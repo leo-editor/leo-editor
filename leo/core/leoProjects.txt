@@ -19,7 +19,7 @@
 #@@tabwidth -4
 
 #@+all
-#@+node:ekr.20090714085726.5991:Leo 4.7
+#@+node:ekr.20090714085726.5991:Leo 4.6.1 projects
 #@+node:ekr.20090717092906.12764:Bugs
 #@+node:ekr.20090717092906.6000:How does Leo write encoding in the first line?
 @nocolor-node
@@ -83,6 +83,13 @@ def initIvars(self):
         # keys are gnx strings; values are ignored
 #@-node:ekr.20090218115025.5:initIvars
 #@-node:ekr.20090717092906.6000:How does Leo write encoding in the first line?
+#@+node:ekr.20090717140657.5980:Fixed file-open focus bug
+@nocolor-node
+
+Opening a file from the File menu doesn't work well.
+The new window does not come to the front.
+#@nonl
+#@-node:ekr.20090717140657.5980:Fixed file-open focus bug
 #@-node:ekr.20090717092906.12764:Bugs
 #@+node:ekr.20090717112235.10330:Features
 #@+node:ekr.20090715082137.5989:Added leoVersion.py & improved startup messages
@@ -593,7 +600,9 @@ def finishInitApp(c):
 #@-node:ekr.20080921060401.5:finishInitApp (runLeo.py)
 #@-node:ekr.20090715082137.5989:Added leoVersion.py & improved startup messages
 #@-node:ekr.20090717112235.10330:Features
-#@-node:ekr.20090714085726.5991:Leo 4.7
+#@-node:ekr.20090714085726.5991:Leo 4.6.1 projects
+#@+node:ekr.20090718091653.5982:Leo 4.7 projects
+#@-node:ekr.20090718091653.5982:Leo 4.7 projects
 #@-all
 #@nonl
 #@-node:EKR.20040429143933:@thin leoProjects.txt
