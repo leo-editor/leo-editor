@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -263,6 +263,7 @@
 <v t="ekr.20090619103402.1821"><vh>@@button render-as-text</vh></v>
 </v>
 <v t="ekr.20090630141519.1793"><vh>rClick proto script</vh></v>
+<v t="ekr.20090715064044.1782"><vh>@button render-as-sphinx</vh></v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20090309064612.1"><vh> Future features/bug fixes (do not delete)</vh>
@@ -339,8 +340,7 @@
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
-<v t="ekr.20090715064044.1782"><vh>@button render-as-sphinx</vh></v>
-<v t="ekr.20090715065515.1786"><vh>sphinx output</vh></v>
+<v t="ekr.20090718072135.1786"><vh>@button print sep</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2779,6 +2779,6 @@ else:
 w = c.frame.body.bodyCtrl.widget
 w.setHtml(b)
 </t>
-<t tx="ekr.20090715065515.1786">&lt;p&gt;&lt;b&gt;Hello&lt;/b&gt; world&lt;\p&gt;</t>
+<t tx="ekr.20090718072135.1786">print '=' * 40</t>
 </tnodes>
 </leo_file>

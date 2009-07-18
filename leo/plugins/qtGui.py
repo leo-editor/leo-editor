@@ -3456,8 +3456,6 @@ class leoQtFrame (leoFrame.leoFrame):
         f.menu = leoQtMenu(f)
         c.setLog()
         g.app.windowList.append(f)
-        # c.initVersion()
-        # c.signOnWithVersion()
         f.miniBufferWidget = leoQtMinibuffer(c)
         c.bodyWantsFocusNow()
     #@+node:ekr.20081121105001.255:createSplitterComponents (qtFrame)
@@ -4461,7 +4459,8 @@ class leoQtFrame (leoFrame.leoFrame):
     def bringToFront (self):
         self.lift()
     def deiconify (self):
-        self.lift()
+        if self.top.isMinimized(): # Buf 400739.
+            self.lift()
     def getFocus(self):
         return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
     def get_window_info(self):
@@ -4474,6 +4473,7 @@ class leoQtFrame (leoFrame.leoFrame):
     def iconify(self):
         self.top.showMinimized()
     def lift (self):
+        # g.trace(self.c,'\n',g.callers(9))
         if self.top.isMinimized(): # Bug 379141
             self.top.showNormal()
         self.top.activateWindow()
@@ -4689,8 +4689,6 @@ class leoQtLog (leoFrame.leoLog):
     #@-node:ekr.20081121105001.326:put
     #@+node:ekr.20081121105001.327:putnl
     def putnl (self,tabName='Log'):
-
-        return ###
 
         if g.app.quitting:
             return

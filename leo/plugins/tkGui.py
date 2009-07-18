@@ -584,10 +584,7 @@ class tkinterGui(leoGui.leoGui):
     #@+node:ekr.20081121110412.387:getFullVersion (tkGui)
     def getFullVersion (self):
 
-        # tkLevel = c.frame.top.getvar("tk_patchLevel")
-        tkLevel = Tk.TkVersion
-
-        return 'Tk %s, Pmw %s' % (tkLevel,Pmw.version())
+        return 'Tk %s, Pmw %s' % (Tk.TkVersion,Pmw.version())
     #@-node:ekr.20081121110412.387:getFullVersion (tkGui)
     #@+node:ekr.20081121110412.388:Icons
     #@+node:ekr.20081121110412.389:attachLeoIcon & createLeoIcon
@@ -3396,8 +3393,6 @@ class leoTkinterFrame (leoFrame.leoFrame):
             # c.finishCreate calls f.createMenuBar later.
         c.setLog()
         g.app.windowList.append(f)
-        # c.initVersion()
-        # c.signOnWithVersion()
         f.miniBufferWidget = f.createMiniBufferWidget()
         c.bodyWantsFocusNow()
 

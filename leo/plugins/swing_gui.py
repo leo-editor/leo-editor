@@ -1003,8 +1003,6 @@ class leoSwingFrame (leoFrame.leoFrame):
             # c.finishCreate calls f.createMenuBar later.
         c.setLog()
         g.app.windowList.append(f)
-        # c.initVersion()
-        # c.signOnWithVersion()
         f.miniBufferWidget = f.createMiniBufferWidget()
         c.bodyWantsFocusNow()
     #@+node:ekr.20081121105001.657:createOuterFrames
