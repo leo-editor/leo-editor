@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -341,6 +341,7 @@
 <v t="ekr.20070223164126.2"><vh>importDir</vh></v>
 <v t="ekr.20070223164126.3"><vh>createLastChildOf</vh></v>
 </v>
+<v t="ekr.20090719131157.1786"><vh>new</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2780,5 +2781,6 @@ w = c.frame.body.bodyCtrl.widget
 w.setHtml(b)
 </t>
 <t tx="ekr.20090718072135.1786">print '=' * 40</t>
+<t tx="ekr.20090719131157.1786"></t>
 </tnodes>
 </leo_file>
