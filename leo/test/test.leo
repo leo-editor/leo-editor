@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -150,11 +150,6 @@
 </v>
 <v t="ekr.20071026102420.3"><vh>Scripts</vh>
 <v t="ekr.20071129103842"><vh>create-at-auto-nodes</vh></v>
-<v t="ekr.20070223164126"><vh>Recursive import script</vh>
-<v t="ekr.20070223164126.1"><vh>importFiles</vh></v>
-<v t="ekr.20070223164126.2"><vh>importDir</vh></v>
-<v t="ekr.20070223164126.3"><vh>createLastChildOf</vh></v>
-</v>
 <v t="ekr.20070517070854"><vh>run script in nullGui</vh></v>
 <v t="ekr.20070517071510"><vh>run script with leoBridge</vh></v>
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
@@ -341,6 +336,11 @@
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
 <v t="ekr.20090718072135.1786"><vh>@button print sep</vh></v>
+<v t="ekr.20070223164126"><vh>Recursive import script</vh>
+<v t="ekr.20070223164126.1"><vh>importFiles</vh></v>
+<v t="ekr.20070223164126.2"><vh>importDir</vh></v>
+<v t="ekr.20070223164126.3"><vh>createLastChildOf</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -765,9 +765,9 @@ import os
 
 @others
 
-types = (".py",) #,".c",".html",".txt")
+types = (".c",) #".py",,".c",".html",".txt")
 
-dir = r'C:\prog\Notabene'
+dir = r'C:\prog\Leo Stuff\Old Leo stuff\Tuple\CC2\CC2\CC2src'
 
 c.beginUpdate()
 try:
