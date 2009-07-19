@@ -2781,6 +2781,6 @@ w = c.frame.body.bodyCtrl.widget
 w.setHtml(b)
 </t>
 <t tx="ekr.20090718072135.1786">print '=' * 40</t>
-<t tx="ekr.20090719131157.1786">changed 3</t>
+<t tx="ekr.20090719131157.1786">changed 4</t>
 </tnodes>
 </leo_file>
