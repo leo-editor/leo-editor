@@ -126,6 +126,14 @@ def install_qt_quicksearch_tab(c):
     c.k.registerCommand(
             'history', None, nodehistory)
 
+    @g.command('marked-list')
+    def showmarks(event):
+        """ List marked nodes in nav tab """
+        #c.frame.log.selectTab('Nav')
+        wdg.scon.doShowMarked()
+
+
+
 
     c.frame.nav = wdg            
 
@@ -150,7 +158,11 @@ class LeoQuickSearchWidget(QtGui.QWidget):
 
     def returnPressed(self):
         t = unicode(self.ui.lineEdit.text())
-        self.scon.doSearch(t)
+        if t == u'm':
+            self.scon.doShowMarked()
+        else:        
+            self.scon.doSearch(t)
+
         if self.scon.its:
             self.ui.listWidget.setFocus()
     #@-node:ville.20090314215508.3:methods
@@ -163,7 +175,6 @@ def matchlines(b, miter):
     for m in miter:
         st, en = g.getLine(b, m.start())
         li = b[st:en].strip()
-        #print li
         res.append((li, (m.start(), m.end() )))
     return res
 
@@ -179,8 +190,8 @@ class QuickSearchController:
         self.lw.connect(self.lw,                                    
                 QtCore.SIGNAL("itemPressed(QListWidgetItem*)"),
                 self.selectItem)        
-    def selectItem(self, it):
 
+    def selectItem(self, it):
         tgt = self.its[it]
         # generic callable
         if callable(tgt):
@@ -195,6 +206,16 @@ class QuickSearchController:
                 w.setSelectionRange(st,en)
                 w.seeInsertPoint()
             self.lw.setFocus()
+
+    def doShowMarked(self):
+        self.clear()
+        c = self.c
+        pl = leoNodes.poslist()
+        for p in c.allNodes_iter():
+            if p.isMarked():
+                pl.append(p.copy())
+        self.addHeadlineMatches(pl)
+
 
     def addHeadlineMatches(self, poslist):
         for p in poslist:
