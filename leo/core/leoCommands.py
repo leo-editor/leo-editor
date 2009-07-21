@@ -7654,14 +7654,21 @@ class baseCommands (object):
         since Leo read it or if the user agrees to overwrite it.
         '''
 
+        trace = False and not g.unitTesting
         c = self
         timeStamp = c.timeStampDict.get(fn)
         if not timeStamp:
-            # g.trace('no stamp for %s' % (fn))
+            if trace: g.trace('no time stamp',fn)
+            return True
+
+        # Don't assume the file still exists.
+        if not g.os_path_exists(fn):
+            if trace: g.trace('file no longer exists',fn)
             return True
 
         timeStamp2 = os.path.getmtime(fn)
         if timeStamp == timeStamp2:
+            if trace: g.trace('time stamps match',fn)
             return True
 
         if g.app.unitTesting:

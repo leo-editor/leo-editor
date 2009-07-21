@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -58,10 +58,9 @@
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
+<v t="ekr.20080915095329.1"><vh>@@button rst3</vh></v>
+<v t="ekr.20090718072135.1786"><vh>@button print sep</vh></v>
 <v t="ekr.20090521070342.1907"><vh>@button show-rst</vh></v>
-<v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
-<v t="ekr.20061030041356"><vh>@url c:\prog\IronPython-1.0.1\Doc\IronPythonApiReference.chm</vh></v>
-</v>
 <v t="ekr.20070531102813"><vh>Disabled buttons</vh>
 <v t="ekr.20060814111542"><vh>@@button add-e</vh></v>
 <v t="ekr.20080813100905.1"><vh>@@button args-test @args = a,b,c</vh></v>
@@ -108,7 +107,9 @@
 <v t="ekr.20060904111037"><vh>@@button opml-read</vh></v>
 </v>
 </v>
-<v t="ekr.20080915095329.1"><vh>@@button rst3</vh></v>
+<v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
+<v t="ekr.20061030041356"><vh>@url c:\prog\IronPython-1.0.1\Doc\IronPythonApiReference.chm</vh></v>
+</v>
 </v>
 <v t="ekr.20070410063214"><vh>Commands</vh>
 <v t="ekr.20060924180049"><vh>@@command clones-tab</vh>
@@ -335,13 +336,6 @@
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
-<v t="ekr.20090718072135.1786"><vh>@button print sep</vh></v>
-<v t="ekr.20070223164126"><vh>Recursive import script</vh>
-<v t="ekr.20070223164126.1"><vh>importFiles</vh></v>
-<v t="ekr.20070223164126.2"><vh>importDir</vh></v>
-<v t="ekr.20070223164126.3"><vh>createLastChildOf</vh></v>
-</v>
-<v t="ekr.20090719131157.1786"><vh>new</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -759,81 +753,6 @@ winpdb = g.os_path_join(pythonDir,'Lib','site-packages','winpdb.py') # For versi
 os.chdir(g.app.loadDir)
 cmdline = '%s %s -t %s' % (python,winpdb,filename) 
 subprocess.Popen(cmdline)
-</t>
-<t tx="ekr.20070223164126"># An example of running this script:
-    
-import os
-
-@others
-
-types = (".c",) #".py",,".c",".html",".txt")
-
-dir = r'C:\prog\Leo Stuff\Old Leo stuff\Tuple\CC2\CC2\CC2src'
-
-c.beginUpdate()
-try:
-    importFiles(dir,types,recursive=True)
-finally:
-    c.endUpdate()
-
-g.es("done",color="blue")
-</t>
-<t tx="ekr.20070223164126.1">def importFiles (dir,type=None,kind="@file",recursive=False):
-    
-    v = c.currentVnode()
-
-    # Check the params.
-    if kind != "@file" and kind != "@root":
-        g.es("kind must be @file or @root: " + kind)
-        return
-
-    if not g.os_path_exists(dir):
-        g.es("directory does not exist: " + dir)
-        return
-    
-    c.beginUpdate()
-    try:
-        root = createLastChildOf(v,"imported files")
-        try:
-            importDir (dir,type,kind,recursive,root)
-            root.contract()
-        except:
-            g.es_exception()
-    finally:
-        c.endUpdate()</t>
-<t tx="ekr.20070223164126.2">def importDir (dir,types,kind,recursive,root):
-
-    g.es("dir: " + dir,color="blue")
-    
-    try:
-        files = os.listdir(dir)
-        files2 = [] ; dirs =[]
-        for f in files:
-            path = g.os_path_join(dir,f)
-            if g.os_path_isfile(path):
-                name, ext = g.os_path_splitext(f)
-                if not types or ext in types:
-                    files2.append(path)
-            elif recursive:
-                dirs.append(path)
-        if len(files2) &gt; 0 or len(dirs) &gt; 0:
-            child = createLastChildOf(root,dir)
-            c.selectVnode(child)
-        if len(files2) &gt; 0:
-            c.importCommands.importFilesCommand(files2,kind)
-        if len(dirs) &gt; 0:
-            dirs.sort()
-            for dir in dirs:
-                importDir(dir,types,kind,recursive,child)
-    except:
-        g.es("exception in importFiles script")
-        g.es_exception()
-</t>
-<t tx="ekr.20070223164126.3">def createLastChildOf (v,headline):
-    
-    child = v.insertAsLastChild()
-    child.initHeadString(headline)
-    return child
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
@@ -2781,6 +2700,5 @@ w = c.frame.body.bodyCtrl.widget
 w.setHtml(b)
 </t>
 <t tx="ekr.20090718072135.1786">print '=' * 40</t>
-<t tx="ekr.20090719131157.1786">changed 4</t>
 </tnodes>
 </leo_file>

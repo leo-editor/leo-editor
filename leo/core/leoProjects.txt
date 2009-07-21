@@ -606,6 +606,76 @@ def finishInitApp(c):
 #@-node:ekr.20090717112235.10330:Features
 #@-node:ekr.20090714085726.5991:Leo 4.6.1 projects
 #@+node:ekr.20090718091653.5982:Leo 4.7 projects
+#@+node:ekr.20090721093155.5986:Bugs
+#@+node:ekr.20090721091726.5982:Fixed crasher when writing to a newly-deleted file
+#@+node:bwmulder.20050101094804:openForWrite (atFile)
+def openForWrite (self, filename, wb='wb'):
+
+    '''Open a file for writes, handling shadow files.'''
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c ; x = c.shadowController
+
+    try:
+        shadow_filename = x.shadowPathName(filename)
+        self.writing_to_shadow_directory = os.path.exists(shadow_filename)
+        open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
+        self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
+
+        if self.writing_to_shadow_directory:
+            if trace: g.trace(filename,shadow_filename)
+            x.message('writing %s' % shadow_filename)
+            return 'shadow',open(open_file_name,wb)
+        else:
+            ok = c.checkFileTimeStamp(at.targetFileName)
+            return 'check',ok and open(open_file_name,wb)
+
+    except IOError:
+        if not g.app.unitTesting:
+            g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
+            g.es_exception()
+        return 'error',None
+#@-node:bwmulder.20050101094804:openForWrite (atFile)
+#@+node:ekr.20090103070824.11:c.checkFileTimeStamp
+def checkFileTimeStamp (self,fn):
+
+    '''
+    Return True if the file given by fn has not been changed
+    since Leo read it or if the user agrees to overwrite it.
+    '''
+
+    trace = False and not g.unitTesting
+    c = self
+    timeStamp = c.timeStampDict.get(fn)
+    if not timeStamp:
+        if trace: g.trace('no time stamp',fn)
+        return True
+
+    # Don't assume the file still exists.
+    if not g.os_path_exists(fn):
+        if trace: g.trace('file no longer exists',fn)
+        return True
+
+    timeStamp2 = os.path.getmtime(fn)
+    if timeStamp == timeStamp2:
+        if trace: g.trace('time stamps match',fn)
+        return True
+
+    if g.app.unitTesting:
+        return False
+
+    # g.trace(timeStamp, timeStamp2)
+    message = '%s\n%s\n%s' % (
+        fn,
+        g.tr('has been modified outside of Leo.'),
+        g.tr('Overwrite this file?'))
+    ok = g.app.gui.runAskYesNoCancelDialog(c,
+        title = 'Overwrite modified file?',
+        message = message)
+    return ok == 'yes'
+#@-node:ekr.20090103070824.11:c.checkFileTimeStamp
+#@-node:ekr.20090721091726.5982:Fixed crasher when writing to a newly-deleted file
+#@-node:ekr.20090721093155.5986:Bugs
 #@-node:ekr.20090718091653.5982:Leo 4.7 projects
 #@-all
 #@nonl
