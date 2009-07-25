@@ -342,7 +342,10 @@ class LeoApp:
 
         """A convenience routines for plugins to create the Qt gui class."""
 
-        leoPlugins.loadOnePlugin ('qtGui',verbose=verbose)
+        import leo.plugins.qtGui
+        leo.plugins.qtGui.init()
+
+        #leoPlugins.loadOnePlugin ('qtGui',verbose=verbose)
 
         if fileName and verbose: print('qtGui created in %s' % fileName)
     #@-node:ekr.20090202191501.1:app.createQtGui
