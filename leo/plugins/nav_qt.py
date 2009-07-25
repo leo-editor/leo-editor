@@ -88,15 +88,15 @@ class pluginController:
     #@+node:ville.20090518182905.7867:clickPrev
     def clickPrev(self):
         c = self.c
-        p = c.nodeHistory.goPrev()
+        p = c.goPrevVisitedNode()
         # g.trace(p)
-        if p: c.selectPosition(p)
+        #if p: c.selectPosition(p)
 
     #@-node:ville.20090518182905.7867:clickPrev
     #@+node:ville.20090518182905.7868:clickNext
     def clickNext(self):
         c = self.c
-        p = c.nodeHistory.goNext()
+        p = c.goNextVisitedNode()
         # g.trace(p)
         if p: c.selectPosition(p)
     #@-node:ville.20090518182905.7868:clickNext
