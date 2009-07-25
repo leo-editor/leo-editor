@@ -272,7 +272,13 @@ class tkinterGui(leoGui.leoGui):
         d = tkinterAskYesNoCancel(
             c,title,message,yesMessage,noMessage,defaultButton)
         return d.run(modal=True)
-    #@nonl
+
+    def runPropertiesDialog(
+        title='Properties',data={}, callback=None, buttons=None):
+        """Dispay a modal TkPropertiesDialog"""
+        dialog = TkPropertiesDialog(title, data, callback, buttons)
+
+        return dialog.result 
     #@+node:ekr.20081122170423.2:tkGui.alert
     def alert (self,message):
 
@@ -1070,6 +1076,178 @@ class leoTkinterDialog:
     #@-node:ekr.20081121110412.37:run (tkDialog)
     #@-others
 #@-node:ekr.20081121110412.29: class leoTkinterDialog
+#@+node:ekr.20090722094828.3643:class leoTkinterPropertiesDialog
+class leoTkinterPropertiesDialog:
+
+    """A class to create and run a Properties dialog"""
+
+    #@    @+others
+    #@+node:ekr.20090722094828.3644:__init__
+    def __init__(self, title, data, callback=None, buttons=[]):
+        #@    << docstring >>
+        #@+node:ekr.20090722094828.3645:<< docstring >>
+        """ Initialize and show a Properties dialog.
+
+            'buttons' should be a list of names for buttons.
+
+            'callback' should be None or a function of the form:
+
+                def cb(name, data)
+                    ...
+                    return 'close' # or anything other than 'close'
+
+            where name is the name of the button clicked and data is
+            a data structure representing the current state of the dialog.
+
+            If a callback is provided then when a button (other than
+            'OK' or 'Cancel') is clicked then the callback will be called
+            with name and data as parameters.
+
+                If the literal string 'close' is returned from the callback
+                the dialog will be closed and self.result will be set to a
+                tuple (button, data).
+
+                If anything other than the literal string 'close' is returned
+                from the callback, the dialog will continue to be displayed.
+
+            If no callback is provided then when a button is clicked the
+            dialog will be closed and self.result set to  (button, data).
+
+            The 'ok' and 'cancel' buttons (which are always provided) behave as
+            if no callback was supplied.
+
+        """
+        #@-node:ekr.20090722094828.3645:<< docstring >>
+        #@nl
+
+        if buttons is None:
+            buttons = []
+
+        self.entries = []
+        self.title = title
+        self.callback = callback
+        self.buttons = buttons
+        self.data = data
+
+        #@    << create the frame from the configuration data >>
+        #@+node:ekr.20090722094828.3646:<< Create the frame from the configuration data >>
+        root = g.app.root
+
+        #@<< Create the top level and the main frame >>
+        #@+node:ekr.20090722094828.3647:<< Create the top level and the main frame >>
+        self.top = top = Tk.Toplevel(root)
+        g.app.gui.attachLeoIcon(self.top)
+        #top.title("Properties of "+ plugin.name)
+        top.title(title)
+
+        top.resizable(0,0) # neither height or width is resizable.
+
+        self.frame = frame = Tk.Frame(top)
+        frame.pack(side="top")
+        #@nonl
+        #@-node:ekr.20090722094828.3647:<< Create the top level and the main frame >>
+        #@nl
+        #@<< Create widgets for each section and option >>
+        #@+node:ekr.20090722094828.3648:<< Create widgets for each section and option >>
+        # Create all the entry boxes on the screen to allow the user to edit the properties
+
+        sections = data.keys()
+        sections.sort()
+
+        for section in sections:
+
+            # Create a frame for the section.
+            f = Tk.Frame(top, relief="groove",bd=2)
+            f.pack(side="top",padx=5,pady=5)
+            Tk.Label(f, text=section.capitalize()).pack(side="top")
+
+            # Create an inner frame for the options.
+            b = Tk.Frame(f)
+            b.pack(side="top",padx=2,pady=2)
+
+            options = data[section].keys()
+            options.sort()
+
+            row = 0
+            # Create a Tk.Label and Tk.Entry for each option.
+            for option in options:
+                e = Tk.Entry(b)
+                e.insert(0, data[section][option])
+                Tk.Label(b, text=option).grid(row=row, column=0, sticky="e", pady=4)
+                e.grid(row=row, column=1, sticky="ew", pady = 4)
+                row += 1
+                self.entries.append((section, option, e))
+        #@-node:ekr.20090722094828.3648:<< Create widgets for each section and option >>
+        #@nl
+        #@<< Create the buttons >>
+        #@+node:ekr.20090722094828.3649:<< Create the buttons >>
+        box = Tk.Frame(top, borderwidth=5)
+        box.pack(side="bottom")
+
+        buttons.extend(("OK", "Cancel"))
+
+        for name in buttons:
+            Tk.Button(box,
+                text=name,
+                width=6,
+                command=lambda self=self, name=name: self.onButton(name)
+            ).pack(side="left",padx=5)
+
+        #@-node:ekr.20090722094828.3649:<< Create the buttons >>
+        #@nl
+
+        g.app.gui.center_dialog(top) # Do this after packing.
+        top.grab_set() # Make the dialog a modal dialog.
+        top.focus_force() # Get all keystrokes.
+
+        self.result = ('Cancel', '')
+
+        root.wait_window(top)
+        #@nonl
+        #@-node:ekr.20090722094828.3646:<< Create the frame from the configuration data >>
+        #@nl
+    #@nonl
+    #@-node:ekr.20090722094828.3644:__init__
+    #@+node:ekr.20090722094828.3650:Event Handlers
+
+    def onButton(self, name):
+        """Event handler for all button clicks."""
+
+        data = self.getData()
+        self.result = (name, data)
+
+        if name in ('OK', 'Cancel'):
+            self.top.destroy()
+            return
+
+        if self.callback:
+            retval = self.callback(name, data)
+            if retval == 'close':
+                self.top.destroy()
+            else:
+                self.result = ('Cancel', None)
+
+
+    #@-node:ekr.20090722094828.3650:Event Handlers
+    #@+node:ekr.20090722094828.3651:getData
+    def getData(self):
+        """Return the modified configuration."""
+
+        data = {}
+        for section, option, entry in self.entries:
+            if section not in data:
+                data[section] = {}
+            s = entry.get()
+            s = g.toEncodedString(s,"ascii",reportErrors=True) # Config params had better be ascii.
+            data[section][option] = s
+
+        return data
+
+
+    #@-node:ekr.20090722094828.3651:getData
+    #@-others
+#@nonl
+#@-node:ekr.20090722094828.3643:class leoTkinterPropertiesDialog
 #@+node:ekr.20081121110412.8:class leoTkinterComparePanel
 class leoTkinterComparePanel (leoCompare.leoCompare,leoTkinterDialog):
 

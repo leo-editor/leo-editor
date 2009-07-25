@@ -474,8 +474,9 @@ class PlugIn:
     #@-node:pap.20050317183526:getNiceName
     #@+node:EKR.20040517080555.9:properties
     def properties(self, event=None):
-        """Display a modal properties dialog for this plugin"""
 
+
+        """Display a modal properties dialog for this plugin"""
 
         if self.hasapply:
 
@@ -932,7 +933,6 @@ def runPropertiesDialog(title='Properties', data={}, callback=None, buttons=None
 #@+node:bob.20071209110304:runScrolledMessageDialog
 def runScrolledMessageDialog(title='Message', label= '', msg='', callback=None, buttons=None, **kw):
     """Display a modal TkScrolledMessageDialog."""
-
 
     dialog = TkScrolledMessageDialog(title, label, msg, callback, buttons)
 

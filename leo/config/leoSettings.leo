@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,7,9"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913"><vh>@@button Save</vh></v>
@@ -98,7 +98,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20090703122042.7463"><vh>@@button a-common-button</vh></v>
@@ -320,7 +320,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20061003173413" a="E"><vh>File options</vh>
+<v t="ekr.20061003173413"><vh>File options</vh>
 <v t="ekr.20041119034357.7"><vh>.leo file options</vh>
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
@@ -1078,6 +1078,7 @@
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
 <v t="ekr.20081018053140.11"><vh>qtGui plugin</vh>
+<v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 0</vh></v>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
@@ -7924,6 +7925,8 @@ Change to your Python's default encoding if you have unicode problems.</t>
 <t tx="ekr.20090630073313.8521"></t>
 <t tx="ekr.20090630073313.8522"></t>
 <t tx="ekr.20090703122042.7463">print 'hi'</t>
+<t tx="ekr.20090724102842.2492">If zero, all nodes are colorized, regardless of length of body text.
+If &gt; 0, only nodes whose body text are smaller than this limit are colorized.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

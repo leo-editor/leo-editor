@@ -6431,7 +6431,7 @@ class leoQtGui(leoGui.leoGui):
 
 
     #@-node:ekr.20081121105001.478:Do nothings
-    #@+node:ekr.20081121105001.479:Dialogs & panels
+    #@+node:ekr.20081121105001.479:Dialogs & panels (qtGui)
     #@+node:ekr.20081122170423.1:alert (qtGui)
     def alert (self,message):
 
@@ -6609,6 +6609,20 @@ class leoQtGui(leoGui.leoGui):
             return s
     #@nonl
     #@-node:ekr.20081121105001.488:runOpenFileDialog
+    #@+node:ekr.20090722094828.3653:runPropertiesDialog (qtGui)
+    def runPropertiesDialog(self,
+        title='Properties',data={}, callback=None, buttons=None):
+
+        """Dispay a modal TkPropertiesDialog"""
+
+        # g.trace(data)
+        result = 'Cancel'
+        return result,data
+
+        # d = propertiesDialog(title,data)
+        # result = d.run()
+        # return result
+    #@-node:ekr.20090722094828.3653:runPropertiesDialog (qtGui)
     #@+node:ekr.20081121105001.489:runSaveFileDialog
     def runSaveFileDialog(self,initialfile='',title='Save',filetypes=[],defaultextension=''):
 
@@ -6678,7 +6692,7 @@ class leoQtGui(leoGui.leoGui):
         #@-node:leohag.20081205043707.13:<< emergency fallback >>
         #@nl
     #@-node:ekr.20081121105001.490:runScrolledMessageDialog
-    #@-node:ekr.20081121105001.479:Dialogs & panels
+    #@-node:ekr.20081121105001.479:Dialogs & panels (qtGui)
     #@+node:ekr.20081121105001.491:Focus (qtGui)
     def get_focus(self,c=None):
 
@@ -7557,7 +7571,8 @@ class leoQtColorizer:
         self.flag = True # Per-node enable/disable flag.
         self.killColorFlag = False
         self.language = 'python' # set by scanColorDirectives.
-        self.max_chars_to_colorize = 10000
+        self.max_chars_to_colorize = c.config.getInt('qt_max_colorized_chars') or 0
+
 
         # Step 2: create the highlighter.
         self.highlighter = leoQtSyntaxHighlighter(c,w,colorizer=self)
@@ -7577,7 +7592,7 @@ class leoQtColorizer:
 
         self.count += 1 # For unit testing.
 
-        if len(p.b) > self.max_chars_to_colorize:
+        if len(p.b) > self.max_chars_to_colorize > 0:
             self.flag = False
         elif self.enabled:
             oldLanguage = self.language
@@ -7691,7 +7706,7 @@ class leoQtColorizer:
         trace = False and not g.unitTesting
         p = p.copy()
 
-        if len(p.b) > self.max_chars_to_colorize:
+        if len(p.b) > self.max_chars_to_colorize > 0:
             self.flag = False
         else:
             # self.flag is True unless an unambiguous @nocolor is seen.
