@@ -243,6 +243,11 @@ class leoGui:
         message=None,yesMessage="Yes",noMessage="No",defaultButton="Yes"):
         """Create and run an askYesNoCancel dialog ."""
         self.oops()
+
+    def runPropertiesDialog(title='Properties', data={}, callback=None, buttons=None):
+        """Dispay a modal TkPropertiesDialog"""
+        self.oops()
+    #@nonl
     #@-node:ekr.20031218072017.3730:app.gui dialogs
     #@+node:ekr.20061031173016:app.gui.createKeyHandlerClass
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):

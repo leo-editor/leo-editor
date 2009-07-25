@@ -2495,7 +2495,7 @@ else:
 </t>
 <t tx="ekr.20090514101216.1927"># 'self' is now defined in @test and @suite nodes.
 self.assertNotEqual(1,2)</t>
-<t tx="ekr.20090514103332.1929"></t>
+<t tx="ekr.20090514103332.1929">@language python</t>
 <t tx="ekr.20090521070342.1907">g.app.gui.runScrolledMessageDialog(c=c,msg=u'rst:'+p.b)</t>
 <t tx="ekr.20090525090210.1940">La Peña</t>
 <t tx="ekr.20090601093755.1802">bookmarks = []
