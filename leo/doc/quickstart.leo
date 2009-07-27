@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="218" left="759" height="759" width="1233"/>
+	<global_window_position top="173" left="562" height="759" width="1233"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -19,7 +19,7 @@
 </v>
 <v t="ville.20090627211608.5782"><vh>Welcome to Leo!</vh></v>
 <v t="ville.20090627211608.5784"><vh>Tree manipulation basics</vh></v>
-<v t="ville.20090630234425.12394" a="E"><vh>Programming</vh>
+<v t="ville.20090630234425.12394"><vh>Programming</vh>
 <v t="ville.20090627211608.10118" a="E"><vh>External files</vh>
 <v t="ville.20090627211608.10116"><vh>Thin nodes (explanation &amp; exercise)</vh>
 <v t="ville.20090627211608.10119"><vh>@path ~</vh>
@@ -81,7 +81,7 @@
 <v t="ville.20090630234425.12395"><vh>Configuration (enabling plugins etc.)</vh>
 <v t="ville.20090630234425.14847"><vh>Find out your ~/.leo directory (script)</vh></v>
 <v t="ville.20090630234425.12396" a="E"><vh>@@settings</vh>
-<v t="ville.20090708192943.3926"><vh>@enabled-plugins</vh></v>
+<v t="ville.20090728003644.3957"><vh>@enabled-plugins</vh></v>
 <v t="ville.20090708172716.16846"><vh>@@string initial_split_orientation = horizontal</vh></v>
 </v>
 </v>
@@ -365,7 +365,7 @@ opening the external file afterwards.
 vertical: body pane on the botton
 
 vertical is the default; you may prefer horizontal for small but wide screens (e.g. on laptops)</t>
-<t tx="ville.20090708192943.3926"># Leo loads plugins in the order they appear here.
+<t tx="ville.20090728003644.3957"># Leo loads plugins in the order they appear here.
 # File names may be indented as desired.
 
 # Standard plugins enabled in official distributions....
@@ -376,6 +376,7 @@ mod_scripting.py
 quicksearch.py
 UNL.py
 contextmenu.py
+nav_qt.py
 
 # The plugins manager plugin does not
 # understand @enabled-plugins nodes.
