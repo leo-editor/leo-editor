@@ -6,9 +6,16 @@
 
 Just load the plugin, activate "Nav" tab, enter search text and press enter.
 
-The pattern to search for is a case insensitive fnmatch pattern, because they are typically easier to type than regexps. 
-If you want to search for a regexp, use 'r:' prefix, e.g. r:foo.*bar
+The pattern to search for is, by default, a case *insensitive* fnmatch pattern
+(e.g. foo*bar), because they are typically easier to type than regexps. If you
+want to search for a regexp, use 'r:' prefix, e.g. r:foo.*bar.
 
+Regexp matching is case sensitive; if you want to do a case-insensitive regular
+expression search (or any kind of case-sentive search in the first place), do it
+by searching for "r:(?i)Foo". (?i) is a standard feature of Python regural expression
+syntax, as documented in 
+
+http://docs.python.org/library/re.html#regular-expression-syntax
 
 '''
 #@-node:ville.20090314215508.5:<< docstring >>
@@ -36,7 +43,7 @@ from PyQt4.QtGui import QListWidget, QListWidgetItem
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 
-import fnmatch
+import fnmatch,re
 
 # Whatever other imports your plugins uses.
 #@nonl
@@ -252,16 +259,20 @@ class QuickSearchController:
 
     def doSearch(self, pat):
         self.clear()
+
+
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*'+ pat + '*')
             bpat = fnmatch.translate(pat).rstrip('$')
+            flags = re.IGNORECASE
         else:
             hpat = pat[2:]
             bpat = pat[2:]
+            flags = 0
 
-        hm = self.c.find_h(hpat)
+        hm = self.c.find_h(hpat, flags)
         self.addHeadlineMatches(hm)
-        bm = self.c.find_b(bpat)
+        bm = self.c.find_b(bpat, flags)
         self.addBodyMatches(bm)
 
     def doNodeHistory(self):
