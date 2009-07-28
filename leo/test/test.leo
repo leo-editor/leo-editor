@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6,2,4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -155,6 +155,11 @@
 <v t="ekr.20070517071510"><vh>run script with leoBridge</vh></v>
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 <v t="ekr.20090428081009.1"><vh>patching auto-completion table</vh></v>
+<v t="ekr.20090728090618.2832"><vh>Recursive import script</vh>
+<v t="ekr.20090728090618.2833"><vh>importFiles</vh></v>
+<v t="ekr.20090728090618.2834"><vh>importDir</vh></v>
+<v t="ekr.20090728090618.2835"><vh>createLastChildOf</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20071025193940"></v>
@@ -335,6 +340,22 @@
 <v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
+</v>
+<v t="ekr.20090728090618.2836"><vh>imported files</vh></v>
+<v t="ekr.20090728090618.2837" a="E"><vh>pydiction-1.0</vh>
+<v t="ekr.20090728090618.2846"><vh>pydiction.vim</vh></v>
+<v t="ekr.20090728090618.2847"><vh>README.txt</vh></v>
+<v t="ekr.20090728090618.2838" a="E"><vh>pydiction.py</vh>
+<v t="ekr.20090728090618.2849"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20090728090618.2839"><vh>&lt;&lt; declarations &gt;&gt;</vh></v>
+<v t="ekr.20090728090618.2848"><vh>&lt;&lt; process command line &gt;&gt;</vh></v>
+<v t="ekr.20090728090618.2840"><vh>get_submodules</vh></v>
+<v t="ekr.20090728090618.2841"><vh>write_dictionary</vh></v>
+<v t="ekr.20090728090618.2842"><vh>my_import</vh></v>
+<v t="ekr.20090728090618.2843"><vh>remove_duplicates</vh></v>
+<v t="ekr.20090728090618.2844"><vh>get_yesno</vh></v>
+<v t="ekr.20090728090618.2845"><vh>main</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -2700,5 +2721,632 @@ w = c.frame.body.bodyCtrl.widget
 w.setHtml(b)
 </t>
 <t tx="ekr.20090718072135.1786">print '=' * 40</t>
+<t tx="ekr.20090728090618.2832"># An example of running this script:
+
+import os
+
+@others
+
+types = (".py",".vim",".txt") #,".c",".html",".txt")
+
+dir = r"C:\prog\pydiction-1.0"
+
+importFiles(dir,types,recursive=True)
+c.redraw()
+
+g.es("done",color="blue")
+</t>
+<t tx="ekr.20090728090618.2833">def importFiles (dir,type=None,kind="@file",recursive=False):
+
+    v = c.currentVnode()
+
+    # Check the params.
+    if kind != "@file" and kind != "@root":
+        g.es("kind must be @file or @root: " + kind)
+        return
+
+    if not g.os_path_exists(dir):
+        g.es("directory does not exist: " + dir)
+        return
+
+    root = createLastChildOf(v,"imported files")
+    try:
+        importDir (dir,type,kind,recursive,root)
+        root.contract()
+    except:
+        g.es_exception()
+    c.redraw()</t>
+<t tx="ekr.20090728090618.2834">def importDir (dir,types,kind,recursive,root):
+
+    g.es("dir: " + dir,color="blue")
+
+    try:
+        files = os.listdir(dir)
+        files2 = [] ; dirs =[]
+        for f in files:
+            path = g.os_path_join(dir,f)
+            if g.os_path_isfile(path):
+                name, ext = g.os_path_splitext(f)
+                if not types or ext in types:
+                    files2.append(path)
+            elif recursive:
+                dirs.append(path)
+        if len(files2) &gt; 0 or len(dirs) &gt; 0:
+            child = createLastChildOf(root,dir)
+            c.selectVnode(child)
+        if len(files2) &gt; 0:
+            c.importCommands.importFilesCommand(files2,kind)
+        if len(dirs) &gt; 0:
+            dirs.sort()
+            for dir in dirs:
+                importDir(dir,types,kind,recursive,child)
+    except:
+        g.es("exception in importFiles script")
+        g.es_exception()
+</t>
+<t tx="ekr.20090728090618.2835">def createLastChildOf (v,headline):
+
+    child = v.insertAsLastChild()
+    child.initHeadString(headline)
+    return child
+</t>
+<t tx="ekr.20090728090618.2836"></t>
+<t tx="ekr.20090728090618.2837"></t>
+<t tx="ekr.20090728090618.2838">@first #!/usr/bin/env python
+
+# Last modified: July 15th, 2009
+
+@language python
+@tabwidth -4
+
+&lt;&lt; docstring &gt;&gt;
+&lt;&lt; declarations &gt;&gt;
+
+# Path/filename of the vim dictionary file to write to:
+PYDICTION_DICT = r'complete-dict'
+# Path/filename of the vim dictionary backup file:
+PYDICTION_DICT_BACKUP = r'complete-dict.last'
+
+@others
+
+if __name__ == '__main__':
+    &lt;&lt; process command line &gt;&gt;
+</t>
+<t tx="ekr.20090728090618.2839">__author__ = "Ryan Kulla (rkulla AT gmail DOT com)"
+__version__ = "1.0"
+__copyright__ = "Copyright (c) 2003-2009 Ryan Kulla"
+
+import os
+import sys
+import types
+import shutil
+</t>
+<t tx="ekr.20090728090618.2840">def get_submodules(module_name, submodules):
+    """Build a list of all the submodules of modules."""
+
+    # Try to import a given module, so we can dir() it:
+    try:
+        imported_module = my_import(module_name)
+    except ImportError, err:
+        return submodules
+
+    mod_attrs = dir(imported_module)
+
+    for mod_attr in mod_attrs:
+        if type(getattr(imported_module, mod_attr)) is types.ModuleType:
+            submodules.append(module_name + '.' + mod_attr)
+
+    return submodules
+
+
+</t>
+<t tx="ekr.20090728090618.2841">def write_dictionary(module_name):
+    """Write to module attributes to the vim dictionary file."""
+
+    try:
+        imported_module = my_import(module_name)
+    except ImportError, err:
+        return
+
+    mod_attrs = dir(imported_module)
+
+    # Generate fully-qualified module names: 
+    write_to.write('\n--- %(x)s module with "%(x)s." prefix ---\n' % 
+                   {'x': module_name})
+    for mod_attr in mod_attrs:
+        if callable(getattr(imported_module, mod_attr)):
+            # If an attribute is callable, show an opening parentheses:
+            prefix_on = '%s.%s('
+        else:
+            prefix_on = '%s.%s'
+        write_to.write(prefix_on % (module_name, mod_attr) + '\n')
+
+    # Generate non-fully-qualified module names: 
+    write_to.write('\n--- %(x)s module without "%(x)s." prefix ---\n' % 
+                   {'x': module_name})
+    for mod_attr in mod_attrs:
+        if callable(getattr(imported_module, mod_attr)):
+            prefix_off = '%s('
+        else:
+            prefix_off = '%s'
+        write_to.write(prefix_off % mod_attr + '\n')
+</t>
+<t tx="ekr.20090728090618.2842">def my_import(name):
+    """Make __import__ import "package.module" formatted names."""
+    mod = __import__(name)
+    components = name.split('.')
+    for comp in components[1:]:
+        mod = getattr(mod, comp)
+    return mod
+
+
+</t>
+<t tx="ekr.20090728090618.2843">def remove_duplicates(seq, keep=()):
+    """
+
+    Remove duplicates from a sequence while perserving order.
+
+    The optional tuple argument "keep" can be given to specificy 
+    each string you don't want to be removed as a duplicate.
+    """
+    seq2 = []
+    seen = set();
+    for i in seq:
+        if i in (keep):
+            seq2.append(i)
+            continue
+        elif i not in seen:
+            seq2.append(i)
+        seen.add(i)
+    return seq2
+
+
+</t>
+<t tx="ekr.20090728090618.2844">def get_yesno(msg="[Y/n]?"):
+    """
+
+    Returns True if user inputs 'n', 'Y', "yes", "Yes"...
+    Returns False if user inputs 'n', 'N', "no", "No"...
+    If they enter an invalid option it tells them so and asks again.
+    Hitting Enter is equivalent to answering Yes.
+    Takes an optional message to display, defaults to "[Y/n]?".
+
+    """
+    while True:
+        answer = raw_input(msg)
+        if answer == '':
+            return True
+        elif len(answer):
+            answer = answer.lower()[0]
+            if answer == 'y':
+                return True
+                break
+            elif answer == 'n':
+                return False
+                break
+            else:
+                print "Invalid option. Please try again."
+                continue
+
+
+</t>
+<t tx="ekr.20090728090618.2845">def main(write_to):
+    """Generate a dictionary for Vim of python module attributes."""
+    submodules = []
+
+    for module_name in sys.argv[1:]:
+        try:
+            imported_module = my_import(module_name)
+        except ImportError, err:
+            print "Couldn't import: %s. %s" % (module_name, err)
+            sys.argv.remove(module_name)
+
+    cli_modules = sys.argv[1:]
+
+    # Step through each command line argument:
+    for module_name in cli_modules:
+        print "Trying module: %s" % module_name
+        submodules = get_submodules(module_name, submodules)
+
+        # Step through the current module's submodules:
+        for submodule_name in submodules:
+            submodules = get_submodules(submodule_name, submodules)
+
+    # Add the top-level modules to the list too:
+    for module_name in cli_modules:
+        submodules.append(module_name)
+
+    submodules.sort()
+
+    # Step through all of the modules and submodules to create the dict file:
+    for submodule_name in submodules:
+        write_dictionary(submodule_name)
+
+    # Close and Reopen the file for reading and remove all duplicate lines:
+    write_to.close()
+    print "Removing duplicates..."
+    f = open(PYDICTION_DICT, 'r')
+    file_lines = f.readlines()
+    file_lines = remove_duplicates(file_lines, ('\n'))
+    f.close()
+
+    # Delete the original file:
+    os.unlink(PYDICTION_DICT)
+
+    # Recreate the file, this time it won't have any duplicates lines:
+    f = open(PYDICTION_DICT, 'w')
+    for attr in file_lines:
+        f.write(attr)
+    f.close()
+    print "Done."
+</t>
+<t tx="ekr.20090728090618.2846">@language vim
+" ============================================================================
+" python_pydiction.vim - Module and Keyword completion for Python
+" ============================================================================
+"
+" Author: Ryan Kulla (rkulla AT gmail DOT com)
+" Version: 1.0, for Vim 7
+" URL: http://www.vim.org/scripts/script.php?script_id=850
+" Last Modified: July 18th, 2009
+" Installation: On Linux, put this file in ~/.vim/after/ftplugin/
+"               On Windows, put this file in C:\vim\vimfiles\ftplugin\
+"                        (assuming you installed vim in C:\vim\).
+"               You may install the other files anywhere. 
+"               In .vimrc, add the following:
+"                   filetype plugin on
+"                   let g:pydiction_location = 'path/to/complete-dict'
+"               Optionally, you set the completion menu height like:
+"                   let g:pydiction_menu_height = 20
+"               The default menu height is 15
+"               To do case-sensitive searches, set noignorecase (:set noic).
+" License: BSD
+" Copyright: Copyright (c) 2003-2009 Ryan Kulla
+"            All rights reserved.
+"
+"            Redistribution and use in source and binary forms, with or without
+"            modification, are permitted provided that the following conditions
+"            are met:
+"            1. Redistributions of source code must retain the above copyright
+"               notice, this list of conditions and the following disclaimer.
+"            2. Redistributions in binary form must reproduce the above
+"               copyright notice, this list of conditions and the following
+"               disclaimer in the documentation and/or other materials provided
+"               with the distribution.
+"            3. The name of the author may not be used to endorse or promote 
+"               products derived from this software without specific prior 
+"               written permission.
+"
+"            THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS
+"            OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+"            WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+"            ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+"            DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+"            DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+"            GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+"            INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+"            WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+"            NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+"            THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"
+"
+
+if v:version &lt; 700
+    echoerr "Pydiction requires vim version 7 or greater."
+    finish
+endif
+
+
+" Make the Tab key do python code completion:
+inoremap &lt;silent&gt; &lt;buffer&gt; &lt;Tab&gt; 
+         \&lt;C-R&gt;=&lt;SID&gt;SetVals()&lt;CR&gt;
+         \&lt;C-R&gt;=&lt;SID&gt;TabComplete()&lt;CR&gt;
+         \&lt;C-R&gt;=&lt;SID&gt;RestoreVals()&lt;CR&gt;
+
+
+if !exists("*s:TabComplete")
+    function! s:TabComplete()
+        " Check if the char before the char under the cursor is an 
+        " underscore, letter, number, dot or opening parentheses.
+        " If it is, and if the popup menu is not visible, use 
+        " I_CTRL-X_CTRL-K ('dictionary' only completion)--otherwise, 
+        " use I_CTRL-N to scroll downward through the popup menu.
+        " If the char is some other character, insert a normal Tab:
+        if searchpos('[_a-zA-Z0-9.(]\%#', 'nb') != [0, 0] 
+            if !pumvisible()
+                return "\&lt;C-X&gt;\&lt;C-K&gt;"
+            else
+                return "\&lt;C-N&gt;"
+            endif
+        else
+            return "\&lt;Tab&gt;"
+        endif
+    endfunction
+endif
+
+
+if !exists("*s:SetVals") 
+    function! s:SetVals()
+        " Save and change any config values we need.
+
+        " Temporarily change isk to treat periods and opening 
+        " parenthesis as part of a keyword -- so we can complete
+        " python modules and functions:
+        let s:pydiction_save_isk = &amp;iskeyword
+        setlocal iskeyword +=.,(
+
+        " Save any current dictionaries the user has set:
+        let s:pydiction_save_dictions = &amp;dictionary
+        " Temporarily use only pydiction's dictionary:
+        let &amp;dictionary = g:pydiction_location
+
+        " Save the ins-completion options the user has set:
+        let s:pydiction_save_cot = &amp;completeopt
+        " Have the completion menu show up for one or more matches:
+        let &amp;completeopt = "menu,menuone"
+
+        " Set the popup menu height:
+        let s:pydiction_save_pumheight = &amp;pumheight
+        if !exists('g:pydiction_menu_height')
+            let g:pydiction_menu_height = 15
+        endif
+        let &amp;pumheight = g:pydiction_menu_height
+
+        return ''
+    endfunction
+endif
+
+
+if !exists("*s:RestoreVals")
+    function! s:RestoreVals()
+        " Restore the user's initial values.
+
+        let &amp;dictionary = s:pydiction_save_dictions
+        let &amp;completeopt = s:pydiction_save_cot
+        let &amp;pumheight = s:pydiction_save_pumheight
+        let &amp;iskeyword = s:pydiction_save_isk
+
+        return ''
+    endfunction
+endif
+</t>
+<t tx="ekr.20090728090618.2847">@nocolor
+Pydiction 1.0 by Ryan Kulla (http://www.vim.org/scripts/script.php?script_id=850)
+-------------
+
+Pydiction is a filetype plugin for python files to be able to tab-complete Python code, including Python's keywords, standard library and even third-party libraries.  
+
+It consists of three main files: 
+    python_pydiction.vim -- This is the ftplugin you put in your non-system ftplugin directory. (i.e., ~/.vim/after/ftplugin/, on Unix or C:\vim\vimfiles\ftplugin\, on Windows)
+    complete-dict -- This is a vim dictionary file that consists of Python keywords and modules. This is what python_pydiction.vim looks at to know which things are completeable.
+    pydiction.py -- This is a Python script that was used to generate complete-dict. You can optionally run this script to add more modules to complete-dict to be able to complete them.
+
+
+Installing
+----------
+Unix/Linux: Put python_pydiction.vim in ~/.vim/after/ftplugin/   (if that directory doesn't exist, create it. Vim will know to look there automatically.)
+Windows: Put python_pydiction.vim in C:\vim\vimfiles\ftplugin  (assuming you installed vim in C:\vim\).
+
+You may install the other files (complete-dict and pydiction.py) anywhere you want. For this example, we'll assume you put them in "C:\vim\vimfiles\ftplugin\pydiction\" (Do not put any file but python_pydiction.vim in the ftplugin\ directory, only .vim files should go there. It's ok to make a subdirectory in it though, like I just did.)
+
+In your .vimrc file, first add the following line to enable filetype plugins:
+
+    filetype plugin on
+
+then make sure you set "g:pydiction_location" to the full path of where yo uinstalled complete-dict. Ie:
+
+    let g:pydiction_location = 'C:/vim/vimfiles/ftplugin/pydiction/complete-dict'
+
+You can optionally set the height of the completion menu by setting "g:pydiction_menu_height" in your vimrc. The default height is 15:
+
+    let g:pydiction_menu_height = 20
+
+By default, pydiction ignores case while doing Tab-completion. If you want it to do case-sensitive searches, then set noignorecase (:set noic).
+
+
+Pydiction versus other forms of completion 
+------------------------------------------
+Pydiction can complete Python Keywords, as well as Python module names, and their attributes and methods. It can also complete both the fully-qualified module names such as "module.method(", as well as non-fully qualified names such as "method(".
+
+Pydiction only uses the Tab-key to complete, uses a special dictionary file to complete from, and only attempts to do it on python files. This has the advantages of only requiring one keystroke to do completion and of not polluting all of your completion menus that you may be using for other types of completion, such as Vim's regular omni-completion, or other completion scripts that you may be running.
+
+Since pydiction uses a dictionary file of possible completion items, it can complete 3rd party modules much more accurately than other ways. You have full control over what it can and can't complete. If it's unable to complete anything you can either use pydiction.py to automatically add a new module's contents to the dictionary or you can even manually add them using a text editor. The dictionary is just a normal text file, which also makes it portable across all platforms.  For example, if you're a PyQT user, you can add all the PyQT related modules to the dictionary file (complete-dict) by using pydiction.py.
+
+Also, because pydiction uses a dictionary file, You don't have to import a module before you can complete it. Nor do you even have to have the module installed. This frees you up to use pydiction as a way of looking up what a module attribute is called without having to install it first.
+
+Pydiction is smart enough to know when you're completing callable method or not and if you are, it will automatically insert an opening parentheses for you.
+
+The Tab key will work as normally expected for everything else. Pydiction will only try to use it to complete python code if you're editing a python file and you first type part of some python code, as specified in complete-dict.
+
+Pydiction doesn't even require that python support be compiled into your version of vim!
+
+python_pydiction.vim
+--------------------
+Pydiction will make it so your the Tab key on your keyboard is able to complete python code (as long as the functionality has been added to complete-dict).
+
+Version 1.0 of pydiction uses a new file called python_pydiction.vim, which is an ftplugin that only activates when you're editing a python file (e.g., you're editing a file with a ".py" extension or you've manually typed ":set filetype=python").  Past versions of pydiction didn't use a plugin and instead just required you to change the value of "isk" in your .vimrc, which was not desirable. Version 1.0 and greater do not require you to manually change the value of isk, it changes it for you safely by only setting it while you're doing tab completion (of python code only), and automatically changes isk back to its original value whenever tab completion isn't being activated.
+
+Pydiction works by using Vim's omni-completion functionality by temporarily remapping the Tab key to do the same thing as I_CTRL-X_CTRL_K (dictionary only completion). This means, whenever you're editing a Python file and you start typing the name of a python keyword or module, you can press the Tab key to complete it. For example, if you type "os.pa" and then press Tab, pydiction will pop up a completion menu in vim that will look like:
+    os.pardir
+    os.path
+    os.pathconf(
+    os.pathconf_names
+    os.path.
+    os.path.__all__
+    os.path.__builtins__
+    os.path.__doc__
+    ...
+Pressing Tab again while the menu is open will scroll down the menu so you can choose whatever item you want to go with, using the normal omni-completion keys:
+    &lt;Ctrl-y&gt; will accept the current word.
+    &lt;Space&gt; will accept the current word and insert a space.
+    &lt;Ctrl-e&gt; will close the menu and not accept any word.
+
+pydiction.py
+------------
+This is the Python script used to create the "complete-dict" vim dictionary file.  I have created and bundled a default complete-dict for your use. I created it in Ubuntu 9.04 Linux, so there won't be any win32 specific support in it. You're free to run pydiction.py to add as many more modules as you want.  The dictionary file will still work if you're using windows, but it won't complete win32 related modules unless you tell it to.      
+
+Usage: In a command prompt, run: 
+    $ python pydiction.py &lt;module&gt; ... [-v]
+You have to have python 2.x installed.
+
+
+Say you wanted to add a module called "mymodule" to complete-dict, do the following:
+    $ python pydiction.py mymodule
+
+You can input more than one module name on the command-line, just separate them by spaces:
+    $ python pydiction.py mymodule1 mymodule2 mymodule3
+
+The -v option will just write the results to stdout (standard output) instead of the complete-dict file.
+
+If the backfup file "complete-dict.last" doesn't exist in the current directory, pydiction.py will create it for you. You should always keep a backup of your last working dictionary in case anything goes wrong, as it can get tedious having to recreate the file from scratch.
+
+If complete-dict.last already exists, pydiction will ask you if you want to overwrite your old backup with the new backup.
+
+If you try to add a module that already exists in complete-dict, pydiction will tell you it already exists, so don't worry about adding duplicates. In fact, you can't add duplicates, everytime pydiction.py runs it looks for and removes any duplicates in the file.
+
+When pydiction adds new modules to complete-dict, it does so in two phases. First, it adds the fully-qualified name of the module. For example:
+    module.attribute
+    module.method(
+
+then it adds the non-fully qualified name:
+    attribute
+    method(
+
+this allows you to complete your python code the way that you imported it in the first place. E.g.:
+    import module
+or:
+    from module import method
+
+Say you want to complete "pygame.display.set_mode". If you imported Pygame using "import pygame", then you can Tab-complete using:
+    pygame.di&lt;Tab&gt;
+to expand to "pygame.display.". Then type:
+    se&lt;Tab&gt; 
+to expand to "pygame.display.set_mode("
+
+Now say you imported using "from pygame import display". To expand to "display.set_mode(" just type:
+    display.se&lt;Tab&gt;
+
+And if you imported using "from pygame.display import set_mode" just type:
+    se&lt;Tab&gt;
+
+Keep in mind that if you don't use fully-qualified module names that you may get a lot of possible menu options popping up and so you may want to use more than just two letters to try to narrow it down. 
+
+
+complete-dict
+-------------
+Again, this is the vim dictionary file that python_pydiction.vim reads from and pydiction.py writes to. Without this file, pydiction wouldn't know what python keywords and modules it can Tab-complete.
+
+complete-dict is only an optional file in the sense that you can create your own if you don't want to use the default one that is bundled with pydiction.  The default complete-dict gives you a major headstart as far as what you can Tab-complete because I did my best to put all of the Python keywords, standard library and some popular third party modules in it for you. 
+
+It currently contains:
+
+    Python keywords:
+
+        and       del       for       is        raise    
+        assert    elif      from      lambda    return   
+        break     else      global    not       try      
+        class     except    if        or        while    
+        continue  exec      import    pass      yield    
+        def       finally   in        print
+    
+    Most of the standard library and builtins:  __builtin__, __future__, os, sys, time, re, sets, string, math, Tkinter, hashlib, urllib, etc... 
+
+    It also contains some popular third-party libraries: pygame, wxPython, twisted, numarray and OpenGL.
+
+If you open complete-dict in your text editor you'll see sections in it for each module, such as:
+ 
+    --- os module with "os." prefix ---
+    os.EX_CANTCREAT
+    os.EX_CONFIG
+    os.EX_DATAERR
+    ...
+
+    --- os module without "os." prefix ---
+    EX_CANTCREAT
+    EX_CONFIG
+    EX_DATAERR
+    ...
+
+if certain attributes seem to be missing, it's probably because pydiction removed them because they were duplicates. This mainly happens with the non-fully qualified module sections. So first try searching the entire file for whatever string you assume is missing before you try adding it. For example, if you don't see "__doc__" under "--- sys module without "sys." prefix ---", it's because a previous module, such as "os" already has it.
+    
+If you try to recreate complete-dict from scratch, you'll need to manually add the Python keywords back to it, as those aren't generated with pydiction.py.
+
+</t>
+<t tx="ekr.20090728090618.2848">"""Process the command line."""
+
+if sys.version_info[0:2] &lt; (2, 3):
+    sys.exit("You need a Python 2.x version of at least Python 2.3")
+
+if len(sys.argv) &lt;= 1:
+    sys.exit("%s requires at least one argument. None given." % 
+              sys.argv[0])
+
+if '-v' in sys.argv:
+    write_to = sys.stdout
+    sys.argv.remove('-v')
+elif os.path.exists(PYDICTION_DICT):
+        # See if any of the given modules have already been pydiction'd:
+        f = open(PYDICTION_DICT, 'r')
+        file_lines = f.readlines()
+        for module_name in sys.argv[1:]:
+            for line in file_lines:
+                if line.find('--- %s module with' % module_name) != -1:
+                    print '"%s" already exists in %s. Skipping...' % \
+                           (module_name, PYDICTION_DICT)
+                    sys.argv.remove(module_name)
+                    break
+        f.close()
+
+        if len(sys.argv) &lt; 2:
+            # Check if there's still enough command-line arguments:
+            sys.exit("Nothing new to do. Aborting.")
+
+        if os.path.exists(PYDICTION_DICT_BACKUP):
+            answer = get_yesno('Overwrite existing backup "%s" [Y/n]? ' % \
+                                PYDICTION_DICT_BACKUP)
+            if (answer):
+                print "Backing up old dictionary to: %s" % \
+                       PYDICTION_DICT_BACKUP
+                try:
+                    shutil.copyfile(PYDICTION_DICT, PYDICTION_DICT_BACKUP)
+                except IOError, err:
+                    print "Couldn't back up %s. %s" % (PYDICTION_DICT, err)
+            else:
+                print "Skipping backup..."
+
+            print 'Appending to: "%s"' % PYDICTION_DICT
+        else:
+            print "Backing up current %s to %s" % \
+                   (PYDICTION_DICT, PYDICTION_DICT_BACKUP)
+            try:
+                shutil.copyfile(PYDICTION_DICT, PYDICTION_DICT_BACKUP)
+            except IOError, err:
+                print "Couldn't back up %s. %s" % (PYDICTION_DICT, err)
+else:
+    print 'Creating file: "%s"' % PYDICTION_DICT
+
+write_to = open(PYDICTION_DICT, 'a')
+
+main(write_to)</t>
+<t tx="ekr.20090728090618.2849">"""
+
+pydiction.py 1.0 by Ryan Kulla (rkulla AT gmail DOT com).
+
+Description: Creates a Vim dictionary of Python module attributes for Vim's 
+             completion feature.  The created dictionary file is used by
+             the Vim ftplugin "python_pydiction.vim".
+
+Usage: pydiction.py &lt;module&gt; ... [-v]
+Example: The following will append all the "time" and "math" modules'
+         attributes to a file, in the current directory, called "pydiction"
+         with and without the "time." and "math." prefix:
+             $ python pydiction.py time math
+         To print the output just to stdout, instead of appending to the file, 
+         supply the -v option: 
+             $ python pydiction.py -v time math
+
+License: BSD.
+"""
+</t>
 </tnodes>
 </leo_file>

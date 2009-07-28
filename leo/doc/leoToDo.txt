@@ -11,6 +11,10 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20090714085914.5990:To do first
+#@+node:ekr.20090727085243.5993:Add clone-marked command
+http://groups.google.com/group/leo-editor/browse_thread/thread/81af48a58fb84397/c6fcbe5a2a95b39f#c6fcbe5a2a95b39f
+
+#@-node:ekr.20090727085243.5993:Add clone-marked command
 #@+node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
 @nocolor-node
 
@@ -21,6 +25,9 @@ The data is lost because @auto-rst mostly ignores the top-level node.
 #@-node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
 #@+node:ekr.20090724081340.5987:Improve recursive import script and @auto
 @nocolor-node
+
+Instead of adding an @ignore directive, it might be better
+to change @auto to @@auto.
 
 Should @auto be more lenient with C files?
 
