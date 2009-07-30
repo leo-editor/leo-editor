@@ -1,12 +1,14 @@
-Leo 4.6 release candidate 1                             July 9, 2009
+Leo 4.6.1 final                             July 18, 2009
 
-Leo 4.6 rc1 is now available at:
+Leo 4.6.1 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
 
-The highlights of Leo 4.6:
+Leo 4.6.1 fixes several minor bugs in Leo 4.6.
+
+The highlights of Leo 4.6
 --------------------------
 
 - Cached external files *greatly* reduces the time to load .leo files.
