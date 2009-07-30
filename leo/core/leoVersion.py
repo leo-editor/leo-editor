@@ -5,10 +5,9 @@
 #@@language python
 #@@tabwidth -4
 
-buildString = "$Revision: 4.7.0$" # sccs updates this.
-buildNumber = buildString[10:-1] # Strip off $Revision and training $
-date = "July 17, 2009"
-version = "4.7 devel"
-#@nonl
+version = 2265
+
+date = "July 30, 2009"
+version = "4.6.1 final"
 #@-node:ekr.20090717092906.12765:@thin leoVersion.py
 #@-leo
