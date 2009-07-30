@@ -1,13 +1,13 @@
 Metadata-Version: 1.0
 Name: leo
-Version: 4.6-rc1
+Version: 4.6.1-final
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
 Author-email: edreamleo@charter.net
 License: Python
 Description: Leo is an outline-oriented editor written in 100% pure Python.
-		Leo works on any platform that supports Python 2.4 or above.
+		Leo works on any platform that supports Python 2.5 or above.
      Leo will work with either Qt or Tk guis.
 		You may download Python from http://python.org/ and
 		tcl/Tk from http://tcl.activestate.com/software/tcltk/

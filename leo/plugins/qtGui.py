@@ -2034,7 +2034,7 @@ class DynamicWindow(QtGui.QMainWindow):
     #@+node:ekr.20090424085523.38:createFindTab
     def createFindTab (self,parent):
 
-        grid = self.createGrid(parent,'findGrid',margin=10,spacing=15)
+        grid = self.createGrid(parent,'findGrid',margin=10,spacing=2)
 
         # Labels.
         lab2 = self.createLabel(parent,'findLabel','Find:')

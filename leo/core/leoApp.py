@@ -342,7 +342,10 @@ class LeoApp:
 
         """A convenience routines for plugins to create the Qt gui class."""
 
-        leoPlugins.loadOnePlugin ('qtGui',verbose=verbose)
+        import leo.plugins.qtGui
+        leo.plugins.qtGui.init()
+
+        #leoPlugins.loadOnePlugin ('qtGui',verbose=verbose)
 
         if fileName and verbose: print('qtGui created in %s' % fileName)
     #@-node:ekr.20090202191501.1:app.createQtGui
@@ -711,7 +714,6 @@ class LeoApp:
     def computeSignon (self):
 
         app = self
-        # buildNumber = leoVersion.buildNumber
         date        = leoVersion.date
         guiVersion  = app.gui.getFullVersion()
         leoVer      = leoVersion.version
@@ -727,8 +729,6 @@ class LeoApp:
 
         else: sysVersion = sys.platform
 
-        # app.signon = 'Leo %s build %s, %s' % (
-            # leoVer,buildNumber,date)
         app.signon = 'Leo %s, %s' % (
             leoVer,date)
         app.signon2 = 'Python %s.%s.%s, %s\n%s' % (

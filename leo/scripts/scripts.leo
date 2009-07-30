@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="130" left="280" height="832" width="869"/>
+	<global_window_position top="75" left="83" height="832" width="1166"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070615131954" str_leo_pos="1,0,0,3"><vh>Startup</vh>
+<v t="ekr.20070615131954" str_leo_pos="1,0,1,5"><vh>Startup</vh>
 <v t="ekr.20070427110751"><vh>@chapters</vh></v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20051020124457"><vh>Disabled buttons</vh>
@@ -33,7 +33,7 @@
 </v>
 <v t="ekr.20061008055616" a="E"><vh>Scripts</vh>
 <v t="ekr.20051110111150" a="E"
-expanded="ekr.20051110110853,"><vh>@thin leoScripts.txt</vh></v>
+expanded="ekr.20060531090036,"><vh>@thin leoScripts.txt</vh></v>
 </v>
 <v t="ekr.20060824111500"><vh>jEdit2Py</vh>
 <v t="ekr.20060824111500.1"><vh>Colorizing test scripts</vh>
@@ -337,7 +337,7 @@ expanded="ekr.20051110110853,"><vh>@thin leoScripts.txt</vh></v>
 </v>
 </v>
 </v>
-<v t="ville.20090508224531.9799"><vh>@button git-dump</vh></v>
+<v t="ville.20090508224531.9799"><vh>@@button git-dump</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081226095234.1">'''Analyze external calls in lisp files.'''

@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="117" left="488" height="822" width="783"/>
+	<global_window_position top="97" left="341" height="839" width="1133"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -2077,7 +2077,7 @@
 </v>
 <v t="ekr.20040712101754.182"></v>
 </v>
-<v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
+<v t="ekr.20040712101754.187" a="E" annotate="7d71002e"><vh> Position tests</vh>
 <v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
 <v t="ekr.20040712101754.184"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
 <v t="ekr.20040712101754.208" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
@@ -17409,6 +17409,12 @@ is the  sentence.  And
 this is the last sentence.
 </t>
 <t tx="ekr.20090102061858.2">child = p.insertAsLastChild()
+assert c.positionExists(child)
+child.doDelete()
+assert not c.positionExists(child)
+
+# also check the same on root level
+child = c.rootPosition().insertAfter()
 assert c.positionExists(child)
 child.doDelete()
 assert not c.positionExists(child)</t>

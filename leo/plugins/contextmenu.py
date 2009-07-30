@@ -176,10 +176,47 @@ def nextclone_rclick(c,p, menu):
 
 
 #@-node:ville.20090702171015.5480:nextclone_rclick
+#@+node:ville.20090719202132.5248:marknodes_rclick
+def marknodes_rclick(c,p, menu):
+    """ Mark selected nodes """
+
+    pl = c.getSelectedPositions()
+
+    have_mark = False
+    have_unmark = False
+    if any(p.isMarked() for p in pl):
+        have_unmark = True
+
+    if any(not p.isMarked() for p in pl):
+        have_mark = True
+
+    def marknodes_rclick_cb():
+        for p in pl:
+            p.setMarked()
+        c.redraw_after_icons_changed()            
+
+    def unmarknodes_rclick_cb():
+        for p in pl:
+            p.v.clearMarked()
+        c.redraw_after_icons_changed()                        
+
+
+    if have_mark:
+        markaction = menu.addAction("Mark")
+        markaction.connect(markaction, QtCore.SIGNAL("triggered()"), marknodes_rclick_cb)
+
+    if have_unmark:
+        unmarkaction = menu.addAction("Unmark")
+        unmarkaction.connect(unmarkaction, QtCore.SIGNAL("triggered()"), unmarknodes_rclick_cb)
+
+
+
+
+#@-node:ville.20090719202132.5248:marknodes_rclick
 #@+node:ville.20090630210947.10189:install_handlers
 def install_handlers():
     """ Install all the wanted handlers (menu creators) """
-    hnd = [openwith_rclick, refresh_rclick, editnode_rclick, nextclone_rclick]
+    hnd = [openwith_rclick, refresh_rclick, editnode_rclick, nextclone_rclick, marknodes_rclick]
     g.tree_popup_handlers.extend(hnd)
     leoPlugins.registerHandler("idle", editnode_on_idle)
 

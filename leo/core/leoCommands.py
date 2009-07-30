@@ -5407,8 +5407,12 @@ class baseCommands (object):
         p = c.nodeHistory.goNext()
 
         if p:
-            c.selectPosition(p)
-            c.redraw_after_select(p)
+            c.nodeHistory.skipBeadUpdate = True
+            try:
+                c.selectPosition(p)
+            finally:
+                c.nodeHistory.skipBeadUpdate = False
+                c.redraw_after_select(p)
 
     #@-node:ekr.20031218072017.1628:goNextVisitedNode
     #@+node:ekr.20031218072017.1627:goPrevVisitedNode
@@ -5421,8 +5425,12 @@ class baseCommands (object):
         p = c.nodeHistory.goPrev()
 
         if p:
-            c.selectPosition(p)
-            c.redraw_after_select(p)
+            c.nodeHistory.skipBeadUpdate = True
+            try:
+                c.selectPosition(p)
+            finally:            
+                c.nodeHistory.skipBeadUpdate = False
+                c.redraw_after_select(p)
     #@-node:ekr.20031218072017.1627:goPrevVisitedNode
     #@+node:ekr.20031218072017.2914:goToFirstNode
     def goToFirstNode (self,event=None):
@@ -5759,7 +5767,6 @@ class baseCommands (object):
 
         # Don't use triple-quoted strings or continued strings here.
         # Doing so would add unwanted leading tabs.
-        # version = c.getSignOnLine() + "\n\n"
         version = g.app.signon + '\n\n'
         theCopyright = (
             "Copyright 1999-2009 by Edward K. Ream\n" +
@@ -7145,7 +7152,12 @@ class baseCommands (object):
                 if i >= len(children) or children[i] != old_v:
                     return False
             else:
-                p.moveToBack()
+                # root position, check from hidden root vnode
+                i = p._childIndex
+                rootchildren = root.v.parents[0].t.children
+                if i >= len(rootchildren) or rootchildren[i] != p.v:
+                    return False
+                return True
 
         return False
     #@-node:ekr.20040307104131.3:c.positionExists
@@ -7891,6 +7903,7 @@ class nodeHistory:
             # nav_buttons and nodenavigator plugins.
         self.beadPointer = -1
         self.trace = False
+        self.skipBeadUpdate = False
     #@nonl
     #@-node:ekr.20070615131604.1: ctor (nodeHistory)
     #@+node:ekr.20070615131604.3:canGoToNext/Prev
@@ -7921,24 +7934,35 @@ class nodeHistory:
     def goNext (self):
 
         '''Return the next visited node, or None.'''
-        if self.beadPointer + 1 < len(self.beadList):
+
+        c = self.c
+        while self.beadPointer + 1 < len(self.beadList):
             self.beadPointer += 1
             p,chapter = self.beadList[self.beadPointer]
-            self.selectChapter(chapter)
-            return p
+            if c.positionExists(p):
+                break
         else:
             return None
+
+        self.selectChapter(chapter)
+        return p
 
     def goPrev (self):
 
         '''Return the previous visited node, or None.'''
-        if self.beadPointer > 0:
+
+        c = self.c
+        while self.beadPointer > 0:
             self.beadPointer -= 1
             p,chapter = self.beadList[self.beadPointer]
-            self.selectChapter(chapter)
-            return p
+            if c.positionExists(p):
+                break
         else:
             return None
+
+
+        self.selectChapter(chapter)
+        return p
     #@-node:ekr.20070615134813:goNext/Prev
     #@+node:ekr.20070615132939.1:remove
     def remove (self,p):
@@ -7968,30 +7992,36 @@ class nodeHistory:
         if cc and chapter and chapter != cc.getSelectedChapter():
             cc.selectChapterByName(chapter.name)
     #@-node:ekr.20070615140032:selectChapter
-    #@+node:ekr.20070615131604.2:update
+    #@+node:ville.20090724234020.14676:update
     def update (self,p):
 
         c = self.c
+        if self.skipBeadUpdate:
+            return
 
-        self.beadList = [z for z in self.beadList
-                            if c.positionExists(z[0])]
+        p = p.copy()
+        if self.beadList and self.beadList[-1][0] == p:
+            # do not re-append the same node
+            return
 
-        positions = [z[0] for z in self.beadList]
+        cc = c.chapterController
+        theChapter = cc and cc.getSelectedChapter()
+        data = (p,theChapter)
 
-        try:
-            self.beadPointer = positions.index(p)
-        except ValueError:
-            cc = c.chapterController
-            theChapter = cc and cc.getSelectedChapter()
-            data = (p.copy(),theChapter)
-            self.beadList.append(data)
-            self.beadPointer = len(self.beadList)-1
+        if self.beadPointer < len(self.beadList) - 1:
+            # if we came to new node, truncate bead list
+            self.beadList = self.beadList[0:self.beadPointer]
 
-        if self.trace:
+        self.beadList.append(data)
+        self.beadPointer = len(self.beadList) - 1
+
+
+        if self.trace:    
             g.trace('bead list',p.h)
             g.pr([z[0].h for z in self.beadList])
 
-    #@-node:ekr.20070615131604.2:update
+
+    #@-node:ville.20090724234020.14676:update
     #@+node:ekr.20070615140655:visitedPositions
     def visitedPositions (self):
 
