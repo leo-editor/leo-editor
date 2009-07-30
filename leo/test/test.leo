@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6,2,4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -265,6 +265,21 @@
 </v>
 <v t="ekr.20090630141519.1793"><vh>rClick proto script</vh></v>
 <v t="ekr.20090715064044.1782"><vh>@button render-as-sphinx</vh></v>
+<v t="ekr.20090728090618.2837"><vh>pydiction-1.0</vh>
+<v t="ekr.20090728090618.2846"><vh>pydiction.vim</vh></v>
+<v t="ekr.20090728090618.2847"><vh>README.txt</vh></v>
+<v t="ekr.20090728090618.2838"><vh>pydiction.py</vh>
+<v t="ekr.20090728090618.2849"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20090728090618.2839"><vh>&lt;&lt; declarations &gt;&gt;</vh></v>
+<v t="ekr.20090728090618.2848"><vh>&lt;&lt; process command line &gt;&gt;</vh></v>
+<v t="ekr.20090728090618.2840"><vh>get_submodules</vh></v>
+<v t="ekr.20090728090618.2841"><vh>write_dictionary</vh></v>
+<v t="ekr.20090728090618.2842"><vh>my_import</vh></v>
+<v t="ekr.20090728090618.2843"><vh>remove_duplicates</vh></v>
+<v t="ekr.20090728090618.2844"><vh>get_yesno</vh></v>
+<v t="ekr.20090728090618.2845"><vh>main</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20090309064612.1"><vh> Future features/bug fixes (do not delete)</vh>
@@ -340,22 +355,6 @@
 <v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
-</v>
-<v t="ekr.20090728090618.2836"><vh>imported files</vh></v>
-<v t="ekr.20090728090618.2837" a="E"><vh>pydiction-1.0</vh>
-<v t="ekr.20090728090618.2846"><vh>pydiction.vim</vh></v>
-<v t="ekr.20090728090618.2847"><vh>README.txt</vh></v>
-<v t="ekr.20090728090618.2838" a="E"><vh>pydiction.py</vh>
-<v t="ekr.20090728090618.2849"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
-<v t="ekr.20090728090618.2839"><vh>&lt;&lt; declarations &gt;&gt;</vh></v>
-<v t="ekr.20090728090618.2848"><vh>&lt;&lt; process command line &gt;&gt;</vh></v>
-<v t="ekr.20090728090618.2840"><vh>get_submodules</vh></v>
-<v t="ekr.20090728090618.2841"><vh>write_dictionary</vh></v>
-<v t="ekr.20090728090618.2842"><vh>my_import</vh></v>
-<v t="ekr.20090728090618.2843"><vh>remove_duplicates</vh></v>
-<v t="ekr.20090728090618.2844"><vh>get_yesno</vh></v>
-<v t="ekr.20090728090618.2845"><vh>main</vh></v>
-</v>
 </v>
 </vnodes>
 <tnodes>
@@ -2790,7 +2789,6 @@ g.es("done",color="blue")
     child.initHeadString(headline)
     return child
 </t>
-<t tx="ekr.20090728090618.2836"></t>
 <t tx="ekr.20090728090618.2837"></t>
 <t tx="ekr.20090728090618.2838">@first #!/usr/bin/env python
 
