@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="2,2"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -20,7 +20,7 @@
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="EKR.20040519091259" a="E"><vh>Annoucements</vh>
+<v t="EKR.20040519091259"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
@@ -53,7 +53,7 @@
 </v>
 </v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
-<v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
+<v t="EKR.20040519090846.2" a="E"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="ekr.20080825083632.262"><vh>Leo's HOME directory</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
@@ -203,7 +203,7 @@ DAMAGES.</t>
 <t tx="EKR.20040519090846.3">System requirements for leo.py
 ------------------------------
 
-leo.py requires Python 2.4 or above and tcl/tk 8.4 or above.
+leo.py requires Python 2.5 or above and tcl/tk 8.4 or above.
 
 	Download Python from http://python.org/ 
 	Download tcl/Tk from http://tcl.activestate.com/software/tcltk/
@@ -318,7 +318,7 @@ Author: Edward K. Ream
 Author-email: edreamleo@charter.net
 License: Python
 Description: Leo is an outline-oriented editor written in 100% pure Python.
-		Leo works on any platform that supports Python 2.4 or above.
+		Leo works on any platform that supports Python 2.5 or above.
      Leo will work with either Qt or Tk guis.
 		You may download Python from http://python.org/ and
 		tcl/Tk from http://tcl.activestate.com/software/tcltk/
@@ -1040,7 +1040,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
     os.system('dir %s' % (top))
 </t>
 <t tx="ekr.20080916084557.1"></t>
-<t tx="ekr.20080916084557.2">version = '4-6-1-final'</t>
+<t tx="ekr.20080916084557.2">version = '4-6-rc1'</t>
 <t tx="ekr.20090325065530.1">Leo 4.6 b1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
