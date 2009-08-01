@@ -31,6 +31,8 @@ __version__ = '0.0'
 
 #@<< imports >>
 #@+node:ville.20090801181915.5281:<< imports >>
+import sys
+
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -60,6 +62,15 @@ def pydee_launch(event):
     g.pydeens = main.console.shell.interpreter.namespace
     pydee_update(event)
     main.show()
+
+@g.command('pydee-light')
+def pydee_light(event):
+    """ Launch pydee in "light" mode """
+    oldarg = sys.argv
+    sys.argv = ['pydee', '--light']
+    pydee_launch(event)
+    sys.argv = oldarg
+
 
 @g.command('pydee-update')
 def pydee_update(event):
