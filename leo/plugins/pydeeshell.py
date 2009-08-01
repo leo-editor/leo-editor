@@ -35,11 +35,11 @@ import leo.core.leoPlugins as leoPlugins
 #@+others
 #@+node:ville.20090801181915.5282:init
 def init ():
-    ok = self.gui.guiName() == 'tkinter'    
+    ok = g.app.gui.guiName() == 'qt'    
     return ok
 
 #@-node:ville.20090801181915.5282:init
-#@+node:ville.20090801181915.5284:Leo commands 
+#@+node:ville.20090801181915.5284:Leo commands
 @g.command('pydee-launch')
 def pydee_launch(event):
     """ Launch pydee """
@@ -68,7 +68,7 @@ def pydee_update(event):
     ns['g'] = g
     ns['p'] = c.p
     g.pydee.show()
-#@-node:ville.20090801181915.5284:Leo commands 
+#@-node:ville.20090801181915.5284:Leo commands
 #@-others
 #@nonl
 #@-node:ville.20090801181915.5278:@thin pydeeshell.py
