@@ -86,7 +86,7 @@ __version__ = "0.11"
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
-Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
+#Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
 import urlparse 
 #@nonl
@@ -104,8 +104,8 @@ import urlparse
 #@+node:ekr.20070112173134:init
 def init ():
 
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
+    #if g.app.gui is None:
+    #    g.app.createTkGui(__file__)
 
     leoPlugins.registerHandler(
         "after-create-leo-frame", createStatusLine)

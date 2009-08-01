@@ -1018,7 +1018,8 @@ class baseFileCommands:
             val = pickle.loads(bin)
             return val
 
-        except (TypeError,pickle.UnpicklingError,ImportError):
+        except:
+            g.es_exception()
             g.trace('Can not unpickle',s)
             return None
     #@-node:EKR.20040627114602:getDescendentUnknownAttributes
