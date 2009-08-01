@@ -3444,10 +3444,11 @@ class leoQtFrame (leoFrame.leoFrame):
         self.use_chapters      = c.config.getBool('use_chapters')
         self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
 
-        f.top = DynamicWindow(c)
+        f.top = DynamicWindow(c, g.app.gui.masterFrame)
         g.app.gui.attachLeoIcon(f.top)
         f.top.setWindowTitle(self.title)
         f.top.show()
+        g.app.gui.masterFrame.addTab(f.top, 'Leowin')
 
         f.createIconBar() # A base class method.
         f.createSplitterComponents()
@@ -6282,6 +6283,7 @@ class leoQtGui(leoGui.leoGui):
         # Initialize the base class.
         leoGui.leoGui.__init__(self,'qt')
 
+        self.masterFrame = None
         self.qtApp = app = QtGui.QApplication(sys.argv)
 
         self.bodyTextWidget  = leoQtBaseTextWidget
@@ -6292,6 +6294,7 @@ class leoQtGui(leoGui.leoGui):
         self.mGuiName = 'qt'
 
         self.defaultEncoding = None # Set by toUnicode as needed.
+        self.createMaster()
     #@-node:ekr.20081121105001.474: qtGui.__init__
     #@+node:ekr.20081121105001.475:createKeyHandlerClass (qtGui)
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
@@ -6376,6 +6379,16 @@ class leoQtGui(leoGui.leoGui):
         self.qtApp.exit()
     #@nonl
     #@-node:ekr.20081121105001.477:destroySelf
+    #@+node:ville.20090801220618.3740:createMaster
+    def createMaster(self):
+        self.masterFrame = QtGui.QTabWidget(self.masterFrame)
+        #self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
+        #self.setName(w,name)
+        #w.addTab(self.tab, "")
+        #self.tab_2 = QtGui.QWidget()
+
+        self.masterFrame.show()
+    #@-node:ville.20090801220618.3740:createMaster
     #@-node:ekr.20081121105001.473:  Birth & death (qtGui)
     #@+node:ekr.20081121105001.183:Clipboard (qtGui)
     def replaceClipboardWith (self,s):
