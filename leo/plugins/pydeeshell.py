@@ -6,6 +6,13 @@
 
 http://code.google.com/p/pydee/
 
+Usage:
+
+Execute alt-x pydee-launch to start pydee
+
+Execute alt-x pydee-update to pass current c,p,g to pydee
+interactive session. pydee-update also shows the window
+if it was closed before.
 
 '''
 #@-node:ville.20090801181915.5279:<< docstring >>
@@ -60,7 +67,7 @@ def pydee_update(event):
 
     Also shows pydee window if it was closed earlier
 
-  .  """    
+    """    
 
     c = event['c']
     ns = g.pydeens
