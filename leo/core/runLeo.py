@@ -246,7 +246,7 @@ def scanOptions():
     parser = optparse.OptionParser()
     parser.add_option('-c', '--config', dest="one_config_path")
     parser.add_option('-f', '--file',   dest="fileName")
-    parser.add_option('--gui',          dest="gui")
+    parser.add_option('--gui',          dest="gui", help = 'gui to use (qt/tk)')
     parser.add_option('--silent',       action="store_true",dest="silent")
     parser.add_option('--script',       dest="script")
     parser.add_option('--script-window',dest="script_window")
