@@ -6537,6 +6537,15 @@ def importExtension (moduleName,pluginName=None,verbose=False,required=False):
 
     module = g.importModule(moduleName,pluginName=pluginName,verbose=False)
 
+    # this is basically only used for Pmw these days - we'll prevent plugins 
+    # from killing all of Leo by returning None here instead
+    if not module:
+        g.pr("Warning: plugin '%s' failed to import '%s'" % (pluginName, moduleName))
+
+    return module
+
+
+    """
     extensionsDir = g.app and g.app.extensionsDir or os.path.join(os.path.dirname(__file__),'..','extensions')
 
     if not module:
@@ -6550,6 +6559,7 @@ def importExtension (moduleName,pluginName=None,verbose=False,required=False):
                 import sys ; sys.exit(1)
 
     return module
+    """
 #@+node:ekr.20060329083657:cantImportDialog & helpers
 def cantImportDialog (pluginName,moduleName):
 

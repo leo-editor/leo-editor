@@ -2585,7 +2585,7 @@ class keyHandlerClass:
 
         if trace: g.trace('widget_name',name,'stroke',stroke)
 
-        if stroke and (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1):
+        if stroke and not stroke.startswith('Alt+Ctrl') and (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1):
             if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
             return 'break'
 
@@ -3396,7 +3396,7 @@ class keyHandlerClass:
         if stroke and isPlain:
             #@        << handle special cases for plain keys >>
             #@+node:ekr.20080510153327.4:<< handle special cases for plain keys >>
-            # g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
+            #g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
 
             # Important: only keys bound somewhere have a stroke.
             # All unbound plain keys will be handled by handleUnboundKeys.
@@ -4417,8 +4417,12 @@ class keyHandlerClass:
 
         k = self ; shortcut = shortcut or ''
 
+        # altgr combos (Alt+Ctrl) are always plain keys
+        if shortcut.startswith('Alt+Ctrl+'):
+            return True
+
         for s in ('Alt','Ctrl','Command','Meta'):
-            if shortcut.find(s) != -1:
+            if shortcut.find(s) != -1:            
                 return False
         else:
             # Careful, allow bare angle brackets for unit tests.

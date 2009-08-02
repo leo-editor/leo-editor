@@ -61,6 +61,9 @@ def init():
     if not Tk:
         return False
 
+    if not Pmw:
+        g.pr("WARNING: Pmw is not available. Tk ui will not work. Install python-pmw to fix")
+        return False
     if g.app.gui:
         return g.app.gui.guiName() == 'tkinter'
     else:
@@ -589,8 +592,8 @@ class tkinterGui(leoGui.leoGui):
     #@-node:ekr.20081121110412.385:Font
     #@+node:ekr.20081121110412.387:getFullVersion (tkGui)
     def getFullVersion (self):
-
-        return 'Tk %s, Pmw %s' % (Tk.TkVersion,Pmw.version())
+        pmwver = Pmw and Pmw.version() or "UNAVAILABLE"
+        return 'Tk %s, Pmw %s' % (Tk.TkVersion,pmwver)
     #@-node:ekr.20081121110412.387:getFullVersion (tkGui)
     #@+node:ekr.20081121110412.388:Icons
     #@+node:ekr.20081121110412.389:attachLeoIcon & createLeoIcon
@@ -9137,8 +9140,12 @@ class leoTkinterTreeTab (leoFrame.leoTreeTab):
 
         # This crashes on recent Ubuntu versions.
         # It may be a Tk bug.
-        if not sys.platform.startswith('linux'):
-            tt.chapterMenu.setitems(names)
+
+        # since this was crashing on Windows as well,
+        # we'll disable it completely for time being
+
+        #if not sys.platform.startswith('linux'):
+        #    tt.chapterMenu.setitems(names)
     #@nonl
     #@-node:ekr.20081121110412.316:tt.setNames
     #@-node:ekr.20081121110412.311:Tabs...

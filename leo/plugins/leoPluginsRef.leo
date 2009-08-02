@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="48" left="273" height="982" width="917"/>
+	<global_window_position top="29" left="675" height="700" width="1000"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20041211035618" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20041211035618" str_leo_pos="2,20,2,3"><vh>Startup</vh>
 <v t="ekr.20070718131416"><vh>@chapters</vh></v>
 <v t="ekr.20050217093214"><vh>@settings</vh>
 <v t="ekr.20050328101812"><vh>@page http plugin</vh>
@@ -28,12 +28,13 @@
 <v t="ekr.20080515173014.1"><vh>regex: replace w.bind by c.bind(w...)</vh></v>
 <v t="ekr.20080519084304.2"><vh>@@button change leo imports</vh></v>
 </v>
-<v t="ekr.20090430075506.4"><vh>Notes &amp; to-do</vh>
-<v t="ekr.20090430075506.3"><vh>@thin leoPluginNotes.txt</vh></v>
+<v t="ekr.20090430075506.4" a="E"><vh>Notes &amp; to-do</vh>
+<v t="ekr.20090430075506.3" a="E"
+expanded="ekr.20090629080139.5277,ekr.20090628104247.5272,"><vh>@thin leoPluginNotes.txt</vh></v>
 </v>
-<v t="edream.110203113231.618"><vh>Plugins</vh>
+<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
-<v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
+<v t="ekr.20050303051035" a="E"><vh> Templates: these show recommended ways of defining plugins.</vh>
 <v t="ekr.20041114102139"><vh>Notes</vh>
 <v t="ekr.20041114103913"><vh>About comments in the style guide</vh></v>
 <v t="ekr.20041114102139.1"><vh>About the root node</vh></v>
@@ -41,7 +42,7 @@
 <v t="ekr.20041114102139.2"><vh>About the &lt;&lt; imports &gt;&gt; section</vh></v>
 <v t="ekr.20050306072156"><vh>About exceptions</vh></v>
 </v>
-<v t="ekr.20050306071629"><vh>Template for plugin that overrides commander methods</vh>
+<v t="ekr.20050306071629" a="E"><vh>Template for plugin that overrides commander methods</vh>
 <v t="ekr.20050306071629.1"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
 <v t="ekr.20050306071629.2"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
 <v t="ekr.20050306071629.3"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
@@ -704,9 +705,10 @@
 </v>
 <v t="pap.20050605183206"><vh>@thin leoupdate.py</vh></v>
 </v>
-<v t="ekr.20041001210557"><vh>Scripting</vh>
+<v t="ekr.20041001210557" a="E"><vh>Scripting</vh>
 <v t="ekr.20060328125248"><vh>@thin mod_scripting.py</vh></v>
 <v t="tbrown.20090513125417.5244"><vh>@thin interact.py</vh></v>
+<v t="ville.20090801181915.5278" a="E"><vh>@thin pydeeshell.py</vh></v>
 </v>
 <v t="ekr.20050111122605"><vh>Servers</vh>
 <v t="EKR.20040517080250.1"><vh>@thin mod_http.py</vh></v>
