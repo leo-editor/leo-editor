@@ -3502,6 +3502,8 @@ class TabbedFrameFactory:
         wdg.show()
 
     def createTabCommands(self):
+        #@    << Commands for tabs >>
+        #@+node:ville.20090803184912.3685:<< Commands for tabs >>
         @g.command('tab-detach')
         def tab_detach(event):
             """ Detach current tab from tab bar """
@@ -3513,6 +3515,19 @@ class TabbedFrameFactory:
             f = c.frame
             self.detachTab(f.top)
             f.top.setWindowTitle(f.title + u' [D]')
+
+        # this is actually not tab-specific, move elsewhere?
+        @g.command('close-others')
+        def close_others(event):
+            myc = event['c']
+            for c in g.app.commanders():
+                if c is not myc:
+                    c.close()
+
+        #@-node:ville.20090803184912.3685:<< Commands for tabs >>
+        #@nl
+
+
 
 
     #@-node:ville.20090803164510.3688:createTabCommands
