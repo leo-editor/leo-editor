@@ -246,7 +246,7 @@ def scanOptions():
     parser = optparse.OptionParser()
     parser.add_option('-c', '--config', dest="one_config_path")
     parser.add_option('-f', '--file',   dest="fileName")
-    parser.add_option('--gui',          dest="gui", help = 'gui to use (qt/tk)')
+    parser.add_option('--gui',          dest="gui", help = 'gui to use (qt/tk/qttabs)')
     parser.add_option('--silent',       action="store_true",dest="silent")
     parser.add_option('--script',       dest="script")
     parser.add_option('--script-window',dest="script_window")
@@ -273,8 +273,13 @@ def scanOptions():
 
     # -- gui
     gui = options.gui
+    g.app.qt_use_tabs = False
     if gui:
         gui = gui.lower()
+        if gui == 'qttabs':
+            gui = 'qt'
+            g.app.qt_use_tabs = True
+
         if gui not in ('tk','qt','wx'):
             g.trace('unknown gui: %s' % gui)
             gui = None
