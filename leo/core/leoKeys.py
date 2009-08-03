@@ -1633,6 +1633,8 @@ class keyHandlerClass:
         self.trace_key_event                = c.config.getBool('trace_key_event')
         self.trace_minibuffer               = c.config.getBool('trace_minibuffer')
         self.warn_about_redefined_shortcuts = c.config.getBool('warn_about_redefined_shortcuts')
+        # Has to be disabled (default) for AltGr support on Windows
+        self.enable_alt_ctrl_bindings       = c.config.getBool('enable_alt_ctrl_bindings')
         #@    << define externally visible ivars >>
         #@+node:ekr.20061031131434.78:<< define externally visible ivars >>
         self.abbrevOn = False # True: abbreviations are on.
@@ -2577,7 +2579,6 @@ class keyHandlerClass:
     #@-node:ekr.20061031131434.109:callKeystrokeFunction (not used)
     #@+node:ekr.20061031131434.110:k.handleDefaultChar
     def handleDefaultChar(self,event,stroke):
-
         k = self ; c = k.c
         w = event and event.widget
         name = c.widget_name(w)
@@ -2585,7 +2586,7 @@ class keyHandlerClass:
 
         if trace: g.trace('widget_name',name,'stroke',stroke)
 
-        if stroke and not stroke.startswith('Alt+Ctrl') and (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1):
+        if stroke and not (stroke.startswith('Alt+Ctrl') and not self.enable_alt_ctrl_bindings) and (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1):
             if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
             return 'break'
 
@@ -4418,7 +4419,7 @@ class keyHandlerClass:
         k = self ; shortcut = shortcut or ''
 
         # altgr combos (Alt+Ctrl) are always plain keys
-        if shortcut.startswith('Alt+Ctrl+'):
+        if shortcut.startswith('Alt+Ctrl+') and not self.enable_alt_ctrl_bindings:
             return True
 
         for s in ('Alt','Ctrl','Command','Meta'):

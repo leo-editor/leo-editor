@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="0"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -34,6 +34,7 @@
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
 <v t="ekr.20090718093249.5927"><vh>ANN: Leo 4.6.1 final</vh></v>
+<v t="ekr.20090803090630.1408"><vh>ANN: Leo 4.6.2 final</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
 <v t="ekr.20090718093249.5928"><vh>4.6</vh>
 <v t="ekr.20090709085944.1401"><vh>ANN: Leo 4.6 rc1</vh></v>
@@ -52,8 +53,8 @@
 </v>
 </v>
 </v>
-<v t="EKR.20040519090846"><vh>Distribution files</vh>
-<v t="EKR.20040519090846.2" a="E"><vh>@asis ../doc/INSTALL.TXT</vh>
+<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
+<v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="ekr.20080825083632.262"><vh>Leo's HOME directory</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
@@ -203,7 +204,7 @@ DAMAGES.</t>
 <t tx="EKR.20040519090846.3">System requirements for leo.py
 ------------------------------
 
-leo.py requires Python 2.5 or above and tcl/tk 8.4 or above.
+leo.py requires Python 2.4 or above and tcl/tk 8.4 or above.
 
 	Download Python from http://python.org/ 
 	Download tcl/Tk from http://tcl.activestate.com/software/tcltk/
@@ -311,14 +312,14 @@ Thanks to Randall Voth for these instructions.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.6.1-final
+Version: 4.6.2-final
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
 Author-email: edreamleo@charter.net
 License: Python
 Description: Leo is an outline-oriented editor written in 100% pure Python.
-		Leo works on any platform that supports Python 2.5 or above.
+		Leo works on any platform that supports Python 2.4 or above.
      Leo will work with either Qt or Tk guis.
 		You may download Python from http://python.org/ and
 		tcl/Tk from http://tcl.activestate.com/software/tcltk/
@@ -331,19 +332,19 @@ Description: Leo is an outline-oriented editor written in 100% pure Python.
 		Download tkIcon from http://www.effbot.org/downloads/#tkIcon
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.6.1 final                             July 18, 2009
+<t tx="EKR.20040519090846.9">Leo 4.6.2 final                             August 3, 2009
 
-Leo 4.6.1 final is now available at:
+Leo 4.6.2 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
 
-Leo 4.6.1 fixes several minor bugs in Leo 4.6.
+Leo 4.6.2 fixes several bugs reported since Leo 4.6 was released.
 
 The highlights of Leo 4.6
 --------------------------
-
+?
 - Cached external files *greatly* reduces the time to load .leo files.
 - Leo now features a modern Qt interface by default.
   Leo's legacy Tk interface can also be used.
@@ -1227,5 +1228,37 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20090718093249.5928"></t>
+<t tx="ekr.20090803090630.1408">Leo 4.6.2 final                             August 3, 2009
+
+Leo 4.6.2 final is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+Leo 4.6.2 fixes several bugs reported since Leo 4.6 was released.
+
+The highlights of Leo 4.6
+--------------------------
+?
+- Cached external files *greatly* reduces the time to load .leo files.
+- Leo now features a modern Qt interface by default.
+  Leo's legacy Tk interface can also be used.
+- New --config, --file and --gui command-line options.
+- Leo tests syntax of .py files when saving them.
+- Leo can now open any kind of file into @edit nodes.
+- @auto-rst nodes allow easy editing of reStructuredText files.
+- Properties of commanders, positions and nodes simplify programming.
+- Improved Leo's unit testing framework.
+- Leo now requires Python 2.5 or later.
+- Dozens of small improvements and bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 </tnodes>
 </leo_file>
