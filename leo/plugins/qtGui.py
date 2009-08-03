@@ -3417,14 +3417,27 @@ class TabbedFrameFactory:
     def createFrame(self, leoFrame):
         #f.top = DynamicWindow(c, g.app.gui.masterFrame)    
         c = leoFrame.c
-        title = leoFrame.title
+
         if self.masterFrame is None:
             self.createMaster()
 
         tabw = self.masterFrame
         dw = DynamicWindow(c, tabw )
         self.leoFrames[dw] = leoFrame
+
+        # make the title shorter
+
+
+        fname = c.mFileName
+        if fname:
+            title, tip = os.path.basename(fname), leoFrame.title
+        else:
+            title, tip = leoFrame.title, None
+
         idx = tabw.addTab(dw, title)
+        if tip:
+             tabw.setTabToolTip(idx, tip)
+
         tabw.setCurrentIndex(idx)            
         if tabw.count() > 1:
             tabw.tabBar().setVisible(True)
@@ -3454,13 +3467,15 @@ class TabbedFrameFactory:
         g.app.gui.attachLeoIcon(mf)
 
         tabbar = mf.tabBar()
+
         try:
             tabbar.setTabsClosable(True)
+            tabbar.connect(tabbar,QtCore.SIGNAL('tabCloseRequested(int)'),self.slotCloseRequest)
 
         except AttributeError:
+            # Qt 4.4 does not support setTabsClosable
             pass
 
-        tabbar.connect(tabbar,QtCore.SIGNAL('tabCloseRequested(int)'),self.slotCloseRequest)
         mf.connect(mf, QtCore.SIGNAL('currentChanged(int)'), self.slotCurrentChanged)
         mf.show()
 
@@ -3477,7 +3492,6 @@ class TabbedFrameFactory:
         w = tabw.widget(idx)
         f = self.leoFrames[w]
         tabw.setWindowTitle(f.title)
-    #@nonl
     #@-node:ville.20090803132402.3684:createMaster & signal handlers
     #@+node:ville.20090803164510.3688:createTabCommands
     def detachTab(self, wdg):
