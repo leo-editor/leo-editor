@@ -273,8 +273,13 @@ def scanOptions():
 
     # -- gui
     gui = options.gui
+    g.app.qt_use_tabs = False
     if gui:
         gui = gui.lower()
+        if gui == 'qttabs':
+            gui = 'qt'
+            g.app.qt_use_tabs = True
+
         if gui not in ('tk','qt','wx'):
             g.trace('unknown gui: %s' % gui)
             gui = None

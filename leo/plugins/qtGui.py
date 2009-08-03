@@ -3379,11 +3379,13 @@ class SDIFrameFactory:
 
     #@    @+others
     #@+node:ville.20090803130409.3680:frame creation
-    def createFrame(self, c, title):
+    def createFrame(self, leoFrame):
         #f.top = DynamicWindow(c, g.app.gui.masterFrame)
+        c = leoFrame.c
+
         dw = DynamicWindow(c)
         g.app.gui.attachLeoIcon(dw)
-        dw.setWindowTitle(title)
+        dw.setWindowTitle(leoFrame.title)
         dw.show()
         return dw
 
@@ -3405,16 +3407,23 @@ class TabbedFrameFactory:
     #@+node:ville.20090803132402.3685:ctor
     def __init__(self):    
         # will be created when first frame appears    
+
+        # DynamicWindow => Leo frame map
+        self.leoFrames = {} 
         self.masterFrame = None
     #@-node:ville.20090803132402.3685:ctor
     #@+node:ville.20090803130409.3686:frame creation
-    def createFrame(self, c, title):
-        #f.top = DynamicWindow(c, g.app.gui.masterFrame)
+    def createFrame(self, leoFrame):
+        #f.top = DynamicWindow(c, g.app.gui.masterFrame)    
+        c = leoFrame.c
+        title = leoFrame.title
         if self.masterFrame is None:
             self.createMaster()
+
         tabw = self.masterFrame
         dw = DynamicWindow(c, tabw )
         idx = tabw.addTab(dw, title)
+        self.leoFrames[dw] = leoFrame
         tabw.setCurrentIndex(idx)
         #g.app.gui.attachLeoIcon(f.top)
         dw.setWindowTitle(title)
@@ -3517,7 +3526,7 @@ class leoQtFrame (leoFrame.leoFrame):
         self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
 
         # returns DynamicgWindow
-        f.top = g.app.gui.frameFactory.createFrame(c, self.title)
+        f.top = g.app.gui.frameFactory.createFrame(f)
 
         f.createIconBar() # A base class method.
         f.createSplitterComponents()
@@ -6354,8 +6363,6 @@ class leoQtGui(leoGui.leoGui):
         leoGui.leoGui.__init__(self,'qt')
 
 
-        #self.frameFactory = SDIFrameFactory()
-
         self.qtApp = app = QtGui.QApplication(sys.argv)
 
         self.bodyTextWidget  = leoQtBaseTextWidget
@@ -6366,7 +6373,12 @@ class leoQtGui(leoGui.leoGui):
         self.mGuiName = 'qt'
 
         self.defaultEncoding = None # Set by toUnicode as needed.    
-        self.frameFactory = TabbedFrameFactory()
+
+        if g.app.qt_use_tabs:    
+            self.frameFactory = TabbedFrameFactory()
+        else:
+            self.frameFactory = SDIFrameFactory()
+
     #@-node:ekr.20081121105001.474: qtGui.__init__
     #@+node:ekr.20081121105001.475:createKeyHandlerClass (qtGui)
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
