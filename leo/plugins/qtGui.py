@@ -3412,7 +3412,7 @@ class TabbedFrameFactory:
         self.leoFrames = {} 
         self.masterFrame = None
     #@-node:ville.20090803132402.3685:ctor
-    #@+node:ville.20090803130409.3686:frame creation
+    #@+node:ville.20090803130409.3686:frame creation & destruction
     def createFrame(self, leoFrame):
         #f.top = DynamicWindow(c, g.app.gui.masterFrame)    
         c = leoFrame.c
@@ -3422,11 +3422,9 @@ class TabbedFrameFactory:
 
         tabw = self.masterFrame
         dw = DynamicWindow(c, tabw )
-        idx = tabw.addTab(dw, title)
         self.leoFrames[dw] = leoFrame
-        tabw.setCurrentIndex(idx)    
-        #g.app.gui.attachLeoIcon(f.top)
-        #dw.setWindowTitle(title)
+        idx = tabw.addTab(dw, title)
+        tabw.setCurrentIndex(idx)            
         if tabw.count() > 1:
             tabw.tabBar().setVisible(True)
         else:
@@ -3445,16 +3443,13 @@ class TabbedFrameFactory:
             tabw.tabBar().setVisible(False)
 
 
-    #@-node:ville.20090803130409.3686:frame creation
-    #@+node:ville.20090803132402.3684:createMaster
+    #@-node:ville.20090803130409.3686:frame creation & destruction
+    #@+node:ville.20090803132402.3684:createMaster & signal handlers
     def createMaster(self):
         mf = self.masterFrame = QtGui.QTabWidget()
         mf.resize(1000, 700)
         g.app.gui.attachLeoIcon(mf)
-        #self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
-        #self.setName(w,name)
-        #w.addTab(self.tab, "")
-        #self.tab_2 = QtGui.QWidget()
+
         tabbar = mf.tabBar()
         try:
             tabbar.setTabsClosable(True)
@@ -3463,18 +3458,24 @@ class TabbedFrameFactory:
             pass
 
         tabbar.connect(tabbar,QtCore.SIGNAL('tabCloseRequested(int)'),self.slotCloseRequest)
+        mf.connect(mf, QtCore.SIGNAL('currentChanged(int)'), self.slotCurrentChanged)
         mf.show()
 
+
     def slotCloseRequest(self,idx):
-        print "close request", idx
         tabw = self.masterFrame
-        #w = self.masterFrame.
         w = tabw.widget(idx)
         f = self.leoFrames[w]
         c = f.c
         c.close()
 
-    #@-node:ville.20090803132402.3684:createMaster
+    def slotCurrentChanged(self, idx):
+        tabw = self.masterFrame
+        w = tabw.widget(idx)
+        f = self.leoFrames[w]
+        tabw.setWindowTitle(f.title)
+    #@nonl
+    #@-node:ville.20090803132402.3684:createMaster & signal handlers
     #@-others
 #@-node:ville.20090803130409.3685:class TabbedFrameFactory
 #@+node:ekr.20081121105001.249:class leoQtFrame
