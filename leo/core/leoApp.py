@@ -714,7 +714,7 @@ class LeoApp:
     def computeSignon (self):
 
         app = self
-        date        = leoVersion.date
+        build,date  = leoVersion.build,leoVersion.date
         guiVersion  = app.gui.getFullVersion()
         leoVer      = leoVersion.version
         n1,n2,n3,junk,junk=sys.version_info
@@ -729,8 +729,8 @@ class LeoApp:
 
         else: sysVersion = sys.platform
 
-        app.signon = 'Leo %s, %s' % (
-            leoVer,date)
+        app.signon = 'Leo %s, build %s, %s' % (
+            leoVer,build,date)
         app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
             n1,n2,n3,guiVersion,sysVersion)
     #@nonl

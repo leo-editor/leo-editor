@@ -14863,7 +14863,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
 
-Leo 4.6.2 fixes several bugs reported since Leo 4.6 was released
+Leo 4.6.2 fixes several bugs reported since Leo 4.6 was released.
 
 The highlights of Leo 4.6
 --------------------------
