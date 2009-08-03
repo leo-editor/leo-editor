@@ -1642,7 +1642,7 @@ class DynamicWindow(QtGui.QMainWindow):
         orientation = c.config.getString('initial_split_orientation')
         self.setSplitDirection(orientation)
         self.setStyleSheets()
-        self.setLeoWindowIcon()
+        #self.setLeoWindowIcon()
     #@-node:ekr.20081121105001.201: ctor (DynamicWindow)
     #@+node:ekr.20081121105001.202:closeEvent (DynanicWindow)
     def closeEvent (self,event):
@@ -2263,6 +2263,7 @@ class DynamicWindow(QtGui.QMainWindow):
     #@+node:ville.20090702214819.4211:setLeoWindowIcon
     def setLeoWindowIcon(self):
         """ Set icon visible in title bar and task bar """
+        # xxx do not use 
         self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     #@nonl
     #@-node:ville.20090702214819.4211:setLeoWindowIcon
@@ -3369,6 +3370,86 @@ class leoQtFindTab (leoFind.findTab):
     #@-node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
     #@-others
 #@-node:ekr.20081121105001.235:class leoQtFindTab (findTab)
+#@+node:ville.20090803130409.3679:class SDIFrameFactory
+class SDIFrameFactory:
+    """ 'Toplevel' frame builder 
+
+    This only deals with Qt level widgets, not Leo wrappers
+    """
+
+    #@    @+others
+    #@+node:ville.20090803130409.3680:frame creation
+    def createFrame(self, leoFrame):
+        #f.top = DynamicWindow(c, g.app.gui.masterFrame)
+        c = leoFrame.c
+
+        dw = DynamicWindow(c)
+        g.app.gui.attachLeoIcon(dw)
+        dw.setWindowTitle(leoFrame.title)
+        dw.show()
+        return dw
+
+    def deleteFrame(self, wdg):
+        pass
+
+    #@-node:ville.20090803130409.3680:frame creation
+    #@-others
+#@-node:ville.20090803130409.3679:class SDIFrameFactory
+#@+node:ville.20090803130409.3685:class TabbedFrameFactory
+class TabbedFrameFactory:
+    """ 'Toplevel' frame builder for tabbed toplevel interface
+
+    This causes Leo to maintain only one toplevel window,
+    with multiple tabs for documents
+    """
+
+    #@    @+others
+    #@+node:ville.20090803132402.3685:ctor
+    def __init__(self):    
+        # will be created when first frame appears    
+
+        # DynamicWindow => Leo frame map
+        self.leoFrames = {} 
+        self.masterFrame = None
+    #@-node:ville.20090803132402.3685:ctor
+    #@+node:ville.20090803130409.3686:frame creation
+    def createFrame(self, leoFrame):
+        #f.top = DynamicWindow(c, g.app.gui.masterFrame)    
+        c = leoFrame.c
+        title = leoFrame.title
+        if self.masterFrame is None:
+            self.createMaster()
+
+        tabw = self.masterFrame
+        dw = DynamicWindow(c, tabw )
+        idx = tabw.addTab(dw, title)
+        self.leoFrames[dw] = leoFrame
+        tabw.setCurrentIndex(idx)
+        #g.app.gui.attachLeoIcon(f.top)
+        dw.setWindowTitle(title)
+        dw.show()
+
+        return dw
+
+    def deleteFrame(self, wdg):
+        tabw = self.masterFrame
+        idx = tabw.indexOf(wdg)
+        tabw.removeTab(idx)
+    #@-node:ville.20090803130409.3686:frame creation
+    #@+node:ville.20090803132402.3684:createMaster
+    def createMaster(self):
+        mf = self.masterFrame = QtGui.QTabWidget()
+        mf.resize(1000, 700)
+        g.app.gui.attachLeoIcon(mf)
+        #self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
+        #self.setName(w,name)
+        #w.addTab(self.tab, "")
+        #self.tab_2 = QtGui.QWidget()
+
+        mf.show()
+    #@-node:ville.20090803132402.3684:createMaster
+    #@-others
+#@-node:ville.20090803130409.3685:class TabbedFrameFactory
 #@+node:ekr.20081121105001.249:class leoQtFrame
 class leoQtFrame (leoFrame.leoFrame):
 
@@ -3444,10 +3525,8 @@ class leoQtFrame (leoFrame.leoFrame):
         self.use_chapters      = c.config.getBool('use_chapters')
         self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
 
-        f.top = DynamicWindow(c)
-        g.app.gui.attachLeoIcon(f.top)
-        f.top.setWindowTitle(self.title)
-        f.top.show()
+        # returns DynamicgWindow
+        f.top = g.app.gui.frameFactory.createFrame(f)
 
         f.createIconBar() # A base class method.
         f.createSplitterComponents()
@@ -3539,6 +3618,7 @@ class leoQtFrame (leoFrame.leoFrame):
         # Remember these: we are about to destroy all of our ivars!
         c,top = self.c,self.top 
 
+        g.app.gui.frameFactory.deleteFrame(top)
         # Indicate that the commander is no longer valid.
         c.exists = False
 
@@ -6282,6 +6362,7 @@ class leoQtGui(leoGui.leoGui):
         # Initialize the base class.
         leoGui.leoGui.__init__(self,'qt')
 
+
         self.qtApp = app = QtGui.QApplication(sys.argv)
 
         self.bodyTextWidget  = leoQtBaseTextWidget
@@ -6291,7 +6372,13 @@ class leoQtGui(leoGui.leoGui):
 
         self.mGuiName = 'qt'
 
-        self.defaultEncoding = None # Set by toUnicode as needed.
+        self.defaultEncoding = None # Set by toUnicode as needed.    
+
+        if g.app.qt_use_tabs:    
+            self.frameFactory = TabbedFrameFactory()
+        else:
+            self.frameFactory = SDIFrameFactory()
+
     #@-node:ekr.20081121105001.474: qtGui.__init__
     #@+node:ekr.20081121105001.475:createKeyHandlerClass (qtGui)
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
@@ -6769,9 +6856,11 @@ class leoQtGui(leoGui.leoGui):
 
         """Attach a Leo icon to the window."""
 
-        icon = self.getIconImage('leoApp.ico')
+        #icon = self.getIconImage('leoApp.ico')
 
-        window.setWindowIcon(icon)
+        #window.setWindowIcon(icon)
+        window.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
+        #window.setLeoWindowIcon()
     #@-node:ekr.20081121105001.496:attachLeoIcon (qtGui)
     #@+node:ekr.20081121105001.497:getIconImage (qtGui)
     def getIconImage (self,name):
