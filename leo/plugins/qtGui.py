@@ -3455,8 +3455,25 @@ class TabbedFrameFactory:
         #self.setName(w,name)
         #w.addTab(self.tab, "")
         #self.tab_2 = QtGui.QWidget()
+        tabbar = mf.tabBar()
+        try:
+            tabbar.setTabsClosable(True)
 
+        except AttributeError:
+            pass
+
+        tabbar.connect(tabbar,QtCore.SIGNAL('tabCloseRequested(int)'),self.slotCloseRequest)
         mf.show()
+
+    def slotCloseRequest(self,idx):
+        print "close request", idx
+        tabw = self.masterFrame
+        #w = self.masterFrame.
+        w = tabw.widget(idx)
+        f = self.leoFrames[w]
+        c = f.c
+        c.close()
+
     #@-node:ville.20090803132402.3684:createMaster
     #@-others
 #@-node:ville.20090803130409.3685:class TabbedFrameFactory
