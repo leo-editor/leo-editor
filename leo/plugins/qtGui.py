@@ -3369,6 +3369,27 @@ class leoQtFindTab (leoFind.findTab):
     #@-node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
     #@-others
 #@-node:ekr.20081121105001.235:class leoQtFindTab (findTab)
+#@+node:ville.20090803130409.3679:class SDIFrameFactory
+class SDIFrameFactory:
+    """ 'Toplevel' frame builder 
+
+    This only deals with Qt level widgets, not Leo wrappers
+    """
+
+    #@    @+others
+    #@+node:ville.20090803130409.3680:frame creation
+    def createFrame(self, c, title):
+        #f.top = DynamicWindow(c, g.app.gui.masterFrame)
+        dw = DynamicWindow(c)
+        #g.app.gui.attachLeoIcon(f.top)
+        dw.setWindowTitle(title)
+        dw.show()
+        #g.app.gui.masterFrame.addTab(f.top, 'Leowin')
+        return dw
+
+    #@-node:ville.20090803130409.3680:frame creation
+    #@-others
+#@-node:ville.20090803130409.3679:class SDIFrameFactory
 #@+node:ekr.20081121105001.249:class leoQtFrame
 class leoQtFrame (leoFrame.leoFrame):
 
@@ -3444,11 +3465,7 @@ class leoQtFrame (leoFrame.leoFrame):
         self.use_chapters      = c.config.getBool('use_chapters')
         self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
 
-        f.top = DynamicWindow(c, g.app.gui.masterFrame)
-        g.app.gui.attachLeoIcon(f.top)
-        f.top.setWindowTitle(self.title)
-        f.top.show()
-        g.app.gui.masterFrame.addTab(f.top, 'Leowin')
+        f.top = g.app.gui.frameFactory.createFrame(c, self.title)
 
         f.createIconBar() # A base class method.
         f.createSplitterComponents()
@@ -6284,6 +6301,7 @@ class leoQtGui(leoGui.leoGui):
         leoGui.leoGui.__init__(self,'qt')
 
         self.masterFrame = None
+        self.frameFactory = SDIFrameFactory()
         self.qtApp = app = QtGui.QApplication(sys.argv)
 
         self.bodyTextWidget  = leoQtBaseTextWidget
