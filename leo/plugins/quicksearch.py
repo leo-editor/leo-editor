@@ -165,6 +165,9 @@ class LeoQuickSearchWidget(QtGui.QWidget):
 
     def returnPressed(self):
         t = unicode(self.ui.lineEdit.text())
+        if not t.strip():
+            return
+
         if t == u'm':
             self.scon.doShowMarked()
         else:        
