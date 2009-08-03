@@ -3390,6 +3390,44 @@ class SDIFrameFactory:
     #@-node:ville.20090803130409.3680:frame creation
     #@-others
 #@-node:ville.20090803130409.3679:class SDIFrameFactory
+#@+node:ville.20090803130409.3685:class TabbedFrameFactory
+class TabbedFrameFactory:
+    """ 'Toplevel' frame builder 
+
+    This only deals with Qt level widgets, not Leo wrappers
+    """
+
+    #@    @+others
+    #@+node:ville.20090803132402.3685:ctor
+    def __init__(self):    
+        # will be created when first frame appears    
+        self.masterFrame = None
+    #@-node:ville.20090803132402.3685:ctor
+    #@+node:ville.20090803130409.3686:frame creation
+    def createFrame(self, c, title):
+        #f.top = DynamicWindow(c, g.app.gui.masterFrame)
+        if self.masterFrame is None:
+            self.createMaster()
+        dw = DynamicWindow(c)
+        #g.app.gui.attachLeoIcon(f.top)
+        dw.setWindowTitle(title)
+        dw.show()
+        self.masterFrame.addTab(dw, title)
+        return dw
+
+    #@-node:ville.20090803130409.3686:frame creation
+    #@+node:ville.20090803132402.3684:createMaster
+    def createMaster(self):
+        self.masterFrame = QtGui.QTabWidget()
+        #self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
+        #self.setName(w,name)
+        #w.addTab(self.tab, "")
+        #self.tab_2 = QtGui.QWidget()
+
+        self.masterFrame.show()
+    #@-node:ville.20090803132402.3684:createMaster
+    #@-others
+#@-node:ville.20090803130409.3685:class TabbedFrameFactory
 #@+node:ekr.20081121105001.249:class leoQtFrame
 class leoQtFrame (leoFrame.leoFrame):
 
@@ -6300,8 +6338,9 @@ class leoQtGui(leoGui.leoGui):
         # Initialize the base class.
         leoGui.leoGui.__init__(self,'qt')
 
-        self.masterFrame = None
-        self.frameFactory = SDIFrameFactory()
+
+        #self.frameFactory = SDIFrameFactory()
+
         self.qtApp = app = QtGui.QApplication(sys.argv)
 
         self.bodyTextWidget  = leoQtBaseTextWidget
@@ -6311,8 +6350,8 @@ class leoQtGui(leoGui.leoGui):
 
         self.mGuiName = 'qt'
 
-        self.defaultEncoding = None # Set by toUnicode as needed.
-        self.createMaster()
+        self.defaultEncoding = None # Set by toUnicode as needed.    
+        self.frameFactory = TabbedFrameFactory()
     #@-node:ekr.20081121105001.474: qtGui.__init__
     #@+node:ekr.20081121105001.475:createKeyHandlerClass (qtGui)
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
@@ -6397,16 +6436,6 @@ class leoQtGui(leoGui.leoGui):
         self.qtApp.exit()
     #@nonl
     #@-node:ekr.20081121105001.477:destroySelf
-    #@+node:ville.20090801220618.3740:createMaster
-    def createMaster(self):
-        self.masterFrame = QtGui.QTabWidget(self.masterFrame)
-        #self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
-        #self.setName(w,name)
-        #w.addTab(self.tab, "")
-        #self.tab_2 = QtGui.QWidget()
-
-        self.masterFrame.show()
-    #@-node:ville.20090801220618.3740:createMaster
     #@-node:ekr.20081121105001.473:  Birth & death (qtGui)
     #@+node:ekr.20081121105001.183:Clipboard (qtGui)
     def replaceClipboardWith (self,s):
