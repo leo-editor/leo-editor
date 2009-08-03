@@ -3381,11 +3381,14 @@ class SDIFrameFactory:
     def createFrame(self, c, title):
         #f.top = DynamicWindow(c, g.app.gui.masterFrame)
         dw = DynamicWindow(c)
-        #g.app.gui.attachLeoIcon(f.top)
+        g.app.gui.attachLeoIcon(self)
         dw.setWindowTitle(title)
         dw.show()
         #g.app.gui.masterFrame.addTab(f.top, 'Leowin')
         return dw
+
+    def deleteFrame(self, wdg):
+        pass
 
     #@-node:ville.20090803130409.3680:frame creation
     #@-others
@@ -3408,17 +3411,24 @@ class TabbedFrameFactory:
         #f.top = DynamicWindow(c, g.app.gui.masterFrame)
         if self.masterFrame is None:
             self.createMaster()
-        dw = DynamicWindow(c)
+        tabw = self.masterFrame
+        dw = DynamicWindow(c, tabw )
+        tabw.addTab(dw, title)
         #g.app.gui.attachLeoIcon(f.top)
         dw.setWindowTitle(title)
         dw.show()
-        self.masterFrame.addTab(dw, title)
+
         return dw
 
+    def deleteFrame(self, wdg):
+        tabw = self.masterFrame
+        idx = tabw.indexOf(wdg)
+        tabw.removeTab(idx)
     #@-node:ville.20090803130409.3686:frame creation
     #@+node:ville.20090803132402.3684:createMaster
     def createMaster(self):
         self.masterFrame = QtGui.QTabWidget()
+
         #self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
         #self.setName(w,name)
         #w.addTab(self.tab, "")
@@ -3503,6 +3513,7 @@ class leoQtFrame (leoFrame.leoFrame):
         self.use_chapters      = c.config.getBool('use_chapters')
         self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
 
+        # returns DynamicgWindow
         f.top = g.app.gui.frameFactory.createFrame(c, self.title)
 
         f.createIconBar() # A base class method.
@@ -3595,6 +3606,7 @@ class leoQtFrame (leoFrame.leoFrame):
         # Remember these: we are about to destroy all of our ivars!
         c,top = self.c,self.top 
 
+        g.app.gui.frameFactory.deleteFrame(top)
         # Indicate that the commander is no longer valid.
         c.exists = False
 
