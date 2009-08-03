@@ -3378,7 +3378,7 @@ class SDIFrameFactory:
     """
 
     #@    @+others
-    #@+node:ville.20090803130409.3680:frame creation
+    #@+node:ville.20090803130409.3680:frame creation & null deletion
     def createFrame(self, leoFrame):
         #f.top = DynamicWindow(c, g.app.gui.masterFrame)
         c = leoFrame.c
@@ -3392,7 +3392,7 @@ class SDIFrameFactory:
     def deleteFrame(self, wdg):
         pass
 
-    #@-node:ville.20090803130409.3680:frame creation
+    #@-node:ville.20090803130409.3680:frame creation & null deletion
     #@-others
 #@-node:ville.20090803130409.3679:class SDIFrameFactory
 #@+node:ville.20090803130409.3685:class TabbedFrameFactory
@@ -3411,6 +3411,7 @@ class TabbedFrameFactory:
         # DynamicWindow => Leo frame map
         self.leoFrames = {} 
         self.masterFrame = None
+        self.createTabCommands()
     #@-node:ville.20090803132402.3685:ctor
     #@+node:ville.20090803130409.3686:frame creation & destruction
     def createFrame(self, leoFrame):
@@ -3431,18 +3432,20 @@ class TabbedFrameFactory:
             tabw.tabBar().setVisible(False)
 
         dw.show()
+        tabw.show()
 
         return dw
 
     def deleteFrame(self, wdg):
+        if wdg not in self.leoFrames:
+            # probably detached tab
+            return
         tabw = self.masterFrame
         idx = tabw.indexOf(wdg)
         tabw.removeTab(idx)
         del self.leoFrames[wdg]
         if tabw.count() < 2:
             tabw.tabBar().setVisible(False)
-
-
     #@-node:ville.20090803130409.3686:frame creation & destruction
     #@+node:ville.20090803132402.3684:createMaster & signal handlers
     def createMaster(self):
@@ -3476,6 +3479,29 @@ class TabbedFrameFactory:
         tabw.setWindowTitle(f.title)
     #@nonl
     #@-node:ville.20090803132402.3684:createMaster & signal handlers
+    #@+node:ville.20090803164510.3688:createTabCommands
+    def detachTab(self, wdg):
+        """ Detach specified tab as individual toplevel window """
+
+        del self.leoFrames[wdg]
+        wdg.setParent(None)
+        wdg.show()
+
+    def createTabCommands(self):
+        @g.command('tab-detach')
+        def tab_detach(event):
+            """ Detach current tab from tab bar """
+            if len(self.leoFrames) < 2:
+                g.es_print_error("Can't detach last tab")
+                return
+
+            c = event['c']
+            f = c.frame
+            self.detachTab(f.top)
+            f.top.setWindowTitle(f.title + u' [D]')
+
+
+    #@-node:ville.20090803164510.3688:createTabCommands
     #@-others
 #@-node:ville.20090803130409.3685:class TabbedFrameFactory
 #@+node:ekr.20081121105001.249:class leoQtFrame
