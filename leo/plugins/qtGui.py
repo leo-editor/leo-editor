@@ -3493,6 +3493,18 @@ class TabbedFrameFactory:
         f = self.leoFrames[w]
         tabw.setWindowTitle(f.title)
     #@-node:ville.20090803132402.3684:createMaster & signal handlers
+    #@+node:ville.20090803201708.3694:utilities
+    def focusCurrentBody(self):
+        """ Focus body control of current tab """
+        tabw = self.masterFrame
+        w = tabw.currentWidget()
+        w.setFocus()
+
+        f = self.leoFrames[w]
+        c = f.c
+        c.bodyWantsFocusNow()
+    #@nonl
+    #@-node:ville.20090803201708.3694:utilities
     #@+node:ville.20090803164510.3688:createTabCommands
     def detachTab(self, wdg):
         """ Detach specified tab as individual toplevel window """
@@ -3534,6 +3546,8 @@ class TabbedFrameFactory:
             if cur == count:
                 cur = 0
             tabw.setCurrentIndex(cur)
+            self.focusCurrentBody()
+
 
         @g.command('tab-cycle-next')
         def tab_cycle_next(event):
