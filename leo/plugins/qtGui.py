@@ -3424,9 +3424,14 @@ class TabbedFrameFactory:
         dw = DynamicWindow(c, tabw )
         idx = tabw.addTab(dw, title)
         self.leoFrames[dw] = leoFrame
-        tabw.setCurrentIndex(idx)
+        tabw.setCurrentIndex(idx)    
         #g.app.gui.attachLeoIcon(f.top)
-        dw.setWindowTitle(title)
+        #dw.setWindowTitle(title)
+        if tabw.count() > 1:
+            tabw.tabBar().setVisible(True)
+        else:
+            tabw.tabBar().setVisible(False)
+
         dw.show()
 
         return dw
@@ -3435,6 +3440,11 @@ class TabbedFrameFactory:
         tabw = self.masterFrame
         idx = tabw.indexOf(wdg)
         tabw.removeTab(idx)
+        del self.leoFrames[wdg]
+        if tabw.count() < 2:
+            tabw.tabBar().setVisible(False)
+
+
     #@-node:ville.20090803130409.3686:frame creation
     #@+node:ville.20090803132402.3684:createMaster
     def createMaster(self):
