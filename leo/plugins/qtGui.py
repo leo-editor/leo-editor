@@ -6926,7 +6926,7 @@ class leoQtGui(leoGui.leoGui):
     def getFullVersion (self):
 
         try:
-            qtLevel = 'version %s' % QtCore.QT_VERSION
+            qtLevel = 'version %s' % QtCore.QT_VERSION_STR
         except Exception:
             # g.es_exception()
             qtLevel = '<qtLevel>'
