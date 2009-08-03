@@ -6543,23 +6543,6 @@ def importExtension (moduleName,pluginName=None,verbose=False,required=False):
         g.pr("Warning: plugin '%s' failed to import '%s'" % (pluginName, moduleName))
 
     return module
-
-
-    """
-    extensionsDir = g.app and g.app.extensionsDir or os.path.join(os.path.dirname(__file__),'..','extensions')
-
-    if not module:
-        module = g.importFromPath(moduleName,extensionsDir,pluginName=pluginName,verbose=verbose)
-
-        if not module and required:
-            g.cantImportDialog(pluginName,moduleName)
-            try: # Avoid raising SystemExit if possible.
-                import os ; os._exit(1) # May not be available on all platforms.
-            except Exception:
-                import sys ; sys.exit(1)
-
-    return module
-    """
 #@+node:ekr.20060329083657:cantImportDialog & helpers
 def cantImportDialog (pluginName,moduleName):
 

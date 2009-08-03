@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20051031040240" str_leo_pos="5,1"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20090620052003.8505"><vh>@button add-test @key=alt-9</vh></v>
 <v t="ekr.20090514093345.6054"><vh>Disabled buttons</vh>
@@ -101,7 +101,7 @@
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20040117181936"
-marks="ekr.20031218072017.2829,"><vh>@thin ../doc/leoToDo.txt</vh></v>
+marks="ekr.20090717083356.5991,ekr.20031218072017.2829,ekr.20080510153327.4,ekr.20061031131434.110,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
 <v t="ekr.20090113083258.3"><vh>Unit tests &amp; helper files</vh>
@@ -121,7 +121,13 @@ marks="ekr.20031218072017.2829,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 </v>
 <v t="ekr.20090113083258.1" descendentVnodeUnknownAttributes="7d7100285507302e322e372e3471017d71025808000000616e6e6f7461746571037d7104735503302e3071057d71065808000000616e6e6f7461746571077d7108735507302e322e302e3571097d710a5808000000616e6e6f74617465710b7d710c735507302e322e362e33710d7d710e5808000000616e6e6f74617465710f7d7110735508302e322e332e333571117d71125808000000616e6e6f7461746571137d711473752e"><vh>@thin test_core.txt</vh></v>
 </v>
-<v t="ekr.20031218072017.2406"><vh>Code</vh>
+<v t="ekr.20031218072017.2406" a="E"><vh>Code</vh>
+<v t="ekr.20090802181029.5988"><vh>Version</vh>
+<v t="ekr.20090717092906.12765"><vh>@thin leoVersion.py</vh></v>
+</v>
+<v t="ekr.20090802181029.5989"><vh>Startup</vh>
+<v t="ekr.20031218072017.2605"><vh>@thin runLeo.py </vh></v>
+</v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@thin leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@thin leoAtFile.py</vh></v>
@@ -138,12 +144,11 @@ marks="ekr.20031218072017.2829,"><vh>@thin leoCommands.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@thin leoNodes.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@thin leoPlugins.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@thin leoPymacs.py</vh></v>
-<v t="ekr.20090502071837.3"><vh>@thin leoRst.py</vh></v>
+<v t="ekr.20090502071837.3"
+marks="ekr.20090502071837.71,"><vh>@thin leoRst.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@thin leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@thin leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@thin leoUndo.py</vh></v>
-<v t="ekr.20090717092906.12765"><vh>@thin leoVersion.py</vh></v>
-<v t="ekr.20031218072017.2605"><vh>@thin runLeo.py </vh></v>
 </v>
 <v t="ekr.20031218072017.3625"><vh>Gui Base classes</vh>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
@@ -151,7 +156,8 @@ marks="ekr.20031218072017.2829,"><vh>@thin leoCommands.py</vh></v>
 <v t="ekr.20060123151617"><vh>@thin leoFind.py</vh></v>
 <v t="ekr.20031218072017.3655"><vh>@thin leoFrame.py</vh></v>
 <v t="ekr.20031218072017.3719"><vh>@thin leoGui.py</vh></v>
-<v t="ekr.20061031131434"><vh>@thin leoKeys.py</vh></v>
+<v t="ekr.20061031131434"
+marks="ekr.20061031131434.110,ekr.20080510153327.4,"><vh>@thin leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@thin leoMenu.py</vh></v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Test classes</vh>
@@ -159,15 +165,6 @@ marks="ekr.20031218072017.2829,"><vh>@thin leoCommands.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@thin leoDynamicTest.py</vh></v>
 <v t="ekr.20051104075904" annotate="285808000000616e6e6f7461746571007d71017471022e" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@thin leoTest.py</vh></v>
 </v>
-</v>
-<v t="ekr.20090714085914.5990"><vh>To do first</vh>
-<v t="ekr.20090717083356.5991"><vh>Add screen shot page linked to Leo's home page</vh></v>
-<v t="ekr.20090714085914.5992"><vh>Fix @auto-rst code-loss bug</vh></v>
-<v t="ekr.20090709101224.6040"><vh>Fix rst bug</vh></v>
-<v t="ekr.20090714085914.5991"><vh>Add drag and drop to qt gui</vh></v>
-<v t="ekr.20090622020908.6058"><vh>Add lite sentinels</vh></v>
-<v t="ekr.20090528072540.5738"><vh>Unify commands in File:Read/Write menu</vh></v>
-<v t="ekr.20090526102407.10033"><vh>Can Leo delete empty resurrected nodes?</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -945,14 +942,6 @@ g.es_print('unit tests done',color='blue')</t>
 <t tx="ekr.20090517020744.5911"></t>
 <t tx="ekr.20090517102212.5874"></t>
 <t tx="ekr.20090517102548.5889"># Add the nodes in the following tree to external unit tests.</t>
-<t tx="ekr.20090526102407.10033"></t>
-<t tx="ekr.20090528072540.5738">@nocolor-node
-
-- Combine 3 "read @x nodes" commands into a single "read @&lt;file&gt; nodes" command.
-
-- Combine 3 "write @x nodes" commands into a single "write @&lt;file&gt; nodes" command. 
-
-- Combine 3 "write dirty @x nodes" commands into a single "write dirty @&lt;file&gt; nodes" command. </t>
 <t tx="ekr.20090620052003.8505">u = c.undoer
 w = c.frame.body.bodyCtrl
 p2 = p.insertAsNthChild(0)
@@ -970,28 +959,7 @@ w.setInsertPoint(len(s))
 c.bodyWantsFocus()
 c.outerUpdate()
 </t>
-<t tx="ekr.20090622020908.6058">http://groups.google.com/group/leo-editor/browse_thread/thread/c4f2cf250600e4a9</t>
-<t tx="ekr.20090709101224.6040">@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/73db1b3109cc94b6
-
-Apparently, the problem is with this line::
-
-&lt;p&gt;Greet the world, politely**code**:.. class:: code..::   g.es (&amp;quot;Hello, world&amp;quot;)&lt;/p&gt;
-
-Presumably, the ..class:: code..:: should start a new line. There have been
-changes recently to how newlines are handled. I'll put this on the list of
-things to fix for Leo 4.6 final.
-
-
-</t>
-<t tx="ekr.20090714085914.5990"></t>
-<t tx="ekr.20090714085914.5991"></t>
-<t tx="ekr.20090714085914.5992">@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/b84659e608ba44d5
-
-The data is lost because @auto-rst mostly ignores the top-level node.</t>
-<t tx="ekr.20090717083356.5991">http://leo-editor.googlegroups.com/web/625-leo-window.png?gda=Fjn-hkQAAACaem1_7XPo9S1KnEkCtDqka_lw8qfHa3YHzOgIlt5IjVd5eKdLdCg0nUt3E6wDF75V6u9SiETdg0Q2ffAyHU-dzc4BZkLnSFWX59nr5BxGqA</t>
+<t tx="ekr.20090802181029.5988"></t>
+<t tx="ekr.20090802181029.5989"></t>
 </tnodes>
 </leo_file>

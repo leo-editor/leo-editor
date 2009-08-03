@@ -3955,6 +3955,8 @@ what I want).
 #@+node:ekr.20090502071837.71:writeBody & helpers
 def writeBody (self,p):
 
+    # g.trace(p.h,p.b)
+
     # remove trailing cruft and split into lines.
     lines = g.splitLines(p.b)
 
@@ -3991,14 +3993,9 @@ def writeBody (self,p):
 
     # Write the lines.
     s = ''.join(lines)
-    if True: #### not self.trialWrite:
-        # A little fib.  We don't alter the text when doing a trial write,
-        # so the perfect-import comparison will pass.
-        # We *do* ensure 2 newlines when doing a "real" write.
-        s = g.ensureLeadingNewlines(s,1)
-        s = g.ensureTrailingNewlines(s,2)
+    s = g.ensureLeadingNewlines(s,1)
+    s = g.ensureTrailingNewlines(s,2)
     self.write(s)
-#@nonl
 #@-node:ekr.20090502071837.71:writeBody & helpers
 #@-node:ekr.20090601083544.6051:Add expand_noweb_references for rst3 plugin
 #@-node:ekr.20090714085914.5993:Most important features
@@ -4795,7 +4792,7 @@ else:
         return 'break'
 #@-node:ekr.20061031131434.149:<< handle mode bindings >>
 #@+node:ekr.20080510153327.4:<< handle special cases for plain keys >>
-# g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
+#g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
 
 # Important: only keys bound somewhere have a stroke.
 # All unbound plain keys will be handled by handleUnboundKeys.
@@ -5102,7 +5099,6 @@ def callKeystrokeFunction (self,event):
 #@-node:ekr.20061031131434.109:callKeystrokeFunction (not used)
 #@+node:ekr.20061031131434.110:k.handleDefaultChar
 def handleDefaultChar(self,event,stroke):
-
     k = self ; c = k.c
     w = event and event.widget
     name = c.widget_name(w)
@@ -5110,7 +5106,7 @@ def handleDefaultChar(self,event,stroke):
 
     if trace: g.trace('widget_name',name,'stroke',stroke)
 
-    if stroke and (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1):
+    if stroke and not (stroke.startswith('Alt+Ctrl') and not self.enable_alt_ctrl_bindings) and (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1):
         if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
         return 'break'
 

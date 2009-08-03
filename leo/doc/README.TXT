@@ -1,16 +1,16 @@
-Leo 4.6.1 final                             July 18, 2009
+Leo 4.6.2 final                             August 3, 2009
 
-Leo 4.6.1 final is now available at:
+Leo 4.6.2 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
 
-Leo 4.6.1 fixes several minor bugs in Leo 4.6.
+Leo 4.6.2 fixes several bugs reported since Leo 4.6 was released.
 
 The highlights of Leo 4.6
 --------------------------
-
+?
 - Cached external files *greatly* reduces the time to load .leo files.
 - Leo now features a modern Qt interface by default.
   Leo's legacy Tk interface can also be used.
