@@ -3524,6 +3524,31 @@ class TabbedFrameFactory:
                 if c is not myc:
                     c.close()
 
+        def tab_cycle(offset):
+            tabw = self.masterFrame
+            cur = tabw.currentIndex()
+            count = tabw.count()
+            cur += offset
+            if cur < 0:
+                cur = count -1
+            if cur == count:
+                cur = 0
+            tabw.setCurrentIndex(cur)
+
+        @g.command('tab-cycle-next')
+        def tab_cycle_next(event):
+            """ Cycle to next tab """
+            tab_cycle(1)
+
+        @g.command('tab-cycle-previous')
+        def tab_cycle_next(event):
+            """ Cycle to next tab """
+            tab_cycle(-1)
+
+
+
+
+
         #@-node:ville.20090803184912.3685:<< Commands for tabs >>
         #@nl
 
