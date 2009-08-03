@@ -244,7 +244,7 @@ class leoGui:
         """Create and run an askYesNoCancel dialog ."""
         self.oops()
 
-    def runPropertiesDialog(title='Properties', data={}, callback=None, buttons=None):
+    def runPropertiesDialog(self,title='Properties', data={}, callback=None, buttons=None):
         """Dispay a modal TkPropertiesDialog"""
         self.oops()
     #@nonl

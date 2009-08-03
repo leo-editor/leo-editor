@@ -16127,7 +16127,10 @@ This makes Leo a superb environment for using rST.
     scroll-down-half-page   ! tree = Shift-PageDn
     scroll-down-page        ! tree = PageDn
     scroll-up-half-page     ! tree = Shift-PageUp
-    scroll-up-page          ! tree = PageUp         
+    scroll-up-page          ! tree = PageUp    
+
+- @bool enable_alt_ctrl_bindings.
+  The default is False, needed for AltGr functionality on Windows.
 .. @-node:ekr.20090324145450.49:New settings
 .. @+node:ekr.20090324145450.54:Plugins
 - Improved nav_buttons plugin and corresponding nodeHistory class.

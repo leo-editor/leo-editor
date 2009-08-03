@@ -276,7 +276,7 @@ class tkinterGui(leoGui.leoGui):
             c,title,message,yesMessage,noMessage,defaultButton)
         return d.run(modal=True)
 
-    def runPropertiesDialog(
+    def runPropertiesDialog(self,
         title='Properties',data={}, callback=None, buttons=None):
         """Dispay a modal TkPropertiesDialog"""
         dialog = TkPropertiesDialog(title, data, callback, buttons)

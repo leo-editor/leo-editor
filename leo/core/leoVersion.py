@@ -5,9 +5,9 @@
 #@@language python
 #@@tabwidth -4
 
-version = 2265
+version = 2276
 
-date = "July 30, 2009"
-version = "4.6.1 final"
+date = "August 3, 2009"
+version = "4.6.2 final"
 #@-node:ekr.20090717092906.12765:@thin leoVersion.py
 #@-leo
