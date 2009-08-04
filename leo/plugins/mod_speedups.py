@@ -46,7 +46,7 @@ def init ():
 #@+node:ville.20090804155017.7596:g.toUnicodeFileEncoding
 def speedup_toUnicodeFileEncoding(s, arg = None):
     #if g:
-    #    print g.callers(5)
+        #print s,g.callers(10)
     return s    
 
 import leo    
@@ -64,8 +64,11 @@ g.os_path_splitext = os.path.splitext
 g.os_path_abspath = os.path.abspath
 #g.os_path_join = os.path.join
 g.os_path_normpath = os.path.normpath
+g.os_path_exists = os.path.exists
 #g.os_path_finalize = os.path.abspath
-#@nonl
+
+
+
 #@-node:ville.20090804155017.12332:os.path shortcuts
 #@+node:ville.20090804155017.12333:os_path_finalize caching
 
@@ -74,6 +77,7 @@ os_path_finalize_join_orig = g.os_path_finalize_join
 
 _finalized_cache = {}
 _finalized_join_cache = {}
+_expanduser_cache = {}
 
 def os_path_finalize_cached (path,**keys):
     res = _finalized_cache.get(path)
@@ -93,12 +97,23 @@ def os_path_finalize_join_cached (*args,**keys):
     _finalized_join_cache[args] = res
     return res
 
+def os_path_expanduser_cached(path, encoding = None):
+    res = _expanduser_cache.get(path)
+    if res:
+        #print "cache hit", path
+        return res
+    res = os.path.expanduser(path)
+    _expanduser_cache[path] = res
+    return res
+
+def os_path_join_speedup(*args, **kw):    
+    path = os.path.join(*args)
+    return path
 
 g.os_path_finalize = os_path_finalize_cached
-
-
-
 g.os_path_finalize_join = os_path_finalize_join_cached
+g.os_path_expanduser = os_path_expanduser_cached
+#g.os_path_join = os_path_join_speedup
 
 #@-node:ville.20090804155017.12333:os_path_finalize caching
 #@-others
