@@ -11544,16 +11544,22 @@ number_code_lines (default: True)
     This option has no effect in rst mode.
 
 publish-argv-for-missing-stylesheets (Default: '')
-    The arguments to be passed to docutils.core.Publisher().publish()
+    The arguments to be passed to docutils.core.Publisher().publish_string()
     when no stylesheet is in effect.
-    This is a string that represents a comma-separated list of strings:
-    For example, the option::
+    For example::
 
-        publish-argv-for-missing-stylesheets=--language=de,--documentclass=report,--use-latex-toc
+        publish-argv-for-missing-stylesheets=language=de,documentclass=report,use-latex-toc
 
     results in the call::
 
-        publish(['--language=de','--documentclass=report','--use-latex-toc'])
+        publish_string(
+            # (other args not shown)
+            settings_overrides=overrides)
+
+    where overrides is the following python dictionary::
+
+        { 'language':'de','documentclass':'report','use-latex_toc':'1' }
+
 
 show_doc_parts_as_paragraphs (default: False)
     True: Move doc parts outside of the code-block directive in code mode.

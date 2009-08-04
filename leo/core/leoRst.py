@@ -956,7 +956,7 @@ class rstCommands:
             data = arg.split('=')
             if len(data) == 1:
                 key = data[0]
-                d[str(key)] = ""
+                d[str(key)] = "1" # New in Leo 4.7: empty arg defaults to "1".
             elif len(data) == 2:
                 key,value = data
                 d[str(key)] = str(value)
@@ -1024,70 +1024,6 @@ class rstCommands:
         return n, result
     #@nonl
     #@-node:ekr.20090502071837.68:getDocPart
-    #@+node:ekr.20090502071837.70:skip_literal_block
-    def skip_literal_block (self,lines,n):
-
-        s = lines[n] ; result = [s] ; n += 1
-        indent = g.skip_ws(s,0)
-
-        # Skip lines until a non-blank line is found with same or less indent.
-        while n < len(lines):
-            s = lines[n]
-            indent2 = g.skip_ws(s,0)
-            if s and not s.isspace() and indent2 <= indent:
-                break # We will rescan lines [n]
-            n += 1
-            result.append(s)
-
-        # g.printList(result,tag='literal block')
-        return n, result
-    #@nonl
-    #@-node:ekr.20090502071837.70:skip_literal_block
-    #@+node:ekr.20090502071837.71:writeBody & helpers
-    def writeBody (self,p):
-
-        # g.trace(p.h,p.b)
-
-        # remove trailing cruft and split into lines.
-        lines = g.splitLines(p.b)
-
-        if self.getOption('code_mode'):
-            if not self.getOption('show_options_doc_parts'):
-                lines = self.handleSpecialDocParts(lines,'@rst-options',
-                    retainContents=False)
-            if not self.getOption('show_markup_doc_parts'):
-                lines = self.handleSpecialDocParts(lines,'@rst-markup',
-                    retainContents=False)
-            if not self.getOption('show_leo_directives'):
-                lines = self.removeLeoDirectives(lines)
-            lines = self.handleCodeMode(lines)
-        elif self.getOption('doc_only_mode'):
-            # New in version 1.15
-            lines = self.handleDocOnlyMode(p,lines)
-        else:
-            lines = self.handleSpecialDocParts(lines,'@rst-options',
-                retainContents=False)
-            lines = self.handleSpecialDocParts(lines,'@rst-markup',
-                retainContents=self.getOption('generate_rst'))
-            if self.getOption('show_doc_parts_in_rst_mode') is True:
-                pass  # original behaviour, treat as plain text
-            elif self.getOption('show_doc_parts_in_rst_mode'):
-                # use value as class for content
-                lines = self.handleSpecialDocParts(lines,None,
-                    retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
-            else:  # option evaluates to false, cut them out
-                lines = self.handleSpecialDocParts(lines,None,
-                    retainContents=False)
-            lines = self.removeLeoDirectives(lines)
-            if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
-                lines = self.replaceCodeBlockDirectives(lines)
-
-        # Write the lines.
-        s = ''.join(lines)
-        s = g.ensureLeadingNewlines(s,1)
-        s = g.ensureTrailingNewlines(s,2)
-        self.write(s)
-    #@-node:ekr.20090502071837.71:writeBody & helpers
     #@+node:ekr.20090502071837.72:handleCodeMode & helper
     def handleCodeMode (self,lines):
 
@@ -1197,75 +1133,6 @@ class rstCommands:
         return result
     #@nonl
     #@-node:ekr.20090502071837.76:handleDocOnlyMode
-    #@+node:ekr.20090502071837.77:isAnyDocPart
-    def isAnyDocPart (self,s):
-
-        if s.startswith('@doc'):
-            return True
-        elif not s.startswith('@'):
-            return False
-        else:
-            return len(s) == 1 or s[1].isspace()
-    #@nonl
-    #@-node:ekr.20090502071837.77:isAnyDocPart
-    #@+node:ekr.20090502071837.78:isSpecialDocPart
-    def isSpecialDocPart (self,s,kind):
-
-        '''Return True if s is a special doc part of the indicated kind.
-
-        If kind is None, return True if s is any doc part.'''
-
-        if s.startswith('@') and len(s) > 1 and s[1].isspace():
-            if kind:
-                i = g.skip_ws(s,1)
-                result = g.match_word(s,i,kind)
-            else:
-                result = True
-        elif not kind:
-            result = g.match_word(s,0,'@doc') or g.match_word(s,0,'@')
-        else:
-            result = False
-
-        return result
-    #@nonl
-    #@-node:ekr.20090502071837.78:isSpecialDocPart
-    #@+node:ekr.20090502071837.79:isAnySpecialDocPart
-    def isAnySpecialDocPart (self,s):
-
-        for kind in (
-            '@rst-markup',
-            '@rst-option',
-            '@rst-options',
-        ):
-            if self.isSpecialDocPart(s,kind):
-                return True
-
-        return False
-    #@-node:ekr.20090502071837.79:isAnySpecialDocPart
-    #@+node:ekr.20090502071837.80:removeLeoDirectives
-    def removeLeoDirectives (self,lines):
-
-        '''Remove all Leo directives, except within literal blocks.'''
-
-        n = 0 ; result = []
-        while n < len(lines):
-            s = lines [n] ; n += 1
-            if s.strip().endswith('::'):
-                n, lit = self.skip_literal_block(lines,n-1)
-                result.extend(lit)
-            elif s.startswith('@') and not self.isAnySpecialDocPart(s):
-                for key in self.leoDirectivesList:
-                    if g.match_word(s,0,key):
-                        # g.trace('removing %s' % s)
-                        break
-                else:
-                    result.append(s)
-            else:
-                result.append(s)
-
-        return result
-    #@nonl
-    #@-node:ekr.20090502071837.80:removeLeoDirectives
     #@+node:ekr.20090502071837.81:handleSpecialDocParts
     def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
 
@@ -1294,6 +1161,75 @@ class rstCommands:
 
         return result
     #@-node:ekr.20090502071837.81:handleSpecialDocParts
+    #@+node:ekr.20090502071837.77:isAnyDocPart
+    def isAnyDocPart (self,s):
+
+        if s.startswith('@doc'):
+            return True
+        elif not s.startswith('@'):
+            return False
+        else:
+            return len(s) == 1 or s[1].isspace()
+    #@nonl
+    #@-node:ekr.20090502071837.77:isAnyDocPart
+    #@+node:ekr.20090502071837.79:isAnySpecialDocPart
+    def isAnySpecialDocPart (self,s):
+
+        for kind in (
+            '@rst-markup',
+            '@rst-option',
+            '@rst-options',
+        ):
+            if self.isSpecialDocPart(s,kind):
+                return True
+
+        return False
+    #@-node:ekr.20090502071837.79:isAnySpecialDocPart
+    #@+node:ekr.20090502071837.78:isSpecialDocPart
+    def isSpecialDocPart (self,s,kind):
+
+        '''Return True if s is a special doc part of the indicated kind.
+
+        If kind is None, return True if s is any doc part.'''
+
+        if s.startswith('@') and len(s) > 1 and s[1].isspace():
+            if kind:
+                i = g.skip_ws(s,1)
+                result = g.match_word(s,i,kind)
+            else:
+                result = True
+        elif not kind:
+            result = g.match_word(s,0,'@doc') or g.match_word(s,0,'@')
+        else:
+            result = False
+
+        return result
+    #@nonl
+    #@-node:ekr.20090502071837.78:isSpecialDocPart
+    #@+node:ekr.20090502071837.80:removeLeoDirectives
+    def removeLeoDirectives (self,lines):
+
+        '''Remove all Leo directives, except within literal blocks.'''
+
+        n = 0 ; result = []
+        while n < len(lines):
+            s = lines [n] ; n += 1
+            if s.strip().endswith('::'):
+                n, lit = self.skip_literal_block(lines,n-1)
+                result.extend(lit)
+            elif s.startswith('@') and not self.isAnySpecialDocPart(s):
+                for key in self.leoDirectivesList:
+                    if g.match_word(s,0,key):
+                        # g.trace('removing %s' % s)
+                        break
+                else:
+                    result.append(s)
+            else:
+                result.append(s)
+
+        return result
+    #@nonl
+    #@-node:ekr.20090502071837.80:removeLeoDirectives
     #@+node:ekr.20090502071837.82:replaceCodeBlockDirectives
     def replaceCodeBlockDirectives (self,lines):
 
@@ -1322,6 +1258,70 @@ class rstCommands:
         return result
     #@nonl
     #@-node:ekr.20090502071837.82:replaceCodeBlockDirectives
+    #@+node:ekr.20090502071837.70:skip_literal_block
+    def skip_literal_block (self,lines,n):
+
+        s = lines[n] ; result = [s] ; n += 1
+        indent = g.skip_ws(s,0)
+
+        # Skip lines until a non-blank line is found with same or less indent.
+        while n < len(lines):
+            s = lines[n]
+            indent2 = g.skip_ws(s,0)
+            if s and not s.isspace() and indent2 <= indent:
+                break # We will rescan lines [n]
+            n += 1
+            result.append(s)
+
+        # g.printList(result,tag='literal block')
+        return n, result
+    #@nonl
+    #@-node:ekr.20090502071837.70:skip_literal_block
+    #@+node:ekr.20090502071837.71:writeBody & helpers
+    def writeBody (self,p):
+
+        # g.trace(p.h,p.b)
+
+        # remove trailing cruft and split into lines.
+        lines = g.splitLines(p.b)
+
+        if self.getOption('code_mode'):
+            if not self.getOption('show_options_doc_parts'):
+                lines = self.handleSpecialDocParts(lines,'@rst-options',
+                    retainContents=False)
+            if not self.getOption('show_markup_doc_parts'):
+                lines = self.handleSpecialDocParts(lines,'@rst-markup',
+                    retainContents=False)
+            if not self.getOption('show_leo_directives'):
+                lines = self.removeLeoDirectives(lines)
+            lines = self.handleCodeMode(lines)
+        elif self.getOption('doc_only_mode'):
+            # New in version 1.15
+            lines = self.handleDocOnlyMode(p,lines)
+        else:
+            lines = self.handleSpecialDocParts(lines,'@rst-options',
+                retainContents=False)
+            lines = self.handleSpecialDocParts(lines,'@rst-markup',
+                retainContents=self.getOption('generate_rst'))
+            if self.getOption('show_doc_parts_in_rst_mode') is True:
+                pass  # original behaviour, treat as plain text
+            elif self.getOption('show_doc_parts_in_rst_mode'):
+                # use value as class for content
+                lines = self.handleSpecialDocParts(lines,None,
+                    retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
+            else:  # option evaluates to false, cut them out
+                lines = self.handleSpecialDocParts(lines,None,
+                    retainContents=False)
+            lines = self.removeLeoDirectives(lines)
+            if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
+                lines = self.replaceCodeBlockDirectives(lines)
+
+        # Write the lines.
+        s = ''.join(lines)
+        s = g.ensureLeadingNewlines(s,1)
+        s = g.ensureTrailingNewlines(s,2)
+        self.write(s)
+    #@-node:ekr.20090502071837.71:writeBody & helpers
     #@+node:ekr.20090502071837.83:writeHeadline & helper
     def writeHeadline (self,p):
 

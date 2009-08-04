@@ -11,28 +11,6 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20090714085914.5990:To do first
-#@+node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
-@nocolor-node
-
-I use Visual Studio 2008, the same that is used for Python 2.5/2.6.
-
-A few days ago, I submitted a patch that allows you to use Mingw32 as a
-compiler, too. If you use it, then you need to produce libpython26.a.
-
-For doing this, there is a tool pexport.exe which can do that. I found a website
-with those hints, but lost that, again :-) pexport is not included with mingw32.
-#@nonl
-#@+node:ekr.20090730165955.6014:Notes
-http://www.emmestech.com/software/pexports-0.43/download_pexports.html
-#@nonl
-#@-node:ekr.20090730165955.6014:Notes
-#@-node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
-#@+node:ekr.20090801103907.6017:Remove rst plugins
-#@-node:ekr.20090801103907.6017:Remove rst plugins
-#@+node:ekr.20090801103907.6018:Have @auto add @language directive languages in leo/modes
-http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
-#@nonl
-#@-node:ekr.20090801103907.6018:Have @auto add @language directive languages in leo/modes
 #@+node:ekr.20090717083356.5991:Add screen shot page linked to Leo's home page
 http://leo-editor.googlegroups.com/web/625-leo-window.png?gda=Fjn-hkQAAACaem1_7XPo9S1KnEkCtDqka_lw8qfHa3YHzOgIlt5IjVd5eKdLdCg0nUt3E6wDF75V6u9SiETdg0Q2ffAyHU-dzc4BZkLnSFWX59nr5BxGqA
 #@nonl
@@ -544,6 +522,28 @@ def os_path_expandExpression (s,c):
     return s
 #@-node:ekr.20080922124033.6:os_path_expandExpression
 #@-node:ekr.20090727085243.5992:Fix unicode file problem
+#@+node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
+@nocolor-node
+
+I use Visual Studio 2008, the same that is used for Python 2.5/2.6.
+
+A few days ago, I submitted a patch that allows you to use Mingw32 as a
+compiler, too. If you use it, then you need to produce libpython26.a.
+
+For doing this, there is a tool pexport.exe which can do that. I found a website
+with those hints, but lost that, again :-) pexport is not included with mingw32.
+#@nonl
+#@+node:ekr.20090730165955.6014:Notes
+http://www.emmestech.com/software/pexports-0.43/download_pexports.html
+#@nonl
+#@-node:ekr.20090730165955.6014:Notes
+#@-node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
+#@+node:ekr.20090801103907.6017:Remove rst plugins
+#@-node:ekr.20090801103907.6017:Remove rst plugins
+#@+node:ekr.20090801103907.6018:Have @auto add @language directive languages in leo/modes
+http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
+#@nonl
+#@-node:ekr.20090801103907.6018:Have @auto add @language directive languages in leo/modes
 #@-node:ekr.20090714085914.5990:To do first
 #@+node:ekr.20090131200406.9:Bugs
 #@+node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
