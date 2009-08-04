@@ -2049,6 +2049,7 @@ class position (object):
             p = self.p
             u = self.unique
 
+            self_d_get = self.d.get
             if p:
                 # We've been visited
                 self.d[u(p)]=True
@@ -2056,7 +2057,7 @@ class position (object):
                 # First, try to find an unmarked child
                 if p.v.t.children:
                     p.moveToFirstChild()
-                    while p and self.d.get(u(p)):
+                    while p and self_d_get(u(p)):
                         if p.hasNext():
                             p.moveToNext()
                         else:
@@ -2064,23 +2065,23 @@ class position (object):
 
                 # If we didn't find an unmarked child,
                 # try to find an unmarked sibling
-                if p and self.d.get(u(p)):
+                if p and self_d_get(u(p)):
                     while p.hasNext():
                         p.moveToNext()
-                        if not self.d.get(u(p)):
+                        if not self_d_get(u(p)):
                             break
 
                 # If we didn't find an unmarked sibling,
                 # find a parent with an unmarked sibling
-                if p and self.d.get(u(p)):
+                if p and self_d_get(u(p)):
                     p.moveToParent()
                     while p:
                         while p.hasNext():
                             p.moveToNext()
-                            if not self.d.get(u(p)):
+                            if not self_d_get(u(p)):
                                 break
                         # if we run out of siblings, go to parent
-                        if self.d.get(u(p)):
+                        if self_d_get(u(p)):
                             p.moveToParent()
                         else:
                             break # found
