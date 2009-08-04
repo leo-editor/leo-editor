@@ -128,6 +128,10 @@ These are projects that3 I'd like to follow up on.
 Scripts-->@thin leoScripts.txt-->Others-->
 Call hierarchy tracing (using python 'trace' module)
 
+- autosphinx.py plugin
+  http://groups.google.com/group/leo-editor/browse_thread/thread/f292f7c9f2fd66d8
+  bzr branch lp:~villemvainio/leo-editor/autosphinx 
+
 - Caliopy: integrate Leo with many scientific computing tools.
   http://www.caliopywork.org/
 
