@@ -3395,6 +3395,30 @@ class SDIFrameFactory:
     #@-node:ville.20090803130409.3680:frame creation & null deletion
     #@-others
 #@-node:ville.20090803130409.3679:class SDIFrameFactory
+#@+node:ville.20090804182114.8400:class LeoTabbedTopLevel
+class LeoTabbedTopLevel(QtGui.QTabWidget):
+    """ Toplevel frame for tabbed ui """
+
+    #@    @+others
+    #@+node:ville.20090804182114.8401:closeEvent
+    def closeEvent(self, event):
+        noclose = False
+        for c in g.app.commanders():
+            res = g.app.closeLeoWindow(c.frame)
+            if not res:
+                noclose = True
+
+        if noclose:
+            event.ignore()
+        else:            
+            event.accept()
+    #@-node:ville.20090804182114.8401:closeEvent
+    #@-others
+
+
+
+
+#@-node:ville.20090804182114.8400:class LeoTabbedTopLevel
 #@+node:ville.20090803130409.3685:class TabbedFrameFactory
 class TabbedFrameFactory:
     """ 'Toplevel' frame builder for tabbed toplevel interface
@@ -3462,7 +3486,7 @@ class TabbedFrameFactory:
     #@-node:ville.20090803130409.3686:frame creation & destruction
     #@+node:ville.20090803132402.3684:createMaster & signal handlers
     def createMaster(self):
-        mf = self.masterFrame = QtGui.QTabWidget()
+        mf = self.masterFrame = LeoTabbedTopLevel()
         mf.resize(1000, 700)
         g.app.gui.attachLeoIcon(mf)
 
@@ -3490,8 +3514,9 @@ class TabbedFrameFactory:
     def slotCurrentChanged(self, idx):
         tabw = self.masterFrame
         w = tabw.widget(idx)
-        f = self.leoFrames[w]
-        tabw.setWindowTitle(f.title)
+        f = self.leoFrames.get(w)
+        if f:
+            tabw.setWindowTitle(f.title)
     #@-node:ville.20090803132402.3684:createMaster & signal handlers
     #@+node:ville.20090803201708.3694:utilities
     def focusCurrentBody(self):
