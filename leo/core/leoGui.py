@@ -371,7 +371,7 @@ class leoGui:
             return 0,0
     #@-node:ekr.20061031132907:Events (leoGui)
     #@+node:ekr.20070212145124:getFullVersion
-    def getFullVersion (self,c):
+    def getFullVersion (self,c=None):
 
         return 'leoGui: dummy version'
     #@-node:ekr.20070212145124:getFullVersion

@@ -155,6 +155,7 @@ class bridgeController:
         self.adjustSysPath()
         if self.loadPlugins:
             g.doHook("start1") # Load plugins.
+        g.app.computeSignon()
         g.init_sherlock(args=[])
         g.app.initing = False
         g.doHook("start2",c=None,p=None,v=None,fileName=None)
