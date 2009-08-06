@@ -384,7 +384,7 @@ g.es('Outline in ' + os.path.abspath(titlename))
 #@nonl
 #@-node:ville.20090508224531.9799:@@button git-dump
 #@+node:ville.20090806184004.2380:@@button set-style-sheet
-# For iterative polishing in Leo's look
+# For iterative polishing of Leo's look
 # select a node with style sheet and press this button 
 # to update stylesheet in realtime.
 
