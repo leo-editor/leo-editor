@@ -1613,7 +1613,16 @@ class DynamicWindow(QtGui.QMainWindow):
 
         '''Create Leo's main window, c.frame.top'''
 
-        self.c = c ; top = c.frame.top
+        QtGui.QMainWindow.__init__(self,parent)
+        self.c = c
+        self.construct()
+
+    #@-node:ekr.20081121105001.201: ctor (DynamicWindow)
+    #@+node:ville.20090806213440.3689:construct
+    def construct(self):
+        """ Factor 'heavy duty' code out from ctor """
+
+        c = self.c; top = c.frame.top
         # print('DynamicWindow.__init__ %s' % c)
 
         # Init the base class.
@@ -1624,8 +1633,6 @@ class DynamicWindow(QtGui.QMainWindow):
         ui_description_file = g.app.loadDir + "/../plugins/" + ui_file_name
         # g.pr('DynamicWindw.__init__,ui_description_file)
         assert g.os_path_exists(ui_description_file)
-
-        QtGui.QMainWindow.__init__(self,parent)
 
         self.bigTree = c.config.getBool('big_outline_pane')
 
@@ -1643,7 +1650,8 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setSplitDirection(orientation)
         self.setStyleSheets()
         #self.setLeoWindowIcon()
-    #@-node:ekr.20081121105001.201: ctor (DynamicWindow)
+
+    #@-node:ville.20090806213440.3689:construct
     #@+node:ekr.20081121105001.202:closeEvent (DynanicWindow)
     def closeEvent (self,event):
 
@@ -1672,7 +1680,6 @@ class DynamicWindow(QtGui.QMainWindow):
         MainWindow = self
         self.ui = self
 
-        self.setVisible(False)
         self.setMainWindowOptions()
         self.createCentralWidget()
         self.createMainLayout(self.centralwidget)
@@ -1693,7 +1700,6 @@ class DynamicWindow(QtGui.QMainWindow):
 
         # Signals
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        self.setVisible(True)
     #@+node:ekr.20090426183711.10:top-level
     #@+node:ekr.20090424085523.43:createBodyPane
     def createBodyPane (self,parent):
@@ -3386,6 +3392,9 @@ class SDIFrameFactory:
         c = leoFrame.c
 
         dw = DynamicWindow(c)
+        dw.setVisible(False)
+        dw.construct()
+        dw.setVisible(True)
         g.app.gui.attachLeoIcon(dw)
         dw.setWindowTitle(leoFrame.title)
         dw.show()
@@ -3449,6 +3458,8 @@ class TabbedFrameFactory:
 
         tabw = self.masterFrame
         dw = DynamicWindow(c, tabw )
+        dw.setVisible(False)
+
         self.leoFrames[dw] = leoFrame
 
         # make the title shorter
@@ -3463,6 +3474,8 @@ class TabbedFrameFactory:
         idx = tabw.addTab(dw, title)
         if tip:
              tabw.setTabToolTip(idx, tip)
+        dw.construct()
+        dw.setVisible(True)
 
         tabw.setCurrentIndex(idx)            
         if tabw.count() > 1:
