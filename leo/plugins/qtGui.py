@@ -3473,10 +3473,12 @@ class TabbedFrameFactory:
         idx = tabw.addTab(dw, title)
         if tip:
              tabw.setTabToolTip(idx, tip)
+
         dw.construct()
+        tabw.setCurrentIndex(idx)            
+
         dw.setVisible(True)
 
-        tabw.setCurrentIndex(idx)            
         if tabw.count() > 1:
             tabw.tabBar().setVisible(True)
         else:
