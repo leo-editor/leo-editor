@@ -1672,6 +1672,7 @@ class DynamicWindow(QtGui.QMainWindow):
         MainWindow = self
         self.ui = self
 
+        self.setVisible(False)
         self.setMainWindowOptions()
         self.createCentralWidget()
         self.createMainLayout(self.centralwidget)
@@ -1692,6 +1693,7 @@ class DynamicWindow(QtGui.QMainWindow):
 
         # Signals
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.setVisible(True)
     #@+node:ekr.20090426183711.10:top-level
     #@+node:ekr.20090424085523.43:createBodyPane
     def createBodyPane (self,parent):
