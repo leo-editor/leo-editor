@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="256" left="153" height="700" width="1000"/>
+	<global_window_position top="226" left="186" height="700" width="1000"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20090628091852.6030" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20090628091852.6030" str_leo_pos="4"><vh>Startup</vh>
 <v t="ville.20090627211608.5783"><vh>@chapters</vh></v>
 <v t="ekr.20090628091852.6031"><vh>@settings</vh>
 <v t="ekr.20090628091852.8471"><vh>@string target_language = rest</vh></v>
@@ -80,10 +80,17 @@
 </v>
 <v t="ville.20090630234425.12395"><vh>Configuration (enabling plugins etc.)</vh>
 <v t="ville.20090630234425.14847"><vh>Find out your ~/.leo directory (script)</vh></v>
-<v t="ville.20090630234425.12396" a="E"><vh>@@settings</vh>
+<v t="ville.20090630234425.12396"><vh>@@settings</vh>
 <v t="ville.20090728003644.3957"><vh>@enabled-plugins</vh></v>
 <v t="ville.20090708172716.16846"><vh>@@string initial_split_orientation = horizontal</vh></v>
-<v t="ville.20090806182306.3877"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+<v t="ville.20090806210322.1435"><vh>suggested style sheets</vh>
+<v t="ville.20090806210322.1436"><vh>default look (Linux)</vh>
+<v t="ville.20090806210322.1439"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+</v>
+<v t="ville.20090806210322.1437"><vh>A mac look</vh>
+<v t="ville.20090806210322.1440"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+</v>
+</v>
 <v t="ville.20090806182306.6324"><vh>@int qt_max_colorized_chars = 200000</vh></v>
 </v>
 </v>
@@ -475,7 +482,23 @@ nav_qt.py
 # tomboy_import.py
 # ctagscompleter.py
 # colorize_headlines.py</t>
-<t tx="ville.20090806182306.3877">/* Documentation of Qt stylesheets at http://doc.trolltech.com/stylesheet.html 
+<t tx="ville.20090806182306.6324">If zero, all nodes are colorized, regardless of length of body text.
+If &gt; 0, only nodes whose body text are smaller than this limit are colorized.</t>
+<t tx="ville.20090806210322.1435">This tree containt some suggested "looks" for Leo.
+
+To experiment, you may want to use a @button that applies
+the stylesheet in current node; look for "@button set-style-sheet" 
+in scripts.leo.
+
+For information on stylesheets, see
+
+http://doc.trolltech.com/stylesheet.html
+
+Style contributions are welcome.</t>
+<t tx="ville.20090806210322.1436">Classic Leo colors. This should look good on Linux.</t>
+<t tx="ville.20090806210322.1437">This is the classic Leo look, but with fonts that
+allegedly look better on Mac.</t>
+<t tx="ville.20090806210322.1439">/* Documentation of Qt stylesheets at http://doc.trolltech.com/stylesheet.html 
 
 To experiment, you may want to use a @button that applies
 the current stylesheet; look for "@button set-style-sheet" in
@@ -611,7 +634,133 @@ XXQMenuBar {
     font-style: normal; /* normal,italic,oblique */
 }
 </t>
-<t tx="ville.20090806182306.6324">If zero, all nodes are colorized, regardless of length of body text.
-If &gt; 0, only nodes whose body text are smaller than this limit are colorized.</t>
+<t tx="ville.20090806210322.1440">/* Documentation of Qt stylesheets at http://doc.trolltech.com/4.2/stylesheet.html */
+
+/* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
+
+/* A QWidget: supports only background attributes.*/
+
+QSplitter::handle {
+    background-color: #CAE1FF; /* lightSteelBlue1 */
+}
+
+QStackedWidget {
+    /* background-color:lightpink; */
+    border-color: red;
+    padding: 0px;
+    /* border-width: 0px; */
+    /* background-color: yellow; */
+}
+
+QSplitter {
+    border-color: white;
+    background-color: white;
+    border-style: solid;
+}
+
+QTreeWidget {
+    /* These apply to the selected item, but not to editing items.*/
+    background-color: #ffffec; /* Leo's traditional tree color */
+    selection-color: black; /* was white */
+    selection-background-color: lightgrey;
+    /* font-family: SansSerif; */
+    font-family: Lucida Grande;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+ }
+
+/* Headline edit widgets */
+QTreeWidget QLineEdit {
+    background-color: cornsilk;
+    selection-color: white;
+    selection-background-color: blue;
+    font-family: Lucida Grande;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+}
+
+/* The log panes */
+QTextEdit {
+    background-color: #f2fdff;
+    selection-color: white;
+    selection-background-color: blue;
+    font-family: Monaco;
+    font-size: 10px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal, italic,oblique */
+}
+
+/* The body pane */
+QTextEdit#richTextEdit {
+    background-color: #fdf5f5; /* A kind of pink. */
+    selection-color: white;
+    selection-background-color: lightgrey;
+    font-family: Monaco;
+    /* font-family: Courier New; */
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLabel {
+    font-family: Lucida Grande;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+/* Editor labels */
+QLineEdit#editorLabel {
+    background-color: #ffffec;
+    font-family: Lucida Grande;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+    border: 2px;
+    margin: 2px;
+}
+
+/* The mini-buffer */
+QLineEdit#lineEdit {
+    selection-color: white;
+    selection-background-color: lightgrey;
+    font-family: Monaco;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLineEdit#status1 {
+    background-color: lightgrey;
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgrey;
+}
+
+QLineEdit#status2 {
+    background-color: lightgrey;
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgrey;
+}
+
+XXQPushButton {
+    background-color: #fdf5f5; /* A kind of pink. */
+    margin: 2px;
+    padding; 4px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: darkgrey;
+}
+
+/* QMenuBar works, but not QMenu... */
+XXQMenuBar {
+    font-family: Lucida Grande;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}</t>
 </tnodes>
 </leo_file>
