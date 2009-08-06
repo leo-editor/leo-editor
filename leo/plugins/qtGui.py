@@ -1615,7 +1615,6 @@ class DynamicWindow(QtGui.QMainWindow):
 
         QtGui.QMainWindow.__init__(self,parent)
         self.c = c
-        self.construct()
 
     #@-node:ekr.20081121105001.201: ctor (DynamicWindow)
     #@+node:ville.20090806213440.3689:construct
