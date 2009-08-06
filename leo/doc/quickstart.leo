@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="121" left="20" height="700" width="1000"/>
+	<global_window_position top="256" left="153" height="700" width="1000"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -80,7 +80,7 @@
 </v>
 <v t="ville.20090630234425.12395"><vh>Configuration (enabling plugins etc.)</vh>
 <v t="ville.20090630234425.14847"><vh>Find out your ~/.leo directory (script)</vh></v>
-<v t="ville.20090630234425.12396"><vh>@@settings</vh>
+<v t="ville.20090630234425.12396" a="E"><vh>@@settings</vh>
 <v t="ville.20090728003644.3957"><vh>@enabled-plugins</vh></v>
 <v t="ville.20090708172716.16846"><vh>@@string initial_split_orientation = horizontal</vh></v>
 <v t="ville.20090806182306.3877"><vh>@data qt-gui-plugin-style-sheet</vh></v>
@@ -475,7 +475,13 @@ nav_qt.py
 # tomboy_import.py
 # ctagscompleter.py
 # colorize_headlines.py</t>
-<t tx="ville.20090806182306.3877">/* Documentation of Qt stylesheets at http://doc.trolltech.com/stylesheet.html */
+<t tx="ville.20090806182306.3877">/* Documentation of Qt stylesheets at http://doc.trolltech.com/stylesheet.html 
+
+To experiment, you may want to use a @button that applies
+the current stylesheet; look for "@button set-style-sheet" in
+scripts.leo.
+
+*/
 
 /* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
 
