@@ -3390,10 +3390,8 @@ class SDIFrameFactory:
         #f.top = DynamicWindow(c, g.app.gui.masterFrame)
         c = leoFrame.c
 
-        dw = DynamicWindow(c)
-        dw.setVisible(False)
+        dw = DynamicWindow(c)    
         dw.construct()
-        dw.setVisible(True)
         g.app.gui.attachLeoIcon(dw)
         dw.setWindowTitle(leoFrame.title)
         dw.show()
@@ -3457,7 +3455,6 @@ class TabbedFrameFactory:
 
         tabw = self.masterFrame
         dw = DynamicWindow(c, tabw )
-        dw.setVisible(False)
 
         self.leoFrames[dw] = leoFrame
 
@@ -3476,8 +3473,6 @@ class TabbedFrameFactory:
 
         dw.construct()
         tabw.setCurrentIndex(idx)            
-
-        dw.setVisible(True)
 
         if tabw.count() > 1:
             tabw.tabBar().setVisible(True)
@@ -3690,12 +3685,13 @@ class leoQtFrame (leoFrame.leoFrame):
 
         # returns DynamicgWindow
         f.top = g.app.gui.frameFactory.createFrame(f)
-
+        f.top.hide()
         f.createIconBar() # A base class method.
         f.createSplitterComponents()
         f.createStatusLine() # A base class method.
         f.createFirstTreeNode() # Call the base-class method.
         f.menu = leoQtMenu(f)
+        f.top.show()
         c.setLog()
         g.app.windowList.append(f)
         f.miniBufferWidget = leoQtMinibuffer(c)
