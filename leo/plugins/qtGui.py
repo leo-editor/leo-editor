@@ -3685,13 +3685,17 @@ class leoQtFrame (leoFrame.leoFrame):
 
         # returns DynamicgWindow
         f.top = g.app.gui.frameFactory.createFrame(f)
-        f.top.hide()
+
+        # hiding would remove flicker, but doesn't work with all
+        # window managers
+
+        #f.top.hide()
         f.createIconBar() # A base class method.
         f.createSplitterComponents()
         f.createStatusLine() # A base class method.
         f.createFirstTreeNode() # Call the base-class method.
         f.menu = leoQtMenu(f)
-        f.top.show()
+        #f.top.show()
         c.setLog()
         g.app.windowList.append(f)
         f.miniBufferWidget = leoQtMinibuffer(c)
