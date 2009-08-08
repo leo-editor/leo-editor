@@ -22,7 +22,7 @@ __version__ = '0.0'
 #@<< imports >>
 #@+node:ville.20090808222331.5232:<< imports >>
 import leo.core.leoGlobals as g
-
+from leo.core import leoPlugins 
 # Whatever other imports your plugins uses.
 #@nonl
 #@-node:ville.20090808222331.5232:<< imports >>
@@ -38,7 +38,14 @@ def init ():
         #leoPlugins.registerHandler('start2',onStart2)
         g.plugin_signon(__name__)
 
+    leoPlugins.registerHandler("select2", onSelect)
     return ok
+
+def onSelect(tag,keywords):
+    c = keywords.get('c') or keywords.get('new_c')    
+    wdg = c.frame.top.leo_body_frame
+    wdg.setWindowTitle(c.p.h)
+
 #@-node:ville.20090808222331.5233:init
 #@+node:ville.20090808222331.5236:detach-editor-toggle
 @g.command('detach-editor-toggle')
