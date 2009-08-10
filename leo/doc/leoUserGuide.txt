@@ -2065,13 +2065,14 @@ Qt ui, Qt 4.4 or newer (and compatible PyQt) is required.
 .. @nonl
 .. @-node:edream.110203163054.49:System requirements
 .. @+node:ekr.20080408060320.784:Leo's HOME directory
-Python's HOME environment variable specifies Leo's HOME directory.
-See http://docs.python.org/lib/os-procinfo.html for details.
+Python's HOME environment variable specifies Leo's HOME directory. See
+http://docs.python.org/lib/os-procinfo.html for details.
 
-Leo uses os.expanduser('~') to determine the HOME directory if no HOME environment variable exists.
+Leo uses os.path.expanduser('~') to determine the HOME directory if no HOME
+environment variable exists.
 
-Leo puts several files in your HOME/.leo directory:
-.leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
+Leo puts several files in your HOME/.leo directory: .leoID.txt,
+.leoRecentFiles.txt, and myLeoSettings.leo.
 
 .. @-node:ekr.20080408060320.784:Leo's HOME directory
 .. @+node:edream.110203163054.50:How to install Leo on Linux

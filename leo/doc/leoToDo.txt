@@ -11,28 +11,60 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20090714085914.5990:To do first
-#@+node:ekr.20090810103524.5996:Remove onFocusColorHelper
-@nocolor-node
+#@+node:ekr.20090804091109.5985:fix double prompt in c.close()
+#@+node:ekr.20031218072017.2833:close
+def close (self,event=None):
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/76dbfecb905354ee
+    '''Close the Leo window, prompting to save it if it has been changed.'''
 
-> The  code in onFocusColorHelper sets the background color for both focus-in
-> and focus-out events.  If that can be done just by using stylesheets, I am
-> all for it.  Otherwise, the existing code, while ugly, is more powerful.
+    g.app.closeLeoWindow(self.frame)
+#@-node:ekr.20031218072017.2833:close
+#@+node:ekr.20031218072017.2609:app.closeLeoWindow
+def closeLeoWindow (self,frame):
 
-Yes, it can. Color specified by QTreeWidget:focus is set when the
-control gains focus. Likewise, the color specified by just QTreeWidget
-{ ... } (without :focus mode selector) is set in "other" cases (i.e.
-when it has lost focus). 
+    """Attempt to close a Leo window.
 
-QTreeWidget:focus {
-  background-color: #ffffec; /* Leo's traditional tree color */
-}
+    Return False if the user veto's the close."""
 
-QTextEdit:focus {
-  background-color: blue; /* A kind of blue */
-} 
-#@-node:ekr.20090810103524.5996:Remove onFocusColorHelper
+    c = frame.c
+
+    # g.trace('frame',frame,g.callers(4))
+
+    c.endEditing() # Commit any open edits.
+
+    if c.promptingForClose:
+        # There is already a dialog open asking what to do.
+        return False
+
+    g.app.config.writeRecentFilesFile(c) # Make sure .leoRecentFiles.txt is written.
+
+    if c.changed:
+        c.promptingForClose = True
+        veto = frame.promptForSave()
+        c.promptingForClose = False
+        if veto: return False
+
+    g.app.setLog(None) # no log until we reactive a window.
+
+    g.doHook("close-frame",c=c) # This may remove frame from the window list.
+
+    if frame in g.app.windowList:
+        g.app.destroyWindow(frame)
+
+    if g.app.windowList:
+        # Pick a window to activate so we can set the log.
+        frame = g.app.windowList[0]
+        frame.deiconify()
+        frame.lift()
+        frame.c.setLog()
+        frame.c.bodyWantsFocus()
+        frame.c.outerUpdate()
+    elif not g.app.unitTesting:
+        g.app.finishQuit()
+
+    return True # The window has been closed.
+#@-node:ekr.20031218072017.2609:app.closeLeoWindow
+#@-node:ekr.20090804091109.5985:fix double prompt in c.close()
 #@+node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
 http://groups.google.com/group/leo-editor/browse_thread/thread/3677d60dae79b2e3
 #@nonl
@@ -572,6 +604,28 @@ http://www.emmestech.com/software/pexports-0.43/download_pexports.html
 http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
 #@nonl
 #@-node:ekr.20090801103907.6018:Have @auto add @language directive languages in leo/modes
+#@+node:ekr.20090810103524.5996:Remove onFocusColorHelper
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/76dbfecb905354ee
+
+> The  code in onFocusColorHelper sets the background color for both focus-in
+> and focus-out events.  If that can be done just by using stylesheets, I am
+> all for it.  Otherwise, the existing code, while ugly, is more powerful.
+
+Yes, it can. Color specified by QTreeWidget:focus is set when the
+control gains focus. Likewise, the color specified by just QTreeWidget
+{ ... } (without :focus mode selector) is set in "other" cases (i.e.
+when it has lost focus). 
+
+QTreeWidget:focus {
+  background-color: #ffffec; /* Leo's traditional tree color */
+}
+
+QTextEdit:focus {
+  background-color: blue; /* A kind of blue */
+} 
+#@-node:ekr.20090810103524.5996:Remove onFocusColorHelper
 #@-node:ekr.20090714085914.5990:To do first
 #@+node:ekr.20090131200406.9:Bugs
 #@+node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
