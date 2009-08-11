@@ -11,32 +11,23 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20090714085914.5990:To do first
-#@+node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
+#@+node:ekr.20090724081340.5987:Improve recursive import script and @auto
 @nocolor-node
 
-I use Visual Studio 2008, the same that is used for Python 2.5/2.6.
+Instead of adding an @ignore directive, it might be better
+to change @auto to @@auto.
 
-A few days ago, I submitted a patch that allows you to use Mingw32 as a
-compiler, too. If you use it, then you need to produce libpython26.a.
+Should @auto be more lenient with C files?
 
-For doing this, there is a tool pexport.exe which can do that. I found a website
-with those hints, but lost that, again :-) pexport is not included with mingw32.
-#@nonl
-#@+node:ekr.20090730165955.6014:Notes
-http://www.emmestech.com/software/pexports-0.43/download_pexports.html
-#@nonl
-#@-node:ekr.20090730165955.6014:Notes
-#@-node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
-#@+node:ekr.20090801103907.6017:Remove rst plugins
-#@-node:ekr.20090801103907.6017:Remove rst plugins
+Improve the recursive import script.
+    - Minimize the path names
+    - Option to include/exclude the @auto itself
+
+#@-node:ekr.20090724081340.5987:Improve recursive import script and @auto
 #@+node:ekr.20090801103907.6018:Have @auto add @language directive languages in leo/modes
 http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
 #@nonl
 #@-node:ekr.20090801103907.6018:Have @auto add @language directive languages in leo/modes
-#@+node:ekr.20090717083356.5991:Add screen shot page linked to Leo's home page
-http://leo-editor.googlegroups.com/web/625-leo-window.png?gda=Fjn-hkQAAACaem1_7XPo9S1KnEkCtDqka_lw8qfHa3YHzOgIlt5IjVd5eKdLdCg0nUt3E6wDF75V6u9SiETdg0Q2ffAyHU-dzc4BZkLnSFWX59nr5BxGqA
-#@nonl
-#@-node:ekr.20090717083356.5991:Add screen shot page linked to Leo's home page
 #@+node:ekr.20090727085243.5993:Add clone-marked command
 @nocolor-node
 
@@ -86,6 +77,9 @@ clone_marked(p.copy())
 #@nonl
 #@-node:ekr.20090728110657.6016:Ville's code
 #@-node:ekr.20090727085243.5993:Add clone-marked command
+#@+node:ekr.20090811090022.6029:Bugs
+#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
+#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
 #@+node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
 @nocolor-node
 
@@ -94,19 +88,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/b84659e608ba44d5
 The data is lost because @auto-rst mostly ignores the top-level node.
 #@nonl
 #@-node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
-#@+node:ekr.20090724081340.5987:Improve recursive import script and @auto
-@nocolor-node
-
-Instead of adding an @ignore directive, it might be better
-to change @auto to @@auto.
-
-Should @auto be more lenient with C files?
-
-Improve the recursive import script.
-    - Minimize the path names
-    - Option to include/exclude the @auto itself
-
-#@-node:ekr.20090724081340.5987:Improve recursive import script and @auto
 #@+node:ekr.20090709101224.6040:Fix rst bug
 @nocolor-node
 
@@ -122,14 +103,29 @@ things to fix for Leo 4.6 final.
 
 
 #@-node:ekr.20090709101224.6040:Fix rst bug
-#@+node:ekr.20090714085914.5991:Add drag and drop to qt gui
-#@-node:ekr.20090714085914.5991:Add drag and drop to qt gui
+#@-node:ekr.20090811090022.6029:Bugs
+#@+node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
+@nocolor-node
+
+I use Visual Studio 2008, the same that is used for Python 2.5/2.6.
+
+A few days ago, I submitted a patch that allows you to use Mingw32 as a
+compiler, too. If you use it, then you need to produce libpython26.a.
+
+For doing this, there is a tool pexport.exe which can do that. I found a website
+with those hints, but lost that, again :-) pexport is not included with mingw32.
+#@nonl
+#@+node:ekr.20090730165955.6014:Notes
+http://www.emmestech.com/software/pexports-0.43/download_pexports.html
+#@nonl
+#@-node:ekr.20090730165955.6014:Notes
+#@-node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
 #@+node:ekr.20090622020908.6058:Add lite sentinels
 http://groups.google.com/group/leo-editor/browse_thread/thread/c4f2cf250600e4a9
 #@nonl
 #@-node:ekr.20090622020908.6058:Add lite sentinels
-#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
-#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
+#@+node:ekr.20090714085914.5991:Add drag and drop to qt gui
+#@-node:ekr.20090714085914.5991:Add drag and drop to qt gui
 #@+node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
 @nocolor-node
 
@@ -140,410 +136,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/c4f2cf250600e4a9
 - Combine 3 "write dirty @x nodes" commands into a single "write dirty @<file> nodes" command. 
 #@nonl
 #@-node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
-#@+node:ekr.20090727085243.5992:Fix unicode file problem
-@nocolor-node
-
-The problem was an improperly-specified home directory.
-
-==============
-
-I also have the same problem.. The output from console is:
-
->>> leo.run()
-reading settings in C:\Python26\Lib\site-packages\Leo\leo\config
-\leoSettings.leo
-
-Using menus from leoSettings.leo
-reading C:\Python26\.leo\.leoRecentFiles.txt
-Traceback (most recent call last):
-...
-
- File "C:\Python26\Lib\site-packages\Leo\leo\core\runLeo.py", line 353, in createFrame
-   fileName = g.os_path_finalize(fileName)
-
- File "C:\Python26\Lib\site-packages\Leo\leo\core\leoGlobals.py", line 4078, in os_path_finalize
-   path = g.os_path_expanduser(path,encoding=encoding)
-
- File "C:\Python26\Lib\site-packages\Leo\leo\core\leoGlobals.py", line 4060, in os_path_expanduser
-   result = os.path.normpath(os.path.expanduser(path))
-
- File "C:\Python26\lib\ntpath.py", line 300, in expanduser
-   return userhome + path[i:]
-
-UnicodeDecodeError: 'ascii' codec can't decode byte 0x93 in position
-0: ordinal
-not in range(128)
-#@nonl
-#@clone 2
-#@+node:ekr.20031218072017.2160:toUnicodeFileEncoding
-def toUnicodeFileEncoding(path,encoding):
-
-    if path: path = path.replace('\\', os.sep)
-
-    if not encoding:
-        if sys.platform == "win32" or sys.platform.lower().startswith('java'):
-            # encoding = "mbcs" # Leo 4.2 and previous.
-            encoding = 'utf-8' # New in Leo 4.3
-        else:
-            encoding = app.tkEncoding
-
-    # Yes, this is correct.  All os_path_x functions return Unicode strings.
-    return g.toUnicode(path,encoding)
-#@-node:ekr.20031218072017.2160:toUnicodeFileEncoding
-#@+node:ekr.20031218072017.2145:os.path wrappers (leoGlobals.py)
-@ Note: all these methods return Unicode strings. It is up to the user to
-convert to an encoded string as needed, say when opening a file.
-#@+node:ekr.20031218072017.2146:os_path_abspath
-def os_path_abspath(path,encoding=None):
-
-    """Convert a path to an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    path = os.path.abspath(path)
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    return path
-#@-node:ekr.20031218072017.2146:os_path_abspath
-#@+node:ekr.20031218072017.2147:os_path_basename
-def os_path_basename(path,encoding=None):
-
-    """Return the second half of the pair returned by split(path)."""
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    path = os.path.basename(path)
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    return path
-#@-node:ekr.20031218072017.2147:os_path_basename
-#@+node:ekr.20031218072017.2148:os_path_dirname
-def os_path_dirname(path,encoding=None):
-
-    """Return the first half of the pair returned by split(path)."""
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    path = os.path.dirname(path)
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    return path
-#@-node:ekr.20031218072017.2148:os_path_dirname
-#@+node:ekr.20031218072017.2149:os_path_exists
-def os_path_exists(path,encoding=None):
-
-    """Normalize the path and convert it to an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    return os.path.exists(path)
-#@-node:ekr.20031218072017.2149:os_path_exists
-#@+node:ekr.20080922124033.6:os_path_expandExpression
-def os_path_expandExpression (s,c):
-
-    '''Expand {{anExpression}} in c's context.'''
-
-    # c = keys.get('c')
-    # if not c:
-        # g.trace('can not happen: no c',g.callers())
-        # return s
-
-    if not s: return ''
-
-    i = s.find('{{')
-    j = s.find('}}')
-    if -1 < i < j:
-        exp = s[i+2:j].strip()
-        if exp:
-            try:
-                import os
-                import sys
-                p = c.p
-                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
-                val = eval(exp,d)
-                s = s[:i] + str(val) + s[j+2:]
-            except Exception:
-                g.trace(g.callers())
-                g.es_exception(full=True, c=c, color='red')
-
-    return s
-#@-node:ekr.20080922124033.6:os_path_expandExpression
-#@+node:ekr.20080921060401.13:os_path_expanduser
-def os_path_expanduser(path,encoding=None):
-
-    """wrap os.path.expanduser"""
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    path = os.path.expanduser(path)
-    path = os.path.normpath(path)
-
-    result = g.toUnicodeFileEncoding(path,encoding) # New
-
-    # g.trace('path',path,'expanduser', result)
-
-    return result
-#@-node:ekr.20080921060401.13:os_path_expanduser
-#@+node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
-def os_path_finalize (path,**keys):
-
-    '''
-    Expand '~', then return os.path.normpath, os.path.abspath of the path.
-
-    There is no corresponding os.path method'''
-
-    c,encoding = keys.get('c'),keys.get('encoding')
-
-    if c: path = g.os_path_expandExpression(path,c) # **keys)
-    path = g.os_path_expanduser(path,encoding=encoding)
-    #return os.path.normpath(os.path.abspath(path))
-    path = g.os_path_abspath(path,encoding=encoding)
-    return g.os_path_normpath(path,encoding=encoding)
-
-def os_path_finalize_join (*args,**keys):
-
-    '''Do os.path.join(*args), then finalize the result.'''
-
-    c,encoding = keys.get('c'),keys.get('encoding')
-
-    if c: args = [g.os_path_expandExpression(path,c) # **keys)
-        for path in args if path]
-
-    # return g_os_path_normpath(g.os_path_abspath( # new
-        # g.os_path_join(*args,**keys))) # Handles expanduser
-
-    path = g.os_path_join(*args,**keys)
-    path = g.os_path_abspath(path,encoding=encoding)
-    return g.os_path_normpath(path,encoding=encoding)
-#@-node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
-#@+node:ekr.20031218072017.2150:os_path_getmtime
-def os_path_getmtime(path,encoding=None):
-
-    """Normalize the path and convert it to an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    return os.path.getmtime(path)
-#@-node:ekr.20031218072017.2150:os_path_getmtime
-#@+node:ekr.20080729142651.2:os_path_getsize
-def os_path_getsize (path,encoding=None):
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    return os.path.getsize(path)
-#@-node:ekr.20080729142651.2:os_path_getsize
-#@+node:ekr.20031218072017.2151:os_path_isabs
-def os_path_isabs(path,encoding=None):
-
-    """Normalize the path and convert it to an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    return os.path.isabs(path)
-#@-node:ekr.20031218072017.2151:os_path_isabs
-#@+node:ekr.20031218072017.2152:os_path_isdir
-def os_path_isdir(path,encoding=None):
-
-    """Normalize the path and convert it to an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    return os.path.isdir(path)
-#@-node:ekr.20031218072017.2152:os_path_isdir
-#@+node:ekr.20031218072017.2153:os_path_isfile
-def os_path_isfile(path,encoding=None):
-
-    """Normalize the path and convert it to an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    return os.path.isfile(path)
-#@-node:ekr.20031218072017.2153:os_path_isfile
-#@+node:ekr.20031218072017.2154:os_path_join
-def os_path_join(*args,**keys):
-
-    c = keys.get('c')
-    encoding = keys.get('encoding')
-
-    uargs = [g.toUnicodeFileEncoding(arg,encoding) for arg in args]
-
-    # Note:  This is exactly the same convention as used by getBaseDirectory.
-    if uargs and uargs[0] == '!!':
-        uargs[0] = g.app.loadDir
-    elif uargs and uargs[0] == '.':
-        c = keys.get('c')
-        if c and c.openDirectory:
-            uargs[0] = c.openDirectory
-            # g.trace(c.openDirectory)
-
-    uargs = [g.os_path_expanduser(z,encoding=encoding) for z in uargs if z]
-
-    path = os.path.join(*uargs)
-
-    # May not be needed on some Pythons.
-    path = g.toUnicodeFileEncoding(path,encoding)
-    return path
-#@-node:ekr.20031218072017.2154:os_path_join
-#@+node:ekr.20031218072017.2156:os_path_normcase
-def os_path_normcase(path,encoding=None):
-
-    """Normalize the path's case."""
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    path = os.path.normcase(path)
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    return path
-#@-node:ekr.20031218072017.2156:os_path_normcase
-#@+node:ekr.20031218072017.2157:os_path_normpath
-def os_path_normpath(path,encoding=None):
-
-    """Normalize the path."""
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    path = os.path.normpath(path)
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    return path
-#@-node:ekr.20031218072017.2157:os_path_normpath
-#@+node:ekr.20080605064555.2:os_path_realpath
-def os_path_realpath(path,encoding=None):
-
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    path = os.path.realpath(path)
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    return path
-#@-node:ekr.20080605064555.2:os_path_realpath
-#@+node:ekr.20031218072017.2158:os_path_split
-def os_path_split(path,encoding=None):
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    head,tail = os.path.split(path)
-
-    head = g.toUnicodeFileEncoding(head,encoding)
-    tail = g.toUnicodeFileEncoding(tail,encoding)
-
-    return head,tail
-#@-node:ekr.20031218072017.2158:os_path_split
-#@+node:ekr.20031218072017.2159:os_path_splitext
-def os_path_splitext(path,encoding=None):
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    head,tail = os.path.splitext(path)
-
-    head = g.toUnicodeFileEncoding(head,encoding)
-    tail = g.toUnicodeFileEncoding(tail,encoding)
-
-    return head,tail
-#@-node:ekr.20031218072017.2159:os_path_splitext
-#@+node:ekr.20031218072017.2160:toUnicodeFileEncoding
-def toUnicodeFileEncoding(path,encoding):
-
-    if path: path = path.replace('\\', os.sep)
-
-    if not encoding:
-        if sys.platform == "win32" or sys.platform.lower().startswith('java'):
-            # encoding = "mbcs" # Leo 4.2 and previous.
-            encoding = 'utf-8' # New in Leo 4.3
-        else:
-            encoding = app.tkEncoding
-
-    # Yes, this is correct.  All os_path_x functions return Unicode strings.
-    return g.toUnicode(path,encoding)
-#@-node:ekr.20031218072017.2160:toUnicodeFileEncoding
-#@-node:ekr.20031218072017.2145:os.path wrappers (leoGlobals.py)
-#@+node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
-def os_path_finalize (path,**keys):
-
-    '''
-    Expand '~', then return os.path.normpath, os.path.abspath of the path.
-
-    There is no corresponding os.path method'''
-
-    c,encoding = keys.get('c'),keys.get('encoding')
-
-    if c: path = g.os_path_expandExpression(path,c) # **keys)
-    path = g.os_path_expanduser(path,encoding=encoding)
-    #return os.path.normpath(os.path.abspath(path))
-    path = g.os_path_abspath(path,encoding=encoding)
-    return g.os_path_normpath(path,encoding=encoding)
-
-def os_path_finalize_join (*args,**keys):
-
-    '''Do os.path.join(*args), then finalize the result.'''
-
-    c,encoding = keys.get('c'),keys.get('encoding')
-
-    if c: args = [g.os_path_expandExpression(path,c) # **keys)
-        for path in args if path]
-
-    # return g_os_path_normpath(g.os_path_abspath( # new
-        # g.os_path_join(*args,**keys))) # Handles expanduser
-
-    path = g.os_path_join(*args,**keys)
-    path = g.os_path_abspath(path,encoding=encoding)
-    return g.os_path_normpath(path,encoding=encoding)
-#@-node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
-#@+node:ekr.20080921060401.13:os_path_expanduser
-def os_path_expanduser(path,encoding=None):
-
-    """wrap os.path.expanduser"""
-
-    path = g.toUnicodeFileEncoding(path,encoding)
-
-    path = os.path.expanduser(path)
-    path = os.path.normpath(path)
-
-    result = g.toUnicodeFileEncoding(path,encoding) # New
-
-    # g.trace('path',path,'expanduser', result)
-
-    return result
-#@-node:ekr.20080921060401.13:os_path_expanduser
-#@+node:ekr.20080922124033.6:os_path_expandExpression
-def os_path_expandExpression (s,c):
-
-    '''Expand {{anExpression}} in c's context.'''
-
-    # c = keys.get('c')
-    # if not c:
-        # g.trace('can not happen: no c',g.callers())
-        # return s
-
-    if not s: return ''
-
-    i = s.find('{{')
-    j = s.find('}}')
-    if -1 < i < j:
-        exp = s[i+2:j].strip()
-        if exp:
-            try:
-                import os
-                import sys
-                p = c.p
-                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
-                val = eval(exp,d)
-                s = s[:i] + str(val) + s[j+2:]
-            except Exception:
-                g.trace(g.callers())
-                g.es_exception(full=True, c=c, color='red')
-
-    return s
-#@-node:ekr.20080922124033.6:os_path_expandExpression
-#@-node:ekr.20090727085243.5992:Fix unicode file problem
 #@-node:ekr.20090714085914.5990:To do first
 #@+node:ekr.20090131200406.9:Bugs
 #@+node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
