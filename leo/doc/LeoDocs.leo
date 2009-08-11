@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="74" left="237" height="981" width="877"/>
+	<global_window_position top="32" left="229" height="988" width="1005"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="2,0,5"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>
@@ -59,21 +59,8 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20080301071818"><vh>Home page</vh>
-<v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
-<v t="ekr.20080301071818.1" a="E"
-expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
-</v>
-<v t="ekr.20090711120622.10446"><vh>Screen shots page</vh>
-<v t="ekr.20090711120622.10447" a="E"><vh>@rst html/screen-shots.html</vh>
-<v t="ekr.20090811090022.14451"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20090811090022.14452"><vh>Windows screen shots</vh></v>
-<v t="ekr.20090811090022.14453"><vh>Linux screen shots</vh></v>
-</v>
-</v>
-<v t="ekr.20090717084250.10703"><vh>Leo's users Guide</vh>
-<v t="ville.20090521211406.6348" a="E"><vh>@rst leoUserGuide.txt</vh>
 <v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20090811134705.6550" a="E"><vh>@rst leoUserGuide.txt</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -213,7 +200,7 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20050831195331.2" a="E"><vh>Chapter 1: Installing Leo</vh>
+<v t="ekr.20050831195331.2"><vh>Chapter 1: Installing Leo</vh>
 <v t="edream.110203163054.48"><vh>@rst html\install.html</vh>
 <v t="ekr.20050901110110"><vh>@rst-no-head links</vh></v>
 <v t="edream.110203163054.49"><vh>System requirements</vh></v>
@@ -231,7 +218,7 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20060105145125"><vh>How to install the Aspell spell checker</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.3" a="E"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
+<v t="ekr.20050831195331.3"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
 <v t="ekr.20050816073412" a="E"><vh>@rst html\intro.html</vh>
 <v t="ekr.20050816073814"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050816073412.1"><vh>Introduction</vh>
@@ -1001,8 +988,19 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
+<v t="ekr.20090717084250.10702" a="E"><vh>Other docs</vh>
+<v t="ekr.20080301071818"><vh>Home page</vh>
+<v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
+<v t="ekr.20080301071818.1" a="E"
+expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20090717084250.10702"><vh>Other docs</vh>
+<v t="ekr.20090711120622.10446"><vh>Screen shots page</vh>
+<v t="ekr.20090711120622.10447"><vh>@rst html/screen-shots.html</vh>
+<v t="ekr.20090811090022.14451"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20090811090022.14452"><vh>Windows screen shots</vh></v>
+<v t="ekr.20090811090022.14453"><vh>Linux screen shots</vh></v>
+</v>
+</v>
 <v t="ekr.20090428133936.2" tnodeList="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 <v t="ekr.20090428102353.1" tnodeList="ekr.20090428102353.1" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e657331710355013d7104752e"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ville.20090609182215.5676" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355007104752e"><vh>@auto-rst treecaching.txt</vh></v>
@@ -9636,9 +9634,11 @@ If you have any problem, please do ask for help on `Leo's help forum`_.
 
 Now that you have Leo installed, please `launch Leo`_.
 You should see Leo's main window, something like this:
-**Note**: the actual contents of the icon area at the top depends on what plugins are active.
+**Note**: the actual contents of the icon area at the top depends on
+what plugins are active.
 
 |leoMainWindow|
+
 </t>
 <t tx="ekr.20050816073814">.. Links used in this document...
 
@@ -9722,7 +9722,8 @@ You should see Leo's main window, something like this:
 .. _`section references`:       glossary.html#section-references
 .. _siblings:                   glossary.html#siblings
 
-.. |leoMainWindow| image:: screen-shots/PCWindow.png
+.. For reasons unknown, this image must appear in the _images folder on the web site.
+.. |leoMainWindow| image:: screen-shots/leo-qt-main-window.JPG
 </t>
 <t tx="ekr.20050818163826">.. publish_argv_for_missing_stylesheets = --language=de,--documentclass=report,--use-latex-toc
 
@@ -29332,7 +29333,6 @@ Leo screen shots
 </t>
 <t tx="ekr.20090712122931.10453"></t>
 <t tx="ekr.20090717084250.10702"></t>
-<t tx="ekr.20090717084250.10703"></t>
 <t tx="ekr.20090717084250.10704"></t>
 <t tx="ekr.20090717084250.10808">Leo 4.6 final                             July 15, 2009
 
@@ -30135,8 +30135,6 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 - Fixed bug 397433, tk chapter menu crash, on all platforms.</t>
 <t tx="ekr.20090811090022.14451">.. Links used in this document...
 
-.. .. |leoMainWindow| image:: screen-shots/PCWindow.png
-
 .. |leoQtMainWindow| image:: screen-shots/leo-qt-main-window.JPG
 
 .. |leoTkMainWindow| image:: screen-shots/leo-tk-main-window.jpg
@@ -30166,6 +30164,12 @@ All parts of the find tab can be controlled from the keyboard.
 <t tx="ekr.20090811090022.14453">Here is Leo's main window as it appears on Linux:
 
 |leoQtMainWindowLinux|</t>
+<t tx="ekr.20090811134705.6550">@language rest
+
+.. This node represents the entire users guide.
+.. It may be useful for generating the pdf docs.
+
+@all</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?
@@ -30187,10 +30191,6 @@ Just load the plugin, activate "Nav" tab, enter search text and press enter.</t>
 This plugin is mostly an example of how to change appearance of headlines - as
 such, it does a relatively mundane chore of highlighting @thin, @auto, @shadow
 nodes in bold.</t>
-<t tx="ville.20090521211406.6348">@language rest
-@tabwidth -4
-
-@all</t>
 <t tx="ville.20090603183524.5672">You can use the ``@g.command`` decorator to create new commands. This is an easy-to-use
 wrapper for ``c.k.registerCommand()``, with the following advantages over it:
 
