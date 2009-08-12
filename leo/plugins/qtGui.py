@@ -2065,7 +2065,7 @@ class DynamicWindow(QtGui.QMainWindow):
             ('box', 'Whole &Word',      2,0),
             ('rb',  '&Entire Outline',  2,1),
             ('box', '&Ignore Case',     3,0),
-            ('rb',  '&Subroutine Only', 3,1),
+            ('rb',  '&Suboutline Only', 3,1),
             ('box', 'Wrap &Around',     4,0),
             ('rb',  '&Node Only',       4,1),
             ('box', '&Reverse',         5,0),
@@ -2077,6 +2077,7 @@ class DynamicWindow(QtGui.QMainWindow):
             # a,b,c,e,f,h,i,n,rs,w
 
         for kind,label,row,col in table:
+
             name = mungeName(label)
             func = g.choose(kind=='box',
                 self.createCheckBox,self.createRadioButton)
@@ -3124,7 +3125,7 @@ class leoQtFindTab (leoFind.findTab):
             ('pattern_match',   w.checkBoxRegexp),
             ('mark_finds',      w.checkBoxMarkFinds),
             ('entire_outline',  w.checkBoxEntireOutline),
-            ('suboutline_only', w.checkBoxSubroutineOnly),  
+            ('suboutline_only', w.checkBoxSuboutlineOnly),  
             ('node_only',       w.checkBoxNodeOnly),
             ('search_headline', w.checkBoxSearchHeadline),
             ('search_body',     w.checkBoxSearchBody),
