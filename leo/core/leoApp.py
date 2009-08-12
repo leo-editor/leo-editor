@@ -70,6 +70,7 @@ class LeoApp:
         self.openWithTable = None # The table passed to createOpenWithMenuFromTable.
         self.positions = 0 # Count of the number of positions generated.
         self.printWaiting = [] # Queue of messages to be sent to the printer.
+        self.qt_use_tabs = False # True: allow tabbed main window.
         self.quitting = False # True if quitting.  Locks out some events.
         self.realMenuNameDict = {} # Contains translations of menu names and menu item names.
         self.root = None # The hidden main window. Set later.

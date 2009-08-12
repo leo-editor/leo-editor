@@ -15,13 +15,14 @@ REM goto good_plugins
 REM goto bad_plugins
 
 REM goto essential_plugins
-REM goto errors
+goto errors
 goto all
 
 :errors
 
-echo leoApp.py
-call pylint.bat leo\core\leoApp.py           --rcfile=leo\test\pylint-leo-rc.txt
+echo qtGui.py
+call pylint.bat leo\plugins\qtGui.py         --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
+
 goto done
 
 :all

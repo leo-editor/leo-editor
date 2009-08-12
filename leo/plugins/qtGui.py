@@ -3470,7 +3470,7 @@ class TabbedFrameFactory:
 
         idx = tabw.addTab(dw, title)
         if tip:
-             tabw.setTabToolTip(idx, tip)
+            tabw.setTabToolTip(idx, tip)
 
         dw.construct()
         tabw.setCurrentIndex(idx)            
@@ -3592,7 +3592,7 @@ class TabbedFrameFactory:
             tab_cycle(1)
 
         @g.command('tab-cycle-previous')
-        def tab_cycle_next(event):
+        def tab_cycle_previous(event):
             """ Cycle to next tab """
             tab_cycle(-1)
 
