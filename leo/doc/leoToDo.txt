@@ -13,6 +13,8 @@
 #@+node:ekr.20090714085914.5990:To do first
 #@+node:ekr.20090811141250.5954:Easy
 #@+node:ekr.20090804091109.5985:fix double prompt in c.close()
+# only on Linux.
+#@nonl
 #@-node:ekr.20090804091109.5985:fix double prompt in c.close()
 #@+node:ekr.20090727085243.5993:Add clone-marked command
 @nocolor-node
