@@ -403,6 +403,85 @@ def setTopGeometry(self,w,h,x,y,adjustSize=True):
     self.top.setGeometry(QtCore.QRect(x,y,w,h))
 #@-node:ekr.20081121105001.317:Qt bindings... (qtFrame)
 #@-node:ekr.20090718070434.3641:Fixed file-open focus problem
+#@+node:ekr.20090812211903.3642:Added support for iconclick hooks
+#@+node:ekr.20090812211903.3641:onItemClicked (nativeTree) (New in Leo 4.7)
+def onItemClicked (self,item,col):
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    if trace: g.trace(col,self.traceItem(item),g.callers(4))
+
+    try:
+        self.selecting = True
+
+        p = self.item2position(item)
+        if p:
+            event = None
+            g.doHook("iconclick1",c=c,p=p,v=p,event=event)
+#@verbatim
+            #@ c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+            g.doHook("iconclick2",c=c,p=p,v=p,event=event)
+        else:
+            g.trace('*** no p')
+
+        c.outerUpdate()
+    finally:
+        self.selecting = False
+#@-node:ekr.20090812211903.3641:onItemClicked (nativeTree) (New in Leo 4.7)
+#@+node:ekr.20090124174652.120:qtTree.initAfterLoad
+def initAfterLoad (self):
+
+    '''Do late-state inits.'''
+
+    # Called by Leo's core.
+
+    c = self.c ; frame = c.frame
+    w = c.frame.top ; tw = self.treeWidget
+
+    if not leoQtTree.callbacksInjected:
+        leoQtTree.callbacksInjected = True
+        self.injectCallbacks() # A base class method.
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemDoubleClicked(QTreeWidgetItem*, int)"),
+        self.onItemDoubleClicked)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemClicked(QTreeWidgetItem*, int)"),
+        self.onItemClicked)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemSelectionChanged()"),
+        self.onTreeSelect)
+
+    # We don't need this.  Hooray!
+    # w.connect(self.treeWidget,QtCore.SIGNAL(
+            # "itemChanged(QTreeWidgetItem*, int)"),
+        # self.onItemChanged)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemCollapsed(QTreeWidgetItem*)"),
+        self.onItemCollapsed)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemExpanded(QTreeWidgetItem*)"),
+        self.onItemExpanded)
+
+    w.connect(self.treeWidget, QtCore.SIGNAL(
+            "customContextMenuRequested(QPoint)"),
+        self.onContextMenu)    
+
+    self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
+    tw.installEventFilter(self.ev_filter)
+
+    c.setChanged(False)
+#@-node:ekr.20090124174652.120:qtTree.initAfterLoad
+#@-node:ekr.20090812211903.3642:Added support for iconclick hooks
 #@-node:ekr.20090717095154.3729:Leo 4.7 devel projects
 #@+node:ekr.20081208155215.12:Unused
 #@-node:ekr.20081208155215.12:Unused

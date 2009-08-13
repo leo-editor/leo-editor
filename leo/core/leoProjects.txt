@@ -89,6 +89,40 @@ def checkFileTimeStamp (self,fn):
     return ok == 'yes'
 #@-node:ekr.20090103070824.11:c.checkFileTimeStamp
 #@-node:ekr.20090721091726.5982:Fixed crasher when writing to a newly-deleted file
+#@+node:ekr.20090812165611.5973:Fixed registerHandler bug
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/8616f4e171e1a24b
+
+On Aug 10, 12:25 pm, tfer <tfethers...@aol.com> wrote:
+> Well from vim.py:
+> When properly installed, this plugin does the following:
+>
+> 1. - Double clicking on a node's icon opens that node in VIM. You can
+> open nodes in VIM with
+>         a single-click if you set useDoubleClick = False.
+
+I tried setting "useDoubleClick = False" under the vim plugin node in
+leoPluginsRef.leo work. It doesn't seem to work. I get the message:
+
+exception loading plugin
+Traceback (most recent call last):
+
+ File "C:\Program Files\Leo-4-6-2-final\leo\core\leoPlugins.py", line
+437, in loadOnePlugin
+   init_result = result.init()
+
+ File "C:\Program Files\Leo-4-6-2-final\leo\plugins\vim.py", line
+232, in init
+   leoPlugins.registerHandler(event,open_in_vim,val=True)
+
+TypeError: registerHandler() got an unexpected keyword argument 'val'
+
+The variable val doesn't get modified in the "open_in_vim
+(tag,keywords,val=None)" function.
+- Show quoted text -
+#@nonl
+#@-node:ekr.20090812165611.5973:Fixed registerHandler bug
 #@-node:ekr.20090721093155.5986:Bugs
 #@-node:ekr.20090718091653.5982:Leo 4.7 projects
 #@-all
