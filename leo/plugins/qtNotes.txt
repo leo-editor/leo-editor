@@ -362,47 +362,13 @@ bracketright: ']'
 #@-node:ekr.20081121105001.187:dump guiBindNamesInverseDict
 #@-node:ekr.20081121105001.185:Scripts
 #@+node:ekr.20090717095154.3729:Leo 4.7 devel projects
+#@+node:ekr.20090813101852.3644:Features
 #@+node:ekr.20090718070434.3640:Removed signon code from guis
 @nocolor-node
 
 This is now done in app.computeSignon and app.writeWaitingLog.
 #@nonl
 #@-node:ekr.20090718070434.3640:Removed signon code from guis
-#@+node:ekr.20090718070434.3641:Fixed file-open focus problem
-#@+node:ekr.20081121105001.317:Qt bindings... (qtFrame)
-def bringToFront (self):
-    self.lift()
-def deiconify (self):
-    if self.top.isMinimized(): # Buf 400739.
-        self.lift()
-def getFocus(self):
-    return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
-def get_window_info(self):
-    rect = self.top.geometry()
-    topLeft = rect.topLeft()
-    x,y = topLeft.x(),topLeft.y()
-    w,h = rect.width(),rect.height()
-    # g.trace(w,h,x,y)
-    return w,h,x,y
-def iconify(self):
-    self.top.showMinimized()
-def lift (self):
-    # g.trace(self.c,'\n',g.callers(9))
-    if self.top.isMinimized(): # Bug 379141
-        self.top.showNormal()
-    self.top.activateWindow()
-    self.top.raise_()
-def update (self):
-    pass
-def getTitle (self):
-    return g.app.gui.toUnicode(self.top.windowTitle())
-def setTitle (self,s):
-    self.top.setWindowTitle(s)
-def setTopGeometry(self,w,h,x,y,adjustSize=True):
-    # g.trace(x,y,w,y,g.callers(5))
-    self.top.setGeometry(QtCore.QRect(x,y,w,h))
-#@-node:ekr.20081121105001.317:Qt bindings... (qtFrame)
-#@-node:ekr.20090718070434.3641:Fixed file-open focus problem
 #@+node:ekr.20090812211903.3642:Added support for iconclick hooks
 #@+node:ekr.20090812211903.3641:onItemClicked (nativeTree) (New in Leo 4.7)
 def onItemClicked (self,item,col):
@@ -482,6 +448,83 @@ def initAfterLoad (self):
     c.setChanged(False)
 #@-node:ekr.20090124174652.120:qtTree.initAfterLoad
 #@-node:ekr.20090812211903.3642:Added support for iconclick hooks
+#@-node:ekr.20090813101852.3644:Features
+#@+node:ekr.20090813101852.3643:Bugs
+#@+node:ekr.20090718070434.3641:Fixed file-open focus problem
+#@+node:ekr.20081121105001.317:Qt bindings... (qtFrame)
+def bringToFront (self):
+    self.lift()
+def deiconify (self):
+    if self.top.isMinimized(): # Buf 400739.
+        self.lift()
+def getFocus(self):
+    return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
+def get_window_info(self):
+    rect = self.top.geometry()
+    topLeft = rect.topLeft()
+    x,y = topLeft.x(),topLeft.y()
+    w,h = rect.width(),rect.height()
+    # g.trace(w,h,x,y)
+    return w,h,x,y
+def iconify(self):
+    self.top.showMinimized()
+def lift (self):
+    # g.trace(self.c,'\n',g.callers(9))
+    if self.top.isMinimized(): # Bug 379141
+        self.top.showNormal()
+    self.top.activateWindow()
+    self.top.raise_()
+def update (self):
+    pass
+def getTitle (self):
+    return g.app.gui.toUnicode(self.top.windowTitle())
+def setTitle (self,s):
+    self.top.setWindowTitle(s)
+def setTopGeometry(self,w,h,x,y,adjustSize=True):
+    # g.trace(x,y,w,y,g.callers(5))
+    self.top.setGeometry(QtCore.QRect(x,y,w,h))
+#@-node:ekr.20081121105001.317:Qt bindings... (qtFrame)
+#@-node:ekr.20090718070434.3641:Fixed file-open focus problem
+#@+node:ekr.20090813101852.3642:Eliminate double close prompt
+#@+node:ekr.20081121105001.202:closeEvent (DynanicWindow)
+def closeEvent (self,event):
+
+    trace = True and not g.unitTesting
+    c = self.c
+
+    if not c.exists:
+        # Fixes double-prompt bug on Linux.
+        if trace: g.trace('destroyed')
+        event.accept()
+        return
+
+    if c.inCommand:
+        if trace: g.trace('in command')
+        c.requestCloseWindow = True
+    else:
+        if trace: g.trace('closing')
+        ok = g.app.closeLeoWindow(c.frame)
+        if ok:
+            event.accept()
+        else:
+            event.ignore()
+#@-node:ekr.20081121105001.202:closeEvent (DynanicWindow)
+#@+node:ville.20090804182114.8401:closeEvent (leoTabbedTopLevel)
+def closeEvent(self, event):
+
+    noclose = False
+    for c in g.app.commanders():
+        res = c.exists and g.app.closeLeoWindow(c.frame)
+        if not res:
+            noclose = True
+
+    if noclose:
+        event.ignore()
+    else:            
+        event.accept()
+#@-node:ville.20090804182114.8401:closeEvent (leoTabbedTopLevel)
+#@-node:ekr.20090813101852.3642:Eliminate double close prompt
+#@-node:ekr.20090813101852.3643:Bugs
 #@-node:ekr.20090717095154.3729:Leo 4.7 devel projects
 #@+node:ekr.20081208155215.12:Unused
 #@-node:ekr.20081208155215.12:Unused

@@ -208,6 +208,55 @@ def checkFileTimeStamp (self,fn):
     return ok == 'yes'
 #@-node:ekr.20090103070824.11:c.checkFileTimeStamp
 #@-node:ekr.20090813084404.5974:Fix crasher when writing to a renamed file
+#@+node:ekr.20090804091109.5985:Fixed double prompt in c.close()
+# only on Linux.
+#@nonl
+#@+node:ekr.20031218072017.2609:app.closeLeoWindow
+def closeLeoWindow (self,frame):
+
+    """Attempt to close a Leo window.
+
+    Return False if the user veto's the close."""
+
+    c = frame.c
+
+    # g.trace('frame',frame,g.callers(4))
+
+    c.endEditing() # Commit any open edits.
+
+    if c.promptingForClose:
+        # There is already a dialog open asking what to do.
+        return False
+
+    g.app.config.writeRecentFilesFile(c) # Make sure .leoRecentFiles.txt is written.
+
+    if c.changed:
+        c.promptingForClose = True
+        veto = frame.promptForSave()
+        c.promptingForClose = False
+        if veto: return False
+
+    g.app.setLog(None) # no log until we reactive a window.
+
+    g.doHook("close-frame",c=c) # This may remove frame from the window list.
+
+    if frame in g.app.windowList:
+        g.app.destroyWindow(frame)
+
+    if g.app.windowList:
+        # Pick a window to activate so we can set the log.
+        frame = g.app.windowList[0]
+        frame.deiconify()
+        frame.lift()
+        frame.c.setLog()
+        frame.c.bodyWantsFocus()
+        frame.c.outerUpdate()
+    elif not g.app.unitTesting:
+        g.app.finishQuit()
+
+    return True # The window has been closed.
+#@-node:ekr.20031218072017.2609:app.closeLeoWindow
+#@-node:ekr.20090804091109.5985:Fixed double prompt in c.close()
 #@-node:ekr.20090721093155.5986:Bugs
 #@-node:ekr.20090718091653.5982:Leo 4.7 projects
 #@-all

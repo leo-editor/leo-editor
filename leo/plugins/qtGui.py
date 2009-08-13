@@ -1658,6 +1658,7 @@ class DynamicWindow(QtGui.QMainWindow):
         c = self.c
 
         if not c.exists:
+            # Fixes double-prompt bug on Linux.
             if trace: g.trace('destroyed')
             event.accept()
             return
@@ -3417,9 +3418,10 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
     #@    @+others
     #@+node:ville.20090804182114.8401:closeEvent (leoTabbedTopLevel)
     def closeEvent(self, event):
+
         noclose = False
         for c in g.app.commanders():
-            res = g.app.closeLeoWindow(c.frame)
+            res = c.exists and g.app.closeLeoWindow(c.frame)
             if not res:
                 noclose = True
 
