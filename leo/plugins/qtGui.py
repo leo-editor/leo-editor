@@ -5964,6 +5964,10 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
             self.onItemDoubleClicked)
 
         w.connect(self.treeWidget,QtCore.SIGNAL(
+                "itemClicked(QTreeWidgetItem*, int)"),
+            self.onItemClicked)
+
+        w.connect(self.treeWidget,QtCore.SIGNAL(
                 "itemSelectionChanged()"),
             self.onTreeSelect)
 

@@ -472,6 +472,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.36:onIconBoxClick
     def onIconBoxClick (self,event,p=None):
 
+        g.trace(self.c.p)
+
         if self.busy(): return
 
         c = self.c
@@ -530,6 +532,35 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         c.outerUpdate()
     #@-node:ekr.20090124174652.40:onItemCollapsed (nativeTree)
+    #@+node:ekr.20090812211903.3641:onItemClicked (nativeTree) (New in Leo 4.7)
+    def onItemClicked (self,item,col):
+
+        trace = False and not g.unitTesting
+        verbose = False
+
+        if self.busy(): return
+
+        c = self.c
+
+        if trace: g.trace(col,self.traceItem(item),g.callers(4))
+
+        try:
+            self.selecting = True
+
+            p = self.item2position(item)
+            if p:
+                event = None
+                g.doHook("iconclick1",c=c,p=p,v=p,event=event)
+    #@verbatim
+                #@ c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+                g.doHook("iconclick2",c=c,p=p,v=p,event=event)
+            else:
+                g.trace('*** no p')
+
+            c.outerUpdate()
+        finally:
+            self.selecting = False
+    #@-node:ekr.20090812211903.3641:onItemClicked (nativeTree) (New in Leo 4.7)
     #@+node:ekr.20090124174652.41:onItemDoubleClicked (nativeTree)
     def onItemDoubleClicked (self,item,col):
 
