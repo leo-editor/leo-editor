@@ -60,25 +60,28 @@ def checkFileTimeStamp (self,fn):
 
     trace = False and not g.unitTesting
     c = self
-    timeStamp = c.timeStampDict.get(fn)
-    if not timeStamp:
-        if trace: g.trace('no time stamp',fn)
-        return True
 
     # Don't assume the file still exists.
     if not g.os_path_exists(fn):
         if trace: g.trace('file no longer exists',fn)
         return True
 
+    timeStamp = c.timeStampDict.get(fn)
+    if not timeStamp:
+        if trace: g.trace('no time stamp',fn)
+        return True
+
     timeStamp2 = os.path.getmtime(fn)
     if timeStamp == timeStamp2:
-        if trace: g.trace('time stamps match',fn)
+        if trace: g.trace('time stamps match',fn,timeStamp)
         return True
 
     if g.app.unitTesting:
         return False
 
-    # g.trace(timeStamp, timeStamp2)
+    if trace:
+        g.trace('mismatch',timeStamp,timeStamp2)
+
     message = '%s\n%s\n%s' % (
         fn,
         g.tr('has been modified outside of Leo.'),
@@ -86,6 +89,7 @@ def checkFileTimeStamp (self,fn):
     ok = g.app.gui.runAskYesNoCancelDialog(c,
         title = 'Overwrite modified file?',
         message = message)
+
     return ok == 'yes'
 #@-node:ekr.20090103070824.11:c.checkFileTimeStamp
 #@-node:ekr.20090721091726.5982:Fixed crasher when writing to a newly-deleted file
@@ -123,6 +127,87 @@ The variable val doesn't get modified in the "open_in_vim
 - Show quoted text -
 #@nonl
 #@-node:ekr.20090812165611.5973:Fixed registerHandler bug
+#@+node:ekr.20090813084945.5977:Suppressed dangerous write prompt for clones
+# at_read attribute in the tnode, not the vnode.
+#@nonl
+#@+node:ekr.20090712050729.6017:promptForDangerousWrite
+def promptForDangerousWrite (self,fileName,kind):
+
+    c = self.c
+
+    if g.app.unitTesting:
+        val = g.app.unitTestDict.get('promptForDangerousWrite')
+        return val in (None,True)
+
+    # g.trace(timeStamp, timeStamp2)
+    message = '%s %s\n%s\n%s' % (
+        kind, fileName,
+        g.tr('already exists.'),
+        g.tr('Overwrite this file?'))
+
+    ok = g.app.gui.runAskYesNoCancelDialog(c,
+        title = 'Overwrite existing file?',
+        message = message)
+
+    return ok == 'yes'
+#@-node:ekr.20090712050729.6017:promptForDangerousWrite
+#@-node:ekr.20090813084945.5977:Suppressed dangerous write prompt for clones
+#@+node:ekr.20090813084404.5974:Fix crasher when writing to a renamed file
+@nocolor-node
+
+.....  File "C:\Python25\Lib\site-packages\Leo-4-6-final\leo\core
+\leoCommands.py", line 7705, in checkFileTimeStamp
+.....    timeStamp2 = os.path.getmtime(fn)
+.....  File "C:\Python25\lib\ntpath.py", line 232, in getmtime
+.....    return os.stat(filename).st_mtime
+.....WindowsError: [Error 2] The system cannot find the file
+specified: u'C:\\fina\\POSTE\\work.leo'
+
+The fix: checkFileTimeStamp now makes the check for existing file first.
+#@nonl
+#@+node:ekr.20090103070824.11:c.checkFileTimeStamp
+def checkFileTimeStamp (self,fn):
+
+    '''
+    Return True if the file given by fn has not been changed
+    since Leo read it or if the user agrees to overwrite it.
+    '''
+
+    trace = False and not g.unitTesting
+    c = self
+
+    # Don't assume the file still exists.
+    if not g.os_path_exists(fn):
+        if trace: g.trace('file no longer exists',fn)
+        return True
+
+    timeStamp = c.timeStampDict.get(fn)
+    if not timeStamp:
+        if trace: g.trace('no time stamp',fn)
+        return True
+
+    timeStamp2 = os.path.getmtime(fn)
+    if timeStamp == timeStamp2:
+        if trace: g.trace('time stamps match',fn,timeStamp)
+        return True
+
+    if g.app.unitTesting:
+        return False
+
+    if trace:
+        g.trace('mismatch',timeStamp,timeStamp2)
+
+    message = '%s\n%s\n%s' % (
+        fn,
+        g.tr('has been modified outside of Leo.'),
+        g.tr('Overwrite this file?'))
+    ok = g.app.gui.runAskYesNoCancelDialog(c,
+        title = 'Overwrite modified file?',
+        message = message)
+
+    return ok == 'yes'
+#@-node:ekr.20090103070824.11:c.checkFileTimeStamp
+#@-node:ekr.20090813084404.5974:Fix crasher when writing to a renamed file
 #@-node:ekr.20090721093155.5986:Bugs
 #@-node:ekr.20090718091653.5982:Leo 4.7 projects
 #@-all

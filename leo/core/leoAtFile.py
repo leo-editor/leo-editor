@@ -486,7 +486,7 @@ class atFile:
         cachefile = self._contentHashFile(root, fileContent)
 
         # Remember that we have read this file.
-        root.v.at_read = True # Create the attribute.
+        root.v.t.at_read = True # Create the attribute for all clones.
 
         if cachefile in c.db:
             # This message isn't so useful.
@@ -503,7 +503,7 @@ class atFile:
 
         # Delete all children, but **not** for @file and @nosent nodes!
         if thinFile or atShadow:
-            root.v.at_read = True # Create the attribute
+            root.v.t.at_read = True # Create the attribute for all clones.
             while root.hasChildren():
                 root.firstChild().doDelete()
 
@@ -2396,14 +2396,14 @@ class atFile:
             if nosentinels:
                 if not self.shouldWriteAtNosentNode(root,exists):
                     return
-            elif not hasattr(root.v,'at_read') and exists:
+            elif not hasattr(root.v.t,'at_read') and exists:
                 # Prompt if writing a new @file or @thin node would
                 # overwrite an existing file.
                 ok = self.promptForDangerousWrite(
                     eventualFileName,
                     kind = g.choose(thinFile,'@thin','@file'))
                 if ok:
-                    root.v.at_read = True # Create the attribute
+                    root.v.t.at_read = True # Create the attribute for all clones.
                 else:
                     g.es("not written:",eventualFileName)
                     return

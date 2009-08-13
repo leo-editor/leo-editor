@@ -11,6 +11,37 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20090714085914.5990:To do first
+#@+node:ekr.20090811090022.6029:Bugs
+#@+node:ekr.20090804091109.5985:fix double prompt in c.close()
+# only on Linux.
+#@nonl
+#@-node:ekr.20090804091109.5985:fix double prompt in c.close()
+#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
+#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
+#@+node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b84659e608ba44d5
+
+The data is lost because @auto-rst mostly ignores the top-level node.
+#@nonl
+#@-node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
+#@+node:ekr.20090709101224.6040:Fix rst bug
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/73db1b3109cc94b6
+
+Apparently, the problem is with this line::
+
+<p>Greet the world, politely**code**:.. class:: code..::   g.es (&quot;Hello, world&quot;)</p>
+
+Presumably, the ..class:: code..:: should start a new line. There have been
+changes recently to how newlines are handled. I'll put this on the list of
+things to fix for Leo 4.6 final.
+
+
+#@-node:ekr.20090709101224.6040:Fix rst bug
+#@-node:ekr.20090811090022.6029:Bugs
 #@+node:ekr.20090811141250.5954:Easy
 #@+node:ekr.20090727085243.5993:Add clone-marked command
 @nocolor-node
@@ -79,37 +110,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
 #@nonl
 #@-node:ekr.20090801103907.6018:Have @auto add @language directive languages in leo/modes
 #@-node:ekr.20090811141250.5954:Easy
-#@+node:ekr.20090811090022.6029:Bugs
-#@+node:ekr.20090804091109.5985:fix double prompt in c.close()
-# only on Linux.
-#@nonl
-#@-node:ekr.20090804091109.5985:fix double prompt in c.close()
-#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
-#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
-#@+node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/b84659e608ba44d5
-
-The data is lost because @auto-rst mostly ignores the top-level node.
-#@nonl
-#@-node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
-#@+node:ekr.20090709101224.6040:Fix rst bug
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/73db1b3109cc94b6
-
-Apparently, the problem is with this line::
-
-<p>Greet the world, politely**code**:.. class:: code..::   g.es (&quot;Hello, world&quot;)</p>
-
-Presumably, the ..class:: code..:: should start a new line. There have been
-changes recently to how newlines are handled. I'll put this on the list of
-things to fix for Leo 4.6 final.
-
-
-#@-node:ekr.20090709101224.6040:Fix rst bug
-#@-node:ekr.20090811090022.6029:Bugs
 #@+node:ekr.20090811141250.5955:Harder
 #@+node:ekr.20090714085914.5991:Add drag and drop to qt gui
 #@-node:ekr.20090714085914.5991:Add drag and drop to qt gui
