@@ -11,11 +11,30 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20090714085914.5990:To do first
+#@+node:ekr.20090813084945.5979:one-node world
+#@-node:ekr.20090813084945.5979:one-node world
 #@+node:ekr.20090811090022.6029:Bugs
 #@+node:ekr.20090804091109.5985:fix double prompt in c.close()
 # only on Linux.
 #@nonl
 #@-node:ekr.20090804091109.5985:fix double prompt in c.close()
+#@+node:ekr.20090813084945.5978:Fix scrolling problem with multiple editors
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/33e87adbff5d69d9
+
+Latest trunk.  qt gui
+
+I used multiple body editors (2) for the first time in a long time and the
+scroll position was moving at times that it shouldn't.
+
+For example if I scrolled partially down the page and copied some text and then
+pasted the text somewhere else that was visible without scrolling, the scroll
+position would change significantly although the new text would remain visible.
+
+It may not sound particularly serious but I found it very difficult to use.
+#@nonl
+#@-node:ekr.20090813084945.5978:Fix scrolling problem with multiple editors
 #@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
 #@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
 #@+node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug

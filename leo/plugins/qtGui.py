@@ -1654,14 +1654,20 @@ class DynamicWindow(QtGui.QMainWindow):
     #@+node:ekr.20081121105001.202:closeEvent (DynanicWindow)
     def closeEvent (self,event):
 
+        trace = True and not g.unitTesting
         c = self.c
 
+        if not c.exists:
+            if trace: g.trace('destroyed')
+            event.accept()
+            return
+
         if c.inCommand:
-            # g.trace('requesting window close')
+            if trace: g.trace('in command')
             c.requestCloseWindow = True
         else:
+            if trace: g.trace('closing')
             ok = g.app.closeLeoWindow(c.frame)
-            # g.trace('ok',ok)
             if ok:
                 event.accept()
             else:
@@ -3409,7 +3415,7 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
     """ Toplevel frame for tabbed ui """
 
     #@    @+others
-    #@+node:ville.20090804182114.8401:closeEvent
+    #@+node:ville.20090804182114.8401:closeEvent (leoTabbedTopLevel)
     def closeEvent(self, event):
         noclose = False
         for c in g.app.commanders():
@@ -3421,7 +3427,7 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
             event.ignore()
         else:            
             event.accept()
-    #@-node:ville.20090804182114.8401:closeEvent
+    #@-node:ville.20090804182114.8401:closeEvent (leoTabbedTopLevel)
     #@-others
 
 
@@ -3794,6 +3800,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         # g.trace('qtFrame',c,g.callers(4))
         top.close()
+
 
     #@-node:ekr.20081121105001.260:destroySelf (qtFrame)
     #@-node:ekr.20081121105001.257:Destroying the qtFrame
