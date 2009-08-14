@@ -457,22 +457,8 @@ class atFile:
         """Read any @thin, @file and @noref trees."""
 
         at = self ; c = at.c
-        #@    << set fileName >>
-        #@+node:ekr.20041005105605.22:<< set fileName >>
-        if fromString:
-            fileName = "<string-file>"
-        elif importFileName:
-            fileName = importFileName
-        elif root.isAnyAtFileNode():
-            fileName = root.anyAtFileNodeName()
-        else:
-            fileName = None
-
-        if not fileName:
-            at.error("Missing file name.  Restoring @file tree from .leo file.")
-            return False
-        #@-node:ekr.20041005105605.22:<< set fileName >>
-        #@nl
+        fileName = at.setReadFileName(root,importFileName,fromString)
+        if not fileName: return False
 
         at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
         if at.errors: return False
@@ -599,6 +585,23 @@ class atFile:
     #@-node:ekr.20090814065249.6383:@@thin leoGlobals.py
     #@-node:ekr.20090814065249.5996:@test killReserrectedNodes
     #@-node:ekr.20090814065249.5994:killResurrectedNodes & test
+    #@+node:ekr.20041005105605.22:setReadFileName
+    def setReadFileName (self,root,importFileName,fromString):
+
+        if fromString:
+            fileName = "<string-file>"
+        elif importFileName:
+            fileName = importFileName
+        elif root.isAnyAtFileNode():
+            fileName = root.anyAtFileNodeName()
+        else:
+            fileName = None
+
+        if not fileName:
+            at.error("Missing file name.  Restoring @file tree from .leo file.")
+
+        return fileName
+    #@-node:ekr.20041005105605.22:setReadFileName
     #@-node:ekr.20041005105605.21:read (atFile) & helpers
     #@+node:ville.20090606131405.6362:writeCachedTree (atFile)
     def writeCachedTree(self, pos, cachefile):

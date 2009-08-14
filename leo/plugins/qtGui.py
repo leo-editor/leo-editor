@@ -1654,7 +1654,7 @@ class DynamicWindow(QtGui.QMainWindow):
     #@+node:ekr.20081121105001.202:closeEvent (DynanicWindow)
     def closeEvent (self,event):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
 
         if not c.exists:
