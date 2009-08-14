@@ -4720,6 +4720,19 @@ s = '''<?xml version="1.0" encoding="utf-8"?>
 '''
 #@-node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
 #@-node:ekr.20080811174246.5:createMyLeoSettingsFile (not used)
+#@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
+resurrected = 0
+for p in root.self_and_subtree_iter():
+
+    if not p.v.t.isVisited():
+        g.es('resurrected node:',p.h,color='blue')
+        g.es('in file:',fileName,color='blue')
+        resurrected += 1
+
+if resurrected:
+    g.es('you may want to delete ressurected nodes')
+
+#@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node

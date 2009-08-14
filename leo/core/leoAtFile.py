@@ -451,7 +451,7 @@ class atFile:
 
         return fn
     #@-node:ekr.20041005105605.19:openFileForReading (atFile) helper & test
-    #@+node:ekr.20041005105605.21:read (atFile)
+    #@+node:ekr.20041005105605.21:read (atFile) & helpers
     def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
 
         """Read any @thin, @file and @noref trees."""
@@ -516,39 +516,90 @@ class atFile:
         at.inputFile.close()
         root.clearDirty() # May be set dirty below.
         if at.errors == 0:
-            #@        << advise user to delete all unvisited nodes >>
-            #@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
-            resurrected = 0
-            for p in root.self_and_subtree_iter():
+            if at.hasResurrectedNodes(root) and not fromString:
+                # Delete all children and reread.
+                at.killResurrectedNodes(root,fileName)
 
-                if not p.v.t.isVisited():
-                    g.es('resurrected node:',p.h,color='blue')
-                    g.es('in file:',fileName,color='blue')
-                    resurrected += 1
-
-            if resurrected:
-                g.es('you may want to delete ressurected nodes')
-
-            #@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
-            #@nl
         if at.errors == 0 and not at.importing:
             # Package this as a method for use by mod_labels plugin.
-            self.copyAllTempBodyStringsToTnodes(root,thinFile)
+            at.copyAllTempBodyStringsToTnodes(root,thinFile)
 
-        #@    << delete all tempBodyStrings >>
-        #@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
-        for t in c.all_unique_tnodes_iter():
-
-            if hasattr(t,"tempBodyString"):
-                delattr(t,"tempBodyString")
-        #@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
-        #@nl
-
-        # write out the cache version
-        self.writeCachedTree(root, cachefile)
+        at.deleteTempBodyStrings()
+        at.writeCachedTree(root, cachefile)
 
         return at.errors == 0
-    #@-node:ekr.20041005105605.21:read (atFile)
+    #@+node:ekr.20041005105605.25:deleteTempBodyStrings
+    def deleteTempBodyStrings (self):
+
+        c = self.c
+
+        for t in c.all_unique_tnodes_iter():
+            if hasattr(t,"tempBodyString"):
+                delattr(t,"tempBodyString")
+    #@-node:ekr.20041005105605.25:deleteTempBodyStrings
+    #@+node:ekr.20090814065249.5993:hasResurrectedNodes
+    def hasResurrectedNodes (self,root):
+
+        for p in root.self_and_subtree_iter():
+            if not p.v.t.isVisited():
+                return True
+        else:
+            return False
+    #@-node:ekr.20090814065249.5993:hasResurrectedNodes
+    #@+node:ekr.20090814065249.5994:killResurrectedNodes & test
+    def killResurrectedNodes (self,root,fileName):
+
+        '''Remove all resurrected nodes by deleting all children
+        and rereading the file.'''
+
+        at = self
+
+        if not g.unitTesting:
+            g.es('deleting resurrected nodes in',
+                fileName,color='red')
+
+        # Kill all the resurrected nodes by deleting all children.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+
+        # Re-read the file.
+        at.initReadIvars(root,fileName,
+            importFileName=None,thinFile=True,atShadow=False)
+        at.inputFile = open(fileName,'rb')
+        root.clearVisitedInTree()
+        at.scanAllDirectives(root,importing=at.importing,reading=True)
+        at.readOpenFile(root,at.inputFile,fileName)
+        at.inputFile.close()
+        root.clearDirty()
+
+        if at.errors:
+            g.es('can not happen: errors re-reading',
+                fileName,color='red')
+    #@+node:ekr.20090814065249.5996:@test killReserrectedNodes
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+
+        fileName = g.os_path_finalize_join(
+            g.app.loadDir,'..','core','leoGlobals.py')
+
+        at = c.atFileCommands
+        root = p.firstChild()
+        assert root
+        assert root.h == '@@thin leoGlobals.py'
+
+        try:
+            at.killResurrectedNodes(root,fileName)
+        finally:
+            while root.firstChild():
+                root.firstChild().doDelete()
+            c.redraw()
+
+    #@+node:ekr.20090814065249.6383:@@thin leoGlobals.py
+    #@-node:ekr.20090814065249.6383:@@thin leoGlobals.py
+    #@-node:ekr.20090814065249.5996:@test killReserrectedNodes
+    #@-node:ekr.20090814065249.5994:killResurrectedNodes & test
+    #@-node:ekr.20041005105605.21:read (atFile) & helpers
     #@+node:ville.20090606131405.6362:writeCachedTree (atFile)
     def writeCachedTree(self, pos, cachefile):
         c = self.c
