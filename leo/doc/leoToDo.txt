@@ -14,8 +14,6 @@
 #@+node:ekr.20090813112405.5979:Announce on my blog
 #@-node:ekr.20090813112405.5979:Announce on my blog
 #@+node:ekr.20090811090022.6029:Bugs
-#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
-#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
 #@+node:ekr.20090813084945.5978:Fix scrolling problem with multiple editors
 @nocolor-node
 
