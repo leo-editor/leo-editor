@@ -451,14 +451,28 @@ class atFile:
 
         return fn
     #@-node:ekr.20041005105605.19:openFileForReading (atFile) helper & test
-    #@+node:ekr.20041005105605.21:read (atFile) & helpers
+    #@+node:ekr.20041005105605.21:read (atFile)
     def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
 
         """Read any @thin, @file and @noref trees."""
 
         at = self ; c = at.c
-        fileName = at.setReadFileName(root,importFileName,fromString)
-        if not fileName: return False
+        #@    << set fileName >>
+        #@+node:ekr.20041005105605.22:<< set fileName >>
+        if fromString:
+            fileName = "<string-file>"
+        elif importFileName:
+            fileName = importFileName
+        elif root.isAnyAtFileNode():
+            fileName = root.anyAtFileNodeName()
+        else:
+            fileName = None
+
+        if not fileName:
+            at.error("Missing file name.  Restoring @file tree from .leo file.")
+            return False
+        #@-node:ekr.20041005105605.22:<< set fileName >>
+        #@nl
 
         at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
         if at.errors: return False
@@ -502,55 +516,39 @@ class atFile:
         at.inputFile.close()
         root.clearDirty() # May be set dirty below.
         if at.errors == 0:
-            at.reportResurrectedNodes(root)
+            #@        << advise user to delete all unvisited nodes >>
+            #@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+            resurrected = 0
+            for p in root.self_and_subtree_iter():
+
+                if not p.v.t.isVisited():
+                    g.es('resurrected node:',p.h,color='blue')
+                    g.es('in file:',fileName,color='blue')
+                    resurrected += 1
+
+            if resurrected:
+                g.es('you may want to delete ressurected nodes')
+
+            #@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+            #@nl
         if at.errors == 0 and not at.importing:
             # Package this as a method for use by mod_labels plugin.
-            at.copyAllTempBodyStringsToTnodes(root,thinFile)
-        at.deleteTempBodyStrings()
-        at.writeCachedTree(root, cachefile)
+            self.copyAllTempBodyStringsToTnodes(root,thinFile)
 
-        return at.errors == 0
-    #@+node:ekr.20041005105605.25:deleteTempBodyStrings
-    def deleteTempBodyStrings (self):
-
-        c = self.c
-
+        #@    << delete all tempBodyStrings >>
+        #@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
         for t in c.all_unique_tnodes_iter():
+
             if hasattr(t,"tempBodyString"):
                 delattr(t,"tempBodyString")
-    #@-node:ekr.20041005105605.25:deleteTempBodyStrings
-    #@+node:ekr.20090814065249.5993:reportResurrectedNodes
-    def reportResurrectedNodes (self,root):
+        #@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+        #@nl
 
-        resurrected = 0
-        for p in root.self_and_subtree_iter():
-            if not p.v.t.isVisited():
-                g.es('resurrected node:',p.h,color='blue')
-                g.es('in file:',fileName,color='blue')
-                resurrected += 1
+        # write out the cache version
+        self.writeCachedTree(root, cachefile)
 
-        if resurrected:
-            g.es('you may want to delete ressurected nodes')
-
-    #@-node:ekr.20090814065249.5993:reportResurrectedNodes
-    #@+node:ekr.20041005105605.22:setReadFileName
-    def setReadFileName (self,root,importFileName,fromString):
-
-        if fromString:
-            fileName = "<string-file>"
-        elif importFileName:
-            fileName = importFileName
-        elif root.isAnyAtFileNode():
-            fileName = root.anyAtFileNodeName()
-        else:
-            fileName = None
-
-        if not fileName:
-            at.error("Missing file name.  Restoring @file tree from .leo file.")
-
-        return fileName
-    #@-node:ekr.20041005105605.22:setReadFileName
-    #@-node:ekr.20041005105605.21:read (atFile) & helpers
+        return at.errors == 0
+    #@-node:ekr.20041005105605.21:read (atFile)
     #@+node:ville.20090606131405.6362:writeCachedTree (atFile)
     def writeCachedTree(self, pos, cachefile):
         c = self.c
