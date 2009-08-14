@@ -11,6 +11,8 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20090714085914.5990:To do first
+#@+node:ekr.20090813112405.5979:Announce on my blog
+#@-node:ekr.20090813112405.5979:Announce on my blog
 #@+node:ekr.20090811090022.6029:Bugs
 #@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
 #@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
@@ -125,7 +127,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
 #@-node:ekr.20090811141250.5954:Easy
 #@+node:ekr.20090813084945.5979:one-node world
 #@-node:ekr.20090813084945.5979:one-node world
-#@+node:ekr.20090811141250.5955:Harder
+#@+node:ekr.20090811141250.5955:Harder features
 #@+node:ekr.20090714085914.5991:Add drag and drop to qt gui
 #@-node:ekr.20090714085914.5991:Add drag and drop to qt gui
 #@+node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
@@ -144,7 +146,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/c4f2cf250600e4a9
 #@-node:ekr.20090622020908.6058:Add lite sentinels
 #@+node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
 #@-node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
-#@-node:ekr.20090811141250.5955:Harder
+#@-node:ekr.20090811141250.5955:Harder features
 #@+node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
 @nocolor-node
 
