@@ -4733,6 +4733,59 @@ if resurrected:
     g.es('you may want to delete ressurected nodes')
 
 #@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
+#@+node:ekr.20090814065249.5994:killResurrectedNodes & test
+def killResurrectedNodes (self,root,fileName):
+
+    '''Remove all resurrected nodes by deleting all children
+    and rereading the file.'''
+
+    at = self
+
+    if not g.unitTesting:
+        g.es('deleting resurrected nodes in',
+            fileName,color='red')
+
+    # Kill all the resurrected nodes by deleting all children.
+    while root.hasChildren():
+        root.firstChild().doDelete()
+
+    # Re-read the file.
+    at.initReadIvars(root,fileName,
+        importFileName=None,thinFile=False,atShadow=False)
+    at.inputFile = open(fileName,'rb')
+    root.clearVisitedInTree()
+    at.scanAllDirectives(root,importing=at.importing,reading=True)
+    at.readOpenFile(root,at.inputFile,fileName)
+    at.inputFile.close()
+    root.clearDirty()
+
+    if at.errors:
+        g.es('can not happen: errors re-reading',
+            fileName,color='red')
+#@+node:ekr.20090814065249.5996:@test killReserrectedNodes
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    fileName = g.os_path_finalize_join(
+        g.app.loadDir,'..','core','leoGlobals.py')
+
+    at = c.atFileCommands
+    root = p.firstChild()
+    assert root
+    assert root.h == '@@thin leoGlobals.py'
+
+    try:
+        at.killResurrectedNodes(root,fileName)
+    finally:
+        while root.firstChild():
+            root.firstChild().doDelete()
+        c.redraw()
+
+#@+node:ekr.20090814065249.6383:@@thin leoGlobals.py
+#@-node:ekr.20090814065249.6383:@@thin leoGlobals.py
+#@-node:ekr.20090814065249.5996:@test killReserrectedNodes
+#@-node:ekr.20090814065249.5994:killResurrectedNodes & test
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node
