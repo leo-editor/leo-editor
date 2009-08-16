@@ -116,10 +116,497 @@ Improve the recursive import script.
     - Option to include/exclude the @auto itself
 
 #@-node:ekr.20090724081340.5987:Improve recursive import script and @auto
-#@+node:ekr.20090801103907.6018:Have @auto add @language directive languages in leo/modes
+#@+node:ekr.20090801103907.6018:Add endtries to global dicts for more languages
 http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
+
+Especially languages in leo/modes.
 #@nonl
-#@-node:ekr.20090801103907.6018:Have @auto add @language directive languages in leo/modes
+#@+node:ekr.20090814190307.5983:print all modes/*.py files
+import glob
+
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
+
+aList = glob.glob(theDir)
+
+for z in aList:
+    print g.os_path_basename(z)
+
+@
+Exist:
+
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+"w"     : "cweb",
+"xml"   : "xml",
+"xsl"   : "xslt",
+
+Add first:
+
+
+ada95.py
+antlr.py
+apacheconf.py
+apdl.py
+applescript.py
+asp.py
+aspect_j.py
+assembly_macro32.py
+assembly_mcs51.py
+assembly_parrot.py
+assembly_r2000.py
+assembly_x86.py
+awk.py
+b.py
+batch.py
+bbj.py
+bcel.py
+bibtex.py
+c.py
+chill.py
+cobol.py
+coldfusion.py
+cplusplus.py
+csharp.py
+css.py
+cvs_commit.py
+d.py
+doxygen.py
+dsssl.py
+eiffel.py
+embperl.py
+erlang.py
+factor.py
+forth.py
+fortran.py
+fortran90.py
+foxpro.py
+freemarker.py
+gettext.py
+groovy.py
+haskell.py
+hex.py
+html.py
+i4gl.py
+icon.py
+idl.py
+inform.py
+ini.py
+inno_setup.py
+interlis.py
+io.py
+java.py
+javascript.py
+jcl.py
+jhtml.py
+jmk.py
+jsp.py
+latex.py
+lilypond.py
+lisp.py
+lotos.py
+lua.py
+mail.py
+makefile.py
+maple.py
+matlab.py
+ml.py
+modula3.py
+moin.py
+mqsc.py
+netrexx.py
+nqc.py
+nsis2.py
+objective_c.py
+objectrexx.py
+occam.py
+omnimark.py
+pascal.py
+patch.py
+perl.py
+php.py
+phpsection.py
+pike.py
+pl1.py
+plain.py
+plsql.py
+pop11.py
+postscript.py
+povray.py
+powerdynamo.py
+progress.py
+prolog.py
+props.py
+psp.py
+ptl.py
+pvwave.py
+pyrex.py
+python.py
+r.py
+rebol.py
+redcode.py
+relax_ng_compact.py
+rest.py
+rhtml.py
+rib.py
+rpmspec.py
+rtf.py
+ruby.py
+rview.py
+sas.py
+scheme.py
+sdl_pr.py
+sgml.py
+shell.py
+shellscript.py
+shtml.py
+smalltalk.py
+smi_mib.py
+splus.py
+sqr.py
+squidconf.py
+ssharp.py
+svn_commit.py
+swig.py
+tcl.py
+tex.py
+texinfo.py
+text.py
+tpl.py
+tsql.py
+uscript.py
+vbscript.py
+velocity.py
+verilog.py
+vhdl.py
+xml.py
+xsl.py
+zpt.py
+__init__.py
+#@-node:ekr.20090814190307.5983:print all modes/*.py files
+#@+node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM_", # Use the REM hack.
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lua"           : "--",  # ddm 13/02/06
+    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "rest"          : ".._",
+    "rst"           : ".._",
+    "ruby"          : "#",  # thyrsus 2008-11-05
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+    "vim"           : "\"",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+    "xslt"          : "<!-- -->",
+}
+
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f90",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    "rst"           : "rst",
+    "rst"           : "rest",
+    "ruby"          : "rb",   # thyrsus 2008-11-05
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vim"           : "vim",
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+    "xslt"          : "xsl",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+    "w"     : "cweb",
+    "xml"   : "xml",
+    "xsl"   : "xslt",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran90',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
+
+self.global_commands_dict = {}
+#@-node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,
+    atAuto=False,atShadow=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+
+    # New in Leo 4.4.7: honor @path directives.
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = c.os_path_finalize_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
+        func = self.scanRstText
+    else:
+        func = self.importDispatchDict.get(ext)
+
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
+    else:
+        # Just copy the file to the parent node.
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    p.contract()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = c.os_path_finalize(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    if atShadow: kind = '@shadow '
+    elif atAuto: kind = '@auto '
+    else: kind = ''
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (kind,fileName),color='red')
+    # g.trace(g.callers())
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # g.pr('found',e,'in',line1)
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@+node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
+def scanUnknownFileType (self,s,p,ext,atAuto=False):
+
+    c = self.c
+    changed = c.isChanged()
+    body = g.choose(atAuto,'','@ignore\n')
+    if ext in ('.html','.htm'):   body += '@language html\n'
+    elif ext in ('.txt','.text'): body += '@nocolor\n'
+    else:
+        language = self.languageForExtension(ext)
+        if language: body += '@language %s\n' % language
+
+    self.setBodyString(p,body + self.rootLine + self.escapeFalseSectionReferences(s))
+    if atAuto:
+        for p in p.self_and_subtree_iter():
+            p.clearDirty()
+        if not changed:
+            c.setChanged(False)
+
+    g.app.unitTestDict = {'result':True}
+#@+node:ekr.20080811174246.1:languageForExtension
+def languageForExtension (self,ext):
+
+    '''Return the language corresponding to the extensiion ext.'''
+
+    unknown = 'unknown_language'
+
+    if ext.startswith('.'): ext = ext[1:]
+
+    if ext:
+        z = g.app.extra_extension_dict.get(ext)
+        if z not in (None,'none','None'):
+            language = z
+        else:
+            language = g.app.extension_dict.get(ext)
+        if language in (None,'none','None'):
+            language = unknown
+    else:
+        language = unknown
+
+    # g.trace(ext,repr(language))
+
+    # Return the language even if there is no colorizer mode for it.
+    return language
+#@-node:ekr.20080811174246.1:languageForExtension
+#@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
+#@-node:ekr.20090801103907.6018:Add endtries to global dicts for more languages
 #@-node:ekr.20090811141250.5954:Easy
 #@+node:ekr.20090813084945.5979:one-node world
 #@-node:ekr.20090813084945.5979:one-node world

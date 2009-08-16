@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" a="E" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -24,6 +24,7 @@
 </v>
 </v>
 <v t="ekr.20070224123943"><vh>@settings</vh>
+<v t="ekr.20090815161520.1815"><vh>@string vim_trigger_event = icondclick2</vh></v>
 <v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
 <v t="ekr.20090629105832.1790"><vh>@@bool big_outline_pane = True</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
@@ -1372,14 +1373,14 @@ leoTest.doTests (c,all=False)</t>
 plugins_menu.py
 #open_with.py
 quicksearch.py
-ipython.py
+# ipython.py
 scrolledmessage.py
 UNL.py
 mod_scripting.py
 pydeeshell.py
 # nodenavigator.py
 # vim.py
-xemacs.py
+# xemacs.py
 
 # test of @bool warn_when_plugins_fail_to_load
 # xyzzy.py 
@@ -3347,5 +3348,6 @@ Example: The following will append all the "time" and "math" modules'
 License: BSD.
 """
 </t>
+<t tx="ekr.20090815161520.1815">Reasonable values are iconclick2, icondclick2 and select2.</t>
 </tnodes>
 </leo_file>

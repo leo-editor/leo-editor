@@ -509,20 +509,6 @@ def closeEvent (self,event):
         else:
             event.ignore()
 #@-node:ekr.20081121105001.202:closeEvent (DynanicWindow)
-#@+node:ville.20090804182114.8401:closeEvent (leoTabbedTopLevel)
-def closeEvent(self, event):
-
-    noclose = False
-    for c in g.app.commanders():
-        res = c.exists and g.app.closeLeoWindow(c.frame)
-        if not res:
-            noclose = True
-
-    if noclose:
-        event.ignore()
-    else:            
-        event.accept()
-#@-node:ville.20090804182114.8401:closeEvent (leoTabbedTopLevel)
 #@-node:ekr.20090813101852.3642:Eliminate double close prompt
 #@-node:ekr.20090813101852.3643:Bugs
 #@-node:ekr.20090717095154.3729:Leo 4.7 devel projects
