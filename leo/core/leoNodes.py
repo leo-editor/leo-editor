@@ -1340,13 +1340,25 @@ class position (object):
 
         p = self
 
-        vList = [z[0] for z in p.stack]
+        # Create a complete key.
+        result = []
+        for z in p.stack:
+            v,childIndex = z
+            result.append('%s:%s' % (id(v),childIndex))
 
-        return '%s:%s.%s' % (
-            id(p.v),
-            p._childIndex,
-            ','.join([str(id(z)) for z in vList])
-        )
+        result.append('%s:%s' % (id(p.v),p._childIndex))
+
+        return '.'.join(result)
+
+        # Old code
+
+        # vList = [z[0] for z in p.stack]
+
+        # return '%s:%s.%s' % (
+            # id(p.v),
+            # p._childIndex,
+            # ','.join([str(id(z)) for z in vList])
+        # )
     #@-node:ekr.20080416161551.191:p.key
     #@-node:ekr.20040228094013: p.ctor & other special methods...
     #@+node:ekr.20090128083459.74:p.Properties
