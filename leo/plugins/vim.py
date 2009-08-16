@@ -217,8 +217,12 @@ def init ():
     if ok:
         # print ('vim.py enabled')
         # Register the handlers...
-        event = g.choose(useDoubleClick,"icondclick1","iconclick1")
-        leoPlugins.registerHandler(event,open_in_vim)
+
+        event = 'open2'
+        leoPlugins.registerHandler(event,on_open_window)
+
+        # event = g.choose(useDoubleClick,"icondclick1","iconclick1")
+        # leoPlugins.registerHandler(event,open_in_vim)
 
         # Enable the os.system call if you want to
         # start a (g)vim server when Leo starts.
@@ -239,13 +243,30 @@ def init ():
 
     return ok
 #@-node:ekr.20050226184624:init
-#@+node:EKR.20040517075715.11:open_in_vim
-def open_in_vim (tag,keywords,val=None):
+#@+node:ekr.20090815160535.5176:on_open_window
+def on_open_window (tag,keywords):
 
     c = keywords.get('c')
-    g.trace(repr(c))
+
+    event = c.config.getString('vim_trigger_event') or 'icondclick1'
+
+    leoPlugins.registerHandler(event,open_in_vim)
+
+    # g.trace('trigger event:',event,repr(c))
+#@-node:ekr.20090815160535.5176:on_open_window
+#@+node:EKR.20040517075715.11:open_in_vim
+def open_in_vim (tag,keywords):
+
+    if g.unitTesting: return
+
+    c = keywords.get('c')
+    p2 = keywords.get('old_p')
     if not c: return
     p = c.p
+    # g.trace(tag,p and p.key(),p2 and p2.key())
+
+    if tag.startswith('select') and p == p2:
+        return
 
     #Avoid @file node types
     #if p.isAnyAtFileNode():
@@ -324,7 +345,7 @@ def open_in_vim (tag,keywords,val=None):
         # Reopen the old temp file.
         os.system(vim_cmd+"--remote-send '<C-\\><C-N>:e "+path+"<CR>'")
 
-    return val
+    # return val
 #@-node:EKR.20040517075715.11:open_in_vim
 #@-others
 #@-node:EKR.20040517075715.10:@thin vim.py
