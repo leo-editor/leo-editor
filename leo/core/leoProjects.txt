@@ -257,7 +257,31 @@ def closeLeoWindow (self,frame):
     return True # The window has been closed.
 #@-node:ekr.20031218072017.2609:app.closeLeoWindow
 #@-node:ekr.20090804091109.5985:Fixed double prompt in c.close()
+#@+node:ekr.20090817080059.5995:Select main chapter initially
+It can be alarming to select a small chapter in a large outline.
+#@nonl
+#@-node:ekr.20090817080059.5995:Select main chapter initially
 #@-node:ekr.20090721093155.5986:Bugs
+#@+node:ekr.20090817080059.5996:Features
+#@+node:ekr.20090815073537.5991:Added options to vim plugin
+@nocolor-node
+
+The setting::
+
+    @string vim_trigger_event = icondclick2
+
+is the default.  It opens vim when the user double-clicks the icon box.
+
+Alternatives are::
+
+    @string vim_trigger_event = iconclick2
+    @string vim_trigger_event = select2
+
+The former opens vim on single clicks in the icon bar.
+The latter opens vim whenever a new node is selected in Leo.
+#@nonl
+#@-node:ekr.20090815073537.5991:Added options to vim plugin
+#@-node:ekr.20090817080059.5996:Features
 #@-node:ekr.20090718091653.5982:Leo 4.7 projects
 #@-all
 #@nonl

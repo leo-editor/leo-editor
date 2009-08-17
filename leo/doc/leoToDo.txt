@@ -116,11 +116,39 @@ Improve the recursive import script.
     - Option to include/exclude the @auto itself
 
 #@-node:ekr.20090724081340.5987:Improve recursive import script and @auto
-#@+node:ekr.20090801103907.6018:Add endtries to global dicts for more languages
+#@-node:ekr.20090811141250.5954:Easy
+#@+node:ekr.20090813084945.5979:one-node world
+#@-node:ekr.20090813084945.5979:one-node world
+#@+node:ekr.20090811141250.5955:Harder features
+#@+node:ekr.20090714085914.5991:Add drag and drop to qt gui
+#@-node:ekr.20090714085914.5991:Add drag and drop to qt gui
+#@+node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
+@nocolor-node
+
+- Combine 3 "read @x nodes" commands into a single "read @<file> nodes" command.
+
+- Combine 3 "write @x nodes" commands into a single "write @<file> nodes" command. 
+
+- Combine 3 "write dirty @x nodes" commands into a single "write dirty @<file> nodes" command. 
+#@nonl
+#@-node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
+#@+node:ekr.20090622020908.6058:Add lite sentinels
+http://groups.google.com/group/leo-editor/browse_thread/thread/c4f2cf250600e4a9
+#@nonl
+#@-node:ekr.20090622020908.6058:Add lite sentinels
+#@+node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
+#@-node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
+#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
+This probably should wait until the one-node world works.
+#@nonl
+#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
+#@+node:ekr.20090801103907.6018:Add entries to global dicts for more languages
 http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
 
 Especially languages in leo/modes.
 #@nonl
+#@+node:ekr.20090816125009.5993:@url http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
+#@-node:ekr.20090816125009.5993:@url http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
 #@+node:ekr.20090814190307.5983:print all modes/*.py files
 import glob
 
@@ -606,33 +634,7 @@ def languageForExtension (self,ext):
     return language
 #@-node:ekr.20080811174246.1:languageForExtension
 #@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
-#@-node:ekr.20090801103907.6018:Add endtries to global dicts for more languages
-#@-node:ekr.20090811141250.5954:Easy
-#@+node:ekr.20090813084945.5979:one-node world
-#@-node:ekr.20090813084945.5979:one-node world
-#@+node:ekr.20090811141250.5955:Harder features
-#@+node:ekr.20090714085914.5991:Add drag and drop to qt gui
-#@-node:ekr.20090714085914.5991:Add drag and drop to qt gui
-#@+node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
-@nocolor-node
-
-- Combine 3 "read @x nodes" commands into a single "read @<file> nodes" command.
-
-- Combine 3 "write @x nodes" commands into a single "write @<file> nodes" command. 
-
-- Combine 3 "write dirty @x nodes" commands into a single "write dirty @<file> nodes" command. 
-#@nonl
-#@-node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
-#@+node:ekr.20090622020908.6058:Add lite sentinels
-http://groups.google.com/group/leo-editor/browse_thread/thread/c4f2cf250600e4a9
-#@nonl
-#@-node:ekr.20090622020908.6058:Add lite sentinels
-#@+node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
-#@-node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
-#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
-This probably should wait until the one-node world works.
-#@nonl
-#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
+#@-node:ekr.20090801103907.6018:Add entries to global dicts for more languages
 #@-node:ekr.20090811141250.5955:Harder features
 #@+node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
 @nocolor-node

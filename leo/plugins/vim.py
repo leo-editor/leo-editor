@@ -10,7 +10,25 @@ It's recommended that you have gvim installed - basic console vim is not recomme
 
 When properly installed, this plugin does the following:
 
-- Double clicking on a node's icon opens that node in VIM. You can open nodes in VIM with a single-click if you set useDoubleClick = False. However, that interfere's with Leo's dragging logic.
+- By default, the plugin opens nodes on icondclick2 events.
+  (double click in the icon box)
+
+- The setting::
+
+    @string vim_trigger_event = icondclick2
+
+  controls when nodes are opened in vim.  The default, shown above,
+  opens a node in vim on double clicks in Leo's icon box.
+  A typical alternative would be::
+
+      @string vim_trigger_event = iconclick2
+
+  to open nodes on single clicks in the icon box.
+  You could also set:
+
+      @string vim_trigger_event = select2
+
+  to open a node in vim whenever the selected node changes for any reason.
 
 - Leo will put Vim cursor at same location as Leo cursor in file if 'vim_plugin_positions_cursor' set to True.
 
@@ -186,8 +204,6 @@ subprocess = g.importExtension('subprocess',pluginName=__name__,verbose=True)
 #@-node:ekr.20050226184411.2:<< imports >>
 #@nl
 
-useDoubleClick = True # True: double-click opens VIM.  False: single-click opens VIM.
-
 # This command is used to communicate with the vim server. If you use gvim
 # you can leave the command as is, you do not need to change it to "gvim ..."
 
@@ -220,9 +236,6 @@ def init ():
 
         event = 'open2'
         leoPlugins.registerHandler(event,on_open_window)
-
-        # event = g.choose(useDoubleClick,"icondclick1","iconclick1")
-        # leoPlugins.registerHandler(event,open_in_vim)
 
         # Enable the os.system call if you want to
         # start a (g)vim server when Leo starts.
