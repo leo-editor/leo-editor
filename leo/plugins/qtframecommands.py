@@ -48,10 +48,20 @@ def onSelect(tag,keywords):
 
 #@-node:ville.20090808222331.5233:init
 #@+node:ville.20090808222331.5236:detach-editor-toggle
+@g.command('detach-editor-toggle-max')
+def detach_editor_toggle_max(event):
+    """ Detach editor, maximize """
+    c = event['c']
+    detach_editor_toggle(event)
+    if c.frame.detached_body_info is not None:
+        wdg = c.frame.top.leo_body_frame
+        wdg.showMaximized()
+
+
 @g.command('detach-editor-toggle')
 def detach_editor_toggle(event):
-    c = event['c']
-    #g.pdb()
+    """ Detach or undetach body editor """
+    c = event['c']    
     detach = True
     try:
         if c.frame.detached_body_info is not None:
