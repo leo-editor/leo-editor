@@ -64,12 +64,11 @@ class chapterController:
                         cc.chaptersDict[tabName] = chapter(c=c,chapterController=cc,name=tabName,root=p)
 
         p = c.p
-        if c.positionExists(p):
-            name = cc.findChapterNameForPosition(p) or 'main'
-            # g.trace('chapterController',name,c.p)
-            cc.selectChapterByName(name,collapse=False)
-        else:
-            cc.selectChapterByName('main')
+
+        # Always select the main chapter.
+        # It can be alarming to open a small chapter in a large .leo file.
+        cc.selectChapterByName('main')
+    #@nonl
     #@-node:ekr.20070325104904:cc.finishCreate
     #@-node:ekr.20070530075604:Birth
     #@+node:ekr.20070317085437.30:Commands (chapters)

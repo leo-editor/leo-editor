@@ -3,18 +3,18 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="108" left="117" height="694" width="994"/>
+	<global_window_position top="108" left="409" height="694" width="702"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" a="E" str_leo_pos="1"><vh>Startup</vh>
-<v t="ekr.20070529172620"><vh>@chapters</vh>
+<v t="ekr.20070416075121" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20070529172620" a="E"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
 </v>
-<v t="ekr.20070529173219"><vh>@chapter abc</vh>
+<v t="ekr.20070529173219" a="E"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 </v>
