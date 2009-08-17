@@ -73,7 +73,7 @@ def onCreate (tag, keys):
 
 #@-node:ville.20090314215508.9:onCreate
 #@+node:ville.20090314215508.2:class LeoQuickSearchWidget
-import qt_quicksearch
+from leo.plugins import qt_quicksearch
 
 global qsWidget
 
