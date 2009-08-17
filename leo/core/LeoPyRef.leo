@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="51" left="371" height="977" width="891"/>
+	<global_window_position top="0" left="0" height="672" width="1414"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240" str_leo_pos="5,1"><vh>Startup</vh>
+<v t="ekr.20051031040240" str_leo_pos="5,2,12,9"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20090620052003.8505"><vh>@button add-test @key=alt-9</vh></v>
 <v t="ekr.20090514093345.6054"><vh>Disabled buttons</vh>
@@ -101,7 +101,7 @@
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20040117181936"
-marks="ekr.20090717083356.5991,ekr.20031218072017.2829,ekr.20080510153327.4,ekr.20061031131434.110,"><vh>@thin ../doc/leoToDo.txt</vh></v>
+marks="ekr.20031218072017.2829,ekr.20090502071837.71,ekr.20080510153327.4,ekr.20061031131434.110,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
 <v t="ekr.20090113083258.3"><vh>Unit tests &amp; helper files</vh>
@@ -128,7 +128,7 @@ marks="ekr.20090717083356.5991,ekr.20031218072017.2829,ekr.20080510153327.4,ekr.
 <v t="ekr.20090802181029.5989"><vh>Startup</vh>
 <v t="ekr.20031218072017.2605"><vh>@thin runLeo.py </vh></v>
 </v>
-<v t="ekr.20031218072017.2604"><vh>Core classes</vh>
+<v t="ekr.20031218072017.2604" a="E"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@thin leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@thin leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
@@ -142,7 +142,7 @@ marks="ekr.20031218072017.2829,"><vh>@thin leoCommands.py</vh></v>
 <v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31352e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@thin leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@thin leoImport.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@thin leoNodes.py</vh></v>
-<v t="ekr.20031218072017.3439"><vh>@thin leoPlugins.py</vh></v>
+<v t="ekr.20031218072017.3439" a="E"><vh>@thin leoPlugins.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@thin leoPymacs.py</vh></v>
 <v t="ekr.20090502071837.3"
 marks="ekr.20090502071837.71,"><vh>@thin leoRst.py</vh></v>

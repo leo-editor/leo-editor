@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="114" left="255" height="827" width="980"/>
+	<global_window_position top="0" left="0" height="672" width="996"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="9"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,14,12,3"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913"><vh>@@button Save</vh></v>
@@ -98,7 +98,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20090703122042.7463"><vh>@@button a-common-button</vh></v>
@@ -1010,7 +1010,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1077,7 +1077,7 @@
 <v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
-<v t="ekr.20081018053140.11"><vh>qtGui plugin</vh>
+<v t="ekr.20081018053140.11" a="E"><vh>qtGui plugin</vh>
 <v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 200000</vh></v>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
@@ -1253,8 +1253,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20081018053140.11" a="E"></v>
-<v t="TL.20090712101620.4691"><vh>@keys Vim bindings</vh>
+<v t="ekr.20081018053140.11"></v>
+<v t="TL.20090712101620.4691" a="E"><vh>@keys Vim bindings</vh>
 <v t="TL.20090712101620.4692"><vh>Vim User Documentation</vh></v>
 <v t="TL.20090712101620.4693"><vh>Vim Developer Documentation</vh></v>
 <v t="TL.20090712101620.4694"><vh>Vim settings</vh>
@@ -1269,9 +1269,9 @@
 <v t="TL.20090712101620.4702"><vh>@mode tree-double-click-node</vh></v>
 <v t="TL.20090712101620.4703"><vh>@mode focus-to-tree</vh></v>
 <v t="TL.20090712101620.4704"><vh>@mode focus-to-body</vh></v>
-<v t="TL.20090712101620.4705" a="E"><vh>@mode body-command-line</vh>
+<v t="TL.20090712101620.4705"><vh>@mode body-command-line</vh>
 <v t="TL.20090712101620.4706"><vh>@mode body-command-revert</vh></v>
-<v t="TL.20090712101620.4707" a="E"><vh>@mode body-command-save</vh>
+<v t="TL.20090712101620.4707"><vh>@mode body-command-save</vh>
 <v t="TL.20090712101620.4708"><vh>@mode body-command-save-quit</vh>
 <v t="TL.20090712101620.4709"><vh>@mode body-command-save-quit-return</vh></v>
 </v>
@@ -1332,7 +1332,7 @@
 <v t="TL.20090712101620.4755"><vh>@mode body-search-all-nodes</vh></v>
 <v t="TL.20090712101620.4756"><vh>@mode body-search-toggle-headline</vh></v>
 <v t="TL.20090712101620.4757"><vh>@mode body-search-toggle-body</vh></v>
-<v t="TL.20090712101620.4758" a="E"><vh>@mode body-search-toggle-mark</vh>
+<v t="TL.20090712101620.4758"><vh>@mode body-search-toggle-mark</vh>
 <v t="TL.20090712101620.4759"><vh>@mode body-search-toggle-mark-finds</vh></v>
 <v t="TL.20090712101620.4760"><vh>@mode body-search-toggle-mark-changes</vh></v>
 </v>
@@ -1341,7 +1341,7 @@
 <v t="TL.20090712101620.4762"><vh>@mode body-replace-string</vh></v>
 <v t="TL.20090712101620.4763"><vh>@mode body-paste-then-find</vh></v>
 <v t="TL.20090712101620.4764"><vh>@mode body-goto-end-of-buffer</vh></v>
-<v t="TL.20090712101620.4765" a="E"><vh>@mode body-goto</vh>
+<v t="TL.20090712101620.4765"><vh>@mode body-goto</vh>
 <v t="TL.20090712101620.4766"><vh>@mode body-goto-beginning-of-buffer</vh></v>
 </v>
 <v t="TL.20090712101620.4767"><vh>@mode body-new-line-below</vh></v>
@@ -7796,23 +7796,6 @@ QLineEdit#status2 {
     border-width: 1px;
     border-style: solid;
     border-color: darkgrey;
-}
-
-XXQPushButton {
-    background-color: #fdf5f5; /* A kind of pink. */
-    margin: 2px;
-    padding; 4px;
-    border-width: 2px;
-    border-style: solid;
-    border-color: darkgrey;
-}
-
-/* QMenuBar works, but not QMenu... */
-XXQMenuBar {
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
 }
 </t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.

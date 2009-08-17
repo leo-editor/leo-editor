@@ -2243,7 +2243,10 @@ class DynamicWindow(QtGui.QMainWindow):
         if sheet:
             sheet = '\n'.join(sheet)
             if trace: g.trace(len(sheet))
-            self.ui.setStyleSheet(sheet or self.default_sheet())
+            if not sheet:
+                sheet = self.default_sheet()
+
+            g.app.gui.qtApp.setStyleSheet(sheet)        
         else:
             if trace: g.trace('no style sheet')
     #@+node:ekr.20081121105001.204:defaultStyleSheet
@@ -3042,6 +3045,7 @@ class leoQtBody (leoFrame.leoBody):
     badFocusColors = []
 
     def onFocusColorHelper(self,kind,obj):
+        return
 
         trace = False and not g.unitTesting
 
@@ -3831,7 +3835,6 @@ class leoQtFrame (leoFrame.leoFrame):
             self.statusBar.addWidget(w2,True)
             self.put('')
             self.update()
-            c.frame.top.setStyleSheets()
         #@-node:ekr.20081121105001.262:ctor
         #@+node:ekr.20081121105001.263: do-nothings
         def disable (self,background=None): pass
