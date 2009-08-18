@@ -9,12 +9,12 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="2"><vh>Startup</vh>
-<v t="ekr.20070529172620" a="E"><vh>@chapters</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
 </v>
-<v t="ekr.20070529173219" a="E"><vh>@chapter abc</vh>
+<v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 </v>
@@ -357,6 +357,7 @@
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
+<v t="ekr.20090818115756.1817"><vh>scroll test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -3349,5 +3350,31 @@ License: BSD.
 """
 </t>
 <t tx="ekr.20090815161520.1815">Reasonable values are iconclick2, icondclick2 and select2.</t>
+<t tx="ekr.20090818115756.1817">@
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a</t>
 </tnodes>
 </leo_file>

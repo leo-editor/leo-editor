@@ -2792,21 +2792,27 @@ class leoQtBody (leoFrame.leoBody):
 
         c = self.c ; p = c.p ; body = p.b
         d = self.editorWidgets
+        if len(d.keys()) < 2: return # There is only the main widget
+
         w0 = c.frame.body.bodyCtrl
         i,j = w0.getSelectionRange()
         ins = w0.getInsertPoint()
-        if len(d.keys()) < 2: return # There is only the main widget.
-
+        sb0 = w0.widget.verticalScrollBar()
+        pos0 = sb0.sliderPosition()
         for key in d:
             wrapper = d.get(key)
             w = wrapper.widget
             v = hasattr(w,'leo_p') and w.leo_p.v
             if v and v == p.v and w != w0:
+                sb = w.verticalScrollBar()
+                pos = sb.sliderPosition()
                 wrapper.setAllText(body)
                 self.recolorWidget(p,wrapper)
+                sb.setSliderPosition(pos)
 
         c.bodyWantsFocusNow()
         w0.setSelectionRange(i,j,ins=ins)
+        sb0.setSliderPosition(pos0)
     #@nonl
     #@-node:ekr.20081121105001.226:updateEditors
     #@-node:ekr.20081121105001.215:entries

@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="0" left="0" height="672" width="996"/>
+	<global_window_position top="29" left="468" height="997" width="807"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1254,7 +1254,7 @@
 </v>
 </v>
 <v t="ekr.20081018053140.11"></v>
-<v t="TL.20090712101620.4691" a="E"><vh>@keys Vim bindings</vh>
+<v t="TL.20090712101620.4691"><vh>@keys Vim bindings</vh>
 <v t="TL.20090712101620.4692"><vh>Vim User Documentation</vh></v>
 <v t="TL.20090712101620.4693"><vh>Vim Developer Documentation</vh></v>
 <v t="TL.20090712101620.4694"><vh>Vim settings</vh>
