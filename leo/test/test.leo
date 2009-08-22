@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="108" left="409" height="694" width="702"/>
+	<global_window_position top="108" left="409" height="694" width="844"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" a="E" str_leo_pos="0,2,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -24,7 +24,7 @@
 </v>
 </v>
 <v t="ekr.20070224123943"><vh>@settings</vh>
-<v t="ekr.20090815161520.1815"><vh>@string vim_trigger_event = icondclick2</vh></v>
+<v t="ekr.20090815161520.1815"><vh>@string vim_trigger_event = select2</vh></v>
 <v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
 <v t="ekr.20090629105832.1790"><vh>@@bool big_outline_pane = True</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
@@ -58,7 +58,8 @@
 </v>
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
 </v>
-<v t="ekr.20041001211817"><vh>Buttons</vh>
+<v t="ekr.20041001211817" a="E"><vh>Buttons</vh>
+<v t="ekr.20090819085532.4265"><vh>@button detach-body</vh></v>
 <v t="ekr.20080915095329.1"><vh>@@button rst3</vh></v>
 <v t="ekr.20090718072135.1786"><vh>@button print sep</vh></v>
 <v t="ekr.20090521070342.1907"><vh>@button show-rst</vh></v>
@@ -357,7 +358,6 @@
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
-<v t="ekr.20090818115756.1817"><vh>scroll test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -1380,7 +1380,7 @@ UNL.py
 mod_scripting.py
 pydeeshell.py
 # nodenavigator.py
-# vim.py
+vim.py
 # xemacs.py
 
 # test of @bool warn_when_plugins_fail_to_load
@@ -3349,32 +3349,13 @@ Example: The following will append all the "time" and "math" modules'
 License: BSD.
 """
 </t>
-<t tx="ekr.20090815161520.1815">Reasonable values are iconclick2, icondclick2 and select2.</t>
-<t tx="ekr.20090818115756.1817">@
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a</t>
+<t tx="ekr.20090815161520.1815">Reasonable values are iconclick2, icondclick2 and select2.
+
+When using select2, you may want to use the detach-editor-toggle command.
+</t>
+<t tx="ekr.20090819085532.4265">w = c.frame.body.bodyCtrl.widget
+w.setParent(None)
+w.show()
+</t>
 </tnodes>
 </leo_file>
