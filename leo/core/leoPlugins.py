@@ -394,7 +394,9 @@ def getEnabledFiles (s,plugins_path):
 #@+node:ekr.20041113113140:loadOnePlugin & test
 def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
 
-    # g.trace(tag,moduleOrFileName)
+    trace = False # and not g.unitTesting
+    verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
+    warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
 
     # Prevent Leo from crashing if .leoID.txt does not exist.
     if g.app.config is None:
@@ -405,9 +407,6 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
 
     global loadedModules,loadingModuleNameStack
 
-    verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
-    warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
-
     if moduleOrFileName.endswith('.py'):
         moduleName = moduleOrFileName [:-3]
     else:
@@ -416,11 +415,13 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
 
     if isLoaded(moduleName):
         module = loadedModules.get(moduleName)
-        if verbose:
-            g.es_print('plugin',moduleName,'already loaded',color="blue")
+        if trace or verbose:
+            g.trace('plugin',moduleName,'already loaded',color="blue")
         return module
 
-    plugins_path = g.os_path_join(g.app.loadDir,"..","plugins")
+    assert g.app.loadDir
+
+    plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
     moduleName = g.toUnicode(moduleName,g.app.tkEncoding)
 
     # This import will typically result in calls to registerHandler.
@@ -431,7 +432,10 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
 
     if result:
         loadingModuleNameStack.append(moduleName)
-        if hasattr(result,'init'):
+
+        if tag == 'unit-test-load':
+            pass # Keep the result, but do no more.
+        elif hasattr(result,'init'):
             try:
                 # Indicate success only if init_result is True.
                 init_result = result.init()
@@ -444,30 +448,31 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
                         g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")
                     result = None
             except Exception:
-                g.es('exception loading plugin',color='red')
+                g.es_print('exception loading plugin',color='red')
                 g.es_exception()
                 result = None
         else:
             # No top-level init function.
             # Guess that the module was loaded correctly,
             # but do *not* load the plugin if we are unit testing.
-            g.trace('no init()',moduleName)
+
             if g.app.unitTesting:
                 result = None
                 loadedModules[moduleName] = None
             else:
+                g.trace('no init()',moduleName)
                 loadedModules[moduleName] = result
         loadingModuleNameStack.pop()
 
-    if g.unitTesting or g.app.batchMode or g.app.inBridge:
+    if g.app.batchMode or g.app.inBridge: # or g.unitTesting
         pass
-    elif result is None:
-        if warn_on_failure or (verbose and not g.app.initing): # or not g.app.unitTesting:
-            if tag == 'open0':
-                g.es_print('can not load enabled plugin:',moduleName,color="red")
-    elif verbose:
-        g.es_print('loaded plugin:',moduleName,
-            g.callers(6),color="blue")
+    elif result:
+        if trace or verbose:
+            g.trace('loaded plugin:',moduleName,color="blue")
+    else:
+        if trace or warn_on_failure or (verbose and not g.app.initing):
+            if trace or tag == 'open0':
+                g.trace('can not load enabled plugin:',moduleName,color="red")
 
     return result
 #@+node:ekr.20090522161156.5886:@test class StubConfig

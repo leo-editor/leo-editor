@@ -231,7 +231,11 @@ def makeTestSuite (c,p):
         print("no script in %s" % h)
         return None
     try:
-        # g.trace(script)
+        if 0: #debugging
+            n,lines = 0,g.splitLines(script)
+            for line in lines:
+                print n,line,
+                n += 1
         exec(script + '\n',{'c':c,'g':g,'p':p})
         suite = g.app.scriptDict.get("suite")
         if not suite:

@@ -3627,7 +3627,7 @@ def plugin_signon(module_name,verbose=False):
 
         g.pr(m.__name__, m.__version__)
 
-    app.loadedPlugins.append(module_name)
+    g.app.loadedPlugins.append(module_name)
 #@-node:ekr.20031218072017.1318:g.plugin_signon
 #@+node:ville.20090521164644.5924:g.command (decorator for creating global commands)
 class command:
@@ -6487,8 +6487,9 @@ def cantImport (moduleName,pluginName=None,verbose=True):
     if pluginName: s = s + " from plugin %s" % pluginName
 
     if not g.app or not g.app.gui:
-        g.pr(s)
+        print s
     elif g.unitTesting:
+        # print s
         return
     elif g.app.gui.guiName() == 'tkinter' and moduleName in ('Tkinter','Pmw'):
         return
@@ -6508,19 +6509,37 @@ def importModule (moduleName,pluginName=None,verbose=False):
 
     moduleName is the module's name, without file extension.'''
 
+    trace = False and not g.unitTesting
     module = sys.modules.get(moduleName)
-    if not module:
+    if module:  return module
+
+    try:
+        theFile = None
+        import imp
         try:
-            theFile = None
-            import imp
-            try:
-                data = imp.find_module(moduleName) # This can open the file.
-                theFile,pathname,description = data
-                module = imp.load_module(moduleName,theFile,pathname,description)
-            except Exception: # Importing a module can throw exceptions other than ImportError.
-                g.cantImport(moduleName,pluginName=pluginName,verbose=verbose)
-        finally:
-            if theFile: theFile.close()
+            # New in Leo 4.7. We no longer add Leo directories to sys.path,
+            # so search extensions and external directories here explicitly.
+            for findPath in (None,'extensions','external'):
+                if findPath:
+                    findPath2 = g.os_path_finalize_join(
+                        g.app.loadDir,'..',findPath)
+                    findPath = [findPath2]
+                if trace: g.trace('findPath',findPath)
+                try:
+                    data = imp.find_module(moduleName,findPath) # This can open the file.
+                    theFile,pathname,description = data
+                    if trace: g.trace(theFile,moduleName,pathname)
+                    module = imp.load_module(moduleName,theFile,pathname,description)
+                    if module: break
+                except ImportError:
+                    if trace: g.trace('not found',moduleName,findPath)
+        except Exception: # Importing a module can throw exceptions other than ImportError.
+            g.es_exception()
+    finally:
+        if theFile: theFile.close()
+
+    if not module:
+        g.cantImport(moduleName,pluginName=pluginName,verbose=verbose)
     return module
 #@-node:ekr.20041219095213.1:g.importModule
 #@+node:ekr.20041219071407:g.importExtension & helpers
@@ -6671,34 +6690,39 @@ def get_window_info (top):
 #@+node:ekr.20031218072017.2278:g.importFromPath
 def importFromPath (name,path,pluginName=None,verbose=False):
 
+    trace = False # and not g.unitTesting
     fn = g.shortFileName(name)
     moduleName,ext = g.os_path_splitext(fn)
     path = g.os_path_normpath(path)
     path = g.toEncodedString(path,app and app.tkEncoding or 'ascii')
 
-    # g.trace(verbose,name,pluginName)
     module = sys.modules.get(moduleName)
-    if not module:
-        try:
-            theFile = None
-            import imp
-            try:
-                data = imp.find_module(moduleName,[path]) # This can open the file.
-                theFile,pathname,description = data
-                module = imp.load_module(moduleName,theFile,pathname,description)
-            except ImportError:
-                if 0: # verbose:
-                    g.es_print("exception in g.importFromPath",color='blue')
-                    g.es_exception()
-            except Exception:
-                g.es_print("unexpected exception in g.importFromPath(%s)" %
-                    (name),color='blue')
-                g.es_exception()
-        # Put no return statements before here!
-        finally: 
-            if theFile: theFile.close()
+    if module:
+        if trace: g.trace('already loaded',moduleName,module)
+        return module
 
-    if not module:
+    try:
+        theFile = None
+        import imp
+        try:
+            data = imp.find_module(moduleName,[path]) # This can open the file.
+            theFile,pathname,description = data
+            module = imp.load_module(moduleName,theFile,pathname,description)
+        except ImportError:
+            if trace: # or verbose:
+                g.es_print("exception in g.importFromPath",color='blue')
+                g.es_exception()
+        except Exception:
+            g.es_print("unexpected exception in g.importFromPath(%s)" %
+                (name),color='blue')
+            g.es_exception()
+    # Put no return statements before here!
+    finally: 
+        if theFile: theFile.close()
+
+    if module:
+        if trace: g.trace('loaded',moduleName)
+    else:
         g.cantImport(moduleName,pluginName=pluginName,verbose=verbose)
 
     return module

@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="97" left="341" height="839" width="1133"/>
+	<global_window_position top="55" left="353" height="917" width="912"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -782,9 +782,8 @@
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20050120095423" annotate="7d71002e"><vh>Plugins</vh>
-<v t="ekr.20080309193654.1"><vh>@ignore</vh>
 <v t="ekr.20050120095423.21"><vh>print all loaded plugins</vh></v>
-<v t="ekr.20050218015346"><vh>@suite run all plugin test routines</vh>
+<v t="ekr.20050218015346"><vh>@@suite run all plugin test routines</vh>
 <v t="ekr.20050218015346.11"><vh>&lt;&lt; class testRoutineTestCase &gt;&gt;</vh>
 <v t="ekr.20050218015346.12"><vh>__init__</vh></v>
 <v t="ekr.20050218015346.13"><vh> fail</vh></v>
@@ -798,7 +797,7 @@
 <v t="ekr.20050218015346.21"><vh>getAllPlugins</vh></v>
 <v t="ekr.20050218015346.22"><vh>removeLeadingWs</vh></v>
 </v>
-<v t="ekr.20050120095423.11"><vh>@suite plugins tests</vh>
+<v t="ekr.20050120095423.11"><vh>@@suite plugins tests</vh>
 <v t="ekr.20050120095423.12"><vh>makePluginsTestSuite</vh></v>
 <v t="ekr.20050120095423.13"><vh>class pluginTestCase</vh>
 <v t="ekr.20050120095423.14"><vh>__init__</vh></v>
@@ -809,11 +808,10 @@
 </v>
 <v t="ekr.20050120095423.20"><vh>class lastTestCase</vh></v>
 </v>
-<v t="ekr.20070301064408"><vh>@test print All plugins tests complete</vh></v>
+<v t="ekr.20070301064408"><vh>@@test print All plugins tests complete</vh></v>
 <v t="ekr.20080701183239.1"><vh>Tests of threading_colorizer code</vh>
 <v t="ekr.20080701183239.2"><vh>quickConvertRowColToPythonIndex</vh></v>
 <v t="ekr.20080701183239.3"><vh>quickConvertPythonIndexToRowCol</vh></v>
-</v>
 </v>
 </v>
 <v t="ekr.20071113194858"><vh>Organized by file</vh>
@@ -4026,11 +4024,11 @@ g.app.scriptDict['suite'] = suite</t>
     module = sys.modules.get(moduleName)
 
     if not module:
-        module = leoPlugins.loadOnePlugin(moduleName,verbose=False)
+        module = leoPlugins.loadOnePlugin(moduleName,tag='unit-test-load',verbose=False)
         assert module, 'can not import %s' % moduleName</t>
 <t tx="ekr.20050120095423.17">def setUp(self):
 
-    g.app.unitTestDict = {}</t>
+    g.app.unitTestDict = {'c':self.c,'p':self.c.p}</t>
 <t tx="ekr.20050120095423.18">def shortDescription (self):
 
     return "pluginTestCase: %s" % g.shortFileName(self.path)</t>
@@ -4046,8 +4044,8 @@ g.app.scriptDict['suite'] = suite</t>
 
     def runTest(self):
         c = self.c
-        print('\n%s a new window to test more plugin logic\n' % g.choose()
-            self.openFlag,'opening','open')
+        print('\n%s a new window to test more plugin logic\n' % g.choose(
+            self.openFlag,'opening','open'))
         if self.openFlag:
             self.new_c = new_c = c.new() # Create the new window.
             new_c.frame.setTitle("unit test for 'new' hook")
@@ -16120,7 +16118,6 @@ abc</t>
 abc
 # -- end -- &lt;&lt; secref &gt;&gt;
 </t>
-<t tx="ekr.20080309193654.1"></t>
 <t tx="ekr.20080310073711.1">gnx = g.app.nodeIndices.toString(None)
 assert(gnx not in (None,'None'))
 assert(len(gnx) &gt; 1)</t>

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -358,6 +358,7 @@
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
+<v t="ekr.20090823140318.1819"><vh>Tests of imports</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -1378,7 +1379,6 @@ quicksearch.py
 scrolledmessage.py
 UNL.py
 mod_scripting.py
-pydeeshell.py
 # nodenavigator.py
 # vim.py
 # xemacs.py
@@ -3357,5 +3357,14 @@ When using select2, you may want to use the detach-editor-toggle command.
 w.setParent(None)
 w.show()
 </t>
+<t tx="ekr.20090823140318.1819"># see if we still need adjustSysPath
+
+if 0:
+    import leo.extensions.path as path
+    print path
+
+for module in ('path','Pmw','sets',):
+    m = g.importExtension(module,pluginName='test.leo',verbose=True,required=True)
+    print 'loaded',m</t>
 </tnodes>
 </leo_file>
