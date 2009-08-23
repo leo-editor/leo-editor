@@ -261,6 +261,25 @@ def closeLeoWindow (self,frame):
 It can be alarming to select a small chapter in a large outline.
 #@nonl
 #@-node:ekr.20090817080059.5995:Select main chapter initially
+#@+node:ekr.20090813084945.5978:Fixed scrolling problem with multiple editors
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/33e87adbff5d69d9
+
+Latest trunk.  qt gui
+
+I used multiple body editors (2) for the first time in a long time and the
+scroll position was moving at times that it shouldn't.
+
+For example if I scrolled partially down the page and copied some text and then
+pasted the text somewhere else that was visible without scrolling, the scroll
+position would change significantly although the new text would remain visible.
+
+It may not sound particularly serious but I found it very difficult to use.
+
+The fix was to leoQtGui.updateEditors.
+#@nonl
+#@-node:ekr.20090813084945.5978:Fixed scrolling problem with multiple editors
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin

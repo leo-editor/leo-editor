@@ -11,24 +11,91 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20090714085914.5990:To do first
+#@+node:ekr.20090822054806.6004:Improve the intro
+
+* Give some hint about why Leo is different.
+
+* Give some hints about the Aha, and that there *is* an Aha.
+#@nonl
+#@-node:ekr.20090822054806.6004:Improve the intro
 #@+node:ekr.20090811090022.6029:Bugs
-#@+node:ekr.20090813084945.5978:Fix scrolling problem with multiple editors
+#@+node:ekr.20090822054806.6003:Add rst button that doesn't need rst3 plugin
 @nocolor-node
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/33e87adbff5d69d9
+http://groups.google.com/group/leo-editor/browse_thread/thread/95687c7a2dba5e18
 
-Latest trunk.  qt gui
+The rst3 plugin is required to use the script examples given in the
+"@@button rst" example in the leoSettings.leo file and in Chapter 14
+of the users guide (shown below).  They should be updated to utilize
+the new rST functionality in Leo's core.
 
-I used multiple body editors (2) for the first time in a long time and the
-scroll position was moving at times that it shouldn't.
+Until that is done, can someone post a working "@button rst" script
+that doesn't require the rst3 plugin?  I would like to test the rST
+implementation in Leo's core.
 
-For example if I scrolled partially down the page and copied some text and then
-pasted the text somewhere else that was visible without scrolling, the scroll
-position would change significantly although the new text would remain visible.
+Script in "@@button rst" example in the leoSettings.leo file:
+|   import leoPlugins
+|   rst3 = leoPlugins.getPluginModule('rst3')
+|   if rst3:
+|       controller = rst3.controllers.get(c)
+|       if controller:
+|           controller.processTopTree(p)
+|   else:
+|       rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
+|       if rst3:
+|           g.es('rst3 loaded')
+|           rst3.onCreate('tag',{'c':c})
+|       else:
+|           # Ask to be removed.
+|           g.app.scriptDict['removeMe'] = True
 
-It may not sound particularly serious but I found it very difficult to use.
+Script in Chapter 14 of the users guide:
+|   import leo.core.leoPlugins as leoPlugins
+|   rst3 = leoPlugins.getPluginModule('rst3')
+|   if rst3:
+|       controller = rst3.controllers.get(c)
+|       if controller:
+|           p,s = controller.writeNodeToString(ext='.html')
+|           print '*' * 40,p
+|           print s 
 #@nonl
-#@-node:ekr.20090813084945.5978:Fix scrolling problem with multiple editors
+#@-node:ekr.20090822054806.6003:Add rst button that doesn't need rst3 plugin
+#@+node:ekr.20090822054806.6001:Fix cursor up/down bug
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/731b9c541f3a3ab0
+
+sequence::
+
+ type """ <cr> """ <up>
+
+the cursor is at the end of the first line
+
+type <down>
+
+the cursor is now between the 2nd and 3rd quote. 
+#@nonl
+#@-node:ekr.20090822054806.6001:Fix cursor up/down bug
+#@+node:ekr.20090822054806.6002:Do sys path cleanup
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b868abd65fb57759
+
+I noted that leo adds all of its directories to sys.path. This is
+considered "bad form" and can cause nasty surprises. I believe this is
+an artifact of the old "leo-as-package" work; now that leo-as-package
+stuff works well, I don't think this is needed anymore.
+
+It's not a lot of work to fix either - it's just a matter of removing
+the call to adjustSysPath in runLeo.py, and fixing some plugins. (yes,
+I tried it). e.g. quicksearch.py needed this trivial change:
+
++++ leo/plugins/quicksearch.py  2009-08-15 20:22:20 +0000
+
+-import qt_quicksearch
++from leo.plugins import qt_quicksearch 
+#@nonl
+#@-node:ekr.20090822054806.6002:Do sys path cleanup
 #@+node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
 @nocolor-node
 
@@ -737,7 +804,7 @@ if not fileName:
     at.error("Missing file name.  Restoring @file tree from .leo file.")
     return False
 #@-node:ekr.20041005105605.22:<< set fileName >>
-#@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+#@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
 resurrected = 0
 for p in root.self_and_subtree_iter():
 
@@ -749,7 +816,7 @@ for p in root.self_and_subtree_iter():
 if resurrected:
     g.es('you may want to delete ressurected nodes')
 
-#@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+#@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
 #@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
 for t in c.all_unique_tnodes_iter():
 
