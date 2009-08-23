@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="134" left="183" height="700" width="1000"/>
+	<global_window_position top="47" left="531" height="963" width="728"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20041211035618" str_leo_pos="2,20,3,0"><vh>Startup</vh>
+<v t="ekr.20041211035618" str_leo_pos="2,20,2"><vh>Startup</vh>
 <v t="ekr.20070718131416"><vh>@chapters</vh></v>
 <v t="ekr.20050217093214"><vh>@settings</vh>
 <v t="ekr.20050328101812"><vh>@page http plugin</vh>
@@ -28,21 +28,20 @@
 <v t="ekr.20080515173014.1"><vh>regex: replace w.bind by c.bind(w...)</vh></v>
 <v t="ekr.20080519084304.2"><vh>@@button change leo imports</vh></v>
 </v>
-<v t="ekr.20090430075506.4" a="E"><vh>Notes &amp; to-do</vh>
-<v t="ekr.20090430075506.3" a="E"
-expanded="ekr.20090629080139.5277,ekr.20090628104247.5272,"><vh>@thin leoPluginNotes.txt</vh></v>
+<v t="ekr.20090430075506.4"><vh>Notes &amp; to-do</vh>
+<v t="ekr.20090430075506.3"><vh>@thin leoPluginNotes.txt</vh></v>
 </v>
 <v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
-<v t="ekr.20050303051035" a="E"><vh> Templates: these show recommended ways of defining plugins.</vh>
-<v t="ekr.20041114102139" a="E"><vh>Notes</vh>
+<v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
+<v t="ekr.20041114102139"><vh>Notes</vh>
 <v t="ekr.20041114103913"><vh>About comments in the style guide</vh></v>
 <v t="ekr.20041114102139.1"><vh>About the root node</vh></v>
 <v t="ekr.20041114103913.1"><vh>About defining functions in separate nodes</vh></v>
 <v t="ekr.20041114102139.2"><vh>About the &lt;&lt; imports &gt;&gt; section</vh></v>
 <v t="ekr.20050306072156"><vh>About exceptions</vh></v>
 </v>
-<v t="ekr.20050306071629" a="E"><vh>Template for plugin that overrides commander methods</vh>
+<v t="ekr.20050306071629"><vh>Template for plugin that overrides commander methods</vh>
 <v t="ekr.20050306071629.1"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
 <v t="ekr.20050306071629.2"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
 <v t="ekr.20050306071629.3"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
@@ -60,10 +59,9 @@ expanded="ekr.20090629080139.5277,ekr.20090628104247.5272,"><vh>@thin leoPluginN
 </v>
 </v>
 </v>
-<v t="ekr.20040722135402.1" a="E"><vh>Body pane</vh>
-<v t="edream.110403140857.8" a="E"
-expanded="ekr.20060108112937,"><vh>@thin color_markup.py</vh></v>
-<v t="ekr.20090701111504.5294" a="E"><vh>@thin contextmenu.py</vh></v>
+<v t="ekr.20040722135402.1"><vh>Body pane</vh>
+<v t="edream.110403140857.8"><vh>@thin color_markup.py</vh></v>
+<v t="ekr.20090701111504.5294"><vh>@thin contextmenu.py</vh></v>
 <v t="ekr.20060506070443.1"><vh>@thin detect_urls.py</vh></v>
 <v t="edream.110203113231.753"><vh>@thin image.py</vh></v>
 <v t="edream.110203113231.925"><vh>@thin script_io_to_body.py</vh></v>
@@ -709,8 +707,7 @@ expanded="ekr.20060108112937,"><vh>@thin color_markup.py</vh></v>
 <v t="ekr.20041001210557" a="E"><vh>Scripting</vh>
 <v t="ekr.20060328125248"><vh>@thin mod_scripting.py</vh></v>
 <v t="tbrown.20090513125417.5244"><vh>@thin interact.py</vh></v>
-<v t="ville.20090801181915.5278"><vh>@thin pydeeshell.py</vh></v>
-<v t="ville.20090815203828.5235" a="E"><vh>@thin spydershell.py</vh></v>
+<v t="ville.20090815203828.5235"><vh>@thin spydershell.py</vh></v>
 </v>
 <v t="ekr.20050111122605"><vh>Servers</vh>
 <v t="EKR.20040517080250.1"><vh>@thin mod_http.py</vh></v>
@@ -805,7 +802,7 @@ expanded="ekr.20060108112937,"><vh>@thin color_markup.py</vh></v>
 </v>
 <v t="rogererens.20041013082304"><vh>@thin UNL.py</vh></v>
 </v>
-<v t="ekr.20040915073259" a="E"><vh>Windows</vh>
+<v t="ekr.20040915073259"><vh>Windows</vh>
 <v t="tbrown.20090322083202.1"><vh>NOTE: todo.py is qt verion of cleo.py (which is tk)</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@thin todo.py</vh></v>
 <v t="ekr.20050227071948" annotate="5404010000376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333464306632373632353530343665366636343635373130353238363830323666373130363535303734363635363137343735373236353731303736323535303236323637373130383238363830323666373130393535303037313061363235353039363137323633363836353734373937303635373130623238363830323666373130633638306136323535303236363637373130643238363830323666373130653638306136323735326571002e"><vh> cleo</vh>
@@ -861,7 +858,7 @@ expanded="ekr.20060108112937,"><vh>@thin color_markup.py</vh></v>
 <v t="ekr.20060506070443.1"></v>
 <v t="ville.20090310191936.10"><vh>@thin colorize_headlines.py</vh></v>
 <v t="ville.20090314215508.4"><vh>@thin quicksearch.py</vh></v>
-<v t="ville.20090808222331.5229" a="E"><vh>@thin qtframecommands.py</vh></v>
+<v t="ville.20090808222331.5229"><vh>@thin qtframecommands.py</vh></v>
 </v>
 </v>
 </vnodes>
