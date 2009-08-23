@@ -153,6 +153,8 @@ def createNullGuiWithScript (script):
 #@+node:ekr.20070306085724:adjustSysPath
 def adjustSysPath ():
 
+    return # No longer needed.
+
     '''Adjust sys.path to enable imports as usual with Leo.'''
 
     #g.trace('loadDir',g.app.loadDir)
