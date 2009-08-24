@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" a="E" str_leo_pos="0,2,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -58,7 +58,7 @@
 </v>
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
 </v>
-<v t="ekr.20041001211817" a="E"><vh>Buttons</vh>
+<v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20090819085532.4265"><vh>@button detach-body</vh></v>
 <v t="ekr.20080915095329.1"><vh>@@button rst3</vh></v>
 <v t="ekr.20090718072135.1786"><vh>@button print sep</vh></v>
@@ -1380,7 +1380,7 @@ UNL.py
 mod_scripting.py
 pydeeshell.py
 # nodenavigator.py
-vim.py
+# vim.py
 # xemacs.py
 
 # test of @bool warn_when_plugins_fail_to_load
