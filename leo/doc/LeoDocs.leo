@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="2,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>
@@ -59,8 +59,8 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
-<v t="ekr.20090811134705.6550"><vh>@rst leoUserGuide.txt</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20090811134705.6550" a="E"><vh>@@rst leoUserGuide.txt</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -200,17 +200,14 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050831195331.2"><vh>Chapter 1: Installing Leo</vh>
+<v t="ekr.20050831195331.2" a="E"><vh>Chapter 1: Installing Leo</vh>
 <v t="edream.110203163054.48"><vh>@rst html\install.html</vh>
 <v t="ekr.20050901110110"><vh>@rst-no-head links</vh></v>
 <v t="edream.110203163054.49"><vh>System requirements</vh></v>
 <v t="ekr.20080408060320.784"><vh>Leo's HOME directory</vh></v>
 <v t="edream.110203163054.50"><vh>How to install Leo on Linux</vh></v>
 <v t="ekr.20090622091845.5623"><vh>Installing Leo on MacOS X</vh></v>
-<v t="ekr.20070622141457"><vh>Installing Leo on Windows</vh>
-<v t="ekr.20090623072844.10382"><vh>Installing Qt on Windows</vh></v>
-<v t="edream.110203163054.60"><vh>How to associate Leo with .leo files on Windows</vh></v>
-</v>
+<v t="ekr.20070622141457"><vh>Installing Leo on Windows</vh></v>
 <v t="vivainio.20080409164902.1"><vh>Tracking the development version</vh></v>
 <v t="ekr.20050901174937"><vh>Running Leo</vh></v>
 <v t="ekr.20090705111443.10370"><vh>Running Leo from a console window</vh></v>
@@ -219,7 +216,7 @@
 </v>
 </v>
 <v t="ekr.20050831195331.3"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
-<v t="ekr.20050816073412" a="E"><vh>@rst html\intro.html</vh>
+<v t="ekr.20050816073412"><vh>@rst html\intro.html</vh>
 <v t="ekr.20050816073814"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050816073412.1"><vh>Introduction</vh>
 <v t="ekr.20050822173420"><vh>Leo's main window</vh></v>
@@ -988,11 +985,10 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090717084250.10702"><vh>Other docs</vh>
+<v t="ekr.20090717084250.10702" a="E"><vh>Other docs</vh>
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
-<v t="ekr.20080301071818.1" a="E"
-expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
+<v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20090711120622.10446"><vh>Screen shots page</vh>
 <v t="ekr.20090711120622.10447"><vh>@rst html/screen-shots.html</vh>
@@ -3040,7 +3036,7 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20090324145450.20"></v>
 <v t="ekr.20090718092032.10405"><vh>4.6.1 final</vh>
 <v t="ekr.20090718092032.10406"><vh>Bug fixes</vh>
@@ -3163,6 +3159,10 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20090803084828.5800"><vh>Bugs fixed</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20090824090942.11313" a="E"><vh>Old windows install docs</vh>
+<v t="ekr.20090623072844.10382"><vh>Installing Qt on Windows</vh></v>
+<v t="edream.110203163054.60"><vh>How to associate Leo with .leo files on Windows</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -23138,41 +23138,48 @@ the code they are intended to test.</t>
 <t tx="ekr.20070622090350.66">The test 'if g.unitTesting:' is a shorter replacement for the test 'if g.app and g.app.unitTesting:'.
 
 Using g.getTestVars eliminates pychecker warnings about undefined c and p variables.</t>
-<t tx="ekr.20070622141457">Leo is distributed at present only as a .zip file.
+<t tx="ekr.20070622141457">1. Install Python from http://www.python.org/download/releases/
 
-..  To install Leo using the executable installer:
+2. Install PyQt. Get binary package from
+   http://www.riverbankcomputing.co.uk/software/pyqt/download which
+   matches installed Python version.
+   Then run the installer.
 
-..      1. Download the latest version of Leo's installer from `Leo's download page`_.
-..         The installer will be called something like LeoSetup-4-5.exe.
+3. Install Leo.  Get Leo's .zip file from http://sourceforge.net/projects/leo/
+   You can unpack the .zip file anywhere, including Python's *site-packages* folder,
+   for example, C:\Python25\Lib\site-packages
 
-..      2. Run the installer.
-..         By default, the install will install Leo an **unpacked folder**
-..         called something like Leo-4-5 in your ``Python\Lib\site-packages`` directory.
+4. [optional] Generate/update a junction link from unpacked
+   leo folder to ...\site-packages\leo
 
-.. To install Leo from the .zip file:
+      cd C:\Python25\Lib\site-packages\
+      junction leo leo-4-6-2-final
 
-    1. Download the latest version of Leo (a .zip file) from `Leo's download page`_.  
+5. Create windows shortcut (edit paths as necessary):
 
-    2. Unzip the .zip file.  The **unpacked folder** will have a name like Leo-x-y,
-       where x and y are version numbers.  For example, Leo-4-5 or Leo-4-5-b3.
+      Target   =  C:\Python25\pythonw.exe "C:\Python25\Lib\site-packages\leo\launchLeo.py"
+      Start in =  D:\code
 
-    3. Place the unpacked folder in the 'Program Files' folder or any convenient location.
+6. Associate .leo filetype batch file:
 
-    4. Place the location of the unpacked folder to your python path.
-       One way to do this is adding something like the following to python/Lib/sitecustomize.py::
+      ftype LeoFile=C:\Python25\pythonw.exe "C:\Python25\Lib\site-packages\leo\launchLeo.py" "%1"
+      assoc .leo=LeoFile
 
-        import sys
-        sys.path.append(r'c:\Program Files\Leo-4-5')
+7. [optional] Put this leo.bat in %PATH%:
 
-Another way is to append the path to the unpacked folder to the Windows PYTHONPATH environment variable.
+      @C:\Python25\python.exe -i "C:\Python25\Lib\site-packages\leo\launchLeo.py" %*
 
-Now that you have installed Leo and told Python where to find Leo,
-you are ready to `run Leo`_.
 
-**Note**:
-If you haven't already created a HOME environment variable, it would be good to
-define home to be "%USERPROFILE%\My Documents".  You can check whether HOME exists
-by typing 'echo %HOME%' (without the quotes) in a console window.</t>
+For more information see::
+
+    Junction links:
+        http://technet.microsoft.com/en-gb/sysinternals/bb896768.aspx,
+        http://groups.google.com/group/leo-editor/msg/30116f9193241dc4
+    ftype:
+        http://ss64.com/nt/ftype.html
+    assoc:
+        http://ss64.com/nt/assoc.html
+</t>
 <t tx="ekr.20070622180342">- Added support for chapters to Leo's core
 
   Chapters are regions of a Leo outline whose root is an @chapter node. @chapter
@@ -30170,6 +30177,41 @@ All parts of the find tab can be controlled from the keyboard.
 .. It may be useful for generating the pdf docs.
 
 @all</t>
+<t tx="ekr.20090824090942.11313">@language rest
+
+..  To install Leo using the executable installer:
+
+..      1. Download the latest version of Leo's installer from `Leo's download page`_.
+..         The installer will be called something like LeoSetup-4-5.exe.
+
+..      2. Run the installer.
+..         By default, the install will install Leo an **unpacked folder**
+..         called something like Leo-4-5 in your ``Python\Lib\site-packages`` directory.
+
+.. To install Leo from the .zip file:
+
+    1. Download the latest version of Leo (a .zip file) from `Leo's download page`_.  
+
+    2. Unzip the .zip file.  The **unpacked folder** will have a name like Leo-x-y,
+       where x and y are version numbers.  For example, Leo-4-5 or Leo-4-5-b3.
+
+    3. Place the unpacked folder in the 'Program Files' folder or any convenient location.
+
+    4. Place the location of the unpacked folder to your python path.
+       One way to do this is adding something like the following to python/Lib/sitecustomize.py::
+
+        import sys
+        sys.path.append(r'c:\Program Files\Leo-4-5')
+
+Another way is to append the path to the unpacked folder to the Windows PYTHONPATH environment variable.
+
+Now that you have installed Leo and told Python where to find Leo,
+you are ready to `run Leo`_.
+
+**Note**:
+If you haven't already created a HOME environment variable, it would be good to
+define home to be "%USERPROFILE%\My Documents".  You can check whether HOME exists
+by typing 'echo %HOME%' (without the quotes) in a console window.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?

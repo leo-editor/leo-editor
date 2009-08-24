@@ -2311,82 +2311,47 @@ Installing Leo on Windows
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-Leo is distributed at present only as a .zip file.
+1. Install Python from http://www.python.org/download/releases/
 
-..  To install Leo using the executable installer:
+2. Install PyQt. Get binary package from
+   http://www.riverbankcomputing.co.uk/software/pyqt/download which
+   matches installed Python version.
+   Then run the installer.
 
-..      1. Download the latest version of Leo's installer from `Leo's download page`_.
-..         The installer will be called something like LeoSetup-4-5.exe.
+3. Install Leo.  Get Leo's .zip file from http://sourceforge.net/projects/leo/
+   You can unpack the .zip file anywhere, including Python's *site-packages* folder,
+   for example, C:\Python25\Lib\site-packages
 
-..      2. Run the installer.
-..         By default, the install will install Leo an **unpacked folder**
-..         called something like Leo-4-5 in your ``Python\Lib\site-packages`` directory.
+4. [optional] Generate/update a junction link from unpacked
+   leo folder to ...\site-packages\leo
 
-.. To install Leo from the .zip file:
+      cd C:\Python25\Lib\site-packages\
+      junction leo leo-4-6-2-final
 
-    1. Download the latest version of Leo (a .zip file) from `Leo's download page`_.  
+5. Create windows shortcut (edit paths as necessary):
 
-    2. Unzip the .zip file.  The **unpacked folder** will have a name like Leo-x-y,
-       where x and y are version numbers.  For example, Leo-4-5 or Leo-4-5-b3.
+      Target   =  C:\Python25\pythonw.exe "C:\Python25\Lib\site-packages\leo\launchLeo.py"
+      Start in =  D:\code
 
-    3. Place the unpacked folder in the 'Program Files' folder or any convenient location.
+6. Associate .leo filetype batch file:
 
-    4. Place the location of the unpacked folder to your python path.
-       One way to do this is adding something like the following to python/Lib/sitecustomize.py::
+      ftype LeoFile=C:\Python25\pythonw.exe "C:\Python25\Lib\site-packages\leo\launchLeo.py" "%1"
+      assoc .leo=LeoFile
 
-        import sys
-        sys.path.append(r'c:\Program Files\Leo-4-5')
+7. [optional] Put this leo.bat in %PATH%:
 
-Another way is to append the path to the unpacked folder to the Windows PYTHONPATH environment variable.
-
-Now that you have installed Leo and told Python where to find Leo,
-you are ready to `run Leo`_.
-
-**Note**:
-If you haven't already created a HOME environment variable, it would be good to
-define home to be "%USERPROFILE%\My Documents".  You can check whether HOME exists
-by typing 'echo %HOME%' (without the quotes) in a console window.
-
-Installing Qt on Windows
-~~~~~~~~~~~~~~~~~~~~~~~~
+      @C:\Python25\python.exe -i "C:\Python25\Lib\site-packages\leo\launchLeo.py" %*
 
 
-For Windows, install PyQt using the binary installer at
-http://www.riverbankcomputing.co.uk/software/pyqt/download
+For more information see::
 
-How to associate Leo with .leo files on Windows
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-Leo will open .leo files automatically provided that you associate leo.py with .leo files.
-Here is how to open Leo when double-clicking a .leo file on Windows 2K or XP:
-
--   In Windows 2K or XP, go to ``Start->Settings->Control panel``, open the ``Folder Options`` tab.
--   Select the ``file types`` tab. Press the ``New`` button.
--   Enter ``Leo`` into the ``Create New File Extension`` field. Press OK.
--   With ``Leo`` still highlighted in the ``Registered File Types`` list box, press the ``Advanced`` button.
--   Change the default file type field to something like ``Leo Literate Outline``.
--   Press the ``Icon`` button and browse to the ``LeoDoc`` icon in Leo's ``Icons`` folder.
--   Click OK. This gets the icons right and registers the description of the .leo file.
-
-You now have to tell windows what to do to open the file properly:
-
--   Press the new button to open the ``New Action`` window.
--   In the ``Action`` field type ``Open``, then type **one** of the following lines::
-
-    <python install dir>\pythonw.exe   <path-to-unpacked-folder>\launchLeo.py "%1"
-    <python install dir>\python.exe -i <path-to-unpacked-folder>\launchLeo.py "%1"
-
-**Important**: <path-to-unpacked-folder> refers to the full path to the directory with a name like Leo-x-y,
-where x and y are version numbers.
-This unpacked folder must contain a folder called 'leo'.
-
-**Important**: The -i option is not valid when using pythonw.exe.
-Any call to pythonw -i will cause pythonw.exe to exit immediately.
-
-The first  line opens Leo files with no console window.
-The second line opens Leo files with a console window and leaves the window open after Leo exits.
-You should now be able to double click on a leo file in explorer with Leo.
+    Junction links:
+        http://technet.microsoft.com/en-gb/sysinternals/bb896768.aspx,
+        http://groups.google.com/group/leo-editor/msg/30116f9193241dc4
+    ftype:
+        http://ss64.com/nt/ftype.html
+    assoc:
+        http://ss64.com/nt/assoc.html
 
 Tracking the development version
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -280,6 +280,92 @@ It may not sound particularly serious but I found it very difficult to use.
 The fix was to leoQtGui.updateEditors.
 #@nonl
 #@-node:ekr.20090813084945.5978:Fixed scrolling problem with multiple editors
+#@+node:ekr.20090822060128.6035:Improved the install docs
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/add6242d6f4fc476
+
+From Matt Wilkie
+
+I've installed Leo several times on windows, yet this morning still
+took me a few minutes to find the section you reference above because
+there are at least two other document sections with phrases similar to
+"installing leo". Anyway, this is my simplified recipe for a virgin
+install:
+
+-------------------------
+Installing Leo On Windows
+-------------------------
+//skip any step not needed//
+
+1. Install Python - There are many sources, but from
+http://www.python.org/download/releases/ is good
+
+2. Install PyQt - acquire and run Binary Package from
+http://www.riverbankcomputing.co.uk/software/pyqt/download which
+matches installed Python version (so for python 2.5 scan for the
+"Py2.5" in filename)
+
+3. Install Leo
+   - Head to http://sourceforge.net/projects/leo/ and slap [Download Now]
+   - Unpack python *site-packages* folder, e.g.
+C:\Python25\Lib\site-packages\leo-4-6-2-final
+
+   - [optional] Generate/update a junction link from unpacked
+leo-4-6-2-final to ...\site-packages\leo
+
+      cd C:\Python25\Lib\site-packages\
+      junction leo leo-4-6-2-final
+
+   - Create windows shortcut (edit paths as necessary):
+
+      Target   =  C:\Python25\pythonw.exe
+"C:\Python25\Lib\site-packages\leo\launchLeo.py" --gui=qt
+      Start in =  D:\code
+
+   - Associate .leo filetype batch file:
+
+      ftype LeoFile=C:\Python25\pythonw.exe
+"C:\Python25\Lib\site-packages\leo\launchLeo.py" "--gui=qt" "%1"
+      assoc .leo=LeoFile
+
+   - [optional] Put this leo.bat in %PATH%:
+
+      @C:\Python25\python.exe -i
+"C:\Python25\Lib\site-packages\leo\launchLeo.py" --gui=qt %*
+
+-------------------------
+
+Further reading / Sources used:
+
+   Junction links -
+http://technet.microsoft.com/en-gb/sysinternals/bb896768.aspx,
+http://groups.google.com/group/leo-editor/msg/30116f9193241dc4
+   FTYPE - http://ss64.com/nt/ftype.html
+   ASSOC - http://ss64.com/nt/assoc.html
+
+
+=====================
+Ville's comments
+
+On Thu, Aug 20, 2009 at 10:49 PM, Matt Wilkie<map...@gmail.com> wrote:
+> 3. Install Leo
+>   - Head to http://sourceforge.net/projects/leo/ and slap [Download Now]
+>   - Unpack python *site-packages* folder, e.g.
+> C:\Python25\Lib\site-packages\leo-4-6-2-final
+
+I don't think you need to use site-packages. Just extract it anywhere
+you want (e.g. c:/opt/leo). But I could be wrong.
+
+>   - Associate .leo filetype batch file:
+>n
+>      ftype LeoFile=C:\Python25\pythonw.exe
+> "C:\Python25\Lib\site-packages\leo\launchLeo.py" "--gui=qt" "%1"
+>      assoc .leo=LeoFile
+
+--gui=qt us not needed anymore. 
+#@nonl
+#@-node:ekr.20090822060128.6035:Improved the install docs
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin
