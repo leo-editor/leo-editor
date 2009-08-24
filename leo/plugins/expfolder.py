@@ -22,7 +22,7 @@ import leo.core.leoPlugins as leoPlugins
 import os
 import os.path
 import ConfigParser
-from textnode import savetextnode
+from leo.plugins.textnode import savetextnode
 
 __version__ = "1.0"
 
