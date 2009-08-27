@@ -8,6 +8,8 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 from math import atan2, sin, cos
 
+g.assertUi('qt')
+
 from PyQt4 import QtCore, QtGui, uic
 Qt = QtCore.Qt
 def init ():
