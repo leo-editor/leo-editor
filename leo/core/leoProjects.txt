@@ -894,6 +894,252 @@ def writeCachedTree(self, p, cachefile):
         c.db[cachefile] = tree
 #@-node:ville.20090606131405.6362:writeCachedTree (atFile)
 #@-node:ekr.20090828080035.5984:enableDB logic
+#@+node:ekr.20090828082535.7140:Compute signon properly in bridge
+#@+node:ekr.20070227093530:initLeo & helpers
+def initLeo (self):
+
+    '''Init the Leo app to which this class gives access.
+    This code is based on leo.run().'''
+
+    if not self.isValidPython(): return
+    << import leoGlobals and leoApp >>
+    g.computeStandardDirectories()
+    if not self.getLeoID(): return
+    << import leoNodes and leoConfig >>
+    g.app.inBridge = True # Added 2007/10/21: support for g.getScript.
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.config = leoConfig.configClass()
+    if self.readSettings:
+        g.app.config.readSettingsFiles(None,verbose=self.verbose)
+    self.createGui() # Create the gui *before* loading plugins.
+    if self.verbose: self.reportDirectories()
+    self.adjustSysPath()
+    if self.loadPlugins:
+        g.doHook("start1") # Load plugins.
+    g.app.computeSignon()
+    g.init_sherlock(args=[])
+    g.app.initing = False
+    g.doHook("start2",c=None,p=None,v=None,fileName=None)
+#@+node:ekr.20070227093629.1:<< import leoGlobals and leoApp >>
+# Import leoGlobals, but do NOT set g.
+try:
+    import leo.core.leoGlobals as leoGlobals
+except ImportError:
+    print("Error importing leoGlobals.py")
+
+# Create the application object.
+try:
+    import leo.core.leoApp as leoApp
+    leoGlobals.app = leoApp.LeoApp()
+except ImportError:
+    print("Error importing leoApp.py")
+
+# NOW we can set g.
+self.g = g = leoGlobals
+assert(g.app)
+g.app.leoID = None
+
+# Set leoGlobals.g here, rather than in leoGlobals.
+leoGlobals.g = leoGlobals
+#@-node:ekr.20070227093629.1:<< import leoGlobals and leoApp >>
+#@+node:ekr.20070227093629.2:<< import leoNodes and leoConfig >>
+try:
+    import leo.core.leoNodes as leoNodes
+except ImportError:
+    print("Error importing leoNodes.py")
+    import traceback ; traceback.print_exc()
+
+try:
+    import leo.core.leoConfig as leoConfig
+except ImportError:
+    print("Error importing leoConfig.py")
+    import traceback ; traceback.print_exc()
+#@-node:ekr.20070227093629.2:<< import leoNodes and leoConfig >>
+#@+node:ekr.20070302061713:adjustSysPath
+def adjustSysPath (self):
+
+    '''Adjust sys.path to enable imports as usual with Leo.'''
+
+    import sys
+
+    g = self.g
+
+    #g.trace('loadDir',g.app.loadDir)
+
+    leoDirs = ('config','doc','extensions','modes','plugins','core','test') # 2008/7/30
+
+    for theDir in leoDirs:
+        path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
+        if path not in sys.path:
+            sys.path.append(path)
+#@-node:ekr.20070302061713:adjustSysPath
+#@+node:ekr.20070227095743:createGui
+def createGui (self):
+
+    g = self.g
+
+    if self.guiName == 'nullGui':
+        import leo.core.leoGui as leoGui
+        import leo.core.leoFrame as leoFrame
+        g.app.gui = leoGui.nullGui("nullGui")
+        g.app.log = g.app.gui.log = log = leoFrame.nullLog()
+        log.isNull = False
+        log.enabled = True # Allow prints from nullLog.
+    elif self.guiName == 'qt':
+        import leo.plugins.qtGui as qtGui
+        g.app.gui = qtGui.leoQtGui()
+        print 'qtGui created'
+    else:
+        assert False,'leoBridge.py: unsupported gui: %s' % self.guiName
+
+#@-node:ekr.20070227095743:createGui
+#@+node:ekr.20070227093629.4:isValidPython
+def isValidPython(self):
+
+    import sys
+
+    if sys.platform == 'cli':
+        return True
+
+    message = """\
+Leo requires Python 2.2.1 or higher.
+You may download Python from http://python.org/download/
+"""
+    try:
+        # This will fail if True/False are not defined.
+        import leo.core.leoGlobals as g
+        # print('leoBridge:isValidPython:g',g)
+        # Set leoGlobals.g here, rather than in leoGlobals.py.
+        g.g = g
+    except ImportError:
+        print("isValidPython: can not import leo.core.leoGlobals as leoGlobals")
+        return 0
+    except:
+        print("isValidPytyhon: unexpected exception: import leo.core.leoGlobals as leoGlobals.py as g")
+        import traceback ; traceback.print_exc()
+        return 0
+    try:
+        version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
+        ok = g.CheckVersion(version,'2.2.1')
+        if not ok:
+            print(message)
+            g.app.gui.runAskOkDialog(None,"Python version error",message=message,text="Exit")
+        return ok
+    except:
+        print("isValidPython: unexpected exception: g.CheckVersion")
+        import traceback ; traceback.print_exc()
+        return 0
+#@nonl
+#@-node:ekr.20070227093629.4:isValidPython
+#@+node:ekr.20070227094232:getLeoID
+def getLeoID (self):
+
+    import os
+    import sys
+
+    g = self.g ; tag = ".leoID.txt"
+    homeDir = g.app.homeLeoDir # Was homeDir.
+    globalConfigDir = g.app.globalConfigDir
+    loadDir = g.app.loadDir
+
+    verbose = False and not g.app.unitTesting
+    << try to get leoID from sys.leoID >>
+    if not g.app.leoID:
+        << try to get leoID from "leoID.txt" >>
+    if not g.app.leoID:
+        << try to get leoID from os.getenv('USER') >>
+    return g.app.leoID
+#@+node:ekr.20070227094232.1:<< try to get leoID from sys.leoID>>
+# This would be set by in Python's sitecustomize.py file.
+
+# Use hasattr & getattr to suppress pylint warning.
+# We also have to use a "non-constant" attribute to suppress another warning!
+
+nonConstantAttr = "leoID"
+
+if hasattr(sys,nonConstantAttr):
+    g.app.leoID = getattr(sys,nonConstantAttr)
+    if verbose and not g.app.silentMode:
+        g.es("leoID=",g.app.leoID,spaces=False,color='red')
+#@nonl
+#@-node:ekr.20070227094232.1:<< try to get leoID from sys.leoID>>
+#@+node:ekr.20070227094232.2:<< try to get leoID from "leoID.txt" >>
+for theDir in (homeDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'r')
+            s = f.readline()
+            f.close()
+            if s and len(s) > 0:
+                g.app.leoID = s.strip()
+                if verbose and not g.app.silentMode:
+                    g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
+                break
+            elif verbose:
+                g.es('empty ',tag,' (in ',theDir,')',spaces=False,color = "red")
+        except IOError:
+            g.app.leoID = None
+        except Exception:
+            g.app.leoID = None
+            g.es('unexpected exception in app.setLeoID',color='red')
+            g.es_exception()
+#@-node:ekr.20070227094232.2:<< try to get leoID from "leoID.txt" >>
+#@+node:ekr.20070227094232.3:<< try to get leoID from os.getenv('USER') >>
+try:
+    theId = os.getenv('USER')
+    if theId:
+        if verbose: g.es_print("using os.getenv('USER'):",repr(theId),color='red')
+        g.app.leoID = theId
+
+except Exception:
+    pass
+#@-node:ekr.20070227094232.3:<< try to get leoID from os.getenv('USER') >>
+#@-node:ekr.20070227094232:getLeoID
+#@+node:ekr.20070227093629.9:reportDirectories
+def reportDirectories (self):
+
+    g = self.g
+
+    for kind,theDir in (
+        ("global config",g.app.globalConfigDir),
+        ("home",g.app.homeDir),
+    ):
+        g.es('',kind,'directory','',':',theDir,color='blue')
+#@-node:ekr.20070227093629.9:reportDirectories
+#@-node:ekr.20070227093530:initLeo & helpers
+#@+node:ekr.20090717112235.6007:app.computeSignon
+def computeSignon (self):
+
+    app = self
+    build,date  = leoVersion.build,leoVersion.date
+    guiVersion  = app.gui.getFullVersion()
+    leoVer      = leoVersion.version
+    n1,n2,n3,junk,junk=sys.version_info
+
+    if sys.platform.startswith('win'):
+        sysVersion = 'Windows '
+        try:
+            v = os.sys.getwindowsversion()
+            sysVersion += ', '.join([str(z) for z in v])
+        except Exception:
+            pass
+
+    else: sysVersion = sys.platform
+
+    app.signon = 'Leo %s, build %s, %s' % (
+        leoVer,build,date)
+    app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
+        n1,n2,n3,guiVersion,sysVersion)
+#@nonl
+#@-node:ekr.20090717112235.6007:app.computeSignon
+#@+node:ekr.20070212145124:getFullVersion
+def getFullVersion (self,c=None):
+
+    return 'leoGui: dummy version'
+#@-node:ekr.20070212145124:getFullVersion
+#@-node:ekr.20090828082535.7140:Compute signon properly in bridge
 #@-node:ekr.20090721093155.5986:Bugs
 #@-node:ekr.20090718091653.5982:Leo 4.7 projects
 #@-all
