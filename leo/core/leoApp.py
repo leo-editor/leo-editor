@@ -128,6 +128,7 @@ class LeoApp:
             "forth"         : "\\_ _(_ _)", # Use the "REM hack"
             "fortran"       : "C",
             "fortran90"     : "!",
+            "haskell"       : "--_ {-_ _-}",
             "html"          : "<!-- -->",
             "ini"           : ";",
             "java"          : "// /* */",
@@ -173,6 +174,7 @@ class LeoApp:
             "forth"         : "forth",
             "fortran"       : "f",
             "fortran90"     : "f90",
+            "haskell"       : "hs",
             "html"          : "html",
             "ini"           : "ini",
             "java"          : "java",
@@ -220,6 +222,7 @@ class LeoApp:
             "f90"   : "fortran90",
             "h"     : "c",
             "html"  : "html",
+            "hs"    : "haskell",
             "ini"   : "ini",
             "java"  : "java",
             "ksh"   : "kshell", # Leo 4.5.1.
