@@ -518,7 +518,7 @@ class atFile:
         root.clearDirty() # May be set dirty below.
         if at.errors == 0:
             #@        << advise user to delete all unvisited nodes >>
-            #@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+            #@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
             resurrected = 0
             for p in root.self_and_subtree_iter():
 
@@ -530,7 +530,7 @@ class atFile:
             if resurrected:
                 g.es('you may want to delete ressurected nodes')
 
-            #@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+            #@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
             #@nl
         if at.errors == 0 and not at.importing:
             # Package this as a method for use by mod_labels plugin.
