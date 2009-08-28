@@ -114,6 +114,10 @@ app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
 isPython3 = sys.version_info >= (3,0,0)
 
+enableDB = True
+if not enableDB:
+    print 'leoGlobals.py: caching disabled'
+
 # "compile-time" constants.
 # It makes absolutely no sense to change these after Leo loads.
 unified_nodes = False

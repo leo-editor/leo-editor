@@ -246,6 +246,7 @@ def scanOptions():
     parser = optparse.OptionParser()
     parser.add_option('-c', '--config', dest="one_config_path")
     parser.add_option('-f', '--file',   dest="fileName")
+    parser.add_option('--no-cache',     dest='no_cache',action="store_true")
     parser.add_option('--gui',          dest="gui", help = 'gui to use (qt/tk)')
     parser.add_option('--silent',       action="store_true",dest="silent")
     parser.add_option('--script',       dest="script")
@@ -267,6 +268,11 @@ def scanOptions():
             g.app.oneConfigFilename = path
         else:
             g.es_print('Invalid -c option: file not found:',path,color='red')
+
+    # --no-cache
+    if options.no_cache:
+        g.trace('disabling caching')
+        g.enableDB = False
 
     # -f or --file
     fileName = options.fileName

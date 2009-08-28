@@ -474,6 +474,7 @@ class atFile:
         #@-node:ekr.20041005105605.22:<< set fileName >>
         #@nl
 
+        doCache = g.enableDB and (thinFile or atShadow)
         at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
         if at.errors: return False
         fileName = at.openFileForReading(fileName,fromString=fromString)
@@ -488,7 +489,7 @@ class atFile:
         # Remember that we have read this file.
         root.v.at_read = True # Create the attribute.
 
-        if cachefile in c.db:
+        if doCache and cachefile in c.db:
             # This message isn't so useful.
             # if not g.unitTesting: # g.es('uncache:',root.h)
 
@@ -550,17 +551,19 @@ class atFile:
         return at.errors == 0
     #@-node:ekr.20041005105605.21:read (atFile)
     #@+node:ville.20090606131405.6362:writeCachedTree (atFile)
-    def writeCachedTree(self, pos, cachefile):
+    def writeCachedTree(self, p, cachefile):
+
+        trace = False and not g.unitTesting
         c = self.c
 
-        if cachefile in c.db:
-            # g.trace('Already cached')
-            pass
+        if not g.enableDB:
+            if trace: g.trace('cache disabled')
+        elif cachefile in c.db:
+            if trace: g.trace('already cached')
         else:
-            tree = g.tree_at_position(pos)
+            if trace: g.trace('caching ',p.h)
+            tree = g.tree_at_position(p)
             c.db[cachefile] = tree
-
-        return True
     #@-node:ville.20090606131405.6362:writeCachedTree (atFile)
     #@+node:ville.20090606150238.6351:_contentHashFile (atFile)
     def _contentHashFile(self, pos, content):

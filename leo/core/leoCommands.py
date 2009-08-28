@@ -317,15 +317,16 @@ class baseCommands (object):
         import hashlib
         pth, bname = os.path.split(self.mFileName)
 
-        if pth and bname:
+        if pth and bname and g.enableDB:
             dbdirname = g.app.homeLeoDir + "/db/" + bname + "_" + hashlib.md5(self.mFileName.lower()).hexdigest()
             # use compressed pickles (handy for @thin caches)
             self.db = leo.external.pickleshare.PickleShareDB(dbdirname, protocol='picklez')
 
         else:
-            self.db = None
+            self.db = {}
             # if not g.app.silentMode and not g.unitTesting:
-                # print("\n*** No file in controller, using c.db=None ***\n")
+                # print('caching disabled')
+
         #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
         #@nl
         self.config = configSettings(c)

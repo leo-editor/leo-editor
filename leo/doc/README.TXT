@@ -10,7 +10,7 @@ Leo 4.6.2 fixes several bugs reported since Leo 4.6 was released.
 
 The highlights of Leo 4.6
 --------------------------
-?
+
 - Cached external files *greatly* reduces the time to load .leo files.
 - Leo now features a modern Qt interface by default.
   Leo's legacy Tk interface can also be used.
