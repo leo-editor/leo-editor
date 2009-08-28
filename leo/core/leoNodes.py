@@ -340,9 +340,8 @@ class vnode (baseVnode):
             # It is named .context rather than .c to emphasize its limited usage.
 
         self.iconVal = 0
-        self.parents = [] # List of all parents of this node.
-            # This list will have 1 member unless the parent node is a clone.
-            # In particular, cloned nodes do *not* share parents.
+        self.parents = [] # Unordered list of all parents of this node.
+
         self.statusBits = 0 # status bits
 
         if g.unified_nodes: # vnodes contain all tnode info.
@@ -363,9 +362,10 @@ class vnode (baseVnode):
                 self._bodyString = unicode('')
 
             self.children = [] # List of all children of this node.
-            self.vnodeList = []
+            # self.vnodeList = []
                 # List of all vnodes pointing to this tnode.
                 # v is a clone iff len(v.vnodeList) > 1.
+                # Thus, the same parent may appear multiple times in this list.
 
             # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
             self.fileIndex = g.app.nodeIndices.getNewIndex()
@@ -390,20 +390,16 @@ class vnode (baseVnode):
     def dump (self,label=""):
 
         v = self
-
-        if label:
-            g.pr('-'*10,label,v)
-        else:
-            g.pr("self    ",v.dumpLink(v))
-            g.pr("len(vnodeList)",len(v.t.vnodeList))
-            g.pr('len(parents)',len(v.parents))
-            g.pr('len(children)',len(v.t.children))
-
-        if 1:
-            g.pr("t",v.dumpLink(v.t))
-            g.pr("vnodeList", g.listToString(v.t.vnodeList))
-            g.pr('parents',g.listToString(v.parents))
-            g.pr('children',g.listToString(v.t.children))
+        print('%s %s %s' % ('-'*10,label,v))
+        if not g.unified_nodes:
+            print("len(vnodeList) %s" % len(v.t.vnodeList))
+        print('len(parents) %s' % len(v.parents))
+        print('len(children) %s' % len(v.t.children))
+        if not g.unified_nodes:
+            print("t %s" % v.dumpLink(v.t))
+            print("vnodeList %s" %  g.listToString(v.t.vnodeList))
+        print('parents %s' % g.listToString(v.parents))
+        print('children%s' % g.listToString(v.t.children))
     #@-node:ekr.20040312145256:v.dump
     #@+node:ekr.20060910100316:v.__hash__ (only for zodb)
     if use_zodb and ZODB:
@@ -700,7 +696,10 @@ class vnode (baseVnode):
     #@+node:ekr.20031218072017.3368:v.isCloned
     def isCloned (self):
 
-        return len(self.t.vnodeList) > 1
+        if g.unified_nodes:
+            return len(self.parents) > 1
+        else:
+            return len(self.t.vnodeList) > 1
     #@-node:ekr.20031218072017.3368:v.isCloned
     #@+node:ekr.20031218072017.3369:v.isDirty
     def isDirty (self):
@@ -914,42 +913,123 @@ class vnode (baseVnode):
     #@-node:ekr.20031218072017.3402:v.setSelection
     #@-node:ekr.20031218072017.3384:v.Setters
     #@+node:ekr.20080427062528.9:v.Low level methods
+    #@+node:ekr.20090706110836.6135:v._addLink (new) & helper & test
+    def _addLink (self,childIndex,parent_v,adjust=True):
+        '''Adjust links after adding a link to v.'''
+
+        trace = False and not g.unitTesting
+        v = self
+
+        # Update parent_v.children & v.parents.
+        parent_v.children.insert(childIndex,v)
+        v.parents.append(parent_v)
+        if trace: g.trace('*** added parent',parent_v,'to',v,
+            'len(parents)',len(v.parents))
+
+        # Set zodb changed flags.
+        v._p_changed = 1
+        parent_v._p_changed = 1
+
+        # If v has only one parent, we adjust all
+        # the parnets links in the descendant tree.
+        if adjust:
+            if len(v.parents) == 1:
+                for child in v.children:
+                    child._addParentLinks(parent=v)
+    #@+node:ekr.20090804184658.6129:v._addParentLinks
+    def _addParentLinks(self,parent): 
+
+        trace = False and not g.unitTesting
+        v = self
+
+        v.parents.append(parent)
+        if trace: g.trace(
+            '*** added parent',parent,'to',v,'len(parents)',len(v.parents))
+
+        if len(v.parents) == 1:
+            for child in v.children:
+                child._addParentLinks(parent=v)
+    #@nonl
+    #@-node:ekr.20090804184658.6129:v._addParentLinks
+    #@-node:ekr.20090706110836.6135:v._addLink (new) & helper & test
+    #@+node:ekr.20080427062528.10:v._computeParentsOfChildren (replaced by v._add/cutLink)
+    # This is called from c.promote/demote as well as several undo methods.
+    # Also called from linkAs... methods.
+
+    def _computeParentsOfChildren (self,children=None):
+
+        '''add all nodes in v.t.vnodeList to the parent list of all v's children.'''
+
+        trace = False and not g.unitTesting
+
+        v = self # The parent vnode
+
+        if g.unified_nodes:
+            assert False,'Should not be called: %s' % g.callers(5)
+        else:
+            if children is None:
+                children = v.t.children
+            for child in children:
+                child.parents = []
+                for v2 in v.t.vnodeList:
+                    if v2 not in child.parents:
+                        if trace: g.trace('Adding %s to parents of %s' % (v2,child))
+                        child.parents.append(v2)
+    #@-node:ekr.20080427062528.10:v._computeParentsOfChildren (replaced by v._add/cutLink)
+    #@+node:ekr.20090804184658.6128:v._cutLink (new)
+    def _cutLink (self,childIndex,parent_v):
+        '''Adjust links after cutting a link to v.'''
+        v = self
+
+        assert parent_v.children[childIndex]==v
+        del parent_v.children[childIndex]
+        v.parents.remove(parent_v)
+        v._p_changed = 1
+        parent_v._p_changed = 1
+
+        # If v has no more parents, we adjust all
+        # the parent links in the descendant tree.
+        if len(v.parents) == 0:
+            for child in v.children:
+                child._cutParentLinks(parent=v)
+    #@nonl
+    #@+node:ekr.20090804190529.6133:v._cutParentLinks
+    def _cutParentLinks(self,parent):
+
+        trace = False and not g.unitTesting
+        v = self
+
+        if trace: g.trace('parent',parent,'v',v)
+        v.parents.remove(parent)
+
+        if len(v.parents) == 0:
+            for child in v.children:
+                child._cutParentLinks(parent=v)
+    #@-node:ekr.20090804190529.6133:v._cutParentLinks
+    #@-node:ekr.20090804184658.6128:v._cutLink (new)
     #@+node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
     def _linkAsNthChild (self,parent_v,n):
 
         """Links self as the n'th child of vnode pv"""
 
         # Similar to p._linkAsNthChild.
-        v = self
+        v = self # The child node.
 
-         # Add v to it's tnode's vnodeList.
-        if v not in v.t.vnodeList:
-            v.t.vnodeList.append(v)
-            v.t._p_changed = 1 # Support for tnode class.
+        if g.unified_nodes:
+            v._addLink(n,parent_v)
+        else:
+            # Add v to it's tnode's vnodeList.
+            if v not in v.t.vnodeList:
+                v.t.vnodeList.append(v)
+                v.t._p_changed = 1 # Support for tnode class.
 
-        # Add v to parent_v's children.
-        parent_v.t.children.insert(n,v)
-        parent_v._p_changed = 1
+            # Add v to parent_v's children.
+            parent_v.t.children.insert(n,v)
+            parent_v._p_changed = 1
 
-        # Add parent_v to v's parents.
-        parent_v._computeParentsOfChildren()
+            # Add parent_v to v's parents.
+            parent_v._computeParentsOfChildren()
     #@-node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
-    #@+node:ekr.20080427062528.10:v._computeParentsOfChildren
-    def _computeParentsOfChildren (self,children=None):
-
-        '''add all nodes in v.t.vnodeList to the parent list of all v's children.'''
-
-        v = self
-        if children is None:
-            children = v.t.children
-
-        for child in children:
-            child.parents = []
-            for v2 in v.t.vnodeList:
-                if v2 not in child.parents:
-                    # g.trace('Adding %s to parents of %s' % (v2,child))
-                    child.parents.append(v2)
-    #@-node:ekr.20080427062528.10:v._computeParentsOfChildren
     #@-node:ekr.20080427062528.9:v.Low level methods
     #@+node:ekr.20090130065000.1:v.Properties
     #@+node:ekr.20090130114732.5:v.b Property
@@ -1326,7 +1406,6 @@ class position (object):
     def dump (self,label=""):
 
         p = self
-        g.pr('-'*10,label,p)
         if p.v:
             p.v.dump() # Don't print a label
 
@@ -1340,7 +1419,8 @@ class position (object):
 
         p = self
 
-        # Create a complete key.
+        # For unified nodes we must include a complete key,
+        # so we can distinguish between clones.
         result = []
         for z in p.stack:
             v,childIndex = z
@@ -1349,16 +1429,6 @@ class position (object):
         result.append('%s:%s' % (id(p.v),p._childIndex))
 
         return '.'.join(result)
-
-        # Old code
-
-        # vList = [z[0] for z in p.stack]
-
-        # return '%s:%s.%s' % (
-            # id(p.v),
-            # p._childIndex,
-            # ','.join([str(id(z)) for z in vList])
-        # )
     #@-node:ekr.20080416161551.191:p.key
     #@-node:ekr.20040228094013: p.ctor & other special methods...
     #@+node:ekr.20090128083459.74:p.Properties
@@ -1614,7 +1684,10 @@ class position (object):
     def isCloned (self):
 
         p = self
-        return len(p.v.t.vnodeList) > 1
+
+        return p.v.isCloned()
+
+        # return len(p.v.t.vnodeList) > 1
     #@-node:ekr.20040306215056:p.isCloned
     #@+node:ekr.20040307104131.2:p.isRoot
     def isRoot (self):
@@ -1794,15 +1867,18 @@ class position (object):
         p = self
         p.v.clearDirty()
     #@-node:ekr.20040311113514:p.clearDirty
-    #@+node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
+    #@+node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes (revised)
     def findAllPotentiallyDirtyNodes(self):
 
         trace = False and not g.unitTesting
         p = self ; c = p.v.context
 
-        # Start with all nodes in the vnodeList.
+        # Set the starting nodes.
         nodes = []
-        newNodes = p.v.t.vnodeList[:]
+        if g.unified_nodes:
+            newNodes = [p.v]
+        else:
+            newNodes = p.v.t.vnodeList[:]
 
         # Add nodes until no more are added.
         while newNodes:
@@ -1810,9 +1886,10 @@ class position (object):
             # g.trace(len(newNodes))
             nodes.extend(newNodes)
             for v in newNodes:
-                for v2 in v.t.vnodeList:
-                    if v2 not in nodes and v2 not in addedNodes:
-                        addedNodes.append(v2)
+                if not g.unified_nodes:
+                    for v2 in v.t.vnodeList:
+                        if v2 not in nodes and v2 not in addedNodes:
+                            addedNodes.append(v2)
                 for v2 in v.parents:
                     if v2 not in nodes and v2 not in addedNodes:
                         addedNodes.append(v2)
@@ -1826,7 +1903,7 @@ class position (object):
         # g.trace('done',len(nodes))
         if trace: g.trace(nodes)
         return nodes
-    #@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
+    #@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes (revised)
     #@+node:ekr.20040702104823:p.inAtIgnoreRange
     def inAtIgnoreRange (self):
 
@@ -2463,21 +2540,20 @@ class position (object):
         p = self ; context = p.v.context
 
         if g.unified_nodes:
-            import copy
-            p2 = p.copy()
-            p2.v = copy.copy(p.v)
+            p2 = p.copy() # Do *not* copy the vnode!
+            p2._linkAfter(p) # This should "just work"
         else:
             p2 = p.copy()
             p2.v = vnode(context=context,t=p2.v.t)
 
-        p2._linkAfter(p)
-        p2.v._computeParentsOfChildren()
-        p2._parentVnode()._computeParentsOfChildren()
+            p2._linkAfter(p)
+            p2.v._computeParentsOfChildren()
+            p2._parentVnode()._computeParentsOfChildren()
 
-        assert (p.v.t == p2.v.t)
-        for z in (p.v,p2.v):
-            if z not in p.v.t.vnodeList:
-                p.v.t.vnodeList.append(z)
+            assert (p.v.t == p2.v.t)
+            for z in (p.v,p2.v):
+                if z not in p.v.t.vnodeList:
+                    p.v.t.vnodeList.append(z)
 
         return p2
     #@-node:ekr.20040303175026.8:p.clone
@@ -2523,9 +2599,11 @@ class position (object):
                 break
 
         p._unlink()
-        p._deleteLinksInTree()
-        p.v._computeParentsOfChildren()
-        p._parentVnode()._computeParentsOfChildren()
+
+        if not g.unified_nodes:
+            p._deleteLinksInTree()
+            p.v._computeParentsOfChildren()
+            p._parentVnode()._computeParentsOfChildren()
     #@-node:ekr.20040303175026.2:p.doDelete
     #@+node:ekr.20040303175026.3:p.insertAfter
     def insertAfter (self):
@@ -2881,109 +2959,137 @@ class position (object):
 
         """Move a position to the position of the previous visible node."""
 
-        trace = False and not g.unitTesting
+        trace = False and g.unified_nodes and not g.unitTesting
+        verbose = True
         p = self ; limit,limitIsVisible = c.visLimit()
-
-        if trace: g.trace('limit',limit,'limitIsVisible',limitIsVisible)
-
-        def checkLimit (p):
-            '''Return done, return-val'''
-            if limit:
-                if limit == p:
-                    if trace: g.trace('at limit',p)
-                    return True,g.choose(limitIsVisible and p.isVisible(c),p,None)
-                elif limit.isAncestorOf(p):
-                    return False,None
-                else:
-                    if trace: g.trace('outside limit tree',limit,p)
-                    return True,None
-            else:
-                return False,None
-
+        if trace and verbose:
+            g.trace(p,'limit',limit,'limitIsVisible',limitIsVisible)
+        if trace: g.trace('***entry','parent',p.parent(),'p',p,g.callers(5))
         while p:
             # Short-circuit if possible.
             back = p.back()
-            if trace: g.trace(
-                'back',back,'hasChildren',bool(back and back.hasChildren()),
-                'isExpanded',bool(back and back.isExpanded()))
+                # g.trace(
+                # 'back',back,'hasChildren',bool(back and back.hasChildren()),
+                # 'isExpanded',bool(back and back.isExpanded()))
             if back and (not back.hasChildren() or not back.isExpanded()):
                 p.moveToBack()
             else:
                 p.moveToThreadBack()
+            if trace: g.trace(p.parent(),p)
             if p:
-                if trace: g.trace('*p',p.h)
-                done,val = checkLimit(p)
+                if trace and verbose: g.trace('**p',p)
+                done,val = self.checkVisBackLimit(limit,limitIsVisible,p)
                 if done:
-                    if trace: g.trace('done')
+                    if trace and verbose: g.trace('done',p)
                     return val
                 if p.isVisible(c):
-                    if trace: g.trace('isVisible')
+                    if trace and verbose: g.trace('isVisible',p)
                     return p
         else:
             # assert not p.
             return p
+    #@+node:ekr.20090715145956.6166:checkVisBackLimit
+    def checkVisBackLimit (self,limit,limitIsVisible,p):
+
+        '''Return done, return-val'''
+
+        trace = True and not g.unitTesting
+        c = p.v.context
+
+        if limit:
+            if limit == p:
+                if trace: g.trace('at limit',p)
+                if limitIsVisible and p.isVisible(c):
+                    return True,p
+                else:
+                    return True,None
+                #return True,g.choose(limitIsVisible and p.isVisible(c),p,None)
+            elif limit.isAncestorOf(p):
+                return False,None
+            else:
+                if trace: g.trace('outside limit tree',limit,p)
+                return True,None
+        else:
+            return False,None
+    #@-node:ekr.20090715145956.6166:checkVisBackLimit
     #@-node:ekr.20080416161551.210:p.moveToVisBack
     #@+node:ekr.20080416161551.211:p.moveToVisNext
     def moveToVisNext (self,c):
 
         """Move a position to the position of the next visible node."""
 
-        p = self ; limit,limitIsVisible = c.visLimit() ; trace = False
-
-        def checkLimit (p):
-            '''Return done, return-val'''
-            if limit:
-                # Unlike moveToVisBack, being at the limit does not terminate.
-                if limit == p:
-                    return False, None
-                elif limit.isAncestorOf(p):
-                    return False,None
-                else:
-                    if trace: g.trace('outside limit tree')
-                    return True,None
-            else:
-                return False,None
-
+        trace = False and g.unified_nodes and not g.unitTesting
+        verbose = False
+        p = self ; limit,limitIsVisible = c.visLimit()
+        if trace: g.trace(p.parent(),p)
         while p:
-            if trace: g.trace(
-                'hasChildren',p.hasChildren(),
-                'isExpanded',p.isExpanded(),
-                p.h)
+            if trace: g.trace(p.parent(),p)
+            # if trace: g.trace('hasChildren %s, isExpanded %s %s' % (
+                # p.hasChildren(),p.isExpanded(),p.h))
             # Short-circuit if possible.
             if p.hasNext() and (not p.hasChildren() or not p.isExpanded()):
                 p.moveToNext()
             else:
                 p.moveToThreadNext()
+            if trace: g.trace(p.parent(),p)
             if p:
-                if trace: g.trace('*p',p.h)
-                done,val = checkLimit(p)
+                if trace and verbose: g.trace('**p',p)
+                done,val = self.checkVisNextLimit(limit,p)
                 if done: return val
                 if p.isVisible(c):
                     return p.copy()
         else:
             # assert not p.
             return p
-    #@nonl
+    #@+node:ekr.20090715145956.6167:checkVisNextLimit
+    def checkVisNextLimit (self,limit,p):
+
+        '''Return done, return-val'''
+
+        trace = False and not g.unitTesting
+
+        if limit:
+            # Unlike moveToVisBack, being at the limit does not terminate.
+            if limit == p:
+                return False, None
+            elif limit.isAncestorOf(p):
+                return False,None
+            else:
+                if trace: g.trace('outside limit tree')
+                return True,None
+        else:
+            return False,None
+    #@-node:ekr.20090715145956.6167:checkVisNextLimit
     #@-node:ekr.20080416161551.211:p.moveToVisNext
     #@-node:ekr.20080416161551.199:p.moveToX
     #@+node:ekr.20080423062035.1:p.Low level methods
     # These methods are only for the use of low-level code
     # in leoNodes.py, leoFileCommands.py and leoUndo.py.
     #@nonl
-    #@+node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
+    #@+node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink (no change)
     def _adjustPositionBeforeUnlink (self,p2):
 
         '''Adjust position p before unlinking p2.'''
 
+        # p will change if p2 is a previous sibling of p or
+        # p2 is a previous sibling of any ancestor of p.
+
+        trace = False and not g.unitTesting
         p = self ; sib = p.copy()
 
+        if trace: g.trace('entry',p.stack)
+
+        # A special case for previous siblings.
+        # Adjust p._childIndex, not the stack's childIndex.
         while sib.hasBack():
             sib.moveToBack()
             if sib == p2:
                 p._childIndex -= 1
-                break
+                if trace: g.trace('***new index: %s\n%s' % (
+                    p.h,p.stack))
+                return ### break
 
-        # Major bug fix: 6/26/2008. Adjust p's stack as well.
+        # Adjust p's stack.
         stack = [] ; changed = False ; i = 0
         while i < len(p.stack):
             v,childIndex = p.stack[i]
@@ -2992,38 +3098,164 @@ class position (object):
                 if p2.v == p3.v: # A match with the to-be-moved node?
                     stack.append((v,childIndex-1),)
                     changed = True
-                    break
+                    break # terminate only the inner loop.
                 p3.moveToBack()
             else:
                 stack.append((v,childIndex),)
             i += 1
 
         if changed:
-            # g.trace('***new stack','p',p,'stack',stack)
+            if trace: g.trace('***new stack: %s\n%s' % (
+                p.h,stack))
             p.stack = stack
-    #@-node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
-    #@+node:ekr.20040409203454.1:p._deleteLinksInTree
+    #@nonl
+    #@+node:ekr.20090713125326.6116:@test p.adjustPositionBeforeUnlink
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+
+        table = (
+            '1',
+            '1-1','1-1-1','1-1-2',
+            '1-2','1-2-1','1-2-2',
+            '2',
+            '2-1','2-1-1','2-1-2',
+            '2-2','2-2-1','2-2-2',
+            '3',
+            '3-1','3-1-1','3-1-2',
+            '3-2','3-2-1','3-2-2',
+        )
+
+        for suffix in table:
+            h = 'node %s' % suffix
+            p2 = g.findNodeInTree(c,p,h)
+            assert p2,h
+
+        table2 = (
+            ('2-1-2','2-1-1','2-1-1'),
+            ('3','2','2'),
+        )  
+
+        for h1,h2,h3 in table2:
+            p1 = g.findNodeInTree(c,p,'node %s' % h1)
+            p2 = g.findNodeInTree(c,p,'node %s' % h2)
+            p3 = g.findNodeInTree(c,p,'node %s' % h3)
+            p1._adjustPositionBeforeUnlink(p2)
+            result = p1
+            assert result.stack == p3.stack,'expected %s got %s' % (
+                p3.h,result and result.h or '<none>')
+
+        # Data.
+        #@    @+others
+        #@+node:ekr.20090713125326.6117:node 1
+        # Node 1
+        #@nonl
+        #@+node:ekr.20090713125326.6118:node 1-1
+        # node 1-1
+        #@nonl
+        #@+node:ekr.20090713125326.6119:node 1-1-1
+        # node 1-1-1
+        #@nonl
+        #@-node:ekr.20090713125326.6119:node 1-1-1
+        #@+node:ekr.20090713125326.6135:node 1-1-2
+        # node 1-1-2
+        #@nonl
+        #@-node:ekr.20090713125326.6135:node 1-1-2
+        #@-node:ekr.20090713125326.6118:node 1-1
+        #@+node:ekr.20090713125326.6133:node 1-2
+        # node 1-2
+        #@nonl
+        #@+node:ekr.20090713125326.6134:node 1-2-1
+        # node 1-2-1
+        #@nonl
+        #@-node:ekr.20090713125326.6134:node 1-2-1
+        #@+node:ekr.20090713125326.6136:node 1-2-2
+        # node 1-2-2
+        #@nonl
+        #@-node:ekr.20090713125326.6136:node 1-2-2
+        #@-node:ekr.20090713125326.6133:node 1-2
+        #@-node:ekr.20090713125326.6117:node 1
+        #@+node:ekr.20090713125326.6124:node 2
+        # node 2
+        #@nonl
+        #@+node:ekr.20090713125326.6125:node 2-1
+        # node 2-1
+        #@nonl
+        #@+node:ekr.20090713125326.6126:node 2-1-1
+        # node 2-1-1
+        #@nonl
+        #@-node:ekr.20090713125326.6126:node 2-1-1
+        #@+node:ekr.20090713125326.6137:node 2-1-2
+        # node 2-1-2
+        #@-node:ekr.20090713125326.6137:node 2-1-2
+        #@-node:ekr.20090713125326.6125:node 2-1
+        #@+node:ekr.20090713125326.6142:node 2-2
+        # node 2-2
+        #@nonl
+        #@+node:ekr.20090713125326.6143:node 2-2-1
+        # node 2-2-1
+        #@nonl
+        #@-node:ekr.20090713125326.6143:node 2-2-1
+        #@+node:ekr.20090713125326.6144:node 2-2-2
+        # node 2-2-2
+        #@-node:ekr.20090713125326.6144:node 2-2-2
+        #@-node:ekr.20090713125326.6142:node 2-2
+        #@-node:ekr.20090713125326.6124:node 2
+        #@+node:ekr.20090713125326.6130:node 3
+        # node 3
+        #@nonl
+        #@+node:ekr.20090713125326.6131:node 3-1
+        # node 3-1
+        #@+node:ekr.20090713125326.6132:node 3-1-1
+        # node 3-1-1
+        #@nonl
+        #@-node:ekr.20090713125326.6132:node 3-1-1
+        #@+node:ekr.20090713125326.6138:node 3-1-2
+        # node 3-1-2
+        #@-node:ekr.20090713125326.6138:node 3-1-2
+        #@-node:ekr.20090713125326.6131:node 3-1
+        #@+node:ekr.20090713125326.6148:node 3-2
+        # node 3-2
+        #@+node:ekr.20090713125326.6149:node 3-2-1
+        # node 3-2-1
+        #@nonl
+        #@-node:ekr.20090713125326.6149:node 3-2-1
+        #@+node:ekr.20090713125326.6150:node 3-2-2
+        # node 3-2-2
+        #@-node:ekr.20090713125326.6150:node 3-2-2
+        #@-node:ekr.20090713125326.6148:node 3-2
+        #@-node:ekr.20090713125326.6130:node 3
+        #@-others
+    #@-node:ekr.20090713125326.6116:@test p.adjustPositionBeforeUnlink
+    #@-node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink (no change)
+    #@+node:ekr.20040409203454.1:p._deleteLinksInTree (not used with unified nodes)
     def _deleteLinksInTree (self):
 
         """Adjust links when deleting node."""
 
+        trace = True and not g.unitTesting
+
         root = p = self
 
-        # Delete p.v from the its own vnodeList.
-        if p.v in p.v.t.vnodeList:
-            # g.trace('**** remove p.v from %s' % p.h)
-            p.v.t.vnodeList.remove(p.v)
-            p.v.t._p_changed = 1
-            assert(p.v not in p.v.t.vnodeList)
+        if g.unified_nodes:
+            pass
 
-        # Recursively delete links in the subtree.
-        if len(p.v.t.vnodeList) == 0:
-            # This node is not shared by other nodes.
-            for p in root.children_iter():
-                p._deleteLinksInTree()
-    #@-node:ekr.20040409203454.1:p._deleteLinksInTree
+        else:
+            # Delete p.v from the its own vnodeList.
+            if p.v in p.v.t.vnodeList:
+                # g.trace('**** remove p.v from %s' % p.h)
+                p.v.t.vnodeList.remove(p.v)
+                p.v.t._p_changed = 1
+                assert(p.v not in p.v.t.vnodeList)
+
+            # Recursively delete links in the subtree.
+            if len(p.v.t.vnodeList) == 0:
+                # This node is not shared by other nodes.
+                for p in root.children_iter():
+                    p._deleteLinksInTree()
+    #@-node:ekr.20040409203454.1:p._deleteLinksInTree (not used with unified nodes)
     #@+node:ekr.20080416161551.214:p._linkAfter
-    def _linkAfter (self,p_after):
+    def _linkAfter (self,p_after,adjust=True):
 
         '''Link self after p_after.'''
 
@@ -3035,20 +3267,26 @@ class position (object):
         p.stack = p_after.stack[:]
         p._childIndex = p_after._childIndex + 1
 
-        # Add v to it's tnode's vnodeList.
-        if p.v not in p.v.t.vnodeList:
-            p.v.t.vnodeList.append(p.v)
-            p.v.t._p_changed = 1 # Support for tnode class.
+        if g.unified_nodes:
+            # Set the links.
+            child = p.v
+            n = p_after._childIndex+1
+            child._addLink(n,parent_v,adjust=adjust)
+        else:
+            # Add v to it's tnode's vnodeList.
+            if p.v not in p.v.t.vnodeList:
+                p.v.t.vnodeList.append(p.v)
+                p.v.t._p_changed = 1 # Support for tnode class.
 
-        # Add p.v to parent_v's children.
-        parent_v.t.children.insert(p_after._childIndex+1,p.v)
-        parent_v._p_changed = 1
+            # Add p.v to parent_v's children.
+            parent_v.t.children.insert(p_after._childIndex+1,p.v)
+            parent_v._p_changed = 1
 
-        # Add all all nodes in parent_v.t.vnodeList to p.v.parents
-        parent_v._computeParentsOfChildren()
+            # Add all all nodes in parent_v.t.vnodeList to p.v.parents
+            parent_v._computeParentsOfChildren()
     #@-node:ekr.20080416161551.214:p._linkAfter
     #@+node:ekr.20080416161551.215:p._linkAsNthChild
-    def _linkAsNthChild (self,parent,n):
+    def _linkAsNthChild (self,parent,n,adjust=True):
 
         p = self
         parent_v = parent.v
@@ -3058,18 +3296,21 @@ class position (object):
         p.stack.append((parent_v,parent._childIndex),)
         p._childIndex = n
 
-        # Add p.v to it's tnode's vnodeList.
-        if p.v not in p.v.t.vnodeList:
-            p.v.t.vnodeList.append(p.v)
-            p.v.t._p_changed = 1 # Support for tnode class.
+        if g.unified_nodes:
+            child = p.v
+            child._addLink(n,parent_v,adjust=adjust)
+        else:
+            # Add p.v to it's tnode's vnodeList.
+            if p.v not in p.v.t.vnodeList:
+                p.v.t.vnodeList.append(p.v)
+                p.v.t._p_changed = 1 # Support for tnode class.
 
-        # Add p.v to parent_v's children.
-        parent_v.t.children.insert(n,p.v)
-        parent_v._p_changed = 1
+            # Add p.v to parent_v's children.
+            parent_v.t.children.insert(n,p.v)
+            parent_v._p_changed = 1
 
-        # Add all all nodes in parent_v.t.vnodeList to p.v.parents
-        parent_v._computeParentsOfChildren()
-
+            # Add all all nodes in parent_v.t.vnodeList to p.v.parents
+            parent_v._computeParentsOfChildren()
     #@-node:ekr.20080416161551.215:p._linkAsNthChild
     #@+node:ekr.20080416161551.216:p._linkAsRoot
     def _linkAsRoot (self,oldRoot):
@@ -3088,22 +3329,28 @@ class position (object):
         p.stack = []
         p._childIndex = 0
 
-        # Update p.v.t.vnodeList.
-        if p.v not in p.v.t.vnodeList:
-            p.v.t.vnodeList.append(p.v)
-            p.v.t._p_changed = 1
-
-        # Update the hiddenRootNode's children.
-        if oldRoot:
-            hiddenRootNode.t.children.insert(0,p.v)
+        if g.unified_nodes:
+            parent_v = hiddenRootNode
+            child = p.v
+            if not oldRoot: parent_v.children = []
+            child._addLink(0,parent_v)
         else:
-            hiddenRootNode.t.children = [p.v]
+            # Update p.v.t.vnodeList.
+            if p.v not in p.v.t.vnodeList:
+                p.v.t.vnodeList.append(p.v)
+                p.v.t._p_changed = 1
 
-        hiddenRootNode._computeParentsOfChildren()
+            # Update the hiddenRootNode's children.
+            if oldRoot:
+                hiddenRootNode.t.children.insert(0,p.v)
+            else:
+                hiddenRootNode.t.children = [p.v]
+
+            hiddenRootNode._computeParentsOfChildren()
 
         return p
     #@-node:ekr.20080416161551.216:p._linkAsRoot
-    #@+node:ekr.20080416161551.212:p._parentVnode
+    #@+node:ekr.20080416161551.212:p._parentVnode (no change)
     def _parentVnode (self):
 
         '''Return the parent vnode.
@@ -3120,68 +3367,88 @@ class position (object):
                 return p.v.context.hiddenRootNode
         else:
             return None
-    #@-node:ekr.20080416161551.212:p._parentVnode
-    #@+node:ekr.20040409203454:p._restoreLinksInTree
+    #@-node:ekr.20080416161551.212:p._parentVnode (no change)
+    #@+node:ekr.20040409203454:p._restoreLinksInTree (replaced by v._addLink)
     def _restoreLinksInTree (self):
 
         """Restore links when undoing a delete node operation."""
 
-        root = p = self
+        p = self
 
-        if p.v not in p.v.t.vnodeList:
-            p.v.t.vnodeList.append(p.v)
-            p.v.t._p_changed = 1
-
-        for p in root.children_iter():
-            p._restoreLinksInTree()
-    #@-node:ekr.20040409203454:p._restoreLinksInTree
-    #@+node:ekr.20080416161551.217:p._unlink
+        if g.unified_nodes:
+            assert False,'should never be called'
+            # p.v._restoreParents()
+        else:
+            if p.v not in p.v.t.vnodeList:
+                p.v.t.vnodeList.append(p.v)
+                p.v.t._p_changed = 1
+            for p2 in p.children_iter():
+                p2._restoreLinksInTree()
+    #@-node:ekr.20040409203454:p._restoreLinksInTree (replaced by v._addLink)
+    #@+node:ekr.20080416161551.217:p._unlink (revised)
     def _unlink (self):
 
         '''Unlink the receiver p from the tree.'''
 
-        trace = True
         p = self ; n = p._childIndex
         parent_v = p._parentVnode()
             # returns None if p.v is None
+        child = p.v
         assert(p.v)
         assert(parent_v)
-        # g.trace('parent_v',parent_v)
 
-        # Remove v from it's tnode's vnodeList.
-        if p.v in p.v.t.vnodeList:
-            p.v.t.vnodeList.remove(p.v)
-            p.v.t._p_changed = 1 # Support for tnode class.
+        if g.unified_nodes:
+            # Delete the child.
+            if (0 <= n < len(parent_v.children) and
+                parent_v.children[n] == child
+            ):
+                # This is the only call to v._cutlink.
+                child._cutLink(n,parent_v)
+            else:
+                self.badUnlink(parent_v,n,child)
+                return 
+        else:
+            # Remove v from it's tnode's vnodeList.
+            if p.v in p.v.t.vnodeList:
+                p.v.t.vnodeList.remove(p.v)
+                p.v.t._p_changed = 1 # Support for tnode class.
 
-        # Delete p.v from parent_v's children.
-        if 0 <= n < len(parent_v.t.children):
-            if parent_v.t.children[n] == p.v:
+            # Delete p.v from parent_v's children.
+            if (0 <= n < len(parent_v.t.children) and
+                parent_v.t.children[n] == p.v
+            ):
                 del parent_v.t.children[n]
                 parent_v._p_changed = 1
-            elif trace:
-                g.trace('**can not happen: children[%s] != p.v' % (n))
-                g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
-                g.trace('parent_v',parent_v)
-                g.trace('parent_v.t.children[n]',parent_v.t.children[n])
-                g.trace('p.v',p.v)
-                g.trace('** callers:',g.callers())
-                if g.app.unitTesting: assert False, 'children[%s] != p.v'
-        elif trace:
-            g.trace('can not happen: bad child index: %s, len(children): %s' % (n,len(parent_v.t.children)))
-            # g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
-            g.trace('parent_v',parent_v,'p.v',p.v)
+            else:
+                self.badUnlink(parent_v,n,child)
+
+            # Clear the entire parents array.
+            if p.v.parents:
+                p.v.parents = []
+                p.v._p_changed = 1
+    #@+node:ekr.20090706171333.6226:p.badUnlink
+    def badUnlink (self,parent_v,n,child):
+
+        if 0 <= n < len(parent_v.t.children):
+            g.trace('**can not happen: children[%s] != p.v' % (n))
+            g.trace('parent_v.t.children...\n',
+                g.listToString(parent_v.t.children))
+            g.trace('parent_v',parent_v)
+            g.trace('parent_v.t.children[n]',parent_v.t.children[n])
+            g.trace('child',child)
             g.trace('** callers:',g.callers())
-            g.pdb()
             if g.app.unitTesting: assert False, 'children[%s] != p.v'
-
-        # Clear the entire parents array.
-        if p.v.parents:
-            p.v.parents = []
-            p.v._p_changed = 1
-
-
-
-    #@-node:ekr.20080416161551.217:p._unlink
+        else:   
+            g.trace('**can not happen: bad child index: %s, len(children): %s' % (
+                n,len(parent_v.t.children)))
+            g.trace('parent_v.t.children...\n',
+                g.listToString(parent_v.t.children))
+            g.trace('parent_v',parent_v,'child',child)
+            g.trace('** callers:',g.callers())
+            if g.app.unitTesting: assert False, 'bad child index: %s' % (n)
+    #@nonl
+    #@-node:ekr.20090706171333.6226:p.badUnlink
+    #@-node:ekr.20080416161551.217:p._unlink (revised)
     #@-node:ekr.20080423062035.1:p.Low level methods
     #@-others
 #@-node:ekr.20031218072017.889:class position
