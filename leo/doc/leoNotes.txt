@@ -4762,7 +4762,7 @@ def killResurrectedNodes (self,root,fileName):
     if at.errors:
         g.es('can not happen: errors re-reading',
             fileName,color='red')
-#@+node:ekr.20090814065249.5996:@test killReserrectedNodes
+#@+node:ekr.20090814065249.5996:@@test killReserrectedNodes
 if g.unitTesting:
 
     c,p = g.getTestVars()
@@ -4784,7 +4784,7 @@ if g.unitTesting:
 
 #@+node:ekr.20090814065249.6383:@@thin leoGlobals.py
 #@-node:ekr.20090814065249.6383:@@thin leoGlobals.py
-#@-node:ekr.20090814065249.5996:@test killReserrectedNodes
+#@-node:ekr.20090814065249.5996:@@test killReserrectedNodes
 #@-node:ekr.20090814065249.5994:killResurrectedNodes & test
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it

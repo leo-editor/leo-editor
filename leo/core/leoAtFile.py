@@ -517,7 +517,7 @@ class atFile:
         root.clearDirty() # May be set dirty below.
         if at.errors == 0:
             #@        << advise user to delete all unvisited nodes >>
-            #@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+            #@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
             resurrected = 0
             for p in root.self_and_subtree_iter():
 
@@ -529,7 +529,7 @@ class atFile:
             if resurrected:
                 g.es('you may want to delete ressurected nodes')
 
-            #@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+            #@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
             #@nl
         if at.errors == 0 and not at.importing:
             # Package this as a method for use by mod_labels plugin.
@@ -550,17 +550,19 @@ class atFile:
         return at.errors == 0
     #@-node:ekr.20041005105605.21:read (atFile)
     #@+node:ville.20090606131405.6362:writeCachedTree (atFile)
-    def writeCachedTree(self, pos, cachefile):
+    def writeCachedTree(self, p, cachefile):
+
+        trace = False and not g.unitTesting
         c = self.c
 
-        if cachefile in c.db:
-            # g.trace('Already cached')
-            pass
+        if not g.enableDB:
+            if trace: g.trace('cache disabled')
+        elif cachefile in c.db:
+            if trace: g.trace('already cached')
         else:
-            tree = g.tree_at_position(pos)
+            if trace: g.trace('caching ',p.h)
+            tree = g.tree_at_position(p)
             c.db[cachefile] = tree
-
-        return True
     #@-node:ville.20090606131405.6362:writeCachedTree (atFile)
     #@+node:ville.20090606150238.6351:_contentHashFile (atFile)
     def _contentHashFile(self, pos, content):

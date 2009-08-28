@@ -689,8 +689,14 @@ class LeoApp:
             g.app.db['hello'] = [1,2,5]
 
         """
-        dbdirname = self.homeLeoDir + "/db/global"
-        self.db = leo.external.pickleshare.PickleShareDB(dbdirname, protocol='picklez')
+
+        # g.trace('g.enableDB',g.enableDB)
+
+        if g.enableDB:
+            dbdirname = self.homeLeoDir + "/db/global"
+            self.db = leo.external.pickleshare.PickleShareDB(dbdirname, protocol='picklez')
+        else:
+            self.db = {}
 
 
     #@-node:ville.20090620122043.6275:app.setGlobalDb

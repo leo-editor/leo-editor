@@ -114,6 +114,10 @@ app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
 isPython3 = sys.version_info >= (3,0,0)
 
+enableDB = True
+if not enableDB:
+    print 'leoGlobals.py: caching disabled'
+
 # "compile-time" constants.
 # It makes absolutely no sense to change these after Leo loads.
 unified_nodes = False
@@ -6737,6 +6741,11 @@ class readLinesClass:
     __next__ = next
 #@-node:EKR.20040612114220.4:class readLinesClass
 #@-node:ekr.20040629162023:readLines class and generator
+#@+node:ville.20090827174345.9963:g.assertui
+def assertUi(uitype):
+    assert g.app.gui.guiName() == uitype
+#@nonl
+#@-node:ville.20090827174345.9963:g.assertui
 #@-node:EKR.20040612114220:Utility classes, functions & objects...
 #@+node:ekr.20031218072017.3197:Whitespace...
 #@+node:ekr.20051014175117:g.adjustTripleString (same as removeExtraLws)
