@@ -104,7 +104,8 @@ class baseCommands (object):
         self.frame = frame
         self.hiddenRootNode = leoNodes.vnode(context=c)
         self.hiddenRootNode.setHeadString('<hidden root vnode>')
-        self.hiddenRootNode.t.vnodeList = [self.hiddenRootNode]
+        if not g.unified_nodes:
+            self.hiddenRootNode.t.vnodeList = [self.hiddenRootNode]
         self.isZipped = False # May be set to True by g.openWithFileName.
         self.mFileName = fileName
             # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
@@ -326,9 +327,9 @@ class baseCommands (object):
             self.db = {}
             # if not g.app.silentMode and not g.unitTesting:
                 # print('caching disabled')
-
         #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
         #@nl
+
         self.config = configSettings(c)
         g.app.config.setIvarsFromSettings(c)
     #@-node:ekr.20040731071037:c.initIvars
@@ -3874,31 +3875,34 @@ class baseCommands (object):
                         assert p.back().parent() == p.parent(), "back.parent==parent"
                     #@-node:ekr.20040314035615.2:assert consistency of parent and child links
                     #@+node:ekr.20040314043623:assert consistency of vnodeList
-                    vnodeList = p.v.t.vnodeList
+                    if not g.unified_nodes:
 
-                    for v in vnodeList:
+                        vnodeList = p.v.t.vnodeList
 
-                        try:
-                            assert v.t == p.v.t
-                        except AssertionError:
-                            g.pr("p",p)
-                            g.pr("v",v)
-                            g.pr("p.v",p.v)
-                            g.pr("v.t",v.t)
-                            g.pr("p.v.t",p.v.t)
-                            raise AssertionError("v.t == p.v.t")
+                        for v in vnodeList:
 
-                        if p.v.isCloned():
-                            assert v.isCloned(), "v.isCloned"
-                            assert len(vnodeList) > 1, "len(vnodeList) > 1"
-                        else:
-                            assert not v.isCloned(), "not v.isCloned"
-                            assert len(vnodeList) == 1, "len(vnodeList) == 1"
+                            try:
+                                assert v.t == p.v.t
+                            except AssertionError:
+                                g.pr("p",p)
+                                g.pr("v",v)
+                                g.pr("p.v",p.v)
+                                g.pr("v.t",v.t)
+                                g.pr("p.v.t",p.v.t)
+                                raise AssertionError("v.t == p.v.t")
+
+                            if p.v.isCloned():
+                                assert v.isCloned(), "v.isCloned"
+                                assert len(vnodeList) > 1, "len(vnodeList) > 1"
+                            else:
+                                assert not v.isCloned(), "not v.isCloned"
+                                assert len(vnodeList) == 1, "len(vnodeList) == 1"
                     #@-node:ekr.20040314043623:assert consistency of vnodeList
                     #@+node:ekr.20040323162707:assert that clones actually share subtrees
-                    if p.isCloned() and p.hasChildren():
-                        for z in p.v.t.vnodeList:
-                            assert z.t == p.v.t
+                    if not g.unified_nodes:
+                        if p.isCloned() and p.hasChildren():
+                            for z in p.v.t.vnodeList:
+                                assert z.t == p.v.t
                     #@-node:ekr.20040323162707:assert that clones actually share subtrees
                     #@+node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
                     #@+at
@@ -4113,8 +4117,18 @@ class baseCommands (object):
 
         c = self
 
+        seen = {}
+
+        print ; print '='*40
+
+        v = c.hiddenRootNode
+        v.dump()
+        seen[v] = True
+
         for p in c.allNodes_iter():
-            p.dump()
+            if p.v not in seen:
+                seen[p.v] = True
+                p.v.dump()
     #@-node:ekr.20040412060927:c.dumpOutline
     #@+node:ekr.20040711135959.1:Pretty Print commands
     #@+node:ekr.20040712053025:prettyPrintAllPythonCode
@@ -4635,7 +4649,11 @@ class baseCommands (object):
         c = self ; p = c.p
 
         p.contract()
-        c.redraw_after_contract(p=p,setFocus=True)
+
+        if p.isCloned():
+            c.redraw() # A full redraw is necessary to handle clones.
+        else:
+            c.redraw_after_contract(p=p,setFocus=True)
     #@-node:ekr.20031218072017.2901:contractNode
     #@+node:ekr.20040930064232:contractNodeOrGoToParent
     def contractNodeOrGoToParent (self,event=None):
@@ -4644,9 +4662,11 @@ class baseCommands (object):
 
         trace = False and not g.unitTesting
         c = self ; p = c.p
+        redraw = False
         if p.hasChildren() and p.isExpanded():
             if trace: g.trace('contract',p.h)
             c.contractNode()
+            redraw = True # New in one-node world.
         elif p.hasParent() and p.parent().isVisible(c):
             redraw = False
             if self.sparse_goto_parent:
@@ -4656,14 +4676,19 @@ class baseCommands (object):
                         redraw = True
             if trace: g.trace('goto parent',p.h)
             c.goToParent()
-            if redraw: c.redraw()
-        # New in Leo 4.6 rc1.
-        elif p.hasBack():
-            c.contractNode()
-            c.goToPrevSibling()
 
-        c.treeFocusHelper()
-    #@nonl
+        if redraw:
+            if p.isCloned():
+                c.redraw()
+            else:
+                c.redraw_after_contract(p=p,setFocus=True)
+
+        # New in Leo 4.6 rc1: killed in Leo 4.7
+        # elif p.hasBack():
+            # c.contractNode()
+            # c.goToPrevSibling()
+
+        # c.treeFocusHelper()
     #@-node:ekr.20040930064232:contractNodeOrGoToParent
     #@+node:ekr.20031218072017.2902:contractParent
     def contractParent (self,event=None):
@@ -4676,6 +4701,7 @@ class baseCommands (object):
         if not parent: return
 
         parent.contract()
+
         c.redraw_after_contract(p=parent)
     #@-node:ekr.20031218072017.2902:contractParent
     #@+node:ekr.20031218072017.2903:expandAllHeadlines
@@ -4802,13 +4828,6 @@ class baseCommands (object):
                     break
             c.selectPosition(p)
         c.treeFocusHelper()
-
-        # Old code.
-        # if not p.hasChildren():
-            # c.treeFocusHelper()
-            # return
-        # if not p.isExpanded():
-            # c.expandNode() # Calls redraw_after_expand.
 
     def expandNodeOrGoToFirstChild (self,event=None):
 
@@ -5115,12 +5134,25 @@ class baseCommands (object):
         n = p.childIndex()
         followingSibs = parent_v.t.children[n+1:]
         # g.trace('sibs2\n',g.listToString(followingSibs2))
-        # Adjust the parent links of all moved nodes.
-        parent_v._computeParentsOfChildren(children=followingSibs)
-        # Remove the moved nodes from the parent's children.
-        parent_v.t.children = parent_v.t.children[:n+1]
-        # Add the moved nodes to p's children
-        p.v.t.children.extend(followingSibs)
+
+        if g.unified_nodes:
+            # Remove the moved nodes from the parent's children.
+            parent_v.t.children = parent_v.t.children[:n+1]
+            # Add the moved nodes to p's children
+            p.v.t.children.extend(followingSibs)
+            # Adjust the parent links in the moved nodes.
+            # There is no need to adjust descendant links.
+            for child in followingSibs:
+                child.parents.remove(parent_v)
+                child.parents.append(p.v)
+        else:
+            # Adjust the parent links of all moved nodes.
+            parent_v._computeParentsOfChildren(children=followingSibs)
+            # Remove the moved nodes from the parent's children.
+            parent_v.t.children = parent_v.t.children[:n+1]
+            # Add the moved nodes to p's children
+            p.v.t.children.extend(followingSibs)
+
         p.expand()
         # Even if p is an @ignore node there is no need to mark the demoted children dirty.
         dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
@@ -5273,14 +5305,19 @@ class baseCommands (object):
 
         '''Move the selected node up if possible.'''
 
+        trace = False and not g.unitTesting
         c = self ; u = c.undoer ; p = c.p
         if not p: return
         if not c.canMoveOutlineUp(): # Support for hoist.
             if c.hoistStack: self.cantMoveMessage()
             c.treeFocusHelper()
             return
+
         back = p.visBack(c)
-        if not back: return
+        if not back:
+            if trace: g.trace('no visBack')
+            return
+
         inAtIgnoreRange = p.inAtIgnoreRange()
         back2 = back.visBack(c)
 
@@ -5291,23 +5328,15 @@ class baseCommands (object):
         moved = False
         #@    << Move p up >>
         #@+node:ekr.20031218072017.1773:<< Move p up >>
-        if 0:
+        if trace:
             g.trace("visBack",back)
             g.trace("visBack2",back2)
-            g.trace("back2.hasChildren",back2.hasChildren())
-            g.trace("back2.isExpanded",back2.isExpanded())
+            g.trace("back2.hasChildren",back2 and back2.hasChildren())
+            g.trace("back2.isExpanded",back2 and back2.isExpanded())
 
         parent = p.parent()
 
-        # For this special case we move p after back2.
-        specialCase = back2 and p.v in back2.v.t.vnodeList
-
-        if specialCase:
-            # The move must be legal.
-            moved = True
-            back2.contract()
-            p.moveAfter(back2)
-        elif not back2:
+        if not back2:
             if c.hoistStack: # hoist or chapter.
                 limit,limitIsVisible = c.visLimit()
                 assert limit
@@ -5322,6 +5351,7 @@ class baseCommands (object):
                 # p will be the new root node
                 p.moveToRoot(oldRoot=c.rootPosition())
                 moved = True
+
         elif back2.hasChildren() and back2.isExpanded():
             if c.checkMoveWithParentWithWarning(p,back2,True):
                 moved = True
@@ -5330,9 +5360,11 @@ class baseCommands (object):
             if c.checkMoveWithParentWithWarning(p,back2.parent(),True):
                 moved = True
                 p.moveAfter(back2)
+
         if moved and sparseMove and parent and not parent.isAncestorOf(p):
             # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
             parent.contract()
+        #@nonl
         #@-node:ekr.20031218072017.1773:<< Move p up >>
         #@nl
         if moved:
@@ -5346,7 +5378,6 @@ class baseCommands (object):
             u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
         c.redraw(p,setFocus=True)
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
-    #@nonl
     #@-node:ekr.20031218072017.1772:moveOutlineUp
     #@+node:ekr.20031218072017.1774:promote
     def promote (self,event=None):
@@ -5373,8 +5404,17 @@ class baseCommands (object):
         parent_v.t.children.extend(z[n:])
         # Remove v's children.
         p.v.t.children = []
-        # Adjust the parent links of all moved nodes.
-        parent_v._computeParentsOfChildren(children=children)
+
+        if g.unified_nodes:
+            # Adjust the parent links in the moved children.
+            # There is no need to adjust descendant links.
+            for child in children:
+                child.parents.remove(p.v)
+                child.parents.append(parent_v)
+        else:
+            # Adjust the parent links of all moved nodes.
+            parent_v._computeParentsOfChildren(children=children)
+
         c.setChanged(True)
         if not inAtIgnoreRange and isAtIgnoreNode:
             # The promoted nodes have just become newly unignored.
@@ -5683,6 +5723,8 @@ class baseCommands (object):
         if not c.canSelectVisBack(): return
 
         p.moveToVisBack(c)
+
+        # g.trace(p,p.key())
         c.treeSelectHelper(p)
     #@-node:ekr.20031218072017.2995:selectVisBack
     #@+node:ekr.20031218072017.2996:selectVisNext
@@ -6487,10 +6529,11 @@ class baseCommands (object):
         else:
             p = c.currentPosition()
 
-        c.frame.tree.redraw_after_contract(p)
-
-        if setFocus:
-            c.treeFocusHelper()
+        if p.isCloned():
+            c.redraw(p=p,setFocus=setFocus)
+        else:
+            c.frame.tree.redraw_after_contract(p)
+            if setFocus: c.treeFocusHelper()
     #@-node:ekr.20090110131802.2:c.redraw_after_contract
     #@+node:ekr.20090112065525.1:c.redraw_after_expand
     def redraw_after_expand (self,p=None,setFocus=False):
@@ -6504,10 +6547,11 @@ class baseCommands (object):
         else:
             p = c.currentPosition()
 
-        c.frame.tree.redraw_after_expand(p)
-
-        if setFocus:
-            c.treeFocusHelper()
+        if p.isCloned():
+            c.redraw(p=p,setFocus=setFocus)
+        else:
+            c.frame.tree.redraw_after_expand(p)
+            if setFocus: c.treeFocusHelper()
     #@-node:ekr.20090112065525.1:c.redraw_after_expand
     #@+node:ekr.20090110073010.2:c.redraw_after_head_changed
     def redraw_after_head_changed(self):
@@ -7684,6 +7728,11 @@ class baseCommands (object):
         if timeStamp == timeStamp2:
             if trace: g.trace('time stamps match',fn,timeStamp)
             return True
+
+        # if timeStamp > timeStamp2:
+            # # Cached timestamp is later.
+            # if trace: g.trace('cached time > mod time',fn,timeStamp)
+            # return True
 
         if g.app.unitTesting:
             return False

@@ -474,6 +474,7 @@ class atFile:
         #@-node:ekr.20041005105605.22:<< set fileName >>
         #@nl
 
+        doCache = g.enableDB and (thinFile or atShadow)
         at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
         if at.errors: return False
         fileName = at.openFileForReading(fileName,fromString=fromString)
@@ -486,9 +487,9 @@ class atFile:
         cachefile = self._contentHashFile(root, fileContent)
 
         # Remember that we have read this file.
-        root.v.t.at_read = True # Create the attribute for all clones.
+        root.v.t.at_read = True # Create the attribut for all clones.
 
-        if cachefile in c.db:
+        if doCache and cachefile in c.db:
             # This message isn't so useful.
             # if not g.unitTesting: # g.es('uncache:',root.h)
 
@@ -517,7 +518,7 @@ class atFile:
         root.clearDirty() # May be set dirty below.
         if at.errors == 0:
             #@        << advise user to delete all unvisited nodes >>
-            #@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
+            #@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
             resurrected = 0
             for p in root.self_and_subtree_iter():
 
@@ -529,7 +530,7 @@ class atFile:
             if resurrected:
                 g.es('you may want to delete ressurected nodes')
 
-            #@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
+            #@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
             #@nl
         if at.errors == 0 and not at.importing:
             # Package this as a method for use by mod_labels plugin.
@@ -565,11 +566,11 @@ class atFile:
             c.db[cachefile] = tree
     #@-node:ville.20090606131405.6362:writeCachedTree (atFile)
     #@+node:ville.20090606150238.6351:_contentHashFile (atFile)
-    def _contentHashFile(self, pos, content):
+    def _contentHashFile(self, p, content):
         c = self.c
         m = hashlib.md5()
         # note that we also consider the headline in hash, to separate @auto foo.py from @thin foo.py
-        m.update(pos.h)
+        m.update(p.h)
         m.update(content)
         return "fcache/" + m.hexdigest()
 
@@ -925,19 +926,20 @@ class atFile:
             else:
                 child = leoNodes.vnode(context=c,t=t)
 
-            if child not in t.vnodeList:
-                t.vnodeList.append(child)
+            if not g.unified_nodes:
+                if child not in t.vnodeList:
+                    t.vnodeList.append(child)
             child._linkAsNthChild(parent,parent.numberOfChildren())
 
         if trace and verbose: g.trace('new node: %s' % child)
         child.t.setVisited() # Supress warning/deletion of unvisited nodes.
         return child
     #@-node:ekr.20041005105605.72:createThinChild4
-    #@+node:ekr.20041005105605.73:findChild4
+    #@+node:ekr.20041005105605.73:findChild4 (Can **not** be removed)
     def findChild4 (self,headline):
 
         """Return the next tnode in at.root.t.tnodeList.
-        This is called only for @file nodes"""
+        This is called only for @file/@noref nodes"""
 
         # Note: tnodeLists are used _only_ when reading @file (not @thin) nodes.
         # tnodeLists compensate (a hack) for not having gnx's in derived files! 
@@ -963,18 +965,25 @@ class atFile:
         assert(t)
         at.tnodeListIndex += 1
 
-        # Get any vnode joined to t.
-        try:
-            v = t.vnodeList[0]
-        except Exception:
-            at.readError("No vnodeList for tnode: %s" % repr(t))
-            g.trace(at.tnodeListIndex)
-            return None
+        if g.unified_nodes:
+            pass # v == t.
+        else:
+            # Get any vnode joined to t.
+            try:
+                v = t.vnodeList[0]
+            except AttributeError:
+                at.readError("No vnodeList for tnode: %s" % repr(t))
+                g.trace(at.tnodeListIndex)
+                return None
+            except Exception:
+                at.readError("findChild4: unexpected exception for tnode: %s" % repr(t))
+                g.es_exception()
+                return None
 
         # Don't check the headline.  It simply causes problems.
         t.setVisited() # Supress warning/deletion of unvisited nodes.
         return t
-    #@-node:ekr.20041005105605.73:findChild4
+    #@-node:ekr.20041005105605.73:findChild4 (Can **not** be removed)
     #@+node:ekr.20041005105605.74:scanText4 & allies
     def scanText4 (self,theFile,fileName,p,verbose=False):
 
@@ -1013,6 +1022,7 @@ class atFile:
         # g.trace(at.startSentinelComment)
         #@-node:ekr.20041005105605.75:<< init ivars for scanText4 >>
         #@nl
+        if trace: g.trace(fileName)
         try:
             while at.errors == 0 and not at.done:
                 s = at.readLine(theFile)
@@ -1224,6 +1234,7 @@ class atFile:
         at.outStack.append(at.out) ; at.out = []
         at.tStack.append(at.t)
 
+        if trace: g.trace(at.root)
         if at.importing:
             p = at.createImportedNode(at.root,headline)
             at.t = p.v.t
@@ -3433,6 +3444,7 @@ class atFile:
         clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
         if clonedSibs > 1 and thisClonedSibIndex == 1:
             at.writeError("Cloned siblings are not valid in @thin trees")
+            g.es_print(p.h,color='red')
 
         at.putOpenNodeSentinel(p)
         at.putBody(p) 

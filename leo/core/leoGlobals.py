@@ -113,15 +113,20 @@ g = nullObject() # Set later by startup logic to this module.
 app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
 isPython3 = sys.version_info >= (3,0,0)
-
 enableDB = True
 if not enableDB:
-    print 'leoGlobals.py: caching disabled'
+    print '** leoGlobals.py: caching disabled'
 
-# "compile-time" constants.
-# It makes absolutely no sense to change these after Leo loads.
-unified_nodes = False
-    # True: (Not recommended) unify vnodes and tnodes into a single vnode.
+#@<< define unified_nodes >>
+#@+node:ekr.20090804205506.6142:<< define unified_nodes >>
+
+unified_nodes = False # True: merge tnodes into vnodes.
+
+if unified_nodes: # Hard to disable in unit tests.
+    print ('** leoGlobals.py: unified_nodes: %s' % (unified_nodes))
+#@nonl
+#@-node:ekr.20090804205506.6142:<< define unified_nodes >>
+#@nl
 
 #@+others
 #@+node:ekr.20050328133058:g.createStandAloneTkApp
@@ -3031,11 +3036,16 @@ shortFilename = shortFileName
 def guessExternalEditor():
     """ Return a 'sensible' external editor """
 
-    editor = os.environ.get("LEO_EDITOR") or os.environ.get("EDITOR") or g.app.db.get("LEO_EDITOR")
-    if editor:
-        return editor
+    editor = (
+        os.environ.get("LEO_EDITOR") or
+        os.environ.get("EDITOR") or
+        g.app.db.get("LEO_EDITOR"))
 
-    g.es("No editor set! Please set LEO_EDITOR or EDITOR environment variable, or do g.app.db['LEO_EDITOR'] = 'gvim'")
+    if editor: return editor
+
+    g.es('''No editor set!
+Please set LEO_EDITOR or EDITOR environment variable,
+or do g.app.db['LEO_EDITOR'] = "gvim"''')
 
     # fallbacks
     if sys.platform == 'win32':
@@ -3043,9 +3053,7 @@ def guessExternalEditor():
 
     # linux still has no default editor, one that would work without terminal at least ;-)
     return None
-
-
-
+#@nonl
 #@-node:ville.20090701144325.14942:g.guessExternalEditor
 #@+node:ekr.20050104135720:Used by tangle code & leoFileCommands
 #@+node:ekr.20031218072017.1241:g.update_file_if_changed
@@ -7086,8 +7094,9 @@ def fast_add_last_child(c, parent_v, gnxString = None):
     else:
         child = leoNodes.vnode(context=c,t=t)
 
-    if child not in t.vnodeList:
-        t.vnodeList.append(child)
+    if not g.unified_nodes:
+        if child not in t.vnodeList:
+            t.vnodeList.append(child)
     child._linkAsNthChild(parent_v,parent_v.numberOfChildren())
 
     child.t.setVisited() # Supress warning/deletion of unvisited nodes.
