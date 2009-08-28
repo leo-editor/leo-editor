@@ -7729,11 +7729,6 @@ class baseCommands (object):
             if trace: g.trace('time stamps match',fn,timeStamp)
             return True
 
-        # if timeStamp > timeStamp2:
-            # # Cached timestamp is later.
-            # if trace: g.trace('cached time > mod time',fn,timeStamp)
-            # return True
-
         if g.app.unitTesting:
             return False
 
