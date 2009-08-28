@@ -6741,6 +6741,11 @@ class readLinesClass:
     __next__ = next
 #@-node:EKR.20040612114220.4:class readLinesClass
 #@-node:ekr.20040629162023:readLines class and generator
+#@+node:ville.20090827174345.9963:g.assertui
+def assertUi(uitype):
+    assert g.app.gui.guiName() == uitype
+#@nonl
+#@-node:ville.20090827174345.9963:g.assertui
 #@-node:EKR.20040612114220:Utility classes, functions & objects...
 #@+node:ekr.20031218072017.3197:Whitespace...
 #@+node:ekr.20051014175117:g.adjustTripleString (same as removeExtraLws)

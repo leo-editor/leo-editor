@@ -36,8 +36,13 @@ __version__ = '0.0'
 #@<< imports >>
 #@+node:ville.20090314215508.7:<< imports >>
 import leo.core.leoGlobals as g
+
+g.assertUi('qt')
+
 import leo.core.leoPlugins as leoPlugins
 from leo.core import leoNodes
+
+
 
 from PyQt4.QtGui import QListWidget, QListWidgetItem
 from PyQt4 import QtCore

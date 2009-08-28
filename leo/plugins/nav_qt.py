@@ -29,6 +29,9 @@ __version__ = '0.2'
 #@<< imports >>
 #@+node:ville.20090518182905.5422:<< imports >>
 import leo.core.leoGlobals as g
+
+g.assertUi('qt')
+
 import leo.core.leoPlugins as leoPlugins
 from PyQt4 import QtGui
 
