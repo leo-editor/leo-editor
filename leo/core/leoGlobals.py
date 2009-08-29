@@ -113,20 +113,14 @@ g = nullObject() # Set later by startup logic to this module.
 app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
 isPython3 = sys.version_info >= (3,0,0)
+
 enableDB = True
 if not enableDB:
     print '** leoGlobals.py: caching disabled'
 
-#@<< define unified_nodes >>
-#@+node:ekr.20090804205506.6142:<< define unified_nodes >>
-
 unified_nodes = False # True: merge tnodes into vnodes.
-
 if unified_nodes: # Hard to disable in unit tests.
     print ('** leoGlobals.py: unified_nodes: %s' % (unified_nodes))
-#@nonl
-#@-node:ekr.20090804205506.6142:<< define unified_nodes >>
-#@nl
 
 #@+others
 #@+node:ekr.20050328133058:g.createStandAloneTkApp
@@ -4235,13 +4229,6 @@ def os_path_splitext(path,encoding=None):
 
     return head,tail
 #@-node:ekr.20031218072017.2159:os_path_splitext
-#@+node:ville.20090828145131.10085:os_startfile
-def os_startfile(fname):
-    if sys.platform.startswith('win'):
-        os.startfile(fname)
-    else:
-        os.system('xdg-open ' + fname)
-#@-node:ville.20090828145131.10085:os_startfile
 #@+node:ekr.20031218072017.2160:toUnicodeFileEncoding
 def toUnicodeFileEncoding(path,encoding):
 
@@ -7040,130 +7027,6 @@ def init_zodb (pathToZodbStorage,verbose=True):
 #@nonl
 #@-node:ekr.20060913090832.1:g.init_zodb
 #@-node:ekr.20060913091602:ZODB support
-#@+node:ville.20090606103927.6472:tree operations (tree_at_position...)
-# manipulation of whole trees as recursive objects """
-
-def tree_at_position(p):
-    return [p.h, p.b, p.gnx, [tree_at_position(po) for po in p.children_iter()]]
-
-
-def fast_add_last_child(c, parent_v, gnxString = None):
-    """ Create new vnode as last child of parent_v.
-
-    If the gnx exists already, create a clone instead of new vnode.
-
-    Returns vnode, or None if this was clone. After calling this function, fill in the vnode asap
-    as in this example::
-
-        child = fast_add_last_child(c, p.v, 'ville.20090321214352.375')
-        if child is not Note:
-            t = v.t
-            t._headString = u"Heading (note unicode)"
-            t._bodyString = u"Body content"
-
-    Stolen from createThinChild4. 
-
-    The main purpose of this function is allow fast tree population with automatic clone
-    creation (which is very slow using positions alone)   
-    """
-
-    # xxx avoid circular import?
-    from leo.core import leoNodes
-
-    indices = g.app.nodeIndices
-    tnodesDict = c.fileCommands.tnodesDict
-    if gnxString is not None:
-        t = tnodesDict.get(gnxString)
-    else:
-        t = None
-
-    if t is None:
-        # not clone, create
-        if g.unified_nodes: 
-            t = leoNodes.vnode(context=c)
-        else:               
-            t = leoNodes.tnode()
-
-        if gnxString is not None:
-            gnx = indices.scanGnx(gnxString,0)
-            t.fileIndex = gnx
-
-        tnodesDict[gnxString] = t
-        is_clone = False
-
-    else:
-        #g.trace("Creating clone gnx",gnxString)
-        is_clone = True
-
-    if g.unified_nodes:
-        child = t
-
-    else:
-        child = leoNodes.vnode(context=c,t=t)
-
-    if not g.unified_nodes:
-        if child not in t.vnodeList:
-            t.vnodeList.append(child)
-    child._linkAsNthChild(parent_v,parent_v.numberOfChildren())
-
-    child.t.setVisited() # Supress warning/deletion of unvisited nodes.
-    if is_clone:
-        return None
-
-    return child
-
-def create_tree_at_vnode(c, v, tree):
-    """ Create outline structure from tree
-
-    Tree is recursive list structure with [h, b, gnx, [children...]
-
-    Example tree::
-
-        [u'many tests',
-         u'',
-         'ville.20090321214352.375',
-         [[u'o', u'1/0', 'ville.20090321185223.2', []],
-          [u'@test aoaaosuccess', u'print "ok"', 'ville.20090321205114.1', []],
-          [u'@test other failure',
-           u"\ns = 'test%cthis' % 27\n\nassert c.fileCommands.cleanSaxInputString(s) == 'test this'",
-           'ville.20090321214352.376',
-           []]]]
-
-    Clones will be automatically created by gnx, but *not* for the root node.
-    """
-
-    #import pprint
-    #pprint.pprint(tree)
-    h,b,gnx,chi = tree
-    if h is not None:
-        t = v.t
-        t._headString = h    
-        t._bodyString = b
-
-    for el in chi:
-        # gnx prefilled, rest done by create_tree_at_vnode
-        child = fast_add_last_child(c, v, el[2])
-        # recurse
-        if child is not None:
-            create_tree_at_vnode(c,child, el)
-
-
-def create_tree_at_position(p, tree):
-    """ Like create_tree_at_vnode, but slower, simpler, without clone/gnx support
-    """
-    h,b,gnx,chi = tree
-
-    # special case: b is None => do not manipulate the root node, just add children
-    if b is not None:
-        p.h = h
-        p.b = b
-
-    for el in chi:
-        chpos = p.insertAsLastChild().copy()
-        # recurse
-        create_tree_at_position(chpos, el)
-
-#@-node:ville.20090606103927.6472:tree operations (tree_at_position...)
 #@-others
 #@-node:ekr.20031218072017.3093:@thin leoGlobals.py
 #@-leo

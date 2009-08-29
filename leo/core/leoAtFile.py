@@ -487,7 +487,7 @@ class atFile:
         cachefile = self._contentHashFile(root, fileContent)
 
         # Remember that we have read this file.
-        root.v.t.at_read = True # Create the attribut for all clones.
+        root.v.t.at_read = True # Create the attribute for all clones.
 
         if doCache and cachefile in c.db:
             # This message isn't so useful.
@@ -496,8 +496,8 @@ class atFile:
             # Delete the previous tree, regardless of the @<file> type.
             while root.hasChildren():
                 root.firstChild().doDelete()
-            tree = c.db[cachefile]
-            g.create_tree_at_vnode(c, root.v, tree)
+            aList = c.db[cachefile]
+            root.v.createOutlineFromCacheList(c,aList)
             at.inputFile.close() # Bug fix.
             root.clearDirty() # Bug fix.
             return
@@ -562,8 +562,11 @@ class atFile:
             if trace: g.trace('already cached')
         else:
             if trace: g.trace('caching ',p.h)
-            tree = g.tree_at_position(p)
-            c.db[cachefile] = tree
+            #tree = g.tree_at_position(p)
+            #c.db[cachefile] = tree
+
+            c.db[cachefile] = p.makeCacheList()
+
     #@-node:ville.20090606131405.6362:writeCachedTree (atFile)
     #@+node:ville.20090606150238.6351:_contentHashFile (atFile)
     def _contentHashFile(self, p, content):
@@ -671,8 +674,8 @@ class atFile:
 
         if cachefile is not None and cachefile in c.db:        
             # g.es('uncache:',p.h)
-            tree = c.db[cachefile]
-            g.create_tree_at_vnode(c, p.v, tree)
+            aList = c.db[cachefile]
+            p.v.createOutlineFromCacheList(c,aList)
             return
 
         if not g.unitTesting:

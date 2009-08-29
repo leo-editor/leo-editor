@@ -1030,6 +1030,79 @@ class vnode (baseVnode):
             # Add parent_v to v's parents.
             parent_v._computeParentsOfChildren()
     #@-node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
+    #@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helper
+    def createOutlineFromCacheList(self,c,aList):
+        """ Create outline structure from recursive aList
+        built by p.makeCacheList.
+
+        Clones will be automatically created by gnx,
+        but *not* for the top-level node.
+        """
+
+        parent_v = self
+
+        #import pprint ; pprint.pprint(tree)
+        parent_v = self
+        h,b,gnx,children = aList
+        if h is not None:
+            t = parent_v.t
+            t._headString = h    
+            t._bodyString = b
+
+        for z in children:
+            h,b,gnx,grandChildren = z
+            isClone,child_v = parent_v.fastAddLastChild(c,gnx)
+            if isClone:
+                # Bug fix: the last seen clone rules.
+                child_v.h = h
+                child_v.b = b
+            else:
+                child_v.createOutlineFromCacheList(c,z)
+    #@+node:ekr.20090829064400.6042:v.fastAddLastChild
+    # Similar to createThinChild4
+    def fastAddLastChild(self,c,gnxString):
+        '''Create new vnode as last child of the receiver.
+
+        If the gnx exists already, create a clone instead of new vnode.
+        '''
+
+        trace = False and not g.unitTesting
+        parent_v = self
+        indices = g.app.nodeIndices
+        tnodesDict = c.fileCommands.tnodesDict
+
+        if gnxString is None: t = None
+        else:                 t = tnodesDict.get(gnxString)
+        is_clone = t is not None
+
+        if trace: g.trace(
+            'clone','%-5s' % (is_clone),
+            'parent_v',parent_v,'gnx',gnxString,'t',repr(t))
+
+        if not is_clone:
+            if g.unified_nodes: t = vnode(context=c)
+            else:               t = tnode()
+            if gnxString:
+                gnx = indices.scanGnx(gnxString,0)
+                t.fileIndex = gnx
+            tnodesDict[gnxString] = t
+
+        if g.unified_nodes: child_v = t
+        else:               child_v = vnode(context=c,t=t)
+
+        if g.unified_nodes:
+            pass
+        else:
+            if child_v not in t.vnodeList:
+                t.vnodeList.append(child_v)
+
+        child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
+
+        child_v.t.setVisited() # Supress warning/deletion of unvisited nodes.
+
+        return is_clone,child_v
+    #@-node:ekr.20090829064400.6042:v.fastAddLastChild
+    #@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helper
     #@-node:ekr.20080427062528.9:v.Low level methods
     #@+node:ekr.20090130065000.1:v.Properties
     #@+node:ekr.20090130114732.5:v.b Property
@@ -3449,6 +3522,19 @@ class position (object):
     #@nonl
     #@-node:ekr.20090706171333.6226:p.badUnlink
     #@-node:ekr.20080416161551.217:p._unlink (revised)
+    #@+node:ekr.20090829064400.6044:p.makeCacheList
+    def makeCacheList(self):
+
+        '''Create a recursive list describing a tree
+        for use by v.createOutlineFromCacheList.
+        '''
+
+        p = self
+
+        return [
+            p.h,p.b,p.gnx,
+            [p2.makeCacheList() for p2 in p.children_iter()]]
+    #@-node:ekr.20090829064400.6044:p.makeCacheList
     #@-node:ekr.20080423062035.1:p.Low level methods
     #@-others
 #@-node:ekr.20031218072017.889:class position
