@@ -114,8 +114,14 @@ def openwith_rclick(c,p, menu):
         p = subprocess.Popen(cmd, shell=True)
 
 
-    action = menu.addAction("Edit " + bname + " in %s (%s)" % (os.path.basename(editor), path))
+    def openfolder_rclick_cb():
+        g.os_startfile(path)
+
+    action = menu.addAction("Edit " + bname + " in " + os.path.basename(editor))
     action.connect(action, QtCore.SIGNAL("triggered()"), openwith_rclick_cb)
+
+    action = menu.addAction("Open " + path)
+    action.connect(action, QtCore.SIGNAL("triggered()"), openfolder_rclick_cb)
 #@-node:ville.20090630210947.5465:openwith_rclick
 #@+node:ville.20090630221949.5462:refresh_rclick
 def refresh_rclick(c,p, menu):

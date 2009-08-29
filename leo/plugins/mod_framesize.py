@@ -16,13 +16,14 @@ Prevents Leo from setting custom frame size (e.g. from an external .leo document
 #@+others
 #@+node:ville.20090726125902.5293:init
 def init():
-    from leo.plugins import qtGui    
+    
     from leo.core import leoGlobals as g
 
     ok = g.app.gui.guiName() == "qt"
     if not ok:
         return False
 
+    from leo.plugins import qtGui    
     setattr(qtGui.leoQtFrame, 'setTopGeometry', setTopGeometry_mod_framesize)
     g.plugin_signon(__name__)
     return True
