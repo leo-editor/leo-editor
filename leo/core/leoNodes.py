@@ -2650,9 +2650,9 @@ class position (object):
     #@+node:ekr.20040303175026.2:p.doDelete
     #@+at 
     #@nonl
-    # This is the main delete routine.  It deletes the receiver's entire tree 
-    # from the screen.  Because of the undo command we never actually delete 
-    # vnodes or tnodes.
+    # This is the main delete routine.
+    # It deletes the receiver's entire tree from the screen.
+    # Because of the undo command we never actually delete vnodes or tnodes.
     #@-at
     #@@c
 
@@ -3312,7 +3312,6 @@ class position (object):
 
         if g.unified_nodes:
             pass
-
         else:
             # Delete p.v from the its own vnodeList.
             if p.v in p.v.t.vnodeList:

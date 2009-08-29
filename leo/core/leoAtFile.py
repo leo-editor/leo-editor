@@ -941,7 +941,7 @@ class atFile:
         child.t.setVisited() # Supress warning/deletion of unvisited nodes.
         return child
     #@-node:ekr.20041005105605.72:createThinChild4
-    #@+node:ekr.20041005105605.73:findChild4 (Can **not** be removed)
+    #@+node:ekr.20041005105605.73:findChild4
     def findChild4 (self,headline):
 
         """Return the next tnode in at.root.t.tnodeList.
@@ -990,7 +990,7 @@ class atFile:
         # Don't check the headline.  It simply causes problems.
         t.setVisited() # Supress warning/deletion of unvisited nodes.
         return t
-    #@-node:ekr.20041005105605.73:findChild4 (Can **not** be removed)
+    #@-node:ekr.20041005105605.73:findChild4
     #@+node:ekr.20041005105605.74:scanText4 & allies
     def scanText4 (self,theFile,fileName,p,verbose=False):
 
