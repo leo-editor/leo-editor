@@ -4229,6 +4229,13 @@ def os_path_splitext(path,encoding=None):
 
     return head,tail
 #@-node:ekr.20031218072017.2159:os_path_splitext
+#@+node:ekr.20090829140232.6036:os_startfile
+def os_startfile(fname):
+    if sys.platform.startswith('win'):
+        os.startfile(fname)
+    else:
+        os.system('xdg-open ' + fname)
+#@-node:ekr.20090829140232.6036:os_startfile
 #@+node:ekr.20031218072017.2160:toUnicodeFileEncoding
 def toUnicodeFileEncoding(path,encoding):
 
