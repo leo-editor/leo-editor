@@ -1030,7 +1030,7 @@ class vnode (baseVnode):
             # Add parent_v to v's parents.
             parent_v._computeParentsOfChildren()
     #@-node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
-    #@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helper
+    #@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList
     def createOutlineFromCacheList(self,c,aList):
         """ Create outline structure from recursive aList
         built by p.makeCacheList.
@@ -1102,7 +1102,7 @@ class vnode (baseVnode):
 
         return is_clone,child_v
     #@-node:ekr.20090829064400.6042:v.fastAddLastChild
-    #@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helper
+    #@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList
     #@-node:ekr.20080427062528.9:v.Low level methods
     #@+node:ekr.20090130065000.1:v.Properties
     #@+node:ekr.20090130114732.5:v.b Property

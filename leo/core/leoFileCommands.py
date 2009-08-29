@@ -1181,7 +1181,7 @@ class baseFileCommands:
     def createSaxVnode (self,sax_node,parent_v,t=None):
 
         c = self.c
-        trace = False and not g.unitTesting and c.shortFileName().find('small') > -1
+        trace = False and not g.unitTesting # and c.shortFileName().find('small') > -1
         h = sax_node.headString
         b = sax_node.bodyString
 

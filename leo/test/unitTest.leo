@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="97" left="341" height="839" width="1133"/>
+	<global_window_position top="107" left="97" height="839" width="1133"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1174,7 +1174,9 @@
 </v>
 <v t="ekr.20080905112230.3"><vh>goto-line-number tests: original files</vh>
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
-<v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh></v>
+<v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
+<v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
+</v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 <v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
 <v t="ekr.20080907123324.2"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
@@ -1182,7 +1184,7 @@
 </v>
 </v>
 <v t="ekr.20080905112230.4"><vh>goto-line-number tests: clones</vh>
-<v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
+<v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080905130723.4"><vh>at-thin-child</vh></v>
 <v t="ekr.20080907123324.3"></v>
 </v>

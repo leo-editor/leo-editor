@@ -521,8 +521,11 @@ class atFile:
             #@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
             resurrected = 0
             for p in root.self_and_subtree_iter():
-
-                if not p.v.t.isVisited():
+                if p.v.t.isVisited():
+                    pass
+                    # g.trace('visited',p.v.t,p.h)
+                else:
+                    g.trace('**** not visited',p.v.t,p.h)
                     g.es('resurrected node:',p.h,color='blue')
                     g.es('in file:',fileName,color='blue')
                     resurrected += 1
@@ -950,7 +953,8 @@ class atFile:
         trace = False and not g.unitTesting
         at = self ; v = at.root.v
 
-        if trace: g.trace('%s %s' % (
+        if trace: g.trace('%s %s %s' % (
+            at.tnodeListIndex,
             v.t.tnodeList[at.tnodeListIndex],headline))
 
         if not hasattr(v.t,"tnodeList"):
@@ -1253,6 +1257,8 @@ class atFile:
         else:
             at.t = at.findChild4(headline)
 
+        if trace: g.trace('scanning',at.t)
+
         at.endSentinelStack.append(at.endNode)
     #@-node:ekr.20041005105605.85:readStartNode (4.x)
     #@+node:ekr.20041005105605.89:readStartOthers
@@ -1408,6 +1414,7 @@ class atFile:
 
         # Indicate that the tnode has been set in the derived file.
         at.t.setVisited()
+        # g.trace('visit',at.t)
 
         # End the previous node sentinel.
         at.indent = at.indentStack.pop()

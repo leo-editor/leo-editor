@@ -4723,8 +4723,11 @@ s = '''<?xml version="1.0" encoding="utf-8"?>
 #@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
 resurrected = 0
 for p in root.self_and_subtree_iter():
-
-    if not p.v.t.isVisited():
+    if p.v.t.isVisited():
+        pass
+        # g.trace('visited',p.v.t,p.h)
+    else:
+        g.trace('**** not visited',p.v.t,p.h)
         g.es('resurrected node:',p.h,color='blue')
         g.es('in file:',fileName,color='blue')
         resurrected += 1
