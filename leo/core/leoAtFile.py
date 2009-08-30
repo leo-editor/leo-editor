@@ -498,8 +498,8 @@ class atFile:
                 root.firstChild().doDelete()
             aList = c.db[cachefile]
             root.v.createOutlineFromCacheList(c,aList)
-            at.inputFile.close() # Bug fix.
-            root.clearDirty() # Bug fix.
+            at.inputFile.close()
+            root.clearDirty()
             return
 
         # Delete all children, but **not** for @file and @nosent nodes!

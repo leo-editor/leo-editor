@@ -754,18 +754,92 @@ class vnode (baseVnode):
     #@-node:ekr.20031218072017.3367:v.Status Bits
     #@-node:ekr.20031218072017.3359:v.Getters
     #@+node:ekr.20031218072017.3384:v.Setters
-    #@+node:ekr.20031218072017.3386: v.Status bits
-    #@+node:ekr.20031218072017.3389:v.clearClonedBit
-    def clearClonedBit (self):
-
-        self.statusBits &= ~ self.clonedBit
-    #@-node:ekr.20031218072017.3389:v.clearClonedBit
+    #@+node:ekr.20090830051712.6151: v.Dirty bits
     #@+node:ekr.20031218072017.3390:v.clearDirty
     def clearDirty (self):
         v = self
         v.t.statusBits &= ~ v.t.dirtyBit
 
     #@-node:ekr.20031218072017.3390:v.clearDirty
+    #@+node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes (new)
+    def findAllPotentiallyDirtyNodes(self):
+
+        trace = False and not g.unitTesting
+        v = self ; c = v.context
+
+        # Set the starting nodes.
+        nodes = []
+        if g.unified_nodes:
+            newNodes = [v]
+        else:
+            newNodes = v.t.vnodeList[:]
+
+        # Add nodes until no more are added.
+        while newNodes:
+            addedNodes = []
+            # g.trace(len(newNodes))
+            nodes.extend(newNodes)
+            for v in newNodes:
+                if not g.unified_nodes:
+                    for v2 in v.t.vnodeList:
+                        if v2 not in nodes and v2 not in addedNodes:
+                            addedNodes.append(v2)
+                for v2 in v.parents:
+                    if v2 not in nodes and v2 not in addedNodes:
+                        addedNodes.append(v2)
+            newNodes = addedNodes[:]
+
+        # Remove the hidden vnode.
+        if c.hiddenRootNode in nodes:
+            if trace: g.trace('removing hidden root',c.hiddenRootNode)
+            nodes.remove(c.hiddenRootNode)
+
+        # g.trace('done',len(nodes))
+        if trace: g.trace(nodes)
+        return nodes
+    #@-node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes (new)
+    #@+node:ekr.20090830051712.6157:v.setAllAncestorAtFileNodesDirty (new)
+    # Unlike p.setAllAncestorAtFileNodesDirty,
+    # there is no setDescendentsDirty arg.
+
+    def setAllAncestorAtFileNodesDirty (self):
+
+        trace = False and not g.unitTesting
+        verbose = False
+        v = self
+        dirtyVnodeList = []
+
+        # Calculate all nodes that are joined to p or parents of such nodes.
+        nodes = v.findAllPotentiallyDirtyNodes()
+
+        if trace and verbose:
+            for v in nodes:
+                print v.t.isDirty(),v.isAnyAtFileNode(),v
+
+        dirtyVnodeList = [v for v in nodes
+            if not v.t.isDirty() and v.isAnyAtFileNode()]
+
+        changed = len(dirtyVnodeList) > 0
+
+        for v in dirtyVnodeList:
+            v.t.setDirty() # Do not call v.setDirty here!
+
+        if trace: g.trace(dirtyVnodeList)
+
+        return dirtyVnodeList
+    #@-node:ekr.20090830051712.6157:v.setAllAncestorAtFileNodesDirty (new)
+    #@+node:ekr.20080429053831.12:v.setDirty
+    def setDirty (self):
+
+        self.t.statusBits |= self.t.dirtyBit
+    #@-node:ekr.20080429053831.12:v.setDirty
+    #@-node:ekr.20090830051712.6151: v.Dirty bits
+    #@+node:ekr.20031218072017.3386: v.Status bits
+    #@+node:ekr.20031218072017.3389:v.clearClonedBit
+    def clearClonedBit (self):
+
+        self.statusBits &= ~ self.clonedBit
+    #@-node:ekr.20031218072017.3389:v.clearClonedBit
     #@+node:ekr.20031218072017.3391:v.clearMarked
     def clearMarked (self):
 
@@ -823,11 +897,6 @@ class vnode (baseVnode):
         else:
             self.statusBits &= ~ self.clonedBit
     #@-node:ekr.20031218072017.3397:v.setClonedBit & initClonedBit
-    #@+node:ekr.20080429053831.12:v.setDirty (new in Leo 4.5)
-    def setDirty (self):
-
-        self.t.statusBits |= self.t.dirtyBit
-    #@-node:ekr.20080429053831.12:v.setDirty (new in Leo 4.5)
     #@+node:ekr.20031218072017.3398:v.setMarked & initMarkedBit
     def setMarked (self):
 
@@ -1030,7 +1099,7 @@ class vnode (baseVnode):
             # Add parent_v to v's parents.
             parent_v._computeParentsOfChildren()
     #@-node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
-    #@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList
+    #@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
     def createOutlineFromCacheList(self,c,aList):
         """ Create outline structure from recursive aList
         built by p.makeCacheList.
@@ -1053,9 +1122,14 @@ class vnode (baseVnode):
             h,b,gnx,grandChildren = z
             isClone,child_v = parent_v.fastAddLastChild(c,gnx)
             if isClone:
-                # Bug fix: the last seen clone rules.
-                child_v.h = h
-                child_v.b = b
+                if child_v.b != b: # or child_v.h
+                    # Bug fix: the last seen clone rules.
+                    child_v.h = h
+                    child_v.b = b
+                    # Bug fix: mark @<file> nodes dirty.
+                    child_v.setAllAncestorAtFileNodesDirty()
+                    child_v.setMarked()
+                    g.es("changed:",child_v.h,color="blue")
             else:
                 child_v.createOutlineFromCacheList(c,z)
     #@+node:ekr.20090829064400.6042:v.fastAddLastChild
@@ -1102,7 +1176,7 @@ class vnode (baseVnode):
 
         return is_clone,child_v
     #@-node:ekr.20090829064400.6042:v.fastAddLastChild
-    #@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList
+    #@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
     #@-node:ekr.20080427062528.9:v.Low level methods
     #@+node:ekr.20090130065000.1:v.Properties
     #@+node:ekr.20090130114732.5:v.b Property
@@ -1940,43 +2014,13 @@ class position (object):
         p = self
         p.v.clearDirty()
     #@-node:ekr.20040311113514:p.clearDirty
-    #@+node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes (revised)
+    #@+node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes (changed)
     def findAllPotentiallyDirtyNodes(self):
 
-        trace = False and not g.unitTesting
-        p = self ; c = p.v.context
+        p = self
+        return p.v.findAllPotentiallyDirtyNodes()
 
-        # Set the starting nodes.
-        nodes = []
-        if g.unified_nodes:
-            newNodes = [p.v]
-        else:
-            newNodes = p.v.t.vnodeList[:]
-
-        # Add nodes until no more are added.
-        while newNodes:
-            addedNodes = []
-            # g.trace(len(newNodes))
-            nodes.extend(newNodes)
-            for v in newNodes:
-                if not g.unified_nodes:
-                    for v2 in v.t.vnodeList:
-                        if v2 not in nodes and v2 not in addedNodes:
-                            addedNodes.append(v2)
-                for v2 in v.parents:
-                    if v2 not in nodes and v2 not in addedNodes:
-                        addedNodes.append(v2)
-            newNodes = addedNodes[:]
-
-        # Remove the hidden vnode.
-        if c.hiddenRootNode in nodes:
-            if trace: g.trace('removing hidden root',c.hiddenRootNode)
-            nodes.remove(c.hiddenRootNode)
-
-        # g.trace('done',len(nodes))
-        if trace: g.trace(nodes)
-        return nodes
-    #@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes (revised)
+    #@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes (changed)
     #@+node:ekr.20040702104823:p.inAtIgnoreRange
     def inAtIgnoreRange (self):
 
