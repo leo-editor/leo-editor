@@ -310,6 +310,393 @@ you want (e.g. c:/opt/leo). But I could be wrong.
 --gui=qt us not needed anymore. 
 #@nonl
 #@-node:ekr.20090822060128.6035:Improved the install docs
+#@+node:ekr.20090829175108.6133:Marked @<file> nodes dirty if nodes change during read.
+#@+node:ekr.20041005105605.21:read (atFile)
+def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
+
+    """Read any @thin, @file and @noref trees."""
+
+    at = self ; c = at.c
+    << set fileName >>
+
+    doCache = g.enableDB and (thinFile or atShadow)
+    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
+    if at.errors: return False
+    fileName = at.openFileForReading(fileName,fromString=fromString)
+    if at.inputFile:
+        c.setFileTimeStamp(fileName)
+    else:
+        return False
+
+    fileContent = open(fileName, "rb").read()
+    cachefile = self._contentHashFile(root, fileContent)
+
+    # Remember that we have read this file.
+    root.v.t.at_read = True # Create the attribute for all clones.
+
+    if doCache and cachefile in c.db:
+        # This message isn't so useful.
+        # if not g.unitTesting: # g.es('uncache:',root.h)
+
+        # Delete the previous tree, regardless of the @<file> type.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+        aList = c.db[cachefile]
+        root.v.createOutlineFromCacheList(c,aList)
+        at.inputFile.close()
+        root.clearDirty()
+        return
+
+    # Delete all children, but **not** for @file and @nosent nodes!
+    if thinFile or atShadow:
+        root.v.t.at_read = True # Create the attribute for all clones.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+
+    if not g.unitTesting:
+        g.es("reading:",root.h)
+
+    root.clearVisitedInTree()
+    at.scanAllDirectives(root,importing=at.importing,reading=True)
+    at.readOpenFile(root,at.inputFile,fileName)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        << advise user to delete all unvisited nodes >>
+    if at.errors == 0 and not at.importing:
+        # Package this as a method for use by mod_labels plugin.
+        self.copyAllTempBodyStringsToTnodes(root,thinFile)
+
+    << delete all tempBodyStrings >>
+
+    # write out the cache version
+    self.writeCachedTree(root, cachefile)
+
+    return at.errors == 0
+#@+node:ekr.20041005105605.22:<< set fileName >>
+if fromString:
+    fileName = "<string-file>"
+elif importFileName:
+    fileName = importFileName
+elif root.isAnyAtFileNode():
+    fileName = root.anyAtFileNodeName()
+else:
+    fileName = None
+
+if not fileName:
+    at.error("Missing file name.  Restoring @file tree from .leo file.")
+    return False
+#@-node:ekr.20041005105605.22:<< set fileName >>
+#@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
+resurrected = 0
+for p in root.self_and_subtree_iter():
+    if p.v.t.isVisited():
+        pass
+        # g.trace('visited',p.v.t,p.h)
+    else:
+        g.trace('**** not visited',p.v.t,p.h)
+        g.es('resurrected node:',p.h,color='blue')
+        g.es('in file:',fileName,color='blue')
+        resurrected += 1
+
+if resurrected:
+    g.es('you may want to delete ressurected nodes')
+
+#@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
+#@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+for t in c.all_unique_tnodes_iter():
+
+    if hasattr(t,"tempBodyString"):
+        delattr(t,"tempBodyString")
+#@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+#@-node:ekr.20041005105605.21:read (atFile)
+#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    try:
+        fileContent = open(fileName, "rb").read()
+        cachefile = self._contentHashFile(p, fileContent)
+    except IOError:
+        cachefile = None
+
+    # Remember that we have read this file.
+    p.v.at_auto_read = True # Create the attribute
+
+    if cachefile is not None and cachefile in c.db:        
+        # g.es('uncache:',p.h)
+        aList = c.db[cachefile]
+        p.v.createOutlineFromCacheList(c,aList)
+        return
+
+    if not g.unitTesting:
+        g.es("reading:",p.h)
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        # Note: the file contains an @ignore,
+        # so no unintended write can happen.
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        # c.setBodyString(p,'')
+        p.clearDirty()
+        c.setChanged(oldChanged)
+    else:
+        self.writeCachedTree(p, cachefile)
+        g.doHook('after-auto', p = p)  # call after-auto callbacks
+#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+#@+node:ekr.20040305162628:p.Dirty bits
+#@+node:ekr.20040311113514:p.clearDirty
+def clearDirty (self):
+
+    p = self
+    p.v.clearDirty()
+#@-node:ekr.20040311113514:p.clearDirty
+#@+node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes (changed)
+def findAllPotentiallyDirtyNodes(self):
+
+    p = self
+    return p.v.findAllPotentiallyDirtyNodes()
+
+#@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes (changed)
+#@+node:ekr.20040702104823:p.inAtIgnoreRange
+def inAtIgnoreRange (self):
+
+    """Returns True if position p or one of p's parents is an @ignore node."""
+
+    p = self
+
+    for p in p.self_and_parents_iter():
+        if p.isAtIgnoreNode():
+            return True
+
+    return False
+#@-node:ekr.20040702104823:p.inAtIgnoreRange
+#@+node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
+def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    p = self
+    dirtyVnodeList = []
+
+    # Calculate all nodes that are joined to p or parents of such nodes.
+    nodes = p.findAllPotentiallyDirtyNodes()
+
+    if setDescendentsDirty:
+        # N.B. Only mark _direct_ descendents of nodes.
+        # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
+        for p2 in p.subtree_iter():
+            # Only @thin nodes need to be marked.
+            if p2.v not in nodes and p2.isAtThinFileNode():
+                nodes.append(p2.v)
+
+    if trace and verbose:
+        for v in nodes:
+            print v.t.isDirty(),v.isAnyAtFileNode(),v
+
+    dirtyVnodeList = [v for v in nodes
+        if not v.t.isDirty() and v.isAnyAtFileNode()]
+    changed = len(dirtyVnodeList) > 0
+
+    for v in dirtyVnodeList:
+        v.t.setDirty() # Do not call v.setDirty here!
+
+    if trace: g.trace(dirtyVnodeList) #,g.callers(5))
+
+    return dirtyVnodeList
+#@-node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
+#@+node:ekr.20040303163330:p.setDirty
+def setDirty (self,setDescendentsDirty=True):
+
+    '''Mark a node and all ancestor @file nodes dirty.'''
+
+    p = self ; dirtyVnodeList = []
+
+    # g.trace(p.h,g.callers(4))
+
+    if not p.v.t.isDirty():
+        p.v.t.setDirty()
+        dirtyVnodeList.append(p.v)
+
+    # Important: this must be called even if p.v is already dirty.
+    # Typing can change the @ignore state!
+    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty(setDescendentsDirty)
+    dirtyVnodeList.extend(dirtyVnodeList2)
+
+    return dirtyVnodeList
+#@-node:ekr.20040303163330:p.setDirty
+#@-node:ekr.20040305162628:p.Dirty bits
+#@+node:ekr.20090830051712.6151: v.Dirty bits
+#@+node:ekr.20031218072017.3390:v.clearDirty
+def clearDirty (self):
+    v = self
+    v.t.statusBits &= ~ v.t.dirtyBit
+
+#@-node:ekr.20031218072017.3390:v.clearDirty
+#@+node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes (new)
+def findAllPotentiallyDirtyNodes(self):
+
+    trace = False and not g.unitTesting
+    v = self ; c = v.context
+
+    # Set the starting nodes.
+    nodes = []
+    if g.unified_nodes:
+        newNodes = [v]
+    else:
+        newNodes = v.t.vnodeList[:]
+
+    # Add nodes until no more are added.
+    while newNodes:
+        addedNodes = []
+        # g.trace(len(newNodes))
+        nodes.extend(newNodes)
+        for v in newNodes:
+            if not g.unified_nodes:
+                for v2 in v.t.vnodeList:
+                    if v2 not in nodes and v2 not in addedNodes:
+                        addedNodes.append(v2)
+            for v2 in v.parents:
+                if v2 not in nodes and v2 not in addedNodes:
+                    addedNodes.append(v2)
+        newNodes = addedNodes[:]
+
+    # Remove the hidden vnode.
+    if c.hiddenRootNode in nodes:
+        if trace: g.trace('removing hidden root',c.hiddenRootNode)
+        nodes.remove(c.hiddenRootNode)
+
+    # g.trace('done',len(nodes))
+    if trace: g.trace(nodes)
+    return nodes
+#@-node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes (new)
+#@+node:ekr.20090830051712.6157:v.setAllAncestorAtFileNodesDirty (new)
+# Unlike p.setAllAncestorAtFileNodesDirty,
+# there is no setDescendentsDirty arg.
+
+def setAllAncestorAtFileNodesDirty (self):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    v = self
+    dirtyVnodeList = []
+
+    # Calculate all nodes that are joined to p or parents of such nodes.
+    nodes = v.findAllPotentiallyDirtyNodes()
+
+    if trace and verbose:
+        for v in nodes:
+            print v.t.isDirty(),v.isAnyAtFileNode(),v
+
+    dirtyVnodeList = [v for v in nodes
+        if not v.t.isDirty() and v.isAnyAtFileNode()]
+
+    changed = len(dirtyVnodeList) > 0
+
+    for v in dirtyVnodeList:
+        v.t.setDirty() # Do not call v.setDirty here!
+
+    if trace: g.trace(dirtyVnodeList)
+
+    return dirtyVnodeList
+#@-node:ekr.20090830051712.6157:v.setAllAncestorAtFileNodesDirty (new)
+#@+node:ekr.20080429053831.12:v.setDirty
+def setDirty (self):
+
+    self.t.statusBits |= self.t.dirtyBit
+#@-node:ekr.20080429053831.12:v.setDirty
+#@-node:ekr.20090830051712.6151: v.Dirty bits
+#@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
+def createOutlineFromCacheList(self,c,aList):
+    """ Create outline structure from recursive aList
+    built by p.makeCacheList.
+
+    Clones will be automatically created by gnx,
+    but *not* for the top-level node.
+    """
+
+    parent_v = self
+
+    #import pprint ; pprint.pprint(tree)
+    parent_v = self
+    h,b,gnx,children = aList
+    if h is not None:
+        t = parent_v.t
+        t._headString = h    
+        t._bodyString = b
+
+    for z in children:
+        h,b,gnx,grandChildren = z
+        isClone,child_v = parent_v.fastAddLastChild(c,gnx)
+        if isClone:
+            if child_v.b != b: # or child_v.h
+                # Bug fix: the last seen clone rules.
+                child_v.h = h
+                child_v.b = b
+                # Bug fix: mark @<file> nodes dirty.
+                child_v.setAllAncestorAtFileNodesDirty()
+                child_v.setMarked()
+                g.es("changed:",child_v.h,color="blue")
+        else:
+            child_v.createOutlineFromCacheList(c,z)
+#@+node:ekr.20090829064400.6042:v.fastAddLastChild
+# Similar to createThinChild4
+def fastAddLastChild(self,c,gnxString):
+    '''Create new vnode as last child of the receiver.
+
+    If the gnx exists already, create a clone instead of new vnode.
+    '''
+
+    trace = False and not g.unitTesting
+    parent_v = self
+    indices = g.app.nodeIndices
+    tnodesDict = c.fileCommands.tnodesDict
+
+    if gnxString is None: t = None
+    else:                 t = tnodesDict.get(gnxString)
+    is_clone = t is not None
+
+    if trace: g.trace(
+        'clone','%-5s' % (is_clone),
+        'parent_v',parent_v,'gnx',gnxString,'t',repr(t))
+
+    if not is_clone:
+        if g.unified_nodes: t = vnode(context=c)
+        else:               t = tnode()
+        if gnxString:
+            gnx = indices.scanGnx(gnxString,0)
+            t.fileIndex = gnx
+        tnodesDict[gnxString] = t
+
+    if g.unified_nodes: child_v = t
+    else:               child_v = vnode(context=c,t=t)
+
+    if g.unified_nodes:
+        pass
+    else:
+        if child_v not in t.vnodeList:
+            t.vnodeList.append(child_v)
+
+    child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
+
+    child_v.t.setVisited() # Supress warning/deletion of unvisited nodes.
+
+    return is_clone,child_v
+#@-node:ekr.20090829064400.6042:v.fastAddLastChild
+#@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
+#@-node:ekr.20090829175108.6133:Marked @<file> nodes dirty if nodes change during read.
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin

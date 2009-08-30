@@ -114,11 +114,11 @@ app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
 isPython3 = sys.version_info >= (3,0,0)
 
-enableDB = False
+enableDB = True
 if not enableDB:
     print '** leoGlobals.py: caching disabled'
 
-unified_nodes = True # True: merge tnodes into vnodes.
+unified_nodes = False # True: merge tnodes into vnodes.
 if unified_nodes: # Hard to disable in unit tests.
     print ('** leoGlobals.py: unified_nodes: %s' % (unified_nodes))
 
