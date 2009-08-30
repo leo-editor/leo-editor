@@ -672,7 +672,7 @@ try:
 except ImportError:
     Image = ImageTk = None
 
-import rClickBasePluginClasses as baseClasses
+import leo.plugins.rClickBasePluginClasses as baseClasses
 #@-node:ekr.20050101090207.2:<< imports >>
 #@nl
 
@@ -2335,9 +2335,5 @@ class pluginController(baseClasses.basePluginController):
     #@-others
 #@-node:bobjack.20080516105903.18:class pluginController
 #@-others
-
-
-
-
 #@-node:bobjack.20080321133958.6:@thin rClick.py
 #@-leo

@@ -153,16 +153,24 @@ def createNullGuiWithScript (script):
 #@+node:ekr.20070306085724:adjustSysPath
 def adjustSysPath ():
 
-    '''Adjust sys.path to enable imports as usual with Leo.'''
+    '''Adjust sys.path to enable imports as usual with Leo.
 
-    #g.trace('loadDir',g.app.loadDir)
+    This method is no longer needed:
 
-    leoDirs = ('config','doc','extensions','modes','plugins','core','test')
+    1. g.importModule will import from the
+       'external' or 'extensions' folders as needed
+       without altering sys.path.
 
-    for theDir in leoDirs:
-        path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
-        if path not in sys.path:
-            sys.path.append(path)
+    2  Plugins now do fully qualified imports.
+    '''
+
+    # leoDirs = ('config','doc','extensions','modes','plugins','core','test')
+
+    # for theDir in leoDirs:
+        # path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
+        # if path not in sys.path:
+            # sys.path.append(path)
+#@nonl
 #@-node:ekr.20070306085724:adjustSysPath
 #@+node:ekr.20071117060958:getFileName & helper
 def getFileName (fileName,script):
