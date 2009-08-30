@@ -118,7 +118,7 @@ enableDB = True
 if not enableDB:
     print '** leoGlobals.py: caching disabled'
 
-unified_nodes = True # True: merge tnodes into vnodes.
+unified_nodes = True # For unit tests only.
 
 #@+others
 #@+node:ekr.20050328133058:g.createStandAloneTkApp
