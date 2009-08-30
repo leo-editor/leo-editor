@@ -2121,7 +2121,7 @@
 <v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
 <v t="ekr.20040712101754.200" annotate="7d71002e"><vh>@test that clones share subtrees</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
-<v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
+<v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@@test vnode list</vh></v>
 <v t="ville.20090312195309.2"><vh>@test find_h / find_b / select_h / select_b</vh></v>
 </v>
 <v t="ekr.20090130133404.2"><vh>@test leoNodes properties</vh></v>
