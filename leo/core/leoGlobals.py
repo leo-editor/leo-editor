@@ -114,7 +114,7 @@ app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
 isPython3 = sys.version_info >= (3,0,0)
 
-enableDB = True
+enableDB = False
 if not enableDB:
     print '** leoGlobals.py: caching disabled'
 
