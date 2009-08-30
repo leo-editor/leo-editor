@@ -905,13 +905,6 @@ for s in lines:
     scanned += 1
 #@-node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
 #@+node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
-@ We use the tnodeList to find a _tnode_ corresponding to the proper node, so the user will for sure be editing the proper text, even if several nodes happen to have the same headline.  This is really all that we need.
-
-However, this code has no good way of distinguishing between different cloned vnodes in the file: they all have the same tnode.  So this code just picks p = t.vnodeList[0] and leaves it at that.
-
-The only way to do better is to scan the outline, replicating the write logic to determine which vnode created the given line.  That's way too difficult, and it would create an unwanted dependency in this code.
-@c
-
 # g.trace("tnodeIndex",tnodeIndex)
 if tnodeIndex < len(tnodeList):
     t = tnodeList[tnodeIndex]
