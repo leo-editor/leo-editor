@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="2,0"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="2,0,10"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>
@@ -200,7 +200,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050831195331.2" a="E"><vh>Chapter 1: Installing Leo</vh>
+<v t="ekr.20050831195331.2"><vh>Chapter 1: Installing Leo</vh>
 <v t="edream.110203163054.48"><vh>@rst html\install.html</vh>
 <v t="ekr.20050901110110"><vh>@rst-no-head links</vh></v>
 <v t="edream.110203163054.49"><vh>System requirements</vh></v>
@@ -383,7 +383,7 @@
 <v t="EKR.20040524104904.181"><vh>How Leo Changes the Notion of Literate Programming</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.4"><vh>Chapter 7: Scripting Leo with Python</vh>
+<v t="ekr.20050831195331.4" a="E"><vh>Chapter 7: Scripting Leo with Python</vh>
 <v t="ekr.20040403171740"><vh>@rst html\scripting.html</vh>
 <v t="ekr.20050812134441.1"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20050901184158"><vh>@rst-ignore Important: you can run these examples!</vh></v>
@@ -436,6 +436,7 @@
 <v t="ekr.20040403173920.24" rst_http_attribute="5d71002855463c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710155043c2f613e71025d71032855263c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710455063c2f6469763e71055d710628554f3c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710755063c2f6469763e71085d710928553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a55063c2f6469763e710b5d710c2855063c626f64793e710d55073c2f626f64793e710e5d710f2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711055073c2f68746d6c3e71114e656565656555073c2f6469763e0a711255073c2f6469763e0a711355353c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7114556c3c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a7115652e"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20080922124033.1"><vh>Getting interactive input from scripts</vh></v>
 <v t="ville.20090603183524.5672"><vh>Creating Leo commands - @g.command</vh></v>
+<v t="ekr.20090831090752.11347"><vh>Leo's legacy data model</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.211"><vh>Chapter 8: Customizing Leo</vh>
@@ -985,7 +986,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090717084250.10702" a="E"><vh>Other docs</vh>
+<v t="ekr.20090717084250.10702"><vh>Other docs</vh>
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
@@ -3160,7 +3161,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090824090942.11313" a="E"><vh>Old windows install docs</vh>
+<v t="ekr.20090824090942.11313"><vh>Old windows install docs</vh>
 <v t="ekr.20090623072844.10382"><vh>Installing Qt on Windows</vh></v>
 <v t="edream.110203163054.60"><vh>How to associate Leo with .leo files on Windows</vh></v>
 </v>
@@ -7000,17 +7001,32 @@ Chapter 7: Scripting Leo with Python
 ####################################
 
 This chapter is a tutorial describing how to write Python scripts that get and
-modify data contained in Leo outlines. Scripts use Leo's, **vnode**, **tnode**
-and **position** classes to access data in Leo outlines. The combination of a
-vnode v and its tnode v.t represents a node's data. Leo needs both vnodes and
-tnodes to represent clones efficiently. Indeed, a tnode represents all data
-shared by cloned nodes. When Leo clones a vnode v, Leo creates a new,
-independent vnode v2 and sets v2.t == v.t. Thus, cloning a node does not
-duplicate any information in descendant trees, but descendants of a cloned node
-appear more than once on the screen (when all nodes are expanded). Positions
-represent a node at a particular place on the screen. Equivalently, a position
-indicates a particular place in a tree traversal. Iterators of the position
-class define various kinds of tree traversals.
+modify data contained in Leo outlines.
+
+This chapter describes Leo's simplied node (one-node) data model.
+The section called `Leo's legacy data model`_ describes a more complex data model.
+
+Leo's **vnode** classe represents all the data in a particular node.
+In the simplied data model, a single vnode represents all clones on the screen.
+When Leo clones a vnode v, alters data structures in v and v's parent vnode,
+but Leo does *not* create another vnode to represent the clone.
+Thus, the *exact same* vnode may appear in several places on Leo's outline pane.
+
+Leo's **position** class represents a position (spot) in Leo's outline pane.
+More exactly, a position represents the state of a tree traversal of Leo's data.
+Vnode's may appear several times in a traversal, which is another way of saying
+that vnodes may appear several times in Leo's outline pane.
+
+Leo's **iterators** generate lists of positions.
+For example, the c.allNodes_iter() generates a list of all positions in the outline.
+As another example, given a position p,
+p.self_and_subtree() generates a list of all descendants of the vnode at position p.
+
+Leo' **position methods** provide other ways ways of finding positions.
+Given a position p, p.parent() is the p's parent position,
+p.firstChild() is the position of p's first child (if it exists),
+and p.next() is the position of p's next sibling (again, if it exists).
+Many other position methods exist, as discussed below.
 
 Leo's execute-script command predefines several symbols.  This makes it easy to
 access the data in Leo outlines and the Leo's own source code. g is predefined
@@ -7022,7 +7038,7 @@ script is contained. Whenever possible, scripts should use the high-level
 methods of the commander to insert, delete or clone nodes. Finally, the
 execute-script commands predefines p to be the presently selected position.
 
-This chapter describes only some of Leo's functions, classes and methods.
+This chapter describes many of Leo's functions, classes and methods.
 However, your scripts have complete access to all of Leo's source code, that
 is, all the code in ``LeoPy.leo``. You are not limited by what you see in this
 chapter.
@@ -7061,24 +7077,24 @@ Calls need *not* be paired. Redundant calls are ignored and the last call made
 controls where output for each stream goes.
 **Note**: you must execute Leo in a console window to see non-redirected output from the print statement::
 
-    print "stdout isRedirected:", g.stdOutIsRedirected()
-    print "stderr isRedirected:", g.stdErrIsRedirected()
+    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
+    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
 
     g.redirectStderr()
-    print "stdout isRedirected:", g.stdOutIsRedirected()
-    print "stderr isRedirected:", g.stdErrIsRedirected()
+    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
+    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
 
     g.redirectStdout()
-    print "stdout isRedirected:", g.stdOutIsRedirected()
-    print "stderr isRedirected:", g.stdErrIsRedirected()
+    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
+    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
 
     g.restoreStderr()
-    print "stdout isRedirected:", g.stdOutIsRedirected()
-    print "stderr isRedirected:", g.stdErrIsRedirected()
+    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
+    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
 
     g.restoreStdout()
-    print "stdout isRedirected:", g.stdOutIsRedirected()
-    print "stderr isRedirected:", g.stdErrIsRedirected()</t>
+    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
+    print("stderr isRedirected: %s" % g.stdErrIsRedirected())</t>
 <t tx="ekr.20040403173920.6">Here is how to access the data of a Leo window::
 
     g.es(p) # p is already defined.
@@ -7118,13 +7134,13 @@ Here is one way to count the nodes of an outline::
 
 Here is a way to count the *distinct* vnodes of an outline::
 
-    positions = 0 ; tnodes = {}
+    positions = 0 ; vnodes = {}
     for p in c.allNodes_iter():
         positions += 1
-        if not tnodes.get(p.v.t):
-            tnodes[p.v.t] = p.v.t
+        if not vnodes.get(p.v):
+            vnodes[p.v] = p.v
     g.es("%8s positions" % positions)
-    g.es("%8s vnodes" % len(tnodes.keys()))</t>
+    g.es("%8s vnodes" % len(vnodes.keys()))</t>
 <t tx="ekr.20040403173920.13">The ``p.children_iter`` iterator returns a list of all children of position ``p``::
 
     parent = p.parent()
@@ -7358,9 +7374,7 @@ for that frame::
 
 There is also g.app.commandrs() method, that gives the list of all active
 commanders directly.</t>
-<t tx="ekr.20040403183229">@language python
-
-Leo's source code is a collection of classes, along with utility functions in
+<t tx="ekr.20040403183229">Leo's source code is a collection of classes, along with utility functions in
 ``leoGlobals.py``. Here are the classes and objects that scripts will commonly use:
 
 **g.app**
@@ -7387,8 +7401,7 @@ Leo's source code is a collection of classes, along with utility functions in
     An instance of the ``position`` class in ``leoNodes.py``.
     A position object represents the location of a particular node *in a tree traversal*.
     By convention, variables named ``p``, ``p1`` or ``p2`` are positions.
-    For any ``position`` ``p``, ``p.v`` is the vnode at that position and
-    ``p.v.t`` is the tnode at that position.
+    For any ``position`` ``p``, ``p.v`` is the vnode at that position.
     **Positions are the primary way to access data.**
     ``c.currentPosition`` (aka ``c.p``) and ``c.rootPosition`` return positions.
     From those starting point, it is possible to access the data in any node.
@@ -7398,13 +7411,9 @@ Leo's source code is a collection of classes, along with utility functions in
     As discussed below, plugins and scripts that store positions for use at a later time should make sure the
     position p is still valid by calling c.positionExists(p)
 
-    **Important**:
+    **Note**:
     For compatibility with old (pre-4.2) scripts, ``c.currentVnode`` and
-    ``c.rootVnode`` methods return *positions* not vnodes. Old scripts appear to
-    be using vnodes; in fact they are using positions. I call such scripts
-    **confused** scripts. Confused scripts work because the ``position`` class
-    is designed to make them work. We'll see how this works in detail in `About
-    copying positions`_.  This section is **supremely important**.
+    ``c.rootVnode`` methods return *positions* not vnodes.
 
 **baseTextWidget and its subclasses**
 
@@ -7419,19 +7428,11 @@ Gui plugins implement Leo's body pane by subclassing baseTextWidget.
     By convention, variables named ``v``, ``v1`` or ``v2`` refer to vnodes.
     **Important**: scripts normally should use positions, not vnodes.
 
-**tnode**
-    An instance of the ``tnode`` class in ``leoNodes.py``.
-    tnodes represent the actual data in a vnode, including headline and body text.
-    For any vnode ``v``, ``v.t`` is v's tnode.
-    Cloned vnodes v1 and v2 share the same tnode.  That is ``v1.t == v2``.
-    **Important**: If ``p`` is a ``position``, ``p.v.t`` is the tnode associated with that position.
-    Many positions may share the same tnode.
-
-**Important**: With the exception of the p.v and v.t ivars, scripts should be
-careful to use only the methods of the position, vnode and tnode classes rather
-than the internal ivars of these classes. Doing so will ensure that the script
-is as simple as possible and that the script will continue to work regardless of
-future changes to the internals of these classes.
+**Important**: With the exception of the p.v ivar, scripts should be careful to
+use only the methods of the position and vnode classes rather than the internal
+ivars of these classes. Doing so will ensure that the script is as simple as
+possible and that the script will continue to work regardless of future changes
+to the internals of these classes.
 </t>
 <t tx="ekr.20040411151245">Iterators exist only in the position class::
 
@@ -13575,9 +13576,9 @@ Another way to solve this problem is to set ``copy=True`` when using an iterator
 
     d = {}
     for p in c.allNodes_iter(copy=True):
-        d[p.v.t] = p
+        d[p.v] = p
 
-This creates a dictionary of (unchanging!) positions, indexed via tnode.
+This creates a dictionary of (unchanging!) positions, indexed via vnode.
 **Warning** The positions in this dictionary will become invalid when the
 outline's structure changes. It would be wrong to save a dictionary like this
 for use between commands.
@@ -13585,13 +13586,7 @@ for use between commands.
 Setting the ``copy=True`` argument to iterators is an acceptable strategy for
 infrequently used scripts; it is not acceptable for heavily used code in Leo's
 core: it would create huge numbers of positions that would immediately be
-candidates for garbage collection.
-
-**Important**: 'Confused' scripts work because the ``position`` methods that
-simulate the old ``vnode`` methods automatically create copies of positions when
-'moving' through an outline. Thus, confused scripts generate many more positions
-than would the equivalent script that uses ``position`` iterators. Such is the
-price of compatibility.</t>
+candidates for garbage collection.</t>
 <t tx="ekr.20050902080416"># Start at the top.
 b = c.frame.body.bodyCtrl
 b.mark_set('insert','1.0')
@@ -22094,28 +22089,20 @@ My second choice is using g.pdb to set breakpoints for the pdb_ debugger. Pdb
 uses the console for all interaction, so you must `run Leo in a console window`_.
 See `the FAQ`_ for a discussion of both g.trace and g.pdb.
 </t>
-<t tx="ekr.20070119131801">**Joined nodes** represent the same data. Joined nodes are vnodes v1 and v2 such
-that v1.t == v2.t. Joined vnodes are distinct (v1 != v2) if the vnodes are
-clones of each other. Joined nodes are in fact the same node (v1 == v2) if they
-are descendants of clone nodes. In particular, we can say that p1.v is joined to
-p2.v if p1.v.t == p2.v.t regardless of whether p1.v == p2.v. Thus a script can
-process nodes exactly once if it ignores nodes joined to previously visited
-nodes. A later section will provide an example of this common scripting pattern.
-
-The following script illustrates a common idiom. It prints each headline of an
+<t tx="ekr.20070119131801">The following script illustrates a common idiom. It prints each headline of an
 outline, eliminating duplications that would happen as the result of cloned
 trees::
 
     d = {}
     for p in c.allNodes_iter():
-        if p.v.t not in d:
-            print p.h
-            d[p.v.t] = p.v.t
+        if p.v not in d:
+            print(p.h)
+            d[p.v] = p.v
 
-As mentioned in the introduction, joined nodes share the same tnode. Thus, when
-we visit a position p we print p.h only if p.v.t is not already in
-the dictionary. We then enter p.v.t in the dictionary to prevent printing the
-headlines of any future node joined to p.v.</t>
+Here is a simpler way::
+
+    for p in c.all_unique_vnodes_iter():
+        print(p.h)</t>
 <t tx="ekr.20070120075236">Leo's ``Execute Script`` command predefines ``c`` to be the commander of the
 outline containing the script. ``g`` and ``p`` are predefined as follows::
 
@@ -22127,7 +22114,7 @@ information in a Leo outline. For example, as discussed below, the following
 script will print every headline in the Leo outline in which the script occurs.
 
     for p in c.allNodes_iter():
-        print p.h
+        print ('%s%s' % (p.level() * ' ',p.h))
 </t>
 <t tx="ekr.20070122070619">Leo 4.4.3 alpha 1                                  January 26, 2006
 
@@ -22359,7 +22346,7 @@ The following code will find a position p2 describing the same node as p::
                 # found
                 c.selectPosition(p2)
         else:
-            print 'position no longer exists'
+            print ('position no longer exists')
 </t>
 <t tx="ekr.20070122104240">http://sourceforge.net/forum/message.php?msg_id=4113315
 </t>
@@ -27841,7 +27828,7 @@ for which python was not the top-most directory.</t>
            k.getArg(event,stateName,1,getInput)
        else:
            k.clearState()
-           g.es_print('input:',k.arg)
+           g.es_print('input: %s' % k.arg)
 
     getInput()
 
@@ -27873,7 +27860,7 @@ The following lines handle state 1::
 
     else:
         k.clearState()
-        g.es_print('input:',k.arg)
+        g.es_print('input: %s' % k.arg)
 
 k.arg is the value returned by k.getArg.
 This example code just prints the value of k.arg and clears the input state.
@@ -30212,6 +30199,48 @@ you are ready to `run Leo`_.
 If you haven't already created a HOME environment variable, it would be good to
 define home to be "%USERPROFILE%\My Documents".  You can check whether HOME exists
 by typing 'echo %HOME%' (without the quotes) in a console window.</t>
+<t tx="ekr.20090831090752.11347">This section describes the data model used in all versions of Leo before Leo 4.7.
+
+Leo's legacy model used two class, the **vnode** and **tnode** classes to
+represent nodes. The combination of a vnode v and its tnode v.t represents a
+node's data. Leo used both vnodes and tnodes to represent clones efficiently. A
+tnode represents all data shared by cloned nodes. When Leo clones a vnode v, Leo
+creates a new, independent vnode v2 and sets v2.t == v.t. Thus, cloning a node
+does not duplicate any information in descendant trees, but descendants of a
+cloned node appear more than once on the screen (when all nodes are expanded).
+
+In the legacy data model, tnodes represent the actual data in a vnode, including
+headline and body text. For any vnode ``v``, ``v.t`` is v's tnode. Cloned vnodes
+v1 and v2 share the same tnode. That is ``v1.t == v2``. If ``p`` is a
+``position``, ``p.v.t`` is the tnode associated with that position. Many
+positions may share the same tnode.
+
+The legacy data model had a concept called **joined nodes**. Joined nodes
+represent the same data. In the new, simplied model, all joined nodes are the
+same vnode, but that was not true in the legacy data model.
+
+Joined nodes were vnodes v1 and v2 such that v1.t == v2.t. Joined vnodes are
+distinct (v1 != v2) if the vnodes are clones of each other. Joined nodes are in
+fact the same node (v1 == v2) if they are descendants of clone nodes. In
+particular, we can say that p1.v is joined to p2.v if p1.v.t == p2.v.t
+regardless of whether p1.v == p2.v. Thus a script can process nodes exactly once
+if it ignores nodes joined to previously visited nodes. A later section will
+provide an example of this common scripting pattern.
+
+The following script illustrates a common idiom. It prints each headline of an
+outline, eliminating duplications that would happen as the result of cloned
+trees::
+
+    d = {}
+    for p in c.allNodes_iter():
+        if p.v.t not in d:
+            print(p.h)
+            d[p.v.t] = p.v.t
+
+In the legacy data model, joined vnodes shared the same tnode. Thus, when we
+visit a position p we print p.h only if p.v.t is not already in the dictionary.
+We then enter p.v.t in the dictionary to prevent printing the headlines of any
+future node joined to p.v.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?
