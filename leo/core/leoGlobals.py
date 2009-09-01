@@ -6781,7 +6781,7 @@ def assertUi(uitype):
 #@-node:ville.20090827174345.9963:g.assertui
 #@-node:EKR.20040612114220:Utility classes, functions & objects...
 #@+node:ekr.20031218072017.3197:Whitespace...
-#@+node:ekr.20051014175117:g.adjustTripleString (same as removeExtraLws)
+#@+node:ekr.20051014175117:g.adjustTripleString
 def adjustTripleString (s,tab_width):
 
     '''Remove leading indentation from a triple-quoted string.
@@ -6790,24 +6790,43 @@ def adjustTripleString (s,tab_width):
     '''
 
     # Compute the minimum leading whitespace of all non-blank lines.
+    trace = True and not g.unitTesting
     lines = g.splitLines(s)
-    w = -1
-    for s in lines:
-        if s.strip():
-            lws = g.get_leading_ws(s)
+    w = 0 ; val = -1
+    for line in lines:
+        if line.strip():
+            lws = g.get_leading_ws(line)
             w2 = g.computeWidth(lws,tab_width)
-            if w < 0: w = w2
-            else:     w = min(w,w2)
-            # g.trace('w',w)
+            # The sign of w does not matter.
+            if w == 0 or abs(w2) < w:
+                w = abs(w2)
 
-    if w <= 0: return s
+    if w == 0: return s
 
     # Remove the leading whitespace.
     result = [g.removeLeadingWhitespace(line,w,tab_width) for line in lines]
     result = ''.join(result)
-
     return result
-#@-node:ekr.20051014175117:g.adjustTripleString (same as removeExtraLws)
+#@+node:ekr.20090901175503.6098:@test g.adjustTripleString
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    s = '''\
+    a
+      b
+
+c
+    d'''
+
+    s2 = 'a\n  b\n\nc\nd'
+
+    result = g.adjustTripleString(s,c.tab_width)
+    assert result == s2,repr(result)
+
+
+#@-node:ekr.20090901175503.6098:@test g.adjustTripleString
+#@-node:ekr.20051014175117:g.adjustTripleString
 #@+node:ekr.20031218072017.3198:computeLeadingWhitespace
 # Returns optimized whitespace corresponding to width with the indicated tab_width.
 
@@ -6878,7 +6897,7 @@ def regularizeTrailingNewlines(s,kind):
 
 def removeLeadingWhitespace (s,first_ws,tab_width):
 
-    j = 0 ; ws = 0
+    j = 0 ; ws = 0 ; first_ws = abs(first_ws)
     for ch in s:
         if ws >= first_ws:
             break
@@ -6901,11 +6920,10 @@ def removeExtraLws (s,tab_width):
     lines = g.splitLines(s)
 
     # Find the first non-blank line and compute w, the width of its leading whitespace.
-    for s in lines:
-        if s.strip():
-            lws = g.get_leading_ws(s)
+    for line in lines:
+        if line.strip():
+            lws = g.get_leading_ws(line)
             w = g.computeWidth(lws,tab_width)
-            # g.trace('w',w)
             break
     else: return s
 

@@ -1,161 +1,161 @@
 !define PRODUCT_VERSION "4.6.3-final"
 
-    ; HM NIS Edit Wizard helper defines
-    !define PRODUCT_NAME "Leo"
-    !define PRODUCT_PUBLISHER "Edward K. Ream"
-    !define PRODUCT_WEB_SITE "http://webpages.charter.net/edreamleo/front.html"
-    ; !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
-    !define PRODUCT_UNINST_ROOT_KEY "HKLM"
+; HM NIS Edit Wizard helper defines
+!define PRODUCT_NAME "Leo"
+!define PRODUCT_PUBLISHER "Edward K. Ream"
+!define PRODUCT_WEB_SITE "http://webpages.charter.net/edreamleo/front.html"
+; !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
+!define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
-    SetCompressor bzip2
-    
-    ; hand-created defines
-    ; used for Windows Registry links to uninstaller
+SetCompressor bzip2
 
-    !define PRODUCT_NAME_LOWER_CASE "leo"
+; hand-created defines
+; used for Windows Registry links to uninstaller
 
-    !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME_LOWER_CASE}"
+!define PRODUCT_NAME_LOWER_CASE "leo"
 
-    ; On Windows NT-derived operating systems, Python.org installer for Python 2.4 
-    ; can be installed for all users or current user only.
-    ; define the following symbol to install if Python is installed only for current user. 
-    ; !define INSTALL_IF_PYTHON_FOR_CURRENT_USER
+!define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME_LOWER_CASE}"
 
-    !define STRING_PYTHON_NOT_FOUND "Python is not installed on this system.    Please install Python first.    Click OK to cancel installation and remove installation Files."
+; On Windows NT-derived operating systems, Python.org installer for Python 2.4 
+; can be installed for all users or current user only.
+; define the following symbol to install if Python is installed only for current user. 
+; !define INSTALL_IF_PYTHON_FOR_CURRENT_USER
 
-    !define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only.    ${PRODUCT_NAME} does not support use with Python so configured.    Click OK to cancel installation and remove installation Files."
-    
-    Caption "Leo Installer"
-    AutoCloseWindow false 
-    SilentInstall normal
-    CRCCheck on ; FIXME shouldn't this be CRCCheck force ? Why give user option of using corrupted installer?
-    SetCompress auto ; FIXME this is disabled for solid compression, which comes with BZip2 and LZMA compression
-    SetDatablockOptimize on
-    ; SetOverwrite ifnewer
-    WindowIcon off
+!define STRING_PYTHON_NOT_FOUND "Python is not installed on this system.    Please install Python first.    Click OK to cancel installation and remove installation Files."
 
-    ; settings from HM NIS Edit Wizard
-    Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-    OutFile "LeoSetup-4.6.3-final.exe"
-    LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
-    InstallDir "$PROGRAMFILES\Leo"
-    Icon "C:\leo.repo\main-trunk\leo\Icons\leo_inst.ico"
-    ; Version 1.0 of NSIS Script for Leo comes with its own uninstall icon
-    ; UninstallIcon "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
-    DirText "Setup will install $(^Name) in the following folder.    To install in a different folder, click Browse and select another folder."
-    LicenseText "If you accept all the terms of the agreement, choose I Agree to continue.    You must accept the agreement to install $(^Name)."
-    LicenseData "C:\leo.repo\main-trunk\License.txt"
-    ShowInstDetails show
-    ShowUnInstDetails show
-    
-    ; Location where the Installer finds a Pythonw.exe
-    ; set by the .onInit function
-    var PythonExecutable
-    var StrNoUsablePythonFound
-    
-    ; .onInit -- find Pythonw.exe, set PythonExecutable with string value
-    ; of its fully qualified path.
-    ; code taken from the "Leo" Section of Leo Installer Version 1.0
-    ;
-    Function .onInit
+!define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only.    ${PRODUCT_NAME} does not support use with Python so configured.    Click OK to cancel installation and remove installation Files."
 
-        # Bypass this for now.
-        goto done
+Caption "Leo Installer"
+AutoCloseWindow false 
+SilentInstall normal
+CRCCheck on ; FIXME shouldn't this be CRCCheck force ? Why give user option of using corrupted installer?
+SetCompress auto ; FIXME this is disabled for solid compression, which comes with BZip2 and LZMA compression
+SetDatablockOptimize on
+; SetOverwrite ifnewer
+WindowIcon off
 
-        # Create default error message
-        StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
+; settings from HM NIS Edit Wizard
+Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
+OutFile "LeoSetup-4.6.3-final.exe"
+LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
+InstallDir "$PROGRAMFILES\Leo"
+Icon "C:\leo.repo\main-trunk\leo\Icons\leo_inst.ico"
+; Version 1.0 of NSIS Script for Leo comes with its own uninstall icon
+; UninstallIcon "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
+DirText "Setup will install $(^Name) in the following folder.    To install in a different folder, click Browse and select another folder."
+LicenseText "If you accept all the terms of the agreement, choose I Agree to continue.    You must accept the agreement to install $(^Name)."
+LicenseData "C:\leo.repo\main-trunk\License.txt"
+ShowInstDetails show
+ShowUnInstDetails show
 
-        # I sure hope there is a better way to do this,
-        # but other techniques don't seem to work.
-        # Supposedly the Python installer creates the following registry entry
-        # HKEY_LOCAL_MACHINE\Software\Python\PythonCore\CurrentVersion
-        # and then we can read find the Python folder location via
-        # HKEY_LOCAL_MACHINE\Software\Python\PythonCore\{versionno}.
-        # Alas, at the time of this writing, the Python installer is NOT writing the first entry.
-        # There is no way to know what the current versionno is.
-        # Hence, the following hack.
+; Location where the Installer finds a Pythonw.exe
+; set by the .onInit function
+var PythonExecutable
+var StrNoUsablePythonFound
 
-        # Get pythonw.exe path from registry... except it isn't there, nor is it an environment variable... thanks guys!
-        # We'll have to get it in a roundabout way
-        ReadRegStr $9 HKEY_LOCAL_MACHINE "SOFTWARE\Classes\Python.NoConFile\shell\open\command" ""
+; .onInit -- find Pythonw.exe, set PythonExecutable with string value
+; of its fully qualified path.
+; code taken from the "Leo" Section of Leo Installer Version 1.0
+;
+Function .onInit
 
-        # the NSIS installer for Python 2.3 leaves the registry entry in the following format:
-        # C:\Python23\pythonw.exe[SP]"%1%"[SP]%*
-        # the MSI installer for python.org's Python 2.4 release leaves the registry entry in the following format:
-        # "C:\Python24\pythonw.exe"[SP]"%1%"[SP]%*
-        # where [SP] represents an ASCII space character.
+    # Bypass this for now.
+    goto done
 
-        # Step 1: Try for the format used by the NSIS installer
+    # Create default error message
+    StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
 
-        # cut 8 characters from back of the open command
-        StrCpy $8 $9 -8
+    # I sure hope there is a better way to do this,
+    # but other techniques don't seem to work.
+    # Supposedly the Python installer creates the following registry entry
+    # HKEY_LOCAL_MACHINE\Software\Python\PythonCore\CurrentVersion
+    # and then we can read find the Python folder location via
+    # HKEY_LOCAL_MACHINE\Software\Python\PythonCore\{versionno}.
+    # Alas, at the time of this writing, the Python installer is NOT writing the first entry.
+    # There is no way to know what the current versionno is.
+    # Hence, the following hack.
 
-        IfFileExists $8 ok tryagain
+    # Get pythonw.exe path from registry... except it isn't there, nor is it an environment variable... thanks guys!
+    # We'll have to get it in a roundabout way
+    ReadRegStr $9 HKEY_LOCAL_MACHINE "SOFTWARE\Classes\Python.NoConFile\shell\open\command" ""
 
-        tryagain:
-        # ok, that  didn't work, but since the Python installer doesn't seem to be consistent, we'll try again
-        # cut 3 characters from back of the open command
-        StrCpy $8 $9 -3
+    # the NSIS installer for Python 2.3 leaves the registry entry in the following format:
+    # C:\Python23\pythonw.exe[SP]"%1%"[SP]%*
+    # the MSI installer for python.org's Python 2.4 release leaves the registry entry in the following format:
+    # "C:\Python24\pythonw.exe"[SP]"%1%"[SP]%*
+    # where [SP] represents an ASCII space character.
 
-        # that didn't work. check for the registry entry left by MSI Python 2.4 installers
-        # from www.python.org and www.activestate.com
+    # Step 1: Try for the format used by the NSIS installer
 
-        IfFileExists $8 ok tryMSIformat
+    # cut 8 characters from back of the open command
+    StrCpy $8 $9 -8
 
-        # Step 2: Try format used for Python available to all users.
-    tryMSIformat:
+    IfFileExists $8 ok tryagain
 
-        # is the first character a "
-        StrCpy $8 $9 1
-        StrCmp $8 '"' foundQuote tryMSIformatCurrentUser
+    tryagain:
+    # ok, that  didn't work, but since the Python installer doesn't seem to be consistent, we'll try again
+    # cut 3 characters from back of the open command
+    StrCpy $8 $9 -3
 
-    foundQuote:
-        # OK. Strip off the " at the start as well as the 9 characters at the end
-        StrCpy $8 $9 -9 1
-        # MessageBox MB_OK "3: Searching for Pythonw.exe -- is it '$8' ? "
-        IfFileExists $8 ok tryMSIformatCurrentUser
+    # that didn't work. check for the registry entry left by MSI Python 2.4 installers
+    # from www.python.org and www.activestate.com
 
-        # Step 3: Try format used for Python available to current users.
+    IfFileExists $8 ok tryMSIformat
 
-    tryMSIformatCurrentUser:
-        ReadRegStr $9 HKEY_CURRENT_USER "SOFTWARE\Classes\Python.NoConFile\shell\open\command" ""
+    # Step 2: Try format used for Python available to all users.
+tryMSIformat:
 
-        # repeating the logic of tryMSIformat:
-        # is the first character a "
-        StrCpy $8 $9 1
-        StrCmp $8 '"' foundQuoteCurrentUser oops
+    # is the first character a "
+    StrCpy $8 $9 1
+    StrCmp $8 '"' foundQuote tryMSIformatCurrentUser
 
-        # Patch: 10/6/06: Complain if Python not found.
-        StrCmp $8 '"' foundQuoteCurrentUser 0
-        StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
-        Goto oops
+foundQuote:
+    # OK. Strip off the " at the start as well as the 9 characters at the end
+    StrCpy $8 $9 -9 1
+    # MessageBox MB_OK "3: Searching for Pythonw.exe -- is it '$8' ? "
+    IfFileExists $8 ok tryMSIformatCurrentUser
 
-    foundQuoteCurrentUser:
-        # OK. Strip off the " at the start as well as the 9 characters at the end
-        StrCpy $8 $9 -9 1
+    # Step 3: Try format used for Python available to current users.
 
-        !ifdef INSTALL_IF_PYTHON_FOR_CURRENT_USER
-          StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
-          IfFileExists $8 ok oops
-        !else
-          IfFileExists $8 usePythonCUFoundMessage usePythonNotFoundMessage
-          usePythonCUFoundMessage:
-          StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_CURRENT_USER_FOUND}"
-          goto oops
-          usePythonNotFoundMessage:
-          StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
-          goto oops
-        !endif
+tryMSIformatCurrentUser:
+    ReadRegStr $9 HKEY_CURRENT_USER "SOFTWARE\Classes\Python.NoConFile\shell\open\command" ""
 
-    oops:
-        MessageBox MB_OK "$StrNoUsablePythonFound"
-        Quit
-    ok:
-         MessageBox MB_OK "Found Python executable at '$8'"
-         StrCpy $PythonExecutable $8
-    done:
-    FunctionEnd
-    
+    # repeating the logic of tryMSIformat:
+    # is the first character a "
+    StrCpy $8 $9 1
+    StrCmp $8 '"' foundQuoteCurrentUser oops
+
+    # Patch: 10/6/06: Complain if Python not found.
+    StrCmp $8 '"' foundQuoteCurrentUser 0
+    StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
+    Goto oops
+
+foundQuoteCurrentUser:
+    # OK. Strip off the " at the start as well as the 9 characters at the end
+    StrCpy $8 $9 -9 1
+
+    !ifdef INSTALL_IF_PYTHON_FOR_CURRENT_USER
+      StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
+      IfFileExists $8 ok oops
+    !else
+      IfFileExists $8 usePythonCUFoundMessage usePythonNotFoundMessage
+      usePythonCUFoundMessage:
+      StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_CURRENT_USER_FOUND}"
+      goto oops
+      usePythonNotFoundMessage:
+      StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
+      goto oops
+    !endif
+
+oops:
+    MessageBox MB_OK "$StrNoUsablePythonFound"
+    Quit
+ok:
+     MessageBox MB_OK "Found Python executable at '$8'"
+     StrCpy $PythonExecutable $8
+done:
+FunctionEnd
+
 Section "Leo" SEC01
 
     ; top-level
@@ -2232,108 +2232,109 @@ Section "Leo" SEC01
     File C:\leo.repo\main-trunk\leo\www\leo_rst.css
     File C:\leo.repo\main-trunk\leo\www\silver_city.css
 
+; end Leo section
 SectionEnd
 
-    ; FIXME $SMPROGRAMS depends on the value of SetShellVarContext. Since that defaults to 'current'
-    ; that means that this installer will make Leo available for the current user only.
-    ; Unless I am grossly mistaken this is a needless hindrance, and a Bad Thing since
-    ; security concerns are such that it would be best to not run Leo with the Administrator privileges
-    ; of the account used to install the software.
-    ;
-    ; Sure enough, the Start Menu Shortcuts and Desktop Shortcut work for the installer account only. 
-    ;
-    ; Question is -- do we want Leo always available for any log-in on this computer?
-    ;
-    ; My guesses:
-    ; Ideally, Uninstall.lnk should appear only for the current user, and the uninstaller should refuse to run
-    ; if run by a user who lacks Admin privileges on Windows NT and its descendants
-    ;
-    ; How will Windows XP Home deal with that? 
+; FIXME $SMPROGRAMS depends on the value of SetShellVarContext. Since that defaults to 'current'
+; that means that this installer will make Leo available for the current user only.
+; Unless I am grossly mistaken this is a needless hindrance, and a Bad Thing since
+; security concerns are such that it would be best to not run Leo with the Administrator privileges
+; of the account used to install the software.
+;
+; Sure enough, the Start Menu Shortcuts and Desktop Shortcut work for the installer account only. 
+;
+; Question is -- do we want Leo always available for any log-in on this computer?
+;
+; My guesses:
+; Ideally, Uninstall.lnk should appear only for the current user, and the uninstaller should refuse to run
+; if run by a user who lacks Admin privileges on Windows NT and its descendants
+;
+; How will Windows XP Home deal with that? 
 
-    Section "Start Menu Shortcuts" SEC02
-      CreateDirectory "$SMPROGRAMS\Leo"
-      CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
-    ; In Version 1.0 installer, was
-    ; CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" "$PythonExecutable" '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
-      CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
-    SectionEnd
-    
-    Section "Desktop Shortcut" SEC03
-      CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
-    SectionEnd
-    
-    Section ".leo File Association"
-      SectionIn 1
-      SectionIn 2
-      SectionIn 3
+Section "Start Menu Shortcuts" SEC02
+  CreateDirectory "$SMPROGRAMS\Leo"
+  CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
+; In Version 1.0 installer, was
+; CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" "$PythonExecutable" '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+  CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+SectionEnd
 
-      # back up old value of .leo in case some other program was using it
-      ReadRegStr $1 HKCR ".leo" ""
-      StrCmp $1 "" Label1
-      StrCmp $1 "LeoFile" Label1
-      WriteRegStr HKCR ".leo" "backup_val" $1
+Section "Desktop Shortcut" SEC03
+  CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+SectionEnd
 
-    Label1:
-      WriteRegStr HKCR ".leo" "" "LeoFile"
-      WriteRegStr HKCR "LeoFile" "" "Leo File"
-      WriteRegStr HKCR "LeoFile\shell" "" "open"
-    ; In Version 1.0 installer, the .ico reference was
-    ;  WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico,0
-    ; which does not work under Windows XP Professional SP2.
-      WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico
-      WriteRegStr HKCR "LeoFile\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\src\leo.py" "%1"'
+Section ".leo File Association"
+  SectionIn 1
+  SectionIn 2
+  SectionIn 3
 
-    SectionEnd
-    
-    Section -AdditionalIcons
-      SetOutPath $INSTDIR
-      CreateDirectory "$SMPROGRAMS\Leo"
-      CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" "$INSTDIR\uninst.exe"
-    SectionEnd
-    
-    Section -Post
-      WriteRegStr HKEY_LOCAL_MACHINE "SOFTWARE\EKR\leo" "" "$INSTDIR"
-      WriteUninstaller "$INSTDIR\uninst.exe"
-      WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name) (remove only)"
-      WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-      WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
-      WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
-      WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
-    SectionEnd
-    
-    UninstallCaption "Uninstall Leo"
-    UninstallIcon "C:\leo.repo\main-trunk\leo\Icons\uninst.ico"
-    
-    Function un.onUninstSuccess
-      HideWindow
-      MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) was successfully removed from your computer."
-    FunctionEnd
+  # back up old value of .leo in case some other program was using it
+  ReadRegStr $1 HKCR ".leo" ""
+  StrCmp $1 "" Label1
+  StrCmp $1 "LeoFile" Label1
+  WriteRegStr HKCR ".leo" "backup_val" $1
 
-    Function un.onInit
-      MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Are you sure you want to completely remove $(^Name) and all of its components?" IDYES +2
-      Abort
-    FunctionEnd
-    
-    ; Uninstall section as generated by HM NE, with hand-edits
+Label1:
+  WriteRegStr HKCR ".leo" "" "LeoFile"
+  WriteRegStr HKCR "LeoFile" "" "Leo File"
+  WriteRegStr HKCR "LeoFile\shell" "" "open"
+; In Version 1.0 installer, the .ico reference was
+;  WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico,0
+; which does not work under Windows XP Professional SP2.
+  WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico
+  WriteRegStr HKCR "LeoFile\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\src\leo.py" "%1"'
 
-    Section Uninstall
+SectionEnd
 
-        DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\EKR\leo"
+Section -AdditionalIcons
+  SetOutPath $INSTDIR
+  CreateDirectory "$SMPROGRAMS\Leo"
+  CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" "$INSTDIR\uninst.exe"
+SectionEnd
 
-        ReadRegStr $1 HKCR ".leo" ""
-        StrCmp $1 "LeoFile" 0 NoOwn ; only do this if we own it.
+Section -Post
+  WriteRegStr HKEY_LOCAL_MACHINE "SOFTWARE\EKR\leo" "" "$INSTDIR"
+  WriteUninstaller "$INSTDIR\uninst.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name) (remove only)"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
+SectionEnd
 
-        ReadRegStr $1 HKCR ".leo" "backup_val"
-        StrCmp $1 "" 0 RestoreBackup ; if backup == "" then delete the whole key
-          DeleteRegKey HKCR ".leo"
-        Goto NoOwn
+UninstallCaption "Uninstall Leo"
+UninstallIcon "C:\leo.repo\main-trunk\leo\Icons\uninst.ico"
 
-        RestoreBackup:
-          WriteRegStr HKCR ".leo" "" $1
-          DeleteRegValue HKCR ".leo" "backup_val"
+Function un.onUninstSuccess
+  HideWindow
+  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) was successfully removed from your computer."
+FunctionEnd
 
-        ; ---- Start of manifest-related script...
-        ; Uninstall files...
+Function un.onInit
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Are you sure you want to completely remove $(^Name) and all of its components?" IDYES +2
+  Abort
+FunctionEnd
+
+; Uninstall section as generated by HM NE, with hand-edits
+
+Section Uninstall
+
+    DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\EKR\leo"
+
+    ReadRegStr $1 HKCR ".leo" ""
+    StrCmp $1 "LeoFile" 0 NoOwn ; only do this if we own it.
+
+    ReadRegStr $1 HKCR ".leo" "backup_val"
+    StrCmp $1 "" 0 RestoreBackup ; if backup == "" then delete the whole key
+      DeleteRegKey HKCR ".leo"
+    Goto NoOwn
+
+    RestoreBackup:
+      WriteRegStr HKCR ".leo" "" $1
+      DeleteRegValue HKCR ".leo" "backup_val"
+
+    ; ---- Start of manifest-related data...
+    ; Uninstall files...
 
     ; Delete top-level files...
     Delete "$INSTDIR\LICENSE.txt"
@@ -4369,7 +4370,6 @@ SectionEnd
     RMDir "$INSTDIR\leo\test\unittest\perfectImport"
     RMDir "$INSTDIR\leo\test\unittest\output"
     RMDir "$INSTDIR\leo\test\unittest\input"
-    RMDir "$INSTDIR\leo\test\unittest\.leo_shadow"
     RMDir "$INSTDIR\leo\test\unittest"
     RMDir "$INSTDIR\leo\test\cgi-bin"
     RMDir "$INSTDIR\leo\test"
@@ -4434,17 +4434,18 @@ SectionEnd
     RMDir "$INSTDIR\.bzr\branch"
     RMDir "$INSTDIR"
 
-        ; ---- End of manifest related script.
+    ; ---- End of manifest related data.
 
-        NoOwn:
-        MessageBox MB_YESNO|MB_ICONQUESTION             "Delete all files in Leo Program folder?"             IDNO NoDelete
+    NoOwn:
+    MessageBox MB_YESNO|MB_ICONQUESTION             "Delete all files in Leo Program folder?"             IDNO NoDelete
 
-    NoDelete:
-      Delete "$SMPROGRAMS\Leo\Uninstall.lnk"
-      RMDir "$SMPROGRAMS\Leo"
-      Delete "$DESKTOP\Leo.lnk"
+NoDelete:
+  Delete "$SMPROGRAMS\Leo\Uninstall.lnk"
+  RMDir "$SMPROGRAMS\Leo"
+  Delete "$DESKTOP\Leo.lnk"
 
-      DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
-      SetAutoClose false
-    SectionEnd
-    
+  DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
+  SetAutoClose false
+
+; end Uninstall section
+SectionEnd

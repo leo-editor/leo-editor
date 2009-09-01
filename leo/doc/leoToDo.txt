@@ -12,8 +12,8 @@
 #@nonl
 #@+node:ekr.20090714085914.5990:To do first
 #@+node:ekr.20090831095817.6067:Urgent Leo 4.6.3
-- Put caching bug fixes into 46-maint branch
-- Finish create .nsi script.
+- (done) Put caching bug fixes into 46-maint branch
+- (done) Finish create .nsi script.
 #@nonl
 #@-node:ekr.20090831095817.6067:Urgent Leo 4.6.3
 #@+node:ekr.20090822054806.6004:Improve the intro

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="9"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="9,2,3"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -141,9 +141,9 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 </v>
 <v t="ekr.20090826220933.1573"><vh>bzr-manifest.txt</vh></v>
 <v t="ekr.20090831172520.1555"><vh>@@auto ../../bzr-small-manifest.txt</vh></v>
-<v t="ekr.20090826220933.1565"><vh>Create leo.nsi</vh>
+<v t="ekr.20090826220933.1565" a="E"><vh>Create leo.nsi</vh>
 <v t="ekr.20090831172520.1553"><vh>ctor</vh></v>
-<v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
+<v t="ekr.20090901092556.1608" a="E"><vh>Boilerplate</vh>
 <v t="ekr.20090901092556.1609" a="E"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1578"><vh>putDefines</vh></v>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
@@ -160,9 +160,9 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 <v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
 </v>
 </v>
-<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
-<v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
+<v t="ekr.20090901092556.1574" a="E"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
 </v>
 <v t="ekr.20090901092556.1575"><vh>genMiddle &amp; helper</vh></v>
@@ -178,7 +178,7 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 </v>
 <v t="ekr.20090831172520.1554"><vh>run &amp; helpers</vh>
 <v t="ekr.20090826220933.1569"><vh>directoryList</vh></v>
-<v t="ekr.20090901082242.1562"><vh>filterLines &amp; helpers</vh>
+<v t="ekr.20090901082242.1562" a="E"><vh>filterLines &amp; helpers</vh>
 <v t="ekr.20090826220933.1566"><vh>delete...</vh></v>
 </v>
 <v t="ekr.20090901082242.1563"><vh>makeDicts</vh></v>
@@ -3777,11 +3777,9 @@ setup.py
 
     '''Output s to leo.nsi.'''
 
-    # if adjust:
-        # s = g.adjustTripleString(s,c.tab_width)
+    if adjust:
+        s = g.adjustTripleString(s,c.tab_width)
 
-    # g.trace(len(s),g.callers(4))
-    # g.trace(s[1:1000])
     self.f.write(s)
 </t>
 <t tx="ekr.20090831172520.1553">def __init__ (self,c,rootDir):
@@ -3924,7 +3922,10 @@ setup.py
     lines = self.deleteExt(lines,'.pyo')
 
     # Remove specific files.
-    deleteList = ('.bzrignore','bzr-manifest.txt','bzr-small-manifest.txt')
+    deleteList = ('.bzrignore',
+        'bzr-manifest.txt','bzr-small-manifest.txt',
+        'leo/test/unittest/.leo_shadow/',
+    )
     lines = self.deleteFiles(lines,deleteList)
     if lines and lines[0].endswith('bzr ls -R'):
         lines = lines[1:]
@@ -4044,12 +4045,13 @@ setup.py
 
     '''Generate the manifest-specific install data.'''
 
-    self.put('\nSection "Leo" SEC01\n\n',adjust=False)
+    self.put('\nSection "Leo" SEC01\n\n')
 
     self.put(self.getInstallVariableData(
         dirs,dirDict,filesDict),adjust=False)
 
-    self.put('\nSectionEnd\n',adjust=False)
+    self.put('\n; end Leo section\n')
+    self.put('SectionEnd\n')
 </t>
 <t tx="ekr.20090901092556.1575">def genMiddle (self):
 
@@ -4088,7 +4090,7 @@ Section Uninstall
       WriteRegStr HKCR ".leo" "" $1
       DeleteRegValue HKCR ".leo" "backup_val"
 
-    ; ---- Start of manifest-related script...
+    ; ---- Start of manifest-related data...
 ''')
 
     # Does all the hard work.
@@ -4097,7 +4099,7 @@ Section Uninstall
         adjust = False)
 
     self.put('''
-    ; ---- End of manifest related script.
+    ; ---- End of manifest related data.
 
     NoOwn:
     MessageBox MB_YESNO|MB_ICONQUESTION \
@@ -4111,8 +4113,11 @@ NoDelete:
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   SetAutoClose false
+
+; end Uninstall section
 SectionEnd
-''')</t>
+''')
+</t>
 <t tx="ekr.20090901092556.1577">def genTail (self):
 
     '''Generate the boilerplate appearing after
@@ -4158,7 +4163,6 @@ Click OK to cancel installation and remove installation Files."
 ${PRODUCT_NAME} does not support use with Python so configured.\
 Click OK to cancel installation and remove installation Files."
 ''')
-
 </t>
 <t tx="ekr.20090901092556.1588">def putSettings (self):
 
@@ -4189,7 +4193,7 @@ ShowInstDetails show
 ShowUnInstDetails show
 ''' % (self.version,rootDir,rootDir)
 
-    self.put(s,adjust=False)
+    self.put(s)
 </t>
 <t tx="ekr.20090901092556.1589">def putVariables (self):
 
