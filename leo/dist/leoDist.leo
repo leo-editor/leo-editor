@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="9,9"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -198,15 +198,22 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 <v t="ekr.20090831172520.1555"><vh>@auto ../../bzr-small-manifest.txt</vh></v>
 <v t="ekr.20090826220933.1565" a="E"><vh>Create leo.nsi</vh>
 <v t="ekr.20090831172520.1553"><vh>ctor</vh></v>
-<v t="ekr.20090826220933.1566"><vh>deleteComments/Dirs/Ext/Files</vh></v>
-<v t="ekr.20090826220933.1567"><vh>defineDeleteList</vh></v>
+<v t="ekr.20090901082242.1561"><vh>Not used</vh>
 <v t="ekr.20090826220933.1568"><vh>defineIncludeList</vh></v>
-<v t="ekr.20090826220933.1569"><vh>directoryList</vh></v>
-<v t="ekr.20090831172520.1550"><vh>norm</vh></v>
-<v t="ekr.20090831172520.1551"><vh>put &amp; dump</vh></v>
 <v t="ekr.20090826220933.1570"><vh>putFiles</vh></v>
 <v t="ekr.20090826220933.1571"><vh>setOutPath</vh></v>
-<v t="ekr.20090831172520.1554"><vh>write</vh></v>
+</v>
+<v t="ekr.20090901082242.1560"><vh>utils</vh>
+<v t="ekr.20090831172520.1551"><vh>put &amp; dump</vh></v>
+</v>
+<v t="ekr.20090831172520.1554" a="E"><vh>run &amp; helpers</vh>
+<v t="ekr.20090901082242.1563"><vh>makeDicts</vh></v>
+<v t="ekr.20090826220933.1566"><vh>delete...</vh></v>
+<v t="ekr.20090901082242.1562"><vh>filterLines</vh></v>
+<v t="ekr.20090826220933.1569"><vh>directoryList</vh></v>
+<v t="ekr.20090901082242.1564"><vh>printMissing</vh></v>
+<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -2032,7 +2039,9 @@ RMDir "$INSTDIR\test"
 
 ; Delete top-level folder.
 RMDir "$INSTDIR"</t>
-<t tx="ekr.20090826220933.1565">'''Create the installer script.'''
+<t tx="ekr.20090826220933.1565"># use bzr ls -R &gt;bzr-manifest.txt
+
+'''Create the installer script.'''
 
 import os
 
@@ -2040,41 +2049,31 @@ class nsiWriter:
     '''A class to write .nsi scripts.'''
     @others
 
-print '=' * 40
-
 # The root directory contains the leo directory.
 rootDir = g.os_path_finalize_join(
     g.app.loadDir,'..','..')
 
 manifest = g.os_path_finalize_join(
-    rootDir,'bzr-small-manifest.txt')
+    rootDir,'bzr-manifest.txt')  #'bzr-small-manifest.txt')
 
 nsi = nsiWriter(c,rootDir)
-nsi.write(manifest)
+nsi.run(manifest)
 </t>
-<t tx="ekr.20090826220933.1566">def deleteComments (self,lines):
+<t tx="ekr.20090826220933.1566">def deleteBlankLines (self,lines):
+
+    return [z.strip() for z in lines if z.strip()]
+
+def deleteComments (self,lines):
 
     return [z for z in lines if not z.startswith('#')]
 
-# def deleteDirs (self,lines,rootDir):
-
-    # return [z for z in lines if not
-        # g.os_path_isdir(g.os_path_finalize_join(rootDir,z))]
-
 def deleteExt (self,lines,ext):
 
-    return [z for z in lines if not z.strip().endswith(ext)]
+    return [z for z in lines if not z.endswith(ext)]
 
 def deleteFiles (self,lines,deleteList):
 
-    return [z for z in lines if not z.strip() in deleteList]
-</t>
-<t tx="ekr.20090826220933.1567">def defineDeleteList(self):
-
-    return (
-        '.bzrignore',
-        '.bzr-manifest.txt',
-    )
+    return [z for z in lines if not z in deleteList]
 </t>
 <t tx="ekr.20090826220933.1568">def defineIcludeList(self):
 
@@ -2089,36 +2088,27 @@ def deleteFiles (self,lines,deleteList):
 </t>
 <t tx="ekr.20090826220933.1569">def directoryList (self,rootDir):
 
+    '''Compute a top-down list of all directories.
+       These directories start at the leo directory.'''
+
+    trace = False
     ignoreDirs = ('.bzr',)
-    ignoreDirs = [g.os_path_finalize_join(rootDir,z) for z in ignoreDirs]
-    # put(ignoreDirs)
-
     result = [] ; n = len(rootDir)
-    for z in os.walk(rootDir):
-        # top-down traversal.
+    for z in os.walk(rootDir): # top-down traversal.
         dirpath, dirnames, filenames = z
-        ignore = False
-        for z2 in ignoreDirs:
-            if dirpath.startswith(z2):
-                ignore = True
-        if not ignore:
-            assert dirpath.startswith(rootDir),z
-            if len(dirpath) &gt; n:
-                path = dirpath[n+1:].replace('\\','/')
-                result.append(path)
-
-    if 1:
-        g.trace()
-        for z in result:
-            print z
-
+        assert dirpath.startswith(rootDir),z
+        if len(dirpath) &gt; n:
+            path = dirpath[n+1:].replace('\\','/')
+            result.append(path)
+    result = [ z for z in result if not z in ignoreDirs]
+    if trace:
+        g.trace('=' * 40)
+        g.trace(g.listToString(result))
     return result
 </t>
 <t tx="ekr.20090826220933.1570">def putFiles (self,rootDir,theDir,lines):
 
     '''Create a File line for every file in theDir.'''
-
-    # g.trace(rootDir,theDir)
 
     theDir = theDir[len(rootDir)+1:]
     theDir = g.os_path_normpath(theDir)
@@ -4247,12 +4237,6 @@ profileLeo.py
 pylint-leo.bat
 setup.py
 </t>
-<t tx="ekr.20090831172520.1550">def norm (self,theDir,rootDir):
-
-    '''Normalize path s relative to rootDir.'''
-
-    return s
-</t>
 <t tx="ekr.20090831172520.1551">def dump (self,s):
 
     '''Output s to leo.dist.'''
@@ -4265,20 +4249,58 @@ put = dump</t>
     self.c = c
     self.rootDir = rootDir
 </t>
-<t tx="ekr.20090831172520.1554">def write (self,fn):
+<t tx="ekr.20090831172520.1554">def run (self,fn):
 
+    # Create and filter the list of files.
     s = open(fn).read()
     lines = g.splitLines(s)
+    files = self.filterLines(lines)
 
-    # Remove comments and .pyc files.
-    deleteList = self.defineDeleteList()
+    # Compute the list of all the directories.
+    dirs = self.directoryList(rootDir)
+
+    # Compute dictionaries of directories and files.
+    dirDict,filesDict = self.makeDicts(dirs,files)
+
+    # Print the files not in filesDict.
+    errors = self.printMissing(files,dirDict,filesDict)
+    if errors:
+        g.es_print('%s errors' % (errors),color='red')
+    else:
+        self.genScript(dirDict,filesDict)
+        g.es_print('done. no errors')
+
+</t>
+<t tx="ekr.20090901082242.1560"></t>
+<t tx="ekr.20090901082242.1561">if 0: # old
+    for z in self.directoryList(rootDir):
+        self.putFiles(self.rootDir,z,lines)
+</t>
+<t tx="ekr.20090901082242.1562">def filterLines (self,lines):
+
+    trace = False
+
+    # Remove blank lines, comments, .pyc and .pyo files.
+    lines = self.deleteBlankLines(lines)
     lines = self.deleteComments(lines)
     lines = self.deleteExt(lines,'.pyc')
-    lines = self.deleteFiles(lines,deleteList)
+    lines = self.deleteExt(lines,'.pyo')
 
-    # Compute a top-down list of all directories.
-    # These directories start at the leo
-    dirs = self.directoryList(rootDir)
+    # Remove specific files.
+    deleteList = ('.bzrignore','bzr-manifest.txt',)
+    lines = self.deleteFiles(lines,deleteList)
+    if lines and lines[0].endswith('bzr ls -R'):
+        lines = lines[1:]
+
+    if trace:
+        g.trace('=' * 40)
+        g.trace(g.listToString(lines))
+
+    return lines
+</t>
+<t tx="ekr.20090901082242.1563">def makeDicts (self,dirs,lines):
+
+    trace = False ; verbose = False
 
     # Create the dirDict.
     # Keys are directories (starting at leo).
@@ -4292,16 +4314,15 @@ put = dump</t>
     for line in lines:
         line = line.strip().replace('\\','/')
         if line in dirDict.keys():
-            # g.trace('**ignore',repr(line))
-            fn = None
+            path,fn = None,None
         elif line.startswith('leo/'):
             path,fn = g.os_path_split(line)
         else:
             path,fn = '**top',line.strip()
 
-        if fn == 'Gato': g.trace(repr(line),path,fn)
-
-        if fn and fn != 'leo':
+        # Don't include top-level leo directory,
+        # Do include leo/scripts/leo file.
+        if fn and (path != '**top**' or fn != 'leo'):
             aList = dirDict.get(path,[])
             assert line not in aList,repr(line)
             aList.append(fn)
@@ -4309,7 +4330,12 @@ put = dump</t>
 
     for theDir in sorted(dirDict):
         aList = dirDict.get(theDir)
-        if aList: print '\n',theDir,'\n',g.listToString(aList)
+        if aList and trace:
+            if verbose:
+                print ; print theDir
+                print g.listToString(aList)
+            else:
+                print theDir
 
     # Create the inverse dict.
     filesDict = {}
@@ -4320,26 +4346,22 @@ put = dump</t>
                 fn,'%s/%s' % (theDir,fn))
             filesDict[path] = theDir
 
-    # Print the lines not in filesDict.
-    for line in lines:
-        line = line.strip()
-        if line.strip() and line not in dirDict and line not in filesDict:
-            print 'missing',repr(line)
+    return dirDict,filesDict
+</t>
+<t tx="ekr.20090901082242.1564">def printMissing (self,files,dirDict,filesDict):
 
-    if 0: # old
-        lines = self.deleteComments(lines)
-        lines = self.deleteExt(lines,'.pyc')
-        deleteList = self.defineDeleteList()
-        lines = self.deleteFiles(lines,deleteList)
-        lines = self.deleteDirs(lines,self.rootDir)
+    errors = 0
 
-        if 1:
-            for line in lines:
-                self.put(line.strip())
-            self.put('-' * 40)
+    for fn in files:
+        fn = fn.rstrip('/')
+        if fn and fn not in dirDict and fn not in filesDict:
+            g.es_print('missing',fn,color='red')
+            errors += 1
 
-        for z in self.directoryList(rootDir):
-            self.putFiles(self.rootDir,z,lines)
+    return errors</t>
+<t tx="ekr.20090901082242.1565">def genScript (self,dirDict,filesDict):
+
+    pass
 </t>
 </tnodes>
 </leo_file>
