@@ -21,9 +21,13 @@ SetCompressor bzip2
 ; define the following symbol to install if Python is installed only for current user. 
 ; !define INSTALL_IF_PYTHON_FOR_CURRENT_USER
 
-!define STRING_PYTHON_NOT_FOUND "Python is not installed on this system.    Please install Python first.    Click OK to cancel installation and remove installation Files."
+!define STRING_PYTHON_NOT_FOUND "Python is not installed on this system.\
+Please install Python first.\
+Click OK to cancel installation and remove installation Files."
 
-!define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only.    ${PRODUCT_NAME} does not support use with Python so configured.    Click OK to cancel installation and remove installation Files."
+!define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only.\
+${PRODUCT_NAME} does not support use with Python so configured.\
+Click OK to cancel installation and remove installation Files."
 
 Caption "Leo Installer"
 AutoCloseWindow false 
@@ -38,12 +42,14 @@ WindowIcon off
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "LeoSetup-4.6.3-final.exe"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
-InstallDir "$PROGRAMFILES\Leo"
+InstallDir "$PROGRAMFILES\Leo-4.6.3-final"
 Icon "C:\leo.repo\main-trunk\leo\Icons\leo_inst.ico"
 ; Version 1.0 of NSIS Script for Leo comes with its own uninstall icon
 ; UninstallIcon "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
-DirText "Setup will install $(^Name) in the following folder.    To install in a different folder, click Browse and select another folder."
-LicenseText "If you accept all the terms of the agreement, choose I Agree to continue.    You must accept the agreement to install $(^Name)."
+DirText "Setup will install $(^Name) in the following folder.\
+To install in a different folder, click Browse and select another folder."
+LicenseText "If you accept all the terms of the agreement, choose I Agree to continue.\
+You must accept the agreement to install $(^Name)."
 LicenseData "C:\leo.repo\main-trunk\License.txt"
 ShowInstDetails show
 ShowUnInstDetails show
@@ -93,7 +99,8 @@ Function .onInit
     IfFileExists $8 ok tryagain
 
     tryagain:
-    # ok, that  didn't work, but since the Python installer doesn't seem to be consistent, we'll try again
+    # That didn't work, but since the Python installer doesn't seem to be consistent,
+    # we'll try again.
     # cut 3 characters from back of the open command
     StrCpy $8 $9 -3
 
@@ -154,6 +161,7 @@ ok:
      MessageBox MB_OK "Found Python executable at '$8'"
      StrCpy $PythonExecutable $8
 done:
+
 FunctionEnd
 
 Section "Leo" SEC01
@@ -2345,10 +2353,16 @@ Section Uninstall
     Delete "$INSTDIR\pylint-leo.bat"
     Delete "$INSTDIR\setup.py"
 
+    Delete "$INSTDIR\leo\*.pyc"
+    Delete "$INSTDIR\leo\*.pyo"
     Delete "$INSTDIR\leo\__init__.py"
 
+    Delete "$INSTDIR\leo\config\*.pyc"
+    Delete "$INSTDIR\leo\config\*.pyo"
     Delete "$INSTDIR\leo\config\leoSettings.leo"
 
+    Delete "$INSTDIR\leo\core\*.pyc"
+    Delete "$INSTDIR\leo\core\*.pyo"
     Delete "$INSTDIR\leo\core\LeoPyRef.leo"
     Delete "$INSTDIR\leo\core\__init__.py"
     Delete "$INSTDIR\leo\core\buttons.txt"
@@ -2392,10 +2406,14 @@ Section Uninstall
     Delete "$INSTDIR\leo\core\runLeo.py"
     Delete "$INSTDIR\leo\core\test_core.txt"
 
+    Delete "$INSTDIR\leo\dist\*.pyc"
+    Delete "$INSTDIR\leo\dist\*.pyo"
     Delete "$INSTDIR\leo\dist\LeoPackage.pmsp"
     Delete "$INSTDIR\leo\dist\leo-post-install-script.py"
     Delete "$INSTDIR\leo\dist\leoDist.leo"
 
+    Delete "$INSTDIR\leo\doc\*.pyc"
+    Delete "$INSTDIR\leo\doc\*.pyo"
     Delete "$INSTDIR\leo\doc\INSTALL.TXT"
     Delete "$INSTDIR\leo\doc\LeoDocs.leo"
     Delete "$INSTDIR\leo\doc\LeoSlideShows.leo"
@@ -2411,6 +2429,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\doc\silver_city.css"
     Delete "$INSTDIR\leo\doc\treecaching.txt"
 
+    Delete "$INSTDIR\leo\doc\html\*.pyc"
+    Delete "$INSTDIR\leo\doc\html\*.pyo"
     Delete "$INSTDIR\leo\doc\html\Blank.gif"
     Delete "$INSTDIR\leo\doc\html\FAQ.html"
     Delete "$INSTDIR\leo\doc\html\FAQ.html.txt"
@@ -2508,6 +2528,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\doc\html\zodb.html"
     Delete "$INSTDIR\leo\doc\html\zodb.html.txt"
 
+    Delete "$INSTDIR\leo\doc\html\screen-shots\*.pyc"
+    Delete "$INSTDIR\leo\doc\html\screen-shots\*.pyo"
     Delete "$INSTDIR\leo\doc\html\screen-shots\PCWindow.gif"
     Delete "$INSTDIR\leo\doc\html\screen-shots\PCWindow.png"
     Delete "$INSTDIR\leo\doc\html\screen-shots\at-test-nodes.jpg"
@@ -2519,6 +2541,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\doc\html\screen-shots\spell-tab.jpg"
     Delete "$INSTDIR\leo\doc\html\screen-shots\unit-test-leo.jpg"
 
+    Delete "$INSTDIR\leo\extensions\*.pyc"
+    Delete "$INSTDIR\leo\extensions\*.pyo"
     Delete "$INSTDIR\leo\extensions\__init__.py"
     Delete "$INSTDIR\leo\extensions\asciidoc.py"
     Delete "$INSTDIR\leo\extensions\aspell23.pyd"
@@ -2529,6 +2553,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\extensions\subprocess.py"
     Delete "$INSTDIR\leo\extensions\testExtension.py"
 
+    Delete "$INSTDIR\leo\extensions\Gato\*.pyc"
+    Delete "$INSTDIR\leo\extensions\Gato\*.pyo"
     Delete "$INSTDIR\leo\extensions\Gato\AnimatedAlgorithms.py"
     Delete "$INSTDIR\leo\extensions\Gato\AnimatedDataStructures.py"
     Delete "$INSTDIR\leo\extensions\Gato\AnimationHistory.py"
@@ -2564,13 +2590,21 @@ Section Uninstall
     Delete "$INSTDIR\leo\extensions\Gato\sample.cat"
     Delete "$INSTDIR\leo\extensions\Gato\test.cat"
 
+    Delete "$INSTDIR\leo\extensions\Pmw\*.pyc"
+    Delete "$INSTDIR\leo\extensions\Pmw\*.pyo"
     Delete "$INSTDIR\leo\extensions\Pmw\README"
     Delete "$INSTDIR\leo\extensions\Pmw\__init__.py"
 
+    Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\*.pyc"
+    Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\*.pyo"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\__init__.py"
 
+    Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\bin\*.pyc"
+    Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\bin\*.pyo"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\bin\bundlepmw.py"
 
+    Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\contrib\*.pyc"
+    Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\contrib\*.pyo"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\contrib\DirBrowser.py"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\contrib\MCListbox.py"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\contrib\PmwFileDialog.py"
@@ -2579,6 +2613,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\contrib\README"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\contrib\TreeBrowser.py"
 
+    Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\demos\*.pyc"
+    Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\demos\*.pyo"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\demos\AboutDialog.py"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\demos\All.py"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\demos\Args.py"
@@ -2637,6 +2673,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\demos\TimeCounter.py"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\demos\WidgetDestroy.py"
 
+    Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\doc\*.pyc"
+    Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\doc\*.pyo"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\doc\AboutDialog.gif"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\doc\AboutDialog.html"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\doc\Balloon.gif"
@@ -2729,6 +2767,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\doc\todo.html"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\doc\transdove.gif"
 
+    Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\lib\*.pyc"
+    Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\lib\*.pyo"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\lib\Pmw.def"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\lib\PmwAboutDialog.py"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\lib\PmwBalloon.py"
@@ -2767,6 +2807,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\lib\PmwTimeFuncs.py"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\lib\__init__.py"
 
+    Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\tests\*.pyc"
+    Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\tests\*.pyo"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\tests\AboutDialog_test.py"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\tests\All.py"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\tests\Blt_test.py"
@@ -2801,10 +2843,14 @@ Section Uninstall
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\tests\earthris.gif"
     Delete "$INSTDIR\leo\extensions\Pmw\Pmw_1_3\tests\flagup.bmp"
 
+    Delete "$INSTDIR\leo\external\*.pyc"
+    Delete "$INSTDIR\leo\external\*.pyo"
     Delete "$INSTDIR\leo\external\__init__.py"
     Delete "$INSTDIR\leo\external\path.py"
     Delete "$INSTDIR\leo\external\pickleshare.py"
 
+    Delete "$INSTDIR\leo\Icons\*.pyc"
+    Delete "$INSTDIR\leo\Icons\*.pyo"
     Delete "$INSTDIR\leo\Icons\LeoApp.ico"
     Delete "$INSTDIR\leo\Icons\LeoApp16.ico"
     Delete "$INSTDIR\leo\Icons\LeoDoc.ico"
@@ -2858,6 +2904,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\Icons\rt_arrow_enabled.gif"
     Delete "$INSTDIR\leo\Icons\uninst.ico"
 
+    Delete "$INSTDIR\leo\Icons\cleo\*.pyc"
+    Delete "$INSTDIR\leo\Icons\cleo\*.pyo"
     Delete "$INSTDIR\leo\Icons\cleo\bngblk.png"
     Delete "$INSTDIR\leo\Icons\cleo\bullet.png"
     Delete "$INSTDIR\leo\Icons\cleo\chkblk.png"
@@ -2889,6 +2937,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\Icons\cleo\xblk.png"
     Delete "$INSTDIR\leo\Icons\cleo\xgry.png"
 
+    Delete "$INSTDIR\leo\Icons\cleo\small\*.pyc"
+    Delete "$INSTDIR\leo\Icons\cleo\small\*.pyo"
     Delete "$INSTDIR\leo\Icons\cleo\small\bngblk.png"
     Delete "$INSTDIR\leo\Icons\cleo\small\bullet.png"
     Delete "$INSTDIR\leo\Icons\cleo\small\chkblk.png"
@@ -2918,6 +2968,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\Icons\cleo\small\xblk.png"
     Delete "$INSTDIR\leo\Icons\cleo\small\xgry.png"
 
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\actions\*.pyc"
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\actions\*.pyo"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\actions\add.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\actions\address-book-new.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\actions\appointment-new.png"
@@ -3190,9 +3242,13 @@ Section Uninstall
     Delete "$INSTDIR\leo\Icons\Tango\16x16\actions\window_new.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\actions\xfce-system-lock.png"
 
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\animations\*.pyc"
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\animations\*.pyo"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\animations\gnome-spinner.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\animations\process-working.png"
 
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\apps\*.pyc"
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\apps\*.pyo"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\apps\access.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\apps\accessibility-directory.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\apps\accessories-calculator.png"
@@ -3323,6 +3379,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\Icons\Tango\16x16\apps\xscreensaver.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\apps\zen-icon.png"
 
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\categories\*.pyc"
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\categories\*.pyo"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\categories\applications-accessories.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\categories\applications-development.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\categories\applications-games.png"
@@ -3380,6 +3438,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\Icons\Tango\16x16\categories\xfce-utils.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\categories\xfce4-settings.png"
 
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\devices\*.pyc"
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\devices\*.pyo"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\devices\3floppy_unmount.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\devices\audio-card.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\devices\audio-input-microphone.png"
@@ -3472,6 +3532,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\Icons\Tango\16x16\devices\yast_printer.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\devices\yast_soundcard.png"
 
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\emblems\*.pyc"
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\emblems\*.pyo"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\emblems\emblem-favorite.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\emblems\emblem-important.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\emblems\emblem-noread.png"
@@ -3483,6 +3545,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\Icons\Tango\16x16\emblems\emblem-unreadable.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\emblems\stock_mail-priority-high.png"
 
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\emotes\*.pyc"
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\emotes\*.pyo"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\emotes\face-angel.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\emotes\face-crying.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\emotes\face-devilish.png"
@@ -3509,6 +3573,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\Icons\Tango\16x16\emotes\stock_smiley-7.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\emotes\stock_smiley-8.png"
 
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\mimetypes\*.pyc"
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\mimetypes\*.pyo"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\mimetypes\application-certificate.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\mimetypes\application-x-executable.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\mimetypes\ascii.png"
@@ -3667,6 +3733,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\Icons\Tango\16x16\mimetypes\x-office-spreadsheet.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\mimetypes\zip.png"
 
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\places\*.pyc"
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\places\*.pyo"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\places\application-x-gnome-saved-search.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\places\desktop.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\places\distributor-logo.png"
@@ -3709,6 +3777,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\Icons\Tango\16x16\places\user-trash.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\places\xfce-trash_empty.png"
 
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\status\*.pyc"
+    Delete "$INSTDIR\leo\Icons\Tango\16x16\status\*.pyo"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\status\audio-volume-high.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\status\audio-volume-low.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\status\audio-volume-medium.png"
@@ -3800,6 +3870,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\Icons\Tango\16x16\status\weather-storm.png"
     Delete "$INSTDIR\leo\Icons\Tango\16x16\status\xfce-trash_full.png"
 
+    Delete "$INSTDIR\leo\modes\*.pyc"
+    Delete "$INSTDIR\leo\modes\*.pyo"
     Delete "$INSTDIR\leo\modes\__init__.py"
     Delete "$INSTDIR\leo\modes\actionscript.py"
     Delete "$INSTDIR\leo\modes\actionscript.xml"
@@ -4083,6 +4155,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\modes\zpt.py"
     Delete "$INSTDIR\leo\modes\zpt.xml"
 
+    Delete "$INSTDIR\leo\plugins\*.pyc"
+    Delete "$INSTDIR\leo\plugins\*.pyo"
     Delete "$INSTDIR\leo\plugins\.cvsignore"
     Delete "$INSTDIR\leo\plugins\Backlink.ui"
     Delete "$INSTDIR\leo\plugins\ConceptualSort.py"
@@ -4258,6 +4332,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\plugins\xsltWithNodes.py"
     Delete "$INSTDIR\leo\plugins\zenity_file_dialogs.py"
 
+    Delete "$INSTDIR\leo\plugins\examples\*.pyc"
+    Delete "$INSTDIR\leo\plugins\examples\*.pyo"
     Delete "$INSTDIR\leo\plugins\examples\__overrideClasses.py"
     Delete "$INSTDIR\leo\plugins\examples\chinese_menu.py"
     Delete "$INSTDIR\leo\plugins\examples\french_fm.py"
@@ -4265,11 +4341,15 @@ Section Uninstall
     Delete "$INSTDIR\leo\plugins\examples\print_cp.py"
     Delete "$INSTDIR\leo\plugins\examples\redefine_put.py"
 
+    Delete "$INSTDIR\leo\plugins\test\*.pyc"
+    Delete "$INSTDIR\leo\plugins\test\*.pyo"
     Delete "$INSTDIR\leo\plugins\test\ekr_test.py"
     Delete "$INSTDIR\leo\plugins\test\failed_import.py"
     Delete "$INSTDIR\leo\plugins\test\failed_to_load_plugin.py"
     Delete "$INSTDIR\leo\plugins\test\syntax_error_plugin.py"
 
+    Delete "$INSTDIR\leo\plugins\trees\*.pyc"
+    Delete "$INSTDIR\leo\plugins\trees\*.pyo"
     Delete "$INSTDIR\leo\plugins\trees\doc.py"
     Delete "$INSTDIR\leo\plugins\trees\news.py"
     Delete "$INSTDIR\leo\plugins\trees\pluginsManager.txt"
@@ -4277,6 +4357,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\plugins\trees\rss.py"
     Delete "$INSTDIR\leo\plugins\trees\test.py"
 
+    Delete "$INSTDIR\leo\scripts\*.pyc"
+    Delete "$INSTDIR\leo\scripts\*.pyo"
     Delete "$INSTDIR\leo\scripts\LinixInstall.py"
     Delete "$INSTDIR\leo\scripts\convert_to_shadow.py"
     Delete "$INSTDIR\leo\scripts\leo"
@@ -4287,6 +4369,8 @@ Section Uninstall
     Delete "$INSTDIR\leo\scripts\tangle_done.py"
     Delete "$INSTDIR\leo\scripts\untangle_done.py"
 
+    Delete "$INSTDIR\leo\test\*.pyc"
+    Delete "$INSTDIR\leo\test\*.pyo"
     Delete "$INSTDIR\leo\test\dynamicUnitTest.leo"
     Delete "$INSTDIR\leo\test\gtkOutlineDemo.py"
     Delete "$INSTDIR\leo\test\hello.html"
@@ -4312,9 +4396,13 @@ Section Uninstall
     Delete "$INSTDIR\leo\test\ut.leo"
     Delete "$INSTDIR\leo\test\ut.py"
 
+    Delete "$INSTDIR\leo\test\cgi-bin\*.pyc"
+    Delete "$INSTDIR\leo\test\cgi-bin\*.pyo"
     Delete "$INSTDIR\leo\test\cgi-bin\edward.py"
     Delete "$INSTDIR\leo\test\cgi-bin\leo.js"
 
+    Delete "$INSTDIR\leo\test\unittest\*.pyc"
+    Delete "$INSTDIR\leo\test\unittest\*.pyo"
     Delete "$INSTDIR\leo\test\unittest\at-asis-test.py"
     Delete "$INSTDIR\leo\test\unittest\at-auto-line-number-test.py"
     Delete "$INSTDIR\leo\test\unittest\at-auto-test.py"
@@ -4343,22 +4431,30 @@ Section Uninstall
     Delete "$INSTDIR\leo\test\unittest\shadowWriteTest-2.py"
     Delete "$INSTDIR\leo\test\unittest\test_1.py"
 
+    Delete "$INSTDIR\leo\test\unittest\input\*.pyc"
+    Delete "$INSTDIR\leo\test\unittest\input\*.pyo"
     Delete "$INSTDIR\leo\test\unittest\input\cweave.w"
     Delete "$INSTDIR\leo\test\unittest\input\flat.txt"
     Delete "$INSTDIR\leo\test\unittest\input\noweave.nw.txt"
     Delete "$INSTDIR\leo\test\unittest\input\testLeoAtFile.py"
     Delete "$INSTDIR\leo\test\unittest\input\testLeoAtFile.py.txt"
 
+    Delete "$INSTDIR\leo\test\unittest\output\*.pyc"
+    Delete "$INSTDIR\leo\test\unittest\output\*.pyo"
     Delete "$INSTDIR\leo\test\unittest\output\exportHeadlines.txt"
     Delete "$INSTDIR\leo\test\unittest\output\flattenOutline.txt"
     Delete "$INSTDIR\leo\test\unittest\output\outlineToCweb.txt"
     Delete "$INSTDIR\leo\test\unittest\output\outlineToNoweb.txt"
     Delete "$INSTDIR\leo\test\unittest\output\weave.txt"
 
+    Delete "$INSTDIR\leo\test\unittest\perfectImport\*.pyc"
+    Delete "$INSTDIR\leo\test\unittest\perfectImport\*.pyo"
     Delete "$INSTDIR\leo\test\unittest\perfectImport\SimpleHTTPServer.py"
     Delete "$INSTDIR\leo\test\unittest\perfectImport\formatter.py"
     Delete "$INSTDIR\leo\test\unittest\perfectImport\unitTestFile.py"
 
+    Delete "$INSTDIR\leo\www\*.pyc"
+    Delete "$INSTDIR\leo\www\*.pyo"
     Delete "$INSTDIR\leo\www\default.css"
     Delete "$INSTDIR\leo\www\index.html"
     Delete "$INSTDIR\leo\www\leo_rst.css"
@@ -4421,17 +4517,6 @@ Section Uninstall
     RMDir "$INSTDIR\leo\core"
     RMDir "$INSTDIR\leo\config"
     RMDir "$INSTDIR\leo"
-    RMDir "$INSTDIR\.bzr\repository\upload"
-    RMDir "$INSTDIR\.bzr\repository\packs"
-    RMDir "$INSTDIR\.bzr\repository\obsolete_packs"
-    RMDir "$INSTDIR\.bzr\repository\lock"
-    RMDir "$INSTDIR\.bzr\repository\indices"
-    RMDir "$INSTDIR\.bzr\repository"
-    RMDir "$INSTDIR\.bzr\checkout\lock"
-    RMDir "$INSTDIR\.bzr\checkout"
-    RMDir "$INSTDIR\.bzr\branch-lock"
-    RMDir "$INSTDIR\.bzr\branch\lock"
-    RMDir "$INSTDIR\.bzr\branch"
     RMDir "$INSTDIR"
 
     ; ---- End of manifest related data.

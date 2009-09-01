@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="9,2,3"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -141,10 +141,10 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 </v>
 <v t="ekr.20090826220933.1573"><vh>bzr-manifest.txt</vh></v>
 <v t="ekr.20090831172520.1555"><vh>@@auto ../../bzr-small-manifest.txt</vh></v>
-<v t="ekr.20090826220933.1565" a="E"><vh>Create leo.nsi</vh>
+<v t="ekr.20090826220933.1565"><vh>Create leo.nsi</vh>
 <v t="ekr.20090831172520.1553"><vh>ctor</vh></v>
-<v t="ekr.20090901092556.1608" a="E"><vh>Boilerplate</vh>
-<v t="ekr.20090901092556.1609" a="E"><vh>head boilerplate</vh>
+<v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
+<v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1578"><vh>putDefines</vh></v>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1589"><vh>putVariables</vh></v>
@@ -162,11 +162,11 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 </v>
 <v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
-<v t="ekr.20090901092556.1574" a="E"><vh>genInstallData &amp; helpers</vh>
+<v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
 </v>
 <v t="ekr.20090901092556.1575"><vh>genMiddle &amp; helper</vh></v>
-<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helper</vh>
+<v t="ekr.20090901092556.1576" a="E"><vh>genUninstallData &amp; helper</vh>
 <v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
 <v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
 <v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
@@ -1634,8 +1634,6 @@ Delete "$INSTDIR\uninstall"
 <t tx="ekr.20090826220933.1565"># use bzr ls -R &gt;bzr-manifest.txt
 
 '''Create the installer script.'''
-
-# To do: fix g.adjustTripleString.
 
 import os
 
@@ -4155,12 +4153,12 @@ SetCompressor bzip2
 ; define the following symbol to install if Python is installed only for current user. 
 ; !define INSTALL_IF_PYTHON_FOR_CURRENT_USER
 
-!define STRING_PYTHON_NOT_FOUND "Python is not installed on this system.\
-Please install Python first.\
+!define STRING_PYTHON_NOT_FOUND "Python is not installed on this system.\\
+Please install Python first.\\
 Click OK to cancel installation and remove installation Files."
 
-!define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only.\
-${PRODUCT_NAME} does not support use with Python so configured.\
+!define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only.\\
+${PRODUCT_NAME} does not support use with Python so configured.\\
 Click OK to cancel installation and remove installation Files."
 ''')
 </t>
@@ -4180,18 +4178,18 @@ WindowIcon off
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "LeoSetup-%s.exe"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
-InstallDir "$PROGRAMFILES\Leo"
+InstallDir "$PROGRAMFILES\Leo-%s"
 Icon "%s\leo\Icons\leo_inst.ico"
 ; Version 1.0 of NSIS Script for Leo comes with its own uninstall icon
 ; UninstallIcon "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
-DirText "Setup will install $(^Name) in the following folder.\
+DirText "Setup will install $(^Name) in the following folder.\\
 To install in a different folder, click Browse and select another folder."
-LicenseText "If you accept all the terms of the agreement, choose I Agree to continue.\
+LicenseText "If you accept all the terms of the agreement, choose I Agree to continue.\\
 You must accept the agreement to install $(^Name)."
 LicenseData "%s\License.txt"
 ShowInstDetails show
 ShowUnInstDetails show
-''' % (self.version,rootDir,rootDir)
+''' % (self.version,self.version,rootDir,rootDir)
 
     self.put(s)
 </t>
@@ -4247,7 +4245,8 @@ Function .onInit
     IfFileExists $8 ok tryagain
 
     tryagain:
-    # ok, that  didn't work, but since the Python installer doesn't seem to be consistent, we'll try again
+    # That didn't work, but since the Python installer doesn't seem to be consistent,
+    # we'll try again.
     # cut 3 characters from back of the open command
     StrCpy $8 $9 -3
 
@@ -4308,6 +4307,7 @@ ok:
      MessageBox MB_OK "Found Python executable at '$8'"
      StrCpy $PythonExecutable $8
 done:
+
 FunctionEnd
 ''')
 </t>
@@ -4441,8 +4441,9 @@ FunctionEnd
     for theDir in reverseDirs:
         # Delete the directory even if it has no files.
         if theDir and theDir != '**top':
-            result.append('RMDir "$INSTDIR\\%s"\n' % (
-                theDir.replace('/','\\')))
+            if not theDir.startswith('.bzr'):
+                result.append('RMDir "$INSTDIR\\%s"\n' % (
+                    theDir.replace('/','\\')))
 
     # top-level folder.
     result.append('RMDir "$INSTDIR"\n')
@@ -4464,10 +4465,14 @@ FunctionEnd
     for theDir in dirs:
         if theDir:
             aList = dirDict.get(theDir,[])
-            if aList: result.append('\n')
+            dir2 = theDir.replace('/','\\')
+            if aList:
+                result.append('\n')
+                result.append('Delete "$INSTDIR\\%s\\*.pyc"\n' % (dir2))
+                result.append('Delete "$INSTDIR\\%s\\*.pyo"\n' % (dir2))
             for fn in aList:
                 result.append('Delete "$INSTDIR\\%s\\%s"\n' % (
-                    theDir.replace('/','\\'),fn))
+                    dir2,fn))
 
     # special case for created file:
     result.append('Delete "$INSTDIR\\uninst.exe"\n')
