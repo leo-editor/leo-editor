@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="9"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="10"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -138,22 +138,10 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 <v t="ekr.20090826220933.1556"><vh>&lt;&lt; uninstall top-level files &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20090826220933.1509"><vh>@@thin leo-4-3.nsi</vh>
-<v t="ekr.20090826220933.1510"><vh>&lt;&lt; defines &gt;&gt;</vh>
-<v t="ekr.20090826220933.1511"><vh>&lt;&lt; 4.3 nsi installer version &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1512"><vh>&lt;&lt; HM NIS Edit Wizard helper defines &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1513"><vh>&lt;&lt; custom defines &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20090826220933.1514"><vh>&lt;&lt; Settings for leo-4.3.nsi &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1515"><vh>&lt;&lt; Variables &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1516"><vh>&lt;&lt; Function .onInit &gt;&gt;</vh>
-<v t="ekr.20090826220933.1517"><vh>&lt;&lt; .onInit documentation &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1518"><vh>&lt;&lt; Try for format used by the NSIS installer &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1519"><vh>&lt;&lt; Try for format used by the MSI installer of Python 2.4-release &gt;&gt;</vh>
-<v t="ekr.20090826220933.1520"><vh>&lt;&lt; Try for format used for Python available to all users &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1521"><vh>&lt;&lt; Try for format used for Python available to current users &gt;&gt;</vh></v>
-</v>
-</v>
+<v t="ekr.20090826220933.1573"><vh>bzr-manifest.txt</vh></v>
+<v t="ekr.20090831172520.1555"><vh>@auto ../../bzr-small-manifest.txt</vh></v>
+<v t="ekr.20090826220933.1509"><vh>old leo-4-3.nsi</vh>
 <v t="ekr.20090826220933.1522"><vh>&lt;&lt; Section "Leo" &gt;&gt;</vh>
 <v t="ekr.20090826220933.1523"></v>
 <v t="ekr.20090826220933.1524"></v>
@@ -168,14 +156,6 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 <v t="ekr.20090826220933.1533"></v>
 <v t="ekr.20090826220933.1534"></v>
 </v>
-<v t="ekr.20090826220933.1535"><vh>&lt;&lt; Section "Start Menu Shortcuts"  &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1536"><vh>&lt;&lt; Section "Desktop Shortcut" &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1537"><vh>&lt;&lt; Section ".leo File Association" &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1538"><vh>&lt;&lt; Section -AdditionalIcons &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1539"><vh>&lt;&lt; Section -Post &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1540"><vh>&lt;&lt; Uninstall-related Settings &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1541"><vh>&lt;&lt; Function un.onUninstSuccess &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1542"><vh>&lt;&lt; Function un.onInit &gt;&gt;</vh></v>
 <v t="ekr.20090826220933.1543"><vh>&lt;&lt; Section Uninstall &gt;&gt;</vh>
 <v t="ekr.20090826220933.1544"><vh>&lt;&lt; remove file association &gt;&gt;</vh></v>
 <v t="ekr.20090826220933.1545"></v>
@@ -192,27 +172,47 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 <v t="ekr.20090826220933.1556"></v>
 <v t="ekr.20090826220933.1557"><vh>&lt;&lt; delete folders &gt;&gt;</vh></v>
 </v>
-</v>
-</v>
-<v t="ekr.20090826220933.1573"><vh>bzr-manifest.txt</vh></v>
-<v t="ekr.20090831172520.1555"><vh>@auto ../../bzr-small-manifest.txt</vh></v>
-<v t="ekr.20090826220933.1565" a="E"><vh>Create leo.nsi</vh>
-<v t="ekr.20090831172520.1553"><vh>ctor</vh></v>
 <v t="ekr.20090901082242.1561"><vh>Not used</vh>
 <v t="ekr.20090826220933.1568"><vh>defineIncludeList</vh></v>
 <v t="ekr.20090826220933.1570"><vh>putFiles</vh></v>
-<v t="ekr.20090826220933.1571"><vh>setOutPath</vh></v>
 </v>
-<v t="ekr.20090901082242.1560"><vh>utils</vh>
-<v t="ekr.20090831172520.1551"><vh>put &amp; dump</vh></v>
 </v>
-<v t="ekr.20090831172520.1554" a="E"><vh>run &amp; helpers</vh>
-<v t="ekr.20090901082242.1563"><vh>makeDicts</vh></v>
-<v t="ekr.20090826220933.1566"><vh>delete...</vh></v>
-<v t="ekr.20090901082242.1562"><vh>filterLines</vh></v>
+<v t="ekr.20090826220933.1565"><vh>Create leo.nsi</vh>
+<v t="ekr.20090831172520.1553"><vh>ctor</vh></v>
+<v t="ekr.20090901092556.1608" a="E"><vh>Boilerplate</vh>
+<v t="ekr.20090901092556.1609" a="E"><vh>head boilerplate</vh>
+<v t="ekr.20090901092556.1578"><vh>putDefines</vh></v>
+<v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
+<v t="ekr.20090901092556.1589"><vh>putVariables</vh></v>
+<v t="ekr.20090901092556.1590"><vh>putOnInit</vh></v>
+</v>
+<v t="ekr.20090901092556.1610"><vh>middle boilerplate</vh>
+<v t="ekr.20090901092556.1603"><vh>genMenuShortcuts</vh></v>
+<v t="ekr.20090901092556.1604"><vh>genDesktopShortcuts</vh></v>
+<v t="ekr.20090901092556.1605"><vh>genFileAssociation</vh></v>
+<v t="ekr.20090901092556.1606"><vh>genAdditionalIcons</vh></v>
+<v t="ekr.20090901092556.1607"><vh>genPost</vh></v>
+<v t="ekr.20090901092556.1611"><vh>genUninstallSettings</vh></v>
+<v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
+</v>
+</v>
+<v t="ekr.20090831172520.1554"><vh>run &amp; helpers</vh>
 <v t="ekr.20090826220933.1569"><vh>directoryList</vh></v>
+<v t="ekr.20090901082242.1562"><vh>filterLines &amp; helpers</vh>
+<v t="ekr.20090826220933.1566"><vh>delete...</vh></v>
+</v>
+<v t="ekr.20090901082242.1563"><vh>makeDicts</vh></v>
 <v t="ekr.20090901082242.1564"><vh>printMissing</vh></v>
-<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh></v>
+</v>
+<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
+<v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh></v>
+<v t="ekr.20090901092556.1575"><vh>genMiddle</vh></v>
+<v t="ekr.20090901092556.1576"><vh>genUninstallData</vh></v>
+<v t="ekr.20090901092556.1577"><vh>genTail</vh></v>
+<v t="ekr.20090901092556.1572"><vh>openNsi</vh></v>
+<v t="ekr.20090831172520.1551"><vh>put</vh></v>
+<v t="ekr.20090826220933.1571"><vh>setOutPath</vh></v>
 </v>
 </v>
 </vnodes>
@@ -1414,172 +1414,8 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 ;
 
 ; Script generated by the HM NIS Edit Script Wizard and then hand-customized
-&lt;&lt; defines &gt;&gt;
-&lt;&lt; Settings for leo-4.3.nsi &gt;&gt;
-&lt;&lt; Variables &gt;&gt;
-&lt;&lt; Function .onInit &gt;&gt;
 &lt;&lt; Section "Leo" &gt;&gt;
-&lt;&lt; Section "Start Menu Shortcuts"  &gt;&gt;
-&lt;&lt; Section "Desktop Shortcut" &gt;&gt;
-&lt;&lt; Section ".leo File Association" &gt;&gt;
-&lt;&lt; Section -AdditionalIcons &gt;&gt;
-&lt;&lt; Section -Post &gt;&gt;
-&lt;&lt; Uninstall-related Settings &gt;&gt;
-&lt;&lt; Function un.onUninstSuccess &gt;&gt;
-&lt;&lt; Function un.onInit &gt;&gt;
 &lt;&lt; Section Uninstall &gt;&gt;</t>
-<t tx="ekr.20090826220933.1510">&lt;&lt; 4.3 nsi installer version &gt;&gt;
-&lt;&lt; HM NIS Edit Wizard helper defines &gt;&gt;
-&lt;&lt; custom defines &gt;&gt;</t>
-<t tx="ekr.20090826220933.1511">!define PRODUCT_VERSION "4.4.5-final"</t>
-<t tx="ekr.20090826220933.1512">; HM NIS Edit Wizard helper defines
-!define PRODUCT_NAME "Leo"
-!define PRODUCT_PUBLISHER "Edward K. Ream"
-!define PRODUCT_WEB_SITE "http://webpages.charter.net/edreamleo/front.html"
-; !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
-!define PRODUCT_UNINST_ROOT_KEY "HKLM"
-
-SetCompressor bzip2
-</t>
-<t tx="ekr.20090826220933.1513">@comment ;
-
-; hand-created defines
-; used for Windows Registry links to uninstaller
-
-!define PRODUCT_NAME_LOWER_CASE "leo"
-
-!define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME_LOWER_CASE}"
-
-; On Windows NT-derived operating systems, Python.org installer for Python 2.4 
-; can be installed for all users or current user only.
-; define the following symbol to install if Python is installed only for current user. 
-; !define INSTALL_IF_PYTHON_FOR_CURRENT_USER
-
-!define STRING_PYTHON_NOT_FOUND "Python is not installed on this system. $\nPlease install Python first. $\n$\nClick OK to cancel installation and remove installation Files."
-
-!define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only. $\n$\n${PRODUCT_NAME} does not support use with Python so configured. $\n$\nClick OK to cancel installation and remove installation Files."</t>
-<t tx="ekr.20090826220933.1514">; settings taken from Version 1.0 of NSIS Script for Leo
-Caption "Leo Installer"
-AutoCloseWindow false 
-SilentInstall normal
-CRCCheck on ; FIXME shouldn't this be CRCCheck force ? Why give user option of using corrupted installer?
-SetCompress auto ; FIXME this is disabled for solid compression, which comes with BZip2 and LZMA compression
-SetDatablockOptimize on
-; SetOverwrite ifnewer
-WindowIcon off
-
-; settings from HM NIS Edit Wizard
-Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "LeoSetup-4-4-5-final.exe"
-LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
-InstallDir "$PROGRAMFILES\Leo"
-Icon "..\Icons\leo_inst.ico"
-; Version 1.0 of NSIS Script for Leo comes with its own uninstall icon
-; UninstallIcon "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
-DirText "Setup will install $(^Name) in the following folder.$\r$\n$\r$\nTo install in a different folder, click Browse and select another folder."
-LicenseText "If you accept all the terms of the agreement, choose I Agree to continue. You must accept the agreement to install $(^Name)."
-LicenseData "..\doc\License.txt"
-ShowInstDetails show
-ShowUnInstDetails show</t>
-<t tx="ekr.20090826220933.1515">; Location where the Installer finds a Pythonw.exe
-; set by the .onInit function
-var PythonExecutable
-var StrNoUsablePythonFound</t>
-<t tx="ekr.20090826220933.1516">; .onInit -- find Pythonw.exe, set PythonExecutable with string value
-; of its fully qualified path.
-; code taken from the "Leo" Section of Leo Installer Version 1.0
-;
-Function .onInit
-    # Create default error message
-    StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
-    &lt;&lt; .onInit documentation &gt;&gt;
-    &lt;&lt; Try for format used by the NSIS installer &gt;&gt;
-    &lt;&lt; Try for format used by the MSI installer of Python 2.4-release &gt;&gt;
-oops:
-    MessageBox MB_OK "$StrNoUsablePythonFound"
-    Quit
-ok:
-     MessageBox MB_OK "Found Python executable at '$8'"
-     StrCpy $PythonExecutable $8
-FunctionEnd</t>
-<t tx="ekr.20090826220933.1517">  # I sure hope there is a better way to do this, but other techniques don't seem to work.
-
-  # Supposedly the Python installer creates the following registry entry
-  # HKEY_LOCAL_MACHINE\Software\Python\PythonCore\CurrentVersion
-  # and then we can read find the Python folder location via
-  # HKEY_LOCAL_MACHINE\Software\Python\PythonCore\{versionno}.
-  # Alas, at the time of this writing, the Python installer is NOT writing the first entry.
-  # There is no way to know what the current versionno is.
-  # Hence, the following hack.
-
-  # Get pythonw.exe path from registry... except it isn't there, nor is it an environment variable... thanks guys!
-  # We'll have to get it in a roundabout way
-  ReadRegStr $9 HKEY_LOCAL_MACHINE "SOFTWARE\Classes\Python.NoConFile\shell\open\command" ""
-
-  # the NSIS installer for Python 2.3 leaves the registry entry in the following format:
-  # C:\Python23\pythonw.exe[SP]"%1%"[SP]%*
-  # the MSI installer for python.org's Python 2.4 release leaves the registry entry in the following format:
-  # "C:\Python24\pythonw.exe"[SP]"%1%"[SP]%*
-  # where [SP] represents an ASCII space character.</t>
-<t tx="ekr.20090826220933.1518"># Try for the format used by the NSIS installer
-# cut 8 characters from back of the open command
-StrCpy $8 $9 -8
-
-IfFileExists $8 ok tryagain
-
-tryagain:
-# ok, that  didn't work, but since the Python installer doesn't seem to be consistent, we'll try again
-# cut 3 characters from back of the open command
-StrCpy $8 $9 -3
-
-# that didn't work. check for the registry entry left by MSI Python 2.4 installers
-# from www.python.org and www.activestate.com
-
-IfFileExists $8 ok tryMSIformat</t>
-<t tx="ekr.20090826220933.1519">
-&lt;&lt; Try for format used for Python available to all users &gt;&gt;
-&lt;&lt; Try for format used for Python available to current users &gt;&gt;</t>
-<t tx="ekr.20090826220933.1520">tryMSIformat:
-# is the first character a "
-StrCpy $8 $9 1
-StrCmp $8 '"' foundQuote tryMSIformatCurrentUser
-
-foundQuote:
-# OK. Strip off the " at the start as well as the 9 characters at the end
-StrCpy $8 $9 -9 1
-
-# MessageBox MB_OK "3: Searching for Pythonw.exe -- is it '$8' ? "
-
-IfFileExists $8 ok tryMSIformatCurrentUser</t>
-<t tx="ekr.20090826220933.1521">tryMSIformatCurrentUser:
-ReadRegStr $9 HKEY_CURRENT_USER "SOFTWARE\Classes\Python.NoConFile\shell\open\command" ""
-
-# repeating the logic of tryMSIformat:
-# is the first character a "
-StrCpy $8 $9 1
-StrCmp $8 '"' foundQuoteCurrentUser oops
-
-# Patch: 10/6/06: Complain if Python not found.
-StrCmp $8 '"' foundQuoteCurrentUser 0
-StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
-Goto oops
-
-foundQuoteCurrentUser:
-# OK. Strip off the " at the start as well as the 9 characters at the end
-StrCpy $8 $9 -9 1
-
-!ifdef INSTALL_IF_PYTHON_FOR_CURRENT_USER
-  StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
-  IfFileExists $8 ok oops
-!else
-  IfFileExists $8 usePythonCUFoundMessage usePythonNotFoundMessage
-  usePythonCUFoundMessage:
-  StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_CURRENT_USER_FOUND}"
-  goto oops
-  usePythonNotFoundMessage:
-  StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
-  goto oops
-!endif</t>
 <t tx="ekr.20090826220933.1522">Section "Leo" SEC01
 
   SetOutPath "$INSTDIR"
@@ -1760,85 +1596,6 @@ File "..\test\leoDynamicTest.py"
 File "..\test\unittest\errorTest.py"
 File "..\test\unittest\at-file-thin-test2.txt"
 </t>
-<t tx="ekr.20090826220933.1535">; FIXME $SMPROGRAMS depends on the value of SetShellVarContext. Since that defaults to 'current'
-; that means that this installer will make Leo available for the current user only.
-; Unless I am grossly mistaken this is a needless hindrance, and a Bad Thing since
-; security concerns are such that it would be best to not run Leo with the Administrator privileges
-; of the account used to install the software.
-;
-; Sure enough, the Start Menu Shortcuts and Desktop Shortcut work for the installer account only. 
-;
-; Question is -- do we want Leo always available for any log-in on this computer?
-;
-; My guesses:
-; Ideally, Uninstall.lnk should appear only for the current user, and the uninstaller should refuse to run
-; if run by a user who lacks Admin privileges on Windows NT and its descendants
-;
-; How will Windows XP Home deal with that? 
-
-Section "Start Menu Shortcuts" SEC02
-  CreateDirectory "$SMPROGRAMS\Leo"
-  CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
-; In Version 1.0 installer, was
-; CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" "$PythonExecutable" '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
-  CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
-SectionEnd</t>
-<t tx="ekr.20090826220933.1536">Section "Desktop Shortcut" SEC03
-  CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
-SectionEnd</t>
-<t tx="ekr.20090826220933.1537">Section ".leo File Association"
-  SectionIn 1
-  SectionIn 2
-  SectionIn 3
-
-  # back up old value of .leo in case some other program was using it
-  ReadRegStr $1 HKCR ".leo" ""
-  StrCmp $1 "" Label1
-  StrCmp $1 "LeoFile" Label1
-  WriteRegStr HKCR ".leo" "backup_val" $1
-
-Label1:
-  WriteRegStr HKCR ".leo" "" "LeoFile"
-  WriteRegStr HKCR "LeoFile" "" "Leo File"
-  WriteRegStr HKCR "LeoFile\shell" "" "open"
-; In Version 1.0 installer, the .ico reference was
-;  WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico,0
-; which does not work under Windows XP Professional SP2.
-  WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico
-  WriteRegStr HKCR "LeoFile\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\src\leo.py" "%1"'
-
-SectionEnd</t>
-<t tx="ekr.20090826220933.1538">Section -AdditionalIcons
-  SetOutPath $INSTDIR
-  CreateDirectory "$SMPROGRAMS\Leo"
-  CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" "$INSTDIR\uninst.exe"
-SectionEnd</t>
-<t tx="ekr.20090826220933.1539">Section -Post
-  WriteRegStr HKEY_LOCAL_MACHINE "SOFTWARE\EKR\leo" "" "$INSTDIR"
-  WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name) (remove only)"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
-SectionEnd</t>
-<t tx="ekr.20090826220933.1540">; from Leo installer Version 1.0
-;
-; UninstallText "This will uninstall Leo from your system"
-; UninstallCaption "Uninstall Leo"
-; UninstallIcon c:\prog\tigris-cvs\leo\Icons\uninst.ico
-
-; UninstallText "This will uninstall Leo from your system"
-UninstallCaption "Uninstall Leo"
-UninstallIcon c:\prog\tigris-cvs\leo\Icons\uninst.ico</t>
-<t tx="ekr.20090826220933.1541">Function un.onUninstSuccess
-  HideWindow
-  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) was successfully removed from your computer."
-FunctionEnd</t>
-<t tx="ekr.20090826220933.1542">Function un.onInit
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Are you sure you want to completely remove $(^Name) and all of its components?" IDYES +2
-  Abort
-FunctionEnd</t>
 <t tx="ekr.20090826220933.1543">; Uninstall section as generated by HM NE, with hand-edits
 
 Section Uninstall
@@ -2140,14 +1897,10 @@ def deleteFiles (self,lines,deleteList):
         pass
         # self.put('ignoring',theDir)
 </t>
-<t tx="ekr.20090826220933.1571">def setOutPath(self,theDir,rootDir):
+<t tx="ekr.20090826220933.1571">def setOutPath(self,theDir):
 
-    assert theDir.startswith(rootDir)
-
-    suffix = norm(theDir,rootDir)
-
-    if suffix:
-        self.put('SetOutPath "$INSTDIR\%s"' % suffix)
+    if theDir:
+        self.put('SetOutPath "$INSTDIR\%s"' % theDir)
     else:
         self.put('SetOutPath "$INSTDIR"')
 </t>
@@ -4237,21 +3990,26 @@ profileLeo.py
 pylint-leo.bat
 setup.py
 </t>
-<t tx="ekr.20090831172520.1551">def dump (self,s):
+<t tx="ekr.20090831172520.1551">def put (self,s):
 
-    '''Output s to leo.dist.'''
+    '''Output s to leo.nsi.'''
 
-    print(s)
+    s = g.adjustTripleString(s,c.tab_width)
 
-put = dump</t>
+    # g.trace(s)
+    self.f.write(s)
+</t>
 <t tx="ekr.20090831172520.1553">def __init__ (self,c,rootDir):
 
     self.c = c
     self.rootDir = rootDir
+    self.version = '4.6.3-final'
 </t>
 <t tx="ekr.20090831172520.1554">def run (self,fn):
 
-    # Create and filter the list of files.
+    '''The top-level logic.'''
+
+    # Create and filter the list of files from the manifest.
     s = open(fn).read()
     lines = g.splitLines(s)
     files = self.filterLines(lines)
@@ -4262,21 +4020,21 @@ put = dump</t>
     # Compute dictionaries of directories and files.
     dirDict,filesDict = self.makeDicts(dirs,files)
 
-    # Print the files not in filesDict.
+    # Print manifest lines not in either dict.
+    # This is a crucial check.
     errors = self.printMissing(files,dirDict,filesDict)
-    if errors:
-        g.es_print('%s errors' % (errors),color='red')
-    else:
-        self.genScript(dirDict,filesDict)
-        g.es_print('done. no errors')
+    if errors: return
 
+    # Generate the script!
+    self.genScript(dirs,dirDict,filesDict)
 </t>
-<t tx="ekr.20090901082242.1560"></t>
 <t tx="ekr.20090901082242.1561">if 0: # old
     for z in self.directoryList(rootDir):
         self.putFiles(self.rootDir,z,lines)
 </t>
 <t tx="ekr.20090901082242.1562">def filterLines (self,lines):
+
+    '''Filter lines from the input manifest file.'''
 
     trace = False
 
@@ -4358,10 +4116,372 @@ put = dump</t>
             g.es_print('missing',fn,color='red')
             errors += 1
 
-    return errors</t>
-<t tx="ekr.20090901082242.1565">def genScript (self,dirDict,filesDict):
+    if errors:
+        g.es_print('%s errors' % (errors),color='red')
+
+    return errors
+</t>
+<t tx="ekr.20090901082242.1565">def genScript (self,dirs,dirDict,filesDict):
+
+    '''Generate the .nsi file.'''
+
+    self.f = self.openNsi()
+    if not self.f: return
+
+    try:
+        self.genHead()
+        self.genInstallData(dirs,dirDict,filesDict)
+        self.genMiddle()
+        self.genUninstallData(dirs,dirDict,filesDict)
+        self.genTail()
+    finally:
+        self.f.close()
+
+    g.es_print('done. no errors')
+</t>
+<t tx="ekr.20090901092556.1572">def openNsi (self):
+
+    path = g.os_path_finalize_join(
+        g.app.loadDir,'..','..','leo.nsi')
+
+    try:
+        f = open(path,'w')
+    except IOError:
+        f = None
+        g.es_print('Can not open',path,color='red')
+
+    return f
+</t>
+<t tx="ekr.20090901092556.1573">def genHead (self):
+
+    '''Generate the boilerplate appearing before
+    the manifest-specific install data.'''
+
+    self.putDefines()
+    self.putSettings()
+    self.putVariables()
+    self.putOnInit()</t>
+<t tx="ekr.20090901092556.1574">def genInstallData(self,dirs,dirDict,filesDict):
+
+    '''Generate the manifest-specific install data.'''
+
+    pass</t>
+<t tx="ekr.20090901092556.1575">def genMiddle (self):
+
+    '''Generate the boilerplate appearing between
+    the manifest-specific install data and
+    the manifest-specific uninstall data.'''
+
+    self.genMenuShortcuts()
+    self.genDesktopShortcuts()
+    self.genFileAssociation()
+    self.genAdditionalIcons()
+    self.genPost()
+    self.genUninstallSettings()
+    self.genMiddleFunctions()
+</t>
+<t tx="ekr.20090901092556.1576">def genUninstallData(self,dirs,dirDict,filesDict):
+
+    '''Generate the manifest-specific uninstall data.'''
 
     pass
+</t>
+<t tx="ekr.20090901092556.1577">def genTail (self):
+
+    '''Generate the boilerplate appearing after
+    the manifest-specific uninstall data.'''
+
+    pass
+</t>
+<t tx="ekr.20090901092556.1578">def putDefines(self):
+
+    # Version.
+    self.put('!define PRODUCT_VERSION "%s"\n' % self.version)
+
+    # HM NIS Edit Wizard helper defines
+    self.put('''
+; HM NIS Edit Wizard helper defines
+!define PRODUCT_NAME "Leo"
+!define PRODUCT_PUBLISHER "Edward K. Ream"
+!define PRODUCT_WEB_SITE "http://webpages.charter.net/edreamleo/front.html"
+; !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
+!define PRODUCT_UNINST_ROOT_KEY "HKLM"
+
+SetCompressor bzip2
+''')
+
+    # Custom defines
+    self.put('''
+; hand-created defines
+; used for Windows Registry links to uninstaller
+
+!define PRODUCT_NAME_LOWER_CASE "leo"
+
+!define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME_LOWER_CASE}"
+
+; On Windows NT-derived operating systems, Python.org installer for Python 2.4 
+; can be installed for all users or current user only.
+; define the following symbol to install if Python is installed only for current user. 
+; !define INSTALL_IF_PYTHON_FOR_CURRENT_USER
+
+!define STRING_PYTHON_NOT_FOUND "Python is not installed on this system. $\nPlease install Python first. $\n$\nClick OK to cancel installation and remove installation Files."
+
+!define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only. $\n$\n${PRODUCT_NAME} does not support use with Python so configured. $\n$\nClick OK to cancel installation and remove installation Files."
+''')
+
+</t>
+<t tx="ekr.20090901092556.1588">def putSettings (self):
+
+    self.put('''
+; settings taken from Version 1.0 of NSIS Script for Leo
+Caption "Leo Installer"
+AutoCloseWindow false 
+SilentInstall normal
+CRCCheck on ; FIXME shouldn't this be CRCCheck force ? Why give user option of using corrupted installer?
+SetCompress auto ; FIXME this is disabled for solid compression, which comes with BZip2 and LZMA compression
+SetDatablockOptimize on
+; SetOverwrite ifnewer
+WindowIcon off
+
+; settings from HM NIS Edit Wizard
+Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
+OutFile "LeoSetup-4-4-5-final.exe"
+LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
+InstallDir "$PROGRAMFILES\Leo"
+Icon "..\Icons\leo_inst.ico"
+; Version 1.0 of NSIS Script for Leo comes with its own uninstall icon
+; UninstallIcon "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
+DirText "Setup will install $(^Name) in the following folder.$\r$\n$\r$\nTo install in a different folder, click Browse and select another folder."
+LicenseText "If you accept all the terms of the agreement, choose I Agree to continue. You must accept the agreement to install $(^Name)."
+LicenseData "..\doc\License.txt"
+ShowInstDetails show
+ShowUnInstDetails show
+''')
+</t>
+<t tx="ekr.20090901092556.1589">def putVariables (self):
+
+    self.put('''
+; Location where the Installer finds a Pythonw.exe
+; set by the .onInit function
+var PythonExecutable
+var StrNoUsablePythonFound
+''')
+</t>
+<t tx="ekr.20090901092556.1590">def putOnInit (self):
+
+    self.put('''
+; .onInit -- find Pythonw.exe, set PythonExecutable with string value
+; of its fully qualified path.
+; code taken from the "Leo" Section of Leo Installer Version 1.0
+;
+Function .onInit
+    # Create default error message
+    StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
+
+    # I sure hope there is a better way to do this,
+    # but other techniques don't seem to work.
+    # Supposedly the Python installer creates the following registry entry
+    # HKEY_LOCAL_MACHINE\Software\Python\PythonCore\CurrentVersion
+    # and then we can read find the Python folder location via
+    # HKEY_LOCAL_MACHINE\Software\Python\PythonCore\{versionno}.
+    # Alas, at the time of this writing, the Python installer is NOT writing the first entry.
+    # There is no way to know what the current versionno is.
+    # Hence, the following hack.
+
+    # Get pythonw.exe path from registry... except it isn't there, nor is it an environment variable... thanks guys!
+    # We'll have to get it in a roundabout way
+    ReadRegStr $9 HKEY_LOCAL_MACHINE "SOFTWARE\Classes\Python.NoConFile\shell\open\command" ""
+
+    # the NSIS installer for Python 2.3 leaves the registry entry in the following format:
+    # C:\Python23\pythonw.exe[SP]"%1%"[SP]%*
+    # the MSI installer for python.org's Python 2.4 release leaves the registry entry in the following format:
+    # "C:\Python24\pythonw.exe"[SP]"%1%"[SP]%*
+    # where [SP] represents an ASCII space character.
+
+    # Step 1: Try for the format used by the NSIS installer
+
+    # cut 8 characters from back of the open command
+    StrCpy $8 $9 -8
+
+    IfFileExists $8 ok tryagain
+
+    tryagain:
+    # ok, that  didn't work, but since the Python installer doesn't seem to be consistent, we'll try again
+    # cut 3 characters from back of the open command
+    StrCpy $8 $9 -3
+
+    # that didn't work. check for the registry entry left by MSI Python 2.4 installers
+    # from www.python.org and www.activestate.com
+
+    IfFileExists $8 ok tryMSIformat
+
+    # Step 2: Try format used for Python available to all users.
+tryMSIformat:
+
+    # is the first character a "
+    StrCpy $8 $9 1
+    StrCmp $8 '"' foundQuote tryMSIformatCurrentUser
+
+foundQuote:
+    # OK. Strip off the " at the start as well as the 9 characters at the end
+    StrCpy $8 $9 -9 1
+    # MessageBox MB_OK "3: Searching for Pythonw.exe -- is it '$8' ? "
+    IfFileExists $8 ok tryMSIformatCurrentUser
+
+    # Step 3: Try format used for Python available to current users.
+
+tryMSIformatCurrentUser:
+    ReadRegStr $9 HKEY_CURRENT_USER "SOFTWARE\Classes\Python.NoConFile\shell\open\command" ""
+
+    # repeating the logic of tryMSIformat:
+    # is the first character a "
+    StrCpy $8 $9 1
+    StrCmp $8 '"' foundQuoteCurrentUser oops
+
+    # Patch: 10/6/06: Complain if Python not found.
+    StrCmp $8 '"' foundQuoteCurrentUser 0
+    StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
+    Goto oops
+
+foundQuoteCurrentUser:
+    # OK. Strip off the " at the start as well as the 9 characters at the end
+    StrCpy $8 $9 -9 1
+
+    !ifdef INSTALL_IF_PYTHON_FOR_CURRENT_USER
+      StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
+      IfFileExists $8 ok oops
+    !else
+      IfFileExists $8 usePythonCUFoundMessage usePythonNotFoundMessage
+      usePythonCUFoundMessage:
+      StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_CURRENT_USER_FOUND}"
+      goto oops
+      usePythonNotFoundMessage:
+      StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
+      goto oops
+    !endif
+
+oops:
+    MessageBox MB_OK "$StrNoUsablePythonFound"
+    Quit
+ok:
+     MessageBox MB_OK "Found Python executable at '$8'"
+     StrCpy $PythonExecutable $8
+FunctionEnd
+''')
+</t>
+<t tx="ekr.20090901092556.1603">def genMenuShortcuts (self):
+
+    self.put('''
+; FIXME $SMPROGRAMS depends on the value of SetShellVarContext. Since that defaults to 'current'
+; that means that this installer will make Leo available for the current user only.
+; Unless I am grossly mistaken this is a needless hindrance, and a Bad Thing since
+; security concerns are such that it would be best to not run Leo with the Administrator privileges
+; of the account used to install the software.
+;
+; Sure enough, the Start Menu Shortcuts and Desktop Shortcut work for the installer account only. 
+;
+; Question is -- do we want Leo always available for any log-in on this computer?
+;
+; My guesses:
+; Ideally, Uninstall.lnk should appear only for the current user, and the uninstaller should refuse to run
+; if run by a user who lacks Admin privileges on Windows NT and its descendants
+;
+; How will Windows XP Home deal with that? 
+
+Section "Start Menu Shortcuts" SEC02
+  CreateDirectory "$SMPROGRAMS\Leo"
+  CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
+; In Version 1.0 installer, was
+; CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" "$PythonExecutable" '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+  CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+SectionEnd
+''')
+</t>
+<t tx="ekr.20090901092556.1604">def genDesktopShortcuts(self):
+
+    self.put('''
+Section "Desktop Shortcut" SEC03
+  CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+SectionEnd
+''')
+</t>
+<t tx="ekr.20090901092556.1605">def genFileAssociation(self):
+
+    self.put('''
+Section ".leo File Association"
+  SectionIn 1
+  SectionIn 2
+  SectionIn 3
+
+  # back up old value of .leo in case some other program was using it
+  ReadRegStr $1 HKCR ".leo" ""
+  StrCmp $1 "" Label1
+  StrCmp $1 "LeoFile" Label1
+  WriteRegStr HKCR ".leo" "backup_val" $1
+
+Label1:
+  WriteRegStr HKCR ".leo" "" "LeoFile"
+  WriteRegStr HKCR "LeoFile" "" "Leo File"
+  WriteRegStr HKCR "LeoFile\shell" "" "open"
+; In Version 1.0 installer, the .ico reference was
+;  WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico,0
+; which does not work under Windows XP Professional SP2.
+  WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico
+  WriteRegStr HKCR "LeoFile\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\src\leo.py" "%1"'
+
+SectionEnd
+''')
+</t>
+<t tx="ekr.20090901092556.1606">def genAdditionalIcons(self):
+
+    self.put('''
+Section -AdditionalIcons
+  SetOutPath $INSTDIR
+  CreateDirectory "$SMPROGRAMS\Leo"
+  CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" "$INSTDIR\uninst.exe"
+SectionEnd
+''')
+</t>
+<t tx="ekr.20090901092556.1607">def genPost (self):
+
+    self.put('''
+Section -Post
+  WriteRegStr HKEY_LOCAL_MACHINE "SOFTWARE\EKR\leo" "" "$INSTDIR"
+  WriteUninstaller "$INSTDIR\uninst.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name) (remove only)"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
+SectionEnd
+''')
+</t>
+<t tx="ekr.20090901092556.1608"></t>
+<t tx="ekr.20090901092556.1609"></t>
+<t tx="ekr.20090901092556.1610"></t>
+<t tx="ekr.20090901092556.1611">def genUninstallSettings(self):
+
+    path = g.os_path_finalize_join(
+        g.app.loadDir,'..','Icons','uninst.ico')
+
+    self.put('''
+UninstallCaption "Uninstall Leo"
+UninstallIcon "%s"
+''' % path)
+</t>
+<t tx="ekr.20090901092556.1612">def genMiddleFunctions (self):
+
+    self.put('''
+Function un.onUninstSuccess
+  HideWindow
+  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) was successfully removed from your computer."
+FunctionEnd
+
+Function un.onInit
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Are you sure you want to completely remove $(^Name) and all of its components?" IDYES +2
+  Abort
+FunctionEnd
+''')
 </t>
 </tnodes>
 </leo_file>
