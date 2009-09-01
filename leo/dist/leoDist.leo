@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="10,1,0,1"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="10,2,3,0"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -179,7 +179,7 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 </v>
 <v t="ekr.20090826220933.1565" a="E"><vh>Create leo.nsi</vh>
 <v t="ekr.20090831172520.1553"><vh>ctor</vh></v>
-<v t="ekr.20090901092556.1608" a="E"><vh>Boilerplate</vh>
+<v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
 <v t="ekr.20090901092556.1609" a="E"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1578"><vh>putDefines</vh></v>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
@@ -196,13 +196,13 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 <v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
 </v>
 </v>
-<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
-<v t="ekr.20090901092556.1574" a="E"><vh>genInstallData &amp; helpers</vh>
+<v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
 </v>
 <v t="ekr.20090901092556.1575"><vh>genMiddle &amp; helper</vh></v>
-<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helper</vh>
+<v t="ekr.20090901092556.1576" a="E"><vh>genUninstallData &amp; helper</vh>
 <v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
 <v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
 <v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
@@ -4557,8 +4557,11 @@ FunctionEnd
     result = []
     result.append('; Uninstall directories in reverse order\n')
     for theDir in reverseDirs:
-        if theDir and dirDict.get(theDir):
-            result.append('RMDir "$INSTDIR/%s"\n' % theDir)
+        # Delete the directory even if it has no files.
+        if theDir: # and dirDict.get(theDir):
+            if theDir != '**top':
+                theDir2 = theDir.replace('/','\\')
+                result.append('RMDir "$INSTDIR\\%s"\n' % theDir2)
 
     # top-level folder.
     result.append('RMDir "$INSTDIR"\n')
@@ -4573,26 +4576,26 @@ FunctionEnd
     result.append('; Uninstall files...\n\n')
 
     # top-level files.
-    result.append('; Delete top-level files\n')
+    result.append('; Delete top-level files...\n')
     aList = dirDict.get('**top',[])
     for fn in aList:
-        result.append('Delete "$INSTDIR/%s"\n' % fn)
-
-    # special case for created file:
-    result.append('Delete "$INSTDIR/uninst.exe"\n')
+        result.append('Delete "$INSTDIR\\%s"\n' % fn)
 
     for theDir in dirs:
         if theDir:
             aList = dirDict.get(theDir,[])
             if aList: result.append('\n')
             for fn in aList:
-                # result('\n; Delete files in %s...\n' % theDir)
-                result.append('Delete "$INSTDIR/%s/%s"\n' % (
-                    theDir,fn))
+                result.append('Delete "$INSTDIR\\%s\\%s"\n' % (
+                    theDir.replace('/','\\'),fn.replace('/','\\')))
+
+    # special case for created file:
+    result.append('Delete "$INSTDIR\\uninst.exe"\n')
 
     # Indent
     result = ['    %s' % (z) for z in result]
-    return ''.join(result)</t>
+    return ''.join(result)
+</t>
 <t tx="ekr.20090901121423.1570">def getInstallVariableData (self,dirs,dirDict,filesDict):
 
     global rootDir
