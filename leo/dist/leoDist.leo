@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="36" left="376" height="968" width="888"/>
+	<global_window_position top="36" left="239" height="968" width="1025"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="10,3,1,0"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="10,1,0,1"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -141,8 +141,8 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 </v>
 <v t="ekr.20090826220933.1573"><vh>bzr-manifest.txt</vh></v>
 <v t="ekr.20090831172520.1555"><vh>@auto ../../bzr-small-manifest.txt</vh></v>
-<v t="ekr.20090826220933.1509" a="E"><vh>old leo-4-3.nsi</vh>
-<v t="ekr.20090826220933.1522" a="E"><vh>&lt;&lt; Section "Leo" &gt;&gt;</vh>
+<v t="ekr.20090826220933.1509"><vh>old leo-4-3.nsi</vh>
+<v t="ekr.20090826220933.1522"><vh>&lt;&lt; Section "Leo" &gt;&gt;</vh>
 <v t="ekr.20090826220933.1523"></v>
 <v t="ekr.20090826220933.1524"></v>
 <v t="ekr.20090826220933.1525"></v>
@@ -180,7 +180,7 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 <v t="ekr.20090826220933.1565" a="E"><vh>Create leo.nsi</vh>
 <v t="ekr.20090831172520.1553"><vh>ctor</vh></v>
 <v t="ekr.20090901092556.1608" a="E"><vh>Boilerplate</vh>
-<v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
+<v t="ekr.20090901092556.1609" a="E"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1578"><vh>putDefines</vh></v>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1589"><vh>putVariables</vh></v>
@@ -196,21 +196,13 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 <v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
 </v>
 </v>
-<v t="ekr.20090831172520.1554"><vh>run &amp; helpers</vh>
-<v t="ekr.20090826220933.1569"><vh>directoryList</vh></v>
-<v t="ekr.20090901082242.1562"><vh>filterLines &amp; helpers</vh>
-<v t="ekr.20090826220933.1566"><vh>delete...</vh></v>
-</v>
-<v t="ekr.20090901082242.1563"><vh>makeDicts</vh></v>
-<v t="ekr.20090901082242.1564"><vh>printMissing</vh></v>
-</v>
-<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
 <v t="ekr.20090901092556.1574" a="E"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
 </v>
 <v t="ekr.20090901092556.1575"><vh>genMiddle &amp; helper</vh></v>
-<v t="ekr.20090901092556.1576" a="E"><vh>genUninstallData &amp; helper</vh>
+<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helper</vh>
 <v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
 <v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
 <v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
@@ -218,7 +210,14 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 <v t="ekr.20090901092556.1577"><vh>genTail</vh></v>
 <v t="ekr.20090901092556.1572"><vh>openNsi</vh></v>
 <v t="ekr.20090831172520.1551"><vh>put</vh></v>
-<v t="ekr.20090826220933.1571"><vh>setOutPath</vh></v>
+</v>
+<v t="ekr.20090831172520.1554"><vh>run &amp; helpers</vh>
+<v t="ekr.20090826220933.1569"><vh>directoryList</vh></v>
+<v t="ekr.20090901082242.1562"><vh>filterLines &amp; helpers</vh>
+<v t="ekr.20090826220933.1566"><vh>delete...</vh></v>
+</v>
+<v t="ekr.20090901082242.1563"><vh>makeDicts</vh></v>
+<v t="ekr.20090901082242.1564"><vh>printMissing</vh></v>
 </v>
 </v>
 </vnodes>
@@ -1821,6 +1820,7 @@ manifest = g.os_path_finalize_join(
 
 nsi = nsiWriter(c,rootDir)
 nsi.run(manifest)
+# print '*' * 60
 </t>
 <t tx="ekr.20090826220933.1566">def deleteBlankLines (self,lines):
 
@@ -1902,13 +1902,6 @@ def deleteFiles (self,lines,deleteList):
     if not pathSet:
         pass
         # self.put('ignoring',theDir)
-</t>
-<t tx="ekr.20090826220933.1571">def setOutPath(self,theDir):
-
-    if theDir:
-        self.put('SetOutPath "$INSTDIR\%s"' % theDir)
-    else:
-        self.put('SetOutPath "$INSTDIR"')
 </t>
 <t tx="ekr.20090826220933.1573">@killcolor
 
@@ -4000,10 +3993,11 @@ setup.py
 
     '''Output s to leo.nsi.'''
 
-    if adjust:
-        s = g.adjustTripleString(s,c.tab_width)
+    # if adjust:
+        # s = g.adjustTripleString(s,c.tab_width)
 
-    # g.trace(s)
+    # g.trace(len(s),g.callers(4))
+    # g.trace(s[1:1000])
     self.f.write(s)
 </t>
 <t tx="ekr.20090831172520.1553">def __init__ (self,c,rootDir):
@@ -4264,7 +4258,7 @@ SectionEnd
 SetCompressor bzip2
 ''')
 
-    # Custom defines
+    # Custom defines.
     self.put('''
 ; hand-created defines
 ; used for Windows Registry links to uninstaller
@@ -4278,16 +4272,19 @@ SetCompressor bzip2
 ; define the following symbol to install if Python is installed only for current user. 
 ; !define INSTALL_IF_PYTHON_FOR_CURRENT_USER
 
-!define STRING_PYTHON_NOT_FOUND "Python is not installed on this system. $\nPlease install Python first. $\n$\nClick OK to cancel installation and remove installation Files."
+!define STRING_PYTHON_NOT_FOUND "Python is not installed on this system.\
+Please install Python first.\
+Click OK to cancel installation and remove installation Files."
 
-!define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only. $\n$\n${PRODUCT_NAME} does not support use with Python so configured. $\n$\nClick OK to cancel installation and remove installation Files."
+!define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only.\
+${PRODUCT_NAME} does not support use with Python so configured.\
+Click OK to cancel installation and remove installation Files."
 ''')
 
 </t>
 <t tx="ekr.20090901092556.1588">def putSettings (self):
 
-    self.put('''
-; settings taken from Version 1.0 of NSIS Script for Leo
+    s = '''
 Caption "Leo Installer"
 AutoCloseWindow false 
 SilentInstall normal
@@ -4299,18 +4296,22 @@ WindowIcon off
 
 ; settings from HM NIS Edit Wizard
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "LeoSetup-4-4-5-final.exe"
+OutFile "LeoSetup-%s.exe"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 InstallDir "$PROGRAMFILES\Leo"
-Icon "..\Icons\leo_inst.ico"
+Icon "%s\leo\Icons\leo_inst.ico"
 ; Version 1.0 of NSIS Script for Leo comes with its own uninstall icon
 ; UninstallIcon "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
-DirText "Setup will install $(^Name) in the following folder.$\r$\n$\r$\nTo install in a different folder, click Browse and select another folder."
-LicenseText "If you accept all the terms of the agreement, choose I Agree to continue. You must accept the agreement to install $(^Name)."
-LicenseData "..\doc\License.txt"
+DirText "Setup will install $(^Name) in the following folder.\
+To install in a different folder, click Browse and select another folder."
+LicenseText "If you accept all the terms of the agreement, choose I Agree to continue.\
+You must accept the agreement to install $(^Name)."
+LicenseData "%s\License.txt"
 ShowInstDetails show
 ShowUnInstDetails show
-''')
+''' % (self.version,rootDir,rootDir)
+
+    self.put(s,adjust=False)
 </t>
 <t tx="ekr.20090901092556.1589">def putVariables (self):
 
@@ -4329,6 +4330,10 @@ var StrNoUsablePythonFound
 ; code taken from the "Leo" Section of Leo Installer Version 1.0
 ;
 Function .onInit
+
+    # Bypass this for now.
+    goto done
+
     # Create default error message
     StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
 
@@ -4420,6 +4425,7 @@ oops:
 ok:
      MessageBox MB_OK "Found Python executable at '$8'"
      StrCpy $PythonExecutable $8
+done:
 FunctionEnd
 ''')
 </t>
@@ -4589,9 +4595,10 @@ FunctionEnd
     return ''.join(result)</t>
 <t tx="ekr.20090901121423.1570">def getInstallVariableData (self,dirs,dirDict,filesDict):
 
+    global rootDir
     result = []
 
-    # Tope level
+    # Top level
     theDir = '**top'
     result.append('; top-level\n')
     result.append('SetOutPath "$INSTDIR"\n')
@@ -4604,20 +4611,20 @@ FunctionEnd
         if theDir != '**top':
             aList = dirDict.get(theDir,[])
             if aList:
-                # theDir2 = theDir.replace('/','\\').rstrip('\\')
-                theDir2 = theDir.replace('\\','/').rstrip('/')
+                theDir2 = theDir.replace('/','\\').rstrip('\\')
                 result.append('\n')
-                result.append('SetOutPath "$INSTDIR/%s"\n' % theDir2)
-                ### To do: what is the proper way to specify this file.
+                result.append('SetOutPath $INSTDIR\\%s\n' % theDir2)
                 for fn in aList:
-                    # result.append('File "$INSTDIR\\%s\\%s"\n' % (
+                    result.append('File %s\\%s\\%s\n' % (
+                        rootDir,theDir2,fn))
+                    # result.append('File $INSTDIR\\%s\\%s\n' % (
                         # theDir2,fn))
                     # result.append('File "..\\%s\\%s"\n' % (
                         # theDir2,fn))
                     # result.append('File "%s"\n' % fn)
                     # result.append('File "../%s/%s"\n' % (
                         # theDir2,fn))
-                    result.append('File "%s/%s"\n' % (theDir2,fn))
+                    # result.append('File "%s\\%s"\n' % (theDir2,fn))
 
     # Indent
     result = ['    %s' % (z) for z in result]
