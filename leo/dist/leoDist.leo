@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -67,7 +67,26 @@
 <v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
 </v>
 <v t="ekr.20090620072519.1389"><vh>Distribution checklist</vh></v>
+<v t="ekr.20090902092112.1478"><vh>not used from leoGlobals</vh>
+<v t="ekr.20090902092112.1465"><vh>computeLeadingWhitespace</vh></v>
+<v t="ekr.20090902092112.1468"><vh>optimizeLeadingWhitespace</vh></v>
+<v t="ekr.20090902092112.1469"><vh>regularizeTrailingNewlines</vh></v>
+<v t="ekr.20090902092112.1471"><vh>g.removeExtraLws &amp; test</vh>
+<v t="ekr.20090902092112.1472"><vh>@test g.removeExtraLws</vh></v>
+</v>
+<v t="ekr.20090902092112.1473"><vh>removeTrailingWs &amp; test</vh>
+<v t="ekr.20090902092112.1474"><vh>@test removeTrailingWs</vh></v>
+</v>
+<v t="ekr.20090902092112.1475"><vh>skip_leading_ws</vh></v>
+<v t="ekr.20090902092112.1476"><vh>skip_leading_ws_with_indent</vh></v>
+<v t="ekr.20090902092112.1477"><vh>stripBlankLines</vh></v>
+</v>
+<v t="ekr.20090902092112.1481"><vh>&lt;&lt; define version &gt;&gt;</vh></v>
 <v t="ekr.20090826220933.1565"><vh>Create leo.nsi</vh>
+<v t="ekr.20090902092112.1481"></v>
+<v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
+<v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
+<v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
 <v t="ekr.20090831172520.1553"><vh>ctor</vh></v>
 <v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
 <v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
@@ -92,7 +111,7 @@
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
 </v>
 <v t="ekr.20090901092556.1575"><vh>genMiddle &amp; helper</vh></v>
-<v t="ekr.20090901092556.1576" a="E"><vh>genUninstallData &amp; helper</vh>
+<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helper</vh>
 <v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
 <v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
 <v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
@@ -104,11 +123,19 @@
 </v>
 <v t="ekr.20090831172520.1554"><vh>run &amp; helpers</vh>
 <v t="ekr.20090826220933.1569"><vh>directoryList</vh></v>
-<v t="ekr.20090901082242.1562" a="E"><vh>filterLines &amp; helpers</vh>
+<v t="ekr.20090901082242.1562"><vh>filterLines &amp; helpers</vh>
 <v t="ekr.20090826220933.1566"><vh>delete...</vh></v>
 </v>
 <v t="ekr.20090901082242.1563"><vh>makeDicts</vh></v>
 <v t="ekr.20090901082242.1564"><vh>printMissing</vh></v>
+</v>
+<v t="ekr.20090902092112.1445"><vh>whitespace</vh>
+<v t="ekr.20090902092112.1463"><vh>adjustTripleString</vh></v>
+<v t="ekr.20090902092112.1467"><vh>get_leading_ws</vh></v>
+<v t="ekr.20090902092112.1466"><vh>computeWidth</vh></v>
+<v t="ekr.20090902092112.1470"><vh>removeLeadingWhitespace</vh></v>
+<v t="ekr.20090902092112.1479"><vh>splitLines</vh></v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -1017,25 +1044,30 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20090826220933.1565"># use bzr ls -R &gt;bzr-manifest.txt
+<t tx="ekr.20090826220933.1565"># Create bzr-manifest as follows::
+#     bzr ls -R &gt;bzr-manifest.txt
 
 '''Create the installer script.'''
 
+# To do:
+# Make script independent of app.
+# Use dicts in string substitutions.
+
 import os
 
-class nsiWriter:
-    '''A class to write .nsi scripts.'''
-    @others
+&lt;&lt; define version &gt;&gt;
+&lt;&lt; define inLeo &gt;&gt;
+&lt;&lt; define application constants &gt;&gt;
 
-# Change this version as needed.
-version = '4.6.3-final'
+@others
 
-# The root directory contains the leo directory.
-rootDir = g.os_path_finalize_join(
-    g.app.loadDir,'..','..')
-
-manifest = g.os_path_finalize_join(
-    rootDir,'bzr-manifest.txt')  #'bzr-small-manifest.txt')
+if inLeo:
+    # The root directory contains the leo directory.
+    rootDir = g.os_path_finalize_join(g.app.loadDir,'..','..')
+    manifest = g.os_path_finalize_join(rootDir,'bzr-manifest.txt')
+else:
+    rootDir = os.path.abspath(os.curdir)
+    manifest = os.path.normpath(os.path.join(rootDir,'bzr-manifest.txt'))
 
 nsi = nsiWriter(version)
 nsi.run(manifest)
@@ -1081,7 +1113,7 @@ def deleteFiles (self,lines,deleteList):
     '''Output s to leo.nsi.'''
 
     if adjust:
-        s = g.adjustTripleString(s,c.tab_width)
+        s = self.adjustTripleString(s)
 
     self.f.write(s)
 </t>
@@ -1720,5 +1752,245 @@ FunctionEnd
     else:
         return s
 </t>
+<t tx="ekr.20090902092112.1445"># These are adapted from the corresponding functions in leoPy.leo
+# They are defined here to make this script independent of Leo</t>
+<t tx="ekr.20090902092112.1463">def adjustTripleString (self,s):
+
+    '''Remove leading indentation from a triple-quoted string.
+
+    This works around the fact that Leo nodes can't represent underindented strings.
+    '''
+
+    # Compute the minimum leading whitespace of all non-blank lines.
+    lines = self.splitLines(s)
+    w = 0 ; val = -1
+    for line in lines:
+        if line.strip():
+            lws = self.get_leading_ws(line)
+            w2 = self.computeWidth(lws)
+            # The sign of w does not matter.
+            if w == 0 or abs(w2) &lt; w:
+                w = abs(w2)
+
+    if w == 0: return s
+
+    # Remove the leading whitespace.
+    result = [self.removeLeadingWhitespace(line,w) for line in lines]
+    result = ''.join(result)
+    return result
+</t>
+<t tx="ekr.20090902092112.1465"># Returns optimized whitespace corresponding to width with the indicated tab_width.
+
+def computeLeadingWhitespace (width, tab_width):
+
+    if width &lt;= 0:
+        return ""
+    if tab_width &gt; 1:
+        tabs   = width / tab_width
+        blanks = width % tab_width
+        return ('\t' * tabs) + (' ' * blanks)
+    else: # 7/3/02: negative tab width always gets converted to blanks.
+        return (' ' * width)
+</t>
+<t tx="ekr.20090902092112.1466">def computeWidth (self,s):
+
+    '''Return the width of s, assuming s starts a line.'''
+
+    tabwidth = 4
+    w = 0
+    for ch in s:
+        if ch == '\t':
+            w += tab_width - (w % tab_width)
+        else:
+            w += 1
+    return w
+</t>
+<t tx="ekr.20090902092112.1467">def get_leading_ws(self,s):
+
+    """Returns the leading whitespace of 's'."""
+
+    i = 0 ; n = len(s)
+    while i &lt; n and s[i] in (' ','\t'):
+        i += 1
+    return s[0:i]
+</t>
+<t tx="ekr.20090902092112.1468"># Optimize leading whitespace in s with the given tab_width.
+
+def optimizeLeadingWhitespace (line,tab_width):
+
+    i, width = g.skip_leading_ws_with_indent(line,0,tab_width)
+    s = g.computeLeadingWhitespace(width,tab_width) + line[i:]
+    return s
+</t>
+<t tx="ekr.20090902092112.1469">@
+
+The caller should call g.stripBlankLines before calling this routine if desired.
+
+This routine does _not_ simply call rstrip(): that would delete all trailing whitespace-only lines, and in some cases that would change the meaning of program or data.
+
+@c
+
+def regularizeTrailingNewlines(s,kind):
+
+    """Kind is 'asis', 'zero' or 'one'."""
+
+    pass
+</t>
+<t tx="ekr.20090902092112.1470">def removeLeadingWhitespace (self,s,first_ws):
+
+    '''Remove whitespace up to first_ws wide in s.'''
+
+    j = 0 ; ws = 0
+    tabwidth = 4
+    first_ws = abs(first_ws)
+    for ch in s:
+        if ws &gt;= first_ws:
+            break
+        elif ch == ' ':
+            j += 1 ; ws += 1
+        elif ch == '\t':
+            j += 1 ; ws += tab_width - (ws % tab_width)
+        else: break
+    if j &gt; 0:
+        s = s[j:]
+    return s
+</t>
+<t tx="ekr.20090902092112.1471">def removeExtraLws (s,tab_width):
+
+    '''Remove extra indentation from one or more lines.
+
+    Warning: used by getScript.  This is *not* the same as g.adjustTripleString.'''
+
+    lines = g.splitLines(s)
+
+    # Find the first non-blank line and compute w, the width of its leading whitespace.
+    for line in lines:
+        if line.strip():
+            lws = g.get_leading_ws(line)
+            w = g.computeWidth(lws,tab_width)
+            break
+    else: return s
+
+    # Remove the leading whitespace.
+    result = [g.removeLeadingWhitespace(line,w,tab_width) for line in lines]
+    result = ''.join(result)
+
+    if 0:
+        g.trace('lines...')
+        for line in g.splitLines(result):
+            g.pr(repr(line))
+
+    return result
+</t>
+<t tx="ekr.20090902092112.1472">if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    for s,expected in (
+        (' a\n b\n c', 'a\nb\nc'),
+        (' \n  A\n    B\n  C\n', '\nA\n  B\nC\n'),
+    ):
+        result = g.removeExtraLws(s,c.tab_width)
+        assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
+            repr(s),repr(expected),repr(result))
+</t>
+<t tx="ekr.20090902092112.1473"># Warning: string.rstrip also removes newlines!
+
+def removeTrailingWs(s):
+
+    j = len(s)-1
+    while j &gt;= 0 and (s[j] == ' ' or s[j] == '\t'):
+        j -= 1
+    return s[:j+1]
+</t>
+<t tx="ekr.20090902092112.1474">if g.unitTesting:
+
+    table = (
+        ('a a\t','a a'),
+        ('a a\t\n','a a\t\n'),
+        ('a a ','a a'),
+    )
+
+    for s,val in table:
+        result = g.removeTrailingWs(s)
+        assert result == val, 'expected %s, got %s' % (
+            repr(val),repr(result))
+</t>
+<t tx="ekr.20090902092112.1475"># Skips leading up to width leading whitespace.
+
+def skip_leading_ws(s,i,ws,tab_width):
+
+    count = 0
+    while count &lt; ws and i &lt; len(s):
+        ch = s[i]
+        if ch == ' ':
+            count += 1
+            i += 1
+        elif ch == '\t':
+            count += (abs(tab_width) - (count % abs(tab_width)))
+            i += 1
+        else: break
+
+    return i
+</t>
+<t tx="ekr.20090902092112.1476">def skip_leading_ws_with_indent(s,i,tab_width):
+
+    """Skips leading whitespace and returns (i, indent), 
+
+    - i points after the whitespace
+    - indent is the width of the whitespace, assuming tab_width wide tabs."""
+
+    count = 0 ; n = len(s)
+    while i &lt; n:
+        ch = s[i]
+        if ch == ' ':
+            count += 1
+            i += 1
+        elif ch == '\t':
+            count += (abs(tab_width) - (count % abs(tab_width)))
+            i += 1
+        else: break
+
+    return i, count
+</t>
+<t tx="ekr.20090902092112.1477">def stripBlankLines(s):
+
+    lines = g.splitLines(s)
+
+    for i in range(len(lines)):
+
+        line = lines[i]
+        j = g.skip_ws(line,0)
+        if j &gt;= len(line):
+            lines[i] = ''
+            # g.trace("%4d %s" % (i,repr(lines[i])))
+        elif line[j] == '\n':
+            lines[i] = '\n'
+            # g.trace("%4d %s" % (i,repr(lines[i])))
+
+    return ''.join(lines)
+</t>
+<t tx="ekr.20090902092112.1478"></t>
+<t tx="ekr.20090902092112.1479">def splitLines (self,s):
+
+    '''Split s into lines, preserving the number of lines and the ending of the last line.'''
+
+    return s and s.splitlines(True) or []
+</t>
+<t tx="ekr.20090902092112.1480">class nsiWriter:
+
+    '''A class to write .nsi scripts.'''
+
+    @others
+</t>
+<t tx="ekr.20090902092112.1481">version = '4.6.3-final'</t>
+<t tx="ekr.20090902092112.1482">try:
+    inLeo = g is not None
+except AttributeError:
+    inLeo = False
+
+print 'inLeo',inLeo
+</t>
+<t tx="ekr.20090902092112.1483"></t>
 </tnodes>
 </leo_file>
