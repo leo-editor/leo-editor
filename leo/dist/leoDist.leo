@@ -141,7 +141,7 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 </v>
 <v t="ekr.20090826220933.1573"><vh>bzr-manifest.txt</vh></v>
 <v t="ekr.20090831172520.1555"><vh>@@auto ../../bzr-small-manifest.txt</vh></v>
-<v t="ekr.20090826220933.1565"><vh>Create leo.nsi</vh>
+<v t="ekr.20090826220933.1565" a="E"><vh>Create leo.nsi</vh>
 <v t="ekr.20090831172520.1553"><vh>ctor</vh></v>
 <v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
 <v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
@@ -1648,7 +1648,7 @@ rootDir = g.os_path_finalize_join(
 manifest = g.os_path_finalize_join(
     rootDir,'bzr-manifest.txt')  #'bzr-small-manifest.txt')
 
-nsi = nsiWriter(c,rootDir)
+nsi = nsiWriter()
 nsi.run(manifest)
 </t>
 <t tx="ekr.20090826220933.1566">def deleteBlankLines (self,lines):
@@ -3780,10 +3780,8 @@ setup.py
 
     self.f.write(s)
 </t>
-<t tx="ekr.20090831172520.1553">def __init__ (self,c,rootDir):
+<t tx="ekr.20090831172520.1553">def __init__ (self):
 
-    self.c = c
-    self.rootDir = rootDir
     self.version = '4.6.3-final'
 </t>
 <t tx="ekr.20090831172520.1554">def run (self,fn):
