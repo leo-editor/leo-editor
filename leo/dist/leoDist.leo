@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="7,3,0,1,2"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="7,3,1,3"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -87,14 +87,14 @@
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
-<v t="ekr.20090901092556.1608" a="E"><vh>Boilerplate</vh>
+<v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
 <v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1578"><vh>putDefines</vh></v>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1589"><vh>putVariables</vh></v>
 <v t="ekr.20090901092556.1590"><vh>putOnInit</vh></v>
 </v>
-<v t="ekr.20090901092556.1610" a="E"><vh>middle boilerplate</vh>
+<v t="ekr.20090901092556.1610"><vh>middle boilerplate</vh>
 <v t="ekr.20090901092556.1603"><vh>genMenuShortcuts</vh></v>
 <v t="ekr.20090901092556.1604"><vh>genDesktopShortcuts</vh></v>
 <v t="ekr.20090901092556.1605"><vh>genFileAssociation</vh></v>
@@ -104,13 +104,13 @@
 <v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
 </v>
 </v>
-<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
 <v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
 </v>
-<v t="ekr.20090901092556.1575"><vh>genMiddle &amp; helper</vh></v>
-<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helper</vh>
+<v t="ekr.20090901092556.1575"><vh>genMiddle</vh></v>
+<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
 <v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
 <v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
@@ -128,7 +128,7 @@
 <v t="ekr.20090901082242.1563"><vh>makeDicts</vh></v>
 <v t="ekr.20090901082242.1564"><vh>printMissing</vh></v>
 </v>
-<v t="ekr.20090902092112.1445"><vh>whitespace</vh>
+<v t="ekr.20090902092112.1445" a="E"><vh>whitespace</vh>
 <v t="ekr.20090902092112.1463"><vh>adjustTripleString</vh></v>
 <v t="ekr.20090902092112.1467"><vh>get_leading_ws</vh></v>
 <v t="ekr.20090902092112.1466"><vh>computeWidth</vh></v>
@@ -1048,10 +1048,6 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 
 '''Create the installer script.'''
 
-# To do:
-# Create app-specific constants.
-# Use dicts in string substitutions.
-
 import os
 &lt;&lt; define version &gt;&gt;
 &lt;&lt; define inLeo &gt;&gt;
@@ -1089,7 +1085,7 @@ def deleteFiles (self,lines,deleteList):
 <t tx="ekr.20090826220933.1569">def directoryList (self,rootDir):
 
     '''Compute a top-down list of all directories.
-       These directories start at the leo directory.'''
+       These directories start at the top-level directory.'''
 
     trace = False
     ignoreDirs = ('.bzr',)
@@ -1108,7 +1104,7 @@ def deleteFiles (self,lines,deleteList):
 </t>
 <t tx="ekr.20090831172520.1551">def put (self,s,adjust=True):
 
-    '''Output s to leo.nsi.'''
+    '''Output s to the nsi file.'''
 
     if adjust:
         s = self.adjustTripleString(s)
@@ -1170,7 +1166,7 @@ def deleteFiles (self,lines,deleteList):
     trace = False ; verbose = False
 
     # Create the dirDict.
-    # Keys are directories (starting at leo).
+    # Keys are directories.
     # Values are files contained in each directory.
     dirDict = {}
     dirDict['**top'] = [] # Create an entry for the root directory.
@@ -1232,7 +1228,7 @@ def deleteFiles (self,lines,deleteList):
 </t>
 <t tx="ekr.20090901082242.1565">def genScript (self,dirs,dirDict,filesDict):
 
-    '''Generate leo.nsi.'''
+    '''Generate the .nsi installer script.'''
 
     self.f = self.openNsi()
     if not self.f: return
@@ -1251,7 +1247,7 @@ def deleteFiles (self,lines,deleteList):
 <t tx="ekr.20090901092556.1572">def openNsi (self):
 
     path = g.os_path_finalize_join(
-        g.app.loadDir,'..','..','leo.nsi')
+        g.app.loadDir,'..','..',nsi_name)
 
     try:
         f = open(path,'w')
@@ -1274,12 +1270,12 @@ def deleteFiles (self,lines,deleteList):
 
     '''Generate the manifest-specific install data.'''
 
-    self.put('\nSection "Leo" SEC01\n\n')
+    self.put('\nSection "%s" SEC01\n\n' % (app_name))
 
     self.put(self.getInstallVariableData(
         dirs,dirDict,filesDict),adjust=False)
 
-    self.put('\n; end Leo section\n')
+    self.put('\n; end %s section\n' % (app_name))
     self.put('SectionEnd\n')
 </t>
 <t tx="ekr.20090901092556.1575">def genMiddle (self):
@@ -1301,26 +1297,32 @@ def deleteFiles (self,lines,deleteList):
     '''Generate the manifest-specific uninstall data.'''
 
     self.put('''
-; Uninstall section as generated by HM NE, with hand-edits
-
 Section Uninstall
 
-    DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\EKR\leo"
+    DeleteRegKey HKEY_LOCAL_MACHINE "%s"
 
-    ReadRegStr $1 HKCR ".leo" ""
-    StrCmp $1 "LeoFile" 0 NoOwn ; only do this if we own it.
+    ReadRegStr $1 HKCR "%s" ""
+    StrCmp $1 "%sFile" 0 NoOwn ; only do this if we own it.
 
-    ReadRegStr $1 HKCR ".leo" "backup_val"
+    ReadRegStr $1 HKCR "%s" "backup_val"
     StrCmp $1 "" 0 RestoreBackup ; if backup == "" then delete the whole key
-      DeleteRegKey HKCR ".leo"
+      DeleteRegKey HKCR "%s"
     Goto NoOwn
 
-    RestoreBackup:
-      WriteRegStr HKCR ".leo" "" $1
-      DeleteRegValue HKCR ".leo" "backup_val"
+RestoreBackup:
+    WriteRegStr HKCR "%s" "" $1
+    DeleteRegValue HKCR "%s" "backup_val"
 
     ; ---- Start of manifest-related data...
-''')
+''' % (
+    app_hkey_local_machine, # DeleteRegKey
+    app_extension, # ReadRegStr
+    app_name,      # StrCmp
+    app_extension, # ReadRegStr
+    app_extension, # DeleteRegKey
+    app_extension, # WriteRegStr
+    app_extension, # DeleteRegValue
+))
 
     # Does all the hard work.
     self.put(
@@ -1330,22 +1332,26 @@ Section Uninstall
     self.put('''
     ; ---- End of manifest related data.
 
-    NoOwn:
+NoOwn:
     MessageBox MB_YESNO|MB_ICONQUESTION \
-        "Delete all files in Leo Program folder?" \
+        "Delete all files in %s Program folder?" \
         IDNO NoDelete
 
 NoDelete:
   Delete "$SMPROGRAMS\Leo\Uninstall.lnk"
-  RMDir "$SMPROGRAMS\Leo"
-  Delete "$DESKTOP\Leo.lnk"
+  RMDir "$SMPROGRAMS\%s"
+  Delete "$DESKTOP\%s.lnk"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   SetAutoClose false
 
 ; end Uninstall section
 SectionEnd
-''')
+''' % (
+    app_name, # Delete all files...?
+    app_name, # RmDir
+    app_name, # Delete
+))
 </t>
 <t tx="ekr.20090901092556.1577">def genTail (self):
 
@@ -1621,7 +1627,7 @@ SectionEnd
 
     self.put('''
 Section -Post
-  WriteRegStr HKEY_LOCAL_MACHINE "SOFTWARE\EKR\leo" "" "$INSTDIR"
+  WriteRegStr HKEY_LOCAL_MACHINE "%s" "" "$INSTDIR"
   WriteUninstaller "$INSTDIR\uninst.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name) (remove only)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
@@ -1629,7 +1635,7 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
 SectionEnd
-''')
+''' % (app_hkey_local_machine))
 </t>
 <t tx="ekr.20090901092556.1608"></t>
 <t tx="ekr.20090901092556.1609"></t>
@@ -1640,9 +1646,9 @@ SectionEnd
         g.app.loadDir,'..','Icons','uninst.ico')
 
     self.put('''
-UninstallCaption "Uninstall Leo"
+UninstallCaption "Uninstall %s"
 UninstallIcon "%s"
-''' % path)
+''' % (app_name,path))
 </t>
 <t tx="ekr.20090901092556.1612">def genMiddleFunctions (self):
 
@@ -1752,10 +1758,7 @@ FunctionEnd
 # They are defined here to make this script independent of Leo</t>
 <t tx="ekr.20090902092112.1463">def adjustTripleString (self,s):
 
-    '''Remove leading indentation from a triple-quoted string.
-
-    This works around the fact that Leo nodes can't represent underindented strings.
-    '''
+    '''Remove leading indentation from a triple-quoted string.'''
 
     # Compute the minimum leading whitespace of all non-blank lines.
     lines = self.splitLines(s)
@@ -1989,6 +1992,7 @@ except AttributeError:
 </t>
 <t tx="ekr.20090902092112.1483">app_doc_icon = 'Icons\LeoDoc.ico'
 app_extension = '.leo'
+app_hkey_local_machine = 'SOFTWARE\EKR\leo'
 app_icon = "%s\leo\Icons\leo_inst.ico" % rootDir
 app_icon2 = 'Icons\LeoApp.ico'
 app_license = '%s\License.txt' % rootDir
@@ -1998,6 +2002,7 @@ app_publisher = 'Edward K. Ream'
 app_python_executable = 'launchLeo.py'
 app_web_site = 'http://webpages.charter.net/edreamleo/front.html'
 
+nsi_name = 'leo.nsi'
 target_file = 'LeoSetup-%s.exe' % app_version</t>
 </tnodes>
 </leo_file>
