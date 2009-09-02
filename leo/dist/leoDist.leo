@@ -141,7 +141,7 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 </v>
 <v t="ekr.20090826220933.1573"><vh>bzr-manifest.txt</vh></v>
 <v t="ekr.20090831172520.1555"><vh>@@auto ../../bzr-small-manifest.txt</vh></v>
-<v t="ekr.20090826220933.1565" a="E"><vh>Create leo.nsi</vh>
+<v t="ekr.20090826220933.1565"><vh>Create leo.nsi</vh>
 <v t="ekr.20090831172520.1553"><vh>ctor</vh></v>
 <v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
 <v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
@@ -160,7 +160,7 @@ marks="ekr.20080916084557.2,"><vh>@thin leo-post-install-script.py</vh></v>
 <v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
 </v>
 </v>
-<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
 <v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
@@ -1640,6 +1640,9 @@ import os
 class nsiWriter:
     '''A class to write .nsi scripts.'''
     @others
+    
+# Change this version as needed.
+version = '4.6.3-final'
 
 # The root directory contains the leo directory.
 rootDir = g.os_path_finalize_join(
@@ -1648,7 +1651,7 @@ rootDir = g.os_path_finalize_join(
 manifest = g.os_path_finalize_join(
     rootDir,'bzr-manifest.txt')  #'bzr-small-manifest.txt')
 
-nsi = nsiWriter()
+nsi = nsiWriter(version)
 nsi.run(manifest)
 </t>
 <t tx="ekr.20090826220933.1566">def deleteBlankLines (self,lines):
@@ -3780,9 +3783,9 @@ setup.py
 
     self.f.write(s)
 </t>
-<t tx="ekr.20090831172520.1553">def __init__ (self):
+<t tx="ekr.20090831172520.1553">def __init__ (self,version):
 
-    self.version = '4.6.3-final'
+    self.version = version
 </t>
 <t tx="ekr.20090831172520.1554">def run (self,fn):
 
