@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="7,3,0,1,2"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -82,20 +82,19 @@
 <v t="ekr.20090902092112.1477"><vh>stripBlankLines</vh></v>
 </v>
 <v t="ekr.20090902092112.1481"><vh>&lt;&lt; define version &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1565"><vh>Create leo.nsi</vh>
+<v t="ekr.20090826220933.1565" a="E"><vh>@button Create leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
-<v t="ekr.20090831172520.1553"><vh>ctor</vh></v>
-<v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
+<v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
+<v t="ekr.20090901092556.1608" a="E"><vh>Boilerplate</vh>
 <v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1578"><vh>putDefines</vh></v>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1589"><vh>putVariables</vh></v>
 <v t="ekr.20090901092556.1590"><vh>putOnInit</vh></v>
 </v>
-<v t="ekr.20090901092556.1610"><vh>middle boilerplate</vh>
+<v t="ekr.20090901092556.1610" a="E"><vh>middle boilerplate</vh>
 <v t="ekr.20090901092556.1603"><vh>genMenuShortcuts</vh></v>
 <v t="ekr.20090901092556.1604"><vh>genDesktopShortcuts</vh></v>
 <v t="ekr.20090901092556.1605"><vh>genFileAssociation</vh></v>
@@ -1050,26 +1049,25 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 '''Create the installer script.'''
 
 # To do:
-# Make script independent of app.
+# Create app-specific constants.
 # Use dicts in string substitutions.
 
 import os
-
 &lt;&lt; define version &gt;&gt;
 &lt;&lt; define inLeo &gt;&gt;
-&lt;&lt; define application constants &gt;&gt;
-
-@others
 
 if inLeo:
     # The root directory contains the leo directory.
-    rootDir = g.os_path_finalize_join(g.app.loadDir,'..','..')
+    rootDir  = g.os_path_finalize_join(g.app.loadDir,'..','..')
     manifest = g.os_path_finalize_join(rootDir,'bzr-manifest.txt')
 else:
     rootDir = os.path.abspath(os.curdir)
     manifest = os.path.normpath(os.path.join(rootDir,'bzr-manifest.txt'))
 
-nsi = nsiWriter(version)
+&lt;&lt; define application constants &gt;&gt;
+@others
+
+nsi = nsiWriter()
 nsi.run(manifest)
 </t>
 <t tx="ekr.20090826220933.1566">def deleteBlankLines (self,lines):
@@ -1116,10 +1114,6 @@ def deleteFiles (self,lines,deleteList):
         s = self.adjustTripleString(s)
 
     self.f.write(s)
-</t>
-<t tx="ekr.20090831172520.1553">def __init__ (self,version):
-
-    self.version = version
 </t>
 <t tx="ekr.20090831172520.1554">def run (self,fn):
 
@@ -1361,34 +1355,19 @@ SectionEnd
     pass</t>
 <t tx="ekr.20090901092556.1578">def putDefines(self):
 
-    # Version.
-    self.put('!define PRODUCT_VERSION "%s"\n' % self.version)
-
-    # HM NIS Edit Wizard helper defines
     self.put('''
-; HM NIS Edit Wizard helper defines
-!define PRODUCT_NAME "Leo"
-!define PRODUCT_PUBLISHER "Edward K. Ream"
-!define PRODUCT_WEB_SITE "http://webpages.charter.net/edreamleo/front.html"
-; !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
+!define PRODUCT_VERSION "%s"
+!define PRODUCT_NAME "%s"
+!define PRODUCT_PUBLISHER "%s"
+!define PRODUCT_WEB_SITE "%s"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
 SetCompressor bzip2
-''')
 
-    # Custom defines.
-    self.put('''
-; hand-created defines
 ; used for Windows Registry links to uninstaller
-
-!define PRODUCT_NAME_LOWER_CASE "leo"
+!define PRODUCT_NAME_LOWER_CASE "%s"
 
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME_LOWER_CASE}"
-
-; On Windows NT-derived operating systems, Python.org installer for Python 2.4 
-; can be installed for all users or current user only.
-; define the following symbol to install if Python is installed only for current user. 
-; !define INSTALL_IF_PYTHON_FOR_CURRENT_USER
 
 !define STRING_PYTHON_NOT_FOUND "Python is not installed on this system.\\
 Please install Python first.\\
@@ -1397,12 +1376,18 @@ Click OK to cancel installation and remove installation Files."
 !define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only.\\
 ${PRODUCT_NAME} does not support use with Python so configured.\\
 Click OK to cancel installation and remove installation Files."
-''')
+''' % (
+    app_version, # Product_Version
+    app_name, # Product_Name,
+    app_publisher, # Product_Publisher
+    app_web_site, # Product_Web_Site
+    app_lower_case_name, # Product_Name_Lower_Case
+))
 </t>
 <t tx="ekr.20090901092556.1588">def putSettings (self):
 
-    s = '''
-Caption "Leo Installer"
+    self.put('''
+Caption "%s Installer"
 AutoCloseWindow false 
 SilentInstall normal
 CRCCheck on ; FIXME shouldn't this be CRCCheck force ? Why give user option of using corrupted installer?
@@ -1411,25 +1396,25 @@ SetDatablockOptimize on
 ; SetOverwrite ifnewer
 WindowIcon off
 
-; settings from HM NIS Edit Wizard
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "LeoSetup-%s.exe"
+OutFile "%s"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
-InstallDir "$PROGRAMFILES\Leo-%s"
-Icon "%s\leo\Icons\leo_inst.ico"
-; Version 1.0 of NSIS Script for Leo comes with its own uninstall icon
-; UninstallIcon "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
+InstallDir "$PROGRAMFILES\%s-%s"
+Icon "%s"
 DirText "Setup will install $(^Name) in the following folder.\\
 To install in a different folder, click Browse and select another folder."
 LicenseText "If you accept all the terms of the agreement, choose I Agree to continue.\\
 You must accept the agreement to install $(^Name)."
-LicenseData "%s\License.txt"
+LicenseData "%s"
 ShowInstDetails show
 ShowUnInstDetails show
-''' % (self.version,self.version,rootDir,rootDir)
-
-    self.put(s)
-</t>
+''' % (
+    app_name, # Caption
+    target_file, # OutFile
+    app_name, app_version, # InstallDir
+    app_icon, # Icon
+    app_license, # LicenseData
+))</t>
 <t tx="ekr.20090901092556.1589">def putVariables (self):
 
     self.put('''
@@ -1444,8 +1429,7 @@ var StrNoUsablePythonFound
     self.put('''
 ; .onInit -- find Pythonw.exe, set PythonExecutable with string value
 ; of its fully qualified path.
-; code taken from the "Leo" Section of Leo Installer Version 1.0
-;
+
 Function .onInit
 
     # Bypass this for now.
@@ -1552,14 +1536,14 @@ FunctionEnd
 
     self.put('''
 ; FIXME $SMPROGRAMS depends on the value of SetShellVarContext. Since that defaults to 'current'
-; that means that this installer will make Leo available for the current user only.
+; that means that this installer will make the app available for the current user only.
 ; Unless I am grossly mistaken this is a needless hindrance, and a Bad Thing since
-; security concerns are such that it would be best to not run Leo with the Administrator privileges
+; security concerns are such that it would be best to not run the app with the Administrator privileges
 ; of the account used to install the software.
 ;
 ; Sure enough, the Start Menu Shortcuts and Desktop Shortcut work for the installer account only. 
 ;
-; Question is -- do we want Leo always available for any log-in on this computer?
+; Question is -- do we want the app always available for any log-in on this computer?
 ;
 ; My guesses:
 ; Ideally, Uninstall.lnk should appear only for the current user, and the uninstaller should refuse to run
@@ -1568,58 +1552,70 @@ FunctionEnd
 ; How will Windows XP Home deal with that? 
 
 Section "Start Menu Shortcuts" SEC02
-  CreateDirectory "$SMPROGRAMS\Leo"
-  CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
-; In Version 1.0 installer, was
-; CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" "$PythonExecutable" '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
-  CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+  CreateDirectory "$SMPROGRAMS\%s"
+  CreateShortCut "$SMPROGRAMS\%s\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
+  CreateShortCut "$SMPROGRAMS\%s\%s.lnk" '"$PythonExecutable"' '"$INSTDIR\%s"' "$INSTDIR\%s" 0
 SectionEnd
-''')
+''' % (
+    app_name, # CreateDirectory
+    app_name, # CreateShortCut
+    app_name, app_name, app_python_executable, app_icon2, # CreateShortCut
+))
 </t>
 <t tx="ekr.20090901092556.1604">def genDesktopShortcuts(self):
 
     self.put('''
 Section "Desktop Shortcut" SEC03
-  CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+  CreateShortCut "$DESKTOP\%s.lnk" '"$PythonExecutable"' '"$INSTDIR\%s"' "$INSTDIR\%s" 0
 SectionEnd
-''')
-</t>
+''' % (app_name,app_python_executable,app_icon2))</t>
 <t tx="ekr.20090901092556.1605">def genFileAssociation(self):
 
     self.put('''
-Section ".leo File Association"
+Section "%s File Association"
   SectionIn 1
   SectionIn 2
   SectionIn 3
 
-  # back up old value of .leo in case some other program was using it
-  ReadRegStr $1 HKCR ".leo" ""
+  # back up old value of extension in case some other program was using it
+  ReadRegStr $1 HKCR "%s" ""
   StrCmp $1 "" Label1
-  StrCmp $1 "LeoFile" Label1
-  WriteRegStr HKCR ".leo" "backup_val" $1
+  StrCmp $1 "%sFile" Label1
+  WriteRegStr HKCR "%s" "backup_val" $1
 
 Label1:
-  WriteRegStr HKCR ".leo" "" "LeoFile"
-  WriteRegStr HKCR "LeoFile" "" "Leo File"
-  WriteRegStr HKCR "LeoFile\shell" "" "open"
-; In Version 1.0 installer, the .ico reference was
-;  WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico,0
-; which does not work under Windows XP Professional SP2.
-  WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico
-  WriteRegStr HKCR "LeoFile\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\src\leo.py" "%1"'
+  WriteRegStr HKCR "%s" "" "%sFile"
+  WriteRegStr HKCR "%sFile" "" "%s File"
+  WriteRegStr HKCR "%sFile\shell" "" "open"
+  WriteRegStr HKCR "%sFile\DefaultIcon" "" $INSTDIR\%s
+  WriteRegStr HKCR "%sFile\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\%s" "%%1"'
 
 SectionEnd
-''')
+''' % (
+    app_extension, # Section
+    app_extension, # ReadRegStr
+    app_name,      # StrCmp
+    app_extension, # WriteRegStr
+# Label1:
+    app_extension, app_name, # line 1
+    app_name, app_name, # line 2
+    app_name, # line 3
+    app_name, app_doc_icon, # line 4
+    app_name, app_python_executable, # line 5
+))
 </t>
 <t tx="ekr.20090901092556.1606">def genAdditionalIcons(self):
 
     self.put('''
 Section -AdditionalIcons
   SetOutPath $INSTDIR
-  CreateDirectory "$SMPROGRAMS\Leo"
-  CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" "$INSTDIR\uninst.exe"
+  CreateDirectory "$SMPROGRAMS\%s"
+  CreateShortCut "$SMPROGRAMS\%s\Uninstall.lnk" "$INSTDIR\uninst.exe"
 SectionEnd
-''')
+''' % (
+    app_name, # CreateDirectory
+    app_name, # CreateShortCut
+))
 </t>
 <t tx="ekr.20090901092556.1607">def genPost (self):
 
@@ -1983,14 +1979,25 @@ def skip_leading_ws(s,i,ws,tab_width):
 
     @others
 </t>
-<t tx="ekr.20090902092112.1481">version = '4.6.3-final'</t>
+<t tx="ekr.20090902092112.1481">app_version = '4.6.3-final'</t>
 <t tx="ekr.20090902092112.1482">try:
     inLeo = g is not None
 except AttributeError:
     inLeo = False
 
-print 'inLeo',inLeo
+# print 'inLeo',inLeo
 </t>
-<t tx="ekr.20090902092112.1483"></t>
+<t tx="ekr.20090902092112.1483">app_doc_icon = 'Icons\LeoDoc.ico'
+app_extension = '.leo'
+app_icon = "%s\leo\Icons\leo_inst.ico" % rootDir
+app_icon2 = 'Icons\LeoApp.ico'
+app_license = '%s\License.txt' % rootDir
+app_lower_case_name = 'leo'
+app_name = 'Leo'
+app_publisher = 'Edward K. Ream'
+app_python_executable = 'launchLeo.py'
+app_web_site = 'http://webpages.charter.net/edreamleo/front.html'
+
+target_file = 'LeoSetup-%s.exe' % app_version</t>
 </tnodes>
 </leo_file>

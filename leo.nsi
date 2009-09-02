@@ -1,25 +1,16 @@
-!define PRODUCT_VERSION "4.6.3-final"
 
-; HM NIS Edit Wizard helper defines
+!define PRODUCT_VERSION "4.6.3-final"
 !define PRODUCT_NAME "Leo"
 !define PRODUCT_PUBLISHER "Edward K. Ream"
 !define PRODUCT_WEB_SITE "http://webpages.charter.net/edreamleo/front.html"
-; !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
 SetCompressor bzip2
 
-; hand-created defines
 ; used for Windows Registry links to uninstaller
-
 !define PRODUCT_NAME_LOWER_CASE "leo"
 
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME_LOWER_CASE}"
-
-; On Windows NT-derived operating systems, Python.org installer for Python 2.4 
-; can be installed for all users or current user only.
-; define the following symbol to install if Python is installed only for current user. 
-; !define INSTALL_IF_PYTHON_FOR_CURRENT_USER
 
 !define STRING_PYTHON_NOT_FOUND "Python is not installed on this system.\
 Please install Python first.\
@@ -38,14 +29,11 @@ SetDatablockOptimize on
 ; SetOverwrite ifnewer
 WindowIcon off
 
-; settings from HM NIS Edit Wizard
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "LeoSetup-4.6.3-final.exe"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 InstallDir "$PROGRAMFILES\Leo-4.6.3-final"
 Icon "C:\leo.repo\main-trunk\leo\Icons\leo_inst.ico"
-; Version 1.0 of NSIS Script for Leo comes with its own uninstall icon
-; UninstallIcon "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
 DirText "Setup will install $(^Name) in the following folder.\
 To install in a different folder, click Browse and select another folder."
 LicenseText "If you accept all the terms of the agreement, choose I Agree to continue.\
@@ -61,8 +49,7 @@ var StrNoUsablePythonFound
 
 ; .onInit -- find Pythonw.exe, set PythonExecutable with string value
 ; of its fully qualified path.
-; code taken from the "Leo" Section of Leo Installer Version 1.0
-;
+
 Function .onInit
 
     # Bypass this for now.
@@ -2244,14 +2231,14 @@ Section "Leo" SEC01
 SectionEnd
 
 ; FIXME $SMPROGRAMS depends on the value of SetShellVarContext. Since that defaults to 'current'
-; that means that this installer will make Leo available for the current user only.
+; that means that this installer will make the app available for the current user only.
 ; Unless I am grossly mistaken this is a needless hindrance, and a Bad Thing since
-; security concerns are such that it would be best to not run Leo with the Administrator privileges
+; security concerns are such that it would be best to not run the app with the Administrator privileges
 ; of the account used to install the software.
 ;
 ; Sure enough, the Start Menu Shortcuts and Desktop Shortcut work for the installer account only. 
 ;
-; Question is -- do we want Leo always available for any log-in on this computer?
+; Question is -- do we want the app always available for any log-in on this computer?
 ;
 ; My guesses:
 ; Ideally, Uninstall.lnk should appear only for the current user, and the uninstaller should refuse to run
@@ -2262,13 +2249,11 @@ SectionEnd
 Section "Start Menu Shortcuts" SEC02
   CreateDirectory "$SMPROGRAMS\Leo"
   CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
-; In Version 1.0 installer, was
-; CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" "$PythonExecutable" '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
-  CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+  CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\launchLeo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
 SectionEnd
 
 Section "Desktop Shortcut" SEC03
-  CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+  CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\launchLeo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
 SectionEnd
 
 Section ".leo File Association"
@@ -2276,7 +2261,7 @@ Section ".leo File Association"
   SectionIn 2
   SectionIn 3
 
-  # back up old value of .leo in case some other program was using it
+  # back up old value of extension in case some other program was using it
   ReadRegStr $1 HKCR ".leo" ""
   StrCmp $1 "" Label1
   StrCmp $1 "LeoFile" Label1
@@ -2286,11 +2271,8 @@ Label1:
   WriteRegStr HKCR ".leo" "" "LeoFile"
   WriteRegStr HKCR "LeoFile" "" "Leo File"
   WriteRegStr HKCR "LeoFile\shell" "" "open"
-; In Version 1.0 installer, the .ico reference was
-;  WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico,0
-; which does not work under Windows XP Professional SP2.
   WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico
-  WriteRegStr HKCR "LeoFile\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\src\leo.py" "%1"'
+  WriteRegStr HKCR "LeoFile\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\launchLeo.py" "%1"'
 
 SectionEnd
 
