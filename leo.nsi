@@ -9,7 +9,6 @@ SetCompressor bzip2
 
 ; used for Windows Registry links to uninstaller
 !define PRODUCT_NAME_LOWER_CASE "leo"
-
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME_LOWER_CASE}"
 
 !define STRING_PYTHON_NOT_FOUND "Python is not installed on this system.\

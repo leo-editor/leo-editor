@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="7,3,1,3"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -82,19 +82,19 @@
 <v t="ekr.20090902092112.1477"><vh>stripBlankLines</vh></v>
 </v>
 <v t="ekr.20090902092112.1481"><vh>&lt;&lt; define version &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1565" a="E"><vh>@button Create leo.nsi</vh>
+<v t="ekr.20090826220933.1565"><vh>@button Create leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
+<v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
 <v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
-<v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
+<v t="ekr.20090901092556.1609" a="E"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1578"><vh>putDefines</vh></v>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1589"><vh>putVariables</vh></v>
 <v t="ekr.20090901092556.1590"><vh>putOnInit</vh></v>
 </v>
-<v t="ekr.20090901092556.1610"><vh>middle boilerplate</vh>
+<v t="ekr.20090901092556.1610" a="E"><vh>middle boilerplate</vh>
 <v t="ekr.20090901092556.1603"><vh>genMenuShortcuts</vh></v>
 <v t="ekr.20090901092556.1604"><vh>genDesktopShortcuts</vh></v>
 <v t="ekr.20090901092556.1605"><vh>genFileAssociation</vh></v>
@@ -104,7 +104,7 @@
 <v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
 </v>
 </v>
-<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
 <v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
@@ -128,7 +128,7 @@
 <v t="ekr.20090901082242.1563"><vh>makeDicts</vh></v>
 <v t="ekr.20090901082242.1564"><vh>printMissing</vh></v>
 </v>
-<v t="ekr.20090902092112.1445" a="E"><vh>whitespace</vh>
+<v t="ekr.20090902092112.1445"><vh>whitespace</vh>
 <v t="ekr.20090902092112.1463"><vh>adjustTripleString</vh></v>
 <v t="ekr.20090902092112.1467"><vh>get_leading_ws</vh></v>
 <v t="ekr.20090902092112.1466"><vh>computeWidth</vh></v>
@@ -1361,18 +1361,17 @@ SectionEnd
     pass</t>
 <t tx="ekr.20090901092556.1578">def putDefines(self):
 
-    self.put('''
-!define PRODUCT_VERSION "%s"
-!define PRODUCT_NAME "%s"
-!define PRODUCT_PUBLISHER "%s"
-!define PRODUCT_WEB_SITE "%s"
+    s = '''
+!define PRODUCT_VERSION "{{version}}"
+!define PRODUCT_NAME "{{name}}"
+!define PRODUCT_PUBLISHER "{{publisher}}"
+!define PRODUCT_WEB_SITE "{{site}}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
 SetCompressor bzip2
 
 ; used for Windows Registry links to uninstaller
-!define PRODUCT_NAME_LOWER_CASE "%s"
-
+!define PRODUCT_NAME_LOWER_CASE "{{lower-name}}"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME_LOWER_CASE}"
 
 !define STRING_PYTHON_NOT_FOUND "Python is not installed on this system.\\
@@ -1382,18 +1381,23 @@ Click OK to cancel installation and remove installation Files."
 !define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only.\\
 ${PRODUCT_NAME} does not support use with Python so configured.\\
 Click OK to cancel installation and remove installation Files."
-''' % (
-    app_version, # Product_Version
-    app_name, # Product_Name,
-    app_publisher, # Product_Publisher
-    app_web_site, # Product_Web_Site
-    app_lower_case_name, # Product_Name_Lower_Case
-))
+'''
+    table = (
+        ('{{lower-name}}',app_lower_case_name),
+        ('{{name}}',app_name),
+        ('{{publisher}}',app_publisher),
+        ('{{site}}',app_web_site),
+        ('{{version}}',app_version))
+
+    for pattern,val in table:
+        s = s.replace(pattern,val)
+
+    self.put(s)
 </t>
 <t tx="ekr.20090901092556.1588">def putSettings (self):
 
-    self.put('''
-Caption "%s Installer"
+    s = '''
+Caption "{{name}} Installer"
 AutoCloseWindow false 
 SilentInstall normal
 CRCCheck on ; FIXME shouldn't this be CRCCheck force ? Why give user option of using corrupted installer?
@@ -1403,24 +1407,30 @@ SetDatablockOptimize on
 WindowIcon off
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "%s"
+OutFile "{{target}}"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
-InstallDir "$PROGRAMFILES\%s-%s"
-Icon "%s"
+InstallDir "$PROGRAMFILES\{{name}}-{{version}}"
+Icon "{{icon}}"
 DirText "Setup will install $(^Name) in the following folder.\\
 To install in a different folder, click Browse and select another folder."
 LicenseText "If you accept all the terms of the agreement, choose I Agree to continue.\\
 You must accept the agreement to install $(^Name)."
-LicenseData "%s"
+LicenseData "{{license}}"
 ShowInstDetails show
 ShowUnInstDetails show
-''' % (
-    app_name, # Caption
-    target_file, # OutFile
-    app_name, app_version, # InstallDir
-    app_icon, # Icon
-    app_license, # LicenseData
-))</t>
+'''
+    table = (
+        ('{{icon}}',app_icon),
+        ('{{license}}',app_license),
+        ('{{name}}',app_name),
+        ('{{target}}',target_file),
+        ('{{version}}',app_version))
+
+    for pattern,val in table:
+        s = s.replace(pattern,val)
+
+    self.put(s)
+</t>
 <t tx="ekr.20090901092556.1589">def putVariables (self):
 
     self.put('''
@@ -1540,7 +1550,7 @@ FunctionEnd
 </t>
 <t tx="ekr.20090901092556.1603">def genMenuShortcuts (self):
 
-    self.put('''
+    s = '''
 ; FIXME $SMPROGRAMS depends on the value of SetShellVarContext. Since that defaults to 'current'
 ; that means that this installer will make the app available for the current user only.
 ; Unless I am grossly mistaken this is a needless hindrance, and a Bad Thing since
@@ -1558,15 +1568,20 @@ FunctionEnd
 ; How will Windows XP Home deal with that? 
 
 Section "Start Menu Shortcuts" SEC02
-  CreateDirectory "$SMPROGRAMS\%s"
-  CreateShortCut "$SMPROGRAMS\%s\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
-  CreateShortCut "$SMPROGRAMS\%s\%s.lnk" '"$PythonExecutable"' '"$INSTDIR\%s"' "$INSTDIR\%s" 0
+  CreateDirectory "$SMPROGRAMS\{{name}}"
+  CreateShortCut "$SMPROGRAMS\{{name}}\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
+  CreateShortCut "$SMPROGRAMS\{{name}}\{{name}}.lnk" '"$PythonExecutable"' '"$INSTDIR\{{exe}}"' "$INSTDIR\{{icon2}}" 0
 SectionEnd
-''' % (
-    app_name, # CreateDirectory
-    app_name, # CreateShortCut
-    app_name, app_name, app_python_executable, app_icon2, # CreateShortCut
-))
+'''
+    # The $'s prevent us from using string.Template.
+    table = (
+        ('{{exe}}', app_python_executable),
+        ('{{icon2}}',app_icon2),
+        ('{{name}}',app_name))
+
+    for pattern,val in table:
+        s = s.replace(pattern,val)
+    self.put(s)
 </t>
 <t tx="ekr.20090901092556.1604">def genDesktopShortcuts(self):
 
@@ -1577,57 +1592,53 @@ SectionEnd
 ''' % (app_name,app_python_executable,app_icon2))</t>
 <t tx="ekr.20090901092556.1605">def genFileAssociation(self):
 
-    self.put('''
-Section "%s File Association"
+    s = '''
+Section "{{ext}} File Association"
   SectionIn 1
   SectionIn 2
   SectionIn 3
 
   # back up old value of extension in case some other program was using it
-  ReadRegStr $1 HKCR "%s" ""
+  ReadRegStr $1 HKCR "{{ext}}" ""
   StrCmp $1 "" Label1
-  StrCmp $1 "%sFile" Label1
-  WriteRegStr HKCR "%s" "backup_val" $1
+  StrCmp $1 "{{name}}File" Label1
+  WriteRegStr HKCR "{{ext}}" "backup_val" $1
 
 Label1:
-  WriteRegStr HKCR "%s" "" "%sFile"
-  WriteRegStr HKCR "%sFile" "" "%s File"
-  WriteRegStr HKCR "%sFile\shell" "" "open"
-  WriteRegStr HKCR "%sFile\DefaultIcon" "" $INSTDIR\%s
-  WriteRegStr HKCR "%sFile\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\%s" "%%1"'
+  WriteRegStr HKCR "{{ext}}" "" "{{name}}File"
+  WriteRegStr HKCR "{{name}}File" "" "{{name}} File"
+  WriteRegStr HKCR "{{name}}File\shell" "" "open"
+  WriteRegStr HKCR "{{name}}File\DefaultIcon" "" $INSTDIR\{{doc-icon}}
+  WriteRegStr HKCR "{{name}}File\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\{{exe}}" "%1"'
 
 SectionEnd
-''' % (
-    app_extension, # Section
-    app_extension, # ReadRegStr
-    app_name,      # StrCmp
-    app_extension, # WriteRegStr
-# Label1:
-    app_extension, app_name, # line 1
-    app_name, app_name, # line 2
-    app_name, # line 3
-    app_name, app_doc_icon, # line 4
-    app_name, app_python_executable, # line 5
-))
+'''
+    table = (
+        ('{{doc-icon}}',app_doc_icon),
+        ('{{exe}}',app_python_executable),
+        ('{{ext}}',app_extension),
+        ('{{name}}',app_name))
+
+    for pattern,val in table:
+        s = s.replace(pattern,val)
+    self.put(s)
 </t>
 <t tx="ekr.20090901092556.1606">def genAdditionalIcons(self):
 
-    self.put('''
+    s = '''
 Section -AdditionalIcons
   SetOutPath $INSTDIR
-  CreateDirectory "$SMPROGRAMS\%s"
-  CreateShortCut "$SMPROGRAMS\%s\Uninstall.lnk" "$INSTDIR\uninst.exe"
+  CreateDirectory "$SMPROGRAMS\{{name}}"
+  CreateShortCut "$SMPROGRAMS\{{name}}\Uninstall.lnk" "$INSTDIR\uninst.exe"
 SectionEnd
-''' % (
-    app_name, # CreateDirectory
-    app_name, # CreateShortCut
-))
-</t>
+'''
+    s = s.replace('{{name}}',app_name)
+    self.put(s)</t>
 <t tx="ekr.20090901092556.1607">def genPost (self):
 
-    self.put('''
+    s = '''
 Section -Post
-  WriteRegStr HKEY_LOCAL_MACHINE "%s" "" "$INSTDIR"
+  WriteRegStr HKEY_LOCAL_MACHINE "{{hkey}}" "" "$INSTDIR"
   WriteUninstaller "$INSTDIR\uninst.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name) (remove only)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
@@ -1635,7 +1646,9 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
 SectionEnd
-''' % (app_hkey_local_machine))
+'''
+    s = s.replace('{{hkey}}',app_hkey_local_machine)
+    self.put(s)
 </t>
 <t tx="ekr.20090901092556.1608"></t>
 <t tx="ekr.20090901092556.1609"></t>
@@ -1645,11 +1658,18 @@ SectionEnd
     path = g.os_path_finalize_join(
         g.app.loadDir,'..','Icons','uninst.ico')
 
-    self.put('''
-UninstallCaption "Uninstall %s"
-UninstallIcon "%s"
-''' % (app_name,path))
-</t>
+    s = '''
+UninstallCaption "Uninstall {{name}}"
+UninstallIcon "{{path}}"
+'''
+
+    table = (
+        ('{{name}}',app_name),
+        ('{{path}}',path))
+
+    for pattern,val in table:
+        s = s.replace(pattern,val)
+    self.put(s)</t>
 <t tx="ekr.20090901092556.1612">def genMiddleFunctions (self):
 
     self.put('''
