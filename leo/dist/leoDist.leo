@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="7,3,0,1,6"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -82,13 +82,13 @@
 <v t="ekr.20090902092112.1477"><vh>stripBlankLines</vh></v>
 </v>
 <v t="ekr.20090902092112.1481"><vh>&lt;&lt; define version &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1565"><vh>@button Create leo.nsi</vh>
+<v t="ekr.20090826220933.1565" a="E"><vh>@button Create leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
-<v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
-<v t="ekr.20090901092556.1609" a="E"><vh>head boilerplate</vh>
+<v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
+<v t="ekr.20090901092556.1608" a="E"><vh>Boilerplate</vh>
+<v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1578"><vh>putDefines</vh></v>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1589"><vh>putVariables</vh></v>
@@ -104,13 +104,13 @@
 <v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
 </v>
 </v>
-<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
 <v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
 </v>
 <v t="ekr.20090901092556.1575"><vh>genMiddle</vh></v>
-<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
+<v t="ekr.20090901092556.1576" a="E"><vh>genUninstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
 <v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
 <v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
@@ -1409,24 +1409,24 @@ var PythonExecutable
 </t>
 <t tx="ekr.20090901092556.1590">def putOnInit (self):
 
-    s = '''
+    s = r'''
 ; Set PythonExecutable to full path to Pythonw.exe.
 Function .onInit
-    ReadRegStr $9 HKLM "SOFTWARE\\Python\\PythonCore\\2.6\\InstallPath" ""
+    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.6\InstallPath" ""
     StrCmp $9 "" tryPython25 ok
 
 tryPython25:
-    ReadRegStr $9 HKLM "SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath" ""
+    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.5\InstallPath" ""
     StrCmp $9 "" oops ok
 
 oops:
-    MessageBox MB_OK "Python not found: using c:\\python25"
+    MessageBox MB_OK "Python not found: using c:\python25"
     ; Guess where Python 2.5 is.
-    StrCpy $PythonExecutable "c:\\Python25\\pythonw.exe"
+    StrCpy $PythonExecutable "c:\Python25\pythonw.exe"
     Goto done
 ok:
     MessageBox MB_OK "Found Python at $9"
-    StrCpy $PythonExecutable "$9\\pythonw.exe"
+    StrCpy $PythonExecutable "$9\pythonw.exe"
 done:
 
 ; End .onInit

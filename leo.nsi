@@ -19,30 +19,25 @@ LicenseData "C:\leo.repo\main-trunk\License.txt"
 ShowInstDetails show
 ShowUnInstDetails show
 
-; Location where the Installer finds a Pythonw.exe
-; set by the .onInit function
+; Location of Pythonw.exe. Set by .onInit.
 var PythonExecutable
-; var StrNoUsablePythonFound
 
 ; Set PythonExecutable to full path to Pythonw.exe.
-
 Function .onInit
     ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.6\InstallPath" ""
-    ; MessageBox MB_OK "Python 2.6 path: $9"
     StrCmp $9 "" tryPython25 ok
 
 tryPython25:
     ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.5\InstallPath" ""
-    ; MessageBox MB_OK "Python 2.5 path: $9"
     StrCmp $9 "" oops ok
 
 oops:
     MessageBox MB_OK "Python not found: using c:\python25"
-    ; Punt by guessing where Python 2.5 is.
+    ; Guess where Python 2.5 is.
     StrCpy $PythonExecutable "c:\Python25\pythonw.exe"
     Goto done
 ok:
-    MessageBox MB_OK "Found Python: $9"
+    MessageBox MB_OK "Found Python at $9"
     StrCpy $PythonExecutable "$9\pythonw.exe"
 done:
 
