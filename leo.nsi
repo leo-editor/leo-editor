@@ -1,14 +1,4 @@
 
-
-!define STRING_PYTHON_NOT_FOUND "Python is not installed on this system.\
-Please install Python first.\
-Click OK to cancel installation and remove installation Files."
-
-
-!define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only.\
-Leo does not support use with Python so configured.\
-Click OK to cancel installation and remove installation Files."
-
 SetCompressor bzip2
 Caption "Leo Installer"
 AutoCloseWindow false 
@@ -32,110 +22,31 @@ ShowUnInstDetails show
 ; Location where the Installer finds a Pythonw.exe
 ; set by the .onInit function
 var PythonExecutable
-var StrNoUsablePythonFound
+; var StrNoUsablePythonFound
 
-; .onInit -- find Pythonw.exe, set PythonExecutable with string value
-; of its fully qualified path.
+; Set PythonExecutable to full path to Pythonw.exe.
 
 Function .onInit
+    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.6\InstallPath" ""
+    ; MessageBox MB_OK "Python 2.6 path: $9"
+    StrCmp $9 "" tryPython25 ok
 
-    # Bypass this for now.
-    goto done
-
-    # Create default error message
-    StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
-
-    # I sure hope there is a better way to do this,
-    # but other techniques don't seem to work.
-    # Supposedly the Python installer creates the following registry entry
-    # HKEY_LOCAL_MACHINE\Software\Python\PythonCore\CurrentVersion
-    # and then we can read find the Python folder location via
-    # HKEY_LOCAL_MACHINE\Software\Python\PythonCore\{versionno}.
-    # Alas, at the time of this writing, the Python installer is NOT writing the first entry.
-    # There is no way to know what the current versionno is.
-    # Hence, the following hack.
-
-    # Get pythonw.exe path from registry... except it isn't there, nor is it an environment variable... thanks guys!
-    # We'll have to get it in a roundabout way
-    ReadRegStr $9 HKEY_LOCAL_MACHINE "SOFTWARE\Classes\Python.NoConFile\shell\open\command" ""
-
-    # the NSIS installer for Python 2.3 leaves the registry entry in the following format:
-    # C:\Python23\pythonw.exe[SP]"%1%"[SP]%*
-    # the MSI installer for python.org's Python 2.4 release leaves the registry entry in the following format:
-    # "C:\Python24\pythonw.exe"[SP]"%1%"[SP]%*
-    # where [SP] represents an ASCII space character.
-
-    # Step 1: Try for the format used by the NSIS installer
-
-    # cut 8 characters from back of the open command
-    StrCpy $8 $9 -8
-
-    IfFileExists $8 ok tryagain
-
-    tryagain:
-    # That didn't work, but since the Python installer doesn't seem to be consistent,
-    # we'll try again.
-    # cut 3 characters from back of the open command
-    StrCpy $8 $9 -3
-
-    # that didn't work. check for the registry entry left by MSI Python 2.4 installers
-    # from www.python.org and www.activestate.com
-
-    IfFileExists $8 ok tryMSIformat
-
-    # Step 2: Try format used for Python available to all users.
-tryMSIformat:
-
-    # is the first character a "
-    StrCpy $8 $9 1
-    StrCmp $8 '"' foundQuote tryMSIformatCurrentUser
-
-foundQuote:
-    # OK. Strip off the " at the start as well as the 9 characters at the end
-    StrCpy $8 $9 -9 1
-    # MessageBox MB_OK "3: Searching for Pythonw.exe -- is it '$8' ? "
-    IfFileExists $8 ok tryMSIformatCurrentUser
-
-    # Step 3: Try format used for Python available to current users.
-
-tryMSIformatCurrentUser:
-    ReadRegStr $9 HKEY_CURRENT_USER "SOFTWARE\Classes\Python.NoConFile\shell\open\command" ""
-
-    # repeating the logic of tryMSIformat:
-    # is the first character a "
-    StrCpy $8 $9 1
-    StrCmp $8 '"' foundQuoteCurrentUser oops
-
-    # Patch: 10/6/06: Complain if Python not found.
-    StrCmp $8 '"' foundQuoteCurrentUser 0
-    StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
-    Goto oops
-
-foundQuoteCurrentUser:
-    # OK. Strip off the " at the start as well as the 9 characters at the end
-    StrCpy $8 $9 -9 1
-
-    !ifdef INSTALL_IF_PYTHON_FOR_CURRENT_USER
-      StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
-      IfFileExists $8 ok oops
-    !else
-      IfFileExists $8 usePythonCUFoundMessage usePythonNotFoundMessage
-      usePythonCUFoundMessage:
-      StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_CURRENT_USER_FOUND}"
-      goto oops
-      usePythonNotFoundMessage:
-      StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
-      goto oops
-    !endif
+tryPython25:
+    ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.5\InstallPath" ""
+    ; MessageBox MB_OK "Python 2.5 path: $9"
+    StrCmp $9 "" oops ok
 
 oops:
-    MessageBox MB_OK "$StrNoUsablePythonFound"
-    Quit
+    MessageBox MB_OK "Python not found: using c:\python25"
+    ; Punt by guessing where Python 2.5 is.
+    StrCpy $PythonExecutable "c:\Python25\pythonw.exe"
+    Goto done
 ok:
-     MessageBox MB_OK "Found Python executable at '$8'"
-     StrCpy $PythonExecutable $8
+    MessageBox MB_OK "Found Python: $9"
+    StrCpy $PythonExecutable "$9\pythonw.exe"
 done:
 
+; End .onInit
 FunctionEnd
 
 Section "Leo" SEC01

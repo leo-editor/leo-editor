@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="41" left="185" height="968" width="1076"/>
+	<global_window_position top="41" left="184" height="968" width="1077"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -88,13 +88,13 @@
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
 <v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
-<v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
+<v t="ekr.20090901092556.1609" a="E"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1578"><vh>putDefines</vh></v>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1589"><vh>putVariables</vh></v>
 <v t="ekr.20090901092556.1590"><vh>putOnInit</vh></v>
 </v>
-<v t="ekr.20090901092556.1610"><vh>middle boilerplate</vh>
+<v t="ekr.20090901092556.1610" a="E"><vh>middle boilerplate</vh>
 <v t="ekr.20090901092556.1603"><vh>genMenuShortcuts</vh></v>
 <v t="ekr.20090901092556.1604"><vh>genDesktopShortcuts</vh></v>
 <v t="ekr.20090901092556.1605"><vh>genFileAssociation</vh></v>
@@ -1361,19 +1361,20 @@ SectionEnd
     pass</t>
 <t tx="ekr.20090901092556.1578">def putDefines(self):
 
-    s = '''
+    pass
 
-!define STRING_PYTHON_NOT_FOUND "Python is not installed on this system.\\
-Please install Python first.\\
-Click OK to cancel installation and remove installation Files."
+    # s = '''
 
+# !define PythonNotFound "Python not found"
+# '''
 
-!define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only.\\
-${name} does not support use with Python so configured.\\
-Click OK to cancel installation and remove installation Files."
-'''
+    # self.put(s,substitute=True)
 
-    self.put(s,substitute=True)</t>
+# !define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only.\\
+# ${name} does not support use with Python so configured.\\
+# Click OK to cancel installation and remove installation Files."
+# '''
+</t>
 <t tx="ekr.20090901092556.1588">def putSettings (self):
 
     s = '''
@@ -1402,120 +1403,37 @@ ShowUnInstDetails show
 <t tx="ekr.20090901092556.1589">def putVariables (self):
 
     self.put('''
-; Location where the Installer finds a Pythonw.exe
-; set by the .onInit function
+; Location of Pythonw.exe. Set by .onInit.
 var PythonExecutable
-var StrNoUsablePythonFound
 ''')
 </t>
 <t tx="ekr.20090901092556.1590">def putOnInit (self):
 
     s = '''
-; .onInit -- find Pythonw.exe, set PythonExecutable with string value
-; of its fully qualified path.
-
+; Set PythonExecutable to full path to Pythonw.exe.
 Function .onInit
+    ReadRegStr $9 HKLM "SOFTWARE\\Python\\PythonCore\\2.6\\InstallPath" ""
+    StrCmp $9 "" tryPython25 ok
 
-    # Bypass this for now.
-    goto done
-
-    # Create default error message
-    StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
-
-    # I sure hope there is a better way to do this,
-    # but other techniques don't seem to work.
-    # Supposedly the Python installer creates the following registry entry
-    # HKEY_LOCAL_MACHINE\Software\Python\PythonCore\CurrentVersion
-    # and then we can read find the Python folder location via
-    # HKEY_LOCAL_MACHINE\Software\Python\PythonCore\{versionno}.
-    # Alas, at the time of this writing, the Python installer is NOT writing the first entry.
-    # There is no way to know what the current versionno is.
-    # Hence, the following hack.
-
-    # Get pythonw.exe path from registry... except it isn't there, nor is it an environment variable... thanks guys!
-    # We'll have to get it in a roundabout way
-    ReadRegStr $9 HKEY_LOCAL_MACHINE "SOFTWARE\Classes\Python.NoConFile\shell\open\command" ""
-
-    # the NSIS installer for Python 2.3 leaves the registry entry in the following format:
-    # C:\Python23\pythonw.exe[SP]"%1%"[SP]%*
-    # the MSI installer for python.org's Python 2.4 release leaves the registry entry in the following format:
-    # "C:\Python24\pythonw.exe"[SP]"%1%"[SP]%*
-    # where [SP] represents an ASCII space character.
-
-    # Step 1: Try for the format used by the NSIS installer
-
-    # cut 8 characters from back of the open command
-    StrCpy $8 $9 -8
-
-    IfFileExists $8 ok tryagain
-
-    tryagain:
-    # That didn't work, but since the Python installer doesn't seem to be consistent,
-    # we'll try again.
-    # cut 3 characters from back of the open command
-    StrCpy $8 $9 -3
-
-    # that didn't work. check for the registry entry left by MSI Python 2.4 installers
-    # from www.python.org and www.activestate.com
-
-    IfFileExists $8 ok tryMSIformat
-
-    # Step 2: Try format used for Python available to all users.
-tryMSIformat:
-
-    # is the first character a "
-    StrCpy $8 $9 1
-    StrCmp $8 '"' foundQuote tryMSIformatCurrentUser
-
-foundQuote:
-    # OK. Strip off the " at the start as well as the 9 characters at the end
-    StrCpy $8 $9 -9 1
-    # MessageBox MB_OK "3: Searching for Pythonw.exe -- is it '$8' ? "
-    IfFileExists $8 ok tryMSIformatCurrentUser
-
-    # Step 3: Try format used for Python available to current users.
-
-tryMSIformatCurrentUser:
-    ReadRegStr $9 HKEY_CURRENT_USER "SOFTWARE\Classes\Python.NoConFile\shell\open\command" ""
-
-    # repeating the logic of tryMSIformat:
-    # is the first character a "
-    StrCpy $8 $9 1
-    StrCmp $8 '"' foundQuoteCurrentUser oops
-
-    # Patch: 10/6/06: Complain if Python not found.
-    StrCmp $8 '"' foundQuoteCurrentUser 0
-    StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
-    Goto oops
-
-foundQuoteCurrentUser:
-    # OK. Strip off the " at the start as well as the 9 characters at the end
-    StrCpy $8 $9 -9 1
-
-    !ifdef INSTALL_IF_PYTHON_FOR_CURRENT_USER
-      StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
-      IfFileExists $8 ok oops
-    !else
-      IfFileExists $8 usePythonCUFoundMessage usePythonNotFoundMessage
-      usePythonCUFoundMessage:
-      StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_CURRENT_USER_FOUND}"
-      goto oops
-      usePythonNotFoundMessage:
-      StrCpy $StrNoUsablePythonFound "${STRING_PYTHON_NOT_FOUND}"
-      goto oops
-    !endif
+tryPython25:
+    ReadRegStr $9 HKLM "SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath" ""
+    StrCmp $9 "" oops ok
 
 oops:
-    MessageBox MB_OK "$StrNoUsablePythonFound"
-    Quit
+    MessageBox MB_OK "Python not found: using c:\\python25"
+    ; Guess where Python 2.5 is.
+    StrCpy $PythonExecutable "c:\\Python25\\pythonw.exe"
+    Goto done
 ok:
-     MessageBox MB_OK "Found Python executable at '$8'"
-     StrCpy $PythonExecutable $8
+    MessageBox MB_OK "Found Python at $9"
+    StrCpy $PythonExecutable "$9\\pythonw.exe"
 done:
 
+; End .onInit
 FunctionEnd
 '''
-    self.put(s,substitute=False) # Not yet.
+    # Must double all $'s if we do substitutions.
+    self.put(s,substitute=False)
 </t>
 <t tx="ekr.20090901092556.1603">def genMenuShortcuts (self):
 
@@ -1996,8 +1914,6 @@ substitutionDict = {
     'nsi_name': nsi_name,
     'publisher': app_publisher,
 
-    # Doesn't work.
-    # 'PythonExecutable': '"%s"' % sys.executable, # A hack for testing:
     'site': app_web_site,
     'target_file': target_file,
     'uninst_key': app_uninst_key,
