@@ -1,24 +1,15 @@
 
-!define PRODUCT_VERSION "4.6.3-final"
-!define PRODUCT_NAME "Leo"
-!define PRODUCT_PUBLISHER "Edward K. Ream"
-!define PRODUCT_WEB_SITE "http://webpages.charter.net/edreamleo/front.html"
-!define PRODUCT_UNINST_ROOT_KEY "HKLM"
-
-SetCompressor bzip2
-
-; used for Windows Registry links to uninstaller
-!define PRODUCT_NAME_LOWER_CASE "leo"
-!define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME_LOWER_CASE}"
 
 !define STRING_PYTHON_NOT_FOUND "Python is not installed on this system.\
 Please install Python first.\
 Click OK to cancel installation and remove installation Files."
 
+
 !define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only.\
-${PRODUCT_NAME} does not support use with Python so configured.\
+Leo does not support use with Python so configured.\
 Click OK to cancel installation and remove installation Files."
 
+SetCompressor bzip2
 Caption "Leo Installer"
 AutoCloseWindow false 
 SilentInstall normal
@@ -27,16 +18,13 @@ SetCompress auto ; FIXME this is disabled for solid compression, which comes wit
 SetDatablockOptimize on
 ; SetOverwrite ifnewer
 WindowIcon off
-
-Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "LeoSetup-4.6.3-final.exe"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 InstallDir "$PROGRAMFILES\Leo-4.6.3-final"
 Icon "C:\leo.repo\main-trunk\leo\Icons\leo_inst.ico"
-DirText "Setup will install $(^Name) in the following folder.\
+DirText "Setup will install Leo-4.6.3-final in the following folder. \
 To install in a different folder, click Browse and select another folder."
-LicenseText "If you accept all the terms of the agreement, choose I Agree to continue.\
-You must accept the agreement to install $(^Name)."
+LicenseText "You must accept the agreement to install Leo-4.6.3-final."
 LicenseData "C:\leo.repo\main-trunk\License.txt"
 ShowInstDetails show
 ShowUnInstDetails show
@@ -2246,9 +2234,9 @@ SectionEnd
 ; How will Windows XP Home deal with that? 
 
 Section "Start Menu Shortcuts" SEC02
-  CreateDirectory "$SMPROGRAMS\Leo"
-  CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
-  CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\launchLeo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+    CreateDirectory "$SMPROGRAMS\Leo"
+    CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
+    CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\launchLeo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
 SectionEnd
 
 Section "Desktop Shortcut" SEC03
@@ -2284,11 +2272,11 @@ SectionEnd
 Section -Post
   WriteRegStr HKEY_LOCAL_MACHINE "SOFTWARE\EKR\leo" "" "$INSTDIR"
   WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name) (remove only)"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo" "DisplayName" "Leo-4.6.3-final (remove only)"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo" "UninstallString" "$INSTDIR\uninst.exe"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo" "DisplayVersion" "4.6.3-final"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo" "URLInfoAbout" "http://webpages.charter.net/edreamleo/front.html"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo" "Publisher" "Edward K. Ream"
 SectionEnd
 
 UninstallCaption "Uninstall Leo"
@@ -2296,11 +2284,12 @@ UninstallIcon "C:\leo.repo\main-trunk\leo\Icons\uninst.ico"
 
 Function un.onUninstSuccess
   HideWindow
-  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) was successfully removed from your computer."
+  MessageBox MB_ICONINFORMATION|MB_OK "Leo-4.6.3-final was successfully removed from your computer."
 FunctionEnd
 
 Function un.onInit
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Are you sure you want to completely remove $(^Name) and all of its components?" IDYES +2
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 \
+  "Are you sure you want to completely remove Leo-4.6.3-final and all of its components?" IDYES +2
   Abort
 FunctionEnd
 
@@ -4501,14 +4490,14 @@ RestoreBackup:
     ; ---- End of manifest related data.
 
 NoOwn:
-    MessageBox MB_YESNO|MB_ICONQUESTION             "Delete all files in Leo Program folder?"             IDNO NoDelete
+    MessageBox MB_YESNO|MB_ICONQUESTION             "Delete all files in $INSTDIR?" IDNO NoDelete
 
 NoDelete:
   Delete "$SMPROGRAMS\Leo\Uninstall.lnk"
-  RMDir "$SMPROGRAMS\Leo"
+  RMDir "$SMPROGRAMS\Leo-4.6.3-final"
   Delete "$DESKTOP\Leo.lnk"
 
-  DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
   SetAutoClose false
 
 ; end Uninstall section

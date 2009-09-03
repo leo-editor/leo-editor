@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="36" left="239" height="968" width="1025"/>
+	<global_window_position top="41" left="185" height="968" width="1076"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -88,13 +88,13 @@
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
 <v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
-<v t="ekr.20090901092556.1609" a="E"><vh>head boilerplate</vh>
+<v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1578"><vh>putDefines</vh></v>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1589"><vh>putVariables</vh></v>
 <v t="ekr.20090901092556.1590"><vh>putOnInit</vh></v>
 </v>
-<v t="ekr.20090901092556.1610" a="E"><vh>middle boilerplate</vh>
+<v t="ekr.20090901092556.1610"><vh>middle boilerplate</vh>
 <v t="ekr.20090901092556.1603"><vh>genMenuShortcuts</vh></v>
 <v t="ekr.20090901092556.1604"><vh>genDesktopShortcuts</vh></v>
 <v t="ekr.20090901092556.1605"><vh>genFileAssociation</vh></v>
@@ -1048,7 +1048,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 
 '''Create the installer script.'''
 
-import os
+import os,string,sys
 &lt;&lt; define version &gt;&gt;
 &lt;&lt; define inLeo &gt;&gt;
 
@@ -1102,12 +1102,21 @@ def deleteFiles (self,lines,deleteList):
         g.trace(g.listToString(result))
     return result
 </t>
-<t tx="ekr.20090831172520.1551">def put (self,s,adjust=True):
+<t tx="ekr.20090831172520.1551">def put (self,s,adjust=True,substitute=False):
 
     '''Output s to the nsi file.'''
 
     if adjust:
         s = self.adjustTripleString(s)
+
+    if substitute:
+        if 0:
+            n = 1
+            for z in g.splitLines(s):
+                print('%3s %s' % (n,z.rstrip()))
+                n += 1
+        s = string.Template(s)
+        s = s.substitute(substitutionDict)
 
     self.f.write(s)
 </t>
@@ -1296,62 +1305,53 @@ def deleteFiles (self,lines,deleteList):
 
     '''Generate the manifest-specific uninstall data.'''
 
-    self.put('''
+    s = '''
 Section Uninstall
 
-    DeleteRegKey HKEY_LOCAL_MACHINE "%s"
+    DeleteRegKey HKEY_LOCAL_MACHINE "${hkey_local_machine}"
 
-    ReadRegStr $1 HKCR "%s" ""
-    StrCmp $1 "%sFile" 0 NoOwn ; only do this if we own it.
+    ReadRegStr $$1 HKCR "${ext}" ""
+    StrCmp $$1 "${name}File" 0 NoOwn ; only do this if we own it.
 
-    ReadRegStr $1 HKCR "%s" "backup_val"
-    StrCmp $1 "" 0 RestoreBackup ; if backup == "" then delete the whole key
-      DeleteRegKey HKCR "%s"
+    ReadRegStr $$1 HKCR "${ext}" "backup_val"
+    StrCmp $$1 "" 0 RestoreBackup ; if backup == "" then delete the whole key
+      DeleteRegKey HKCR "${ext}"
     Goto NoOwn
 
 RestoreBackup:
-    WriteRegStr HKCR "%s" "" $1
-    DeleteRegValue HKCR "%s" "backup_val"
+    WriteRegStr HKCR "${ext}" "" $$1
+    DeleteRegValue HKCR "${ext}" "backup_val"
 
     ; ---- Start of manifest-related data...
-''' % (
-    app_hkey_local_machine, # DeleteRegKey
-    app_extension, # ReadRegStr
-    app_name,      # StrCmp
-    app_extension, # ReadRegStr
-    app_extension, # DeleteRegKey
-    app_extension, # WriteRegStr
-    app_extension, # DeleteRegValue
-))
+'''
+
+    self.put(s,substitute=True)
 
     # Does all the hard work.
     self.put(
         self.getUninstallVariableData(dirs,dirDict,filesDict),
         adjust = False)
 
-    self.put('''
+    s = '''
     ; ---- End of manifest related data.
 
 NoOwn:
     MessageBox MB_YESNO|MB_ICONQUESTION \
-        "Delete all files in %s Program folder?" \
-        IDNO NoDelete
+        "Delete all files in ${INSTDIR}?" IDNO NoDelete
 
 NoDelete:
-  Delete "$SMPROGRAMS\Leo\Uninstall.lnk"
-  RMDir "$SMPROGRAMS\%s"
-  Delete "$DESKTOP\%s.lnk"
+  Delete "${SMPROGRAMS}\${name}\Uninstall.lnk"
+  RMDir "${SMPROGRAMS}\${name}-${version}"
+  Delete "${DESKTOP}\${name}.lnk"
 
-  DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
+  DeleteRegKey ${uninst_root_key} "${uninst_key}"
   SetAutoClose false
 
 ; end Uninstall section
 SectionEnd
-''' % (
-    app_name, # Delete all files...?
-    app_name, # RmDir
-    app_name, # Delete
-))
+'''
+
+    self.put(s,substitute=True)
 </t>
 <t tx="ekr.20090901092556.1577">def genTail (self):
 
@@ -1362,42 +1362,23 @@ SectionEnd
 <t tx="ekr.20090901092556.1578">def putDefines(self):
 
     s = '''
-!define PRODUCT_VERSION "{{version}}"
-!define PRODUCT_NAME "{{name}}"
-!define PRODUCT_PUBLISHER "{{publisher}}"
-!define PRODUCT_WEB_SITE "{{site}}"
-!define PRODUCT_UNINST_ROOT_KEY "HKLM"
-
-SetCompressor bzip2
-
-; used for Windows Registry links to uninstaller
-!define PRODUCT_NAME_LOWER_CASE "{{lower-name}}"
-!define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME_LOWER_CASE}"
 
 !define STRING_PYTHON_NOT_FOUND "Python is not installed on this system.\\
 Please install Python first.\\
 Click OK to cancel installation and remove installation Files."
 
+
 !define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only.\\
-${PRODUCT_NAME} does not support use with Python so configured.\\
+${name} does not support use with Python so configured.\\
 Click OK to cancel installation and remove installation Files."
 '''
-    table = (
-        ('{{lower-name}}',app_lower_case_name),
-        ('{{name}}',app_name),
-        ('{{publisher}}',app_publisher),
-        ('{{site}}',app_web_site),
-        ('{{version}}',app_version))
 
-    for pattern,val in table:
-        s = s.replace(pattern,val)
-
-    self.put(s)
-</t>
+    self.put(s,substitute=True)</t>
 <t tx="ekr.20090901092556.1588">def putSettings (self):
 
     s = '''
-Caption "{{name}} Installer"
+SetCompressor bzip2
+Caption "${name} Installer"
 AutoCloseWindow false 
 SilentInstall normal
 CRCCheck on ; FIXME shouldn't this be CRCCheck force ? Why give user option of using corrupted installer?
@@ -1405,31 +1386,18 @@ SetCompress auto ; FIXME this is disabled for solid compression, which comes wit
 SetDatablockOptimize on
 ; SetOverwrite ifnewer
 WindowIcon off
-
-Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "{{target}}"
+OutFile "${target_file}"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
-InstallDir "$PROGRAMFILES\{{name}}-{{version}}"
-Icon "{{icon}}"
-DirText "Setup will install $(^Name) in the following folder.\\
+InstallDir "${PROGRAMFILES}\${name}-${version}"
+Icon "${icon}"
+DirText "Setup will install ${name}-${version} in the following folder. \\
 To install in a different folder, click Browse and select another folder."
-LicenseText "If you accept all the terms of the agreement, choose I Agree to continue.\\
-You must accept the agreement to install $(^Name)."
-LicenseData "{{license}}"
+LicenseText "You must accept the agreement to install ${name}-${version}."
+LicenseData "${license}"
 ShowInstDetails show
 ShowUnInstDetails show
 '''
-    table = (
-        ('{{icon}}',app_icon),
-        ('{{license}}',app_license),
-        ('{{name}}',app_name),
-        ('{{target}}',target_file),
-        ('{{version}}',app_version))
-
-    for pattern,val in table:
-        s = s.replace(pattern,val)
-
-    self.put(s)
+    self.put(s,substitute=True)
 </t>
 <t tx="ekr.20090901092556.1589">def putVariables (self):
 
@@ -1442,7 +1410,7 @@ var StrNoUsablePythonFound
 </t>
 <t tx="ekr.20090901092556.1590">def putOnInit (self):
 
-    self.put('''
+    s = '''
 ; .onInit -- find Pythonw.exe, set PythonExecutable with string value
 ; of its fully qualified path.
 
@@ -1546,7 +1514,8 @@ ok:
 done:
 
 FunctionEnd
-''')
+'''
+    self.put(s,substitute=False) # Not yet.
 </t>
 <t tx="ekr.20090901092556.1603">def genMenuShortcuts (self):
 
@@ -1568,87 +1537,75 @@ FunctionEnd
 ; How will Windows XP Home deal with that? 
 
 Section "Start Menu Shortcuts" SEC02
-  CreateDirectory "$SMPROGRAMS\{{name}}"
-  CreateShortCut "$SMPROGRAMS\{{name}}\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
-  CreateShortCut "$SMPROGRAMS\{{name}}\{{name}}.lnk" '"$PythonExecutable"' '"$INSTDIR\{{exe}}"' "$INSTDIR\{{icon2}}" 0
+    CreateDirectory "${SMPROGRAMS}\${name}"
+    CreateShortCut "${SMPROGRAMS}\${name}\Uninstall.lnk" "${INSTDIR}\uninst.exe" "" "${INSTDIR}\uninst.exe" 0
+    CreateShortCut "${SMPROGRAMS}\${name}\${name}.lnk" '"${PythonExecutable}"' '"${INSTDIR}\${exe}"' "${INSTDIR}\${icon2}" 0
 SectionEnd
 '''
-    # The $'s prevent us from using string.Template.
-    table = (
-        ('{{exe}}', app_python_executable),
-        ('{{icon2}}',app_icon2),
-        ('{{name}}',app_name))
 
-    for pattern,val in table:
-        s = s.replace(pattern,val)
-    self.put(s)
+    self.put(s,substitute=True)
 </t>
 <t tx="ekr.20090901092556.1604">def genDesktopShortcuts(self):
 
-    self.put('''
+    s = '''
 Section "Desktop Shortcut" SEC03
-  CreateShortCut "$DESKTOP\%s.lnk" '"$PythonExecutable"' '"$INSTDIR\%s"' "$INSTDIR\%s" 0
+  CreateShortCut "${DESKTOP}\${name}.lnk" '"${PythonExecutable}"' '"$INSTDIR\${exe}"' "$INSTDIR\${icon2}" 0
 SectionEnd
-''' % (app_name,app_python_executable,app_icon2))</t>
+'''
+
+    self.put(s,substitute=True)</t>
 <t tx="ekr.20090901092556.1605">def genFileAssociation(self):
 
     s = '''
-Section "{{ext}} File Association"
+Section "${ext} File Association"
   SectionIn 1
   SectionIn 2
   SectionIn 3
 
   # back up old value of extension in case some other program was using it
-  ReadRegStr $1 HKCR "{{ext}}" ""
-  StrCmp $1 "" Label1
-  StrCmp $1 "{{name}}File" Label1
-  WriteRegStr HKCR "{{ext}}" "backup_val" $1
+  ReadRegStr $$1 HKCR "${ext}" ""
+  StrCmp $$1 "" Label1
+  StrCmp $$1 "${name}File" Label1
+  WriteRegStr HKCR "${ext}" "backup_val" $$1
 
 Label1:
-  WriteRegStr HKCR "{{ext}}" "" "{{name}}File"
-  WriteRegStr HKCR "{{name}}File" "" "{{name}} File"
-  WriteRegStr HKCR "{{name}}File\shell" "" "open"
-  WriteRegStr HKCR "{{name}}File\DefaultIcon" "" $INSTDIR\{{doc-icon}}
-  WriteRegStr HKCR "{{name}}File\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\{{exe}}" "%1"'
+  WriteRegStr HKCR "${ext}" "" "${name}File"
+  WriteRegStr HKCR "${name}File" "" "${name} File"
+  WriteRegStr HKCR "${name}File\shell" "" "open"
+  WriteRegStr HKCR "${name}File\DefaultIcon" "" ${INSTDIR}\${doc_icon}
+  WriteRegStr HKCR "${name}File\shell\open\command" "" '"${PythonExecutable}" "${INSTDIR}\${exe}" "%1"'
 
 SectionEnd
 '''
-    table = (
-        ('{{doc-icon}}',app_doc_icon),
-        ('{{exe}}',app_python_executable),
-        ('{{ext}}',app_extension),
-        ('{{name}}',app_name))
 
-    for pattern,val in table:
-        s = s.replace(pattern,val)
-    self.put(s)
+    self.put(s,substitute=True)
 </t>
 <t tx="ekr.20090901092556.1606">def genAdditionalIcons(self):
 
     s = '''
 Section -AdditionalIcons
   SetOutPath $INSTDIR
-  CreateDirectory "$SMPROGRAMS\{{name}}"
-  CreateShortCut "$SMPROGRAMS\{{name}}\Uninstall.lnk" "$INSTDIR\uninst.exe"
+  CreateDirectory "${SMPROGRAMS}\${name}"
+  CreateShortCut "${SMPROGRAMS}\${name}\Uninstall.lnk" "$INSTDIR\uninst.exe"
 SectionEnd
 '''
-    s = s.replace('{{name}}',app_name)
-    self.put(s)</t>
+
+    self.put(s,substitute=True)</t>
 <t tx="ekr.20090901092556.1607">def genPost (self):
 
     s = '''
 Section -Post
-  WriteRegStr HKEY_LOCAL_MACHINE "{{hkey}}" "" "$INSTDIR"
+  WriteRegStr HKEY_LOCAL_MACHINE "${hkey_local_machine}" "" "$INSTDIR"
   WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name) (remove only)"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "DisplayName" "${name}-${version} (remove only)"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "UninstallString" "${INSTDIR}\uninst.exe"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "DisplayVersion" "${version}"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "URLInfoAbout" "${site}"
+  WriteRegStr ${uninst_root_key} "${uninst_key}" "Publisher" "${publisher}"
 SectionEnd
 '''
-    s = s.replace('{{hkey}}',app_hkey_local_machine)
-    self.put(s)
+
+    self.put(s,substitute=True)
 </t>
 <t tx="ekr.20090901092556.1608"></t>
 <t tx="ekr.20090901092556.1609"></t>
@@ -1659,30 +1616,29 @@ SectionEnd
         g.app.loadDir,'..','Icons','uninst.ico')
 
     s = '''
-UninstallCaption "Uninstall {{name}}"
-UninstallIcon "{{path}}"
+UninstallCaption "Uninstall ${name}"
+UninstallIcon "${path}"
 '''
 
-    table = (
-        ('{{name}}',app_name),
-        ('{{path}}',path))
-
-    for pattern,val in table:
-        s = s.replace(pattern,val)
-    self.put(s)</t>
+    s = s.replace('${path}',path)
+    self.put(s,substitute=True)
+</t>
 <t tx="ekr.20090901092556.1612">def genMiddleFunctions (self):
 
-    self.put('''
+    s = '''
 Function un.onUninstSuccess
   HideWindow
-  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) was successfully removed from your computer."
+  MessageBox MB_ICONINFORMATION|MB_OK "${name}-${version} was successfully removed from your computer."
 FunctionEnd
 
 Function un.onInit
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Are you sure you want to completely remove $(^Name) and all of its components?" IDYES +2
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 \\
+  "Are you sure you want to completely remove ${name}-${version} and all of its components?" IDYES +2
   Abort
 FunctionEnd
-''')
+'''
+
+    self.put(s,substitute=True)
 </t>
 <t tx="ekr.20090901121423.1567">def getUninstallVariableData(self,dirs,dirDict,filesDict):
 
@@ -2020,9 +1976,41 @@ app_lower_case_name = 'leo'
 app_name = 'Leo'
 app_publisher = 'Edward K. Ream'
 app_python_executable = 'launchLeo.py'
+app_uninst_key = "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
+app_uninst_root_key = 'HKLM'
 app_web_site = 'http://webpages.charter.net/edreamleo/front.html'
 
 nsi_name = 'leo.nsi'
-target_file = 'LeoSetup-%s.exe' % app_version</t>
+target_file = 'LeoSetup-%s.exe' % app_version
+
+substitutionDict = {
+    'doc_icon': app_doc_icon,
+    'ext': app_extension,
+    'exe': app_python_executable,
+    'hkey_local_machine': app_hkey_local_machine,
+    'icon': app_icon,
+    'icon2': app_icon2,
+    'license': app_license,
+    'lower_name': app_lower_case_name,
+    'name': app_name,
+    'nsi_name': nsi_name,
+    'publisher': app_publisher,
+
+    # Doesn't work.
+    # 'PythonExecutable': '"%s"' % sys.executable, # A hack for testing:
+    'site': app_web_site,
+    'target_file': target_file,
+    'uninst_key': app_uninst_key,
+    'uninst_root_key': app_uninst_root_key,
+    'version': app_version,
+    # Leave these unchanged.
+    'DESKTOP': '$DESKTOP',
+    'INSTDIR': '$INSTDIR',
+    'NSISDIR': '${NSISDIR}',
+    'PROGRAMFILES': '$PROGRAMFILES',
+    'PythonExecutable': '$PythonExecutable',
+    'SMPROGRAMS': '$SMPROGRAMS'
+}
+</t>
 </tnodes>
 </leo_file>
