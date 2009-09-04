@@ -86,7 +86,7 @@
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
+<v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
 <v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
 <v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1578"><vh>putDefines</vh></v>
@@ -1884,17 +1884,17 @@ except AttributeError:
 
 # print 'inLeo',inLeo
 </t>
-<t tx="ekr.20090902092112.1483">app_doc_icon = 'Icons\LeoDoc.ico'
+<t tx="ekr.20090902092112.1483">app_doc_icon = r'Icons\LeoDoc.ico'
 app_extension = '.leo'
-app_hkey_local_machine = 'SOFTWARE\EKR\leo'
-app_icon = "%s\leo\Icons\leo_inst.ico" % rootDir
-app_icon2 = 'leo\Icons\LeoApp.ico' # Relative to install dir.
-app_license = '%s\License.txt' % rootDir
+app_hkey_local_machine = r'SOFTWARE\EKR\leo'
+app_icon = r"%s\leo\Icons\leo_inst.ico" % rootDir
+app_icon2 = r'leo\Icons\LeoApp.ico' # Relative to install dir.
+app_license = r'%s\License.txt' % rootDir
 app_lower_case_name = 'leo'
 app_name = 'Leo'
 app_publisher = 'Edward K. Ream'
 app_python_executable = 'launchLeo.py'
-app_uninst_key = "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
+app_uninst_key = r"Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
 app_uninst_root_key = 'HKLM'
 app_web_site = 'http://webpages.charter.net/edreamleo/front.html'
 
