@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6,1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -359,6 +359,10 @@
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
 <v t="ekr.20090831145049.1819"><vh>Unicode test</vh></v>
+<v t="ekr.20090904063348.1821" a="E"><vh>Parellel code</vh>
+<v t="ekr.20090904063348.1824"><vh>Common</vh></v>
+<v t="ekr.20090904063348.1823"><vh>Loops</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -3360,5 +3364,44 @@ w.show()
 </t>
 <t tx="ekr.20090831145049.1819">@first # -*- coding: utf-8 -*- 
 print u'ä' </t>
+<t tx="ekr.20090904063348.1821">@others
+
+print '*' * 10
+assert loop_serial() == loop_deco()
+print 'OK'</t>
+<t tx="ekr.20090904063348.1823">def loop_serial():
+    results = [None]*count
+    for i in range(count):
+        results[i] = do_work(data, i)
+    return summarize(results, count)
+
+def parellel(iterable):
+    g.trace()
+    def call(func): # Could use thread.
+        g.trace(func)
+        # map(func,iterable)
+        for i in iterable: func(i)
+    return call
+
+def loop_deco():
+    g.trace()
+    results = [None]*count
+    @parellel(range(count))
+    def loop(i):
+        g.trace(i)
+        results[i] = do_work(data, i)
+    return summarize(results, count)</t>
+<t tx="ekr.20090904063348.1824">count = 10
+data = [3.0*j for j in range(count) ]
+
+def do_work(data, i):
+    '''The body of the loop'''
+    g.trace(i)
+    return data[i]/2
+
+def summarize(results, count):
+    g.trace(count)
+    return sum(results[:count])
+</t>
 </tnodes>
 </leo_file>
