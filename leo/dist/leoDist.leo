@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="7,2"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -82,7 +82,7 @@
 <v t="ekr.20090902092112.1477"><vh>stripBlankLines</vh></v>
 </v>
 <v t="ekr.20090902092112.1481"><vh>&lt;&lt; define version &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1565" a="E"><vh>@button Create leo.nsi</vh>
+<v t="ekr.20090826220933.1565"><vh>@button Create leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
