@@ -2142,11 +2142,11 @@ SectionEnd
 Section "Start Menu Shortcuts" SEC02
     CreateDirectory "$SMPROGRAMS\Leo"
     CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
-    CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\launchLeo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+    CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\launchLeo.py"' "$INSTDIR\leo\Icons\LeoApp.ico" 0
 SectionEnd
 
 Section "Desktop Shortcut" SEC03
-  CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\launchLeo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+  CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\launchLeo.py"' "$INSTDIR\leo\Icons\LeoApp.ico" 0
 SectionEnd
 
 Section ".leo File Association"
