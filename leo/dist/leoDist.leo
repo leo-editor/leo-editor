@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -67,28 +67,14 @@
 <v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
 </v>
 <v t="ekr.20090620072519.1389"><vh>Distribution checklist</vh></v>
-<v t="ekr.20090902092112.1478"><vh>not used from leoGlobals</vh>
-<v t="ekr.20090902092112.1465"><vh>computeLeadingWhitespace</vh></v>
-<v t="ekr.20090902092112.1468"><vh>optimizeLeadingWhitespace</vh></v>
-<v t="ekr.20090902092112.1469"><vh>regularizeTrailingNewlines</vh></v>
-<v t="ekr.20090902092112.1471"><vh>g.removeExtraLws &amp; test</vh>
-<v t="ekr.20090902092112.1472"><vh>@test g.removeExtraLws</vh></v>
-</v>
-<v t="ekr.20090902092112.1473"><vh>removeTrailingWs &amp; test</vh>
-<v t="ekr.20090902092112.1474"><vh>@test removeTrailingWs</vh></v>
-</v>
-<v t="ekr.20090902092112.1475"><vh>skip_leading_ws</vh></v>
-<v t="ekr.20090902092112.1476"><vh>skip_leading_ws_with_indent</vh></v>
-<v t="ekr.20090902092112.1477"><vh>stripBlankLines</vh></v>
-</v>
 <v t="ekr.20090902092112.1481"><vh>&lt;&lt; define version &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1565"><vh>@button Create leo.nsi</vh>
+<v t="ekr.20090826220933.1565"><vh>@button make leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
-<v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
-<v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
+<v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
+<v t="ekr.20090901092556.1608" a="E"><vh>Boilerplate</vh>
+<v t="ekr.20090901092556.1609" a="E"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1578"><vh>putDefines</vh></v>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1589"><vh>putVariables</vh></v>
@@ -136,6 +122,12 @@
 <v t="ekr.20090902092112.1479"><vh>splitLines</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20090905082405.1486"><vh>@button make leo.zip</vh>
+<v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
+<v t="ekr.20090902092112.1481"></v>
+<v t="ekr.20090905082405.1489"><vh>make</vh></v>
+<v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -491,7 +483,7 @@ makes the system more flexible...
 now for about 2 -- 3 months. It has totally changed not only the way that I
 program, but also the way that I store and organise all of the information that
 I need for the job that I do. -- Ian Mulvany</t>
-<t tx="ekr.20050315084904"></t>
+<t tx="ekr.20050315084904" str_leo_pos="4"></t>
 <t tx="ekr.20050315084922">c.spellCommands.openSpellTab()</t>
 <t tx="ekr.20060213160806">"Thanks for a wonderful program – everybody should be using it! It blows the
 socks off that Java Mind mapping software that won project of the month a while
@@ -1672,19 +1664,6 @@ FunctionEnd
     result = ''.join(result)
     return result
 </t>
-<t tx="ekr.20090902092112.1465"># Returns optimized whitespace corresponding to width with the indicated tab_width.
-
-def computeLeadingWhitespace (width, tab_width):
-
-    if width &lt;= 0:
-        return ""
-    if tab_width &gt; 1:
-        tabs   = width / tab_width
-        blanks = width % tab_width
-        return ('\t' * tabs) + (' ' * blanks)
-    else: # 7/3/02: negative tab width always gets converted to blanks.
-        return (' ' * width)
-</t>
 <t tx="ekr.20090902092112.1466">def computeWidth (self,s):
 
     '''Return the width of s, assuming s starts a line.'''
@@ -1707,28 +1686,6 @@ def computeLeadingWhitespace (width, tab_width):
         i += 1
     return s[0:i]
 </t>
-<t tx="ekr.20090902092112.1468"># Optimize leading whitespace in s with the given tab_width.
-
-def optimizeLeadingWhitespace (line,tab_width):
-
-    i, width = g.skip_leading_ws_with_indent(line,0,tab_width)
-    s = g.computeLeadingWhitespace(width,tab_width) + line[i:]
-    return s
-</t>
-<t tx="ekr.20090902092112.1469">@
-
-The caller should call g.stripBlankLines before calling this routine if desired.
-
-This routine does _not_ simply call rstrip(): that would delete all trailing whitespace-only lines, and in some cases that would change the meaning of program or data.
-
-@c
-
-def regularizeTrailingNewlines(s,kind):
-
-    """Kind is 'asis', 'zero' or 'one'."""
-
-    pass
-</t>
 <t tx="ekr.20090902092112.1470">def removeLeadingWhitespace (self,s,first_ws):
 
     '''Remove whitespace up to first_ws wide in s.'''
@@ -1748,122 +1705,6 @@ def regularizeTrailingNewlines(s,kind):
         s = s[j:]
     return s
 </t>
-<t tx="ekr.20090902092112.1471">def removeExtraLws (s,tab_width):
-
-    '''Remove extra indentation from one or more lines.
-
-    Warning: used by getScript.  This is *not* the same as g.adjustTripleString.'''
-
-    lines = g.splitLines(s)
-
-    # Find the first non-blank line and compute w, the width of its leading whitespace.
-    for line in lines:
-        if line.strip():
-            lws = g.get_leading_ws(line)
-            w = g.computeWidth(lws,tab_width)
-            break
-    else: return s
-
-    # Remove the leading whitespace.
-    result = [g.removeLeadingWhitespace(line,w,tab_width) for line in lines]
-    result = ''.join(result)
-
-    if 0:
-        g.trace('lines...')
-        for line in g.splitLines(result):
-            g.pr(repr(line))
-
-    return result
-</t>
-<t tx="ekr.20090902092112.1472">if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    for s,expected in (
-        (' a\n b\n c', 'a\nb\nc'),
-        (' \n  A\n    B\n  C\n', '\nA\n  B\nC\n'),
-    ):
-        result = g.removeExtraLws(s,c.tab_width)
-        assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
-            repr(s),repr(expected),repr(result))
-</t>
-<t tx="ekr.20090902092112.1473"># Warning: string.rstrip also removes newlines!
-
-def removeTrailingWs(s):
-
-    j = len(s)-1
-    while j &gt;= 0 and (s[j] == ' ' or s[j] == '\t'):
-        j -= 1
-    return s[:j+1]
-</t>
-<t tx="ekr.20090902092112.1474">if g.unitTesting:
-
-    table = (
-        ('a a\t','a a'),
-        ('a a\t\n','a a\t\n'),
-        ('a a ','a a'),
-    )
-
-    for s,val in table:
-        result = g.removeTrailingWs(s)
-        assert result == val, 'expected %s, got %s' % (
-            repr(val),repr(result))
-</t>
-<t tx="ekr.20090902092112.1475"># Skips leading up to width leading whitespace.
-
-def skip_leading_ws(s,i,ws,tab_width):
-
-    count = 0
-    while count &lt; ws and i &lt; len(s):
-        ch = s[i]
-        if ch == ' ':
-            count += 1
-            i += 1
-        elif ch == '\t':
-            count += (abs(tab_width) - (count % abs(tab_width)))
-            i += 1
-        else: break
-
-    return i
-</t>
-<t tx="ekr.20090902092112.1476">def skip_leading_ws_with_indent(s,i,tab_width):
-
-    """Skips leading whitespace and returns (i, indent), 
-
-    - i points after the whitespace
-    - indent is the width of the whitespace, assuming tab_width wide tabs."""
-
-    count = 0 ; n = len(s)
-    while i &lt; n:
-        ch = s[i]
-        if ch == ' ':
-            count += 1
-            i += 1
-        elif ch == '\t':
-            count += (abs(tab_width) - (count % abs(tab_width)))
-            i += 1
-        else: break
-
-    return i, count
-</t>
-<t tx="ekr.20090902092112.1477">def stripBlankLines(s):
-
-    lines = g.splitLines(s)
-
-    for i in range(len(lines)):
-
-        line = lines[i]
-        j = g.skip_ws(line,0)
-        if j &gt;= len(line):
-            lines[i] = ''
-            # g.trace("%4d %s" % (i,repr(lines[i])))
-        elif line[j] == '\n':
-            lines[i] = '\n'
-            # g.trace("%4d %s" % (i,repr(lines[i])))
-
-    return ''.join(lines)
-</t>
-<t tx="ekr.20090902092112.1478"></t>
 <t tx="ekr.20090902092112.1479">def splitLines (self,s):
 
     '''Split s into lines, preserving the number of lines and the ending of the last line.'''
@@ -1876,7 +1717,8 @@ def skip_leading_ws(s,i,ws,tab_width):
 
     @others
 </t>
-<t tx="ekr.20090902092112.1481">app_version = '4.6.3-final'</t>
+<t tx="ekr.20090902092112.1481"># Used by both @button make leo.nsi and @button make leo.zip.
+app_version = version = '4.6.3-final'</t>
 <t tx="ekr.20090902092112.1482">try:
     inLeo = g is not None
 except AttributeError:
@@ -1927,6 +1769,69 @@ substitutionDict = {
     'PythonExecutable': '$PythonExecutable',
     'SMPROGRAMS': '$SMPROGRAMS'
 }
+</t>
+<t tx="ekr.20090905082405.1486">'''Create leo.zip using bzr export'''
+
+# To do: Leo bitmap.
+
+&lt;&lt; includes &gt;&gt;
+&lt;&lt; define version &gt;&gt;
+@others
+
+abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
+
+root = join('Lib','site-packages','Leo-%s' % (version)) # Don't use abspath!
+docDir  = abspath(join(g.app.loadDir,'..','doc'))
+top     = abspath(join(g.app.loadDir,'..','..'))
+zipFile = abspath(join(top,'Leo-%s.zip' % (version)))
+zipFile2= abspath(join(top,'Leo-%s-temp.zip' % (version)))
+
+make()
+
+print('@button make: done')
+</t>
+<t tx="ekr.20090905082405.1487">import os
+import shutil
+import struct
+import sys
+import time</t>
+<t tx="ekr.20090905082405.1489">def make():
+
+    # Copy files from the doc directory to the top directory.
+    for theFile in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
+        path= abspath(join(docDir,theFile))
+        shutil.copy(path,top)
+        g.es_print('created in %s: %s' % (top,theFile))
+
+    for z in (zipFile,zipFile2):
+        if exists(z): unlink(z)
+
+    commands = (
+        r'cd %s' % (top),
+        r'bzr status',
+        # This commit ensures the proper files are included in the distribution.
+        r'bzr commit -m "commit doc files during make"',
+        r'bzr status',
+        r'bzr export "%s"' % (zipFile),
+        r'bzr export --root="%s" "%s"' % (root,zipFile2),
+    )
+
+    for z in commands:
+        print ('command: %s' % z)
+        os.system(z)
+
+    # Unlink temp files.
+    unlink(zipFile2)
+    for z in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
+        path= abspath(join(top,z))
+        if exists(z): unlink(z)
+
+    os.system('dir %s' % (top))
+</t>
+<t tx="ekr.20090905082405.1490">def unlink (fileName):
+
+    print ('removing: %s' % fileName)
+    os.remove(fileName)
 </t>
 </tnodes>
 </leo_file>

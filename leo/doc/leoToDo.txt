@@ -11,6 +11,13 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20090714085914.5990:To do first
+#@+node:ekr.20090905075736.6097:Improve installer
+@nocolor-node
+
+Delete .leo folders on uninstall.
+Don't include leoPy.leo, etc.
+#@nonl
+#@-node:ekr.20090905075736.6097:Improve installer
 #@+node:ekr.20090822054806.6004:Improve the intro
 
 * Give some hint about why Leo is different.
@@ -18,6 +25,70 @@
 * Give some hints about the Aha, and that there *is* an Aha.
 #@nonl
 #@-node:ekr.20090822054806.6004:Improve the intro
+#@+node:ekr.20090811141250.5954:Easy
+#@+node:ekr.20090727085243.5993:Add clone-marked command
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/81af48a58fb84397/c6fcbe5a2a95b39f#c6fcbe5a2a95b39f
+
+A clone-marked command should be part of the core.
+
+Make sure you work on http://pastebin.com/f4e9b31d7 version, which
+supports undo - and try to fix the undo problem (where nodes still
+seem like clones, even if they aren't after undo). 
+#@nonl
+#@+node:ekr.20090728110657.6016:Ville's code
+'''Create a clone for each marked noded, and gathers them.'''
+
+from leo.core import leoNodes
+
+def clone_as_nth_child(c, parent_v, n, v):
+    """ Clone vnode as nth child of parent_v """
+    t = v.t
+    if g.unified_nodes:
+        child = v.t
+    else:
+        child = leoNodes.vnode(context=c,t=t)
+
+    if child not in v.t.vnodeList:
+        v.t.vnodeList.append(child)
+    child._linkAsNthChild(parent_v,n)
+
+
+def clone_marked(parent):
+    u = c.undoer
+    undoData = u.beforeChangeTree(parent)
+
+    marked = [m.copy() for m in c.allNodes_iter() if m.isMarked()]
+    print marked
+
+    for m in marked:
+        # do not clear marks (to make undo simpler)
+        #m.clearMarked()
+        clone_as_nth_child(c, parent.v, 0, m.v)
+
+    u.afterChangeTree(p,'Clone marked',undoData)
+    c.redraw()    
+
+
+clone_marked(p.copy())
+#@nonl
+#@-node:ekr.20090728110657.6016:Ville's code
+#@-node:ekr.20090727085243.5993:Add clone-marked command
+#@+node:ekr.20090724081340.5987:Improve recursive import script and @auto
+@nocolor-node
+
+Instead of adding an @ignore directive, it might be better
+to change @auto to @@auto.
+
+Should @auto be more lenient with C files?
+
+Improve the recursive import script.
+    - Minimize the path names
+    - Option to include/exclude the @auto itself
+
+#@-node:ekr.20090724081340.5987:Improve recursive import script and @auto
+#@-node:ekr.20090811141250.5954:Easy
 #@+node:ekr.20090811090022.6029:Bugs
 #@+node:ekr.20090822054806.6003:Add rst button that doesn't need rst3 plugin
 @nocolor-node
@@ -100,70 +171,6 @@ things to fix for Leo 4.6 final.
 
 #@-node:ekr.20090709101224.6040:Fix rst bug
 #@-node:ekr.20090811090022.6029:Bugs
-#@+node:ekr.20090811141250.5954:Easy
-#@+node:ekr.20090727085243.5993:Add clone-marked command
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/81af48a58fb84397/c6fcbe5a2a95b39f#c6fcbe5a2a95b39f
-
-A clone-marked command should be part of the core.
-
-Make sure you work on http://pastebin.com/f4e9b31d7 version, which
-supports undo - and try to fix the undo problem (where nodes still
-seem like clones, even if they aren't after undo). 
-#@nonl
-#@+node:ekr.20090728110657.6016:Ville's code
-'''Create a clone for each marked noded, and gathers them.'''
-
-from leo.core import leoNodes
-
-def clone_as_nth_child(c, parent_v, n, v):
-    """ Clone vnode as nth child of parent_v """
-    t = v.t
-    if g.unified_nodes:
-        child = v.t
-    else:
-        child = leoNodes.vnode(context=c,t=t)
-
-    if child not in v.t.vnodeList:
-        v.t.vnodeList.append(child)
-    child._linkAsNthChild(parent_v,n)
-
-
-def clone_marked(parent):
-    u = c.undoer
-    undoData = u.beforeChangeTree(parent)
-
-    marked = [m.copy() for m in c.allNodes_iter() if m.isMarked()]
-    print marked
-
-    for m in marked:
-        # do not clear marks (to make undo simpler)
-        #m.clearMarked()
-        clone_as_nth_child(c, parent.v, 0, m.v)
-
-    u.afterChangeTree(p,'Clone marked',undoData)
-    c.redraw()    
-
-
-clone_marked(p.copy())
-#@nonl
-#@-node:ekr.20090728110657.6016:Ville's code
-#@-node:ekr.20090727085243.5993:Add clone-marked command
-#@+node:ekr.20090724081340.5987:Improve recursive import script and @auto
-@nocolor-node
-
-Instead of adding an @ignore directive, it might be better
-to change @auto to @@auto.
-
-Should @auto be more lenient with C files?
-
-Improve the recursive import script.
-    - Minimize the path names
-    - Option to include/exclude the @auto itself
-
-#@-node:ekr.20090724081340.5987:Improve recursive import script and @auto
-#@-node:ekr.20090811141250.5954:Easy
 #@+node:ekr.20090811141250.5955:Harder features
 #@+node:ekr.20090714085914.5991:Add drag and drop to qt gui
 #@-node:ekr.20090714085914.5991:Add drag and drop to qt gui
