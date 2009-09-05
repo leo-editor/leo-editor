@@ -4910,6 +4910,37 @@ class baseCommands (object):
     #@-node:ekr.20031218072017.2909:Utilities
     #@-node:ekr.20031218072017.2898:Expand & Contract...
     #@+node:ekr.20031218072017.2922:Mark...
+    #@+node:ekr.20090905110447.6098:c.cloneMarked
+    def cloneMarked(self,event=None):
+
+        """Clone all marked nodes as children of parent position."""
+
+        c = self ; u = c.undoer
+        current = c.currentPosition()
+
+        if not g.unified_nodes:
+            return g.es_print(
+                'clone-marked works only with g.unified_nodes = True',
+                color='blue')
+
+        # Create a new node to hold clones.
+        parent = current.insertAfter()
+        parent.h = 'Clones of marked nodes'
+        marked = []
+        for p in c.allNodes_iter():
+            if p.isMarked() and not p.v in marked:
+                marked.append(p.v)
+        marked.reverse()
+
+        undoData = u.beforeChangeTree(parent)
+        for v in marked:
+            # This only works for one-node world.
+            v._linkAsNthChild(parent.v,0)
+        u.afterChangeTree(parent,'Clone marked',undoData)
+        parent.expand()
+        c.selectPosition(parent)
+        c.redraw()    
+    #@-node:ekr.20090905110447.6098:c.cloneMarked
     #@+node:ekr.20031218072017.2923:markChangedHeadlines
     def markChangedHeadlines (self,event=None):
 

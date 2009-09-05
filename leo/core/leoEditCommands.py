@@ -1453,6 +1453,7 @@ class editCommandsClass (baseEditCommandsClass):
             'click-click-box':                      self.clickClickBox,
             'click-headline':                       self.clickHeadline,
             'click-icon-box':                       self.clickIconBox,
+            'clone-marked':                         c.cloneMarked,
             'contract-body-pane':                   c.frame.contractBodyPane,
             'contract-log-pane':                    c.frame.contractLogPane,
             'contract-outline-pane':                c.frame.contractOutlinePane,
