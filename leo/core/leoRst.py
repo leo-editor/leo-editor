@@ -976,7 +976,7 @@ class rstCommands:
         The @rst may or may not be followed by a filename; the filename is *ignored*,
         and its type does not affect ext or the output generated in any way.
 
-        ext should start with a period:  .html, .tex or None (specifies rst output).
+        ext should start with a period: .html, .tex or None (specifies rst output).
 
         Returns p, s, where p is the position of the @rst node and s is the converted text.'''
 

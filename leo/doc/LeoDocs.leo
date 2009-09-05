@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="5,0,0"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="2"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>
@@ -215,7 +215,7 @@
 <v t="ekr.20060105145125"><vh>How to install the Aspell spell checker</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.3" a="E"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
+<v t="ekr.20050831195331.3"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
 <v t="ekr.20050816073412" a="E"><vh>@rst html\intro.html</vh>
 <v t="ekr.20050816073814"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050816073412.1"><vh>Introduction</vh>
@@ -699,7 +699,7 @@
 </v>
 </v>
 <v t="ekr.20050831184021.1"><vh>Chapter 14: Leo and reStructuredText</vh>
-<v t="ekr.20050818163826"><vh>@rst html\rstplugin3.html</vh>
+<v t="ekr.20050818163826" a="E"><vh>@rst html\rstplugin3.html</vh>
 <v t="ekr.20050818163826.1"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050818163826.2"><vh>Overview</vh></v>
 <v t="ekr.20050818163826.3"><vh>Power features of @rst trees</vh></v>
@@ -3161,7 +3161,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050831195331.3" a="E"></v>
+<v t="ekr.20050831195331.3"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
@@ -18538,32 +18538,20 @@ When the first @rst node is found, writeNodeToString processes the node as usual
 - writeNodeToString returns after processing at most one @rst node.
 
 Scripts can easily use writeNodeToString to convert @rst trees into various kinds of output.
-For example, here is the body of @button rst-&gt;html in LeoDocs.leo::
+For example::
 
-    import leo.core.leoPlugins as leoPlugins
-    rst3 = leoPlugins.getPluginModule('rst3')
-    if rst3:
-        controller = rst3.controllers.get(c)
-        if controller:
-            p,s = controller.writeNodeToString(ext='.html')
-            print '*' * 40,p
-            print s
+    p,s = c.rstCommands.writeNodeToString(p,ext='html')
 
 Notes:
 
-- This script scans the presently selected tree for @rst nodes, just like the @button rst script does.
+- This script scans the presently selected tree for @rst nodes.
   In particular, if the presently selected tree does not contain an @rst node the search continues in parent trees.
   When an @rst node is found, it converts the node (and descendants) to html and returns p,
   the found @rst node and s, the html itself.
+  
+- Valid values for the ext argument are ".html", ".tex" or None (specifies rst output)
 
-- The script shown above merely prints the output, but many other actions could be taken.
-  In particular, because writeNodeToString returns p it would be possible to write a script that
-  would scan multiple @rst nodes.
-
-- None and '.tex' are also valid values for the ext argument to writeNodeToString.
-  None converts the @rst tree to a single reStructuredText string, as shown in @button rst-&gt;rst.
-
-- There is some support for ext='.pdf', but this is experimental code.  Expect crashes.</t>
+- There is some support for ext=".pdf", but this is experimental code.  Expect crashes.</t>
 <t tx="ekr.20060527105211">@language rest</t>
 <t tx="ekr.20060527105617">#######################################
 Chapter 16: Debugging with Leo
@@ -23029,7 +23017,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="5,0,0"></t>
+<t tx="ekr.20070610174018" str_leo_pos="2"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 

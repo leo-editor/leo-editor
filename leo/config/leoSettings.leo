@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,14,12,3"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913"><vh>@@button Save</vh></v>
@@ -98,9 +98,9 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
-<v t="ekr.20070926132045"><vh>Common @button nodes</vh>
-<v t="ekr.20070926082407"><vh>@buttons</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20070926132045" a="E"><vh>Common @button nodes</vh>
+<v t="ekr.20070926082407" a="E"><vh>@buttons</vh>
 <v t="ekr.20090703122042.7463"><vh>@@button a-common-button</vh></v>
 <v t="ekr.20090610164636.8489"><vh>@@button add-test @key=alt-9</vh></v>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -1010,7 +1010,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
+<v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1077,7 +1077,7 @@
 <v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
-<v t="ekr.20081018053140.11" a="E"><vh>qtGui plugin</vh>
+<v t="ekr.20081018053140.11"><vh>qtGui plugin</vh>
 <v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 200000</vh></v>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
@@ -6543,7 +6543,7 @@ propagate-key-event = Alt-O
 propagate-key-event = Alt-W
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401"></t>
+<t tx="ekr.20070622214401" str_leo_pos="6"></t>
 <t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070919125633">button_text_font_family = verdana
@@ -7029,22 +7029,8 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20071005173455"></t>
 <t tx="ekr.20071006153053">True: add stuff consisting only of whitespace to the kill ring.</t>
 <t tx="ekr.20071006153725"></t>
-<t tx="ekr.20071009135515">import leoPlugins
-
-rst3 = leoPlugins.getPluginModule('rst3')
-
-if rst3:
-    controller = rst3.controllers.get(c)
-    if controller:
-        controller.processTopTree(p)
-else:
-    rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
-    if rst3:
-        g.es('rst3 loaded')
-        rst3.onCreate('tag',{'c':c})
-    else:
-        # Ask to be removed.
-        g.app.scriptDict['removeMe'] = True</t>
+<t tx="ekr.20071009135515">c.rstCommands.rst3()
+</t>
 <t tx="ekr.20071010123015">文件</t>
 <t tx="ekr.20071010123015.1">新建</t>
 <t tx="ekr.20071010123223.1">打开</t>

@@ -54,7 +54,7 @@
 </v>
 </v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
-<v t="EKR.20040519090846.2" a="E"><vh>@asis ../doc/INSTALL.TXT</vh>
+<v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="ekr.20080825083632.262"><vh>Leo's HOME directory</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
