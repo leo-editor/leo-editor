@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="108" left="409" height="841" width="864"/>
+	<global_window_position top="102" left="332" height="841" width="864"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -359,10 +359,7 @@
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
 <v t="ekr.20090831145049.1819" a="M"><vh>Unicode test</vh></v>
-<v t="ekr.20090904063348.1821"><vh>Parellel code</vh>
-<v t="ekr.20090904063348.1824"><vh>Common</vh></v>
-<v t="ekr.20090904063348.1823"><vh>Loops</vh></v>
-</v>
+<v t="ekr.20090906100616.1828"><vh>generator tests</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -3364,44 +3361,37 @@ w.show()
 </t>
 <t tx="ekr.20090831145049.1819">@first # -*- coding: utf-8 -*- 
 print u'ä' </t>
-<t tx="ekr.20090904063348.1821">@others
+<t tx="ekr.20090906100616.1828">def allPositions(c):
+    this,next = None,c.rootPosition()
+    while next:
+        this = next
+        next = this.threadNext()
+        yield this
+    raise StopIteration
 
-print '*' * 10
-assert loop_serial() == loop_deco()
-print 'OK'</t>
-<t tx="ekr.20090904063348.1823">def loop_serial():
-    results = [None]*count
-    for i in range(count):
-        results[i] = do_work(data, i)
-    return summarize(results, count)
+def allVnodes1(c): # Will be a commands method.
+    this,next = None,c.rootPosition()
+    while next:
+        this = next
+        next = this.threadNext()
+        yield this.v
+    raise StopIteration
 
-def parellel(iterable):
-    g.trace()
-    def call(func): # Could use thread.
-        g.trace(func)
-        # map(func,iterable)
-        for i in iterable: func(i)
-    return call
+def allVnodes2(c): # Will be a commands method.
+    for p in allPositions(c):
+        yield p.v
+    raise StopIteration
 
-def loop_deco():
-    g.trace()
-    results = [None]*count
-    @parellel(range(count))
-    def loop(i):
-        g.trace(i)
-        results[i] = do_work(data, i)
-    return summarize(results, count)</t>
-<t tx="ekr.20090904063348.1824">count = 10
-data = [3.0*j for j in range(count) ]
+vnodes1 = [v for v in allVnodes1(c)]
+vnodes2 = [v for v in allVnodes2(c)] #,c.allNodes_iter())]
+vnodes3 = [p.v for p in allPositions(c)]
+assert vnodes2 == vnodes1
+assert vnodes3 == vnodes2
 
-def do_work(data, i):
-    '''The body of the loop'''
-    g.trace(i)
-    return data[i]/2
-
-def summarize(results, count):
-    g.trace(count)
-    return sum(results[:count])
-</t>
+missing = [v for v in vnodes1 if v not in vnodes2]
+if missing:
+    print 'missing',len(missing)
+else:
+    print 'done'</t>
 </tnodes>
 </leo_file>
