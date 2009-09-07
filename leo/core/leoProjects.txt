@@ -25,6 +25,29 @@
 - Created .nsi script.
 #@nonl
 #@-node:ekr.20090831095817.6067:Leo 4.6.3
+#@+node:ekr.20090907080624.6082:Leo 4.6.4
+#@+node:ekr.20090907080624.6083:Added new plugins
+@nocolor-node
+
+New command-line option
+    --gui=qttabs
+
+new plugins:
+    spydershell,
+    qtframecommands
+    mod_framesize.
+
+Improved plugin:  "show folder" in rclick menu.
+
+Improved plugin: contextmenu.py
+
+    If you rclick on @thin / whatever item, you should see "open
+    /home/ville/foo" (or equivalent) menu entry. It open up the file manager on
+    that folder (using xdg-open on linux, os.startfile on windows). I have no
+    idea what to do with mac, now it runs xdg-open and probably fails.
+#@nonl
+#@-node:ekr.20090907080624.6083:Added new plugins
+#@-node:ekr.20090907080624.6082:Leo 4.6.4
 #@+node:ekr.20090718091653.5982:Leo 4.7 projects
 #@+node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090721091726.5982:Fixed crasher when writing to a newly-deleted file
@@ -810,47 +833,6 @@ def removeLeadingWhitespace (s,first_ws,tab_width):
     return s
 #@-node:ekr.20031218072017.3202:removeLeadingWhitespace
 #@-node:ekr.20090901175503.6096:Fixed bug in g.adjustTripleString
-#@+node:ekr.20090822054806.6003:Converted buttons and docs to use leoRst.py
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/95687c7a2dba5e18
-
-The rst3 plugin is required to use the script examples given in the
-"@@button rst" example in the leoSettings.leo file and in Chapter 14
-of the users guide (shown below).  They should be updated to utilize
-the new rST functionality in Leo's core.
-
-Until that is done, can someone post a working "@button rst" script
-that doesn't require the rst3 plugin?  I would like to test the rST
-implementation in Leo's core.
-
-Script in "@@button rst" example in the leoSettings.leo file:
-|   import leoPlugins
-|   rst3 = leoPlugins.getPluginModule('rst3')
-|   if rst3:
-|       controller = rst3.controllers.get(c)
-|       if controller:
-|           controller.processTopTree(p)
-|   else:
-|       rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
-|       if rst3:
-|           g.es('rst3 loaded')
-|           rst3.onCreate('tag',{'c':c})
-|       else:
-|           # Ask to be removed.
-|           g.app.scriptDict['removeMe'] = True
-
-Script in Chapter 14 of the users guide:
-|   import leo.core.leoPlugins as leoPlugins
-|   rst3 = leoPlugins.getPluginModule('rst3')
-|   if rst3:
-|       controller = rst3.controllers.get(c)
-|       if controller:
-|           p,s = controller.writeNodeToString(ext='.html')
-|           print '*' * 40,p
-|           print s 
-#@nonl
-#@-node:ekr.20090822054806.6003:Converted buttons and docs to use leoRst.py
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin
@@ -898,227 +880,6 @@ What I did:
 - Added __init__.py to 'extensions' folder.
 #@nonl
 #@-node:ekr.20090822054806.6002:Merged clean-sys-path branch
-#@+node:ekr.20090727085243.5993:Added clone-marked command
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/81af48a58fb84397/c6fcbe5a2a95b39f#c6fcbe5a2a95b39f
-#@+node:ekr.20050920084036.55: getPublicCommands (editCommandsClass)
-def getPublicCommands (self):        
-
-    c = self.c
-
-    return {
-        'activate-cmds-menu':                   self.activateCmdsMenu,
-        'activate-edit-menu':                   self.activateEditMenu,
-        'activate-file-menu':                   self.activateFileMenu,
-        'activate-help-menu':                   self.activateHelpMenu,
-        'activate-outline-menu':                self.activateOutlineMenu,
-        'activate-plugins-menu':                self.activatePluginsMenu,
-        'activate-window-menu':                 self.activateWindowMenu,
-        'add-editor':                           c.frame.body and c.frame.body.addEditor,
-        'add-space-to-lines':                   self.addSpaceToLines,
-        'add-tab-to-lines':                     self.addTabToLines, 
-        'back-to-indentation':                  self.backToIndentation,
-        'back-to-home':                         self.backToHome,
-        'back-char':                            self.backCharacter,
-        'back-char-extend-selection':           self.backCharacterExtendSelection,
-        'back-page':                            self.backPage,
-        'back-page-extend-selection':           self.backPageExtendSelection,
-        'back-paragraph':                       self.backwardParagraph,
-        'back-paragraph-extend-selection':      self.backwardParagraphExtendSelection,
-        'back-sentence':                        self.backSentence,
-        'back-sentence-extend-selection':       self.backSentenceExtendSelection,
-        'back-word':                            self.backwardWord,
-        'back-word-extend-selection':           self.backwardWordExtendSelection,
-        'backward-delete-char':                 self.backwardDeleteCharacter,
-        'backward-kill-paragraph':              self.backwardKillParagraph,
-        'backward-find-character':              self.backwardFindCharacter,
-        'backward-find-character-extend-selection': self.backwardFindCharacterExtendSelection,
-        'beginning-of-buffer':                  self.beginningOfBuffer,
-        'beginning-of-buffer-extend-selection': self.beginningOfBufferExtendSelection,
-        'beginning-of-line':                    self.beginningOfLine,
-        'beginning-of-line-extend-selection':   self.beginningOfLineExtendSelection,
-        'capitalize-word':                      self.capitalizeWord,
-        'center-line':                          self.centerLine,
-        'center-region':                        self.centerRegion,
-        'clean-all-lines':                      self.cleanAllLines,
-        'clean-lines':                          self.cleanLines,
-        'clear-extend-mode':                    self.clearExtendMode,
-        'clear-selected-text':                  self.clearSelectedText,
-        'click-click-box':                      self.clickClickBox,
-        'click-headline':                       self.clickHeadline,
-        'click-icon-box':                       self.clickIconBox,
-        'clone-marked':                         c.cloneMarked,
-        'contract-body-pane':                   c.frame.contractBodyPane,
-        'contract-log-pane':                    c.frame.contractLogPane,
-        'contract-outline-pane':                c.frame.contractOutlinePane,
-        'contract-pane':                        c.frame.contractPane,
-        'count-region':                         self.countRegion,
-        'cycle-focus':                          self.cycleFocus,
-        'cycle-all-focus':                      self.cycleAllFocus,
-        'cycle-editor-focus':                   c.frame.body.cycleEditorFocus,
-        # 'delete-all-icons':                   self.deleteAllIcons,
-        'delete-char':                          self.deleteNextChar,
-        'delete-editor':                        c.frame.body.deleteEditor,
-        'delete-first-icon':                    self.deleteFirstIcon,
-        'delete-indentation':                   self.deleteIndentation,
-        'delete-last-icon':                     self.deleteLastIcon,
-        'delete-node-icons':                    self.deleteNodeIcons,
-        'delete-spaces':                        self.deleteSpaces,
-        'do-nothing':                           self.doNothing,
-        'downcase-region':                      self.downCaseRegion,
-        'downcase-word':                        self.downCaseWord,
-        'double-click-headline':                self.doubleClickHeadline,
-        'double-click-icon-box':                self.doubleClickIconBox,
-        'end-of-buffer':                        self.endOfBuffer,
-        'end-of-buffer-extend-selection':       self.endOfBufferExtendSelection,
-        'end-of-line':                          self.endOfLine,
-        'end-of-line-extend-selection':         self.endOfLineExtendSelection,
-        'escape':                               self.watchEscape,
-        'eval-expression':                      self.evalExpression,
-        'exchange-point-mark':                  self.exchangePointMark,
-        'expand-body-pane':                     c.frame.expandBodyPane,
-        'expand-log-pane':                      c.frame.expandLogPane,
-        'expand-outline-pane':                  c.frame.expandOutlinePane,
-        'expand-pane':                          c.frame.expandPane,
-        'extend-to-line':                       self.extendToLine,
-        'extend-to-paragraph':                  self.extendToParagraph,
-        'extend-to-sentence':                   self.extendToSentence,
-        'extend-to-word':                       self.extendToWord,
-        'fill-paragraph':                       self.fillParagraph,
-        'fill-region':                          self.fillRegion,
-        'fill-region-as-paragraph':             self.fillRegionAsParagraph,
-        'find-character':                       self.findCharacter,
-        'find-character-extend-selection':      self.findCharacterExtendSelection,
-        'find-word':                            self.findWord,
-        'find-word-in-line':                    self.findWordInLine,
-        'flush-lines':                          self.flushLines,
-        'focus-to-body':                        self.focusToBody,
-        'focus-to-log':                         self.focusToLog,
-        'focus-to-minibuffer':                  self.focusToMinibuffer,
-        'focus-to-tree':                        self.focusToTree,
-        'forward-char':                         self.forwardCharacter,
-        'forward-char-extend-selection':        self.forwardCharacterExtendSelection,
-        'forward-page':                         self.forwardPage,
-        'forward-page-extend-selection':        self.forwardPageExtendSelection,
-        'forward-paragraph':                    self.forwardParagraph,
-        'forward-paragraph-extend-selection':   self.forwardParagraphExtendSelection,
-        'forward-sentence':                     self.forwardSentence,
-        'forward-sentence-extend-selection':    self.forwardSentenceExtendSelection,
-        'forward-end-word':                     self.forwardEndWord, # New in Leo 4.4.2.
-        'forward-end-word-extend-selection':    self.forwardEndWordExtendSelection, # New in Leo 4.4.2.
-        'forward-word':                         self.forwardWord,
-        'forward-word-extend-selection':        self.forwardWordExtendSelection,
-        'fully-expand-body-pane':               c.frame.fullyExpandBodyPane,
-        'fully-expand-log-pane':                c.frame.fullyExpandLogPane,
-        'fully-expand-pane':                    c.frame.fullyExpandPane,
-        'fully-expand-outline-pane':            c.frame.fullyExpandOutlinePane,
-        'goto-char':                            self.gotoCharacter,
-        'goto-global-line':                     self.gotoGlobalLine,
-        'goto-line':                            self.gotoLine,
-        'hide-body-pane':                       c.frame.hideBodyPane,
-        'hide-log-pane':                        c.frame.hideLogPane,
-        'hide-pane':                            c.frame.hidePane,
-        'hide-outline-pane':                    c.frame.hideOutlinePane,
-        'how-many':                             self.howMany,
-        # Use indentBody in leoCommands.py
-        'indent-relative':                      self.indentRelative,
-        'indent-rigidly':                       self.tabIndentRegion,
-        'indent-to-comment-column':             self.indentToCommentColumn,
-        'insert-icon':                          self.insertIcon,
-        'insert-newline':                       self.insertNewline,
-        'insert-parentheses':                   self.insertParentheses,
-        'keep-lines':                           self.keepLines,
-        'kill-paragraph':                       self.killParagraph,
-        'line-number':                          self.lineNumber,
-        'move-lines-down':                      self.moveLinesDown,
-        'move-lines-up':                        self.moveLinesUp,
-        'move-past-close':                      self.movePastClose,
-        'move-past-close-extend-selection':     self.movePastCloseExtendSelection,
-        'newline-and-indent':                   self.insertNewLineAndTab,
-        'next-line':                            self.nextLine,
-        'next-line-extend-selection':           self.nextLineExtendSelection,
-        'previous-line':                        self.prevLine,
-        'previous-line-extend-selection':       self.prevLineExtendSelection,
-        'remove-blank-lines':                   self.removeBlankLines,
-        'remove-space-from-lines':              self.removeSpaceFromLines,
-        'remove-tab-from-lines':                self.removeTabFromLines,
-        'reverse-region':                       self.reverseRegion,
-        'reverse-sort-lines':                   self.reverseSortLines,
-        'reverse-sort-lines-ignoring-case':     self.reverseSortLinesIgnoringCase,
-        'scroll-down-half-page':                self.scrollDownHalfPage,                
-        'scroll-down-line':                     self.scrollDownLine,
-        'scroll-down-page':                     self.scrollDownPage,
-        'scroll-outline-down-line':             self.scrollOutlineDownLine,
-        'scroll-outline-down-page':             self.scrollOutlineDownPage,
-        'scroll-outline-left':                  self.scrollOutlineLeft,
-        'scroll-outline-right':                 self.scrollOutlineRight,
-        'scroll-outline-up-line':               self.scrollOutlineUpLine,
-        'scroll-outline-up-page':               self.scrollOutlineUpPage,
-        'scroll-up-half-page':                  self.scrollUpHalfPage,                        
-        'scroll-up-line':                       self.scrollUpLine,
-        'scroll-up-page':                       self.scrollUpPage,
-        'select-all':                           self.selectAllText,
-        # Exists, but can not be executed via the minibuffer.
-        # 'self-insert-command':                self.selfInsertCommand,
-        'set-comment-column':                   self.setCommentColumn,
-        'set-extend-mode':                      self.setExtendMode,
-        'set-fill-column':                      self.setFillColumn,
-        'set-fill-prefix':                      self.setFillPrefix,
-        #'set-mark-command':                    self.setRegion,
-        'show-colors':                          self.showColors,
-        'show-fonts':                           self.showFonts,
-        'simulate-begin-drag':                  self.simulateBeginDrag,
-        'simulate-end-drag':                    self.simulateEndDrag,
-        'sort-columns':                         self.sortColumns,
-        'sort-fields':                          self.sortFields,
-        'sort-lines':                           self.sortLines,
-        'sort-lines-ignoring-case':             self.sortLinesIgnoringCase,
-        'split-line':                           self.splitLine,
-        'tabify':                               self.tabify,
-        'toggle-extend-mode':                   self.toggleExtendMode,
-        'transpose-chars':                      self.transposeCharacters,
-        'transpose-lines':                      self.transposeLines,
-        'transpose-words':                      self.transposeWords,
-        'untabify':                             self.untabify,
-        'upcase-region':                        self.upCaseRegion,
-        'upcase-word':                          self.upCaseWord,
-        'view-lossage':                         self.viewLossage,
-        'what-line':                            self.whatLine,
-    }
-#@-node:ekr.20050920084036.55: getPublicCommands (editCommandsClass)
-#@+node:ekr.20090905110447.6098:c.cloneMarked
-def cloneMarked(self,event=None):
-
-    """Clone all marked nodes as children of parent position."""
-
-    c = self ; u = c.undoer
-    current = c.currentPosition()
-
-    if not g.unified_nodes:
-        return g.es_print(
-            'clone-marked works only with g.unified_nodes = True',
-            color='blue')
-
-    # Create a new node to hold clones.
-    parent = current.insertAfter()
-    parent.h = 'Clones of marked nodes'
-    marked = []
-    for p in c.allNodes_iter():
-        if p.isMarked() and not p.v in marked:
-            marked.append(p.v)
-    marked.reverse()
-
-    undoData = u.beforeChangeTree(parent)
-    for v in marked:
-        # This only works for one-node world.
-        v._linkAsNthChild(parent.v,0)
-    u.afterChangeTree(parent,'Clone marked',undoData)
-    parent.expand()
-    c.selectPosition(parent)
-    c.redraw()    
-#@-node:ekr.20090905110447.6098:c.cloneMarked
-#@-node:ekr.20090727085243.5993:Added clone-marked command
 #@-node:ekr.20090817080059.5996:Features
 #@-node:ekr.20090718091653.5982:Leo 4.7 projects
 #@-all
