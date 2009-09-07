@@ -395,8 +395,8 @@ def getEnabledFiles (s,plugins_path):
 def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
 
     trace = False # and not g.unitTesting
-    verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
-    warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+
+    global loadedModules,loadingModuleNameStack
 
     # Prevent Leo from crashing if .leoID.txt does not exist.
     if g.app.config is None:
@@ -405,7 +405,9 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
             pass
         g.app.config = StubConfig()
 
-    global loadedModules,loadingModuleNameStack
+    # Fixed reversion: do this after possibly creating stub config class.
+    verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
+    warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
 
     if moduleOrFileName.endswith('.py'):
         moduleName = moduleOrFileName [:-3]
