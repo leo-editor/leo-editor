@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="7,3,1,1,0"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -68,11 +68,17 @@
 </v>
 <v t="ekr.20090620072519.1389"><vh>Distribution checklist</vh></v>
 <v t="ekr.20090902092112.1481"><vh>&lt;&lt; define version &gt;&gt;</vh></v>
-<v t="ekr.20090826220933.1565"><vh>@button make leo.nsi</vh>
+<v t="ekr.20090905082405.1486"><vh>@button make leo.zip</vh>
+<v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
+<v t="ekr.20090902092112.1481"></v>
+<v t="ekr.20090905082405.1489"><vh>make</vh></v>
+<v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
+</v>
+<v t="ekr.20090826220933.1565" a="E"><vh>@button make leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
+<v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
 <v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
 <v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1578"><vh>putDefines</vh></v>
@@ -90,9 +96,9 @@
 <v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
 </v>
 </v>
-<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
-<v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
+<v t="ekr.20090901092556.1574" a="E"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
 </v>
 <v t="ekr.20090901092556.1575"><vh>genMiddle</vh></v>
@@ -122,12 +128,6 @@
 <v t="ekr.20090902092112.1479"><vh>splitLines</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20090905082405.1486"><vh>@button make leo.zip</vh>
-<v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
-<v t="ekr.20090902092112.1481"></v>
-<v t="ekr.20090905082405.1489"><vh>make</vh></v>
-<v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -483,7 +483,7 @@ makes the system more flexible...
 now for about 2 -- 3 months. It has totally changed not only the way that I
 program, but also the way that I store and organise all of the information that
 I need for the job that I do. -- Ian Mulvany</t>
-<t tx="ekr.20050315084904" str_leo_pos="3"></t>
+<t tx="ekr.20050315084904" str_leo_pos="7,3,1,1,0"></t>
 <t tx="ekr.20050315084922">c.spellCommands.openSpellTab()</t>
 <t tx="ekr.20060213160806">"Thanks for a wonderful program – everybody should be using it! It blows the
 socks off that Java Mind mapping software that won project of the month a while
@@ -1627,7 +1627,8 @@ FunctionEnd
                 result.append('\n')
                 result.append('SetOutPath $INSTDIR\\%s\n' % theDir2)
                 for fn in aList:
-                    result.append('File %s\\%s\\%s\n' % (
+                    # Fix bug 425369: quote file names.
+                    result.append('File "%s\\%s\\%s"\n' % (
                         rootDir,theDir2,fn))
 
     result = [self.indent(z) for z in result]
