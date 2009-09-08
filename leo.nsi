@@ -3,6 +3,7 @@
 var PythonExecutable
 ; Installation directory.  Set by .onInit.
 var InstallDirectory
+
 SetCompressor bzip2
 Caption "Leo Installer"
 AutoCloseWindow false 
@@ -58,6 +59,7 @@ Section "Leo" SEC01
     SetOutPath "$INSTDIR"
     SetOverwrite ifnewer
     File "LICENSE.txt"
+    File "Leo-4.7-beta-1.zip"
     File "launchLeo.py"
     File "leo.nsi"
     File "leo_to_html.xsl"
@@ -2233,6 +2235,7 @@ RestoreBackup:
 
     ; Delete top-level files...
     Delete "$INSTDIR\LICENSE.txt"
+    Delete "$INSTDIR\Leo-4.7-beta-1.zip"
     Delete "$INSTDIR\launchLeo.py"
     Delete "$INSTDIR\leo.nsi"
     Delete "$INSTDIR\leo_to_html.xsl"
