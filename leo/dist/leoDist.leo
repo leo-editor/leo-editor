@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="7,3,0,0,0"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -74,7 +74,7 @@
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
-<v t="ekr.20090826220933.1565"><vh>@button make leo.nsi</vh>
+<v t="ekr.20090826220933.1565" a="E"><vh>@button make leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
@@ -82,7 +82,6 @@
 <v t="ekr.20090901092556.1608" a="E"><vh>Boilerplate</vh>
 <v t="ekr.20090901092556.1609" a="E"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
-<v t="ekr.20090901092556.1589"><vh>putVariables</vh></v>
 <v t="ekr.20090901092556.1590"><vh>putOnInit</vh></v>
 </v>
 <v t="ekr.20090901092556.1610"><vh>middle boilerplate</vh>
@@ -95,7 +94,7 @@
 <v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
 </v>
 </v>
-<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
 <v t="ekr.20090901092556.1574" a="E"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
@@ -481,7 +480,7 @@ makes the system more flexible...
 now for about 2 -- 3 months. It has totally changed not only the way that I
 program, but also the way that I store and organise all of the information that
 I need for the job that I do. -- Ian Mulvany</t>
-<t tx="ekr.20050315084904" str_leo_pos="7"></t>
+<t tx="ekr.20050315084904" str_leo_pos="7,3,0,0,0"></t>
 <t tx="ekr.20050315084922">c.spellCommands.openSpellTab()</t>
 <t tx="ekr.20060213160806">"Thanks for a wonderful program – everybody should be using it! It blows the
 socks off that Java Mind mapping software that won project of the month a while
@@ -1263,7 +1262,6 @@ def deleteFiles (self,lines,deleteList):
     the manifest-specific install data.'''
 
     self.putSettings()
-    self.putVariables()
     self.putOnInit()</t>
 <t tx="ekr.20090901092556.1574">def genInstallData(self,dirs,dirDict,filesDict):
 
@@ -1350,6 +1348,7 @@ SectionEnd
 var PythonExecutable
 ; Installation directory.  Set by .onInit.
 var InstallDirectory
+
 SetCompressor bzip2
 Caption "${name} Installer"
 AutoCloseWindow false 
@@ -1373,10 +1372,6 @@ ShowUnInstDetails show
 
 '''
     self.put(s,substitute=True)
-</t>
-<t tx="ekr.20090901092556.1589">def putVariables (self):
-
-   pass
 </t>
 <t tx="ekr.20090901092556.1590">def putOnInit (self):
 
