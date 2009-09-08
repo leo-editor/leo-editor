@@ -118,7 +118,8 @@ enableDB = True
 if not enableDB:
     print '** leoGlobals.py: caching disabled'
 
-unified_nodes = True # True: merge tnodes into vnodes.
+# For Leo 4.7 b1 we set unified_nodes = False so todo.py plugin works.
+unified_nodes = False # True: merge tnodes into vnodes.
 if unified_nodes: # Hard to disable in unit tests.
     print ('** leoGlobals.py: unified_nodes: %s' % (unified_nodes))
 
