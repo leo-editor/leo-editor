@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="41" left="184" height="968" width="1077"/>
+	<global_window_position top="41" left="463" height="968" width="798"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="7,3,1,1,0"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -74,14 +74,13 @@
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
-<v t="ekr.20090826220933.1565" a="E"><vh>@button make leo.nsi</vh>
+<v t="ekr.20090826220933.1565"><vh>@button make leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
-<v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
-<v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
-<v t="ekr.20090901092556.1578"><vh>putDefines</vh></v>
+<v t="ekr.20090901092556.1608" a="E"><vh>Boilerplate</vh>
+<v t="ekr.20090901092556.1609" a="E"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1589"><vh>putVariables</vh></v>
 <v t="ekr.20090901092556.1590"><vh>putOnInit</vh></v>
@@ -96,7 +95,7 @@
 <v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
 </v>
 </v>
-<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
 <v t="ekr.20090901092556.1574" a="E"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
@@ -107,14 +106,13 @@
 <v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
 <v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
 </v>
-<v t="ekr.20090901092556.1577"><vh>genTail</vh></v>
 <v t="ekr.20090901160534.1572"><vh>indent</vh></v>
 <v t="ekr.20090901092556.1572"><vh>openNsi</vh></v>
 <v t="ekr.20090831172520.1551"><vh>put</vh></v>
 </v>
-<v t="ekr.20090831172520.1554"><vh>run &amp; helpers</vh>
+<v t="ekr.20090831172520.1554" a="E"><vh>run &amp; helpers</vh>
 <v t="ekr.20090826220933.1569"><vh>directoryList</vh></v>
-<v t="ekr.20090901082242.1562"><vh>filterLines &amp; helpers</vh>
+<v t="ekr.20090901082242.1562" a="E"><vh>filterLines &amp; helpers</vh>
 <v t="ekr.20090826220933.1566"><vh>delete...</vh></v>
 </v>
 <v t="ekr.20090901082242.1563"><vh>makeDicts</vh></v>
@@ -483,7 +481,7 @@ makes the system more flexible...
 now for about 2 -- 3 months. It has totally changed not only the way that I
 program, but also the way that I store and organise all of the information that
 I need for the job that I do. -- Ian Mulvany</t>
-<t tx="ekr.20050315084904" str_leo_pos="7,3,1,1,0"></t>
+<t tx="ekr.20050315084904" str_leo_pos="7"></t>
 <t tx="ekr.20050315084922">c.spellCommands.openSpellTab()</t>
 <t tx="ekr.20060213160806">"Thanks for a wonderful program – everybody should be using it! It blows the
 socks off that Java Mind mapping software that won project of the month a while
@@ -1146,11 +1144,13 @@ def deleteFiles (self,lines,deleteList):
     lines = self.deleteComments(lines)
     lines = self.deleteExt(lines,'.pyc')
     lines = self.deleteExt(lines,'.pyo')
+    lines = self.deleteExt(lines,'.exe') # Don't include the installer.
 
     # Remove specific files.
     deleteList = ('.bzrignore',
         'bzr-manifest.txt','bzr-small-manifest.txt',
         'leo/test/unittest/.leo_shadow/',
+        'nsi.log.txt', # Can't write log while we are creating it.
     )
     lines = self.deleteFiles(lines,deleteList)
     if lines and lines[0].endswith('bzr ls -R'):
@@ -1239,7 +1239,6 @@ def deleteFiles (self,lines,deleteList):
         self.genInstallData(dirs,dirDict,filesDict)
         self.genMiddle()
         self.genUninstallData(dirs,dirDict,filesDict)
-        self.genTail()
     finally:
         self.f.close()
 
@@ -1263,7 +1262,6 @@ def deleteFiles (self,lines,deleteList):
     '''Generate the boilerplate appearing before
     the manifest-specific install data.'''
 
-    self.putDefines()
     self.putSettings()
     self.putVariables()
     self.putOnInit()</t>
@@ -1345,31 +1343,13 @@ SectionEnd
 
     self.put(s,substitute=True)
 </t>
-<t tx="ekr.20090901092556.1577">def genTail (self):
-
-    '''Generate the boilerplate appearing after
-    the manifest-specific uninstall data.'''
-
-    pass</t>
-<t tx="ekr.20090901092556.1578">def putDefines(self):
-
-    pass
-
-    # s = '''
-
-# !define PythonNotFound "Python not found"
-# '''
-
-    # self.put(s,substitute=True)
-
-# !define STRING_PYTHON_CURRENT_USER_FOUND "Python is installed for the current user only.\\
-# ${name} does not support use with Python so configured.\\
-# Click OK to cancel installation and remove installation Files."
-# '''
-</t>
 <t tx="ekr.20090901092556.1588">def putSettings (self):
 
     s = '''
+; Location of Pythonw.exe. Set by .onInit.
+var PythonExecutable
+; Installation directory.  Set by .onInit.
+var InstallDirectory
 SetCompressor bzip2
 Caption "${name} Installer"
 AutoCloseWindow false 
@@ -1381,27 +1361,27 @@ SetDatablockOptimize on
 WindowIcon off
 OutFile "${target_file}"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
+; Default location.  May be changed in .onInit.
 InstallDir "${PROGRAMFILES}\${name}-${version}"
 Icon "${icon}"
-DirText "Setup will install ${name}-${version} in the following folder. \\
+DirText "Setup will install ${name}-${version} in the following folder. $$\\n\\
 To install in a different folder, click Browse and select another folder."
 LicenseText "You must accept the agreement to install ${name}-${version}."
 LicenseData "${license}"
 ShowInstDetails show
 ShowUnInstDetails show
+
 '''
     self.put(s,substitute=True)
 </t>
 <t tx="ekr.20090901092556.1589">def putVariables (self):
 
-    self.put('''
-; Location of Pythonw.exe. Set by .onInit.
-var PythonExecutable
-''')
+   pass
 </t>
 <t tx="ekr.20090901092556.1590">def putOnInit (self):
 
     s = r'''
+
 ; Set PythonExecutable to full path to Pythonw.exe.
 Function .onInit
     ReadRegStr $9 HKLM "SOFTWARE\Python\PythonCore\2.6\InstallPath" ""
@@ -1415,16 +1395,20 @@ oops:
     MessageBox MB_OK "Python not found: using c:\python25"
     ; Guess where Python 2.5 is.
     StrCpy $PythonExecutable "c:\Python25\pythonw.exe"
+    ; Fallback installation directory is "Program Files"
     Goto done
 ok:
     MessageBox MB_OK "Found Python at $9"
     StrCpy $PythonExecutable "$9\pythonw.exe"
+    ; Normal installation directory 
+    ;;;StrCpy $InstallDirectory "$9\Lib\site-packages\${name}-${version}"
+    StrCpy $INSTDIR "$9\Lib\site-packages\${name}-${version}"
 done:
 
 ; End .onInit
 FunctionEnd
 '''
-    # Must double all $'s if we do substitutions.
+    s = s.replace('${name}',app_name).replace('${version}',app_version)
     self.put(s,substitute=False)
 </t>
 <t tx="ekr.20090901092556.1603">def genMenuShortcuts (self):
@@ -1719,7 +1703,7 @@ FunctionEnd
     @others
 </t>
 <t tx="ekr.20090902092112.1481"># Used by both @button make leo.nsi and @button make leo.zip.
-app_version = version = '4.6.3-final'</t>
+app_version = version = '4.7-beta-1'</t>
 <t tx="ekr.20090902092112.1482">try:
     inLeo = g is not None
 except AttributeError:
