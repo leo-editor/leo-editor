@@ -43,7 +43,7 @@ else:
 
 class vnode (baseVnode):
     #@    << vnode constants >>
-    #@+node:ekr.20031218072017.951:<< vnode constants >> (cleaned)
+    #@+node:ekr.20031218072017.951:<< vnode constants >>
     # Define the meaning of status bits in new vnodes.
 
     # Archived...
@@ -61,11 +61,11 @@ class vnode (baseVnode):
 
     dirtyBit    = 0x200 # Was in tnode.
     writeBit    = 0x400 # Was in tnode.
-    #@-node:ekr.20031218072017.951:<< vnode constants >> (cleaned)
+    #@-node:ekr.20031218072017.951:<< vnode constants >>
     #@nl
     #@    @+others
     #@+node:ekr.20031218072017.3342:v.Birth & death
-    #@+node:ekr.20031218072017.3344:v.__init__ (cleaned)
+    #@+node:ekr.20031218072017.3344:v.__init
     def __init__ (self,context,t=None):
 
         assert t is None
@@ -103,7 +103,7 @@ class vnode (baseVnode):
 
         # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
         self.fileIndex = g.app.nodeIndices.getNewIndex()
-    #@-node:ekr.20031218072017.3344:v.__init__ (cleaned)
+    #@-node:ekr.20031218072017.3344:v.__init
     #@+node:ekr.20031218072017.3345:v.__repr__ & v.__str__
     def __repr__ (self):
 
@@ -114,7 +114,7 @@ class vnode (baseVnode):
 
     __str__ = __repr__
     #@-node:ekr.20031218072017.3345:v.__repr__ & v.__str__
-    #@+node:ekr.20040312145256:v.dump (cleaned)
+    #@+node:ekr.20040312145256:v.dump
     def dumpLink (self,link):
         return g.choose(link,link,"<none>")
 
@@ -126,7 +126,7 @@ class vnode (baseVnode):
         print('len(children) %s' % len(v.t.children))
         print('parents %s' % g.listToString(v.parents))
         print('children%s' % g.listToString(v.t.children))
-    #@-node:ekr.20040312145256:v.dump (cleaned)
+    #@-node:ekr.20040312145256:v.dump
     #@+node:ekr.20060910100316:v.__hash__ (only for zodb)
     if use_zodb and ZODB:
         def __hash__(self):
@@ -419,11 +419,11 @@ class vnode (baseVnode):
         return g.toEncodedString(s,"ascii") # Replaces non-ascii characters by '?'
     #@-node:ekr.20031218072017.1581:v.headString & v.cleanHeadString
     #@+node:ekr.20031218072017.3367:v.Status Bits
-    #@+node:ekr.20031218072017.3368:v.isCloned (cleaned)
+    #@+node:ekr.20031218072017.3368:v.isCloned
     def isCloned (self):
 
         return len(self.parents) > 1
-    #@-node:ekr.20031218072017.3368:v.isCloned (cleaned)
+    #@-node:ekr.20031218072017.3368:v.isCloned
     #@+node:ekr.20031218072017.3369:v.isDirty
     def isDirty (self):
 
@@ -461,12 +461,12 @@ class vnode (baseVnode):
 
         return ( self.statusBits & vnode.visitedBit ) != 0
     #@-node:ekr.20031218072017.3376:v.isVisited
-    #@+node:ekr.20080429053831.10:v.isWriteBit (cleaned)
+    #@+node:ekr.20080429053831.10:v.isWriteBit
     def isWriteBit (self):
 
         v = self
         return (v.statusBits & v.writeBit) != 0
-    #@-node:ekr.20080429053831.10:v.isWriteBit (cleaned)
+    #@-node:ekr.20080429053831.10:v.isWriteBit
     #@+node:ekr.20031218072017.3377:v.status
     def status (self):
 
@@ -492,10 +492,10 @@ class vnode (baseVnode):
 
         self.statusBits &= ~ self.markedBit
     #@-node:ekr.20031218072017.3391:v.clearMarked
-    #@+node:ekr.20080429053831.8:v.clearWriteBit (cleaned)
+    #@+node:ekr.20080429053831.8:v.clearWriteBit
     def clearWriteBit (self):
         self.statusBits &= ~ self.writeBit
-    #@-node:ekr.20080429053831.8:v.clearWriteBit (cleaned)
+    #@-node:ekr.20080429053831.8:v.clearWriteBit
     #@+node:ekr.20031218072017.3392:v.clearOrphan
     def clearOrphan (self):
 
@@ -575,10 +575,10 @@ class vnode (baseVnode):
 
         self.statusBits |= self.visitedBit
     #@-node:ekr.20031218072017.3401:v.setVisited
-    #@+node:ekr.20080429053831.9:v.setWriteBit (cleaned)
+    #@+node:ekr.20080429053831.9:v.setWriteBit
     def setWriteBit (self):
         self.statusBits |= self.writeBit
-    #@-node:ekr.20080429053831.9:v.setWriteBit (cleaned)
+    #@-node:ekr.20080429053831.9:v.setWriteBit
     #@-node:ekr.20031218072017.3386: v.Status bits
     #@+node:ekr.20040315032144:v .setBodyString & v.setHeadString
     def setBodyString (self,s,encoding="utf-8"):
@@ -700,14 +700,14 @@ class vnode (baseVnode):
                 child._cutParentLinks(parent=v)
     #@-node:ekr.20090804190529.6133:v._cutParentLinks
     #@-node:ekr.20090804184658.6128:v._cutLink (new)
-    #@+node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic) (cleaned)
+    #@+node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
     def _linkAsNthChild (self,parent_v,n):
 
         """Links self as the n'th child of vnode pv"""
 
         v = self # The child node.
         v._addLink(n,parent_v)
-    #@-node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic) (cleaned)
+    #@-node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
     #@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList
     def createOutlineFromCacheList(self,c,aList):
         """ Create outline structure from recursive aList
@@ -736,7 +736,7 @@ class vnode (baseVnode):
                 child_v.b = b
             else:
                 child_v.createOutlineFromCacheList(c,z)
-    #@+node:ekr.20090829064400.6042:v.fastAddLastChild (cleaned)
+    #@+node:ekr.20090829064400.6042:v.fastAddLastChild
     # Similar to createThinChild4
     def fastAddLastChild(self,c,gnxString):
         '''Create new vnode as last child of the receiver.
@@ -769,7 +769,7 @@ class vnode (baseVnode):
         child_v.t.setVisited() # Supress warning/deletion of unvisited nodes.
 
         return is_clone,child_v
-    #@-node:ekr.20090829064400.6042:v.fastAddLastChild (cleaned)
+    #@-node:ekr.20090829064400.6042:v.fastAddLastChild
     #@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList
     #@-node:ekr.20080427062528.9:v.Low level methods
     #@+node:ekr.20090130065000.1:v.Properties
@@ -1139,7 +1139,7 @@ class position (object):
 
         return position(self.v,self._childIndex,self.stack,trace=False)
     #@-node:ekr.20040117171654:p.copy
-    #@+node:ekr.20040310153624:p.dump (cleaned)
+    #@+node:ekr.20040310153624:p.dump
     def dumpLink (self,link):
 
         return g.choose(link,link,"<none>")
@@ -1149,7 +1149,7 @@ class position (object):
         p = self
         if p.v:
             p.v.dump() # Don't print a label
-    #@-node:ekr.20040310153624:p.dump (cleaned)
+    #@-node:ekr.20040310153624:p.dump
     #@+node:ekr.20080416161551.191:p.key
     def key (self):
 
@@ -1600,7 +1600,7 @@ class position (object):
         p = self
         p.v.clearDirty()
     #@-node:ekr.20040311113514:p.clearDirty
-    #@+node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes (cleaned)
+    #@+node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
     def findAllPotentiallyDirtyNodes(self):
 
         trace = False and not g.unitTesting
@@ -1629,7 +1629,7 @@ class position (object):
         # g.trace('done',len(nodes))
         if trace: g.trace(nodes)
         return nodes
-    #@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes (cleaned)
+    #@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
     #@+node:ekr.20040702104823:p.inAtIgnoreRange
     def inAtIgnoreRange (self):
 
@@ -2256,7 +2256,7 @@ class position (object):
     #@-others
     #@-node:ekr.20040305162628.1:p.Iterators
     #@+node:ekr.20040303175026:p.Moving, Inserting, Deleting, Cloning, Sorting
-    #@+node:ekr.20040303175026.8:p.clone (cleaned)
+    #@+node:ekr.20040303175026.8:p.clone
     def clone (self):
 
         """Create a clone of back.
@@ -2267,7 +2267,7 @@ class position (object):
         p2 = p.copy() # Do *not* copy the vnode!
         p2._linkAfter(p) # This should "just work"
         return p2
-    #@-node:ekr.20040303175026.8:p.clone (cleaned)
+    #@-node:ekr.20040303175026.8:p.clone
     #@+node:ekr.20040303175026.9:p.copyTreeAfter, copyTreeTo
     # These used by unit tests and by the group_operations plugin.
 
@@ -2285,7 +2285,7 @@ class position (object):
             child2 = p2.insertAsLastChild()
             child.copyTreeFromSelfTo(child2)
     #@-node:ekr.20040303175026.9:p.copyTreeAfter, copyTreeTo
-    #@+node:ekr.20040303175026.2:p.doDelete (cleaned)
+    #@+node:ekr.20040303175026.2:p.doDelete
     #@+at 
     #@nonl
     # This is the main delete routine.
@@ -2310,7 +2310,7 @@ class position (object):
                 break
 
         p._unlink()
-    #@-node:ekr.20040303175026.2:p.doDelete (cleaned)
+    #@-node:ekr.20040303175026.2:p.doDelete
     #@+node:ekr.20040303175026.3:p.insertAfter
     def insertAfter (self):
 
@@ -2934,7 +2934,7 @@ class position (object):
         #@-others
     #@-node:ekr.20090713125326.6116:@test p.adjustPositionBeforeUnlink
     #@-node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink (no change)
-    #@+node:ekr.20080416161551.214:p._linkAfter (cleaned)
+    #@+node:ekr.20080416161551.214:p._linkAfter
     def _linkAfter (self,p_after,adjust=True):
 
         '''Link self after p_after.'''
@@ -2952,8 +2952,8 @@ class position (object):
         n = p_after._childIndex+1
         child._addLink(n,parent_v,adjust=adjust)
     #@nonl
-    #@-node:ekr.20080416161551.214:p._linkAfter (cleaned)
-    #@+node:ekr.20080416161551.215:p._linkAsNthChild (cleaned)
+    #@-node:ekr.20080416161551.214:p._linkAfter
+    #@+node:ekr.20080416161551.215:p._linkAsNthChild
     def _linkAsNthChild (self,parent,n,adjust=True):
 
         p = self
@@ -2967,8 +2967,26 @@ class position (object):
         child = p.v
         child._addLink(n,parent_v,adjust=adjust)
 
-    #@-node:ekr.20080416161551.215:p._linkAsNthChild (cleaned)
-    #@+node:ekr.20080416161551.216:p._linkAsRoot (cleaned)
+    #@-node:ekr.20080416161551.215:p._linkAsNthChild
+    #@+node:ekr.20080416161551.212:p._parentVnode
+    def _parentVnode (self):
+
+        '''Return the parent vnode.
+        Return the hiddenRootNode if there is no other parent.'''
+
+        p = self
+
+        if p.v:
+            data = p.stack and p.stack[-1]
+            if data:
+                v, junk = data
+                return v
+            else:
+                return p.v.context.hiddenRootNode
+        else:
+            return None
+    #@-node:ekr.20080416161551.212:p._parentVnode
+    #@+node:ekr.20080416161551.216:p._linkAsRoot
     def _linkAsRoot (self,oldRoot):
 
         """Link self as the root node."""
@@ -2991,26 +3009,8 @@ class position (object):
         child._addLink(0,parent_v)
 
         return p
-    #@-node:ekr.20080416161551.216:p._linkAsRoot (cleaned)
-    #@+node:ekr.20080416161551.212:p._parentVnode (no change)
-    def _parentVnode (self):
-
-        '''Return the parent vnode.
-        Return the hiddenRootNode if there is no other parent.'''
-
-        p = self
-
-        if p.v:
-            data = p.stack and p.stack[-1]
-            if data:
-                v, junk = data
-                return v
-            else:
-                return p.v.context.hiddenRootNode
-        else:
-            return None
-    #@-node:ekr.20080416161551.212:p._parentVnode (no change)
-    #@+node:ekr.20080416161551.217:p._unlink (cleaned)
+    #@-node:ekr.20080416161551.216:p._linkAsRoot
+    #@+node:ekr.20080416161551.217:p._unlink
     def _unlink (self):
 
         '''Unlink the receiver p from the tree.'''
@@ -3053,7 +3053,7 @@ class position (object):
             if g.app.unitTesting: assert False, 'bad child index: %s' % (n)
     #@nonl
     #@-node:ekr.20090706171333.6226:p.badUnlink
-    #@-node:ekr.20080416161551.217:p._unlink (cleaned)
+    #@-node:ekr.20080416161551.217:p._unlink
     #@+node:ekr.20090829064400.6044:p.makeCacheList
     def makeCacheList(self):
 

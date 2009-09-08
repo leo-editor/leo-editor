@@ -873,7 +873,7 @@ class baseFileCommands:
     #@-node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
     #@-node:ekr.20031218072017.1554:warnOnReadOnlyFiles
     #@-node:ekr.20031218072017.1553:getLeoFile & helpers
-    #@+node:ekr.20031218072017.2009:newTnode (fileCommands) (cleaned)
+    #@+node:ekr.20031218072017.2009:newTnode (fileCommands)
     def newTnode(self,index):
 
         c = self.c
@@ -897,7 +897,7 @@ class baseFileCommands:
                 t.fileIndex = gnx
 
             return t
-    #@-node:ekr.20031218072017.2009:newTnode (fileCommands) (cleaned)
+    #@-node:ekr.20031218072017.2009:newTnode (fileCommands)
     #@+node:ekr.20031218072017.3029:readAtFileNodes (fileCommands)
     def readAtFileNodes (self):
 
@@ -1107,7 +1107,7 @@ class baseFileCommands:
         assert c.fileCommands.cleanSaxInputString(s) == 'test this'
     #@-node:ekr.20090525144314.6527:@test cleanSaxInputString
     #@-node:ekr.20090525144314.6526:cleanSaxInputString & test
-    #@+node:ekr.20060919110638.5:createSaxChildren & helpers (cleaned)
+    #@+node:ekr.20060919110638.5:createSaxChildren & helpers
     def createSaxChildren (self, sax_node, parent_v):
 
         c = self.c
@@ -1136,7 +1136,7 @@ class baseFileCommands:
                 'len(child.parents)',len(child.parents))
 
         return children
-    #@+node:ekr.20060919110638.7:createSaxVnode & helpers (cleaned)
+    #@+node:ekr.20060919110638.7:createSaxVnode & helpers
     def createSaxVnode (self,sax_node,parent_v,t=None):
 
         c = self.c
@@ -1351,8 +1351,8 @@ class baseFileCommands:
                     p.firstChild().doDelete()
     #@-node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
     #@-node:ekr.20061004053644:handleVnodeSaxAttributes
-    #@-node:ekr.20060919110638.7:createSaxVnode & helpers (cleaned)
-    #@-node:ekr.20060919110638.5:createSaxChildren & helpers (cleaned)
+    #@-node:ekr.20060919110638.7:createSaxVnode & helpers
+    #@-node:ekr.20060919110638.5:createSaxChildren & helpers
     #@+node:ekr.20060919110638.2:dumpSaxTree
     def dumpSaxTree (self,root,dummy):
 
@@ -1503,7 +1503,7 @@ class baseFileCommands:
 
         return sax_node
     #@-node:ekr.20060919110638.14:parse_leo_file
-    #@+node:ekr.20060919110638.3:readSaxFile (cleaned)
+    #@+node:ekr.20060919110638.3:readSaxFile
     def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
 
         dump = False and not g.unitTesting
@@ -1524,7 +1524,7 @@ class baseFileCommands:
             return v
         else:
             return None
-    #@-node:ekr.20060919110638.3:readSaxFile (cleaned)
+    #@-node:ekr.20060919110638.3:readSaxFile
     #@+node:ekr.20060919110638.11:resolveTnodeLists
     def resolveTnodeLists (self):
 
@@ -1547,7 +1547,7 @@ class baseFileCommands:
                 delattr(p.v,'tempTnodeList')
     #@nonl
     #@-node:ekr.20060919110638.11:resolveTnodeLists
-    #@+node:ekr.20080805132422.3:resolveArchivedPosition  (New in Leo 4.5) (cleaned)
+    #@+node:ekr.20080805132422.3:resolveArchivedPosition  (New in Leo 4.5)
     def resolveArchivedPosition(self,archivedPosition,root_v):
 
         '''Return a vnode corresponding to the archived position relative to root node root_v.'''
@@ -1580,7 +1580,7 @@ class baseFileCommands:
 
         return last_v
     #@nonl
-    #@-node:ekr.20080805132422.3:resolveArchivedPosition  (New in Leo 4.5) (cleaned)
+    #@-node:ekr.20080805132422.3:resolveArchivedPosition  (New in Leo 4.5)
     #@+node:ekr.20060919110638.13:setPositionsFromVnodes & helper
     def setPositionsFromVnodes (self):
 

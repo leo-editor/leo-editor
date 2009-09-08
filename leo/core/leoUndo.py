@@ -406,7 +406,7 @@ class undoer:
             v.unknownAttributes = uA
             v._p_changed = 1
     #@-node:ekr.20050415170737.2:restoreVnodeUndoInfo
-    #@+node:ekr.20050415170812.2:restoreTnodeUndoInfo (cleaned)
+    #@+node:ekr.20050415170812.2:restoreTnodeUndoInfo
     def restoreTnodeUndoInfo (self,bunch):
 
         t = bunch.t
@@ -419,7 +419,7 @@ class undoer:
         if uA is not None:
             t.unknownAttributes = uA
             t._p_changed = 1
-    #@-node:ekr.20050415170812.2:restoreTnodeUndoInfo (cleaned)
+    #@-node:ekr.20050415170812.2:restoreTnodeUndoInfo
     #@-node:EKR.20040530121329:u.restoreTree & helpers
     #@+node:EKR.20040528075307:u.saveTree & helpers
     def saveTree (self,p,treeInfo=None):
@@ -487,7 +487,7 @@ class undoer:
 
         return bunch
     #@-node:ekr.20050415170737.1:createVnodeUndoInfo
-    #@+node:ekr.20050415170812.1:createTnodeUndoInfo (cleaned)
+    #@+node:ekr.20050415170812.1:createTnodeUndoInfo
     def createTnodeUndoInfo (self,t):
 
         """Create a bunch containing all info needed to recreate a vnode."""
@@ -503,7 +503,7 @@ class undoer:
             bunch.unknownAttributes = t.unknownAttributes
 
         return bunch
-    #@-node:ekr.20050415170812.1:createTnodeUndoInfo (cleaned)
+    #@-node:ekr.20050415170812.1:createTnodeUndoInfo
     #@-node:EKR.20040528075307:u.saveTree & helpers
     #@+node:ekr.20050525151449:u.trace
     def trace (self):
@@ -1428,7 +1428,7 @@ class undoer:
 
         c.frame.menu.createRecentFilesMenuItems()
     #@-node:ekr.20050424170219:redoClearRecentFiles
-    #@+node:ekr.20050412083057:redoCloneNode (cleaned)
+    #@+node:ekr.20050412083057:redoCloneNode
     def redoCloneNode (self):
 
         u = self ; c = u.c
@@ -1445,7 +1445,7 @@ class undoer:
             v.t.setDirty()
 
         c.selectPosition(u.newP)
-    #@-node:ekr.20050412083057:redoCloneNode (cleaned)
+    #@-node:ekr.20050412083057:redoCloneNode
     #@+node:EKR.20040526072519.2:redoDeleteNode
     def redoDeleteNode (self):
 
@@ -1455,7 +1455,7 @@ class undoer:
         c.deleteOutline()
         c.selectPosition(u.newP)
     #@-node:EKR.20040526072519.2:redoDeleteNode
-    #@+node:ekr.20080425060424.9:redoDemote (cleaned)
+    #@+node:ekr.20080425060424.9:redoDemote
     def redoDemote (self):
 
         u = self ; c = u.c
@@ -1473,7 +1473,7 @@ class undoer:
             v.parents.append(u.p.v)
 
         c.setCurrentPosition(u.p)
-    #@-node:ekr.20080425060424.9:redoDemote (cleaned)
+    #@-node:ekr.20080425060424.9:redoDemote
     #@+node:ekr.20050318085432.6:redoGroup
     def redoGroup (self):
 
@@ -1530,7 +1530,7 @@ class undoer:
         c.selectPosition(u.p)
         c.dehoist()
     #@-node:ekr.20050412085138.1:redoHoistNode & redoDehoistNode
-    #@+node:ekr.20050412084532:redoInsertNode (cleaned)
+    #@+node:ekr.20050412084532:redoInsertNode
     def redoInsertNode (self):
 
         u = self ; c = u.c
@@ -1557,7 +1557,7 @@ class undoer:
                 # g.trace(t,bunch.head,bunch.body)
 
         c.selectPosition(u.newP)
-    #@-node:ekr.20050412084532:redoInsertNode (cleaned)
+    #@-node:ekr.20050412084532:redoInsertNode
     #@+node:ekr.20050526125801:redoMark
     def redoMark (self):
 
@@ -1573,7 +1573,7 @@ class undoer:
             c.selectPosition(u.p)
     #@nonl
     #@-node:ekr.20050526125801:redoMark
-    #@+node:ekr.20050411111847:redoMove (cleaned)
+    #@+node:ekr.20050411111847:redoMove
     def redoMove (self):
 
         u = self ; c = u.c ; v = u.p.v
@@ -1596,7 +1596,7 @@ class undoer:
             v.t.setDirty()
 
         c.selectPosition(u.newP)
-    #@-node:ekr.20050411111847:redoMove (cleaned)
+    #@-node:ekr.20050411111847:redoMove
     #@+node:ekr.20050318085432.7:redoNodeContents
     def redoNodeContents (self):
 
@@ -1623,7 +1623,7 @@ class undoer:
         for v in u.dirtyVnodeList:
             v.t.setDirty()
     #@-node:ekr.20050318085432.7:redoNodeContents
-    #@+node:ekr.20080425060424.13:redoPromote (cleaned)
+    #@+node:ekr.20080425060424.13:redoPromote
     def redoPromote (self):
 
         u = self ; c = u.c
@@ -1650,7 +1650,7 @@ class undoer:
             child.parents.append(parent_v)
 
         c.setCurrentPosition(u.p)
-    #@-node:ekr.20080425060424.13:redoPromote (cleaned)
+    #@-node:ekr.20080425060424.13:redoPromote
     #@+node:ekr.20080425060424.4:redoSort
     def redoSort (self):
 
@@ -1772,7 +1772,7 @@ class undoer:
 
         c.selectPosition(u.p)
     #@-node:ekr.20050412083057.1:undoCloneNode
-    #@+node:ekr.20050412084055:undoDeleteNode (cleaned)
+    #@+node:ekr.20050412084055:undoDeleteNode
     def undoDeleteNode (self):
 
         u = self ; c = u.c
@@ -1787,8 +1787,8 @@ class undoer:
 
         u.p.setAllAncestorAtFileNodesDirty()
         c.selectPosition(u.p)
-    #@-node:ekr.20050412084055:undoDeleteNode (cleaned)
-    #@+node:ekr.20080425060424.10:undoDemote (cleaned)
+    #@-node:ekr.20050412084055:undoDeleteNode
+    #@+node:ekr.20080425060424.10:undoDemote
     def undoDemote (self):
 
         u = self ; c = u.c
@@ -1808,7 +1808,7 @@ class undoer:
             sib.parents.append(parent_v)
 
         c.setCurrentPosition(u.p)
-    #@-node:ekr.20080425060424.10:undoDemote (cleaned)
+    #@-node:ekr.20080425060424.10:undoDemote
     #@+node:ekr.20050318085713:undoGroup
     def undoGroup (self):
 
@@ -1904,7 +1904,7 @@ class undoer:
 
             c.selectPosition(u.p)
     #@-node:ekr.20050526124906:undoMark
-    #@+node:ekr.20050411112033:undoMove (cleaned)
+    #@+node:ekr.20050411112033:undoMove
     def undoMove (self):
 
         u = self ; c = u.c ; v = u.p.v
@@ -1927,7 +1927,7 @@ class undoer:
             v.t.setDirty()
 
         c.selectPosition(u.p)
-    #@-node:ekr.20050411112033:undoMove (cleaned)
+    #@-node:ekr.20050411112033:undoMove
     #@+node:ekr.20050318085713.1:undoNodeContents
     def undoNodeContents (self):
 
@@ -1954,7 +1954,7 @@ class undoer:
         for v in u.dirtyVnodeList:
             v.t.setDirty() # Bug fix: Leo 4.4.6.
     #@-node:ekr.20050318085713.1:undoNodeContents
-    #@+node:ekr.20080425060424.14:undoPromote (cleaned)
+    #@+node:ekr.20080425060424.14:undoPromote
     def undoPromote (self):
 
         u = self ; c = u.c
@@ -1980,7 +1980,7 @@ class undoer:
             child.parents.append(u.p.v)
 
         c.setCurrentPosition(u.p)
-    #@-node:ekr.20080425060424.14:undoPromote (cleaned)
+    #@-node:ekr.20080425060424.14:undoPromote
     #@+node:ekr.20031218072017.1493:undoRedoText
     def undoRedoText (self,p,
         leading,trailing, # Number of matching leading & trailing lines.

@@ -5052,7 +5052,7 @@ class baseCommands (object):
         kind = g.choose(h.startswith('@chapter'),'chapter','hoist')
         g.es("can't move node out of",kind,color="blue")
     #@-node:ekr.20070420092425:cantMoveMessage
-    #@+node:ekr.20031218072017.1767:demote (cleaned)
+    #@+node:ekr.20031218072017.1767:demote
     def demote (self,event=None):
 
         '''Make all following siblings children of the selected node.'''
@@ -5093,7 +5093,7 @@ class baseCommands (object):
         u.afterDemote(p,followingSibs,dirtyVnodeList)
         c.redraw(p,setFocus=True)
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
-    #@-node:ekr.20031218072017.1767:demote (cleaned)
+    #@-node:ekr.20031218072017.1767:demote
     #@+node:ekr.20031218072017.1768:moveOutlineDown
     #@+at 
     #@nonl
@@ -5312,7 +5312,7 @@ class baseCommands (object):
         c.redraw(p,setFocus=True)
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@-node:ekr.20031218072017.1772:moveOutlineUp
-    #@+node:ekr.20031218072017.1774:promote (cleaned)
+    #@+node:ekr.20031218072017.1774:promote
     def promote (self,event=None):
 
         '''Make all children of the selected nodes siblings of the selected node.'''
@@ -5354,7 +5354,7 @@ class baseCommands (object):
         c.redraw(p,setFocus=True)
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@nonl
-    #@-node:ekr.20031218072017.1774:promote (cleaned)
+    #@-node:ekr.20031218072017.1774:promote
     #@+node:ekr.20071213185710:c.toggleSparseMove
     def toggleSparseMove (self,event=None):
 
