@@ -101,6 +101,12 @@ Script in Chapter 14 of the users guide:
 #@-node:ekr.20090822054806.6003:Add rst button that doesn't need rst3 plugin
 #@-node:ekr.20090811090022.6029:Bugs 3
 #@+node:ekr.20090907080624.6078:New to-do items
+#@+node:ekr.20090909093330.6124:Investigate "multiple parts not allowed" tangle errors
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/181533467503ef48
+
+#@-node:ekr.20090909093330.6124:Investigate "multiple parts not allowed" tangle errors
 #@+node:ekr.20090907080624.6069:Update the 4.6.3 release notes in the trunk
 It also provides lots of new features. --gui=qttabs and new plugins
 (spydershell, qtframecommands, mod_framesize). There is also "show
