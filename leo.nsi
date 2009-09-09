@@ -4200,6 +4200,7 @@ RestoreBackup:
     RMDir "$INSTDIR\leo\plugins\test"
     RMDir "$INSTDIR\leo\plugins\experimental"
     RMDir "$INSTDIR\leo\plugins\examples"
+    RMDir "$INSTDIR\leo\plugins\.leo_shadow"
     RMDir "$INSTDIR\leo\plugins"
     RMDir "$INSTDIR\leo\modes"
     RMDir "$INSTDIR\leo\Icons\Tango\16x16\status"
