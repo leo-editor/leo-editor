@@ -182,7 +182,7 @@ Leo's code uses the following conventions throughout:
 
 c:  a commander.
 ch: a character.
-d:  a dialog orf a dict.
+d:  a dialog or a dict.
 f:  an open file.
 fn: a file name.
 g:  the leoGlobal module.
@@ -248,7 +248,7 @@ Two (recently written) functions in leoGlobals.py support conversions from Pytho
 
 Important:  the first Tkinter index is '1.0', not '0.0', but the row returned by g.convertPythonIndexToRowCol is zero based, so the code that actually creates Tkinter indices from row/col must add 1 to the row.  Similar remarks apply when going in the reverse direction.
 </t>
-<t tx="ekr.20051031040240" str_leo_pos="7"></t>
+<t tx="ekr.20051031040240" str_leo_pos="5"></t>
 <t tx="ekr.20060217111834"></t>
 <t tx="ekr.20060531093331">@
 Ever have a clone that is difficult to understand outside the context of its
