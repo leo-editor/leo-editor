@@ -20,7 +20,7 @@
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="EKR.20040519091259" a="E"><vh>Annoucements</vh>
+<v t="EKR.20040519091259"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
@@ -873,7 +873,8 @@ Test files
 # **** Scan all folders &amp; files before uploading.
 @nocolor
 
-Create Release on SourceForge: https://sourceforge.net/projects/leo/files/
+Create Release on SourceForge:
+    https://sourceforge.net/project/admin/explorer.php?group_id=3458
 
 Announcements
 - Update version number on Leo's wikipedia site: http://en.wikipedia.org/wiki/Leo_(editor)
