@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -20,7 +20,7 @@
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="EKR.20040519091259"><vh>Annoucements</vh>
+<v t="EKR.20040519091259" a="E"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
@@ -35,6 +35,7 @@
 </v>
 <v t="ekr.20090718093249.5927"><vh>ANN: Leo 4.6.1 final</vh></v>
 <v t="ekr.20090803090630.1408"><vh>ANN: Leo 4.6.2 final</vh></v>
+<v t="ekr.20090909091918.1463"><vh>ANN: Leo 4.7 b1</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
 <v t="ekr.20090718093249.5928"><vh>4.6</vh>
 <v t="ekr.20090709085944.1401"><vh>ANN: Leo 4.6 rc1</vh></v>
@@ -54,7 +55,7 @@
 </v>
 </v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
-<v t="EKR.20040519090846.2" a="E"><vh>@asis ../doc/INSTALL.TXT</vh>
+<v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="ekr.20080825083632.262"><vh>Leo's HOME directory</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
@@ -488,7 +489,7 @@ makes the system more flexible...
 now for about 2 -- 3 months. It has totally changed not only the way that I
 program, but also the way that I store and organise all of the information that
 I need for the job that I do. -- Ian Mulvany</t>
-<t tx="ekr.20050315084904" str_leo_pos="7,3,0,0,0"></t>
+<t tx="ekr.20050315084904" str_leo_pos="4"></t>
 <t tx="ekr.20050315084922">c.spellCommands.openSpellTab()</t>
 <t tx="ekr.20060213160806">"Thanks for a wonderful program – everybody should be using it! It blows the
 socks off that Java Mind mapping software that won project of the month a while
@@ -862,7 +863,7 @@ Create a bzr tag:
     - bzr tag leo-x-y
     - bzr commit --unchanged -m "added tag"
     - bzr push
-Create distribution files using @button make in leoDist.leo
+Create distribution files using to @button make scripts in leoDist.leo
 Test files
 	- test the files created in c:\Python\Lib\site-packages\leo-x-y folder
     ** Open unitTest.leo: does it open without errors?
@@ -872,7 +873,7 @@ Test files
 # **** Scan all folders &amp; files before uploading.
 @nocolor
 
-Create Release on SourceForge: https://frs.sourceforge.net/webupload
+Create Release on SourceForge: https://sourceforge.net/projects/leo/files/
 
 Announcements
 - Update version number on Leo's wikipedia site: http://en.wikipedia.org/wiki/Leo_(editor)
@@ -1820,6 +1821,43 @@ import time</t>
 
     print ('removing: %s' % fileName)
     os.remove(fileName)
+</t>
+<t tx="ekr.20090909091918.1463">Leo 4.7 beta 1                          September 9, 2009
+
+Leo 4.7 beta 1 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+This version of Leo is labeled a beta version because it contains some new,
+relatively untested plugins.  However, Leo's core should be quite reliable.
+
+In particular, Leo 4.7 beta 1 fixes a bug that caused Leo 4.6 releases to crash
+if .leoID.txt did not exist. Usually this file does exist, but Leo will prompt
+for the contents of this file (a user id) the very first time somebody uses Leo.
+Alas, an unfortunate reversion of code caused Leo to crash. Not exactly the best
+introduction to Leo!
+
+The highlights of Leo 4.7:
+--------------------------
+
+- A major simplification of internal data model: the so-called
+  one-node world. Note: this is **disabled** in the beta 1 release.
+- A new executable Windows installer, whose manifest is created from
+  the files that bzr actively manages.
+- Leo no longer adds directories to sys.path on startup.
+- New plugins.
+- The usual assortment of bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+
 </t>
 </tnodes>
 </leo_file>
