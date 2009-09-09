@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="4,1,3"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="3,0,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>
@@ -986,8 +986,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090717084250.10702"><vh>Other docs</vh>
-<v t="ekr.20080301071818"><vh>Home page</vh>
+<v t="ekr.20090717084250.10702" a="E"><vh>Other docs</vh>
+<v t="ekr.20080301071818" a="E"><vh>Home page</vh>
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
@@ -3159,7 +3159,7 @@
 <v t="ekr.20090802162204.5798"><vh>4.6.2 final</vh>
 <v t="ekr.20090803084828.5800"><vh>Bugs fixed</vh></v>
 </v>
-<v t="ekr.20090909083000.6547" a="E"><vh>4.7 beta 1</vh>
+<v t="ekr.20090909083000.6547"><vh>4.7 beta 1</vh>
 <v t="ekr.20090909083000.6556"><vh>Added new Windows installer</vh></v>
 <v t="ekr.20090909083000.6555"><vh>Added new plugins</vh></v>
 <v t="ekr.20090909083000.6552"><vh>Added options to vim plugin</vh></v>
@@ -23022,7 +23022,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="2"></t>
+<t tx="ekr.20070610174018" str_leo_pos="3,0,0"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -25964,7 +25964,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.6 final]&lt;/a&gt;</t>
+    Download Leo[4.7 beta 1]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
