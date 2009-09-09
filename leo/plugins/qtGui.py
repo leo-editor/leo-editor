@@ -6871,12 +6871,14 @@ class leoQtGui(leoGui.leoGui):
 
         parent = None
         filter = self.makeFilter(filetypes)
+
+        if multiple:
+            lst = QtGui.QFileDialog.getOpenFileNames(parent,title,os.curdir,filter)
+            return list(unicode(s) for s in lst)
+
         s = QtGui.QFileDialog.getOpenFileName(parent,title,os.curdir,filter)
         s = g.app.gui.toUnicode(s)
-        if multiple:
-            return [s]
-        else:
-            return s
+        return s
     #@nonl
     #@-node:ekr.20081121105001.488:runOpenFileDialog
     #@+node:ekr.20090722094828.3653:runPropertiesDialog (qtGui)
