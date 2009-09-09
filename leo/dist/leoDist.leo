@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="7,3,0,0,0"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -54,7 +54,7 @@
 </v>
 </v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
-<v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
+<v t="EKR.20040519090846.2" a="E"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="ekr.20080825083632.262"><vh>Leo's HOME directory</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
@@ -74,13 +74,13 @@
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
-<v t="ekr.20090826220933.1565" a="E"><vh>@button make leo.nsi</vh>
+<v t="ekr.20090826220933.1565"><vh>@button make leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
-<v t="ekr.20090901092556.1608" a="E"><vh>Boilerplate</vh>
-<v t="ekr.20090901092556.1609" a="E"><vh>head boilerplate</vh>
+<v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
+<v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
+<v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1590"><vh>putOnInit</vh></v>
 </v>
@@ -94,9 +94,9 @@
 <v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
 </v>
 </v>
-<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
-<v t="ekr.20090901092556.1574" a="E"><vh>genInstallData &amp; helpers</vh>
+<v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
 </v>
 <v t="ekr.20090901092556.1575"><vh>genMiddle</vh></v>
@@ -109,9 +109,9 @@
 <v t="ekr.20090901092556.1572"><vh>openNsi</vh></v>
 <v t="ekr.20090831172520.1551"><vh>put</vh></v>
 </v>
-<v t="ekr.20090831172520.1554" a="E"><vh>run &amp; helpers</vh>
+<v t="ekr.20090831172520.1554"><vh>run &amp; helpers</vh>
 <v t="ekr.20090826220933.1569"><vh>directoryList</vh></v>
-<v t="ekr.20090901082242.1562" a="E"><vh>filterLines &amp; helpers</vh>
+<v t="ekr.20090901082242.1562"><vh>filterLines &amp; helpers</vh>
 <v t="ekr.20090826220933.1566"><vh>delete...</vh></v>
 </v>
 <v t="ekr.20090901082242.1563"><vh>makeDicts</vh></v>
@@ -267,8 +267,13 @@ You can add  ~/leo-4-5 to your path, or you can create an alias that executes::
 Installing the leo.py on Windows
 --------------------------------
 
-Leo is distributed as a .zip file.
-To install Leo from the .zip file:
+There are now two ways to install Leo on Windows:
+    
+1. Use the single-click executable installer, named something like
+   LeoSetup-4.7-beta-1.exe
+
+2. Leo is distributed as a .zip file.
+   To install Leo from the .zip file:
 
     1. Download the latest version of Leo (a .zip file) from:    
        http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
@@ -276,13 +281,13 @@ To install Leo from the .zip file:
     2. Unzip the .zip file and place the unpacked leo folder in 
        the 'Program Files' folder or any convenient location.
 
-After you have installed Leo, you should add the location of your leo/core folder to your python path.
-One way to do this is adding something like the following to python/Lib/sitecustomize.py:
+    After you have installed Leo, you should add the location of your leo/core folder to your python path.
+    One way to do this is adding something like the following to python/Lib/sitecustomize.py:
 
-    import sys
-    sys.path.append(r'&lt;path-to-leo&gt;leo\core')
+        import sys
+        sys.path.append(r'&lt;path-to-leo&gt;leo\core')
 
-Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.
+    Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.
 </t>
 <t tx="EKR.20040519090846.6">
 Installing leo.py on MacOs
@@ -349,7 +354,7 @@ Thanks to Randall Voth for these instructions.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.6.2-final
+Version: 4.7-beta-1
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -369,30 +374,33 @@ Description: Leo is an outline-oriented editor written in 100% pure Python.
 		Download tkIcon from http://www.effbot.org/downloads/#tkIcon
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.6.2 final                             August 3, 2009
+<t tx="EKR.20040519090846.9">Leo 4.7 beta 1                          September 9, 2009
 
-Leo 4.6.2 final is now available at:
+Leo 4.7 beta 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
 
-Leo 4.6.2 fixes several bugs reported since Leo 4.6 was released.
+This version of Leo is labeled a beta version because it contains some new,
+relatively untested plugins.  However, Leo's core should be quite reliable.
 
-The highlights of Leo 4.6
+In particular, Leo 4.7 beta 1 fixes a bug that caused Leo 4.6 releases to crash
+if .leoID.txt did not exist. Usually this file does exist, but Leo will prompt
+for the contents of this file (a user id) the very first time somebody uses Leo.
+Alas, an unfortunate reversion of code caused Leo to crash. Not exactly the best
+introduction to Leo!
+
+The highlights of Leo 4.7:
 --------------------------
-?
-- Cached external files *greatly* reduces the time to load .leo files.
-- Leo now features a modern Qt interface by default.
-  Leo's legacy Tk interface can also be used.
-- New --config, --file and --gui command-line options.
-- Leo tests syntax of .py files when saving them.
-- Leo can now open any kind of file into @edit nodes.
-- @auto-rst nodes allow easy editing of reStructuredText files.
-- Properties of commanders, positions and nodes simplify programming.
-- Improved Leo's unit testing framework.
-- Leo now requires Python 2.5 or later.
-- Dozens of small improvements and bug fixes.
+
+- A major simplification of internal data model: the so-called
+  one-node world. Note: this is **disabled** in the beta 1 release.
+- A new executable Windows installer, whose manifest is created from
+  the files that bzr actively manages.
+- Leo no longer adds directories to sys.path on startup.
+- New plugins.
+- The usual assortment of bug fixes.
 
 Links:
 ------

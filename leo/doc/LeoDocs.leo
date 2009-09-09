@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4,1,3"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>
@@ -216,7 +216,7 @@
 </v>
 </v>
 <v t="ekr.20050831195331.3"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
-<v t="ekr.20050816073412" a="E"><vh>@rst html\intro.html</vh>
+<v t="ekr.20050816073412"><vh>@rst html\intro.html</vh>
 <v t="ekr.20050816073814"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050816073412.1"><vh>Introduction</vh>
 <v t="ekr.20050822173420"><vh>Leo's main window</vh></v>
@@ -699,7 +699,7 @@
 </v>
 </v>
 <v t="ekr.20050831184021.1"><vh>Chapter 14: Leo and reStructuredText</vh>
-<v t="ekr.20050818163826" a="E"><vh>@rst html\rstplugin3.html</vh>
+<v t="ekr.20050818163826"><vh>@rst html\rstplugin3.html</vh>
 <v t="ekr.20050818163826.1"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050818163826.2"><vh>Overview</vh></v>
 <v t="ekr.20050818163826.3"><vh>Power features of @rst trees</vh></v>
@@ -1016,7 +1016,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46"><vh>Release Notes</vh>
+<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -3037,7 +3037,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63"><vh>Latest version</vh>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
 <v t="ekr.20090324145450.20"></v>
 <v t="ekr.20090718092032.10405"><vh>4.6.1 final</vh>
 <v t="ekr.20090718092032.10406"><vh>Bug fixes</vh>
@@ -3159,9 +3159,14 @@
 <v t="ekr.20090802162204.5798"><vh>4.6.2 final</vh>
 <v t="ekr.20090803084828.5800"><vh>Bugs fixed</vh></v>
 </v>
+<v t="ekr.20090909083000.6547" a="E"><vh>4.7 beta 1</vh>
+<v t="ekr.20090909083000.6556"><vh>Added new Windows installer</vh></v>
+<v t="ekr.20090909083000.6555"><vh>Added new plugins</vh></v>
+<v t="ekr.20090909083000.6552"><vh>Added options to vim plugin</vh></v>
+<v t="ekr.20090909083000.6553"><vh>Leo no longer adds directories to sys.path</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.3"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
@@ -30160,6 +30165,80 @@ In the legacy data model, joined vnodes shared the same tnode. Thus, when we
 visit a position p we print p.h only if p.v.t is not already in the dictionary.
 We then enter p.v.t in the dictionary to prevent printing the headlines of any
 future node joined to p.v.</t>
+<t tx="ekr.20090909083000.6547">Leo 4.7 beta 1                          September 9, 2009
+
+Leo 4.7 beta 1 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+This version of Leo is labeled a beta version because it contains some new,
+relatively untested plugins.  However, Leo's core should be quite reliable.
+
+In particular, Leo 4.7 beta 1 fixes a bug that caused Leo 4.6 releases to crash
+if .leoID.txt did not exist. Usually this file does exist, but Leo will prompt
+for the contents of this file (a user id) the very first time somebody uses Leo.
+Alas, an unfortunate reversion of code caused Leo to crash. Not exactly the best
+introduction to Leo!
+
+The highlights of Leo 4.7:
+--------------------------
+
+- A major simplification of internal data model: the so-called
+  one-node world. Note: this is **disabled** in the beta 1 release.
+- A new executable Windows installer, whose manifest is created from
+  the files that bzr actively manages.
+- Leo no longer adds directories to sys.path on startup.
+- New plugins.
+- The usual assortment of bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20090909083000.6552">The setting::
+
+    @string vim_trigger_event = icondclick2
+
+is the default.  It opens vim when the user double-clicks the icon box.
+
+Alternatives are::
+
+    @string vim_trigger_event = iconclick2
+    @string vim_trigger_event = select2
+
+The former opens vim on single clicks in the icon bar.
+The latter opens vim whenever a new node is selected in Leo.</t>
+<t tx="ekr.20090909083000.6553">http://groups.google.com/group/leo-editor/browse_thread/thread/b868abd65fb57759
+
+Leo no longer adds directories to sys.path on startup.
+
+(Merged the clean-sys-path branch into the trunk.)_
+</t>
+<t tx="ekr.20090909083000.6555">@nocolor-node
+
+New command-line option
+    --gui=qttabs
+
+new plugins:
+    spydershell,
+    qtframecommands
+    mod_framesize.
+
+Improved plugin:  "show folder" in rclick menu.
+
+Improved plugin: contextmenu.py
+
+    If you rclick on @thin / whatever item, you should see "open
+    /home/ville/foo" (or equivalent) menu entry. It open up the file manager on
+    that folder (using xdg-open on linux, os.startfile on windows). I have no
+    idea what to do with mac, now it runs xdg-open and probably fails.</t>
+<t tx="ekr.20090909083000.6556">Unlike previous installers, the manifest is created from the
+@button make leo.nsi script in dist.leo.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?
