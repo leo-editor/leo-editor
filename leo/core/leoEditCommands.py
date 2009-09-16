@@ -2380,13 +2380,15 @@ class editCommandsClass (baseEditCommandsClass):
         if trace:
             if p == self.c.rootPosition(): g.trace('='*40)
             g.trace(p.h)
-        fromTnode = []
-        if hasattr(p.v.t,'unknownAttributes'):
-            if trace: g.trace(p.v.t.u)
-            fromTnode = [dict(i) for i in p.v.t.u.get('icons',[])]
-            for i in fromTnode: i['on'] = 'tnode'
 
-        if trace and fromTnode: g.trace('fromTnode',fromTnode,p.h)
+        if g.unified_nodes:
+            fromTnode = []
+            if hasattr(p.v.t,'unknownAttributes'):
+                if trace: g.trace(p.v.t.u)
+                fromTnode = [dict(i) for i in p.v.t.u.get('icons',[])]
+                for i in fromTnode: i['on'] = 'tnode'
+
+            if trace and fromTnode: g.trace('fromTnode',fromTnode,p.h)
 
         fromVnode = []
         if hasattr(p.v,'unknownAttributes'):
@@ -2398,7 +2400,8 @@ class editCommandsClass (baseEditCommandsClass):
 
         # if vnode icons are rendered to left of tnode icons
         # it makes sense to extend fromVnode with fromTnode
-        fromVnode.extend(fromTnode)
+        if g.unified_nodes:
+            fromVnode.extend(fromTnode)
         return fromVnode
     #@-node:tbrown.20080119085249:getIconList
     #@+node:tbrown.20080119085249.1:setIconList & helpers
