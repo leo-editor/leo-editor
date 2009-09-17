@@ -334,7 +334,17 @@ class LeoApp:
 
         """A convenience routines for plugins to create the default gui class."""
 
-        self.createQtGui(fileName,verbose=verbose)
+        have_qt = False
+        try:
+            import PyQt4.QtGui                
+            have_qt = True
+        except ImportError:
+            print("PyQt not installed - reverting to Tk UI")        
+
+        if have_qt:        
+            self.createQtGui(fileName, verbose=verbose)
+        else:
+            self.createTkGui(fileName, verbose = verbose)
     #@-node:ekr.20090619065122.8593:app.createDefaultGui
     #@+node:ekr.20090202191501.1:app.createQtGui
     def createQtGui (self,fileName='',verbose=False):

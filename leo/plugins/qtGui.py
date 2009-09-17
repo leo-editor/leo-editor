@@ -47,7 +47,7 @@ try:
     import PyQt4.QtGui as QtGui
 except ImportError:
     QtCore = None
-    print('\nqtGui.py: can not import Qt\n')
+    print('\nqtGui.py: can not import Qt\nUse "launchLeo.py --gui=tk" to force Tk')
 
 # remove scintilla dep for now    
 if 0:    
