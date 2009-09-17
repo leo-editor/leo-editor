@@ -27,6 +27,10 @@ __version__ = '0.0'
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
+g.assertUi('qt')
+
+from PyQt4 import QtCore
+
 # Whatever other imports your plugins uses.
 #@nonl
 #@-node:ville.20090614224528.8138:<< imports >>
@@ -41,9 +45,10 @@ def init ():
     if ok:
         g.plugin_signon(__name__)
 
+    install_contextmenu_handlers()
     return ok
 #@-node:ville.20090614224528.8139:init
-#@+node:ville.20090614224528.8141:auto_walk() and g.command('auto-walk')
+#@+node:ville.20090614224528.8141:auto_walk() and g.command('projectwizard')
 def auto_walk(c, directory, parent=None, isroot=True):
     """ source: http://leo.zwiki.org/CreateShadows
 
@@ -125,7 +130,33 @@ def project_wizard(event):
 
 
 #project_wizard()    
-#@-node:ville.20090614224528.8141:auto_walk() and g.command('auto-walk')
+#@-node:ville.20090614224528.8141:auto_walk() and g.command('projectwizard')
+#@+node:ville.20090910010217.5230:context menu import
+def rclick_path_importfile(c,p,menu):
+    if not p.h.startswith('@path'):
+        return
+
+    def importfiles_rclick_cb():
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+
+        table = [("All files","*"),
+            ("Python files","*.py"),]
+        fnames = g.app.gui.runOpenFileDialog(
+            title = "Import files",filetypes = table, 
+            defaultextension = '.notused',
+            multiple=True)
+
+        print "import files from",path
+
+    action = menu.addAction("Import files")
+    action.connect(action, QtCore.SIGNAL("triggered()"), importfiles_rclick_cb)        
+
+def install_contextmenu_handlers():
+    """ Install all the wanted handlers (menu creators) """
+    hnd = [rclick_path_importfile]
+    g.tree_popup_handlers.extend(hnd)
+#@-node:ville.20090910010217.5230:context menu import
 #@-others
 #@nonl
 #@-node:ekr.20090622063842.5264:@thin projectwizard.py
