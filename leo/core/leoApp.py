@@ -643,7 +643,7 @@ class LeoApp:
             theId = os.getenv('USER')
             if theId:
                 if verbose and not g.app.unitTesting:
-                    g.es("setting HOME to os.getenv('USER'):",repr(theId),color='blue')
+                    g.es("setting leoID from os.getenv('USER'):",repr(theId),color='blue')
                 g.app.leoID = theId
                 # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
                 g.app.leoID = g.app.leoID.replace('.','-')
@@ -660,8 +660,16 @@ class LeoApp:
         # Create an emergency gui and a Tk root window.
         g.app.createTkGui("startup")
 
+        if g.app.gui is None:
+            # tkinter broken/doesn't exist. Print error
+            print "Please enter LeoID (e.g. your username, 'johndoe'...)"
+            leoid = raw_input('LeoID: ')
+
+        else:
+            leoid = g.app.gui.runAskLeoIDDialog()
+
         # Bug fix: 2/6/05: put result in g.app.leoID.
-        g.app.leoID = g.app.gui.runAskLeoIDDialog()
+        g.app.leoID = leoid
 
         # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
         g.app.leoID = g.app.leoID.replace('.','-')
