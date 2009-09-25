@@ -137,7 +137,7 @@ def onCreate (tag, keys):
     c.ipythonController = ipythonController(c)
 
     try:
-        import ipy_leo
+        from leo.external import ipy_leo
     except ImportError:
         return
     try:
@@ -193,9 +193,9 @@ class ipythonController:
         c = self.c
         global gIP
         try:
-            import ipy_leo
+            from leo.external import ipy_leo
         except ImportError:
-            self.error("ipy_leo.py extension not available - upgrade your IPython!")
+            self.error("Error importing ipy_leo")
             return
 
         if gIP:
@@ -261,7 +261,7 @@ class ipythonController:
                 self.message('Reusing existing IPython shell')
                 gIP = existing_ip                
 
-            ipy_leo_m = gIP.load('ipy_leo')
+            ipy_leo_m = gIP.load('leo.external.ipy_leo')
             ipy_leo_m.update_commander(leox)
             c.inCommand = False # Disable the command lockout logic, just as for scripts.
             # start mainloop only if it's not running already
