@@ -112,7 +112,7 @@ def init ():
     #if g.app.gui is None:
     #    g.app.createTkGui(__file__)
 
-    if g.app.gui.guiName() == 'qt' and not g.app.useIpython:
+    if g.app.gui and g.app.gui.guiName() == 'qt' and not g.app.useIpython:
         g.pr('ipython.py plugin disabled ("leo --ipython" enables it)')
         return False
 
