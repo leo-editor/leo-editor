@@ -29,7 +29,7 @@ http://tinyurl.com/pxhlq - Jim Fulton's presentation::
 #@<< imports >>
 #@+node:ekr.20070119094733.2:<<imports>>
 import leo.core.leoPlugins as leoPlugins
-from leoPlugins import baseLeoPlugin
+from leo.core.leoPlugins import baseLeoPlugin
 import doctest
 import os
 import leo.core.leoGlobals as g
