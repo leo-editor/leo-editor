@@ -128,6 +128,7 @@ class LeoApp:
             "forth"         : "\\_ _(_ _)", # Use the "REM hack"
             "fortran"       : "C",
             "fortran90"     : "!",
+            "haskell"       : "--_ {-_ _-}",
             "html"          : "<!-- -->",
             "ini"           : ";",
             "java"          : "// /* */",
@@ -173,6 +174,7 @@ class LeoApp:
             "forth"         : "forth",
             "fortran"       : "f",
             "fortran90"     : "f90",
+            "haskell"       : "hs",
             "html"          : "html",
             "ini"           : "ini",
             "java"          : "java",
@@ -220,6 +222,7 @@ class LeoApp:
             "f90"   : "fortran90",
             "h"     : "c",
             "html"  : "html",
+            "hs"    : "haskell",
             "ini"   : "ini",
             "java"  : "java",
             "ksh"   : "kshell", # Leo 4.5.1.
@@ -334,7 +337,17 @@ class LeoApp:
 
         """A convenience routines for plugins to create the default gui class."""
 
-        self.createQtGui(fileName,verbose=verbose)
+        have_qt = False
+        try:
+            import PyQt4.QtGui                
+            have_qt = True
+        except ImportError:
+            print("PyQt not installed - reverting to Tk UI")        
+
+        if have_qt:        
+            self.createQtGui(fileName, verbose=verbose)
+        else:
+            self.createTkGui(fileName, verbose = verbose)
     #@-node:ekr.20090619065122.8593:app.createDefaultGui
     #@+node:ekr.20090202191501.1:app.createQtGui
     def createQtGui (self,fileName='',verbose=False):
@@ -633,7 +646,7 @@ class LeoApp:
             theId = os.getenv('USER')
             if theId:
                 if verbose and not g.app.unitTesting:
-                    g.es("setting HOME to os.getenv('USER'):",repr(theId),color='blue')
+                    g.es("setting leoID from os.getenv('USER'):",repr(theId),color='blue')
                 g.app.leoID = theId
                 # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
                 g.app.leoID = g.app.leoID.replace('.','-')
@@ -650,8 +663,16 @@ class LeoApp:
         # Create an emergency gui and a Tk root window.
         g.app.createTkGui("startup")
 
+        if g.app.gui is None:
+            # tkinter broken/doesn't exist. Print error
+            print "Please enter LeoID (e.g. your username, 'johndoe'...)"
+            leoid = raw_input('LeoID: ')
+
+        else:
+            leoid = g.app.gui.runAskLeoIDDialog()
+
         # Bug fix: 2/6/05: put result in g.app.leoID.
-        g.app.leoID = g.app.gui.runAskLeoIDDialog()
+        g.app.leoID = leoid
 
         # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
         g.app.leoID = g.app.leoID.replace('.','-')

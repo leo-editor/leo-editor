@@ -131,10 +131,9 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=[0], maxp=[None]):
     """try and move to unl in the commander c"""
 
     def moveToP(c, p):
-        c.frame.tree.expandAllAncestors(p)
         c.selectPosition(p)
         c.redraw()
-        c.redraw()
+        c.frame.bringToFront()  # doesn't seem to work
 
     if depth == 0:
         nds = c.rootPosition().self_and_siblings_iter()
@@ -224,7 +223,7 @@ def onUrl1 (tag,keywords):
                     c2 = frame.c
 
                     if urlTuple [4]: # we have a UNL!
-                        recursiveUNLSearch(urlTuple[4].split("-->"), c)
+                        recursiveUNLSearch(urlTuple[4].split("-->"), c2)
 
                     # Disable later call to c.onClick so the focus stays in c2.
                     c.doubleClickFlag = True

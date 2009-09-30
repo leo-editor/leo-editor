@@ -6,11 +6,12 @@
 #@+node:tbrown.20070117104409.1:<< docstring >>
 """Create buttons to quickly move nodes to other nodes
 
-Adds 'To Last Child Button' and 'To First Child Button' commands to the Outline menu.
+Adds 'Move/Clone To Last Child Button' and 
+'Move/Clone To First Child Button' commands to the Outline menu.
 
 Select a node 'Foo' and then use the 'To Last Child Button' command. The adds a 'to
 Foo' button to the button bar. Now select another node and click the 'to Foo'
-button. The selected node will be moved and appended as the last child of the
+button. The selected node will be moved or cloned to the last child of the
 node 'Foo'.
 
 'To First Child Button' works the same way, except that moved nodes are inserted as the
@@ -21,7 +22,7 @@ first child of the target node.
 #@-node:tbrown.20070117104409.1:<< docstring >>
 #@nl
 
-__version__ = '0.6'
+__version__ = '0.7'
 #@<< version history >>
 #@+node:tbrown.20070117104409.6:<< version history >>
 #@+at
@@ -36,6 +37,7 @@ __version__ = '0.6'
 # 0.4 EKR: Added checkMove method.
 # 0.5 EKR: Added c arg to p.visNext & p.visBack.
 # 0.6 TNB: Store vnodes rather than positions, vnodes are more durable
+# 0.7 TNB: Added "clone to" as well as "move to"
 #@-at
 #@nonl
 #@-node:tbrown.20070117104409.6:<< version history >>
@@ -81,8 +83,10 @@ class quickMove:
         self.c = c
 
         table = (
-            ("Add To First Child Button",None,self.addToFirstChildButton),
-            ("Add To Last Child Button",None,self.addToLastChildButton),
+            ("Move To First Child Button",None,self.addToFirstChildButton),
+            ("Move To Last Child Button",None,self.addToLastChildButton),
+            ("Clone To First Child Button",None,self.cloneToFirstChildButton),
+            ("Clone To Last Child Button",None,self.cloneToLastChildButton),
         )
 
         c.frame.menu.createMenuItemsFromTable('Outline', table)
@@ -94,14 +98,20 @@ class quickMove:
     def addToLastChildButton (self,event=None):
         self.addButton(first=False)
 
-    def addButton (self,first):
+    def cloneToFirstChildButton (self,event=None):
+        self.addButton(first=True, clone=True)
+
+    def cloneToLastChildButton (self,event=None):
+        self.addButton(first=False, clone=True)
+
+    def addButton (self,first,clone=False):
 
         '''Add a button that creates a target for future moves.'''
 
         c = self.c ; p = c.p
         sc = scriptingController(c)
 
-        mb = quickMoveButton(self,p.copy(),first)
+        mb = quickMoveButton(self,p.copy(),first,clone)
 
         b = sc.createIconButton(
             text = 'to-' + p.h, # createButton truncates text.
@@ -121,13 +131,15 @@ class quickMoveButton:
 
     #@    @+others
     #@+node:ekr.20070117121326:ctor
-    def __init__(self, owner, target, first):
+    def __init__(self, owner, target, first, clone):
 
         self.c = owner.c
         self.owner = owner
         self.target = target.v
         self.targetHeadString = target.h
         self.first = first
+        self.clone = clone
+    #@nonl
     #@-node:ekr.20070117121326:ctor
     #@+node:ekr.20070117121326.1:moveCurrentNodeToTarget
     def moveCurrentNodeToTarget(self):
@@ -152,8 +164,15 @@ class quickMoveButton:
         nxt = p.visNext(c) or p.visBack(c)
         nxt = nxt.v
         # store a vnode instead of position as positions are too easily lost
-        if self.first:  p.moveToFirstChildOf(p2)
-        else:           p.moveToLastChildOf(p2)
+
+        if self.clone:
+            p = p.clone()
+
+        if self.first:
+            p.moveToFirstChildOf(p2)
+        else:
+            p.moveToLastChildOf(p2)
+
         nxt = c.vnode2position(nxt)
         if c.positionExists(nxt):
             c.selectPosition(nxt)
