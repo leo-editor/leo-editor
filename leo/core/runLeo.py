@@ -116,7 +116,10 @@ def doPrePluginsInit(fileName,pymacs):
     g.app.config.readSettingsFiles(fileName,verbose)
     g.app.setEncoding()
     g.app.setGlobalDb()
-    createSpecialGui(gui,pymacs,script,windowFlag)
+    if gui is None:
+        g.app.createDefaultGui(__file__)
+    else:
+        createSpecialGui(gui,pymacs,script,windowFlag)
     return fileName,relativeFileName,script
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
 def createSpecialGui(gui,pymacs,script,windowFlag):
@@ -141,7 +144,6 @@ def createSpecialGui(gui,pymacs,script,windowFlag):
     elif gui == 'qt':   g.app.createQtGui(tag)
     elif gui == 'tk':   g.app.createTkGui(tag)
     elif gui == 'wx':   g.app.createWxGui(tag)
-#@nonl
 #@+node:ekr.20031218072017.1938:createNullGuiWithScript
 def createNullGuiWithScript (script):
 
