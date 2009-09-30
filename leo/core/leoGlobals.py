@@ -6725,6 +6725,9 @@ def importFromPath (name,path,pluginName=None,verbose=False):
             if trace: # or verbose:
                 g.es_print("exception in g.importFromPath",color='blue')
                 g.es_exception()
+        except UiTypeException:
+            g.es_print("Ui type not compatible for plugin (%s)" %
+                (name),color='blue')            
         except Exception:
             g.es_print("unexpected exception in g.importFromPath(%s)" %
                 (name),color='blue')
@@ -6775,9 +6778,12 @@ class readLinesClass:
 #@-node:EKR.20040612114220.4:class readLinesClass
 #@-node:ekr.20040629162023:readLines class and generator
 #@+node:ville.20090827174345.9963:g.assertui
+class UiTypeException(Exception):
+    pass
+
 def assertUi(uitype):
-    assert g.app.gui.guiName() == uitype
-#@nonl
+    if not g.app.gui.guiName() == uitype:
+        raise UiTypeException
 #@-node:ville.20090827174345.9963:g.assertui
 #@-node:EKR.20040612114220:Utility classes, functions & objects...
 #@+node:ekr.20031218072017.3197:Whitespace...
