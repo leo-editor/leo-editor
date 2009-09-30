@@ -116,7 +116,9 @@ def init ():
         g.pr('ipython.py plugin disabled ("leo --ipython" enables it)')
         return False
 
-    ok = g.app.gui.guiName() in ("tkinter","qt")
+    # since tk and qt are the only ones used currently, we are not too picky
+    ok = True
+    #ok = g.app.gui.guiName() in ("tkinter","qt")
     if ok:
 
         # Call onCreate after the commander and the key handler exist.
