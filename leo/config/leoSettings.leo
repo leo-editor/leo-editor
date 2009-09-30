@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="9,1,15"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913"><vh>@@button Save</vh></v>
@@ -522,8 +522,8 @@
 <v t="ekr.20070925144534.70"><vh>@item *&amp;indent-region</vh></v>
 <v t="ekr.20070925144534.71"><vh>@item *&amp;unindent-region</vh></v>
 <v t="ekr.20070925144534.72"><vh>@item *&amp;match-brackets</vh></v>
-<v t="ekr.20070925144534.73"><vh>@item *add-comments</vh></v>
-<v t="ekr.20070925144534.74"><vh>@item *delete-comments</vh></v>
+<v t="ekr.20070925144534.73"><vh>@item *&amp;add-comments</vh></v>
+<v t="ekr.20070925144534.74"><vh>@item *&amp;delete-comments</vh></v>
 </v>
 <v t="ekr.20070925144534.75"><vh>@menu Edit &amp;Headline...</vh>
 <v t="ekr.20070925144534.76"><vh>@item *edit-&amp;headline</vh></v>
@@ -1428,6 +1428,10 @@
 </v>
 <v t="ekr.20060603215208"></v>
 <v t="ekr.20070224073109.1"></v>
+<v t="ekr.20090930151626.8534" a="E"><vh>add/delete-comments...</vh>
+<v t="ekr.20060925060533.4"></v>
+<v t="ekr.20070925144534.58" a="E"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -7899,6 +7903,7 @@ Change to your Python's default encoding if you have unicode problems.</t>
 <t tx="ekr.20090724102842.2492">If zero, all nodes are colorized, regardless of length of body text.
 If &gt; 0, only nodes whose body text are smaller than this limit are colorized.</t>
 <t tx="ekr.20090905151712.8546"></t>
+<t tx="ekr.20090930151626.8534"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

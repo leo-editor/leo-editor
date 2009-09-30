@@ -5470,6 +5470,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         if command:
             def add_command_callback(label=label,command=command):
+                # g.trace(command)
                 return command()
 
             QtCore.QObject.connect(action,
@@ -7527,10 +7528,10 @@ class leoQtEventFilter(QtCore.QObject):
     def eventFilter(self, obj, event):
 
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         traceEvent = True
-        traceKey = False
-        traceFocus = False
+        traceKey = True
+        traceFocus = True
         c = self.c ; k = c.k
         eventType = event.type()
         ev = QtCore.QEvent
