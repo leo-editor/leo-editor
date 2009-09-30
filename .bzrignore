@@ -1,3 +1,5 @@
+
+*.exe
 *.o
 *~
 *.tmp
@@ -32,7 +34,6 @@ leo/doc/_templates
 leo/doc/html/*.html
 leo/doc/html/*.html.txt
 leo/doc/html/_static
-
 
 leo/plugins/leoPlugins.leo
 leo/plugins/temacs_ext/
