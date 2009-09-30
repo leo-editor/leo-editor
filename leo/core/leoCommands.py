@@ -3032,7 +3032,7 @@ class baseCommands (object):
     #@-node:ekr.20031218072017.1832:getTime
     #@-node:ekr.20031218072017.1831:insertBodyTime, helpers and tests
     #@+node:ekr.20050312114529:insert/removeComments
-    #@+node:ekr.20050312114529.1:addComments (test)
+    #@+node:ekr.20050312114529.1:addComments
     def addComments (self,event=None):
 
         '''Convert all selected lines in the body text to comment lines.'''
@@ -3060,8 +3060,8 @@ class baseCommands (object):
 
         result = ''.join(result)
         c.updateBodyPane(head,result,tail,undoType='Add Comments',oldSel=None,oldYview=oldYview)
-    #@-node:ekr.20050312114529.1:addComments (test)
-    #@+node:ekr.20050312114529.2:deleteComments (test)
+    #@-node:ekr.20050312114529.1:addComments
+    #@+node:ekr.20050312114529.2:deleteComments
     def deleteComments (self,event=None):
 
         '''Remove one level of comment delimiters from all selected lines in the body text.'''
@@ -3112,7 +3112,7 @@ class baseCommands (object):
 
         result = ''.join(result)
         c.updateBodyPane(head,result,tail,undoType='Delete Comments',oldSel=None,oldYview=oldYview)
-    #@-node:ekr.20050312114529.2:deleteComments (test)
+    #@-node:ekr.20050312114529.2:deleteComments
     #@-node:ekr.20050312114529:insert/removeComments
     #@+node:ekr.20031218072017.1833:reformatParagraph
     def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):

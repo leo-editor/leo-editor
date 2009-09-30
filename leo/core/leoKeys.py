@@ -2125,6 +2125,7 @@ class keyHandlerClass:
 
         No actual gui bindings are made: only entries in k.masterBindingsDict.'''
 
+        trace = False and not g.unitTesting
         k = self ; c = k.c
 
         # g.trace(pane,shortcut,commandName)
@@ -2147,13 +2148,18 @@ class keyHandlerClass:
         bunchList = k.bindingsDict.get(shortcut,[])
         #@    << trace bindings >>
         #@+node:ekr.20061031131434.91:<< trace bindings >>
-        if c.config.getBool('trace_bindings_verbose'):
-            theFilter = c.config.getString('trace_bindings_filter') or ''
-            # g.trace(repr(theFilter))
-            if not theFilter or shortcut.find(theFilter) != -1:
-                pane_filter = c.config.getString('trace_bindings_pane_filter')
-                if not pane_filter or pane_filter.lower() == pane:
-                    g.trace(pane,shortcut,commandName)
+        if trace: # or c.config.getBool('trace_bindings_verbose'):
+
+            g.trace(pane,shortcut,commandName)
+
+            # Old trace code.
+
+            # theFilter = c.config.getString('trace_bindings_filter') or ''
+            # # g.trace(repr(theFilter))
+            # if not theFilter or shortcut.find(theFilter) != -1:
+                # pane_filter = c.config.getString('trace_bindings_pane_filter')
+                # if not pane_filter or pane_filter.lower() == pane:
+                    # g.trace(pane,shortcut,commandName)
         #@-node:ekr.20061031131434.91:<< trace bindings >>
         #@nl
         try:

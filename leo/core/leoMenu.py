@@ -1317,10 +1317,10 @@ class leoMenu:
         New in 4.4: this method shows the shortcut in the menu,
         but this method **never** binds any shortcuts.'''
 
-        # g.trace('menu',menu)
-
-        c = self.c ; f = c.frame ; k = c.k ; trace = False
+        c = self.c ; f = c.frame ; k = c.k
         if g.app.unitTesting: return
+
+        trace = False
         for data in table:
             #@        << get label & command or continue >>
             #@+node:ekr.20051021091958:<< get label & command or continue >>
@@ -1367,7 +1367,6 @@ class leoMenu:
                     # Pick the first entry that is not a mode.
                     for bunch in bunchList:
                         if not bunch.pane.endswith('-mode'):
-                            if trace: g.trace('1','%20s' % (bunch.val),commandName)
                             accel = bunch and bunch.val
                             if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
                 else:
@@ -1425,11 +1424,15 @@ class leoMenu:
                         g.trace('No inverse for %s' % commandName)
             #@-node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
             #@nl
-            accelerator = stroke = k.shortcutFromSetting(accel,addKey=False) or ''
-            accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
+            # Bug fix: 2009/09/30: use canonical stroke.
+            accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
+            stroke = k.shortcutFromSetting(accel,addKey=True) or ''
+            if accelerator:
+                accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
+            if trace: # and commandName == 'add-comments':
+                g.trace(bunch.val,repr(stroke),repr(accelerator),commandName)
             def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName,event=None):
-                #k.clearState()
-                #g.trace(stroke)
+                # if trace: g.trace('stroke',stroke)
                 return k.masterMenuHandler(stroke,command,commandName)
 
             realLabel = self.getRealMenuName(label)
