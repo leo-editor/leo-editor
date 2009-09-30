@@ -31,8 +31,13 @@ You can add  ~/leo-4-5 to your path, or you can create an alias that executes::
 Installing the leo.py on Windows
 --------------------------------
 
-Leo is distributed as a .zip file.
-To install Leo from the .zip file:
+There are now two ways to install Leo on Windows:
+    
+1. Use the single-click executable installer, named something like
+   LeoSetup-4.7-beta-1.exe
+
+2. Leo is distributed as a .zip file.
+   To install Leo from the .zip file:
 
     1. Download the latest version of Leo (a .zip file) from:    
        http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
@@ -40,13 +45,13 @@ To install Leo from the .zip file:
     2. Unzip the .zip file and place the unpacked leo folder in 
        the 'Program Files' folder or any convenient location.
 
-After you have installed Leo, you should add the location of your leo/core folder to your python path.
-One way to do this is adding something like the following to python/Lib/sitecustomize.py:
+    After you have installed Leo, you should add the location of your leo/core folder to your python path.
+    One way to do this is adding something like the following to python/Lib/sitecustomize.py:
 
-    import sys
-    sys.path.append(r'<path-to-leo>leo\core')
+        import sys
+        sys.path.append(r'<path-to-leo>leo\core')
 
-Another way is to append <path-to-leo> to the Windows PYTHONPATH environment variable.
+    Another way is to append <path-to-leo> to the Windows PYTHONPATH environment variable.
 
 Installing leo.py on MacOs
 --------------------------
