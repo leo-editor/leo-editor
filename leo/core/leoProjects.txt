@@ -935,6 +935,79 @@ if g.unitTesting:
 #@-node:ekr.20090522161156.5886:@test class StubConfig
 #@-node:ekr.20041113113140:loadOnePlugin & test
 #@-node:ekr.20090907140408.6123:Fixed startup reversion when .leoID.txt does not exist
+#@+node:ekr.20090930103947.6085:Fixed elisp bug
+> Here is the fix:
+> 'startsFunction' in 'elispScanner' should use
+>    j = self.skipId(s,i)
+> instead of
+>    j = g.skip_id(s,i)
+> skip_id doesn't take extraIdChars ('-' in elisp case) into
+> consideration. 
+#@nonl
+#@+node:ekr.20070711060113:class elispScanner
+class elispScanner (baseScannerClass):
+
+    @others
+#@+node:ekr.20070711060113.1: __init__
+def __init__ (self,importCommands,atAuto):
+
+    # Init the base class.
+    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='elisp')
+
+    # Set the parser delims.
+    self.blockCommentDelim1 = None
+    self.blockCommentDelim2 = None
+    self.lineCommentDelim = ';'
+    self.lineCommentDelim2 = None
+    self.blockDelim1 = '('
+    self.blockDelim2 = ')'
+    self.extraIdChars = '-'
+
+#@-node:ekr.20070711060113.1: __init__
+#@+node:ekr.20070711060113.2:Overrides
+# skipClass/Function/Signature are defined in the base class.
+#@nonl
+#@+node:ekr.20070711060113.3:startsClass/Function & skipSignature
+def startsClass (self,unused_s,unused_i):
+    '''Return True if s[i:] starts a class definition.
+    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
+    return False
+
+def startsFunction(self,s,i):
+    '''Return True if s[i:] starts a function.
+    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
+
+    self.sigStart = i
+    self.codeEnd = self.sigEnd = self.sigId = None
+    if not g.match(s,i,'('): return False
+
+    end = self.skipBlock(s,i)
+    # g.trace('%3s %15s block: %s' % (i,repr(s[i:i+10]),repr(s[i:end])))
+    if not g.match(s,end-1,')'): return False
+
+    i = g.skip_ws(s,i+1)
+    if not g.match_word(s,i,'defun'): return False
+
+    i += len('defun')
+    sigEnd = i = g.skip_ws_and_nl(s,i)
+    j = self.skipId(s,i) # Bug fix: 2009/09/30
+    word = s[i:j]
+    if not word: return False
+
+    self.codeEnd = end + 1
+    self.sigEnd = sigEnd
+    self.sigId = word
+    return True
+#@-node:ekr.20070711060113.3:startsClass/Function & skipSignature
+#@+node:ekr.20070711063339:startsString
+def startsString(self,s,i):
+
+    # Single quotes are not strings.
+    return g.match(s,i,'"')
+#@-node:ekr.20070711063339:startsString
+#@-node:ekr.20070711060113.2:Overrides
+#@-node:ekr.20070711060113:class elispScanner
+#@-node:ekr.20090930103947.6085:Fixed elisp bug
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin
