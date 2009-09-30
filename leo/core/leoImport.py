@@ -3239,7 +3239,7 @@ class elispScanner (baseScannerClass):
 
         i += len('defun')
         sigEnd = i = g.skip_ws_and_nl(s,i)
-        j = g.skip_id(s,i)
+        j = self.skipId(s,i) # Bug fix: 2009/09/30
         word = s[i:j]
         if not word: return False
 
