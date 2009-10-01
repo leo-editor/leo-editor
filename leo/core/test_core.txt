@@ -352,7 +352,7 @@ for ivar in (
 import os
 import sys
 
-verbose = False
+trace = False
 
 python_interp = sys.executable
 test_path = g.os_path_join(g.app.loadDir,"..","test","unittest")
@@ -362,7 +362,7 @@ leo_file   = g.os_path_join(src_path,"launchLeo.py")
 batch_file = g.os_path_join(test_path,"batchTest.py")
 test_file  = g.os_path_join(test_path,"createdFile.txt")
 
-# Execute this command: python leo.py -script test\unittest\batchTest.py
+# Execute this command: python launchLeo.py --script test\unittest\batchTest.py
 
 if 1:
     command = r"%s %s --silent --script %s" % (python_interp,leo_file,batch_file)
@@ -371,28 +371,26 @@ else:
 
 @others
 
-removeFile(test_file,verbose)
-os.system(command)
+if trace:
+    print('@test batch mode: loadDir: %s' % g.app.loadDir)
 
-try:
-    g.redirectStdout()
-    removeFile(test_file,verbose)
-    os.system(command)
-finally:
-    g.restoreStdout()
+removeFile(test_file)
+os.system(command)
 
 assert(g.os_path_exists(test_file))
 #@nonl
 #@+node:ekr.20090529103821.7096:removeFile
-def removeFile(path,verbose):
+def removeFile(path):
+
+    trace = False
 
     if os.path.exists(test_file):
-        if verbose:
-            print("@test batch mode: deleting",test_file)
+        if trace:
+            print("@test batch mode: removeFile: deleting",test_file)
         os.remove(test_file)
     else:
-        if verbose:
-            print("@test batch mode: not found:",test_file)
+        if trace:
+            print("@test batch mode: removeFile: not found:",test_file)
 #@-node:ekr.20090529103821.7096:removeFile
 #@-node:ekr.20090529103821.7095:@test batch mode
 #@+node:ekr.20090529103821.7102:@test all commands have an event arg

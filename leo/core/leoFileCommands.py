@@ -739,11 +739,6 @@ class baseFileCommands:
                 # if trace: g.trace('***reassign',p2.v)
                 p2.v.t.fileIndex = g.app.nodeIndices.getNewIndex()
 
-        if g.unified_nodes:
-            pass
-        else:
-            self.initAllParents() # Does nothing for unified nodes.
-
         if trace and verbose:
             g.trace('**** dumping outline...')
             c.dumpOutline()
@@ -808,7 +803,7 @@ class baseFileCommands:
 
             self.setPositionsFromVnodes()
             c.selectVnode(c.p) # load body pane
-            self.initAllParents()
+            # self.initAllParents()
             if c.config.getBool('check_outline_after_read'):
                 c.checkOutline(event=None,verbose=True,unittest=False,full=True)
         finally:
@@ -878,46 +873,19 @@ class baseFileCommands:
     #@-node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
     #@-node:ekr.20031218072017.1554:warnOnReadOnlyFiles
     #@-node:ekr.20031218072017.1553:getLeoFile & helpers
-    #@+node:ekr.20080428055516.3:initAllParents
-    def initAllParents(self):
-
-        '''Properly init the parents list of all vnodes.'''
-
-        c = self.c
-        trace = True and not g.unitTesting
-        traceTime = False
-        dumpOutline = False
-
-        if g.unified_nodes:
-            pass
-        else:
-            if trace and traceTime:
-                import time
-                t1 = time.time()
-            # This takes about 0.15 sec for this file.
-            c.hiddenRootNode._computeParentsOfChildren()
-
-            # An important point: this iter does not depend on any parent list.
-            for v in c.all_unique_vnodes_iter():
-                v._computeParentsOfChildren()
-
-            if trace and traceTime:
-                t2 = time.time()
-                g.trace(t2-t1)
-    #@-node:ekr.20080428055516.3:initAllParents
     #@+node:ekr.20031218072017.2009:newTnode (fileCommands)
     def newTnode(self,index):
 
         c = self.c
 
-        if g.unified_nodes: t = leoNodes.vnode(context=c)
-        else:               t = leoNodes.tnode()
+        t = leoNodes.vnode(context=c)
 
         if index in self.tnodesDict:
             g.es("bad tnode index:",str(index),"using empty text.")
             return t
         else:
-            # Create the tnode.  Use the _original_ index as the key in tnodesDict.
+            # Create the tnode.
+            # Use the _original_ index as the key in tnodesDict.
             self.tnodesDict[index] = t
 
             if not g.isString(index):
@@ -1158,23 +1126,14 @@ class baseFileCommands:
                 v = self.createSaxVnode(sax_child,parent_v)
                 self.createSaxChildren(sax_child,v)
 
-            # Compute parents.
-            if g.unified_nodes:
-                pass
-            else:
-                v._computeParentsOfChildren()
             children.append(v)
 
-        if g.unified_nodes:
-            parent_v.children = children
-            for child in children:
-                child.parents.append(parent_v)
-                if trace: g.trace(
-                    '*** added parent',parent_v,'to',child,
-                    'len(child.parents)',len(child.parents))
-
-        else:
-            self._linkParentAndChildren(parent_v,children)
+        parent_v.children = children
+        for child in children:
+            child.parents.append(parent_v)
+            if trace: g.trace(
+                '*** added parent',parent_v,'to',child,
+                'len(child.parents)',len(child.parents))
 
         return children
     #@+node:ekr.20060919110638.7:createSaxVnode & helpers
@@ -1186,33 +1145,19 @@ class baseFileCommands:
         b = sax_node.bodyString
 
         if t:
-            if g.unified_nodes:
-                # t is really a vnode.
-                # The body of the later node overrides the earlier.
-                # Don't set t.h: h is always empty.
-                t.b = b 
-            else:
-                pass
+            # t is really a vnode.
+            # The body of the later node overrides the earlier.
+            # Don't set t.h: h is always empty.
+            t.b = b 
         else:
-            if g.unified_nodes:
-                t = leoNodes.vnode(context=c)
-                t.setBodyString(b)
-                t.setHeadString(h)
-            else:
-                t = leoNodes.tnode(bodyString=b,headString=h)
+            t = leoNodes.vnode(context=c)
+            t.setBodyString(b)
+            t.setHeadString(h)
 
             if sax_node.tnx:
                 t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
-        if g.unified_nodes:
-            v = t
-        else:
-            v = leoNodes.vnode(context=c,t=t)
-
-        if g.unified_nodes:
-            pass
-        else:
-            v.t.vnodeList.append(v)
+        v = t
 
         index = self.canonicalTnodeIndex(sax_node.tnx)
         self.tnodesDict [index] = t
@@ -1408,24 +1353,6 @@ class baseFileCommands:
     #@-node:ekr.20061004053644:handleVnodeSaxAttributes
     #@-node:ekr.20060919110638.7:createSaxVnode & helpers
     #@-node:ekr.20060919110638.5:createSaxChildren & helpers
-    #@+node:ekr.20060919110638.9:at._linkParentAndChildren (not used with unified nodes)
-    def _linkParentAndChildren (self, parent_v, children):
-
-        trace = True and not g.unitTesting
-
-        if g.unified_nodes:
-            assert False,'should never be called'
-        else:
-            # Add parent_v to it's tnode's vnodeList.
-            if parent_v not in parent_v.t.vnodeList:
-                parent_v.t.vnodeList.append(parent_v)
-
-            # Set parent_v's children.
-            parent_v.t.children = children
-
-            # Make parent_v a parent of each child.
-            parent_v._computeParentsOfChildren()
-    #@-node:ekr.20060919110638.9:at._linkParentAndChildren (not used with unified nodes)
     #@+node:ekr.20060919110638.2:dumpSaxTree
     def dumpSaxTree (self,root,dummy):
 
@@ -1592,12 +1519,7 @@ class baseFileCommands:
         if saxRoot:
             parent_v = c.hiddenRootNode
             children = at.createSaxChildren(saxRoot,parent_v)
-
-            if g.unified_nodes:
-                assert c.hiddenRootNode.children == children
-            else:
-                # g.trace('children',children)
-                c.hiddenRootNode.t.children = children
+            assert c.hiddenRootNode.children == children
             v = children and children[0] or None
             return v
         else:
@@ -1650,14 +1572,14 @@ class baseFileCommands:
 
         while aList:
             n = aList.pop()
-            if g.unified_nodes: children = last_v.children
-            else:               children = last_v.t.children
+            children = last_v.children
             if n < len(children):
                 last_v = children[n]
             else:
                 return oops('bad index="%s", len(children)="%s"' % (n,len(children)))
 
         return last_v
+    #@nonl
     #@-node:ekr.20080805132422.3:resolveArchivedPosition  (New in Leo 4.5)
     #@+node:ekr.20060919110638.13:setPositionsFromVnodes & helper
     def setPositionsFromVnodes (self):

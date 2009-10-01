@@ -413,8 +413,6 @@ class undoer:
 
         t._headString  = bunch.headString
         t._bodyString  = bunch.bodyString
-        if not g.unified_nodes:
-            t.vnodeList = bunch.vnodeList
         t.statusBits  = bunch.statusBits
 
         uA = bunch.get('unknownAttributes')
@@ -494,21 +492,12 @@ class undoer:
 
         """Create a bunch containing all info needed to recreate a vnode."""
 
-        if g.unified_nodes:
-            bunch = g.Bunch(
-                t = t,
-                headString = t._headString,
-                bodyString = t._bodyString,
-                statusBits = t.statusBits,
-            )
-        else:
-            bunch = g.Bunch(
-                t = t,
-                headString = t._headString,
-                bodyString = t._bodyString,
-                vnodeList  = t.vnodeList[:],
-                statusBits = t.statusBits,
-            )
+        bunch = g.Bunch(
+            t = t,
+            headString = t._headString,
+            bodyString = t._bodyString,
+            statusBits = t.statusBits,
+        )
 
         if hasattr(t,'unknownAttributes'):
             bunch.unknownAttributes = t.unknownAttributes
@@ -1455,12 +1444,6 @@ class undoer:
         for v in u.dirtyVnodeList:
             v.t.setDirty()
 
-        if g.unified_nodes:
-            pass
-        else:
-            u.newP.v._computeParentsOfChildren()
-            u.newP._parentVnode()._computeParentsOfChildren()
-
         c.selectPosition(u.newP)
     #@-node:ekr.20050412083057:redoCloneNode
     #@+node:EKR.20040526072519.2:redoDeleteNode
@@ -1479,23 +1462,15 @@ class undoer:
         parent_v = u.p._parentVnode()
         n = u.p.childIndex()
 
-        # Adjust the links of all moved nodes.
-        if g.unified_nodes:
-            # Move the demoted nodes from the old parent to the new parent.
-            parent_v.children = parent_v.children[:n+1]
-            u.p.v.children.extend(u.followingSibs)
+        # Move the demoted nodes from the old parent to the new parent.
+        parent_v.children = parent_v.children[:n+1]
+        u.p.v.children.extend(u.followingSibs)
 
-            # Adjust the parent links of the moved nodes.
-            # There is no need to adjust descendant links.
-            for v in u.followingSibs:
-                v.parents.remove(parent_v)
-                v.parents.append(u.p.v)
-        else:
-            # Remove the moved nodes from the parent's children.
-            parent_v.t.children = parent_v.t.children[:n+1]
-             # Add the moved nodes to p's children
-            u.p.v.t.children.extend(u.followingSibs)
-            u.p.v._computeParentsOfChildren(children=u.followingSibs)
+        # Adjust the parent links of the moved nodes.
+        # There is no need to adjust descendant links.
+        for v in u.followingSibs:
+            v.parents.remove(parent_v)
+            v.parents.append(u.p.v)
 
         c.setCurrentPosition(u.p)
     #@-node:ekr.20080425060424.9:redoDemote
@@ -1555,7 +1530,7 @@ class undoer:
         c.selectPosition(u.p)
         c.dehoist()
     #@-node:ekr.20050412085138.1:redoHoistNode & redoDehoistNode
-    #@+node:ekr.20050412084532:redoInsertNode (changed)
+    #@+node:ekr.20050412084532:redoInsertNode
     def redoInsertNode (self):
 
         u = self ; c = u.c
@@ -1570,12 +1545,6 @@ class undoer:
             oldRoot = c.rootPosition()
             u.newP._linkAsRoot(oldRoot)
 
-        # Restore all vnodeLists (and thus all clone marks).
-        if g.unified_nodes:
-            pass
-        else:
-            u.newP._restoreLinksInTree()
-
         if u.pasteAsClone:
             for bunch in u.afterTree:
                 t = bunch.t
@@ -1588,7 +1557,7 @@ class undoer:
                 # g.trace(t,bunch.head,bunch.body)
 
         c.selectPosition(u.newP)
-    #@-node:ekr.20050412084532:redoInsertNode (changed)
+    #@-node:ekr.20050412084532:redoInsertNode
     #@+node:ekr.20050526125801:redoMark
     def redoMark (self):
 
@@ -1616,15 +1585,10 @@ class undoer:
         assert u.oldParent_v.t.children[u.oldN] == v
         del u.oldParent_v.t.children[u.oldN]
 
-        if g.unified_nodes:
-            parent_v = u.newParent_v
-            parent_v.t.children.insert(u.newN,v)
-            v.parents.append(u.newParent_v)
-            v.parents.remove(u.oldParent_v)
-        else:
-            u.newParent_v.t.children.insert(u.newN,v)
-            # Recompute the parent links.
-            u.newParent_v._computeParentsOfChildren()
+        parent_v = u.newParent_v
+        parent_v.t.children.insert(u.newN,v)
+        v.parents.append(u.newParent_v)
+        v.parents.remove(u.oldParent_v)
 
         u.updateMarks('new')
 
@@ -1668,34 +1632,22 @@ class undoer:
         # Add the children to parent_v's children.
         n = u.p.childIndex() + 1
 
-        if g.unified_nodes:
-            old_children = parent_v.t.children[:]
-            parent_v.t.children = old_children[:n]
-                # Add children up to the promoted nodes.
-            parent_v.t.children.extend(u.children)
-                # Add the promoted nodes.
-            parent_v.t.children.extend(old_children[n:])
-                # Add the children up to the promoted nodes.
+        old_children = parent_v.t.children[:]
+        parent_v.t.children = old_children[:n]
+            # Add children up to the promoted nodes.
+        parent_v.t.children.extend(u.children)
+            # Add the promoted nodes.
+        parent_v.t.children.extend(old_children[n:])
+            # Add the children up to the promoted nodes.
 
-            # Remove the old children.
-            u.p.v.children = []
+        # Remove the old children.
+        u.p.v.children = []
 
-            # Adjust the parent links in the moved children.
-            # There is no need to adjust descendant links.
-            for child in u.children:
-                child.parents.remove(u.p.v)
-                child.parents.append(parent_v)
-        else:
-            z = parent_v.t.children[:]
-            parent_v.t.children = z[:n]
-            parent_v.t.children.extend(u.children)
-            parent_v.t.children.extend(z[n:])
-
-            # Remove v's children.
-            u.p.v.t.children = []
-
-            # Adjust the parent links of all moved nodes.
-            parent_v._computeParentsOfChildren(children=u.children)
+        # Adjust the parent links in the moved children.
+        # There is no need to adjust descendant links.
+        for child in u.children:
+            child.parents.remove(u.p.v)
+            child.parents.append(parent_v)
 
         c.setCurrentPosition(u.p)
     #@-node:ekr.20080425060424.13:redoPromote
@@ -1833,10 +1785,6 @@ class undoer:
             oldRoot = c.rootPosition()
             u.p._linkAsRoot(oldRoot)
 
-        # Restore all vnodeLists (and thus all clone marks).
-        if not g.unified_nodes:
-            u.p._restoreLinksInTree()
-
         u.p.setAllAncestorAtFileNodesDirty()
         c.selectPosition(u.p)
     #@-node:ekr.20050412084055:undoDeleteNode
@@ -1853,15 +1801,11 @@ class undoer:
         # Add the demoted nodes to the parent's children.
         parent_v.t.children.extend(u.followingSibs)
 
-        if g.unified_nodes:
-            # Adjust the parent links.
-            # There is no need to adjust descendant links.
-            for sib in u.followingSibs:
-                sib.parents.remove(u.p.v)
-                sib.parents.append(parent_v)
-        else:
-            # Adjust the parent links of all moved nodes.
-            parent_v._computeParentsOfChildren(children=u.followingSibs)
+        # Adjust the parent links.
+        # There is no need to adjust descendant links.
+        for sib in u.followingSibs:
+            sib.parents.remove(u.p.v)
+            sib.parents.append(parent_v)
 
         c.setCurrentPosition(u.p)
     #@-node:ekr.20080425060424.10:undoDemote
@@ -1974,11 +1918,8 @@ class undoer:
         u.oldParent_v.t.children.insert(u.oldN,v)
 
         # Recompute the parent links.
-        if g.unified_nodes:
-            v.parents.append(u.oldParent_v)
-            v.parents.remove(u.newParent_v)
-        else:
-            u.oldParent_v._computeParentsOfChildren()
+        v.parents.append(u.oldParent_v)
+        v.parents.remove(u.newParent_v)
 
         u.updateMarks('old')
 
@@ -2022,33 +1963,21 @@ class undoer:
         # Remove the promoted nodes from parent_v's children.
         n = u.p.childIndex() + 1
 
-        if g.unified_nodes:
+        # Adjust the old parents children
+        old_children = parent_v.children
+        parent_v.children = old_children[:n]
+            # Add the nodes before the promoted nodes.
+        parent_v.children.extend(old_children[n+len(u.children):])
+            # Add the nodes after the promoted nodes.
 
-            # Adjust the old parents children
-            old_children = parent_v.children
-            parent_v.children = old_children[:n]
-                # Add the nodes before the promoted nodes.
-            parent_v.children.extend(old_children[n+len(u.children):])
-                # Add the nodes after the promoted nodes.
+        # Add the demoted nodes to v's children.
+        u.p.v.children = u.children[:]
 
-            # Add the demoted nodes to v's children.
-            u.p.v.children = u.children[:]
-
-            # Adjust the parent links.
-            # There is no need to adjust descendant links.
-            for child in u.children:
-                child.parents.remove(parent_v)
-                child.parents.append(u.p.v)
-        else:
-            z = parent_v.t.children
-            parent_v.t.children = z[:n]
-            parent_v.t.children.extend(z[n+len(u.children):])
-
-            # Add the demoted nodes to v's children.
-            u.p.t.children = u.children[:]
-
-            # Adjust the parent links of all moved nodes.
-            u.p.v._computeParentsOfChildren(children=u.children)
+        # Adjust the parent links.
+        # There is no need to adjust descendant links.
+        for child in u.children:
+            child.parents.remove(parent_v)
+            child.parents.append(u.p.v)
 
         c.setCurrentPosition(u.p)
     #@-node:ekr.20080425060424.14:undoPromote

@@ -2121,7 +2121,6 @@
 <v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
 <v t="ekr.20040712101754.200" annotate="7d71002e"><vh>@test that clones share subtrees</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
-<v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 <v t="ville.20090312195309.2"><vh>@test find_h / find_b / select_h / select_b</vh></v>
 </v>
 <v t="ekr.20090130133404.2"><vh>@test leoNodes properties</vh></v>
@@ -2856,12 +2855,7 @@ assert p.__ne__(root) is True</t>
         # assert(id(childv) == id(p.v.t._firstChild))
         firstChild = p.v.t.children[0]
         assert childv == firstChild
-        if not g.unified_nodes:
-            for v in p.v.t.vnodeList:
-                # assert(v.t._firstChild == childv)
-                # assert(id(v.t._firstChild) == id(childv))
-                firstChild = v.t.children[0]
-                assert(id(firstChild) == id(childv))</t>
+</t>
 <t tx="ekr.20040712101754.201" annotate="7d71002e">for copy in (True,False):
     p2 = c.rootPosition()
     for p in c.allNodes_iter(copy=copy):
@@ -2987,21 +2981,6 @@ except AssertionError:
     assert(
         (threadNext and p.hasThreadNext()) or
         (not threadNext and not p.hasThreadNext()))</t>
-<t tx="ekr.20040712101754.212" annotate="7d71002e">if not g.unified_nodes:
-    
-    for p in c.allNodes_iter():
-
-        vnodeList = p.v.t.vnodeList
-    
-        for v in vnodeList:
-    
-            assert(v.t == p.v.t)
-            if p.v.isCloned():
-                assert(v.isCloned())
-                assert(len(vnodeList) &gt; 1)
-            else:
-                assert(not v.isCloned())
-                assert(len(vnodeList) == 1)</t>
 <t tx="ekr.20040712101754.213"></t>
 <t tx="ekr.20040712101754.214"></t>
 <t tx="ekr.20040712101754.215">import leoNodes

@@ -267,57 +267,6 @@ char need two marks.
 #@nonl
 #@-node:ekr.20090907080624.6077:Fix underlining problem in rst
 #@-node:ekr.20090907080624.6078:New to-do items
-#@+node:ekr.20090811141250.5954:Easy
-#@+node:ekr.20090727085243.5993:Add clone-marked command
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/81af48a58fb84397/c6fcbe5a2a95b39f#c6fcbe5a2a95b39f
-
-A clone-marked command should be part of the core.
-
-Make sure you work on http://pastebin.com/f4e9b31d7 version, which
-supports undo - and try to fix the undo problem (where nodes still
-seem like clones, even if they aren't after undo). 
-#@nonl
-#@+node:ekr.20090728110657.6016:Ville's code
-'''Create a clone for each marked noded, and gathers them.'''
-
-from leo.core import leoNodes
-
-def clone_as_nth_child(c, parent_v, n, v):
-    """ Clone vnode as nth child of parent_v """
-    t = v.t
-    if g.unified_nodes:
-        child = v.t
-    else:
-        child = leoNodes.vnode(context=c,t=t)
-
-    if child not in v.t.vnodeList:
-        v.t.vnodeList.append(child)
-    child._linkAsNthChild(parent_v,n)
-
-
-def clone_marked(parent):
-    u = c.undoer
-    undoData = u.beforeChangeTree(parent)
-
-    marked = [m.copy() for m in c.allNodes_iter() if m.isMarked()]
-    print marked
-
-    for m in marked:
-        # do not clear marks (to make undo simpler)
-        #m.clearMarked()
-        clone_as_nth_child(c, parent.v, 0, m.v)
-
-    u.afterChangeTree(p,'Clone marked',undoData)
-    c.redraw()    
-
-
-clone_marked(p.copy())
-#@nonl
-#@-node:ekr.20090728110657.6016:Ville's code
-#@-node:ekr.20090727085243.5993:Add clone-marked command
-#@-node:ekr.20090811141250.5954:Easy
 #@+node:ekr.20090811141250.5955:Harder features
 #@+node:ekr.20090724081340.5987:Improve recursive import script and @auto
 @nocolor-node
@@ -576,6 +525,7 @@ self.language_delims_dict = {
     "forth"         : "\\_ _(_ _)", # Use the "REM hack"
     "fortran"       : "C",
     "fortran90"     : "!",
+    "haskell"       : "--_ {-_ _-}",
     "html"          : "<!-- -->",
     "ini"           : ";",
     "java"          : "// /* */",
@@ -621,6 +571,7 @@ self.language_extension_dict = {
     "forth"         : "forth",
     "fortran"       : "f",
     "fortran90"     : "f90",
+    "haskell"       : "hs",
     "html"          : "html",
     "ini"           : "ini",
     "java"          : "java",
@@ -668,6 +619,7 @@ self.extension_dict = {
     "f90"   : "fortran90",
     "h"     : "c",
     "html"  : "html",
+    "hs"    : "haskell",
     "ini"   : "ini",
     "java"  : "java",
     "ksh"   : "kshell", # Leo 4.5.1.
@@ -1043,13 +995,6 @@ for s in lines:
     scanned += 1
 #@-node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
 #@+node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
-@ We use the tnodeList to find a _tnode_ corresponding to the proper node, so the user will for sure be editing the proper text, even if several nodes happen to have the same headline.  This is really all that we need.
-
-However, this code has no good way of distinguishing between different cloned vnodes in the file: they all have the same tnode.  So this code just picks p = t.vnodeList[0] and leaves it at that.
-
-The only way to do better is to scan the outline, replicating the write logic to determine which vnode created the given line.  That's way too difficult, and it would create an unwanted dependency in this code.
-@c
-
 # g.trace("tnodeIndex",tnodeIndex)
 if tnodeIndex < len(tnodeList):
     t = tnodeList[tnodeIndex]

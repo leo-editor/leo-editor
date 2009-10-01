@@ -104,8 +104,6 @@ class baseCommands (object):
         self.frame = frame
         self.hiddenRootNode = leoNodes.vnode(context=c)
         self.hiddenRootNode.setHeadString('<hidden root vnode>')
-        if not g.unified_nodes:
-            self.hiddenRootNode.t.vnodeList = [self.hiddenRootNode]
         self.isZipped = False # May be set to True by g.openWithFileName.
         self.mFileName = fileName
             # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
@@ -2017,25 +2015,6 @@ class baseCommands (object):
             tnodeIndex = max(0,tnodeIndex)
             #@        << set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = False >>
             #@+node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
-            #@+at 
-            #@nonl
-            # We use the tnodeList to find a _tnode_ corresponding to the 
-            # proper node, so the user will for sure be editing the proper 
-            # text, even if several nodes happen to have the same headline.  
-            # This is really all that we need.
-            # 
-            # However, this code has no good way of distinguishing between 
-            # different cloned vnodes in the file: they all have the same 
-            # tnode.  So this code just picks p = t.vnodeList[0] and leaves it 
-            # at that.
-            # 
-            # The only way to do better is to scan the outline, replicating 
-            # the write logic to determine which vnode created the given 
-            # line.  That's way too difficult, and it would create an unwanted 
-            # dependency in this code.
-            #@-at
-            #@@c
-
             # g.trace("tnodeIndex",tnodeIndex)
             if tnodeIndex < len(tnodeList):
                 t = tnodeList[tnodeIndex]
@@ -3874,36 +3853,6 @@ class baseCommands (object):
                     if p.hasBack():
                         assert p.back().parent() == p.parent(), "back.parent==parent"
                     #@-node:ekr.20040314035615.2:assert consistency of parent and child links
-                    #@+node:ekr.20040314043623:assert consistency of vnodeList
-                    if not g.unified_nodes:
-
-                        vnodeList = p.v.t.vnodeList
-
-                        for v in vnodeList:
-
-                            try:
-                                assert v.t == p.v.t
-                            except AssertionError:
-                                g.pr("p",p)
-                                g.pr("v",v)
-                                g.pr("p.v",p.v)
-                                g.pr("v.t",v.t)
-                                g.pr("p.v.t",p.v.t)
-                                raise AssertionError("v.t == p.v.t")
-
-                            if p.v.isCloned():
-                                assert v.isCloned(), "v.isCloned"
-                                assert len(vnodeList) > 1, "len(vnodeList) > 1"
-                            else:
-                                assert not v.isCloned(), "not v.isCloned"
-                                assert len(vnodeList) == 1, "len(vnodeList) == 1"
-                    #@-node:ekr.20040314043623:assert consistency of vnodeList
-                    #@+node:ekr.20040323162707:assert that clones actually share subtrees
-                    if not g.unified_nodes:
-                        if p.isCloned() and p.hasChildren():
-                            for z in p.v.t.vnodeList:
-                                assert z.t == p.v.t
-                    #@-node:ekr.20040323162707:assert that clones actually share subtrees
                     #@+node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
                     #@+at
                     # Every nodes gets visited, so we only check consistency
@@ -3918,14 +3867,6 @@ class baseCommands (object):
                     n = p.childIndex()
 
                     assert parent_v.t.children[n] == p.v,'fail 1'
-
-                    if not g.unified_nodes:
-
-                        assert parent_v in p.v.parents,'fail 2: parent_v: %s\nparents: %s' % (
-                            parent_v,g.listToString(p.v.parents))
-
-                        for z in p.v.parents:
-                            assert p.v in z.t.children,'fail 3'
                     #@-node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
                     #@-others
                     #@-node:ekr.20040323155951:<< do full tests >>
@@ -4918,11 +4859,6 @@ class baseCommands (object):
         c = self ; u = c.undoer
         current = c.currentPosition()
 
-        if not g.unified_nodes:
-            return g.es_print(
-                'clone-marked works only with g.unified_nodes = True',
-                color='blue')
-
         # Create a new node to hold clones.
         parent = current.insertAfter()
         parent.h = 'Clones of marked nodes'
@@ -5166,23 +5102,15 @@ class baseCommands (object):
         followingSibs = parent_v.t.children[n+1:]
         # g.trace('sibs2\n',g.listToString(followingSibs2))
 
-        if g.unified_nodes:
-            # Remove the moved nodes from the parent's children.
-            parent_v.t.children = parent_v.t.children[:n+1]
-            # Add the moved nodes to p's children
-            p.v.t.children.extend(followingSibs)
-            # Adjust the parent links in the moved nodes.
-            # There is no need to adjust descendant links.
-            for child in followingSibs:
-                child.parents.remove(parent_v)
-                child.parents.append(p.v)
-        else:
-            # Adjust the parent links of all moved nodes.
-            parent_v._computeParentsOfChildren(children=followingSibs)
-            # Remove the moved nodes from the parent's children.
-            parent_v.t.children = parent_v.t.children[:n+1]
-            # Add the moved nodes to p's children
-            p.v.t.children.extend(followingSibs)
+        # Remove the moved nodes from the parent's children.
+        parent_v.t.children = parent_v.t.children[:n+1]
+        # Add the moved nodes to p's children
+        p.v.t.children.extend(followingSibs)
+        # Adjust the parent links in the moved nodes.
+        # There is no need to adjust descendant links.
+        for child in followingSibs:
+            child.parents.remove(parent_v)
+            child.parents.append(p.v)
 
         p.expand()
         # Even if p is an @ignore node there is no need to mark the demoted children dirty.
@@ -5436,15 +5364,11 @@ class baseCommands (object):
         # Remove v's children.
         p.v.t.children = []
 
-        if g.unified_nodes:
-            # Adjust the parent links in the moved children.
-            # There is no need to adjust descendant links.
-            for child in children:
-                child.parents.remove(p.v)
-                child.parents.append(parent_v)
-        else:
-            # Adjust the parent links of all moved nodes.
-            parent_v._computeParentsOfChildren(children=children)
+        # Adjust the parent links in the moved children.
+        # There is no need to adjust descendant links.
+        for child in children:
+            child.parents.remove(p.v)
+            child.parents.append(parent_v)
 
         c.setChanged(True)
         if not inAtIgnoreRange and isAtIgnoreNode:

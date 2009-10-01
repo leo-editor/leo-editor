@@ -117,7 +117,11 @@ def doPrePluginsInit(fileName,pymacs):
     g.app.setEncoding()
     g.app.setGlobalDb()
     if gui is None:
-        g.app.createDefaultGui(__file__)
+        if script and not windowFlag:
+            # Bug fix: 2009/10/1: use null gui for scripts.
+            createNullGuiWithScript(script)
+        else:
+            g.app.createDefaultGui(__file__)
     else:
         createSpecialGui(gui,pymacs,script,windowFlag)
     return fileName,relativeFileName,script
@@ -201,6 +205,9 @@ def getFileName (fileName,script):
 #@+node:ekr.20041124083125:completeFileName
 def completeFileName (fileName):
 
+    trace = False
+    if trace: print('completeFileName',fileName)
+
     if not (fileName and fileName.strip()):
         return None,None
 
@@ -224,7 +231,7 @@ def completeFileName (fileName):
         fileName = fileName + ".leo"
         relativeFileName = relativeFileName + ".leo"
 
-    # g.trace(fileName)
+    if trace: print('completeFileName',fileName)
 
     return fileName,relativeFileName
 #@-node:ekr.20041124083125:completeFileName
@@ -252,6 +259,7 @@ def reportDirectories(verbose):
 def scanOptions():
 
     '''Handle all options and remove them from sys.argv.'''
+    trace = False
 
     parser = optparse.OptionParser()
     parser.add_option('-c', '--config', dest="one_config_path")
@@ -266,7 +274,7 @@ def scanOptions():
     # Parse the options, and remove them from sys.argv.
     options, args = parser.parse_args()
     sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
-    # g.trace(sys.argv)
+    # print('scanOptions',sys.argv)
 
     # Handle the args...
 
@@ -312,16 +320,17 @@ def scanOptions():
         try:
             f = None
             try:
+                if trace: print("scan_options: script: %s" % script_name)
                 f = open(script_name,'r')
                 script = f.read()
-                # g.trace("script",script)
             except IOError:
-                g.es_print("can not open script file:",script_name, color="red")
+                print("can not open script file: %s" % script_name)
                 script = None
         finally:
             if f: f.close()
     else:
         script = None
+        if trace: print('scanOptions: no script')
 
     # --silent
     g.app.silentMode = options.silent

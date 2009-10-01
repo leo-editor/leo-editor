@@ -921,20 +921,12 @@ class atFile:
                 else:
                     g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
             else:
-                if g.unified_nodes: t = leoNodes.vnode(context=c)
-                else:               t = leoNodes.tnode()
+                t = leoNodes.vnode(context=c)
                 t._headString = headline
                 t.fileIndex = gnx
                 tnodesDict[gnxString] = t
 
-            if g.unified_nodes:
-                child = t
-            else:
-                child = leoNodes.vnode(context=c,t=t)
-
-            if not g.unified_nodes:
-                if child not in t.vnodeList:
-                    t.vnodeList.append(child)
+            child = t
             child._linkAsNthChild(parent,parent.numberOfChildren())
 
         if trace and verbose: g.trace('new node: %s' % child)
@@ -971,21 +963,6 @@ class atFile:
         t = v.t.tnodeList[at.tnodeListIndex]
         assert(t)
         at.tnodeListIndex += 1
-
-        if g.unified_nodes:
-            pass # v == t.
-        else:
-            # Get any vnode joined to t.
-            try:
-                v = t.vnodeList[0]
-            except AttributeError:
-                at.readError("No vnodeList for tnode: %s" % repr(t))
-                g.trace(at.tnodeListIndex)
-                return None
-            except Exception:
-                at.readError("findChild4: unexpected exception for tnode: %s" % repr(t))
-                g.es_exception()
-                return None
 
         # Don't check the headline.  It simply causes problems.
         t.setVisited() # Supress warning/deletion of unvisited nodes.
