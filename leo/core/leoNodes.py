@@ -1814,6 +1814,130 @@ class position (object):
     #@@c
 
     #@+others
+    #@+node:ekr.20091001141621.6060:New generators
+    #@+node:ekr.20091001141621.6055:p.children
+    def children(self,copy=False):
+        p = self
+        p = p.firstChild()
+        if copy:
+            while p:
+                yield p.copy()
+                p.moveToNext()
+        else:
+            while p:
+                yield p
+                p.moveToNext()
+        raise StopIteration
+    #@-node:ekr.20091001141621.6055:p.children
+    #@+node:ekr.20091001141621.6056:p.descendants
+    def descendants(self,copy=False):
+        p = self
+        after = p.nodeAfterTree()
+        p = p.threadNext() # Don't include node itself.
+        if copy:
+            while p and p != after:
+                yield p.copy()
+                p.moveToThreadNext()
+        else:
+            while p and p != after:
+                yield p
+                p.moveToThreadNext()
+        raise StopIteration
+    #@-node:ekr.20091001141621.6056:p.descendants
+    #@+node:ekr.20091001141621.6058:p.parents
+    def parents(self,copy=False):
+        p = self
+        p = p.parent()
+        if copy:
+            while p:
+                yield p.copy()
+                p.moveToParent()
+        else:
+            while p:
+                yield p
+                p.moveToParent()
+        raise StopIteration
+
+    #@-node:ekr.20091001141621.6058:p.parents
+    #@+node:ekr.20091001141621.6057:p.siblings
+    def siblings(self,copy=False,following=False):
+        p = self
+        p = p.copy() # Always include the original node.
+        if not following:
+            while p.hasBack():
+                p.moveToBack()
+        if copy:
+            while p:
+                yield p.copy()
+                p.moveToNext()
+        else:
+            while p:
+                yield p
+                p.moveToNext()
+        raise StopIteration
+
+    #@-node:ekr.20091001141621.6057:p.siblings
+    #@+node:ekr.20091001141621.6066:p.subtree
+    def subtree(self,copy=False):
+        p = self
+        after = p.nodeAfterTree()
+        if copy:
+            while p and p != after:
+                yield p.copy()
+                p.moveToThreadNext()
+        else:
+            while p and p != after:
+                yield p
+                p.moveToThreadNext()
+        raise StopIteration
+
+    #@-node:ekr.20091001141621.6066:p.subtree
+    #@-node:ekr.20091001141621.6060:New generators
+    #@+node:ekr.20040305172211.1:p.children_iter
+    class children_iter_class:
+
+        """Returns a list of children of a position."""
+
+        #@    @+others
+        #@+node:ekr.20040305172211.2:__init__ & __iter__
+        def __init__(self,p,copy):
+
+            if p.hasChildren():
+                self.first = p.copy().moveToFirstChild()
+            else:
+                self.first = None
+
+            self.p = None
+            self.copy = copy
+
+        def __iter__(self):
+
+            return self
+        #@-node:ekr.20040305172211.2:__init__ & __iter__
+        #@+node:ekr.20040305172211.3:next
+        def next(self):
+
+            if self.first:
+                self.p = self.first
+                self.first = None
+
+            elif self.p:
+                self.p.moveToNext()
+
+            if self.p:
+                if self.copy: return self.p.copy()
+                else:         return self.p
+            else: raise StopIteration
+
+        __next__ = next
+        #@nonl
+        #@-node:ekr.20040305172211.3:next
+        #@-others
+
+    def children_iter (self,copy=False):
+
+        return self.children_iter_class(self,copy)
+    #@-node:ekr.20040305172211.1:p.children_iter
     #@+node:sps.20080331123552.3:p.iter
     class iter_class:
 
@@ -1860,28 +1984,30 @@ class position (object):
 
         return self.iter_class(self, lambda p: p.v)
     #@-node:sps.20080331123552.3:p.iter
-    #@+node:sps.20080331123552.8:p.unique_iter
-    class unique_iter_class:
+    #@+node:ekr.20040305172855:p.parents_iter
+    class parents_iter_class:
 
-        """Returns a list of positions in a subtree, possibly including the root of the subtree."""
+        """Returns a list of positions of a position."""
 
         #@    @+others
-        #@+node:sps.20080331123552.4:__init__ & __iter__ (p.unique_tnodes_iter)
-        def __init__(self,p,mapping,unique=lambda p: p.v.t):
+        #@+node:ekr.20040305172855.1:__init__ & __iter__
+        def __init__(self,p,copy,includeSelf):
 
-            # g.trace('p.unique_tnodes_iter.__init','p',p,)
+            if includeSelf:
+                self.first = p.copy()
+            elif p.hasParent():
+                self.first = p.copy().moveToParent()
+            else:
+                self.first = None
 
-            self.d = {}
-            self.first = p.copy()
             self.p = None
-            self.mapping = mapping
-            self.unique=unique
+            self.copy = copy
 
         def __iter__(self):
 
             return self
-        #@-node:sps.20080331123552.4:__init__ & __iter__ (p.unique_tnodes_iter)
-        #@+node:sps.20080331123552.5:next
+        #@-node:ekr.20040305172855.1:__init__ & __iter__
+        #@+node:ekr.20040305172855.2:next
         def next(self):
 
             if self.first:
@@ -1889,74 +2015,83 @@ class position (object):
                 self.first = None
 
             elif self.p:
-                self.moveToThreadNextUnique()
+                self.p.moveToParent()
 
             if self.p:
-                return self.mapping(self.p)
-
-            raise StopIteration
+                if self.copy: return self.p.copy()
+                else:         return self.p
+            else:
+                raise StopIteration
 
         __next__ = next
-        #@-node:sps.20080331123552.5:next
-        #@+node:sps.20080331123552.7:moveToThreadNextUnique
-        def moveToThreadNextUnique (self):
-
-            """Move a position to threadNext position."""
-
-            p = self.p
-            u = self.unique
-
-            self_d_get = self.d.get
-            if p:
-                # We've been visited
-                self.d[u(p)]=True
-
-                # First, try to find an unmarked child
-                if p.v.t.children:
-                    p.moveToFirstChild()
-                    while p and self_d_get(u(p)):
-                        if p.hasNext():
-                            p.moveToNext()
-                        else:
-                            p.moveToParent()
-
-                # If we didn't find an unmarked child,
-                # try to find an unmarked sibling
-                if p and self_d_get(u(p)):
-                    while p.hasNext():
-                        p.moveToNext()
-                        if not self_d_get(u(p)):
-                            break
-
-                # If we didn't find an unmarked sibling,
-                # find a parent with an unmarked sibling
-                if p and self_d_get(u(p)):
-                    p.moveToParent()
-                    while p:
-                        while p.hasNext():
-                            p.moveToNext()
-                            if not self_d_get(u(p)):
-                                break
-                        # if we run out of siblings, go to parent
-                        if self_d_get(u(p)):
-                            p.moveToParent()
-                        else:
-                            break # found
-                    # At this point, either (not p.d[p.v.t]) and found
-                    # or (not p) and we're finished
-
-            return p 
-        #@-node:sps.20080331123552.7:moveToThreadNextUnique
+        #@nonl
+        #@-node:ekr.20040305172855.2:next
         #@-others
 
-    def unique_tnodes_iter (self):
+    def parents_iter (self,copy=False):
 
-        return self.unique_iter_class(self, lambda p: p.v.t)
+        return self.parents_iter_class(self,copy,includeSelf=False)
 
-    def unique_vnodes_iter (self):
+    def self_and_parents_iter(self,copy=False):
 
-        return self.unique_iter_class(self, lambda p: p.v)
-    #@-node:sps.20080331123552.8:p.unique_iter
+        return self.parents_iter_class(self,copy,includeSelf=True)
+    #@-node:ekr.20040305172855:p.parents_iter
+    #@+node:ekr.20040305173343:p.siblings_iter
+    class siblings_iter_class:
+
+        '''Returns a list of siblings of a position, including the position itself!'''
+
+        #@    @+others
+        #@+node:ekr.20040305173343.1:__init__ & __iter__
+        def __init__(self,p,copy,following):
+
+            # We always include p, even if following is True.
+
+            if following:
+                self.first = p.copy()
+            else:
+                p = p.copy()
+                while p.hasBack():
+                    p.moveToBack()
+                self.first = p
+
+            self.p = None
+            self.copy = copy
+
+        def __iter__(self):
+
+            return self
+        #@-node:ekr.20040305173343.1:__init__ & __iter__
+        #@+node:ekr.20040305173343.2:next
+        def next(self):
+
+            if self.first:
+                self.p = self.first
+                self.first = None
+
+            elif self.p:
+                self.p.moveToNext()
+
+            if self.p:
+                if self.copy: return self.p.copy()
+                else:         return self.p
+            else: raise StopIteration
+
+        __next__ = next
+        #@nonl
+        #@-node:ekr.20040305173343.2:next
+        #@-others
+
+    def siblings_iter (self,copy=False,following=False):
+
+        return self.siblings_iter_class(self,copy,following)
+
+    self_and_siblings_iter = siblings_iter
+
+    def following_siblings_iter (self,copy=False):
+
+        return self.siblings_iter_class(self,copy,following=True)
+    #@-node:ekr.20040305173343:p.siblings_iter
     #@+node:ekr.20040305173559:p.subtree_iter
     class subtree_iter_class:
 
@@ -2142,28 +2277,28 @@ class position (object):
             lambda p: p.v,
             includeSelf=False)
     #@-node:sps.20080331123552.12:p.subtree_unique_iter
-    #@+node:ekr.20040305172211.1:p.children_iter
-    class children_iter_class:
+    #@+node:sps.20080331123552.8:p.unique_iter
+    class unique_iter_class:
 
-        """Returns a list of children of a position."""
+        """Returns a list of positions in a subtree, possibly including the root of the subtree."""
 
         #@    @+others
-        #@+node:ekr.20040305172211.2:__init__ & __iter__
-        def __init__(self,p,copy):
+        #@+node:sps.20080331123552.4:__init__ & __iter__ (p.unique_tnodes_iter)
+        def __init__(self,p,mapping,unique=lambda p: p.v.t):
 
-            if p.hasChildren():
-                self.first = p.copy().moveToFirstChild()
-            else:
-                self.first = None
+            # g.trace('p.unique_tnodes_iter.__init','p',p,)
 
+            self.d = {}
+            self.first = p.copy()
             self.p = None
-            self.copy = copy
+            self.mapping = mapping
+            self.unique=unique
 
         def __iter__(self):
 
             return self
-        #@-node:ekr.20040305172211.2:__init__ & __iter__
-        #@+node:ekr.20040305172211.3:next
+        #@-node:sps.20080331123552.4:__init__ & __iter__ (p.unique_tnodes_iter)
+        #@+node:sps.20080331123552.5:next
         def next(self):
 
             if self.first:
@@ -2171,130 +2306,74 @@ class position (object):
                 self.first = None
 
             elif self.p:
-                self.p.moveToNext()
+                self.moveToThreadNextUnique()
 
             if self.p:
-                if self.copy: return self.p.copy()
-                else:         return self.p
-            else: raise StopIteration
+                return self.mapping(self.p)
+
+            raise StopIteration
 
         __next__ = next
-        #@nonl
-        #@-node:ekr.20040305172211.3:next
+        #@-node:sps.20080331123552.5:next
+        #@+node:sps.20080331123552.7:moveToThreadNextUnique
+        def moveToThreadNextUnique (self):
+
+            """Move a position to threadNext position."""
+
+            p = self.p
+            u = self.unique
+
+            self_d_get = self.d.get
+            if p:
+                # We've been visited
+                self.d[u(p)]=True
+
+                # First, try to find an unmarked child
+                if p.v.t.children:
+                    p.moveToFirstChild()
+                    while p and self_d_get(u(p)):
+                        if p.hasNext():
+                            p.moveToNext()
+                        else:
+                            p.moveToParent()
+
+                # If we didn't find an unmarked child,
+                # try to find an unmarked sibling
+                if p and self_d_get(u(p)):
+                    while p.hasNext():
+                        p.moveToNext()
+                        if not self_d_get(u(p)):
+                            break
+
+                # If we didn't find an unmarked sibling,
+                # find a parent with an unmarked sibling
+                if p and self_d_get(u(p)):
+                    p.moveToParent()
+                    while p:
+                        while p.hasNext():
+                            p.moveToNext()
+                            if not self_d_get(u(p)):
+                                break
+                        # if we run out of siblings, go to parent
+                        if self_d_get(u(p)):
+                            p.moveToParent()
+                        else:
+                            break # found
+                    # At this point, either (not p.d[p.v.t]) and found
+                    # or (not p) and we're finished
+
+            return p 
+        #@-node:sps.20080331123552.7:moveToThreadNextUnique
         #@-others
 
-    def children_iter (self,copy=False):
+    def unique_tnodes_iter (self):
 
-        return self.children_iter_class(self,copy)
-    #@-node:ekr.20040305172211.1:p.children_iter
-    #@+node:ekr.20040305172855:p.parents_iter
-    class parents_iter_class:
+        return self.unique_iter_class(self, lambda p: p.v.t)
 
-        """Returns a list of positions of a position."""
+    def unique_vnodes_iter (self):
 
-        #@    @+others
-        #@+node:ekr.20040305172855.1:__init__ & __iter__
-        def __init__(self,p,copy,includeSelf):
-
-            if includeSelf:
-                self.first = p.copy()
-            elif p.hasParent():
-                self.first = p.copy().moveToParent()
-            else:
-                self.first = None
-
-            self.p = None
-            self.copy = copy
-
-        def __iter__(self):
-
-            return self
-        #@-node:ekr.20040305172855.1:__init__ & __iter__
-        #@+node:ekr.20040305172855.2:next
-        def next(self):
-
-            if self.first:
-                self.p = self.first
-                self.first = None
-
-            elif self.p:
-                self.p.moveToParent()
-
-            if self.p:
-                if self.copy: return self.p.copy()
-                else:         return self.p
-            else:
-                raise StopIteration
-
-        __next__ = next
-        #@nonl
-        #@-node:ekr.20040305172855.2:next
-        #@-others
-
-    def parents_iter (self,copy=False):
-
-        return self.parents_iter_class(self,copy,includeSelf=False)
-
-    def self_and_parents_iter(self,copy=False):
-
-        return self.parents_iter_class(self,copy,includeSelf=True)
-    #@-node:ekr.20040305172855:p.parents_iter
-    #@+node:ekr.20040305173343:p.siblings_iter
-    class siblings_iter_class:
-
-        '''Returns a list of siblings of a position, including the position itself!'''
-
-        #@    @+others
-        #@+node:ekr.20040305173343.1:__init__ & __iter__
-        def __init__(self,p,copy,following):
-
-            # We always include p, even if following is True.
-
-            if following:
-                self.first = p.copy()
-            else:
-                p = p.copy()
-                while p.hasBack():
-                    p.moveToBack()
-                self.first = p
-
-            self.p = None
-            self.copy = copy
-
-        def __iter__(self):
-
-            return self
-        #@-node:ekr.20040305173343.1:__init__ & __iter__
-        #@+node:ekr.20040305173343.2:next
-        def next(self):
-
-            if self.first:
-                self.p = self.first
-                self.first = None
-
-            elif self.p:
-                self.p.moveToNext()
-
-            if self.p:
-                if self.copy: return self.p.copy()
-                else:         return self.p
-            else: raise StopIteration
-
-        __next__ = next
-        #@nonl
-        #@-node:ekr.20040305173343.2:next
-        #@-others
-
-    def siblings_iter (self,copy=False,following=False):
-
-        return self.siblings_iter_class(self,copy,following)
-
-    self_and_siblings_iter = siblings_iter
-
-    def following_siblings_iter (self,copy=False):
-
-        return self.siblings_iter_class(self,copy,following=True)
-    #@-node:ekr.20040305173343:p.siblings_iter
+        return self.unique_iter_class(self, lambda p: p.v)
+    #@-node:sps.20080331123552.8:p.unique_iter
     #@-others
     #@-node:ekr.20040305162628.1:p.Iterators
     #@+node:ekr.20040303175026:p.Moving, Inserting, Deleting, Cloning, Sorting

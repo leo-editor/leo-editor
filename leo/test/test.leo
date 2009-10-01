@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -359,8 +359,7 @@
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
 <v t="ekr.20090831145049.1819" a="M"><vh>Unicode test</vh></v>
-<v t="ekr.20090906100616.1828"><vh>generator tests</vh></v>
-<v t="ekr.20090906161846.1824"><vh>new generators</vh></v>
+<v t="ekr.20091001161528.1828"><vh>@test c.allPositions &amp; c.allUniquePositions</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -781,7 +780,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="7"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -3362,91 +3361,14 @@ w.show()
 </t>
 <t tx="ekr.20090831145049.1819">@first # -*- coding: utf-8 -*- 
 print u'ä' </t>
-<t tx="ekr.20090906100616.1828">def allPositions(c):
-    this,next = None,c.rootPosition()
-    while next:
-        this = next
-        next = this.threadNext()
-        yield this
-    raise StopIteration
+<t tx="ekr.20091001161528.1828">vList1 = [p.v for p in c.allPositions()]
+vList2 = [p.v for p in c.allNodes_iter()]
+assert vList1 == vList2
+print 'pass 1'
 
-def allVnodes1(c): # Will be a commands method.
-    this,next = None,c.rootPosition()
-    while next:
-        this = next
-        next = this.threadNext()
-        yield this.v
-    raise StopIteration
-
-def allVnodes2(c): # Will be a commands method.
-    for p in allPositions(c):
-        yield p.v
-    raise StopIteration
-
-vnodes1 = [v for v in allVnodes1(c)]
-vnodes2 = [v for v in allVnodes2(c)] #,c.allNodes_iter())]
-vnodes3 = [p.v for p in allPositions(c)]
-assert vnodes2 == vnodes1
-assert vnodes3 == vnodes2
-print len(vnodes1)
-
-missing = [v for v in vnodes1 if v not in vnodes2]
-if missing:
-    print 'missing',len(missing)
-else:
-    print 'done'</t>
-<t tx="ekr.20090906161846.1824"># def children_iter(p):
-    # if p.hasChildren():
-        # child = p.firstChild() # makes copy
-        # while child:
-            # next = child.next()
-            # yield child
-            # child = next
-    # raise StopIteration
-
-# def siblings_iter(p):
-    # if p.hasNext():
-        # sib = p.next() # makes copy
-        # while sib:
-            # next = sib.next()
-            # yield sib
-            # sib = next
-    # raise StopIteration
-
-# def threadNext_iter(p):
-    # if p:
-        # yield p
-        # for child in children_iter(p):
-            # for p2 in threadNext_iter(child):
-                # yield p2
-        # for sib in siblings_iter(p):
-            # for p2 in threadNext_iter(sib):
-                # yield p2
-    # raise StopIteration
-
-def threadNext_iter(p):
-    if p:
-        p = p.copy() # The only copy
-        while p:
-            yield p
-            if p.hasChildren():
-                p.moveToFirstChild()
-            elif p.hasNext():
-                p.moveToNext()
-            else:
-                while p:
-                    p.moveToParent()
-                    if p and p.hasNext():
-                        p.moveToNext()
-                        break
-    raise StopIteration
-
-count = 0
-for p in threadNext_iter(c.rootPosition()):
-    if 1:
-        g.pr(p.level()*' ',p.h)
-    count += 1
-print count
-</t>
+vList1 = [p.v for p in c.allUniquePositions()]
+vList2 = [v for v in c.all_unique_vnodes_iter()]
+assert vList1 == vList2
+print 'pass 2'</t>
 </tnodes>
 </leo_file>

@@ -413,6 +413,61 @@ class baseCommands (object):
         return "break" # Inhibit all other handlers.
     #@-node:ekr.20031218072017.2817: doCommand
     #@+node:ekr.20040312090934:c.iterators
+    #@+node:ekr.20091001141621.6061:New generators
+    #@+node:ekr.20091001141621.6043:c.allNodes & allUniqueNodes
+    def allNodes(self,copy=False):
+        c = self
+        for p in allPositions(c,copy):
+            yield p.v
+        raise StopIteration
+
+    def allUniqueNodes(self,copy=False):
+        c = self
+        for p in allUniquePositions(c,copy):
+            yield p.v
+        raise StopIteration
+    #@-node:ekr.20091001141621.6043:c.allNodes & allUniqueNodes
+    #@+node:ekr.20091001141621.6044:c.allPositions
+    def allPositions(self,copy=False):
+        c = self ; p = c.rootPosition() # Make one copy.
+        if copy:
+            while p:
+                yield p.copy()
+                p.moveToThreadNext()
+        else:
+            while p:
+                yield p
+                p.moveToThreadNext()
+        raise StopIteration
+    #@-node:ekr.20091001141621.6044:c.allPositions
+    #@+node:ekr.20091001141621.6062:c.allUniquePositions
+    def allUniquePositions(self,copy=False):
+        c = self
+        p = c.rootPosition() # Make one copy.
+        seen = set()
+        if copy:
+            while p:
+                if p.v in seen:
+                    p.moveToNodeAfterTree()
+                else:
+                    seen.add(p.v)
+                    yield p.copy()
+                    p.moveToThreadNext()
+        else:
+            while p:
+                if p.v in seen:
+                    p.moveToNodeAfterTree()
+                else:
+                    seen.add(p.v)
+                    yield p
+                    p.moveToThreadNext()
+            raise StopIteration
+
+
+        raise StopIteration
+
+    #@-node:ekr.20091001141621.6062:c.allUniquePositions
+    #@-node:ekr.20091001141621.6061:New generators
     #@+node:EKR.20040529091232:c.all_positions_iter == allNodes_iter
     def allNodes_iter (self,copy=False):
 
