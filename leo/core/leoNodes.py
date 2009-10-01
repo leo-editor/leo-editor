@@ -93,10 +93,10 @@ class vnode (baseVnode):
 
         # Convert everything to unicode...
         if g.isPython3:
-            self._headString = ''
+            self._headString = 'newHeadline'
             self._bodyString = ''
         else:
-            self._headString = unicode('')
+            self._headString = unicode('newHeadline')
             self._bodyString = unicode('')
 
         self.children = [] # List of all children of this node.
