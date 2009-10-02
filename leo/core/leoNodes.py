@@ -1820,8 +1820,8 @@ class position (object):
     # Compatibility with old code.
     children_iter = children
     #@-node:ekr.20091001141621.6055:p.children
-    #@+node:ekr.20091002083910.6102:p.followingSiblings
-    def followingSiblings(self):
+    #@+node:ekr.20091002083910.6102:p.following_siblings
+    def following_siblings(self):
         '''
         Return all siblings that follow p, not including p.
         '''
@@ -1834,13 +1834,9 @@ class position (object):
             p.moveToNext()
         raise StopIteration
 
-    # Pep-8 style
-    following_siblings = followingSiblings
-
     # Compatibility with old code.
-    siblings_iter = followingSiblings
-    #@nonl
-    #@-node:ekr.20091002083910.6102:p.followingSiblings
+    following_siblings_iter = following_siblings
+    #@-node:ekr.20091002083910.6102:p.following_siblings
     #@+node:ekr.20091002083910.6104:p.nodes
     def nodes (self):
 
@@ -1869,8 +1865,8 @@ class position (object):
     # Compatibility with old code.
     parents_iter = parents
     #@-node:ekr.20091001141621.6058:p.parents
-    #@+node:ekr.20091002083910.6099:p.selfAndParents
-    def selfAndParents(self):
+    #@+node:ekr.20091002083910.6099:p.self_and_parents
+    def self_and_parents(self):
 
         '''Return p and all parents of p.'''
 
@@ -1881,33 +1877,11 @@ class position (object):
             p.moveToParent()
         raise StopIteration
 
-    # Pep-8 style.
-    self_and_parents = selfAndParents
-
     # Compatibility with old code.
-    self_and_parents_iter = selfAndParents
-    #@-node:ekr.20091002083910.6099:p.selfAndParents
-    #@+node:ekr.20091001141621.6066:p.selfAndSubtree
-    def selfAndSubtree(self):
-
-        '''Return p's entire subtree, including p.'''
-
-        p = self
-        p = p.copy()
-        after = p.nodeAfterTree()
-        while p and p != after:
-            yield p
-            p.moveToThreadNext()
-        raise StopIteration
-
-    # Pep-8 style
-    self_and_subtree = selfAndSubtree
-
-    # Compatibility with old code.
-    self_and_subtree_iter = selfAndSubtree
-    #@-node:ekr.20091001141621.6066:p.selfAndSubtree
-    #@+node:ekr.20091001141621.6057:p.siblings
-    def siblings(self):
+    self_and_parents_iter = self_and_parents
+    #@-node:ekr.20091002083910.6099:p.self_and_parents
+    #@+node:ekr.20091001141621.6057:p.self_and_siblings
+    def self_and_siblings(self):
         '''Return all siblings of p including p.
         '''
 
@@ -1921,9 +1895,25 @@ class position (object):
         raise StopIteration
 
     # Compatibility with old code.
-    self_and_siblings_iter = siblings
+    self_and_siblings_iter = self_and_siblings
     #@nonl
-    #@-node:ekr.20091001141621.6057:p.siblings
+    #@-node:ekr.20091001141621.6057:p.self_and_siblings
+    #@+node:ekr.20091001141621.6066:p.self_and_subtree
+    def self_and_subtree(self):
+
+        '''Return p's entire subtree, including p.'''
+
+        p = self
+        p = p.copy()
+        after = p.nodeAfterTree()
+        while p and p != after:
+            yield p
+            p.moveToThreadNext()
+        raise StopIteration
+
+    # Compatibility with old code.
+    self_and_subtree_iter = self_and_subtree
+    #@-node:ekr.20091001141621.6066:p.self_and_subtree
     #@+node:ekr.20091001141621.6056:p.subtree
     def subtree(self):
 
@@ -1941,8 +1931,8 @@ class position (object):
     # Compatibility with old code.
     subtree_iter = subtree
     #@-node:ekr.20091001141621.6056:p.subtree
-    #@+node:ekr.20091002083910.6105:p.uniqueNodes
-    def uniqueNodes (self):
+    #@+node:ekr.20091002083910.6105:p.unique_nodes
+    def unique_nodes (self):
 
         p = self
         p = p.copy()
@@ -1955,17 +1945,12 @@ class position (object):
                 yield p.v
                 p.moveToThreadNext()
 
-    # Pep-8 style
-    unique_nodes = uniqueNodes
-    unique_tnodes = uniqueNodes
-    unique_vnodes = uniqueNodes
-
     # Compatibility with old code.
-    unique_tnodes_iter = uniqueNodes
-    unique_vnodes_iter = uniqueNodes
-    #@-node:ekr.20091002083910.6105:p.uniqueNodes
-    #@+node:ekr.20091002083910.6103:p.uniqueSubtree
-    def uniqueSubtree (self):
+    unique_tnodes_iter = unique_nodes
+    unique_vnodes_iter = unique_nodes
+    #@-node:ekr.20091002083910.6105:p.unique_nodes
+    #@+node:ekr.20091002083910.6103:p.unique_subtree
+    def unique_subtree (self):
         '''Return unique positions in p's entire subtree, including p.'''
 
         p = self
@@ -1981,14 +1966,10 @@ class position (object):
                 p.moveToThreadNext()
         raise StopIteration
 
-    # Pep-8 style.
-    unique_subtree = uniqueSubtree
-    unique_subtree = uniqueSubtree
-
     # Compatibility with old code.
-    subtree_with_unique_tnodes_iter = uniqueSubtree
-    subtree_with_unique_vnodes_iter = uniqueSubtree
-    #@-node:ekr.20091002083910.6103:p.uniqueSubtree
+    subtree_with_unique_tnodes_iter = unique_subtree
+    subtree_with_unique_vnodes_iter = unique_subtree
+    #@-node:ekr.20091002083910.6103:p.unique_subtree
     #@-node:ekr.20091001141621.6060:p.generators
     #@+node:ekr.20040303175026:p.Moving, Inserting, Deleting, Cloning, Sorting
     #@+node:ekr.20040303175026.8:p.clone

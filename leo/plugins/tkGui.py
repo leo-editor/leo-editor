@@ -7955,7 +7955,7 @@ class leoTkinterTree (leoFrame.leoTree):
             if p.firstChild():  theIter = [p.firstChild()]
             else:               theIter = []
         else:
-            theIter = p.self_and_siblings_iter() # Bug fix 10/27/07: was p.siblings_iter()
+            theIter = p.self_and_siblings_iter()
 
         for p2 in theIter:
             if trace and p1.h == p2.h:

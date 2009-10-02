@@ -6542,7 +6542,7 @@ class leoSwingTree (leoFrame.leoTree):
             if trace: g.trace('does not exist',p.h)
             return h,False # An extra precaution.
         p = p.copy()
-        for p2 in p.self_and_siblings_iter():  # was p.siblings_iter
+        for p2 in p.self_and_siblings_iter():
             print "yoffsetTree:", p2
             if p2 == p1:
                 if trace: g.trace(p.h,p1.h,h)

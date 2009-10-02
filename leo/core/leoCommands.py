@@ -459,42 +459,27 @@ class baseCommands (object):
     #@-node:ville.20090311200059.1:c.find_b
     #@-node:ekr.20091002083910.6106:c.find...
     #@+node:ekr.20091001141621.6061:c.generators
-    #@+node:ekr.20091001141621.6043:c.allNodes & allUniqueNodes
-    def allNodes(self):
+    #@+node:ekr.20091001141621.6043:c.all_nodes & all_unique_nodes
+    def all_nodes(self):
         c = self
-        for p in c.allPositions():
+        for p in c.all_positions():
             yield p.v
         raise StopIteration
 
-    def allUniqueNodes(self):
+    def all_unique_nodes(self):
         c = self
-        for p in c.allUniquePositions():
+        for p in c.all_unique_positions():
             yield p.v
         raise StopIteration
 
     # Compatibility with old code.
-    all_tnodes_iter = allNodes
-    all_vnodes_iter = allNodes
-    all_unique_tnodes_iter = allUniqueNodes
-    all_unique_vnodes_iter = allUniqueNodes
-    #@-node:ekr.20091001141621.6043:c.allNodes & allUniqueNodes
-    #@+node:ekr.20091001141621.6044:c.allPositions (aka outline)
-    def allPositions(self):
-        c = self
-        p = c.rootPosition() # Make one copy.
-        while p:
-            yield p
-            p.moveToThreadNext()
-        raise StopIteration
-
-    outline = allPositions
-
-    # Compatibility with old code.
-    all_positions_iter = allPositions
-    allNodes_iter = allPositions
-    #@-node:ekr.20091001141621.6044:c.allPositions (aka outline)
-    #@+node:ekr.20091001141621.6062:c.allUniquePositions
-    def allUniquePositions(self):
+    all_tnodes_iter = all_nodes
+    all_vnodes_iter = all_nodes
+    all_unique_tnodes_iter = all_unique_nodes
+    all_unique_vnodes_iter = all_unique_nodes
+    #@-node:ekr.20091001141621.6043:c.all_nodes & all_unique_nodes
+    #@+node:ekr.20091001141621.6062:c.all_unique_positions
+    def all_unique_positions(self):
         c = self
         p = c.rootPosition() # Make one copy.
         seen = set()
@@ -508,10 +493,26 @@ class baseCommands (object):
         raise StopIteration
 
     # Compatibility with old code.
-    all_positions_with_unique_tnodes_iter = allUniquePositions
-    all_positions_with_unique_vnodes_iter = allUniquePositions
+    all_positions_with_unique_tnodes_iter = all_unique_positions
+    all_positions_with_unique_vnodes_iter = all_unique_positions
     #@nonl
-    #@-node:ekr.20091001141621.6062:c.allUniquePositions
+    #@-node:ekr.20091001141621.6062:c.all_unique_positions
+    #@+node:ekr.20091001141621.6044:c.outline (all_positions)
+    def outline (self):
+        c = self
+        p = c.rootPosition() # Make one copy.
+        while p:
+            yield p
+            p.moveToThreadNext()
+        raise StopIteration
+
+    all_positions = outline
+
+    # Compatibility with old code.
+    all_positions_iter = outline
+    allNodes_iter = outline
+
+    #@-node:ekr.20091001141621.6044:c.outline (all_positions)
     #@-node:ekr.20091001141621.6061:c.generators
     #@+node:ekr.20051106040126:c.executeMinibufferCommand
     def executeMinibufferCommand (self,commandName):
