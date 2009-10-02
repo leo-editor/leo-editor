@@ -421,10 +421,6 @@ class baseCommands (object):
             yield p.v
         raise StopIteration
 
-    if g.new_generators:
-        all_tnodes_iter = allNodes
-        all_vnodes_iter = allNodes
-
     def allUniqueNodes(self):
         c = self
         for p in c.allUniquePositions():
@@ -432,6 +428,8 @@ class baseCommands (object):
         raise StopIteration
 
     if g.new_generators:
+        all_tnodes_iter = allNodes
+        all_vnodes_iter = allNodes
         all_unique_tnodes_iter = allUniqueNodes
         all_unique_vnodes_iter = allUniqueNodes
     #@-node:ekr.20091001141621.6043:c.allNodes & allUniqueNodes
@@ -470,7 +468,7 @@ class baseCommands (object):
     #@nonl
     #@-node:ekr.20091001141621.6062:c.allUniquePositions
     #@-node:ekr.20091001141621.6061:New generators
-    #@+node:ekr.20091001141621.6067:Old iterators
+    #@+node:ekr.20091001141621.6067:c.Old iterators
     if not g.new_generators:
 
         #@    @+others
@@ -520,7 +518,7 @@ class baseCommands (object):
         #@-node:sps.20080327174748.4:c.all_positions_with_unique_vnodes_iter
         #@-others
     #@nonl
-    #@-node:ekr.20091001141621.6067:Old iterators
+    #@-node:ekr.20091001141621.6067:c.Old iterators
     #@+node:ville.20090311190405.70:c.find_h
     def find_h(self, regex, flags = re.IGNORECASE):
         """ Return list (a poslist) of all nodes whose headline matches the regex

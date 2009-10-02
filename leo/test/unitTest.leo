@@ -2888,15 +2888,13 @@ assert not p2, repr(p2)</t>
     next = p.next()
     if back: assert(back.getNext() == p)
     if next: assert(next.getBack() == p)</t>
-<t tx="ekr.20040712101754.205" annotate="7d71002e">for copy in (True,False):
+<t tx="ekr.20040712101754.205" annotate="7d71002e">for p in c.allNodes_iter():
+    p2 = p.parent()
+    for p3 in p.parents_iter():
+        assert p3==p2, "%s != %s" % (p3,p2)
+        p2.moveToParent()
 
-    for p in c.allNodes_iter():
-        p2 = p.parent()
-        for p3 in p.parents_iter(copy=copy):
-            assert p3==p2, "%s != %s" % (p3,p2)
-            p2.moveToParent()
-
-        assert not p2, repr(p2)</t>
+    assert not p2, repr(p2)</t>
 <t tx="ekr.20040712101754.206" annotate="7d71002e"># Test consistency of p.parent, p.next, p.back and p.firstChild.
 for p in c.allNodes_iter():
     
