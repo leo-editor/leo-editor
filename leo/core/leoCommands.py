@@ -424,7 +424,7 @@ class baseCommands (object):
         """
         pat = re.compile(regex, flags)
         res = leoNodes.poslist()
-        for p in self.allNodes_iter():
+        for p in self.outline():
             m = re.match(pat, p.h)
             if m:
                 pc = p.copy()
@@ -445,7 +445,7 @@ class baseCommands (object):
 
         pat = re.compile(regex, flags)
         res = leoNodes.poslist()
-        for p in self.allNodes_iter():
+        for p in self.outline():
             m = re.finditer(pat, p.b)
             t1,t2 = itertools.tee(m,2)
             try:
@@ -3799,9 +3799,9 @@ class baseCommands (object):
             g.es("all tests enabled: this may take awhile",color="blue")
 
         if root: iter = root.self_and_subtree_iter
-        else:    iter = c.allNodes_iter 
+        else:    iter = c.outline 
 
-        for p in iter():  # c.allNodes_iter():
+        for p in iter():
             try:
                 count += 1
                 #@            << remove unused tnodeList >>
@@ -4077,7 +4077,7 @@ class baseCommands (object):
         v.dump()
         seen[v] = True
 
-        for p in c.allNodes_iter():
+        for p in c.outline():
             if p.v not in seen:
                 seen[p.v] = True
                 p.v.dump()
@@ -4874,7 +4874,7 @@ class baseCommands (object):
         parent = current.insertAfter()
         parent.h = 'Clones of marked nodes'
         marked = []
-        for p in c.allNodes_iter():
+        for p in c.outline():
             if p.isMarked() and not p.v in marked:
                 marked.append(p.v)
         marked.reverse()

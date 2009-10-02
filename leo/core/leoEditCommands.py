@@ -443,7 +443,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
         items = []
         if self.globalDynamicAbbrevs:
-            for p in self.c.allNodes_iter():
+            for p in self.c.outline():
                 s = p.b
                 if s:
                     items.extend(self.dynaregex.findall(s))
@@ -5027,7 +5027,7 @@ class editFileCommandsClass (baseEditCommandsClass):
         '''Create a dictionary of all relevant positions in commander c.'''
 
         d = {}
-        for p in c.allNodes_iter():
+        for p in c.outline():
             try:
                 # fileIndices for pre-4.x versions of .leo files have a different format.
                 i,j,k = p.v.t.fileIndex

@@ -636,7 +636,7 @@ trace = False
 
 if trace: print '=' * 20
 
-for p in c.allNodes_iter():
+for p in c.outline():
 
     p2 = c.vnode2position(p.v)
 
@@ -3147,7 +3147,7 @@ if g.unitTesting:
 
     if 0:
         print 'c',c
-        for z in c.allNodes_iter(): print '.'*z.level(),z.h
+        for z in c.outline(): print '.'*z.level(),z.h
 
     table = (
         # at-path-test1.py does not use an @path directive.

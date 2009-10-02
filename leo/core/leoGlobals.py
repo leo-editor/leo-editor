@@ -1702,7 +1702,7 @@ def printEntireTree(c,tag=''):
 
     g.pr('printEntireTree','=' * 50)
     g.pr('printEntireTree',tag,'root',c.rootPosition())
-    for p in c.allNodes_iter():
+    for p in c.outline():
         g.pr('..'*p.level(),p.v)
 #@nonl
 #@-node:ekr.20070510074941:g.printEntireTree
@@ -3833,7 +3833,7 @@ class posList(list):
         self.c = c
         list.__init__(self) # Init the base class
         if aList is None:
-            for p in c.allNodes_iter():
+            for p in c.outline():
                 self.append(p.copy())
         else:
             for p in aList:

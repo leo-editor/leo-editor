@@ -2163,7 +2163,7 @@ Template(251, 158, ('/* ',
 print '-' * 20
 d = []
 
-for p in c.allNodes_iter():
+for p in c.outline():
     s = p.h
     if s.startswith('@thin'):
         d.append(s[5:].strip())

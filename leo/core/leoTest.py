@@ -566,7 +566,7 @@ class testUtils:
         """Returns the number of cloned nodes in an outline"""
 
         c = self.c ; n = 0
-        for p in c.allNodes_iter():
+        for p in c.outline():
             if p.isCloned():
                 n += 1
         return n
@@ -576,7 +576,7 @@ class testUtils:
 
         """Returns the total number of nodes in an outline"""
 
-        return len([p for p in self.c.allNodes_iter()])
+        return len([p for p in self.c.outline()])
     #@-node:ekr.20051104075904.34:numberOfNodesInOutline
     #@+node:ekr.20051104075904.36:testUtils.writeNode/sToNode
     #@+node:ekr.20051104075904.37:writeNodesToNode
