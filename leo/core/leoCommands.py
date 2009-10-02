@@ -412,8 +412,53 @@ class baseCommands (object):
 
         return "break" # Inhibit all other handlers.
     #@-node:ekr.20031218072017.2817: doCommand
-    #@+node:ekr.20040312090934:c.iterators
-    #@+node:ekr.20091001141621.6061:New generators
+    #@+node:ekr.20091002083910.6106:c.find...
+    #@+node:ville.20090311190405.70:c.find_h
+    def find_h(self, regex, flags = re.IGNORECASE):
+        """ Return list (a poslist) of all nodes whose headline matches the regex
+
+        You can chain find_h / find_b with select_h / select_b like this
+        to refine an outline search::
+
+        pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')    
+        """
+        pat = re.compile(regex, flags)
+        res = leoNodes.poslist()
+        for p in self.allNodes_iter():
+            m = re.match(pat, p.h)
+            if m:
+                pc = p.copy()
+                pc.mo = m
+                res.append(pc)
+        return res
+
+    #@-node:ville.20090311190405.70:c.find_h
+    #@+node:ville.20090311200059.1:c.find_b
+    def find_b(self, regex, flags = re.IGNORECASE | re.MULTILINE):
+        """ Return list (a poslist) of all nodes whose body matches the regex
+
+        You can chain find_h / find_b with select_h / select_b like this
+        to refine an outline search::
+
+        pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')    
+        """
+
+        pat = re.compile(regex, flags)
+        res = leoNodes.poslist()
+        for p in self.allNodes_iter():
+            m = re.finditer(pat, p.b)
+            t1,t2 = itertools.tee(m,2)
+            try:
+                first = t1.next()
+            except StopIteration:
+                continue
+            pc = p.copy()
+            pc.matchiter = t2
+            res.append(pc)
+        return res
+    #@-node:ville.20090311200059.1:c.find_b
+    #@-node:ekr.20091002083910.6106:c.find...
+    #@+node:ekr.20091001141621.6061:c.generators
     #@+node:ekr.20091001141621.6043:c.allNodes & allUniqueNodes
     def allNodes(self):
         c = self
@@ -467,103 +512,7 @@ class baseCommands (object):
         all_positions_with_unique_vnodes_iter = allUniquePositions
     #@nonl
     #@-node:ekr.20091001141621.6062:c.allUniquePositions
-    #@-node:ekr.20091001141621.6061:New generators
-    #@+node:ekr.20091001141621.6067:c.Old iterators
-    if not g.new_generators:
-
-        #@    @+others
-        #@+node:EKR.20040529091232:c.all_positions_iter == allNodes_iter
-        def allNodes_iter (self,copy=False):
-
-            r = self.rootPosition()
-            if copy:
-                cp = lambda p: p.copy()
-            else:
-                cp = lambda p: p
-            return r.iter_class(r, cp)
-
-        all_positions_iter = allNodes_iter
-        #@nonl
-        #@-node:EKR.20040529091232:c.all_positions_iter == allNodes_iter
-        #@+node:EKR.20040529091232.1:c.all_tnodes_iter
-        def all_tnodes_iter (self):
-
-            return self.rootPosition().tnodes_iter()
-        #@-node:EKR.20040529091232.1:c.all_tnodes_iter
-        #@+node:EKR.20040529091232.2:c.all_unique_tnodes_iter
-        def all_unique_tnodes_iter (self):
-
-            return self.rootPosition().unique_tnodes_iter()
-        #@-node:EKR.20040529091232.2:c.all_unique_tnodes_iter
-        #@+node:EKR.20040529091232.3:c.all_vnodes_iter
-        def all_vnodes_iter (self):
-            return self.rootPosition().vnodes_iter()
-        #@-node:EKR.20040529091232.3:c.all_vnodes_iter
-        #@+node:EKR.20040529091232.4:c.all_unique_vnodes_iter
-        def all_unique_vnodes_iter (self):
-
-            return self.rootPosition().unique_vnodes_iter()
-        #@-node:EKR.20040529091232.4:c.all_unique_vnodes_iter
-        #@+node:sps.20080317144948.3:c.all_positions_with_unique_tnodes_iter
-        def all_positions_with_unique_tnodes_iter (self):
-
-            r = self.rootPosition()
-            return r.unique_iter_class(r, lambda p: p)
-        #@-node:sps.20080317144948.3:c.all_positions_with_unique_tnodes_iter
-        #@+node:sps.20080327174748.4:c.all_positions_with_unique_vnodes_iter
-        def all_positions_with_unique_vnodes_iter (self):
-
-            r = self.rootPosition()
-            return r.unique_iter_class(r, lambda p: p, lambda u: u.v)
-        #@-node:sps.20080327174748.4:c.all_positions_with_unique_vnodes_iter
-        #@-others
-    #@nonl
-    #@-node:ekr.20091001141621.6067:c.Old iterators
-    #@+node:ville.20090311190405.70:c.find_h
-    def find_h(self, regex, flags = re.IGNORECASE):
-        """ Return list (a poslist) of all nodes whose headline matches the regex
-
-        You can chain find_h / find_b with select_h / select_b like this
-        to refine an outline search::
-
-        pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')    
-        """
-        pat = re.compile(regex, flags)
-        res = leoNodes.poslist()
-        for p in self.allNodes_iter():
-            m = re.match(pat, p.h)
-            if m:
-                pc = p.copy()
-                pc.mo = m
-                res.append(pc)
-        return res
-
-    #@-node:ville.20090311190405.70:c.find_h
-    #@+node:ville.20090311200059.1:c.find_b
-    def find_b(self, regex, flags = re.IGNORECASE | re.MULTILINE):
-        """ Return list (a poslist) of all nodes whose body matches the regex
-
-        You can chain find_h / find_b with select_h / select_b like this
-        to refine an outline search::
-
-        pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')    
-        """
-
-        pat = re.compile(regex, flags)
-        res = leoNodes.poslist()
-        for p in self.allNodes_iter():
-            m = re.finditer(pat, p.b)
-            t1,t2 = itertools.tee(m,2)
-            try:
-                first = t1.next()
-            except StopIteration:
-                continue
-            pc = p.copy()
-            pc.matchiter = t2
-            res.append(pc)
-        return res
-    #@-node:ville.20090311200059.1:c.find_b
-    #@-node:ekr.20040312090934:c.iterators
+    #@-node:ekr.20091001141621.6061:c.generators
     #@+node:ekr.20051106040126:c.executeMinibufferCommand
     def executeMinibufferCommand (self,commandName):
 

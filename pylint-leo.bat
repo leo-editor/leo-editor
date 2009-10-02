@@ -23,6 +23,9 @@ goto all
 echo leoCommands.py
 call pylint.bat leo\core\leoCommands.py      --rcfile=leo\test\pylint-leo-rc.txt
 
+echo leoNodes.py
+call pylint.bat leo\core\leoNodes.py         --rcfile=leo\test\pylint-leo-rc.txt
+
 goto done
 
 :all
@@ -69,9 +72,6 @@ call pylint.bat leo\core\leoImport.py        --rcfile=leo\test\pylint-leo-rc.txt
 
 echo leoMenu.py
 call pylint.bat leo\core\leoMenu.py          --rcfile=leo\test\pylint-leo-rc.txt
-
-echo leoNodes.py
-call pylint.bat leo\core\leoNodes.py         --rcfile=leo\test\pylint-leo-rc.txt
 
 echo leoPlugins.py
 call pylint.bat leo\core\leoPlugins.py       --rcfile=leo\test\pylint-leo-rc.txt
