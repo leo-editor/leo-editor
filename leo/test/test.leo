@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -352,7 +352,6 @@
 <v t="ekr.20090701062041.1798"><vh>PHP test</vh>
 <v t="ekr.20090704133634.1780"><vh>Inner php</vh></v>
 </v>
-</v>
 <v t="ekr.20090514103332.1929" a="M"><vh>Unit tests</vh>
 <v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
@@ -360,6 +359,7 @@
 </v>
 <v t="ekr.20090831145049.1819" a="M"><vh>Unicode test</vh></v>
 <v t="ekr.20091001161528.1828"><vh>@test c.allPositions &amp; c.allUniquePositions</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -780,7 +780,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="6"></t>
+<t tx="ekr.20070416075121" str_leo_pos="3"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -3369,6 +3369,7 @@ print 'pass 1'
 vList1 = [p.v for p in c.allUniquePositions()]
 vList2 = [v for v in c.all_unique_vnodes_iter()]
 assert vList1 == vList2
-print 'pass 2'</t>
+print 'pass 2'
+</t>
 </tnodes>
 </leo_file>
