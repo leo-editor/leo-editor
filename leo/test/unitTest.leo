@@ -2855,23 +2855,20 @@ assert p.__ne__(root) is True</t>
         firstChild = p.v.t.children[0]
         assert childv == firstChild
 </t>
-<t tx="ekr.20040712101754.201" annotate="7d71002e">for copy in (True,False):
-    p2 = c.rootPosition()
-    for p in c.allNodes_iter(copy=copy):
-        assert p==p2, "%s != %s" % (p,p2)
-        p2.moveToThreadNext()
-        
-    assert not p2, repr(p2)
+<t tx="ekr.20040712101754.201" annotate="7d71002e">p2 = c.rootPosition()
+for p in c.allNodes_iter():
+    assert p==p2, "%s != %s" % (p,p2)
+    p2.moveToThreadNext()
+    
+assert not p2, repr(p2)
 </t>
-<t tx="ekr.20040712101754.202" annotate="7d71002e">for copy in (True,False):
-    for p in c.allNodes_iter(copy=copy):
-        
-        p2 = p.firstChild()
-        for p3 in p.children_iter(copy=copy):
-            assert p3==p2, "%s != %s" % (p3,p2)
-            p2.moveToNext()
+<t tx="ekr.20040712101754.202" annotate="7d71002e">for p in c.allNodes_iter():
+    p2 = p.firstChild()
+    for p3 in p.children_iter():
+        assert p3==p2, "%s != %s" % (p3,p2)
+        p2.moveToNext()
 
-    assert not p2, repr(p2)</t>
+assert not p2, repr(p2)</t>
 <t tx="ekr.20040712101754.203" annotate="7d71002e">for p in c.allNodes_iter():
     
     if p.hasParent():

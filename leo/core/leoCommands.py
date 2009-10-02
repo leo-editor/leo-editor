@@ -415,9 +415,9 @@ class baseCommands (object):
     #@+node:ekr.20040312090934:c.iterators
     #@+node:ekr.20091001141621.6061:New generators
     #@+node:ekr.20091001141621.6043:c.allNodes & allUniqueNodes
-    def allNodes(self,copy=False):
+    def allNodes(self):
         c = self
-        for p in c.allPositions(copy):
+        for p in c.allPositions():
             yield p.v
         raise StopIteration
 
@@ -425,9 +425,9 @@ class baseCommands (object):
         all_tnodes_iter = allNodes
         all_vnodes_iter = allNodes
 
-    def allUniqueNodes(self,copy=False):
+    def allUniqueNodes(self):
         c = self
-        for p in c.allUniquePositions(copy):
+        for p in c.allUniquePositions():
             yield p.v
         raise StopIteration
 
@@ -436,16 +436,12 @@ class baseCommands (object):
         all_unique_vnodes_iter = allUniqueNodes
     #@-node:ekr.20091001141621.6043:c.allNodes & allUniqueNodes
     #@+node:ekr.20091001141621.6044:c.allPositions (aka outline)
-    def allPositions(self,copy=False):
-        c = self ; p = c.rootPosition() # Make one copy.
-        if copy:
-            while p:
-                yield p.copy()
-                p.moveToThreadNext()
-        else:
-            while p:
-                yield p
-                p.moveToThreadNext()
+    def allPositions(self):
+        c = self
+        p = c.rootPosition() # Make one copy.
+        while p:
+            yield p
+            p.moveToThreadNext()
         raise StopIteration
 
     outline = allPositions
@@ -455,26 +451,17 @@ class baseCommands (object):
         allNodes_iter = allPositions
     #@-node:ekr.20091001141621.6044:c.allPositions (aka outline)
     #@+node:ekr.20091001141621.6062:c.allUniquePositions
-    def allUniquePositions(self,copy=False):
+    def allUniquePositions(self):
         c = self
         p = c.rootPosition() # Make one copy.
         seen = set()
-        if copy:
-            while p:
-                if p.v in seen:
-                    p.moveToNodeAfterTree()
-                else:
-                    seen.add(p.v)
-                    yield p.copy()
-                    p.moveToThreadNext()
-        else:
-            while p:
-                if p.v in seen:
-                    p.moveToNodeAfterTree()
-                else:
-                    seen.add(p.v)
-                    yield p
-                    p.moveToThreadNext()
+        while p:
+            if p.v in seen:
+                p.moveToNodeAfterTree()
+            else:
+                seen.add(p.v)
+                yield p
+                p.moveToThreadNext()
         raise StopIteration
 
     if g.new_generators:
@@ -7043,7 +7030,7 @@ class baseCommands (object):
     #@+node:ekr.20031218072017.2982:Getters & Setters
     #@+node:ekr.20060906211747:Getters
     #@+node:ekr.20040803140033:c.currentPosition
-    def currentPosition (self,copy=True):
+    def currentPosition (self):
 
         """Return the presently selected position."""
 

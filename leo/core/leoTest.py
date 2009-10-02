@@ -553,8 +553,7 @@ class testUtils:
                 return p.copy()
 
         if False and breakOnError: # useful for debugging.
-            aList = [repr(z) for z in c.p.parent().
-                self_and_siblings_iter(copy=True)]
+            aList = [repr(z.copy()) for z in c.p.parent().self_and_siblings_iter()]
             print '\n'.join(aList)
             g.pdb()
 
@@ -1167,12 +1166,14 @@ def makeImportExportSuite(c,parentHeadline,doImport):
     # Create the suite and add all test cases.
     suite = unittest.makeSuite(unittest.TestCase)
 
-    for p in parent.children_iter(copy=True):
-        if p == temp: continue
-        dialog = u.findNodeInTree(p,"dialog")
-        assert(dialog)
-        test = importExportTestCase(c,p,dialog,temp,doImport)
-        suite.addTest(test)
+    for p in parent.children_iter():
+        if p != temp:
+            # 2009/10/02: avoid copy arg to iter
+            p2 = p.copy()
+            dialog = u.findNodeInTree(p2,"dialog")
+            assert(dialog)
+            test = importExportTestCase(c,p2,dialog,temp,doImport)
+            suite.addTest(test)
 
     return suite
 #@-node:ekr.20051104075904.78:makeImportExportSuite

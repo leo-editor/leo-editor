@@ -1816,83 +1816,71 @@ class position (object):
     #@+others
     #@+node:ekr.20091001141621.6060:New generators
     #@+node:ekr.20091001141621.6055:p.children
-    def children(self,copy=False):
+    def children(self):
+
+        '''Return all children of p.'''
+
         p = self
         p = p.firstChild()
-        if copy:
-            while p:
-                yield p.copy()
-                p.moveToNext()
-        else:
-            while p:
-                yield p
-                p.moveToNext()
+        while p:
+            yield p
+            p.moveToNext()
         raise StopIteration
     #@-node:ekr.20091001141621.6055:p.children
     #@+node:ekr.20091001141621.6056:p.descendants
-    def descendants(self,copy=False):
+    def descendants(self):
+
+        '''Return all descendants of p, not including p.'''
+
         p = self
         after = p.nodeAfterTree()
-        p = p.threadNext() # Don't include node itself.
-        if copy:
-            while p and p != after:
-                yield p.copy()
-                p.moveToThreadNext()
-        else:
-            while p and p != after:
-                yield p
-                p.moveToThreadNext()
+        p = p.threadNext()
+        while p and p != after:
+            yield p
+            p.moveToThreadNext()
         raise StopIteration
     #@-node:ekr.20091001141621.6056:p.descendants
     #@+node:ekr.20091001141621.6058:p.parents
-    def parents(self,copy=False):
+    def parents(self):
+
+        '''Return all parents of p.'''
+
         p = self
         p = p.parent()
-        if copy:
-            while p:
-                yield p.copy()
-                p.moveToParent()
-        else:
-            while p:
-                yield p
-                p.moveToParent()
+        while p:
+            yield p
+            p.moveToParent()
         raise StopIteration
-
     #@-node:ekr.20091001141621.6058:p.parents
     #@+node:ekr.20091001141621.6057:p.siblings
-    def siblings(self,copy=False,following=False):
+    def siblings(self,following=False):
+
+        '''
+        If following is True, return all siblings of p including p.
+        Otherwise, return all siblings that follow p, not including p.
+        '''
+
         p = self
         p = p.copy() # Always include the original node.
         if not following:
             while p.hasBack():
                 p.moveToBack()
-        if copy:
-            while p:
-                yield p.copy()
-                p.moveToNext()
-        else:
-            while p:
-                yield p
-                p.moveToNext()
+        while p:
+            yield p
+            p.moveToNext()
         raise StopIteration
-
     #@-node:ekr.20091001141621.6057:p.siblings
     #@+node:ekr.20091001141621.6066:p.subtree
-    def subtree(self,copy=False):
+    def subtree(self):
         p = self
         after = p.nodeAfterTree()
-        if copy:
-            while p and p != after:
-                yield p.copy()
-                p.moveToThreadNext()
-        else:
-            while p and p != after:
-                yield p
-                p.moveToThreadNext()
+        while p and p != after:
+            yield p
+            p.moveToThreadNext()
         raise StopIteration
-
     #@-node:ekr.20091001141621.6066:p.subtree
     #@-node:ekr.20091001141621.6060:New generators
+    #@+node:ekr.20091002072933.6096:Old iterators
     #@+node:ekr.20040305172211.1:p.children_iter
     class children_iter_class:
 
@@ -2374,6 +2362,7 @@ class position (object):
 
         return self.unique_iter_class(self, lambda p: p.v)
     #@-node:sps.20080331123552.8:p.unique_iter
+    #@-node:ekr.20091002072933.6096:Old iterators
     #@-others
     #@-node:ekr.20040305162628.1:p.Iterators
     #@+node:ekr.20040303175026:p.Moving, Inserting, Deleting, Cloning, Sorting
@@ -2402,7 +2391,9 @@ class position (object):
         p = self
         p2.v.t._headString = p.h
         p2.v.t._bodyString = p.b
-        for child in p.children_iter(copy=True):
+
+        # 2009/10/02: no need to copy arg to iter
+        for child in p.children_iter():
             child2 = p2.insertAsLastChild()
             child.copyTreeFromSelfTo(child2)
     #@-node:ekr.20040303175026.9:p.copyTreeAfter, copyTreeTo

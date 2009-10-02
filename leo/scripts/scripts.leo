@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070615131954" str_leo_pos="1,0,1,5"><vh>Startup</vh>
+<v t="ekr.20070615131954" str_leo_pos="1,0,1,0,0,1"><vh>Startup</vh>
 <v t="ekr.20070427110751"><vh>@chapters</vh></v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20051020124457"><vh>Disabled buttons</vh>
@@ -33,7 +33,7 @@
 </v>
 <v t="ekr.20061008055616" a="E"><vh>Scripts</vh>
 <v t="ekr.20051110111150" a="E"
-expanded="ekr.20060531090036,"><vh>@thin leoScripts.txt</vh></v>
+expanded="ekr.20060531090036,ekr.20060531085804,ekr.20060531085804.1,"><vh>@thin leoScripts.txt</vh></v>
 </v>
 <v t="ekr.20060824111500"><vh>jEdit2Py</vh>
 <v t="ekr.20060824111500.1"><vh>Colorizing test scripts</vh>
@@ -6927,7 +6927,7 @@ def endElementNS(self,name,qname):
         return ''</t>
 <t tx="ekr.20061008055616"></t>
 <t tx="ekr.20070427110751"></t>
-<t tx="ekr.20070615131954"></t>
+<t tx="ekr.20070615131954" str_leo_pos="1,0,1,0,0,1"></t>
 <t tx="ville.20090508224531.9799">""" Dump nodes to ~/.leo/dump git repository.
 
 Before using this, you need to:

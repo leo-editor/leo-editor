@@ -457,7 +457,8 @@ def findTabWidthDirectives(c,p):
         return # c may be None for testing.
 
     w = None
-    for p in p.self_and_parents_iter(copy=True):
+    # 2009/10/02: no need for copy arg to iter
+    for p in p.self_and_parents_iter():
         if w: break
         for s in p.h,p.b:
             if w: break
@@ -486,7 +487,8 @@ def findLanguageDirectives(c,p):
     else:
         language = 'python'
     found = False
-    for p in p.self_and_parents_iter(copy=True):
+    # 2009/10/02: no need for copy arg to iter.
+    for p in p.self_and_parents_iter():
         if found: break
         for s in p.h,p.b:
             if found: break

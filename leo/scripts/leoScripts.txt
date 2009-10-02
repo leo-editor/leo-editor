@@ -120,9 +120,13 @@ def __init__ (self,c):
 #@+node:ekr.20060531085804.3:getAllClones
 def getAllClones(self,p):
     c = self.c
-    def clonesOf(p,p1=p):
-        return p.v.t == p1.v.t
-    return filter(clonesOf, c.allNodes_iter(copy=True))
+
+    # def clonesOf(p,p1=p):
+        # return p.v.t == p1.v.t 
+    # return filter(clonesOf, c.allNodes_iter(copy=True))
+
+    # 2009/10/2: avoid copy arg to iter.
+    return [z.copy() for z in c.allNodes_iter() if z.v == p.v]
 #@nonl
 #@-node:ekr.20060531085804.3:getAllClones
 #@+node:ekr.20060531085804.4:displayClones
