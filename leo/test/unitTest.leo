@@ -1146,7 +1146,6 @@
 <v t="ekr.20071113145804.10"><vh>@test c.contractAllHeadlines</vh></v>
 <v t="ekr.20090104053806.1"><vh>@@test c.checkFileTimeStamp &amp; c.setFileTimeStamp</vh></v>
 <v t="ekr.20061106114738"><vh>Load tests for .leo files</vh></v>
-<v t="ekr.20060211135917"><vh>All unit tests</vh></v>
 <v t="ekr.20061106112522"><vh>@test c.insertBodyTime</vh></v>
 <v t="ekr.20040802065214" annotate="7d71002e"><vh>@test changing headline marks descendent @thin nodes dirty</vh>
 <v t="ekr.20040802065214.1"><vh>bogus</vh></v>
@@ -11370,7 +11369,6 @@ vals2.sort()
 for val in vals2:
     if val not in keys1:
         assert False, '%s not in commandsDict.keys()' % (val)</t>
-<t tx="ekr.20060211135917">assert type(c.getTime()) == type('')</t>
 <t tx="ekr.20060325071703.1">import sys
 
 win32  = c.config.getBool('test_win32_setting')
@@ -21913,21 +21911,19 @@ assert  tangle_dir == expectedDir,'expected: %s got: %s' % (
 tangle_fn = d.get('tangle_output_fn')
 assert expectedFn == tangle_fn,'expected: %s got: %s' % (
     expectedFn,tangle_fn)</t>
-<t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
+<t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
+# adjust accordingly
+
+# These seem to fail if various nodes are cloned.
 import random,fnmatch
 
 all_h = [po.h for po in c.find_h('.')]
 
 assert len(all_h) &gt; 1000
-
-#for p in c.allNodes_iter():
-#    all_h.append(p.h)
-#    print p.h
     
 sample = random.sample(all_h, 20)    
 
-#test that all nodes are found at least once
-
+# Test that all nodes are found at least once.
 for h in sample:
     pat = fnmatch.translate(h)
     pl = c.find_h(pat)
@@ -21952,14 +21948,13 @@ for node in bm:
 assert forloops &gt; 10
 
 # all of these should also be found by find_b
-
 all_bm = c.find_b('(.*)allNodes_iter')
 assert len(all_bm) &gt;= len(bm)
 
 assert set(el.h for el in bm).issubset(set(el.h for el in all_bm))
 
 itertest = c.find_h('@test p.iters and v.iters')
-assert len(itertest) == 1
+assert len(itertest) &gt;= 1
 tn = itertest[0]
 assert tn.h == '@test p.iters and v.iters'
 assert len(itertest.select_b('notfound, really')) == 0
@@ -21974,9 +21969,7 @@ assert len(chi_b) == 2
 assert chi_b[0].h == chi_b[1].h == 'b'
 chi_e = chi.select_h('d').select_h('e')
 assert len(chi_e) == 1
-assert chi_e[0].h == 'e'
-
-</t>
+assert chi_e[0].h == 'e'</t>
 <t tx="ville.20090313183551.2"># test the controller-specific pickleshare db
 v = [1212,121131313, { 'hello' : (121,'world')} ]
 c.db['leo_utest'] = v

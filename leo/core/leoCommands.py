@@ -417,17 +417,25 @@ class baseCommands (object):
     #@+node:ekr.20091001141621.6043:c.allNodes & allUniqueNodes
     def allNodes(self,copy=False):
         c = self
-        for p in allPositions(c,copy):
+        for p in c.allPositions(copy):
             yield p.v
         raise StopIteration
 
+    if g.new_generators:
+        all_tnodes_iter = allNodes
+        all_vnodes_iter = allNodes
+
     def allUniqueNodes(self,copy=False):
         c = self
-        for p in allUniquePositions(c,copy):
+        for p in c.allUniquePositions(copy):
             yield p.v
         raise StopIteration
+
+    if g.new_generators:
+        all_unique_tnodes_iter = allUniqueNodes
+        all_unique_vnodes_iter = allUniqueNodes
     #@-node:ekr.20091001141621.6043:c.allNodes & allUniqueNodes
-    #@+node:ekr.20091001141621.6044:c.allPositions
+    #@+node:ekr.20091001141621.6044:c.allPositions (aka outline)
     def allPositions(self,copy=False):
         c = self ; p = c.rootPosition() # Make one copy.
         if copy:
@@ -439,7 +447,13 @@ class baseCommands (object):
                 yield p
                 p.moveToThreadNext()
         raise StopIteration
-    #@-node:ekr.20091001141621.6044:c.allPositions
+
+    outline = allPositions
+
+    if g.new_generators:
+        all_positions_iter = allPositions
+        allNodes_iter = allPositions
+    #@-node:ekr.20091001141621.6044:c.allPositions (aka outline)
     #@+node:ekr.20091001141621.6062:c.allUniquePositions
     def allUniquePositions(self,copy=False):
         c = self
@@ -461,57 +475,65 @@ class baseCommands (object):
                     seen.add(p.v)
                     yield p
                     p.moveToThreadNext()
-            raise StopIteration
-
-
         raise StopIteration
 
+    if g.new_generators:
+        all_positions_with_unique_tnodes_iter = allUniquePositions
+        all_positions_with_unique_vnodes_iter = allUniquePositions
+    #@nonl
     #@-node:ekr.20091001141621.6062:c.allUniquePositions
     #@-node:ekr.20091001141621.6061:New generators
-    #@+node:EKR.20040529091232:c.all_positions_iter == allNodes_iter
-    def allNodes_iter (self,copy=False):
+    #@+node:ekr.20091001141621.6067:Old iterators
+    if not g.new_generators:
 
-        r = self.rootPosition()
-        if copy:
-            cp = lambda p: p.copy()
-        else:
-            cp = lambda p: p
-        return r.iter_class(r, cp)
+        #@    @+others
+        #@+node:EKR.20040529091232:c.all_positions_iter == allNodes_iter
+        def allNodes_iter (self,copy=False):
 
-    all_positions_iter = allNodes_iter
+            r = self.rootPosition()
+            if copy:
+                cp = lambda p: p.copy()
+            else:
+                cp = lambda p: p
+            return r.iter_class(r, cp)
+
+        all_positions_iter = allNodes_iter
+        #@nonl
+        #@-node:EKR.20040529091232:c.all_positions_iter == allNodes_iter
+        #@+node:EKR.20040529091232.1:c.all_tnodes_iter
+        def all_tnodes_iter (self):
+
+            return self.rootPosition().tnodes_iter()
+        #@-node:EKR.20040529091232.1:c.all_tnodes_iter
+        #@+node:EKR.20040529091232.2:c.all_unique_tnodes_iter
+        def all_unique_tnodes_iter (self):
+
+            return self.rootPosition().unique_tnodes_iter()
+        #@-node:EKR.20040529091232.2:c.all_unique_tnodes_iter
+        #@+node:EKR.20040529091232.3:c.all_vnodes_iter
+        def all_vnodes_iter (self):
+            return self.rootPosition().vnodes_iter()
+        #@-node:EKR.20040529091232.3:c.all_vnodes_iter
+        #@+node:EKR.20040529091232.4:c.all_unique_vnodes_iter
+        def all_unique_vnodes_iter (self):
+
+            return self.rootPosition().unique_vnodes_iter()
+        #@-node:EKR.20040529091232.4:c.all_unique_vnodes_iter
+        #@+node:sps.20080317144948.3:c.all_positions_with_unique_tnodes_iter
+        def all_positions_with_unique_tnodes_iter (self):
+
+            r = self.rootPosition()
+            return r.unique_iter_class(r, lambda p: p)
+        #@-node:sps.20080317144948.3:c.all_positions_with_unique_tnodes_iter
+        #@+node:sps.20080327174748.4:c.all_positions_with_unique_vnodes_iter
+        def all_positions_with_unique_vnodes_iter (self):
+
+            r = self.rootPosition()
+            return r.unique_iter_class(r, lambda p: p, lambda u: u.v)
+        #@-node:sps.20080327174748.4:c.all_positions_with_unique_vnodes_iter
+        #@-others
     #@nonl
-    #@-node:EKR.20040529091232:c.all_positions_iter == allNodes_iter
-    #@+node:EKR.20040529091232.1:c.all_tnodes_iter
-    def all_tnodes_iter (self):
-
-        return self.rootPosition().tnodes_iter()
-    #@-node:EKR.20040529091232.1:c.all_tnodes_iter
-    #@+node:EKR.20040529091232.2:c.all_unique_tnodes_iter
-    def all_unique_tnodes_iter (self):
-
-        return self.rootPosition().unique_tnodes_iter()
-    #@-node:EKR.20040529091232.2:c.all_unique_tnodes_iter
-    #@+node:EKR.20040529091232.3:c.all_vnodes_iter
-    def all_vnodes_iter (self):
-        return self.rootPosition().vnodes_iter()
-    #@-node:EKR.20040529091232.3:c.all_vnodes_iter
-    #@+node:EKR.20040529091232.4:c.all_unique_vnodes_iter
-    def all_unique_vnodes_iter (self):
-
-        return self.rootPosition().unique_vnodes_iter()
-    #@-node:EKR.20040529091232.4:c.all_unique_vnodes_iter
-    #@+node:sps.20080317144948.3:c.all_positions_with_unique_tnodes_iter
-    def all_positions_with_unique_tnodes_iter (self):
-
-        r = self.rootPosition()
-        return r.unique_iter_class(r, lambda p: p)
-    #@-node:sps.20080317144948.3:c.all_positions_with_unique_tnodes_iter
-    #@+node:sps.20080327174748.4:c.all_positions_with_unique_vnodes_iter
-    def all_positions_with_unique_vnodes_iter (self):
-
-        r = self.rootPosition()
-        return r.unique_iter_class(r, lambda p: p, lambda u: u.v)
-    #@-node:sps.20080327174748.4:c.all_positions_with_unique_vnodes_iter
+    #@-node:ekr.20091001141621.6067:Old iterators
     #@+node:ville.20090311190405.70:c.find_h
     def find_h(self, regex, flags = re.IGNORECASE):
         """ Return list (a poslist) of all nodes whose headline matches the regex

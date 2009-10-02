@@ -113,6 +113,8 @@ g = nullObject() # Set later by startup logic to this module.
 app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
 isPython3 = sys.version_info >= (3,0,0)
+new_generators = False
+    # True: new generators replace old.  False: new generators are separate.
 
 enableDB = True
 if not enableDB:
