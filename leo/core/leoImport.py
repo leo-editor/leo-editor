@@ -68,6 +68,10 @@ class leoImportCommands (scanUtility):
             # Keys are file extensions, values are text scanners.
             # Text scanners must have the signature scanSomeText(self,s,parent,atAuto=False)
             '.c':       self.scanCText,
+            '.h':       self.scanCText,
+            '.h++':     self.scanCText,
+            '.cc':      self.scanCText,
+            '.c++':     self.scanCText,
             '.cpp':     self.scanCText,
             '.cxx':     self.scanCText,
             '.cs':      self.scanCSharpText,

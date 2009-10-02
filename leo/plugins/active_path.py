@@ -220,9 +220,12 @@ def createFile(c,parent,d):
 #@+node:tbrown.20080613095157.9:openFile
 def openFile(c,parent,d):
     """Open an existing file"""
-    hdr = os.path.basename(d)
-    parent.h = '@auto '+hdr
-    parent.b = file(d).read()
+    # hdr = os.path.basename(d)
+    # parent.h = '@auto '+hdr
+    # parent.b = file(d).read()
+    c.importCommands.createOutline(d,parent=parent,atAuto=True)
+    parent.h = '@auto '+parent.h
+
     c.bodyWantsFocusNow()
 #@-node:tbrown.20080613095157.9:openFile
 #@+node:tbrown.20080613095157.10:openDir
