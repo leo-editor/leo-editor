@@ -472,11 +472,11 @@ class baseCommands (object):
             yield p.v
         raise StopIteration
 
-    if g.new_generators:
-        all_tnodes_iter = allNodes
-        all_vnodes_iter = allNodes
-        all_unique_tnodes_iter = allUniqueNodes
-        all_unique_vnodes_iter = allUniqueNodes
+    # Compatibility with old code.
+    all_tnodes_iter = allNodes
+    all_vnodes_iter = allNodes
+    all_unique_tnodes_iter = allUniqueNodes
+    all_unique_vnodes_iter = allUniqueNodes
     #@-node:ekr.20091001141621.6043:c.allNodes & allUniqueNodes
     #@+node:ekr.20091001141621.6044:c.allPositions (aka outline)
     def allPositions(self):
@@ -489,9 +489,9 @@ class baseCommands (object):
 
     outline = allPositions
 
-    if g.new_generators:
-        all_positions_iter = allPositions
-        allNodes_iter = allPositions
+    # Compatibility with old code.
+    all_positions_iter = allPositions
+    allNodes_iter = allPositions
     #@-node:ekr.20091001141621.6044:c.allPositions (aka outline)
     #@+node:ekr.20091001141621.6062:c.allUniquePositions
     def allUniquePositions(self):
@@ -507,9 +507,9 @@ class baseCommands (object):
                 p.moveToThreadNext()
         raise StopIteration
 
-    if g.new_generators:
-        all_positions_with_unique_tnodes_iter = allUniquePositions
-        all_positions_with_unique_vnodes_iter = allUniquePositions
+    # Compatibility with old code.
+    all_positions_with_unique_tnodes_iter = allUniquePositions
+    all_positions_with_unique_vnodes_iter = allUniquePositions
     #@nonl
     #@-node:ekr.20091001141621.6062:c.allUniquePositions
     #@-node:ekr.20091001141621.6061:c.generators

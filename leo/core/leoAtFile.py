@@ -5112,19 +5112,6 @@ class atFile:
                     if sib == v:
                         thisClonedSibIndex = clonedSibs
 
-        # if v and v.isCloned():
-            # sib = v
-            # while sib.back():
-                # sib = sib.back()
-            # while sib:
-                # if sib.t == v.t:
-                    # clonedSibs += 1
-                    # if sib == v:
-                        # thisClonedSibIndex = clonedSibs
-                # sib = sib.next()
-
-        # g.trace(clonedSibs,thisClonedSibIndex)
-
         return clonedSibs,thisClonedSibIndex
     #@-node:ekr.20041005105605.242:scanForClonedSibs (reading & writing)
     #@+node:ekr.20041005105605.243:sentinelName

@@ -813,11 +813,6 @@ def runTestsExternally (c,all):
 
             # Add the entire @mark-for-unit-tests tree.
             self.addNode(p)
-
-            # for p in p.subtree_iter():
-                # # if self.isUnitTestNode(p) and not p.v.t in self.seen:
-                # if not p.v.t in self.seen: # Add *all* nodes.
-                    # self.addNode(p)
         #@-node:ekr.20070705080413:addMarkTree
         #@+node:ekr.20070705065154.1:addNode
         def addNode(self,p):
