@@ -372,7 +372,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.redrawing = True
         try:
             item = self.getCurrentItem()
-            for p in c.rootPosition().self_and_siblings_iter():
+            for p in c.rootPosition().self_and_siblings():
                 self.updateVisibleIcons(p)
         finally:
             self.redrawing = False
@@ -752,7 +752,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # isAtFile = False
         # isAtRoot = False
 
-        # for v2 in v.self_and_subtree_iter():
+        # for v2 in v.self_and_subtree():
             # if isAtFile and isAtRoot:
                 # break
             # if (v2.isAtFileNode() or
@@ -1382,7 +1382,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.updateIcon(p,force=True)
 
         if p.hasChildren() and p.isExpanded():
-            for child in p.children_iter():
+            for child in p.children():
                 self.updateVisibleIcons(child)
     #@-node:ekr.20090124174652.114:updateVisibleIcons
     #@-node:ekr.20090124174652.72:Icons (nativeTree)

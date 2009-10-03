@@ -631,7 +631,7 @@ class textTree(leoFrame.leoTree):
 
   def draw_tree_helper (self,p,indent):
 
-    for p in p.self_and_siblings_iter():
+    for p in p.self_and_siblings():
 
       if p.hasChildren():
         box = g.choose(p.isExpanded(),'+','-')

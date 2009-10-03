@@ -3963,7 +3963,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
         # Using a dict here is essential for adequate speed.
         vList = [] ; tDict = {}
 
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             vList.append(p.v)
             if p.v.t:
                 key = id(p.v.t)
@@ -7955,7 +7955,7 @@ class leoTkinterTree (leoFrame.leoTree):
             if p.firstChild():  theIter = [p.firstChild()]
             else:               theIter = []
         else:
-            theIter = p.self_and_siblings_iter()
+            theIter = p.self_and_siblings()
 
         for p2 in theIter:
             if trace and p1.h == p2.h:
@@ -8668,7 +8668,7 @@ class leoTkinterTree (leoFrame.leoTree):
         isAtFile = False
         isAtRoot = False
 
-        for v2 in v.self_and_subtree_iter():
+        for v2 in v.self_and_subtree():
             if isAtFile and isAtRoot:
                 break
             if (v2.isAtFileNode() or

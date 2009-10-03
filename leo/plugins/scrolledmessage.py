@@ -271,7 +271,7 @@ class ScrolledMessageDialog(object):
             self.doNextLevel(root, html)
         else:
             root = self.c.rootPosition()
-            for pp in root.following_siblings_iter():
+            for pp in root.following_siblings():
                 self.doNextLevel(pp, html)
 
         html.append('</ol>')
@@ -318,7 +318,7 @@ class ScrolledMessageDialog(object):
         if p.hasChildren() and (p.isExpanded() or not self._expandFollowsTree):
 
             html.append('<ol>')
-            for item in p.children_iter():
+            for item in p.children():
                 self.doNextLevel(item, html)
             html.append('</ol>')
 
