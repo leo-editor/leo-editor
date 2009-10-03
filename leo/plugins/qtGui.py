@@ -371,8 +371,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         insert = keys.get('insert')
         i,j = self.toGuiIndex(i),self.toGuiIndex(j)
 
-        ### if i > j: i,j = j,i
-
         return self.setSelectionRangeHelper(i,j,insert)
     #@+node:ekr.20081121105001.534:setSelectionRangeHelper
     def setSelectionRangeHelper(self,i,j,insert):
@@ -3752,24 +3750,12 @@ class leoQtFrame (leoFrame.leoFrame):
         # Do this first.
         #@    << clear all vnodes in the tree >>
         #@+node:ekr.20081121105001.259:<< clear all vnodes in the tree>>
-        # Using a dict here is essential for adequate speed.
-        vList = [] ### ; vDict = {}
-
-        for v in c.all_unique_nodes():
-            vList.append(v)
-            ###
-            # if p.v:
-                # key = id(p.v)
-                # if key not in tDict:
-                    # vDict[key] = p.v
-
-        # for key in vDict:
-            # g.clearAllIvars(vDict[key])
+        vList = [z for z in c.all_unique_nodes()]
 
         for v in vList:
             g.clearAllIvars(v)
 
-        vList = [] ### ; tDict = {} # Remove these references immediately.
+        vList = [] # Remove these references immediately.
         #@-node:ekr.20081121105001.259:<< clear all vnodes in the tree>>
         #@nl
 
