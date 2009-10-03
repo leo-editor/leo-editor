@@ -422,9 +422,10 @@ class baseCommands (object):
 
         pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')    
         """
+        c = self
         pat = re.compile(regex, flags)
         res = leoNodes.poslist()
-        for p in self.outline():
+        for p in c.all_positions():
             m = re.match(pat, p.h)
             if m:
                 pc = p.copy()
@@ -443,9 +444,10 @@ class baseCommands (object):
         pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')    
         """
 
+        c = self
         pat = re.compile(regex, flags)
         res = leoNodes.poslist()
-        for p in self.outline():
+        for p in c.all_positions():
             m = re.finditer(pat, p.b)
             t1,t2 = itertools.tee(m,2)
             try:
@@ -497,8 +499,8 @@ class baseCommands (object):
     all_positions_with_unique_vnodes_iter = all_unique_positions
     #@nonl
     #@-node:ekr.20091001141621.6062:c.all_unique_positions
-    #@+node:ekr.20091001141621.6044:c.outline (all_positions)
-    def outline (self):
+    #@+node:ekr.20091001141621.6044:c.all_positions
+    def all_positions (self):
         c = self
         p = c.rootPosition() # Make one copy.
         while p:
@@ -506,13 +508,10 @@ class baseCommands (object):
             p.moveToThreadNext()
         raise StopIteration
 
-    all_positions = outline
-
     # Compatibility with old code.
-    all_positions_iter = outline
-    allNodes_iter = outline
-
-    #@-node:ekr.20091001141621.6044:c.outline (all_positions)
+    all_positions_iter = all_positions
+    allNodes_iter = all_positions
+    #@-node:ekr.20091001141621.6044:c.all_positions
     #@-node:ekr.20091001141621.6061:c.generators
     #@+node:ekr.20051106040126:c.executeMinibufferCommand
     def executeMinibufferCommand (self,commandName):
@@ -1942,7 +1941,7 @@ class baseCommands (object):
         isAuto = root.isAtAutoNode()
 
         if trace: g.trace('=' * 10)
-        for p in p.self_and_subtree_iter():
+        for p in p.self_and_subtree():
             lastv = p.copy()
             s = p.b
             if isNosent or isAuto:
@@ -1989,7 +1988,7 @@ class baseCommands (object):
 
         gnx = g.app.nodeIndices.scanGnx(gnx,0)
 
-        for p in root.self_and_subtree_iter():
+        for p in root.self_and_subtree():
             if p.matchHeadline(vnodeName):
                 if p.v.fileIndex == gnx:
                     return p.copy(),True
@@ -2031,7 +2030,7 @@ class baseCommands (object):
             if tnodeIndex < len(tnodeList):
                 v = tnodeList[tnodeIndex]
                 # Find v.
-                for p in root.self_and_subtree_iter():
+                for p in root.self_and_subtree():
                     if p.v == v:
                         found = True ; break
                 if not found:
@@ -2056,7 +2055,7 @@ class baseCommands (object):
             # Fall back to the old logic.
             #@        << set p to the first node whose headline matches vnodeName >>
             #@+node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
-            for p in root.self_and_subtree_iter():
+            for p in root.self_and_subtree():
                 if p.matchHeadline(vnodeName):
                     found = True ; break
             #@-node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
@@ -2248,17 +2247,17 @@ class baseCommands (object):
         c = self ; p1 = p.copy()
 
         # First look for ancestor @file node.
-        for p in p.self_and_parents_iter():
+        for p in p.self_and_parents():
             fileName = not p.isAtAllNode() and p.anyAtFileNodeName()
             if fileName:
                 return p.copy(),fileName
 
         # Search the entire tree for joined nodes.
         # Bug fix: Leo 4.5.1: *must* search *all* positions.
-        for p in c.all_positions_iter():
+        for p in c.all_positions():
             if p.v == p1.v and p != p1:
                 # Found a joined position.
-                for p2 in p.self_and_parents_iter():
+                for p2 in p.self_and_parents():
                     fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
                     if fileName:
                         return p2.copy(),fileName
@@ -2473,7 +2472,7 @@ class baseCommands (object):
         tabWidth  = d.get("tabwidth")
         count = 0 ; dirtyVnodeList = []
         u.beforeChangeGroup(current,undoType)
-        for p in current.self_and_subtree_iter():
+        for p in current.self_and_subtree():
             # g.trace(p.h,tabWidth)
             innerUndoData = u.beforeChangeNodeContents(p)
             if p == current:
@@ -2520,7 +2519,7 @@ class baseCommands (object):
         tabWidth  = theDict.get("tabwidth")
         count = 0 ; dirtyVnodeList = []
         u.beforeChangeGroup(current,undoType)
-        for p in current.self_and_subtree_iter():
+        for p in current.self_and_subtree():
             undoData = u.beforeChangeNodeContents(p)
             if p == current:
                 changed,dirtyVnodeList2 = self.convertTabs(event)
@@ -3440,7 +3439,7 @@ class baseCommands (object):
             #@-at
             #@@c
 
-            for v in c.all_unique_vnodes_iter():
+            for v in c.all_unique_nodes():
                 if v not in tnodeInfoDict:
                     tnodeInfoDict[v] = g.Bunch(
                         v=v,head=v.headString(),body=v.b)
@@ -3460,7 +3459,7 @@ class baseCommands (object):
             #@+node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
             # Create a dict containing only copied tnodes.
             copiedTnodeDict = {}
-            for p in pasted.self_and_subtree_iter():
+            for p in pasted.self_and_subtree():
                 if p.v not in copiedTnodeDict:
                     copiedTnodeDict[p.v] = p.v
 
@@ -3551,7 +3550,7 @@ class baseCommands (object):
 
         # g.trace("root",root,"parent",parent)
         clonedTnodes = {}
-        for ancestor in parent.self_and_parents_iter():
+        for ancestor in parent.self_and_parents():
             if ancestor.isCloned():
                 v = ancestor.v
                 clonedTnodes[v] = v
@@ -3559,7 +3558,7 @@ class baseCommands (object):
         if not clonedTnodes:
             return True
 
-        for p in root.self_and_subtree_iter():
+        for p in root.self_and_subtree():
             if p.isCloned() and clonedTnodes.get(p.v):
                 if g.app.unitTesting:
                     g.app.unitTestDict['checkMoveWithParentWithWarning']=True
@@ -3577,7 +3576,7 @@ class baseCommands (object):
 
         # g.trace('root',root.h,'target',target.h)
 
-        for z in root.subtree_iter():
+        for z in root.subtree():
             if z == target:
                 if g.app.unitTesting:
                     g.app.unitTestDict['checkMoveWithParentWithWarning']=True
@@ -3797,8 +3796,8 @@ class baseCommands (object):
         if full and not unittest:
             g.es("all tests enabled: this may take awhile",color="blue")
 
-        if root: iter = root.self_and_subtree_iter
-        else:    iter = c.outline 
+        if root: iter = root.self_and_subtree
+        else:    iter = c.all_positions
 
         for p in iter():
             try:
@@ -3854,7 +3853,7 @@ class baseCommands (object):
                         n = p.childIndex()
                         assert p == p.parent().moveToNthChild(n), "p==parent.moveToNthChild"
 
-                    for child in p.children_iter():
+                    for child in p.children():
                         assert p == child.parent(), "p==child.parent"
 
                     if p.hasNext():
@@ -3913,8 +3912,7 @@ class baseCommands (object):
 
         c = self ; count = 0 ; result = "ok"
 
-        for p in c.all_positions_with_unique_tnodes_iter():
-
+        for p in c.all_unique_positions():
             count += 1
             if not unittest:
                 #@            << print dots >>
@@ -3957,7 +3955,7 @@ class baseCommands (object):
         if not unittest:
             g.es("checking Python code   ")
 
-        for p in c.p.self_and_subtree_iter():
+        for p in c.p.self_and_subtree():
 
             count += 1
             if not unittest and not checkOnSave:
@@ -4067,16 +4065,13 @@ class baseCommands (object):
         """ Dump all nodes in the outline."""
 
         c = self
-
         seen = {}
 
         print ; print '='*40
-
         v = c.hiddenRootNode
         v.dump()
         seen[v] = True
-
-        for p in c.outline():
+        for p in c.all_positions():
             if p.v not in seen:
                 seen[p.v] = True
                 p.v.dump()
@@ -4089,7 +4084,7 @@ class baseCommands (object):
 
         c = self ; pp = c.prettyPrinter(c)
 
-        for p in c.all_positions_with_unique_tnodes_iter():
+        for p in c.all_unique_positions():
 
             # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
             if g.scanForAtLanguage(c,p) == "python":
@@ -4114,7 +4109,7 @@ class baseCommands (object):
 
         pp = c.prettyPrinter(c)
 
-        for p in root.self_and_subtree_iter():
+        for p in root.self_and_subtree():
 
             # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
             if g.scanForAtLanguage(c,p) == "python":
@@ -4151,7 +4146,7 @@ class baseCommands (object):
 
         c = self ; p = c.p ; pp = c.prettyPrinter(c)
 
-        for p in p.self_and_subtree_iter():
+        for p in p.self_and_subtree():
 
             # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
             if g.scanForAtLanguage(c,p) == "python":
@@ -4552,7 +4547,7 @@ class baseCommands (object):
 
         c = self
 
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             p.contract()
         # Select the topmost ancestor of the presently selected node.
         p = c.p
@@ -4571,7 +4566,7 @@ class baseCommands (object):
 
         c = self ; leaveOpen = c.p
 
-        for p in c.rootPosition().self_and_siblings_iter():
+        for p in c.rootPosition().self_and_siblings():
             c.contractIfNotCurrent(p,leaveOpen)
 
         c.redraw()
@@ -4584,11 +4579,11 @@ class baseCommands (object):
         if p == leaveOpen or not p.isAncestorOf(leaveOpen):
             p.contract()
 
-        for child in p.children_iter():
+        for child in p.children():
             if child != leaveOpen and child.isAncestorOf(leaveOpen):
                 c.contractIfNotCurrent(child,leaveOpen)
             else:
-                for p2 in child.self_and_subtree_iter():
+                for p2 in child.self_and_subtree():
                     p2.contract()
     #@-node:ekr.20080819075811.7:contractIfNotCurrent
     #@-node:ekr.20080819075811.3:contractAllOtherNodes & helper
@@ -4621,7 +4616,7 @@ class baseCommands (object):
         elif p.hasParent() and p.parent().isVisible(c):
             redraw = False
             if self.sparse_goto_parent:
-                for child in p.parent().children_iter():
+                for child in p.parent().children():
                     if child.isExpanded():
                         child.contract()
                         redraw = True
@@ -4798,9 +4793,9 @@ class baseCommands (object):
 
         c = self ; level = 1
 
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             p.contract()
-        for p in c.p.parents_iter():
+        for p in c.p.parents():
             p.expand()
             level += 1
 
@@ -4828,7 +4823,7 @@ class baseCommands (object):
     #@+node:ekr.20031218072017.2910:contractSubtree
     def contractSubtree (self,p):
 
-        for p in p.subtree_iter():
+        for p in p.subtree():
             p.contract()
     #@-node:ekr.20031218072017.2910:contractSubtree
     #@+node:ekr.20031218072017.2911:expandSubtree
@@ -4849,7 +4844,7 @@ class baseCommands (object):
         c = self
         current = c.p
         n = current.level()
-        for p in current.self_and_subtree_iter():
+        for p in current.self_and_subtree():
             if p.level() - n + 1 < level:
                 p.expand()
             else:
@@ -4873,7 +4868,7 @@ class baseCommands (object):
         parent = current.insertAfter()
         parent.h = 'Clones of marked nodes'
         marked = []
-        for p in c.outline():
+        for p in c.all_positions():
             if p.isMarked() and not p.v in marked:
                 marked.append(p.v)
         marked.reverse()
@@ -4897,7 +4892,7 @@ class baseCommands (object):
 
         c.endEditing()
         u.beforeChangeGroup(current,undoType)
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             if p.isDirty()and not p.isMarked():
                 bunch = u.beforeMark(p,undoType)
                 c.setMarked(p)
@@ -4919,7 +4914,7 @@ class baseCommands (object):
 
         c.endEditing()
         u.beforeChangeGroup(current,undoType)
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             if p.isDirty()and not p.isMarked():
                 s = p.b
                 flag, i = g.is_special(s,0,"@root")
@@ -4990,7 +4985,7 @@ class baseCommands (object):
         c.endEditing()
         u.beforeChangeGroup(current,undoType)
         dirtyVnodeList = []
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             if p.v == current.v:
                 bunch = u.beforeMark(p,undoType)
                 c.setMarked(p)
@@ -5062,7 +5057,7 @@ class baseCommands (object):
         c.endEditing()
         u.beforeChangeGroup(current,undoType)
         changed = False
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             if p.isMarked():
                 bunch = u.beforeMark(p,undoType)
                 # c.clearMarked(p) # Very slow: calls a hook.
@@ -5070,7 +5065,7 @@ class baseCommands (object):
                 p.v.setDirty()
                 u.afterMark(p,undoType,bunch)
                 changed = True
-        dirtyVnodeList = [p.v for p in c.all_positions_with_unique_vnodes_iter() if p.v.isDirty()]
+        dirtyVnodeList = [p.v for p in c.all_unique_positions() if p.v.isDirty()]
         if changed:
             g.doHook("clear-all-marks",c=c,p=p,v=p)
             c.setChanged(True)
@@ -6626,7 +6621,7 @@ class baseCommands (object):
 
         c = self ; current = c.p
 
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             if p != current and p.isDirty():
                 return True
 
@@ -6637,7 +6632,7 @@ class baseCommands (object):
 
         c = self ; current = c.p
 
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             if p != current and p.isMarked():
                 return True
 
@@ -6648,7 +6643,7 @@ class baseCommands (object):
 
         c = self
 
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             if p.isDirty():
                 return True
 
@@ -6659,7 +6654,7 @@ class baseCommands (object):
 
         c = self
 
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             if p.isDirty and p.isAnyAtFileNode():
                 return True
 
@@ -6683,7 +6678,7 @@ class baseCommands (object):
 
         c = self
 
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             if p.isExpanded():
                 return True
 
@@ -6741,7 +6736,7 @@ class baseCommands (object):
 
         c = self
 
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             if not p.isExpanded():
                 return True
 
@@ -6967,7 +6962,7 @@ class baseCommands (object):
 
         c = self
 
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             if p.isMarked():
                 return True
 
@@ -7256,7 +7251,7 @@ class baseCommands (object):
 
         c = self
 
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             p.v.clearMarked()
     #@-node:ekr.20031218072017.2984:c.clearAllMarked
     #@+node:ekr.20031218072017.2985:c.clearAllVisited
@@ -7264,7 +7259,7 @@ class baseCommands (object):
 
         c = self
 
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             p.v.clearVisited()
             p.v.clearWriteBit()
     #@-node:ekr.20031218072017.2985:c.clearAllVisited
@@ -7318,7 +7313,7 @@ class baseCommands (object):
         # Clear all dirty bits except orphaned @file nodes
         if not changedFlag:
             # g.trace("clearing all dirty bits")
-            for p in c.all_positions_with_unique_tnodes_iter():
+            for p in c.all_unique_positions():
                 if p.isDirty() and not (p.isAtFileNode() or p.isAtNorefFileNode()):
                     p.clearDirty()
 

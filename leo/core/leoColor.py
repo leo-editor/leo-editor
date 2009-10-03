@@ -3177,7 +3177,7 @@ class colorizer:
         if 'nocolor-node' in theDict:
             return False
 
-        for p in p.self_and_parents_iter():
+        for p in p.self_and_parents():
             theDict = g.get_directives_dict(p)
             no_color = 'nocolor' in theDict
             color = 'color' in theDict

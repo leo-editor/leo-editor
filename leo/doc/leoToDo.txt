@@ -903,7 +903,7 @@ def goto_countLines (self,root,n):
     isAuto = root.isAtAutoNode()
 
     if trace: g.trace('=' * 10)
-    for p in p.self_and_subtree_iter():
+    for p in p.self_and_subtree():
         lastv = p.copy()
         s = p.b
         if isNosent or isAuto:
@@ -950,7 +950,7 @@ def goto_findGnx (self,root,gnx,vnodeName):
 
     gnx = g.app.nodeIndices.scanGnx(gnx,0)
 
-    for p in root.self_and_subtree_iter():
+    for p in root.self_and_subtree():
         if p.matchHeadline(vnodeName):
             if p.v.fileIndex == gnx:
                 return p.copy(),True
@@ -999,7 +999,7 @@ for s in lines:
 if tnodeIndex < len(tnodeList):
     v = tnodeList[tnodeIndex]
     # Find v.
-    for p in root.self_and_subtree_iter():
+    for p in root.self_and_subtree():
         if p.v == v:
             found = True ; break
     if not found:
@@ -1017,7 +1017,7 @@ else:
     ok = False
 #@-node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
 #@+node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
-for p in root.self_and_subtree_iter():
+for p in root.self_and_subtree():
     if p.matchHeadline(vnodeName):
         found = True ; break
 #@-node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
@@ -1197,17 +1197,17 @@ def goto_findRoot (self,p):
     c = self ; p1 = p.copy()
 
     # First look for ancestor @file node.
-    for p in p.self_and_parents_iter():
+    for p in p.self_and_parents():
         fileName = not p.isAtAllNode() and p.anyAtFileNodeName()
         if fileName:
             return p.copy(),fileName
 
     # Search the entire tree for joined nodes.
     # Bug fix: Leo 4.5.1: *must* search *all* positions.
-    for p in c.all_positions_iter():
+    for p in c.all_positions():
         if p.v == p1.v and p != p1:
             # Found a joined position.
-            for p2 in p.self_and_parents_iter():
+            for p2 in p.self_and_parents():
                 fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
                 if fileName:
                     return p2.copy(),fileName

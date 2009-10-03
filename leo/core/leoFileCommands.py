@@ -1069,7 +1069,7 @@ class baseFileCommands:
 
         if marks or expanded:
             # g.trace('marks',len(marks),'expanded',len(expanded))
-            for p in c.all_positions_with_unique_vnodes_iter():
+            for p in c.all_unique_positions():
                 if marks.get(p.v):
                     p.v.initMarkedBit()
                         # This was the problem: was p.setMark.
@@ -1524,7 +1524,7 @@ class baseFileCommands:
         trace = False and not g.unitTesting
         c = self.c
 
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             if hasattr(p.v,'tempTnodeList'):
                 # g.trace(p.v.headString())
                 result = []
@@ -1942,7 +1942,7 @@ class baseFileCommands:
         if self.usingClipboard: # write the current tree.
             theIter = c.p.self_and_subtree_iter()
         else: # write everything
-            theIter = c.all_positions_with_unique_tnodes_iter()
+            theIter = c.all_unique_positions()
 
         # Populate tnodes
         tnodes = {}

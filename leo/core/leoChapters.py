@@ -53,7 +53,7 @@ class chapterController:
         cc.chaptersDict['main'] = chapter(c=c,chapterController=cc,name='main',root=c.rootPosition())
 
         tag = '@chapter'
-        for p in c.all_positions_with_unique_tnodes_iter():
+        for p in c.all_unique_positions():
             h = p.h
             if h.startswith(tag) and not h.startswith('@chapters'):
                 tabName = h[len(tag):].strip()
@@ -478,7 +478,7 @@ class chapterController:
 
             # New in Leo 4.6 b2: clean up, but not initially.
             if collapse and chapter.name == 'main':
-                for p in c.all_positions_with_unique_vnodes_iter():
+                for p in c.all_unique_positions():
                     if p != c.p:
                         p.contract()
 
@@ -581,7 +581,7 @@ class chapterController:
             return # An error has already been given.
 
         s = '@chapter ' + chapterName
-        for p in cc.chaptersNode.children_iter():
+        for p in cc.chaptersNode.children():
             h = p.h
             if h == s:
                 return p
@@ -605,7 +605,7 @@ class chapterController:
 
         cc = self ; c = cc.c
 
-        for p in c.all_positions_with_unique_tnodes_iter():
+        for p in c.all_unique_positions():
             if p.h == '@chapters':
                 cc.chaptersNode = p.copy()
                 return p
@@ -655,8 +655,8 @@ class chapterController:
 
         cc = self ; c = cc.c ; root = cc.chaptersNode
 
-        for p in c.rootPosition().self_and_siblings_iter():
-            for p2 in p.self_and_subtree_iter():
+        for p in c.rootPosition().self_and_siblings():
+            for p2 in p.self_and_subtree():
                 if p2 == root:
                     inTree = True ; break
         else:
@@ -668,7 +668,7 @@ class chapterController:
 
         if root and full:
             g.pr('@chapters tree...','(in main tree: %s)' % inTree)
-            for p in root.self_and_subtree_iter():
+            for p in root.self_and_subtree():
                 g.pr('.'*p.level(),p.v)
     #@nonl
     #@-node:ekr.20070510064813:cc.printChaptersTree
@@ -964,7 +964,7 @@ class chapter:
             return p1
 
         if name == 'main':
-            for p in self.c.all_positions_with_unique_vnodes_iter():
+            for p in self.c.all_unique_positions():
                 if p.v == p1.v:
                     # g.trace('*** found in main chapter',p)
                     self.p = p.copy()
@@ -974,7 +974,7 @@ class chapter:
             else:
                 self.p = c.rootPosition()
         else:
-            for p in self.root.self_and_subtree_iter():
+            for p in self.root.self_and_subtree():
                 # g.trace('testing',p,p1)
                 if p.v == p1.v:
                     # g.trace('*** found in chapter',p)

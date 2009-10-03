@@ -1702,7 +1702,7 @@ def printEntireTree(c,tag=''):
 
     g.pr('printEntireTree','=' * 50)
     g.pr('printEntireTree',tag,'root',c.rootPosition())
-    for p in c.outline():
+    for p in c.all_positions():
         g.pr('..'*p.level(),p.v)
 #@nonl
 #@-node:ekr.20070510074941:g.printEntireTree
@@ -3841,7 +3841,7 @@ class posList(list):
         self.c = c
         list.__init__(self) # Init the base class
         if aList is None:
-            for p in c.outline():
+            for p in c.all_positions():
                 self.append(p.copy())
         else:
             for p in aList:
@@ -5130,7 +5130,7 @@ def findNodeInTree(c,p,headline):
 
 def findNodeAnywhere(c,headline):
 
-    for p in c.all_positions_with_unique_tnodes_iter():
+    for p in c.all_unique_positions():
         if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()

@@ -1726,7 +1726,7 @@ class configClass:
 
         # g.trace(c,c.rootPosition())
 
-        for p in c.all_positions_with_unique_tnodes_iter():
+        for p in c.all_unique_positions():
             if p.h.rstrip() == "@settings":
                 return p.copy()
         else:

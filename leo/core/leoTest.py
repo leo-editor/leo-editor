@@ -547,7 +547,7 @@ class testUtils:
     def findNodeAnywhere(self,headline,breakOnError=False):
 
         c = self.c
-        for p in c.all_positions_with_unique_tnodes_iter():
+        for p in c.all_unique_positions():
             h = headline.strip().lower()
             if p.h.strip().lower() == h:
                 return p.copy()
@@ -566,7 +566,7 @@ class testUtils:
         """Returns the number of cloned nodes in an outline"""
 
         c = self.c ; n = 0
-        for p in c.outline():
+        for p in c.all_positions():
             if p.isCloned():
                 n += 1
         return n
@@ -576,7 +576,7 @@ class testUtils:
 
         """Returns the total number of nodes in an outline"""
 
-        return len([p for p in self.c.outline()])
+        return len([p for p in self.c.all_positions()])
     #@-node:ekr.20051104075904.34:numberOfNodesInOutline
     #@+node:ekr.20051104075904.36:testUtils.writeNode/sToNode
     #@+node:ekr.20051104075904.37:writeNodesToNode
@@ -872,7 +872,7 @@ def runTestsExternally (c,all):
         def searchOutline (self,p):
 
             c = self.c ; p = c.p
-            iter = g.choose(self.all,c.all_positions_with_unique_tnodes_iter,p.self_and_subtree_iter)
+            iter = g.choose(self.all,c.all_unique_positions,p.self_and_subtree_iter)
 
             # First, look down the tree.
             for p in iter():
@@ -891,7 +891,7 @@ def runTestsExternally (c,all):
                             return True
 
             # Finally, look for all @mark-for-unit-test nodes.
-            for p in c.all_positions_with_unique_tnodes_iter():
+            for p in c.all_unique_positions():
                 if p.h.startswith('@mark-for-unit-test'):
                     return True
 
@@ -1750,7 +1750,7 @@ def findAllAtFileNodes(c):
 
     paths = []
 
-    for p in c.all_positions_with_unique_tnodes_iter():
+    for p in c.all_unique_positions():
         name = p.anyAtFileNodeName()
         if name:
             head,tail = g.os_path_split(name)

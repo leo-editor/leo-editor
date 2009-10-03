@@ -1152,7 +1152,7 @@ class leoBody:
             return True
         else:
             g.trace('***** does not exist',w.leo_name)
-            for p2 in c.all_positions_with_unique_vnodes_iter():
+            for p2 in c.all_unique_positions():
                 if p2.v and p2.v == w.leo_v:
                     w.leo_p = p2.copy()
                     return True
