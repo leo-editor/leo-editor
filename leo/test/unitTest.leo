@@ -11038,8 +11038,8 @@ assert 'body' in wName, 'focus: %s = %s, expected %s = %s' % (
     w,wName,bodyCtrl,g.app.gui.widget_name(bodyCtrl))</t>
 <t tx="ekr.20051109091333"># Not ready yet: generating a backspace seems impossible!
 
-import leoTest ; u = leoTest.testUtils(c)
-
+import leo.core.leoTest as leoTest
+u = leoTest.testUtils(c)
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
