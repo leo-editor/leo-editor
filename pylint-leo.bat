@@ -11,7 +11,7 @@ rem This ensures that imports of base classes work.
 rem cd c:\leo.repo\trunk
 
 REM tests that fail...
-REM goto good_plugins
+goto good_plugins
 REM goto bad_plugins
 
 REM goto essential_plugins
@@ -20,14 +20,14 @@ goto all
 
 :errors
 
-echo leoUndo.py
-call pylint.bat leo\core\leoUndo.py          --rcfile=leo\test\pylint-leo-rc.txt
+echo leoNodes.py
+call pylint.bat leo\core\leoMenu.py          --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 
 :all
 
-echo runLeo.py
+echo runLeo.py (suppress W0611)
 rem Harmless: W0611 (import pychecker)
 call pylint.bat leo\core\runLeo.py           --disable-msg=W0611 --rcfile=leo\test\pylint-leo-rc.txt
 
@@ -43,7 +43,7 @@ call pylint.bat leo\core\leoChapters.py      --rcfile=leo\test\pylint-leo-rc.txt
 echo leoCommands.py
 call pylint.bat leo\core\leoCommands.py      --rcfile=leo\test\pylint-leo-rc.txt
 
-echo leoEditCommands.py
+echo leoEditCommands.py (Supress W0511: Fixme)
 rem W0511:2380: FIXME lineYOffset is expected to be on a tnode in drawing code
 call pylint.bat leo\core\leoEditCommands.py  --disable-msg=W0511 --rcfile=leo\test\pylint-leo-rc.txt
 
@@ -70,11 +70,11 @@ call pylint.bat leo\core\leoImport.py        --rcfile=leo\test\pylint-leo-rc.txt
 echo leoMenu.py
 call pylint.bat leo\core\leoMenu.py          --rcfile=leo\test\pylint-leo-rc.txt
 
+echo leoNodes.py
+call pylint.bat leo\core\leoMenu.py          --rcfile=leo\test\pylint-leo-rc.txt
+
 echo leoPlugins.py
 call pylint.bat leo\core\leoPlugins.py       --rcfile=leo\test\pylint-leo-rc.txt
-
-echo qtGui.py
-call pylint.bat leo\plugins\qtGui.py         --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
 
 echo leoShadow.py
 call pylint.bat leo\core\leoShadow.py       --rcfile=leo\test\pylint-leo-rc.txt
@@ -85,19 +85,10 @@ call pylint.bat leo\core\leoTangle.py        --rcfile=leo\test\pylint-leo-rc.txt
 echo leoUndo.py
 call pylint.bat leo\core\leoUndo.py          --rcfile=leo\test\pylint-leo-rc.txt
 
-goto done
+echo qtGui.py (suppress W0221)
+call pylint.bat leo\plugins\qtGui.py         --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
 
-REM These have been moved into tkGui plugin
-REM call pylint.bat leo\core\leoTkinterDialog.py --rcfile=leo\test\pylint-leo-rc.txt
-REM call pylint.bat leo\core\leoTkinterFind.py   --rcfile=leo\test\pylint-leo-rc.txt
-REM call pylint.bat leo\core\leoTkinterGui.py    --rcfile=leo\test\pylint-leo-rc.txt
-REM echo leoTkinterFrame.py
-rem  Harmless: 				     W0221: mismatch between Tk.Text methods and overridden methods.
-REM call pylint.bat leo\core\leoTkinterFrame.py  --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
-REM call pylint.bat leo\core\leoTkinterKeys.py   --rcfile=leo\test\pylint-leo-rc.txt
-rem  Harmless: 				     W0221: mismatch between Tk.Text methods and overridden methods.
-REM call pylint.bat leo\core\leoTkinterMenu.py   --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
-REM call pylint.bat leo\core\leoTkinterTree.py   --rcfile=leo\test\pylint-leo-rc.txt
+REM goto done
 
 :essential_plugins
 
@@ -108,13 +99,7 @@ call pylint.bat leo\plugins\mod_scripting.py        --disable-msg=E0611 --rcfile
 echo open_with.py
 call pylint.bat leo\plugins\open_with.py            --rcfile=leo\test\pylint-leo-rc.txt
 
-echo rst3.py
-call pylint.bat leo\plugins\rst3.py                 --rcfile=leo\test\pylint-leo-rc.txt
-
-echo threading_colorizer.py
-call pylint.bat leo\plugins\threading_colorizer.py  --rcfile=leo\test\pylint-leo-rc.txt
-
-echo toolbar.py
+echo toolbar.py (Suppress E1101,W0221,W0511)
 rem doesn't help: cd c:\leo.repo\trunk\leo\plugins
 rem call pylint.bat toolbar.py     --rcfile=c:\leo.repo\trunk\leo\test\pylint-leo-rc.txt
 rem cd c:\leo.repo\trunk
@@ -137,7 +122,7 @@ goto done
 :good_plugins
 
 
-echo active_path.py
+echo active_path.py (Suppress W0511)
 rem                                               W0511: A todo message
 call pylint.bat leo\plugins\active_path.py        --disable-msg=W0511 --rcfile=leo\test\pylint-leo-rc.txt
 
@@ -226,8 +211,7 @@ call pylint.bat leo\plugins\ipython.py             --rcfile=leo\test\pylint-leo-
 echo keybindings.py
 call pylint.bat leo\plugins\keybindings.py         --rcfile=leo\test\pylint-leo-rc.txt
 
-echo leo_pdf.py
-rem
+echo leo_pdf.py (suppress E0602,W0105)
 rem  A pylint error(?):  E0602:391:Bunch.__setitem__: Undefined variable 'operator'
 rem  This may be needed: W0105:415:Writer: String statement has no effect
 call pylint.bat leo\plugins\leo_pdf.py             --disable-msg=E0602,W0105 --rcfile=leo\test\pylint-leo-rc.txt
@@ -299,9 +283,6 @@ call pylint.bat leo\plugins\plugins_menu.py         --rcfile=leo\test\pylint-leo
 echo pluginsTest.py
 call pylint.bat leo\plugins\pluginsTest.py          --rcfile=leo\test\pylint-leo-rc.txt
 
-echo qtGui.py
-call pylint.bat leo\plugins\qtGui.py                 --rcfile=leo\test\pylint-leo-rc.txt
-
 echo quickMove.py
 call pylint.bat leo\plugins\quickMove.py            --rcfile=leo\test\pylint-leo-rc.txt
 
@@ -313,9 +294,6 @@ call pylint.bat leo\plugins\redirect_to_log.py      --rcfile=leo\test\pylint-leo
 
 echo rowcol.py
 call pylint.bat leo\plugins\rowcol.py               --rcfile=leo\test\pylint-leo-rc.txt
-
-REM echo rst.py
-REM call pylint.bat leo\plugins\rst.py                  --rcfile=leo\test\pylint-leo-rc.txt
 
 echo run_nodes.py
 call pylint.bat leo\plugins\run_nodes.py            --rcfile=leo\test\pylint-leo-rc.txt
@@ -347,6 +325,9 @@ call pylint.bat leo\plugins\testRegisterCommand.py  --rcfile=leo\test\pylint-leo
 echo textnode.py
 call pylint.bat leo\plugins\textnode.py             --rcfile=leo\test\pylint-leo-rc.txt
 
+echo threading_colorizer.py
+call pylint.bat leo\plugins\threading_colorizer.py  --rcfile=leo\test\pylint-leo-rc.txt
+
 echo trace_gc_plugin.py
 call pylint.bat leo\plugins\trace_gc_plugin.py      --rcfile=leo\test\pylint-leo-rc.txt
 
@@ -371,7 +352,7 @@ call pylint.bat leo\plugins\word_count.py           --rcfile=leo\test\pylint-leo
 echo word_export.py
 call pylint.bat leo\plugins\word_export.py          --rcfile=leo\test\pylint-leo-rc.txt
 
-echo xsltWithNodes.py
+echo xsltWithNodes.py (Suppress W0105)
 rem                                              W0105:697: String statement has no effect
 rem                                              This string is needed as an example
 call pylint.bat leo\plugins\xsltWithNodes.py     --disable-msg=W0105 --rcfile=leo\test\pylint-leo-rc.txt

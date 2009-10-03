@@ -1500,7 +1500,7 @@ class colorizer:
             functions = self.rulesDict.get(s[i],[])
             for f in functions:
                 if trace and f.__name__ != 'match_blanks':
-                     g.trace(i,f.__name__)
+                    g.trace(i,f.__name__)
                 n = f(self,s,i)
                 if n is None or n < 0:
                     g.trace('Can not happen: matcher returns: %s f = %s' % (repr(n),repr(f)))
