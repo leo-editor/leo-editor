@@ -1786,7 +1786,7 @@
 <v t="ekr.20061001124008.2"><vh>grandchild</vh></v>
 </v>
 </v>
-<v t="ekr.20061001091616"><vh>@test putDescendentTnodeUas</vh>
+<v t="ekr.20061001091616"><vh>@@test putDescendentTnodeUas</vh>
 <v t="ekr.20061001091647" unit_test_child="55046162636471002e"><vh>child</vh>
 <v t="ekr.20061001091647.1" unit_test_grandchild="55047778797a71002e"><vh>grandChild</vh></v>
 </v>
@@ -11474,7 +11474,9 @@ for v1,condition,v2 in (
     ('1','&lt;','1.1'),
 ):
     assert g.CheckVersion(v1,v2,condition=condition,trace=False)</t>
-<t tx="ekr.20061001091616">fc = c.fileCommands
+<t tx="ekr.20061001091616"># putDescendantTnodeUas is redundant and should never be called.
+
+fc = c.fileCommands
 child = p.firstChild()
 grandChild = child.firstChild()
 # Note: only tnodes can have unknown attributes.

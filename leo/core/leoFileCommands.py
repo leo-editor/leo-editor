@@ -2035,7 +2035,7 @@ class baseFileCommands:
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
             # We put the entire tree when using the clipboard, so no need for this.
             if not isAuto: # Bug fix: 2008/8/7.
-                attrs.append(self.putDescendentTnodeUas(p))
+                ### attrs.append(self.putDescendentTnodeUas(p))
                 attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
                 attrs.append(self.putDescendentAttributes(p))
         #@nonl
@@ -2476,8 +2476,12 @@ class baseFileCommands:
 
         return ''.join(result)
     #@-node:ekr.20040701065235.2:putDescendentAttributes
-    #@+node:ekr.20080805071954.1:putDescendentTnodeUas
+    #@+node:ekr.20080805071954.1:putDescendentTnodeUas (no longer used)
     def putDescendentTnodeUas (self,p):
+
+        ### In the one-node world, there are no such things as independent tnodes.
+        g.trace('*** ERROR: should not be called')
+        return
 
         trace = False
         if trace: g.trace(p.h)
@@ -2512,14 +2516,12 @@ class baseFileCommands:
         # Pickle and hexlify d.
         return d and self.pickle(
             torv=p.v,val=d,tag="descendentTnodeUnknownAttributes") or ''
-    #@-node:ekr.20080805071954.1:putDescendentTnodeUas
+    #@-node:ekr.20080805071954.1:putDescendentTnodeUas (no longer used)
     #@+node:ekr.20080805071954.2:putDescendentVnodeUas
     def putDescendentVnodeUas (self,p):
 
         '''Return the a uA field for descendent vnode attributes,
         suitable for reconstituting uA's for anonymous vnodes.'''
-
-        ### What is the status of this in the one-node world???
 
         trace = False
         if trace: g.trace(p.h)
