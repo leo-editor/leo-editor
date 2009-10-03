@@ -421,8 +421,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         newSel = w.getSelectionRange()
         newText = w.getAllText() # Converts to unicode.
 
-        # Get the previous values from the tnode.
-        oldText = g.app.gui.toUnicode(p.v.t._bodyString)
+        # Get the previous values from the vnode.
+        oldText = g.app.gui.toUnicode(p.v._bodyString)
         if oldText == newText:
             # This can happen as the result of undo.
             # g.trace('*** unexpected non-change',color="red")
@@ -430,8 +430,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         if trace: g.trace('**',len(newText),p.h,'\n',g.callers(8))
 
-        oldIns  = p.v.t.insertSpot
-        i,j = p.v.t.selectionStart,p.v.t.selectionLength
+        oldIns  = p.v.insertSpot
+        i,j = p.v.selectionStart,p.v.selectionLength
         oldSel  = (i,j-i)
         oldYview = None
         undoType = 'Typing'
@@ -439,13 +439,13 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             oldText=oldText,newText=newText,
             oldSel=oldSel,newSel=newSel,oldYview=oldYview)
 
-        # Update the tnode.
+        # Update the vnode.
         p.v.setBodyString(newText)
-        p.v.t.insertSpot = newInsert
+        p.v.insertSpot = newInsert
         i,j = newSel
         i,j = self.toGuiIndex(i),self.toGuiIndex(j)
         if i > j: i,j = j,i
-        p.v.t.selectionStart,p.v.t.selectionLength = (i,j-i)
+        p.v.selectionStart,p.v.selectionLength = (i,j-i)
 
         # No need to redraw the screen.
         if not self.useScintilla:
@@ -3750,26 +3750,27 @@ class leoQtFrame (leoFrame.leoFrame):
         # g.printGcAll()
 
         # Do this first.
-        #@    << clear all vnodes and tnodes in the tree >>
-        #@+node:ekr.20081121105001.259:<< clear all vnodes and tnodes in the tree>>
+        #@    << clear all vnodes in the tree >>
+        #@+node:ekr.20081121105001.259:<< clear all vnodes in the tree>>
         # Using a dict here is essential for adequate speed.
-        vList = [] ; tDict = {}
+        vList = [] ### ; vDict = {}
 
-        for p in c.all_positions_with_unique_vnodes_iter():
-            vList.append(p.v)
-            if p.v.t:
-                key = id(p.v.t)
-                if key not in tDict:
-                    tDict[key] = p.v.t
+        for v in c.all_unique_nodes():
+            vList.append(v)
+            ###
+            # if p.v:
+                # key = id(p.v)
+                # if key not in tDict:
+                    # vDict[key] = p.v
 
-        for key in tDict:
-            g.clearAllIvars(tDict[key])
+        # for key in vDict:
+            # g.clearAllIvars(vDict[key])
 
         for v in vList:
             g.clearAllIvars(v)
 
-        vList = [] ; tDict = {} # Remove these references immediately.
-        #@-node:ekr.20081121105001.259:<< clear all vnodes and tnodes in the tree>>
+        vList = [] ### ; tDict = {} # Remove these references immediately.
+        #@-node:ekr.20081121105001.259:<< clear all vnodes in the tree>>
         #@nl
 
         if 1:

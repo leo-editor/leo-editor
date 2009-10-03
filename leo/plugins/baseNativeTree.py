@@ -60,7 +60,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.item2positionDict = {}
         self.item2vnodeDict = {}
         self.position2itemDict = {}
-        self.tnode2itemsDict = {} # values are lists of items.
+        ### self.tnode2itemsDict = {} # values are lists of items.
         self.vnode2itemsDict = {} # values are lists of items.
         self.editWidgetsDict = {} # keys are native edit widgets, values are wrappers.
 
@@ -281,7 +281,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.item2positionDict = {}
         self.item2vnodeDict = {}
         self.position2itemDict = {}
-        self.tnode2itemsDict = {}
+        ### self.tnode2itemsDict = {}
         self.vnode2itemsDict = {}
         self.editWidgetsDict = {}
     #@-node:ekr.20090124174652.22:initData
@@ -302,8 +302,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         # Update tnode2itemsDict & vnode2itemsDict.
         table = (
-            (self.tnode2itemsDict,v.t),
-            (self.vnode2itemsDict,v))
+            ### (self.tnode2itemsDict,v.t),
+            (self.vnode2itemsDict,v),)
 
         for d,key in table:
             aList = d.get(key,[])
@@ -350,7 +350,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         currentItem = self.getCurrentItem()
 
         if p:
-            for item in self.tnode2items(p.v.t):
+            ### for item in self.tnode2items(p.v.t):
+            for item in self.vnode2items(p.v):
                 if self.isValidItem(item):
                     self.setItemText(item,p.h)
     #@-node:ekr.20090124174652.26:redraw_after_head_changed
@@ -1259,9 +1260,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # g.trace(item,p.h)
         return p
 
-    def item2tnode (self,item):
-        v = self.item2vnodeDict.get(item)
-        return v and v.t
+    ### def item2tnode (self,item):
+        # v = self.item2vnodeDict.get(item)
+        # return v and v.t
 
     def item2vnode (self,item):
         return self.item2vnodeDict.get(item)
@@ -1271,8 +1272,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # g.trace(item and id(item) or '<no item>',p.key(),p.h)
         return item
 
-    def tnode2items(self,t):
-        return self.tnode2itemsDict.get(t,[])
+    ### def tnode2items(self,t):
+        # return self.tnode2itemsDict.get(t,[])
 
     def vnode2items(self,v):
         return self.vnode2itemsDict.get(v,[])
@@ -1366,7 +1367,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         icon = self.getIcon(p) # sets p.v.iconVal
 
         # Update all cloned/joined items.
-        items = self.tnode2items(p.v.t)
+        ### items = self.tnode2items(p.v.t)
+        items = self.vnode2items(p.v)
         for item in items:
             self.setItemIcon(item,icon)
     #@nonl
