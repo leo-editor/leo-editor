@@ -2409,12 +2409,8 @@ class editCommandsClass (baseEditCommandsClass):
 
         if trace: g.trace(l)
 
-        ###
-        # subl = [i for i in l if i.get('on') != 'vnode']
-        # self._setIconListHelper(p, subl, p.v.t)
+        self._setIconListHelper(p, l, p.v)
 
-        subl = [i for i in l if i.get('on') == 'vnode']
-        self._setIconListHelper(p, subl, p.v)
     #@+node:ekr.20090701125429.6012:_setIconListHelper
     def _setIconListHelper(self, p, subl, uaLoc):
         """icon setting code common between v and t nodes
