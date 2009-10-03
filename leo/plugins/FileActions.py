@@ -149,7 +149,7 @@ def doFileAction(filename, c):
     if p:
         done = False
         name = os.path.split(filename)[1]
-        for p2 in p.children_iter():
+        for p2 in p.children():
             pattern = p2.h.strip()
             if fnmatch.fnmatchcase(name, pattern):
                 applyFileAction(p2, filename, c)

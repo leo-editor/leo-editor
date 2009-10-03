@@ -443,7 +443,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
         items = []
         if self.globalDynamicAbbrevs:
-            for p in self.c.allNodes_iter():
+            for p in self.c.all_positions():
                 s = p.b
                 if s:
                     items.extend(self.dynaregex.findall(s))
@@ -873,9 +873,9 @@ class bufferCommandsClass (baseEditCommandsClass):
         self.nameList = []
         self.names = {} ; self.tnodes = {}
 
-        for p in self.c.all_positions_with_unique_tnodes_iter():
+        for p in self.c.all_unique_positions():
             h = p.h.strip()
-            t = p.v.t
+            v = p.v
             nameList = self.names.get(h,[])
             if nameList:
                 if p.parent():
@@ -885,17 +885,17 @@ class bufferCommandsClass (baseEditCommandsClass):
             else:
                 key = h
             self.nameList.append(key)
-            self.tnodes[key] = t
+            self.tnodes[key] = v
             nameList.append(key)
             self.names[h] = nameList
     #@-node:ekr.20051215121416:computeData
     #@+node:ekr.20051215164823:findBuffer
     def findBuffer (self,name):
 
-        t = self.tnodes.get(name)
+        v = self.tnodes.get(name) ###
 
-        for p in self.c.all_positions_with_unique_tnodes_iter():
-            if p.v.t == t:
+        for p in self.c.all_unique_positions():
+            if p.v == v:
                 return p
 
         g.trace("Can't happen",name)
@@ -2409,11 +2409,8 @@ class editCommandsClass (baseEditCommandsClass):
 
         if trace: g.trace(l)
 
-        subl = [i for i in l if i.get('on') != 'vnode']
-        self._setIconListHelper(p, subl, p.v.t)
+        self._setIconListHelper(p, l, p.v)
 
-        subl = [i for i in l if i.get('on') == 'vnode']
-        self._setIconListHelper(p, subl, p.v)
     #@+node:ekr.20090701125429.6012:_setIconListHelper
     def _setIconListHelper(self, p, subl, uaLoc):
         """icon setting code common between v and t nodes
@@ -2459,7 +2456,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@nonl
     #@-node:ekr.20071114082418:deleteFirstIcon
     #@+node:ekr.20071114092622:deleteIconByName
-    def deleteIconByName (self,t,name,relPath):
+    def deleteIconByName (self,t,name,relPath): ### t not used.
         """for use by the right-click remove icon callback"""
         c = self.c ; p = c.p
 
@@ -2485,9 +2482,7 @@ class editCommandsClass (baseEditCommandsClass):
             c.redraw_after_icons_changed()
         else:
             g.trace('not found',name)
-
-
-
+    #@nonl
     #@-node:ekr.20071114092622:deleteIconByName
     #@+node:ekr.20071114085054:deleteLastIcon
     def deleteLastIcon (self,event=None):
@@ -2507,9 +2502,9 @@ class editCommandsClass (baseEditCommandsClass):
 
         c = self.c ; p = c.p
 
-        if hasattr(p.v.t,"unknownAttributes"):
-            a = p.v.t.unknownAttributes
-            p.v.t._p_changed = 1
+        if hasattr(p.v,"unknownAttributes"):
+            a = p.v.unknownAttributes
+            p.v._p_changed = 1
             self.setIconList(p,[])
             a["lineYOffset"] = 0
             p.setDirty()
@@ -2770,7 +2765,7 @@ class editCommandsClass (baseEditCommandsClass):
         w = c.frame.body.bodyCtrl
         if not w: return
 
-        for p in current.self_and_subtree_iter():
+        for p in current.self_and_subtree():
             c.selectPosition(p)
             w.setSelectionRange(0,0,insert=0)
             c.editCommands.cleanLines(event)
@@ -3421,7 +3416,7 @@ class editCommandsClass (baseEditCommandsClass):
             'spot=',spot,'moveSpot',self.moveSpot)
 
         # Reset the move spot if needed.
-        if self.moveSpot is None or p.v.t != self.moveSpotNode:
+        if self.moveSpot is None or p.v != self.moveSpotNode:
             # g.trace('no spot')
             self.setMoveCol(w,g.choose(extend,ins,spot)) # sets self.moveSpot.
         elif extend:
@@ -3717,7 +3712,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         self.moveSpot = i
         self.moveCol = col
-        self.moveSpotNode = p.v.t
+        self.moveSpotNode = p.v
 
         # g.trace('moveSpot',i)
     #@nonl
@@ -5027,10 +5022,10 @@ class editFileCommandsClass (baseEditCommandsClass):
         '''Create a dictionary of all relevant positions in commander c.'''
 
         d = {}
-        for p in c.allNodes_iter():
+        for p in c.all_positions():
             try:
                 # fileIndices for pre-4.x versions of .leo files have a different format.
-                i,j,k = p.v.t.fileIndex
+                i,j,k = p.v.fileIndex
                 d[str(i),str(j),str(k)] = p.copy()
             except Exception:
                 pass
@@ -8495,10 +8490,10 @@ class spellTabHandler (leoFind.leoFind):
                     redraw = not p.isVisible(c)
                     # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
                     if sparseFind and not c.p.isAncestorOf(p):
-                        for p2 in c.p.self_and_parents_iter():
+                        for p2 in c.p.self_and_parents():
                             p2.contract()
                             redraw = True
-                    for p2 in p.parents_iter():
+                    for p2 in p.parents():
                         if not p2.isExpanded():
                             p2.expand()
                             redraw = True

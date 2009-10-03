@@ -766,7 +766,7 @@ def scanUnknownFileType (self,s,p,ext,atAuto=False):
 
     self.setBodyString(p,body + self.rootLine + self.escapeFalseSectionReferences(s))
     if atAuto:
-        for p in p.self_and_subtree_iter():
+        for p in p.self_and_subtree():
             p.clearDirty()
         if not changed:
             c.setChanged(False)
@@ -903,7 +903,7 @@ def goto_countLines (self,root,n):
     isAuto = root.isAtAutoNode()
 
     if trace: g.trace('=' * 10)
-    for p in p.self_and_subtree_iter():
+    for p in p.self_and_subtree():
         lastv = p.copy()
         s = p.b
         if isNosent or isAuto:
@@ -950,9 +950,9 @@ def goto_findGnx (self,root,gnx,vnodeName):
 
     gnx = g.app.nodeIndices.scanGnx(gnx,0)
 
-    for p in root.self_and_subtree_iter():
+    for p in root.self_and_subtree():
         if p.matchHeadline(vnodeName):
-            if p.v.t.fileIndex == gnx:
+            if p.v.fileIndex == gnx:
                 return p.copy(),True
 
     return None,False
@@ -962,11 +962,11 @@ def goto_scanTnodeList (self,root,delim,lines,n,vnodeName):
 
     # This is about the best that can be done without replicating the entire atFile write logic.
     found = False
-    ok = hasattr(root.v.t,"tnodeList")
+    ok = hasattr(root.v,"tnodeList")
 
     if ok:
         # Use getattr to keep pylint happy.
-        tnodeList = getattr(root.v.t,'tnodeList')
+        tnodeList = getattr(root.v,'tnodeList')
         << set tnodeIndex to the number of +node sentinels before line n >>
         tnodeIndex = max(0,tnodeIndex)
         << set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = False >>
@@ -997,10 +997,10 @@ for s in lines:
 #@+node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
 # g.trace("tnodeIndex",tnodeIndex)
 if tnodeIndex < len(tnodeList):
-    t = tnodeList[tnodeIndex]
-    # Find the first vnode whose tnode is t.
-    for p in root.self_and_subtree_iter():
-        if p.v.t == t:
+    v = tnodeList[tnodeIndex]
+    # Find v.
+    for p in root.self_and_subtree():
+        if p.v == v:
             found = True ; break
     if not found:
         s = "tnode not found for " + vnodeName
@@ -1017,7 +1017,7 @@ else:
     ok = False
 #@-node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
 #@+node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
-for p in root.self_and_subtree_iter():
+for p in root.self_and_subtree():
     if p.matchHeadline(vnodeName):
         found = True ; break
 #@-node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
@@ -1197,18 +1197,17 @@ def goto_findRoot (self,p):
     c = self ; p1 = p.copy()
 
     # First look for ancestor @file node.
-    for p in p.self_and_parents_iter():
+    for p in p.self_and_parents():
         fileName = not p.isAtAllNode() and p.anyAtFileNodeName()
         if fileName:
             return p.copy(),fileName
 
     # Search the entire tree for joined nodes.
     # Bug fix: Leo 4.5.1: *must* search *all* positions.
-    for p in c.all_positions_iter():
-        # if p.v.t == p1.v.t: g.trace('p1',p1,'p',p)
-        if p.v.t == p1.v.t and p != p1:
+    for p in c.all_positions():
+        if p.v == p1.v and p != p1:
             # Found a joined position.
-            for p2 in p.self_and_parents_iter():
+            for p2 in p.self_and_parents():
                 fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
                 if fileName:
                     return p2.copy(),fileName
@@ -1449,7 +1448,7 @@ def extendHelper (self,w,extend,spot,upOrDown=False):
         'spot=',spot,'moveSpot',self.moveSpot)
 
     # Reset the move spot if needed.
-    if self.moveSpot is None or p.v.t != self.moveSpotNode:
+    if self.moveSpot is None or p.v != self.moveSpotNode:
         # g.trace('no spot')
         self.setMoveCol(w,g.choose(extend,ins,spot)) # sets self.moveSpot.
     elif extend:
@@ -1745,7 +1744,7 @@ def setMoveCol (self,w,spot):
 
     self.moveSpot = i
     self.moveCol = col
-    self.moveSpotNode = p.v.t
+    self.moveSpotNode = p.v
 
     # g.trace('moveSpot',i)
 #@nonl
@@ -2431,18 +2430,18 @@ but in larger files it would have been very hard to find because none
 of the nodes would load from the file. 
 #@nonl
 #@+node:ekr.20031218072017.1577:putTnode
-def putTnode (self,t):
+def putTnode (self,v):
 
     # Could be eliminated.
-    # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
-    if not t.fileIndex:
-        g.trace('can not happen: no index for tnode',t)
-        t.fileIndex = g.app.nodeIndices.getNewIndex()
+    # New in Leo 4.4.8.  Assign v.fileIndex here as needed.
+    if not v.fileIndex:
+        g.trace('can not happen: no index for tnode',v)
+        v.fileIndex = g.app.nodeIndices.getNewIndex()
 
     # New in Leo 4.4.2 b2: call put just once.
-    gnx = g.app.nodeIndices.toString(t.fileIndex)
-    ua = hasattr(t,'unknownAttributes') and self.putUnknownAttributes(t) or ''
-    b = t.b
+    gnx = g.app.nodeIndices.toString(v.fileIndex)
+    ua = hasattr(v,'unknownAttributes') and self.putUnknownAttributes(v) or ''
+    b = v.b
     if b:
         # Convert to encoded string ????
         # b = g.toEncodedString(b,self.leo_file_encoding,reportErrors=True)
@@ -3776,7 +3775,7 @@ if ext[0] != ".":
 #@-node:ekr.20031218072017.2824:<< set ext based on the present language >>
 #@+node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
 theDict = None ; path = None
-<< set dict and path if a temp file already refers to p.v.t >>
+<< set dict and path if a temp file already refers to p.v >>
 if path:
     << create or recreate temp file as needed >>
 else:
@@ -3784,7 +3783,7 @@ else:
 
 if not path:
     return # An error has occured.
-#@+node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+#@+node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v >>
 searchPath = c.openWithTempFilePath(p,ext)
 
 if g.os_path_exists(searchPath):
@@ -3792,7 +3791,7 @@ if g.os_path_exists(searchPath):
         if p.v == theDict.get('v') and searchPath == theDict.get("path"):
             path = searchPath
             break
-#@-node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+#@-node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v >>
 #@+node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
 @ We test for changes in both p and the temp file:
 
@@ -3945,7 +3944,7 @@ def createOpenWithTempFile (self,p,ext):
 #@+node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
 for d in g.app.openWithFiles[:]:
     p2 = d.get("p")
-    if p.v.t == p2.v.t:
+    if p.v == p2.v:
         # g.pr("removing previous entry in g.app.openWithFiles for",p.h)
         g.app.openWithFiles.remove(d)
 #@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
@@ -3957,7 +3956,7 @@ def openWithTempFilePath (self,p,ext):
 
     name = "%s_LeoTemp_%s%s" % (
         g.sanitize_filename(p.headString()),
-        str(id(p.v.t)),ext)
+        str(id(p.v)),ext)
 
     name = g.toUnicode(name,g.app.tkEncoding)
 
@@ -4604,7 +4603,7 @@ finally:
 
 Fragment 2:
 
-for p in c.allNodes_iter():
+for p in c.all_positions():
     pass
 #@-node:ekr.20070624135822:Templates for common code fragments
 #@+node:ekr.20081119132758.2:Support @ifgui in settings trees
@@ -4791,12 +4790,12 @@ def findAll(self):
         line = s[i:j]
         if not self.clone_find_all:
             self.printLine(line,allFlag=True)
-        if self.clone_find_all and self.p.v.t not in clones:
-            # g.trace(self.p.v.t,self.p.h)
+        if self.clone_find_all and self.p.v not in clones:
+            # g.trace(self.p.v,self.p.h)
             if not clones:
                 undoData = u.beforeInsertNode(c.p)
                 << create the found node >>
-            clones.append(self.p.v.t)
+            clones.append(self.p.v)
             << create a clone of p under the find node >>
 
     if self.clone_find_all and clones:

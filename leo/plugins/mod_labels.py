@@ -86,7 +86,7 @@ __version__ = "1.6"
 # - get_labels_dict now always returns a dictionary, never None.
 # - Renamed current_node_and_labels to current_position_and_labels.
 # - Renamed get_labellist_for_node to get_labellist_for_current_position.
-# - Replaced self.iterator by self.c.allNodes_iter
+# - Replaced self.iterator by self.c.all_positions
 # 1.4 EKR: Removed call to Pmw.initialise.  This is now done in Leo's core.
 # 1.5 EKR: Added event=None to argument list for all commands in the menu.
 # 1.6 EKR: Import tkGui as needed.
@@ -284,7 +284,7 @@ class labelsController(object):
         '''Return a sorted list of all labels in the outline.'''
 
         labels = {}
-        for p in self.c.allNodes_iter():
+        for p in self.c.all_positions():
             vlabels = self.get_labels_dict(p)
             for key in vlabels.keys():
                 labels[key] = ''
@@ -421,7 +421,7 @@ class labelsController(object):
             - the content of that label at that node.
         """
         result = []
-        for p in self.c.allNodes_iter():
+        for p in self.c.all_positions():
             labels = self.get_labels_dict(p)
             if labels.has_key(labelname):
                 result.append ((p.copy(), labelname, labels[labelname]))
@@ -486,7 +486,7 @@ class labelsController(object):
             return
         if result == 'OK':
             g.es("Deleting ALL labels", color='red')
-            for p in self.c.allNodes_iter():
+            for p in self.c.all_positions():
                 labels_dict = self.get_labels_dict(p)
                 if labels_dict:
                     self.set_labels_dict(p,None)
@@ -499,7 +499,7 @@ class labelsController(object):
         """
         labelname = self.select_label("Select label to delete")
         if labelname:
-            for p in self.c.allNodes_iter():
+            for p in self.c.all_positions():
                 labels_dict = self.get_labels_dict(p)
                 if labels_dict:
                     if labels_dict.has_key(labelname):
@@ -536,7 +536,7 @@ class labelsController(object):
         labelname = widget.dialog.get()
         g.es("Convert the existing marks to label %s" % labelname)
         #  markedBit = self.c.rootVnode().__class__.markedBit
-        for p in self.c.allNodes_iter():
+        for p in self.c.all_positions():
             if p.isMarked():
                 # if (v.statusBits & markedBit ) != 0:
                 labels_dict = self.get_labels_dict(p)
@@ -563,7 +563,7 @@ class labelsController(object):
         labelname = widget.dialog.get()
         if labelname in labellist:
             count = 0
-            for p in self.c.allNodes_iter():
+            for p in self.c.all_positions():
                 labels_dict = self.get_labels_dict(p)
                 if labels_dict:
                     if labels_dict.has_key(labelname):
@@ -631,7 +631,7 @@ class labelsController(object):
         """
         labels = self.collect_labels()
         positions = []
-        for p in self.c.allNodes_iter():
+        for p in self.c.all_positions():
             labels_dict = self.get_labels_dict(p)
             if labels_dict:
                 for key, value in labels_dict.items():
@@ -705,7 +705,7 @@ class labelsController(object):
         labelname = self.select_label()
         if labelname:
             nodes_to_delete = []
-            for p in self.c.allNodes_iter():
+            for p in self.c.all_positions():
                 labels_dict = self.get_labels_dict(p)
                 if labels_dict:
                     if labels_dict.has_key(labelname):
@@ -743,7 +743,7 @@ class labelsController(object):
         labelnames = self.collect_labels()
         if labelnames:
             nodes_to_delete = []
-            for p in self.c.allNodes_iter():
+            for p in self.c.all_positions():
                 labels_dict = self.get_labels_dict(p)
                 if labels_dict:
                     for labelname in labels_dict.keys():

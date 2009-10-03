@@ -135,7 +135,7 @@ def export_rtf( c ):
     levelHeader = "\\pard \\ql \\fi-360\\ri0\\widctlpar\\jclisttab\\faauto\\ls1\\adjustright\\rin0\\itap0"
     myLevel = -1
 
-    for p in c.allNodes_iter():
+    for p in c.all_positions():
         curLevel = p.level() + 1    # Store current level so method doesn't have to be called again
         if curLevel != myLevel:
             if myLevel != -1:

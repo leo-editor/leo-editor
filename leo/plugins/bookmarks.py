@@ -41,7 +41,7 @@ def onDClick1 (tag,keywords):
     c = keywords.get("c")
     p = keywords.get("p")
     bookmark = False
-    for nd in p.parents_iter():
+    for nd in p.parents():
         if '@bookmarks' in nd.h:
             bookmark = True
             break

@@ -112,7 +112,7 @@ class slideshowController:
     def findFirstSlideShow (self):
 
         c = self.c
-        for p in c.allNodes_iter():
+        for p in c.all_positions():
             h = p.h.strip()
             if h.startswith('@slideshow'):
                 self.firstSlideShow = p.copy()
@@ -127,7 +127,7 @@ class slideshowController:
     #@+node:ekr.20060904110319:ignored
     def ignored (self,p):
 
-        for p2 in p.self_and_parents_iter():
+        for p2 in p.self_and_parents():
             if g.match_word(p2.h,0,'@ignore'):
                 return True
         else:

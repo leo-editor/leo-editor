@@ -160,10 +160,11 @@ def OnIconDoubleClick(tag,keywords):
             #@+node:ekr.20040910102554:<< handle double click in @run icon >>
             RunList = []
 
-            for p2 in p.self_and_subtree_iter(copy=True):
+            for p2 in p.self_and_subtree():
                 if g.match_word(p2.h,0,"@run"):
                     # g.trace(p2)
-                    RunList.append(p2)	
+                    # 2009/10/30: don't use iter copy arg.
+                    RunList.append(p2.copy())	
 
             ExitCode = None
             OwnIdleHook = True
@@ -292,7 +293,7 @@ def FindRunChildren(p):
 
     global RunList
 
-    for child in p.children_iter():
+    for child in p.children():
         if g.match_word(child.h,0,"@run"):
             RunList.append(child)	
         FindRunChildren(child)
@@ -343,7 +344,7 @@ def OpenProcess(p):
     args = []
     #@    << append arguments from child nodes to command >>
     #@+node:ekr.20040910095147:<< append arguments from child nodes to command >>
-    for child in p.children_iter():
+    for child in p.children():
         h = child.h
         if g.match_word(h,0,"@arg"):
             arg = h[4:].strip()

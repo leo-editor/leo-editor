@@ -2163,7 +2163,7 @@ Template(251, 158, ('/* ',
 print '-' * 20
 d = []
 
-for p in c.allNodes_iter():
+for p in c.all_positions():
     s = p.h
     if s.startswith('@thin'):
         d.append(s[5:].strip())
@@ -3426,13 +3426,20 @@ paste-at-column:    ^(.{4})             -->  \1x
 paste-after-lws:    ^([ \t]+)           -->  \1x
 
 (?=...)
-    Matches if ... matches next, but doesnt consume any of the string. This is called a lookahead assertion. For example, Isaac (?=Asimov) will match 'Isaac ' only if it's followed by 'Asimov'.
+    Matches if ... matches next, but doesnt consume any of the string.
+    This is called a lookahead assertion.
+    For example, Isaac (?=Asimov) will match 'Isaac ' only if it's followed by 'Asimov'.
 
 (?!...)
-    Matches if ... doesn't match next. This is a negative lookahead assertion. For example, Isaac (?!Asimov) will match 'Isaac ' only if it is not followed by 'Asimov'.
+    Matches if ... doesn't match next.
+    This is a negative lookahead assertion.
+    For example, Isaac (?!Asimov) will match 'Isaac ' only if it is not followed by 'Asimov'.
 
 (?<=...)
-    Matches if the current position in the string is preceded by a match for ... that ends at the current position. This is called a positive lookbehind assertion. The contained pattern must only match strings of some fixed length, meaning that abc or a|b are allowed, but a* and a{3,4} are not
+    Matches if the current position in the string is preceded by a match for ...
+    that ends at the current position. This is called a positive lookbehind assertion.
+    The contained pattern must only match strings of some fixed length,
+    meaning that abc or a|b are allowed, but a* and a{3,4} are not.
 #@nonl
 #@+node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html
 #@-node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html

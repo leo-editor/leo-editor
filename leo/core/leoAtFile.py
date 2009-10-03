@@ -230,7 +230,7 @@ class atFile:
         self.indent = 0  # The unit of indentation is spaces, not tabs.
         self.pending = []
         self.raw = False # True: in @raw mode
-        self.root = None # The root of tree being read or written.
+        self.root = None # The root (a position) of tree being read or written.
         self.root_seen = False # True: root vnode has been handled in this file.
         self.toString = False # True: sring-oriented read or write.
         self.writing_to_shadow_directory = False
@@ -271,7 +271,7 @@ class atFile:
         self.rootSeen = False
         self.tnodeList = []
         self.tnodeListIndex = 0
-        self.t = None
+        self.v = None
         self.tStack = []
         self.thinNodeStack = [] # Used by createThinChild4.
         self.updateWarningGiven = False
@@ -366,8 +366,8 @@ class atFile:
 
         # Init all other ivars even if there is an error.
         if not self.errors and self.root:
-            self.root.v.t.tnodeList = []
-            self.root.v.t._p_changed = True
+            self.root.v.tnodeList = []
+            self.root.v._p_changed = True
     #@-node:ekr.20041005105605.15:initWriteIvars
     #@-node:ekr.20041005105605.7:at.Birth & init
     #@+node:ekr.20041005105605.17:at.Reading
@@ -487,7 +487,7 @@ class atFile:
         cachefile = self._contentHashFile(root, fileContent)
 
         # Remember that we have read this file.
-        root.v.t.at_read = True # Create the attribute for all clones.
+        root.v.at_read = True # Create the attribute for all clones.
 
         if doCache and cachefile in c.db:
             # This message isn't so useful.
@@ -504,7 +504,7 @@ class atFile:
 
         # Delete all children, but **not** for @file and @nosent nodes!
         if thinFile or atShadow:
-            root.v.t.at_read = True # Create the attribute for all clones.
+            root.v.at_read = True # Create the attribute for all clones.
             while root.hasChildren():
                 root.firstChild().doDelete()
 
@@ -520,12 +520,12 @@ class atFile:
             #@        << advise user to delete all unvisited nodes >>
             #@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
             resurrected = 0
-            for p in root.self_and_subtree_iter():
-                if p.v.t.isVisited():
+            for p in root.self_and_subtree():
+                if p.v.isVisited():
                     pass
-                    # g.trace('visited',p.v.t,p.h)
+                    # g.trace('visited',p.v,p.h)
                 else:
-                    g.trace('**** not visited',p.v.t,p.h)
+                    g.trace('**** not visited',p.v,p.h)
                     g.es('resurrected node:',p.h,color='blue')
                     g.es('in file:',fileName,color='blue')
                     resurrected += 1
@@ -541,10 +541,10 @@ class atFile:
 
         #@    << delete all tempBodyStrings >>
         #@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
-        for t in c.all_unique_tnodes_iter():
+        for v in c.all_unique_nodes():
 
-            if hasattr(t,"tempBodyString"):
-                delattr(t,"tempBodyString")
+            if hasattr(v,"tempBodyString"):
+                delattr(v,"tempBodyString")
         #@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
         #@nl
 
@@ -645,7 +645,7 @@ class atFile:
                 p.moveToNodeAfterTree()
             else: p.moveToThreadNext()
         # Clear all orphan bits.
-        for v in c.all_unique_vnodes_iter():
+        for v in c.all_unique_nodes():
             v.clearOrphan()
 
         if partialFlag and not anyRead:
@@ -765,12 +765,12 @@ class atFile:
                 g.trace('root',root and root.h,fileName)
 
         if root:
-            root.v.t.setVisited() # Disable warning about set nodes.
+            root.v.setVisited() # Disable warning about set nodes.
 
         #@    << handle first and last lines >>
         #@+node:ekr.20041005105605.28:<< handle first and last lines >>
         try:
-            body = root.v.t.tempBodyString
+            body = root.v.tempBodyString
         except Exception:
             body = ""
 
@@ -778,7 +778,7 @@ class atFile:
         at.completeFirstDirectives(lines,firstLines)
         at.completeLastDirectives(lines,lastLines)
         s = '\n'.join(lines).replace('\r', '')
-        root.v.t.tempBodyString = s
+        root.v.tempBodyString = s
         #@-node:ekr.20041005105605.28:<< handle first and last lines >>
         #@nl
 
@@ -879,16 +879,17 @@ class atFile:
         trace = False and not g.unitTesting
         verbose = False
         at = self ; c = at.c ; indices = g.app.nodeIndices
-        last = at.lastThinNode ; lastIndex = last.t.fileIndex
+        last = at.lastThinNode
+        lastIndex = last.fileIndex
         gnx = indices.scanGnx(gnxString,0)
 
         if trace and verbose: g.trace("last %s, gnx %s %s" % (
             last,gnxString,headline))
 
         parent = at.lastThinNode # A vnode.
-        children = parent.t.children
+        children = parent.children
         for child in children:
-            if indices.areEqual(gnx,child.t.fileIndex):
+            if indices.areEqual(gnx,child.fileIndex):
                 break
         else:
             child = None
@@ -901,11 +902,11 @@ class atFile:
             if trace: g.trace(copies,headline)
         else:
             if indices.areEqual(gnx,lastIndex):
-                last.t.setVisited() # Supress warning/deletion of unvisited nodes.
+                last.setVisited() # Supress warning/deletion of unvisited nodes.
                 if trace:g.trace('found last',last)
                 return last
             if child:
-                child.t.setVisited() # Supress warning/deletion of unvisited nodes.
+                child.setVisited() # Supress warning/deletion of unvisited nodes.
                 if trace: g.trace('found child',child)
                 return child
             copies = 1 # Create exactly one copy.
@@ -914,29 +915,29 @@ class atFile:
             copies -= 1
             # Create the tnode only if it does not already exist.
             tnodesDict = c.fileCommands.tnodesDict
-            t = tnodesDict.get(gnxString)
-            if t:
-                if indices.areEqual(t.fileIndex,gnx):
+            v = tnodesDict.get(gnxString)
+            if v:
+                if indices.areEqual(v.fileIndex,gnx):
                     pass
                 else:
-                    g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
+                    g.trace('can not happen: v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx))
             else:
-                t = leoNodes.vnode(context=c)
-                t._headString = headline
-                t.fileIndex = gnx
-                tnodesDict[gnxString] = t
+                v = leoNodes.vnode(context=c)
+                v._headString = headline
+                v.fileIndex = gnx
+                tnodesDict[gnxString] = v
 
-            child = t
+            child = v
             child._linkAsNthChild(parent,parent.numberOfChildren())
 
         if trace and verbose: g.trace('new node: %s' % child)
-        child.t.setVisited() # Supress warning/deletion of unvisited nodes.
+        child.setVisited() # Supress warning/deletion of unvisited nodes.
         return child
     #@-node:ekr.20041005105605.72:createThinChild4
     #@+node:ekr.20041005105605.73:findChild4
     def findChild4 (self,headline):
 
-        """Return the next tnode in at.root.t.tnodeList.
+        """Return the next tnode in at.root.tnodeList.
         This is called only for @file/@noref nodes"""
 
         # Note: tnodeLists are used _only_ when reading @file (not @thin) nodes.
@@ -947,26 +948,26 @@ class atFile:
 
         if trace: g.trace('%s %s %s' % (
             at.tnodeListIndex,
-            v.t.tnodeList[at.tnodeListIndex],headline))
+            v.tnodeList[at.tnodeListIndex],headline))
 
-        if not hasattr(v.t,"tnodeList"):
+        if not hasattr(v,"tnodeList"):
             at.readError("no tnodeList for " + repr(v))
             g.es("write the @file node or use the Import Derived File command")
             g.trace("no tnodeList for ",v,g.callers())
             return None
 
-        if at.tnodeListIndex >= len(v.t.tnodeList):
+        if at.tnodeListIndex >= len(v.tnodeList):
             at.readError("bad tnodeList index: %d, %s" % (at.tnodeListIndex,repr(v)))
-            g.trace("bad tnodeList index",at.tnodeListIndex,len(v.t.tnodeList),v)
+            g.trace("bad tnodeList index",at.tnodeListIndex,len(v.tnodeList),v)
             return None
 
-        t = v.t.tnodeList[at.tnodeListIndex]
-        assert(t)
+        v = v.tnodeList[at.tnodeListIndex]
+        assert(v)
         at.tnodeListIndex += 1
 
         # Don't check the headline.  It simply causes problems.
-        t.setVisited() # Supress warning/deletion of unvisited nodes.
-        return t
+        v.setVisited() # Supress warning/deletion of unvisited nodes.
+        return v
     #@-node:ekr.20041005105605.73:findChild4
     #@+node:ekr.20041005105605.74:scanText4 & allies
     def scanText4 (self,theFile,fileName,p,verbose=False):
@@ -992,14 +993,15 @@ class atFile:
         # Stacked ivars...
         at.endSentinelStack = [at.endLeo] # We have already handled the @+leo sentinel.
         at.out = [] ; at.outStack = []
-        at.t = p.v.t ; at.tStack = []
+        at.v = p.v
+        at.tStack = []
         # New code: always identify root @thin node with self.root:
         at.lastThinNode = None
         at.thinNodeStack = []
 
         if 0: # Useful for debugging.
-            if hasattr(p.v.t,"tnodeList"):
-                g.trace("len(tnodeList)",len(p.v.t.tnodeList),p.v)
+            if hasattr(p.v,"tnodeList"):
+                g.trace("len(tnodeList)",len(p.v.tnodeList),p.v)
             else:
                 g.trace("no tnodeList",p.v)
 
@@ -1216,12 +1218,12 @@ class atFile:
         at.indentStack.append(at.indent) ; at.indent = newIndent
 
         at.outStack.append(at.out) ; at.out = []
-        at.tStack.append(at.t)
+        at.tStack.append(at.v)
 
         if trace: g.trace(at.root)
         if at.importing:
             p = at.createImportedNode(at.root,headline)
-            at.t = p.v.t
+            at.v = p.v
         elif at.thinFile:
             if at.thinNodeStack:
                 at.thinNodeStack.append(at.lastThinNode)
@@ -1230,11 +1232,11 @@ class atFile:
                 v = at.root.v
                 at.thinNodeStack.append(v)
             at.lastThinNode = v
-            at.t = v.t
+            at.v = v
         else:
-            at.t = at.findChild4(headline)
+            at.v = at.findChild4(headline)
 
-        if trace: g.trace('scanning',at.t)
+        if trace: g.trace('scanning',at.v)
 
         at.endSentinelStack.append(at.endNode)
     #@-node:ekr.20041005105605.85:readStartNode (4.x)
@@ -1325,18 +1327,18 @@ class atFile:
         s = g.toUnicode(s,g.app.tkEncoding) # 9/28/03
 
         if at.importing:
-            at.t._bodyString = s
+            at.v._bodyString = s
         elif middle: 
             pass # Middle sentinels never alter text.
         else:
-            if hasattr(at.t,"tempBodyString") and s != at.t.tempBodyString:
-                old = at.t.tempBodyString
-            elif at.t.hasBody() and s != at.t.getBody():
-                old = at.t.getBody()
+            if hasattr(at.v,"tempBodyString") and s != at.v.tempBodyString:
+                old = at.v.tempBodyString
+            elif at.v.hasBody() and s != at.v.getBody():
+                old = at.v.getBody()
             else:
                 old = None
             # 9/4/04: Suppress this warning for the root: @first complicates matters.
-            if old and not g.app.unitTesting and at.t != at.root.t:
+            if old and not g.app.unitTesting and at.v != at.root.v:
                 #@            << indicate that the node has been changed >>
                 #@+node:ekr.20041005105605.96:<< indicate that the node has been changed >>
                 if at.perfectImportRoot:
@@ -1346,8 +1348,8 @@ class atFile:
                     at.correctedLines += 1
 
                     found = False
-                    for p in at.perfectImportRoot.self_and_subtree_iter():
-                        if p.v.t == at.t:
+                    for p in at.perfectImportRoot.self_and_subtree():
+                        if p.v == at.v:
                             found = True ; break
 
                     if found:
@@ -1365,21 +1367,21 @@ class atFile:
                             g.pr('\n','-' * 40)
                     else:
                         # This should never happen.
-                        g.es("correcting hidden node: t=",repr(at.t),color="red")
+                        g.es("correcting hidden node: v=",repr(at.v),color="red")
                     #@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
                     #@nl
                     # p.setMarked()
-                    at.t._bodyString = s # Just setting at.t.tempBodyString won't work here.
-                    at.t.setDirty() # Mark the node dirty.  Ancestors will be marked dirty later.
+                    at.v._bodyString = s # Just setting at.v.tempBodyString won't work here.
+                    at.v.setDirty() # Mark the node dirty.  Ancestors will be marked dirty later.
                     at.c.setChanged(True)
                 else:
                     if 0: # New in 4.4.1 final.  This warning can be very confusing.
                         if not at.updateWarningGiven:
                             at.updateWarningGiven = True
-                            # g.pr("***",at.t,at.root.t)
+                            # g.pr("***",at.v,at.root.v)
                             g.es("warning: updating changed text in",at.root.h,color="blue")
                     # Just set the dirty bit. Ancestors will be marked dirty later.
-                    at.t.setDirty()
+                    at.v.setDirty()
                     if 1: # We must avoid the full setChanged logic here!
                         c.changed = True
                     else: # Far too slow for mass changes.
@@ -1387,16 +1389,16 @@ class atFile:
                 #@nonl
                 #@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
                 #@nl
-            at.t.tempBodyString = s
+            at.v.tempBodyString = s
 
         # Indicate that the tnode has been set in the derived file.
-        at.t.setVisited()
-        # g.trace('visit',at.t)
+        at.v.setVisited()
+        # g.trace('visit',at.v)
 
         # End the previous node sentinel.
         at.indent = at.indentStack.pop()
         at.out = at.outStack.pop()
-        at.t = at.tStack.pop()
+        at.v = at.tStack.pop()
         if at.thinFile and not at.importing:
             at.lastThinNode = at.thinNodeStack.pop()
 
@@ -1878,8 +1880,8 @@ class atFile:
     def  copyAllTempBodyStringsToTnodes (self,root,thinFile):
 
         c = self.c
-        for p in root.self_and_subtree_iter():
-            try: s = p.v.t.tempBodyString
+        for p in root.self_and_subtree():
+            try: s = p.v.tempBodyString
             except Exception: s = ""
             old_body = p.b
             if s != old_body:
@@ -1916,7 +1918,7 @@ class atFile:
             p = root
             at.importRootSeen = True
 
-        p.v.t.setVisited() # Suppress warning about unvisited node.
+        p.v.setVisited() # Suppress warning about unvisited node.
         return p
     #@-node:ekr.20041005105605.119:createImportedNode
     #@+node:ekr.20041005105605.120:at.parseLeoSentinel
@@ -2048,7 +2050,7 @@ class atFile:
         self.error(message)
 
         # Delete all of root's tree.
-        self.root.t.children = []
+        self.root.v.children = []
         self.root.setOrphan()
         self.root.setDirty()
     #@-node:ekr.20041005105605.127:readError
@@ -2166,7 +2168,7 @@ class atFile:
             #@-at
             #@@c
 
-            s = root.v.t._bodyString
+            s = root.v._bodyString
             tag = "@first"
             i = 0
             while g.match(s,i,tag):
@@ -2193,7 +2195,7 @@ class atFile:
             #@-node:ekr.20041005105605.139:<< put optional @comment sentinel lines >>
             #@nl
 
-            for p in root.self_and_subtree_iter():
+            for p in root.self_and_subtree():
                 #@    << Write p's node >>
                 #@+node:ekr.20041005105605.140:<< Write p's node >>
                 at.putOpenNodeSentinel(p)
@@ -2225,7 +2227,7 @@ class atFile:
             #@@c
 
             tag = "@last"
-            lines = root.v.t._bodyString.split('\n')
+            lines = root.v._bodyString.split('\n')
             n = len(lines) ; j = k = n - 1
             # Don't write an empty last line.
             if j >= 0 and len(lines[j])==0:
@@ -2364,8 +2366,8 @@ class atFile:
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
 
-        if hasattr(root.v.t,'tnodeList'):# 2008/10/3
-            has_list,old_list = True,root.v.t.tnodeList[:]
+        if hasattr(root.v,'tnodeList'):# 2008/10/3
+            has_list,old_list = True,root.v.tnodeList[:]
         else:
             has_list,old_list = False,[]
 
@@ -2396,14 +2398,14 @@ class atFile:
             if nosentinels:
                 if not self.shouldWriteAtNosentNode(root,exists):
                     return
-            elif not hasattr(root.v.t,'at_read') and exists:
+            elif not hasattr(root.v,'at_read') and exists:
                 # Prompt if writing a new @file or @thin node would
                 # overwrite an existing file.
                 ok = self.promptForDangerousWrite(
                     eventualFileName,
                     kind = g.choose(thinFile,'@thin','@file'))
                 if ok:
-                    root.v.t.at_read = True # Create the attribute for all clones.
+                    root.v.at_read = True # Create the attribute for all clones.
                 else:
                     g.es("not written:",eventualFileName)
                     return
@@ -2418,8 +2420,8 @@ class atFile:
                 at.closeWriteFile() # sets self.stringOutput
                 # Major bug: failure to clear this wipes out headlines!
                 # Minor bug: sometimes this causes slight problems...
-                at.root.v.t.tnodeList = []
-                at.root.v.t._p_changed = True
+                at.root.v.tnodeList = []
+                at.root.v._p_changed = True
             else:
                 at.closeWriteFile()
                 if at.errors > 0 or at.root.isOrphan():
@@ -2437,15 +2439,15 @@ class atFile:
                 else:
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
-                if has_list: root.v.t.tnodeList = old_list # 2008/10/3
+                if has_list: root.v.tnodeList = old_list # 2008/10/3
         except Exception:
             if toString:
                 at.exception("exception preprocessing script")
-                at.root.v.t.tnodeList = []
-                at.root.v.t._p_changed = True
+                at.root.v.tnodeList = []
+                at.root.v._p_changed = True
             else:
                 at.writeException() # Sets dirty and orphan bits.
-                if has_list: root.v.t.tnodeList = old_list # 2008/10/3
+                if has_list: root.v.tnodeList = old_list # 2008/10/3
     #@+node:ekr.20080620095343.1:shouldWriteAtNosentNode
     #@+at 
     #@nonl
@@ -2516,7 +2518,7 @@ class atFile:
         #@-at
         #@@c
 
-        for v2 in p.self_and_subtree_iter():
+        for v2 in p.self_and_subtree():
             v2.clearOrphan()
         #@-node:ekr.20041005105605.148:<< Clear all orphan bits >>
         #@nl
@@ -2537,7 +2539,7 @@ class atFile:
                         at.setPathUa(p,newPath) # Remember that we have changed paths.
                         g.es_print('path changed for',p.h,color='blue')
 
-                if p.v.isDirty() or pathChanged or writeAtFileNodesFlag or p.v.t in writtenFiles:
+                if p.v.isDirty() or pathChanged or writeAtFileNodesFlag or p.v in writtenFiles:
 
                     at.fileChangedFlag = False
                     autoSave = False
@@ -2545,30 +2547,30 @@ class atFile:
                     # Tricky: @ignore not recognised in @silentfile nodes.
                     if p.isAtAsisFileNode():
                         at.asisWrite(p,toString=toString)
-                        writtenFiles.append(p.v.t) ; autoSave = True
+                        writtenFiles.append(p.v) ; autoSave = True
                     elif p.isAtIgnoreNode():
                         pass
                     elif p.isAtAutoNode():
                         at.writeOneAtAutoNode(p,toString=toString,force=False)
-                        writtenFiles.append(p.v.t) # No need for autosave
+                        writtenFiles.append(p.v) # No need for autosave
                     elif p.isAtEditNode():
                         at.writeOneAtEditNode(p,toString=toString)
-                        writtenFiles.append(p.v.t) # No need for autosave
+                        writtenFiles.append(p.v) # No need for autosave
                     elif p.isAtNorefFileNode():
                         at.norefWrite(p,toString=toString)
-                        writtenFiles.append(p.v.t) ; autoSave = True
+                        writtenFiles.append(p.v) ; autoSave = True
                     elif p.isAtNoSentFileNode():
                         at.write(p,nosentinels=True,toString=toString)
-                        writtenFiles.append(p.v.t) # No need for autosave
+                        writtenFiles.append(p.v) # No need for autosave
                     elif p.isAtShadowFileNode():
                         at.writeOneAtShadowNode(p,toString=toString,force=False or pathChanged)
-                        writtenFiles.append(p.v.t) ; autoSave = True # 2008/7/29
+                        writtenFiles.append(p.v) ; autoSave = True # 2008/7/29
                     elif p.isAtThinFileNode():
                         at.write(p,thinFile=True,toString=toString)
-                        writtenFiles.append(p.v.t) # No need for autosave.
+                        writtenFiles.append(p.v) # No need for autosave.
                     elif p.isAtFileNode():
                         at.write(p,toString=toString)
-                        writtenFiles.append(p.v.t) ; autoSave = True
+                        writtenFiles.append(p.v) ; autoSave = True
 
                     if at.errors: atOk = False
 
@@ -3038,8 +3040,8 @@ class atFile:
             # Major bug: failure to clear this wipes out headlines!
             # Minor bug: sometimes this causes slight problems...
             if root:
-                root.v.t.tnodeList = []
-                root.v.t._p_changed = True
+                root.v.tnodeList = []
+                root.v._p_changed = True
         except Exception:
             at.exception("exception preprocessing script")
 
@@ -3120,7 +3122,7 @@ class atFile:
             if not at.openFileForWriting(root,targetFileName,toString):
                 # openFileForWriting calls root.setDirty() if there are errors.
                 return
-            for p in root.self_and_subtree_iter():
+            for p in root.self_and_subtree():
                 #@            << Write p's headline if it starts with @@ >>
                 #@+node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
                 s = p.h
@@ -3157,7 +3159,7 @@ class atFile:
 
         """Do all writes except asis writes."""
 
-        at = self ; s = g.choose(fromString,fromString,root.v.t._bodyString)
+        at = self ; s = g.choose(fromString,fromString,root.v._bodyString)
 
         root.clearAllVisitedInTree() # Clear both vnode and tnode bits.
         root.clearVisitedInTree()
@@ -3190,10 +3192,11 @@ class atFile:
         # New in 4.3 b2: get s from fromString if possible.
         s = g.choose(fromString,fromString,p.b)
 
-        p.v.t.setVisited() # Suppress orphans check.
-        p.v.setVisited() # Make sure v is never expanded again.
+        p.v.setVisited()
+            # Make sure v is never expanded again.
+            # Suppress orphans check.
         if not at.thinFile:
-            p.v.t.setWriteBit() # Mark the tnode to be written.
+            p.v.setWriteBit() # Mark the tnode to be written.
         if not at.thinFile and not s: return
 
         inCode = True
@@ -3311,7 +3314,7 @@ class atFile:
         else:
             at.putSentinel("@+all")
 
-        for child in p.children_iter():
+        for child in p.children():
             at.putAtAllChild(child)
 
         at.putSentinel("@-all")
@@ -3324,8 +3327,10 @@ class atFile:
 
         at = self ; s = p.b
 
-        p.v.setVisited()   # Make sure v is never expanded again.
-        p.v.t.setVisited() # Use the tnode for the orphans check.
+        p.v.setVisited()
+            # Make sure v is never expanded again.
+            # Suppress orphans check.
+
         if not at.thinFile and not s: return
         inCode = True
         #@    << Make sure all lines end in a newline >>
@@ -3388,7 +3393,7 @@ class atFile:
         at.putOpenNodeSentinel(p,inAtAll=True) # Suppress warnings about @file nodes.
         at.putAtAllBody(p) 
 
-        for child in p.children_iter():
+        for child in p.children():
             at.putAtAllChild(child)
 
         at.putCloseNodeSentinel(p)
@@ -3437,7 +3442,7 @@ class atFile:
         at.putBody(p) 
 
         # Insert expansions of all children.
-        for child in p.children_iter():
+        for child in p.children():
             if at.inAtOthers(child):
                 at.putAtOthersChild(child)
 
@@ -3458,7 +3463,7 @@ class atFile:
         else:
             at.putSentinel("@+others")
 
-        for child in p.children_iter():
+        for child in p.children():
             if at.inAtOthers(child):
                 at.putAtOthersChild(child)
 
@@ -3818,9 +3823,9 @@ class atFile:
         #@nl
 
         if at.thinFile:
-            if not p.v.t.fileIndex:
-                p.v.t.fileIndex = g.app.nodeIndices.getNewIndex()
-            gnx = g.app.nodeIndices.toString(p.v.t.fileIndex)
+            if not p.v.fileIndex:
+                p.v.fileIndex = g.app.nodeIndices.getNewIndex()
+            gnx = g.app.nodeIndices.toString(p.v.fileIndex)
             return "%s:%s" % (gnx,h)
         else:
             return h
@@ -3906,12 +3911,12 @@ class atFile:
             at.putSentinel("@+node:" + s)
 
         if not at.thinFile:
-            # Append the n'th tnode to the root's tnode list.
+            # Append the n'th tnode to the root's tnodeList.
             # It may not exist when executing scripts.
             try:
-                t = at.root.v.t
-                t.tnodeList.append(p.v.t)
-                t._p_changed = True
+                v = at.root.v
+                v.tnodeList.append(p.v)
+                v._p_changed = True
             except AttributeError:
                 pass # Do nothing.  We are creating a script.
     #@-node:ekr.20041005105605.193:putOpenNodeSentinel (sets tnodeList) 4.x
@@ -4659,8 +4664,8 @@ class atFile:
         # Always warn, even when language=="cweb"
         at = self ; root = at.root
 
-        for p in root.self_and_subtree_iter():
-            if not p.v.t.isVisited(): # Check tnode bit, not vnode bit.
+        for p in root.self_and_subtree():
+            if not p.v.isVisited():
                 at.writeError("Orphan node:  " + p.h)
                 if p.hasParent():
                     g.es("parent node:",p.parent().h,color="blue")
@@ -4985,7 +4990,7 @@ class atFile:
             path = g.os_path_finalize_join(path,fn)
         else:
             g.trace('can not happen: not an @<file> node:',g.callers(4))
-            for p2 in p.self_and_parents_iter():
+            for p2 in p.self_and_parents():
                 g.trace(p2.h)
             path = ''
 
@@ -5011,20 +5016,20 @@ class atFile:
     #@+node:ekr.20090530055015.6023:get/setPathUa (leoAtFile) & tests
     def getPathUa (self,p):
 
-        if hasattr(p.v.t,'tempAttributes'):
-            d = p.v.t.tempAttributes.get('read-path',{})
+        if hasattr(p.v,'tempAttributes'):
+            d = p.v.tempAttributes.get('read-path',{})
             return d.get('path')
         else:
             return ''
 
     def setPathUa (self,p,path):
 
-        if not hasattr(p.v.t,'tempAttributes'):
-            p.v.t.tempAttributes = {}
+        if not hasattr(p.v,'tempAttributes'):
+            p.v.tempAttributes = {}
 
-        d = p.v.t.tempAttributes.get('read-path',{})
+        d = p.v.tempAttributes.get('read-path',{})
         d['path'] = path
-        p.v.t.tempAttributes ['read-path'] = d
+        p.v.tempAttributes ['read-path'] = d
     #@+node:ekr.20090530055015.6024:@test at.get/setPathUa
     if g.unitTesting:
 
@@ -5032,7 +5037,7 @@ class atFile:
         at = c.atFileCommands
 
         at.setPathUa(p,'abc')
-        d = p.v.t.tempAttributes
+        d = p.v.tempAttributes
         d2 = d.get('read-path')
         val1 = d2.get('path')
         val2 = at.getPathUa(p)
@@ -5105,25 +5110,11 @@ class atFile:
         thisClonedSibIndex = 0 # Position of p in list of cloned siblings.
 
         if v and v.isCloned():
-            sibs = parent_v.t.children
-            for sib in sibs:
-                if sib.t == v.t:
+            for sib in parent_v.children:
+                if sib == v:
                     clonedSibs += 1
                     if sib == v:
                         thisClonedSibIndex = clonedSibs
-
-        # if v and v.isCloned():
-            # sib = v
-            # while sib.back():
-                # sib = sib.back()
-            # while sib:
-                # if sib.t == v.t:
-                    # clonedSibs += 1
-                    # if sib == v:
-                        # thisClonedSibIndex = clonedSibs
-                # sib = sib.next()
-
-        # g.trace(clonedSibs,thisClonedSibIndex)
 
         return clonedSibs,thisClonedSibIndex
     #@-node:ekr.20041005105605.242:scanForClonedSibs (reading & writing)

@@ -1082,7 +1082,7 @@ class pluginController(baseClasses.basePluginController):
         popup = '@popup '
         lp = len(popup)
 
-        for p in self.c.allNodes_iter():
+        for p in self.c.all_positions():
 
             h = p.h.strip()
 
@@ -1090,7 +1090,7 @@ class pluginController(baseClasses.basePluginController):
                 continue
 
             found = False
-            for pp in p.parents_iter():
+            for pp in p.parents():
                 if pp.h.strip().lower().startswith('@settings'):
                     found = True
                     break

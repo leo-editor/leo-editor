@@ -449,7 +449,7 @@ class Leo_to_HTML(object):
 
         else:
 
-            for pp in root.following_siblings_iter():
+            for pp in root.following_siblings():
 
                 if self.bullet_type == 'head':
                     self.doItemHeadlineTags(pp)
@@ -473,7 +473,7 @@ class Leo_to_HTML(object):
 
         if p.hasChildren() and self.showSubtree(p):
 
-            for item in p.children_iter():
+            for item in p.children():
                 self.doItemHeadlineTags(item, level +1)
 
 
@@ -494,7 +494,7 @@ class Leo_to_HTML(object):
         if p.hasChildren():
 
             xhtml.append(self.openLevelString)
-            for item in p.children_iter():
+            for item in p.children():
                 self.doItemBulletList(item)
             xhtml.append(self.closeLevelString)
 

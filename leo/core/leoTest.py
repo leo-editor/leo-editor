@@ -464,7 +464,7 @@ class testUtils:
         content and join lists are equivalent"""
 
         p2 = root2.copy() ; ok = True
-        for p1 in root1.self_and_subtree_iter():
+        for p1 in root1.self_and_subtree():
             ok = (
                 p1 and p2 and
                 p1.numberOfChildren() == p2.numberOfChildren() and
@@ -513,12 +513,12 @@ class testUtils:
     #@+node:ekr.20051104075904.27:findChildrenOf
     def findChildrenOf (self,root):
 
-        return [p.copy() for p in root.children_iter()]
+        return [p.copy() for p in root.children()]
     #@-node:ekr.20051104075904.27:findChildrenOf
     #@+node:ekr.20051104075904.28:findSubnodesOf
     def findSubnodesOf (self,root):
 
-        return [p.copy() for p in root.subtree_iter()]
+        return [p.copy() for p in root.subtree()]
     #@-node:ekr.20051104075904.28:findSubnodesOf
     #@+node:ekr.20051104075904.29:findNodeInRootTree
     def findRootNode (self,p):
@@ -536,7 +536,7 @@ class testUtils:
 
         c = self.c
         h = headline.strip().lower()
-        for p in p.subtree_iter():
+        for p in p.subtree():
             h2 = p.h.strip().lower()
             if h2 == h or startswith and h2.startswith(h):
                 return p.copy()
@@ -547,14 +547,13 @@ class testUtils:
     def findNodeAnywhere(self,headline,breakOnError=False):
 
         c = self.c
-        for p in c.all_positions_with_unique_tnodes_iter():
+        for p in c.all_unique_positions():
             h = headline.strip().lower()
             if p.h.strip().lower() == h:
                 return p.copy()
 
         if False and breakOnError: # useful for debugging.
-            aList = [repr(z) for z in c.p.parent().
-                self_and_siblings_iter(copy=True)]
+            aList = [repr(z.copy()) for z in c.p.parent().self_and_siblings()]
             print '\n'.join(aList)
             g.pdb()
 
@@ -567,7 +566,7 @@ class testUtils:
         """Returns the number of cloned nodes in an outline"""
 
         c = self.c ; n = 0
-        for p in c.allNodes_iter():
+        for p in c.all_positions():
             if p.isCloned():
                 n += 1
         return n
@@ -577,14 +576,14 @@ class testUtils:
 
         """Returns the total number of nodes in an outline"""
 
-        return len([p for p in self.c.allNodes_iter()])
+        return len([p for p in self.c.all_positions()])
     #@-node:ekr.20051104075904.34:numberOfNodesInOutline
     #@+node:ekr.20051104075904.36:testUtils.writeNode/sToNode
     #@+node:ekr.20051104075904.37:writeNodesToNode
     def writeNodesToNode (self,c,input,output,sentinels=True):
 
         result = []
-        for p in input.self_and_subtree_iter():
+        for p in input.self_and_subtree():
             s = self.writeNodeToString(c,p,sentinels)
             result.append(s)
         result = ''.join(result)
@@ -607,11 +606,11 @@ class testUtils:
         df = c.atFileCommands
         nodeIndices = g.app.nodeIndices
 
-        for p in input.self_and_subtree_iter():
+        for p in input.self_and_subtree():
             try:
-                theId,time,n = p.v.t.fileIndex
+                theId,time,n = p.v.fileIndex
             except TypeError:
-                p.v.t.fileIndex = nodeIndices.getNewIndex()
+                p.v.fileIndex = nodeIndices.getNewIndex()
 
         # Write the file to a string.
         df.write(input,thinFile=True,nosentinels= not sentinels,toString=True)
@@ -794,7 +793,7 @@ def runTestsExternally (c,all):
                     p and p.h or '<none>',
                     limit and limit.h or '<none>'))
                 while p and p != limit:
-                    if p.v.t in self.seen:
+                    if p.v in self.seen:
                         if trace: g.trace('seen',p.h)
                         p.moveToNodeAfterTree()
                     elif lookForMark and p.h.startswith(markTag):
@@ -814,11 +813,6 @@ def runTestsExternally (c,all):
 
             # Add the entire @mark-for-unit-tests tree.
             self.addNode(p)
-
-            # for p in p.subtree_iter():
-                # # if self.isUnitTestNode(p) and not p.v.t in self.seen:
-                # if not p.v.t in self.seen: # Add *all* nodes.
-                    # self.addNode(p)
         #@-node:ekr.20070705080413:addMarkTree
         #@+node:ekr.20070705065154.1:addNode
         def addNode(self,p):
@@ -832,8 +826,8 @@ def runTestsExternally (c,all):
             p2 = p.copyTreeAfter()
             p2.moveToLastChildOf(self.copyRoot)
 
-            for p2 in p.self_and_subtree_iter():
-                self.seen.append(p2.v.t)
+            for p2 in p.self_and_subtree():
+                self.seen.append(p2.v)
         #@-node:ekr.20070705065154.1:addNode
         #@+node:ekr.20070705075604.3:isUnitTestNode
         def isUnitTestNode (self,p):
@@ -878,7 +872,7 @@ def runTestsExternally (c,all):
         def searchOutline (self,p):
 
             c = self.c ; p = c.p
-            iter = g.choose(self.all,c.all_positions_with_unique_tnodes_iter,p.self_and_subtree_iter)
+            iter = g.choose(self.all,c.all_unique_positions,p.self_and_subtree)
 
             # First, look down the tree.
             for p in iter():
@@ -889,7 +883,7 @@ def runTestsExternally (c,all):
 
             # Next, look up the tree.
             if not self.all:   
-                for p in c.p.parents_iter():
+                for p in c.p.parents():
                     for s in self.tags:
                         if p.h.startswith(s):
                             c.selectPosition(p)
@@ -897,7 +891,7 @@ def runTestsExternally (c,all):
                             return True
 
             # Finally, look for all @mark-for-unit-test nodes.
-            for p in c.all_positions_with_unique_tnodes_iter():
+            for p in c.all_unique_positions():
                 if p.h.startswith('@mark-for-unit-test'):
                     return True
 
@@ -1006,7 +1000,7 @@ def makeEditBodySuite(c,p):
     # Create the suite and add all test cases.
     suite = unittest.makeSuite(unittest.TestCase)
 
-    for p in data_p.children_iter():
+    for p in data_p.children():
         if p.h=="tempNode": continue # TempNode now in data tree.
         before = u.findNodeInTree(p,"before")
         after  = u.findNodeInTree(p,"after")
@@ -1167,12 +1161,14 @@ def makeImportExportSuite(c,parentHeadline,doImport):
     # Create the suite and add all test cases.
     suite = unittest.makeSuite(unittest.TestCase)
 
-    for p in parent.children_iter(copy=True):
-        if p == temp: continue
-        dialog = u.findNodeInTree(p,"dialog")
-        assert(dialog)
-        test = importExportTestCase(c,p,dialog,temp,doImport)
-        suite.addTest(test)
+    for p in parent.children():
+        if p != temp:
+            # 2009/10/02: avoid copy arg to iter
+            p2 = p.copy()
+            dialog = u.findNodeInTree(p2,"dialog")
+            assert(dialog)
+            test = importExportTestCase(c,p2,dialog,temp,doImport)
+            suite.addTest(test)
 
     return suite
 #@-node:ekr.20051104075904.78:makeImportExportSuite
@@ -1754,7 +1750,7 @@ def findAllAtFileNodes(c):
 
     paths = []
 
-    for p in c.all_positions_with_unique_tnodes_iter():
+    for p in c.all_unique_positions():
         name = p.anyAtFileNodeName()
         if name:
             head,tail = g.os_path_split(name)

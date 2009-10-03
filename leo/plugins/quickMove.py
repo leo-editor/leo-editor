@@ -184,7 +184,7 @@ class quickMoveButton:
 
         c = self.c
 
-        for z in p2.parents_iter():
+        for z in p2.parents():
             if z == p:
                 return False
 

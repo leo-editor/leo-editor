@@ -518,7 +518,7 @@ class backlinkController(object):
 
         # /here id should be a dict of lists of "aliases"
 
-        for p in c.allNodes_iter():
+        for p in c.all_positions():
             self.positions[p.v] = p.copy()
             v = p.v
             if v.u and '_bklnk' in v.u and 'id' in v.u['_bklnk']:
@@ -794,16 +794,16 @@ class backlinkController(object):
 
         # rest for historical interest
 
-        search_from = self.c.allNodes_iter
+        search_from = self.c.all_positions
 
         # first check the cache
         if v in self.positions:
             p = self.positions[v]
             if p.v is v and self.positionExistsSomewhere(p):
-                search_from = p.self_and_siblings_iter
+                search_from = p.self_and_siblings
                 # p._childIndex may be out of date, the above is equivalent to but
                 # less ugly than the below
-                # index = [x.v for x in p.self_and_siblings_iter()].index(v)
+                # index = [x.v for x in p.self_and_siblings()].index(v)
                 # # assumes this iter runs in child order, not self first then others
                 # if p._childIndex != index:
                 #     p._childIndex = index

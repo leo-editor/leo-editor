@@ -1146,7 +1146,6 @@
 <v t="ekr.20071113145804.10"><vh>@test c.contractAllHeadlines</vh></v>
 <v t="ekr.20090104053806.1"><vh>@@test c.checkFileTimeStamp &amp; c.setFileTimeStamp</vh></v>
 <v t="ekr.20061106114738"><vh>Load tests for .leo files</vh></v>
-<v t="ekr.20060211135917"><vh>All unit tests</vh></v>
 <v t="ekr.20061106112522"><vh>@test c.insertBodyTime</vh></v>
 <v t="ekr.20040802065214" annotate="7d71002e"><vh>@test changing headline marks descendent @thin nodes dirty</vh>
 <v t="ekr.20040802065214.1"><vh>bogus</vh></v>
@@ -1787,7 +1786,7 @@
 <v t="ekr.20061001124008.2"><vh>grandchild</vh></v>
 </v>
 </v>
-<v t="ekr.20061001091616"><vh>@test putDescendentTnodeUas</vh>
+<v t="ekr.20061001091616"><vh>@@test putDescendentTnodeUas</vh>
 <v t="ekr.20061001091647" unit_test_child="55046162636471002e"><vh>child</vh>
 <v t="ekr.20061001091647.1" unit_test_grandchild="55047778797a71002e"><vh>grandChild</vh></v>
 </v>
@@ -2083,7 +2082,7 @@
 <v t="ekr.20040712101754.101"><vh>&lt;&lt; duplicate tests &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20040712101754.204" annotate="7d71002e"><vh>@test consistency of back/next links</vh></v>
-<v t="ekr.20040712101754.201" annotate="7d71002e"><vh>@test consistency of c.allNodes_iter() and p.ThreadNext()</vh></v>
+<v t="ekr.20040712101754.201" annotate="7d71002e"><vh>@test consistency of c.all_positions() and p.ThreadNext()</vh></v>
 <v t="ekr.20040712101754.202" annotate="7d71002e"><vh>@test consistency of firstChild &amp; children_iter()</vh></v>
 <v t="ekr.20040712101754.203" annotate="7d71002e"><vh>@test consistency of level</vh></v>
 <v t="ekr.20040712101754.205" annotate="7d71002e"><vh>@test consistency of parent &amp; parents_iter()</vh></v>
@@ -2666,12 +2665,13 @@ Line 1
 #@-leo
 last line 1: two trailing newlines
 </t>
-<t tx="ekr.20040712101754.175">root = c.rootPosition()
+<t tx="ekr.20040712101754.175">if True:
+    root = c.rootPosition()
 
-# NOTE: p.__getattr__ must be enabled for this test to work.
-
-for p in c.allNodes_iter():
-    assert(p.t == p.v.t)</t>
+    # NOTE: p.__getattr__ must be enabled for this test to work.
+    
+    for p in c.all_positions():
+        assert(p.t == p.v.t)</t>
 <t tx="ekr.20040712101754.177">p = p.firstChild()
 assert(p.h=="File Conversion")
 p.convertTreeToString()</t>
@@ -2722,7 +2722,7 @@ def moreBody (self):
 <t tx="ekr.20040712101754.181"># The actual test is in a child node.</t>
 <t tx="ekr.20040712101754.182"></t>
 <t tx="ekr.20040712101754.183">try:
-    for p in c.allNodes_iter():
+    for p in c.all_positions():
         if 0: # Check all ancestors.  This is tricky and doesn't work yet.
             parents1 = [parent.v for parent in p.parents_iter()]
             parents2 = []
@@ -2750,7 +2750,7 @@ except AssertionError:
     for parent in parents2: print(parent)
     raise</t>
 <t tx="ekr.20040712101754.184">try:
-    for p in c.allNodes_iter():
+    for p in c.all_positions():
         if p.isCloned():
             parents = p.v.t.vnodeList
             for child in p.children_iter():
@@ -2848,7 +2848,7 @@ assert p.__eq__(copy) is True
 assert p.__ne__(copy) is False
 assert p.__eq__(root) is False
 assert p.__ne__(root) is True</t>
-<t tx="ekr.20040712101754.200" annotate="7d71002e">for p in c.allNodes_iter():
+<t tx="ekr.20040712101754.200" annotate="7d71002e">for p in c.all_positions():
     if p.isCloned() and p.hasChildren():
         childv = p.firstChild().v
         # assert(childv == p.v.t._firstChild)
@@ -2856,24 +2856,21 @@ assert p.__ne__(root) is True</t>
         firstChild = p.v.t.children[0]
         assert childv == firstChild
 </t>
-<t tx="ekr.20040712101754.201" annotate="7d71002e">for copy in (True,False):
-    p2 = c.rootPosition()
-    for p in c.allNodes_iter(copy=copy):
-        assert p==p2, "%s != %s" % (p,p2)
-        p2.moveToThreadNext()
-        
-    assert not p2, repr(p2)
+<t tx="ekr.20040712101754.201" annotate="7d71002e">p2 = c.rootPosition()
+for p in c.all_positions():
+    assert p==p2, "%s != %s" % (p,p2)
+    p2.moveToThreadNext()
+    
+assert not p2, repr(p2)
 </t>
-<t tx="ekr.20040712101754.202" annotate="7d71002e">for copy in (True,False):
-    for p in c.allNodes_iter(copy=copy):
-        
-        p2 = p.firstChild()
-        for p3 in p.children_iter(copy=copy):
-            assert p3==p2, "%s != %s" % (p3,p2)
-            p2.moveToNext()
+<t tx="ekr.20040712101754.202" annotate="7d71002e">for p in c.all_positions():
+    p2 = p.firstChild()
+    for p3 in p.children_iter():
+        assert p3==p2, "%s != %s" % (p3,p2)
+        p2.moveToNext()
 
-    assert not p2, repr(p2)</t>
-<t tx="ekr.20040712101754.203" annotate="7d71002e">for p in c.allNodes_iter():
+assert not p2, repr(p2)</t>
+<t tx="ekr.20040712101754.203" annotate="7d71002e">for p in c.all_positions():
     
     if p.hasParent():
         assert(p.parent().level() == p.level() - 1)
@@ -2886,23 +2883,21 @@ assert p.__ne__(root) is True</t>
 
     if p.hasBack():
         assert(p.back().level() == p.level())</t>
-<t tx="ekr.20040712101754.204" annotate="7d71002e">for p in c.allNodes_iter():
+<t tx="ekr.20040712101754.204" annotate="7d71002e">for p in c.all_positions():
     
     back = p.back()
     next = p.next()
     if back: assert(back.getNext() == p)
     if next: assert(next.getBack() == p)</t>
-<t tx="ekr.20040712101754.205" annotate="7d71002e">for copy in (True,False):
+<t tx="ekr.20040712101754.205" annotate="7d71002e">for p in c.all_positions():
+    p2 = p.parent()
+    for p3 in p.parents_iter():
+        assert p3==p2, "%s != %s" % (p3,p2)
+        p2.moveToParent()
 
-    for p in c.allNodes_iter():
-        p2 = p.parent()
-        for p3 in p.parents_iter(copy=copy):
-            assert p3==p2, "%s != %s" % (p3,p2)
-            p2.moveToParent()
-
-        assert not p2, repr(p2)</t>
+    assert not p2, repr(p2)</t>
 <t tx="ekr.20040712101754.206" annotate="7d71002e"># Test consistency of p.parent, p.next, p.back and p.firstChild.
-for p in c.allNodes_iter():
+for p in c.all_positions():
     
     if p.hasParent():
         n = p.childIndex()
@@ -2916,7 +2911,7 @@ for p in c.allNodes_iter():
         
     if p.hasBack():
         assert(p.back().parent() == p.parent())</t>
-<t tx="ekr.20040712101754.207" annotate="7d71002e">for p in c.allNodes_iter():
+<t tx="ekr.20040712101754.207" annotate="7d71002e">for p in c.all_positions():
 
     threadBack = p.threadBack()
     threadNext = p.threadNext()
@@ -2927,7 +2922,7 @@ for p in c.allNodes_iter():
     if threadNext:
         assert(p == threadNext.getThreadBack())</t>
 <t tx="ekr.20040712101754.208" annotate="7d71002e">try:
-    for p in c.allNodes_iter():
+    for p in c.all_positions():
         if p.isCloned():
             parents = p.v.t.vnodeList
             for child in p.children_iter():
@@ -2945,7 +2940,7 @@ except AssertionError:
     for parent in vparents: print(parent)
     g.pdb()
     raise # for unittest.</t>
-<t tx="ekr.20040712101754.209" annotate="7d71002e">for p in c.allNodes_iter():
+<t tx="ekr.20040712101754.209" annotate="7d71002e">for p in c.all_positions():
 
     back = p.back()
     next = p.next()
@@ -2957,7 +2952,7 @@ except AssertionError:
     assert(
         (next and p.hasNext()) or
         (not next and not p.hasNext()))</t>
-<t tx="ekr.20040712101754.210" annotate="7d71002e">for p in c.allNodes_iter():
+<t tx="ekr.20040712101754.210" annotate="7d71002e">for p in c.all_positions():
 
     child = p.firstChild()
     parent = p.parent()
@@ -2969,7 +2964,7 @@ except AssertionError:
     assert(
         (parent and p.hasParent()) or
         (not parent and not p.hasParent()))</t>
-<t tx="ekr.20040712101754.211" annotate="7d71002e">for p in c.allNodes_iter():
+<t tx="ekr.20040712101754.211" annotate="7d71002e">for p in c.all_positions():
 
     threadBack = p.getThreadBack()
     threadNext = p.getThreadNext()
@@ -3249,7 +3244,7 @@ class eggs:
     """ A typical doc string """
 
     @others</t>
-<t tx="ekr.20040722055040" annotate="7d71002e">for p in c.allNodes_iter():
+<t tx="ekr.20040722055040" annotate="7d71002e">for p in c.all_positions():
     
     child = p.firstChild()
     while child:
@@ -4830,7 +4825,7 @@ line 1
 line4</t>
 <t tx="ekr.20050417205012.3">1.0
 6.5</t>
-<t tx="ekr.20050512083700.1" annotate="7d71002e">marks = [p.v for p in c.allNodes_iter() if p.isMarked()]
+<t tx="ekr.20050512083700.1" annotate="7d71002e">marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
     try:
@@ -4838,7 +4833,7 @@ try:
     except Exception:
         ok = False
 finally:
-    for p in c.allNodes_iter():
+    for p in c.all_positions():
         if p.v in marks:
             if not p.isMarked():
                 c.setMarked(p)
@@ -4847,7 +4842,7 @@ finally:
                 c.clearMarked(p)
                 
 if not ok: raise</t>
-<t tx="ekr.20050512083807" annotate="7d71002e">marks = [p.v for p in c.allNodes_iter() if p.isMarked()]
+<t tx="ekr.20050512083807" annotate="7d71002e">marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
     try:
@@ -4855,7 +4850,7 @@ try:
     except Exception:
         ok = False
 finally:
-    for p in c.allNodes_iter():
+    for p in c.all_positions():
         if p.v in marks:
             if not p.isMarked():
                 c.setMarked(p)
@@ -4864,7 +4859,7 @@ finally:
                 c.clearMarked(p)
                 
 if not ok: raise</t>
-<t tx="ekr.20050512083807.1" annotate="7d71002e">marks = [p.v for p in c.allNodes_iter() if p.isMarked()]
+<t tx="ekr.20050512083807.1" annotate="7d71002e">marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
     try:
@@ -4872,7 +4867,7 @@ try:
     except Exception:
         ok = False
 finally:
-    for p in c.allNodes_iter():
+    for p in c.all_positions():
         if p.v in marks:
             if not p.isMarked():
                 c.setMarked(p)
@@ -4881,7 +4876,7 @@ finally:
                 c.clearMarked(p)
                 
 if not ok: raise</t>
-<t tx="ekr.20050512083807.2" annotate="7d71002e">marks = [p.v for p in c.allNodes_iter() if p.isMarked()]
+<t tx="ekr.20050512083807.2" annotate="7d71002e">marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
     try:
@@ -4889,7 +4884,7 @@ try:
     except Exception:
         ok = False
 finally:
-    for p in c.allNodes_iter():
+    for p in c.all_positions():
         if p.v in marks:
             if not p.isMarked():
                 c.setMarked(p)
@@ -4898,7 +4893,7 @@ finally:
                 c.clearMarked(p)
                 
 if not ok: raise</t>
-<t tx="ekr.20050512083816" annotate="7d71002e">marks = [p.v for p in c.allNodes_iter() if p.isMarked()]
+<t tx="ekr.20050512083816" annotate="7d71002e">marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
     try:
@@ -4906,7 +4901,7 @@ try:
     except Exception:
         ok = False
 finally:
-    for p in c.allNodes_iter():
+    for p in c.all_positions():
         if p.v in marks:
             if not p.isMarked():
                 c.setMarked(p)
@@ -4915,7 +4910,7 @@ finally:
                 c.clearMarked(p)
                 
 if not ok: raise</t>
-<t tx="ekr.20050512083822" annotate="7d71002e">marks = [p.v for p in c.allNodes_iter() if p.isMarked()]
+<t tx="ekr.20050512083822" annotate="7d71002e">marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
     try:
@@ -4923,7 +4918,7 @@ try:
     except Exception:
         ok = False
 finally:
-    for p in c.allNodes_iter():
+    for p in c.all_positions():
         if p.v in marks:
             if not p.isMarked():
                 c.setMarked(p)
@@ -4932,7 +4927,7 @@ finally:
                 c.clearMarked(p)
                 
 if not ok: raise</t>
-<t tx="ekr.20050512083822.1" annotate="7d71002e">marks = [p.v for p in c.allNodes_iter() if p.isMarked()]
+<t tx="ekr.20050512083822.1" annotate="7d71002e">marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
     try:
@@ -4940,7 +4935,7 @@ try:
     except Exception:
         ok = False
 finally:
-    for p in c.allNodes_iter():
+    for p in c.all_positions():
         if p.v in marks:
             if not p.isMarked():
                 c.setMarked(p)
@@ -4949,7 +4944,7 @@ finally:
                 c.clearMarked(p)
                 
 if not ok: raise</t>
-<t tx="ekr.20050512083822.2" annotate="7d71002e">marks = [p.v for p in c.allNodes_iter() if p.isMarked()]
+<t tx="ekr.20050512083822.2" annotate="7d71002e">marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
     try:
@@ -4957,7 +4952,7 @@ try:
     except Exception:
         ok = False
 finally:
-    for p in c.allNodes_iter():
+    for p in c.all_positions():
         if p.v in marks:
             if not p.isMarked():
                 c.setMarked(p)
@@ -11370,7 +11365,6 @@ vals2.sort()
 for val in vals2:
     if val not in keys1:
         assert False, '%s not in commandsDict.keys()' % (val)</t>
-<t tx="ekr.20060211135917">assert type(c.getTime()) == type('')</t>
 <t tx="ekr.20060325071703.1">import sys
 
 win32  = c.config.getBool('test_win32_setting')
@@ -11480,7 +11474,9 @@ for v1,condition,v2 in (
     ('1','&lt;','1.1'),
 ):
     assert g.CheckVersion(v1,v2,condition=condition,trace=False)</t>
-<t tx="ekr.20061001091616">fc = c.fileCommands
+<t tx="ekr.20061001091616"># putDescendantTnodeUas is redundant and should never be called.
+
+fc = c.fileCommands
 child = p.firstChild()
 grandChild = child.firstChild()
 # Note: only tnodes can have unknown attributes.
@@ -17398,7 +17394,7 @@ child.doDelete()
 assert not c.positionExists(child)</t>
 <t tx="ekr.20090102062037.2">root = c.rootPosition()
 
-for p in c.allNodes_iter():
+for p in c.all_positions():
     assert c.positionExists(p,root)</t>
 <t tx="ekr.20090104053806.1"># Disabled because modifying errorTest.py creates annoying bzr conflicts.
 
@@ -17456,7 +17452,7 @@ assert v.h == h
 t.h = h
 assert t.h == h
 
-for p in c.allNodes_iter():
+for p in c.all_positions():
     assert p.b == p.bodyString()
     assert p.v.b == p.v.bodyString()
     assert p.v.t.b == p.v.t.bodyString()
@@ -21913,35 +21909,27 @@ assert  tangle_dir == expectedDir,'expected: %s got: %s' % (
 tangle_fn = d.get('tangle_output_fn')
 assert expectedFn == tangle_fn,'expected: %s got: %s' % (
     expectedFn,tangle_fn)</t>
-<t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
+<t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
+# adjust accordingly
+
+# These seem to fail if various nodes are cloned.
 import random,fnmatch
 
-all_h = [po.h for po in c.find_h('.')]
+all_h = [z.copy().h for z in c.find_h('.')]
 
 assert len(all_h) &gt; 1000
-
-#for p in c.allNodes_iter():
-#    all_h.append(p.h)
-#    print p.h
     
 sample = random.sample(all_h, 20)    
 
-#test that all nodes are found at least once
-
+# Test that all nodes are found at least once.
 for h in sample:
     pat = fnmatch.translate(h)
     pl = c.find_h(pat)
-    #print pl,h
     assert len(pl) &gt; 0 and len(pl) &lt; len(all_h)
-    #print pl
 
 tests = c.find_h('@test(.*)')
 
-#print tests
-
-# some of then have allNodes_iter
-bm = tests.select_b('(.*)allNodes_iter')
-#print bm
+bm = tests.select_b('(.*)all_positions')
 forloops = 0
 for node in bm:   
     # many of these are for loops
@@ -21952,14 +21940,13 @@ for node in bm:
 assert forloops &gt; 10
 
 # all of these should also be found by find_b
-
-all_bm = c.find_b('(.*)allNodes_iter')
+all_bm = c.find_b('(.*)all_positions')
 assert len(all_bm) &gt;= len(bm)
 
 assert set(el.h for el in bm).issubset(set(el.h for el in all_bm))
 
 itertest = c.find_h('@test p.iters and v.iters')
-assert len(itertest) == 1
+assert len(itertest) &gt;= 1
 tn = itertest[0]
 assert tn.h == '@test p.iters and v.iters'
 assert len(itertest.select_b('notfound, really')) == 0
@@ -21974,9 +21961,7 @@ assert len(chi_b) == 2
 assert chi_b[0].h == chi_b[1].h == 'b'
 chi_e = chi.select_h('d').select_h('e')
 assert len(chi_e) == 1
-assert chi_e[0].h == 'e'
-
-</t>
+assert chi_e[0].h == 'e'</t>
 <t tx="ville.20090313183551.2"># test the controller-specific pickleshare db
 v = [1212,121131313, { 'hello' : (121,'world')} ]
 c.db['leo_utest'] = v

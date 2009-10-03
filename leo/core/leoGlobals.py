@@ -455,7 +455,8 @@ def findTabWidthDirectives(c,p):
         return # c may be None for testing.
 
     w = None
-    for p in p.self_and_parents_iter(copy=True):
+    # 2009/10/02: no need for copy arg to iter
+    for p in p.self_and_parents():
         if w: break
         for s in p.h,p.b:
             if w: break
@@ -484,7 +485,8 @@ def findLanguageDirectives(c,p):
     else:
         language = 'python'
     found = False
-    for p in p.self_and_parents_iter(copy=True):
+    # 2009/10/02: no need for copy arg to iter.
+    for p in p.self_and_parents():
         if found: break
         for s in p.h,p.b:
             if found: break
@@ -512,7 +514,7 @@ def findLanguageDirectives(c,p):
 
 def findReference(c,name,root):
 
-    for p in root.subtree_iter():
+    for p in root.subtree():
         assert(p!=root)
         if p.matchHeadline(name) and not p.isAtIgnoreNode():
             return p
@@ -596,7 +598,7 @@ def get_directives_dict_list(p1):
 
     result = [] ; p1 = p1.copy()
 
-    for p in p1.self_and_parents_iter():
+    for p in p1.self_and_parents():
         if p.hasParent(): root = None
         else:             root = [p.copy()]
         result.append(g.get_directives_dict(p,root=root))
@@ -806,7 +808,7 @@ def scanForAtIgnore(c,p):
     if g.app.unitTesting:
         return False # For unit tests.
 
-    for p in p.self_and_parents_iter():
+    for p in p.self_and_parents():
         d = g.get_directives_dict(p)
         if 'ignore' in d:
             return True
@@ -823,7 +825,7 @@ def scanForAtLanguage(c,p):
     # Unlike the code in x.scanAllDirectives, this code ignores @comment directives.
 
     if c and p:
-        for p in p.self_and_parents_iter():
+        for p in p.self_and_parents():
             d = g.get_directives_dict(p)
             if 'language' in d:
                 z = d["language"]
@@ -837,7 +839,7 @@ def scanForAtSettings(p):
 
     """Scan position p and its ancestors looking for @settings nodes."""
 
-    for p in p.self_and_parents_iter():
+    for p in p.self_and_parents():
         h = p.h
         h = g.app.config.canonicalizeSettingName(h)
         if h.startswith("@settings"):
@@ -1700,7 +1702,7 @@ def printEntireTree(c,tag=''):
 
     g.pr('printEntireTree','=' * 50)
     g.pr('printEntireTree',tag,'root',c.rootPosition())
-    for p in c.allNodes_iter():
+    for p in c.all_positions():
         g.pr('..'*p.level(),p.v)
 #@nonl
 #@-node:ekr.20070510074941:g.printEntireTree
@@ -2060,29 +2062,34 @@ def print_stack():
 printStack = print_stack
 #@-node:ekr.20041122153823:print_stack (printStack)
 #@+node:ekr.20031218072017.3129:Sherlock... (trace)
-#@+at 
-#@nonl
+#@+at
 # Starting with this release, you will see trace statements throughout the 
-# code.  The trace function is defined in leoGlobals.py; trace implements much 
-# of the functionality of my Sherlock tracing package.  Traces are more 
-# convenient than print statements for two reasons: 1) you don't need explicit 
-# trace names and 2) you can disable them without recompiling.
+# code.
+# The trace function is defined in leoGlobals.py; trace implements much of the
+# functionality of my Sherlock tracing package. Traces are more convenient 
+# than
+# print statements for two reasons: 1) you don't need explicit trace names and 
+# 2)
+# you can disable them without recompiling.
 # 
 # In the following examples, suppose that the call to trace appears in 
 # function f.
 # 
-# g.trace(string) prints string if tracing for f has been enabled.  For 
-# example, the following statment prints from s[i] to the end of the line if 
-# tracing for f has been enabled.
+# g.trace(string) prints string if tracing for f has been enabled. For 
+# example,
+# the following statment prints from s[i] to the end of the line if tracing 
+# for f
+# has been enabled.
 # 
 #   j = g.skip_line(s,i) ; g.trace(s[i:j])
 # 
-# g.trace(function) exectutes the function if tracing for f has been enabled.  
-# For example,
+# g.trace(function) exectutes the function if tracing for f has been enabled. 
+# For
+# example,
 # 
 #   g.trace(self.f2)
 # 
-# You enable and disable tracing by calling g.init_trace(args).  Examples:
+# You enable and disable tracing by calling g.init_trace(args). Examples:
 # 
 #   g.init_trace("+*")         # enable all traces
 #   g.init_trace("+a","+b")    # enable traces for a and b
@@ -2091,13 +2098,16 @@ printStack = print_stack
 #   traces = g.init_trace("?") # return the list of enabled traces
 # 
 # If two arguments are supplied to trace, the first argument is the 
-# "tracepoint name" and the second argument is the "tracepoint action" as 
-# shown in the examples above.  If tracing for the tracepoint name is enabled, 
-# the tracepoint action is printed (if it is a string) or exectuted (if it is 
-# a function name).
+# "tracepoint
+# name" and the second argument is the "tracepoint action" as shown in the
+# examples above. If tracing for the tracepoint name is enabled, the 
+# tracepoint
+# action is printed (if it is a string) or exectuted (if it is a function 
+# name).
 # 
 # "*" will not match an explicit tracepoint name that starts with a minus 
-# sign.  For example,
+# sign.
+# For example,
 # 
 #   g.trace_tag("-nocolor", self.disable_color)
 #@-at
@@ -3819,7 +3829,7 @@ class posList(list):
             # such that p.h matches the pattern.
             # The pattern is a regular expression if regex is True.
             # if removeClones is True, all positions p2 are removed
-            # if a position p is already in the list and p2.v.t == p.v.t.
+            # if a position p is already in the list and p2.v == p.v.
 
         aList.dump(sort=False,verbose=False)
             # Prints all positions in aList, sorted if sort is True.
@@ -3831,7 +3841,7 @@ class posList(list):
         self.c = c
         list.__init__(self) # Init the base class
         if aList is None:
-            for p in c.allNodes_iter():
+            for p in c.all_positions():
                 self.append(p.copy())
         else:
             for p in aList:
@@ -3860,8 +3870,8 @@ class posList(list):
     def removeClones(self,aList):
         seen = {} ; aList2 = []
         for p in aList:
-            if p.v.t not in seen:
-                seen[p.v.t] = p.v.t
+            if p.v not in seen:
+                seen[p.v] = p.v
                 aList2.append(p)
         return aList2
 #@-node:ekr.20090128083459.82:g.posList
@@ -5104,7 +5114,7 @@ def findNodeInChildren(c,p,headline):
 
     """Search for a node in v's tree matching the given headline."""
 
-    for p in p.children_iter():
+    for p in p.children():
         if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
@@ -5113,21 +5123,21 @@ def findNodeInTree(c,p,headline):
 
     """Search for a node in v's tree matching the given headline."""
 
-    for p in p.subtree_iter():
+    for p in p.subtree():
         if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
 
 def findNodeAnywhere(c,headline):
 
-    for p in c.all_positions_with_unique_tnodes_iter():
+    for p in c.all_unique_positions():
         if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
 
 def findTopLevelNode(c,headline):
 
-    for p in c.rootPosition().self_and_siblings_iter():
+    for p in c.rootPosition().self_and_siblings():
         if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()

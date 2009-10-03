@@ -1417,7 +1417,7 @@ class leoSwingFrame (leoFrame.leoFrame):
         # Using a dict here is essential for adequate speed.
         vList = [] ; tDict = {}
 
-        for p in c.allNodes_iter():
+        for p in c.all_positions():
             vList.append(p.v)
             if p.v.t:
                 key = id(p.v.t)
@@ -6542,7 +6542,7 @@ class leoSwingTree (leoFrame.leoTree):
             if trace: g.trace('does not exist',p.h)
             return h,False # An extra precaution.
         p = p.copy()
-        for p2 in p.self_and_siblings_iter():  # was p.siblings_iter
+        for p2 in p.self_and_siblings():
             print "yoffsetTree:", p2
             if p2 == p1:
                 if trace: g.trace(p.h,p1.h,h)
@@ -7227,7 +7227,7 @@ class leoSwingTree (leoFrame.leoTree):
         isAtFile = False
         isAtRoot = False
 
-        for v2 in v.self_and_subtree_iter():
+        for v2 in v.self_and_subtree():
             if isAtFile and isAtRoot:
                 break
             if (v2.isAtFileNode() or

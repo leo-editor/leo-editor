@@ -104,7 +104,7 @@ def onSelect (tag,keywords):
 #@-node:tbrown.20080613095157.4:onSelect
 #@+node:tbrown.20080616153649.4:getPath
 def getPath(c, p):
-    for n in p.self_and_parents_iter():
+    for n in p.self_and_parents():
         if n.h.startswith('@path'):
             break
     else:
@@ -159,7 +159,7 @@ def flattenOrganizers(p):
             nodeF
             nodeG    
     """    
-    for n in p.children_iter():
+    for n in p.children():
         yield n
         if (not isDirNode(n)
             and not n.h.startswith('@')):
@@ -286,7 +286,7 @@ def openDir(c,parent,d):
         else:
             nh = '*'+p.h.strip('*')+'*'
             if isDirNode(p):
-                for orphan in p.subtree_iter():
+                for orphan in p.subtree():
                     c.setHeadString(orphan, '*'+orphan.h.strip('*')+'*')
         if p.h != nh:  # don't dirty node unless we must
             c.setHeadString(p,nh)
@@ -326,7 +326,7 @@ def cmd_UpdateRecursive(c):
     """Recursive update, no new expansions."""
     p = c.p
 
-    for s in p.self_and_subtree_iter():
+    for s in p.self_and_subtree():
         path = getPath(c, s)
 
         if path:
@@ -340,7 +340,7 @@ def cmd_LoadRecursive(c):
     """Recursive update, with expansions."""
     p = c.p
 
-    for s in p.self_and_subtree_iter():
+    for s in p.self_and_subtree():
         path = getPath(c, s)
 
         if path:
@@ -384,7 +384,7 @@ def cmd_PurgeVanishedFilesRecursive(c):
 
 def deleteChildren(p, cond, dtor=None):
 
-    cull = [child.copy() for child in p.children_iter() if cond(child)]
+    cull = [child.copy() for child in p.children() if cond(child)]
 
     if cull:
         cull.reverse()
@@ -399,7 +399,7 @@ def deleteChildren(p, cond, dtor=None):
 
 def deleteDescendents(p, cond, dtor=None, descendAnyway=False, _culls=0):
 
-    childs = [child.copy() for child in p.children_iter()]
+    childs = [child.copy() for child in p.children()]
     childs.reverse()
     for child in childs:
         if descendAnyway or not cond(child):

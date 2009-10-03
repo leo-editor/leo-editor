@@ -371,8 +371,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         insert = keys.get('insert')
         i,j = self.toGuiIndex(i),self.toGuiIndex(j)
 
-        ### if i > j: i,j = j,i
-
         return self.setSelectionRangeHelper(i,j,insert)
     #@+node:ekr.20081121105001.534:setSelectionRangeHelper
     def setSelectionRangeHelper(self,i,j,insert):
@@ -421,8 +419,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         newSel = w.getSelectionRange()
         newText = w.getAllText() # Converts to unicode.
 
-        # Get the previous values from the tnode.
-        oldText = g.app.gui.toUnicode(p.v.t._bodyString)
+        # Get the previous values from the vnode.
+        oldText = g.app.gui.toUnicode(p.v._bodyString)
         if oldText == newText:
             # This can happen as the result of undo.
             # g.trace('*** unexpected non-change',color="red")
@@ -430,8 +428,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         if trace: g.trace('**',len(newText),p.h,'\n',g.callers(8))
 
-        oldIns  = p.v.t.insertSpot
-        i,j = p.v.t.selectionStart,p.v.t.selectionLength
+        oldIns  = p.v.insertSpot
+        i,j = p.v.selectionStart,p.v.selectionLength
         oldSel  = (i,j-i)
         oldYview = None
         undoType = 'Typing'
@@ -439,13 +437,13 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             oldText=oldText,newText=newText,
             oldSel=oldSel,newSel=newSel,oldYview=oldYview)
 
-        # Update the tnode.
+        # Update the vnode.
         p.v.setBodyString(newText)
-        p.v.t.insertSpot = newInsert
+        p.v.insertSpot = newInsert
         i,j = newSel
         i,j = self.toGuiIndex(i),self.toGuiIndex(j)
         if i > j: i,j = j,i
-        p.v.t.selectionStart,p.v.t.selectionLength = (i,j-i)
+        p.v.selectionStart,p.v.selectionLength = (i,j-i)
 
         # No need to redraw the screen.
         if not self.useScintilla:
@@ -2881,7 +2879,7 @@ class leoQtBody (leoFrame.leoBody):
             return True
         else:
             if trace: g.trace('***** does not exist',w.leo_name)
-            for p2 in c.all_positions_with_unique_vnodes_iter():
+            for p2 in c.all_unique_positions():
                 if p2.v and p2.v == w.leo_p.v:
                     if trace: g.trace(p2.h)
                     w.leo_p = p2.copy()
@@ -3750,26 +3748,15 @@ class leoQtFrame (leoFrame.leoFrame):
         # g.printGcAll()
 
         # Do this first.
-        #@    << clear all vnodes and tnodes in the tree >>
-        #@+node:ekr.20081121105001.259:<< clear all vnodes and tnodes in the tree>>
-        # Using a dict here is essential for adequate speed.
-        vList = [] ; tDict = {}
-
-        for p in c.all_positions_with_unique_vnodes_iter():
-            vList.append(p.v)
-            if p.v.t:
-                key = id(p.v.t)
-                if key not in tDict:
-                    tDict[key] = p.v.t
-
-        for key in tDict:
-            g.clearAllIvars(tDict[key])
+        #@    << clear all vnodes in the tree >>
+        #@+node:ekr.20081121105001.259:<< clear all vnodes in the tree>>
+        vList = [z for z in c.all_unique_nodes()]
 
         for v in vList:
             g.clearAllIvars(v)
 
-        vList = [] ; tDict = {} # Remove these references immediately.
-        #@-node:ekr.20081121105001.259:<< clear all vnodes and tnodes in the tree>>
+        vList = [] # Remove these references immediately.
+        #@-node:ekr.20081121105001.259:<< clear all vnodes in the tree>>
         #@nl
 
         if 1:
@@ -7342,7 +7329,7 @@ class QuickHeadlines:
         self.requested = False
         self.listWidget.clear()
         p = self.c.currentPosition()
-        for n in p.children_iter():
+        for n in p.children():
             self.listWidget.addItem(n.h)
 
 
@@ -7922,7 +7909,7 @@ class leoQtColorizer:
         self.language = language = c.target_language
         self.rootMode = None # None, "code" or "doc"
 
-        for p in p.self_and_parents_iter():
+        for p in p.self_and_parents():
             theDict = g.get_directives_dict(p)
             #@        << Test for @language >>
             #@+node:ekr.20090226105328.13:<< Test for @language >>
@@ -8004,7 +7991,7 @@ class leoQtColorizer:
         p = p.copy()
         first = True ; kind = None ; val = True
         self.killColorFlag = False
-        for p in p.self_and_parents_iter():
+        for p in p.self_and_parents():
             d = self.findColorDirectives(p)
             color,no_color = 'color' in d,'nocolor' in d
             # An @nocolor-node in the first node disabled coloring.

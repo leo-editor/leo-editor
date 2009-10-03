@@ -259,7 +259,7 @@ class scriptingController:
         # Last, scan for user-defined nodes.
         def startswith(p,s):
             return g.match_word(p.h,0,s)
-        for p in c.allNodes_iter():
+        for p in c.all_positions():
             if self.atButtonNodes and startswith(p,'@button'): 
                 self.handleAtButtonNode(p)
             if self.atCommandsNodes and startswith(p,'@command'):

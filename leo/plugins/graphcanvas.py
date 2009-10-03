@@ -170,9 +170,9 @@ class graphcanvasController(object):
     def loadGraph(self, what='node', pnt=None):
 
         if what == 'sibs':
-            collection = self.c.currentPosition().self_and_siblings_iter()
+            collection = self.c.currentPosition().self_and_siblings()
         elif what == 'recur':
-            collection = self.c.currentPosition().subtree_iter()
+            collection = self.c.currentPosition().subtree()
         else:
             collection = [self.c.currentPosition()]
 

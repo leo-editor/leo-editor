@@ -450,8 +450,7 @@ if sys.platform != 'cli':
             for bunch in self.attrsToList(attrs):
                 name = bunch.name ; val = bunch.val
                 if name != 'tx':
-                    ### Huge bug fix: 2009/7/1
-                    ### The old code used just node = self.node!
+                    # Huge bug fix: 2009/7/1: was node == self.node.
                     for node in self.nodeList:
                         if trace: g.trace('%s %s=%s...' % (node,name,val[:20]))
                         node.tnodeAttributes[name] = val
@@ -689,15 +688,15 @@ class baseFileCommands:
         checkAfterRead = False or c.config.getBool('check_outline_after_read')
 
         # Save the hidden root's children.
-        children = c.hiddenRootNode.t.children
+        children = c.hiddenRootNode.children
 
         # Always recreate the tnodesDict
         self.tnodesDict = {}
         if not reassignIndices:
             x = g.app.nodeIndices
-            for t in c.all_unique_tnodes_iter():
-                index = x.toString(t.fileIndex)
-                self.tnodesDict[index] = t
+            for v in c.all_unique_nodes():
+                index = x.toString(v.fileIndex)
+                self.tnodesDict[index] = v
 
         self.usingClipboard = True
         try:
@@ -715,7 +714,7 @@ class baseFileCommands:
             self.usingClipboard = False
 
         # Restore the hidden root's children
-        c.hiddenRootNode.t.children = children
+        c.hiddenRootNode.children = children
 
         # Unlink v from the hidden root.
         v.parents.remove(c.hiddenRootNode)
@@ -734,10 +733,10 @@ class baseFileCommands:
             p._linkAfter(current,adjust=False)
 
         if reassignIndices:
-            for p2 in p.self_and_subtree_iter():
+            for p2 in p.self_and_subtree():
                 # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
                 # if trace: g.trace('***reassign',p2.v)
-                p2.v.t.fileIndex = g.app.nodeIndices.getNewIndex()
+                p2.v.fileIndex = g.app.nodeIndices.getNewIndex()
 
         if trace and verbose:
             g.trace('**** dumping outline...')
@@ -758,12 +757,12 @@ class baseFileCommands:
 
         if not parent: return True
 
-        parents = [z.copy() for z in parent.self_and_parents_iter()]
+        parents = [z.copy() for z in parent.self_and_parents()]
 
-        for p in p.self_and_subtree_iter():
+        for p in p.self_and_subtree():
             for z in parents:
-                # g.trace(p.h,id(p.v.t),id(z.v.t))
-                if p.v.t == z.v.t:
+                # g.trace(p.h,id(p.v),id(z.v))
+                if p.v == z.v:
                     g.es('Invalid paste: nodes may not descend from themselves',color="blue")
                     return False
 
@@ -873,31 +872,6 @@ class baseFileCommands:
     #@-node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
     #@-node:ekr.20031218072017.1554:warnOnReadOnlyFiles
     #@-node:ekr.20031218072017.1553:getLeoFile & helpers
-    #@+node:ekr.20031218072017.2009:newTnode (fileCommands)
-    def newTnode(self,index):
-
-        c = self.c
-
-        t = leoNodes.vnode(context=c)
-
-        if index in self.tnodesDict:
-            g.es("bad tnode index:",str(index),"using empty text.")
-            return t
-        else:
-            # Create the tnode.
-            # Use the _original_ index as the key in tnodesDict.
-            self.tnodesDict[index] = t
-
-            if not g.isString(index):
-                g.es("newTnode: unexpected index type:",type(index),index,color="red")
-
-            # Convert any pre-4.1 index to a gnx.
-            junk,theTime,junk = gnx = g.app.nodeIndices.scanGnx(index,0)
-            if theTime != None:
-                t.fileIndex = gnx
-
-            return t
-    #@-node:ekr.20031218072017.2009:newTnode (fileCommands)
     #@+node:ekr.20031218072017.3029:readAtFileNodes (fileCommands)
     def readAtFileNodes (self):
 
@@ -1034,10 +1008,10 @@ class baseFileCommands:
             if trace: g.trace('t.dict',resultDict)
             for gnx in resultDict:
                 tref = self.canonicalTnodeIndex(gnx)
-                t = self.tnodesDict.get(tref)
-                if t:
-                    t.unknownAttributes = resultDict[gnx]
-                    t._p_changed = 1
+                v = self.tnodesDict.get(tref)
+                if v:
+                    v.unknownAttributes = resultDict[gnx]
+                    v._p_changed = 1
                 elif verbose:
                     g.trace('can not find tnode (duA): gnx = %s' % (gnx),color='red')
 
@@ -1056,26 +1030,26 @@ class baseFileCommands:
         marks = {} ; expanded = {}
         for gnx in self.descendentExpandedList:
             tref = self.canonicalTnodeIndex(gnx)
-            t = self.tnodesDict.get(gnx)
-            if t: expanded[t]=t
+            v = self.tnodesDict.get(gnx)
+            if v: expanded[v]=v
             elif verbose:
                 g.trace('can not find tnode (expanded): gnx = %s, tref: %s' % (gnx,tref),color='red')
 
         for gnx in self.descendentMarksList:
             tref = self.canonicalTnodeIndex(gnx)
-            t = self.tnodesDict.get(gnx)
-            if t: marks[t]=t
+            v = self.tnodesDict.get(gnx)
+            if v: marks[v]=v
             elif verbose:
                 g.trace('can not find tnode (marks): gnx = %s tref: %s' % (gnx,tref),color='red')
 
         if marks or expanded:
             # g.trace('marks',len(marks),'expanded',len(expanded))
-            for p in c.all_positions_with_unique_vnodes_iter():
-                if marks.get(p.v.t):
+            for p in c.all_unique_positions():
+                if marks.get(p.v):
                     p.v.initMarkedBit()
                         # This was the problem: was p.setMark.
                         # There was a big performance bug in the mark hook in the Node Navigator plugin.
-                if expanded.get(p.v.t):
+                if expanded.get(p.v):
                     p.expand()
     #@-node:EKR.20040627120120:restoreDescendentAttributes
     #@-node:ekr.20060919133249:Common
@@ -1116,12 +1090,12 @@ class baseFileCommands:
 
         for sax_child in sax_node.children:
             tnx = sax_child.tnx
-            t = self.tnodesDict.get(tnx)
+            v = self.tnodesDict.get(tnx)
 
-            if t:
+            if v:
                 # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
-                if trace: g.trace('**clone',t)
-                v = self.createSaxVnode(sax_child,parent_v,t=t)   
+                if trace: g.trace('**clone',v)
+                v = self.createSaxVnode(sax_child,parent_v,v=v)   
             else:
                 v = self.createSaxVnode(sax_child,parent_v)
                 self.createSaxChildren(sax_child,v)
@@ -1137,46 +1111,40 @@ class baseFileCommands:
 
         return children
     #@+node:ekr.20060919110638.7:createSaxVnode & helpers
-    def createSaxVnode (self,sax_node,parent_v,t=None):
+    def createSaxVnode (self,sax_node,parent_v,v=None):
 
         c = self.c
         trace = False and not g.unitTesting # and c.shortFileName().find('small') > -1
         h = sax_node.headString
         b = sax_node.bodyString
 
-        if t:
-            # t is really a vnode.
+        if v:
             # The body of the later node overrides the earlier.
             # Don't set t.h: h is always empty.
-            t.b = b 
+            v.b = b 
         else:
-            t = leoNodes.vnode(context=c)
-            t.setBodyString(b)
-            t.setHeadString(h)
+            v = leoNodes.vnode(context=c)
+            v.setBodyString(b)
+            v.setHeadString(h)
 
             if sax_node.tnx:
-                t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
-
-        v = t
+                v.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
         index = self.canonicalTnodeIndex(sax_node.tnx)
-        self.tnodesDict [index] = t
+        self.tnodesDict [index] = v
 
         if trace: g.trace(
             'tnx','%-22s' % (index),'v',id(v),
-            # 'v.t',id(v.t),
             'len(body)','%-4d' % (len(b)),h)
 
         self.handleVnodeSaxAttributes(sax_node,v)
-        self.handleTnodeSaxAttributes(sax_node,t)
+        self.handleTnodeSaxAttributes(sax_node,v)
 
         return v
     #@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
-    def handleTnodeSaxAttributes (self,sax_node,t):
+    def handleTnodeSaxAttributes (self,sax_node,v):
 
         trace = False and not g.unitTesting
-        ### Huge bug fix. 2009/7/1.
-        ### d = sax_node.attributes
         d = sax_node.tnodeAttributes
         if trace and d: g.trace(sax_node,d.keys())
 
@@ -1188,8 +1156,8 @@ class baseFileCommands:
             aDict[key] = val2
 
         if aDict:
-            if trace: g.trace('uA',t,aDict.keys())
-            t.unknownAttributes = aDict
+            if trace: g.trace('uA',v,aDict.keys())
+            v.unknownAttributes = aDict
     #@+node:ekr.20090702070510.6028:@test handleTnodeSaxAttributes
     if g.unitTesting:
 
@@ -1531,19 +1499,19 @@ class baseFileCommands:
         trace = False and not g.unitTesting
         c = self.c
 
-        for p in c.all_positions_with_unique_vnodes_iter():
+        for p in c.all_unique_positions():
             if hasattr(p.v,'tempTnodeList'):
                 # g.trace(p.v.headString())
                 result = []
                 for tnx in p.v.tempTnodeList:
                     index = self.canonicalTnodeIndex(tnx)
-                    t = self.tnodesDict.get(index)
-                    if t:
-                        if trace: g.trace(tnx,t)
-                        result.append(t)
+                    v = self.tnodesDict.get(index)
+                    if v:
+                        if trace: g.trace(tnx,v)
+                        result.append(v)
                     else:
                         g.trace('*** No tnode for %s' % tnx)
-                p.v.t.tnodeList = result
+                p.v.tnodeList = result
                 delattr(p.v,'tempTnodeList')
     #@nonl
     #@-node:ekr.20060919110638.11:resolveTnodeLists
@@ -1763,10 +1731,10 @@ class baseFileCommands:
             #@+node:ekr.20031218072017.1972:<< count the number of tnodes >>
             c.clearAllVisited()
 
-            for p in c.p.self_and_subtree_iter():
-                t = p.v.t
-                if t and not t.isWriteBit():
-                    t.setWriteBit()
+            for p in c.p.self_and_subtree():
+                v = p.v
+                if v and not v.isWriteBit():
+                    v.setWriteBit()
                     tnodes += 1
             #@-node:ekr.20031218072017.1972:<< count the number of tnodes >>
             #@nl
@@ -1915,18 +1883,18 @@ class baseFileCommands:
     #@nonl
     #@-node:ekr.20031218072017.1248:putStyleSheetLine
     #@+node:ekr.20031218072017.1577:putTnode
-    def putTnode (self,t):
+    def putTnode (self,v):
 
         # Could be eliminated.
-        # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
-        if not t.fileIndex:
-            g.trace('can not happen: no index for tnode',t)
-            t.fileIndex = g.app.nodeIndices.getNewIndex()
+        # New in Leo 4.4.8.  Assign v.fileIndex here as needed.
+        if not v.fileIndex:
+            g.trace('can not happen: no index for tnode',v)
+            v.fileIndex = g.app.nodeIndices.getNewIndex()
 
         # New in Leo 4.4.2 b2: call put just once.
-        gnx = g.app.nodeIndices.toString(t.fileIndex)
-        ua = hasattr(t,'unknownAttributes') and self.putUnknownAttributes(t) or ''
-        b = t.b
+        gnx = g.app.nodeIndices.toString(v.fileIndex)
+        ua = hasattr(v,'unknownAttributes') and self.putUnknownAttributes(v) or ''
+        b = v.b
         if b:
             # Convert to encoded string ????
             # b = g.toEncodedString(b,self.leo_file_encoding,reportErrors=True)
@@ -1947,9 +1915,9 @@ class baseFileCommands:
         #@    << write only those tnodes that were referenced >>
         #@+node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
         if self.usingClipboard: # write the current tree.
-            theIter = c.p.self_and_subtree_iter()
+            theIter = c.p.self_and_subtree()
         else: # write everything
-            theIter = c.all_positions_with_unique_tnodes_iter()
+            theIter = c.all_unique_positions()
 
         # Populate tnodes
         tnodes = {}
@@ -1957,19 +1925,19 @@ class baseFileCommands:
         for p in theIter:
             # Could be eliminated. 
             # New in Leo 4.4.8: assign file indices here.
-            if not p.v.t.fileIndex:
-                p.v.t.fileIndex = nodeIndices.getNewIndex()
-            tnodes[p.v.t.fileIndex] = p.v.t
+            if not p.v.fileIndex:
+                p.v.fileIndex = nodeIndices.getNewIndex()
+            tnodes[p.v.fileIndex] = p.v
 
         # Put all tnodes in index order.
         for index in sorted(tnodes):
             # g.trace(index)
-            t = tnodes.get(index)
-            if not t:
+            v = tnodes.get(index)
+            if not v:
                 g.trace('can not happen: no tnode for',index)
             # Write only those tnodes whose vnodes were written.
-            if t.isWriteBit():
-                self.putTnode(t)
+            if v.isWriteBit():
+                self.putTnode(v)
         #@nonl
         #@-node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
         #@nl
@@ -1998,14 +1966,14 @@ class baseFileCommands:
         #@    << Set gnx = tnode index >>
         #@+node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
         # Could be eliminated.
-        # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
-        if not v.t.fileIndex:
-            v.t.fileIndex = g.app.nodeIndices.getNewIndex()
+        # New in Leo 4.4.8.  Assign v.fileIndex here as needed.
+        if not v.fileIndex:
+            v.fileIndex = g.app.nodeIndices.getNewIndex()
 
-        gnx = g.app.nodeIndices.toString(v.t.fileIndex)
+        gnx = g.app.nodeIndices.toString(v.fileIndex)
 
         if forceWrite or self.usingClipboard:
-            v.t.setWriteBit() # 4.2: Indicate we wrote the body text.
+            v.setWriteBit() # 4.2: Indicate we wrote the body text.
         #@-node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
         #@nl
         attrs = []
@@ -2049,14 +2017,14 @@ class baseFileCommands:
         # Write the tnodeList only for @file nodes.
         # New in 4.2: tnode list is in tnode.
 
-        if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
+        if hasattr(v,"tnodeList") and len(v.tnodeList) > 0 and v.isAnyAtFileNode():
             if isThin or isShadow or isAuto:  # Bug fix: 2008/8/7.
                 if isThin or isShadow: # Never issue warning for @auto.
                     if g.app.unitTesting:
                         g.app.unitTestDict["warning"] = True
                     g.es("deleting tnode list for",p.h,color="blue")
                 # This is safe: cloning can't change the type of this node!
-                delattr(v.t,"tnodeList")
+                delattr(v,"tnodeList")
             else:
                 attrs.append(fc.putTnodeList(v)) # New in 4.0
 
@@ -2067,7 +2035,7 @@ class baseFileCommands:
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
             # We put the entire tree when using the clipboard, so no need for this.
             if not isAuto: # Bug fix: 2008/8/7.
-                attrs.append(self.putDescendentTnodeUas(p))
+                ### attrs.append(self.putDescendentTnodeUas(p))
                 attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
                 attrs.append(self.putDescendentAttributes(p))
         #@nonl
@@ -2122,7 +2090,7 @@ class baseFileCommands:
         if self.usingClipboard:
             self.putVnode(self.currentPosition) # Write only current tree.
         else:
-            for p in c.rootPosition().self_and_siblings_iter():
+            for p in c.rootPosition().self_and_siblings():
                 # New in Leo 4.4.2 b2 An optimization:
                 self.putVnode(p,isIgnore=p.isAtIgnoreNode()) # Write the next top-level node.
 
@@ -2484,23 +2452,23 @@ class baseFileCommands:
 
         # Create lists of all tnodes whose vnodes are marked or expanded.
         marks = [] ; expanded = []
-        for p in p.subtree_iter():
-            t = p.v.t
-            if p.isMarked() and p.v.t not in marks:
-                marks.append(t)
-            if p.hasChildren() and p.isExpanded() and t not in expanded:
-                expanded.append(t)
+        for p in p.subtree():
+            v = p.v
+            if p.isMarked() and p.v not in marks:
+                marks.append(v)
+            if p.hasChildren() and p.isExpanded() and v not in expanded:
+                expanded.append(v)
 
         result = []
         for theList,tag in ((marks,"marks"),(expanded,"expanded")):
             if theList:
                 sList = []
-                for t in theList:
+                for v in theList:
                     # Could be eliminated.
-                    # New in Leo 4.4.8.  Assign t.fileIndex here as needed.
-                    if not t.fileIndex:
-                        t.fileIndex = g.app.nodeIndices.getNewIndex()
-                    gnx = t.fileIndex
+                    # New in Leo 4.4.8.  Assign v.fileIndex here as needed.
+                    if not v.fileIndex:
+                        v.fileIndex = g.app.nodeIndices.getNewIndex()
+                    gnx = v.fileIndex
                     sList.append("%s," % nodeIndices.toString(gnx))
                 s = ''.join(sList)
                 # g.trace(tag,[str(p.h) for p in theList])
@@ -2508,43 +2476,6 @@ class baseFileCommands:
 
         return ''.join(result)
     #@-node:ekr.20040701065235.2:putDescendentAttributes
-    #@+node:ekr.20080805071954.1:putDescendentTnodeUas
-    def putDescendentTnodeUas (self,p):
-
-        trace = False
-        if trace: g.trace(p.h)
-
-        # Create a list of all tnodes having a valid unknownAttributes dict.
-        tnodes = [] ; aList = []
-        for p2 in p.self_and_subtree_iter():
-            t = p2.v.t
-            if hasattr(t,"unknownAttributes"):
-                if t not in tnodes :
-                    # g.trace(p2.h,t)
-                    tnodes.append(t)
-                    aList.append((p2.copy(),t),)
-
-        # Create a list of pairs (t,d) where d contains only pickleable entries.
-        if aList: aList = self.createUaList(aList)
-        if not aList: return ''
-
-        # Create s, an enclosing dict to hold all the inner dicts.
-        d = {}
-        nodeIndices = g.app.nodeIndices
-        for t,d2 in aList:
-            # Could be eliminated.
-            # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
-            if not t.fileIndex:
-                t.fileIndex = g.app.nodeIndices.getNewIndex()
-            gnx = nodeIndices.toString(t.fileIndex)
-            d[gnx]=d2
-
-        if trace: g.trace(g.dictToString(d))
-
-        # Pickle and hexlify d.
-        return d and self.pickle(
-            torv=p.t,val=d,tag="descendentTnodeUnknownAttributes") or ''
-    #@-node:ekr.20080805071954.1:putDescendentTnodeUas
     #@+node:ekr.20080805071954.2:putDescendentVnodeUas
     def putDescendentVnodeUas (self,p):
 
@@ -2557,7 +2488,7 @@ class baseFileCommands:
         # Create aList of tuples (p,v) having a valid unknownAttributes dict.
         # Create dictionary: keys are vnodes, values are corresonding archived positions.
         pDict = {} ; aList = []
-        for p2 in p.self_and_subtree_iter():
+        for p2 in p.self_and_subtree():
             if hasattr(p2.v,"unknownAttributes"):
                 aList.append((p2.copy(),p2.v),)
                 pDict[p2.v] = p2.archivedPosition(root_p=p)
@@ -2587,20 +2518,19 @@ class baseFileCommands:
 
         # Remember: entries in the tnodeList correspond to @+node sentinels, _not_ to tnodes!
         nodeIndices = g.app.nodeIndices
-        tnodeList = v.t.tnodeList
+        tnodeList = v.tnodeList
 
         if tnodeList:
             # g.trace("%4d" % len(tnodeList),v)
-            for t in tnodeList:
+            for v in tnodeList:
                 # Can this be eliminated?
                 try: # Will fail for None or any pre 4.1 file index.
-                    junk,junk,junk = t.fileIndex
+                    junk,junk,junk = v.fileIndex
                 except Exception:
                     gnx = nodeIndices.getNewIndex()
-                    # Apparent bug fix: Leo 4.4.8, 2008-3-8: use t, not v.t here!
-                    # t.setFileIndex(gnx) # Don't convert to string until the actual write.
-                    t.fileIndex = gnx
-            s = ','.join([nodeIndices.toString(t.fileIndex) for t in tnodeList])
+                    # v.setFileIndex(gnx) # Don't convert to string until the actual write.
+                    v.fileIndex = gnx
+            s = ','.join([nodeIndices.toString(v.fileIndex) for v in tnodeList])
             return ' tnodeList="%s"' % (s)
         else:
             return ''

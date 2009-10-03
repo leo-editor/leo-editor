@@ -322,7 +322,7 @@ class cleoController:
     def loadAllIcons(self):
         """Load icons to represent cleo state"""
 
-        for p in self.c.allNodes_iter():
+        for p in self.c.all_positions():
             self.loadIcons(p)
     #@-node:tbrown.20080303214305:loadAllIcons
     #@+node:tbrown.20080303232514:loadIcons
@@ -490,7 +490,7 @@ class cleoController:
         "search whole tree for empty nodes"
 
         cnt = 0
-        for p in self.c.allNodes_iter(): 
+        for p in self.c.all_positions(): 
             if self.dropEmpty(p.v): cnt += 1
 
         g.es("cleo: dropped %d empty dictionaries" % cnt)
@@ -541,7 +541,7 @@ class cleoController:
 
         fg = self.getat(p.v, 'fg')
         bg = self.getat(p.v, 'bg')
-        for n in p.subtree_iter():
+        for n in p.subtree():
             self.setat(n.v, 'fg', fg)
             self.setat(n.v, 'bg', bg)
         self.c.redraw()
@@ -1011,7 +1011,7 @@ class cleoController:
         self.c.sortSiblings(cmp=self.pricmp)
 
     def childrenTodo(self):
-        for p in self.pickleP.children_iter():
+        for p in self.pickleP.children():
             if self.getat(p.v, 'priority') != 9999: continue
             self.setat(p.v, 'priority', 19)
             self.loadIcons(p)
@@ -1020,7 +1020,7 @@ class cleoController:
     def showDist(self):
         """show distribution of priority levels in subtree"""
         pris = {}
-        for p in self.pickleP.subtree_iter():
+        for p in self.pickleP.subtree():
             pri = int(self.getat(p.v, 'priority'))
             if pri not in pris:
                 pris[pri] = 1
@@ -1057,7 +1057,7 @@ class cleoController:
             return
 
         cnt = 0
-        for p in self.pickleP.subtree_iter():
+        for p in self.pickleP.subtree():
             pri = int(self.getat(p.v, 'priority'))
             if pri in dat['from']:
                 self.setat(p.v, 'priority', dat['to'][dat['from'].index(pri)])
@@ -1276,7 +1276,7 @@ class cleoController:
 
         def rnd(x): return re.sub('.0$', '', '%.1f' % x)
 
-        for nd in p.self_and_subtree_iter():
+        for nd in p.self_and_subtree():
             if hasattr(nd, 'setHeadStringOrHeadline'):  # temp. cvs transition code
                 nd.setHeadStringOrHeadline(re.sub(' <[^>]*>$', '', nd.h))
             else:
@@ -1310,7 +1310,7 @@ class cleoController:
         time_done = None
 
         # get values from children, if any
-        for cn in p.children_iter():
+        for cn in p.children():
             ans = self.recalc_time(cn.copy(), clear)
             if time_totl == None:
                 time_totl = ans[0]
@@ -1376,7 +1376,7 @@ class cleoController:
 
         project = None
 
-        for nd in p.self_and_parents_iter():
+        for nd in p.self_and_parents():
             if nd.h.find('@project') > -1:
                 project = nd.copy()
 
@@ -1404,7 +1404,7 @@ class cleoController:
             self.c.redraw()
             return True
 
-        for nd in p.children_iter():
+        for nd in p.children():
             if self.find_todo(nd, stage = 2): return True
 
         if stage < 2 and p.getNext():

@@ -60,7 +60,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.item2positionDict = {}
         self.item2vnodeDict = {}
         self.position2itemDict = {}
-        self.tnode2itemsDict = {} # values are lists of items.
         self.vnode2itemsDict = {} # values are lists of items.
         self.editWidgetsDict = {} # keys are native edit widgets, values are wrappers.
 
@@ -281,7 +280,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.item2positionDict = {}
         self.item2vnodeDict = {}
         self.position2itemDict = {}
-        self.tnode2itemsDict = {}
         self.vnode2itemsDict = {}
         self.editWidgetsDict = {}
     #@-node:ekr.20090124174652.22:initData
@@ -300,18 +298,14 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # Update item2vnodeDict.
         self.item2vnodeDict[item] = v
 
-        # Update tnode2itemsDict & vnode2itemsDict.
-        table = (
-            (self.tnode2itemsDict,v.t),
-            (self.vnode2itemsDict,v))
-
-        for d,key in table:
-            aList = d.get(key,[])
-            if item in aList:
-                g.trace('*** ERROR *** item already in list: %s, %s' % (item,aList))
-            else:
-                aList.append(item)
-            d[key] = aList
+        # Update vnode2itemsDict.
+        d = self.vnode2itemsDict
+        aList = d.get(v,[])
+        if item in aList:
+            g.trace('*** ERROR *** item already in list: %s, %s' % (item,aList))
+        else:
+            aList.append(item)
+        d[v] = aList
     #@-node:ekr.20090124174652.23:rememberItem
     #@-node:ekr.20090124174652.17:full_redraw & helpers
     #@+node:ekr.20090124174652.24:redraw_after_contract
@@ -350,7 +344,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         currentItem = self.getCurrentItem()
 
         if p:
-            for item in self.tnode2items(p.v.t):
+            for item in self.vnode2items(p.v):
                 if self.isValidItem(item):
                     self.setItemText(item,p.h)
     #@-node:ekr.20090124174652.26:redraw_after_head_changed
@@ -371,7 +365,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.redrawing = True
         try:
             item = self.getCurrentItem()
-            for p in c.rootPosition().self_and_siblings_iter():
+            for p in c.rootPosition().self_and_siblings():
                 self.updateVisibleIcons(p)
         finally:
             self.redrawing = False
@@ -751,7 +745,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # isAtFile = False
         # isAtRoot = False
 
-        # for v2 in v.self_and_subtree_iter():
+        # for v2 in v.self_and_subtree():
             # if isAtFile and isAtRoot:
                 # break
             # if (v2.isAtFileNode() or
@@ -1259,10 +1253,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # g.trace(item,p.h)
         return p
 
-    def item2tnode (self,item):
-        v = self.item2vnodeDict.get(item)
-        return v and v.t
-
     def item2vnode (self,item):
         return self.item2vnodeDict.get(item)
 
@@ -1271,9 +1261,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # g.trace(item and id(item) or '<no item>',p.key(),p.h)
         return item
 
-    def tnode2items(self,t):
-        return self.tnode2itemsDict.get(t,[])
-
     def vnode2items(self,v):
         return self.vnode2itemsDict.get(v,[])
 
@@ -1281,80 +1268,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         return item in self.item2vnodeDict
 
     #@-node:ekr.20090124174652.64:item dict getters
-    #@+node:ekr.20090124174652.68:item2position (baseNativeTree) (no longer used)
-    # def item2position (self,item):
-
-        # '''Reconstitute a position given an item.'''
-
-        # trace = False and not g.unitTesting
-        # c = self.c
-        # stack = []
-        # childIndex = self.childIndexOfItem(item)
-        # v = self.item2vnode(item)
-        # if trace: g.trace(self.traceItem(item),repr(v))
-        # if not v:
-            # return self.error('no v for item')
-
-        # item = self.getParentItem(item)
-        # while item:
-            # n2 = self.childIndexOfItem(item)
-            # v2 = self.item2vnode(item)
-            # data = v2,n2
-            # if trace: g.trace(self.traceItem(item),n2,
-                # v2 and repr(v2 and v2.h))
-            # stack.insert(0,data)
-            # item = self.getParentItem(item)
-
-        # ### Doesn't work.
-        # # if c.hoistStack:
-            # # bunch = c.hoistStack[-1]
-            # # root_item = self.getRootItem()
-            # # if trace: g.trace(root_item and id(root_item) or '<no root>')
-            # # if item == root_item:
-                # # if trace: g.trace('**root item',id(item),bunch.p.h)
-                # # return bunch.p.copy()
-
-        # p = leoNodes.position(v,childIndex,stack)
-
-        # if not p:
-            # self.error('item2position failed. p: %s, v: %s, childIndex: %s stack: %s' % (
-                # p,v,childIndex,stack))
-
-        # if trace: g.trace('returns',p)
-        # return p
-    #@-node:ekr.20090124174652.68:item2position (baseNativeTree) (no longer used)
-    #@+node:ekr.20090124174652.70:position2item (baseNativeTree) (no longer used)
-    # def position2item (self,p):
-
-        # '''Return the unique tree item associated with position p.
-
-        # Return None if there no such tree item.  This is *not* an error.'''
-
-        # trace = False and not g.unitTesting
-        # c = self.c
-        # item,parent_item = None,None
-        # # stack = p.stack
-        # # root_item = self.getRootItem()
-
-        # # if c.hoistStack:
-            # # # parent_item = self.nthChildItem(0,parent_item=None)
-            # # parent_item = root_item
-            # # bunch = c.hoistStack[-1]
-            # # if p == bunch.p:
-                # # item = root_item
-            # # else:
-                # # n = len(bunch.p.stack)
-                # # stack = p.stack[n+1:]
-
-        # # if not item:
-
-        # for v,n in p.stack:
-            # parent_item = self.nthChildItem(n,parent_item)
-        # item = self.nthChildItem(p.childIndex(),parent_item)
-
-        # # if trace: g.trace(bool(c.hoistStack),id(root_item),id(item), p.h)
-        # return item
-    #@-node:ekr.20090124174652.70:position2item (baseNativeTree) (no longer used)
     #@-node:ekr.20090124174652.63:Associating items and positions
     #@+node:ekr.20090124174652.71:Focus (nativeTree)
     def getFocus(self):
@@ -1439,8 +1352,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         icon = self.getIcon(p) # sets p.v.iconVal
 
-        # Update all cloned/joined items.
-        items = self.tnode2items(p.v.t)
+        # Update all cloned items.
+        items = self.vnode2items(p.v)
         for item in items:
             self.setItemIcon(item,icon)
     #@nonl
@@ -1454,7 +1367,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.updateIcon(p,force=True)
 
         if p.hasChildren() and p.isExpanded():
-            for child in p.children_iter():
+            for child in p.children():
                 self.updateVisibleIcons(child)
     #@-node:ekr.20090124174652.114:updateVisibleIcons
     #@-node:ekr.20090124174652.72:Icons (nativeTree)
