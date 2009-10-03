@@ -3439,7 +3439,7 @@ paste-after-lws:    ^([ \t]+)           -->  \1x
     Matches if the current position in the string is preceded by a match for ...
     that ends at the current position. This is called a positive lookbehind assertion.
     The contained pattern must only match strings of some fixed length,
-    meaning that abc or a|b are allowed, but a* and a{3,4} are not
+    meaning that abc or a|b are allowed, but a* and a{3,4} are not.
 #@nonl
 #@+node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html
 #@-node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html

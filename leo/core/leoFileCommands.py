@@ -1155,8 +1155,6 @@ class baseFileCommands:
             if sax_node.tnx:
                 v.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
-        ### v = t
-
         index = self.canonicalTnodeIndex(sax_node.tnx)
         self.tnodesDict [index] = v
 
