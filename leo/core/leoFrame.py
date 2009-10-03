@@ -3311,9 +3311,9 @@ class nullTree (leoTree):
         d = self.editWidgetsDict
 
         for key in d:
-            # keys are tnodes, values are stringTextWidgets.
+            # keys are vnodes, values are stringTextWidgets.
             w = d.get(key)
-            g.pr('w',w,'t._headString:',key.headString,'s:',repr(w.s))
+            g.pr('w',w,'v._headString:',key.headString,'s:',repr(w.s))
 
     #@-node:ekr.20070228173611:printWidgets
     #@+node:ekr.20031218072017.2236:Overrides

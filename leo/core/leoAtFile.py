@@ -541,10 +541,10 @@ class atFile:
 
         #@    << delete all tempBodyStrings >>
         #@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
-        for t in c.all_unique_tnodes_iter():
+        for v in c.all_unique_nodes():
 
-            if hasattr(t,"tempBodyString"):
-                delattr(t,"tempBodyString")
+            if hasattr(v,"tempBodyString"):
+                delattr(v,"tempBodyString")
         #@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
         #@nl
 
@@ -915,19 +915,19 @@ class atFile:
             copies -= 1
             # Create the tnode only if it does not already exist.
             tnodesDict = c.fileCommands.tnodesDict
-            t = tnodesDict.get(gnxString)
-            if t:
-                if indices.areEqual(t.fileIndex,gnx):
+            v = tnodesDict.get(gnxString)
+            if v:
+                if indices.areEqual(v.fileIndex,gnx):
                     pass
                 else:
-                    g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
+                    g.trace('can not happen: v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx))
             else:
-                t = leoNodes.vnode(context=c)
-                t._headString = headline
-                t.fileIndex = gnx
-                tnodesDict[gnxString] = t
+                v = leoNodes.vnode(context=c)
+                v._headString = headline
+                v.fileIndex = gnx
+                tnodesDict[gnxString] = v
 
-            child = t
+            child = v
             child._linkAsNthChild(parent,parent.numberOfChildren())
 
         if trace and verbose: g.trace('new node: %s' % child)
@@ -961,13 +961,13 @@ class atFile:
             g.trace("bad tnodeList index",at.tnodeListIndex,len(v.tnodeList),v)
             return None
 
-        t = v.tnodeList[at.tnodeListIndex]
-        assert(t)
+        v = v.tnodeList[at.tnodeListIndex]
+        assert(v)
         at.tnodeListIndex += 1
 
         # Don't check the headline.  It simply causes problems.
-        t.setVisited() # Supress warning/deletion of unvisited nodes.
-        return t
+        v.setVisited() # Supress warning/deletion of unvisited nodes.
+        return v
     #@-node:ekr.20041005105605.73:findChild4
     #@+node:ekr.20041005105605.74:scanText4 & allies
     def scanText4 (self,theFile,fileName,p,verbose=False):
@@ -1367,7 +1367,7 @@ class atFile:
                             g.pr('\n','-' * 40)
                     else:
                         # This should never happen.
-                        g.es("correcting hidden node: t=",repr(at.v),color="red")
+                        g.es("correcting hidden node: v=",repr(at.v),color="red")
                     #@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
                     #@nl
                     # p.setMarked()
@@ -4665,7 +4665,7 @@ class atFile:
         at = self ; root = at.root
 
         for p in root.self_and_subtree_iter():
-            if not p.v.isVisited(): ### Check tnode bit, not vnode bit.
+            if not p.v.isVisited():
                 at.writeError("Orphan node:  " + p.h)
                 if p.hasParent():
                     g.es("parent node:",p.parent().h,color="blue")

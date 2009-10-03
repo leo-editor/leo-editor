@@ -2030,7 +2030,7 @@ class baseCommands (object):
             # g.trace("tnodeIndex",tnodeIndex)
             if tnodeIndex < len(tnodeList):
                 v = tnodeList[tnodeIndex]
-                # Find the first vnode whose tnode is t.
+                # Find v.
                 for p in root.self_and_subtree_iter():
                     if p.v == v:
                         found = True ; break
@@ -3443,7 +3443,7 @@ class baseCommands (object):
             for v in c.all_unique_vnodes_iter():
                 if v not in tnodeInfoDict:
                     tnodeInfoDict[v] = g.Bunch(
-                        t=v,head=v.headString(),body=v.b)
+                        v=v,head=v.headString(),body=v.b)
             #@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
             #@nl
         # create a *position* to be pasted.
@@ -3466,9 +3466,9 @@ class baseCommands (object):
 
             # g.trace(copiedTnodeDict.keys())
 
-            for t in tnodeInfoDict:
-                bunch = tnodeInfoDict.get(t)
-                if copiedTnodeDict.get(t):
+            for v in tnodeInfoDict:
+                bunch = tnodeInfoDict.get(v)
+                if copiedTnodeDict.get(v):
                     copiedBunchList.append(bunch)
 
             # g.trace('copiedBunchList',copiedBunchList)
@@ -3863,7 +3863,7 @@ class baseCommands (object):
                     if p.hasBack():
                         assert p.back().parent() == p.parent(), "back.parent==parent"
                     #@-node:ekr.20040314035615.2:assert consistency of parent and child links
-                    #@+node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
+                    #@+node:ekr.20080426051658.1:assert consistency of parent and children arrays
                     #@+at
                     # Every nodes gets visited, so we only check consistency
                     # between p and its parent, not between p and its 
@@ -3877,7 +3877,7 @@ class baseCommands (object):
                     n = p.childIndex()
 
                     assert parent_v.children[n] == p.v,'fail 1'
-                    #@-node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
+                    #@-node:ekr.20080426051658.1:assert consistency of parent and children arrays
                     #@-others
                     #@-node:ekr.20040323155951:<< do full tests >>
                     #@nl
@@ -5131,12 +5131,13 @@ class baseCommands (object):
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@-node:ekr.20031218072017.1767:demote
     #@+node:ekr.20031218072017.1768:moveOutlineDown
-    #@+at 
-    #@nonl
+    #@+at
     # Moving down is more tricky than moving up; we can't move p to be a child 
-    # of itself.  An important optimization:  we don't have to call 
+    # of
+    # itself. An important optimization: we don't have to call
     # checkMoveWithParentWithWarning() if the parent of the moved node remains 
-    # the same.
+    # the
+    # same.
     #@-at
     #@@c
 

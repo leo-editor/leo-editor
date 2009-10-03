@@ -109,11 +109,6 @@ class vnode (baseVnode):
 
         return "<vnode %d:'%s'>" % (id(self),self.cleanHeadString())
 
-        # if self.t:
-            # return "<vnode %d:'%s'>" % (id(self),self.cleanHeadString())
-        # else:
-            # return "<vnode %d:NULL tnode>" % (id(self))
-
     __str__ = __repr__
     #@-node:ekr.20031218072017.3345:v.__repr__ & v.__str__
     #@+node:ekr.20040312145256:v.dump
@@ -815,22 +810,22 @@ class vnode (baseVnode):
         indices = g.app.nodeIndices
         tnodesDict = c.fileCommands.tnodesDict
 
-        if gnxString is None: t = None
-        else:                 t = tnodesDict.get(gnxString)
-        is_clone = t is not None
+        if gnxString is None: v = None
+        else:                 v = tnodesDict.get(gnxString)
+        is_clone = v is not None
 
         if trace: g.trace(
             'clone','%-5s' % (is_clone),
-            'parent_v',parent_v,'gnx',gnxString,'t',repr(t))
+            'parent_v',parent_v,'gnx',gnxString,'v',repr(v))
 
         if not is_clone:
-            t = vnode(context=c)
+            v = vnode(context=c)
             if gnxString:
                 gnx = indices.scanGnx(gnxString,0)
-                t.fileIndex = gnx
-            tnodesDict[gnxString] = t
+                v.fileIndex = gnx
+            tnodesDict[gnxString] = v
 
-        child_v = t
+        child_v = v
         child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
         child_v.setVisited() # Supress warning/deletion of unvisited nodes.
 
@@ -1107,7 +1102,7 @@ class position (object):
         return not self.__eq__(p2) # For possible use in Python 2.x.
     #@-node:ekr.20080920052058.3:p.__eq__ & __ne__
     #@+node:ekr.20040117170612:p.__getattr__  ON:  must be ON if use_plugins
-    if 0: # Good for compatibility, bad for finding conversion problems.
+    if 1: # Good for compatibility, bad for finding conversion problems.
 
         def __getattr__ (self,attr):
 
@@ -1121,7 +1116,7 @@ class position (object):
                 # New in 4.3: _silently_ raise the attribute error.
                 # This allows plugin code to use hasattr(p,attr) !
                 if 0:
-                    g.pr("unknown position attribute:",attr)
+                    print("unknown position attribute: %s" % attr)
                     import traceback ; traceback.print_stack()
                 raise AttributeError(attr)
     #@nonl
@@ -1712,7 +1707,7 @@ class position (object):
         changed = len(dirtyVnodeList) > 0
 
         for v in dirtyVnodeList:
-            v.setDirty() ### Do not call v.setDirty here!
+            v.setDirty()
 
         if trace: g.trace(dirtyVnodeList) #,g.callers(5))
 
@@ -2510,7 +2505,7 @@ class position (object):
                 p._childIndex -= 1
                 if trace: g.trace('***new index: %s\n%s' % (
                     p.h,p.stack))
-                return ### break
+                return
 
         # Adjust p's stack.
         stack = [] ; changed = False ; i = 0

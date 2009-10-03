@@ -2460,7 +2460,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@nonl
     #@-node:ekr.20071114082418:deleteFirstIcon
     #@+node:ekr.20071114092622:deleteIconByName
-    def deleteIconByName (self,t,name,relPath):
+    def deleteIconByName (self,t,name,relPath): ### t not used.
         """for use by the right-click remove icon callback"""
         c = self.c ; p = c.p
 
@@ -2486,9 +2486,7 @@ class editCommandsClass (baseEditCommandsClass):
             c.redraw_after_icons_changed()
         else:
             g.trace('not found',name)
-
-
-
+    #@nonl
     #@-node:ekr.20071114092622:deleteIconByName
     #@+node:ekr.20071114085054:deleteLastIcon
     def deleteLastIcon (self,event=None):

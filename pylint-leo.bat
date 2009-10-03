@@ -15,16 +15,13 @@ REM goto good_plugins
 REM goto bad_plugins
 
 REM goto essential_plugins
-REM errors
+REM goto errors
 goto all
 
 :errors
 
-echo leoCommands.py
-call pylint.bat leo\core\leoCommands.py      --rcfile=leo\test\pylint-leo-rc.txt
-
-echo leoNodes.py
-call pylint.bat leo\core\leoNodes.py         --rcfile=leo\test\pylint-leo-rc.txt
+echo leoUndo.py
+call pylint.bat leo\core\leoUndo.py          --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 

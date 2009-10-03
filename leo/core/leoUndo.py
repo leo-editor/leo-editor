@@ -409,7 +409,7 @@ class undoer:
     #@+node:ekr.20050415170812.2:restoreTnodeUndoInfo
     def restoreTnodeUndoInfo (self,bunch):
 
-        v = bunch.t
+        v = bunch.v ### was bunch.t
 
         v._headString  = bunch.headString
         v._bodyString  = bunch.bodyString
@@ -431,26 +431,31 @@ class undoer:
         #@+node:EKR.20040530114124:<< about u.saveTree >>
         #@+at 
         # The old code made a free-standing copy of the tree using v.copy and 
-        # t.copy.  This looks "elegant" and is WRONG.  The problem is that it 
-        # can not handle clones properly, especially when some clones were in 
-        # the "undo" tree and some were not.   Moreover, it required complex 
-        # adjustments to t.vnodeLists.
+        # t.copy. This
+        # looks "elegant" and is WRONG. The problem is that it can not handle 
+        # clones
+        # properly, especially when some clones were in the "undo" tree and 
+        # some were not.
+        # Moreover, it required complex adjustments to t.vnodeLists.
         # 
         # Instead of creating new nodes, the new code creates all information 
-        # needed to properly restore the vnodes and tnodes.  It creates a list 
-        # of tuples, on tuple for each vnode in the tree.  Each tuple has the 
-        # form,
+        # needed to
+        # properly restore the vnodes and tnodes. It creates a list of tuples, 
+        # on tuple
+        # for each vnode in the tree. Each tuple has the form,
         # 
         # (vnodeInfo, tnodeInfo)
         # 
         # where vnodeInfo and tnodeInfo are dicts contain all info needed to 
-        # recreate the nodes.  The v.createUndoInfoDict and 
-        # t.createUndoInfoDict methods correspond to the old v.copy and t.copy 
-        # methods.
+        # recreate the
+        # nodes. The v.createUndoInfoDict and t.createUndoInfoDict methods 
+        # correspond to
+        # the old v.copy and t.copy methods.
         # 
-        # Aside:  Prior to 4.2 Leo used a scheme that was equivalent to the 
+        # Aside: Prior to 4.2 Leo used a scheme that was equivalent to the
         # createUndoInfoDict info, but quite a bit uglier.
         #@-at
+        #@nonl
         #@-node:EKR.20040530114124:<< about u.saveTree >>
         #@nl
 
@@ -489,19 +494,19 @@ class undoer:
         return bunch
     #@-node:ekr.20050415170737.1:createVnodeUndoInfo
     #@+node:ekr.20050415170812.1:createTnodeUndoInfo
-    def createTnodeUndoInfo (self,t):
+    def createTnodeUndoInfo (self,v):
 
         """Create a bunch containing all info needed to recreate a vnode."""
 
         bunch = g.Bunch(
-            t = t,
-            headString = t._headString,
-            bodyString = t._bodyString,
-            statusBits = t.statusBits,
+            v = v, ###
+            headString = v._headString,
+            bodyString = v._bodyString,
+            statusBits = v.statusBits,
         )
 
-        if hasattr(t,'unknownAttributes'):
-            bunch.unknownAttributes = t.unknownAttributes
+        if hasattr(v,'unknownAttributes'):
+            bunch.unknownAttributes = v.unknownAttributes
 
         return bunch
     #@-node:ekr.20050415170812.1:createTnodeUndoInfo
@@ -782,9 +787,9 @@ class undoer:
             beforeTree=bunch.beforeTree
             afterTree = []
             for bunch2 in beforeTree:
-                v = bunch2.t ### should be bunch2.v
+                v = bunch2.v ### was bunch2.t
                 afterTree.append(
-                    g.Bunch(t=v,head=v._headString[:],body=v._bodyString[:]))
+                    g.Bunch(v=v,head=v._headString[:],body=v._bodyString[:]))
             bunch.afterTree=afterTree
             # g.trace(afterTree)
 
@@ -1548,7 +1553,7 @@ class undoer:
 
         if u.pasteAsClone:
             for bunch in u.afterTree:
-                v = bunch.t ### should be renamed.
+                v = bunch.v ### was bunch.t
                 if u.newP.v == v:
                     c.setBodyString(u.newP,bunch.body)
                     c.setHeadString(u.newP,bunch.head)
@@ -1881,13 +1886,13 @@ class undoer:
 
         if u.pasteAsClone:
             for bunch in u.beforeTree:
-                t = bunch.t ### Should be renamed.
-                if u.p.v == t:
+                v = bunch.v ### was bunch.t
+                if u.p.v == v:
                     c.setBodyString(u.p,bunch.body)
                     c.setHeadString(u.p,bunch.head)
                 else:
-                    t.setBodyString(bunch.body)
-                    t.setHeadString(bunch.head)
+                    v.setBodyString(bunch.body)
+                    v.setHeadString(bunch.head)
 
         c.selectPosition(u.p)
     #@-node:ekr.20050412085112:undoInsertNode

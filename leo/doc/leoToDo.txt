@@ -998,7 +998,7 @@ for s in lines:
 # g.trace("tnodeIndex",tnodeIndex)
 if tnodeIndex < len(tnodeList):
     v = tnodeList[tnodeIndex]
-    # Find the first vnode whose tnode is t.
+    # Find v.
     for p in root.self_and_subtree_iter():
         if p.v == v:
             found = True ; break
@@ -2430,18 +2430,18 @@ but in larger files it would have been very hard to find because none
 of the nodes would load from the file. 
 #@nonl
 #@+node:ekr.20031218072017.1577:putTnode
-def putTnode (self,t):
+def putTnode (self,v):
 
     # Could be eliminated.
     # New in Leo 4.4.8.  Assign v.fileIndex here as needed.
-    if not t.fileIndex:
-        g.trace('can not happen: no index for tnode',t)
-        t.fileIndex = g.app.nodeIndices.getNewIndex()
+    if not v.fileIndex:
+        g.trace('can not happen: no index for tnode',v)
+        v.fileIndex = g.app.nodeIndices.getNewIndex()
 
     # New in Leo 4.4.2 b2: call put just once.
-    gnx = g.app.nodeIndices.toString(t.fileIndex)
-    ua = hasattr(t,'unknownAttributes') and self.putUnknownAttributes(t) or ''
-    b = t.b
+    gnx = g.app.nodeIndices.toString(v.fileIndex)
+    ua = hasattr(v,'unknownAttributes') and self.putUnknownAttributes(v) or ''
+    b = v.b
     if b:
         # Convert to encoded string ????
         # b = g.toEncodedString(b,self.leo_file_encoding,reportErrors=True)

@@ -865,11 +865,12 @@ class baseTangleCommands:
         if self.errors + g.app.scanErrors == 0:
             #@        << Pass 2: Untangle the outline using the UST and a newly-created TST >>
             #@+node:ekr.20031218072017.3485:<< Pass 2:  Untangle the outline using the UST and a newly-created TST >>
-            #@+at 
-            #@nonl
+            #@+at
             # This code untangles the root and all its siblings. We don't call 
-            # tangleTree here because we must handle all siblings.  
-            # tanglePass1 handles an entire tree.  It also handles @ignore.
+            # tangleTree here
+            # because we must handle all siblings. tanglePass1 handles an 
+            # entire tree. It also
+            # handles @ignore.
             #@-at
             #@@c
 
@@ -2630,20 +2631,25 @@ class baseTangleCommands:
         self.message = message
     #@-node:ekr.20031218072017.3562:mismatch
     #@+node:ekr.20031218072017.3563:scan_derived_file (pass 1)
-    #@+at 
-    #@nonl
+    #@+at
+    # 
     # This function scans an entire derived file in s, discovering section or 
-    # part definitions.
+    # part
+    # definitions.
     # 
     # This is the easiest place to delete leading whitespace from each line: 
-    # we simply don't copy it.  We also ignore leading blank lines and 
-    # trailing blank lines.  The resulting definition must compare equal using 
-    # the "forgiving" compare to any other definitions of that section or 
-    # part.
+    # we simply
+    # don't copy it. We also ignore leading blank lines and trailing blank 
+    # lines. The
+    # resulting definition must compare equal using the "forgiving" compare to 
+    # any
+    # other definitions of that section or part.
     # 
-    # We use a stack to handle nested expansions.  The outermost level of 
-    # expansion corresponds to the @root directive that created the file.  
-    # When the stack is popped, the indent variable is restored.
+    # We use a stack to handle nested expansions. The outermost level of 
+    # expansion
+    # corresponds to the @root directive that created the file. When the stack 
+    # is
+    # popped, the indent variable is restored.
     # 
     # self.root_name is the name of the file mentioned in the @root directive.
     # 
@@ -2906,11 +2912,12 @@ class baseTangleCommands:
         ucode = g.toUnicode(part.code,self.encoding) # 4/4/03
         #@    << Remove leading blank lines and comments from ucode >>
         #@+node:ekr.20031218072017.3574:<< Remove leading blank lines and comments from ucode >>
-        #@+at 
-        #@nonl
-        # We assume that any leading comments came from an @doc part.  This 
-        # isn't always valid and this code will eliminate such leading 
-        # comments.  This is a defect in Untangle; it can hardly be avoided.
+        #@+at
+        # We assume that any leading comments came from an @doc part. This 
+        # isn't always
+        # valid and this code will eliminate such leading comments. This is a 
+        # defect in
+        # Untangle; it can hardly be avoided.
         #@-at
         #@@c
 

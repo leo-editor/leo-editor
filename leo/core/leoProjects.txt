@@ -433,10 +433,10 @@ if resurrected:
 
 #@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
 #@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
-for t in c.all_unique_tnodes_iter():
+for v in c.all_unique_nodes():
 
-    if hasattr(t,"tempBodyString"):
-        delattr(t,"tempBodyString")
+    if hasattr(v,"tempBodyString"):
+        delattr(v,"tempBodyString")
 #@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
 #@-node:ekr.20041005105605.21:read (atFile)
 #@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
@@ -539,7 +539,7 @@ def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
     changed = len(dirtyVnodeList) > 0
 
     for v in dirtyVnodeList:
-        v.setDirty() ### Do not call v.setDirty here!
+        v.setDirty()
 
     if trace: g.trace(dirtyVnodeList) #,g.callers(5))
 
@@ -684,22 +684,22 @@ def fastAddLastChild(self,c,gnxString):
     indices = g.app.nodeIndices
     tnodesDict = c.fileCommands.tnodesDict
 
-    if gnxString is None: t = None
-    else:                 t = tnodesDict.get(gnxString)
-    is_clone = t is not None
+    if gnxString is None: v = None
+    else:                 v = tnodesDict.get(gnxString)
+    is_clone = v is not None
 
     if trace: g.trace(
         'clone','%-5s' % (is_clone),
-        'parent_v',parent_v,'gnx',gnxString,'t',repr(t))
+        'parent_v',parent_v,'gnx',gnxString,'v',repr(v))
 
     if not is_clone:
-        t = vnode(context=c)
+        v = vnode(context=c)
         if gnxString:
             gnx = indices.scanGnx(gnxString,0)
-            t.fileIndex = gnx
-        tnodesDict[gnxString] = t
+            v.fileIndex = gnx
+        tnodesDict[gnxString] = v
 
-    child_v = t
+    child_v = v
     child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
     child_v.setVisited() # Supress warning/deletion of unvisited nodes.
 

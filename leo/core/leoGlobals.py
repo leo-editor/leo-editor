@@ -2062,29 +2062,34 @@ def print_stack():
 printStack = print_stack
 #@-node:ekr.20041122153823:print_stack (printStack)
 #@+node:ekr.20031218072017.3129:Sherlock... (trace)
-#@+at 
-#@nonl
+#@+at
 # Starting with this release, you will see trace statements throughout the 
-# code.  The trace function is defined in leoGlobals.py; trace implements much 
-# of the functionality of my Sherlock tracing package.  Traces are more 
-# convenient than print statements for two reasons: 1) you don't need explicit 
-# trace names and 2) you can disable them without recompiling.
+# code.
+# The trace function is defined in leoGlobals.py; trace implements much of the
+# functionality of my Sherlock tracing package. Traces are more convenient 
+# than
+# print statements for two reasons: 1) you don't need explicit trace names and 
+# 2)
+# you can disable them without recompiling.
 # 
 # In the following examples, suppose that the call to trace appears in 
 # function f.
 # 
-# g.trace(string) prints string if tracing for f has been enabled.  For 
-# example, the following statment prints from s[i] to the end of the line if 
-# tracing for f has been enabled.
+# g.trace(string) prints string if tracing for f has been enabled. For 
+# example,
+# the following statment prints from s[i] to the end of the line if tracing 
+# for f
+# has been enabled.
 # 
 #   j = g.skip_line(s,i) ; g.trace(s[i:j])
 # 
-# g.trace(function) exectutes the function if tracing for f has been enabled.  
-# For example,
+# g.trace(function) exectutes the function if tracing for f has been enabled. 
+# For
+# example,
 # 
 #   g.trace(self.f2)
 # 
-# You enable and disable tracing by calling g.init_trace(args).  Examples:
+# You enable and disable tracing by calling g.init_trace(args). Examples:
 # 
 #   g.init_trace("+*")         # enable all traces
 #   g.init_trace("+a","+b")    # enable traces for a and b
@@ -2093,13 +2098,16 @@ printStack = print_stack
 #   traces = g.init_trace("?") # return the list of enabled traces
 # 
 # If two arguments are supplied to trace, the first argument is the 
-# "tracepoint name" and the second argument is the "tracepoint action" as 
-# shown in the examples above.  If tracing for the tracepoint name is enabled, 
-# the tracepoint action is printed (if it is a string) or exectuted (if it is 
-# a function name).
+# "tracepoint
+# name" and the second argument is the "tracepoint action" as shown in the
+# examples above. If tracing for the tracepoint name is enabled, the 
+# tracepoint
+# action is printed (if it is a string) or exectuted (if it is a function 
+# name).
 # 
 # "*" will not match an explicit tracepoint name that starts with a minus 
-# sign.  For example,
+# sign.
+# For example,
 # 
 #   g.trace_tag("-nocolor", self.disable_color)
 #@-at
