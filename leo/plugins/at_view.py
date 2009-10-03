@@ -215,7 +215,7 @@ class View:
         # we are currently in a @view node; get the file or directory name
         pathFragments.append(self.getPathFragment(self.current))
 
-        for p in self.current.parents_iter():
+        for p in self.current.parents():
             pathFragments.append(self.getPathFragment(p))
 
         if pathFragments:

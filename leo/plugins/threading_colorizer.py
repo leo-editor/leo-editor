@@ -954,7 +954,7 @@ class colorizer:
             # g.trace('nocolor-node',p.h)
             return False
 
-        for p in p.self_and_parents_iter():
+        for p in p.self_and_parents():
             theDict = g.get_directives_dict(p)
             no_color = 'nocolor' in theDict
             color = 'color' in theDict
@@ -2048,7 +2048,7 @@ class colorizer:
         self.comment_string = None
         self.rootMode = None # None, "code" or "doc"
 
-        for p in p.self_and_parents_iter():
+        for p in p.self_and_parents():
             theDict = g.get_directives_dict(p)
             #@        << Test for @comment or @language >>
             #@+node:ekr.20071010193720.75:<< Test for @comment or @language >>

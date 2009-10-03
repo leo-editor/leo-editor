@@ -338,7 +338,7 @@ class todoController:
     def loadAllIcons(self, tag=None, k=None, clear=None):
         """Load icons to represent cleo state"""
 
-        for p in self.c.allNodes_iter():
+        for p in self.c.all_positions():
             self.loadIcons(p, clear=clear)
     #@-node:tbrown.20090119215428.15:loadAllIcons
     #@+node:tbrown.20090119215428.16:loadIcons
@@ -532,9 +532,9 @@ class todoController:
     def clear_all(self, recurse=False, all=False):
 
         if all:
-            what = self.c.allNodes_iter()
+            what = self.c.all_positions()
         elif recurse:
-            what = self.c.currentPosition().self_and_subtree_iter()
+            what = self.c.currentPosition().self_and_subtree()
         else:
             what = iter([self.c.currentPosition()])
 
@@ -589,7 +589,7 @@ class todoController:
         if p is None:
             p = self.c.currentPosition()
 
-        for nd in p.self_and_subtree_iter():
+        for nd in p.self_and_subtree():
             self.c.setHeadString(nd, re.sub(' <[^>]*>$', '', nd.headString()))
 
             tr = self.getat(nd.v, 'time_req')
@@ -624,7 +624,7 @@ class todoController:
         time_done = None
 
         # get values from children, if any
-        for cn in p.children_iter():
+        for cn in p.children():
             ans = self.recalc_time(cn.copy(), clear)
             if time_totl == None:
                 time_totl = ans[0]
@@ -685,7 +685,7 @@ class todoController:
             p = self.c.currentPosition()
         project = None
 
-        for nd in p.self_and_parents_iter():
+        for nd in p.self_and_parents():
             if nd.headString().find('@project') > -1:
                 project = nd.copy()
 
@@ -715,7 +715,7 @@ class todoController:
     def childrenTodo(self, p=None):
         if p is None:
             p = self.c.currentPosition()
-        for p in p.children_iter():
+        for p in p.children():
             if self.getat(p.v, 'priority') != 9999: continue
             self.setat(p.v, 'priority', 19)
             self.loadIcons(p)
@@ -741,7 +741,7 @@ class todoController:
             self.c.selectPosition(p)
             return True
 
-        for nd in p.children_iter():
+        for nd in p.children():
             if self.find_todo(nd, stage = 2): return True
 
         if stage < 2 and p.getNext():
@@ -826,7 +826,7 @@ class todoController:
             return
 
         cnt = 0
-        for p in p.subtree_iter():
+        for p in p.subtree():
             pri = int(self.getat(p.v, 'priority'))
             if pri in dat['from']:
                 self.setat(p.v, 'priority', dat['to'][dat['from'].index(pri)])
@@ -855,7 +855,7 @@ class todoController:
         if p is None:
             p = self.c.currentPosition()
         pris = {}
-        for p in p.subtree_iter():
+        for p in p.subtree():
             pri = int(self.getat(p.v, 'priority'))
             if pri not in pris:
                 pris[pri] = 1

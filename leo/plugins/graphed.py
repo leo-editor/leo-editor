@@ -182,9 +182,9 @@ class tGraph:
 
         self.splitLabels = splitLabels
         if '@graph' in p.h:
-            for p1 in p.children_iter():
+            for p1 in p.children():
                 self._addNodesLinks(p1)
-            for p1 in p.children_iter():
+            for p1 in p.children():
                 self._addLinks(p1)
         else:
             self._addNodesLinks(p)
@@ -281,7 +281,7 @@ class tGraph:
 
         # if only one top level node, remove the holder node
         if pos.numberOfChildren() == 1:
-            ch = pos.children_iter().next()
+            ch = pos.children().next()
             ch._linkAfter(pos)
             ans = ch
             pos._unlink()
@@ -297,7 +297,7 @@ class tGraph:
         self.addNode(gn)
         self._gnxStr2tnode[str(p.v.t.fileIndex)] = gn
 
-        for nd0 in p.children_iter():
+        for nd0 in p.children():
             if nd0.h.startswith('@link'): continue
             gn1 = self._addNodesLinks(nd0)
             self.addDirectedEdge(gn, gn1)
@@ -310,7 +310,7 @@ class tGraph:
         self._gnxStr2tnode"""
 
         s0 = str(p.v.t.fileIndex)
-        for nd0 in p.children_iter():
+        for nd0 in p.children():
             if nd0.h.startswith('@link'):
                 s1 = self._indexStrFromStr(nd0.h)
                 try:
@@ -497,7 +497,7 @@ class GraphEd:
         tgraph.addGraphFromPosition(p, splitLabels = (splitL == 'yes'))
 
         #X # make sure fileIndex is set on everything
-        #X for p2 in p.self_and_subtree_iter():
+        #X for p2 in p.self_and_subtree():
         #X     self.setIndex(p2)
 
         self.graph = Graph.Graph()
@@ -626,7 +626,7 @@ class GraphEd:
         c = self.c
         s = c.p.h
         s = self.indexStrFromStr(s)
-        for p in c.allNodes_iter():
+        for p in c.all_positions():
             if self.indexStrFromStr(str(p.v.t.fileIndex)) == s:
                 c.selectPosition(p)
                 break

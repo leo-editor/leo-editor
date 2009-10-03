@@ -93,7 +93,7 @@ def show_unittest_failures(event):
     for gnx, stack in fails:
         pos = None
         # sucks
-        for p in c.allNodes_iter():
+        for p in c.all_positions():
             if p.gnx == gnx:
                 pos = p.copy()
                 break
@@ -226,7 +226,7 @@ class QuickSearchController:
         self.clear()
         c = self.c
         pl = leoNodes.poslist()
-        for p in c.allNodes_iter():
+        for p in c.all_positions():
             if p.isMarked():
                 pl.append(p.copy())
         self.addHeadlineMatches(pl)

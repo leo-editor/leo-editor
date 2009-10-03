@@ -97,7 +97,7 @@ def parsenote(cont):
 
 def pos_for_gnx(c,gnx):
     #print "match",gnx
-    for pos in c.allNodes_iter():
+    for pos in c.all_positions():
         pos = pos.copy()
         #print pos.gnx, pos.h
         if pos.gnx == gnx:

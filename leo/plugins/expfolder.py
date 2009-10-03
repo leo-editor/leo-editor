@@ -57,7 +57,7 @@ def on_icondclick(tag, keywords):
             if result == "no":
                 return
             kids = []
-            for cp in p.subtree_iter():
+            for cp in p.subtree():
                 if cp.isDirty() and g.match_word(cp.h, 0, "@text"):
                     kids.append(cp.copy())
             if kids != []:

@@ -223,7 +223,7 @@ def onHeadKey(tag,keywords):
     h = v.h.strip()
     ch = keywords.get("ch")
     if (ch == '\r') and (h[:h.find(' ')] in templates.keys()) and (not v.b):
-        for p in v.parents_iter():
+        for p in v.parents():
             if p.h[:8] == '@bibtex ':
                 #@                << write template >>
                 #@+node:timo.20050215232157:<< write template >>
@@ -248,7 +248,7 @@ def writeTreeAsBibTex(bibFile, vnode, c):
     strings = ''
     entries = ''
     # iterate over nodes in this tree
-    for v in vnode.subtree_iter():    
+    for v in vnode.subtree():    
         h = v.h
         h = g.toEncodedString(h,encoding,reportErrors=True)
         if h.lower() == '@string':

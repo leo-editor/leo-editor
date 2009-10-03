@@ -54,10 +54,10 @@ def onPreSave(tag=None, keywords=None):
     global nosentNodes
     c = keywords.get('c')
     if c:
-        for p in c.allNodes_iter():
+        for p in c.all_positions():
             if p.isAtNoSentinelsFileNode() and p.isDirty():
                 nosentNodes.append(p.copy())
-                for p2 in p.self_and_subtree_iter():
+                for p2 in p.self_and_subtree():
                     s = p2.b
                     lastline = s.split("\n")[-1]
                     if lastline.strip():

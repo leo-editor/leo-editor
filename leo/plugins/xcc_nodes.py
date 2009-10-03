@@ -637,7 +637,7 @@ if 0:
 def GetNodePath(node,xas="->"):
 
 	path = []
-	for p in node.parents_iter():
+	for p in node.parents():
 		path.insert(0,p.h+xas)
 
 	path.append(node.h)
@@ -658,7 +658,7 @@ def GetUnknownAttributes(vnode,create = False):
 #@+node:ekr.20060513122450.389:GetXccNode
 def GetXccNode(node):
 
-	for p in node.parents_iter():
+	for p in node.parents():
 		h = p.h
 		if (h[0:5] == "@xcc "):
 			return p
@@ -927,7 +927,7 @@ class controllerClass:
     #@+node:ekr.20060513122450.323:cIs
     def cIs(self,node):
 
-        for p in node.parents_iter():
+        for p in node.parents():
             if p.h[0:5] == "@xcc ":
                 return True	
         return False
@@ -1002,7 +1002,7 @@ class controllerClass:
         cc = self ; c = cc.c ; w = cc.LeoBodyText
 
         if not node.isVisible(c):
-            for p in node.parents_iter():
+            for p in node.parents():
                 p.expand()
         c.selectPosition(node)
         c.redraw()
@@ -4700,7 +4700,7 @@ class BreakbarClass(Tk.Text):
         cc = self.cc
 
         if cc.SELECTED_NODE:
-            for c in cc.SELECTED_NODE.subtree_iter():
+            for c in cc.SELECTED_NODE.subtree():
                 ua = cc.GetUnknownAttributes(c.v)
                 if ua and "xcc_child_cfg" in ua.keys():
                     if "BreakPoints" in ua["xcc_child_cfg"].keys():
@@ -5564,7 +5564,7 @@ class CppParserClass:
         if self.DO_PARSE == False:
             return False
 
-        for cn in node.children_iter():
+        for cn in node.children():
             self.OnParseNode(cn)		
             ch = cn.h		
 

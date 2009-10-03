@@ -136,9 +136,9 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=[0], maxp=[None]):
         c.frame.bringToFront()  # doesn't seem to work
 
     if depth == 0:
-        nds = c.rootPosition().self_and_siblings_iter()
+        nds = c.rootPosition().self_and_siblings()
     else:
-        nds = p.children_iter()
+        nds = p.children()
 
     for i in nds:
 
@@ -280,7 +280,7 @@ def onSelect2 (tag,keywords):
     if not new_p: return    
 
     c.frame.clearStatusLine()
-    myList = [p.h for p in new_p.self_and_parents_iter()]
+    myList = [p.h for p in new_p.self_and_parents()]
     myList.reverse()
 
     # Rich has reported using ::

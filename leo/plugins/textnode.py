@@ -48,7 +48,7 @@ def on_open(tag,keywords):
     c = keywords.get("c")
     if not c: return
 
-    for p in c.allNodes_iter():
+    for p in c.all_positions():
         h = p.h
         if g.match_word(h,0,"@text"):
             readtextnode(c, p)
@@ -59,7 +59,7 @@ def on_save(tag,keywords):
     c = keywords.get("c")
     if not c: return
 
-    for p in c.allNodes_iter():
+    for p in c.all_positions():
         h = p.h
         if g.match_word(h,0,"@text") and p.isDirty():
             savetextnode(c, p)
@@ -68,7 +68,7 @@ def on_save(tag,keywords):
 #@-node:ajones.20070122161942:on_save
 #@+node:tbrown.20080128221824:getPath
 def getPath(c,p):
-    path = [i.h[6:] for i in p.self_and_parents_iter()
+    path = [i.h[6:] for i in p.self_and_parents()
             if i.h[:6] in ('@path ', '@text ')]
     path.append(g.getBaseDirectory(c))
     path.reverse()

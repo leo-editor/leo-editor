@@ -216,7 +216,7 @@ def scanForMultiPath (c):
         at.scanDefaultDirectory(root) # Using root here may be dubious.
         fileName = g.os_path_join(at.default_directory,fileName)
         # g.trace(fileName,at.default_directory)
-        positions = [p.copy() for p in root.self_and_parents_iter()]
+        positions = [p.copy() for p in root.self_and_parents()]
         positions.reverse()
         prefix = ''
         for p in positions:

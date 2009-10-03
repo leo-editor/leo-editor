@@ -290,7 +290,7 @@ class InteractBASH(Interact):
     #@-node:tbrown.20090603104805.4959:bashReader
     #@+node:tbrown.20090603104805.4960:getPath
     def getPath(self, c, p):
-        for n in p.self_and_parents_iter():
+        for n in p.self_and_parents():
             if n.h.startswith('@path'):
                 break
         else:

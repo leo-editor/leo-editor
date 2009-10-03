@@ -861,10 +861,10 @@ class rstClass:
         self.tnodeOptionDict = {}
 
         # Bug fix 12/4/05: must preprocess parents too.
-        for p in root.parents_iter():
+        for p in root.parents():
             self.preprocessNode(p)
 
-        for p in root.self_and_subtree_iter():
+        for p in root.self_and_subtree():
             self.preprocessNode(p)
 
         if 0:
@@ -1063,7 +1063,7 @@ class rstClass:
         seen = self.singleNodeOptions[:] # Suppress inheritance of single-node options.
 
         # g.trace('-'*20)
-        for p in p.self_and_parents_iter():
+        for p in p.self_and_parents():
             d = self.tnodeOptionDict.get(p.v.t,{})
             # g.trace(p.h,d)
             for key in d.keys():
@@ -1173,7 +1173,7 @@ class rstClass:
 
         c = self.c ; current = p.copy()
 
-        for p in current.self_and_parents_iter():
+        for p in current.self_and_parents():
             h = p.h
             if h.startswith('@rst') and not h.startswith('@rst-'):
                 self.processTree(p,ext=None,toString=False,justOneFile=justOneFile)
@@ -1405,7 +1405,7 @@ class rstClass:
 
         c = self.c ; current = p or c.p
 
-        for p in current.self_and_parents_iter():
+        for p in current.self_and_parents():
             if p.h.startswith('@rst'):
                 return self.processTree(p,ext=ext,toString=True,justOneFile=True)
         else:
@@ -1971,7 +1971,7 @@ class rstClass:
             self.set_initial_http_attributes(filename)
             self.find_anchors(p)
             if justOneFile:
-                self.relocate_references(p.self_and_subtree_iter)
+                self.relocate_references(p.self_and_subtree)
 
             g.es_print('html updated for http plugin',color="blue")
 
@@ -2075,7 +2075,7 @@ class rstClass:
         Used for relocation.
         """
 
-        for p1 in p.self_and_subtree_iter():
+        for p1 in p.self_and_subtree():
             attr = mod_http.get_http_attribute(p1)
             if attr:
                 yield (p1.copy(),attr)

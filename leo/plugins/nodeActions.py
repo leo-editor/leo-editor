@@ -102,7 +102,7 @@ def doNodeAction(pClicked, c):
       foundPattern = False
       passEventExternal = False  #No pass to next plugin after pattern matched
       #Check all children pattern nodes under the "nodeActions" node
-      for pScript in pNA.children_iter():
+      for pScript in pNA.children():
 
          #Don't trigger on double click of a nodeActions' pattern node
          if pClicked == pScript:

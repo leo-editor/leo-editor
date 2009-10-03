@@ -376,7 +376,7 @@ def scanForTemplates (tag,keywords):
 
     haveseen[c] = None 
     pos = c.rootPosition()
-    for z in c.allNodes_iter():
+    for z in c.all_positions():
         t = z.v.t 
         if hasattr(t,'unknownAttributes'):
             if t.unknownAttributes.has_key('template'):

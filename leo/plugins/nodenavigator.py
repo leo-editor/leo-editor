@@ -192,7 +192,7 @@ class Navigator:
 
         # Find all marked nodes. We only do this once!
         marks = self.markLists.get(c,[])
-        for p in c.all_positions_iter():
+        for p in c.all_positions():
             if p.isMarked() and p.v.t not in marks:
                 def callback(event=None,self=self,c=c,p=p.copy()):
                     self.select(c,p)
