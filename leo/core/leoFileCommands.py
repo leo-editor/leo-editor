@@ -2476,47 +2476,6 @@ class baseFileCommands:
 
         return ''.join(result)
     #@-node:ekr.20040701065235.2:putDescendentAttributes
-    #@+node:ekr.20080805071954.1:putDescendentTnodeUas (no longer used)
-    def putDescendentTnodeUas (self,p):
-
-        ### In the one-node world, there are no such things as independent tnodes.
-        g.trace('*** ERROR: should not be called')
-        return
-
-        trace = False
-        if trace: g.trace(p.h)
-
-        # Create a list of all tnodes having a valid unknownAttributes dict.
-        tnodes = [] ; aList = []
-        for p2 in p.self_and_subtree():
-            v = p2.v
-            if hasattr(v,"unknownAttributes"):
-                if v not in tnodes :
-                    # g.trace(p2.h,v)
-                    tnodes.append(v)
-                    aList.append((p2.copy(),v),)
-
-        # Create a list of pairs (v,d) where d contains only pickleable entries.
-        if aList: aList = self.createUaList(aList)
-        if not aList: return ''
-
-        # Create s, an enclosing dict to hold all the inner dicts.
-        d = {}
-        nodeIndices = g.app.nodeIndices
-        for v,d2 in aList:
-            # Could be eliminated.
-            # New in Leo 4.4.8.  Assign v.fileIndex here as needed.
-            if not v.fileIndex:
-                v.fileIndex = g.app.nodeIndices.getNewIndex()
-            gnx = nodeIndices.toString(v.fileIndex)
-            d[gnx]=d2
-
-        if trace: g.trace(g.dictToString(d))
-
-        # Pickle and hexlify d.
-        return d and self.pickle(
-            torv=p.v,val=d,tag="descendentTnodeUnknownAttributes") or ''
-    #@-node:ekr.20080805071954.1:putDescendentTnodeUas (no longer used)
     #@+node:ekr.20080805071954.2:putDescendentVnodeUas
     def putDescendentVnodeUas (self,p):
 
