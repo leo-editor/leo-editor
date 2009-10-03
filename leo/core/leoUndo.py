@@ -409,8 +409,7 @@ class undoer:
     #@+node:ekr.20050415170812.2:restoreTnodeUndoInfo
     def restoreTnodeUndoInfo (self,bunch):
 
-        v = bunch.v ### was bunch.t
-
+        v = bunch.v
         v._headString  = bunch.headString
         v._bodyString  = bunch.bodyString
         v.statusBits  = bunch.statusBits
@@ -499,7 +498,7 @@ class undoer:
         """Create a bunch containing all info needed to recreate a vnode."""
 
         bunch = g.Bunch(
-            v = v, ###
+            v = v,
             headString = v._headString,
             bodyString = v._bodyString,
             statusBits = v.statusBits,
@@ -787,7 +786,7 @@ class undoer:
             beforeTree=bunch.beforeTree
             afterTree = []
             for bunch2 in beforeTree:
-                v = bunch2.v ### was bunch2.t
+                v = bunch2.v
                 afterTree.append(
                     g.Bunch(v=v,head=v._headString[:],body=v._bodyString[:]))
             bunch.afterTree=afterTree
@@ -1553,7 +1552,7 @@ class undoer:
 
         if u.pasteAsClone:
             for bunch in u.afterTree:
-                v = bunch.v ### was bunch.t
+                v = bunch.v
                 if u.newP.v == v:
                     c.setBodyString(u.newP,bunch.body)
                     c.setHeadString(u.newP,bunch.head)
@@ -1886,7 +1885,7 @@ class undoer:
 
         if u.pasteAsClone:
             for bunch in u.beforeTree:
-                v = bunch.v ### was bunch.t
+                v = bunch.v
                 if u.p.v == v:
                     c.setBodyString(u.p,bunch.body)
                     c.setHeadString(u.p,bunch.head)
