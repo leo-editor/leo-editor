@@ -8,7 +8,7 @@
 #@nonl
 #@+node:ekr.20040312021734.1:Clean unused tnodeLists
 count = 0
-for p in c.allNodes_iter():
+for p in c.all_unique_positions():
     count += 1
     # Empty tnodeLists are not errors because they never get written to the .leo file.
     v = p.v
@@ -21,20 +21,6 @@ s = "%d nodes" % count
 print s ; g.es(s)
 #@nonl
 #@-node:ekr.20040312021734.1:Clean unused tnodeLists
-#@+node:ekr.20051110105027.171:Clean unused tnodeLists
-v = c.rootVnode()
-while v:
-    # Empty tnodeLists are not errors because they never get written to the .leo file.
-    # New in 4.2: tnode list is in tnode.
-    if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and not v.isAnyAtFileNode():
-        g.es("deleting tnodeList for ",v,color="blue")
-        delattr(v.t,"tnodeList")
-        c.setChanged(True)
-    v = v.threadNext()
-
-g.es("tnodeList script complete")
-#@nonl
-#@-node:ekr.20051110105027.171:Clean unused tnodeLists
 #@+node:ekr.20051110105027.102:Clear all timestamps
 # About the only time you should run this script is when:
 # - changing the format of timestamps in nodeIndices.setTimestamp or
@@ -42,25 +28,20 @@ g.es("tnodeList script complete")
 
 if 0: # This is usually a very bad idea.
 
-    v = c.rootVnode()
-    while v:
-        v.t.fileIndex = None
-        v = v.threadNext()
+    for p in c.all_positions():
+        p.v.fileIndex = None
 
     g.es("all timestamps cleared")
 #@nonl
 #@-node:ekr.20051110105027.102:Clear all timestamps
 #@+node:ekr.20040318091620:Clear all uAs (unknown attributes)
 put = g.es_print
-for p in c.allNodes_iter():
+for p in c.all_positions():
     if p.v.u:
         put("deleting v.u:",p.h,
             g.listToString(p.v.u.keys()))
         p.v.u = None
-    if p.v.t.u:
-        put("deleting t.u:",p.h,
-            g.listToString(p.v.t.u.keys()))
-        p.v.t.u = None
+
 put('done') 
 c.redraw()
 #@nonl
@@ -120,13 +101,7 @@ def __init__ (self,c):
 #@+node:ekr.20060531085804.3:getAllClones
 def getAllClones(self,p):
     c = self.c
-
-    # def clonesOf(p,p1=p):
-        # return p.v.t == p1.v.t 
-    # return filter(clonesOf, c.allNodes_iter(copy=True))
-
-    # 2009/10/2: avoid copy arg to iter.
-    return [z.copy() for z in c.allNodes_iter() if z.v == p.v]
+    return [z.copy() for z in c.all_positions() if z.v == p.v]
 #@nonl
 #@-node:ekr.20060531085804.3:getAllClones
 #@+node:ekr.20060531085804.4:displayClones
@@ -189,7 +164,7 @@ f=open(filePath + myFileName + ".htm", 'w')
 f.write("<HTML>")
 f.write("<BODY>")
 
-for p in c.allNodes_iter():
+for p in c.all_positions():
     myLevel = str(p.level() + 1)
     myHeadline = p.h
     # Check for node with LeoToHTML and ignore it
@@ -250,7 +225,7 @@ f.write("{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\
 fcharset0 Arial;}}")
 f.write("{\\*\\generator LEOtoRTF;}\\viewkind4\\uc1\\pard\\f0\\fs20")
 
-for p in c.allNodes_iter():
+for p in c.all_positions():
     myLevel = str(p.level() + 1)
     myHeadline = p.h
     # Check for node with LeoToHTML and ignore it
@@ -309,7 +284,7 @@ shadow_subdir = c.config.getString("shadow_subdir").strip()
 if not shadow_subdir: assert False,'No shadow_subdir setting'
 prefix = c.config.getString("shadow_prefix")
 
-for p in p.self_and_subtree_iter():
+for p in p.self_and_subtree():
    h = p.h.strip()
    if h.startswith("@thin"):
        start = h.find("@thin") + len("@thin")
@@ -354,8 +329,8 @@ assert os.path.isdir(flatroot)
 hl = []
 
 def dump_nodes():
-    for p in c.all_positions_with_unique_tnodes_iter():
-        name, date, num = p.t.fileIndex
+    for p in c.all_unique_positions():
+        name, date, num = p.v.fileIndex
         gnx = '%s%s%s' % (name, date, num)
         hl.append('<a href="%s">%s%s</a><br/>' % (gnx, '-' * p.level(), p.h))
         fname = gnx
@@ -429,7 +404,7 @@ if 0:
 def findFunctionsInTree(p):
 
     nameList = []
-    for p in p.self_and_subtree_iter():
+    for p in p.self_and_subtree():
         names = findDefs(p.b)
         if names:
             for name in names:
@@ -469,7 +444,7 @@ def prependNamesInTree(p,nameList,prefix,replace=False):
     def_s = "def " ; def_n = len(def_s)
     prefix_n = len(prefix)
     total = 0
-    for p in p.self_and_subtree_iter():
+    for p in p.self_and_subtree():
         count = 0 ; s = p.b
         printFlag = False
         if s:
@@ -784,7 +759,7 @@ def headfind():
         sMyOwnPrefix = re.escape("FOLLOWING FILE IS: ").lower()
         sAllowablePrefixRe = "\@([A-Za-z][A-Za-z0-9\-]+) "
             # @ char, followed by alpha,some alphanum or dash chars, then space ...matches Leo special nodes
-        for p in c.allNodes_iter():
+        for p in c.all_positions():
             srch="(^%s%s|^%s%s|^%s| %s%s)" % (sMyOwnPrefix,s,sAllowablePrefixRe,s,s,s,sUseLogTrigger) #all re
             if re.findall(srch,p.h.lower()):
                 g.es("found " + s)
@@ -829,7 +804,7 @@ keys = [z for z in d.values() if z not in k.tkNamesList]
 keys.sort()
 h = ' tkKeys.defineSpecialKeys'
 for key in keys:
-    for p in c.allNodes_iter():
+    for p in c.all_positions():
         if p.h != h and p.h.find('keywords') == -1:
             s = p.b
             for z in ('"%s"' % (key), "'%s'" % (key)):
@@ -847,9 +822,9 @@ p1 = p.copy()
 baseClass = leoTkinterFrame.leoTkTextWidget
 allMatches = True
 seen = {}
-for p in p.self_and_subtree_iter():
-    if seen.get(p.v.t): continue # search clones once.
-    seen[p.v.t] = True
+for p in p.self_and_subtree():
+    if seen.get(p.v): continue
+    seen[p.v] = True
     s = p.b
     i = 0
     while 1:
@@ -1083,7 +1058,7 @@ def run (c):
 
     print ; print '*' * 60
     e = e2py(dumping=False)
-    for p in input.children_iter():
+    for p in input.children():
         print ; print '-' * 10, p.h
         print p.b
         result = e.doOuterBlock(p.b)
@@ -1424,7 +1399,7 @@ input_node  = u.findNodeAnywhere('new-elisp2py-input-')
 output_node = u.findNodeAnywhere('new-elisp2py-output-')
 assert input_node and output_node
 
-for p in input_node.children_iter():
+for p in input_node.children():
 
     if 0: # No need for child node yet.
         root = output_node.insertAsLastChild()
@@ -3351,7 +3326,7 @@ def stringize (self,s,delim):
 def scan(self):
 
 
-    for p in self.p.self_and_subtree_iter():
+    for p in self.p.self_and_subtree():
 
         self.scanNode(p)
 #@nonl
@@ -3527,7 +3502,7 @@ print '-' * 40
 
 tag = 'import leo' ; n = len('import ')
 
-for p in p.self_and_subtree_iter():
+for p in p.self_and_subtree():
     result = []
     for s in g.splitlines(p.b):
         i = s.find(tag,0)
@@ -5028,23 +5003,23 @@ def check(name,lines):
 g.es_print('='*40)
 
 g.es_print('%s %s' % ('-'*20,'must have a c arg'))
-for p in c.allNodes_iter():
+for p in c.all_positions():
     findFunctionCalls(add_c_arg,p,showEmptyArgs=True)
 
 g.es_print('%s %s' % ('-'*20,'these methods should not exist'))
-for p in c.allNodes_iter():
+for p in c.all_positions():
     findFunctionCalls(removed,p,showEmptyArgs=True)
 
 g.es_print('%s %s' % ('-'*20,'p methods should have no c arg'))
-for p in c.allNodes_iter():
+for p in c.all_positions():
     findFunctionCalls(p_methods,p)
 
 g.es_print('%s %s' % ('-'*20,'v methods should have no c arg'))
-for p in c.allNodes_iter():
+for p in c.all_positions():
     findFunctionCalls(v_methods,p)
 
 g.es_print('%s %s' % ('-'*20,'c methods should start with a position arg'))
-for p in c.allNodes_iter():
+for p in c.all_positions():
     findFunctionCalls(c_methods,p)
 
 g.es_print('done')
@@ -5261,7 +5236,7 @@ mode = g.choose(c.config.output_newline=="platform",'w','wb')
 try:
     theFile = open(fileName,mode)
     theFile.write("<hj-Treepad version 2.7>" + nl)
-    for p in p.copy().self_and_subtree_iter():
+    for p in p.copy().self_and_subtree():
         theFile.write("dt=text" + nl)
         theFile.write("<node>" + nl)
         theFile.write(p.h + nl)
@@ -13349,7 +13324,7 @@ def findNodes(p):
     p should be in tree whose root is a @test node containing
     'work', 'before' and 'after' children.'''
 
-    for p in p.self_and_parents_iter():
+    for p in p.self_and_parents():
         if p.h.startswith('@test '):
             break
     top    = p and p.copy()
@@ -13416,7 +13391,7 @@ def findNodes(p):
     p should be in tree whose root is a @test node containing
     'work', 'before' and 'after' children.'''
 
-    for p in p.self_and_parents_iter():
+    for p in p.self_and_parents():
         if p.h.startswith('@test '):
             break
     top    = p and p.copy()
@@ -13475,7 +13450,7 @@ line 3
 
 @others
 
-for p in c.allNodes_iter():
+for p in c.all_positions():
     if p.isAnyAtFileNode():
         clean_file(p)
 
@@ -13484,9 +13459,9 @@ def clean_file(p):
 
     at = c.atFileCommands
 
-    if hasattr(p.v.t,'tnodeList'):
+    if hasattr(p.v,'tnodeList'):
         has_list = True
-        old_list =  p.v.t.tnodeList[:]
+        old_list =  p.v.tnodeList[:]
     else:
         has_list = False
 
@@ -13498,7 +13473,7 @@ def clean_file(p):
         write_strips_blank_lines=False)
 
     if has_list:
-        p.v.t.tnodeList = old_list
+        p.v.tnodeList = old_list
 
     fileName = g.os_path_normpath(g.os_path_join(
         at.default_directory,
@@ -13774,7 +13749,7 @@ result_p = p.firstChild().next()
 
 result = []
 entries = []
-for child in address_p.children_iter():
+for child in address_p.children():
     s = child.b
     lines = g.splitLines(s)
     for line in lines:
@@ -13807,9 +13782,9 @@ print 'done!'
 # Same as delete-all-icons command (now removed)
 # A script seems safer because it can not be executed by mistake.
 
-for p in c.allNodes_iter():
-    if hasattr(p.v.t,"unknownAttributes"):
-        a = p.v.t.unknownAttributes
+for p in c.all_positions():
+    if hasattr(p.v,"unknownAttributes"):
+        a = p.v.unknownAttributes
         iconsList = a.get("icons")
         if iconsList:
             a["icons"] = []
@@ -14456,7 +14431,7 @@ def addLeoNodesToGraph(p,graph,top=False):
         child = p.firstChild()
         childNode = addLeoNodesToGraph(child,graph)
         graph.add_node(childNode)
-        edge2 = pydot.Edge(tnodeRepr(p.v.t),vnodeRepr(child.v))
+        edge2 = pydot.Edge(tnodeRepr(p.v),vnodeRepr(child.v))
         graph.add_edge(edge2)
 
         while child.hasNext():
@@ -14467,8 +14442,8 @@ def addLeoNodesToGraph(p,graph,top=False):
             graph.add_edge(edge)
             child = next
 
-    tnode = pydot.Node(name=tnodeRepr(p.v.t),shape="box",label=tnodeLabel(p.v.t))
-    edge1 = pydot.Edge(vnodeRepr(p.v),tnodeRepr(p.v.t),arrowhead="none")
+    tnode = pydot.Node(name=tnodeRepr(p.v),shape="box",label=tnodeLabel(p.v))
+    edge1 = pydot.Edge(vnodeRepr(p.v),tnodeRepr(p.v),arrowhead="none")
     graph.add_edge(edge1)
     graph.add_node(tnode)
 
@@ -14479,8 +14454,8 @@ def addLeoNodesToGraph(p,graph,top=False):
             graph.add_edge(edge)
 
     if 0: # Marginally useful.
-        for v in p.v.t.vnodeList:
-            edge = pydot.Edge(tnodeRepr(p.v.t),vnodeRepr(v),
+        for v in p.v.vnodeList:
+            edge = pydot.Edge(tnodeRepr(p.v),vnodeRepr(v),
                 style="dotted",arrowhead="onormal")
             graph.add_edge(edge)
 
@@ -14494,7 +14469,7 @@ def tnodeLabel(t):
 
 def vnodeLabel(v):
 
-    return "v %d %s" % (id(v),v.t.headString)
+    return "v %d %s" % (id(v),v.h)
 #@-node:ekr.20051110105027.141:tnode/vnodeLabel
 #@+node:ekr.20051110105027.142:tnode/vnodeRepr
 def dotId(s):
@@ -14773,7 +14748,7 @@ def OLDsearch(vn,regex):
 
     sn = vn 
     while vn != None:
-        if regex.search( vn.t.bodyString ) : yield vn
+        if regex.search( vn.b ) : yield vn
         nc = vn.numberOfChildren()
         if nc == 0:
             i = vn.childIndex()
@@ -15021,7 +14996,7 @@ print "***** Leo installed successfully - type 'leo filename.leo' to use it."
 pmax = p.copy()
 n = len(p.b)
 
-for p in p.self_and_subtree_iter():
+for p in p.self_and_subtree():
     if len(p.b) > n:
         n = len(p.b)
         pmax = p.copy()
@@ -15046,7 +15021,7 @@ def tags(p):
 pmax = p.copy()
 n = tags(p) # len(p.b)
 
-for p in p.self_and_subtree_iter():
+for p in p.self_and_subtree():
     # if len(p.b) > n:
     n2 = tags(p)
     if n2 > n:
@@ -15060,7 +15035,7 @@ c.redraw()
 #@-node:ekr.20060509121738:Scipts related to the new colorizer
 #@+node:ekr.20060801093639:Finding @file nodes
 current = c.currentPosition()
-for p in current.self_and_parents_iter():
+for p in current.self_and_parents():
     if p.isAnyAtFileNode():
         d = c.scanAllDirectives(p)
         path = d.get('path')
@@ -16280,13 +16255,13 @@ def pos_to_archive(p):
     Counterpart of archive_to_pos
     """
 
-    ps = [po.gnx for po in p.self_and_parents_iter()]
+    ps = [po.gnx for po in p.self_and_parents()]
     ps.reverse()
     return ":".join(ps)
 
 def sibling_by_gnx(p, gnx):
     """ Look through siblings of p for a node with specified gnx """
-    for po in p.siblings_iter():
+    for po in p.siblings():
         #g.es('test' , po, po.gnx)
         if po.gnx == gnx:
             return po
@@ -16317,44 +16292,39 @@ assert po == p
 #@+node:ekr.20051104082151:Reports
 #@+node:EKR.20040517074600.8:Count pages
 nodes = 0 ; lines = 0
-
-c.clearAllVisited()
-for p in c.allNodes_iter():
-    if not p.v.t.isVisited():
-        p.v.t.setVisited()
-        nodes += 1
-        lines += len(g.splitLines(p.b))
+for p in c.all_unique_positions():
+    nodes += 1
+    lines += len(g.splitLines(p.b))
 
 pages = ((nodes * 10) + lines) / 50
 s = "%d nodes,  %d lines, %d pages" % (nodes,lines,pages)
 print s ; g.es(s)
 #@nonl
 #@-node:EKR.20040517074600.8:Count pages
-#@+node:ekr.20051110105027.104:Count separate nodes (tnodes)
+#@+node:ekr.20051110105027.104:Count separate nodes
 # p = g.findTopLevelNode("Code")
 
 tnodes = {} ; count = 0
-for p in p.self_and_subtree_iter():
-    tnodes[p.v.t]=p.v.t
+for p in p.self_and_subtree():
+    tnodes[p.v]=p.v
     count += 1
 
 s = "%4s: %d vnodes, %d distinct" % ("Code",count,len(tnodes.keys()))
 g.es_print(s)
 
 tnodes = {} ; count = 0
-for p in c.allNodes_iter():
-    tnodes[p.v.t]=p.v.t
+for p in c.all_positions():
+    tnodes[p.v]=p.v
     count += 1
 
 s = "%4s: %d vnodes, %d distinct" % ("All",count,len(tnodes.keys()))
 g.es_print(s)
 #@nonl
-#@-node:ekr.20051110105027.104:Count separate nodes (tnodes)
+#@-node:ekr.20051110105027.104:Count separate nodes
 #@+node:ekr.20051110105027.105:Count total, visible nodes
 total,visible = 0,0
 
-
-for p in c.allNodes_iter():
+for p in c.all_positions():
     total += 1
 
 p = c.rootPosition()
@@ -16366,19 +16336,19 @@ print "total,visible",total,visible
 #@nonl
 #@-node:ekr.20051110105027.105:Count total, visible nodes
 #@+node:ekr.20040311090054:Dump fileIndex
-for p in c.allNodes_iter():
-    print p.v.t.fileIndex
+for p in c.all_positions():
+    print p.v.fileIndex
 #@nonl
 #@-node:ekr.20040311090054:Dump fileIndex
 #@+node:ekr.20050704172623:Print all headlines, properly indented
-for p in c.allNodes_iter():
+for p in c.all_positions():
     print p.level()*' ',p.h
 #@-node:ekr.20050704172623:Print all headlines, properly indented
 #@+node:ekr.20040915080419:Print all uAs (unknown attributes)
-for p in c.allNodes_iter():
+for p in c.all_positions():
     h = p.h
-    if hasattr(p.v,'unknownAttributes'):   print 'v',h,p.v.unknownAttributes
-    if hasattr(p.v.t,'unknownAttributes'): print 't',h,p.v.t.unknownAttributes
+    if hasattr(p.v,'unknownAttributes'):
+        print('v',h,p.v.unknownAttributes)
 #@nonl
 #@-node:ekr.20040915080419:Print all uAs (unknown attributes)
 #@+node:EKR.20040517074600.13:Print default font
@@ -16388,7 +16358,7 @@ print font.cget("family"), font.cget("weight")
 #@nonl
 #@-node:EKR.20040517074600.13:Print default font
 #@+node:ekr.20040717121014:Print gnx
-print "gnx", p.v.t.fileIndex, p.h
+print "gnx", p.v.fileIndex, p.h
 #@nonl
 #@-node:ekr.20040717121014:Print gnx
 #@+node:ekr.20041124144944:Print sys.path
@@ -16401,9 +16371,9 @@ for s in sys.path:
 #@-node:ekr.20041124144944:Print sys.path
 #@+node:ekr.20040322120331:Print tnodeList's
 print '-'*20
-for p in c.allNodes_iter():
-    if hasattr(p.v.t,"tnodeList"):
-        print p,p.v.t.tnodeList
+for p in c.all_positions():
+    if hasattr(p.v,"tnodeList"):
+        print p,p.v.tnodeList
 #@nonl
 #@-node:ekr.20040322120331:Print tnodeList's
 #@+node:ekr.20041019080125:Report loaded plugins
@@ -17282,16 +17252,13 @@ assert(child.h.lower().strip() == 'to be cloned')
 s = child.b
 lines = g.splitLines(s)
 
-seen = {}
-for p in c.allNodes_iter():
-    if not seen.get(p.v.t):
-        seen[p.v.t] = True
-        h = p.h.strip()
-        for line in lines:
-            if h == line.strip():
-                print 'found',h
-                clone = p.clone()
-                clone.moveToLastChildOf(root)
+for p in c.all_unique_positions():
+    h = p.h.strip()
+    for line in lines:
+        if h == line.strip():
+            print 'found',h
+            clone = p.clone()
+            clone.moveToLastChildOf(root)
 c.redraw()
 #@nonl
 #@+node:ekr.20071113150213.1:To be cloned
@@ -17405,7 +17372,7 @@ u.afterChangeNodeContents(p,'add-begin/endUpdate',b)
 #@-node:ekr.20051216153249:Test
 #@-node:ekr.20051216152812:insert begin/endUpdate
 #@+node:ekr.20060813102424:Remove blank trailing lines
-for p in p.self_and_subtree_iter():
+for p in p.self_and_subtree():
     s = p.b
     target = s.rstrip()
     if s != target:
@@ -17460,7 +17427,7 @@ been changed.'''
 @others
 
 p = c.currentPosition()
-pass1(p) # Make the changes and do p.v.t.setDirty for all changed nodes p.
+pass1(p) # Make the changes and do p.v.setDirty for all changed nodes p.
 pass2() # Quickly set all @thin/@file nodes dirty if any of their descendents are dirty.
 g.es_print('done')
 c.redraw()
@@ -17471,16 +17438,16 @@ def pass1(root):
     '''Remove trailing newlines from all nodes.'''
 
     count = 0 ; seen = {}
-    for p in root.self_and_subtree_iter():
-        if seen.get(p.v.t): continue
+    for p in root.self_and_subtree():
+        if seen.get(p.v): continue
         s = p.b
         if s:
             s2 = s.rstrip() + '\n'
             if s2 != s:
                 s2 = g.toUnicode(s2,g.app.tkEncoding,reportErrors=True)
-                p.v.t.bodyString = s2
-                seen [p.v.t] = True
-                p.v.t.setDirty() # Just set the bit: do **not** redraw!
+                p.v._bodyString = s2
+                seen [p.v] = True
+                p.v.setDirty() # Just set the bit: do **not** redraw!
                 count += 1
 
     g.es_print("pass 1: %d nodes converted" % count)
@@ -17491,13 +17458,11 @@ def pass2():
     '''Quickly mark all changed @file nodes dirty.'''
 
     count = 0
-
-    # Important: we must look at **all** nodes because of clones.
-    for p in c.allNodes_iter():
+    for p in c.all_unique_positions():
         if p.isAnyAtFileNode():
             root = p.copy()
-            for p2 in root.self_and_subtree_iter():
-                if p2.v.t.isDirty():
+            for p2 in root.self_and_subtree():
+                if p2.v.isDirty():
                     root.setDirty()
                     count += 1
                     break
@@ -17545,7 +17510,7 @@ print '-' * 60
 c.undoer.setUndoParams("Change All",c.currentPosition())
 
 n = 0 ; total = 0
-for p in c.currentPosition().self_and_subtree_iter():
+for p in c.currentPosition().self_and_subtree():
     total += 1
     body = p.b
     s = g.stripBlankLines(body)
