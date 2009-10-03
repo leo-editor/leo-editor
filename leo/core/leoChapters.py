@@ -501,12 +501,12 @@ class chapterController:
         p.moveToRoot(oldRoot=root)
         c.setRootPosition(p)
         cc.chaptersNode = p.copy()
-        t = p.v.t
+        v = p.v
 
-        if t.fileIndex:
+        if v.fileIndex:
             pass
         else:
-            t.setFileIndex(g.app.nodeIndices.getNewIndex())
+            v.setFileIndex(g.app.nodeIndices.getNewIndex())
 
         c.setChanged(True)
     #@-node:ekr.20070325101652:cc.createChaptersNode
@@ -987,7 +987,7 @@ class chapter:
 
         if 0:
             self.error('***** chapter: %s findPositionInChapter: lost %s' % (
-                self.name,p1.v.t._headString))
+                self.name,p1.v._headString))
             g.trace(g.callers())
 
         return self.p.copy()

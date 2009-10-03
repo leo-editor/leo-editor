@@ -610,16 +610,16 @@ class leoImportCommands (scanUtility):
 
         s = g.toUnicode(s,encoding)
         current = c.p
-        if current and p.v.t==current.v.t:
+        if current and p.v==current.v:
             c.frame.body.setSelectionAreas(s,None,None)
             w = c.frame.body.bodyCtrl
             i = w.getInsertPoint()
             w.setSelectionRange(i,i)
 
         # Keep the body text in the tnode up-to-date.
-        if v.t._bodyString != s:
+        if v._bodyString != s:
             v.setBodyString(s)
-            v.t.setSelection(0,0)
+            v.setSelection(0,0)
             p.setDirty()
             if not c.isChanged():
                 c.setChanged(True)

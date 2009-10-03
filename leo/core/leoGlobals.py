@@ -3821,7 +3821,7 @@ class posList(list):
             # such that p.h matches the pattern.
             # The pattern is a regular expression if regex is True.
             # if removeClones is True, all positions p2 are removed
-            # if a position p is already in the list and p2.v.t == p.v.t.
+            # if a position p is already in the list and p2.v == p.v.
 
         aList.dump(sort=False,verbose=False)
             # Prints all positions in aList, sorted if sort is True.
@@ -3862,8 +3862,8 @@ class posList(list):
     def removeClones(self,aList):
         seen = {} ; aList2 = []
         for p in aList:
-            if p.v.t not in seen:
-                seen[p.v.t] = p.v.t
+            if p.v not in seen:
+                seen[p.v] = p.v
                 aList2.append(p)
         return aList2
 #@-node:ekr.20090128083459.82:g.posList

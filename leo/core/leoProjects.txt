@@ -361,7 +361,7 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     cachefile = self._contentHashFile(root, fileContent)
 
     # Remember that we have read this file.
-    root.v.t.at_read = True # Create the attribute for all clones.
+    root.v.at_read = True # Create the attribute for all clones.
 
     if doCache and cachefile in c.db:
         # This message isn't so useful.
@@ -378,7 +378,7 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
 
     # Delete all children, but **not** for @file and @nosent nodes!
     if thinFile or atShadow:
-        root.v.t.at_read = True # Create the attribute for all clones.
+        root.v.at_read = True # Create the attribute for all clones.
         while root.hasChildren():
             root.firstChild().doDelete()
 
@@ -419,11 +419,11 @@ if not fileName:
 #@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
 resurrected = 0
 for p in root.self_and_subtree_iter():
-    if p.v.t.isVisited():
+    if p.v.isVisited():
         pass
-        # g.trace('visited',p.v.t,p.h)
+        # g.trace('visited',p.v,p.h)
     else:
-        g.trace('**** not visited',p.v.t,p.h)
+        g.trace('**** not visited',p.v,p.h)
         g.es('resurrected node:',p.h,color='blue')
         g.es('in file:',fileName,color='blue')
         resurrected += 1
@@ -532,14 +532,14 @@ def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
 
     if trace and verbose:
         for v in nodes:
-            print v.t.isDirty(),v.isAnyAtFileNode(),v
+            print (v.isDirty(),v.isAnyAtFileNode(),v)
 
     dirtyVnodeList = [v for v in nodes
-        if not v.t.isDirty() and v.isAnyAtFileNode()]
+        if not v.isDirty() and v.isAnyAtFileNode()]
     changed = len(dirtyVnodeList) > 0
 
     for v in dirtyVnodeList:
-        v.t.setDirty() # Do not call v.setDirty here!
+        v.setDirty() ### Do not call v.setDirty here!
 
     if trace: g.trace(dirtyVnodeList) #,g.callers(5))
 
@@ -554,8 +554,8 @@ def setDirty (self,setDescendentsDirty=True):
 
     # g.trace(p.h,g.callers(4))
 
-    if not p.v.t.isDirty():
-        p.v.t.setDirty()
+    if not p.v.isDirty():
+        p.v.setDirty()
         dirtyVnodeList.append(p.v)
 
     # Important: this must be called even if p.v is already dirty.
@@ -570,7 +570,7 @@ def setDirty (self,setDescendentsDirty=True):
 #@+node:ekr.20031218072017.3390:v.clearDirty
 def clearDirty (self):
     v = self
-    v.t.statusBits &= ~ v.t.dirtyBit
+    v.statusBits &= ~ v.dirtyBit
 
 #@-node:ekr.20031218072017.3390:v.clearDirty
 #@+node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
@@ -618,15 +618,15 @@ def setAllAncestorAtFileNodesDirty (self):
 
     if trace and verbose:
         for v in nodes:
-            print v.t.isDirty(),v.isAnyAtFileNode(),v
+            print v.isDirty(),v.isAnyAtFileNode(),v
 
     dirtyVnodeList = [v for v in nodes
-        if not v.t.isDirty() and v.isAnyAtFileNode()]
+        if not v.isDirty() and v.isAnyAtFileNode()]
 
     changed = len(dirtyVnodeList) > 0
 
     for v in dirtyVnodeList:
-        v.t.setDirty() # Do not call v.setDirty here!
+        v.setDirty() # Do not call v.setDirty here!
 
     if trace: g.trace(dirtyVnodeList)
 
@@ -635,7 +635,7 @@ def setAllAncestorAtFileNodesDirty (self):
 #@+node:ekr.20080429053831.12:v.setDirty
 def setDirty (self):
 
-    self.t.statusBits |= self.t.dirtyBit
+    self.statusBits |= self.dirtyBit
 #@-node:ekr.20080429053831.12:v.setDirty
 #@-node:ekr.20090830051712.6151: v.Dirty bits
 #@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
@@ -653,9 +653,9 @@ def createOutlineFromCacheList(self,c,aList):
     parent_v = self
     h,b,gnx,children = aList
     if h is not None:
-        t = parent_v.t
-        t._headString = h    
-        t._bodyString = b
+        v = parent_v
+        v._headString = h    
+        v._bodyString = b
 
     for z in children:
         h,b,gnx,grandChildren = z
@@ -701,7 +701,7 @@ def fastAddLastChild(self,c,gnxString):
 
     child_v = t
     child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
-    child_v.t.setVisited() # Supress warning/deletion of unvisited nodes.
+    child_v.setVisited() # Supress warning/deletion of unvisited nodes.
 
     return is_clone,child_v
 #@-node:ekr.20090829064400.6042:v.fastAddLastChild

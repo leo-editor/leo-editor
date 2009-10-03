@@ -713,8 +713,8 @@ class leoFind:
             line = s[i:j]
             if not self.clone_find_all:
                 self.printLine(line,allFlag=True)
-            if self.clone_find_all and self.p.v.t not in clones:
-                # g.trace(self.p.v.t,self.p.h)
+            if self.clone_find_all and self.p.v not in clones:
+                # g.trace(self.p.v,self.p.h)
                 if not clones:
                     undoData = u.beforeInsertNode(c.p)
                     #@                << create the found node >>
@@ -726,7 +726,7 @@ class leoFind:
                     c.setRootPosition(found) # New in Leo 4.5.
                     #@-node:ekr.20051113110735:<< create the found node >>
                     #@nl
-                clones.append(self.p.v.t)
+                clones.append(self.p.v)
                 #@            << create a clone of p under the find node >>
                 #@+node:ekr.20051113110851:<< create a clone of p under the find node >>
                 q = self.p.clone()

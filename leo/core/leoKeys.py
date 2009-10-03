@@ -206,7 +206,7 @@ class autoCompleterClass:
             (['p','p1','p2'],       'object',p),             
             (['s','s1','s2','ch'],  'object','aString'),
             (['string'],            'object',string), # Python's string module.
-            (['t','t1','t2'],       'object',p.v.t),  
+            # (['t','t1','t2'],       'object',p.v.t),  
             (['v','v1','v2'],       'object',p.v),
             (['w','widget'],        'object',c.frame.body.bodyCtrl),
         ]
@@ -1033,7 +1033,7 @@ class autoCompleterClass:
                 if obj:
                     self.selfObjectsDict [className] = obj
                     # This prevents future rescanning, even if the node moves.
-                    self.selfTnodesDict [p.v.t] = obj
+                    self.selfTnodesDict [p.v] = obj
         if obj:
             self.selfClassName = className
             self.push(self.theObject)
@@ -1437,7 +1437,7 @@ class autoCompleterClass:
                         s = None ; break
                     else:
                         # g.es_print('syntax error: deleting',p.h)
-                        self.excludedTnodesList.append(p.v.t)
+                        self.excludedTnodesList.append(p.v)
                         s = g.getScript(c,root,useSelectedText=False)
             return s or ''
         #@-node:ekr.20061031131434.63:forgivingParser
@@ -1463,7 +1463,7 @@ class autoCompleterClass:
         #@+node:ekr.20061031131434.65:newPutBody
         def newPutBody (self,p,oneNodeOnly=False,fromString=''):
 
-            if p.v.t in self.excludedTnodesList:
+            if p.v in self.excludedTnodesList:
                 pass
                 # g.trace('ignoring',p.h)
             else:
@@ -1510,7 +1510,7 @@ class autoCompleterClass:
 
             # First, see if any parent has already been scanned.
             for p in root.self_and_parents_iter():
-                obj = autoCompleter.selfTnodesDict.get(p.v.t)
+                obj = autoCompleter.selfTnodesDict.get(p.v)
                 if obj:
                     # g.trace('found',obj,'in',p.h)
                     return None,obj,p

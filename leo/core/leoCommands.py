@@ -741,8 +741,8 @@ class baseCommands (object):
                 #@            << create or reopen temp file, testing for conflicting changes >>
                 #@+node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
                 theDict = None ; path = None
-                #@<< set dict and path if a temp file already refers to p.v.t >>
-                #@+node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+                #@<< set dict and path if a temp file already refers to p.v >>
+                #@+node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v >>
                 searchPath = c.openWithTempFilePath(p,ext)
 
                 if g.os_path_exists(searchPath):
@@ -750,7 +750,7 @@ class baseCommands (object):
                         if p.v == theDict.get('v') and searchPath == theDict.get("path"):
                             path = searchPath
                             break
-                #@-node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+                #@-node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v >>
                 #@nl
                 if path:
                     #@    << create or recreate temp file as needed >>
@@ -918,7 +918,7 @@ class baseCommands (object):
             #@+node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
             for d in g.app.openWithFiles[:]:
                 p2 = d.get("p")
-                if p.v.t == p2.v.t:
+                if p.v == p2.v:
                     # g.pr("removing previous entry in g.app.openWithFiles for",p.h)
                     g.app.openWithFiles.remove(d)
             #@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
@@ -940,7 +940,7 @@ class baseCommands (object):
 
         name = "%s_LeoTemp_%s%s" % (
             g.sanitize_filename(p.headString()),
-            str(id(p.v.t)),ext)
+            str(id(p.v)),ext)
 
         name = g.toUnicode(name,g.app.tkEncoding)
 
@@ -1991,7 +1991,7 @@ class baseCommands (object):
 
         for p in root.self_and_subtree_iter():
             if p.matchHeadline(vnodeName):
-                if p.v.t.fileIndex == gnx:
+                if p.v.fileIndex == gnx:
                     return p.copy(),True
 
         return None,False
@@ -2001,11 +2001,11 @@ class baseCommands (object):
 
         # This is about the best that can be done without replicating the entire atFile write logic.
         found = False
-        ok = hasattr(root.v.t,"tnodeList")
+        ok = hasattr(root.v,"tnodeList")
 
         if ok:
             # Use getattr to keep pylint happy.
-            tnodeList = getattr(root.v.t,'tnodeList')
+            tnodeList = getattr(root.v,'tnodeList')
             #@        << set tnodeIndex to the number of +node sentinels before line n >>
             #@+node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
 
@@ -2029,10 +2029,10 @@ class baseCommands (object):
             #@+node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
             # g.trace("tnodeIndex",tnodeIndex)
             if tnodeIndex < len(tnodeList):
-                t = tnodeList[tnodeIndex]
+                v = tnodeList[tnodeIndex]
                 # Find the first vnode whose tnode is t.
                 for p in root.self_and_subtree_iter():
-                    if p.v.t == t:
+                    if p.v == v:
                         found = True ; break
                 if not found:
                     s = "tnode not found for " + vnodeName
@@ -2256,8 +2256,7 @@ class baseCommands (object):
         # Search the entire tree for joined nodes.
         # Bug fix: Leo 4.5.1: *must* search *all* positions.
         for p in c.all_positions_iter():
-            # if p.v.t == p1.v.t: g.trace('p1',p1,'p',p)
-            if p.v.t == p1.v.t and p != p1:
+            if p.v == p1.v and p != p1:
                 # Found a joined position.
                 for p2 in p.self_and_parents_iter():
                     fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
@@ -2484,7 +2483,7 @@ class baseCommands (object):
                     dirtyVnodeList.extend(dirtyVnodeList2)
             else:
                 changed = False ; result = []
-                text = p.t._bodyString
+                text = p.v._bodyString
                 assert(g.isUnicode(text))
                 lines = text.split('\n')
                 for line in lines:
@@ -2530,7 +2529,7 @@ class baseCommands (object):
                     dirtyVnodeList.extend(dirtyVnodeList2)
             else:
                 result = [] ; changed = False
-                text = p.t._bodyString
+                text = p.v._bodyString
                 assert(g.isUnicode(text))
                 lines = text.split('\n')
                 for line in lines:
@@ -3442,10 +3441,9 @@ class baseCommands (object):
             #@@c
 
             for v in c.all_unique_vnodes_iter():
-                t = v.t
-                if t not in tnodeInfoDict:
-                    tnodeInfoDict[t] = g.Bunch(
-                        t=t,head=v.headString(),body=v.b)
+                if v not in tnodeInfoDict:
+                    tnodeInfoDict[v] = g.Bunch(
+                        t=v,head=v.headString(),body=v.b)
             #@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
             #@nl
         # create a *position* to be pasted.
@@ -3463,8 +3461,8 @@ class baseCommands (object):
             # Create a dict containing only copied tnodes.
             copiedTnodeDict = {}
             for p in pasted.self_and_subtree_iter():
-                if p.v.t not in copiedTnodeDict:
-                    copiedTnodeDict[p.v.t] = p.v.t
+                if p.v not in copiedTnodeDict:
+                    copiedTnodeDict[p.v] = p.v
 
             # g.trace(copiedTnodeDict.keys())
 
@@ -3555,14 +3553,14 @@ class baseCommands (object):
         clonedTnodes = {}
         for ancestor in parent.self_and_parents_iter():
             if ancestor.isCloned():
-                t = ancestor.v.t
-                clonedTnodes[t] = t
+                v = ancestor.v
+                clonedTnodes[v] = v
 
         if not clonedTnodes:
             return True
 
         for p in root.self_and_subtree_iter():
-            if p.isCloned() and clonedTnodes.get(p.v.t):
+            if p.isCloned() and clonedTnodes.get(p.v):
                 if g.app.unitTesting:
                     g.app.unitTestDict['checkMoveWithParentWithWarning']=True
                 elif warningFlag:
@@ -3736,8 +3734,8 @@ class baseCommands (object):
         undoType = g.choose(sortChildren,'Sort Children','Sort Siblings')
         parent_v = p._parentVnode()
         parent = p.parent()
-        oldChildren = parent_v.t.children[:]
-        newChildren = parent_v.t.children[:]
+        oldChildren = parent_v.children[:]
+        newChildren = parent_v.children[:]
 
         if key == None:
             def lowerKey (self):
@@ -3750,7 +3748,7 @@ class baseCommands (object):
         # g.trace(g.listToString(newChildren))
 
         bunch = u.beforeSort(p,undoType,oldChildren,newChildren,sortChildren)
-        parent_v.t.children = newChildren
+        parent_v.children = newChildren
         if parent:
             dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
         else:
@@ -3776,7 +3774,7 @@ class baseCommands (object):
             if parent:
                 p = parent.firstChild()
             else:
-                p = leoNodes.position(parent_v.t.children[0])
+                p = leoNodes.position(parent_v.children[0])
             while p and p.v != p_v:
                 p.moveToNext()
             p = p or parent
@@ -3811,12 +3809,12 @@ class baseCommands (object):
                 v = p.v
 
                 # New in 4.2: tnode list is in tnode.
-                if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and not v.isAnyAtFileNode():
+                if hasattr(v,"tnodeList") and len(v.tnodeList) > 0 and not v.isAnyAtFileNode():
                     if 0:
                         s = "deleting tnodeList for " + repr(v)
                         g.es_print(s,color="blue")
-                    delattr(v.t,"tnodeList")
-                    v.t._p_changed = True
+                    delattr(v,"tnodeList")
+                    v._p_changed = True
                 #@-node:ekr.20040313150633:<< remove unused tnodeList >>
                 #@nl
                 if full: # Unit tests usually set this false.
@@ -3878,7 +3876,7 @@ class baseCommands (object):
                     parent_v = p._parentVnode()
                     n = p.childIndex()
 
-                    assert parent_v.t.children[n] == p.v,'fail 1'
+                    assert parent_v.children[n] == p.v,'fail 1'
                     #@-node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
                     #@-others
                     #@-node:ekr.20040323155951:<< do full tests >>
@@ -4993,7 +4991,7 @@ class baseCommands (object):
         u.beforeChangeGroup(current,undoType)
         dirtyVnodeList = []
         for p in c.all_positions_with_unique_vnodes_iter():
-            if p.v.t == current.v.t:
+            if p.v == current.v:
                 bunch = u.beforeMark(p,undoType)
                 c.setMarked(p)
                 c.setChanged(True)
@@ -5069,7 +5067,7 @@ class baseCommands (object):
                 bunch = u.beforeMark(p,undoType)
                 # c.clearMarked(p) # Very slow: calls a hook.
                 p.v.clearMarked()
-                p.v.t.setDirty()
+                p.v.setDirty()
                 u.afterMark(p,undoType,bunch)
                 changed = True
         dirtyVnodeList = [p.v for p in c.all_positions_with_unique_vnodes_iter() if p.v.isDirty()]
@@ -5111,13 +5109,13 @@ class baseCommands (object):
         c.endEditing()
         parent_v = p._parentVnode()
         n = p.childIndex()
-        followingSibs = parent_v.t.children[n+1:]
+        followingSibs = parent_v.children[n+1:]
         # g.trace('sibs2\n',g.listToString(followingSibs2))
 
         # Remove the moved nodes from the parent's children.
-        parent_v.t.children = parent_v.t.children[:n+1]
+        parent_v.children = parent_v.children[:n+1]
         # Add the moved nodes to p's children
-        p.v.t.children.extend(followingSibs)
+        p.v.children.extend(followingSibs)
         # Adjust the parent links in the moved nodes.
         # There is no need to adjust descendant links.
         for child in followingSibs:
@@ -5366,15 +5364,15 @@ class baseCommands (object):
         inAtIgnoreRange = p.inAtIgnoreRange()
         c.endEditing()
         parent_v = p._parentVnode()
-        children = p.v.t.children
+        children = p.v.children
         # Add the children to parent_v's children.
         n = p.childIndex()+1
-        z = parent_v.t.children[:]
-        parent_v.t.children = z[:n]
-        parent_v.t.children.extend(children)
-        parent_v.t.children.extend(z[n:])
+        z = parent_v.children[:]
+        parent_v.children = z[:n]
+        parent_v.children.extend(children)
+        parent_v.children.extend(z[n:])
         # Remove v's children.
-        p.v.t.children = []
+        p.v.children = []
 
         # Adjust the parent links in the moved children.
         # There is no need to adjust descendant links.
@@ -5525,11 +5523,11 @@ class baseCommands (object):
             g.es('not a clone:',p.h,color='blue')
             return
 
-        t = p.v.t
+        v = p.v
         p.moveToThreadNext()
         wrapped = False
         while 1:
-            if p and p.v.t == t:
+            if p and p.v == v:
                 break
             elif p:
                 p.moveToThreadNext()
@@ -7159,14 +7157,14 @@ class baseCommands (object):
                 old_v = p.v
                 i = p._childIndex
                 p.moveToParent()
-                children = p.v.t.children
+                children = p.v.children
                 # Major bug fix: 2009/1/2 and 2009/1/5
                 if i >= len(children) or children[i] != old_v:
                     return False
             else:
                 # root position, check from hidden root vnode
                 i = p._childIndex
-                rootchildren = root.v.parents[0].t.children
+                rootchildren = root.v.parents[0].children
                 if i >= len(rootchildren) or rootchildren[i] != p.v:
                     return False
                 return True
@@ -7222,8 +7220,8 @@ class baseCommands (object):
         stack = []
         while v.parents:
             parent = v.parents[0]
-            if v in parent.t.children:
-                n = parent.t.children.index(v)
+            if v in parent.children:
+                n = parent.children.index(v)
             else:
                 return None
             stack.insert(0,(v,n),)
@@ -7267,8 +7265,7 @@ class baseCommands (object):
 
         for p in c.all_positions_with_unique_vnodes_iter():
             p.v.clearVisited()
-            p.v.t.clearVisited()
-            p.v.t.clearWriteBit()
+            p.v.clearWriteBit()
     #@-node:ekr.20031218072017.2985:c.clearAllVisited
     #@+node:ekr.20060906211138:c.clearMarked
     def clearMarked  (self,p):
@@ -7289,7 +7286,7 @@ class baseCommands (object):
         # 1/22/05: Major change: the previous test was: 'if p == current:'
         # This worked because commands work on the presently selected node.
         # But setRecentFiles may change a _clone_ of the selected node!
-        if current and p.v.t==current.v.t:
+        if current and p.v==current.v:
             # Revert to previous code, but force an empty selection.
             c.frame.body.setSelectionAreas(s,None,None)
             w = c.frame.body.bodyCtrl
@@ -7299,9 +7296,9 @@ class baseCommands (object):
             c.recolor()
 
         # Keep the body text in the tnode up-to-date.
-        if v.t._bodyString != s:
+        if v._bodyString != s:
             v.setBodyString(s)
-            v.t.setSelection(0,0)
+            v.setSelection(0,0)
             p.setDirty()
             if not c.isChanged():
                 c.setChanged(True)

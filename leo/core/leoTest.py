@@ -608,9 +608,9 @@ class testUtils:
 
         for p in input.self_and_subtree_iter():
             try:
-                theId,time,n = p.v.t.fileIndex
+                theId,time,n = p.v.fileIndex
             except TypeError:
-                p.v.t.fileIndex = nodeIndices.getNewIndex()
+                p.v.fileIndex = nodeIndices.getNewIndex()
 
         # Write the file to a string.
         df.write(input,thinFile=True,nosentinels= not sentinels,toString=True)
@@ -793,7 +793,7 @@ def runTestsExternally (c,all):
                     p and p.h or '<none>',
                     limit and limit.h or '<none>'))
                 while p and p != limit:
-                    if p.v.t in self.seen:
+                    if p.v in self.seen:
                         if trace: g.trace('seen',p.h)
                         p.moveToNodeAfterTree()
                     elif lookForMark and p.h.startswith(markTag):
@@ -827,7 +827,7 @@ def runTestsExternally (c,all):
             p2.moveToLastChildOf(self.copyRoot)
 
             for p2 in p.self_and_subtree_iter():
-                self.seen.append(p2.v.t)
+                self.seen.append(p2.v)
         #@-node:ekr.20070705065154.1:addNode
         #@+node:ekr.20070705075604.3:isUnitTestNode
         def isUnitTestNode (self,p):

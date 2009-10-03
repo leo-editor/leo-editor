@@ -376,10 +376,10 @@ class rstCommands:
     #@+node:ekr.20090502071837.47:preprocessNode
     def preprocessNode (self,p):
 
-        d = self.tnodeOptionDict.get(p.v.t)
+        d = self.tnodeOptionDict.get(p.v)
         if d is None:
             d = self.scanNodeForOptions(p)
-            self.tnodeOptionDict [p.v.t] = d
+            self.tnodeOptionDict [p.v] = d
     #@nonl
     #@-node:ekr.20090502071837.47:preprocessNode
     #@+node:ekr.20090502071837.48:parseOptionLine
@@ -563,7 +563,7 @@ class rstCommands:
 
         # g.trace('-'*20)
         for p in p.self_and_parents_iter():
-            d = self.tnodeOptionDict.get(p.v.t,{})
+            d = self.tnodeOptionDict.get(p.v,{})
             # g.trace(p.h,d)
             for key in d.keys():
                 ivar = self.munge(key)
@@ -606,7 +606,7 @@ class rstCommands:
 
         All such options default to False.'''
 
-        d = self.tnodeOptionDict.get(p.v.t, {} )
+        d = self.tnodeOptionDict.get(p.v, {} )
 
         for ivar in self.singleNodeOptions:
             val = d.get(ivar,False)
@@ -682,7 +682,7 @@ class rstCommands:
         self.outputFileName = fileName
 
         # Set underlining characters.
-        d = self.tnodeOptionDict.get(p.v.t) # Set by preprocessTree.
+        d = self.tnodeOptionDict.get(p.v) # Set by preprocessTree.
         underlines = d.get('underline_characters')
         if underlines:
             self.atAutoWriteUnderlines = underlines

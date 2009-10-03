@@ -398,7 +398,7 @@ class undoer:
         v = bunch.v
 
         v.statusBits = bunch.statusBits
-        v.t.children = bunch.children
+        v.children   = bunch.children
         v.parents    = bunch.parents
 
         uA = bunch.get('unknownAttributes')
@@ -409,16 +409,16 @@ class undoer:
     #@+node:ekr.20050415170812.2:restoreTnodeUndoInfo
     def restoreTnodeUndoInfo (self,bunch):
 
-        t = bunch.t
+        v = bunch.t
 
-        t._headString  = bunch.headString
-        t._bodyString  = bunch.bodyString
-        t.statusBits  = bunch.statusBits
+        v._headString  = bunch.headString
+        v._bodyString  = bunch.bodyString
+        v.statusBits  = bunch.statusBits
 
         uA = bunch.get('unknownAttributes')
         if uA is not None:
-            t.unknownAttributes = uA
-            t._p_changed = 1
+            v.unknownAttributes = uA
+            v._p_changed = 1
     #@-node:ekr.20050415170812.2:restoreTnodeUndoInfo
     #@-node:EKR.20040530121329:u.restoreTree & helpers
     #@+node:EKR.20040528075307:u.saveTree & helpers
@@ -457,8 +457,9 @@ class undoer:
         u = self ; topLevel = (treeInfo == None)
         if topLevel: treeInfo = []
 
-        # Add info for p.v and p.v.t.  Duplicate tnode info is harmless.
-        data = (p.v,u.createVnodeUndoInfo(p.v),u.createTnodeUndoInfo(p.v.t))
+        ### What is the status of this in the one-node world?
+        # Add info for p.v.  Duplicate tnode info is harmless.
+        data = (p.v,u.createVnodeUndoInfo(p.v),u.createTnodeUndoInfo(p.v))
         treeInfo.append(data)
 
         # Recursively add info for the subtree.
@@ -478,7 +479,7 @@ class undoer:
             v = v,
             statusBits = v.statusBits,
             parents    = v.parents[:],
-            children   = v.t.children[:],
+            children   = v.children[:],
             # The tnode never changes so there is no need to save it here.
         )
 
@@ -781,9 +782,9 @@ class undoer:
             beforeTree=bunch.beforeTree
             afterTree = []
             for bunch2 in beforeTree:
-                t = bunch2.t
+                v = bunch2.t ### should be bunch2.v
                 afterTree.append(
-                    g.Bunch(t=t,head=t._headString[:],body=t._bodyString[:]))
+                    g.Bunch(t=v,head=v._headString[:],body=v._bodyString[:]))
             bunch.afterTree=afterTree
             # g.trace(afterTree)
 
@@ -1442,7 +1443,7 @@ class undoer:
             u.newP._linkAsRoot(oldRoot)
 
         for v in u.dirtyVnodeList:
-            v.t.setDirty()
+            v.setDirty()
 
         c.selectPosition(u.newP)
     #@-node:ekr.20050412083057:redoCloneNode
@@ -1506,7 +1507,7 @@ class undoer:
         u.updateMarks('new') # Bug fix: Leo 4.4.6.
 
         for v in dirtyVnodeList:
-            v.t.setDirty()
+            v.setDirty()
 
         if not g.unitTesting:
             g.es("redo",count,"instances")
@@ -1547,14 +1548,14 @@ class undoer:
 
         if u.pasteAsClone:
             for bunch in u.afterTree:
-                t = bunch.t
-                if u.newP.v.t == t:
+                v = bunch.t ### should be renamed.
+                if u.newP.v == v:
                     c.setBodyString(u.newP,bunch.body)
                     c.setHeadString(u.newP,bunch.head)
                 else:
-                    t.setBodyString(bunch.body)
-                    t.setHeadString(bunch.head)
-                # g.trace(t,bunch.head,bunch.body)
+                    v.setBodyString(bunch.body)
+                    v.setHeadString(bunch.head)
+                # g.trace(v,bunch.head,bunch.body)
 
         c.selectPosition(u.newP)
     #@-node:ekr.20050412084532:redoInsertNode
@@ -1568,7 +1569,7 @@ class undoer:
         if u.groupCount == 0:
 
             for v in u.dirtyVnodeList:
-                v.t.setDirty()
+                v.setDirty()
 
             c.selectPosition(u.p)
     #@nonl
@@ -1582,18 +1583,18 @@ class undoer:
         assert(v)
 
         # Adjust the children arrays.
-        assert u.oldParent_v.t.children[u.oldN] == v
-        del u.oldParent_v.t.children[u.oldN]
+        assert u.oldParent_v.children[u.oldN] == v
+        del u.oldParent_v.children[u.oldN]
 
         parent_v = u.newParent_v
-        parent_v.t.children.insert(u.newN,v)
+        parent_v.children.insert(u.newN,v)
         v.parents.append(u.newParent_v)
         v.parents.remove(u.oldParent_v)
 
         u.updateMarks('new')
 
         for v in u.dirtyVnodeList:
-            v.t.setDirty()
+            v.setDirty()
 
         c.selectPosition(u.newP)
     #@-node:ekr.20050411111847:redoMove
@@ -1621,7 +1622,7 @@ class undoer:
         u.updateMarks('new')
 
         for v in u.dirtyVnodeList:
-            v.t.setDirty()
+            v.setDirty()
     #@-node:ekr.20050318085432.7:redoNodeContents
     #@+node:ekr.20080425060424.13:redoPromote
     def redoPromote (self):
@@ -1632,12 +1633,12 @@ class undoer:
         # Add the children to parent_v's children.
         n = u.p.childIndex() + 1
 
-        old_children = parent_v.t.children[:]
-        parent_v.t.children = old_children[:n]
+        old_children = parent_v.children[:]
+        parent_v.children = old_children[:n]
             # Add children up to the promoted nodes.
-        parent_v.t.children.extend(u.children)
+        parent_v.children.extend(u.children)
             # Add the promoted nodes.
-        parent_v.t.children.extend(old_children[n:])
+        parent_v.children.extend(old_children[n:])
             # Add the children up to the promoted nodes.
 
         # Remove the old children.
@@ -1657,7 +1658,7 @@ class undoer:
         u = self ; c = u.c
 
         parent_v = u.p._parentVnode()
-        parent_v.t.children = u.newChildren
+        parent_v.children = u.newChildren
         p = c.setPositionAfterSort(u.sortChildren)
         c.setCurrentPosition(p)
     #@nonl
@@ -1695,7 +1696,7 @@ class undoer:
         u.updateMarks('new')
 
         for v in u.dirtyVnodeList:
-            v.t.setDirty()
+            v.setDirty()
 
         if u.newSel:
             c.bodyWantsFocusNow()
@@ -1768,7 +1769,7 @@ class undoer:
         c.deleteOutline()
 
         for v in u.dirtyVnodeList:
-            v.t.setDirty() # Bug fix: Leo 4.4.6
+            v.setDirty() # Bug fix: Leo 4.4.6
 
         c.selectPosition(u.p)
     #@-node:ekr.20050412083057.1:undoCloneNode
@@ -1796,10 +1797,10 @@ class undoer:
         n = len(u.followingSibs)
 
         # Remove the demoted nodes from p's children.
-        u.p.v.t.children = u.p.v.t.children[:-n]
+        u.p.v.children = u.p.v.children[:-n]
 
         # Add the demoted nodes to the parent's children.
-        parent_v.t.children.extend(u.followingSibs)
+        parent_v.children.extend(u.followingSibs)
 
         # Adjust the parent links.
         # There is no need to adjust descendant links.
@@ -1845,7 +1846,7 @@ class undoer:
         u.updateMarks('old') # Bug fix: Leo 4.4.6.
 
         for v in dirtyVnodeList:
-            v.t.setDirty() # Bug fix: Leo 4.4.6.
+            v.setDirty() # Bug fix: Leo 4.4.6.
 
         if not g.unitTesting:
             g.es("undo",count,"instances")
@@ -1880,8 +1881,8 @@ class undoer:
 
         if u.pasteAsClone:
             for bunch in u.beforeTree:
-                t = bunch.t
-                if u.p.v.t == t:
+                t = bunch.t ### Should be renamed.
+                if u.p.v == t:
                     c.setBodyString(u.p,bunch.body)
                     c.setHeadString(u.p,bunch.head)
                 else:
@@ -1900,7 +1901,7 @@ class undoer:
         if u.groupCount == 0:
 
             for v in u.dirtyVnodeList:
-                v.t.setDirty() # Bug fix: Leo 4.4.6.
+                v.setDirty() # Bug fix: Leo 4.4.6.
 
             c.selectPosition(u.p)
     #@-node:ekr.20050526124906:undoMark
@@ -1913,9 +1914,9 @@ class undoer:
         assert(v)
 
         # Adjust the children arrays.
-        assert u.newParent_v.t.children[u.newN] == v
-        del u.newParent_v.t.children[u.newN]
-        u.oldParent_v.t.children.insert(u.oldN,v)
+        assert u.newParent_v.children[u.newN] == v
+        del u.newParent_v.children[u.newN]
+        u.oldParent_v.children.insert(u.oldN,v)
 
         # Recompute the parent links.
         v.parents.append(u.oldParent_v)
@@ -1924,7 +1925,7 @@ class undoer:
         u.updateMarks('old')
 
         for v in u.dirtyVnodeList:
-            v.t.setDirty()
+            v.setDirty()
 
         c.selectPosition(u.p)
     #@-node:ekr.20050411112033:undoMove
@@ -1952,7 +1953,7 @@ class undoer:
         u.updateMarks('old')
 
         for v in u.dirtyVnodeList:
-            v.t.setDirty() # Bug fix: Leo 4.4.6.
+            v.setDirty() # Bug fix: Leo 4.4.6.
     #@-node:ekr.20050318085713.1:undoNodeContents
     #@+node:ekr.20080425060424.14:undoPromote
     def undoPromote (self):
@@ -2060,7 +2061,7 @@ class undoer:
         u = self ; c = u.c
 
         parent_v = u.p._parentVnode()
-        parent_v.t.children = u.oldChildren
+        parent_v.children = u.oldChildren
         p = c.setPositionAfterSort(u.sortChildren)
         c.setCurrentPosition(p)
     #@nonl
@@ -2098,7 +2099,7 @@ class undoer:
         u.updateMarks('old')
 
         for v in u.dirtyVnodeList:
-            v.t.setDirty() # Bug fix: Leo 4.4.6.
+            v.setDirty() # Bug fix: Leo 4.4.6.
 
         if u.oldSel:
             c.bodyWantsFocusNow()

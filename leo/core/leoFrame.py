@@ -1256,7 +1256,7 @@ class leoBody:
         c.undoer.setUndoTypingParams(p,undoType,
             oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
         p.v.setBodyString(newText)
-        p.v.t.insertSpot = body.getInsertPoint()
+        p.v.insertSpot = body.getInsertPoint()
         #@    << recolor the body >>
         #@+node:ekr.20051026083733.6:<< recolor the body >>
         body.colorizer.interrupt()
@@ -2728,8 +2728,8 @@ class leoTree:
                     self.setUnselectedLabelState(old_p)
 
                 if old_p:
-                    old_p.v.t.scrollBarSpot = yview
-                    old_p.v.t.insertSpot = insertSpot
+                    old_p.v.scrollBarSpot = yview
+                    old_p.v.insertSpot = insertSpot
                 #@-node:ekr.20040803072955.129:<< unselect the old node >>
                 #@nl
 
@@ -2793,7 +2793,7 @@ class leoTree:
 
         # Always do this.  Otherwise there can be problems with trailing newlines.
         c = self.c ; w = c.frame.body.bodyCtrl
-        s = g.toUnicode(p.v.t._bodyString,"utf-8")
+        s = g.toUnicode(p.v._bodyString,"utf-8")
         old_s = w.getAllText()
 
         if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
@@ -2806,12 +2806,12 @@ class leoTree:
                 colorizer.setHighlighter(p)
             self.frame.body.recolor(p)
 
-        if p.v and p.v.t.scrollBarSpot != None:
-            first,last = p.v.t.scrollBarSpot
+        if p.v and p.v.scrollBarSpot != None:
+            first,last = p.v.scrollBarSpot
             w.setYScrollPosition(first)
 
-        if p.v and p.v.t.insertSpot != None:
-            spot = p.v.t.insertSpot
+        if p.v and p.v.insertSpot != None:
+            spot = p.v.insertSpot
             w.setInsertPoint(spot)
             w.see(spot)
         else:
@@ -3359,11 +3359,11 @@ class nullTree (leoTree):
     #@+node:ekr.20070228163350.2:Headlines (nullTree)
     def edit_widget (self,p):
         d = self.editWidgetsDict
-        if not p.v or not p.v.t:
+        if not p.v:
             return None
-        w = d.get(p.v.t)
+        w = d.get(p.v)
         if not w:
-            d[p.v.t] = w = stringTextWidget(
+            d[p.v] = w = stringTextWidget(
                 c=self.c,
                 name='head-%d' % (1 + len(d.keys())))
             w.setAllText(p.h)

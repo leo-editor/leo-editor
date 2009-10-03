@@ -875,7 +875,7 @@ class bufferCommandsClass (baseEditCommandsClass):
 
         for p in self.c.all_positions_with_unique_tnodes_iter():
             h = p.h.strip()
-            t = p.v.t
+            v = p.v
             nameList = self.names.get(h,[])
             if nameList:
                 if p.parent():
@@ -885,17 +885,17 @@ class bufferCommandsClass (baseEditCommandsClass):
             else:
                 key = h
             self.nameList.append(key)
-            self.tnodes[key] = t
+            self.tnodes[key] = v
             nameList.append(key)
             self.names[h] = nameList
     #@-node:ekr.20051215121416:computeData
     #@+node:ekr.20051215164823:findBuffer
     def findBuffer (self,name):
 
-        t = self.tnodes.get(name)
+        v = self.tnodes.get(name) ###
 
         for p in self.c.all_positions_with_unique_tnodes_iter():
-            if p.v.t == t:
+            if p.v == v:
                 return p
 
         g.trace("Can't happen",name)
@@ -2409,8 +2409,9 @@ class editCommandsClass (baseEditCommandsClass):
 
         if trace: g.trace(l)
 
-        subl = [i for i in l if i.get('on') != 'vnode']
-        self._setIconListHelper(p, subl, p.v.t)
+        ###
+        # subl = [i for i in l if i.get('on') != 'vnode']
+        # self._setIconListHelper(p, subl, p.v.t)
 
         subl = [i for i in l if i.get('on') == 'vnode']
         self._setIconListHelper(p, subl, p.v)
@@ -2507,9 +2508,9 @@ class editCommandsClass (baseEditCommandsClass):
 
         c = self.c ; p = c.p
 
-        if hasattr(p.v.t,"unknownAttributes"):
-            a = p.v.t.unknownAttributes
-            p.v.t._p_changed = 1
+        if hasattr(p.v,"unknownAttributes"):
+            a = p.v.unknownAttributes
+            p.v._p_changed = 1
             self.setIconList(p,[])
             a["lineYOffset"] = 0
             p.setDirty()
@@ -3421,7 +3422,7 @@ class editCommandsClass (baseEditCommandsClass):
             'spot=',spot,'moveSpot',self.moveSpot)
 
         # Reset the move spot if needed.
-        if self.moveSpot is None or p.v.t != self.moveSpotNode:
+        if self.moveSpot is None or p.v != self.moveSpotNode:
             # g.trace('no spot')
             self.setMoveCol(w,g.choose(extend,ins,spot)) # sets self.moveSpot.
         elif extend:
@@ -3717,7 +3718,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         self.moveSpot = i
         self.moveCol = col
-        self.moveSpotNode = p.v.t
+        self.moveSpotNode = p.v
 
         # g.trace('moveSpot',i)
     #@nonl
@@ -5030,7 +5031,7 @@ class editFileCommandsClass (baseEditCommandsClass):
         for p in c.outline():
             try:
                 # fileIndices for pre-4.x versions of .leo files have a different format.
-                i,j,k = p.v.t.fileIndex
+                i,j,k = p.v.fileIndex
                 d[str(i),str(j),str(k)] = p.copy()
             except Exception:
                 pass
