@@ -12,8 +12,10 @@
 #@nonl
 #@+node:ekr.20091003163012.6056:First
 - Create at-file branch to unify @thin and @file.
+
+bzr push bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/at-file
+
 - contract-or-go-right does not always work.
-- regex for t
 #@nonl
 #@-node:ekr.20091003163012.6056:First
 #@+node:ekr.20090714085914.5990:Next

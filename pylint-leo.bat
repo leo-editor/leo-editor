@@ -11,7 +11,7 @@ rem This ensures that imports of base classes work.
 rem cd c:\leo.repo\trunk
 
 REM tests that fail...
-goto good_plugins
+REM goto good_plugins
 REM goto bad_plugins
 
 REM goto essential_plugins
@@ -88,7 +88,7 @@ call pylint.bat leo\core\leoUndo.py          --rcfile=leo\test\pylint-leo-rc.txt
 echo qtGui.py (suppress W0221)
 call pylint.bat leo\plugins\qtGui.py         --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
 
-REM goto done
+goto done
 
 :essential_plugins
 

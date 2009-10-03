@@ -66,32 +66,29 @@ class vnode (baseVnode):
     #@    @+others
     #@+node:ekr.20031218072017.3342:v.Birth & death
     #@+node:ekr.20031218072017.3344:v.__init
-    def __init__ (self,context,t=None):
+    def __init__ (self,context):
 
-        assert t is None
-
-        # To support ZODB the code must set v._p_changed = 1 whenever
+        # To support ZODB, the code must set v._p_changed = 1 whenever
         # v.unknownAttributes or any mutable vnode object changes.
 
+        self.children = [] # Ordered list of all children of this node.
         self.context = context # The context containing context.hiddenRootNode.
             # Required for trees, so we can compute top-level siblings.
             # It is named .context rather than .c to emphasize its limited usage.
-
         self.iconVal = 0
         self.parents = [] # Unordered list of all parents of this node.
-
         self.statusBits = 0 # status bits
-
-        # vnodes contain all tnode info.
-        self.t = self # This will probably never go away.
         self.cloneIndex = 0 # For Pre-3.12 files.  Zero for @file nodes
-        self.fileIndex = None # The immutable file index for this tnode.
+        self.fileIndex = g.app.nodeIndices.getNewIndex()
+            # The immutable file index for this tnode.
+            # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
         self.insertSpot = None # Location of previous insert point.
         self.scrollBarSpot = None # Previous value of scrollbar position.
         self.selectionLength = 0 # The length of the selected body text.
         self.selectionStart = 0 # The start of the selected body text.
-
-        # Convert everything to unicode...
+        self.t = self # For compatibility with scripts and plugins.
+            # The 't' ivar will probably never go away,
+            # but Leo's core (and all unit tests) work without it.
         if g.isPython3:
             self._headString = 'newHeadline'
             self._bodyString = ''
@@ -99,10 +96,7 @@ class vnode (baseVnode):
             self._headString = unicode('newHeadline')
             self._bodyString = unicode('')
 
-        self.children = [] # List of all children of this node.
-
-        # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
-        self.fileIndex = g.app.nodeIndices.getNewIndex()
+    #@nonl
     #@-node:ekr.20031218072017.3344:v.__init
     #@+node:ekr.20031218072017.3345:v.__repr__ & v.__str__
     def __repr__ (self):

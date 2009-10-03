@@ -1786,11 +1786,6 @@
 <v t="ekr.20061001124008.2"><vh>grandchild</vh></v>
 </v>
 </v>
-<v t="ekr.20061001091616"><vh>@@test putDescendentTnodeUas</vh>
-<v t="ekr.20061001091647" unit_test_child="55046162636471002e"><vh>child</vh>
-<v t="ekr.20061001091647.1" unit_test_grandchild="55047778797a71002e"><vh>grandChild</vh></v>
-</v>
-</v>
 <v t="ekr.20080805104144.1"><vh>@test putDescendentVnodeUas</vh>
 <v t="ekr.20080805104144.2"><vh>child</vh>
 <v t="ekr.20080805104144.3"><vh>grandChild</vh></v>
@@ -2074,7 +2069,7 @@
 </v>
 <v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
 <v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
-<v t="ekr.20040712101754.184"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
+<v t="ekr.20040712101754.184"><vh>@@test consistency of p.v.vnodeList &amp; v.parents for cloned nodes</vh></v>
 <v t="ekr.20040712101754.208" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
 </v>
 <v t="ekr.20040712101754.99" annotate="7d71002e"><vh>@test c iters</vh>
@@ -2117,7 +2112,7 @@
 <v t="ekr.20040802071519" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
+<v t="ekr.20040712101754.175"><vh>@test p.t == p.v</vh></v>
 <v t="ekr.20040712101754.200" annotate="7d71002e"><vh>@test that clones share subtrees</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ville.20090312195309.2"><vh>@test find_h / find_b / select_h / select_b</vh></v>
@@ -2596,26 +2591,16 @@ if 0: # all nodes
 if 0: # unique nodes
     for v in c.all_unique_vnodes_iter(): print(v)
     for t in c.all_unique_tnodes_iter(): print(t)</t>
-<t tx="ekr.20040712101754.100">v1 = [p.v for p in c.all_positions_iter()]
-v2 = [v for v in c.all_vnodes_iter()]
+<t tx="ekr.20040712101754.100">v1 = [p.v for p in c.all_positions()]
+v2 = [v for v in c.all_nodes()]
 for v in v2: assert(v in v1)
 for v in v1: assert(v in v2)
 
-t1 = [p.v.t for p in c.all_positions_iter()]
-t2 = [t for t in c.all_tnodes_iter()]
-for t in t2: assert(t in t1)
-for t in t1: assert(t in t2)
-
 # print("coverage tests pass")</t>
 <t tx="ekr.20040712101754.101">nodes = []
-for v in c.all_unique_vnodes_iter():
+for v in c.all_unique_nodes():
     assert v not in nodes
     nodes.append(v)
-    
-nodes = []
-for t in c.all_unique_tnodes_iter():
-    assert t not in nodes
-    nodes.append(t)
     
 # print("duplicate tests pass")</t>
 <t tx="ekr.20040712101754.103">import leo.core.leoTest as leoTest
@@ -2671,7 +2656,7 @@ last line 1: two trailing newlines
     # NOTE: p.__getattr__ must be enabled for this test to work.
     
     for p in c.all_positions():
-        assert(p.t == p.v.t)</t>
+        assert(p.t == p.v)</t>
 <t tx="ekr.20040712101754.177">p = p.firstChild()
 assert(p.h=="File Conversion")
 p.convertTreeToString()</t>
@@ -2733,8 +2718,6 @@ def moreBody (self):
                 parent2 = v.directParents()
         else:
             parents1 = p.v.parents
-            # if p.v._parent: parents1 = p.v._parent.t.vnodeList
-            # else:           parents1 = []
             parents2 = p.v.directParents()
         
         assert len(parents1) == len(parents2), "length mismatch: %s" % (p)
@@ -2752,7 +2735,7 @@ except AssertionError:
 <t tx="ekr.20040712101754.184">try:
     for p in c.all_positions():
         if p.isCloned():
-            parents = p.v.t.vnodeList
+            parents = p.v.vnodeList
             for child in p.children_iter():
                 vparents = child.v.directParents()
                 assert len(parents) == len(vparents), "length mismatch: %s,%s" % (p,child)
@@ -2851,9 +2834,7 @@ assert p.__ne__(root) is True</t>
 <t tx="ekr.20040712101754.200" annotate="7d71002e">for p in c.all_positions():
     if p.isCloned() and p.hasChildren():
         childv = p.firstChild().v
-        # assert(childv == p.v.t._firstChild)
-        # assert(id(childv) == id(p.v.t._firstChild))
-        firstChild = p.v.t.children[0]
+        firstChild = p.v.children[0]
         assert childv == firstChild
 </t>
 <t tx="ekr.20040712101754.201" annotate="7d71002e">p2 = c.rootPosition()
@@ -2924,7 +2905,7 @@ for p in c.all_positions():
 <t tx="ekr.20040712101754.208" annotate="7d71002e">try:
     for p in c.all_positions():
         if p.isCloned():
-            parents = p.v.t.vnodeList
+            parents = p.v.vnodeList
             for child in p.children_iter():
                 vparents = child.directParents()
                 assert(len(parents) == len(vparents)), 'fail 1'
@@ -3315,7 +3296,7 @@ h = "@thin ../src/leoTest.py"
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 
-p.v.t.tnodeList = ["bogus tnodeList"]
+p.v.tnodeList = ["bogus tnodeList"]
 
 if 0: # This causes p to be written, thereby clearing the tnodeList.
     p.setDirty()
@@ -11460,8 +11441,7 @@ time.sleep(0.5)
 <t tx="ekr.20060913084600">import leo.core.leoNodes as leoNodes
 
 if leoNodes.use_zodb:
-    p.v.__hash__()
-    p.v.t.__hash__()</t>
+    p.v.__hash__()</t>
 <t tx="ekr.20060921115303"># for condition in ('&lt;','&lt;=','&gt;','&gt;='):
 
 for v1,condition,v2 in (
@@ -11474,32 +11454,6 @@ for v1,condition,v2 in (
     ('1','&lt;','1.1'),
 ):
     assert g.CheckVersion(v1,v2,condition=condition,trace=False)</t>
-<t tx="ekr.20061001091616"># putDescendantTnodeUas is redundant and should never be called.
-
-fc = c.fileCommands
-child = p.firstChild()
-grandChild = child.firstChild()
-# Note: only tnodes can have unknown attributes.
-child.v.t.unknownAttributes = {'unit_test_child':'abcd'}
-grandChild.v.t.unknownAttributes = {'unit_test_grandchild':'wxyz'}
-
-try:
-
-    s = fc.putDescendentTnodeUas (p)
-    
-    expected = ' descendentTnodeUnknownAttributes="\
-7d7100285514656b722e32303036313030313039313634372e3\
-171017d71025514756e69745f746573745f6772616e64636869\
-6c64710355047778797a7104735512656b722e3230303631303\
-03130393136343771057d7106550f756e69745f746573745f63\
-68696c647107550461626364710873752e"'
-    
-    assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
-finally:
-    del child.v.t.unknownAttributes
-    del grandChild.v.t.unknownAttributes</t>
-<t tx="ekr.20061001091647" unit_test_child="55046162636471002e"></t>
-<t tx="ekr.20061001091647.1" unit_test_grandchild="55047778797a71002e"></t>
 <t tx="ekr.20061001114236" unit_test="55046162636471002e">fc = c.fileCommands # self is a dummy
 p.v.unknownAttributes = {'unit_test':'abcd'}
 s = fc.putUnknownAttributes (p.v)
@@ -11508,20 +11462,20 @@ assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
 </t>
 <t tx="ekr.20061001114637"># 3 failures with Alt-5</t>
 <t tx="ekr.20061001124008">fc = c.fileCommands
-t = p.v.t
+v = p.v
 child = p.firstChild()
 assert child,'no child'
 grandChild = child.firstChild()
 assert grandChild,'no grandChild'
-assert not t.tnodeList,repr(t.tnodeList)
+assert not v.tnodeList,repr(v.tnodeList)
    
 try:
-    t.tnodeList = [t,child.v.t,grandChild.v.t]
+    v.tnodeList = [v,child.v,grandChild.v]
     s = fc.putTnodeList(p.v)
     expected = ' tnodeList="ekr.20061001124008,ekr.20061001124008.1,ekr.20061001124008.2"'
     assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
 finally:
-    t.tnodeList = []</t>
+    v.tnodeList = []</t>
 <t tx="ekr.20061001124008.1"></t>
 <t tx="ekr.20061001124008.2"></t>
 <t tx="ekr.20061008162912">assert p.firstChild(), 'no child node'
@@ -16186,15 +16140,15 @@ try:
     c.selectPosition(child)
     assert c.p.h == 'child','fail 1'
     c.copyOutline()
-    oldTnodes = [p2.v.t for p2 in child.self_and_subtree_iter()]
+    oldVnodes = [p2.v for p2 in child.self_and_subtree()]
     c.selectPosition(child)
     c.p.contract() # Essential
     c.pasteOutline()
     assert c.p != child, 'fail 2'
     assert c.p.h == 'child','fail 3'
-    newTnodes = [p2.v.t for p2 in c.p.self_and_subtree_iter()]
-    for t in newTnodes:
-        assert t not in oldTnodes, 'fail 4'
+    newVnodes = [p2.v for p2 in c.p.self_and_subtree()]
+    for v in newVnodes:
+        assert v not in oldVnodes, 'fail 4'
     c.undoer.undo()
     c.undoer.redo()
     c.undoer.undo()
@@ -16218,13 +16172,13 @@ grandChild.setHeadString('grand child')
 try:
     c.selectPosition(child)
     c.copyOutline()
-    oldTnodes = [p2.v.t for p2 in child.self_and_subtree_iter()]
+    oldVnodes = [p2.v for p2 in child.self_and_subtree()]
     c.p.contract() # Essential
     c.pasteOutlineRetainingClones()
     assert c.p != child, 'fail 2'
-    newTnodes = [p2.v.t for p2 in c.p.self_and_subtree_iter()]
-    for t in newTnodes:
-        assert t in oldTnodes, 'fail 3'
+    newVnodes = [p2.v for p2 in c.p.self_and_subtree()]
+    for v in newVnodes:
+        assert v in oldVnodes, 'fail 3'
 finally:
     if 1:
         while p.hasChildren():
@@ -16768,7 +16722,6 @@ trace = False
 if 0: # Set the uA's.
     for p2 in root.self_and_subtree_iter():
         p2.v.unknownAttributes = {tag: p2.h}
-        p2.v.t.unknownAttributes = {ttag: p2.h}
 else: # Test the uA's.
     # The root is a special case.
     v = root.v
@@ -16780,13 +16733,7 @@ else: # Test the uA's.
         a = getattr(v,uA)
         d = {tag: v.h}
         if trace: print(d)
-        assert a == d, 'expected v.uA: "%s", got "%s"' % (d,a)
-        t = p2.v.t
-        assert hasattr(t,uA),'no t.uA for %s' % p.h
-        a = getattr(t,uA)
-        d = {ttag: v.h}
-        if trace: print(d)
-        assert a == d, 'expected t.uA: "%s", got "%s"' % (d,a)</t>
+        assert a == d, 'expected v.uA: "%s", got "%s"' % (d,a)</t>
 <t tx="ekr.20080806211453.1" round-trip-u.uA="581e00000040736861646f772075415f746573745f736861646f775f66696c652e707971002e">@language python
 @tabwidth -4
 @others
@@ -16800,7 +16747,6 @@ trace = False
 if 0: # Set the uA's.
     for p2 in root.self_and_subtree_iter():
         p2.v.unknownAttributes = {tag: p2.h}
-        p2.v.t.unknownAttributes = {ttag: p2.h}
 else: # Test the uA's.
     # The root is a special case.
     v = root.v
@@ -16812,13 +16758,7 @@ else: # Test the uA's.
         a = getattr(v,uA)
         d = {tag: v.h}
         if trace: print(d)
-        assert a == d, 'expected v.uA: "%s", got "%s"' % (d,a)
-        t = p2.v.t
-        assert hasattr(t,uA),'no t.uA for %s' % p.h
-        a = getattr(t,uA)
-        d = {ttag: v.h}
-        if trace: print(d)
-        assert a == d, 'expected t.uA: "%s", got "%s"' % (d,a)</t>
+        assert a == d, 'expected v.uA: "%s", got "%s"' % (d,a)</t>
 <t tx="ekr.20080821123427.2">@first # -*- coding: utf-8 -*-
 
 import sys
@@ -16924,7 +16864,7 @@ h = '@file unittest/at-file-line-number-test.py'
 target = g.findNodeInTree(c,root,h)
 assert target,'no target'
 
-gnx = g.app.nodeIndices.toString(target.v.t.fileIndex)
+gnx = g.app.nodeIndices.toString(target.v.fileIndex)
 assert gnx,'no gnx'
 
 p,found = c.goto_findGnx(root,gnx,h)
@@ -17435,31 +17375,24 @@ val = c.checkFileTimeStamp(path)
 assert val,repr(val)
 </t>
 <t tx="ekr.20090128184952.3"></t>
-<t tx="ekr.20090130133404.2">v,t = p.v,p.v.t
+<t tx="ekr.20090130133404.2">v = p.v
 b = p.b
 p.b = b
 assert p.b == b
 v.b = b
 assert v.b == b
-t.b = b
-assert t.b == b
 
 h = p.h
 p.h = h
 assert p.h == h
 v.h = h
 assert v.h == h
-t.h = h
-assert t.h == h
 
 for p in c.all_positions():
     assert p.b == p.bodyString()
     assert p.v.b == p.v.bodyString()
-    assert p.v.t.b == p.v.t.bodyString()
-    
     assert p.h == p.headString()
-    assert p.v.h == p.v.headString()
-    assert p.v.t.h == p.v.t.headString()</t>
+    assert p.v.h == p.v.headString()</t>
 <t tx="ekr.20090225102051.2">import leo.core.leoTest as leoTest
 
 leoTest.runAtFileTest(c,p)</t>
@@ -17496,7 +17429,7 @@ leoTest.runEditCommandTest(c,p)</t>
     b = 'xyz'</t>
 <t tx="ekr.20090427104851.18">if a:
     b = 'xyz'</t>
-<t tx="ekr.20090507084947.5152">assert p.v.t.fileIndex == ('ekr', '20090507084947', 5152)
+<t tx="ekr.20090507084947.5152">assert p.v.fileIndex == ('ekr', '20090507084947', 5152)
 </t>
 <t tx="ekr.20090529115704.4396"></t>
 <t tx="ekr.20090529115704.4397">import unittest
@@ -21084,14 +21017,14 @@ def copyTree(self,root):
 
     c = self
     # Create the root vnode.
-    result = v = leoNodes.vnode(c,root.t)
+    result = v = leoNodes.vnode(c)
     # Copy the headline and icon values v.copyNode(root,v)
     # Copy the rest of tree.
     v.copyTree(root,v)
     # Replace all tnodes in v by copies.
     assert(v.nodeAfterTree() == None)
     while v:
-        v.t = leoNodes.tnode(0, v.b)
+        v = leoNodes.vnode(c)
         v = v.threadNext()
     return result</t>
 <t tx="ekr.20090615053403.4929">p = c.p.firstChild()
