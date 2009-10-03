@@ -10,7 +10,13 @@
 - Refactoring: rope, etc.
 - Flexitble file format.
 #@nonl
-#@+node:ekr.20090714085914.5990:To do first
+#@+node:ekr.20091003163012.6056:First
+- Create at-file branch to unify @thin and @file.
+- contract-or-go-right does not always work.
+- regex for t
+#@nonl
+#@-node:ekr.20091003163012.6056:First
+#@+node:ekr.20090714085914.5990:Next
 #@+node:ekr.20090822054806.6004:Improve the intro
 
 * Give some hint about why Leo is different.
@@ -166,8 +172,6 @@ Greg
             "ksh"   : "kshell", # Leo 4.5.1.
 #@nonl
 #@-node:ekr.20090907080624.6072:Install support for haskel
-#@+node:ekr.20090907080624.6070:Merge the trunk into the clean-one-node branch
-#@-node:ekr.20090907080624.6070:Merge the trunk into the clean-one-node branch
 #@+node:ekr.20090907080624.6073:Fix wrong link in front page
 @nocolor-node
 
@@ -816,7 +820,7 @@ http://www.emmestech.com/software/pexports-0.43/download_pexports.html
 #@-node:ekr.20090730165955.6014:Notes
 #@-node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
 #@-node:ekr.20090811141250.5955:Harder features
-#@-node:ekr.20090714085914.5990:To do first
+#@-node:ekr.20090714085914.5990:Next
 #@+node:ekr.20090131200406.9:Bugs
 #@+node:ekr.20090813112405.5980:Delete resurrected nodes
 @nocolor-node

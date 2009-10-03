@@ -3425,6 +3425,26 @@ remove-trailing-ws: [ \t]+$             -->  empty
 paste-at-column:    ^(.{4})             -->  \1x
 paste-after-lws:    ^([ \t]+)           -->  \1x
 
+[]
+    Used to indicate a set of characters. Characters can be listed individually,
+    or a range of characters can be indicated by giving two characters and
+    separating them by a '-'. Special characters are not active inside sets.
+
+    [akm$] will match any of the characters 'a', 'k', 'm', or '$';
+    [a-z] will match any lowercase letter.
+    [a-zA-Z0-9] matches any letter or digit.
+
+    Character classes such as \w or \S (defined below) are also
+    acceptable inside a range, although the characters they match depends on
+    whether LOCALE or UNICODE mode is in force. If you want to include a ']' or
+    a '-' inside a set, precede it with a backslash, or place it as the first
+    character. The pattern []] will match ']', for example.
+
+    You can match the characters not within a range by complementing the set.
+    This is indicated by including a '^' as the first character of the set; '^'
+    elsewhere will simply match the '^' character. For example, [^5] will match
+    any character except '5', and [^^] will match any character except '^'.
+
 (?=...)
     Matches if ... matches next, but doesnt consume any of the string.
     This is called a lookahead assertion.

@@ -2462,7 +2462,7 @@ class atFile:
     # information.
     # - We want the user to be able to create an @auto node which will be 
     # populated the next time the.leo file is opened.
-    # - We don ' t want minor import imperfections to be written to the @auto 
+    # - We don't want minor import imperfections to be written to the @auto 
     # file.
     # - The explicit commands that read and write @auto trees must always be 
     # honored.
