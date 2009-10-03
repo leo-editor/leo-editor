@@ -418,7 +418,7 @@ if not fileName:
 #@-node:ekr.20041005105605.22:<< set fileName >>
 #@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
 resurrected = 0
-for p in root.self_and_subtree_iter():
+for p in root.self_and_subtree():
     if p.v.isVisited():
         pass
         # g.trace('visited',p.v,p.h)
@@ -505,7 +505,7 @@ def inAtIgnoreRange (self):
 
     p = self
 
-    for p in p.self_and_parents_iter():
+    for p in p.self_and_parents():
         if p.isAtIgnoreNode():
             return True
 
@@ -525,7 +525,7 @@ def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
     if setDescendentsDirty:
         # N.B. Only mark _direct_ descendents of nodes.
         # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
-        for p2 in p.subtree_iter():
+        for p2 in p.subtree():
             # Only @thin nodes need to be marked.
             if p2.v not in nodes and p2.isAtThinFileNode():
                 nodes.append(p2.v)

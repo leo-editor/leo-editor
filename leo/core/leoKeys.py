@@ -1454,7 +1454,7 @@ class autoCompleterClass:
                 lines, n, root, scriptFind = True)
 
             if vnodeName:
-                for p in root.self_and_subtree_iter():
+                for p in root.self_and_subtree():
                     if p.matchHeadline(vnodeName):
                         return p
 
@@ -1509,7 +1509,7 @@ class autoCompleterClass:
             autoCompleter = self.c.k.autoCompleter
 
             # First, see if any parent has already been scanned.
-            for p in root.self_and_parents_iter():
+            for p in root.self_and_parents():
                 obj = autoCompleter.selfTnodesDict.get(p.v)
                 if obj:
                     # g.trace('found',obj,'in',p.h)
@@ -1517,7 +1517,7 @@ class autoCompleterClass:
 
             # Next, do a much slower scan.
             # g.trace('slow scanning...')
-            for p in root.self_and_parents_iter():
+            for p in root.self_and_parents():
                 className = self.findClass(p)
                 if className:
                     # g.trace('found',className,'in',p.h)

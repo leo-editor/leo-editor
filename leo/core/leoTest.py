@@ -464,7 +464,7 @@ class testUtils:
         content and join lists are equivalent"""
 
         p2 = root2.copy() ; ok = True
-        for p1 in root1.self_and_subtree_iter():
+        for p1 in root1.self_and_subtree():
             ok = (
                 p1 and p2 and
                 p1.numberOfChildren() == p2.numberOfChildren() and
@@ -513,12 +513,12 @@ class testUtils:
     #@+node:ekr.20051104075904.27:findChildrenOf
     def findChildrenOf (self,root):
 
-        return [p.copy() for p in root.children_iter()]
+        return [p.copy() for p in root.children()]
     #@-node:ekr.20051104075904.27:findChildrenOf
     #@+node:ekr.20051104075904.28:findSubnodesOf
     def findSubnodesOf (self,root):
 
-        return [p.copy() for p in root.subtree_iter()]
+        return [p.copy() for p in root.subtree()]
     #@-node:ekr.20051104075904.28:findSubnodesOf
     #@+node:ekr.20051104075904.29:findNodeInRootTree
     def findRootNode (self,p):
@@ -536,7 +536,7 @@ class testUtils:
 
         c = self.c
         h = headline.strip().lower()
-        for p in p.subtree_iter():
+        for p in p.subtree():
             h2 = p.h.strip().lower()
             if h2 == h or startswith and h2.startswith(h):
                 return p.copy()
@@ -553,7 +553,7 @@ class testUtils:
                 return p.copy()
 
         if False and breakOnError: # useful for debugging.
-            aList = [repr(z.copy()) for z in c.p.parent().self_and_siblings_iter()]
+            aList = [repr(z.copy()) for z in c.p.parent().self_and_siblings()]
             print '\n'.join(aList)
             g.pdb()
 
@@ -583,7 +583,7 @@ class testUtils:
     def writeNodesToNode (self,c,input,output,sentinels=True):
 
         result = []
-        for p in input.self_and_subtree_iter():
+        for p in input.self_and_subtree():
             s = self.writeNodeToString(c,p,sentinels)
             result.append(s)
         result = ''.join(result)
@@ -606,7 +606,7 @@ class testUtils:
         df = c.atFileCommands
         nodeIndices = g.app.nodeIndices
 
-        for p in input.self_and_subtree_iter():
+        for p in input.self_and_subtree():
             try:
                 theId,time,n = p.v.fileIndex
             except TypeError:
@@ -826,7 +826,7 @@ def runTestsExternally (c,all):
             p2 = p.copyTreeAfter()
             p2.moveToLastChildOf(self.copyRoot)
 
-            for p2 in p.self_and_subtree_iter():
+            for p2 in p.self_and_subtree():
                 self.seen.append(p2.v)
         #@-node:ekr.20070705065154.1:addNode
         #@+node:ekr.20070705075604.3:isUnitTestNode
@@ -872,7 +872,7 @@ def runTestsExternally (c,all):
         def searchOutline (self,p):
 
             c = self.c ; p = c.p
-            iter = g.choose(self.all,c.all_unique_positions,p.self_and_subtree_iter)
+            iter = g.choose(self.all,c.all_unique_positions,p.self_and_subtree)
 
             # First, look down the tree.
             for p in iter():
@@ -883,7 +883,7 @@ def runTestsExternally (c,all):
 
             # Next, look up the tree.
             if not self.all:   
-                for p in c.p.parents_iter():
+                for p in c.p.parents():
                     for s in self.tags:
                         if p.h.startswith(s):
                             c.selectPosition(p)
@@ -1000,7 +1000,7 @@ def makeEditBodySuite(c,p):
     # Create the suite and add all test cases.
     suite = unittest.makeSuite(unittest.TestCase)
 
-    for p in data_p.children_iter():
+    for p in data_p.children():
         if p.h=="tempNode": continue # TempNode now in data tree.
         before = u.findNodeInTree(p,"before")
         after  = u.findNodeInTree(p,"after")
@@ -1161,7 +1161,7 @@ def makeImportExportSuite(c,parentHeadline,doImport):
     # Create the suite and add all test cases.
     suite = unittest.makeSuite(unittest.TestCase)
 
-    for p in parent.children_iter():
+    for p in parent.children():
         if p != temp:
             # 2009/10/02: avoid copy arg to iter
             p2 = p.copy()

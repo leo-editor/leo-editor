@@ -3420,7 +3420,7 @@ class baseCommands (object):
             return # This should never happen.
 
         isLeo = g.match(s,0,g.app.prolog_prefix_string)
-        tnodeInfoDict = {}
+        vnodeInfoDict = {}
         if pasteAsClone:
             #@        << remember all data for undo/redo Paste As Clone >>
             #@+node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
@@ -3440,8 +3440,8 @@ class baseCommands (object):
             #@@c
 
             for v in c.all_unique_nodes():
-                if v not in tnodeInfoDict:
-                    tnodeInfoDict[v] = g.Bunch(
+                if v not in vnodeInfoDict:
+                    vnodeInfoDict[v] = g.Bunch(
                         v=v,head=v.headString(),body=v.b)
             #@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
             #@nl
@@ -3458,16 +3458,16 @@ class baseCommands (object):
             #@        << put only needed info in copiedBunchList >>
             #@+node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
             # Create a dict containing only copied tnodes.
-            copiedTnodeDict = {}
+            copiedVnodeDict = {}
             for p in pasted.self_and_subtree():
-                if p.v not in copiedTnodeDict:
-                    copiedTnodeDict[p.v] = p.v
+                if p.v not in copiedVnodeDict:
+                    copiedVnodeDict[p.v] = p.v
 
-            # g.trace(copiedTnodeDict.keys())
+            # g.trace(copiedVnodeDict.keys())
 
-            for v in tnodeInfoDict:
-                bunch = tnodeInfoDict.get(v)
-                if copiedTnodeDict.get(v):
+            for v in vnodeInfoDict:
+                bunch = vnodeInfoDict.get(v)
+                if copiedVnodeDict.get(v):
                     copiedBunchList.append(bunch)
 
             # g.trace('copiedBunchList',copiedBunchList)
@@ -3549,17 +3549,17 @@ class baseCommands (object):
         message = "Illegal move or drag: no clone may contain a clone of itself"
 
         # g.trace("root",root,"parent",parent)
-        clonedTnodes = {}
+        clonedVnodes = {}
         for ancestor in parent.self_and_parents():
             if ancestor.isCloned():
                 v = ancestor.v
-                clonedTnodes[v] = v
+                clonedVnodes[v] = v
 
-        if not clonedTnodes:
+        if not clonedVnodes:
             return True
 
         for p in root.self_and_subtree():
-            if p.isCloned() and clonedTnodes.get(p.v):
+            if p.isCloned() and clonedVnodes.get(p.v):
                 if g.app.unitTesting:
                     g.app.unitTestDict['checkMoveWithParentWithWarning']=True
                 elif warningFlag:
@@ -3807,7 +3807,6 @@ class baseCommands (object):
                 # Empty tnodeLists are not errors.
                 v = p.v
 
-                # New in 4.2: tnode list is in tnode.
                 if hasattr(v,"tnodeList") and len(v.tnodeList) > 0 and not v.isAnyAtFileNode():
                     if 0:
                         s = "deleting tnodeList for " + repr(v)
@@ -5032,7 +5031,7 @@ class baseCommands (object):
         c.endEditing()
         u.beforeChangeGroup(current,undoType)
         dirtyVnodeList = []
-        for p in current.children_iter():
+        for p in current.children():
             if not p.isMarked():
                 bunch = u.beforeMark(p,undoType)
                 c.setMarked(p)
@@ -6117,7 +6116,7 @@ class baseCommands (object):
         path = d.get('path')
 
         name = ''
-        for p in p.self_and_parents_iter():
+        for p in p.self_and_parents():
             name = p.anyAtFileNodeName()
             if name: break
 
@@ -6348,7 +6347,7 @@ class baseCommands (object):
         c = self ; cc = c.chapterController
         redraw_flag = False
 
-        for p in p.parents_iter():
+        for p in p.parents():
             if not p.isExpanded():
                 p.expand()
                 redraw_flag = True
@@ -6689,7 +6688,7 @@ class baseCommands (object):
 
         c = self ; current = c.p
 
-        for p in current.subtree_iter():
+        for p in current.subtree():
             if p != current and p.isExpanded():
                 return True
 
@@ -6706,7 +6705,7 @@ class baseCommands (object):
 
         c = self ; current = c.p
 
-        for child in current.children_iter():
+        for child in current.children():
             if child.isExpanded():
                 return True
 
@@ -6747,7 +6746,7 @@ class baseCommands (object):
 
         c = self
 
-        for p in c.p.subtree_iter():
+        for p in c.p.subtree():
             if not p.isExpanded():
                 return True
 
@@ -6758,7 +6757,7 @@ class baseCommands (object):
 
         c = self ; current = c.p
 
-        for p in current.children_iter():
+        for p in current.children():
             if p != current and not p.isExpanded():
                 return True
 
@@ -7291,7 +7290,7 @@ class baseCommands (object):
             # This code destoys all tags, so we must recolor.
             c.recolor()
 
-        # Keep the body text in the tnode up-to-date.
+        # Keep the body text in the vnode up-to-date.
         if v._bodyString != s:
             v.setBodyString(s)
             v.setSelection(0,0)

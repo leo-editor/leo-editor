@@ -169,7 +169,7 @@ class parserBaseClass:
         '''Handle an @buttons tree.'''
 
         aList = [] ; c = self.c ; tag = '@button'
-        for p in p.subtree_with_unique_tnodes_iter():
+        for p in p.unique_subtree():
             h = p.h
             if g.match_word(h,0,tag):
                 # We can not assume that p will be valid when it is used.
@@ -190,7 +190,7 @@ class parserBaseClass:
         '''Handle an @commands tree.'''
 
         aList = [] ; c = self.c ; tag = '@command'
-        for p in p.subtree_iter():
+        for p in p.subtree():
             h = p.h
             if g.match_word(h,0,tag):
                 # We can not assume that p will be valid when it is used.
@@ -1372,7 +1372,7 @@ class configClass:
 
         setting = munge(setting)
 
-        for p in root.subtree_iter():
+        for p in root.subtree():
             #BJ munge will return None if a headstring is empty
             h = munge(p.h) or ''
             if h.startswith(setting):

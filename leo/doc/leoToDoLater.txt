@@ -2700,7 +2700,7 @@ The key here is the so-called 'hidden machinery'. This is an essential feature o
 So the only real alternative is to add uA's sufficient to recreate elements in the *reconstituted* vnodes that Leo creates in the leoAtFile read logic. Happily, we can do this as follows. When writing, a plugin (or an extended Leo) would 'piggyback' the vnode attributes in the corresponding **t**.unknownAttributes field. When reading, the plugin (or Leo) would put the vnode attributes "where they belong" in the appropriate vnode. We associate a 'vnode traversal index' with each vnode. This is simply how many previous "same" vnodes appeared in the traversal before getting to the desired vnode. Something like this:: 
 
 vx = {} # traversal indices for vnodes. 
-for p in c.outline(): 
+for p in c.all_positions(): 
 ....n = vx.get(p.v.t,0) # n is the traversal index for vnode p.v. 
 ....vx[p.v.t] = n+1 # bump the index for the next v such that v.t == p.v.t 
 

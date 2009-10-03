@@ -1399,7 +1399,7 @@ class leoFind:
         redraw1 = not p.isVisible(c)
         if sparseFind:
             # Show only the 'sparse' tree when redrawing.
-            for p2 in c.p.self_and_parents_iter():
+            for p2 in c.p.self_and_parents():
                 if p2.isAncestorOf(p):
                     break
                 p2.contract()

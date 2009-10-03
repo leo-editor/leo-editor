@@ -456,7 +456,7 @@ def findTabWidthDirectives(c,p):
 
     w = None
     # 2009/10/02: no need for copy arg to iter
-    for p in p.self_and_parents_iter():
+    for p in p.self_and_parents():
         if w: break
         for s in p.h,p.b:
             if w: break
@@ -486,7 +486,7 @@ def findLanguageDirectives(c,p):
         language = 'python'
     found = False
     # 2009/10/02: no need for copy arg to iter.
-    for p in p.self_and_parents_iter():
+    for p in p.self_and_parents():
         if found: break
         for s in p.h,p.b:
             if found: break
@@ -514,7 +514,7 @@ def findLanguageDirectives(c,p):
 
 def findReference(c,name,root):
 
-    for p in root.subtree_iter():
+    for p in root.subtree():
         assert(p!=root)
         if p.matchHeadline(name) and not p.isAtIgnoreNode():
             return p
@@ -598,7 +598,7 @@ def get_directives_dict_list(p1):
 
     result = [] ; p1 = p1.copy()
 
-    for p in p1.self_and_parents_iter():
+    for p in p1.self_and_parents():
         if p.hasParent(): root = None
         else:             root = [p.copy()]
         result.append(g.get_directives_dict(p,root=root))
@@ -808,7 +808,7 @@ def scanForAtIgnore(c,p):
     if g.app.unitTesting:
         return False # For unit tests.
 
-    for p in p.self_and_parents_iter():
+    for p in p.self_and_parents():
         d = g.get_directives_dict(p)
         if 'ignore' in d:
             return True
@@ -825,7 +825,7 @@ def scanForAtLanguage(c,p):
     # Unlike the code in x.scanAllDirectives, this code ignores @comment directives.
 
     if c and p:
-        for p in p.self_and_parents_iter():
+        for p in p.self_and_parents():
             d = g.get_directives_dict(p)
             if 'language' in d:
                 z = d["language"]
@@ -839,7 +839,7 @@ def scanForAtSettings(p):
 
     """Scan position p and its ancestors looking for @settings nodes."""
 
-    for p in p.self_and_parents_iter():
+    for p in p.self_and_parents():
         h = p.h
         h = g.app.config.canonicalizeSettingName(h)
         if h.startswith("@settings"):
@@ -5114,7 +5114,7 @@ def findNodeInChildren(c,p,headline):
 
     """Search for a node in v's tree matching the given headline."""
 
-    for p in p.children_iter():
+    for p in p.children():
         if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
@@ -5123,7 +5123,7 @@ def findNodeInTree(c,p,headline):
 
     """Search for a node in v's tree matching the given headline."""
 
-    for p in p.subtree_iter():
+    for p in p.subtree():
         if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
@@ -5137,7 +5137,7 @@ def findNodeAnywhere(c,headline):
 
 def findTopLevelNode(c,headline):
 
-    for p in c.rootPosition().self_and_siblings_iter():
+    for p in c.rootPosition().self_and_siblings():
         if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()

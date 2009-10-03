@@ -733,7 +733,7 @@ class baseFileCommands:
             p._linkAfter(current,adjust=False)
 
         if reassignIndices:
-            for p2 in p.self_and_subtree_iter():
+            for p2 in p.self_and_subtree():
                 # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
                 # if trace: g.trace('***reassign',p2.v)
                 p2.v.fileIndex = g.app.nodeIndices.getNewIndex()
@@ -757,9 +757,9 @@ class baseFileCommands:
 
         if not parent: return True
 
-        parents = [z.copy() for z in parent.self_and_parents_iter()]
+        parents = [z.copy() for z in parent.self_and_parents()]
 
-        for p in p.self_and_subtree_iter():
+        for p in p.self_and_subtree():
             for z in parents:
                 # g.trace(p.h,id(p.v),id(z.v))
                 if p.v == z.v:
@@ -872,31 +872,6 @@ class baseFileCommands:
     #@-node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
     #@-node:ekr.20031218072017.1554:warnOnReadOnlyFiles
     #@-node:ekr.20031218072017.1553:getLeoFile & helpers
-    #@+node:ekr.20031218072017.2009:newTnode (fileCommands)
-    def newTnode(self,index):
-
-        c = self.c
-
-        v = leoNodes.vnode(context=c)
-
-        if index in self.tnodesDict:
-            g.es("bad tnode index:",str(index),"using empty text.")
-            return v
-        else:
-            # Create the tnode.
-            # Use the _original_ index as the key in tnodesDict.
-            self.tnodesDict[index] = v
-
-            if not g.isString(index):
-                g.es("newTnode: unexpected index type:",type(index),index,color="red")
-
-            # Convert any pre-4.1 index to a gnx.
-            junk,theTime,junk = gnx = g.app.nodeIndices.scanGnx(index,0)
-            if theTime != None:
-                v.fileIndex = gnx
-
-            return v
-    #@-node:ekr.20031218072017.2009:newTnode (fileCommands)
     #@+node:ekr.20031218072017.3029:readAtFileNodes (fileCommands)
     def readAtFileNodes (self):
 
@@ -1756,7 +1731,7 @@ class baseFileCommands:
             #@+node:ekr.20031218072017.1972:<< count the number of tnodes >>
             c.clearAllVisited()
 
-            for p in c.p.self_and_subtree_iter():
+            for p in c.p.self_and_subtree():
                 v = p.v
                 if v and not v.isWriteBit():
                     v.setWriteBit()
@@ -1940,7 +1915,7 @@ class baseFileCommands:
         #@    << write only those tnodes that were referenced >>
         #@+node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
         if self.usingClipboard: # write the current tree.
-            theIter = c.p.self_and_subtree_iter()
+            theIter = c.p.self_and_subtree()
         else: # write everything
             theIter = c.all_unique_positions()
 
@@ -2115,7 +2090,7 @@ class baseFileCommands:
         if self.usingClipboard:
             self.putVnode(self.currentPosition) # Write only current tree.
         else:
-            for p in c.rootPosition().self_and_siblings_iter():
+            for p in c.rootPosition().self_and_siblings():
                 # New in Leo 4.4.2 b2 An optimization:
                 self.putVnode(p,isIgnore=p.isAtIgnoreNode()) # Write the next top-level node.
 
@@ -2477,7 +2452,7 @@ class baseFileCommands:
 
         # Create lists of all tnodes whose vnodes are marked or expanded.
         marks = [] ; expanded = []
-        for p in p.subtree_iter():
+        for p in p.subtree():
             v = p.v
             if p.isMarked() and p.v not in marks:
                 marks.append(v)
@@ -2509,7 +2484,7 @@ class baseFileCommands:
 
         # Create a list of all tnodes having a valid unknownAttributes dict.
         tnodes = [] ; aList = []
-        for p2 in p.self_and_subtree_iter():
+        for p2 in p.self_and_subtree():
             v = p2.v
             if hasattr(v,"unknownAttributes"):
                 if v not in tnodes :
@@ -2552,7 +2527,7 @@ class baseFileCommands:
         # Create aList of tuples (p,v) having a valid unknownAttributes dict.
         # Create dictionary: keys are vnodes, values are corresonding archived positions.
         pDict = {} ; aList = []
-        for p2 in p.self_and_subtree_iter():
+        for p2 in p.self_and_subtree():
             if hasattr(p2.v,"unknownAttributes"):
                 aList.append((p2.copy(),p2.v),)
                 pDict[p2.v] = p2.archivedPosition(root_p=p)

@@ -766,7 +766,7 @@ def scanUnknownFileType (self,s,p,ext,atAuto=False):
 
     self.setBodyString(p,body + self.rootLine + self.escapeFalseSectionReferences(s))
     if atAuto:
-        for p in p.self_and_subtree_iter():
+        for p in p.self_and_subtree():
             p.clearDirty()
         if not changed:
             c.setChanged(False)
@@ -4603,7 +4603,7 @@ finally:
 
 Fragment 2:
 
-for p in c.outline():
+for p in c.all_positions():
     pass
 #@-node:ekr.20070624135822:Templates for common code fragments
 #@+node:ekr.20081119132758.2:Support @ifgui in settings trees

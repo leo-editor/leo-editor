@@ -368,7 +368,7 @@ class leoImportCommands (scanUtility):
             g.es("can not open",fileName,color="blue")
             leoTest.fail()
             return
-        for p in p.self_and_subtree_iter():
+        for p in p.self_and_subtree():
             head = p.moreHead(firstLevel,useVerticalBar=True)
             head = g.toEncodedString(head,self.encoding,reportErrors=True)
             theFile.write(head + nl)
@@ -393,7 +393,7 @@ class leoImportCommands (scanUtility):
             leoTest.fail()
             return
 
-        for p in p.self_and_subtree_iter():
+        for p in p.self_and_subtree():
             head = p.moreHead(firstLevel)
             head = g.toEncodedString(head,self.encoding,reportErrors=True)
             theFile.write(head + nl)
@@ -423,12 +423,12 @@ class leoImportCommands (scanUtility):
 
         self.treeType = "@file"
         # Set self.treeType to @root if p or an ancestor is an @root node.
-        for p in current.parents_iter():
+        for p in current.parents():
             flag,junk = g.is_special(p.b,0,"@root")
             if flag:
                 self.treeType = "@root"
                 break
-        for p in current.self_and_subtree_iter():
+        for p in current.self_and_subtree():
             s = self.convertVnodeToWeb(p)
             if len(s) > 0:
                 s = g.toEncodedString(s,self.encoding,reportErrors=True)
@@ -555,7 +555,7 @@ class leoImportCommands (scanUtility):
             return
         #@-node:ekr.20031218072017.1150:<< open filename to f, or return >>
         #@nl
-        for p in p.self_and_subtree_iter():
+        for p in p.self_and_subtree():
             s = p.b
             s2 = s.strip()
             if s2 and len(s2) > 0:
@@ -1673,7 +1673,7 @@ class leoImportCommands (scanUtility):
 
         self.setBodyString(p,body + self.rootLine + self.escapeFalseSectionReferences(s))
         if atAuto:
-            for p in p.self_and_subtree_iter():
+            for p in p.self_and_subtree():
                 p.clearDirty()
             if not changed:
                 c.setChanged(False)
@@ -3083,7 +3083,7 @@ class baseScannerClass (scanUtility):
         if not ok: self.insertIgnoreDirective(parent)
 
         if self.atAuto and ok:
-            for p in root.self_and_subtree_iter():
+            for p in root.self_and_subtree():
                 p.clearDirty()
             c.setChanged(changed)
         else:

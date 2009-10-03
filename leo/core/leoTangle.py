@@ -600,7 +600,7 @@ class baseTangleCommands:
         self.initTangleCommand()
         has_roots = False
 
-        for p in c.rootPosition().self_and_siblings_iter():
+        for p in c.rootPosition().self_and_siblings():
             ok = self.tangleTree(p,dont_report_errors)
             if ok: has_roots = True
             if self.path_warning_given:
@@ -751,7 +751,7 @@ class baseTangleCommands:
         self.initUntangleCommand()
         has_roots = False
 
-        for p in c.rootPosition().self_and_siblings_iter():
+        for p in c.rootPosition().self_and_siblings():
             ok = self.untangleTree(p,False)
             if ok: has_roots = True
         c.redraw()

@@ -1174,10 +1174,10 @@ class position (object):
         p = self
 
         if root_p is None:
-            aList = [z._childIndex for z in p.self_and_parents_iter()]
+            aList = [z._childIndex for z in p.self_and_parents()]
         else:
             aList = []
-            for z in p.self_and_parents_iter():
+            for z in p.self_and_parents():
                 if z == root_p:
                     aList.append(0)
                     break
@@ -1546,7 +1546,7 @@ class position (object):
 
         p.txtOffset = 0
         # walk back from the current position
-        for cursor in p.self_and_parents_iter():
+        for cursor in p.self_and_parents():
             # we also need the parent, the "text offset" is relative to it
             parent = cursor.parent()
             if parent == None: # root reached
@@ -1642,13 +1642,13 @@ class position (object):
 
     def clearVisitedInTree (self):
 
-        for p in self.self_and_subtree_iter():
+        for p in self.self_and_subtree():
             p.clearVisited()
     #@-node:ekr.20040306220634.17:p.clearVisitedInTree
     #@+node:ekr.20031218072017.3388:p.clearAllVisitedInTree
     def clearAllVisitedInTree (self):
 
-        for p in self.self_and_subtree_iter():
+        for p in self.self_and_subtree():
             p.v.clearVisited()
             p.v.clearWriteBit()
     #@-node:ekr.20031218072017.3388:p.clearAllVisitedInTree
@@ -1673,7 +1673,7 @@ class position (object):
 
         p = self
 
-        for p in p.self_and_parents_iter():
+        for p in p.self_and_parents():
             if p.isAtIgnoreNode():
                 return True
 
@@ -1693,7 +1693,7 @@ class position (object):
         if setDescendentsDirty:
             # N.B. Only mark _direct_ descendents of nodes.
             # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
-            for p2 in p.subtree_iter():
+            for p2 in p.subtree():
                 # Only @thin nodes need to be marked.
                 if p2.v not in nodes and p2.isAtThinFileNode():
                     nodes.append(p2.v)
@@ -1749,7 +1749,7 @@ class position (object):
         p = self ; level1 = p.level()
 
         array = []
-        for p in p.self_and_subtree_iter():
+        for p in p.self_and_subtree():
             array.append(p.moreHead(level1)+'\n')
             body = p.moreBody()
             if body:
@@ -1993,7 +1993,7 @@ class position (object):
         p2.v._bodyString = p.b
 
         # 2009/10/02: no need to copy arg to iter
-        for child in p.children_iter():
+        for child in p.children():
             child2 = p2.insertAsLastChild()
             child.copyTreeFromSelfTo(child2)
     #@-node:ekr.20040303175026.9:p.copyTreeAfter, copyTreeTo
@@ -2182,7 +2182,7 @@ class position (object):
         #@nl
 
         # Recursively validate all the children.
-        for child in p.children_iter():
+        for child in p.children():
             r = child.validateOutlineWithParent(p)
             if not r: result = False
 
@@ -2777,7 +2777,7 @@ class position (object):
 
         return [
             p.h,p.b,p.gnx,
-            [p2.makeCacheList() for p2 in p.children_iter()]]
+            [p2.makeCacheList() for p2 in p.children()]]
     #@-node:ekr.20090829064400.6044:p.makeCacheList
     #@-node:ekr.20080423062035.1:p.Low level methods
     #@-others
@@ -2805,7 +2805,7 @@ class poslist(list):
         pat = re.compile(regex, flags)
         res = poslist()
         for p in self:
-            for child_p in p.children_iter():            
+            for child_p in p.children():            
                 m = re.match(pat, child_p.h)
                 if m:
                     pc = child_p.copy()

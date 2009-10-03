@@ -2769,7 +2769,7 @@ class editCommandsClass (baseEditCommandsClass):
         w = c.frame.body.bodyCtrl
         if not w: return
 
-        for p in current.self_and_subtree_iter():
+        for p in current.self_and_subtree():
             c.selectPosition(p)
             w.setSelectionRange(0,0,insert=0)
             c.editCommands.cleanLines(event)
@@ -8494,10 +8494,10 @@ class spellTabHandler (leoFind.leoFind):
                     redraw = not p.isVisible(c)
                     # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
                     if sparseFind and not c.p.isAncestorOf(p):
-                        for p2 in c.p.self_and_parents_iter():
+                        for p2 in c.p.self_and_parents():
                             p2.contract()
                             redraw = True
-                    for p2 in p.parents_iter():
+                    for p2 in p.parents():
                         if not p2.isExpanded():
                             p2.expand()
                             redraw = True

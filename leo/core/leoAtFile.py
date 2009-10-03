@@ -520,7 +520,7 @@ class atFile:
             #@        << advise user to delete all unvisited nodes >>
             #@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
             resurrected = 0
-            for p in root.self_and_subtree_iter():
+            for p in root.self_and_subtree():
                 if p.v.isVisited():
                     pass
                     # g.trace('visited',p.v,p.h)
@@ -645,7 +645,7 @@ class atFile:
                 p.moveToNodeAfterTree()
             else: p.moveToThreadNext()
         # Clear all orphan bits.
-        for v in c.all_unique_vnodes_iter():
+        for v in c.all_unique_nodes():
             v.clearOrphan()
 
         if partialFlag and not anyRead:
@@ -1348,7 +1348,7 @@ class atFile:
                     at.correctedLines += 1
 
                     found = False
-                    for p in at.perfectImportRoot.self_and_subtree_iter():
+                    for p in at.perfectImportRoot.self_and_subtree():
                         if p.v == at.v:
                             found = True ; break
 
@@ -1880,7 +1880,7 @@ class atFile:
     def  copyAllTempBodyStringsToTnodes (self,root,thinFile):
 
         c = self.c
-        for p in root.self_and_subtree_iter():
+        for p in root.self_and_subtree():
             try: s = p.v.tempBodyString
             except Exception: s = ""
             old_body = p.b
@@ -2195,7 +2195,7 @@ class atFile:
             #@-node:ekr.20041005105605.139:<< put optional @comment sentinel lines >>
             #@nl
 
-            for p in root.self_and_subtree_iter():
+            for p in root.self_and_subtree():
                 #@    << Write p's node >>
                 #@+node:ekr.20041005105605.140:<< Write p's node >>
                 at.putOpenNodeSentinel(p)
@@ -2518,7 +2518,7 @@ class atFile:
         #@-at
         #@@c
 
-        for v2 in p.self_and_subtree_iter():
+        for v2 in p.self_and_subtree():
             v2.clearOrphan()
         #@-node:ekr.20041005105605.148:<< Clear all orphan bits >>
         #@nl
@@ -3122,7 +3122,7 @@ class atFile:
             if not at.openFileForWriting(root,targetFileName,toString):
                 # openFileForWriting calls root.setDirty() if there are errors.
                 return
-            for p in root.self_and_subtree_iter():
+            for p in root.self_and_subtree():
                 #@            << Write p's headline if it starts with @@ >>
                 #@+node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
                 s = p.h
@@ -3314,7 +3314,7 @@ class atFile:
         else:
             at.putSentinel("@+all")
 
-        for child in p.children_iter():
+        for child in p.children():
             at.putAtAllChild(child)
 
         at.putSentinel("@-all")
@@ -3393,7 +3393,7 @@ class atFile:
         at.putOpenNodeSentinel(p,inAtAll=True) # Suppress warnings about @file nodes.
         at.putAtAllBody(p) 
 
-        for child in p.children_iter():
+        for child in p.children():
             at.putAtAllChild(child)
 
         at.putCloseNodeSentinel(p)
@@ -3442,7 +3442,7 @@ class atFile:
         at.putBody(p) 
 
         # Insert expansions of all children.
-        for child in p.children_iter():
+        for child in p.children():
             if at.inAtOthers(child):
                 at.putAtOthersChild(child)
 
@@ -3463,7 +3463,7 @@ class atFile:
         else:
             at.putSentinel("@+others")
 
-        for child in p.children_iter():
+        for child in p.children():
             if at.inAtOthers(child):
                 at.putAtOthersChild(child)
 
@@ -4664,7 +4664,7 @@ class atFile:
         # Always warn, even when language=="cweb"
         at = self ; root = at.root
 
-        for p in root.self_and_subtree_iter():
+        for p in root.self_and_subtree():
             if not p.v.isVisited():
                 at.writeError("Orphan node:  " + p.h)
                 if p.hasParent():
@@ -4990,7 +4990,7 @@ class atFile:
             path = g.os_path_finalize_join(path,fn)
         else:
             g.trace('can not happen: not an @<file> node:',g.callers(4))
-            for p2 in p.self_and_parents_iter():
+            for p2 in p.self_and_parents():
                 g.trace(p2.h)
             path = ''
 
