@@ -1385,7 +1385,7 @@ class editCommandsClass (baseEditCommandsClass):
         self.extendMode = False # True: all cursor move commands extend the selection.
         self.fillPrefix = '' # For fill prefix functions.
         self.fillColumn = 70 # For line centering.
-        self.moveSpotNode = None # A tnode.
+        self.moveSpotNode = None # A vnode.
         self.moveSpot = None # For retaining preferred column when moving up or down.
         self.moveCol = None # For retaining preferred column when moving up or down.
         self.sampleWidget = None # Created later.
@@ -2421,7 +2421,6 @@ class editCommandsClass (baseEditCommandsClass):
 
         trace = False and not g.unitTesting
 
-        # FIXME lineYOffset is expected to be on a tnode in drawing code
         if subl: # Update the uA.
             if not hasattr(uaLoc,'unknownAttributes'):
                 uaLoc.unknownAttributes = {}

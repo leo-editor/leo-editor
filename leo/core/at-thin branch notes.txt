@@ -6,12 +6,22 @@
 
 To do:
 
+- Can we use tnodeList to avoid pre-read of @file nodes?
+    Yes we can.
+
 - Read @file nodes only once, if possible.
 
-** Make sure that all uA's are written to vnodes.
+- Review sax read code.  Can it be simplified?
+
+- Review read/write code for uA's.
+    - Make sure that all uA's are written to vnodes.
     - allow either <v> or <t> elements to carry uA's for compatibility.
 
 What I did:
+
+- Removed useless checks for v.fileIndex.
+
+- Changed tnodesDict to gnxDict.
 
 - Revised docs:
     - Updated section on uA's.
@@ -266,7 +276,7 @@ def goto_scanTnodeList (self,root,delim,lines,n,vnodeName):
         tnodeList = getattr(root.v,'tnodeList')
         << set tnodeIndex to the number of +node sentinels before line n >>
         tnodeIndex = max(0,tnodeIndex)
-        << set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = False >>
+        << set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = False >>
     else:
         g.es_print("no child index for",root.h,color="red")
 
@@ -291,7 +301,7 @@ for s in lines:
             tnodeIndex += 1
     scanned += 1
 #@-node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
-#@+node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+#@+node:ekr.20080904071003.9:<< set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = false >>
 # g.trace("tnodeIndex",tnodeIndex)
 if tnodeIndex < len(tnodeList):
     v = tnodeList[tnodeIndex]
@@ -300,7 +310,7 @@ if tnodeIndex < len(tnodeList):
         if p.v == v:
             found = True ; break
     if not found:
-        s = "tnode not found for " + vnodeName
+        s = "vnode not found for " + vnodeName
         g.es_print(s, color="red") ; ok = False
     elif p.h.strip() != vnodeName:
         if 0: # Apparently this error doesn't prevent a later scan for working properly.
@@ -312,7 +322,7 @@ else:
         s = "Invalid computed tnodeIndex: %d" % tnodeIndex
         g.es_print(s, color = "red")
     ok = False
-#@-node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+#@-node:ekr.20080904071003.9:<< set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = false >>
 #@+node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
 for p in root.self_and_subtree():
     if p.matchHeadline(vnodeName):
@@ -636,7 +646,7 @@ def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
 #@+node:ekr.20041005105605.26:readAll (atFile)
 def readAll(self,root,partialFlag=False):
 
-    """Scan vnodes, looking for @file nodes to read."""
+    """Scan vnodes, looking for @<file> nodes to read."""
 
     use_tracer = False
     if use_tracer: tt = g.startTracer()
@@ -710,8 +720,10 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     at = self ; c = at.c
     << set fileName and isAtFile >>
     if isAtFile:
-        # Pre-read the external file to see if it has thin-like sentinels.
-        thinFile = at.scanClosedFileForThinSentinels(root)
+        # The @file node has file-like sentinels iff there root.v.tnodeList exists.
+        ### Pre-read the external file to see if it has thin-like sentinels.
+        ### thinFile = at.scanClosedFileForThinSentinels(root)
+        thinFile = not (hasattr(root.v,'tnodeList') and root.v.tnodeList)
     doCache = g.enableDB and (thinFile or atShadow)
     at.initReadIvars(root,fileName,
         importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
@@ -1034,10 +1046,12 @@ if p.v.isDirty() or pathChanged or writeAtFileNodesFlag or p.v in writtenFiles:
     elif p.isAtFileNode():
         if g.convert_at_file:
             at.write(p,kind='@file',thinFile=True,toString=toString)
-            writtenFiles.append(p.v) # No need for autosave.
+            writtenFiles.append(p.v)
+            autoSave = True # Clears root.v.tnodeList, so we must save.
         else:
             at.write(p,kind='@file',thinFile=False,toString=toString)
-            writtenFiles.append(p.v) ; autoSave = True
+            writtenFiles.append(p.v)
+            autoSave = True # Updates root.v.tnodeList, so we must save.
 
     if at.errors: atOk = False
 
@@ -1055,7 +1069,12 @@ if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
 #@-node:ekr.20041005105605.149:<< handle v's tree >>
 #@-node:ekr.20041005105605.147:writeAll (atFile)
 #@+node:ekr.20041005105605.144:write & helper (atFile)
-# This is the entry point to the write code.  root should be an @file vnode.
+# This is the entry point to the write code.  root should be an @<file> vnode.
+
+# Important: kind == @file and thinFile = False
+# only if we are to write old file-like sentinels.
+# No change should be needed to this code to handle
+# the implicit conversion of @file nodes to use thin-like sentinels.
 
 def write (self,root,
     kind = '@unknown', # Should not happen.
@@ -1070,7 +1089,7 @@ def write (self,root,
     at = self ; c = at.c
     c.endEditing() # Capture the current headline.
 
-    if hasattr(root.v,'tnodeList'):# 2008/10/3
+    if hasattr(root.v,'tnodeList'):
         has_list,old_list = True,root.v.tnodeList[:]
     else:
         has_list,old_list = False,[]
@@ -1123,12 +1142,14 @@ def write (self,root,
                 at.replaceTargetFileIfDifferent(root)
                     # Sets/clears dirty and orphan bits.
             if has_list:
-                if thinFile:
-                    # Kill the tnode list.
+                if at.errors > 0:
+                    root.v.tnodeList = old_list
+                else:
+                    # Kill the tnodeList.
+                    # Future writes will write thin-like sentinels.
                     root.v.tnodeList = []
                     at.root.v._p_changed = True
-                else:
-                    root.v.tnodeList = old_list
+
     except Exception:
         if toString:
             at.exception("exception preprocessing script")

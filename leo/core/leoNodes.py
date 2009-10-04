@@ -58,44 +58,48 @@ class vnode (baseVnode):
     # Not archived...
     richTextBit = 0x080 # Determines whether we use <bt> or <btr> tags.
     visitedBit  = 0x100
-
-    dirtyBit    = 0x200 # Was in tnode.
-    writeBit    = 0x400 # Was in tnode.
+    dirtyBit    = 0x200
+    writeBit    = 0x400
     #@-node:ekr.20031218072017.951:<< vnode constants >>
     #@nl
     #@    @+others
     #@+node:ekr.20031218072017.3342:v.Birth & death
     #@+node:ekr.20031218072017.3344:v.__init
+    # To support ZODB, the code must set v._p_changed = 1 whenever
+    # v.unknownAttributes or any mutable vnode object changes.
+
     def __init__ (self,context):
 
-        # To support ZODB, the code must set v._p_changed = 1 whenever
-        # v.unknownAttributes or any mutable vnode object changes.
-
-        self.children = [] # Ordered list of all children of this node.
-        self.context = context # The context containing context.hiddenRootNode.
-            # Required for trees, so we can compute top-level siblings.
-            # It is named .context rather than .c to emphasize its limited usage.
-        self.fileIndex = g.app.nodeIndices.getNewIndex()
-        self.iconVal = 0
-        self.parents = [] # Unordered list of all parents of this node.
-        self.statusBits = 0 # status bits
-
-            # The immutable file index for this tnode.
-            # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
-        self.insertSpot = None # Location of previous insert point.
-        self.scrollBarSpot = None # Previous value of scrollbar position.
-        self.selectionLength = 0 # The length of the selected body text.
-        self.selectionStart = 0 # The start of the selected body text.
-
-        # v.t no longer exists.  All code must now be aware of the one-node world.
-        # self.t = self # For compatibility with scripts and plugins.
-
+        # The primary data: headline and body text.
         if g.isPython3:
             self._headString = 'newHeadline'
             self._bodyString = ''
         else:
             self._headString = unicode('newHeadline')
             self._bodyString = unicode('')
+
+        # Structure data...
+        self.children = [] # Ordered list of all children of this node.
+        self.parents = [] # Unordered list of all parents of this node.
+
+        # Other essential data...
+        self.fileIndex = g.app.nodeIndices.getNewIndex()
+            # The immutable file index for this vnode.
+            # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
+        self.iconVal = 0 # The present value of the node's icon.
+        self.statusBits = 0 # status bits
+
+        # v.t no longer exists.  All code must now be aware of the one-node world.
+        # self.t = self # For compatibility with scripts and plugins.
+
+        # Information that is never written to any file...
+        self.context = context # The context containing context.hiddenRootNode.
+            # Required so we can compute top-level siblings.
+            # It is named .context rather than .c to emphasize its limited usage.
+        self.insertSpot = None # Location of previous insert point.
+        self.scrollBarSpot = None # Previous value of scrollbar position.
+        self.selectionLength = 0 # The length of the selected body text.
+        self.selectionStart = 0 # The start of the selected body text.
     #@-node:ekr.20031218072017.3344:v.__init
     #@+node:ekr.20031218072017.3345:v.__repr__ & v.__str__
     def __repr__ (self):
@@ -384,7 +388,7 @@ class vnode (baseVnode):
     #@+node:ekr.20080429053831.6:v.hasBody
     def hasBody (self):
 
-        '''Return True if this tnode contains body text.'''
+        '''Return True if this vnode contains body text.'''
 
         s = self._bodyString
 
@@ -801,10 +805,10 @@ class vnode (baseVnode):
         trace = False and not g.unitTesting
         parent_v = self
         indices = g.app.nodeIndices
-        tnodesDict = c.fileCommands.tnodesDict
+        gnxDict = c.fileCommands.gnxDict
 
         if gnxString is None: v = None
-        else:                 v = tnodesDict.get(gnxString)
+        else:                 v = gnxDict.get(gnxString)
         is_clone = v is not None
 
         if trace: g.trace(
@@ -816,7 +820,7 @@ class vnode (baseVnode):
             if gnxString:
                 gnx = indices.scanGnx(gnxString,0)
                 v.fileIndex = gnx
-            tnodesDict[gnxString] = v
+            gnxDict[gnxString] = v
 
         child_v = v
         child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
@@ -911,7 +915,7 @@ class nodeIndices (object):
         self.setTimeStamp()
         self.lastIndex = 0
     #@-node:ekr.20031218072017.1992:nodeIndices.__init__
-    #@+node:ekr.20031218072017.1993:areEqual
+    #@+node:ekr.20031218072017.1993:areEqual (no longer used)
     def areEqual (self,gnx1,gnx2):
 
         """Return True if all fields of gnx1 and gnx2 are equal"""
@@ -919,7 +923,7 @@ class nodeIndices (object):
         # works whatever the format of gnx1 and gnx2.
         # This should never throw an exception.
         return gnx1 == gnx2
-    #@-node:ekr.20031218072017.1993:areEqual
+    #@-node:ekr.20031218072017.1993:areEqual (no longer used)
     #@+node:ekr.20031218072017.1994:get/setDefaultId
     # These are used by the fileCommands read/write code.
 
@@ -943,14 +947,14 @@ class nodeIndices (object):
         # g.trace(d)
         return d
     #@-node:ekr.20031218072017.1995:getNewIndex
-    #@+node:ekr.20031218072017.1996:isGnx
+    #@+node:ekr.20031218072017.1996:isGnx (not used)
     def isGnx (self,gnx):
         try:
             theId,t,n = gnx
             return t != None
         except Exception:
             return False
-    #@-node:ekr.20031218072017.1996:isGnx
+    #@-node:ekr.20031218072017.1996:isGnx (not used)
     #@+node:ekr.20031218072017.1997:scanGnx
     def scanGnx (self,s,i):
 

@@ -348,8 +348,10 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     at = self ; c = at.c
     << set fileName and isAtFile >>
     if isAtFile:
-        # Pre-read the external file to see if it has thin-like sentinels.
-        thinFile = at.scanClosedFileForThinSentinels(root)
+        # The @file node has file-like sentinels iff there root.v.tnodeList exists.
+        ### Pre-read the external file to see if it has thin-like sentinels.
+        ### thinFile = at.scanClosedFileForThinSentinels(root)
+        thinFile = not (hasattr(root.v,'tnodeList') and root.v.tnodeList)
     doCache = g.enableDB and (thinFile or atShadow)
     at.initReadIvars(root,fileName,
         importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
@@ -712,10 +714,10 @@ def fastAddLastChild(self,c,gnxString):
     trace = False and not g.unitTesting
     parent_v = self
     indices = g.app.nodeIndices
-    tnodesDict = c.fileCommands.tnodesDict
+    gnxDict = c.fileCommands.gnxDict
 
     if gnxString is None: v = None
-    else:                 v = tnodesDict.get(gnxString)
+    else:                 v = gnxDict.get(gnxString)
     is_clone = v is not None
 
     if trace: g.trace(
@@ -727,7 +729,7 @@ def fastAddLastChild(self,c,gnxString):
         if gnxString:
             gnx = indices.scanGnx(gnxString,0)
             v.fileIndex = gnx
-        tnodesDict[gnxString] = v
+        gnxDict[gnxString] = v
 
     child_v = v
     child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
@@ -2591,7 +2593,6 @@ def _setIconListHelper(self, p, subl, uaLoc):
 
     trace = False and not g.unitTesting
 
-    # FIXME lineYOffset is expected to be on a tnode in drawing code
     if subl: # Update the uA.
         if not hasattr(uaLoc,'unknownAttributes'):
             uaLoc.unknownAttributes = {}

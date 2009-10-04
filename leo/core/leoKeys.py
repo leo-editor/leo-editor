@@ -144,7 +144,7 @@ class autoCompleterClass:
         self.selectedText = None # The selected text on entry to autocompleter or calltips.
         self.selfClassName = None
         self.selfObjectsDict = {} # Keys are classNames, values are real proxy objects.
-        self.selfTnodesDict = {} # Keys are tnodes, values are real proxy objects.
+        self.selfVnodesDict = {} # Keys are tnodes, values are real proxy objects.
         self.prefix = None
         self.prevObjects = []
         self.tabList = []
@@ -1033,7 +1033,7 @@ class autoCompleterClass:
                 if obj:
                     self.selfObjectsDict [className] = obj
                     # This prevents future rescanning, even if the node moves.
-                    self.selfTnodesDict [p.v] = obj
+                    self.selfVnodesDict [p.v] = obj
         if obj:
             self.selfClassName = className
             self.push(self.theObject)
@@ -1510,7 +1510,7 @@ class autoCompleterClass:
 
             # First, see if any parent has already been scanned.
             for p in root.self_and_parents():
-                obj = autoCompleter.selfTnodesDict.get(p.v)
+                obj = autoCompleter.selfVnodesDict.get(p.v)
                 if obj:
                     # g.trace('found',obj,'in',p.h)
                     return None,obj,p

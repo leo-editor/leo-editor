@@ -482,8 +482,10 @@ class atFile:
         #@-node:ekr.20041005105605.22:<< set fileName and isAtFile >>
         #@nl
         if isAtFile:
-            # Pre-read the external file to see if it has thin-like sentinels.
-            thinFile = at.scanClosedFileForThinSentinels(root)
+            # The @file node has file-like sentinels iff there root.v.tnodeList exists.
+            ### Pre-read the external file to see if it has thin-like sentinels.
+            ### thinFile = at.scanClosedFileForThinSentinels(root)
+            thinFile = not (hasattr(root.v,'tnodeList') and root.v.tnodeList)
         doCache = g.enableDB and (thinFile or atShadow)
         at.initReadIvars(root,fileName,
             importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
@@ -617,7 +619,7 @@ class atFile:
     #@+node:ekr.20041005105605.26:readAll (atFile)
     def readAll(self,root,partialFlag=False):
 
-        """Scan vnodes, looking for @file nodes to read."""
+        """Scan vnodes, looking for @<file> nodes to read."""
 
         use_tracer = False
         if use_tracer: tt = g.startTracer()
@@ -919,7 +921,7 @@ class atFile:
         parent = at.lastThinNode # A vnode.
         children = parent.children
         for child in children:
-            if indices.areEqual(gnx,child.fileIndex):
+            if gnx == child.fileIndex:
                 break
         else:
             child = None
@@ -931,7 +933,8 @@ class atFile:
             copies = n - clonedSibs
             if trace: g.trace(copies,headline)
         else:
-            if indices.areEqual(gnx,lastIndex):
+            ### if indices.areEqual(gnx,lastIndex):
+            if gnx == lastIndex:
                 last.setVisited() # Supress warning/deletion of unvisited nodes.
                 if trace:g.trace('found last',last)
                 return last
@@ -943,19 +946,17 @@ class atFile:
 
         while copies > 0:
             copies -= 1
-            # Create the tnode only if it does not already exist.
-            tnodesDict = c.fileCommands.tnodesDict
-            v = tnodesDict.get(gnxString)
+            # Create the vnode only if it does not already exist.
+            gnxDict = c.fileCommands.gnxDict
+            v = gnxDict.get(gnxString)
             if v:
-                if indices.areEqual(v.fileIndex,gnx):
-                    pass
-                else:
+                if gnx != v.fileIndex:
                     g.trace('can not happen: v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx))
             else:
                 v = leoNodes.vnode(context=c)
                 v._headString = headline
                 v.fileIndex = gnx
-                tnodesDict[gnxString] = v
+                gnxDict[gnxString] = v
 
             child = v
             child._linkAsNthChild(parent,parent.numberOfChildren())
@@ -967,7 +968,7 @@ class atFile:
     #@+node:ekr.20041005105605.73:findChild4
     def findChild4 (self,headline):
 
-        """Return the next tnode in at.root.tnodeList.
+        """Return the next vnode in at.root.tnodeList.
         This is called only for @file/@noref nodes"""
 
         # Note: tnodeLists are used _only_ when reading @file (not @thin) nodes.
@@ -1421,7 +1422,7 @@ class atFile:
                 #@nl
             at.v.tempBodyString = s
 
-        # Indicate that the tnode has been set in the derived file.
+        # Indicate that the vnode has been set in the derived file.
         at.v.setVisited()
         # g.trace('visit',at.v)
 
@@ -2382,7 +2383,12 @@ class atFile:
     #@-node:ekr.20041005105605.143:openFileForWritingHelper & helper
     #@-node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
     #@+node:ekr.20041005105605.144:write & helper (atFile)
-    # This is the entry point to the write code.  root should be an @file vnode.
+    # This is the entry point to the write code.  root should be an @<file> vnode.
+
+    # Important: kind == @file and thinFile = False
+    # only if we are to write old file-like sentinels.
+    # No change should be needed to this code to handle
+    # the implicit conversion of @file nodes to use thin-like sentinels.
 
     def write (self,root,
         kind = '@unknown', # Should not happen.
@@ -2397,7 +2403,7 @@ class atFile:
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
 
-        if hasattr(root.v,'tnodeList'):# 2008/10/3
+        if hasattr(root.v,'tnodeList'):
             has_list,old_list = True,root.v.tnodeList[:]
         else:
             has_list,old_list = False,[]
@@ -2470,12 +2476,14 @@ class atFile:
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
                 if has_list:
-                    if thinFile:
-                        # Kill the tnode list.
+                    if at.errors > 0:
+                        root.v.tnodeList = old_list
+                    else:
+                        # Kill the tnodeList.
+                        # Future writes will write thin-like sentinels.
                         root.v.tnodeList = []
                         at.root.v._p_changed = True
-                    else:
-                        root.v.tnodeList = old_list
+
         except Exception:
             if toString:
                 at.exception("exception preprocessing script")
@@ -2607,10 +2615,12 @@ class atFile:
                     elif p.isAtFileNode():
                         if g.convert_at_file:
                             at.write(p,kind='@file',thinFile=True,toString=toString)
-                            writtenFiles.append(p.v) # No need for autosave.
+                            writtenFiles.append(p.v)
+                            autoSave = True # Clears root.v.tnodeList, so we must save.
                         else:
                             at.write(p,kind='@file',thinFile=False,toString=toString)
-                            writtenFiles.append(p.v) ; autoSave = True
+                            writtenFiles.append(p.v)
+                            autoSave = True # Updates root.v.tnodeList, so we must save.
 
                     if at.errors: atOk = False
 
@@ -3201,8 +3211,8 @@ class atFile:
 
         at = self ; s = g.choose(fromString,fromString,root.v._bodyString)
 
-        root.clearAllVisitedInTree() # Clear both vnode and tnode bits.
-        root.clearVisitedInTree()
+        root.clearAllVisitedInTree()
+        # root.clearVisitedInTree() # Redundant.
 
         at.putAtFirstLines(s)
         at.putOpenLeoSentinel("@+leo-ver=4")
@@ -3236,7 +3246,7 @@ class atFile:
             # Make sure v is never expanded again.
             # Suppress orphans check.
         if not at.thinFile:
-            p.v.setWriteBit() # Mark the tnode to be written.
+            p.v.setWriteBit() # Mark the vnode to be written.
         if not at.thinFile and not s: return
 
         inCode = True
@@ -3863,8 +3873,6 @@ class atFile:
         #@nl
 
         if at.thinFile:
-            if not p.v.fileIndex:
-                p.v.fileIndex = g.app.nodeIndices.getNewIndex()
             gnx = g.app.nodeIndices.toString(p.v.fileIndex)
             return "%s:%s" % (gnx,h)
         else:
@@ -3951,7 +3959,7 @@ class atFile:
             at.putSentinel("@+node:" + s)
 
         if not at.thinFile:
-            # Append the n'th tnode to the root's tnodeList.
+            # Append the n'th vnode to the root's tnodeList.
             # It may not exist when executing scripts.
             try:
                 v = at.root.v

@@ -381,7 +381,7 @@ class undoer:
     #@+node:EKR.20040530121329:u.restoreTree & helpers
     def restoreTree (self,treeInfo):
 
-        """Use the tree info to restore all vnode and tnode data,
+        """Use the tree info to restore all vnode data,
         including all links."""
 
         u = self
@@ -484,7 +484,6 @@ class undoer:
             statusBits = v.statusBits,
             parents    = v.parents[:],
             children   = v.children[:],
-            # The tnode never changes so there is no need to save it here.
         )
 
         if hasattr(v,'unknownAttributes'):

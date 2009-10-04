@@ -19,21 +19,19 @@ import leo.core.leoUndo as leoUndo
 #@+at
 # Leo must handle events or commands that change the text in the outline or 
 # body
-# panes. We must ensure that headline and body text corresponds to the vnode 
-# and
-# tnode corresponding to presently selected outline, and vice versa. For 
-# example,
-# when the user selects a new headline in the outline pane, we must ensure 
-# that:
+# panes. We must ensure that headline and body text corresponds to the vnode
+# corresponding to presently selected outline, and vice versa. For example, 
+# when
+# the user selects a new headline in the outline pane, we must ensure that:
 # 
-# 1) All vnodes and tnodes have up-to-date information and
+# 1) All vnodes have up-to-date information and
 # 
 # 2) the body pane is loaded with the correct data.
 # 
 # Early versions of Leo attempted to satisfy these conditions when the user
 # switched outline nodes. Such attempts never worked well; there were too many
 # special cases. Later versions of Leo use a much more direct approach: every
-# keystroke in the body pane updates the presently selected tnode immediately.
+# keystroke in the body pane updates the presently selected vnode immediately.
 # 
 # The leoTree class contains all the event handlers for the tree pane, and the
 # leoBody class contains the event handlers for the body pane. The following

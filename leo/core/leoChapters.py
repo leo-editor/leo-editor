@@ -502,12 +502,7 @@ class chapterController:
         c.setRootPosition(p)
         cc.chaptersNode = p.copy()
         v = p.v
-
-        if v.fileIndex:
-            pass
-        else:
-            v.setFileIndex(g.app.nodeIndices.getNewIndex())
-
+        assert(v.fileIndex)
         c.setChanged(True)
     #@-node:ekr.20070325101652:cc.createChaptersNode
     #@+node:ekr.20070325063303.2:cc.createChapterNode

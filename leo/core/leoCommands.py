@@ -2025,8 +2025,8 @@ class baseCommands (object):
             #@-node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
             #@nl
             tnodeIndex = max(0,tnodeIndex)
-            #@        << set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = False >>
-            #@+node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+            #@        << set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = False >>
+            #@+node:ekr.20080904071003.9:<< set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = false >>
             # g.trace("tnodeIndex",tnodeIndex)
             if tnodeIndex < len(tnodeList):
                 v = tnodeList[tnodeIndex]
@@ -2035,7 +2035,7 @@ class baseCommands (object):
                     if p.v == v:
                         found = True ; break
                 if not found:
-                    s = "tnode not found for " + vnodeName
+                    s = "vnode not found for " + vnodeName
                     g.es_print(s, color="red") ; ok = False
                 elif p.h.strip() != vnodeName:
                     if 0: # Apparently this error doesn't prevent a later scan for working properly.
@@ -2047,7 +2047,7 @@ class baseCommands (object):
                     s = "Invalid computed tnodeIndex: %d" % tnodeIndex
                     g.es_print(s, color = "red")
                 ok = False
-            #@-node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+            #@-node:ekr.20080904071003.9:<< set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = false >>
             #@nl
         else:
             g.es_print("no child index for",root.h,color="red")

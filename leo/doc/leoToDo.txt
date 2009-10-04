@@ -976,7 +976,7 @@ def goto_scanTnodeList (self,root,delim,lines,n,vnodeName):
         tnodeList = getattr(root.v,'tnodeList')
         << set tnodeIndex to the number of +node sentinels before line n >>
         tnodeIndex = max(0,tnodeIndex)
-        << set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = False >>
+        << set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = False >>
     else:
         g.es_print("no child index for",root.h,color="red")
 
@@ -1001,7 +1001,7 @@ for s in lines:
             tnodeIndex += 1
     scanned += 1
 #@-node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
-#@+node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+#@+node:ekr.20080904071003.9:<< set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = false >>
 # g.trace("tnodeIndex",tnodeIndex)
 if tnodeIndex < len(tnodeList):
     v = tnodeList[tnodeIndex]
@@ -1010,7 +1010,7 @@ if tnodeIndex < len(tnodeList):
         if p.v == v:
             found = True ; break
     if not found:
-        s = "tnode not found for " + vnodeName
+        s = "vnode not found for " + vnodeName
         g.es_print(s, color="red") ; ok = False
     elif p.h.strip() != vnodeName:
         if 0: # Apparently this error doesn't prevent a later scan for working properly.
@@ -1022,7 +1022,7 @@ else:
         s = "Invalid computed tnodeIndex: %d" % tnodeIndex
         g.es_print(s, color = "red")
     ok = False
-#@-node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+#@-node:ekr.20080904071003.9:<< set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = false >>
 #@+node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
 for p in root.self_and_subtree():
     if p.matchHeadline(vnodeName):
@@ -2438,12 +2438,6 @@ of the nodes would load from the file.
 #@nonl
 #@+node:ekr.20031218072017.1577:putTnode
 def putTnode (self,v):
-
-    # Could be eliminated.
-    # New in Leo 4.4.8.  Assign v.fileIndex here as needed.
-    if not v.fileIndex:
-        g.trace('can not happen: no index for tnode',v)
-        v.fileIndex = g.app.nodeIndices.getNewIndex()
 
     # New in Leo 4.4.2 b2: call put just once.
     gnx = g.app.nodeIndices.toString(v.fileIndex)

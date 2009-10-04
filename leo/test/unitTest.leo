@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,2,0,7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -722,15 +722,17 @@
 </v>
 </v>
 <v t="ekr.20071113203234"><vh> Test files</vh>
+<v t="ekr.20091004182125.5057"><vh>These @@@file nodes *are* used by unit tests</vh>
+<v t="ekr.20090704085350.5007"><vh>@@@file ../test/unittest/at-file-test.py</vh>
+<v t="ekr.20090704085350.5008"><vh>spam</vh></v>
+<v t="ekr.20090704085350.5009"><vh>eggs</vh></v>
+</v>
+</v>
 <v t="ekr.20090704085350.5028"><vh>@asis ../test/unittest/at-asis-test.py</vh>
 <v t="ekr.20090704085350.5029"><vh>spam</vh></v>
 <v t="ekr.20090704085350.5030"><vh>eggs</vh></v>
 </v>
 <v t="ekr.20090704085350.5056"><vh>@auto ../test/unittest/at-auto-test.py</vh></v>
-<v t="ekr.20090704085350.5007" tnodeList="ekr.20090704085350.5007,ekr.20090704085350.5008,ekr.20090704085350.5009"><vh>@file ../test/unittest/at-file-test.py</vh>
-<v t="ekr.20090704085350.5008"><vh>spam</vh></v>
-<v t="ekr.20090704085350.5009"><vh>eggs</vh></v>
-</v>
 <v t="ekr.20090704085350.5040" tnodeList="ekr.20090704085350.5040,ekr.20090704085350.5041,ekr.20090704085350.5042"><vh>@noref ../test/unittest/at-noref-test.py</vh>
 <v t="ekr.20090704085350.5041"><vh>spam</vh></v>
 <v t="ekr.20090704085350.5042"><vh>eggs</vh></v>
@@ -771,7 +773,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20090703080553.5000" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
@@ -810,8 +812,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20071113194858"><vh>Organized by file</vh>
-<v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
+<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
+<v t="ekr.20050112095306.1" a="E" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
 <v t="ekr.20041021065903"><vh>#@asis</vh>
@@ -14015,7 +14017,7 @@ b</t>
 <t tx="ekr.20070315065849.3">a
 
 b</t>
-<t tx="ekr.20070417092935" str_leo_pos="7"></t>
+<t tx="ekr.20070417092935" str_leo_pos="7,2,0,7"></t>
 <t tx="ekr.20070417092935.1"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070515150433"></t>
@@ -21681,20 +21683,42 @@ else:
     pass</t>
 <t tx="ekr.20090704085350.5009">def eggs():
     pass</t>
-<t tx="ekr.20090704085350.5010">h = '@file ../test/unittest/at-file-test.py'
+<t tx="ekr.20090704085350.5010">h = '@@@file ../test/unittest/at-file-test.py'
 p = g.findNodeAnywhere(c,h)
 assert p
-
-table = (
-    (p.firstChild(),'spam'),
-    (p.firstChild().next(),'eggs')
-)
-
+assert p.v.tnodeList
 assert not p.isDirty(),p.h # Do not ignore this failure!
+oldTnodeList = p.v.t.tnodeList
 
-for p2,h2 in table:
-    assert p2.h == h2
-    assert p2.b &gt; 10</t>
+try:
+    p.h = p[2:] # convert @@@file to @file
+    p.clearDirty()
+    bunch = c.undoer.beforeChangeTree(p)
+    
+    # Read the node as a regular @file node
+    at = c.atFileCommands
+    c.atFileCommands.read(
+        root=p.copy(),
+        importFileName=None,
+        thinFile=False,
+        fromString=None,
+        atShadow=False)
+        
+    c.undoer.afterChangeTree(p,'atFile.Read',bunch)
+
+    table = (
+        (p.firstChild(),'spam'),
+        (p.firstChild().next(),'eggs')
+    )
+    
+    for p2,h2 in table:
+        assert p2.h == h2
+        assert p2.b &gt; 10
+
+finally:
+    p.h = h
+    p.v.tnodeList = oldTnodeList
+    c.undoer.undo()</t>
 <t tx="ekr.20090704085350.5018">h = '@shadow ../test/unittest/at-shadow-test.py'
 p = g.findNodeAnywhere(c,h)
 assert p
@@ -21839,6 +21863,13 @@ assert  tangle_dir == expectedDir,'expected: %s got: %s' % (
 tangle_fn = d.get('tangle_output_fn')
 assert expectedFn == tangle_fn,'expected: %s got: %s' % (
     expectedFn,tangle_fn)</t>
+<t tx="ekr.20091004182125.5057">@nocolor-node
+
+The individual unit test is responsible for doing the following:
+    
+- Changing the headline from @@@file x to @file x.
+- Calling atFile.read with the proper args to read the external file.
+- Restoring the headline to @@@file x.</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
