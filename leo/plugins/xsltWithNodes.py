@@ -190,7 +190,7 @@ def processDocumentNode( c ):
         stylesource = InputSource.DefaultFactory.fromString( sIO, uri = hstring)
         proc.appendStylesheet( stylesource )
         c.selectPosition( pos )
-        xmlnode = pos.v.t
+        xmlnode = pos.v
         xIO = getString( c )
         mdom2 = minidom.parseString( xIO )
         xIO = str( mdom2.toxml())

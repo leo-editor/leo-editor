@@ -155,7 +155,7 @@ class quickMoveButton:
             g.es('Target no longer exists: %s' % self.targetHeadString,color='red')
             return
 
-        if p.v.t == p2.v.t or not self.checkMove(p,p2):
+        if p.v == p2.v or not self.checkMove(p,p2):
             g.es('Invalid move: %s' % (self.targetHeadString),color='red')
             return
 

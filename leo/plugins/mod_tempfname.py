@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ville.20090711235451.1353:@thin ~/leo-editor/leo/plugins/mod_tempfname.py
+#@+node:EKR.20040517075715.1:@thin mod_tempfname.py
 """Replace Commands.openWithTempFilePath to create alternate temporary
 directory paths.  Two alternates are supported.  Default method creates temporary
 files with a filename that begins with the headline text, and
@@ -83,7 +83,7 @@ def openWithTempFilePath (self,v,ext):
             p = p.parent()
 
         #Put temporary directory structure under <tempdir>\Leo<uniqueId> directory
-        ancestor.append( "Leo" + str(id(v.t)))
+        ancestor.append( "Leo" + str(id(v)))
 
         #Build temporary directory
         td = os.path.abspath(tempfile.gettempdir())
@@ -106,7 +106,7 @@ def openWithTempFilePath (self,v,ext):
         td = os.path.join(os.path.abspath(tempfile.gettempdir()), leoTempDir)
         if not os.path.exists(td):
             os.mkdir(td)
-        name = g.sanitize_filename(v.h) + '_' + str(id(v.t)) + ext
+        name = g.sanitize_filename(v.h) + '_' + str(id(v)) + ext
 
     path = os.path.join(td,name)
 
@@ -123,5 +123,5 @@ if not g.app.unitTesting: # Not Ok for unit testing: it changes Leo's core.
     __version__ = "1.3"
     g.plugin_signon(__name__)
 #@nonl
-#@-node:ville.20090711235451.1353:@thin ~/leo-editor/leo/plugins/mod_tempfname.py
+#@-node:EKR.20040517075715.1:@thin mod_tempfname.py
 #@-leo

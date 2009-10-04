@@ -350,8 +350,8 @@ class marksDialog (tkinterListBoxDialog):
         menu_table = []
         tnodeList = []
         for p in c.all_positions():
-            if p.isMarked() and p.v.t not in tnodeList:
-                tnodeList.append(p.v.t)
+            if p.isMarked() and p.v not in tnodeList:
+                tnodeList.append(p.v)
                 cb = lambda event, keywords, p=p.copy(): self.gotoNode(p)
                 menu_table.append((p.h.strip(), cb))
 
@@ -431,9 +431,9 @@ class marksDialog (tkinterListBoxDialog):
         i = 0 ; self.positionList = [] ; tnodeList = []
 
         for p in c.all_positions():
-            if p.isMarked() and p.v.t not in tnodeList:
+            if p.isMarked() and p.v not in tnodeList:
                 self.box.insert(i,p.h.strip())
-                tnodeList.append(p.v.t)
+                tnodeList.append(p.v)
                 self.positionList.append(p.copy())
                 i += 1
 

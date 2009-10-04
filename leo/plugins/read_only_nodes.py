@@ -381,7 +381,7 @@ def insert_read_only_node (c,v,name):
             #@nonl
             #@-node:edream.110203113231.895:<< convert HTML to text >>
             #@nl
-        previous = v.t._bodyString
+        previous = v._bodyString
         c.setBodyString(v,new)
         changed = (g.toUnicode(new,'ascii') != g.toUnicode(previous,'ascii'))
         if changed and previous != "":

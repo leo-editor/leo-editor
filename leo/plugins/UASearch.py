@@ -130,9 +130,10 @@ def search( name, value, stype, c ):
         return note("empty name")
     if stype == "uaname":
         while cv:
-            t = getT( cv )
-            if hasattr(t,'unknownAttributes'): 
-                if t.unknownAttributes.has_key( name ):
+            # t = getV( cv )
+            v = cv.v
+            if hasattr(v,'unknownAttributes'): 
+                if v.unknownAttributes.has_key( name ):
                     return found(cv,name)
             cv = cv.threadNext()
     else:
@@ -140,29 +141,30 @@ def search( name, value, stype, c ):
         if stype == 'regex':
             sea = re.compile( value )
         while cv:
-            t = getT( cv )
-            if hasattr(t,'unknownAttributes' ):
-                if t.unknownAttributes.has_key( name ):
+            # t = getT( cv )
+            v = cv.v
+            if hasattr(v,'unknownAttributes' ):
+                if v.unknownAttributes.has_key( name ):
                     if stype == 'uavalue':
-                        if t.unknownAttributes[ name ] == value:
+                        if v.unknownAttributes[ name ] == value:
                             return found(cv,name)
                     else:
-                        st = t.unknownAttributes[ name ]
+                        st = v.unknownAttributes[ name ]
                         if sea.search( st ):
                             return found(cv,name)
             cv = cv.threadNext()
     note ("not found: " + name)
 #@nonl
 #@-node:ekr.20040915075530.4:search
-#@+node:ekr.20040915075530.5:getT
-def getT( node ):
+#@+node:ekr.20040915075530.5:getV
+# def getT( node ):
 
-    if str( node.__class__ )== 'leoNodes.vnode':
-        return node.t
-    else:
-        return node.v.t
+    # if str( node.__class__ )== 'leoNodes.vnode':
+        # return node.t
+    # else:
+        # return node.v.t
 #@nonl
-#@-node:ekr.20040915075530.5:getT
+#@-node:ekr.20040915075530.5:getV
 #@-others
 #@nonl
 #@-node:ekr.20040915075530:@thin UASearch.py

@@ -172,9 +172,9 @@ def getTemplateDialog (pos,c):
 
     """Put up a dialog that asks the user to enter template params."""
 
-    tnode = pos.v.t 
+    v = pos.v
     bS = getNodeAsString(c,pos)
-    hS = tnode.headString 
+    hS = v.h 
     num = bS.count('%s')
     ok = True 
     if num:
@@ -228,11 +228,10 @@ def getTemplateDialog (pos,c):
         hS = '<'+'<%s>'%hS+'>'
 
     if ok:
-        # nTnd = leoNodes.tnode(bS,hS)
         pos = c.p
-        p = pos.insertAsNthChild(0) #,nTnd)
-        p.setBodyString(bS)
-        p.setHeadString(hS)
+        p = pos.insertAsNthChild(0)
+        p.b = bs
+        p.h = hs
         bodyCtrl = c.frame.body.bodyCtrl 
         bodyCtrl.insert('insert',hS)
         bodyCtrl.event_generate('<Key>')
@@ -308,9 +307,9 @@ def markAsTemplate (c):
     global templates 
 
     pos = c.p
-    t = pos.v.t 
-    uA = t.__dict__.get("unknownAttributes",{})
-    t.unknownAttributes = uA 
+    v = pos.v
+    uA = v.__dict__.get("unknownAttributes",{})
+    v.unknownAttributes = uA 
 
     if uA.has_key("template"):
         del uA["template"]
@@ -376,11 +375,10 @@ def scanForTemplates (tag,keywords):
 
     haveseen[c] = None 
     pos = c.rootPosition()
-    for z in c.all_positions():
-        t = z.v.t 
-        if hasattr(t,'unknownAttributes'):
-            if t.unknownAttributes.has_key('template'):
-                templates.add(z.copy())
+    for p in c.all_positions():
+        if hasattr(p.v,'unknownAttributes'):
+            if p.v.unknownAttributes.has_key('template'):
+                templates.add(p.copy())
 
     c.frame.tree.redraw()
 #@nonl

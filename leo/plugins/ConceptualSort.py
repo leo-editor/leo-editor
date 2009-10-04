@@ -174,12 +174,12 @@ class CSFrontend:
         from sets import Set
         atts = Set()
         for child in nodes:
-            if str(child.__class__) == 'leoNodes.vnode':
-                t = child.t
-            else:
-                t = child.v.t
-            if hasattr( t, 'unknownAttributes' ):
-                uAs = t.unknownAttributes.keys()
+            # if str(child.__class__) == 'leoNodes.vnode':
+                # t = child.t
+            # else:
+                # t = child.v.t
+            if hasattr(child.v, 'unknownAttributes' ):
+                uAs = child.v.unknownAttributes.keys()
                 map( lambda a: atts.add( a ), uAs )
         return atts
     #@nonl
@@ -257,13 +257,13 @@ def buildAttList( children, concept ):
 
     atts = {}
     for child in children:
-        if str(child.__class__) == 'leoNodes.vnode':
-            t = child.t
-        else:
-            t = child.v.t
+        # if str(child.__class__) == 'leoNodes.vnode':
+            # t = child.t
+        # else:
+            # t = child.v.t
         atts[ child ] = None
-        if hasattr( t, 'unknownAttributes' ):
-            uA = t.unknownAttributes
+        if hasattr(child.v, 'unknownAttributes' ):
+            uA = child.v.unknownAttributes
             atts[ child ] = uA.get( concept )
     return atts
 

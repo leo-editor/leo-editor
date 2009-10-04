@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>
@@ -435,7 +435,6 @@
 <v t="ekr.20040403173920.24" rst_http_attribute="5d71002855463c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710155043c2f613e71025d71032855263c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710455063c2f6469763e71055d710628554f3c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710755063c2f6469763e71085d710928553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a55063c2f6469763e710b5d710c2855063c626f64793e710d55073c2f626f64793e710e5d710f2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711055073c2f68746d6c3e71114e656565656555073c2f6469763e0a711255073c2f6469763e0a711355353c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7114556c3c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a7115652e"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20080922124033.1"><vh>Getting interactive input from scripts</vh></v>
 <v t="ville.20090603183524.5672"><vh>Creating Leo commands with the @g.command decorator</vh></v>
-<v t="ekr.20090831090752.11347"><vh>Leo's legacy data model</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.211"><vh>Chapter 8: Customizing Leo</vh>
@@ -1015,7 +1014,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
+<v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -4497,20 +4496,20 @@ handlers: ``onBodyChanged``, ``onBodyWillChange``, ``onBodyKey``, ``onHeadChange
 indicate that a command has changed, or will change, the headline or body text.
 Calling event handlers rather than ``c.beginUpdate`` and ``c.endUpdate`` ensures that
 the outline pane is redrawn only when needed.</t>
-<t tx="EKR.20040524104904.265">Since version 4.2, Leo represents clones by sharing tnodes. Cloned vnodes share
-the same tnode. This shared tnode represents the entire shared subtree of both
-clones. Thus, the ``_firstChild`` link must reside in *tnodes*, not *vnodes*.
+<t tx="EKR.20040524104904.265">New in Leo 4.7. All clones of a node **are the same node**. This is the
+so-called **one-node** world. In this world, vnodes represent data, generators
+and positions represent the location of the data in an outline.  This is a much
+simpler world than all previous data representations.
 
-Because vnodes may be visited many times during a complete traversal of a tree,
-a vnode does not represent unique location on the screen. As a result, the
-**position** class had to be invented. ``c.rootVnode`` and ``c.currentVnode``
-now return *positions* instead of vnodes. The position class was designed to
-allow compatibility with old scripts. Old code can use positions just like they
-used to use vnodes.
+In Leo versions 4.2 to 4.6 clones were represented by sharing **tnodes**. Cloned
+vnodes shared the same tnode. This shared tnode represented the entire shared
+subtree of both clones. Thus, the ``_firstChild`` link had to reside in
+*tnodes*, not *vnodes*.
 
-Earlier versions of Leo duplicated all the descendants of vnode v when cloning
-v. This created many complications that no longer exist. In particular, in the
-new scheme a vnode v is cloned if and only if ``len(v.t.vnodeList) &gt; 1``.</t>
+Prior to Leo version 4.2, Leo duplicated all the descendants of vnode v when
+cloning v. This created many complications that were removed in the shared tnode
+world. In particular, in the shared tnode scheme a vnode v is cloned if and only
+if ``len(v.t.vnodeList) &gt; 1``.</t>
 <t tx="EKR.20040524104904.266">The find and change commands are tricky; there are many details that must be
 handled properly. The following principles govern the LeoFind class:
 
@@ -8708,40 +8707,46 @@ doesn't call atfile.write.
 This suppresses the following irrelevant message when executing scripts:
 
     "No absolute directory specified anywhere."</t>
-<t tx="ekr.20050306090601">Leo's .leo file format is extensible. The basis for extending .leo files are the
-``t.unknownAttributes`` and ``v.unknownAttributes`` ivars of tnodes and vnodes,
-or uA's for short. Leo translates between uA's and xml attributes in the
-corresponding ``&lt;v&gt;`` and ``&lt;t&gt;`` elements in .leo files. Plugins may also use
-``v.tempAttributes`` or ``t.tempAttributes`` ivars to hold temporary information
+<t tx="ekr.20050306090601">Leo's .leo file format is extensible.
+The basis for extending .leo files are the ``v.unknownAttributes`` ivars of vnodes,
+uA's for short.
+Leo translates between uA's and xml attributes in the corresponding
+``&lt;v&gt;`` elements in .leo files.
+Plugins may also use ``v.tempAttributes`` ivars to hold temporary information
 that will *not* be written to the .leo file.
+These two ivars are called **attribute ivars**.
 
-Collectively, these four kinds of ivars are called **attribute ivars**.
 Attribute ivars must be Python dictionaries, whose keys are names of plugins and
 whose values are *other* dictionaries, called **inner dictionaries**, for
-exclusive use of each plugin. For example, a plugin named 'xyzzy' would set
-``t.unknownAttributes`` as follows::
+exclusive use of each plugin.
 
-    # Create the uA if necessary.
-    if not hasattr(p.v.t,'unknownAttributes'):
-        p.v.t.unknownAttributes = {}
+The v.u Python property allows plugins to get and set ``v.unknownAttributes`` easily::
 
-    # Get the inner dictionary for the 'xyzzy' plugin, creating it if necessary.
-    d = p.v.t.unknownAttributes.get('xyzzy',{})
+    d = v.u # gets uA (the outer dict) for v
+    v.u = d # sets uA (the outer dict) for v
+    
+For example:
 
-    # Set some values. These values must be picklable.
-    d ['duration'] = 5
-    d ['notes'] = "This is a note."
+    plugin_name = 'xyzzy'
+    d = v.u # Get the outer dict.
+    inner_d = d.get(plugin_name,{}) # Get the inner dict.
+    inner_d ['duration']= 5
+    inner_d ['notes'] "This is a note."
+    d [plugin_name] = inner_d
+    v.u = d
+    
+No corresponding Python properties exist for ``v.tempAttributes``,
+so the corresponding example would be::
 
-    # Update the uA.
-    p.v.t.unknownAttributes ['xyzzy'] = d
-
-    if hasattr(p.v.t,"unknownAttributes"):
-        d = p.v.t.unknownAttributes.get("xyzzy",{})
-        g.es(d['duration'])
-        g.es(d['notes'])
-
-Plugins would use similar code to create ``v.unknownAttributes``,
-``t.tempAttributes``, and ``v.tempAttributes`` ivars.
+    plugin_name = 'xyzzy'
+    # Get the outer dict.
+    if hasattr(p.v,'tempAttributes'): d = p.v.tempAttributes
+    else: d = {}
+    inner_d = d.get(plugin_name,{}) # Get the inner dict.
+    inner_d ['duration'] = 5
+    inner_d ['notes'] = "This is a note."
+    d [plugin_name] = inner_d
+    p.v.tempAttributes = d
 
 **Important**: All members of inner dictionaries should be picklable: Leo
 uses Python's Pickle module to encode all values in these dictionaries. Leo will
@@ -8753,37 +8758,38 @@ dictionaries, a plugin could put the tnode's gnx (a string) in the dictionary.
 The values of such members should be a Python string.
 This convention allows strings to appear in .leo files in a more readable format.
 
-**Important**: Plugins must *not* use ``v.unknownAttributes`` inside ``@thin``
-trees. Indeed Leo uses **hidden machinery** to write ``t.unknownAttributes``.
-Leo does *not* write ``t.unknownAttributes`` to thin derived files. Instead Leo
-writes a representation of all ``t.unknownAttributes`` contained in the
-``@thin`` tree to a special xml attribute called
-``descendentTnodeUnknownAttributes`` in the ``&lt;v&gt;`` element corresponding to the
-``@thin`` node. Yes, this is complicated, but it works. Leo can *not* write
-``v.unknownAttributes`` in ``@thin`` trees because **only tnodes have gnx's in
-thin derived files**. In effect, vnodes are anonymous.
+..  **Important**: Plugins must *not* use ``v.unknownAttributes`` inside ``@thin``
+..  trees. Indeed Leo uses **hidden machinery** to write ``t.unknownAttributes``.
+..  Leo does *not* write ``t.unknownAttributes`` to thin derived files. Instead Leo
+..  writes a representation of all ``t.unknownAttributes`` contained in the
+..  ``@thin`` tree to a special xml attribute called
+..  ``descendentTnodeUnknownAttributes`` in the ``&lt;v&gt;`` element corresponding to the
+..  ``@thin`` node. Yes, this is complicated, but it works. Leo can *not* write
+..  ``v.unknownAttributes`` in ``@thin`` trees because **only tnodes have gnx's in
+..  thin derived files**. In effect, vnodes are anonymous.
 
-Plugins that must associate attributes with vnodes should support only ``@file``
-trees. A completely different alternative would be for the plugin to extend how
-Leo reads and writes ``&lt;v&gt;`` elements in .leo files, but that would be much more
-complicated than using ``t.unknownAttributes``
+..  Plugins that must associate attributes with vnodes should support only ``@file``
+..  trees. A completely different alternative would be for the plugin to extend how
+..  Leo reads and writes ``&lt;v&gt;`` elements in .leo files, but that would be much more
+..  complicated than using ``t.unknownAttributes``
 
-Here are the details about how Leo associates uA's with ``&lt;v&gt;`` and ``&lt;t&gt;`` elements in .leo files:
+Here is how Leo associates uA's with ``&lt;v&gt;`` elements in .leo files:
 
-- **Native xml attributes** are the attributes of ``&lt;v&gt;`` and ``&lt;t&gt;`` elements that are
-  known (treated specially) by Leo's read/write code.
-  The only native attribute of ``&lt;t&gt;`` elements is ``tx``.
-  The native attributes of ``&lt;v&gt;`` elements are ``a``, ``t``, ``vtag``, ``tnodeList``,
-  ``marks``, ``expanded`` and ``descendentTnodeUnknownAttributes``.
-  All other attributes of ``&lt;v&gt;`` and ``&lt;t&gt;`` elements are **foreign xml attributes**.
+- **Native xml attributes** are the attributes of ``&lt;v&gt;`` elements that are
+  known (treated specially) by Leo's read/write code. The native attributes of
+  ``&lt;v&gt;`` elements are ``a``, ``t``, ``vtag``, ``tnodeList``, ``marks``,
+  ``expanded`` and ``descendentTnodeUnknownAttributes``. All other attributes of
+  ``&lt;v&gt;`` and ``&lt;t&gt;`` elements are **foreign xml attributes**.
 
-- When reading a .leo file, Leo will create ``t.unknownAttributes`` or ``v.unknownAttributes`` ivars for
-  any ``tnode`` or ``vnode`` whose corresponding ``&lt;v&gt;`` or ``&lt;t&gt;`` element contains a foreign xml attribute.
+- When reading a .leo file, Leo will create ``v.unknownAttributes`` ivars for
+  any ``vnode`` whose corresponding ``&lt;v&gt;`` or ``&lt;t&gt;`` element contains a
+  foreign xml attribute.
 
-- When writing a file, Leo will write foreign xml attributes in ``&lt;v&gt;`` or ``&lt;t&gt;`` elements
-  if the corresponding  vnode or tnode contains an ``unknownAttributes`` ivar.
+- When writing a file, Leo will write foreign xml attributes in ``&lt;v&gt;`` elements
+  if the corresponding vnode contains an ``unknownAttributes`` ivar.
 
-- Leo performs the usual xml escapes on these strings when reading or writing the ``unknownAttributes`` ivars.</t>
+- Leo performs the usual xml escapes on these strings when reading or writing
+  the ``unknownAttributes`` ivars.</t>
 <t tx="ekr.20050313101229">Leo 4.3 alpha 4                 March 15, 2005
 
 Leo 4.3 is the culmination of more than five months of work. This alpha 4
@@ -20325,12 +20331,12 @@ pathToZodbStorage is the full path to the zodb storage file.
 You can call g.init_zodb as many times as you like.
 Only the first call for any path actually does anything:
 subsequent calls for a previously opened path simply return the same value as the first call.</t>
-<t tx="ekr.20060913165542.3">This vnode method returns v2, a copy of v that is completely detached from the outline.
-v2.t is a completely new tnode.
-v2.fileIndex is None initially, but is may be convenient to copy this field::
+<t tx="ekr.20060913165542.3">This vnode method returns v2, a copy of v that is completely detached from the
+outline. v2.fileIndex is unrelated to v.fileIndex initially, but is may be
+convenient to copy this field::
 
     v2 = v.detach()
-    v2.t.fileIndex = v.t.fileIndex</t>
+    v2.fileIndex = v.fileIndex</t>
 <t tx="ekr.20060913170145">To enable zodb scripting within Leo, you must set ``use_zodb = True`` in the root node of leoNodes.py.
 You must also install ZODB itself.  See `Installing ZODB`_ for details.
 
@@ -20410,14 +20416,14 @@ The following are only suggestions: you are free to use any string you like.
 2. When saving a single vnode or tree of vnodes, say v,
    a good choice would be to use v's gnx, namely::
 
-        aKey = g.app.nodeIndices.toString(v.t.fileIndex)
+        aKey = g.app.nodeIndices.toString(v.fileIndex)
 
-   Note that v.detach() does not automatically copy v.t.fileIndex to the detached node,
+   Note that v.detach() does not automatically copy v.fileIndex to the detached node,
    so when writing a detached node you would typically do the following::
 
        v2 = v.detach()
-       v2.t.fileIndex = v.t.fileIndex
-       aKey = g.app.nodeIndices.toString(v2.t.fileIndex)</t>
+       v2.fileIndex = v.fileIndex
+       aKey = g.app.nodeIndices.toString(v2.fileIndex)</t>
 <t tx="ekr.20060913175437.1">The scripts shown above close the zodb connection after processing the data.
 This is by far the simplest strategy.
 I recommend it for typical scripts.
@@ -23019,7 +23025,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="2"></t>
+<t tx="ekr.20070610174018" str_leo_pos="4"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -30120,48 +30126,6 @@ All parts of the find tab can be controlled from the keyboard.
 .. It may be useful for generating the pdf docs.
 
 @all</t>
-<t tx="ekr.20090831090752.11347">This section describes the data model used in all versions of Leo before Leo 4.7.
-
-Leo's legacy model used two class, the **vnode** and **tnode** classes to
-represent nodes. The combination of a vnode v and its tnode v.t represents a
-node's data. Leo used both vnodes and tnodes to represent clones efficiently. A
-tnode represents all data shared by cloned nodes. When Leo clones a vnode v, Leo
-creates a new, independent vnode v2 and sets v2.t == v.t. Thus, cloning a node
-does not duplicate any information in descendant trees, but descendants of a
-cloned node appear more than once on the screen (when all nodes are expanded).
-
-In the legacy data model, tnodes represent the actual data in a vnode, including
-headline and body text. For any vnode ``v``, ``v.t`` is v's tnode. Cloned vnodes
-v1 and v2 share the same tnode. That is ``v1.t == v2``. If ``p`` is a
-``position``, ``p.v.t`` is the tnode associated with that position. Many
-positions may share the same tnode.
-
-The legacy data model had a concept called **joined nodes**. Joined nodes
-represent the same data. In the new, simplied model, all joined nodes are the
-same vnode, but that was not true in the legacy data model.
-
-Joined nodes were vnodes v1 and v2 such that v1.t == v2.t. Joined vnodes are
-distinct (v1 != v2) if the vnodes are clones of each other. Joined nodes are in
-fact the same node (v1 == v2) if they are descendants of clone nodes. In
-particular, we can say that p1.v is joined to p2.v if p1.v.t == p2.v.t
-regardless of whether p1.v == p2.v. Thus a script can process nodes exactly once
-if it ignores nodes joined to previously visited nodes. A later section will
-provide an example of this common scripting pattern.
-
-The following script illustrates a common idiom. It prints each headline of an
-outline, eliminating duplications that would happen as the result of cloned
-trees::
-
-    d = {}
-    for p in c.all_positions():
-        if p.v.t not in d:
-            print(p.h)
-            d[p.v.t] = p.v.t
-
-In the legacy data model, joined vnodes shared the same tnode. Thus, when we
-visit a position p we print p.h only if p.v.t is not already in the dictionary.
-We then enter p.v.t in the dictionary to prevent printing the headlines of any
-future node joined to p.v.</t>
 <t tx="ekr.20090909083000.6547">Leo 4.7 beta 1                          September 9, 2009
 
 Leo 4.7 beta 1 is now available at:
