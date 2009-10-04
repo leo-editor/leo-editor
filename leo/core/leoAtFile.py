@@ -411,7 +411,7 @@ class atFile:
             g.es_print('check-derived-file passed',color='blue')
     #@-node:ekr.20070919133659:checkDerivedFile (atFile)
     #@+node:ekr.20041005105605.19:openFileForReading (atFile) helper & test
-    def openFileForReading(self,fn,fromString=False):
+    def openFileForReading(self,fn,fromString=False): ### fn not used!
 
         trace = False and not g.app.unitTesting
         verbose = False
@@ -451,14 +451,14 @@ class atFile:
 
         return fn
     #@-node:ekr.20041005105605.19:openFileForReading (atFile) helper & test
-    #@+node:ekr.20041005105605.21:read (atFile)
+    #@+node:ekr.20041005105605.21:read (atFile) & helper
     def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
 
         """Read any @thin, @file and @noref trees."""
 
         at = self ; c = at.c
-        #@    << set fileName >>
-        #@+node:ekr.20041005105605.22:<< set fileName >>
+        #@    << set fileName and isAtFile >>
+        #@+node:ekr.20041005105605.22:<< set fileName and isAtFile >>
         if fromString:
             fileName = "<string-file>"
         elif importFileName:
@@ -471,11 +471,22 @@ class atFile:
         if not fileName:
             at.error("Missing file name.  Restoring @file tree from .leo file.")
             return False
-        #@-node:ekr.20041005105605.22:<< set fileName >>
-        #@nl
 
+        isAtFile = (
+            not thinFile and
+            not importFileName and
+            not atShadow and
+            not fromString and
+            root.h.startswith('@file'))
+        #@nonl
+        #@-node:ekr.20041005105605.22:<< set fileName and isAtFile >>
+        #@nl
+        if isAtFile:
+            # Pre-read the external file to see if it has thin-like sentinels.
+            thinFile = at.scanClosedFileForThinSentinels(root)
         doCache = g.enableDB and (thinFile or atShadow)
-        at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
+        at.initReadIvars(root,fileName,
+            importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
         if at.errors: return False
         fileName = at.openFileForReading(fileName,fromString=fromString)
         if at.inputFile:
@@ -490,9 +501,6 @@ class atFile:
         root.v.at_read = True # Create the attribute for all clones.
 
         if doCache and cachefile in c.db:
-            # This message isn't so useful.
-            # if not g.unitTesting: # g.es('uncache:',root.h)
-
             # Delete the previous tree, regardless of the @<file> type.
             while root.hasChildren():
                 root.firstChild().doDelete()
@@ -503,6 +511,7 @@ class atFile:
             return
 
         # Delete all children, but **not** for @file and @nosent nodes!
+        # (We do delete all children for @file nodes with thin-like sentinels.)
         if thinFile or atShadow:
             root.v.at_read = True # Create the attribute for all clones.
             while root.hasChildren():
@@ -552,7 +561,28 @@ class atFile:
         self.writeCachedTree(root, cachefile)
 
         return at.errors == 0
-    #@-node:ekr.20041005105605.21:read (atFile)
+    #@+node:ekr.20091003205136.6059:scanClosedFileForThinSentinels
+    def scanClosedFileForThinSentinels(self,root):
+
+        trace = False and not g.unitTesting
+        at = self
+        fn = at.fullPath(root)
+            # Returns full path, including file name
+
+        try:
+            # Open the file in binary mode to allow 0x1a in bodies & headlines.
+            theFile = open(fn,'rb')
+        except IOError:
+            g.trace("can not open: '@file %s'" % (fn))
+            return False
+
+        isThin = at.scanHeaderForThin(theFile,fn)
+        theFile.close()
+
+        if trace: g.trace(isThin,fn)
+        return isThin
+    #@-node:ekr.20091003205136.6059:scanClosedFileForThinSentinels
+    #@-node:ekr.20041005105605.21:read (atFile) & helper
     #@+node:ville.20090606131405.6362:writeCachedTree (atFile)
     def writeCachedTree(self, p, cachefile):
 
@@ -2355,6 +2385,7 @@ class atFile:
     # This is the entry point to the write code.  root should be an @file vnode.
 
     def write (self,root,
+        kind = '@unknown', # Should not happen.
         nosentinels = False,
         thinFile = False,
         scriptWrite = False,
@@ -2401,9 +2432,8 @@ class atFile:
             elif not hasattr(root.v,'at_read') and exists:
                 # Prompt if writing a new @file or @thin node would
                 # overwrite an existing file.
-                ok = self.promptForDangerousWrite(
-                    eventualFileName,
-                    kind = g.choose(thinFile,'@thin','@file'))
+                ok = self.promptForDangerousWrite(eventualFileName,kind)
+                    # kind = g.choose(thinFile,'@thin','@file'))
                 if ok:
                     root.v.at_read = True # Create the attribute for all clones.
                 else:
@@ -2439,7 +2469,13 @@ class atFile:
                 else:
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
-                if has_list: root.v.tnodeList = old_list # 2008/10/3
+                if has_list:
+                    if thinFile:
+                        # Kill the tnode list.
+                        root.v.tnodeList = []
+                        at.root.v._p_changed = True
+                    else:
+                        root.v.tnodeList = old_list
         except Exception:
             if toString:
                 at.exception("exception preprocessing script")
@@ -2447,7 +2483,7 @@ class atFile:
                 at.root.v._p_changed = True
             else:
                 at.writeException() # Sets dirty and orphan bits.
-                if has_list: root.v.tnodeList = old_list # 2008/10/3
+                if has_list: root.v.tnodeList = old_list
     #@+node:ekr.20080620095343.1:shouldWriteAtNosentNode
     #@+at 
     #@nonl
@@ -2560,17 +2596,21 @@ class atFile:
                         at.norefWrite(p,toString=toString)
                         writtenFiles.append(p.v) ; autoSave = True
                     elif p.isAtNoSentFileNode():
-                        at.write(p,nosentinels=True,toString=toString)
+                        at.write(p,kind='@nosent',nosentinels=True,toString=toString)
                         writtenFiles.append(p.v) # No need for autosave
                     elif p.isAtShadowFileNode():
                         at.writeOneAtShadowNode(p,toString=toString,force=False or pathChanged)
                         writtenFiles.append(p.v) ; autoSave = True # 2008/7/29
                     elif p.isAtThinFileNode():
-                        at.write(p,thinFile=True,toString=toString)
+                        at.write(p,kind='@thin',thinFile=True,toString=toString)
                         writtenFiles.append(p.v) # No need for autosave.
                     elif p.isAtFileNode():
-                        at.write(p,toString=toString)
-                        writtenFiles.append(p.v) ; autoSave = True
+                        if g.convert_at_file:
+                            at.write(p,kind='@file',thinFile=True,toString=toString)
+                            writtenFiles.append(p.v) # No need for autosave.
+                        else:
+                            at.write(p,kind='@file',thinFile=False,toString=toString)
+                            writtenFiles.append(p.v) ; autoSave = True
 
                     if at.errors: atOk = False
 
@@ -3072,9 +3112,9 @@ class atFile:
                             elif p.isAtNorefFileNode():
                                 at.norefWrite(p)
                             elif p.isAtNoSentFileNode():
-                                at.write(p,nosentinels=True)
+                                at.write(p,kind='@nosent',nosentinels=True)
                             elif p.isAtFileNode():
-                                at.write(p)
+                                at.write(p,kind='@file')
                             else: assert(0)
 
                             writtenFiles = True

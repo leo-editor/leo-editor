@@ -340,16 +340,19 @@ you want (e.g. c:/opt/leo). But I could be wrong.
 #@nonl
 #@-node:ekr.20090822060128.6035:Improved the install docs
 #@+node:ekr.20090829175108.6133:Marked @<file> nodes dirty if nodes change during read.
-#@+node:ekr.20041005105605.21:read (atFile)
+#@+node:ekr.20041005105605.21:read (atFile) & helper
 def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
 
     """Read any @thin, @file and @noref trees."""
 
     at = self ; c = at.c
-    << set fileName >>
-
+    << set fileName and isAtFile >>
+    if isAtFile:
+        # Pre-read the external file to see if it has thin-like sentinels.
+        thinFile = at.scanClosedFileForThinSentinels(root)
     doCache = g.enableDB and (thinFile or atShadow)
-    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
+    at.initReadIvars(root,fileName,
+        importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
     if at.errors: return False
     fileName = at.openFileForReading(fileName,fromString=fromString)
     if at.inputFile:
@@ -364,9 +367,6 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     root.v.at_read = True # Create the attribute for all clones.
 
     if doCache and cachefile in c.db:
-        # This message isn't so useful.
-        # if not g.unitTesting: # g.es('uncache:',root.h)
-
         # Delete the previous tree, regardless of the @<file> type.
         while root.hasChildren():
             root.firstChild().doDelete()
@@ -377,6 +377,7 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
         return
 
     # Delete all children, but **not** for @file and @nosent nodes!
+    # (We do delete all children for @file nodes with thin-like sentinels.)
     if thinFile or atShadow:
         root.v.at_read = True # Create the attribute for all clones.
         while root.hasChildren():
@@ -402,7 +403,7 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     self.writeCachedTree(root, cachefile)
 
     return at.errors == 0
-#@+node:ekr.20041005105605.22:<< set fileName >>
+#@+node:ekr.20041005105605.22:<< set fileName and isAtFile >>
 if fromString:
     fileName = "<string-file>"
 elif importFileName:
@@ -415,7 +416,15 @@ else:
 if not fileName:
     at.error("Missing file name.  Restoring @file tree from .leo file.")
     return False
-#@-node:ekr.20041005105605.22:<< set fileName >>
+
+isAtFile = (
+    not thinFile and
+    not importFileName and
+    not atShadow and
+    not fromString and
+    root.h.startswith('@file'))
+#@nonl
+#@-node:ekr.20041005105605.22:<< set fileName and isAtFile >>
 #@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
 resurrected = 0
 for p in root.self_and_subtree():
@@ -438,7 +447,28 @@ for v in c.all_unique_nodes():
     if hasattr(v,"tempBodyString"):
         delattr(v,"tempBodyString")
 #@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
-#@-node:ekr.20041005105605.21:read (atFile)
+#@+node:ekr.20091003205136.6059:scanClosedFileForThinSentinels
+def scanClosedFileForThinSentinels(self,root):
+
+    trace = False and not g.unitTesting
+    at = self
+    fn = at.fullPath(root)
+        # Returns full path, including file name
+
+    try:
+        # Open the file in binary mode to allow 0x1a in bodies & headlines.
+        theFile = open(fn,'rb')
+    except IOError:
+        g.trace("can not open: '@file %s'" % (fn))
+        return False
+
+    isThin = at.scanHeaderForThin(theFile,fn)
+    theFile.close()
+
+    if trace: g.trace(isThin,fn)
+    return isThin
+#@-node:ekr.20091003205136.6059:scanClosedFileForThinSentinels
+#@-node:ekr.20041005105605.21:read (atFile) & helper
 #@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
 def readOneAtAutoNode (self,fileName,p):
 

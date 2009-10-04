@@ -1998,7 +1998,8 @@ class baseCommands (object):
     #@+node:ekr.20080904071003.19:goto_scanTnodeList
     def goto_scanTnodeList (self,root,delim,lines,n,vnodeName):
 
-        # This is about the best that can be done without replicating the entire atFile write logic.
+        # This is about the best that can be done without replicating
+        # the entire atFile write logic.
         found = False
         ok = hasattr(root.v,"tnodeList")
 
@@ -2274,7 +2275,7 @@ class baseCommands (object):
         if root.isAtNoSentFileNode():
             # Write a virtual file containing sentinels.
             at = c.atFileCommands
-            at.write(root,nosentinels=False,toString=True)
+            at.write(root,kind='@nosent',nosentinels=False,toString=True)
             lines = g.splitLines(at.stringOutput)
         else:
             # Calculate the full path.
