@@ -75,28 +75,27 @@ class vnode (baseVnode):
         self.context = context # The context containing context.hiddenRootNode.
             # Required for trees, so we can compute top-level siblings.
             # It is named .context rather than .c to emphasize its limited usage.
+        self.fileIndex = g.app.nodeIndices.getNewIndex()
         self.iconVal = 0
         self.parents = [] # Unordered list of all parents of this node.
         self.statusBits = 0 # status bits
-        self.cloneIndex = 0 # For Pre-3.12 files.  Zero for @file nodes
-        self.fileIndex = g.app.nodeIndices.getNewIndex()
+
             # The immutable file index for this tnode.
             # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
         self.insertSpot = None # Location of previous insert point.
         self.scrollBarSpot = None # Previous value of scrollbar position.
         self.selectionLength = 0 # The length of the selected body text.
         self.selectionStart = 0 # The start of the selected body text.
-        self.t = self # For compatibility with scripts and plugins.
-            # The 't' ivar will probably never go away,
-            # but Leo's core (and all unit tests) work without it.
+
+        # v.t no longer exists.  All code must now be aware of the one-node world.
+        # self.t = self # For compatibility with scripts and plugins.
+
         if g.isPython3:
             self._headString = 'newHeadline'
             self._bodyString = ''
         else:
             self._headString = unicode('newHeadline')
             self._bodyString = unicode('')
-
-    #@nonl
     #@-node:ekr.20031218072017.3344:v.__init
     #@+node:ekr.20031218072017.3345:v.__repr__ & v.__str__
     def __repr__ (self):
@@ -1095,26 +1094,24 @@ class position (object):
 
         return not self.__eq__(p2) # For possible use in Python 2.x.
     #@-node:ekr.20080920052058.3:p.__eq__ & __ne__
-    #@+node:ekr.20040117170612:p.__getattr__  ON:  must be ON if use_plugins
-    if 1: # Good for compatibility, bad for finding conversion problems.
+    #@+node:ekr.20040117170612:p.__getattr__ (no longer used)
+    # No longer used.  All code must now be aware of the one-node world.
 
-        def __getattr__ (self,attr):
+    # def __getattr__ (self,attr):
 
-            """Convert references to p.t into references to p.v.
+        # """Convert references to p.t into references to p.v."""
 
-            N.B. This automatically keeps p.t in synch with p.v."""
-
-            if attr=="t":
-                return self.v
-            else:
-                # New in 4.3: _silently_ raise the attribute error.
-                # This allows plugin code to use hasattr(p,attr) !
-                if 0:
-                    print("unknown position attribute: %s" % attr)
-                    import traceback ; traceback.print_stack()
-                raise AttributeError(attr)
+        # if attr=="t":
+            # return self.v
+        # else:
+            # # New in 4.3: _silently_ raise the attribute error.
+            # # This allows plugin code to use hasattr(p,attr) !
+            # if 0:
+                # print("unknown position attribute: %s" % attr)
+                # import traceback ; traceback.print_stack()
+            # raise AttributeError(attr)
     #@nonl
-    #@-node:ekr.20040117170612:p.__getattr__  ON:  must be ON if use_plugins
+    #@-node:ekr.20040117170612:p.__getattr__ (no longer used)
     #@+node:ekr.20040117173448:p.__nonzero__ & __bool__
     #@+at
     # Tests such as 'if p' or 'if not p' are the _only_ correct ways to test 

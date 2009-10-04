@@ -2112,7 +2112,7 @@
 <v t="ekr.20040802071519" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.175"><vh>@test p.t == p.v</vh></v>
+<v t="ekr.20040712101754.175"><vh>@@test p.t == p.v</vh></v>
 <v t="ekr.20040712101754.200" annotate="7d71002e"><vh>@test that clones share subtrees</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ville.20090312195309.2"><vh>@test find_h / find_b / select_h / select_b</vh></v>
@@ -2650,13 +2650,10 @@ Line 1
 #@-leo
 last line 1: two trailing newlines
 </t>
-<t tx="ekr.20040712101754.175">if True:
-    root = c.rootPosition()
+<t tx="ekr.20040712101754.175"># p.__getattr__ must be enabled for this test to work.
 
-    # NOTE: p.__getattr__ must be enabled for this test to work.
-    
-    for p in c.all_positions():
-        assert(p.t == p.v)</t>
+for p in c.all_positions():
+    assert(p.t == p.v)</t>
 <t tx="ekr.20040712101754.177">p = p.firstChild()
 assert(p.h=="File Conversion")
 p.convertTreeToString()</t>
