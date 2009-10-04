@@ -1685,6 +1685,297 @@ shortcut = ''.join([g.toUnicode(val,g.app.tkEncoding) for flag,val in table if f
 #@-node:ekr.20061031131434.189:<< compute shortcut >>
 #@-node:ekr.20061031131434.184:shortcutFromSetting (uses k.guiBindNamesDict)
 #@-node:ekr.20090930151626.6086:Made add-comments and delete-comments commands work with shortcuts
+#@+node:ekr.20091003171114.6465:Fixed contractOrGoRight
+@nocolor-node
+
+The culprit was the sparse_goto_parent option.
+It never worked properly, and it caused the expansion
+state of nodes as seen by Leo to get out-of-synch
+with the expansion state as seen by the qt tree code.
+
+To exercise the bug, do the following in test.leo:
+
+- Expand the "prototypes" node.
+- Expand any child node.
+- Move beyond the now-expanded child node.
+- Hit Alt-Left.  This will select the prototype node.
+  The expanded child node will be marked by Leo as being contracted,
+  but it *wont* be contracted actually, which confuses moveToVisNext.
+#@nonl
+#@+node:ekr.20031218072017.2996:selectVisNext
+def selectVisNext (self,event=None):
+
+    '''Select the visible node following the presently selected node.'''
+
+    c = self ; p = c.p
+    if not p: return
+    if not c.canSelectVisNext(): return
+
+    p.moveToVisNext(c)
+    c.treeSelectHelper(p)
+#@-node:ekr.20031218072017.2996:selectVisNext
+#@+node:ekr.20031218072017.2995:selectVisBack
+# This has an up arrow for a control key.
+
+def selectVisBack (self,event=None):
+
+    '''Select the visible node preceding the presently selected node.'''
+
+    c = self ; p = c.p
+    if not p: return
+    if not c.canSelectVisBack(): return
+
+    p.moveToVisBack(c)
+
+    # g.trace(p.h)
+    c.treeSelectHelper(p)
+#@-node:ekr.20031218072017.2995:selectVisBack
+#@+node:ekr.20031218072017.2920:goToParent
+def goToParent (self,event=None):
+
+    '''Select the parent of the selected node.'''
+
+    c = self ; p = c.p
+
+    # g.trace(p.parent())
+
+    c.treeSelectHelper(p and p.parent())
+#@-node:ekr.20031218072017.2920:goToParent
+#@+node:ekr.20040930064232:contractNodeOrGoToParent
+def contractNodeOrGoToParent (self,event=None):
+
+    """Simulate the left Arrow Key in folder of Windows Explorer."""
+
+    trace = False and not g.unitTesting
+    c = self ; p = c.p
+    redraw = False ; fullRedraw = False
+    if p.hasChildren() and p.isExpanded():
+        if trace: g.trace('contract',p.h)
+        c.contractNode()
+        redraw = True # New in one-node world.
+    elif p.hasParent() and p.parent().isVisible(c):
+        redraw = False
+        p.contract() # Make sure we know this node is contracted.
+        # This "feature" is dubious.
+        # To work properly, it requires a full redraw.
+        if False: # self.sparse_goto_parent:
+            for child in p.self_and_siblings():
+                if child != p and child.isExpanded():
+                    child.contract()
+                    redraw = True ; fullRedraw = True
+        if trace: g.trace('goto parent',p.h)
+        c.goToParent()
+
+    if redraw:
+        if fullRedraw or p.isCloned():
+            if trace: g.trace('full redraw',p.h)
+            c.redraw()
+        else:
+            c.redraw_after_contract(p=p,setFocus=True)
+#@-node:ekr.20040930064232:contractNodeOrGoToParent
+#@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
+def expandNodeAndGoToFirstChild (self,event=None):
+
+    """If a node has children, expand it if needed and go to the first child."""
+
+    trace = False and not g.unitTesting
+    c = self ; p = c.p
+
+    # New code.
+    if p.hasChildren():
+        if p.isExpanded():
+            p.moveToFirstChild()
+            if trace: g.trace('select',p.h)
+            c.selectPosition(p)
+        else:
+            if trace: g.trace('expand',p.h)
+            c.expandNode() # Calls redraw_after_expand.
+    elif p.hasNext():
+        c.goToNextSibling()
+    else:
+        while p.hasParent():
+            p.moveToParent()
+            if p.hasNext():
+                p.moveToNext()
+                break
+        c.selectPosition(p)
+    c.treeFocusHelper()
+
+def expandNodeOrGoToFirstChild (self,event=None):
+
+    """Simulate the Right Arrow Key in folder of Windows Explorer."""
+
+    c = self ; p = c.p
+    if p.hasChildren():
+        if not p.isExpanded():
+            c.expandNode() # Calls redraw_after_expand.
+        else:
+            c.redraw_after_expand(p.firstChild(),setFocus=True)
+#@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
+#@+node:ekr.20031218072017.2901:contractNode
+def contractNode (self,event=None):
+
+    '''Contract the presently selected node.'''
+
+    c = self ; p = c.p
+
+    p.contract()
+
+    if p.isCloned():
+        c.redraw() # A full redraw is necessary to handle clones.
+    else:
+        c.redraw_after_contract(p=p,setFocus=True)
+#@-node:ekr.20031218072017.2901:contractNode
+#@+node:ekr.20031218072017.2907:expandNode
+def expandNode (self,event=None):
+
+    '''Expand the presently selected node.'''
+
+    trace = True and not g.unitTesting
+    c = self ; p = c.p
+
+    p.expand()
+
+    if p.isCloned():
+        if trace: g.trace('***redraw')
+        c.redraw() # Bug fix: 2009/10/03.
+    else:
+        c.redraw_after_expand(p,setFocus=True)
+
+#@-node:ekr.20031218072017.2907:expandNode
+#@+node:ekr.20070226113916: treeSelectHelper
+def treeSelectHelper (self,p):
+
+    c = self
+
+    if not p: p = c.p
+
+    if p:
+        # Do not call expandAllAncestors here.
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+
+    c.treeFocusHelper()
+#@-node:ekr.20070226113916: treeSelectHelper
+#@+node:ekr.20080416161551.210:p.moveToVisBack
+def moveToVisBack (self,c):
+
+    """Move a position to the position of the previous visible node."""
+
+    trace = False and not g.unitTesting
+    verbose = True
+    p = self ; limit,limitIsVisible = c.visLimit()
+    if trace and verbose:
+        g.trace(p,'limit',limit,'limitIsVisible',limitIsVisible)
+    if trace: g.trace('***entry','parent',p.parent(),'p',p,g.callers(5))
+    while p:
+        # Short-circuit if possible.
+        back = p.back()
+        if trace: g.trace(
+            'back',back,'hasChildren',bool(back and back.hasChildren()),
+            'isExpanded',bool(back and back.isExpanded()))
+
+        if back and back.hasChildren() and back.isExpanded():
+            p.moveToThreadBack()
+        elif back:
+            p.moveToBack()
+        else:
+            p.moveToParent() # Same as p.moveToThreadBack()
+        # if back and (not back.hasChildren() or not back.isExpanded()):
+            # p.moveToBack()
+        # else:
+            # p.moveToThreadBack()
+        if trace: g.trace(p.parent(),p)
+        if p:
+            if trace and verbose: g.trace('**p',p)
+            done,val = self.checkVisBackLimit(limit,limitIsVisible,p)
+            if done:
+                if trace and verbose: g.trace('done',p)
+                return val
+            if p.isVisible(c):
+                if trace and verbose: g.trace('isVisible',p)
+                return p
+    else:
+        # assert not p.
+        return p
+#@+node:ekr.20090715145956.6166:checkVisBackLimit
+def checkVisBackLimit (self,limit,limitIsVisible,p):
+
+    '''Return done, return-val'''
+
+    trace = True and not g.unitTesting
+    c = p.v.context
+
+    if limit:
+        if limit == p:
+            if trace: g.trace('at limit',p)
+            if limitIsVisible and p.isVisible(c):
+                return True,p
+            else:
+                return True,None
+            #return True,g.choose(limitIsVisible and p.isVisible(c),p,None)
+        elif limit.isAncestorOf(p):
+            return False,None
+        else:
+            if trace: g.trace('outside limit tree',limit,p)
+            return True,None
+    else:
+        return False,None
+#@-node:ekr.20090715145956.6166:checkVisBackLimit
+#@-node:ekr.20080416161551.210:p.moveToVisBack
+#@+node:ekr.20080416161551.211:p.moveToVisNext
+def moveToVisNext (self,c):
+
+    """Move a position to the position of the next visible node."""
+
+    trace = False and not g.unitTesting
+    verbose = False
+    p = self ; limit,limitIsVisible = c.visLimit()
+    while p:
+        if trace: g.trace('1',p.h)
+        # if trace: g.trace('hasChildren %s, isExpanded %s %s' % (
+            # p.hasChildren(),p.isExpanded(),p.h))
+        # Short-circuit if possible.
+        if p.hasNext() and p.hasChildren() and p.isExpanded():
+            p.moveToFirstChild()
+        elif p.hasNext():
+            p.moveToNext()
+        else:
+            p.moveToThreadNext()
+        # if p.hasNext() and (not p.hasChildren() or not p.isExpanded()):
+            # p.moveToNext()
+        # else:
+            # p.moveToThreadNext()
+        if trace: g.trace('2',p.h)
+        if p:
+            done,val = self.checkVisNextLimit(limit,p)
+            if done: return val
+            if p.isVisible(c):
+                return p.copy()
+    else:
+        # assert not p.
+        return p
+#@+node:ekr.20090715145956.6167:checkVisNextLimit
+def checkVisNextLimit (self,limit,p):
+
+    '''Return done, return-val'''
+
+    trace = False and not g.unitTesting
+
+    if limit:
+        # Unlike moveToVisBack, being at the limit does not terminate.
+        if limit == p:
+            return False, None
+        elif limit.isAncestorOf(p):
+            return False,None
+        else:
+            if trace: g.trace('outside limit tree')
+            return True,None
+    else:
+        return False,None
+#@-node:ekr.20090715145956.6167:checkVisNextLimit
+#@-node:ekr.20080416161551.211:p.moveToVisNext
+#@-node:ekr.20091003171114.6465:Fixed contractOrGoRight
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin

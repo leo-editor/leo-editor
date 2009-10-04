@@ -311,16 +311,20 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.24:redraw_after_contract
     def redraw_after_contract (self,p=None):
 
+        trace = False and not g.unitTesting
+
         if self.redrawing:
             return
 
         item = self.position2item(p)
 
         if item:
+            if trace: g.trace('contracting item',item,p and p.h or '<no p>')
             self.contractItem(item)
         else:
             # This is not an error.
             # We may have contracted a node that was not, in fact, visible.
+            if trace: g.trace('***full redraw',p and p.h or '<no p>')
             self.full_redraw(scroll=False)
     #@-node:ekr.20090124174652.24:redraw_after_contract
     #@+node:ekr.20090124174652.25:redraw_after_expand

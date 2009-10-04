@@ -230,7 +230,8 @@ class baseCommands (object):
         c.fixed                 = cf.getBool('fixedWindow',False)
         c.fixedWindowPosition   = cf.getData('fixedWindowPosition')
         c.showMinibuffer        = cf.getBool('useMinibuffer')
-        c.sparse_goto_parent    = cf.getBool('sparse_goto_parent')
+        # c.sparse_goto_parent    = cf.getBool('sparse_goto_parent')
+            # This option is a bad idea.
         c.stayInTree            = cf.getBool('stayInTreeAfterSelect')
         c.smart_tab             = cf.getBool('smart_tab')
             # Note: there is also a smart_auto_indent setting.
@@ -4607,33 +4608,30 @@ class baseCommands (object):
 
         trace = False and not g.unitTesting
         c = self ; p = c.p
-        redraw = False
+        redraw = False ; fullRedraw = False
         if p.hasChildren() and p.isExpanded():
             if trace: g.trace('contract',p.h)
             c.contractNode()
             redraw = True # New in one-node world.
         elif p.hasParent() and p.parent().isVisible(c):
             redraw = False
-            if self.sparse_goto_parent:
-                for child in p.parent().children():
-                    if child.isExpanded():
+            p.contract() # Make sure we know this node is contracted.
+            # This "feature" is dubious.
+            # To work properly, it requires a full redraw.
+            if False: # self.sparse_goto_parent:
+                for child in p.self_and_siblings():
+                    if child != p and child.isExpanded():
                         child.contract()
-                        redraw = True
+                        redraw = True ; fullRedraw = True
             if trace: g.trace('goto parent',p.h)
             c.goToParent()
 
         if redraw:
-            if p.isCloned():
+            if fullRedraw or p.isCloned():
+                if trace: g.trace('full redraw',p.h)
                 c.redraw()
             else:
                 c.redraw_after_contract(p=p,setFocus=True)
-
-        # New in Leo 4.6 rc1: killed in Leo 4.7
-        # elif p.hasBack():
-            # c.contractNode()
-            # c.goToPrevSibling()
-
-        # c.treeFocusHelper()
     #@-node:ekr.20040930064232:contractNodeOrGoToParent
     #@+node:ekr.20031218072017.2902:contractParent
     def contractParent (self,event=None):
@@ -4740,11 +4738,16 @@ class baseCommands (object):
 
         '''Expand the presently selected node.'''
 
+        trace = True and not g.unitTesting
         c = self ; p = c.p
 
         p.expand()
 
-        c.redraw_after_expand(p,setFocus=True)
+        if p.isCloned():
+            if trace: g.trace('***redraw')
+            c.redraw() # Bug fix: 2009/10/03.
+        else:
+            c.redraw_after_expand(p,setFocus=True)
 
     #@-node:ekr.20031218072017.2907:expandNode
     #@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
@@ -4752,16 +4755,17 @@ class baseCommands (object):
 
         """If a node has children, expand it if needed and go to the first child."""
 
+        trace = False and not g.unitTesting
         c = self ; p = c.p
 
         # New code.
-        # Important: automatically collapsing nodes is
-        # way too confusing.  And it's a bit illogical.
         if p.hasChildren():
             if p.isExpanded():
                 p.moveToFirstChild()
+                if trace: g.trace('select',p.h)
                 c.selectPosition(p)
             else:
+                if trace: g.trace('expand',p.h)
                 c.expandNode() # Calls redraw_after_expand.
         elif p.hasNext():
             c.goToNextSibling()
@@ -5684,7 +5688,7 @@ class baseCommands (object):
 
         p.moveToVisBack(c)
 
-        # g.trace(p,p.key())
+        # g.trace(p.h)
         c.treeSelectHelper(p)
     #@-node:ekr.20031218072017.2995:selectVisBack
     #@+node:ekr.20031218072017.2996:selectVisNext

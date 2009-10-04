@@ -96,7 +96,6 @@ class vnode (baseVnode):
             self._headString = unicode('newHeadline')
             self._bodyString = unicode('')
 
-    #@nonl
     #@-node:ekr.20031218072017.3344:v.__init
     #@+node:ekr.20031218072017.3345:v.__repr__ & v.__str__
     def __repr__ (self):
@@ -2380,13 +2379,20 @@ class position (object):
         while p:
             # Short-circuit if possible.
             back = p.back()
-                # g.trace(
-                # 'back',back,'hasChildren',bool(back and back.hasChildren()),
-                # 'isExpanded',bool(back and back.isExpanded()))
-            if back and (not back.hasChildren() or not back.isExpanded()):
+            if trace: g.trace(
+                'back',back,'hasChildren',bool(back and back.hasChildren()),
+                'isExpanded',bool(back and back.isExpanded()))
+
+            if back and back.hasChildren() and back.isExpanded():
+                p.moveToThreadBack()
+            elif back:
                 p.moveToBack()
             else:
-                p.moveToThreadBack()
+                p.moveToParent() # Same as p.moveToThreadBack()
+            # if back and (not back.hasChildren() or not back.isExpanded()):
+                # p.moveToBack()
+            # else:
+                # p.moveToThreadBack()
             if trace: g.trace(p.parent(),p)
             if p:
                 if trace and verbose: g.trace('**p',p)
@@ -2433,19 +2439,23 @@ class position (object):
         trace = False and not g.unitTesting
         verbose = False
         p = self ; limit,limitIsVisible = c.visLimit()
-        if trace: g.trace(p.parent(),p)
         while p:
-            if trace: g.trace(p.parent(),p)
+            if trace: g.trace('1',p.h)
             # if trace: g.trace('hasChildren %s, isExpanded %s %s' % (
                 # p.hasChildren(),p.isExpanded(),p.h))
             # Short-circuit if possible.
-            if p.hasNext() and (not p.hasChildren() or not p.isExpanded()):
+            if p.hasNext() and p.hasChildren() and p.isExpanded():
+                p.moveToFirstChild()
+            elif p.hasNext():
                 p.moveToNext()
             else:
                 p.moveToThreadNext()
-            if trace: g.trace(p.parent(),p)
+            # if p.hasNext() and (not p.hasChildren() or not p.isExpanded()):
+                # p.moveToNext()
+            # else:
+                # p.moveToThreadNext()
+            if trace: g.trace('2',p.h)
             if p:
-                if trace and verbose: g.trace('**p',p)
                 done,val = self.checkVisNextLimit(limit,p)
                 if done: return val
                 if p.isVisible(c):
