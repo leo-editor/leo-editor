@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="107" left="429" height="839" width="801"/>
+	<global_window_position top="107" left="178" height="839" width="1052"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7,2,0,7"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -722,17 +722,15 @@
 </v>
 </v>
 <v t="ekr.20071113203234"><vh> Test files</vh>
-<v t="ekr.20091004182125.5057"><vh>These @@@file nodes *are* used by unit tests</vh>
-<v t="ekr.20090704085350.5007"><vh>@@@file ../test/unittest/at-file-test.py</vh>
-<v t="ekr.20090704085350.5008"><vh>spam</vh></v>
-<v t="ekr.20090704085350.5009"><vh>eggs</vh></v>
-</v>
-</v>
 <v t="ekr.20090704085350.5028"><vh>@asis ../test/unittest/at-asis-test.py</vh>
 <v t="ekr.20090704085350.5029"><vh>spam</vh></v>
 <v t="ekr.20090704085350.5030"><vh>eggs</vh></v>
 </v>
 <v t="ekr.20090704085350.5056"><vh>@auto ../test/unittest/at-auto-test.py</vh></v>
+<v t="ekr.20090704085350.5007"><vh>@@@file ../test/unittest/at-file-test.py</vh>
+<v t="ekr.20090704085350.5008"><vh>spam</vh></v>
+<v t="ekr.20090704085350.5009"><vh>eggs</vh></v>
+</v>
 <v t="ekr.20090704085350.5040" tnodeList="ekr.20090704085350.5040,ekr.20090704085350.5041,ekr.20090704085350.5042"><vh>@noref ../test/unittest/at-noref-test.py</vh>
 <v t="ekr.20090704085350.5041"><vh>spam</vh></v>
 <v t="ekr.20090704085350.5042"><vh>eggs</vh></v>
@@ -773,7 +771,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
+<v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20090703080553.5000" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
@@ -812,8 +810,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
-<v t="ekr.20050112095306.1" a="E" annotate="7d71002e"><vh>leoAtFile</vh>
+<v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
 <v t="ekr.20041021065903"><vh>#@asis</vh>
@@ -842,7 +840,7 @@
 </v>
 <v t="ekr.20090704085350.5044"><vh>@test @asis: shape of tree</vh></v>
 <v t="ekr.20090704085350.5052"><vh>@test @auto: shape of tree</vh></v>
-<v t="ekr.20090704085350.5010"><vh>@test @file: shape of tree</vh></v>
+<v t="ekr.20090704085350.5010"><vh>@@@test @file: shape of tree</vh></v>
 <v t="ekr.20090704085350.5048"><vh>@test @noref: shape of tree</vh></v>
 <v t="ekr.20090704085350.5050"><vh>@test @nosent: shape of tree</vh></v>
 <v t="ekr.20090704093658.5061"><vh>@test @root: shape of tree</vh></v>
@@ -1175,7 +1173,7 @@
 </v>
 <v t="ekr.20080905112230.3"><vh>goto-line-number tests: original files</vh>
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
-<v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
+<v t="ekr.20080904102243.2"><vh>@@@file unittest/at-file-line-number-test.py</vh>
 <v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
 </v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
@@ -2040,17 +2038,17 @@
 <v t="ekr.20080917151620.20"><vh>@test g.scanAtPagewidthDirectives -40</vh></v>
 <v t="ekr.20080917151620.21"><vh>@test g.scanAtPagewidthDirectives 40</vh></v>
 <v t="ekr.20080917151620.22"><vh>@test g.scanAtPathDirectives ../test/unittest/at-path-test1.py</vh>
-<v t="ekr.20080917151620.23" tnodeList="ekr.20080917151620.23"><vh>@file ../test/unittest/at-path-test1.py</vh></v>
+<v t="ekr.20080917151620.23"><vh>@thin ../test/unittest/at-path-test1.py</vh></v>
 </v>
-<v t="ekr.20080917151620.24"><vh>@test g.scanAtPathDirectives @path ../test/unittest @file at-path-test2.py</vh>
+<v t="ekr.20080917151620.24"><vh>@test g.scanAtPathDirectives @path ../test/unittest @thin at-path-test2.py</vh>
 <v t="ekr.20080917151620.25"><vh>@path ../test/unittest</vh>
-<v t="ekr.20080917151620.26" tnodeList="ekr.20080917151620.26"><vh>@file at-path-test2.py</vh></v>
+<v t="ekr.20080917151620.26"><vh>@thin at-path-test2.py</vh></v>
 </v>
 </v>
 <v t="ekr.20080917151620.27"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @file at-path-test3.py</vh>
 <v t="ekr.20080917151620.28"><vh>@path ../test</vh>
 <v t="ekr.20080917151620.29"><vh>@path unittest</vh>
-<v t="ekr.20080917151620.30" tnodeList="ekr.20080917151620.30"><vh>@file at-path-test3.py</vh></v>
+<v t="ekr.20080917151620.30"><vh>@thin at-path-test3.py</vh></v>
 </v>
 </v>
 </v>
@@ -14017,7 +14015,7 @@ b</t>
 <t tx="ekr.20070315065849.3">a
 
 b</t>
-<t tx="ekr.20070417092935" str_leo_pos="7,2,0,7"></t>
+<t tx="ekr.20070417092935" str_leo_pos="7"></t>
 <t tx="ekr.20070417092935.1"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070515150433"></t>
@@ -17106,8 +17104,6 @@ s = c.scanAtPathDirectives(aList,force=True)
 end = g.os_path_normpath(r'leo/test')
 
 assert s.endswith(end),repr(s)</t>
-<t tx="ekr.20080917151620.23">@language python
-# unittest/at-path-test1.py </t>
 <t tx="ekr.20080917151620.24">grandChild = p.firstChild().firstChild()
 aList = g.get_directives_dict_list(grandChild)
 s = c.scanAtPathDirectives(aList,force=True)
@@ -17115,8 +17111,6 @@ end = g.os_path_normpath(r'leo/test/unittest')
 
 assert s.endswith(end),repr(s)</t>
 <t tx="ekr.20080917151620.25"></t>
-<t tx="ekr.20080917151620.26">@language python
-# unittest/at-path-test2.py</t>
 <t tx="ekr.20080917151620.27">greatGrandChild = p.firstChild().firstChild().firstChild()
 aList = g.get_directives_dict_list(greatGrandChild)
 s = c.scanAtPathDirectives(aList,force=True)
@@ -17125,8 +17119,6 @@ end = g.os_path_normpath(r'leo/test/unittest')
 assert s.endswith(end),repr(s)</t>
 <t tx="ekr.20080917151620.28"></t>
 <t tx="ekr.20080917151620.29"></t>
-<t tx="ekr.20080917151620.30">@language python
-# unittest/at-path-test3.py </t>
 <t tx="ekr.20080917151620.31">@tabwidth 6
 
 aList = g.get_directives_dict_list(p)
@@ -21683,42 +21675,19 @@ else:
     pass</t>
 <t tx="ekr.20090704085350.5009">def eggs():
     pass</t>
-<t tx="ekr.20090704085350.5010">h = '@@@file ../test/unittest/at-file-test.py'
+<t tx="ekr.20090704085350.5010">h = '@file ../test/unittest/at-file-test.py'
 p = g.findNodeAnywhere(c,h)
 assert p
-assert p.v.tnodeList
 assert not p.isDirty(),p.h # Do not ignore this failure!
-oldTnodeList = p.v.t.tnodeList
 
-try:
-    p.h = p[2:] # convert @@@file to @file
-    p.clearDirty()
-    bunch = c.undoer.beforeChangeTree(p)
-    
-    # Read the node as a regular @file node
-    at = c.atFileCommands
-    c.atFileCommands.read(
-        root=p.copy(),
-        importFileName=None,
-        thinFile=False,
-        fromString=None,
-        atShadow=False)
-        
-    c.undoer.afterChangeTree(p,'atFile.Read',bunch)
+table = (
+    (p.firstChild(),'spam'),
+    (p.firstChild().next(),'eggs')
+)
 
-    table = (
-        (p.firstChild(),'spam'),
-        (p.firstChild().next(),'eggs')
-    )
-    
-    for p2,h2 in table:
-        assert p2.h == h2
-        assert p2.b &gt; 10
-
-finally:
-    p.h = h
-    p.v.tnodeList = oldTnodeList
-    c.undoer.undo()</t>
+for p2,h2 in table:
+    assert p2.h == h2
+    assert p2.b &gt; 10</t>
 <t tx="ekr.20090704085350.5018">h = '@shadow ../test/unittest/at-shadow-test.py'
 p = g.findNodeAnywhere(c,h)
 assert p
@@ -21863,13 +21832,6 @@ assert  tangle_dir == expectedDir,'expected: %s got: %s' % (
 tangle_fn = d.get('tangle_output_fn')
 assert expectedFn == tangle_fn,'expected: %s got: %s' % (
     expectedFn,tangle_fn)</t>
-<t tx="ekr.20091004182125.5057">@nocolor-node
-
-The individual unit test is responsible for doing the following:
-    
-- Changing the headline from @@@file x to @file x.
-- Calling atFile.read with the proper args to read the external file.
-- Restoring the headline to @@@file x.</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

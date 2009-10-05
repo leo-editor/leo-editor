@@ -6,27 +6,19 @@
 
 To do:
 
-- Can we use tnodeList to avoid pre-read of @file nodes?
-    Yes we can.
-
-- Read @file nodes only once, if possible.
-
 - Review sax read code.  Can it be simplified?
-
 - Review read/write code for uA's.
     - Make sure that all uA's are written to vnodes.
     - allow either <v> or <t> elements to carry uA's for compatibility.
 
 What I did:
 
+- Use tnodeList to avoid pre-read of @file nodes.
 - Removed useless checks for v.fileIndex.
-
 - Changed tnodesDict to gnxDict.
-
 - Revised docs:
     - Updated section on uA's.
     - Removed all references to v.t, except for legacy docs.
-
 - Removed v.t from most plugins, but not backlink.py and graphed.py.
 #@nonl
 #@+node:ekr.20091003205136.6058:Use v.tnodeList
