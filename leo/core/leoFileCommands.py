@@ -2008,9 +2008,10 @@ class baseFileCommands:
             else:
                 attrs.append(fc.putTnodeList(v)) # New in 4.0
 
-        if hasattr(v,"unknownAttributes"): # New in 4.0
-            # g.trace('v',v,'v.uA',v.unknownAttributes)
-            attrs.append(self.putUnknownAttributes(v))
+        if False: # These are now put in <t> elements.
+            if hasattr(v,"unknownAttributes"): # New in 4.0
+                # g.trace('v',v,'v.uA',v.unknownAttributes)
+                attrs.append(self.putUnknownAttributes(v))
 
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
             # We put the entire tree when using the clipboard, so no need for this.

@@ -3,16 +3,7 @@
 #@+all
 #@+node:ekr.20091003205136.6056:Deprecate @file function, @thin name
 @nocolor-node
-
-To do:
-
-- (Maybe not): change tnodeList vars to vnodeList.
-    Note: we can *not* change tnodeList attributes for <v> or <t> elements.
-* Headlines don't stick during find command.
-- Review sax read code.  Can it be simplified?
-- Review read/write code for uA's.
-    - Make sure that all uA's are written to vnodes.
-    - allow either <v> or <t> elements to carry uA's for compatibility.
+@
 
 What I did:
 
@@ -2085,9 +2076,10 @@ if hasattr(v,"tnodeList") and len(v.tnodeList) > 0 and v.isAnyAtFileNode():
     else:
         attrs.append(fc.putTnodeList(v)) # New in 4.0
 
-if hasattr(v,"unknownAttributes"): # New in 4.0
-    # g.trace('v',v,'v.uA',v.unknownAttributes)
-    attrs.append(self.putUnknownAttributes(v))
+if False: # These are now put in <t> elements.
+    if hasattr(v,"unknownAttributes"): # New in 4.0
+        # g.trace('v',v,'v.uA',v.unknownAttributes)
+        attrs.append(self.putUnknownAttributes(v))
 
 if p.hasChildren() and not forceWrite and not self.usingClipboard:
     # We put the entire tree when using the clipboard, so no need for this.

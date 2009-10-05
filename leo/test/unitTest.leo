@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7,2,4,0,0,0"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -771,7 +771,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
+<v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20090703080553.5000" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
@@ -810,7 +810,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
+<v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -1165,9 +1165,9 @@
 <v t="ekr.20050203001146"><vh>@test local settings (c.page_width)</vh></v>
 <v t="ekr.20071113201854" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113192611" a="E"><vh>leoEditCommands</vh>
-<v t="ekr.20080904095020.1" a="E"><vh>goto-line-number tests</vh>
-<v t="ekr.20080905125317.1" a="E"><vh>Unused</vh>
+<v t="ekr.20071113192611"><vh>leoEditCommands</vh>
+<v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
+<v t="ekr.20080905125317.1"><vh>Unused</vh>
 <v t="ekr.20080904120258.7"><vh>@@test goto_scanTnodeList</vh></v>
 <v t="ekr.20080904120258.5"><vh>@@test goto_scanForVnodeName</vh></v>
 </v>
@@ -2524,7 +2524,7 @@ Line 1
 #@-node:ekr.20040707141957.13:#@thin
 #@-leo
 last line 1: no newline</t>
-<t tx="ekr.20040712101754.2" annotate="7d71002e">@language python
+<t tx="ekr.20040712101754.2">@language python
 @tabwidth -4</t>
 <t tx="ekr.20040712101754.3">import leo.core.leoTest as leoTest
 
@@ -2547,7 +2547,7 @@ leoTest.runLeoTest(c,path)
 path = g.os_path_join(g.app.loadDir,"..","doc","LeoDocs.leo")
 leoTest.runLeoTest(c,path)
 </t>
-<t tx="ekr.20040712101754.37" annotate="7d71002e"># Create unit tests in g.app.scriptDict["suite"]
+<t tx="ekr.20040712101754.37"># Create unit tests in g.app.scriptDict["suite"]
 
 import leo.core.leoTest as leoTest
 
@@ -2556,7 +2556,7 @@ g.app.enableUnitTest = True
 suite = leoTest.makeEditBodySuite(c,p)
 
 g.app.scriptDict['suite'] = suite</t>
-<t tx="ekr.20040712101754.38" annotate="7d71002e">@language plain
+<t tx="ekr.20040712101754.38">@language plain
 
 The names of child nodes are the names of commander methods to be called to do the test.
 
@@ -2566,7 +2566,7 @@ Each child node will in turn have two or more children:
 - an "after" node
 - an optional selection node containing two lines giving the selection range in Tk coordinates.
 - An optional insert node containing one line giving the insert point in Tk coordinates.</t>
-<t tx="ekr.20040712101754.49" annotate="7d71002e"></t>
+<t tx="ekr.20040712101754.49"></t>
 <t tx="ekr.20040712101754.50">line 1
     line 2
     line 3
@@ -2577,7 +2577,7 @@ line 3
 line 4</t>
 <t tx="ekr.20040712101754.52">2.0
 3.5</t>
-<t tx="ekr.20040712101754.99" annotate="7d71002e">&lt;&lt; coverage tests &gt;&gt;
+<t tx="ekr.20040712101754.99">&lt;&lt; coverage tests &gt;&gt;
 &lt;&lt; duplicate tests &gt;&gt;
 
 if 0:
@@ -2746,8 +2746,8 @@ except AssertionError:
     print("vparents...")
     for parent in vparents: print(parent)
     raise # for unittest.</t>
-<t tx="ekr.20040712101754.187" annotate="7d71002e"></t>
-<t tx="ekr.20040712101754.188" annotate="7d71002e">import leo.core.leoNodes as leoNodes
+<t tx="ekr.20040712101754.187"></t>
+<t tx="ekr.20040712101754.188">import leo.core.leoNodes as leoNodes
 
 current = c.p
 child = current.firstChild()
@@ -2817,7 +2817,7 @@ if 0: # subtree of root node:
 if 0: # child1's tree.  child2 should not be included.
     for v in child.vnodes_iter(): print(v)
     for t in child.tnodes_iter(): print(t)</t>
-<t tx="ekr.20040712101754.199" annotate="7d71002e">copy = p.copy()
+<t tx="ekr.20040712101754.199">copy = p.copy()
 assert(p == copy)
 assert(p != p.threadNext())
 
@@ -2828,27 +2828,27 @@ assert p.__eq__(copy) is True
 assert p.__ne__(copy) is False
 assert p.__eq__(root) is False
 assert p.__ne__(root) is True</t>
-<t tx="ekr.20040712101754.200" annotate="7d71002e">for p in c.all_positions():
+<t tx="ekr.20040712101754.200">for p in c.all_positions():
     if p.isCloned() and p.hasChildren():
         childv = p.firstChild().v
         firstChild = p.v.children[0]
         assert childv == firstChild
 </t>
-<t tx="ekr.20040712101754.201" annotate="7d71002e">p2 = c.rootPosition()
+<t tx="ekr.20040712101754.201">p2 = c.rootPosition()
 for p in c.all_positions():
     assert p==p2, "%s != %s" % (p,p2)
     p2.moveToThreadNext()
     
 assert not p2, repr(p2)
 </t>
-<t tx="ekr.20040712101754.202" annotate="7d71002e">for p in c.all_positions():
+<t tx="ekr.20040712101754.202">for p in c.all_positions():
     p2 = p.firstChild()
     for p3 in p.children_iter():
         assert p3==p2, "%s != %s" % (p3,p2)
         p2.moveToNext()
 
 assert not p2, repr(p2)</t>
-<t tx="ekr.20040712101754.203" annotate="7d71002e">for p in c.all_positions():
+<t tx="ekr.20040712101754.203">for p in c.all_positions():
     
     if p.hasParent():
         assert(p.parent().level() == p.level() - 1)
@@ -2861,20 +2861,20 @@ assert not p2, repr(p2)</t>
 
     if p.hasBack():
         assert(p.back().level() == p.level())</t>
-<t tx="ekr.20040712101754.204" annotate="7d71002e">for p in c.all_positions():
+<t tx="ekr.20040712101754.204">for p in c.all_positions():
     
     back = p.back()
     next = p.next()
     if back: assert(back.getNext() == p)
     if next: assert(next.getBack() == p)</t>
-<t tx="ekr.20040712101754.205" annotate="7d71002e">for p in c.all_positions():
+<t tx="ekr.20040712101754.205">for p in c.all_positions():
     p2 = p.parent()
     for p3 in p.parents_iter():
         assert p3==p2, "%s != %s" % (p3,p2)
         p2.moveToParent()
 
     assert not p2, repr(p2)</t>
-<t tx="ekr.20040712101754.206" annotate="7d71002e"># Test consistency of p.parent, p.next, p.back and p.firstChild.
+<t tx="ekr.20040712101754.206"># Test consistency of p.parent, p.next, p.back and p.firstChild.
 for p in c.all_positions():
     
     if p.hasParent():
@@ -2889,7 +2889,7 @@ for p in c.all_positions():
         
     if p.hasBack():
         assert(p.back().parent() == p.parent())</t>
-<t tx="ekr.20040712101754.207" annotate="7d71002e">for p in c.all_positions():
+<t tx="ekr.20040712101754.207">for p in c.all_positions():
 
     threadBack = p.threadBack()
     threadNext = p.threadNext()
@@ -2899,7 +2899,7 @@ for p in c.all_positions():
 
     if threadNext:
         assert(p == threadNext.getThreadBack())</t>
-<t tx="ekr.20040712101754.208" annotate="7d71002e">try:
+<t tx="ekr.20040712101754.208">try:
     for p in c.all_positions():
         if p.isCloned():
             parents = p.v.vnodeList
@@ -2918,7 +2918,7 @@ except AssertionError:
     for parent in vparents: print(parent)
     g.pdb()
     raise # for unittest.</t>
-<t tx="ekr.20040712101754.209" annotate="7d71002e">for p in c.all_positions():
+<t tx="ekr.20040712101754.209">for p in c.all_positions():
 
     back = p.back()
     next = p.next()
@@ -2930,7 +2930,7 @@ except AssertionError:
     assert(
         (next and p.hasNext()) or
         (not next and not p.hasNext()))</t>
-<t tx="ekr.20040712101754.210" annotate="7d71002e">for p in c.all_positions():
+<t tx="ekr.20040712101754.210">for p in c.all_positions():
 
     child = p.firstChild()
     parent = p.parent()
@@ -2942,7 +2942,7 @@ except AssertionError:
     assert(
         (parent and p.hasParent()) or
         (not parent and not p.hasParent()))</t>
-<t tx="ekr.20040712101754.211" annotate="7d71002e">for p in c.all_positions():
+<t tx="ekr.20040712101754.211">for p in c.all_positions():
 
     threadBack = p.getThreadBack()
     threadNext = p.getThreadNext()
@@ -3222,7 +3222,7 @@ class eggs:
     """ A typical doc string """
 
     @others</t>
-<t tx="ekr.20040722055040" annotate="7d71002e">for p in c.all_positions():
+<t tx="ekr.20040722055040">for p in c.all_positions():
     
     child = p.firstChild()
     while child:
@@ -3242,7 +3242,7 @@ leoTest.runLeoTest(c,path,verbose=False,full=True)
 path = g.os_path_join(g.app.loadDir,"..","test","unittest","minimalLeoFile2.leo")
 leoTest.runLeoTest(c,path,verbose=False,full=True)
 </t>
-<t tx="ekr.20040802065214" annotate="7d71002e"># Make sure that changing this headline marks descendant @thin nodes dirty.
+<t tx="ekr.20040802065214"># Make sure that changing this headline marks descendant @thin nodes dirty.
 h = p.h
 
 try:
@@ -3264,7 +3264,7 @@ finally:
 #### c.redraw()
 </t>
 <t tx="ekr.20040802065214.1">test</t>
-<t tx="ekr.20040802071519" annotate="7d71002e"># Tests that c.setBodyString works immediately.
+<t tx="ekr.20040802071519"># Tests that c.setBodyString works immediately.
 h = p.h
 
 try:
@@ -3333,8 +3333,8 @@ import leoTest
 
 leoTest.doTests(c,all=False)
 c.selectPosition(p)</t>
-<t tx="ekr.20041001211817" annotate="7d71002e"></t>
-<t tx="ekr.20041013062906" annotate="7d71002e"># This hack is needed only for tkinter gui.
+<t tx="ekr.20041001211817"></t>
+<t tx="ekr.20041013062906"># This hack is needed only for tkinter gui.
 if g.app.gui.guiName() == 'tkinter':
     p.OnHyperLinkControlClick(event=None)
 </t>
@@ -3420,7 +3420,7 @@ last linesection line 1unnamed node line 1</t>
 last line</t>
 <t tx="ekr.20041021065903.1">section line 1</t>
 <t tx="ekr.20041021065903.2">unnamed node line 1</t>
-<t tx="ekr.20041121151002" annotate="7d71002e"></t>
+<t tx="ekr.20041121151002"></t>
 <t tx="ekr.20050104095950"># Switch EqualSizedPanes and ExecuteScript
 
 # EqualSizedPanes = Ctrl+E
@@ -3623,7 +3623,7 @@ f.close()
 # print('Contents of %s: %s' % (at.targetFileName,s))
 assert s == 'test %s' % at.outputFileName, 'unexpected contents of target file'
 os.remove(at.targetFileName)</t>
-<t tx="ekr.20050106080304" annotate="7d71002e">import glob
+<t tx="ekr.20050106080304">import glob
 import inspect
 import unittest
 
@@ -3912,8 +3912,8 @@ else:
 
     result = ''.join(result)
     return result</t>
-<t tx="ekr.20050112095306.1" annotate="7d71002e"># 2 failures with Alt-5.</t>
-<t tx="ekr.20050120095423" annotate="7d71002e"></t>
+<t tx="ekr.20050112095306.1"># 2 failures with Alt-5.</t>
+<t tx="ekr.20050120095423"></t>
 <t tx="ekr.20050120095423.11"># Create unit tests in g.app.scriptDict["suite"]
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoTest as leoTest
@@ -4035,7 +4035,7 @@ assert not ok and not frame</t>
 s = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
 
 s2 = 'test: %s' % s</t>
-<t tx="ekr.20050208051418" annotate="7d71002e"></t>
+<t tx="ekr.20050208051418"></t>
 <t tx="ekr.20050208051418.1">@first # -*- coding: utf-8 -*-
 
 old_c = c
@@ -4329,107 +4329,107 @@ else:
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
 <t tx="ekr.20050328101834.3"></t>
-<t tx="ekr.20050417095020.11" annotate="7d71002e"># Honor the first line's leading whitespace.
+<t tx="ekr.20050417095020.11"># Honor the first line's leading whitespace.
 
 import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,5,16)
 </t>
-<t tx="ekr.20050417095020.12" annotate="7d71002e"># Honor the first and second line's leading whitespace.
+<t tx="ekr.20050417095020.12"># Honor the first and second line's leading whitespace.
 
 import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,5,16)
 </t>
-<t tx="ekr.20050417095020.13" annotate="7d71002e"># Single paragraph, hanging indentation.
+<t tx="ekr.20050417095020.13"># Single paragraph, hanging indentation.
 
 import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,5,8)
 </t>
-<t tx="ekr.20050417095020.14" annotate="7d71002e"># Single paragraph, hanging indentation with other indentation beyond line 2.
+<t tx="ekr.20050417095020.14"># Single paragraph, hanging indentation with other indentation beyond line 2.
 
 import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,5,8)</t>
-<t tx="ekr.20050417095020.15" annotate="7d71002e"># Single paragraph, hanging indentation, short lines, extraneous indentation, and last line uses a tab for whitespace.
+<t tx="ekr.20050417095020.15"># Single paragraph, hanging indentation, short lines, extraneous indentation, and last line uses a tab for whitespace.
 
 import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,5,8)</t>
-<t tx="ekr.20050417095124.16" annotate="7d71002e">@language plain
+<t tx="ekr.20050417095124.16">@language plain
 @pagewidth 40
 @tabwidth 8</t>
-<t tx="ekr.20050417095124.17" annotate="7d71002e">This line is under 40 chars.</t>
-<t tx="ekr.20050417095124.18" annotate="7d71002e">This line is under 40 chars.</t>
-<t tx="ekr.20050417095124.19" annotate="7d71002e">@language plain
+<t tx="ekr.20050417095124.17">This line is under 40 chars.</t>
+<t tx="ekr.20050417095124.18">This line is under 40 chars.</t>
+<t tx="ekr.20050417095124.19">@language plain
 @pagewidth 40
 @tabwidth 8</t>
-<t tx="ekr.20050417095124.20" annotate="7d71002e">   This line is over forty characters long, at least it seems to be.
+<t tx="ekr.20050417095124.20">   This line is over forty characters long, at least it seems to be.
    This is shorter, 
 but should be part of the same
 paragraph.  And this is indented 3 characters.</t>
-<t tx="ekr.20050417095124.21" annotate="7d71002e">   This line is over forty characters
+<t tx="ekr.20050417095124.21">   This line is over forty characters
    long, at least it seems to be. This
    is shorter, but should be part of the
    same paragraph. And this is indented
    3 characters.</t>
-<t tx="ekr.20050417095124.22" annotate="7d71002e">@language plain
+<t tx="ekr.20050417095124.22">@language plain
 @pagewidth 40
 @tabwidth 8</t>
-<t tx="ekr.20050417095124.23" annotate="7d71002e">   This line is over forty characters long, at least it seems to be.
+<t tx="ekr.20050417095124.23">   This line is over forty characters long, at least it seems to be.
    This is shorter, 
      but should be part of the same
      paragraph.  And this is indented 3 characters.</t>
-<t tx="ekr.20050417095124.24" annotate="7d71002e">   This line is over forty characters
+<t tx="ekr.20050417095124.24">   This line is over forty characters
    long, at least it seems to be. This
    is shorter, but should be part of the
    same paragraph. And this is indented
    3 characters.</t>
-<t tx="ekr.20050417095124.25" annotate="7d71002e">@language plain
+<t tx="ekr.20050417095124.25">@language plain
 @pagewidth 40
 @tabwidth 8</t>
-<t tx="ekr.20050417095124.26" annotate="7d71002e">Honor this line that has a hanging indentation, please.  Hanging
+<t tx="ekr.20050417095124.26">Honor this line that has a hanging indentation, please.  Hanging
   indentation is valuable for lists of all kinds.  But it is tricky to get right.</t>
-<t tx="ekr.20050417095124.27" annotate="7d71002e">Honor this line that has a hanging
+<t tx="ekr.20050417095124.27">Honor this line that has a hanging
   indentation, please. Hanging
   indentation is valuable for lists of
   all kinds. But it is tricky to get
   right.</t>
-<t tx="ekr.20050417095124.28" annotate="7d71002e">@language plain
+<t tx="ekr.20050417095124.28">@language plain
 @pagewidth 40
 @tabwidth 8</t>
-<t tx="ekr.20050417095124.29" annotate="7d71002e">Honor this line that has
+<t tx="ekr.20050417095124.29">Honor this line that has
   a hanging indentation, please.  Hanging
     indentation is valuable for lists of all kinds.  But it is tricky to get right.</t>
-<t tx="ekr.20050417095124.30" annotate="7d71002e">Honor this line that has a hanging
+<t tx="ekr.20050417095124.30">Honor this line that has a hanging
   indentation, please. Hanging
   indentation is valuable for lists of
   all kinds. But it is tricky to get
   right.</t>
-<t tx="ekr.20050417095124.31" annotate="7d71002e">@language plain
+<t tx="ekr.20050417095124.31">@language plain
 @pagewidth 40
 @tabwidth 8</t>
-<t tx="ekr.20050417095124.32" annotate="7d71002e">Honor this line that 
+<t tx="ekr.20050417095124.32">Honor this line that 
   has a hanging indentation, 
   please.  Hanging
    indentation is valuable
     for lists of all kinds.  But 
     it is tricky to get right.</t>
-<t tx="ekr.20050417095124.33" annotate="7d71002e">Honor this line that has a hanging
+<t tx="ekr.20050417095124.33">Honor this line that has a hanging
   indentation, please. Hanging
   indentation is valuable for lists of
   all kinds. But it is tricky to get
   right.</t>
-<t tx="ekr.20050417095124.34" annotate="7d71002e">@language plain
+<t tx="ekr.20050417095124.34">@language plain
 @pagewidth 40
 @tabwidth 8</t>
-<t tx="ekr.20050417095124.35" annotate="7d71002e">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+<t tx="ekr.20050417095124.35">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
 Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?</t>
-<t tx="ekr.20050417095124.36" annotate="7d71002e">Americans live in the most severe
+<t tx="ekr.20050417095124.36">Americans live in the most severe
 weather-prone country on Earth. Each
 year, Americans cope with an average of
 10,000 thunderstorms, 2,500 floods,
@@ -4461,14 +4461,14 @@ awareness. No community is storm proof,
 but StormReady can help communities save
 lives. Does StormReady make a
 difference?</t>
-<t tx="ekr.20050417095124.37" annotate="7d71002e">@language plain
+<t tx="ekr.20050417095124.37">@language plain
 @pagewidth 40
 @tabwidth 8
 
 # DTHEIN 2004.01.11: Added test case data
 
 </t>
-<t tx="ekr.20050417095124.38" annotate="7d71002e">This paragraph leads of this test.  It is the "lead"
+<t tx="ekr.20050417095124.38">This paragraph leads of this test.  It is the "lead"
 paragraph.
 
   1. This is item 
@@ -4482,7 +4482,7 @@ paragraph.
 
 This paragraph ends the test.  It is the "final"
 paragraph.</t>
-<t tx="ekr.20050417095124.39" annotate="7d71002e">This paragraph leads of this test. It is
+<t tx="ekr.20050417095124.39">This paragraph leads of this test. It is
 the "lead" paragraph.
 
   1. This is item number 1. It is the
@@ -4496,7 +4496,7 @@ the "lead" paragraph.
 
 This paragraph ends the test. It is the
 "final" paragraph.</t>
-<t tx="ekr.20050417095124.40" annotate="7d71002e">@language plain
+<t tx="ekr.20050417095124.40">@language plain
 @pagewidth 40
 @tabwidth 8
 
@@ -4504,12 +4504,12 @@ This paragraph ends the test. It is the
 
 Test to make sure that reformatting treats directives as a new paragraph and doesn't wrap directive lines.
 </t>
-<t tx="ekr.20050417095124.41" annotate="7d71002e">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+<t tx="ekr.20050417095124.41">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 @unknownDirective
 Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
 @unknownDirective
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?</t>
-<t tx="ekr.20050417095124.42" annotate="7d71002e">Americans live in the most severe
+<t tx="ekr.20050417095124.42">Americans live in the most severe
 weather-prone country on Earth. Each
 year, Americans cope with an average of
 10,000 thunderstorms, 2,500 floods,
@@ -4541,12 +4541,12 @@ awareness. No community is storm proof,
 but StormReady can help communities save
 lives. Does StormReady make a
 difference?</t>
-<t tx="ekr.20050417095124.43" annotate="7d71002e">@language plain
+<t tx="ekr.20050417095124.43">@language plain
 @pagewidth 40
 @tabwidth 8
 
 </t>
-<t tx="ekr.20050417095124.44" annotate="7d71002e">This paragraph leads of this test.  It is the "lead"
+<t tx="ekr.20050417095124.44">This paragraph leads of this test.  It is the "lead"
 paragraph.
   
   1. This is item 
@@ -4560,7 +4560,7 @@ paragraph.
   
 This paragraph ends the test.  It is the "final"
 paragraph.</t>
-<t tx="ekr.20050417095124.45" annotate="7d71002e">This paragraph leads of this test. It is
+<t tx="ekr.20050417095124.45">This paragraph leads of this test. It is
 the "lead" paragraph.
   
   1. This is item number 1. It is the
@@ -4574,7 +4574,7 @@ the "lead" paragraph.
   
 This paragraph ends the test. It is the
 "final" paragraph.</t>
-<t tx="ekr.20050417102057" annotate="7d71002e">@ Rewritten by EKR.  April 17, 2005.
+<t tx="ekr.20050417102057">@ Rewritten by EKR.  April 17, 2005.
 
 Each data node must have three children:
     
@@ -4583,93 +4583,93 @@ Each data node must have three children:
 - a "tempNode" node
 
 A parent to before and after nodes will contain pagewidth and language formatting directives.</t>
-<t tx="ekr.20050417102114" annotate="7d71002e"># Wrap a long line, no trailing newline.
+<t tx="ekr.20050417102114"># Wrap a long line, no trailing newline.
 
 import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,2,24)</t>
-<t tx="ekr.20050417102114.1" annotate="7d71002e">This line is over forty characters long, at least it seems to be.</t>
-<t tx="ekr.20050417102114.2" annotate="7d71002e">This line is over forty characters long,
+<t tx="ekr.20050417102114.1">This line is over forty characters long, at least it seems to be.</t>
+<t tx="ekr.20050417102114.2">This line is over forty characters long,
 at least it seems to be.</t>
-<t tx="ekr.20050417104821" annotate="7d71002e">@language plain
+<t tx="ekr.20050417104821">@language plain
 @pagewidth 40
 @tabwidth 8
 
 </t>
-<t tx="ekr.20050417111144" annotate="7d71002e"># Wrap a long line, with trailing newline.
+<t tx="ekr.20050417111144"># Wrap a long line, with trailing newline.
 
 import leo.core.leoTest as leoTest
 
 # Wrap a long line, no trailing newline.
 leoTest.singleParagraphTest(c,p,3,0)</t>
-<t tx="ekr.20050417111144.1" annotate="7d71002e">@language plain
+<t tx="ekr.20050417111144.1">@language plain
 @pagewidth 40
 @tabwidth 8</t>
-<t tx="ekr.20050417111144.2" annotate="7d71002e">This line is over forty characters long, at least it seems to be.
+<t tx="ekr.20050417111144.2">This line is over forty characters long, at least it seems to be.
 </t>
-<t tx="ekr.20050417111144.3" annotate="7d71002e">This line is over forty characters long,
+<t tx="ekr.20050417111144.3">This line is over forty characters long,
 at least it seems to be.
 </t>
-<t tx="ekr.20050417111240" annotate="7d71002e"></t>
-<t tx="ekr.20050417113549" annotate="7d71002e"># Wrap a long line and some short ones.
+<t tx="ekr.20050417111240"></t>
+<t tx="ekr.20050417113549"># Wrap a long line and some short ones.
 
 import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,4,10)</t>
-<t tx="ekr.20050417113910" annotate="7d71002e">@language plain
+<t tx="ekr.20050417113910">@language plain
 @pagewidth 40
 @tabwidth 8</t>
-<t tx="ekr.20050417113910.1" annotate="7d71002e">This line is over forty characters long, at least it seems to be.
+<t tx="ekr.20050417113910.1">This line is over forty characters long, at least it seems to be.
 This is shorter, 
 but should be part of the same
 paragraph.</t>
-<t tx="ekr.20050417113910.2" annotate="7d71002e">This line is over forty characters long,
+<t tx="ekr.20050417113910.2">This line is over forty characters long,
 at least it seems to be. This is
 shorter, but should be part of the same
 paragraph.</t>
-<t tx="ekr.20050417113921" annotate="7d71002e"></t>
-<t tx="ekr.20050417114153" annotate="7d71002e"># Wrap a paragraph with interior lines that have leading white space.
+<t tx="ekr.20050417113921"></t>
+<t tx="ekr.20050417114153"># Wrap a paragraph with interior lines that have leading white space.
 
 import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,4,12)</t>
-<t tx="ekr.20050417114221" annotate="7d71002e">@language plain
+<t tx="ekr.20050417114221">@language plain
 @pagewidth 40
 @tabwidth 8</t>
-<t tx="ekr.20050417114221.1" annotate="7d71002e"></t>
-<t tx="ekr.20050417114221.2" annotate="7d71002e">This line is over forty characters long, at least it seems to be.
+<t tx="ekr.20050417114221.1"></t>
+<t tx="ekr.20050417114221.2">This line is over forty characters long, at least it seems to be.
   This indented line should be merged into the same
 paragraph.</t>
-<t tx="ekr.20050417114221.3" annotate="7d71002e">This line is over forty characters long,
+<t tx="ekr.20050417114221.3">This line is over forty characters long,
   at least it seems to be. This indented
   line should be merged into the same
   paragraph.</t>
-<t tx="ekr.20050417114836" annotate="7d71002e"># No wrapping required, so don't change a thing.
+<t tx="ekr.20050417114836"># No wrapping required, so don't change a thing.
 
 import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,1,28)
 </t>
-<t tx="ekr.20050417114914" annotate="7d71002e"></t>
-<t tx="ekr.20050417115111" annotate="7d71002e"></t>
-<t tx="ekr.20050417115257" annotate="7d71002e"></t>
-<t tx="ekr.20050417115414" annotate="7d71002e"></t>
-<t tx="ekr.20050417115559" annotate="7d71002e"></t>
-<t tx="ekr.20050417115709" annotate="7d71002e"></t>
-<t tx="ekr.20050417120312.1" annotate="7d71002e"># Multiple long lined paragraphs.  Cursor should move to next paragraph after formatting a paragraph.
+<t tx="ekr.20050417114914"></t>
+<t tx="ekr.20050417115111"></t>
+<t tx="ekr.20050417115257"></t>
+<t tx="ekr.20050417115414"></t>
+<t tx="ekr.20050417115559"></t>
+<t tx="ekr.20050417115709"></t>
+<t tx="ekr.20050417120312.1"># Multiple long lined paragraphs.  Cursor should move to next paragraph after formatting a paragraph.
 
 import leo.core.leoTest as leoTest
 
 leoTest.multiParagraphTest(c,p)</t>
-<t tx="ekr.20050417120312.2" annotate="7d71002e"></t>
-<t tx="ekr.20050417121448" annotate="7d71002e"># A regular paragraph, plus a numbered list of several items, plus a final regular paragraph.
+<t tx="ekr.20050417120312.2"></t>
+<t tx="ekr.20050417121448"># A regular paragraph, plus a numbered list of several items, plus a final regular paragraph.
 # Cursor should move to next paragraph after formatting a paragraph.
 
 import leo.core.leoTest as leoTest
 
 leoTest.multiParagraphWithListTest(c,p)</t>
-<t tx="ekr.20050417121448.1" annotate="7d71002e"></t>
-<t tx="ekr.20050417121942" annotate="7d71002e">@
+<t tx="ekr.20050417121448.1"></t>
+<t tx="ekr.20050417121942">@
 Ran into a problem with the wrapping eating blank lines that delimit paragraphs
 if those blank lines have any leading whitespace. This test is to make sure that
 still works.
@@ -4681,13 +4681,13 @@ which is different from the "testMultiParagraphWithList" test.
 import leo.core.leoTest as leoTest
 
 leoTest.leadingWSOnEmptyLinesTest(c,p)</t>
-<t tx="ekr.20050417121942.1" annotate="7d71002e"></t>
-<t tx="ekr.20050417122215.1" annotate="7d71002e">import leo.core.leoTest as leoTest
+<t tx="ekr.20050417121942.1"></t>
+<t tx="ekr.20050417122215.1">import leo.core.leoTest as leoTest
 
 leoTest.directiveBreaksParagraphTest(c,p)</t>
-<t tx="ekr.20050417122215.2" annotate="7d71002e"></t>
-<t tx="ekr.20050417124704" annotate="7d71002e"></t>
-<t tx="ekr.20050417201845" annotate="7d71002e"></t>
+<t tx="ekr.20050417122215.2"></t>
+<t tx="ekr.20050417124704"></t>
+<t tx="ekr.20050417201845"></t>
 <t tx="ekr.20050417201845.1">before
     &lt;&lt; section &gt;&gt;
     sec line 1
@@ -4701,7 +4701,7 @@ after</t>
 sec line 3</t>
 <t tx="ekr.20050417201845.4">2.0
 5.10</t>
-<t tx="ekr.20050417202713" annotate="7d71002e"></t>
+<t tx="ekr.20050417202713"></t>
 <t tx="ekr.20050417202713.1">@language python
 
 def addCommentTest():
@@ -4722,7 +4722,7 @@ def addCommentTest():
     pass</t>
 <t tx="ekr.20050417202713.3">5.0
 7.8</t>
-<t tx="ekr.20050417202817" annotate="7d71002e"></t>
+<t tx="ekr.20050417202817"></t>
 <t tx="ekr.20050417202817.1">@language python
 
 def deleteCommentTest():
@@ -4743,8 +4743,8 @@ def deleteCommentTest():
     pass</t>
 <t tx="ekr.20050417202817.3">5.0
 7.8</t>
-<t tx="ekr.20050417203114" annotate="7d71002e"></t>
-<t tx="ekr.20050417203114.1" annotate="7d71002e"></t>
+<t tx="ekr.20050417203114"></t>
+<t tx="ekr.20050417203114.1"></t>
 <t tx="ekr.20050417203310">@tabwidth -4
 
 line 1
@@ -4773,7 +4773,7 @@ line 1
 line4</t>
 <t tx="ekr.20050417204901">1.0
 6.5</t>
-<t tx="ekr.20050417204940" annotate="7d71002e"></t>
+<t tx="ekr.20050417204940"></t>
 <t tx="ekr.20050417204940.1">@tabwidth -4
 
 line 1
@@ -4788,7 +4788,7 @@ line 1
 line4</t>
 <t tx="ekr.20050417204940.3">1.0
 6.5</t>
-<t tx="ekr.20050417205012" annotate="7d71002e"></t>
+<t tx="ekr.20050417205012"></t>
 <t tx="ekr.20050417205012.1">@tabwidth -4
 
 line 1
@@ -4803,7 +4803,7 @@ line 1
 line4</t>
 <t tx="ekr.20050417205012.3">1.0
 6.5</t>
-<t tx="ekr.20050512083700.1" annotate="7d71002e">marks = [p.v for p in c.all_positions() if p.isMarked()]
+<t tx="ekr.20050512083700.1">marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
     try:
@@ -4820,7 +4820,7 @@ finally:
                 c.clearMarked(p)
                 
 if not ok: raise</t>
-<t tx="ekr.20050512083807" annotate="7d71002e">marks = [p.v for p in c.all_positions() if p.isMarked()]
+<t tx="ekr.20050512083807">marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
     try:
@@ -4837,7 +4837,7 @@ finally:
                 c.clearMarked(p)
                 
 if not ok: raise</t>
-<t tx="ekr.20050512083807.1" annotate="7d71002e">marks = [p.v for p in c.all_positions() if p.isMarked()]
+<t tx="ekr.20050512083807.1">marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
     try:
@@ -4854,7 +4854,7 @@ finally:
                 c.clearMarked(p)
                 
 if not ok: raise</t>
-<t tx="ekr.20050512083807.2" annotate="7d71002e">marks = [p.v for p in c.all_positions() if p.isMarked()]
+<t tx="ekr.20050512083807.2">marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
     try:
@@ -4871,7 +4871,7 @@ finally:
                 c.clearMarked(p)
                 
 if not ok: raise</t>
-<t tx="ekr.20050512083816" annotate="7d71002e">marks = [p.v for p in c.all_positions() if p.isMarked()]
+<t tx="ekr.20050512083816">marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
     try:
@@ -4888,7 +4888,7 @@ finally:
                 c.clearMarked(p)
                 
 if not ok: raise</t>
-<t tx="ekr.20050512083822" annotate="7d71002e">marks = [p.v for p in c.all_positions() if p.isMarked()]
+<t tx="ekr.20050512083822">marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
     try:
@@ -4905,7 +4905,7 @@ finally:
                 c.clearMarked(p)
                 
 if not ok: raise</t>
-<t tx="ekr.20050512083822.1" annotate="7d71002e">marks = [p.v for p in c.all_positions() if p.isMarked()]
+<t tx="ekr.20050512083822.1">marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
     try:
@@ -4922,7 +4922,7 @@ finally:
                 c.clearMarked(p)
                 
 if not ok: raise</t>
-<t tx="ekr.20050512083822.2" annotate="7d71002e">marks = [p.v for p in c.all_positions() if p.isMarked()]
+<t tx="ekr.20050512083822.2">marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
     ok = True
     try:
@@ -4939,10 +4939,10 @@ finally:
                 c.clearMarked(p)
 
 if not ok: raise</t>
-<t tx="ekr.20050512084850" annotate="7d71002e"></t>
+<t tx="ekr.20050512084850"></t>
 <t tx="ekr.20050512084850.1">pass</t>
 <t tx="ekr.20050512084850.2">pass</t>
-<t tx="ekr.20050518070540" annotate="7d71002e"></t>
+<t tx="ekr.20050518070540"></t>
 <t tx="ekr.20050518070540.1">before
     &lt;&lt; section &gt;&gt;
     sec line 1
@@ -4957,7 +4957,7 @@ after</t>
         sec line 2 indented
 sec line 3
 after</t>
-<t tx="ekr.20050518070927" annotate="7d71002e"></t>
+<t tx="ekr.20050518070927"></t>
 <t tx="ekr.20050518070927.1">before
     &lt;&lt; section &gt;&gt;
     sec line 1
@@ -4972,7 +4972,7 @@ after</t>
 sec line 3</t>
 <t tx="ekr.20050518070927.4">2.0
 5.10</t>
-<t tx="ekr.20050518071251" annotate="7d71002e"></t>
+<t tx="ekr.20050518071251"></t>
 <t tx="ekr.20050518071251.1">before
     &lt;&lt; section &gt;&gt;
     sec line 1
@@ -5248,8 +5248,8 @@ c.redraw_now()</t>
 <t tx="ekr.20051025070722">c.prettyPrintPythonNode()</t>
 <t tx="ekr.20051025091355">c.spellCommands.openSpellTab()
 </t>
-<t tx="ekr.20051104080236" annotate="7d71002e"></t>
-<t tx="ekr.20051104081502" annotate="7d71002e">@language python
+<t tx="ekr.20051104080236"></t>
+<t tx="ekr.20051104081502">@language python
 @tabwidth -4</t>
 <t tx="ekr.20051104081502.2"></t>
 <t tx="ekr.20051104081502.3"></t>
@@ -5755,7 +5755,7 @@ else:
 u.setUndoParams("Bletch",p)
 
 # Selecting "Undo Bletch" will enable "Redo Bletch", etc.</t>
-<t tx="ekr.20051104081502.149" myPlugin="7d710055016171014930310a732e">d = { "a":True }
+<t tx="ekr.20051104081502.149">d = { "a":True }
 
 if 1:
     # Warning: executing this in the a2 code base will cause any save operation to fail.
@@ -10709,12 +10709,12 @@ k.registerCommand('print-hello2',None,f2)</t>
 
 ---*---*---*
 ab</t>
-<t tx="ekr.20051107115231" annotate="7d71002e"># These are mysteriously fragile tests, so they go first
+<t tx="ekr.20051107115231"># These are mysteriously fragile tests, so they go first
 </t>
-<t tx="ekr.20051107115231.1" annotate="7d71002e"># This is used by a unit test.
+<t tx="ekr.20051107115231.1"># This is used by a unit test.
 g.es_print('Test of @command')
 g.app.unitTestDict ['unit-test-command1'] = True</t>
-<t tx="ekr.20051107115231.9" annotate="7d71002e">c.redraw(p) # To make node visible
+<t tx="ekr.20051107115231.9">c.redraw(p) # To make node visible
 
 c2 = c.new()
 p2 = c2.p
@@ -10727,8 +10727,8 @@ try:
 finally:
     c2.setChanged(False)
     c2.close()</t>
-<t tx="ekr.20051107115231.13" annotate="7d71002e"></t>
-<t tx="ekr.20051107115231.14" annotate="7d71002e">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.13"></t>
+<t tx="ekr.20051107115231.14">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
 h = '@test return ends editing of headline'
 p = u.findNodeAnywhere(h)
@@ -10742,7 +10742,7 @@ assert wName.startswith('head'),'w.name:%s' % wName
 w.event_generate('&lt;Return&gt;')
 c.outerUpdate()
 assert w != c.get_focus(),'oops2: focus in headline'</t>
-<t tx="ekr.20051107115231.15" annotate="7d71002e">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.15">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
@@ -10762,7 +10762,7 @@ if selectAll:
 else:
     assert i == len(s) and j == len(s),'oops2: i: %d, j: %d' % (i,j)
 </t>
-<t tx="ekr.20051107115231.16" annotate="7d71002e">trace = False ; verbose = False
+<t tx="ekr.20051107115231.16">trace = False ; verbose = False
 import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
@@ -10806,7 +10806,7 @@ finally:
     if 1:
         c.setHeadString(p,h) # Essential
         c.redraw(p)</t>
-<t tx="ekr.20051107115231.17" annotate="7d71002e">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.17">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.k
 
 if k.defaultUnboundKeyAction == 'insert':
@@ -10841,7 +10841,7 @@ if k.defaultUnboundKeyAction == 'insert':
         if 1:
             c.setHeadString(p,h) # Essential
             c.redraw(p)</t>
-<t tx="ekr.20051107115231.18" annotate="7d71002e">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.18">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
@@ -10864,7 +10864,7 @@ finally:
     if 1:
         c.setHeadString(p,h) # Essential
         c.redraw(p)</t>
-<t tx="ekr.20051107115231.20" annotate="7d71002e">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.20">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
@@ -10887,7 +10887,7 @@ finally:
     if 1:
         c.setHeadString(p,h) # Essential
         c.redraw(p)</t>
-<t tx="ekr.20051107115231.21" annotate="7d71002e">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.21">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.k
 
 if k.defaultUnboundKeyAction == 'insert':
@@ -10912,7 +10912,7 @@ if k.defaultUnboundKeyAction == 'insert':
         if 1:
             c.setHeadString(p,h) # Essential
             c.redraw(p)</t>
-<t tx="ekr.20051107115231.24" annotate="7d71002e"># Should be a comment# Should be a comment# Should be a comment# Should be a comment
+<t tx="ekr.20051107115231.24"># Should be a comment# Should be a comment# Should be a comment# Should be a comment
 import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
@@ -10940,7 +10940,7 @@ finally:
     if 1:
         c.setBodyString(p,'')
         c.redraw(p)</t>
-<t tx="ekr.20051107115231.25" annotate="7d71002e">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.25">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
@@ -10973,7 +10973,7 @@ finally:
     if 1:
         c.setHeadString(p,h) # Essential
         c.redraw(p)</t>
-<t tx="ekr.20051107115231.28" annotate="7d71002e">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.28">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
@@ -10998,7 +10998,7 @@ finally:
     if 1:
         c.setHeadString(p,h) # Essential
         c.redraw(p)</t>
-<t tx="ekr.20051107115231.29" annotate="7d71002e">import leo.core.leoEditCommands as leoEditCommands
+<t tx="ekr.20051107115231.29">import leo.core.leoEditCommands as leoEditCommands
 s = 'foo' ; bodyCtrl = c.frame.body.bodyCtrl
 
 c.searchCommands.openFindTab()
@@ -11036,7 +11036,7 @@ finally:
     if 1:
         c.setBodyString(p,'')
         c.redraw_now()</t>
-<t tx="ekr.20051109091731" annotate="7d71002e">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051109091731">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
@@ -11054,19 +11054,19 @@ finally:
     if 1:
         c.setBodyString(p,'')
         c.redraw(p)</t>
-<t tx="ekr.20051109143831" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20051109143831"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractAllHeadlines()
 g.app.unitTestDict['restoreSelectedNode']=False
 
     </t>
-<t tx="ekr.20051120110335" annotate="7d71002e">u = c.undoer
+<t tx="ekr.20051120110335">u = c.undoer
 c.insertHeadline()
 assert u.undoMenuLabel == 'Undo Insert Node',repr(c.undoMenuLabel)
 c.undoer.undo()
 assert u.redoMenuLabel == 'Redo Insert Node',repr(u.undoMenuLabel)</t>
-<t tx="ekr.20051120115046" annotate="7d71002e">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051120115046">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
@@ -11081,8 +11081,8 @@ try:
     assert p.b == body
 finally:
     c.setBodyString(p,'')</t>
-<t tx="ekr.20051122095426" annotate="7d71002e"></t>
-<t tx="ekr.20051125155134" annotate="7d71002e">n = c.frame.tree.redrawCount
+<t tx="ekr.20051122095426"></t>
+<t tx="ekr.20051125155134">n = c.frame.tree.redrawCount
 # print ('before')
 c.insertHeadline()
 c.outerUpdate() # Not actually needed, but should not matter.
@@ -11093,7 +11093,7 @@ try:
     assert n2 == n + 1,'redraws: %d' % (n2 - n)
 finally:
     c.undoer.undo()</t>
-<t tx="ekr.20051125170139" annotate="7d71002e">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051125170139">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
@@ -11108,12 +11108,12 @@ finally:
     if 1:
         c.setHeadString(p,h) # Essential
         c.redraw(p)</t>
-<t tx="ekr.20051216171321" annotate="7d71002e"></t>
-<t tx="ekr.20060106211922" annotate="7d71002e">n = g.app.positions
+<t tx="ekr.20051216171321"></t>
+<t tx="ekr.20060106211922">n = g.app.positions
 assert c.isCurrentPosition(None) is False
 assert c.isCurrentPosition(p) is True
 assert g.app.positions == n</t>
-<t tx="ekr.20060106211922.1" annotate="7d71002e">n = g.app.positions
+<t tx="ekr.20060106211922.1">n = g.app.positions
 assert c.isRootPosition(None) is False
 assert c.isRootPosition(p) is False
 assert g.app.positions == n</t>
@@ -11162,7 +11162,7 @@ for command in table:
     c.k.keyboardQuit(None)</t>
 <t tx="ekr.20060130151716.4">c.k.simulateCommand('show-find-options')</t>
 <t tx="ekr.20060131102450">print('\nEnd of typing and undo tests')</t>
-<t tx="ekr.20060208072307" annotate="7d71002e">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20060208072307">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
 if c.k.defaultUnboundKeyAction == 'insert':
     h = 'Test headline abc'
@@ -11192,7 +11192,7 @@ if c.k.defaultUnboundKeyAction == 'insert':
             c.setBodyString(p,'')
             c.redraw(p)
 </t>
-<t tx="ekr.20060208072331" annotate="7d71002e">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20060208072331">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
@@ -11220,7 +11220,7 @@ finally:
     if 1:
         c.setHeadString(p,h) # Essential
         c.redraw(p)</t>
-<t tx="ekr.20060208072358" annotate="7d71002e"># This test is too flaky for Tk.
+<t tx="ekr.20060208072358"># This test is too flaky for Tk.
 if g.app.gui.guiName() != 'tkinter':
 
     import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
@@ -11246,7 +11246,7 @@ if g.app.gui.guiName() != 'tkinter':
         if 1:
             c.setBodyString(p,'')
             c.redraw(p)</t>
-<t tx="ekr.20060208072415" annotate="7d71002e">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20060208072415">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
@@ -11451,7 +11451,7 @@ for v1,condition,v2 in (
     ('1','&lt;','1.1'),
 ):
     assert g.CheckVersion(v1,v2,condition=condition,trace=False)</t>
-<t tx="ekr.20061001114236" unit_test="55046162636471002e">fc = c.fileCommands # self is a dummy
+<t tx="ekr.20061001114236">fc = c.fileCommands # self is a dummy
 p.v.unknownAttributes = {'unit_test':'abcd'}
 s = fc.putUnknownAttributes (p.v)
 expected = ' unit_test="55046162636471002e"'
@@ -13986,7 +13986,7 @@ p3 = c.p
 # print(p3)
 # assert p == p3
 </t>
-<t tx="ekr.20070306091949" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20070306091949"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
@@ -14015,7 +14015,7 @@ b</t>
 <t tx="ekr.20070315065849.3">a
 
 b</t>
-<t tx="ekr.20070417092935" str_leo_pos="7,2,4,0,0,0"></t>
+<t tx="ekr.20070417092935"></t>
 <t tx="ekr.20070417092935.1"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070515150433"></t>
@@ -15964,63 +15964,63 @@ This eliminates references to nodes that no longer exist in the present outline.
 <t tx="ekr.20071113194424.1"># 4 failures with Alt-5</t>
 <t tx="ekr.20071113194858"># All the following files have problems when run with Alt-5.</t>
 <t tx="ekr.20071113200638.1"># 2 failures with Alt-5</t>
-<t tx="ekr.20071113201736" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20071113201736"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
     
 print('\nEnd of leoAtFile tests')</t>
-<t tx="ekr.20071113201833" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20071113201833"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
     
 print('\nEnd of leoCommands tests')</t>
-<t tx="ekr.20071113201854" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20071113201854"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
     
 print('\nEnd of leoConfig tests')</t>
-<t tx="ekr.20071113202045" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20071113202045"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
   
 print('\nEnd of leoFileCommands tests.')</t>
-<t tx="ekr.20071113202153" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20071113202153"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
     
 # print('\nEnd of leoFind tests.')</t>
-<t tx="ekr.20071113202153.1" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20071113202153.1"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
     
 # print('\nEnd of leoFrame tests.')</t>
-<t tx="ekr.20071113202153.2" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20071113202153.2"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
     
 # print('\nEnd of leoGlobals tests.')</t>
-<t tx="ekr.20071113202452" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20071113202452"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
     
 print('\nEnd of leoNodes tests.')</t>
-<t tx="ekr.20071113202510" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20071113202510"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
@@ -16661,8 +16661,8 @@ for z in p.firstChild().next().children_iter():
     assert val == [0,1,i],'expected %s, got %s'%([0,1,i],val)
     i += 1</t>
 <t tx="ekr.20080805122315.1"></t>
-<t tx="ekr.20080805122315.2" unit_test_child="55046162636471002e"></t>
-<t tx="ekr.20080805122315.3" unit_test_grandchild="55047778797a71002e"></t>
+<t tx="ekr.20080805122315.2"></t>
+<t tx="ekr.20080805122315.3"></t>
 <t tx="ekr.20080805122315.4"></t>
 <t tx="ekr.20080806072412.1">child1 = p.firstChild()
 child2 = p.firstChild().next()
@@ -16698,18 +16698,18 @@ for v,archivedPosition in table:
     assert v == v2,'got %s, expected %s' % (v2,v)
 </t>
 <t tx="ekr.20080806072412.2"></t>
-<t tx="ekr.20080806072412.3" unit_test_child="55046162636471002e"></t>
-<t tx="ekr.20080806072412.4" unit_test_grandchild="55047778797a71002e"></t>
+<t tx="ekr.20080806072412.3"></t>
+<t tx="ekr.20080806072412.4"></t>
 <t tx="ekr.20080806072412.5"></t>
 <t tx="ekr.20080806080425.1"></t>
 <t tx="ekr.20080806080425.2"></t>
 <t tx="ekr.20080806080425.3"></t>
 <t tx="ekr.20080806080425.4"></t>
-<t tx="ekr.20080806084924.2" round-trip-u.uA="5815000000407468696e2075415f746573745f66696c652e707971002e">@others</t>
-<t tx="ekr.20080806084924.3" round-trip-u.uA="58060000006368696c643171002e">pass</t>
-<t tx="ekr.20080806084924.4" round-trip-u.uA="580b0000006772616e644368696c643171002e">pass
+<t tx="ekr.20080806084924.2">@others</t>
+<t tx="ekr.20080806084924.3">pass</t>
+<t tx="ekr.20080806084924.4">pass
 </t>
-<t tx="ekr.20080806084924.5" round-trip-u.uA="581000000067726561744772616e644368696c643171002e">pass</t>
+<t tx="ekr.20080806084924.5">pass</t>
 <t tx="ekr.20080806095923.2">root = p.firstChild()
 uA = 'unknownAttributes'
 tag = 'round-trip-u.uA'
@@ -16731,7 +16731,7 @@ else: # Test the uA's.
         d = {tag: v.h}
         if trace: print(d)
         assert a == d, 'expected v.uA: "%s", got "%s"' % (d,a)</t>
-<t tx="ekr.20080806211453.1" round-trip-u.uA="581e00000040736861646f772075415f746573745f736861646f775f66696c652e707971002e">@language python
+<t tx="ekr.20080806211453.1">@language python
 @tabwidth -4
 @others
 </t>
@@ -16779,7 +16779,7 @@ for s in table:
         s = unicode(s,e)
     print      'print     ',s
     print      'repr(s)   ',repr(s)</t>
-<t tx="ekr.20080822160527.1" round-trip-u.uA="58060000006368696c643171002e">pass
+<t tx="ekr.20080822160527.1">pass
 pass
 pass
 </t>
@@ -17239,39 +17239,39 @@ finally:
             root.firstChild().doDelete(newNode = None)
     c.redraw_now()
 </t>
-<t tx="ekr.20081111082931.1" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20081111082931.1"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 </t>
-<t tx="ekr.20081111084046.1" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20081111084046.1"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
     </t>
 <t tx="ekr.20081111084046.2"></t>
-<t tx="ekr.20081111084046.3" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20081111084046.3"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 </t>
-<t tx="ekr.20081111084046.4" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20081111084046.4"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 </t>
-<t tx="ekr.20081111084046.6" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20081111084046.6"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 </t>
-<t tx="ekr.20081111150402.11" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20081111150402.11"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
@@ -17996,9 +17996,9 @@ if g.os_path_exists(shadow_dir):
 <t tx="ekr.20090529141856.4682"># These test are inconvenient to include in leoPy.leo
 # because they would need a @mark-for-unit-tests node,
 # and Alt-5 would execute all the tests.</t>
-<t tx="ekr.20090529141856.4684" annotate="7d71002e">@language python
+<t tx="ekr.20090529141856.4684">@language python
 @tabwidth -4</t>
-<t tx="ekr.20090529141856.4685" annotate="7d71002e"># Create unit tests in g.app.scriptDict["suite"]
+<t tx="ekr.20090529141856.4685"># Create unit tests in g.app.scriptDict["suite"]
 
 
 import unittest
@@ -18009,7 +18009,7 @@ import leo.core.leoTest as leoTest
 suite = leoTest.makeImportExportSuite(c,"exportTests",doImport=False)
 
 g.app.scriptDict['suite'] = suite</t>
-<t tx="ekr.20090529141856.4686" annotate="7d71002e">@language plain</t>
+<t tx="ekr.20090529141856.4686">@language plain</t>
 <t tx="ekr.20090529141856.4687"></t>
 <t tx="ekr.20090529141856.4688"></t>
 <t tx="ekr.20090529141856.4689">saveFileDialog
@@ -18027,7 +18027,7 @@ test\\unittest\\output\\outlineToNoweb.txt</t>
 <t tx="ekr.20090529141856.4697">saveFileDialog
 test\\unittest\\output\\outlineToCweb.txt</t>
 <t tx="ekr.20090529141856.4698"></t>
-<t tx="ekr.20090529141856.4699" annotate="7d71002e"># Create unit tests in g.app.scriptDict["suite"]
+<t tx="ekr.20090529141856.4699"># Create unit tests in g.app.scriptDict["suite"]
 
 import unittest
 import leo.core.leoTest as leoTest
@@ -18037,27 +18037,27 @@ import leo.core.leoTest as leoTest
 suite = leoTest.makeImportExportSuite(c,"importTests",doImport=True)
 
 g.app.scriptDict['suite'] = suite</t>
-<t tx="ekr.20090529141856.4700" annotate="7d71002e">@language plain</t>
-<t tx="ekr.20090529141856.4701" annotate="7d71002e"></t>
-<t tx="ekr.20090529141856.4702" annotate="7d71002e"></t>
+<t tx="ekr.20090529141856.4700">@language plain</t>
+<t tx="ekr.20090529141856.4701"></t>
+<t tx="ekr.20090529141856.4702"></t>
 <t tx="ekr.20090529141856.4703">openFileDialog
 test\\unittest\\perfectImport\\formatter.py</t>
-<t tx="ekr.20090529141856.4704" annotate="7d71002e"></t>
+<t tx="ekr.20090529141856.4704"></t>
 <t tx="ekr.20090529141856.4705">openFileDialog
 core\\runLeo.py</t>
-<t tx="ekr.20090529141856.4706" annotate="7d71002e"></t>
+<t tx="ekr.20090529141856.4706"></t>
 <t tx="ekr.20090529141856.4707">openFileDialog
 test\\unittest\\input\\noweave.nw.txt</t>
-<t tx="ekr.20090529141856.4708" annotate="7d71002e"></t>
+<t tx="ekr.20090529141856.4708"></t>
 <t tx="ekr.20090529141856.4709">openFileDialog
 test\\unittest\\input\\flat.txt</t>
-<t tx="ekr.20090529141856.4710" annotate="7d71002e"></t>
+<t tx="ekr.20090529141856.4710"></t>
 <t tx="ekr.20090529141856.4711">openFileDialog
 test\\unittest\\input\\cweave.w</t>
-<t tx="ekr.20090529141856.4712" annotate="7d71002e"></t>
+<t tx="ekr.20090529141856.4712"></t>
 <t tx="ekr.20090529141856.4713">openFileDialog
 test\\unittest\\input\\testLeoAtFile.py</t>
-<t tx="ekr.20090529141856.4714" annotate="7d71002e"></t>
+<t tx="ekr.20090529141856.4714"></t>
 <t tx="ekr.20090529141856.4715">openFileDialog
 test\\unittest\\perfectImport\\formatter.py</t>
 <t tx="ekr.20090529141856.4716">@tabwidth -4
@@ -21482,7 +21482,7 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 if
 IF
 </t>
-<t tx="ekr.20090615053403.4957" annotate="7d71002e"># This is **not** a real unit test.
+<t tx="ekr.20090615053403.4957"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
@@ -21603,7 +21603,7 @@ def cheese():
 #end
 </t>
 <t tx="ekr.20090629104856.4992"></t>
-<t tx="ekr.20090703080553.5000" annotate="7d71002e">import unittest
+<t tx="ekr.20090703080553.5000">import unittest
 import leo.core.leoTest as leoTest
 
 import sys
