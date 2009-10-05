@@ -2922,6 +2922,28 @@ def putDescendentTnodeUas (self,p):
         torv=p.v,val=d,tag="descendentTnodeUnknownAttributes") or ''
 #@-node:ekr.20080805071954.1:putDescendentTnodeUas
 #@-node:ekr.20091001141621.6042:iters -> generators & code cleanup
+#@+node:ekr.20091005145253.6057:Convert @file nodes so they use file-like sentinels
+@nocolor-node
+
+Leo will now automatically write @file nodes as if they were @thin nodes
+(thin-like sentinels). Leo will read @file correctly regardless of whether the
+corresponding external file has file-like (legacy) or thin-like (recommended)
+sentinels. Once thin-like sentinels are written, Leo deletes the problematic
+tnodeList attribute in the .leo file.
+
+**Important**: The conversion to thin-like sentinels happens *only* if Leo
+actually writes the @file node, and that happens only if the @file node or one
+of its descendants changes. As usual with @file nodes, writing any @file node
+forces Leo to write the .leo file. This is necessary so that the tnodeList
+attribute in the .leo file remains up- to-date. Thus, the conversion process
+should be as safe as using @file nodes ever was, which is to say, *usually* safe
+but subject to problems in a cooperative environment.
+
+In short, I recommend that you use Shift-Ctrl-W (write-at-files-nodes)
+to force the conversion of all your legacy @file nodes.  Please back
+up your .leo file and all your external files first.
+#@nonl
+#@-node:ekr.20091005145253.6057:Convert @file nodes so they use file-like sentinels
 #@-node:ekr.20090718091653.5982:Leo 4.7 projects
 #@-all
 #@nonl

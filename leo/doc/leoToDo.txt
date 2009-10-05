@@ -10,170 +10,13 @@
 - Refactoring: rope, etc.
 - Flexitble file format.
 #@nonl
-#@+node:ekr.20091003171114.6466:First
-#@-node:ekr.20091003171114.6466:First
-#@+node:ekr.20090714085914.5990:Next
+#@+node:ekr.20091005145253.6060:Docs
 #@+node:ekr.20090822054806.6004:Improve the intro
 
 * Give some hint about why Leo is different.
 
 * Give some hints about the Aha, and that there *is* an Aha.
 #@nonl
-#@-node:ekr.20090822054806.6004:Improve the intro
-#@+node:ekr.20090811090022.6029:Bugs 3
-#@+node:ekr.20090822054806.6001:Fix cursor up/down bug
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/731b9c541f3a3ab0
-
-sequence::
-
- type """ <cr> """ <up>
-
-the cursor is at the end of the first line
-
-type <down>
-
-the cursor is now between the 2nd and 3rd quote. 
-#@nonl
-#@-node:ekr.20090822054806.6001:Fix cursor up/down bug
-#@+node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/b84659e608ba44d5
-
-The data is lost because @auto-rst mostly ignores the top-level node.
-#@nonl
-#@-node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
-#@+node:ekr.20090709101224.6040:Fix rst bug
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/73db1b3109cc94b6
-
-Apparently, the problem is with this line::
-
-<p>Greet the world, politely**code**:.. class:: code..::   g.es (&quot;Hello, world&quot;)</p>
-
-Presumably, the ..class:: code..:: should start a new line. There have been
-changes recently to how newlines are handled. I'll put this on the list of
-things to fix for Leo 4.6 final.
-
-
-#@-node:ekr.20090709101224.6040:Fix rst bug
-#@+node:ekr.20090822054806.6003:Add rst button that doesn't need rst3 plugin
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/95687c7a2dba5e18
-
-The rst3 plugin is required to use the script examples given in the
-"@@button rst" example in the leoSettings.leo file and in Chapter 14
-of the users guide (shown below).  They should be updated to utilize
-the new rST functionality in Leo's core.
-
-Until that is done, can someone post a working "@button rst" script
-that doesn't require the rst3 plugin?  I would like to test the rST
-implementation in Leo's core.
-
-Script in "@@button rst" example in the leoSettings.leo file:
-|   import leoPlugins
-|   rst3 = leoPlugins.getPluginModule('rst3')
-|   if rst3:
-|       controller = rst3.controllers.get(c)
-|       if controller:
-|           controller.processTopTree(p)
-|   else:
-|       rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
-|       if rst3:
-|           g.es('rst3 loaded')
-|           rst3.onCreate('tag',{'c':c})
-|       else:
-|           # Ask to be removed.
-|           g.app.scriptDict['removeMe'] = True
-
-Script in Chapter 14 of the users guide:
-|   import leo.core.leoPlugins as leoPlugins
-|   rst3 = leoPlugins.getPluginModule('rst3')
-|   if rst3:
-|       controller = rst3.controllers.get(c)
-|       if controller:
-|           p,s = controller.writeNodeToString(ext='.html')
-|           print '*' * 40,p
-|           print s 
-#@nonl
-#@-node:ekr.20090822054806.6003:Add rst button that doesn't need rst3 plugin
-#@-node:ekr.20090811090022.6029:Bugs 3
-#@+node:ekr.20090907080624.6078:New to-do items
-#@+node:ekr.20090909093330.6124:Investigate "multiple parts not allowed" tangle errors
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/181533467503ef48
-
-#@-node:ekr.20090909093330.6124:Investigate "multiple parts not allowed" tangle errors
-#@+node:ekr.20090907080624.6069:Update the 4.6.3 release notes in the trunk
-It also provides lots of new features. --gui=qttabs and new plugins
-(spydershell, qtframecommands, mod_framesize). There is also "show
-folder" in rclick menu.
-#@nonl
-#@-node:ekr.20090907080624.6069:Update the 4.6.3 release notes in the trunk
-#@+node:ekr.20090907080624.6071:Install to site-packages, not "c:\program files"
-#@-node:ekr.20090907080624.6071:Install to site-packages, not "c:\program files"
-#@+node:ekr.20090907080624.6081:Bug: spell checker should check headlines
-#@-node:ekr.20090907080624.6081:Bug: spell checker should check headlines
-#@+node:ekr.20090907080624.6072:Install support for haskel
-@nocolor-node
-
-private communication to me from Gregary Crosswhite.
-
-First, thank you for all of your hard work on Leo! It is one of the most useful
-tools that I have ever discovered.
-
-Since I saw that you are planning to have another release tomorrow, could you
-take a quick look at my merge request
-(lp:~gcrosswhite/leo-editor/fix-haskell-support) which fixes support for
-Haskell? It is a simple patch that just adds an entry for Haskell to the
-language comment deliminator dictionaries, but it makes a big difference since
-currently tangled Haskell sources are rejected by the compiler.
-
-For convenience, I have also included the diff at the end of this e-mail.
-
-Thanks,
-Greg
-
-=== modified file 'leo/core/leoApp.py'
---- leo/core/leoApp.py  2009-08-12 21:52:50 +0000
-+++ leo/core/leoApp.py  2009-08-28 05:46:38 +0000
-@@ -128,6 +128,7 @@
-            "forth"         : "\\_ _(_ _)", # Use the "REM hack"
-            "fortran"       : "C",
-            "fortran90"     : "!",
-+            "haskell"       : "--_ {-_ _-}",
-            "html"          : "<!-- -->",
-            "ini"           : ";",
-            "java"          : "// /* */",
-@@ -173,6 +174,7 @@
-            "forth"         : "forth",
-            "fortran"       : "f",
-            "fortran90"     : "f90",
-+            "haskell"       : "hs",
-            "html"          : "html",
-            "ini"           : "ini",
-            "java"          : "java",
-@@ -220,6 +222,7 @@
-            "f90"   : "fortran90",
-            "h"     : "c",
-            "html"  : "html",
-+            "hs"    : "haskell",
-            "ini"   : "ini",
-            "java"  : "java",
-            "ksh"   : "kshell", # Leo 4.5.1.
-#@nonl
-#@-node:ekr.20090907080624.6072:Install support for haskel
-#@+node:ekr.20090907080624.6073:Fix wrong link in front page
-@nocolor-node
-
-The link 'Edward K. Ream' in the last line points to the Users Guide index.
-#@nonl
-#@-node:ekr.20090907080624.6073:Fix wrong link in front page
 #@+node:ekr.20090907080624.6074:Add *very* brief words at the start of the intro
 @nocolor-node
 
@@ -200,10 +43,19 @@ Leo can operate on the text blocks using user scripts. Text and
 graphic output can be captured to tabbed panes within Leo.  The
 scripts can be easily (and dynamically) assigned to buttons and menus.
 #@-node:ekr.20090907080624.6074:Add *very* brief words at the start of the intro
-#@+node:ekr.20090907080624.6075:Can we choose gui's dynamically
-People are having trouble with qt vs. tk.
+#@-node:ekr.20090822054806.6004:Improve the intro
+#@+node:ekr.20090907080624.6073:Fix wrong link in front page
+@nocolor-node
+
+The link 'Edward K. Ream' in the last line points to the Users Guide index.
 #@nonl
-#@-node:ekr.20090907080624.6075:Can we choose gui's dynamically
+#@-node:ekr.20090907080624.6073:Fix wrong link in front page
+#@+node:ekr.20090907080624.6069:Update the 4.6.3 release notes in the trunk
+It also provides lots of new features. --gui=qttabs and new plugins
+(spydershell, qtframecommands, mod_framesize). There is also "show
+folder" in rclick menu.
+#@nonl
+#@-node:ekr.20090907080624.6069:Update the 4.6.3 release notes in the trunk
 #@+node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
 @nocolor-node
 
@@ -254,6 +106,145 @@ debian/ubuntu, and the rest can run launchLeo.py. We can mostly forget
 that section of the docs.
 #@nonl
 #@-node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
+#@-node:ekr.20091005145253.6060:Docs
+#@+node:ekr.20091003171114.6466:First
+#@+node:ekr.20080918164844.8:Add read/write-any-derived-file commands
+# Remove the old type-specific commands from the default menu.
+#@nonl
+#@-node:ekr.20080918164844.8:Add read/write-any-derived-file commands
+#@+node:ekr.20090822054806.6003:Add rst button that doesn't need rst3 plugin
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/95687c7a2dba5e18
+
+The rst3 plugin is required to use the script examples given in the
+"@@button rst" example in the leoSettings.leo file and in Chapter 14
+of the users guide (shown below).  They should be updated to utilize
+the new rST functionality in Leo's core.
+
+Until that is done, can someone post a working "@button rst" script
+that doesn't require the rst3 plugin?  I would like to test the rST
+implementation in Leo's core.
+
+Script in "@@button rst" example in the leoSettings.leo file:
+|   import leoPlugins
+|   rst3 = leoPlugins.getPluginModule('rst3')
+|   if rst3:
+|       controller = rst3.controllers.get(c)
+|       if controller:
+|           controller.processTopTree(p)
+|   else:
+|       rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
+|       if rst3:
+|           g.es('rst3 loaded')
+|           rst3.onCreate('tag',{'c':c})
+|       else:
+|           # Ask to be removed.
+|           g.app.scriptDict['removeMe'] = True
+
+Script in Chapter 14 of the users guide:
+|   import leo.core.leoPlugins as leoPlugins
+|   rst3 = leoPlugins.getPluginModule('rst3')
+|   if rst3:
+|       controller = rst3.controllers.get(c)
+|       if controller:
+|           p,s = controller.writeNodeToString(ext='.html')
+|           print '*' * 40,p
+|           print s 
+#@nonl
+#@-node:ekr.20090822054806.6003:Add rst button that doesn't need rst3 plugin
+#@+node:ekr.20090907080624.6072:Install support for haskel
+@nocolor-node
+
+private communication to me from Gregary Crosswhite.
+
+First, thank you for all of your hard work on Leo! It is one of the most useful
+tools that I have ever discovered.
+
+Since I saw that you are planning to have another release tomorrow, could you
+take a quick look at my merge request
+(lp:~gcrosswhite/leo-editor/fix-haskell-support) which fixes support for
+Haskell? It is a simple patch that just adds an entry for Haskell to the
+language comment deliminator dictionaries, but it makes a big difference since
+currently tangled Haskell sources are rejected by the compiler.
+
+For convenience, I have also included the diff at the end of this e-mail.
+
+Thanks,
+Greg
+
+=== modified file 'leo/core/leoApp.py'
+--- leo/core/leoApp.py  2009-08-12 21:52:50 +0000
++++ leo/core/leoApp.py  2009-08-28 05:46:38 +0000
+@@ -128,6 +128,7 @@
+            "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+            "fortran"       : "C",
+            "fortran90"     : "!",
++            "haskell"       : "--_ {-_ _-}",
+            "html"          : "<!-- -->",
+            "ini"           : ";",
+            "java"          : "// /* */",
+@@ -173,6 +174,7 @@
+            "forth"         : "forth",
+            "fortran"       : "f",
+            "fortran90"     : "f90",
++            "haskell"       : "hs",
+            "html"          : "html",
+            "ini"           : "ini",
+            "java"          : "java",
+@@ -220,6 +222,7 @@
+            "f90"   : "fortran90",
+            "h"     : "c",
+            "html"  : "html",
++            "hs"    : "haskell",
+            "ini"   : "ini",
+            "java"  : "java",
+            "ksh"   : "kshell", # Leo 4.5.1.
+#@nonl
+#@-node:ekr.20090907080624.6072:Install support for haskel
+#@-node:ekr.20091003171114.6466:First
+#@+node:ekr.20091005145253.6059:Urgent bugs
+#@+node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
+#@-node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
+#@+node:ekr.20090822054806.6001:Fix cursor up/down bug
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/731b9c541f3a3ab0
+
+sequence::
+
+ type """ <cr> """ <up>
+
+the cursor is at the end of the first line
+
+type <down>
+
+the cursor is now between the 2nd and 3rd quote. 
+#@nonl
+#@-node:ekr.20090822054806.6001:Fix cursor up/down bug
+#@+node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b84659e608ba44d5
+
+The data is lost because @auto-rst mostly ignores the top-level node.
+#@nonl
+#@-node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
+#@+node:ekr.20090709101224.6040:Fix rst bug
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/73db1b3109cc94b6
+
+Apparently, the problem is with this line::
+
+<p>Greet the world, politely**code**:.. class:: code..::   g.es (&quot;Hello, world&quot;)</p>
+
+Presumably, the ..class:: code..:: should start a new line. There have been
+changes recently to how newlines are handled. I'll put this on the list of
+things to fix for Leo 4.6 final.
+
+
+#@-node:ekr.20090709101224.6040:Fix rst bug
 #@+node:ekr.20090907080624.6077:Fix underlining problem in rst
 @nocolor-node
 
@@ -266,558 +257,18 @@ the the underlines is not long enough, because the underline for one Japanese
 char need two marks.
 #@nonl
 #@-node:ekr.20090907080624.6077:Fix underlining problem in rst
-#@-node:ekr.20090907080624.6078:New to-do items
-#@+node:ekr.20090811141250.5955:Harder features
-#@+node:ekr.20090724081340.5987:Improve recursive import script and @auto
+#@+node:ekr.20090909093330.6124:Investigate "multiple parts not allowed" tangle errors
 @nocolor-node
 
-Instead of adding an @ignore directive, it might be better
-to change @auto to @@auto.
+http://groups.google.com/group/leo-editor/browse_thread/thread/181533467503ef48
 
-Should @auto be more lenient with C files?
-
-Improve the recursive import script.
-    - Minimize the path names
-    - Option to include/exclude the @auto itself
-
-#@-node:ekr.20090724081340.5987:Improve recursive import script and @auto
-#@+node:ekr.20090714085914.5991:Add drag and drop to qt gui
-#@-node:ekr.20090714085914.5991:Add drag and drop to qt gui
-#@+node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
-@nocolor-node
-
-- Combine 3 "read @x nodes" commands into a single "read @<file> nodes" command.
-
-- Combine 3 "write @x nodes" commands into a single "write @<file> nodes" command. 
-
-- Combine 3 "write dirty @x nodes" commands into a single "write dirty @<file> nodes" command. 
-#@nonl
-#@-node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
-#@+node:ekr.20090622020908.6058:Add lite sentinels
-http://groups.google.com/group/leo-editor/browse_thread/thread/c4f2cf250600e4a9
-#@nonl
-#@-node:ekr.20090622020908.6058:Add lite sentinels
-#@+node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
-#@-node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
-#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
-This probably should wait until the one-node world works.
-#@nonl
-#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
-#@+node:ekr.20090801103907.6018:Add entries to global dicts for more languages
-http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
-
-Especially languages in leo/modes.
-#@nonl
-#@+node:ekr.20090816125009.5993:@url http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
-#@-node:ekr.20090816125009.5993:@url http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
-#@+node:ekr.20090814190307.5983:print all modes/*.py files
-import glob
-
-theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
-
-aList = glob.glob(theDir)
-
-for z in aList:
-    print g.os_path_basename(z)
-
-@
-Exist:
-
-    "ada"   : "ada",
-    "adb"   : "ada",
-    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
-    "as"    : "actionscript",
-    "bas"   : "rapidq",
-    "bat"   : "batch",
-    "c"     : "c",
-    "cfg"   : "config",
-    "cpp"   : "cpp",
-    "css"   : "css",
-    "el"    : "elisp",
-    "forth" : "forth",
-    "f"     : "fortran",
-    "f90"   : "fortran90",
-    "h"     : "c",
-    "html"  : "html",
-    "ini"   : "ini",
-    "java"  : "java",
-    "ksh"   : "kshell", # Leo 4.5.1.
-    "lua"   : "lua",  # ddm 13/02/06
-    "nw"    : "noweb",
-    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
-    "p"     : "pascal",
-    "pl"    : "perl",   # 11/7/05
-    "pod"   : "perlpod", # 11/7/05
-    "php"   : "php",
-    "py"    : "python",
-    "sql"   : "plsql", # qt02537 2005-05-27
-    "r"     : "rebol",
-    "rb"    : "ruby", # thyrsus 2008-11-05
-    "rest"  : "rst",
-    "rst"   : "rst",
-    "sh"    : "shell",
-    "tex"   : "tex",
-    "txt"   : "plain",
-    "tcl"   : "tcltk",
-    "vim"   : "vim",
-"w"     : "cweb",
-"xml"   : "xml",
-"xsl"   : "xslt",
-
-Add first:
-
-
-ada95.py
-antlr.py
-apacheconf.py
-apdl.py
-applescript.py
-asp.py
-aspect_j.py
-assembly_macro32.py
-assembly_mcs51.py
-assembly_parrot.py
-assembly_r2000.py
-assembly_x86.py
-awk.py
-b.py
-batch.py
-bbj.py
-bcel.py
-bibtex.py
-c.py
-chill.py
-cobol.py
-coldfusion.py
-cplusplus.py
-csharp.py
-css.py
-cvs_commit.py
-d.py
-doxygen.py
-dsssl.py
-eiffel.py
-embperl.py
-erlang.py
-factor.py
-forth.py
-fortran.py
-fortran90.py
-foxpro.py
-freemarker.py
-gettext.py
-groovy.py
-haskell.py
-hex.py
-html.py
-i4gl.py
-icon.py
-idl.py
-inform.py
-ini.py
-inno_setup.py
-interlis.py
-io.py
-java.py
-javascript.py
-jcl.py
-jhtml.py
-jmk.py
-jsp.py
-latex.py
-lilypond.py
-lisp.py
-lotos.py
-lua.py
-mail.py
-makefile.py
-maple.py
-matlab.py
-ml.py
-modula3.py
-moin.py
-mqsc.py
-netrexx.py
-nqc.py
-nsis2.py
-objective_c.py
-objectrexx.py
-occam.py
-omnimark.py
-pascal.py
-patch.py
-perl.py
-php.py
-phpsection.py
-pike.py
-pl1.py
-plain.py
-plsql.py
-pop11.py
-postscript.py
-povray.py
-powerdynamo.py
-progress.py
-prolog.py
-props.py
-psp.py
-ptl.py
-pvwave.py
-pyrex.py
-python.py
-r.py
-rebol.py
-redcode.py
-relax_ng_compact.py
-rest.py
-rhtml.py
-rib.py
-rpmspec.py
-rtf.py
-ruby.py
-rview.py
-sas.py
-scheme.py
-sdl_pr.py
-sgml.py
-shell.py
-shellscript.py
-shtml.py
-smalltalk.py
-smi_mib.py
-splus.py
-sqr.py
-squidconf.py
-ssharp.py
-svn_commit.py
-swig.py
-tcl.py
-tex.py
-texinfo.py
-text.py
-tpl.py
-tsql.py
-uscript.py
-vbscript.py
-velocity.py
-verilog.py
-vhdl.py
-xml.py
-xsl.py
-zpt.py
-__init__.py
-#@-node:ekr.20090814190307.5983:print all modes/*.py files
-#@+node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
-# Internally, lower case is used for all language names.
-self.language_delims_dict = {
-    # Keys are languages, values are 1,2 or 3-tuples of delims.
-    "ada"           : "--",
-    "batch"         : "REM_", # Use the REM hack.
-    "actionscript"  : "// /* */", #jason 2003-07-03
-    "autohotkey"    : "; /* */", #TL - AutoHotkey language
-    "c"             : "// /* */", # C, C++ or objective C.
-    "config"        : "#", # Leo 4.5.1
-    "csharp"        : "// /* */", # C#
-    "cpp"           : "// /* */",# C++.
-    "css"           : "/* */", # 4/1/04
-    "cweb"          : "@q@ @>", # Use the "cweb hack"
-    "elisp"         : ";",
-    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
-    "fortran"       : "C",
-    "fortran90"     : "!",
-    "haskell"       : "--_ {-_ _-}",
-    "html"          : "<!-- -->",
-    "ini"           : ";",
-    "java"          : "// /* */",
-    "kshell"        : "#", # Leo 4.5.1.
-    "latex"         : "%",
-    "lua"           : "--",  # ddm 13/02/06
-    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
-    "pascal"        : "// { }",
-    "perl"          : "#",
-    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
-    "php"           : "// /* */", # 6/23/07: was "//",
-    "plain"         : "#", # We must pick something.
-    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
-    "python"        : "#",
-    "rapidq"        : "'", # fil 2004-march-11
-    "rebol"         : ";",  # jason 2003-07-03
-    "rest"          : ".._",
-    "rst"           : ".._",
-    "ruby"          : "#",  # thyrsus 2008-11-05
-    "shell"         : "#",  # shell scripts
-    "tcltk"         : "#",
-    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
-    "unknown"       : "#", # Set when @comment is seen.
-    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
-    "vim"           : "\"",
-    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
-    "xml"           : "<!-- -->",
-    "xslt"          : "<!-- -->",
-}
-
-self.language_extension_dict = {
-    # Keys are languages, values are extensions.
-    "ada"           : "ada",
-    "actionscript"  : "as", #jason 2003-07-03
-    "autohotkey"    : "ahk", #TL - AutoHotkey language
-    "batch"         : "bat", # Leo 4.5.1.
-    "c"             : "c",
-    "config"        : "cfg",
-    "cpp"           : "cpp",
-    "css"           : "css", # 4/1/04
-    "cweb"          : "w",
-    "elisp"         : "el",
-    "forth"         : "forth",
-    "fortran"       : "f",
-    "fortran90"     : "f90",
-    "haskell"       : "hs",
-    "html"          : "html",
-    "ini"           : "ini",
-    "java"          : "java",
-    "kshell"        : "ksh", # Leo 4.5.1.
-    "latex"         : "tex", # 1/8/04
-    "lua"           : "lua",  # ddm 13/02/06
-    "noweb"         : "nw",
-    "pascal"        : "p",
-    "perl"          : "pl",      # 11/7/05
-    "perlpod"       : "pod",  # 11/7/05
-    "php"           : "php",
-    "plain"         : "txt",
-    "python"        : "py",
-    "plsql"         : "sql", # qt02537 2005-05-27
-    "rapidq"        : "bas", # fil 2004-march-11
-    "rebol"         : "r",    # jason 2003-07-03
-    "rst"           : "rst",
-    "rst"           : "rest",
-    "ruby"          : "rb",   # thyrsus 2008-11-05
-    "shell"         : "sh",   # DS 4/1/04
-    "tex"           : "tex",
-    "tcltk"         : "tcl",
-    "unknown"       : "txt", # Set when @comment is seen.
-    "vim"           : "vim",
-    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
-    "xml"           : "xml",
-    "xslt"          : "xsl",
-}
-
-self.extension_dict = {
-    # Keys are extensions, values are languages.
-    "ada"   : "ada",
-    "adb"   : "ada",
-    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
-    "as"    : "actionscript",
-    "bas"   : "rapidq",
-    "bat"   : "batch",
-    "c"     : "c",
-    "cfg"   : "config",
-    "cpp"   : "cpp",
-    "css"   : "css",
-    "el"    : "elisp",
-    "forth" : "forth",
-    "f"     : "fortran",
-    "f90"   : "fortran90",
-    "h"     : "c",
-    "html"  : "html",
-    "hs"    : "haskell",
-    "ini"   : "ini",
-    "java"  : "java",
-    "ksh"   : "kshell", # Leo 4.5.1.
-    "lua"   : "lua",  # ddm 13/02/06
-    "nw"    : "noweb",
-    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
-    "p"     : "pascal",
-    "pl"    : "perl",   # 11/7/05
-    "pod"   : "perlpod", # 11/7/05
-    "php"   : "php",
-    "py"    : "python",
-    "sql"   : "plsql", # qt02537 2005-05-27
-    "r"     : "rebol",
-    "rb"    : "ruby", # thyrsus 2008-11-05
-    "rest"  : "rst",
-    "rst"   : "rst",
-    "sh"    : "shell",
-    "tex"   : "tex",
-    "txt"   : "plain",
-    "tcl"   : "tcltk",
-    "vim"   : "vim",
-    "w"     : "cweb",
-    "xml"   : "xml",
-    "xsl"   : "xslt",
-}
-
-# Extra language extensions, used to associate extensions with mode files.
-# Used by importCommands.languageForExtension.
-# Keys are extensions, values are corresponding mode file (without .py)
-# A value of 'none' is a signal to unit tests that no extension file exists.
-self.extra_extension_dict = {
-    'actionscript': 'actionscript',
-    'ada'   : 'ada95',
-    'adb'   : 'none', # ada??
-    'awk'   : 'awk',
-    'bas'   : 'none', # rapidq
-    'bat'   : 'none', # batch
-    'cfg'   : 'none', # Leo 4.5.1
-    'cpp'   : 'c',
-    'el'    : 'lisp',
-    'f'     : 'fortran90',
-    'ksh'   : 'none', # Leo 4.5.1
-    'nw'    : 'none', # noweb.
-    'otl'   : 'none', # vimoutline.
-    'pod'   : 'perl',
-    'tcl'   : 'tcl',
-    'unknown_language': 'none',
-    'w'     : 'none', # cweb
-}
-
-self.global_commands_dict = {}
-#@-node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
-#@+node:ekr.20031218072017.3210:createOutline (leoImport)
-def createOutline (self,fileName,parent,
-    atAuto=False,atShadow=False,s=None,ext=None):
-
-    c = self.c ; u = c.undoer ; s1 = s
-
-    # New in Leo 4.4.7: honor @path directives.
-    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-    fileName = c.os_path_finalize_join(self.default_directory,fileName)
-    junk,self.fileName = g.os_path_split(fileName)
-    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
-    self.setEncoding(p=parent,atAuto=atAuto)
-    if not ext: ext = self.fileType
-    ext = ext.lower()
-    if not s:
-        << Read file into s >>
-    << convert s to the proper encoding >>
-
-    # Create the top-level headline.
-    if atAuto:
-        p = parent.copy()
-        p.setBodyString('')
-    else:
-        undoData = u.beforeInsertNode(parent)
-        p = parent.insertAsLastChild()
-
-        if self.treeType == "@file":
-            p.initHeadString("@file " + fileName)
-        else:
-            # @root nodes don't have @root in the headline.
-            p.initHeadString(fileName)
-        u.afterInsertNode(p,'Import',undoData)
-
-    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
-
-    if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
-        func = self.scanRstText
-    else:
-        func = self.importDispatchDict.get(ext)
-
-    if func and not c.config.getBool('suppress_import_parsing',default=False):
-        func(s,p,atAuto=atAuto)
-    else:
-        # Just copy the file to the parent node.
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-
-    p.contract()
-    return p
-#@+node:ekr.20031218072017.3211:<< Read file into s >>
-try:
-    fileName = c.os_path_finalize(fileName)
-    theFile = open(fileName)
-    s = theFile.read()
-    theFile.close()
-except IOError:
-    if atShadow: kind = '@shadow '
-    elif atAuto: kind = '@auto '
-    else: kind = ''
-    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
-    g.es("can not open", "%s%s" % (kind,fileName),color='red')
-    # g.trace(g.callers())
-    leoTest.fail()
-    return None
-#@-node:ekr.20031218072017.3211:<< Read file into s >>
-#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
-if s and fileName.endswith('.py'):
-    # Python's encoding comments override everything else.
-    lines = g.splitLines(s)
-    tag = '# -*- coding:' ; tag2 = '-*-'
-    n1,n2 = len(tag),len(tag2)
-    line1 = lines[0].strip()
-    if line1.startswith(tag) and line1.endswith(tag2):
-        e = line1[n1:-n2].strip()
-        if e and g.isValidEncoding(e):
-            # g.pr('found',e,'in',line1)
-            self.encoding = e
-
-s = g.toUnicode(s,self.encoding)
-#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
-#@-node:ekr.20031218072017.3210:createOutline (leoImport)
-#@+node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
-def scanUnknownFileType (self,s,p,ext,atAuto=False):
-
-    c = self.c
-    changed = c.isChanged()
-    body = g.choose(atAuto,'','@ignore\n')
-    if ext in ('.html','.htm'):   body += '@language html\n'
-    elif ext in ('.txt','.text'): body += '@nocolor\n'
-    else:
-        language = self.languageForExtension(ext)
-        if language: body += '@language %s\n' % language
-
-    self.setBodyString(p,body + self.rootLine + self.escapeFalseSectionReferences(s))
-    if atAuto:
-        for p in p.self_and_subtree():
-            p.clearDirty()
-        if not changed:
-            c.setChanged(False)
-
-    g.app.unitTestDict = {'result':True}
-#@+node:ekr.20080811174246.1:languageForExtension
-def languageForExtension (self,ext):
-
-    '''Return the language corresponding to the extensiion ext.'''
-
-    unknown = 'unknown_language'
-
-    if ext.startswith('.'): ext = ext[1:]
-
-    if ext:
-        z = g.app.extra_extension_dict.get(ext)
-        if z not in (None,'none','None'):
-            language = z
-        else:
-            language = g.app.extension_dict.get(ext)
-        if language in (None,'none','None'):
-            language = unknown
-    else:
-        language = unknown
-
-    # g.trace(ext,repr(language))
-
-    # Return the language even if there is no colorizer mode for it.
-    return language
-#@-node:ekr.20080811174246.1:languageForExtension
-#@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
-#@-node:ekr.20090801103907.6018:Add entries to global dicts for more languages
-#@+node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
-@nocolor-node
-
-I use Visual Studio 2008, the same that is used for Python 2.5/2.6.
-
-A few days ago, I submitted a patch that allows you to use Mingw32 as a
-compiler, too. If you use it, then you need to produce libpython26.a.
-
-For doing this, there is a tool pexport.exe which can do that. I found a website
-with those hints, but lost that, again :-) pexport is not included with mingw32.
-#@nonl
-#@+node:ekr.20090730165955.6014:Notes
-http://www.emmestech.com/software/pexports-0.43/download_pexports.html
-#@nonl
-#@-node:ekr.20090730165955.6014:Notes
-#@-node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
-#@-node:ekr.20090811141250.5955:Harder features
-#@-node:ekr.20090714085914.5990:Next
-#@+node:ekr.20090131200406.9:Bugs
+#@-node:ekr.20090909093330.6124:Investigate "multiple parts not allowed" tangle errors
+#@+node:ekr.20090907080624.6071:Install to site-packages, not "c:\program files"
+#@-node:ekr.20090907080624.6071:Install to site-packages, not "c:\program files"
+#@-node:ekr.20091005145253.6059:Urgent bugs
+#@+node:ekr.20090811090022.6029:Bugs
+#@+node:ekr.20090907080624.6081:Spell checker should check headlines
+#@-node:ekr.20090907080624.6081:Spell checker should check headlines
 #@+node:ekr.20090813112405.5980:Delete resurrected nodes
 @nocolor-node
 
@@ -827,10 +278,7 @@ This problem is hard.
 It may be simpler in the one-node world.
 #@nonl
 #@-node:ekr.20090813112405.5980:Delete resurrected nodes
-#@+node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
-#@-node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
-#@+node:ekr.20081215070651.4:Minor bugs 7
-#@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
+#@+node:ekr.20080812072419.1:goto-line doesn't work for @nosent & @auto files
 @nocolor
 
 A pretty feeble start for support for goto-global-line for @nosent files.
@@ -1335,7 +783,7 @@ def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
     return n
 #@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
 #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
-#@-node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
+#@-node:ekr.20080812072419.1:goto-line doesn't work for @nosent & @auto files
 #@+node:ekr.20080519062109.2:Improve how Leo handles long lines
 @nocolor
 
@@ -2350,8 +1798,8 @@ archivedPosition: 0.3.6.6.2.3, root_v: <vnode 168011244:'@thin
 test_core.txt'>
 #@nonl
 #@-node:ekr.20090202064534.1:Remove bad archived position message?
-#@-node:ekr.20081215070651.4:Minor bugs 7
-#@+node:ekr.20080517102922.1:File bugs 8
+#@-node:ekr.20090811090022.6029:Bugs
+#@+node:ekr.20080517102922.1:File bugs & features
 #@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
 @nocolor-node
 
@@ -2365,26 +1813,6 @@ write code should not use any @path declarations found in its body
 text.
 #@nonl
 #@-node:ekr.20081204091750.4:Fix inconsistency in how @path works
-#@+node:ekr.20090130065000.3:t.uA's are not persistent
-@nocolor-node
-
-They are written to the <t> element, but sax does not seem to get them.
-#@nonl
-#@+node:EKR.20040526202501:putUnknownAttributes
-def putUnknownAttributes (self,torv):
-
-    """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
-
-    attrDict = torv.unknownAttributes
-    if type(attrDict) != type({}):
-        g.es("ignoring non-dictionary unknownAttributes for",torv,color="blue")
-        return ''
-    else:
-        val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
-        # g.trace(torv,attrDict)
-        return val
-#@-node:EKR.20040526202501:putUnknownAttributes
-#@-node:ekr.20090130065000.3:t.uA's are not persistent
 #@+node:ekr.20090105083748.1:Fix xml write bug
 @nocolor-node
 
@@ -2516,63 +1944,6 @@ since pressing ctrl+S in leo has even more significant implications we
 should be absolutely certain everything happens safely. 
 #@nonl
 #@-node:ekr.20080918164844.14:Protect @shadow and @auto files from overwriting external changes
-#@+node:ekr.20080626081829.2:Allow headline comments for @nosent files
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/eb718b4c6d478ac0
-
-I'm just getting started learning how to use Leo. Now, I'd like to use
-it for some of my projects, but there's no chance that I can convert
-everyone at work to using it, so putting sentinel-filled files in our
-repository is out of the question. At the same time, my code looks
-awfully bare without sentinels because the documentation ends up in
-the section names, not the comments!
-
-So, I was wondering if there's a convenient way to pull the section
-names into a comment at the start of each section?
-
-===============
-
-Interesting question.  Am I correct in assuming you are using @nosent trees
-to generate your files?  If so, it would be easy to add support for the
-following options:
-
-@bool write_section_comments_in_at_nosent_trees
-@bool write_node_name_comments_in_at_nosent_trees
-
-The first would write a sentinel consisting of only the section name;
-the second would write a sentinel consisting only of the node's headline
-(for nodes whose headline is not a section name).
-
-These seem like they would be useful additions.  One can even imagine
-corresponding Leo directives so that the comments could be turned on or off
-within an @nosent tree.
-
-What do you think?
-
-=====================
-
-> Interesting question.  Am I correct in assuming you are using @nosent trees
-> to generate your files?  If so, it would be easy to add support for the
-> following options:
-
-> @bool write_section_comments_in_at_nosent_trees
-> @bool write_node_name_comments_in_at_nosent_trees
-
-> The first would write a sentinel consisting of only the section name;
-> the second would write a sentinel consisting only of the node's headline
-> (for nodes whose headline is not a section name).
-
-> These seem like they would be useful additions.  One can even imagine
-> corresponding Leo directives so that the comments could be turned on or off
-> within an @nosent tree.
-
-That sounds like an excellent solution. Particularly the last bit --
-if you could turn section-comments on and off as required, it would
-become very convenient to use Leo to produce source that is intended
-to also be read by non Leo users. 
-#@nonl
-#@-node:ekr.20080626081829.2:Allow headline comments for @nosent files
 #@+node:ekr.20080412053100.1:Look into undefined-section behavior
 @nocolor
 
@@ -2600,8 +1971,556 @@ intended behavior. The correct behavior would be to save the file,
 give me the warning about the undefined section, and exit.
 #@nonl
 #@-node:ekr.20080412053100.1:Look into undefined-section behavior
-#@-node:ekr.20080517102922.1:File bugs 8
-#@-node:ekr.20090131200406.9:Bugs
+#@+node:ekr.20090622020908.6058:Add lite sentinels
+http://groups.google.com/group/leo-editor/browse_thread/thread/c4f2cf250600e4a9
+#@nonl
+#@-node:ekr.20090622020908.6058:Add lite sentinels
+#@-node:ekr.20080517102922.1:File bugs & features
+#@+node:ekr.20090811141250.5955:Harder features
+#@+node:ekr.20090724081340.5987:Improve recursive import script and @auto
+@nocolor-node
+
+Instead of adding an @ignore directive, it might be better
+to change @auto to @@auto.
+
+Should @auto be more lenient with C files?
+
+Improve the recursive import script.
+    - Minimize the path names
+    - Option to include/exclude the @auto itself
+
+#@-node:ekr.20090724081340.5987:Improve recursive import script and @auto
+#@+node:ekr.20090714085914.5991:Add drag and drop to qt gui
+#@-node:ekr.20090714085914.5991:Add drag and drop to qt gui
+#@+node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
+@nocolor-node
+
+- Combine 3 "read @x nodes" commands into a single "read @<file> nodes" command.
+
+- Combine 3 "write @x nodes" commands into a single "write @<file> nodes" command. 
+
+- Combine 3 "write dirty @x nodes" commands into a single "write dirty @<file> nodes" command. 
+#@nonl
+#@-node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
+#@+node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
+#@-node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
+#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
+This probably should wait until the one-node world works.
+#@nonl
+#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
+#@+node:ekr.20090801103907.6018:Add entries to global dicts for more languages
+http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
+
+Especially languages in leo/modes.
+#@nonl
+#@+node:ekr.20090816125009.5993:@url http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
+#@-node:ekr.20090816125009.5993:@url http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
+#@+node:ekr.20090814190307.5983:print all modes/*.py files
+import glob
+
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
+
+aList = glob.glob(theDir)
+
+for z in aList:
+    print g.os_path_basename(z)
+
+@
+Exist:
+
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+"w"     : "cweb",
+"xml"   : "xml",
+"xsl"   : "xslt",
+
+Add first:
+
+
+ada95.py
+antlr.py
+apacheconf.py
+apdl.py
+applescript.py
+asp.py
+aspect_j.py
+assembly_macro32.py
+assembly_mcs51.py
+assembly_parrot.py
+assembly_r2000.py
+assembly_x86.py
+awk.py
+b.py
+batch.py
+bbj.py
+bcel.py
+bibtex.py
+c.py
+chill.py
+cobol.py
+coldfusion.py
+cplusplus.py
+csharp.py
+css.py
+cvs_commit.py
+d.py
+doxygen.py
+dsssl.py
+eiffel.py
+embperl.py
+erlang.py
+factor.py
+forth.py
+fortran.py
+fortran90.py
+foxpro.py
+freemarker.py
+gettext.py
+groovy.py
+haskell.py
+hex.py
+html.py
+i4gl.py
+icon.py
+idl.py
+inform.py
+ini.py
+inno_setup.py
+interlis.py
+io.py
+java.py
+javascript.py
+jcl.py
+jhtml.py
+jmk.py
+jsp.py
+latex.py
+lilypond.py
+lisp.py
+lotos.py
+lua.py
+mail.py
+makefile.py
+maple.py
+matlab.py
+ml.py
+modula3.py
+moin.py
+mqsc.py
+netrexx.py
+nqc.py
+nsis2.py
+objective_c.py
+objectrexx.py
+occam.py
+omnimark.py
+pascal.py
+patch.py
+perl.py
+php.py
+phpsection.py
+pike.py
+pl1.py
+plain.py
+plsql.py
+pop11.py
+postscript.py
+povray.py
+powerdynamo.py
+progress.py
+prolog.py
+props.py
+psp.py
+ptl.py
+pvwave.py
+pyrex.py
+python.py
+r.py
+rebol.py
+redcode.py
+relax_ng_compact.py
+rest.py
+rhtml.py
+rib.py
+rpmspec.py
+rtf.py
+ruby.py
+rview.py
+sas.py
+scheme.py
+sdl_pr.py
+sgml.py
+shell.py
+shellscript.py
+shtml.py
+smalltalk.py
+smi_mib.py
+splus.py
+sqr.py
+squidconf.py
+ssharp.py
+svn_commit.py
+swig.py
+tcl.py
+tex.py
+texinfo.py
+text.py
+tpl.py
+tsql.py
+uscript.py
+vbscript.py
+velocity.py
+verilog.py
+vhdl.py
+xml.py
+xsl.py
+zpt.py
+__init__.py
+#@-node:ekr.20090814190307.5983:print all modes/*.py files
+#@+node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM_", # Use the REM hack.
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "haskell"       : "--_ {-_ _-}",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lua"           : "--",  # ddm 13/02/06
+    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "rest"          : ".._",
+    "rst"           : ".._",
+    "ruby"          : "#",  # thyrsus 2008-11-05
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+    "vim"           : "\"",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+    "xslt"          : "<!-- -->",
+}
+
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f90",
+    "haskell"       : "hs",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    "rst"           : "rst",
+    "rst"           : "rest",
+    "ruby"          : "rb",   # thyrsus 2008-11-05
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vim"           : "vim",
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+    "xslt"          : "xsl",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "hs"    : "haskell",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+    "w"     : "cweb",
+    "xml"   : "xml",
+    "xsl"   : "xslt",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran90',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
+
+self.global_commands_dict = {}
+#@-node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,
+    atAuto=False,atShadow=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+
+    # New in Leo 4.4.7: honor @path directives.
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = c.os_path_finalize_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
+        func = self.scanRstText
+    else:
+        func = self.importDispatchDict.get(ext)
+
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
+    else:
+        # Just copy the file to the parent node.
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    p.contract()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = c.os_path_finalize(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    if atShadow: kind = '@shadow '
+    elif atAuto: kind = '@auto '
+    else: kind = ''
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (kind,fileName),color='red')
+    # g.trace(g.callers())
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # g.pr('found',e,'in',line1)
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@+node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
+def scanUnknownFileType (self,s,p,ext,atAuto=False):
+
+    c = self.c
+    changed = c.isChanged()
+    body = g.choose(atAuto,'','@ignore\n')
+    if ext in ('.html','.htm'):   body += '@language html\n'
+    elif ext in ('.txt','.text'): body += '@nocolor\n'
+    else:
+        language = self.languageForExtension(ext)
+        if language: body += '@language %s\n' % language
+
+    self.setBodyString(p,body + self.rootLine + self.escapeFalseSectionReferences(s))
+    if atAuto:
+        for p in p.self_and_subtree():
+            p.clearDirty()
+        if not changed:
+            c.setChanged(False)
+
+    g.app.unitTestDict = {'result':True}
+#@+node:ekr.20080811174246.1:languageForExtension
+def languageForExtension (self,ext):
+
+    '''Return the language corresponding to the extensiion ext.'''
+
+    unknown = 'unknown_language'
+
+    if ext.startswith('.'): ext = ext[1:]
+
+    if ext:
+        z = g.app.extra_extension_dict.get(ext)
+        if z not in (None,'none','None'):
+            language = z
+        else:
+            language = g.app.extension_dict.get(ext)
+        if language in (None,'none','None'):
+            language = unknown
+    else:
+        language = unknown
+
+    # g.trace(ext,repr(language))
+
+    # Return the language even if there is no colorizer mode for it.
+    return language
+#@-node:ekr.20080811174246.1:languageForExtension
+#@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
+#@-node:ekr.20090801103907.6018:Add entries to global dicts for more languages
+#@+node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
+@nocolor-node
+
+I use Visual Studio 2008, the same that is used for Python 2.5/2.6.
+
+A few days ago, I submitted a patch that allows you to use Mingw32 as a
+compiler, too. If you use it, then you need to produce libpython26.a.
+
+For doing this, there is a tool pexport.exe which can do that. I found a website
+with those hints, but lost that, again :-) pexport is not included with mingw32.
+#@nonl
+#@+node:ekr.20090730165955.6014:Notes
+http://www.emmestech.com/software/pexports-0.43/download_pexports.html
+#@nonl
+#@-node:ekr.20090730165955.6014:Notes
+#@-node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
+#@-node:ekr.20090811141250.5955:Harder features
 #@+node:ekr.20090131200406.14:autocompletion
 #@+node:ekr.20081005065934.12:Links from Ville re Scintilla
 @nocolor-node
@@ -3562,7 +3481,132 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
 #@nonl
 #@-node:ekr.20080421140032.1:Fix multiple controllers problem in all plugins
 #@-node:ekr.20080730212711.7:Improve config & plugins
-#@+node:ekr.20090131200406.15:File features
+#@+node:ekr.20090714085914.5993:Most important features
+#@+node:ekr.20071001052501:Versioning for nodes
+@nocolor
+
+One feature I have not seen in SCS system is something which might be called
+"history compression": I might be interested in having both version 5 and 6
+in my source tree, when the current version is 7, but I am not really interested
+in the 2000 steps which transformed 5 into 6 (just suggested this feature to
+the bazaar people). This happens actually quite often to me, since I use the
+SCS as a back-up system, saving many (uninteresting) intermediate steps while
+implementing a new feature.
+#@nonl
+#@-node:ekr.20071001052501:Versioning for nodes
+#@+node:ekr.20090601083544.6051:Add expand_noweb_references for rst3 plugin
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
+
+> What would work for me is if named sections in a @rst subtree
+> would work exactly as they work for other derived files: they
+> get inserted at the place where they are referenced.
+
+- Add support for the following options:
+    - expand_noweb_references: default False for compatibility.
+    - ignore_noweb definitions: default False for compatibility.
+
+- When expand_noweb_references is True, definitions (typically clones)
+  must be descendants of the referencing node (in the @rst tree)
+#@+node:ekr.20090601083544.6052:post
+@nocolor-node
+
+I want to write the documentation for the source program in a @rst3 subtree. In
+this @rst3 subtree I want to refer to fragments of the program, like:
+
+In the following code fragment::
+
+  <<code fragment>>
+
+Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
+get to this work, I should have <<code fragment>> under the @rst3 subtree as
+well, but this is then also treated as @rst3 input (which in this case, is not
+what I want).
+#@nonl
+#@-node:ekr.20090601083544.6052:post
+#@+node:ekr.20090502071837.71:writeBody & helpers
+def writeBody (self,p):
+
+    # g.trace(p.h,p.b)
+
+    # remove trailing cruft and split into lines.
+    lines = g.splitLines(p.b)
+
+    if self.getOption('code_mode'):
+        if not self.getOption('show_options_doc_parts'):
+            lines = self.handleSpecialDocParts(lines,'@rst-options',
+                retainContents=False)
+        if not self.getOption('show_markup_doc_parts'):
+            lines = self.handleSpecialDocParts(lines,'@rst-markup',
+                retainContents=False)
+        if not self.getOption('show_leo_directives'):
+            lines = self.removeLeoDirectives(lines)
+        lines = self.handleCodeMode(lines)
+    elif self.getOption('doc_only_mode'):
+        # New in version 1.15
+        lines = self.handleDocOnlyMode(p,lines)
+    else:
+        lines = self.handleSpecialDocParts(lines,'@rst-options',
+            retainContents=False)
+        lines = self.handleSpecialDocParts(lines,'@rst-markup',
+            retainContents=self.getOption('generate_rst'))
+        if self.getOption('show_doc_parts_in_rst_mode') is True:
+            pass  # original behaviour, treat as plain text
+        elif self.getOption('show_doc_parts_in_rst_mode'):
+            # use value as class for content
+            lines = self.handleSpecialDocParts(lines,None,
+                retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
+        else:  # option evaluates to false, cut them out
+            lines = self.handleSpecialDocParts(lines,None,
+                retainContents=False)
+        lines = self.removeLeoDirectives(lines)
+        if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
+            lines = self.replaceCodeBlockDirectives(lines)
+
+    # Write the lines.
+    s = ''.join(lines)
+    s = g.ensureLeadingNewlines(s,1)
+    s = g.ensureTrailingNewlines(s,2)
+    self.write(s)
+#@-node:ekr.20090502071837.71:writeBody & helpers
+#@-node:ekr.20090601083544.6051:Add expand_noweb_references for rst3 plugin
+#@+node:ekr.20080918164844.12:Improve headline navigation
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bce1065d9a332fcd
+
+Now that the leo is more "modeless" (I'm speaking of switching between
+outline navigation and body editing modes), which btw is a clear improvement
+to how leo used to behave, here are some things that still feel a bit
+un-intuitive:
+
+- ctrl+H (edit-headline) "locks" the user into the mode way too much.
+
+   * The headline editing mode should be cancelled when the user does:
+      - cursor up/down
+      - ESC
+
+   * Even better alternative: I find myself constantly thinking that "ok,
+now I need to edit a headline (typically not the current headline), so now
+I'll press ctrl+H". I think perhaps pressing up/down should cancel the
+current headline editing, and select the next/previous headline for editing.
+That is, I wouldn't need to navigate to the headline I want to edit before I
+start editing it.
+
+  - cut-node (ctrl+shift+x) selects the wrong node after the cut. The
+intuitive assumption is that cut will select the node that "took the place
+of the
+    current node", instead of starting to travel upwards the set of nodes.
+
+   * Typical use case is the way you usually start deleting a set of items.
+You move to the first item and start cutting repeatedly. This wont work with
+the current behaviour. 
+#@nonl
+#@-node:ekr.20080918164844.12:Improve headline navigation
+#@-node:ekr.20090714085914.5993:Most important features
+#@+node:ekr.20091005145253.6058:Optional...
+#@+node:ekr.20090131200406.15:Optional file features
 #@+node:ekr.20080311135649.2:Allow different .leo formats
 @nocolor
 
@@ -3620,10 +3664,6 @@ these provided that headlines appear somewhere.
 So that's clean.  This will happen in Leo 4.5. 
 #@nonl
 #@-node:ekr.20080311135649.2:Allow different .leo formats
-#@+node:ekr.20080918164844.8:Add read/write-any-derived-file commands
-# Remove the old type-specific commands from the default menu.
-#@nonl
-#@-node:ekr.20080918164844.8:Add read/write-any-derived-file commands
 #@+node:ekr.20061002093442:Add opml support to new,open, save commands
 #@+node:ekr.20031218072017.2820:top level (file menu)
 #@+node:ekr.20031218072017.1623:c.new
@@ -4195,99 +4235,65 @@ it should be the _default._
 No big deal.
 #@nonl
 #@-node:ekr.20090218115025.3:Why are attributes pickled by default?
-#@-node:ekr.20090131200406.15:File features
-#@+node:ekr.20090714085914.5993:Most important features
-#@+node:ekr.20071001052501:Versioning for nodes
+#@+node:ekr.20080626081829.2:Allow headline comments for @nosent files
 @nocolor
 
-One feature I have not seen in SCS system is something which might be called
-"history compression": I might be interested in having both version 5 and 6
-in my source tree, when the current version is 7, but I am not really interested
-in the 2000 steps which transformed 5 into 6 (just suggested this feature to
-the bazaar people). This happens actually quite often to me, since I use the
-SCS as a back-up system, saving many (uninteresting) intermediate steps while
-implementing a new feature.
+http://groups.google.com/group/leo-editor/browse_thread/thread/eb718b4c6d478ac0
+
+I'm just getting started learning how to use Leo. Now, I'd like to use
+it for some of my projects, but there's no chance that I can convert
+everyone at work to using it, so putting sentinel-filled files in our
+repository is out of the question. At the same time, my code looks
+awfully bare without sentinels because the documentation ends up in
+the section names, not the comments!
+
+So, I was wondering if there's a convenient way to pull the section
+names into a comment at the start of each section?
+
+===============
+
+Interesting question.  Am I correct in assuming you are using @nosent trees
+to generate your files?  If so, it would be easy to add support for the
+following options:
+
+@bool write_section_comments_in_at_nosent_trees
+@bool write_node_name_comments_in_at_nosent_trees
+
+The first would write a sentinel consisting of only the section name;
+the second would write a sentinel consisting only of the node's headline
+(for nodes whose headline is not a section name).
+
+These seem like they would be useful additions.  One can even imagine
+corresponding Leo directives so that the comments could be turned on or off
+within an @nosent tree.
+
+What do you think?
+
+=====================
+
+> Interesting question.  Am I correct in assuming you are using @nosent trees
+> to generate your files?  If so, it would be easy to add support for the
+> following options:
+
+> @bool write_section_comments_in_at_nosent_trees
+> @bool write_node_name_comments_in_at_nosent_trees
+
+> The first would write a sentinel consisting of only the section name;
+> the second would write a sentinel consisting only of the node's headline
+> (for nodes whose headline is not a section name).
+
+> These seem like they would be useful additions.  One can even imagine
+> corresponding Leo directives so that the comments could be turned on or off
+> within an @nosent tree.
+
+That sounds like an excellent solution. Particularly the last bit --
+if you could turn section-comments on and off as required, it would
+become very convenient to use Leo to produce source that is intended
+to also be read by non Leo users. 
 #@nonl
-#@-node:ekr.20071001052501:Versioning for nodes
-#@+node:ekr.20090601083544.6051:Add expand_noweb_references for rst3 plugin
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
-
-> What would work for me is if named sections in a @rst subtree
-> would work exactly as they work for other derived files: they
-> get inserted at the place where they are referenced.
-
-- Add support for the following options:
-    - expand_noweb_references: default False for compatibility.
-    - ignore_noweb definitions: default False for compatibility.
-
-- When expand_noweb_references is True, definitions (typically clones)
-  must be descendants of the referencing node (in the @rst tree)
-#@+node:ekr.20090601083544.6052:post
-@nocolor-node
-
-I want to write the documentation for the source program in a @rst3 subtree. In
-this @rst3 subtree I want to refer to fragments of the program, like:
-
-In the following code fragment::
-
-  <<code fragment>>
-
-Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
-get to this work, I should have <<code fragment>> under the @rst3 subtree as
-well, but this is then also treated as @rst3 input (which in this case, is not
-what I want).
-#@nonl
-#@-node:ekr.20090601083544.6052:post
-#@+node:ekr.20090502071837.71:writeBody & helpers
-def writeBody (self,p):
-
-    # g.trace(p.h,p.b)
-
-    # remove trailing cruft and split into lines.
-    lines = g.splitLines(p.b)
-
-    if self.getOption('code_mode'):
-        if not self.getOption('show_options_doc_parts'):
-            lines = self.handleSpecialDocParts(lines,'@rst-options',
-                retainContents=False)
-        if not self.getOption('show_markup_doc_parts'):
-            lines = self.handleSpecialDocParts(lines,'@rst-markup',
-                retainContents=False)
-        if not self.getOption('show_leo_directives'):
-            lines = self.removeLeoDirectives(lines)
-        lines = self.handleCodeMode(lines)
-    elif self.getOption('doc_only_mode'):
-        # New in version 1.15
-        lines = self.handleDocOnlyMode(p,lines)
-    else:
-        lines = self.handleSpecialDocParts(lines,'@rst-options',
-            retainContents=False)
-        lines = self.handleSpecialDocParts(lines,'@rst-markup',
-            retainContents=self.getOption('generate_rst'))
-        if self.getOption('show_doc_parts_in_rst_mode') is True:
-            pass  # original behaviour, treat as plain text
-        elif self.getOption('show_doc_parts_in_rst_mode'):
-            # use value as class for content
-            lines = self.handleSpecialDocParts(lines,None,
-                retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
-        else:  # option evaluates to false, cut them out
-            lines = self.handleSpecialDocParts(lines,None,
-                retainContents=False)
-        lines = self.removeLeoDirectives(lines)
-        if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
-            lines = self.replaceCodeBlockDirectives(lines)
-
-    # Write the lines.
-    s = ''.join(lines)
-    s = g.ensureLeadingNewlines(s,1)
-    s = g.ensureTrailingNewlines(s,2)
-    self.write(s)
-#@-node:ekr.20090502071837.71:writeBody & helpers
-#@-node:ekr.20090601083544.6051:Add expand_noweb_references for rst3 plugin
-#@-node:ekr.20090714085914.5993:Most important features
-#@+node:ekr.20090210093316.1:Features
+#@-node:ekr.20080626081829.2:Allow headline comments for @nosent files
+#@-node:ekr.20090131200406.15:Optional file features
+#@+node:ekr.20090210093316.1:Optional features
 #@+node:ekr.20080922115725.1:Minor @shadow stuff
 #@+node:ekr.20081004102201.2:Create a log file for @shadow?
 @nocolor-node
@@ -4574,8 +4580,6 @@ def bookmark(event):
 QQQ
 #@nonl
 #@-node:ekr.20090601083544.6067:Make all commands available to all commanders
-#@+node:ekr.20081202093528.2:Put new commands in leoEditCommands.py
-#@-node:ekr.20081202093528.2:Put new commands in leoEditCommands.py
 #@+node:ekr.20070624135822:Templates for common code fragments
 @
 Use completion to show fragments.
@@ -4622,39 +4626,6 @@ code.google.com/p/python-ttk/wiki/Screenshots)
 http://groups.google.com/group/leo-editor/browse_thread/thread/dff0c165e2211691
 #@nonl
 #@-node:ekr.20080919085541.3:Use sqlite data base as an alternative representation for .leo files
-#@+node:ekr.20080918164844.12:Improve headline navigation
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/bce1065d9a332fcd
-
-Now that the leo is more "modeless" (I'm speaking of switching between
-outline navigation and body editing modes), which btw is a clear improvement
-to how leo used to behave, here are some things that still feel a bit
-un-intuitive:
-
-- ctrl+H (edit-headline) "locks" the user into the mode way too much.
-
-   * The headline editing mode should be cancelled when the user does:
-      - cursor up/down
-      - ESC
-
-   * Even better alternative: I find myself constantly thinking that "ok,
-now I need to edit a headline (typically not the current headline), so now
-I'll press ctrl+H". I think perhaps pressing up/down should cancel the
-current headline editing, and select the next/previous headline for editing.
-That is, I wouldn't need to navigate to the headline I want to edit before I
-start editing it.
-
-  - cut-node (ctrl+shift+x) selects the wrong node after the cut. The
-intuitive assumption is that cut will select the node that "took the place
-of the
-    current node", instead of starting to travel upwards the set of nodes.
-
-   * Typical use case is the way you usually start deleting a set of items.
-You move to the first item and start cutting repeatedly. This wont work with
-the current behaviour. 
-#@nonl
-#@-node:ekr.20080918164844.12:Improve headline navigation
 #@+node:ekr.20080727122007.1:Allow user to set background colors of nodes
 What uA should be used to specify node colors?
 
@@ -4723,8 +4694,8 @@ Edward
 
 P.S.  I think it would be good style to append "Class" to the name of each command class. This makes it clear that self.myCommandClass(self) is a ctor.
 #@-node:ekr.20080628095358.1:Make each Leo command a class
-#@-node:ekr.20090210093316.1:Features
-#@+node:ekr.20090714085914.5994:New commands
+#@-node:ekr.20090210093316.1:Optional features
+#@+node:ekr.20090714085914.5994:Optionsal new commands
 #@+node:ekr.20071004120359.2:Do expand-region-abbrevs from
 See: regionalExpandAbbrev.
 #@nonl
@@ -5688,7 +5659,8 @@ def startKbdMacro (self,event):
 #@-node:ekr.20050920084036.204:startKbdMacro
 #@-node:ekr.20050920084036.190:macroCommandsClass
 #@-node:ekr.20090201122309.5:Improve macro commands
-#@-node:ekr.20090714085914.5994:New commands
+#@-node:ekr.20090714085914.5994:Optionsal new commands
+#@-node:ekr.20091005145253.6058:Optional...
 #@-node:ekr.20071211093011:4.7 One-node world, Leo3K
 #@+node:ekr.20060306194040:Leo Video
 @nocolor
