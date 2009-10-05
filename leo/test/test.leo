@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -352,13 +352,17 @@
 <v t="ekr.20090701062041.1798"><vh>PHP test</vh>
 <v t="ekr.20090704133634.1780"><vh>Inner php</vh></v>
 </v>
-<v t="ekr.20090514103332.1929" a="M"><vh>Unit tests</vh>
+<v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
 <v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
-<v t="ekr.20090831145049.1819" a="M"><vh>Unicode test</vh></v>
+<v t="ekr.20090831145049.1819"><vh>Unicode test</vh></v>
 <v t="ekr.20091001161528.1828"><vh>@test c.allPositions &amp; c.allUniquePositions</vh></v>
+</v>
+<v t="ekr.20091004190944.1825" a="E"><vh>@file at-file-conversion-test.py</vh>
+<v t="ekr.20091004190944.1826"><vh>spam</vh></v>
+<v t="ekr.20091004190944.1827"><vh>eggs</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -780,7 +784,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="3"></t>
+<t tx="ekr.20070416075121" str_leo_pos="4"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -3371,5 +3375,14 @@ vList2 = [v for v in c.all_unique_vnodes_iter()]
 assert vList1 == vList2
 print 'pass 2'
 </t>
+<t tx="ekr.20091004190944.1825">@language python
+# changed 2.
+@others</t>
+<t tx="ekr.20091004190944.1826">def spam():
+
+    pass # changed.</t>
+<t tx="ekr.20091004190944.1827">def eggs():
+
+    pass</t>
 </tnodes>
 </leo_file>

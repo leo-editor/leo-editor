@@ -2416,6 +2416,9 @@ class atFile:
             at.targetFileName = root.atNoSentFileNodeName()
         elif thinFile:
             at.targetFileName = root.atThinFileNodeName()
+            if not at.targetFileName:
+                # We have an @file node.
+                at.targetFileName = root.atFileNodeName()
         else:
             at.targetFileName = root.atFileNodeName()
         #@-node:ekr.20041005105605.145:<< set at.targetFileName >>
@@ -4608,7 +4611,7 @@ class atFile:
                     g.es('wrote:    ',fn)
                 else:
                     # g.trace('created:',fn,g.callers())
-                    g.es('created:  ',fn)
+                    g.es('created:',fn)
             return True
         except IOError:
             at.error('unexpected exception writing file: %s' % (fn))
@@ -4682,7 +4685,7 @@ class atFile:
                 ok = self.rename(self.outputFileName,self.targetFileName,mode)
                 if ok:
                     c.setFileTimeStamp(self.targetFileName)
-                    g.es('wrote:    ',self.shortFileName)
+                    g.es('wrote:',self.shortFileName)
                 else:
                     # self.rename gives the error.
                     g.es('unchanged:',self.shortFileName)
@@ -4695,7 +4698,7 @@ class atFile:
             ok = self.rename(self.outputFileName,self.targetFileName)
             if ok:
                 c.setFileTimeStamp(self.targetFileName)
-                g.es('created:  ',self.targetFileName)
+                g.es('created:',self.targetFileName)
             else:
                 # self.rename gives the error.
                 if root: root.setDirty() # New in 4.4.8.

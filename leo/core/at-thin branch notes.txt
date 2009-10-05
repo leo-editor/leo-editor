@@ -1157,6 +1157,9 @@ elif nosentinels:
     at.targetFileName = root.atNoSentFileNodeName()
 elif thinFile:
     at.targetFileName = root.atThinFileNodeName()
+    if not at.targetFileName:
+        # We have an @file node.
+        at.targetFileName = root.atFileNodeName()
 else:
     at.targetFileName = root.atFileNodeName()
 #@-node:ekr.20041005105605.145:<< set at.targetFileName >>
@@ -1195,6 +1198,61 @@ def shouldWriteAtNosentNode (self,p,exists):
 #@-node:ekr.20080620095343.1:shouldWriteAtNosentNode
 #@-node:ekr.20041005105605.144:write & helper (atFile)
 #@-node:ekr.20091003205136.6061:Writing
+#@+node:ekr.20051104075904.44:at-File test code (leoTest.py)
+def runAtFileTest(c,p):
+
+    """Common code for testing output of @file, @thin, etc."""
+
+    at = c.atFileCommands
+    child1 = p.firstChild()
+    child2 = child1.next()
+    h1 = child1.h.lower().strip()
+    h2 = child2.h.lower().strip()
+    assert(g.match(h1,0,"#@"))
+    assert(g.match(h2,0,"output"))
+    expected = child2.b
+
+    # Compute the type from child1's headline.
+    j = g.skip_c_id(h1,2)
+    theType = h1[1:j]
+    assert theType in ("@auto","@edit","@file","@thin","@nosent",
+        "@noref","@asis","@root",), "bad type: %s" % type
+
+    thinFile = theType == "@thin"
+    nosentinels = theType in ("@asis","edit","@nosent")
+
+    if theType == "@root":
+        c.tangleCommands.tangle_output = ''
+        c.tangleCommands.tangle(event=None,p=child1)
+        at.stringOutput = c.tangleCommands.tangle_output
+    elif theType == "@asis":
+        at.asisWrite(child1,toString=True)
+    elif theType == "@auto":
+        at.writeOneAtAutoNode(child1,toString=True,force=True)
+    elif theType == "@edit":
+        at.writeOneAtEditNode(child1,toString=True)
+    elif theType == "@noref":
+        at.norefWrite(child1,toString=True)
+    else:
+        at.write(child1,thinFile=thinFile,nosentinels=nosentinels,toString=True)
+    try:
+        result = g.toUnicode(at.stringOutput,"ascii")
+        assert(result == expected)
+    except AssertionError:
+        << dump result and expected >>
+        raise
+#@+node:ekr.20051104075904.45:<< dump result and expected >>
+print('\n','-' * 20)
+print("result...")
+for line in g.splitLines(result):
+    print("%3d" % len(line),repr(line))
+print('-' * 20)
+print("expected...")
+for line in g.splitLines(expected):
+    print("%3d" % len(line),repr(line))
+print('-' * 20)
+#@-node:ekr.20051104075904.45:<< dump result and expected >>
+#@-node:ekr.20051104075904.44:at-File test code (leoTest.py)
 #@-node:ekr.20091003205136.6056:Deprecate @file function, @thin name
 #@-all
 #@nonl

@@ -727,7 +727,7 @@
 <v t="ekr.20090704085350.5030"><vh>eggs</vh></v>
 </v>
 <v t="ekr.20090704085350.5056"><vh>@auto ../test/unittest/at-auto-test.py</vh></v>
-<v t="ekr.20090704085350.5007"><vh>@@@file ../test/unittest/at-file-test.py</vh>
+<v t="ekr.20090704085350.5007"><vh>@file ../test/unittest/at-file-test.py</vh>
 <v t="ekr.20090704085350.5008"><vh>spam</vh></v>
 <v t="ekr.20090704085350.5009"><vh>eggs</vh></v>
 </v>
@@ -840,7 +840,7 @@
 </v>
 <v t="ekr.20090704085350.5044"><vh>@test @asis: shape of tree</vh></v>
 <v t="ekr.20090704085350.5052"><vh>@test @auto: shape of tree</vh></v>
-<v t="ekr.20090704085350.5010"><vh>@@@test @file: shape of tree</vh></v>
+<v t="ekr.20090704085350.5010"><vh>@test @file: shape of tree</vh></v>
 <v t="ekr.20090704085350.5048"><vh>@test @noref: shape of tree</vh></v>
 <v t="ekr.20090704085350.5050"><vh>@test @nosent: shape of tree</vh></v>
 <v t="ekr.20090704093658.5061"><vh>@test @root: shape of tree</vh></v>
@@ -1168,12 +1168,12 @@
 <v t="ekr.20071113192611"><vh>leoEditCommands</vh>
 <v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
 <v t="ekr.20080905125317.1"><vh>Unused</vh>
-<v t="ekr.20080904120258.7"><vh>@@test goto_scanTnodeList</vh></v>
+<v t="ekr.20080904120258.7"><vh>@test goto_scanTnodeList</vh></v>
 <v t="ekr.20080904120258.5"><vh>@@test goto_scanForVnodeName</vh></v>
 </v>
 <v t="ekr.20080905112230.3"><vh>goto-line-number tests: original files</vh>
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
-<v t="ekr.20080904102243.2"><vh>@@@file unittest/at-file-line-number-test.py</vh>
+<v t="ekr.20080904102243.2"><vh>@file unittest/at-file-line-number-test.py</vh>
 <v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
 </v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
@@ -2045,9 +2045,9 @@
 <v t="ekr.20080917151620.26"><vh>@thin at-path-test2.py</vh></v>
 </v>
 </v>
-<v t="ekr.20080917151620.27"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @file at-path-test3.py</vh>
-<v t="ekr.20080917151620.28"><vh>@path ../test</vh>
-<v t="ekr.20080917151620.29"><vh>@path unittest</vh>
+<v t="ekr.20080917151620.27"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @thin at-path-test3.py</vh>
+<v t="ekr.20080917151620.28" a="E"><vh>@path ../test</vh>
+<v t="ekr.20080917151620.29" a="E"><vh>@path unittest</vh>
 <v t="ekr.20080917151620.30"><vh>@thin at-path-test3.py</vh></v>
 </v>
 </v>
@@ -16868,10 +16868,7 @@ p,found = c.goto_findGnx(root,gnx,h)
 assert found,found
 assert p == target,'\np:     %s\ntarget:%s' % (p,target)
 </t>
-<t tx="ekr.20080904120258.7"># h = '@file unittest/at-file-line-number-test.py'
-# root = g.findNodeAnywhere(c,h)
-
-root = p.parent().parent()
+<t tx="ekr.20080904120258.7">root = p.parent().parent()
 h = '@file unittest/at-file-line-number-test.py'
 target = g.findNodeInTree(c,root,h)
 assert target
