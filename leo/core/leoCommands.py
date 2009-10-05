@@ -4739,7 +4739,7 @@ class baseCommands (object):
 
         '''Expand the presently selected node.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self ; p = c.p
 
         p.expand()

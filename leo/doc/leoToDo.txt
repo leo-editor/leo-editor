@@ -108,10 +108,16 @@ that section of the docs.
 #@-node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
 #@-node:ekr.20091005145253.6060:Docs
 #@+node:ekr.20091003171114.6466:First
-#@+node:ekr.20080918164844.8:Add read/write-any-derived-file commands
-# Remove the old type-specific commands from the default menu.
+#@+node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
+@nocolor-node
+
+- Combine 3 "read @x nodes" commands into a single "read @<file> nodes" command.
+
+- Combine 3 "write @x nodes" commands into a single "write @<file> nodes" command. 
+
+- Combine 3 "write dirty @x nodes" commands into a single "write dirty @<file> nodes" command. 
 #@nonl
-#@-node:ekr.20080918164844.8:Add read/write-any-derived-file commands
+#@-node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
 #@+node:ekr.20090822054806.6003:Add rst button that doesn't need rst3 plugin
 @nocolor-node
 
@@ -153,6 +159,43 @@ Script in Chapter 14 of the users guide:
 |           print s 
 #@nonl
 #@-node:ekr.20090822054806.6003:Add rst button that doesn't need rst3 plugin
+#@+node:ekr.20090822054806.6004:Improve the intro
+
+* Give some hint about why Leo is different.
+
+* Give some hints about the Aha, and that there *is* an Aha.
+#@nonl
+#@+node:ekr.20090907080624.6074:Add *very* brief words at the start of the intro
+@nocolor-node
+
+Ville's words
+
+I think we need to give a *very* brief explanation of what Leo
+actually is, in concrete terms, something akin to:
+
+- Leo is a tree-structured outliner
+
+- It consists of a tree with nodes, and a text editor. Every node is
+associated with a heading and a block of text (a program, a function,
+class declaration, a food recipe, doc snippet, list of urls, use case
+description, irc log, ... all depending on your problem domain)
+
+- Tree structure is significant. A subtree often represents a single
+file in a file system.
+
+=============
+
+rhh's words
+
+Leo can operate on the text blocks using user scripts. Text and
+graphic output can be captured to tabbed panes within Leo.  The
+scripts can be easily (and dynamically) assigned to buttons and menus.
+#@-node:ekr.20090907080624.6074:Add *very* brief words at the start of the intro
+#@-node:ekr.20090822054806.6004:Improve the intro
+#@+node:ekr.20080918164844.8:Add read/write-any-derived-file commands
+# Remove the old type-specific commands from the default menu.
+#@nonl
+#@-node:ekr.20080918164844.8:Add read/write-any-derived-file commands
 #@+node:ekr.20090907080624.6072:Install support for haskel
 @nocolor-node
 
@@ -1992,16 +2035,6 @@ Improve the recursive import script.
 #@-node:ekr.20090724081340.5987:Improve recursive import script and @auto
 #@+node:ekr.20090714085914.5991:Add drag and drop to qt gui
 #@-node:ekr.20090714085914.5991:Add drag and drop to qt gui
-#@+node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
-@nocolor-node
-
-- Combine 3 "read @x nodes" commands into a single "read @<file> nodes" command.
-
-- Combine 3 "write @x nodes" commands into a single "write @<file> nodes" command. 
-
-- Combine 3 "write dirty @x nodes" commands into a single "write dirty @<file> nodes" command. 
-#@nonl
-#@-node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
 #@+node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
 #@-node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
 #@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
