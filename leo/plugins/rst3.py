@@ -876,10 +876,10 @@ class rstClass:
     #@+node:ekr.20051204070141:preprocessNode
     def preprocessNode (self,p):
 
-        d = self.tnodeOptionDict.get(p.v.t)
+        d = self.tnodeOptionDict.get(p.v)
         if d is None:
             d = self.scanNodeForOptions(p)
-            self.tnodeOptionDict [p.v.t] = d
+            self.tnodeOptionDict [p.v] = d
     #@nonl
     #@-node:ekr.20051204070141:preprocessNode
     #@+node:ekr.20050808072943.1:parseOptionLine
@@ -1064,7 +1064,7 @@ class rstClass:
 
         # g.trace('-'*20)
         for p in p.self_and_parents():
-            d = self.tnodeOptionDict.get(p.v.t,{})
+            d = self.tnodeOptionDict.get(p.v,{})
             # g.trace(p.h,d)
             for key in d.keys():
                 ivar = self.munge(key)
@@ -1107,7 +1107,7 @@ class rstClass:
 
         All such options default to False.'''
 
-        d = self.tnodeOptionDict.get(p.v.t, {} )
+        d = self.tnodeOptionDict.get(p.v, {} )
 
         for ivar in self.singleNodeOptions:
             val = d.get(ivar,False)

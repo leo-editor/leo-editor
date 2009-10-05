@@ -773,8 +773,8 @@ class labelsController(object):
         Collect clones of all nodes with a label and move them to a child position of the current node.
         """
         def clonefilter(node):
-            result = node.t not in tnodes
-            tnodes[node.t] = None
+            result = node not in tnodes
+            tnodes[node] = None
             return result
 
         currentPosition = self.c.p

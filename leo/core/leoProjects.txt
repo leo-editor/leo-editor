@@ -340,16 +340,19 @@ you want (e.g. c:/opt/leo). But I could be wrong.
 #@nonl
 #@-node:ekr.20090822060128.6035:Improved the install docs
 #@+node:ekr.20090829175108.6133:Marked @<file> nodes dirty if nodes change during read.
-#@+node:ekr.20041005105605.21:read (atFile)
+#@+node:ekr.20041005105605.21:read (atFile) & helper
 def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
 
     """Read any @thin, @file and @noref trees."""
 
     at = self ; c = at.c
-    << set fileName >>
-
+    << set fileName and isAtFile >>
+    if isAtFile:
+        # The @file node has file-like sentinels iff a tnodeList exists.
+        thinFile = not (hasattr(root.v,'tnodeList') and root.v.tnodeList)
     doCache = g.enableDB and (thinFile or atShadow)
-    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
+    at.initReadIvars(root,fileName,
+        importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
     if at.errors: return False
     fileName = at.openFileForReading(fileName,fromString=fromString)
     if at.inputFile:
@@ -364,9 +367,6 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     root.v.at_read = True # Create the attribute for all clones.
 
     if doCache and cachefile in c.db:
-        # This message isn't so useful.
-        # if not g.unitTesting: # g.es('uncache:',root.h)
-
         # Delete the previous tree, regardless of the @<file> type.
         while root.hasChildren():
             root.firstChild().doDelete()
@@ -377,6 +377,7 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
         return
 
     # Delete all children, but **not** for @file and @nosent nodes!
+    # (We do delete all children for @file nodes with thin-like sentinels.)
     if thinFile or atShadow:
         root.v.at_read = True # Create the attribute for all clones.
         while root.hasChildren():
@@ -402,7 +403,7 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     self.writeCachedTree(root, cachefile)
 
     return at.errors == 0
-#@+node:ekr.20041005105605.22:<< set fileName >>
+#@+node:ekr.20041005105605.22:<< set fileName and isAtFile >>
 if fromString:
     fileName = "<string-file>"
 elif importFileName:
@@ -415,7 +416,15 @@ else:
 if not fileName:
     at.error("Missing file name.  Restoring @file tree from .leo file.")
     return False
-#@-node:ekr.20041005105605.22:<< set fileName >>
+
+isAtFile = (
+    not thinFile and
+    not importFileName and
+    not atShadow and
+    not fromString and
+    root.h.startswith('@file'))
+#@nonl
+#@-node:ekr.20041005105605.22:<< set fileName and isAtFile >>
 #@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
 resurrected = 0
 for p in root.self_and_subtree():
@@ -438,7 +447,7 @@ for v in c.all_unique_nodes():
     if hasattr(v,"tempBodyString"):
         delattr(v,"tempBodyString")
 #@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
-#@-node:ekr.20041005105605.21:read (atFile)
+#@-node:ekr.20041005105605.21:read (atFile) & helper
 #@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
 def readOneAtAutoNode (self,fileName,p):
 
@@ -682,10 +691,10 @@ def fastAddLastChild(self,c,gnxString):
     trace = False and not g.unitTesting
     parent_v = self
     indices = g.app.nodeIndices
-    tnodesDict = c.fileCommands.tnodesDict
+    gnxDict = c.fileCommands.gnxDict
 
     if gnxString is None: v = None
-    else:                 v = tnodesDict.get(gnxString)
+    else:                 v = gnxDict.get(gnxString)
     is_clone = v is not None
 
     if trace: g.trace(
@@ -697,7 +706,7 @@ def fastAddLastChild(self,c,gnxString):
         if gnxString:
             gnx = indices.scanGnx(gnxString,0)
             v.fileIndex = gnx
-        tnodesDict[gnxString] = v
+        gnxDict[gnxString] = v
 
     child_v = v
     child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
@@ -2852,7 +2861,6 @@ def _setIconListHelper(self, p, subl, uaLoc):
 
     trace = False and not g.unitTesting
 
-    # FIXME lineYOffset is expected to be on a tnode in drawing code
     if subl: # Update the uA.
         if not hasattr(uaLoc,'unknownAttributes'):
             uaLoc.unknownAttributes = {}

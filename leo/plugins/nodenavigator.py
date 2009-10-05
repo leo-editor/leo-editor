@@ -132,7 +132,7 @@ class Navigator:
         if c != self.c or not p: return
 
         marks = self.markLists.get(c,[])
-        if p.v.t in marks: return
+        if p.v in marks: return
 
         menu = self.marksMenus.get(c)
         if menu is None: return
@@ -143,7 +143,7 @@ class Navigator:
 
         name = p.h.strip()
         c.add_command(menu,label=name[:40],command=callback)
-        marks.append(p.v.t)
+        marks.append(p.v)
 
         # Unlike the recent menu, which gets recreated each time, we remember the marks.
         self.markLists[c] = marks
@@ -193,12 +193,12 @@ class Navigator:
         # Find all marked nodes. We only do this once!
         marks = self.markLists.get(c,[])
         for p in c.all_positions():
-            if p.isMarked() and p.v.t not in marks:
+            if p.isMarked() and p.v not in marks:
                 def callback(event=None,self=self,c=c,p=p.copy()):
                     self.select(c,p)
                 name = p.h.strip()
                 c.add_command(menu,label=name,command=callback)
-                marks.append(p.v.t)
+                marks.append(p.v)
         self.markLists[c] = marks
     #@nonl
     #@-node:ekr.20040730092357:initMarks
@@ -212,7 +212,7 @@ class Navigator:
         if c != self.c or not p: return
 
         marks = self.markLists.get(c,[])
-        if not p.v.t in marks: return
+        if not p.v in marks: return
 
         menu = self.marksMenus.get(c)
         if menu is None: return # This should never happen.
@@ -225,7 +225,7 @@ class Navigator:
             menu.delete(name)
         except Tk.TclError:
             pass
-        marks.remove(p.v.t)
+        marks.remove(p.v)
 
         # Unlike the recent menu, which gets recreated each time, we remember the marks.
         self.markLists[c] = marks

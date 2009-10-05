@@ -1,18 +1,18 @@
-#@+leo-ver=4
-#@+node:@file ../test/unittest/at-file-test.py
+#@+leo-ver=4-thin
+#@+node:ekr.20090704085350.5007:@file ../test/unittest/at-file-test.py
 #@@language python
 #@+others
-#@+node:spam
+#@+node:ekr.20090704085350.5008:spam
 def spam():
     pass
 #@nonl
-#@-node:spam
-#@+node:eggs
+#@-node:ekr.20090704085350.5008:spam
+#@+node:ekr.20090704085350.5009:eggs
 def eggs():
     pass
 #@nonl
-#@-node:eggs
+#@-node:ekr.20090704085350.5009:eggs
 #@-others
 #@nonl
-#@-node:@file ../test/unittest/at-file-test.py
+#@-node:ekr.20090704085350.5007:@file ../test/unittest/at-file-test.py
 #@-leo

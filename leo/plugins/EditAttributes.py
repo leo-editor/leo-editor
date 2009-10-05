@@ -79,11 +79,11 @@ class AttrEditor:
     def __init__ (self,c,p):
 
         self.c = c
-        t = p.v.t
-        self.uAs = t.unknownAttributes = getattr(t,'unknownAttributes',{})
+        v = p.v
+        self.uAs = v.unknownAttributes = getattr(v,'unknownAttributes',{})
         self.dialog = Pmw.Dialog(c.frame.top, ## Required.
             buttons = ('Add Attribute','Remove Attribute','Close'),
-                        title = t._headString,
+                        title = v._headString,
                         command = self.buttonCommands)
         group = Pmw.Group(self.dialog.interior(),tag_text=p.h)
         group.pack(side='top')

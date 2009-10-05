@@ -1,12 +1,12 @@
-#@+leo-ver=4
-#@+node:@file unittest/at-file-line-number-test.py
+#@+leo-ver=4-thin
+#@+node:ekr.20080904102243.2:@file unittest/at-file-line-number-test.py
 #@@language python
 #@@tabwidth -4
 #@+others
-#@+node:at-file-child
+#@+node:ekr.20080904102243.3:at-file-child
 def child():
     pass
-#@-node:at-file-child
+#@-node:ekr.20080904102243.3:at-file-child
 #@-others
-#@-node:@file unittest/at-file-line-number-test.py
+#@-node:ekr.20080904102243.2:@file unittest/at-file-line-number-test.py
 #@-leo

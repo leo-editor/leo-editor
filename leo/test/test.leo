@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070416075121"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -301,7 +301,7 @@
 <v t="ekr.20081205104320.1"><vh>run bash script</vh></v>
 </v>
 <v t="ekr.20080930114036.1"><vh>Icon stuff</vh>
-<v t="ekr.20090701133940.1767" lineYOffset="4b032e" icons="5d7100287d71012855026f6e71025505746e6f64657103550577686572657104550e6265666f7265486561646c696e6571055507796f666673657471064b00550466696c6571075837000000433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c6164642e706e67710855047870616471094b01550474797065710a68075507786f6666736574710b4b02550772656c50617468710c581b00000054616e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e2855026f6e710f6803550577686572657110550e6265666f7265486561646c696e6571115507796f666673657471124b00550466696c657113583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f74746f6d2e706e67711455047870616471154b01550474797065711668135507786f666673657471174b02550772656c506174687118581e00000054616e676f5c31367831365c616374696f6e735c626f74746f6d2e706e67711975652e"><vh>print icons</vh></v>
+<v t="ekr.20090701133940.1767"><vh>print icons</vh></v>
 <v t="ekr.20090701125834.1765"><vh>@@button insert-inst-icon</vh></v>
 <v t="ekr.20080930080501.1"><vh>Add icon row</vh></v>
 <v t="ekr.20080930083052.1"><vh>hide icon rows</vh></v>
@@ -352,14 +352,21 @@
 <v t="ekr.20090701062041.1798"><vh>PHP test</vh>
 <v t="ekr.20090704133634.1780"><vh>Inner php</vh></v>
 </v>
-<v t="ekr.20090514103332.1929" a="M"><vh>Unit tests</vh>
+<v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
 <v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
-<v t="ekr.20090831145049.1819" a="M"><vh>Unicode test</vh></v>
+<v t="ekr.20090831145049.1819"><vh>Unicode test</vh></v>
 <v t="ekr.20091001161528.1828"><vh>@test c.allPositions &amp; c.allUniquePositions</vh></v>
 </v>
+<v t="ekr.20091004190944.1825"><vh>@file at-file-conversion-test.py</vh>
+<v t="ekr.20091004190944.1826"><vh>spam</vh></v>
+<v t="ekr.20091004190944.1827"><vh>eggs</vh></v>
+</v>
+<v t="ekr.20091005055820.1831"><vh>print tnodeList</vh></v>
+<v t="ekr.20091005075815.1833"><vh>test of uA's</vh></v>
+<v t="ekr.20091005075957.1835"><vh>print uA's</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -780,7 +787,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="3"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -3371,5 +3378,24 @@ vList2 = [v for v in c.all_unique_vnodes_iter()]
 assert vList1 == vList2
 print 'pass 2'
 </t>
+<t tx="ekr.20091004190944.1825">@language python
+# changed 2.
+@others</t>
+<t tx="ekr.20091004190944.1826">def spam():
+
+    pass # changed.</t>
+<t tx="ekr.20091004190944.1827">def eggs():
+
+    pass</t>
+<t tx="ekr.20091005055820.1831">for v in c.all_nodes():
+    if hasattr(v,'tnodeList'):
+        print v,v.tnodeList</t>
+<t tx="ekr.20091005075815.1833" test.leo="7d7100550775612d7465737471014930310a732e">inner_d = {'ua-test':True}
+d = {'test.leo':inner_d}
+p.v.u = d</t>
+<t tx="ekr.20091005075957.1835">for v in c.all_nodes():
+    if v.u:
+        print
+        print v.u</t>
 </tnodes>
 </leo_file>

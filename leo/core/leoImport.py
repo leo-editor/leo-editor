@@ -620,7 +620,7 @@ class leoImportCommands (scanUtility):
             i = w.getInsertPoint()
             w.setSelectionRange(i,i)
 
-        # Keep the body text in the tnode up-to-date.
+        # Keep the body text up-to-date.
         if v._bodyString != s:
             v.setBodyString(s)
             v.setSelection(0,0)

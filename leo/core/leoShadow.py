@@ -181,8 +181,8 @@ class shadowController:
             f.close()
             if not g.unitTesting:
                 # g.trace('created:',fn,g.callers())
-                if exists:  g.es('wrote:    ',fn)
-                else:       g.es('created:  ',fn)
+                if exists:  g.es('wrote:',fn)
+                else:       g.es('created:',fn)
             return True
         except IOError:
             x.error('unexpected exception writing file: %s' % (fn))
