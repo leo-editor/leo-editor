@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -360,10 +360,11 @@
 <v t="ekr.20090831145049.1819"><vh>Unicode test</vh></v>
 <v t="ekr.20091001161528.1828"><vh>@test c.allPositions &amp; c.allUniquePositions</vh></v>
 </v>
-<v t="ekr.20091004190944.1825" a="E"><vh>@file at-file-conversion-test.py</vh>
+<v t="ekr.20091004190944.1825"><vh>@file at-file-conversion-test.py</vh>
 <v t="ekr.20091004190944.1826"><vh>spam</vh></v>
 <v t="ekr.20091004190944.1827"><vh>eggs</vh></v>
 </v>
+<v t="ekr.20091005055820.1831"><vh>print tnodeList</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -784,7 +785,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="4"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -3384,5 +3385,8 @@ print 'pass 2'
 <t tx="ekr.20091004190944.1827">def eggs():
 
     pass</t>
+<t tx="ekr.20091005055820.1831">for v in c.all_nodes():
+    if hasattr(v,'tnodeList'):
+        print v,v.tnodeList</t>
 </tnodes>
 </leo_file>

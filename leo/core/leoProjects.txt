@@ -348,9 +348,7 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     at = self ; c = at.c
     << set fileName and isAtFile >>
     if isAtFile:
-        # The @file node has file-like sentinels iff there root.v.tnodeList exists.
-        ### Pre-read the external file to see if it has thin-like sentinels.
-        ### thinFile = at.scanClosedFileForThinSentinels(root)
+        # The @file node has file-like sentinels iff a tnodeList exists.
         thinFile = not (hasattr(root.v,'tnodeList') and root.v.tnodeList)
     doCache = g.enableDB and (thinFile or atShadow)
     at.initReadIvars(root,fileName,
@@ -449,27 +447,6 @@ for v in c.all_unique_nodes():
     if hasattr(v,"tempBodyString"):
         delattr(v,"tempBodyString")
 #@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
-#@+node:ekr.20091003205136.6059:scanClosedFileForThinSentinels
-def scanClosedFileForThinSentinels(self,root):
-
-    trace = False and not g.unitTesting
-    at = self
-    fn = at.fullPath(root)
-        # Returns full path, including file name
-
-    try:
-        # Open the file in binary mode to allow 0x1a in bodies & headlines.
-        theFile = open(fn,'rb')
-    except IOError:
-        g.trace("can not open: '@file %s'" % (fn))
-        return False
-
-    isThin = at.scanHeaderForThin(theFile,fn)
-    theFile.close()
-
-    if trace: g.trace(isThin,fn)
-    return isThin
-#@-node:ekr.20091003205136.6059:scanClosedFileForThinSentinels
 #@-node:ekr.20041005105605.21:read (atFile) & helper
 #@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
 def readOneAtAutoNode (self,fileName,p):

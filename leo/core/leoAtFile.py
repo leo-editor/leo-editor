@@ -482,9 +482,7 @@ class atFile:
         #@-node:ekr.20041005105605.22:<< set fileName and isAtFile >>
         #@nl
         if isAtFile:
-            # The @file node has file-like sentinels iff there root.v.tnodeList exists.
-            ### Pre-read the external file to see if it has thin-like sentinels.
-            ### thinFile = at.scanClosedFileForThinSentinels(root)
+            # The @file node has file-like sentinels iff a tnodeList exists.
             thinFile = not (hasattr(root.v,'tnodeList') and root.v.tnodeList)
         doCache = g.enableDB and (thinFile or atShadow)
         at.initReadIvars(root,fileName,
@@ -563,27 +561,6 @@ class atFile:
         self.writeCachedTree(root, cachefile)
 
         return at.errors == 0
-    #@+node:ekr.20091003205136.6059:scanClosedFileForThinSentinels
-    def scanClosedFileForThinSentinels(self,root):
-
-        trace = False and not g.unitTesting
-        at = self
-        fn = at.fullPath(root)
-            # Returns full path, including file name
-
-        try:
-            # Open the file in binary mode to allow 0x1a in bodies & headlines.
-            theFile = open(fn,'rb')
-        except IOError:
-            g.trace("can not open: '@file %s'" % (fn))
-            return False
-
-        isThin = at.scanHeaderForThin(theFile,fn)
-        theFile.close()
-
-        if trace: g.trace(isThin,fn)
-        return isThin
-    #@-node:ekr.20091003205136.6059:scanClosedFileForThinSentinels
     #@-node:ekr.20041005105605.21:read (atFile) & helper
     #@+node:ville.20090606131405.6362:writeCachedTree (atFile)
     def writeCachedTree(self, p, cachefile):
@@ -1029,14 +1006,7 @@ class atFile:
         # New code: always identify root @thin node with self.root:
         at.lastThinNode = None
         at.thinNodeStack = []
-
-        if 0: # Useful for debugging.
-            if hasattr(p.v,"tnodeList"):
-                g.trace("len(tnodeList)",len(p.v.tnodeList),p.v)
-            else:
-                g.trace("no tnodeList",p.v)
-
-        # g.trace(at.startSentinelComment)
+        #@nonl
         #@-node:ekr.20041005105605.75:<< init ivars for scanText4 >>
         #@nl
         if trace: g.trace(fileName)
@@ -2383,13 +2353,6 @@ class atFile:
     #@-node:ekr.20041005105605.143:openFileForWritingHelper & helper
     #@-node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
     #@+node:ekr.20041005105605.144:write & helper (atFile)
-    # This is the entry point to the write code.  root should be an @<file> vnode.
-
-    # Important: kind == @file and thinFile = False
-    # only if we are to write old file-like sentinels.
-    # No change should be needed to this code to handle
-    # the implicit conversion of @file nodes to use thin-like sentinels.
-
     def write (self,root,
         kind = '@unknown', # Should not happen.
         nosentinels = False,
@@ -2397,8 +2360,8 @@ class atFile:
         scriptWrite = False,
         toString = False,
     ):
-
-        """Write a 4.x derived file."""
+        """Write a 4.x derived file.
+        root is the position of an @<file> node"""
 
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
@@ -2442,7 +2405,6 @@ class atFile:
                 # Prompt if writing a new @file or @thin node would
                 # overwrite an existing file.
                 ok = self.promptForDangerousWrite(eventualFileName,kind)
-                    # kind = g.choose(thinFile,'@thin','@file'))
                 if ok:
                     root.v.at_read = True # Create the attribute for all clones.
                 else:
@@ -2455,15 +2417,16 @@ class atFile:
 
         try:
             at.writeOpenFile(root,nosentinels=nosentinels,toString=toString)
+            assert root==at.root
             if toString:
                 at.closeWriteFile() # sets self.stringOutput
                 # Major bug: failure to clear this wipes out headlines!
                 # Minor bug: sometimes this causes slight problems...
-                at.root.v.tnodeList = []
-                at.root.v._p_changed = True
+                root.v.tnodeList = []
+                root.v._p_changed = True
             else:
                 at.closeWriteFile()
-                if at.errors > 0 or at.root.isOrphan():
+                if at.errors > 0 or root.isOrphan():
                     #@                << set dirty and orphan bits >>
                     #@+node:ekr.20041005105605.146:<< set dirty and orphan bits >>
                     # Setting the orphan and dirty flags tells Leo to write the tree..
@@ -2479,19 +2442,21 @@ class atFile:
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
                 if has_list:
-                    if at.errors > 0:
-                        root.v.tnodeList = old_list
-                    else:
-                        # Kill the tnodeList.
+                    if at.errors == 0 and g.convert_at_file:
+                        # Clear the tnodeList in the root.
                         # Future writes will write thin-like sentinels.
+                        # This will also clear the tnodeList attributes in
+                        # <v> elements when the .leo file is written later.
                         root.v.tnodeList = []
-                        at.root.v._p_changed = True
+                        root.v._p_changed = True
+                    else:
+                        root.v.tnodeList = old_list
 
         except Exception:
             if toString:
                 at.exception("exception preprocessing script")
-                at.root.v.tnodeList = []
-                at.root.v._p_changed = True
+                root.v.tnodeList = []
+                root.v._p_changed = True
             else:
                 at.writeException() # Sets dirty and orphan bits.
                 if has_list: root.v.tnodeList = old_list

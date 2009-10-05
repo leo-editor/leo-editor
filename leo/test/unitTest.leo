@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,2,4,0,0,0"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -771,7 +771,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20090703080553.5000" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
@@ -810,7 +810,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -1165,10 +1165,10 @@
 <v t="ekr.20050203001146"><vh>@test local settings (c.page_width)</vh></v>
 <v t="ekr.20071113201854" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113192611"><vh>leoEditCommands</vh>
-<v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
-<v t="ekr.20080905125317.1"><vh>Unused</vh>
-<v t="ekr.20080904120258.7"><vh>@test goto_scanTnodeList</vh></v>
+<v t="ekr.20071113192611" a="E"><vh>leoEditCommands</vh>
+<v t="ekr.20080904095020.1" a="E"><vh>goto-line-number tests</vh>
+<v t="ekr.20080905125317.1" a="E"><vh>Unused</vh>
+<v t="ekr.20080904120258.7"><vh>@@test goto_scanTnodeList</vh></v>
 <v t="ekr.20080904120258.5"><vh>@@test goto_scanForVnodeName</vh></v>
 </v>
 <v t="ekr.20080905112230.3"><vh>goto-line-number tests: original files</vh>
@@ -2046,8 +2046,8 @@
 </v>
 </v>
 <v t="ekr.20080917151620.27"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @thin at-path-test3.py</vh>
-<v t="ekr.20080917151620.28" a="E"><vh>@path ../test</vh>
-<v t="ekr.20080917151620.29" a="E"><vh>@path unittest</vh>
+<v t="ekr.20080917151620.28"><vh>@path ../test</vh>
+<v t="ekr.20080917151620.29"><vh>@path unittest</vh>
 <v t="ekr.20080917151620.30"><vh>@thin at-path-test3.py</vh></v>
 </v>
 </v>
@@ -14015,7 +14015,7 @@ b</t>
 <t tx="ekr.20070315065849.3">a
 
 b</t>
-<t tx="ekr.20070417092935" str_leo_pos="7"></t>
+<t tx="ekr.20070417092935" str_leo_pos="7,2,4,0,0,0"></t>
 <t tx="ekr.20070417092935.1"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070515150433"></t>
