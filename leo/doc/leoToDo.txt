@@ -98,6 +98,8 @@ that section of the docs.
 #@-node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
 #@-node:ekr.20091005145253.6060:Docs
 #@+node:ekr.20091005145253.6059:Urgent bugs
+#@+node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
+#@-node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
 #@+node:ekr.20090822054806.6001:Fix cursor up/down bug
 @nocolor-node
 

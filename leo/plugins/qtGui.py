@@ -5010,6 +5010,8 @@ class leoQtLog (leoFrame.leoLog):
             w.addTab(widget,tabName)
         else:
             contents = widget
+            # Bug fix: 2009/10/06
+            widget.leo_log_wrapper = contents # Inject an ivar.
             # if trace: g.trace('** using',tabName,contents)
             self.contentsDict[tabName] = contents
             w.addTab(contents,tabName)

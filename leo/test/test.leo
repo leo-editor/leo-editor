@@ -360,7 +360,6 @@
 <v t="ekr.20090831145049.1819"><vh>Unicode test</vh></v>
 <v t="ekr.20091001161528.1828"><vh>@test c.allPositions &amp; c.allUniquePositions</vh></v>
 </v>
-<v t="ekr.20091006110008.1837"><vh>@file tab-width-test.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -781,7 +780,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="4"></t>
+<t tx="ekr.20070416075121" str_leo_pos="3"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -3372,7 +3371,5 @@ vList2 = [v for v in c.all_unique_vnodes_iter()]
 assert vList1 == vList2
 print 'pass 2'
 </t>
-<t tx="ekr.20091006110008.1837">@tabwidth 8
-	a</t>
 </tnodes>
 </leo_file>

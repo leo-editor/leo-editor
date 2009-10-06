@@ -1995,6 +1995,38 @@ def checkVisNextLimit (self,limit,p):
 The link 'Edward K. Ream' in the last line points to the Users Guide index.
 #@nonl
 #@-node:ekr.20090907080624.6073:Fixed wrong link in front page
+#@+node:ekr.20091006063434.24623:Fixed tab crash in quicksearch plugin
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/401454
+
+Steps to reproduce:
+
+- have quicksearch.py loaded ("Nav" tab, on by default)
+- alt-x history
+
+You'll get exception:
+
+AttributeError: 'LeoQuickSearchWidget' object has no attribute 'leo_log_wrapper'
+ File "/home/ville/leo-editor/leo/core/leoCommands.py", line 559, in minibufferCallback
+    retval = function(keywords)
+  File "/home/ville/leo-editor/leo/plugins/quicksearch.py", line 117, in nodehistory
+    c.frame.log.selectTab('Nav')
+  File "/home/ville/leo-editor/leo/plugins/qtGui.py", line 4810, in selectTab
+    ok = self.selectHelper(tabName,createText)
+  File "/home/ville/leo-editor/leo/plugins/qtGui.py", line 4825, in selectHelper
+    self.logCtrl = w.widget(i).leo_log_wrapper
+
+This is because we don't indeed have leo_log_wrapper. It is created in createTab only for specific tab types in
+
+Qt gui-->@thin qtGui.py-->Frame and component classes...-->class leoQtLog-->Tab (qtLog)-->createTab
+
+What I did
+
+- set widget.leo_log_wrapper = widget
+  This fixes the crash listed above, but may not work in general.
+#@nonl
+#@-node:ekr.20091006063434.24623:Fixed tab crash in quicksearch plugin
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20091006063434.22073:Docs
 #@+node:ekr.20090907080624.6069:Update the 4.6.3 release notes in the trunk
