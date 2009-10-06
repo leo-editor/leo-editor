@@ -118,47 +118,6 @@ that section of the docs.
 - Combine 3 "write dirty @x nodes" commands into a single "write dirty @<file> nodes" command. 
 #@nonl
 #@-node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
-#@+node:ekr.20090822054806.6003:Add rst button that doesn't need rst3 plugin
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/95687c7a2dba5e18
-
-The rst3 plugin is required to use the script examples given in the
-"@@button rst" example in the leoSettings.leo file and in Chapter 14
-of the users guide (shown below).  They should be updated to utilize
-the new rST functionality in Leo's core.
-
-Until that is done, can someone post a working "@button rst" script
-that doesn't require the rst3 plugin?  I would like to test the rST
-implementation in Leo's core.
-
-Script in "@@button rst" example in the leoSettings.leo file:
-|   import leoPlugins
-|   rst3 = leoPlugins.getPluginModule('rst3')
-|   if rst3:
-|       controller = rst3.controllers.get(c)
-|       if controller:
-|           controller.processTopTree(p)
-|   else:
-|       rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
-|       if rst3:
-|           g.es('rst3 loaded')
-|           rst3.onCreate('tag',{'c':c})
-|       else:
-|           # Ask to be removed.
-|           g.app.scriptDict['removeMe'] = True
-
-Script in Chapter 14 of the users guide:
-|   import leo.core.leoPlugins as leoPlugins
-|   rst3 = leoPlugins.getPluginModule('rst3')
-|   if rst3:
-|       controller = rst3.controllers.get(c)
-|       if controller:
-|           p,s = controller.writeNodeToString(ext='.html')
-|           print '*' * 40,p
-|           print s 
-#@nonl
-#@-node:ekr.20090822054806.6003:Add rst button that doesn't need rst3 plugin
 #@+node:ekr.20080918164844.8:Add read/write-any-derived-file commands
 # Remove the old type-specific commands from the default menu.
 #@nonl
