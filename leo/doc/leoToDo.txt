@@ -46,18 +46,6 @@ graphic output can be captured to tabbed panes within Leo.  The
 scripts can be easily (and dynamically) assigned to buttons and menus.
 #@-node:ekr.20090907080624.6074:Add *very* brief words at the start of the intro
 #@-node:ekr.20090822054806.6004:Improve the intro
-#@+node:ekr.20090907080624.6073:Fix wrong link in front page
-@nocolor-node
-
-The link 'Edward K. Ream' in the last line points to the Users Guide index.
-#@nonl
-#@-node:ekr.20090907080624.6073:Fix wrong link in front page
-#@+node:ekr.20090907080624.6069:Update the 4.6.3 release notes in the trunk
-It also provides lots of new features. --gui=qttabs and new plugins
-(spydershell, qtframecommands, mod_framesize). There is also "show
-folder" in rclick menu.
-#@nonl
-#@-node:ekr.20090907080624.6069:Update the 4.6.3 release notes in the trunk
 #@+node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
 @nocolor-node
 
@@ -109,9 +97,13 @@ that section of the docs.
 #@nonl
 #@-node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
 #@-node:ekr.20091005145253.6060:Docs
-#@+node:ekr.20091003171114.6466:First
-#@-node:ekr.20091003171114.6466:First
 #@+node:ekr.20091005145253.6059:Urgent bugs
+#@+node:ekr.20090909093330.6124:Investigate "multiple parts not allowed" tangle errors
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/181533467503ef48
+
+#@-node:ekr.20090909093330.6124:Investigate "multiple parts not allowed" tangle errors
 #@+node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
 #@-node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
 #@+node:ekr.20090822054806.6001:Fix cursor up/down bug
@@ -130,6 +122,7 @@ type <down>
 the cursor is now between the 2nd and 3rd quote. 
 #@nonl
 #@-node:ekr.20090822054806.6001:Fix cursor up/down bug
+#@+node:ekr.20091006063434.22069:rst problems
 #@+node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
 @nocolor-node
 
@@ -165,16 +158,11 @@ the the underlines is not long enough, because the underline for one Japanese
 char need two marks.
 #@nonl
 #@-node:ekr.20090907080624.6077:Fix underlining problem in rst
-#@+node:ekr.20090909093330.6124:Investigate "multiple parts not allowed" tangle errors
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/181533467503ef48
-
-#@-node:ekr.20090909093330.6124:Investigate "multiple parts not allowed" tangle errors
-#@+node:ekr.20090907080624.6071:Install to site-packages, not "c:\program files"
-#@-node:ekr.20090907080624.6071:Install to site-packages, not "c:\program files"
+#@-node:ekr.20091006063434.22069:rst problems
 #@-node:ekr.20091005145253.6059:Urgent bugs
 #@+node:ekr.20090811090022.6029:Bugs
+#@+node:ekr.20090907080624.6071:Install to site-packages, not "c:\program files"
+#@-node:ekr.20090907080624.6071:Install to site-packages, not "c:\program files"
 #@+node:ekr.20090907080624.6081:Spell checker should check headlines
 #@-node:ekr.20090907080624.6081:Spell checker should check headlines
 #@+node:ekr.20090813112405.5980:Delete resurrected nodes

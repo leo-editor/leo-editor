@@ -1989,6 +1989,12 @@ def checkVisNextLimit (self,limit,p):
 #@-node:ekr.20090715145956.6167:checkVisNextLimit
 #@-node:ekr.20080416161551.211:p.moveToVisNext
 #@-node:ekr.20091003171114.6465:Fixed contractOrGoRight
+#@+node:ekr.20090907080624.6073:Fixed wrong link in front page
+@nocolor-node
+
+The link 'Edward K. Ream' in the last line points to the Users Guide index.
+#@nonl
+#@-node:ekr.20090907080624.6073:Fixed wrong link in front page
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin
