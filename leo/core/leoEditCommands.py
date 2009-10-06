@@ -4455,7 +4455,8 @@ class editCommandsClass (baseEditCommandsClass):
         if hasattr(w,'scrollDelegate'):
             w.scrollDelegate(kind)
         else:
-            g.trace('scrolling not implemented')
+            if not g.unitTesting:
+                g.trace('scrolling not implemented')
     #@-node:ekr.20060113082917:scrollHelper
     #@-node:ekr.20050920084036.116:scrollUp/Down & helper
     #@+node:ekr.20060309060654.1:scrollOutlineUp/Down/Line/Page
