@@ -554,6 +554,338 @@ def createTab (self,tabName,widget=None,wrap='none'):
     return contents
 #@-node:ekr.20081121105001.330:createTab
 #@-node:ekr.20091006123049.3699:Fixed crash in quicksearch plugin
+#@+node:ekr.20091006142109.3700:Fixed @nosent dirty bug
+# Note: changing a headline as *no effect* on an @nosent file!
+# The only bug was that redraw_after_head_changed must update icons.
+#@nonl
+#@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None,e=None):
+
+    '''Officially change a headline.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    c = self.c ; u = c.undoer
+    if not p:
+        if trace: g.trace('** no p')
+        return
+
+    item = self.getCurrentItem()
+    if not item:
+        if trace and verbose: g.trace('** no item')
+        return
+    if not e:
+        e = self.getTreeEditorForItem(item)
+    if not e:
+        if trace and verbose: g.trace('** not editing')
+        return
+
+    s = unicode(e.text())
+
+    if g.doHook("headkey1",c=c,p=c.p,v=c.p,s=s):
+        return
+
+    self.closeEditorHelper(e,item)
+    oldHead = p.h
+    changed = s != oldHead
+    if changed:
+        if trace: g.trace('new',repr(s),'old',p.h,g.callers())
+        p.initHeadString(s)
+        item.setText(0,s) # Required to avoid full redraw.
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+
+    g.doHook("headkey2",c=c,p=c.p,v=c.p,s=s)
+
+    # This is a crucial shortcut.
+    if g.unitTesting: return
+
+    if changed:
+        self.redraw_after_head_changed()
+
+    if 0: # Don't do this: it interferes with clicks, and is not needed.
+        if self.stayInTree:
+            c.treeWantsFocus()
+        else:
+            c.bodyWantsFocus()
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+#@+node:ekr.20090124174652.15:Drawing... (nativeTree)
+#@+node:ekr.20090124174652.17:full_redraw & helpers
+# forceDraw not used. It is used in the Tk code.
+
+def full_redraw (self,p=None,scroll=True,forceDraw=False):
+
+    '''Redraw all visible nodes of the tree.
+
+    Preserve the vertical scrolling unless scroll is True.'''
+
+    trace = False and not g.app.unitTesting
+    verbose = False
+    c = self.c
+
+    if self.busy():
+        return g.trace('*** full_redraw: busy!',g.callers(5))
+
+    if p is None:   p = c.currentPosition()
+    else:           c.setCurrentPosition(p)
+
+    # if trace: g.trace(p.isExpanded(),p.h)
+
+    self.redrawCount += 1
+    if trace: t1 = g.getTime()
+    self.initData()
+    self.nodeDrawCount = 0
+    try:
+        self.redrawing = True
+        self.drawTopTree(p)
+    finally:
+        self.redrawing = False
+
+    self.setItemForCurrentPosition(scroll=scroll)
+    c.requestRedrawFlag= False
+
+    if trace:
+        theTime = g.timeSince(t1)
+        callers = g.choose(verbose,g.callers(5),'')
+        g.trace('*** %s: scroll %5s drew %3s nodes in %s' % (
+            self.redrawCount,scroll,self.nodeDrawCount,theTime),callers)
+
+# Compatibility
+redraw = full_redraw 
+redraw_now = full_redraw
+#@+node:ekr.20090124174652.19:drawChildren
+def drawChildren (self,p,parent_item):
+
+    trace = False and not g.unitTesting
+
+    if trace: g.trace('children? %5s expanded? %5s %s' % (
+        p.hasChildren(),p.isExpanded(),p.h))
+
+    if not p:
+        return g.trace('can not happen: no p')
+
+    if p.hasChildren():
+        if p.isExpanded():
+            self.expandItem(parent_item)
+            child = p.firstChild()
+            while child:
+                self.drawTree(child,parent_item)
+                child.moveToNext()
+        else:
+            # Draw the hidden children.
+            child = p.firstChild()
+            while child:
+                self.drawNode(child,parent_item)
+                child.moveToNext()
+            self.contractItem(parent_item)
+    else:
+        self.contractItem(parent_item)
+#@-node:ekr.20090124174652.19:drawChildren
+#@+node:ekr.20090124174652.20:drawNode
+def drawNode (self,p,parent_item):
+
+    trace = False
+    c = self.c 
+    self.nodeDrawCount += 1
+
+    # Allocate the item.
+    item = self.createTreeItem(p,parent_item) 
+
+    # Do this now, so self.isValidItem will be true in setItemIcon.
+    self.rememberItem(p,item)
+
+    # Set the headline and maybe the icon.
+    self.setItemText(item,p.h)
+    if p:
+        self.drawItemIcon(p,item)
+
+    if trace: g.trace(self.traceItem(item))
+
+    return item
+#@-node:ekr.20090124174652.20:drawNode
+#@+node:ekr.20090129062500.12:drawTopTree (qt)
+def drawTopTree (self,p):
+
+    c = self.c
+    hPos,vPos = self.getScroll()
+    self.clear()
+    # Draw all top-level nodes and their visible descendants.
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        p = bunch.p ; h = p.h
+        if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
+            p = p.firstChild()
+            while p:
+                self.drawTree(p)
+                p.moveToNext()
+        else:
+            self.drawTree(p)
+    else:
+        p = c.rootPosition()
+        while p:
+            self.drawTree(p)
+            p.moveToNext()
+
+    # This method always retains previous scroll position.
+    self.setHScroll(hPos)
+    self.setVScroll(vPos)
+
+    self.repaint()
+#@nonl
+#@-node:ekr.20090129062500.12:drawTopTree (qt)
+#@+node:ekr.20090124174652.21:drawTree
+def drawTree (self,p,parent_item=None):
+
+    # Draw the (visible) parent node.
+    item = self.drawNode(p,parent_item)
+
+    # Draw all the visible children.
+    self.drawChildren(p,parent_item=item)
+#@-node:ekr.20090124174652.21:drawTree
+#@+node:ekr.20090124174652.22:initData
+def initData (self):
+
+    # g.trace('*****')
+
+    self.item2positionDict = {}
+    self.item2vnodeDict = {}
+    self.position2itemDict = {}
+    self.vnode2itemsDict = {}
+    self.editWidgetsDict = {}
+#@-node:ekr.20090124174652.22:initData
+#@+node:ekr.20090124174652.23:rememberItem
+def rememberItem (self,p,item):
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(id(item),p.h)
+
+    v = p.v
+
+    # Update position dicts.
+    self.position2itemDict[p.key()] = item
+    self.item2positionDict[item] = p.copy()
+
+    # Update item2vnodeDict.
+    self.item2vnodeDict[item] = v
+
+    # Update vnode2itemsDict.
+    d = self.vnode2itemsDict
+    aList = d.get(v,[])
+    if item in aList:
+        g.trace('*** ERROR *** item already in list: %s, %s' % (item,aList))
+    else:
+        aList.append(item)
+    d[v] = aList
+#@-node:ekr.20090124174652.23:rememberItem
+#@-node:ekr.20090124174652.17:full_redraw & helpers
+#@+node:ekr.20090124174652.24:redraw_after_contract
+def redraw_after_contract (self,p=None):
+
+    trace = False and not g.unitTesting
+
+    if self.redrawing:
+        return
+
+    item = self.position2item(p)
+
+    if item:
+        if trace: g.trace('contracting item',item,p and p.h or '<no p>')
+        self.contractItem(item)
+    else:
+        # This is not an error.
+        # We may have contracted a node that was not, in fact, visible.
+        if trace: g.trace('***full redraw',p and p.h or '<no p>')
+        self.full_redraw(scroll=False)
+#@-node:ekr.20090124174652.24:redraw_after_contract
+#@+node:ekr.20090124174652.25:redraw_after_expand
+def redraw_after_expand (self,p=None):
+
+    # Important, setting scrolling to False makes the problem *worse*
+    self.full_redraw (p,scroll=True)
+#@-node:ekr.20090124174652.25:redraw_after_expand
+#@+node:ekr.20090124174652.26:redraw_after_head_changed
+def redraw_after_head_changed (self):
+
+    trace = False and not g.unitTesting
+
+    if self.busy(): return
+
+    c = self.c ; p = c.currentPosition()
+    ew = self.edit_widget(p)
+
+    if trace: g.trace(p.h)
+
+    currentItem = self.getCurrentItem()
+
+    if p:
+        for item in self.vnode2items(p.v):
+            if self.isValidItem(item):
+                self.setItemText(item,p.h)
+
+    # Bug fix: 2009/10/06
+    self.redraw_after_icons_changed()
+#@-node:ekr.20090124174652.26:redraw_after_head_changed
+#@+node:ekr.20090124174652.27:redraw_after_icons_changed
+def redraw_after_icons_changed (self):
+
+    trace = False and not g.unitTesting
+
+    if self.busy(): return
+
+    self.redrawCount += 1 # To keep a unit test happy.
+
+    c = self.c
+
+    if trace: g.trace(c.p.h,g.callers(4))
+
+    # Suppress call to setHeadString in onItemChanged!
+    self.redrawing = True
+    try:
+        item = self.getCurrentItem()
+        for p in c.rootPosition().self_and_siblings():
+            # Updates icons in p and all visible descendants of p.
+            self.updateVisibleIcons(p)
+    finally:
+        self.redrawing = False
+#@-node:ekr.20090124174652.27:redraw_after_icons_changed
+#@+node:ekr.20090124174652.28:redraw_after_select
+# Important: this can not replace before/afterSelectHint.
+
+def redraw_after_select (self,p=None):
+
+    '''Redraw the entire tree when an invisible node
+    is selected.'''
+
+    trace = False and not g.unitTesting
+
+    if trace: g.trace('(leoQtTree) busy? %s %s' % (
+        self.busy(),p and p.h or '<no p>'),g.callers(4))
+
+    # Prevent the selecting lockout from disabling the redraw.
+    oldSelecting = self.selecting
+    self.selecting = False
+    try:
+        if not self.busy():
+            self.full_redraw(p,scroll=False)
+    finally:
+        self.selecting = oldSelecting
+
+    # c.redraw_after_select calls tree.select indirectly.
+    # Do not call it again here.
+#@-node:ekr.20090124174652.28:redraw_after_select
+#@-node:ekr.20090124174652.15:Drawing... (nativeTree)
+#@-node:ekr.20091006142109.3700:Fixed @nosent dirty bug
 #@-node:ekr.20090813101852.3643:Bugs
 #@-node:ekr.20090717095154.3729:Leo 4.7 devel projects
 #@+node:ekr.20081208155215.12:Unused
