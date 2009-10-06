@@ -6217,6 +6217,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         if e:
             s = e.text() ; len_s = len(s)
+            if s == 'newHeadline': selectAll=True
             if selection:
                 i,j,ins = selection
                 start,n = i,abs(i-j)

@@ -448,6 +448,37 @@ def initAfterLoad (self):
     c.setChanged(False)
 #@-node:ekr.20090124174652.120:qtTree.initAfterLoad
 #@-node:ekr.20090812211903.3642:Added support for iconclick hooks
+#@+node:ekr.20091006164957.3701:Select all text if headline is newHeadline
+#@+node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
+def editLabelHelper (self,item,selectAll=False,selection=None):
+
+    '''Called by nativeTree.editLabel to do
+    gui-specific stuff.'''
+
+    w = self.treeWidget
+    w.setCurrentItem(item) # Must do this first.
+    w.editItem(item)
+        # Generates focus-in event that tree doesn't report.
+    e = w.itemWidget(item,0) # A QLineEdit.
+
+    if e:
+        s = e.text() ; len_s = len(s)
+        if s == 'newHeadline': selectAll=True
+        if selection:
+            i,j,ins = selection
+            start,n = i,abs(i-j)
+                # Not right for backward searches.
+        elif selectAll: start,n,ins = 0,len_s,len_s
+        else:           start,n,ins = len_s,0,len_s
+        e.setObjectName('headline')
+        e.setSelection(start,n)
+        # e.setCursorPosition(ins) # Does not work.
+        e.setFocus()
+        self.connectEditorWidget(e,item) # Hook up the widget.
+
+    return e
+#@-node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
+#@-node:ekr.20091006164957.3701:Select all text if headline is newHeadline
 #@-node:ekr.20090813101852.3644:Features
 #@+node:ekr.20090813101852.3643:Bugs
 #@+node:ekr.20090718070434.3641:Fixed file-open focus problem
