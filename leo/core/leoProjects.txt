@@ -1996,6 +1996,14 @@ The link 'Edward K. Ream' in the last line points to the Users Guide index.
 #@nonl
 #@-node:ekr.20090907080624.6073:Fixed wrong link in front page
 #@-node:ekr.20090721093155.5986:Bugs
+#@+node:ekr.20091006063434.22073:Docs
+#@+node:ekr.20090907080624.6069:Update the 4.6.3 release notes in the trunk
+It also provides lots of new features. --gui=qttabs and new plugins
+(spydershell, qtframecommands, mod_framesize). There is also "show
+folder" in rclick menu.
+#@nonl
+#@-node:ekr.20090907080624.6069:Update the 4.6.3 release notes in the trunk
+#@-node:ekr.20091006063434.22073:Docs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin
 @nocolor-node
