@@ -2036,7 +2036,584 @@ What I did:
 - Added __init__.py to 'extensions' folder.
 #@nonl
 #@-node:ekr.20090822054806.6002:Merged clean-sys-path branch
-#@-node:ekr.20090817080059.5996:Features
+#@+node:ekr.20090528072540.5738:Unified commands in File:Read/Write menu
+@nocolor-node
+
+- Combine 3 "read @x nodes" commands into a single "read @<file> nodes" command.
+- Combine 3 "write @x nodes" commands into a single "write @<file> nodes" command. 
+- Combine 3 "write dirty @x nodes" commands into a single "write dirty @<file> nodes" command.
+
+This is easy:
+    - read-at-file-nodes calls atFile.readAll.
+    - write-at-file-nodes calls atFile.writeAll.
+        - This handles both write commands.
+    - Added force flag to atFile.read.  It disables caching.
+    - Changed messages to say @<file> instead of @file.
+
+#@+node:ekr.20050920084036.186:leoCommandsClass (add docstrings)
+class leoCommandsClass (baseEditCommandsClass):
+
+    @others
+#@+node:ekr.20050920084036.187: ctor
+def __init__ (self,c):
+
+    baseEditCommandsClass.__init__(self,c) # init the base class.
+#@-node:ekr.20050920084036.187: ctor
+#@+node:ekr.20050920084036.188:leoCommands.getPublicCommands
+def getPublicCommands (self):
+
+    '''(leoCommands) Return a dict of the 'legacy' Leo commands.'''
+
+    k = self.k ; d2 = {}
+
+    << define dictionary d of names and Leo commands >>
+
+    # Create a callback for each item in d.
+    for name in sorted(d):
+        f = d.get(name)
+        d2 [name] = f
+        k.inverseCommandsDict [f.__name__] = name
+        # g.trace('leoCommands %24s = %s' % (f.__name__,name))
+
+    return d2
+#@+node:ekr.20050920084036.189:<< define dictionary d of names and Leo commands >>
+c = self.c ; f = c.frame
+
+d = {
+    'abort-edit-headline':          f.abortEditLabelCommand,
+    'about-leo':                    c.about,
+    'add-comments':                 c.addComments,     
+    'beautify-all':                 c.beautifyAllPythonCode,
+    'beautify-tree':                c.beautifyPythonTree,
+    'beautify':                     c.beautifyPythonCode,
+    'cascade-windows':              f.cascade,
+    'check-derived-file':           c.atFileCommands.checkDerivedFile,
+    'check-leo-file':               c.fileCommands.checkLeoFile,
+    'clear-recent-files':           c.clearRecentFiles,
+    'clean-recent-files':           c.cleanRecentFiles,
+    'sort-recent-files':            c.sortRecentFiles,
+    'close-window':                 c.close,
+    'contract-or-go-left':          c.contractNodeOrGoToParent,
+    'check-python-code':            c.checkPythonCode,
+    'check-all-python-code':        c.checkAllPythonCode,
+    'check-outline':                c.checkOutline,
+    'clear-recent-files':           c.clearRecentFiles,
+    'clone-node':                   c.clone,
+    'contract-node':                c.contractNode,
+    'contract-all':                 c.contractAllHeadlines,
+    'contract-all-other-nodes':     c.contractAllOtherNodes,
+    'contract-parent':              c.contractParent,
+    'convert-all-blanks':           c.convertAllBlanks,
+    'convert-all-tabs':             c.convertAllTabs,
+    'convert-blanks':               c.convertBlanks,
+    'convert-tabs':                 c.convertTabs,
+    'copy-node':                    c.copyOutline,
+    'copy-text':                    f.copyText,
+    'cut-node':                     c.cutOutline,
+    'cut-text':                     f.cutText,
+    'de-hoist':                     c.dehoist,
+    'delete-comments':              c.deleteComments,
+    'delete-node':                  c.deleteOutline,
+    'demote':                       c.demote,
+    'dump-outline':                 c.dumpOutline,
+    'edit-headline':                c.editHeadline,
+    'end-edit-headline':            f.endEditLabelCommand,
+    'equal-sized-panes':            f.equalSizedPanes,
+    'execute-script':               c.executeScript,
+    'exit-leo':                     g.app.onQuit,
+    'expand-all':                   c.expandAllHeadlines,
+    'expand-next-level':            c.expandNextLevel,
+    'expand-node':                  c.expandNode,
+    'expand-and-go-right':          c.expandNodeAndGoToFirstChild,
+    'expand-ancestors-only':        c.expandOnlyAncestorsOfNode,
+    'expand-or-go-right':           c.expandNodeOrGoToFirstChild,
+    'expand-prev-level':            c.expandPrevLevel,
+    'expand-to-level-1':            c.expandLevel1,
+    'expand-to-level-2':            c.expandLevel2,
+    'expand-to-level-3':            c.expandLevel3,
+    'expand-to-level-4':            c.expandLevel4,
+    'expand-to-level-5':            c.expandLevel5,
+    'expand-to-level-6':            c.expandLevel6,
+    'expand-to-level-7':            c.expandLevel7,
+    'expand-to-level-8':            c.expandLevel8,
+    'expand-to-level-9':            c.expandLevel9,
+    'export-headlines':             c.exportHeadlines,
+    'extract':                      c.extract,
+    'extract-names':                c.extractSectionNames,
+    'extract-section':              c.extractSection,
+    'find-next-clone':              c.findNextClone,
+    'flatten-outline':              c.flattenOutline,
+    'go-back':                      c.goPrevVisitedNode,
+    'go-forward':                   c.goNextVisitedNode,
+    'goto-first-node':              c.goToFirstNode,
+    'goto-first-visible-node':      c.goToFirstVisibleNode,
+    'goto-first-sibling':           c.goToFirstSibling,
+    'goto-last-node':               c.goToLastNode,
+    'goto-last-sibling':            c.goToLastSibling,
+    'goto-last-visible-node':       c.goToLastVisibleNode,
+    'goto-next-changed':            c.goToNextDirtyHeadline,
+    'goto-next-clone':              c.goToNextClone,
+    'goto-next-marked':             c.goToNextMarkedHeadline,
+    'goto-next-node':               c.selectThreadNext,
+    'goto-next-sibling':            c.goToNextSibling,
+    'goto-next-visible':            c.selectVisNext,
+    'goto-parent':                  c.goToParent,
+    'goto-prev-node':               c.selectThreadBack,
+    'goto-prev-sibling':            c.goToPrevSibling,
+    'goto-prev-visible':            c.selectVisBack,
+    'hide-invisibles':              c.hideInvisibles,
+    'hoist':                        c.hoist,
+    'import-at-file':               c.importAtFile,
+    'import-at-root':               c.importAtRoot,
+    'import-cweb-files':            c.importCWEBFiles,
+    'import-derived-file':          c.importDerivedFile,
+    'import-flattened-outline':     c.importFlattenedOutline,
+    'import-noweb-files':           c.importNowebFiles,
+    'indent-region':                c.indentBody,
+    'insert-child':                 c.insertChild,
+    'insert-node':                  c.insertHeadline,
+    'insert-body-time':             c.insertBodyTime,
+    'insert-headline-time':         f.insertHeadlineTime,
+    'mark':                         c.markHeadline,
+    'mark-changed-items':           c.markChangedHeadlines,
+    'mark-changed-roots':           c.markChangedRoots,
+    'mark-clones':                  c.markClones,
+    'mark-subheads':                c.markSubheads,
+    'match-brackets':               c.findMatchingBracket,
+    'minimize-all':                 f.minimizeAll,
+    'move-outline-down':            c.moveOutlineDown,
+    'move-outline-left':            c.moveOutlineLeft,
+    'move-outline-right':           c.moveOutlineRight,
+    'move-outline-up':              c.moveOutlineUp,
+    'new':                          c.new,
+    'open-compare-window':          c.openCompareWindow,
+    'open-find-dialog':             c.showFindPanel, # Deprecated.
+    'open-leoDocs-leo':             c.leoDocumentation,
+    'open-leoPlugins-leo':          c.openLeoPlugins,
+    'open-leoSettings-leo':         c.openLeoSettings,
+    'open-myLeoSettings-leo':       c.openMyLeoSettings,
+    'open-online-home':             c.leoHome,
+    'open-online-tutorial':         c.leoTutorial,
+    'open-offline-tutorial':        f.leoHelp,
+    'open-outline':                 c.open,
+    'open-python-window':           c.openPythonWindow,
+    'open-quickstart-leo':          c.leoQuickStart,
+    'open-scripts-leo':             c.openLeoScripts,
+    'open-users-guide':             c.leoUsersGuide,
+    'open-with':                    c.openWith,
+    'outline-to-cweb':              c.outlineToCWEB,
+    'outline-to-noweb':             c.outlineToNoweb,
+    'paste-node':                   c.pasteOutline,
+    'paste-retaining-clones':       c.pasteOutlineRetainingClones,
+    'paste-text':                   f.pasteText,
+    'pretty-print-all-python-code': c.prettyPrintAllPythonCode,
+    'pretty-print-python-code':     c.prettyPrintPythonCode,
+    'promote':                      c.promote,
+    'read-at-auto-nodes':           c.readAtAutoNodes,
+    'read-at-file-nodes':           c.readAtFileNodes,
+        # Write @<file> Nodes.
+    'read-at-shadow-nodes':         c.readAtShadowNodes,
+    'read-outline-only':            c.readOutlineOnly,
+    'read-file-into-node':          c.readFileIntoNode,
+    'redo':                         c.undoer.redo,
+    'reformat-paragraph':           c.reformatParagraph,
+    'remove-sentinels':             c.removeSentinels,
+    'resize-to-screen':             f.resizeToScreen,
+    'revert':                       c.revert,
+    'save-file':                    c.save,
+    'save-file-as':                 c.saveAs,
+    'save-file-as-unzipped':        c.saveAsUnzipped,
+    'save-file-as-zipped':          c.saveAsZipped,
+    'save-file-to':                 c.saveTo,
+    'settings':                     c.preferences,
+    'set-colors':                   c.colorPanel,
+    'set-font':                     c.fontPanel,
+    'show-invisibles':              c.showInvisibles,
+    'sort-children':                c.sortChildren,
+    'sort-siblings':                c.sortSiblings,
+    'tangle':                       c.tangle,
+    'tangle-all':                   c.tangleAll,
+    'tangle-marked':                c.tangleMarked,
+    'toggle-active-pane':           f.toggleActivePane,
+    'toggle-angle-brackets':        c.toggleAngleBrackets,
+    'toggle-invisibles':            c.toggleShowInvisibles,
+    'toggle-sparce-move':           c.toggleSparseMove,
+    'toggle-split-direction':       f.toggleSplitDirection,
+    'undo':                         c.undoer.undo,
+    'unindent-region':              c.dedentBody,
+    'unmark-all':                   c.unmarkAll,
+    'untangle':                     c.untangle,
+    'untangle-all':                 c.untangleAll,
+    'untangle-marked':              c.untangleMarked,
+    'weave':                        c.weave,
+    'write-at-auto-nodes':          c.atFileCommands.writeAtAutoNodes,
+    'write-at-file-nodes':          c.fileCommands.writeAtFileNodes,
+        # Write @<file> Nodes.
+    'write-at-shadow-nodes':        c.fileCommands.writeAtShadowNodes,
+    'write-dirty-at-auto-nodes':    c.atFileCommands.writeDirtyAtAutoNodes,
+    'write-dirty-at-file-nodes':    c.fileCommands.writeDirtyAtFileNodes,
+    'write-dirty-at-shadow-nodes':  c.fileCommands.writeDirtyAtShadowNodes,
+    'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
+    'write-outline-only':           c.fileCommands.writeOutlineOnly,
+    'write-file-from-node':         c.writeFileFromNode,
+}
+#@-node:ekr.20050920084036.189:<< define dictionary d of names and Leo commands >>
+#@-node:ekr.20050920084036.188:leoCommands.getPublicCommands
+#@-node:ekr.20050920084036.186:leoCommandsClass (add docstrings)
+#@+node:ekr.20091006063434.18802:Reading...
+#@+node:ekr.20031218072017.1839:readAtFileNodes (commands)
+def readAtFileNodes (self,event=None):
+
+    '''Read all @file nodes in the presently selected outline.'''
+
+    c = self ; u = c.undoer ; p = c.p
+
+    c.endEditing()
+    undoData = u.beforeChangeTree(p)
+    c.fileCommands.readAtFileNodes()
+    u.afterChangeTree(p,'Read @file Nodes',undoData)
+    c.redraw()
+#@-node:ekr.20031218072017.1839:readAtFileNodes (commands)
+#@+node:ekr.20031218072017.3029:readAtFileNodes (fileCommands)
+def readAtFileNodes (self):
+
+    c = self.c ; p = c.p
+
+    c.endEditing()
+    c.atFileCommands.readAll(p,partialFlag=True)
+    c.redraw()
+
+    # Force an update of the body pane.
+    c.setBodyString(p,p.b)
+    c.frame.body.onBodyChanged(undoType=None)
+#@-node:ekr.20031218072017.3029:readAtFileNodes (fileCommands)
+#@+node:ekr.20041005105605.26:readAll (atFile)
+def readAll(self,root,partialFlag=False):
+
+    """Scan vnodes, looking for @<file> nodes to read."""
+
+    use_tracer = False
+    if use_tracer: tt = g.startTracer()
+
+    at = self ; c = at.c
+    force = partialFlag
+    if partialFlag:
+        # Capture the current headline only if we aren't doing the initial read.
+        c.endEditing() 
+    anyRead = False
+    p = root.copy()
+
+    scanned_tnodes = set()
+
+    if partialFlag: after = p.nodeAfterTree()    
+    else: after = c.nullPosition()
+
+    while p and p != after:
+        gnx = p.gnx
+        # g.trace(p.h)
+
+        #skip clones
+        if gnx in scanned_tnodes:
+            p.moveToNodeAfterTree()
+            continue
+        scanned_tnodes.add(gnx)
+
+        if not p.h.startswith('@'):
+            p.moveToThreadNext()
+        elif p.isAtIgnoreNode():
+            p.moveToNodeAfterTree()
+        elif p.isAtThinFileNode():
+            anyRead = True
+            at.read(p,thinFile=True,force=force)
+            p.moveToNodeAfterTree()
+        elif p.isAtAutoNode():
+            fileName = p.atAutoNodeName()
+            at.readOneAtAutoNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtEditNode():
+            fileName = p.atEditNodeName()
+            at.readOneAtEditNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtShadowFileNode():
+            fileName = p.atShadowFileNodeName()
+            at.readOneAtShadowNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtFileNode() or p.isAtNorefFileNode():
+            anyRead = True
+            wasOrphan = p.isOrphan()
+            ok = at.read(p,force=force)
+            if wasOrphan and not partialFlag and not ok:
+                # Remind the user to fix the problem.
+                p.setDirty()
+                c.setChanged(True)
+            p.moveToNodeAfterTree()
+        else: p.moveToThreadNext()
+    # Clear all orphan bits.
+    for v in c.all_unique_nodes():
+        v.clearOrphan()
+
+    if partialFlag and not anyRead:
+        g.es("no @<file> nodes in the selected tree")
+
+    if use_tracer: tt.stop()
+#@-node:ekr.20041005105605.26:readAll (atFile)
+#@+node:ekr.20041005105605.21:read (atFile) & helper
+def read(self,root,
+    importFileName=None,thinFile=False,
+    fromString=None,atShadow=False,
+    force=False
+):
+
+    """Read any @thin, @file and @noref trees."""
+
+    at = self ; c = at.c
+    << set fileName and isAtFile >>
+    if isAtFile:
+        # The @file node has file-like sentinels iff a tnodeList exists.
+        thinFile = not (hasattr(root.v,'tnodeList') and root.v.tnodeList)
+    doCache = g.enableDB and (thinFile or atShadow) and not force
+    at.initReadIvars(root,fileName,
+        importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
+    if at.errors: return False
+    fileName = at.openFileForReading(fileName,fromString=fromString)
+    if at.inputFile:
+        c.setFileTimeStamp(fileName)
+    else:
+        return False
+
+    fileContent = open(fileName, "rb").read()
+    cachefile = self._contentHashFile(root, fileContent)
+
+    # Remember that we have read this file.
+    root.v.at_read = True # Create the attribute for all clones.
+
+    if doCache and cachefile in c.db:
+        # Delete the previous tree, regardless of the @<file> type.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+        aList = c.db[cachefile]
+        root.v.createOutlineFromCacheList(c,aList)
+        at.inputFile.close()
+        root.clearDirty()
+        return
+
+    # Delete all children, but **not** for @file and @nosent nodes!
+    # (We do delete all children for @file nodes with thin-like sentinels.)
+    if thinFile or atShadow:
+        root.v.at_read = True # Create the attribute for all clones.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+
+    if not g.unitTesting:
+        g.es("reading:",root.h)
+
+    root.clearVisitedInTree()
+    at.scanAllDirectives(root,importing=at.importing,reading=True)
+    at.readOpenFile(root,at.inputFile,fileName)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        << advise user to delete all unvisited nodes >>
+    if at.errors == 0 and not at.importing:
+        # Package this as a method for use by mod_labels plugin.
+        self.copyAllTempBodyStringsToTnodes(root,thinFile)
+
+    << delete all tempBodyStrings >>
+
+    # write out the cache version
+    self.writeCachedTree(root, cachefile)
+
+    return at.errors == 0
+#@+node:ekr.20041005105605.22:<< set fileName and isAtFile >>
+if fromString:
+    fileName = "<string-file>"
+elif importFileName:
+    fileName = importFileName
+elif root.isAnyAtFileNode():
+    fileName = root.anyAtFileNodeName()
+else:
+    fileName = None
+
+if not fileName:
+    at.error("Missing file name.  Restoring @file tree from .leo file.")
+    return False
+
+isAtFile = (
+    not thinFile and
+    not importFileName and
+    not atShadow and
+    not fromString and
+    root.h.startswith('@file'))
+#@nonl
+#@-node:ekr.20041005105605.22:<< set fileName and isAtFile >>
+#@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
+resurrected = 0
+for p in root.self_and_subtree():
+    if p.v.isVisited():
+        pass
+        # g.trace('visited',p.v,p.h)
+    else:
+        g.trace('**** not visited',p.v,p.h)
+        g.es('resurrected node:',p.h,color='blue')
+        g.es('in file:',fileName,color='blue')
+        resurrected += 1
+
+if resurrected:
+    g.es('you may want to delete ressurected nodes')
+
+#@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
+#@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+for v in c.all_unique_nodes():
+
+    if hasattr(v,"tempBodyString"):
+        delattr(v,"tempBodyString")
+#@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+#@-node:ekr.20041005105605.21:read (atFile) & helper
+#@-node:ekr.20091006063434.18802:Reading...
+#@+node:ekr.20091006063434.18803:Writing...
+#@+node:ekr.20031218072017.2012:writeAtFileNodes (fileCommands)
+def writeAtFileNodes (self,event=None):
+
+    '''Write all @file nodes in the selected outline.'''
+
+    c = self.c
+
+    changedFiles,atOk = c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
+
+    if changedFiles:
+        g.es("auto-saving outline",color="blue")
+        c.save() # Must be done to set or clear tnodeList.
+#@-node:ekr.20031218072017.2012:writeAtFileNodes (fileCommands)
+#@+node:ekr.20031218072017.1666:writeDirtyAtFileNodes (fileCommands)
+def writeDirtyAtFileNodes (self,event=None):
+
+    '''Write all changed @file Nodes.'''
+
+    c = self.c
+
+    changedFiles,atOk = c.atFileCommands.writeAll(writeDirtyAtFileNodesFlag=True)
+
+    if changedFiles:
+        g.es("auto-saving outline",color="blue")
+        c.save() # Must be done to set or clear tnodeList.
+#@-node:ekr.20031218072017.1666:writeDirtyAtFileNodes (fileCommands)
+#@+node:ekr.20041005105605.147:writeAll (atFile)
+def writeAll(self,
+    writeAtFileNodesFlag=False,
+    writeDirtyAtFileNodesFlag=False,
+    toString=False
+):
+
+    """Write @file nodes in all or part of the outline"""
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c
+    if trace: scanAtPathDirectivesCount = c.scanAtPathDirectivesCount
+    writtenFiles = [] # Files that might be written again.
+    mustAutoSave = False ; atOk = True
+    force = writeAtFileNodesFlag
+
+    if writeAtFileNodesFlag:
+        # The Write @<file> Nodes command.
+        # Write all nodes in the selected tree.
+        p = c.p
+        after = p.nodeAfterTree()
+    else:
+        # Write dirty nodes in the entire outline.
+        p =  c.rootPosition()
+        after = c.nullPosition()
+
+    << Clear all orphan bits >>
+    atOk = True
+    while p and p != after:
+        if p.isAnyAtFileNode() or p.isAtIgnoreNode():
+            << handle v's tree >>
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+
+    << say the command is finished >>
+    if trace: g.trace('%s calls to c.scanAtPathDirectives()' % (
+        c.scanAtPathDirectivesCount-scanAtPathDirectivesCount))
+    return mustAutoSave,atOk
+#@+node:ekr.20041005105605.148:<< Clear all orphan bits >>
+@ We must clear these bits because they may have been set on a previous write.
+Calls to atFile::write may set the orphan bits in @file nodes.
+If so, write_Leo_file will write the entire @file tree.
+@c
+
+for v2 in p.self_and_subtree():
+    v2.clearOrphan()
+#@-node:ekr.20041005105605.148:<< Clear all orphan bits >>
+#@+node:ekr.20041005105605.149:<< handle v's tree >>
+if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
+    pathChanged = False
+else:
+    oldPath = at.getPathUa(p)
+    newPath = at.fullPath(p)
+    # if trace: g.trace('p %s\noldPath %s\nnewPath %s' % (
+        # p.h,repr(oldPath),repr(newPath)))
+    pathChanged = oldPath and oldPath != newPath
+    if pathChanged:
+        at.setPathUa(p,newPath) # Remember that we have changed paths.
+        g.es_print('path changed for',p.h,color='blue')
+
+if p.v.isDirty() or pathChanged or writeAtFileNodesFlag or p.v in writtenFiles:
+
+    at.fileChangedFlag = False
+    autoSave = False
+
+    # Tricky: @ignore not recognised in @silentfile nodes.
+    if p.isAtAsisFileNode():
+        at.asisWrite(p,toString=toString)
+        writtenFiles.append(p.v) ; autoSave = True
+    elif p.isAtIgnoreNode():
+        pass
+    elif p.isAtAutoNode():
+        at.writeOneAtAutoNode(p,toString=toString,force=force)
+        writtenFiles.append(p.v) # No need for autosave
+    elif p.isAtEditNode():
+        at.writeOneAtEditNode(p,toString=toString)
+        writtenFiles.append(p.v) # No need for autosave
+    elif p.isAtNorefFileNode():
+        at.norefWrite(p,toString=toString)
+        writtenFiles.append(p.v) ; autoSave = True
+    elif p.isAtNoSentFileNode():
+        at.write(p,kind='@nosent',nosentinels=True,toString=toString)
+        writtenFiles.append(p.v) # No need for autosave
+    elif p.isAtShadowFileNode():
+        at.writeOneAtShadowNode(p,toString=toString,force=force or pathChanged)
+        writtenFiles.append(p.v) ; autoSave = True # 2008/7/29
+    elif p.isAtThinFileNode():
+        at.write(p,kind='@thin',thinFile=True,toString=toString)
+        writtenFiles.append(p.v) # No need for autosave.
+    elif p.isAtFileNode():
+        if g.convert_at_file:
+            at.write(p,kind='@file',thinFile=True,toString=toString)
+            writtenFiles.append(p.v)
+            autoSave = True # Clears root.v.tnodeList, so we must save.
+        else:
+            at.write(p,kind='@file',thinFile=False,toString=toString)
+            writtenFiles.append(p.v)
+            autoSave = True # Updates root.v.tnodeList, so we must save.
+
+    if at.errors: atOk = False
+
+    if at.fileChangedFlag and autoSave: # Set by replaceTargetFileIfDifferent.
+        mustAutoSave = True
+#@-node:ekr.20041005105605.149:<< handle v's tree >>
+#@+node:ekr.20041005105605.150:<< say the command is finished >>
+if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
+    if len(writtenFiles) > 0:
+        g.es("finished")
+    elif writeAtFileNodesFlag:
+        g.es("no @<file> nodes in the selected tree")
+    else:
+        g.es("no dirty @<file> nodes")
+#@-node:ekr.20041005105605.150:<< say the command is finished >>
+#@-node:ekr.20041005105605.147:writeAll (atFile)
+#@-node:ekr.20091006063434.18803:Writing...
+#@-node:ekr.20090528072540.5738:Unified commands in File:Read/Write menu
 #@+node:ekr.20091001141621.6042:iters -> generators & code cleanup
 @nocolor-node
 @
@@ -2948,6 +3525,7 @@ to force the conversion of all your legacy @file nodes.  Please back
 up your .leo file and all your external files first.
 #@nonl
 #@-node:ekr.20091005145253.6057:Convert @file nodes so they use file-like sentinels
+#@-node:ekr.20090817080059.5996:Features
 #@-node:ekr.20090718091653.5982:Leo 4.7 projects
 #@-all
 #@nonl
