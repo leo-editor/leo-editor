@@ -683,7 +683,7 @@ class vnode (baseVnode):
     #@-node:ekr.20031218072017.3402:v.setSelection
     #@-node:ekr.20031218072017.3384:v.Setters
     #@+node:ekr.20080427062528.9:v.Low level methods
-    #@+node:ekr.20090706110836.6135:v._addLink (new) & helper & test
+    #@+node:ekr.20090706110836.6135:v._addLink & helper
     def _addLink (self,childIndex,parent_v,adjust=True):
         '''Adjust links after adding a link to v.'''
 
@@ -701,7 +701,8 @@ class vnode (baseVnode):
         parent_v._p_changed = 1
 
         # If v has only one parent, we adjust all
-        # the parnets links in the descendant tree.
+        # the parents links in the descendant tree.
+        # This handles clones properly when undoing a delete.
         if adjust:
             if len(v.parents) == 1:
                 for child in v.children:
@@ -721,8 +722,8 @@ class vnode (baseVnode):
                 child._addParentLinks(parent=v)
     #@nonl
     #@-node:ekr.20090804184658.6129:v._addParentLinks
-    #@-node:ekr.20090706110836.6135:v._addLink (new) & helper & test
-    #@+node:ekr.20090804184658.6128:v._cutLink (new)
+    #@-node:ekr.20090706110836.6135:v._addLink & helper
+    #@+node:ekr.20090804184658.6128:v._cutLink
     def _cutLink (self,childIndex,parent_v):
         '''Adjust links after cutting a link to v.'''
         v = self
@@ -735,6 +736,7 @@ class vnode (baseVnode):
 
         # If v has no more parents, we adjust all
         # the parent links in the descendant tree.
+        # This handles clones properly when deleting a tree.
         if len(v.parents) == 0:
             for child in v.children:
                 child._cutParentLinks(parent=v)
@@ -752,7 +754,7 @@ class vnode (baseVnode):
             for child in v.children:
                 child._cutParentLinks(parent=v)
     #@-node:ekr.20090804190529.6133:v._cutParentLinks
-    #@-node:ekr.20090804184658.6128:v._cutLink (new)
+    #@-node:ekr.20090804184658.6128:v._cutLink
     #@+node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
     def _linkAsNthChild (self,parent_v,n):
 
@@ -2490,7 +2492,7 @@ class position (object):
     # These methods are only for the use of low-level code
     # in leoNodes.py, leoFileCommands.py and leoUndo.py.
     #@nonl
-    #@+node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink (no change)
+    #@+node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
     def _adjustPositionBeforeUnlink (self,p2):
 
         '''Adjust position p before unlinking p2.'''
@@ -2651,7 +2653,7 @@ class position (object):
         #@-node:ekr.20090713125326.6130:node 3
         #@-others
     #@-node:ekr.20090713125326.6116:@test p.adjustPositionBeforeUnlink
-    #@-node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink (no change)
+    #@-node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
     #@+node:ekr.20080416161551.214:p._linkAfter
     def _linkAfter (self,p_after,adjust=True):
 
