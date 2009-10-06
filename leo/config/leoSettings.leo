@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="9,1,15"><vh>Startup</vh>
+<v t="ekr.20070622214401"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913"><vh>@@button Save</vh></v>
@@ -453,19 +453,19 @@
 <v t="ekr.20071001120755.2"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.14"><vh>@item *read-outline-only</vh></v>
 <v t="ekr.20071001120755.3"><vh>@item *read-file-into-node</vh></v>
-<v t="ekr.20070925144534.17"><vh>@item read-at-auto-nodes</vh></v>
+<v t="ekr.20070925144534.17"><vh>@@@item read-at-auto-nodes</vh></v>
 <v t="ekr.20070925144534.21"><vh>@item read-at-file-nodes</vh></v>
-<v t="ekr.20080801104153.2"><vh>@item read-at-shadow-nodes</vh></v>
+<v t="ekr.20080801104153.2"><vh>@@@item read-at-shadow-nodes</vh></v>
 <v t="ekr.20071001123216"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.15"><vh>@item *write-outline-only</vh></v>
 <v t="ekr.20071001120755.4"><vh>@item *write-file-from-node</vh></v>
-<v t="ekr.20070925144534.18"><vh>@item write-at-auto-nodes</vh></v>
-<v t="ekr.20080801104153.3"><vh>@item write-at-shadow-nodes</vh></v>
+<v t="ekr.20070925144534.18"><vh>@@@item write-at-auto-nodes</vh></v>
 <v t="ekr.20070925144534.24"><vh>@item write-at-file-nodes</vh></v>
+<v t="ekr.20080801104153.3"><vh>@@@item write-at-shadow-nodes</vh></v>
 <v t="ekr.20070925144534.16"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.19"><vh>@item write-dirty-at-auto-nodes</vh></v>
+<v t="ekr.20070925144534.19"><vh>@@@item write-dirty-at-auto-nodes</vh></v>
 <v t="ekr.20070925144534.22"><vh>@item write-dirty-at-file-nodes</vh></v>
-<v t="ekr.20080801104153.4"><vh>@item write-dirty-at-shadow-nodes</vh></v>
+<v t="ekr.20080801104153.4"><vh>@@@item write-dirty-at-shadow-nodes</vh></v>
 <v t="ekr.20070925144534.23"><vh>@item write-missing-at-file-nodes</vh></v>
 </v>
 <v t="ekr.20070925144534.25"><vh>@menu Tan&amp;gle...</vh>
@@ -1428,9 +1428,9 @@
 </v>
 <v t="ekr.20060603215208"></v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20090930151626.8534" a="E"><vh>add/delete-comments...</vh>
+<v t="ekr.20090930151626.8534"><vh>add/delete-comments...</vh>
 <v t="ekr.20060925060533.4"></v>
-<v t="ekr.20070925144534.58" a="E"></v>
+<v t="ekr.20070925144534.58"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -6576,10 +6576,10 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.17">Read @auto Nodes</t>
 <t tx="ekr.20070925144534.18">Write @auto Nodes</t>
 <t tx="ekr.20070925144534.19">Write Dirty @auto Nodes</t>
-<t tx="ekr.20070925144534.21">Read @file Nodes</t>
-<t tx="ekr.20070925144534.22">Write Dirty @file Nodes</t>
+<t tx="ekr.20070925144534.21">Read @&lt;file&gt; Nodes</t>
+<t tx="ekr.20070925144534.22">Write Dirty @&lt;file&gt; Nodes</t>
 <t tx="ekr.20070925144534.23">Write Missing @file Nodes</t>
-<t tx="ekr.20070925144534.24">Write @file Nodes</t>
+<t tx="ekr.20070925144534.24">Write @&lt;file&gt; Nodes</t>
 <t tx="ekr.20070925144534.25"></t>
 <t tx="ekr.20070925144534.26"></t>
 <t tx="ekr.20070925144534.27"></t>

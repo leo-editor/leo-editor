@@ -6191,6 +6191,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'promote':                      c.promote,
             'read-at-auto-nodes':           c.readAtAutoNodes,
             'read-at-file-nodes':           c.readAtFileNodes,
+                # Write @<file> Nodes.
             'read-at-shadow-nodes':         c.readAtShadowNodes,
             'read-outline-only':            c.readOutlineOnly,
             'read-file-into-node':          c.readFileIntoNode,
@@ -6227,6 +6228,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'weave':                        c.weave,
             'write-at-auto-nodes':          c.atFileCommands.writeAtAutoNodes,
             'write-at-file-nodes':          c.fileCommands.writeAtFileNodes,
+                # Write @<file> Nodes.
             'write-at-shadow-nodes':        c.fileCommands.writeAtShadowNodes,
             'write-dirty-at-auto-nodes':    c.atFileCommands.writeDirtyAtAutoNodes,
             'write-dirty-at-file-nodes':    c.fileCommands.writeDirtyAtFileNodes,

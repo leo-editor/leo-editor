@@ -2286,7 +2286,7 @@ class baseFileCommands:
         theFile.close()
     #@-node:ekr.20070412095520:writeZipFile
     #@-node:ekr.20031218072017.3046:write_Leo_file
-    #@+node:ekr.20031218072017.2012:writeAtFileNodes
+    #@+node:ekr.20031218072017.2012:writeAtFileNodes (fileCommands)
     def writeAtFileNodes (self,event=None):
 
         '''Write all @file nodes in the selected outline.'''
@@ -2298,7 +2298,7 @@ class baseFileCommands:
         if changedFiles:
             g.es("auto-saving outline",color="blue")
             c.save() # Must be done to set or clear tnodeList.
-    #@-node:ekr.20031218072017.2012:writeAtFileNodes
+    #@-node:ekr.20031218072017.2012:writeAtFileNodes (fileCommands)
     #@+node:ekr.20080801071227.5:writeAtShadowNodes (fileCommands)
     def writeAtShadowNodes (self,event=None):
 

@@ -341,7 +341,11 @@ you want (e.g. c:/opt/leo). But I could be wrong.
 #@-node:ekr.20090822060128.6035:Improved the install docs
 #@+node:ekr.20090829175108.6133:Marked @<file> nodes dirty if nodes change during read.
 #@+node:ekr.20041005105605.21:read (atFile) & helper
-def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
+def read(self,root,
+    importFileName=None,thinFile=False,
+    fromString=None,atShadow=False,
+    force=False
+):
 
     """Read any @thin, @file and @noref trees."""
 
@@ -350,7 +354,7 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     if isAtFile:
         # The @file node has file-like sentinels iff a tnodeList exists.
         thinFile = not (hasattr(root.v,'tnodeList') and root.v.tnodeList)
-    doCache = g.enableDB and (thinFile or atShadow)
+    doCache = g.enableDB and (thinFile or atShadow) and not force
     at.initReadIvars(root,fileName,
         importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
     if at.errors: return False
