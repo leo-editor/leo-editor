@@ -351,6 +351,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             for item in self.vnode2items(p.v):
                 if self.isValidItem(item):
                     self.setItemText(item,p.h)
+
+        # Bug fix: 2009/10/06
+        self.redraw_after_icons_changed()
     #@-node:ekr.20090124174652.26:redraw_after_head_changed
     #@+node:ekr.20090124174652.27:redraw_after_icons_changed
     def redraw_after_icons_changed (self):
@@ -370,6 +373,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         try:
             item = self.getCurrentItem()
             for p in c.rootPosition().self_and_siblings():
+                # Updates icons in p and all visible descendants of p.
                 self.updateVisibleIcons(p)
         finally:
             self.redrawing = False

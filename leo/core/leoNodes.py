@@ -531,7 +531,7 @@ class vnode (baseVnode):
         for v in dirtyVnodeList:
             v.setDirty() # Do not call v.setDirty here!
 
-        if trace: g.trace(dirtyVnodeList)
+        if trace: g.trace("vnode",dirtyVnodeList)
 
         return dirtyVnodeList
     #@-node:ekr.20090830051712.6157:v.setAllAncestorAtFileNodesDirty
@@ -1706,7 +1706,7 @@ class position (object):
         for v in dirtyVnodeList:
             v.setDirty()
 
-        if trace: g.trace(dirtyVnodeList) #,g.callers(5))
+        if trace: g.trace("position",dirtyVnodeList,g.callers(5))
 
         return dirtyVnodeList
     #@-node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty

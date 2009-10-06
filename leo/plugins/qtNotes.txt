@@ -512,6 +512,48 @@ def closeEvent (self,event):
 #@-node:ekr.20090813101852.3642:Eliminate double close prompt
 #@+node:ekr.20090818115409.3645:Fixed scrolling problem with multiple editors
 #@-node:ekr.20090818115409.3645:Fixed scrolling problem with multiple editors
+#@+node:ekr.20091006123049.3699:Fixed crash in quicksearch plugin
+#@+node:ekr.20081121105001.330:createTab
+def createTab (self,tabName,widget=None,wrap='none'):
+    """ Create a new tab in tab widget
+
+    if widget is None, Create a QTextBrowser,
+    suitable for log functionality.
+    """
+
+    trace = False and not g.unitTesting
+    c = self.c ; w = self.tabWidget
+
+    # Important. Not called during startup.
+
+    if widget is None:
+        # widget = QtGui.QTextBrowser()
+        widget = QTextBrowserSubclass(parent=None,c=c,wrapper=self)
+        contents = leoQTextEditWidget(widget=widget,name='log',c=c)
+        widget.leo_log_wrapper = contents # Inject an ivar.
+        if trace: g.trace('** creating',tabName,contents,widget,'\n',g.callers(9))
+        widget.setWordWrapMode(QtGui.QTextOption.NoWrap)
+        widget.setReadOnly(False) # Allow edits.
+        self.logDict[tabName] = widget
+        if tabName == 'Log':
+            self.logCtrl = contents
+            widget.setObjectName('log-widget')
+            theFilter = leoQtEventFilter(c,w=self,tag='log')
+            self.eventFilters.append(theFilter) # Needed!
+            widget.installEventFilter(theFilter)
+        self.contentsDict[tabName] = widget
+        w.addTab(widget,tabName)
+    else:
+        contents = widget
+        # Bug fix: 2009/10/06
+        widget.leo_log_wrapper = contents # Inject an ivar.
+        # if trace: g.trace('** using',tabName,contents)
+        self.contentsDict[tabName] = contents
+        w.addTab(contents,tabName)
+
+    return contents
+#@-node:ekr.20081121105001.330:createTab
+#@-node:ekr.20091006123049.3699:Fixed crash in quicksearch plugin
 #@-node:ekr.20090813101852.3643:Bugs
 #@-node:ekr.20090717095154.3729:Leo 4.7 devel projects
 #@+node:ekr.20081208155215.12:Unused
