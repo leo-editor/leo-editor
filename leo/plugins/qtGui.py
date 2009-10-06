@@ -1219,7 +1219,14 @@ class findTextWrapper (leoQLineEditWidget):
 
     '''A class representing the find/change edit widgets.'''
 
-    pass
+    def __init__ (self,widget,name,c=None):
+        # Init the base class.
+        leoQLineEditWidget.__init__(self,widget,name,c=c)
+        self.tabWidget = None
+
+    def setTabWidget (self,widget):
+        self.tabWidget = widget
+#@nonl
 #@-node:ekr.20081121105001.593:class findTextWrapper
 #@+node:ekr.20081121105001.559:class leoQScintilla
 class leoQScintillaWidget (leoQtBaseTextWidget):
@@ -3119,16 +3126,22 @@ class leoQtFindTab (leoFind.findTab):
         self.initTextWidgets()
         self.initCheckBoxes()
         self.initRadioButtons()
-    #@+node:ekr.20081121105001.239:createIvars
+    #@+node:ekr.20081121105001.239:createIvars (qtFindTab)
     def createIvars (self):
 
         c = self.c ; w = c.frame.top.ui # A Window ui object.
 
         # Bind boxes to Window objects.
         self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
+        findWrapper   = findTextWrapper(w.findPattern,'find-widget',c)
+        changeWrapper = findTextWrapper(w.findChange,'change-widget',c)
+        if 0: # Not yet.
+            findWrapper.setTabWidget(changeWrapper)
+            findWrapper.setReturnCommand = None
+            changeWrapper.setTabWidget(findWrapper)
         data = (
-            ('find_ctrl',       findTextWrapper(w.findPattern,'find-widget',c)),
-            ('change_ctrl',     findTextWrapper(w.findChange,'change-widget',c)),
+            ('find_ctrl',       findWrapper),
+            ('change_ctrl',     changeWrapper),
             ('whole_word',      w.checkBoxWholeWord),
             ('ignore_case',     w.checkBoxIgnoreCase),
             ('wrap',            w.checkBoxWrapAround),
@@ -3147,7 +3160,7 @@ class leoQtFindTab (leoFind.findTab):
             setattr(self,ivar,widget)
             self.widgetsDict[ivar] = widget
             # g.trace(ivar,widget)
-    #@-node:ekr.20081121105001.239:createIvars
+    #@-node:ekr.20081121105001.239:createIvars (qtFindTab)
     #@+node:ekr.20081121105001.240:initIvars
     def initIvars(self):
 
