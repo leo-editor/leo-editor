@@ -341,7 +341,11 @@ you want (e.g. c:/opt/leo). But I could be wrong.
 #@-node:ekr.20090822060128.6035:Improved the install docs
 #@+node:ekr.20090829175108.6133:Marked @<file> nodes dirty if nodes change during read.
 #@+node:ekr.20041005105605.21:read (atFile) & helper
-def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
+def read(self,root,
+    importFileName=None,thinFile=False,
+    fromString=None,atShadow=False,
+    force=False
+):
 
     """Read any @thin, @file and @noref trees."""
 
@@ -350,7 +354,7 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     if isAtFile:
         # The @file node has file-like sentinels iff a tnodeList exists.
         thinFile = not (hasattr(root.v,'tnodeList') and root.v.tnodeList)
-    doCache = g.enableDB and (thinFile or atShadow)
+    doCache = g.enableDB and (thinFile or atShadow) and not force
     at.initReadIvars(root,fileName,
         importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
     if at.errors: return False
@@ -1985,6 +1989,73 @@ def checkVisNextLimit (self,limit,p):
 #@-node:ekr.20090715145956.6167:checkVisNextLimit
 #@-node:ekr.20080416161551.211:p.moveToVisNext
 #@-node:ekr.20091003171114.6465:Fixed contractOrGoRight
+#@+node:ekr.20091007105735.6462:Fixed bug: @nosent should warn about orphan nodes
+#@+node:ekr.20041005105605.154:asisWrite
+def asisWrite(self,root,toString=False):
+
+    at = self ; c = at.c
+    c.endEditing() # Capture the current headline.
+
+    try:
+        # Note: @asis always writes all nodes,
+        # so there can be no orphan or ignored nodes.
+        targetFileName = root.atAsisFileNodeName()
+        at.initWriteIvars(root,targetFileName,toString=toString)
+        if at.errors: return
+        if not at.openFileForWriting(root,targetFileName,toString):
+            # openFileForWriting calls root.setDirty() if there are errors.
+            return
+        for p in root.self_and_subtree():
+            << Write p's headline if it starts with @@ >>
+            << Write p's body >>
+        at.closeWriteFile()
+        at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+    except Exception:
+        at.writeException(root) # Sets dirty and orphan bits.
+
+silentWrite = asisWrite # Compatibility with old scripts.
+#@+node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
+s = p.h
+
+if g.match(s,0,"@@"):
+    s = s[2:]
+    if s and len(s) > 0:
+        s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
+        at.outputFile.write(s)
+#@-node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
+#@+node:ekr.20041005105605.156:<< Write p's body >>
+s = p.b
+
+if s:
+    s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
+    at.outputStringWithLineEndings(s)
+#@-node:ekr.20041005105605.156:<< Write p's body >>
+#@-node:ekr.20041005105605.154:asisWrite
+#@+node:ekr.20041005105605.157:writeOpenFile
+# New in 4.3: must be inited before calling this method.
+# New in 4.3 b2: support for writing from a string.
+
+def writeOpenFile(self,root,
+    nosentinels=False,toString=False,fromString=''):
+
+    """Do all writes except asis writes."""
+
+    at = self ; s = g.choose(fromString,fromString,root.v._bodyString)
+
+    root.clearAllVisitedInTree()
+    at.putAtFirstLines(s)
+    at.putOpenLeoSentinel("@+leo-ver=4")
+    at.putInitialComment()
+    at.putOpenNodeSentinel(root)
+    at.putBody(root,fromString=fromString)
+    at.putCloseNodeSentinel(root)
+    at.putSentinel("@-leo")
+    root.setVisited()
+    at.putAtLastLines(s)
+    if not toString:
+        at.warnAboutOrphandAndIgnoredNodes()
+#@-node:ekr.20041005105605.157:writeOpenFile
+#@-node:ekr.20091007105735.6462:Fixed bug: @nosent should warn about orphan nodes
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin
@@ -2058,6 +2129,8 @@ to force the conversion of all your legacy @file nodes.  Please back
 up your .leo file and all your external files first.
 #@nonl
 #@-node:ekr.20091005145253.6057:Convert @file nodes so they use file-like sentinels
+#@+node:ekr.20091007105735.6463:Made show-fonts work with qt gui
+#@-node:ekr.20091007105735.6463:Made show-fonts work with qt gui
 #@-node:ekr.20090817080059.5996:Features
 #@+node:ekr.20091007104807.6470:Code
 #@+node:ekr.20091001141621.6042:iters -> generators & code cleanup

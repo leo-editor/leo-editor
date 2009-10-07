@@ -553,6 +553,8 @@ def createTab (self,tabName,widget=None,wrap='none'):
     """
 
     trace = False and not g.unitTesting
+    if trace: g.trace(tabName,g.callers(4))
+
     c = self.c ; w = self.tabWidget
 
     # Important. Not called during startup.

@@ -4987,6 +4987,8 @@ class leoQtLog (leoFrame.leoLog):
         """
 
         trace = False and not g.unitTesting
+        if trace: g.trace(tabName,g.callers(4))
+
         c = self.c ; w = self.tabWidget
 
         # Important. Not called during startup.
@@ -5062,7 +5064,7 @@ class leoQtLog (leoFrame.leoLog):
         return len([val for val in self.frameDict.values() if val != None])
     #@-node:ekr.20081121105001.334:numberOfVisibleTabs
     #@+node:ekr.20081121105001.335:selectTab & helper
-    def selectTab (self,tabName,createText=True,wrap='none'):
+    def selectTab (self,tabName,createText=True,widget=None,wrap='none'):
 
         '''Create the tab if necessary and make it active.'''
 
@@ -5071,7 +5073,7 @@ class leoQtLog (leoFrame.leoLog):
         ok = self.selectHelper(tabName,createText)
         if ok: return
 
-        self.createTab(tabName,widget= None,wrap = wrap)
+        self.createTab(tabName,widget=widget,wrap=wrap)
         self.selectHelper(tabName,createText)
 
     #@+node:ekr.20081121105001.336:selectHelper
@@ -5229,97 +5231,45 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081121105001.342:createFontPicker
     def createFontPicker (self,tabName):
 
-        return
+        log = self
+        QFont = QtGui.QFont
+        font,ok = QtGui.QFontDialog.getFont()
+        if not (font and ok): return
 
-        # log = self ; c = self.c
-        # parent = log.frameDict.get(tabName)
-        # w = log.textDict.get(tabName)
-        # w.pack_forget()
+        style = font.style()
+        table = (
+            (QFont.StyleNormal,'normal'),
+            (QFont.StyleItalic,'italic'),
+            (QFont.StyleOblique,'oblique'))
+        for val,name in table:
+            if style == val:
+                style = name ; break
+        else: style = ''
 
-        # bg = parent.cget('background')
-        # font = self.getFont()
+        weight = font.weight()
+        table = (
+            (QFont.Light,'light'),
+            (QFont.Normal,'normal'),
+            (QFont.DemiBold,'demibold'),
+            (QFont.Bold	,'bold'),
+            (QFont.Black,'black'))
+        for val,name in table:
+            if weight == val:
+                weight = name ; break
+        else: weight = ''
 
-        #@    << create the frames >>
-        #@+node:ekr.20081121105001.343:<< create the frames >>
-        # f = qt.Frame(parent,background=bg) ; f.pack (side='top',expand=0,fill='both')
-        # f1 = qt.Frame(f,background=bg)     ; f1.pack(side='top',expand=1,fill='x')
-        # f2 = qt.Frame(f,background=bg)     ; f2.pack(side='top',expand=1,fill='x')
-        # f3 = qt.Frame(f,background=bg)     ; f3.pack(side='top',expand=1,fill='x')
-        # f4 = qt.Frame(f,background=bg)     ; f4.pack(side='top',expand=1,fill='x')
-        #@-node:ekr.20081121105001.343:<< create the frames >>
-        #@nl
-        #@    << create the family combo box >>
-        #@+node:ekr.20081121105001.344:<< create the family combo box >>
-        # names = tkFont.families()
-        # names = list(names)
-        # names.sort()
-        # names.insert(0,'<None>')
+        table = (
+            ('family',str(font.family())),
+            ('size  ',font.pointSize()),
+            ('style ',style),
+            ('weight',weight),
+        )
 
-        # self.familyBox = familyBox = Pmw.ComboBox(f1,
-            # labelpos="we",label_text='Family:',label_width=10,
-            # label_background=bg,
-            # arrowbutton_background=bg,
-            # scrolledlist_items=names)
+        for key,val in table:
+            if val:
+                g.es(key,val,tabName='Fonts')
 
-        # familyBox.selectitem(0)
-        # familyBox.pack(side="left",padx=2,pady=2)
-        #@-node:ekr.20081121105001.344:<< create the family combo box >>
-        #@nl
-        #@    << create the size entry >>
-        #@+node:ekr.20081121105001.345:<< create the size entry >>
-        # qt.Label(f2,text="Size:",width=10,background=bg).pack(side="left")
-
-        # sizeEntry = qt.Entry(f2,width=4)
-        # sizeEntry.insert(0,'12')
-        # sizeEntry.pack(side="left",padx=2,pady=2)
-        #@-node:ekr.20081121105001.345:<< create the size entry >>
-        #@nl
-        #@    << create the weight combo box >>
-        #@+node:ekr.20081121105001.346:<< create the weight combo box >>
-        # weightBox = Pmw.ComboBox(f3,
-            # labelpos="we",label_text="Weight:",label_width=10,
-            # label_background=bg,
-            # arrowbutton_background=bg,
-            # scrolledlist_items=['normal','bold'])
-
-        # weightBox.selectitem(0)
-        # weightBox.pack(side="left",padx=2,pady=2)
-        #@-node:ekr.20081121105001.346:<< create the weight combo box >>
-        #@nl
-        #@    << create the slant combo box >>
-        #@+node:ekr.20081121105001.347:<< create the slant combo box>>
-        # slantBox = Pmw.ComboBox(f4,
-            # labelpos="we",label_text="Slant:",label_width=10,
-            # label_background=bg,
-            # arrowbutton_background=bg,
-            # scrolledlist_items=['roman','italic'])
-
-        # slantBox.selectitem(0)
-        # slantBox.pack(side="left",padx=2,pady=2)
-        #@-node:ekr.20081121105001.347:<< create the slant combo box>>
-        #@nl
-        #@    << create the sample text widget >>
-        #@+node:ekr.20081121105001.348:<< create the sample text widget >>
-        # self.sampleWidget = sample = g.app.gui.plainTextWidget(f,height=20,width=80,font=font)
-        # sample.pack(side='left')
-
-        # s = 'The quick brown fox\njumped over the lazy dog.\n0123456789'
-        # sample.insert(0,s)
-        #@-node:ekr.20081121105001.348:<< create the sample text widget >>
-        #@nl
-        #@    << create and bind the callbacks >>
-        #@+node:ekr.20081121105001.349:<< create and bind the callbacks >>
-        # def fontCallback(event=None):
-            # self.setFont(familyBox,sizeEntry,slantBox,weightBox,sample)
-
-        # for w in (familyBox,slantBox,weightBox):
-            # w.configure(selectioncommand=fontCallback)
-
-        # c.bind(sizeEntry,'<Return>',fontCallback)
-        #@-node:ekr.20081121105001.349:<< create and bind the callbacks >>
-        #@nl
-
-        # self.createBindings()
+    #@nonl
     #@-node:ekr.20081121105001.342:createFontPicker
     #@+node:ekr.20081121105001.350:createBindings (fontPicker)
     def createBindings (self):
