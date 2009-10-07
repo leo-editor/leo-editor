@@ -452,7 +452,11 @@ class atFile:
         return fn
     #@-node:ekr.20041005105605.19:openFileForReading (atFile) helper & test
     #@+node:ekr.20041005105605.21:read (atFile) & helper
-    def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
+    def read(self,root,
+        importFileName=None,thinFile=False,
+        fromString=None,atShadow=False,
+        force=False
+    ):
 
         """Read any @thin, @file and @noref trees."""
 
@@ -484,7 +488,7 @@ class atFile:
         if isAtFile:
             # The @file node has file-like sentinels iff a tnodeList exists.
             thinFile = not (hasattr(root.v,'tnodeList') and root.v.tnodeList)
-        doCache = g.enableDB and (thinFile or atShadow)
+        doCache = g.enableDB and (thinFile or atShadow) and not force
         at.initReadIvars(root,fileName,
             importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
         if at.errors: return False
@@ -602,6 +606,7 @@ class atFile:
         if use_tracer: tt = g.startTracer()
 
         at = self ; c = at.c
+        force = partialFlag
         if partialFlag:
             # Capture the current headline only if we aren't doing the initial read.
             c.endEditing() 
@@ -629,7 +634,7 @@ class atFile:
                 p.moveToNodeAfterTree()
             elif p.isAtThinFileNode():
                 anyRead = True
-                at.read(p,thinFile=True)
+                at.read(p,thinFile=True,force=force)
                 p.moveToNodeAfterTree()
             elif p.isAtAutoNode():
                 fileName = p.atAutoNodeName()
@@ -646,7 +651,7 @@ class atFile:
             elif p.isAtFileNode() or p.isAtNorefFileNode():
                 anyRead = True
                 wasOrphan = p.isOrphan()
-                ok = at.read(p)
+                ok = at.read(p,force=force)
                 if wasOrphan and not partialFlag and not ok:
                     # Remind the user to fix the problem.
                     p.setDirty()
@@ -658,7 +663,7 @@ class atFile:
             v.clearOrphan()
 
         if partialFlag and not anyRead:
-            g.es("no @file nodes in the selected tree")
+            g.es("no @<file> nodes in the selected tree")
 
         if use_tracer: tt.stop()
     #@-node:ekr.20041005105605.26:readAll (atFile)
@@ -2499,7 +2504,7 @@ class atFile:
     def writeAll(self,
         writeAtFileNodesFlag=False,
         writeDirtyAtFileNodesFlag=False,
-        toString=False,
+        toString=False
     ):
 
         """Write @file nodes in all or part of the outline"""
@@ -2509,8 +2514,10 @@ class atFile:
         if trace: scanAtPathDirectivesCount = c.scanAtPathDirectivesCount
         writtenFiles = [] # Files that might be written again.
         mustAutoSave = False ; atOk = True
+        force = writeAtFileNodesFlag
 
         if writeAtFileNodesFlag:
+            # The Write @<file> Nodes command.
             # Write all nodes in the selected tree.
             p = c.p
             after = p.nodeAfterTree()
@@ -2563,7 +2570,7 @@ class atFile:
                     elif p.isAtIgnoreNode():
                         pass
                     elif p.isAtAutoNode():
-                        at.writeOneAtAutoNode(p,toString=toString,force=False)
+                        at.writeOneAtAutoNode(p,toString=toString,force=force)
                         writtenFiles.append(p.v) # No need for autosave
                     elif p.isAtEditNode():
                         at.writeOneAtEditNode(p,toString=toString)
@@ -2575,7 +2582,7 @@ class atFile:
                         at.write(p,kind='@nosent',nosentinels=True,toString=toString)
                         writtenFiles.append(p.v) # No need for autosave
                     elif p.isAtShadowFileNode():
-                        at.writeOneAtShadowNode(p,toString=toString,force=False or pathChanged)
+                        at.writeOneAtShadowNode(p,toString=toString,force=force or pathChanged)
                         writtenFiles.append(p.v) ; autoSave = True # 2008/7/29
                     elif p.isAtThinFileNode():
                         at.write(p,kind='@thin',thinFile=True,toString=toString)
@@ -2601,17 +2608,15 @@ class atFile:
                 p.moveToThreadNext()
 
         #@    << say the command is finished >>
-        #@+middle:ekr.20041005105605.149:<< handle v's tree >>
         #@+node:ekr.20041005105605.150:<< say the command is finished >>
         if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
             if len(writtenFiles) > 0:
                 g.es("finished")
             elif writeAtFileNodesFlag:
-                g.es("no @file nodes in the selected tree")
+                g.es("no @<file> nodes in the selected tree")
             else:
-                g.es("no dirty @file nodes")
+                g.es("no dirty @<file> nodes")
         #@-node:ekr.20041005105605.150:<< say the command is finished >>
-        #@-middle:ekr.20041005105605.149:<< handle v's tree >>
         #@nl
         if trace: g.trace('%s calls to c.scanAtPathDirectives()' % (
             c.scanAtPathDirectivesCount-scanAtPathDirectivesCount))

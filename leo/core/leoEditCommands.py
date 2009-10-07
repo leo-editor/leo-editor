@@ -4420,29 +4420,29 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20050920084036.116:scrollUp/Down & helper
     def scrollDownHalfPage (self,event):
         '''Scroll the presently selected pane down one lline.'''
-        self.scrollHelper(event,'down-half-page')
+        self.scrollHelper(event,'down','half-page')
 
     def scrollDownLine (self,event):
         '''Scroll the presently selected pane down one lline.'''
-        self.scrollHelper(event,'down-line')
+        self.scrollHelper(event,'down','line')
 
     def scrollDownPage (self,event):
         '''Scroll the presently selected pane down one page.'''
-        self.scrollHelper(event,'down-page')
+        self.scrollHelper(event,'down','page')
 
     def scrollUpHalfPage (self,event):
         '''Scroll the presently selected pane down one lline.'''
-        self.scrollHelper(event,'up-half-page')
+        self.scrollHelper(event,'up','half-page')
 
     def scrollUpLine (self,event):
         '''Scroll the presently selected pane up one page.'''
-        self.scrollHelper(event,'up-line')
+        self.scrollHelper(event,'up','line')
 
     def scrollUpPage (self,event):
         '''Scroll the presently selected pane up one page.'''
-        self.scrollHelper(event,'up-page')
+        self.scrollHelper(event,'up','page')
     #@+node:ekr.20060113082917:scrollHelper
-    def scrollHelper (self,event,kind):
+    def scrollHelper (self,event,direction,distance):
 
         '''Scroll the present pane up or down one page
         kind is in ('up/down-half-page/line/page)'''
@@ -4453,9 +4453,37 @@ class editCommandsClass (baseEditCommandsClass):
         if not w: return
 
         if hasattr(w,'scrollDelegate'):
+            kind = direction + '-' + distance
             w.scrollDelegate(kind)
         else:
-            g.trace('scrolling not implemented')
+            self.tkScrollHelper(event,direction,distance)
+
+    def tkScrollHelper (self,event,direction,distance,extend=None):
+        #Scroll body pane up/down (direction) by page/half-page/line (distance)
+        #Note: Currently moves cursor, scrolls if needed to keep cursor visible
+        k = self.k ; c = k.c ; gui = g.app.gui
+        w = gui.eventWidget(event)
+        if not w: return #  This does **not** require a text widget.
+
+        if gui.isTextWidget(w):
+            c.widgetWantsFocusNow(w)
+            # Remember the original insert point.  This may become the moveSpot.
+            ins1 = w.getInsertPoint()
+            s = w.getAllText()
+            row,col = g.convertPythonIndexToRowCol(s,ins1)
+            # Compute the spot.
+            # assume scroll by "page"
+            delta = self.measure(w)
+            if distance == 'half-page':
+               delta = delta / 2
+            elif distance == 'line':
+               delta = 1
+            row1 = g.choose(direction=='down',row+delta,row-delta)
+            row1 = max(0,row1)
+            spot = g.convertRowColToPythonIndex(s,row1,col)
+            # g.trace('spot',spot,'row1',row1)
+            self.extendHelper(w,extend,spot)
+            w.seeInsertPoint()
     #@-node:ekr.20060113082917:scrollHelper
     #@-node:ekr.20050920084036.116:scrollUp/Down & helper
     #@+node:ekr.20060309060654.1:scrollOutlineUp/Down/Line/Page
@@ -6191,6 +6219,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'promote':                      c.promote,
             'read-at-auto-nodes':           c.readAtAutoNodes,
             'read-at-file-nodes':           c.readAtFileNodes,
+                # Write @<file> Nodes.
             'read-at-shadow-nodes':         c.readAtShadowNodes,
             'read-outline-only':            c.readOutlineOnly,
             'read-file-into-node':          c.readFileIntoNode,
@@ -6227,6 +6256,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'weave':                        c.weave,
             'write-at-auto-nodes':          c.atFileCommands.writeAtAutoNodes,
             'write-at-file-nodes':          c.fileCommands.writeAtFileNodes,
+                # Write @<file> Nodes.
             'write-at-shadow-nodes':        c.fileCommands.writeAtShadowNodes,
             'write-dirty-at-auto-nodes':    c.atFileCommands.writeDirtyAtAutoNodes,
             'write-dirty-at-file-nodes':    c.fileCommands.writeDirtyAtFileNodes,

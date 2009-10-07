@@ -33,6 +33,7 @@
 <v t="ville.20090705225609.5736"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
 <v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20091006063434.13802"><vh>@button rst3</vh></v>
 <v t="ville.20090520232034.6345"><vh>@button rst-preview</vh></v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
@@ -1014,7 +1015,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46"><vh>Release Notes</vh>
+<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -3033,10 +3034,6 @@
 <v t="ekr.20090717084250.10910"><vh>New features in 4.6 final</vh></v>
 </v>
 </v>
-</v>
-</v>
-<v t="edream.110203163054.63"><vh>Latest version</vh>
-<v t="ekr.20090324145450.20"></v>
 <v t="ekr.20090718092032.10405"><vh>4.6.1 final</vh>
 <v t="ekr.20090718092032.10406"><vh>Bug fixes</vh>
 <v t="ekr.20090718092032.10407"><vh>Bugs fixed in 4.6 b2</vh>
@@ -3157,6 +3154,13 @@
 <v t="ekr.20090802162204.5798"><vh>4.6.2 final</vh>
 <v t="ekr.20090803084828.5800"><vh>Bugs fixed</vh></v>
 </v>
+<v t="ekr.20091006093902.6558"><vh>4.6.3 final</vh>
+<v t="ekr.20091006093902.6559"><vh>Bugs fixed</vh></v>
+<v t="ekr.20091006093902.6560"><vh>New features</vh></v>
+</v>
+</v>
+</v>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
 <v t="ekr.20090909083000.6547"><vh>4.7 beta 1</vh>
 <v t="ekr.20090909083000.6556"><vh>Added new Windows installer</vh></v>
 <v t="ekr.20090909083000.6555"><vh>Added new plugins</vh></v>
@@ -6975,8 +6979,8 @@ Chapter 7: Scripting Leo with Python
 This chapter is a tutorial describing how to write Python scripts that get and
 modify data contained in Leo outlines.
 
-This chapter describes Leo's simplied node (one-node) data model.
-The section called `Leo's legacy data model`_ describes a more complex data model.
+This chapter describes Leo's simplied node (one-node) data model,
+in effect in Leo 4.7.
 
 Leo's **vnode** classe represents all the data in a particular node.
 In the simplied data model, a single vnode represents all clones on the screen.
@@ -13470,8 +13474,9 @@ This chapter will be of use primarily to those wanting to change Leo's code.
 .. _run:                    `Running Leo`_
 .. _`run Leo`:              `Running Leo`_
 .. _`Leo's download page`:  http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-.. _`associating leo with .leo files`:   `How to associate Leo with .leo files on Windows`_
-.. _`associated .leo files with Leo`:   `How to associate Leo with .leo files on Windows`_
+
+.. .. _`associating leo with .leo files`:   `How to associate Leo with .leo files on Windows`_
+.. .. _`associated .leo files with Leo`:   `How to associate Leo with .leo files on Windows`_
 </t>
 <t tx="ekr.20050901121617">@color
 
@@ -13533,7 +13538,7 @@ Here are some tips that may make running Leo easier:
     where &lt;leopath&gt; is the path to the directory containing the leo directory. 
 
 **Windows**
-    If you have `associated .leo files with Leo`_ you may run Leo by double-clicking any .leo file.
+    If you have associated .leo files with Leo you may run Leo by double-clicking any .leo file.
     You can also use a batch file.
     Put the following .bat file in c:\\Windows::
 
@@ -14098,8 +14103,10 @@ script calls the `rst3 plugin`_ to format it. I don't have to select the actual
 the output stream that goes to the console window. In Linux and MacOS
 environments, python programs normally execute with the console window visible.
 On Windows, can run Leo with the console window visible by associating .leo
-files with ``python.exe`` *not* ``pythonw.exe``. For full instructions about how
-to do this, see `Associating Leo with .leo Files`_.</t>
+files with ``python.exe`` *not* ``pythonw.exe``.
+
+.. For full instructions about how
+.. to do this, see `Associating Leo with .leo Files`_.</t>
 <t tx="ekr.20050906104918">Leo 4.3.2 beta 1                  September 10, 2005
 
 To learn about Leo, see: http://webpages.charter.net/edreamleo/intro.html
@@ -23025,7 +23032,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="2"></t>
+<t tx="ekr.20070610174018" str_leo_pos="3"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -28520,7 +28527,9 @@ What's New in Leo 4.6
 - Created leoGuiPluginsRef.leo.
 
 - Leo issues an error message if a non-existent plugin appears
-  in an @enabled-plugin node.</t>
+  in an @enabled-plugin node.
+  
+- New plugins: spydershell.py, qtframecommands.py, and mod_framesize.py.</t>
 <t tx="ekr.20090401113141.1">To generate .odt or .rtf or .pdf files, you create an intermediate file and
 ignore the the "official" output file, in this case test.html. The intermediate
 file contains the rST text corresponding to the @rst tree.
@@ -28986,8 +28995,10 @@ http://vvtools.googlecode.com/files/Leodocumentation.pdf </t>
 the output stream that goes to the console window. In Linux and MacOS
 environments, python programs normally execute with the console window visible.
 On Windows, can run Leo with the console window visible by associating .leo
-files with ``python.exe`` *not* ``pythonw.exe``. For full instructions about how
-to do this, see `Associating Leo with .leo Files`_.</t>
+files with ``python.exe`` *not* ``pythonw.exe``. 
+
+.. For full instructions about how
+.. to do this, see `Associating Leo with .leo Files`_.</t>
 <t tx="ekr.20090706042206.14718">Leo's sentinels add outline structure to source files.
 However, those sentinels annoy some people who don't use Leo.
 
@@ -30200,6 +30211,49 @@ Improved plugin: contextmenu.py
     idea what to do with mac, now it runs xdg-open and probably fails.</t>
 <t tx="ekr.20090909083000.6556">Unlike previous installers, the manifest is created from the
 @button make leo.nsi script in dist.leo.</t>
+<t tx="ekr.20091006063434.13802">c.rstCommands.rst3()</t>
+<t tx="ekr.20091006093902.6558">Leo 4.6.3 final                             September 4, 2009
+
+Leo 4.6.3 final is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+Leo 4.6.3 fixes a significant caching bug in Leo 4.6.2.
+Leo 4.6.3 also comes with an executable installer for Windows.
+Leo 3.6.3 adds several new plugins.
+
+The highlights of Leo 4.6
+--------------------------
+
+- Cached external files *greatly* reduces the time to load .leo files.
+- Leo now features a modern Qt interface by default.
+  Leo's legacy Tk interface can also be used.
+- New --config, --file and --gui command-line options.
+- Leo tests syntax of .py files when saving them.
+- Leo can now open any kind of file into @edit nodes.
+- @auto-rst nodes allow easy editing of reStructuredText files.
+- Properties of commanders, positions and nodes simplify programming.
+- Improved Leo's unit testing framework.
+- Leo now requires Python 2.5 or later.
+- Dozens of small improvements and bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20091006093902.6559">- Leo marks nodes dirty if the nodes changed during read.
+
+- Fixed a bug in g.adjustTripleString.</t>
+<t tx="ekr.20091006093902.6560">- Added --gui=qttabs command-line option
+
+- Added new plugins: spydershell.py, qtframecommands.py, and mod_framesize.py.
+
+- Added "show folder" in rclick menu.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?

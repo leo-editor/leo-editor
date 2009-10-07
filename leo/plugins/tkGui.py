@@ -3965,10 +3965,10 @@ class leoTkinterFrame (leoFrame.leoFrame):
 
         for p in c.all_unique_positions():
             vList.append(p.v)
-            if p.v.t:
-                key = id(p.v.t)
+            if p.v:
+                key = id(p.v)
                 if key not in tDict:
-                    tDict[key] = p.v.t
+                    tDict[key] = p.v
 
         for key in tDict:
             g.clearAllIvars(tDict[key])
@@ -7469,8 +7469,8 @@ class leoTkinterTree (leoFrame.leoTree):
         if 1:
             self.lineyoffset = 0
         else:
-            if hasattr(p.v.t,"unknownAttributes"):
-                self.lineyoffset = p.v.t.unknownAttributes.get("lineYOffset",0)
+            if hasattr(p.v,"unknownAttributes"):
+                self.lineyoffset = p.v.unknownAttributes.get("lineYOffset",0)
             else:
                 self.lineyoffset = 0
 
@@ -7542,9 +7542,9 @@ class leoTkinterTree (leoFrame.leoTree):
     #@+node:ekr.20081121110412.484:drawUserIcons & helper
     def drawUserIcons(self,p,where,x,y):
 
-        """Draw any icons specified by p.v.t.unknownAttributes["icons"]."""
+        """Draw any icons specified by p.v.unknownAttributes["icons"]."""
 
-        h,w = 0,0 ; t = p.v.t
+        h,w = 0,0
 
         com = self.c.editCommands
         iconsList = com.getIconList(p)
@@ -7559,7 +7559,6 @@ class leoTkinterTree (leoFrame.leoTree):
             g.es_exception()
 
         # g.trace(where,h,w)
-
         return h,w
     #@+node:ekr.20081121110412.485:drawUserIcon
     def drawUserIcon (self,p,where,x,y,w2,theDict):
@@ -7609,7 +7608,7 @@ class leoTkinterTree (leoFrame.leoTree):
             fullname = g.os_path_normpath(fullname)
 
             # Bug fix: the key must include distinguish nodes.
-            key = (fullname,p.v.t)
+            key = (fullname,p.v)
             image = self.iconimages.get(key)
 
             if not image:
@@ -8197,7 +8196,7 @@ class leoTkinterTree (leoFrame.leoTree):
             if not self.look_for_control_drag_on_mouse_down:
                 self.controlDrag = c.frame.controlKeyIsDown
 
-        redrawFlag = vdrag and vdrag.v.t != p.v.t
+        redrawFlag = vdrag and vdrag.v != p.v
         if redrawFlag: # Disallow drag to joined node.
             #@        << drag p to vdrag >>
             #@+node:ekr.20081121110412.516:<< drag p to vdrag >>
@@ -8450,8 +8449,8 @@ class leoTkinterTree (leoFrame.leoTree):
                 w  = c.frame.body.bodyCtrl
                 if c.frame.findPanel:
                     c.frame.findPanel.handleUserClick(p)
-                if p.v.t.insertSpot != None:
-                    spot = p.v.t.insertSpot
+                if p.v.insertSpot != None:
+                    spot = p.v.insertSpot
                     w.setInsertPoint(spot)
                     w.see(spot)
                 else:

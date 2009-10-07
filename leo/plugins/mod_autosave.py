@@ -32,12 +32,13 @@ import time
 # 0.3 EKR:
 # - Removed calls to g.top.
 # - Added init function.
+# 0.4 EKR: call g.enableIdleTimeHook() in init.
 #@-at
 #@nonl
 #@-node:ekr.20060108123141.1:<< version history >>
 #@nl
 
-__version__ = "0.3"
+__version__ = "0.4" # EKR: call g.enableIdleTimeHook()
 
 #@+others
 #@+node:ekr.20060108123141.2:init
@@ -57,6 +58,10 @@ def init ():
         leoPlugins.registerHandler("idle", autosave)
         g.es("auto save enabled",color="orange")
         g.plugin_signon( __name__ )
+
+        # Bug fix: 2009/10/06
+        if ACTIVE == "Yes":
+            g.enableIdleTimeHook()
 
     return ok
 #@nonl
