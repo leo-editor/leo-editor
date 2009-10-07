@@ -3139,6 +3139,8 @@ class atFile:
         c.endEditing() # Capture the current headline.
 
         try:
+            # Note: @asis always writes all nodes,
+            # so there can be no orphan or ignored nodes.
             targetFileName = root.atAsisFileNodeName()
             at.initWriteIvars(root,targetFileName,toString=toString)
             if at.errors: return
@@ -3185,8 +3187,6 @@ class atFile:
         at = self ; s = g.choose(fromString,fromString,root.v._bodyString)
 
         root.clearAllVisitedInTree()
-        # root.clearVisitedInTree() # Redundant.
-
         at.putAtFirstLines(s)
         at.putOpenLeoSentinel("@+leo-ver=4")
         at.putInitialComment()
@@ -3196,8 +3196,7 @@ class atFile:
         at.putSentinel("@-leo")
         root.setVisited()
         at.putAtLastLines(s)
-
-        if self.atAuto or (not toString and not nosentinels):
+        if not toString:
             at.warnAboutOrphandAndIgnoredNodes()
     #@-node:ekr.20041005105605.157:writeOpenFile
     #@-node:ekr.20041005105605.153:Override in plugins...

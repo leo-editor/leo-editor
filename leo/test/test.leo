@@ -359,6 +359,10 @@
 </v>
 <v t="ekr.20090831145049.1819"><vh>Unicode test</vh></v>
 <v t="ekr.20091001161528.1828"><vh>@test c.allPositions &amp; c.allUniquePositions</vh></v>
+<v t="ekr.20091007113250.1828"><vh>@@nosent orphan-test.py</vh>
+<v t="ekr.20091007113250.1829"><vh>spam</vh></v>
+<v t="ekr.20091007113347.1832"><vh>eggs</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -3371,5 +3375,10 @@ vList2 = [v for v in c.all_unique_vnodes_iter()]
 assert vList1 == vList2
 print 'pass 2'
 </t>
+<t tx="ekr.20091007113250.1828">@language python</t>
+<t tx="ekr.20091007113250.1829">def spam():
+    pass</t>
+<t tx="ekr.20091007113347.1832">def eggs():
+    pass</t>
 </tnodes>
 </leo_file>
