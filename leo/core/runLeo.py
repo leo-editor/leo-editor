@@ -85,15 +85,15 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     # Phase 1: before loading plugins.
     # Scan options, set directories and read settings.
     if not isValidPython(): return
-    fn,relFn,script = doPrePluginsInit(fileName,pymacs)
+    fn,relFn,script,versionFlag = doPrePluginsInit(fileName,pymacs)
 
     # Phase 2: load plugins.
     g.doHook("start1") # Plugins may create a gui.
     if g.app.killed: return
 
     # Phase 3: after loading plugins. Create a frame.
-    ok = doPostPluginsInit(args,fn,relFn,script)
-    if ok: g.app.gui.runMainLoop()
+    ok = doPostPluginsInit(args,fn,relFn,script,versionFlag)
+    if ok and not versionFlag: g.app.gui.runMainLoop()
 #@+node:ekr.20090519143741.5915:doPrePluginsInit & helpers
 def doPrePluginsInit(fileName,pymacs):
 
@@ -102,7 +102,7 @@ def doPrePluginsInit(fileName,pymacs):
 
     g.computeStandardDirectories()
     adjustSysPath()
-    fileName2,gui,script,windowFlag = scanOptions()
+    fileName2,gui,script,versionFlag,windowFlag = scanOptions()
     if fileName2: fileName = fileName2
     # print ('runLeo.run: sys.argv %s' % sys.argv)
     # print ('runLeo.run: fileName %s' % fileName)
@@ -124,7 +124,7 @@ def doPrePluginsInit(fileName,pymacs):
             g.app.createDefaultGui(__file__)
     else:
         createSpecialGui(gui,pymacs,script,windowFlag)
-    return fileName,relativeFileName,script
+    return fileName,relativeFileName,script,versionFlag
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
@@ -255,21 +255,24 @@ def reportDirectories(verbose):
         ):
             g.es("%s dir:" % (kind),theDir,color="blue")
 #@-node:ekr.20041130093254:reportDirectories
-#@+node:ekr.20080521132317.2:scanOptions
+#@+node:ekr.20091007103358.6061:scanOptions
 def scanOptions():
 
     '''Handle all options and remove them from sys.argv.'''
     trace = False
 
+    # Note: this automatically implements the --help option.
     parser = optparse.OptionParser()
     parser.add_option('-c', '--config', dest="one_config_path")
     parser.add_option('-f', '--file',   dest="fileName")
-    parser.add_option('--gui',          dest="gui", help = 'gui to use (qt/tk/qttabs)')
-    parser.add_option('--no-cache',     dest='no_cache',action="store_true")
+    parser.add_option('--gui',          dest="gui",help = 'gui to use (qt/tk/qttabs)')
+    #parser.add_option('--help',         action="store_true",dest="help_option")
+    parser.add_option('--ipython',      action="store_true",dest="use_ipython")
+    parser.add_option('--no-cache',     action="store_true",dest='no_cache')
     parser.add_option('--silent',       action="store_true",dest="silent")
     parser.add_option('--script',       dest="script")
     parser.add_option('--script-window',dest="script_window")
-    parser.add_option('--ipython',      action="store_true",dest="use_ipython")
+    parser.add_option('--version',      action="store_true",dest="version")
 
     # Parse the options, and remove them from sys.argv.
     options, args = parser.parse_args()
@@ -295,7 +298,7 @@ def scanOptions():
     # -f or --file
     fileName = options.fileName
 
-    # -- gui
+    # --gui
     gui = options.gui
     g.app.qt_use_tabs = False
     if gui:
@@ -307,6 +310,9 @@ def scanOptions():
         if gui not in ('tk','qt','wx'):
             g.trace('unknown gui: %s' % gui)
             gui = None
+
+    # --ipython
+    g.app.useIpython = options.use_ipython
 
     # --script
     script_path = options.script
@@ -336,16 +342,16 @@ def scanOptions():
     g.app.silentMode = options.silent
     # g.trace('silentMode',g.app.silentMode)
 
-    # --ipython
-    g.app.useIpython = options.use_ipython
+    # --version: print the version and exit.
+    versionFlag = options.version
 
     # Compute the return values.
     windowFlag = script and script_path_w
-    return fileName, gui, script, windowFlag
-#@-node:ekr.20080521132317.2:scanOptions
+    return fileName,gui,script,versionFlag,windowFlag
+#@-node:ekr.20091007103358.6061:scanOptions
 #@-node:ekr.20090519143741.5915:doPrePluginsInit & helpers
 #@+node:ekr.20090519143741.5917:doPostPluginsInit & helpers
-def doPostPluginsInit(args,fileName,relativeFileName,script):
+def doPostPluginsInit(args,fileName,relativeFileName,script,versionFlag):
 
     '''Return True if the frame was created properly.'''
 
@@ -354,6 +360,10 @@ def doPostPluginsInit(args,fileName,relativeFileName,script):
 
     # We can't print the signon until we know the gui.
     g.app.computeSignon() # Set app.signon/signon2 for commanders.
+
+    if versionFlag:
+        print(g.app.signon)
+        return
 
     g.init_sherlock(args)  # Init tracing and statistics.
     if g.app and g.app.use_psyco: startPsyco()
