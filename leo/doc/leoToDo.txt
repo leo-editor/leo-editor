@@ -11,6 +11,8 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20091005145253.6060:Docs
+#@+node:ekr.20091006063434.16252:A slide show for newbies
+#@-node:ekr.20091006063434.16252:A slide show for newbies
 #@+node:ekr.20090822054806.6004:Improve the intro
 
 * Give some hint about why Leo is different.
@@ -44,18 +46,6 @@ graphic output can be captured to tabbed panes within Leo.  The
 scripts can be easily (and dynamically) assigned to buttons and menus.
 #@-node:ekr.20090907080624.6074:Add *very* brief words at the start of the intro
 #@-node:ekr.20090822054806.6004:Improve the intro
-#@+node:ekr.20090907080624.6073:Fix wrong link in front page
-@nocolor-node
-
-The link 'Edward K. Ream' in the last line points to the Users Guide index.
-#@nonl
-#@-node:ekr.20090907080624.6073:Fix wrong link in front page
-#@+node:ekr.20090907080624.6069:Update the 4.6.3 release notes in the trunk
-It also provides lots of new features. --gui=qttabs and new plugins
-(spydershell, qtframecommands, mod_framesize). There is also "show
-folder" in rclick menu.
-#@nonl
-#@-node:ekr.20090907080624.6069:Update the 4.6.3 release notes in the trunk
 #@+node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
 @nocolor-node
 
@@ -107,164 +97,8 @@ that section of the docs.
 #@nonl
 #@-node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
 #@-node:ekr.20091005145253.6060:Docs
-#@+node:ekr.20091003171114.6466:First
-#@+node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
-@nocolor-node
-
-- Combine 3 "read @x nodes" commands into a single "read @<file> nodes" command.
-
-- Combine 3 "write @x nodes" commands into a single "write @<file> nodes" command. 
-
-- Combine 3 "write dirty @x nodes" commands into a single "write dirty @<file> nodes" command. 
-#@nonl
-#@-node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
-#@+node:ekr.20090822054806.6003:Add rst button that doesn't need rst3 plugin
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/95687c7a2dba5e18
-
-The rst3 plugin is required to use the script examples given in the
-"@@button rst" example in the leoSettings.leo file and in Chapter 14
-of the users guide (shown below).  They should be updated to utilize
-the new rST functionality in Leo's core.
-
-Until that is done, can someone post a working "@button rst" script
-that doesn't require the rst3 plugin?  I would like to test the rST
-implementation in Leo's core.
-
-Script in "@@button rst" example in the leoSettings.leo file:
-|   import leoPlugins
-|   rst3 = leoPlugins.getPluginModule('rst3')
-|   if rst3:
-|       controller = rst3.controllers.get(c)
-|       if controller:
-|           controller.processTopTree(p)
-|   else:
-|       rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
-|       if rst3:
-|           g.es('rst3 loaded')
-|           rst3.onCreate('tag',{'c':c})
-|       else:
-|           # Ask to be removed.
-|           g.app.scriptDict['removeMe'] = True
-
-Script in Chapter 14 of the users guide:
-|   import leo.core.leoPlugins as leoPlugins
-|   rst3 = leoPlugins.getPluginModule('rst3')
-|   if rst3:
-|       controller = rst3.controllers.get(c)
-|       if controller:
-|           p,s = controller.writeNodeToString(ext='.html')
-|           print '*' * 40,p
-|           print s 
-#@nonl
-#@-node:ekr.20090822054806.6003:Add rst button that doesn't need rst3 plugin
-#@+node:ekr.20090822054806.6004:Improve the intro
-
-* Give some hint about why Leo is different.
-
-* Give some hints about the Aha, and that there *is* an Aha.
-#@nonl
-#@+node:ekr.20090907080624.6074:Add *very* brief words at the start of the intro
-@nocolor-node
-
-Ville's words
-
-I think we need to give a *very* brief explanation of what Leo
-actually is, in concrete terms, something akin to:
-
-- Leo is a tree-structured outliner
-
-- It consists of a tree with nodes, and a text editor. Every node is
-associated with a heading and a block of text (a program, a function,
-class declaration, a food recipe, doc snippet, list of urls, use case
-description, irc log, ... all depending on your problem domain)
-
-- Tree structure is significant. A subtree often represents a single
-file in a file system.
-
-=============
-
-rhh's words
-
-Leo can operate on the text blocks using user scripts. Text and
-graphic output can be captured to tabbed panes within Leo.  The
-scripts can be easily (and dynamically) assigned to buttons and menus.
-#@-node:ekr.20090907080624.6074:Add *very* brief words at the start of the intro
-#@-node:ekr.20090822054806.6004:Improve the intro
-#@+node:ekr.20080918164844.8:Add read/write-any-derived-file commands
-# Remove the old type-specific commands from the default menu.
-#@nonl
-#@-node:ekr.20080918164844.8:Add read/write-any-derived-file commands
-#@+node:ekr.20090907080624.6072:Install support for haskel
-@nocolor-node
-
-private communication to me from Gregary Crosswhite.
-
-First, thank you for all of your hard work on Leo! It is one of the most useful
-tools that I have ever discovered.
-
-Since I saw that you are planning to have another release tomorrow, could you
-take a quick look at my merge request
-(lp:~gcrosswhite/leo-editor/fix-haskell-support) which fixes support for
-Haskell? It is a simple patch that just adds an entry for Haskell to the
-language comment deliminator dictionaries, but it makes a big difference since
-currently tangled Haskell sources are rejected by the compiler.
-
-For convenience, I have also included the diff at the end of this e-mail.
-
-Thanks,
-Greg
-
-=== modified file 'leo/core/leoApp.py'
---- leo/core/leoApp.py  2009-08-12 21:52:50 +0000
-+++ leo/core/leoApp.py  2009-08-28 05:46:38 +0000
-@@ -128,6 +128,7 @@
-            "forth"         : "\\_ _(_ _)", # Use the "REM hack"
-            "fortran"       : "C",
-            "fortran90"     : "!",
-+            "haskell"       : "--_ {-_ _-}",
-            "html"          : "<!-- -->",
-            "ini"           : ";",
-            "java"          : "// /* */",
-@@ -173,6 +174,7 @@
-            "forth"         : "forth",
-            "fortran"       : "f",
-            "fortran90"     : "f90",
-+            "haskell"       : "hs",
-            "html"          : "html",
-            "ini"           : "ini",
-            "java"          : "java",
-@@ -220,6 +222,7 @@
-            "f90"   : "fortran90",
-            "h"     : "c",
-            "html"  : "html",
-+            "hs"    : "haskell",
-            "ini"   : "ini",
-            "java"  : "java",
-            "ksh"   : "kshell", # Leo 4.5.1.
-#@nonl
-#@-node:ekr.20090907080624.6072:Install support for haskel
-#@-node:ekr.20091003171114.6466:First
 #@+node:ekr.20091005145253.6059:Urgent bugs
-#@+node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
-#@-node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
-#@+node:ekr.20090822054806.6001:Fix cursor up/down bug
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/731b9c541f3a3ab0
-
-sequence::
-
- type """ <cr> """ <up>
-
-the cursor is at the end of the first line
-
-type <down>
-
-the cursor is now between the 2nd and 3rd quote. 
-#@nonl
-#@-node:ekr.20090822054806.6001:Fix cursor up/down bug
+#@+node:ekr.20091006063434.22069:rst problems
 #@+node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
 @nocolor-node
 
@@ -300,16 +134,109 @@ the the underlines is not long enough, because the underline for one Japanese
 char need two marks.
 #@nonl
 #@-node:ekr.20090907080624.6077:Fix underlining problem in rst
+#@-node:ekr.20091006063434.22069:rst problems
+#@+node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
+#@-node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
+#@+node:ekr.20090822054806.6001:Fix cursor up/down bug
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/731b9c541f3a3ab0
+
+sequence::
+
+ type """ <cr> """ <up>
+
+the cursor is at the end of the first line
+
+type <down>
+
+the cursor is now between the 2nd and 3rd quote. 
+#@nonl
+#@-node:ekr.20090822054806.6001:Fix cursor up/down bug
 #@+node:ekr.20090909093330.6124:Investigate "multiple parts not allowed" tangle errors
 @nocolor-node
 
+I'm waiting for example code from Graham Chiu.
+
 http://groups.google.com/group/leo-editor/browse_thread/thread/181533467503ef48
 
+#@+node:ekr.20031218072017.3494:<< Define a section for a leading code part >>
+if self.header_name:
+    # Tangle code.
+    flag = g.choose(code_seen,allow_multiple_parts,disallow_multiple_parts)
+    part = self.st_enter_section_name(self.header_name,code,doc,flag)
+    # Untangle code.
+    if not self.tangling: 
+        head = s[:j] ; tail = s[i:]
+        s,i,changed = self.update_def(self.header,part,head,code,tail,not_root_name)
+        if changed: anyChanged = True
+    code_seen = True
+    code = doc = None
+#@-node:ekr.20031218072017.3494:<< Define a section for a leading code part >>
+#@+node:ekr.20031218072017.3493:<< Define a section containing only an @doc part >>
+@ It's valid for an @doc directive to appear under a headline that does not contain a section name.  In that case, no section is defined.
+@c
+
+if self.header_name:
+    # Tangle code.
+    flag = g.choose(code_seen,allow_multiple_parts,disallow_multiple_parts)
+    part = self.st_enter_section_name(self.header_name,code,doc,flag)
+    # Untangle code.
+    if not self.tangling: 
+        # Untangle no longer updates doc parts.
+        # 12/03/02: Mark the part as having been updated to suppress warning.
+        junk,junk = self.ust_lookup(self.header_name,
+            part,not_root_name,True) # set update flag
+
+doc = None
+#@-node:ekr.20031218072017.3493:<< Define a section containing only an @doc part >>
+#@+node:ekr.20031218072017.3495:<< Scan and define a section definition >>
+# We enter the code part and any preceding doc part into the symbol table.
+
+# Skip the section definition line.
+k = i ; i, kind, junk = self.skip_section_name(s,i)
+section_name = s[k:i]
+# g.trace(section_name)
+assert(kind == section_def)
+i = g.skip_to_end_of_line(s,i)
+
+# Tangle code: enter the section name even if the code part is empty.
+j = g.skip_blank_lines(s,i)
+i, code = self.skip_code(s,j)
+flag = g.choose(kind==section_def,allow_multiple_parts,disallow_multiple_parts)
+part = self.st_enter_section_name(section_name,code,doc,flag)
+
+if not self.tangling: # Untangle code.
+    head = s[:j] ; tail = s[i:]
+    s,i,changed = self.update_def(section_name,part,head,code,tail,not_root_name)
+    if changed: anyChanged = True
+
+code = doc = None
+#@-node:ekr.20031218072017.3495:<< Scan and define a section definition >>
+#@+node:ekr.20031218072017.3496:<< Scan and define an @code defininition >>
+# All @c or @code directives denote < < headline_name > > =
+if self.header_name:
+
+    # Tangle code.
+    j = g.skip_blank_lines(s,i)
+    i, code = self.skip_code(s,j)
+    flag = g.choose(code_seen,allow_multiple_parts,disallow_multiple_parts)
+    part = self.st_enter_section_name(self.header_name,code,doc,flag)
+    if not self.tangling: # Untangle code.
+        head = s[:j] ; tail = s[i:]
+        s,i,changed = self.update_def(self.header,part,head,code,tail,not_root_name)
+        if changed: anyChanged = True
+else:
+    self.error("@c expects the headline: " + self.header + " to contain a section name")
+
+code_seen = True
+code = doc = None
+#@-node:ekr.20031218072017.3496:<< Scan and define an @code defininition >>
 #@-node:ekr.20090909093330.6124:Investigate "multiple parts not allowed" tangle errors
-#@+node:ekr.20090907080624.6071:Install to site-packages, not "c:\program files"
-#@-node:ekr.20090907080624.6071:Install to site-packages, not "c:\program files"
 #@-node:ekr.20091005145253.6059:Urgent bugs
 #@+node:ekr.20090811090022.6029:Bugs
+#@+node:ekr.20090907080624.6071:Install to site-packages, not "c:\program files"
+#@-node:ekr.20090907080624.6071:Install to site-packages, not "c:\program files"
 #@+node:ekr.20090907080624.6081:Spell checker should check headlines
 #@-node:ekr.20090907080624.6081:Spell checker should check headlines
 #@+node:ekr.20090813112405.5980:Delete resurrected nodes
@@ -1841,6 +1768,193 @@ archivedPosition: 0.3.6.6.2.3, root_v: <vnode 168011244:'@thin
 test_core.txt'>
 #@nonl
 #@-node:ekr.20090202064534.1:Remove bad archived position message?
+#@+node:ekr.20091006063434.24624:Fixed bug: at-nosent nodes were not being dirty when headline changes
+#@+node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
+def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    p = self
+    dirtyVnodeList = []
+
+    # Calculate all nodes that are joined to p or parents of such nodes.
+    nodes = p.findAllPotentiallyDirtyNodes()
+
+    if setDescendentsDirty:
+        # N.B. Only mark _direct_ descendents of nodes.
+        # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
+        for p2 in p.subtree():
+            # Only @thin nodes need to be marked.
+            if p2.v not in nodes and p2.isAtThinFileNode():
+                nodes.append(p2.v)
+
+    if trace and verbose:
+        for v in nodes:
+            print (v.isDirty(),v.isAnyAtFileNode(),v)
+
+    dirtyVnodeList = [v for v in nodes
+        if not v.isDirty() and v.isAnyAtFileNode()]
+    changed = len(dirtyVnodeList) > 0
+
+    for v in dirtyVnodeList:
+        v.setDirty()
+
+    if trace: g.trace("position",dirtyVnodeList,g.callers(5))
+
+    return dirtyVnodeList
+#@-node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
+#@+node:ekr.20090830051712.6157:v.setAllAncestorAtFileNodesDirty
+# Unlike p.setAllAncestorAtFileNodesDirty,
+# there is no setDescendentsDirty arg.
+
+def setAllAncestorAtFileNodesDirty (self):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    v = self
+    dirtyVnodeList = []
+
+    # Calculate all nodes that are joined to p or parents of such nodes.
+    nodes = v.findAllPotentiallyDirtyNodes()
+
+    if trace and verbose:
+        for v in nodes:
+            print v.isDirty(),v.isAnyAtFileNode(),v
+
+    dirtyVnodeList = [v for v in nodes
+        if not v.isDirty() and v.isAnyAtFileNode()]
+
+    changed = len(dirtyVnodeList) > 0
+
+    for v in dirtyVnodeList:
+        v.setDirty() # Do not call v.setDirty here!
+
+    if trace: g.trace("vnode",dirtyVnodeList)
+
+    return dirtyVnodeList
+#@-node:ekr.20090830051712.6157:v.setAllAncestorAtFileNodesDirty
+#@+node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
+def findAllPotentiallyDirtyNodes(self):
+
+    trace = False and not g.unitTesting
+    v = self ; c = v.context
+
+    # Set the starting nodes.
+    nodes = []
+    newNodes = [v]
+
+    # Add nodes until no more are added.
+    while newNodes:
+        addedNodes = []
+        nodes.extend(newNodes)
+        for v in newNodes:
+            for v2 in v.parents:
+                if v2 not in nodes and v2 not in addedNodes:
+                    addedNodes.append(v2)
+        newNodes = addedNodes[:]
+
+    # Remove the hidden vnode.
+    if c.hiddenRootNode in nodes:
+        if trace: g.trace('removing hidden root',c.hiddenRootNode)
+        nodes.remove(c.hiddenRootNode)
+
+    if trace: g.trace(nodes)
+    return nodes
+#@nonl
+#@-node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
+#@+node:ekr.20040803072955.91:onHeadChanged (leoTree)
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None):
+
+    '''Officially change a headline.
+    Set the old undo text to the previous revert point.'''
+
+    trace = False and g.unitTesting
+    c = self.c ; u = c.undoer
+    w = self.edit_widget(p)
+
+    if c.suppressHeadChanged: return
+    if not w:
+        if trace: g.trace('****** no w for p: %s',repr(p))
+        return
+
+    ch = '\n' # New in 4.4: we only report the final keystroke.
+    if g.doHook("headkey1",c=c,p=p,v=p,ch=ch):
+        return # The hook claims to have handled the event.
+
+    if s is None: s = w.getAllText()
+    if trace: g.trace('w',repr(w),'s',repr(s))
+    << truncate s if it has multiple lines >>
+    # Make the change official, but undo to the *old* revert point.
+    oldRevert = self.revertHeadline
+    changed = s != oldRevert
+    self.revertHeadline = s
+    p.initHeadString(s)
+    if trace: g.trace('changed',changed,'new',repr(s))
+    if changed:
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldRevert)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.scanForTabWidth(p)
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+    if changed:
+        c.redraw_after_head_changed()
+        if self.stayInTree:
+            c.treeWantsFocus()
+        else:
+            c.bodyWantsFocus()
+    else:
+        c.frame.tree.setSelectedLabelState(p)
+
+    g.doHook("headkey2",c=c,p=p,v=p,ch=ch)
+#@+node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
+# Remove one or two trailing newlines before warning of truncation.
+for i in (0,1):
+    if s and s[-1] == '\n':
+        if len(s) > 1: s = s[:-1]
+        else: s = ''
+
+# Warn if there are multiple lines.
+i = s.find('\n')
+if i > -1:
+    # g.trace(i,len(s),repr(s))
+    g.es("truncating headline to one line",color="blue")
+    s = s[:i]
+
+limit = 1000
+if len(s) > limit:
+    g.es("truncating headline to",limit,"characters",color="blue")
+    s = s[:limit]
+
+s = g.toUnicode(s or '',g.app.tkEncoding)
+#@-node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
+#@-node:ekr.20040803072955.91:onHeadChanged (leoTree)
+#@+node:ekr.20040303163330:p.setDirty
+def setDirty (self,setDescendentsDirty=True):
+
+    '''Mark a node and all ancestor @file nodes dirty.'''
+
+    p = self ; dirtyVnodeList = []
+
+    # g.trace(p.h,g.callers(4))
+
+    if not p.v.isDirty():
+        p.v.setDirty()
+        dirtyVnodeList.append(p.v)
+
+    # Important: this must be called even if p.v is already dirty.
+    # Typing can change the @ignore state!
+    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty(setDescendentsDirty)
+    dirtyVnodeList.extend(dirtyVnodeList2)
+
+    return dirtyVnodeList
+#@-node:ekr.20040303163330:p.setDirty
+#@-node:ekr.20091006063434.24624:Fixed bug: at-nosent nodes were not being dirty when headline changes
 #@-node:ekr.20090811090022.6029:Bugs
 #@+node:ekr.20080517102922.1:File bugs & features
 #@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
