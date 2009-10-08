@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:vivainio2.20091008133028.5820:@thin stickynotes.py
+#@+node:ville.20091008210853.5241:@thin stickynotes.py
 #@<< docstring >>
 #@+node:vivainio2.20091008133028.5821:<< docstring >>
 ''' Simple "sticky notes" feature (popout editors)
@@ -70,6 +70,26 @@ def init ():
     g.app.stickynotes = {}    
     return ok
 #@-node:vivainio2.20091008133028.5824:init
+#@+node:ville.20091008210853.7616:class StickyNote
+class FocusingPlaintextEdit(QtGui.QPlainTextEdit):
+
+    def __init__(self, focusin, focusout):
+        QtGui.QPlainTextEdit.__init__(self)        
+        self.focusin = focusin
+        self.focusout = focusout
+
+    def focusOutEvent ( self, event ):
+        #print "focus out"
+        self.focusout()
+
+    def focusInEvent ( self, event ):        
+        self.focusin()
+
+
+
+
+
+#@-node:ville.20091008210853.7616:class StickyNote
 #@+node:vivainio2.20091008133028.5825:g.command('stickynote')
 @g.command('stickynote')
 def stickynote_f(event):
@@ -77,19 +97,36 @@ def stickynote_f(event):
 
     c= event['c']
     p = c.p
-    nf = QtGui.QPlainTextEdit()
+    v = p.v
+    def focusin():
+        #print "focus in"
+        if v is c.p.v:
+            nf.setPlainText(v.b)
+            nf.setWindowTitle(p.h)
+            nf.dirty = False
+
+
+    def focusout():
+        #print "focus out"
+        if not nf.dirty:
+            return
+        v.b = nf.toPlainText()
+        v.setDirty()
+        nf.dirty = False
+        p = c.p
+        if p.v is v:
+            c.selectPosition(c.p)
+
+
+    nf = FocusingPlaintextEdit(focusin, focusout)
+
     decorate_window(nf)
     nf.setWindowTitle(p.h)
     nf.setPlainText(p.b)
-
-    # a bit of a hack - always set p dirty, since 
-    # assigning to v.b doesn't do it (and we don't 
-    # want to memorize p)
     p.setDirty()
 
-    v = p.v
     def textchanged_cb():
-        v.b = nf.toPlainText()
+        nf.dirty = True
 
     nf.connect(nf,
         QtCore.SIGNAL("textChanged()"),textchanged_cb)
@@ -100,5 +137,5 @@ def stickynote_f(event):
 #@-node:vivainio2.20091008133028.5825:g.command('stickynote')
 #@-others
 #@nonl
-#@-node:vivainio2.20091008133028.5820:@thin stickynotes.py
+#@-node:ville.20091008210853.5241:@thin stickynotes.py
 #@-leo
