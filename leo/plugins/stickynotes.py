@@ -26,12 +26,38 @@ __version__ = '0.0'
 #@+node:vivainio2.20091008133028.5823:<< imports >>
 import leo.core.leoGlobals as g
 from leo.core import leoPlugins 
+
 # Whatever other imports your plugins uses.
+
+g.assertUi('qt')
+
+from PyQt4 import QtGui, QtCore
 #@nonl
 #@-node:vivainio2.20091008133028.5823:<< imports >>
 #@nl
 
 #@+others
+#@+node:vivainio2.20091008140054.14555:styling
+stickynote_stylesheet = """
+/* The body pane */
+QPlainTextEdit {
+    background-color: #fdf5f5; /* A kind of pink. */
+    selection-color: white;
+    selection-background-color: lightgrey;
+    font-family: DejaVu Sans Mono;
+    /* font-family: Courier New; */
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+"""
+
+def decorate_window(w):
+    w.setStyleSheet(stickynote_stylesheet)
+    w.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
+    w.resize(600, 300)
+
+#@-node:vivainio2.20091008140054.14555:styling
 #@+node:vivainio2.20091008133028.5824:init
 def init ():
 
@@ -48,13 +74,14 @@ def init ():
 @g.command('stickynote')
 def stickynote_f(event):
     """ Launch editable 'sticky note' for the node """
-    from PyQt4 import QtGui, QtCore
+
     c= event['c']
     p = c.p
     nf = QtGui.QPlainTextEdit()
-    nf.setPlainText(p.b)
-    nf.resize(600, 300)
+    decorate_window(nf)
     nf.setWindowTitle(p.h)
+    nf.setPlainText(p.b)
+
     v = p.v
     def textchanged_cb():
         v.b = nf.toPlainText()
@@ -65,10 +92,6 @@ def stickynote_f(event):
     nf.show()
 
     g.app.stickynotes[p.gnx] = nf
-
-
-
-
 #@-node:vivainio2.20091008133028.5825:g.command('stickynote')
 #@-others
 #@nonl
