@@ -52,9 +52,11 @@ def stickynote_f(event):
     p = c.p
     nf = QtGui.QTextEdit()
     nf.setPlainText(p.b)
+    nf.resize(600, 300)
     nf.show()
     nf.setWindowTitle(p.h)
     g.app.stickynotes[p.gnx] = nf
+
 
 
 
