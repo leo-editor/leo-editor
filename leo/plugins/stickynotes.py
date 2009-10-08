@@ -119,7 +119,7 @@ def stickynote_f(event):
 
 
     nf = FocusingPlaintextEdit(focusin, focusout)
-
+    nf.dirty = False
     decorate_window(nf)
     nf.setWindowTitle(p.h)
     nf.setPlainText(p.b)
