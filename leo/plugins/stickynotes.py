@@ -47,14 +47,23 @@ def init ():
 #@+node:vivainio2.20091008133028.5825:g.command('stickynote')
 @g.command('stickynote')
 def stickynote_f(event):
-    from PyQt4 import QtGui
+    """ Launch editable 'sticky note' for the node """
+    from PyQt4 import QtGui, QtCore
     c= event['c']
     p = c.p
-    nf = QtGui.QTextEdit()
+    nf = QtGui.QPlainTextEdit()
     nf.setPlainText(p.b)
     nf.resize(600, 300)
-    nf.show()
     nf.setWindowTitle(p.h)
+    v = p.v
+    def textchanged_cb():
+        v.b = nf.toPlainText()
+
+    nf.connect(nf,
+        QtCore.SIGNAL("textChanged()"),textchanged_cb)
+
+    nf.show()
+
     g.app.stickynotes[p.gnx] = nf
 
 
