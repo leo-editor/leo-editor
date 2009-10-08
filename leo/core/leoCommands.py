@@ -2204,7 +2204,7 @@ class baseCommands (object):
 
         '''Return (fileName,isRaw,lines,n,p,root) where:
 
-        fileName is the name of the nearest @file node, or None.
+        fileName is the name of the nearest @<file> node, or None.
         isRaw is True if there are no sentinels in the file.
         lines are the lines to be scanned.
         n is the effective line number (munged for @shadow nodes).
@@ -2212,6 +2212,7 @@ class baseCommands (object):
 
         c = self
 
+        # First, find the root and lines.
         if scriptData:
             assert p is None
             lines = scriptData.get('lines')
@@ -2229,7 +2230,10 @@ class baseCommands (object):
                 lines = c.goto_getScriptLines(p)
 
         isRaw = not root or (
-            root.isAtAsisFileNode() or root.isAtNoSentFileNode() or root.isAtAutoNode())
+            root.isAtEditNode() or
+            root.isAtAsisFileNode() or
+            root.isAtAutoNode() or
+            root.isAtNoSentFileNode())
 
         ignoreSentinels = root and root.isAtNoSentFileNode()
 
@@ -2242,7 +2246,7 @@ class baseCommands (object):
     #@+node:ekr.20080904071003.25:goto_findRoot
     def goto_findRoot (self,p):
 
-        '''Find the closest ancestor @file node, of any type, except @all nodes.
+        '''Find the closest ancestor @<file> node, except @all nodes.
 
         return root, fileName.'''
 
@@ -2273,10 +2277,14 @@ class baseCommands (object):
 
         c = self
 
-        if root.isAtNoSentFileNode():
+        isAtEdit = root.isAtEditNode()
+        isAtNoSent = root.isAtNoSentFileNode()
+
+        if isAtNoSent or isAtEdit:
             # Write a virtual file containing sentinels.
             at = c.atFileCommands
-            at.write(root,kind='@nosent',nosentinels=False,toString=True)
+            kind = g.choose(isAtNoSent,'@nosent','@edit')
+            at.write(root,kind=kind,nosentinels=False,toString=True)
             lines = g.splitLines(at.stringOutput)
         else:
             # Calculate the full path.
@@ -2305,8 +2313,8 @@ class baseCommands (object):
     def goto_open (self,filename):
         """
         Open a file for "goto linenumber" command and check if a shadow file exists.
-        Construct a line mapping. This ivar is empty i no shadow file exists.
-        Otherwise it contains a mapping shadow file number -> real file number.
+        Construct a line mapping. This ivar is empty if no shadow file exists.
+        Otherwise it contains a mapping, shadow file number -> real file number.
         """
 
         c = self ; x = c.shadowController
