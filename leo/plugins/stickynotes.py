@@ -82,6 +82,11 @@ def stickynote_f(event):
     nf.setWindowTitle(p.h)
     nf.setPlainText(p.b)
 
+    # a bit of a hack - always set p dirty, since 
+    # assigning to v.b doesn't do it (and we don't 
+    # want to memorize p)
+    p.setDirty()
+
     v = p.v
     def textchanged_cb():
         v.b = nf.toPlainText()
