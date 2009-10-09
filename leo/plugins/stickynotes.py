@@ -85,6 +85,10 @@ class FocusingPlaintextEdit(QtGui.QPlainTextEdit):
     def focusInEvent ( self, event ):        
         self.focusin()
 
+    def closeEvent(self, event):
+        event.accept()
+        self.focusout()
+
 
 
 
