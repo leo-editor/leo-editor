@@ -127,7 +127,7 @@ def createStatusLine(tag,keywords):
 #@nonl
 #@-node:rogererens.20041013082304.1:createStatusLine
 #@+node:tbrown.20070726135242:recursiveUNLSearch
-def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=[0], maxp=[None]):
+def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=None, maxp=None):
     """try and move to unl in the commander c"""
 
     def moveToP(c, p):
@@ -146,21 +146,21 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=[0], maxp=[None]):
 
             if depth+1 == len(unlList):  # found it
                 moveToP(c, i)
-                return True
+                return True, maxdepth, maxp
             else:
-                if maxdepth[0] < depth+1:
-                    maxdepth[0] = depth+1
-                    maxp[0] = i.copy()
-                    g.es(i.h)
-                if recursiveUNLSearch(unlList, c, depth+1, i, maxdepth, maxp):
-                    return True
+                if maxdepth < depth+1:
+                    maxdepth = depth+1
+                    maxp = i.copy()
+                found, maxdepth, maxp = recursiveUNLSearch(unlList, c, depth+1, i, maxdepth, maxp)
+                if found:
+                    return found, maxdepth, maxp
                 # else keep looking through nds
 
-    if depth == 0 and maxp[0]:  # inexact match
-        moveToP(c, maxp[0])
+    if depth == 0 and maxp:  # inexact match
+        moveToP(c, maxp)
         g.es('Partial UNL match')
 
-    return False
+    return False, maxdepth, maxp
 #@-node:tbrown.20070726135242:recursiveUNLSearch
 #@+node:rogererens.20041021091837:onUrl1
 import os
