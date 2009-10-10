@@ -4,6 +4,27 @@
 #@+node:ville.20091009202416.10041:<< docstring >>
 ''' Remote control for leo
 
+Example client::
+
+    from leo.external import lproto
+    import os
+
+
+    addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
+    print "will connect to",addr
+    pc  = lproto.LProtoClient(addr)
+    pc.send("""
+
+    g.es("hello world from remote") 
+    c = g.app.commanders()[0]
+
+    """)
+
+    # note how c persists between calls
+    pc.send("""
+    c.k.simulateCommand('stickynote')
+    """)
+
 '''
 #@-node:ville.20091009202416.10041:<< docstring >>
 #@nl
@@ -25,7 +46,7 @@ __version__ = '0.0'
 import leo.core.leoGlobals as g
 from leo.core import leoPlugins 
 from leo.external import lproto
-import os, sys
+import os, sys, tempfile
 
 # Whatever other imports your plugins uses.
 
@@ -58,10 +79,29 @@ def init ():
 def leoserv_start(event):
     c = event['c']
     g.app.leoserv = lps = lproto.LProtoServer()
+
+    def dispatch_script(msg, ses):
+        print "dispatch script", msg
+        fd, pth = tempfile.mkstemp(suffix='.py')
+        f = os.fdopen(fd,"w")
+        f.write(msg)
+        f.close()
+        # first run
+        if 'pydict' not in ses:
+            ses['pydict'] = {'g' : g }
+
+        print "run file",pth
+        execfile(pth, ses['pydict'])
+        print "run done"
+
+
+    lps.set_receiver(dispatch_script)
     uniqid = 'leoserv-%d' % os.getpid()
     lps.listen(uniqid)
     fullpath = lps.srv.fullServerName()
     open(os.path.expanduser('~/.leo/leoserv_sockname'),'w').write(fullpath)
+
+
 
 
 

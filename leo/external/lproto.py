@@ -80,6 +80,7 @@ class LProtoServer:
         self.srv = QtNetwork.QLocalServer()
         self.srv.connect(self.srv, QtCore.SIGNAL("newConnection()"),
             self.connected)
+        self.receiver = None
 
         self.ses = {}  
 
@@ -88,8 +89,11 @@ class LProtoServer:
         print "listen on",self.srv.fullServerName()
 
     def msg_received(self, msg, ses):
-        print "message", msg, "to ses", ses
+        if self.receiver:
+            self.receiver(msg, ses)
 
+    def set_receiver(self, receiver):
+        self.receiver = receiver
 
     def connected(self):
         print "hnd con"
