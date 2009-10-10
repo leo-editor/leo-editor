@@ -4140,6 +4140,7 @@ class xmlScanner (baseScannerClass):
 
         '''Add items to self.class/functionTags and from settings.'''
 
+        trace = False and not g.unitTesting
         c = self.c
 
         for ivar,setting in (
@@ -4149,7 +4150,7 @@ class xmlScanner (baseScannerClass):
             aList = getattr(self,ivar)
             aList2 = c.config.getData(setting) or []
             aList.extend(aList2)
-            g.trace(ivar,aList)
+            if trace: g.trace(ivar,aList)
     #@-node:ekr.20071214131818:addTags
     #@+node:ekr.20071214072924.4:startsHelper & helpers
     def startsHelper(self,s,i,kind,tags):

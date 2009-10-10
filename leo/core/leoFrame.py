@@ -2697,7 +2697,11 @@ class leoTree:
 
         old_p = c.p
 
-        if not p:
+        if p:
+            # 2009/10/10: selecting a foreign position
+            # will not be pretty.
+            assert p.v.context == c
+        else:
             # Do *not* test c.positionExists(p) here.
             # We may be in the process of changing roots.
             return None # Not an error.
