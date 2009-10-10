@@ -17,6 +17,7 @@ Author: Ville M. Vainio <vivainio@gmail.com>
 #@+node:ville.20091009234538.1373:<< imports >>
 # todo move out qt dep
 from PyQt4 import QtCore, QtNetwork
+import socket
 import struct
 #@nonl
 #@-node:ville.20091009234538.1373:<< imports >>
@@ -74,7 +75,7 @@ class LProtoBuf:
 #@+node:ville.20091009234538.1374:class LProtoServer
 class LProtoServer:
     #@    @+others
-    #@+node:ville.20091009234538.1380:initialization
+    #@+node:ville.20091009234538.1380:methods
     def __init__(self):
         self.srv = QtNetwork.QLocalServer()
         self.srv.connect(self.srv, QtCore.SIGNAL("newConnection()"),
@@ -118,11 +119,11 @@ class LProtoServer:
     def readyread(self):
         pass
 
-    #@-node:ville.20091009234538.1380:initialization
+    #@-node:ville.20091009234538.1380:methods
     #@-others
 #@-node:ville.20091009234538.1374:class LProtoServer
-#@+node:ville.20091010205847.1360:class LProtoClient
-class LProtoClient:
+#@+node:ville.20091010205847.1360:(ignore) class LProtoObsoleteClient
+class LProtoObsoleteClient:
     #@    @+others
     #@+node:ville.20091010205847.1361:initialization
     def __init__(self):
@@ -134,7 +135,22 @@ class LProtoClient:
         pass
     #@-node:ville.20091010205847.1361:initialization
     #@-others
-#@-node:ville.20091010205847.1360:class LProtoClient
+#@-node:ville.20091010205847.1360:(ignore) class LProtoObsoleteClient
+#@+node:ville.20091010233144.10051:class LProtoClient
+class LProtoClient:
+
+    def __init__(self, fname):
+
+        self.socket = socket.socket( socket.AF_UNIX, socket.SOCK_STREAM)
+        self.socket.connect (fname)
+        self.recvbuf = LProtoBuf()
+
+    def send(self, msg):
+        byts = mk_send_bytes(msg)
+        self.socket.sendall(byts)
+
+
+#@-node:ville.20091010233144.10051:class LProtoClient
 #@-others
 #@nonl
 #@-node:ville.20091010232339.6117:@thin ../external/lproto.py

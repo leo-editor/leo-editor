@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="223" left="410" height="700" width="1000"/>
+	<global_window_position top="117" left="12" height="700" width="1000"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -128,8 +128,7 @@ marks="ekr.20090502071837.71,ekr.20031218072017.2829,ekr.20080510153327.4,ekr.20
 </v>
 <v t="ekr.20090802181029.5989" a="E"><vh>Startup &amp; external</vh>
 <v t="ekr.20090831103504.6069"><vh>@auto ../external/pickleshare.py</vh></v>
-<v t="ville.20091010232339.6117" a="E"
-expanded="ville.20091009234538.1374,ville.20091010205847.1360,"><vh>@thin ../external/lproto.py</vh></v>
+<v t="ville.20091010232339.6117" a="E"><vh>@thin ../external/lproto.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@thin runLeo.py </vh></v>
 </v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
@@ -251,7 +250,7 @@ Two (recently written) functions in leoGlobals.py support conversions from Pytho
 
 Important:  the first Tkinter index is '1.0', not '0.0', but the row returned by g.convertPythonIndexToRowCol is zero based, so the code that actually creates Tkinter indices from row/col must add 1 to the row.  Similar remarks apply when going in the reverse direction.
 </t>
-<t tx="ekr.20051031040240" str_leo_pos="5,1,1,1"></t>
+<t tx="ekr.20051031040240" str_leo_pos="5,1,1,6"></t>
 <t tx="ekr.20060217111834"></t>
 <t tx="ekr.20060531093331">@
 Ever have a clone that is difficult to understand outside the context of its
