@@ -188,7 +188,7 @@ if g.app.gui.guiName() == "tkinter":
                         txt = {'S':'->','D':'<-','U':'--'}[i[0]] + ' ' + i[1].h
                         self.listbox.insert(Tk.END, txt)
                         def delLink(on=v,
-                            to=i[1].v.unknownAttributes['_bklnk']['id'],
+                            to=i[1].v.gnx,
                             type_=i[0]): self.deleteLink(on,to,type_)
                     self.dests = dests            
 elif g.app.gui.guiName() == "qt":
@@ -295,6 +295,8 @@ class backlinkController(object):
         self.c.backlinkController = self
         self.initIvars()
 
+        self.fixIDs(c)
+
         if Tk:
             self.ui = backlinkTkUI(self)
         elif Qt:
@@ -306,11 +308,37 @@ class backlinkController(object):
         # already missed initial 'open2' because of after-create-leo-frame, so
         self.loadLinksInt()
     #@-node:ekr.20090616105756.3943:__init__
+    #@+node:tbrown.20091005145931.5227:fixIDs
+    def fixIDs(self, c):
+
+        update = {}
+
+        for v in c.all_unique_nodes():
+            # collect old -> new ID mapping
+            if (hasattr(v, 'unknownAttributes') and
+                '_bklnk' in v.u and
+                'id' in v.u['_bklnk']):
+                update[v.u['_bklnk']['id']] = v.gnx
+
+        for v in c.all_unique_nodes():
+            if (hasattr(v, 'unknownAttributes') and
+                '_bklnk' in v.u):
+
+                if 'id' in v.u['_bklnk']:
+                    # remove old id
+                    del v.u['_bklnk']['id']
+
+                if 'links' in v.u['_bklnk']:
+
+                    v.u['_bklnk']['links'] = [
+                        (i[0], update[i[1]]) for i in v.u['_bklnk']['links']
+                        if i[1] in update ] 
+    #@-node:tbrown.20091005145931.5227:fixIDs
     #@+node:ekr.20090616105756.3944:deleteLink
     def deleteLink(self, on, to, type_):
         """delete a link from 'on' to 'to' of type 'type_'"""
 
-        vid = on.unknownAttributes['_bklnk']['id']
+        vid = on.gnx #X unknownAttributes['_bklnk']['id']
         links = on.unknownAttributes['_bklnk']['links']
 
         for n,link in enumerate(links):
@@ -353,11 +381,10 @@ class backlinkController(object):
         if '_bklnk' not in v.u:
             v.u['_bklnk'] = {}
 
-        if 'id' not in v.u['_bklnk']:
-            vid = g.app.nodeIndices.toString(g.app.nodeIndices.getNewIndex())
-            v.u['_bklnk'].update({'id':vid, 'links':[]})
+        if 'links' not in v.u['_bklnk']:
+            v.u['_bklnk'].update({'links':[]})
 
-        self.vnode[v.u['_bklnk']['id']] = v
+        self.vnode[v.gnx] = v
     #@-node:ekr.20090616105756.3946:initBacklink
     #@+node:ekr.20090616105756.3947:initIvars
     def initIvars(self):
@@ -367,7 +394,7 @@ class backlinkController(object):
         self.linkSource = None
         self.linkMark = None
         self.vnode = {}
-        self.positions = {}
+        #X self.positions = {}
         self.messageUsed = False
     #@-node:ekr.20090616105756.3947:initIvars
     #@+node:ekr.20090616105756.3948:linkAction
@@ -410,12 +437,12 @@ class backlinkController(object):
         if type_ == 'directed':
             linkType = 'S'
 
-        v0.u['_bklnk']['links'].append( (linkType, v1.u['_bklnk']['id']) )
+        v0.u['_bklnk']['links'].append( (linkType, v1.gnx) )
 
         if type_ == 'directed':
             linkType = 'D'
 
-        v1.u['_bklnk']['links'].append( (linkType, v0.u['_bklnk']['id']) )
+        v1.u['_bklnk']['links'].append( (linkType, v0.gnx) )
 
         gcc = getattr(self.c, 'graphcanvasController')
         if gcc:
@@ -433,7 +460,7 @@ class backlinkController(object):
         elif self.deleteMode:
             self.deleteLink(
                 self.c.p.v,
-                self.dests[selected][1].v.unknownAttributes['_bklnk']['id'],
+                self.dests[selected][1].v.gnx,
                 self.dests[selected][0]
             )
             self.updateTabInt()
@@ -511,47 +538,27 @@ class backlinkController(object):
 
         c = self.c  # checked in loadLinks()
 
-        self.initIvars()
+        self.initIvars()  # clears self.vnode
 
-        ids = {}
-        idsSeen = set()
+        idsSeen = set()  # just the vnodes with link info.
 
-        # /here id should be a dict of lists of "aliases"
-
+        # make map from linked node's ids to their vnodes
         for p in c.all_positions():
-            self.positions[p.v] = p.copy()
             v = p.v
-            if v.u and '_bklnk' in v.u and 'id' in v.u['_bklnk']:
-                vid = v.u['_bklnk']['id']
-                if vid in ids:
-                    ids[vid].append(v)
-                else:
-                    ids[vid] = [v]
-                idsSeen.add(vid)
+            self.vnode[v.gnx] = v
+            if v.u and '_bklnk' in v.u:
+                idsSeen.add(v.gnx)
 
-        rvid = {}
-        for i in ids:
-            rvid[i] = [ids[i][0]]
-            self.vnode[i] = ids[i][0]
-            for x in ids[i][1:]:
-                idx = 1
-
-                def nvid(): return vid+'.'+str(idx)
-                while nvid() in idsSeen and idx <= 100:
-                    idx += 1
-                if nvid() in idsSeen:
-                    # use g.es rather than showMessage here
-                    g.es('backlink: Massive duplication of vnode ids', color='red')
-                idsSeen.add(nvid())
-                rvid[i].append(x)
-                x.unknownAttributes['_bklnk']['id'] = nvid()
-                self.vnode[nvid()] = x
-
-        for vnode in self.vnode:  # just the vnodes with link info.
-            links = self.vnode[vnode].unknownAttributes['_bklnk']['links']
-            nl = []
+        for vnode in idsSeen:  # just the vnodes with link info.
+            if 'links' not in self.vnode[vnode].u['_bklnk']:
+                # graphcanvas.py will only init x and y keys
+                self.vnode[vnode].u['_bklnk']['links'] = []
+            links = self.vnode[vnode].u['_bklnk']['links']
+            newlinks = []  # start with empty list and include only good links
             for link in links:
-                if link[1] not in rvid:
+
+                if link[1] not in self.vnode:
+                    # other end if missing
                     lt = ('to', 'from')
                     if link[0] == 'S':
                         lt = ('from', 'to')
@@ -559,11 +566,22 @@ class backlinkController(object):
                     g.es('backlink: link %s %s %s ??? lost' % (
                         lt[0], self.vnode[vnode].h, lt[1]), color='red')
                     continue
-                for x in rvid[link[1]]:
-                    nl.append((link[0], x.unknownAttributes['_bklnk']['id']))
-            self.vnode[vnode].unknownAttributes['_bklnk']['links'] = nl
 
-        self.showMessage('Link info. loaded on %d nodes' % len(self.vnode))
+                # check other end has link
+                other = self.vnode[link[1]]
+                if '_bklnk' not in other.u or 'links' not in other.u['_bklnk']:
+                    self.initBacklink(other)
+                if not [i for i in other.u['_bklnk']['links']
+                    if i[1] == vnode]:
+                    # we are not in the other's list
+                    direc = {'U':'U', 'S':'D', 'D':'S'}[link[0]]
+                    other.u['_bklnk']['links'].append((direc, vnode))
+
+                newlinks.append((link[0], link[1]))
+
+            self.vnode[vnode].u['_bklnk']['links'] = newlinks
+
+        self.showMessage('Link info. loaded on %d nodes' % len(idsSeen))
     #@-node:ekr.20090616105756.3958:loadLinksInt
     #@+node:ekr.20090616105756.3959:mark
     def mark(self):

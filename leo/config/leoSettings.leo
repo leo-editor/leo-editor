@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="53" left="817" height="997" width="807"/>
+	<global_window_position top="186" left="374" height="700" width="1000"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1010,6 +1010,9 @@
 </v>
 </v>
 </v>
+<v t="ville.20091008201813.3909" a="E"><vh>Qt context menu</vh>
+<v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
+</v>
 </v>
 <v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
@@ -1333,7 +1336,7 @@
 <v t="TL.20091006194534.6310"><vh>@mode body-search-all-nodes</vh></v>
 <v t="TL.20091006194534.6311"><vh>@mode body-search-toggle-headline</vh></v>
 <v t="TL.20091006194534.6312"><vh>@mode body-search-toggle-body</vh></v>
-<v t="TL.20091006194534.6313" a="E"><vh>@mode body-search-toggle-mark</vh>
+<v t="TL.20091006194534.6313"><vh>@mode body-search-toggle-mark</vh>
 <v t="TL.20091006194534.6314"><vh>@mode body-search-toggle-mark-finds</vh></v>
 <v t="TL.20091006194534.6315"><vh>@mode body-search-toggle-mark-changes</vh></v>
 </v>
@@ -1342,10 +1345,10 @@
 <v t="TL.20091006194534.6317"><vh>@mode body-replace-string</vh></v>
 <v t="TL.20091006194534.6318"><vh>@mode body-paste-then-find</vh></v>
 <v t="TL.20091006194534.6319"><vh>@mode body-goto-end-of-buffer</vh></v>
-<v t="TL.20091006194534.6320" a="E"><vh>@mode body-g</vh>
-<v t="TL.20091006194534.6321" a="E"><vh>@mode body-g-beginning-of-buffer</vh>
+<v t="TL.20091006194534.6320"><vh>@mode body-g</vh>
+<v t="TL.20091006194534.6321"><vh>@mode body-g-beginning-of-buffer</vh>
 <v t="TL.20091006194534.6322"><vh>@mode body-g-q</vh></v>
-<v t="TL.20091006194534.6323" a="E"><vh>@mode body-g-w</vh>
+<v t="TL.20091006194534.6323"><vh>@mode body-g-w</vh>
 <v t="TL.20091006194534.6324"><vh>@mode body-g-wq-a</vh></v>
 </v>
 </v>
@@ -6591,7 +6594,7 @@ propagate-key-event = Alt-O
 propagate-key-event = Alt-W
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="6"></t>
+<t tx="ekr.20070622214401" str_leo_pos="4"></t>
 <t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070919125633">button_text_font_family = verdana
@@ -7968,6 +7971,13 @@ is true (and recent_files_omit_directories is False)
 e.g. cleo or cleo/small</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 cm-external-editor = Alt-v</t>
+<t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
+a single @date contextmenu_commands node. </t>
+<t tx="ville.20091008201813.3911"># Add commands to contextmenu
+# The format is &lt;command&gt; SPACE &lt;description&gt;
+
+# stickynote Create a sticky note
+# read-at-file-nodes Read in file nodes</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>

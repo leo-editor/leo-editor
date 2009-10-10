@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="226" left="186" height="700" width="1000"/>
+	<global_window_position top="199" left="303" height="700" width="1000"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20090628091852.6030" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20090628091852.6030"><vh>Startup</vh>
 <v t="ville.20090627211608.5783"><vh>@chapters</vh></v>
 <v t="ekr.20090628091852.6031"><vh>@settings</vh>
 <v t="ekr.20090628091852.8471"><vh>@string target_language = rest</vh></v>
@@ -20,7 +20,7 @@
 <v t="ville.20090627211608.5782"><vh>Welcome to Leo!</vh></v>
 <v t="ville.20090627211608.5784"><vh>Tree manipulation basics</vh></v>
 <v t="ville.20090630234425.12394"><vh>Programming</vh>
-<v t="ville.20090627211608.10118" a="E"><vh>External files</vh>
+<v t="ville.20090627211608.10118"><vh>External files</vh>
 <v t="ville.20090627211608.10116"><vh>Thin nodes (explanation &amp; exercise)</vh>
 <v t="ville.20090627211608.10119"><vh>@path ~</vh>
 <v t="ville.20090627211608.10117"><vh>@@thin myfile_thin.py</vh>
@@ -36,7 +36,7 @@
 </v>
 </v>
 </v>
-<v t="ville.20090627211608.10129" a="E"><vh>Auto nodes</vh>
+<v t="ville.20090627211608.10129"><vh>Auto nodes</vh>
 <v t="ville.20090630145410.1517"><vh>@path ~</vh>
 <v t="ville.20090630145410.1509"><vh>@@auto myfile_auto.py</vh>
 <v t="ville.20090630145410.1510"><vh>imports &amp; setup routines</vh>
@@ -51,8 +51,8 @@
 </v>
 </v>
 </v>
-<v t="ville.20090701175849.1532" a="E"><vh>Shadow nodes</vh>
-<v t="ville.20090701175849.1542" a="E"><vh>@path ~</vh>
+<v t="ville.20090701175849.1532"><vh>Shadow nodes</vh>
+<v t="ville.20090701175849.1542"><vh>@path ~</vh>
 <v t="ville.20090701175849.1543"><vh>@@shadow myfile_shadow.py</vh>
 <v t="ville.20090701175849.1544"><vh>imports &amp; setup routines</vh>
 <v t="ville.20090701175849.1545"><vh>imports</vh></v>
@@ -66,9 +66,9 @@
 </v>
 </v>
 </v>
-<v t="ville.20090701184416.1554" a="E"><vh>reStructuredText (@auto-rst)</vh>
+<v t="ville.20090701184416.1554"><vh>reStructuredText (@auto-rst)</vh>
 <v t="ville.20090701184416.1555"><vh>@path ~</vh>
-<v t="ville.20090701184416.1556" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e65733171036802752e"><vh>@@auto-rst myfile_rst.txt</vh>
+<v t="ville.20090701184416.1556"><vh>@@auto-rst myfile_rst.txt</vh>
 <v t="ville.20090701184416.1557"><vh>Main heading</vh>
 <v t="ville.20090701184416.1558"><vh>subheading 1</vh></v>
 <v t="ville.20090703222440.1472"><vh>subheading 2</vh></v>
@@ -78,9 +78,9 @@
 </v>
 </v>
 </v>
-<v t="ville.20090630234425.12395"><vh>Configuration (enabling plugins etc.)</vh>
+<v t="ville.20090630234425.12395" a="E"><vh>Configuration (enabling plugins etc.)</vh>
 <v t="ville.20090630234425.14847"><vh>Find out your ~/.leo directory (script)</vh></v>
-<v t="ville.20090630234425.12396"><vh>@@settings</vh>
+<v t="ville.20090630234425.12396" a="E"><vh>@@settings</vh>
 <v t="ville.20090728003644.3957"><vh>@enabled-plugins</vh></v>
 <v t="ville.20090708172716.16846"><vh>@@string initial_split_orientation = horizontal</vh></v>
 <v t="ville.20090806210322.1435"><vh>suggested style sheets</vh>
@@ -92,13 +92,14 @@
 </v>
 </v>
 <v t="ville.20090806182306.6324"><vh>@int qt_max_colorized_chars = 200000</vh></v>
+<v t="ville.20091008194838.3931"><vh>@data contextmenu_commands</vh></v>
 </v>
 </v>
 <v t="ville.20090701182804.1550"><vh>Search and replace</vh></v>
 <v t="ville.20090701182804.1551"><vh>Minibuffer</vh></v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20090628091852.6030">This node contains settings and other "machinery" that you
+<t tx="ekr.20090628091852.6030" str_leo_pos="4,1,4">This node contains settings and other "machinery" that you
 can usually ignore.</t>
 <t tx="ekr.20090628091852.6031"></t>
 <t tx="ekr.20090628091852.8471"></t>
@@ -357,7 +358,7 @@ just remove the first @ character from @@auto-rst and save,
 opening the external file afterwards.
 </t>
 <t tx="ville.20090701184416.1555"></t>
-<t tx="ville.20090701184416.1556">@language rest
+<t tx="ville.20090701184416.1556" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e65733171036802752e">@language rest
 @tabwidth -4
 @others
 
@@ -762,5 +763,10 @@ XXQMenuBar {
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }</t>
+<t tx="ville.20091008194838.3931"># Add commands to contextmenu
+# The format is &lt;command&gt; SPACE &lt;description&gt;
+
+# stickynote Create a sticky note
+# read-at-file-nodes Read file node</t>
 </tnodes>
 </leo_file>

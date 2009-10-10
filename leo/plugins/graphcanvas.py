@@ -235,7 +235,9 @@ class graphcanvasController(object):
                 if '_bklnk' in node.u and 'x' in node.u['_bklnk']:
                     txt.setPos(node.u['_bklnk']['x'], node.u['_bklnk']['y'])
                 else:
-                    node.u['_bklnk'] = {}
+                    node.u.setdefault('_bklnk',{})
+                    # very important not to just node.u['_bklnk'] = {}
+                    # as this would overwrite a backlinks.py dict with no x/y
                     node.u['_bklnk']['x'] = 0
                     node.u['_bklnk']['y'] = 0
 
@@ -347,8 +349,8 @@ class graphcanvasController(object):
         v0, v1 = link
 
         # delete in both directions, only one will be needed, typically
-        id0 = v0.u['_bklnk']['id']
-        id1 = v1.u['_bklnk']['id']
+        id0 = v0.gnx
+        id1 = v1.gnx
         blc.deleteLink(v0, id1, 'S')
         blc.deleteLink(v1, id0, 'S')
 
