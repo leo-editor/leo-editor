@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="191" left="333" height="700" width="1000"/>
+	<global_window_position top="230" left="662" height="700" width="1000"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -709,8 +709,9 @@
 <v t="tbrown.20090513125417.5244"><vh>@thin interact.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@thin spydershell.py</vh></v>
 </v>
-<v t="ekr.20050111122605"><vh>Servers</vh>
+<v t="ekr.20050111122605" a="E"><vh>Servers</vh>
 <v t="EKR.20040517080250.1"><vh>@thin mod_http.py</vh></v>
+<v t="ville.20091009202416.10040" a="EM"><vh>@thin leoremote.py</vh></v>
 </v>
 <v t="ekr.20071113084440"><vh>Testing</vh>
 <v t="ekr.20071113084440.1"><vh>@thin test/syntax_error_plugin.py</vh></v>
@@ -802,7 +803,7 @@
 </v>
 <v t="rogererens.20041013082304"><vh>@thin UNL.py</vh></v>
 </v>
-<v t="ekr.20040915073259" a="E"><vh>Windows</vh>
+<v t="ekr.20040915073259"><vh>Windows</vh>
 <v t="tbrown.20090322083202.1"><vh>NOTE: todo.py is qt verion of cleo.py (which is tk)</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@thin todo.py</vh></v>
 <v t="ekr.20050227071948"><vh> cleo</vh>
@@ -859,7 +860,7 @@
 <v t="ville.20090310191936.10"><vh>@thin colorize_headlines.py</vh></v>
 <v t="ville.20090314215508.4"><vh>@thin quicksearch.py</vh></v>
 <v t="ville.20090808222331.5229"><vh>@thin qtframecommands.py</vh></v>
-<v t="ville.20091008210853.5241" a="E"><vh>@thin stickynotes.py</vh></v>
+<v t="ville.20091008210853.5241"><vh>@thin stickynotes.py</vh></v>
 </v>
 </v>
 </vnodes>
@@ -4485,7 +4486,7 @@ your plugin.</t>
 <t tx="ekr.20041114103913.1">PLEASE define each function or method in a separate node! To make this work,
 just put @others in the root of your plugin as shown. Note that @others may be
 nested, as shown in class myClass.</t>
-<t tx="ekr.20041211035618" str_leo_pos="2,25,15,5"></t>
+<t tx="ekr.20041211035618" str_leo_pos="2,21,1,2"></t>
 <t tx="ekr.20041231134702"># This is called from plugins_menu plugin.
 
 # It should only be defined if the extension has been registered.
