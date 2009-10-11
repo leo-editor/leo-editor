@@ -59,6 +59,30 @@ def onCreate (tag,key):
 
     attrib_edit_Controller(c)
 #@-node:tbrown.20091009210724.10976:onCreate
+#@+node:tbrown.20091010211613.5257:class editWatcher
+class editWatcher(object):
+
+    def __init__(self, v, name, value, path, type_):
+        self.v = v
+        self.name = name
+        self.value = value
+        self.path = path
+        self.type_ = type_
+        self._widget = None
+
+    def widget(self):
+        if not self._widget:
+            self._widget = QtGui.QLineEdit(str(self.value))
+            QtCore.QObject.connect(self._widget, 
+                QtCore.SIGNAL("textChanged(QString)"), self.updateValue)
+        return self._widget
+
+    def updateValue(self, newValue):
+        a = self.v.u
+        for i in self.path[:-1]:
+            a = a.setdefault(i, {})
+        a[self.path[-1]] = self.type_(newValue)
+#@-node:tbrown.20091010211613.5257:class editWatcher
 #@+node:tbrown.20091009210724.10979:class attrib_edit_Controller
 class attrib_edit_Controller:
 
@@ -89,9 +113,12 @@ class attrib_edit_Controller:
     #@-node:tbrown.20091009210724.10983:__del__
     #@+node:tbrown.20091009210724.11210:initForm
     def initForm(self):
+
+        self.editors = []
+
         w = self.c.frame.top.attr_splitter
 
-        # seems this gets called 3 times during init, resulting in too many editor panels
+        # seems this gets called 3 times during init, resulting in too many attrib editors
         # so delete all but the 0th (the body editor)
         # print w.count()  # enable this line to see, only seems to be off at init
         for i in range(w.count()-1, 0, -1):
@@ -101,7 +128,6 @@ class attrib_edit_Controller:
         self.form = QtGui.QFormLayout()
         pnl.setLayout(self.form)
         w.addWidget(pnl)
-    #@nonl
     #@-node:tbrown.20091009210724.11210:initForm
     #@+node:tbrown.20091009210724.11047:updateEditor
     def updateEditor(self,tag,k):
@@ -118,7 +144,10 @@ class attrib_edit_Controller:
                 self.form.addRow(QtGui.QLabel(name), QtGui.QLabel(str(value)))
             else:
                 name, value, path, type_ = attr
-                self.form.addRow(QtGui.QLabel(name), QtGui.QLineEdit(str(value)))
+                editor = editWatcher(c.currentPosition().v, name, value, path, type_)
+                self.editors.append(editor)
+
+                self.form.addRow(QtGui.QLabel(name), editor.widget())
     #@-node:tbrown.20091009210724.11047:updateEditor
     #@+node:tbrown.20091009210724.11211:getAttribs
     def getAttribs(self):
@@ -140,11 +169,16 @@ class attrib_edit_Controller:
         """
 
         import time
-        return [
-          ('time', time.time()),
-          ('cars', 0, ['_test','_edit','_int','cars'], int),
-          ('phone', '', ['_test','_edit','phone'], str),
-        ]
+        ans = []
+        ans.append(('time', time.time()))
+        v = self.c.currentPosition().v
+        try:
+            value = v.u['_test']['_edit']['phone']
+        except KeyError:
+            value = ''
+        ans.append(('phone', value, ['_test','_edit','phone'], str))
+        return ans
+    #@nonl
     #@-node:tbrown.20091009210724.11211:getAttribs
     #@-others
 #@-node:tbrown.20091009210724.10979:class attrib_edit_Controller
