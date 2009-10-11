@@ -78,10 +78,14 @@ class editWatcher(object):
         return self._widget
 
     def updateValue(self, newValue):
-        a = self.v.u
-        for i in self.path[:-1]:
+        self.setValue(self.v.u, self.path, self.type_(newValue))
+
+    @staticmethod
+    def setValue(a, path, value):
+        for i in path[:-1]:
             a = a.setdefault(i, {})
-        a[self.path[-1]] = self.type_(newValue)
+        a[path[-1]] = value
+        print path,value
 #@-node:tbrown.20091010211613.5257:class editWatcher
 #@+node:tbrown.20091009210724.10979:class attrib_edit_Controller
 class attrib_edit_Controller:
@@ -93,6 +97,7 @@ class attrib_edit_Controller:
     def __init__ (self, c):
 
         self.c = c
+        c.attribEditor = self
 
         self.handlers = [
            ('select3', self.updateEditor),
@@ -101,10 +106,19 @@ class attrib_edit_Controller:
         for i in self.handlers:
             leoPlugins.registerHandler(i[0], i[1])
 
-        c.frame.top.attr_splitter = QtGui.QSplitter(QtCore.Qt.Vertical)
-        os = c.frame.top.leo_body_frame.parent()
-        c.frame.top.attr_splitter.addWidget(c.frame.top.leo_body_frame)
-        os.addWidget(c.frame.top.attr_splitter)
+        # self.guiMode = 'tab'
+        self.guiMode = 'body'
+
+        if self.guiMode == 'body':
+            self.holder = QtGui.QSplitter(QtCore.Qt.Vertical)
+            os = c.frame.top.leo_body_frame.parent()
+            self.holder.addWidget(c.frame.top.leo_body_frame)
+            os.addWidget(self.holder)
+        elif self.guiMode == 'tab':
+            frame = QtGui.QFrame()
+            self.holder = QtGui.QHBoxLayout()
+            frame.setLayout(self.holder)
+            c.frame.log.createTab('Attribs', widget = frame)
     #@-node:tbrown.20091009210724.10981:__init__
     #@+node:tbrown.20091009210724.10983:__del__
     def __del__(self):
@@ -116,17 +130,25 @@ class attrib_edit_Controller:
 
         self.editors = []
 
-        w = self.c.frame.top.attr_splitter
+        w = self.holder
 
-        # seems this gets called 3 times during init, resulting in too many attrib editors
-        # so delete all but the 0th (the body editor)
-        # print w.count()  # enable this line to see, only seems to be off at init
-        for i in range(w.count()-1, 0, -1):
-            w.widget(i).hide()
-            w.widget(i).deleteLater()
+        if self.guiMode == 'body':
+            # seems this gets called 3 times during init,
+            # resulting in too many attrib editors
+            # so delete all but the 0th (the body editor)
+            # print w.count()  # enable this line to see, only seems to be off at init
+            for i in range(w.count()-1, 0, -1):
+                w.widget(i).hide()
+                w.widget(i).deleteLater()
+
+        elif self.guiMode == 'tab':
+            while w.count():
+                w.takeAt(0)
+
         pnl = QtGui.QFrame()
         self.form = QtGui.QFormLayout()
         pnl.setLayout(self.form)
+        pnl.setAutoFillBackground(True)
         w.addWidget(pnl)
     #@-node:tbrown.20091009210724.11210:initForm
     #@+node:tbrown.20091009210724.11047:updateEditor
@@ -168,18 +190,59 @@ class attrib_edit_Controller:
         v.uA['inventory']['_edit']['_int']['cars'] respectively
         """
 
-        import time
         ans = []
-        ans.append(('time', time.time()))
-        v = self.c.currentPosition().v
-        try:
-            value = v.u['_test']['_edit']['phone']
-        except KeyError:
-            value = ''
-        ans.append(('phone', value, ['_test','_edit','phone'], str))
+        d = self.c.currentPosition().v.u
+
+        def recSearch(d, path, ans):
+            for k in d:
+                if isinstance(d[k], dict):
+                    if k != '_edit':
+                        recSearch(d[k], path+[k], ans)
+                    else:
+                        for ek in d[k]:
+                            ans.append((ek, d[k][ek], path+['_edit',ek], str))
+
+        recSearch(d, [], ans)
+
         return ans
-    #@nonl
     #@-node:tbrown.20091009210724.11211:getAttribs
+    #@+node:tbrown.20091011151836.14787:getNamespace
+    def getNamespace(self, event=None):
+        # JUNK
+       stateName = 'get-input'
+       k = self.c.k
+       state = k.getState(stateName)
+
+       if state == 0:
+           k.setLabelBlue('Namespace (space separated words): ',protect=True)
+           k.getArg(event,stateName,1,self.getNamespace)
+       else:
+           k.clearState()
+           self.namespace = k.arg
+    #@-node:tbrown.20091011151836.14787:getNamespace
+    #@+node:tbrown.20091011151836.14788:createAttrib
+    def createAttrib(self, event=None):
+       stateName = 'get-input'
+       k = self.c.k
+       state = k.getState(stateName)
+
+       if state == 0:
+           k.setLabelBlue('Namespace (space separated words): ',protect=True)
+           k.getArg(event,stateName,1,self.createAttrib)
+       else:
+           k.clearState()
+           ns = k.arg.split()
+           if '_edit' not in ns:
+               ns.insert(-1, '_edit')
+           editWatcher.setValue(self.c.currentPosition().v.u, ns, '')
+    #@-node:tbrown.20091011151836.14788:createAttrib
+    #@+node:tbrown.20091011151836.5259:command attrib-create
+    @staticmethod
+    @g.command('attrib-create')
+    def attrib_create(event):
+        event['c'].attribEditor.createAttrib()
+    #@nonl
+    #@-node:tbrown.20091011151836.5259:command attrib-create
     #@-others
 #@-node:tbrown.20091009210724.10979:class attrib_edit_Controller
 #@-others
