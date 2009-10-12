@@ -61,8 +61,16 @@ def onCreate (tag,key):
 #@-node:tbrown.20091009210724.10976:onCreate
 #@+node:tbrown.20091010211613.5257:class editWatcher
 class editWatcher(object):
+    """class to supply widget for editing attribute and handle
+    its textChanged signal"""
 
     def __init__(self, v, name, value, path, type_):
+        """v - node whose attribute we edit
+        name - name of edited attribute
+        value - initial value of edited attribute
+        path - dictionary key path to attribute in v.u
+        type_ - attribute type
+        """
         self.v = v
         self.name = name
         self.value = value
@@ -71,6 +79,7 @@ class editWatcher(object):
         self._widget = None
 
     def widget(self):
+        """return widget for editing this attribute"""
         if not self._widget:
             self._widget = QtGui.QLineEdit(str(self.value))
             QtCore.QObject.connect(self._widget, 
@@ -78,10 +87,14 @@ class editWatcher(object):
         return self._widget
 
     def updateValue(self, newValue):
+        """copy value from widget to v.u"""
         self.setValue(self.v.u, self.path, self.type_(newValue))
 
     @staticmethod
     def setValue(a, path, value):
+        """copy value into dict a on path,
+        e.g. a['one']['more']['level'] = value
+        """
         for i in path[:-1]:
             a = a.setdefault(i, {})
         a[path[-1]] = value
@@ -91,6 +104,12 @@ class editWatcher(object):
 class attrib_edit_Controller:
 
     '''A per-commander class that manages attribute editing.'''
+
+    typeMap = {
+        '_int': int,
+        '_float': float,
+        '_bool': bool,
+    }
 
     #@    @+others
     #@+node:tbrown.20091009210724.10981:__init__
@@ -127,7 +146,7 @@ class attrib_edit_Controller:
     #@-node:tbrown.20091009210724.10983:__del__
     #@+node:tbrown.20091009210724.11210:initForm
     def initForm(self):
-
+        """set up self.form, the blank form layout before adding edit widgets"""
         self.editors = []
 
         w = self.holder
@@ -153,7 +172,7 @@ class attrib_edit_Controller:
     #@-node:tbrown.20091009210724.11210:initForm
     #@+node:tbrown.20091009210724.11047:updateEditor
     def updateEditor(self,tag,k):
-
+        """update edit panel when new node selected"""
         c = self.c
 
         if k['c'] != self.c: return  # not our problem
@@ -161,16 +180,45 @@ class attrib_edit_Controller:
         self.initForm()
 
         for attr in self.getAttribs():
-            if len(attr) == 2:
+            if len(attr) == 2:  # read only attribute
                 name, value = attr
                 self.form.addRow(QtGui.QLabel(name), QtGui.QLabel(str(value)))
-            else:
+            else:               # editable attribute
                 name, value, path, type_ = attr
                 editor = editWatcher(c.currentPosition().v, name, value, path, type_)
                 self.editors.append(editor)
 
                 self.form.addRow(QtGui.QLabel(name), editor.widget())
     #@-node:tbrown.20091009210724.11047:updateEditor
+    #@+node:tbrown.20091011151836.14789:recSearch
+    def recSearch(self, d, path, ans):
+        """recursive search of tree of dicts for values whose
+        key path is like [*][*][*]['_edit'][*] or
+        [*][*][*]['_edit']['_int'][*]
+
+        Modifies list ans
+        """
+        for k in d:
+            if isinstance(d[k], dict):
+                if k not in ('_edit', '_view'):
+                    self.recSearch(d[k], path+[k], ans)
+                else:
+                    # k == '_edit' or '_view'
+                    for ek in d[k]:
+                        if ek in self.typeMap:
+                            # ek is '_int' or similar
+                            type_ = self.typeMap[ek]
+                            for ekt in d[k][ek]:
+                                if k == '_edit':
+                                    ans.append((ekt, d[k][ek][ekt], path+['_edit',ek,ekt], type_))
+                                else:
+                                    ans.append((ekt, d[k][ek][ekt]))
+                        else:
+                            if k == '_edit':
+                                ans.append((ek, d[k][ek], path+['_edit',ek], str))
+                            else:
+                                ans.append((ek, d[k][ek]))
+    #@-node:tbrown.20091011151836.14789:recSearch
     #@+node:tbrown.20091009210724.11211:getAttribs
     def getAttribs(self):
         """Return a list of tuples describing editable uAs.
@@ -192,17 +240,7 @@ class attrib_edit_Controller:
 
         ans = []
         d = self.c.currentPosition().v.u
-
-        def recSearch(d, path, ans):
-            for k in d:
-                if isinstance(d[k], dict):
-                    if k != '_edit':
-                        recSearch(d[k], path+[k], ans)
-                    else:
-                        for ek in d[k]:
-                            ans.append((ek, d[k][ek], path+['_edit',ek], str))
-
-        recSearch(d, [], ans)
+        self.recSearch(d, [], ans)
 
         return ans
     #@-node:tbrown.20091009210724.11211:getAttribs
