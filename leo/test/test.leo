@@ -165,7 +165,7 @@
 </v>
 </v>
 <v t="ekr.20071025193940"></v>
-<v t="ekr.20070517160058.1"><vh>Prototypes</vh>
+<v t="ekr.20070517160058.1" a="E"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
 <v t="ekr.20070929122956"><vh>Data trees</vh>
 <v t="ekr.20070929114617"><vh>@graph-target</vh></v>
@@ -281,6 +281,19 @@
 <v t="ekr.20090728090618.2844"><vh>get_yesno</vh></v>
 <v t="ekr.20090728090618.2845"><vh>main</vh></v>
 </v>
+</v>
+<v t="ekr.20091013153026.2721"><vh>prototype of using patternmatch library</vh>
+<v t="ekr.20091011110344.1853"><vh>@@button find script a</vh></v>
+<v t="ekr.20091010091628.1836"><vh>@@button create find button</vh>
+<v t="ekr.20091010104145.1840"><vh>class patController</vh>
+<v t="ekr.20091010104145.1842"><vh>ctor</vh></v>
+<v t="ekr.20091010104145.1843"><vh>setup</vh></v>
+<v t="ekr.20091010104145.1844"><vh>driver</vh></v>
+<v t="ekr.20091010104145.1845"><vh>find</vh></v>
+<v t="ekr.20091010104145.1846"><vh>findr</vh></v>
+</v>
+</v>
+<v t="ekr.20091010091628.1837"><vh>find pat a</vh></v>
 </v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
@@ -784,7 +797,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="3"></t>
+<t tx="ekr.20070416075121" str_leo_pos="2,12"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -3380,5 +3393,158 @@ print 'pass 2'
     pass</t>
 <t tx="ekr.20091007113347.1832">def eggs():
     pass</t>
+<t tx="ekr.20091010091628.1836">@language python
+
+'''Create a script button that will search for the icon-like
+pattern in the selected node'''
+
+from leo.plugins import mod_scripting as scripting
+
+script = p.b + '\n'
+
+sc = g.app.gui.ScriptingControllerClass(c)
+
+shortcut = sc.getShortcut(p.h)
+statusLine = 'pattern find button'
+if shortcut: statusLine = '%s = %s' % (statusLine,shortcut)
+
+patC = patController(c,script)
+script = patC.setup() # Modify the script
+
+sc.createAtButtonHelper(p,p.h,statusLine,shortcut,verbose=False)
+</t>
+<t tx="ekr.20091010091628.1837"># This will be done automatically.
+import sys
+import string
+path = r'c:\python25\lib\site-customize\matching'
+if path not in sys.path: sys.path.append(path)
+from matching.patterns_b import *
+from matching.textpatterns_b import *
+from matching.MatchingInput import *
+
+print '*' * 20
+subject = MatchingInput (p.b) #"abcdefgh23;ijklmn")
+while True:
+    if subject ^ AnyOfP (string.letters) [4] &gt;&gt; "four letters":
+       print "found four letters: \"" + subject ["four letters"] + "\""
+    elif subject ^ AnyOfP (string.digits) [2:] &gt;&gt; "the digits" &amp; IsP (";"):
+       print "found two or more digits followed by a semicolon: \"" + \
+             subject ["the digits"] + "\""
+    elif subject ^ AnyOfP (string.letters) [1:3] &gt;&gt; "1 2 3 letters":
+       print "found less than four letters: \"" + \
+             subject ["1 2 3 letters"] + "\""
+    else: break
+</t>
+<t tx="ekr.20091010104145.1840">class patController:
+    
+    '''A class supporting icon-like find scripts using
+    a very-slightly modified version of library at
+    http://www.wilmott.ca/python/patternmatching.html'''
+    
+    @others</t>
+<t tx="ekr.20091010104145.1842">def __init__ (c,script,forward=True):
+    
+    self.c = c
+    self.v = c.p.v # The node containing the find-script to be applied.
+    self.script = script # Will be modified in setup.</t>
+<t tx="ekr.20091010104145.1843">def setup(self):
+    
+    pass</t>
+<t tx="ekr.20091010104145.1844">def driver (self,forward=True):
+    
+    '''Search for the pattern in p and all following nodes
+    until a match is found.'''
+    
+    if forward:
+        while p:
+            i = self.find(p)
+            if i == -1:
+                p.moveToThreadNext()
+            else:
+                self.select(p,i) ; break
+    else:
+        while p:
+            i = self.findr(p)
+            if i == -1:
+                p.moveToThreadBack()
+            else:
+                self.select(p,i) ; break</t>
+<t tx="ekr.20091010104145.1845">def find (self,p):
+    
+    '''Search for self.pattern in p.
+    If p is the presently selected node, start at the cursor position.
+    Otherwise, start at the start of the node.
+    '''</t>
+<t tx="ekr.20091010104145.1846"></t>
+<t tx="ekr.20091011110344.1853">import string
+import sys
+path = r'c:\python25\lib\site-customize\matching'
+if path not in sys.path: sys.path.append(path)
+from matching.patterns_b import *
+from matching.textpatterns_b import *
+from matching.MatchingInput import *
+
+def find(p):
+    s = MatchingInput (p.b)
+    while True:
+        g.trace(s.Pos)
+        if s ^ AnyOfP (string.letters) [4] &gt;&gt; 'pat':
+            found = 'AnyOfP (letters) [4]'
+        elif s ^ AnyOfP (string.digits) [2:] &gt;&gt; 'pat' &amp; IsP (';'):
+            found = 'AnyOfP(digits)[2:]'
+        elif s ^ AnyOfP (string.letters) [1:3] &gt;&gt; 'pat':
+            found = 'AnyOfP (letters) [1:3]'
+        else:
+            found = False
+        if found:
+            pat = s['pat']
+            print ('found: %s --&gt; %s' % (found,pat))
+            yield s.Pos,pat
+        else:
+            raise StopIteration
+
+print '*'*20
+while p:
+    print '----- searching',p.h
+    for pos,pat in find(p):
+        print pos,pat
+    p.moveToThreadNext()
+print('done')
+</t>
+<t tx="ekr.20091013153026.2721">@
+This work has been mostly abandoned.
+
+The idea was to use icon-like patterns, based on
+http://www.wilmott.ca/python/patternmatching.html
+
+There are several problems with this approach:
+    
+1. This library, while elegant, isn't necessarily so useful.
+   Indeed, the typical "find script" in scripts.leo uses
+   either the string method s.find (or s.findr) or similar
+   g.match methods.
+   
+2. Unlike the python regex module, there do not appear to
+   be the equivalent of search or findall methods.  This
+   means that the search code must either
+   a) step through the search string explicitly or 
+   b) use more complicated search patterns that match anywhere.
+   
+3. Search scripts are typically more complex than other @button scripts.
+   The search scripts in scripts.leo avoid this problem by doing all
+   the replacements at once, without prompts.
+   
+State of the prototype code:
+    
+- @@button find script a kinda works, but it only finds patterns at
+  the start of body text.  It does shows that generators are useful.
+  
+- @@button create find button doesn't do anything, and it's not clear
+  that is can ever be extended to be useful.
+  
+  The idea of this button was that clicking on a node, say "pat a",
+  containing an icon-like script, would create *another* @button node,
+  say "@button pat-find pat a" that would (interactively?) find all
+  nodes matched by the script in "pat a".  This isn't going to be easy.</t>
 </tnodes>
 </leo_file>
