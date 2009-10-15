@@ -1,13 +1,19 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20091015103601.5232:@thin autocompleter.py
 """
-autocompletion and calltips plugin.  Special characters:
+autocompletion and calltips plugin.
 
-. summons the autocompletion.
-( summons the calltips
-Escape closes either box.
-Ctrl selects an item.
-alt-up_arrow, alt-down_arrow moves up or down in the list.  The mouse will work for this as well.
+Warning:  this code is for study only: it is way out of date.
+
+Special characters:
+
+    . summons the autocompletion.
+    ( summons the calltips
+    Escape closes either box.
+    Ctrl selects an item.
+    alt-up_arrow, alt-down_arrow moves up or down in the list.
+    The mouse will work for this as well.
+
 This plugin scans the complete outline at startup..
 
 You many enable or disable features in autocomplete.ini( see configuration section ).
@@ -127,19 +133,20 @@ __version__ = ".73"
 #@+node:ekr.20091015103601.5235:<<a note on newCreateControl>>
 #@+at
 # 
-# the function newCreateControl decorates the 
+# the function newCreateControl decorates the
 # leoTkinterFrame.leoTkinterBody.createControl method.
-# It does so to intercept the point where the editor is created.  By doing so, 
-# autocompleter is able
-# to ensure that the placer is used instead of the packer.  By using the 
-# placer autocompleter is able
-# to put the autobox and calltip label over the editor when the appropiate 
-# time is reached.  In versions
-# prior to .7, this was achieved by using a Tk Canvas as the background of the 
-# Editor.  The placer is simpler
-# and from what I see more efficient.
 # 
+# It does so to intercept the point where the editor is created. By doing so,
+# autocompleter is able to ensure that the placer is used instead of the 
+# packer.
+# By using the placer autocompleter is able to put the autobox and calltip 
+# label
+# over the editor when the appropiate time is reached. In versions prior to 
+# .7,
+# this was achieved by using a Tk Canvas as the background of the Editor. The
+# placer is simpler and from what I see more efficient.
 #@-at
+#@nonl
 #@-node:ekr.20091015103601.5235:<<a note on newCreateControl>>
 #@nl
 #@<<load notes>>
@@ -148,11 +155,10 @@ __version__ = ".73"
 # 
 # switching to the placer appears to have gotten rid of this dependency
 # 
-# --no longer true---
-# Autocompleter needs to be loaded before Chapters/chapters or the autobox and 
-# the calltip label do
-# not appear in the correct place.
-# --no longer true---
+# --no longer true--- Autocompleter needs to be loaded before 
+# Chapters/chapters or
+# the autobox and the calltip label do not appear in the correct place. --no
+# longer true---
 # 
 # 
 #@-at
@@ -163,18 +169,20 @@ __version__ = ".73"
 #@+node:ekr.20091015103601.5237:<<coding conventions>>
 #@+at
 # 
-# context - means the widget that backs the editor.  In versions before .7 it 
-# was called c and was a canvas.  context is the
-# new name, and it is no longer a canvas. c, now means commander.
+# context - means the widget that backs the editor. In versions before .7 it 
+# was
+# called c and was a canvas. context is the new name, and it is no longer a
+# canvas. c, now means commander.
 # 
 # context.autobox - means the Pmw.ScrolledListBox that offers the 
-# autocompletion options.
+# autocompletion
+# options.
 # 
 # The autobox contains other widgets that can be accessed by 
-# autobox.component( 'widgetname' )
+# autobox.component(
+# 'widgetname' )
 # 
 # context.calltip - means the Tk.Label that offers calltip information
-# 
 # 
 # context.which = 0 indicates its in autocompleter mode
 # context.which = 1 indicates its in calltip mode
@@ -193,35 +201,43 @@ __version__ = ".73"
 #     useauto
 #     usecalltips
 #     setting either to 1 will turn on the feature. 0 means off.
+# 
 # If there is a section called [ newlanguages ] it will read each option as a 
-# new language for autocompleter to recognize,
-# and compile its value as a regex pattern for the autocompleter system to 
-# recognize as a calltip.  This has relevance for the .ato
-# system described below.
+# new
+# language for autocompleter to recognize, and compile its value as a regex
+# pattern for the autocompleter system to recognize as a calltip. This has
+# relevance for the .ato system described below.
 # 
-# languages that currently have patterns:
-#     python, java, c++, c and perl
+# languages that currently have patterns: python, java, c++, c and perl
+# 
 # This file will automatically be generated for the user if it does not exist 
-# at startup time.
+# at
+# startup time.
 # 
+# Autocompleter looks in the plugin directory for a directory called
+# autocompleter. If it doesn't find one it will attempt to create this 
+# directory.
+# This directory should contain what are called .ato files ( pronounced auto 
+# ).
+# Autocompleter will scan each .ato file that has a first part that matches a
+# languages name. For example::
 # 
-# Autocompleter looks in the plugin directory for a directory called 
-# autocompleter.  If it doesnt find one
-# it will attempt to create this directory.  This directory should contain 
-# what are called .ato files ( pronounced auto ).
-# Autocompleter will scan each .ato file that has a first part that matches a 
-# languages name.  For example:
 #     python.ato
-#     autocompleter recognizes python, and will scan this file.  The contents 
-# are read with the same mechanism that
-#     reads the information in the nodes, so calltip and autocompleter 
-# information is added to autocompleters runtime database.
-# If a new language has been added in the autocompleter.ini file then an .ato 
-# file that starts with the new languages name will be recognized and read 
-# in.  Note, this language needs to be recognizable to Leo.
-# Used correctly an .ato file is a mechanism by which a user can carry 
-# autocompletion and calltip information between .leo files/sessions.
 # 
+# autocompleter recognizes python, and will scan this file. The contents are 
+# read
+# with the same mechanism that reads the information in the nodes, so calltip 
+# and
+# autocompleter information is added to autocompleters runtime database.
+# 
+# If a new language has been added in the autocompleter.ini file then an .ato 
+# file
+# that starts with the new languages name will be recognized and read in. 
+# Note,
+# this language needs to be recognizable to Leo. Used correctly an .ato file 
+# is a
+# mechanism by which a user can carry autocompletion and calltip information
+# between .leo files/sessions.
 #@-at
 #@-node:ekr.20091015103601.5238:<< configuration >>
 #@nl
@@ -262,14 +278,16 @@ haveseen = weakref.WeakKeyDictionary()# a dict that tracks the commanders that h
 #@nl
 #@<<patterns>>
 #@+node:ekr.20091015103601.5241:<< patterns >>
-#This section defines patterns for calltip recognition.  The autocompleter does not use regexes.
+# This section defines patterns for calltip recognition.
+# The autocompleter does not use regexes.
 space = r'[ \t\r\f\v ]+'
 end = r'\w+\s*\([^)]*\)'
 
 pats['python'] = re.compile(r'def\s+%s' % end)
 
 pats['java'] = re.compile(
-    r'((public\s+|private\s+|protected\s+)?(static%s|\w+%s){1,2}%s)' % ( space, space, end ) )
+    r'((public\s+|private\s+|protected\s+)?(static%s|\w+%s){1,2}%s)' % (
+        space, space, end ) )
 
 pats['perl'] = re.compile(r'sub\s+%s' % end)
 
