@@ -14441,8 +14441,7 @@ A
 @tabwidth -4
 @silent
 
-d = c.tangleCommands.scanAllDirectives(
-    p,require_path_flag=False,issue_error_flag=False)
+d = c.tangleCommands.scanAllDirectives(p)
 
 assert d.get('encoding') == 'utf-8'
 assert d.get('language') == 'python'
@@ -21502,8 +21501,7 @@ assert len(p.b) == 199,len(p.b)</t>
 @lineending crlf
 @silent
 
-d = c.tangleCommands.scanAllDirectives(p,
-    require_path_flag=False,issue_error_flag=False)
+d = c.tangleCommands.scanAllDirectives(p)
 
 # print g.dictToString(d)
 
