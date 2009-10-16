@@ -165,7 +165,7 @@
 </v>
 </v>
 <v t="ekr.20071025193940"></v>
-<v t="ekr.20070517160058.1" a="E"><vh>Prototypes</vh>
+<v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
 <v t="ekr.20070929122956"><vh>Data trees</vh>
 <v t="ekr.20070929114617"><vh>@graph-target</vh></v>
@@ -377,6 +377,7 @@
 <v t="ekr.20091007113347.1832"><vh>eggs</vh></v>
 </v>
 </v>
+<v t="ekr.20091015191345.1856"><vh>ctags completion</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -797,7 +798,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="2,12"></t>
+<t tx="ekr.20070416075121" str_leo_pos="4"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -1389,6 +1390,8 @@ leoTest.doTests (c,all=False)</t>
 
 # qtGui.py
 # tkGui.py
+
+ctagscompleter.py
 
 plugins_menu.py
 #open_with.py
@@ -3546,5 +3549,8 @@ State of the prototype code:
   containing an icon-like script, would create *another* @button node,
   say "@button pat-find pat a" that would (interactively?) find all
   nodes matched by the script in "pat a".  This isn't going to be easy.</t>
+<t tx="ekr.20091015191345.1856"># should show c.frame.tree
+
+c.frame.tr</t>
 </tnodes>
 </leo_file>

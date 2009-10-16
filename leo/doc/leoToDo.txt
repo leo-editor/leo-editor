@@ -163,12 +163,12 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/181533467503ef48
 #@+node:ekr.20031218072017.3494:<< Define a section for a leading code part >>
 if self.header_name:
     # Tangle code.
-    flag = g.choose(code_seen,allow_multiple_parts,disallow_multiple_parts)
-    part = self.st_enter_section_name(self.header_name,code,doc,flag)
+    part = self.st_enter_section_name(
+        self.header_name,code,doc,allow_multiple_parts=code_seen)
     # Untangle code.
     if not self.tangling: 
         head = s[:j] ; tail = s[i:]
-        s,i,changed = self.update_def(self.header,part,head,code,tail,not_root_name)
+        s,i,changed = self.update_def(self.header,part,head,code,tail)
         if changed: anyChanged = True
     code_seen = True
     code = doc = None
@@ -179,14 +179,12 @@ if self.header_name:
 
 if self.header_name:
     # Tangle code.
-    flag = g.choose(code_seen,allow_multiple_parts,disallow_multiple_parts)
-    part = self.st_enter_section_name(self.header_name,code,doc,flag)
+    part = self.st_enter_section_name(self.header_name,code,doc,allow_multiple_parts=code_seen)
     # Untangle code.
     if not self.tangling: 
         # Untangle no longer updates doc parts.
         # 12/03/02: Mark the part as having been updated to suppress warning.
-        junk,junk = self.ust_lookup(self.header_name,
-            part,not_root_name,True) # set update flag
+        junk,junk = self.ust_lookup(self.header_name,part,update_flag=True)
 
 doc = None
 #@-node:ekr.20031218072017.3493:<< Define a section containing only an @doc part >>
@@ -203,12 +201,11 @@ i = g.skip_to_end_of_line(s,i)
 # Tangle code: enter the section name even if the code part is empty.
 j = g.skip_blank_lines(s,i)
 i, code = self.skip_code(s,j)
-flag = g.choose(kind==section_def,allow_multiple_parts,disallow_multiple_parts)
-part = self.st_enter_section_name(section_name,code,doc,flag)
+part = self.st_enter_section_name(section_name,code,doc,allow_multiple_parts=(kind==section_def))
 
 if not self.tangling: # Untangle code.
     head = s[:j] ; tail = s[i:]
-    s,i,changed = self.update_def(section_name,part,head,code,tail,not_root_name)
+    s,i,changed = self.update_def(section_name,part,head,code,tail)
     if changed: anyChanged = True
 
 code = doc = None
@@ -220,11 +217,11 @@ if self.header_name:
     # Tangle code.
     j = g.skip_blank_lines(s,i)
     i, code = self.skip_code(s,j)
-    flag = g.choose(code_seen,allow_multiple_parts,disallow_multiple_parts)
-    part = self.st_enter_section_name(self.header_name,code,doc,flag)
-    if not self.tangling: # Untangle code.
+    part = self.st_enter_section_name(self.header_name,code,doc,allow_multiple_parts=code_seen)
+    # Untangle code.
+    if not self.tangling: 
         head = s[:j] ; tail = s[i:]
-        s,i,changed = self.update_def(self.header,part,head,code,tail,not_root_name)
+        s,i,changed = self.update_def(self.header,part,head,code,tail)
         if changed: anyChanged = True
 else:
     self.error("@c expects the headline: " + self.header + " to contain a section name")
