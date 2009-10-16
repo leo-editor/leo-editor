@@ -376,6 +376,12 @@
 <v t="ekr.20091007113250.1829"><vh>spam</vh></v>
 <v t="ekr.20091007113347.1832"><vh>eggs</vh></v>
 </v>
+<v t="ekr.20091016060748.1861"><vh>Test of expanded lookup in @root trees</vh>
+<v t="ekr.20091016060748.1858"><vh>@@root root-coloring.py</vh>
+<v t="ekr.20091016060748.1859"><vh>&lt;&lt; section &gt;&gt;</vh></v>
+<v t="ekr.20091016060748.1860"><vh>&lt;&lt; common section &gt;&gt;</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20091015191345.1856"><vh>ctags completion</vh></v>
 </vnodes>
@@ -3552,5 +3558,10 @@ State of the prototype code:
 <t tx="ekr.20091015191345.1856"># should show c.frame.tree
 
 c.frame.tr</t>
+<t tx="ekr.20091016060748.1858">&lt;&lt; section &gt;&gt;</t>
+<t tx="ekr.20091016060748.1859">if 1:
+    &lt;&lt; common section &gt;&gt;</t>
+<t tx="ekr.20091016060748.1860"># This is the common section</t>
+<t tx="ekr.20091016060748.1861"></t>
 </tnodes>
 </leo_file>
