@@ -504,10 +504,10 @@ class baseTextWidget:
         w._see(i)
     #@-node:ekr.20070228074312.30:see & seeInsertPoint
     #@+node:ekr.20070228074312.32:setAllText
-    def setAllText (self,s):
+    def setAllText (self,s,new_p=None):
 
         w = self
-        w._setAllText(s)
+        w._setAllText(s,new_p=new_p)
     #@nonl
     #@-node:ekr.20070228074312.32:setAllText
     #@+node:ekr.20070228074312.33:setBackgroundColor
@@ -2802,7 +2802,7 @@ class leoTree:
             pass
         else:
             # w.setAllText destroys all color tags, so do a full recolor.
-            w.setAllText(s)
+            w.setAllText(s,new_p=p)
             colorizer = c.frame.body.colorizer
             if hasattr(colorizer,'setHighlighter'):
                 colorizer.setHighlighter(p)

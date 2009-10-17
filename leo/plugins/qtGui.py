@@ -76,6 +76,7 @@ class QTextBrowserSubclass (QtGui.QTextBrowser):
             assert not hasattr(QtGui.QTextBrowser,attr),attr
         self.leo_c = c
         self.leo_wrapper = wrapper
+        self.htmlFlag = True
         QtGui.QTextBrowser.__init__(self,parent)
 
     def leo_dumpButton(self,event,tag):
@@ -604,7 +605,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def getSelectionRange(self,sort=True):  self.oops()
     def hasSelection(self):                 self.oops()
     def see(self,i):                        self.oops()
-    def setAllText(self,s,insert=None):     self.oops()
+    def setAllText(self,s,insert=None,new_p=None):
+        self.oops()
     def setInsertPoint(self,i):             self.oops()
     #@-node:ekr.20081121105001.543: Must be overridden in subclasses
     #@-others
@@ -692,7 +694,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         pass
     #@-node:ekr.20081121105001.555:see & seeInsertPoint
     #@+node:ekr.20081121105001.556:setAllText
-    def setAllText(self,s,insert=None):
+    def setAllText(self,s,insert=None,new_p=None):
 
         w = self.widget
         i = g.choose(insert is None,0,insert)
@@ -1016,7 +1018,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         self.widget.ensureCursorVisible()
     #@-node:ekr.20081121105001.586:seeInsertPoint
     #@+node:ekr.20081121105001.587:setAllText (leoQTextEditWidget)
-    def setAllText(self,s,insert=None):
+    def setAllText(self,s,insert=None,new_p=None):
 
         '''Set the text of the widget.
 
@@ -1042,7 +1044,14 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         try:
             self.changingText = True # Disable onTextChanged
             colorizer.changingText = True
-            w.setPlainText(s)
+            # g.trace(c.p.h,new_p and new_p.h) #g.callers(4))
+            if w.htmlFlag and new_p and new_p.h.startswith('@html '):
+                w.setReadOnly(False)
+                w.setHtml(s)
+                w.setReadOnly(True)
+            else:
+                w.setReadOnly(False)
+                w.setPlainText(s)
         finally:
             self.changingText = False
             colorizer.changingText = False
@@ -5268,8 +5277,6 @@ class leoQtLog (leoFrame.leoLog):
         for key,val in table:
             if val:
                 g.es(key,val,tabName='Fonts')
-
-    #@nonl
     #@-node:ekr.20081121105001.342:createFontPicker
     #@+node:ekr.20081121105001.350:createBindings (fontPicker)
     def createBindings (self):
