@@ -694,7 +694,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         pass
     #@-node:ekr.20081121105001.555:see & seeInsertPoint
     #@+node:ekr.20081121105001.556:setAllText
-    def setAllText(self,s,insert=None,new_p=None):
+    def setAllText(self,s,insert=None):
 
         w = self.widget
         i = g.choose(insert is None,0,insert)
@@ -1365,7 +1365,7 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
     #@nonl
     #@-node:ekr.20081121105001.568:see
     #@+node:ekr.20081121105001.569:setAllText
-    def setAllText(self,s,insert=None):
+    def setAllText(self,s,insert=None,new_p=None):
 
         '''Set the text of the widget.
 
@@ -2425,7 +2425,7 @@ class leoQtBody (leoFrame.leoBody):
     def scrollLines (self,n):           return self.widget.scrollLines(n)
     def see(self,index):                return self.widget.see(index)
     def seeInsertPoint(self):           return self.widget.seeInsertPoint()
-    def setAllText (self,s):            return self.widget.setAllText(s)
+    def setAllText (self,s,new_p=None): return self.widget.setAllText(s,new_p=new_p)
     def setBackgroundColor (self,color):return self.widget.setBackgroundColor(color)
     def setFocus (self):                return self.widget.setFocus()
     set_focus = setFocus

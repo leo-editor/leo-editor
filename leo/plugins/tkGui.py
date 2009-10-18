@@ -9442,7 +9442,7 @@ class leoTkTextWidget (Tk.Text):
         w.setSelectionRange(0,len(s),insert=insert)
     #@-node:ekr.20081121110412.341:selectAllText
     #@+node:ekr.20081121110412.342:setAllText
-    def setAllText (self,s): # tkTextWidget
+    def setAllText (self,s,new_p=None): # tkTextWidget
 
         w = self
 
