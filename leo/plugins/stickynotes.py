@@ -90,9 +90,6 @@ class FocusingPlaintextEdit(QtGui.QPlainTextEdit):
         self.focusout()
 
 
-
-
-
 #@-node:ville.20091008210853.7616:class FocusingPlainTextEdit
 #@+node:ville.20091023181249.5264:class SimpleRichText
 class SimpleRichText(QtGui.QTextEdit):
@@ -100,6 +97,7 @@ class SimpleRichText(QtGui.QTextEdit):
         QtGui.QTextEdit.__init__(self)        
         self.focusin = focusin
         self.focusout = focusout
+        self.createActions()
 
     def focusOutEvent ( self, event ):
         #print "focus out"
@@ -107,12 +105,36 @@ class SimpleRichText(QtGui.QTextEdit):
 
     def focusInEvent ( self, event ):        
         self.focusin()
+    
 
     def closeEvent(self, event):
         event.accept()        
 
+    def createActions(self):
+        self.boldAct = QtGui.QAction(self.tr("&Bold"), self)
+        self.boldAct.setCheckable(True)
+        self.boldAct.setShortcut(self.tr("Ctrl+B"))
+        self.boldAct.setStatusTip(self.tr("Make the text bold"))
+        self.connect(self.boldAct, QtCore.SIGNAL("triggered()"), self.bold)
+        self.addAction(self.boldAct)
 
+        boldFont = self.boldAct.font()
+        boldFont.setBold(True)
+        self.boldAct.setFont(boldFont)
 
+        self.italicAct = QtGui.QAction(self.tr("&Italic"), self)
+        self.italicAct.setCheckable(True)
+        self.italicAct.setShortcut(self.tr("Ctrl+I"))
+        self.italicAct.setStatusTip(self.tr("Make the text italic"))
+        self.connect(self.italicAct, QtCore.SIGNAL("triggered()"), self.italic)
+        self.addAction(self.italicAct)
+
+    def bold(self):
+        print "bold"
+        
+    
+    def italic(self):
+        print "italic"
 
 
 
