@@ -115,7 +115,7 @@ class SimpleRichText(QtGui.QTextEdit):
         self.boldAct.setCheckable(True)
         self.boldAct.setShortcut(self.tr("Ctrl+B"))
         self.boldAct.setStatusTip(self.tr("Make the text bold"))
-        self.connect(self.boldAct, QtCore.SIGNAL("triggered()"), self.bold)
+        self.connect(self.boldAct, QtCore.SIGNAL("triggered()"), self.setBold)
         self.addAction(self.boldAct)
 
         boldFont = self.boldAct.font()
@@ -126,8 +126,32 @@ class SimpleRichText(QtGui.QTextEdit):
         self.italicAct.setCheckable(True)
         self.italicAct.setShortcut(self.tr("Ctrl+I"))
         self.italicAct.setStatusTip(self.tr("Make the text italic"))
-        self.connect(self.italicAct, QtCore.SIGNAL("triggered()"), self.italic)
+        self.connect(self.italicAct, QtCore.SIGNAL("triggered()"), self.setItalic)
         self.addAction(self.italicAct)
+
+    def setBold(self):
+        format = QtGui.QTextCharFormat()
+        if self.boldAct.isChecked():
+                weight = QtGui.QFont.Bold
+        else:
+                weight = QtGui.QFont.Normal
+        format.setFontWeight(weight)
+        self.setFormat(format)
+
+    def setItalic(self):
+        format = QtGui.QTextCharFormat()
+        #format.setFontItalic(self.__italic.isChecked())
+        format.setFontItalic(self.italicAct.isChecked())
+        self.setFormat(format)
+
+    def setUnderline(self):
+        format = QtGui.QTextCharFormat()
+        format.setFontUnderline(self.__underline.isChecked())
+        self.setFormat(format)
+
+    def setFormat(self, format):
+        self.textCursor().mergeCharFormat(format)
+        self.mergeCurrentCharFormat(format)
 
     def bold(self):
         print "bold"
