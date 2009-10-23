@@ -70,7 +70,7 @@ def init ():
     g.app.stickynotes = {}    
     return ok
 #@-node:vivainio2.20091008133028.5824:init
-#@+node:ville.20091008210853.7616:class StickyNote
+#@+node:ville.20091008210853.7616:class FocusingPlainTextEdit
 class FocusingPlaintextEdit(QtGui.QPlainTextEdit):
 
     def __init__(self, focusin, focusout):
@@ -93,7 +93,30 @@ class FocusingPlaintextEdit(QtGui.QPlainTextEdit):
 
 
 
-#@-node:ville.20091008210853.7616:class StickyNote
+#@-node:ville.20091008210853.7616:class FocusingPlainTextEdit
+#@+node:ville.20091023181249.5264:class SimpleRichText
+class SimpleRichText(QtGui.QTextEdit):
+    def __init__(self, focusin, focusout):
+        QtGui.QTextEdit.__init__(self)        
+        self.focusin = focusin
+        self.focusout = focusout
+
+    def focusOutEvent ( self, event ):
+        #print "focus out"
+        self.focusout()
+
+    def focusInEvent ( self, event ):        
+        self.focusin()
+
+    def closeEvent(self, event):
+        event.accept()        
+
+
+
+
+
+
+#@-node:ville.20091023181249.5264:class SimpleRichText
 #@+node:vivainio2.20091008133028.5825:g.command('stickynote')
 @g.command('stickynote')
 def stickynote_f(event):
@@ -139,6 +162,51 @@ def stickynote_f(event):
 
     g.app.stickynotes[p.gnx] = nf
 #@-node:vivainio2.20091008133028.5825:g.command('stickynote')
+#@+node:ville.20091023181249.5266:g.command('stickynoter')
+@g.command('stickynoter')
+def stickynoter_f(event):
+    """ Launch editable 'sticky note' for the node """
+
+    c= event['c']
+    p = c.p
+    v = p.v
+    def focusin():
+        print "focus in"
+        if v is c.p.v:
+            nf.setHtml(v.b)
+            nf.setWindowTitle(p.h)
+            nf.dirty = False
+
+
+    def focusout():
+        print "focus out"
+        if not nf.dirty:
+            return
+        v.b = nf.toHtml()
+        v.setDirty()
+        nf.dirty = False
+        p = c.p
+        if p.v is v:
+            c.selectPosition(c.p)
+
+
+    nf = SimpleRichText(focusin, focusout)
+    nf.dirty = False
+    decorate_window(nf)
+    nf.setWindowTitle(p.h)
+    nf.setHtml(p.b)
+    p.setDirty()
+
+    def textchanged_cb():
+        nf.dirty = True
+
+    nf.connect(nf,
+        QtCore.SIGNAL("textChanged()"),textchanged_cb)
+
+    nf.show()
+
+    g.app.stickynotes[p.gnx] = nf
+#@-node:ville.20091023181249.5266:g.command('stickynoter')
 #@-others
 #@nonl
 #@-node:ville.20091008210853.5241:@thin stickynotes.py
