@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="0" left="0" height="714" width="1337"/>
+	<global_window_position top="230" left="662" height="700" width="1000"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -355,9 +355,7 @@
 <v t="ekr.20071010193720"><vh>@thin threading_colorizer.py	</vh></v>
 <v t="ekr.20080707101341.1"><vh>@thin ../modes/forth.py</vh></v>
 </v>
-<v t="edream.110203113231.872" a="E"><vh>Nodes...</vh>
-<v t="tbrown.20091009210724.10971" a="E"
-expanded="tbrown.20091009210724.10979,"><vh>@thin attrib_edit.py</vh></v>
+<v t="edream.110203113231.872"><vh>Nodes...</vh>
 <v t="edream.110203113231.873"><vh>@thin at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@thin at_produce.py</vh></v>
 <v t="ktenney.20041211072654.1"><vh>@thin at_view.py</vh></v>
@@ -711,8 +709,9 @@ expanded="tbrown.20091009210724.10979,"><vh>@thin attrib_edit.py</vh></v>
 <v t="tbrown.20090513125417.5244"><vh>@thin interact.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@thin spydershell.py</vh></v>
 </v>
-<v t="ekr.20050111122605"><vh>Servers</vh>
+<v t="ekr.20050111122605" a="E"><vh>Servers</vh>
 <v t="EKR.20040517080250.1"><vh>@thin mod_http.py</vh></v>
+<v t="ville.20091009202416.10040" a="EM"><vh>@thin leoremote.py</vh></v>
 </v>
 <v t="ekr.20071113084440"><vh>Testing</vh>
 <v t="ekr.20071113084440.1"><vh>@thin test/syntax_error_plugin.py</vh></v>
@@ -4487,7 +4486,7 @@ your plugin.</t>
 <t tx="ekr.20041114103913.1">PLEASE define each function or method in a separate node! To make this work,
 just put @others in the root of your plugin as shown. Note that @others may be
 nested, as shown in class myClass.</t>
-<t tx="ekr.20041211035618" str_leo_pos="0"></t>
+<t tx="ekr.20041211035618" str_leo_pos="2,21,1,2"></t>
 <t tx="ekr.20041231134702"># This is called from plugins_menu plugin.
 
 # It should only be defined if the extension has been registered.

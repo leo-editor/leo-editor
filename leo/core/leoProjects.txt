@@ -2056,6 +2056,98 @@ def writeOpenFile(self,root,
         at.warnAboutOrphandAndIgnoredNodes()
 #@-node:ekr.20041005105605.157:writeOpenFile
 #@-node:ekr.20091007105735.6462:Fixed bug: @nosent should warn about orphan nodes
+#@+node:ekr.20091016055503.6059:Color sections references in @root trees
+#@+node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
+# The caller passes [root_node] or None as the second arg.
+# This allows us to distinguish between None and [None].
+
+g_noweb_root = re.compile('<'+'<'+'*'+'>'+'>'+'=',re.MULTILINE)
+
+def get_directives_dict(p,root=None):
+
+    """Scan p for @directives found in globalDirectiveList.
+
+    Returns a dict containing pointers to the start of each directive"""
+
+    trace = False and not g.unitTesting
+
+    if root: root_node = root[0]
+    d = {}
+
+    # Do this every time so plugins can add directives.
+    pat = g.compute_directives_re()
+    directives_pat = re.compile(pat,re.MULTILINE)
+
+    # The headline has higher precedence because it is more visible.
+    for kind,s in (('body',p.h),('head',p.b)):
+        anIter = directives_pat.finditer(s)
+        for m in anIter:
+            word = m.group(0)[1:] # Omit the @
+            i = m.start(0)
+            if word.strip() not in d:
+                j = i + 1 + len(word)
+                k = g.skip_line(s,j)
+                val = s[j:k].strip()
+                if trace: g.trace(word,repr(val))
+                d[word.strip()] = val
+
+    if root:
+        anIter = g_noweb_root.finditer(p.b)
+        for m in anIter:
+            if root_node:
+                d["root"]=0 # value not immportant
+            else:
+                g.es('%s= requires @root in the headline' % (
+                    g.angleBrackets('*')))
+            break
+
+    if trace: g.trace('%4d' % (len(p.h) + len(p.b)),g.callers(5))
+    return d
+#@+node:ekr.20090214075058.10:compute_directives_re
+def compute_directives_re ():
+
+    '''Return an re pattern which will match all Leo directives.'''
+
+    global globalDirectiveList
+
+    aList = ['^@%s' % z for z in globalDirectiveList
+                if z != 'others']
+
+    # @others can have leading whitespace.
+    aList.append(r'^\s@others')
+
+    return '|'.join(aList)
+#@-node:ekr.20090214075058.10:compute_directives_re
+#@-node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
+#@+node:ekr.20031218072017.1385:g.findReference
+# Called from the syntax coloring method that colorizes section references.
+
+def findReference(c,name,root):
+
+    '''Find the section definition for name.
+
+    If a search of the descendants fails,
+    and an ancestor is an @root node,
+    search all the descendants of the @root node.
+    '''
+
+    for p in root.subtree():
+        assert(p!=root)
+        if p.matchHeadline(name) and not p.isAtIgnoreNode():
+            return p
+
+    # New in Leo 4.7: expand the search for @root trees.
+    for p in root.self_and_parents():
+        d = g.get_directives_dict(p)
+        if 'root' in d:
+            for p2 in p.subtree():
+                if p2.matchHeadline(name) and not p2.isAtIgnoreNode():
+                    return p2
+
+    # g.trace("not found:",name,root)
+    return c.nullPosition()
+#@-node:ekr.20031218072017.1385:g.findReference
+#@-node:ekr.20091016055503.6059:Color sections references in @root trees
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin

@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="102" left="332" height="841" width="864"/>
+	<global_window_position top="102" left="25" height="841" width="1171"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -282,6 +282,19 @@
 <v t="ekr.20090728090618.2845"><vh>main</vh></v>
 </v>
 </v>
+<v t="ekr.20091013153026.2721"><vh>prototype of using patternmatch library</vh>
+<v t="ekr.20091011110344.1853"><vh>@@button find script a</vh></v>
+<v t="ekr.20091010091628.1836"><vh>@@button create find button</vh>
+<v t="ekr.20091010104145.1840"><vh>class patController</vh>
+<v t="ekr.20091010104145.1842"><vh>ctor</vh></v>
+<v t="ekr.20091010104145.1843"><vh>setup</vh></v>
+<v t="ekr.20091010104145.1844"><vh>driver</vh></v>
+<v t="ekr.20091010104145.1845"><vh>find</vh></v>
+<v t="ekr.20091010104145.1846"><vh>findr</vh></v>
+</v>
+</v>
+<v t="ekr.20091010091628.1837"><vh>find pat a</vh></v>
+</v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20090309064612.1"><vh> Future features/bug fixes (do not delete)</vh>
@@ -363,7 +376,16 @@
 <v t="ekr.20091007113250.1829"><vh>spam</vh></v>
 <v t="ekr.20091007113347.1832"><vh>eggs</vh></v>
 </v>
+<v t="ekr.20091016060748.1861"><vh>Test of expanded lookup in @root trees</vh>
+<v t="ekr.20091016060748.1858"><vh>@@root root-coloring.py</vh>
+<v t="ekr.20091016060748.1859"><vh>&lt;&lt; section &gt;&gt;</vh></v>
+<v t="ekr.20091016060748.1860"><vh>&lt;&lt; common section &gt;&gt;</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20091015191345.1856"><vh>ctags completion</vh></v>
+<v t="ekr.20091016171638.1866"><vh>@html Leo's home page</vh></v>
+<v t="ekr.20091016172814.1868"><vh>@html http://doc.trolltech.com/4.4/qtextbrowser.html</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -784,7 +806,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="3"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -1376,6 +1398,8 @@ leoTest.doTests (c,all=False)</t>
 
 # qtGui.py
 # tkGui.py
+
+ctagscompleter.py
 
 plugins_menu.py
 #open_with.py
@@ -3380,5 +3404,686 @@ print 'pass 2'
     pass</t>
 <t tx="ekr.20091007113347.1832">def eggs():
     pass</t>
+<t tx="ekr.20091010091628.1836">@language python
+
+'''Create a script button that will search for the icon-like
+pattern in the selected node'''
+
+from leo.plugins import mod_scripting as scripting
+
+script = p.b + '\n'
+
+sc = g.app.gui.ScriptingControllerClass(c)
+
+shortcut = sc.getShortcut(p.h)
+statusLine = 'pattern find button'
+if shortcut: statusLine = '%s = %s' % (statusLine,shortcut)
+
+patC = patController(c,script)
+script = patC.setup() # Modify the script
+
+sc.createAtButtonHelper(p,p.h,statusLine,shortcut,verbose=False)
+</t>
+<t tx="ekr.20091010091628.1837"># This will be done automatically.
+import sys
+import string
+path = r'c:\python25\lib\site-customize\matching'
+if path not in sys.path: sys.path.append(path)
+from matching.patterns_b import *
+from matching.textpatterns_b import *
+from matching.MatchingInput import *
+
+print '*' * 20
+subject = MatchingInput (p.b) #"abcdefgh23;ijklmn")
+while True:
+    if subject ^ AnyOfP (string.letters) [4] &gt;&gt; "four letters":
+       print "found four letters: \"" + subject ["four letters"] + "\""
+    elif subject ^ AnyOfP (string.digits) [2:] &gt;&gt; "the digits" &amp; IsP (";"):
+       print "found two or more digits followed by a semicolon: \"" + \
+             subject ["the digits"] + "\""
+    elif subject ^ AnyOfP (string.letters) [1:3] &gt;&gt; "1 2 3 letters":
+       print "found less than four letters: \"" + \
+             subject ["1 2 3 letters"] + "\""
+    else: break
+</t>
+<t tx="ekr.20091010104145.1840">class patController:
+    
+    '''A class supporting icon-like find scripts using
+    a very-slightly modified version of library at
+    http://www.wilmott.ca/python/patternmatching.html'''
+    
+    @others</t>
+<t tx="ekr.20091010104145.1842">def __init__ (c,script,forward=True):
+    
+    self.c = c
+    self.v = c.p.v # The node containing the find-script to be applied.
+    self.script = script # Will be modified in setup.</t>
+<t tx="ekr.20091010104145.1843">def setup(self):
+    
+    pass</t>
+<t tx="ekr.20091010104145.1844">def driver (self,forward=True):
+    
+    '''Search for the pattern in p and all following nodes
+    until a match is found.'''
+    
+    if forward:
+        while p:
+            i = self.find(p)
+            if i == -1:
+                p.moveToThreadNext()
+            else:
+                self.select(p,i) ; break
+    else:
+        while p:
+            i = self.findr(p)
+            if i == -1:
+                p.moveToThreadBack()
+            else:
+                self.select(p,i) ; break</t>
+<t tx="ekr.20091010104145.1845">def find (self,p):
+    
+    '''Search for self.pattern in p.
+    If p is the presently selected node, start at the cursor position.
+    Otherwise, start at the start of the node.
+    '''</t>
+<t tx="ekr.20091010104145.1846"></t>
+<t tx="ekr.20091011110344.1853">import string
+import sys
+path = r'c:\python25\lib\site-customize\matching'
+if path not in sys.path: sys.path.append(path)
+from matching.patterns_b import *
+from matching.textpatterns_b import *
+from matching.MatchingInput import *
+
+def find(p):
+    s = MatchingInput (p.b)
+    while True:
+        g.trace(s.Pos)
+        if s ^ AnyOfP (string.letters) [4] &gt;&gt; 'pat':
+            found = 'AnyOfP (letters) [4]'
+        elif s ^ AnyOfP (string.digits) [2:] &gt;&gt; 'pat' &amp; IsP (';'):
+            found = 'AnyOfP(digits)[2:]'
+        elif s ^ AnyOfP (string.letters) [1:3] &gt;&gt; 'pat':
+            found = 'AnyOfP (letters) [1:3]'
+        else:
+            found = False
+        if found:
+            pat = s['pat']
+            print ('found: %s --&gt; %s' % (found,pat))
+            yield s.Pos,pat
+        else:
+            raise StopIteration
+
+print '*'*20
+while p:
+    print '----- searching',p.h
+    for pos,pat in find(p):
+        print pos,pat
+    p.moveToThreadNext()
+print('done')
+</t>
+<t tx="ekr.20091013153026.2721">@
+This work has been mostly abandoned.
+
+The idea was to use icon-like patterns, based on
+http://www.wilmott.ca/python/patternmatching.html
+
+There are several problems with this approach:
+    
+1. This library, while elegant, isn't necessarily so useful.
+   Indeed, the typical "find script" in scripts.leo uses
+   either the string method s.find (or s.findr) or similar
+   g.match methods.
+   
+2. Unlike the python regex module, there do not appear to
+   be the equivalent of search or findall methods.  This
+   means that the search code must either
+   a) step through the search string explicitly or 
+   b) use more complicated search patterns that match anywhere.
+   
+3. Search scripts are typically more complex than other @button scripts.
+   The search scripts in scripts.leo avoid this problem by doing all
+   the replacements at once, without prompts.
+   
+State of the prototype code:
+    
+- @@button find script a kinda works, but it only finds patterns at
+  the start of body text.  It does shows that generators are useful.
+  
+- @@button create find button doesn't do anything, and it's not clear
+  that is can ever be extended to be useful.
+  
+  The idea of this button was that clicking on a node, say "pat a",
+  containing an icon-like script, would create *another* @button node,
+  say "@button pat-find pat a" that would (interactively?) find all
+  nodes matched by the script in "pat a".  This isn't going to be easy.</t>
+<t tx="ekr.20091015191345.1856"># should show c.frame.tree
+
+c.frame.tr
+
+http://webpages.charter.net/edreamleo/front.html</t>
+<t tx="ekr.20091016060748.1858">&lt;&lt; section &gt;&gt;</t>
+<t tx="ekr.20091016060748.1859">if 1:
+    &lt;&lt; common section &gt;&gt;</t>
+<t tx="ekr.20091016060748.1860"># This is the common section</t>
+<t tx="ekr.20091016060748.1861"></t>
+<t tx="ekr.20091016171638.1866">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;!--@+leo-ver=4-thin--&gt;
+&lt;!--@+node:ekr.20080301071818.1:@thin html/front.html--&gt;
+&lt;!--@@first--&gt;
+
+&lt;!--@@language html--&gt;
+&lt;!--@@tabwidth -4--&gt;
+
+&lt;!-- Last Modified: July 31, 2008 --&gt;
+&lt;!-- Author: Edward K. Ream, edreamleo@gmail.com --&gt;
+
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;!--@&lt;&lt;head&gt;&gt;--&gt;
+&lt;!--@+node:ekr.20080301075734.1:&lt;&lt;head&gt;&gt;--&gt;
+&lt;title&gt;Leo's Home Page&lt;/title&gt;
+
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/&gt;
+
+&lt;meta name="description" content="This page describes Leo, a programmer's outliner." /&gt;
+
+&lt;meta name="keywords" content="LEO, LITERATE PROGRAMMING, OUTLINES, CWEB,
+NOWEB, EDWARD K. REAM, DONALD E. KNUTH, SILVIO LEVY, OPEN SOFTWARE" /&gt;
+
+&lt;!-- for GeoUrl --&gt;
+&lt;meta name="ICBM" content="43.0713768, -89.4188004" /&gt;
+&lt;meta name="DC.title" content="Leo's Home Page" /&gt;
+&lt;!--@-node:ekr.20080301075734.1:&lt;&lt;head&gt;&gt;--&gt;
+&lt;!--@nl--&gt;
+&lt;/head&gt;
+
+&lt;body bgcolor="#fffbdc"&gt;
+&lt;!--@&lt;&lt; main table &gt;&gt;--&gt;
+&lt;!--@+node:ekr.20080301075734.4:&lt;&lt; main table &gt;&gt;--&gt;
+
+&lt;table border="0" bgcolor="#FFFBDC"&gt;
+    &lt;tr&gt;
+        &lt;td width="22%" height="21" align="center" bgcolor="#FFFBDC" valign="middle"&gt;
+            &lt;b&gt;&lt;font size="4"&gt;Leo's Home&lt;/font&gt;&lt;/b&gt;
+        &lt;/td&gt;
+
+        &lt;td bgcolor="#F0E68C" width="78%" height="21" align="center"&gt;
+            &lt;!--@            &lt;&lt; upper table &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20080301080758:&lt;&lt; upper table&gt;&gt;--&gt;
+
+            &lt;table border="0" width="100%"&gt;
+                &lt;tr&gt;
+                    &lt;td width="25%" align="center"&gt;
+                        &lt;a href="http://www.python.org/"&gt;
+                            &lt;img border="0" src="PythonPowered.gif" width="110" height="44" /&gt;&lt;/a&gt;
+                    &lt;/td&gt;
+
+                    &lt;td width="50%" align="center"&gt;
+                        &lt;a href="http://groups.google.com/group/leo-editor"&gt;Leo at Google Groups&lt;/a&gt;
+
+                    &lt;/td&gt;
+
+                    &lt;td width="25%" align="center"&gt;
+                        &lt;a href="http://www.mind-mapping.org/"&gt;mind-mapping.org&lt;/a&gt;
+                    &lt;/td&gt;
+                &lt;/tr&gt;
+            &lt;/table&gt;
+            &lt;!--@nonl--&gt;
+            &lt;!--@-node:ekr.20080301080758:&lt;&lt; upper table&gt;&gt;--&gt;
+
+            &lt;!--@nl--&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr&gt;
+        &lt;td bgcolor="#F0E68C" width="22%" height="143" valign="top"&gt;
+            &lt;!--@            &lt;&lt; left table &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20080301075734.6:&lt;&lt; left table &gt;&gt;--&gt;
+            &lt;table border="0" width="100%"&gt;
+
+                &lt;tr&gt;&lt;td width="50%" bgcolor="#DAA520"&gt;&lt;b&gt;Documentation&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;
+                        &lt;!--
+                        &lt;a href="http://sourceforge.net/project/screenshots.php?group_id=3458"&gt;Screen Shots&lt;/a&gt;
+                        --&gt;
+                        &lt;a href="http:screen-shots.html"&gt;Screen Shots&lt;/a&gt;
+                &lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="intro.html"&gt;Beginners Guide&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="leo_toc.html"&gt;Users Guide&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="FAQ.html"&gt;FAQ&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;
+                    &lt;a href="http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm"&gt;Online tutorial&lt;/a&gt;
+                &lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="testimonials.html"&gt;Quotes&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%" bgcolor="#DAA520"&gt;&lt;b&gt;Links&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;
+
+                    &lt;!--@        &lt;&lt; download ref &gt;&gt;--&gt;
+                    &lt;!--@+node:ekr.20080306071848:&lt;&lt; download ref &gt;&gt; (contains version number)--&gt;
+                    &lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
+                        Download Leo[4.7 beta 1]&lt;/a&gt;
+                    &lt;!--@nonl--&gt;
+                    &lt;!--@-node:ekr.20080306071848:&lt;&lt; download ref &gt;&gt; (contains version number)--&gt;
+                    &lt;!--@nl--&gt;
+                &lt;/td&gt;&lt;/tr&gt;
+
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://sourceforge.net/project/?group_id=3458"&gt; Leo at SourceForge&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://groups.google.com/group/leo-editor"&gt;Leo at Google Groups&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://launchpad.net/leo-editor"&gt;Leo at launchpad&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;!-- &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://leo.tigris.org/source/browse/leo/"&gt;Leo's cvs repository&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt; --&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;Leo's &lt;a href="http://leo.zwiki.org"&gt;Wiki&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;Leo's &lt;a href="http://www.greygreen.org/leo/"&gt;Daily snapshots&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="leoLinks.html"&gt;More links&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%" bgcolor="#DAA520"&gt;&lt;b&gt;Edward K. Ream&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="ekr.html"&gt;Home&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="mailto:edreamleo@gmail.com"&gt;Contact&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+            &lt;/table&gt;
+            &lt;!--@-node:ekr.20080301075734.6:&lt;&lt; left table &gt;&gt;--&gt;
+            &lt;!--@nl--&gt;
+
+        &lt;/td&gt;
+
+        &lt;td width="78%" height="143" bgcolor="#FFFBDC"&gt;
+            &lt;!--@            &lt;&lt; center area &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20080301082848:&lt;&lt; center area &gt;&gt;--&gt;
+            &lt;h2&gt; Leo is...&lt;/h2&gt;
+
+            &lt;ul&gt;
+            &lt;!--@&lt;&lt; what is Leo list &gt;&gt;--&gt;
+
+            &lt;!--@+node:ekr.20080301083325:&lt;&lt; what is Leo list &gt;&gt;--&gt;
+            &lt;li&gt;
+                A &lt;i&gt;versatile data management platform&lt;/i&gt;.&lt;br/&gt;
+                Leo shows &lt;b&gt;user-created&lt;/b&gt; relationships among any kind of data:&lt;br /&gt;
+                computer programs, web sites, etc.&lt;br /&gt;
+
+                Leo shows multiple views of data within a single outline.&lt;/li&gt;
+            &lt;li&gt;
+                An &lt;i&gt;outlining editor for programmers&lt;/i&gt;.&lt;br /&gt;
+                Leo supports &lt;i&gt;optional&lt;/i&gt; &lt;a HREF="http://www.eecs.harvard.edu/~nr/noweb/"&gt;noweb&lt;/a&gt;
+                and &lt;a HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"&gt;CWEB&lt;/a&gt; markup.&lt;/li&gt;
+
+            &lt;li&gt;A flexible &lt;i&gt;browser&lt;/i&gt; for projects, programs, classes or any other data.&lt;/li&gt;
+            &lt;li&gt;A &lt;i&gt;project manager&lt;/i&gt;.&lt;/li&gt;
+            &lt;li&gt;&lt;i&gt;Portable&lt;/i&gt;. Leo runs on Windows, Linux and MacOS X.&lt;/li&gt;
+            &lt;li&gt;&lt;i&gt;100% pure&lt;/i&gt; &lt;a HREF="http://www.python.org/"&gt;&lt;i&gt;Python&lt;/i&gt;&lt;/a&gt;.&lt;/li&gt;
+
+            &lt;li&gt;&lt;i&gt;Fully scriptable using &lt;/i&gt;&lt;a HREF="http://www.python.org/"&gt;&lt;i&gt;Python&lt;/i&gt;&lt;/a&gt;.&lt;/li&gt;
+            &lt;li&gt;Leo's outline files are &lt;a HREF="http://www.w3.org/XML/"&gt;XML&lt;/a&gt; format.&lt;/li&gt;
+            &lt;li&gt;
+                &lt;a href="http://www.opensource.org/"&gt;&lt;i&gt;Open Software&lt;/i&gt;&lt;/a&gt;,
+                distributed under the
+                &lt;a href="http://www.opensource.org/licenses/mit-license.php/"&gt;
+
+                MIT License
+                &lt;/a&gt;.
+            &lt;/li&gt;
+            &lt;!--@nonl--&gt;
+            &lt;!--@-node:ekr.20080301083325:&lt;&lt; what is Leo list &gt;&gt;--&gt;
+            &lt;!--@nl--&gt;
+            &lt;/ul&gt;
+
+            &lt;p&gt;
+            Please use &lt;a href="http://groups.google.com/group/leo-editor"&gt;leo-editor&lt;/a&gt;
+
+            to ask questions and make suggestions.
+            &lt;/p&gt;
+
+            &lt;p&gt;
+            Leo's author is &lt;a HREF="ekr.html"&gt;Edward K. Ream&lt;/a&gt;
+            &lt;/p&gt;
+            &lt;!--@nonl--&gt;
+            &lt;!--@-node:ekr.20080301082848:&lt;&lt; center area &gt;&gt;--&gt;
+            &lt;!--@nl--&gt;
+
+        &lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+&lt;!--@-node:ekr.20080301075734.4:&lt;&lt; main table &gt;&gt;--&gt;
+&lt;!--@nl--&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+&lt;!--@-node:ekr.20080301071818.1:@thin html/front.html--&gt;
+&lt;!--@-leo--&gt;
+</t>
+<t tx="ekr.20091016172814.1868">&lt;?xml version="1.0" encoding="iso-8859-1"?&gt;
+&lt;!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;!-- /home/dboddie/git/qt-nokia-rebranding-working/src/gui/widgets/qtextbrowser.cpp --&gt;
+&lt;head&gt;
+  &lt;title&gt;Qt 4.4.3: QTextBrowser Class Reference&lt;/title&gt;
+  &lt;link href="classic.css" rel="stylesheet" type="text/css" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table border="0" cellpadding="0" cellspacing="0" width="100%"&gt;
+&lt;tr&gt;
+&lt;td align="left" valign="top" width="32"&gt;&lt;a href="http://www.trolltech.com/products/qt"&gt;&lt;img src="images/qt-logo.png" align="left" border="0" /&gt;&lt;/a&gt;&lt;/td&gt;
+&lt;td width="1"&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td class="postheader" valign="center"&gt;&lt;a href="index.html"&gt;&lt;font color="#004faf"&gt;Home&lt;/font&gt;&lt;/a&gt;&amp;nbsp;&amp;middot; &lt;a href="namespaces.html"&gt;&lt;font color="#004faf"&gt;All&amp;nbsp;Namespaces&lt;/font&gt;&lt;/a&gt;&amp;nbsp;&amp;middot; &lt;a href="classes.html"&gt;&lt;font color="#004faf"&gt;All&amp;nbsp;Classes&lt;/font&gt;&lt;/a&gt;&amp;nbsp;&amp;middot; &lt;a href="mainclasses.html"&gt;&lt;font color="#004faf"&gt;Main&amp;nbsp;Classes&lt;/font&gt;&lt;/a&gt;&amp;nbsp;&amp;middot; &lt;a href="groups.html"&gt;&lt;font color="#004faf"&gt;Grouped&amp;nbsp;Classes&lt;/font&gt;&lt;/a&gt;&amp;nbsp;&amp;middot; &lt;a href="modules.html"&gt;&lt;font color="#004faf"&gt;Modules&lt;/font&gt;&lt;/a&gt;&amp;nbsp;&amp;middot; &lt;a href="functions.html"&gt;&lt;font color="#004faf"&gt;Functions&lt;/font&gt;&lt;/a&gt;&lt;/td&gt;
+
+&lt;td align="right" valign="top" width="230"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;h1 class="title"&gt;QTextBrowser Class Reference&lt;br /&gt;&lt;span class="small-subtitle"&gt;[&lt;a href="qtgui.html"&gt;QtGui&lt;/a&gt; module]&lt;/span&gt;
+&lt;/h1&gt;
+&lt;p&gt;The QTextBrowser class provides a rich text browser with hypertext navigation. &lt;a href="#details"&gt;More...&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt; #include &amp;lt;QTextBrowser&amp;gt;&lt;/pre&gt;&lt;p&gt;Inherits &lt;a href="qtextedit.html"&gt;QTextEdit&lt;/a&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="qtextbrowser-members.html"&gt;List of all members, including inherited members&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="qtextbrowser-qt3.html"&gt;Qt 3 support members&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;a name="properties"&gt;&lt;/a&gt;
+&lt;h3&gt;Properties&lt;/h3&gt;
+&lt;p&gt;&lt;table width="100%" border="0" cellpadding="0" cellspacing="0"&gt;
+&lt;tr&gt;&lt;td width="45%" valign="top"&gt;&lt;ul&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;&lt;b&gt;&lt;a href="qtextbrowser.html#modified-prop"&gt;modified&lt;/a&gt;&lt;/b&gt; : const bool&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;&lt;b&gt;&lt;a href="qtextbrowser.html#openExternalLinks-prop"&gt;openExternalLinks&lt;/a&gt;&lt;/b&gt; : bool&lt;/li&gt;
+
+&lt;li&gt;&lt;div class="fn"/&gt;&lt;b&gt;&lt;a href="qtextbrowser.html#openLinks-prop"&gt;openLinks&lt;/a&gt;&lt;/b&gt; : bool&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;&lt;b&gt;&lt;a href="qtextbrowser.html#readOnly-prop"&gt;readOnly&lt;/a&gt;&lt;/b&gt; : const bool&lt;/li&gt;
+&lt;/ul&gt;&lt;/td&gt;&lt;td valign="top"&gt;&lt;ul&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;&lt;b&gt;&lt;a href="qtextbrowser.html#searchPaths-prop"&gt;searchPaths&lt;/a&gt;&lt;/b&gt; : QStringList&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;&lt;b&gt;&lt;a href="qtextbrowser.html#source-prop"&gt;source&lt;/a&gt;&lt;/b&gt; : QUrl&lt;/li&gt;
+
+&lt;li&gt;&lt;div class="fn"/&gt;&lt;b&gt;&lt;a href="qtextbrowser.html#undoRedoEnabled-prop"&gt;undoRedoEnabled&lt;/a&gt;&lt;/b&gt; : const bool&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;15 properties inherited from &lt;a href="qtextedit.html#properties"&gt;QTextEdit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;2 properties inherited from &lt;a href="qabstractscrollarea.html#properties"&gt;QAbstractScrollArea&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;6 properties inherited from &lt;a href="qframe.html#properties"&gt;QFrame&lt;/a&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;div class="fn"/&gt;57 properties inherited from &lt;a href="qwidget.html#properties"&gt;QWidget&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;1 property inherited from &lt;a href="qobject.html#properties"&gt;QObject&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;a name="public-functions"&gt;&lt;/a&gt;
+&lt;h3&gt;Public Functions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;&lt;b&gt;&lt;a href="qtextbrowser.html#QTextBrowser"&gt;QTextBrowser&lt;/a&gt;&lt;/b&gt; ( QWidget * &lt;i&gt;parent&lt;/i&gt; = 0 )&lt;/li&gt;
+
+&lt;li&gt;&lt;div class="fn"/&gt;int &lt;b&gt;&lt;a href="qtextbrowser.html#backwardHistoryCount"&gt;backwardHistoryCount&lt;/a&gt;&lt;/b&gt; () const&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;void &lt;b&gt;&lt;a href="qtextbrowser.html#clearHistory"&gt;clearHistory&lt;/a&gt;&lt;/b&gt; ()&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;int &lt;b&gt;&lt;a href="qtextbrowser.html#forwardHistoryCount"&gt;forwardHistoryCount&lt;/a&gt;&lt;/b&gt; () const&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;QString &lt;b&gt;&lt;a href="qtextbrowser.html#historyTitle"&gt;historyTitle&lt;/a&gt;&lt;/b&gt; ( int &lt;i&gt;i&lt;/i&gt; ) const&lt;/li&gt;
+
+&lt;li&gt;&lt;div class="fn"/&gt;QUrl &lt;b&gt;&lt;a href="qtextbrowser.html#historyUrl"&gt;historyUrl&lt;/a&gt;&lt;/b&gt; ( int &lt;i&gt;i&lt;/i&gt; ) const&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;bool &lt;b&gt;&lt;a href="qtextbrowser.html#isBackwardAvailable"&gt;isBackwardAvailable&lt;/a&gt;&lt;/b&gt; () const&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;bool &lt;b&gt;&lt;a href="qtextbrowser.html#isForwardAvailable"&gt;isForwardAvailable&lt;/a&gt;&lt;/b&gt; () const&lt;/li&gt;
+
+&lt;li&gt;&lt;div class="fn"/&gt;virtual QVariant &lt;b&gt;&lt;a href="qtextbrowser.html#loadResource"&gt;loadResource&lt;/a&gt;&lt;/b&gt; ( int &lt;i&gt;type&lt;/i&gt;, const QUrl &amp;amp; &lt;i&gt;name&lt;/i&gt; )&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;bool &lt;b&gt;&lt;a href="qtextbrowser.html#openExternalLinks-prop"&gt;openExternalLinks&lt;/a&gt;&lt;/b&gt; () const&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;bool &lt;b&gt;&lt;a href="qtextbrowser.html#openLinks-prop"&gt;openLinks&lt;/a&gt;&lt;/b&gt; () const&lt;/li&gt;
+
+&lt;li&gt;&lt;div class="fn"/&gt;QStringList &lt;b&gt;&lt;a href="qtextbrowser.html#searchPaths-prop"&gt;searchPaths&lt;/a&gt;&lt;/b&gt; () const&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;void &lt;b&gt;&lt;a href="qtextbrowser.html#openExternalLinks-prop"&gt;setOpenExternalLinks&lt;/a&gt;&lt;/b&gt; ( bool &lt;i&gt;open&lt;/i&gt; )&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;void &lt;b&gt;&lt;a href="qtextbrowser.html#openLinks-prop"&gt;setOpenLinks&lt;/a&gt;&lt;/b&gt; ( bool &lt;i&gt;open&lt;/i&gt; )&lt;/li&gt;
+
+&lt;li&gt;&lt;div class="fn"/&gt;void &lt;b&gt;&lt;a href="qtextbrowser.html#searchPaths-prop"&gt;setSearchPaths&lt;/a&gt;&lt;/b&gt; ( const QStringList &amp;amp; &lt;i&gt;paths&lt;/i&gt; )&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;QUrl &lt;b&gt;&lt;a href="qtextbrowser.html#source-prop"&gt;source&lt;/a&gt;&lt;/b&gt; () const&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;58 public functions inherited from &lt;a href="qtextedit.html#public-functions"&gt;QTextEdit&lt;/a&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;div class="fn"/&gt;15 public functions inherited from &lt;a href="qabstractscrollarea.html#public-functions"&gt;QAbstractScrollArea&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;13 public functions inherited from &lt;a href="qframe.html#public-functions"&gt;QFrame&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;206 public functions inherited from &lt;a href="qwidget.html#public-functions"&gt;QWidget&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;29 public functions inherited from &lt;a href="qobject.html#public-functions"&gt;QObject&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;12 public functions inherited from &lt;a href="qpaintdevice.html#public-functions"&gt;QPaintDevice&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;a name="public-slots"&gt;&lt;/a&gt;
+
+&lt;h3&gt;Public Slots&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;virtual void &lt;b&gt;&lt;a href="qtextbrowser.html#backward"&gt;backward&lt;/a&gt;&lt;/b&gt; ()&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;virtual void &lt;b&gt;&lt;a href="qtextbrowser.html#forward"&gt;forward&lt;/a&gt;&lt;/b&gt; ()&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;virtual void &lt;b&gt;&lt;a href="qtextbrowser.html#home"&gt;home&lt;/a&gt;&lt;/b&gt; ()&lt;/li&gt;
+
+&lt;li&gt;&lt;div class="fn"/&gt;virtual void &lt;b&gt;&lt;a href="qtextbrowser.html#reload"&gt;reload&lt;/a&gt;&lt;/b&gt; ()&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;virtual void &lt;b&gt;&lt;a href="qtextbrowser.html#source-prop"&gt;setSource&lt;/a&gt;&lt;/b&gt; ( const QUrl &amp;amp; &lt;i&gt;name&lt;/i&gt; )&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;25 public slots inherited from &lt;a href="qtextedit.html#public-slots"&gt;QTextEdit&lt;/a&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;div class="fn"/&gt;19 public slots inherited from &lt;a href="qwidget.html#public-slots"&gt;QWidget&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;1 public slot inherited from &lt;a href="qobject.html#public-slots"&gt;QObject&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;a name="signals"&gt;&lt;/a&gt;
+&lt;h3&gt;Signals&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;void &lt;b&gt;&lt;a href="qtextbrowser.html#anchorClicked"&gt;anchorClicked&lt;/a&gt;&lt;/b&gt; ( const QUrl &amp;amp; &lt;i&gt;link&lt;/i&gt; )&lt;/li&gt;
+
+&lt;li&gt;&lt;div class="fn"/&gt;void &lt;b&gt;&lt;a href="qtextbrowser.html#backwardAvailable"&gt;backwardAvailable&lt;/a&gt;&lt;/b&gt; ( bool &lt;i&gt;available&lt;/i&gt; )&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;void &lt;b&gt;&lt;a href="qtextbrowser.html#forwardAvailable"&gt;forwardAvailable&lt;/a&gt;&lt;/b&gt; ( bool &lt;i&gt;available&lt;/i&gt; )&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;void &lt;b&gt;&lt;a href="qtextbrowser.html#highlighted"&gt;highlighted&lt;/a&gt;&lt;/b&gt; ( const QUrl &amp;amp; &lt;i&gt;link&lt;/i&gt; )&lt;/li&gt;
+
+&lt;li&gt;&lt;div class="fn"/&gt;void &lt;b&gt;&lt;a href="qtextbrowser.html#highlighted-2"&gt;highlighted&lt;/a&gt;&lt;/b&gt; ( const QString &amp;amp; &lt;i&gt;link&lt;/i&gt; )&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;void &lt;b&gt;&lt;a href="qtextbrowser.html#historyChanged"&gt;historyChanged&lt;/a&gt;&lt;/b&gt; ()&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;void &lt;b&gt;&lt;a href="qtextbrowser.html#sourceChanged"&gt;sourceChanged&lt;/a&gt;&lt;/b&gt; ( const QUrl &amp;amp; &lt;i&gt;src&lt;/i&gt; )&lt;/li&gt;
+
+&lt;/ul&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;7 signals inherited from &lt;a href="qtextedit.html#signals"&gt;QTextEdit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;1 signal inherited from &lt;a href="qwidget.html#signals"&gt;QWidget&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;1 signal inherited from &lt;a href="qobject.html#signals"&gt;QObject&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;a name="protected-functions"&gt;&lt;/a&gt;
+&lt;h3&gt;Protected Functions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;virtual void &lt;b&gt;&lt;a href="qtextbrowser.html#keyPressEvent"&gt;keyPressEvent&lt;/a&gt;&lt;/b&gt; ( QKeyEvent * &lt;i&gt;ev&lt;/i&gt; )&lt;/li&gt;
+
+&lt;/ul&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;4 protected functions inherited from &lt;a href="qtextedit.html#protected-functions"&gt;QTextEdit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;16 protected functions inherited from &lt;a href="qabstractscrollarea.html#protected-functions"&gt;QAbstractScrollArea&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;38 protected functions inherited from &lt;a href="qwidget.html#protected-functions"&gt;QWidget&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;7 protected functions inherited from &lt;a href="qobject.html#protected-functions"&gt;QObject&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;1 protected function inherited from &lt;a href="qpaintdevice.html#protected-functions"&gt;QPaintDevice&lt;/a&gt;&lt;/li&gt;
+
+&lt;/ul&gt;
+&lt;h3&gt;Additional Inherited Members&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;4 static public members inherited from &lt;a href="qwidget.html#static-public-members"&gt;QWidget&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;5 static public members inherited from &lt;a href="qobject.html#static-public-members"&gt;QObject&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;1 protected slot inherited from &lt;a href="qabstractscrollarea.html#protected-slots"&gt;QAbstractScrollArea&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;1 protected slot inherited from &lt;a href="qwidget.html#protected-slots"&gt;QWidget&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;a name="details"&gt;&lt;/a&gt;
+&lt;hr /&gt;
+&lt;h2&gt;Detailed Description&lt;/h2&gt;
+&lt;p&gt;The QTextBrowser class provides a rich text browser with hypertext navigation.&lt;/p&gt;
+&lt;p&gt;This class extends &lt;a href="qtextedit.html"&gt;QTextEdit&lt;/a&gt; (in read-only mode), adding some navigation functionality so that users can follow links in hypertext documents.&lt;/p&gt;
+&lt;p&gt;If you want to provide your users with an editable rich text editor, use &lt;a href="qtextedit.html"&gt;QTextEdit&lt;/a&gt;. If you want a text browser without hypertext navigation use &lt;a href="qtextedit.html"&gt;QTextEdit&lt;/a&gt;, and use &lt;a href="qtextedit.html#readOnly-prop"&gt;QTextEdit::setReadOnly&lt;/a&gt;() to disable editing. If you just need to display a small piece of rich text use &lt;a href="qlabel.html"&gt;QLabel&lt;/a&gt;.&lt;/p&gt;
+
+&lt;a name="document-source-and-contents"&gt;&lt;/a&gt;
+&lt;h3&gt;Document Source and Contents&lt;/h3&gt;
+&lt;p&gt;The contents of &lt;a href="qtextedit.html"&gt;QTextEdit&lt;/a&gt; are set with &lt;a href="qtextedit.html#html-prop"&gt;setHtml&lt;/a&gt;() or &lt;a href="qtextedit.html#plainText-prop"&gt;setPlainText&lt;/a&gt;(), but QTextBrowser also implements the &lt;a href="qtextbrowser.html#source-prop"&gt;setSource&lt;/a&gt;() function, making it possible to use a named document as the source text. The name is looked up in a list of search paths and in the directory of the current document factory.&lt;/p&gt;
+&lt;p&gt;If a document name ends with an anchor (for example, &amp;quot;&lt;tt&gt;#anchor&amp;quot;&lt;/tt&gt;), the text browser automatically scrolls to that position (using &lt;a href="qtextedit.html#scrollToAnchor"&gt;scrollToAnchor&lt;/a&gt;()). When the user clicks on a hyperlink, the browser will call &lt;a href="qtextbrowser.html#source-prop"&gt;setSource&lt;/a&gt;() itself with the link's &lt;tt&gt;href&lt;/tt&gt; value as argument. You can track the current source by connecting to the &lt;a href="qtextbrowser.html#sourceChanged"&gt;sourceChanged&lt;/a&gt;() signal.&lt;/p&gt;
+
+&lt;a name="navigation"&gt;&lt;/a&gt;
+&lt;h3&gt;Navigation&lt;/h3&gt;
+&lt;p&gt;QTextBrowser provides &lt;a href="qtextbrowser.html#backward"&gt;backward&lt;/a&gt;() and &lt;a href="qtextbrowser.html#forward"&gt;forward&lt;/a&gt;() slots which you can use to implement Back and Forward buttons. The &lt;a href="qtextbrowser.html#home"&gt;home&lt;/a&gt;() slot sets the text to the very first document displayed. The &lt;a href="qtextbrowser.html#anchorClicked"&gt;anchorClicked&lt;/a&gt;() signal is emitted when the user clicks an anchor. To override the default navigation behavior of the browser, call the &lt;a href="qtextbrowser.html#source-prop"&gt;setSource&lt;/a&gt;() function to supply new document text in a slot connected to this signal.&lt;/p&gt;
+&lt;p&gt;If you want to load documents stored in the Qt resource system use &lt;tt&gt;qrc&lt;/tt&gt; as the scheme in the URL to load. For example, for the document resource path &lt;tt&gt;:/docs/index.html&lt;/tt&gt; use &lt;tt&gt;qrc:/docs/index.html&lt;/tt&gt; as the URL with &lt;a href="qtextbrowser.html#source-prop"&gt;setSource&lt;/a&gt;().&lt;/p&gt;
+
+&lt;p&gt;See also &lt;a href="qtextedit.html"&gt;QTextEdit&lt;/a&gt; and &lt;a href="qtextdocument.html"&gt;QTextDocument&lt;/a&gt;.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;Property Documentation&lt;/h2&gt;
+&lt;h3 class="fn"&gt;&lt;a name="modified-prop"&gt;&lt;/a&gt;modified : const bool&lt;/h3&gt;
+&lt;p&gt;This property holds whether the contents of the text browser have been modified.&lt;/p&gt;
+&lt;h3 class="fn"&gt;&lt;a name="openExternalLinks-prop"&gt;&lt;/a&gt;openExternalLinks : bool&lt;/h3&gt;
+&lt;p&gt;Specifies whether &lt;a href="qtextbrowser.html"&gt;QTextBrowser&lt;/a&gt; should automatically open links to external sources using &lt;a href="qdesktopservices.html#openUrl"&gt;QDesktopServices::openUrl&lt;/a&gt;() instead of emitting the anchorClicked signal. Links are considered external if their scheme is neither file or qrc.&lt;/p&gt;
+
+&lt;p&gt;The default value is false.&lt;/p&gt;
+&lt;p&gt;This property was introduced in Qt 4.2.&lt;/p&gt;
+&lt;p&gt;Access functions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;&lt;b&gt;bool openExternalLinks () const&lt;/b&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;&lt;b&gt;void setOpenExternalLinks ( bool &lt;i&gt;open&lt;/i&gt; )&lt;/b&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 class="fn"&gt;&lt;a name="openLinks-prop"&gt;&lt;/a&gt;openLinks : bool&lt;/h3&gt;
+
+&lt;p&gt;This property specifies whether &lt;a href="qtextbrowser.html"&gt;QTextBrowser&lt;/a&gt; should automatically open links the user tries to activate by mouse or keyboard.&lt;/p&gt;
+&lt;p&gt;Regardless of the value of this property the anchorClicked signal is always emitted.&lt;/p&gt;
+&lt;p&gt;The default value is true.&lt;/p&gt;
+&lt;p&gt;This property was introduced in Qt 4.3.&lt;/p&gt;
+&lt;p&gt;Access functions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;&lt;b&gt;bool openLinks () const&lt;/b&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;&lt;b&gt;void setOpenLinks ( bool &lt;i&gt;open&lt;/i&gt; )&lt;/b&gt;&lt;/li&gt;
+
+&lt;/ul&gt;
+&lt;h3 class="fn"&gt;&lt;a name="readOnly-prop"&gt;&lt;/a&gt;readOnly : const bool&lt;/h3&gt;
+&lt;p&gt;This property holds whether the text browser is read-only.&lt;/p&gt;
+&lt;p&gt;By default, this property is true.&lt;/p&gt;
+&lt;h3 class="fn"&gt;&lt;a name="searchPaths-prop"&gt;&lt;/a&gt;searchPaths : &lt;a href="qstringlist.html"&gt;QStringList&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;This property holds the search paths used by the text browser to find supporting content.&lt;/p&gt;
+&lt;p&gt;&lt;a href="qtextbrowser.html"&gt;QTextBrowser&lt;/a&gt; uses this list to locate images and documents.&lt;/p&gt;
+&lt;p&gt;By default, this property contains an empty string list.&lt;/p&gt;
+
+&lt;p&gt;Access functions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;&lt;b&gt;QStringList searchPaths () const&lt;/b&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;&lt;b&gt;void setSearchPaths ( const QStringList &amp;amp; &lt;i&gt;paths&lt;/i&gt; )&lt;/b&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 class="fn"&gt;&lt;a name="source-prop"&gt;&lt;/a&gt;source : &lt;a href="qurl.html"&gt;QUrl&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;This property holds the name of the displayed document.&lt;/p&gt;
+
+&lt;p&gt;This is a an invalid url if no document is displayed or if the source is unknown.&lt;/p&gt;
+&lt;p&gt;When setting this property &lt;a href="qtextbrowser.html"&gt;QTextBrowser&lt;/a&gt; tries to find a document with the specified name in the paths of the &lt;a href="qtextbrowser.html#searchPaths-prop"&gt;searchPaths&lt;/a&gt; property and directory of the current source, unless the value is an absolute file path. It also checks for optional anchors and scrolls the document accordingly&lt;/p&gt;
+&lt;p&gt;If the first tag in the document is &lt;tt&gt;&amp;lt;qt type=detail&amp;gt;&lt;/tt&gt;, the document is displayed as a popup rather than as new document in the browser window itself. Otherwise, the document is displayed normally in the text browser with the text set to the contents of the named document with &lt;a href="qtextedit.html#html-prop"&gt;setHtml&lt;/a&gt;().&lt;/p&gt;
+&lt;p&gt;By default, this property contains an empty URL.&lt;/p&gt;
+
+&lt;p&gt;Access functions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;&lt;b&gt;QUrl source () const&lt;/b&gt;&lt;/li&gt;
+&lt;li&gt;&lt;div class="fn"/&gt;&lt;b&gt;virtual void setSource ( const QUrl &amp;amp; &lt;i&gt;name&lt;/i&gt; )&lt;/b&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 class="fn"&gt;&lt;a name="undoRedoEnabled-prop"&gt;&lt;/a&gt;undoRedoEnabled : const bool&lt;/h3&gt;
+&lt;p&gt;This property holds whether the text browser supports undo/redo operations.&lt;/p&gt;
+&lt;p&gt;By default, this property is false.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h2&gt;Member Function Documentation&lt;/h2&gt;
+&lt;h3 class="fn"&gt;&lt;a name="QTextBrowser"&gt;&lt;/a&gt;QTextBrowser::QTextBrowser ( &lt;a href="qwidget.html"&gt;QWidget&lt;/a&gt; * &lt;i&gt;parent&lt;/i&gt; = 0 )&lt;/h3&gt;
+&lt;p&gt;Constructs an empty &lt;a href="qtextbrowser.html"&gt;QTextBrowser&lt;/a&gt; with parent &lt;i&gt;parent&lt;/i&gt;.&lt;/p&gt;
+
+&lt;h3 class="fn"&gt;&lt;a name="anchorClicked"&gt;&lt;/a&gt;void QTextBrowser::anchorClicked ( const &lt;a href="qurl.html"&gt;QUrl&lt;/a&gt; &amp;amp; &lt;i&gt;link&lt;/i&gt; )&amp;nbsp;&amp;nbsp;&lt;tt&gt; [signal]&lt;/tt&gt;&lt;/h3&gt;
+&lt;p&gt;This signal is emitted when the user clicks an anchor. The URL referred to by the anchor is passed in &lt;i&gt;link&lt;/i&gt;.&lt;/p&gt;
+&lt;p&gt;Note that the browser will automatically handle navigation to the location specified by &lt;i&gt;link&lt;/i&gt; unless the &lt;a href="qtextbrowser.html#openLinks-prop"&gt;openLinks&lt;/a&gt; property is set to false or you call &lt;a href="qtextbrowser.html#source-prop"&gt;setSource&lt;/a&gt;() in a slot connected. This mechanism is used to override the default navigation features of the browser.&lt;/p&gt;
+
+&lt;h3 class="fn"&gt;&lt;a name="backward"&gt;&lt;/a&gt;void QTextBrowser::backward ()&amp;nbsp;&amp;nbsp;&lt;tt&gt; [virtual slot]&lt;/tt&gt;&lt;/h3&gt;
+&lt;p&gt;Changes the document displayed to the previous document in the list of documents built by navigating links. Does nothing if there is no previous document.&lt;/p&gt;
+&lt;p&gt;See also &lt;a href="qtextbrowser.html#forward"&gt;forward&lt;/a&gt;() and &lt;a href="qtextbrowser.html#backwardAvailable"&gt;backwardAvailable&lt;/a&gt;().&lt;/p&gt;
+&lt;h3 class="fn"&gt;&lt;a name="backwardAvailable"&gt;&lt;/a&gt;void QTextBrowser::backwardAvailable ( bool &lt;i&gt;available&lt;/i&gt; )&amp;nbsp;&amp;nbsp;&lt;tt&gt; [signal]&lt;/tt&gt;&lt;/h3&gt;
+
+&lt;p&gt;This signal is emitted when the availability of &lt;a href="qtextbrowser.html#backward"&gt;backward&lt;/a&gt;() changes. &lt;i&gt;available&lt;/i&gt; is false when the user is at &lt;a href="qtextbrowser.html#home"&gt;home&lt;/a&gt;(); otherwise it is true.&lt;/p&gt;
+&lt;h3 class="fn"&gt;&lt;a name="backwardHistoryCount"&gt;&lt;/a&gt;int QTextBrowser::backwardHistoryCount () const&lt;/h3&gt;
+&lt;p&gt;Returns the number of locations backward in the history.&lt;/p&gt;
+&lt;p&gt;This function was introduced in Qt 4.4.&lt;/p&gt;
+&lt;h3 class="fn"&gt;&lt;a name="clearHistory"&gt;&lt;/a&gt;void QTextBrowser::clearHistory ()&lt;/h3&gt;
+
+&lt;p&gt;Clears the history of visited documents and disables the forward and backward navigation.&lt;/p&gt;
+&lt;p&gt;This function was introduced in Qt 4.2.&lt;/p&gt;
+&lt;p&gt;See also &lt;a href="qtextbrowser.html#backward"&gt;backward&lt;/a&gt;() and &lt;a href="qtextbrowser.html#forward"&gt;forward&lt;/a&gt;().&lt;/p&gt;
+&lt;h3 class="fn"&gt;&lt;a name="forward"&gt;&lt;/a&gt;void QTextBrowser::forward ()&amp;nbsp;&amp;nbsp;&lt;tt&gt; [virtual slot]&lt;/tt&gt;&lt;/h3&gt;
+&lt;p&gt;Changes the document displayed to the next document in the list of documents built by navigating links. Does nothing if there is no next document.&lt;/p&gt;
+&lt;p&gt;See also &lt;a href="qtextbrowser.html#backward"&gt;backward&lt;/a&gt;() and &lt;a href="qtextbrowser.html#forwardAvailable"&gt;forwardAvailable&lt;/a&gt;().&lt;/p&gt;
+
+&lt;h3 class="fn"&gt;&lt;a name="forwardAvailable"&gt;&lt;/a&gt;void QTextBrowser::forwardAvailable ( bool &lt;i&gt;available&lt;/i&gt; )&amp;nbsp;&amp;nbsp;&lt;tt&gt; [signal]&lt;/tt&gt;&lt;/h3&gt;
+&lt;p&gt;This signal is emitted when the availability of &lt;a href="qtextbrowser.html#forward"&gt;forward&lt;/a&gt;() changes. &lt;i&gt;available&lt;/i&gt; is true after the user navigates &lt;a href="qtextbrowser.html#backward"&gt;backward&lt;/a&gt;() and false when the user navigates or goes &lt;a href="qtextbrowser.html#forward"&gt;forward&lt;/a&gt;().&lt;/p&gt;
+
+&lt;h3 class="fn"&gt;&lt;a name="forwardHistoryCount"&gt;&lt;/a&gt;int QTextBrowser::forwardHistoryCount () const&lt;/h3&gt;
+&lt;p&gt;Returns the number of locations forward in the history.&lt;/p&gt;
+&lt;p&gt;This function was introduced in Qt 4.4.&lt;/p&gt;
+&lt;h3 class="fn"&gt;&lt;a name="highlighted"&gt;&lt;/a&gt;void QTextBrowser::highlighted ( const &lt;a href="qurl.html"&gt;QUrl&lt;/a&gt; &amp;amp; &lt;i&gt;link&lt;/i&gt; )&amp;nbsp;&amp;nbsp;&lt;tt&gt; [signal]&lt;/tt&gt;&lt;/h3&gt;
+&lt;p&gt;This signal is emitted when the user has selected but not activated an anchor in the document. The URL referred to by the anchor is passed in &lt;i&gt;link&lt;/i&gt;.&lt;/p&gt;
+
+&lt;h3 class="fn"&gt;&lt;a name="highlighted-2"&gt;&lt;/a&gt;void QTextBrowser::highlighted ( const &lt;a href="qstring.html"&gt;QString&lt;/a&gt; &amp;amp; &lt;i&gt;link&lt;/i&gt; )&amp;nbsp;&amp;nbsp;&lt;tt&gt; [signal]&lt;/tt&gt;&lt;/h3&gt;
+&lt;p&gt;This is an overloaded member function, provided for convenience.&lt;/p&gt;
+&lt;p&gt;Convenience signal that allows connecting to a slot that takes just a &lt;a href="qstring.html"&gt;QString&lt;/a&gt;, like for example &lt;a href="qstatusbar.html"&gt;QStatusBar&lt;/a&gt;'s message().&lt;/p&gt;
+
+&lt;h3 class="fn"&gt;&lt;a name="historyChanged"&gt;&lt;/a&gt;void QTextBrowser::historyChanged ()&amp;nbsp;&amp;nbsp;&lt;tt&gt; [signal]&lt;/tt&gt;&lt;/h3&gt;
+&lt;p&gt;This signal is emitted when the history changes.&lt;/p&gt;
+&lt;p&gt;This function was introduced in Qt 4.4.&lt;/p&gt;
+&lt;p&gt;See also &lt;a href="qtextbrowser.html#historyTitle"&gt;historyTitle&lt;/a&gt;() and &lt;a href="qtextbrowser.html#historyUrl"&gt;historyUrl&lt;/a&gt;().&lt;/p&gt;
+&lt;h3 class="fn"&gt;&lt;a name="historyTitle"&gt;&lt;/a&gt;&lt;a href="qstring.html"&gt;QString&lt;/a&gt; QTextBrowser::historyTitle ( int &lt;i&gt;i&lt;/i&gt; ) const&lt;/h3&gt;
+
+&lt;p&gt;Returns the &lt;a href="qtextedit.html#documentTitle-prop"&gt;documentTitle&lt;/a&gt;() of the HistoryItem.&lt;/p&gt;
+&lt;p&gt;&lt;table align="center" cellpadding="2" cellspacing="1" border="0"&gt;
+&lt;thead&gt;&lt;tr valign="top" class="qt-style"&gt;&lt;th&gt;Input&lt;/th&gt;&lt;th&gt;Return&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+&lt;tr valign="top" class="odd"&gt;&lt;td&gt;&lt;i&gt;i&lt;/i&gt; &amp;lt; 0&lt;/td&gt;&lt;td&gt;&lt;a href="qtextbrowser.html#backward"&gt;backward&lt;/a&gt;() history&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign="top" class="even"&gt;&lt;td&gt;&lt;i&gt;i&lt;/i&gt; == 0&lt;/td&gt;&lt;td&gt;current, see &lt;a href="qtextbrowser.html#source-prop"&gt;QTextBrowser::source&lt;/a&gt;()&lt;/td&gt;&lt;/tr&gt;
+
+&lt;tr valign="top" class="odd"&gt;&lt;td&gt;&lt;i&gt;i&lt;/i&gt; &amp;gt; 0&lt;/td&gt;&lt;td&gt;&lt;a href="qtextbrowser.html#forward"&gt;forward&lt;/a&gt;() history&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;&lt;/p&gt;
+&lt;pre&gt; backaction.setToolTip(browser.historyTitle(-1));
+ forwardaction.setToolTip(browser.historyTitle(+1));&lt;/pre&gt;
+&lt;p&gt;This function was introduced in Qt 4.4.&lt;/p&gt;
+&lt;h3 class="fn"&gt;&lt;a name="historyUrl"&gt;&lt;/a&gt;&lt;a href="qurl.html"&gt;QUrl&lt;/a&gt; QTextBrowser::historyUrl ( int &lt;i&gt;i&lt;/i&gt; ) const&lt;/h3&gt;
+
+&lt;p&gt;Returns the url of the HistoryItem.&lt;/p&gt;
+&lt;p&gt;&lt;table align="center" cellpadding="2" cellspacing="1" border="0"&gt;
+&lt;thead&gt;&lt;tr valign="top" class="qt-style"&gt;&lt;th&gt;Input&lt;/th&gt;&lt;th&gt;Return&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+&lt;tr valign="top" class="odd"&gt;&lt;td&gt;&lt;i&gt;i&lt;/i&gt; &amp;lt; 0&lt;/td&gt;&lt;td&gt;&lt;a href="qtextbrowser.html#backward"&gt;backward&lt;/a&gt;() history&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign="top" class="even"&gt;&lt;td&gt;&lt;i&gt;i&lt;/i&gt; == 0&lt;/td&gt;&lt;td&gt;current, see &lt;a href="qtextbrowser.html#source-prop"&gt;QTextBrowser::source&lt;/a&gt;()&lt;/td&gt;&lt;/tr&gt;
+
+&lt;tr valign="top" class="odd"&gt;&lt;td&gt;&lt;i&gt;i&lt;/i&gt; &amp;gt; 0&lt;/td&gt;&lt;td&gt;&lt;a href="qtextbrowser.html#forward"&gt;forward&lt;/a&gt;() history&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;&lt;/p&gt;
+&lt;p&gt;This function was introduced in Qt 4.4.&lt;/p&gt;
+&lt;h3 class="fn"&gt;&lt;a name="home"&gt;&lt;/a&gt;void QTextBrowser::home ()&amp;nbsp;&amp;nbsp;&lt;tt&gt; [virtual slot]&lt;/tt&gt;&lt;/h3&gt;
+&lt;p&gt;Changes the document displayed to be the first document from the history.&lt;/p&gt;
+&lt;h3 class="fn"&gt;&lt;a name="isBackwardAvailable"&gt;&lt;/a&gt;bool QTextBrowser::isBackwardAvailable () const&lt;/h3&gt;
+
+&lt;p&gt;Returns true if the text browser can go backward in the document history using &lt;a href="qtextbrowser.html#backward"&gt;backward&lt;/a&gt;().&lt;/p&gt;
+&lt;p&gt;This function was introduced in Qt 4.2.&lt;/p&gt;
+&lt;p&gt;See also &lt;a href="qtextbrowser.html#backwardAvailable"&gt;backwardAvailable&lt;/a&gt;() and &lt;a href="qtextbrowser.html#backward"&gt;backward&lt;/a&gt;().&lt;/p&gt;
+&lt;h3 class="fn"&gt;&lt;a name="isForwardAvailable"&gt;&lt;/a&gt;bool QTextBrowser::isForwardAvailable () const&lt;/h3&gt;
+&lt;p&gt;Returns true if the text browser can go forward in the document history using &lt;a href="qtextbrowser.html#forward"&gt;forward&lt;/a&gt;().&lt;/p&gt;
+
+&lt;p&gt;This function was introduced in Qt 4.2.&lt;/p&gt;
+&lt;p&gt;See also &lt;a href="qtextbrowser.html#forwardAvailable"&gt;forwardAvailable&lt;/a&gt;() and &lt;a href="qtextbrowser.html#forward"&gt;forward&lt;/a&gt;().&lt;/p&gt;
+&lt;h3 class="fn"&gt;&lt;a name="keyPressEvent"&gt;&lt;/a&gt;void QTextBrowser::keyPressEvent ( &lt;a href="qkeyevent.html"&gt;QKeyEvent&lt;/a&gt; * &lt;i&gt;ev&lt;/i&gt; )&amp;nbsp;&amp;nbsp;&lt;tt&gt; [virtual protected]&lt;/tt&gt;&lt;/h3&gt;
+
+&lt;p&gt;The event &lt;i&gt;ev&lt;/i&gt; is used to provide the following keyboard shortcuts:&lt;/p&gt;
+&lt;p&gt;&lt;table align="center" cellpadding="2" cellspacing="1" border="0"&gt;
+&lt;thead&gt;&lt;tr valign="top" class="qt-style"&gt;&lt;th&gt;Keypress&lt;/th&gt;&lt;th&gt;Action&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+&lt;tr valign="top" class="odd"&gt;&lt;td&gt;Alt+Left Arrow&lt;/td&gt;&lt;td&gt;&lt;a href="qtextbrowser.html#backward"&gt;backward&lt;/a&gt;()&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign="top" class="even"&gt;&lt;td&gt;Alt+Right Arrow&lt;/td&gt;&lt;td&gt;&lt;a href="qtextbrowser.html#forward"&gt;forward&lt;/a&gt;()&lt;/td&gt;&lt;/tr&gt;
+
+&lt;tr valign="top" class="odd"&gt;&lt;td&gt;Alt+Up Arrow&lt;/td&gt;&lt;td&gt;&lt;a href="qtextbrowser.html#home"&gt;home&lt;/a&gt;()&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;&lt;/p&gt;
+&lt;p&gt;Reimplemented from &lt;a href="qwidget.html#keyPressEvent"&gt;QWidget&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 class="fn"&gt;&lt;a name="loadResource"&gt;&lt;/a&gt;&lt;a href="qvariant.html"&gt;QVariant&lt;/a&gt; QTextBrowser::loadResource ( int &lt;i&gt;type&lt;/i&gt;, const &lt;a href="qurl.html"&gt;QUrl&lt;/a&gt; &amp;amp; &lt;i&gt;name&lt;/i&gt; )&amp;nbsp;&amp;nbsp;&lt;tt&gt; [virtual]&lt;/tt&gt;&lt;/h3&gt;
+
+&lt;p&gt;This function is called when the document is loaded and for each image in the document. The &lt;i&gt;type&lt;/i&gt; indicates the type of resource to be loaded. An invalid &lt;a href="qvariant.html"&gt;QVariant&lt;/a&gt; is returned if the resource cannot be loaded.&lt;/p&gt;
+&lt;p&gt;The default implementation ignores &lt;i&gt;type&lt;/i&gt; and tries to locate the resources by interpreting &lt;i&gt;name&lt;/i&gt; as a file name. If it is not an absolute path it tries to find the file in the paths of the &lt;a href="qtextbrowser.html#searchPaths-prop"&gt;searchPaths&lt;/a&gt; property and in the same directory as the current source. On success, the result is a &lt;a href="qvariant.html"&gt;QVariant&lt;/a&gt; that stores a &lt;a href="qbytearray.html"&gt;QByteArray&lt;/a&gt; with the contents of the file.&lt;/p&gt;
+
+&lt;p&gt;If you reimplement this function, you can return other &lt;a href="qvariant.html"&gt;QVariant&lt;/a&gt; types. The table below shows which variant types are supported depending on the resource type:&lt;/p&gt;
+&lt;p&gt;&lt;table align="center" cellpadding="2" cellspacing="1" border="0"&gt;
+&lt;thead&gt;&lt;tr valign="top" class="qt-style"&gt;&lt;th&gt;ResourceType&lt;/th&gt;&lt;th&gt;&lt;a href="qvariant.html#Type-enum"&gt;QVariant::Type&lt;/a&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+&lt;tr valign="top" class="odd"&gt;&lt;td&gt;&lt;a href="qtextdocument.html#ResourceType-enum"&gt;QTextDocument::HtmlResource&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;a href="qstring.html"&gt;QString&lt;/a&gt; or &lt;a href="qbytearray.html"&gt;QByteArray&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign="top" class="even"&gt;&lt;td&gt;&lt;a href="qtextdocument.html#ResourceType-enum"&gt;QTextDocument::ImageResource&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;a href="qimage.html"&gt;QImage&lt;/a&gt;, &lt;a href="qpixmap.html"&gt;QPixmap&lt;/a&gt; or &lt;a href="qbytearray.html"&gt;QByteArray&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+
+&lt;tr valign="top" class="odd"&gt;&lt;td&gt;&lt;a href="qtextdocument.html#ResourceType-enum"&gt;QTextDocument::StyleSheetResource&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;a href="qstring.html"&gt;QString&lt;/a&gt; or &lt;a href="qbytearray.html"&gt;QByteArray&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;&lt;/p&gt;
+&lt;p&gt;Reimplemented from &lt;a href="qtextedit.html#loadResource"&gt;QTextEdit&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 class="fn"&gt;&lt;a name="reload"&gt;&lt;/a&gt;void QTextBrowser::reload ()&amp;nbsp;&amp;nbsp;&lt;tt&gt; [virtual slot]&lt;/tt&gt;&lt;/h3&gt;
+&lt;p&gt;Reloads the current set source.&lt;/p&gt;
+
+&lt;h3 class="fn"&gt;&lt;a name="sourceChanged"&gt;&lt;/a&gt;void QTextBrowser::sourceChanged ( const &lt;a href="qurl.html"&gt;QUrl&lt;/a&gt; &amp;amp; &lt;i&gt;src&lt;/i&gt; )&amp;nbsp;&amp;nbsp;&lt;tt&gt; [signal]&lt;/tt&gt;&lt;/h3&gt;
+&lt;p&gt;This signal is emitted when the source has changed, &lt;i&gt;src&lt;/i&gt; being the new source.&lt;/p&gt;
+&lt;p&gt;Source changes happen both programmatically when calling &lt;a href="qtextbrowser.html#source-prop"&gt;setSource&lt;/a&gt;(), &lt;a href="qtextbrowser.html#forward"&gt;forward&lt;/a&gt;(), backword() or &lt;a href="qtextbrowser.html#home"&gt;home&lt;/a&gt;() or when the user clicks on links or presses the equivalent key sequences.&lt;/p&gt;
+
+&lt;p /&gt;&lt;address&gt;&lt;hr /&gt;&lt;div align="center"&gt;
+&lt;table width="100%" cellspacing="0" border="0"&gt;&lt;tr class="address"&gt;
+&lt;td width="30%" align="left"&gt;Copyright &amp;copy; 2008 Nokia Corporation and/or its subsidiary(-ies)&lt;/td&gt;
+&lt;td width="40%" align="center"&gt;&lt;a href="trademarks.html"&gt;Trademarks&lt;/a&gt;&lt;/td&gt;
+&lt;td width="30%" align="right"&gt;&lt;div align="right"&gt;Qt 4.4.3&lt;/div&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/address&gt;&lt;/body&gt;
+&lt;/html&gt;
+</t>
 </tnodes>
 </leo_file>

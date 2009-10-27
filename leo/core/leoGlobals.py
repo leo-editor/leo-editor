@@ -506,21 +506,29 @@ def findLanguageDirectives(c,p):
     return language
 #@-node:ekr.20090214075058.6:g.findLanguageDirectives (must be fast)
 #@+node:ekr.20031218072017.1385:g.findReference
-#@+at 
-#@nonl
-# We search the descendents of v looking for the definition node matching 
-# name.
-# There should be exactly one such node (descendents of other definition nodes 
-# are not searched).
-#@-at
-#@@c
+# Called from the syntax coloring method that colorizes section references.
 
 def findReference(c,name,root):
+
+    '''Find the section definition for name.
+
+    If a search of the descendants fails,
+    and an ancestor is an @root node,
+    search all the descendants of the @root node.
+    '''
 
     for p in root.subtree():
         assert(p!=root)
         if p.matchHeadline(name) and not p.isAtIgnoreNode():
             return p
+
+    # New in Leo 4.7: expand the search for @root trees.
+    for p in root.self_and_parents():
+        d = g.get_directives_dict(p)
+        if 'root' in d:
+            for p2 in p.subtree():
+                if p2.matchHeadline(name) and not p2.isAtIgnoreNode():
+                    return p2
 
     # g.trace("not found:",name,root)
     return c.nullPosition()

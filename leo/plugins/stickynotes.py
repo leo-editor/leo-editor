@@ -70,7 +70,7 @@ def init ():
     g.app.stickynotes = {}    
     return ok
 #@-node:vivainio2.20091008133028.5824:init
-#@+node:ville.20091008210853.7616:class StickyNote
+#@+node:ville.20091008210853.7616:class FocusingPlainTextEdit
 class FocusingPlaintextEdit(QtGui.QPlainTextEdit):
 
     def __init__(self, focusin, focusout):
@@ -90,10 +90,79 @@ class FocusingPlaintextEdit(QtGui.QPlainTextEdit):
         self.focusout()
 
 
+#@-node:ville.20091008210853.7616:class FocusingPlainTextEdit
+#@+node:ville.20091023181249.5264:class SimpleRichText
+class SimpleRichText(QtGui.QTextEdit):
+    def __init__(self, focusin, focusout):
+        QtGui.QTextEdit.__init__(self)        
+        self.focusin = focusin
+        self.focusout = focusout
+        self.createActions()
+
+    def focusOutEvent ( self, event ):
+        #print "focus out"
+        self.focusout()
+
+    def focusInEvent ( self, event ):        
+        self.focusin()
+    
+
+    def closeEvent(self, event):
+        event.accept()        
+
+    def createActions(self):
+        self.boldAct = QtGui.QAction(self.tr("&Bold"), self)
+        self.boldAct.setCheckable(True)
+        self.boldAct.setShortcut(self.tr("Ctrl+B"))
+        self.boldAct.setStatusTip(self.tr("Make the text bold"))
+        self.connect(self.boldAct, QtCore.SIGNAL("triggered()"), self.setBold)
+        self.addAction(self.boldAct)
+
+        boldFont = self.boldAct.font()
+        boldFont.setBold(True)
+        self.boldAct.setFont(boldFont)
+
+        self.italicAct = QtGui.QAction(self.tr("&Italic"), self)
+        self.italicAct.setCheckable(True)
+        self.italicAct.setShortcut(self.tr("Ctrl+I"))
+        self.italicAct.setStatusTip(self.tr("Make the text italic"))
+        self.connect(self.italicAct, QtCore.SIGNAL("triggered()"), self.setItalic)
+        self.addAction(self.italicAct)
+
+    def setBold(self):
+        format = QtGui.QTextCharFormat()
+        if self.boldAct.isChecked():
+                weight = QtGui.QFont.Bold
+        else:
+                weight = QtGui.QFont.Normal
+        format.setFontWeight(weight)
+        self.setFormat(format)
+
+    def setItalic(self):
+        format = QtGui.QTextCharFormat()
+        #format.setFontItalic(self.__italic.isChecked())
+        format.setFontItalic(self.italicAct.isChecked())
+        self.setFormat(format)
+
+    def setUnderline(self):
+        format = QtGui.QTextCharFormat()
+        format.setFontUnderline(self.__underline.isChecked())
+        self.setFormat(format)
+
+    def setFormat(self, format):
+        self.textCursor().mergeCharFormat(format)
+        self.mergeCurrentCharFormat(format)
+
+    def bold(self):
+        print "bold"
+        
+    
+    def italic(self):
+        print "italic"
 
 
 
-#@-node:ville.20091008210853.7616:class StickyNote
+#@-node:ville.20091023181249.5264:class SimpleRichText
 #@+node:vivainio2.20091008133028.5825:g.command('stickynote')
 @g.command('stickynote')
 def stickynote_f(event):
@@ -139,6 +208,51 @@ def stickynote_f(event):
 
     g.app.stickynotes[p.gnx] = nf
 #@-node:vivainio2.20091008133028.5825:g.command('stickynote')
+#@+node:ville.20091023181249.5266:g.command('stickynoter')
+@g.command('stickynoter')
+def stickynoter_f(event):
+    """ Launch editable 'sticky note' for the node """
+
+    c= event['c']
+    p = c.p
+    v = p.v
+    def focusin():
+        print "focus in"
+        if v is c.p.v:
+            nf.setHtml(v.b)
+            nf.setWindowTitle(p.h)
+            nf.dirty = False
+
+
+    def focusout():
+        print "focus out"
+        if not nf.dirty:
+            return
+        v.b = nf.toHtml()
+        v.setDirty()
+        nf.dirty = False
+        p = c.p
+        if p.v is v:
+            c.selectPosition(c.p)
+
+
+    nf = SimpleRichText(focusin, focusout)
+    nf.dirty = False
+    decorate_window(nf)
+    nf.setWindowTitle(p.h)
+    nf.setHtml(p.b)
+    p.setDirty()
+
+    def textchanged_cb():
+        nf.dirty = True
+
+    nf.connect(nf,
+        QtCore.SIGNAL("textChanged()"),textchanged_cb)
+
+    nf.show()
+
+    g.app.stickynotes[p.gnx] = nf
+#@-node:ville.20091023181249.5266:g.command('stickynoter')
 #@-others
 #@nonl
 #@-node:ville.20091008210853.5241:@thin stickynotes.py

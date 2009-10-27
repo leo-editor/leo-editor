@@ -2218,7 +2218,13 @@ class baseScannerClass (scanUtility):
     #@+node:ekr.20070707113832.1:putClass & helpers
     def putClass (self,s,i,sigEnd,codeEnd,start,parent):
 
-        '''Creates a child node c of parent for the class, and a child of c for each def in the class.'''
+        '''Creates a child node c of parent for the class,
+        and a child of c for each def in the class.'''
+
+        trace = True and not g.unitTesting
+        if trace:
+            # g.trace('tab_width',self.tab_width)
+            g.trace('sig',s[i:sigEnd])
 
         # Enter a new class 1: save the old class info.
         oldMethodName = self.methodName
@@ -2257,6 +2263,8 @@ class baseScannerClass (scanUtility):
 
         # Set the body of the class node.
         ref = putRef and self.getClassNodeRef(class_name) or ''
+
+        if trace: g.trace('undentVal',undentVal,'bodyIndent',bodyIndent)
 
         # Give ref the same indentation as the body of the class.
         if ref:
@@ -2317,6 +2325,8 @@ class baseScannerClass (scanUtility):
 
         Parse s for inner methods and classes, and create nodes.'''
 
+        trace = True and not g.unitTesting
+
         # Increase the output indentation (used only in startsHelper).
         # This allows us to detect over-indented classes and functions.
         old_output_indent = self.output_indent
@@ -2328,6 +2338,7 @@ class baseScannerClass (scanUtility):
 
         # Set the body indent if there are real decls.
         bodyIndent = decls.strip() and self.getIndent(s,i) or None
+        if trace: g.trace('bodyIndent',bodyIndent)
 
         # Parse the rest of the class.
         delim1, delim2 = self.outerBlockDelim1, self.outerBlockDelim2
@@ -4122,13 +4133,14 @@ class xmlScanner (baseScannerClass):
         self.trace = False
 
         self.addTags()
-
+    #@nonl
     #@-node:ekr.20071214072451: __init__ (xmlScanner)
     #@+node:ekr.20071214131818:addTags
     def addTags (self):
 
         '''Add items to self.class/functionTags and from settings.'''
 
+        trace = False and not g.unitTesting
         c = self.c
 
         for ivar,setting in (
@@ -4138,7 +4150,7 @@ class xmlScanner (baseScannerClass):
             aList = getattr(self,ivar)
             aList2 = c.config.getData(setting) or []
             aList.extend(aList2)
-            # g.trace(ivar,aList)
+            if trace: g.trace(ivar,aList)
     #@-node:ekr.20071214131818:addTags
     #@+node:ekr.20071214072924.4:startsHelper & helpers
     def startsHelper(self,s,i,kind,tags):
