@@ -2,9 +2,89 @@
 #@+node:tbrown.20091026203923.1334:@thin /mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/attrib_edit/leo/plugins/attrib_edit.py
 #@<< docstring >>
 #@+node:tbrown.20091009210724.10972:<< docstring >>
-'''attrib_edit.py  -- Edit certain attributes in v.uA
 '''
-#@nonl
+
+attrib_edit.py - Edit attributes in v.u
+=======================================
+
+This plugin creates a frame for editing attributes similar to::
+
+    Name:   Fred Blogs
+    Home:   555-555-5555
+    Work:   555-555-5556
+
+``attrib_edit`` is also intended to provide attribute editing for
+other plugins, see below.
+
+These attributes are stored in the "unknownAttributes" (uA) data for
+each node, accessed via ``v.u``.
+
+When creating attributes on a node (using the ``attrib-edit-create`` command described below)
+you should specify a path for
+the attribute, e.g.::
+
+    "addressbook First"
+
+to store the attribute in v.u['addressbook']['_edit']['First']
+
+As a convenience, entering a path like::
+
+    "todo metadata created|creator|revised"
+
+would create::
+
+    v.u.['todo']['metadata']['_edit']['created']
+    v.u.['todo']['metadata']['_edit']['creator']
+    v.u.['todo']['metadata']['_edit']['revised']
+
+The plugin defines the following commands, available either in the
+plugin's sub-menu in the Plugins menu, or as ``Alt-X attrib-edit-*``.
+
+attrib-edit-create
+    Create a new attribute on the current node
+
+attrib-edit-create-readonly
+    Create a new readonly attribute on the current node,
+    not really useful
+
+attrib-edit-manage
+    Select which attributes, from all attributes seen so
+    far in this outline, to include on the current node.
+
+attrib-edit-scan
+    Scan the entire outline for attributes so ``attrib-edit-manage``
+    has the complete list.
+
+Technical details
++++++++++++++++++
+
+See the source for complete documentation for use with other
+plugins, here are some points of interest:
+
+- in addition to ``v.u['addressbook']['_edit']['first']`` paths
+  like ``v.u['addressbook']['_edit']['_int']['age']`` may be used
+  to identify type, although currently there's no difference in
+  the edit widget.
+
+- in future the plugin may allow other plugins to register
+  to provide attribute path information, instead of just
+  scanning for ['_edit'] entries in v.u.
+
+- currently there's no sorting of the attributes, which is
+  a problem for some applications.  It's unclear where the
+  desired order would be stored, without even more repetition
+  in v.u.  When other plugins can register to manipulate the
+  attribute list each plugin could address this, with unordered
+  presentation in the absence of the client plugin.
+
+- There's code to have the editor appear in a tab instead
+  of its own area under the body editor, but (a) this is
+  always being buried by output in the log window, and
+  (b) there's a bug which leaves some (harmless) ghost 
+  widgets in the background.  Enable by @setting
+  ``attrib_edit_placement`` to 'tab'.
+
+'''
 #@-node:tbrown.20091009210724.10972:<< docstring >>
 #@nl
 
@@ -184,6 +264,8 @@ class attrib_edit_Controller:
         self.c = c
         c.attribEditor = self
 
+        self.attrPaths = set()  # set of *tuples* to paths
+
         self.handlers = [
            ('select3', self.updateEditor),
         ]
@@ -191,8 +273,8 @@ class attrib_edit_Controller:
         for i in self.handlers:
             leoPlugins.registerHandler(i[0], i[1])
 
-        # self.guiMode = 'tab'
-        self.guiMode = 'body'
+        # 'body' or 'tab' mode
+        self.guiMode = c.config.getString('attrib_edit_placement') or 'body'
 
         if self.guiMode == 'body':
             self.holder = QtGui.QSplitter(QtCore.Qt.Vertical)
@@ -200,11 +282,12 @@ class attrib_edit_Controller:
             os = c.frame.top.leo_body_frame.parent()
             self.holder.addWidget(c.frame.top.leo_body_frame)
             os.addWidget(self.holder)
+            self.parent = self.holder
         elif self.guiMode == 'tab':
-            frame = QtGui.QFrame()
+            self.parent = QtGui.QFrame()
             self.holder = QtGui.QHBoxLayout()
-            frame.setLayout(self.holder)
-            c.frame.log.createTab('Attribs', widget = frame)
+            self.parent.setLayout(self.holder)
+            c.frame.log.createTab('Attribs', widget = self.parent)
     #@-node:tbrown.20091009210724.10981:__init__
     #@+node:tbrown.20091009210724.10983:__del__
     def __del__(self):
@@ -229,7 +312,7 @@ class attrib_edit_Controller:
 
         elif self.guiMode == 'tab':
             while w.count():
-                w.takeAt(0)
+                x = w.takeAt(0)
 
         pnl = QtGui.QFrame()
         self.form = QtGui.QFormLayout()
@@ -283,13 +366,13 @@ class attrib_edit_Controller:
                             # ek is '_int' or similar
                             type_ = self.typeMap[ek]
                             for ekt in d[k][ek]:
-                                ans.append((ekt, d[k][ek][ekt], path+['_edit',ek,ekt],
+                                ans.append((ekt, d[k][ek][ekt], tuple(path+['_edit',ek,ekt]),
                                     type_, k != '_edit'))
                         else:
-                            ans.append((ek, d[k][ek], path+['_edit',ek], str, k != '_edit'))
+                            ans.append((ek, d[k][ek], tuple(path+['_edit',ek]), str, k != '_edit'))
     #@-node:tbrown.20091011151836.14789:recSearch
     #@+node:tbrown.20091009210724.11211:getAttribs
-    def getAttribs(self):
+    def getAttribs(self, d = None):
         """Return a list of tuples describing editable uAs.
 
         (name, value, path, type, readonly)
@@ -297,8 +380,8 @@ class attrib_edit_Controller:
 
         e.g.
 
-        ('created', '2009-09-23', ['stickynotes','_edit','created'], str, False),
-        ('cars', 2, ['inventory','_edit','_int','cars'], int, False)
+        ('created', '2009-09-23', ('stickynotes','_edit','created'), str, False),
+        ('cars', 2, ('inventory','_edit','_int','cars'), int, False)
 
         Changes should be written back to
         v.uA['stickynotes']['_edit']['created'] and
@@ -306,15 +389,46 @@ class attrib_edit_Controller:
         """
 
         ans = []
-        d = self.c.currentPosition().v.u
+        if not d:
+            d = self.c.currentPosition().v.u
         self.recSearch(d, [], ans)
+
+        for ns in ans:
+            self.attrPaths.add(ns[2])
 
         return ans
     #@-node:tbrown.20091009210724.11211:getAttribs
+    #@+node:tbrown.20091029101116.1413:addAttrib
+    def addAttrib(self, attrib):
+        editWatcher.setValue(self.c.currentPosition().v.u, attrib, '')
+    #@nonl
+    #@-node:tbrown.20091029101116.1413:addAttrib
+    #@+node:tbrown.20091029101116.1414:delAttrib
+    def delAttrib(self, attrib):
+
+        a = self.c.currentPosition().v.u
+        for i in attrib[:-1]:
+            try:
+                a = a[i]
+            except KeyError:
+                return
+        try:
+            del a[attrib[-1]]
+        except KeyError:
+            pass
+    #@-node:tbrown.20091029101116.1414:delAttrib
+    #@+node:tbrown.20091029101116.1424:scanAttribs
+    def scanAttribs(self):
+        """scan all of c for attrbutes"""
+        for v in self.c.all_unique_nodes():
+            self.getAttribs(v.u)  # updates internal list of attribs
+        g.es("%d attributes found" % len(self.attrPaths))
+    #@nonl
+    #@-node:tbrown.20091029101116.1424:scanAttribs
     #@+node:tbrown.20091011151836.14788:createAttrib
     def createAttrib(self, event=None, readonly=False):
 
-        path,ok = QtGui.QInputDialog.getText(self.holder, "Enter attribute path",
+        path,ok = QtGui.QInputDialog.getText(self.parent, "Enter attribute path",
             "Enter path to attribute (space separated words)")
 
         ns = str(path).split()  # not the QString
@@ -324,10 +438,20 @@ class attrib_edit_Controller:
 
         type_ = {True: '_view', False: '_edit'}[readonly]
 
-        if type_ not in ns:
-            ns.insert(-1, type_)
+        if '|' in ns[-1]:
+            nslist = [ ns[:-1] + [i.strip()] for i in ns[-1].split('|') ]
+        else:
+            nslist = [ns]
 
-        editWatcher.setValue(self.c.currentPosition().v.u, ns, '')
+        for ns in nslist:
+
+            if type_ not in ns:
+                ns.insert(-1, type_)
+
+            self.attrPaths.add(tuple(ns))
+
+            self.addAttrib(ns)
+
         self.c.currentPosition().v.setDirty()
         self.c.redraw()
 
@@ -336,46 +460,64 @@ class attrib_edit_Controller:
     #@+node:tbrown.20091028131637.1358:manageAttrib
     def manageAttrib(self):
 
-        dat = [
-          ['foo', False],
-          ['foo', False],
-          ['foo', False],
-          ['foo', False],
-          ['bar', False],
-          ['foo', True],
-          ['foo', False],
-        ]
+        attribs = [i[2] for i in self.getAttribs()]
 
-        res = ListDialog(self.holder, "Enter attribute path",
+        dat = [ ['.'.join([j for j in i if j not in ('_edit','_view')]), (i in attribs), i]
+               for i in self.attrPaths]
+
+        if not dat:
+            g.es('No attributes seen (yet)')
+            return
+
+        dat.sort(key=lambda x: x[0])
+
+        res = ListDialog(self.parent, "Enter attribute path",
             "Enter path to attribute (space separated words)", 
             dat)
 
-        print dat
         res.exec_()
-        print dat
-    #@nonl
+
+        if res.result() == QtGui.QDialog.Rejected:
+            return
+
+        # check for deletions
+        for i in dat:
+            if i[2] in attribs and not i[1]:
+                res = QtGui.QMessageBox(QtGui.QMessageBox.Question,
+                    "Really delete attributes?","Really delete attributes?",
+                    QtGui.QMessageBox.Ok|QtGui.QMessageBox.Cancel, self.parent)
+                if res.exec_() == QtGui.QMessageBox.Cancel:
+                    return
+                break
+
+        # apply changes
+        for i in dat:
+            if i[2] in attribs and not i[1]:
+                self.delAttrib(i[2])
+            elif i[2] not in attribs and i[1]:
+                self.addAttrib(i[2])
+
+        self.updateEditorInt()
+
     #@-node:tbrown.20091028131637.1358:manageAttrib
-    #@+node:tbrown.20091011151836.5259:command attrib-manage
-    @staticmethod
-    @g.command('attrib-manage')
-    def attrib_create(event):
-        event['c'].attribEditor.manageAttrib()
-    #@-node:tbrown.20091011151836.5259:command attrib-manage
-    #@+node:tbrown.20091028131637.1356:command attrib-create
-    @staticmethod
-    @g.command('attrib-create')
-    def attrib_create(event):
-        event['c'].attribEditor.createAttrib()
-    #@-node:tbrown.20091028131637.1356:command attrib-create
-    #@+node:tbrown.20091028100922.1492:command attrib-create-ro
-    @staticmethod
-    @g.command('attrib-create-ro')
-    def attrib_create_ro(event):
-        event['c'].attribEditor.createAttrib(readonly=True)
-    #@nonl
-    #@-node:tbrown.20091028100922.1492:command attrib-create-ro
     #@-others
 #@-node:tbrown.20091009210724.10979:class attrib_edit_Controller
+#@+node:tbrown.20091029101116.1415:cmd_Manage
+def cmd_Manage(c):
+   c.attribEditor.manageAttrib()
+#@-node:tbrown.20091029101116.1415:cmd_Manage
+#@+node:tbrown.20091029101116.1419:cmd_Create
+def cmd_Create(c):
+   c.attribEditor.createAttrib()
+#@-node:tbrown.20091029101116.1419:cmd_Create
+#@+node:tbrown.20091029101116.1421:cmd_CreateReadonly
+def cmd_CreateReadonly(c):
+   c.attribEditor.createAttrib(readonly=True)
+#@-node:tbrown.20091029101116.1421:cmd_CreateReadonly
+#@+node:tbrown.20091029101116.1426:cmd_Scan
+def cmd_Scan(c):
+   c.attribEditor.scanAttribs()
+#@-node:tbrown.20091029101116.1426:cmd_Scan
 #@-others
 #@nonl
 #@-node:tbrown.20091026203923.1334:@thin /mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/attrib_edit/leo/plugins/attrib_edit.py
