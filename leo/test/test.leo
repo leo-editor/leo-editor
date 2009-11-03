@@ -384,8 +384,10 @@
 </v>
 </v>
 <v t="ekr.20091015191345.1856"><vh>ctags completion</vh></v>
+<v t="ekr.20091022062720.1870" a="E"><vh>Examples of embedding html pages in Leo</vh>
 <v t="ekr.20091016171638.1866"><vh>@html Leo's home page</vh></v>
 <v t="ekr.20091016172814.1868"><vh>@html http://doc.trolltech.com/4.4/qtextbrowser.html</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -806,7 +808,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5"></t>
+<t tx="ekr.20070416075121" str_leo_pos="1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -1399,6 +1401,7 @@ leoTest.doTests (c,all=False)</t>
 # qtGui.py
 # tkGui.py
 
+attrib_edit.py
 ctagscompleter.py
 
 plugins_menu.py
@@ -4084,6 +4087,18 @@ NOWEB, EDWARD K. REAM, DONALD E. KNUTH, SILVIO LEVY, OPEN SOFTWARE" /&gt;
 &lt;td width="30%" align="right"&gt;&lt;div align="right"&gt;Qt 4.4.3&lt;/div&gt;&lt;/td&gt;
 &lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/address&gt;&lt;/body&gt;
 &lt;/html&gt;
+</t>
+<t tx="ekr.20091022062720.1870">@language html
+@nocolor-node
+@
+
+The children of this node contain html sources in their body text.
+
+To see these nodes as rendered html, start the headline with @html.
+
+To see the sources, start the headline with @@html (or anything except @html).
+
+When changing between @html and @@html, you must change nodes before you will see the change.
 </t>
 </tnodes>
 </leo_file>
