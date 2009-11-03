@@ -3078,7 +3078,7 @@ class baseCommands (object):
             return
 
         if d1:
-            # Append the single-line comment delim in front of each line
+            # Remove the single-line comment delim in front of each line
             for line in lines:
                 i = g.skip_ws(line,0)
                 if g.match(line,i,d1):
