@@ -1419,7 +1419,7 @@ def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False):
         g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
         return False
     bunchList = k.bindingsDict.get(shortcut,[])
-    << trace bindings >>
+    if trace: g.trace(pane,shortcut,commandName)
     try:
         k.bindKeyToDict(pane,shortcut,callback,commandName)
         b = g.bunch(pane=pane,func=callback,commandName=commandName)
@@ -1444,20 +1444,6 @@ if shortcut:
                 commandName,shortcut),color='blue')
             return
 #@-node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
-#@+node:ekr.20061031131434.91:<< trace bindings >>
-if trace: # or c.config.getBool('trace_bindings_verbose'):
-
-    g.trace(pane,shortcut,commandName)
-
-    # Old trace code.
-
-    # theFilter = c.config.getString('trace_bindings_filter') or ''
-    # # g.trace(repr(theFilter))
-    # if not theFilter or shortcut.find(theFilter) != -1:
-        # pane_filter = c.config.getString('trace_bindings_pane_filter')
-        # if not pane_filter or pane_filter.lower() == pane:
-            # g.trace(pane,shortcut,commandName)
-#@-node:ekr.20061031131434.91:<< trace bindings >>
 #@+node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
 if not modeFlag and self.warn_about_redefined_shortcuts:
     redefs = [str(b2.commandName) for b2 in bunchList
@@ -1465,10 +1451,10 @@ if not modeFlag and self.warn_about_redefined_shortcuts:
             and not b2.pane.endswith('-mode')]
     for z in redefs:
         g.es_print ('redefining shortcut %30s from %s to %s in %s' % (
-            shortcut,commandName,z,pane),color='red')
-        # g.es_print('redefining','shortcut %20s' % (shortcut),
-            # 'from',z,'(%s)' % (pane),
-            # 'to',commandName,'(%s)' % (pane),color='red')
+            shortcut,
+            g.choose(pane=='button',z,commandName),
+            g.choose(pane=='button',commandName,z),
+            pane),color='red')
 
 if not modeFlag:
     bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
@@ -2148,6 +2134,137 @@ def findReference(c,name,root):
     return c.nullPosition()
 #@-node:ekr.20031218072017.1385:g.findReference
 #@-node:ekr.20091016055503.6059:Color sections references in @root trees
+#@+node:ekr.20091103082258.6084:Fixed bug: Sometimes 'redefining shortcut' message is backwards
+#@+node:ekr.20061031131434.131:k.registerCommand
+def registerCommand (self,commandName,shortcut,func,pane='all',verbose=False, wrap=True):
+
+    '''Make the function available as a minibuffer command,
+    and optionally attempt to bind a shortcut.
+
+    You can wrap any method in a callback function, so the
+    restriction to functions is not significant.
+
+    If wrap is True then func will be wrapped with c.universalCallback.
+
+    '''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+
+    if wrap:
+        func = c.universalCallback(func)
+
+    f = c.commandsDict.get(commandName)
+    verbose = (False or verbose) and not g.app.unitTesting
+    if f and f.__name__ != 'dummyCallback' and verbose:
+        g.es_print('redefining',commandName, color='red')
+
+    c.commandsDict [commandName] = func
+    k.inverseCommandsDict [func.__name__] = commandName
+    if trace: g.trace('leoCommands %24s = %s' % (func.__name__,commandName))
+
+    if shortcut:
+        stroke = k.shortcutFromSetting(shortcut)
+    elif commandName.lower() == 'shortcut': # Causes problems.
+        stroke = None
+    else:
+        # Try to get a shortcut from leoSettings.leo.
+        junk,bunchList = c.config.getShortcut(commandName)
+        for bunch in bunchList:
+            accel2 = bunch.val ; pane2 = bunch.pane
+            if accel2 and not pane2.endswith('-mode'):
+                shortcut2 = accel2
+                stroke = k.shortcutFromSetting(shortcut2)
+                if stroke: break
+        else: stroke = None
+
+    if stroke:
+        if trace: g.trace('stroke',stroke,'pane',pane,commandName,g.callers(4))
+        ok = k.bindKey (pane,stroke,func,commandName) # Must be a stroke.
+        k.makeMasterGuiBinding(stroke) # Must be a stroke.
+        if verbose and ok and not g.app.silentMode:
+            # g.trace(g.callers())
+            g.es_print('','@command: %s = %s' % (
+                commandName,k.prettyPrintKey(stroke)),color='blue')
+            if 0:
+                d = k.masterBindingsDict.get('button',{})
+                g.print_dict(d)
+        c.frame.tree.setBindings()
+    elif verbose and not g.app.silentMode:
+        g.trace(g.callers())
+        g.es_print('','@command: %s' % (commandName),color='blue')
+
+    # Fixup any previous abbreviation to press-x-button commands.
+    if commandName.startswith('press-') and commandName.endswith('-button'):
+        d = c.config.getAbbrevDict()
+            # Keys are full command names, values are abbreviations.
+        if commandName in d.values():
+            for key in d:
+                if d.get(key) == commandName:
+                    c.commandsDict [key] = c.commandsDict.get(commandName)
+                    break
+#@-node:ekr.20061031131434.131:k.registerCommand
+#@+node:ekr.20061031131434.89:bindKey
+def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False):
+
+    '''Bind the indicated shortcut (a Tk keystroke) to the callback.
+
+    No actual gui bindings are made: only entries in k.masterBindingsDict.'''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+
+    # g.trace(pane,shortcut,commandName)
+    if not shortcut:
+        # g.trace('No shortcut for %s' % commandName)
+        return False
+    << give warning and return if we try to bind to Enter or Leave >>
+    if pane.endswith('-mode'):
+        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
+        return False
+    bunchList = k.bindingsDict.get(shortcut,[])
+    if trace: g.trace(pane,shortcut,commandName)
+    try:
+        k.bindKeyToDict(pane,shortcut,callback,commandName)
+        b = g.bunch(pane=pane,func=callback,commandName=commandName)
+        << remove previous conflicting definitions from bunchList >>
+        bunchList.append(b)
+        shortcut = g.stripBrackets(shortcut.strip())
+        k.bindingsDict [shortcut] = bunchList
+        return True
+    except Exception: # Could be a user error.
+        if not g.app.menuWarningsGiven:
+            g.es_print('exception binding',shortcut,'to',commandName)
+            g.es_exception()
+            g.app.menuWarningsGiven = True
+        return False
+
+bindShortcut = bindKey # For compatibility
+#@+node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
+if shortcut:
+    for s in ('enter','leave'):
+        if -1 != shortcut.lower().find(s):
+            g.es_print('ignoring invalid key binding:','%s = %s' % (
+                commandName,shortcut),color='blue')
+            return
+#@-node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
+#@+node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
+if not modeFlag and self.warn_about_redefined_shortcuts:
+    redefs = [str(b2.commandName) for b2 in bunchList
+        if b2.commandName != commandName and pane in ('button','all',b2.pane)
+            and not b2.pane.endswith('-mode')]
+    for z in redefs:
+        g.es_print ('redefining shortcut %30s from %s to %s in %s' % (
+            shortcut,
+            g.choose(pane=='button',z,commandName),
+            g.choose(pane=='button',commandName,z),
+            pane),color='red')
+
+if not modeFlag:
+    bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
+#@-node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
+#@-node:ekr.20061031131434.89:bindKey
+#@-node:ekr.20091103082258.6084:Fixed bug: Sometimes 'redefining shortcut' message is backwards
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin

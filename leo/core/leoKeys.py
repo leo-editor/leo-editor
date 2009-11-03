@@ -2146,22 +2146,7 @@ class keyHandlerClass:
             g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
             return False
         bunchList = k.bindingsDict.get(shortcut,[])
-        #@    << trace bindings >>
-        #@+node:ekr.20061031131434.91:<< trace bindings >>
-        if trace: # or c.config.getBool('trace_bindings_verbose'):
-
-            g.trace(pane,shortcut,commandName)
-
-            # Old trace code.
-
-            # theFilter = c.config.getString('trace_bindings_filter') or ''
-            # # g.trace(repr(theFilter))
-            # if not theFilter or shortcut.find(theFilter) != -1:
-                # pane_filter = c.config.getString('trace_bindings_pane_filter')
-                # if not pane_filter or pane_filter.lower() == pane:
-                    # g.trace(pane,shortcut,commandName)
-        #@-node:ekr.20061031131434.91:<< trace bindings >>
-        #@nl
+        if trace: g.trace(pane,shortcut,commandName)
         try:
             k.bindKeyToDict(pane,shortcut,callback,commandName)
             b = g.bunch(pane=pane,func=callback,commandName=commandName)
@@ -2173,10 +2158,10 @@ class keyHandlerClass:
                         and not b2.pane.endswith('-mode')]
                 for z in redefs:
                     g.es_print ('redefining shortcut %30s from %s to %s in %s' % (
-                        shortcut,commandName,z,pane),color='red')
-                    # g.es_print('redefining','shortcut %20s' % (shortcut),
-                        # 'from',z,'(%s)' % (pane),
-                        # 'to',commandName,'(%s)' % (pane),color='red')
+                        shortcut,
+                        g.choose(pane=='button',z,commandName),
+                        g.choose(pane=='button',commandName,z),
+                        pane),color='red')
 
             if not modeFlag:
                 bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
@@ -3217,8 +3202,7 @@ class keyHandlerClass:
 
         '''
 
-        # g.trace(commandName,g.callers())
-
+        trace = False and not g.unitTesting
         k = self ; c = k.c
 
         if wrap:
@@ -3231,7 +3215,7 @@ class keyHandlerClass:
 
         c.commandsDict [commandName] = func
         k.inverseCommandsDict [func.__name__] = commandName
-        # g.trace('leoCommands %24s = %s' % (func.__name__,commandName))
+        if trace: g.trace('leoCommands %24s = %s' % (func.__name__,commandName))
 
         if shortcut:
             stroke = k.shortcutFromSetting(shortcut)
@@ -3249,7 +3233,7 @@ class keyHandlerClass:
             else: stroke = None
 
         if stroke:
-            # g.trace('stroke',stroke,'pane',pane,commandName,g.callers())
+            if trace: g.trace('stroke',stroke,'pane',pane,commandName,g.callers(4))
             ok = k.bindKey (pane,stroke,func,commandName) # Must be a stroke.
             k.makeMasterGuiBinding(stroke) # Must be a stroke.
             if verbose and ok and not g.app.silentMode:

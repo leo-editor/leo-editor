@@ -9010,7 +9010,7 @@ class jEditColorizer:
         for tag in ('@c','@code'):
             if g.match_word(s,0,tag):
                 j = len(tag)
-                self.colorRangeWithTag(s,0,j,'docPart')
+                self.colorRangeWithTag(s,0,j,'leoKeyword') # 'docPart')
                 self.clearState()
                 return j
         else:

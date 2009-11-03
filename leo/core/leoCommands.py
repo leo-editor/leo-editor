@@ -1808,10 +1808,11 @@ class baseCommands (object):
                     else:
                         exec(script,d)
                     # g.trace('**** after')
-                    if not script1 and not silent:
-                        # Careful: the script may have changed the log tab.
-                        tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
-                        g.es("end of script",color="purple",tabName=tabName)
+                    if 0: # This message switches panes, and can be disruptive.
+                        if not script1 and not silent:
+                            # Careful: the script may have changed the log tab.
+                            tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+                            g.es("end of script",color="purple",tabName=tabName)
                 except Exception:
                     g.handleScriptException(c,p,script,script1)
                 del sys.path[0]
