@@ -13,6 +13,7 @@
 <v t="ekr.20080129151123"><vh>@chapters</vh></v>
 <v t="ekr.20070315073704"><vh>@settings</vh>
 <v t="ekr.20070315073704.1"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20091104114053.3903"><vh>@bool warn_about_redefined_shortcuts = False</vh></v>
 <v t="ekr.20070315073704.2"><vh>vim plugin</vh>
 <v t="ekr.20070315073704.3"><vh>@string vim_cmd = c:\vim\vim63\gvim --servername LEO</vh></v>
 <v t="ekr.20070315073704.4"><vh>@string vim_exe = c:\vim\vim63\gvim</vh></v>
@@ -37,16 +38,16 @@
 <v t="ekr.20070315074504.1"><vh>a</vh></v>
 <v t="ekr.20070315074504.2"><vh>b</vh></v>
 </v>
-<v t="ekr.20060902101656" a="E"><vh>Slide shows</vh>
+<v t="ekr.20060902101656"><vh>Slide shows</vh>
 <v t="ekr.20060904104955"><vh>@ignore</vh>
 <v t="ekr.20060904104955.1"><vh>@slideshow ignored</vh>
 <v t="ekr.20060904104955.2"><vh>@slide ignored</vh></v>
 </v>
 </v>
-<v t="ekr.20060901153101" a="E"><vh>@slideshow Introduction to Leo</vh>
+<v t="ekr.20060901153101"><vh>@slideshow Introduction to Leo</vh>
 <v t="ekr.20091103090815.1434"><vh>@slide Leo is an (ordinary) outliner</vh></v>
 <v t="ekr.20091103090815.1435"><vh>@slide Leo is an extraordinary outliner.</vh></v>
-<v t="ekr.20060901153101.1" a="E"><vh>@slide topic 1</vh>
+<v t="ekr.20060901153101.1"><vh>@slide topic 1</vh>
 <v t="ekr.20060901153101.2"><vh>@slide 2-1</vh></v>
 <v t="ekr.20060901153101.3"><vh>@slide 2-2</vh></v>
 </v>
@@ -65,8 +66,8 @@
 <v t="ekr.20060901144149.14"><vh>@slide 1-4</vh></v>
 </v>
 </v>
-<v t="ekr.20060902092259" a="E"><vh>@slideshow scripting Leo</vh>
-<v t="ekr.20060902092341.4" a="E"><vh>@slide Leo's classes and objects</vh>
+<v t="ekr.20060902092259"><vh>@slideshow scripting Leo</vh>
+<v t="ekr.20060902092341.4"><vh>@slide Leo's classes and objects</vh>
 <v t="ekr.20091103090815.1427"><vh>@slide c, g and p</vh></v>
 <v t="ekr.20091103090815.1428"><vh>@slide g.app</vh></v>
 <v t="ekr.20091103090815.1429"><vh>@slide commanders: c</vh></v>
@@ -74,13 +75,13 @@
 <v t="ekr.20091103090815.1430"><vh>@slide positions and iterators</vh></v>
 <v t="ekr.20091103090815.1432"><vh>@slides vnodes</vh></v>
 </v>
-<v t="ekr.20091103090815.1433" a="E"><vh>@slide Useful methods</vh>
+<v t="ekr.20091103090815.1433"><vh>@slide Useful methods</vh>
 <v t="ekr.20060902092341.5"><vh>@slide g.es writes to the log tab</vh></v>
 <v t="ekr.20091103090815.1426"><vh>@slide g.es can write to other tabs</vh></v>
 <v t="ekr.20060902092341.6"><vh>@slide app.windowList: the list of all open frames</vh></v>
 <v t="ekr.20060902092341.7"><vh>@slide Getting and setting headline and body text</vh></v>
 <v t="ekr.20060902092341.9"><vh>@slide Copying positions</vh></v>
-<v t="ekr.20060902092341.8" a="E"><vh>@slide Traversing outlines with generators.</vh>
+<v t="ekr.20060902092341.8"><vh>@slide Traversing outlines with generators.</vh>
 <v t="ekr.20060902092341.10"><vh>@slide c.all_positions</vh></v>
 <v t="ekr.20060902092341.11"><vh>@slide p.children_iter</vh></v>
 <v t="ekr.20060902092341.12"><vh>@slide p.parents_iter &amp; p.self_and_parents_iter</vh></v>
@@ -890,7 +891,7 @@ in the @button unit test node.</t>
 <t tx="ekr.20060904104955.2"></t>
 <t tx="ekr.20070315073704"></t>
 <t tx="ekr.20070315073704.1">plugins_menu.py
-plugin_manager.py
+# plugin_manager.py
 open_with.py
 mod_scripting.py
 rst3.py
@@ -908,7 +909,7 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20070315074504.1"></t>
 <t tx="ekr.20070315074504.2"></t>
 <t tx="ekr.20080129151123"></t>
-<t tx="ekr.20080129151228" str_leo_pos="5,1"></t>
+<t tx="ekr.20080129151228" str_leo_pos="0"></t>
 <t tx="ekr.20091103090815.1426"># To create a tab named 'Test' or make it visible if it already exists:
 log = c.frame.log
 log.selectTab('Test')
@@ -991,5 +992,6 @@ print (len(p.b),p.h)
 <t tx="ekr.20091103090815.1433">@ The following slides list useful methods for scripting Leo.</t>
 <t tx="ekr.20091103090815.1434"></t>
 <t tx="ekr.20091103090815.1435"></t>
+<t tx="ekr.20091104114053.3903"></t>
 </tnodes>
 </leo_file>
