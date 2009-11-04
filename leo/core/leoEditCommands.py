@@ -4475,9 +4475,9 @@ class editCommandsClass (baseEditCommandsClass):
             # assume scroll by "page"
             delta = self.measure(w)
             if distance == 'half-page':
-               delta = delta / 2
+                delta = delta / 2
             elif distance == 'line':
-               delta = 1
+                delta = 1
             row1 = g.choose(direction=='down',row+delta,row-delta)
             row1 = max(0,row1)
             spot = g.convertRowColToPythonIndex(s,row1,col)

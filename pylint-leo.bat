@@ -20,8 +20,9 @@ goto all
 
 :errors
 
-echo ctagscompleter.py
-call pylint.bat leo\plugins\ctagscompleter.py        --rcfile=leo\test\pylint-leo-rc.txt
+echo leoEditCommands.py (Supress W0511: Fixme)
+rem W0511:2380: FIXME lineYOffset is expected to be on a tnode in drawing code
+call pylint.bat leo\core\leoEditCommands.py  --disable-msg=W0511 --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 
