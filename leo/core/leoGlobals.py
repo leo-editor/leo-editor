@@ -114,8 +114,8 @@ app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
 isPython3 = sys.version_info >= (3,0,0)
 convert_at_file = True # True: write @file nodes like @thin nodes
-if convert_at_file:
-    print('*** convert_at_file')
+# if convert_at_file:
+    # print('*** convert_at_file')
 
 enableDB = True
 if not enableDB:
