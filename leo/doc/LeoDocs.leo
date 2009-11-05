@@ -3173,7 +3173,6 @@
 <v t="ekr.20050831195331.4"></v>
 <v t="ekr.20091105080104.6568"><vh>More language for the intro</vh></v>
 <v t="ekr.20091105080104.9028"><vh>FAQ bout changing qt fonts </vh></v>
-<v t="ekr.20091105080104.9029"><vh>Add reference to quickstart.leo</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
@@ -9564,16 +9563,18 @@ Removes @ignore, @nocolor, @wrap directives.
 Chapter 2: A Tutorial Introduction to Leo
 ##########################################
 
-This tutorial shows you Leo's basic features.
-These features are simple to use, yet they interact with each other in powerful ways.
-All Leo's features relate in some way to outlines_.
-Indeed, `outline structure is significant everywhere`_.
+This tutorial shows you Leo's basic features. These features are simple to use,
+yet they interact with each other in powerful ways. All Leo's features relate in
+some way to outlines_. Indeed, `outline structure is significant everywhere`_.
 
-`Quick start for programmers`_ contains the heart of this chapter.
-It briefly describes everything a Python programmer needs to know in order to understand Leo's source code.
-`Good style and bad`_ answers common question about when to use the features described in the quickstart_.
-The section `Scripting Leo`_ is an introduction to scripting Leo with Python.
-For full details, see `Chapter 7: Scripting Leo with Python`_.
+`Quick start for programmers`_ contains the heart of this chapter. It briefly
+describes everything a Python programmer needs to know in order to understand
+Leo's source code. `Good style and bad`_ answers common question about when to
+use the features described in the quickstart_. The section `Scripting Leo`_ is
+an introduction to scripting Leo with Python. For full details, see `Chapter 7:
+Scripting Leo with Python`_.
+
+For another introduction to Leo, open the file quickstart.leo in the leo/doc folder.
 
 .. .. contents::</t>
 <t tx="ekr.20050816073412.1">**Important**: please `install Leo`_ before reading this tutorial,
@@ -23597,14 +23598,24 @@ Leo's unit test commands run all the unit tests using the standard unittest text
 runner, and the output of the unit tests appears in the console.
 
 test/unitTest.leo contains many examples of using @test and @suite nodes.</t>
-<t tx="ekr.20070723100037">Why, oh why, would anyone be interested in Leo? After all, Emacs and Vim are 
-superb text editors, and Visual Studio and Eclipse are great IDE's. How can Leo possibly compete with such strong competition? What does Leo offer that these other tools don't? 
+<t tx="ekr.20070723100037">Why, oh why, would anyone be interested in Leo? After all, Emacs and Vim are
+superb text editors, and Visual Studio and Eclipse are great IDE's. How can Leo
+possibly compete with such strong competition? What does Leo offer that these
+other tools don't?
 
-Leo does have something unique to offer--something missing from Emacs,Vim, Visual Studio and Eclipse. Leo's users often speak of an Aha! moment when they understand what this 'something' is. 
-The Aha! arises from considering programs, design and data in a new light. You might call this 'The Leo Way'. In essence, Leo shows that computer programs, designs and data are *not*, after all, mostly about text. Yes, people usually *express* programs, designs and data as text. Yes, people manipulate programs, designs and data *using* text, but *text is not the whole story*. 
+Leo does have something unique to offer--something missing from Emacs,Vim,
+Visual Studio and Eclipse. Leo's users often speak of an Aha! moment when they
+understand what this 'something' is. The Aha! arises from considering programs,
+design and data in a new light. You might call this 'The Leo Way'. In essence,
+Leo shows that computer programs, designs and data are *not*, after all, mostly
+about text. Yes, people usually *express* programs, designs and data as text.
+Yes, people manipulate programs, designs and data *using* text, but *text is not
+the whole story*.
 
-In The Leo Way, text is simply a manifestation (a shadow) of something more 
-fundamental. That 'something else' might be called 'organization' or 'structure' or 'views' or even 'architecture'. However, let us use the term **node** to represent the fundamental unit of structure in Leo. We'll see why in a moment. 
+In The Leo Way, text is simply a manifestation (a shadow) of something more
+fundamental. That 'something else' might be called 'organization' or 'structure'
+or 'views' or even 'architecture'. However, let us use the term **node** to
+represent the fundamental unit of structure in Leo. We'll see why in a moment.
 
 In architectural terms, nodes are bricks that make up a building. In computer
 programming terms, nodes make up methods, classes, files and entire
@@ -23617,7 +23628,9 @@ presently selected node.
 
 **Outline structure is real data**
 
-To repeat: the fundamental unit in Leo is *not* text. True, headlines and body *consist* of text, but a node is just not text, it is a true (Python) object. This means several specific things: 
+To repeat: the fundamental unit in Leo is *not* text. True, headlines and body
+*consist* of text, but a node is just not text, it is a true (Python) object.
+This means several specific things:
 
 1. Because nodes are true objects, Leo commands understand what a node is, and
    where a node fits into the entire outline. I'll say more about outline
@@ -23662,18 +23675,36 @@ To repeat: the fundamental unit in Leo is *not* text. True, headlines and body *
 
 **Leo outlines aren't your average outline**
 
-Earlier I said that *any* node can be built from other nodes, and *any* node can be used by any other node. It takes a very special kind of outline for this to be possible. In a typical outline, such as Emacs outline mode, for example, nodes appear exactly once in the outline. This makes it impossible to 'reuse' nodes in multiple places. Leo removes that limitation: any outline node can be **cloned**, and clones can appear in as many places in an outline as you like. 
+Earlier I said that *any* node can be built from other nodes, and *any* node can
+be used by any other node. It takes a very special kind of outline for this to
+be possible. In a typical outline, such as Emacs outline mode, for example,
+nodes appear exactly once in the outline. This makes it impossible to 'reuse'
+nodes in multiple places. Leo removes that limitation: any outline node can be
+**cloned**, and clones can appear in as many places in an outline as you like.
 
-Cloned nodes are distinct: they must be distinct so they can be moved throughout the outline, but **cloned nodes share all their information**. That is, changing the headline or body text in a node instantly changes the headline and body text in all the other nodes cloned to it. Furthermore, similar remarks apply to the children and descendants of any node--changing any child (or other descendant) of a node, say node A, instantly makes corresponding changes to all nodes cloned to node A. 
+Cloned nodes are distinct: they must be distinct so they can be moved throughout
+the outline, but **cloned nodes share all their information**. That is, changing
+the headline or body text in a node instantly changes the headline and body text
+in all the other nodes cloned to it. Furthermore, similar remarks apply to the
+children and descendants of any node--changing any child (or other descendant)
+of a node, say node A, instantly makes corresponding changes to all nodes cloned
+to node A.
 
-Earlier I said that you can think of nodes as representing 'organization' or 
-'structure' or 'views' or even 'architecture'. Clones are the crucial feature that allows this point of view. For example, we can build up multiple 'views' of data in an outline using clones as follows: 
+Earlier I said that you can think of nodes as representing 'organization' or
+'structure' or 'views' or even 'architecture'. Clones are the crucial feature
+that allows this point of view. For example, we can build up multiple 'views' of
+data in an outline using clones as follows:
 
-- Create a 'view node' that will represent a *user-specified* view. 
+- Create a 'view node' that will represent a *user-specified* view.
 
-- Clone all nodes that are to be part of the view, and move them so that each clone is a child of the view node. 
+- Clone all nodes that are to be part of the view, and move them so that each
+clone is a child of the view node.
 
-That's about all there is to it. The view node, and its children *is* a new view of the outline. This notion of 'view' is so important that Leo supports it directly. Leo's **chapters** are simply views created as I have just described. When you select one chapter, you only see the nodes of that chapter in Leo's outline pane. 
+That's about all there is to it. The view node, and its children *is* a new view
+of the outline. This notion of 'view' is so important that Leo supports it
+directly. Leo's **chapters** are simply views created as I have just described.
+When you select one chapter, you only see the nodes of that chapter in Leo's
+outline pane.
 
 **Conclusions &amp; encouragements**
 
@@ -23686,7 +23717,7 @@ computer design and data organization, including web-site design, database
 design, etc. Leo's commands use headline and body text in many creative ways. So
 can you and your scripts. It's easy, it's fun, and it's revolutionary.
 
-That's about it, except for some words of caution and advice: 
+That's about it, except for some words of caution and advice:
 
 1. Leo has been under active development for over 10 years. The new world
    created by nodes is rich and varied. You won't learn it all in a day or so.
@@ -30267,7 +30298,6 @@ with Leo) would use it for e.g. writing study notes and/or assignment papers via
 RST plugin giving them opportunity to get good-enough (pdf) output with
 docutils/sphinx...</t>
 <t tx="ekr.20091105080104.9028"></t>
-<t tx="ekr.20091105080104.9029"></t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?
