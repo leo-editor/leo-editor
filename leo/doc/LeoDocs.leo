@@ -11,7 +11,7 @@
 <vnodes>
 <v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
-<v t="ekr.20050404094627" a="E"><vh>Buttons</vh>
+<v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
 <v t="ekr.20050812090111"><vh>@@button rst3</vh></v>
@@ -131,19 +131,19 @@
 </v>
 <v t="ekr.20050830115714.12"><vh>How should I use Leo with bzr/git/hg/svn/cvs?</vh></v>
 <v t="ekr.20090706042206.14718"><vh>How can I use Leo cooperatively without sentinels?</vh></v>
-<v t="ekr.20050830115714.13"><vh>Using derived files</vh>
+<v t="ekr.20050830115714.13"><vh>Using external files</vh>
 <v t="ekr.20090501093330.3"><vh>@rst-option show-sections = False</vh>
-<v t="ekr.20050830115714.14"><vh>How do I inhibit sentinels in derived files?</vh></v>
+<v t="ekr.20050830115714.14"><vh>How do I inhibit sentinels in external files?</vh></v>
 <v t="ekr.20050830115714.16"><vh>How do I prevent Leo from expanding sections?</vh></v>
 <v t="ekr.20050830115714.18"><vh>How can I create Javascript comments?</vh></v>
 <v t="ekr.20050830115714.19"><vh>How can I disable PHP comments?</vh></v>
 <v t="ekr.20050830115714.20"><vh>How can I use Leo with unsupported languages?</vh></v>
-<v t="ekr.20050830115714.21"><vh>How do I make derived files start with a shebang line?</vh></v>
+<v t="ekr.20050830115714.21"><vh>How do I make external files start with a shebang line?</vh></v>
 <v t="ekr.20050830115714.22"><vh>How do I use Leo to create CWEB files?</vh></v>
-<v t="ekr.20050830115714.24"><vh>Can @file trees contain material not in the derived file?</vh></v>
+<v t="ekr.20050830115714.24"><vh>Can @file trees contain material not in the external file?</vh></v>
 <v t="ekr.20050830115714.25"><vh>How can I use Leo with older C compilers</vh></v>
 <v t="ekr.20060529053407"><vh>Why can't I use @ignore directives in @thin trees?</vh></v>
-<v t="shadow.20080825171547.9"><vh>How can I avoid getting long lines in derived files?</vh></v>
+<v t="shadow.20080825171547.9"><vh>How can I avoid getting long lines in external files?</vh></v>
 </v>
 </v>
 <v t="ekr.20050830115714.26"><vh>Customizing Leo</vh>
@@ -153,6 +153,7 @@
 <v t="ekr.20050830120844"><vh>How do I add a new menu item from a plugin?</vh></v>
 <v t="ekr.20060805094325"><vh>How can I use Leo's legacy key bindings?</vh></v>
 <v t="ekr.20060915112109"><vh>How can I enable and disable support for psyco?</vh></v>
+<v t="ekr.20091105080104.9031"><vh>How do I specify qt fonts?</vh></v>
 </v>
 </v>
 <v t="ekr.20050830115714.118"><vh>Tips and techniques</vh>
@@ -188,12 +189,13 @@
 <v t="ekr.20050830115714.117"><vh>The new Python decorator syntax causes problems.  What can I do?</vh></v>
 <v t="ekr.20070623145346.1"></v>
 <v t="ekr.20070816092449"><vh>I can't run the LeoBridge module outside of leo/core.  What should I do?</vh></v>
+<v t="ekr.20091105080104.11492"><vh>Why don't @font nodes work with the Qt gui?</vh></v>
 </v>
 </v>
 <v t="ekr.20071026055929"><vh>Unicode issues</vh>
 <v t="ekr.20090501093330.7"><vh>@rst-option show-sections = False</vh>
 <v t="ekr.20061021164213"><vh>I can not enter non-ascii characters.  What can I do?</vh></v>
-<v t="ekr.20050830115714.9"><vh>Some characters in derived files look funny. What can I do?</vh></v>
+<v t="ekr.20050830115714.9"><vh>Some characters in external files look funny. What can I do?</vh></v>
 <v t="ekr.20060917130130"><vh>I get weird results when defining unicode strings in scripts.  What is going on?</vh></v>
 <v t="ekr.20050830115714.10"><vh>Some characters are garbled when importing files. What can I do?</vh></v>
 <v t="ekr.20071026055929.1"><vh>Python's print statement shows 'byte hash' for unicode characters.  What can I do?</vh></v>
@@ -224,7 +226,7 @@
 <v t="ekr.20050823082517"><vh>Using Leo as an outliner</vh></v>
 </v>
 <v t="ekr.20050824151926"><vh>Unique features of Leo</vh>
-<v t="ekr.20050822173420.1"><vh>Derived files</vh></v>
+<v t="ekr.20050822173420.1"><vh>external files</vh></v>
 <v t="ekr.20050822173420.2"><vh>Clones &amp; views</vh></v>
 <v t="ekr.20050827055403"><vh>Outline structure is significant everywhere</vh></v>
 <v t="ekr.20050822173420.3"><vh>Leo directives</vh></v>
@@ -342,7 +344,7 @@
 <v t="EKR.20040524104904.100"><vh>The File Menu</vh>
 <v t="EKR.20040524104904.101"><vh>Loading, Saving and Reverting Files</vh></v>
 <v t="EKR.20040524104904.102"><vh>Communicating with external editors</vh></v>
-<v t="EKR.20040524104904.105"><vh>Tangling an outline: Producing Derived Files</vh></v>
+<v t="EKR.20040524104904.105"><vh>Tangling an outline: Producing external files</vh></v>
 <v t="EKR.20040524104904.106"><vh>Untangling: updating an outline</vh></v>
 <v t="EKR.20040524104904.108"><vh>Importing Files into Leo Outlines</vh></v>
 <v t="EKR.20040524104904.109"><vh>Exporting Files from Leo Outlines</vh></v>
@@ -477,7 +479,7 @@
 <v t="ekr.20050902105852.3"><vh>Borland C++</vh></v>
 <v t="ekr.20050902105852.4"><vh>Discovering Python</vh></v>
 <v t="ekr.20050902105852.5"><vh>SourceForge</vh></v>
-<v t="ekr.20050902105852.6"><vh>Allowing sentinel lines in derived files</vh></v>
+<v t="ekr.20050902105852.6"><vh>Allowing sentinel lines in external files</vh></v>
 <v t="ekr.20050902105852.7"><vh>Untangling @file is easy!</vh></v>
 <v t="ekr.20050902105852.8"><vh>Leo 3.x: Continuous improvement</vh></v>
 <v t="ekr.20050902105852.9"><vh>Leo 4.0: Eliminating error 'recovery'</vh></v>
@@ -858,7 +860,7 @@
 <v t="EKR.20040524104904.333"><vh>Errors while reading @file nodes</vh></v>
 <v t="EKR.20040524104904.336"><vh>Errors while writing @file nodes</vh></v>
 <v t="EKR.20040524104904.357"><vh>Format of .leo files</vh></v>
-<v t="ekr.20060921064744.1"><vh>Format of derived files</vh></v>
+<v t="ekr.20060921064744.1"><vh>Format of external files</vh></v>
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
 </v>
 </v>
@@ -1023,7 +1025,7 @@
 <v t="edream.110203163054.67"><vh>4.0 final</vh>
 <v t="edream.110203163054.68"><vh>4.0 beta 4</vh></v>
 <v t="edream.110203163054.69"><vh>4.0 beta 3</vh>
-<v t="edream.110203163054.70"><vh>Fixed bugs</vh>
+<v t="edream.110203163054.70" a="E"><vh>Fixed bugs</vh>
 <v t="edream.110203163054.71"><vh>Fixed bug that caused some clones not to be marked as clones</vh></v>
 <v t="edream.110203163054.72"><vh>Corrected problems with setting icons on Linux</vh></v>
 <v t="edream.110203163054.73"><vh>Fixed crasher in sentinelName</vh></v>
@@ -1047,7 +1049,7 @@
 <v t="edream.110203163054.88"><vh>Fixed @rawfile write problem</vh></v>
 </v>
 <v t="edream.110203163054.89"><vh>Improved commands</vh>
-<v t="edream.110203163054.90"><vh>Finished Import Derived File command and made it undoable</vh></v>
+<v t="edream.110203163054.90"><vh>Finished Import External File command and made it undoable</vh></v>
 <v t="edream.110203163054.91"><vh>Moved Clear Recent Files menu item into Recent Files menu</vh></v>
 <v t="edream.110203163054.92"><vh>Added better log message for Convert All Tabs/Blanks commands</vh></v>
 <v t="edream.110203163054.93"><vh>Marked changed nodes &amp; make the @file node and the outline dirty.</vh></v>
@@ -1064,8 +1066,8 @@
 <v t="edream.110203163054.101"><vh>New commands &amp; options</vh>
 <v t="edream.110203163054.102"><vh>New write_old_format_derived_files option</vh></v>
 <v t="edream.110203163054.103"><vh>New Clear Recent Files command</vh></v>
-<v t="edream.110203163054.104"><vh>New Import Derived File command</vh></v>
-<v t="edream.110203163054.105"><vh>New Write 3.x/4.x Derived Files &amp; autosave</vh></v>
+<v t="edream.110203163054.104"><vh>New Import External File command</vh></v>
+<v t="edream.110203163054.105"><vh>New Write 3.x/4.x External Files &amp; autosave</vh></v>
 </v>
 <v t="edream.110203163054.106"><vh>New plugins</vh></v>
 <v t="edream.110203163054.107"><vh>New read logic and greatly inproved error recovery</vh>
@@ -1119,14 +1121,14 @@
 <v t="ekr.20040201114855.106"><vh>Added done message to Mark Changed commands</vh></v>
 </v>
 <v t="ekr.20040131040356.1"><vh>Bugs fixed in 4.1 rc4</vh>
-<v t="ekr.20040131044727"><vh>Fixed several bugs when writing derived files</vh></v>
+<v t="ekr.20040131044727"><vh>Fixed several bugs when writing external files</vh></v>
 <v t="ekr.20040131040754"><vh>Fixed several crashers</vh></v>
 <v t="ekr.20040131040544.5"><vh>Fixed "bad leo file" when reading some 3.x .leo files</vh></v>
 <v t="ekr.20040131040544.18"><vh>Fixed huge performance bug in cut/copy node commands</vh></v>
 <v t="ekr.20040131040544.32"><vh>Leo now properly re-enables drawing after exceptions</vh></v>
 <v t="ekr.20040201114855.107"><vh>Fixed major bug in tkFind.init</vh></v>
 <v t="ekr.20040131040544.73"><vh>Fixed bug in Move Up command</vh></v>
-<v t="ekr.20040131040544.81"><vh>Fixed bug in Import Derived File</vh></v>
+<v t="ekr.20040131040544.81"><vh>Fixed bug in Import External File</vh></v>
 <v t="ekr.20040131040544.146"><vh>Fixed bugs related to saving read-only files</vh></v>
 <v t="ekr.20040131040544.169"><vh>Fixed bug in Import Python Window command when using Python 2.2</vh></v>
 <v t="ekr.20040131040544.228"><vh>Fixed bugs in Convert All BlanksTabs commands</vh></v>
@@ -1217,7 +1219,7 @@
 <v t="ekr.20040914103743"><vh>Fixed bugs</vh>
 <v t="ekr.20040914103359.47"><vh>Disabled perfect import</vh></v>
 <v t="ekr.20040914103359.127"><vh>Fixed bugs in Tangle/Untangle</vh></v>
-<v t="ekr.20040914103359.12"><vh>Fixed Import Derived Files command</vh></v>
+<v t="ekr.20040914103359.12"><vh>Fixed Import External Files command</vh></v>
 <v t="ekr.20040914103359.15"><vh>Fixed parsing of minimal &lt;preferences&gt; tag</vh></v>
 <v t="ekr.20040914103359.7"><vh>Fixed problem with tabs on MacOs</vh></v>
 <v t="ekr.20040914103359.28"><vh>Fixed read errors with @language html</vh></v>
@@ -1242,7 +1244,7 @@
 <v t="ekr.20040804164600.406"><vh>Leo makes brings the confirm save box to the front</vh></v>
 <v t="ekr.20040804164600.419"><vh>Improved how es_exception gets line number of errors</vh></v>
 <v t="ekr.20040804164600.421"><vh>Fixed major bug: changing headline now marks subnodes dirty</vh></v>
-<v t="ekr.20040804164600.470"><vh>Leo now gives update warning only once per derived file</vh></v>
+<v t="ekr.20040804164600.470"><vh>Leo now gives update warning only once per external file</vh></v>
 <v t="ekr.20040804164600.471"><vh>Leo updates tnodeLists properly in all situations</vh></v>
 <v t="ekr.20040804164600.515"><vh>Fixed several leaks of positions</vh></v>
 <v t="ekr.20040804171818"><vh>Fixed all unit tests so they work with both Python 2.2 and Python 2.3</vh></v>
@@ -1276,8 +1278,8 @@
 <v t="EKR.20040628095213.113"><vh>Fixed Select All bug</vh></v>
 <v t="EKR.20040628095213.121"><vh>Fixed bugs in @tab_width: support backspace with negative tab width</vh></v>
 <v t="EKR.20040628095213.143"><vh>Fixed bugs in Remove Sentinel command</vh></v>
-<v t="EKR.20040628095213.160"><vh>Eliminated spurious error messages in Import Derived File command</vh></v>
-<v t="EKR.20040628095213.192"><vh>Removed gnx in headlines when importing thin derived files</vh></v>
+<v t="EKR.20040628095213.160"><vh>Eliminated spurious error messages in Import External File command</vh></v>
+<v t="EKR.20040628095213.192"><vh>Removed gnx in headlines when importing thin external files</vh></v>
 <v t="EKR.20040628095213.202"><vh>Fixed bugs reading 4.1 files</vh></v>
 <v t="EKR.20040628095213.213"><vh>Fixed Open With bug</vh></v>
 <v t="EKR.20040628095213.225"><vh>Fixed Go To Line Number command</vh></v>
@@ -1523,7 +1525,7 @@
 <v t="ekr.20050209141626.105"><vh>Made sure Leo asks for leoID at most once</vh></v>
 <v t="ekr.20050209141626.113"><vh>Leo now prints unicode characters properly in the log pane</vh></v>
 <v t="ekr.20050209141626.114"><vh>Fixed various problems with opening files with Unicode filenames</vh></v>
-<v t="ekr.20050211095754"><vh>Fixed bug reading encoding field in derived files</vh></v>
+<v t="ekr.20050211095754"><vh>Fixed bug reading encoding field in external files</vh></v>
 <v t="ekr.20050212054743"><vh>Allow indented code blocks to be run using Execute Script command</vh></v>
 <v t="ekr.20050212144116"><vh>Fixed problems found by pychecker</vh></v>
 </v>
@@ -1551,16 +1553,16 @@
 <v t="ekr.20050123115804.1"><vh>You can install third-party extensions in Leo's extensions directory</vh></v>
 </v>
 <v t="ekr.20050123092834.1"><vh>Fixed bugs...</vh>
-<v t="ekr.20050123101208"><vh> Major bugs: these bugs corrupted derived files!</vh>
+<v t="ekr.20050123101208"><vh> Major bugs: these bugs corrupted external files!</vh>
 <v t="ekr.20050123092834.432"><vh>Fixed double doc part bug</vh></v>
-<v t="ekr.20050123092834.497"><vh>Fixed bug in how Leo writes thin derived files</vh></v>
+<v t="ekr.20050123092834.497"><vh>Fixed bug in how Leo writes thin external files</vh></v>
 </v>
 <v t="ekr.20050123092834.2"><vh>Commands</vh>
 <v t="ekr.20050123092834.6"><vh>Fixed problems with spawnv option of openWith</vh></v>
 <v t="ekr.20050123092834.19"><vh>Fixed bug in  Remove Sentinels command</vh></v>
 <v t="ekr.20050123092834.27"><vh>Fixed bug re Paste Node As Clone</vh></v>
 <v t="ekr.20050123092834.42"><vh>Fixed Pretty Print commands for Python 2.4</vh></v>
-<v t="ekr.20050123092834.71"><vh>Fixed crasher in Import Derived Files command</vh></v>
+<v t="ekr.20050123092834.71"><vh>Fixed crasher in Import external files command</vh></v>
 <v t="ekr.20050123092834.510"><vh>Search commands are now restricted to hoisted area</vh></v>
 </v>
 <v t="ekr.20050123100706.1"><vh>Distribution</vh>
@@ -1573,7 +1575,7 @@
 <v t="ekr.20050123092834.196"><vh>Fixed bug:  @nosent wrote sentinels!</vh></v>
 <v t="ekr.20050123092834.422"><vh>Fixed bug in replaceTargetFileIfDifferent</vh></v>
 <v t="ekr.20050123092834.424"><vh>Made sure that @ignore forces writing of inner @thin trees</vh></v>
-<v t="ekr.20050123092834.431"><vh>Fixed crasher when attempting to write a derived file to an invalid path</vh></v>
+<v t="ekr.20050123092834.431"><vh>Fixed crasher when attempting to write a external file to an invalid path</vh></v>
 <v t="ekr.20050123092834.434"><vh>Fixed Python 2.4 deprecation warning when saving .leo files</vh></v>
 <v t="ekr.20050123092834.499"><vh>Fixed crasher in getOutputNewline</vh></v>
 <v t="ekr.20050123092834.544"><vh>Always use os.rename in utils_rename</vh></v>
@@ -1653,7 +1655,7 @@
 <v t="ekr.20051219150602.75"><vh>Fixed many headline problems</vh></v>
 <v t="ekr.20051219150602.81"><vh>Fixed problem in reformatParagraph</vh></v>
 <v t="ekr.20051219150602.85"><vh>Installed LeoUsers patch </vh></v>
-<v t="ekr.20060105182648.376"><vh>Improved Import Derived Files command.</vh></v>
+<v t="ekr.20060105182648.376"><vh>Improved Import external files command.</vh></v>
 <v t="ekr.20060105182648.377"><vh>Fixed crasher in backwardDeleteCharacter</vh></v>
 <v t="ekr.20060105182648.378"><vh>Fixed recent bug: dialogs now get focus properly when first opened.</vh></v>
 <v t="ekr.20060105182648.379"><vh>Made sure shortcuts are printed clearly by k.registerCommand</vh></v>
@@ -1685,7 +1687,7 @@
 <v t="ekr.20051028051444.7"><vh>Options for selected body text</vh></v>
 </v>
 <v t="ekr.20051028051444.8"><vh>New mini-buffer commands</vh></v>
-<v t="ekr.20051028051444.9"><vh>New code-level features</vh>
+<v t="ekr.20051028051444.9" a="E"><vh>New code-level features</vh>
 <v t="ekr.20051028051444.10"><vh>Dictionaries of keys and commands</vh></v>
 <v t="ekr.20051028051444.11"><vh>Functions that return the present key bindings</vh></v>
 <v t="ekr.20051028051444.12"><vh>The registerCommand helper</vh></v>
@@ -1746,7 +1748,7 @@
 <v t="ekr.20051205090923.22"><vh>Fix problems applying settings</vh></v>
 <v t="ekr.20051128181302.204"><vh>Fixed several bugs in rst3 plugin</vh></v>
 </v>
-<v t="ekr.20051128181651"><vh>Code changes</vh>
+<v t="ekr.20051128181651" a="E"><vh>Code changes</vh>
 <v t="ekr.20051128181302.149"><vh>Removed later arg from c.frame.xWantsFocus</vh></v>
 <v t="ekr.20051128181302.196"><vh>Created enableTclTraces</vh></v>
 <v t="ekr.20051128181302.208"><vh>Eliminated w.update in g.app.gui.set_focus</vh></v>
@@ -1794,7 +1796,7 @@
 <v t="ekr.20060116174906.213"><vh>Call c.setLog in all entries into code</vh></v>
 <v t="ekr.20060116174906.255"><vh>Generalized doCommand</vh></v>
 </v>
-<v t="ekr.20060116174906.258"><vh>New features</vh>
+<v t="ekr.20060116174906.258" a="E"><vh>New features</vh>
 <v t="ekr.20060116174906.259"><vh>Installed many standard bindings to leoSettings.leo</vh></v>
 <v t="ekr.20060116174906.262"><vh>Added Check Bindings script in leoSettings.leo</vh></v>
 <v t="ekr.20060116174906.263"><vh>Scripts now maintain original focus</vh></v>
@@ -2383,7 +2385,7 @@
 <v t="ekr.20070703095207.59"><vh>es</vh></v>
 </v>
 <v t="ekr.20070703095207.61"><vh>Run unit tests in a separate process</vh></v>
-<v t="ekr.20070703095207.72"><vh>Move most unit tests into derived files</vh></v>
+<v t="ekr.20070703095207.72"><vh>Move most unit tests into external files</vh></v>
 <v t="ekr.20070703095207.73"><vh>Send can not import aspell message only to the log</vh></v>
 </v>
 </v>
@@ -2655,7 +2657,7 @@
 </v>
 <v t="ekr.20080328074117.216"><vh>Features</vh>
 <v t="ekr.20080328074117.217"><vh>Added @bool collapse_nodes_while_spelling setting</vh></v>
-<v t="ekr.20080328074117.220"><vh>Errors reading derived files give line numbers</vh></v>
+<v t="ekr.20080328074117.220"><vh>Errors reading external files give line numbers</vh></v>
 <v t="ekr.20080328074117.262"><vh>Added @bool allow_middle_button_paste</vh></v>
 <v t="ekr.20080328074117.297"><vh>Added support for @popup settings</vh></v>
 </v>
@@ -3172,45 +3174,60 @@
 </v>
 <v t="ekr.20050831195331.4"></v>
 <v t="ekr.20091105080104.6568"><vh>More language for the intro</vh></v>
-<v t="ekr.20091105080104.9028"><vh>FAQ bout changing qt fonts </vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
 
-This is an important milestone in Leo's history; the two defining features of the 4.2 code base are complete:
+This is an important milestone in Leo's history; the two defining features of
+the 4.2 code base are complete:
 
 1. This is the first stable version using the "shared nodes" code base.
 
-Shared nodes dramatically improve the time needed to insert, delete, and move nodes.  Moreover, the new code base is code compatible with the old.  Indeed, much of Leo still uses the old code base.  See Chapter 7 for full details of how to script Leo with the 4.2 code base.
+Shared nodes dramatically improve the time needed to insert, delete, and move
+nodes. Moreover, the new code base is code compatible with the old. Indeed, much
+of Leo still uses the old code base. See Chapter 7 for full details of how to
+script Leo with the 4.2 code base.
 
-2. This is the first version to use @file-thin for most derived files.
+2. This is the first version to use @file-thin for most external files.
 
 @file-thin makes it possible to use Leo effectively in a cvs environment.  Indeed, cvs now contains only a "dummy" version of LeoPy.leo.  The idea is that:
 
-- LeoPyRef.leo hardly ever changes.  Developers will download LeoPyRef.leo once from cvs, then rename LeoPyRef.leo to be LeoPy.leo.  LeoPy.leo is private to each developer.
+- LeoPyRef.leo hardly ever changes. Developers will download LeoPyRef.leo once
+from cvs, then rename LeoPyRef.leo to be LeoPy.leo. LeoPy.leo is private to each
+developer.
 
-- Developers will commit and update to cvs only thin derived files.  There is no longer any need to keep .leo files and the files derived from them "in synch".
+- Developers will commit and update to cvs only thin external files. There is no
+longer any need to keep .leo files and the files derived from them "in synch".
 
-- Similar remarks apply to LeoPlugins.leo.  Cvs contains only LeoPluginsRef.leo, and contributors will need only to submit thin derived files.
+- Similar remarks apply to LeoPlugins.leo. Cvs contains only LeoPluginsRef.leo,
+and contributors will need only to submit thin external files.
 
-I have been using the new code base without incident for weeks now, and I am fairly confident that it is safe to use.  Nevertheless, I would suggest routine caution when dealing with this version until more people have tested it.
+I have been using the new code base without incident for weeks now, and I am
+fairly confident that it is safe to use. Nevertheless, I would suggest routine
+caution when dealing with this version until more people have tested it.
 
 Known bugs
 
-- Cutting and pasting an @file-thin node does not work properly.  This will be easy to fix, I think.
+- Cutting and pasting an @file-thin node does not work properly. This will be
+easy to fix, I think.
 
-- The present algorithm for reading thin derived files probably does not handle properly the situation in which a named node is some kind of grand child of the referencing node rather than being an immediate child of the referencing node.  This is a rare situation, easily avoided, and it doesn't happen at all in LeoPy.leo.  Nevertheless, something must be done.
+- The present algorithm for reading thin external files probably does not handle
+properly the situation in which a named node is some kind of grand child of the
+referencing node rather than being an immediate child of the referencing node.
+This is a rare situation, easily avoided, and it doesn't happen at all in
+LeoPy.leo. Nevertheless, something must be done.
 
 Other improvements:
 
-- Fixed a number of problems with using Leo on MacOS X.  In particular, Leo now uses the clover key as is usual on the Mac.  More Mac and *nix specific improvements are coming.
+- Fixed a number of problems with using Leo on MacOS X. In particular, Leo now
+uses the clover key as is usual on the Mac. More Mac and *nix specific
+improvements are coming.
 
 Still to do:
 
-- Perfect import and @import.
-- Make the Go To Line Number command work with @file-thin files.
-- Fix minor bugs and add new features
-  See the "To Do: 4.2" node in the leoToDo.txt node in LeoPy.leo.</t>
+- Perfect import and @import. - Make the Go To Line Number command work with
+@file-thin files. - Fix minor bugs and add new features See the "To Do: 4.2"
+node in the leoToDo.txt node in LeoPy.leo.</t>
 <t tx="EKR.20040518070824"></t>
 <t tx="EKR.20040518070824.1">- Moved call to assignFileIndices into write_Leo_file.
 - Called assignFileIndices in writeAtFileNodes, writeDirtyAtFileNodes, writeMissingAtFileNodes</t>
@@ -3232,7 +3249,7 @@ Directives &amp; sentinels
 Writing
 
 - Added top-level atFile code to write @file-thin tree.
-- DO write @file-thin vnodes if there was an error writing the derived file.
+- DO write @file-thin vnodes if there was an error writing the external file.
 	- No autosave for @file-thin.
  	- Leo writes @file nodes first, so this is not a problem.
 	- putVnode checks orphan bit, which gets set if there was an error.
@@ -3244,7 +3261,7 @@ Reading
 
 - Set at.thinFile when reading thin files.
 - Suppressed changed message and related items for thin files.
-- Modified scanText4 and allies to read thin derived files.
+- Modified scanText4 and allies to read thin external files.
 	- Don't look for tnodeList for thin files.
 	- Initially, at.lastThinNode is at.root.v
 	- readStartNode calls createThinChild
@@ -3273,7 +3290,7 @@ If you remove the @ignore and then save, you will lose data.
 How to recover the data:
 	- Read Outline.
 	- Remove @ignore
-	- Import derived file... </t>
+	- Import External File... </t>
 <t tx="EKR.20040524104904.26">@language rest</t>
 <t tx="EKR.20040524104904.27">A cloned node is a copy of a node that changes when the original changes. Not
 only are changes maintained across all the the clones of a node, changes to its
@@ -3507,7 +3524,7 @@ New in 4.2:  The following terms are equivalent.  The first form is preferred in
 
 You can get any combination of sentinels/no sentinels and references/no references using @file, @nosent, @noref and @asis trees:
 
-                 Derived files        Sections and 
+                External files        Sections and 
 Type of tree   contain sentinels?   @others expanded?
 ------------   ------------------   -----------------
        @asis   no                   no
@@ -3517,17 +3534,31 @@ Type of tree   contain sentinels?   @others expanded?
      
        
 
-Leo can not update the outline from changes made from derived files unless those files contain sentinels.  The primary source for @nosent and @asis trees are the outlines from which those files were derived.
+Leo can not update the outline from changes made from external files unless those
+files contain sentinels. The primary source for @nosent and @asis trees are the
+outlines from which those files were derived.
 
-Leo creates files derived from @noref and @asis trees by writing the body text of all nodes of the tree in outline order.  Leo writes the body text _as is_, without recognizing section definitions, without expanding section references, and without treating directives specially in any way.  In particular, Leo copies all directives, including @space or @c directives, to the derived file as text. However, Leo recognizes the @ignore directive in the _ancestors_ of @noref or @asis nodes, so you may use the @ignore directive as usual to prevent Leo from writing @rawfile and @silentfile trees.
+Leo creates files derived from @noref and @asis trees by writing the body text
+of all nodes of the tree in outline order. Leo writes the body text _as is_,
+without recognizing section definitions, without expanding section references,
+and without treating directives specially in any way. In particular, Leo copies
+all directives, including @space or @c directives, to the external file as text.
+However, Leo recognizes the @ignore directive in the _ancestors_ of @noref or
+@asis nodes, so you may use the @ignore directive as usual to prevent Leo from
+writing @rawfile and @silentfile trees.
 
 Notes:
 
-1. When writing @noref trees, Leo writes only the @+leo, @-leo, @+node, @-node, @+body and @-body sentinels.
+1. When writing @noref trees, Leo writes only the @+leo, @-leo, @+node, @-node,
+@+body and @-body sentinels.
 
-2. Within @asis trees only, if a headline starts with @@, Leo writes everything in the headline following the @@ just before the corresponding body text.
+2. Within @asis trees only, if a headline starts with @@, Leo writes everything
+in the headline following the @@ just before the corresponding body text.
 
-3. Files derived from @asis trees contain _nothing_ not contained in body text (or @@ headlines).  In particular, if body text does not end in a newline, the first line from the next node will concatenated to the last line of the preceding node.</t>
+3. Files derived from @asis trees contain _nothing_ not contained in body text
+(or @@ headlines). In particular, if body text does not end in a newline, the
+first line from the next node will concatenated to the last line of the
+preceding node.</t>
 <t tx="EKR.20040524104904.99">@language rest</t>
 <t tx="EKR.20040524104904.100"></t>
 <t tx="EKR.20040524104904.101">-   The ``New`` command creates a new Leo main window.
@@ -3574,7 +3605,7 @@ The following commands are located in the ``Read/Write`` menu, part of the
 
 -   The ``Write Outline Only`` command saves an outline without writing any ``@file``
     trees. Useful for inserting an @file node into an outline without modifying a
-    derived file with the same name.
+    external file with the same name.
 
 -   The ``Write @file Nodes`` command forces an update of all @file trees.
 
@@ -3595,7 +3626,7 @@ the Tangle commands. The ``Tangle`` command tangles only the selected portion of
 the outline, the ``Tangle All`` command tangles the entire outline, and the
 ``Tangle Marked`` command tangles only marked headlines.
 
-The ``Tangle`` commands create a derived file, call it F, from each ``@root``
+The ``Tangle`` commands create a external file, call it F, from each ``@root``
 node. This process is like macro expansion. The contents of F are simply the
 body text of the ``@root node``, with each section reference replaced by its
 definition. Substitution continues until all references to sections are replaced
@@ -3609,15 +3640,15 @@ the ``@ignore`` directive causes the tangle commands to ignore a subtree. For
 more details, see: `Tangling @root trees with the Tangle commands`_</t>
 <t tx="EKR.20040524104904.106">The ``Untangle``, ``Untangle All`` and ``Untangle Marked`` commands are the
 reverse of the corresponding ``Tangle`` commands. They update an outline based
-on changes made to one or more derived files. These are exceptionally useful
+on changes made to one or more external files. These are exceptionally useful
 commands. For example, suppose you create a new part of the outline and
-``Tangle`` it for the first time. When you compile the resulting derived files
+``Tangle`` it for the first time. When you compile the resulting external files
 for the first time, you are likely to get many syntax errors. You could fix
 those errors in the outline and Tangle the outline again, but there is a much
-easier way: you fix the errors in the derived files using the compiler's editor,
+easier way: you fix the errors in the external files using the compiler's editor,
 then run the untangle command on the part of the outline that created the
-derived file. The ``Untangle`` command updates the selected outline to match the
-changes in the derived files. It's as simple as that. The ``Untangle`` command
+external file. The ``Untangle`` command updates the selected outline to match the
+changes in the external files. It's as simple as that. The ``Untangle`` command
 marks all the nodes in the outline that it updates; you can examine all such
 nodes with the ``Go To Next Marked`` command in the Outline menu. You cannot use
 ``Untangle`` to update doc parts, or leading comments in code parts or "trivial"
@@ -3627,20 +3658,20 @@ came from doc parts or are just leading comments.
 
 ``Untangle`` never changes the structure of an outline; it never inserts,
 deletes or moves nodes. Don't attempt to change the structure of an outline by
-modifying derived files; it won't work. Also, never delete, move or alter the
-sentinel lines in derived files written by the Tangle command. Such lines start
+modifying external files; it won't work. Also, never delete, move or alter the
+sentinel lines in external files written by the Tangle command. Such lines start
 with ``///`` followed by a section name. If you change the section name in a
 sentinel line ``Untangle`` will not update the code in the outline (with the old
 name) that generated the renamed section. Untangle now warns about sections that
-appear in a derived file but not in the outline. Untangle has no trouble with
-changed section references in derived files; it is only changed sentinel lines
+appear in a external file but not in the outline. Untangle has no trouble with
+changed section references in external files; it is only changed sentinel lines
 that cause problems. Cloned nodes that generate code in several files may cause
 problems for ``Untangle`` if not all the code is changed the same way in derived
-files. If ``Untangle`` is run separately on these derived files, Untangle will
+files. If ``Untangle`` is run separately on these external files, Untangle will
 update all cloned nodes each time it is run, so only the code in the last
 ``Untangle`` run will take effect. Therefore, the only reliable way to update
 text in cloned nodes is to make the change in the .leo file rather than the
-derived files.</t>
+external files.</t>
 <t tx="EKR.20040524104904.108">The ``Import`` commands do not attempt to do perfect translations; they merely automate the bulk of the drudgery:
 
 -   The ``Import to @file`` command creates an ``@file`` node from a file.
@@ -3651,7 +3682,7 @@ derived files.</t>
 
 -   The ``Import noweb Files`` command creates an @file node from a `noweb`_ file.
 
--   The Import Derived File command imports all the nodes in a derived file into the outline.
+-   The ``Import External File`` command imports all the nodes in a external file into the outline.
     Unlike the read commands, the command preserves no outline structure.
 
 -   The ``Import Flattened Outline`` command converts plain text written in ``MORE`` format to an outline.
@@ -3728,7 +3759,7 @@ can now use all of Leo's features to organize scripts that you execute
 interactively. Section definitions must appear in the node containing the script
 or in descendant nodes.
 
-Leo preprocesses all scripts by simulating the writing of a derived file to a
+Leo preprocesses all scripts by simulating the writing of a external file to a
 string. The ``Execute Script`` command sets ``app.scriptDict["script1"]`` to the
 value of the script before preprocessing, and sets ``app.scriptDict["script2"]``
 to the value of the script after preprocessing. Scripts may examine and change
@@ -3789,7 +3820,7 @@ Wrap Around
     the command reaches the bottom of the file.
     For reverse searches, the find or change command continues at the bottom of the file when
     the command reaches the top of the file.</t>
-<t tx="EKR.20040524104904.134">The ``Go To Line Number`` command selects the locations in your outlines corresponding to a line in a derived file.
+<t tx="EKR.20040524104904.134">The ``Go To Line Number`` command selects the locations in your outlines corresponding to a line in a external file.
 </t>
 <t tx="EKR.20040524104904.136">The ``Insert Body Time/Date`` and ``Insert Headline Time/Date`` commands insert
 formatted time and date into body or headline text. You must be editing a
@@ -4008,7 +4039,7 @@ A typical `@root node`_ starts out with something like::
 	&lt;&lt; private prototypes for class x &gt;&gt;
 	&lt;&lt; functions of class x &gt;&gt;
 
-In the derived file there is a comment that looks like this::
+In the external file there is a comment that looks like this::
 
 	/// &lt;&lt; includes for class x &gt;&gt;
 
@@ -4061,7 +4092,7 @@ Clones_ can create different views of the outline. An outline_ can contain many 
 `Clones &amp; views`_ discusses the implications of clones in detail.
 
 **Outlines increase flexibility**.
-`Organizer nodes`_ do not affect derived files in any way, but organizer nodes
+`Organizer nodes`_ do not affect external files in any way, but organizer nodes
 often convey the most information about the structure and design of a large
 system. Decoupling structure from content in this way is precisely what is
 needed for flexibility: one can reorganize at will without worrying about
@@ -4224,7 +4255,7 @@ file. Leo puts (the encoding of) these elements into an attribute called
 ``descendentTnodeUnknownAttributes``. This attribute is part of the ``&lt;v&gt;``
 element representing the ``@thin`` node. Leo does _not_ write
 ``v.unknownAttributes`` in ``@thin`` trees because *only tnodes have gnx's in
-thin derived files*. In effect, vnodes are anonymous. We could attempt to get
+thin external files*. In effect, vnodes are anonymous. We could attempt to get
 around this by identifying vnodes by their corresponding tnodes, but that's not
 a general solution and it is, in effect, equivalent to writing only
 ``t.unknownAttributes``. So it seems pointless to "pretend" to be writing
@@ -4251,76 +4282,244 @@ I'm proud of it. Second, much of the design work is not reflected in the code,
 because improved design often eliminated code entirely. The final code is so
 elegant that it obscures the hard work that created it. Third, you must
 understand this design in order to understand the implementation of @file trees
-and their derived files. Someday someone else may take charge of Leo. That
+and their external files. Someday someone else may take charge of Leo. That
 person should know what really makes Leo2 work.</t>
-<t tx="EKR.20040524104904.249">In the summer of 2001 I began work on a project that for a long time I had considered impossible.  I had long considered that "private" file formats such as .leo files were the only way to represent an outline properly and safely.  I'm not sure exactly what changed my mind, but I finally was willing to consider that information embedded in derived files might be useful.  This meant accepting the possibility that sentinel lines might be corrupted.  This was a crucial first step.  If we can trust the user not to corrupt sentinel lines than we can embed almost any kind of information into a derived file.
+<t tx="EKR.20040524104904.249">In the summer of 2001 I began work on a project that for a long time I had
+considered impossible. I had long considered that "private" file formats such as
+.leo files were the only way to represent an outline properly and safely. I'm
+not sure exactly what changed my mind, but I finally was willing to consider
+that information embedded in external files might be useful. This meant accepting
+the possibility that sentinel lines might be corrupted. This was a crucial first
+step. If we can trust the user not to corrupt sentinel lines than we can embed
+almost any kind of information into a external file.
 
-There were several motivations for this work.  I wanted to eliminate the need for explicit Tangle and Untangle commands. I thought of this as "Untangle on Read/Tangle on Write."  If tangling and untangling could be made automatic it would save the user a lot of work.  I also wanted to make derived files the primary sources files.  .leo files might be made much smaller derived files contained the primary source information. This hope turned out to be false.
+There were several motivations for this work. I wanted to eliminate the need for
+explicit Tangle and Untangle commands. I thought of this as "Untangle on
+Read/Tangle on Write." If tangling and untangling could be made automatic it
+would save the user a lot of work. I also wanted to make external files the
+primary sources files. .leo files might be made much smaller external files
+contained the primary source information. This hope turned out to be false.
 
-The result of this design work was something I originally called Leo2, though I now usually prefer to talk about @file trees.  Initially most design issues were unresolved or unknown. I resolved to attempt a robust error-recovery scheme, not knowing in advance what that might involve. I also wanted to solve what I thought of as the "cross-file clone" problem: clones that point from a .leo outline into a derived file. With Leo1 cross-file clones do not exist; everything is in the same .leo file. It was clear that Leo2 would have to change some aspects of clones, but all details were fuzzy.
+The result of this design work was something I originally called Leo2, though I
+now usually prefer to talk about @file trees. Initially most design issues were
+unresolved or unknown. I resolved to attempt a robust error-recovery scheme, not
+knowing in advance what that might involve. I also wanted to solve what I
+thought of as the "cross-file clone" problem: clones that point from a .leo
+outline into a external file. With Leo1 cross-file clones do not exist;
+everything is in the same .leo file. It was clear that Leo2 would have to change
+some aspects of clones, but all details were fuzzy.
 </t>
-<t tx="EKR.20040524104904.250">The next step was also crucial.  I started to use Leo1 as a prototype to design what the new body pane would look like to the user. In retrospect, using Leo1 as a prototype for Leo2 was just as inspired as using MORE as a prototype for Leo1.  Both prototypes marked the true beginning of their respective projects.  The Leo2 prototype was a mockup in Python of the code for reading and writing derived files. The file LeoDocs.leo contain these first prototype nodes.
+<t tx="EKR.20040524104904.250">The next step was also crucial. I started to use Leo1 as a prototype to design
+what the new body pane would look like to the user. In retrospect, using Leo1 as
+a prototype for Leo2 was just as inspired as using MORE as a prototype for Leo1.
+Both prototypes marked the true beginning of their respective projects. The Leo2
+prototype was a mockup in Python of the code for reading and writing derived
+files. The file LeoDocs.leo contain these first prototype nodes.
 
-Writing the prototype got me thinking about improving noweb.  With my experience with Leo1, I was able to create a new markup language that took advantage of outline structure.  I called the new language  "simplified noweb", though that terminology is obsolete.  I created @file nodes to distinguish between the old and new ways of creating derived files.  In Leo1, the @code directive is simply an abbreviation for a section definition line.  Simplified noweb used @c as an abbreviation for @code.  More importantly, simplified noweb used @c to separate doc parts from code parts without necessarily specifying a section name.  It quickly became apparent that most nodes could be unnamed.  All I needed was the @others directive to specify the location for all such unnamed nodes.
+Writing the prototype got me thinking about improving noweb. With my experience
+with Leo1, I was able to create a new markup language that took advantage of
+outline structure. I called the new language "simplified noweb", though that
+terminology is obsolete. I created @file nodes to distinguish between the old
+and new ways of creating external files. In Leo1, the @code directive is simply
+an abbreviation for a section definition line. Simplified noweb used @c as an
+abbreviation for @code. More importantly, simplified noweb used @c to separate
+doc parts from code parts without necessarily specifying a section name. It
+quickly became apparent that most nodes could be unnamed. All I needed was the
+@others directive to specify the location for all such unnamed nodes.
 
-From the start, simplified noweb was a joy to use. Indeed, the @others directive could replace all section definition lines.  Furthermore, I could make @doc directive optional if the body pane started in "code mode".  But this meant that plain body text could become a "literate" program! This was an amazing discovery.  These Aha's got me excited about Leo2. This was important, as it motivated me to do a lot of difficult design work.</t>
-<t tx="EKR.20040524104904.251">In spite of this excitement, I was uneasy. After much "daydreaming" I realized that I was afraid that reading and writing derived files would be interrupted by a long series of alerts. I saw that designing the "user interaction" during reading and writing would be very important. The next Aha was that I could replace a long series of alerts with messages to the log window, followed by a single "summary" alert. Much later I saw how to eliminate alerts entirely.
+From the start, simplified noweb was a joy to use. Indeed, the @others directive
+could replace all section definition lines. Furthermore, I could make @doc
+directive optional if the body pane started in "code mode". But this meant that
+plain body text could become a "literate" program! This was an amazing
+discovery. These Aha's got me excited about Leo2. This was important, as it
+motivated me to do a lot of difficult design work.</t>
+<t tx="EKR.20040524104904.251">In spite of this excitement, I was uneasy. After much "daydreaming" I realized
+that I was afraid that reading and writing external files would be interrupted by
+a long series of alerts. I saw that designing the "user interaction" during
+reading and writing would be very important. The next Aha was that I could
+replace a long series of alerts with messages to the log window, followed by a
+single "summary" alert. Much later I saw how to eliminate alerts entirely.
 
-At this time I thought there would be two kinds of "errors" while reading derived files. Warnings would alert the user that something non-serious had happened. True errors would alert the user that data might have been lost. Indeed, if Leo2 saves orphan and ignored nodes in a .leo file under an @file node, then read errors could endanger such nodes. Much later I saw that a robust error recovery scheme demands that @file nodes not contain orphan and @ignored nodes. (More on this subject later.) But if orphan and @ignored nodes are moved out of @file trees, there are no read errors that can cause data loss! So the distinction between warnings and errors finally went away.</t>
-<t tx="EKR.20040524104904.252">I next turned my attention to writing @file nodes.  A huge Aha: I realized that sentinel lines must contain both a leading and a trailing newline.  The general principle is this: the write code must contain absolutely no "conditional" logic, because otherwise the read code could not figure out whether the condition should be true or false.  So derived files contain blank lines between sentinel lines. These "extra" newlines are very useful, because the read (untangle) code can now easily determine exactly where every blank, tab and newline of the derived file came from.  It would be hard to overstate how important this simplifying principle was in practice.
+At this time I thought there would be two kinds of "errors" while reading
+external files. Warnings would alert the user that something non-serious had
+happened. True errors would alert the user that data might have been lost.
+Indeed, if Leo2 saves orphan and ignored nodes in a .leo file under an @file
+node, then read errors could endanger such nodes. Much later I saw that a robust
+error recovery scheme demands that @file nodes not contain orphan and @ignored
+nodes. (More on this subject later.) But if orphan and @ignored nodes are moved
+out of @file trees, there are no read errors that can cause data loss! So the
+distinction between warnings and errors finally went away.</t>
+<t tx="EKR.20040524104904.252">I next turned my attention to writing @file nodes. A huge Aha: I realized that
+sentinel lines must contain both a leading and a trailing newline. The general
+principle is this: the write code must contain absolutely no "conditional"
+logic, because otherwise the read code could not figure out whether the
+condition should be true or false. So external files contain blank lines between
+sentinel lines. These "extra" newlines are very useful, because the read
+(untangle) code can now easily determine exactly where every blank, tab and
+newline of the external file came from. It would be hard to overstate how
+important this simplifying principle was in practice.
 
-Much later, with urging from a customer, I realized that the write code could safely remove "extra" newlines between sentinels with a caching scheme in the low level atFile::os() routine. This scheme does not alter the body of the write code in any way: in effect, sentinels still contain leading and trailing "logical" newlines. The read code had to be modified to handle "missing" leading newlines, but this can always be done assuming that sentinels still contain logical leading and trailing newlines!
+Much later, with urging from a customer, I realized that the write code could
+safely remove "extra" newlines between sentinels with a caching scheme in the
+low level atFile::os() routine. This scheme does not alter the body of the write
+code in any way: in effect, sentinels still contain leading and trailing
+"logical" newlines. The read code had to be modified to handle "missing" leading
+newlines, but this can always be done assuming that sentinels still contain
+logical leading and trailing newlines!
 
-At about this time I designed a clever way of having the write code tell the read code which newlines were inserted in doc parts. (The whole point of doc parts is to have the write code format long comments by splitting long lines.) To quote from my diary:
+At about this time I designed a clever way of having the write code tell the
+read code which newlines were inserted in doc parts. (The whole point of doc
+parts is to have the write code format long comments by splitting long lines.)
+To quote from my diary:
 
-"We can use the following convention to determine where putDocPart has inserted line breaks: A line in a doc part is followed by an inserted newline if and only if the newline is preceded by whitespace. This is a really elegant convention, and is essentially invisible to the user.
-Tangle outputs words until the line would become too long, and then it inserts a newline. To preserve all whitespace, tangle always includes the whitespace that terminates a word on the same line as the word itself. Therefore, split lines always end in whitespace. To make this convention work, tangle only has to delete the trailing whitespace of all lines that are followed by a 'real' newline."
+"We can use the following convention to determine where putDocPart has inserted
+line breaks: A line in a doc part is followed by an inserted newline if and only
+if the newline is preceded by whitespace. This is a really elegant convention,
+and is essentially invisible to the user. Tangle outputs words until the line
+would become too long, and then it inserts a newline. To preserve all
+whitespace, tangle always includes the whitespace that terminates a word on the
+same line as the word itself. Therefore, split lines always end in whitespace.
+To make this convention work, tangle only has to delete the trailing whitespace
+of all lines that are followed by a 'real' newline."</t>
+<t tx="EKR.20040524104904.253">After the write code was working I turned my attention to the read (untangle)
+code. Leo's Untangle command is the most complex and difficult code I have ever
+written. Imagine my surprise when I realized that the Leo2 read code is
+essentially trivial! Indeed, the Leo2 untangle code is like an assembler. The
+read code scans lines of a external files looking for "opcodes", that is,
+sentinel lines, and executes some simple code for each separate opcode. The
+heart of this code is the scanText routine in atFile.cpp.
 
-</t>
-<t tx="EKR.20040524104904.253">After the write code was working I turned my attention to the read (untangle) code.  Leo's Untangle command  is the most complex and difficult code I have ever written. Imagine my surprise when I realized that the Leo2 read code is essentially trivial! Indeed, the Leo2 untangle code is like an assembler. The read code scans lines of a derived files looking for "opcodes", that is, sentinel lines, and executes some simple code for each separate opcode. The heart of this code is the scanText routine in atFile.cpp.
+The read code was written and debugged in less than two days! It is the most
+elegant code I have ever written. While perfecting the read code I realized that
+sentinel lines should show the complete nesting structure found in the outline,
+even if this information seems redundant. For example, I was tempted to use a
+single sentinel to represent an @other directive, but finally abandoned this
+plan in favor of the @+other and @-other sentinels.
 
-The read code was written and debugged in less than two days! It is the most elegant code I have ever written. While perfecting the read code I realized that sentinel lines should show the complete nesting structure found in the outline, even if this information seems redundant. For example, I was tempted to use a single sentinel to represent an @other directive, but finally abandoned this plan in favor of the @+other and @-other sentinels.
+This redundancy greatly simplified the read code and made the structure of
+external files absolutely clear. Moreover, it turned out that we need, in
+general, all the information created by the present sentinel lines. In short,
+sentinels are as simple as they can be, and no simpler.
 
-This redundancy greatly simplified the read code and made the structure of derived files absolutely clear. Moreover, it turned out that we need, in general, all the information created by the present sentinel lines. In short, sentinels are as simple as they can be, and no simpler.
+The atFile::createNthChild method is a very important: it ensures that nodes
+will be correctly inserted into the outline. createNthChild must be bullet-proof
+if the Read code is to be robust. Note that the write code outputs @node
+sentinels, that is, section definitions, in the order in which sections are
+referenced in the outline, not the order in which sections appear in the
+outline. So createNthChild must insert the n'th node of parent p properly even
+if p contains fewer than n-1 children! The write code ensures that section
+references are properly nested: @node sentinels are enclosed in @node sentinels
+for all their ancestors in the @file tree. createNthChild creates dummy siblings
+as needed, then replaces the dummy siblings later when their actual definitions,
+that is, @node sentinels, are encountered.
 
-The atFile::createNthChild method is a very important: it ensures that nodes will be correctly inserted into the outline. createNthChild must be bullet-proof if the Read code is to be robust. Note that the write code outputs @node sentinels, that is, section definitions, in the order in which sections are referenced in the outline, not the order in which sections appear in the outline. So createNthChild must insert the n'th node of parent p properly even if p contains fewer than n-1 children! The write code ensures that section references are properly nested: @node sentinels are enclosed in @node sentinels for all their ancestors in the @file tree. createNthChild creates dummy siblings as needed, then replaces the dummy siblings later when their actual definitions, that is, @node sentinels, are encountered.
+At this point the fundamental read/write code was complete. I found three minor
+bugs in the code over the next week or so, but it was clear that the read/write
+code formed a rock-solid base from which to continue design and implementation.
+This was an entirely unexpected surprise.</t>
+<t tx="EKR.20040524104904.254">At this point I could read and write external files "by hand", using temporary
+Read and Write commands. The next step was to integrate the reading and writing
+of external files with the loading and saving of .leo files. From time to time I
+made minor changes to the drivers for the read/write code to accommodate the
+Load and Save code, but at no time did I significantly alter the read or write
+code itself.
 
-At this point the fundamental read/write code was complete. I found three minor bugs in the code over the next week or so, but it was clear that the read/write code formed a rock-solid base from which to continue design and implementation. This was an entirely unexpected surprise.</t>
-<t tx="EKR.20040524104904.254">At this point I could read and write derived files "by hand", using temporary Read and Write commands. The next step was to integrate the reading and writing of derived files with the loading and saving of .leo files.  From time to time I made minor changes to the drivers for the read/write code to accommodate the Load and Save code, but at no time did I significantly alter the read or write code itself.
+The user interaction of the Load and Save commands drove the design and
+implementation of the load/store code. The most important questions were: "what
+do we tell the user?", and "what does the user do with the information?" It
+turns out that the user can't make any complex decision during error recovery
+because the user doesn't have nearly enough information to make an informed
+choice. In turn, this means that certain kinds of error recovery schemes are out
+of the question...</t>
+<t tx="EKR.20040524104904.255">I now turned my attention to "attributes" of nodes. Most attributes, like user
+marks, are non-essential. However, clone information is essential; we must never
+lose clone links. At this time I had a preliminary design for cross-file clones
+that involved a two part "pointer" consisting of a full path name and an
+immutable clone index within the external file. Eventually such pointers
+completely disappeared, but the immutable clone indices remain.
 
-The user interaction of the Load and Save commands drove the design and implementation of the load/store code. The most important questions were: "what do we tell the user?", and "what does the user do with the information?" It turns out that the user can't make any complex decision during error recovery because the user doesn't have nearly enough information to make an informed choice. In turn, this means that certain kinds of error recovery schemes are out of the question...</t>
-<t tx="EKR.20040524104904.255">I now turned my attention to "attributes" of nodes.  Most attributes, like user marks, are non-essential. However, clone information is essential; we must never lose clone links. At this time I had a preliminary design for cross-file clones that involved a two part "pointer" consisting of a full path name and an immutable clone index within the derived file. Eventually such pointers completely disappeared, but the immutable clone indices remain.
+My first thought was that it would be good to store all attributes in @node
+sentinels in the external file, but experience showed that would be irritating.
+Indeed, one wants Leo2 to rewrite external files only if something essential has
+changed. For example, one doesn't want to rewrite the external file just because
+a different node as been selected.
 
-My first thought was that it would be good to store all attributes in @node sentinels in the derived file, but experience showed that would be irritating. Indeed, one wants Leo2 to rewrite derived files only if something essential has changed. For example, one doesn't want to rewrite the derived file just because a different node as been selected.
+At this point I had another Aha: we can use the .leo file to store all
+non-essential attributes. For example, this means that the .leo file, not the
+external files, will change if we select a new node. In effect, the .leo file
+mirrors the external file. The only reason to store nodes in the .leo file under
+an @file node is to carry these attributes, so Leo2 wrote dummy nodes that do
+not reference body text. Much later I saw that dummy nodes were dangerous and
+that .leo files should contain all information found in external files.</t>
+<t tx="EKR.20040524104904.256">The concept of mirroring created a huge breakthrough with cross-file clones:
+Here is an excerpt of an email i sent to my brother Speed:
 
-At this point I had another Aha: we can use the .leo file to store all non-essential attributes. For example, this means that the .leo file, not the derived files, will change if we select a new node. In effect, the .leo file mirrors the derived file. The only reason to store nodes in the .leo file under an @file node is to carry these attributes, so Leo2 wrote dummy nodes that do not reference body text.  Much later I saw that dummy nodes were dangerous and that .leo files should contain all information found in derived files.</t>
-<t tx="EKR.20040524104904.256">The concept of mirroring created a huge breakthrough with cross-file clones: Here is an excerpt of an email i sent to my brother Speed:
+"I realized this morning that since a .leo file contains dummy vnodes for all
+nodes in a external file, those dummy nodes can carry clone info! I changed one
+line to make sure that the write code always writes clone info in dummy vnodes
+and voila! Cross-file clones worked!"
 
-"I realized this morning that since a .leo file contains dummy vnodes for all nodes in a derived file, those dummy nodes can carry clone info! I changed one line to make sure that the write code always writes clone info in dummy vnodes and voila! Cross-file clones worked!"
+All of Leo1's clone code could be used completely unchanged. Everything "just
+works".</t>
+<t tx="EKR.20040524104904.257">At first I thought we could make sure that the .leo file always correctly
+mirrors all external file, but disastrous experience showed that is a completely
+false hope. Indeed, backup .leo files will almost never mirror external file
+correctly. So it became urgent to find a completely fool-proof error recovery
+scheme.
 
-All of Leo1's clone code could be used completely unchanged. Everything "just works".</t>
-<t tx="EKR.20040524104904.257">At first I thought we could make sure that the .leo file always correctly mirrors all derived file, but disastrous experience showed that is a completely false hope. Indeed, backup .leo files will almost never mirror derived file correctly. So it became urgent to find a completely fool-proof error recovery scheme.
+I had known for quite a while that error recovery should work "as if" the
+mirroring nodes were deleted, then recreated afresh. Several failed attempts at
+an error recovery scheme convinced me that error recovery would actually have to
+delete all dummy nodes and then do a complete reread. This is what Leo2 does.
 
-I had known for quite a while that error recovery should work "as if" the mirroring nodes were deleted, then recreated afresh. Several failed attempts at an error recovery scheme convinced me that error recovery would actually have to delete all dummy nodes and then do a complete reread. This is what Leo2 does.
+But erasing dummy nodes would destroy any orphan and ignored nodes--by
+definition such nodes appear nowhere in the external file. Therefore, I had to
+enforce the rule that @file nodes should contain no such nodes. Here is an email
+I wrote to my brother, Speed Ream discussing what turned out to be the
+penultimate error recovery scheme:
 
-But erasing dummy nodes would destroy any orphan and ignored nodes--by definition such nodes appear nowhere in the derived file. Therefore, I had to enforce the rule that @file nodes should contain no such nodes. Here is an email I wrote to my brother, Speed Ream discussing what turned out to be the penultimate error recovery scheme:
+"The error recovery saga continues. After much pondering and some trial coding I
+have changed my mind about orphans and @ignored nodes. They simply should never
+appear as descendants of @file nodes. Fortunately, this simplifies all aspects
+of Leo2. Leo2 will issue a warning (not an error) if an orphan or @ignored node
+appears as the descendant of an @file node when a .leo file is being saved. If
+any warnings occur while writing the external file, Leo2 will write the
+"offending" @file tree to the .leo file instead of the external file. This has
+several advantages:
 
-"The error recovery saga continues. After much pondering and some trial coding I have changed my mind about orphans and @ignored nodes. They simply should never appear as descendants of @file nodes. Fortunately, this simplifies all aspects of Leo2.
-Leo2 will issue a warning (not an error) if an orphan or @ignored node appears as the descendant of an @file node when a .leo file is being saved. If any warnings occur while writing the derived file, Leo2 will write the "offending" @file tree to the .leo file instead of the derived file. This has several advantages:
+1. The user gets warned about orphan nodes. These are useful warnings! Orphan
+nodes arise from missing @others directives or missing section references.
 
-1.	The user gets warned about orphan nodes. These are useful warnings! Orphan nodes arise from missing @others directives or missing section references.
+2. The user doesn't have to change anything immediately in order to save an
+outline. This is very important. Besides warnings about orphans, Leo2 will also
+warn about undefined or unreferenced sections. User's shouldn't have to fix
+these warnings to do a Save!
 
-2. The user doesn't have to change anything immediately in order to save an outline. This is very important. Besides warnings about orphans, Leo2 will also warn about undefined or unreferenced sections. User's shouldn't have to fix these warnings to do a Save!
+3. No errors or alerts will occur during Reading or Writing, so the user's
+anxiety level goes way down. At worst, some informational message will be sent
+to the log. The user will never have to make important decisions during Loads or
+Saves. [At last the dubious distinction between errors and warnings disappears.]
 
-3. No errors or alerts will occur during Reading or Writing, so the user's anxiety level goes way down. At worst, some informational message will be sent to the log. The user will never have to make important decisions during Loads or Saves. [At last the dubious distinction between errors and warnings disappears.]
+4. Error recovery can be bullet-proof. Simple code will guarantee that after any
+read operation the structure of an @file node will match the structure of the
+external file. Also, sentinels in external files will now account for all children
+of an @file node. There are no more "missing nodes" that must be filled in using
+the .leo file. Finally, error recovery will never change the @file tree in any
+way: no more "recovered nodes" nodes.
 
-4. Error recovery can be bullet-proof. Simple code will guarantee that after any read operation the structure of an @file node will match the structure of the derived file. Also, sentinels in derived files will now account for all children of an @file node. There are no more "missing nodes" that must be filled in using the .leo file. Finally, error recovery will never change the @file tree in any way: no more "recovered nodes" nodes.
+5. The present read code can be used almost unchanged. The only addition is the
+posting of a warning if the structure of the .leo file does not match the
+structure of the external file. We need a warning because non-essential attribute
+of nodes (like user marks) may be altered."
 
-5. The present read code can be used almost unchanged. The only addition is the posting of a warning if the structure of the .leo file does not match the structure of the derived file. We need a warning because non-essential attribute of nodes (like user marks) may be altered."
-
-This ends the original history of Leo2. In fact, it took quite a while before Leo recovered properly from all errors. I finally saw that .leo files should duplicate all information in derived files. This allows a .leo file to be used a single backup file and allows maximal error recovery in all situations.  It took several months to stamp out several subtle bugs involving clones that caused spurious read errors. Such errors undermine confidence in Leo and can cause disastrous reversions. See my diary entries for January 2002 in leo.py for details.
-
-</t>
+This ends the original history of Leo2. In fact, it took quite a while before
+Leo recovered properly from all errors. I finally saw that .leo files should
+duplicate all information in external files. This allows a .leo file to be used a
+single backup file and allows maximal error recovery in all situations. It took
+several months to stamp out several subtle bugs involving clones that caused
+spurious read errors. Such errors undermine confidence in Leo and can cause
+disastrous reversions. See my diary entries for January 2002 in leo.py for
+details.</t>
 <t tx="EKR.20040524104904.259">The more I look at Tk, the more convinced I am that Python + Tk (aka Tkinter)
 is, by far, the best way to go with Leo. I now have Open Source code for tree
 widgets and splitter windows, and have intensely studied how to modify that code
@@ -4568,8 +4767,8 @@ The ``Tangle`` command translates the selected ``@root`` tree into one or more
 well-formatted C source files. The outline should contain directives, sections
 references and section definitions, as described in Chapter 4. The Untangle
 command is essentially the reverse of the ``Tangle`` command. The Tangle command
-creates a derived file from an ``@root`` tree; the Untangle command incorporates
-changes made to derived files back into the ``@root`` tree.
+creates a external file from an ``@root`` tree; the Untangle command incorporates
+changes made to external files back into the ``@root`` tree.
 
 The ``Tangle`` command operates in two passes. The first pass discovers the complete
 definitions of all sections and places these definitions in a symbol table. The
@@ -4621,10 +4820,10 @@ outline, especially whitespace, from expansions of section definitions created
 by the Tangle command. Such expansions need not be identical because they may
 have been generated at different levels of indentation. The ``Untangle`` command
 can not assume that all expansions of a section will be identical in the derived
-file; within the derived file, the programmer may have made incompatible changes
+file; within the external file, the programmer may have made incompatible changes
 to two different expansions of the same section. ``Untangle`` must check to see
 that all expansions of a section are "equivalent". As an added complication,
-derived files do not contain all the information found in ``@root`` trees.
+external files do not contain all the information found in ``@root`` trees.
 ``@root`` trees may contain headlines that generate no code at all. Also, an
 outline may define a section in several ways: with an ``@c`` or ``@code``
 directive or with a section definition line. To be useful, Untangle must handle
@@ -4634,7 +4833,7 @@ These conventions allow the ``Untangle`` command to recreate whitespace
 correctly.
 
 ``Untangle`` operates in two passes. The first pass finds definitions in the
-derived file and enters them into the **Untangle Symbol Table**, or UST.
+external file and enters them into the **Untangle Symbol Table**, or UST.
 Definitions often include references to other sections, so definitions often
 include nested definitions of referenced sections. The first pass uses a
 definition stack to keep track of nested definitions. The top of the stack
@@ -4815,7 +5014,7 @@ To convert ``@root`` trees to ``@file`` trees by hand:
 <t tx="EKR.20040524104904.327">The following error messages may be generated by the Untangle commands.
 
 Incompatible definitions of &lt;&lt;&lt; section name &gt;&gt;&gt;
-    Two expansions of ``&lt;&lt; section name &gt;&gt;`` were different in the derived file.
+    Two expansions of ``&lt;&lt; section name &gt;&gt;`` were different in the external file.
     This typically arises when the programmer changes one of the expansions but not the other.
 
 Missing root part
@@ -4834,7 +5033,7 @@ Missing root part
     The end of the file was reached before encountering the end sentinel line for ``&lt;&lt; section name &gt;&gt;``.
     This is likely the result of adding, deleting or altering a sentinel line.
 </t>
-<t tx="EKR.20040524104904.333">The following are all serious errors, meaning that the data in a derived file has been corrupted::
+<t tx="EKR.20040524104904.333">The following are all serious errors, meaning that the data in a external file has been corrupted::
 
     Bad @+leosentinel in &lt;filename&gt;
     Bad @delims
@@ -4853,7 +5052,7 @@ Missing root part
 You should restore the information from a backup .leo file using the ``Read Outline Only`` commands,
 followed by a ``Write @file Nodes`` command</t>
 <t tx="EKR.20040524104904.336">Errors while writing ``@file`` nodes are harmless.
-No information is lost because all information is written to the .leo file rather than the derived file.
+No information is lost because all information is written to the .leo file rather than the external file.
 
 ``bad @delims directive``
     A node contains an ill-formed ``@delims`` directive.
@@ -4868,8 +5067,8 @@ No information is lost because all information is written to the .leo file rathe
     The node contains more than one ``@others`` directive.
 
 ``Rename failed: no file created! (file may be read-only)``
-    Leo's ``Save`` command writes derived files to a temporary file,
-    and replaces the derived file by the temporary files only if the two files are different.
+    Leo's ``Save`` command writes external files to a temporary file,
+    and replaces the external file by the temporary files only if the two files are different.
     A problem with the file system prevented the temporary file from being renamed.
 
 ``Path does not exist: &lt;filename&gt;``
@@ -4879,7 +5078,7 @@ No information is lost because all information is written to the .leo file rathe
     but no section definition node for *section name* exists in the descendants of *headline*.</t>
 <t tx="EKR.20040524104904.351">The following bugs can not be fixed:
 
-1.  The ``Untangle`` command has no way of updating a section whose name has been changed in the derived file.
+1.  The ``Untangle`` command has no way of updating a section whose name has been changed in the external file.
 
     Because of the ``@unit`` directive, there is not even a way to issue a meaningful warning.
 
@@ -4889,9 +5088,9 @@ No information is lost because all information is written to the .leo file rathe
     and adding a reference to ``@&lt; c @&gt;`` in all roots of ``CWEB`` files.</t>
 <t tx="EKR.20040524104904.354">Leo uses unicode internally for all strings.
 
-1.  Leo converts headline and body text to unicode when reading .leo files and derived files.
-    Both .leo files and derived files may specify their encoding.  The default is ``utf-8``.
-    If the encoding used in a derived file is not "utf-8" it is represented in the ``@+leo`` sentinel line.
+1.  Leo converts headline and body text to unicode when reading .leo files and external files.
+    Both .leo files and external files may specify their encoding.  The default is ``utf-8``.
+    If the encoding used in a external file is not "utf-8" it is represented in the ``@+leo`` sentinel line.
     For example::
 
         #@+leo-encoding=iso-8859-1.
@@ -4901,7 +5100,7 @@ No information is lost because all information is written to the .leo file rathe
     When reading or writing a character not in a "lossy" encoding,
     Leo converts such characters to '?' and issues a warning. 
 
-2.  When writing .leo files and derived files Leo uses the same encoding used to read the file,
+2.  When writing .leo files and external files Leo uses the same encoding used to read the file,
     again with ``utf-8`` used as a default.
 
 3.  leoSettings.leo contains the following Unicode settings, with the defaults as shown::
@@ -4909,13 +5108,13 @@ No information is lost because all information is written to the .leo file rathe
         default_derived_file_encoding = UTF-8 
         new_leo_file_encoding = UTF-8 
 
-    These control the default encodings used when writing derived files and .leo files.
+    These control the default encodings used when writing external files and .leo files.
     Changing the ``new_leo_file_encoding`` setting is not recommended.
     See the comments in leoSettings.leo.
     You may set ``default_derived_file_encoding`` to anything that makes sense for you.
 
-4.  The ``@encoding`` directive specifies the encoding used in a derived file.
-    You can't mix encodings in a single derived file.</t>
+4.  The ``@encoding`` directive specifies the encoding used in a external file.
+    You can't mix encodings in a single external file.</t>
 <t tx="EKR.20040524104904.357">This technical information may be of use to those wanting to process Leo files with special-purpose filters.
 Leo's uses XML for its file format.
 The following sections describe this format in detail.
@@ -5018,7 +5217,7 @@ These elements must appear in this order.
     -   ``&lt;v&gt;`` elements corresponding to ``@file`` nodes now contain ``tnodeList`` attributes.
         The ``tnodeList`` attribute allows Leo to recreate the order in which nodes should appear in the outline.
         The ``tnodeList`` attribute is a list of gnx's: global node indices.
-        See ``Format of derived files (4.x)`` for the format of gnx's.
+        See ``Format of external files (4.x)`` for the format of gnx's.
 
     -   Plugins and scripts may add attributes to ``&lt;v&gt;`` and ``&lt;t&gt;`` elements.
         See `Chapter 13: Writing plugins`_ for details.
@@ -5043,30 +5242,40 @@ These elements must appear in this order.
 <t tx="EKR.20040524104904.380">@language rest</t>
 <t tx="EKR.20040601084317">Leo 4.2 alpha 3           June 1, 2004
 
-This version fixes completes the essential features of version 4.2.  All known incompletions and bugs involving shared nodes and Leo's new file format have been fixed.  BTW, this version of Leo completes Leaps 201 and 202.
+This version fixes completes the essential features of version 4.2. All known
+incompletions and bugs involving shared nodes and Leo's new file format have
+been fixed. BTW, this version of Leo completes Leaps 201 and 202.
 
-It should be safe to use this version for collaboration between Leo's developers.  I hereby encourage people to start using cvs for collaboration.  Only by doing so will we discover any possible problems.
+It should be safe to use this version for collaboration between Leo's
+developers. I hereby encourage people to start using cvs for collaboration. Only
+by doing so will we discover any possible problems.
 
-The only item that must be completed before releasing 4.2 beta is fixing the Go To Line Number command so it supports thin derived files.
+The only item that must be completed before releasing 4.2 beta is fixing the Go
+To Line Number command so it supports thin external files.
 
-There are many known bugs in this version: most are minor bugs that have been around for a long time.  All known bugs will be fixed by the first release candidate.  See the to-do list in LeoPy.leo for the complete list.
+There are many known bugs in this version: most are minor bugs that have been
+around for a long time. All known bugs will be fixed by the first release
+candidate. See the to-do list in LeoPy.leo for the complete list.
 
 The highlights of this version:
 
-- All features of @file-thin are now complete and appear to be stable.
-	- All .leo files in the distribution use @thin files where possible.
-	- Leo ignores all directives within the range of the @all directive.
-	- The @+middle and @-middle sentinels allow sections to be defined in any descendant node.
-	- The @clone sentinel marks duplicate cloned siblings.
-- The beginnings of a new undo scheme are in place.
-- @thin, @nosent, @noref and @asis are abbreviations for @file-thin, @file-nosent, @file-noref and @file-asis.
-- Created new iterators that return lists of vnodes and tnodes, including iterators that remove all duplicates from those lists.</t>
+- All features of @file-thin are now complete and appear to be stable. - All
+	.leo files in the distribution use @thin files where possible. - Leo ignores
+	all directives within the range of the @all directive. - The @+middle and
+	@-middle sentinels allow sections to be defined in any descendant node. -
+	The @clone sentinel marks duplicate cloned siblings. - The beginnings of a
+	new undo scheme are in place. - @thin, @nosent, @noref and @asis are
+	abbreviations for @file-thin, @file-nosent, @file-noref and @file-asis. -
+	Created new iterators that return lists of vnodes and tnodes, including
+	iterators that remove all duplicates from those lists.</t>
 <t tx="EKR.20040601084317.2"></t>
 <t tx="EKR.20040601084317.99">This happened after write errors such as orphan nodes.</t>
 <t tx="EKR.20040601084317.102">Added u.registerUndoHandlers.
 
 This will become largely unnecessary in the new undo scheme.  It's good to have though.</t>
-<t tx="EKR.20040601084317.142">When writing .leo files Leo now pickle's and hexlify's all data in the v.unknownAttribute and t.unknownAttribute dictionaries.  When reading .leo files Leo does the reverse.
+<t tx="EKR.20040601084317.142">When writing .leo files Leo now pickle's and hexlify's all data in the
+v.unknownAttribute and t.unknownAttribute dictionaries. When reading .leo files
+Leo does the reverse.
 
 Leo ignores all elements in these dictionaries if some element can not be pickled.</t>
 <t tx="EKR.20040601084317.161">I have fallen madly in love with generators.
@@ -5088,14 +5297,19 @@ v.self_and_unique_subtree_iter</t>
 <t tx="EKR.20040601101118">If the copied node was an @thin or @file-thin node node only the root node was copied.</t>
 <t tx="EKR.20040601101227"></t>
 <t tx="EKR.20040601101227.1"></t>
-<t tx="EKR.20040601101430">This bug exists in 4.1 final.  Leo did not properly show the found text in headlines.  The fix was in the code that redraws the screen, not in the find/change code itself.</t>
+<t tx="EKR.20040601101430">This bug exists in 4.1 final. Leo did not properly show the found text in
+headlines. The fix was in the code that redraws the screen, not in the
+find/change code itself.</t>
 <t tx="EKR.20040601101430.1"></t>
 <t tx="EKR.20040601101510"></t>
 <t tx="EKR.20040601101547"></t>
 <t tx="EKR.20040601102115"></t>
-<t tx="EKR.20040601102703">The new scheme simply saves all information in one or more vnodes and their associated tnodes.  This is a general scheme that can be used by almost any command.
+<t tx="EKR.20040601102703">The new scheme simply saves all information in one or more vnodes and their
+associated tnodes. This is a general scheme that can be used by almost any
+command.
 
-At present only the u.saveTree method exists.  Coming soon, u.saveNode, u.saveNodeAndChildren and u.saveListOfNodes.</t>
+At present only the u.saveTree method exists. Coming soon, u.saveNode,
+u.saveNodeAndChildren and u.saveListOfNodes.</t>
 <t tx="EKR.20040601102808">See the to-do list in LeoPy.leo for a list of known bugs in this version.
 
 None of these bugs is serious:  I consider this version to be suitable for day-to-day work.</t>
@@ -5127,7 +5341,7 @@ The highlights of Leo 4.2:
 - @thin trees make Leo much more friendly to cvs. Files derived from @thin can
 be committed to cvs and updated from cvs without having to commit or update the
 corresponding .leo file. There is no longer any need to keep .leo files and
-derived files in synch.
+external files in synch.
 
 - Leo's data structures have been reorganized. As a result, all outline
 operations are much faster. To support this organization, scripts that traverse
@@ -5198,7 +5412,8 @@ What I did:
 - Fixed bug in g.scanDirectives that was rejecting negative tabwidth values.
 	- This bug did not exist in the other versions of scanDirectives.
 
-- With a negative tabwidth, a backspace now computes what spaces are equivalent to a tab and delete all of those.  This is easy to do!
+- With a negative tabwidth, a backspace now computes what spaces are equivalent
+to a tab and delete all of those. This is easy to do!
 </t>
 <t tx="EKR.20040628095213.143"></t>
 <t tx="EKR.20040628095213.160"></t>
@@ -5212,7 +5427,7 @@ This was not good when @tabwidth -4 was in effect.</t>
 <t tx="EKR.20040628095213.202">atFile.scanHeader was not handling -encoding fields properly.</t>
 <t tx="EKR.20040628095213.213"></t>
 <t tx="EKR.20040628095213.225"></t>
-<t tx="EKR.20040628095213.246"># namespace not handled very well.</t>
+<t tx="EKR.20040628095213.246">Namespace not handled very well.</t>
 <t tx="EKR.20040628095213.264"></t>
 <t tx="EKR.20040628095213.269"></t>
 <t tx="EKR.20040628095213.279">I inserted "import time", and while I was at it I improved the error checking.</t>
@@ -5273,15 +5488,22 @@ The whole atFile logic is pretty gruesome.  It's got to be cleaned up.</t>
     - Changed leoColor.doAtKeyword
     
 - Fixed bug in is_special that broke p.isAtAllNode.</t>
-<t tx="EKR.20040628095213.485">There was a small hole in the format of derived files.  Leo assumed that comment delimiters do not change within any particular derived file.  This assumption is not necessarily true in files like leoProjects.txt.
+<t tx="EKR.20040628095213.485">There was a small hole in the format of external files. Leo assumed that comment
+delimiters do not change within any particular external file. This assumption is
+not necessarily true in files like leoProjects.txt.
 
 What I did:
 
-- putDirective and readDirective now check for @langauge and @comment, and change comment delims appropriately.
+- putDirective and readDirective now check for @langauge and @comment, and
+change comment delims appropriately.
 
-This is slightly dubious: after all, an @langauge directive in the middle of most derived files will cause havoc.  However, one could say that this is the users problem :-)
+This is slightly dubious: after all, an @langauge directive in the middle of
+most external files will cause havoc. However, one could say that this is the
+users problem :-)
 
-BTW, this doesn't really solve all problems in @all trees: Leo can still get mightily confused about comment delims if the user doesn't put proper @language directives in @all trees.
+BTW, this doesn't really solve all problems in @all trees: Leo can still get
+mightily confused about comment delims if the user doesn't put proper @language
+directives in @all trees.
 </t>
 <t tx="EKR.20040628095213.490">readEndNode uses the existing tempBodyString attribute to determine if the body text has changed.  If so, we mark the tnode dirty.  The code in 
 
@@ -5290,11 +5512,22 @@ top_df.read.&lt;&lt; copy all tempBodyStrings to tnodes &gt;&gt;
 propagates the dirty marks to all ancestor @file nodes.  This can't be done in readEndNode because no positions are available at that time.</t>
 <t tx="EKR.20040628095213.493"></t>
 <t tx="EKR.20040628095213.499"></t>
-<t tx="EKR.20040628095213.501">Leo now writes t.unknownAttributes to the .leo file when writing the &lt;v&gt; element corresponding to the root of an @thin tree.  Leo will do this by writing a new xml attribute, descendentTnodeUnknownAttributes, in &lt;v&gt; element.
+<t tx="EKR.20040628095213.501">Leo now writes t.unknownAttributes to the .leo file when writing the &lt;v&gt; element
+corresponding to the root of an @thin tree. Leo will do this by writing a new
+xml attribute, descendentTnodeUnknownAttributes, in &lt;v&gt; element.
 
-Leo will only write t.unknownAttributes, not v.unknownAttributes.  This is because only tnodes have gnx's in thin derived files.  In effect, vnodes are anonymous.  We could attempt to get around this by identifying vnodes by their corresponding tnodes, but that's not a general solution and it is, in effect, equivalent to writing only t.unknownAttributes.  This being so, it seems pointless to "pretend" to be writing v.unknownAttributes.
+Leo will only write t.unknownAttributes, not v.unknownAttributes. This is
+because only tnodes have gnx's in thin external files. In effect, vnodes are
+anonymous. We could attempt to get around this by identifying vnodes by their
+corresponding tnodes, but that's not a general solution and it is, in effect,
+equivalent to writing only t.unknownAttributes. This being so, it seems
+pointless to "pretend" to be writing v.unknownAttributes.
 
-The effect of this is to make all vnodes identical, as far as using unknownAttributes is concerned.  As I've stated in the past, this won't do if, for example, a plugin is trying create an arbitrary directed graph between vnodes.  In that case, the plugin should confine itself to @file trees, or just vnodes in .leo files, for that matter.</t>
+The effect of this is to make all vnodes identical, as far as using
+unknownAttributes is concerned. As I've stated in the past, this won't do if,
+for example, a plugin is trying create an arbitrary directed graph between
+vnodes. In that case, the plugin should confine itself to @file trees, or just
+vnodes in .leo files, for that matter.</t>
 <t tx="EKR.20040628095213.512">The problem was setting endSentinelComment to None instead of "" in readDirective.
 
 The code is pretty fragile; it should handle either None or "", but in fact it requires "".</t>
@@ -5367,7 +5600,7 @@ Miscellaneous commands::
 
     Tab         Toggle focus between Outline and Body pane
     =           Simulate double-click on current node's icon box
-    Alt-G       Go to specified line number (relative to derived file)
+    Alt-G       Go to specified line number (relative to external file)
     Ctrl-:      Enter Leo's command line
 </t>
 <t tx="TL.20080804095315.6">Move cursor commands::
@@ -5713,14 +5946,14 @@ Notable missing body pane commands::
     `&lt;command&gt;  Go to character of last edit, jump, ...
 </t>
 <t tx="TL.20080804095315.9">If you use the open-with plugin to open node text in Vim and your Vim's "tag"
-file refers to derived files then there is a risk that a derived file that is
+file refers to external files then there is a risk that a external file that is
 initially displayed via the "tag" command" in Vim is accidentally edited and
 saved from the external Vim editor while your Leo session still contains the
-derived file's original text that may later recreate the original derived file
+external file's original text that may later recreate the original external file
 during a Leo save operation (overwriting the changes saved from the Vim editor).
 
-To prevent this problem, modifications to derived files can be avoided by using
-Vim's "modeline" feature to disable editing of derived files.
+To prevent this problem, modifications to external files can be avoided by using
+Vim's "modeline" feature to disable editing of external files.
 
 Vim's "modeline" feature scans each loaded buffer for text at the top or bottom
 of the file containing " vim:" followed by a series of Vim options. The text is
@@ -5730,7 +5963,7 @@ to a buffer in a Python file::
     # vim:noma (A space is required between the '#' and "vim:noma")
 
 If this line is placed in a separate Leo node at the top or bottom of the list
-of nodes under a derived file node (ex: @thin) then any derived file saved and
+of nodes under a external file node (ex: @thin) then any external file saved and
 then later loaded into Vim will, by default, not be modifiable. If a derived
 file does need to be edited then modifications can be re-enabled on a
 file-by-file basis by issuing Vim's ":ma" command while viewing the derived
@@ -5802,7 +6035,7 @@ Patterns:
 
    To enable a script to run on any type of @file node (@thin, @shadow, ...),
    the pattern can use "@files" at the beginning of the pattern to match on any
-   derived file type.  For example, the pattern "@files \*.py" will
+   external file type.  For example, the pattern "@files \*.py" will
    match a node with the headline "@thin Abcd.py".
 
    The headline of the double-clicked node is matched against the patterns
@@ -5898,12 +6131,12 @@ Configurations:
    @bool nodeActions_save_atFile_nodes = False
 
       :True:
-         The nodeActions plugin will save a double-clicked derived file node
+         The nodeActions plugin will save a double-clicked external file node
          to disk, if a pattern match occurred, before executing its script.  
 
       :False:
-         A pattern match to a double-clicked derived file node will **not**
-         cause the derived file to be saved to disk.
+         A pattern match to a double-clicked external file node will **not**
+         cause the external file to be saved to disk.
          (default)
 
    @int nodeActions_message_level = 1
@@ -6047,15 +6280,28 @@ Leo will draw a Leo icon in Leo windows only if you have installed Fredrik Lundh
 
 This release marks another significant milestone in Leo's history:
 
-- Leo's 4.x file code is complete.  At present I have no plans to change the format of .leo files or derived files.  I am eating my own dog food: I do all my editing with the 4.1 code base.
+- Leo's 4.x file code is complete. At present I have no plans to change the
+format of .leo files or external files. I am eating my own dog food: I do all my
+editing with the 4.1 code base.
 
-- Leo uses immutable gnx's (id:timestamp:n) by default to associate tnodes with vnodes in .leo files.  This makes Leo as cvs friendly as possible.  From now on .leo files will be checked in to cvs with the -ko (text/keywords off) option.
+- Leo uses immutable gnx's (id:timestamp:n) by default to associate tnodes with
+vnodes in .leo files. This makes Leo as cvs friendly as possible. From now on
+.leo files will be checked in to cvs with the -ko (text/keywords off) option.
 
-- The use_gnx setting in leoConfig.txt determines whether uses gnx's (cvs friendly) or ints.  No version of Leo before 4.1 can read .leo files containing gnx.   Only gnx's are immutable.  Leo recomputes all non-gnx indices from scratch whenever writing a .leo file. It is possible to convert between 3.x and 4.1 file formats by changing the use_gnx setting.
+- The use_gnx setting in leoConfig.txt determines whether uses gnx's (cvs
+friendly) or ints. No version of Leo before 4.1 can read .leo files containing
+gnx. Only gnx's are immutable. Leo recomputes all non-gnx indices from scratch
+whenever writing a .leo file. It is possible to convert between 3.x and 4.1 file
+formats by changing the use_gnx setting.
 
-- The 4.1 code base has been reorganized to support gui's other than tkinter.  Leo's src directory contains several new source files.
+- The 4.1 code base has been reorganized to support gui's other than tkinter.
+Leo's src directory contains several new source files.
 
-- The file test.leo in the test directory contains real regression tests for syntax coloring.   Regression testing scripts create regression tests dynamically from data in Leo's outline.  Very cool, very easy, very general.  In particular, regression tests may use temporary nodes in test.leo rather than creating separate Tk windows for testing.
+- The file test.leo in the test directory contains real regression tests for
+syntax coloring. Regression testing scripts create regression tests dynamically
+from data in Leo's outline. Very cool, very easy, very general. In particular,
+regression tests may use temporary nodes in test.leo rather than creating
+separate Tk windows for testing.
 
 Known bugs:
 
@@ -6104,26 +6350,26 @@ More than a year in the making, Leo 4.0 is finally here.
 Highlights of 4.0 final:
 -----------------------
 
-** Improved and simplified format of derived files.
+** Improved and simplified format of external files.
 	- Eliminated child indices, extraneous blank lines and @body sentinels.
 	- Eliminated @node sentinels that indicate outline structure.
 	- New @nl and @nonl sentinels indicate where newlines are and aren't.
 	- These changes will largely eliminate unwanted cvs conflicts.
 
 ** Greatly improved error handling.
-	- Reading derived files _never_ alter outline structure or links.
+	- Reading external files _never_ alter outline structure or links.
 	- Read errors leave the outline completely unchanged.
 	- Broken clone links are gone forever.
 	- As a result, 4.0 is much safer than all previous versions.
 
 ** Full compatibility will previous versions of Leo.
-	- Leo 4.0 reads all derived files properly, regardless of version.
-	- Leo writes new-format derived files by default, and this default may be changed.
-	- New commands in the read/write menu allow you to explicitly specify the format of derived files.
+	- Leo 4.0 reads all external files properly, regardless of version.
+	- Leo writes new-format external files by default, and this default may be changed.
+	- New commands in the read/write menu allow you to explicitly specify the format of external files.
 
 * New commands:
-	- Write 3.x Derived File and Write 4.x Derived File.
-	- Import Derived File.
+	- Write 3.x external file and Write 4.x external file.
+	- Import External File.
 	- Clear Recent Files.
 
 * Dozens of other improvements, including:
@@ -6159,26 +6405,36 @@ See the children of this node for full details.</t>
 <t tx="edream.110203163054.70"></t>
 <t tx="edream.110203163054.71">This was a long-standing bug.  It's effect was cosmetic, and it was important to fix.</t>
 <t tx="edream.110203163054.72"></t>
-<t tx="edream.110203163054.73">This could happen when the derived file was corrupted.</t>
+<t tx="edream.110203163054.73">This could happen when the external file was corrupted.</t>
 <t tx="edream.110203163054.74"></t>
 <t tx="edream.110203163054.75"></t>
-<t tx="edream.110203163054.76">Leo can now read and write "foreign" attributes in &lt;v&gt; and &lt;t&gt; elements in .leo files:
+<t tx="edream.110203163054.76">Leo can now read and write "foreign" attributes in &lt;v&gt; and &lt;t&gt; elements in .leo
+files:
 
-- When reading a .leo file, Leo will create t.unknownAttributes or v.unknownAttributes ivars for any tnode and vnode object whose corresponding &lt;v&gt; or &lt;t&gt; element in the .leo file contains a foreign attribute.
+- When reading a .leo file, Leo will create t.unknownAttributes or
+v.unknownAttributes ivars for any tnode and vnode object whose corresponding &lt;v&gt;
+or &lt;t&gt; element in the .leo file contains a foreign attribute.
 
-- The unknownAttributes ivars are a dictionary whose keys are the attribute names and whose values are strings.
+- The unknownAttributes ivars are a dictionary whose keys are the attribute
+names and whose values are strings.
 
-- When writing a file, Leo will write "foreign" attributes if  a vnode or tnode contains an unknownAttributes ivar.
+- When writing a file, Leo will write "foreign" attributes if a vnode or tnode
+contains an unknownAttributes ivar.
 
-- The only "native" attributes that Leo expects to find are the "tx" attribute in &lt;t&gt; elements and the "a", "t", "vtag" and "tnodeList" attributes of &lt;v&gt; elements.  Everything else is a foreign attribute.
+- The only "native" attributes that Leo expects to find are the "tx" attribute
+in &lt;t&gt; elements and the "a", "t", "vtag" and "tnodeList" attributes of &lt;v&gt;
+elements. Everything else is a foreign attribute.
 
-- Leo performs the usual xml escapes on these strings when reading or writing the unknownAttributes ivars.
+- Leo performs the usual xml escapes on these strings when reading or writing
+the unknownAttributes ivars.
 
-Plugins may cause Leo to write such foreign attributes simply by attaching unknownAttributes ivars to a vnode or tnode.  For example:
+Plugins may cause Leo to write such foreign attributes simply by attaching
+unknownAttributes ivars to a vnode or tnode. For example:
 
 	v.unknownAttributes = {"vnodeIcon" : pathToIcon}
 
-It would be best not to delete other foreign attributes, so the following would be preferred:
+It would be best not to delete other foreign attributes, so the following would
+be preferred:
 
 	if hasattr(v,"unknownAttributes"):
 		v.unknownAttributes["vnodeIcon"] = pathToIcon
@@ -6202,7 +6458,7 @@ collaborative design work and several months of actual implementation.
 Highlights of 4.0 beta 2
 ------------------------
 * Fixed several bugs:
-  - Fixed several problems with reading and writing 4.0 derived files.
+  - Fixed several problems with reading and writing 4.0 external files.
   - Fixed several Unicode-related bugs.
   - Fixed a crasher in the Go To Line Number command.
   - Fixed a problem with Importing Python files.
@@ -6215,7 +6471,7 @@ See the children of this node for full details.
 
 Highlights of 4.0 beta 1
 ------------------------
-* Improved and simplified format of derived files.
+* Improved and simplified format of external files.
 * Greatly improved error handling.
 * Full compatibility will previous versions of Leo.</t>
 <t tx="edream.110203163054.80">- Fix undo/redo bug for all commands that change body text in multiple nodes without changing outline structure.
@@ -6251,17 +6507,22 @@ def some_proc():
 <t tx="edream.110203163054.91">This is much more natural and less cluttered.</t>
 <t tx="edream.110203163054.92"></t>
 <t tx="edream.110203163054.93"></t>
-<t tx="edream.110203163054.94">Leo will create the Leo icon in Leo windows automatically when using Python 2.3.  The Python Imaging Library and the tkIcon package are only used when using previous versions of Python.</t>
+<t tx="edream.110203163054.94">Leo will create the Leo icon in Leo windows automatically when using Python 2.3.
+The Python Imaging Library and the tkIcon package are only used when using
+previous versions of Python.</t>
 <t tx="edream.110203163054.95">This is the foundation for "foreign" guis.</t>
 <t tx="edream.110203163054.96"></t>
 <t tx="edream.110203163054.97">allow_clone_drags
 
-This is a workaround so that Leo may be used on Aqua.  When this setting is zero Leo always moves nodes when dragging.  The default is to enable clone-drags.
+This is a workaround so that Leo may be used on Aqua. When this setting is zero
+Leo always moves nodes when dragging. The default is to enable clone-drags.
 
 enable_drag_messages
 
-Allows the user to suppress the message telling whether dragging nodes will move them or clone them.  The default is to enable those messages.</t>
-<t tx="edream.110203163054.98">After the 4.0 beta 1 release I changed the default so that _new_ format derived files are written if leoConfig.txt does not exist.</t>
+Allows the user to suppress the message telling whether dragging nodes will move
+them or clone them. The default is to enable those messages.</t>
+<t tx="edream.110203163054.98">After the 4.0 beta 1 release I changed the default so that _new_ format derived
+files are written if leoConfig.txt does not exist.</t>
 <t tx="edream.110203163054.99">leo.py 4.0 beta 1                      September 26, 2003
 
 This is the first public release of Leo 4.0.  Version 4.0 is the culmination of over a year of collaborative design work and several months of actual implementation.
@@ -6270,59 +6531,96 @@ Please use caution when using this beta version of Leo.  It appears very solid a
 
 Highlights of 4.0:
 
-** Improved and simplified format of derived files.
+** Improved and simplified format of external files.
 	- Eliminated child indices, extraneous blank lines and @body sentinels.
 	- Eliminated @node sentinels that indicate outline structure.
 	- New @nl and @nonl sentinels indicate where newlines are and aren't.
 	- These changes will largely eliminate unwanted cvs conflicts.
 
 ** Greatly improved error handling.
-	- Reading derived files _never_ alter outline structure or links.
+	- Reading external files _never_ alter outline structure or links.
 	- Read errors leave the outline completely unchanged.
 	- Broken clone links are gone forever.
 	- As a result, using 4.0 is much safer than all previous versions.
 
 ** Full compatibility will previous versions of Leo.
-	- Leo reads all derived files properly, regardless of version.
-	- Leo writes new-format derived files by default, and this default may be changed.
-	- New commands in the read/write menu allow you to explicitly specify the format of derived files.
+	- Leo reads all external files properly, regardless of version.
+	- Leo writes new-format external files by default, and this default may be changed.
+	- New commands in the read/write menu allow you to explicitly specify the format of external files.
 
 * New commands:
-	- Write 3.x Derived File.
-	- Write 4.x Derived File.
-	- Import Derived File.
+	- Write 3.x external file.
+	- Write 4.x external file.
+	- Import external file.
 	- Clear Recent Files.
 
 - Several new plugins.
 - Several minor bug fixes.
 
 See the children of this node for full details.</t>
-<t tx="edream.110203163054.100">The Synchronization Principle simplifies everything and at long last puts Leo on a firm theoretical foundation.  This principle states that the "smallest unit of meaning" of any Leo outline is the entire outline itself.  In particular, individual derived files have meaning only in the context of a particular outline.
+<t tx="edream.110203163054.100">The Synchronization Principle simplifies everything and at long last puts Leo on
+a firm theoretical foundation. This principle states that the "smallest unit of
+meaning" of any Leo outline is the entire outline itself. In particular,
+individual external files have meaning only in the context of a particular
+outline.
 
 The Synchronization Principle has the following happy consequences:
 
-1. We may assume that all derived files are in synch with the outline that wrote them.  This assumption allows Leo to use "hidden machinery" in the outline to associate nodes in the derived file with nodes in the outline.  This "hidden" machinery consists of a list of tnodes associated with @file vnodes in the outline.  When writing a derived file Leo creates a list of tnodes in the order they were written to the derived file.  When reading the derived file, Leo uses this list to associate nodes in the derived file with nodes in the outline.
+1. We may assume that all external files are in synch with the outline that wrote
+them. This assumption allows Leo to use "hidden machinery" in the outline to
+associate nodes in the external file with nodes in the outline. This "hidden"
+machinery consists of a list of tnodes associated with @file vnodes in the
+outline. When writing a external file Leo creates a list of tnodes in the order
+they were written to the external file. When reading the external file, Leo uses
+this list to associate nodes in the external file with nodes in the outline.
 
-2. Derived files must get their structure from the .leo file that wrote them.  As we have seen, this is done using the hidden machinery in the .leo file.  Consequently, there is no further need to represent outline structure in derived files.  There is no need any longer either for child indices or for sentinels to represent outline structure.  As a result, we can eliminate @+body and @-body nodes entirely because all @+node sentinels are followed by body text.
+2. external files must get their structure from the .leo file that wrote them. As
+we have seen, this is done using the hidden machinery in the .leo file.
+Consequently, there is no further need to represent outline structure in derived
+files. There is no need any longer either for child indices or for sentinels to
+represent outline structure. As a result, we can eliminate @+body and @-body
+nodes entirely because all @+node sentinels are followed by body text.
 
-3. All .leo files must contain full outline structure.  Even "thin" outline will contain the full representation of the outline as vnodes.
+3. All .leo files must contain full outline structure. Even "thin" outline will
+contain the full representation of the outline as vnodes.
 
-4. Reading _never_ alters outline structure in the outline.  No vnodes are ever created or destroyed and reading never alters clone links.  This is true whether or not read errors occur.  The read code sets a temporary attribute of tnodes while reading.  These attributes are copied to the permanent t.bodyString attribute only if no read errors were encountered.
+4. Reading _never_ alters outline structure in the outline. No vnodes are ever
+created or destroyed and reading never alters clone links. This is true whether
+or not read errors occur. The read code sets a temporary attribute of tnodes
+while reading. These attributes are copied to the permanent t.bodyString
+attribute only if no read errors were encountered.
 
-4. Error recovery is now trivial:  Read errors indicate that the .leo files and one or more derived files are out-of-synch.  No error recovery is attempted: the @file tree in which the error occurred reverts back to its original state.
+4. Error recovery is now trivial: Read errors indicate that the .leo files and
+one or more external files are out-of-synch. No error recovery is attempted: the
+@file tree in which the error occurred reverts back to its original state.
 
-5. The new Import Derived File command is the _only_ way to recover data from mismatched derived file.</t>
+5. The new Import External File command is the _only_ way to recover data from
+mismatched external file.</t>
 <t tx="edream.110203163054.101"></t>
-<t tx="edream.110203163054.102">The write_old_format_derived_files option in leoConfig.leo and leoConfig.txt determines which format of derived file Leo's Write and Save commands write by default.  If this option is 0 (recommended) Leo writes 4.x format derived files.  Otherwise Leo writes 3.x derived files.
+<t tx="edream.110203163054.102">The write_old_format_derived_files option in leoConfig.leo and leoConfig.txt
+determines which format of external file Leo's Write and Save commands write by
+default. If this option is 0 (recommended) Leo writes 4.x format external files.
+Otherwise Leo writes 3.x external files.
 
-Note that you can use the Write 3.x/4.x Derived Files commands in the File:Read/Write menu to write derived files in an explicitly specified format.</t>
-<t tx="edream.110203163054.103">This command deletes all entries in the Recent Files submenu except the most recent file.  The files themselves are not affected, just the menu entries.</t>
-<t tx="edream.110203163054.104">The Import Derived File command imports all the nodes in a derived file into the outline.  Unlike the read commands, no outline structure is preserved.  This command can import either 3.x or 4.x derived files.
+Note that you can use the Write 3.x/4.x external files commands in the
+File:Read/Write menu to write external files in an explicitly specified format.</t>
+<t tx="edream.110203163054.103">This command deletes all entries in the Recent Files submenu except the most
+recent file. The files themselves are not affected, just the menu entries.</t>
+<t tx="edream.110203163054.104">The Import External File command imports all the nodes in a external file into the
+outline. Unlike the read commands, no outline structure is preserved. This
+command can import either 3.x or 4.x external files.
 
-This command is necessary in version 4.0 because there is no other way to read derived files that are out-of-synch with a .leo file.</t>
-<t tx="edream.110203163054.105">The Write 4.x Derived Files command and Write 3.x Derived Files command work just like the Write @file Nodes command, except that they write the indicated format off derived file.  In contrast, the Write @file Nodes command writes 3.x format derived files if and only if the write_old_format_derived_files = 1 in leoConfig.txt.
+This command is necessary in version 4.0 because there is no other way to read
+external files that are out-of-synch with a .leo file.</t>
+<t tx="edream.110203163054.105">The Write 4.x External Files command and Write 3.x External Files command work
+just like the Write @file Nodes command, except that they write the indicated
+format off external file. In contrast, the Write @file Nodes command writes 3.x
+format external files if and only if the write_old_format_derived_files = 1 in
+leoConfig.txt.
 
-All three of these commands automatically save the outline (the .leo file) if any derived file was actually written.  This is necessary so that information in the .leo file always remains in synch with all derived files.</t>
+All three of these commands automatically save the outline (the .leo file) if
+any external file was actually written. This is necessary so that information in
+the .leo file always remains in synch with all external files.</t>
 <t tx="edream.110203163054.106">Paul Paterson contributed the following new plugins:
 
 mod_autosave.py
@@ -6335,15 +6633,29 @@ Timestamps all save operations to show when they occur.
 
 word_export.py
 
-Exports an outline to a word document.  Clicking "plugins ... word export ... export" exports the selected outline to Word.  Word should be running with an open (empty) document before executing this command.</t>
+Exports an outline to a word document. Clicking "plugins ... word export ...
+export" exports the selected outline to Word. Word should be running with an
+open (empty) document before executing this command.</t>
 <t tx="edream.110203163054.107"></t>
-<t tx="edream.110203163054.108">Leo's read code now warns if any non-empty node is unvisited.  This check, and the check that headlines match pretty much guarantees that out-of-synch outlines will generate errors.  Thus, there is no need a gnx timestamp in @+leo sentinels!</t>
-<t tx="edream.110203163054.109">Version 4.0 is a major advance in Leo's error handling.  Using 4.0 is much safer than all previous versions.  This new error handling applies to all derived files, both 3.x and 4.x format.  
+<t tx="edream.110203163054.108">Leo's read code now warns if any non-empty node is unvisited. This check, and
+the check that headlines match pretty much guarantees that out-of-synch outlines
+will generate errors. Thus, there is no need a gnx timestamp in @+leo sentinels!</t>
+<t tx="edream.110203163054.109">Version 4.0 is a major advance in Leo's error handling. Using 4.0 is much safer
+than all previous versions. This new error handling applies to all derived
+files, both 3.x and 4.x format.
 
-Leo's read code never alters the structure of an outline, regardless of whether read errors are encountered. This means that clone links, marks, and all other information in the outline except body text remains completely unchanged during reads.  Broken clone links (the dreaded read errors) are gone forever.  
-Also, the new read code makes no changes to any body text until it is known that no read errors have occurred.  This ensures that absolutely no changes at all are made to the outline if there are read errors.
+Leo's read code never alters the structure of an outline, regardless of whether
+read errors are encountered. This means that clone links, marks, and all other
+information in the outline except body text remains completely unchanged during
+reads. Broken clone links (the dreaded read errors) are gone forever. Also, the
+new read code makes no changes to any body text until it is known that no read
+errors have occurred. This ensures that absolutely no changes at all are made to
+the outline if there are read errors.
 
-Leo's read code now writes a message to the log pane whenever it sees that the body text in the derived file does not match the body text in the outline.  These messages do not indicate errors, only that the body text has been changed outside of Leo, say in an external editor or by cvs.</t>
+Leo's read code now writes a message to the log pane whenever it sees that the
+body text in the external file does not match the body text in the outline. These
+messages do not indicate errors, only that the body text has been changed
+outside of Leo, say in an external editor or by cvs.</t>
 <t tx="edream.110203163054.110"></t>
 <t tx="edream.110203163054.111"></t>
 <t tx="edream.110203163054.112">Added encoding comments to leoGlobals.py and French plugins
@@ -6355,15 +6667,24 @@ This removes a warning new in Python 2.3.
 <t tx="edream.110203163054.115">This has been changed in Python 2.3 and it probably wasn't ever a good idea...</t>
 <t tx="edream.110203163054.116">The read code has much simplified using look-behind rather than look-ahead.  Both the read and write code write the file line-by-line without recursion.</t>
 <t tx="edream.110203163054.117"></t>
-<t tx="edream.110203163054.833">The Execute Script command executes body text as a Python script.  Leo execute the selected text, or the entire body text if no text is selected.
+<t tx="edream.110203163054.833">The Execute Script command executes body text as a Python script. Leo execute
+the selected text, or the entire body text if no text is selected.
 
-Scripts are executed in a "pristine" environment, that is, with __builtins__ as both the local and global environments.
+Scripts are executed in a "pristine" environment, that is, with __builtins__ as
+both the local and global environments.
 
-New in version 4.1:  Body text may now contain @directives and section references. This is a major step forward: you can now use all of Leo's features to organize scripts that you execute interactively.
+New in version 4.1: Body text may now contain @directives and section
+references. This is a major step forward: you can now use all of Leo's features
+to organize scripts that you execute interactively.
 
-Section definitions must appear in the node containing the script or in descendant nodes.  Leo "preprocesses" all scripts by simulating the writing of a derived file to a string.
+Section definitions must appear in the node containing the script or in
+descendant nodes. Leo "preprocesses" all scripts by simulating the writing of a
+external file to a string.
 
-The Execute Script command sets app.scriptDict["script1"] to the value of the script before preprocessing, and sets app.scriptDict["script2"] to the value of the script after preprocessing.  Scripts may examine and change app.scriptDict as they please.</t>
+The Execute Script command sets app.scriptDict["script1"] to the value of the
+script before preprocessing, and sets app.scriptDict["script2"] to the value of
+the script after preprocessing. Scripts may examine and change app.scriptDict as
+they please.</t>
 <t tx="edream.110303182253.3">Leo does an auto-save only if something has actually been changed.</t>
 <t tx="edream.110303182253.39"></t>
 <t tx="edream.110303182719">The config_encoding setting controls the encoding of non-ascii characters in leoConfig.txt.
@@ -6567,7 +6888,7 @@ for p in newFrame.c.all_positions():
 <t tx="edream.120403180443.1"></t>
 <t tx="edream.121403160546">Leo 4.1 Release Candidate 3              December 19, 2003
 
-This release fixes a serious bug in the logic that reads old-style derived files.
+This release fixes a serious bug in the logic that reads old-style external files.
 
 There are no known bugs in this version of Leo.
 
@@ -6620,7 +6941,7 @@ The highlights of this release:
 	use_gnx = 1 makes .leo files cvs-friendly
 
 - config_encoding specifies the encoding of leoConfig.txt.</t>
-<t tx="edream.121403161340">- Import Derived File command now uses a file dialog.
+<t tx="edream.121403161340">- Import External File command now uses a file dialog.
 
 	This is much more natural than using @file nodes.
 </t>
@@ -6707,7 +7028,7 @@ The highlights of Leo 4.1:
 	use_gnx = 1 makes .leo files cvs-friendly
 
 - config_encoding specifies the encoding of leoConfig.txt.</t>
-<t tx="ekr.20040131040356.5">- Import Derived File command now uses a file dialog.
+<t tx="ekr.20040131040356.5">- Import External File command now uses a file dialog.
 
 	This is much more natural than using @file nodes.</t>
 <t tx="ekr.20040131040544.2"></t>
@@ -6719,16 +7040,24 @@ The highlights of Leo 4.1:
 - Hitting the Return key is now equivalent to hitting the Find button.</t>
 <t tx="ekr.20040131040544.32"></t>
 <t tx="ekr.20040131040544.55">Leo now reports the parent of the orphan node.</t>
-<t tx="ekr.20040131040544.73">This bug happened when a move up command would cause a node to become the sibling of (a clone of) itself.  In such cases, Leo simply selects the other cloned copy of the moved node.</t>
-<t tx="ekr.20040131040544.81">The bug was causing Leo not to remember the comment delimiters in the @+leo sentinel.  As a result, Leo was recognizing no sentinels and the command complained about missing @-leo sentinels.</t>
+<t tx="ekr.20040131040544.73">This bug happened when a move up command would cause a node to become the
+sibling of (a clone of) itself. In such cases, Leo simply selects the other
+cloned copy of the moved node.</t>
+<t tx="ekr.20040131040544.81">The bug was causing Leo not to remember the comment delimiters in the @+leo
+sentinel. As a result, Leo was recognizing no sentinels and the command
+complained about missing @-leo sentinels.</t>
 <t tx="ekr.20040131040544.146">- Leo now does a better job of checking and reporting read-only violations.
 
 - Leo now clears the file-dirty mark only if the file was successfully saved.
 
 </t>
 <t tx="ekr.20040131040544.169"></t>
-<t tx="ekr.20040131040544.178">Leo sets only ancestor @file nodes dirty (not nodes themselves) when altering outline structure, i.e., when moving, inserting, deleting, cloning and sorting nodes.</t>
-<t tx="ekr.20040131040544.222">That is, when preprocessing the script (expanding section references, etc.) Leo now ensures that child nodes effectively end in a newline.  This prevents unintended concatenation of lines.</t>
+<t tx="ekr.20040131040544.178">Leo sets only ancestor @file nodes dirty (not nodes themselves) when altering
+outline structure, i.e., when moving, inserting, deleting, cloning and sorting
+nodes.</t>
+<t tx="ekr.20040131040544.222">That is, when preprocessing the script (expanding section references, etc.) Leo
+now ensures that child nodes effectively end in a newline. This prevents
+unintended concatenation of lines.</t>
 <t tx="ekr.20040131040544.227">A contained a space before a tab in the leading whitespace of the line.</t>
 <t tx="ekr.20040131040544.228">- These commands did not properly count the number of changed nodes.
 - These commands now mark only changed nodes as dirty.</t>
@@ -6759,7 +7088,8 @@ not displayed.
 Leo now creates the new node as the first child of the hoisted node. 
 
 Also, Leo disables the Clone command when the presently selected node is the root of a hoist.</t>
-<t tx="ekr.20040201061329">This creates a status area at the bottom of the Leo Window.  Plugins may write to this area using the status area convenience routines in leoTkinterFrame.py.</t>
+<t tx="ekr.20040201061329">This creates a status area at the bottom of the Leo Window. Plugins may write to
+this area using the status area convenience routines in leoTkinterFrame.py.</t>
 <t tx="ekr.20040201113232">@nocolor
 
 The Scripts node in LeoPy.leo contains a script called initScriptFind.  This script makes it easy to set up script based searches as follows:
@@ -7514,7 +7844,7 @@ Joe Orr created XSLT stylesheets for Leo; see http://www.jserv.com/jk_orr/xml/le
 Joe Orr also created an outstanding set of tutorials for Leo; see http://www.evisa.com/e/sb.htm.
 LeoUser (B.H.) contributed numerous plugins and was the inspiration for Leo's minibuffer.
 LeoUser also wrote jyLeo: Leo for Jython.
-Bernhard Mulder proposed a new way of untangling derived files.
+Bernhard Mulder proposed a new way of untangling external files.
 John K. Ousterhout created tcl/Tk. Neal Norwitz wrote PyChecker.
 Marc-Antoine Parent urged me to use XML for Leo's file format and helped improve it.
 Paul Paterson suggested the plugin architecture,
@@ -7536,11 +7866,22 @@ Rebecca, James and Linda make it all worthwhile.
 It was during a conversation with Rebecca that I realized that ``MORE`` could be used as a prototype for Leo.
 That was a crucial first step.</t>
 <t tx="ekr.20040705111716"></t>
-<t tx="ekr.20040705111716.1">Leo will write only t.unknownAttributes to the .leo file when writing the &lt;v&gt; element corresponding to the root of an @thin tree.  Leo will do this by writing a new xml attribute, say descendentTnodeUnknownAttributes, in &lt;v&gt; element.
+<t tx="ekr.20040705111716.1">Leo will write only t.unknownAttributes to the .leo file when writing the &lt;v&gt;
+element corresponding to the root of an @thin tree. Leo will do this by writing
+a new xml attribute, say descendentTnodeUnknownAttributes, in &lt;v&gt; element.
 
-The reason that Leo will only write t.unknownAttributes and not v.unknownAttributes is that only tnodes have gnx's in thin derived files.  In effect, vnodes are anonymous.  We could attempt to get around this by identifying vnodes by their corresponding tnodes, but that's not a general solution and it is, in effect, equivalent to writing only t.unknownAttributes.  This being so, it seems pointless to "pretend" to be writing v.unknownAttributes.
+The reason that Leo will only write t.unknownAttributes and not
+v.unknownAttributes is that only tnodes have gnx's in thin external files. In
+effect, vnodes are anonymous. We could attempt to get around this by identifying
+vnodes by their corresponding tnodes, but that's not a general solution and it
+is, in effect, equivalent to writing only t.unknownAttributes. This being so, it
+seems pointless to "pretend" to be writing v.unknownAttributes.
 
-The effect of this is to make all vnodes identical, as far as using unknownAttributes is concerned.  As I've stated in the past, this won't do if, for example, a plugin is trying create an arbitrary directed graph between vnodes.  In that case, the plugin should confine itself to @file trees, or just vnodes in .leo files, for that matter.
+The effect of this is to make all vnodes identical, as far as using
+unknownAttributes is concerned. As I've stated in the past, this won't do if,
+for example, a plugin is trying create an arbitrary directed graph between
+vnodes. In that case, the plugin should confine itself to @file trees, or just
+vnodes in .leo files, for that matter.
 
 7/1/04:
 
@@ -7562,7 +7903,7 @@ The highlights of Leo 4.2:
 - @thin trees make Leo much more friendly to cvs. Files derived from @thin can
 be committed to cvs and updated from cvs without having to commit or update the
 corresponding .leo file. There is no longer any need to keep .leo files and
-derived files in synch.
+external files in synch.
 
 - Leo's data structures have been reorganized. As a result, all outline
 operations are much faster. To support this organization, scripts that traverse
@@ -7658,14 +7999,21 @@ or above to get this feature.
 <t tx="ekr.20040804165258.4">Added the Check submenu of the Outline menu. This contains the Check Outline and
 Dump Outline commands, as well as four new commands:
 
-The Check All Python Code and Check Python Code commands report any syntax errors or tabnanny errors.  These commands mark erroneous nodes.  These commands work on the selected Node and its descendants.  These commands ignore any nodes for which a) @ignore is in effect or b) @language python is in not effect.
+The Check All Python Code and Check Python Code commands report any syntax
+errors or tabnanny errors. These commands mark erroneous nodes. These commands
+work on the selected Node and its descendants. These commands ignore any nodes
+for which a) @ignore is in effect or b) @language python is in not effect.
 
-The Check Python Code and Pretty Print Python Code commands replace nodes with their pretty-printed alternative.  No doubt everyone will have their own favorite style.  You could implement alternate pretty printers in a plugin merely by overriding the following methods of class prettyPrinter in leoCommands.py:
+The Check Python Code and Pretty Print Python Code commands replace nodes with
+their pretty-printed alternative. No doubt everyone will have their own favorite
+style. You could implement alternate pretty printers in a plugin merely by
+overriding the following methods of class prettyPrinter in leoCommands.py:
     
 ---- putOperator:      puts whitespace around operators.
 ---- putNormalToken:   puts whitespace around everything else.</t>
 <t tx="ekr.20040804170531"></t>
-<t tx="ekr.20040804170657">Leo now reuses all widgets used to draw the outline pane.  This improves performance and ends leaks of bindings and widgets.</t>
+<t tx="ekr.20040804170657">Leo now reuses all widgets used to draw the outline pane. This improves
+performance and ends leaks of bindings and widgets.</t>
 <t tx="ekr.20040804170846">@thin bad-directory caused excessive and confusing tracebacks.</t>
 <t tx="ekr.20040804171818"></t>
 <t tx="ekr.20040804172113"></t>
@@ -7690,7 +8038,7 @@ The highlights of Leo 4.2:
 - @thin trees make Leo much more friendly to cvs. Files derived from @thin can
 be committed to cvs and updated from cvs without having to commit or update the
 corresponding .leo file. There is no longer any need to keep .leo files and
-derived files in synch.
+external files in synch.
 
 - Leo's data structures have been reorganized. As a result, all outline
 operations are much faster. To support this organization, scripts that traverse
@@ -7767,7 +8115,7 @@ The highlights of Leo 4.2:
 - @thin trees make Leo much more friendly to cvs. Files derived from @thin can
 be committed to cvs and updated from cvs without having to commit or update the
 corresponding .leo file. There is no longer any need to keep .leo files and
-derived files in synch.
+external files in synch.
 
 - Leo's data structures have been reorganized. As a result, all outline
 operations are much faster. To support this organization, scripts that traverse
@@ -7792,10 +8140,15 @@ tests now takes a few seconds!
 - The file called leoSettings.leo in the users home directory.
 - The file being loaded.
 
-Settings that later in the above list override settings found earlier. For example, any setting specified in an @settings tree in the file being loaded overrides any setting seen in any leoSettings.leo file.
+Settings that later in the above list override settings found earlier. For
+example, any setting specified in an @settings tree in the file being loaded
+overrides any setting seen in any leoSettings.leo file.
 
-The Settings command temporarily replaces the outline pane with an outline showing all the @settings trees in effect. The Settings command also replaces the body pane with a "settings dialog" pane. This settings dialog pane
-allows you to change the settings selected in the outline pane using standard gui widgets.
+The Settings command temporarily replaces the outline pane with an outline
+showing all the @settings trees in effect. The Settings command also replaces
+the body pane with a "settings dialog" pane. This settings dialog pane allows
+you to change the settings selected in the outline pane using standard gui
+widgets.
 
 The format of nodes in @settings trees are as follows:
 
@@ -7909,8 +8262,11 @@ imports fail.</t>
 These will be added as time permits and people request.</t>
 <t tx="ekr.20050123092834.1"></t>
 <t tx="ekr.20050123092834.2"></t>
-<t tx="ekr.20050123092834.6">The Open With logic in createOpenWithMenuFromTable for the 'spawnv' case  now actually calls os.spawnv (rather than spawnl) and it allows a variable length list of parameters.</t>
-<t tx="ekr.20050123092834.19">The old code wasn't handling single file selections properly.  The new code works around an apparent bug in Tk.askopenfilename.</t>
+<t tx="ekr.20050123092834.6">The Open With logic in createOpenWithMenuFromTable for the 'spawnv' case now
+actually calls os.spawnv (rather than spawnl) and it allows a variable length
+list of parameters.</t>
+<t tx="ekr.20050123092834.19">The old code wasn't handling single file selections properly. The new code works
+around an apparent bug in Tk.askopenfilename.</t>
 <t tx="ekr.20050123092834.27">The new code forbids Paste Node As Clone if the paste would result in a node being a clone of itself.</t>
 <t tx="ekr.20050123092834.42">The '@' sign is an operator in Python 2.4, not an error token.</t>
 <t tx="ekr.20050123092834.71">What I did:
@@ -7923,17 +8279,25 @@ are unicode encoding errors.
 
 - We must _not_ set self.encoding in scanHeader: that would interfere with
 normal initialization.</t>
-<t tx="ekr.20050123092834.81">- Restored non Pmw code in resizePanesToRatio.  This code got deleted by mistake.  The Equal Sized Panes works again.
+<t tx="ekr.20050123092834.81">- Restored non Pmw code in resizePanesToRatio. This code got deleted by mistake.
+The Equal Sized Panes works again.
 
 - Added many do-nothing methods to nullMenu class.
 
-This should prevent the startup logic from messing with shortcuts in any way.  It's also the right thing to do.
+This should prevent the startup logic from messing with shortcuts in any way.
+It's also the right thing to do.
 
-- Added an entry for EqualSizedPanes to leoSettings.leo.  This overrides the default (Ctrl-E) and thereby prevents the default from overriding the entry for ExecuteScript!
+- Added an entry for EqualSizedPanes to leoSettings.leo. This overrides the
+default (Ctrl-E) and thereby prevents the default from overriding the entry for
+ExecuteScript!
 
-- Re-enabled code in createMenuEntries that warns when shortcuts have been redefined.  Not sure if this is a wise idea, or indeed if it actually does anything :-)
+- Re-enabled code in createMenuEntries that warns when shortcuts have been
+redefined. Not sure if this is a wise idea, or indeed if it actually does
+anything :-)
 
-I am tempted to remove all the default entries entirely.  This would simplify error reporting, but then Leo would hardly work at all if leoSettings.leo were not present.</t>
+I am tempted to remove all the default entries entirely. This would simplify
+error reporting, but then Leo would hardly work at all if leoSettings.leo were
+not present.</t>
 <t tx="ekr.20050123092834.159"></t>
 <t tx="ekr.20050123092834.160">p.moveToParent now just returns if p is a null position.</t>
 <t tx="ekr.20050123092834.163"># Leo looped after this assert failed.</t>
@@ -7966,7 +8330,7 @@ What I did:
 <t tx="ekr.20050123092834.422">This method now does nothing if at.toString is True.</t>
 <t tx="ekr.20050123092834.424"></t>
 <t tx="ekr.20050123092834.431"></t>
-<t tx="ekr.20050123092834.432">Leo did not correctly write adjacent @doc parts in @file trees.  Leo could not read the resulting derived files!
+<t tx="ekr.20050123092834.432">Leo did not correctly write adjacent @doc parts in @file trees.  Leo could not read the resulting external files!
 
 The bug happened if any node in an @file tree contains adjacent @doc parts, like this:
 
@@ -8005,7 +8369,7 @@ to:
 The difference is in quotes.  Especially quotes around "%1" seem to matter.</t>
 <t tx="ekr.20050123092834.492">This is an important difference. imp.load_module is equivalent to a reload, so
 we must not call this if the module already exists!</t>
-<t tx="ekr.20050123092834.497">Leo did not properly write derived files that contained section references to grand-children.
+<t tx="ekr.20050123092834.497">Leo did not properly write external files that contained section references to grand-children.
 
 For example:
 
@@ -8243,11 +8607,22 @@ the last registered hook was ever being remembered!</t>
     - Another major mess cleaned up.
 
 - Renamed find/change_text to find/change_ctrl to avoid name conflict.</t>
-<t tx="ekr.20050123110009">Leo now stores options in @settings trees, that is, outlines whose headline is '@settings'. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files.
+<t tx="ekr.20050123110009">Leo now stores options in @settings trees, that is, outlines whose headline is
+'@settings'. When opening a .leo file, Leo looks for @settings trees not only in
+the outline being opened but also in various leoSettings.leo files.
 
-The key design goal of @settings trees was that Leo's user options must be infinitely flexible. That goal has been accomplished. Indeed, users can create arbitrarily complex user options with @settings trees. Leo settings outlines are, in fact, infinitely more flexible and powerful than any scheme based on flat text.
+The key design goal of @settings trees was that Leo's user options must be
+infinitely flexible. That goal has been accomplished. Indeed, users can create
+arbitrarily complex user options with @settings trees. Leo settings outlines
+are, in fact, infinitely more flexible and powerful than any scheme based on
+flat text.
 
-The Settings command temporarily replaces the outline pane with an outline showing all the @settings trees in effect. The Settings command also replaces the body pane with a "settings pane". This settings pane allows you to change the settings selected in the outline pane using standard gui widgets. The settings pane is dynamically created from nodes in the settings tree; it is as extensible as the @settings tree itself.
+The Settings command temporarily replaces the outline pane with an outline
+showing all the @settings trees in effect. The Settings command also replaces
+the body pane with a "settings pane". This settings pane allows you to change
+the settings selected in the outline pane using standard gui widgets. The
+settings pane is dynamically created from nodes in the settings tree; it is as
+extensible as the @settings tree itself.
 
 For full details, see the children of this node.</t>
 <t tx="ekr.20050123111723"></t>
@@ -8266,7 +8641,8 @@ disables plugins automatically.This plugin also tells you everything you need to
 know about each plugin. Finally, this plugin also lets you download plugins from
 Leo's cvs site! Many thanks to Paul Patterson for this excellent work.
 
-Note.  The Plugins Manager plugin requires Pmw.  You can install Pmw in Leo's extensions directory if you like.</t>
+Note. The Plugins Manager plugin requires Pmw. You can install Pmw in Leo's
+extensions directory if you like.</t>
 <t tx="ekr.20050123115804.1">You can can import any extension to Leo by putting the extension in the 'extensions' directory and using g.importExtension to import it.
 
 - created the 'extensions' directory and g.app.extensionsDir
@@ -8346,7 +8722,8 @@ don't save the .leo file the recent files information will not be updated.</t>
 1. Select a node in the tree
 2. Hit CTRL-I to insert a node
 3. Hit CTRL-Z to undo the insert
-4. There is no longer a node selected in the tree so keyboard tree navigation etc commands don't work until you click on something with the mouse
+4. There is no longer a node selected in the tree so keyboard tree navigation etc 
+commands don't work until you click on something with the mouse
 
 -----
 
@@ -8710,13 +9087,13 @@ This convention allows strings to appear in .leo files in a more readable format
 
 ..  **Important**: Plugins must *not* use ``v.unknownAttributes`` inside ``@thin``
 ..  trees. Indeed Leo uses **hidden machinery** to write ``t.unknownAttributes``.
-..  Leo does *not* write ``t.unknownAttributes`` to thin derived files. Instead Leo
+..  Leo does *not* write ``t.unknownAttributes`` to thin external files. Instead Leo
 ..  writes a representation of all ``t.unknownAttributes`` contained in the
 ..  ``@thin`` tree to a special xml attribute called
 ..  ``descendentTnodeUnknownAttributes`` in the ``&lt;v&gt;`` element corresponding to the
 ..  ``@thin`` node. Yes, this is complicated, but it works. Leo can *not* write
 ..  ``v.unknownAttributes`` in ``@thin`` trees because **only tnodes have gnx's in
-..  thin derived files**. In effect, vnodes are anonymous.
+..  thin external files**. In effect, vnodes are anonymous.
 
 ..  Plugins that must associate attributes with vnodes should support only ``@file``
 ..  trees. A completely different alternative would be for the plugin to extend how
@@ -9040,24 +9417,36 @@ AttributeError: atFile instance has no attribute 'errors'
 
 It is still not completely clear why this happened.</t>
 <t tx="ekr.20050429094215.130"></t>
-<t tx="ekr.20050429094215.131">- Moved computeGlobalConfigDir, computeHomeDir, computeLoadDir and startupEncoding from leo.py to leoGlobals.py.
+<t tx="ekr.20050429094215.131">- Moved computeGlobalConfigDir, computeHomeDir, computeLoadDir and
+startupEncoding from leo.py to leoGlobals.py.
 
 - Created g.computeStandardDirectories and used it in leo.py.
 
-- Created g.createStandAloneApp using the above functions.  This function was based on the 'Standalone Operation' classed in the plugin_manager plugin.  g.createStandAloneApp doesn't actually use any of these classes because the nullGui class is basically a clumsier version of the BlackHole class.
+- Created g.createStandAloneApp using the above functions. This function was
+based on the 'Standalone Operation' classed in the plugin_manager plugin.
+g.createStandAloneApp doesn't actually use any of these classes because the
+nullGui class is basically a clumsier version of the BlackHole class.
 
-- Added a do-nothing attachLeoIcon method to nullGui class to suppress a warning.  As I said, the nullGui class is not as elegant as Paul's BlackHole class.
+- Added a do-nothing attachLeoIcon method to nullGui class to suppress a
+warning. As I said, the nullGui class is not as elegant as Paul's BlackHole
+class.
 
-- Added &lt;&lt;importLeoGlobals&gt;&gt; button to newButtons plugin.  This creates a node named
-  &lt;&lt; define importLeoGlobals &gt;&gt; whose body text defines an importLeoGlobals function.
+- Added &lt;&lt;importLeoGlobals&gt;&gt; button to newButtons plugin. This creates a node
+  named &lt;&lt; define importLeoGlobals &gt;&gt; whose body text defines an
+  importLeoGlobals function.
 
-The idea is that importing leoGlobals from a stand-alone plugin is a bit tricky.  The importLeoGlobals handles these details.  Note that we don't want to define importLeoGlobals in a node included by @others, because this function must be available to the code in the &lt;&lt; imports &gt;&gt; section.  So we use a named section and reference it in before referencing the &lt;&lt; imports &gt;&gt; section.  See the plugin_manager plugin for an example.
+The idea is that importing leoGlobals from a stand-alone plugin is a bit tricky.
+The importLeoGlobals handles these details. Note that we don't want to define
+importLeoGlobals in a node included by @others, because this function must be
+available to the code in the &lt;&lt; imports &gt;&gt; section. So we use a named section
+and reference it in before referencing the &lt;&lt; imports &gt;&gt; section. See the
+plugin_manager plugin for an example.
 
-- Changed the plugin_manager plugin as follows:
-    - Used the newButtons plugin to add an &lt;&lt; define importLeoGlobals &gt;&gt; section.
-    - Simplified the import logic using importLeoGlobals function.
-    - Commented out the Standalone Operation classes.
-    - Called g.createStandAloneApp in the '__name__ == "__main__"' code.</t>
+- Changed the plugin_manager plugin as follows: - Used the newButtons plugin to
+    add an &lt;&lt; define importLeoGlobals &gt;&gt; section. - Simplified the import logic
+    using importLeoGlobals function. - Commented out the Standalone Operation
+    classes. - Called g.createStandAloneApp in the '__name__ == "__main__"'
+    code.</t>
 <t tx="ekr.20050429094215.139">- config.openSettingsFile returns None if there is a read error.
 
 - leoFileCommand.open gives no BadLeoFile message if silent is True.</t>
@@ -9153,27 +9542,40 @@ thorny questions about exactly where recent files info belongs.</t>
 - readSettingsFiles now reads @recentfiles nodes from all settings files.
 
 - Created @settings nodes and @recent-files nodes if they do not exist.</t>
-<t tx="ekr.20050429094215.355">@killcolor
+<t tx="ekr.20050429094215.355">You all have convinced me that storing recent files data in .leo files is a
+dubious idea. My new plan is as follows:
 
-You all have convinced me that storing recent files data in .leo files is a dubious idea. My new plan is as follows:
+1. Leo will store recent files info in files called .leoRecentFiles.txt. These
+will be a plain text files with one line per recent files entry. These will be
+local files, so problems concerning directory structure and path specifications
+should go away.
 
-1. Leo will store recent files info in files called .leoRecentFiles.txt.  These will be a plain text files with one line per recent files entry.  These will be local files, so problems concerning directory structure and path specifications should go away.
+2. On startup, Leo will search for the .leoRecentFiles.txt files in the user's
+home directory, if it exists. Leo will look in Leo's config directory next, but
+only if the home directory does not exist, or does not contain a
+.leoRecentFiles.txt file. In other words, Leo will use at most one
+.leoRecentFiles.txt file on startup.
 
-2.  On startup, Leo will search for the .leoRecentFiles.txt files in the user's home directory, if it exists.  Leo will look in Leo's config directory next, but only if the home directory does not exist, or does not contain a .leoRecentFiles.txt file.  In other words, Leo will use at most one .leoRecentFiles.txt file on startup.
+3. When opening a .leo file, Leo will look for .leoRecentFiles.txt in the
+directory containing the file.
 
-3.  When opening a .leo file, Leo will look for .leoRecentFiles.txt in the directory containing the file.
+4. At no time after installation will Leo create any .leoRecentFiles.txt file.
+This will allow users (or their managers) to set policy regarding where to store
+this information (if anywhere).
 
-4.  At no time after installation will Leo create any .leoRecentFiles.txt file.  This will allow users (or their managers) to set policy regarding where to store this information (if anywhere).
+5. Leo will write at most one .leoRecentFiles.txt file when saving a .leo file,
+namely the file read in item 3 if it exists, or the file read in item 2
+otherwise.
 
-5.  Leo will write at most one .leoRecentFiles.txt file when saving a .leo file, namely the file read in item 3 if it exists, or the file read in item 2 otherwise.
+6. Leo will have settings to tell which .leoRecentFiles.txt files may be
+written.
 
-6.  Leo will have settings to tell which .leoRecentFiles.txt files may be written.
+7. Leo will never create @settings nodes or @recent-files nodes automatically.
+Moreover, I shall remove the @recent-files panel from the settings dialog and
+the corresponding @recent-files code from the config classes.
 
-7. Leo will never create @settings nodes or @recent-files nodes automatically.  Moreover, I shall remove the @recent-files panel from the settings dialog and the corresponding @recent-files code from the config classes.
-
-I believe this will address everyone's concerns without the need for resolving thorny questions about exactly where recent files info belongs.
-
-</t>
+I believe this will address everyone's concerns without the need for resolving
+thorny questions about exactly where recent files info belongs.</t>
 <t tx="ekr.20050429095849">- Saved expansion state of @settings trees when the user hits the OK button.
 
 - Added support for UNL's in the status line when the settings dialog is active.
@@ -9410,14 +9812,20 @@ restarting I still have the old settings in use.
 The fix was to add the following line to the init function:
 
     global click_registry, coloured_nodes</t>
-<t tx="ekr.20050620144052.8">Modifying outlines can invalidate existing positions!  This rarely happens.  At present it affects the atFile.read logic when reading an outline whose initial current position is a clone outside an @thin tree with another clone inside the @thin tree.  So the read logic computes the expected current position before reading all derived files, and this expected current position becomes invalid.
+<t tx="ekr.20050620144052.8">Modifying outlines can invalidate existing positions! This rarely happens. At
+present it affects the atFile.read logic when reading an outline whose initial
+current position is a clone outside an @thin tree with another clone inside the
+@thin tree. So the read logic computes the expected current position before
+reading all external files, and this expected current position becomes invalid.
 
 What I did:
 
-1.  Moved &lt;&lt; set current and top positions &gt;&gt; from getVnodes to end of getLeoFile.
-This ensures that the outline won't change after computing the position.
+1. Moved &lt;&lt; set current and top positions &gt;&gt; from getVnodes to end of
+getLeoFile. This ensures that the outline won't change after computing the
+position.
 
-2. Unit tests will have to be revised to make sure that only valid positions get used.</t>
+2. Unit tests will have to be revised to make sure that only valid positions get
+used.</t>
 <t tx="ekr.20050620144052.48">- Fixed bugs in convertAllBlanks and convertAllTabs.
 
 These must always call afterChangeGroup to match beforeChangeGroup, even if
@@ -9477,7 +9885,8 @@ What I did:
 - Added @language target_language = Python to leoSettings.leo.
 - Convert c.target_language to lowercase in several places.</t>
 <t tx="ekr.20050620144052.207"></t>
-<t tx="ekr.20050620144052.208">idle_body_key now calls doAutoIndent and convertBlanksToTabs.  The idea is that plugins could override these methods if desired.</t>
+<t tx="ekr.20050620144052.208">idle_body_key now calls doAutoIndent and convertBlanksToTabs. The idea is that
+plugins could override these methods if desired.</t>
 <t tx="ekr.20050620144052.210"># I also fixed a bug: the Mark Clones command did not work!</t>
 <t tx="ekr.20050620144052.222">Some non-standard distributions don't include the profile and pstats modules.</t>
 <t tx="ekr.20050620144052.231">Leo will now look for a file called .leo_xresources in the users home directory.
@@ -9600,7 +10009,7 @@ what plugins are active.
 
 .. _directive:              `Leo directives`_
 .. _directives:             `Leo directives`_
-.. _`derived file`:         `Derived files`_
+.. _`external file`:        `External files`_
 .. _glossary:               glossary.html
 .. _`Good style and bad`:   `Good style and bad:  sections vs. @others`_
 .. _outline:                `Leo's main window`_
@@ -10098,7 +10507,7 @@ The rst3 command replaces markup doc parts by the markup they contain, even in
 code mode.
 
 Option and markup doc parts are especially useful in code mode. They allow you
-to specify options or insert rST markup directly from with derived files. This
+to specify options or insert rST markup directly from with external files. This
 makes your source files self contained: there is no need to add other nodes to
 make the rst3 command happy.
 
@@ -10298,37 +10707,37 @@ Mini-buffer
 Now that we are familiar with Leo's main window,
 let's see how to use Leo as a simple outliner.</t>
 <t tx="ekr.20050822173420.1">You don't have to store all outline data in Leo (.leo) files.
-Leo allows you to store outline data in external files called **derived files**.
+Leo allows you to store outline data in external files called **external files**.
 This is useful for creating programming files, documentation files such as LaTeX files, and web pages.
 
 **Important**:
-You can edit `derived files`_ outside of Leo.
+You can edit `external files`_ outside of Leo.
 Leo will update the outline to reflect those changes when Leo next opens the outline_.
 
-It is easy to create derived files; just put ``@thin`` *filename* in a headline_.
+It is easy to create external files; just put ``@thin`` *filename* in a headline_.
 That creates an **@thin node**.
-The **@thin tree** (the ``@thin`` node and all its descendants) corresponds to the derived file *filename*.
-Leo writes a `derived file`_ corresponding to the ``@thin`` tree to your hard drive when Leo saves your outline (.leo file).
-When opening a .leo file, Leo reads all the `derived files`_ corresponding to ``@thin`` nodes in the outline_.
+The **@thin tree** (the ``@thin`` node and all its descendants) corresponds to the external file *filename*.
+Leo writes a `external file`_ corresponding to the ``@thin`` tree to your hard drive when Leo saves your outline (.leo file).
+When opening a .leo file, Leo reads all the `external files`_ corresponding to ``@thin`` nodes in the outline_.
 
 A good rule of thumb is to use ``@thin`` nodes unless you have a specific reason to do otherwise.
-See `Chapter 4: Writing Programs in Leo`_ for a full discussions of the various ways of creating `derived files`_.
+See `Chapter 4: Writing Programs in Leo`_ for a full discussions of the various ways of creating `external files`_.
 
 **Important**:
-You must tell Leo the order in which to write data from the ``@thin`` tree to the `derived file`_.
-The simplest way to specify the contents of a derived file is to insert::
+You must tell Leo the order in which to write data from the ``@thin`` tree to the `external file`_.
+The simplest way to specify the contents of a external file is to insert::
 
     @all
 
 in the body text of the `@thin`_ node_.
 ``@all`` is a Leo `directive`_.
 
-When writing a `derived file`_, Leo writes the `body text`_ of the `@thin`_ node_,
+When writing a `external file`_, Leo writes the `body text`_ of the `@thin`_ node_,
 replacing the ``@all`` directive by the `body text`_ of all the descendant_ nodes_ in **outline order**,
 the order that nodes appear on the screen when all nodes are expanded.
-`Leo for Programmers`_ discusses other, more flexible, ways of creating derived files from `@thin`_ trees.
-**Note**: Leo copies headlines to the derived file as comments.
-This means that headlines_ do not affect the meaning of `derived files`_ and
+`Leo for Programmers`_ discusses other, more flexible, ways of creating external files from `@thin`_ trees.
+**Note**: Leo copies headlines to the external file as comments.
+This means that headlines_ do not affect the meaning of `external files`_ and
 you can use headlines_ to contain whatever data you wish.
 Usually, headlines_ describe what's in the node.</t>
 <t tx="ekr.20050822173420.2">A **cloned node** is a copy of a node_ that changes when the original changes.
@@ -10418,7 +10827,7 @@ To run the entire body text as a script, simply choose the node and execute the 
 If text is selected, the ``Execute Script`` command will run just the selected text as the script.
 
 The ``Execute Script`` command **preprocesses** the script before executing it.
-Leo preprocesses scripts in exactly the same way that Leo writes derived files.
+Leo preprocesses scripts in exactly the same way that Leo writes external files.
 That is,
 **Leo expands section references and processes @others directives** before executing the script.
 This allows you to use all of Leo's normal capabilities to organize your scripts.
@@ -10494,7 +10903,7 @@ For example:
     effects to the presently selected outline.</t>
 <t tx="ekr.20050827061847">**Doc parts** are blocks of text that Leo treats as comments.
 Leo syntax colors doc parts as comments,
-and Leo converts doc parts into comments in derived files.
+and Leo converts doc parts into comments in external files.
 Doc parts start with an ``@`` directive and continue until
 an ``@c`` directive or the end of the body text.
 For example::
@@ -10529,13 +10938,13 @@ identifiers. This construct is a convention of the noweb_ language, and will be
 of use *only* for those who want to create .nw output files for use with the
 official noweb_ system.</t>
 <t tx="ekr.20050827090532">`@thin trees`_ (parts of the outline whose *headline* starts with @thin)
-create `derived files`_ containing your program.
+create `external files`_ containing your program.
 Within ``@thin trees`` you can write *functional pseudo-code*, like this::
 
     &lt;&lt; imports &gt;&gt;  (in body text)
 
 This is a **reference** to a **section** called ``&lt;&lt; imports &gt;&gt;``.
-When writing a `derived file`_,
+When writing a `external file`_,
 Leo replaces all section references by their definition.
 You define sections with **section definition nodes**.
 A section definition node is a node_ whose headline_ starts with a `section name`_::
@@ -10561,16 +10970,16 @@ they don't have to be complete functions or methods.
     Leo replaces the ``@others`` directive by the body text of all descendant_ nodes_
     *except* `section definition nodes`_.
     That's how ``@others`` got its name.
-    For example, the `root node`_ of Python `derived files`_ typically is something like this::
+    For example, the `root node`_ of Python `external files`_ typically is something like this::
 
         &lt;&lt; docstring &gt;&gt;
         &lt;&lt; imports &gt;&gt;
         @others
 
-    The `derived file`_ will contain the docstring, followed by the imports, followed by the
+    The `external file`_ will contain the docstring, followed by the imports, followed by the
     the body text of all other nodes in the ``@file`` tree, in `outline order`_.
 
-- A `derived file`_ may contain multiple ``@others`` directives_: Each
+- A `external file`_ may contain multiple ``@others`` directives_: Each
   ``@others`` directive expands to the body text of all descendant_ nodes_,
   excluding any nodes (and *their* descendants) that contain other ``@others``
   directives_. In practice, using ``@others`` is easy.
@@ -10588,8 +10997,8 @@ The following sections discuss some relatively minor details.
 However, I recommend reading `Good style and bad`_;
 you might save yourself some extra work.
 
-`@auto trees`_ allow you to edit derived files that do not contain sentinels.
-Leo imports such derived files every time Leo reads the .leo file.
+`@auto trees`_ allow you to edit external files that do not contain sentinels.
+Leo imports such external files every time Leo reads the .leo file.
 </t>
 <t tx="ekr.20050827090802">``LeoPyRef.leo`` (in the core subdirectory of the leo folder) contains almost all of Leo's source code.
 It provides hundreds of examples of everything discussed here.
@@ -10597,7 +11006,7 @@ This file will repay close study.
 For full details on all aspects of Leo see ``LeoDocs.leo`` or `Leo's Users Guide`_.</t>
 <t tx="ekr.20050827094813">Newcomers to Leo frequently ask when to use the `@others`_ directive_ and when
 to use sections_. It is good style to use `section references`_ only when the
-order of text within a `derived file`_ matters. For example, Python programmers
+order of text within a `external file`_ matters. For example, Python programmers
 put docstrings and imports at the start of files. So the `body text`_ of
 `@file`_ nodes typically look something like this::
 
@@ -10663,7 +11072,7 @@ A few more words about style:
 - It is bad style to use `@others`_ when order does matter.
   The reason is that it is very easy to move nodes in a tree by mistake,
   say by alphabetizing nodes.
-  One wants to make the meaning of a derived file immune from such movements.
+  One wants to make the meaning of a external file immune from such movements.
 
 One last word about style. The world won't end if you happen to use bad style by
 mistake: you just might cause a bit more work for yourself than was strictly
@@ -10673,7 +11082,7 @@ wise to "know the rules before you break them."
 <t tx="ekr.20050827102655">The previous sections have discussed the basics of Leo.
 *Non-programmers can stop reading this tutorial now*!
 
-The following sections tell how to create derived files that contain computer
+The following sections tell how to create external files that contain computer
 programs. Yes, you could create program files using the ``@all`` directive, but
 the following section explain how you can take advantage of **power-user**
 features designed specifically for computer programmers. Even if you don't read
@@ -11302,10 +11711,10 @@ The ``@others`` directive that occurs highest in the ``@file`` tree refers to al
    This may be dubious behavior, but that's how Leo works.
 
 4. ``@ignore`` can be used by scripts and plugins as they like, but should preserve the behavior in item 1 above.</t>
-<t tx="ekr.20050828103319">When writing `derived files`_, Leo stores information about the outline
+<t tx="ekr.20050828103319">When writing `external files`_, Leo stores information about the outline
 structure in special comments called **sentinel lines**. Sentinel lines are
 comment lines with '@' following the comment delimiter. For example, here are
-some actual sentinel line for the derived file containing Python code::
+some actual sentinel line for the external file containing Python code::
 
     #@+leo-ver=4-thin
     #@+node:ekr.20031218072017.2794:@thin leoColor.py
@@ -11315,13 +11724,13 @@ some actual sentinel line for the derived file containing Python code::
     #@-node:ekr.20031218072017.2794:@thin leoColor.py
     #@-leo
 
-**You must not change sentinel lines** when editing a `derived file`_ in another
-editor! Doing so will corrupt the derived file and make it impossible for Leo to
+**You must not change sentinel lines** when editing a `external file`_ in another
+editor! Doing so will corrupt the external file and make it impossible for Leo to
 read it normally. If you do accidentally alter a sentinel line, don't panic!
-Leo's ``Import Derived File`` command_ can recover information from corrupted
-derived files.
+Leo's ``Import external file`` command_ can recover information from corrupted
+external files.
 
-The main difference between `@file`_ trees, `@thin`_ trees (and other kinds of trees that create derived files)
+The main difference between `@file`_ trees, `@thin`_ trees (and other kinds of trees that create external files)
 is the kind of sentinel lines that Leo writes:
 
 - Sentinels in files derived from `@thin`_ reduce spurious cvs conflicts by
@@ -11333,9 +11742,9 @@ is the kind of sentinel lines that Leo writes:
   **Important**: without sentinels Leo can not automatically update
   ``@nosent`` trees from changes made in external editors.
 
-`Chapter 4: Writing Programs in Leo`_ discusses the various ways of creating derived files.
+`Chapter 4: Writing Programs in Leo`_ discusses the various ways of creating external files.
 This is a highly complex subject: you should ignore these details at first.
-Just use ``@thin`` to create your `derived files`_.</t>
+Just use ``@thin`` to create your `external files`_.</t>
 <t tx="ekr.20050828160132">.. External links...
 .. _`CWEB`:     http://www-cs-faculty.stanford.edu/~knuth/cweb.html
 .. _`noweb`:    http://www.eecs.harvard.edu/~nr/noweb/
@@ -11347,10 +11756,10 @@ Just use ``@thin`` to create your `derived files`_.</t>
 .. _`@auto reference`:      directives#id1
 </t>
 <t tx="ekr.20050828161117">An **orphan node** is a descendant of an `@thin`_ node_ that will not be copied
-to the `derived file`_. Orphan nodes can arise because an `@thin`_ tree has no
+to the `external file`_. Orphan nodes can arise because an `@thin`_ tree has no
 ``@others`` or ``@all`` directives. Sections that are defined but not used also
 create orphan nodes. Leo issues a warning when attempting to write an `@thin`_
-tree containing orphan nodes, and does not save the derived file. Instead Leo
+tree containing orphan nodes, and does not save the external file. Instead Leo
 saves the information in the `@thin`_ tree in the .leo file. No information is
 lost; Leo will load the `@thin`_ tree from the .leo file the next time Leo
 opens the .leo file.
@@ -11473,22 +11882,22 @@ See `Chapter 4: Writing Programs in Leo`_ for full details.
 
 - **@** Starts doc parts (and ends code parts).
 
-- **@all** Copies *all* descendant nodes to the derived file.
+- **@all** Copies *all* descendant nodes to the external file.
 
 - **@c** Starts code parts (and ends doc parts).
 
-- **@encoding** Sets the Unicode encoding used in derived files.
+- **@encoding** Sets the Unicode encoding used in external files.
 
-- **@first** Forces lines to appear before the first sentinel of a derived file.
+- **@first** Forces lines to appear before the first sentinel of a external file.
 
 - **@language** Sets the language used for syntax coloring **and** sets the comment delimiters 
   used in sentinel lines and in doc parts.
 
-- **@last** Forces lines to appear after the last sentinel of a derived file.
+- **@last** Forces lines to appear after the last sentinel of a external file.
 
-- **@lineending** Specifies the line ending to be used in derived files.
+- **@lineending** Specifies the line ending to be used in external files.
 
-- **@others** Copies all nodes *except section definition nodes* to the derived file.
+- **@others** Copies all nodes *except section definition nodes* to the external file.
 
 - **@pagewidth** Sets the page width used to break doc parts into lines.
 
@@ -12023,21 +12432,21 @@ Sections_ are convenient in the following circumstances:
 In short, I create sections when convenient,
 and convert them to functions or methods if they need to be used in several places.</t>
 <t tx="ekr.20050830115714.9">Internally, Leo represents all strings as unicode. Leo translates from a
-particular encoding to Unicode_ when reading .leo files or `derived files`_. Leo
-translates from Unicode_ to a particular encoding when writing `derived files`_. You
+particular encoding to Unicode_ when reading .leo files or `external files`_. Leo
+translates from Unicode_ to a particular encoding when writing `external files`_. You
 may see strange looking characters if your text editor is expecting a different
-encoding. The encoding used in any `derived file`_ is shown in the ``#@+leo`` `sentinel line`_
+encoding. The encoding used in any `external file`_ is shown in the ``#@+leo`` `sentinel line`_
 like this::
 
     #@+leo-encoding=iso-8859-1.
 
 **Exception**: the encoding is ``UTF-8`` if no ``-encoding=`` field exists.
-You can also use the ``@encoding`` directive_ to set the encoding for individual `derived files`_.
+You can also use the ``@encoding`` directive_ to set the encoding for individual `external files`_.
 If no ``@encoding`` directive_ is in effect,
 Leo uses the following settings_ to translate to and from unicode:
 
 default_derived_file_encoding
-    The encoding used for derived files if no ``@encoding`` directive_ is in effect.
+    The encoding used for external files if no ``@encoding`` directive_ is in effect.
     This setting also controls the encoding of files created by the ``Tangle`` commands.
     The default is ``UTF-8`` (case not important).
 
@@ -12076,7 +12485,7 @@ You have two options:
 <t tx="ekr.20050830115714.12">Using `@thin`_ trees can eliminate most problems with using Leo in cooperative
 (SCCS) environments:
 
-- Developers should use `@thin`_ trees to create derived files in any kind of
+- Developers should use `@thin`_ trees to create external files in any kind of
   cooperative environment.
 
 - If sentinels are frowned upon in your development community, use `@auto`_ or
@@ -12084,7 +12493,7 @@ You have two options:
 
 - The repository contains "reference" .leo files. These reference files
   should contain nothing but ``@thin`` nodes. Reference files will change only
-  when new derived files get added to the project.
+  when new external files get added to the project.
 
   **Important**: Leo's `bzr repository`_ contains the *reference* versions of
   the following .leo files: ``LeoPyRef.leo`` and ``LeoPluginsRef.leo``. However,
@@ -12105,35 +12514,35 @@ or not.
 
 -   Use `@nosent`_ trees.
     Files derived from ``@nosent`` trees contain no sentinels_.
-    However, Leo create the `derived file`_ just as in `@thin`_ trees.
+    However, Leo create the `external file`_ just as in `@thin`_ trees.
     In particular, Leo expands section references and understands the ``@others`` directive.
 
 -   Use `@asis`_ trees.
     Files derived from ``@asis`` trees contain no sentinels_.
     Moreover, Leo does not expand section references in ``asis`` trees.
-    In other words, Leo creates the `derived file` simply by writing all body text in outline order.
-    Leo can't update the outline unless the derived file contains sentinels,
+    In other words, Leo creates the `external file` simply by writing all body text in outline order.
+    Leo can't update the outline unless the external file contains sentinels,
     so Leo does not update ``@nosent`` trees or ``@asis`` trees automatically when
-    you change the derived file in an external editor.</t>
+    you change the external file in an external editor.</t>
 <t tx="ekr.20050830115714.16">You have two options, depending on whether you want sentinel lines in your
-derived file or not.
+external file or not.
 
 -   Use `@noref`_ trees.
     Leo creates files derived from ``@noref`` trees by writing all the nodes of the
-    tree to the derived file in outline order.
-    The derived file *does* contain some sentinels,
-    so you *can* update ``@noref`` trees from changes made to derived files.
+    tree to the external file in outline order.
+    The external file *does* contain some sentinels,
+    so you *can* update ``@noref`` trees from changes made to external files.
 
 -   Use `@asis`_ trees.
     Files derived from ``@asis`` trees contain no sentinels.
-    Leo creates the derived file simply by writing all body text in outline order.
-    Leo can't update the outline unless the derived file contains sentinels,
-    so Leo does not update ``@asis`` trees automatically when you change the derived file in an external editor.</t>
+    Leo creates the external file simply by writing all body text in outline order.
+    Leo can't update the outline unless the external file contains sentinels,
+    so Leo does not update ``@asis`` trees automatically when you change the external file in an external editor.</t>
 <t tx="ekr.20050830115714.17">The import commands insert ``@ignore`` directives_ in the top-level node_.
 Leo does this so that you won't accidentally overwrite your files after importing them.
 Change the filename following ``@thin`` or ``@root`` as desired,
 then remove the ``@ignore`` directive_.
-Saving the outline will then create the `derived file`_.</t>
+Saving the outline will then create the `external file`_.</t>
 <t tx="ekr.20050830115714.18">**Question**: I'm writing a Windows Script Component, which is an XML file with
 a CData section containing javascript. I can get the XML as I want it by using
 ``@language html``, but how can I get the tangling comments inside the CData
@@ -12224,7 +12633,7 @@ More than one ``@first`` directive may exist, like this::
 You can also use `@asis`_, `@noref`_ or `@nosent`_ trees to create cweb files.
 See `CWEB mode`_ for full details.
 </t>
-<t tx="ekr.20050830115714.24">No.  Everything in an `@thin`_ trees must be part of the derived file: orphan and
+<t tx="ekr.20050830115714.24">No.  Everything in an `@thin`_ trees must be part of the external file: orphan and
 ``@ignore`` nodes are invalid in ``@thin`` trees. This restriction should not be
 troublesome. For example, you can organize your outline like this::
 
@@ -12542,8 +12951,8 @@ Flash file gets mapped to an &lt;embed&gt; tag, etc).</t>
 .. _cweb:                   glossary.html#cweb
 .. _directive:              glossary.html#directive
 .. _directives:             glossary.html#directives
-.. _`derived file`:         glossary.html#derived-file
-.. _`derived files`:        glossary.html#derived-files
+.. _`external file`:        glossary.html#external-file
+.. _`external files`:       glossary.html#external-files
 .. _headline:               glossary.html#headline
 .. _headlines:              glossary.html#headlines
 .. _node:                   glossary.html#node
@@ -12709,7 +13118,7 @@ Glossary
 .. ----- References to the tutorial.
 .. _`clones &amp; views`:               intro.html#clones-views
 .. _`leo's tutorial`:               intro.html
-.. _`derived files section`:        intro.html#derived-files
+.. _`external files section`:        intro.html#derived-files
 .. _`directives for programming`:   intro.html#directives-for-programming
 .. _`leo directives`:               intro.html#leo-directives
 .. _`quick start for programmers`:  intro.html#quick-start-for-programmers
@@ -12745,7 +13154,7 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
     An @file tree_ is a tree whose root_ is an @file node, etc.
 
 ``@asis, @auto, @file, @noref, @nosent, @thin``
-    Headlines_ that start with one of these create (correspond to) `derived files`_.
+    Headlines_ that start with one of these create (correspond to) `external files`_.
     The following synonyms exist::
 
         @asis, @file-asis
@@ -12755,7 +13164,7 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
     For more information, see the documentation for `@asis`_, `@auto`_, `@file`_, `@noref`_, `@nosent`_ and `@thin`_
     in Leo's `programming reference`_ chapter.
 
-    \@auto trees allow you to edit derived files that contain no sentinels.
+    \@auto trees allow you to edit external files that contain no sentinels.
     Leo will import the @auto files when reading .leo files.  Be careful when first creating the @auto node.
     *Before* saving the .leo file containing the new @auto node,
     use the read-at-auto-nodes command to do the initial import.
@@ -12764,7 +13173,7 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
 .. _`@all directive`:
 
 ``@all``
-    A directive_ that copies the `body text`_ of all nodes_ in an `@thin` tree to the corresponding `derived file`_.
+    A directive_ that copies the `body text`_ of all nodes_ in an `@thin` tree to the corresponding `external file`_.
     For more information, see `directives for programming`_ in `Leo's tutorial`_.
 
 .. _`@others`:
@@ -12772,7 +13181,7 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
 
 ``@others``
     A directive_ that copies the `body text`_ of all nodes_ *except* `section definition nodes`_
-    in an `@thin` tree to the corresponding `derived file`_.
+    in an `@thin` tree to the corresponding `external file`_.
     For more information, see `directives for programming`_ in `Leo's tutorial`_.
 
 .. _`@unit`:
@@ -12842,20 +13251,20 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
 
 ``CWEB``
     A `literate programming`_ language invented by Donald Knuth and Silvio Levy.
-    The `CWEB language`_ produces derived files for the C language.
+    The `CWEB language`_ produces external files for the C language.
 
 .. _`demote`:
 
 ``Demote``
     To move all siblings_ that follow a node_ so that they become children_ of the node.
 
-.. _`derived file`:
-.. _`derived files`:
+.. _`external file`:
+.. _`external files`:
 
-``Derived file``
+``external file``
     The file created as the result of tangling_ a node containing an ``@root`` directive_.
     The file consists of the expansion of the text following the ``@root`` directive_.
-    For more information, see the `derived files section`_ of `Leo's tutorial`_.
+    For more information, see the `external files section`_ of `Leo's tutorial`_.
 
 .. _`descendant`:
 .. _`descendants`:
@@ -12943,7 +13352,7 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
 
     **Leo2** denotes all versions of Leo that write version 2 .leo files, that is,
     all versions of leo.py and all Windows versions with version number 2.0 and above.
-    Only Leo2 can generate `derived files`_ from `@file trees`_.
+    Only Leo2 can generate `external files`_ from `@file trees`_.
 
 .. _`literate programming`:
 
@@ -12971,7 +13380,7 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
 
 ``noweb``
     A literate programming language invented by Norman Ramsey.
-    The `noweb language`_ can produce `derived files`_ for any text-based programming language.
+    The `noweb language`_ can produce `external files`_ for any text-based programming language.
 
 .. _`offspring`:
 
@@ -12985,20 +13394,20 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
 
 ``Organizing node``, ``organizer node``
     A node_ containing no `body text`_.
-    Organizing nodes may appear anywhere in an `@file tree`_; they do not affect the derived file in any way.
-    In particular, organizing nodes do not affect indentation in `derived files`_.
+    Organizing nodes may appear anywhere in an `@file tree`_; they do not affect the external file in any way.
+    In particular, organizing nodes do not affect indentation in `external files`_.
 
 .. _`orphan`:
 .. _`orphan node`:
 .. _`orphan nodes`:
 
 ``Orphan node``
-    A node_ that would not be copied to a `derived file`_.
+    A node_ that would not be copied to a `external file`_.
     Orphan nodes can arise because an `@thin tree`_ has no ``@others`` or ``@all`` directives_.
     Sections_ that are defined but not used also create orphan nodes.
 
     Leo issues a warning when attempting to write an `@thin tree`_ containing orphan nodes,
-    and does not save the `derived file`_.
+    and does not save the `external file`_.
     No information is lost; Leo saves the information in the `@thin tree`_ in the .leo file.
     Leo will load the `@thin tree`_ from the .leo file the next time Leo opens the .leo file.
 
@@ -13083,7 +13492,7 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
 .. _`sections`:
 
 ``Section``
-    A fragment of text that can be incorporated into `derived files`_.
+    A fragment of text that can be incorporated into `external files`_.
     See the `Quick start for programmers`_ in `Leo's tutorial`_ for more details.
 
 .. _`section definition`:
@@ -13126,7 +13535,7 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
 ``Sentinels, sentinel lines``
     Comment lines in files derived from `@file nodes`_.
     Such lines start with an ``@`` following the opening comment delimiter.
-    Sentinels embed outline structure into `derived files`_.
+    Sentinels embed outline structure into `external files`_.
     **Do not alter sentinel lines**.  Doing so can corrupt the outline structure.
     For more information see `Sentinel lines`_ in `Leo's tutorial`_.
 
@@ -13153,7 +13562,7 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
 .. _`tangling`:
 
 ``Tangling``
-    The process of creating `derived files`_ from `@root trees`_ or `@file trees`_.
+    The process of creating `external files`_ from `@root trees`_ or `@file trees`_.
     Leo tangles `@file trees`_ automatically when writing a .leo file.
     You must explicitly tangle_ `@root trees`_ using the ``Tangle`` command.
     Tangling expands all `section references` in an `@root node`_ or `@file node`_.
@@ -13177,8 +13586,8 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
 .. _`untangling`:
 
 ``Untangling``
-    Updating an outline_ based on changes to `derived files`_.
-    Untangling allows changes to be propagated from derived files back to the outline.
+    Updating an outline_ based on changes to `external files`_.
+    Untangling allows changes to be propagated from external files back to the outline.
     Especially useful when fixing syntax errors outside Leo.
     For more information, see `Untangling @root trees`_ in Leo's `programming reference`_.
 
@@ -13198,7 +13607,7 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
 
 ``Weaving``
     The process of creating typeset documentation from a noweb_ or CWEB_ source file.
-    Weaving creates documentation. Tangling_ creates `derived files`_.
+    Weaving creates documentation. Tangling_ creates `external files`_.
     Leo does not support weaving directly.
     To weave a file you can create noweb_ or CWEB_ files using Leo's ``Export`` commands,
     then use the noweb_ or CWEB_ systems to weave those files.</t>
@@ -13606,7 +14015,7 @@ Leo. The first functional version of Leo in Python was 0.05 alpha, December 17,
 <t tx="ekr.20050902105852.5">I registered the Leo project on SourceForge on March 10, 2003. It is certainly
 no accident that Leo started a new life shortly thereafter. Prior to SourceForge
 my interest in Leo had been waning.</t>
-<t tx="ekr.20050902105852.6">In the summer of 2001 I began to consider using sentinel lines in derived files.
+<t tx="ekr.20050902105852.6">In the summer of 2001 I began to consider using sentinel lines in external files.
 Previously I had thought that outline structure must be 'protected' by remaining
 inside .leo files. Accepting the possibility that sentinels might be corrupted
 opened vast new design possibilities. In retrospect, problems with sentinel
@@ -13638,15 +14047,15 @@ Many improvements were at last easy enough to do:
 <t tx="ekr.20050902105852.9">In late 2002 and throughout 2003 I worked on an entirely new file format.
 4.0 final went out the door October 17, 2003 after almost a year intense
 design work trying to improve error recovery scheme used while reading
-derived files. In the summer of 2003 I realized that orphan and ``@ignore``'d
+external files. In the summer of 2003 I realized that orphan and ``@ignore``'d
 nodes must be prohibited in ``@file`` trees. With this restriction, Leo
 could finally recreate ``@file`` trees in outlines using **only** the
-information in derived files. This made the read code much more robust, and
+information in external files. This made the read code much more robust, and
 eliminated all the previous unworkable error recovery schemes. At last Leo
 was on a completely firm foundation.
 </t>
 <t tx="ekr.20050902105852.10">Leo first used gnx's (global node indices) as a foolproof way of associating
-nodes in .leo files with nodes in derived files. At the time, there was
+nodes in .leo files with nodes in external files. At the time, there was
 still intense discussions about protecting the logical consistency of
 outlines. ``@thin`` was later to solve all those problems, but nobody knew
 that then.
@@ -13654,12 +14063,12 @@ that then.
 <t tx="ekr.20050902105852.11">Leo 4.2 Final went out the door September 20, 2004.
 This surely is one of the most significant dates in Leo's history:
 
--   This marked the end worries about consistency of outlines and derived files:
-    Leo recreates all essential information from thin derived files,
+-   This marked the end worries about consistency of outlines and external files:
+    Leo recreates all essential information from thin external files,
     so *there is nothing left in the .leo file to get out of synch*.
 
--   Thin derived files use gnx's extensively.  This simplifies the file format and makes thin derived files
-    more cvs friendly.
+- Thin external files use gnx's extensively. This simplifies the file format and
+    makes thin external files more cvs friendly.
 
 -   A sensational scripting plugin showed how to create script buttons.
     This has lead to improvements in the Execute Script command and
@@ -14079,44 +14488,73 @@ The highlights of 4.3.2:
 - The usual assortment of bug fixes.</t>
 <t tx="ekr.20050906104918.1">Here is a summary of the changes:
 
-- General:  All chapters created with rst3 plugin.  This ensures a uniform look.  The source is in LeoDocs.leo.  Removed all references to older versions of Leo, except when discussing old file formats in the Appendices.  Corrected all text so it discusses present version.
+- General: All chapters created with rst3 plugin. This ensures a uniform look.
+The source is in LeoDocs.leo. Removed all references to older versions of Leo,
+except when discussing old file formats in the Appendices. Corrected all text so
+it discusses present version.
 
-- rst3 plugin itself:  Correct bug that caused chapters to be formatted differently when processing multiple @rst trees.  
+- rst3 plugin itself: Correct bug that caused chapters to be formatted
+differently when processing multiple @rst trees.
 
-- rst3 button in LeoDocs.leo:  The script first looks *up* the tree, looking for an @rst node.  If found, it processes just that tree.  If not found, it processes all @rst nodes *below* the originally selected node.  The button is now much more convenient to use.
+- rst3 button in LeoDocs.leo: The script first looks *up* the tree, looking for
+an @rst node. If found, it processes just that tree. If not found, it processes
+all @rst nodes *below* the originally selected node. The button is now much more
+convenient to use.
 
-- Preface: Shorter, no history.  No longer a dead end.
+- Preface: Shorter, no history. No longer a dead end.
 
 - What People are Saying About Leo: No longer a dead end.
 
-- FAQ: Reorganized, simplified, revised.  Added entries for running Leo in a console window and debugging docutils.  Improved entry for using cvs.
+- FAQ: Reorganized, simplified, revised. Added entries for running Leo in a
+console window and debugging docutils. Improved entry for using cvs.
 
-- Chapter 1: Installation: Now the first chapter.  Revised.
+- Chapter 1: Installation: Now the first chapter. Revised.
 
-- Chapter 2: Tutorial: Completely rewritten.  Like Python's tutorial, this chapter contains everything a beginner needs to understand and use Leo.  The `Quickstart for programmers` section is the heart of this chapter.  All terms used have links either to their definition in the tutorial or in the Glossary.  Newbies should be able to digest this chapter easily.  This chapter should make Leo comprehensible to many more people.
+- Chapter 2: Tutorial: Completely rewritten. Like Python's tutorial, this
+chapter contains everything a beginner needs to understand and use Leo. The
+`Quickstart for programmers` section is the heart of this chapter. All terms
+used have links either to their definition in the tutorial or in the Glossary.
+Newbies should be able to digest this chapter easily. This chapter should make
+Leo comprehensible to many more people.
 
 - Chapter 3: Using Outlines: Revised per general remarks above.
 
-- Chapter 4: Writing Programs in Leo.  Completely rewritten.  The old chapter was an embarrassment. The new chapter is a reference guide, properly organized as such.  The introduction warns newbies away.
+- Chapter 4: Writing Programs in Leo. Completely rewritten. The old chapter was
+an embarrassment. The new chapter is a reference guide, properly organized as
+such. The introduction warns newbies away.
 
-- Chapter 5: Using Leo's Commands.  'Minor' revisions and corrections create a substantially better result.
+- Chapter 5: Using Leo's Commands. 'Minor' revisions and corrections create a
+substantially better result.
 
-- Chapter 6: Leo and literate programming: Reformatting helps.  New words about rST markup and other improvements over traditional LP.
+- Chapter 6: Leo and literate programming: Reformatting helps. New words about
+rST markup and other improvements over traditional LP.
 
-- Chapter 7: Scripting Leo with Python: Rewritten, simplified, updated and corrected.  The sources in LeoDocs.leo are directly executable.  rST sources use literal blocks instead of code-blocks so that the sources are simplified. (Important when executing examples).  Properly discusses positions, including 'supremely important' section on copying positions.
+- Chapter 7: Scripting Leo with Python: Rewritten, simplified, updated and
+corrected. The sources in LeoDocs.leo are directly executable. rST sources use
+literal blocks instead of code-blocks so that the sources are simplified.
+(Important when executing examples). Properly discusses positions, including
+'supremely important' section on copying positions.
 
-- Chapter 8: Customizing Leo.  Heavily revised.  Discusses leoSettings.leo, not leoConfig.txt.  Security warnings are more reasonable.  Section on script buttons. Rewrote section on uA's (Adding extensible attributes to nodes and .leo files).
+- Chapter 8: Customizing Leo. Heavily revised. Discusses leoSettings.leo, not
+leoConfig.txt. Security warnings are more reasonable. Section on script buttons.
+Rewrote section on uA's (Adding extensible attributes to nodes and .leo files).
 
-- Chapter 9: History of Leo.  Rewritten.  Much shorter and more useful.  Discusses the major milestones, concentrating on explaining the major differences between versions.  Gone are details of how discoveries came to be.  They are in LeoPostings.leo, which will be included in the distribution.
+- Chapter 9: History of Leo. Rewritten. Much shorter and more useful. Discusses
+the major milestones, concentrating on explaining the major differences between
+versions. Gone are details of how discoveries came to be. They are in
+LeoPostings.leo, which will be included in the distribution.
 
-- Chapter 10: Theory of Operation.  Largely rewritten.  Discusses positions properly.  Omits discussion of how clones were implemented before 4.2.
+- Chapter 10: Theory of Operation. Largely rewritten. Discusses positions
+properly. Omits discussion of how clones were implemented before 4.2.
 
-- Chapter 11: White Papers.  A new chapter.  This is a slightly-edited version of writing that had been buried in the appendices.
+- Chapter 11: White Papers. A new chapter. This is a slightly-edited version of
+writing that had been buried in the appendices.
 
-- Appendices.  Heavily revised and reformatted.  Rewrote sections on file formats.
+- Appendices. Heavily revised and reformatted. Rewrote sections on file formats.
 
-- Glossary: A separate chapter.  All terms have links to their definition.  All definitions are rST targets so other chapters may refer to them.  Added several new entries.
-</t>
+- Glossary: A separate chapter. All terms have links to their definition. All
+definitions are rST targets so other chapters may refer to them. Added several
+new entries.</t>
 <t tx="ekr.20050906104931.1"></t>
 <t tx="ekr.20050906104931.15">http://sourceforge.net/forum/message.php?msg_id=3218558</t>
 <t tx="ekr.20050906104931.38">The fix was to add an entry of 'unknown' state to state_dict. This fixes the
@@ -14587,7 +15025,7 @@ standard search/replace dialog:
 - Convert the marks to a label.
 - Run the "Clone label subnodes" command.
 
-Finally, if you read a derived file, and the content of a node changes, the
+Finally, if you read a external file, and the content of a node changes, the
 previous content is available under the label "before change:"</t>
 <t tx="ekr.20050912125735.647">A plugin to create and update ``@read-only`` nodes. I wanted to have the ability to
 import files in "read-only" mode, that is, in a mode where files could only be
@@ -14671,7 +15109,7 @@ plugin writers don't have to rewrite all the same kinds of code each time and
 also makes it easier to maintain Leo, since it standardizes the way that certain
 classes of plugin interact with the Leo core. Why use this? I'm a plugin writer
 and I want to write a plugin to display dynamic content, i.e., content not
-directly contained in the .leo or derived files, e.g.,
+directly contained in the .leo or external files, e.g.,
 
 - email messages 
 - news feeds
@@ -14971,7 +15409,7 @@ each ``@multipath`` in an ancestor a copy of the file is created. These
 directives must at the beginning of the line and by themselves.</t>
 <t tx="ekr.20050912125735.2779">Preprocess ``@file-nosent`` nodes: make sure each subnode ends
 with exactly one newline, replace all tabs with spaces, and
-add a newline before class and functions in the derived file.
+add a newline before class and functions in the external file.
 </t>
 <t tx="ekr.20050912125735.2786">LeoN is Leo over the Network. LeoN is Collaborative Leo. This is an important
 project for Leo's long-term development. See leo/doc/LeoN for important research
@@ -15241,44 +15679,73 @@ The highlights of 4.3.3 (and 4.3.2)
 - The usual assortment of bug fixes.</t>
 <t tx="ekr.20050917092557.1">Here is a summary of the changes:
 
-- General:  All chapters created with rst3 plugin.  This ensures a uniform look.  The source is in LeoDocs.leo.  Removed all references to older versions of Leo, except when discussing old file formats in the Appendices.  Corrected all text so it discusses present version.
+- General: All chapters created with rst3 plugin. This ensures a uniform look.
+The source is in LeoDocs.leo. Removed all references to older versions of Leo,
+except when discussing old file formats in the Appendices. Corrected all text so
+it discusses present version.
 
-- rst3 plugin itself:  Correct bug that caused chapters to be formatted differently when processing multiple @rst trees.  
+- rst3 plugin itself: Correct bug that caused chapters to be formatted
+differently when processing multiple @rst trees.
 
-- rst3 button in LeoDocs.leo:  The script first looks *up* the tree, looking for an @rst node.  If found, it processes just that tree.  If not found, it processes all @rst nodes *below* the originally selected node.  The button is now much more convenient to use.
+- rst3 button in LeoDocs.leo: The script first looks *up* the tree, looking for
+an @rst node. If found, it processes just that tree. If not found, it processes
+all @rst nodes *below* the originally selected node. The button is now much more
+convenient to use.
 
-- Preface: Shorter, no history.  No longer a dead end.
+- Preface: Shorter, no history. No longer a dead end.
 
 - What People are Saying About Leo: No longer a dead end.
 
-- FAQ: Reorganized, simplified, revised.  Added entries for running Leo in a console window and debugging docutils.  Improved entry for using cvs.
+- FAQ: Reorganized, simplified, revised. Added entries for running Leo in a
+console window and debugging docutils. Improved entry for using cvs.
 
-- Chapter 1: Installation: Now the first chapter.  Revised.
+- Chapter 1: Installation: Now the first chapter. Revised.
 
-- Chapter 2: Tutorial: Completely rewritten.  Like Python's tutorial, this chapter contains everything a beginner needs to understand and use Leo.  The `Quickstart for programmers` section is the heart of this chapter.  All terms used have links either to their definition in the tutorial or in the Glossary.  Newbies should be able to digest this chapter easily.  This chapter should make Leo comprehensible to many more people.
+- Chapter 2: Tutorial: Completely rewritten. Like Python's tutorial, this
+chapter contains everything a beginner needs to understand and use Leo. The
+`Quickstart for programmers` section is the heart of this chapter. All terms
+used have links either to their definition in the tutorial or in the Glossary.
+Newbies should be able to digest this chapter easily. This chapter should make
+Leo comprehensible to many more people.
 
 - Chapter 3: Using Outlines: Revised per general remarks above.
 
-- Chapter 4: Writing Programs in Leo.  Completely rewritten.  The old chapter was an embarrassment. The new chapter is a reference guide, properly organized as such.  The introduction warns newbies away.
+- Chapter 4: Writing Programs in Leo. Completely rewritten. The old chapter was
+an embarrassment. The new chapter is a reference guide, properly organized as
+such. The introduction warns newbies away.
 
-- Chapter 5: Using Leo's Commands.  'Minor' revisions and corrections create a substantially better result.
+- Chapter 5: Using Leo's Commands. 'Minor' revisions and corrections create a
+substantially better result.
 
-- Chapter 6: Leo and literate programming: Reformatting helps.  New words about rST markup and other improvements over traditional LP.
+- Chapter 6: Leo and literate programming: Reformatting helps. New words about
+rST markup and other improvements over traditional LP.
 
-- Chapter 7: Scripting Leo with Python: Rewritten, simplified, updated and corrected.  The sources in LeoDocs.leo are directly executable.  rST sources use literal blocks instead of code-blocks so that the sources are simplified. (Important when executing examples).  Properly discusses positions, including 'supremely important' section on copying positions.
+- Chapter 7: Scripting Leo with Python: Rewritten, simplified, updated and
+corrected. The sources in LeoDocs.leo are directly executable. rST sources use
+literal blocks instead of code-blocks so that the sources are simplified.
+(Important when executing examples). Properly discusses positions, including
+'supremely important' section on copying positions.
 
-- Chapter 8: Customizing Leo.  Heavily revised.  Discusses leoSettings.leo, not leoConfig.txt.  Security warnings are more reasonable.  Section on script buttons. Rewrote section on uA's (Adding extensible attributes to nodes and .leo files).
+- Chapter 8: Customizing Leo. Heavily revised. Discusses leoSettings.leo, not
+leoConfig.txt. Security warnings are more reasonable. Section on script buttons.
+Rewrote section on uA's (Adding extensible attributes to nodes and .leo files).
 
-- Chapter 9: History of Leo.  Rewritten.  Much shorter and more useful.  Discusses the major milestones, concentrating on explaining the major differences between versions.  Gone are details of how discoveries came to be.  They are in LeoPostings.leo, which will be included in the distribution.
+- Chapter 9: History of Leo. Rewritten. Much shorter and more useful. Discusses
+the major milestones, concentrating on explaining the major differences between
+versions. Gone are details of how discoveries came to be. They are in
+LeoPostings.leo, which will be included in the distribution.
 
-- Chapter 10: Theory of Operation.  Largely rewritten.  Discusses positions properly.  Omits discussion of how clones were implemented before 4.2.
+- Chapter 10: Theory of Operation. Largely rewritten. Discusses positions
+properly. Omits discussion of how clones were implemented before 4.2.
 
-- Chapter 11: White Papers.  A new chapter.  This is a slightly-edited version of writing that had been buried in the appendices.
+- Chapter 11: White Papers. A new chapter. This is a slightly-edited version of
+writing that had been buried in the appendices.
 
-- Appendices.  Heavily revised and reformatted.  Rewrote sections on file formats.
+- Appendices. Heavily revised and reformatted. Rewrote sections on file formats.
 
-- Glossary: A separate chapter.  All terms have links to their definition.  All definitions are rST targets so other chapters may refer to them.  Added several new entries.
-</t>
+- Glossary: A separate chapter. All terms have links to their definition. All
+definitions are rST targets so other chapters may refer to them. Added several
+new entries.</t>
 <t tx="ekr.20050917092557.2"></t>
 <t tx="ekr.20050917092557.3">- Fixed bug with non-unicode characters in file name
 
@@ -15565,7 +16032,10 @@ The scripting plugin has been improved as follows:
 
 @button name @key=shortcut
 
-This binds the shortcut to the script in the script button.  The button's name is 'name', but you can see the full headline in the status line when you move the mouse over the button.  This is a clean and simple way of discovering the shortcut.
+This binds the shortcut to the script in the script button. The button's name is
+'name', but you can see the full headline in the status line when you move the
+mouse over the button. This is a clean and simple way of discovering the
+shortcut.
 
 2. You can create your own minibuffer commands with @command nodes.
 
@@ -15581,11 +16051,18 @@ A node whose headline has the form:
 
 creates new minibuffer command and binds shortcut to it.
 
-3.  The scripting plugin no longer contains the 'bindLate' code-level option.  The scripts for all @button or @command nodes are computed 'dynamically', that is, when the button is pushed or the command is executed from the minibuffer.  This is the most useful way, and the most intuitive.
+3. The scripting plugin no longer contains the 'bindLate' code-level option. The
+scripts for all @button or @command nodes are computed 'dynamically', that is,
+when the button is pushed or the command is executed from the minibuffer. This
+is the most useful way, and the most intuitive.
 
-Previously, scripts for @button nodes were never dynamic, while scripts in @button nodes created by the 'Script button' button were dynamic only if bindLate was True.  You could call this a bug: it was unhelpful, annoying and confusing.
+Previously, scripts for @button nodes were never dynamic, while scripts in
+@button nodes created by the 'Script button' button were dynamic only if
+bindLate was True. You could call this a bug: it was unhelpful, annoying and
+confusing.
 
-4. The scripting plugin no longer prints an 'end of script' message.  This allows scripts to select tabs in the log pane</t>
+4. The scripting plugin no longer prints an 'end of script' message. This allows
+scripts to select tabs in the log pane</t>
 <t tx="ekr.20051028051616.172">@color
 
 # Plugins and scripts can easily create new tabs in the log panel.
@@ -16004,7 +16481,7 @@ And a recent bug: clicking in the expand/contract box didn't save the headline.<
 <t tx="ekr.20051219150602.81">The problem was caused by the recent change to g.app.gui.setTextSelection.
 
 The default for the new 'insert' keyword must be sel.end for compatibility with old code.</t>
-<t tx="ekr.20051219150602.85">Read @file Nodes and Import Derived File commands no longer create copies of the root node.</t>
+<t tx="ekr.20051219150602.85">Read @file Nodes and Import external file commands no longer create copies of the root node.</t>
 <t tx="ekr.20051219150602.100"></t>
 <t tx="ekr.20051219150602.101">The provide batch-mode unit testing.</t>
 <t tx="ekr.20051219150602.102"></t>
@@ -16067,7 +16544,7 @@ any errors or any other suggestions for these settings.</t>
 2.  Specify the location of the Aspell and Aspell/bin directories using
     the aspell_dir and aspell_bin_dir settings in LeoSettings.leo.
 </t>
-<t tx="ekr.20060105182648.376">Leo no longer creates a duplicate root node when importing derived files.
+<t tx="ekr.20060105182648.376">Leo no longer creates a duplicate root node when importing external files.
 
 The code is due to LeoUser.</t>
 <t tx="ekr.20060105182648.377"></t>
@@ -16112,12 +16589,17 @@ Notes:
   commands alter what happens to unbound keys in the top-level mode.
 
 With all these options it should be possible to emulate the keyboard behavior of any other editor.</t>
-<t tx="ekr.20060111192108">A **dangerous** delete is a deletion of a node so that all the data in the node is deleted *everywhere* in an outline.  The data is gone, to be retrieved only via undo or via backups.  It may not be obvious which deletes are dangerous in an outline containing clones.  Happily, there is a very simple rule of thumb::
+<t tx="ekr.20060111192108">A **dangerous** delete is a deletion of a node so that all the data in the node
+is deleted *everywhere* in an outline. The data is gone, to be retrieved only
+via undo or via backups. It may not be obvious which deletes are dangerous in an
+outline containing clones. Happily, there is a very simple rule of thumb::
 
     Deleting a non-cloned node is *always* dangerous.
     Deleting a cloned node is *never* dangerous.
 
-We could also consider a delete to be dangerous **if it results in a node being omitted from a derived file.**  This can happen as follows.  Suppose we have the following outline (As usual, A' indicates that A is marked with a clone mark)::
+We could also consider a delete to be dangerous **if it results in a node being
+omitted from an external file.** This can happen as follows. Suppose we have the
+following outline (As usual, A' indicates that A is marked with a clone mark)::
 
     - @thin spam.py
         - A'
@@ -18581,14 +19063,14 @@ The path to the file to be written by the execute-script command. Notes:
 <t tx="ekr.20060529053407">@ignore can only be used in the root node of ``@thin`` trees.  It tells Leo to ignore the tree.
 
 The @ignore directive can not be used elsewhere in @thin trees because of the way Leo recreates 
-outlines from derived files. This is an absolutely crucial restriction and will never go away.
+outlines from external files. This is an absolutely crucial restriction and will never go away.
 For a few more details, see `Leo 4.0: Eliminating error 'recovery'`_ in `Chapter 9: History of Leo`_.
 
 There are several workaround, as shown in LeoPy.leo:
 
-- keep notes in the outline outside of any derived file.
+- keep notes in the outline outside of any external file.
 
-- Use @all to gather notes in a derived file, as in done in @thin leoProjects.txt.</t>
+- Use @all to gather notes in a external file, as in done in @thin leoProjects.txt.</t>
 <t tx="ekr.20060601101643">Leo 4.4.1 beta 1                                            June 3, 2006
 
 Leo 4.4.1 beta 1 is available at:
@@ -20049,7 +20531,7 @@ The highlights of Leo 4.4.1:
 ----------------------------
 - Leo outputs decorators correctly, provided that the decorator is not a Leo directive.
 - A new colorizer plugin controlled by jEdit language description files.
-- A new shadow files plugin that allows derived files not to have sentinel lines.
+- A new shadow files plugin that allows external files not to have sentinel lines.
 - Multiple editors in Leo's body pane.
 - Search commands now support regex replace patterns: \1, \2, etc.
 - Support for external debuggers: see http://webpages.charter.net/edreamleo/debuggers.html
@@ -20111,7 +20593,7 @@ The highlights of Leo 4.4.1:
 ----------------------------
 - Leo outputs decorators correctly, provided that the decorator is not a Leo directive.
 - A new colorizer plugin controlled by jEdit language description files.
-- A new shadow files plugin that allows derived files not to have sentinel lines.
+- A new shadow files plugin that allows external files not to have sentinel lines.
 - Multiple editors in Leo's body pane.
 - Search commands now support regex replace patterns: \1, \2, etc.
 - Support for external debuggers: see http://webpages.charter.net/edreamleo/debuggers.html
@@ -20244,7 +20726,7 @@ The highlights of Leo 4.4.1:
 ----------------------------
 - Leo outputs decorators correctly, provided that the decorator is not a Leo directive.
 - A new colorizer plugin controlled by jEdit language description files.
-- A new shadow files plugin that allows derived files not to have sentinel lines.
+- A new shadow files plugin that allows external files not to have sentinel lines.
 - A new slide show plugin allows you to use Leo outlines as slide shows.
 - Multiple editors in Leo's body pane.
 - Search commands now support regex replace patterns: \1, \2, etc.
@@ -20465,7 +20947,7 @@ The default values are shown.
 
 - ``@bool opml_read_derived_files = True``
 
-  If True, Leo reads derived files when reading .opml files.
+  If True, Leo reads external files when reading .opml files.
 
 - ``@string opml_namespace = leo:com:leo-opml-version-1``
 
@@ -20492,7 +20974,7 @@ The default values are shown.
 
 - ``@bool opml_write_derived_files = True``
 
-  If True, Leo writes derived files when writing .opml files.
+  If True, Leo writes external files when writing .opml files.
 
 - ``@bool opml_write_leo_details = True``
 
@@ -20514,16 +20996,16 @@ The default values are shown.
 The Add Body Editor (add-editor) command adds a new editor in the body pane.
 The Delete Body Editor (delete-editor) command deletes the presently selected editor,
 The Change Body Editor (cycle-editor-focus) command cycles focus between editors in the body text.</t>
-<t tx="ekr.20060921064744.1">This section describe the format of derived files.
+<t tx="ekr.20060921064744.1">This section describe the format of external files.
 Leo's `sentinel lines`_ are comments, and this section describes those comments.
 
-The format of derived files produced by Leo 4.0 and later meets the following goals:
+The format of external files produced by Leo 4.0 and later meets the following goals:
 
 - The minimum of sentinels needed to properly recreate the outline.
 
 - A robust way of telling whether newlines belong to sentinels or not.
   Prior to Leo 4.0, deleting blank lines before and after sentinel lines
-  could corrupt the outline structure of the derived file.
+  could corrupt the outline structure of the external file.
 
 - A minimum of intrusion and ugliness.
 
@@ -20597,16 +21079,16 @@ In the following discussion, ``gnx`` denotes a gnx as described above.
     Marks the end of body text.
 
 \@delims
-    The ``@delims`` sentinel inserts ``@@delims`` sentinels into the derived file.
+    The ``@delims`` sentinel inserts ``@@delims`` sentinels into the external file.
     The new delimiter strings continue in effect until the next ``@@delims`` sentinel
-    *in the derived file* or until the end of the derived file.
-    Adding, deleting or changing ``@@delim`` *sentinels* will destroy Leo's ability to read the derived file.
+    *in the external file* or until the end of the external file.
+    Adding, deleting or changing ``@@delim`` *sentinels* will destroy Leo's ability to read the external file.
     Mistakes in using the ``@delims`` *directives* have no effect on Leo,
-    though such mistakes will thoroughly mess up a derived file as far as compilers,
+    though such mistakes will thoroughly mess up a external file as far as compilers,
     HTML renderers, etc. are concerned. 
 
 \@+leo
-    Marks the start of any derived file.
+    Marks the start of any external file.
     This sentinel has the form::
 
         &lt;opening_delim&gt;@leo&lt;closing_delim&gt;
@@ -20668,7 +21150,7 @@ In the following discussion, ``gnx`` denotes a gnx as described above.
     the expansion of the ``@others`` directive always occurs within the body text of some node.
 
 \@verbatim
-    ``@verbatim`` indicates that the next line of the derived file is not a sentinel.
+    ``@verbatim`` indicates that the next line of the external file is not a sentinel.
     This escape convention allows body text to contain lines that would otherwise be considered sentinel lines.
 
 \@@verbatimAfterRef
@@ -21652,7 +22134,7 @@ Thus, *Python* scripts running in Emacs can:
 
 - Open any .leo file. 
 - Access any part of the outline. 
-- Change any part of the outline, including derived files, 
+- Change any part of the outline, including external files, 
 - Save .leo files.
 - Execute *any* Leo script.
 
@@ -22735,7 +23217,7 @@ What's New in Leo 4.4.3
 
 The highlights of Leo 4.4.3:
 
-- @test and @suite nodes may now be embedded directly in derived files.
+- @test and @suite nodes may now be embedded directly in external files.
 - Added support for chapters in Leo's core.
 - Added support for zipped .leo files.
 - The new leoBridge module allows full access to all of Leo's capabilities
@@ -22767,7 +23249,7 @@ The highlights of Leo 4.4.3:
     save-file-as-zipped
     select-chapter
 </t>
-<t tx="ekr.20070513115832.2">- @test and @suite nodes may now be embedded in derived files.
+<t tx="ekr.20070513115832.2">- @test and @suite nodes may now be embedded in external files.
 - Added support for chapters to Leo's core
 
   Chapters are regions of a Leo outline whose root is an @chapter node. @chapter
@@ -22975,7 +23457,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="7"></t>
+<t tx="ekr.20070610174018" str_leo_pos="6"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -23468,7 +23950,7 @@ Preface
 .. _users:              http://sourceforge.net/projects/leo/
 
 .. _`cloned nodes`:     intro.html#clones-views
-.. _`derived files`:     intro.html#derived-files
+.. _`external files`:   intro.html#external-files
 
 .. _`Chapter 14\: Using the Rst3 Plugin`:           rstplugin3.html
 </t>
@@ -23816,14 +24298,15 @@ or b) they do not contain a **significant** amount of information. An @auto tree
 contains a significant amount of information if it has  children or if the
 root node contains more than 10 characters.
 
-Leo creates @auto trees by parsing the corresponding derived file. Parsers
+Leo creates @auto trees by parsing the corresponding external file. Parsers
 create descendant nodes of the @auto tree: one node for each class, method and
-function in the derived file.
+function in the external file.
 
 Parsers presently exist for C, elisp, Java, Pascal, PHP and Python. Leo
 determines the language using the file's extension. If no parser exists for a
-language, the entire body of an @auto tree contains a significant amount of information if it has any children or if the root node contains more than 10 non-blank lines. the derived file is copied to the body of the @auto
-node.
+language, the entire body of an @auto tree contains a significant amount of
+information if it has any children or if the root node contains more than 10
+non-blank lines. the external file is copied to the body of the @auto node.
 
 Leo does not write the contents of @auto trees to .leo files. In this respect,
 @auto trees work much like @thin trees. @auto trees whose root node is under the
@@ -24205,7 +24688,7 @@ to me...?
 <t tx="ekr.20070915101157.82"></t>
 <t tx="ekr.20070915101157.168">When saving a .leo file, Leo now *reads* an @auto node if
 
-1) the derived file exists,
+1) the external file exists,
 2) an 'insignificant' amount of data exists in the @auto tree, and
 3)the @auto node has not been read previously.
 
@@ -24222,7 +24705,7 @@ strict languages.
 - Leo ignores leading whitespace in the perfect import tests for non-strict
 languages.
 
-These changes mean that Leo might change a derived file if such a change occurs
+These changes mean that Leo might change a external file if such a change occurs
 only in leading whitespace in a non-strict language.</t>
 <t tx="ekr.20070915101216">Leo 4.4.4 beta 2                                September 19, 2007
 
@@ -24270,12 +24753,12 @@ When a cvs conflict occurs, the user will:
 
 - write the file with the write-file-from-node command.
 
-Any file can be fixed in this way, including derived files and .leo files. The
+Any file can be fixed in this way, including external files and .leo files. The
 only complication is that the user must not change sentinel lines. Two new
 commands check the contents of a node: The **check-derived-file** and
 **check-leo-file** commands tell whether a trial read of the presently selected
 node can be done successfully. The check-derived-file command assumes the body
-text is a derived file; the check-leo-file command assumes the body text is an
+text is a external file; the check-leo-file command assumes the body text is an
 entire .leo file.
 
 The **compare-leo-outlines** command prompts for another (presumably similar)
@@ -24309,7 +24792,7 @@ The highlights of Leo 4.4.4:
 - @buttons trees in settings files create common @button nodes created in all
   Leo outlines.
 
-- @auto nodes eliminate sentinels in derived files, thereby allowing people to
+- @auto nodes eliminate sentinels in external files, thereby allowing people to
   collaborate using Leo more easily.
   
 - New commands for resolving cvs conflicts.
@@ -24666,7 +25149,7 @@ The highlights of Leo 4.4.4:
 - @buttons trees in settings files create common @button nodes created in all
   Leo outlines.
 
-- @auto nodes eliminate sentinels in derived files, thereby allowing people to
+- @auto nodes eliminate sentinels in external files, thereby allowing people to
   collaborate using Leo more easily. **Warning**: for now, please make backup
   copies of files imported with @auto.
   
@@ -24830,7 +25313,7 @@ The highlights of Leo 4.4.4:
 - @buttons trees in settings files create common @button nodes created in all
   Leo outlines.
 
-- @auto nodes eliminate sentinels in derived files, thereby allowing people to
+- @auto nodes eliminate sentinels in external files, thereby allowing people to
   collaborate using Leo more easily. **Warning**: for now, please make backup
   copies of files imported with @auto.
   
@@ -24936,7 +25419,7 @@ read errors absolutely nothing must change. This ensures that read errors never
 destroy information.
 
 B. A new post-pass will look for vampire nodes: nodes that were not actually
-read from the derived file. I think (but haven't proven) that all descendants of
+read from the external file. I think (but haven't proven) that all descendants of
 vampire nodes are also vampire nodes. If that is so the post-pass will simply
 delete vampire nodes without worrying about whether they have descendants.
 </t>
@@ -25412,7 +25895,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20071217092203.1"></t>
 <t tx="ekr.20071217092203.2">http://sourceforge.net/forum/message.php?msg_id=4668960
 
-It seems in derived files you can delete some text and save, causing the derived
+It seems in external files you can delete some text and save, causing the derived
 file to be written and all dirty flags cleared.  But then undo makes the text
 come back, as expected, but save only saves the outline, because the dirty flag
 wasn't set on the node in which the text was restored by undo.</t>
@@ -26972,11 +27455,11 @@ The crucial ideas and algorithms underlying @shadow trees are the invention of B
 Leo's outlines, but wish to retain the source files in their original format,
 without Leo sentinels (markup) in comments in the source file. 
 
-Leo's @file and @thin trees create derived files containing comments called sentinels.
+Leo's @file and @thin trees create external files containing comments called sentinels.
 These sentinel lines allow Leo to recreate the outlines structure of @file and @thin trees.
 Alas, many people and organizations find these added sentinel lines unacceptable.
-@nosent nodes create derived files without sentinels, but at a cost:
-Leo can not update @nosent trees when the corresponding derived file is changed outside of Leo.
+@nosent nodes create external files without sentinels, but at a cost:
+Leo can not update @nosent trees when the corresponding external file is changed outside of Leo.
 
 @shadow trees provide a way around this dilemma.
 When Leo saves an @shadow tree, it saves two copies of the tree:
@@ -30297,17 +30780,28 @@ making Leo extremely useful for people who (besides writing - Haskell - programs
 with Leo) would use it for e.g. writing study notes and/or assignment papers via
 RST plugin giving them opportunity to get good-enough (pdf) output with
 docutils/sphinx...</t>
-<t tx="ekr.20091105080104.9028"></t>
+<t tx="ekr.20091105080104.9031">@font nodes only work with the Tk gui. When using the Qt gui, you specify fonts
+using the node in leoSettings.leo called::
+
+    @data qt-gui-plugin-style-sheet
+    
+As usual, you will probably want to put this node in your myLeoSettings.leo file.</t>
+<t tx="ekr.20091105080104.11492">@font nodes only work with the Tk gui. When using the Qt gui, you specify fonts
+using the node in leoSettings.leo called::
+
+    @data qt-gui-plugin-style-sheet
+    
+As usual, you will probably want to put this node in your myLeoSettings.leo file.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
-line when it gets written to the derived file?
+line when it gets written to the external file?
 
-**Answer**: If a node belongs to a derived file hierarchy, its body might get
-indented when it is written to the derived file. It happens when an
+**Answer**: If a node belongs to a external file hierarchy, its body might get
+indented when it is written to the external file. It happens when an
 `@others directive`_ or a `section name`_ appears indented in a higher-level
 node body. While (**line**, **col**) in status area show the line and column
 containing the body text's cursor, **fcol** shows the cursor coordinate
-relative to the derived file, not to the curent node. The relation
+relative to the external file, not to the curent node. The relation
 **fcol &gt;= col** is always true.</t>
 <t tx="ville.20090520232034.6345">g.app.gui.runScrolledMessageDialog(c=c, msg = u'rst:' + p.b)</t>
 <t tx="ville.20090520232138.11304">Qt version of nav_buttons.py (history navigation)</t>
