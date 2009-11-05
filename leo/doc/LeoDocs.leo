@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="31" left="782" height="1023" width="1134"/>
+	<global_window_position top="31" left="668" height="1023" width="1248"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" a="E"><vh>Startup</vh>
+<v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627" a="E"><vh>Buttons</vh>
 <v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>
@@ -9591,7 +9591,7 @@ what plugins are active.
 
 .. ----- External references.
 
-.. _`Leo's help forum`:         http://sourceforge.net/forum/forum.php?forum_id=10227
+.. _`Leo's help forum`:         http://groups.google.com/group/leo-editor-users
 .. _`Literate Programming`:     http://www.literateprogramming.com/
 .. _`noweb`:                    http://www.eecs.harvard.edu/~nr/noweb/
 
@@ -22974,7 +22974,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="8"></t>
+<t tx="ekr.20070610174018" str_leo_pos="7"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
