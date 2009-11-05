@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="199" left="303" height="700" width="1000"/>
+	<global_window_position top="94" left="346" height="973" width="1105"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -78,9 +78,9 @@
 </v>
 </v>
 </v>
-<v t="ville.20090630234425.12395" a="E"><vh>Configuration (enabling plugins etc.)</vh>
+<v t="ville.20090630234425.12395"><vh>Configuration (enabling plugins etc.)</vh>
 <v t="ville.20090630234425.14847"><vh>Find out your ~/.leo directory (script)</vh></v>
-<v t="ville.20090630234425.12396" a="E"><vh>@@settings</vh>
+<v t="ville.20090630234425.12396"><vh>@@settings</vh>
 <v t="ville.20090728003644.3957"><vh>@enabled-plugins</vh></v>
 <v t="ville.20090708172716.16846"><vh>@@string initial_split_orientation = horizontal</vh></v>
 <v t="ville.20090806210322.1435"><vh>suggested style sheets</vh>
@@ -99,7 +99,7 @@
 <v t="ville.20090701182804.1551"><vh>Minibuffer</vh></v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20090628091852.6030" str_leo_pos="4,1,4">This node contains settings and other "machinery" that you
+<t tx="ekr.20090628091852.6030" str_leo_pos="1">This node contains settings and other "machinery" that you
 can usually ignore.</t>
 <t tx="ekr.20090628091852.6031"></t>
 <t tx="ekr.20090628091852.8471"></t>
@@ -185,10 +185,9 @@ editor).</t>
 @others
 </t>
 <t tx="ville.20090627211608.10118">"External file" means a file that resides on your file
-system - if you are programming, these are the files you
-eventually want to create to get something useful out of Leo
-- e.g. C++ or Python source code that you can feed to the
-compiler/interpreter.</t>
+system. If you are programming, these are the files you
+eventually want to create to get something useful out of
+Leo, for example, your C++ or Python source code files.</t>
 <t tx="ville.20090627211608.10119"> </t>
 <t tx="ville.20090627211608.10120"></t>
 <t tx="ville.20090627211608.10122">class Foo:
@@ -263,21 +262,23 @@ import sys
     pass</t>
 <t tx="ville.20090630145410.1517"></t>
 <t tx="ville.20090630234425.12394"></t>
-<t tx="ville.20090630234425.12395">- If you are just starting, you should create your own myLeoSettings.leo in ~/.leo. We'll do that next.
+<t tx="ville.20090630234425.12395">If you are just starting, you should create your own myLeoSettings.leo in ~/.leo. We'll do that next.
 
-- Create the file first: 
+Create the file first: 
   - File -&gt; New (or ctrl+N)
   - File -&gt; Save as
   - Navigate to ~/.leo
   - save as myLeoSettings.leo
 
-- In the current tree, there is @@settings subtree. We are copying this to the new file. Go to node @@settings,
-  and copy the whole tree to clipboard (ctrl+shift+c).
+In the current tree, there is @@settings subtree. We are
+copying this to the new file. Go to node @@settings, and
+copy the whole tree to clipboard (ctrl+shift+c).
   
-- Select the document that has myLeoSettings.leo (the one you just created). Drop the settings tree there
-  (ctrl+shift+v), Remove extra @ from @@settings, and save again.
+Select the document that has myLeoSettings.leo (the one you
+just created). Drop the settings tree there (ctrl+shift+v),
+Remove extra @ from @@settings, and save again.
 
-- Now, you should be all set. Verify that it worked by Help-&gt;open myLeoSettings.leo
+Now, you should be all set. Verify that it worked by Help-&gt;open myLeoSettings.leo
 </t>
 <t tx="ville.20090630234425.12396"></t>
 <t tx="ville.20090630234425.14847"># execute this script by ctrl+b to find out where your ~/.leo is
@@ -344,11 +345,12 @@ myfile.py in MYEDITOR", and perform the necessary operations.
 After that, right click on the node and choose "Refresh from 
 disk".
 </t>
-<t tx="ville.20090701182804.1551">Minibuffer is the text input area at the bottom of the
-screen, familiar from emacs and vi. Press alt-x to enter a
-minibuffer command (e.g. alt-x fill-paragraph). Press ctrl+p
-(repeat-complex-command) folowed by Enter to re-run a
-previous minibuffer command.</t>
+<t tx="ville.20090701182804.1551">The minibuffer is the text input area at the bottom of the
+screen, familiar to users of emacs and vi.
+
+Press alt-x to enter a minibuffer command (e.g. alt-x
+fill-paragraph). Press ctrl+p (repeat-complex-command)
+folowed by Enter to re-run a previous minibuffer command.</t>
 <t tx="ville.20090701184416.1554">reStructuredText (http://docutils.sourceforge.net/rst.html)
 is an efficient way of authoring documentation as plain text.
 Leo provides first-class support for RST authoring, including 
