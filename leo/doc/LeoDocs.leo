@@ -3,15 +3,15 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="32" left="229" height="988" width="1005"/>
+	<global_window_position top="31" left="782" height="1023" width="1134"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018"><vh>Startup</vh>
+<v t="ekr.20070610174018" a="E"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
-<v t="ekr.20050404094627"><vh>Buttons</vh>
+<v t="ekr.20050404094627" a="E"><vh>Buttons</vh>
 <v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
 <v t="ekr.20050812090111"><vh>@@button rst3</vh></v>
@@ -386,9 +386,10 @@
 </v>
 <v t="ekr.20050831195331.4"><vh>Chapter 7: Scripting Leo with Python</vh>
 <v t="ekr.20040403171740"><vh>@rst html\scripting.html</vh>
+<v t="ekr.20091104200540.6566"><vh>@ignore old, too-complicated, intro</vh></v>
+<v t="ekr.20091104200540.6567"><vh>@ignore details for later</vh></v>
 <v t="ekr.20050812134441.1"><vh>@rst-no-head Links</vh></v>
-<v t="ekr.20050901184158"><vh>@rst-ignore Important: you can run these examples!</vh></v>
-<v t="ekr.20040403183229"><vh>Commonly used classes</vh></v>
+<v t="ekr.20040403183229"><vh>Leo's most import objects</vh></v>
 <v t="ekr.20070120075236"><vh>Predefined objects</vh></v>
 <v t="ekr.20040403173920.3"><vh>g.es writes to the log pane</vh></v>
 <v t="ekr.20040403175157.1"><vh>app.windowList: the list of all open frames</vh></v>
@@ -1015,7 +1016,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
+<v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -3160,7 +3161,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20090909083000.6547"><vh>4.7 beta 1</vh>
 <v t="ekr.20090909083000.6556"><vh>Added new Windows installer</vh></v>
 <v t="ekr.20090909083000.6555"><vh>Added new plugins</vh></v>
@@ -3169,6 +3170,10 @@
 </v>
 </v>
 </v>
+<v t="ekr.20050831195331.4"></v>
+<v t="ekr.20091105080104.6568"><vh>More language for the intro</vh></v>
+<v t="ekr.20091105080104.9028"><vh>FAQ bout changing qt fonts </vh></v>
+<v t="ekr.20091105080104.9029"><vh>Add reference to quickstart.leo</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
@@ -6976,48 +6981,16 @@ show_doc_parts_as_paragraphs = True
 Chapter 7: Scripting Leo with Python
 ####################################
 
-This chapter is a tutorial describing how to write Python scripts that get and
-modify data contained in Leo outlines.
+This chapter describes how to write Python scripts that control Leo and access
+the data in Leo outlines. To write such scripts, you must understand the basics
+of Leo's internal data structures. As we shall see, these basics are quite simple.
 
-This chapter describes Leo's simplied node (one-node) data model,
-in effect in Leo 4.7.
+Although this chapter discussses everything you will need to write most scripts,
+please keep in mind that your scripts have complete access to all of Leo's
+source code, that is, all the code in ``LeoPy.leo``.
 
-Leo's **vnode** classe represents all the data in a particular node.
-In the simplied data model, a single vnode represents all clones on the screen.
-When Leo clones a vnode v, alters data structures in v and v's parent vnode,
-but Leo does *not* create another vnode to represent the clone.
-Thus, the *exact same* vnode may appear in several places on Leo's outline pane.
-
-Leo's **position** class represents a position (spot) in Leo's outline pane.
-More exactly, a position represents the state of a tree traversal of Leo's data.
-Vnode's may appear several times in a traversal, which is another way of saying
-that vnodes may appear several times in Leo's outline pane.
-
-Leo's **generators** generate lists of positions.
-For example, c.all_positions() generates a list of all positions in the outline.
-As another example, given a position p,
-p.self_and_subtree() generates a list of all descendants of the vnode at position p.
-
-Leo' **position methods** provide other ways ways of finding positions.
-Given a position p, p.parent() is the p's parent position,
-p.firstChild() is the position of p's first child (if it exists),
-and p.next() is the position of p's next sibling (again, if it exists).
-Many other position methods exist, as discussed below.
-
-Leo's execute-script command predefines several symbols.  This makes it easy to
-access the data in Leo outlines and the Leo's own source code. g is predefined
-to the leoGlobals module. Scripts commonly use utility functions such as g.es,
-g.trace, etc. The g.app object represents Leo itself. The instance vars (ivars)
-of g.app are Leo's global variables and constants. The execute-script command
-predefines c to be the commander (see below) of the Leo outline in which the
-script is contained. Whenever possible, scripts should use the high-level
-methods of the commander to insert, delete or clone nodes. Finally, the
-execute-script commands predefines p to be the presently selected position.
-
-This chapter describes many of Leo's functions, classes and methods.
-However, your scripts have complete access to all of Leo's source code, that
-is, all the code in ``LeoPy.leo``. You are not limited by what you see in this
-chapter.
+**Note**: If you are reading this documentation in leoDocs.leo you can execute
+all code examples in this chapter by running the Execute Script command (Ctrl-B).
 
 .. .. contents::</t>
 <t tx="ekr.20040403173920.3" rst_http_attribute="5d71002855443c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3522206e616d653d22687474702d6e6f64652d6d61726b65722d35223e710155043c2f613e71025d71032855403c64697620636c6173733d2273656374696f6e222069643d22672d746f702d7468652d636f6d6d616e6465722d6f662d7468652d746f702d77696e646f77223e710455063c2f6469763e71055d710628553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710755063c2f6469763e71085d71092855063c626f64793e710a55073c2f626f64793e710b5d710c2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d55073c2f68746d6c3e710e4e6565656555073c2f6469763e0a710f55363c64697620636c6173733d2273656374696f6e222069643d22672d65732d77726974652d746f2d7468652d6c6f672d70616e65223e0a711055703c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643322206e616d653d22672d65732d77726974652d746f2d7468652d6c6f672d70616e65223e672e657328293a20777269746520746f20746865206c6f672070616e653c2f613e3c2f68313e0a7111652e">The g.es method prints its arguments to the Log tab of the log pane::
@@ -7351,66 +7324,40 @@ for that frame::
 
 There is also g.app.commandrs() method, that gives the list of all active
 commanders directly.</t>
-<t tx="ekr.20040403183229" rst_http_attribute="5d71002855443c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3122206e616d653d22687474702d6e6f64652d6d61726b65722d31223e710155043c2f613e71025d710328553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710455063c2f6469763e71055d71062855063c626f64793e710755073c2f626f64793e71085d71092855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710a55073c2f68746d6c3e710b4e65656555243c64697620636c6173733d2273656374696f6e222069643d226f76657276696577223e0a710c55493c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643122206e616d653d226f76657276696577223e4f766572766965773c2f613e3c2f68313e0a710d652e">Leo's source code is a collection of classes, along with utility functions in
-``leoGlobals.py``. Here are the classes and objects that scripts will commonly use:
+<t tx="ekr.20040403183229" rst_http_attribute="5d71002855443c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3122206e616d653d22687474702d6e6f64652d6d61726b65722d31223e710155043c2f613e71025d710328553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710455063c2f6469763e71055d71062855063c626f64793e710755073c2f626f64793e71085d71092855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710a55073c2f68746d6c3e710b4e65656555243c64697620636c6173733d2273656374696f6e222069643d226f76657276696577223e0a710c55493c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643122206e616d653d226f76657276696577223e4f766572766965773c2f613e3c2f68313e0a710d652e">Leo scripts typically use the following objects. Leo's execute script command
+predefines the ``c``, ``g`` and ``p`` constants. Leo scripts can use the ``c``
+and ``g`` constant to gain access to outline data and all of Leo's source code.
+
+**g**
+    The predefined constant ``g`` is the leo.core.leoGlobals module. This
+    module contains several dozen utilty functions and classes.
 
 **g.app**
-    The **application object** representing the entire Leo application.
-    The ivars (instance variables) of ``g.app`` represent Leo's global variables.
-
-**g.app.gui**
-    This is a wrapper class that shields Leo's core code from gui-dependent details.
-    As described below, scripts can invoke dialogs using g.app.gui convenience methods.
+    ``g.app`` is the **application object** representing the entire Leo application.
+    The instance variables (ivars) of ``g.app`` represent Leo's global variables.
 
 **commander**
-    An instance of the ``Commands`` class in ``leoCommands.py``.
-    Commanders represent commands for a *particular* window.
-    Each open Leo window has its own commander.
-    By convention, any variable named ``c`` is a commander.
-
-**frame**
-    An instance of the base ``leoFrame`` class in ``leoFrame.py``.
-    Frames contains all the internal data needed to manage a Leo window.
-    Given a commander ``c``, ``c.frame`` is commanders frame.
-    Given a frame ``f``, ``f.c`` is the frame's commander.
+    The predefined constant ``c`` is the commander of the window containing the
+    script. Commanders represent all aspects of a single Leo window. For any
+    commander ``c``, ``c.p`` is the presently selected position (see below), and
+    ``c.rootPosition()`` is the root (first) position in the outline. Given
+    ``c``, Leo scripts can gain access to all data present while Leo is running,
+    including all of Leo's classes, functions and data.
 
 **position**
-    An instance of the ``position`` class in ``leoNodes.py``.
-    A position object represents the location of a particular node *in a tree traversal*.
-    By convention, variables named ``p``, ``p1`` or ``p2`` are positions.
-    For any ``position`` ``p``, ``p.v`` is the vnode at that position.
-    **Positions are the primary way to access data.**
-    ``c.currentPosition`` (aka ``c.p``) and ``c.rootPosition`` return positions.
-    From those starting point, it is possible to access the data in any node.
-
-    **Important**:
-    Positions can become *invalid* when the structure of the outline changes.
-    As discussed below, plugins and scripts that store positions for use at a later time should make sure the
-    position p is still valid by calling c.positionExists(p)
-
-    **Note**:
-    For compatibility with old (pre-4.2) scripts, ``c.currentVnode`` and
-    ``c.rootVnode`` methods return *positions* not vnodes.
-
-**baseTextWidget and its subclasses**
-
-Leo's body pane (c.frame.body.bodyCtrl, aka w), is an instance of
-(a subclass of) baseTextWidget.
-Gui plugins implement Leo's body pane by subclassing baseTextWidget.
+    The predefined constant ``p`` is the position of the presently selected
+    node. Positions represent locations in Leo outlines. For any position ``p``,
+    ``p.v`` is the vnode at that position.
 
 **vnode**
-    An instance of the ``vnode`` class in ``leoNodes.py``.
-    vnodes represent one or more outline nodes on the screen.
-    Normally, scripts access vnodes via the ``position`` class described below. 
-    By convention, variables named ``v``, ``v1`` or ``v2`` refer to vnodes.
-    **Important**: scripts normally should use positions, not vnodes.
-
-**Important**: With the exception of the p.v ivar, scripts should be careful to
-use only the methods of the position and vnode classes rather than the internal
-ivars of these classes. Doing so will ensure that the script is as simple as
-possible and that the script will continue to work regardless of future changes
-to the internals of these classes.
-</t>
+    A vnode represents a single outline node. Because of clones, a vnode may
+    appear in several places on the screen. Vnodes hold most of the data in Leo
+    outlines. For any vnode ``v``, ``v.h`` is the node's headline, and ``v.b``
+    is the node's body text. As a convenience, for any position ``p``, ``p.h``
+    and ``p.b`` are synonyms for ``p.v.h`` and ``p.v.b``.
+    
+Later sections will discuss other classes, objects and utility functions, but
+most scripts will need only the objects and classes described above.</t>
 <t tx="ekr.20040411151245" rst_http_attribute="5d71002855463c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d343522206e616d653d22687474702d6e6f64652d6d61726b65722d3435223e710155043c2f613e71025d71032855443c64697620636c6173733d2273656374696f6e222069643d2273756d6d6172792d6f662d7468652d766e6f64652d616e642d706f736974696f6e2d636c6173736573223e710455063c2f6469763e71055d710628553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710755063c2f6469763e71085d71092855063c626f64793e710a55073c2f626f64793e710b5d710c2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d55073c2f68746d6c3e710e4e6565656555253c64697620636c6173733d2273656374696f6e222069643d226974657261746f7273223e0a710f554c3c68323e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323322206e616d653d226974657261746f7273223e4974657261746f72733c2f613e3c2f68323e0a7110652e">Here is the list of Leo's generators::
 
     c.all_nodes             # all vnodes in c.
@@ -13555,11 +13502,6 @@ stores this identifier in the file ``.leoID.txt``. Leo attempts to create
 ``leoID.txt`` in the .leo sub-directory of your home directory, then in Leo's config directory, and
 finally in Leo's core directory. You can change this identifier at any time by
 editing ``.leoID.txt``.</t>
-<t tx="ekr.20050901184158">You can execute all the code in this file. Just select the code you want to
-execute and run the Execute Script command.
-
-**Important**: Python is finicky about indentation, so you must be careful to
-select the leading whitespace of the first line.</t>
 <t tx="ekr.20050902073404">Understanding this section is *essential*.
 All generators discussed below use a *single* position to move
 through the outline. This is a vital optimization; otherwise Leo would generate
@@ -23032,7 +22974,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="3"></t>
+<t tx="ekr.20070610174018" str_leo_pos="8"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -30254,6 +30196,78 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 - Added new plugins: spydershell.py, qtframecommands.py, and mod_framesize.py.
 
 - Added "show folder" in rclick menu.</t>
+<t tx="ekr.20091104200540.6566">Leo's **vnode** classe represents all the data in a particular node.
+In the simplied data model, a single vnode represents all clones on the screen.
+When Leo clones a vnode v, alters data structures in v and v's parent vnode,
+but Leo does *not* create another vnode to represent the clone.
+Thus, the *exact same* vnode may appear in several places on Leo's outline pane.
+
+Leo's **position** class represents a position (spot) in Leo's outline pane.
+More exactly, a position represents the state of a tree traversal of Leo's data.
+Vnode's may appear several times in a traversal, which is another way of saying
+that vnodes may appear several times in Leo's outline pane.
+
+Leo's **generators** generate lists of positions.
+For example, c.all_positions() generates a list of all positions in the outline.
+As another example, given a position p,
+p.self_and_subtree() generates a list of all descendants of the vnode at position p.
+
+Leo' **position methods** provide other ways ways of finding positions.
+Given a position p, p.parent() is the p's parent position,
+p.firstChild() is the position of p's first child (if it exists),
+and p.next() is the position of p's next sibling (again, if it exists).
+Many other position methods exist, as discussed below.
+
+Leo's execute-script command predefines several symbols.  This makes it easy to
+access the data in Leo outlines and the Leo's own source code. g is predefined
+to the leoGlobals module. Scripts commonly use utility functions such as g.es,
+g.trace, etc. The g.app object represents Leo itself. The instance vars (ivars)
+of g.app are Leo's global variables and constants. The execute-script command
+predefines c to be the commander (see below) of the Leo outline in which the
+script is contained. Whenever possible, scripts should use the high-level
+methods of the commander to insert, delete or clone nodes. Finally, the
+execute-script commands predefines p to be the presently selected position.
+</t>
+<t tx="ekr.20091104200540.6567">
+    **Note**:
+    For compatibility with old (pre-4.2) scripts, ``c.currentVnode`` and
+    ``c.rootVnode`` methods return *positions* not vnodes.
+    
+**Important**: With the exception of the p.v ivar, scripts should be careful to
+use only the methods of the position and vnode classes rather than the internal
+ivars of these classes. Doing so will ensure that the script is as simple as
+possible and that the script will continue to work regardless of future changes
+to the internals of these classes.
+
+ **Important**:
+    Positions can become *invalid* when the structure of the outline changes.
+    As discussed below, plugins and scripts that store positions for use at a later time should make sure the
+    position p is still valid by calling c.positionExists(p)
+    
+**baseTextWidget** and its subclasses
+    Leo's body pane, c.frame.body.bodyCtrl, is a subclass of baseTextWidget.
+    Gui plugins implement Leo's body pane by subclassing baseTextWidget.
+    
+**frame**
+    Frames contain the internal data needed to manage a Leo window. Given a
+    commander ``c``, ``c.frame`` is commander's frame. Given a frame ``f``,
+    ``f.c`` is the frame's commander.
+    
+**g.app.gui**
+    This object represents gui-specific subclasses of Leo's base gui code.</t>
+<t tx="ekr.20091105080104.6568">@language rest
+
+I'm not sure if this is the intention, but the docs gives impression that Leo is
+(mostly) meant to do Python-related stuff with it.
+
+I'd say that there should be more stuff like: "These capabilities, all by
+themselves, would make Leo an excellent choice for editing rST documents."
+making Leo extremely useful for people who (besides writing - Haskell - programs
+with Leo) would use it for e.g. writing study notes and/or assignment papers via
+RST plugin giving them opportunity to get good-enough (pdf) output with
+docutils/sphinx...</t>
+<t tx="ekr.20091105080104.9028"></t>
+<t tx="ekr.20091105080104.9029"></t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?

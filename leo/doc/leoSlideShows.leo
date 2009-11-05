@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="50" left="704" height="888" width="1124"/>
+	<global_window_position top="33" left="706" height="1008" width="1205"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -28,18 +28,14 @@
 </v>
 </v>
 <v t="ekr.20060901142356"><vh>Read me first</vh></v>
-<v t="ekr.20060901144149.4"><vh>Sounds</vh>
+<v t="ekr.20060901144149.4" a="E"><vh>Sounds</vh>
 <v t="ekr.20060901144149.5"><vh>@url http://mail.python.org/pipermail/python-list/2004-October/248738.html</vh></v>
 <v t="ekr.20060901144149.6"><vh>@url c:\prog\Sounds\s1.wav</vh></v>
 <v t="ekr.20060901144149.7"><vh>@url c:\prog\Sounds\s2.wav</vh></v>
 </v>
-<v t="ekr.20060902100840"><vh>To do: rst + python colorizing</vh></v>
-<v t="ekr.20070315074504"><vh>To be made into slides</vh>
-<v t="ekr.20070315074504.1"><vh>a</vh></v>
-<v t="ekr.20070315074504.2"><vh>b</vh></v>
-</v>
 <v t="ekr.20091104114348.12072"><vh>Leo Tech report</vh>
 <v t="ekr.20091104114348.12073"><vh>@rst html\techReport.html</vh>
+<v t="ekr.20091104114348.12089"><vh>Old</vh>
 <v t="ekr.20091104114348.12074"><vh>Leo’s window, outlines &amp; clones</vh></v>
 <v t="ekr.20091104114348.12075"><vh>Relations: organizer nodes, views, tasks and metadata</vh></v>
 <v t="ekr.20091104114348.12076"><vh>Plugins</vh></v>
@@ -57,78 +53,84 @@
 <v t="ekr.20091104114348.12088"><vh>Contacts</vh></v>
 </v>
 </v>
-<v t="ekr.20060902101656"><vh>Slide shows</vh>
-<v t="ekr.20060904104955"><vh>@ignore</vh>
-<v t="ekr.20060904104955.1"><vh>@slideshow ignored</vh>
-<v t="ekr.20060904104955.2"><vh>@slide ignored</vh></v>
 </v>
-</v>
-<v t="ekr.20060901153101"><vh>@slideshow Introduction to Leo</vh>
-<v t="ekr.20091103090815.1434"><vh>@slide Leo is an (ordinary) outliner</vh></v>
-<v t="ekr.20091103090815.1435"><vh>@slide Leo is an extraordinary outliner.</vh></v>
-<v t="ekr.20060901153101.1"><vh>@slide topic 1</vh>
-<v t="ekr.20060901153101.2"><vh>@slide 2-1</vh></v>
-<v t="ekr.20060901153101.3"><vh>@slide 2-2</vh></v>
-</v>
-<v t="ekr.20060901153101.4"><vh>@slide topic 2</vh>
-<v t="ekr.20060901153101.5"><vh>@slide 2-3</vh></v>
-<v t="ekr.20060901153101.6"><vh>@slide 2-4</vh></v>
-</v>
-</v>
-<v t="ekr.20060901144149.8"><vh>@slideshow Using external files</vh>
-<v t="ekr.20060901144149.9"><vh>@slide Group 1</vh>
-<v t="ekr.20060901144149.10"><vh>@slide 1-1</vh></v>
-<v t="ekr.20060901144149.11"><vh>@slide 1-2</vh></v>
-</v>
-<v t="ekr.20060901144149.12"><vh>@slide Group 2</vh>
-<v t="ekr.20060901144149.13"><vh>@slide 1-3</vh></v>
-<v t="ekr.20060901144149.14"><vh>@slide 1-4</vh></v>
-</v>
-</v>
+<v t="ekr.20060902101656" a="E"><vh>Slide shows</vh>
 <v t="ekr.20060902092259"><vh>@slideshow scripting Leo</vh>
-<v t="ekr.20060902092341.4"><vh>@slide Leo's classes and objects</vh>
-<v t="ekr.20091103090815.1427"><vh>@slide c, g and p</vh></v>
-<v t="ekr.20091103090815.1428"><vh>@slide g.app</vh></v>
-<v t="ekr.20091103090815.1429"><vh>@slide commanders: c</vh></v>
-<v t="ekr.20091103090815.1431"><vh>@slide frames: c.frame, c.frame.body, etc.</vh></v>
-<v t="ekr.20091103090815.1430"><vh>@slide positions and iterators</vh></v>
-<v t="ekr.20091103090815.1432"><vh>@slides vnodes</vh></v>
+<v t="ekr.20060902092341.4" a="E"><vh>Leo's classes and objects</vh>
+<v t="ekr.20091103090815.1427"><vh>c, g and p</vh></v>
+<v t="ekr.20091103090815.1428"><vh>g.app</vh></v>
+<v t="ekr.20091103090815.1429"><vh>commanders: c</vh></v>
+<v t="ekr.20091103090815.1431"><vh>frames: c.frame, c.frame.body, etc.</vh></v>
+<v t="ekr.20091103090815.1430"><vh>positions and iterators</vh></v>
+<v t="ekr.20091103090815.1432"><vh>vnodes</vh></v>
 </v>
-<v t="ekr.20091103090815.1433"><vh>@slide Useful methods</vh>
-<v t="ekr.20060902092341.5"><vh>@slide g.es writes to the log tab</vh></v>
-<v t="ekr.20091103090815.1426"><vh>@slide g.es can write to other tabs</vh></v>
-<v t="ekr.20060902092341.6"><vh>@slide app.windowList: the list of all open frames</vh></v>
-<v t="ekr.20060902092341.7"><vh>@slide Getting and setting headline and body text</vh></v>
-<v t="ekr.20060902092341.9"><vh>@slide Copying positions</vh></v>
-<v t="ekr.20060902092341.8"><vh>@slide Traversing outlines with generators.</vh>
-<v t="ekr.20060902092341.10"><vh>@slide c.all_positions</vh></v>
-<v t="ekr.20060902092341.11"><vh>@slide p.children_iter</vh></v>
-<v t="ekr.20060902092341.12"><vh>@slide p.parents_iter &amp; p.self_and_parents_iter</vh></v>
-<v t="ekr.20060902092341.13"><vh>@slide p.siblings_iter &amp; p.following_siblings_iter</vh></v>
-<v t="ekr.20060902092341.14"><vh>@slide p.subtree_iter &amp; p.self_and_subtree_iter</vh></v>
-<v t="ekr.20060902092341.15"><vh>@slide Testing whether a position is valid</vh></v>
+<v t="ekr.20091103090815.1433"><vh>Useful methods</vh>
+<v t="ekr.20060902092341.5"><vh>g.es writes to the log tab</vh></v>
+<v t="ekr.20091103090815.1426"><vh>g.es can write to other tabs</vh></v>
+<v t="ekr.20060902092341.6"><vh>app.windowList: the list of all open frames</vh></v>
+<v t="ekr.20060902092341.7"><vh>Getting and setting headline and body text</vh></v>
+<v t="ekr.20060902092341.9"><vh>Copying positions</vh></v>
+<v t="ekr.20060902092341.8"><vh>Traversing outlines with generators.</vh>
+<v t="ekr.20060902092341.10"><vh>c.all_positions</vh></v>
+<v t="ekr.20060902092341.11"><vh>p.children_iter</vh></v>
+<v t="ekr.20060902092341.12"><vh>p.parents_iter &amp; p.self_and_parents_iter</vh></v>
+<v t="ekr.20060902092341.13"><vh>p.siblings_iter &amp; p.following_siblings_iter</vh></v>
+<v t="ekr.20060902092341.14"><vh>p.subtree_iter &amp; p.self_and_subtree_iter</vh></v>
+<v t="ekr.20060902092341.15"><vh>Testing whether a position is valid</vh></v>
 </v>
-<v t="ekr.20060902092341.16"><vh>@slide Updating the screen</vh></v>
-<v t="ekr.20060902092341.17"><vh>@slide Invoking commands from scripts</vh></v>
-<v t="ekr.20060902092341.18"><vh>@slide Getting settings from @settings trees</vh></v>
-<v t="ekr.20060902092341.19"><vh>@slide Getting and setting preferences</vh></v>
-<v t="ekr.20060902092341.20"><vh>@slide Functions for finding and changing text from scripts</vh></v>
-<v t="ekr.20060902092341.21"><vh>@slide Running Leo in batch mode</vh></v>
-<v t="ekr.20060902092341.22"><vh>@slide Functions defined in leoGlobals.py</vh></v>
-<v t="ekr.20060902092341.23"><vh>@slide Redirecting output from scripts</vh></v>
-<v t="ekr.20060902092341.24"><vh>@slide Adding new Tabs to the log pane</vh></v>
-<v t="ekr.20060902092341.25"><vh>@slide Summary of the vnode and position classes</vh>
-<v t="ekr.20060902092341.26"><vh>@slide Iterators</vh></v>
-<v t="ekr.20060902092341.27"><vh>@slide Getters</vh></v>
-<v t="ekr.20060902092341.28"><vh>@slide Setters</vh></v>
+<v t="ekr.20060902092341.16"><vh>Updating the screen</vh></v>
+<v t="ekr.20060902092341.17"><vh>Invoking commands from scripts</vh></v>
+<v t="ekr.20060902092341.18"><vh>Getting settings from @settings trees</vh></v>
+<v t="ekr.20060902092341.19"><vh>Getting and setting preferences</vh></v>
+<v t="ekr.20060902092341.20"><vh>Functions for finding and changing text from scripts</vh></v>
+<v t="ekr.20060902092341.21"><vh>Running Leo in batch mode</vh></v>
+<v t="ekr.20060902092341.22"><vh>Functions defined in leoGlobals.py</vh></v>
+<v t="ekr.20060902092341.23"><vh>Redirecting output from scripts</vh></v>
+<v t="ekr.20060902092341.24"><vh>Adding new Tabs to the log pane</vh></v>
+<v t="ekr.20060902092341.25"><vh>Summary of the vnode and position classes</vh>
+<v t="ekr.20060902092341.26"><vh>Iterators</vh></v>
+<v t="ekr.20060902092341.27"><vh>Getters</vh></v>
+<v t="ekr.20060902092341.28"><vh>Setters</vh></v>
 </v>
-<v t="ekr.20060902092341.29"><vh>@slide Creating script buttons</vh></v>
-<v t="ekr.20060902092341.30"><vh>@slide @test and @suite nodes</vh>
-<v t="ekr.20060902095933"><vh>@slide @test nodes</vh></v>
-<v t="ekr.20060902095933.1"><vh>@slide @suite nodes</vh></v>
+<v t="ekr.20060902092341.29"><vh>Creating script buttons</vh></v>
+<v t="ekr.20060902092341.30"><vh>@test and @suite nodes</vh>
+<v t="ekr.20060902095933"><vh>@test nodes</vh></v>
+<v t="ekr.20060902095933.1"><vh>@suite nodes</vh></v>
 </v>
-<v t="ekr.20060902100250"><vh>@slide conclusion</vh></v>
+<v t="ekr.20060902100250"><vh>conclusion</vh></v>
 </v>
+</v>
+<v t="ekr.20060901153101" a="E"><vh>@slideshow Introduction to Leo</vh>
+<v t="ekr.20091104114348.12090"><vh>Leo is an outliner on a mission</vh></v>
+<v t="ekr.20091104114348.12092"><vh>Leo is designed to handle complex data</vh></v>
+<v t="ekr.20091104114348.12093"><vh>Leo is for power users</vh></v>
+<v t="ekr.20091104114348.12094"><vh>Leo's power tools</vh>
+<v t="ekr.20091104114348.12099"><vh>Power tool #1: Leo outlines are graphs</vh></v>
+<v t="ekr.20091104114348.12100" a="E"><vh>Power tool #2: Python scripting is available everywhere</vh>
+<v t="ekr.20091104114348.12102"><vh>Leo is 100% pure Python</vh></v>
+<v t="ekr.20091104114348.12103"><vh>Leo's outlines and nodes are true Python objects</vh></v>
+<v t="ekr.20091104114348.12104"><vh>Any node can contain a Leo script</vh></v>
+<v t="ekr.20091104114348.12107" a="E"><vh>Scripts can access everything</vh>
+<v t="ekr.20091104114348.12118"><vh>An example script</vh></v>
+</v>
+<v t="ekr.20091104114348.12105" a="E"><vh>Script buttons bring scripts to data</vh>
+<v t="ekr.20091104114348.12119"><vh>@button print slideshow</vh></v>
+</v>
+</v>
+<v t="ekr.20091104114348.12109" a="E"><vh>Power tool #3: Outline structure matters everywhere</vh>
+<v t="ekr.20091104114348.12110"><vh>Leo can manage external files</vh></v>
+<v t="ekr.20091104114348.12101"><vh>Outlines create scripts and external files</vh></v>
+<v t="ekr.20091104114348.12111" a="E"><vh>Commands understand outline structure</vh>
+<v t="ekr.20091104114348.12120"><vh>Example: organizing scripts</vh>
+<v t="ekr.20091104114348.12121"><vh>@noslide myClass</vh></v>
+</v>
+<v t="ekr.20091104114348.12112"><vh>Example: the search command</vh></v>
+<v t="ekr.20091104114348.12113"><vh>Example: @test nodes</vh></v>
+</v>
+<v t="ekr.20091104114348.12115"><vh>@x headlines denote typed data</vh></v>
+</v>
+</v>
+<v t="ekr.20091104114348.12095"><vh>Summary</vh></v>
 </v>
 </v>
 </vnodes>
@@ -152,14 +154,6 @@ from time import sleep </t>
 <t tx="ekr.20060901144149.5"></t>
 <t tx="ekr.20060901144149.6"></t>
 <t tx="ekr.20060901144149.7"></t>
-<t tx="ekr.20060901144149.8"></t>
-<t tx="ekr.20060901144149.9"></t>
-<t tx="ekr.20060901144149.10"># This is the first slide.</t>
-<t tx="ekr.20060901144149.11"># This is the second slide.</t>
-<t tx="ekr.20060901144149.12"></t>
-<t tx="ekr.20060901144149.13">Slide 3</t>
-<t tx="ekr.20060901144149.14">Slide 4
-</t>
 <t tx="ekr.20060901144246">@color
 
 @ A point that can cause confusion:
@@ -172,72 +166,7 @@ The buttons below define commands whose names do *not* end in -command. These
 button define shortcuts for these buttons using the @key syntax.</t>
 <t tx="ekr.20060901144331">c.k.simulateCommand('prev-slide-show-command')</t>
 <t tx="ekr.20060901144359">c.k.simulateCommand('next-slide-command')</t>
-<t tx="ekr.20060901153101">@nocolor
-
-Leo is an outliner on a mission:
-    
-    To be the ultimate power tool for managing complex data
-    like books, databases and computer programs.
-    
-Leo grew out of my frustration in understanding complex computer programs. Leo
-has developed into a superb programming environment. Leo has also developed into
-a data management environment that blends the best features of relational,
-hierarchial and object oriented databases.
-
-Anyone can use Leo, but Leo is designed for power users. Some of the world's
-best programmers use Leo, and continue to contribute to its development.
-
-Features
-
-Like any outliner, newbies can use Leo like a filing cabinet to organize text,
-pictures or other data.
-
-But Leo's outlines are no ordinary outlines:
-
-1. You can organize Leo outlines in as many was as you like: You don't have to
-   choose a single "right" way to view your data. You are *not* limited to a
-   hierarchical or relational view of data. You can create a new view of your
-   data at any time.
-
-2. You can connect external files to Leo's outlines. Saving a Leo outline can
-   change one or more external files. Conversely, changing an exteral file can
-   update a Leo outline.
-   
-   As a result, a single Leo outline naturally represents complex projects that
-   span many files. For example, computer programs, databases and books.
-
-3. Leo's outlines are fully scriptable with Python. The interaction between
-   outlines and Leo scripts is really what makes Leo unique:
-
-    - Any node in a Leo outline can contain a Leo script. You can execute this
-      script at any time.
-    
-    - You can **build** scripts and external files from parts of an outline.
-      This allows you to organize your source code as an outline: outline
-      structure can be an essential part of your code.
-   
-    - Scripts can *easily* access or change any part of a Leo outline. In other
-      words, Leo has a full, complete DOM (Document object model).
-
-    - Any Leo script can be applied to any outline node. "Bringing scripts to
-      data" is simple, fun and powerful.
-
-    - You can customize any part of Leo using scripts and plugins. Many of Leo's
-      features started life this way.
-      
-    - Leo's headlines naturally describe the data in each node. Scripts and
-      plugins can use these descriptions (metadata) to find data without having
-      to parse the actual data.
-      
-These features are easy to use, yet Leo's community of users has been exploring
-their implications for over 10 years. New ways to combine outline structure with
-scripting continue to be invented.</t>
-<t tx="ekr.20060901153101.1"></t>
-<t tx="ekr.20060901153101.2"># This is the first slide.</t>
-<t tx="ekr.20060901153101.3"># This is the second slide.</t>
-<t tx="ekr.20060901153101.4"></t>
-<t tx="ekr.20060901153101.5">Slide 3</t>
-<t tx="ekr.20060901153101.6">Slide 4
+<t tx="ekr.20060901153101">@language rest
 </t>
 <t tx="ekr.20060902092242">c.beginUpdate()
 
@@ -902,12 +831,9 @@ code that supports @test and @suite nodes. **Important**: you could
 customize how @test and @suite nodes work by using your own script
 in the @button unit test node.</t>
 <t tx="ekr.20060902100250">This is the end of the 'Scripting Leo' slide show.</t>
-<t tx="ekr.20060902100840">This would colorize only code blocks (as Python code).</t>
-<t tx="ekr.20060902101656"># @language rst-python
+<t tx="ekr.20060902101656"># Use @ignore to skip slides
+
 @language python</t>
-<t tx="ekr.20060904104955"></t>
-<t tx="ekr.20060904104955.1"></t>
-<t tx="ekr.20060904104955.2"></t>
 <t tx="ekr.20070315073704"></t>
 <t tx="ekr.20070315073704.1">plugins_menu.py
 # plugin_manager.py
@@ -924,11 +850,8 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 </t>
 <t tx="ekr.20070315073704.3"></t>
 <t tx="ekr.20070315073704.4"></t>
-<t tx="ekr.20070315074504"># The children of this node can be made into slides using the make-slide button or make-slide command.</t>
-<t tx="ekr.20070315074504.1"></t>
-<t tx="ekr.20070315074504.2"></t>
 <t tx="ekr.20080129151123"></t>
-<t tx="ekr.20080129151228" str_leo_pos="5"></t>
+<t tx="ekr.20080129151228" str_leo_pos="2,1"></t>
 <t tx="ekr.20091103090815.1426"># To create a tab named 'Test' or make it visible if it already exists:
 log = c.frame.log
 log.selectTab('Test')
@@ -938,8 +861,7 @@ log.clearTab('Test')
 # To write to this widget, add the tabName argument to g.es:
 g.es('Test',color='blue',tabName='Test')
 </t>
-<t tx="ekr.20091103090815.1427">
-@
+<t tx="ekr.20091103090815.1427">@
 The Execute Script command predefines three variables, c, g and p.
     c is the commander (see below) of the outline containing the script.
     g is the leo.core.leoGlobals module, containing global functions.
@@ -1009,8 +931,6 @@ p.h is the headline text and p.b is the body text.
 print (len(p.b),p.h)
 </t>
 <t tx="ekr.20091103090815.1433">@ The following slides list useful methods for scripting Leo.</t>
-<t tx="ekr.20091103090815.1434"></t>
-<t tx="ekr.20091103090815.1435"></t>
 <t tx="ekr.20091104114053.3903"></t>
 <t tx="ekr.20091104114348.12072">This is the rST version of the Tech Report handed out at EuroPython in 2005.
 
@@ -1318,5 +1238,171 @@ to write your own plugins.</t>
 <t tx="ekr.20091104114348.12088">- Leo’s home page:  google edreamleo or http://webpages.charter.net/edreamleo/front.html
 
 - Edward K. Ream:  edreamleo@charter.net, 166 N. Prospect Ave., Madison WI 53726, (608) 231-0766</t>
+<t tx="ekr.20091104114348.12089"></t>
+<t tx="ekr.20091104114348.12090">Leo's mission
+
+    To be the ultimate power tool for managing complex data
+    like computer programs, books and databases.</t>
+<t tx="ekr.20091104114348.12092">Leo started life as a way to understand complex computer programs.
+
+Later, it became a data management environment that blends the best
+features of relational, hierarchical and object oriented databases.
+</t>
+<t tx="ekr.20091104114348.12093">Newbies can use Leo outlines like a filing cabinet to organize text,
+pictures and other data.
+
+But Leo is designed for power users.
+
+Some of the world's best programmers use Leo. Leo has a large community of
+sophisticated users who continue to improve Leo.</t>
+<t tx="ekr.20091104114348.12094">Leo gives you three complementary power tools:
+
+1. Leo's outlines are graphs, not simple hierarchies.
+
+2. Python scripting is available everywhere.
+
+3. Outline structure matters everywhere.</t>
+<t tx="ekr.20091104114348.12095">Leo's features create a unique environment for programming and for
+managing data.
+
+They are easy to use, yet Leo's community of users has been exploring their
+implications for over 10 years.</t>
+<t tx="ekr.20091104114348.12099">Leo outlines are Directed Acyclic Graphs (DAG's), not simple hierarchies
+
+You can organize Leo outlines in as many was as you like. You don't have to
+choose a single "right" way to view your data. You are *not* limited to a
+hierarchical or relational view of data. You can create a new view of your data
+at any time.
+
+Views are normal parts of a Leo outline, not something tacked onto the outline.</t>
+<t tx="ekr.20091104114348.12100">You can customize any aspect of Leo's operation with Python scripts, script
+buttons or plugins. Many of Leo's core features started out this way.</t>
+<t tx="ekr.20091104114348.12101">Leo uses outline structure in non-trivial ways when writing external files or
+creating scripts.
+
+Outlines structure becomes an integral part of external files and scripts.
+
+Programs are no longer merely classes and data, they also have inherent outline
+structure.</t>
+<t tx="ekr.20091104114348.12102"></t>
+<t tx="ekr.20091104114348.12103"></t>
+<t tx="ekr.20091104114348.12104">
+
+
+</t>
+<t tx="ekr.20091104114348.12105">Leo scripts can easily create **script buttons** that appear in
+Leo's window.  When you press one of those buttons Leo executes the
+script on the presently selected node.  The catch-phrase for this is
+"bringing scripts to data", and it has unlimited uses.
+
+</t>
+<t tx="ekr.20091104114348.12107">Leo scripts have full access to all nodes in a Leo outline.
+
+Leo has a DOM (Document Object Model).
+
+Leo scripts also have access to all of Leo's source code.</t>
+<t tx="ekr.20091104114348.12109"></t>
+<t tx="ekr.20091104114348.12110">Parts of Leo outlines can correspond to external files on your file system.
+
+Saving a Leo outline updates the corresponding external files.
+
+Conversely, changing an external file will update the Leo outline the next time
+you load the outline.
+
+Thus, a single Leo outline can naturally represent a complex projects comprising
+many files.</t>
+<t tx="ekr.20091104114348.12111">Most of Leo's commands can work on all of the outline, or selected parts.</t>
+<t tx="ekr.20091104114348.12112">Leo's file command can search all of the outline or just selected parts.
+
+Leo's find command can work like a normal find, or like grep.</t>
+<t tx="ekr.20091104114348.12113">Leo's run-unit-test command command executes Python code in the body of an @test
+node (a node with @test in the headline) as a unit test, **without** having to
+set up the typical unit testing classes.
+
+Writing the run-unit-test command was straightforward: the command has easy
+access to body text without having to do any difficult parsing.
+
+You can run a single unit test by selecting a single node; you can run a suite
+of unit tests by selecting a larger part of the outline. This makes running
+exactly the unit tests you want a snap. The kind of usage pattern happens
+everywhere.</t>
+<t tx="ekr.20091104114348.12115">Headlines naturally describe the body text of a node.
+
+By convention, headlines that start with @x denote a node of type x.
+
+Examples:
+
+@button     creates a script button.
+@command:   creates user-defined command.
+@rst:       contains reStructuredText.
+@test:      creates a unit test.
+@url:       opens the url (in the headline) in a browser.
+
+Headlines name the button, command or unit test.
+
+Body text contain the script.
+
+Scripts and plugins can easily create other user-defined types.</t>
+<t tx="ekr.20091104114348.12118">@language python
+
+'''Print the entire slideshow in which this node appears.'''
+
+# Note: Leo predefines c, g and p in all Leo scripts.
+#       These variables makes Leo's entire DOM available.
+
+# Clear the console.
+import os
+os.system('cls')
+
+# Print a separator with the name of this .leo file.
+print('%s%s%s' % ('-'* 20, c.shortFileName(),'-'*20))
+
+# Find the nearest ancestor @slideshow node.
+for z in p.self_and_parents():
+    if z.h.startswith('@slideshow'):
+        break
+
+# Print all the descendant nodes.
+for z in z.self_and_subtree():
+    print('%s%s' % (z.level()*' ',z.h))
+</t>
+<t tx="ekr.20091104114348.12119">@language python
+
+'''Print the entire slideshow in which this node appears.'''
+
+# Note: Leo predefines c, g and p in all Leo scripts.
+#       These variables makes Leo's entire DOM available.
+
+# Clear the console.
+import os
+os.system('cls')
+
+# Print a separator with the name of this .leo file.
+print('%s%s%s' % ('-'* 20, c.shortFileName(),'-'*20))
+
+# Find the nearest ancestor @slideshow node.
+for z in p.self_and_parents():
+    if z.h.startswith('@slideshow'):
+        break
+
+# Print all the descendant nodes.
+for z in z.self_and_subtree():
+    print('%s%s' % (z.level()*' ',z.h))
+</t>
+<t tx="ekr.20091104114348.12120">@language python
+
+import os
+
+# The @others directive inserts nodes.
+@others
+
+os.system('cls')
+print('beginning')
+myClass().printMiddle()
+print('end')</t>
+<t tx="ekr.20091104114348.12121">class myClass:
+    def printMiddle(self):
+        print('middle')
+</t>
 </tnodes>
 </leo_file>

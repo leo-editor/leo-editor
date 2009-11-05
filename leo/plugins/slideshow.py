@@ -128,7 +128,7 @@ class slideshowController:
     def ignored (self,p):
 
         for p2 in p.self_and_parents():
-            if g.match_word(p2.h,0,'@ignore'):
+            if g.match_word(p2.h,0,'@ignore') or g.match_word(p2.h,0,'@noslide'):
                 return True
         else:
             return False
@@ -150,11 +150,13 @@ class slideshowController:
             elif h.startswith('@slideshow'):
                 self.select(p)
                 return g.es('At %s of slide show' % g.choose(oldSlide,'end','start'))
-            elif g.match_word(h,0,'@ignore'):
+            elif g.match_word(h,0,'@ignore') or g.match_word(h,0,'@noslide'):
                 p = p.nodeAfterTree()
-            elif h.startswith('@slide'):
+            else:
                 return self.select(p)
-            else: p = p.threadNext()
+            # elif h.startswith('@slide'):
+                # return self.select(p)
+            # else: p = p.threadNext()
         else:
             return g.es(g.choose(self.slideShowRoot,
                 'At end of slide show',
@@ -205,9 +207,11 @@ class slideshowController:
             elif h.startswith('@slideshow'):
                 self.select(p)
                 return g.es('At start of slide show')
-            elif h.startswith('@slide'):
+            else:
                 return self.select(p)
-            else: p = p.threadBack()
+            # elif h.startswith('@slide'):
+                # return self.select(p)
+            # else: p = p.threadBack()
         else:
             p = self.findFirstSlideShow()
             if p:
