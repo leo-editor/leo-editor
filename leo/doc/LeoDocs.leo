@@ -10346,6 +10346,15 @@ stylesheet_name (default: 'default.css')
 stylesheet_path (default: '')
     The directory containing the stylesheet passed to docutils.
 
+    :Note:
+        If the stylesheet_embed option is True, specify a path relative
+        to the location of the Leo file.  If the stylesheet_embed option is
+        False, specify a path relative to the location of the HTML file.
+
+stylesheet_embed (default: True)
+    | True: The content of the stylesheet file will be embedded in the HTML file.
+    | False: The HTML file will link to an external stylesheet file.
+
 underline_characters (default: \'\'\'#=+*^~"'\`-:&gt;&lt;\_\'\'\')
     The underlining characters to be used to specify rST sections.
     The first character is reserved so you can specify the top-level section explicitly.
