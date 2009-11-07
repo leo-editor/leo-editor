@@ -505,8 +505,14 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if self.busy(): return
 
         c = self.c
+        if not p: p = c.p
 
-        g.doHook("icondclick1",c=c,p=p,v=p,event=event)
+        ### g.doHook("icondclick1",c=c,p=p,v=p,event=event)
+
+        if not g.doHook("icondclick1",c=c,p=p,v=p,event=event):
+                self.endEditLabel()
+                self.OnIconDoubleClick(p) # Call the method in the base class.
+
         g.doHook("icondclick2",c=c,p=p,v=p,event=event)
 
         c.outerUpdate()
