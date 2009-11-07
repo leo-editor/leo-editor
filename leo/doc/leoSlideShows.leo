@@ -82,7 +82,7 @@
 <v t="ekr.20060902100250"><vh>conclusion</vh></v>
 </v>
 </v>
-<v t="ekr.20060901153101" a="E"><vh>@slideshow Introducing Leo</vh>
+<v t="ekr.20060901153101"><vh>@slideshow Introducing Leo</vh>
 <v t="ekr.20091107071654.1488"><vh>Leo looks like an ordinary outliner</vh></v>
 <v t="ekr.20091107093823.6816"><vh>But no other program can do what Leo does</vh></v>
 <v t="ekr.20091107071654.1501"><vh>Leo outlines shows you your data *your* way</vh>
@@ -97,15 +97,17 @@
 <v t="ekr.20091107093823.1470"><vh>It is easy to traverse Leo outines</vh></v>
 </v>
 </v>
-<v t="ekr.20091107071654.1507"><vh>The execute-script command composes scripts from outlines</vh>
+<v t="ekr.20091107071654.1507"><vh>The execute-script command *composes* scripts from outlines</vh>
 <v t="ekr.20091107093823.6812"><vh>This script is formed from a tree</vh>
 <v t="ekr.20091107093823.6813"><vh>class myClass</vh>
 <v t="ekr.20091107093823.6814"><vh>printHi</vh></v>
 </v>
 </v>
-<v t="ekr.20091107071654.1514"><vh>@thin ..\test\slide-show-file.py</vh></v>
 </v>
-<v t="ekr.20091107093823.6815"><vh>Leo can compose external files from outlines</vh></v>
+<v t="ekr.20091107093823.6815"><vh>Leo can compose external files from outlines</vh>
+<v t="ekr.20091107071654.1514"><vh>@thin ..\test\slide-show-file.py</vh></v>
+<v t="ekr.20091107142231.6263"><vh>Execute slide-show-file.py</vh></v>
+</v>
 <v t="ekr.20091107093823.6808"><vh>You can apply scripts to data</vh></v>
 <v t="ekr.20091107093823.1465"><vh>Nodes can be typed</vh>
 <v t="ekr.20091107093823.1468"><vh>@html Leo's home page</vh></v>
@@ -117,6 +119,12 @@
 </v>
 <v t="ekr.20091107093823.6819"><vh>Leo plays well with others</vh></v>
 <v t="ekr.20091107071654.1493"><vh>Conclusions</vh></v>
+</v>
+<v t="ekr.20091107142231.6264" a="E"><vh>@slideshow Managing an Open Source Project</vh>
+<v t="ekr.20091107142231.6265"><vh>Put your project first</vh></v>
+<v t="ekr.20091107142231.6266"><vh>Put yourself in the background</vh></v>
+<v t="ekr.20091107142231.6267"><vh>Encourage others</vh></v>
+<v t="ekr.20091107142231.6268"><vh>Stay away from politics</vh></v>
 </v>
 </v>
 </vnodes>
@@ -840,7 +848,7 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20070315073704.3"></t>
 <t tx="ekr.20070315073704.4"></t>
 <t tx="ekr.20080129151123"></t>
-<t tx="ekr.20080129151228" str_leo_pos="4"></t>
+<t tx="ekr.20080129151228" str_leo_pos="4,2,3"></t>
 <t tx="ekr.20091103090815.1426"># To create a tab named 'Test' or make it visible if it already exists:
 log = c.frame.log
 log.selectTab('Test')
@@ -941,17 +949,17 @@ You can do everything with keystrokes: no mouse is needed.</t>
     like computer programs, books and databases.
 
 Leo aims to accomplish this mission by creating *vision* and *power*.</t>
-<t tx="ekr.20091107071654.1493">Leo has gone far beyond my wildest hopes. I have many people to thank for that.
+<t tx="ekr.20091107071654.1493">Leo has gone far beyond my wildest hopes. I have Leo's users to thank for that.
 
-I would never again willing program without it. All of Leo's sources,
+I would never again willing program without Leo. All of Leo's sources,
 documentation and scripts are contained in Leo outlines.
 
 Leo's mission is to be the ultimate power tool for managing complex data like
 computer programs, books and databases.  This task will never be finished.
 
-This is *good* news. Leo has become a playground for exploring new ways of
-exploring how to apply scripts to outlines. Leo has a large community of users
-who continually push Leo in new directions.</t>
+Leo has a large community of users who push Leo in new directions.
+
+Leo is a playground for exploring how to apply scripts to outlines.</t>
 <t tx="ekr.20091107071654.1501">Leo outlines are more flexible than ordinary outlines.
 
 **Clones** are nodes that appear in multiple places in the outline.
@@ -960,7 +968,7 @@ With clones, your data are *not* limited to a hierarchy:
 
 - You can organize a *single* Leo outline in as many ways as you like.
 - You don't have to choose a single "right" way to view your data.
-- You can create a new view of (relation on) your data at any time.
+- You can create a new view of (or relation on) your data at any time.
 
 Views (relations) are normal parts of a Leo outline, not something tacked onto the outline.
 
@@ -974,20 +982,20 @@ We'll see how this works in the next few slides.
 </t>
 <t tx="ekr.20091107071654.1503">Any node can contain a Python script.
 
-You can use Leo outlines is as filing cabinet for scripts. Because of clones,
+You can use a Leo outline as filing cabinet for scripts. Because of clones,
 this filing cabinet is more flexible than usual.
 
-But this is only the most trivial way of combining outlines and scripts. There
-are many more ways. Some were true Ahas when they were first discovered.</t>
-<t tx="ekr.20091107071654.1506">We call any script in a Leo outline a **Leo scripts** because such scripts have
+But this is a trivial way of combining outlines and scripts.
+
+There are many more ways, some not at all obvious.</t>
+<t tx="ekr.20091107071654.1506">We call any script in a Leo outline a **Leo script** because all such scripts have
 *easy* access to *all* the data in the outline.
 
-In other words, Leo has a DOM (Document Object Model).
-</t>
-<t tx="ekr.20091107071654.1507">@language rest
+In fancy words, Leo has a DOM (Document Object Model).</t>
+<t tx="ekr.20091107071654.1507">Leo's execute-script command **composes** scripts from an outline node and its
+descendants.
 
-Leo's execute-script command **composes** scripts from an outline node and its
-descendants. The composition rules are simple, but they allow you to organize
+The composition rules are simple, but they allow you to organize
 scripts any way you like.</t>
 <t tx="ekr.20091107071654.1511">Leo creates an environment in which some tasks become easier, and others
 just *disappear*.  Some dogs that aren't barking:
@@ -1006,13 +1014,18 @@ just *disappear*.  Some dogs that aren't barking:
 Everything from '@' to '@c' is a comment.
 
 It is easy to use Leo's DOM: Leo's execute-script command predefines c and g and p:
-    - c is the "commander" of the outline, giving full access to all it's data.
-    - g is part of Leo's sources containing global utility classes and methods.
-    - p is the presently selected position.
+
+- c is the "commander" of the outline, giving full access to all it's data.
+- g is part of Leo's sources containing global utility classes and methods.
+- p is the presently selected position.
 @c
 
 g.es('Hello','world',color='purple')
     # g.es prints its arguments to the log tab.
+
+g.es(c)
+g.es(g)
+g.es(p)
 </t>
 <t tx="ekr.20091107071654.1513">@
 For any position p, p.v is the node at that position,
@@ -1022,8 +1035,7 @@ As a convenience, p.b and p.b are synonyms for p.v.b and p.v.h.
 @c
 
 g.es('headline: ', p.h)
-g.es('len(body):', len(p.b))
-</t>
+g.es('len(body):', len(p.b))</t>
 <t tx="ekr.20091107093823.1465"></t>
 <t tx="ekr.20091107093823.1468">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
 &lt;!--@+leo-ver=4-thin--&gt;
@@ -1213,7 +1225,7 @@ NOWEB, EDWARD K. REAM, DONALD E. KNUTH, SILVIO LEVY, OPEN SOFTWARE" /&gt;
 Outline structure becomes a new domain for creativity. We say that Leo outlines
 have **good style**.  Such a notion does not exist in any other tool.</t>
 <t tx="ekr.20091107093823.1470">@
-c.all_positions is a generator returning each position of the outline.
+c.all_positions() is a generator returning each position of the outline.
 
 Because of clones, a node may appear in more than one position.
 @c
@@ -1225,7 +1237,7 @@ g.es('This outline contains %s positions' % (n),color='blue')
 for p in c.all_positions():
     sep = g.choose(p.hasChildren(),'+','-')
     indent = ' '*p.level()
-    print ('%s%s%s' % (indent,sep,p.h))
+    print ('%s%s %s' % (indent,sep,p.h))
 </t>
 <t tx="ekr.20091107093823.1471">@language python</t>
 <t tx="ekr.20091107093823.6808"></t>
@@ -1246,7 +1258,7 @@ myClass().printHi()</t>
 
     '''Print Hi on the log tab.'''
 
-    g.es('Hi',color='red')
+    g.es('Hi',color='blue')
 </t>
 <t tx="ekr.20091107093823.6815"></t>
 <t tx="ekr.20091107093823.6816">You can do things in Leo you can't even *think* about in other programs.
@@ -1277,6 +1289,17 @@ The Projects nodes contains task-centric views of Leo's sources. Each view
 typically contains notes in the top-level node, and clones of related sources in
 child nodes.
 
-Thus, each project node creates a full-fledged **relation** on the data.</t>
+Thus, each project node creates a full-fledged **relation** on the data.
+
+So Leo outlines combine the best features of hierarchical databases, relational
+databases and object-oriented databases.</t>
+<t tx="ekr.20091107142231.6263">import os
+
+os.system(r'python c:\leo.repo\trunk\leo\test\slide-show-file.py')</t>
+<t tx="ekr.20091107142231.6264"></t>
+<t tx="ekr.20091107142231.6265"></t>
+<t tx="ekr.20091107142231.6266">Be an adult.</t>
+<t tx="ekr.20091107142231.6267"></t>
+<t tx="ekr.20091107142231.6268"></t>
 </tnodes>
 </leo_file>
