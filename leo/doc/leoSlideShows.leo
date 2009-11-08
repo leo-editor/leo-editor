@@ -33,7 +33,7 @@
 <v t="ekr.20060901144149.6"><vh>@url c:\prog\Sounds\s1.wav</vh></v>
 <v t="ekr.20060901144149.7"><vh>@url c:\prog\Sounds\s2.wav</vh></v>
 </v>
-<v t="ekr.20060902101656" a="E"><vh>Slide shows</vh>
+<v t="ekr.20060902101656"><vh>Slide shows</vh>
 <v t="ekr.20060902092259"><vh>@slideshow Scripting with Leo</vh>
 <v t="ekr.20060902092341.4"><vh>Leo's classes and objects</vh>
 <v t="ekr.20091103090815.1427"><vh>c, g and p</vh></v>
@@ -72,9 +72,9 @@
 <v t="ekr.20060902092341.28"><vh>Setters</vh></v>
 </v>
 <v t="ekr.20060902092341.29"><vh>Creating script buttons</vh></v>
-<v t="ekr.20060902092341.30"><vh>@test and @suite nodes</vh>
-<v t="ekr.20060902095933"><vh>@test nodes</vh></v>
-<v t="ekr.20060902095933.1"><vh>@suite nodes</vh></v>
+<v t="ekr.20060902092341.30"><vh>\@test and @suite nodes</vh>
+<v t="ekr.20060902095933"><vh>\@test nodes</vh></v>
+<v t="ekr.20060902095933.1"><vh>\@suite nodes</vh></v>
 </v>
 <v t="ekr.20060902100250"><vh>conclusion</vh></v>
 </v>
@@ -93,7 +93,7 @@
 </v>
 <v t="ekr.20091107071654.1502"><vh>Leo scripts create new ways to handle data</vh>
 <v t="ekr.20091107071654.1503"><vh>Any node can contain a Python script</vh></v>
-<v t="ekr.20091107071654.1506" a="E"><vh>Leo scripts have full access to outline data</vh>
+<v t="ekr.20091107071654.1506"><vh>Leo scripts have full access to outline data</vh>
 <v t="ekr.20091107093823.1471"><vh>Some example scripts</vh>
 <v t="ekr.20091107071654.1512"><vh>A first script</vh></v>
 <v t="ekr.20091107071654.1513"><vh>It is easy to access nodes</vh></v>
@@ -123,27 +123,33 @@
 <v t="ekr.20091107093823.6819"><vh>Leo plays well with others</vh></v>
 <v t="ekr.20091107071654.1493"><vh>Conclusions</vh></v>
 </v>
-<v t="ekr.20091107171305.1499" a="E"><vh>@slideshow Introducing Leo -- short form</vh>
+<v t="ekr.20091108165951.1513"><vh>To do: put speakers notes in uA's.</vh></v>
+<v t="ekr.20091107171305.1499"><vh>@slideshow Introducing Leo -- short form</vh>
+<v t="ekr.20091108165951.1511"><vh>Elevator pitch</vh></v>
 <v t="ekr.20091107171305.1500"><vh>An ordinary outliner</vh></v>
-<v t="ekr.20091107171305.1528"><vh>With 2 *BIG* differences</vh>
+<v t="ekr.20091107171305.1528"><vh>With 2 BIG differences</vh>
 <v t="ekr.20091107171305.1533"><vh>1. **NO** right view of data</vh>
-<v t="ekr.20091107171305.1503"><vh>@url file:c:\leo.repo\trunk\leo\core\leoPy.leo --&gt; Projects</vh></v>
+<v t="ekr.20091107171305.1503"><vh>@url file:..\core\leoPy.leo --&gt; Projects</vh></v>
 </v>
 <v t="ekr.20091107171305.1530"><vh>2. Scripts applied to outlines</vh>
 <v t="ekr.20091107171305.1534"><vh>Examples</vh>
+<v t="ekr.20091107180129.20727"><vh>Predefined constants</vh></v>
 <v t="ekr.20091107171305.1535"><vh>Get data from *this* node</vh></v>
 <v t="ekr.20091107171305.1536"><vh>Get data from any node</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20091107171305.1539" a="E"><vh>User types</vh>
+<v t="ekr.20091107171305.1539"><vh>User types</vh>
 <v t="ekr.20091107171305.1537"><vh>@button count-headline</vh></v>
 <v t="ekr.20091107171305.1522"><vh>@html Leo's home page</vh></v>
 <v t="ekr.20091107171305.6350"><vh>@test fail</vh></v>
+<v t="ekr.20091107181442.1509"><vh>@url file:..\doc\LeoDocs.leo --&gt; Users Guide--&gt;@@rst leoUserGuide.txt--&gt;Chapter 7: Scripting Leo with Python--&gt;@rst html\scripting.html</vh></v>
+<v t="ekr.20091107181442.12182"><vh>@url http://webpages.charter.net/edreamleo/scripting.html</vh></v>
 </v>
 <v t="ekr.20091107171305.1538"><vh>External files</vh>
 <v t="ekr.20091107171305.1516"><vh>@thin ..\test\slide-show-file.py</vh></v>
 <v t="ekr.20091107171305.1541"><vh>Run the file</vh></v>
+<v t="ekr.20091107180129.6307"><vh>@url file:c:\leo.repo\trunk\leo\core\leoPy.leo --&gt; Code--&gt;Core classes--&gt;@thin leoApp.py</vh></v>
 </v>
 <v t="ekr.20091107171305.1542"><vh>Plays well with others</vh></v>
 <v t="ekr.20091107171305.1543"><vh>Leo style, good and not</vh></v>
@@ -860,10 +866,11 @@ code that supports @test and @suite nodes. **Important**: you could
 customize how @test and @suite nodes work by using your own script
 in the @button unit test node.</t>
 <t tx="ekr.20060902100250">This is the end of the 'Scripting Leo' slide show.</t>
-<t tx="ekr.20060902101656">@language python</t>
+<t tx="ekr.20060902101656"></t>
 <t tx="ekr.20070315073704"></t>
 <t tx="ekr.20070315073704.1">plugins_menu.py
 # plugin_manager.py
+# attrib_edit.py
 open_with.py
 mod_scripting.py
 rst3.py
@@ -878,7 +885,7 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20070315073704.3"></t>
 <t tx="ekr.20070315073704.4"></t>
 <t tx="ekr.20080129151123"></t>
-<t tx="ekr.20080129151228" str_leo_pos="3,3,2"></t>
+<t tx="ekr.20080129151228" str_leo_pos="2"></t>
 <t tx="ekr.20091103090815.1426"># To create a tab named 'Test' or make it visible if it already exists:
 log = c.frame.log
 log.selectTab('Test')
@@ -1326,17 +1333,8 @@ os.system(r'python c:\leo.repo\trunk\leo\test\slide-show-file.py')</t>
 <t tx="ekr.20091107142231.6267"></t>
 <t tx="ekr.20091107142231.6268"></t>
 <t tx="ekr.20091107171305.1499">@language rest
-@
-The @language **directive** shown above means that this slide show
-is syntax-colored as reStructured text, a popular markup language.
-@c
 
-This is the first slide of a slideshow introducing Leo.
-
-@
-I'm not going to read everything on every slide.
-So pay attention :-)
-
+- Distill 15 years into 15 minutes.
 
 </t>
 <t tx="ekr.20091107171305.1500"></t>
@@ -1535,13 +1533,23 @@ for p in c.all_positions():
     n += len(p.b)
 print('%d characters in this outline' % n)</t>
 <t tx="ekr.20091107171305.1537">print('%s characters in headline' % (len(p.h)))</t>
-<t tx="ekr.20091107171305.1538">@language python</t>
-<t tx="ekr.20091107171305.1539"></t>
+<t tx="ekr.20091107171305.1538"></t>
+<t tx="ekr.20091107171305.1539">@language python</t>
 <t tx="ekr.20091107171305.1541">import os
 
 os.system(r'python c:\leo.repo\trunk\leo\test\slide-show-file.py')</t>
 <t tx="ekr.20091107171305.1542"></t>
 <t tx="ekr.20091107171305.1543"></t>
 <t tx="ekr.20091107171305.6350">assert 1 == 2</t>
+<t tx="ekr.20091107180129.6307"></t>
+<t tx="ekr.20091107180129.20727">print(c)
+print(g)
+print(p)</t>
+<t tx="ekr.20091107181442.1509"></t>
+<t tx="ekr.20091107181442.12182"></t>
+<t tx="ekr.20091108165951.1511">Distill 15 years into 15 seconds.
+
+Good things happen when all data is in a Leo outline.</t>
+<t tx="ekr.20091108165951.1513"></t>
 </tnodes>
 </leo_file>

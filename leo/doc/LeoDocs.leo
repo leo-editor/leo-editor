@@ -388,8 +388,10 @@
 </v>
 <v t="ekr.20050831195331.4"><vh>Chapter 7: Scripting Leo with Python</vh>
 <v t="ekr.20040403171740"><vh>@rst html\scripting.html</vh>
-<v t="ekr.20091104200540.6566"><vh>@ignore old, too-complicated, intro</vh></v>
-<v t="ekr.20091104200540.6567"><vh>@ignore details for later</vh></v>
+<v t="ekr.20091104200540.6566"><vh>@rst-ignore</vh>
+<v t="ekr.20091107181442.26607"><vh>old, too complicated intro</vh></v>
+<v t="ekr.20091104200540.6567"><vh>details for later</vh></v>
+</v>
 <v t="ekr.20050812134441.1"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20040403183229"><vh>Leo's most import objects</vh></v>
 <v t="ekr.20070120075236"><vh>Predefined objects</vh></v>
@@ -988,7 +990,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090717084250.10702" a="E"><vh>Other docs</vh>
+<v t="ekr.20090717084250.10702"><vh>Other docs</vh>
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
@@ -23479,7 +23481,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="3,8"></t>
+<t tx="ekr.20070610174018" str_leo_pos="2"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -30733,38 +30735,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 - Added new plugins: spydershell.py, qtframecommands.py, and mod_framesize.py.
 
 - Added "show folder" in rclick menu.</t>
-<t tx="ekr.20091104200540.6566">Leo's **vnode** classe represents all the data in a particular node.
-In the simplied data model, a single vnode represents all clones on the screen.
-When Leo clones a vnode v, alters data structures in v and v's parent vnode,
-but Leo does *not* create another vnode to represent the clone.
-Thus, the *exact same* vnode may appear in several places on Leo's outline pane.
-
-Leo's **position** class represents a position (spot) in Leo's outline pane.
-More exactly, a position represents the state of a tree traversal of Leo's data.
-Vnode's may appear several times in a traversal, which is another way of saying
-that vnodes may appear several times in Leo's outline pane.
-
-Leo's **generators** generate lists of positions.
-For example, c.all_positions() generates a list of all positions in the outline.
-As another example, given a position p,
-p.self_and_subtree() generates a list of all descendants of the vnode at position p.
-
-Leo' **position methods** provide other ways ways of finding positions.
-Given a position p, p.parent() is the p's parent position,
-p.firstChild() is the position of p's first child (if it exists),
-and p.next() is the position of p's next sibling (again, if it exists).
-Many other position methods exist, as discussed below.
-
-Leo's execute-script command predefines several symbols.  This makes it easy to
-access the data in Leo outlines and the Leo's own source code. g is predefined
-to the leoGlobals module. Scripts commonly use utility functions such as g.es,
-g.trace, etc. The g.app object represents Leo itself. The instance vars (ivars)
-of g.app are Leo's global variables and constants. The execute-script command
-predefines c to be the commander (see below) of the Leo outline in which the
-script is contained. Whenever possible, scripts should use the high-level
-methods of the commander to insert, delete or clone nodes. Finally, the
-execute-script commands predefines p to be the presently selected position.
-</t>
+<t tx="ekr.20091104200540.6566"></t>
 <t tx="ekr.20091104200540.6567">
     **Note**:
     For compatibility with old (pre-4.2) scripts, ``c.currentVnode`` and
@@ -31263,6 +31234,38 @@ to write your own plugins.</t>
 <t tx="ekr.20091107093823.6807">- Leo’s home page:  google edreamleo or http://webpages.charter.net/edreamleo/front.html
 
 - Edward K. Ream:  edreamleo@charter.net, 166 N. Prospect Ave., Madison WI 53726, (608) 231-0766</t>
+<t tx="ekr.20091107181442.26607">Leo's **vnode** classe represents all the data in a particular node.
+In the simplied data model, a single vnode represents all clones on the screen.
+When Leo clones a vnode v, alters data structures in v and v's parent vnode,
+but Leo does *not* create another vnode to represent the clone.
+Thus, the *exact same* vnode may appear in several places on Leo's outline pane.
+
+Leo's **position** class represents a position (spot) in Leo's outline pane.
+More exactly, a position represents the state of a tree traversal of Leo's data.
+Vnode's may appear several times in a traversal, which is another way of saying
+that vnodes may appear several times in Leo's outline pane.
+
+Leo's **generators** generate lists of positions.
+For example, c.all_positions() generates a list of all positions in the outline.
+As another example, given a position p,
+p.self_and_subtree() generates a list of all descendants of the vnode at position p.
+
+Leo' **position methods** provide other ways ways of finding positions.
+Given a position p, p.parent() is the p's parent position,
+p.firstChild() is the position of p's first child (if it exists),
+and p.next() is the position of p's next sibling (again, if it exists).
+Many other position methods exist, as discussed below.
+
+Leo's execute-script command predefines several symbols.  This makes it easy to
+access the data in Leo outlines and the Leo's own source code. g is predefined
+to the leoGlobals module. Scripts commonly use utility functions such as g.es,
+g.trace, etc. The g.app object represents Leo itself. The instance vars (ivars)
+of g.app are Leo's global variables and constants. The execute-script command
+predefines c to be the commander (see below) of the Leo outline in which the
+script is contained. Whenever possible, scripts should use the high-level
+methods of the commander to insert, delete or clone nodes. Finally, the
+execute-script commands predefines p to be the presently selected position.
+</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?

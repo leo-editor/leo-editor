@@ -131,6 +131,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=None, maxp=None):
     """try and move to unl in the commander c"""
 
     def moveToP(c, p):
+        c.expandAllAncestors(p) # 2009/11/07
         c.selectPosition(p)
         c.redraw()
         c.frame.bringToFront()  # doesn't seem to work

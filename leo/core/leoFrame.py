@@ -372,7 +372,7 @@ class baseTextWidget:
     def _insertText(self,i,s):          self.oops()
     def _scrollLines(self,n):           self.oops()
     def _see(self,i):                   self.oops()
-    def _setAllText(self,s):            self.oops()
+    def _setAllText(self,s,new_p=None): self.oops()
     def _setBackgroundColor(self,color): self.oops()
     def _setForegroundColor(self,color): self.oops()
     def _setFocus(self):                self.oops()
@@ -635,7 +635,7 @@ class stringTextWidget (baseTextWidget):
         self.sel = i,i
     def _scrollLines(self,n):           pass
     def _see(self,i):                   pass
-    def _setAllText(self,s):
+    def _setAllText(self,s,new_p=None):
         if self.trace: g.trace(self,'len(s)',len(s),g.callers())
         if self.trace: g.trace(self,'s',repr(s[-10:]),g.callers())
         # g.trace(repr(s),g.callers())
