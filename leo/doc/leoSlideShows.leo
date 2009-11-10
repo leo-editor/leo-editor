@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="41" left="691" height="1008" width="1205"/>
+	<global_window_position top="46" left="625" height="1008" width="1205"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -26,15 +26,30 @@
 <v t="ekr.20060901144359"><vh>@@button next-slide @key=Alt-7</vh></v>
 <v t="ekr.20060902092242"><vh>@@button make-slide @key=Alt-0</vh></v>
 </v>
+<v t="ekr.20091110090536.1729"><vh>Dummy clones for slide show: do not delete!</vh>
+<v t="ekr.20091110090536.1724"><vh> treeSelectHelper</vh></v>
+<v t="ekr.20091110090536.1722"><vh>contractNode</vh></v>
+<v t="ekr.20091110090536.1720"><vh>contractNodeOrGoToParent</vh></v>
+<v t="ekr.20091110090536.1723"><vh>expandNode</vh></v>
+<v t="ekr.20091110090536.1721"><vh>expandNodeAnd/OrGoToFirstChild</vh></v>
+<v t="ekr.20091110090536.1719"><vh>goToParent</vh></v>
+<v t="ekr.20091110090536.1725"><vh>p.moveToVisBack</vh>
+<v t="ekr.20091110090536.1726"><vh>checkVisBackLimit</vh></v>
 </v>
-<v t="ekr.20060901142356"><vh>Read me first</vh></v>
+<v t="ekr.20091110090536.1727"><vh>p.moveToVisNext</vh>
+<v t="ekr.20091110090536.1728"><vh>checkVisNextLimit</vh></v>
+</v>
+<v t="ekr.20091110090536.1718"><vh>selectVisBack</vh></v>
+<v t="ekr.20091110090536.1717"><vh>selectVisNext</vh></v>
+</v>
+</v>
+<v t="ekr.20091109103928.1545"><vh>Other</vh>
 <v t="ekr.20060901144149.4"><vh>Sounds</vh>
 <v t="ekr.20060901144149.5"><vh>@url http://mail.python.org/pipermail/python-list/2004-October/248738.html</vh></v>
 <v t="ekr.20060901144149.6"><vh>@url c:\prog\Sounds\s1.wav</vh></v>
 <v t="ekr.20060901144149.7"><vh>@url c:\prog\Sounds\s2.wav</vh></v>
 </v>
-<v t="ekr.20060902101656"><vh>Slide shows</vh>
-<v t="ekr.20060902092259"><vh>@slideshow Scripting with Leo</vh>
+<v t="ekr.20060902092259"><vh>Scripting with Leo (do not delete)</vh>
 <v t="ekr.20060902092341.4"><vh>Leo's classes and objects</vh>
 <v t="ekr.20091103090815.1427"><vh>c, g and p</vh></v>
 <v t="ekr.20091103090815.1428"><vh>g.app</vh></v>
@@ -79,13 +94,7 @@
 <v t="ekr.20060902100250"><vh>conclusion</vh></v>
 </v>
 </v>
-<v t="ekr.20091107142231.6264"><vh>@slideshow Managing an Open Source Project</vh>
-<v t="ekr.20091107142231.6265"><vh>Put your project first</vh></v>
-<v t="ekr.20091107142231.6266"><vh>Put yourself in the background</vh></v>
-<v t="ekr.20091107142231.6267"><vh>Encourage others</vh></v>
-<v t="ekr.20091107142231.6268"><vh>Avoid politics</vh></v>
-</v>
-<v t="ekr.20060901153101"><vh>@slideshow Introducing Leo</vh>
+<v t="ekr.20060901153101"><vh>Introducing Leo (old)</vh>
 <v t="ekr.20091107071654.1488"><vh>Leo looks like an ordinary outliner</vh></v>
 <v t="ekr.20091107093823.6816"><vh>But no other program can do what Leo does</vh></v>
 <v t="ekr.20091107071654.1501"><vh>Leo outlines shows you your data *your* way</vh>
@@ -123,53 +132,369 @@
 <v t="ekr.20091107093823.6819"><vh>Leo plays well with others</vh></v>
 <v t="ekr.20091107071654.1493"><vh>Conclusions</vh></v>
 </v>
-<v t="ekr.20091108165951.1513"><vh>To do: put speakers notes in uA's.</vh></v>
-<v t="ekr.20091107171305.1499"><vh>@slideshow Introducing Leo -- short form</vh>
-<v t="ekr.20091108165951.1511"><vh>Elevator pitch</vh></v>
-<v t="ekr.20091107171305.1500"><vh>An ordinary outliner</vh></v>
-<v t="ekr.20091107171305.1528"><vh>With 2 BIG differences</vh>
-<v t="ekr.20091107171305.1533"><vh>1. **NO** right view of data</vh>
-<v t="ekr.20091107171305.1503"><vh>@url file:..\core\leoPy.leo --&gt; Projects</vh></v>
+<v t="ekr.20091110090536.1640"><vh>What people do with Leo</vh>
+<v t="ekr.20091110090536.1641"><vh>Understand complex programs more easily</vh></v>
+<v t="ekr.20091110090536.1642"><vh>Organize scripts</vh></v>
+<v t="ekr.20091110090536.1643"><vh>Manage web sites</vh>
+<v t="ekr.20091110090536.1644"><vh>@url http://webpages.charter.net/edreamleo/leo_toc.html</vh></v>
 </v>
-<v t="ekr.20091107171305.1530"><vh>2. Scripts applied to outlines</vh>
-<v t="ekr.20091107171305.1534"><vh>Examples</vh>
-<v t="ekr.20091107180129.20727"><vh>Predefined constants</vh></v>
-<v t="ekr.20091107171305.1535"><vh>Get data from *this* node</vh></v>
-<v t="ekr.20091107171305.1536"><vh>Get data from any node</vh></v>
+<v t="ekr.20091110090536.1645"><vh>Store scientific data</vh></v>
 </v>
 </v>
+<v t="ekr.20091109103928.1546"><vh>To do</vh>
+<v t="ekr.20091108172508.15988"><vh>Bug double-click-icon-box is not selecting the proper node.</vh></v>
+<v t="ekr.20091109103928.1544"><vh>Bug contracting a node should redraw the screen</vh></v>
+<v t="ekr.20091110090536.1635"><vh>Description</vh></v>
 </v>
-<v t="ekr.20091107171305.1539"><vh>User types</vh>
-<v t="ekr.20091107171305.1537"><vh>@button count-headline</vh></v>
-<v t="ekr.20091107171305.1522"><vh>@html Leo's home page</vh></v>
-<v t="ekr.20091107171305.6350"><vh>@test fail</vh></v>
-<v t="ekr.20091107181442.1509"><vh>@url file:..\doc\LeoDocs.leo --&gt; Users Guide--&gt;@@rst leoUserGuide.txt--&gt;Chapter 7: Scripting Leo with Python--&gt;@rst html\scripting.html</vh></v>
-<v t="ekr.20091107181442.12182"><vh>@url http://webpages.charter.net/edreamleo/scripting.html</vh></v>
+<v t="ekr.20060902101656" a="E"><vh>Slide shows</vh>
+<v t="ekr.20091110090536.1636"><vh>15-20 minutes: Introducing Leo</vh>
+<v t="ekr.20091110090536.1674"><vh>What people are saying about Leo</vh>
+<v t="ekr.20091110090536.1677"><vh>Leo is revolutionary</vh></v>
+<v t="ekr.20091110090536.1679"><vh>Leo is fun, even addicting</vh></v>
+<v t="ekr.20091110090536.1681"><vh>Leo is a great outliner</vh></v>
+<v t="ekr.20091110090536.1693"><vh>Leo is a great programming tool</vh></v>
+<v t="ekr.20091110090536.1694"><vh>Leo is a great PIM</vh></v>
+<v t="ekr.20091110090536.1684"><vh>Leo is a great documentation tool</vh></v>
+<v t="ekr.20091110090536.1685"><vh>Leo clarifies complex systems</vh></v>
 </v>
-<v t="ekr.20091107171305.1538"><vh>External files</vh>
-<v t="ekr.20091107171305.1516"><vh>@thin ..\test\slide-show-file.py</vh></v>
-<v t="ekr.20091107171305.1541"><vh>Run the file</vh></v>
-<v t="ekr.20091107180129.6307"><vh>@url file:c:\leo.repo\trunk\leo\core\leoPy.leo --&gt; Code--&gt;Core classes--&gt;@thin leoApp.py</vh></v>
+<v t="ekr.20091110090536.1604"><vh>Leo's screen</vh></v>
+<v t="ekr.20091110090536.1695"><vh>The essentials of Leo</vh>
+<v t="ekr.20091110090536.2171"><vh>1. Leo outlines</vh>
+<v t="ekr.20091110090536.1696"><vh>Clones make Leo outlines special</vh>
+<v t="ekr.20091110090536.1697"><vh>Clones are nodes appearing in several places in the outline</vh>
+<v t="ekr.20091110090536.1698"><vh>A</vh>
+<v t="ekr.20091110090536.1699"><vh>B</vh>
+<v t="ekr.20091110090536.1700"><vh>C</vh></v>
+<v t="ekr.20091110090536.1701"><vh>D</vh></v>
 </v>
-<v t="ekr.20091107171305.1542"><vh>Plays well with others</vh></v>
-<v t="ekr.20091107171305.1543"><vh>Leo style, good and not</vh></v>
-<v t="ekr.20091107171305.1527"><vh>Thanks to Leo's community</vh></v>
 </v>
+</v>
+<v t="ekr.20091110090536.1702"><vh>Clones create multiple views of data</vh>
+<v t="ekr.20091110090536.1730"><vh>Here is an example of a view</vh>
+<v t="ekr.20091110090536.1716"><vh>Fixed contractOrGoRight</vh>
+<v t="ekr.20091110104908.2105"><vh>The bug</vh></v>
+<v t="ekr.20091110104908.2106"><vh>What I did</vh></v>
+<v t="ekr.20091110090536.1717"></v>
+<v t="ekr.20091110090536.1718"></v>
+<v t="ekr.20091110090536.1719"></v>
+<v t="ekr.20091110090536.1720"></v>
+<v t="ekr.20091110090536.1721"></v>
+<v t="ekr.20091110090536.1722"></v>
+<v t="ekr.20091110090536.1723"></v>
+<v t="ekr.20091110090536.1724"></v>
+<v t="ekr.20091110090536.1725"></v>
+<v t="ekr.20091110090536.1727"></v>
+</v>
+</v>
+<v t="ekr.20091110104908.2104"><vh>There is no such thing as *the* right view of data</vh></v>
+</v>
+</v>
+<v t="ekr.20091110090536.1732"><vh>Outlines can represent external files</vh>
+<v t="ekr.20091110090536.1951"><vh>@@thin leoNodes.py</vh>
+<v t="ekr.20091110090536.1952"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20091110090536.1953"><vh>class vnode</vh>
+<v t="ekr.20091110090536.1954"><vh>&lt;&lt; vnode constants &gt;&gt;</vh></v>
+<v t="ekr.20091110090536.1955"><vh>v.Birth &amp; death</vh>
+<v t="ekr.20091110090536.1956"><vh>v.__init</vh></v>
+<v t="ekr.20091110090536.1957"><vh>v.__repr__ &amp; v.__str__</vh></v>
+<v t="ekr.20091110090536.1958"><vh>v.dump</vh></v>
+<v t="ekr.20091110090536.1959"><vh>v.__hash__ (only for zodb)</vh></v>
+</v>
+<v t="ekr.20091110090536.1960"><vh>v.Comparisons</vh>
+<v t="ekr.20091110090536.1961"><vh>v.findAtFileName</vh></v>
+<v t="ekr.20091110090536.1962"><vh>anyAtFileNodeName</vh></v>
+<v t="ekr.20091110090536.1963"><vh>at...FileNodeName &amp; tests</vh>
+<v t="ekr.20091110090536.1964"><vh>@test v.atAutoNodeName &amp; v.atAutoRstNodeName</vh></v>
+</v>
+<v t="ekr.20091110090536.1965"><vh>isAtAllNode</vh></v>
+<v t="ekr.20091110090536.1966"><vh>isAnyAtFileNode</vh></v>
+<v t="ekr.20091110090536.1967"><vh>isAt...FileNode (vnode)</vh></v>
+<v t="ekr.20091110090536.1968"><vh>isAtIgnoreNode</vh></v>
+<v t="ekr.20091110090536.1969"><vh>isAtOthersNode</vh></v>
+<v t="ekr.20091110090536.1970"><vh>matchHeadline</vh></v>
+</v>
+<v t="ekr.20091110090536.1971"><vh>v.Getters</vh>
+<v t="ekr.20091110090536.1972"><vh>v.bodyString</vh></v>
+<v t="ekr.20091110090536.1973"><vh>v.Children</vh>
+<v t="ekr.20091110090536.1974"><vh>v.firstChild</vh></v>
+<v t="ekr.20091110090536.1975"><vh>v.hasChildren &amp; hasFirstChild</vh></v>
+<v t="ekr.20091110090536.1976"><vh>v.lastChild</vh></v>
+<v t="ekr.20091110090536.1977"><vh>v.nthChild</vh></v>
+<v t="ekr.20091110090536.1978"><vh>v.numberOfChildren</vh></v>
+</v>
+<v t="ekr.20091110090536.1979"><vh>v.directParents</vh></v>
+<v t="ekr.20091110090536.1980"><vh>v.hasBody</vh></v>
+<v t="ekr.20091110090536.1981"><vh>v.headString &amp; v.cleanHeadString</vh></v>
+<v t="ekr.20091110090536.1982"><vh>v.Status Bits</vh>
+<v t="ekr.20091110090536.1983"><vh>v.isCloned</vh></v>
+<v t="ekr.20091110090536.1984"><vh>v.isDirty</vh></v>
+<v t="ekr.20091110090536.1985"><vh>v.isExpanded</vh></v>
+<v t="ekr.20091110090536.1986"><vh>v.isMarked</vh></v>
+<v t="ekr.20091110090536.1987"><vh>v.isOrphan</vh></v>
+<v t="ekr.20091110090536.1988"><vh>v.isSelected</vh></v>
+<v t="ekr.20091110090536.1989"><vh>v.isTopBitSet</vh></v>
+<v t="ekr.20091110090536.1990"><vh>v.isVisited</vh></v>
+<v t="ekr.20091110090536.1991"><vh>v.isWriteBit</vh></v>
+<v t="ekr.20091110090536.1992"><vh>v.status</vh></v>
+</v>
+</v>
+<v t="ekr.20091110090536.1993"><vh>v.Setters</vh>
+<v t="ekr.20091110090536.1994"><vh> v.Dirty bits</vh>
+<v t="ekr.20091110090536.1995"><vh>v.clearDirty</vh></v>
+<v t="ekr.20091110090536.1996"><vh>v.findAllPotentiallyDirtyNodes</vh></v>
+<v t="ekr.20091110090536.1997"><vh>v.setAllAncestorAtFileNodesDirty</vh></v>
+<v t="ekr.20091110090536.1998"><vh>v.setDirty</vh></v>
+</v>
+<v t="ekr.20091110090536.1999"><vh> v.Status bits</vh>
+<v t="ekr.20091110090536.2000"><vh>v.clearClonedBit</vh></v>
+<v t="ekr.20091110090536.2001"><vh>v.clearMarked</vh></v>
+<v t="ekr.20091110090536.2002"><vh>v.clearWriteBit</vh></v>
+<v t="ekr.20091110090536.2003"><vh>v.clearOrphan</vh></v>
+<v t="ekr.20091110090536.2004"><vh>v.clearVisited</vh></v>
+<v t="ekr.20091110090536.2005"><vh>v.contract &amp; expand &amp; initExpandedBit</vh></v>
+<v t="ekr.20091110090536.2006"><vh>v.initStatus</vh></v>
+<v t="ekr.20091110090536.2007"><vh>v.setClonedBit &amp; initClonedBit</vh></v>
+<v t="ekr.20091110090536.2008"><vh>v.setMarked &amp; initMarkedBit</vh></v>
+<v t="ekr.20091110090536.2009"><vh>v.setOrphan</vh></v>
+<v t="ekr.20091110090536.2010"><vh>v.setSelected</vh></v>
+<v t="ekr.20091110090536.2011"><vh>v.setVisited</vh></v>
+<v t="ekr.20091110090536.2012"><vh>v.setWriteBit</vh></v>
+</v>
+<v t="ekr.20091110090536.2013"><vh>v .setBodyString &amp; v.setHeadString</vh></v>
+<v t="ekr.20091110090536.2014"><vh>v.setFileIndex</vh></v>
+<v t="ekr.20091110090536.2015"><vh>v.computeIcon &amp; setIcon</vh></v>
+<v t="ekr.20091110090536.2016"><vh>v.setSelection</vh></v>
+</v>
+<v t="ekr.20091110090536.2017"><vh>v.Low level methods</vh>
+<v t="ekr.20091110090536.2018"><vh>v._addLink &amp; helper</vh>
+<v t="ekr.20091110090536.2019"><vh>v._addParentLinks</vh></v>
+</v>
+<v t="ekr.20091110090536.2020"><vh>v._cutLink</vh>
+<v t="ekr.20091110090536.2021"><vh>v._cutParentLinks</vh></v>
+</v>
+<v t="ekr.20091110090536.2022"><vh>v._linkAsNthChild (used by 4.x read logic)</vh></v>
+<v t="ekr.20091110090536.2023"><vh>v.createOutlineFromCacheList &amp; helpers</vh>
+<v t="ekr.20091110090536.2024"><vh>v.fastAddLastChild</vh></v>
+</v>
+</v>
+<v t="ekr.20091110090536.2025"><vh>v.Properties</vh>
+<v t="ekr.20091110090536.2026"><vh>v.b Property</vh></v>
+<v t="ekr.20091110090536.2027"><vh>v.h property</vh></v>
+<v t="ekr.20091110090536.2028"><vh>v.u Property</vh></v>
+<v t="ekr.20091110090536.2029"><vh>v.gnx Property</vh></v>
+</v>
+</v>
+<v t="ekr.20091110090536.2030"><vh>class nodeIndices</vh>
+<v t="ekr.20091110090536.2031"><vh>nodeIndices.__init__</vh></v>
+<v t="ekr.20091110090536.2032"><vh>areEqual (no longer used)</vh></v>
+<v t="ekr.20091110090536.2033"><vh>get/setDefaultId</vh></v>
+<v t="ekr.20091110090536.2034"><vh>getNewIndex</vh></v>
+<v t="ekr.20091110090536.2035"><vh>isGnx (not used)</vh></v>
+<v t="ekr.20091110090536.2036"><vh>scanGnx</vh></v>
+<v t="ekr.20091110090536.2037"><vh>setTimeStamp</vh></v>
+<v t="ekr.20091110090536.2038"><vh>toString</vh></v>
+</v>
+<v t="ekr.20091110090536.2039"><vh>class position</vh>
+<v t="ekr.20091110090536.2040"><vh>&lt;&lt; about the position class &gt;&gt;</vh></v>
+<v t="ekr.20091110090536.2041"><vh> p.ctor &amp; other special methods...</vh>
+<v t="ekr.20091110090536.2042"><vh> p.__init__</vh></v>
+<v t="ekr.20091110090536.2043"><vh>p.__eq__ &amp; __ne__</vh></v>
+<v t="ekr.20091110090536.2044"><vh>p.__getattr__ (no longer used)</vh></v>
+<v t="ekr.20091110090536.2045"><vh>p.__nonzero__ &amp; __bool__</vh></v>
+<v t="ekr.20091110090536.2046"><vh>p.__str__ and p.__repr__</vh></v>
+<v t="ekr.20091110090536.2047"><vh>p.archivedPosition</vh></v>
+<v t="ekr.20091110090536.2048"><vh>p.copy</vh></v>
+<v t="ekr.20091110090536.2049"><vh>p.dump</vh></v>
+<v t="ekr.20091110090536.2050"><vh>p.key</vh></v>
+</v>
+<v t="ekr.20091110090536.2051"><vh>p.Properties</vh>
+<v t="ekr.20091110090536.2052"><vh>p.b property</vh></v>
+<v t="ekr.20091110090536.2053"><vh>p.h property</vh></v>
+<v t="ekr.20091110090536.2054"><vh>p.gnx property</vh></v>
+</v>
+<v t="ekr.20091110090536.2055"><vh>p.Getters</vh>
+<v t="ekr.20091110090536.2056"><vh>p.vnode proxies</vh>
+<v t="ekr.20091110090536.2057"><vh>p.Comparisons</vh></v>
+<v t="ekr.20091110090536.2058"><vh>p.Headline &amp; body strings</vh></v>
+<v t="ekr.20091110090536.2059"><vh>p.Status bits</vh></v>
+</v>
+<v t="ekr.20091110090536.2060"><vh>p.children &amp; parents</vh>
+<v t="ekr.20091110090536.2061"><vh>p.childIndex</vh></v>
+<v t="ekr.20091110090536.2062"><vh>p.directParents</vh></v>
+<v t="ekr.20091110090536.2063"><vh>p.hasChildren &amp; p.numberOfChildren</vh></v>
+</v>
+<v t="ekr.20091110090536.2064"><vh>p.getX &amp; vnode compatibility traversal routines</vh></v>
+<v t="ekr.20091110090536.2065"><vh>p.hasX</vh>
+<v t="ekr.20091110090536.2066"><vh>hasThreadNext (the only complex hasX method)</vh></v>
+</v>
+<v t="ekr.20091110090536.2067"><vh>p.findRootPosition</vh></v>
+<v t="ekr.20091110090536.2068"><vh>p.isAncestorOf</vh></v>
+<v t="ekr.20091110090536.2069"><vh>p.isCloned</vh></v>
+<v t="ekr.20091110090536.2070"><vh>p.isRoot</vh></v>
+<v t="ekr.20091110090536.2071"><vh>p.isVisible</vh></v>
+<v t="ekr.20091110090536.2072"><vh>p.level &amp; simpleLevel</vh></v>
+<v t="ekr.20091110090536.2073"><vh>p.textOffset</vh></v>
+</v>
+<v t="ekr.20091110090536.2074"><vh>p.Setters</vh>
+<v t="ekr.20091110090536.2075"><vh>p.Vnode proxies</vh>
+<v t="ekr.20091110090536.2076"><vh>p.Status bits</vh></v>
+<v t="ekr.20091110090536.2077"><vh>p.computeIcon &amp; p.setIcon</vh></v>
+<v t="ekr.20091110090536.2078"><vh>p.setSelection</vh></v>
+</v>
+<v t="ekr.20091110090536.2079"><vh>p.setBodyString &amp; setHeadString</vh></v>
+<v t="ekr.20091110090536.2080"><vh>p.Visited bits</vh>
+<v t="ekr.20091110090536.2081"><vh>p.clearVisitedInTree</vh></v>
+<v t="ekr.20091110090536.2082"><vh>p.clearAllVisitedInTree</vh></v>
+</v>
+<v t="ekr.20091110090536.2083"><vh>p.Dirty bits</vh>
+<v t="ekr.20091110090536.2084"><vh>p.clearDirty</vh></v>
+<v t="ekr.20091110090536.2085"><vh>p.findAllPotentiallyDirtyNodes</vh></v>
+<v t="ekr.20091110090536.2086"><vh>p.inAtIgnoreRange</vh></v>
+<v t="ekr.20091110090536.2087"><vh>p.setAllAncestorAtFileNodesDirty</vh></v>
+<v t="ekr.20091110090536.2088"><vh>p.setDirty</vh></v>
+</v>
+</v>
+<v t="ekr.20091110090536.2089"><vh>p.File Conversion</vh>
+<v t="ekr.20091110090536.2090"><vh>p.convertTreeToString</vh></v>
+<v t="ekr.20091110090536.2091"><vh>p.moreHead</vh></v>
+<v t="ekr.20091110090536.2092"><vh>p.moreBody</vh></v>
+</v>
+<v t="ekr.20091110090536.2093"><vh>p.generators</vh>
+<v t="ekr.20091110090536.2094"><vh>p.children</vh></v>
+<v t="ekr.20091110090536.2095"><vh>p.following_siblings</vh></v>
+<v t="ekr.20091110090536.2096"><vh>p.nodes</vh></v>
+<v t="ekr.20091110090536.2097"><vh>p.parents</vh></v>
+<v t="ekr.20091110090536.2098"><vh>p.self_and_parents</vh></v>
+<v t="ekr.20091110090536.2099"><vh>p.self_and_siblings</vh></v>
+<v t="ekr.20091110090536.2100"><vh>p.self_and_subtree</vh></v>
+<v t="ekr.20091110090536.2101"><vh>p.subtree</vh></v>
+<v t="ekr.20091110090536.2102"><vh>p.unique_nodes</vh></v>
+<v t="ekr.20091110090536.2103"><vh>p.unique_subtree</vh></v>
+</v>
+<v t="ekr.20091110090536.2104"><vh>p.Moving, Inserting, Deleting, Cloning, Sorting</vh>
+<v t="ekr.20091110090536.2105"><vh>p.clone</vh></v>
+<v t="ekr.20091110090536.2106"><vh>p.copyTreeAfter, copyTreeTo</vh></v>
+<v t="ekr.20091110090536.2107"><vh>p.doDelete</vh></v>
+<v t="ekr.20091110090536.2108"><vh>p.insertAfter</vh></v>
+<v t="ekr.20091110090536.2109"><vh>p.insertAsLastChild</vh></v>
+<v t="ekr.20091110090536.2110"><vh>p.insertAsNthChild</vh></v>
+<v t="ekr.20091110090536.2111"><vh>p.invalidOutline</vh></v>
+<v t="ekr.20091110090536.2112"><vh>p.moveAfter</vh></v>
+<v t="ekr.20091110090536.2113"><vh>p.moveToFirst/LastChildOf</vh></v>
+<v t="ekr.20091110090536.2114"><vh>p.moveToNthChildOf</vh></v>
+<v t="ekr.20091110090536.2115"><vh>p.moveToRoot</vh></v>
+<v t="ekr.20091110090536.2116"><vh>p.validateOutlineWithParent</vh>
+<v t="ekr.20091110090536.2117"><vh>&lt;&lt; validate parent ivar &gt;&gt;</vh></v>
+<v t="ekr.20091110090536.2118"><vh>&lt;&lt; validate childIndex ivar &gt;&gt;</vh></v>
+<v t="ekr.20091110090536.2119"><vh>&lt;&lt; validate x ivar &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20091110090536.2120"><vh>p.moveToX</vh>
+<v t="ekr.20091110090536.2121"><vh>p.moveToBack</vh></v>
+<v t="ekr.20091110090536.2122"><vh>p.moveToFirstChild</vh></v>
+<v t="ekr.20091110090536.2123"><vh>p.moveToLastChild</vh></v>
+<v t="ekr.20091110090536.2124"><vh>p.moveToLastNode</vh></v>
+<v t="ekr.20091110090536.2125"><vh>p.moveToNext</vh></v>
+<v t="ekr.20091110090536.2126"><vh>p.moveToNodeAfterTree</vh></v>
+<v t="ekr.20091110090536.2127"><vh>p.moveToNthChild</vh></v>
+<v t="ekr.20091110090536.2128"><vh>p.moveToParent</vh></v>
+<v t="ekr.20091110090536.2129"><vh>p.moveToThreadBack</vh></v>
+<v t="ekr.20091110090536.2130"><vh>p.moveToThreadNext</vh></v>
+<v t="ekr.20091110090536.2131"><vh>p.moveToVisBack</vh>
+<v t="ekr.20091110090536.2132"><vh>checkVisBackLimit</vh></v>
+</v>
+<v t="ekr.20091110090536.2133"><vh>p.moveToVisNext</vh>
+<v t="ekr.20091110090536.2134"><vh>checkVisNextLimit</vh></v>
+</v>
+</v>
+<v t="ekr.20091110090536.2135"><vh>p.Low level methods</vh>
+<v t="ekr.20091110090536.2136"><vh>p._adjustPositionBeforeUnlink</vh>
+<v t="ekr.20091110090536.2137"><vh>@test p.adjustPositionBeforeUnlink</vh>
+<v t="ekr.20091110090536.2138"><vh>node 1</vh>
+<v t="ekr.20091110090536.2139"><vh>node 1-1</vh>
+<v t="ekr.20091110090536.2140"><vh>node 1-1-1</vh></v>
+<v t="ekr.20091110090536.2141"><vh>node 1-1-2</vh></v>
+</v>
+<v t="ekr.20091110090536.2142"><vh>node 1-2</vh>
+<v t="ekr.20091110090536.2143"><vh>node 1-2-1</vh></v>
+<v t="ekr.20091110090536.2144"><vh>node 1-2-2</vh></v>
+</v>
+</v>
+<v t="ekr.20091110090536.2145"><vh>node 2</vh>
+<v t="ekr.20091110090536.2146"><vh>node 2-1</vh>
+<v t="ekr.20091110090536.2147"><vh>node 2-1-1</vh></v>
+<v t="ekr.20091110090536.2148"><vh>node 2-1-2</vh></v>
+</v>
+<v t="ekr.20091110090536.2149"><vh>node 2-2</vh>
+<v t="ekr.20091110090536.2150"><vh>node 2-2-1</vh></v>
+<v t="ekr.20091110090536.2151"><vh>node 2-2-2</vh></v>
+</v>
+</v>
+<v t="ekr.20091110090536.2152"><vh>node 3</vh>
+<v t="ekr.20091110090536.2153"><vh>node 3-1</vh>
+<v t="ekr.20091110090536.2154"><vh>node 3-1-1</vh></v>
+<v t="ekr.20091110090536.2155"><vh>node 3-1-2</vh></v>
+</v>
+<v t="ekr.20091110090536.2156"><vh>node 3-2</vh>
+<v t="ekr.20091110090536.2157"><vh>node 3-2-1</vh></v>
+<v t="ekr.20091110090536.2158"><vh>node 3-2-2</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20091110090536.2159"><vh>p._linkAfter</vh></v>
+<v t="ekr.20091110090536.2160"><vh>p._linkAsNthChild</vh></v>
+<v t="ekr.20091110090536.2161"><vh>p._parentVnode</vh></v>
+<v t="ekr.20091110090536.2162"><vh>p._linkAsRoot</vh></v>
+<v t="ekr.20091110090536.2163"><vh>p._unlink</vh>
+<v t="ekr.20091110090536.2164"><vh>p.badUnlink</vh></v>
+</v>
+<v t="ekr.20091110090536.2165"><vh>p.makeCacheList</vh></v>
+</v>
+</v>
+<v t="ekr.20091110090536.2166"><vh>class poslist</vh>
+<v t="ekr.20091110090536.2167"><vh>select_h</vh></v>
+<v t="ekr.20091110090536.2168"><vh>select_b</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20091110090536.2172"><vh>2. Leo scripts</vh>
+<v t="ekr.20091110090536.2169"><vh>Scripts have full access to outlines</vh>
+<v t="ekr.20091110090536.2173"><vh>An example script</vh></v>
+</v>
+<v t="ekr.20091110090536.1731"><vh>Views *are* mathematical relations</vh></v>
+<v t="ekr.20091110090536.2174"><vh>The @x convention: headlines are metadata</vh>
+<v t="ekr.20091110090536.2189"><vh>Examples</vh>
+<v t="ekr.20091110090536.2186"><vh>@html Leo's home page</vh></v>
+<v t="ekr.20091110104908.2101"><vh>@url http://webpages.charter.net/edreamleo/front.html</vh></v>
+<v t="ekr.20091110090536.2181"><vh>@test add-tab-to-lines</vh>
+<v t="ekr.20091110090536.2182"><vh>work</vh></v>
+<v t="ekr.20091110090536.2183"><vh>before sel=2.0,5.6</vh></v>
+<v t="ekr.20091110090536.2184"><vh>after sel=2.0,5.10</vh></v>
+</v>
+<v t="ekr.20091110090536.2188"><vh>@button count-headline</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20091110090536.1651"><vh>Conclusions</vh>
+<v t="ekr.20091110104908.2102"><vh>@url http://webpages.charter.net/edreamleo/front.html</vh></v>
+</v>
+</v>
+<v t="ekr.20091107142231.6264"><vh>5-10 minutes: Managing an Open Source Project</vh>
+<v t="ekr.20091107142231.6265"><vh>Put your project first</vh></v>
+<v t="ekr.20091107142231.6267"><vh>Encourage others</vh></v>
+<v t="ekr.20091109103928.14983"><vh>Alway try for simplicity</vh></v>
+<v t="ekr.20091107142231.6268"><vh>Avoid politics</vh></v>
+<v t="ekr.20091110090536.1654"><vh>Spend 1/2 of your time communicating about your project</vh>
+<v t="ekr.20091110104908.2108"><vh>@url http://www.cs.virginia.edu/~robins/YouAndYourResearch.html</vh></v>
+</v>
+</v>
+<v t="ekr.20091110104908.2107"><vh>Questions</vh></v>
 </v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20060901142356">@nocolor
-
-This file contains several slideshows illustrating Leo's features.
-
-You control these slides shows using four buttons in the icon bar:
-
-- 'prev-show' (Alt-4) and 'next-show' (Alt-5) move backward and forward to the start of a slideshow.
-
-- 'prev-slide' (Alt-6) and 'next-slide' (Alt-7) move backward and forward to slides *within* a slideshow.
-
-Now press the 'next-show' button (or type Alt-5, or type Alt-x next-show)
-to take you to the first slideshow: 'Introduction to Leo'.</t>
 <t tx="ekr.20060901144149.2">c.k.simulateCommand('prev-slide-command')</t>
 <t tx="ekr.20060901144149.3">c.k.simulateCommand('next-slide-show-command')</t>
 <t tx="ekr.20060901144149.4">from PMIDI import * 
@@ -885,7 +1210,7 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20070315073704.3"></t>
 <t tx="ekr.20070315073704.4"></t>
 <t tx="ekr.20080129151123"></t>
-<t tx="ekr.20080129151228" str_leo_pos="2"></t>
+<t tx="ekr.20080129151228" str_leo_pos="3,1"></t>
 <t tx="ekr.20091103090815.1426"># To create a tab named 'Test' or make it visible if it already exists:
 log = c.frame.log
 log.selectTab('Test')
@@ -1328,18 +1653,3004 @@ databases and object-oriented databases.</t>
 os.system(r'python c:\leo.repo\trunk\leo\test\slide-show-file.py')</t>
 <t tx="ekr.20091107142231.6264">@language rest
 </t>
-<t tx="ekr.20091107142231.6265"></t>
-<t tx="ekr.20091107142231.6266">Be an adult.  It's not about how smart you are.Down</t>
-<t tx="ekr.20091107142231.6267"></t>
-<t tx="ekr.20091107142231.6268"></t>
-<t tx="ekr.20091107171305.1499">@language rest
+<t tx="ekr.20091107142231.6265">Be an adult:
 
-- Distill 15 years into 15 minutes.
+- Put yourself in the background.
+
+- It's not about how smark you are.
+
+- It's not about control.</t>
+<t tx="ekr.20091107142231.6267">You want people to have *better* ideas than yours.
+
+I didn't invent *any* of Leo's features.  I did expand some :-)
+
+Every Leo feature came from somewhere (or someone) else.</t>
+<t tx="ekr.20091107142231.6268"></t>
+<t tx="ekr.20091108172508.15988"></t>
+<t tx="ekr.20091109103928.1544"></t>
+<t tx="ekr.20091109103928.1545"></t>
+<t tx="ekr.20091109103928.1546">**Find somebody from UW.**</t>
+<t tx="ekr.20091109103928.14983">Others will, in their enthusiasm, likely want to add complexity via features.
+
+"Ed, you continue to push the envelope. The amazing thing is that the footprint
+isn't doubling every few months like it would be in another designer's hands."</t>
+<t tx="ekr.20091110090536.1604">**Nodes** contain **headlines** and **body text**.
 
 </t>
-<t tx="ekr.20091107171305.1500"></t>
-<t tx="ekr.20091107171305.1503"></t>
-<t tx="ekr.20091107171305.1522">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+<t tx="ekr.20091110090536.1635">@nocolor-node
+
+Email Erbach:
+    
+What equipment do I need:
+    
+Python installed.
+Leo installed.
+Internet connection, if possible.
+
+Date I'll arrive.
+
+Description of talk:
+    
+Leo is a successful open-source project. Leo is a an unusual programmer's
+editor, a powerful scripting environment and a data management environment.
+    
+Edward Ream, the creator of Leo, will say a few words about Leo and invite
+listeners to give Leo a closer look.  For more information, google edreamleo.
+
+Edward will also say a few words about what it takes to manage an open source
+project successfully.</t>
+<t tx="ekr.20091110090536.1636">@language rest
+
+I've been a programmer for 35+ years.
+
+I've been working on Leo for 15+ years.
+
+Leo is a open-source programming and data management tool.
+
+This talk invites you to give Leo a closer look.
+
+For more information, google edreamleo.</t>
+<t tx="ekr.20091110090536.1640">- Write computer programs.
+
+- Manage web sites.
+
+- Write documentation.</t>
+<t tx="ekr.20091110090536.1641"></t>
+<t tx="ekr.20091110090536.1642"></t>
+<t tx="ekr.20091110090536.1643">- All of Leo's documentation is a Leo outline.</t>
+<t tx="ekr.20091110090536.1644"></t>
+<t tx="ekr.20091110090536.1645"></t>
+<t tx="ekr.20091110090536.1651">You can do things with Leo that you can't even *think* in other programs.
+
+Some of the world's great programmers use Leo.
+
+Many people use Leo *with* vim, emacs or ipython. Leo plays well with others.
+
+The purpose of this talk was to invite you to give Leo a closer look.
+It will take 1 or 2 hours to read to "get" Leo.
+
+I hope I have convinced you that this *might* be time well spent.
+
+For more details, google edreamleo.</t>
+<t tx="ekr.20091110090536.1654">google: "you and your research" by Richard Hamming.
+
+</t>
+<t tx="ekr.20091110090536.1674">People get excited about Leo.</t>
+<t tx="ekr.20091110090536.1677">"The most amazing software since the invention of the spreadsheet."
+
+"A breakthrough tool and a whole new way of writing code."
+
+"Utterly changed my view of programming (indeed of writing) forever."
+</t>
+<t tx="ekr.20091110090536.1679">"They'll have to pry Leo out of my cold, dead fingers!"
+
+"I have been absolutely seduced by Leo over the past few days...I can not put it
+down."
+
+"There is almost an addictive withdrawal effect when I can complete an operation
+in so much less time with Leo &amp; python than I had become used to."</t>
+<t tx="ekr.20091110090536.1681">"Word outlines are very useful. But Leo makes Word look like a clunky toy."
+
+"Leo is *exactly* the kind of outliner I was looking for."
+
+"Cloning is pure genius."
+
+</t>
+<t tx="ekr.20091110090536.1684">"I've already started converting the IT Procedures manual from Open Office to
+Leo...the possibility of keeping system maintenance scripts in the IT manual is
+mind boggling."
+
+"Leo is the best outliner I have yet encountered for writing the early stages of
+academic papers."
+</t>
+<t tx="ekr.20091110090536.1685">"Leo allows the designer to reveal and discipline structure at many
+layers simultaneously: data structures, object structure, entity-relationship
+structure, client-server structure, design pattern structure, temporal
+structure, project management structure, and any other structure relevant to the
+system."
+
+"When I 'Leo-ise' other people's code, Leo makes the code's structure so
+transparent that design faults become very quickly apparent."</t>
+<t tx="ekr.20091110090536.1693">"Your current trajectory puts you on track to kick Emacs into the dustbin of
+computing history."
+
+"People complain about the lack of a project manager for [Python]. Leo clearly
+solves that problem and in a way that commercial tools can't touch."
+</t>
+<t tx="ekr.20091110090536.1694">"Leo is the best URL bookmark manager there is.
+
+"I use Leo to organize my lists of pictures."
+</t>
+<t tx="ekr.20091110090536.1695">This sections gives *hints* about how Leo works, and how the quotes given above
+might be true. For details, see Leo's web site.
+
+Leo outlines are special.
+
+Leo scripts are special.
+
+The combination of Leo outlines and Leo scripts is even more special.
+
+In Leo, **outline structure is real data that is available to scripts.**</t>
+<t tx="ekr.20091110090536.1696"></t>
+<t tx="ekr.20091110090536.1697"></t>
+<t tx="ekr.20091110090536.1698"></t>
+<t tx="ekr.20091110090536.1699"></t>
+<t tx="ekr.20091110090536.1700"></t>
+<t tx="ekr.20091110090536.1701"></t>
+<t tx="ekr.20091110090536.1702"></t>
+<t tx="ekr.20091110090536.1716"></t>
+<t tx="ekr.20091110090536.1717">def selectVisNext (self,event=None):
+
+    '''Select the visible node following the presently selected node.'''
+
+    c = self ; p = c.p
+    if not p: return
+    if not c.canSelectVisNext(): return
+
+    p.moveToVisNext(c)
+    c.treeSelectHelper(p)
+</t>
+<t tx="ekr.20091110090536.1718"># This has an up arrow for a control key.
+
+def selectVisBack (self,event=None):
+
+    '''Select the visible node preceding the presently selected node.'''
+
+    c = self ; p = c.p
+    if not p: return
+    if not c.canSelectVisBack(): return
+
+    p.moveToVisBack(c)
+
+    # g.trace(p.h)
+    c.treeSelectHelper(p)
+</t>
+<t tx="ekr.20091110090536.1719">def goToParent (self,event=None):
+
+    '''Select the parent of the selected node.'''
+
+    c = self ; p = c.p
+
+    # g.trace(p.parent())
+
+    c.treeSelectHelper(p and p.parent())
+</t>
+<t tx="ekr.20091110090536.1720">def contractNodeOrGoToParent (self,event=None):
+
+    """Simulate the left Arrow Key in folder of Windows Explorer."""
+
+    trace = False and not g.unitTesting
+    c = self ; p = c.p
+    redraw = False ; fullRedraw = False
+    if p.hasChildren() and p.isExpanded():
+        if trace: g.trace('contract',p.h)
+        c.contractNode()
+        redraw = True # New in one-node world.
+    elif p.hasParent() and p.parent().isVisible(c):
+        redraw = False
+        p.contract() # Make sure we know this node is contracted.
+        # This "feature" is dubious.
+        # To work properly, it requires a full redraw.
+        if False: # self.sparse_goto_parent:
+            for child in p.self_and_siblings():
+                if child != p and child.isExpanded():
+                    child.contract()
+                    redraw = True ; fullRedraw = True
+        if trace: g.trace('goto parent',p.h)
+        c.goToParent()
+
+    if redraw:
+        if fullRedraw or p.isCloned():
+            if trace: g.trace('full redraw',p.h)
+            c.redraw()
+        else:
+            c.redraw_after_contract(p=p,setFocus=True)
+</t>
+<t tx="ekr.20091110090536.1721">def expandNodeAndGoToFirstChild (self,event=None):
+
+    """If a node has children, expand it if needed and go to the first child."""
+
+    trace = False and not g.unitTesting
+    c = self ; p = c.p
+
+    # New code.
+    if p.hasChildren():
+        if p.isExpanded():
+            p.moveToFirstChild()
+            if trace: g.trace('select',p.h)
+            c.selectPosition(p)
+        else:
+            if trace: g.trace('expand',p.h)
+            c.expandNode() # Calls redraw_after_expand.
+    elif p.hasNext():
+        c.goToNextSibling()
+    else:
+        while p.hasParent():
+            p.moveToParent()
+            if p.hasNext():
+                p.moveToNext()
+                break
+        c.selectPosition(p)
+    c.treeFocusHelper()
+
+def expandNodeOrGoToFirstChild (self,event=None):
+
+    """Simulate the Right Arrow Key in folder of Windows Explorer."""
+
+    c = self ; p = c.p
+    if p.hasChildren():
+        if not p.isExpanded():
+            c.expandNode() # Calls redraw_after_expand.
+        else:
+            c.redraw_after_expand(p.firstChild(),setFocus=True)
+</t>
+<t tx="ekr.20091110090536.1722">def contractNode (self,event=None):
+
+    '''Contract the presently selected node.'''
+
+    c = self ; p = c.p
+
+    p.contract()
+
+    if p.isCloned():
+        c.redraw() # A full redraw is necessary to handle clones.
+    else:
+        c.redraw_after_contract(p=p,setFocus=True)
+</t>
+<t tx="ekr.20091110090536.1723">def expandNode (self,event=None):
+
+    '''Expand the presently selected node.'''
+
+    trace = False and not g.unitTesting
+    c = self ; p = c.p
+
+    p.expand()
+
+    if p.isCloned():
+        if trace: g.trace('***redraw')
+        c.redraw() # Bug fix: 2009/10/03.
+    else:
+        c.redraw_after_expand(p,setFocus=True)
+
+</t>
+<t tx="ekr.20091110090536.1724">def treeSelectHelper (self,p):
+
+    c = self
+
+    if not p: p = c.p
+
+    if p:
+        # Do not call expandAllAncestors here.
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+
+    c.treeFocusHelper()
+</t>
+<t tx="ekr.20091110090536.1725">def moveToVisBack (self,c):
+
+    """Move a position to the position of the previous visible node."""
+
+    trace = False and not g.unitTesting
+    verbose = True
+    p = self ; limit,limitIsVisible = c.visLimit()
+    if trace and verbose:
+        g.trace(p,'limit',limit,'limitIsVisible',limitIsVisible)
+    if trace: g.trace('***entry','parent',p.parent(),'p',p,g.callers(5))
+    while p:
+        # Short-circuit if possible.
+        back = p.back()
+        if trace: g.trace(
+            'back',back,'hasChildren',bool(back and back.hasChildren()),
+            'isExpanded',bool(back and back.isExpanded()))
+
+        if back and back.hasChildren() and back.isExpanded():
+            p.moveToThreadBack()
+        elif back:
+            p.moveToBack()
+        else:
+            p.moveToParent() # Same as p.moveToThreadBack()
+        # if back and (not back.hasChildren() or not back.isExpanded()):
+            # p.moveToBack()
+        # else:
+            # p.moveToThreadBack()
+        if trace: g.trace(p.parent(),p)
+        if p:
+            if trace and verbose: g.trace('**p',p)
+            done,val = self.checkVisBackLimit(limit,limitIsVisible,p)
+            if done:
+                if trace and verbose: g.trace('done',p)
+                return val
+            if p.isVisible(c):
+                if trace and verbose: g.trace('isVisible',p)
+                return p
+    else:
+        # assert not p.
+        return p
+</t>
+<t tx="ekr.20091110090536.1726">def checkVisBackLimit (self,limit,limitIsVisible,p):
+
+    '''Return done, return-val'''
+
+    trace = True and not g.unitTesting
+    c = p.v.context
+
+    if limit:
+        if limit == p:
+            if trace: g.trace('at limit',p)
+            if limitIsVisible and p.isVisible(c):
+                return True,p
+            else:
+                return True,None
+            #return True,g.choose(limitIsVisible and p.isVisible(c),p,None)
+        elif limit.isAncestorOf(p):
+            return False,None
+        else:
+            if trace: g.trace('outside limit tree',limit,p)
+            return True,None
+    else:
+        return False,None
+</t>
+<t tx="ekr.20091110090536.1727">def moveToVisNext (self,c):
+
+    """Move a position to the position of the next visible node."""
+
+    trace = False and not g.unitTesting
+    verbose = False
+    p = self ; limit,limitIsVisible = c.visLimit()
+    while p:
+        if trace: g.trace('1',p.h)
+        # if trace: g.trace('hasChildren %s, isExpanded %s %s' % (
+            # p.hasChildren(),p.isExpanded(),p.h))
+        # Short-circuit if possible.
+        if p.hasNext() and p.hasChildren() and p.isExpanded():
+            p.moveToFirstChild()
+        elif p.hasNext():
+            p.moveToNext()
+        else:
+            p.moveToThreadNext()
+        # if p.hasNext() and (not p.hasChildren() or not p.isExpanded()):
+            # p.moveToNext()
+        # else:
+            # p.moveToThreadNext()
+        if trace: g.trace('2',p.h)
+        if p:
+            done,val = self.checkVisNextLimit(limit,p)
+            if done: return val
+            if p.isVisible(c):
+                return p.copy()
+    else:
+        # assert not p.
+        return p
+</t>
+<t tx="ekr.20091110090536.1728">def checkVisNextLimit (self,limit,p):
+
+    '''Return done, return-val'''
+
+    trace = False and not g.unitTesting
+
+    if limit:
+        # Unlike moveToVisBack, being at the limit does not terminate.
+        if limit == p:
+            return False, None
+        elif limit.isAncestorOf(p):
+            return False,None
+        else:
+            if trace: g.trace('outside limit tree')
+            return True,None
+    else:
+        return False,None
+</t>
+<t tx="ekr.20091110090536.1729"></t>
+<t tx="ekr.20091110090536.1730">@language python</t>
+<t tx="ekr.20091110090536.1731">Proof:
+
+- Relations are tuples, as are Leo views.
+- Because of clones, a Leo view can contain any other node.
+
+QED.</t>
+<t tx="ekr.20091110090536.1732"></t>
+<t tx="ekr.20091110090536.1951">@language python
+@tabwidth -4
+@pagewidth 80
+
+use_zodb = False
+
+&lt;&lt; imports &gt;&gt;
+
+@others</t>
+<t tx="ekr.20091110090536.1952">if use_zodb:
+    # It may be important to import ZODB first.
+    try:
+        import ZODB
+        import ZODB.FileStorage
+    except ImportError:
+        ZODB = None
+else:
+    ZODB = None
+
+import leo.core.leoGlobals as g
+
+if g.app and g.app.use_psyco:
+    # g.pr("enabled psyco classes",__file__)
+    try: from psyco.classes import *
+    except ImportError: pass
+
+import time
+import re
+import itertools</t>
+<t tx="ekr.20091110090536.1953">if use_zodb and ZODB:
+    class baseVnode (ZODB.Persistence.Persistent):
+        pass
+else:
+    class baseVnode (object):
+        pass
+
+class vnode (baseVnode):
+    &lt;&lt; vnode constants &gt;&gt;
+    @others</t>
+<t tx="ekr.20091110090536.1954"># Define the meaning of status bits in new vnodes.
+
+# Archived...
+clonedBit   = 0x01 # True: vnode has clone mark.
+# unused      0x02
+expandedBit = 0x04 # True: vnode is expanded.
+markedBit   = 0x08 # True: vnode is marked
+orphanBit   = 0x10 # True: vnode saved in .leo file, not derived file.
+selectedBit = 0x20 # True: vnode is current vnode.
+topBit      = 0x40 # True: vnode was top vnode when saved.
+
+# Not archived...
+richTextBit = 0x080 # Determines whether we use &lt;bt&gt; or &lt;btr&gt; tags.
+visitedBit  = 0x100
+dirtyBit    = 0x200
+writeBit    = 0x400
+</t>
+<t tx="ekr.20091110090536.1955"></t>
+<t tx="ekr.20091110090536.1956"># To support ZODB, the code must set v._p_changed = 1 whenever
+# v.unknownAttributes or any mutable vnode object changes.
+
+def __init__ (self,context):
+
+    # The primary data: headline and body text.
+    if g.isPython3:
+        self._headString = 'newHeadline'
+        self._bodyString = ''
+    else:
+        self._headString = unicode('newHeadline')
+        self._bodyString = unicode('')
+
+    # Structure data...
+    self.children = [] # Ordered list of all children of this node.
+    self.parents = [] # Unordered list of all parents of this node.
+
+    # Other essential data...
+    self.fileIndex = g.app.nodeIndices.getNewIndex()
+        # The immutable file index for this vnode.
+        # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
+    self.iconVal = 0 # The present value of the node's icon.
+    self.statusBits = 0 # status bits
+
+    # v.t no longer exists.  All code must now be aware of the one-node world.
+    # self.t = self # For compatibility with scripts and plugins.
+
+    # Information that is never written to any file...
+    self.context = context # The context containing context.hiddenRootNode.
+        # Required so we can compute top-level siblings.
+        # It is named .context rather than .c to emphasize its limited usage.
+    self.insertSpot = None # Location of previous insert point.
+    self.scrollBarSpot = None # Previous value of scrollbar position.
+    self.selectionLength = 0 # The length of the selected body text.
+    self.selectionStart = 0 # The start of the selected body text.
+</t>
+<t tx="ekr.20091110090536.1957">def __repr__ (self):
+
+    return "&lt;vnode %d:'%s'&gt;" % (id(self),self.cleanHeadString())
+
+__str__ = __repr__
+</t>
+<t tx="ekr.20091110090536.1958">def dumpLink (self,link):
+    return g.choose(link,link,"&lt;none&gt;")
+
+def dump (self,label=""):
+
+    v = self
+    print('%s %s %s' % ('-'*10,label,v))
+    print('len(parents) %s' % len(v.parents))
+    print('len(children) %s' % len(v.children))
+    print('parents %s' % g.listToString(v.parents))
+    print('children%s' % g.listToString(v.children))
+</t>
+<t tx="ekr.20091110090536.1959">if use_zodb and ZODB:
+    def __hash__(self):
+        return self.__hash__()</t>
+<t tx="ekr.20091110090536.1960"></t>
+<t tx="ekr.20091110090536.1961">def findAtFileName (self,names,h=''):
+
+    """Return the name following one of the names in nameList.
+    Return an empty string."""
+
+    # Allow h argument for unit testing.
+    if not h: h = self.headString()
+
+    if not g.match(h,0,'@'):
+        return ""
+
+    i = g.skip_id(h,1,'-')
+    word = h[:i]
+    if word in names and g.match_word(h,0,word):
+        name = h[i:].strip()
+        # g.trace(repr(word),repr(name))
+        return name
+    else:
+        return ""
+</t>
+<t tx="ekr.20091110090536.1962">def anyAtFileNodeName (self):
+
+    """Return the file name following an @file node or an empty string."""
+
+    names = (
+        "@auto",
+        "@auto-rst",
+        "@edit",
+        "@file",
+        "@thin",   "@file-thin",   "@thinfile",
+        "@asis",   "@file-asis",   "@silentfile",
+        "@noref",  "@file-noref",  "@rawfile",
+        "@nosent", "@file-nosent", "@nosentinelsfile",
+        "@shadow",)
+
+    return self.findAtFileName(names)
+</t>
+<t tx="ekr.20091110090536.1963"># These return the filename following @xxx, in v.headString.
+# Return the the empty string if v is not an @xxx node.
+
+def atAutoNodeName (self,h=None):
+    # # Prevent conflicts with autotrees plugin: don't allow @auto-whatever to match.
+    # return g.match_word(h,0,tag) and not g.match(h,0,tag+'-') and h[len(tag):].strip()
+    names = ("@auto","@auto-rst",)
+    return self.findAtFileName(names,h=h)
+
+def atAutoRstNodeName (self,h=None):
+    names = ("@auto-rst",)
+    return self.findAtFileName(names,h=h)
+
+def atEditNodeName (self):
+    names = ("@edit",)
+    return self.findAtFileName(names)
+
+def atFileNodeName (self):
+    names = ("@file",)
+    return self.findAtFileName(names)
+
+def atNoSentinelsFileNodeName (self):
+    names = ("@nosent", "@file-nosent", "@nosentinelsfile")
+    return self.findAtFileName(names)
+
+def atRawFileNodeName (self):
+    names = ("@noref", "@file-noref", "@rawfile")
+    return self.findAtFileName(names)
+
+def atShadowFileNodeName (self):
+    names = ("@shadow",)
+    return self.findAtFileName(names)
+
+def atSilentFileNodeName (self):
+    names = ("@asis", "@file-asis", "@silentfile")
+    return self.findAtFileName(names)
+
+def atThinFileNodeName (self):
+    names = ("@thin", "@file-thin", "@thinfile")
+    return self.findAtFileName(names)
+
+# New names, less confusing
+atNoSentFileNodeName  = atNoSentinelsFileNodeName
+atNorefFileNodeName   = atRawFileNodeName
+atAsisFileNodeName    = atSilentFileNodeName
+</t>
+<t tx="ekr.20091110090536.1964">if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    table = (
+        ('@auto-rst rst-file','rst-file','rst-file'),
+        ('@auto x','x',''),
+        ('xyz','',''),
+    )
+
+    for s,expected1,expected2 in table:
+        result1 = p.v.atAutoNodeName(h=s)
+        result2 = p.v.atAutoRstNodeName(h=s)
+        assert result1 == expected1,'fail1: given %s expected %s got %s' % (
+            repr(s),repr(expected1),repr(result1))
+        assert result2 == expected2,'fail2: given %s expected %s got %s' % (
+            repr(s),repr(expected2),repr(result2))
+</t>
+<t tx="ekr.20091110090536.1965">def isAtAllNode (self):
+
+    """Returns True if the receiver contains @others in its body at the start of a line."""
+
+    flag, i = g.is_special(self._bodyString,0,"@all")
+    return flag
+</t>
+<t tx="ekr.20091110090536.1966">def isAnyAtFileNode (self):
+
+    """Return True if v is any kind of @file or related node."""
+
+    # This routine should be as fast as possible.
+    # It is called once for every vnode when writing a file.
+
+    h = self.headString()
+    return h and h[0] == '@' and self.anyAtFileNodeName()
+</t>
+<t tx="ekr.20091110090536.1967">def isAtAutoNode (self):
+    return g.choose(self.atAutoNodeName(),True,False)
+
+def isAtAutoRstNode (self):
+    return g.choose(self.atAutoRstNodeName(),True,False)
+
+def isAtEditNode (self):
+    return g.choose(self.atEditNodeName(),True,False)
+
+def isAtFileNode (self):
+    return g.choose(self.atFileNodeName(),True,False)
+
+def isAtNoSentinelsFileNode (self):
+    return g.choose(self.atNoSentinelsFileNodeName(),True,False)
+
+def isAtRawFileNode (self): # @file-noref
+    return g.choose(self.atRawFileNodeName(),True,False)
+
+def isAtSilentFileNode (self): # @file-asis
+    return g.choose(self.atSilentFileNodeName(),True,False)
+
+def isAtShadowFileNode (self):
+    return g.choose(self.atShadowFileNodeName(),True,False)
+
+def isAtThinFileNode (self):
+    return g.choose(self.atThinFileNodeName(),True,False)
+
+# New names, less confusing:
+isAtNoSentFileNode = isAtNoSentinelsFileNode
+isAtNorefFileNode  = isAtRawFileNode
+isAtAsisFileNode   = isAtSilentFileNode
+</t>
+<t tx="ekr.20091110090536.1968">def isAtIgnoreNode (self):
+
+    """Returns True if the receiver contains @ignore in its body at the start of a line."""
+
+    flag, i = g.is_special(self._bodyString, 0, "@ignore")
+    return flag
+</t>
+<t tx="ekr.20091110090536.1969">def isAtOthersNode (self):
+
+    """Returns True if the receiver contains @others in its body at the start of a line."""
+
+    flag, i = g.is_special(self._bodyString,0,"@others")
+    return flag
+</t>
+<t tx="ekr.20091110090536.1970">def matchHeadline (self,pattern):
+
+    """Returns True if the headline matches the pattern ignoring whitespace and case.
+
+    The headline may contain characters following the successfully matched pattern."""
+
+    v = self
+
+    h = g.toUnicode(v.headString(),'utf-8')
+    h = h.lower().replace(' ','').replace('\t','')
+
+    pattern = g.toUnicode(pattern,'utf-8')
+    pattern = pattern.lower().replace(' ','').replace('\t','')
+
+    return h.startswith(pattern)
+</t>
+<t tx="ekr.20091110090536.1971"></t>
+<t tx="ekr.20091110090536.1972">def bodyString (self):
+
+    # This message should never be printed and we want to avoid crashing here!
+    if not g.isUnicode(self._bodyString):
+        s = "v.bodyString: Leo internal error: not unicode:" + repr(self._bodyString)
+        g.es_print('',s,color="red")
+
+    # Make _sure_ we return a unicode string.
+    return g.toUnicode(self._bodyString,g.app.tkEncoding)
+
+getBody = bodyString</t>
+<t tx="ekr.20091110090536.1973"></t>
+<t tx="ekr.20091110090536.1974">def firstChild (self):
+
+    v = self
+    return v.children and v.children[0]
+</t>
+<t tx="ekr.20091110090536.1975">def hasChildren (self):
+
+    v = self
+    return len(v.children) &gt; 0
+
+hasFirstChild = hasChildren
+</t>
+<t tx="ekr.20091110090536.1976">def lastChild (self):
+
+    v = self
+    return v.children and v.children[-1] or None
+</t>
+<t tx="ekr.20091110090536.1977"># childIndex and nthChild are zero-based.
+
+def nthChild (self, n):
+
+    v = self
+
+    if 0 &lt;= n &lt; len(v.children):
+        return v.children[n]
+    else:
+        return None
+</t>
+<t tx="ekr.20091110090536.1978">def numberOfChildren (self):
+
+    v = self
+    return len(v.children)
+</t>
+<t tx="ekr.20091110090536.1979">def directParents (self):
+
+    """(New in 4.2) Return a list of all direct parent vnodes of a vnode.
+
+    This is NOT the same as the list of ancestors of the vnode."""
+
+    v = self
+    return v.parents
+</t>
+<t tx="ekr.20091110090536.1980">def hasBody (self):
+
+    '''Return True if this vnode contains body text.'''
+
+    s = self._bodyString
+
+    return s and len(s) &gt; 0
+</t>
+<t tx="ekr.20091110090536.1981">def headString (self):
+
+    """Return the headline string."""
+
+    # This message should never be printed and we want to avoid crashing here!
+    if not g.isUnicode(self._headString):
+        s = "Leo internal error: not unicode:" + repr(self._headString)
+        g.es_print('',s,color="red")
+
+    # Make _sure_ we return a unicode string.
+    return g.toUnicode(self._headString,g.app.tkEncoding)
+
+def cleanHeadString (self):
+
+    s = self._headString
+    return g.toEncodedString(s,"ascii") # Replaces non-ascii characters by '?'
+</t>
+<t tx="ekr.20091110090536.1982"></t>
+<t tx="ekr.20091110090536.1983">def isCloned (self):
+
+    return len(self.parents) &gt; 1
+</t>
+<t tx="ekr.20091110090536.1984">def isDirty (self):
+
+    return (self.statusBits &amp; self.dirtyBit) != 0
+</t>
+<t tx="ekr.20091110090536.1985">def isExpanded (self):
+
+    # g.trace( ( self.statusBits &amp; self.expandedBit ) != 0, g.callers())
+
+    return ( self.statusBits &amp; self.expandedBit ) != 0
+</t>
+<t tx="ekr.20091110090536.1986">def isMarked (self):
+
+    return ( self.statusBits &amp; vnode.markedBit ) != 0
+</t>
+<t tx="ekr.20091110090536.1987">def isOrphan (self):
+
+    return ( self.statusBits &amp; vnode.orphanBit ) != 0
+</t>
+<t tx="ekr.20091110090536.1988">def isSelected (self):
+
+    return ( self.statusBits &amp; vnode.selectedBit ) != 0
+</t>
+<t tx="ekr.20091110090536.1989">def isTopBitSet (self):
+
+    return ( self.statusBits &amp; self.topBit ) != 0
+</t>
+<t tx="ekr.20091110090536.1990">def isVisited (self):
+
+    return ( self.statusBits &amp; vnode.visitedBit ) != 0
+</t>
+<t tx="ekr.20091110090536.1991">def isWriteBit (self):
+
+    v = self
+    return (v.statusBits &amp; v.writeBit) != 0
+</t>
+<t tx="ekr.20091110090536.1992">def status (self):
+
+    return self.statusBits
+</t>
+<t tx="ekr.20091110090536.1993"></t>
+<t tx="ekr.20091110090536.1994"></t>
+<t tx="ekr.20091110090536.1995">def clearDirty (self):
+    v = self
+    v.statusBits &amp;= ~ v.dirtyBit
+
+</t>
+<t tx="ekr.20091110090536.1996">def findAllPotentiallyDirtyNodes(self):
+
+    trace = False and not g.unitTesting
+    v = self ; c = v.context
+
+    # Set the starting nodes.
+    nodes = []
+    newNodes = [v]
+
+    # Add nodes until no more are added.
+    while newNodes:
+        addedNodes = []
+        nodes.extend(newNodes)
+        for v in newNodes:
+            for v2 in v.parents:
+                if v2 not in nodes and v2 not in addedNodes:
+                    addedNodes.append(v2)
+        newNodes = addedNodes[:]
+
+    # Remove the hidden vnode.
+    if c.hiddenRootNode in nodes:
+        if trace: g.trace('removing hidden root',c.hiddenRootNode)
+        nodes.remove(c.hiddenRootNode)
+
+    if trace: g.trace(nodes)
+    return nodes</t>
+<t tx="ekr.20091110090536.1997"># Unlike p.setAllAncestorAtFileNodesDirty,
+# there is no setDescendentsDirty arg.
+
+def setAllAncestorAtFileNodesDirty (self):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    v = self
+    dirtyVnodeList = []
+
+    # Calculate all nodes that are joined to p or parents of such nodes.
+    nodes = v.findAllPotentiallyDirtyNodes()
+
+    if trace and verbose:
+        for v in nodes:
+            print v.isDirty(),v.isAnyAtFileNode(),v
+
+    dirtyVnodeList = [v for v in nodes
+        if not v.isDirty() and v.isAnyAtFileNode()]
+
+    changed = len(dirtyVnodeList) &gt; 0
+
+    for v in dirtyVnodeList:
+        v.setDirty() # Do not call v.setDirty here!
+
+    if trace: g.trace("vnode",dirtyVnodeList)
+
+    return dirtyVnodeList
+</t>
+<t tx="ekr.20091110090536.1998">def setDirty (self):
+
+    self.statusBits |= self.dirtyBit
+</t>
+<t tx="ekr.20091110090536.1999"></t>
+<t tx="ekr.20091110090536.2000">def clearClonedBit (self):
+
+    self.statusBits &amp;= ~ self.clonedBit
+</t>
+<t tx="ekr.20091110090536.2001">def clearMarked (self):
+
+    self.statusBits &amp;= ~ self.markedBit
+</t>
+<t tx="ekr.20091110090536.2002">def clearWriteBit (self):
+    self.statusBits &amp;= ~ self.writeBit
+</t>
+<t tx="ekr.20091110090536.2003">def clearOrphan (self):
+
+    self.statusBits &amp;= ~ self.orphanBit
+</t>
+<t tx="ekr.20091110090536.2004">def clearVisited (self):
+
+    self.statusBits &amp;= ~ self.visitedBit
+</t>
+<t tx="ekr.20091110090536.2005">def contract(self):
+
+    # if self.context.p.v == self: g.trace(self,g.callers(4))
+
+    self.statusBits &amp;= ~ self.expandedBit
+
+def expand(self):
+
+    # g.trace(self,g.callers(4))
+
+    self.statusBits |= self.expandedBit
+
+def initExpandedBit (self):
+
+    # g.trace(self._headString)
+
+    self.statusBits |= self.expandedBit
+</t>
+<t tx="ekr.20091110090536.2006">def initStatus (self, status):
+
+    self.statusBits = status
+</t>
+<t tx="ekr.20091110090536.2007">def setClonedBit (self):
+
+    self.statusBits |= self.clonedBit
+
+def initClonedBit (self, val):
+
+    if val:
+        self.statusBits |= self.clonedBit
+    else:
+        self.statusBits &amp;= ~ self.clonedBit
+</t>
+<t tx="ekr.20091110090536.2008">def setMarked (self):
+
+    self.statusBits |= self.markedBit
+
+def initMarkedBit (self):
+
+    self.statusBits |= self.markedBit
+</t>
+<t tx="ekr.20091110090536.2009">def setOrphan (self):
+
+    self.statusBits |= self.orphanBit
+</t>
+<t tx="ekr.20091110090536.2010"># This only sets the selected bit.
+
+def setSelected (self):
+
+    self.statusBits |= self.selectedBit
+</t>
+<t tx="ekr.20091110090536.2011"># Compatibility routine for scripts
+
+def setVisited (self):
+
+    self.statusBits |= self.visitedBit
+</t>
+<t tx="ekr.20091110090536.2012">def setWriteBit (self):
+    self.statusBits |= self.writeBit
+</t>
+<t tx="ekr.20091110090536.2013">def setBodyString (self,s,encoding="utf-8"):
+
+    trace = False and not g.unitTesting
+    v = self
+    if trace and v._bodyString != s:
+        g.trace('v %s %s -&gt; %s %s\nold: %s\nnew: %s' % (
+            v.h, len(v._bodyString),len(s),g.callers(5),
+            v._bodyString,s))
+    v._bodyString = g.toUnicode(s,encoding,reportErrors=True)
+
+def setHeadString (self,s,encoding="utf-8"):
+    v = self
+    v._headString = g.toUnicode(s,encoding,reportErrors=True)
+
+initBodyString = setBodyString
+initHeadString = setHeadString
+setHeadText = setHeadString
+setTnodeText = setBodyString
+</t>
+<t tx="ekr.20091110090536.2014">def setFileIndex (self, index):
+
+    self.fileIndex = index
+</t>
+<t tx="ekr.20091110090536.2015">def computeIcon (self):
+
+    val = 0 ; v = self
+    if v.hasBody(): val += 1
+    if v.isMarked(): val += 2
+    if v.isCloned(): val += 4
+    if v.isDirty(): val += 8
+    return val
+
+def setIcon (self):
+
+    pass # Compatibility routine for old scripts
+</t>
+<t tx="ekr.20091110090536.2016">def setSelection (self, start, length):
+
+    v = self
+    v.selectionStart = start
+    v.selectionLength = length
+</t>
+<t tx="ekr.20091110090536.2017"></t>
+<t tx="ekr.20091110090536.2018">def _addLink (self,childIndex,parent_v,adjust=True):
+    '''Adjust links after adding a link to v.'''
+
+    trace = False and not g.unitTesting
+    v = self
+
+    # Update parent_v.children &amp; v.parents.
+    parent_v.children.insert(childIndex,v)
+    v.parents.append(parent_v)
+    if trace: g.trace('*** added parent',parent_v,'to',v,
+        'len(parents)',len(v.parents))
+
+    # Set zodb changed flags.
+    v._p_changed = 1
+    parent_v._p_changed = 1
+
+    # If v has only one parent, we adjust all
+    # the parents links in the descendant tree.
+    # This handles clones properly when undoing a delete.
+    if adjust:
+        if len(v.parents) == 1:
+            for child in v.children:
+                child._addParentLinks(parent=v)
+</t>
+<t tx="ekr.20091110090536.2019">def _addParentLinks(self,parent): 
+
+    trace = False and not g.unitTesting
+    v = self
+
+    v.parents.append(parent)
+    if trace: g.trace(
+        '*** added parent',parent,'to',v,'len(parents)',len(v.parents))
+
+    if len(v.parents) == 1:
+        for child in v.children:
+            child._addParentLinks(parent=v)</t>
+<t tx="ekr.20091110090536.2020">def _cutLink (self,childIndex,parent_v):
+    '''Adjust links after cutting a link to v.'''
+    v = self
+
+    assert parent_v.children[childIndex]==v
+    del parent_v.children[childIndex]
+    v.parents.remove(parent_v)
+    v._p_changed = 1
+    parent_v._p_changed = 1
+
+    # If v has no more parents, we adjust all
+    # the parent links in the descendant tree.
+    # This handles clones properly when deleting a tree.
+    if len(v.parents) == 0:
+        for child in v.children:
+            child._cutParentLinks(parent=v)</t>
+<t tx="ekr.20091110090536.2021">def _cutParentLinks(self,parent):
+
+    trace = False and not g.unitTesting
+    v = self
+
+    if trace: g.trace('parent',parent,'v',v)
+    v.parents.remove(parent)
+
+    if len(v.parents) == 0:
+        for child in v.children:
+            child._cutParentLinks(parent=v)
+</t>
+<t tx="ekr.20091110090536.2022">def _linkAsNthChild (self,parent_v,n):
+
+    """Links self as the n'th child of vnode pv"""
+
+    v = self # The child node.
+    v._addLink(n,parent_v)
+</t>
+<t tx="ekr.20091110090536.2023">def createOutlineFromCacheList(self,c,aList):
+    """ Create outline structure from recursive aList
+    built by p.makeCacheList.
+
+    Clones will be automatically created by gnx,
+    but *not* for the top-level node.
+    """
+
+    parent_v = self
+
+    #import pprint ; pprint.pprint(tree)
+    parent_v = self
+    h,b,gnx,children = aList
+    if h is not None:
+        v = parent_v
+        v._headString = h    
+        v._bodyString = b
+
+    for z in children:
+        h,b,gnx,grandChildren = z
+        isClone,child_v = parent_v.fastAddLastChild(c,gnx)
+        if isClone:
+            if child_v.b != b: # or child_v.h
+                # Bug fix: the last seen clone rules.
+                child_v.h = h
+                child_v.b = b
+                # Bug fix: mark @&lt;file&gt; nodes dirty.
+                child_v.setAllAncestorAtFileNodesDirty()
+                child_v.setMarked()
+                g.es("changed:",child_v.h,color="blue")
+        else:
+            child_v.createOutlineFromCacheList(c,z)
+</t>
+<t tx="ekr.20091110090536.2024"># Similar to createThinChild4
+def fastAddLastChild(self,c,gnxString):
+    '''Create new vnode as last child of the receiver.
+
+    If the gnx exists already, create a clone instead of new vnode.
+    '''
+
+    trace = False and not g.unitTesting
+    parent_v = self
+    indices = g.app.nodeIndices
+    gnxDict = c.fileCommands.gnxDict
+
+    if gnxString is None: v = None
+    else:                 v = gnxDict.get(gnxString)
+    is_clone = v is not None
+
+    if trace: g.trace(
+        'clone','%-5s' % (is_clone),
+        'parent_v',parent_v,'gnx',gnxString,'v',repr(v))
+
+    if not is_clone:
+        v = vnode(context=c)
+        if gnxString:
+            gnx = indices.scanGnx(gnxString,0)
+            v.fileIndex = gnx
+        gnxDict[gnxString] = v
+
+    child_v = v
+    child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
+    child_v.setVisited() # Supress warning/deletion of unvisited nodes.
+
+    return is_clone,child_v
+</t>
+<t tx="ekr.20091110090536.2025"></t>
+<t tx="ekr.20091110090536.2026">def __get_b(self):
+
+    v = self
+    return v.bodyString()
+
+def __set_b(self,val):
+
+    v = self
+    v.setBodyString(val)
+
+b = property(
+    __get_b, __set_b,
+    doc = "vnode body string property")
+</t>
+<t tx="ekr.20091110090536.2027">def __get_h(self):
+
+    v = self
+    return v.headString()
+
+def __set_h(self,val):
+
+    v = self
+    v.setHeadString(val)
+
+h = property(
+    __get_h, __set_h,
+    doc = "vnode headline string property")  
+</t>
+<t tx="ekr.20091110090536.2028">def __get_u(self):
+    v = self
+    if not hasattr(v,'unknownAttributes'):
+        v.unknownAttributes = {}
+    return v.unknownAttributes
+
+def __set_u(self,val):
+    v = self
+    if val is None:
+        if hasattr(v,'unknownAttributes'):
+            delattr(v,'unknownAttributes')
+    elif type(val) == type({}):
+        v.unknownAttributes = val
+    else:
+        raise ValueError
+
+u = property(
+    __get_u, __set_u,
+    doc = "vnode unknownAttribute property")
+</t>
+<t tx="ekr.20091110090536.2029">def __get_gnx(self):
+    v = self
+    return g.app.nodeIndices.toString(v.fileIndex)
+
+gnx = property(
+    __get_gnx, # __set_gnx,
+    doc = "vnode gnx property")
+</t>
+<t tx="ekr.20091110090536.2030"># Indices are Python dicts containing 'id','loc','time' and 'n' keys.
+
+class nodeIndices (object):
+
+    """A class to implement global node indices (gnx's)."""
+
+    @others
+</t>
+<t tx="ekr.20091110090536.2031">def __init__ (self,id):
+
+    """ctor for nodeIndices class"""
+
+    self.userId = id
+    self.defaultId = id
+
+    # A Major simplification: Only assign the timestamp once.
+    self.setTimeStamp()
+    self.lastIndex = 0
+</t>
+<t tx="ekr.20091110090536.2032">def areEqual (self,gnx1,gnx2):
+
+    """Return True if all fields of gnx1 and gnx2 are equal"""
+
+    # works whatever the format of gnx1 and gnx2.
+    # This should never throw an exception.
+    return gnx1 == gnx2
+</t>
+<t tx="ekr.20091110090536.2033"># These are used by the fileCommands read/write code.
+
+def getDefaultId (self):
+
+    """Return the id to be used by default in all gnx's"""
+    return self.defaultId
+
+def setDefaultId (self,theId):
+
+    """Set the id to be used by default in all gnx's"""
+    self.defaultId = theId
+</t>
+<t tx="ekr.20091110090536.2034">def getNewIndex (self):
+
+    '''Create a new gnx.'''
+
+    self.lastIndex += 1
+    d = (self.userId,self.timeString,self.lastIndex)
+    # g.trace(d)
+    return d
+</t>
+<t tx="ekr.20091110090536.2035">def isGnx (self,gnx):
+    try:
+        theId,t,n = gnx
+        return t != None
+    except Exception:
+        return False
+</t>
+<t tx="ekr.20091110090536.2036">def scanGnx (self,s,i):
+
+    """Create a gnx from its string representation"""
+
+    if not g.isString(s):
+        g.es("scanGnx: unexpected index type:",type(s),'',s,color="red")
+        return None,None,None
+
+    s = s.strip()
+
+    theId,t,n = None,None,None
+    i,theId = g.skip_to_char(s,i,'.')
+    if g.match(s,i,'.'):
+        i,t = g.skip_to_char(s,i+1,'.')
+        if g.match(s,i,'.'):
+            i,n = g.skip_to_char(s,i+1,'.')
+    # Use self.defaultId for missing id entries.
+    if theId == None or len(theId) == 0:
+        theId = self.defaultId
+    # Convert n to int.
+    if n:
+        try: n = int(n)
+        except Exception: pass
+
+    return theId,t,n
+</t>
+<t tx="ekr.20091110090536.2037">def setTimestamp (self):
+
+    """Set the timestamp string to be used by getNewIndex until further notice"""
+
+    self.timeString = time.strftime(
+        "%Y%m%d%H%M%S", # Help comparisons; avoid y2k problems.
+        time.localtime())
+
+    # g.trace(self.timeString,self.lastIndex,g.callers(4))
+
+setTimeStamp = setTimestamp
+</t>
+<t tx="ekr.20091110090536.2038">def toString (self,index):
+
+    """Convert a gnx (a tuple) to its string representation"""
+
+    try:
+        theId,t,n = index
+        if n in (None,0,'',):
+            return "%s.%s" % (theId,t)
+        else:
+            return "%s.%s.%d" % (theId,t,n)
+    except Exception:
+        if not g.app.unitTesting:
+            g.trace('unusual gnx',repr(index),g.callers()) 
+        try:
+            theId,t,n = self.getNewIndex()
+            if n in (None,0,'',):
+                return "%s.%s" % (theId,t)
+            else:
+                return "%s.%s.%d" % (theId,t,n)
+        except Exception:
+            g.trace('double exception: returning original index')
+            return repr(index)</t>
+<t tx="ekr.20091110090536.2039">&lt;&lt; about the position class &gt;&gt;
+
+# Positions should *never* be saved by the ZOBD.
+class position (object):
+    @others
+</t>
+<t tx="ekr.20091110090536.2040">@killcolor
+@
+
+A position marks the spot in a tree traversal. A position p consists of a vnode
+p.v, a child index p._childIndex, and a stack of tuples (v,childIndex), one for
+each ancestor **at the spot in tree traversal. Positions p has a unique set of
+parents.
+
+The p.moveToX methods may return a null (invalid) position p with p.v = None.
+
+The tests "if p" or "if not p" are the _only_ correct way to test whether a
+position p is valid. In particular, tests like "if p is None" or "if p is not
+None" will not work properly.
+</t>
+<t tx="ekr.20091110090536.2041"></t>
+<t tx="ekr.20091110090536.2042">def __init__ (self,v,childIndex=0,stack=None,trace=False):
+
+    '''Create a new position with the given childIndex and parent stack.'''
+
+    # To support ZODB the code must set v._p_changed = 1
+    # whenever any mutable vnode object changes.
+
+    self._childIndex = childIndex
+    self.v = v
+
+    # New in Leo 4.5: stack entries are tuples (v,childIndex).
+    if stack:
+        self.stack = stack[:] # Creating a copy here is safest and best.
+    else:
+        self.stack = []
+
+    g.app.positions += 1
+
+    # if g.app.tracePositions and trace: g.trace(g.callers())
+
+    self.txtOffset = None # see self.textOffset()
+</t>
+<t tx="ekr.20091110090536.2043">def __eq__(self,p2):
+
+    """Return True if two postions are equivalent."""
+
+    p1 = self
+
+    # Don't use g.trace: it might call p.__eq__ or p.__ne__.
+    # print ('p.__eq__: %s %s' % (
+        # p1 and p1.v and p1.h,p2 and p2.v and p2.h))
+
+    if p2 is None or p2.v is None:
+        return p1.v is None
+    else:
+        return ( p1.v == p2.v and
+            p1._childIndex == p2._childIndex and
+            p1.stack == p2.stack )
+
+def __ne__(self,p2):
+
+    """Return True if two postions are not equivalent."""
+
+    return not self.__eq__(p2) # For possible use in Python 2.x.
+</t>
+<t tx="ekr.20091110090536.2044"># No longer used.  All code must now be aware of the one-node world.
+
+# def __getattr__ (self,attr):
+
+    # """Convert references to p.t into references to p.v."""
+
+    # if attr=="t":
+        # return self.v
+    # else:
+        # # New in 4.3: _silently_ raise the attribute error.
+        # # This allows plugin code to use hasattr(p,attr) !
+        # if 0:
+            # print("unknown position attribute: %s" % attr)
+            # import traceback ; traceback.print_stack()
+        # raise AttributeError(attr)</t>
+<t tx="ekr.20091110090536.2045">@
+Tests such as 'if p' or 'if not p' are the _only_ correct ways to test whether a position p is valid.
+In particular, tests like 'if p is None' or 'if p is not None' will not work properly.
+@c
+
+if g.isPython3:
+
+    def __bool__ ( self):
+
+        """Return True if a position is valid."""
+
+        # Tracing this appears to cause unbounded prints.
+        # print("__bool__",self.v and self.v.cleanHeadString())
+
+        return self.v is not None
+
+else:
+
+    def __nonzero__ ( self):
+
+        """Return True if a position is valid."""
+
+        # if g.app.trace: "__nonzero__",self.v
+
+        # g.trace(repr(self))
+
+        return self.v is not None
+</t>
+<t tx="ekr.20091110090536.2046">def __str__ (self):
+
+    p = self
+
+    if p.v:
+        return "&lt;pos %d childIndex: %d lvl: %d [%d] %s&gt;" % (
+            id(p),p._childIndex,p.level(),len(p.stack),p.cleanHeadString())
+    else:
+        return "&lt;pos %d [%d] None&gt;" % (id(p),len(p.stack))
+
+__repr__ = __str__
+</t>
+<t tx="ekr.20091110090536.2047">def archivedPosition (self,root_p=None):
+
+    '''Return a representation of a position suitable for use in .leo files.'''
+
+    p = self
+
+    if root_p is None:
+        aList = [z._childIndex for z in p.self_and_parents()]
+    else:
+        aList = []
+        for z in p.self_and_parents():
+            if z == root_p:
+                aList.append(0)
+                break
+            else:
+                aList.append(z._childIndex)
+        # g.trace(aList)
+
+    aList.reverse()
+    return aList</t>
+<t tx="ekr.20091110090536.2048"># Using this routine can generate huge numbers of temporary positions during a tree traversal.
+
+def copy (self):
+
+    """"Return an independent copy of a position."""
+
+    # if g.app.tracePositions: g.trace(g.callers())
+
+    return position(self.v,self._childIndex,self.stack,trace=False)
+</t>
+<t tx="ekr.20091110090536.2049">def dumpLink (self,link):
+
+    return g.choose(link,link,"&lt;none&gt;")
+
+def dump (self,label=""):
+
+    p = self
+    if p.v:
+        p.v.dump() # Don't print a label
+</t>
+<t tx="ekr.20091110090536.2050">def key (self):
+
+    p = self
+
+    # For unified nodes we must include a complete key,
+    # so we can distinguish between clones.
+    result = []
+    for z in p.stack:
+        v,childIndex = z
+        result.append('%s:%s' % (id(v),childIndex))
+
+    result.append('%s:%s' % (id(p.v),p._childIndex))
+
+    return '.'.join(result)
+</t>
+<t tx="ekr.20091110090536.2051"></t>
+<t tx="ekr.20091110090536.2052">def __get_b(self):
+
+    p = self
+    return p.bodyString()
+
+def __set_b(self,val):
+
+    p = self ; c = p.v and p.v.context
+    if c:
+        c.setBodyString(p, val)
+        # Don't redraw the screen: p.b must be fast.
+        # c.redraw_after_icons_changed()
+
+b = property(
+    __get_b, __set_b,
+    doc = "position body string property")
+</t>
+<t tx="ekr.20091110090536.2053">def __get_h(self):
+
+    p = self
+    return p.headString()
+
+def __set_h(self,val):
+
+    p = self ; c = p.v and p.v.context
+    if c:
+        c.setHeadString(p,val)
+        # Don't redraw the screen: p.h must be fast.
+        # c.redraw_after_head_changed()
+
+h = property(
+    __get_h, __set_h,
+    doc = "position headline string property")  
+</t>
+<t tx="ekr.20091110090536.2054">def __get_gnx(self):
+    p = self
+    return g.app.nodeIndices.toString(p.v.fileIndex)
+
+gnx = property(
+    __get_gnx, # __set_gnx,
+    doc = "position gnx property")
+</t>
+<t tx="ekr.20091110090536.2055"></t>
+<t tx="ekr.20091110090536.2056"></t>
+<t tx="ekr.20091110090536.2057">def anyAtFileNodeName         (self): return self.v.anyAtFileNodeName()
+def atAutoNodeName            (self): return self.v.atAutoNodeName()
+def atEditNodeName            (self): return self.v.atEditNodeName()
+def atFileNodeName            (self): return self.v.atFileNodeName()
+def atNoSentinelsFileNodeName (self): return self.v.atNoSentinelsFileNodeName()
+def atRawFileNodeName         (self): return self.v.atRawFileNodeName()
+def atShadowFileNodeName      (self): return self.v.atShadowFileNodeName()
+def atSilentFileNodeName      (self): return self.v.atSilentFileNodeName()
+def atThinFileNodeName        (self): return self.v.atThinFileNodeName()
+
+# New names, less confusing
+atNoSentFileNodeName  = atNoSentinelsFileNodeName
+atNorefFileNodeName   = atRawFileNodeName
+atAsisFileNodeName    = atSilentFileNodeName
+
+def isAnyAtFileNode         (self): return self.v.isAnyAtFileNode()
+def isAtAllNode             (self): return self.v.isAtAllNode()
+def isAtAutoNode            (self): return self.v.isAtAutoNode()
+def isAtAutoRstNode         (self): return self.v.isAtAutoRstNode()
+def isAtEditNode            (self): return self.v.isAtEditNode()
+def isAtFileNode            (self): return self.v.isAtFileNode()
+def isAtIgnoreNode          (self): return self.v.isAtIgnoreNode()
+def isAtNoSentinelsFileNode (self): return self.v.isAtNoSentinelsFileNode()
+def isAtOthersNode          (self): return self.v.isAtOthersNode()
+def isAtRawFileNode         (self): return self.v.isAtRawFileNode()
+def isAtSilentFileNode      (self): return self.v.isAtSilentFileNode()
+def isAtShadowFileNode      (self): return self.v.isAtShadowFileNode()
+def isAtThinFileNode        (self): return self.v.isAtThinFileNode()
+
+# New names, less confusing:
+isAtNoSentFileNode = isAtNoSentinelsFileNode
+isAtNorefFileNode  = isAtRawFileNode
+isAtAsisFileNode   = isAtSilentFileNode
+
+# Utilities.
+def matchHeadline (self,pattern): return self.v.matchHeadline(pattern)
+</t>
+<t tx="ekr.20091110090536.2058">def bodyString (self):
+
+    return self.v.bodyString()
+
+def headString (self):
+
+    return self.v.headString()
+
+def cleanHeadString (self):
+
+    return self.v.cleanHeadString()
+</t>
+<t tx="ekr.20091110090536.2059">def isDirty     (self): return self.v.isDirty()
+def isExpanded  (self): return self.v.isExpanded()
+def isMarked    (self): return self.v.isMarked()
+def isOrphan    (self): return self.v.isOrphan()
+def isSelected  (self): return self.v.isSelected()
+def isTopBitSet (self): return self.v.isTopBitSet()
+def isVisited   (self): return self.v.isVisited()
+def status      (self): return self.v.status()
+</t>
+<t tx="ekr.20091110090536.2060"></t>
+<t tx="ekr.20091110090536.2061"># This used to be time-critical code.
+
+def childIndex(self):
+
+    p = self
+    return p._childIndex
+</t>
+<t tx="ekr.20091110090536.2062">def directParents (self):
+
+    return self.v.directParents()
+</t>
+<t tx="ekr.20091110090536.2063">def hasChildren (self):
+
+    p = self
+    return len(p.v.children) &gt; 0
+
+hasFirstChild = hasChildren
+
+def numberOfChildren (self):
+
+    p = self
+    return len(p.v.children)
+</t>
+<t tx="ekr.20091110090536.2064"># These methods are useful abbreviations.
+# Warning: they make copies of positions, so they should be used _sparingly_
+
+def getBack          (self): return self.copy().moveToBack()
+def getFirstChild    (self): return self.copy().moveToFirstChild()
+def getLastChild     (self): return self.copy().moveToLastChild()
+def getLastNode      (self): return self.copy().moveToLastNode()
+def getLastVisible   (self): return self.copy().moveToLastVisible()
+def getNext          (self): return self.copy().moveToNext()
+def getNodeAfterTree (self): return self.copy().moveToNodeAfterTree()
+def getNthChild    (self,n): return self.copy().moveToNthChild(n)
+def getParent        (self): return self.copy().moveToParent()
+def getThreadBack    (self): return self.copy().moveToThreadBack()
+def getThreadNext    (self): return self.copy().moveToThreadNext()
+
+# New in Leo 4.4.3 b2: add c args.
+def getVisBack (self,c): return self.copy().moveToVisBack(c)
+def getVisNext (self,c): return self.copy().moveToVisNext(c)
+
+# These are efficient enough now that iterators are the normal way to traverse the tree!
+
+back          = getBack
+firstChild    = getFirstChild
+lastChild     = getLastChild
+lastNode      = getLastNode
+lastVisible   = getLastVisible # New in 4.2 (was in tk tree code).
+next          = getNext
+nodeAfterTree = getNodeAfterTree
+nthChild      = getNthChild
+parent        = getParent
+threadBack    = getThreadBack
+threadNext    = getThreadNext
+visBack       = getVisBack
+visNext       = getVisNext
+
+# New in Leo 4.4.3:
+hasVisBack = visBack
+hasVisNext = visNext</t>
+<t tx="ekr.20091110090536.2065">def hasBack(self):
+    p = self
+    return p.v and p._childIndex &gt; 0
+
+def hasNext(self):
+    p = self
+    try:
+        parent_v = p._parentVnode()
+            # Returns None if p.v is None.
+        return p.v and parent_v and p._childIndex+1 &lt; len(parent_v.children)
+    except Exception:
+        g.trace('*** Unexpected exception')
+        g.es_exception()
+        return None
+
+def hasParent(self):
+    p = self
+    return p.v and len(p.stack) &gt; 0
+
+def hasThreadBack(self):
+    p = self
+    return p.hasParent() or p.hasBack() # Much cheaper than computing the actual value.
+</t>
+<t tx="ekr.20091110090536.2066">def hasThreadNext (self):
+
+    p = self
+    if not p.v: return False
+
+    if p.hasChildren() or p.hasNext(): return True
+
+    n = len(p.stack) -1
+    while n &gt;= 0:
+        v,childIndex = p.stack[n]
+        # See how many children v's parent has.
+        if n == 0:
+            parent_v = v.context.hiddenRootNode
+        else:
+            parent_v,junk = p.stack[n-1]
+        if len(parent_v.children) &gt; childIndex+1:
+            # v has a next sibling.
+            return True
+        n -= 1
+    return False
+</t>
+<t tx="ekr.20091110090536.2067">def findRootPosition (self):
+
+    p = self.copy()
+    while p.hasParent():
+        p.moveToParent()
+    while p.hasBack():
+        p.moveToBack()
+    return p</t>
+<t tx="ekr.20091110090536.2068">def isAncestorOf (self, p2):
+
+    p = self ; v = p.v
+
+    for z in p2.stack:
+        v2,junk = z
+        if v2 == v:
+            return True
+
+    return False
+</t>
+<t tx="ekr.20091110090536.2069">def isCloned (self):
+
+    p = self
+    return p.v.isCloned()
+</t>
+<t tx="ekr.20091110090536.2070">def isRoot (self):
+
+    p = self
+
+    return not p.hasParent() and not p.hasBack()
+</t>
+<t tx="ekr.20091110090536.2071">def isVisible (self,c):
+
+    p = self ; trace = False
+    limit,limitIsVisible = c.visLimit()
+    limit_v = limit and limit.v or None
+    if p.v == limit_v:
+        if trace: g.trace('*** at limit','limitIsVisible',limitIsVisible,p.h)
+        return limitIsVisible
+
+    # It's much easier with a full stack.
+    n = len(p.stack)-1
+    while n &gt;= 0:
+        progress = n
+        # v,n = p.vParentWithStack(v,p.stack,n)
+        v,junk = p.stack[n]
+        if v == limit_v:  # We are at a descendant of limit.
+            if trace: g.trace('*** descendant of limit',
+                'limitIsVisible',limitIsVisible,
+                'limit.isExpanded()',limit.isExpanded(),'v',v)
+            if limitIsVisible:
+                return limit.isExpanded()
+            else: # Ignore the expansion state of @chapter nodes.
+                return True
+        if not v.isExpanded():
+            if trace: g.trace('*** non-limit parent is not expanded:',v._headString,p.h)
+            return False
+        n -= 1
+        assert progress &gt; n
+
+    return True
+</t>
+<t tx="ekr.20091110090536.2072">def level (self):
+
+    '''Return the number of p's parents.'''
+
+    p = self
+    return p.v and len(p.stack) or 0
+
+simpleLevel = level
+</t>
+<t tx="ekr.20091110090536.2073">def textOffset(self):
+    '''
+        See http://tinyurl.com/5nescw for details
+    '''
+
+    p = self
+
+    # caching of p.textOffset, we need to calculate it only once
+    if p.txtOffset is not None:
+        return p.txtOffset
+
+    p.txtOffset = 0
+    # walk back from the current position
+    for cursor in p.self_and_parents():
+        # we also need the parent, the "text offset" is relative to it
+        parent = cursor.parent()
+        if parent == None: # root reached
+            break
+        parent_bodyString = parent.b
+        if parent_bodyString == '': # organizer node
+            continue
+        parent_lines = parent_bodyString.split('\n')
+        # check out if the cursor node is a section
+        cursor_is_section = False
+        cursor_headString = cursor.h
+        if cursor_headString.startswith('&lt;&lt;'):
+            cursor_is_section = True # section node
+        for line in parent_lines:
+            if cursor_is_section == True:
+                # find out the section in the bodyString of the parent
+                pos = line.find(cursor_headString)
+            else:
+                # otherwise find the "@others" directive in the bodyString of the parent
+                pos = line.find('@others')
+            if pos &gt; 0:
+                # break the iteration over lines if something is found 
+                break
+        if pos &gt; 0:
+            p.txtOffset += pos
+        if parent.v.isAnyAtFileNode(): # do not scan upper
+            break
+
+    return p.txtOffset         
+</t>
+<t tx="ekr.20091110090536.2074"></t>
+<t tx="ekr.20091110090536.2075"></t>
+<t tx="ekr.20091110090536.2076"># Clone bits are no longer used.
+# Dirty bits are handled carefully by the position class.
+
+def clearMarked  (self): return self.v.clearMarked()
+def clearOrphan  (self): return self.v.clearOrphan()
+def clearVisited (self): return self.v.clearVisited()
+
+def contract (self): return self.v.contract()
+def expand   (self): return self.v.expand()
+
+def initExpandedBit    (self): return self.v.initExpandedBit()
+def initMarkedBit      (self): return self.v.initMarkedBit()
+def initStatus (self, status): return self.v.initStatus(status)
+
+def setMarked   (self): return self.v.setMarked()
+def setOrphan   (self): return self.v.setOrphan()
+def setSelected (self): return self.v.setSelected()
+def setVisited  (self): return self.v.setVisited()
+</t>
+<t tx="ekr.20091110090536.2077">def computeIcon (self):
+
+    return self.v.computeIcon()
+
+def setIcon (self):
+
+    pass # Compatibility routine for old scripts
+</t>
+<t tx="ekr.20091110090536.2078">def setSelection (self,start,length):
+
+    return self.v.setSelection(start,length)
+</t>
+<t tx="ekr.20091110090536.2079">def setBodyString (self,s,encoding="utf-8"):
+
+    p = self
+    return p.v.setBodyString(s,encoding)
+
+initBodyString = setBodyString
+setTnodeText = setBodyString
+scriptSetBodyString = setBodyString
+
+def initHeadString (self,s,encoding="utf-8"):
+
+    p = self
+    p.v.initHeadString(s,encoding)
+
+def setHeadString (self,s,encoding="utf-8"):
+
+    p = self
+    p.v.initHeadString(s,encoding)
+    p.setDirty()
+</t>
+<t tx="ekr.20091110090536.2080"></t>
+<t tx="ekr.20091110090536.2081"># Compatibility routine for scripts.
+
+def clearVisitedInTree (self):
+
+    for p in self.self_and_subtree():
+        p.clearVisited()
+</t>
+<t tx="ekr.20091110090536.2082">def clearAllVisitedInTree (self):
+
+    for p in self.self_and_subtree():
+        p.v.clearVisited()
+        p.v.clearWriteBit()
+</t>
+<t tx="ekr.20091110090536.2083"></t>
+<t tx="ekr.20091110090536.2084">def clearDirty (self):
+
+    p = self
+    p.v.clearDirty()
+</t>
+<t tx="ekr.20091110090536.2085">def findAllPotentiallyDirtyNodes(self):
+
+    p = self
+    return p.v.findAllPotentiallyDirtyNodes()
+</t>
+<t tx="ekr.20091110090536.2086">def inAtIgnoreRange (self):
+
+    """Returns True if position p or one of p's parents is an @ignore node."""
+
+    p = self
+
+    for p in p.self_and_parents():
+        if p.isAtIgnoreNode():
+            return True
+
+    return False
+</t>
+<t tx="ekr.20091110090536.2087">def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    p = self
+    dirtyVnodeList = []
+
+    # Calculate all nodes that are joined to p or parents of such nodes.
+    nodes = p.findAllPotentiallyDirtyNodes()
+
+    if setDescendentsDirty:
+        # N.B. Only mark _direct_ descendents of nodes.
+        # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
+        for p2 in p.subtree():
+            # Only @thin nodes need to be marked.
+            if p2.v not in nodes and p2.isAtThinFileNode():
+                nodes.append(p2.v)
+
+    if trace and verbose:
+        for v in nodes:
+            print (v.isDirty(),v.isAnyAtFileNode(),v)
+
+    dirtyVnodeList = [v for v in nodes
+        if not v.isDirty() and v.isAnyAtFileNode()]
+    changed = len(dirtyVnodeList) &gt; 0
+
+    for v in dirtyVnodeList:
+        v.setDirty()
+
+    if trace: g.trace("position",dirtyVnodeList,g.callers(5))
+
+    return dirtyVnodeList
+</t>
+<t tx="ekr.20091110090536.2088">def setDirty (self,setDescendentsDirty=True):
+
+    '''Mark a node and all ancestor @file nodes dirty.'''
+
+    p = self ; dirtyVnodeList = []
+
+    # g.trace(p.h,g.callers(4))
+
+    if not p.v.isDirty():
+        p.v.setDirty()
+        dirtyVnodeList.append(p.v)
+
+    # Important: this must be called even if p.v is already dirty.
+    # Typing can change the @ignore state!
+    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty(setDescendentsDirty)
+    dirtyVnodeList.extend(dirtyVnodeList2)
+
+    return dirtyVnodeList
+</t>
+<t tx="ekr.20091110090536.2089">@
+- convertTreeToString and moreHead can't be vnode methods because they uses level().
+- moreBody could be anywhere: it may as well be a postion method.
+</t>
+<t tx="ekr.20091110090536.2090">def convertTreeToString (self):
+
+    """Convert a positions  suboutline to a string in MORE format."""
+
+    p = self ; level1 = p.level()
+
+    array = []
+    for p in p.self_and_subtree():
+        array.append(p.moreHead(level1)+'\n')
+        body = p.moreBody()
+        if body:
+            array.append(body +'\n')
+
+    return ''.join(array)
+</t>
+<t tx="ekr.20091110090536.2091">def moreHead (self, firstLevel,useVerticalBar=False):
+
+    """Return the headline string in MORE format."""
+
+    # useVerticalBar is unused, but it would be useful in over-ridden methods.
+
+    p = self
+    level = self.level() - firstLevel
+    plusMinus = g.choose(p.hasChildren(), "+", "-")
+
+    return "%s%s %s" % ('\t'*level,plusMinus,p.h)
+</t>
+<t tx="ekr.20091110090536.2092">@ 
+    + test line
+    - test line
+    \ test line
+    test line +
+    test line -
+    test line \
+    More lines...
+@c
+
+def moreBody (self):
+
+    """Returns the body string in MORE format.  
+
+    Inserts a backslash before any leading plus, minus or backslash."""
+
+    p = self ; array = []
+    lines = p.b.split('\n')
+    for s in lines:
+        i = g.skip_ws(s,0)
+        if i &lt; len(s) and s[i] in ('+','-','\\'):
+            s = s[:i] + '\\' + s[i:]
+        array.append(s)
+    return '\n'.join(array)
+</t>
+<t tx="ekr.20091110090536.2093"></t>
+<t tx="ekr.20091110090536.2094">def children(self):
+
+    '''Return all children of p.'''
+
+    p = self
+    p = p.firstChild()
+    while p:
+        yield p
+        p.moveToNext()
+    raise StopIteration
+
+# Compatibility with old code.
+children_iter = children
+</t>
+<t tx="ekr.20091110090536.2095">def following_siblings(self):
+    '''
+    Return all siblings that follow p, not including p.
+    '''
+
+    p = self
+    p = p.copy() # Always include the original node.
+    p = p.next()
+    while p:
+        yield p
+        p.moveToNext()
+    raise StopIteration
+
+# Compatibility with old code.
+following_siblings_iter = following_siblings
+</t>
+<t tx="ekr.20091110090536.2096">def nodes (self):
+
+    p = self
+    p = p.copy()
+    while p:
+        yield p.v
+        p.moveToThreadNext()
+
+# Compatibility with old code.
+tnodes_iter = nodes
+vnodes_iter = nodes
+</t>
+<t tx="ekr.20091110090536.2097">def parents(self):
+
+    '''Return all parents of p.'''
+
+    p = self
+    p = p.parent()
+    while p:
+        yield p
+        p.moveToParent()
+    raise StopIteration
+
+# Compatibility with old code.
+parents_iter = parents
+</t>
+<t tx="ekr.20091110090536.2098">def self_and_parents(self):
+
+    '''Return p and all parents of p.'''
+
+    p = self
+    p = p.copy()
+    while p:
+        yield p
+        p.moveToParent()
+    raise StopIteration
+
+# Compatibility with old code.
+self_and_parents_iter = self_and_parents
+</t>
+<t tx="ekr.20091110090536.2099">def self_and_siblings(self):
+    '''Return all siblings of p including p.
+    '''
+
+    p = self
+    p = p.copy()
+    while p.hasBack():
+        p.moveToBack()
+    while p:
+        yield p
+        p.moveToNext()
+    raise StopIteration
+
+# Compatibility with old code.
+self_and_siblings_iter = self_and_siblings</t>
+<t tx="ekr.20091110090536.2100">def self_and_subtree(self):
+
+    '''Return p's entire subtree, including p.'''
+
+    p = self
+    p = p.copy()
+    after = p.nodeAfterTree()
+    while p and p != after:
+        yield p
+        p.moveToThreadNext()
+    raise StopIteration
+
+# Compatibility with old code.
+self_and_subtree_iter = self_and_subtree
+</t>
+<t tx="ekr.20091110090536.2101">def subtree(self):
+
+    '''Return all descendants of p, not including p.'''
+
+    p = self
+    p = p.copy()
+    after = p.nodeAfterTree()
+    p.moveToThreadNext()
+    while p and p != after:
+        yield p
+        p.moveToThreadNext()
+    raise StopIteration
+
+# Compatibility with old code.
+subtree_iter = subtree
+</t>
+<t tx="ekr.20091110090536.2102">def unique_nodes (self):
+
+    p = self
+    p = p.copy()
+    seen = set()
+    while p:
+        if p.v in seen:
+            p.moveToNodeAfterTree()
+        else:
+            seen.add(p.v)
+            yield p.v
+            p.moveToThreadNext()
+
+# Compatibility with old code.
+unique_tnodes_iter = unique_nodes
+unique_vnodes_iter = unique_nodes
+</t>
+<t tx="ekr.20091110090536.2103">def unique_subtree (self):
+    '''Return unique positions in p's entire subtree, including p.'''
+
+    p = self
+    p = p.copy()
+    after = p.nodeAfterTree()
+    seen = set()
+    while p and p != after:
+        if p.v in seen:
+            p.moveToNodeAfterTree()
+        else:
+            seen.add(p.v)
+            yield p
+            p.moveToThreadNext()
+    raise StopIteration
+
+# Compatibility with old code.
+subtree_with_unique_tnodes_iter = unique_subtree
+subtree_with_unique_vnodes_iter = unique_subtree
+</t>
+<t tx="ekr.20091110090536.2104"></t>
+<t tx="ekr.20091110090536.2105">def clone (self):
+
+    """Create a clone of back.
+
+    Returns the newly created position."""
+
+    p = self
+    p2 = p.copy() # Do *not* copy the vnode!
+    p2._linkAfter(p) # This should "just work"
+    return p2
+</t>
+<t tx="ekr.20091110090536.2106"># These used by unit tests and by the group_operations plugin.
+
+def copyTreeAfter(self):
+    p = self
+    p2 = p.insertAfter()
+    p.copyTreeFromSelfTo(p2)
+    return p2
+
+def copyTreeFromSelfTo(self,p2):
+    p = self
+    p2.v._headString = p.h
+    p2.v._bodyString = p.b
+
+    # 2009/10/02: no need to copy arg to iter
+    for child in p.children():
+        child2 = p2.insertAsLastChild()
+        child.copyTreeFromSelfTo(child2)
+</t>
+<t tx="ekr.20091110090536.2107">@ This is the main delete routine.
+It deletes the receiver's entire tree from the screen.
+Because of the undo command we never actually delete vnodes or tnodes.
+@c
+
+def doDelete (self,newNode=None):
+
+    """Deletes position p from the outline."""
+
+    p = self
+    p.setDirty() # Mark @file nodes dirty!
+
+    # Adjust newNode._childIndex if newNode is a following sibling of p.
+    sib = p.copy()
+    while sib.hasNext():
+        sib.moveToNext()
+        if sib == newNode:
+            newNode._childIndex -= 1
+            break
+
+    p._unlink()
+</t>
+<t tx="ekr.20091110090536.2108">def insertAfter (self):
+
+    """Inserts a new position after self.
+
+    Returns the newly created position."""
+
+    p = self ; context = p.v.context
+    p2 = self.copy()
+
+    p2.v = vnode(context=context)
+    p2.v.iconVal = 0
+    p2._linkAfter(p)
+
+    return p2
+</t>
+<t tx="ekr.20091110090536.2109">def insertAsLastChild (self):
+
+    """Inserts a new vnode as the last child of self.
+
+    Returns the newly created position."""
+
+    p = self
+    n = p.numberOfChildren()
+
+    return p.insertAsNthChild(n)
+</t>
+<t tx="ekr.20091110090536.2110">def insertAsNthChild (self,n):
+
+    """Inserts a new node as the the nth child of self.
+    self must have at least n-1 children.
+
+    Returns the newly created position."""
+
+    p = self ; context = p.v.context
+    p2 = self.copy()
+
+    p2.v = vnode(context=context)
+    p2.v.iconVal = 0
+    p2._linkAsNthChild(p,n)
+
+    return p2
+</t>
+<t tx="ekr.20091110090536.2111">def invalidOutline (self, message):
+
+    p = self
+
+    if p.hasParent():
+        node = p.parent()
+    else:
+        node = p
+
+    g.alert("invalid outline: %s\n%s" % (message,node))
+</t>
+<t tx="ekr.20091110090536.2112">def moveAfter (self,a):
+
+    """Move a position after position a."""
+
+    p = self # Do NOT copy the position!
+
+    # g.trace('before','p',p,p.stack,'\na',a,a.stack)
+
+    a._adjustPositionBeforeUnlink(p)
+    p._unlink()
+    p._linkAfter(a)
+
+    # g.trace('before','p',p,p.stack,'\na',a,a.stack)
+
+    return p
+</t>
+<t tx="ekr.20091110090536.2113">def moveToFirstChildOf (self,parent):
+
+    """Move a position to the first child of parent."""
+
+    p = self # Do NOT copy the position!
+    p._unlink()
+    p._linkAsNthChild(parent,0)
+    return p
+
+
+def moveToLastChildOf (self,parent):
+
+    """Move a position to the last child of parent."""
+
+    p = self # Do NOT copy the position!
+    p._unlink()
+    n = parent.numberOfChildren()
+    p._linkAsNthChild(parent,n)
+    return p
+</t>
+<t tx="ekr.20091110090536.2114">def moveToNthChildOf (self,parent,n):
+
+    """Move a position to the nth child of parent."""
+
+    p = self # Do NOT copy the position!
+
+    parent._adjustPositionBeforeUnlink(p)
+    p._unlink()
+    p._linkAsNthChild(parent,n)
+
+    return p
+</t>
+<t tx="ekr.20091110090536.2115">def moveToRoot (self,oldRoot=None):
+
+    '''Moves a position to the root position.
+
+    Important: oldRoot must the previous root position if it exists.'''
+
+    p = self # Do NOT copy the position!
+    if oldRoot:
+        oldRoot._adjustPositionBeforeUnlink(p)
+    p._unlink()
+    p._linkAsRoot(oldRoot)
+
+    return p
+</t>
+<t tx="ekr.20091110090536.2116"># This routine checks the structure of the receiver's tree.
+
+def validateOutlineWithParent (self,pv):
+
+    p = self
+    result = True # optimists get only unpleasant surprises.
+    parent = p.getParent()
+    childIndex = p._childIndex
+
+    # g.trace(p,parent,pv)
+    &lt;&lt; validate parent ivar &gt;&gt;
+    &lt;&lt; validate childIndex ivar &gt;&gt;
+    &lt;&lt; validate x ivar &gt;&gt;
+
+    # Recursively validate all the children.
+    for child in p.children():
+        r = child.validateOutlineWithParent(p)
+        if not r: result = False
+
+    return result
+</t>
+<t tx="ekr.20091110090536.2117">if parent != pv:
+    p.invalidOutline( "Invalid parent link: " + repr(parent))
+</t>
+<t tx="ekr.20091110090536.2118">if pv:
+    if childIndex &lt; 0:
+        p.invalidOutline ( "missing childIndex" + childIndex )
+    elif childIndex &gt;= pv.numberOfChildren():
+        p.invalidOutline ( "missing children entry for index: " + childIndex )
+elif childIndex &lt; 0:
+    p.invalidOutline ( "negative childIndex" + childIndex )
+</t>
+<t tx="ekr.20091110090536.2119">if not p.v and pv:
+    self.invalidOutline ( "Empty t" )
+</t>
+<t tx="ekr.20091110090536.2120">@
+These routines change self to a new position "in place".
+That is, these methods must _never_ call p.copy().
+
+When moving to a nonexistent position, these routines simply set p.v = None,
+leaving the p.stack unchanged. This allows the caller to "undo" the effect of
+the invalid move by simply restoring the previous value of p.v.
+
+These routines all return self on exit so the following kind of code will work:
+    after = p.copy().moveToNodeAfterTree()
+</t>
+<t tx="ekr.20091110090536.2121">def moveToBack (self):
+
+    """Move self to its previous sibling."""
+
+    p = self ; n = p._childIndex
+
+    parent_v = p._parentVnode()
+        # Returns None if p.v is None.
+
+    # Do not assume n is in range: this is used by positionExists.
+    if parent_v and p.v and 0 &lt; n &lt;= len(parent_v.children):
+        p._childIndex -= 1
+        p.v = parent_v.children[n-1]
+    else:
+        p.v = None
+
+    return p
+</t>
+<t tx="ekr.20091110090536.2122">def moveToFirstChild (self):
+
+    """Move a position to it's first child's position."""
+
+    p = self
+
+    if p.v and p.v.children:
+        p.stack.append((p.v,p._childIndex),)
+        p.v = p.v.children[0]
+        p._childIndex = 0
+    else:
+        p.v = None
+
+    return p</t>
+<t tx="ekr.20091110090536.2123">def moveToLastChild (self):
+
+    """Move a position to it's last child's position."""
+
+    p = self
+
+    if p.v and p.v.children:
+        p.stack.append((p.v,p._childIndex),)
+        n = len(p.v.children)
+        p.v = p.v.children[n-1]
+        p._childIndex = n-1
+    else:
+        p.v = None
+
+    return p
+</t>
+<t tx="ekr.20091110090536.2124">def moveToLastNode (self):
+
+    """Move a position to last node of its tree.
+
+    N.B. Returns p if p has no children."""
+
+    p = self
+
+    # Huge improvement for 4.2.
+    while p.hasChildren():
+        p.moveToLastChild()
+
+    return p
+</t>
+<t tx="ekr.20091110090536.2125">def moveToNext (self):
+
+    """Move a position to its next sibling."""
+
+    p = self ; n = p._childIndex
+
+    parent_v = p._parentVnode()
+        # Returns None if p.v is None.
+    if not p.v: g.trace('parent_v',parent_v,'p.v',p.v)
+
+    if p.v and parent_v and len(parent_v.children) &gt; n+1:
+        p._childIndex = n+1
+        p.v = parent_v.children[n+1]
+    else:
+        p.v = None
+
+    return p
+</t>
+<t tx="ekr.20091110090536.2126">def moveToNodeAfterTree (self):
+
+    """Move a position to the node after the position's tree."""
+
+    p = self
+
+    while p:
+        if p.hasNext():
+            p.moveToNext()
+            break
+        p.moveToParent()
+
+    return p
+</t>
+<t tx="ekr.20091110090536.2127">def moveToNthChild (self,n):
+
+    p = self
+
+    if p.v and len(p.v.children) &gt; n:
+        p.stack.append((p.v,p._childIndex),)
+        p.v = p.v.children[n]
+        p._childIndex = n
+    else:
+        p.v = None
+
+    return p
+</t>
+<t tx="ekr.20091110090536.2128">def moveToParent (self):
+
+    """Move a position to its parent position."""
+
+    p = self
+
+    if p.v and p.stack:
+        p.v,p._childIndex = p.stack.pop()
+    else:
+        p.v = None
+
+    return p
+</t>
+<t tx="ekr.20091110090536.2129">def moveToThreadBack (self):
+
+    """Move a position to it's threadBack position."""
+
+    p = self
+
+    if p.hasBack():
+        p.moveToBack()
+        p.moveToLastNode()
+    else:
+        p.moveToParent()
+
+    return p
+</t>
+<t tx="ekr.20091110090536.2130">def moveToThreadNext (self):
+
+    """Move a position to threadNext position."""
+
+    p = self
+
+    if p.v:
+        if p.v.children:
+            p.moveToFirstChild()
+        elif p.hasNext():
+            p.moveToNext()
+        else:
+            p.moveToParent()
+            while p:
+                if p.hasNext():
+                    p.moveToNext()
+                    break #found
+                p.moveToParent()
+            # not found.
+
+    return p
+</t>
+<t tx="ekr.20091110090536.2131">def moveToVisBack (self,c):
+
+    """Move a position to the position of the previous visible node."""
+
+    trace = False and not g.unitTesting
+    verbose = True
+    p = self ; limit,limitIsVisible = c.visLimit()
+    if trace and verbose:
+        g.trace(p,'limit',limit,'limitIsVisible',limitIsVisible)
+    if trace: g.trace('***entry','parent',p.parent(),'p',p,g.callers(5))
+    while p:
+        # Short-circuit if possible.
+        back = p.back()
+        if trace: g.trace(
+            'back',back,'hasChildren',bool(back and back.hasChildren()),
+            'isExpanded',bool(back and back.isExpanded()))
+
+        if back and back.hasChildren() and back.isExpanded():
+            p.moveToThreadBack()
+        elif back:
+            p.moveToBack()
+        else:
+            p.moveToParent() # Same as p.moveToThreadBack()
+        # if back and (not back.hasChildren() or not back.isExpanded()):
+            # p.moveToBack()
+        # else:
+            # p.moveToThreadBack()
+        if trace: g.trace(p.parent(),p)
+        if p:
+            if trace and verbose: g.trace('**p',p)
+            done,val = self.checkVisBackLimit(limit,limitIsVisible,p)
+            if done:
+                if trace and verbose: g.trace('done',p)
+                return val
+            if p.isVisible(c):
+                if trace and verbose: g.trace('isVisible',p)
+                return p
+    else:
+        # assert not p.
+        return p
+</t>
+<t tx="ekr.20091110090536.2132">def checkVisBackLimit (self,limit,limitIsVisible,p):
+
+    '''Return done, return-val'''
+
+    trace = True and not g.unitTesting
+    c = p.v.context
+
+    if limit:
+        if limit == p:
+            if trace: g.trace('at limit',p)
+            if limitIsVisible and p.isVisible(c):
+                return True,p
+            else:
+                return True,None
+            #return True,g.choose(limitIsVisible and p.isVisible(c),p,None)
+        elif limit.isAncestorOf(p):
+            return False,None
+        else:
+            if trace: g.trace('outside limit tree',limit,p)
+            return True,None
+    else:
+        return False,None
+</t>
+<t tx="ekr.20091110090536.2133">def moveToVisNext (self,c):
+
+    """Move a position to the position of the next visible node."""
+
+    trace = False and not g.unitTesting
+    verbose = False
+    p = self ; limit,limitIsVisible = c.visLimit()
+    while p:
+        if trace: g.trace('1',p.h)
+        # if trace: g.trace('hasChildren %s, isExpanded %s %s' % (
+            # p.hasChildren(),p.isExpanded(),p.h))
+        # Short-circuit if possible.
+        if p.hasNext() and p.hasChildren() and p.isExpanded():
+            p.moveToFirstChild()
+        elif p.hasNext():
+            p.moveToNext()
+        else:
+            p.moveToThreadNext()
+        # if p.hasNext() and (not p.hasChildren() or not p.isExpanded()):
+            # p.moveToNext()
+        # else:
+            # p.moveToThreadNext()
+        if trace: g.trace('2',p.h)
+        if p:
+            done,val = self.checkVisNextLimit(limit,p)
+            if done: return val
+            if p.isVisible(c):
+                return p.copy()
+    else:
+        # assert not p.
+        return p
+</t>
+<t tx="ekr.20091110090536.2134">def checkVisNextLimit (self,limit,p):
+
+    '''Return done, return-val'''
+
+    trace = False and not g.unitTesting
+
+    if limit:
+        # Unlike moveToVisBack, being at the limit does not terminate.
+        if limit == p:
+            return False, None
+        elif limit.isAncestorOf(p):
+            return False,None
+        else:
+            if trace: g.trace('outside limit tree')
+            return True,None
+    else:
+        return False,None
+</t>
+<t tx="ekr.20091110090536.2135"># These methods are only for the use of low-level code
+# in leoNodes.py, leoFileCommands.py and leoUndo.py.</t>
+<t tx="ekr.20091110090536.2136">def _adjustPositionBeforeUnlink (self,p2):
+
+    '''Adjust position p before unlinking p2.'''
+
+    # p will change if p2 is a previous sibling of p or
+    # p2 is a previous sibling of any ancestor of p.
+
+    trace = False and not g.unitTesting
+    p = self ; sib = p.copy()
+
+    if trace: g.trace('entry',p.stack)
+
+    # A special case for previous siblings.
+    # Adjust p._childIndex, not the stack's childIndex.
+    while sib.hasBack():
+        sib.moveToBack()
+        if sib == p2:
+            p._childIndex -= 1
+            if trace: g.trace('***new index: %s\n%s' % (
+                p.h,p.stack))
+            return
+
+    # Adjust p's stack.
+    stack = [] ; changed = False ; i = 0
+    while i &lt; len(p.stack):
+        v,childIndex = p.stack[i]
+        p3 = position(v=v,childIndex=childIndex,stack=stack[:i])
+        while p3:
+            if p2.v == p3.v: # A match with the to-be-moved node?
+                stack.append((v,childIndex-1),)
+                changed = True
+                break # terminate only the inner loop.
+            p3.moveToBack()
+        else:
+            stack.append((v,childIndex),)
+        i += 1
+
+    if changed:
+        if trace: g.trace('***new stack: %s\n%s' % (
+            p.h,stack))
+        p.stack = stack</t>
+<t tx="ekr.20091110090536.2137">if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    table = (
+        '1',
+        '1-1','1-1-1','1-1-2',
+        '1-2','1-2-1','1-2-2',
+        '2',
+        '2-1','2-1-1','2-1-2',
+        '2-2','2-2-1','2-2-2',
+        '3',
+        '3-1','3-1-1','3-1-2',
+        '3-2','3-2-1','3-2-2',
+    )
+
+    for suffix in table:
+        h = 'node %s' % suffix
+        p2 = g.findNodeInTree(c,p,h)
+        assert p2,h
+
+    table2 = (
+        ('2-1-2','2-1-1','2-1-1'),
+        ('3','2','2'),
+    )  
+
+    for h1,h2,h3 in table2:
+        p1 = g.findNodeInTree(c,p,'node %s' % h1)
+        p2 = g.findNodeInTree(c,p,'node %s' % h2)
+        p3 = g.findNodeInTree(c,p,'node %s' % h3)
+        p1._adjustPositionBeforeUnlink(p2)
+        result = p1
+        assert result.stack == p3.stack,'expected %s got %s' % (
+            p3.h,result and result.h or '&lt;none&gt;')
+
+    # Data.
+    @others
+</t>
+<t tx="ekr.20091110090536.2138"># Node 1</t>
+<t tx="ekr.20091110090536.2139"># node 1-1</t>
+<t tx="ekr.20091110090536.2140"># node 1-1-1</t>
+<t tx="ekr.20091110090536.2141"># node 1-1-2</t>
+<t tx="ekr.20091110090536.2142"># node 1-2</t>
+<t tx="ekr.20091110090536.2143"># node 1-2-1</t>
+<t tx="ekr.20091110090536.2144"># node 1-2-2</t>
+<t tx="ekr.20091110090536.2145"># node 2</t>
+<t tx="ekr.20091110090536.2146"># node 2-1</t>
+<t tx="ekr.20091110090536.2147"># node 2-1-1</t>
+<t tx="ekr.20091110090536.2148"># node 2-1-2
+</t>
+<t tx="ekr.20091110090536.2149"># node 2-2</t>
+<t tx="ekr.20091110090536.2150"># node 2-2-1</t>
+<t tx="ekr.20091110090536.2151"># node 2-2-2
+</t>
+<t tx="ekr.20091110090536.2152"># node 3</t>
+<t tx="ekr.20091110090536.2153"># node 3-1
+</t>
+<t tx="ekr.20091110090536.2154"># node 3-1-1</t>
+<t tx="ekr.20091110090536.2155"># node 3-1-2
+</t>
+<t tx="ekr.20091110090536.2156"># node 3-2
+</t>
+<t tx="ekr.20091110090536.2157"># node 3-2-1</t>
+<t tx="ekr.20091110090536.2158"># node 3-2-2
+</t>
+<t tx="ekr.20091110090536.2159">def _linkAfter (self,p_after,adjust=True):
+
+    '''Link self after p_after.'''
+
+    p = self
+    parent_v = p_after._parentVnode()
+        # Returns None if p.v is None
+
+    # Init the ivars.
+    p.stack = p_after.stack[:]
+    p._childIndex = p_after._childIndex + 1
+
+    # Set the links.
+    child = p.v
+    n = p_after._childIndex+1
+    child._addLink(n,parent_v,adjust=adjust)</t>
+<t tx="ekr.20091110090536.2160">def _linkAsNthChild (self,parent,n,adjust=True):
+
+    p = self
+    parent_v = parent.v
+
+    # Init the ivars.
+    p.stack = parent.stack[:]
+    p.stack.append((parent_v,parent._childIndex),)
+    p._childIndex = n
+
+    child = p.v
+    child._addLink(n,parent_v,adjust=adjust)
+
+</t>
+<t tx="ekr.20091110090536.2161">def _parentVnode (self):
+
+    '''Return the parent vnode.
+    Return the hiddenRootNode if there is no other parent.'''
+
+    p = self
+
+    if p.v:
+        data = p.stack and p.stack[-1]
+        if data:
+            v, junk = data
+            return v
+        else:
+            return p.v.context.hiddenRootNode
+    else:
+        return None
+</t>
+<t tx="ekr.20091110090536.2162">def _linkAsRoot (self,oldRoot):
+
+    """Link self as the root node."""
+
+    p = self
+    assert(p.v)
+
+    hiddenRootNode = p.v.context.hiddenRootNode
+
+    if oldRoot: oldRootNode = oldRoot.v
+    else:       oldRootNode = None
+
+    # Init the ivars.
+    p.stack = []
+    p._childIndex = 0
+
+    parent_v = hiddenRootNode
+    child = p.v
+    if not oldRoot: parent_v.children = []
+    child._addLink(0,parent_v)
+
+    return p
+</t>
+<t tx="ekr.20091110090536.2163">def _unlink (self):
+
+    '''Unlink the receiver p from the tree.'''
+
+    p = self ; n = p._childIndex
+    parent_v = p._parentVnode()
+        # returns None if p.v is None
+    child = p.v
+    assert(p.v)
+    assert(parent_v)
+
+    # Delete the child.
+    if (0 &lt;= n &lt; len(parent_v.children) and
+        parent_v.children[n] == child
+    ):
+        # This is the only call to v._cutlink.
+        child._cutLink(n,parent_v)
+    else:
+        self.badUnlink(parent_v,n,child)</t>
+<t tx="ekr.20091110090536.2164">def badUnlink (self,parent_v,n,child):
+
+    if 0 &lt;= n &lt; len(parent_v.children):
+        g.trace('**can not happen: children[%s] != p.v' % (n))
+        g.trace('parent_v.children...\n',
+            g.listToString(parent_v.children))
+        g.trace('parent_v',parent_v)
+        g.trace('parent_v.children[n]',parent_v.children[n])
+        g.trace('child',child)
+        g.trace('** callers:',g.callers())
+        if g.app.unitTesting: assert False, 'children[%s] != p.v'
+    else:   
+        g.trace('**can not happen: bad child index: %s, len(children): %s' % (
+            n,len(parent_v.children)))
+        g.trace('parent_v.children...\n',
+            g.listToString(parent_v.children))
+        g.trace('parent_v',parent_v,'child',child)
+        g.trace('** callers:',g.callers())
+        if g.app.unitTesting: assert False, 'bad child index: %s' % (n)</t>
+<t tx="ekr.20091110090536.2165">def makeCacheList(self):
+
+    '''Create a recursive list describing a tree
+    for use by v.createOutlineFromCacheList.
+    '''
+
+    p = self
+
+    return [
+        p.h,p.b,p.gnx,
+        [p2.makeCacheList() for p2 in p.children()]]
+</t>
+<t tx="ekr.20091110090536.2166">class poslist(list):
+    """ List of positions 
+
+    This behaves like a normal list, with the distinction that it 
+    has select_h and select_b methods that can be used 
+    to search through immediate children of the nodes.
+
+    """
+    @others
+</t>
+<t tx="ekr.20091110090536.2167">def select_h(self, regex, flags = re.IGNORECASE):
+    """ Find immediate child nodes of nodes in poslist with regex.
+
+    You can chain find_h / find_b with select_h / select_b like this
+    to refine an outline search::
+
+        pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')
+
+    """
+    pat = re.compile(regex, flags)
+    res = poslist()
+    for p in self:
+        for child_p in p.children():            
+            m = re.match(pat, child_p.h)
+            if m:
+                pc = child_p.copy()
+                pc.mo = m
+                res.append(pc)
+    return res
+
+
+
+</t>
+<t tx="ekr.20091110090536.2168">def select_b(self, regex, flags = re.IGNORECASE ):
+    """ Find all the nodes in poslist where body matches regex
+
+    You can chain find_h / find_b with select_h / select_b like this
+    to refine an outline search::
+
+        pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')
+    """
+    pat = re.compile(regex, flags)
+    res = poslist()
+    for p in self:
+        m = re.finditer(pat, p.b)
+        t1,t2 = itertools.tee(m,2)
+        try:
+            first = t1.next()
+            # if does not raise StopIteration...
+            pc = p.copy()
+            pc.matchiter = t2
+            res.append(pc)
+
+        except StopIteration:
+            pass
+
+    return res
+
+
+
+</t>
+<t tx="ekr.20091110090536.2169"></t>
+<t tx="ekr.20091110090536.2171"></t>
+<t tx="ekr.20091110090536.2172"></t>
+<t tx="ekr.20091110090536.2173">@language python
+
+'''This script prints the number of nodes in the outline.'''
+
+# Leo's execute-script command (ctrl-B) predefines c and g.
+
+n = len(list(c.all_nodes())) # Count the number of nodes.
+fn = c.shortFileName() # Get the name of Leo outline.
+g.es('%s contains %s nodes' % (fn,n),color='red')</t>
+<t tx="ekr.20091110090536.2174">Leo headlines naturally describe body text.
+
+Headlines are *metadata*. Body text is data.
+
+By *convention*, headlines that start with @x declare **node types**.
+
+Leo's core supports many types. Scripts and plugins support others.</t>
+<t tx="ekr.20091110090536.2181"># Scripts, including unit tests, can use outline structure, and types.
+
+import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)</t>
+<t tx="ekr.20091110090536.2182">first line
+    line 1
+        line a
+            line b
+    line c
+last line</t>
+<t tx="ekr.20091110090536.2183">first line
+line 1
+    line a
+        line b
+line c
+last line</t>
+<t tx="ekr.20091110090536.2184">first line
+    line 1
+        line a
+            line b
+    line c
+last line</t>
+<t tx="ekr.20091110090536.2186">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
 &lt;!--@+leo-ver=4-thin--&gt;
 &lt;!--@+node:ekr.20080301071818.1:@thin html/front.html--&gt;
 &lt;!--@@first--&gt;
@@ -1522,34 +4833,32 @@ NOWEB, EDWARD K. REAM, DONALD E. KNUTH, SILVIO LEVY, OPEN SOFTWARE" /&gt;
 &lt;!--@-node:ekr.20080301071818.1:@thin html/front.html--&gt;
 &lt;!--@-leo--&gt;
 </t>
-<t tx="ekr.20091107171305.1527"></t>
-<t tx="ekr.20091107171305.1528"></t>
-<t tx="ekr.20091107171305.1530"></t>
-<t tx="ekr.20091107171305.1533"></t>
-<t tx="ekr.20091107171305.1534">@language python</t>
-<t tx="ekr.20091107171305.1535">print('%s characters in this node' % (len(p.b)))</t>
-<t tx="ekr.20091107171305.1536">n = 0
-for p in c.all_positions():
-    n += len(p.b)
-print('%d characters in this outline' % n)</t>
-<t tx="ekr.20091107171305.1537">print('%s characters in headline' % (len(p.h)))</t>
-<t tx="ekr.20091107171305.1538"></t>
-<t tx="ekr.20091107171305.1539">@language python</t>
-<t tx="ekr.20091107171305.1541">import os
+<t tx="ekr.20091110090536.2188"># @button nodes create buttons in the icon bar.
+# Pressing the button, applies the script to the selected node.
 
-os.system(r'python c:\leo.repo\trunk\leo\test\slide-show-file.py')</t>
-<t tx="ekr.20091107171305.1542"></t>
-<t tx="ekr.20091107171305.1543"></t>
-<t tx="ekr.20091107171305.6350">assert 1 == 2</t>
-<t tx="ekr.20091107180129.6307"></t>
-<t tx="ekr.20091107180129.20727">print(c)
-print(g)
-print(p)</t>
-<t tx="ekr.20091107181442.1509"></t>
-<t tx="ekr.20091107181442.12182"></t>
-<t tx="ekr.20091108165951.1511">Distill 15 years into 15 seconds.
+g.es('%s characters in headline' % (len(p.h)))</t>
+<t tx="ekr.20091110090536.2189">@language python</t>
+<t tx="ekr.20091110104908.2101"></t>
+<t tx="ekr.20091110104908.2102"></t>
+<t tx="ekr.20091110104908.2104"></t>
+<t tx="ekr.20091110104908.2105">@nocolor-node
 
-Good things happen when all data is in a Leo outline.</t>
-<t tx="ekr.20091108165951.1513"></t>
+To exercise the bug, do the following in test.leo:
+
+- Expand the "prototypes" node.
+- Expand any child node.
+- Move beyond the now-expanded child node.
+- Hit Alt-Left.  This will select the prototype node.
+  The expanded child node will be marked by Leo as being contracted,
+  but it *wont* be contracted actually, which confuses moveToVisNext.</t>
+<t tx="ekr.20091110104908.2106">@nocolor-node
+
+The culprit was the sparse_goto_parent option.
+It never worked properly, and it caused the expansion
+state of nodes as seen by Leo to get out-of-synch
+with the expansion state as seen by the qt tree code.
+</t>
+<t tx="ekr.20091110104908.2107"></t>
+<t tx="ekr.20091110104908.2108"></t>
 </tnodes>
 </leo_file>

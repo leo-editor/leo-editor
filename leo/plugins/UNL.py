@@ -88,6 +88,7 @@ import leo.core.leoPlugins as leoPlugins
 
 #Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
+import os
 import urlparse 
 #@nonl
 #@-node:rogererens.20041014110709.1:<< imports >>
@@ -164,14 +165,14 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=None, maxp=None):
     return False, maxdepth, maxp
 #@-node:tbrown.20070726135242:recursiveUNLSearch
 #@+node:rogererens.20041021091837:onUrl1
-import os
 def onUrl1 (tag,keywords):
     """Redefine the @url functionality of Leo Core: allows jumping to URL _and UNLs_.
     Spaces are now allowed in URLs."""
+    trace = True and not g.unitTesting
     c = keywords.get("c")
     v = keywords.get("v")
-    # The unl key is new in 4.3 beta 2.
-    # The unl ends with the first blank, unless either single or double quotes are used.
+    # The url key is new in 4.3 beta 2.
+    # The url ends with the first blank, unless either single or double quotes are used.
     url = keywords.get('url')
     url = url.replace('%20',' ')
 
@@ -183,22 +184,22 @@ def onUrl1 (tag,keywords):
 #   file://home/me/todolist.html
 #@-at
 #@@c
-    # g.trace(url)
+    if trace: g.trace(url)
 
     try:
         try:
             urlTuple = urlparse.urlsplit(url)
-            #@            << log url-stuff >>
-            #@+node:rogererens.20041125015212:<<log url-stuff>>
-            if 0:
-                g.es("scheme  : " + urlTuple[0])
-                g.es("network : " + urlTuple[1])
-                g.es("path    : " + urlTuple[2])
-                g.es("query   : " + urlTuple[3])
-                g.es("fragment: " + urlTuple[4])
-            #@nonl
-            #@-node:rogererens.20041125015212:<<log url-stuff>>
-            #@nl
+            if trace:
+                #@                << log url-stuff >>
+                #@+node:rogererens.20041125015212:<<log url-stuff>>
+                g.trace("scheme  : " + urlTuple[0])
+                g.trace("network : " + urlTuple[1])
+                g.trace("path    : " + urlTuple[2])
+                g.trace("query   : " + urlTuple[3])
+                g.trace("fragment: " + urlTuple[4])
+                #@nonl
+                #@-node:rogererens.20041125015212:<<log url-stuff>>
+                #@nl
         except:
             g.es("exception interpreting the url " + url)
             g.es_exception()
@@ -267,7 +268,6 @@ def onUrl1 (tag,keywords):
     except:
         g.es("exception opening " + url)
         g.es_exception()
-#@nonl
 #@-node:rogererens.20041021091837:onUrl1
 #@+node:rogererens.20041013084119:onSelect2
 def onSelect2 (tag,keywords):

@@ -182,8 +182,12 @@ def promptForDangerousWrite (self,fileName,kind):
 #@-node:ekr.20090712050729.6017:promptForDangerousWrite
 #@-node:ekr.20090813084945.5977:Suppressed dangerous write prompt for clones
 #@+node:ekr.20090804091109.5985:Fixed double prompt in c.close()
-# only on Linux.
+#@+node:ekr.20091109103928.6372:Notes
+@nocolor
+
+This bug happens only on Linux.
 #@nonl
+#@-node:ekr.20091109103928.6372:Notes
 #@+node:ekr.20031218072017.2609:app.closeLeoWindow
 def closeLeoWindow (self,frame):
 
