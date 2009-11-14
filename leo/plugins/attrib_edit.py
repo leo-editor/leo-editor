@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:tbrown.20091103080354.6817:@thin /mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/attrib_edit/leo/plugins/attrib_edit.py
+#@+node:tbrown.20091029123555.5319:@thin attrib_edit.py
 #@<< docstring >>
 #@+node:tbrown.20091009210724.10972:<< docstring >>
 '''
@@ -362,7 +362,7 @@ class AttributeGetterAt(AttributeGetter):
         ans = []
 
         for n in v.children:
-            if n.h[0] == '@' and ('A' <= n.h[1] <= 'Z'):
+            if n.h and n.h[0] == '@' and ('A' <= n.h[1] <= 'Z'):
                 words = n.h[1:].split(None, 1)
                 if not words:
                     continue
@@ -437,6 +437,8 @@ class AttributeGetterColon(AttributeGetter):
         parts = v.b.split('\n',100)
 
         for i in parts[:99]:
+            if not i or i[0].isspace():
+                continue
             words = i.split(None, 1)
             if words and len(words[0]) and words[0][-1] == ':':
                 if len(words) == 1:
@@ -901,5 +903,5 @@ def cmd_Scan(c):
 #@-node:tbrown.20091029101116.1426:cmd_Scan
 #@-others
 #@nonl
-#@-node:tbrown.20091103080354.6817:@thin /mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/attrib_edit/leo/plugins/attrib_edit.py
+#@-node:tbrown.20091029123555.5319:@thin attrib_edit.py
 #@-leo
