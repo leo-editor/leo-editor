@@ -247,6 +247,7 @@ class LeoApp:
             "w"     : "cweb",
             "xml"   : "xml",
             "xsl"   : "xslt",
+            "hx"    : "haxe",
         }
 
         # Extra language extensions, used to associate extensions with mode files.
