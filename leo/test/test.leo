@@ -1401,7 +1401,7 @@ leoTest.doTests (c,all=False)</t>
 # qtGui.py
 # tkGui.py
 
-attrib_edit.py
+# attrib_edit.py
 ctagscompleter.py
 
 plugins_menu.py

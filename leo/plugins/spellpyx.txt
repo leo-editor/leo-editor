@@ -18,6 +18,7 @@ AutoTrees
 Autocompletion
 Autosaves
 Avec
+Awk
 BackSpace
 BadLeoFile
 Baecker

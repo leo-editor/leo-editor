@@ -1017,7 +1017,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         self.widget.ensureCursorVisible()
     #@-node:ekr.20081121105001.586:seeInsertPoint
-    #@+node:ekr.20081121105001.587:setAllText (leoQTextEditWidget)
+    #@+node:ekr.20081121105001.587:setAllText (leoQTextEditWidget) & helper
     def setAllText(self,s,insert=None,new_p=None):
 
         '''Set the text of the widget.
@@ -1039,7 +1039,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         if insert is None: i,pos = 0,0
         else: i,pos = insert,sb.sliderPosition()
 
-        if trace: g.trace(id(w),len(s),c.p.h)
+        if trace: g.trace(new_p)
         if trace and verbose: t1 = g.getTime()
         try:
             self.changingText = True # Disable onTextChanged
@@ -1048,6 +1048,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             if w.htmlFlag and new_p and new_p.h.startswith('@html '):
                 w.setReadOnly(False)
                 w.setHtml(s)
+                w.setReadOnly(True)
+            elif w.htmlFlag and new_p and new_p.h.startswith('@image'):
+                s2 = self.urlToImageHtml(new_p,s)
+                w.setReadOnly(False)
+                w.setHtml(s2)
                 w.setReadOnly(True)
             else:
                 w.setReadOnly(False)
@@ -1060,7 +1065,31 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         self.setSelectionRange(i,i,insert=i)
         sb.setSliderPosition(pos)
     #@nonl
-    #@-node:ekr.20081121105001.587:setAllText (leoQTextEditWidget)
+    #@+node:ekr.20091117092146.3671:urlToImageHtml
+    def urlToImageHtml (self,p,s):
+
+        '''Create html that will display an image whose url is in s or p.h.'''
+
+        if not s.strip():
+            assert p.h.startswith('@image')
+            s = p.h[6:].strip()
+
+        if not s.startswith('"'): s = '"' + s
+        if not s.endswith('"'): s = s + '"'
+
+        html = '''
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head></head>
+    <body bgcolor="#fffbdc">
+    <img src=%s>
+    </body>
+    </html>
+    ''' % (s)
+
+        return html
+    #@-node:ekr.20091117092146.3671:urlToImageHtml
+    #@-node:ekr.20081121105001.587:setAllText (leoQTextEditWidget) & helper
     #@+node:ekr.20081121105001.588:setInsertPoint
     def setInsertPoint(self,i):
 

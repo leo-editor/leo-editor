@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet ekr_test?>
+<?xml-stylesheet ekr_stylesheet?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
@@ -29,6 +29,7 @@
 <v t="ekr.20060525110135.1"><vh>@@button rst-&gt;tex</vh></v>
 <v t="ekr.20060525110217"><vh>@@button rst-&gt;rst</vh></v>
 </v>
+<v t="ekr.20091112060950.6677"><vh>@button Remove newlines</vh></v>
 <v t="ville.20090705224948.5734"><vh>@button generate-userguide</vh>
 <v t="ville.20090705225609.5736"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
 <v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
@@ -218,20 +219,16 @@
 <v t="ekr.20060105145125"><vh>How to install the Aspell spell checker</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.3"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
-<v t="ekr.20050816073412"><vh>@rst html\intro.html</vh>
+<v t="ekr.20050831195331.3" a="E"><vh>Chapter 2: The Leo Tutorial</vh>
+<v t="ekr.20050816073412" a="E"><vh>@rst html\intro.html</vh>
 <v t="ekr.20050816073814"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20050816073412.1"><vh>Introduction</vh>
+<v t="ekr.20091111112709.6666"><vh>Whetting your appetite</vh></v>
 <v t="ekr.20050822173420"><vh>Leo's main window</vh></v>
 <v t="ekr.20050823082517"><vh>Using Leo as an outliner</vh></v>
-</v>
-<v t="ekr.20050824151926"><vh>Unique features of Leo</vh>
-<v t="ekr.20050822173420.1"><vh>external files</vh></v>
+<v t="ekr.20050822173420.1"><vh>External files</vh></v>
 <v t="ekr.20050822173420.2"><vh>Clones &amp; views</vh></v>
-<v t="ekr.20050827055403"><vh>Outline structure is significant everywhere</vh></v>
-<v t="ekr.20050822173420.3"><vh>Leo directives</vh></v>
-</v>
-<v t="ekr.20050827102655"><vh>Leo for Programmers</vh>
+<v t="ekr.20050822173420.3"><vh>Leo directives (for non-programmers)</vh></v>
+<v t="ekr.20050827102655"><vh>Leo for Programmers</vh></v>
 <v t="ekr.20050827090532"><vh>Quick start for programmers</vh></v>
 <v t="ekr.20050829081318"><vh>Beginner`s reference guide</vh>
 <v t="ekr.20050827155902"><vh>Syntax of section names</vh></v>
@@ -245,7 +242,6 @@
 <v t="ekr.20050822173420.5"><vh>Scripting Leo</vh></v>
 <v t="ekr.20050823081317.1"><vh>Plugins &amp; settings</vh></v>
 <v t="ekr.20050827090802"><vh>Further study</vh></v>
-</v>
 </v>
 </v>
 <v t="EKR.20040524104904.26"><vh>Chapter 3: Using Outlines</vh>
@@ -866,11 +862,17 @@
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
 </v>
 </v>
-<v t="EKR.20040524104904.380"><vh>Glossary</vh>
+<v t="EKR.20040524104904.380"><vh>OLD Glossary</vh>
 <v t="ekr.20050901071041"><vh>@rst html\glossary.html</vh>
 <v t="ekr.20050901071300"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050901073048"><vh>@rst-no-head glossary</vh></v>
 </v>
+</v>
+<v t="ekr.20091111112709.6671"><vh>Glossary</vh>
+<v t="ekr.20091111112709.6672"><vh>@rst html\glossary.txt</vh>
+<v t="ekr.20091111112709.6676"><vh>@rst-no-head links</vh></v>
+</v>
+<v t="ekr.20091111112709.6677"><vh>To be rewritten</vh></v>
 </v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20090324145450.20"><vh>What's New in Leo 4.6</vh>
@@ -1037,6 +1039,36 @@
 <v t="ekr.20091107093823.6805"><vh>Unit Testing with @test and @suite nodes</vh></v>
 <v t="ekr.20091107093823.6806"><vh>Plugins and hooks</vh></v>
 <v t="ekr.20091107093823.6807"><vh>Contacts</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20091111083703.6640"><vh>OLD Chapter 2: A Tutorial Introduction to Leo</vh>
+<v t="ekr.20091111083703.6641"><vh>OLD @@rst html\intro.html</vh>
+<v t="ekr.20091111083703.6642"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20091111083703.6643"><vh>Introduction</vh>
+<v t="ekr.20091111083703.6644"><vh>Leo's main window</vh></v>
+<v t="ekr.20091111083703.6645"><vh>Using Leo as an outliner</vh></v>
+</v>
+<v t="ekr.20091111083703.6646"><vh>Unique features of Leo</vh>
+<v t="ekr.20091111083703.6647"><vh>external files</vh></v>
+<v t="ekr.20091111083703.6648"><vh>Clones &amp; views</vh></v>
+<v t="ekr.20091111083703.6649"><vh>Outline structure is significant everywhere</vh></v>
+<v t="ekr.20091111083703.6650"><vh>Leo directives</vh></v>
+</v>
+<v t="ekr.20091111083703.6651"><vh>Leo for Programmers</vh>
+<v t="ekr.20091111083703.6652"><vh>Quick start for programmers</vh></v>
+<v t="ekr.20091111083703.6653"><vh>Beginner`s reference guide</vh>
+<v t="ekr.20091111083703.6654"><vh>Syntax of section names</vh></v>
+<v t="ekr.20091111083703.6655"><vh>Code and doc parts</vh></v>
+<v t="ekr.20091111083703.6656"><vh>Directives for programming</vh></v>
+<v t="ekr.20091111083703.6657"><vh>Orphan nodes</vh></v>
+<v t="ekr.20091111083703.6658"><vh>Sentinel lines</vh></v>
+<v t="ekr.20091111083703.6659"><vh>Leo and literate programming</vh></v>
+</v>
+<v t="ekr.20091111083703.6660"><vh>Good style and bad:  sections vs. @others</vh></v>
+<v t="ekr.20091111083703.6661"><vh>Scripting Leo</vh></v>
+<v t="ekr.20091111083703.6662"><vh>Plugins &amp; settings</vh></v>
+<v t="ekr.20091111083703.6663"><vh>Further study</vh></v>
 </v>
 </v>
 </v>
@@ -3195,10 +3227,16 @@
 </v>
 </v>
 </v>
+<v t="ekr.20091111083703.6668"><vh>Intro notes</vh>
 <v t="ekr.20091105080104.6568"><vh>More language for the intro</vh></v>
 <v t="ekr.20091105080104.11493"><vh>New intro language Geoff Evans</vh></v>
-<v t="ekr.20050831195331.4"></v>
 <v t="ekr.20091105080104.11494"><vh>EKR second draft of the intro</vh></v>
+<v t="ekr.20091111083703.6666"><vh>From old intro</vh>
+<v t="ekr.20091111083703.6667"><vh>From first node</vh></v>
+<v t="ekr.20050827055403"><vh>Outline structure is significant everywhere</vh></v>
+</v>
+</v>
+<v t="ekr.20050831195331.3" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
@@ -9992,47 +10030,54 @@ Removes @ignore, @nocolor, @wrap directives.
 .. _chapter8:       customizing.html
 .. _`rst3 plugin`:  rstplugin3.html
 </t>
-<t tx="ekr.20050816073412">##########################################
-Chapter 2: A Tutorial Introduction to Leo
-##########################################
+<t tx="ekr.20050816073412">############################
+Chapter 2: The Leo Tutorial
+############################
 
-This tutorial shows you Leo's basic features. These features are simple to use,
-yet they interact with each other in powerful ways. All Leo's features relate in
-some way to outlines_. Indeed, `outline structure is significant everywhere`_.
+:Release: |version|
+:Date: |today|
 
-`Quick start for programmers`_ contains the heart of this chapter. It briefly
-describes everything a Python programmer needs to know in order to understand
-Leo's source code. `Good style and bad`_ answers common question about when to
-use the features described in the quickstart_. The section `Scripting Leo`_ is
-an introduction to scripting Leo with Python. For full details, see `Chapter 7:
-Scripting Leo with Python`_.
+Leo is an easy to learn, powerful programming editor, data management tool and
+scripting environment for the `Python`_ language. Many people say that Leo is
+fun to use, even addicting.
 
-For another introduction to Leo, open the file quickstart.leo in the leo/doc folder.
+Leo is freely available in source or binary form for all major platforms. You
+may download Leo from http://sourceforge.net/projects/leo/files/Leo/ Leo is Open
+Software and may be freely distributed.
+
+`Leo's home page`_ contains additional documentation and links to other
+resources. For another introduction to Leo, open the file quickstart.leo in the
+leo/doc folder.
+
+This tutorial introduces the reader to the basic concepts and features of Leo.
+It helps to have Leo running for hands-on experience, but all examples here are
+self-contained, so the tutorial can be read off-line as well.
+See `Leo's Installation Guide`_. for detailed installation instructions. If you
+have problems installing Leo, please ask for help on `Leo's help forum`_. 
+
+This tutorial does not attempt to be comprehensive and cover every single
+feature of Leo, or even every commonly used feature. Instead, it introduces many
+of Leo's most noteworthy features, and will give you a good idea of Leo's flavor
+and style. After reading it, you will be able to use Leo in basic ways to create
+external files and organize data. You will then be ready to learn more about
+Leo's many advanced features in `Leo's Users Guide`_.
+
+The :ref:`glossary` is also worth going through.
 
 .. .. contents::</t>
-<t tx="ekr.20050816073412.1">**Important**: please `install Leo`_ before reading this tutorial,
-If you have any problem, please do ask for help on `Leo's help forum`_.
-
-Now that you have Leo installed, please `launch Leo`_.
-You should see Leo's main window, something like this:
-**Note**: the actual contents of the icon area at the top depends on
-what plugins are active.
-
-|leoMainWindow|
-
-</t>
 <t tx="ekr.20050816073814">.. Links used in this document...
 
 .. ----- External references.
 
 .. _`Leo's help forum`:         http://groups.google.com/group/leo-editor-users
+.. _`Leo's home page`:          http://webpages.charter.net/edreamleo/front.html
 .. _`Literate Programming`:     http://www.literateprogramming.com/
 .. _`noweb`:                    http://www.eecs.harvard.edu/~nr/noweb/
+.. _`Python`:                   http://www.python.org/
+.. _`What people are saying about Leo`: 
 
 .. ----- Relative links....
 
-.. _directive:              `Leo directives`_
-.. _directives:             `Leo directives`_
 .. _`external file`:        `External files`_
 .. _glossary:               glossary.html
 .. _`Good style and bad`:   `Good style and bad:  sections vs. @others`_
@@ -10049,11 +10094,15 @@ what plugins are active.
 .. _`@auto trees`:                                  directives.html#auto-trees
 .. _command:                                        commands.html
 .. _commands:                                       commands.html
+.. _directive:                                      directives.html
+.. _directives:                                     directives.html
+.. _`Leo directives`:                               directives.html
 .. _`editing commands`:                             commands.html#the-edit-menu
 .. _front:                                          front.html
 .. _`install Leo`:                                  install.html
 .. _`launch Leo`:                                   install.html#running-leo
 .. _`Leo's Users Guide`:                            leo_TOC.html
+.. _`Leo's Installation Guide`:                     install.html
 .. _`Chapter 4: Writing Programs in Leo`:           directives.html
 .. _`Chapter 5: Using Leo's Commands`:              commands.html
 .. _`Chapter 6: Leo and Literate Programming`:      design.html
@@ -10105,6 +10154,7 @@ what plugins are active.
 
 .. For reasons unknown, this image must appear in the _images folder on the web site.
 .. |leoMainWindow| image:: screen-shots/leo-qt-main-window.JPG
+
 </t>
 <t tx="ekr.20050818163826">.. publish_argv_for_missing_stylesheets = --language=de,--documentclass=report,--use-latex-toc
 
@@ -10694,12 +10744,14 @@ scanAllOptions
 <t tx="ekr.20050818163826.16">Josef Dalcolmo wrote the initial rst plugin.
 Timo Honkasalo, Bernhard Mulder, Paul Paterson, Kent Tenney and
 Steve Zatz made contributions to the rst and rst2 plugins.</t>
-<t tx="ekr.20050822173420">The main window represents an entire project and is stored in a single **Leo file**,
+<t tx="ekr.20050822173420">Leo's main window, shown below, represents an entire project and is stored in a single **Leo file**,
 a file with a .leo extension.
 As you can see, the main window contains three panes:
 the **outline pane** at the top left,
 the **log pane** at the top right, and the **body pane** at the bottom.
 The window also contains an **icon area** at the very top, a **status area** and a **mini-buffer** at the very bottom.
+
+|leoMainWindow|
 
 Outline pane &amp; nodes
     The outline pane shows your project as an outline.
@@ -10773,22 +10825,22 @@ the order that nodes appear on the screen when all nodes are expanded.
 This means that headlines_ do not affect the meaning of `external files`_ and
 you can use headlines_ to contain whatever data you wish.
 Usually, headlines_ describe what's in the node.</t>
-<t tx="ekr.20050822173420.2">A **cloned node** is a copy of a node_ that changes when the original changes.
-Changes to the children_, grandchildren_, etc. of a node are simultaneously made
-to the corresponding nodes contained in all cloned nodes. A small red arrow in
-icon boxes marks clones.
+<t tx="ekr.20050822173420.2">A **clone** is a node that appears in more than one place in the outline.
+Clones are marked with a small red arrow in the icon box.
+All clones of a node are actually *the same node*, so any change to one clone
+affects all clones.  For example, inserting, moving or deleting any child of
+a clone will change all other clones on the screen.
 
-Please take a few moments to experiment with clones. Start with a single node,
-say a node_ whose headline_ is A. Clone node A using the ``Clone Node`` command_
-in Leo's Outline menu. Both clones are identical; there is no distinction
-between the original node and any of its clones.
+Please take a few moments to experiment with clones. Create a node whose
+headline is A. Clone node A using the ``Clone Node`` command in Leo's Outline
+menu.
 
-Type some text into the body of either node A. The same text appears in the
-bodies of all other clones_ of A. Now insert a node, say B, as a child of any of
+Type some text into the body of either clone of A. The same text appears in the
+bodies of all other clones of A. Now insert a node, say B, as a child of any of
 the A nodes. All the A nodes now have a B child. See what happens if you clone
-B. See what happens if you insert, delete or move nodes that are children_ of A.
-Verify that when the second-to-last cloned node is deleted the last cloned node
-becomes a regular node again.
+B. See what happens if you insert, delete or move nodes that are children of A.
+Verify that when you delete the penultimate clone, the last clone becomes a
+regular node again.
 
 Clones are much more than a cute feature. **Clones allow multiple views of data
 to exist within a single outline**. The ability to create multiple views of data
@@ -10825,9 +10877,10 @@ task at hand, and lets me ignore all other details.
 
 Clones are the basis for Leo's project management capabilities. Indeed, the
 ability to create multiple views of a project is most helpful.</t>
-<t tx="ekr.20050822173420.3">Leo directives control such things as syntax coloring, line wrapping within the body pane and the width of tabs.
-Leo directives may appear in headlines or body text.
-Leo directives start with '@' in the leftmost column, followed by the name of the directive.  Some examples::
+<t tx="ekr.20050822173420.3">Leo directives control such things as syntax coloring, line wrapping within the
+body pane and the width of tabs. Leo directives may appear in headlines or body
+text. Leo directives start with '@' in the leftmost column, followed by the name
+of the directive. The following directives are useful for non-programmers::
 
     @language python
     @tabwidth -4
@@ -10837,23 +10890,21 @@ Leo directives start with '@' in the leftmost column, followed by the name of th
     @nocolor
     @killcolor
 
-The following directives are useful for non-programmers;
-`Directives for programming`_ lists the directives used for computer programming.
+**\@color**, **\@nocolor** and **\@killcolor** control syntax coloring.
 
-- **\@color**, **\@nocolor** and **\@killcolor** control syntax coloring.
+  You can mix ``@nocolor`` and ``@color`` directives in a single node_, but
+  these directives apply to descendant nodes only if they are **unambiguous**,
+  that is, only if the ancestor node contains exactly one ``@color`` or
+  ``@nocolor`` directive.
 
-- **\@language** sets the language used for syntax coloring.
+**\@language** sets the language used for syntax coloring.
 
-- **\@tabwidth** sets the width of tabs.
-  Negative tab widths cause Leo to convert tabs to spaces
-  (highly recommended for Python programming.)
+**\@tabwidth** sets the width of tabs.
 
-- **\@wrap** and **\@nowrap** enable or disable line wrapping the Leo's body pane.
+  Negative tab widths cause Leo to convert tabs to spaces and are highly
+  recommended for Python programming.
 
-**Note**:
-You can mix ``@nocolor`` and ``@color`` directives in a single node_,
-but these directives apply to descendant_ nodes only if they are **unambiguous**, that is,
-only if the ancestor node contains exactly one ``@color`` or ``@nocolor`` directive.</t>
+**\@wrap** and **\@nowrap** enable or disable line wrapping the Leo's body pane.</t>
 <t tx="ekr.20050822173420.5">Leo is fully scriptable using the Python language.
 **Leo can execute any body text as a Python script**.
 To run the entire body text as a script, simply choose the node and execute the ``Execute Script`` command (``Ctrl+B``).
@@ -10916,8 +10967,6 @@ You enter `body text`_ for any node by selecting the node's headline in the
 outline pane and then typing in the body pane. Leo has a full range of `editing
 commands`_ that apply to the body pane.
 </t>
-<t tx="ekr.20050824151926">So far we have discussed features that Leo shares with other editors and outliners.
-The following sections explain what makes Leo unique.</t>
 <t tx="ekr.20050827055403">So far we have been focusing on Leo's outline pane: creating and cloning_ nodes_.
 In fact, *outline structure affects all aspects of Leo*.
 For example:
@@ -23481,7 +23530,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="2"></t>
+<t tx="ekr.20070610174018" str_leo_pos="6,0,1"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -31266,6 +31315,884 @@ script is contained. Whenever possible, scripts should use the high-level
 methods of the commander to insert, delete or clone nodes. Finally, the
 execute-script commands predefines p to be the presently selected position.
 </t>
+<t tx="ekr.20091111083703.6640">@language rest</t>
+<t tx="ekr.20091111083703.6641">##########################################
+Chapter 2: A Tutorial Introduction to Leo
+##########################################
+
+This tutorial shows you Leo's basic features. These features are simple to use,
+yet they interact with each other in powerful ways. All Leo's features relate in
+some way to outlines_. Indeed, `outline structure is significant everywhere`_.
+
+`Quick start for programmers`_ contains the heart of this chapter. It briefly
+describes everything a Python programmer needs to know in order to understand
+Leo's source code. `Good style and bad`_ answers common question about when to
+use the features described in the quickstart_. The section `Scripting Leo`_ is
+an introduction to scripting Leo with Python. For full details, see `Chapter 7:
+Scripting Leo with Python`_.
+
+For another introduction to Leo, open the file quickstart.leo in the leo/doc folder.
+
+.. .. contents::</t>
+<t tx="ekr.20091111083703.6642">.. Links used in this document...
+
+.. ----- External references.
+
+.. _`Leo's help forum`:         http://groups.google.com/group/leo-editor-users
+.. _`Literate Programming`:     http://www.literateprogramming.com/
+.. _`noweb`:                    http://www.eecs.harvard.edu/~nr/noweb/
+
+.. ----- Relative links....
+
+.. _directive:              `Leo directives`_
+.. _directives:             `Leo directives`_
+.. _`external file`:        `External files`_
+.. _glossary:               glossary.html
+.. _`Good style and bad`:   `Good style and bad:  sections vs. @others`_
+.. _outline:                `Leo's main window`_
+.. _outlines:               `Leo's main window`_
+.. _plugin:                 `Plugins &amp; settings`_
+.. _plugins:                `Plugins &amp; settings`_
+.. _quickstart:             `Quick start for programmers`_
+.. _scripts:                `Scripting Leo`_
+.. _settings:               `Plugins &amp; settings`_
+
+.. ----- References to other chapters.
+
+.. _`@auto trees`:                                  directives.html#auto-trees
+.. _command:                                        commands.html
+.. _commands:                                       commands.html
+.. _`editing commands`:                             commands.html#the-edit-menu
+.. _front:                                          front.html
+.. _`install Leo`:                                  install.html
+.. _`launch Leo`:                                   install.html#running-leo
+.. _`Leo's Users Guide`:                            leo_TOC.html
+.. _`Chapter 4: Writing Programs in Leo`:           directives.html
+.. _`Chapter 5: Using Leo's Commands`:              commands.html
+.. _`Chapter 6: Leo and Literate Programming`:      design.html
+.. _`Chapter 7: Scripting Leo with Python`:         scripting.html
+.. _`Chapter 8: Customizing Leo`:                   customizing.html
+
+.. ----- References to the glossary
+
+.. _`@auto`:                    glossary.html#auto
+.. _`@file`:                    glossary.html#file
+.. _`@nosent`:                  glossary.html#nosent
+.. _`@others`:                  glossary.html#others
+.. _`@thin`:                    glossary.html#thin
+.. _`@thin trees`:              glossary.html#thin-trees
+.. _`body text`:                glossary.html#body-text
+.. _ancestor:                   glossary.html#ancestor
+.. _children:                   glossary.html#child
+.. _clone:                      glossary.html#clone
+.. _cloned:                     glossary.html#cloned
+.. _cloning:                    glossary.html#clone
+.. _clones:                     glossary.html#clones
+.. _`code part`:                glossary.html#code-part
+.. _`doc part`:                 glossary.html#doc-part
+.. _descendant:                 glossary.html#descendant
+.. _descendants:                glossary.html#descendants
+.. _`doc part`:                 glossary.html#doc-part
+.. _grandchildren:              glossary.html#grandchildren
+.. _headline:                   glossary.html#headline
+.. _headlines:                  glossary.html#headlines
+.. _`organizer node`:           glossary.html#organizer-node
+.. _`organizer nodes`:          glossary.html#organizer-nodes
+.. _`outline order`:            glossary.html#outline-order
+.. _node:                       glossary.html#node
+.. _nodes:                      glossary.html#nodes
+.. _reference:                  glossary.html#reference
+.. _references:                 glossary.html#references
+.. _root:                       glossary.html#root
+.. _`root node`:   	            glossary.html#root
+.. _section:                    glossary.html#section
+.. _sections:                   glossary.html#section
+.. _`section definition`:       glossary.html#section-definition
+.. _`section definitions`:      glossary.html#section-definitions
+.. _`section definition nodes`: glossary.html#section-definition-nodes
+.. _`section name`:             glossary.html#section-name
+.. _`section names`:            glossary.html#section-names
+.. _`section reference`:        glossary.html#section-reference
+.. _`section references`:       glossary.html#section-references
+.. _siblings:                   glossary.html#siblings
+
+.. For reasons unknown, this image must appear in the _images folder on the web site.
+.. |leoMainWindow| image:: screen-shots/leo-qt-main-window.JPG
+</t>
+<t tx="ekr.20091111083703.6643">**Important**: please `install Leo`_ before reading this tutorial,
+If you have any problem, please do ask for help on `Leo's help forum`_.
+
+Now that you have Leo installed, please `launch Leo`_.
+You should see Leo's main window, something like this:
+**Note**: the actual contents of the icon area at the top depends on
+what plugins are active.
+
+|leoMainWindow|
+
+</t>
+<t tx="ekr.20091111083703.6644">The main window represents an entire project and is stored in a single **Leo file**,
+a file with a .leo extension.
+As you can see, the main window contains three panes:
+the **outline pane** at the top left,
+the **log pane** at the top right, and the **body pane** at the bottom.
+The window also contains an **icon area** at the very top, a **status area** and a **mini-buffer** at the very bottom.
+
+Outline pane &amp; nodes
+    The outline pane shows your project as an outline.
+    The outline contains all your project's data.
+    An outline consists of **nodes**.
+    Nodes have two parts, a **headline** and **body text**.
+    The outline pane shows headlines.
+    **Selecting a headline selects the entire node**; the node's body text appears in the body pane.
+    The **icon box** is a small icon directly to the left of the headline text.
+    If a node contains children, a smaller icon appears to the left of the icon box.
+    This icon contains a ``+`` or ``-`` symbol.
+    Clicking this **expansion box** expands or contracts the node.
+
+Body pane
+    The body pane contains the body text of the node selected in the outline pane.
+    You can control how Leo shows body text using `Leo directives`_ and settings_.
+    For example, directives specify whether to syntax color the body text and whether to wrap the text.
+
+Log pane
+    The log pane contains informational messages from Leo.
+    Scripts_ and plugins_ may also write message to the log pane.
+
+Icon area
+    Depending on what plugins are enabled,
+    the icon area may contain buttons and other widgets that extend what Leo can do.
+    The scripting plugin makes it easy to add buttons to the icon area.
+
+Status area
+    The status area shows the line and column containing the body text's cursor.
+    Other information may follow.
+    Usually this is the **UNL** (Uniform Node Location) that describes the path in the outline
+    to the selected node.
+    Please select nodes at several levels of the outline to see how the UNL changes.
+
+Mini-buffer
+    It is used like the Emacs mini-buffer to invoke commands. For full details, see `Chapter 5: Using Leo's Commands`_.
+
+Now that we are familiar with Leo's main window,
+let's see how to use Leo as a simple outliner.</t>
+<t tx="ekr.20091111083703.6645">You can use Leo as fairly typical outliner. Play around with some of the
+commands from the Outline menu:
+
+- Click the expansion box of nodes_ to show and hide their children.
+
+- The ``Insert Node`` command (``Ctrl+I``) inserts a new headline into the outline.
+
+- The ``Cut Node`` command (``Ctrl+Shift+X``) deletes a headline and all its children, and copies the 
+  structure to clipboard - ready to paste with ``Paste Node`` command (``Ctrl+Shift+V``). Use
+  ``Copy Node`` command (``Ctrl+Shift+C``) to copy node to clipboard without deleting it 
+  from outline. Copy-paste command family works across different Leo documents.
+
+- The ``Move Up`` (``Ctrl+U``), ``Move Down`` (``Ctrl+D``), ``Move Left`` (``Ctrl+L``) and ``Move Right`` (``Ctrl+R``)
+  commands move the currently selected node, along with all its descendants. 
+
+- The ``Promote`` (``Ctrl+}``) command makes all the children of a headline siblings of the headline.
+  The ``Demote`` (``Ctrl+{``) command makes all following siblings_ of a headline children of the headline.
+
+- Move around the tree and expand/collapse nodes by pressing Alt + arrow keys. This also moves the focus 
+  to tree, so, after pressing Alt + arrow, you can move around by using arrow keys alone. Return the 
+  focus to the body control by pressing ``Enter``. 
+
+- To edit the headline, use press ``Ctrl+H``. This works regardless of whether body or headline 
+  has focus.
+
+- We'll discuss the ``Clone Node`` command in the next section.
+
+You enter `body text`_ for any node by selecting the node's headline in the
+outline pane and then typing in the body pane. Leo has a full range of `editing
+commands`_ that apply to the body pane.
+</t>
+<t tx="ekr.20091111083703.6646">So far we have discussed features that Leo shares with other editors and outliners.
+The following sections explain what makes Leo unique.</t>
+<t tx="ekr.20091111083703.6647">You don't have to store all outline data in Leo (.leo) files.
+Leo allows you to store outline data in external files called **external files**.
+This is useful for creating programming files, documentation files such as LaTeX files, and web pages.
+
+**Important**:
+You can edit `external files`_ outside of Leo.
+Leo will update the outline to reflect those changes when Leo next opens the outline_.
+
+It is easy to create external files; just put ``@thin`` *filename* in a headline_.
+That creates an **@thin node**.
+The **@thin tree** (the ``@thin`` node and all its descendants) corresponds to the external file *filename*.
+Leo writes a `external file`_ corresponding to the ``@thin`` tree to your hard drive when Leo saves your outline (.leo file).
+When opening a .leo file, Leo reads all the `external files`_ corresponding to ``@thin`` nodes in the outline_.
+
+A good rule of thumb is to use ``@thin`` nodes unless you have a specific reason to do otherwise.
+See `Chapter 4: Writing Programs in Leo`_ for a full discussions of the various ways of creating `external files`_.
+
+**Important**:
+You must tell Leo the order in which to write data from the ``@thin`` tree to the `external file`_.
+The simplest way to specify the contents of a external file is to insert::
+
+    @all
+
+in the body text of the `@thin`_ node_.
+``@all`` is a Leo `directive`_.
+
+When writing a `external file`_, Leo writes the `body text`_ of the `@thin`_ node_,
+replacing the ``@all`` directive by the `body text`_ of all the descendant_ nodes_ in **outline order**,
+the order that nodes appear on the screen when all nodes are expanded.
+`Leo for Programmers`_ discusses other, more flexible, ways of creating external files from `@thin`_ trees.
+**Note**: Leo copies headlines to the external file as comments.
+This means that headlines_ do not affect the meaning of `external files`_ and
+you can use headlines_ to contain whatever data you wish.
+Usually, headlines_ describe what's in the node.</t>
+<t tx="ekr.20091111083703.6648">A **cloned node** is a copy of a node_ that changes when the original changes.
+Changes to the children_, grandchildren_, etc. of a node are simultaneously made
+to the corresponding nodes contained in all cloned nodes. A small red arrow in
+icon boxes marks clones.
+
+Please take a few moments to experiment with clones. Start with a single node,
+say a node_ whose headline_ is A. Clone node A using the ``Clone Node`` command_
+in Leo's Outline menu. Both clones are identical; there is no distinction
+between the original node and any of its clones.
+
+Type some text into the body of either node A. The same text appears in the
+bodies of all other clones_ of A. Now insert a node, say B, as a child of any of
+the A nodes. All the A nodes now have a B child. See what happens if you clone
+B. See what happens if you insert, delete or move nodes that are children_ of A.
+Verify that when the second-to-last cloned node is deleted the last cloned node
+becomes a regular node again.
+
+Clones are much more than a cute feature. **Clones allow multiple views of data
+to exist within a single outline**. The ability to create multiple views of data
+is crucial; you don't have to try to decide what is the 'correct' view of data.
+You can create as many views as you like, each tailored exactly to the task at hand.
+
+To create a new view of the data, just create any *ordinary* node. This node
+will *represent* the new view. Let us call it a **view node.** Now just put any
+nodes that are related to the view as descendant nodes of your view node. Let us
+call the descendants of the view nodes the **components** of the view. Component
+nodes are typically clones of other nodes in the outline. This is what gives the
+view its power: a view can contain nodes gathered from all over the outline.
+However, it is also sometimes useful to add non-cloned nodes as components of
+views.
+
+For example, when I begin to fix a bug I first create a view node to represent
+the bug. I then create a component node (not cloned) that contains the original
+bug report. I may also create other non-cloned nodes to contain notes and
+documentation. Next, I go looking throughout Leo's code for nodes that relate in
+some way to the bug. When I find such a node I clone it and move one of the
+clones so it becomes a component of the view node for the bug. **Note**: I can
+organize the components of the view node as I please. In particular, I can
+create **organizer nodes** whose only purpose is to contain groups of component
+nodes. In other words, the full power of Leo outlines is available within view
+nodes.
+
+**Important**: Once I have created the view of the bug, I can concentrate *only*
+on that view. In particular, I can fix code by changing *component* nodes.
+Because the code nodes are cloned, any changes I make to a component node also
+get made to the other cloned nodes throughout the outline. In effect, my view
+node for the bug lets me work only on the nodes of the outline that are directly
+related to the bug. In other words, the view nodes lets me focus *only* on the
+task at hand, and lets me ignore all other details.
+
+Clones are the basis for Leo's project management capabilities. Indeed, the
+ability to create multiple views of a project is most helpful.</t>
+<t tx="ekr.20091111083703.6649">So far we have been focusing on Leo's outline pane: creating and cloning_ nodes_.
+In fact, *outline structure affects all aspects of Leo*.
+For example:
+
+-   As mentioned earlier, body text can contain `Leo directives`_ that control how Leo works.
+    By default, a Leo directive applies to a node and all its descendants_,
+    but a Leo directive in a descendant node can **override** a directive in an ancestor_ node.
+
+-   Programs in `body text`_ can contain optional markup consisting of sections_ and section references_.
+    (See `Quick start for programmers`_ for details.)
+    Leo outlines limits the visibility of such sections:
+    sections_ must be defined in a node descending from the node containing the `section reference`_.
+
+-   You can organize scripts and programs using outlines, and scripts can use
+    outline structure to access data. Plugins_ and scripts_ often confine their
+    effects to the presently selected outline.</t>
+<t tx="ekr.20091111083703.6650">Leo directives control such things as syntax coloring, line wrapping within the body pane and the width of tabs.
+Leo directives may appear in headlines or body text.
+Leo directives start with '@' in the leftmost column, followed by the name of the directive.  Some examples::
+
+    @language python
+    @tabwidth -4
+    @wrap
+    @nowrap
+    @color
+    @nocolor
+    @killcolor
+
+The following directives are useful for non-programmers;
+`Directives for programming`_ lists the directives used for computer programming.
+
+- **\@color**, **\@nocolor** and **\@killcolor** control syntax coloring.
+
+- **\@language** sets the language used for syntax coloring.
+
+- **\@tabwidth** sets the width of tabs.
+  Negative tab widths cause Leo to convert tabs to spaces
+  (highly recommended for Python programming.)
+
+- **\@wrap** and **\@nowrap** enable or disable line wrapping the Leo's body pane.
+
+**Note**:
+You can mix ``@nocolor`` and ``@color`` directives in a single node_,
+but these directives apply to descendant_ nodes only if they are **unambiguous**, that is,
+only if the ancestor node contains exactly one ``@color`` or ``@nocolor`` directive.</t>
+<t tx="ekr.20091111083703.6651">The previous sections have discussed the basics of Leo.
+*Non-programmers can stop reading this tutorial now*!
+
+The following sections tell how to create external files that contain computer
+programs. Yes, you could create program files using the ``@all`` directive, but
+the following section explain how you can take advantage of **power-user**
+features designed specifically for computer programmers. Even if you don't read
+manuals, please read the following short `Quick start for programmers`_ section.</t>
+<t tx="ekr.20091111083703.6652">`@thin trees`_ (parts of the outline whose *headline* starts with @thin)
+create `external files`_ containing your program.
+Within ``@thin trees`` you can write *functional pseudo-code*, like this::
+
+    &lt;&lt; imports &gt;&gt;  (in body text)
+
+This is a **reference** to a **section** called ``&lt;&lt; imports &gt;&gt;``.
+When writing a `external file`_,
+Leo replaces all section references by their definition.
+You define sections with **section definition nodes**.
+A section definition node is a node_ whose headline_ starts with a `section name`_::
+
+    &lt;&lt; imports &gt;&gt;   (in a headline)
+
+The `body text`_ of this node_ is its definition.  For example::
+
+    import leo.core.leoGlobals as g
+    import sys
+
+As you can see, `section definitions`_ can be *fragments* of code;
+they don't have to be complete functions or methods.
+
+**Notes**:
+
+-   `Section definition nodes`_ must be descendants_ of the node_ containing the `section reference`_.
+    Leo's syntax colorer underlines undefined `section references`_.
+
+-   `Section definitions`_ may contain references to other sections_.
+
+-   The **@others** directive_ is a special kind of `section reference`_.
+    Leo replaces the ``@others`` directive by the body text of all descendant_ nodes_
+    *except* `section definition nodes`_.
+    That's how ``@others`` got its name.
+    For example, the `root node`_ of Python `external files`_ typically is something like this::
+
+        &lt;&lt; docstring &gt;&gt;
+        &lt;&lt; imports &gt;&gt;
+        @others
+
+    The `external file`_ will contain the docstring, followed by the imports, followed by the
+    the body text of all other nodes in the ``@file`` tree, in `outline order`_.
+
+- A `external file`_ may contain multiple ``@others`` directives_: Each
+  ``@others`` directive expands to the body text of all descendant_ nodes_,
+  excluding any nodes (and *their* descendants) that contain other ``@others``
+  directives_. In practice, using ``@others`` is easy.
+
+- You may precede `section references`_ (including the ``@others`` directive_)
+  with whitespace. When expanding the section references, Leo inserts the
+  preceding whitespace before every expanded line. For example, the following
+  will work properly in Python::
+
+    if path:
+        &lt;&lt; create or recreate temp file as needed &gt;&gt;
+
+*You now know enough to understand Leo's source code*.  Hurray!
+The following sections discuss some relatively minor details.
+However, I recommend reading `Good style and bad`_;
+you might save yourself some extra work.
+
+`@auto trees`_ allow you to edit external files that do not contain sentinels.
+Leo imports such external files every time Leo reads the .leo file.
+</t>
+<t tx="ekr.20091111083703.6653">This section covers all the details of programming with Leo that beginners are likely to need.
+`Chapter 4: Writing Programs in Leo`_ is the full reference guide.
+I recommend avoiding that chapter until you have been programming with Leo for some time.
+</t>
+<t tx="ekr.20091111083703.6654">A section name has the form::
+
+    &lt;&lt; any text &gt;&gt;
+
+`Any text` is just that: *any* sequence of text not containing '&gt;&gt;'.  For example::
+
+    &lt;&lt; initialize ivars &gt;&gt;
+
+Leo ignores case and whitespace in section names, so the following are all equivalent::
+
+    &lt;&lt; Peanut Butter &amp; Jelly &gt;&gt;
+    &lt;&lt; peanut butter&amp;jelly &gt;&gt;
+    &lt;&lt;peanut butter &amp; jelly&gt;&gt;
+    &lt;&lt;peanutbutter&amp;jelly&gt;&gt;
+    &lt;&lt;PEANUTBUTTER&amp;JELLY&gt;&gt;
+
+When ``&lt;&lt;`` and ``&gt;&gt;`` are not paired on a line,
+they are treated as ordinary ``&lt;&lt;`` and ``&gt;&gt;`` characters.
+Leo has *no* escape mechanism for section names.
+That is, paired ``&lt;&lt;`` and ``&gt;&gt;`` characters on the same line always denote a section name,
+*even within comments and strings*.
+This means that ``&lt;&lt;`` and ``&gt;&gt;`` characters that do not delimit a section name must be placed on separate lines.
+In practice, this requirement seldom causes problems.
+
+The syntax of section names is based on Norman Ramsey's `noweb`_ markup language,
+but without noweb's escape conventions.
+Eliminating these escape conventions may seem odd,
+but it has turned out to be one of the best design decisions I ever made.</t>
+<t tx="ekr.20091111083703.6655">**Doc parts** are blocks of text that Leo treats as comments.
+Leo syntax colors doc parts as comments,
+and Leo converts doc parts into comments in external files.
+Doc parts start with an ``@`` directive and continue until
+an ``@c`` directive or the end of the body text.
+For example::
+
+    @ This is a comment in a doc part.
+    Doc parts can span multiple lines.
+    The next line ends the doc part
+    @c
+
+Doc parts are entirely optional;
+you could simply use comments in the language specified by the ``@language`` directive_.
+Using doc parts for lengthy comments is convenient, however.
+Not only do you not need to specify comment delimiters,
+but Leo breaks doc parts into lines automatically.
+The ``@pagewidth`` directive specifies the width of those lines.
+
+**Notes**:
+
+- In body text, everything not in a doc part is in a **code part**.
+  If a node does not contain a doc part, the entire body text is a code part.
+
+- ``@doc`` is a synonym for ``@`` and ``@code`` is a synonym for ``@c``.
+  However, ``@`` and ``@c`` are preferred.
+
+- A doc part of the form::
+
+    @ %def identifiers
+
+declares that the preceding code part contains the list of identifiers.
+Whitespace separate the identifiers; everything else is taken to be the
+identifiers. This construct is a convention of the noweb_ language, and will be
+of use *only* for those who want to create .nw output files for use with the
+official noweb_ system.</t>
+<t tx="ekr.20091111083703.6656">The following directives are commonly used by Leo programmers.
+See `Chapter 4: Writing Programs in Leo`_ for full details.
+
+- **@** Starts doc parts (and ends code parts).
+
+- **@all** Copies *all* descendant nodes to the external file.
+
+- **@c** Starts code parts (and ends doc parts).
+
+- **@encoding** Sets the Unicode encoding used in external files.
+
+- **@first** Forces lines to appear before the first sentinel of a external file.
+
+- **@language** Sets the language used for syntax coloring **and** sets the comment delimiters 
+  used in sentinel lines and in doc parts.
+
+- **@last** Forces lines to appear after the last sentinel of a external file.
+
+- **@lineending** Specifies the line ending to be used in external files.
+
+- **@others** Copies all nodes *except section definition nodes* to the external file.
+
+- **@pagewidth** Sets the page width used to break doc parts into lines.
+
+- **@path** Sets the path to be prepended to filenames in descendant ``@file`` nodes.
+
+**Important**:
+Leo treats lines starting with ``@`` as a normal code line unless the ``@`` starts a Leo directive.
+In particular, Leo will output Python decorators correctly, provided the name of the decorator is not a Leo directive.</t>
+<t tx="ekr.20091111083703.6657">An **orphan node** is a descendant of an `@thin`_ node_ that will not be copied
+to the `external file`_. Orphan nodes can arise because an `@thin`_ tree has no
+``@others`` or ``@all`` directives. Sections that are defined but not used also
+create orphan nodes. Leo issues a warning when attempting to write an `@thin`_
+tree containing orphan nodes, and does not save the external file. Instead Leo
+saves the information in the `@thin`_ tree in the .leo file. No information is
+lost; Leo will load the `@thin`_ tree from the .leo file the next time Leo
+opens the .leo file.
+
+</t>
+<t tx="ekr.20091111083703.6658">When writing `external files`_, Leo stores information about the outline
+structure in special comments called **sentinel lines**. Sentinel lines are
+comment lines with '@' following the comment delimiter. For example, here are
+some actual sentinel line for the external file containing Python code::
+
+    #@+leo-ver=4-thin
+    #@+node:ekr.20031218072017.2794:@thin leoColor.py
+    #@@language python
+    #@@tabwidth -4
+    #@@pagewidth 80
+    #@-node:ekr.20031218072017.2794:@thin leoColor.py
+    #@-leo
+
+**You must not change sentinel lines** when editing a `external file`_ in another
+editor! Doing so will corrupt the external file and make it impossible for Leo to
+read it normally. If you do accidentally alter a sentinel line, don't panic!
+Leo's ``Import external file`` command_ can recover information from corrupted
+external files.
+
+The main difference between `@file`_ trees, `@thin`_ trees (and other kinds of trees that create external files)
+is the kind of sentinel lines that Leo writes:
+
+- Sentinels in files derived from `@thin`_ reduce spurious cvs conflicts by
+  marking each node with unique, unchanging **timestamp** as shown above.
+
+- Sentinels in files derived from `@file`_ are as friendly as possible for human readers.
+
+- Files derived from `@nosent`_ have no sentinels at all.
+  **Important**: without sentinels Leo can not automatically update
+  ``@nosent`` trees from changes made in external editors.
+
+`Chapter 4: Writing Programs in Leo`_ discusses the various ways of creating external files.
+This is a highly complex subject: you should ignore these details at first.
+Just use ``@thin`` to create your `external files`_.</t>
+<t tx="ekr.20091111083703.6659">Leo can support a style of programming similar to `Literate Programming`_ (LP).
+LP has a bad reputation in some quarters. That's too bad; Leo fixes all the
+problems with traditional LP. See `Chapter 6: Leo and Literate Programming`_ in
+`Leo's Users Guide`_ for more details. *Please* don't let the words 'Literate
+Programming' get in the way of your using Leo effectively. That would be *your*
+mistake, and a big one.</t>
+<t tx="ekr.20091111083703.6660">Newcomers to Leo frequently ask when to use the `@others`_ directive_ and when
+to use sections_. It is good style to use `section references`_ only when the
+order of text within a `external file`_ matters. For example, Python programmers
+put docstrings and imports at the start of files. So the `body text`_ of
+`@file`_ nodes typically look something like this::
+
+    &lt;&lt; docstring &gt;&gt;
+    @language python
+    @tabwidth -4
+    &lt;&lt; imports &gt;&gt;
+    @others
+
+This ensures that the docstring is first in the file, followed by imports,
+followed by everything else. Note that the order in which functions are defined
+in a file, or methods defined within a class, typically does *not* matter. Thus,
+it is good style to define classes like this::
+
+  class myClass:
+        &lt;&lt; class attributes &gt;&gt;
+        @others
+
+It would be bad style to define a class like this::
+
+  class myClass:
+        &lt;&lt; class attributes &gt;&gt;
+        &lt;&lt; method 1 &gt;&gt;
+        &lt;&lt; method 2 &gt;&gt;
+        ...
+
+Not only does this over-specify the order in which methods are defined, but it
+requires lots of extra typing. Not only must you add a line for each method, but
+headlines must contain section names such as &lt;&lt; method 1 &gt;&gt;, &lt;&lt;method 2&gt;&gt;, etc.
+When using ``@others`` it is good style simply to put the name of each method in
+the headline.
+
+A few more words about style:
+
+- It is good style to **put each class, function or method in its own node**.
+  This makes it easy to see the shape of your code.
+
+- It is good style to use `organizer nodes`_ to group related functions or methods.
+  An organizer node has no content except maybe for comments.
+  Like this::
+
+    + myClass
+        + birth and death
+            + __init__
+            etc.
+        + getters
+            etc.
+        + setters
+            etc.
+        + misc methods
+            etc.
+
+  (In this notation, '+' denotes a headline.)
+  This organization is far superior to using hideous comments like::
+
+    ###########
+    # Getters #
+    ###########
+
+- It is bad style to use `@others`_ in `organizer nodes`_.
+  There is no need to do so.
+
+- It is bad style to use `@others`_ when order does matter.
+  The reason is that it is very easy to move nodes in a tree by mistake,
+  say by alphabetizing nodes.
+  One wants to make the meaning of a external file immune from such movements.
+
+One last word about style. The world won't end if you happen to use bad style by
+mistake: you just might cause a bit more work for yourself than was strictly
+necessary. Feel free to invent your own style of using Leo. Still, it would be
+wise to "know the rules before you break them."
+</t>
+<t tx="ekr.20091111083703.6661">Leo is fully scriptable using the Python language.
+**Leo can execute any body text as a Python script**.
+To run the entire body text as a script, simply choose the node and execute the ``Execute Script`` command (``Ctrl+B``).
+If text is selected, the ``Execute Script`` command will run just the selected text as the script.
+
+The ``Execute Script`` command **preprocesses** the script before executing it.
+Leo preprocesses scripts in exactly the same way that Leo writes external files.
+That is,
+**Leo expands section references and processes @others directives** before executing the script.
+This allows you to use all of Leo's normal capabilities to organize your scripts.
+**Note**: ``test.leo`` contains dozens of examples of using Leo outline structure to organize stand-alone scripts.
+
+Your Python scripts can easily access data in an outline.  For example, the following script will print all the headlines in an outline::
+
+    for p in c.all_positions():
+        print ' '*p.level(),p.h
+
+Your scripts can use outline structure to avoid having to parse data.
+With a little forethought you can arrange outlines to make scripts easier to write.
+The example above is only the beginning of what scripts can do.
+See `Chapter 7: Scripting Leo with Python`_ for a complete discussion of scripting.</t>
+<t tx="ekr.20091111083703.6662">**Plugins** are Python modules that change how Leo works, yet are not part of Leo's core code. 
+Leo's user have contributed dozens of plugins that have extended Leo's capabilities in many new directions.
+The file ``leoPlugins.leo`` contains all plugins that are included in Leo distributions.
+
+Plugins and other parts of Leo can get options from **@settings** trees,
+outlines whose headline is ``@settings``. When opening a .leo file, Leo looks
+for ``@settings`` trees in the outline being opened and also in various
+``leoSettings.leo`` files. ``@settings`` trees allow plugins to get options without
+any further support from Leo's core code. For a full discussion of
+``@settings`` trees, see `Chapter 8: Customizing Leo`_.</t>
+<t tx="ekr.20091111083703.6663">``LeoPyRef.leo`` (in the core subdirectory of the leo folder) contains almost all of Leo's source code.
+It provides hundreds of examples of everything discussed here.
+This file will repay close study.
+For full details on all aspects of Leo see ``LeoDocs.leo`` or `Leo's Users Guide`_.</t>
+<t tx="ekr.20091111083703.6666">@language rest</t>
+<t tx="ekr.20091111083703.6667">This chapter introduces you to Leo's two basic features: **Leo outlines** and
+**Leo scripts**.  You don't have to be a programmer to use Leo.
+
+Outlines
+
+Everything in Leo is part of a Leo outline. Outlines consist of **nodes**. Nodes
+have two parts; a **headline** shown in Leo's **outline pane** and **body text**
+shown in Leo's **body pane**. As you might expect, Leo's outline shows the
+hierarchical relationships between nodes. That is, nodes can have parents and
+children.
+
+Leo outlines are more flexible than typical outlines: **clones* are outline
+nodes that appear in places in an outline. Clones allow you to create as many
+**views** of the data in your outline as you like. We'll see how this works in
+detail soon.
+
+Scripts
+
+Leo scripts are also more flexible usual, because Leo scripts have full and easy
+access to all the data in Leo outlines. The body text of any node can contain
+a Leo script.  That is, the body text of any node can potentially be treated
+as a script.
+
+This tutorial shows you Leo's basic features. These features are simple to use,
+yet they interact with each other in powerful ways. All Leo's features relate in
+some way to outlines_. Indeed, `outline structure is significant everywhere`_.
+
+`Quick start for programmers`_ contains the heart of this chapter. It briefly
+describes everything a Python programmer needs to know in order to understand
+Leo's source code. `Good style and bad`_ answers common question about when to
+use the features described in the quickstart_. The section `Scripting Leo`_ is
+an introduction to scripting Leo with Python. For full details, see `Chapter 7:
+Scripting Leo with Python`_.
+
+For another introduction to Leo, open the file quickstart.leo in the leo/doc folder.
+</t>
+<t tx="ekr.20091111083703.6668"></t>
+<t tx="ekr.20091111112709.6666">If you do much work on computers, eventually you find that you have lots of data
+to organize, and various data-related tasks to automate.
+
+For example, you may want to organize photos into a photo album, or organize
+notes about interesting web sites. You might want organize your data, whether it
+be photos, notes or anything else, in various ways. For example, you might want
+to include a particular photo in several slideshows, but not in all of your
+slideshows, and you might want to put that photo at the start of one slideshow,
+but in the middle of another.
+
+Or you might be a computer programmer who wants to have all the data for a
+computer project in a single place. You want to organize the source files of
+your program along with related scripts, design notes, documentation, bug fixes
+and unit tests. And like the photographer who wants to organize slides in a
+variety of different slideshows, you want the organize all the data in your
+project in *many* task-oriented ways simultaneously. Finally, you would like to
+be able apply scripts to all the data in your project so you can automate
+project-specific tasks. You might even want to create scripts that analyze,
+modify and refactor the source code in your project.
+
+Leo is just the tool for you.
+
+========
+Leo stores all its data in a tree of nodes, represented on the screen as an
+outline. Leo outline ares more flexible than usual: clones are nodes that may
+appear in multiple places within an outline. Using clones, Leo can act like a
+flexible filing cabinet in which nodes may be filed in many folders at once.
+
+Any part of a Leo tree may generate an external file (a file on your computer's
+file system). A single Leo outline can contain all the files of a programming
+project or any other set of related files. Leo supports outline-oriented markup
+that programmers can use to generate external files in flexible ways from
+
+Any outline node may contain a Leo script; such scripts have full access to all
+the data in Leo's outlines. Integrating outlines with scripting makes Leo an
+ideal scripting environment.
+===========
+
+Leo organizes *all* data in flexible outlines. This organization affects
+everything you do in Leo. Leo outlines looks like simple hierarchical trees, but
+in fact they more than simple hierarchies. Leo outlines are composed of
+**nodes**. Any node can be **cloned** (duplicated); cloned nodes may appear in
+many places in an outline at the same time.
+
+For example, a photographer can clone a photo several times, and can insert the
+clones in different places in different slideshows. It's just that easy.
+
+Programmers can also use clones to organize computer programs. Just as
+photographers can put a photo in different positions in different slideshows,
+computer programmers can organize snippets of codes in many different ways.
+
+This concludes the discussion of Leo for non-programmer, who may want want
+to skip the rest of this page.  The rest of this page discusses features of Leo
+that are directly related to computer programming.
+
+
+Organization for computer programmers
+
+Leo is particularly well suited to organizing computer programs. To do this most
+effectively, it turns out to be extremely useful to put code snippets in
+separate nodes. Happily, Leo makes it easy and natural to do this.
+
+Actually, Leo is the *only* programming tool that makes it possible to organize
+data this way. With other tools you couldn't put functions, methods, classes (or
+larger units such as Python modules) into separate areas of text because, for
+example, putting a class into one text are would require that all the methods of
+the class would have to be part of that *same* text area.  There would then
+be *no way* to put each method into its own text area!  Do you see the problem?
+
+Leo solves this problem very simply, with several easy-to-use, outline-aware
+markup. Using this markup, can use outlines to describe computer programs at
+*any* level of detail. If you want to, you can easily put each of your modules,
+classes, methods and functions in a node of its own. You can even put put
+snippets of complex functions into separate nodes. You don't *have* to organize
+your data this way, but after you use Leo for awhile you will see the great
+advantages of doing so.
+
+Leo and scripting
+
+Let's turn now to scripting.  Leo is written entirely in the Python language,
+and you, as a programmer, benefit directly from all of Python's great strengths.
+
+For example, if you know how to program in Python, your scripts can easily give
+Leo new commands. Leo has many other features that make Leo extensible. Leo's
+**plugins** are Python modules that change Leo in larger ways. Scripts and
+plugins can change virtually *any* aspect of how Leo works.
+
+But extending Leo is only the most obvious way to use scripting in Leo.  Any node
+can contain a Leo script, and Leo script have full access to *all* the data in
+Leo outlines. There are several *extremely* useful side effect of
+putting data in separate nodes. Nodes are *real Python objects*. All of Leo's
+commands can act on nodes and their descendants. Even more powerfully, you can
+write scripts that easy access to any node of the outline.
+
+The implications of outline structure for scripting are surprising and profound.
+Each Leo node has a descriptive **headline** and associated **body text**.  Again,
+headlines and body text are true Python objects.  It turns out to be natural to
+treat headlines as description of the text (data) in the body text.  Scripts can
+*easily* find nodes using their headlines.  This eliminates a lot of parsing and other
+futzing around.
+
+For example, by *convention*, headlines that start with '@x' denote a node of
+"type" x. Leo itself, that is, Leo's core code, supports many such types.
+Plugins support other node types. Scripts, including scripts that you write,
+support other types. The rest of this tutorial will discuss these types in great
+detail. For now, you should realize that these (extensible! user-definable!)
+node types constitute a brand new dimension in computer programming.
+
+Leo's name
+
+The name "Leo" has a history behind it.  It used to be an acronym,
+but that acronym became absolute after the focus of Leo became broader.  Now,
+Leo is just the name for a Lion, and the term "Leonine" describes how people
+treat data in "the world according to Leo".  I think you will soon agree that this
+is indeed a unique world.
+
+Now that you are all excited about Leo, you’ll want to examine it in some more
+detail. Since the best way to learn a language is to use it, the tutorial
+invites you to play with Leo as you read.</t>
+<t tx="ekr.20091111112709.6671">@language rest</t>
+<t tx="ekr.20091111112709.6672">.. _glossary:
+
+#########
+Glossary
+#########
+
+We often refer to outline nodes by the directives they contain.
+For example, an @file node is a node whose headline starts with @file, etc.
+
+.. glossary::
+
+    @&lt;file&gt; node
+        A node whose headline starts with
+        @asis, @edit @file, @nosent, @shadow, @thin, or their longer forms.
+   
+    @all directive
+        Cause Leo to copy the body text of all nodes in an @thin tree to the corresponding external file.
+        For more information, see `directives for programming`_ in `Leo's tutorial`_.
+</t>
+<t tx="ekr.20091111112709.6676">.. Links used in this document.
+
+.. ----- External links.
+
+.. _`CWEB language`:                    http://www-cs-faculty.stanford.edu/~knuth/cweb.html
+.. _`literate programming web page`:    http://www.literateprogramming.com/
+.. _`noweb language`:                   http://www.eecs.harvard.edu/~nr/noweb/
+.. _`rST primer`:                       http://docutils.sourceforge.net/docs/user/rst/quickstart.html
+
+.. ----- Relative links.
+
+.. _`Chapter 8: Customizing Leo`:   customizing.html
+.. _`Writing plugins and hooks`:    writingPlugins.html
+
+.. _`programming reference`:    directives.html
+.. _`@asis`:                    directives.html#asis-and-noref
+.. _`@auto`:                    directives.html#auto
+.. _`@file`:                    directives.html#file-and-thin
+.. _`@noref`:                   directives.html#asis-and-noref
+.. _`@nosent`:                  directives.html#nosent
+.. _`@root`:                    directives.html#root
+.. _`@thin`:                    directives.html#file-and-thin
+.. _`@unit documentation`:      directives.html#root
+.. _`tangling @root trees`:     directives.html#tangling-root-trees-with-the-tangle-commands
+.. _`untangling @root trees`:   directives.html#untangling-root-trees-with-the-untangle-commands
+
+.. ----- References to the tutorial.
+.. _`clones &amp; views`:               intro.html#clones-views
+.. _`leo's tutorial`:               intro.html
+.. _`external files section`:        intro.html#derived-files
+.. _`directives for programming`:   intro.html#directives-for-programming
+.. _`leo directives`:               intro.html#leo-directives
+.. _`quick start for programmers`:  intro.html#quick-start-for-programmers
+.. _`sentinels lines`:              intro.html#sentinel-lines
+</t>
+<t tx="ekr.20091111112709.6677"></t>
+<t tx="ekr.20091112060950.6677">s = p.bodyString()
+
+s = s.replace('\n\n','***2***')
+s = s.replace('\n',' ')
+s = s.replace('***2***','\n\n')
+s = s.replace('\n  ','\n')
+s = s.replace('\n ','\n')
+s = s.replace('     ',' ')
+s = s.replace('    ',' ')
+s = s.replace('   ',' ')
+s = s.replace('  ',' ')
+
+p.setBodyString(s)</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?
