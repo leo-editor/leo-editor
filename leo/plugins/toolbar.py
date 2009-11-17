@@ -311,9 +311,10 @@ Pmw = g.importExtension("Pmw",pluginName=__name__,verbose=True,required=True)
 # except ImportError:
     # Image = ImageTk = None
 
-mod_scripting = g.importExtension('mod_scripting',pluginName=__name__,verbose=True,required=True)
+#mod_scripting = g.importExtension('mod_scripting',pluginName=__name__,verbose=True,required=True)
+from leo.plugins import mod_scripting
 
-import rClickBasePluginClasses as baseClasses
+from leo.plugins import rClickBasePluginClasses as baseClasses
 #@-node:bobjack.20080424190906.15:<< imports >>
 #@nl
 
