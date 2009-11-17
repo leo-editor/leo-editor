@@ -480,34 +480,16 @@
 <v t="ekr.20091110104908.2102"><vh>@url http://webpages.charter.net/edreamleo/front.html</vh></v>
 </v>
 </v>
+<v t="ekr.20091110090536.1635"><vh>Description</vh></v>
+<v t="ekr.20091117082920.2628"><vh>Speakers Notes</vh>
+<v t="ekr.20091117082920.8031"><vh>1: who am I?</vh></v>
+<v t="ekr.20091117082920.8032"><vh>2: who are you?</vh></v>
+<v t="ekr.20091117100212.2629"><vh>3: What people are saying about Leo</vh></v>
+</v>
 </v>
 <v t="ekr.20091109103928.1546"><vh>To do</vh>
 <v t="ekr.20091108172508.15988"><vh>Bug double-click-icon-box is not selecting the proper node.</vh></v>
 <v t="ekr.20091109103928.1544"><vh>Bug contracting a node should redraw the screen</vh></v>
-</v>
-<v t="ekr.20091110090536.1635"><vh>Description</vh></v>
-<v t="ekr.20091115204246.7438"><vh>PP intro</vh>
-<v t="ekr.20091115204246.7439"><vh>What is Leo ?</vh></v>
-<v t="ekr.20091115204246.7445"><vh>Leo's users say it's fun, even addictive</vh></v>
-<v t="ekr.20091115204246.7446"><vh>How do people use Leo?</vh></v>
-<v t="ekr.20091115204246.7441"><vh>Code editor</vh></v>
-<v t="ekr.20091115204246.7442"><vh>Outliner</vh></v>
-<v t="ekr.20091115204246.7444"><vh>PIM</vh></v>
-<v t="ekr.20091115204246.7443"><vh>Scripting environment</vh></v>
-<v t="ekr.20091110090536.1674"><vh>What people are saying about Leo</vh>
-<v t="ekr.20091110090536.1677"><vh>Leo is revolutionary</vh></v>
-<v t="ekr.20091110090536.1679"><vh>Leo is fun, even addicting</vh></v>
-<v t="ekr.20091110090536.1681"><vh>Leo is a great outliner</vh></v>
-<v t="ekr.20091110090536.1693"><vh>Leo is a great programming tool</vh></v>
-<v t="ekr.20091110090536.1694"><vh>Leo is a great PIM</vh></v>
-<v t="ekr.20091110090536.1684"><vh>Leo is a great documentation tool</vh></v>
-<v t="ekr.20091110090536.1685"><vh>Leo clarifies complex systems</vh></v>
-</v>
-</v>
-<v t="ekr.20091117082920.2628"><vh>Speakers Notes</vh>
-<v t="ekr.20091117082920.8031"><vh>1: who am I?</vh></v>
-<v t="ekr.20091117082920.8032"><vh>2: who are you?</vh></v>
-<v t="ekr.20091117082920.8034"><vh>3: What can you do with Leo?</vh></v>
 </v>
 <v t="ekr.20060902101656" a="E"><vh>Slide shows</vh>
 <v t="ekr.20091107142231.6264"><vh>5-10 minutes: Managing an Open Source Project</vh>
@@ -519,10 +501,8 @@
 <v t="ekr.20091110104908.2108"><vh>@url http://www.cs.virginia.edu/~robins/YouAndYourResearch.html</vh></v>
 </v>
 </v>
-<v t="ekr.20091116094116.2312" a="E"><vh>@image 15-20 minutes: Introducing Leo (NEW)</vh>
-<v t="ekr.20091117082920.2627"><vh>Intro</vh></v>
-<v t="ekr.20091116094116.2603"><vh>What people are saying about Leo</vh>
-<v t="ekr.20091117093857.2640"><vh>Leo is...</vh>
+<v t="ekr.20091116094116.2312" a="E"><vh>@image 15-20 minutes: Introducing Leo</vh>
+<v t="ekr.20091117093857.2640"><vh>Users say Leo is...</vh>
 <v t="ekr.20091116094116.2604"><vh>revolutionary</vh></v>
 <v t="ekr.20091116094116.2605"><vh>fun, even addicting</vh></v>
 <v t="ekr.20091116094116.2606"><vh>a great outliner</vh></v>
@@ -532,27 +512,20 @@
 <v t="ekr.20091116094116.2609"><vh>a great documentation tool</vh></v>
 <v t="ekr.20091116094116.2610"><vh>a great way to understand complex systems</vh></v>
 </v>
-</v>
-<v t="ekr.20091116094116.2612"><vh>What is Leo?</vh>
-<v t="ekr.20091116094116.2614"><vh>A data organizer</vh></v>
-<v t="ekr.20091116094116.2613"><vh>A code editor and IDE</vh></v>
-<v t="ekr.20091116094116.2615"><vh>A great programming environment</vh></v>
-</v>
 <v t="ekr.20091116094116.2313"><vh>Leo's screen</vh></v>
-<v t="ekr.20091116094116.2314"><vh>What makes Leo special?</vh>
-<v t="ekr.20091116094116.2315"><vh>1. Leo outlines</vh>
-<v t="ekr.20091116094116.2316"><vh>Clones make Leo outlines special</vh>
-<v t="ekr.20091116094116.2317"><vh>Clones are nodes appearing in several places in the outline</vh>
+<v t="ekr.20091117100212.2632" a="E"><vh>Outlines</vh>
+<v t="ekr.20091116094116.2343"><vh>There is no such thing as *the* right view of data</vh></v>
+<v t="ekr.20091116094116.2315"><vh>Leo outlines aren't just trees</vh>
+<v t="ekr.20091116094116.2317"><vh>The same node can appear in many places in an outline</vh>
 <v t="ekr.20091116094116.2322"><vh>A</vh>
 <v t="ekr.20091116094116.2323"><vh>B</vh>
 <v t="ekr.20091116094116.2324"><vh>C</vh></v>
 <v t="ekr.20091116094116.2325"><vh>D</vh></v>
 </v>
 </v>
-<v t="ekr.20091116094116.2322"></v>
 </v>
-<v t="ekr.20091116094116.2326"><vh>Clones create multiple views of data</vh>
-<v t="ekr.20091116094116.2327"><vh>Here is an example of a view</vh>
+</v>
+<v t="ekr.20091116094116.2326"><vh>Views organize data</vh>
 <v t="ekr.20091116094116.2328"><vh>Fixed contractOrGoRight</vh>
 <v t="ekr.20091116094116.2329"><vh>The bug</vh></v>
 <v t="ekr.20091116094116.2330"><vh>What I did</vh></v>
@@ -572,10 +545,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20091116094116.2343"><vh>There is no such thing as *the* right view of data</vh></v>
-</v>
-</v>
-<v t="ekr.20091116094116.2344"><vh>Outlines can represent external files</vh>
+<v t="ekr.20091116094116.2344"><vh>Outlines create external files</vh>
 <v t="ekr.20091116094116.2345"><vh>@@thin leoNodes.py</vh>
 <v t="ekr.20091116094116.2346"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20091116094116.2347"><vh>class vnode</vh>
@@ -845,14 +815,14 @@
 </v>
 </v>
 </v>
-<v t="ekr.20091116094116.2563"><vh>2. Leo scripts</vh>
-<v t="ekr.20091116094116.2564"><vh>Scripts have full access to outlines</vh>
-<v t="ekr.20091116094116.2565"><vh>An example script</vh></v>
-</v>
+<v t="ekr.20091117100212.2633"><vh>Scripts</vh>
+<v t="ekr.20091116094116.2564"><vh>Scripts have full access to outlines</vh></v>
 <v t="ekr.20091116094116.2566"><vh>The @x convention: headlines are metadata</vh>
 <v t="ekr.20091116094116.2567"><vh>Examples</vh>
 <v t="ekr.20091116094116.2568"><vh>@html Leo's home page</vh></v>
 <v t="ekr.20091116094116.2569"><vh>@url http://webpages.charter.net/edreamleo/front.html</vh></v>
+<v t="ekr.20091117100212.2635"><vh>@image Lion image</vh></v>
+<v t="ekr.20091117100212.2636"><vh>@test fail</vh></v>
 <v t="ekr.20091116094116.2570"><vh>@test add-tab-to-lines</vh>
 <v t="ekr.20091116094116.2571"><vh>work</vh></v>
 <v t="ekr.20091116094116.2572"><vh>before sel=2.0,5.6</vh></v>
@@ -862,10 +832,8 @@
 </v>
 </v>
 </v>
-</v>
-<v t="ekr.20091116094116.2575"><vh>Conclusions</vh>
-<v t="ekr.20091116094116.2576"><vh>@url http://webpages.charter.net/edreamleo/front.html</vh></v>
-</v>
+<v t="ekr.20091116094116.2575"><vh>Conclusions</vh></v>
+<v t="ekr.20091117100212.2630"><vh>Questions</vh></v>
 </v>
 </v>
 </vnodes>
@@ -1585,7 +1553,7 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20070315073704.3"></t>
 <t tx="ekr.20070315073704.4"></t>
 <t tx="ekr.20080129151123"></t>
-<t tx="ekr.20080129151228" str_leo_pos="6,1"></t>
+<t tx="ekr.20080129151228" str_leo_pos="3,1,2,0"></t>
 <t tx="ekr.20091103090815.1426"># To create a tab named 'Test' or make it visible if it already exists:
 log = c.frame.log
 log.selectTab('Test')
@@ -2083,50 +2051,6 @@ For details, google edreamleo.
 For more questions send me email or post to leo-editor google group.
 </t>
 <t tx="ekr.20091110090536.1654">Google: "you and your research" by Richard Hamming.</t>
-<t tx="ekr.20091110090536.1674">Peole get excited about Leo...</t>
-<t tx="ekr.20091110090536.1677">"The most amazing software since the invention of the spreadsheet."
-
-"A breakthrough tool and a whole new way of writing code."
-
-"Utterly changed my view of programming (indeed of writing) forever."
-</t>
-<t tx="ekr.20091110090536.1679">"They'll have to pry Leo out of my cold, dead fingers!"
-
-"I have been absolutely seduced by Leo over the past few days...I can not put it
-down."
-
-"There is almost an addictive withdrawal effect when I can complete an operation
-in so much less time with Leo &amp; python than I had become used to."</t>
-<t tx="ekr.20091110090536.1681">"Word outlines are very useful. But Leo makes Word look like a clunky toy."
-
-"Leo is *exactly* the kind of outliner I was looking for."</t>
-<t tx="ekr.20091110090536.1684">"I've already started converting the IT Procedures manual from Open Office to
-Leo...the possibility of keeping system maintenance scripts in the IT manual is
-mind boggling."
-
-"Leo is the best outliner I have yet encountered for writing the early stages of
-academic papers."
-</t>
-<t tx="ekr.20091110090536.1685">"Leo allows the designer to reveal and discipline structure at many
-layers simultaneously: data structures, object structure, entity-relationship
-structure, client-server structure, design pattern structure, temporal
-structure, project management structure, and any other structure relevant to the
-system."
-
-"When I 'Leo-ise' other people's code, Leo makes the code's structure so
-transparent that design faults become very quickly apparent."</t>
-<t tx="ekr.20091110090536.1693">"Your current trajectory puts you on track to kick Emacs into the dustbin of
-computing history."
-
-Note: Many people use Leo *with* vim, emacs or ipython.
-
-"People complain about the lack of a project manager for [Python]. Leo clearly
-solves that problem and in a way that commercial tools can't touch."
-</t>
-<t tx="ekr.20091110090536.1694">"Leo is the best URL bookmark manager there is.
-
-"I use Leo to organize my lists of pictures."
-</t>
 <t tx="ekr.20091110090536.1695">This sections gives *hints* about how Leo works, and how the quotes given above
 might be true. For details, see Leo's web site.
 
@@ -5213,62 +5137,18 @@ s = s.replace('   ',' ')
 s = s.replace('  ',' ')
 
 p.setBodyString(s)</t>
-<t tx="ekr.20091115204246.7438">@language rest
-
-</t>
-<t tx="ekr.20091115204246.7439">What is Leo?
-
-.. Leo is a lot of things...
-
-What do peole do with Leo?
-
-.. A lot of things :-)
-
-</t>
-<t tx="ekr.20091115204246.7441">.. Many people use Leo to write and organize computer code.
-
-"A breakthrough tool and a whole new way of writing code." [name]
-
-.. How many use vim and emacs?
-
-.. Lot of my users use vim and emacs with Leo.</t>
-<t tx="ekr.20091115204246.7442">"Leo is the best outliner I have yet encountered for writing the early stages of
-academic papers."</t>
-<t tx="ekr.20091115204246.7443">"The most amazing software since the invention of the spreadsheet."</t>
-<t tx="ekr.20091115204246.7444">"Leo is the best URL bookmark manager there is.
-
-"I use Leo to organize my lists of pictures."</t>
-<t tx="ekr.20091115204246.7445">"They'll have to pry Leo out of my cold, dead fingers!"
-
-"I have been absolutely seduced by Leo over the past few days...I can not put it
-down."
-
-"There is almost an addictive withdrawal effect when I can complete an operation
-in so much less time with Leo &amp; python than I had become used to."</t>
-<t tx="ekr.20091115204246.7446">- Organize slides.
-
-- Write code.
-
-- Manage web sites.
-
-- Design software.</t>
 <t tx="ekr.20091116094116.2312">C:\leo.repo\trunk\leo\Icons\Lioness.jpg</t>
-<t tx="ekr.20091116094116.2313">**Nodes** contain **headlines** and **body text**.</t>
-<t tx="ekr.20091116094116.2314">This sections gives *hints* about how Leo works, and how the quotes given above
-might be true. For details, see Leo's web site.
+<t tx="ekr.20091116094116.2313">*Nodes* contain *headlines* and *body text*.
 
-
-</t>
+Nodes and outlines are true Python objects.</t>
 <t tx="ekr.20091116094116.2315"></t>
-<t tx="ekr.20091116094116.2316"></t>
 <t tx="ekr.20091116094116.2317"></t>
 <t tx="ekr.20091116094116.2322"></t>
 <t tx="ekr.20091116094116.2323"></t>
 <t tx="ekr.20091116094116.2324"></t>
 <t tx="ekr.20091116094116.2325"></t>
 <t tx="ekr.20091116094116.2326"></t>
-<t tx="ekr.20091116094116.2327">@language python</t>
-<t tx="ekr.20091116094116.2328"></t>
+<t tx="ekr.20091116094116.2328">@language python</t>
 <t tx="ekr.20091116094116.2329">@nocolor-node
 
 To exercise the bug, do the following in test.leo:
@@ -8089,22 +7969,15 @@ These routines all return self on exit so the following kind of code will work:
 
 
 </t>
-<t tx="ekr.20091116094116.2563">Leo is written entirely in Python.</t>
-<t tx="ekr.20091116094116.2564">In Leo, **outline structure is real data that is available to scripts.**</t>
-<t tx="ekr.20091116094116.2565">@language python
+<t tx="ekr.20091116094116.2564">@language python # This is Leo markup. It applies to all descendant nodes.
 
-'''This script prints the number of nodes in the outline.'''
+# The execute-script command predefines g and c.
 
-# Leo's execute-script command (ctrl-B) predefines c and g.
-
-n = len(list(c.all_nodes())) # Count the number of nodes.
-fn = c.shortFileName() # Get the name of Leo outline.
-g.es('%s contains %s nodes' % (fn,n),color='red')</t>
-<t tx="ekr.20091116094116.2566">Leo headlines naturally describe body text.
-
-Headlines are *metadata*. Body text is data.
-
-By *convention*, headlines that start with @x declare **node types**.
+g.es('%s contains %s nodes' % (
+    c.shortFileName(),
+    len(list(c.all_nodes()))),
+    color='red')</t>
+<t tx="ekr.20091116094116.2566">By *convention*, headlines that start with @x declare **node types**.
 
 Leo's core supports many types. Scripts and plugins support others.</t>
 <t tx="ekr.20091116094116.2567">@language python</t>
@@ -8292,10 +8165,9 @@ NOWEB, EDWARD K. REAM, DONALD E. KNUTH, SILVIO LEVY, OPEN SOFTWARE" /&gt;
 &lt;!--@-leo--&gt;
 </t>
 <t tx="ekr.20091116094116.2569"></t>
-<t tx="ekr.20091116094116.2570"># Scripts, including unit tests, can use outline structure, and types.
-
-import leo.core.leoTest as leoTest
-leoTest.runEditCommandTest(c,p)</t>
+<t tx="ekr.20091116094116.2570">import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)
+</t>
 <t tx="ekr.20091116094116.2571">first line
     line 1
         line a
@@ -8320,15 +8192,7 @@ last line</t>
 g.es('%s characters in headline' % (len(p.h)))</t>
 <t tx="ekr.20091116094116.2575">You can do things with Leo that you can't even *imagine* doing in other programs.
 
-Which is why some of the world's great programmers use Leo.
-
-I'd like to answer your questions now.
-
-For details, google edreamleo.
-
-For more questions send me email or post to leo-editor google group.
-</t>
-<t tx="ekr.20091116094116.2576"></t>
+Some of the world's great programmers use Leo.</t>
 <t tx="ekr.20091116094116.2587">Peole get excited about Leo...</t>
 <t tx="ekr.20091116094116.2588">"The most amazing software since the invention of the spreadsheet."
 
@@ -8373,25 +8237,26 @@ system."
 
 "When I 'Leo-ise' other people's code, Leo makes the code's structure so
 transparent that design faults become very quickly apparent."</t>
-<t tx="ekr.20091116094116.2603"></t>
 <t tx="ekr.20091116094116.2604">"A breakthrough tool and a whole new way of writing code."
+    -- Joe Orr
 </t>
-<t tx="ekr.20091116094116.2605">"They'll have to pry Leo out of my cold, dead fingers!"</t>
-<t tx="ekr.20091116094116.2606">"Leo makes Word [outlines] look like a clunky toy."</t>
-<t tx="ekr.20091116094116.2607">"[Leo is] on track to kick Emacs into the dustbin of computing history."</t>
-<t tx="ekr.20091116094116.2608">"Leo is the best URL bookmark manager there is.</t>
-<t tx="ekr.20091116094116.2609">"Leo is the best outliner I have yet encountered for writing the early stages of
-academic papers."
+<t tx="ekr.20091116094116.2605">"They'll have to pry Leo out of my cold, dead fingers!"
+    -- Travers A. Hough</t>
+<t tx="ekr.20091116094116.2606">"Leo makes Word [outlines] look like a clunky toy."
+    -- Joe Orr</t>
+<t tx="ekr.20091116094116.2607">"[Leo is] on track to kick Emacs into the dustbin of computing history."
+    -- Dan Winkler</t>
+<t tx="ekr.20091116094116.2608">"Leo is the best URL bookmark manager there is."
+    -- Dan Winkler</t>
+<t tx="ekr.20091116094116.2609">"Leo is the best outliner I have yet encountered for writing the
+early stages of academic papers." -- Anon.
 </t>
 <t tx="ekr.20091116094116.2610">"Leo allows the designer to reveal..structure at many layers simultaneously..."
+    -- Steven P. Schaefer
 
 "When I 'Leo-ise' other people's code, Leo makes the code's structure so
-transparent that design faults become very quickly apparent."</t>
-<t tx="ekr.20091116094116.2612"></t>
-<t tx="ekr.20091116094116.2613"></t>
-<t tx="ekr.20091116094116.2614"></t>
-<t tx="ekr.20091116094116.2615"></t>
-<t tx="ekr.20091117082920.2627"></t>
+transparent that design faults become very quickly apparent."
+    -- David McNab</t>
 <t tx="ekr.20091117082920.2628">@language rest
 </t>
 <t tx="ekr.20091117082920.8031">Thanks, David, for inviting me.
@@ -8403,7 +8268,6 @@ that I've been leading for 15+ years.</t>
 Use vim or emacs?
 
 Any others?</t>
-<t tx="ekr.20091117082920.8034"></t>
 <t tx="ekr.20091117082920.12019">C:\leo.repo\trunk\leo\Icons\Lioness.jpg</t>
 <t tx="ekr.20091117093857.2637">@language html
 
@@ -8425,6 +8289,22 @@ Any others?</t>
 &lt;/html&gt;</t>
 <t tx="ekr.20091117093857.2639"></t>
 <t tx="ekr.20091117093857.2640"></t>
-<t tx="ekr.20091117093857.2641">"keeping system maintenance scripts in the IT manual is mind boggling."</t>
+<t tx="ekr.20091117093857.2641">"...keeping system maintenance scripts in the IT manual is mind boggling."
+    -- David Nichols</t>
+<t tx="ekr.20091117100212.2629">People get excited about Leo.
+
+There is an Aha moment.</t>
+<t tx="ekr.20091117100212.2630">Google edreamleo
+
+Email:  edreamleo@gmail.com
+
+Google Group: http://groups.google.com/group/leo-editor
+
+</t>
+<t tx="ekr.20091117100212.2632"></t>
+<t tx="ekr.20091117100212.2633"></t>
+<t tx="ekr.20091117100212.2635">C:\leo.repo\trunk\leo\Icons\Lioness.jpg</t>
+<t tx="ekr.20091117100212.2636">assert 1 == 2
+</t>
 </tnodes>
 </leo_file>
