@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20091015185317.5233:@thin ctagscompleter.py
+#@+node:ekr.20091118065749.5261:@thin ctagscompleter.py
 #@<< docstring >>
 #@+node:ville.20090317180704.8:<< docstring >>
 ''' This plugin uses ctags to provide autocompletion list
@@ -27,13 +27,14 @@ search.
 #@-node:ville.20090317180704.8:<< docstring >>
 #@nl
 
-__version__ = '0.1'
+__version__ = '0.2'
 #@<< version history >>
 #@+node:ville.20090317180704.9:<< version history >>
 #@@nocolor-node
 #@+at
 # 
 # 0.1 EKR: place helpers as children of callers.
+# 0.2 EKR: Don't crash if the ctags file doesn't exist.
 #@-at
 #@nonl
 #@-node:ville.20090317180704.9:<< version history >>
@@ -97,6 +98,8 @@ def read_tags_file():
 
     trace = True
     tagsFileName = os.path.expanduser('~/.leo/tags')
+    if not os.path.exists(tagsFileName):
+        return [] # EKR: 11/18/2009
     assert os.path.isfile(tagsFileName)
 
     try:
@@ -193,5 +196,5 @@ def mkins(completer, body):
 #@-node:ekr.20091015185801.5243:ctags_complete & helpers
 #@-others
 #@nonl
-#@-node:ekr.20091015185317.5233:@thin ctagscompleter.py
+#@-node:ekr.20091118065749.5261:@thin ctagscompleter.py
 #@-leo

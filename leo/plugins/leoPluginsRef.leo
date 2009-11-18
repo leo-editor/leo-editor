@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="0" left="0" height="672" width="996"/>
+	<global_window_position top="40" left="60" height="877" width="1234"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -29,9 +29,10 @@
 <v t="ekr.20080519084304.2"><vh>@@button change leo imports</vh></v>
 </v>
 <v t="ekr.20090430075506.4"><vh>Notes &amp; to-do</vh>
-<v t="ekr.20090430075506.3"><vh>@thin leoPluginNotes.txt</vh></v>
+<v t="ekr.20090430075506.3"
+marks="ekr.20050808064245,ekr.20050809082854.1,"><vh>@thin leoPluginNotes.txt</vh></v>
 </v>
-<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
+<v t="edream.110203113231.618"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
 <v t="ekr.20041114102139"><vh>Notes</vh>
@@ -355,7 +356,7 @@
 <v t="ekr.20071010193720"><vh>@thin threading_colorizer.py	</vh></v>
 <v t="ekr.20080707101341.1"><vh>@thin ../modes/forth.py</vh></v>
 </v>
-<v t="edream.110203113231.872" a="E"><vh>Nodes...</vh>
+<v t="edream.110203113231.872"><vh>Nodes...</vh>
 <v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710455055f6564697471057d7106550474686973710755126f6b20686f77206120626f757420746869737108737373732e"><vh>@thin attrib_edit.py</vh></v>
 <v t="edream.110203113231.873"><vh>@thin at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@thin at_produce.py</vh></v>
@@ -712,7 +713,7 @@
 </v>
 <v t="ekr.20050111122605"><vh>Servers</vh>
 <v t="EKR.20040517080250.1"><vh>@thin mod_http.py</vh></v>
-<v t="ville.20091009202416.10040" a="EM"><vh>@thin leoremote.py</vh></v>
+<v t="ville.20091009202416.10040" a="M"><vh>@thin leoremote.py</vh></v>
 </v>
 <v t="ekr.20071113084440"><vh>Testing</vh>
 <v t="ekr.20071113084440.1"><vh>@thin test/syntax_error_plugin.py</vh></v>
@@ -791,7 +792,8 @@
 </v>
 <v t="ekr.20050817132814"><vh>rst3</vh>
 <v t="ekr.20090704103932.5160"><vh>@thin leo_pdf.py</vh></v>
-<v t="ekr.20050805162550"><vh>@thin rst3.py</vh></v>
+<v t="ekr.20050805162550"
+marks="ekr.20050808064245,ekr.20050809082854.1,"><vh>@thin rst3.py</vh></v>
 </v>
 <v t="ekr.20070119094733.1"><vh>@thin dtest.py</vh></v>
 </v>
@@ -864,6 +866,7 @@
 <v t="ville.20091008210853.5241"><vh>@thin stickynotes.py</vh></v>
 </v>
 </v>
+<v t="ekr.20091118065749.5261"><vh>@thin ctagscompleter.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040517075715"></t>
@@ -4487,7 +4490,7 @@ your plugin.</t>
 <t tx="ekr.20041114103913.1">PLEASE define each function or method in a separate node! To make this work,
 just put @others in the root of your plugin as shown. Note that @others may be
 nested, as shown in class myClass.</t>
-<t tx="ekr.20041211035618" str_leo_pos="2,18,0"></t>
+<t tx="ekr.20041211035618" str_leo_pos="3"></t>
 <t tx="ekr.20041231134702"># This is called from plugins_menu plugin.
 
 # It should only be defined if the extension has been registered.
