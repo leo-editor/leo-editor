@@ -10034,8 +10034,8 @@ Removes @ignore, @nocolor, @wrap directives.
 Chapter 2: The Leo Tutorial
 ############################
 
-:Release: |version|
-:Date: |today|
+.. :Release: |version|
+.. :Date: |today|
 
 Leo is an easy to learn, powerful programming editor, data management tool and
 scripting environment for the `Python`_ language. Many people say that Leo is
@@ -10062,9 +10062,11 @@ and style. After reading it, you will be able to use Leo in basic ways to create
 external files and organize data. You will then be ready to learn more about
 Leo's many advanced features in `Leo's Users Guide`_.
 
-The :ref:`glossary` is also worth going through.
+.. The :ref:`glossary` is also worth going through.
 
-.. .. contents::</t>
+.. contents::
+
+</t>
 <t tx="ekr.20050816073814">.. Links used in this document...
 
 .. ----- External references.
@@ -32027,7 +32029,8 @@ modify and refactor the source code in your project.
 
 Leo is just the tool for you.
 
-========
+.. ========
+
 Leo stores all its data in a tree of nodes, represented on the screen as an
 outline. Leo outline ares more flexible than usual: clones are nodes that may
 appear in multiple places within an outline. Using clones, Leo can act like a
@@ -32041,7 +32044,8 @@ that programmers can use to generate external files in flexible ways from
 Any outline node may contain a Leo script; such scripts have full access to all
 the data in Leo's outlines. Integrating outlines with scripting makes Leo an
 ideal scripting environment.
-===========
+
+.. ===========
 
 Leo organizes *all* data in flexible outlines. This organization affects
 everything you do in Leo. Leo outlines looks like simple hierarchical trees, but
@@ -32123,7 +32127,8 @@ is indeed a unique world.
 
 Now that you are all excited about Leo, you’ll want to examine it in some more
 detail. Since the best way to learn a language is to use it, the tutorial
-invites you to play with Leo as you read.</t>
+invites you to play with Leo as you read.
+</t>
 <t tx="ekr.20091111112709.6671">@language rest</t>
 <t tx="ekr.20091111112709.6672">.. _glossary:
 
