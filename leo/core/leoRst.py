@@ -840,7 +840,7 @@ class rstCommands:
 
         try:
             output = self.writeToDocutils(self.source)
-            ok = True
+            ok = output is not None
         except Exception:
             g.pr('Exception in docutils')
             g.es_exception()
@@ -931,13 +931,17 @@ class rstCommands:
                 g.es_print('relative path:', rel_stylesheet_path)
         try:
             # All paths now come through here.
+            result = None # Ensure that result is defined.
             result = docutils.core.publish_string(source=s,
                     reader_name='standalone',
                     parser_name='restructuredtext',
                     writer_name=writer,
                     settings_overrides=overrides)
         except docutils.ApplicationError, error:
-            g.es_print('Error (%s): %s' % (error.__class__.__name__, error))
+            # g.es_print('Docutils error (%s):' % (
+                # error.__class__.__name__),color='red')
+            g.es_print('Docutils error:',color='red')
+            g.es_print(error,color='blue')
         except Exception:
             g.es_print('Unexpected docutils exception')
             g.es_exception()
