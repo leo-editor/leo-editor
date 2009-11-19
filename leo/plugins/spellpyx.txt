@@ -186,6 +186,7 @@ InstanceType
 JComponent
 JEdit
 JEdit``'s
+JPG
 JPID
 JPIDs
 Jaakko
@@ -616,6 +617,7 @@ _headlines
 _home
 _http
 _huge_
+_images
 _indicate_
 _inside_
 _ip
@@ -749,6 +751,7 @@ allNode_iter
 allNodes_iter
 allPanes
 allStatements
+all_positions
 all_tnodes_iter
 all_vnodes_iter
 allow_clone_drags
@@ -1918,6 +1921,7 @@ leoKeys
 leoKeywords
 leoLeaps
 leoLinks
+leoMainWindow
 leoMainWinow
 leoMenu
 leoNode
@@ -2743,6 +2747,7 @@ section1
 section2
 section_
 section_name
+sectnum
 sel
 selEnd
 selStart

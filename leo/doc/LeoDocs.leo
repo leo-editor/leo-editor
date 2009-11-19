@@ -221,24 +221,31 @@
 </v>
 <v t="ekr.20050831195331.3" a="E"><vh>Chapter 2: The Leo Tutorial</vh>
 <v t="ekr.20050816073412" a="E"><vh>@rst html\intro.html</vh>
+<v t="ekr.20091119124742.6684"><vh>@rst-ignore to-do</vh></v>
 <v t="ekr.20050816073814"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20091111112709.6666"><vh>Whetting your appetite</vh></v>
+<v t="ekr.20091111112709.6666"><vh>Whetting your appetite</vh>
+<v t="ekr.20091119112012.6678"><vh>@rst-ignore notes</vh></v>
+</v>
+<v t="ekr.20091119112012.6679"><vh>Leo's name</vh></v>
 <v t="ekr.20050822173420"><vh>Leo's main window</vh></v>
 <v t="ekr.20050823082517"><vh>Using Leo as an outliner</vh></v>
 <v t="ekr.20050822173420.1"><vh>External files</vh></v>
 <v t="ekr.20050822173420.2"><vh>Clones &amp; views</vh></v>
-<v t="ekr.20050822173420.3"><vh>Leo directives (for non-programmers)</vh></v>
-<v t="ekr.20050827102655"><vh>Leo for Programmers</vh></v>
+<v t="ekr.20050822173420.3"><vh>Basic directives (for everybody)</vh></v>
+<v t="ekr.20050827102655"><vh>Leo for programmers</vh></v>
 <v t="ekr.20050827090532"><vh>Quick start for programmers</vh></v>
-<v t="ekr.20050829081318"><vh>Beginner`s reference guide</vh>
+<v t="ekr.20050829081318" a="E"><vh>Beginning programmer's reference guide</vh>
 <v t="ekr.20050827155902"><vh>Syntax of section names</vh></v>
 <v t="ekr.20050827061847"><vh>Code and doc parts</vh></v>
-<v t="ekr.20050828205054"><vh>Directives for programming</vh></v>
+<v t="ekr.20050828205054"><vh>Programming directives</vh></v>
 <v t="ekr.20050828161117"><vh>Orphan nodes</vh></v>
 <v t="ekr.20050828103319"><vh>Sentinel lines</vh></v>
 <v t="ekr.20050827162537"><vh>Leo and literate programming</vh></v>
 </v>
-<v t="ekr.20050827094813"><vh>Good style and bad:  sections vs. @others</vh></v>
+<v t="ekr.20050827094813"><vh>Good Leo style</vh>
+<v t="ekr.20091119124742.6682"><vh>Choosing between @others and sections</vh></v>
+<v t="ekr.20091119124742.6683"><vh>Organizing programs as outlines</vh></v>
+</v>
 <v t="ekr.20050822173420.5"><vh>Scripting Leo</vh></v>
 <v t="ekr.20050823081317.1"><vh>Plugins &amp; settings</vh></v>
 <v t="ekr.20050827090802"><vh>Further study</vh></v>
@@ -10066,6 +10073,8 @@ Leo's many advanced features in `Leo's Users Guide`_.
 
 .. contents::
 
+.. .. sectnum::
+
 </t>
 <t tx="ekr.20050816073814">.. Links used in this document...
 
@@ -11084,85 +11093,23 @@ you might save yourself some extra work.
 `@auto trees`_ allow you to edit external files that do not contain sentinels.
 Leo imports such external files every time Leo reads the .leo file.
 </t>
-<t tx="ekr.20050827090802">``LeoPyRef.leo`` (in the core subdirectory of the leo folder) contains almost all of Leo's source code.
-It provides hundreds of examples of everything discussed here.
-This file will repay close study.
-For full details on all aspects of Leo see ``LeoDocs.leo`` or `Leo's Users Guide`_.</t>
-<t tx="ekr.20050827094813">Newcomers to Leo frequently ask when to use the `@others`_ directive_ and when
-to use sections_. It is good style to use `section references`_ only when the
-order of text within a `external file`_ matters. For example, Python programmers
-put docstrings and imports at the start of files. So the `body text`_ of
-`@file`_ nodes typically look something like this::
+<t tx="ekr.20050827090802">``LeoPyRef.leo`` (in the core subdirectory of the leo folder) contains almost
+all of Leo's source code. It provides hundreds of examples of everything
+discussed here. This file will repay close study. For full details on all
+aspects of Leo see ``LeoDocs.leo`` or `Leo's Users Guide`_.</t>
+<t tx="ekr.20050827094813">The following paragraphs discuss what I call good Leo style, which means how you
+choose to organize your data, programs and scripts as outlines. These choices
+simply don't exist with other editors, and the choices you make will influence
+how easy it is to work with your data. We say an organization is **Leonine**
+if it uses Leo effectively and naturally.
 
-    &lt;&lt; docstring &gt;&gt;
-    @language python
-    @tabwidth -4
-    &lt;&lt; imports &gt;&gt;
-    @others
-
-This ensures that the docstring is first in the file, followed by imports,
-followed by everything else. Note that the order in which functions are defined
-in a file, or methods defined within a class, typically does *not* matter. Thus,
-it is good style to define classes like this::
-
-  class myClass:
-        &lt;&lt; class attributes &gt;&gt;
-        @others
-
-It would be bad style to define a class like this::
-
-  class myClass:
-        &lt;&lt; class attributes &gt;&gt;
-        &lt;&lt; method 1 &gt;&gt;
-        &lt;&lt; method 2 &gt;&gt;
-        ...
-
-Not only does this over-specify the order in which methods are defined, but it
-requires lots of extra typing. Not only must you add a line for each method, but
-headlines must contain section names such as &lt;&lt; method 1 &gt;&gt;, &lt;&lt;method 2&gt;&gt;, etc.
-When using ``@others`` it is good style simply to put the name of each method in
-the headline.
-
-A few more words about style:
-
-- It is good style to **put each class, function or method in its own node**.
-  This makes it easy to see the shape of your code.
-
-- It is good style to use `organizer nodes`_ to group related functions or methods.
-  An organizer node has no content except maybe for comments.
-  Like this::
-
-    + myClass
-        + birth and death
-            + __init__
-            etc.
-        + getters
-            etc.
-        + setters
-            etc.
-        + misc methods
-            etc.
-
-  (In this notation, '+' denotes a headline.)
-  This organization is far superior to using hideous comments like::
-
-    ###########
-    # Getters #
-    ###########
-
-- It is bad style to use `@others`_ in `organizer nodes`_.
-  There is no need to do so.
-
-- It is bad style to use `@others`_ when order does matter.
-  The reason is that it is very easy to move nodes in a tree by mistake,
-  say by alphabetizing nodes.
-  One wants to make the meaning of a external file immune from such movements.
-
-One last word about style. The world won't end if you happen to use bad style by
-mistake: you just might cause a bit more work for yourself than was strictly
-necessary. Feel free to invent your own style of using Leo. Still, it would be
-wise to "know the rules before you break them."
-</t>
+Newcomers to Leo often have questions about how to use Leo's outline-oriented
+markup. The following paragraphs answer those questions and present a
+straightforward, easy-to-use style of organizing your scripts and programs. I
+developed this style within an hour of using the first prototype of Leo, and it
+has remained mostly unchanged ever since. You may want to modify this style to
+suit your particular needs. By all means, do so. With just a bit of
+experimentation, you should be able to your own Leonine style.</t>
 <t tx="ekr.20050827102655">The previous sections have discussed the basics of Leo.
 *Non-programmers can stop reading this tutorial now*!
 
@@ -12116,7 +12063,7 @@ Negative values cause Leo to convert tabs to blanks.</t>
 
 - **\@wrap** and **\@nowrap**
   Enable or disable line wrapping the Leo's body pane.</t>
-<t tx="ekr.20050829081318">This section covers all the details of programming with Leo that beginners are likely to need.
+<t tx="ekr.20050829081318">This section covers all the details of programming with Leo that programmers new to Leo are likely to need.
 `Chapter 4: Writing Programs in Leo`_ is the full reference guide.
 I recommend avoiding that chapter until you have been programming with Leo for some time.
 </t>
@@ -23532,7 +23479,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="6,0,1"></t>
+<t tx="ekr.20070610174018" str_leo_pos="6,0,11"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -32007,15 +31954,15 @@ Scripting Leo with Python`_.
 For another introduction to Leo, open the file quickstart.leo in the leo/doc folder.
 </t>
 <t tx="ekr.20091111083703.6668"></t>
-<t tx="ekr.20091111112709.6666">If you do much work on computers, eventually you find that you have lots of data
-to organize, and various data-related tasks to automate.
+<t tx="ekr.20091111112709.6666">If you do much work on computers, you'll eventually want to organize lots
+of data.  You may also want to automate tasks that operate on those data.
 
 For example, you may want to organize photos into a photo album, or organize
 notes about interesting web sites. You might want organize your data, whether it
-be photos, notes or anything else, in various ways. For example, you might want
-to include a particular photo in several slideshows, but not in all of your
-slideshows, and you might want to put that photo at the start of one slideshow,
-but in the middle of another.
+be photos, notes or anything else, in various ways. You might want to include a
+particular photo in several slideshows, but not in all of your slideshows, and
+you might want to put that photo at the start of one slideshow, but in the
+middle of another.
 
 Or you might be a computer programmer who wants to have all the data for a
 computer project in a single place. You want to organize the source files of
@@ -32029,101 +31976,30 @@ modify and refactor the source code in your project.
 
 Leo is just the tool for you.
 
-.. ========
-
 Leo stores all its data in a tree of nodes, represented on the screen as an
 outline. Leo outline ares more flexible than usual: clones are nodes that may
 appear in multiple places within an outline. Using clones, Leo can act like a
 flexible filing cabinet in which nodes may be filed in many folders at once.
 
 Any part of a Leo tree may generate an external file (a file on your computer's
-file system). A single Leo outline can contain all the files of a programming
-project or any other set of related files. Leo supports outline-oriented markup
-that programmers can use to generate external files in flexible ways from
+file system). Leo defines simple, outline-oriented markup that tells Leo how to
+create the external file from an outline. Thus, a single Leo outline can contain
+all the files of a programming project or any other set of related files. Leo
+supports outline-oriented markup that programmers can use to generate external
+files in flexible ways from
 
-Any outline node may contain a Leo script; such scripts have full access to all
-the data in Leo's outlines. Integrating outlines with scripting makes Leo an
-ideal scripting environment.
+Integrating outlines with scripting makes Leo an ideal scripting environment.
+Within Leo, outlines and scripts work together in three ways:
 
-.. ===========
+1. You can use an outline like a filing cabinet to organize scripts.  As usual,
+   clones allow you to file scripts in more than one place.
 
-Leo organizes *all* data in flexible outlines. This organization affects
-everything you do in Leo. Leo outlines looks like simple hierarchical trees, but
-in fact they more than simple hierarchies. Leo outlines are composed of
-**nodes**. Any node can be **cloned** (duplicated); cloned nodes may appear in
-many places in an outline at the same time.
+2. Your scripts can get data from outlines. All Leo scripts have *full* and
+   *easy* access to all the data in the outline.
 
-For example, a photographer can clone a photo several times, and can insert the
-clones in different places in different slideshows. It's just that easy.
-
-Programmers can also use clones to organize computer programs. Just as
-photographers can put a photo in different positions in different slideshows,
-computer programmers can organize snippets of codes in many different ways.
-
-This concludes the discussion of Leo for non-programmer, who may want want
-to skip the rest of this page.  The rest of this page discusses features of Leo
-that are directly related to computer programming.
-
-
-Organization for computer programmers
-
-Leo is particularly well suited to organizing computer programs. To do this most
-effectively, it turns out to be extremely useful to put code snippets in
-separate nodes. Happily, Leo makes it easy and natural to do this.
-
-Actually, Leo is the *only* programming tool that makes it possible to organize
-data this way. With other tools you couldn't put functions, methods, classes (or
-larger units such as Python modules) into separate areas of text because, for
-example, putting a class into one text are would require that all the methods of
-the class would have to be part of that *same* text area.  There would then
-be *no way* to put each method into its own text area!  Do you see the problem?
-
-Leo solves this problem very simply, with several easy-to-use, outline-aware
-markup. Using this markup, can use outlines to describe computer programs at
-*any* level of detail. If you want to, you can easily put each of your modules,
-classes, methods and functions in a node of its own. You can even put put
-snippets of complex functions into separate nodes. You don't *have* to organize
-your data this way, but after you use Leo for awhile you will see the great
-advantages of doing so.
-
-Leo and scripting
-
-Let's turn now to scripting.  Leo is written entirely in the Python language,
-and you, as a programmer, benefit directly from all of Python's great strengths.
-
-For example, if you know how to program in Python, your scripts can easily give
-Leo new commands. Leo has many other features that make Leo extensible. Leo's
-**plugins** are Python modules that change Leo in larger ways. Scripts and
-plugins can change virtually *any* aspect of how Leo works.
-
-But extending Leo is only the most obvious way to use scripting in Leo.  Any node
-can contain a Leo script, and Leo script have full access to *all* the data in
-Leo outlines. There are several *extremely* useful side effect of
-putting data in separate nodes. Nodes are *real Python objects*. All of Leo's
-commands can act on nodes and their descendants. Even more powerfully, you can
-write scripts that easy access to any node of the outline.
-
-The implications of outline structure for scripting are surprising and profound.
-Each Leo node has a descriptive **headline** and associated **body text**.  Again,
-headlines and body text are true Python objects.  It turns out to be natural to
-treat headlines as description of the text (data) in the body text.  Scripts can
-*easily* find nodes using their headlines.  This eliminates a lot of parsing and other
-futzing around.
-
-For example, by *convention*, headlines that start with '@x' denote a node of
-"type" x. Leo itself, that is, Leo's core code, supports many such types.
-Plugins support other node types. Scripts, including scripts that you write,
-support other types. The rest of this tutorial will discuss these types in great
-detail. For now, you should realize that these (extensible! user-definable!)
-node types constitute a brand new dimension in computer programming.
-
-Leo's name
-
-The name "Leo" has a history behind it.  It used to be an acronym,
-but that acronym became absolute after the focus of Leo became broader.  Now,
-Leo is just the name for a Lion, and the term "Leonine" describes how people
-treat data in "the world according to Leo".  I think you will soon agree that this
-is indeed a unique world.
+3. You can organize any script *as* an outline. Leo's execute-script
+   command synthesizes the script from the nodes of an outline using the
+   same outline-oriented markup used to create external files.
 
 Now that you are all excited about Leo, you’ll want to examine it in some more
 detail. Since the best way to learn a language is to use it, the tutorial
@@ -32198,6 +32074,163 @@ s = s.replace('   ',' ')
 s = s.replace('  ',' ')
 
 p.setBodyString(s)</t>
+<t tx="ekr.20091119112012.6678">Key features:
+
+clones
+external files
+outline-oriented markup
+
+Leo organizes *all* data in flexible outlines. This organization affects
+everything you do in Leo. Leo outlines looks like simple hierarchical trees, but
+in fact they more than simple hierarchies. Leo outlines are composed of
+**nodes**. Any node can be **cloned** (duplicated); cloned nodes may appear in
+many places in an outline at the same time.
+
+For example, a photographer can clone a photo several times, and can insert the
+clones in different places in different slideshows. It's just that easy.
+
+Programmers can also use clones to organize computer programs. Just as
+photographers can put a photo in different positions in different slideshows,
+computer programmers can organize snippets of codes in many different ways.
+
+This concludes the discussion of Leo for non-programmer, who may want want
+to skip the rest of this page.  The rest of this page discusses features of Leo
+that are directly related to computer programming.
+
+
+Organization for computer programmers
+
+Leo is particularly well suited to organizing computer programs. To do this most
+effectively, it turns out to be extremely useful to put code snippets in
+separate nodes. Happily, Leo makes it easy and natural to do this.
+
+Actually, Leo is the *only* programming tool that makes it possible to organize
+data this way. With other tools you couldn't put functions, methods, classes (or
+larger units such as Python modules) into separate areas of text because, for
+example, putting a class into one text are would require that all the methods of
+the class would have to be part of that *same* text area.  There would then
+be *no way* to put each method into its own text area!  Do you see the problem?
+
+Leo solves this problem very simply, with several easy-to-use, outline-aware
+markup. Using this markup, can use outlines to describe computer programs at
+*any* level of detail. If you want to, you can easily put each of your modules,
+classes, methods and functions in a node of its own. You can even put put
+snippets of complex functions into separate nodes. You don't *have* to organize
+your data this way, but after you use Leo for awhile you will see the great
+advantages of doing so.
+
+Leo and scripting
+
+Let's turn now to scripting.  Leo is written entirely in the Python language,
+and you, as a programmer, benefit directly from all of Python's great strengths.
+
+For example, if you know how to program in Python, your scripts can easily give
+Leo new commands. Leo has many other features that make Leo extensible. Leo's
+**plugins** are Python modules that change Leo in larger ways. Scripts and
+plugins can change virtually *any* aspect of how Leo works.
+
+But extending Leo is only the most obvious way to use scripting in Leo.  Any node
+can contain a Leo script, and Leo script have full access to *all* the data in
+Leo outlines. There are several *extremely* useful side effect of
+putting data in separate nodes. Nodes are *real Python objects*. All of Leo's
+commands can act on nodes and their descendants. Even more powerfully, you can
+write scripts that easy access to any node of the outline.
+
+The implications of outline structure for scripting are surprising and profound.
+Each Leo node has a descriptive **headline** and associated **body text**.  Again,
+headlines and body text are true Python objects.  It turns out to be natural to
+treat headlines as description of the text (data) in the body text.  Scripts can
+*easily* find nodes using their headlines.  This eliminates a lot of parsing and other
+futzing around.
+
+For example, by *convention*, headlines that start with '@x' denote a node of
+"type" x. Leo itself, that is, Leo's core code, supports many such types.
+Plugins support other node types. Scripts, including scripts that you write,
+support other types. The rest of this tutorial will discuss these types in great
+detail. For now, you should realize that these (extensible! user-definable!)
+node types constitute a brand new dimension in computer programming.</t>
+<t tx="ekr.20091119112012.6679">Leo's name has a history. It used to be an acronym but that acronym became
+obsolete after Leo became a more general tool. Now, Leo is just the name for a
+Lion, and the term "Leonine" describes how people treat data in "the world
+according to Leo". I think you will soon agree that this is indeed a unique
+world.</t>
+<t tx="ekr.20091119124742.6682">Newcomers to Leo frequently ask when to use the `@others`_ directive_ and when
+to use sections_. It is good style to use `section references`_ only when the
+order of text within a `external file`_ matters. For example, Python programmers
+put docstrings and imports at the start of files. So the `body text`_ of
+`@file`_ nodes typically look something like this::
+
+    &lt;&lt; docstring &gt;&gt;
+    @language python
+    @tabwidth -4
+    &lt;&lt; imports &gt;&gt;
+    @others
+
+This ensures that the docstring is first in the file, followed by imports,
+followed by everything else. Note that the order in which functions are defined
+in a file, or methods defined within a class, typically does *not* matter. Thus,
+it is good style to define classes like this::
+
+  class myClass:
+        &lt;&lt; class attributes &gt;&gt;
+        @others
+
+It would be bad style to define a class like this::
+
+  class myClass:
+        &lt;&lt; class attributes &gt;&gt;
+        &lt;&lt; method 1 &gt;&gt;
+        &lt;&lt; method 2 &gt;&gt;
+        ...
+
+Not only does this over-specify the order in which methods are defined, but it
+requires lots of extra typing. Not only must you add a line for each method, but
+headlines must contain section names such as &lt;&lt; method 1 &gt;&gt;, &lt;&lt;method 2&gt;&gt;, etc.
+When using ``@others`` it is good style simply to put the name of each method in
+the headline.
+</t>
+<t tx="ekr.20091119124742.6683">A few more words about style:
+
+- It is good style to **put each class, function or method in its own node**.
+  This makes it easy to see the shape of your code.
+
+- It is good style to use `organizer nodes`_ to group related functions or methods.
+  An organizer node has no content except maybe for comments.
+  Like this::
+
+    + myClass
+        + birth and death
+            + __init__
+            etc.
+        + getters
+            etc.
+        + setters
+            etc.
+        + misc methods
+            etc.
+
+  (In this notation, '+' denotes a headline.)
+  This organization is far superior to using hideous comments like::
+
+    ###########
+    # Getters #
+    ###########
+
+- It is bad style to use `@others`_ in `organizer nodes`_.
+  There is no need to do so.
+
+- It is bad style to use `@others`_ when order does matter.
+  The reason is that it is very easy to move nodes in a tree by mistake,
+  say by alphabetizing nodes.
+  One wants to make the meaning of a external file immune from such movements.
+
+One last word about style. The world won't end if you happen to use bad style by
+mistake: you just might cause a bit more work for yourself than was strictly
+necessary. Feel free to invent your own style of using Leo. Still, it would be
+wise to "know the rules before you break them."</t>
+<t tx="ekr.20091119124742.6684">Use sphinx-like glossary.
+
+Is it possble to use the same style with both rST and Sphinx?</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?
