@@ -225,6 +225,8 @@
 <v t="ekr.20050816073814"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20091111112709.6666"><vh>Whetting your appetite</vh>
 <v t="ekr.20091119112012.6678"><vh>@rst-ignore notes</vh></v>
+<v t="ekr.20091119190813.6690"><vh>@rst-ignore old writing</vh></v>
+<v t="ekr.20091119190813.6693"><vh>@rst-ignore new writing</vh></v>
 </v>
 <v t="ekr.20091119112012.6679"><vh>Leo's name</vh></v>
 <v t="ekr.20050822173420"><vh>Leo's main window</vh></v>
@@ -233,8 +235,10 @@
 <v t="ekr.20050822173420.2"><vh>Clones &amp; views</vh></v>
 <v t="ekr.20050822173420.3"><vh>Basic directives (for everybody)</vh></v>
 <v t="ekr.20050827102655"><vh>Leo for programmers</vh></v>
-<v t="ekr.20050827090532"><vh>Quick start for programmers</vh></v>
-<v t="ekr.20050829081318" a="E"><vh>Beginning programmer's reference guide</vh>
+<v t="ekr.20050827090532"><vh>Quick start for programmers</vh>
+<v t="ekr.20091119190813.6689"><vh>@rst-ignore</vh></v>
+</v>
+<v t="ekr.20050829081318"><vh>Beginning programmer's reference guide</vh>
 <v t="ekr.20050827155902"><vh>Syntax of section names</vh></v>
 <v t="ekr.20050827061847"><vh>Code and doc parts</vh></v>
 <v t="ekr.20050828205054"><vh>Programming directives</vh></v>
@@ -246,7 +250,9 @@
 <v t="ekr.20091119124742.6682"><vh>Choosing between @others and sections</vh></v>
 <v t="ekr.20091119124742.6683"><vh>Organizing programs as outlines</vh></v>
 </v>
-<v t="ekr.20050822173420.5"><vh>Scripting Leo</vh></v>
+<v t="ekr.20050822173420.5"><vh>Scripting Leo</vh>
+<v t="ekr.20091119190813.6688"><vh>@rst-ignore</vh></v>
+</v>
 <v t="ekr.20050823081317.1"><vh>Plugins &amp; settings</vh></v>
 <v t="ekr.20050827090802"><vh>Further study</vh></v>
 </v>
@@ -10836,11 +10842,11 @@ the order that nodes appear on the screen when all nodes are expanded.
 This means that headlines_ do not affect the meaning of `external files`_ and
 you can use headlines_ to contain whatever data you wish.
 Usually, headlines_ describe what's in the node.</t>
-<t tx="ekr.20050822173420.2">A **clone** is a node that appears in more than one place in the outline.
-Clones are marked with a small red arrow in the icon box.
-All clones of a node are actually *the same node*, so any change to one clone
-affects all clones.  For example, inserting, moving or deleting any child of
-a clone will change all other clones on the screen.
+<t tx="ekr.20050822173420.2">A **clone** is a node that appears in more than one place in the outline. Clones
+are marked with a small red arrow in the icon box. All clones of a node are
+actually *the same node*, so any change to one clone affects all clones. For
+example, inserting, moving or deleting any child of a clone will change all
+other clones on the screen.
 
 Please take a few moments to experiment with clones. Create a node whose
 headline is A. Clone node A using the ``Clone Node`` command in Leo's Outline
@@ -10853,41 +10859,44 @@ B. See what happens if you insert, delete or move nodes that are children of A.
 Verify that when you delete the penultimate clone, the last clone becomes a
 regular node again.
 
-Clones are much more than a cute feature. **Clones allow multiple views of data
-to exist within a single outline**. The ability to create multiple views of data
-is crucial; you don't have to try to decide what is the 'correct' view of data.
-You can create as many views as you like, each tailored exactly to the task at hand.
+Clones are much more than a cute feature. Clones allow multiple views of data to
+exist **within a single outline**. With Leo, there is no such thing as a single,
+"correct" view of data. You can have as many views of data as you like.
 
-To create a new view of the data, just create any *ordinary* node. This node
-will *represent* the new view. Let us call it a **view node.** Now just put any
-nodes that are related to the view as descendant nodes of your view node. Let us
-call the descendants of the view nodes the **components** of the view. Component
-nodes are typically clones of other nodes in the outline. This is what gives the
-view its power: a view can contain nodes gathered from all over the outline.
-However, it is also sometimes useful to add non-cloned nodes as components of
-views.
+To create a new view of the data in your outline, just do the following:
 
-For example, when I begin to fix a bug I first create a view node to represent
-the bug. I then create a component node (not cloned) that contains the original
-bug report. I may also create other non-cloned nodes to contain notes and
-documentation. Next, I go looking throughout Leo's code for nodes that relate in
-some way to the bug. When I find such a node I clone it and move one of the
-clones so it becomes a component of the view node for the bug. **Note**: I can
-organize the components of the view node as I please. In particular, I can
-create **organizer nodes** whose only purpose is to contain groups of component
-nodes. In other words, the full power of Leo outlines is available within view
-nodes.
+1. Create an *ordinary* node, that will represent the view. We call these nodes
+   **view nodes** merely to indicate they represent a view.
+   
+2. Clone all the nodes from the outline that you want the view to contain.
+   Move these clones so they become children of the view node.
+   
+3. (Optional) You can add regular nodes as children of the view node too.
+   
+For example, when I fix a bug in Leo, I create an ordinary node to represent the
+bug. This **bug node** is my view of all the data in Leo's source code that
+relates to the bug. As I discover code related to the bug, I clone their nodes
+and move them under the bug node. I'll also add ordinary nodes as children of
+the bug node. These nodes contain the original bug report, descriptions of how I
+fixed the bug, test data, or any other notes I might want to keep.
 
-**Important**: Once I have created the view of the bug, I can concentrate *only*
-on that view. In particular, I can fix code by changing *component* nodes.
-Because the code nodes are cloned, any changes I make to a component node also
-get made to the other cloned nodes throughout the outline. In effect, my view
-node for the bug lets me work only on the nodes of the outline that are directly
-related to the bug. In other words, the view nodes lets me focus *only* on the
-task at hand, and lets me ignore all other details.
+Once I have created the bug node, I concentrate *only* on that node and its
+children. I can examine the bug node and its children without having to jump
+around the outline. Everything I need is in one place. When I get around to
+actually fixing the bug I can do so by changing the clones. Again, I do not have
+to jump around the outline. It doesn't matter how big or complex the entire
+outline is: I am only dealing with the bug node and its children. This extremely
+narrow focus makes it *much* easier to fix bugs.
 
-Clones are the basis for Leo's project management capabilities. Indeed, the
-ability to create multiple views of a project is most helpful.</t>
+By the way, I never have to remember to save external files. When I change any
+clone, Leo marks all instances of that clone throughout the entire outline as
+dirty (changed). When I save the Leo outline, Leo automatically writes all the
+external files that contain dirty nodes.
+
+Views have an unlimited number of uses. Use them whenever you want to focus your
+attention on some smaller set of nodes. For example, I often create view nodes
+when studying other people's code. The view node helps me concentrate on just
+the part of the code that interests me at the moment.</t>
 <t tx="ekr.20050822173420.3">Leo directives control such things as syntax coloring, line wrapping within the
 body pane and the width of tabs. Leo directives may appear in headlines or body
 text. Leo directives start with '@' in the leftmost column, followed by the name
@@ -11111,7 +11120,22 @@ has remained mostly unchanged ever since. You may want to modify this style to
 suit your particular needs. By all means, do so. With just a bit of
 experimentation, you should be able to your own Leonine style.</t>
 <t tx="ekr.20050827102655">The previous sections have discussed the basics of Leo.
-*Non-programmers can stop reading this tutorial now*!
+The rest of this tutorial discusses topics related to programming and scripting.
+
+
+
+running Python scripts inside Leo.
+
+
+We call these scripts **Leo scripts** to emphasize that these scripts
+have full and easy access to all parts of Leo's source code and all parts
+of the outline containing the scripts.
+
+Scripting is one of Leo's biggest strengths.  Simple Python scripts
+can do a *lot*.  
+
+Because Leo is written entirely in 
+
 
 The following sections tell how to create external files that contain computer
 programs. Yes, you could create program files using the ``@all`` directive, but
@@ -23479,7 +23503,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="6,0,11"></t>
+<t tx="ekr.20070610174018" str_leo_pos="6,0,7"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -31977,29 +32001,25 @@ modify and refactor the source code in your project.
 Leo is just the tool for you.
 
 Leo stores all its data in a tree of nodes, represented on the screen as an
-outline. Leo outline ares more flexible than usual: clones are nodes that may
-appear in multiple places within an outline. Using clones, Leo can act like a
-flexible filing cabinet in which nodes may be filed in many folders at once.
+outline. Leo outline ares more flexible than usual: **clones** are nodes that
+may appear in multiple places within an outline. Using clones, Leo can act like
+a flexible filing cabinet in which nodes may be filed in many folders at once.
 
-Any part of a Leo tree may generate an external file (a file on your computer's
-file system). Leo defines simple, outline-oriented markup that tells Leo how to
+Any part of a Leo tree may generate an **external file** (a file on your computer's
+file system). Leo defines simple, **outline-oriented markup** that tells Leo how to
 create the external file from an outline. Thus, a single Leo outline can contain
-all the files of a programming project or any other set of related files. Leo
-supports outline-oriented markup that programmers can use to generate external
-files in flexible ways from
+all the files of a programming project or any other set of related files.
 
-Integrating outlines with scripting makes Leo an ideal scripting environment.
-Within Leo, outlines and scripts work together in three ways:
-
-1. You can use an outline like a filing cabinet to organize scripts.  As usual,
-   clones allow you to file scripts in more than one place.
-
-2. Your scripts can get data from outlines. All Leo scripts have *full* and
-   *easy* access to all the data in the outline.
-
-3. You can organize any script *as* an outline. Leo's execute-script
-   command synthesizes the script from the nodes of an outline using the
-   same outline-oriented markup used to create external files.
+Any node in a Leo outline may contain a Python script. We call these scripts
+**Leo scripts** to emphasize that they are fully integrated with Leo. All of Leo
+is written in Python, so Leo scripts can use (or change!) any part of Leo while
+Leo is running. Furthermore, Leo scripts have *easy* access to all the data in
+any Leo outline. Because Leo scripts have full access to both Leo's source code
+and Leo outlines, it is *easy* for Leo scripts to create new commands that act
+on any part of an outline. This is a big reason why Leo is so much fun to use.
+You don't have to wait for somebody to add a new feature to Leo--you can do
+often do it yourself in a matter of minutes. Many of Leo's commands started out
+this way.
 
 Now that you are all excited about Leo, you’ll want to examine it in some more
 detail. Since the best way to learn a language is to use it, the tutorial
@@ -32074,86 +32094,15 @@ s = s.replace('   ',' ')
 s = s.replace('  ',' ')
 
 p.setBodyString(s)</t>
-<t tx="ekr.20091119112012.6678">Key features:
+<t tx="ekr.20091119112012.6678">Key features discussed in "Whetting your appetite"
 
-clones
-external files
-outline-oriented markup
+- clones
+- external files
+- outline-oriented markup
 
-Leo organizes *all* data in flexible outlines. This organization affects
-everything you do in Leo. Leo outlines looks like simple hierarchical trees, but
-in fact they more than simple hierarchies. Leo outlines are composed of
-**nodes**. Any node can be **cloned** (duplicated); cloned nodes may appear in
-many places in an outline at the same time.
-
-For example, a photographer can clone a photo several times, and can insert the
-clones in different places in different slideshows. It's just that easy.
-
-Programmers can also use clones to organize computer programs. Just as
-photographers can put a photo in different positions in different slideshows,
-computer programmers can organize snippets of codes in many different ways.
-
-This concludes the discussion of Leo for non-programmer, who may want want
-to skip the rest of this page.  The rest of this page discusses features of Leo
-that are directly related to computer programming.
-
-
-Organization for computer programmers
-
-Leo is particularly well suited to organizing computer programs. To do this most
-effectively, it turns out to be extremely useful to put code snippets in
-separate nodes. Happily, Leo makes it easy and natural to do this.
-
-Actually, Leo is the *only* programming tool that makes it possible to organize
-data this way. With other tools you couldn't put functions, methods, classes (or
-larger units such as Python modules) into separate areas of text because, for
-example, putting a class into one text are would require that all the methods of
-the class would have to be part of that *same* text area.  There would then
-be *no way* to put each method into its own text area!  Do you see the problem?
-
-Leo solves this problem very simply, with several easy-to-use, outline-aware
-markup. Using this markup, can use outlines to describe computer programs at
-*any* level of detail. If you want to, you can easily put each of your modules,
-classes, methods and functions in a node of its own. You can even put put
-snippets of complex functions into separate nodes. You don't *have* to organize
-your data this way, but after you use Leo for awhile you will see the great
-advantages of doing so.
-
-Leo and scripting
-
-Let's turn now to scripting.  Leo is written entirely in the Python language,
-and you, as a programmer, benefit directly from all of Python's great strengths.
-
-For example, if you know how to program in Python, your scripts can easily give
-Leo new commands. Leo has many other features that make Leo extensible. Leo's
-**plugins** are Python modules that change Leo in larger ways. Scripts and
-plugins can change virtually *any* aspect of how Leo works.
-
-But extending Leo is only the most obvious way to use scripting in Leo.  Any node
-can contain a Leo script, and Leo script have full access to *all* the data in
-Leo outlines. There are several *extremely* useful side effect of
-putting data in separate nodes. Nodes are *real Python objects*. All of Leo's
-commands can act on nodes and their descendants. Even more powerfully, you can
-write scripts that easy access to any node of the outline.
-
-The implications of outline structure for scripting are surprising and profound.
-Each Leo node has a descriptive **headline** and associated **body text**.  Again,
-headlines and body text are true Python objects.  It turns out to be natural to
-treat headlines as description of the text (data) in the body text.  Scripts can
-*easily* find nodes using their headlines.  This eliminates a lot of parsing and other
-futzing around.
-
-For example, by *convention*, headlines that start with '@x' denote a node of
-"type" x. Leo itself, that is, Leo's core code, supports many such types.
-Plugins support other node types. Scripts, including scripts that you write,
-support other types. The rest of this tutorial will discuss these types in great
-detail. For now, you should realize that these (extensible! user-definable!)
-node types constitute a brand new dimension in computer programming.</t>
-<t tx="ekr.20091119112012.6679">Leo's name has a history. It used to be an acronym but that acronym became
-obsolete after Leo became a more general tool. Now, Leo is just the name for a
-Lion, and the term "Leonine" describes how people treat data in "the world
-according to Leo". I think you will soon agree that this is indeed a unique
-world.</t>
+</t>
+<t tx="ekr.20091119112012.6679">Leo's name used to be an acronym but that acronym is obsolete. However, the term
+**Leonine** describes how people treat data in "the world according to Leo".</t>
 <t tx="ekr.20091119124742.6682">Newcomers to Leo frequently ask when to use the `@others`_ directive_ and when
 to use sections_. It is good style to use `section references`_ only when the
 order of text within a `external file`_ matters. For example, Python programmers
@@ -32230,7 +32179,90 @@ necessary. Feel free to invent your own style of using Leo. Still, it would be
 wise to "know the rules before you break them."</t>
 <t tx="ekr.20091119124742.6684">Use sphinx-like glossary.
 
-Is it possble to use the same style with both rST and Sphinx?</t>
+Is it possible to use the same style with both rST and Sphinx?</t>
+<t tx="ekr.20091119190813.6688">This section needs to be rewritten.
+
+- All of Leo is written in Python, so scripts can change any part of Leo.
+- Scripts have access to the outline that contains them.
+    So scripts can change outlines.
+- Scripts have access to the file system.
+
+- @button and @command make it easy to extend Leo.
+
+- </t>
+<t tx="ekr.20091119190813.6689">This really isn't a quick start, it's just about Leo markup.
+
+A quickstart would give an overview.
+
+There should be lots more stories in this section.</t>
+<t tx="ekr.20091119190813.6690">Leo organizes *all* data in flexible outlines. This organization affects
+everything you do in Leo. Leo outlines looks like simple hierarchical trees, but
+in fact they more than simple hierarchies. Leo outlines are composed of
+**nodes**. Any node can be **cloned** (duplicated); cloned nodes may appear in
+many places in an outline at the same time.
+
+Organization for computer programmers
+
+Leo is particularly well suited to organizing computer programs. To do this most
+effectively, it turns out to be extremely useful to put code snippets in
+separate nodes. Happily, Leo makes it easy and natural to do this.
+
+Actually, Leo is the *only* programming tool that makes it possible to organize
+data this way. With other tools you couldn't put functions, methods, classes (or
+larger units such as Python modules) into separate areas of text because, for
+example, putting a class into one text are would require that all the methods of
+the class would have to be part of that *same* text area.  There would then
+be *no way* to put each method into its own text area!  Do you see the problem?
+
+Leo solves this problem very simply, with several easy-to-use, outline-aware
+markup. Using this markup, can use outlines to describe computer programs at
+*any* level of detail. If you want to, you can easily put each of your modules,
+classes, methods and functions in a node of its own. You can even put put
+snippets of complex functions into separate nodes. You don't *have* to organize
+your data this way, but after you use Leo for awhile you will see the great
+advantages of doing so.
+
+Leo and scripting
+
+Let's turn now to scripting.  Leo is written entirely in the Python language,
+and you, as a programmer, benefit directly from all of Python's great strengths.
+
+For example, if you know how to program in Python, your scripts can easily give
+Leo new commands. Leo has many other features that make Leo extensible. Leo's
+**plugins** are Python modules that change Leo in larger ways. Scripts and
+plugins can change virtually *any* aspect of how Leo works.
+
+But extending Leo is only the most obvious way to use scripting in Leo.  Any node
+can contain a Leo script, and Leo script have full access to *all* the data in
+Leo outlines. There are several *extremely* useful side effect of
+putting data in separate nodes. Nodes are *real Python objects*. All of Leo's
+commands can act on nodes and their descendants. Even more powerfully, you can
+write scripts that easy access to any node of the outline.
+
+The implications of outline structure for scripting are surprising and profound.
+Each Leo node has a descriptive **headline** and associated **body text**.  Again,
+headlines and body text are true Python objects.  It turns out to be natural to
+treat headlines as description of the text (data) in the body text.  Scripts can
+*easily* find nodes using their headlines.  This eliminates a lot of parsing and other
+futzing around.
+
+For example, by *convention*, headlines that start with '@x' denote a node of
+"type" x. Leo itself, that is, Leo's core code, supports many such types.
+Plugins support other node types. Scripts, including scripts that you write,
+support other types. The rest of this tutorial will discuss these types in great
+detail. For now, you should realize that these (extensible! user-definable!)
+node types constitute a brand new dimension in computer programming.</t>
+<t tx="ekr.20091119190813.6693">Within Leo, outlines and scripts work together in three ways:
+
+1. You can use an outline like a filing cabinet to organize scripts.  As usual,
+   clones allow you to file scripts in more than one place.
+
+2. Your scripts can get data from outlines. All Leo scripts have *full* and
+   *easy* access to all the data in the outline.
+
+3. You can organize any script *as* an outline. Leo's execute-script
+   command synthesizes the script from the nodes of an outline using the
+   same outline-oriented markup used to create external files.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?
