@@ -10054,6 +10054,9 @@ Leo is an easy to learn, powerful programming editor, data management tool and
 scripting environment for the `Python`_ language. Many people say that Leo is
 fun to use, even addicting.
 
+Leo is a powerful &amp; easy to learn. It's a programming editor, data management
+tool, and python scripting environment.
+
 Leo is freely available in source or binary form for all major platforms. You
 may download Leo from http://sourceforge.net/projects/leo/files/Leo/ Leo is Open
 Software and may be freely distributed.
@@ -23503,7 +23506,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="6,0,7"></t>
+<t tx="ekr.20070610174018" str_leo_pos="6,0,0"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -32021,9 +32024,9 @@ You don't have to wait for somebody to add a new feature to Leo--you can do
 often do it yourself in a matter of minutes. Many of Leo's commands started out
 this way.
 
-Now that you are all excited about Leo, you’ll want to examine it in some more
-detail. Since the best way to learn a language is to use it, the tutorial
-invites you to play with Leo as you read.
+Now that you have some insight into Leo, you’ll want to examine it in
+some more detail. Since the best way to learn a language is to use it,
+the tutorial invites you to play with Leo as you read. 
 </t>
 <t tx="ekr.20091111112709.6671">@language rest</t>
 <t tx="ekr.20091111112709.6672">.. _glossary:
