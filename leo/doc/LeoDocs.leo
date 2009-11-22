@@ -220,9 +220,7 @@
 </v>
 </v>
 <v t="ekr.20050831195331.3" a="E"><vh>Chapter 2: The Leo Tutorial</vh>
-<v t="ekr.20050816073412" a="E"><vh>@rst html\intro.html</vh>
 <v t="ekr.20091119124742.6684"><vh>@rst-ignore-tree to-do</vh>
-<v t="ekr.20091111083703.6668"><vh>@rst-ignore Intro notes</vh>
 <v t="ekr.20091105080104.6568"><vh>More language for the intro</vh></v>
 <v t="ekr.20091105080104.11493"><vh>New intro language Geoff Evans</vh></v>
 <v t="ekr.20091105080104.11494"><vh>EKR second draft of the intro</vh></v>
@@ -230,47 +228,50 @@
 <v t="ekr.20091111083703.6667"><vh>From first node</vh></v>
 <v t="ekr.20050827055403"><vh>Outline structure is significant everywhere</vh></v>
 </v>
-</v>
 <v t="ekr.20091120072403.6697"><vh>@rst-ignore new stories</vh></v>
 <v t="ekr.20091120072403.6698"><vh>@rst-ignore preface stories</vh></v>
 </v>
+<v t="ekr.20050816073412" a="E"><vh>@rst html\intro.html</vh>
 <v t="ekr.20050816073814"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20091111112709.6666"><vh>Whetting your appetite</vh>
+<v t="ekr.20091111112709.6666" a="E"><vh>Whetting your appetite</vh>
 <v t="ekr.20091119112012.6678"><vh>@rst-ignore notes</vh></v>
 <v t="ekr.20091119190813.6690"><vh>@rst-ignore old writing</vh></v>
-<v t="ekr.20091119190813.6693"><vh>@rst-ignore new writing</vh></v>
 </v>
 <v t="ekr.20091119112012.6679"><vh>Leo's name</vh></v>
+<v t="ekr.20091120145745.6706" a="E"><vh>Part 1: Leo's basics</vh>
 <v t="ekr.20050822173420"><vh>Leo's main window</vh></v>
 <v t="ekr.20050823082517"><vh>Using Leo as an outliner</vh></v>
+<v t="ekr.20050822173420.1"><vh>External files</vh></v>
 <v t="ekr.20050822173420.2"><vh>Clones &amp; views</vh></v>
 <v t="ekr.20050822173420.3"><vh>Outline-oriented directives (for everybody)</vh></v>
-<v t="ekr.20050822173420.1"><vh>Leo (.leo) files and external files</vh></v>
-<v t="ekr.20091120072403.6705"><vh>@rst-ignore  Isn't the @others story the key???</vh></v>
 <v t="ekr.20091120072403.6704"><vh>The @all and @others directives</vh></v>
-<v t="ekr.20050827102655" a="E"><vh>Markup for programmers</vh>
-<v t="ekr.20091120072403.6701"><vh>@rst-ignore checklist</vh></v>
-<v t="ekr.20091120072403.6700"><vh>@rst-ignore old writing</vh></v>
+<v t="ekr.20091120145745.6705"><vh>Configuring Leo (rewrite)</vh></v>
 </v>
-<v t="ekr.20050829081318" a="E"><vh>Beginning programmer's reference guide (revise)</vh>
-<v t="ekr.20050828205054"><vh>Programming directives (add more info)</vh></v>
+<v t="ekr.20050827102655" a="E"><vh>Part 2: Leo for programmers</vh>
+<v t="ekr.20091120145745.6707"><vh>@rst-ignore notes</vh>
+<v t="ekr.20091120072403.6700"><vh>@rst-ignore old writing</vh></v>
+<v t="ekr.20050829081318"><vh>@rst-ignore Beginning programmer's reference guide (revise)</vh></v>
 <v t="ekr.20050827090532"><vh>@rst-ignore Quick start for programmers</vh>
 <v t="ekr.20091119190813.6689"><vh>@rst-ignore</vh></v>
 </v>
-<v t="ekr.20050827155902"><vh>Syntax of section names</vh></v>
-<v t="ekr.20050827061847"><vh>Code and doc parts (revise)</vh></v>
-<v t="ekr.20050828103319"><vh>Sentinel lines</vh></v>
 <v t="ekr.20050827162537"><vh>@rst-ignore Leo and literate programming</vh></v>
 </v>
+<v t="ekr.20091120145745.6704"><vh>The all-important @others directive</vh></v>
+<v t="ekr.20050828205054"><vh>Other programming directives</vh></v>
+<v t="ekr.20091120145745.6708"><vh>Optional programming markup</vh>
+<v t="ekr.20050827155902"><vh>Section names and section references</vh></v>
+<v t="ekr.20050827061847"><vh>@\doc parts</vh></v>
+</v>
+<v t="ekr.20050828103319"><vh>Sentinel lines</vh></v>
 <v t="ekr.20050827094813"><vh>Good Leo style</vh>
 <v t="ekr.20091119124742.6682"><vh>Choosing between @others and sections</vh></v>
 <v t="ekr.20091119124742.6683"><vh>Organizing programs as outlines</vh></v>
 </v>
-<v t="ekr.20050822173420.5"><vh>Scripting Leo</vh>
-<v t="ekr.20091119190813.6688"><vh>@rst-ignore</vh></v>
-</v>
-<v t="ekr.20050823081317.1"><vh>Plugins &amp; settings</vh></v>
+<v t="ekr.20050822173420.5"><vh>Scripting Leo</vh></v>
+<v t="ekr.20050823081317.1"><vh>Extending Leo</vh></v>
 <v t="ekr.20050827090802"><vh>Further study</vh></v>
+</v>
+<v t="ekr.20091120143500.6706"><vh>@rst-ignore The Leo Aha and history</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.26"><vh>Chapter 3: Using Outlines</vh>
@@ -10057,12 +10058,8 @@ Chapter 2: The Leo Tutorial
 .. :Release: |version|
 .. :Date: |today|
 
-Leo is an easy to learn, powerful programming editor, data management tool and
-scripting environment for the `Python`_ language. Many people say that Leo is
-fun to use, even addicting.
-
-Leo is a powerful &amp; easy to learn. It's a programming editor, data management
-tool, and python scripting environment.
+Leo is an easy-to-learn, powerful programming editor, data management tool and
+scripting environment. Many people say that Leo is fun to use, even addicting.
 
 Leo is freely available in source or binary form for all major platforms. You
 may download Leo from http://sourceforge.net/projects/leo/files/Leo/ Leo is Open
@@ -10107,14 +10104,14 @@ Leo's many advanced features in `Leo's Users Guide`_.
 
 .. _`external file`:        `External files`_
 .. _glossary:               glossary.html
-.. _`Good style and bad`:   `Good style and bad:  sections vs. @others`_
+.. _`Good style and bad`:   `Good Leo Style`_
 .. _outline:                `Leo's main window`_
 .. _outlines:               `Leo's main window`_
-.. _plugin:                 `Plugins &amp; settings`_
-.. _plugins:                `Plugins &amp; settings`_
-.. _quickstart:             `Quick start for programmers`_
+.. _plugin:                 `Extending Leo`_
+.. _plugins:                `Extending Leo`_
+.. .. _quickstart:             `Quick start for programmers`_
 .. _scripts:                `Scripting Leo`_
-.. _settings:               `Plugins &amp; settings`_
+.. _settings:               `Configuring Leo`_
 
 .. ----- References to other chapters.
 
@@ -10833,8 +10830,7 @@ is dirty if the node or any of its descendant nodes has become dirty.
 When you open a .leo file, Leo reads all the ``@file`` nodes in the outline.
 If you have changed an external file outside of Leo, Leo will update the
 corresponding @file tree to reflect those changes when Leo next opens the outline.
-
-**Note**: when writing an external file, Leo writes headlines as comments, so you are
+When writing an external file, Leo writes headlines as comments, so you are
 free to put whatever you want in any headline.
 
 You can create external files with other kinds of nodes. Collectively, these
@@ -10850,14 +10846,12 @@ other clones on the screen.
 
 Please take a few moments to experiment with clones. Create a node whose
 headline is A. Clone node A using the ``Clone Node`` command in Leo's Outline
-menu.
-
-Type some text into the body of either clone of A. The same text appears in the
-bodies of all other clones of A. Now insert a node, say B, as a child of any of
-the A nodes. All the A nodes now have a B child. See what happens if you clone
-B. See what happens if you insert, delete or move nodes that are children of A.
-Verify that when you delete the penultimate clone, the last clone becomes a
-regular node again.
+menu. Type some text into the body of either clone of A. The same text appears
+in the bodies of all other clones of A. Now insert a node, say B, as a child of
+any of the A nodes. All the A nodes now have a B child. See what happens if you
+clone B. See what happens if you insert, delete or move nodes that are children
+of A. Verify that when you delete the penultimate clone, the last clone becomes
+a regular node again.
 
 Clones are much more than a cute feature. Clones allow multiple views of data to
 exist **within a single outline**. With Leo, there is no such thing as a single,
@@ -10946,7 +10940,9 @@ effect throughout a tree, unless overridden in some subtree.
   recommended for Python programming.
 
 **\@wrap** and **\@nowrap** enable or disable line wrapping the Leo's body pane.</t>
-<t tx="ekr.20050822173420.5">Leo is fully scriptable using the Python language.
+<t tx="ekr.20050822173420.5">.. XXX Scripts have access to the file system.
+
+Leo is fully scriptable using the Python language.
 **Leo can execute any body text as a Python script**.
 To run the entire body text as a script, simply choose the node and execute the ``Execute Script`` command (``Ctrl+B``).
 If text is selected, the ``Execute Script`` command will run just the selected text as the script.
@@ -10971,12 +10967,14 @@ See `Chapter 7: Scripting Leo with Python`_ for a complete discussion of scripti
 Leo's user have contributed dozens of plugins that have extended Leo's capabilities in many new directions.
 The file ``leoPlugins.leo`` contains all plugins that are included in Leo distributions.
 
+.. XXX - @button and @command make it easy to extend Leo.
+
 Plugins and other parts of Leo can get options from **@settings** trees,
-outlines whose headline is ``@settings``. When opening a .leo file, Leo looks
-for ``@settings`` trees in the outline being opened and also in various
-``leoSettings.leo`` files. ``@settings`` trees allow plugins to get options without
-any further support from Leo's core code. For a full discussion of
-``@settings`` trees, see `Chapter 8: Customizing Leo`_.</t>
+outlines whose headline is ``@settings``.
+
+``@settings`` trees allow plugins to get options without any further support
+from Leo's core code. For a full discussion of ``@settings`` trees, see
+`Chapter 8: Customizing Leo`_.</t>
 <t tx="ekr.20050823082517">You can use Leo as fairly typical outliner. Play around with some of the
 commands from the Outline menu:
 
@@ -11142,8 +11140,7 @@ developed this style within an hour of using the first prototype of Leo, and it
 has remained mostly unchanged ever since. You may want to modify this style to
 suit your particular needs. By all means, do so. With just a bit of
 experimentation, you should be able to your own Leonine style.</t>
-<t tx="ekr.20050827102655">The previous sections have discussed how to organize data with Leo outlines. The
-rest of this tutorial discusses topics related to programming. Scripting Leo with
+<t tx="ekr.20050827102655">This part of Leo's tutorial discusses topics related to programming. Scripting Leo with
 Python is easy, so I encourage you to read on.
 </t>
 <t tx="ekr.20050827155902">A section name has the form::
@@ -11911,7 +11908,7 @@ Leo from writing ``@noref`` or ``@asis`` trees.
   text (or ``@@`` headlines). In particular, if body text does not end in a
   newline, the first line from the next node will concatenated to the last line
   of the preceding node.</t>
-<t tx="ekr.20050828205054">.. Add information from chapter 4 so that the reader
+<t tx="ekr.20050828205054">.. XXX Add information from chapter 4 so that the reader
 .. doesn't need to use that chapter.
 
 The following directives are commonly used by Leo programmers.
@@ -11935,8 +11932,6 @@ The following directives are commonly used by Leo programmers.
 - **@last** Forces lines to appear after the last sentinel of a external file.
 
 - **@lineending** Specifies the line ending to be used in external files.
-
-- **@others** Copies all nodes *except section definition nodes* to the external file.
 
 - **@pagewidth** Sets the page width used to break doc parts into lines.
 
@@ -23488,7 +23483,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="5,0,11,1"></t>
+<t tx="ekr.20070610174018" str_leo_pos="5,1,3,6"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -31962,26 +31957,24 @@ Scripting Leo with Python`_.
 
 For another introduction to Leo, open the file quickstart.leo in the leo/doc folder.
 </t>
-<t tx="ekr.20091111083703.6668"></t>
-<t tx="ekr.20091111112709.6666">If you do much work on computers, you'll eventually want to organize lots
-of data.  You may also want to automate tasks that operate on those data.
+<t tx="ekr.20091111112709.6666">If you do much work on computers, you'll eventually want to organize data. You
+may also want to automate tasks that operate on those data.
 
 For example, you may want to organize photos into a photo album, or organize
-notes about interesting web sites. You might want organize your data, whether it
-be photos, notes or anything else, in various ways. You might want to include a
-particular photo in several slideshows, but not in all of your slideshows, and
-you might want to put that photo at the start of one slideshow, but in the
-middle of another.
+notes about interesting web sites. You might want to include a particular photo
+in several slideshows, but not in all of your slideshows, and you might want to
+put that photo at the start of one slideshow, but in the middle of another. So
+you would want to organize your photos in *more than one way*.
 
 Or you might be a computer programmer who wants to have all the data for a
 computer project in a single place. You want to organize the source files of
 your program along with related scripts, design notes, documentation, bug fixes
 and unit tests. And like the photographer who wants to organize slides in a
 variety of different slideshows, you want the organize all the data in your
-project in *many* task-oriented ways simultaneously. Finally, you would like to
-be able apply scripts to all the data in your project so you can automate
-project-specific tasks. You might even want to create scripts that analyze,
-modify and refactor the source code in your project.
+project in *many* different task-oriented ways simultaneously. Finally, you
+would like to be able apply scripts to all the data in your project so you can
+automate project-specific tasks. You might even want to create scripts that
+analyze, modify and refactor the source code in your project.
 
 Leo is just the tool for you.
 
@@ -31995,7 +31988,7 @@ file system). Leo defines simple, **outline-oriented markup** that tells Leo how
 create the external file from an outline. Thus, a single Leo outline can contain
 all the files of a programming project or any other set of related files.
 
-Any node in a Leo outline may contain a Python script. We call these scripts
+Any node in a Leo outline may contain a Python_ script. We call these scripts
 **Leo scripts** to emphasize that they are fully integrated with Leo. All of Leo
 is written in Python, so Leo scripts can use (or change!) any part of Leo while
 Leo is running. Furthermore, Leo scripts have *easy* access to all the data in
@@ -32165,16 +32158,6 @@ wise to "know the rules before you break them."</t>
 <t tx="ekr.20091119124742.6684">Use sphinx-like glossary.
 
 Is it possible to use the same style with both rST and Sphinx?</t>
-<t tx="ekr.20091119190813.6688">This section needs to be rewritten.
-
-- All of Leo is written in Python, so scripts can change any part of Leo.
-- Scripts have access to the outline that contains them.
-    So scripts can change outlines.
-- Scripts have access to the file system.
-
-- @button and @command make it easy to extend Leo.
-
-- </t>
 <t tx="ekr.20091119190813.6689">This really isn't a quick start, it's just about Leo markup.
 
 A quickstart would give an overview.
@@ -32237,17 +32220,6 @@ Plugins support other node types. Scripts, including scripts that you write,
 support other types. The rest of this tutorial will discuss these types in great
 detail. For now, you should realize that these (extensible! user-definable!)
 node types constitute a brand new dimension in computer programming.</t>
-<t tx="ekr.20091119190813.6693">Within Leo, outlines and scripts work together in three ways:
-
-1. You can use an outline like a filing cabinet to organize scripts.  As usual,
-   clones allow you to file scripts in more than one place.
-
-2. Your scripts can get data from outlines. All Leo scripts have *full* and
-   *easy* access to all the data in the outline.
-
-3. You can organize any script *as* an outline. Leo's execute-script
-   command synthesizes the script from the nodes of an outline using the
-   same outline-oriented markup used to create external files.</t>
 <t tx="ekr.20091120072403.6697">A story about why Leo is fun, and powerful.
 
 It's easy to use python scripts to import or export data, so among
@@ -32354,8 +32326,6 @@ the following section explain how you can take advantage of **power-user**
 features designed specifically for computer programmers. Even if you don't read
 manuals, please read the following short `Quick start for programmers`_ section.
 </t>
-<t tx="ekr.20091120072403.6701">- Scripting
-- External files</t>
 <t tx="ekr.20091120072403.6704">If an ``@&lt;file&gt;`` node has no children, Leo just writes the body text of the
 ``@&lt;file&gt;`` node to the external file. But usually, ``@&lt;file&gt;`` nodes will have
 many descendant nodes. In this case, you must use either one of the following
@@ -32388,7 +32358,20 @@ directive. If you forget to add either directive, all the children of the
 saving the outline, Leo will will save the erroneous ``@&lt;file&gt;`` tree in the
 .leo file instead of the external file. No information is lost.
 </t>
-<t tx="ekr.20091120072403.6705"></t>
+<t tx="ekr.20091120143500.6706">.. XXX Isn't the @others story the key???
+
+.. Where to put this???
+
+.. Revise the preface???</t>
+<t tx="ekr.20091120145745.6704">- **@others** Copies all nodes *except section definition nodes* to the external file.
+
+.. many more details needed here!</t>
+<t tx="ekr.20091120145745.6705">When opening a .leo file, Leo looks
+for ``@settings`` trees in the outline being opened and also in various
+``leoSettings.leo`` files. </t>
+<t tx="ekr.20091120145745.6706">This part of Leo's tutorial describes Leo's basic features.</t>
+<t tx="ekr.20091120145745.6707"></t>
+<t tx="ekr.20091120145745.6708"></t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?

@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="46" left="625" height="1008" width="1205"/>
+	<global_window_position top="45" left="603" height="1008" width="1205"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -501,7 +501,7 @@
 <v t="ekr.20091110104908.2108"><vh>@url http://www.cs.virginia.edu/~robins/YouAndYourResearch.html</vh></v>
 </v>
 </v>
-<v t="ekr.20091116094116.2312" a="E"><vh>@image 15-20 minutes: Introducing Leo</vh>
+<v t="ekr.20091116094116.2312"><vh>@image 15-20 minutes: Introducing Leo</vh>
 <v t="ekr.20091117093857.2640"><vh>Users say Leo is...</vh>
 <v t="ekr.20091116094116.2604"><vh>revolutionary</vh></v>
 <v t="ekr.20091116094116.2605"><vh>fun, even addicting</vh></v>
@@ -513,7 +513,7 @@
 <v t="ekr.20091116094116.2610"><vh>a great way to understand complex systems</vh></v>
 </v>
 <v t="ekr.20091116094116.2313"><vh>Leo's screen</vh></v>
-<v t="ekr.20091117100212.2632" a="E"><vh>Outlines</vh>
+<v t="ekr.20091117100212.2632"><vh>Outlines</vh>
 <v t="ekr.20091116094116.2343"><vh>There is no such thing as *the* right view of data</vh></v>
 <v t="ekr.20091116094116.2315"><vh>Leo outlines aren't just trees</vh>
 <v t="ekr.20091116094116.2317"><vh>The same node can appear in many places in an outline</vh>
@@ -835,6 +835,7 @@
 <v t="ekr.20091116094116.2575"><vh>Conclusions</vh></v>
 <v t="ekr.20091117100212.2630"><vh>Questions</vh></v>
 </v>
+<v t="ekr.20091121184836.2583"><vh>Leo is really simple :-)</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1553,7 +1554,7 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20070315073704.3"></t>
 <t tx="ekr.20070315073704.4"></t>
 <t tx="ekr.20080129151123"></t>
-<t tx="ekr.20080129151228" str_leo_pos="3,1"></t>
+<t tx="ekr.20080129151228" str_leo_pos="3,2"></t>
 <t tx="ekr.20091103090815.1426"># To create a tab named 'Test' or make it visible if it already exists:
 log = c.frame.log
 log.selectTab('Test')
@@ -8305,6 +8306,18 @@ Google Group: http://groups.google.com/group/leo-editor
 <t tx="ekr.20091117100212.2633"></t>
 <t tx="ekr.20091117100212.2635">C:\leo.repo\trunk\leo\Icons\Lioness.jpg</t>
 <t tx="ekr.20091117100212.2636">assert 1 == 2
+</t>
+<t tx="ekr.20091121184836.2583">@language rest
+
+The basics of Leo:
+
+- Programs (data) are outlines in disguise.
+- @others allows you to see data at *any* level of detail.
+  (Tail recursion isn't good enough: @others specifies indentation)
+- There is no such thing a single "right" view of data.
+- Clones let you choose.  (You can put clones in as many views as you like.)
+- Outlines must be true objects.
+- Headlines are meta-data.
 </t>
 </tnodes>
 </leo_file>
