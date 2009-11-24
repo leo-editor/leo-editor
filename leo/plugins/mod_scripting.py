@@ -620,7 +620,7 @@ class scriptingController:
 
         if self.atScriptNodes:
             g.es("executing script %s" % (name),color="blue")
-            c.executeScript(arsg=args,p=p,useSelectedText=False,silent=True)
+            c.executeScript(args=args,p=p,useSelectedText=False,silent=True)
         else:
             g.es("disabled @script: %s" % (name),color="blue")
 
