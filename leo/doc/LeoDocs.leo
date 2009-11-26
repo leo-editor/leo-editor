@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="48" left="0" height="694" width="1024"/>
+	<global_window_position top="48" left="3" height="692" width="1018"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -62,7 +62,6 @@
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20040414161647"><vh>Users Guide</vh>
-<v t="ekr.20090811134705.6550"><vh>@@rst leoUserGuide.txt</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -220,7 +219,7 @@
 </v>
 </v>
 <v t="ekr.20050831195331.3"><vh>Chapter 2: The Leo Tutorial</vh>
-<v t="ekr.20091119124742.6684"><vh>@rst-ignore-tree to-do</vh>
+<v t="ekr.20091119124742.6684" a="E"><vh>@rst-ignore-tree to-do</vh>
 <v t="ekr.20091105080104.6568"><vh>More language for the intro</vh></v>
 <v t="ekr.20091105080104.11493"><vh>New intro language Geoff Evans</vh></v>
 <v t="ekr.20091105080104.11494"><vh>EKR second draft of the intro</vh></v>
@@ -230,6 +229,7 @@
 </v>
 <v t="ekr.20091120072403.6697"><vh>@rst-ignore new stories</vh></v>
 <v t="ekr.20091120072403.6698"><vh>@rst-ignore preface stories</vh></v>
+<v t="ekr.20091126111710.6698"><vh>Create a hello-world example (Matt)</vh></v>
 </v>
 <v t="ekr.20050816073412"><vh>@rst html\intro.html</vh>
 <v t="ekr.20050816073814"><vh>@rst-no-head links</vh></v>
@@ -1017,7 +1017,6 @@
 <v t="ekr.20071004101443.178"><vh>Added new convenience methods for scripts and plugins</vh></v>
 <v t="ekr.20060620140130"><vh>New and improved plugins</vh></v>
 <v t="ekr.20060620140228"><vh>New and improved settings</vh></v>
-</v>
 </v>
 </v>
 </v>
@@ -23483,7 +23482,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="5"></t>
+<t tx="ekr.20070610174018" str_leo_pos="2"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -30614,12 +30613,6 @@ All parts of the find tab can be controlled from the keyboard.
 <t tx="ekr.20090811090022.14453">Here is Leo's main window as it appears on Linux:
 
 |leoQtMainWindowLinux|</t>
-<t tx="ekr.20090811134705.6550">@language rest
-
-.. This node represents the entire users guide.
-.. It may be useful for generating the pdf docs.
-
-@all</t>
 <t tx="ekr.20090909083000.6547">Leo 4.7 beta 1                          September 9, 2009
 
 Leo 4.7 beta 1 is now available at:
@@ -32372,6 +32365,51 @@ for ``@settings`` trees in the outline being opened and also in various
 <t tx="ekr.20091120145745.6706">This part of Leo's tutorial describes Leo's basic features.</t>
 <t tx="ekr.20091120145745.6707"></t>
 <t tx="ekr.20091120145745.6708"></t>
+<t tx="ekr.20091126111710.6698">The documentation here http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm
+is very good, except the example does not work in Leo 4.6.2.   It
+generates code in which the comment character is a line starting with
+# -- a different preprocessor command in C.  I tried putting a
+@language C directrive in the root node to no avail. Note that this
+tutorial is not complete in that it does not show the contents of the
+includes and methods nodes.   The current Leo version does not
+highlight the syntax of the examples here properly -- it apparently
+requires the @doc directive to be matched by an @c directive, which is
+not mentioned.
+
+The documentation here http://webpages.charter.net/edreamleo/intro.html
+(Chapter 2: The Leo Tutorial) contains all sorts of feature
+information that would be useful to somebody who'd managed to get Leo
+working, but no actual working examples.  For example, I could learn
+from this that I probably need to include an @language directive to
+correct the problem with the much better tutorial  above, but no
+example showing how to use it or where to put it.
+
+Basically, there is no complete, working "hello world" example for
+using Leo, even though such a thing should be only a few minutes work
+for somebody who knows how to get the system to work.
+
+Also, when I start the editor, it starts throwing up the following
+message in the log window:
+"No editor set! Please set LEO_EDITOR or EDITOR environment variable,
+or do g.app.db['LEO_EDITOR'] = 'gvim'".
+
+While I obviously can set the environment variable in the shell, I
+might not want to use the environment variable. So the advice "do
+g.app.db['LEO_EDITOR'] = 'gvim'" appears to be what I want, but there
+is no instruction on where this is supposed to go.  I don't want to
+know how to fix this; I want to know *how to figure out how to fix
+this from the documentation*.  I too a wild guess and opened up edit-
+&gt;settings was a shock.  I understand the "eat your own dog food"
+philosophy, but that doesn't extend to making users deal with source
+code to do elementary settings.
+
+The current state of the documentation appears to be such that a new
+user cannot learn the most basic operations of the Leo editor without
+diving into the source code.  I'd like to use this editor, but unless
+I'm working exclusively in python I'm not sure I can.  Clearly, the
+intent of the system is not to be python only.
+
+-Matt</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?
