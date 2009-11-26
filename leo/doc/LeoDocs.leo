@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="31" left="668" height="1023" width="1248"/>
+	<global_window_position top="48" left="0" height="694" width="1024"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -219,7 +219,7 @@
 <v t="ekr.20060105145125"><vh>How to install the Aspell spell checker</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.3" a="E"><vh>Chapter 2: The Leo Tutorial</vh>
+<v t="ekr.20050831195331.3"><vh>Chapter 2: The Leo Tutorial</vh>
 <v t="ekr.20091119124742.6684"><vh>@rst-ignore-tree to-do</vh>
 <v t="ekr.20091105080104.6568"><vh>More language for the intro</vh></v>
 <v t="ekr.20091105080104.11493"><vh>New intro language Geoff Evans</vh></v>
@@ -231,14 +231,14 @@
 <v t="ekr.20091120072403.6697"><vh>@rst-ignore new stories</vh></v>
 <v t="ekr.20091120072403.6698"><vh>@rst-ignore preface stories</vh></v>
 </v>
-<v t="ekr.20050816073412" a="E"><vh>@rst html\intro.html</vh>
+<v t="ekr.20050816073412"><vh>@rst html\intro.html</vh>
 <v t="ekr.20050816073814"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20091111112709.6666" a="E"><vh>Whetting your appetite</vh>
+<v t="ekr.20091111112709.6666"><vh>Whetting your appetite</vh>
 <v t="ekr.20091119112012.6678"><vh>@rst-ignore notes</vh></v>
 <v t="ekr.20091119190813.6690"><vh>@rst-ignore old writing</vh></v>
 </v>
 <v t="ekr.20091119112012.6679"><vh>Leo's name</vh></v>
-<v t="ekr.20091120145745.6706" a="E"><vh>Part 1: Leo's basics</vh>
+<v t="ekr.20091120145745.6706"><vh>Part 1: Leo's basics</vh>
 <v t="ekr.20050822173420"><vh>Leo's main window</vh></v>
 <v t="ekr.20050823082517"><vh>Using Leo as an outliner</vh></v>
 <v t="ekr.20050822173420.1"><vh>External files</vh></v>
@@ -247,7 +247,7 @@
 <v t="ekr.20091120072403.6704"><vh>The @all and @others directives</vh></v>
 <v t="ekr.20091120145745.6705"><vh>Configuring Leo (rewrite)</vh></v>
 </v>
-<v t="ekr.20050827102655" a="E"><vh>Part 2: Leo for programmers</vh>
+<v t="ekr.20050827102655"><vh>Part 2: Leo for programmers</vh>
 <v t="ekr.20091120145745.6707"><vh>@rst-ignore notes</vh>
 <v t="ekr.20091120072403.6700"><vh>@rst-ignore old writing</vh></v>
 <v t="ekr.20050829081318"><vh>@rst-ignore Beginning programmer's reference guide (revise)</vh></v>
@@ -3257,7 +3257,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050831195331.3" a="E"></v>
+<v t="ekr.20050831195331.3"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
@@ -23483,7 +23483,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="5,1,3,6"></t>
+<t tx="ekr.20070610174018" str_leo_pos="5"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
