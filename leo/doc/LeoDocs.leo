@@ -218,7 +218,7 @@
 <v t="ekr.20060105145125"><vh>How to install the Aspell spell checker</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.3" a="E"><vh>Chapter 2: The Leo Tutorial</vh>
+<v t="ekr.20050831195331.3"><vh>Chapter 2: The Leo Tutorial</vh>
 <v t="ekr.20050816073412"><vh>@rst html\intro.html</vh>
 <v t="ekr.20091127091501.6711"><vh>@rst-ignore deleted from intro</vh></v>
 <v t="ekr.20091119124742.6684"><vh>@rst-ignore-tree</vh>
@@ -3260,7 +3260,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050831195331.3" a="E"></v>
+<v t="ekr.20050831195331.3"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
@@ -12538,20 +12538,13 @@ You have two options:
 - If sentinels are frowned upon in your development community, use `@auto`_ or
   `@shadow`_ instead of ``@thin``.
 
-- The repository contains "reference" .leo files. These reference files
-  should contain nothing but ``@thin`` nodes. Reference files will change only
-  when new external files get added to the project.
-
-  **Important**: Leo's `bzr repository`_ and Leo distributions contains these
-  **reference** files: ``LeoPyRef.leo``, ``LeoPluginsRef.leo`` and
-  ``leoGuiPluginsRef.leo``. Reference files use only ``@thin`` nodes, so
-  reference .leo files need to be checked into the repository only when
-  ``@thin`` nodes are added or deleted. If you find yourself checking in a .leo
-  file frequently, consider migrating valuable content to ``@thin`` nodes.
-
-- Developers will use local copies of reference files for their own work. For
-  example, instead of using ``LeoPyRef.leo`` directly, I use a copy called
-  ``LeoPy.leo``. My local copy can contain nodes other than ``@thin`` nodes.</t>
+- The repository contains **reference** .leo files. These reference files should
+  contain nothing but ``@thin`` nodes. Reference files should change only when
+  new external files get added to the project. Leo's `bzr repository`_ and Leo
+  distributions contain the following reference files: ``LeoPyRef.leo``,
+  ``LeoPluginsRef.leo`` and ``leoGuiPluginsRef.leo``. Developers should use
+  local copies of reference files for their own work. For example, instead of
+  using ``LeoPyRef.leo`` directly, I use a copy called ``LeoPy.leo``.</t>
 <t tx="ekr.20050830115714.13"></t>
 <t tx="ekr.20050830115714.14">You have two options, depending on whether you want to be able to use sections
 or not.
