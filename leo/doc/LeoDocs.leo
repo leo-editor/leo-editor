@@ -61,7 +61,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -102,8 +102,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050831195331.1"><vh>FAQ</vh>
-<v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
+<v t="ekr.20050831195331.1" a="E"><vh>FAQ</vh>
+<v t="ekr.20050830115714" a="E"><vh>@rst html\FAQ.html</vh>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20090212054250.5"><vh>Getting Leo</vh>
 <v t="ekr.20090501091345.2"><vh>@rst-option show-sections = False</vh>
@@ -219,7 +219,7 @@
 </v>
 </v>
 <v t="ekr.20050831195331.3" a="E"><vh>Chapter 2: The Leo Tutorial</vh>
-<v t="ekr.20050816073412" a="E"><vh>@rst html\intro.html</vh>
+<v t="ekr.20050816073412"><vh>@rst html\intro.html</vh>
 <v t="ekr.20091127091501.6711"><vh>@rst-ignore deleted from intro</vh></v>
 <v t="ekr.20091119124742.6684"><vh>@rst-ignore-tree</vh>
 <v t="ekr.20091127091501.6707"><vh>Old language</vh>
@@ -12542,15 +12542,12 @@ You have two options:
   should contain nothing but ``@thin`` nodes. Reference files will change only
   when new external files get added to the project.
 
-  **Important**: Leo's `bzr repository`_ contains the *reference* versions of
-  the following .leo files: ``LeoPyRef.leo`` and ``LeoPluginsRef.leo``. However,
-  Leo's distributions contain the *non-reference* versions of those files:
-  ``LeoPy.leo`` and ``LeoPlugins.leo``. These two files have many ``@thin``
-  nodes. There is no reference file for ``test.leo`` even though it contains
-  ``@thin leoTest.py``. It would be clumsy to use testRef.leo, and there is less
-  need to do so. Reference .leo files (or any .leo files) rarely need to be
-  checked into the repository. If you find yourself checking in a .leo file
-  frequently, consider migrating valuable content to `@thin`_ nodes.
+  **Important**: Leo's `bzr repository`_ and Leo distributions contains these
+  **reference** files: ``LeoPyRef.leo``, ``LeoPluginsRef.leo`` and
+  ``leoGuiPluginsRef.leo``. Reference files use only ``@thin`` nodes, so
+  reference .leo files need to be checked into the repository only when
+  ``@thin`` nodes are added or deleted. If you find yourself checking in a .leo
+  file frequently, consider migrating valuable content to ``@thin`` nodes.
 
 - Developers will use local copies of reference files for their own work. For
   example, instead of using ``LeoPyRef.leo`` directly, I use a copy called
@@ -23495,7 +23492,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="5,0"></t>
+<t tx="ekr.20070610174018" str_leo_pos="2,3,0,4"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
