@@ -846,6 +846,7 @@ batchfile
 baz
 bbb
 bbox
+bc
 bdist
 beadList
 beforeGroup
