@@ -544,7 +544,8 @@ class PlugIn:
             f.close()
     #@-node:bob.20071208033759:writeConfiguration
     #@+node:pap.20051011215345:niceMenuName
-    def niceMenuName(self, name):
+    @staticmethod
+    def niceMenuName(name):
         """Return a nice version of the command name for the menu
 
         The command will be of the form::
