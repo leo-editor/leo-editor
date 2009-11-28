@@ -58,6 +58,8 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import os
 
+from leo.plugins.plugins_menu import PlugIn
+
 testing = False
 
 __version__ = "0.2"
@@ -73,7 +75,49 @@ __version__ = "0.2"
 #@nl
 
 #@+others
-#@+node:tbrown.20090219133655.231:isDirNode
+#@+node:tbrown.20091128094521.15048:init
+if g.app.gui.guiName() == "qt":
+    from PyQt4 import QtCore
+
+def init():
+    leoPlugins.registerHandler('after-create-leo-frame', attachToCommander)
+    g.act_on_node.add(active_path_act_on_node, priority = 90)
+
+    g.plugin_signon(__name__)
+
+    if g.app.gui.guiName() == "qt":
+        g.tree_popup_handlers.append(popup_entry)
+
+    return True
+#@-node:tbrown.20091128094521.15048:init
+#@+node:tbrown.20091128094521.15047:attachToCommander
+# defer binding event until c exists
+def attachToCommander(t,k):
+    c = k.get('c')
+    event = c.config.getString('active_path_event') or "icondclick1"
+    leoPlugins.registerHandler(event, lambda t,k: onSelect(t,k))
+#@nonl
+#@-node:tbrown.20091128094521.15047:attachToCommander
+#@+node:tbrown.20091128094521.15042:popup_entry
+def mkCmd(cmd, c):
+
+    def f():
+        return cmd(c)
+
+    return f
+
+def popup_entry(c,p,menu):
+
+    pathmenu = menu.addMenu("Path")
+
+    for i in globals():
+        if i.startswith('cmd_'):
+
+            a = pathmenu.addAction(PlugIn.niceMenuName(i))
+            CMD = globals()[i]
+            a.connect(a, QtCore.SIGNAL("triggered()"), mkCmd(CMD,c))
+#@-node:tbrown.20091128094521.15042:popup_entry
+#@+node:tbrown.20091128094521.15037:isDirNode
 def isDirNode(p):
 
     return (
@@ -82,7 +126,34 @@ def isDirNode(p):
         (not p.h.strip().startswith('@') and p.h.strip().endswith('/'))
         or p.h.strip().startswith('/')
         )
-#@-node:tbrown.20090219133655.231:isDirNode
+#@-node:tbrown.20091128094521.15037:isDirNode
+#@+node:tbrown.20091128094521.15039:isFileNode
+def isFileNode(p):
+    """really isEligibleToBecomeAFileNode"""
+    return (not p.h.strip().startswith('@') and not p.hasChildren() and
+      not isDirNode(p) and isDirNode(p.parent())
+      and not p.b.strip())
+#@-node:tbrown.20091128094521.15039:isFileNode
+#@+node:tbrown.20091128094521.15040:subDir
+def subDir(d, p):
+
+    if p.h.strip().startswith('@path'):
+        p = p.h.split(None,1)
+        if len(p) != 2:
+            return None
+        p = p[1]
+
+    elif p.b.strip().startswith('@path'):
+        p = p.b.split('\n',1)[0].split(None,1)
+        if len(p) != 2:
+            return None
+        p = p[1]
+
+    else:
+        p = p.h.strip(' /')
+
+    return os.path.join(d,p)
+#@-node:tbrown.20091128094521.15040:subDir
 #@+node:tbrown.20080613095157.4:onSelect
 def onSelect (tag,keywords):
     """Determine if a file or directory status-iconbox was clicked, and the path"""
@@ -94,16 +165,16 @@ def onSelect (tag,keywords):
     path = getPath(c, p)
 
     if path:
-        sync_node_to_folder(c,pos,path)
-        c.requestRedrawFlag = True
-        c.redraw()
-        return True
+        if sync_node_to_folder(c,pos,path):
+            c.requestRedrawFlag = True
+            c.redraw()
+            return True
 
     return None
-#@nonl
 #@-node:tbrown.20080613095157.4:onSelect
 #@+node:tbrown.20080616153649.4:getPath
 def getPath(c, p):
+
     for n in p.self_and_parents():
         if n.h.startswith('@path'):
             break
@@ -113,7 +184,11 @@ def getPath(c, p):
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
     if (not isDirNode(p)):  # add file name
-        path = os.path.join(path, p.h.strip())
+        h = p.h.split(None, 1)
+        if h[0].startswith('@') and len(h) == 2:
+            path = os.path.join(path, h[1])
+        else:
+            path = os.path.join(path, p.h.strip())
     return path
 #@-node:tbrown.20080616153649.4:getPath
 #@+node:tbrown.20090219133655.230:getPathOld
@@ -171,34 +246,48 @@ def flattenOrganizers(p):
 def sync_node_to_folder(c,parent,d,updateOnly=False, recurse=False):
     """Decide whether we're opening or creating a file or a folder"""
 
+    if (not updateOnly
+      and not recurse
+      and isDirNode(parent) and not parent.h.strip().startswith('@path')
+      and not parent.b.strip().startswith('@path')):
+        createDir(c,parent,d)
+        return True  # even if it didn't happen, else get stuck in edit mode w/o focus
+
     if os.path.isdir(d):
         if (isDirNode(parent)
             and (not updateOnly or recurse or parent.hasChildren())):
             # no '/' or @path implies organizer
             openDir(c,parent,d)
-        return
+            return True
 
-    if updateOnly: return
+    if updateOnly: return False
 
-    if os.path.isfile(d):
+    if os.path.isfile(d) and isFileNode(parent):
         openFile(c,parent,d)
-    elif isDirNode(parent):
-        createDir(c,parent,d)
-    else:
+        return True
+
+    if isFileNode(parent):
         createFile(c,parent,d)
+        return True  # even if it didn't happen, else get stuck in edit mode w/o focus
+
+    return False
 #@-node:tbrown.20080613095157.6:sync_node_to_folder
 #@+node:tbrown.20080613095157.7:createDir
 def createDir(c,parent,d):
     """Ask if we should create a new folder"""
-    newd = os.path.basename(d)
+    newd = parent.h.strip(' /')
     ok = g.app.gui.runAskYesNoDialog(c, 'Create folder?',
         'Create folder '+newd+'?')
     if ok == 'no':
-        return
-    c.setHeadString(parent, '/'+newd+'/')
-    c.setBodyString(parent, '@path '+newd+'\n'+parent.b)
-    os.mkdir(d)
-#@nonl
+        return False
+    parent.h = '/'+newd+'/'
+    if parent.b.strip():
+        parent.b = '@path '+newd+'\n'+parent.b
+    else:
+        parent.b = '@path '+newd
+
+    os.mkdir(os.path.join(d, newd))
+    return True
 #@-node:tbrown.20080613095157.7:createDir
 #@+node:tbrown.20080613095157.8:createFile
 def createFile(c,parent,d):
@@ -206,16 +295,18 @@ def createFile(c,parent,d):
     directory = os.path.dirname(d)
     if not os.path.isdir(directory):
         g.es('Create parent directories first', color='red')
-        return
+        return False
 
     d = os.path.basename(d)
     atType = c.config.getString('active_path_attype') or 'auto'
     ok = g.app.gui.runAskYesNoDialog(c, 'Create / load file?',
-        'Create / load file @'+atType+' '+d+'?')
+        'Create file @'+atType+' '+d+'?')
     if ok == 'no':
-        return
+        return False
     c.setHeadString(parent, '@'+atType+' '+d)
     c.bodyWantsFocusNow()
+    return True
+#@nonl
 #@-node:tbrown.20080613095157.8:createFile
 #@+node:tbrown.20080613095157.9:openFile
 def openFile(c,parent,d):
@@ -352,20 +443,26 @@ def cmd_LoadRecursive(c):
 def cmd_SetNodeToAbsolutePath(c):
     """Change "/dirname/" to "@path /absolute/path/to/dirname"."""
     p = c.p
-    if '@' in p.h:
-        g.es('Node should be a "/dirname/" type directory entry')
-        return
     path = getPath(c, p)
-    c.setBodyString(p, ('path Created from node "%s"\n\n'
-        % p.h)+p.b)
-    c.setHeadString(p, '@path '+path)
+    d = p.h.split(None, 1)
+    if len(d) > 1 and d[0].startswith('@'):
+        type_  = d[0]
+    elif isDirNode(p):
+        type_ = "@path"
+    else:
+        type_ = "@auto"
+    p.b = '# path Created from node "%s"\n\n' % p.h + p.b
+    p.h = type_+' '+path
 #@-node:tbrown.20080616153649.5:cmd_SetNodeToAbsolutePath
 #@+node:tbrown.20080618141617.879:cmd_PurgeVanishedFiles
 def cond(p):
     return p.h.startswith('*') and p.h.endswith('*')
 
+def condunl(p):
+    return isFileNode(p) and not p.b.strip()
+
 def dtor(p):
-    g.es(p.h)
+    # g.es(p.h)
     p.doDelete()
 
 def cmd_PurgeVanishedFilesHere(c):
@@ -379,6 +476,20 @@ def cmd_PurgeVanishedFilesRecursive(c):
     """Remove files no longer present, i.e. "*filename*" entries."""
     p = c.p
     n = deleteDescendents(p, cond, dtor=dtor)
+    g.es('Deleted at least %d nodes' % n)
+    c.redraw(p)
+
+def cmd_PurgeUnloadedFilesHere(c):
+    """Remove files no longer present, i.e. "*filename*" entries."""
+    p = c.p.getParent()
+    n = deleteChildren(p, condunl, dtor=dtor)
+    g.es('Deleted %d nodes' % n)
+    c.redraw(p)
+
+def cmd_PurgeUnloadedFilesRecursive(c):
+    """Remove files no longer present, i.e. "*filename*" entries."""
+    p = c.p
+    n = deleteDescendents(p, condunl, dtor=dtor)
     g.es('Deleted at least %d nodes' % n)
     c.redraw(p)
 
@@ -460,18 +571,5 @@ if testing:
 #@-node:tbrown.20080619080950.15:makeTestHierachy
 #@-node:tbrown.20080619080950.14:testing
 #@-others
-
-# defer binding event until c exists
-def attachToCommander(t,k):
-    c = k.get('c')
-    event = c.config.getString('active_path_event') or "icondclick1"
-    leoPlugins.registerHandler(event, lambda t,k: onSelect(t,k))    
-
-def init():
-    leoPlugins.registerHandler('after-create-leo-frame', attachToCommander)
-    g.act_on_node.add(active_path_act_on_node, priority = 90)
-
-    g.plugin_signon(__name__)
-    return True
 #@-node:tbrown.20080613095157.2:@thin active_path.py
 #@-leo
