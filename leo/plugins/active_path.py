@@ -57,6 +57,7 @@ active_path is a rewrite of the at_directory plugin to use @path directives (whi
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import os
+import re
 
 from leo.plugins.plugins_menu import PlugIn
 
@@ -77,6 +78,7 @@ __version__ = "0.2"
 #@+others
 #@+node:tbrown.20091128094521.15048:init
 if g.app.gui.guiName() == "qt":
+    # for the right click context menu
     from PyQt4 import QtCore
 
 def init():
@@ -96,7 +98,16 @@ def attachToCommander(t,k):
     c = k.get('c')
     event = c.config.getString('active_path_event') or "icondclick1"
     leoPlugins.registerHandler(event, lambda t,k: onSelect(t,k))
-#@nonl
+
+    # not using a proper class, so
+    c.__active_path = {'ignore': [], 'autoload': []}
+
+    if c.config.getData('active_path_ignore'):
+        c.__active_path['ignore'] = [re.compile(i, re.IGNORECASE)
+            for i in c.config.getData('active_path_ignore')]
+    if c.config.getData('active_path_autoload'):
+        c.__active_path['autoload'] = [re.compile(i, re.IGNORECASE)
+            for i in c.config.getData('active_path_autoload')]
 #@-node:tbrown.20091128094521.15047:attachToCommander
 #@+node:tbrown.20091128094521.15042:popup_entry
 def mkCmd(cmd, c):
@@ -134,6 +145,15 @@ def isFileNode(p):
       not isDirNode(p) and isDirNode(p.parent())
       and not p.b.strip())
 #@-node:tbrown.20091128094521.15039:isFileNode
+#@+node:tbrown.20091129085043.9329:inReList
+def inReList(txt, lst):
+
+    for pat in lst:
+        if pat.search(txt):
+            return True
+
+    return False
+#@-node:tbrown.20091129085043.9329:inReList
 #@+node:tbrown.20091128094521.15040:subDir
 def subDir(d, p):
 
@@ -345,11 +365,11 @@ def openDir(c,parent,d):
                 entry = entry[len(directive[0]):].strip()
         oldlist.add(entry)
 
-    for d in dirs:
-        if d in oldlist:
-            oldlist.discard(d)
+    for d2 in dirs:
+        if d2 in oldlist:
+            oldlist.discard(d2)
         else:
-            newlist.append('/'+d+'/')
+            newlist.append('/'+d2+'/')
     for f in files:
         if f in oldlist:
             oldlist.discard(f)
@@ -358,15 +378,26 @@ def openDir(c,parent,d):
 
     # insert newlist
     newlist.sort()
+    ignored = 0
     newlist.reverse()  # un-reversed by the following loop
     for name in newlist:
+
+        if inReList(name, c.__active_path['ignore']):
+            ignored += 1
+            continue
+
         p = parent.insertAsNthChild(0)
         c.setChanged(True)
         c.setHeadString(p,name)
         if name.startswith('/'): 
             # sufficient test of dirness as we created newlist
             c.setBodyString(p, '@path '+name.strip('/'))
+        elif inReList(name, c.__active_path['autoload']):
+            openFile(c, p, os.path.join(d, p.h))
         p.setMarked()
+
+    if ignored:
+        g.es('Ignored %d files in directory' % ignored)
 
     # warn / mark for orphan oldlist
     for p in flattenOrganizers(parent):
@@ -381,7 +412,6 @@ def openDir(c,parent,d):
                     c.setHeadString(orphan, '*'+orphan.h.strip('*')+'*')
         if p.h != nh:  # don't dirty node unless we must
             c.setHeadString(p,nh)
-#@nonl
 #@-node:tbrown.20080613095157.10:openDir
 #@+node:ville.20090223183051.1:act on node
 def cmd_ActOnNode(c, p=None, event=None):
