@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="186" left="374" height="700" width="1000"/>
+	<global_window_position top="0" left="0" height="929" width="1356"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -94,7 +94,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20090703122042.7463"><vh>@@button a-common-button</vh></v>
@@ -1010,11 +1010,11 @@
 </v>
 </v>
 </v>
-<v t="ville.20091008201813.3909" a="E"><vh>Qt context menu</vh>
+<v t="ville.20091008201813.3909"><vh>Qt context menu</vh>
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
-<v t="ekr.20051123100536"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1171,6 +1171,12 @@
 </v>
 <v t="ekr.20060904211808"><vh>zodb plugin</vh>
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
+</v>
+<v t="tbrown.20091129085043.11789" a="E"><vh>active_path plugin</vh>
+<v t="tbrown.20091129085043.11790"><vh>@string active_path_attype = auto</vh></v>
+<v t="tbrown.20091129085043.11792"><vh>@string active_path_event = icondclick1</vh></v>
+<v t="tbrown.20091129085043.11793"><vh>@data active_path_ignore</vh></v>
+<v t="tbrown.20091129085043.11795"><vh>@data active_path_autoload</vh></v>
 </v>
 </v>
 <v t="ekr.20041119034357.28"><vh>Preferences panel</vh>
@@ -6594,7 +6600,7 @@ propagate-key-event = Alt-O
 propagate-key-event = Alt-W
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="4"></t>
+<t tx="ekr.20070622214401" str_leo_pos="4,14,19,2"></t>
 <t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070919125633">button_text_font_family = verdana
@@ -7969,6 +7975,23 @@ is true (and recent_files_omit_directories is False)
 </t>
 <t tx="tbrown.20090430112929.1">path to cleo icons relative to Leo icon dir
 e.g. cleo or cleo/small</t>
+<t tx="tbrown.20091129085043.11789"></t>
+<t tx="tbrown.20091129085043.11790">file type (auto, shadow, etc.) without the '@', to use when
+loading files</t>
+<t tx="tbrown.20091129085043.11792">event hook used by active_path, icondclick1 is probably best</t>
+<t tx="tbrown.20091129085043.11793"># regular expressions (case insensitive) for files/directories
+# active_path won't list, one per line
+# e.g.
+#
+#   ^\.bzr$    - ignore files and directories called '.bzr'
+#   \.pyc$     -ignore files and directories ending in '.pyc'
+</t>
+<t tx="tbrown.20091129085043.11795"># regular expressions (case insensitive) for files/directories
+# active_path loads automatically
+# e.g.
+#
+#   ^readme    - load any file starting with 'readme'
+</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
