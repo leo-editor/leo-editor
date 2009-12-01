@@ -3293,7 +3293,7 @@
 <v t="ekr.20091130111843.6830"><vh>@rst-ignore Section names and section references</vh></v>
 </v>
 </v>
-<v t="ekr.20091201091455.6809" a="O"><vh>Creating external files from outlines</vh>
+<v t="ekr.20091201091455.6809" a="EO"><vh>Creating external files from outlines</vh>
 <v t="ekr.20091201091455.6813"><vh>section references</vh></v>
 <v t="ekr.20091201091455.6814"><vh>The @others directive</vh></v>
 <v t="ekr.20091201091455.6815"><vh>The @all directive</vh></v>
@@ -23738,7 +23738,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="6,0,3"></t>
+<t tx="ekr.20070610174018" str_leo_pos="6,0,0"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -33112,15 +33112,15 @@ learn more about Leo's many advanced features in `Leo's Users Guide`_.
 
 .. ----- Relative links....
 
-.. _`external file`:        `External files`_
+.. _`external file`:        `external files`_
 .. _glossary:               glossary.html
-.. _`Good style and bad`:   `Good Leo Style`_
+.. _`Good style and bad`:   `style`_
 .. _outline:                `Leo's main window`_
 .. _outlines:               `Leo's main window`_
-.. _plugin:                 `Extending Leo`_
-.. _plugins:                `Extending Leo`_
+.. _plugin:                 `extending`_
+.. _plugins:                `extending`_
 .. .. _quickstart:             `Quick start for programmers`_
-.. _scripts:                `Scripting Leo`_
+.. _scripts:                `scripting`_
 .. _settings:               `config`_
 .. _`Configuring Leo`:      `config`_
 
@@ -33466,7 +33466,9 @@ identifiers. This construct is a convention of the noweb_ language, and will be
 of use *only* for those who want to create .nw output files for use with the
 official noweb_ system.
 </t>
-<t tx="ekr.20091130111843.6838">Newcomers to Leo frequently ask when to use the `@others`_ directive_ and when
+<t tx="ekr.20091130111843.6838">.. _style:
+
+Newcomers to Leo frequently ask when to use the `@others`_ directive_ and when
 to use sections_. It is good style to use `section references`_ only when the
 order of text within a `external file`_ matters. For example, Python programmers
 put docstrings and imports at the start of files. So the `body text`_ of
@@ -33540,7 +33542,9 @@ One last word about style. The world won't end if you happen to use bad style by
 mistake: you just might cause a bit more work for yourself than was strictly
 necessary. Feel free to invent your own style of using Leo. Still, it would be
 wise to "know the rules before you break them."</t>
-<t tx="ekr.20091130111843.6840">Leo is fully scriptable using the Python language. Leo can execute any body text
+<t tx="ekr.20091130111843.6840">.. _scripting:
+
+Leo is fully scriptable using the Python language. Leo can execute any body text
 as a Python script. To run the entire body text as a script, simply choose the
 node and execute the ``Execute Script`` command (``Ctrl+B``). If text is
 selected, the ``Execute Script`` command will run just the selected text as the
@@ -33562,10 +33566,14 @@ For example, the following script will print all the headlines in an outline::
 The example above is only the beginning of what scripts can do.
 See `Chapter 7: Scripting Leo with Python`_ for a complete discussion of scripting Leo.
 
+.. _extending:
+
 **Plugins** are Python modules that change how Leo works. Leo's user have
 contributed dozens of plugins that have extended Leo's capabilities in many new
 directions. The file ``leoPlugins.leo`` contains all plugins that are included
 in Leo distributions.
+
+.. _config:
 
 Plugins and other parts of Leo can get options from **@settings** trees.
 ``@settings`` trees allow plugins to get options without any further support
@@ -33617,7 +33625,9 @@ aspects of Leo see ``LeoDocs.leo`` or `Leo's Users Guide`_.
 <t tx="ekr.20091130111843.6845">With other outlining programs, outline nodes are simply regions of otherwise
 undifferentiated text. Not so in Leo. Nodes in Leo outlines are true objects:
 they have identity, content and other attributes.</t>
-<t tx="ekr.20091130111843.6846">Leo stores outline data on your file system in **.leo files**. The format of
+<t tx="ekr.20091130111843.6846">.. _`external files`:
+
+Leo stores outline data on your file system in **.leo files**. The format of
 these files is `XML`_. You don't have to store all your data in .leo files: Leo
 allows you to store parts of your outline data **external files**, that is,
 other files on your file system.
@@ -33859,69 +33869,7 @@ the ``@file`` node's descendants only when it sees one of three kinds of markup:
 section references, the ``@others`` directive and the ``@all`` directive. Each
 kind of markup directs Leo to write the **expansion** of one or more descendant
 nodes to the external file. Programmers will recognize this process as akin to
-macro expansion. The following paragraphs will explain this process in detail.
-
-
-
-
-
-
-
-
-
-
-================
-
-Indentation
-
-
-If an ``@&lt;file&gt;`` node has no children, Leo just writes the body text of the
-``@&lt;file&gt;`` node to the external file. But usually, ``@&lt;file&gt;`` nodes will have
-many descendant nodes. In this case, you must use either one of the following
-directives::
-
-    @all
-    @others
-    
-Both these directives tell Leo how to write all descendant nodes to the external
-file. Each tells Leo to write all the descendant nodes to the external file,
-indented by the leading whitespace that appears before the ``@all`` or
-``@others`` directive. When Leo sees either directive, Leo writes all the
-descendant nodes in **outline order**, the order in which nodes appear on the
-screen.  Furthermore, the indentation of these directives matters: Leo adds
-the leading whitespace of these directives when writing all descendant nodes.
-
-For example, here is a typical way to define a Python class::
-
-    class myClass:
-        '''This is the docstring for myClass'''
-        @others
-        
-When Leo writes this node to an external file, Leo will write the first two
-lines to the external file, with the indentation in effect for the node. Leo
-will then write all descendant nodes to the external files, with *additional*
-indentation equal to the leading whitespace appearing before the ``@others``
-directive.  Actually, as we'll discuss in more detail below, the ``@others``
-directive causes Leo to write only the *unnamed* descendant nodes.  Named
-nodes have headlines of the form &lt;&lt; any text &gt;&gt;.
-
-Use the ``all`` directive if your external file contains unrelated nodes. For
-example, I use an external file to store programming notes. These notes
-typically have clones of programming source code, but there is no real
-relationships between the clones--the file is simply a grab bag of information.
-The ``@all`` directive is designed for this situation.
-
-The ``@others`` directive works pretty much the same as ``@all``, but it is
-designed for programming source code files. Unlike ``@all``, the ``@others``
-directive checks the programming markup in the file. I'll say more about the
-``@others`` directive later, after we discuss Leo's programming markup.
-
-Every ``@&lt;file&gt;`` node with children must contain an ``@all`` or ``@others``
-directive. If you forget to add either directive, all the children of the
-``@&lt;file&gt;`` node will be **orphan nodes**. This is not a serious error. When
-saving the outline, Leo will will save the erroneous ``@&lt;file&gt;`` tree in the
-.leo file instead of the external file. No information is lost.
-</t>
+macro expansion. The following sections will explain this process in detail.</t>
 <t tx="ekr.20091201091455.6812">We have now covered the essentials of how Leo creates external files from
 ``@file`` nodes. The following section discusses some further details.
 
