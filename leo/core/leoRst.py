@@ -877,6 +877,7 @@ class rstCommands:
 
         '''Send s to docutils using the writer implied by self.ext and return the result.'''
 
+        trace = True and not g.unitTesting
         openDirectory = self.c.frame.openDirectory
         overrides = {'output_encoding': self.encoding }
 
@@ -931,6 +932,7 @@ class rstCommands:
                 g.es_print('relative path:', rel_stylesheet_path)
         try:
             # All paths now come through here.
+            if trace: g.trace('overrides',overrides)
             result = None # Ensure that result is defined.
             result = docutils.core.publish_string(source=s,
                     reader_name='standalone',
@@ -952,30 +954,61 @@ class rstCommands:
         '''Parse the publish_argv_for_missing_stylesheets option,
         returning a dict containing the parsed args.'''
 
-        d = {}
+        trace = False and not g.unitTesting
+        force = False
+
+        if force:
+            # See http://docutils.sourceforge.net/docs/user/config.html#documentclass
+            return {'documentclass':'report', 'documentoptions':'english,12pt,lettersize'}
+
         if not s:
             s = self.getOption('publish_argv_for_missing_stylesheets')
-        if not s: return d
+        if not s: return {}
 
-        args = s.strip()
-        if args.find(',') == -1:
-            args = [args]
-        else:
-            args = args.split(',')
-
-        for arg in args:
-            data = arg.split('=')
-            if len(data) == 1:
-                key = data[0]
-                d[str(key)] = "1" # New in Leo 4.7: empty arg defaults to "1".
-            elif len(data) == 2:
-                key,value = data
-                d[str(key)] = str(value)
+        # Handle argument lists such as this:
+        # --language=en,--documentclass=report,--documentoptions=[english,12pt,lettersize]
+        d = {}
+        while s:
+            s = s.strip()
+            if not s.startswith('--'): break
+            s = s[2:] ; i = s.find('=')
+            if i == -1: break
+            key = s[:i] ; s = s[i+1:] ; i = s.find('--')
+            if i == -1:
+                val = s ; s = ''
             else:
-                g.es_print('bad option: %s' % s,color='red')
-                break
+                val = s[:i] ; s = s[i:]
+            # g.trace('s',repr(s))
+            if val.endswith(','): val = val[:-1]
+            if val.startswith('[') and val.endswith(']'): val = val[1:-1]
+            val = val.strip()
+            if not val: val = '1'
+            d[str(key)] = str(val)
 
+        if trace: g.trace(d)
         return d
+
+        # if args.find(',') == -1:
+            # args = [args]
+        # else:
+            # args = args.split(',')
+
+        # for arg in args:
+            # data = arg.split('=')
+            # if len(data) == 1:
+                # key = data[0]
+                # d[str(key)] = "1" # New in Leo 4.7: empty arg defaults to "1".
+            # elif len(data) == 2:
+                # key,value = data
+                # value = value.strip()
+                # if value.startswith('[') and value.endswith(']'):
+                    # value = value[1:-1]
+                # d[str(key)] = str(value)
+            # else:
+                # g.es_print('bad option: %s' % s,color='red')
+                # break
+
+        # return d
     #@-node:ekr.20090502071837.66:handleMissingStyleSheetArgs
     #@-node:ekr.20090502071837.65:writeToDocutils (sets argv) & helper
     #@+node:ekr.20090502071837.67:writeNodeToString (New in 4.4.1)
