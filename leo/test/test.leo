@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="102" left="25" height="841" width="1171"/>
+	<global_window_position top="48" left="3" height="692" width="1018"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -384,10 +384,11 @@
 </v>
 </v>
 <v t="ekr.20091015191345.1856"><vh>ctags completion</vh></v>
-<v t="ekr.20091022062720.1870" a="E"><vh>Examples of embedding html pages in Leo</vh>
+<v t="ekr.20091022062720.1870"><vh>Examples of embedding html pages in Leo</vh>
 <v t="ekr.20091016171638.1866"><vh>@html Leo's home page</vh></v>
 <v t="ekr.20091016172814.1868"><vh>@html http://doc.trolltech.com/4.4/qtextbrowser.html</vh></v>
 </v>
+<v t="ekr.20091201200308.1866"><vh>Minimize</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -808,7 +809,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -4088,7 +4089,8 @@ NOWEB, EDWARD K. REAM, DONALD E. KNUTH, SILVIO LEVY, OPEN SOFTWARE" /&gt;
 &lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/address&gt;&lt;/body&gt;
 &lt;/html&gt;
 </t>
-<t tx="ekr.20091022062720.1870">@language html
+<t tx="ekr.20091022062720.1870">
+@language html
 @nocolor-node
 @
 
@@ -4099,6 +4101,12 @@ To see these nodes as rendered html, start the headline with @html.
 To see the sources, start the headline with @@html (or anything except @html).
 
 When changing between @html and @@html, you must change nodes before you will see the change.
+</t>
+<t tx="ekr.20091201200308.1866">import PyQt4.QtCore as QtCore
+c.frame.top.showNormal()
+
+# c.frame.top.setWindowState(QtCore.Qt.WindowMaximized)
+# c.frame.top.setWindowState(QtCore.Qt.WindowMinimized)
 </t>
 </tnodes>
 </leo_file>
