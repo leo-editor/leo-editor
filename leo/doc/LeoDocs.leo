@@ -218,7 +218,7 @@
 <v t="ekr.20060105145125"><vh>How to install the Aspell spell checker</vh></v>
 </v>
 </v>
-<v t="ekr.20091130111843.6787"><vh>Chapter 2: The Leo Tutorial</vh>
+<v t="ekr.20091130111843.6787" a="E"><vh>Chapter 2: The Leo Tutorial</vh>
 <v t="ekr.20091130111843.6788"><vh>@rst html\intro.html</vh>
 <v t="ekr.20091130111843.6810"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20091130111843.6845"><vh>@rst-ignore-tree</vh>
@@ -235,7 +235,7 @@
 <v t="ekr.20091130111843.6814"><vh>Leo's main window</vh></v>
 <v t="ekr.20091130111843.6816"><vh>Outline commands</vh></v>
 <v t="ekr.20091130111843.6846"><vh>External files and @file nodes</vh></v>
-<v t="ekr.20091201091455.6809" a="O"><vh>Creating external files from outlines</vh>
+<v t="ekr.20091201091455.6809"><vh>Creating external files from outlines</vh>
 <v t="ekr.20091201091455.6813"><vh>section references</vh></v>
 <v t="ekr.20091201091455.6814"><vh>The @others directive</vh></v>
 <v t="ekr.20091201091455.6815"><vh>The @all directive</vh></v>
@@ -3212,7 +3212,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20091130111843.6787"></v>
+<v t="ekr.20091130111843.6787" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
@@ -23022,7 +23022,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="5"></t>
+<t tx="ekr.20070610174018" str_leo_pos="5,0"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -30866,20 +30866,19 @@ very top, a **status area** and a **mini-buffer** at the very bottom.
 |leoMainWindow|
 
 The outline pane
-    The outline pane shows your project as an outline. The outline contains all your
-    project's data. An outline consists of **nodes**. The **icon box** is a small
-    icon directly to the left of the headline text. If a node contains children, a
-    smaller icon appears to the left of the icon box. This icon contains a ``+`` or
-    ``-`` symbol. Clicking this **expansion box** expands or contracts the node.
+    The outline pane shows your project as an outline. The outline contains all
+    your project's data. An outline consists of **nodes**. The **icon box** is a
+    small icon directly to the left of the headline text. If a node contains
+    children, a smaller icon appears to the left of the icon box. This icon
+    contains a ``+`` or ``-`` symbol. Clicking this **expansion box** expands or
+    contracts the node.
     
 Nodes
-    Nodes have two parts, a **headline** and
-    **body text**. The outline pane shows headlines. **Selecting a headline
-    selects the entire node**; the node's body text appears in the body pane.
-    
-    Leo uses standard terminology to describe the relationships of nodes in an
-    outline. We speak of **parent** nodes, **child** nodes, **ancestor** nodes
-    and **descendant** nodes.
+    Nodes have two parts, a **headline** and **body text**. The outline pane
+    shows headlines. Selecting a headline selects the entire node; the node's
+    body text appears in the body pane. Leo uses standard terminology to
+    describe the relationships of nodes in an outline. We speak of **parent**
+    nodes, **child** nodes, **ancestor** nodes and **descendant** nodes.
 
 Body pane
     The body pane contains the body text of the node selected in the outline pane.
@@ -30888,9 +30887,9 @@ Log pane
     The log pane contains informational messages from Leo or your scripts.
 
 Icon area
-    Depending on what plugins are enabled,
-    the icon area may contain buttons and other widgets that extend what Leo can do.
-    The scripting plugin makes it easy to add buttons to the icon area.
+    Depending on what plugins are enabled, the icon area may contain buttons and
+    other widgets that extend what Leo can do. The scripting plugin makes it
+    easy to add buttons to the icon area.
 
 Status area
     The status area shows the line and column containing the body text's cursor,
@@ -30907,37 +30906,36 @@ Mini-buffer
 <t tx="ekr.20091130111843.6816">You can use Leo as fairly typical outliner. Play around with some of the
 commands from the Outline menu:
 
-- Click the expansion box of nodes_ to show and hide their children.
+- Click the expansion box of nodes to show and hide their children.
 
-- The ``Insert Node`` command (``Ctrl+I``) inserts a new headline into the
-  outline.
+- The Insert Node command (Ctrl+I) inserts a new headline into the outline.
 
-- The ``Cut Node`` command (``Ctrl+Shift+X``) deletes a headline and all its
-  children, and copies the structure to clipboard - ready to paste with ``Paste
-  Node`` command (``Ctrl+Shift+V``). Use ``Copy Node`` command
-  (``Ctrl+Shift+C``) to copy node to clipboard without deleting it from outline.
-  Copy-paste command family works across different Leo documents.
+- The Cut Node command (Ctrl+Shift+X) deletes a headline and all its
+  children, and copies the structure to clipboard - ready to paste with Paste
+  Node command (Ctrl+Shift+V). Use Copy Node command (Ctrl+Shift+C) to
+  copy node to clipboard without deleting it from outline. Copy-paste command
+  family works across different Leo documents.
 
-- The ``Move Up`` (``Ctrl+U``), ``Move Down`` (``Ctrl+D``), ``Move Left``
-  (``Ctrl+L``) and ``Move Right`` (``Ctrl+R``) commands move the currently
-  selected node, along with all its descendants.
+- The Move Up (Ctrl+U), Move Down (Ctrl+D), Move Left (Ctrl+L) and
+  Move Right (Ctrl+R) commands move the currently selected node, along with
+  all its descendants.
 
-- The ``Promote`` (``Ctrl+}``) command makes all the children of a headline
-  siblings of the headline. The ``Demote`` (``Ctrl+{``) command makes all
-  following siblings_ of a headline children of the headline.
+- The Promote (Ctrl+}) command makes all the children of a headline siblings
+  of the headline. The Demote (Ctrl+{) command makes all following siblings
+  of a headline children of the headline.
 
 - Move around the tree and expand/collapse nodes by pressing Alt + arrow keys.
   This also moves the focus to tree, so, after pressing Alt + arrow, you can
   move around by using arrow keys alone. Return the focus to the body control by
-  pressing ``Enter``.
+  pressing Enter.
 
-- To edit the headline, use press ``Ctrl+H``. This works regardless of whether
+- To edit the headline, use press Ctrl+H. This works regardless of whether
   body or headline has focus.
 
-- We'll discuss the ``Clone Node`` command in the next section.
+- We'll discuss the Clone Node command in the next section.
 
-You enter `body text`_ for any node by selecting the node's headline in the
-outline pane and then typing in the body pane. Leo has a full range of `editing
+You enter body text for any node by selecting the node's headline in the outline
+pane and then typing in the body pane. Leo has a full range of `editing
 commands`_ that apply to the body pane.
 </t>
 <t tx="ekr.20091130111843.6817">A **clone** is a node that appears in more than one place in a Leo outline.
@@ -30947,13 +30945,13 @@ example, inserting, moving or deleting any child of a clone will change all
 other clones on the screen.
 
 Please take a few moments to experiment with clones. Create a node whose
-headline is A. Clone node A using the ``Clone Node`` command in Leo's Outline
-menu. Type some text into the body of either clone of A. The same text appears
-in the bodies of all other clones of A. Now insert a node, say B, as a child of
-any of the A nodes. All the A nodes now have a B child. See what happens if you
-clone B. See what happens if you insert, delete or move nodes that are children
-of A. Verify that when you delete the penultimate clone, the last clone becomes
-a regular node again.
+headline is A. Clone node A using the Clone Node command in Leo's Outline menu.
+Type some text into the body of either clone of A. The same text appears in the
+bodies of all other clones of A. Now insert a node, say B, as a child of any of
+the A nodes. All the A nodes now have a B child. See what happens if you clone
+B. See what happens if you insert, delete or move nodes that are children of A.
+Verify that when you delete the penultimate clone, the last clone becomes a
+regular node again.
 
 Clones are much more than a cute feature. Clones allow multiple views of data to
 exist **within a single outline**. With Leo, there is no such thing as a single,
@@ -30964,8 +30962,8 @@ To create a new view of the data in your outline, just do the following:
 1. Create an *ordinary* node, that will represent the view. We call these nodes
    **view nodes** merely to indicate they represent a view.
    
-2. Clone all the nodes from the outline that you want the view to contain.
-   Move these clones so they become children of the view node.
+2. Clone all the nodes from the outline that you want the view to contain. Move
+   these clones so they become children of the view node.
    
 3. (Optional) You can add regular nodes as children of the view node too.
    
@@ -30992,7 +30990,8 @@ external files that contain dirty nodes.
 Views have an unlimited number of uses. Use them whenever you want to focus your
 attention on some smaller set of nodes. For example, I often create view nodes
 when studying other people's code. The view node helps me concentrate on just
-the part of the code that interests me at the moment.</t>
+the part of the code that interests me at the moment.
+</t>
 <t tx="ekr.20091130111843.6823">.. _`markup`:
 
 The following sections discuss the second element of Leo: outline-oriented
@@ -31108,7 +31107,7 @@ In practice, this requirement seldom causes problems.
 </t>
 <t tx="ekr.20091130111843.6832">**Doc parts** are blocks of text that Leo treats as comments. Leo syntax colors
 doc parts as comments, and Leo converts doc parts into comments in external
-files. Doc parts start with an ``@`` directive and continue until an ``@c``
+files. Doc parts start with an @ directive and continue until an @c
 directive or the end of the body text. For example::
 
     @ This is a comment in a doc part.
@@ -31118,7 +31117,7 @@ directive or the end of the body text. For example::
 
 Doc parts are optional, but convenient. You do not need to specify comment
 delimiters, and in addition Leo breaks doc parts into lines automatically. The
-``@pagewidth`` directive specifies the width of those lines.
+@pagewidth directive specifies the width of those lines.
 
 A doc part of the form::
 
@@ -31126,17 +31125,17 @@ A doc part of the form::
 
 declares that the preceding code part contains the list of identifiers.
 Whitespace separate the identifiers; everything else is taken to be the
-identifiers. This construct is a convention of the noweb_ language, and will be
+identifiers. This construct is a convention of the `noweb`_ language, and will be
 of use *only* for those who want to create .nw output files for use with the
-official noweb_ system.
+official noweb system.
 </t>
 <t tx="ekr.20091130111843.6838">.. _style:
 
-Newcomers to Leo frequently ask when to use the `@others`_ directive_ and when
-to use sections_. It is good style to use `section references`_ only when the
-order of text within a `external file`_ matters. For example, Python programmers
-put docstrings and imports at the start of files. So the `body text`_ of
-`@file`_ nodes typically look something like this::
+Newcomers to Leo frequently ask when to use the @others directive_ and when to
+use sections. It is good style to use section references only when the order of
+text within a external file matters. For example, Python programmers put
+docstrings and imports at the start of files. So the body text of
+@file nodes typically look something like this::
 
     &lt;&lt; docstring &gt;&gt;
     @language python
@@ -31164,7 +31163,7 @@ It would be bad style to define a class like this::
 Not only does this over-specify the order in which methods are defined, but it
 requires lots of extra typing. Not only must you add a line for each method, but
 headlines must contain section names such as &lt;&lt; method 1 &gt;&gt;, &lt;&lt;method 2&gt;&gt;, etc.
-When using ``@others`` it is good style simply to put the name of each method in
+When using @others it is good style simply to put the name of each method in
 the headline.
 </t>
 <t tx="ekr.20091130111843.6839">A few more words about style:
@@ -31194,12 +31193,10 @@ the headline.
     # Getters #
     ###########
 
-- It is bad style to use `@others`_ in `organizer nodes`_.
-  There is no need to do so.
+- It is bad style to use @others in organizer nodes. There is no need to do so.
 
-- It is bad style to use `@others`_ when order does matter.
-  The reason is that it is very easy to move nodes in a tree by mistake,
-  say by alphabetizing nodes.
+- It is bad style to use @others when order does matter. The reason is that it
+  is very easy to move nodes in a tree by mistake, say by alphabetizing nodes.
   One wants to make the meaning of a external file immune from such movements.
 
 One last word about style. The world won't end if you happen to use bad style by
@@ -31210,38 +31207,37 @@ wise to "know the rules before you break them."</t>
 
 Leo is fully scriptable using the Python language. Leo can execute any body text
 as a Python script. To run the entire body text as a script, simply choose the
-node and execute the ``Execute Script`` command (``Ctrl+B``). If text is
-selected, the ``Execute Script`` command will run just the selected text as the
-script.
+node and execute the Execute Script command (Ctrl+B). If text is selected, the
+Execute Script command will run just the selected text as the script.
 
-The ``Execute Script`` command **preprocesses** the script before executing it,
-in exactly the same way that Leo writes external files. Leo expands section
+The Execute Script command **preprocesses** the script before executing it, in
+exactly the same way that Leo writes external files. Leo expands section
 references and processes @others directives before executing the script. This
 allows you to use all of Leo's outlining capabilities to organize your scripts.
 
 Your Python scripts can easily access data in an outline. Leo's execute-script
-(Ctrl-B) command predefines three variables, ``c``, ``g`` and ``p`` that scripts
-can use to easily access any part of any Leo outline, and Leo's own source code.
-For example, the following script will print all the headlines in an outline::
+(Ctrl-B) command predefines three variables, c, g and p, that scripts can use to
+easily access any part of any Leo outline, and Leo's own source code. For
+example, the following script will print all the headlines in an outline::
 
     for p in c.all_positions():
         print ' '*p.level(),p.h
 
-The example above is only the beginning of what scripts can do.
-See `Chapter 7: Scripting Leo with Python`_ for a complete discussion of scripting Leo.
+The example above is only the beginning of what scripts can do. See `Chapter 7:
+Scripting Leo with Python`_ for a complete discussion of scripting Leo.
 
 .. _extending:
 
 **Plugins** are Python modules that change how Leo works. Leo's user have
 contributed dozens of plugins that have extended Leo's capabilities in many new
-directions. The file ``leoPlugins.leo`` contains all plugins that are included
-in Leo distributions.
+directions. The file leoPlugins.leo contains all plugins that are included in
+Leo distributions.
 
 .. _config:
 
 Plugins and other parts of Leo can get options from **@settings** trees.
-``@settings`` trees allow plugins to get options without any further support
-from Leo's core code. For a full discussion of ``@settings`` trees, see
+@settings trees allow plugins to get options without any further support
+from Leo's core code. For a full discussion of @settings trees, see
 `Chapter 8: Customizing Leo`_.</t>
 <t tx="ekr.20091130111843.6842">Leo's users speak of the "Aha" moment, when they see how Leo's three essential
 elements (flexible outlines, outline-oriented markup and integrated Python
@@ -31280,11 +31276,10 @@ principle:
   node to the presently selected node. ``@test`` trees define unit tests. Leo
   composes the unit tests from each ``@test`` node. Furthermore, the unit test
   can use outline data during the test.</t>
-<t tx="ekr.20091130111843.6843">``LeoPyRef.leo`` (in the core subdirectory of the leo folder) contains almost
-all of Leo's source code. It provides hundreds of examples of everything
-discussed here. This file will repay close study. For full details on all
-aspects of Leo see ``LeoDocs.leo`` or `Leo's Users Guide`_.
-
+<t tx="ekr.20091130111843.6843">LeoPyRef.leo (in the core subdirectory of the leo folder) contains almost all of
+Leo's source code. It provides hundreds of examples of everything discussed
+here. This file will repay close study. For full details on all aspects of Leo
+see LeoDocs.leo or `Leo's Users Guide`_.
 </t>
 <t tx="ekr.20091130111843.6845">With other outlining programs, outline nodes are simply regions of otherwise
 undifferentiated text. Not so in Leo. Nodes in Leo outlines are true objects:
@@ -31296,8 +31291,8 @@ these files is `XML`_. You don't have to store all your data in .leo files: Leo
 allows you to store parts of your outline data **external files**, that is,
 other files on your file system.
 
-**@file nodes** create external files. ``@file`` nodes have headlines starting
-with ``@file`` followed by a file name. Some examples::
+**@file nodes** create external files. @file nodes have headlines starting
+with @file followed by a file name. Some examples::
 
     @file leoNodes.py
     @file ../../notes.text
@@ -31309,16 +31304,16 @@ Leo reads and writes external files automatically when you open or save your Leo
 outline:
 
 - When you open an outline (.leo file) Leo reads all the external files created
-  by the ``@file`` nodes in the outline. If you have changed an external file
-  outside of Leo, Leo will update the corresponding ``@file`` tree to reflect
+  by the @file nodes in the outline. If you have changed an external file
+  outside of Leo, Leo will update the corresponding @file tree to reflect
   those changes when Leo next opens the outline.
 
-- When you save your outline, Leo writes all **dirty** ``@file nodes``. An
-  ``@file`` is dirty if the node or any of its descendant nodes has changed.
+- When you save your outline, Leo writes all **dirty** @file nodes. An
+  @file is dirty if the node or any of its descendant nodes has changed.
   **Important**: When Leo writes an external file, Leo writes all the essential
-  information in the ``@file`` tree to the external file, *not* to the .leo
+  information in the @file tree to the external file, *not* to the .leo
   file.  The only nodes that gets written to the .leo file are nodes that are
-  not contained in any ``@file`` tree.</t>
+  not contained in any @file tree.</t>
 <t tx="ekr.20091130194648.6799">With Leo, there
 are also many ways of organizing computer programs *as outlines*; some are more
 Leonine than others. With Leo, you can talk about good or bad outlining style.
@@ -31436,13 +31431,13 @@ an ``@file`` *tree* is the ``@file`` node and all its descendants.
 - In body text, everything not in a doc part is in a **code part**.
   If a node does not contain a doc part, the entire body text is a code part.
 
-- ``@doc`` is a synonym for ``@`` and ``@code`` is a synonym for ``@c``.
-  However, ``@`` and ``@c`` are preferred.
+- @doc is a synonym for @ and @code is a synonym for @c.
+  However, @ and @c are preferred.
 </t>
-<t tx="ekr.20091130194648.6811">Leo's **directives** control such things as syntax coloring, line wrapping within the
-body pane and the width of tabs. Leo directives may appear in headlines or body
-text. Leo directives start with '@' in the leftmost column, followed by the name
-of the directive.  Here are some of Leo's directives::
+<t tx="ekr.20091130194648.6811">Leo's **directives** control such things as syntax coloring, line wrapping
+within the body pane and the width of tabs. Leo directives may appear in
+headlines or body text. Leo directives start with '@' in the leftmost column,
+followed by the name of the directive. Here are some of Leo's directives::
 
     @language python
     @tabwidth -4
@@ -31459,28 +31454,28 @@ the directive::
 
     @language python
     
-tells Leo to syntax color the node and all descendant nodes as Python code.  However,
-some descendant node mignt contain::
+tells Leo to syntax color the node and all descendant nodes as Python code.
+However, some descendant node mignt contain::
 
     @language rest
     
-which tells Leo to color that node and all of *its* decendants as reStructureText.
-This principle applies to almost all of Leo's directives: the directive is in
-effect throughout a tree, unless overridden in some subtree.
+which tells Leo to color that node and all of *its* decendants as
+reStructureText. This principle applies to almost all of Leo's directives: the
+directive is in effect throughout a tree, unless overridden in some subtree.
 
 **\@color**, **\@nocolor** and **\@killcolor** control syntax coloring.
 
-  You can mix ``@nocolor`` and ``@color`` directives in a single node_, but
-  these directives apply to descendant nodes only if they are **unambiguous**,
-  that is, only if the ancestor node contains exactly one ``@color`` or
-  ``@nocolor`` directive.
+  You can mix @nocolor and @color directives in a single node, but these
+  directives apply to descendant nodes only if they are **unambiguous**, that
+  is, only if the ancestor node contains exactly one @color or @nocolor
+  directive.
 
 - **@encoding** Sets the Unicode encoding used in external files.
 
 - **@first** directives orces lines to appear before the first sentinel of a external file.
 
-    This directive may only appear in ``@&lt;file&gt;`` nodes. A common use of ``@first`` directives
-    is to add shebang lines::
+    This directive may only appear in @&lt;file&gt; nodes. A common use of @first
+    directives is to add shebang lines::
     
         @first #! /usr/bin/env python
         
@@ -31497,13 +31492,14 @@ effect throughout a tree, unless overridden in some subtree.
 
 - **@pagewidth** Sets the page width used to break doc parts into lines.
 
-- **@path** Sets the path to be prepended to filenames in descendant ``@file`` nodes.
+- **@path** Sets the path to be prepended to filenames in descendant @file
+  nodes.
 
-Leo treats lines starting with ``@`` as a normal code line unless the ``@``
-starts a Leo directive. In particular, Leo will output Python decorators
-correctly, provided the name of the decorator is not a Leo directive.
+Leo treats lines starting with @ as a normal code line unless the @ starts a Leo
+directive. In particular, Leo will output Python decorators correctly, provided
+the name of the decorator is not a Leo directive.
 
-**\@language** sets the language used for syntax coloring.  Some examples::
+**\@language** sets the language used for syntax coloring. Some examples::
 
     @language python
     @language c
@@ -31520,21 +31516,21 @@ correctly, provided the name of the decorator is not a Leo directive.
 <t tx="ekr.20091201091455.6809">We come now to one of Leo's most important and unusual features. When Leo writes
 an external file, it does so in a flexible manner, directed by
 **outline-oriented markup**. This markup tells Leo exactly how to create the
-external file from an ``@file`` node.
+external file from an @file node.
 
-The **obvious** way to write an external file would be to write the ``@file``
-node itself followed by all the descendant nodes in **outline order** (the order
-in which nodes appear in the outline). But Leo does *not* write external files
+The **obvious** way to write an external file would be to write the @file node
+itself followed by all the descendant nodes in **outline order** (the order in
+which nodes appear in the outline). But Leo does *not* write external files
 exactly this way.
 
-Yes, Leo does indeed start by writing the ``@file`` node itself. But Leo writes
-the ``@file`` node's descendants only when it sees one of three kinds of markup:
-section references, the ``@others`` directive and the ``@all`` directive. Each
-kind of markup directs Leo to write the **expansion** of one or more descendant
-nodes to the external file. Programmers will recognize this process as akin to
-macro expansion. The following sections will explain this process in detail.</t>
+Yes, Leo does indeed start by writing the @file node itself. But Leo writes the
+@file node's descendants only when it sees one of three kinds of markup: section
+references, the @others directive and the @all directive. Each kind of markup
+directs Leo to write the **expansion** of one or more descendant nodes to the
+external file. Programmers will recognize this process as akin to macro
+expansion. The following sections will explain this process in detail.</t>
 <t tx="ekr.20091201091455.6812">We have now covered the essentials of how Leo creates external files from
-``@file`` nodes. The following section discusses some further details.
+@file nodes. The following section discusses some further details.
 
 
 
@@ -31547,8 +31543,8 @@ macro expansion. The following sections will explain this process in detail.</t>
 
     &lt;&lt; a section name &gt;&gt;
     
-Here, ``a section name`` can be any descriptive text not containing ``&gt;&gt;``. When
-Leo encounters a section reference, Leo searches all the descendants of the node
+Here, "a section name" can be any descriptive text not containing "&gt;&gt;". When Leo
+encounters a section reference, Leo searches all the descendants of the node
 containing the reference looking for a node whose headline matches the section
 reference. That is, Leo looks for a descendant node whose headline starts with::
 
@@ -31558,12 +31554,12 @@ We call such nodes **named nodes**. Leo doesn't require an exact match. Leo
 ignores whitespace and the case of letters when comparing headlines to section
 reference. Also, Leo ignores anything that may follow the section name in a
 named node. For example, the following headline will match the section reference
-above.
+above::
 
     &lt;&lt; A Section Name &gt;&gt; (to do)
 
-If Leo does find a match, Leo *replaces* the section reference (``&lt;&lt; a section
-name&gt;&gt;``) by the *expansion* of the body text of the matched node. That is, Leo
+If Leo does find a match, Leo *replaces* the section reference ("&lt;&lt; a section
+name&gt;&gt;") by the *expansion* of the body text of the matched node. That is, Leo
 replaces the section reference by the body text of the matched node, but Leo
 **expands all markup** in the matched node *before* making the replacement. The
 entire expansion of the matched node replaces the original section reference.
@@ -31573,29 +31569,30 @@ We have just discussed what happens if Leo does find a descendant named node
 that matches the section reference. If no such match is found the section
 reference is said to be **undefined** and Leo does not write any data to the
 external file. This is *not* a serious error: Leo will will save the erroneous
-``@&lt;file&gt;`` tree in the .leo file instead of the external file. No information
+@&lt;file&gt; tree in the .leo file instead of the external file. No information
 is lost. By the way, Leo's syntax coloring will indicate undefined section
 reference by underlining the section name.
 
-**Important**: the indentation of the section *reference* matters. When
-expanding a section reference, Leo indents every line of the expansion by the
-leading whitespace that occurs before the section refenence.</t>
+**Important**: the indentation of section references matters. When expanding a
+section reference, Leo indents every line of the expansion by the leading
+whitespace that occurs before the section refenence.
+</t>
 <t tx="ekr.20091201091455.6814">The **@others directive** is the second (and most common) way of including
-descendant nodes in an external files. When Leo encounters the ``@others``
-directive it replaces the ``@others directive`` by the *expansion* of all
-**unnamed** descendant nodes.  As with section references, Leo replaces
-all markup in the descendant nodes, and the entire expansion replaces the
-``@others`` directive.
+descendant nodes in an external files. When Leo encounters the @others directive
+it replaces the @others directive by the *expansion* of all **unnamed**
+descendant nodes. As with section references, Leo replaces all markup in the
+descendant nodes, and the entire expansion replaces the
+@others directive.
 
-In short, section references write *named* nodes; ``@others`` directives
-write all *unnamed* nodes.  By the way, no node may contain more than one
-``@others`` directive because there would be no way to "apportion" descendant
-nodes to more than one ``@others`` directive.  However, nodes may contain
-as many section references as you like.
+In short, section references write *named* nodes; @others directives write all
+*unnamed* nodes. By the way, no node may contain more than one
+@others directive because there would be no way to "apportion" descendant
+nodes to more than one @others directive. However, nodes may contain as many
+section references as you like.
 
-As with section references, the indentation of the ``@others`` directive
-matters. This allows Leo to handle Python source code properly. For exmple, the
-following is a common way of representing a Python class::
+As with section references, the indentation of the @others directive matters.
+This allows Leo to handle Python source code properly. For exmple, the following
+is a common way of representing a Python class::
 
     class myClass:
         '''a docstring'''
@@ -31604,40 +31601,45 @@ following is a common way of representing a Python class::
 When Leo writes this node to an external file, Leo will write the first two
 lines to the external file, with the indentation in effect for the node. Leo
 will then write all descendant nodes to the external files, with *additional*
-indentation equal to the leading whitespace appearing before the ``@others``
-directive.  </t>
-<t tx="ekr.20091201091455.6815">The ``@all`` directive is the third, simplest (and least common) way of
-including descendant nodes. This directive causes Leo to write all descendant
-nodes in outline order, regardless of whether they are named or not.
-Furthermore, the ``@all directive`` does not expand any markup in descendant
-nodes. This results in Leo writing the external file in the "obvious" way. That
-is, Leo writes all descendant nodes in outline order.
+indentation equal to the leading whitespace appearing before the @others
+directive.
+</t>
+<t tx="ekr.20091201091455.6815">The @all directive is the third, simplest (and least common) way of including
+descendant nodes. This directive causes Leo to write all descendant nodes in
+outline order, regardless of whether they are named or not. Furthermore, the
+@all directive does not expand any markup in descendant nodes. This results in
+Leo writing the external file in the "obvious" way. That is, Leo writes all
+descendant nodes in outline order.
 
-Use the ``all`` directive if your external file contains unrelated nodes. For
+Use the all directive if your external file contains unrelated nodes. For
 example, I use an external file to store programming notes. These notes
 typically contain snippets of programming source code, but there is no real
 relationships between the snippets--the file is simply a grab bag of
-information. The ``@all`` directive is designed for this situation.
+information. The @all directive is designed for this situation.
 </t>
-<t tx="ekr.20091201091455.6816">When ``&lt;&lt;`` and ``&gt;&gt;`` are not paired on a line,
-they are treated as ordinary ``&lt;&lt;`` and ``&gt;&gt;`` characters.
+<t tx="ekr.20091201091455.6816">When "&lt;&lt;" and 
+"&gt;&gt;" are not paired on a line,
+they are treated as ordinary "&lt;&lt;" and
+"&gt;&gt;" characters.
 Leo has *no* escape mechanism for section names.
-That is, paired ``&lt;&lt;`` and ``&gt;&gt;`` characters on the same line always denote a section name,
+That is, paired "&lt;&lt;" and
+"&gt;&gt;" characters on the same line always denote a section name,
 *even within comments and strings*.
-This means that ``&lt;&lt;`` and ``&gt;&gt;`` characters that do not delimit a section name must be placed on separate lines.
+This means that "&lt;&lt;" and
+"&gt;&gt;" characters that do not delimit a section name must be placed on separate lines.
 In practice, this requirement seldom causes problems.</t>
-<t tx="ekr.20091201091455.6817">Every ``@file`` node with children must contain an ``@all`` or ``@others``
-directive. It it contains neither directive, all the children of the ``@file``
+<t tx="ekr.20091201091455.6817">Every @file node with children must contain an @all or @others
+directive. It it contains neither directive, all the children of the @file
 node will be **orphan nodes**. This is *not* a serious error. When saving the
-outline, Leo will will save the erroneous ``@&lt;file&gt;`` tree in the .leo file
+outline, Leo will will save the erroneous @&lt;file&gt; tree in the .leo file
 instead of the external file. No information is lost.</t>
 <t tx="ekr.20091201091455.6818">Whenever Leo writes any node to an external file, Leo converts the node's
 headline to a comment. This allows you to put descriptive information in any
 headline.</t>
 <t tx="ekr.20091201091455.6819">You can create external files with other kinds of nodes. Collectively, these
 nodes are known as **@&lt;file&gt;** nodes. As you will become more experienced with
-Leo, you may want to use other kinds of ``@&lt;file&gt;`` nodes, such as ``@auto`` or
-``@shadow``, etc. For now though, a good rule of thumb is to use ``@file`` nodes
+Leo, you may want to use other kinds of @&lt;file&gt; nodes, such as @auto or
+@shadow, etc. For now though, a good rule of thumb is to use @file nodes
 unless you have a specific reason to do otherwise.</t>
 <t tx="ekr.20091201091455.6820">When writing external files, Leo stores information about outline structure in
 special comments called **sentinel lines**. Sentinel lines must have an '@' sign
@@ -31653,13 +31655,13 @@ following the comment delimiter. Here are some examples::
 
 Do not change sentinel lines when editing an external file in another
 editor--Leo won't be able to read the file normally. If you do so accidentally,
-you can use Leo's ``Import external file`` command to recover the information
+you can use Leo's "Import external file" command to recover the information
 from the file.
 
-Most ``@&lt;file&gt;`` nodes cause Leo to write sentinels. However, Leo writes no
-sentinels when writing ``@nosent`` trees. `Chapter 4: Writing Programs in Leo`_
+Most @&lt;file&gt; nodes cause Leo to write sentinels. However, Leo writes no
+sentinels when writing @nosent trees. `Chapter 4: Writing Programs in Leo`_
 discusses other ways of creating external files, but this is an advanced
-chapter. For now, just use ``@file`` trees to create your external files.
+chapter. For now, just use @file trees to create your external files.
 </t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
