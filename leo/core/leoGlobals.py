@@ -3916,7 +3916,10 @@ def pr(*args,**keys):
     # However, the following must appear in Python\Lib\sitecustomize.py:
     #    sys.setdefaultencoding('utf-8')
     s = g.translateArgs(args,d) # Translates everything to unicode.
-    s2 = g.toEncodedString(s,encoding)
+    if g.isPython3:
+        s2 = s
+    else:
+        s2 = g.toEncodedString(s,encoding)
 
     if app.logInited:
         try: # We can't use any print keyword args in Python 2.x!

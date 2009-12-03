@@ -798,7 +798,7 @@ def getColor(name, default=None):
 
 
     """
-    if not isinstance(name, basestring):
+    if not isinstance(name,str): ### was basestring:
         return name
 
     #g.trace(name, default)

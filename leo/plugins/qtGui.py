@@ -903,14 +903,17 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         #g.trace("getAllText", g.callers(5))
         w = self.widget
-        s = unicode(w.toPlainText())
+
+        if g.isPython3:
+            s = w.toPlainText()
+        else:
+            s = unicode(w.toPlainText())
 
         # Doesn't work: gets only the line containing the cursor.
         # s = unicode(w.textCursor().block().text())
 
         # g.trace(repr(s))
         return s
-    #@nonl
     #@-node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
     #@+node:ekr.20081121105001.581:getInsertPoint
     def getInsertPoint(self):
@@ -1155,8 +1158,14 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         w = self.widget
         sb = w.verticalScrollBar()
         if pos is None: pos = 0
-        elif type(pos) == types.TupleType:
-            pos = pos[0]
+        # elif type(pos) == types.TupleType:
+            # pos = pos[0]
+        else:
+            try:
+                n1,n2 = pos
+                pos = n1
+            except TypeError:
+                pass
         sb.setSliderPosition(pos)
     #@-node:ekr.20081121105001.591:setYScrollPosition
     #@+node:ville.20090321082712.1: PythonIndex
@@ -2564,7 +2573,7 @@ class leoQtBody (leoFrame.leoBody):
         if self.numberOfEditors == 2:
             # Inject the ivars into the first editor.
             # The name of the last editor need not be '1'
-            d = self.editorWidgets ; keys = d.keys()
+            d = self.editorWidgets ; keys = list(d.keys())
             old_name = keys[0]
             old_wrapper = d.get(old_name)
             old_w = old_wrapper.widget
@@ -2654,7 +2663,7 @@ class leoQtBody (leoFrame.leoBody):
         assert isinstance(wrapper,leoQTextEditWidget),wrapper
         assert isinstance(w,QtGui.QTextEdit),w
 
-        if len(d.keys()) <= 1: return
+        if len(list(d.keys())) <= 1: return
 
         # At present, can not delete the first column.
         if name == '1':
@@ -2842,7 +2851,7 @@ class leoQtBody (leoFrame.leoBody):
 
         c = self.c ; p = c.p ; body = p.b
         d = self.editorWidgets
-        if len(d.keys()) < 2: return # There is only the main widget
+        if len(list(d.keys())) < 2: return # There is only the main widget
 
         w0 = c.frame.body.bodyCtrl
         i,j = w0.getSelectionRange()
@@ -3913,9 +3922,10 @@ class leoQtFrame (leoFrame.leoFrame):
 
         def put_helper(self,s,w):
             # w.setEnabled(True)
-            if sys.platform.startswith('linux'):
-                # Work around an apparent Qt bug.
-                s = g.toEncodedString(s,'ascii',reportErrors=False)
+            if 0: ### no longer needed???
+                if sys.platform.startswith('linux'):
+                    # Work around an apparent Qt bug.
+                    s = g.toEncodedString(s,'ascii',reportErrors=False)
             w.setText(s)
             # w.setEnabled(False)
         #@-node:ekr.20081121105001.264:clear, get & put/1
@@ -7192,6 +7202,8 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20081121105001.502:toUnicode (qtGui)
     def toUnicode (self,s,encoding=None,reportErrors=True):
 
+        return s ###
+
         # These tests will usually be very fast.
         if encoding is None:
             encoding = self.defaultEncoding
@@ -8451,7 +8463,7 @@ class jEditColorizer:
             self.fonts['default_body_font'] = defaultBodyfont
 
         # Configure fonts.
-        keys = self.default_font_dict.keys() ; keys.sort()
+        keys = list(self.default_font_dict.keys()) ; keys.sort()
         for key in keys:
             option_name = self.default_font_dict[key]
             # First, look for the language-specific setting, then the general setting.
@@ -8478,11 +8490,11 @@ class jEditColorizer:
                         w.tag_config(key,font=font)
                         break
             else: # Neither the general setting nor the language-specific setting exists.
-                if self.fonts.keys(): # Restore the default font.
+                if list(self.fonts.keys()): # Restore the default font.
                     if trace and verbose: g.trace('default',key)
                     w.tag_config(key,font=defaultBodyfont)
 
-        keys = self.default_colors_dict.keys() ; keys.sort()
+        keys = list(self.default_colors_dict.keys()) ; keys.sort()
         for name in keys:
             option_name,default_color = self.default_colors_dict[name]
             color = (
@@ -8719,7 +8731,7 @@ class jEditColorizer:
 
         # Add any new user keywords to leoKeywordsDict.
         d = self.keywordsDict
-        keys = d.keys()
+        keys = list(d.keys())
         for s in g.globalDirectiveList:
             key = '@' + s
             if key not in keys:
@@ -8729,7 +8741,7 @@ class jEditColorizer:
         chars = [g.toUnicode(ch,encoding='UTF-8')
             for ch in (string.letters + string.digits)]
 
-        for key in d.keys():
+        for key in list(d.keys()):
             for ch in key:
                 if ch not in chars:
                     chars.append(g.toUnicode(ch,encoding='UTF-8'))

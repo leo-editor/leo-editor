@@ -806,11 +806,12 @@ def rememberItem (self,p,item):
     v = p.v
 
     # Update position dicts.
+    itemHash = repr(item)
     self.position2itemDict[p.key()] = item
-    self.item2positionDict[item] = p.copy()
+    self.item2positionDict[itemHash] = p.copy() # was item
 
     # Update item2vnodeDict.
-    self.item2vnodeDict[item] = v
+    self.item2vnodeDict[itemHash] = v # was item
 
     # Update vnode2itemsDict.
     d = self.vnode2itemsDict
