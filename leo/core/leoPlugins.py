@@ -722,10 +722,12 @@ class CommandChainDispatcher:
             try:
                 ret = cmd(*args, **kw)
                 return ret
-            except TryNext, exc:
+            ### except TryNext, exc:
+            except TryNext as exc:
                 if exc.args or exc.kwargs:
                     args = exc.args
                     kw = exc.kwargs
+
         # if no function will accept it, raise TryNext up to the caller
         raise TryNext
 

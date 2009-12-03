@@ -185,8 +185,10 @@ def getFileName (fileName,script):
 
     if g.isPython3:
         ### Testing only.
-        fileName = r'c:\leo.repo\trunk\leo\test\test.leo'
-        assert g.os_path_exists(fileName)
+        # fileName = r'c:\leo.repo\trunk\leo\test\test.leo'
+        # assert g.os_path_exists(fileName)
+        import pdb
+        pdb.set_trace()
     elif script:
         fileName = None
     elif fileName:

@@ -4077,7 +4077,7 @@ class baseCommands (object):
         c = self
         seen = {}
 
-        print ; print '='*40
+        print ; print('='*40)
         v = c.hiddenRootNode
         v.dump()
         seen[v] = True

@@ -521,7 +521,7 @@ class vnode (baseVnode):
 
         if trace and verbose:
             for v in nodes:
-                print v.isDirty(),v.isAnyAtFileNode(),v
+                print (v.isDirty(),v.isAnyAtFileNode(),v)
 
         dirtyVnodeList = [v for v in nodes
             if not v.isDirty() and v.isAnyAtFileNode()]

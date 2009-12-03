@@ -666,7 +666,7 @@ class LeoApp:
 
         if g.app.gui is None:
             # tkinter broken/doesn't exist. Print error
-            print "Please enter LeoID (e.g. your username, 'johndoe'...)"
+            print("Please enter LeoID (e.g. your username, 'johndoe'...)")
             leoid = raw_input('LeoID: ')
 
         else:
@@ -769,7 +769,7 @@ class LeoApp:
 
         app = self
         # Do not call g.es, g.es_print, g.pr or g.trace here!
-        # print 'writeWaitingLog',c,g.callers(4)
+        # print('writeWaitingLog',c,g.callers(4))
         table = [
             ('Leo Log Window','red'),
             (app.signon,'black'),
@@ -780,8 +780,8 @@ class LeoApp:
         if app.log:
             if not app.logInited:
                 app.logInited = True # Prevent recursive call.
-                print app.signon
-                print app.signon2
+                print(app.signon)
+                print(app.signon2)
                 for s,color in table:
                     app.logWaiting.insert(0,(s+'\n',color),)
             elif forceLog:
@@ -789,7 +789,7 @@ class LeoApp:
                     app.logWaiting.insert(0,(s+'\n',color),)
             # The test for isNull would probably interfere with batch mode.
             for s in app.printWaiting:
-                print s
+                print(s)
             app.printWaiting = []
             for s,color in app.logWaiting:
                 g.es('',s,color=color,newline=0)

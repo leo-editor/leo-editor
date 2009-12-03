@@ -10,7 +10,11 @@ import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
 
 import sys
-import zipfile
+
+try:
+    import zipfile
+except ImportError:
+    zipfile = None
 #@-node:ekr.20041227063801:<< imports >>
 #@nl
 
@@ -1860,7 +1864,7 @@ class configClass:
             if path:
                 path = g.os_path_realpath(g.os_path_finalize(path))
                 # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
-            isZipped = path and zipfile.is_zipfile(path)
+            isZipped = path and zipfile and zipfile.is_zipfile(path)
             isLeo = isZipped or (path and path.endswith('.leo'))
             if isLeo and path and path.lower() not in seen and g.os_path_exists(path):
                 seen.append(path.lower())

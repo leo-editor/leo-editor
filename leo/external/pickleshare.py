@@ -15,11 +15,11 @@ Example usage::
     from pickleshare import *
     db = PickleShareDB('~/testpickleshare')
     db.clear()
-    print "Should be empty:",db.items()
+    print ("Should be empty:",db.items())
     db['hello'] = 15
     db['aku ankka'] = [1,2,313]
     db['paths/are/ok/key'] = [1,(5,46)]
-    print db.keys()
+    print (db.keys())
     del db['aku ankka']
 
 This module is certainly not ZODB, but can be used for low-load 
@@ -35,7 +35,7 @@ License: MIT open source license.
 
 from leo.external.path import path as Path
 import os,stat,time
-import UserDict
+### import UserDict
 import warnings
 import glob
 
@@ -44,7 +44,7 @@ def gethashfile(key):
 
 _sentinel = object()
 
-class PickleShareDB(UserDict.DictMixin):
+class PickleShareDB(dict): ### UserDict.DictMixin):
     """ The main 'connection' object for PickleShare database """
     def __init__(self,root, protocol = 'pickle'):
         """ Initialize a PickleShare object that will manage the specied directory
@@ -128,10 +128,10 @@ class PickleShareDB(UserDict.DictMixin):
         pickled = self.dumper(value,fil.open('wb'))
         try:
             self.cache[fil] = (value,fil.mtime)
-        except OSError,e:
+        # except OSError,e:
+        except OSError as e:
             if e.errno != 2:
                 raise
-
     def hset(self, hashroot, key, value):
         """ hashed set """
         hroot = self.root / hashroot
@@ -150,7 +150,6 @@ class PickleShareDB(UserDict.DictMixin):
         hfile = hroot / gethashfile(key)
 
         d = self.get(hfile, _sentinel )
-        #print "got dict",d,"from",hfile
         if d is _sentinel:
             if fast_only:
                 if default is _sentinel:
@@ -169,17 +168,15 @@ class PickleShareDB(UserDict.DictMixin):
         hfiles.sort()
         last = len(hfiles) and hfiles[-1] or ''
         if last.endswith('xx'):
-            # print "using xx"
             hfiles = [last] + hfiles[:-1]
 
         all = {}
 
         for f in hfiles:
-            # print "using",f
             try:
                 all.update(self[f])
             except KeyError:
-                print "Corrupt",f,"deleted - hset is not threadsafe!"
+                print ("Corrupt",f,"deleted - hset is not threadsafe!")
                 del self[f]
 
             self.uncache(f)
@@ -196,7 +193,6 @@ class PickleShareDB(UserDict.DictMixin):
         hfiles = self.keys(hashroot + "/*")
         all = {}
         for f in hfiles:
-            # print "using",f
             all.update(self[f])
             self.uncache(f)
 
@@ -315,25 +311,25 @@ class PickleShareLink:
 def test():
     db = PickleShareDB('~/testpickleshare')
     db.clear()
-    print "Should be empty:",db.items()
+    print("Should be empty:",db.items())
     db['hello'] = 15
     db['aku ankka'] = [1,2,313]
     db['paths/nest/ok/keyname'] = [1,(5,46)]
     db.hset('hash', 'aku', 12)
     db.hset('hash', 'ankka', 313)
-    print "12 =",db.hget('hash','aku')
-    print "313 =",db.hget('hash','ankka')
-    print "all hashed",db.hdict('hash')
-    print db.keys()
-    print db.keys('paths/nest/ok/k*')
-    print dict(db) # snapsot of whole db
+    print("12 =",db.hget('hash','aku'))
+    print("313 =",db.hget('hash','ankka'))
+    print("all hashed",db.hdict('hash'))
+    print(db.keys())
+    print(db.keys('paths/nest/ok/k*'))
+    print(dict(db)) # snapsot of whole db
     db.uncache() # frees memory, causes re-reads later
 
     # shorthand for accessing deeply nested files
     lnk = db.getlink('myobjects/test')
     lnk.foo = 2
     lnk.bar = lnk.foo + 5
-    print lnk.bar # 7
+    print(lnk.bar) # 7
 
 def stress():
     db = PickleShareDB('~/fsdbtest')
@@ -351,7 +347,7 @@ def stress():
             db[str(j)] = db.get(str(j), []) + [(i,j,"proc %d" % os.getpid())]
             db.hset('hash',j, db.hget('hash',j,15) + 1 )
 
-        print i,
+        print(i)
         sys.stdout.flush()
         if i % 10 == 0:
             db.uncache()
@@ -370,7 +366,7 @@ def main():
     DB = PickleShareDB
     import sys
     if len(sys.argv) < 2:
-        print usage
+        print(usage)
         return
 
     cmd = sys.argv[1]
@@ -390,7 +386,7 @@ def main():
     elif cmd == 'testwait':
         db = DB(args[0])
         db.clear()
-        print db.waitget('250')
+        print(db.waitget('250'))
     elif cmd == 'test':
         test()
         stress()

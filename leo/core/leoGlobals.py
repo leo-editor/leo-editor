@@ -46,7 +46,11 @@ import operator
 import re
 import sys
 import time
-import zipfile
+
+try:
+    import zipfile
+except ImportError:
+    zipfile = None
 
 # These do not exist in IronPython.
 # However, it *is* valid for IronPython to use the Python 2.4 libs!
@@ -102,24 +106,26 @@ class nullObject:
     def __repr__   (self): return "nullObject"
     def __str__    (self): return "nullObject"
     def __nonzero__(self): return 0
-    def __delattr__(self,attr):     return self
-    def __getattr__(self,attr):     return self
-    def __setattr__(self,attr,val): return self
-
+    def __delattr__(self,attr):     return None ### self
+    def __getattr__(self,attr):     return None ### self
+    def __setattr__(self,attr,val): return None ### self
 #@-node:ekr.20090521175848.5881:<< define the nullObject class >>
 #@nl
+
+if False:
+    import pdb
+    pdb.set_trace()
 
 g = nullObject() # Set later by startup logic to this module.
 app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
 isPython3 = sys.version_info >= (3,0,0)
 convert_at_file = True # True: write @file nodes like @thin nodes
-# if convert_at_file:
-    # print('*** convert_at_file')
+# if convert_at_file: print('*** convert_at_file')
 
 enableDB = True
 if not enableDB:
-    print '** leoGlobals.py: caching disabled'
+    print('** leoGlobals.py: caching disabled')
 
 #@+others
 #@+node:ekr.20050328133058:g.createStandAloneTkApp
@@ -1459,7 +1465,7 @@ def pdb (message=''):
     import pdb # Required: we have just defined pdb as a function!
 
     if message:
-        print message
+        print(message)
     pdb.set_trace()
 #@+node:ekr.20090517020744.5880:@test g.pdb
 if g.unitTesting:
@@ -2729,7 +2735,7 @@ def makePathRelativeTo (fullPath,basePath):
 def openLeoOrZipFile (fileName):
 
     try:
-        isZipped = zipfile.is_zipfile(fileName)
+        isZipped = zipfile and zipfile.is_zipfile(fileName)
         if isZipped:
             import StringIO
             theFile = zipfile.ZipFile(fileName,'r')
@@ -2886,7 +2892,7 @@ def mungeFileName(fileName):
     relFn = g.os_path_normpath(fileName)
     fn = g.os_path_finalize(fileName)
 
-    isZipped = fn and zipfile.is_zipfile(fn)
+    isZipped = fn and zipfile and zipfile.is_zipfile(fn)
     isLeo = isZipped or fn.endswith('.leo')
 
     return isLeo,fn,relFn
@@ -5302,7 +5308,7 @@ if g.unitTesting:
 if g.unitTesting:
 
     c,p = g.getTestVars()
-    file = u'Ỗ'
+    # file = u'Ỗ'
     path = g.os_path_join('Ỗ','Ỗ')
     # print(g.toEncodedString(file,'utf-8'))
 
@@ -5330,9 +5336,10 @@ if g.unitTesting:
     at = c.atFileCommands
     at.errors = 0
 
-    s = u'La Pe\xf1a'
-    s = u'La Peña'
+    # s = u'La Pe\xf1a'
+    # s = u'La Peña'
     # s = u'Ă: U+0102: Latin Capital Letter A With Breve'
+    s = 'La Peña'
     at.printError('test of at.printError:',s)
 #@-node:ekr.20090517020744.5862:@test atFile.printError
 #@+node:ekr.20090517020744.5863:@test % operator with unicode
@@ -5356,9 +5363,9 @@ if g.unitTesting:
     s2,ok = g.toUnicodeWithErrorCode(s,encoding)
     assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
 
-    s = u'炰'
-    s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
-    assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
+    # s = u'炰'
+    # s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
+    # assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
 #@-node:ekr.20090517020744.5864:@test failure to convert unicode characters to ascii
 #@+node:ekr.20090517020744.5865:@test of round-tripping toUnicode & toEncodedString
 #@@first
@@ -5395,9 +5402,9 @@ if g.unitTesting:
     s2,ok = g.toUnicodeWithErrorCode(s,encoding)
     assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
 
-    s = u'炰'
-    s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
-    assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
+    # s = u'炰'
+    # s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
+    # assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
 #@-node:ekr.20090517020744.5866:@test failure with ascii encodings
 #@+node:ekr.20090517020744.5867:@test round trip toUnicode toEncodedString
 #@@first
@@ -5626,14 +5633,14 @@ if g.unitTesting:
 
     for s,encoding in (
         ('aĂbĂ',  'ascii'),
-        (u'aĂbĂ', 'ascii'),
+        #(u'aĂbĂ', 'ascii'),
         ('炰',    'ascii'),
-        (u'炰',   'ascii'),
+        #(u'炰',   'ascii'),
 
         ('aĂbĂ',  'utf-8'),
-        (u'aĂbĂ', 'utf-8'),
+        #(u'aĂbĂ', 'utf-8'),
         ('炰',    'utf-8'),
-        (u'炰',   'utf-8'),
+        #(u'炰',   'utf-8'),
     ):
 
         g.reportBadChars(s,encoding)
@@ -6515,7 +6522,7 @@ def cantImport (moduleName,pluginName=None,verbose=True):
     if pluginName: s = s + " from plugin %s" % pluginName
 
     if not g.app or not g.app.gui:
-        print s
+        print (s)
     elif g.unitTesting:
         # print s
         return

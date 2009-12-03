@@ -1651,27 +1651,6 @@ class rstCommands:
         f.close()
     #@nonl
     #@-node:ekr.20090502071837.98:set_initial_http_attributes
-    #@+node:ekr.20090502071837.99:find_anchors
-    def find_anchors (self, p):
-
-        '''Find the anchors in all the nodes.'''
-
-        for p1, attrs in self.http_attribute_iter(p):
-            html = mod_http.reconstruct_html_from_attrs(attrs)
-            # g.trace(pprint.pprint(html))
-            parser = anchor_htmlParserClass(self, p1)
-            for line in html:
-                try:
-                    parser.feed(line)
-                # bwm: changed to unicode(line)
-                except:
-                    line = ''.join([ch for ch in line if ord(ch) <= 127])
-                    # filter out non-ascii characters.
-                    # bwm: not quite sure what's going on here.
-                    parser.feed(line)        
-        # g.trace(g.dictToString(self.anchor_map,tag='anchor_map'))
-    #@nonl
-    #@-node:ekr.20090502071837.99:find_anchors
     #@+node:ekr.20090502071837.100:relocate_references
     #@+at 
     #@nonl
@@ -1718,18 +1697,41 @@ class rstCommands:
                     marker = marker_parts [1]
                     replacement = u"%s#%s" % (http_node_ref,marker)
                     try:
-                        attr [line + 2] = attr [line + 2].replace(u'href="%s"' % href, u'href="%s"' % replacement)
+                        # attr [line + 2] = attr [line + 2].replace(u'href="%s"' % href, u'href="%s"' % replacement)
+                        attr [line + 2] = attr [line + 2].replace('href="%s"' % href, 'href="%s"' % replacement)
                     except:
                         g.es("Skipped ", attr[line + 2])
                 else:
                     filename = marker_parts [0]
                     try:
-                        attr [line + 2] = attr [line + 2].replace(u'href="%s"' % href,u'href="%s"' % http_node_ref)
+                        # attr [line + 2] = attr [line + 2].replace(u'href="%s"' % href,u'href="%s"' % http_node_ref)
+                        attr [line + 2] = attr [line + 2].replace('href="%s"' % href,'href="%s"' % http_node_ref)
                     except:
                         g.es("Skipped", attr[line+2])
         # g.trace('after %s\n\n\n',attr)
     #@nonl
     #@-node:ekr.20090502071837.100:relocate_references
+    #@+node:ekr.20090502071837.99:find_anchors
+    def find_anchors (self, p):
+
+        '''Find the anchors in all the nodes.'''
+
+        for p1, attrs in self.http_attribute_iter(p):
+            html = mod_http.reconstruct_html_from_attrs(attrs)
+            # g.trace(pprint.pprint(html))
+            parser = anchor_htmlParserClass(self, p1)
+            for line in html:
+                try:
+                    parser.feed(line)
+                # bwm: changed to unicode(line)
+                except:
+                    line = ''.join([ch for ch in line if ord(ch) <= 127])
+                    # filter out non-ascii characters.
+                    # bwm: not quite sure what's going on here.
+                    parser.feed(line)        
+        # g.trace(g.dictToString(self.anchor_map,tag='anchor_map'))
+    #@nonl
+    #@-node:ekr.20090502071837.99:find_anchors
     #@+node:ekr.20090502071837.101:http_attribute_iter
     def http_attribute_iter (self, p):
         """

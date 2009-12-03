@@ -30,7 +30,11 @@ import pickle
 # import string
 import sys
 import types
-import zipfile
+
+try:
+    import zipfile
+except ImportError:
+    zipfile = None
 # import string
 # import re
 
@@ -2281,7 +2285,7 @@ class baseFileCommands:
             self.leo_file_encoding,reportErrors=True)
 
         # Write the archive.
-        theFile = zipfile.ZipFile(fileName,'w',zipfile.ZIP_DEFLATED)
+        theFile = zipfile and zipfile.ZipFile(fileName,'w',zipfile.ZIP_DEFLATED)
         theFile.writestr(contentsName,s)
         theFile.close()
     #@-node:ekr.20070412095520:writeZipFile

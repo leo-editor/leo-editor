@@ -38,23 +38,25 @@ __all__ = ['path']
 
 # Pre-2.3 support.  Are unicode filenames supported?
 _base = str
-try:
-    if os.path.supports_unicode_filenames:
-        _base = unicode
-except AttributeError:
-    pass
+
+###
+#try:
+#    if os.path.supports_unicode_filenames:
+#        _base = unicode
+#except AttributeError:
+ #   pass
 
 # Pre-2.3 workaround for basestring.
-try:
-    basestring
-except NameError:
-    basestring = (str, unicode)
+# try:
+ #   basestring
+#except NameError:
+ #   basestring = (str, unicode)
 
 # Universal newline support
-_textmode = 'r'
-if hasattr(file, 'newlines'):
-    _textmode = 'U'
-
+#_textmode = 'r'
+# if hasattr(file, 'newlines'):
+#    _textmode = 'U'
+_textmode = 'U'
 
 class path(_base):
     """ Represents a filesystem path.
@@ -452,11 +454,11 @@ class path(_base):
                 t = f.read()
             finally:
                 f.close()
-            return (t.replace(u'\r\n', u'\n')
-                     .replace(u'\r\x85', u'\n')
-                     .replace(u'\r', u'\n')
-                     .replace(u'\x85', u'\n')
-                     .replace(u'\u2028', u'\n'))
+            return (t.replace('\r\n', '\n')
+                     .replace('\r\x85', '\n')
+                     .replace('\r', '\n')
+                     .replace('\x85', '\n')
+                     .replace('\u2028', '\n'))
 
     def write_text(self, text, encoding=None, errors='strict', linesep=os.linesep, append=False):
         """ Write the given text to this file.
@@ -522,16 +524,16 @@ class path(_base):
         conversion.
 
         """
-        if isinstance(text, unicode):
+        if True: ### isinstance(text, unicode):
             if linesep is not None:
                 # Convert all standard end-of-line sequences to
                 # ordinary newline characters.
-                text = (text.replace(u'\r\n', u'\n')
-                            .replace(u'\r\x85', u'\n')
-                            .replace(u'\r', u'\n')
-                            .replace(u'\x85', u'\n')
-                            .replace(u'\u2028', u'\n'))
-                text = text.replace(u'\n', linesep)
+                text = (text.replace('\r\n', '\n')
+                            .replace('\r\x85', '\n')
+                            .replace('\r', '\n')
+                            .replace('\x85', '\n')
+                            .replace('\u2028', '\n'))
+                text = text.replace('\n', linesep)
             if encoding is None:
                 encoding = sys.getdefaultencoding()
             bytes = text.encode(encoding, errors)
@@ -592,8 +594,8 @@ class path(_base):
 
         linesep - The desired line-ending.  This line-ending is
             applied to every line.  If a line already has any
-            standard line ending ('\r', '\n', '\r\n', u'\x85',
-            u'\r\x85', u'\u2028'), that will be stripped off and
+            standard line ending ('\r', '\n', '\r\n', '\x85',
+            '\r\x85', '\u2028'), that will be stripped off and
             this will be used instead.  The default is os.linesep,
             which is platform-dependent ('\r\n' on Windows, '\n' on
             Unix, etc.)  Specify None to write the lines as-is,
@@ -614,15 +616,15 @@ class path(_base):
         f = self.open(mode)
         try:
             for line in lines:
-                isUnicode = isinstance(line, unicode)
+                isUnicode = True ### isinstance(line, unicode)
                 if linesep is not None:
                     # Strip off any existing line-end and add the
                     # specified linesep string.
                     if isUnicode:
-                        if line[-2:] in (u'\r\n', u'\x0d\x85'):
+                        if line[-2:] in ('\r\n', '\x0d\x85'):
                             line = line[:-2]
-                        elif line[-1:] in (u'\r', u'\n',
-                                           u'\x85', u'\u2028'):
+                        elif line[-1:] in ('\r', '\n',
+                                           '\x85', '\u2028'):
                             line = line[:-1]
                     else:
                         if line[-2:] == '\r\n':
@@ -720,10 +722,10 @@ class path(_base):
 
     # --- Create/delete operations on directories
 
-    def mkdir(self, mode=0777):
+    def mkdir(self, mode=0o777): # was 0777:
         os.mkdir(self, mode)
 
-    def makedirs(self, mode=0777):
+    def makedirs(self, mode=0o777): # was 0777):
         os.makedirs(self, mode)
 
     def rmdir(self):
@@ -739,7 +741,7 @@ class path(_base):
         """ Set the access/modified times of this file to the current time.
         Create the file if it does not exist.
         """
-        fd = os.open(self, os.O_WRONLY | os.O_CREAT, 0666)
+        fd = os.open(self, os.O_WRONLY | os.O_CREAT, 0o66) # was 0666)
         os.close(fd)
         os.utime(self, None)
 
