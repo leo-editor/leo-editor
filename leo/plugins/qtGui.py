@@ -1621,7 +1621,7 @@ def init():
 
         # Override g.pdb
         def qtPdb(message=''):
-            if message: print message
+            if message: print(message)
             import pdb
             if not g.app.useIpython:
                 QtCore.pyqtRemoveInputHook()

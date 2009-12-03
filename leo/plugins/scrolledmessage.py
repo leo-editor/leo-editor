@@ -441,8 +441,8 @@ class ScrolledMessageDialog(object):
             self.parent.onDialogClosing(self)
             self.dock.destroy()
 
-            print self.dock
-            print self.ui
+            print(self.dock)
+            print(self.ui)
 
     #@-node:leohag.20081203205020.1:closeMe
     #@+node:leohag.20081203143921.10:findChkControls
