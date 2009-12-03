@@ -905,7 +905,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         w = self.widget
 
         if g.isPython3:
-            s = w.toPlainText()
+            s = str(w.toPlainText())
         else:
             s = unicode(w.toPlainText())
 
@@ -7202,7 +7202,7 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20081121105001.502:toUnicode (qtGui)
     def toUnicode (self,s,encoding=None,reportErrors=True):
 
-        return s ###
+        return str(s) ###
 
         # These tests will usually be very fast.
         if encoding is None:
