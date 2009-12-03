@@ -112,14 +112,11 @@ class nullObject:
 #@-node:ekr.20090521175848.5881:<< define the nullObject class >>
 #@nl
 
-if False:
-    import pdb
-    pdb.set_trace()
-
 g = nullObject() # Set later by startup logic to this module.
 app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
 isPython3 = sys.version_info >= (3,0,0)
+print('*** isPython3',isPython3)
 convert_at_file = True # True: write @file nodes like @thin nodes
 # if convert_at_file: print('*** convert_at_file')
 
