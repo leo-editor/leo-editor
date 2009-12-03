@@ -24,9 +24,20 @@ import leo.core.leoTest as leoTest
 import leo.core.leoCommands as commands
 
 import os
-import HTMLParser
+
+# try:
+    # import HTMLParser
+# except ImportError:
+    # import html.parser
+
 import pprint
-import StringIO
+
+try:
+    import StringIO
+except ImportError:
+    import io
+    StringIO = io.StringIO
+
 import sys
 
 try:
@@ -314,7 +325,7 @@ class rstCommands:
     def dumpSettings (self):
 
         d = self.optionsDict
-        keys = d.keys() ; keys.sort()
+        keys = list(d.keys()) ; keys.sort()
 
         g.pr('present settings...')
         for key in keys:
@@ -583,7 +594,7 @@ class rstCommands:
     def initOptionsFromSettings (self):
 
         c = self.c ; d = self.defaultOptionsDict
-        keys = d.keys() ; keys.sort()
+        keys = list(d.keys()) ; keys.sort()
 
         for key in keys:
             for getter,kind in (
@@ -939,7 +950,7 @@ class rstCommands:
                     parser_name='restructuredtext',
                     writer_name=writer,
                     settings_overrides=overrides)
-        except docutils.ApplicationError, error:
+        except docutils.ApplicationError as error:
             # g.es_print('Docutils error (%s):' % (
                 # error.__class__.__name__),color='red')
             g.es_print('Docutils error:',color='red')
@@ -1695,7 +1706,8 @@ class rstCommands:
                 marker_parts = href.split("#")
                 if len(marker_parts) == 2:
                     marker = marker_parts [1]
-                    replacement = u"%s#%s" % (http_node_ref,marker)
+                    # replacement = u"%s#%s" % (http_node_ref,marker)
+                    replacement = '%s#%s' % (http_node_ref,marker)
                     try:
                         # attr [line + 2] = attr [line + 2].replace(u'href="%s"' % href, u'href="%s"' % replacement)
                         attr [line + 2] = attr [line + 2].replace('href="%s"' % href, 'href="%s"' % replacement)

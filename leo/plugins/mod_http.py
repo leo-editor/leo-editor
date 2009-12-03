@@ -844,7 +844,7 @@ def poll(timeout=0.0):
         #@+node:EKR.20040517080250.41:<< try r, w, e = select.select >>
         try:
             r, w, e = select.select(r, w, e, timeout)
-        except select.error, err:
+        except select.error as err:
             if err[0] != EINTR:
                 raise
             else:

@@ -39,6 +39,10 @@ import os,stat,time
 import warnings
 import glob
 
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle as pickle 
 def gethashfile(key):
     return ("%02x" % abs(hash(key) % 256))[-2:]
 
@@ -71,7 +75,7 @@ class PickleShareDB(dict): ### UserDict.DictMixin):
         # self.loader(fileobj)
 
         if protocol == 'pickle':
-            import cPickle as pickle
+            # import cPickle as pickle
 
             self.loader = pickle.load
             self.dumper = pickle.dump
@@ -88,7 +92,7 @@ class PickleShareDB(dict): ### UserDict.DictMixin):
 
             # import here, because not always available
             import zlib
-            import cPickle as pickle
+            # import cPickle as pickle
 
             def loadz(fileobj):
                 val = pickle.loads(zlib.decompress(fileobj.read()))
@@ -393,5 +397,3 @@ def main():
 
 if __name__== "__main__":
     main()
-
-

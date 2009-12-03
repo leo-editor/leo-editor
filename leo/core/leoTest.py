@@ -235,7 +235,7 @@ def makeTestSuite (c,p):
         if 0: #debugging
             n,lines = 0,g.splitLines(script)
             for line in lines:
-                print n,line,
+                print(n,line)
                 n += 1
         exec(script + '\n',{'c':c,'g':g,'p':p})
         suite = g.app.scriptDict.get("suite")
@@ -554,7 +554,7 @@ class testUtils:
 
         if False and breakOnError: # useful for debugging.
             aList = [repr(z.copy()) for z in c.p.parent().self_and_siblings()]
-            print '\n'.join(aList)
+            print('\n'.join(aList))
             g.pdb()
 
         return c.nullPosition()

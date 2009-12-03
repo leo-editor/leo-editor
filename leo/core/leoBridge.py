@@ -192,7 +192,7 @@ class bridgeController:
         elif self.guiName == 'qt':
             import leo.plugins.qtGui as qtGui
             g.app.gui = qtGui.leoQtGui()
-            print 'qtGui created'
+            print('qtGui created')
         else:
             assert False,'leoBridge.py: unsupported gui: %s' % self.guiName
 

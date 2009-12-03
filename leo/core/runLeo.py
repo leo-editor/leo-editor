@@ -183,12 +183,13 @@ def getFileName (fileName,script):
 
     '''Return the filename from sys.argv.'''
 
+    # import pdb ; pdb.set_trace()
+
     if g.isPython3:
         ### Testing only.
         # fileName = r'c:\leo.repo\trunk\leo\test\test.leo'
         # assert g.os_path_exists(fileName)
-        import pdb
-        pdb.set_trace()
+        pass
     elif script:
         fileName = None
     elif fileName:

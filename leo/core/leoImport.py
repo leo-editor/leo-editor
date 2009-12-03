@@ -13,7 +13,13 @@
 import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest
 import string
-import StringIO
+
+try:
+    import StringIO
+except ImportError:
+    import io
+    StringIO = io.StringIO
+    # BytesIO = io.BytesIO
 
 #@<< class scanUtility >>
 #@+node:sps.20081112093624.1:<< class scanUtility >>

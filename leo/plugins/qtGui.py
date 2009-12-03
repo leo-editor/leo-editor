@@ -47,7 +47,14 @@ try:
     import PyQt4.QtGui as QtGui
 except ImportError:
     QtCore = None
-    print('\nqtGui.py: can not import Qt\nUse "launchLeo.py --gui=tk" to force Tk')
+
+if QtCore is None:
+    try: # Attempt Python 3000 imports
+        from PyQt4 import QtCore
+    except ImportError:
+        QtCore = None
+        print('\nqtGui.py: can not import Qt\nUse "launchLeo.py --gui=tk" to force Tk')
+        raise
 
 # remove scintilla dep for now    
 if 0:    
@@ -1621,7 +1628,7 @@ def init():
 
         # Override g.pdb
         def qtPdb(message=''):
-            if message: print message
+            if message: print(message)
             import pdb
             if not g.app.useIpython:
                 QtCore.pyqtRemoveInputHook()
@@ -3626,7 +3633,7 @@ class TabbedFrameFactory:
             c = event['c']
             f = c.frame
             self.detachTab(f.top)
-            f.top.setWindowTitle(f.title + u' [D]')
+            f.top.setWindowTitle(f.title + ' [D]')
 
         # this is actually not tab-specific, move elsewhere?
         @g.command('close-others')
@@ -4982,7 +4989,7 @@ class leoQtLog (leoFrame.leoLog):
             g.app.logWaiting.append((s,color),)
             if g.isUnicode(s):
                 s = g.toEncodedString(s,"ascii")
-            print (s)
+            print(s)
     #@-node:ekr.20081121105001.326:put
     #@+node:ekr.20081121105001.327:putnl
     def putnl (self,tabName='Log'):
@@ -8187,7 +8194,7 @@ class jEditColorizer:
         # Used by recolor and helpers...
         self.actualColorDict = {} # Used only by setTag.
         self.hyperCount = 0
-        self.defaultState = u'default-state:' # The name of the default state.
+        self.defaultState = 'default-state:' # The name of the default state.
         self.nextState = 1 # Dont use 0.
         self.restartDict = {} # Keys are state numbers, values are restart functions.
         self.stateDict = {} # Keys are state numbers, values state names.
