@@ -5120,7 +5120,8 @@ def executeFile(filename, options= ''):
     else:
         if fdir: os.chdir(fdir)
         d = {'__name__': '__main__'}
-        execfile(fname, d)  #, globals()
+        execfile(fname, d)
+        ### exec(compile(open(fname).read(),fname, 'exec'),d)
         os.system('%s %s' % (sys.executable, fname))
         if fdir: os.chdir(cwd)
 #@-node:ekr.20050503112513.7:g.executeFile

@@ -191,6 +191,7 @@ class generalTestCase(unittest.TestCase):
         if writeScriptFile:
             scriptFile = c.writeScriptFile(script)
             execfile(scriptFile,d)
+            ###exec(compile(open(scriptFile).read(),scriptFile,'exec'),d)
         else:
             exec(script,d)
 

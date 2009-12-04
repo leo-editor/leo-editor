@@ -8441,7 +8441,11 @@ class jEditColorizer:
         for ch, rule, atFront, in table:
 
             # Replace the bound method by an unbound method.
-            rule = rule.im_func
+
+            if g.isPython3:
+                rule = rule.__func__
+            else:
+                rule = rule.im_func
             # g.trace(rule)
 
             theList = theDict.get(ch,[])
@@ -8752,7 +8756,8 @@ class jEditColorizer:
 
         # Create a temporary chars list.  It will be converted to a dict later.
         chars = [g.toUnicode(ch,encoding='UTF-8')
-            for ch in (string.letters + string.digits)]
+            ### for ch in (string.letters + string.digits)]
+            for ch in (string.ascii_letters + string.digits)]
 
         for key in list(d.keys()):
             for ch in key:

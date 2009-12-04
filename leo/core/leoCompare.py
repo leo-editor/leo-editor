@@ -486,7 +486,8 @@ class baseLeoCompare:
 
         # g.pr(s)
         if self.outputFile:
-            self.outputFile.write(s + '\n')
+            s = g.toEncodedString(s + '\n',encoding='utf-8')
+            self.outputFile.write(s)
         elif self.c:
             g.es(s)
         else:

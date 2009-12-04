@@ -283,13 +283,19 @@ def doHandlersForTag (tag,keywords):
     return None
 #@-node:ekr.20031218072017.3442:doHandlersForTag
 #@+node:ekr.20041001161108:doPlugins
+ignoringMessageGiven = False
+
 def doPlugins(tag,keywords):
+
+    global ignoringMessageGiven
 
     if g.app.killed:
         return
 
     if g.isPython3:
-        g.trace('ignoring all plugins')
+        if not ignoringMessageGiven:
+            ignoringMessageGiven = True
+            g.trace('ignoring all plugins')
         return
 
     # g.trace(tag)

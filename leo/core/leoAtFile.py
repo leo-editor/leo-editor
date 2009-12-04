@@ -4577,6 +4577,7 @@ class atFile:
         # Replace
         try:
             f = open(fn,'wb')
+            s = g.toEncodedString(s,encoding=self.encoding) ###
             f.write(s)
             f.close()
             if not testing:

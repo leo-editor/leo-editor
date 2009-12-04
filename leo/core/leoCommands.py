@@ -1807,6 +1807,7 @@ class baseCommands (object):
                     if writeScriptFile:
                         scriptFile = self.writeScriptFile(script)
                         execfile(scriptFile,d)
+                        ### exec(compile(open(scriptFile).read(),scriptFile,'exec'),d)
                     else:
                         exec(script,d)
                     # g.trace('**** after')

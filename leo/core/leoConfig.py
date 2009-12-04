@@ -2060,11 +2060,14 @@ class configClass:
             # g.trace('writing',fileName)
             theFile = open(fileName,'w')
             if self.recentFiles:
-                lines = [g.toEncodedString(line,'utf-8') for line in self.recentFiles]
-                theFile.write('\n'.join(lines))
+                ### lines = [g.toEncodedString(line,'utf-8') for line in self.recentFiles]
+                ### s = '\n'.join(lines)
+                s = '\n'.join(self.recentFiles)
+                s = g.toEncodedString(s,'utf-8')
+                theFile.write(s)
                 # g.trace(fileName,'lines\n%s' % lines)
             else:
-                theFile.write('\n')
+                theFile.write(g.toEncodedString('\n','utf-8'))
 
         except IOError:
             # The user may have erased a file.  Not an error.
