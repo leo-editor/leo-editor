@@ -5366,7 +5366,7 @@ class helpCommandsClass (baseEditCommandsClass):
     further exclamation marks toggles between full and abbreviated modes.
 
     If x is a list 'x.!' shows all its elements, and if x is a Python dictionary,
-    'x.!' shows x.keys(). For example, 'sys.modules.!' Again, further exclamation
+    'x.!' shows list(x.keys()). For example, 'sys.modules.!' Again, further exclamation
     marks toggles between full and abbreviated modes.
 
     During autocompletion, typing a question mark shows the docstring for the

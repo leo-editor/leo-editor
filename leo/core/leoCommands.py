@@ -3476,7 +3476,7 @@ class baseCommands (object):
                 if p.v not in copiedVnodeDict:
                     copiedVnodeDict[p.v] = p.v
 
-            # g.trace(copiedVnodeDict.keys())
+            # g.trace(list(copiedVnodeDict.keys()))
 
             for v in vnodeInfoDict:
                 bunch = vnodeInfoDict.get(v)

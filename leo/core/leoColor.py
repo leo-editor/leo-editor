@@ -2060,7 +2060,7 @@ class colorizer:
                             w.tag_config(key,font=font)
                             break
                 else: # Neither the general setting nor the language-specific setting exists.
-                    if len(self.fonts.keys()) > 1: # Restore the default font.
+                    if len(list(self.fonts.keys())) > 1: # Restore the default font.
                         # g.trace('default',key)
                         w.tag_config(key,font=defaultBodyfont)
             #@nonl

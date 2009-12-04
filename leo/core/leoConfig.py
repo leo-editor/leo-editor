@@ -1922,7 +1922,7 @@ class configClass:
         if 0: # Good trace.
             if localFlag:
                 g.trace(c.fileName())
-                g.trace(d and d.keys())
+                g.trace(d and list(d.keys()))
     #@-node:ekr.20051013161232:updateSettings
     #@-node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
     #@+node:ekr.20041117083857.1:g.app.config.readSettings

@@ -589,8 +589,12 @@ class atFile:
         c = self.c
         m = hashlib.md5()
         # note that we also consider the headline in hash, to separate @auto foo.py from @thin foo.py
-        m.update(p.h)
-        m.update(content)
+        if g.isPython3:
+            m.update(g.toEncodedString(p.h,encoding='utf-8'))
+            m.update(g.toEncodedString(content,encoding='utf-8'))
+        else:
+            m.update(p.h)
+            m.update(content)
         return "fcache/" + m.hexdigest()
 
 

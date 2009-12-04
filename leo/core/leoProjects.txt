@@ -1271,7 +1271,7 @@ for key,name in (
     ):
         d = k.masterBindingsDict.get(key,{})
         if trace: g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-        # g.trace(key,'keys',g.listToString(d.keys(),sort=True)) # [:5])
+        # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
         if d:
             b = d.get(stroke)
             if b:
@@ -2202,7 +2202,7 @@ def registerCommand (self,commandName,shortcut,func,pane='all',verbose=False, wr
     if commandName.startswith('press-') and commandName.endswith('-button'):
         d = c.config.getAbbrevDict()
             # Keys are full command names, values are abbreviations.
-        if commandName in d.values():
+        if commandName in list(d.values()):
             for key in d:
                 if d.get(key) == commandName:
                     c.commandsDict [key] = c.commandsDict.get(commandName)

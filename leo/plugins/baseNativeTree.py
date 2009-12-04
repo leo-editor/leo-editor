@@ -292,7 +292,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         v = p.v
 
         # Update position dicts.
-        itemHash = repr(item)
+        itemHash = self.itemHash(item)
         self.position2itemDict[p.key()] = item
         self.item2positionDict[itemHash] = p.copy() # was item
 
@@ -947,7 +947,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             if trace and verbose: g.trace('** not editing')
             return
 
-        s = unicode(e.text())
+        if g.isPython3:
+            s = str(e.text())
+        else:
+            s = unicode(e.text())
 
         if g.doHook("headkey1",c=c,p=c.p,v=c.p,s=s):
             return
@@ -1263,14 +1266,17 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@-at
     #@nonl
     #@+node:ekr.20090124174652.64:item dict getters
+    def itemHash(self,item):
+        return '%s at %s' % (repr(item),str(id(item)))
+
     def item2position(self,item):
-        itemHash = repr(item)
+        itemHash = self.itemHash(item)
         p = self.item2positionDict.get(itemHash) # was item
         # g.trace(item,p.h)
         return p
 
     def item2vnode (self,item):
-        itemHash = repr(item)
+        itemHash = self.itemHash(item)
         return self.item2vnodeDict.get(itemHash) # was item
 
     def position2item(self,p):
@@ -1282,7 +1288,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         return self.vnode2itemsDict.get(v,[])
 
     def isValidItem (self,item):
-        itemHash = repr(item)
+        itemHash = self.itemHash(item)
         return itemHash in self.item2vnodeDict # was item.
 
     #@-node:ekr.20090124174652.64:item dict getters

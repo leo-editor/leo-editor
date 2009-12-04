@@ -3122,7 +3122,7 @@ if g.unitTesting:
     assert not exists(path)
     assert not g.utils_remove(path,verbose=False)
 
-    f = file(path,'w')
+    f = open(path,'w')
     f.write('test')
     f.close()
 
@@ -3206,14 +3206,14 @@ if g.unitTesting:
         if exists(p):
             os.remove(p)
         assert not exists(p)
-        f = file(p,'w')
+        f = open(p,'w')
         f.write('test %s' % p)
         f.close()
         assert exists(p)
 
     assert g.utils_rename(c,path,path2,verbose=True)
     assert exists(path2)
-    f = file(path2)
+    f = open(path2)
     s = f.read()
     f.close()
     # print('Contents of %s: %s' % (path2,s))
@@ -3351,7 +3351,7 @@ def printGcAll (tag=''):
         d[t] = d.get(t,0) + 1
 
     if 1: # Sort by n
-        items = d.items()
+        items = list(d.items())
         try:
             # Support for keword args to sort function exists in Python 2.4.
             # Support for None as an alternative to omitting cmp exists in Python 2.3.

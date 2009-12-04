@@ -15,11 +15,11 @@ Example usage::
     from pickleshare import *
     db = PickleShareDB('~/testpickleshare')
     db.clear()
-    print ("Should be empty:",db.items())
+    print ("Should be empty:",list(db.items()))
     db['hello'] = 15
     db['aku ankka'] = [1,2,313]
     db['paths/are/ok/key'] = [1,(5,46)]
-    print (db.keys())
+    print (list(db.keys()))
     del db['aku ankka']
 
 This module is certainly not ZODB, but can be used for low-load 
@@ -315,7 +315,7 @@ class PickleShareLink:
 def test():
     db = PickleShareDB('~/testpickleshare')
     db.clear()
-    print("Should be empty:",db.items())
+    print("Should be empty:",list(db.items()))
     db['hello'] = 15
     db['aku ankka'] = [1,2,313]
     db['paths/nest/ok/keyname'] = [1,(5,46)]
@@ -324,8 +324,8 @@ def test():
     print("12 =",db.hget('hash','aku'))
     print("313 =",db.hget('hash','ankka'))
     print("all hashed",db.hdict('hash'))
-    print(db.keys())
-    print(db.keys('paths/nest/ok/k*'))
+    print(list(db.keys()))
+    print(list(db.keys('paths/nest/ok/k*')))
     print(dict(db)) # snapsot of whole db
     db.uncache() # frees memory, causes re-reads later
 
@@ -379,7 +379,7 @@ def main():
         if not args: args= ['.']
         db = DB(args[0])
         import pprint
-        pprint.pprint(db.items())
+        pprint.pprint(list(db.items()))
     elif cmd == 'load':
         cont = sys.stdin.read()
         db = DB(args[0])

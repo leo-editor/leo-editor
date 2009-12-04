@@ -909,10 +909,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         else:
             s = unicode(w.toPlainText())
 
-        # Doesn't work: gets only the line containing the cursor.
-        # s = unicode(w.textCursor().block().text())
-
-        # g.trace(repr(s))
         return s
     #@-node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
     #@+node:ekr.20081121105001.581:getInsertPoint
@@ -1244,7 +1240,10 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         # common case, e.g. one character    
         if bl.contains(j):
-            s = unicode(bl.text())
+            if g.isPython3:
+                s = str(bl.text())
+            else:
+                s = unicode(bl.text())
             offset = i - bl.position()
 
             ret = s[ offset : offset + (j-i)]
@@ -6247,7 +6246,10 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         '''Return the text of the item.'''
 
         if item:
-            return unicode(item.text(0))
+            if g.isPython3:
+                return str(item.text(0))
+            else:
+                return unicode(item.text(0))
         else:
             return '<no item>'
     #@nonl
@@ -6881,7 +6883,11 @@ class leoQtGui(leoGui.leoGui):
 
         if multiple:
             lst = QtGui.QFileDialog.getOpenFileNames(parent,title,os.curdir,filter)
-            return list(unicode(s) for s in lst)
+            if g.isPython3:
+                return [str(s) for s in lst]
+            else:
+                return [unicode(s) for s in lst]
+            # return [g.toUnicode(s) for s in lst]
 
         s = QtGui.QFileDialog.getOpenFileName(parent,title,os.curdir,filter)
         s = g.app.gui.toUnicode(s)
@@ -7202,32 +7208,33 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20081121105001.502:toUnicode (qtGui)
     def toUnicode (self,s,encoding=None,reportErrors=True):
 
-        return str(s) ###
+        ### return str(s) ###
 
-        # These tests will usually be very fast.
-        if encoding is None:
-            encoding = self.defaultEncoding
-        elif not g.isValidEncoding(encoding):
-            encoding = None
+        # # These tests will usually be very fast.
+        # if encoding is None:
+            # encoding = self.defaultEncoding
+        # elif not g.isValidEncoding(encoding):
+            # encoding = None
 
-        if not encoding:
-            e = g.app.config.getString(c=None,setting='qtdefaultencoding')
-            if e and g.isValidEncoding(e):
-                encoding = e
-            else:
-                encoding = 'utf-8'
-            self.defaultEncoding = encoding
+        # if not encoding:
+            # e = g.app.config.getString(c=None,setting='qtdefaultencoding')
+            # if e and g.isValidEncoding(e):
+                # encoding = e
+            # else:
+                # encoding = 'utf-8'
+            # self.defaultEncoding = encoding
 
         # g.trace(encoding)
 
         try:
-            return unicode(s)
+            if g.isPython3:
+                return str(s)
+            else:
+                return unicode(s)
         except Exception:
             # g.trace('Warning - toUnicode does encoding (bugs possible)')
-            return unicode(s,encoding,errors='replace')
-
-
-
+            # return g.toUnicode(s,encoding,errors='replace')
+            return g.toUnicode(s,'utf-8',errors='replace')
     #@-node:ekr.20081121105001.502:toUnicode (qtGui)
     #@+node:ekr.20081121105001.503:widget_name (qtGui)
     def widget_name (self,w):
@@ -7618,7 +7625,10 @@ class leoQtEventFilter(QtCore.QObject):
         keynum = event.key()
         text   = event.text() # This is the unicode text.
         toString = QtGui.QKeySequence(keynum).toString()
-        toUnicode = unicode
+        if g.isPython3:
+            toUnicode = str
+        else:
+            toUnicode = unicode
 
         try:
             ch1 = chr(keynum)
@@ -8107,7 +8117,10 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
 
         if self.hasCurrentBlock and not self.colorizer.killColorFlag:
             colorer = self.colorer
-            s = unicode(s)
+            if g.isPython3:
+                s = str(s)
+            else:
+                s = unicode(s)
             colorer.recolor(s)
     #@-node:ekr.20081205131308.11:highlightBlock
     #@+node:ekr.20081206062411.15:rehighlight

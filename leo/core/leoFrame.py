@@ -856,7 +856,7 @@ class leoBody:
         if self.numberOfEditors == 2:
             # Inject the ivars into the first editor.
             # Bug fix: Leo 4.4.8 rc1: The name of the last editor need not be '1'
-            d = self.editorWidgets ; keys = d.keys()
+            d = self.editorWidgets ; keys = list(d.keys())
             if len(keys) == 1:
                 w_old = d.get(keys[0])
                 self.updateInjectedIvars(w_old,p)
@@ -918,11 +918,11 @@ class leoBody:
         '''Cycle keyboard focus between the body text editors.'''
 
         c = self.c ; d = self.editorWidgets ; w = c.frame.body.bodyCtrl
-        values = d.values()
+        values = list(d.values())
         if len(values) > 1:
             i = values.index(w) + 1
             if i == len(values): i = 0
-            w2 = d.values()[i]
+            w2 = list(d.values())[i]
             assert(w!=w2)
             self.selectEditor(w2)
             c.frame.body.bodyCtrl = w2
@@ -937,7 +937,7 @@ class leoBody:
 
         c = self.c ; w = c.frame.body.bodyCtrl ; d = self.editorWidgets
 
-        if len(d.keys()) == 1: return
+        if len(list(d.keys())) == 1: return
 
         name = w.leo_name
 
@@ -950,7 +950,7 @@ class leoBody:
             self.pb.configurepane(pane,size=minSize)
 
         # Select another editor.
-        w = d.values()[0]
+        w = list(d.values())[0]
         # c.frame.body.bodyCtrl = w # Don't do this now?
         self.numberOfEditors -= 1
         self.selectEditor(w)
@@ -960,7 +960,7 @@ class leoBody:
 
         '''Return an editor to be assigned to chapter.'''
 
-        c = self.c ; d = self.editorWidgets ; values = d.values()
+        c = self.c ; d = self.editorWidgets ; values = list(d.values())
 
         # First, try to match both the chapter and position.
         if p:
@@ -1104,7 +1104,7 @@ class leoBody:
 
         c = self.c ; p = c.p
         d = self.editorWidgets
-        if len(d.keys()) < 2: return # There is only the main widget.
+        if len(list(d.keys())) < 2: return # There is only the main widget.
 
         for key in d:
             w = d.get(key)
@@ -2157,11 +2157,11 @@ class leoLog:
         w = d.get(self.tabName)
         # g.trace(self.tabName,w)
 
-        values = d.values()
+        values = list(d.values())
         if self.numberOfVisibleTabs() > 1:
             i = i2 = values.index(w) + 1
             if i == len(values): i = 0
-            tabName = d.keys()[i]
+            tabName = list(d.keys())[i]
             self.selectTab(tabName)
             return 
     #@nonl
@@ -2207,7 +2207,7 @@ class leoLog:
     #@+node:ekr.20070302094848.9:numberOfVisibleTabs
     def numberOfVisibleTabs (self):
 
-        return len([val for val in self.frameDict.values() if val != None])
+        return len([val for val in list(self.frameDict.values()) if val != None])
     #@-node:ekr.20070302094848.9:numberOfVisibleTabs
     #@+node:ekr.20070302094848.10:renameTab
     def renameTab (self,oldName,newName):
@@ -3367,7 +3367,7 @@ class nullTree (leoTree):
         if not w:
             d[p.v] = w = stringTextWidget(
                 c=self.c,
-                name='head-%d' % (1 + len(d.keys())))
+                name='head-%d' % (1 + len(list(d.keys()))))
             w.setAllText(p.h)
         # g.trace('w',w,'p',p.h)
         return w

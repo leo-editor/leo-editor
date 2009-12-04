@@ -325,7 +325,8 @@ class rstCommands:
     def dumpSettings (self):
 
         d = self.optionsDict
-        keys = list(d.keys()) ; keys.sort()
+        # keys = list(d.keys()) ; keys.sort()
+        keys = sorted(d)
 
         g.pr('present settings...')
         for key in keys:
@@ -531,7 +532,7 @@ class rstCommands:
         if data:
             name,val = data
             fullName = 'rst3_' + self.munge(name)
-            if fullName in self.defaultOptionsDict.keys():
+            if fullName in list(self.defaultOptionsDict.keys()):
                 if   val.lower() == 'true': val = True
                 elif val.lower() == 'false': val = False
                 # g.trace('%24s %8s %s' % (self.munge(name),val,p.h))
@@ -594,7 +595,8 @@ class rstCommands:
     def initOptionsFromSettings (self):
 
         c = self.c ; d = self.defaultOptionsDict
-        keys = list(d.keys()) ; keys.sort()
+        # keys = list(d.keys()) ; keys.sort()
+        keys = sorted(d)
 
         for key in keys:
             for getter,kind in (
@@ -637,7 +639,7 @@ class rstCommands:
 
         # bwm = False
         # if bwm:
-            # if not self.optionsDict.has_key(ivar):
+            # if ivar not in self.optionsDict:
                 # g.trace('init %24s %20s %s %s' % (ivar, val, tag, self))
             # elif self.optionsDict.get(ivar) != val:
                 # g.trace('set  %24s %20s %s %s' % (ivar, val, tag, self))

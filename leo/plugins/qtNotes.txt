@@ -616,7 +616,10 @@ def onHeadChanged (self,p,undoType='Typing',s=None,e=None):
         if trace and verbose: g.trace('** not editing')
         return
 
-    s = unicode(e.text())
+    if g.isPython3:
+        s = str(e.text())
+    else:
+        s = unicode(e.text())
 
     if g.doHook("headkey1",c=c,p=c.p,v=c.p,s=s):
         return
@@ -806,7 +809,7 @@ def rememberItem (self,p,item):
     v = p.v
 
     # Update position dicts.
-    itemHash = repr(item)
+    itemHash = self.itemHash(item)
     self.position2itemDict[p.key()] = item
     self.item2positionDict[itemHash] = p.copy() # was item
 

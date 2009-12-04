@@ -181,8 +181,8 @@ class autoCompleterClass:
                 # if name == 'position': g.trace(t,z)
                 self.allClassesDict [name] = z
 
-        # g.printList(self.allClassesDict.keys(),tag='Classes',sort=True)
-        # g.trace(len(self.allClassesDict.keys()))
+        # g.printList(list(self.allClassesDict.keys()),tag='Classes',sort=True)
+        # g.trace(len(list(self.allClassesDict.keys())))
         # g.trace('position:',self.allClassesDict.get('position'))
     #@-node:ekr.20061031131434.6:defineClassesDict
     #@+node:ekr.20061031131434.7:defineObjectDict
@@ -306,7 +306,7 @@ class autoCompleterClass:
             # Toggle between verbose and brief listing.
             self.verbose = not self.verbose
             if type(self.theObject) == types.DictType:
-                self.membersList = self.theObject.keys()
+                self.membersList = list(self.theObject.keys())
             elif type(self.theObject) in (types.ListType,types.TupleType):
                 self.membersList = self.theObject
             self.computeCompletionList(verbose=self.verbose)
@@ -980,7 +980,7 @@ class autoCompleterClass:
             # Leading dot shows all classes.
             self.leadinWord = None
             self.theObject = sys.modules
-            self.membersList = sys.modules.keys()
+            self.membersList = list(sys.modules.keys())
             self.beginTabName('Modules')
         elif word in ( "'",'"'):
             word = 'aString' # This is in the objectsDict.
@@ -2650,11 +2650,11 @@ class keyHandlerClass:
                 k.callAltXFunction(k.mb_event)
         elif keysym in ('Tab','\t'):
             if trace and verbose: g.trace('***Tab')
-            k.doTabCompletion(c.commandsDict.keys())
+            k.doTabCompletion(list(c.commandsDict.keys()))
             c.minibufferWantsFocus()
         elif keysym == 'BackSpace':
             if trace and verbose: g.trace('***BackSpace')
-            k.doBackSpace(c.commandsDict.keys())
+            k.doBackSpace(list(c.commandsDict.keys()))
             c.minibufferWantsFocus()
         elif k.ignore_unbound_non_ascii_keys and len(ch) > 1:
             # g.trace('non-ascii')
@@ -2695,7 +2695,7 @@ class keyHandlerClass:
         else:
             if 1: # Useful.
                 if trace: g.trace('*** tab completion')
-                k.doTabCompletion(c.commandsDict.keys())
+                k.doTabCompletion(list(c.commandsDict.keys()))
             else: # Annoying.
                 k.keyboardQuit(event)
                 k.setLabel('Command does not exist: %s' % commandName)
@@ -3252,7 +3252,7 @@ class keyHandlerClass:
         if commandName.startswith('press-') and commandName.endswith('-button'):
             d = c.config.getAbbrevDict()
                 # Keys are full command names, values are abbreviations.
-            if commandName in d.values():
+            if commandName in list(d.values()):
                 for key in d:
                     if d.get(key) == commandName:
                         c.commandsDict [key] = c.commandsDict.get(commandName)
@@ -3450,7 +3450,7 @@ class keyHandlerClass:
             ):
                 d = k.masterBindingsDict.get(key,{})
                 if trace: g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-                # g.trace(key,'keys',g.listToString(d.keys(),sort=True)) # [:5])
+                # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
                 if d:
                     b = d.get(stroke)
                     if b:
@@ -4014,7 +4014,7 @@ class keyHandlerClass:
         else:
             k.modeBindingsDict = d
             prompt = d.get('*command-prompt*') or modeName
-            if trace: g.trace('modeName',modeName,prompt,'d.keys()',d.keys())
+            if trace: g.trace('modeName',modeName,prompt,'d.keys()',list(d.keys()))
 
         k.inputModeName = modeName
         k.silentMode = False

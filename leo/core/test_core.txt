@@ -475,7 +475,7 @@ if sys.platform.lower().startswith('win'):
 
     for path in leoTest.getAllPluginFilenames():
 
-        f = file(path)
+        f = open(path)
         assert f, "File not found: %s" % path
         # Do not test the syntax_error_plugin.
         if path.find('syntax_error_plugin') == -1:
@@ -513,7 +513,7 @@ def runTest(self):
 
     c = self.c ; path = self.path
 
-    s = file(path).read()
+    s = open(path).read()
 
     if self.checkCompile:
         leoTest.checkFileSyntax(path,s)
@@ -4267,7 +4267,7 @@ fn = '../test/unittest/replaceFileWithStringTestFile.py'
 path = g.os_path_abspath(g.os_path_join(g.app.loadDir,fn))
 
 x.replaceFileWithString(path,s)
-f = file(path)
+f = open(path)
 s2 = f.read()
 f.close()
 assert s == s2
@@ -4358,7 +4358,7 @@ fn = 'unitTestFile.py'
 path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','unittest',fn))
 try:
     c.atFileCommands.replaceFileWithString(path,s)
-    f = file(path)
+    f = open(path)
     s2 = f.read()
     f.close()
     assert s == s2

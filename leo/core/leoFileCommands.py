@@ -34,6 +34,8 @@ import types
 try:
     import zipfile
 except ImportError:
+    import zip
+    print(zip)
     zipfile = None
 # import string
 # import re
@@ -474,7 +476,7 @@ if sys.platform != 'cli':
                         'tx':'ekr.123','testAttr':'abc',
                     }
                 def getNames(self):
-                    return self.attrs.keys()
+                    return list(self.attrs.keys())
                 def getValue(self,key):
                     return self.attrs.get(key)
 
@@ -570,7 +572,7 @@ if sys.platform != 'cli':
             g.pr('\nnode: tnx: %s len(body): %d %s' % (
                 self.tnx,len(self.bodyString),self.headString))
             g.pr('children:',g.listToString(self.children))
-            g.pr('attrs:',self.attributes.values())
+            g.pr('attrs:',list(self.attributes.values()))
         #@nonl
         #@-node:ekr.20060919110638.18:node.dump
         #@-others
@@ -1147,7 +1149,7 @@ class baseFileCommands:
 
         trace = False and not g.unitTesting
         d = sax_node.tnodeAttributes
-        if trace and d: g.trace(sax_node,d.keys())
+        if trace and d: g.trace(sax_node,list(d.keys()))
 
         aDict = {}
         for key in d:
@@ -1157,7 +1159,7 @@ class baseFileCommands:
             aDict[key] = val2
 
         if aDict:
-            if trace: g.trace('uA',v,aDict.keys())
+            if trace: g.trace('uA',v,list(aDict.keys()))
             v.unknownAttributes = aDict
     #@+node:ekr.20090702070510.6028:@test handleTnodeSaxAttributes
     if g.unitTesting:
