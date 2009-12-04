@@ -91,12 +91,12 @@ def onCreate (tag, keys):
 
     install_codewise_completer(c)
 
-#@+node:ville.20091204224145.5362:install_ctags_completer
+#@+node:ville.20091204224145.5362:install_codewise_completer
 def install_codewise_completer(c):
 
     c.k.registerCommand(
             'codewise-complete','Alt-0',codewise_complete)
-#@-node:ville.20091204224145.5362:install_ctags_completer
+#@-node:ville.20091204224145.5362:install_codewise_completer
 #@-node:ville.20091204224145.5361:onCreate & helper
 #@+node:ville.20091204224145.5363:ctags_complete & helpers
 def codewise_complete(event):
@@ -125,7 +125,7 @@ def codewise_lookup(prefix):
     desc = []
     for h in hits:
         s = h[0]
-        sig = h[1][2:-1].strip()
+        sig = h[1].strip()[2:-4].strip()
         desc.append(s + '\t' + sig)
 
     aList = list(set(desc))
