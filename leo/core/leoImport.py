@@ -2227,7 +2227,7 @@ class baseScannerClass (scanUtility):
         '''Creates a child node c of parent for the class,
         and a child of c for each def in the class.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace:
             # g.trace('tab_width',self.tab_width)
             g.trace('sig',s[i:sigEnd])
@@ -2331,7 +2331,7 @@ class baseScannerClass (scanUtility):
 
         Parse s for inner methods and classes, and create nodes.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
 
         # Increase the output indentation (used only in startsHelper).
         # This allows us to detect over-indented classes and functions.

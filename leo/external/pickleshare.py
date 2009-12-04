@@ -1,5 +1,11 @@
 #!/usr/bin/env python
-
+#@+leo-ver=4-thin
+#@+node:ekr.20090831103504.6069:@thin ../external/pickleshare.py
+#@@first
+#@@language python
+#@@tabwidth -4
+#@<< docstring >>
+#@+node:ekr.20091204141748.6178:<< docstring >>
 """ PickleShare - a small 'shelve' like datastore with concurrency support
 
 Like shelve, a PickleShareDB object acts like a normal dictionary. Unlike 
@@ -15,11 +21,11 @@ Example usage::
     from pickleshare import *
     db = PickleShareDB('~/testpickleshare')
     db.clear()
-    print ("Should be empty:",list(db.items()))
+    print("Should be empty:",db.items())
     db['hello'] = 15
     db['aku ankka'] = [1,2,313]
     db['paths/are/ok/key'] = [1,(5,46)]
-    print (list(db.keys()))
+    print(db.keys())
     del db['aku ankka']
 
 This module is certainly not ZODB, but can be used for low-load 
@@ -32,24 +38,44 @@ Author: Ville M. Vainio <vivainio@gmail.com>
 License: MIT open source license.
 
 """
-
+#@-node:ekr.20091204141748.6178:<< docstring >>
+#@nl
+#@<< imports >>
+#@+node:ekr.20091204132346.6078:<< imports >>
 from leo.external.path import path as Path
-import os,stat,time
-### import UserDict
+import os,stat,sys,time
+
+isPython3 = sys.version_info >= (3,0,0)
+
+if isPython3:
+    # import collections
+    # mixin = collections.MutableMapping
+    mixin = dict
+    import pickle
+else:
+    # Works.
+    import UserDict # Required for correct caching.
+    mixin = UserDict.DictMixin
+    import cPickle as pickle
 import warnings
 import glob
 
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle as pickle 
+
+#@-node:ekr.20091204132346.6078:<< imports >>
+#@nl
+#@+others
+#@+node:ekr.20091204132346.6079:gethashfile
 def gethashfile(key):
     return ("%02x" % abs(hash(key) % 256))[-2:]
 
+#@-node:ekr.20091204132346.6079:gethashfile
+#@+node:ekr.20091204132346.6080:class PickleShareDB
 _sentinel = object()
 
-class PickleShareDB(dict): ### UserDict.DictMixin):
+class PickleShareDB(mixin): ### UserDict.DictMixin):
     """ The main 'connection' object for PickleShare database """
+    #@    @+others
+    #@+node:ekr.20091204132346.6081:__init__
     def __init__(self,root, protocol = 'pickle'):
         """ Initialize a PickleShare object that will manage the specied directory
 
@@ -104,6 +130,8 @@ class PickleShareDB(dict): ### UserDict.DictMixin):
 
             self.loader = loadz
             self.dumper = dumpz
+    #@-node:ekr.20091204132346.6081:__init__
+    #@+node:ekr.20091204132346.6082:__getitem__
     def __getitem__(self,key):
         """ db['key'] reading """
         fil = self.root / key
@@ -123,6 +151,8 @@ class PickleShareDB(dict): ### UserDict.DictMixin):
         self.cache[fil] = (obj,mtime)
         return obj
 
+    #@-node:ekr.20091204132346.6082:__getitem__
+    #@+node:ekr.20091204132346.6083:__setitem__
     def __setitem__(self,key,value):
         """ db['key'] = 5 """
         fil = self.root / key
@@ -132,10 +162,12 @@ class PickleShareDB(dict): ### UserDict.DictMixin):
         pickled = self.dumper(value,fil.open('wb'))
         try:
             self.cache[fil] = (value,fil.mtime)
-        # except OSError,e:
         except OSError as e:
             if e.errno != 2:
                 raise
+
+    #@-node:ekr.20091204132346.6083:__setitem__
+    #@+node:ekr.20091204132346.6084:hset
     def hset(self, hashroot, key, value):
         """ hashed set """
         hroot = self.root / hashroot
@@ -148,12 +180,15 @@ class PickleShareDB(dict): ### UserDict.DictMixin):
 
 
 
+    #@-node:ekr.20091204132346.6084:hset
+    #@+node:ekr.20091204132346.6085:hget
     def hget(self, hashroot, key, default = _sentinel, fast_only = True):
         """ hashed get """
         hroot = self.root / hashroot
         hfile = hroot / gethashfile(key)
 
         d = self.get(hfile, _sentinel )
+        # print("got dict",d,"from",hfile)
         if d is _sentinel:
             if fast_only:
                 if default is _sentinel:
@@ -166,27 +201,33 @@ class PickleShareDB(dict): ### UserDict.DictMixin):
 
         return d.get(key, default)
 
+    #@-node:ekr.20091204132346.6085:hget
+    #@+node:ekr.20091204132346.6086:hdict
     def hdict(self, hashroot):
         """ Get all data contained in hashed category 'hashroot' as dict """
         hfiles = self.keys(hashroot + "/*")
         hfiles.sort()
         last = len(hfiles) and hfiles[-1] or ''
         if last.endswith('xx'):
+            # print("using xx")
             hfiles = [last] + hfiles[:-1]
 
         all = {}
 
         for f in hfiles:
+            # print("using",f)
             try:
                 all.update(self[f])
             except KeyError:
-                print ("Corrupt",f,"deleted - hset is not threadsafe!")
+                print("Corrupt",f,"deleted - hset is not threadsafe!")
                 del self[f]
 
             self.uncache(f)
 
         return all
 
+    #@-node:ekr.20091204132346.6086:hdict
+    #@+node:ekr.20091204132346.6087:hcompress
     def hcompress(self, hashroot):
         """ Compress category 'hashroot', so hset is fast again
 
@@ -197,6 +238,7 @@ class PickleShareDB(dict): ### UserDict.DictMixin):
         hfiles = self.keys(hashroot + "/*")
         all = {}
         for f in hfiles:
+            # print("using",f)
             all.update(self[f])
             self.uncache(f)
 
@@ -209,6 +251,8 @@ class PickleShareDB(dict): ### UserDict.DictMixin):
 
 
 
+    #@-node:ekr.20091204132346.6087:hcompress
+    #@+node:ekr.20091204132346.6088:__delitem__
     def __delitem__(self,key):
         """ del db["key"] """
         fil = self.root / key
@@ -220,10 +264,14 @@ class PickleShareDB(dict): ### UserDict.DictMixin):
             # lost, the other process wins the conflict
             pass
 
+    #@-node:ekr.20091204132346.6088:__delitem__
+    #@+node:ekr.20091204132346.6089:_normalized
     def _normalized(self, p):
         """ Make a key suitable for user's eyes """
         return str(self.root.relpathto(p)).replace('\\','/')
 
+    #@-node:ekr.20091204132346.6089:_normalized
+    #@+node:ekr.20091204132346.6090:keys
     def keys(self, globpat = None):
         """ All keys in DB, or all keys matching a glob"""
 
@@ -233,6 +281,8 @@ class PickleShareDB(dict): ### UserDict.DictMixin):
             files = [Path(p) for p in glob.glob(self.root/globpat)]
         return [self._normalized(p) for p in files if p.isfile()]
 
+    #@-node:ekr.20091204132346.6090:keys
+    #@+node:ekr.20091204132346.6091:uncache
     def uncache(self,*items):
         """ Removes all, or specified items from cache
 
@@ -246,6 +296,8 @@ class PickleShareDB(dict): ### UserDict.DictMixin):
         for it in items:
             self.cache.pop(it,None)
 
+    #@-node:ekr.20091204132346.6091:uncache
+    #@+node:ekr.20091204132346.6092:waitget
     def waitget(self,key, maxwaittime = 60 ):
         """ Wait (poll) for a key to get a value
 
@@ -278,15 +330,23 @@ class PickleShareDB(dict): ### UserDict.DictMixin):
             if tries < len(wtimes) -1:
                 tries+=1
 
+    #@-node:ekr.20091204132346.6092:waitget
+    #@+node:ekr.20091204132346.6093:getlink
     def getlink(self,folder):
         """ Get a convenient link for accessing items  """
         return PickleShareLink(self, folder)
 
+    #@-node:ekr.20091204132346.6093:getlink
+    #@+node:ekr.20091204132346.6094:__repr__
     def __repr__(self):
         return "PickleShareDB('%s')" % self.root
 
 
 
+    #@-node:ekr.20091204132346.6094:__repr__
+    #@-others
+#@-node:ekr.20091204132346.6080:class PickleShareDB
+#@+node:ekr.20091204132346.6095:class PickleShareLink
 class PickleShareLink:
     """ A shortdand for accessing nested PickleShare data conveniently.
 
@@ -297,13 +357,21 @@ class PickleShareLink:
         lnk.bar = lnk.foo + 5
 
     """
+    #@    @+others
+    #@+node:ekr.20091204132346.6096:__init__
     def __init__(self, db, keydir ):    
         self.__dict__.update(locals())
 
+    #@-node:ekr.20091204132346.6096:__init__
+    #@+node:ekr.20091204132346.6097:__getattr__
     def __getattr__(self,key):
         return self.__dict__['db'][self.__dict__['keydir']+'/' + key]
+    #@-node:ekr.20091204132346.6097:__getattr__
+    #@+node:ekr.20091204132346.6098:__setattr__
     def __setattr__(self,key,val):
         self.db[self.keydir+'/' + key] = val
+    #@-node:ekr.20091204132346.6098:__setattr__
+    #@+node:ekr.20091204132346.6099:__repr__
     def __repr__(self):
         db = self.__dict__['db']
         keys = db.keys( self.__dict__['keydir'] +"/*")
@@ -312,6 +380,10 @@ class PickleShareLink:
             ";".join([Path(k).basename() for k in keys]))
 
 
+    #@-node:ekr.20091204132346.6099:__repr__
+    #@-others
+#@-node:ekr.20091204132346.6095:class PickleShareLink
+#@+node:ekr.20091204132346.6100:test
 def test():
     db = PickleShareDB('~/testpickleshare')
     db.clear()
@@ -335,6 +407,8 @@ def test():
     lnk.bar = lnk.foo + 5
     print(lnk.bar) # 7
 
+#@-node:ekr.20091204132346.6100:test
+#@+node:ekr.20091204132346.6101:stress
 def stress():
     db = PickleShareDB('~/fsdbtest')
     import time,sys
@@ -351,11 +425,14 @@ def stress():
             db[str(j)] = db.get(str(j), []) + [(i,j,"proc %d" % os.getpid())]
             db.hset('hash',j, db.hget('hash',j,15) + 1 )
 
+        # print i,
         print(i)
         sys.stdout.flush()
         if i % 10 == 0:
             db.uncache()
 
+#@-node:ekr.20091204132346.6101:stress
+#@+node:ekr.20091204132346.6102:main
 def main():
     import textwrap
     usage = textwrap.dedent("""\
@@ -379,7 +456,7 @@ def main():
         if not args: args= ['.']
         db = DB(args[0])
         import pprint
-        pprint.pprint(list(db.items()))
+        pprint.pprint(db.items())
     elif cmd == 'load':
         cont = sys.stdin.read()
         db = DB(args[0])
@@ -395,5 +472,11 @@ def main():
         test()
         stress()
 
+#@-node:ekr.20091204132346.6102:main
+#@-others
 if __name__== "__main__":
     main()
+
+
+#@-node:ekr.20090831103504.6069:@thin ../external/pickleshare.py
+#@-leo

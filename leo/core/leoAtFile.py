@@ -27,7 +27,7 @@ import sys
 import time
 import hashlib
 # import cPickle as pickle
-
+#@nonl
 #@-node:ekr.20041005105605.2:<< imports >>
 #@nl
 
@@ -569,7 +569,7 @@ class atFile:
     #@+node:ville.20090606131405.6362:writeCachedTree (atFile)
     def writeCachedTree(self, p, cachefile):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self.c
 
         if not g.enableDB:
@@ -580,9 +580,8 @@ class atFile:
             if trace: g.trace('caching ',p.h)
             #tree = g.tree_at_position(p)
             #c.db[cachefile] = tree
-
             c.db[cachefile] = p.makeCacheList()
-
+    #@nonl
     #@-node:ville.20090606131405.6362:writeCachedTree (atFile)
     #@+node:ville.20090606150238.6351:_contentHashFile (atFile)
     def _contentHashFile(self, p, content):
