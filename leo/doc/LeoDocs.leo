@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="48" left="3" height="692" width="1018"/>
+	<global_window_position top="0" left="0" height="848" width="1588"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -61,7 +61,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -218,7 +218,7 @@
 <v t="ekr.20060105145125"><vh>How to install the Aspell spell checker</vh></v>
 </v>
 </v>
-<v t="ekr.20091130111843.6787" a="E"><vh>Chapter 2: The Leo Tutorial</vh>
+<v t="ekr.20091130111843.6787"><vh>Chapter 2: The Leo Tutorial</vh>
 <v t="ekr.20091130111843.6788"><vh>@rst html\intro.html</vh>
 <v t="ekr.20091130111843.6810"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20091130111843.6845"><vh>@rst-ignore-tree</vh>
@@ -569,8 +569,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050912125144"><vh>Chapter 12: Plugins</vh>
-<v t="ekr.20050912125144.1"><vh>@rst html\plugins.html</vh>
+<v t="ekr.20050912125144" a="E"><vh>Chapter 12: Plugins</vh>
+<v t="ekr.20050912125144.1" a="E"><vh>@rst html\plugins.html</vh>
 <v t="ekr.20050912125735"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070814104719"><vh>Enabling plugins</vh></v>
 <v t="ekr.20050912125735.868"><vh>Body pane</vh>
@@ -623,7 +623,10 @@
 <v t="ekr.20050912125735.2749"><vh>word_export.py</vh></v>
 <v t="ekr.20050912125735.2743"><vh>xemacs.py</vh></v>
 </v>
-<v t="ekr.20050912125735.2759"><vh>Files</vh>
+<v t="ekr.20050912125735.2759" a="E"><vh>Files</vh>
+<v t="tbrown.20091203211538.14165" a="E"><vh>active_path.py</vh>
+<v t="tbrown.20091203211538.20637"><vh>Settings</vh></v>
+</v>
 <v t="ekr.20050912125735.2760"><vh>empty_leo_file.py</vh></v>
 <v t="ekr.20060920054924"><vh>leoOPML.py</vh></v>
 <v t="ekr.20050912125735.2763"><vh>lineNumbers.py</vh></v>
@@ -3212,7 +3215,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20091130111843.6787" a="E"></v>
+<v t="ekr.20091130111843.6787"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
@@ -23022,7 +23025,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="5,0"></t>
+<t tx="ekr.20070610174018" str_leo_pos="2,15,0,7,0"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -31674,6 +31677,67 @@ node body. While (**line**, **col**) in status area show the line and column
 containing the body text's cursor, **fcol** shows the cursor coordinate
 relative to the external file, not to the curent node. The relation
 **fcol &gt;= col** is always true.</t>
+<t tx="tbrown.20091203211538.14165">Makes @path nodes "active".
+
+With this plugin running, double clicking on @path nodes
+and their descendents synchronizes the node with the
+filesystem.  If the node refers to a fodler (as the top
+level @path node always will), the folder's contents are
+loaded as child nodes.  If it refers to a file, the file is
+loaded as an @auto node.
+
+For files not previously seen in a folder a new node will appear on top of
+the children list (with a mark).
+
+Folders appear in the list as /foldername/.  If you double click on the
+icon-box of the folder node, it will have children added to it based on
+the contents of the folder on disk.  These folders have the '@path' directive
+as the first line of their body text.
+
+When files are deleted from the folder and the list is updated by double
+clicking the files will appear in the list as *filename* (or */foldername/*).
+
+You can describe files and directories in the body of the nodes.
+
+You can organize files and directories with organizer nodes, an organizer
+node name cannot contain with '/'.
+
+Files and folders can be created by entering a node with the required
+name as its headline (must start and/or end with "/" for a folder)
+and then double clicking on the node's status-iconbox.
+
+@auto nodes can be set up for existing files can be loaded by
+double clicking on the node's status-iconbox.  If you prefer
+@shadow or something else use the "active_path_attype" setting,
+without the "@".
+
+There are commands on the Plugins active_path submenu:
+
+    - show path - show the current path
+    - set absolute path - changes a node "/dirname/" to "@path /absolute/path/to/dirname".
+    - purge vanished (recursive) - remove *entries*
+    - purge unoaded files (recursive) - remove *entries*
+    - update recursive - recursive load of directories, use with caution on large
+      file systems
+
+If you want to use an input other than double clicking a node's status-iconbox
+set active_path_event to a value like 'iconrclick1' or 'iconclick1'.
+
+
+active_path is a rewrite of the at_directory plugin to use @path directives (which influence
+@auto and other @file type directives), and to handle sub-folders more automatically.
+'''</t>
+<t tx="tbrown.20091203211538.20637">  @string active_path_attype = auto
+    Change to load file nodes as something other than @auto
+  
+  @string active_path_event = icondclick1
+    The default is probably the most useful event binding here
+  
+  @data active_path_ignore
+    List of regex expressions active_path doesn't list in folders
+    
+  @data active_path_autoload
+    List of regex expressions active_path @auto loads automatically</t>
 <t tx="ville.20090520232034.6345">g.app.gui.runScrolledMessageDialog(c=c, msg = u'rst:' + p.b)</t>
 <t tx="ville.20090520232138.11304">Qt version of nav_buttons.py (history navigation)</t>
 <t tx="ville.20090520232138.11305">This plugin adds a fast-to-use search widget, in the style of "Find in files" feature of many editors.
