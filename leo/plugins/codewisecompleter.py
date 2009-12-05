@@ -83,22 +83,43 @@ def init ():
 
     return ok
 #@-node:ville.20091204224145.5359:init & helper
-#@+node:ville.20091204224145.5361:onCreate & helper
-def onCreate (tag, keys):
+#@+node:ville.20091205173337.10141:class ContextSniffer
+class ContextSniffer:
+    """ Class to analyze surrounding context and guess class
 
-    c = keys.get('c')
-    if not c: return
+    For simple dynamic code completion engines
 
-    install_codewise_completer(c)
+    """
 
-#@+node:ville.20091204224145.5362:install_codewise_completer
-def install_codewise_completer(c):
+    def __init__(self):
+        # var name => list of classes
+        self.vars = {}
 
-    c.k.registerCommand(
-            'codewise-complete','Alt-0',codewise_complete)
-#@-node:ville.20091204224145.5362:install_codewise_completer
-#@-node:ville.20091204224145.5361:onCreate & helper
-#@+node:ville.20091204224145.5363:codewise_complete & helpers
+
+    def declare(self, var, klass):
+        print "declare",var,klass
+        vars = self.vars.get(var, [])
+        if not vars:
+            self.vars[var] = vars
+        vars.append(klass)
+
+
+    def push_declarations(self, body):
+        for l in body.splitlines():
+            l = l.lstrip()
+            if not l.startswith('#'):
+                continue
+            l = l.lstrip('#')
+            parts = l.split(':')
+            if len(parts) != 2:
+                continue
+            self.declare(parts[0].strip(), parts[1].strip())
+
+    def set_small_context(self, body):
+        """ Set immediate function """
+        self.push_declarations(body)
+#@-node:ville.20091205173337.10141:class ContextSniffer
+#@+node:ville.20091205173337.10142:class guessing heuristics
 def get_current_line(w):
     s = w.getAllText() ; ins = w.getInsertPoint()
     i,j = g.getLine(s,ins)
@@ -128,7 +149,29 @@ def guess_class(c, p, varname):
             if m:
                 return [m.group(1)]
 
-    return []
+    # alright, have to do 'real' analysis
+
+    sn = ContextSniffer()
+    sn.set_small_context(p.b)
+    cl = sn.vars.get(varname, [])
+    return cl
+#@-node:ville.20091205173337.10142:class guessing heuristics
+#@+node:ville.20091204224145.5361:onCreate & helper
+def onCreate (tag, keys):
+
+    c = keys.get('c')
+    if not c: return
+
+    install_codewise_completer(c)
+
+#@+node:ville.20091204224145.5362:install_codewise_completer
+def install_codewise_completer(c):
+
+    c.k.registerCommand(
+            'codewise-complete','Alt-0',codewise_complete)
+#@-node:ville.20091204224145.5362:install_codewise_completer
+#@-node:ville.20091204224145.5361:onCreate & helper
+#@+node:ville.20091204224145.5363:codewise_complete & helpers
 
 
 def codewise_complete(event):
@@ -143,7 +186,7 @@ def codewise_complete(event):
     m = get_attr_target_python(head)
     obj = m.group(1)
     prefix = m.group(3)
-    g.pdb()
+    #g.pdb()
     klasses = guess_class(c,p, obj)
 
     body = c.frame.top.ui.richTextEdit    
@@ -182,7 +225,7 @@ def codewise_lookup(prefix):
 #@+node:ville.20091205173337.10140:codewise_lookup_methods
 def codewise_lookup_methods(klasses, prefix):
 
-    g.pdb()
+    #g.pdb()
     trace = False ; verbose = False
     hits = (z.split(None,1) for z in os.popen('codewise m %s' % klasses[0]) if z.strip())
 
@@ -190,7 +233,12 @@ def codewise_lookup_methods(klasses, prefix):
     for h in hits:
 
         s = h[0]
-        sig = h[1].strip()[2:-4].strip()
+
+        #ctags patterns need radical cleanup
+        if h[1].strip().startswith('/'):
+            sig = h[1].strip()[2:-4].strip()
+        else:
+            sig = h[1].strip()
         desc.append(s + '\t' + sig)
 
     aList = list(set(desc))
