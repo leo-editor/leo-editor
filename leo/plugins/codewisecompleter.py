@@ -98,17 +98,63 @@ def install_codewise_completer(c):
             'codewise-complete','Alt-0',codewise_complete)
 #@-node:ville.20091204224145.5362:install_codewise_completer
 #@-node:ville.20091204224145.5361:onCreate & helper
-#@+node:ville.20091204224145.5363:ctags_complete & helpers
+#@+node:ville.20091204224145.5363:codewise_complete & helpers
+def get_current_line(w):
+    s = w.getAllText() ; ins = w.getInsertPoint()
+    i,j = g.getLine(s,ins)
+    head, tail = s[i:ins], s[ins:j]
+
+    return head, tail
+
+def get_attr_target_python(text):
+    """ a.b.foob """
+    m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", text.lstrip())
+
+    return m
+
+def guess_class(c, p, varname):
+    """ given var name (self, c, ..) return the applicable classes
+
+    """
+
+    if varname == 'p':
+        return ['position']
+    if varname == 'c':
+        return ['baseCommands']
+    if varname == 'self':
+        for par in p.parents():
+            h = par.h
+            m = re.search('class\s+(\w+)', h)
+            if m:
+                return [m.group(1)]
+
+    return []
+
+
 def codewise_complete(event):
 
     c = event.get('c')
+    p = c.p
+    w = event['mb_event'].widget
+    # w : leoQTextEditWidget
+    #print w
+
+    head, tail = get_current_line(w)
+    m = get_attr_target_python(head)
+    obj = m.group(1)
+    prefix = m.group(3)
+    g.pdb()
+    klasses = guess_class(c,p, obj)
 
     body = c.frame.top.ui.richTextEdit    
     tc = body.textCursor()
     tc.select(QtGui.QTextCursor.WordUnderCursor)
     txt = tc.selectedText()
 
-    hits = codewise_lookup(txt)
+    if not klasses:
+        hits = codewise_lookup(txt)
+    else:
+        hits = codewise_lookup_methods(klasses, prefix)
 
     cpl = c.frame.top.completer = QCompleter(hits)
     cpl.setWidget(body)
@@ -116,11 +162,11 @@ def codewise_complete(event):
     cpl.setCompletionPrefix(txt)
     cpl.connect(cpl, QtCore.SIGNAL("activated(QString)"), f)    
     cpl.complete()
-#@+node:ville.20091204224145.5364:ctags_lookup
+#@+node:ville.20091204224145.5364:codewise_lookup
 def codewise_lookup(prefix):
 
     trace = False ; verbose = False
-    hits = (z.split(None,1) for z in os.popen('codewise f %s' % prefix))
+    hits = (z.split(None,1) for z in os.popen('codewise f %s' % prefix) if z.strip())
 
     desc = []
     for h in hits:
@@ -132,7 +178,26 @@ def codewise_lookup(prefix):
     aList.sort()
     return aList
 
-#@-node:ville.20091204224145.5364:ctags_lookup
+#@-node:ville.20091204224145.5364:codewise_lookup
+#@+node:ville.20091205173337.10140:codewise_lookup_methods
+def codewise_lookup_methods(klasses, prefix):
+
+    g.pdb()
+    trace = False ; verbose = False
+    hits = (z.split(None,1) for z in os.popen('codewise m %s' % klasses[0]) if z.strip())
+
+    desc = []
+    for h in hits:
+
+        s = h[0]
+        sig = h[1].strip()[2:-4].strip()
+        desc.append(s + '\t' + sig)
+
+    aList = list(set(desc))
+    aList.sort()
+    return aList
+
+#@-node:ville.20091205173337.10140:codewise_lookup_methods
 #@+node:ville.20091204224145.5365:mkins
 def mkins(completer, body):
 
@@ -148,7 +213,7 @@ def mkins(completer, body):
 
     return insertCompletion
 #@-node:ville.20091204224145.5365:mkins
-#@-node:ville.20091204224145.5363:ctags_complete & helpers
+#@-node:ville.20091204224145.5363:codewise_complete & helpers
 #@-others
 #@nonl
 #@-node:ville.20091204224145.5355:@thin codewisecompleter.py
