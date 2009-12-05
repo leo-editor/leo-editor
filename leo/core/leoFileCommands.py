@@ -27,18 +27,9 @@ else:
 
 import os
 import pickle
-# import string
 import sys
 import types
-
-try:
-    import zipfile
-except ImportError:
-    import zip
-    print(zip)
-    zipfile = None
-# import string
-# import re
+import zipfile
 
 try:
     # IronPython has problems with this.
@@ -2291,7 +2282,7 @@ class baseFileCommands:
             self.leo_file_encoding,reportErrors=True)
 
         # Write the archive.
-        theFile = zipfile and zipfile.ZipFile(fileName,'w',zipfile.ZIP_DEFLATED)
+        theFile = zipfile.ZipFile(fileName,'w',zipfile.ZIP_DEFLATED)
         theFile.writestr(contentsName,s)
         theFile.close()
     #@-node:ekr.20070412095520:writeZipFile

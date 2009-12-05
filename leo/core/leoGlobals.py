@@ -46,11 +46,7 @@ import operator
 import re
 import sys
 import time
-
-try:
-    import zipfile
-except ImportError:
-    zipfile = None
+import zipfile
 
 # These do not exist in IronPython.
 # However, it *is* valid for IronPython to use the Python 2.4 libs!
@@ -2732,7 +2728,7 @@ def makePathRelativeTo (fullPath,basePath):
 def openLeoOrZipFile (fileName):
 
     try:
-        isZipped = zipfile and zipfile.is_zipfile(fileName)
+        isZipped = zipfile.is_zipfile(fileName)
         if isZipped:
             import StringIO
             theFile = zipfile.ZipFile(fileName,'r')
@@ -2889,7 +2885,7 @@ def mungeFileName(fileName):
     relFn = g.os_path_normpath(fileName)
     fn = g.os_path_finalize(fileName)
 
-    isZipped = fn and zipfile and zipfile.is_zipfile(fn)
+    isZipped = fn and zipfile.is_zipfile(fn)
     isLeo = isZipped or fn.endswith('.leo')
 
     return isLeo,fn,relFn
