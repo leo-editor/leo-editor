@@ -21,13 +21,17 @@ if g.app and g.app.use_psyco:
     except ImportError: pass
 
 import leo.core.leoNodes as leoNodes
+
+if g.isPython3:
+    # import py_compile as compiler
+    import code
+else:
+    import compiler
+import parser
 import os
-# import string
 import sys
 import time
 import hashlib
-# import cPickle as pickle
-#@nonl
 #@-node:ekr.20041005105605.2:<< imports >>
 #@nl
 
@@ -4005,11 +4009,12 @@ class atFile:
     #@+node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
     def checkPythonSyntax (self,p,body):
 
-        import compiler,parser
-
         try:
             ok = True
-            compiler.parse(body + '\n')
+            if g.isPython3:
+                code.compile_command(body + '\n')
+            else:
+                compiler.parse(body + '\n')
         except (parser.ParserError,SyntaxError):
             self.syntaxError(p,body)
             # p.setMarked()

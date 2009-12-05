@@ -821,8 +821,7 @@ def getColor(name, default=None):
     return None
 
 get = getColor
-
-
+#@nonl
 #@-node:bob.20071231111744.2:get / getColor
 #@+node:bob.20080115070511.4:getRGB / getColorRGB
 def getColorRGB(name, default=None):

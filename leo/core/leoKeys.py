@@ -25,9 +25,13 @@ import types
 
 # The following imports _are_ used.
 
-try:
-    # These do not exist in IronPython or Python 2.4
+if g.isPython3:
+    import py_compile as compiler
+else:
     import compiler
+
+try:
+    # Does not exist in IronPython.
     import parser
 except ImportError:
     pass

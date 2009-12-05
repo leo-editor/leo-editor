@@ -60,6 +60,8 @@ import types
 # g.pr('(types.StringTypes)',repr(types.StringTypes))
 #@-node:ekr.20050208101229:<< imports >>
 #@nl
+isPython3 = sys.version_info >= (3,0,0)
+print('*** isPython3',isPython3)
 #@<< define general constants >>
 #@+node:ekr.20031218072017.3094:<< define general constants >>
 body_newline = '\n'
@@ -101,18 +103,18 @@ class nullObject:
     # def __len__    (self): return 0 # Debatable.
     def __repr__   (self): return "nullObject"
     def __str__    (self): return "nullObject"
-    def __nonzero__(self): return 0
+    if isPython3:
+        def __bool__(self): return 0
+    else:
+        def __nonzero__(self): return 0
     def __delattr__(self,attr):     return None ### self
     def __getattr__(self,attr):     return None ### self
     def __setattr__(self,attr,val): return None ### self
 #@-node:ekr.20090521175848.5881:<< define the nullObject class >>
 #@nl
-
 g = nullObject() # Set later by startup logic to this module.
 app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
-isPython3 = sys.version_info >= (3,0,0)
-print('*** isPython3',isPython3)
 convert_at_file = True # True: write @file nodes like @thin nodes
 # if convert_at_file: print('*** convert_at_file')
 
@@ -5116,7 +5118,7 @@ def executeFile(filename, options= ''):
     else:
         if fdir: os.chdir(fdir)
         d = {'__name__': '__main__'}
-        execfile(fname, d)
+        ### execfile(fname, d)
         ### exec(compile(open(fname).read(),fname, 'exec'),d)
         os.system('%s %s' % (sys.executable, fname))
         if fdir: os.chdir(cwd)

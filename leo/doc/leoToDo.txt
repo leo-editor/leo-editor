@@ -2044,7 +2044,10 @@ def put (self,s):
     # Improved code: self.outputFile (a cStringIO object) always exists.
     if s:
         self.putCount += 1
-        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+        if g.isPython3:
+            pass
+        else:
+            s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
         self.outputFile.write(s)
 
 def put_dquote (self):

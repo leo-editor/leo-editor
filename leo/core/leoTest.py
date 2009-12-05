@@ -18,26 +18,25 @@ import leo.core.leoGui as leoGui
 import leo.core.leoNodes as leoNodes
 
 import doctest
+import gc
 import glob
 import os
-
+import cProfile as profile
+# import pstats
 import sys
+import timeit
 import tokenize
 import unittest
+
+if g.isPython3:
+    import py_compile as compiler
+else:
+    import compiler
 
 try:
     import tabnanny # Does not exist in jython.
 except ImportError:
     tabnanny = None
-
-try:
-    import compiler
-    import gc
-    import profile
-    import pstats
-    import timeit
-except ImportError:
-    pass
 #@-node:ekr.20051104075904.1:<< leoTest imports >>
 #@nl
 
@@ -190,7 +189,8 @@ class generalTestCase(unittest.TestCase):
 
         if writeScriptFile:
             scriptFile = c.writeScriptFile(script)
-            execfile(scriptFile,d)
+            exec(script,d)
+            ###execfile(scriptFile,d)
             ###exec(compile(open(scriptFile).read(),scriptFile,'exec'),d)
         else:
             exec(script,d)

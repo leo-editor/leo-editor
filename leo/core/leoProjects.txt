@@ -2378,7 +2378,8 @@ def executeScript(self,event=None,args=None,p=None,script=None,
                 # g.trace('**** before',writeScriptFile)
                 if writeScriptFile:
                     scriptFile = self.writeScriptFile(script)
-                    execfile(scriptFile,d)
+                    ### execfile(scriptFile,d)
+                    exec(script,d)
                     ### exec(compile(open(scriptFile).read(),scriptFile,'exec'),d)
                 else:
                     exec(script,d)

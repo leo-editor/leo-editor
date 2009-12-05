@@ -45,7 +45,7 @@ except ImportError:
     tabnanny = None
 
 if g.isPython3:
-    pass # compiler module does not exist
+    import py_compile as compiler # compiler module does not exist
 else:
     try:
         # IronPython has troubles with these.
@@ -1806,7 +1806,8 @@ class baseCommands (object):
                     # g.trace('**** before',writeScriptFile)
                     if writeScriptFile:
                         scriptFile = self.writeScriptFile(script)
-                        execfile(scriptFile,d)
+                        ### execfile(scriptFile,d)
+                        exec(script,d)
                         ### exec(compile(open(scriptFile).read(),scriptFile,'exec'),d)
                     else:
                         exec(script,d)

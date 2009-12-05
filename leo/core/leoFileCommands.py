@@ -1684,7 +1684,10 @@ class baseFileCommands:
         # Improved code: self.outputFile (a cStringIO object) always exists.
         if s:
             self.putCount += 1
-            s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+            if g.isPython3:
+                pass
+            else:
+                s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
             self.outputFile.write(s)
 
     def put_dquote (self):
@@ -1917,8 +1920,13 @@ class baseFileCommands:
         for p in theIter:
             tnodes[p.v.fileIndex] = p.v
 
+        if g.isPython3:
+            aList = list(tnodes.keys())
+        else:
+            aList = sorted(tnodes)
+
         # Put all tnodes in index order.
-        for index in sorted(tnodes):
+        for index in aList:
             # g.trace(index)
             v = tnodes.get(index)
             if not v:
@@ -1926,7 +1934,6 @@ class baseFileCommands:
             # Write only those tnodes whose vnodes were written.
             if v.isWriteBit():
                 self.putTnode(v)
-        #@nonl
         #@-node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
         #@nl
         self.put("</tnodes>\n")
@@ -2211,7 +2218,11 @@ class baseFileCommands:
                 theActualFile = None
                 toZip = True
             else:
-                theActualFile = open(fileName, 'wb')
+                if g.isPython3:
+                    mode = 'w'
+                else:
+                    mode = 'wb'
+                theActualFile = open(fileName,mode)
             #@-node:ekr.20060929103258:<< create theActualFile >>
             #@nl
             # t1 = time.clock()
