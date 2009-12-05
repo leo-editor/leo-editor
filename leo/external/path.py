@@ -486,12 +486,9 @@ class path(_base):
     #@-node:ekr.20091204132801.6175:Listing, searching, walking, matching
     #@+node:ekr.20091204132801.6176:Reading or writing and entire file
     #@+node:ekr.20091204132801.2721:open
-    # --- Reading or writing an entire file at once.
-
     def open(self, mode='r'):
         """ Open this file.  Return a file object. """
-        return file(self, mode)
-
+        return open(self, mode)
     #@-node:ekr.20091204132801.2721:open
     #@+node:ekr.20091204132801.2722:bytes
     def bytes(self):

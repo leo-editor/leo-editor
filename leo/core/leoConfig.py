@@ -2063,7 +2063,7 @@ class configClass:
                 ### lines = [g.toEncodedString(line,'utf-8') for line in self.recentFiles]
                 ### s = '\n'.join(lines)
                 s = '\n'.join(self.recentFiles)
-                s = g.toEncodedString(s,'utf-8')
+                # s = g.toEncodedString(s,'utf-8')
                 theFile.write(s)
                 # g.trace(fileName,'lines\n%s' % lines)
             else:

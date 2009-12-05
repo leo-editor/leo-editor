@@ -569,7 +569,7 @@ class atFile:
     #@+node:ville.20090606131405.6362:writeCachedTree (atFile)
     def writeCachedTree(self, p, cachefile):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
 
         if not g.enableDB:
