@@ -712,7 +712,7 @@ class LeoApp:
 
         """
 
-        trace = True
+        trace = False
         if trace: g.trace('g.enableDB',g.enableDB)
 
         if g.enableDB:
