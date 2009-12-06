@@ -1355,13 +1355,14 @@ class baseFileCommands:
 
         try:
             binString = binascii.unhexlify(val) # Throws a TypeError if val is not a hex string.
-        except TypeError:
+        except Exception:
+            # Python 2.x throws TypeError
+            # Python 3.x throws binascii.Error
             # Assume that Leo 4.1 wrote the attribute.
             if g.unitTesting:
                 assert kind == 'raw','unit test failed: kind=' % repr(kind)
             else:
-                g.trace('can not unhexlify %s=%s' % (
-                    attr,val),g.callers(3))
+                g.trace('can not unhexlify %s=%s' % (attr,val))
             return val
         try:
             # No change needed to support protocols.
