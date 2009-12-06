@@ -5712,6 +5712,14 @@ def toUnicode (s,encoding,reportErrors=False):
     return s
 #@nonl
 #@-node:ekr.20050208093800.1:g.toUnicode
+#@+node:ekr.20091206161352.6232:g.u
+def u(s,encoding='utf-8'):
+    if g.isPython3:
+        return str(s,encoding)
+    else:
+        return unicode(s,encoding)
+#@nonl
+#@-node:ekr.20091206161352.6232:g.u
 #@+node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
 def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
 

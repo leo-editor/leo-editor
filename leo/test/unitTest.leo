@@ -776,7 +776,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
+<v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20090703080553.5000"><vh>@suite run all doctests (windows only)</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
@@ -4028,9 +4028,9 @@ assert c.page_width == 80</t>
 assert w == 132</t>
 <t tx="ekr.20050206090416">@first # -*- coding: utf-8 -*-
 
-file = u'Ỗ'
+theFile = g.u('Ỗ')
 path = g.os_path_join('Ỗ','Ỗ')
-# print(g.toEncodedString(file,'utf-8'))
+# print(g.toEncodedString(theFile,'utf-8'))
 
 ok,frame = g.openWithFileName(path,c)
 
@@ -4052,9 +4052,9 @@ assert(not ok)</t>
 at = c.atFileCommands
 at.errors = 0
 
-s = u'La Pe\xf1a'
-s = u'La Peña'
-# s = u'Ă: U+0102: Latin Capital Letter A With Breve'
+s = g.u('La Pe\xf1a')
+s = g.u(u'La Peña')
+# s = g.u('Ă: U+0102: Latin Capital Letter A With Breve')
 at.printError('test of at.printError:',s)
 
 # important: this test will fail if sitecustomize.py
@@ -4109,7 +4109,7 @@ s = '炰'
 s2,ok = g.toUnicodeWithErrorCode(s,encoding)
 assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
 
-s = u'炰'
+s = g.u('炰')
 s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
 assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s</t>
 <t tx="ekr.20050208135429"># print(g.listToString(dir()))
@@ -13581,8 +13581,8 @@ line 2
 </t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
-dir = g.os_path_join(g.app.loadDir,'..','test','unittest',u'chinese\u8116folder',encoding='utf-8')
-s   = g.os_path_join(dir,u'chinese\u8116test.leo',encoding='utf-8')
+dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
+s   = g.os_path_join(dir,g.u('chinese\u8116test.leo'),encoding='utf-8')
     
 if not g.os_path_exists(dir):
     import os
@@ -15607,7 +15607,7 @@ s = '炰'
 s2,ok = g.toUnicodeWithErrorCode(s,encoding)
 assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
 
-s = u'炰'
+s = g.u('炰')
 s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
 assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
 </t>
@@ -15622,8 +15622,8 @@ try:
     s = w.getAllText()
     
     # This strings tests unicode, paren matching, and auto-indentation.
-    u = u'(a\u00c9\u03a9B\u3045\u4e7cz):\n' # '(aÉΩBぅ乼cz):\n'
-    u = u'(pdq):\n'
+    u = g.u('(a\u00c9\u03a9B\u3045\u4e7cz):\n') # '(aÉΩBぅ乼cz):\n'
+    u = g.u('(pdq):\n')
     w.setInsertPoint(len(s))
     for char in u:
         event = g.Bunch(widget=w,char=char,keysym=None)
@@ -15783,15 +15783,15 @@ if 0: # Not usually enabled.
 <t tx="ekr.20071113145804.23">@first # -*- coding: utf-8 -*-
 
 for s,encoding in (
-    ('aĂbĂ',  'ascii'),
-    (u'aĂbĂ', 'ascii'),
-    ('炰',    'ascii'),
-    (u'炰',   'ascii'),
+    ('aĂbĂ',         'ascii'),
+    (g.u('aĂbĂ'),    'ascii'),
+    ('炰',           'ascii'),
+    (g.u('炰'),      'ascii'),
 
-    ('aĂbĂ',  'utf-8'),
-    (u'aĂbĂ', 'utf-8'),
-    ('炰',    'utf-8'),
-    (u'炰',   'utf-8'),
+    ('aĂbĂ',         'utf-8'),
+    (g.u('aĂbĂ'),    'utf-8'),
+    ('炰',           'utf-8'),
+    (g.u('炰'),      'utf-8'),
 ):
 
     g.reportBadChars(s,encoding)
@@ -16764,9 +16764,9 @@ print('encoding',e)
 
 table = (
     'La Peña',
-    unicode('La Peña','utf-8'),
-    u'La Peña',
-    u'La Pe\xf1a',
+    g.u('La Peña'),
+    # u'La Peña',
+    g.u('La Pe\xf1a')
 )
 
 for s in table:
