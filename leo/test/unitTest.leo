@@ -776,7 +776,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20090703080553.5000"><vh>@suite run all doctests (windows only)</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
@@ -14013,7 +14013,7 @@ b</t>
 <t tx="ekr.20070315065849.3">a
 
 b</t>
-<t tx="ekr.20070417092935" str_leo_pos="7"></t>
+<t tx="ekr.20070417092935" str_leo_pos="7,4"></t>
 <t tx="ekr.20070417092935.1"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070515150433"></t>
@@ -17273,6 +17273,9 @@ g.app.unitTestDict['restoreSelectedNode']=False
 
 c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
+
+# Does not work: print is redirected.
+# g.es_print('all unit tests done',color='blue')
 </t>
 <t tx="ekr.20081121164135.1">import leo.core.leoTest as leoTest
 
