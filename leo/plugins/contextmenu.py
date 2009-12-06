@@ -222,6 +222,33 @@ def marknodes_rclick(c,p, menu):
 
 
 #@-node:ville.20090719202132.5248:marknodes_rclick
+#@+node:tbrown.20091203121808.15818:deletenodes_rclick
+def deletenodes_rclick(c,p, menu):
+    """ Delete selected nodes """
+
+    pl = c.getSelectedPositions()
+
+    undoType = 'Delete Node'
+    if len(pl) > 1:
+        undoType += 's'
+
+    current = p
+    u = c.undoer
+
+    def deletenodes_rclick_cb():
+        c.endEditing()
+        u.beforeChangeGroup(current,undoType)
+        for nd in pl:
+            bunch = u.beforeMark(nd,undoType)
+            c.deleteOutline(nd)
+            u.afterMark(nd,undoType,bunch)
+        u.afterChangeGroup(current,undoType)
+
+        c.redraw_after_icons_changed()                        
+
+    action = menu.addAction("Delete")
+    action.connect(action, QtCore.SIGNAL("triggered()"), deletenodes_rclick_cb)
+#@-node:tbrown.20091203121808.15818:deletenodes_rclick
 #@+node:ville.20091008192104.7691:configuredcommands_rclick
 def configuredcommands_rclick(c,p, menu):
     """ Provide "edit in EDITOR" context menu item """
@@ -249,7 +276,9 @@ def configuredcommands_rclick(c,p, menu):
 #@+node:ville.20090630210947.10189:install_handlers
 def install_handlers():
     """ Install all the wanted handlers (menu creators) """
-    hnd = [openwith_rclick, refresh_rclick, editnode_rclick, nextclone_rclick, marknodes_rclick, configuredcommands_rclick]
+    hnd = [openwith_rclick, refresh_rclick, editnode_rclick,
+        nextclone_rclick, marknodes_rclick,
+        configuredcommands_rclick, deletenodes_rclick]
     g.tree_popup_handlers.extend(hnd)
     leoPlugins.registerHandler("idle", editnode_on_idle)
 
