@@ -7245,6 +7245,42 @@ class baseCommands (object):
         return p
 
     #@-node:ekr.20090107113956.1:c.vnode2position
+    #@+node:tbrown.20091206142842.10296:c.vnode2allPositions
+    def vnode2allPositions (self,v):
+
+        '''Given a vnode v, find all valid positions p such that p.v = v.
+
+        Not really all, just all for each of v's distinct immediate parents.
+        '''
+
+        c = self
+        context = v.context # v's commander.
+        root = c.hiddenRootNode
+        assert (c == context)
+
+        positions = []
+        for immediate in v.parents:
+            if v in immediate.children:
+                n = immediate.children.index(v)
+            else:
+                continue
+            stack = [(v,n)]
+            while immediate.parents:
+                parent = immediate.parents[0]
+                if immediate in parent.children:
+                    n = parent.children.index(immediate)
+                else:
+                    break
+                stack.insert(0,(immediate,n),)
+                immediate = parent
+            else:
+                v,n = stack.pop()
+                p = leoNodes.position(v,n,stack)
+                positions.append(p)
+
+        return positions
+
+    #@-node:tbrown.20091206142842.10296:c.vnode2allPositions
     #@-node:ekr.20060906211747:Getters
     #@+node:ekr.20060906211747.1:Setters
     #@+node:ekr.20040315032503:c.appendStringToBody
