@@ -239,11 +239,18 @@ def deletenodes_rclick(c,p, menu):
         c.endEditing()
         cull = []
         for nd in pl:
-            cull.append(nd.v)
+            cull.append((nd.v, nd.parent().v or None))
         u.beforeChangeGroup(current,undoType)
-        for v in cull:
+        msg = "Sorry, can't delete some nodes"
+        for v, vp in cull:
             p2 = c.vnode2position(v)
-            if c.positionExists(p2):
+            if not c.positionExists(p2):
+                continue
+            if p2.parent().v != vp:
+                if msg:
+                    g.es(msg)
+                    msg = None
+            else:
                 bunch = u.beforeDeleteNode(p2)
                 p2.doDelete()
                 u.afterDeleteNode(p2,undoType,bunch)
