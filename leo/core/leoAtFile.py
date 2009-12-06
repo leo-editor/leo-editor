@@ -4305,7 +4305,7 @@ class atFile:
 
         if s and f:
             try:
-                if trace: g.trace(repr(s),g.callers(4))
+                if trace: g.trace(repr(s))
                 if s.startswith(tag):
                     junk,s = self.parseUnderindentTag(s)
                 # Bug fix: this must be done last.

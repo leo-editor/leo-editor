@@ -643,6 +643,9 @@ def getOutputNewline (c=None,name=None):
     elif s == "crlf": s = "\r\n"
     else: s = '\n' # Default for erroneous values.
     # g.trace(c,name,c.config.output_newline,'returns',repr(s))
+
+    if g.isPython3:
+        s = str(s)
     return s
 #@-node:ekr.20031218072017.1386:g.getOutputNewline
 #@+node:ekr.20080827175609.52:g.scanAtCommentAndLanguageDirectives
@@ -6862,8 +6865,8 @@ def computeLeadingWhitespace (width, tab_width):
     if width <= 0:
         return ""
     if tab_width > 1:
-        tabs   = width / tab_width
-        blanks = width % tab_width
+        tabs   = int(width / tab_width)
+        blanks = int(width % tab_width)
         return ('\t' * tabs) + (' ' * blanks)
     else: # 7/3/02: negative tab width always gets converted to blanks.
         return (' ' * width)
