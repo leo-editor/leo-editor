@@ -4673,9 +4673,13 @@ class editCommandsClass (baseEditCommandsClass):
             s2 = s[i:j]
             if not s2.endswith('\n'): s2 = s2+'\n'
             aList = g.splitLines(s2)
-            if ignoreCase:  aList.sort(key=string.lower)
-            else:           aList.sort()
-            if reverse:     aList.reverse()
+            if ignoreCase:
+                def lower(s): return s.lower()
+                aList.sort(key=lower)
+            else:
+                aList.sort()
+            if reverse:
+                aList.reverse()
             s = g.joinLines(aList)
             w.delete(i,j)
             w.insert(i,s)

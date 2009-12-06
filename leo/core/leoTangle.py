@@ -3397,7 +3397,7 @@ class baseTangleCommands:
         # Find the first '>'
         while i < n and name [i] != '>':
             i += 1
-        name = string.strip(name[j:i])
+        name = name[j:i].strip()
 
         return name
     #@-node:ekr.20031218072017.3598:standardize_name

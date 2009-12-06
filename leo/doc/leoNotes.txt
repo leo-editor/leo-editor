@@ -1861,7 +1861,7 @@ Unless spaces, the text is nested within a regexp parenthetical group.
         return ''
     if text == ' ' * len(text):
         return ' *'
-    return '(' + re.escape(string.strip(text)) + ') *'
+    return '(' + re.escape(text.strip() + ') *'
 
 #@-node:ekr.20071103093725.33:regexp_quote
 #@+node:ekr.20071103093725.34:regexp_ruler

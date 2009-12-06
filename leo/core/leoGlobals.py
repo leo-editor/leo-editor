@@ -5446,10 +5446,8 @@ def emptyString():
 
     '''Return an empty unicode string.'''
 
-    if isPython3:
-        return ''
-    else:
-        return unicode('')
+    return g.u('')
+#@nonl
 #@-node:ekr.20081204091750.2:g.emptyString
 #@+node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
 # The syntax of these functions must be valid on Python2K and Python3K.
