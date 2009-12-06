@@ -100,14 +100,14 @@ def doPrePluginsInit(fileName,pymacs):
     '''
     Scan options, set directories and read settings.'''
 
-    trace = True
+    trace = False
     g.computeStandardDirectories()
     adjustSysPath()
     fileName2,gui,script,versionFlag,windowFlag = scanOptions()
     if fileName2: fileName = fileName2
     if trace:
-        print ('runLeo.run: sys.argv %s' % sys.argv)
-        print ('runLeo.run: fileName %s' % fileName)
+        print ('runLeo.doPrePluginsInit: sys.argv %s' % sys.argv)
+        print ('runLeo.doPrePluginsInit: fileName %s' % fileName)
     if pymacs: script,windowFlag = None,False
     verbose = script is None
     initApp(verbose)
