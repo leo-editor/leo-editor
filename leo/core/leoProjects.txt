@@ -5686,7 +5686,7 @@ zip
 - different exceptions get thrown.
 #@-node:ekr.20091206084842.6197:Details, surprises
 #@+node:ekr.20091206150342.6187:Failed unit tests
-@nocolor
+@color
 #@+node:ekr.20091206150342.6208:Real failures
 FAIL: @test @asis
 ----------------------------------------------------------------------
@@ -5848,6 +5848,61 @@ Traceback (most recent call last):
     if ignoreCase:  aList.sort(key=string.lower)
 AttributeError: 'module' object has no attribute 'lower'
 #@-node:ekr.20091206150342.6192:sortLines: string.lower does not exist
+#@+node:ekr.20091206150342.6191:centerRegion
+ERROR: @test center-region
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 4, in <module>
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1669, in runEditCommandTest
+    c.k.simulateCommand(commandName)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoKeys.py", line 3079, in simulateCommand
+    k.masterCommand(event,func,stroke)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoKeys.py", line 2543, in masterCommand
+    c.doCommand(func,commandName,event=event)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoCommands.py", line 390, in doCommand
+    val = command(event)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoEditCommands.py", line 2125, in centerRegion
+    w.insert(i,' '*n)
+TypeError: can't multiply sequence by non-int of type 'float'
+#@+node:ekr.20050920084036.69:centerRegion
+def centerRegion (self,event):
+
+    '''Centers the selected text within the fill column'''
+
+    k = self.k ; w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    sel_1, sel_2 = w.getSelectionRange()
+    ind, junk = g.getLine(s,sel_1)
+    junk, end = g.getLine(s,sel_2)
+
+    self.beginCommand(undoType='center-region')
+
+    inserted = 0
+    while ind < end:
+        s = w.getAllText()
+        i, j = g.getLine(s,ind)
+        line = s [i:j].strip()
+        # g.trace(len(line),repr(line))
+        if len(line) >= self.fillColumn:
+            ind = j
+        else:
+            n = int((self.fillColumn-len(line))/2)
+            inserted += n
+            k = g.skip_ws(s,i)
+            if k > i: w.delete(i,k-i)
+            w.insert(i,' '*n)
+            ind = j + n-(k-i)
+
+    w.setSelectionRange(sel_1,sel_2+inserted)
+
+    self.endCommand(changed=True,setLabel=True)
+#@-node:ekr.20050920084036.69:centerRegion
+#@-node:ekr.20091206150342.6191:centerRegion
 #@-node:ekr.20091206161352.6230:Fixed
 #@+node:ekr.20091206150342.6185:crash in log pane during unit tests
 @nocolor-node
@@ -5880,26 +5935,6 @@ TypeError: expected an object with the buffer interface
 
 TypeError: initial_value must be str or None, not bytes
 #@-node:ekr.20091206150342.6190:parse_leo_file
-#@+node:ekr.20091206150342.6191:centerRegion
-ERROR: @test center-region
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 4, in <module>
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1669, in runEditCommandTest
-    c.k.simulateCommand(commandName)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoKeys.py", line 3079, in simulateCommand
-    k.masterCommand(event,func,stroke)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoKeys.py", line 2543, in masterCommand
-    c.doCommand(func,commandName,event=event)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoCommands.py", line 390, in doCommand
-    val = command(event)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoEditCommands.py", line 2125, in centerRegion
-    w.insert(i,' '*n)
-TypeError: can't multiply sequence by non-int of type 'float'
-#@-node:ekr.20091206150342.6191:centerRegion
 #@+node:ekr.20091206150342.6194:sortColumns
 ERROR: @test sort-columns
 

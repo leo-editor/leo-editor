@@ -716,6 +716,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         w = self.widget
         s = w.text()
         s = g.app.gui.toUnicode(s)
+        i = w.toPythonIndex(i)
         i = max(0,min(i,len(s)))
         w.setCursorPosition(i)
     #@-node:ekr.20081121105001.557:setInsertPoint
@@ -1102,6 +1103,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         w = self.widget
 
         s = w.toPlainText()
+        i = self.toPythonIndex(i)
         i = max(0,min(i,len(s)))
         cursor = w.textCursor()
 
@@ -1564,6 +1566,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         w = self.widget
         s = w.text()
         s = g.app.gui.toUnicode(s)
+        i = self.toPythonIndex(i)
         i = max(0,min(i,len(s)))
         w.setCursorPosition(i)
     #@-node:ekr.20090603073641.3858:setInsertPoint

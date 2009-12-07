@@ -2118,7 +2118,7 @@ class editCommandsClass (baseEditCommandsClass):
             if len(line) >= self.fillColumn:
                 ind = j
             else:
-                n = (self.fillColumn-len(line)) / 2
+                n = int((self.fillColumn-len(line))/2)
                 inserted += n
                 k = g.skip_ws(s,i)
                 if k > i: w.delete(i,k-i)
