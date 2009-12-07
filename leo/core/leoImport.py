@@ -3247,6 +3247,7 @@ class elispScanner (baseScannerClass):
         '''Return True if s[i:] starts a function.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
 
+        self.startSigIndent = self.getLeadingIndent(s,i)
         self.sigStart = i
         self.codeEnd = self.sigEnd = self.sigId = None
         if not g.match(s,i,'('): return False
