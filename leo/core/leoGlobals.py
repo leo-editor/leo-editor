@@ -4745,8 +4745,9 @@ def find_on_line(s,i,pattern):
     j = s.find('\n',i)
     if j == -1: j = len(s)
     k = s.find(pattern,i,j)
-    if k > -1: return k
-    else: return None
+    return k
+    # if k > -1: return k
+    # else: return None
 #@-node:ekr.20031218072017.3176:find_on_line
 #@+node:ekr.20031218072017.3177:is_c_id
 def is_c_id(ch):

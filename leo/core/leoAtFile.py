@@ -4224,7 +4224,7 @@ class atFile:
         if not g.match(s,i,"<<"):
             return False, -1
         i = g.find_on_line(s,i,">>")
-        if i:
+        if i > -1:
             return True, i + 2
         else:
             return False, -1
@@ -4321,7 +4321,8 @@ class atFile:
     def outputStringWithLineEndings (self,s):
 
         # Calling self.onl() runs afoul of queued newlines.
-        self.os(s.replace('\n',self.output_newline))
+        s = g.u(s).replace(g.u('\n'),g.u(self.output_newline))
+        self.os(s)
     #@-node:ekr.20041005105605.205:outputStringWithLineEndings
     #@+node:ekr.20050506090446.1:putAtFirstLines
     def putAtFirstLines (self,s):

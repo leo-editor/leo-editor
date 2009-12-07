@@ -473,7 +473,8 @@ class leoImportCommands (scanUtility):
             #@+node:ekr.20031218072017.3302:<< set delims from the header line >>
             # Skip any non @+leo lines.
             i = 0
-            while i < len(s) and not g.find_on_line(s,i,"@+leo"):
+            ### while i < len(s) and not g.find_on_line(s,i,"@+leo"):
+            while i < len(s) and g.find_on_line(s,i,"@+leo") == -1:
                 i = g.skip_line(s,i)
 
             # Get the comment delims from the @+leo sentinel line.

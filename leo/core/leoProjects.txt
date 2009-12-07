@@ -6119,12 +6119,223 @@ def flattenOutline (self,fileName):
     theFile.close()
 #@-node:ekr.20031218072017.1147:flattenOutline
 #@-node:ekr.20091206150342.6199:flattenHeadline
+#@+node:ekr.20091206150342.6198:exportHeadlines
+ERROR: ImportExportTestCase: exportHeadlines /home/edreamleo/leo.repo/leo-3k/leo/test/unittest/output/exportHeadlines.txt
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1229, in runTest
+    self.importExport()
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1219, in importExport
+    command(event=None)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoCommands.py", line 1523, in exportHeadlines
+    c.importCommands.exportHeadlines(fileName)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 384, in exportHeadlines
+    theFile.write(head + nl)
+TypeError: can't concat bytes to str
+
+#@+node:ekr.20031218072017.1462:exportHeadlines
+def exportHeadlines (self,fileName):
+
+    c = self.c ; nl = g.u(self.output_newline)
+    p = c.p
+    if not p: return
+    self.setEncoding()
+    firstLevel = p.level()
+    mode = c.config.output_newline
+    mode = g.choose(mode=="platform",'w','wb')
+    try:
+        theFile = open(fileName,mode)
+    except IOError:
+        g.es("can not open",fileName,color="blue")
+        leoTest.fail()
+        return
+    for p in p.self_and_subtree():
+        head = p.moreHead(firstLevel,useVerticalBar=True)
+        s = g.toEncodedString(head + nl,self.encoding,reportErrors=True)
+        theFile.write(s)
+    theFile.close()
+#@-node:ekr.20031218072017.1462:exportHeadlines
+#@-node:ekr.20091206150342.6198:exportHeadlines
+#@+node:ekr.20091206150342.6200:scanWebFile
+ERROR: ImportExportTestCase: importCWEBFiles /home/edreamleo/leo.repo/leo-3k/leo/test/unittest/input/cweave.w
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1229, in runTest
+    self.importExport()
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1219, in importExport
+    command(event=None)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoCommands.py", line 1626, in importCWEBFiles
+    c.importCommands.importWebCommand(names,"cweb")
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 1212, in importWebCommand
+    p = self.createOutlineFromWeb(fileName,current)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 1195, in createOutlineFromWeb
+    self.scanWebFile(path,p)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 1332, in scanWebFile
+    if k > -1: self.cstEnter(s[j:k])
+TypeError: unorderable types: NoneType() > int()
+#@nonl
+#@+node:ekr.20031218072017.3176:find_on_line
+def find_on_line(s,i,pattern):
+
+    j = s.find('\n',i)
+    if j == -1: j = len(s)
+    k = s.find(pattern,i,j)
+    return k
+    # if k > -1: return k
+    # else: return None
+#@-node:ekr.20031218072017.3176:find_on_line
+#@+node:ekr.20031218072017.3231:scanWebFile (handles limbo)
+def scanWebFile (self,fileName,parent):
+
+    theType = self.webType
+    lb = g.choose(theType=="cweb","@<","<<")
+    rb = g.choose(theType=="cweb","@>",">>")
+
+    try: # Read the file into s.
+        f = open(fileName)
+        s = f.read()
+    except Exception:
+        g.es("can not import",fileName, color="blue")
+        return
+
+    << Create a symbol table of all section names >>
+    << Create nodes for limbo text and the root section >>
+    while i < len(s):
+        outer_progress = i
+        << Create a node for the next module >>
+        assert(i > outer_progress)
+#@nonl
+#@+node:ekr.20031218072017.3232:<< Create a symbol table of all section names >>
+i = 0 ; self.web_st = []
+
+while i < len(s):
+    progress = i
+    i = g.skip_ws_and_nl(s,i)
+    # line = g.get_line(s,i) ; g.trace(line)
+    if self.isDocStart(s,i):
+        if theType == "cweb": i += 2
+        else: i = g.skip_line(s,i)
+    elif theType == "cweb" and g.match(s,i,"@@"):
+        i += 2
+    elif g.match(s,i,lb):
+        i += 2 ; j = i ; k = g.find_on_line(s,j,rb)
+        if k > -1: self.cstEnter(s[j:k])
+    else: i += 1
+    assert (i > progress)
+
+# g.trace(self.cstDump())
+#@-node:ekr.20031218072017.3232:<< Create a symbol table of all section names >>
+#@+node:ekr.20031218072017.3233:<< Create nodes for limbo text and the root section >>
+i = 0
+while i < len(s):
+    progress = i
+    i = g.skip_ws_and_nl(s,i)
+    if self.isModuleStart(s,i) or g.match(s,i,lb):
+        break
+    else: i = g.skip_line(s,i)
+    assert(i > progress)
+
+j = g.skip_ws(s,0)
+if j < i:
+    self.createHeadline(parent,"@ " + s[j:i],"Limbo")
+
+j = i
+if g.match(s,i,lb):
+    while i < len(s):
+        progress = i
+        i = g.skip_ws_and_nl(s,i)
+        if self.isModuleStart(s,i):
+            break
+        else: i = g.skip_line(s,i)
+        assert(i > progress)
+    self.createHeadline(parent,s[j:i],g.angleBrackets(" @ "))
+
+# g.trace(g.get_line(s,i))
+#@-node:ekr.20031218072017.3233:<< Create nodes for limbo text and the root section >>
+#@+node:ekr.20031218072017.3234:<< Create a node for the next module >>
+if theType=="cweb":
+    assert(self.isModuleStart(s,i))
+    start = i
+    if self.isDocStart(s,i):
+        i += 2
+        while i < len(s):
+            progress = i
+            i = g.skip_ws_and_nl(s,i)
+            if self.isModuleStart(s,i): break
+            else: i = g.skip_line(s,i)
+            assert (i > progress)
+    << Handle cweb @d, @f, @c and @p directives >>
+else:
+    assert(self.isDocStart(s,i)) # isModuleStart == isDocStart for noweb.
+    start = i ; i = g.skip_line(s,i)
+    while i < len(s):
+        progress = i
+        i = g.skip_ws_and_nl(s,i)
+        if self.isDocStart(s,i): break
+        else: i = g.skip_line(s,i)
+        assert (i > progress)
+
+body = s[start:i]
+body = self.massageWebBody(body)
+headline = self.scanBodyForHeadline(body)
+self.createHeadline(parent,body,headline)
+#@+node:ekr.20031218072017.3235:<< Handle cweb @d, @f, @c and @p directives >>
+if g.match(s,i,"@d") or g.match(s,i,"@f"):
+    i += 2 ; i = g.skip_line(s,i)
+    # Place all @d and @f directives in the same node.
+    while i < len(s):
+        progress = i
+        i = g.skip_ws_and_nl(s,i)
+        if g.match(s,i,"@d") or g.match(s,i,"@f"): i = g.skip_line(s,i)
+        else: break
+        assert (i > progress)
+    i = g.skip_ws_and_nl(s,i)
+
+while i < len(s) and not self.isModuleStart(s,i):
+    progress = i
+    i = g.skip_line(s,i)
+    i = g.skip_ws_and_nl(s,i)
+    assert (i > progress)
+
+if g.match(s,i,"@c") or g.match(s,i,"@p"):
+    i += 2
+    while i < len(s):
+        progress = i
+        i = g.skip_line(s,i)
+        i = g.skip_ws_and_nl(s,i)
+        if self.isModuleStart(s,i):
+            break
+        assert (i > progress)
+#@-node:ekr.20031218072017.3235:<< Handle cweb @d, @f, @c and @p directives >>
+#@-node:ekr.20031218072017.3234:<< Create a node for the next module >>
+#@-node:ekr.20031218072017.3231:scanWebFile (handles limbo)
+#@-node:ekr.20091206150342.6200:scanWebFile
+#@+node:ekr.20091206150342.6189:outputStringWithLineEndings
+Traceback (most recent call last):
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 3175, in asisWrite
+    at.outputStringWithLineEndings(s)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
+    self.os(s.replace('\n',self.output_newline))
+TypeError: expected an object with the buffer interface
+#@nonl
+#@+node:ekr.20041005105605.205:outputStringWithLineEndings
+# Write the string s as-is except that we replace '\n' with the proper line ending.
+
+def outputStringWithLineEndings (self,s):
+
+    # Calling self.onl() runs afoul of queued newlines.
+    s = g.u(s).replace(g.u('\n'),g.u(self.output_newline))
+    self.os(s)
+#@-node:ekr.20041005105605.205:outputStringWithLineEndings
+#@-node:ekr.20091206150342.6189:outputStringWithLineEndings
 #@-node:ekr.20091206161352.6230:Fixed unit tests
 #@+node:ekr.20091206150342.6187:Failed unit tests
 @color
 
 Best so far:
-FAILED (failures=9, errors=7)
+
+FAILED (failures=9, errors=4)
 #@nonl
 #@+node:ekr.20091206150342.6208:Real failures
 FAIL: @test @asis
@@ -6203,78 +6414,12 @@ Traceback (most recent call last):
 AttributeError: 'editBodyTestCase' object has no attribute 'p'
 #@nonl
 #@-node:ekr.20091206150342.6185:crash in log pane during unit tests
-#@+node:ekr.20091206150342.6189:outputStringWithLineEndings
-Traceback (most recent call last):
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 3175, in asisWrite
-    at.outputStringWithLineEndings(s)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
-    self.os(s.replace('\n',self.output_newline))
-TypeError: expected an object with the buffer interface
-#@nonl
-#@-node:ekr.20091206150342.6189:outputStringWithLineEndings
 #@+node:ekr.20091206150342.6190:parse_leo_file
  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoFileCommands.py", line 1445, in parse_leo_file
     theFile = StringIO(s)
 
 TypeError: initial_value must be str or None, not bytes
 #@-node:ekr.20091206150342.6190:parse_leo_file
-#@+node:ekr.20091206150342.6198:exportHeadlines
-ERROR: ImportExportTestCase: exportHeadlines /home/edreamleo/leo.repo/leo-3k/leo/test/unittest/output/exportHeadlines.txt
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1229, in runTest
-    self.importExport()
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1219, in importExport
-    command(event=None)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoCommands.py", line 1523, in exportHeadlines
-    c.importCommands.exportHeadlines(fileName)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 384, in exportHeadlines
-    theFile.write(head + nl)
-TypeError: can't concat bytes to str
-
-#@+node:ekr.20031218072017.1462:exportHeadlines
-def exportHeadlines (self,fileName):
-
-    c = self.c ; nl = g.u(self.output_newline)
-    p = c.p
-    if not p: return
-    self.setEncoding()
-    firstLevel = p.level()
-    mode = c.config.output_newline
-    mode = g.choose(mode=="platform",'w','wb')
-    try:
-        theFile = open(fileName,mode)
-    except IOError:
-        g.es("can not open",fileName,color="blue")
-        leoTest.fail()
-        return
-    for p in p.self_and_subtree():
-        head = p.moreHead(firstLevel,useVerticalBar=True)
-        s = g.toEncodedString(head + nl,self.encoding,reportErrors=True)
-        theFile.write(s)
-    theFile.close()
-#@-node:ekr.20031218072017.1462:exportHeadlines
-#@-node:ekr.20091206150342.6198:exportHeadlines
-#@+node:ekr.20091206150342.6200:scanWebFile
-ERROR: ImportExportTestCase: importCWEBFiles /home/edreamleo/leo.repo/leo-3k/leo/test/unittest/input/cweave.w
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1229, in runTest
-    self.importExport()
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1219, in importExport
-    command(event=None)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoCommands.py", line 1626, in importCWEBFiles
-    c.importCommands.importWebCommand(names,"cweb")
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 1212, in importWebCommand
-    p = self.createOutlineFromWeb(fileName,current)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 1195, in createOutlineFromWeb
-    self.scanWebFile(path,p)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 1332, in scanWebFile
-    if k > -1: self.cstEnter(s[j:k])
-TypeError: unorderable types: NoneType() > int()
-
-#@-node:ekr.20091206150342.6200:scanWebFile
 #@+node:ekr.20091206150342.6204:toEncodedStringWithErrorCode
 ERROR: @test of round-tripping toUnicode & toEncodedString
 
@@ -6318,181 +6463,10 @@ AttributeError: 'itertools.tee' object has no attribute 'next'
 AttributeError: 'editBodyTestCase' object has no attribute 'p'
 #@-node:ekr.20091206150342.6209:leoTest line 116
 #@-node:ekr.20091206150342.6187:Failed unit tests
-#@+node:ekr.20091206180115.6238:Latest failures
-@killcolor
-
+#@+node:ekr.20091206194627.6252:Latest failures
 Syntax error in: @shadow ../test/unittest/at-shadow-test.py
 makeTestSuite: @suite run all doctests (windows only) script did not set g.app.scriptDict
-exception writing:
-Traceback (most recent call last):
-
-Traceback (most recent call last):
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 3175, in asisWrite
-    at.outputStringWithLineEndings(s)
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 3175, in asisWrite
-    at.outputStringWithLineEndings(s)
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
-    self.os(s.replace('\n',self.output_newline))
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
-    self.os(s.replace('\n',self.output_newline))
-
-TypeError: expected an object with the buffer interface
-
-TypeError: expected an object with the buffer interface
-
-exception removing: <string: >
-Traceback (most recent call last):
-
-Traceback (most recent call last):
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 3175, in asisWrite
-    at.outputStringWithLineEndings(s)
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 3175, in asisWrite
-    at.outputStringWithLineEndings(s)
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
-    self.os(s.replace('\n',self.output_newline))
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
-    self.os(s.replace('\n',self.output_newline))
-
-TypeError: expected an object with the buffer interface
-
-TypeError: expected an object with the buffer interface
-
-
-During handling of the above exception, another exception occurred:
-
-
-
-During handling of the above exception, another exception occurred:
-
-
-Traceback (most recent call last):
-
-Traceback (most recent call last):
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4985, in remove
-    os.remove(fileName)
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4985, in remove
-    os.remove(fileName)
-
-OSError: [Errno 2] No such file or directory: '<string: >'
-
-OSError: [Errno 2] No such file or directory: '<string: >'
-
-remove runTest,<module>,runAtFileTest,asisWrite,writeException
-
- --------------------
-result...
---------------------
-expected...
- 43 '# Test that @nosent generates no sentinels\n'
-  1 '\n'
- 14 '<< section >>\n'
-  1 '\n'
-  8 '@others\n'
-  1 '\n'
- 42 'last linesection line 1unnamed node line 1'
---------------------
-F...........F...exception writing:
-Traceback (most recent call last):
-
-Traceback (most recent call last):
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 2221, in norefWrite
-    at.outputStringWithLineEndings(s)
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 2221, in norefWrite
-    at.outputStringWithLineEndings(s)
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
-    self.os(s.replace('\n',self.output_newline))
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
-    self.os(s.replace('\n',self.output_newline))
-
-TypeError: expected an object with the buffer interface
-
-TypeError: expected an object with the buffer interface
-
-exception removing: <string: >
-Traceback (most recent call last):
-
-Traceback (most recent call last):
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 2221, in norefWrite
-    at.outputStringWithLineEndings(s)
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 2221, in norefWrite
-    at.outputStringWithLineEndings(s)
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
-    self.os(s.replace('\n',self.output_newline))
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
-    self.os(s.replace('\n',self.output_newline))
-
-TypeError: expected an object with the buffer interface
-
-TypeError: expected an object with the buffer interface
-
-
-During handling of the above exception, another exception occurred:
-
-
-
-During handling of the above exception, another exception occurred:
-
-
-Traceback (most recent call last):
-
-Traceback (most recent call last):
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4985, in remove
-    os.remove(fileName)
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4985, in remove
-    os.remove(fileName)
-
-OSError: [Errno 2] No such file or directory: '<string: >'
-
-OSError: [Errno 2] No such file or directory: '<string: >'
-
-remove runTest,<module>,runAtFileTest,norefWrite,writeException
-
- --------------------
-result...
---------------------
-expected...
- 13 '#@+leo-ver=4\n'
- 16 '#@+node:#@noref\n'
- 43 '# Test that @nosent generates no sentinels\n'
-  1 '\n'
- 14 '<< section >>\n'
-  1 '\n'
-  8 '@others\n'
-  1 '\n'
- 10 'last line\n'
-  7 '#@nonl\n'
- 16 '#@-node:#@noref\n'
- 22 '#@+node:<< section >>\n'
- 15 'section line 1\n'
-  7 '#@nonl\n'
- 22 '#@-node:<< section >>\n'
- 21 '#@+node:unnamed node\n'
- 20 'unnamed node line 1\n'
-  7 '#@nonl\n'
- 21 '#@-node:unnamed node\n'
-  7 '#@-leo\n'
---------------------
-F.......wrote: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
+............F...........wrote: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
 .unchanged: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
 .created: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
 ....
@@ -6503,7 +6477,7 @@ End of leoColor tests
 End of leoCommands tests
 ......
 End of leoConfig tests
-.....................................................................................................................................E..........
+................................................................................................................................................
 End of leoEditCommands tests.
 ...FFYou must be using Python 2.5 or above to use aspell on Linux
 Leo Log Window
@@ -6512,7 +6486,7 @@ Python 3.1.1, qt version 4.5.2
 linux2
 .....
 End of leoFileCommands tests.
-.............EE.......E.............................................................test of at.printError: La Peña
+....................................................................................test of at.printError: La Peña
 ..FEFE.....E...........................................................E...........unexpected exception parsing <clipboard>
 Traceback (most recent call last):
 
@@ -6549,57 +6523,9 @@ F........
 End of leoNodes tests.
 .........................................................
 End of leoUndo tests.
-.tree.redrawCount: 329
+.tree.redrawCount: 331
 .all unit tests done
 .
-======================================================================
-
-======================================================================
-ERROR: ImportExportTestCase: exportHeadlines /home/edreamleo/leo.repo/leo-3k/leo/test/unittest/output/exportHeadlines.txt
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1229, in runTest
-    self.importExport()
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1219, in importExport
-    command(event=None)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoCommands.py", line 1523, in exportHeadlines
-    c.importCommands.exportHeadlines(fileName)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 384, in exportHeadlines
-    theFile.write(head + nl)
-TypeError: can't concat bytes to str
-
-======================================================================
-ERROR: ImportExportTestCase: flattenOutline /home/edreamleo/leo.repo/leo-3k/leo/test/unittest/output/flattenOutline.txt
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1229, in runTest
-    self.importExport()
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1219, in importExport
-    command(event=None)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoCommands.py", line 1545, in flattenOutline
-    c.importCommands.flattenOutline(fileName)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 409, in flattenOutline
-    theFile.write(head + nl)
-TypeError: can't concat bytes to str
-
-======================================================================
-ERROR: ImportExportTestCase: importCWEBFiles /home/edreamleo/leo.repo/leo-3k/leo/test/unittest/input/cweave.w
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1229, in runTest
-    self.importExport()
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1219, in importExport
-    command(event=None)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoCommands.py", line 1626, in importCWEBFiles
-    c.importCommands.importWebCommand(names,"cweb")
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 1212, in importWebCommand
-    p = self.createOutlineFromWeb(fileName,current)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 1195, in createOutlineFromWeb
-    self.scanWebFile(path,p)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 1332, in scanWebFile
-    if k > -1: self.cstEnter(s[j:k])
-TypeError: unorderable types: NoneType() > int()
-
 ======================================================================
 ERROR: @test of round-tripping toUnicode & toEncodedString
 
@@ -6608,7 +6534,7 @@ Traceback (most recent call last):
   File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
     exec(script,d)
   File "<string>", line 17, in <module>
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoGlobals.py", line 5676, in toEncodedStringWithErrorCode
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoGlobals.py", line 5677, in toEncodedStringWithErrorCode
     if type(s) == types.UnicodeType:
 AttributeError: 'module' object has no attribute 'UnicodeType'
 
@@ -6620,7 +6546,7 @@ Traceback (most recent call last):
   File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
     exec(script,d)
   File "<string>", line 25, in <module>
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoGlobals.py", line 5676, in toEncodedStringWithErrorCode
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoGlobals.py", line 5677, in toEncodedStringWithErrorCode
     if type(s) == types.UnicodeType:
 AttributeError: 'module' object has no attribute 'UnicodeType'
 
@@ -6647,18 +6573,6 @@ Traceback (most recent call last):
 AttributeError: 'itertools.tee' object has no attribute 'next'
 
 ======================================================================
-FAIL: @test @asis
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 5, in <module>
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 948, in runAtFileTest
-    assert(result == expected)
-AssertionError
-
-======================================================================
 FAIL: @test @shadow: shape of tree
 
 ----------------------------------------------------------------------
@@ -6666,18 +6580,6 @@ Traceback (most recent call last):
   File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
     exec(script,d)
   File "<string>", line 15, in <module>
-AssertionError
-
-======================================================================
-FAIL: @test @noref
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 5, in <module>
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 948, in runAtFileTest
-    assert(result == expected)
 AssertionError
 
 ======================================================================
@@ -6741,13 +6643,10 @@ Traceback (most recent call last):
 AssertionError: fail 2
 
 ----------------------------------------------------------------------
-Ran 480 tests in 41.785s
+Ran 480 tests in 43.998s
 
-
-wrote recent file: /home/edreamleo/.leo/.leoRecentFiles.txt
-edreamleo@edreamleo-laptop:~/leo.repo/leo-3k$ 
-
-#@-node:ekr.20091206180115.6238:Latest failures
+FAILED (failures=7, errors=4)
+#@-node:ekr.20091206194627.6252:Latest failures
 #@-node:ekr.20091203060018.6100:leo-3k
 #@-all
 #@nonl
