@@ -1,7 +1,7 @@
+# coding: utf-8
 #@+leo-ver=4-thin
 #@+node:tbrown.20070117104409:@thin quickMove.py
-#@@nowrap
-
+#@@first
 #@<< docstring >>
 #@+node:tbrown.20070117104409.1:<< docstring >>
 """Create buttons to quickly move nodes to other nodes
@@ -56,10 +56,15 @@ __version__ = '0.7'
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 from mod_scripting import scriptingController
+if g.app.gui.guiName() == "qt":
+    # for the right click context menu
+    from PyQt4 import QtCore
 #@-node:tbrown.20070117104409.2:<< imports >>
 #@nl
 
 #@+others
+#@+node:tbrown.20091207102637.11493:menu / command table
+#@-node:tbrown.20091207102637.11493:menu / command table
 #@+node:tbrown.20070117104409.3:init and onCreate
 def init():
     leoPlugins.registerHandler('after-create-leo-frame', onCreate)
@@ -80,16 +85,24 @@ class quickMove:
     #@    @+others
     #@+node:ekr.20070117113133:ctor
     def __init__(self, c):
-        self.c = c
 
-        table = (
+        self.table = (
             ("Move To First Child Button",None,self.addToFirstChildButton),
             ("Move To Last Child Button",None,self.addToLastChildButton),
             ("Clone To First Child Button",None,self.cloneToFirstChildButton),
             ("Clone To Last Child Button",None,self.cloneToLastChildButton),
+            ("Copy To First Child Button",None,self.copyToFirstChildButton),
+            ("Copy To Last Child Button",None,self.copyToLastChildButton),
         )
 
-        c.frame.menu.createMenuItemsFromTable('Outline', table)
+        self.c = c
+
+        c.frame.menu.createNewMenu('Move', 'Outline')
+
+        c.frame.menu.createMenuItemsFromTable('Move', self.table)
+
+        if g.app.gui.guiName() == "qt":
+            g.tree_popup_handlers.append(self.popup)
     #@-node:ekr.20070117113133:ctor
     #@+node:ekr.20070117113133.2:addTarget/AppendButton
     def addToFirstChildButton (self,event=None):
@@ -104,23 +117,39 @@ class quickMove:
     def cloneToLastChildButton (self,event=None):
         self.addButton(first=False, clone=True)
 
-    def addButton (self,first,clone=False):
+    def copyToFirstChildButton (self,event=None):
+        self.addButton(first=True, copy=True)
+
+    def copyToLastChildButton (self,event=None):
+        self.addButton(first=False, copy=True)
+
+    def addButton (self,first,clone=False,copy=False):
 
         '''Add a button that creates a target for future moves.'''
 
         c = self.c ; p = c.p
         sc = scriptingController(c)
 
-        mb = quickMoveButton(self,p.copy(),first,clone)
+        mb = quickMoveButton(self,p.copy(),first,clone,copy)
 
         b = sc.createIconButton(
-            text = 'to-' + p.h, # createButton truncates text.
+            text = 'to:' + p.h, # createButton truncates text.
             command = mb.moveCurrentNodeToTarget,
             shortcut = None,
             statusLine = 'Move current node to %s child of %s' % (g.choose(first,'first','last'),p.h),
             bg = "LightBlue"
         )
     #@-node:ekr.20070117113133.2:addTarget/AppendButton
+    #@+node:tbrown.20091207102637.11494:popup
+    def popup(self, c, p, menu):
+        """make popup menu entry"""
+
+        pathmenu = menu.addMenu("Move")
+
+        for name,dummy,command in self.table:
+            a = pathmenu.addAction(name)
+            a.connect(a, QtCore.SIGNAL("triggered()"), command)
+    #@-node:tbrown.20091207102637.11494:popup
     #@-others
 #@nonl
 #@-node:tbrown.20070117104409.4:class quickMove
@@ -131,7 +160,7 @@ class quickMoveButton:
 
     #@    @+others
     #@+node:ekr.20070117121326:ctor
-    def __init__(self, owner, target, first, clone):
+    def __init__(self, owner, target, first, clone, copy):
 
         self.c = owner.c
         self.owner = owner
@@ -139,7 +168,7 @@ class quickMoveButton:
         self.targetHeadString = target.h
         self.first = first
         self.clone = clone
-    #@nonl
+        self.copy = copy
     #@-node:ekr.20070117121326:ctor
     #@+node:ekr.20070117121326.1:moveCurrentNodeToTarget
     def moveCurrentNodeToTarget(self):
@@ -168,10 +197,18 @@ class quickMoveButton:
         if self.clone:
             p = p.clone()
 
-        if self.first:
-            p.moveToFirstChildOf(p2)
+        if not self.copy:
+            if self.first:
+                p.moveToFirstChildOf(p2)
+            else:
+                p.moveToLastChildOf(p2)
         else:
-            p.moveToLastChildOf(p2)
+            if self.first:
+                nd = p2.insertAsNthChild(0)
+                p.copyTreeFromSelfTo(nd)
+            else:
+                nd = p2.insertAsLastChild()
+                p.copyTreeFromSelfTo(nd)
 
         nxt = c.vnode2position(nxt)
         if c.positionExists(nxt):
