@@ -5650,23 +5650,12 @@ if g.unitTesting:
 #@+node:ekr.20050208093800:g.toEncodedString
 def toEncodedString (s,encoding,reportErrors=False):
 
-    if isPython3:
-        if g.isString(s):
-            try:
-                s = s.encode(encoding,"strict")
-            except UnicodeError:
-                if reportErrors:
-                    g.reportBadChars(s,encoding)
-                s = s.encode(encoding,"replace")
-
-    else:
-        if type(s) == types.UnicodeType:
-            try:
-                s = s.encode(encoding,"strict")
-            except UnicodeError:
-                if reportErrors:
-                    g.reportBadChars(s,encoding)
-                s = s.encode(encoding,"replace")
+    if g.isUnicode(s):
+        try:
+            s = s.encode(encoding,"strict")
+        except UnicodeError:
+            if reportErrors: g.reportBadChars(s,encoding)
+            s = s.encode(encoding,"replace")
     return s
 #@-node:ekr.20050208093800:g.toEncodedString
 #@+node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
@@ -5674,17 +5663,14 @@ def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
 
     ok = True
 
-    if type(s) == types.UnicodeType:
-
+    if g.isUnicode(s):
         try:
             s = s.encode(encoding,"strict")
         except UnicodeError:
-            if reportErrors:
-                g.reportBadChars(s,encoding)
+            if reportErrors: g.reportBadChars(s,encoding)
             s = s.encode(encoding,"replace")
             ok = False
-
-    return s,ok
+    return s, ok
 #@-node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
 #@+node:ekr.20050208093800.1:g.toUnicode
 def toUnicode (s,encoding,reportErrors=False):
