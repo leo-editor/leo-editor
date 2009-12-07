@@ -4164,7 +4164,10 @@ def computeLeadingWhitespace (width, tab_width):
 #@+node:ekr.20091206161352.6232:g.u
 def u(s,encoding='utf-8'):
     if g.isPython3:
-        return str(s,encoding)
+        if type(s) == type(''):
+            return s
+        else:
+            return str(s,encoding)
     else:
         return unicode(s,encoding)
 #@nonl
@@ -6011,9 +6014,65 @@ def skipBlock(self,s,i,delim1=None,delim2=None):
     return start
 #@-node:ekr.20070707073859:skipBlock
 #@-node:ekr.20091206150342.6201:skipBlock (elisp)
+#@+node:ekr.20091206150342.6194:sortColumns
+ERROR: @test sort-columns
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 4, in <module>
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1669, in runEditCommandTest
+    c.k.simulateCommand(commandName)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoKeys.py", line 3079, in simulateCommand
+    k.masterCommand(event,func,stroke)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoKeys.py", line 2543, in masterCommand
+    c.doCommand(func,commandName,event=event)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoCommands.py", line 390, in doCommand
+    val = command(event)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoEditCommands.py", line 4709, in sortColumns
+    zlist.sort()
+AttributeError: 'zip' object has no attribute 'sort'
+
+#@+node:ekr.20050920084036.119:sortColumns
+def sortColumns (self,event):
+
+    '''Sort lines of selected text using only lines in the given columns to do the comparison.'''
+
+    k = self.k
+    w = self.editWidget(event)
+    if not self._chckSel(event): return
+    self.beginCommand(undoType='sort-columns')
+    try:
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        sel_1,sel_2 = w.getSelectionRange()
+        sint1,sint2 = g.convertPythonIndexToRowCol(s,sel_1)
+        sint3,sint4 = g.convertPythonIndexToRowCol(s,sel_2)
+        sint1 += 1 ; sint3 += 1
+        i,junk = g.getLine(s,sel_1)
+        junk,j = g.getLine(s,sel_2)
+        txt = s[i:j]
+        columns = [w.get('%s.%s' % (z,sint2),'%s.%s' % (z,sint4))
+            for z in range(sint1,sint3+1)]
+        aList = g.splitLines(txt)
+        zlist = list(zip(columns,aList))
+        zlist.sort()
+        s = g.joinLines([z[1] for z in zlist])
+        w.delete(i,j)
+        w.insert(i,s)
+        w.setSelectionRange(sel_1,sel_1+len(s),insert=sel_1+len(s))
+    finally:
+        self.endCommand(changed=True,setLabel=True)
+#@-node:ekr.20050920084036.119:sortColumns
+#@-node:ekr.20091206150342.6194:sortColumns
 #@-node:ekr.20091206161352.6230:Fixed unit tests
 #@+node:ekr.20091206150342.6187:Failed unit tests
 @color
+
+Best so far:
+FAILED (failures=9, errors=7)
+#@nonl
 #@+node:ekr.20091206150342.6208:Real failures
 FAIL: @test @asis
 ----------------------------------------------------------------------
@@ -6107,74 +6166,6 @@ TypeError: expected an object with the buffer interface
 
 TypeError: initial_value must be str or None, not bytes
 #@-node:ekr.20091206150342.6190:parse_leo_file
-#@+node:ekr.20091206150342.6194:sortColumns
-ERROR: @test sort-columns
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 4, in <module>
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1669, in runEditCommandTest
-    c.k.simulateCommand(commandName)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoKeys.py", line 3079, in simulateCommand
-    k.masterCommand(event,func,stroke)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoKeys.py", line 2543, in masterCommand
-    c.doCommand(func,commandName,event=event)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoCommands.py", line 390, in doCommand
-    val = command(event)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoEditCommands.py", line 4709, in sortColumns
-    zlist.sort()
-AttributeError: 'zip' object has no attribute 'sort'
-
-#@+node:ekr.20050920084036.119:sortColumns
-def sortColumns (self,event):
-
-    '''Sort lines of selected text using only lines in the given columns to do the comparison.'''
-
-    k = self.k
-    w = self.editWidget(event)
-    if not self._chckSel(event): return
-    self.beginCommand(undoType='sort-columns')
-    try:
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        sel_1,sel_2 = w.getSelectionRange()
-        sint1,sint2 = g.convertPythonIndexToRowCol(s,sel_1)
-        sint3,sint4 = g.convertPythonIndexToRowCol(s,sel_2)
-        sint1 += 1 ; sint3 += 1
-        i,junk = g.getLine(s,sel_1)
-        junk,j = g.getLine(s,sel_2)
-        txt = s[i:j]
-        columns = [w.get('%s.%s' % (z,sint2),'%s.%s' % (z,sint4))
-            for z in range(sint1,sint3+1)]
-        aList = g.splitLines(txt)
-        zlist = list(zip(columns,aList))
-        zlist.sort()
-        s = g.joinLines([z[1] for z in zlist])
-        w.delete(i,j)
-        w.insert(i,s)
-        w.setSelectionRange(sel_1,sel_1+len(s),insert=sel_1+len(s))
-    finally:
-        self.endCommand(changed=True,setLabel=True)
-#@-node:ekr.20050920084036.119:sortColumns
-#@-node:ekr.20091206150342.6194:sortColumns
-#@+node:ekr.20091206150342.6196:setSelectionRangeHelper
-======================================================================
-ERROR: @test <Delete> key sticks in headline
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 12, in <module>
-  File "/home/edreamleo/leo.repo/leo-3k/leo/plugins/qtGui.py", line 382, in setSelectionRange
-    return self.setSelectionRangeHelper(i,j,insert)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/plugins/qtGui.py", line 1582, in setSelectionRangeHelper
-    insert = max(0,min(insert,n))
-TypeError: unorderable types: int() < NoneType()
-#@nonl
-#@-node:ekr.20091206150342.6196:setSelectionRangeHelper
 #@+node:ekr.20091206150342.6198:exportHeadlines
 ERROR: ImportExportTestCase: exportHeadlines /home/edreamleo/leo.repo/leo-3k/leo/test/unittest/output/exportHeadlines.txt
 ----------------------------------------------------------------------
@@ -6265,7 +6256,451 @@ AttributeError: 'itertools.tee' object has no attribute 'next'
 
 AttributeError: 'editBodyTestCase' object has no attribute 'p'
 #@-node:ekr.20091206150342.6209:leoTest line 116
+#@+node:ekr.20091206150342.6196:setSelectionRangeHelper
+ERROR: @test paste from menu into headline sticks
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 10, in <module>
+  File "/home/edreamleo/leo.repo/leo-3k/leo/plugins/qtGui.py", line 382, in setSelectionRange
+    return self.setSelectionRangeHelper(i,j,insert)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/plugins/qtGui.py", line 1594, in setSelectionRangeHelper
+    insert = max(0,min(insert,n))
+TypeError: unorderable types: int() < str()
+#@-node:ekr.20091206150342.6196:setSelectionRangeHelper
 #@-node:ekr.20091206150342.6187:Failed unit tests
+#@+node:ekr.20091206180115.6238:Latest failures
+@killcolor
+
+Syntax error in: @shadow ../test/unittest/at-shadow-test.py
+makeTestSuite: @suite run all doctests (windows only) script did not set g.app.scriptDict
+exception writing:
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 3175, in asisWrite
+    at.outputStringWithLineEndings(s)
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 3175, in asisWrite
+    at.outputStringWithLineEndings(s)
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
+    self.os(s.replace('\n',self.output_newline))
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
+    self.os(s.replace('\n',self.output_newline))
+
+TypeError: expected an object with the buffer interface
+
+TypeError: expected an object with the buffer interface
+
+exception removing: <string: >
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 3175, in asisWrite
+    at.outputStringWithLineEndings(s)
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 3175, in asisWrite
+    at.outputStringWithLineEndings(s)
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
+    self.os(s.replace('\n',self.output_newline))
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
+    self.os(s.replace('\n',self.output_newline))
+
+TypeError: expected an object with the buffer interface
+
+TypeError: expected an object with the buffer interface
+
+
+During handling of the above exception, another exception occurred:
+
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4985, in remove
+    os.remove(fileName)
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4985, in remove
+    os.remove(fileName)
+
+OSError: [Errno 2] No such file or directory: '<string: >'
+
+OSError: [Errno 2] No such file or directory: '<string: >'
+
+remove runTest,<module>,runAtFileTest,asisWrite,writeException
+
+ --------------------
+result...
+--------------------
+expected...
+ 43 '# Test that @nosent generates no sentinels\n'
+  1 '\n'
+ 14 '<< section >>\n'
+  1 '\n'
+  8 '@others\n'
+  1 '\n'
+ 42 'last linesection line 1unnamed node line 1'
+--------------------
+F...........F...exception writing:
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 2221, in norefWrite
+    at.outputStringWithLineEndings(s)
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 2221, in norefWrite
+    at.outputStringWithLineEndings(s)
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
+    self.os(s.replace('\n',self.output_newline))
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
+    self.os(s.replace('\n',self.output_newline))
+
+TypeError: expected an object with the buffer interface
+
+TypeError: expected an object with the buffer interface
+
+exception removing: <string: >
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 2221, in norefWrite
+    at.outputStringWithLineEndings(s)
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 2221, in norefWrite
+    at.outputStringWithLineEndings(s)
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
+    self.os(s.replace('\n',self.output_newline))
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4324, in outputStringWithLineEndings
+    self.os(s.replace('\n',self.output_newline))
+
+TypeError: expected an object with the buffer interface
+
+TypeError: expected an object with the buffer interface
+
+
+During handling of the above exception, another exception occurred:
+
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4985, in remove
+    os.remove(fileName)
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoAtFile.py", line 4985, in remove
+    os.remove(fileName)
+
+OSError: [Errno 2] No such file or directory: '<string: >'
+
+OSError: [Errno 2] No such file or directory: '<string: >'
+
+remove runTest,<module>,runAtFileTest,norefWrite,writeException
+
+ --------------------
+result...
+--------------------
+expected...
+ 13 '#@+leo-ver=4\n'
+ 16 '#@+node:#@noref\n'
+ 43 '# Test that @nosent generates no sentinels\n'
+  1 '\n'
+ 14 '<< section >>\n'
+  1 '\n'
+  8 '@others\n'
+  1 '\n'
+ 10 'last line\n'
+  7 '#@nonl\n'
+ 16 '#@-node:#@noref\n'
+ 22 '#@+node:<< section >>\n'
+ 15 'section line 1\n'
+  7 '#@nonl\n'
+ 22 '#@-node:<< section >>\n'
+ 21 '#@+node:unnamed node\n'
+ 20 'unnamed node line 1\n'
+  7 '#@nonl\n'
+ 21 '#@-node:unnamed node\n'
+  7 '#@-leo\n'
+--------------------
+F.......wrote: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
+.unchanged: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
+.created: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
+....
+End of leoAtFile tests
+....................................
+End of leoColor tests
+.................
+End of leoCommands tests
+......
+End of leoConfig tests
+.....................................................................................................................................E..........
+End of leoEditCommands tests.
+...FFYou must be using Python 2.5 or above to use aspell on Linux
+Leo Log Window
+Leo 4.7 devel, build 2277, August 28, 2009
+Python 3.1.1, qt version 4.5.2
+linux2
+.....
+End of leoFileCommands tests.
+.............EE.......E.............................................................test of at.printError: La Peña
+..FEFE.....E...........................................................E...........unexpected exception parsing <clipboard>
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoFileCommands.py", line 1445, in parse_leo_file
+    theFile = StringIO(s)
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoFileCommands.py", line 1445, in parse_leo_file
+    theFile = StringIO(s)
+
+TypeError: initial_value must be str or None, not bytes
+
+TypeError: initial_value must be str or None, not bytes
+
+the clipboard is not valid 
+Funexpected exception parsing <clipboard>
+Traceback (most recent call last):
+
+Traceback (most recent call last):
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoFileCommands.py", line 1445, in parse_leo_file
+    theFile = StringIO(s)
+
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoFileCommands.py", line 1445, in parse_leo_file
+    theFile = StringIO(s)
+
+TypeError: initial_value must be str or None, not bytes
+
+TypeError: initial_value must be str or None, not bytes
+
+the clipboard is not valid 
+F........
+End of leoNodes tests.
+.........................................................
+End of leoUndo tests.
+.tree.redrawCount: 329
+.all unit tests done
+.
+======================================================================
+
+======================================================================
+ERROR: ImportExportTestCase: exportHeadlines /home/edreamleo/leo.repo/leo-3k/leo/test/unittest/output/exportHeadlines.txt
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1229, in runTest
+    self.importExport()
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1219, in importExport
+    command(event=None)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoCommands.py", line 1523, in exportHeadlines
+    c.importCommands.exportHeadlines(fileName)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 384, in exportHeadlines
+    theFile.write(head + nl)
+TypeError: can't concat bytes to str
+
+======================================================================
+ERROR: ImportExportTestCase: flattenOutline /home/edreamleo/leo.repo/leo-3k/leo/test/unittest/output/flattenOutline.txt
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1229, in runTest
+    self.importExport()
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1219, in importExport
+    command(event=None)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoCommands.py", line 1545, in flattenOutline
+    c.importCommands.flattenOutline(fileName)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 409, in flattenOutline
+    theFile.write(head + nl)
+TypeError: can't concat bytes to str
+
+======================================================================
+ERROR: ImportExportTestCase: importCWEBFiles /home/edreamleo/leo.repo/leo-3k/leo/test/unittest/input/cweave.w
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1229, in runTest
+    self.importExport()
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1219, in importExport
+    command(event=None)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoCommands.py", line 1626, in importCWEBFiles
+    c.importCommands.importWebCommand(names,"cweb")
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 1212, in importWebCommand
+    p = self.createOutlineFromWeb(fileName,current)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 1195, in createOutlineFromWeb
+    self.scanWebFile(path,p)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 1332, in scanWebFile
+    if k > -1: self.cstEnter(s[j:k])
+TypeError: unorderable types: NoneType() > int()
+
+======================================================================
+ERROR: @test of round-tripping toUnicode & toEncodedString
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 17, in <module>
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoGlobals.py", line 5676, in toEncodedStringWithErrorCode
+    if type(s) == types.UnicodeType:
+AttributeError: 'module' object has no attribute 'UnicodeType'
+
+======================================================================
+ERROR: @test round trip toUnicode toEncodedString
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 25, in <module>
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoGlobals.py", line 5676, in toEncodedStringWithErrorCode
+    if type(s) == types.UnicodeType:
+AttributeError: 'module' object has no attribute 'UnicodeType'
+
+======================================================================
+ERROR: @test g.create_temp_file
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 7, in <module>
+AttributeError: 'module' object has no attribute 'FileType'
+
+======================================================================
+ERROR: @test find_h / find_b / select_h / select_b
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 23, in <module>
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoNodes.py", line 2842, in select_b
+    first = t1.next()
+AttributeError: 'itertools.tee' object has no attribute 'next'
+
+======================================================================
+FAIL: @test @asis
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 5, in <module>
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 948, in runAtFileTest
+    assert(result == expected)
+AssertionError
+
+======================================================================
+FAIL: @test @shadow: shape of tree
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 15, in <module>
+AssertionError
+
+======================================================================
+FAIL: @test @noref
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 5, in <module>
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 948, in runAtFileTest
+    assert(result == expected)
+AssertionError
+
+======================================================================
+FAIL: @test putDescendentVnodeUas
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 19, in <module>
+AssertionError: expected: ' descendentVnodeUnknownAttributes="7d7100285503302e3071017d7102550f756e69745f746573745f6368696c6471035504616263647104735505302e302e3071057d71065514756e69745f746573745f6772616e646368696c64710755047778797a710873752e"', got: ' descendentVnodeUnknownAttributes="b\'7d7100285803000000302e3071017d7102580f000000756e69745f746573745f6368696c6471035804000000616263647104735805000000302e302e3071057d71065814000000756e69745f746573745f6772616e646368696c64710758040000007778797a710873752e\'"'
+
+======================================================================
+FAIL: @test putUa
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 7, in <module>
+AssertionError: expected: ' unit_test="55046162636471002e"', got: ' unit_test="b\'58040000006162636471002e\'"'
+
+======================================================================
+FAIL: @test failure to convert unicode characters to ascii
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 11, in <module>
+AssertionError: toUnicodeWithErrorCode returns True for 炰 with ascii encoding
+
+======================================================================
+FAIL: @test failure with ascii encodings
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 10, in <module>
+AssertionError: toUnicodeWithErrorCode returns True for 炰 with ascii encoding
+
+======================================================================
+FAIL: @test paste-node
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 25, in <module>
+AssertionError: fail 2
+
+======================================================================
+FAIL: @test paste-retaining-clones
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 18, in <module>
+AssertionError: fail 2
+
+----------------------------------------------------------------------
+Ran 480 tests in 41.785s
+
+
+wrote recent file: /home/edreamleo/.leo/.leoRecentFiles.txt
+edreamleo@edreamleo-laptop:~/leo.repo/leo-3k$ 
+
+#@-node:ekr.20091206180115.6238:Latest failures
 #@-node:ekr.20091203060018.6100:leo-3k
 #@-all
 #@nonl

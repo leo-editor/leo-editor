@@ -1119,6 +1119,10 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         w = self.widget
         # g.trace('i',i,'j',j,'insert',insert,g.callers(4))
         e = QtGui.QTextCursor
+        i = self.toPythonIndex(i)
+        j = self.toPythonIndex(j)
+        if insert is not None:
+            insert = self.toPythonIndex(insert)
         if i > j: i,j = j,i
         n = self.lengthHelper()
         i = max(0,min(i,n))
@@ -1173,6 +1177,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         w = self
         te = self.widget
 
+        if index is None:
+            return 0
         if type(index) == type(99):
             return index
         elif index == '1.0':
@@ -1582,7 +1588,11 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         n = len(s)
         i = max(0,min(i,n))
         j = max(0,min(j,n))
-        insert = max(0,min(insert,n))
+        if insert is None:
+            insert = j
+        else:
+            insert = self.toPythonIndex(insert)
+            insert = max(0,min(insert,n))
         if i == j:
             w.setCursorPosition(i)
         else:

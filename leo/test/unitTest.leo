@@ -4053,7 +4053,7 @@ at = c.atFileCommands
 at.errors = 0
 
 s = g.u('La Pe\xf1a')
-s = g.u(u'La Peña')
+s = g.u('La Peña')
 # s = g.u('Ă: U+0102: Latin Capital Letter A With Breve')
 at.printError('test of at.printError:',s)
 
