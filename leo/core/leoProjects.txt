@@ -6374,6 +6374,76 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
     return sax_node
 #@-node:ekr.20060919110638.14:parse_leo_file
 #@-node:ekr.20091206150342.6190:parse_leo_file
+#@+node:ekr.20091206150342.6204:toEncodedStringWithErrorCode
+ERROR: @test of round-tripping toUnicode & toEncodedString
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 17, in <module>
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoGlobals.py", line 5679, in toEncodedStringWithErrorCode
+    if type(s) == types.UnicodeType:
+AttributeError: 'module' object has no attribute 'UnicodeType'
+#@nonl
+#@+node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
+# The syntax of these functions must be valid on Python2K and Python3K.
+
+def isBytes(s):
+    '''Return True if s is Python3k bytes type.'''
+    if g.isPython3:
+        # Generates a pylint warning, but that can't be helped.
+        return type(s) == type(bytes('a','utf-8'))
+    else:
+        return False
+
+def isChar(s):
+    '''Return True if s is a Python2K character type.'''
+    if g.isPython3:
+        return False
+    else:
+        return type(s) == types.StringType
+
+def isString(s):
+    '''Return True if s is any string, but not bytes.'''
+    if g.isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) in types.StringTypes
+
+def isUnicode(s):
+    '''Return True if s is a unicode string.'''
+    if g.isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) == types.UnicodeType
+#@-node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
+#@+node:ekr.20050208093800:g.toEncodedString
+def toEncodedString (s,encoding,reportErrors=False):
+
+    if g.isUnicode(s):
+        try:
+            s = s.encode(encoding,"strict")
+        except UnicodeError:
+            if reportErrors: g.reportBadChars(s,encoding)
+            s = s.encode(encoding,"replace")
+    return s
+#@-node:ekr.20050208093800:g.toEncodedString
+#@+node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
+def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
+
+    ok = True
+
+    if g.isUnicode(s):
+        try:
+            s = s.encode(encoding,"strict")
+        except UnicodeError:
+            if reportErrors: g.reportBadChars(s,encoding)
+            s = s.encode(encoding,"replace")
+            ok = False
+    return s, ok
+#@-node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
+#@-node:ekr.20091206150342.6204:toEncodedStringWithErrorCode
 #@-node:ekr.20091206161352.6230:Fixed unit tests
 #@+node:ekr.20091206150342.6187:Failed unit tests
 @color
@@ -6490,76 +6560,6 @@ AttributeError: 'itertools.tee' object has no attribute 'next'
 AttributeError: 'editBodyTestCase' object has no attribute 'p'
 #@-node:ekr.20091206150342.6209:leoTest line 116
 #@-node:ekr.20091206150342.6187:Failed unit tests
-#@+node:ekr.20091206150342.6204:toEncodedStringWithErrorCode
-ERROR: @test of round-tripping toUnicode & toEncodedString
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 17, in <module>
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoGlobals.py", line 5679, in toEncodedStringWithErrorCode
-    if type(s) == types.UnicodeType:
-AttributeError: 'module' object has no attribute 'UnicodeType'
-#@nonl
-#@+node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
-# The syntax of these functions must be valid on Python2K and Python3K.
-
-def isBytes(s):
-    '''Return True if s is Python3k bytes type.'''
-    if g.isPython3:
-        # Generates a pylint warning, but that can't be helped.
-        return type(s) == type(bytes('a','utf-8'))
-    else:
-        return False
-
-def isChar(s):
-    '''Return True if s is a Python2K character type.'''
-    if g.isPython3:
-        return False
-    else:
-        return type(s) == types.StringType
-
-def isString(s):
-    '''Return True if s is any string, but not bytes.'''
-    if g.isPython3:
-        return type(s) == type('a')
-    else:
-        return type(s) in types.StringTypes
-
-def isUnicode(s):
-    '''Return True if s is a unicode string.'''
-    if g.isPython3:
-        return type(s) == type('a')
-    else:
-        return type(s) == types.UnicodeType
-#@-node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
-#@+node:ekr.20050208093800:g.toEncodedString
-def toEncodedString (s,encoding,reportErrors=False):
-
-    if g.isUnicode(s):
-        try:
-            s = s.encode(encoding,"strict")
-        except UnicodeError:
-            if reportErrors: g.reportBadChars(s,encoding)
-            s = s.encode(encoding,"replace")
-    return s
-#@-node:ekr.20050208093800:g.toEncodedString
-#@+node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
-def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
-
-    ok = True
-
-    if g.isUnicode(s):
-        try:
-            s = s.encode(encoding,"strict")
-        except UnicodeError:
-            if reportErrors: g.reportBadChars(s,encoding)
-            s = s.encode(encoding,"replace")
-            ok = False
-    return s, ok
-#@-node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
-#@-node:ekr.20091206150342.6204:toEncodedStringWithErrorCode
 #@+node:ekr.20091206210418.6259:Latest failures
 Syntax error in: @shadow ../test/unittest/at-shadow-test.py
 makeTestSuite: @suite run all doctests (windows only) script did not set g.app.scriptDict
