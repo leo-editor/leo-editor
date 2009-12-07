@@ -63,8 +63,6 @@ if g.app.gui.guiName() == "qt":
 #@nl
 
 #@+others
-#@+node:tbrown.20091207102637.11493:menu / command table
-#@-node:tbrown.20091207102637.11493:menu / command table
 #@+node:tbrown.20070117104409.3:init and onCreate
 def init():
     leoPlugins.registerHandler('after-create-leo-frame', onCreate)
@@ -102,8 +100,14 @@ class quickMove:
         c.frame.menu.createMenuItemsFromTable('Move', self.table)
 
         if g.app.gui.guiName() == "qt":
-            g.tree_popup_handlers.append(self.popup)
+                g.tree_popup_handlers.append(self.popup)
     #@-node:ekr.20070117113133:ctor
+    #@+node:tbrown.20091207120031.5356:dtor
+    def __del__(self, c):
+
+        if g.app.gui.guiName() == "qt":
+                g.tree_popup_handlers.remove(self.popup)
+    #@-node:tbrown.20091207120031.5356:dtor
     #@+node:ekr.20070117113133.2:addTarget/AppendButton
     def addToFirstChildButton (self,event=None):
         self.addButton(first=True)
@@ -143,6 +147,9 @@ class quickMove:
     #@+node:tbrown.20091207102637.11494:popup
     def popup(self, c, p, menu):
         """make popup menu entry"""
+
+        if c != self.c:
+            return  # wrong commander
 
         pathmenu = menu.addMenu("Move")
 
