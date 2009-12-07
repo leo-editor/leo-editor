@@ -4709,7 +4709,7 @@ class editCommandsClass (baseEditCommandsClass):
             columns = [w.get('%s.%s' % (z,sint2),'%s.%s' % (z,sint4))
                 for z in range(sint1,sint3+1)]
             aList = g.splitLines(txt)
-            zlist = zip(columns,aList)
+            zlist = list(zip(columns,aList))
             zlist.sort()
             s = g.joinLines([z[1] for z in zlist])
             w.delete(i,j)

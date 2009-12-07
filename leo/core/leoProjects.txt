@@ -6127,6 +6127,37 @@ Traceback (most recent call last):
     zlist.sort()
 AttributeError: 'zip' object has no attribute 'sort'
 
+#@+node:ekr.20050920084036.119:sortColumns
+def sortColumns (self,event):
+
+    '''Sort lines of selected text using only lines in the given columns to do the comparison.'''
+
+    k = self.k
+    w = self.editWidget(event)
+    if not self._chckSel(event): return
+    self.beginCommand(undoType='sort-columns')
+    try:
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        sel_1,sel_2 = w.getSelectionRange()
+        sint1,sint2 = g.convertPythonIndexToRowCol(s,sel_1)
+        sint3,sint4 = g.convertPythonIndexToRowCol(s,sel_2)
+        sint1 += 1 ; sint3 += 1
+        i,junk = g.getLine(s,sel_1)
+        junk,j = g.getLine(s,sel_2)
+        txt = s[i:j]
+        columns = [w.get('%s.%s' % (z,sint2),'%s.%s' % (z,sint4))
+            for z in range(sint1,sint3+1)]
+        aList = g.splitLines(txt)
+        zlist = list(zip(columns,aList))
+        zlist.sort()
+        s = g.joinLines([z[1] for z in zlist])
+        w.delete(i,j)
+        w.insert(i,s)
+        w.setSelectionRange(sel_1,sel_1+len(s),insert=sel_1+len(s))
+    finally:
+        self.endCommand(changed=True,setLabel=True)
+#@-node:ekr.20050920084036.119:sortColumns
 #@-node:ekr.20091206150342.6194:sortColumns
 #@+node:ekr.20091206150342.6196:setSelectionRangeHelper
 ======================================================================
