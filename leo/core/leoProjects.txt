@@ -5419,8 +5419,6 @@ zip
      #@-others
 #@verbatim
  #@-node:ekr.20060516135654.69:class DictProxy
-
-#@nonl
 #@-node:ekr.20091203165343.6150:leo_RemoteDebugger
 #@+node:ekr.20091203165343.6149:leo_shell
 @@ -5,9 +5,9 @@
@@ -5646,8 +5644,6 @@ zip
      #@-node:ekr.20060516135654.21:interrupt_the_server
 #@verbatim
      #@+node:ekr.20060516135654.22:leo_run.Executive.start_the_debugger
-
-#@nonl
 #@-node:ekr.20091203165343.6148:leo_run (tkinter: to be deleted?)
 #@+node:ekr.20091203165343.6147:runLeo (tkinter: to be deleted?)
 
@@ -6066,6 +6062,63 @@ def sortColumns (self,event):
         self.endCommand(changed=True,setLabel=True)
 #@-node:ekr.20050920084036.119:sortColumns
 #@-node:ekr.20091206150342.6194:sortColumns
+#@+node:ekr.20091206150342.6196:setSelectionRangeHelper
+ERROR: @test paste from menu into headline sticks
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 10, in <module>
+  File "/home/edreamleo/leo.repo/leo-3k/leo/plugins/qtGui.py", line 382, in setSelectionRange
+    return self.setSelectionRangeHelper(i,j,insert)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/plugins/qtGui.py", line 1594, in setSelectionRangeHelper
+    insert = max(0,min(insert,n))
+TypeError: unorderable types: int() < str()
+#@-node:ekr.20091206150342.6196:setSelectionRangeHelper
+#@+node:ekr.20091206150342.6199:flattenHeadline
+ERROR: ImportExportTestCase: flattenOutline /home/edreamleo/leo.repo/leo-3k/leo/test/unittest/output/flattenOutline.txt
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1229, in runTest
+    self.importExport()
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1219, in importExport
+    command(event=None)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoCommands.py", line 1545, in flattenOutline
+    c.importCommands.flattenOutline(fileName)
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 409, in flattenOutline
+    theFile.write(head + nl)
+TypeError: can't concat bytes to str
+#@+node:ekr.20031218072017.1147:flattenOutline
+def flattenOutline (self,fileName):
+
+    c = self.c ; nl = g.u(self.output_newline)
+    p = c.currentVnode()
+    if not p: return
+    self.setEncoding()
+    firstLevel = p.level()
+
+    # 10/14/02: support for output_newline setting.
+    mode = c.config.output_newline
+    mode = g.choose(mode=="platform",'w','wb')
+    try:
+        theFile = open(fileName,mode)
+    except IOError:
+        g.es("can not open",fileName,color="blue")
+        leoTest.fail()
+        return
+
+    for p in p.self_and_subtree():
+        head = p.moreHead(firstLevel)
+        s = g.toEncodedString(head + nl,encoding=self.encoding,reportErrors=True)
+        theFile.write(s)
+        body = p.moreBody() # Inserts escapes.
+        if len(body) > 0:
+            s = g.toEncodedString(body + nl,self.encoding,reportErrors=True)
+            theFile.write(s)
+    theFile.close()
+#@-node:ekr.20031218072017.1147:flattenOutline
+#@-node:ekr.20091206150342.6199:flattenHeadline
 #@-node:ekr.20091206161352.6230:Fixed unit tests
 #@+node:ekr.20091206150342.6187:Failed unit tests
 @color
@@ -6180,21 +6233,29 @@ Traceback (most recent call last):
     theFile.write(head + nl)
 TypeError: can't concat bytes to str
 
+#@+node:ekr.20031218072017.1462:exportHeadlines
+def exportHeadlines (self,fileName):
+
+    c = self.c ; nl = g.u(self.output_newline)
+    p = c.p
+    if not p: return
+    self.setEncoding()
+    firstLevel = p.level()
+    mode = c.config.output_newline
+    mode = g.choose(mode=="platform",'w','wb')
+    try:
+        theFile = open(fileName,mode)
+    except IOError:
+        g.es("can not open",fileName,color="blue")
+        leoTest.fail()
+        return
+    for p in p.self_and_subtree():
+        head = p.moreHead(firstLevel,useVerticalBar=True)
+        s = g.toEncodedString(head + nl,self.encoding,reportErrors=True)
+        theFile.write(s)
+    theFile.close()
+#@-node:ekr.20031218072017.1462:exportHeadlines
 #@-node:ekr.20091206150342.6198:exportHeadlines
-#@+node:ekr.20091206150342.6199:flattenHeadline
-ERROR: ImportExportTestCase: flattenOutline /home/edreamleo/leo.repo/leo-3k/leo/test/unittest/output/flattenOutline.txt
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1229, in runTest
-    self.importExport()
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 1219, in importExport
-    command(event=None)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoCommands.py", line 1545, in flattenOutline
-    c.importCommands.flattenOutline(fileName)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoImport.py", line 409, in flattenOutline
-    theFile.write(head + nl)
-TypeError: can't concat bytes to str
-#@-node:ekr.20091206150342.6199:flattenHeadline
 #@+node:ekr.20091206150342.6200:scanWebFile
 ERROR: ImportExportTestCase: importCWEBFiles /home/edreamleo/leo.repo/leo-3k/leo/test/unittest/input/cweave.w
 ----------------------------------------------------------------------
@@ -6256,20 +6317,6 @@ AttributeError: 'itertools.tee' object has no attribute 'next'
 
 AttributeError: 'editBodyTestCase' object has no attribute 'p'
 #@-node:ekr.20091206150342.6209:leoTest line 116
-#@+node:ekr.20091206150342.6196:setSelectionRangeHelper
-ERROR: @test paste from menu into headline sticks
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 10, in <module>
-  File "/home/edreamleo/leo.repo/leo-3k/leo/plugins/qtGui.py", line 382, in setSelectionRange
-    return self.setSelectionRangeHelper(i,j,insert)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/plugins/qtGui.py", line 1594, in setSelectionRangeHelper
-    insert = max(0,min(insert,n))
-TypeError: unorderable types: int() < str()
-#@-node:ekr.20091206150342.6196:setSelectionRangeHelper
 #@-node:ekr.20091206150342.6187:Failed unit tests
 #@+node:ekr.20091206180115.6238:Latest failures
 @killcolor
