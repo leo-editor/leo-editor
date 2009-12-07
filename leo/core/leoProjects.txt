@@ -6329,13 +6329,58 @@ def outputStringWithLineEndings (self,s):
     self.os(s)
 #@-node:ekr.20041005105605.205:outputStringWithLineEndings
 #@-node:ekr.20091206150342.6189:outputStringWithLineEndings
+#@+node:ekr.20091206150342.6190:parse_leo_file
+ File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoFileCommands.py", line 1445, in parse_leo_file
+    theFile = StringIO(s)
+
+TypeError: initial_value must be str or None, not bytes
+#@+node:ekr.20060919110638.14:parse_leo_file
+def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
+
+    c = self.c
+    # g.trace('hiddenRootNode',c.hiddenRootNode)
+
+    try:
+        if g.isPython3:
+            if theFile:
+                pass # Just use the open binary file, opened by g.openLeoOrZipFile.
+            else:
+                theFile = StringIO(g.u(s))
+        else:
+            if theFile: s = theFile.read()
+            s = self.cleanSaxInputString(s)
+            theFile = cStringIO.StringIO(s)
+        parser = xml.sax.make_parser()
+        parser.setFeature(xml.sax.handler.feature_external_ges,1)
+            # Include external general entities, esp. xml-stylesheet lines.
+        if 0: # Expat does not read external features.
+            parser.setFeature(xml.sax.handler.feature_external_pes,1)
+                # Include all external parameter entities
+                # Hopefully the parser can figure out the encoding from the <?xml> element.
+        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
+        parser.setContentHandler(handler)
+        parser.parse(theFile) # expat does not support parseString
+        # g.trace('parsing done')
+        sax_node = handler.getRootNode()
+    except xml.sax.SAXParseException:
+        g.es_print('error parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+    except Exception:
+        g.es_print('unexpected exception parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+
+    return sax_node
+#@-node:ekr.20060919110638.14:parse_leo_file
+#@-node:ekr.20091206150342.6190:parse_leo_file
 #@-node:ekr.20091206161352.6230:Fixed unit tests
 #@+node:ekr.20091206150342.6187:Failed unit tests
 @color
 
 Best so far:
 
-FAILED (failures=9, errors=4)
+FAILED (failures=5, errors=4)
 #@nonl
 #@+node:ekr.20091206150342.6208:Real failures
 FAIL: @test @asis
@@ -6414,12 +6459,6 @@ Traceback (most recent call last):
 AttributeError: 'editBodyTestCase' object has no attribute 'p'
 #@nonl
 #@-node:ekr.20091206150342.6185:crash in log pane during unit tests
-#@+node:ekr.20091206150342.6190:parse_leo_file
- File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoFileCommands.py", line 1445, in parse_leo_file
-    theFile = StringIO(s)
-
-TypeError: initial_value must be str or None, not bytes
-#@-node:ekr.20091206150342.6190:parse_leo_file
 #@+node:ekr.20091206150342.6204:toEncodedStringWithErrorCode
 ERROR: @test of round-tripping toUnicode & toEncodedString
 
@@ -6463,72 +6502,12 @@ AttributeError: 'itertools.tee' object has no attribute 'next'
 AttributeError: 'editBodyTestCase' object has no attribute 'p'
 #@-node:ekr.20091206150342.6209:leoTest line 116
 #@-node:ekr.20091206150342.6187:Failed unit tests
-#@+node:ekr.20091206194627.6252:Latest failures
+#@+node:ekr.20091206194627.6253:Latest failures
 Syntax error in: @shadow ../test/unittest/at-shadow-test.py
 makeTestSuite: @suite run all doctests (windows only) script did not set g.app.scriptDict
-............F...........wrote: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
-.unchanged: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
-.created: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
-....
-End of leoAtFile tests
-....................................
-End of leoColor tests
-.................
-End of leoCommands tests
-......
-End of leoConfig tests
-................................................................................................................................................
-End of leoEditCommands tests.
-...FFYou must be using Python 2.5 or above to use aspell on Linux
-Leo Log Window
-Leo 4.7 devel, build 2277, August 28, 2009
-Python 3.1.1, qt version 4.5.2
-linux2
-.....
-End of leoFileCommands tests.
-....................................................................................test of at.printError: La Peña
-..FEFE.....E...........................................................E...........unexpected exception parsing <clipboard>
-Traceback (most recent call last):
 
-Traceback (most recent call last):
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoFileCommands.py", line 1445, in parse_leo_file
-    theFile = StringIO(s)
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoFileCommands.py", line 1445, in parse_leo_file
-    theFile = StringIO(s)
-
-TypeError: initial_value must be str or None, not bytes
-
-TypeError: initial_value must be str or None, not bytes
-
-the clipboard is not valid 
-Funexpected exception parsing <clipboard>
-Traceback (most recent call last):
-
-Traceback (most recent call last):
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoFileCommands.py", line 1445, in parse_leo_file
-    theFile = StringIO(s)
-
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoFileCommands.py", line 1445, in parse_leo_file
-    theFile = StringIO(s)
-
-TypeError: initial_value must be str or None, not bytes
-
-TypeError: initial_value must be str or None, not bytes
-
-the clipboard is not valid 
-F........
-End of leoNodes tests.
-.........................................................
-End of leoUndo tests.
-.tree.redrawCount: 331
-.all unit tests done
-.
 ======================================================================
 ERROR: @test of round-tripping toUnicode & toEncodedString
-
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
@@ -6540,7 +6519,6 @@ AttributeError: 'module' object has no attribute 'UnicodeType'
 
 ======================================================================
 ERROR: @test round trip toUnicode toEncodedString
-
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
@@ -6552,7 +6530,6 @@ AttributeError: 'module' object has no attribute 'UnicodeType'
 
 ======================================================================
 ERROR: @test g.create_temp_file
-
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
@@ -6562,7 +6539,6 @@ AttributeError: 'module' object has no attribute 'FileType'
 
 ======================================================================
 ERROR: @test find_h / find_b / select_h / select_b
-
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
@@ -6574,7 +6550,6 @@ AttributeError: 'itertools.tee' object has no attribute 'next'
 
 ======================================================================
 FAIL: @test @shadow: shape of tree
-
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
@@ -6584,7 +6559,6 @@ AssertionError
 
 ======================================================================
 FAIL: @test putDescendentVnodeUas
-
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
@@ -6594,7 +6568,6 @@ AssertionError: expected: ' descendentVnodeUnknownAttributes="7d7100285503302e30
 
 ======================================================================
 FAIL: @test putUa
-
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
@@ -6604,7 +6577,6 @@ AssertionError: expected: ' unit_test="55046162636471002e"', got: ' unit_test="b
 
 ======================================================================
 FAIL: @test failure to convert unicode characters to ascii
-
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
@@ -6614,7 +6586,6 @@ AssertionError: toUnicodeWithErrorCode returns True for 炰 with ascii encoding
 
 ======================================================================
 FAIL: @test failure with ascii encodings
-
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
@@ -6622,31 +6593,11 @@ Traceback (most recent call last):
   File "<string>", line 10, in <module>
 AssertionError: toUnicodeWithErrorCode returns True for 炰 with ascii encoding
 
-======================================================================
-FAIL: @test paste-node
-
 ----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 25, in <module>
-AssertionError: fail 2
+Ran 480 tests in 43.786s
 
-======================================================================
-FAIL: @test paste-retaining-clones
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 18, in <module>
-AssertionError: fail 2
-
-----------------------------------------------------------------------
-Ran 480 tests in 43.998s
-
-FAILED (failures=7, errors=4)
-#@-node:ekr.20091206194627.6252:Latest failures
+FAILED (failures=5, errors=4)
+#@-node:ekr.20091206194627.6253:Latest failures
 #@-node:ekr.20091203060018.6100:leo-3k
 #@-all
 #@nonl

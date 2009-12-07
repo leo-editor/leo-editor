@@ -1442,7 +1442,7 @@ class baseFileCommands:
                 if theFile:
                     pass # Just use the open binary file, opened by g.openLeoOrZipFile.
                 else:
-                    theFile = StringIO(s)
+                    theFile = StringIO(g.u(s))
             else:
                 if theFile: s = theFile.read()
                 s = self.cleanSaxInputString(s)
