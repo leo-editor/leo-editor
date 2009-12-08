@@ -3352,6 +3352,12 @@ def putDescendentTnodeUas (self,p):
 #@-node:ekr.20091007104807.6470:Code
 #@-node:ekr.20090718091653.5982:Leo 4.7 projects
 #@+node:ekr.20091203060018.6100:leo-3k
+@nocolor-node
+
+To do:
+
+- Write tnodes in proper order.
+#@nonl
 #@+node:ekr.20091206180115.6235:Changed
 #@+node:ekr.20090521175848.5881:<< define the nullObject class >>
 # From the Python cookbook, recipe 5.23
@@ -6374,18 +6380,41 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
     return sax_node
 #@-node:ekr.20060919110638.14:parse_leo_file
 #@-node:ekr.20091206150342.6190:parse_leo_file
-#@+node:ekr.20091206150342.6204:toEncodedStringWithErrorCode
-ERROR: @test of round-tripping toUnicode & toEncodedString
-
+#@+node:ekr.20091206224118.6260:unicode failures
+FAIL: @test failure to convert unicode characters to ascii
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
     exec(script,d)
-  File "<string>", line 17, in <module>
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoGlobals.py", line 5679, in toEncodedStringWithErrorCode
-    if type(s) == types.UnicodeType:
-AttributeError: 'module' object has no attribute 'UnicodeType'
-#@nonl
+  File "<string>", line 11, in <module>
+AssertionError: toUnicodeWithErrorCode returns True for 炰 with ascii encoding
+
+======================================================================
+FAIL: @test of round-tripping toUnicode & toEncodedString
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 19, in <module>
+AssertionError: Round-trip one fails for a
+
+======================================================================
+FAIL: @test failure with ascii encodings
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 10, in <module>
+AssertionError: toUnicodeWithErrorCode returns True for 炰 with ascii encoding
+
+======================================================================
+FAIL: @test round trip toUnicode toEncodedString
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 27, in <module>
+AssertionError: Round-trip one failed for a
 #@+node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
 # The syntax of these functions must be valid on Python2K and Python3K.
 
@@ -6418,6 +6447,7 @@ def isUnicode(s):
     else:
         return type(s) == types.UnicodeType
 #@-node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
+#@+node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
 #@+node:ekr.20050208093800:g.toEncodedString
 def toEncodedString (s,encoding,reportErrors=False):
 
@@ -6443,7 +6473,81 @@ def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
             ok = False
     return s, ok
 #@-node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
-#@-node:ekr.20091206150342.6204:toEncodedStringWithErrorCode
+#@+node:ekr.20050208093800.1:g.toUnicode
+def toUnicode (s,encoding,reportErrors=False):
+
+    if isPython3:
+        convert,mustConvert,nullVal = str,g.isBytes,''
+    else:
+        convert,nullVal = unicode,unicode('')
+        def mustConvert (s):
+            return type(s) != types.UnicodeType
+
+    if not s:
+        s = nullVal
+    elif mustConvert(s):
+        try:
+            s = convert(s,encoding,'strict')
+        except UnicodeError:
+            s = convert(s,encoding,'replace')
+            if reportErrors: g.reportBadChars(s,encoding)
+    else:
+        pass
+
+    return s
+#@nonl
+#@-node:ekr.20050208093800.1:g.toUnicode
+#@+node:ekr.20091206161352.6232:g.u
+def u(s,encoding='utf-8'):
+    if g.isPython3:
+        if type(s) == type(''):
+            return s
+        else:
+            return str(s,encoding)
+    else:
+        return unicode(s,encoding)
+#@nonl
+#@-node:ekr.20091206161352.6232:g.u
+#@+node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
+def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
+
+    ok = True
+    if g.isPython3: f = str
+    else: f = unicode
+    if s is None:
+        s = g.u('')
+    if not g.isUnicode(s):
+        try:
+            s = f(s,encoding,'strict')
+        except (UnicodeError,ValueError):
+            if reportErrors:
+                g.reportBadChars(s,encoding)
+            s = f(s,encoding,'replace')
+            ok = False
+    return s,ok
+
+    # if isPython3:
+        # if s is None:
+            # s = ''
+        # if g.isString(s):
+            # s = repr(s)
+        # else:
+            # pass # Leave s unchanged.
+    # else:
+        # if s is None:
+            # s = unicode('')
+        # if type(s) != types.UnicodeType:
+            # try:
+                # s = unicode(s,encoding,"strict")
+            # except UnicodeError:
+                # if reportErrors:
+                    # g.reportBadChars(s,encoding)
+                # s = unicode(s,encoding,"replace")
+                # ok = False
+    # return s,ok
+#@-node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
+#@-node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
+#@-node:ekr.20091206224118.6260:unicode failures
 #@-node:ekr.20091206161352.6230:Fixed unit tests
 #@+node:ekr.20091206150342.6187:Failed unit tests
 @color
@@ -6452,6 +6556,7 @@ Best so far:
 
 FAILED (failures=5, errors=4)
 FAILED (failures=7, errors=2)
+FAILED (failures=3, errors=2)
 #@nonl
 #@+node:ekr.20091206150342.6208:Real failures
 FAIL: @test @asis
@@ -6515,21 +6620,6 @@ Traceback (most recent call last):
   File "<string>", line 18, in <module>
 AssertionError: fail 2
 #@-node:ekr.20091206150342.6208:Real failures
-#@+node:ekr.20091206150342.6185:crash in log pane during unit tests
-@nocolor-node
-
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoCommands.py", line 390, in doCommand
-    val = command(event)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoEditCommands.py", line 1356, in runUnitTestsLocally
-    leoTest.doTests(c,all=False)
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 116, in doTests
-    archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 116, in <listcomp>
-    archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
-AttributeError: 'editBodyTestCase' object has no attribute 'p'
-#@nonl
-#@-node:ekr.20091206150342.6185:crash in log pane during unit tests
 #@+node:ekr.20091206150342.6205:FileType not in Python3k
 ERROR: @test g.create_temp_file
 
@@ -6553,144 +6643,11 @@ Traceback (most recent call last):
     first = t1.next()
 AttributeError: 'itertools.tee' object has no attribute 'next'
 #@-node:ekr.20091206150342.6206:leoNodes iterators
-#@+node:ekr.20091206150342.6209:leoTest line 116
- File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 116, in <listcomp>
-    archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
-
-AttributeError: 'editBodyTestCase' object has no attribute 'p'
-#@-node:ekr.20091206150342.6209:leoTest line 116
 #@-node:ekr.20091206150342.6187:Failed unit tests
-#@+node:ekr.20091206210418.6259:Latest failures
-Syntax error in: @shadow ../test/unittest/at-shadow-test.py
-makeTestSuite: @suite run all doctests (windows only) script did not set g.app.scriptDict
-............F...........wrote: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
-.unchanged: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
-.created: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
-....
-End of leoAtFile tests
-....................................
-End of leoColor tests
-.................
-End of leoCommands tests
-......
-End of leoConfig tests
-................................................................................................................................................
-End of leoEditCommands tests.
-...FFYou must be using Python 2.5 or above to use aspell on Linux
-Leo Log Window
-Leo 4.7 devel, build 2277, August 28, 2009
-Python 3.1.1, qt version 4.5.2
-linux2
-.....
-End of leoFileCommands tests.
-....................................................................................test of at.printError: La Peña
-..FFFF.....E...........................................................E.....................
-End of leoNodes tests.
-.........................................................
-End of leoUndo tests.
-.tree.redrawCount: 339
-.all unit tests done
-.
-======================================================================
-ERROR: @test g.create_temp_file
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 7, in <module>
-AttributeError: 'module' object has no attribute 'FileType'
-
-======================================================================
-ERROR: @test find_h / find_b / select_h / select_b
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 23, in <module>
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoNodes.py", line 2842, in select_b
-    first = t1.next()
-AttributeError: 'itertools.tee' object has no attribute 'next'
-
-======================================================================
-FAIL: @test @shadow: shape of tree
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 15, in <module>
-AssertionError
-
-======================================================================
-FAIL: @test putDescendentVnodeUas
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 19, in <module>
-AssertionError: expected: ' descendentVnodeUnknownAttributes="7d7100285503302e3071017d7102550f756e69745f746573745f6368696c6471035504616263647104735505302e302e3071057d71065514756e69745f746573745f6772616e646368696c64710755047778797a710873752e"', got: ' descendentVnodeUnknownAttributes="b\'7d7100285803000000302e3071017d7102580f000000756e69745f746573745f6368696c6471035804000000616263647104735805000000302e302e3071057d71065814000000756e69745f746573745f6772616e646368696c64710758040000007778797a710873752e\'"'
-
-======================================================================
-FAIL: @test putUa
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 7, in <module>
-AssertionError: expected: ' unit_test="55046162636471002e"', got: ' unit_test="b\'58040000006162636471002e\'"'
-
-======================================================================
-FAIL: @test failure to convert unicode characters to ascii
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 11, in <module>
-AssertionError: toUnicodeWithErrorCode returns True for 炰 with ascii encoding
-
-======================================================================
-FAIL: @test of round-tripping toUnicode & toEncodedString
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 19, in <module>
-AssertionError: Round-trip one fails for a
-
-======================================================================
-FAIL: @test failure with ascii encodings
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 10, in <module>
-AssertionError: toUnicodeWithErrorCode returns True for 炰 with ascii encoding
-
-======================================================================
-FAIL: @test round trip toUnicode toEncodedString
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 27, in <module>
-AssertionError: Round-trip one failed for a
-
-----------------------------------------------------------------------
-Ran 480 tests in 44.159s
-
-FAILED (failures=7, errors=2)
-wrote recent file: /home/edreamleo/.leo/.leoRecentFiles.txt
-edreamleo@edreamleo-laptop:~/leo.repo/leo-3k$ 
-
-#@-node:ekr.20091206210418.6259:Latest failures
+#@+node:ekr.20091207194815.6263:Latest failures
+@nocolor-node
+#@nonl
+#@-node:ekr.20091207194815.6263:Latest failures
 #@-node:ekr.20091203060018.6100:leo-3k
 #@-all
 #@nonl

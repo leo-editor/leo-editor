@@ -2510,13 +2510,12 @@ def create_temp_file (textMode=False):
 #@+node:ekr.20090517020744.5873:@test g.create_temp_file
 if g.unitTesting:
 
-    import types
-
     c,p = g.getTestVars()
-    theFile,theFileName = g.create_temp_file()
 
-    assert type(theFile) == types.FileType, 'not file type'
-    assert type(theFileName) in (types.StringType, types.UnicodeType), 'not string type'
+    theFile,fn = g.create_temp_file()
+    assert theFile
+    assert g.isString(fn)
+#@nonl
 #@-node:ekr.20090517020744.5873:@test g.create_temp_file
 #@-node:ekr.20031218072017.3117:g.create_temp_file & test
 #@+node:ekr.20031218072017.3118:g.ensure_extension
@@ -5711,26 +5710,39 @@ def u(s,encoding='utf-8'):
 def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
 
     ok = True
-
-    if isPython3:
-        if s is None:
-            s = ''
-        if g.isString(s):
-            s = repr(s)
-        else:
-            pass # Leave s unchanged.
-    else:
-        if s is None:
-            s = unicode('')
-        if type(s) != types.UnicodeType:
-            try:
-                s = unicode(s,encoding,"strict")
-            except UnicodeError:
-                if reportErrors:
-                    g.reportBadChars(s,encoding)
-                s = unicode(s,encoding,"replace")
-                ok = False
+    if g.isPython3: f = str
+    else: f = unicode
+    if s is None:
+        s = g.u('')
+    if not g.isUnicode(s):
+        try:
+            s = f(s,encoding,'strict')
+        except (UnicodeError,ValueError):
+            if reportErrors:
+                g.reportBadChars(s,encoding)
+            s = f(s,encoding,'replace')
+            ok = False
     return s,ok
+
+    # if isPython3:
+        # if s is None:
+            # s = ''
+        # if g.isString(s):
+            # s = repr(s)
+        # else:
+            # pass # Leave s unchanged.
+    # else:
+        # if s is None:
+            # s = unicode('')
+        # if type(s) != types.UnicodeType:
+            # try:
+                # s = unicode(s,encoding,"strict")
+            # except UnicodeError:
+                # if reportErrors:
+                    # g.reportBadChars(s,encoding)
+                # s = unicode(s,encoding,"replace")
+                # ok = False
+    # return s,ok
 #@-node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
 #@-node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
 #@-node:ekr.20031218072017.1498:Unicode utils...
