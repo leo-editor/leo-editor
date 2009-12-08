@@ -454,7 +454,10 @@ class baseCommands (object):
             m = re.finditer(pat, p.b)
             t1,t2 = itertools.tee(m,2)
             try:
-                first = t1.next()
+                if g.isPython3:
+                    first = t1.__next__()
+                else:
+                    first = t1.next()
             except StopIteration:
                 continue
             pc = p.copy()

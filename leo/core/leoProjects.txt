@@ -6549,89 +6549,45 @@ def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
 #@-node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
 #@-node:ekr.20091206224118.6260:unicode failures
 #@-node:ekr.20091206161352.6230:Fixed unit tests
-#@+node:ekr.20091206150342.6187:Failed unit tests
-@color
+#@+node:ekr.20091207194815.6263:Latest failures
+@nocolor-node
 
-Best so far:
-
-FAILED (failures=5, errors=4)
-FAILED (failures=7, errors=2)
-FAILED (failures=3, errors=2)
-#@nonl
-#@+node:ekr.20091206150342.6208:Real failures
-FAIL: @test @asis
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 5, in <module>
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 948, in runAtFileTest
-    assert(result == expected)
-AssertionError
-
-
-FAIL: @test @shadow: shape of tree
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 15, in <module>
-AssertionError
-
-FAIL: @test @noref
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 5, in <module>
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 948, in runAtFileTest
-    assert(result == expected)
-AssertionError
-
-FAIL: @test putDescendentVnodeUas
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 19, in <module>
-AssertionError: expected: ' descendentVnodeUnknownAttributes="7d7100285503302e3071017d7102550f756e69745f746573745f6368696c6471035504616263647104735505302e302e3071057d71065514756e69745f746573745f6772616e646368696c64710755047778797a710873752e"', got: ' descendentVnodeUnknownAttributes="b\'7d7100285803000000302e3071017d7102580f000000756e69745f746573745f6368696c6471035804000000616263647104735805000000302e302e3071057d71065814000000756e69745f746573745f6772616e646368696c64710758040000007778797a710873752e\'"'
-
-FAIL: @test putUa
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 7, in <module>
-AssertionError: expected: ' unit_test="55046162636471002e"', got: ' unit_test="b\'58040000006162636471002e\'"'
-
-FAIL: @test paste-node
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 25, in <module>
-AssertionError: fail 2
-
-FAIL: @test paste-retaining-clones
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 18, in <module>
-AssertionError: fail 2
-#@-node:ekr.20091206150342.6208:Real failures
-#@+node:ekr.20091206150342.6205:FileType not in Python3k
-ERROR: @test g.create_temp_file
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 7, in <module>
-AttributeError: 'module' object has no attribute 'FileType'
-#@nonl
-#@-node:ekr.20091206150342.6205:FileType not in Python3k
-#@+node:ekr.20091206150342.6206:leoNodes iterators
+getSaxUa can not unhexlify unit_test=b'585d0100006227353861353030303030303632323733353338333433393330333033303330333033303336333233323337333333353333333833333331333633323333333033333330333333303333333033333330333333303333333633333332333333323333333733333333333333353333333333333338333333333333333033333333333333343333333333333330333333333333333033333333333333303333333333333330333333333333333033333333333333303333333333333336333333333333333133333333333333363333333333333332333333333333333633333333333333333333333333333336333333333333333433333333333333373333333333333331333333333333333033333333333333303333333333333332333333363333333533333332333333373333333733333331333333303333333033333332333633353332333733373331333033303332363532373731303032652771002e'
+reading /home/edreamleo/.leo/.leoRecentFiles.txt
+doPlugins ignoring all plugins
+You must be using Python 2.5 or above to use aspell on Linux
+getSaxUa can not unhexlify unit_test=b'585d0100006227353861353030303030303632323733353338333433393330333033303330333033303336333233323337333333353333333833333331333633323333333033333330333333303333333033333330333333303333333633333332333333323333333733333333333333353333333333333338333333333333333033333333333333343333333333333330333333333333333033333333333333303333333333333330333333333333333033333333333333303333333333333336333333333333333133333333333333363333333333333332333333333333333633333333333333333333333333333336333333333333333433333333333333373333333333333331333333333333333033333333333333303333333333333332333333363333333533333332333333373333333733333331333333303333333033333332333633353332333733373331333033303332363532373731303032652771002e'
+Syntax error in: @shadow ../test/unittest/at-shadow-test.py
+makeTestSuite: @suite run all doctests (windows only) script did not set g.app.scriptDict
+............F...........wrote: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
+.unchanged: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
+.created: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
+....
+End of leoAtFile tests
+....................................
+End of leoColor tests
+.................
+End of leoCommands tests
+......
+End of leoConfig tests
+................................................................................................................................................
+End of leoEditCommands tests.
+...FFYou must be using Python 2.5 or above to use aspell on Linux
+Leo Log Window
+Leo 4.7 devel, build 2277, August 28, 2009
+Python 3.1.1, qt version 4.5.2
+linux2
+.....
+End of leoFileCommands tests.
+....................................................................................test of at.printError: La Peña
+.......................................................................E.....................
+End of leoNodes tests.
+.........................................................
+End of leoUndo tests.
+.tree.redrawCount: 339
+.all unit tests done
+.
+======================================================================
 ERROR: @test find_h / find_b / select_h / select_b
 
 ----------------------------------------------------------------------
@@ -6642,10 +6598,41 @@ Traceback (most recent call last):
   File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoNodes.py", line 2842, in select_b
     first = t1.next()
 AttributeError: 'itertools.tee' object has no attribute 'next'
-#@-node:ekr.20091206150342.6206:leoNodes iterators
-#@-node:ekr.20091206150342.6187:Failed unit tests
-#@+node:ekr.20091207194815.6263:Latest failures
-@nocolor-node
+
+======================================================================
+FAIL: @test @shadow: shape of tree
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 15, in <module>
+AssertionError
+
+======================================================================
+FAIL: @test putDescendentVnodeUas
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 19, in <module>
+AssertionError: expected: ' descendentVnodeUnknownAttributes="7d7100285503302e3071017d7102550f756e69745f746573745f6368696c6471035504616263647104735505302e302e3071057d71065514756e69745f746573745f6772616e646368696c64710755047778797a710873752e"', got: ' descendentVnodeUnknownAttributes="b\'7d7100285803000000302e3071017d7102580f000000756e69745f746573745f6368696c6471035804000000616263647104735805000000302e302e3071057d71065814000000756e69745f746573745f6772616e646368696c64710758040000007778797a710873752e\'"'
+
+======================================================================
+FAIL: @test putUa
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 7, in <module>
+AssertionError: expected: ' unit_test="55046162636471002e"', got: ' unit_test="b\'58040000006162636471002e\'"'
+
+----------------------------------------------------------------------
+Ran 480 tests in 45.310s
+
+FAILED (failures=3, errors=1)
 #@nonl
 #@-node:ekr.20091207194815.6263:Latest failures
 #@-node:ekr.20091203060018.6100:leo-3k

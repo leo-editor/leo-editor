@@ -2820,9 +2820,6 @@ class poslist(list):
                     pc.mo = m
                     res.append(pc)
         return res
-
-
-
     #@-node:ville.20090311190405.69:select_h
     #@+node:ville.20090311195550.1:select_b
     def select_b(self, regex, flags = re.IGNORECASE ):
@@ -2839,7 +2836,10 @@ class poslist(list):
             m = re.finditer(pat, p.b)
             t1,t2 = itertools.tee(m,2)
             try:
-                first = t1.next()
+                if g.isPython3:
+                    first = t1.__next__()
+                else:
+                    first = t1.next()
                 # if does not raise StopIteration...
                 pc = p.copy()
                 pc.matchiter = t2
@@ -2849,9 +2849,6 @@ class poslist(list):
                 pass
 
         return res
-
-
-
     #@-node:ville.20090311195550.1:select_b
     #@-others
 #@-node:ville.20090311190405.68:class poslist
