@@ -11464,7 +11464,12 @@ for v1,condition,v2 in (
 <t tx="ekr.20061001114236">fc = c.fileCommands # self is a dummy
 p.v.unknownAttributes = {'unit_test':'abcd'}
 s = fc.putUnknownAttributes (p.v)
-expected = ' unit_test="55046162636471002e"'
+
+if g.isPython3:
+    expected = ' unit_test=b"55046162636471002e"'
+else:
+    expected = ' unit_test="55046162636471002e"'
+
 assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
 </t>
 <t tx="ekr.20061001114637"># 3 failures with Alt-5</t>

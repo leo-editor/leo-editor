@@ -608,7 +608,7 @@ class baseFileCommands:
         # The bin param doesn't exist in Python 2.3;
         # the protocol param doesn't exist in earlier versions of Python.
         version = '.'.join([str(sys.version_info[i]) for i in (0,1)])
-        self.python23 = g.CheckVersion(version,'2.3')
+        # self.python23 = g.CheckVersion(version,'2.3')
 
         # For reading
         self.checking = False # True: checking only: do *not* alter the outline.
@@ -2419,18 +2419,13 @@ class baseFileCommands:
         '''Pickle val and return the hexlified result.'''
 
         try:
-            if self.python23:
-                s = pickle.dumps(val,protocol=1) # Requires Python 2.3
-                # g.trace('protocol=1')
-            else:
-                s = pickle.dumps(val,bin=True) # Requires Earlier version of Python.
-                # g.trace('bin=True')
+            s = pickle.dumps(val,protocol=1) # Requires Python 2.3
+            s = g.u(s)
             field = ' %s="%s"' % (tag,binascii.hexlify(s))
             return field
 
         except pickle.PicklingError:
-            if tag:
-                # The caller will print the error if tag is None.
+            if tag: # The caller will print the error if tag is None.
                 g.es_print("ignoring non-pickleable value",val,"in",torv,color="blue")
             return ''
 

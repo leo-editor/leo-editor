@@ -2515,7 +2515,6 @@ if g.unitTesting:
     theFile,fn = g.create_temp_file()
     assert theFile
     assert g.isString(fn)
-#@nonl
 #@-node:ekr.20090517020744.5873:@test g.create_temp_file
 #@-node:ekr.20031218072017.3117:g.create_temp_file & test
 #@+node:ekr.20031218072017.3118:g.ensure_extension

@@ -3356,6 +3356,8 @@ def putDescendentTnodeUas (self,p):
 
 To do:
 
+** Make sure all doctests are run.
+- Use g.u where possible in leoGuiPlugins.leo.
 - Write tnodes in proper order.
 #@nonl
 #@+node:ekr.20091206180115.6235:Changed
