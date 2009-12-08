@@ -6548,6 +6548,75 @@ def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
 #@-node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
 #@-node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
 #@-node:ekr.20091206224118.6260:unicode failures
+#@+node:ekr.20091207194815.6264:t1.next
+ERROR: @test find_h / find_b / select_h / select_b
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
+    exec(script,d)
+  File "<string>", line 23, in <module>
+  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoNodes.py", line 2842, in select_b
+    first = t1.next()
+AttributeError: 'itertools.tee' object has no attribute 'next'
+#@+node:ville.20090311195550.1:select_b
+def select_b(self, regex, flags = re.IGNORECASE ):
+    """ Find all the nodes in poslist where body matches regex
+
+    You can chain find_h / find_b with select_h / select_b like this
+    to refine an outline search::
+
+        pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')
+    """
+    pat = re.compile(regex, flags)
+    res = poslist()
+    for p in self:
+        m = re.finditer(pat, p.b)
+        t1,t2 = itertools.tee(m,2)
+        try:
+            if g.isPython3:
+                first = t1.__next__()
+            else:
+                first = t1.next()
+            # if does not raise StopIteration...
+            pc = p.copy()
+            pc.matchiter = t2
+            res.append(pc)
+
+        except StopIteration:
+            pass
+
+    return res
+#@-node:ville.20090311195550.1:select_b
+#@+node:ville.20090311200059.1:c.find_b
+def find_b(self, regex, flags = re.IGNORECASE | re.MULTILINE):
+    """ Return list (a poslist) of all nodes whose body matches the regex
+
+    You can chain find_h / find_b with select_h / select_b like this
+    to refine an outline search::
+
+    pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')    
+    """
+
+    c = self
+    pat = re.compile(regex, flags)
+    res = leoNodes.poslist()
+    for p in c.all_positions():
+        m = re.finditer(pat, p.b)
+        t1,t2 = itertools.tee(m,2)
+        try:
+            if g.isPython3:
+                first = t1.__next__()
+            else:
+                first = t1.next()
+        except StopIteration:
+            continue
+        pc = p.copy()
+        pc.matchiter = t2
+        res.append(pc)
+    return res
+#@-node:ville.20090311200059.1:c.find_b
+#@-node:ekr.20091207194815.6264:t1.next
 #@-node:ekr.20091206161352.6230:Fixed unit tests
 #@+node:ekr.20091207194815.6263:Latest failures
 @nocolor-node

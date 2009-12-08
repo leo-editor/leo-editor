@@ -21702,7 +21702,7 @@ table = (
 assert not p.isDirty(),p.h # Do not ignore this failure!
 
 for p2,h2 in table:
-    assert len(p2.h) == h2</t>
+    assert len(p2.h) == len(h2)</t>
 <t tx="ekr.20090704085350.5028">@language python
 @others</t>
 <t tx="ekr.20090704085350.5029">def spam():
