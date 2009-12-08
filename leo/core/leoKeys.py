@@ -311,7 +311,7 @@ class autoCompleterClass:
             self.verbose = not self.verbose
             if type(self.theObject) == types.DictType:
                 self.membersList = list(self.theObject.keys())
-            elif type(self.theObject) in (types.ListType,types.TupleType):
+            elif type(self.theObject) in (type((),),type([])): ### types.TupleType,types.ListType):types.ListType,types.TupleType):
                 self.membersList = self.theObject
             self.computeCompletionList(verbose=self.verbose)
         elif ch and ch in string.printable:
