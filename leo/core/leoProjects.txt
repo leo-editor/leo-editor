@@ -3357,9 +3357,10 @@ def putDescendentTnodeUas (self,p):
 To do:
 
 ** Make sure all doctests are run.
-- Use g.u where possible in leoGuiPlugins.leo.
+
 ** Write tnodes in proper order (the same order as in leo2k).
 - Enable plugins in doPlugins.
+- Use g.u where possible in leoGuiPlugins.leo.
 #@nonl
 #@+node:ekr.20091206180115.6235:Changed
 #@+node:ekr.20090521175848.5881:<< define the nullObject class >>
@@ -6619,68 +6620,7 @@ def find_b(self, regex, flags = re.IGNORECASE | re.MULTILINE):
     return res
 #@-node:ville.20090311200059.1:c.find_b
 #@-node:ekr.20091207194815.6264:t1.next
-#@-node:ekr.20091206161352.6230:Fixed unit tests
-#@+node:ekr.20091207194815.6263:Latest failures
-@nocolor-node
-
-getSaxUa can not unhexlify unit_test=b'585d0100006227353861353030303030303632323733353338333433393330333033303330333033303336333233323337333333353333333833333331333633323333333033333330333333303333333033333330333333303333333633333332333333323333333733333333333333353333333333333338333333333333333033333333333333343333333333333330333333333333333033333333333333303333333333333330333333333333333033333333333333303333333333333336333333333333333133333333333333363333333333333332333333333333333633333333333333333333333333333336333333333333333433333333333333373333333333333331333333333333333033333333333333303333333333333332333333363333333533333332333333373333333733333331333333303333333033333332333633353332333733373331333033303332363532373731303032652771002e'
-reading /home/edreamleo/.leo/.leoRecentFiles.txt
-doPlugins ignoring all plugins
-You must be using Python 2.5 or above to use aspell on Linux
-getSaxUa can not unhexlify unit_test=b'585d0100006227353861353030303030303632323733353338333433393330333033303330333033303336333233323337333333353333333833333331333633323333333033333330333333303333333033333330333333303333333633333332333333323333333733333333333333353333333333333338333333333333333033333333333333343333333333333330333333333333333033333333333333303333333333333330333333333333333033333333333333303333333333333336333333333333333133333333333333363333333333333332333333333333333633333333333333333333333333333336333333333333333433333333333333373333333333333331333333333333333033333333333333303333333333333332333333363333333533333332333333373333333733333331333333303333333033333332333633353332333733373331333033303332363532373731303032652771002e'
-Syntax error in: @shadow ../test/unittest/at-shadow-test.py
-makeTestSuite: @suite run all doctests (windows only) script did not set g.app.scriptDict
-............F...........wrote: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
-.unchanged: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
-.created: /home/edreamleo/leo.repo/leo-3k/leo/test/xyzzy2
-....
-End of leoAtFile tests
-....................................
-End of leoColor tests
-.................
-End of leoCommands tests
-......
-End of leoConfig tests
-................................................................................................................................................
-End of leoEditCommands tests.
-...FFYou must be using Python 2.5 or above to use aspell on Linux
-Leo Log Window
-Leo 4.7 devel, build 2277, August 28, 2009
-Python 3.1.1, qt version 4.5.2
-linux2
-.....
-End of leoFileCommands tests.
-....................................................................................test of at.printError: La Peña
-.......................................................................E.....................
-End of leoNodes tests.
-.........................................................
-End of leoUndo tests.
-.tree.redrawCount: 339
-.all unit tests done
-.
-======================================================================
-ERROR: @test find_h / find_b / select_h / select_b
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 23, in <module>
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoNodes.py", line 2842, in select_b
-    first = t1.next()
-AttributeError: 'itertools.tee' object has no attribute 'next'
-
-======================================================================
-FAIL: @test @shadow: shape of tree
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 15, in <module>
-AssertionError
-
-======================================================================
+#@+node:ekr.20091207194815.6265:putDescendentVnodeUas
 FAIL: @test putDescendentVnodeUas
 
 ----------------------------------------------------------------------
@@ -6689,8 +6629,8 @@ Traceback (most recent call last):
     exec(script,d)
   File "<string>", line 19, in <module>
 AssertionError: expected: ' descendentVnodeUnknownAttributes="7d7100285503302e3071017d7102550f756e69745f746573745f6368696c6471035504616263647104735505302e302e3071057d71065514756e69745f746573745f6772616e646368696c64710755047778797a710873752e"', got: ' descendentVnodeUnknownAttributes="b\'7d7100285803000000302e3071017d7102580f000000756e69745f746573745f6368696c6471035804000000616263647104735805000000302e302e3071057d71065814000000756e69745f746573745f6772616e646368696c64710758040000007778797a710873752e\'"'
-
-======================================================================
+#@-node:ekr.20091207194815.6265:putDescendentVnodeUas
+#@+node:ekr.20091207194815.6266:putUa
 FAIL: @test putUa
 
 ----------------------------------------------------------------------
@@ -6699,13 +6639,173 @@ Traceback (most recent call last):
     exec(script,d)
   File "<string>", line 7, in <module>
 AssertionError: expected: ' unit_test="55046162636471002e"', got: ' unit_test="b\'58040000006162636471002e\'"'
+#@+node:ekr.20061003093021:getSaxUa
+def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
 
-----------------------------------------------------------------------
-Ran 480 tests in 45.310s
+    """Parse an unknown attribute in a <v> or <t> element.
+    The unknown tag has been pickled and hexlify'd.
+    """
 
-FAILED (failures=3, errors=1)
+    try:
+        val = str(val)
+    except UnicodeError:
+        g.es_print('unexpected exception converting hexlified string to string')
+        g.es_exception()
+
+    # g.trace(attr,repr(val))
+
+    # New in 4.3: leave string attributes starting with 'str_' alone.
+    if attr.startswith('str_') and type(val) == type(''):
+        # g.trace(attr,val)
+        return val
+
+    # New in 4.3: convert attributes starting with 'b64_' using the base64 conversion.
+    if 0: # Not ready yet.
+        if attr.startswith('b64_'):
+            try: pass
+            except Exception: pass
+
+    try:
+        binString = binascii.unhexlify(val) # Throws a TypeError if val is not a hex string.
+    except Exception:
+        # Python 2.x throws TypeError
+        # Python 3.x throws binascii.Error
+        # Assume that Leo 4.1 wrote the attribute.
+        if g.unitTesting:
+            assert kind == 'raw','unit test failed: kind=' % repr(kind)
+        else:
+            g.trace('can not unhexlify %s=%s' % (attr,val))
+        return val
+    try:
+        # No change needed to support protocols.
+        val2 = pickle.loads(binString)
+        # g.trace('v.3 val:',val2)
+        return val2
+    except (pickle.UnpicklingError,ImportError,AttributeError,ValueError):
+        g.trace('can not unpickle %s=%s' % (attr,val))
+        return val
+#@+node:ekr.20090702072557.6495:@test getSaxUa
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    expectedIconDictList = [
+    {
+        'on': 'tnode',
+        'where': 'beforeHeadline',
+        'yoffset': 0,
+        # 'file': u'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\add.png',
+        'file': 'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\add.png',
+        'xpad': 1,
+        'type': 'file',
+        'xoffset': 2,
+        # 'relPath': u'Tango\\16x16\\actions\\add.png',
+        'relPath': 'Tango\\16x16\\actions\\add.png',
+    },
+    {
+        'on': 'tnode',
+        'where': 'beforeHeadline',
+        'yoffset': 0,
+        # 'file': u'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\bottom.png',
+        'file': 'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\bottom.png',
+        'xpad': 1,
+        'type': 'file',
+        'xoffset': 2,
+        # 'relPath': u'Tango\\16x16\\actions\\bottom.png',
+        'relPath': 'Tango\\16x16\\actions\\bottom.png',
+    }]
+    table = (
+('tx','raw',None,"ekr.20090701133940.1767"),
+('lineYOffset',None,3,"4b032e"),
+# A real icon
+('icons',None,expectedIconDictList,
+"5d7100287d71012855026f6e71025505746e6f6465710355047479\
+70657104550466696c6571055507796f666673657471064b006805583700000\
+0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
+676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
+471084b01550577686572657109550e6265666f7265486561646c696e65710a\
+5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
+e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
+55026f6e710f68035504747970657110550466696c6571115507796f6666736\
+57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
+656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
+4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
+65666f7265486561646c696e6571165507786f666673657471174b025507726\
+56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
+5c626f74746f6d2e706e67711975652e"),
+)
+    for attr,kind,expected,val in table:
+        result = c.fileCommands.getSaxUa(attr,val,kind=kind)
+        if expected is None: expected = val
+        assert expected==result,'expected %s got %s' % (
+            expected,result)
 #@nonl
-#@-node:ekr.20091207194815.6263:Latest failures
+#@-node:ekr.20090702072557.6495:@test getSaxUa
+#@-node:ekr.20061003093021:getSaxUa
+#@+node:EKR.20040526202501:putUnknownAttributes
+def putUnknownAttributes (self,torv):
+
+    """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
+
+    attrDict = torv.unknownAttributes
+    if type(attrDict) != type({}):
+        g.es("ignoring non-dictionary unknownAttributes for",torv,color="blue")
+        return ''
+    else:
+        val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
+        # g.trace(torv,attrDict)
+        return val
+#@-node:EKR.20040526202501:putUnknownAttributes
+#@+node:ekr.20050418161620.2:putUaHelper
+def putUaHelper (self,torv,key,val):
+
+    '''Put attribute whose name is key and value is val to the output stream.'''
+
+    # g.trace(key,repr(val),g.callers())
+
+    # New in 4.3: leave string attributes starting with 'str_' alone.
+    if key.startswith('str_'):
+        if type(val) == type(''):
+            attr = ' %s="%s"' % (key,xml.sax.saxutils.escape(val))
+            return attr
+        else:
+            g.es("ignoring non-string attribute",key,"in",torv,color="blue")
+            return ''
+    else:
+        return self.pickle(torv=torv,val=val,tag=key)
+#@-node:ekr.20050418161620.2:putUaHelper
+#@+node:ekr.20080805085257.2:pickle
+def pickle (self,torv,val,tag):
+
+    '''Pickle val and return the hexlified result.'''
+
+    trace = False
+    try:
+        if g.isPython3:
+            # s = pickle.dumps(val,protocol=1,fix_imports=False)
+            s = pickle.dumps(val)
+        else:
+            s = pickle.dumps(val,protocol=1)
+        s2 = binascii.hexlify(s)
+        s3 = g.u(s2)
+        if trace: g.trace('\n',
+            type(val),val,'\n',type(s),repr(s),'\n',
+            type(s2),s2,'\n',type(s3),s3)
+        field = ' %s="%s"' % (tag,s3)
+        return field
+
+    except pickle.PicklingError:
+        if tag: # The caller will print the error if tag is None.
+            g.es_print("ignoring non-pickleable value",val,"in",torv,color="blue")
+        return ''
+
+    except Exception:
+        g.es("fc.pickle: unexpected exception in",torv,color='red')
+        g.es_exception()
+        return ''
+#@-node:ekr.20080805085257.2:pickle
+#@-node:ekr.20091207194815.6266:putUa
+#@-node:ekr.20091206161352.6230:Fixed unit tests
 #@-node:ekr.20091203060018.6100:leo-3k
 #@-all
 #@nonl
