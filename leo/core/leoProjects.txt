@@ -3358,7 +3358,8 @@ To do:
 
 ** Make sure all doctests are run.
 - Use g.u where possible in leoGuiPlugins.leo.
-- Write tnodes in proper order.
+** Write tnodes in proper order (the same order as in leo2k).
+- Enable plugins in doPlugins.
 #@nonl
 #@+node:ekr.20091206180115.6235:Changed
 #@+node:ekr.20090521175848.5881:<< define the nullObject class >>
@@ -4044,9 +4045,8 @@ def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
         val2 = pickle.loads(binString)
         # g.trace('v.3 val:',val2)
         return val2
-    except (pickle.UnpicklingError,ImportError,AttributeError):
-        g.trace('can not unpickle %s=%s' % (
-            attr,val),g.callers(3))
+    except (pickle.UnpicklingError,ImportError,AttributeError,ValueError):
+        g.trace('can not unpickle %s=%s' % (attr,val))
         return val
 #@+node:ekr.20090702072557.6495:@test getSaxUa
 if g.unitTesting:

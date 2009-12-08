@@ -1369,9 +1369,8 @@ class baseFileCommands:
             val2 = pickle.loads(binString)
             # g.trace('v.3 val:',val2)
             return val2
-        except (pickle.UnpicklingError,ImportError,AttributeError):
-            g.trace('can not unpickle %s=%s' % (
-                attr,val),g.callers(3))
+        except (pickle.UnpicklingError,ImportError,AttributeError,ValueError):
+            g.trace('can not unpickle %s=%s' % (attr,val))
             return val
     #@+node:ekr.20090702072557.6495:@test getSaxUa
     if g.unitTesting:
@@ -2418,10 +2417,19 @@ class baseFileCommands:
 
         '''Pickle val and return the hexlified result.'''
 
+        trace = False
         try:
-            s = pickle.dumps(val,protocol=1) # Requires Python 2.3
-            s = g.u(s)
-            field = ' %s="%s"' % (tag,binascii.hexlify(s))
+            if g.isPython3:
+                # s = pickle.dumps(val,protocol=1,fix_imports=False)
+                s = pickle.dumps(val)
+            else:
+                s = pickle.dumps(val,protocol=1)
+            s2 = binascii.hexlify(s)
+            s3 = g.u(s2)
+            if trace: g.trace('\n',
+                type(val),val,'\n',type(s),repr(s),'\n',
+                type(s2),s2,'\n',type(s3),s3)
+            field = ' %s="%s"' % (tag,s3)
             return field
 
         except pickle.PicklingError:

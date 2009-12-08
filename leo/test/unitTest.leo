@@ -2492,8 +2492,6 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20061001114236"></v>
-<v t="ekr.20080805104144.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -11461,16 +11459,16 @@ for v1,condition,v2 in (
     ('1','&lt;','1.1'),
 ):
     assert g.CheckVersion(v1,v2,condition=condition,trace=False)</t>
-<t tx="ekr.20061001114236">fc = c.fileCommands # self is a dummy
+<t tx="ekr.20061001114236" unit_test="554c3830303335383163303030303030333833303330333333353338333033343330333033303330333033303336333133363332333633333336333433373331333033303332363537313030326571002e">fc = c.fileCommands # self is a dummy
 p.v.unknownAttributes = {'unit_test':'abcd'}
 s = fc.putUnknownAttributes (p.v)
 
 if g.isPython3:
-    expected = ' unit_test=b"55046162636471002e"'
+    expected = ' unit_test="800358040000006162636471002e"'
 else:
     expected = ' unit_test="55046162636471002e"'
 
-assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
+assert s == expected, '\nexpected: %s\ngot:      %s' % (repr(expected),repr(s))
 </t>
 <t tx="ekr.20061001114637"># 3 failures with Alt-5</t>
 <t tx="ekr.20061001124008">fc = c.fileCommands
@@ -16635,17 +16633,25 @@ grandChild.v.unknownAttributes = {'unit_test_grandchild':'wxyz'}
 try:
 
     s = fc.putDescendentVnodeUas (p)
-    
-    expected = ' descendentVnodeUnknownAttributes="\
+
+    if g.isPython3:
+        expected = ' descendentVnodeUnknownAttributes="\
+80037d7100285803000000302e3071017d7102580f000000756e6974\
+5f746573745f6368696c647103580400000061626364710473580500\
+0000302e302e3071057d71065814000000756e69745f746573745f67\
+72616e646368696c64710758040000007778797a710873752e"'
+    else:
+        expected = ' descendentVnodeUnknownAttributes="\
 7d7100285503302e3071017d7102550f756e69745f746573745f\
 6368696c6471035504616263647104735505302e302e3071057d\
 71065514756e69745f746573745f6772616e646368696c647107\
 55047778797a710873752e"'
-    
+
     assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
 finally:
     del child.v.unknownAttributes
-    del grandChild.v.unknownAttributes</t>
+    del grandChild.v.unknownAttributes
+</t>
 <t tx="ekr.20080805104144.2"></t>
 <t tx="ekr.20080805104144.3"></t>
 <t tx="ekr.20080805105541.1">val = p.archivedPosition(root_p=p)
