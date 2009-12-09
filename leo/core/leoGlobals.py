@@ -5696,11 +5696,11 @@ def toUnicode (s,encoding,reportErrors=False):
 #@-node:ekr.20050208093800.1:g.toUnicode
 #@+node:ekr.20091206161352.6232:g.u
 def u(s,encoding='utf-8'):
-    if g.isPython3:
-        if type(s) == type(''):
-            return s
-        else:
-            return str(s,encoding)
+
+    if g.isUnicode(s):
+        return s
+    elif g.isPython3:
+       return str(s,encoding)
     else:
         return unicode(s,encoding)
 #@nonl

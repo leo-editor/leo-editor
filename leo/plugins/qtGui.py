@@ -904,7 +904,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         w = self.widget
 
-        return g.u(w.toPlainText())
+        s = g.u(w.toPlainText())
+
+        return s
     #@-node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
     #@+node:ekr.20081121105001.581:getInsertPoint
     def getInsertPoint(self):
@@ -7205,10 +7207,11 @@ class leoQtGui(leoGui.leoGui):
     def toUnicode (self,s,encoding=None,reportErrors=True):
 
         try:
-            return g.u(s)
+            s = g.u(s)
+            return s
         except Exception:
             # g.trace('Warning - toUnicode does encoding (bugs possible)')
-            return g.toUnicode(s,'utf-8',errors='replace')
+            return g.toUnicode(s,'utf-8',reportErrors='replace')
     #@-node:ekr.20081121105001.502:toUnicode (qtGui)
     #@+node:ekr.20081121105001.503:widget_name (qtGui)
     def widget_name (self,w):

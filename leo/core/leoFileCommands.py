@@ -2417,13 +2417,9 @@ class baseFileCommands:
 
         '''Pickle val and return the hexlified result.'''
 
-        trace = False
+        trace = False and g.unitTesting
         try:
-            if g.isPython3:
-                # s = pickle.dumps(val,protocol=1,fix_imports=False)
-                s = pickle.dumps(val)
-            else:
-                s = pickle.dumps(val,protocol=1)
+            s = pickle.dumps(val,protocol=1)
             s2 = binascii.hexlify(s)
             s3 = g.u(s2)
             if trace: g.trace('\n',
