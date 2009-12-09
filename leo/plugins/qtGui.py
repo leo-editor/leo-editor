@@ -7604,10 +7604,11 @@ class leoQtEventFilter(QtCore.QObject):
         toString = QtGui.QKeySequence(keynum).toString()
 
         # Do *not* use g.u here: ch1 is a wrapper type.
+        # Convert the Qt wrapper to a Python unicode string.
         if g.isPython3:
-            toUnicode = str
+            u = str
         else:
-            toUnicode = unicode
+            u = unicode
 
         try:
             ch1 = chr(keynum)
@@ -7615,12 +7616,12 @@ class leoQtEventFilter(QtCore.QObject):
             ch1 = ''
 
         try:
-            ch = toUnicode(ch1) # g.u does not work here.
+            ch = u(ch1) # Do not use g.u here!
         except UnicodeError:
             ch = ch1
 
-        text     = toUnicode(text)
-        toString = toUnicode(toString)
+        text     = u(text)
+        toString = u(toString)
 
         if trace and self.keyIsActive: g.trace(
             'keynum %s ch %s ch1 %s toString %s' % (
