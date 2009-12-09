@@ -5697,6 +5697,8 @@ def toUnicode (s,encoding,reportErrors=False):
 #@+node:ekr.20091206161352.6232:g.u
 def u(s,encoding='utf-8'):
 
+    '''Convert the string s to unicode if necessary.'''
+
     if g.isUnicode(s):
         return s
     elif g.isPython3:

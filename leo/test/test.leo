@@ -391,6 +391,56 @@
 <v t="ekr.20091201200308.1866"><vh>Minimize</vh></v>
 </vnodes>
 <tnodes>
+<t tx="edward.20081127113749.10">def undo_replacement(self):
+    u = self.c.undoer; c=self.c; p=u.p
+    bunch = u.getBead(u.bead)
+    c.setBodyString(p, bunch.oldBody)
+    c.frame.body.setInsertPoint(bunch.insertPos)</t>
+<t tx="edward.20081127113749.11">def redo_replacement(self):
+    c = self.c; u=c.undoer; bunch=u.getBead(u.bead+1)
+    c.setBodyString(bunch.p, bunch.newBody)
+    c.frame.body.setInsertPoint(bunch.insertPos)</t>
+<t tx="edward.20081127113749.12">def exit(self):
+    #g.app.config.set(c,word_completer_key,'WordCompleter',None)
+    #g.app.config.set(c,'next_word_completer','WordCompleter',None)
+    self.pos = -1</t>
+<t tx="edward.20081127113749.13">def run(self):
+    self.adjust(self.p, c.frame.body.getInsertPoint())
+    self.complete_word()
+</t>
+<t tx="edward.20081127113749.14">def adjust(self, p, pos):
+    if p != self.p or pos != self.pos:
+        self.p = p.copy()
+        self.pos = pos
+        bs = p.bodyString()
+        word = getCurrentWord(bs, pos)
+        self.word = word
+        self.before = bs[:pos-len(word)]
+        self.after = bs[pos:]
+        self.search_pos = p.copy()
+        if self.back:
+            self.chunk = self.before
+        else:
+            self.chunk = self.after
+        self.tried = {word:1}</t>
+<t tx="edward.20081127113749.15">def getCurrentWord(s, pos):
+    i = pos-1
+    while i&gt;=0 and wordsep.find(s[i]) &lt; 0:
+         i -= 1
+    return s[i+1:pos]</t>
+<t tx="edward.20081127113749.16">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
+word_completer_key = 'next_word_completer'
+@others
+completer = g.app.config.get(c,word_completer_key,'WordCompleter')
+if completer is None:
+    completer = WordCompleter(p, c, back=False)
+    g.app.config.set(c, word_completer_key, 'WordCompleter', completer)
+    completer.run()
+else:
+    completer.adjust(p, c.frame.body.getInsertPoint())
+    completer.complete_word()
+
+</t>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
 word_completer_key = 'back_word_completer'
 @others
@@ -495,56 +545,6 @@ def acceptable_word(self, i, txt, word):
 
             return True
     return False
-</t>
-<t tx="edward.20081127113749.10">def undo_replacement(self):
-    u = self.c.undoer; c=self.c; p=u.p
-    bunch = u.getBead(u.bead)
-    c.setBodyString(p, bunch.oldBody)
-    c.frame.body.setInsertPoint(bunch.insertPos)</t>
-<t tx="edward.20081127113749.11">def redo_replacement(self):
-    c = self.c; u=c.undoer; bunch=u.getBead(u.bead+1)
-    c.setBodyString(bunch.p, bunch.newBody)
-    c.frame.body.setInsertPoint(bunch.insertPos)</t>
-<t tx="edward.20081127113749.12">def exit(self):
-    #g.app.config.set(c,word_completer_key,'WordCompleter',None)
-    #g.app.config.set(c,'next_word_completer','WordCompleter',None)
-    self.pos = -1</t>
-<t tx="edward.20081127113749.13">def run(self):
-    self.adjust(self.p, c.frame.body.getInsertPoint())
-    self.complete_word()
-</t>
-<t tx="edward.20081127113749.14">def adjust(self, p, pos):
-    if p != self.p or pos != self.pos:
-        self.p = p.copy()
-        self.pos = pos
-        bs = p.bodyString()
-        word = getCurrentWord(bs, pos)
-        self.word = word
-        self.before = bs[:pos-len(word)]
-        self.after = bs[pos:]
-        self.search_pos = p.copy()
-        if self.back:
-            self.chunk = self.before
-        else:
-            self.chunk = self.after
-        self.tried = {word:1}</t>
-<t tx="edward.20081127113749.15">def getCurrentWord(s, pos):
-    i = pos-1
-    while i&gt;=0 and wordsep.find(s[i]) &lt; 0:
-         i -= 1
-    return s[i+1:pos]</t>
-<t tx="edward.20081127113749.16">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
-word_completer_key = 'next_word_completer'
-@others
-completer = g.app.config.get(c,word_completer_key,'WordCompleter')
-if completer is None:
-    completer = WordCompleter(p, c, back=False)
-    g.app.config.set(c, word_completer_key, 'WordCompleter', completer)
-    completer.run()
-else:
-    completer.adjust(p, c.frame.body.getInsertPoint())
-    completer.complete_word()
-
 </t>
 <t tx="edward.20081221145716.1">def debug(f,*args,**keys):
     if 1:
@@ -1635,6 +1635,7 @@ for pattern in (
         g.pr('pattern:',pattern)
         g.pr(g.listToString(proposals))</t>
 <t tx="ekr.20080529111617.1"></t>
+<t tx="ekr.20080529111617.10">The name of time unit (e.g. days, weeks, hours)</t>
 <t tx="ekr.20080529111617.2"></t>
 <t tx="ekr.20080529111617.3">The colour used instead of green in progress bars</t>
 <t tx="ekr.20080529111617.4">The colour used instead of red in progress bars</t>
@@ -1651,7 +1652,6 @@ for pattern in (
 1: unscaled progress bars
 2: scaled progress bars</t>
 <t tx="ekr.20080529111617.9">pixels per time unit to add to width of scaled progress bars</t>
-<t tx="ekr.20080529111617.10">The name of time unit (e.g. days, weeks, hours)</t>
 <t tx="ekr.20080531080812.1">def eggs():
     g.trace()
 

@@ -3420,10 +3420,7 @@ zip
 @nocolor-node
 
 - add list for .keys(), .values(), .items()
-- changes to library.
-
-- opening .leo files from the command line didn't work.
-- different exceptions get thrown.
+- changes to library & exceptions.
 
 *** Happy surprises ***
 
@@ -4240,13 +4237,14 @@ def toUnicode (s,encoding,reportErrors=False):
 #@+node:ekr.20091206161352.6232:g.u
 def u(s,encoding='utf-8'):
 
+    '''Convert the string s to unicode if necessary.'''
+
     if g.isUnicode(s):
         return s
     elif g.isPython3:
        return str(s,encoding)
     else:
         return unicode(s,encoding)
-#@nonl
 #@-node:ekr.20091206161352.6232:g.u
 #@+node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
 def toUnicodeWithErrorCode (s,encoding,reportErrors=False):

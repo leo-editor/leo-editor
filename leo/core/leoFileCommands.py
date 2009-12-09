@@ -1918,22 +1918,37 @@ class baseFileCommands:
         tnodes = {}
         nodeIndices = g.app.nodeIndices
         for p in theIter:
-            tnodes[p.v.fileIndex] = p.v
+            # Make *sure* the file index has the proper form.
+            # g.trace(p.v.fileIndex)
+            try:
+                theId,t,n = p.v.fileIndex
+            except ValueError:
+                try:
+                    theId,t,n = p.v.fileIndex,''
+                except Exception:
+                    raise BadLeoFile('bad p.v.fileIndex' % repr(index))
 
-        if g.isPython3:
-            aList = list(tnodes.keys())
-        else:
-            aList = sorted(tnodes)
+            if n is None:
+                n = g.u('0')
+            elif g.isPython3:
+                n = str(n)
+            else:
+                n = unicode(n)
+            index = theId,t,n
+            tnodes[index] = p.v
 
         # Put all tnodes in index order.
-        for index in aList:
+        for index in sorted(tnodes):
             # g.trace(index)
             v = tnodes.get(index)
-            if not v:
-                g.trace('can not happen: no vnode for',index)
-            # Write only those tnodes whose vnodes were written.
-            if v.isWriteBit():
-                self.putTnode(v)
+            if v:
+                # Write only those tnodes whose vnodes were written.
+                if v.isWriteBit():
+                    self.putTnode(v)
+            else:
+                g.trace('can not happen: no vnode for',repr(index))
+                # This prevents the file from being written.
+                raise BadLeoFile('no vnode for %s' % repr(index))
         #@-node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
         #@nl
         self.put("</tnodes>\n")
