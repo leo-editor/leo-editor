@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="0" left="0" height="848" width="1588"/>
+	<global_window_position top="0" left="0" height="848" width="1229"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -660,7 +660,7 @@
 <v t="ekr.20050912125735.2844"><vh>pie_menus.py</vh></v>
 <v t="ville.20090704073251.9442"><vh>contextmenu.py</vh></v>
 </v>
-<v t="ekr.20050912125735.525"><vh>Nodes</vh>
+<v t="ekr.20050912125735.525" a="E"><vh>Nodes</vh>
 <v t="ekr.20050912125735.526"><vh>at_folder.py</vh></v>
 <v t="ekr.20050912125735.529"><vh>at_produce.py</vh></v>
 <v t="ekr.20050912125735.540"><vh>at_view.py</vh></v>
@@ -668,6 +668,7 @@
 <v t="ekr.20050912125735.556"><vh>base64Packager.py</vh></v>
 <v t="ekr.20050912125735.565"><vh>fastGotoNode.py</vh></v>
 <v t="ekr.20050912125735.597"><vh>mod_labels.py</vh></v>
+<v t="tbrown.20091209092858.17775"><vh>quickmove.py</vh></v>
 <v t="ekr.20050912125735.647"><vh>read_only_nodes.py</vh></v>
 <v t="ekr.20050912125735.674"><vh>run_nodes.py</vh></v>
 <v t="ekr.20060928201227.1"><vh>slideshow.py</vh></v>
@@ -14515,7 +14516,10 @@ tktable widget at http://sourceforge.net/projects/tktable.
 This plugin creates a dyna_menu menu from which you can execute commands.
 You may download the latest version at: http://rclick.netfirms.com/dyna_menu.py.html</t>
 <t tx="ekr.20050912125735.525"></t>
-<t tx="ekr.20050912125735.526">Synchronizes ``@folder`` nodes with folders. If a node is named ``@folder
+<t tx="ekr.20050912125735.526">See active_path.py under files for a more up to date version of this
+plugin.
+
+Synchronizes ``@folder`` nodes with folders. If a node is named ``@folder
 path_to_folder``, the content (filenames) of the folder and the children of that
 node will be sync. Whenever a new file is put there, a new node will appear on
 top of the children list (with mark). So that I can put my description (i.e.,
@@ -23025,7 +23029,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="2,15,0,7,0"></t>
+<t tx="ekr.20070610174018" str_leo_pos="2,15,0,12,0"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -31738,6 +31742,22 @@ active_path is a rewrite of the at_directory plugin to use @path directives (whi
     
   @data active_path_autoload
     List of regex expressions active_path @auto loads automatically</t>
+<t tx="tbrown.20091209092858.17775">Create buttons to quickly move nodes to other nodes
+
+Quickly move nodes from around the tree to one or more target nodes.
+
+Adds 'Move/Clone/Copy To Last Child Button' and 'Move/Clone/Copy To First Child
+Button' commands to the Move submenu on the Outline menu, and the context menu,
+if contextmenu.py is enabled.
+
+Select a node 'Foo' and then use the 'To Last Child Button' command. The adds a
+'to Foo' button to the button bar. Now select another node and click the 'to
+Foo' button. The selected node will be moved or cloned to the last child of the
+node 'Foo'.
+
+'To First Child Button' works the same way, except that moved nodes are inserted
+as the first child of the target node.
+</t>
 <t tx="ville.20090520232034.6345">g.app.gui.runScrolledMessageDialog(c=c, msg = u'rst:' + p.b)</t>
 <t tx="ville.20090520232138.11304">Qt version of nav_buttons.py (history navigation)</t>
 <t tx="ville.20090520232138.11305">This plugin adds a fast-to-use search widget, in the style of "Find in files" feature of many editors.

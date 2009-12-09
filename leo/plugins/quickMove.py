@@ -6,16 +6,19 @@
 #@+node:tbrown.20070117104409.1:<< docstring >>
 """Create buttons to quickly move nodes to other nodes
 
-Adds 'Move/Clone To Last Child Button' and 
-'Move/Clone To First Child Button' commands to the Outline menu.
+Quickly move nodes from around the tree to one or more target nodes.
 
-Select a node 'Foo' and then use the 'To Last Child Button' command. The adds a 'to
-Foo' button to the button bar. Now select another node and click the 'to Foo'
-button. The selected node will be moved or cloned to the last child of the
+Adds 'Move/Clone/Copy To Last Child Button' and 'Move/Clone/Copy To First Child
+Button' commands to the Move submenu on the Outline menu, and the context menu,
+if contextmenu.py is enabled.
+
+Select a node 'Foo' and then use the 'To Last Child Button' command. The adds a
+'to Foo' button to the button bar. Now select another node and click the 'to
+Foo' button. The selected node will be moved or cloned to the last child of the
 node 'Foo'.
 
-'To First Child Button' works the same way, except that moved nodes are inserted as the
-first child of the target node.
+'To First Child Button' works the same way, except that moved nodes are inserted
+as the first child of the target node.
 
 """
 #@nonl
