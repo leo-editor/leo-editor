@@ -3356,8 +3356,8 @@ def putDescendentTnodeUas (self,p):
 
 To do:
 
+* Caching does not work for leo3k.
 * Make sure all doctests are run.
-* Write tnodes in proper order (the same order as in leo2k).
 - Fix plugins that fail with Python3k.
 - Run all tests in this file. (These are minor failures).
     FAILED (failures=3, errors=6)
@@ -4245,6 +4245,7 @@ def u(s,encoding='utf-8'):
        return str(s,encoding)
     else:
         return unicode(s,encoding)
+#@nonl
 #@-node:ekr.20091206161352.6232:g.u
 #@+node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
 def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
@@ -4380,6 +4381,88 @@ def doPlugins(tag,keywords):
 
     return doHandlersForTag(tag,keywords)
 #@-node:ekr.20041001161108:doPlugins
+#@+node:ekr.20091209095640.6218:Output tnodes in proper order
+#@+node:ekr.20031218072017.1997:scanGnx
+def scanGnx (self,s,i):
+
+    """Create a gnx from its string representation"""
+
+    if not g.isString(s):
+        g.es("scanGnx: unexpected index type:",type(s),'',s,color="red")
+        return None,None,None
+
+    s = s.strip()
+
+    theId,t,n = None,None,None
+    i,theId = g.skip_to_char(s,i,'.')
+    if g.match(s,i,'.'):
+        i,t = g.skip_to_char(s,i+1,'.')
+        if g.match(s,i,'.'):
+            i,n = g.skip_to_char(s,i+1,'.')
+    # Use self.defaultId for missing id entries.
+    if theId == None or len(theId) == 0:
+        theId = self.defaultId
+    # Convert n to int.
+    if n:
+        try: n = int(n)
+        except Exception: pass
+
+    return theId,t,n
+#@-node:ekr.20031218072017.1997:scanGnx
+#@+node:ekr.20031218072017.1575:putTnodes
+def putTnodes (self):
+
+    """Puts all tnodes as required for copy or save commands"""
+
+    c = self.c
+
+    self.put("<tnodes>\n")
+    << write only those tnodes that were referenced >>
+    self.put("</tnodes>\n")
+#@+node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
+if self.usingClipboard: # write the current tree.
+    theIter = c.p.self_and_subtree()
+else: # write everything
+    theIter = c.all_unique_positions()
+
+# Populate tnodes
+tnodes = {}
+nodeIndices = g.app.nodeIndices
+for p in theIter:
+    # Make *sure* the file index has the proper form.
+    # g.trace(p.v.fileIndex)
+    try:
+        theId,t,n = p.v.fileIndex
+    except ValueError:
+        try:
+            theId,t,n = p.v.fileIndex,''
+        except Exception:
+            raise BadLeoFile('bad p.v.fileIndex' % repr(index))
+
+    if n is None:
+        n = g.u('0')
+    elif g.isPython3:
+        n = str(n)
+    else:
+        n = unicode(n)
+    index = theId,t,n
+    tnodes[index] = p.v
+
+# Put all tnodes in index order.
+for index in sorted(tnodes):
+    # g.trace(index)
+    v = tnodes.get(index)
+    if v:
+        # Write only those tnodes whose vnodes were written.
+        if v.isWriteBit():
+            self.putTnode(v)
+    else:
+        g.trace('can not happen: no vnode for',repr(index))
+        # This prevents the file from being written.
+        raise BadLeoFile('no vnode for %s' % repr(index))
+#@-node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
+#@-node:ekr.20031218072017.1575:putTnodes
+#@-node:ekr.20091209095640.6218:Output tnodes in proper order
 #@-node:ekr.20091206161352.6230:Fixed unit tests
 #@-node:ekr.20091203060018.6100:leo-3k
 #@-all
