@@ -1100,6 +1100,57 @@ class position (object):
 
         return not self.__eq__(p2) # For possible use in Python 2.x.
     #@-node:ekr.20080920052058.3:p.__eq__ & __ne__
+    #@+node:ekr.20091210082012.6230:p.__ge__ & __le__& __lt__
+    def __ge__ (self,other):
+
+        return self.__eq__(other) or self.__gt__(other)
+
+    def __le__ (self,other):
+
+        return self.__eq__(other) or self.__lt__(other)
+
+    def __lt__ (self,other):
+
+        return not self.__eq__(other) and not self.__gt__(other)
+    #@-node:ekr.20091210082012.6230:p.__ge__ & __le__& __lt__
+    #@+node:ekr.20091210082012.6233:p.__gt__
+    def __gt__ (self,other):
+
+        '''Return True if self appears after other in outline order.'''
+
+        trace = True
+        if trace: g.trace('***',self.h,'***',other.h)
+        for item1,item2 in zip(self.stack,other.stack):
+            v1,x1 = item1 ; v2,x2 = item2
+            if trace: print('index',x1,v1.h)
+            if trace: print('index',x2,v2.h)
+            if x1 > x2:
+                if trace: g.trace('True:  x1 > x2')
+                return True
+            elif x1 < x2:
+                if trace: g.trace('False: x1 < x2')
+                return False
+        # The stacks are equal.
+        if len(self.stack) == len(other.stack):
+            x1,x2 = self._childIndex,other._childIndex
+            if trace: g.trace('stack same',x1 > x2)
+            return x1 > x2
+        # The hard case
+        n = min(len(self.stack),len(other.stack))
+        if len(self.stack) < len(other.stack):
+            x1 = self._childIndex
+            item2 = other.stack[n]
+            v2,x2 = item2
+        else: # len(self.stack) > len(other.stack)
+            x2 = other._childIndex
+            item1 = self.stack[n]
+            v1,x1 = item1
+        if trace: print('x1,x2',x1,x2)
+        if trace: print('stack',self.stack)
+        if trace: print('stack',other.stack)
+        return x1 > x2
+        # return len(self.stack) > len(other.stack)
+    #@-node:ekr.20091210082012.6233:p.__gt__
     #@+node:ekr.20040117170612:p.__getattr__ (no longer used)
     # No longer used.  All code must now be aware of the one-node world.
 

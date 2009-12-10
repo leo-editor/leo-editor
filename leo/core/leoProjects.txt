@@ -4088,7 +4088,8 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
             if theFile:
                 pass # Just use the open binary file, opened by g.openLeoOrZipFile.
             else:
-                theFile = StringIO(g.u(s))
+                ### theFile = StringIO(g.u(s))
+                theFile = StringIO(str(s,encoding='utf-8'))
         else:
             if theFile: s = theFile.read()
             s = self.cleanSaxInputString(s)
@@ -4235,17 +4236,25 @@ def toUnicode (s,encoding,reportErrors=False):
 #@nonl
 #@-node:ekr.20050208093800.1:g.toUnicode
 #@+node:ekr.20091206161352.6232:g.u
-def u(s,encoding='utf-8'):
+if False:
+    def u(s):
+        '''Convert the string s to unicode if necessary.'''
+        if g.isUnicode(s):
+            return s
+        elif g.isPython3:
+           return str(s)
+        else:
+            return unicode(s)
+else:
+    def u(s,encoding='utf-8'):
+        '''Convert the string s to unicode if necessary.'''
+        if g.isUnicode(s):
+            return s
+        elif g.isPython3:
+           return str(s,encoding)
+        else:
+            return unicode(s,encoding)
 
-    '''Convert the string s to unicode if necessary.'''
-
-    if g.isUnicode(s):
-        return s
-    elif g.isPython3:
-       return str(s,encoding)
-    else:
-        return unicode(s,encoding)
-#@nonl
 #@-node:ekr.20091206161352.6232:g.u
 #@+node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
 def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
@@ -4381,6 +4390,7 @@ def doPlugins(tag,keywords):
 
     return doHandlersForTag(tag,keywords)
 #@-node:ekr.20041001161108:doPlugins
+#@-node:ekr.20091206161352.6230:Fixed unit tests
 #@+node:ekr.20091209095640.6218:Output tnodes in proper order
 #@+node:ekr.20031218072017.1997:scanGnx
 def scanGnx (self,s,i):
@@ -4463,7 +4473,6 @@ for index in sorted(tnodes):
 #@-node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
 #@-node:ekr.20031218072017.1575:putTnodes
 #@-node:ekr.20091209095640.6218:Output tnodes in proper order
-#@-node:ekr.20091206161352.6230:Fixed unit tests
 #@-node:ekr.20091203060018.6100:leo-3k
 #@-all
 #@nonl

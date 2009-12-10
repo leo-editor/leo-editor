@@ -5695,17 +5695,25 @@ def toUnicode (s,encoding,reportErrors=False):
 #@nonl
 #@-node:ekr.20050208093800.1:g.toUnicode
 #@+node:ekr.20091206161352.6232:g.u
-def u(s,encoding='utf-8'):
+if False:
+    def u(s):
+        '''Convert the string s to unicode if necessary.'''
+        if g.isUnicode(s):
+            return s
+        elif g.isPython3:
+           return str(s)
+        else:
+            return unicode(s)
+else:
+    def u(s,encoding='utf-8'):
+        '''Convert the string s to unicode if necessary.'''
+        if g.isUnicode(s):
+            return s
+        elif g.isPython3:
+           return str(s,encoding)
+        else:
+            return unicode(s,encoding)
 
-    '''Convert the string s to unicode if necessary.'''
-
-    if g.isUnicode(s):
-        return s
-    elif g.isPython3:
-       return str(s,encoding)
-    else:
-        return unicode(s,encoding)
-#@nonl
 #@-node:ekr.20091206161352.6232:g.u
 #@+node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
 def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
