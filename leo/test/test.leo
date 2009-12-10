@@ -4109,13 +4109,17 @@ c.frame.top.showNormal()
 # c.frame.top.setWindowState(QtCore.Qt.WindowMaximized)
 # c.frame.top.setWindowState(QtCore.Qt.WindowMinimized)
 </t>
-<t tx="ekr.20091210124428.1868">last = None
+<t tx="ekr.20091210124428.1868">done = False
 for p in c.all_positions():
-    if last:
-        if not p &gt; last:
-            g.es_print('%s not &gt; %s' % (p.h,last.h))
-            break
+    if done: break
     last = p.copy()
+    p2 = p.next()
+    g.es(p.h)
+    while p2:
+        if not p2 &gt; last:
+            g.es_print('%s not &gt; %s' % (p2.h,last.h))
+            done = True ; break
+        p2.moveToThreadNext()
 g.es('done!')
 </t>
 </tnodes>

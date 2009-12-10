@@ -1120,7 +1120,11 @@ class position (object):
 
         trace = True
         if trace: g.trace('***',self.h,'***',other.h)
-        for item1,item2 in zip(self.stack,other.stack):
+        stack1,stack2 = self.stack,other.stack
+        n1,n2 = len(stack1),len(stack2)
+        n = min(n1,n2)
+        for i in range(n):
+            item1,item2 = stack1[i],stack2[i]
             v1,x1 = item1 ; v2,x2 = item2
             if trace: print('index',x1,v1.h)
             if trace: print('index',x2,v2.h)
@@ -1130,26 +1134,21 @@ class position (object):
             elif x1 < x2:
                 if trace: g.trace('False: x1 < x2')
                 return False
-        # The stacks are equal.
-        if len(self.stack) == len(other.stack):
+        # Finish the comparison.
+        if n1 == n2:
             x1,x2 = self._childIndex,other._childIndex
-            if trace: g.trace('stack same',x1 > x2)
+            if trace: g.trace('same stack',x1,x2)
             return x1 > x2
-        # The hard case
-        n = min(len(self.stack),len(other.stack))
-        if len(self.stack) < len(other.stack):
-            x1 = self._childIndex
-            item2 = other.stack[n]
-            v2,x2 = item2
-        else: # len(self.stack) > len(other.stack)
-            x2 = other._childIndex
-            item1 = self.stack[n]
-            v1,x1 = item1
-        if trace: print('x1,x2',x1,x2)
-        if trace: print('stack',self.stack)
-        if trace: print('stack',other.stack)
-        return x1 > x2
-        # return len(self.stack) > len(other.stack)
+        elif n1 < n2:
+            v1,x1 = self.v,self._childIndex
+            v2,x2 = other.stack[n]
+            if trace: print('smaller stack')
+            if trace: print('x1,x2',x1,x2,'v1,v2',v1.h,v2.h)
+            return x1 > x2
+        else:
+            if trace: print('bigger stack')
+            return True
+    #@nonl
     #@-node:ekr.20091210082012.6233:p.__gt__
     #@+node:ekr.20040117170612:p.__getattr__ (no longer used)
     # No longer used.  All code must now be aware of the one-node world.
