@@ -84,6 +84,12 @@ def detach_editor(c):
 
     c.frame.detached_body_info = parent, parent.sizes()
     wdg.setParent(None)
+
+    sheet = c.config.getData('qt-gui-plugin-style-sheet')
+    if sheet:
+        sheet = '\n'.join(sheet)
+        wdg.setStyleSheet(sheet)
+
     wdg.show()
 
 def undetach_editor(c):
