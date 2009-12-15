@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>GeoTagger</title>
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="jquery.json-2.2.min.js"></script>
+    <script type="text/javascript" src="jquery.color.js"></script>
+    <script type="text/javascript"
+    src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script type="text/javascript" src="map.js"></script>
+    <script type="text/javascript">
+      //<![CDATA[
+      var jQ = jQuery;
+      jQ(initialize);
+      //]]>
+    </script>
+    <style type="text/css" >
+      body { padding: 5px; position: relative; }
+      * { font-family: sans; }
+      #map_holder { position: relative; width: 80%; height: 7in; }
+      #map_canvas { border: solid green 2px; 
+        width: 100%; height: 100%; }
+    </style>
+  </head>  <body>
+
+  <div><span id='info'>Position</span> <button id="send">Send</button>
+  <span id="response"></span>
+  </div>
+
+  <div>Find:<input id="geoquery" size="60"></input></div>
+  <div>Description:<input id="descrip" size="60"></input></div>
+  <div id="map_holder">
+  <div id="map_canvas"/>
+  </div>
+
+  <p>
+      <a href="http://validator.w3.org/check?uri=referer"><img
+       style="border:0;width:88px;height:31px"
+          src="http://www.w3.org/Icons/valid-xhtml10"
+          alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
+
+  <a href="http://jigsaw.w3.org/css-validator/check/referer">
+          <img style="border:0;width:88px;height:31px"
+              src="http://jigsaw.w3.org/css-validator/images/vcss"
+              alt="Valid CSS!" />
+      </a>
+
+    [<a href="./QUIT">QUIT</a>]
+
+  </p>
+
+  </body>
+</html>
