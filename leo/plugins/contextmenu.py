@@ -236,17 +236,20 @@ def deletenodes_rclick(c,p, menu):
     u = c.undoer
 
     def deletenodes_rclick_cb():
+
         c.endEditing()
         cull = []
         for nd in pl:
-            cull.append(nd.v)
+            cull.append((nd.v, nd.parent().v or None))
         u.beforeChangeGroup(current,undoType)
-        for v in cull:
-            p2 = c.vnode2position(v)
-            if c.positionExists(p2):
-                bunch = u.beforeDeleteNode(p2)
-                p2.doDelete()
-                u.afterDeleteNode(p2,undoType,bunch)
+        for v, vp in cull:
+            for pos in c.vnode2allPositions(v):
+                if c.positionExists(pos) and pos.parent().v == vp:
+                    bunch = u.beforeDeleteNode(pos)
+                    pos.doDelete()
+                    u.afterDeleteNode(pos,undoType,bunch)
+                    c.setChanged(True)
+                    break
         u.afterChangeGroup(current,undoType)
 
         c.redraw()                        

@@ -244,7 +244,7 @@ class todoController:
 
         taskmenu = menu.addMenu("Task")
 
-        submenu = taskmenu.addMenu("Icon")
+        submenu = taskmenu.addMenu("Status")
 
         iconlist = [(menu, i) for i in self.recentIcons]
         iconlist.extend([(submenu, i) for i in self.priorities])
@@ -811,6 +811,18 @@ class todoController:
                 x0 = g.app.gui.runAskOkCancelStringDialog(
                     self.c,'Reclassify priority' ,'%s priorities (1-7,19)' % end.upper())
             try:
+                while re.search(r'\d+-\d+', x0):
+                    what = re.search(r'\d+-\d+', x0).group(0)
+                    rng = [int(n) for n in what.split('-')]
+                    repl = []
+                    if rng[0] > rng[1]:
+                        for n in range(rng[0], rng[1]-1, -1):
+                            repl.append(str(n))
+                    else:
+                        for n in range(rng[0], rng[1]+1):
+                            repl.append(str(n))
+                    x0 = x0.replace(what, ','.join(repl))
+
                 x0 = [int(i) for i in x0.replace(',',' ').split()
                       if int(i) in self.todo_priorities]
             except:
@@ -834,7 +846,6 @@ class todoController:
                 cnt += 1
         g.es('\n%d priorities reclassified, new distribution:' % cnt)
         self.showDist()
-    #@nonl
     #@-node:tbrown.20090119215428.46:reclassify
     #@+node:tbrown.20090119215428.47:setPri
     @redrawer
