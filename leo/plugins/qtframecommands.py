@@ -95,7 +95,7 @@ def detach_editor(c):
 def undetach_editor(c):
     wdg = c.frame.top.leo_body_frame
     parent, sizes = c.frame.detached_body_info
-    parent.addWidget(wdg)
+    parent.insertWidget(0,wdg)
     wdg.show()
     parent.setSizes(sizes)
     c.frame.detached_body_info = None

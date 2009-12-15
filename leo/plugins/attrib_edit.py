@@ -619,6 +619,8 @@ class attrib_edit_Controller:
         self.c = c
         c.attribEditor = self
 
+        self.pname = "_attrib_edit_frame"  # used to tag out panel
+
         active = c.config.getData('attrib_edit_active_modes') or []
 
         self.getsetters = []
@@ -665,20 +667,13 @@ class attrib_edit_Controller:
 
         w = self.holder
 
-        if self.guiMode == 'body':
-            # seems this gets called 3 times during init,
-            # resulting in too many attrib editors
-            # so delete all but the 0th (the body editor)
-            # print w.count()  # enable this line to see, only seems to be off at init
-            for i in range(w.count()-1, 0, -1):
-                w.widget(i).hide()
-                w.widget(i).deleteLater()
-
-        elif self.guiMode == 'tab':
-            while w.count():
-                x = w.takeAt(0)
+        for i in w.findChildren(QtCore.QObject):
+            if i.objectName() == self.pname:
+                i.hide()
+                i.deleteLater()
 
         pnl = QtGui.QFrame()
+        pnl.setObjectName(self.pname)
         self.form = QtGui.QFormLayout()
         self.form.setVerticalSpacing(0)
         pnl.setLayout(self.form)
