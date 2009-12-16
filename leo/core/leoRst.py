@@ -634,8 +634,7 @@ class rstCommands:
         self.optionsDict [ivar] = val
     #@-node:ekr.20090502071837.57:setOption
     #@-node:ekr.20090502071837.41:options...
-    #@+node:ekr.20090502071837.58:write methods (leoRst)
-    #@+node:ekr.20090502071837.59: Top-level write code
+    #@+node:ekr.20090502071837.59:Top-level write code
     #@+node:ekr.20090502071837.60:initWrite
     def initWrite (self,p,encoding=None):
 
@@ -1033,7 +1032,8 @@ class rstCommands:
             return self.processTree(current,ext=ext,toString=True,justOneFile=True)
     #@nonl
     #@-node:ekr.20090502071837.67:writeNodeToString (New in 4.4.1)
-    #@-node:ekr.20090502071837.59: Top-level write code
+    #@-node:ekr.20090502071837.59:Top-level write code
+    #@+node:ekr.20090502071837.58:write methods (leoRst)
     #@+node:ekr.20090502071837.68:getDocPart
     def getDocPart (self,lines,n):
 

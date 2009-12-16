@@ -2269,6 +2269,149 @@ if not modeFlag:
 #@-node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
 #@-node:ekr.20061031131434.89:bindKey
 #@-node:ekr.20091103082258.6084:Fixed bug: Sometimes 'redefining shortcut' message is backwards
+#@+node:ekr.20091201125021.6067:Fixed publish-argv-for-missing-stylesheets
+# The parsing in writeToDocutils had to be rewritten.
+#@nonl
+#@+node:ekr.20090502071837.65:writeToDocutils (sets argv) & helper
+def writeToDocutils (self,s):
+
+    '''Send s to docutils using the writer implied by self.ext and return the result.'''
+
+    trace = True and not g.unitTesting
+    openDirectory = self.c.frame.openDirectory
+    overrides = {'output_encoding': self.encoding }
+
+    # Compute the args list if the stylesheet path does not exist.
+    styleSheetArgsDict = self.handleMissingStyleSheetArgs()
+
+    for ext,writer in (
+        ('.html','html'),
+        ('.htm','html'),
+        ('.tex','latex'),
+        ('.pdf','leo_pdf'),
+    ):
+        if self.ext == ext:
+            break
+    else:
+        g.es_print('unknown docutils extension: %s' % (self.ext),color='red')
+        return ''
+
+    # Make the stylesheet path relative to the directory containing the output file.
+    rel_stylesheet_path = self.getOption('stylesheet_path') or ''
+
+    # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
+    stylesheet_path = g.os_path_finalize_join(
+        self.c.frame.openDirectory,rel_stylesheet_path)
+
+    path = g.os_path_finalize_join(
+        stylesheet_path,self.getOption('stylesheet_name'))
+
+    res = ""
+    if self.getOption('stylesheet_embed') == False:
+        rel_path = g.os_path_join(
+            rel_stylesheet_path,self.getOption('stylesheet_name'))
+        overrides['stylesheet'] = rel_path
+        overrides['stylesheet_path'] = None
+        overrides['embed_stylesheet'] = None
+    elif g.os_path_exists(path):
+        if self.ext != '.pdf':
+            overrides['stylesheet'] = path
+            overrides['stylesheet_path'] = None
+    elif styleSheetArgsDict:
+        g.es_print('using publish_argv_for_missing_stylesheets',
+            styleSheetArgsDict)
+        overrides.update(styleSheetArgsDict)
+            # MWC add args to settings
+    elif rel_stylesheet_path == stylesheet_path:
+        g.es_print('stylesheet not found: %s' % (path),color='red')
+    else:
+        g.es_print('stylesheet not found\n',path,color='red')
+        if self.path:g.es_print('@path:', self.path)
+        g.es_print('open path:',self.c.frame.openDirectory)
+        if rel_stylesheet_path:
+            g.es_print('relative path:', rel_stylesheet_path)
+    try:
+        # All paths now come through here.
+        if trace: g.trace('overrides',overrides)
+        result = None # Ensure that result is defined.
+        result = docutils.core.publish_string(source=s,
+                reader_name='standalone',
+                parser_name='restructuredtext',
+                writer_name=writer,
+                settings_overrides=overrides)
+    except docutils.ApplicationError, error:
+        # g.es_print('Docutils error (%s):' % (
+            # error.__class__.__name__),color='red')
+        g.es_print('Docutils error:',color='red')
+        g.es_print(error,color='blue')
+    except Exception:
+        g.es_print('Unexpected docutils exception')
+        g.es_exception()
+    return result
+#@+node:ekr.20090502071837.66:handleMissingStyleSheetArgs
+def handleMissingStyleSheetArgs (self,s=None):
+
+    '''Parse the publish_argv_for_missing_stylesheets option,
+    returning a dict containing the parsed args.'''
+
+    trace = False and not g.unitTesting
+    force = False
+
+    if force:
+        # See http://docutils.sourceforge.net/docs/user/config.html#documentclass
+        return {'documentclass':'report', 'documentoptions':'english,12pt,lettersize'}
+
+    if not s:
+        s = self.getOption('publish_argv_for_missing_stylesheets')
+    if not s: return {}
+
+    # Handle argument lists such as this:
+    # --language=en,--documentclass=report,--documentoptions=[english,12pt,lettersize]
+    d = {}
+    while s:
+        s = s.strip()
+        if not s.startswith('--'): break
+        s = s[2:] ; i = s.find('=')
+        if i == -1: break
+        key = s[:i] ; s = s[i+1:] ; i = s.find('--')
+        if i == -1:
+            val = s ; s = ''
+        else:
+            val = s[:i] ; s = s[i:]
+        # g.trace('s',repr(s))
+        if val.endswith(','): val = val[:-1]
+        if val.startswith('[') and val.endswith(']'): val = val[1:-1]
+        val = val.strip()
+        if not val: val = '1'
+        d[str(key)] = str(val)
+
+    if trace: g.trace(d)
+    return d
+
+    # if args.find(',') == -1:
+        # args = [args]
+    # else:
+        # args = args.split(',')
+
+    # for arg in args:
+        # data = arg.split('=')
+        # if len(data) == 1:
+            # key = data[0]
+            # d[str(key)] = "1" # New in Leo 4.7: empty arg defaults to "1".
+        # elif len(data) == 2:
+            # key,value = data
+            # value = value.strip()
+            # if value.startswith('[') and value.endswith(']'):
+                # value = value[1:-1]
+            # d[str(key)] = str(value)
+        # else:
+            # g.es_print('bad option: %s' % s,color='red')
+            # break
+
+    # return d
+#@-node:ekr.20090502071837.66:handleMissingStyleSheetArgs
+#@-node:ekr.20090502071837.65:writeToDocutils (sets argv) & helper
+#@-node:ekr.20091201125021.6067:Fixed publish-argv-for-missing-stylesheets
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin
