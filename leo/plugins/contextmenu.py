@@ -236,15 +236,23 @@ def deletenodes_rclick(c,p, menu):
     u = c.undoer
 
     def deletenodes_rclick_cb():
+
         c.endEditing()
-        u.beforeChangeGroup(current,undoType)
+        cull = []
         for nd in pl:
-            bunch = u.beforeMark(nd,undoType)
-            c.deleteOutline(nd)
-            u.afterMark(nd,undoType,bunch)
+            cull.append((nd.v, nd.parent().v or None))
+        u.beforeChangeGroup(current,undoType)
+        for v, vp in cull:
+            for pos in c.vnode2allPositions(v):
+                if c.positionExists(pos) and pos.parent().v == vp:
+                    bunch = u.beforeDeleteNode(pos)
+                    pos.doDelete()
+                    u.afterDeleteNode(pos,undoType,bunch)
+                    c.setChanged(True)
+                    break
         u.afterChangeGroup(current,undoType)
 
-        c.redraw_after_icons_changed()                        
+        c.redraw()                        
 
     action = menu.addAction("Delete")
     action.connect(action, QtCore.SIGNAL("triggered()"), deletenodes_rclick_cb)

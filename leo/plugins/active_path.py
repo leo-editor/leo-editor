@@ -469,20 +469,35 @@ def cmd_LoadRecursive(c):
 
     c.redraw(p)
 #@-node:tbrown.20090225191501.1:cmd_LoadRecursive
-#@+node:tbrown.20080616153649.5:cmd_SetNodeToAbsolutePath
-def cmd_SetNodeToAbsolutePath(c):
-    """Change "/dirname/" to "@path /absolute/path/to/dirname"."""
+#@+node:tbrown.20091214212801.13475:cmd_SetNodeToAbsolutePathRecursive
+def cmd_SetNodeToAbsolutePathRecursive(c):
+    """Change "/dirname/" to "@path /absolute/path/to/dirname", recursively"""
+
     p = c.p
+
+    for s in p.self_and_subtree():
+
+        cmd_SetNodeToAbsolutePath(c, p=s)
+
+    c.redraw(p)
+#@-node:tbrown.20091214212801.13475:cmd_SetNodeToAbsolutePathRecursive
+#@+node:tbrown.20080616153649.5:cmd_SetNodeToAbsolutePath
+def cmd_SetNodeToAbsolutePath(c, p=None):
+    """Change "/dirname/" to "@path /absolute/path/to/dirname"."""
+
+    if p is None:
+        p = c.p
+
     path = getPath(c, p)
     d = p.h.split(None, 1)
     if len(d) > 1 and d[0].startswith('@'):
-        type_  = d[0]
+        type_  = d[0]+" "
     elif isDirNode(p):
-        type_ = "@path"
+        type_ = "@path "
+        p.b = '# path Created from node "%s"\n\n' % p.h + p.b
     else:
-        type_ = "@auto"
-    p.b = '# path Created from node "%s"\n\n' % p.h + p.b
-    p.h = type_+' '+path
+        type_ = "@auto "
+    p.h = type_+path
 #@-node:tbrown.20080616153649.5:cmd_SetNodeToAbsolutePath
 #@+node:tbrown.20080618141617.879:cmd_PurgeVanishedFiles
 def cond(p):

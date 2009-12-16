@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="48" left="0" height="694" width="1024"/>
+	<global_window_position top="48" left="3" height="692" width="1018"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -61,7 +61,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -569,8 +569,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050912125144"><vh>Chapter 12: Plugins</vh>
-<v t="ekr.20050912125144.1"><vh>@rst html\plugins.html</vh>
+<v t="ekr.20050912125144" a="E"><vh>Chapter 12: Plugins</vh>
+<v t="ekr.20050912125144.1" a="E"><vh>@rst html\plugins.html</vh>
 <v t="ekr.20050912125735"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070814104719"><vh>Enabling plugins</vh></v>
 <v t="ekr.20050912125735.868"><vh>Body pane</vh>
@@ -660,7 +660,7 @@
 <v t="ekr.20050912125735.2844"><vh>pie_menus.py</vh></v>
 <v t="ville.20090704073251.9442"><vh>contextmenu.py</vh></v>
 </v>
-<v t="ekr.20050912125735.525"><vh>Nodes</vh>
+<v t="ekr.20050912125735.525" a="E"><vh>Nodes</vh>
 <v t="ekr.20050912125735.526"><vh>at_folder.py</vh></v>
 <v t="ekr.20050912125735.529"><vh>at_produce.py</vh></v>
 <v t="ekr.20050912125735.540"><vh>at_view.py</vh></v>
@@ -668,6 +668,7 @@
 <v t="ekr.20050912125735.556"><vh>base64Packager.py</vh></v>
 <v t="ekr.20050912125735.565"><vh>fastGotoNode.py</vh></v>
 <v t="ekr.20050912125735.597"><vh>mod_labels.py</vh></v>
+<v t="ekr.20091216113613.6638"><vh>quickmove.py</vh></v>
 <v t="ekr.20050912125735.647"><vh>read_only_nodes.py</vh></v>
 <v t="ekr.20050912125735.674"><vh>run_nodes.py</vh></v>
 <v t="ekr.20060928201227.1"><vh>slideshow.py</vh></v>
@@ -1010,7 +1011,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090717084250.10702" a="E"><vh>Other docs</vh>
+<v t="ekr.20090717084250.10702"><vh>Other docs</vh>
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
@@ -23025,7 +23026,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="3,5"></t>
+<t tx="ekr.20070610174018" str_leo_pos="2,15,0,12,7"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -31665,6 +31666,22 @@ Most @&lt;file&gt; nodes cause Leo to write sentinels. However, Leo writes no
 sentinels when writing @nosent trees. `Chapter 4: Writing Programs in Leo`_
 discusses other ways of creating external files, but this is an advanced
 chapter. For now, just use @file trees to create your external files.
+</t>
+<t tx="ekr.20091216113613.6638">Create buttons to quickly move nodes to other nodes
+
+Quickly move nodes from around the tree to one or more target nodes.
+
+Adds 'Move/Clone/Copy To Last Child Button' and 'Move/Clone/Copy To First Child
+Button' commands to the Move submenu on the Outline menu, and the context menu,
+if contextmenu.py is enabled.
+
+Select a node 'Foo' and then use the 'To Last Child Button' command. The adds a
+'to Foo' button to the button bar. Now select another node and click the 'to
+Foo' button. The selected node will be moved or cloned to the last child of the
+node 'Foo'.
+
+'To First Child Button' works the same way, except that moved nodes are inserted
+as the first child of the target node.
 </t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
