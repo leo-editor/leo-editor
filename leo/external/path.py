@@ -3,8 +3,6 @@
 #@@language python
 #@@tabwidth -4
 
-# Changed.
-
 #@<< docstring >>
 #@+node:ekr.20091204132801.6169:<< docstring >>
 """ path.py - An object representing a path to a file or directory.

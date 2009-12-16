@@ -4473,6 +4473,587 @@ for index in sorted(tnodes):
 #@-node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
 #@-node:ekr.20031218072017.1575:putTnodes
 #@-node:ekr.20091209095640.6218:Output tnodes in proper order
+#@+node:ekr.20091209114435.6223:Fixed caching
+#@+node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
+self._currentPosition = self.nullPosition()
+self._rootPosition    = self.nullPosition()
+self._topPosition     = self.nullPosition()
+
+# Delayed focus.
+self.doubleClickFlag = False
+self.hasFocusWidget = None
+self.requestedFocusWidget = None
+
+# Official ivars.
+self.gui = g.app.gui
+self.ipythonController = None # Set only by the ipython plugin.
+
+# Interlock to prevent setting c.changed when switching chapters.
+c.suppressHeadChanged = False
+
+# Interlocks to prevent premature closing of a window.
+self.inCommand = False
+self.requestCloseWindow = False
+
+# For emacs/vim key handling.
+self.commandsDict = None
+self.keyHandler = self.k = None
+self.miniBufferWidget = None
+
+# per-document info...
+self.disableCommandsMessage = ''
+    # The presence of this message disables all commands.
+self.hookFunction = None
+self.openDirectory = None
+self.timeStampDict = {} # New in Leo 4.6.
+
+self.expansionLevel = 0  # The expansion level of this outline.
+self.expansionNode = None # The last node we expanded or contracted.
+self.changed = False # True if any data has been changed since the last save.
+self.loading = False # True if we are loading a file: disables c.setChanged()
+self.outlineToNowebDefaultFileName = "noweb.nw" # For Outline To Noweb dialog.
+self.promptingForClose = False # To lock out additional closing dialogs.
+
+# For tangle/untangle
+self.tangle_errors = 0
+
+# Global options
+self.page_width = 132
+self.tab_width = -4
+self.tangle_batch_flag = False
+self.untangle_batch_flag = False
+
+# Default Tangle options
+self.use_header_flag = False
+self.output_doc_flag = False
+
+# Default Target Language
+self.target_language = "python" # Required if leoConfig.txt does not exist.
+
+# For hoist/dehoist commands.
+self.hoistStack = []
+    # Stack of nodes to be root of drawn tree.
+    # Affects drawing routines and find commands.
+self.recentFiles = [] # List of recent files
+
+# For outline navigation.
+self.navPrefix = g.u('') # Must always be a string.
+self.navTime = None
+
+pth, bname = os.path.split(self.mFileName)
+if pth and bname and g.enableDB:
+    fn = self.mFileName.lower()
+    fn = g.toEncodedString(fn,'utf-8') # Required for Python 3.x.
+    dbdirname = '%s/db/%s_%s' % (
+        g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
+    # Use compressed pickles (handy for @thin caches)
+    self.db = leo.external.pickleshare.PickleShareDB(dbdirname,protocol='picklez')
+else:
+    self.db = {}
+#@nonl
+#@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
+#@+node:ekr.20041005105605.21:read (atFile) & helper
+def read(self,root,
+    importFileName=None,thinFile=False,
+    fromString=None,atShadow=False,
+    force=False
+):
+
+    """Read any @thin, @file and @noref trees."""
+
+    at = self ; c = at.c
+    << set fileName and isAtFile >>
+    if isAtFile:
+        # The @file node has file-like sentinels iff a tnodeList exists.
+        thinFile = not (hasattr(root.v,'tnodeList') and root.v.tnodeList)
+    doCache = g.enableDB and (thinFile or atShadow) and not force
+    at.initReadIvars(root,fileName,
+        importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
+    if at.errors: return False
+    fileName = at.openFileForReading(fileName,fromString=fromString)
+    if at.inputFile:
+        c.setFileTimeStamp(fileName)
+    else:
+        return False
+
+    fileContent = open(fileName, "rb").read()
+    cachefile = self._contentHashFile(root, fileContent)
+
+    # Remember that we have read this file.
+    root.v.at_read = True # Create the attribute for all clones.
+
+    if doCache and cachefile in c.db:
+        # Delete the previous tree, regardless of the @<file> type.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+        aList = c.db[cachefile]
+        root.v.createOutlineFromCacheList(c,aList)
+        at.inputFile.close()
+        root.clearDirty()
+        return
+
+    # Delete all children, but **not** for @file and @nosent nodes!
+    # (We do delete all children for @file nodes with thin-like sentinels.)
+    if thinFile or atShadow:
+        root.v.at_read = True # Create the attribute for all clones.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+
+    if not g.unitTesting:
+        g.es("reading:",root.h)
+
+    root.clearVisitedInTree()
+    at.scanAllDirectives(root,importing=at.importing,reading=True)
+    at.readOpenFile(root,at.inputFile,fileName)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        << advise user to delete all unvisited nodes >>
+    if at.errors == 0 and not at.importing:
+        # Package this as a method for use by mod_labels plugin.
+        self.copyAllTempBodyStringsToTnodes(root,thinFile)
+
+    << delete all tempBodyStrings >>
+
+    # write out the cache version
+    self.writeCachedTree(root, cachefile)
+
+    return at.errors == 0
+#@+node:ekr.20041005105605.22:<< set fileName and isAtFile >>
+if fromString:
+    fileName = "<string-file>"
+elif importFileName:
+    fileName = importFileName
+elif root.isAnyAtFileNode():
+    fileName = root.anyAtFileNodeName()
+else:
+    fileName = None
+
+if not fileName:
+    at.error("Missing file name.  Restoring @file tree from .leo file.")
+    return False
+
+isAtFile = (
+    not thinFile and
+    not importFileName and
+    not atShadow and
+    not fromString and
+    root.h.startswith('@file'))
+#@nonl
+#@-node:ekr.20041005105605.22:<< set fileName and isAtFile >>
+#@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
+resurrected = 0
+for p in root.self_and_subtree():
+    if p.v.isVisited():
+        pass
+        # g.trace('visited',p.v,p.h)
+    else:
+        g.trace('**** not visited',p.v,p.h)
+        g.es('resurrected node:',p.h,color='blue')
+        g.es('in file:',fileName,color='blue')
+        resurrected += 1
+
+if resurrected:
+    g.es('you may want to delete ressurected nodes')
+
+#@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
+#@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+for v in c.all_unique_nodes():
+
+    if hasattr(v,"tempBodyString"):
+        delattr(v,"tempBodyString")
+#@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+#@-node:ekr.20041005105605.21:read (atFile) & helper
+#@+node:ekr.20091204132346.6080:class PickleShareDB
+_sentinel = object()
+
+class PickleShareDB(mixin):
+    """ The main 'connection' object for PickleShare database """
+    @others
+#@+node:ekr.20091204132346.6081: __init__
+def __init__(self,root, protocol = 'pickle'):
+    """ Initialize a PickleShare object that will manage the specied directory
+
+    root: The directory that contains the data. Created if it doesn't exist.
+
+    protocol: one of 
+
+        * 'pickle' (universal, default) 
+        * 'picklez' (compressed pickle)         
+        * 'marshal' (fast, limited type support)
+        * 'json' : brief, human-readable, very limited type support
+
+    Protol 'json' requires installation of simplejson module
+    """
+    self.root = Path(root).expanduser().abspath()
+    if not self.root.isdir():
+        self.root.makedirs()
+    # cache has { 'key' : (obj, orig_mod_time) }
+    self.cache = {}
+
+    if protocol == 'pickle':
+        self.loader = pickle.load
+        self.dumper = pickle.dump
+    elif protocol == 'marshal':
+        if marshal:
+            self.loader = marshal.load
+            self.dumper = marshal.dump
+    elif protocol == 'json':
+        if simplejson:
+            self.loader = simplejson.load
+            self.dumper = simplejson.dump
+    elif protocol == 'picklez':
+        if zlib:
+            def loadz(fileobj):
+                val = pickle.loads(zlib.decompress(fileobj.read()))
+                # g.trace(fileobj)
+                return val
+
+            def dumpz(val, fileobj):
+                compressed = zlib.compress(pickle.dumps(val, pickle.HIGHEST_PROTOCOL))
+                fileobj.write(compressed)
+                # g.trace(fileobj)
+
+            self.loader = loadz
+            self.dumper = dumpz
+#@-node:ekr.20091204132346.6081: __init__
+#@+node:ekr.20091204132346.6088:__delitem__
+def __delitem__(self,key):
+    """ del db["key"] """
+    fil = self.root / key
+    # g.trace('(PickleShareDB)',key) # ,g.shortFileName(fil))
+    self.cache.pop(fil,None)
+    try:
+        fil.remove()
+    except OSError:
+        # notfound and permission denied are ok - we
+        # lost, the other process wins the conflict
+        pass
+
+#@-node:ekr.20091204132346.6088:__delitem__
+#@+node:ekr.20091204132346.6082:__getitem__
+def __getitem__(self,key):
+    """ db['key'] reading """
+    fil = self.root / key
+    # g.trace('(PickleShareDB)',key) #,g.shortFileName(fil))
+    try:
+        mtime = (fil.stat()[stat.ST_MTIME])
+    except OSError:
+        raise KeyError(key)
+
+    if fil in self.cache and mtime == self.cache[fil][1]:
+        return self.cache[fil][0]
+    try:
+        # The cached item has expired, need to read
+        obj = self.loader(fil.open("rb"))
+    except:
+        raise KeyError(key)
+
+    self.cache[fil] = (obj,mtime)
+    return obj
+#@-node:ekr.20091204132346.6082:__getitem__
+#@+node:ekr.20091204132346.6094:__repr__
+def __repr__(self):
+    return "PickleShareDB('%s')" % self.root
+
+
+
+#@-node:ekr.20091204132346.6094:__repr__
+#@+node:ekr.20091204132346.6083:__setitem__
+def __setitem__(self,key,value):
+    """ db['key'] = 5 """
+    fil = self.root / key
+    parent = fil.parent
+    if parent and not parent.isdir():
+        parent.makedirs()
+    pickled = self.dumper(value,fil.open('wb'))
+    # g.trace('(PickleShareDB)',key) # ,g.shortFileName(fil))
+    try:
+        self.cache[fil] = (value,fil.mtime)
+    except OSError as e:
+        if e.errno != 2:
+            raise
+
+#@-node:ekr.20091204132346.6083:__setitem__
+#@+node:ekr.20091216094905.6291:from DictMixin (python 2.6)
+# Copied by EKR from
+# <module 'UserDict' from '/usr/lib/python2.6/UserDict.pyc'>
+
+# Mixin defining all dictionary methods for classes that already have
+# a minimum dictionary interface including getitem, setitem, delitem,
+# and keys. Without knowledge of the subclass constructor, the mixin
+# does not define __init__() or copy().  In addition to the four base
+# methods, progressively more efficiency comes with defining
+# __contains__(), __iter__(), and iteritems().
+#@+node:ekr.20091216103214.6296:second-level
+# second level definitions support higher levels.
+#@nonl
+#@+node:ekr.20091216103214.6305:__contains__
+def __contains__(self, key):
+
+    return self.has_key(key)
+#@-node:ekr.20091216103214.6305:__contains__
+#@+node:ekr.20091216103214.6303:__iter__
+def __iter__(self):
+    for k in list(self.keys()): # EKR: added list
+        yield k
+#@-node:ekr.20091216103214.6303:__iter__
+#@+node:ekr.20091216103214.6304:has_key
+def has_key(self, key):
+
+    try:
+        value = self[key]
+    except KeyError:
+        return False
+
+    return True
+#@-node:ekr.20091216103214.6304:has_key
+#@-node:ekr.20091216103214.6296:second-level
+#@+node:ekr.20091216103214.6297:third-level
+# third level takes advantage of second level definitions.
+#@nonl
+#@+node:ekr.20091216103214.6306:iteritems
+def iteritems(self):
+    for k in self:
+        yield (k, self[k])
+#@-node:ekr.20091216103214.6306:iteritems
+#@+node:ekr.20091216103214.6307:iterkeys
+def iterkeys(self):
+    return self.__iter__()
+#@-node:ekr.20091216103214.6307:iterkeys
+#@-node:ekr.20091216103214.6297:third-level
+#@+node:ekr.20091216103214.6298:fourth-level
+# fourth level uses definitions from lower levels.
+
+def itervalues(self):
+    for _, v in self.iteritems():
+        yield v
+def values(self):
+    return [v for _, v in self.iteritems()]
+def items(self):
+    return list(self.iteritems())
+def clear(self):
+    for key in self.keys():
+        del self[key]
+def setdefault(self, key, default=None):
+    try:
+        return self[key]
+    except KeyError:
+        self[key] = default
+    return default
+def pop(self, key, *args):
+    if len(args) > 1:
+        raise TypeError("pop expected at most 2 arguments, got " % (
+            repr(1 + len(args))))
+    try:
+        value = self[key]
+    except KeyError:
+        if args:
+            return args[0]
+        raise
+    del self[key]
+    return value
+def popitem(self):
+    try:
+        k, v = self.iteritems().next()
+    except StopIteration:
+        raise KeyError('container is empty') # EKR: syntax change.
+    del self[k]
+    return (k, v)
+def update(self, other=None, **kwargs):
+    # Make progressively weaker assumptions about "other"
+    if other is None:
+        pass
+    elif hasattr(other, 'iteritems'):  # iteritems saves memory and lookups
+        for k, v in other.iteritems():
+            self[k] = v
+    elif hasattr(other, 'keys'):
+        for k in other.keys():
+            self[k] = other[k]
+    else:
+        for k, v in other:
+            self[k] = v
+    if kwargs:
+        self.update(kwargs)
+def get(self, key, default=None):
+    try:
+        return self[key]
+    except KeyError:
+        return default
+# def __repr__(self):
+    # return repr(dict(self.iteritems()))
+def __cmp__(self, other):
+    if other is None:
+        return 1
+    if isinstance(other, DictMixin):
+        other = dict(other.iteritems())
+    return cmp(dict(self.iteritems()), other)
+def __len__(self):
+    return len(self.keys())
+#@-node:ekr.20091216103214.6298:fourth-level
+#@-node:ekr.20091216094905.6291:from DictMixin (python 2.6)
+#@+node:ekr.20091204132346.6089:_normalized
+def _normalized(self, p):
+    """ Make a key suitable for user's eyes """
+    return str(self.root.relpathto(p)).replace('\\','/')
+
+#@-node:ekr.20091204132346.6089:_normalized
+#@+node:ekr.20091204132346.6093:getlink
+def getlink(self,folder):
+    """ Get a convenient link for accessing items  """
+    return PickleShareLink(self, folder)
+
+#@-node:ekr.20091204132346.6093:getlink
+#@+node:ekr.20091204132346.6087:hcompress
+def hcompress(self, hashroot):
+    """ Compress category 'hashroot', so hset is fast again
+
+    hget will fail if fast_only is True for compressed items (that were
+    hset before hcompress).
+
+    """
+    hfiles = self.keys(hashroot + "/*")
+    all = {}
+    for f in hfiles:
+        # print("using",f)
+        all.update(self[f])
+        self.uncache(f)
+
+    self[hashroot + '/xx'] = all
+    for f in hfiles:
+        p = self.root / f
+        if p.basename() == 'xx':
+            continue
+        p.remove()
+
+
+
+#@-node:ekr.20091204132346.6087:hcompress
+#@+node:ekr.20091204132346.6086:hdict
+def hdict(self, hashroot):
+    """ Get all data contained in hashed category 'hashroot' as dict """
+    hfiles = self.keys(hashroot + "/*")
+    hfiles.sort()
+    last = len(hfiles) and hfiles[-1] or ''
+    if last.endswith('xx'):
+        # print("using xx")
+        hfiles = [last] + hfiles[:-1]
+
+    all = {}
+
+    for f in hfiles:
+        # print("using",f)
+        try:
+            all.update(self[f])
+        except KeyError:
+            print("Corrupt",f,"deleted - hset is not threadsafe!")
+            del self[f]
+
+        self.uncache(f)
+
+    return all
+#@-node:ekr.20091204132346.6086:hdict
+#@+node:ekr.20091204132346.6085:hget
+def hget(self, hashroot, key, default = _sentinel, fast_only = True):
+    """ hashed get """
+    hroot = self.root / hashroot
+    hfile = hroot / gethashfile(key)
+    d = self.get(hfile, _sentinel )
+    g.trace("got dict",d,"from",g.shortFileName(hfile))
+    if d is _sentinel:
+        if fast_only:
+            if default is _sentinel:
+                raise KeyError(key)
+            return default
+        # slow mode ok, works even after hcompress()
+        d = self.hdict(hashroot)
+
+    return d.get(key, default)
+#@nonl
+#@-node:ekr.20091204132346.6085:hget
+#@+node:ekr.20091204132346.6084:hset
+def hset(self, hashroot, key, value):
+    """ hashed set """
+    hroot = self.root / hashroot
+    if not hroot.isdir():
+        hroot.makedirs()
+    hfile = hroot / gethashfile(key)
+    d = self.get(hfile, {})
+    d.update( {key : value})
+    self[hfile] = d                
+
+
+
+#@-node:ekr.20091204132346.6084:hset
+#@+node:ekr.20091204132346.6090:keys
+def keys(self, globpat = None):
+    """ All keys in DB, or all keys matching a glob"""
+
+    if globpat is None:
+        files = self.root.walkfiles()
+    else:
+        files = [Path(p) for p in glob.glob(self.root/globpat)]
+
+    return [self._normalized(p) for p in files if p.isfile()]
+
+#@-node:ekr.20091204132346.6090:keys
+#@+node:ekr.20091204132346.6091:uncache
+def uncache(self,*items):
+    """ Removes all, or specified items from cache
+
+    Use this after reading a large amount of large objects
+    to free up memory, when you won't be needing the objects
+    for a while.
+
+    """
+    if not items:
+        self.cache = {}
+    for it in items:
+        self.cache.pop(it,None)
+
+#@-node:ekr.20091204132346.6091:uncache
+#@+node:ekr.20091204132346.6092:waitget
+def waitget(self,key, maxwaittime = 60 ):
+    """ Wait (poll) for a key to get a value
+
+    Will wait for `maxwaittime` seconds before raising a KeyError.
+    The call exits normally if the `key` field in db gets a value
+    within the timeout period.
+
+    Use this for synchronizing different processes or for ensuring
+    that an unfortunately timed "db['key'] = newvalue" operation 
+    in another process (which causes all 'get' operation to cause a 
+    KeyError for the duration of pickling) won't screw up your program 
+    logic. 
+    """
+
+    wtimes = [0.2] * 3 + [0.5] * 2 + [1]
+    tries = 0
+    waited = 0
+    while 1:
+        try:
+            val = self[key]
+            return val
+        except KeyError:
+            pass
+
+        if waited > maxwaittime:
+            raise KeyError(key)
+
+        time.sleep(wtimes[tries])
+        waited+=wtimes[tries]
+        if tries < len(wtimes) -1:
+            tries+=1
+#@-node:ekr.20091204132346.6092:waitget
+#@-node:ekr.20091204132346.6080:class PickleShareDB
+#@+node:ekr.20091215202515.6286:Dump
+@nocolor
+
+_getitem__ (PickleShareDB)
+fcache/f6b0571e0ee959a518ff4261bac0450d
+path(u'/home/edreamleo/.leo/db/leoPy.leo_e159a81265b1eda73deb6b17a25eae7d/fcache/f6b0571e0ee959a518ff4261bac0450d')
+#@-node:ekr.20091215202515.6286:Dump
+#@-node:ekr.20091209114435.6223:Fixed caching
 #@-node:ekr.20091203060018.6100:leo-3k
 #@-all
 #@nonl

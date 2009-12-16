@@ -93,8 +93,6 @@ def gethashfile(key):
 #@+node:ekr.20091204132346.6080:class PickleShareDB
 _sentinel = object()
 
-# Changed.
-
 class PickleShareDB(mixin):
     """ The main 'connection' object for PickleShare database """
     #@    @+others
