@@ -1118,35 +1118,21 @@ class position (object):
 
         '''Return True if self appears after other in outline order.'''
 
-        trace = True
-        if trace: g.trace('***',self.h,'***',other.h)
         stack1,stack2 = self.stack,other.stack
-        n1,n2 = len(stack1),len(stack2)
-        n = min(n1,n2)
-        for i in range(n):
-            item1,item2 = stack1[i],stack2[i]
+        n1,n2 = len(stack1),len(stack2) ; n = min(n1,n2)
+        # Compare the common part of the stacks.
+        for item1,item2 in zip(stack1,stack2):
             v1,x1 = item1 ; v2,x2 = item2
-            if trace: print('index',x1,v1.h)
-            if trace: print('index',x2,v2.h)
-            if x1 > x2:
-                if trace: g.trace('True:  x1 > x2')
-                return True
-            elif x1 < x2:
-                if trace: g.trace('False: x1 < x2')
-                return False
+            if x1 > x2: return True
+            elif x1 < x2: return False
         # Finish the comparison.
         if n1 == n2:
             x1,x2 = self._childIndex,other._childIndex
-            if trace: g.trace('same stack',x1,x2)
             return x1 > x2
         elif n1 < n2:
-            v1,x1 = self.v,self._childIndex
-            v2,x2 = other.stack[n]
-            if trace: print('smaller stack')
-            if trace: print('x1,x2',x1,x2,'v1,v2',v1.h,v2.h)
+            x1 = self._childIndex; v2,x2 = other.stack[n]
             return x1 > x2
         else:
-            if trace: print('bigger stack')
             return True
     #@nonl
     #@-node:ekr.20091210082012.6233:p.__gt__

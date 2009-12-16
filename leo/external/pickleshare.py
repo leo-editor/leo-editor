@@ -42,40 +42,63 @@ License: MIT open source license.
 #@nl
 #@<< imports >>
 #@+node:ekr.20091204132346.6078:<< imports >>
+import leo.core.leoGlobals as g
 from leo.external.path import path as Path
-import os,stat,sys,time
+import glob
+import os
+import stat
+import sys
+import time
+import warnings
 
 isPython3 = sys.version_info >= (3,0,0)
+
+try:
+    import marshal
+except ImportError:
+    marshal = None
+
+if isPython3:
+    import pickle
+else:
+    import cPickle as pickle
+
+try:
+    import simplejson
+except ImportError:
+    simplejson = None
+
+try:
+    import zlib
+except ImportError:
+    zlib = None
 
 if isPython3:
     # import collections
     # mixin = collections.MutableMapping
     mixin = dict
-    import pickle
 else:
     # Works.
     import UserDict # Required for correct caching.
     mixin = UserDict.DictMixin
-    import cPickle as pickle
-import warnings
-import glob
-
-
 #@-node:ekr.20091204132346.6078:<< imports >>
 #@nl
 #@+others
 #@+node:ekr.20091204132346.6079:gethashfile
 def gethashfile(key):
+
     return ("%02x" % abs(hash(key) % 256))[-2:]
 
 #@-node:ekr.20091204132346.6079:gethashfile
 #@+node:ekr.20091204132346.6080:class PickleShareDB
 _sentinel = object()
 
-class PickleShareDB(mixin): ### UserDict.DictMixin):
+# Changed.
+
+class PickleShareDB(mixin):
     """ The main 'connection' object for PickleShare database """
     #@    @+others
-    #@+node:ekr.20091204132346.6081:__init__
+    #@+node:ekr.20091204132346.6081: __init__
     def __init__(self,root, protocol = 'pickle'):
         """ Initialize a PickleShare object that will manage the specied directory
 
@@ -96,45 +119,51 @@ class PickleShareDB(mixin): ### UserDict.DictMixin):
         # cache has { 'key' : (obj, orig_mod_time) }
         self.cache = {}
 
-        # protocol:
-        # self.dumper(value, fileobj)
-        # self.loader(fileobj)
-
         if protocol == 'pickle':
-            # import cPickle as pickle
-
             self.loader = pickle.load
             self.dumper = pickle.dump
         elif protocol == 'marshal':
-            import marshal
-            self.loader = marshal.load
-            self.dumper = marshal.dump
+            if marshal:
+                self.loader = marshal.load
+                self.dumper = marshal.dump
         elif protocol == 'json':
-            import simplejson
-            self.loader = simplejson.load
-            self.dumper = simplejson.dump
-
+            if simplejson:
+                self.loader = simplejson.load
+                self.dumper = simplejson.dump
         elif protocol == 'picklez':
+            if zlib:
+                def loadz(fileobj):
+                    val = pickle.loads(zlib.decompress(fileobj.read()))
+                    # g.trace(fileobj)
+                    return val
 
-            # import here, because not always available
-            import zlib
-            # import cPickle as pickle
+                def dumpz(val, fileobj):
+                    compressed = zlib.compress(pickle.dumps(val, pickle.HIGHEST_PROTOCOL))
+                    fileobj.write(compressed)
+                    # g.trace(fileobj)
 
-            def loadz(fileobj):
-                val = pickle.loads(zlib.decompress(fileobj.read()))
-                return val
+                self.loader = loadz
+                self.dumper = dumpz
+    #@-node:ekr.20091204132346.6081: __init__
+    #@+node:ekr.20091204132346.6088:__delitem__
+    def __delitem__(self,key):
+        """ del db["key"] """
+        fil = self.root / key
+        # g.trace('(PickleShareDB)',key) # ,g.shortFileName(fil))
+        self.cache.pop(fil,None)
+        try:
+            fil.remove()
+        except OSError:
+            # notfound and permission denied are ok - we
+            # lost, the other process wins the conflict
+            pass
 
-            def dumpz(val, fileobj):
-                compressed = zlib.compress(pickle.dumps(val, pickle.HIGHEST_PROTOCOL))
-                fileobj.write(compressed)
-
-            self.loader = loadz
-            self.dumper = dumpz
-    #@-node:ekr.20091204132346.6081:__init__
+    #@-node:ekr.20091204132346.6088:__delitem__
     #@+node:ekr.20091204132346.6082:__getitem__
     def __getitem__(self,key):
         """ db['key'] reading """
         fil = self.root / key
+        # g.trace('(PickleShareDB)',key) #,g.shortFileName(fil))
         try:
             mtime = (fil.stat()[stat.ST_MTIME])
         except OSError:
@@ -150,8 +179,14 @@ class PickleShareDB(mixin): ### UserDict.DictMixin):
 
         self.cache[fil] = (obj,mtime)
         return obj
-
     #@-node:ekr.20091204132346.6082:__getitem__
+    #@+node:ekr.20091204132346.6094:__repr__
+    def __repr__(self):
+        return "PickleShareDB('%s')" % self.root
+
+
+
+    #@-node:ekr.20091204132346.6094:__repr__
     #@+node:ekr.20091204132346.6083:__setitem__
     def __setitem__(self,key,value):
         """ db['key'] = 5 """
@@ -160,6 +195,7 @@ class PickleShareDB(mixin): ### UserDict.DictMixin):
         if parent and not parent.isdir():
             parent.makedirs()
         pickled = self.dumper(value,fil.open('wb'))
+        # g.trace('(PickleShareDB)',key) # ,g.shortFileName(fil))
         try:
             self.cache[fil] = (value,fil.mtime)
         except OSError as e:
@@ -167,66 +203,135 @@ class PickleShareDB(mixin): ### UserDict.DictMixin):
                 raise
 
     #@-node:ekr.20091204132346.6083:__setitem__
-    #@+node:ekr.20091204132346.6084:hset
-    def hset(self, hashroot, key, value):
-        """ hashed set """
-        hroot = self.root / hashroot
-        if not hroot.isdir():
-            hroot.makedirs()
-        hfile = hroot / gethashfile(key)
-        d = self.get(hfile, {})
-        d.update( {key : value})
-        self[hfile] = d                
+    #@+node:ekr.20091216094905.6291:from DictMixin (python 2.6)
+    # Copied by EKR from
+    # <module 'UserDict' from '/usr/lib/python2.6/UserDict.pyc'>
 
+    # Mixin defining all dictionary methods for classes that already have
+    # a minimum dictionary interface including getitem, setitem, delitem,
+    # and keys. Without knowledge of the subclass constructor, the mixin
+    # does not define __init__() or copy().  In addition to the four base
+    # methods, progressively more efficiency comes with defining
+    # __contains__(), __iter__(), and iteritems().
+    #@+node:ekr.20091216103214.6296:second-level
+    # second level definitions support higher levels.
+    #@nonl
+    #@+node:ekr.20091216103214.6305:__contains__
+    def __contains__(self, key):
 
+        return self.has_key(key)
+    #@-node:ekr.20091216103214.6305:__contains__
+    #@+node:ekr.20091216103214.6303:__iter__
+    def __iter__(self):
+        for k in list(self.keys()): # EKR: added list
+            yield k
+    #@-node:ekr.20091216103214.6303:__iter__
+    #@+node:ekr.20091216103214.6304:has_key
+    def has_key(self, key):
 
-    #@-node:ekr.20091204132346.6084:hset
-    #@+node:ekr.20091204132346.6085:hget
-    def hget(self, hashroot, key, default = _sentinel, fast_only = True):
-        """ hashed get """
-        hroot = self.root / hashroot
-        hfile = hroot / gethashfile(key)
+        try:
+            value = self[key]
+        except KeyError:
+            return False
 
-        d = self.get(hfile, _sentinel )
-        # print("got dict",d,"from",hfile)
-        if d is _sentinel:
-            if fast_only:
-                if default is _sentinel:
-                    raise KeyError(key)
+        return True
+    #@-node:ekr.20091216103214.6304:has_key
+    #@-node:ekr.20091216103214.6296:second-level
+    #@+node:ekr.20091216103214.6297:third-level
+    # third level takes advantage of second level definitions.
+    #@nonl
+    #@+node:ekr.20091216103214.6306:iteritems
+    def iteritems(self):
+        for k in self:
+            yield (k, self[k])
+    #@-node:ekr.20091216103214.6306:iteritems
+    #@+node:ekr.20091216103214.6307:iterkeys
+    def iterkeys(self):
+        return self.__iter__()
+    #@-node:ekr.20091216103214.6307:iterkeys
+    #@-node:ekr.20091216103214.6297:third-level
+    #@+node:ekr.20091216103214.6298:fourth-level
+    # fourth level uses definitions from lower levels.
 
-                return default
+    def itervalues(self):
+        for _, v in self.iteritems():
+            yield v
+    def values(self):
+        return [v for _, v in self.iteritems()]
+    def items(self):
+        return list(self.iteritems())
+    def clear(self):
+        for key in self.keys():
+            del self[key]
+    def setdefault(self, key, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            self[key] = default
+        return default
+    def pop(self, key, *args):
+        if len(args) > 1:
+            raise TypeError("pop expected at most 2 arguments, got " % (
+                repr(1 + len(args))))
+        try:
+            value = self[key]
+        except KeyError:
+            if args:
+                return args[0]
+            raise
+        del self[key]
+        return value
+    def popitem(self):
+        try:
+            k, v = self.iteritems().next()
+        except StopIteration:
+            raise KeyError('container is empty') # EKR: syntax change.
+        del self[k]
+        return (k, v)
+    def update(self, other=None, **kwargs):
+        # Make progressively weaker assumptions about "other"
+        if other is None:
+            pass
+        elif hasattr(other, 'iteritems'):  # iteritems saves memory and lookups
+            for k, v in other.iteritems():
+                self[k] = v
+        elif hasattr(other, 'keys'):
+            for k in other.keys():
+                self[k] = other[k]
+        else:
+            for k, v in other:
+                self[k] = v
+        if kwargs:
+            self.update(kwargs)
+    def get(self, key, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            return default
+    # def __repr__(self):
+        # return repr(dict(self.iteritems()))
+    def __cmp__(self, other):
+        if other is None:
+            return 1
+        if isinstance(other, DictMixin):
+            other = dict(other.iteritems())
+        return cmp(dict(self.iteritems()), other)
+    def __len__(self):
+        return len(self.keys())
+    #@-node:ekr.20091216103214.6298:fourth-level
+    #@-node:ekr.20091216094905.6291:from DictMixin (python 2.6)
+    #@+node:ekr.20091204132346.6089:_normalized
+    def _normalized(self, p):
+        """ Make a key suitable for user's eyes """
+        return str(self.root.relpathto(p)).replace('\\','/')
 
-            # slow mode ok, works even after hcompress()
-            d = self.hdict(hashroot)
+    #@-node:ekr.20091204132346.6089:_normalized
+    #@+node:ekr.20091204132346.6093:getlink
+    def getlink(self,folder):
+        """ Get a convenient link for accessing items  """
+        return PickleShareLink(self, folder)
 
-        return d.get(key, default)
-
-    #@-node:ekr.20091204132346.6085:hget
-    #@+node:ekr.20091204132346.6086:hdict
-    def hdict(self, hashroot):
-        """ Get all data contained in hashed category 'hashroot' as dict """
-        hfiles = self.keys(hashroot + "/*")
-        hfiles.sort()
-        last = len(hfiles) and hfiles[-1] or ''
-        if last.endswith('xx'):
-            # print("using xx")
-            hfiles = [last] + hfiles[:-1]
-
-        all = {}
-
-        for f in hfiles:
-            # print("using",f)
-            try:
-                all.update(self[f])
-            except KeyError:
-                print("Corrupt",f,"deleted - hset is not threadsafe!")
-                del self[f]
-
-            self.uncache(f)
-
-        return all
-
-    #@-node:ekr.20091204132346.6086:hdict
+    #@-node:ekr.20091204132346.6093:getlink
     #@+node:ekr.20091204132346.6087:hcompress
     def hcompress(self, hashroot):
         """ Compress category 'hashroot', so hset is fast again
@@ -252,25 +357,62 @@ class PickleShareDB(mixin): ### UserDict.DictMixin):
 
 
     #@-node:ekr.20091204132346.6087:hcompress
-    #@+node:ekr.20091204132346.6088:__delitem__
-    def __delitem__(self,key):
-        """ del db["key"] """
-        fil = self.root / key
-        self.cache.pop(fil,None)
-        try:
-            fil.remove()
-        except OSError:
-            # notfound and permission denied are ok - we
-            # lost, the other process wins the conflict
-            pass
+    #@+node:ekr.20091204132346.6086:hdict
+    def hdict(self, hashroot):
+        """ Get all data contained in hashed category 'hashroot' as dict """
+        hfiles = self.keys(hashroot + "/*")
+        hfiles.sort()
+        last = len(hfiles) and hfiles[-1] or ''
+        if last.endswith('xx'):
+            # print("using xx")
+            hfiles = [last] + hfiles[:-1]
 
-    #@-node:ekr.20091204132346.6088:__delitem__
-    #@+node:ekr.20091204132346.6089:_normalized
-    def _normalized(self, p):
-        """ Make a key suitable for user's eyes """
-        return str(self.root.relpathto(p)).replace('\\','/')
+        all = {}
 
-    #@-node:ekr.20091204132346.6089:_normalized
+        for f in hfiles:
+            # print("using",f)
+            try:
+                all.update(self[f])
+            except KeyError:
+                print("Corrupt",f,"deleted - hset is not threadsafe!")
+                del self[f]
+
+            self.uncache(f)
+
+        return all
+    #@-node:ekr.20091204132346.6086:hdict
+    #@+node:ekr.20091204132346.6085:hget
+    def hget(self, hashroot, key, default = _sentinel, fast_only = True):
+        """ hashed get """
+        hroot = self.root / hashroot
+        hfile = hroot / gethashfile(key)
+        d = self.get(hfile, _sentinel )
+        g.trace("got dict",d,"from",g.shortFileName(hfile))
+        if d is _sentinel:
+            if fast_only:
+                if default is _sentinel:
+                    raise KeyError(key)
+                return default
+            # slow mode ok, works even after hcompress()
+            d = self.hdict(hashroot)
+
+        return d.get(key, default)
+    #@nonl
+    #@-node:ekr.20091204132346.6085:hget
+    #@+node:ekr.20091204132346.6084:hset
+    def hset(self, hashroot, key, value):
+        """ hashed set """
+        hroot = self.root / hashroot
+        if not hroot.isdir():
+            hroot.makedirs()
+        hfile = hroot / gethashfile(key)
+        d = self.get(hfile, {})
+        d.update( {key : value})
+        self[hfile] = d                
+
+
+
+    #@-node:ekr.20091204132346.6084:hset
     #@+node:ekr.20091204132346.6090:keys
     def keys(self, globpat = None):
         """ All keys in DB, or all keys matching a glob"""
@@ -279,6 +421,7 @@ class PickleShareDB(mixin): ### UserDict.DictMixin):
             files = self.root.walkfiles()
         else:
             files = [Path(p) for p in glob.glob(self.root/globpat)]
+
         return [self._normalized(p) for p in files if p.isfile()]
 
     #@-node:ekr.20091204132346.6090:keys
@@ -329,21 +472,7 @@ class PickleShareDB(mixin): ### UserDict.DictMixin):
             waited+=wtimes[tries]
             if tries < len(wtimes) -1:
                 tries+=1
-
     #@-node:ekr.20091204132346.6092:waitget
-    #@+node:ekr.20091204132346.6093:getlink
-    def getlink(self,folder):
-        """ Get a convenient link for accessing items  """
-        return PickleShareLink(self, folder)
-
-    #@-node:ekr.20091204132346.6093:getlink
-    #@+node:ekr.20091204132346.6094:__repr__
-    def __repr__(self):
-        return "PickleShareDB('%s')" % self.root
-
-
-
-    #@-node:ekr.20091204132346.6094:__repr__
     #@-others
 #@-node:ekr.20091204132346.6080:class PickleShareDB
 #@+node:ekr.20091204132346.6095:class PickleShareLink

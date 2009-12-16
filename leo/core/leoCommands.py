@@ -27,7 +27,9 @@ if g.app and g.app.use_psyco:
     # import leo.core.leoUndo as leoUndo
 
 import leo.core.leoNodes as leoNodes
+import leo.external.pickleshare
 
+import hashlib
 import keyword
 import os
 # import string
@@ -308,26 +310,20 @@ class baseCommands (object):
         self.recentFiles = [] # List of recent files
 
         # For outline navigation.
-        self.navPrefix = '' # Must always be a string.
+        self.navPrefix = g.u('') # Must always be a string.
         self.navTime = None
 
-        # Controller-specific pickleshare db at /foo/bar.leo_db/
-
-        import leo.external.pickleshare
-        import hashlib
         pth, bname = os.path.split(self.mFileName)
-
         if pth and bname and g.enableDB:
             fn = self.mFileName.lower()
-            fn = g.toEncodedString(fn,'utf-8')
-            dbdirname = g.app.homeLeoDir + "/db/" + bname + "_" + hashlib.md5(fn).hexdigest()
-            # use compressed pickles (handy for @thin caches)
-            self.db = leo.external.pickleshare.PickleShareDB(dbdirname, protocol='picklez')
-
+            fn = g.toEncodedString(fn,'utf-8') # Required for Python 3.x.
+            dbdirname = '%s/db/%s_%s' % (
+                g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
+            # Use compressed pickles (handy for @thin caches)
+            self.db = leo.external.pickleshare.PickleShareDB(dbdirname,protocol='picklez')
         else:
             self.db = {}
-            # if not g.app.silentMode and not g.unitTesting:
-                # print('caching disabled')
+        #@nonl
         #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
         #@nl
 
@@ -415,6 +411,268 @@ class baseCommands (object):
 
         return "break" # Inhibit all other handlers.
     #@-node:ekr.20031218072017.2817: doCommand
+    #@+node:ekr.20080901124540.1:c.Directive scanning
+    # These are all new in Leo 4.5.1.
+    #@nonl
+    #@+node:ekr.20080827175609.39:c.scanAllDirectives
+    def scanAllDirectives(self,p=None):
+
+        '''Scan p and ancestors for directives.
+
+        Returns a dict containing the results, including defaults.'''
+
+        c = self ; p = p or c.p
+
+        # Set defaults
+        language = c.target_language and c.target_language.lower()
+        lang_dict = {
+            'language':language,
+            'delims':g.set_delims_from_language(language),
+        }
+        wrap = c.config.getBool("body_pane_wraps")
+
+        table = (
+            ('encoding',    None,           g.scanAtEncodingDirectives),
+            ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+            ('lineending',  None,           g.scanAtLineendingDirectives),
+            ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+            ('path',        None,           c.scanAtPathDirectives),
+            ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+            ('wrap',        wrap,           g.scanAtWrapDirectives),
+        )
+
+        # Set d by scanning all directives.
+        aList = g.get_directives_dict_list(p)
+        d = {}
+        for key,default,func in table:
+            val = func(aList)
+            d[key] = g.choose(val is None,default,val)
+
+        # Post process: do *not* set commander ivars.
+        lang_dict = d.get('lang-dict')
+
+        return {
+            "delims"        : lang_dict.get('delims'),
+            "encoding"      : d.get('encoding'),
+            "language"      : lang_dict.get('language'),
+            "lineending"    : d.get('lineending'),
+            "pagewidth"     : d.get('pagewidth'),
+            "path"          : d.get('path') or g.getBaseDirectory(c),
+            "tabwidth"      : d.get('tabwidth'),
+            "pluginsList"   : [], # No longer used.
+            "wrap"          : d.get('wrap'),
+        }
+    #@nonl
+    #@-node:ekr.20080827175609.39:c.scanAllDirectives
+    #@+node:ekr.20080828103146.15:c.scanAtPathDirectives & test
+    def scanAtPathDirectives(self,aList,force=False,createPath=True):
+
+        '''Scan aList for @path directives.
+        Return a reasonable default if no @path directive is found.'''
+
+        trace = False and not g.unitTesting
+        verbose = True
+
+        c = self
+
+        c.scanAtPathDirectivesCount += 1 # An important statistic.
+        if trace and verbose: g.trace('**entry',g.callers(4))
+
+        # Step 1: Compute the starting path.
+        # The correct fallback directory is the absolute path to the base.
+        if c.openDirectory:  # Bug fix: 2008/9/18
+            base = c.openDirectory
+        else:
+            base = g.app.config.relative_path_base_directory
+            if base and base == "!":    base = g.app.loadDir
+            elif base and base == ".":  base = c.openDirectory
+
+        if trace and verbose:
+            g.trace('base   ',base)
+            g.trace('loadDir',g.app.loadDir)
+
+        absbase = c.os_path_finalize_join(g.app.loadDir,base)
+
+        if trace and verbose: g.trace('absbase',absbase)
+
+        # Step 2: look for @path directives.
+        paths = [] ; fileName = None
+        for d in aList:
+            # Look for @path directives.
+            path = d.get('path')
+            if path is not None: # retain empty paths for warnings.
+                # Convert "path" or <path> to path.
+                path = g.stripPathCruft(path)
+                if path and path not in paths: paths.append(path)
+                # We will silently ignore empty @path directives.
+
+        # Add absbase and reverse the list.
+        paths.append(absbase)
+        paths.reverse()
+
+        if trace and verbose: g.trace('paths  ',paths)
+
+        # Step 3: Compute the full, effective, absolute path.
+        if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+        path = c.os_path_finalize_join(*paths)
+        if trace and verbose: g.trace('joined path:',path)
+
+        # Step 4: Make the path if necessary.
+        if path and createPath and not g.os_path_exists(path):
+            ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
+            if not ok:
+                if force:
+                    g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+                path = absbase # Bug fix: 2008/9/18
+
+        if trace: g.trace('returns',path)
+
+        return path
+    #@+node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+        p2 = p.firstChild().firstChild().firstChild()
+
+        aList = g.get_directives_dict_list(p2)
+        path = c.scanAtPathDirectives(aList,createPath=False)
+        # print (path,p2.h)
+        endpath = g.os_path_normpath('one/two')
+        assert path and path.endswith(endpath),'expected ending %s got %s' % (
+            endpath,path)
+    #@+node:ekr.20090530055015.6121:@path one
+    #@+node:ekr.20090530055015.6073:@path two
+    #@+node:ekr.20090530055015.6074:xyz
+    #@-node:ekr.20090530055015.6074:xyz
+    #@-node:ekr.20090530055015.6073:@path two
+    #@-node:ekr.20090530055015.6121:@path one
+    #@-node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
+    #@-node:ekr.20080828103146.15:c.scanAtPathDirectives & test
+    #@+node:ekr.20080828103146.12:c.scanAtRootDirectives
+    # Called only by scanColorDirectives.
+
+    def scanAtRootDirectives(self,aList):
+
+        '''Scan aList for @root-code and @root-doc directives.'''
+
+        c = self
+
+        # To keep pylint happy.
+        tag = 'at_root_bodies_start_in_doc_mode'
+        start_in_doc = hasattr(c.config,tag) and getattr(c.config,tag)
+
+        # New in Leo 4.6: dashes are valid in directive names.
+        for d in aList:
+            if 'root-code' in d:
+                return 'code'
+            elif 'root-doc' in d:
+                return 'doc'
+            elif 'root' in d:
+                return g.choose(start_in_doc,'doc','code')
+
+        return None
+    #@-node:ekr.20080828103146.12:c.scanAtRootDirectives
+    #@+node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
+    def os_path_finalize (self,path,**keys):
+
+        c = self
+
+        keys['c'] = c
+
+        return g.os_path_finalize(path,**keys)
+
+    def os_path_finalize_join (self,*args,**keys):
+
+        c = self
+
+        keys['c'] = c
+
+        return g.os_path_finalize_join(*args,**keys)
+    #@-node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
+    #@+node:ekr.20081006100835.1:c.getNodePath & c.getNodeFileName
+    def getNodePath (self,p):
+
+        '''Return the path in effect at node p.'''
+
+        c = self
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        return path
+
+    def getNodeFileName (self,p):
+
+        '''Return the full file name at node p,
+        including effects of all @path directives.
+
+        Return None if p is no kind of @file node.'''
+
+        d = self.scanAllDirectives(p)
+        path = d.get('path')
+
+        name = ''
+        for p in p.self_and_parents():
+            name = p.anyAtFileNodeName()
+            if name: break
+
+        if name:
+            name = g.os_path_finalize_join(path,name)
+        return name
+    #@-node:ekr.20081006100835.1:c.getNodePath & c.getNodeFileName
+    #@-node:ekr.20080901124540.1:c.Directive scanning
+    #@+node:ekr.20091211111443.6265:c.doBatchOperations & helpers
+    def doBatchOperations (self,aList):
+        # Validate aList and create the parents dict
+        ok, d = self.checkBatchOperationsList()
+        if not ok:
+            return g.es('do-batch-operations: invalid list argument',
+                color='red')
+
+        for v in list(d.keys()):
+            aList2 = d.get(v,[])
+            if aList2:
+                aList.sort()
+                for n,op in aList2:
+                    if op == 'insert':
+                        g.trace('insert:',v.h,n)
+                    else:
+                        g.trace('delete:',v.h,n)
+    #@+node:ekr.20091211111443.6266:checkBatchOperationsList
+    def checkBatchOperationsList(self,aList):
+        ok = True ; d = {}
+        for z in aList:
+            try:
+                op,p,n = z
+                ok= (op in ('insert','delete') and
+                    isinstance(p,leoNodes.position) and
+                    type(n) == type(9))
+                if ok:
+                    aList2 = d.get(p.v,[])
+                    data = n,op
+                    aList2.append(data)
+                    d[p.v] = aList2
+            except ValueError:
+                ok = False
+            if not ok: break
+        return ok,d
+    #@nonl
+    #@-node:ekr.20091211111443.6266:checkBatchOperationsList
+    #@-node:ekr.20091211111443.6265:c.doBatchOperations & helpers
+    #@+node:ekr.20051106040126:c.executeMinibufferCommand
+    def executeMinibufferCommand (self,commandName):
+
+        c = self ; k = c.k
+
+        func = c.commandsDict.get(commandName)
+
+        if func:
+            event = g.Bunch(c=c,char='',keysym=None,widget=c.frame.body.bodyCtrl)
+            stroke = None
+            k.masterCommand(event,func,stroke)
+            return k.funcReturn
+        else:
+            g.trace('no such command: %s' % (commandName),color='red')
+            return None
+    #@-node:ekr.20051106040126:c.executeMinibufferCommand
     #@+node:ekr.20091002083910.6106:c.find...
     #@+node:ville.20090311190405.70:c.find_h
     def find_h(self, regex, flags = re.IGNORECASE):
@@ -519,22 +777,16 @@ class baseCommands (object):
     allNodes_iter = all_positions
     #@-node:ekr.20091001141621.6044:c.all_positions
     #@-node:ekr.20091001141621.6061:c.generators
-    #@+node:ekr.20051106040126:c.executeMinibufferCommand
-    def executeMinibufferCommand (self,commandName):
+    #@+node:ekr.20090130135126.1:c.Properties
+    def __get_p(self):
 
-        c = self ; k = c.k
+        c = self
+        return c.currentPosition()
 
-        func = c.commandsDict.get(commandName)
-
-        if func:
-            event = g.Bunch(c=c,char='',keysym=None,widget=c.frame.body.bodyCtrl)
-            stroke = None
-            k.masterCommand(event,func,stroke)
-            return k.funcReturn
-        else:
-            g.trace('no such command: %s' % (commandName),color='red')
-            return None
-    #@-node:ekr.20051106040126:c.executeMinibufferCommand
+    p = property(
+        __get_p, # No setter.
+        doc = "commander current position property")
+    #@-node:ekr.20090130135126.1:c.Properties
     #@+node:bobjack.20080509080123.2:c.universalCallback
     def universalCallback(self, function):
 
@@ -588,16 +840,6 @@ class baseCommands (object):
     #fix bobjacks spelling error
     universallCallback = universalCallback
     #@-node:bobjack.20080509080123.2:c.universalCallback
-    #@+node:ekr.20090130135126.1:c.Properties
-    def __get_p(self):
-
-        c = self
-        return c.currentPosition()
-
-    p = property(
-        __get_p, # No setter.
-        doc = "commander current position property")
-    #@-node:ekr.20090130135126.1:c.Properties
     #@+node:ekr.20031218072017.2818:Command handlers...
     #@+node:ekr.20031218072017.2819:File Menu
     #@+node:ekr.20031218072017.2820:top level (file menu)
@@ -5938,214 +6180,6 @@ class baseCommands (object):
     #@-node:ekr.20060613082924:leoUsersGuide
     #@-node:ekr.20031218072017.2938:Help Menu
     #@-node:ekr.20031218072017.2818:Command handlers...
-    #@+node:ekr.20080901124540.1:c.Directive scanning
-    # These are all new in Leo 4.5.1.
-    #@nonl
-    #@+node:ekr.20080827175609.39:c.scanAllDirectives
-    def scanAllDirectives(self,p=None):
-
-        '''Scan p and ancestors for directives.
-
-        Returns a dict containing the results, including defaults.'''
-
-        c = self ; p = p or c.p
-
-        # Set defaults
-        language = c.target_language and c.target_language.lower()
-        lang_dict = {
-            'language':language,
-            'delims':g.set_delims_from_language(language),
-        }
-        wrap = c.config.getBool("body_pane_wraps")
-
-        table = (
-            ('encoding',    None,           g.scanAtEncodingDirectives),
-            ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
-            ('lineending',  None,           g.scanAtLineendingDirectives),
-            ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-            ('path',        None,           c.scanAtPathDirectives),
-            ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
-            ('wrap',        wrap,           g.scanAtWrapDirectives),
-        )
-
-        # Set d by scanning all directives.
-        aList = g.get_directives_dict_list(p)
-        d = {}
-        for key,default,func in table:
-            val = func(aList)
-            d[key] = g.choose(val is None,default,val)
-
-        # Post process: do *not* set commander ivars.
-        lang_dict = d.get('lang-dict')
-
-        return {
-            "delims"        : lang_dict.get('delims'),
-            "encoding"      : d.get('encoding'),
-            "language"      : lang_dict.get('language'),
-            "lineending"    : d.get('lineending'),
-            "pagewidth"     : d.get('pagewidth'),
-            "path"          : d.get('path') or g.getBaseDirectory(c),
-            "tabwidth"      : d.get('tabwidth'),
-            "pluginsList"   : [], # No longer used.
-            "wrap"          : d.get('wrap'),
-        }
-    #@nonl
-    #@-node:ekr.20080827175609.39:c.scanAllDirectives
-    #@+node:ekr.20080828103146.15:c.scanAtPathDirectives & test
-    def scanAtPathDirectives(self,aList,force=False,createPath=True):
-
-        '''Scan aList for @path directives.
-        Return a reasonable default if no @path directive is found.'''
-
-        trace = False and not g.unitTesting
-        verbose = True
-
-        c = self
-
-        c.scanAtPathDirectivesCount += 1 # An important statistic.
-        if trace and verbose: g.trace('**entry',g.callers(4))
-
-        # Step 1: Compute the starting path.
-        # The correct fallback directory is the absolute path to the base.
-        if c.openDirectory:  # Bug fix: 2008/9/18
-            base = c.openDirectory
-        else:
-            base = g.app.config.relative_path_base_directory
-            if base and base == "!":    base = g.app.loadDir
-            elif base and base == ".":  base = c.openDirectory
-
-        if trace and verbose:
-            g.trace('base   ',base)
-            g.trace('loadDir',g.app.loadDir)
-
-        absbase = c.os_path_finalize_join(g.app.loadDir,base)
-
-        if trace and verbose: g.trace('absbase',absbase)
-
-        # Step 2: look for @path directives.
-        paths = [] ; fileName = None
-        for d in aList:
-            # Look for @path directives.
-            path = d.get('path')
-            if path is not None: # retain empty paths for warnings.
-                # Convert "path" or <path> to path.
-                path = g.stripPathCruft(path)
-                if path and path not in paths: paths.append(path)
-                # We will silently ignore empty @path directives.
-
-        # Add absbase and reverse the list.
-        paths.append(absbase)
-        paths.reverse()
-
-        if trace and verbose: g.trace('paths  ',paths)
-
-        # Step 3: Compute the full, effective, absolute path.
-        if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
-        path = c.os_path_finalize_join(*paths)
-        if trace and verbose: g.trace('joined path:',path)
-
-        # Step 4: Make the path if necessary.
-        if path and createPath and not g.os_path_exists(path):
-            ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
-            if not ok:
-                if force:
-                    g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
-                path = absbase # Bug fix: 2008/9/18
-
-        if trace: g.trace('returns',path)
-
-        return path
-    #@+node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
-    if g.unitTesting:
-
-        c,p = g.getTestVars()
-        p2 = p.firstChild().firstChild().firstChild()
-
-        aList = g.get_directives_dict_list(p2)
-        path = c.scanAtPathDirectives(aList,createPath=False)
-        # print (path,p2.h)
-        endpath = g.os_path_normpath('one/two')
-        assert path and path.endswith(endpath),'expected ending %s got %s' % (
-            endpath,path)
-    #@+node:ekr.20090530055015.6121:@path one
-    #@+node:ekr.20090530055015.6073:@path two
-    #@+node:ekr.20090530055015.6074:xyz
-    #@-node:ekr.20090530055015.6074:xyz
-    #@-node:ekr.20090530055015.6073:@path two
-    #@-node:ekr.20090530055015.6121:@path one
-    #@-node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
-    #@-node:ekr.20080828103146.15:c.scanAtPathDirectives & test
-    #@+node:ekr.20080828103146.12:c.scanAtRootDirectives
-    # Called only by scanColorDirectives.
-
-    def scanAtRootDirectives(self,aList):
-
-        '''Scan aList for @root-code and @root-doc directives.'''
-
-        c = self
-
-        # To keep pylint happy.
-        tag = 'at_root_bodies_start_in_doc_mode'
-        start_in_doc = hasattr(c.config,tag) and getattr(c.config,tag)
-
-        # New in Leo 4.6: dashes are valid in directive names.
-        for d in aList:
-            if 'root-code' in d:
-                return 'code'
-            elif 'root-doc' in d:
-                return 'doc'
-            elif 'root' in d:
-                return g.choose(start_in_doc,'doc','code')
-
-        return None
-    #@-node:ekr.20080828103146.12:c.scanAtRootDirectives
-    #@+node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
-    def os_path_finalize (self,path,**keys):
-
-        c = self
-
-        keys['c'] = c
-
-        return g.os_path_finalize(path,**keys)
-
-    def os_path_finalize_join (self,*args,**keys):
-
-        c = self
-
-        keys['c'] = c
-
-        return g.os_path_finalize_join(*args,**keys)
-    #@-node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
-    #@+node:ekr.20081006100835.1:c.getNodePath & c.getNodeFileName
-    def getNodePath (self,p):
-
-        '''Return the path in effect at node p.'''
-
-        c = self
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        return path
-
-    def getNodeFileName (self,p):
-
-        '''Return the full file name at node p,
-        including effects of all @path directives.
-
-        Return None if p is no kind of @file node.'''
-
-        d = self.scanAllDirectives(p)
-        path = d.get('path')
-
-        name = ''
-        for p in p.self_and_parents():
-            name = p.anyAtFileNodeName()
-            if name: break
-
-        if name:
-            name = g.os_path_finalize_join(path,name)
-        return name
-    #@-node:ekr.20081006100835.1:c.getNodePath & c.getNodeFileName
-    #@-node:ekr.20080901124540.1:c.Directive scanning
     #@+node:ekr.20031218072017.2945:Dragging (commands)
     #@+node:ekr.20031218072017.2353:c.dragAfter
     def dragAfter(self,p,after):

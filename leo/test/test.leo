@@ -390,6 +390,12 @@
 </v>
 <v t="ekr.20091201200308.1866"><vh>Minimize</vh></v>
 <v t="ekr.20091210124428.1868"><vh>test</vh></v>
+<v t="ekr.20091211113036.1870"><vh>test c.doBatchOperations</vh>
+<v t="ekr.20091211113036.1871"><vh>child1</vh></v>
+<v t="ekr.20091211113036.1872"><vh>child2</vh></v>
+<v t="ekr.20091211113036.1873"><vh>child3</vh></v>
+</v>
+<v t="ekr.20091216102126.1878"><vh>test dict for use with DictMixin</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -810,7 +816,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="7"></t>
+<t tx="ekr.20070416075121" str_leo_pos="9"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -4111,16 +4117,38 @@ c.frame.top.showNormal()
 </t>
 <t tx="ekr.20091210124428.1868">done = False
 for p in c.all_positions():
+    g.es(p.h)
     if done: break
     last = p.copy()
-    p2 = p.next()
-    g.es(p.h)
+    p2 = p.copy()
+    assert p == p2
+    assert not p != p2
+    assert not p &gt; p2
+    assert not p &lt; p2
+    p2 = p.threadNext()
     while p2:
         if not p2 &gt; last:
             g.es_print('%s not &gt; %s' % (p2.h,last.h))
             done = True ; break
+        if p == p2 or not p != p2 or p2 &lt; last or p2 &lt;= last:
+            g.es_print('%s == or not != or &lt; or &lt;= %s' % (p2.h,last.h))
+            done = True ; break
         p2.moveToThreadNext()
 g.es('done!')
 </t>
+<t tx="ekr.20091211113036.1870">child1 = g.findNodeInTree(c,p,'child1')
+child2 = g.findNodeInTree(c,p,'child2')
+parent = p
+aList = [
+    ('delete',parent,child2.childIndex()),
+]
+c.doBatchOperations(aList)
+g.es('done')</t>
+<t tx="ekr.20091211113036.1871"></t>
+<t tx="ekr.20091211113036.1872"></t>
+<t tx="ekr.20091211113036.1873"></t>
+<t tx="ekr.20091216102126.1878">d = {}
+aList = d.keys()
+print(d.__dict___)</t>
 </tnodes>
 </leo_file>
