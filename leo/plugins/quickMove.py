@@ -94,9 +94,20 @@ class quickMove:
             ("Clone To Last Child Button",None,self.cloneToLastChildButton),
             ("Copy To First Child Button",None,self.copyToFirstChildButton),
             ("Copy To Last Child Button",None,self.copyToLastChildButton),
+            ("Make Buttons Here Permanent",None,self.permanentButton),
+            ("Clear Permanent Buttons Here",None,self.clearButton),
         )
 
         self.c = c
+
+        c.quickMove = self
+
+        self.buttons = []
+
+        for nd in c.all_unique_nodes():
+            if 'quickMove' in nd.u:
+                for first,clone,copy in nd.u['quickMove']:
+                    self.addButton(first,clone,copy,v=nd)
 
         c.frame.menu.createNewMenu('Move', 'Outline')
 
@@ -130,23 +141,52 @@ class quickMove:
     def copyToLastChildButton (self,event=None):
         self.addButton(first=False, copy=True)
 
-    def addButton (self,first,clone=False,copy=False):
+    def addButton (self,first,clone=False,copy=False,v=None):
 
         '''Add a button that creates a target for future moves.'''
 
         c = self.c ; p = c.p
+        if v is None:
+            v = p.v
         sc = scriptingController(c)
 
-        mb = quickMoveButton(self,p.copy(),first,clone,copy)
+        mb = quickMoveButton(self,v,first,clone,copy)
 
         b = sc.createIconButton(
-            text = 'to:' + p.h, # createButton truncates text.
+            text = 'to:' + v.h, # createButton truncates text.
             command = mb.moveCurrentNodeToTarget,
             shortcut = None,
-            statusLine = 'Move current node to %s child of %s' % (g.choose(first,'first','last'),p.h),
+            statusLine = 'Move current node to %s child of %s' % (g.choose(first,'first','last'),v.h),
             bg = "LightBlue"
         )
+
+        self.buttons.append((mb,b))
     #@-node:ekr.20070117113133.2:addTarget/AppendButton
+    #@+node:tbrown.20091217114654.5372:permanentButton
+    def permanentButton (self,event=None):
+        """make buttons on this node permanent
+
+        WARNING: includes buttons deleted"""
+
+        c = self.c ; p = c.p
+
+        qm = c.quickMove
+
+        p.v.u['quickMove'] = []
+        for mover, button in qm.buttons:
+            if mover.target == p.v:
+                p.v.u['quickMove'].append((mover.first, mover.clone, mover.copy))
+
+        g.es('Set {0} buttons'.format(len(p.v.u['quickMove'])))
+    #@-node:tbrown.20091217114654.5372:permanentButton
+    #@+node:tbrown.20091217114654.5374:clearButton
+    def clearButton (self,event=None):
+        """clear permanent buttons specs from uA"""
+        c = self.c ; p = c.p
+        g.es('Removing {0} buttons'.format(len(p.v.u.get('quickMove',[]))))
+        if 'quickMove' in p.v.u:
+            del p.v.u['quickMove']
+    #@-node:tbrown.20091217114654.5374:clearButton
     #@+node:tbrown.20091207102637.11494:popup
     def popup(self, c, p, menu):
         """make popup menu entry"""
@@ -174,7 +214,7 @@ class quickMoveButton:
 
         self.c = owner.c
         self.owner = owner
-        self.target = target.v
+        self.target = target
         self.targetHeadString = target.h
         self.first = first
         self.clone = clone
