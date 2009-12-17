@@ -221,17 +221,6 @@
 <v t="ekr.20091130111843.6787"><vh>Chapter 2: The Leo Tutorial</vh>
 <v t="ekr.20091130111843.6788"><vh>@rst html\intro.html</vh>
 <v t="ekr.20091130111843.6810"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20091130111843.6845"><vh>@rst-ignore-tree</vh>
-<v t="ekr.20091130194648.6799"><vh>intro: 5 elements of Leo</vh></v>
-<v t="ekr.20091130111843.6827"><vh>Leo and literate programming</vh></v>
-<v t="ekr.20091130111843.6823"><vh>intro to markup</vh></v>
-<v t="ekr.20091130194648.6805"><vh>Intro to good style</vh></v>
-<v t="ekr.20091130111843.6825"><vh>Sections</vh>
-<v t="ekr.20091130111843.6830"><vh>@rst-ignore Section names and section references</vh></v>
-</v>
-<v t="ekr.20091130111843.6842"><vh>The Leo Aha</vh></v>
-<v t="ekr.20091130194648.6807"><vh>Outline terminology</vh></v>
-</v>
 <v t="ekr.20091130111843.6814"><vh>Leo's main window</vh></v>
 <v t="ekr.20091130111843.6816"><vh>Outline commands</vh></v>
 <v t="ekr.20091130111843.6846"><vh>External files and @file nodes</vh></v>
@@ -569,8 +558,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050912125144" a="E"><vh>Chapter 12: Plugins</vh>
-<v t="ekr.20050912125144.1" a="E"><vh>@rst html\plugins.html</vh>
+<v t="ekr.20050912125144"><vh>Chapter 12: Plugins</vh>
+<v t="ekr.20050912125144.1"><vh>@rst html\plugins.html</vh>
 <v t="ekr.20050912125735"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070814104719"><vh>Enabling plugins</vh></v>
 <v t="ekr.20050912125735.868"><vh>Body pane</vh>
@@ -660,7 +649,7 @@
 <v t="ekr.20050912125735.2844"><vh>pie_menus.py</vh></v>
 <v t="ville.20090704073251.9442"><vh>contextmenu.py</vh></v>
 </v>
-<v t="ekr.20050912125735.525" a="E"><vh>Nodes</vh>
+<v t="ekr.20050912125735.525"><vh>Nodes</vh>
 <v t="ekr.20050912125735.526"><vh>at_folder.py</vh></v>
 <v t="ekr.20050912125735.529"><vh>at_produce.py</vh></v>
 <v t="ekr.20050912125735.540"><vh>at_view.py</vh></v>
@@ -3216,7 +3205,17 @@
 </v>
 </v>
 </v>
-<v t="ekr.20091130111843.6787"></v>
+<v t="ekr.20091130111843.6845"><vh>@rst-ignore-tree (from tutorial)</vh>
+<v t="ekr.20091130194648.6799"><vh>intro: 5 elements of Leo</vh></v>
+<v t="ekr.20091130111843.6827"><vh>Leo and literate programming</vh></v>
+<v t="ekr.20091130111843.6823"><vh>intro to markup</vh></v>
+<v t="ekr.20091130194648.6805"><vh>Intro to good style</vh></v>
+<v t="ekr.20091130111843.6825"><vh>Sections</vh>
+<v t="ekr.20091130111843.6830"><vh>@rst-ignore Section names and section references</vh></v>
+</v>
+<v t="ekr.20091130111843.6842"><vh>The Leo Aha</vh></v>
+<v t="ekr.20091130194648.6807"><vh>Outline terminology</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
@@ -23026,7 +23025,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="2,15,0,12,7"></t>
+<t tx="ekr.20070610174018" str_leo_pos="2,5"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -30998,11 +30997,11 @@ the part of the code that interests me at the moment.
 </t>
 <t tx="ekr.20091130111843.6823">.. _`markup`:
 
-The following sections discuss the second element of Leo: outline-oriented
-markup. This markup is simple and easy to use, but it provides an essential
-feature found in no other outlining program. This markup tells Leo exactly how
-to create external files (and scripts!) from outlines. More importantly, it
-allows you to organize programs and data at any level of detail you choose.
+The following sections discuss the second element of Leo: outline-based markup.
+This markup is simple and easy to use, but it provides an essential feature
+found in no other outlining program. This markup tells Leo exactly how to create
+external files (and scripts!) from outlines. More importantly, it allows you to
+organize programs and data at any level of detail you choose.
 
 When Leo writes an ``@file`` tree to an external file, Leo's markup tells Leo
 which nodes to write, where to write them in the external file, and how much
@@ -31020,49 +31019,49 @@ represent all the ``import`` statements in a Python module (file).
 <t tx="ekr.20091130111843.6825">Within ``@&lt;file&gt;`` trees you can write *functional pseudo-code*, like this::
 
     &lt;&lt; imports &gt;&gt;  (in body text)
+    
+This is a **section reference**, that is, a reference to a section called
+&lt;&lt; imports &gt;&gt;. When writing an external file, Leo replaces all section
+references by their definition.
 
-This is a **reference** to a **section** called ``&lt;&lt; imports &gt;&gt;``.
-When writing a `external file`_,
-Leo replaces all section references by their definition.
-You define sections with **section definition nodes**.
-A section definition node is a node_ whose headline_ starts with a `section name`_::
+**Named nodes** define sections. Named nodes are nodes whose headline starts
+with a section name::
 
     &lt;&lt; imports &gt;&gt;   (in a headline)
 
-The `body text`_ of this node_ is its definition.  For example::
+The body text of this node is its definition.  For example::
 
     import leo.core.leoGlobals as g
     import sys
 
-As you can see, `section definitions`_ can be *fragments* of code;
+As you can see, section definitions can be *fragments* of code;
 they don't have to be complete functions or methods.
 
 **Notes**:
 
--   `Section definition nodes`_ must be descendants_ of the node_ containing the `section reference`_.
-    Leo's syntax colorer underlines undefined `section references`_.
+-   Named nodes must be descendants of the node containing the section reference.
+    Leo's syntax colorer underlines undefined section references.
 
--   `Section definitions`_ may contain references to other sections_.
+-   Section definitions may contain references to other sections.
 
--   The **@others** directive_ is a special kind of `section reference`_.
-    Leo replaces the ``@others`` directive by the body text of all descendant_ nodes_
-    *except* `section definition nodes`_.
-    That's how ``@others`` got its name.
-    For example, the `root node`_ of Python `external files`_ typically is something like this::
+- The **@others** directive is a special kind of section reference. Leo replaces
+    the @others directive by the body text of all descendant nodes *except*
+    named nodes. That's how @others got its name. For example, the root node of
+    Python external files typically is something like this::
 
         &lt;&lt; docstring &gt;&gt;
         &lt;&lt; imports &gt;&gt;
         @others
 
-    The `external file`_ will contain the docstring, followed by the imports, followed by the
-    the body text of all other nodes in the ``@file`` tree, in `outline order`_.
+    The external file will contain the docstring, followed by the imports, followed by the
+    the body text of all other nodes in the @file tree, in outline order.
 
-- A `external file`_ may contain multiple ``@others`` directives_: Each
-  ``@others`` directive expands to the body text of all descendant_ nodes_,
+- A external file may contain multiple @others directives: Each
+  ``@others`` directive expands to the body text of all descendant nodes,
   excluding any nodes (and *their* descendants) that contain other ``@others``
-  directives_. In practice, using ``@others`` is easy.
+  directives. In practice, using ``@others`` is easy.
 
-- You may precede `section references`_ (including the ``@others`` directive_)
+- You may precede section references (and the ``@others`` directive)
   with whitespace. When expanding the section references, Leo inserts the
   preceding whitespace before every expanded line. For example, the following
   will work properly in Python::
@@ -31075,7 +31074,7 @@ The following sections discuss some relatively minor details.
 However, I recommend reading `Good style and bad`_;
 you might save yourself some extra work.
 
-`@auto trees`_ allow you to edit external files that do not contain sentinels.
+@auto trees allow you to edit external files that do not contain sentinels.
 Leo imports such external files every time Leo reads the .leo file.
 </t>
 <t tx="ekr.20091130111843.6827">.. No need to bring up this can of worms in a tutorial.
@@ -31135,7 +31134,7 @@ official noweb system.
 </t>
 <t tx="ekr.20091130111843.6838">.. _style:
 
-Newcomers to Leo frequently ask when to use the @others directive_ and when to
+Newcomers to Leo frequently ask when to use the @others directive and when to
 use sections. It is good style to use section references only when the order of
 text within a external file matters. For example, Python programmers put
 docstrings and imports at the start of files. So the body text of
@@ -31175,7 +31174,7 @@ the headline.
 - It is good style to **put each class, function or method in its own node**.
   This makes it easy to see the shape of your code.
 
-- It is good style to use `organizer nodes`_ to group related functions or methods.
+- It is good style to use organizer nodes to group related functions or methods.
   An organizer node has no content except maybe for comments.
   Like this::
 
@@ -31244,7 +31243,7 @@ Plugins and other parts of Leo can get options from **@settings** trees.
 from Leo's core code. For a full discussion of @settings trees, see
 `Chapter 8: Customizing Leo`_.</t>
 <t tx="ekr.20091130111843.6842">Leo's users speak of the "Aha" moment, when they see how Leo's three essential
-elements (flexible outlines, outline-oriented markup and integrated Python
+elements (flexible outlines, outline-based markup and integrated Python
 scripting) work together. One way to describe this Aha is to say that in Leo
 outline structure is significant *everywhere*. Here are some examples of this
 principle:
@@ -31358,7 +31357,7 @@ structure in at least five innovative, powerful and unexpected ways:
    outline, Leo recreates all ``@&lt;file&gt;`` trees in the outline using the
    contents of the external files.
    
-4. Simple **outline-oriented markup** tells Leo exactly how to create external
+4. Simple **outline-based markup** tells Leo exactly how to create external
    files. Code-folding editors or class browsers impose a rigid organization on
    your programs or data. With Leo, you can organize your programs and data any
    way you want, and Leo will remember that organization.
@@ -31405,7 +31404,7 @@ simply don't exist with other editors, and the choices you make will influence
 how easy it is to work with your data. We say an organization is **Leonine**
 if it uses Leo markup effectively and naturally.
 
-Newcomers to Leo often have questions about how to use Leo's outline-oriented
+Newcomers to Leo often have questions about how to use Leo's outline-based
 markup. The following paragraphs answer those questions and present a
 straightforward, easy-to-use style of organizing your scripts and programs. I
 developed this style within an hour of using the first prototype of Leo, and it
@@ -31519,7 +31518,7 @@ the name of the decorator is not a Leo directive.
 </t>
 <t tx="ekr.20091201091455.6809">We come now to one of Leo's most important and unusual features. When Leo writes
 an external file, it does so in a flexible manner, directed by
-**outline-oriented markup**. This markup tells Leo exactly how to create the
+**outline-based markup**. This markup tells Leo exactly how to create the
 external file from an @file node.
 
 The **obvious** way to write an external file would be to write the @file node
@@ -31528,11 +31527,14 @@ which nodes appear in the outline). But Leo does *not* write external files
 exactly this way.
 
 Yes, Leo does indeed start by writing the @file node itself. But Leo writes the
-@file node's descendants only when it sees one of three kinds of markup: section
-references, the @others directive and the @all directive. Each kind of markup
-directs Leo to write the **expansion** of one or more descendant nodes to the
-external file. Programmers will recognize this process as akin to macro
-expansion. The following sections will explain this process in detail.</t>
+@file node's descendants only only when it sees one of three kinds of Leo
+markup: section references, the @others directive and the @all directive. We'll
+discuss these three kinds of markup in the next section.
+
+Section references and the @others and @all directives tell Leo to write the
+**expansion** of one or more descendant nodes to the external file. Programmers
+will recognize this process as akin to macro expansion. The following sections
+will explain this process in detail.</t>
 <t tx="ekr.20091201091455.6812">We have now covered the essentials of how Leo creates external files from
 @file nodes. The following section discusses some further details.
 
@@ -31579,7 +31581,10 @@ reference by underlining the section name.
 
 **Important**: the indentation of section references matters. When expanding a
 section reference, Leo indents every line of the expansion by the leading
-whitespace that occurs before the section refenence.
+whitespace that occurs before the section reference. Note also that you can't
+write something after a section reference and expect it to end up on the same
+line after expansion--Leo always writes a newline after the expansion.
+
 </t>
 <t tx="ekr.20091201091455.6814">The **@others directive** is the second (and most common) way of including
 descendant nodes in an external files. When Leo encounters the @others directive
@@ -31632,11 +31637,13 @@ That is, paired "&lt;&lt;" and
 This means that "&lt;&lt;" and
 "&gt;&gt;" characters that do not delimit a section name must be placed on separate lines.
 In practice, this requirement seldom causes problems.</t>
-<t tx="ekr.20091201091455.6817">Every @file node with children must contain an @all or @others
-directive. It it contains neither directive, all the children of the @file
-node will be **orphan nodes**. This is *not* a serious error. When saving the
-outline, Leo will will save the erroneous @&lt;file&gt; tree in the .leo file
-instead of the external file. No information is lost.</t>
+<t tx="ekr.20091201091455.6817">Every node of an @file tree must be **referenced**. There must be at least one
+section reference for each *named* descendant node. If an @file tree contains
+*unnamed* nodes, the @file node itself must contain an @all or @others directive.
+Unreferenced descendant nodes are called **orphan nodes**. This is not a serious
+error. When saving the outline, Leo will will save the erroneous @&lt;file&gt; tree in
+the .leo file instead of the external file (with a warning to that effect sent
+to the Log pane). No information is lost.</t>
 <t tx="ekr.20091201091455.6818">Whenever Leo writes any node to an external file, Leo converts the node's
 headline to a comment. This allows you to put descriptive information in any
 headline.</t>
