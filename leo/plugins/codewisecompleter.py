@@ -44,13 +44,16 @@ __version__ = '0.2'
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
-from PyQt4.QtGui import QCompleter
-from PyQt4 import QtCore
-from PyQt4 import QtGui
-
 import os
 import re
-#@nonl
+
+try:
+    from PyQt4.QtGui import QCompleter
+    from PyQt4 import QtCore
+    from PyQt4 import QtGui
+except ImportError:
+    # no qt available - some functionality should still exist
+    pass
 #@-node:ville.20091204224145.5358:<< imports >>
 #@nl
 
@@ -169,9 +172,13 @@ def install_codewise_completer(c):
 
     c.k.registerCommand(
             'codewise-complete','Alt-0',codewise_complete)
+
+    c.k.registerCommand(
+            'codewise-suggest',None, codewise_suggest)
+
 #@-node:ville.20091204224145.5362:install_codewise_completer
 #@-node:ville.20091204224145.5361:onCreate & helper
-#@+node:ville.20091204224145.5363:codewise_complete & helpers
+#@+node:ville.20091204224145.5363:codewise_complete & helpers (for Qt)
 
 
 def codewise_complete(event):
@@ -205,23 +212,22 @@ def codewise_complete(event):
     cpl.setCompletionPrefix(txt)
     cpl.connect(cpl, QtCore.SIGNAL("activated(QString)"), f)    
     cpl.complete()
-#@+node:ville.20091204224145.5364:codewise_lookup
-def codewise_lookup(prefix):
+#@+node:ville.20091204224145.5365:mkins
+def mkins(completer, body):
 
-    trace = False ; verbose = False
-    hits = (z.split(None,1) for z in os.popen('codewise f %s' % prefix) if z.strip())
+    def insertCompletion(completion):
+        cmpl = unicode(completion).split(None,1)[0]
 
-    desc = []
-    for h in hits:
-        s = h[0]
-        sig = h[1].strip()[2:-4].strip()
-        desc.append(s + '\t' + sig)
+        tc = body.textCursor()
+        extra = len(cmpl) - completer.completionPrefix().length()
+        tc.movePosition(QtGui.QTextCursor.Left)
+        tc.movePosition(QtGui.QTextCursor.EndOfWord)
+        tc.insertText(cmpl[-extra:])
+        body.setTextCursor(tc)
 
-    aList = list(set(desc))
-    aList.sort()
-    return aList
-
-#@-node:ville.20091204224145.5364:codewise_lookup
+    return insertCompletion
+#@-node:ville.20091204224145.5365:mkins
+#@-node:ville.20091204224145.5363:codewise_complete & helpers (for Qt)
 #@+node:ville.20091205173337.10140:codewise_lookup_methods
 def codewise_lookup_methods(klasses, prefix):
 
@@ -246,22 +252,63 @@ def codewise_lookup_methods(klasses, prefix):
     return aList
 
 #@-node:ville.20091205173337.10140:codewise_lookup_methods
-#@+node:ville.20091204224145.5365:mkins
-def mkins(completer, body):
+#@+node:ville.20091204224145.5364:codewise_lookup
+def codewise_lookup(prefix):
 
-    def insertCompletion(completion):
-        cmpl = unicode(completion).split(None,1)[0]
+    trace = False ; verbose = False
+    hits = (z.split(None,1) for z in os.popen('codewise f %s' % prefix) if z.strip())
 
-        tc = body.textCursor()
-        extra = len(cmpl) - completer.completionPrefix().length()
-        tc.movePosition(QtGui.QTextCursor.Left)
-        tc.movePosition(QtGui.QTextCursor.EndOfWord)
-        tc.insertText(cmpl[-extra:])
-        body.setTextCursor(tc)
+    desc = []
+    for h in hits:
+        s = h[0]
+        sig = h[1].strip()[2:-4].strip()
+        desc.append(s + '\t' + sig)
 
-    return insertCompletion
-#@-node:ville.20091204224145.5365:mkins
-#@-node:ville.20091204224145.5363:codewise_complete & helpers
+    aList = list(set(desc))
+    aList.sort()
+    return aList
+
+#@-node:ville.20091204224145.5364:codewise_lookup
+#@+node:vivainio.20091217144258.5737:codewise_suggest
+def codewise_suggest(event):
+
+    c = event.get('c')
+    p = c.p
+    w = event['mb_event'].widget
+    # w : leoQTextEditWidget
+    #print w
+
+    head, tail = get_current_line(w)
+    m = get_attr_target_python(head)
+    obj = m.group(1)
+    prefix = m.group(3)
+    #g.pdb()
+    klasses = guess_class(c,p, obj)
+
+    #body = c.frame.top.ui.richTextEdit    
+    #tc = body.textCursor()
+    #tc.select(QtGui.QTextCursor.WordUnderCursor)
+    #txt = tc.selectedText()
+
+    if not klasses:
+        hits = codewise_lookup(txt)
+    else:
+        hits = codewise_lookup_methods(klasses, prefix)
+
+
+    realhits = (h for h in hits if h.startswith(prefix))
+    g.es("  Completions:")
+    for h in realhits:
+        g.es(h)
+
+
+    #cpl = c.frame.top.completer = QCompleter(hits)
+    #cpl.setWidget(body)
+    #f = mkins(cpl, body)
+    #cpl.setCompletionPrefix(txt)
+    #cpl.connect(cpl, QtCore.SIGNAL("activated(QString)"), f)    
+    #cpl.complete()
+#@-node:vivainio.20091217144258.5737:codewise_suggest
 #@-others
 #@nonl
 #@-node:ville.20091204224145.5355:@thin codewisecompleter.py
