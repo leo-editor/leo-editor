@@ -396,7 +396,7 @@ def removeFile(path):
 #@+node:ekr.20090529103821.7102:@test all commands have an event arg
 import inspect
 
-d = c.commandsDict ; keys = d.keys() ; keys.sort()
+d = c.commandsDict ; keys = list(d.keys()) ; keys.sort()
 
 for key in keys:
     f = d.get(key) ; name = f and f.__name__
@@ -621,34 +621,39 @@ print('\nEnd of plugins unit tests')
 #@nonl
 #@-node:ekr.20090529103821.9347:@test restore the screen
 #@+node:ekr.20090529103821.9348:@test rst3 handleMissingStyleSheetArgs
-import leo.plugins.rst3 as rst3
-x = rst3.rstClass(c)
+x = c.rstCommands
 
-assert x.handleMissingStyleSheetArgs(s=None) == {}
+result = x.handleMissingStyleSheetArgs(s=None)
+assert result == {},'expected {}, got %s' % result
 
-s = '--language=ca,--use-latex-toc'
-assert x.handleMissingStyleSheetArgs(s=s) == {
-    '--language':'ca','--use-latex-toc':''}
+### This is a real failure.
+
+s = '--language=ca, --use-latex-toc'
+
+result = x.handleMissingStyleSheetArgs(s=s)
+
+expected = {'language':'ca','--use-latex-toc':''}
+
+assert result == expected,'expected %s\ngot %s' % (expected,result)
+#@nonl
 #@-node:ekr.20090529103821.9348:@test rst3 handleMissingStyleSheetArgs
 #@+node:ekr.20090529103821.9349:gui plugins
 #@+node:ekr.20090529103821.9350:@test c.vnode2position
 trace = False
 
-if trace: print '=' * 20
+if trace: print('=' * 20)
 
 for p in c.all_positions():
 
     p2 = c.vnode2position(p.v)
 
-    if trace: print p2.level(), p2.headString()
+    if trace: print(p2.level(), p2.headString())
 
     # We can *not* assert that p == p2, only that
     # p2.v == p.v and c.positionExists(p2)
     assert p2
     assert p2.v == p.v,'p2.v: %s, p.v: %s' % (p2.v,v)
     assert c.positionExists(p2),'does not exist: %s' % p2
-
-# if True or trace: print 'passed'
 #@-node:ekr.20090529103821.9350:@test c.vnode2position
 #@+node:ekr.20090529103821.9351:@test position2Item
 tree = c.frame.tree
@@ -660,7 +665,6 @@ if hasattr(tree,'position2item'): # and hasattr(tree,'item2vnode'):
     p = c.rootPosition()
     while p:
         item = tree.position2item(p)
-        # print item and id(item) or '**none**', p.headString()
         v = tree.item2vnode(item)
         assert v == p.v, 'item2: %s, p.v: %s' % (item,p.v)
         p.moveToVisNext(c)
@@ -689,8 +693,6 @@ def test_sibs(parent_p,parent_item):
             test_sibs(child,parent_item=item)
 
 if hasattr(c.frame.tree,'item2position'):
-
-    # print '='*10
     c.redraw()
     test_sibs(c.rootPosition(),None)
 #@-node:ekr.20090529103821.9352:@test item2position
@@ -3205,7 +3207,7 @@ assert d.get('pagewidth') == 120
 w = c.frame.body.bodyCtrl
 s = w.getAllText()
 
-for i in xrange(len(s)):
+for i in range(len(s)):
     i2 = w.toGuiIndex(i)
     i3 = w.toPythonIndex(i2)
     assert(i3==i)

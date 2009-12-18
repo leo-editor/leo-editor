@@ -169,21 +169,26 @@ class autoCompleterClass:
         try: import gc
         except ImportError: return
 
-        for z in gc.get_objects():
-            t = type(z)
-            if t == types.ClassType:
-                name = z.__name__
-            elif t == types.InstanceType:
+        if g.isPython3:
+            for z in gc.get_objects():
                 name = z.__class__.__name__
-            elif repr(t).startswith('<class'): # A wretched kludge.
-                name = z.__class__.__name__
-            elif t == types.TypeType:
-                name = z.__name__
-            else:
-                name = None
-            if name:
-                # if name == 'position': g.trace(t,z)
                 self.allClassesDict [name] = z
+        else:
+            for z in gc.get_objects():
+                t = type(z)
+                if t == types.ClassType:
+                    name = z.__name__
+                elif t == types.InstanceType:
+                    name = z.__class__.__name__
+                elif repr(t).startswith('<class'): # A wretched kludge.
+                    name = z.__class__.__name__
+                elif t == types.TypeType:
+                    name = z.__name__
+                else:
+                    name = None
+                if name:
+                    # if name == 'position': g.trace(t,z)
+                    self.allClassesDict [name] = z
 
         # g.printList(list(self.allClassesDict.keys()),tag='Classes',sort=True)
         # g.trace(len(list(self.allClassesDict.keys())))

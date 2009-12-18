@@ -186,20 +186,10 @@ class generalTestCase(unittest.TestCase):
         # g.trace(type(script),script)
 
         # Execute the script. Let unit test handle any errors!
-
         if writeScriptFile:
             scriptFile = c.writeScriptFile(script)
-            exec(script,d)
-            ###execfile(scriptFile,d)
-            ###exec(compile(open(scriptFile).read(),scriptFile,'exec'),d)
-        else:
-            exec(script,d)
 
-        # if 0: # debug
-            # import pdb
-            # pdb.run(script+'\n',d)
-        # else:
-            # exec script + '\n' in d
+        exec(script,d)
     #@-node:ekr.20051104075904.10:runTest
     #@+node:ekr.20051104075904.11:shortDescription
     def shortDescription (self):

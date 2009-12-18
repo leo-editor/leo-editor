@@ -929,7 +929,6 @@ if g.unitTesting:
     x = StubConfig()
     assert not x.getBool(c,'mySetting')
     assert not x.enabledPluginsFileName
-#@nonl
 #@-node:ekr.20090522161156.5886:@test class StubConfig
 #@-node:ekr.20041113113140:loadOnePlugin & test
 #@-node:ekr.20090907140408.6123:Fixed startup reversion when .leoID.txt does not exist
@@ -3438,16 +3437,6 @@ Traceback (most recent call last):
             ^
 SyntaxError: invalid syntax
 #@-node:ekr.20091206150342.6202:print statement in unit tests
-#@+node:ekr.20091206150342.6197:xrange in unit tests
-ERROR: @test tkBody.onClick
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/edreamleo/leo.repo/leo-3k/leo/core/leoTest.py", line 192, in runTest
-    exec(script,d)
-  File "<string>", line 5, in <module>
-NameError: name 'xrange' is not defined
-#@nonl
-#@-node:ekr.20091206150342.6197:xrange in unit tests
 #@+node:ekr.20091206150342.6193:u' in unit tests
 ======================================================================
 ERROR: @test selfInsertCommand-1
@@ -5179,6 +5168,253 @@ if g.unitTesting:
 #@-node:ekr.20090703155133.6418:@test safeImportModule
 #@-node:ekr.20051104075904.103:safeImportModule & test
 #@-node:ekr.20091218143600.6302:Fixed doctest problems on Linux
+#@+node:ekr.20091218173731.6717:Fixed completer crash
+#@+node:ekr.20060221083356:g.prettyPrintType
+def prettyPrintType (obj):
+
+    if g.isPython3:
+        if type(obj) in (
+            types.MethodType,
+            # types.UnboundMethodType,
+            types.BuiltinMethodType):
+            return 'method'
+        elif type(obj) in (types.BuiltinFunctionType,types.FunctionType):
+            return 'function'
+        elif type(obj) == types.ModuleType:
+            return 'module'
+        # elif type(obj) == types.InstanceType:
+            # return 'object'
+        elif g.isString(obj): # type(obj) in (types.UnicodeType,types.StringType):
+            return 'string'
+        else:
+            theType = str(type(obj))
+            if theType.startswith("<type '"): theType = theType[7:]
+            if theType.endswith("'>"): theType = theType[:-2]
+            return theType
+    else:
+        if type(obj) in (
+            types.MethodType,types.UnboundMethodType,types.BuiltinMethodType):
+            return 'method'
+        elif type(obj) in (types.BuiltinFunctionType,types.FunctionType):
+            return 'function'
+        elif type(obj) == types.ModuleType:
+            return 'module'
+        elif type(obj) == types.InstanceType:
+            return 'object'
+        elif type(obj) in (types.UnicodeType,types.StringType):
+            return 'string'
+        else:
+            theType = str(type(obj))
+            if theType.startswith("<type '"): theType = theType[7:]
+            if theType.endswith("'>"): theType = theType[:-2]
+            return theType
+#@-node:ekr.20060221083356:g.prettyPrintType
+#@+node:ekr.20061031131434.6:defineClassesDict
+def defineClassesDict (self):
+
+    self.allClassesDict = {}
+
+    # gc may not exist.
+    try: import gc
+    except ImportError: return
+
+    if g.isPython3:
+        for z in gc.get_objects():
+            name = z.__class__.__name__
+            self.allClassesDict [name] = z
+    else:
+        for z in gc.get_objects():
+            t = type(z)
+            if t == types.ClassType:
+                name = z.__name__
+            elif t == types.InstanceType:
+                name = z.__class__.__name__
+            elif repr(t).startswith('<class'): # A wretched kludge.
+                name = z.__class__.__name__
+            elif t == types.TypeType:
+                name = z.__name__
+            else:
+                name = None
+            if name:
+                # if name == 'position': g.trace(t,z)
+                self.allClassesDict [name] = z
+
+    # g.printList(list(self.allClassesDict.keys()),tag='Classes',sort=True)
+    # g.trace(len(list(self.allClassesDict.keys())))
+    # g.trace('position:',self.allClassesDict.get('position'))
+#@-node:ekr.20061031131434.6:defineClassesDict
+#@-node:ekr.20091218173731.6717:Fixed completer crash
+#@+node:ekr.20091218182246.6722:Added entries for haxe language
+#@+node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM_", # Use the REM hack.
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "haskell"       : "--_ {-_ _-}",
+    "haxe"          : "//",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lua"           : "--",  # ddm 13/02/06
+    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "rest"          : ".._",
+    "rst"           : ".._",
+    "ruby"          : "#",  # thyrsus 2008-11-05
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+    "vim"           : "\"",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+    "xslt"          : "<!-- -->",
+}
+
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f90",
+    "haskell"       : "hs",
+    "haxe"          : "hx",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    "rst"           : "rst",
+    "rst"           : "rest",
+    "ruby"          : "rb",   # thyrsus 2008-11-05
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vim"           : "vim",
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+    "xslt"          : "xsl",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "hs"    : "haskell",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+    "w"     : "cweb",
+    "xml"   : "xml",
+    "xsl"   : "xslt",
+    "hx"    : "haxe",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran90',
+    'hx'    : 'none',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
+
+self.global_commands_dict = {}
+#@-node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
+#@-node:ekr.20091218182246.6722:Added entries for haxe language
 #@-node:ekr.20091203060018.6100:leo-3k
 #@-all
 #@nonl

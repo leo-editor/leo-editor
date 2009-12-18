@@ -129,6 +129,7 @@ class LeoApp:
             "fortran"       : "C",
             "fortran90"     : "!",
             "haskell"       : "--_ {-_ _-}",
+            "haxe"          : "//",
             "html"          : "<!-- -->",
             "ini"           : ";",
             "java"          : "// /* */",
@@ -175,6 +176,7 @@ class LeoApp:
             "fortran"       : "f",
             "fortran90"     : "f90",
             "haskell"       : "hs",
+            "haxe"          : "hx",
             "html"          : "html",
             "ini"           : "ini",
             "java"          : "java",
@@ -265,6 +267,7 @@ class LeoApp:
             'cpp'   : 'c',
             'el'    : 'lisp',
             'f'     : 'fortran90',
+            'hx'    : 'none',
             'ksh'   : 'none', # Leo 4.5.1
             'nw'    : 'none', # noweb.
             'otl'   : 'none', # vimoutline.

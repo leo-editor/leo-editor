@@ -487,7 +487,6 @@ if g.unitTesting:
     x = StubConfig()
     assert not x.getBool(c,'mySetting')
     assert not x.enabledPluginsFileName
-#@nonl
 #@-node:ekr.20090522161156.5886:@test class StubConfig
 #@-node:ekr.20041113113140:loadOnePlugin & test
 #@+node:ekr.20050110191444:printHandlers
