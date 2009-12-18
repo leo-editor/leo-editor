@@ -3356,7 +3356,6 @@ def putDescendentTnodeUas (self,p):
 
 To do:
 
-* Caching does not work for leo3k.
 * Make sure all doctests are run.
 - Fix plugins that fail with Python3k.
 - Run all tests in this file. (These are minor failures).
@@ -4088,8 +4087,9 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
             if theFile:
                 pass # Just use the open binary file, opened by g.openLeoOrZipFile.
             else:
-                ### theFile = StringIO(g.u(s))
-                theFile = StringIO(str(s,encoding='utf-8'))
+                s = str(s,encoding='utf-8')
+                s = self.cleanSaxInputString(s)
+                theFile = StringIO(s)
         else:
             if theFile: s = theFile.read()
             s = self.cleanSaxInputString(s)
@@ -4473,6 +4473,80 @@ for index in sorted(tnodes):
 #@-node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
 #@-node:ekr.20031218072017.1575:putTnodes
 #@-node:ekr.20091209095640.6218:Output tnodes in proper order
+#@+node:ekr.20091217191310.6304:Remove bad chars from .leo files
+#@+node:ekr.20090525144314.6526:cleanSaxInputString & test
+def cleanSaxInputString(self,s):
+
+    badchars = [chr(ch) for ch in range(32)]
+    badchars.remove('\t')
+    badchars.remove('\r')
+    badchars.remove('\n')
+
+    flatten = ''.join(badchars)
+    pad = ' ' * len(flatten)
+
+    if g.isPython3:
+        flatten = bytes(flatten,'utf-8')
+        pad = bytes(pad,'utf-8')
+        transtable = bytes.maketrans(flatten,pad)
+    else:
+        transtable = string.maketrans(flatten,pad)
+
+    return s.translate(transtable)
+
+# for i in range(32): print i,repr(chr(i))
+#@+node:ekr.20090525144314.6527:@test cleanSaxInputString
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    s = 'test%cthis' % 27
+
+    assert c.fileCommands.cleanSaxInputString(s) == 'test this'
+#@-node:ekr.20090525144314.6527:@test cleanSaxInputString
+#@-node:ekr.20090525144314.6526:cleanSaxInputString & test
+#@+node:ekr.20060919110638.14:parse_leo_file
+def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
+
+    c = self.c
+    # g.trace('hiddenRootNode',c.hiddenRootNode)
+
+    try:
+        if g.isPython3:
+            if theFile:
+                pass # Just use the open binary file, opened by g.openLeoOrZipFile.
+            else:
+                s = str(s,encoding='utf-8')
+                s = self.cleanSaxInputString(s)
+                theFile = StringIO(s)
+        else:
+            if theFile: s = theFile.read()
+            s = self.cleanSaxInputString(s)
+            theFile = cStringIO.StringIO(s)
+        parser = xml.sax.make_parser()
+        parser.setFeature(xml.sax.handler.feature_external_ges,1)
+            # Include external general entities, esp. xml-stylesheet lines.
+        if 0: # Expat does not read external features.
+            parser.setFeature(xml.sax.handler.feature_external_pes,1)
+                # Include all external parameter entities
+                # Hopefully the parser can figure out the encoding from the <?xml> element.
+        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
+        parser.setContentHandler(handler)
+        parser.parse(theFile) # expat does not support parseString
+        # g.trace('parsing done')
+        sax_node = handler.getRootNode()
+    except xml.sax.SAXParseException:
+        g.es_print('error parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+    except Exception:
+        g.es_print('unexpected exception parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+
+    return sax_node
+#@-node:ekr.20060919110638.14:parse_leo_file
+#@-node:ekr.20091217191310.6304:Remove bad chars from .leo files
 #@+node:ekr.20091209114435.6223:Fixed caching
 #@+node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
 self._currentPosition = self.nullPosition()
@@ -4552,6 +4626,38 @@ else:
     self.db = {}
 #@nonl
 #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
+#@+node:ekr.20091204132346.6078:<< imports >> (pickleshare.py)
+import leo.core.leoGlobals as g
+from leo.external.path import path as Path
+import glob
+import os
+import stat
+import sys
+import time
+import warnings
+
+isPython3 = sys.version_info >= (3,0,0)
+
+try:
+    import marshal
+except ImportError:
+    marshal = None
+
+if isPython3:
+    import pickle
+else:
+    import cPickle as pickle
+
+try:
+    import simplejson
+except ImportError:
+    simplejson = None
+
+try:
+    import zlib
+except ImportError:
+    zlib = None
+#@-node:ekr.20091204132346.6078:<< imports >> (pickleshare.py)
 #@+node:ekr.20041005105605.21:read (atFile) & helper
 def read(self,root,
     importFileName=None,thinFile=False,
@@ -4667,7 +4773,7 @@ for v in c.all_unique_nodes():
 #@+node:ekr.20091204132346.6080:class PickleShareDB
 _sentinel = object()
 
-class PickleShareDB(mixin):
+class PickleShareDB:
     """ The main 'connection' object for PickleShare database """
     @others
 #@+node:ekr.20091204132346.6081: __init__
@@ -4706,20 +4812,25 @@ def __init__(self,root, protocol = 'pickle'):
         if zlib:
             def loadz(fileobj):
                 val = pickle.loads(zlib.decompress(fileobj.read()))
-                # g.trace(fileobj)
                 return val
 
             def dumpz(val, fileobj):
                 compressed = zlib.compress(pickle.dumps(val, pickle.HIGHEST_PROTOCOL))
                 fileobj.write(compressed)
-                # g.trace(fileobj)
 
             self.loader = loadz
             self.dumper = dumpz
 #@-node:ekr.20091204132346.6081: __init__
+#@+node:ekr.20091216103214.6305:__contains__
+def __contains__(self, key):
+
+    return self.has_key(key)
+#@-node:ekr.20091216103214.6305:__contains__
 #@+node:ekr.20091204132346.6088:__delitem__
 def __delitem__(self,key):
+
     """ del db["key"] """
+
     fil = self.root / key
     # g.trace('(PickleShareDB)',key) # ,g.shortFileName(fil))
     self.cache.pop(fil,None)
@@ -4729,11 +4840,12 @@ def __delitem__(self,key):
         # notfound and permission denied are ok - we
         # lost, the other process wins the conflict
         pass
-
 #@-node:ekr.20091204132346.6088:__delitem__
 #@+node:ekr.20091204132346.6082:__getitem__
 def __getitem__(self,key):
+
     """ db['key'] reading """
+
     fil = self.root / key
     # g.trace('(PickleShareDB)',key) #,g.shortFileName(fil))
     try:
@@ -4752,8 +4864,15 @@ def __getitem__(self,key):
     self.cache[fil] = (obj,mtime)
     return obj
 #@-node:ekr.20091204132346.6082:__getitem__
+#@+node:ekr.20091216103214.6303:__iter__
+def __iter__(self):
+
+    for k in list(self.keys()):
+        yield k
+#@-node:ekr.20091216103214.6303:__iter__
 #@+node:ekr.20091204132346.6094:__repr__
 def __repr__(self):
+
     return "PickleShareDB('%s')" % self.root
 
 
@@ -4761,7 +4880,9 @@ def __repr__(self):
 #@-node:ekr.20091204132346.6094:__repr__
 #@+node:ekr.20091204132346.6083:__setitem__
 def __setitem__(self,key,value):
+
     """ db['key'] = 5 """
+
     fil = self.root / key
     parent = fil.parent
     if parent and not parent.isdir():
@@ -4775,123 +4896,6 @@ def __setitem__(self,key,value):
             raise
 
 #@-node:ekr.20091204132346.6083:__setitem__
-#@+node:ekr.20091216094905.6291:from DictMixin (python 2.6)
-# Copied by EKR from
-# <module 'UserDict' from '/usr/lib/python2.6/UserDict.pyc'>
-
-# Mixin defining all dictionary methods for classes that already have
-# a minimum dictionary interface including getitem, setitem, delitem,
-# and keys. Without knowledge of the subclass constructor, the mixin
-# does not define __init__() or copy().  In addition to the four base
-# methods, progressively more efficiency comes with defining
-# __contains__(), __iter__(), and iteritems().
-#@+node:ekr.20091216103214.6296:second-level
-# second level definitions support higher levels.
-#@nonl
-#@+node:ekr.20091216103214.6305:__contains__
-def __contains__(self, key):
-
-    return self.has_key(key)
-#@-node:ekr.20091216103214.6305:__contains__
-#@+node:ekr.20091216103214.6303:__iter__
-def __iter__(self):
-    for k in list(self.keys()): # EKR: added list
-        yield k
-#@-node:ekr.20091216103214.6303:__iter__
-#@+node:ekr.20091216103214.6304:has_key
-def has_key(self, key):
-
-    try:
-        value = self[key]
-    except KeyError:
-        return False
-
-    return True
-#@-node:ekr.20091216103214.6304:has_key
-#@-node:ekr.20091216103214.6296:second-level
-#@+node:ekr.20091216103214.6297:third-level
-# third level takes advantage of second level definitions.
-#@nonl
-#@+node:ekr.20091216103214.6306:iteritems
-def iteritems(self):
-    for k in self:
-        yield (k, self[k])
-#@-node:ekr.20091216103214.6306:iteritems
-#@+node:ekr.20091216103214.6307:iterkeys
-def iterkeys(self):
-    return self.__iter__()
-#@-node:ekr.20091216103214.6307:iterkeys
-#@-node:ekr.20091216103214.6297:third-level
-#@+node:ekr.20091216103214.6298:fourth-level
-# fourth level uses definitions from lower levels.
-
-def itervalues(self):
-    for _, v in self.iteritems():
-        yield v
-def values(self):
-    return [v for _, v in self.iteritems()]
-def items(self):
-    return list(self.iteritems())
-def clear(self):
-    for key in self.keys():
-        del self[key]
-def setdefault(self, key, default=None):
-    try:
-        return self[key]
-    except KeyError:
-        self[key] = default
-    return default
-def pop(self, key, *args):
-    if len(args) > 1:
-        raise TypeError("pop expected at most 2 arguments, got " % (
-            repr(1 + len(args))))
-    try:
-        value = self[key]
-    except KeyError:
-        if args:
-            return args[0]
-        raise
-    del self[key]
-    return value
-def popitem(self):
-    try:
-        k, v = self.iteritems().next()
-    except StopIteration:
-        raise KeyError('container is empty') # EKR: syntax change.
-    del self[k]
-    return (k, v)
-def update(self, other=None, **kwargs):
-    # Make progressively weaker assumptions about "other"
-    if other is None:
-        pass
-    elif hasattr(other, 'iteritems'):  # iteritems saves memory and lookups
-        for k, v in other.iteritems():
-            self[k] = v
-    elif hasattr(other, 'keys'):
-        for k in other.keys():
-            self[k] = other[k]
-    else:
-        for k, v in other:
-            self[k] = v
-    if kwargs:
-        self.update(kwargs)
-def get(self, key, default=None):
-    try:
-        return self[key]
-    except KeyError:
-        return default
-# def __repr__(self):
-    # return repr(dict(self.iteritems()))
-def __cmp__(self, other):
-    if other is None:
-        return 1
-    if isinstance(other, DictMixin):
-        other = dict(other.iteritems())
-    return cmp(dict(self.iteritems()), other)
-def __len__(self):
-    return len(self.keys())
-#@-node:ekr.20091216103214.6298:fourth-level
-#@-node:ekr.20091216094905.6291:from DictMixin (python 2.6)
 #@+node:ekr.20091204132346.6089:_normalized
 def _normalized(self, p):
     """ Make a key suitable for user's eyes """
@@ -4904,6 +4908,16 @@ def getlink(self,folder):
     return PickleShareLink(self, folder)
 
 #@-node:ekr.20091204132346.6093:getlink
+#@+node:ekr.20091216103214.6304:has_key
+def has_key(self, key):
+
+    try:
+        value = self[key]
+    except KeyError:
+        return False
+
+    return True
+#@-node:ekr.20091216103214.6304:has_key
 #@+node:ekr.20091204132346.6087:hcompress
 def hcompress(self, hashroot):
     """ Compress category 'hashroot', so hset is fast again
@@ -4985,6 +4999,14 @@ def hset(self, hashroot, key, value):
 
 
 #@-node:ekr.20091204132346.6084:hset
+#@+node:ekr.20091216103214.6306:iteritems & iterkeys
+def iteritems(self):
+    for k in self:
+        yield (k, self[k])
+
+def iterkeys(self):
+    return self.__iter__()
+#@-node:ekr.20091216103214.6306:iteritems & iterkeys
 #@+node:ekr.20091204132346.6090:keys
 def keys(self, globpat = None):
     """ All keys in DB, or all keys matching a glob"""
@@ -5046,13 +5068,6 @@ def waitget(self,key, maxwaittime = 60 ):
             tries+=1
 #@-node:ekr.20091204132346.6092:waitget
 #@-node:ekr.20091204132346.6080:class PickleShareDB
-#@+node:ekr.20091215202515.6286:Dump
-@nocolor
-
-_getitem__ (PickleShareDB)
-fcache/f6b0571e0ee959a518ff4261bac0450d
-path(u'/home/edreamleo/.leo/db/leoPy.leo_e159a81265b1eda73deb6b17a25eae7d/fcache/f6b0571e0ee959a518ff4261bac0450d')
-#@-node:ekr.20091215202515.6286:Dump
 #@-node:ekr.20091209114435.6223:Fixed caching
 #@-node:ekr.20091203060018.6100:leo-3k
 #@-all

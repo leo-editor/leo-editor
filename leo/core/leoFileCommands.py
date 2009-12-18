@@ -27,6 +27,7 @@ else:
 
 import os
 import pickle
+import string
 import sys
 import types
 import zipfile
@@ -1052,16 +1053,20 @@ class baseFileCommands:
     #@+node:ekr.20090525144314.6526:cleanSaxInputString & test
     def cleanSaxInputString(self,s):
 
-        from string import maketrans
-
         badchars = [chr(ch) for ch in range(32)]
         badchars.remove('\t')
         badchars.remove('\r')
         badchars.remove('\n')
 
         flatten = ''.join(badchars)
+        pad = ' ' * len(flatten)
 
-        transtable = maketrans(flatten, ' ' * len(flatten))
+        if g.isPython3:
+            flatten = bytes(flatten,'utf-8')
+            pad = bytes(pad,'utf-8')
+            transtable = bytes.maketrans(flatten,pad)
+        else:
+            transtable = string.maketrans(flatten,pad)
 
         return s.translate(transtable)
 
@@ -1441,8 +1446,9 @@ class baseFileCommands:
                 if theFile:
                     pass # Just use the open binary file, opened by g.openLeoOrZipFile.
                 else:
-                    ### theFile = StringIO(g.u(s))
-                    theFile = StringIO(str(s,encoding='utf-8'))
+                    s = str(s,encoding='utf-8')
+                    s = self.cleanSaxInputString(s)
+                    theFile = StringIO(s)
             else:
                 if theFile: s = theFile.read()
                 s = self.cleanSaxInputString(s)

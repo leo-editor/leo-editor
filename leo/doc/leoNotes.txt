@@ -5,6 +5,7 @@
 #@+all
 #@+node:ekr.20061116060847:@url http://www.jhorman.org/wikidPad/
 #@-node:ekr.20061116060847:@url http://www.jhorman.org/wikidPad/
+#@+node:ekr.20091218120633.6299:Bzr
 #@+node:ekr.20080917153158.10:Bzr notes
 @nocolor
 
@@ -120,6 +121,7 @@ The prefix doesn't matter, but the contents of these files must contain the prop
 for example, gutsy, hardy, intrepid.
 #@nonl
 #@-node:ekr.20081113095540.1:Bzr/ubuntu notes
+#@-node:ekr.20091218120633.6299:Bzr
 #@+node:ekr.20090502071837.103:Cool projects
 @nocolor
 
@@ -179,6 +181,7 @@ Call hierarchy tracing (using python 'trace' module)
   http://projects.gnome.org/tomboy/index.html
   http://groups.google.com/group/leo-editor/browse_thread/thread/18d4af19686f2ead
 #@-node:ekr.20090502071837.103:Cool projects
+#@+node:ekr.20091218120633.6300:Other notes
 #@+node:ekr.20090601083544.6066:Cool plugins & Leo code
 These are plugins/projects that I'd like to investigate further.
 
@@ -4434,6 +4437,7 @@ Brian Theado
 #@nonl
 #@-node:ekr.20050306070535.3:How to detect changes in text
 #@-node:ekr.20050306070535:Tk Notes
+#@-node:ekr.20091218120633.6300:Other notes
 #@+node:ekr.20031218072017.434:Unused code
 @ignore
 @language python
@@ -4620,6 +4624,145 @@ def stateHandler (self,event):
 #@-node:ekr.20050920084036.215:stateHandler
 #@-node:ekr.20051005151838:Helpers
 #@-node:ekr.20050920084036.207:queryReplaceCommandsClass (limited to single node)
+#@+node:ekr.20081204091750.2:g.emptyString
+def emptyString():
+
+    '''Return an empty unicode string.'''
+
+    return g.u('')
+#@-node:ekr.20081204091750.2:g.emptyString
+#@+node:ekr.20091218121326.6311:from UserDict (python3.1)
+if 0:
+    class UserDict(MutableMapping):
+
+        # Start by filling-out the abstract methods
+        def __init__(self, dict=None, **kwargs):
+            self.data = {}
+            if dict is not None:
+                self.update(dict)
+            if len(kwargs):
+                self.update(kwargs)
+
+if False and isPython3:
+    def __len__(self): return len(self.data)
+    # def __getitem__(self, key):
+        # if key in self.data:
+            # return self.data[key]
+        # if hasattr(self.__class__, "__missing__"):
+            # return self.__class__.__missing__(self, key)
+        # raise KeyError(key)
+    # def __setitem__(self, key, item): self.data[key] = item
+    # def __delitem__(self, key): del self.data[key]
+
+    # Now, add the methods in dicts but not in MutableMapping
+    # def __repr__(self): return repr(self.data)
+    def copy(self):
+        if self.__class__ is UserDict:
+            return UserDict(self.data.copy())
+        import copy
+        data = self.data
+        try:
+            self.data = {}
+            c = copy.copy(self)
+        finally:
+            self.data = data
+        c.update(self)
+        return c
+    @classmethod
+    def fromkeys(cls, iterable, value=None):
+        d = cls()
+        for key in iterable:
+            d[key] = value
+        return d
+#@+node:ekr.20091218122038.6313:second-level
+def __iter__(self):
+    return iter(self.data)
+
+# Modify __contains__ to work correctly when __missing__ is present
+def __contains__(self, key):
+    return key in self.data
+
+### From 2.6.
+def has_key(self, key):
+    try:
+        value = self[key]
+    except KeyError:
+        return False
+
+    return True
+#@-node:ekr.20091218122038.6313:second-level
+#@-node:ekr.20091218121326.6311:from UserDict (python3.1)
+#@+node:ekr.20091216103214.6298:fourth-level (python 2.6)
+# fourth level uses definitions from lower levels.
+
+if False: # Never used in either Leo2k or Leo3k.
+
+    def itervalues(self):
+        for _, v in self.iteritems():
+            yield v
+    def values(self):
+        return [v for _, v in self.iteritems()]
+    def items(self):
+        return list(self.iteritems())
+    def clear(self):
+        for key in self.keys():
+            del self[key]
+    def setdefault(self, key, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            self[key] = default
+        return default
+    def pop(self, key, *args):
+        if len(args) > 1:
+            raise TypeError("pop expected at most 2 arguments, got " % (
+                repr(1 + len(args))))
+        try:
+            value = self[key]
+        except KeyError:
+            if args:
+                return args[0]
+            raise
+        del self[key]
+        return value
+    def popitem(self):
+        try:
+            k, v = self.iteritems().next()
+        except StopIteration:
+            raise KeyError('container is empty') # EKR: syntax change.
+        del self[k]
+        return (k, v)
+    def update(self, other=None, **kwargs):
+        # Make progressively weaker assumptions about "other"
+        if other is None:
+            pass
+        elif hasattr(other, 'iteritems'):  # iteritems saves memory and lookups
+            for k, v in other.iteritems():
+                self[k] = v
+        elif hasattr(other, 'keys'):
+            for k in other.keys():
+                self[k] = other[k]
+        else:
+            for k, v in other:
+                self[k] = v
+        if kwargs:
+            self.update(kwargs)
+    def get(self, key, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            return default
+    # def __repr__(self):
+        # return repr(dict(self.iteritems()))
+    def __cmp__(self, other):
+        if other is None:
+            return 1
+        if isinstance(other, DictMixin):
+            other = dict(other.iteritems())
+        return cmp(dict(self.iteritems()), other)
+    def __len__(self):
+        return len(self.keys())
+#@-node:ekr.20091216103214.6298:fourth-level (python 2.6)
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node

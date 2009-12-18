@@ -5440,13 +5440,6 @@ if g.unitTesting:
             assert s3 == s, 'Round-trip two failed for %s' %s
 #@-node:ekr.20090517020744.5867:@test round trip toUnicode toEncodedString
 #@-node:ekr.20090517020744.5859: Unicode tests
-#@+node:ekr.20081204091750.2:g.emptyString
-def emptyString():
-
-    '''Return an empty unicode string.'''
-
-    return g.u('')
-#@-node:ekr.20081204091750.2:g.emptyString
 #@+node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
 # The syntax of these functions must be valid on Python2K and Python3K.
 
