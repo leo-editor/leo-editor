@@ -2535,7 +2535,7 @@ def createOutline (self,fileName,parent,
     atAuto=False,atShadow=False,s=None,ext=None):
 
     c = self.c ; u = c.undoer ; s1 = s
-
+    w = c.frame.body
     # New in Leo 4.4.7: honor @path directives.
     self.scanDefaultDirectory(parent) # sets .defaultDirectory.
     fileName = c.os_path_finalize_join(self.default_directory,fileName)
@@ -2577,6 +2577,8 @@ def createOutline (self,fileName,parent,
         self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
 
     p.contract()
+    w.setInsertPoint(0)
+    w.seeInsertPoint()
     return p
 #@+node:ekr.20031218072017.3211:<< Read file into s >>
 try:

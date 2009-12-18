@@ -2758,8 +2758,6 @@ class atFile:
         else: # The @auto tree is dirty and contains significant info.
             return True
     #@-node:ekr.20071019141745:shouldWriteAtAutoNode
-    #@+node:ekr.20090706042206.6039:promptForAtAutoRead
-    #@-node:ekr.20090706042206.6039:promptForAtAutoRead
     #@-node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
     #@-node:ekr.20070806105859:writeAtAutoNodes & writeDirtyAtAutoNodes (atFile) & helpers
     #@+node:ekr.20090225080846.5:writeOneAtEditNode

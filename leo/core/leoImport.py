@@ -784,7 +784,7 @@ class leoImportCommands (scanUtility):
         atAuto=False,atShadow=False,s=None,ext=None):
 
         c = self.c ; u = c.undoer ; s1 = s
-
+        w = c.frame.body
         # New in Leo 4.4.7: honor @path directives.
         self.scanDefaultDirectory(parent) # sets .defaultDirectory.
         fileName = c.os_path_finalize_join(self.default_directory,fileName)
@@ -859,6 +859,8 @@ class leoImportCommands (scanUtility):
             self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
 
         p.contract()
+        w.setInsertPoint(0)
+        w.seeInsertPoint()
         return p
     #@-node:ekr.20031218072017.3210:createOutline (leoImport)
     #@+node:ekr.20070806111212:readAtAutoNodes (importCommands) & helper

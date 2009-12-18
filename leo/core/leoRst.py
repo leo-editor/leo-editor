@@ -1437,7 +1437,7 @@ class rstCommands:
     #@nonl
     #@-node:ekr.20090502071837.84:writeHeadlineHelper
     #@-node:ekr.20090502071837.83:writeHeadline & helper
-    #@+node:ekr.20090502071837.85:writeNode
+    #@+node:ekr.20090502071837.85:writeNode (rst)
     def writeNode (self,p):
 
         '''Format a node according to the options presently in effect.'''
@@ -1465,7 +1465,7 @@ class rstCommands:
             self.writeHeadline(p)
             self.writeBody(p)
             p.moveToThreadNext()
-    #@-node:ekr.20090502071837.85:writeNode
+    #@-node:ekr.20090502071837.85:writeNode (rst)
     #@+node:ekr.20090502071837.86:writePreformat
     def writePreformat (self,p):
 

@@ -2498,6 +2498,113 @@ Writing correct undo and redo helpers is usually a bit tricky.  The code is ofte
 
 
 #@-node:ekr.20070623150151:How to make Leo commands undoable
+#@+node:ekr.20091217112515.6070:How to make the codewise completer work
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ac3f8789010c882e
+
+Ville's completer is working and very cool, here are instructions for
+making it go.  They're like the instructions Ville gave, only usable ;-)
+
+1. (done) Make sure you have exuberant ctags (not just regular ctags)
+installed.  It's an Ubuntu package, so easy if you're using Ubuntu.
+
+2. (done) Install Ville's python module "codewise".  This is a small module on
+which the Leo plugin relies.
+
+   bzr branch lp:codewise
+   cd codewise
+   sudo python setup.py install
+
+3. (done) You need a recent trunk version of leo to get the plugin which uses
+the above module.
+
+4. (done) Enable the plugin by putting "codewisecompleter.py" on an
+uncommented line in your @enabled-plugins @settings node.
+
+5. On the command line:
+
+if you have an existing ~/.ctags for some reason, and it's nothing you
+need to keep:
+
+  rm ~/.ctags
+
+then
+
+  codewise setup
+  codewise init
+  codewise parse .../path/to/leo/  # assuming you want completion on
+                                   # leo code
+  codewise parse .../some/other/project/
+
+Then, after restarting leo if necessary, type
+
+c.op<Alt-0> in the body editor to find all the c. methods starting
+with 'op' etc.
+
+
+===== Ville's response
+
+Especially the presentation part (QCompleter) needs some care, so you
+can operate it from your keyboard alone. It should probably be moved
+to core (qtgui, perhaps leoQTextEditWIdget), so codewise completer can
+just invoke w.complete(list_of_completions) that will bring up the
+QCompleter popup.
+
+> Then, after restarting leo if necessary, type
+
+> c.op<Alt-0> in the body editor to find all the c. methods starting
+> with 'op' etc.
+
+Also, try the explicit declarations:
+
+# w : SomeClass
+
+w.<alt+0>
+
+And self.<alt+0>
+#@+node:ekr.20091217112515.6069:Others posts
+@nocolor-node
+
+1. codewisecompleter.py now completes by explicit type hints (as seen in
+screenhots). p, c also work, as does 'self'.
+
+self works by scanning for parent headlines looking for "class Foo"
+
+Work remains for presentation part (it's mouse only now) but Edward
+will probably do it :-).
+
+2. > Would codewise work outside of leo, as stand-alone plugin for a text
+> editor?
+
+Yes, currently Leo uses it as an external program ("codewise m
+MyClass" dumps the methods in MyClass to stdout).
+
+Someone just has to write the vim integration plugin (or whatever they
+call it). OTOH, vim already has "pysmell" and the likes that do the
+same thing.
+
+==============
+
+The version of codewise completer that works with Tk is now on trunk.
+#@nonl
+#@-node:ekr.20091217112515.6069:Others posts
+#@+node:ekr.20091217112515.6071:plugin docs
+@nocolor-node
+
+- You need to create ctags file to ~/.leo/tags. Example::
+
+    cd ~/.leo
+    ctags -R /usr/lib/python2.5 ~/leo-editor ~/my-project
+
+- Enter text you want to complete and press alt+0 to show completions
+  (or bind/execute ctags-complete command yourself).
+
+Attempting to complete 'foo->' is useless, but 'foo->ba' will work (provided you
+don't have 2000 functions/methods starting with 'ba'. 'foo->' portion is ignored
+in completion search.
+#@-node:ekr.20091217112515.6071:plugin docs
+#@-node:ekr.20091217112515.6070:How to make the codewise completer work
 #@+node:ekr.20031218072017.386:How to remove cursed newlines: use binary mode
 teknico ( Nicola Larosa ) 
  RE: Removing '\r' characters?   

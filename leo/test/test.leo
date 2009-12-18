@@ -384,6 +384,11 @@
 </v>
 </v>
 <v t="ekr.20091015191345.1856"><vh>ctags completion</vh></v>
+<v t="ekr.20091217210235.1866"><vh>@@auto at-auto-rst-test.txt</vh>
+<v t="ekr.20091217210235.1867"><vh>section 1</vh></v>
+<v t="ekr.20091217210235.1868"><vh>section 2</vh></v>
+</v>
+<v t="ekr.20091217210418.1873"><vh>@auto at-auto-rst-test.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -804,7 +809,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="4"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -3569,5 +3574,10 @@ http://webpages.charter.net/edreamleo/front.html</t>
     &lt;&lt; common section &gt;&gt;</t>
 <t tx="ekr.20091016060748.1860"># This is the common section</t>
 <t tx="ekr.20091016060748.1861"></t>
+<t tx="ekr.20091217210235.1866">@first #!python
+@language rest
+@others</t>
+<t tx="ekr.20091217210235.1867">This is section 1</t>
+<t tx="ekr.20091217210235.1868">This is section 2</t>
 </tnodes>
 </leo_file>
