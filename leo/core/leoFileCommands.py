@@ -27,12 +27,10 @@ else:
 
 import os
 import pickle
-# import string
+import string
 import sys
 import types
 import zipfile
-# import string
-# import re
 
 try:
     # IronPython has problems with this.
@@ -1055,16 +1053,20 @@ class baseFileCommands:
     #@+node:ekr.20090525144314.6526:cleanSaxInputString & test
     def cleanSaxInputString(self,s):
 
-        from string import maketrans
-
         badchars = [chr(ch) for ch in range(32)]
         badchars.remove('\t')
         badchars.remove('\r')
         badchars.remove('\n')
 
         flatten = ''.join(badchars)
+        pad = ' ' * len(flatten)
 
-        transtable = maketrans(flatten, ' ' * len(flatten))
+        if g.isPython3:
+            flatten = bytes(flatten,'utf-8')
+            pad = bytes(pad,'utf-8')
+            transtable = bytes.maketrans(flatten,pad)
+        else:
+            transtable = string.maketrans(flatten,pad)
 
         return s.translate(transtable)
 
@@ -1433,13 +1435,13 @@ class baseFileCommands:
     def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
 
         c = self.c
-        # g.trace('hiddenRootNode',c.hiddenRootNode)
-
         try:
             if g.isPython3:
                 if theFile:
-                    pass # Just use the open binary file, opened by g.openLeoOrZipFile.
+                    # Use the open binary file, opened by g.openLeoOrZipFile.
+                    pass
                 else:
+                    s = self.cleanSaxInputString(s)
                     theFile = StringIO(s)
             else:
                 if theFile: s = theFile.read()
