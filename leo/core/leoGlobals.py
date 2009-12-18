@@ -9,6 +9,8 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
+import sys
+isPython3 = sys.version_info >= (3,0,0)
 #@<< imports >>
 #@+node:ekr.20050208101229:<< imports >>
 if 0:
@@ -42,9 +44,12 @@ try:
 except ImportError:
     pass
 
+if isPython3:
+    from functools import reduce
+
 import operator
 import re
-import sys
+# import sys
 import time
 import zipfile
 
@@ -60,7 +65,7 @@ import types
 # g.pr('(types.StringTypes)',repr(types.StringTypes))
 #@-node:ekr.20050208101229:<< imports >>
 #@nl
-isPython3 = sys.version_info >= (3,0,0)
+
 print('*** isPython3',isPython3)
 #@<< define general constants >>
 #@+node:ekr.20031218072017.3094:<< define general constants >>

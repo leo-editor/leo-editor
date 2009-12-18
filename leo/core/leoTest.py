@@ -225,7 +225,6 @@ def makeTestSuite (c,p):
 
     """Create a suite of test cases by executing the script in an @suite node."""
 
-    # import leo.core.leoGlobals as g
     p = p.copy()
 
     script = g.getScript(c,p).strip()
@@ -980,6 +979,7 @@ def createUnitTestsFromDoctests (modules,verbose=True):
                 if verbose:
                     g.pr("found %2d doctests for %s" % (n,module.__name__))
         except ValueError:
+            g.pr('no doctests in %s' % module.__name__)
             pass # No tests found.
 
     return g.choose(created,suite,None)
@@ -1693,6 +1693,7 @@ def throwAssertionError():
 #@-node:ekr.20051104075904.43:Specific to particular unit tests...
 #@+node:ekr.20051104075904.96:Test of doctest
 #@+node:ekr.20051104075904.97:factorial
+# Some of these will fail now for Python 2.x.
 def factorial(n):
     """Return the factorial of n, an exact integer >= 0.
 
@@ -1701,12 +1702,8 @@ def factorial(n):
 
     >>> [factorial(n) for n in range(6)]
     [1, 1, 2, 6, 24, 120]
-    >>> [factorial(long(n)) for n in range(6)]
-    [1, 1, 2, 6, 24, 120]
     >>> factorial(30)
-    265252859812191058636308480000000L
-    >>> factorial(30L)
-    265252859812191058636308480000000L
+    265252859812191058636308480000000
     >>> factorial(-1)
     Traceback (most recent call last):
         ...
@@ -1718,7 +1715,7 @@ def factorial(n):
         ...
     ValueError: n must be exact integer
     >>> factorial(30.0)
-    265252859812191058636308480000000L
+    265252859812191058636308480000000
 
     It must also not be ridiculously large:
     >>> factorial(1e100)
@@ -1800,6 +1797,7 @@ def importAllModulesInPath (path,exclude=[]):
         if module:
             modules.append(module)
 
+    # g.trace(modules)
     return modules
 #@nonl
 #@-node:ekr.20051104075904.102:importAllModulesInPath
@@ -1826,11 +1824,20 @@ def safeImportModule (fileName):
             g.unitTesting = False # Disable @test nodes!
             g.app.unitTesting = False
             try:
-                return __import__(moduleName)
+                # for base in ('leo.core','leo.plugins','leo.external',):
+                    # fullName = '%s.%s' % (base,moduleName)
+                    # m = __import__(fullName) # 'leo.core.%s' % moduleName)
+                    # if m is not None:
+                        # return sys.modules.get(fullName)
+                fullName = 'leo.core.%s' % (moduleName)
+                __import__(fullName)
+                return sys.modules.get(fullName)
             finally:
                 g.unitTesting = oldUnitTesting
                 g.app.unitTesting = oldUnitTesting
-        except Exception: # leoScriptModule.py, for example, can throw other exceptions.
+        except Exception:
+            # g.trace('can not import',moduleName,fileName)
+            # leoScriptModule.py, for example, can throw other exceptions.
             return None
     else:
         g.pr("Not a .py file:",fileName)

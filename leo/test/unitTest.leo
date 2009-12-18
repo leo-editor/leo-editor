@@ -776,8 +776,8 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
-<v t="ekr.20090703080553.5000"><vh>@suite run all doctests (windows only)</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
+<v t="ekr.20090703080553.5000"><vh>@suite run all doctests</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20050120095423"><vh>Plugins</vh>
@@ -14016,7 +14016,7 @@ b</t>
 <t tx="ekr.20070315065849.3">a
 
 b</t>
-<t tx="ekr.20070417092935" str_leo_pos="7"></t>
+<t tx="ekr.20070417092935" str_leo_pos="7,0"></t>
 <t tx="ekr.20070417092935.1"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070515150433"></t>
@@ -21617,32 +21617,20 @@ def cheese():
 <t tx="ekr.20090629104856.4992"></t>
 <t tx="ekr.20090703080553.5000">import unittest
 import leo.core.leoTest as leoTest
-
 import sys
 
-# DocTestSuite exists in Python 2.3 and above.
 # WARNING: this causes strange problems when run externally.
-
-if True and sys.platform.lower().startswith('win'):
-
-    version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
-    if g.CheckVersion(version, "2.3"):
-        path = g.os_path_join(g.app.loadDir,"..","core")
-        if 0:
-            &lt;&lt; define exclude &gt;&gt;
-        else:
-            exclude = []
-        modules = leoTest.importAllModulesInPath(path,exclude=exclude)
-        suite = leoTest.createUnitTestsFromDoctests(modules)
-        if suite: g.app.scriptDict['suite'] = suite
+if g.isPython3:
+    # Some tests now fail on Python 2.x.
+    path = g.os_path_join(g.app.loadDir,"..","core")
+    if 0:
+        &lt;&lt; define exclude &gt;&gt;
     else:
-        # Create an empty suite to suppress a warning.
-        # g.app.scriptDict['suite'] = unittest.TestSuite()
-        print("\nCan't create unit tests from doctests")
-        print("doctest.DocTestSuite requires Python 2.3 or above.\n")
-
-else:
-    pass # There are problems on Linux.</t>
+        exclude = []
+    modules = leoTest.importAllModulesInPath(path,exclude=exclude)
+    suite = leoTest.createUnitTestsFromDoctests(modules)
+    if suite: g.app.scriptDict['suite'] = suite
+</t>
 <t tx="ekr.20090703093925.5003">exclude = [
     # These cause no problems, but will not have unit tests.
     'leo_Debugger.py',

@@ -3356,10 +3356,9 @@ def putDescendentTnodeUas (self,p):
 
 To do:
 
-* Make sure all doctests are run.
+- Run all tests in this file (Alt-6).
+
 - Fix plugins that fail with Python3k.
-- Run all tests in this file. (These are minor failures).
-    FAILED (failures=3, errors=6)
 
 #@+node:ekr.20091203060018.6067:2to3 output
 #@+node:ekr.20091203165343.6144:2to3 args
@@ -5069,6 +5068,117 @@ def waitget(self,key, maxwaittime = 60 ):
 #@-node:ekr.20091204132346.6092:waitget
 #@-node:ekr.20091204132346.6080:class PickleShareDB
 #@-node:ekr.20091209114435.6223:Fixed caching
+#@+node:ekr.20091218143600.6302:Fixed doctest problems on Linux
+#@+node:ekr.20051104075904.99:createUnitTestsFromDoctests
+def createUnitTestsFromDoctests (modules,verbose=True):
+
+    created = False # True if suite is non-empty.
+
+    suite = unittest.makeSuite(unittest.TestCase)
+
+    for module in list(modules):
+        # New in Python 4.2: n may be zero.
+        try:
+            test = doctest.DocTestSuite(module)
+            n = test.countTestCases()
+            if n > 0:
+                suite.addTest(test)
+                created = True
+                if verbose:
+                    g.pr("found %2d doctests for %s" % (n,module.__name__))
+        except ValueError:
+            g.pr('no doctests in %s' % module.__name__)
+            pass # No tests found.
+
+    return g.choose(created,suite,None)
+#@-node:ekr.20051104075904.99:createUnitTestsFromDoctests
+#@+node:ekr.20051104075904.102:importAllModulesInPath
+def importAllModulesInPath (path,exclude=[]):
+
+    path = g.os_path_finalize(path)
+
+    if not g.os_path_exists(path):
+        g.es("path does not exist:",path)
+        return []
+
+    path2 = g.os_path_join(path,"leo*.py")
+    files = glob.glob(path2)
+    files2 = []
+    for theFile in files:
+        for z in exclude:
+            if theFile.endswith(z):
+                break
+        else:
+            files2.append(theFile)
+    modules = []
+
+    for theFile in files2:
+        module = safeImportModule(theFile)
+        if module:
+            modules.append(module)
+
+    # g.trace(modules)
+    return modules
+#@nonl
+#@-node:ekr.20051104075904.102:importAllModulesInPath
+#@+node:ekr.20051104075904.103:safeImportModule & test
+@ Warning: do NOT use g.importFromPath here!
+
+g.importFromPath uses imp.load_module, and that is equivalent to reload!
+reloading Leo files while running will crash Leo.
+@c
+
+def safeImportModule (fileName):
+
+    fileName = g.os_path_finalize(fileName)
+    head,tail = g.os_path_split(fileName)
+    moduleName,ext = g.os_path_splitext(tail)
+    oldUnitTesting = g.unitTesting
+
+    if ext == ".py":
+        try:
+            # g.trace(moduleName)
+            g.unitTesting = False # Disable @test nodes!
+            g.app.unitTesting = False
+            try:
+                # for base in ('leo.core','leo.plugins','leo.external',):
+                    # fullName = '%s.%s' % (base,moduleName)
+                    # m = __import__(fullName) # 'leo.core.%s' % moduleName)
+                    # if m is not None:
+                        # return sys.modules.get(fullName)
+                fullName = 'leo.core.%s' % (moduleName)
+                __import__(fullName)
+                return sys.modules.get(fullName)
+            finally:
+                g.unitTesting = oldUnitTesting
+                g.app.unitTesting = oldUnitTesting
+        except Exception:
+            # g.trace('can not import',moduleName,fileName)
+            # leoScriptModule.py, for example, can throw other exceptions.
+            return None
+    else:
+        g.pr("Not a .py file:",fileName)
+        return None
+#@+node:ekr.20090703155133.6418:@test safeImportModule
+if g.unitTesting:
+
+    d = g.app.unitTestDict
+    c,p = g.getTestVars()
+    assert d.get('getTestVars') is True
+    d['getTestVars'] = False
+
+    # Do lots of imports.
+    import leo.core.leoTest as leoTest
+    path = g.os_path_join(g.app.loadDir,"..","core")
+    modules = leoTest.importAllModulesInPath(path)
+
+    # Assert that g.getTestVars has not been called.
+    val = d.get('getTestVars')
+    assert val is False, val
+
+#@-node:ekr.20090703155133.6418:@test safeImportModule
+#@-node:ekr.20051104075904.103:safeImportModule & test
+#@-node:ekr.20091218143600.6302:Fixed doctest problems on Linux
 #@-node:ekr.20091203060018.6100:leo-3k
 #@-all
 #@nonl

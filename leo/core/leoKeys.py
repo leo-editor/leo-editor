@@ -1256,6 +1256,8 @@ class autoCompleterClass:
                     self.makeAutocompletionList(t1[i],t1[i+1],aList)
                     i += 1
             else:
+                if g.isPython3:
+                    from functools import reduce
                 reduce(lambda a,b: self.makeAutocompletionList(a,b,aList),t1)
 
             if aList:

@@ -16,16 +16,19 @@ import leo.core.leoKeys as leoKeys
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoTest as leoTest
 
-if g.isPython3:
-    import pickle # Note: only pickle exists in Python 3.x
-else:
-    import cPickle as pickle 
-
 import difflib
 import os
 import re
 import string   
 import sys
+
+if g.isPython3:
+    from functools import reduce
+
+if g.isPython3:
+    import pickle # Note: only pickle exists in Python 3.x
+else:
+    import cPickle as pickle 
 
 if g.isPython3:
     ctypes = None
