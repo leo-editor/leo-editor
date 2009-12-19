@@ -100,12 +100,14 @@ def doPrePluginsInit(fileName,pymacs):
     '''
     Scan options, set directories and read settings.'''
 
+    trace = False
     g.computeStandardDirectories()
     adjustSysPath()
     fileName2,gui,script,versionFlag,windowFlag = scanOptions()
     if fileName2: fileName = fileName2
-    # print ('runLeo.run: sys.argv %s' % sys.argv)
-    # print ('runLeo.run: fileName %s' % fileName)
+    if trace:
+        print ('runLeo.doPrePluginsInit: sys.argv %s' % sys.argv)
+        print ('runLeo.doPrePluginsInit: fileName %s' % fileName)
     if pymacs: script,windowFlag = None,False
     verbose = script is None
     initApp(verbose)
@@ -183,16 +185,7 @@ def getFileName (fileName,script):
 
     '''Return the filename from sys.argv.'''
 
-    if g.isPython3:
-        ### Testing only.
-        fileName = r'c:\leo.repo\trunk\leo\test\test.leo'
-        assert g.os_path_exists(fileName)
-    elif script:
-        fileName = None
-    elif fileName:
-        pass
-    else:
-        # Bug fix: 2008/10/1
+    if not fileName and not script:
         if sys.platform.startswith('win'):
             if len(sys.argv) > 1:
                 fileName = ' '.join(sys.argv[1:])
@@ -277,7 +270,7 @@ def scanOptions():
     # Parse the options, and remove them from sys.argv.
     options, args = parser.parse_args()
     sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
-    # print('scanOptions',sys.argv)
+    if trace: print('scanOptions',sys.argv)
 
     # Handle the args...
 
@@ -336,7 +329,7 @@ def scanOptions():
             if f: f.close()
     else:
         script = None
-        if trace: print('scanOptions: no script')
+        # if trace: print('scanOptions: no script')
 
     # --silent
     g.app.silentMode = options.silent
@@ -347,6 +340,9 @@ def scanOptions():
 
     # Compute the return values.
     windowFlag = script and script_path_w
+    if trace:
+        print('scanOptions: fileName',fileName)
+        print('scanOptions: argv',sys.argv)
     return fileName,gui,script,versionFlag,windowFlag
 #@-node:ekr.20091007103358.6061:scanOptions
 #@-node:ekr.20090519143741.5915:doPrePluginsInit & helpers

@@ -85,7 +85,7 @@ global qsWidget
 def show_unittest_failures(event):
     c = event.get('c')
     fails = c.db['unittest/cur/fail']
-    print fails
+    print(fails)
     nav = c.frame.nav
     #print nav
 
@@ -144,9 +144,6 @@ def install_qt_quicksearch_tab(c):
         #c.frame.log.selectTab('Nav')
         wdg.scon.doShowMarked()
 
-
-
-
     c.frame.nav = wdg            
 
 class LeoQuickSearchWidget(QtGui.QWidget):
@@ -173,7 +170,7 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         if not t.strip():
             return
 
-        if t == u'm':
+        if t == g.u('m'):
             self.scon.doShowMarked()
         else:        
             self.scon.doSearch(t)

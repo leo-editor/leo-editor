@@ -798,8 +798,12 @@ def getColor(name, default=None):
 
 
     """
-    if not isinstance(name, basestring):
-        return name
+    if g.isPython3:
+        if not isinstance(name,str):
+            return name
+    else:
+        if not isinstance(name,basestring):
+            return name
 
     #g.trace(name, default)
 
@@ -817,8 +821,7 @@ def getColor(name, default=None):
     return None
 
 get = getColor
-
-
+#@nonl
 #@-node:bob.20071231111744.2:get / getColor
 #@+node:bob.20080115070511.4:getRGB / getColorRGB
 def getColorRGB(name, default=None):
@@ -2056,7 +2059,7 @@ class colorizer:
                             w.tag_config(key,font=font)
                             break
                 else: # Neither the general setting nor the language-specific setting exists.
-                    if len(self.fonts.keys()) > 1: # Restore the default font.
+                    if len(list(self.fonts.keys())) > 1: # Restore the default font.
                         # g.trace('default',key)
                         w.tag_config(key,font=defaultBodyfont)
             #@nonl

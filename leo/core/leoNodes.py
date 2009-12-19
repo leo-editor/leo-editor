@@ -521,7 +521,7 @@ class vnode (baseVnode):
 
         if trace and verbose:
             for v in nodes:
-                print v.isDirty(),v.isAnyAtFileNode(),v
+                print (v.isDirty(),v.isAnyAtFileNode(),v)
 
         dirtyVnodeList = [v for v in nodes
             if not v.isDirty() and v.isAnyAtFileNode()]
@@ -1100,6 +1100,42 @@ class position (object):
 
         return not self.__eq__(p2) # For possible use in Python 2.x.
     #@-node:ekr.20080920052058.3:p.__eq__ & __ne__
+    #@+node:ekr.20091210082012.6230:p.__ge__ & __le__& __lt__
+    def __ge__ (self,other):
+
+        return self.__eq__(other) or self.__gt__(other)
+
+    def __le__ (self,other):
+
+        return self.__eq__(other) or self.__lt__(other)
+
+    def __lt__ (self,other):
+
+        return not self.__eq__(other) and not self.__gt__(other)
+    #@-node:ekr.20091210082012.6230:p.__ge__ & __le__& __lt__
+    #@+node:ekr.20091210082012.6233:p.__gt__
+    def __gt__ (self,other):
+
+        '''Return True if self appears after other in outline order.'''
+
+        stack1,stack2 = self.stack,other.stack
+        n1,n2 = len(stack1),len(stack2) ; n = min(n1,n2)
+        # Compare the common part of the stacks.
+        for item1,item2 in zip(stack1,stack2):
+            v1,x1 = item1 ; v2,x2 = item2
+            if x1 > x2: return True
+            elif x1 < x2: return False
+        # Finish the comparison.
+        if n1 == n2:
+            x1,x2 = self._childIndex,other._childIndex
+            return x1 > x2
+        elif n1 < n2:
+            x1 = self._childIndex; v2,x2 = other.stack[n]
+            return x1 > x2
+        else:
+            return True
+    #@nonl
+    #@-node:ekr.20091210082012.6233:p.__gt__
     #@+node:ekr.20040117170612:p.__getattr__ (no longer used)
     # No longer used.  All code must now be aware of the one-node world.
 
@@ -2820,9 +2856,6 @@ class poslist(list):
                     pc.mo = m
                     res.append(pc)
         return res
-
-
-
     #@-node:ville.20090311190405.69:select_h
     #@+node:ville.20090311195550.1:select_b
     def select_b(self, regex, flags = re.IGNORECASE ):
@@ -2839,7 +2872,10 @@ class poslist(list):
             m = re.finditer(pat, p.b)
             t1,t2 = itertools.tee(m,2)
             try:
-                first = t1.next()
+                if g.isPython3:
+                    first = t1.__next__()
+                else:
+                    first = t1.next()
                 # if does not raise StopIteration...
                 pc = p.copy()
                 pc.matchiter = t2
@@ -2849,9 +2885,6 @@ class poslist(list):
                 pass
 
         return res
-
-
-
     #@-node:ville.20090311195550.1:select_b
     #@-others
 #@-node:ville.20090311190405.68:class poslist

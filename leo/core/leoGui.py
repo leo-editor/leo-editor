@@ -711,7 +711,7 @@ class unitTestGui(nullGui):
     def toUnicode (self,s):
 
         if g.isPython3:
-            return s
+            return str(s)
         else:
             return unicode(s)
     #@-node:ekr.20081119083601.1:toUnicode

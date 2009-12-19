@@ -57,20 +57,20 @@ class LProtoBuf:
         if self.plen == -1:
             lendesc = byts[0:4]
             intlen = struct.unpack('I', lendesc)[0]
-            print "have", intlen, "bytes"
+            print("have", intlen, "bytes")
             self.plen = intlen
             self.buf = byts[4:]
         else:
             self.buf = self.buf + byts
 
         if len(self.buf) == self.plen:
-            print "dispatch msg", self.buf
+            print("dispatch msg", self.buf)
             self.recv_cb(self.buf)
             self.buf = ""
             self.plen = -1
             return
 
-        print "in buf",self.buf
+        print("in buf",self.buf)
 #@-node:ville.20091010205847.1362:class LProtoBuf
 #@+node:ville.20091009234538.1374:class LProtoServer
 class LProtoServer:
@@ -86,7 +86,7 @@ class LProtoServer:
 
     def listen(self, name):
         self.srv.listen(name)
-        print "listen on",self.srv.fullServerName()
+        print("listen on",self.srv.fullServerName())
 
     def msg_received(self, msg, ses):
         if self.receiver:
@@ -96,9 +96,9 @@ class LProtoServer:
         self.receiver = receiver
 
     def connected(self):
-        print "hnd con"
+        print("hnd con")
         lsock = self.srv.nextPendingConnection()
-        print "conn", lsock
+        print("conn", lsock)
         buf =  LProtoBuf()
 
         self.ses[lsock] = ses_ent = {'_sock' : lsock, '_buf' : buf }
@@ -110,11 +110,10 @@ class LProtoServer:
 
 
         def readyread_cb():
-            print "read ready"        
+            print("read ready")
             allbytes = lsock.readAll()
             buf = ses_ent['_buf']
             buf.push_bytes(allbytes)
-
 
         lsock.connect(lsock, QtCore.SIGNAL('readyRead()'), readyread_cb)
         #self.connect(self.qsock, SIGNAL('connectionClosed()'), self.handleClosed)
@@ -135,8 +134,7 @@ class LProtoObsoleteClient:
 
     def connect(self, name):
         self.cl.connectToServer(name)
-        print "client connected"
-        pass
+        print("client connected")
     #@-node:ville.20091010205847.1361:initialization
     #@-others
 #@-node:ville.20091010205847.1360:(ignore) class LProtoObsoleteClient

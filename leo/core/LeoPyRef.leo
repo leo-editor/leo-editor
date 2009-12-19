@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="117" left="12" height="700" width="1000"/>
+	<global_window_position top="48" left="228" height="692" width="793"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -97,12 +97,11 @@
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.3"><vh>Projects</vh>
-<v t="EKR.20040429143933" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c68067573732e"
-marks="ekr.20080510153327.4,"><vh>@thin leoProjects.txt</vh></v>
+<v t="EKR.20040429143933" descendentVnodeUnknownAttributes="7d710058010000003071017d71025808000000616e6e6f7461746571037d71042858040000006e6f6465710558000000007106580200000062677107680658080000007072696f726974797108580400000039393939710958020000006667710a6806580800000070726f6772657373710b68065809000000617263686574797065710c68067573732e"
+marks="ekr.20090502071837.66,"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
-<v t="ekr.20040117181936"
-marks="ekr.20090502071837.71,ekr.20031218072017.2829,ekr.20080510153327.4,ekr.20061031131434.110,"><vh>@thin ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20040117181936"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
 <v t="ekr.20090113083258.3"><vh>Unit tests &amp; helper files</vh>
@@ -120,15 +119,16 @@ marks="ekr.20090502071837.71,ekr.20031218072017.2829,ekr.20080510153327.4,ekr.20
 <v t="ekr.20090517020744.5904"><vh>@@thin ../test/unittest/at-path-test1.py</vh></v>
 </v>
 </v>
-<v t="ekr.20090113083258.1" descendentVnodeUnknownAttributes="7d7100285507302e322e372e3471017d71025808000000616e6e6f7461746571037d7104735503302e3071057d71065808000000616e6e6f7461746571077d7108735507302e322e302e3571097d710a5808000000616e6e6f74617465710b7d710c735507302e322e362e33710d7d710e5808000000616e6e6f74617465710f7d7110735508302e322e332e333571117d71125808000000616e6e6f7461746571137d711473752e"><vh>@thin test_core.txt</vh></v>
+<v t="ekr.20090113083258.1" descendentVnodeUnknownAttributes="7d7100285807000000302e322e372e3471017d71025808000000616e6e6f7461746571037d7104735803000000302e3071057d71065808000000616e6e6f7461746571077d7108735807000000302e322e302e3571097d710a5808000000616e6e6f74617465710b7d710c735807000000302e322e362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e322e332e333571117d71125808000000616e6e6f7461746571137d711473752e"><vh>@thin test_core.txt</vh></v>
 </v>
-<v t="ekr.20031218072017.2406" a="E"><vh>Code</vh>
+<v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
 <v t="ekr.20090717092906.12765"><vh>@thin leoVersion.py</vh></v>
 </v>
-<v t="ekr.20090802181029.5989" a="E"><vh>Startup &amp; external</vh>
-<v t="ekr.20090831103504.6069"><vh>@auto ../external/pickleshare.py</vh></v>
-<v t="ville.20091010232339.6117" a="E"><vh>@thin ../external/lproto.py</vh></v>
+<v t="ekr.20090802181029.5989"><vh>Startup &amp; external files</vh>
+<v t="ville.20091010232339.6117"><vh>@thin ../external/lproto.py</vh></v>
+<v t="ekr.20091204131831.6103"><vh>@thin ../external/path.py</vh></v>
+<v t="ekr.20090831103504.6069"><vh>@thin ../external/pickleshare.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@thin runLeo.py </vh></v>
 </v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
@@ -137,18 +137,17 @@ marks="ekr.20090502071837.71,ekr.20031218072017.2829,ekr.20080510153327.4,ekr.20
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@thin leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@thin leoColor.py</vh></v>
-<v t="ekr.20031218072017.2810"
-marks="ekr.20031218072017.2829,"><vh>@thin leoCommands.py</vh></v>
+<v t="ekr.20031218072017.2810"><vh>@thin leoCommands.py</vh></v>
 <v t="ekr.20041117062700"><vh>@thin leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@thin leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31352e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@thin leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31352e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@thin leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@thin leoImport.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@thin leoNodes.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@thin leoPlugins.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@thin leoPymacs.py</vh></v>
 <v t="ekr.20090502071837.3"
-marks="ekr.20090502071837.71,"><vh>@thin leoRst.py</vh></v>
+marks="ekr.20090502071837.66,"><vh>@thin leoRst.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@thin leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@thin leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@thin leoUndo.py</vh></v>
@@ -159,14 +158,13 @@ marks="ekr.20090502071837.71,"><vh>@thin leoRst.py</vh></v>
 <v t="ekr.20060123151617"><vh>@thin leoFind.py</vh></v>
 <v t="ekr.20031218072017.3655"><vh>@thin leoFrame.py</vh></v>
 <v t="ekr.20031218072017.3719"><vh>@thin leoGui.py</vh></v>
-<v t="ekr.20061031131434"
-marks="ekr.20061031131434.110,ekr.20080510153327.4,"><vh>@thin leoKeys.py</vh></v>
+<v t="ekr.20061031131434"><vh>@thin leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@thin leoMenu.py</vh></v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Test classes</vh>
 <v t="ekr.20080730161153.2"><vh>@thin leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@thin leoDynamicTest.py</vh></v>
-<v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@thin leoTest.py</vh></v>
+<v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710058010000003071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@thin leoTest.py</vh></v>
 </v>
 </v>
 </vnodes>
@@ -250,7 +248,7 @@ Two (recently written) functions in leoGlobals.py support conversions from Pytho
 
 Important:  the first Tkinter index is '1.0', not '0.0', but the row returned by g.convertPythonIndexToRowCol is zero based, so the code that actually creates Tkinter indices from row/col must add 1 to the row.  Similar remarks apply when going in the reverse direction.
 </t>
-<t tx="ekr.20051031040240" str_leo_pos="5,1,1,6"></t>
+<t tx="ekr.20051031040240" str_leo_pos="4"></t>
 <t tx="ekr.20060217111834"></t>
 <t tx="ekr.20060531093331">@
 Ever have a clone that is difficult to understand outside the context of its
@@ -459,6 +457,21 @@ Thus, after this script, you can **execute** the body text of the @scan_g.es_res
 In particular, assuming that g.translateString converts all translated text to upper case,
 it is easy to tell which strings have been translated.
 '''</t>
+<t tx="ekr.20080220082617.10">def setDecl (self,s):
+
+    s = s.strip()
+
+    if s in ('c','g','p','len','str','repr','and','or','not','is',):
+        return # Don't need a binding for these.
+
+    if s in ('color','newline','tabName',):
+        return # Special binding will be used for these.
+
+    if s.isdigit():
+        return # Don't bind integers.
+
+    self.decls[s] = True
+</t>
 <t tx="ekr.20080220082617.2">@nocolor
 @
 
@@ -602,21 +615,6 @@ def trace(self,s):
                         self.statements.append(statement)
                 break
         i = max(i,progress+1)
-</t>
-<t tx="ekr.20080220082617.10">def setDecl (self,s):
-
-    s = s.strip()
-
-    if s in ('c','g','p','len','str','repr','and','or','not','is',):
-        return # Don't need a binding for these.
-
-    if s in ('color','newline','tabName',):
-        return # Special binding will be used for these.
-
-    if s.isdigit():
-        return # Don't bind integers.
-
-    self.decls[s] = True
 </t>
 <t tx="ekr.20080220093930">def mungeHeadline (self,s):
 

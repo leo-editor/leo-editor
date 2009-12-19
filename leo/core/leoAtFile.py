@@ -21,13 +21,17 @@ if g.app and g.app.use_psyco:
     except ImportError: pass
 
 import leo.core.leoNodes as leoNodes
+
+if g.isPython3:
+    # import py_compile as compiler
+    import code
+else:
+    import compiler
+import parser
 import os
-# import string
 import sys
 import time
 import hashlib
-# import cPickle as pickle
-
 #@-node:ekr.20041005105605.2:<< imports >>
 #@nl
 
@@ -580,17 +584,20 @@ class atFile:
             if trace: g.trace('caching ',p.h)
             #tree = g.tree_at_position(p)
             #c.db[cachefile] = tree
-
             c.db[cachefile] = p.makeCacheList()
-
+    #@nonl
     #@-node:ville.20090606131405.6362:writeCachedTree (atFile)
     #@+node:ville.20090606150238.6351:_contentHashFile (atFile)
     def _contentHashFile(self, p, content):
         c = self.c
         m = hashlib.md5()
         # note that we also consider the headline in hash, to separate @auto foo.py from @thin foo.py
-        m.update(p.h)
-        m.update(content)
+        if g.isPython3:
+            m.update(g.toEncodedString(p.h,encoding='utf-8'))
+            m.update(g.toEncodedString(content,encoding='utf-8'))
+        else:
+            m.update(p.h)
+            m.update(content)
         return "fcache/" + m.hexdigest()
 
 
@@ -4000,11 +4007,12 @@ class atFile:
     #@+node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
     def checkPythonSyntax (self,p,body):
 
-        import compiler,parser
-
         try:
             ok = True
-            compiler.parse(body + '\n')
+            if g.isPython3:
+                code.compile_command(body + '\n')
+            else:
+                compiler.parse(body + '\n')
         except (parser.ParserError,SyntaxError):
             self.syntaxError(p,body)
             # p.setMarked()
@@ -4214,7 +4222,7 @@ class atFile:
         if not g.match(s,i,"<<"):
             return False, -1
         i = g.find_on_line(s,i,">>")
-        if i:
+        if i > -1:
             return True, i + 2
         else:
             return False, -1
@@ -4295,7 +4303,7 @@ class atFile:
 
         if s and f:
             try:
-                if trace: g.trace(repr(s),g.callers(4))
+                if trace: g.trace(repr(s))
                 if s.startswith(tag):
                     junk,s = self.parseUnderindentTag(s)
                 # Bug fix: this must be done last.
@@ -4311,7 +4319,8 @@ class atFile:
     def outputStringWithLineEndings (self,s):
 
         # Calling self.onl() runs afoul of queued newlines.
-        self.os(s.replace('\n',self.output_newline))
+        s = g.u(s).replace(g.u('\n'),g.u(self.output_newline))
+        self.os(s)
     #@-node:ekr.20041005105605.205:outputStringWithLineEndings
     #@+node:ekr.20050506090446.1:putAtFirstLines
     def putAtFirstLines (self,s):
@@ -4571,6 +4580,7 @@ class atFile:
         # Replace
         try:
             f = open(fn,'wb')
+            s = g.toEncodedString(s,encoding=self.encoding) ###
             f.write(s)
             f.close()
             if not testing:

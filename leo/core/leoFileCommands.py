@@ -468,7 +468,7 @@ if sys.platform != 'cli':
                         'tx':'ekr.123','testAttr':'abc',
                     }
                 def getNames(self):
-                    return self.attrs.keys()
+                    return list(self.attrs.keys())
                 def getValue(self,key):
                     return self.attrs.get(key)
 
@@ -564,7 +564,7 @@ if sys.platform != 'cli':
             g.pr('\nnode: tnx: %s len(body): %d %s' % (
                 self.tnx,len(self.bodyString),self.headString))
             g.pr('children:',g.listToString(self.children))
-            g.pr('attrs:',self.attributes.values())
+            g.pr('attrs:',list(self.attributes.values()))
         #@nonl
         #@-node:ekr.20060919110638.18:node.dump
         #@-others
@@ -609,7 +609,7 @@ class baseFileCommands:
         # The bin param doesn't exist in Python 2.3;
         # the protocol param doesn't exist in earlier versions of Python.
         version = '.'.join([str(sys.version_info[i]) for i in (0,1)])
-        self.python23 = g.CheckVersion(version,'2.3')
+        # self.python23 = g.CheckVersion(version,'2.3')
 
         # For reading
         self.checking = False # True: checking only: do *not* alter the outline.
@@ -1145,7 +1145,7 @@ class baseFileCommands:
 
         trace = False and not g.unitTesting
         d = sax_node.tnodeAttributes
-        if trace and d: g.trace(sax_node,d.keys())
+        if trace and d: g.trace(sax_node,list(d.keys()))
 
         aDict = {}
         for key in d:
@@ -1155,7 +1155,7 @@ class baseFileCommands:
             aDict[key] = val2
 
         if aDict:
-            if trace: g.trace('uA',v,aDict.keys())
+            if trace: g.trace('uA',v,list(aDict.keys()))
             v.unknownAttributes = aDict
     #@+node:ekr.20090702070510.6028:@test handleTnodeSaxAttributes
     if g.unitTesting:
@@ -1360,22 +1360,22 @@ class baseFileCommands:
 
         try:
             binString = binascii.unhexlify(val) # Throws a TypeError if val is not a hex string.
-        except TypeError:
+        except Exception:
+            # Python 2.x throws TypeError
+            # Python 3.x throws binascii.Error
             # Assume that Leo 4.1 wrote the attribute.
             if g.unitTesting:
                 assert kind == 'raw','unit test failed: kind=' % repr(kind)
             else:
-                g.trace('can not unhexlify %s=%s' % (
-                    attr,val),g.callers(3))
+                g.trace('can not unhexlify %s=%s' % (attr,val))
             return val
         try:
             # No change needed to support protocols.
             val2 = pickle.loads(binString)
             # g.trace('v.3 val:',val2)
             return val2
-        except (pickle.UnpicklingError,ImportError,AttributeError):
-            g.trace('can not unpickle %s=%s' % (
-                attr,val),g.callers(3))
+        except (pickle.UnpicklingError,ImportError,AttributeError,ValueError):
+            g.trace('can not unpickle %s=%s' % (attr,val))
             return val
     #@+node:ekr.20090702072557.6495:@test getSaxUa
     if g.unitTesting:
@@ -1387,21 +1387,25 @@ class baseFileCommands:
             'on': 'tnode',
             'where': 'beforeHeadline',
             'yoffset': 0,
-            'file': u'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\add.png',
+            # 'file': u'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\add.png',
+            'file': 'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\add.png',
             'xpad': 1,
             'type': 'file',
             'xoffset': 2,
-            'relPath': u'Tango\\16x16\\actions\\add.png',
+            # 'relPath': u'Tango\\16x16\\actions\\add.png',
+            'relPath': 'Tango\\16x16\\actions\\add.png',
         },
         {
             'on': 'tnode',
             'where': 'beforeHeadline',
             'yoffset': 0,
-            'file': u'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\bottom.png',
+            # 'file': u'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\bottom.png',
+            'file': 'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\bottom.png',
             'xpad': 1,
             'type': 'file',
             'xoffset': 2,
-            'relPath': u'Tango\\16x16\\actions\\bottom.png',
+            # 'relPath': u'Tango\\16x16\\actions\\bottom.png',
+            'relPath': 'Tango\\16x16\\actions\\bottom.png',
         }]
         table = (
     ('tx','raw',None,"ekr.20090701133940.1767"),
@@ -1441,6 +1445,7 @@ class baseFileCommands:
                     # Use the open binary file, opened by g.openLeoOrZipFile.
                     pass
                 else:
+                    s = str(s,encoding='utf-8')
                     s = self.cleanSaxInputString(s)
                     theFile = StringIO(s)
             else:
@@ -1685,7 +1690,10 @@ class baseFileCommands:
         # Improved code: self.outputFile (a cStringIO object) always exists.
         if s:
             self.putCount += 1
-            s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+            if g.isPython3:
+                pass
+            else:
+                s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
             self.outputFile.write(s)
 
     def put_dquote (self):
@@ -1916,18 +1924,37 @@ class baseFileCommands:
         tnodes = {}
         nodeIndices = g.app.nodeIndices
         for p in theIter:
-            tnodes[p.v.fileIndex] = p.v
+            # Make *sure* the file index has the proper form.
+            # g.trace(p.v.fileIndex)
+            try:
+                theId,t,n = p.v.fileIndex
+            except ValueError:
+                try:
+                    theId,t,n = p.v.fileIndex,''
+                except Exception:
+                    raise BadLeoFile('bad p.v.fileIndex' % repr(index))
+
+            if n is None:
+                n = g.u('0')
+            elif g.isPython3:
+                n = str(n)
+            else:
+                n = unicode(n)
+            index = theId,t,n
+            tnodes[index] = p.v
 
         # Put all tnodes in index order.
         for index in sorted(tnodes):
             # g.trace(index)
             v = tnodes.get(index)
-            if not v:
-                g.trace('can not happen: no vnode for',index)
-            # Write only those tnodes whose vnodes were written.
-            if v.isWriteBit():
-                self.putTnode(v)
-        #@nonl
+            if v:
+                # Write only those tnodes whose vnodes were written.
+                if v.isWriteBit():
+                    self.putTnode(v)
+            else:
+                g.trace('can not happen: no vnode for',repr(index))
+                # This prevents the file from being written.
+                raise BadLeoFile('no vnode for %s' % repr(index))
         #@-node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
         #@nl
         self.put("</tnodes>\n")
@@ -2212,7 +2239,11 @@ class baseFileCommands:
                 theActualFile = None
                 toZip = True
             else:
-                theActualFile = open(fileName, 'wb')
+                if g.isPython3:
+                    mode = 'w'
+                else:
+                    mode = 'wb'
+                theActualFile = open(fileName,mode)
             #@-node:ekr.20060929103258:<< create theActualFile >>
             #@nl
             # t1 = time.clock()
@@ -2407,19 +2438,19 @@ class baseFileCommands:
 
         '''Pickle val and return the hexlified result.'''
 
+        trace = False and g.unitTesting
         try:
-            if self.python23:
-                s = pickle.dumps(val,protocol=1) # Requires Python 2.3
-                # g.trace('protocol=1')
-            else:
-                s = pickle.dumps(val,bin=True) # Requires Earlier version of Python.
-                # g.trace('bin=True')
-            field = ' %s="%s"' % (tag,binascii.hexlify(s))
+            s = pickle.dumps(val,protocol=1)
+            s2 = binascii.hexlify(s)
+            s3 = g.u(s2)
+            if trace: g.trace('\n',
+                type(val),val,'\n',type(s),repr(s),'\n',
+                type(s2),s2,'\n',type(s3),s3)
+            field = ' %s="%s"' % (tag,s3)
             return field
 
         except pickle.PicklingError:
-            if tag:
-                # The caller will print the error if tag is None.
+            if tag: # The caller will print the error if tag is None.
                 g.es_print("ignoring non-pickleable value",val,"in",torv,color="blue")
             return ''
 

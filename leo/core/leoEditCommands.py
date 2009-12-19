@@ -16,16 +16,19 @@ import leo.core.leoKeys as leoKeys
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoTest as leoTest
 
-if g.isPython3:
-    import pickle # Note: only pickle exists in Python 3.x
-else:
-    import cPickle as pickle 
-
 import difflib
 import os
 import re
 import string   
 import sys
+
+if g.isPython3:
+    from functools import reduce
+
+if g.isPython3:
+    import pickle # Note: only pickle exists in Python 3.x
+else:
+    import cPickle as pickle 
 
 if g.isPython3:
     ctypes = None
@@ -2118,7 +2121,7 @@ class editCommandsClass (baseEditCommandsClass):
             if len(line) >= self.fillColumn:
                 ind = j
             else:
-                n = (self.fillColumn-len(line)) / 2
+                n = int((self.fillColumn-len(line))/2)
                 inserted += n
                 k = g.skip_ws(s,i)
                 if k > i: w.delete(i,k-i)
@@ -4673,9 +4676,13 @@ class editCommandsClass (baseEditCommandsClass):
             s2 = s[i:j]
             if not s2.endswith('\n'): s2 = s2+'\n'
             aList = g.splitLines(s2)
-            if ignoreCase:  aList.sort(key=string.lower)
-            else:           aList.sort()
-            if reverse:     aList.reverse()
+            if ignoreCase:
+                def lower(s): return s.lower()
+                aList.sort(key=lower)
+            else:
+                aList.sort()
+            if reverse:
+                aList.reverse()
             s = g.joinLines(aList)
             w.delete(i,j)
             w.insert(i,s)
@@ -4705,7 +4712,7 @@ class editCommandsClass (baseEditCommandsClass):
             columns = [w.get('%s.%s' % (z,sint2),'%s.%s' % (z,sint4))
                 for z in range(sint1,sint3+1)]
             aList = g.splitLines(txt)
-            zlist = zip(columns,aList)
+            zlist = list(zip(columns,aList))
             zlist.sort()
             s = g.joinLines([z[1] for z in zlist])
             w.delete(i,j)
@@ -5366,7 +5373,7 @@ class helpCommandsClass (baseEditCommandsClass):
     further exclamation marks toggles between full and abbreviated modes.
 
     If x is a list 'x.!' shows all its elements, and if x is a Python dictionary,
-    'x.!' shows x.keys(). For example, 'sys.modules.!' Again, further exclamation
+    'x.!' shows list(x.keys()). For example, 'sys.modules.!' Again, further exclamation
     marks toggles between full and abbreviated modes.
 
     During autocompletion, typing a question mark shows the docstring for the

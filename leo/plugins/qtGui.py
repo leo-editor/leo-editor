@@ -47,7 +47,14 @@ try:
     import PyQt4.QtGui as QtGui
 except ImportError:
     QtCore = None
-    print('\nqtGui.py: can not import Qt\nUse "launchLeo.py --gui=tk" to force Tk')
+
+if QtCore is None:
+    try: # Attempt Python 3000 imports
+        from PyQt4 import QtCore
+    except ImportError:
+        QtCore = None
+        print('\nqtGui.py: can not import Qt\nUse "launchLeo.py --gui=tk" to force Tk')
+        raise
 
 # remove scintilla dep for now    
 if 0:    
@@ -709,6 +716,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         w = self.widget
         s = w.text()
         s = g.app.gui.toUnicode(s)
+        i = w.toPythonIndex(i)
         i = max(0,min(i,len(s)))
         w.setCursorPosition(i)
     #@-node:ekr.20081121105001.557:setInsertPoint
@@ -894,16 +902,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
     def getAllText(self):
 
-        #g.trace("getAllText", g.callers(5))
         w = self.widget
-        s = unicode(w.toPlainText())
 
-        # Doesn't work: gets only the line containing the cursor.
-        # s = unicode(w.textCursor().block().text())
+        s = g.u(w.toPlainText())
 
-        # g.trace(repr(s))
         return s
-    #@nonl
     #@-node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
     #@+node:ekr.20081121105001.581:getInsertPoint
     def getInsertPoint(self):
@@ -1096,6 +1099,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         w = self.widget
 
         s = w.toPlainText()
+        i = self.toPythonIndex(i)
         i = max(0,min(i,len(s)))
         cursor = w.textCursor()
 
@@ -1111,6 +1115,10 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         w = self.widget
         # g.trace('i',i,'j',j,'insert',insert,g.callers(4))
         e = QtGui.QTextCursor
+        i = self.toPythonIndex(i)
+        j = self.toPythonIndex(j)
+        if insert is not None:
+            insert = self.toPythonIndex(insert)
         if i > j: i,j = j,i
         n = self.lengthHelper()
         i = max(0,min(i,n))
@@ -1148,8 +1156,14 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         w = self.widget
         sb = w.verticalScrollBar()
         if pos is None: pos = 0
-        elif type(pos) == types.TupleType:
-            pos = pos[0]
+        # elif type(pos) == types.TupleType:
+            # pos = pos[0]
+        else:
+            try:
+                n1,n2 = pos
+                pos = n1
+            except TypeError:
+                pass
         sb.setSliderPosition(pos)
     #@-node:ekr.20081121105001.591:setYScrollPosition
     #@+node:ville.20090321082712.1: PythonIndex
@@ -1159,6 +1173,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         w = self
         te = self.widget
 
+        if index is None:
+            return 0
         if type(index) == type(99):
             return index
         elif index == '1.0':
@@ -1228,9 +1244,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         # common case, e.g. one character    
         if bl.contains(j):
-            s = unicode(bl.text())
+            s = g.u(bl.text())
             offset = i - bl.position()
-
             ret = s[ offset : offset + (j-i)]
             #print "fastget",ret
             return ret
@@ -1549,6 +1564,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         w = self.widget
         s = w.text()
         s = g.app.gui.toUnicode(s)
+        i = self.toPythonIndex(i)
         i = max(0,min(i,len(s)))
         w.setCursorPosition(i)
     #@-node:ekr.20090603073641.3858:setInsertPoint
@@ -1564,7 +1580,11 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         n = len(s)
         i = max(0,min(i,n))
         j = max(0,min(j,n))
-        insert = max(0,min(insert,n))
+        if insert is None:
+            insert = j
+        else:
+            insert = self.toPythonIndex(insert)
+            insert = max(0,min(insert,n))
         if i == j:
             w.setCursorPosition(i)
         else:
@@ -2557,7 +2577,7 @@ class leoQtBody (leoFrame.leoBody):
         if self.numberOfEditors == 2:
             # Inject the ivars into the first editor.
             # The name of the last editor need not be '1'
-            d = self.editorWidgets ; keys = d.keys()
+            d = self.editorWidgets ; keys = list(d.keys())
             old_name = keys[0]
             old_wrapper = d.get(old_name)
             old_w = old_wrapper.widget
@@ -2647,7 +2667,7 @@ class leoQtBody (leoFrame.leoBody):
         assert isinstance(wrapper,leoQTextEditWidget),wrapper
         assert isinstance(w,QtGui.QTextEdit),w
 
-        if len(d.keys()) <= 1: return
+        if len(list(d.keys())) <= 1: return
 
         # At present, can not delete the first column.
         if name == '1':
@@ -2835,7 +2855,7 @@ class leoQtBody (leoFrame.leoBody):
 
         c = self.c ; p = c.p ; body = p.b
         d = self.editorWidgets
-        if len(d.keys()) < 2: return # There is only the main widget
+        if len(list(d.keys())) < 2: return # There is only the main widget
 
         w0 = c.frame.body.bodyCtrl
         i,j = w0.getSelectionRange()
@@ -3626,7 +3646,7 @@ class TabbedFrameFactory:
             c = event['c']
             f = c.frame
             self.detachTab(f.top)
-            f.top.setWindowTitle(f.title + u' [D]')
+            f.top.setWindowTitle(f.title + ' [D]')
 
         # this is actually not tab-specific, move elsewhere?
         @g.command('close-others')
@@ -3906,9 +3926,10 @@ class leoQtFrame (leoFrame.leoFrame):
 
         def put_helper(self,s,w):
             # w.setEnabled(True)
-            if sys.platform.startswith('linux'):
-                # Work around an apparent Qt bug.
-                s = g.toEncodedString(s,'ascii',reportErrors=False)
+            if 0: ### no longer needed???
+                if sys.platform.startswith('linux'):
+                    # Work around an apparent Qt bug.
+                    s = g.toEncodedString(s,'ascii',reportErrors=False)
             w.setText(s)
             # w.setEnabled(False)
         #@-node:ekr.20081121105001.264:clear, get & put/1
@@ -4982,7 +5003,7 @@ class leoQtLog (leoFrame.leoLog):
             g.app.logWaiting.append((s,color),)
             if g.isUnicode(s):
                 s = g.toEncodedString(s,"ascii")
-            print (s)
+            print(s)
     #@-node:ekr.20081121105001.326:put
     #@+node:ekr.20081121105001.327:putnl
     def putnl (self,tabName='Log'):
@@ -6230,7 +6251,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         '''Return the text of the item.'''
 
         if item:
-            return unicode(item.text(0))
+            return g.u(item.text(0))
         else:
             return '<no item>'
     #@nonl
@@ -6864,7 +6885,7 @@ class leoQtGui(leoGui.leoGui):
 
         if multiple:
             lst = QtGui.QFileDialog.getOpenFileNames(parent,title,os.curdir,filter)
-            return list(unicode(s) for s in lst)
+            return [g.u(s) for s in lst]
 
         s = QtGui.QFileDialog.getOpenFileName(parent,title,os.curdir,filter)
         s = g.app.gui.toUnicode(s)
@@ -7185,30 +7206,12 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20081121105001.502:toUnicode (qtGui)
     def toUnicode (self,s,encoding=None,reportErrors=True):
 
-        # These tests will usually be very fast.
-        if encoding is None:
-            encoding = self.defaultEncoding
-        elif not g.isValidEncoding(encoding):
-            encoding = None
-
-        if not encoding:
-            e = g.app.config.getString(c=None,setting='qtdefaultencoding')
-            if e and g.isValidEncoding(e):
-                encoding = e
-            else:
-                encoding = 'utf-8'
-            self.defaultEncoding = encoding
-
-        # g.trace(encoding)
-
         try:
-            return unicode(s)
+            s = g.u(s)
+            return s
         except Exception:
             # g.trace('Warning - toUnicode does encoding (bugs possible)')
-            return unicode(s,encoding,errors='replace')
-
-
-
+            return g.toUnicode(s,'utf-8',reportErrors='replace')
     #@-node:ekr.20081121105001.502:toUnicode (qtGui)
     #@+node:ekr.20081121105001.503:widget_name (qtGui)
     def widget_name (self,w):
@@ -7599,7 +7602,13 @@ class leoQtEventFilter(QtCore.QObject):
         keynum = event.key()
         text   = event.text() # This is the unicode text.
         toString = QtGui.QKeySequence(keynum).toString()
-        toUnicode = unicode
+
+        # Do *not* use g.u here: ch1 is a wrapper type.
+        # Convert the Qt wrapper to a Python unicode string.
+        if g.isPython3:
+            u = str
+        else:
+            u = unicode
 
         try:
             ch1 = chr(keynum)
@@ -7607,12 +7616,12 @@ class leoQtEventFilter(QtCore.QObject):
             ch1 = ''
 
         try:
-            ch = toUnicode(ch1)
+            ch = u(ch1) # Do not use g.u here!
         except UnicodeError:
             ch = ch1
 
-        text     = toUnicode(text)
-        toString = toUnicode(toString)
+        text     = u(text)
+        toString = u(toString)
 
         if trace and self.keyIsActive: g.trace(
             'keynum %s ch %s ch1 %s toString %s' % (
@@ -8087,9 +8096,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         """ Called by QSyntaxHiglighter """
 
         if self.hasCurrentBlock and not self.colorizer.killColorFlag:
-            colorer = self.colorer
-            s = unicode(s)
-            colorer.recolor(s)
+            self.colorer.recolor(g.u(s))
     #@-node:ekr.20081205131308.11:highlightBlock
     #@+node:ekr.20081206062411.15:rehighlight
     def rehighlight (self,p):
@@ -8187,7 +8194,7 @@ class jEditColorizer:
         # Used by recolor and helpers...
         self.actualColorDict = {} # Used only by setTag.
         self.hyperCount = 0
-        self.defaultState = u'default-state:' # The name of the default state.
+        self.defaultState = 'default-state:' # The name of the default state.
         self.nextState = 1 # Dont use 0.
         self.restartDict = {} # Keys are state numbers, values are restart functions.
         self.stateDict = {} # Keys are state numbers, values state names.
@@ -8409,7 +8416,11 @@ class jEditColorizer:
         for ch, rule, atFront, in table:
 
             # Replace the bound method by an unbound method.
-            rule = rule.im_func
+
+            if g.isPython3:
+                rule = rule.__func__
+            else:
+                rule = rule.im_func
             # g.trace(rule)
 
             theList = theDict.get(ch,[])
@@ -8444,7 +8455,7 @@ class jEditColorizer:
             self.fonts['default_body_font'] = defaultBodyfont
 
         # Configure fonts.
-        keys = self.default_font_dict.keys() ; keys.sort()
+        keys = list(self.default_font_dict.keys()) ; keys.sort()
         for key in keys:
             option_name = self.default_font_dict[key]
             # First, look for the language-specific setting, then the general setting.
@@ -8471,11 +8482,11 @@ class jEditColorizer:
                         w.tag_config(key,font=font)
                         break
             else: # Neither the general setting nor the language-specific setting exists.
-                if self.fonts.keys(): # Restore the default font.
+                if list(self.fonts.keys()): # Restore the default font.
                     if trace and verbose: g.trace('default',key)
                     w.tag_config(key,font=defaultBodyfont)
 
-        keys = self.default_colors_dict.keys() ; keys.sort()
+        keys = list(self.default_colors_dict.keys()) ; keys.sort()
         for name in keys:
             option_name,default_color = self.default_colors_dict[name]
             color = (
@@ -8712,7 +8723,7 @@ class jEditColorizer:
 
         # Add any new user keywords to leoKeywordsDict.
         d = self.keywordsDict
-        keys = d.keys()
+        keys = list(d.keys())
         for s in g.globalDirectiveList:
             key = '@' + s
             if key not in keys:
@@ -8720,9 +8731,10 @@ class jEditColorizer:
 
         # Create a temporary chars list.  It will be converted to a dict later.
         chars = [g.toUnicode(ch,encoding='UTF-8')
-            for ch in (string.letters + string.digits)]
+            ### for ch in (string.letters + string.digits)]
+            for ch in (string.ascii_letters + string.digits)]
 
-        for key in d.keys():
+        for key in list(d.keys()):
             for ch in key:
                 if ch not in chars:
                     chars.append(g.toUnicode(ch,encoding='UTF-8'))

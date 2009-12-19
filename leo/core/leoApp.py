@@ -129,6 +129,7 @@ class LeoApp:
             "fortran"       : "C",
             "fortran90"     : "!",
             "haskell"       : "--_ {-_ _-}",
+            "haxe"          : "//",
             "html"          : "<!-- -->",
             "ini"           : ";",
             "java"          : "// /* */",
@@ -175,6 +176,7 @@ class LeoApp:
             "fortran"       : "f",
             "fortran90"     : "f90",
             "haskell"       : "hs",
+            "haxe"          : "hx",
             "html"          : "html",
             "ini"           : "ini",
             "java"          : "java",
@@ -265,6 +267,7 @@ class LeoApp:
             'cpp'   : 'c',
             'el'    : 'lisp',
             'f'     : 'fortran90',
+            'hx'    : 'none',
             'ksh'   : 'none', # Leo 4.5.1
             'nw'    : 'none', # noweb.
             'otl'   : 'none', # vimoutline.
@@ -666,7 +669,7 @@ class LeoApp:
 
         if g.app.gui is None:
             # tkinter broken/doesn't exist. Print error
-            print "Please enter LeoID (e.g. your username, 'johndoe'...)"
+            print("Please enter LeoID (e.g. your username, 'johndoe'...)")
             leoid = raw_input('LeoID: ')
 
         else:
@@ -712,15 +715,15 @@ class LeoApp:
 
         """
 
-        # g.trace('g.enableDB',g.enableDB)
+        trace = False
+        if trace: g.trace('g.enableDB',g.enableDB)
 
         if g.enableDB:
             dbdirname = self.homeLeoDir + "/db/global"
             self.db = leo.external.pickleshare.PickleShareDB(dbdirname, protocol='picklez')
+            if trace: g.trace(self.db,dbdirname)
         else:
             self.db = {}
-
-
     #@-node:ville.20090620122043.6275:app.setGlobalDb
     #@+node:ekr.20031218072017.1847:app.setLog, lockLog, unlocklog
     def setLog (self,log):
@@ -769,7 +772,7 @@ class LeoApp:
 
         app = self
         # Do not call g.es, g.es_print, g.pr or g.trace here!
-        # print 'writeWaitingLog',c,g.callers(4)
+        # print('writeWaitingLog',c,g.callers(4))
         table = [
             ('Leo Log Window','red'),
             (app.signon,'black'),
@@ -780,8 +783,8 @@ class LeoApp:
         if app.log:
             if not app.logInited:
                 app.logInited = True # Prevent recursive call.
-                print app.signon
-                print app.signon2
+                print(app.signon)
+                print(app.signon2)
                 for s,color in table:
                     app.logWaiting.insert(0,(s+'\n',color),)
             elif forceLog:
@@ -789,7 +792,7 @@ class LeoApp:
                     app.logWaiting.insert(0,(s+'\n',color),)
             # The test for isNull would probably interfere with batch mode.
             for s in app.printWaiting:
-                print s
+                print(s)
             app.printWaiting = []
             for s,color in app.logWaiting:
                 g.es('',s,color=color,newline=0)

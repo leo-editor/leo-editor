@@ -174,7 +174,7 @@ class shadowController:
         # Replace the file.
         try:
             f = open(fn,'wb')
-            f.write(s)
+            f.write(g.toEncodedString(s,encoding='utf-8'))
             if trace: g.trace('fn',fn,
                 '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
                 '\ncallers',g.callers(4))
@@ -832,7 +832,7 @@ class shadowController:
             try:
                 f1 = open(fileName, "w")
                 for line in lines:
-                    f1.write(line)
+                    f1.write(g.toEncodedString(line,encoding='utf-8'))
                 f1.close()
             except IOError:
                 g.es_exception()

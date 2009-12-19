@@ -9,6 +9,8 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
+import sys
+isPython3 = sys.version_info >= (3,0,0)
 #@<< imports >>
 #@+node:ekr.20050208101229:<< imports >>
 if 0:
@@ -42,9 +44,19 @@ try:
 except ImportError:
     pass
 
+if isPython3:
+    from functools import reduce
+
+if isPython3:
+    import io
+    StringIO = io.StringIO
+else:
+    import cStringIO
+    StringIO = cStringIO.StringIO
+
 import operator
 import re
-import sys
+# import sys
 import time
 import zipfile
 
@@ -60,6 +72,8 @@ import types
 # g.pr('(types.StringTypes)',repr(types.StringTypes))
 #@-node:ekr.20050208101229:<< imports >>
 #@nl
+
+print('*** isPython3',isPython3)
 #@<< define general constants >>
 #@+node:ekr.20031218072017.3094:<< define general constants >>
 body_newline = '\n'
@@ -101,25 +115,24 @@ class nullObject:
     # def __len__    (self): return 0 # Debatable.
     def __repr__   (self): return "nullObject"
     def __str__    (self): return "nullObject"
-    def __nonzero__(self): return 0
+    if isPython3:
+        def __bool__(self): return False
+    else:
+        def __nonzero__(self): return 0
     def __delattr__(self,attr):     return self
     def __getattr__(self,attr):     return self
     def __setattr__(self,attr,val): return self
-
 #@-node:ekr.20090521175848.5881:<< define the nullObject class >>
 #@nl
-
 g = nullObject() # Set later by startup logic to this module.
 app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
-isPython3 = sys.version_info >= (3,0,0)
 convert_at_file = True # True: write @file nodes like @thin nodes
-# if convert_at_file:
-    # print('*** convert_at_file')
+# if convert_at_file: print('*** convert_at_file')
 
 enableDB = True
 if not enableDB:
-    print '** leoGlobals.py: caching disabled'
+    print('** leoGlobals.py: caching disabled')
 
 #@+others
 #@+node:ekr.20050328133058:g.createStandAloneTkApp
@@ -642,6 +655,9 @@ def getOutputNewline (c=None,name=None):
     elif s == "crlf": s = "\r\n"
     else: s = '\n' # Default for erroneous values.
     # g.trace(c,name,c.config.output_newline,'returns',repr(s))
+
+    if g.isPython3:
+        s = str(s)
     return s
 #@-node:ekr.20031218072017.1386:g.getOutputNewline
 #@+node:ekr.20080827175609.52:g.scanAtCommentAndLanguageDirectives
@@ -1459,7 +1475,7 @@ def pdb (message=''):
     import pdb # Required: we have just defined pdb as a function!
 
     if message:
-        print message
+        print(message)
     pdb.set_trace()
 #@+node:ekr.20090517020744.5880:@test g.pdb
 if g.unitTesting:
@@ -2506,13 +2522,11 @@ def create_temp_file (textMode=False):
 #@+node:ekr.20090517020744.5873:@test g.create_temp_file
 if g.unitTesting:
 
-    import types
-
     c,p = g.getTestVars()
-    theFile,theFileName = g.create_temp_file()
 
-    assert type(theFile) == types.FileType, 'not file type'
-    assert type(theFileName) in (types.StringType, types.UnicodeType), 'not string type'
+    theFile,fn = g.create_temp_file()
+    assert theFile
+    assert g.isString(fn)
 #@-node:ekr.20090517020744.5873:@test g.create_temp_file
 #@-node:ekr.20031218072017.3117:g.create_temp_file & test
 #@+node:ekr.20031218072017.3118:g.ensure_extension
@@ -2731,7 +2745,6 @@ def openLeoOrZipFile (fileName):
     try:
         isZipped = zipfile.is_zipfile(fileName)
         if isZipped:
-            import StringIO
             theFile = zipfile.ZipFile(fileName,'r')
             if not theFile: return None,False
             # New in Leo 4.6 b2: read the file into an StringIO file.
@@ -2739,7 +2752,7 @@ def openLeoOrZipFile (fileName):
             name = aList and len(aList) == 1 and aList[0]
             if not name: return None,False
             s = theFile.read(name)
-            theStringFile =  StringIO.StringIO(s)
+            theStringFile =  StringIO(g.u(s))
             return theStringFile,True
         else:
             # mode = g.choose(g.isPython3,'r','rb')
@@ -3119,7 +3132,7 @@ if g.unitTesting:
     assert not exists(path)
     assert not g.utils_remove(path,verbose=False)
 
-    f = file(path,'w')
+    f = open(path,'w')
     f.write('test')
     f.close()
 
@@ -3203,14 +3216,14 @@ if g.unitTesting:
         if exists(p):
             os.remove(p)
         assert not exists(p)
-        f = file(p,'w')
+        f = open(p,'w')
         f.write('test %s' % p)
         f.close()
         assert exists(p)
 
     assert g.utils_rename(c,path,path2,verbose=True)
     assert exists(path2)
-    f = file(path2)
+    f = open(path2)
     s = f.read()
     f.close()
     # print('Contents of %s: %s' % (path2,s))
@@ -3348,7 +3361,7 @@ def printGcAll (tag=''):
         d[t] = d.get(t,0) + 1
 
     if 1: # Sort by n
-        items = d.items()
+        items = list(d.items())
         try:
             # Support for keword args to sort function exists in Python 2.4.
             # Support for None as an alternative to omitting cmp exists in Python 2.3.
@@ -3910,7 +3923,10 @@ def pr(*args,**keys):
     # However, the following must appear in Python\Lib\sitecustomize.py:
     #    sys.setdefaultencoding('utf-8')
     s = g.translateArgs(args,d) # Translates everything to unicode.
-    s2 = g.toEncodedString(s,encoding)
+    if g.isPython3:
+        s2 = s
+    else:
+        s2 = g.toEncodedString(s,encoding)
 
     if app.logInited:
         try: # We can't use any print keyword args in Python 2.x!
@@ -4738,8 +4754,9 @@ def find_on_line(s,i,pattern):
     j = s.find('\n',i)
     if j == -1: j = len(s)
     k = s.find(pattern,i,j)
-    if k > -1: return k
-    else: return None
+    return k
+    # if k > -1: return k
+    # else: return None
 #@-node:ekr.20031218072017.3176:find_on_line
 #@+node:ekr.20031218072017.3177:is_c_id
 def is_c_id(ch):
@@ -5114,7 +5131,8 @@ def executeFile(filename, options= ''):
     else:
         if fdir: os.chdir(fdir)
         d = {'__name__': '__main__'}
-        execfile(fname, d)  #, globals()
+        ### execfile(fname, d)
+        ### exec(compile(open(fname).read(),fname, 'exec'),d)
         os.system('%s %s' % (sys.executable, fname))
         if fdir: os.chdir(cwd)
 #@-node:ekr.20050503112513.7:g.executeFile
@@ -5302,7 +5320,7 @@ if g.unitTesting:
 if g.unitTesting:
 
     c,p = g.getTestVars()
-    file = u'Ỗ'
+    # file = u'Ỗ'
     path = g.os_path_join('Ỗ','Ỗ')
     # print(g.toEncodedString(file,'utf-8'))
 
@@ -5330,9 +5348,10 @@ if g.unitTesting:
     at = c.atFileCommands
     at.errors = 0
 
-    s = u'La Pe\xf1a'
-    s = u'La Peña'
+    # s = u'La Pe\xf1a'
+    # s = u'La Peña'
     # s = u'Ă: U+0102: Latin Capital Letter A With Breve'
+    s = 'La Peña'
     at.printError('test of at.printError:',s)
 #@-node:ekr.20090517020744.5862:@test atFile.printError
 #@+node:ekr.20090517020744.5863:@test % operator with unicode
@@ -5349,99 +5368,69 @@ if g.unitTesting:
 
 if g.unitTesting:
 
-    encoding = 'ascii'
-
-    s = '炰'
-
-    s2,ok = g.toUnicodeWithErrorCode(s,encoding)
-    assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
-
-    s = u'炰'
-    s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
-    assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
+    if not g.isPython3:
+        encoding = 'ascii'
+        s = '炰'
+        s2,ok = g.toUnicodeWithErrorCode(s,encoding)
+        assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
 #@-node:ekr.20090517020744.5864:@test failure to convert unicode characters to ascii
 #@+node:ekr.20090517020744.5865:@test of round-tripping toUnicode & toEncodedString
 #@@first
 
 if g.unitTesting:
 
-    for s,encoding in (
-        ('a',    'utf-8'),
-        ('a',    'ascii'),
-        ('äöü',  'utf-8'),
-        ('äöü',  'mbcs'),
-        ('炰',    'utf-8'),
-        ('炰',    'mbcs'),
-    ):
-        if g.isValidEncoding(encoding):
-            s2,ok = g.toUnicodeWithErrorCode(s,encoding)
-            assert ok, 'toUnicodeWithErrorCode fails for %s' %s
-            s3,ok = g.toEncodedStringWithErrorCode(s2,encoding)
-            assert ok, 'toEncodedStringWithErrorCode fails for %s' % s2
-            assert s3 == s, 'Round-trip one fails for %s' %s
+    if not g.isPython3:
 
-            s2 = g.toUnicode(s,encoding)
-            s3 = g.toEncodedString(s2,encoding)
-            assert s3 == s, 'Round-trip two fails for %s' %s
+        for s,encoding in (
+            ('a',    'utf-8'),
+            ('a',    'ascii'),
+            ('äöü',  'utf-8'),
+            ('äöü',  'mbcs'),
+            ('炰',    'utf-8'),
+            ('炰',    'mbcs'),
+        ):
+            if g.isValidEncoding(encoding):
+                s2,ok = g.toUnicodeWithErrorCode(s,encoding)
+                assert ok, 'toUnicodeWithErrorCode fails for %s' %s
+                s3,ok = g.toEncodedStringWithErrorCode(s2,encoding)
+                assert ok, 'toEncodedStringWithErrorCode fails for %s' % s2
+                assert s3 == s, 'Round-trip one fails for %s' %s
+
+                s2 = g.toUnicode(s,encoding)
+                s3 = g.toEncodedString(s2,encoding)
+                assert s3 == s, 'Round-trip two fails for %s' %s
 #@-node:ekr.20090517020744.5865:@test of round-tripping toUnicode & toEncodedString
-#@+node:ekr.20090517020744.5866:@test failure with ascii encodings
-#@@first
-
-if g.unitTesting:
-
-    encoding = 'ascii'
-
-    s = '炰'
-    s2,ok = g.toUnicodeWithErrorCode(s,encoding)
-    assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
-
-    s = u'炰'
-    s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
-    assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
-#@-node:ekr.20090517020744.5866:@test failure with ascii encodings
 #@+node:ekr.20090517020744.5867:@test round trip toUnicode toEncodedString
 #@@first
 
 if g.unitTesting:
 
-    table = [
-        ('a',    'utf-8'),
-        ('a',    'ascii'),
-        ('äöü',  'utf-8'),
-        ('äöü',  'mbcs'),
-        ('炰',   'utf-8'),
-    ]
+    if not g.isPython3:
+        table = [
+            ('a',    'utf-8'),
+            ('a',    'ascii'),
+            ('äöü',  'utf-8'),
+            ('äöü',  'mbcs'),
+            ('炰',   'utf-8'),
+        ]
+        import sys
+        if sys.platform.startswith('win'):
+            data = '炰','mbcs'
+            table.append(data)
 
-    # __pychecker__ = '--no-reimport'
-    import sys
+        for s,encoding in table:
+            if g.isValidEncoding(encoding):
+                s2,ok = g.toUnicodeWithErrorCode(s,encoding)
+                assert ok, 'toUnicodeWithErrorCode fails for %s' %s
+                s3,ok = g.toEncodedStringWithErrorCode(s2,encoding)
+                assert ok, 'toEncodedStringWithErrorCode fails for %s' % s2
+                assert s3 == s, 'Round-trip one failed for %s' %s
 
-    if sys.platform.startswith('win'):
-        data = '炰','mbcs'
-        table.append(data)
-
-    for s,encoding in table:
-        if g.isValidEncoding(encoding):
-            s2,ok = g.toUnicodeWithErrorCode(s,encoding)
-            assert ok, 'toUnicodeWithErrorCode fails for %s' %s
-            s3,ok = g.toEncodedStringWithErrorCode(s2,encoding)
-            assert ok, 'toEncodedStringWithErrorCode fails for %s' % s2
-            assert s3 == s, 'Round-trip one failed for %s' %s
-
-            s2 = g.toUnicode(s,encoding)
-            s3 = g.toEncodedString(s2,encoding)
-            assert s3 == s, 'Round-trip two failed for %s' %s
+                s2 = g.toUnicode(s,encoding)
+                s3 = g.toEncodedString(s2,encoding)
+                assert s3 == s, 'Round-trip two failed for %s' %s
 #@-node:ekr.20090517020744.5867:@test round trip toUnicode toEncodedString
 #@-node:ekr.20090517020744.5859: Unicode tests
-#@+node:ekr.20081204091750.2:g.emptyString
-def emptyString():
-
-    '''Return an empty unicode string.'''
-
-    if isPython3:
-        return ''
-    else:
-        return unicode('')
-#@-node:ekr.20081204091750.2:g.emptyString
 #@+node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
 # The syntax of these functions must be valid on Python2K and Python3K.
 
@@ -5626,14 +5615,14 @@ if g.unitTesting:
 
     for s,encoding in (
         ('aĂbĂ',  'ascii'),
-        (u'aĂbĂ', 'ascii'),
+        #(u'aĂbĂ', 'ascii'),
         ('炰',    'ascii'),
-        (u'炰',   'ascii'),
+        #(u'炰',   'ascii'),
 
         ('aĂbĂ',  'utf-8'),
-        (u'aĂbĂ', 'utf-8'),
+        #(u'aĂbĂ', 'utf-8'),
         ('炰',    'utf-8'),
-        (u'炰',   'utf-8'),
+        #(u'炰',   'utf-8'),
     ):
 
         g.reportBadChars(s,encoding)
@@ -5643,23 +5632,12 @@ if g.unitTesting:
 #@+node:ekr.20050208093800:g.toEncodedString
 def toEncodedString (s,encoding,reportErrors=False):
 
-    if isPython3:
-        if g.isString(s):
-            try:
-                s = s.encode(encoding,"strict")
-            except UnicodeError:
-                if reportErrors:
-                    g.reportBadChars(s,encoding)
-                s = s.encode(encoding,"replace")
-
-    else:
-        if type(s) == types.UnicodeType:
-            try:
-                s = s.encode(encoding,"strict")
-            except UnicodeError:
-                if reportErrors:
-                    g.reportBadChars(s,encoding)
-                s = s.encode(encoding,"replace")
+    if g.isUnicode(s):
+        try:
+            s = s.encode(encoding,"strict")
+        except UnicodeError:
+            if reportErrors: g.reportBadChars(s,encoding)
+            s = s.encode(encoding,"replace")
     return s
 #@-node:ekr.20050208093800:g.toEncodedString
 #@+node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
@@ -5667,17 +5645,14 @@ def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
 
     ok = True
 
-    if type(s) == types.UnicodeType:
-
+    if g.isUnicode(s):
         try:
             s = s.encode(encoding,"strict")
         except UnicodeError:
-            if reportErrors:
-                g.reportBadChars(s,encoding)
+            if reportErrors: g.reportBadChars(s,encoding)
             s = s.encode(encoding,"replace")
             ok = False
-
-    return s,ok
+    return s, ok
 #@-node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
 #@+node:ekr.20050208093800.1:g.toUnicode
 def toUnicode (s,encoding,reportErrors=False):
@@ -5703,30 +5678,64 @@ def toUnicode (s,encoding,reportErrors=False):
     return s
 #@nonl
 #@-node:ekr.20050208093800.1:g.toUnicode
+#@+node:ekr.20091206161352.6232:g.u
+if False:
+    def u(s):
+        '''Convert the string s to unicode if necessary.'''
+        if g.isUnicode(s):
+            return s
+        elif g.isPython3:
+           return str(s)
+        else:
+            return unicode(s)
+else:
+    def u(s,encoding='utf-8'):
+        '''Convert the string s to unicode if necessary.'''
+        if g.isUnicode(s):
+            return s
+        elif g.isPython3:
+           return str(s,encoding)
+        else:
+            return unicode(s,encoding)
+
+#@-node:ekr.20091206161352.6232:g.u
 #@+node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
 def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
 
     ok = True
-
-    if isPython3:
-        if s is None:
-            s = ''
-        if g.isString(s):
-            s = repr(s)
-        else:
-            pass # Leave s unchanged.
-    else:
-        if s is None:
-            s = unicode('')
-        if type(s) != types.UnicodeType:
-            try:
-                s = unicode(s,encoding,"strict")
-            except UnicodeError:
-                if reportErrors:
-                    g.reportBadChars(s,encoding)
-                s = unicode(s,encoding,"replace")
-                ok = False
+    if g.isPython3: f = str
+    else: f = unicode
+    if s is None:
+        s = g.u('')
+    if not g.isUnicode(s):
+        try:
+            s = f(s,encoding,'strict')
+        except (UnicodeError,ValueError):
+            if reportErrors:
+                g.reportBadChars(s,encoding)
+            s = f(s,encoding,'replace')
+            ok = False
     return s,ok
+
+    # if isPython3:
+        # if s is None:
+            # s = ''
+        # if g.isString(s):
+            # s = repr(s)
+        # else:
+            # pass # Leave s unchanged.
+    # else:
+        # if s is None:
+            # s = unicode('')
+        # if type(s) != types.UnicodeType:
+            # try:
+                # s = unicode(s,encoding,"strict")
+            # except UnicodeError:
+                # if reportErrors:
+                    # g.reportBadChars(s,encoding)
+                # s = unicode(s,encoding,"replace")
+                # ok = False
+    # return s,ok
 #@-node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
 #@-node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
 #@-node:ekr.20031218072017.1498:Unicode utils...
@@ -6373,22 +6382,42 @@ def makeDict(**keys):
 #@+node:ekr.20060221083356:g.prettyPrintType
 def prettyPrintType (obj):
 
-    if type(obj) in (
-        types.MethodType,types.UnboundMethodType,types.BuiltinMethodType):
-        return 'method'
-    elif type(obj) in (types.BuiltinFunctionType,types.FunctionType):
-        return 'function'
-    elif type(obj) == types.ModuleType:
-        return 'module'
-    elif type(obj) == types.InstanceType:
-        return 'object'
-    elif type(obj) in (types.UnicodeType,types.StringType):
-        return 'string'
+    if g.isPython3:
+        if type(obj) in (
+            types.MethodType,
+            # types.UnboundMethodType,
+            types.BuiltinMethodType):
+            return 'method'
+        elif type(obj) in (types.BuiltinFunctionType,types.FunctionType):
+            return 'function'
+        elif type(obj) == types.ModuleType:
+            return 'module'
+        # elif type(obj) == types.InstanceType:
+            # return 'object'
+        elif g.isString(obj): # type(obj) in (types.UnicodeType,types.StringType):
+            return 'string'
+        else:
+            theType = str(type(obj))
+            if theType.startswith("<type '"): theType = theType[7:]
+            if theType.endswith("'>"): theType = theType[:-2]
+            return theType
     else:
-        theType = str(type(obj))
-        if theType.startswith("<type '"): theType = theType[7:]
-        if theType.endswith("'>"): theType = theType[:-2]
-        return theType
+        if type(obj) in (
+            types.MethodType,types.UnboundMethodType,types.BuiltinMethodType):
+            return 'method'
+        elif type(obj) in (types.BuiltinFunctionType,types.FunctionType):
+            return 'function'
+        elif type(obj) == types.ModuleType:
+            return 'module'
+        elif type(obj) == types.InstanceType:
+            return 'object'
+        elif type(obj) in (types.UnicodeType,types.StringType):
+            return 'string'
+        else:
+            theType = str(type(obj))
+            if theType.startswith("<type '"): theType = theType[7:]
+            if theType.endswith("'>"): theType = theType[:-2]
+            return theType
 #@-node:ekr.20060221083356:g.prettyPrintType
 #@+node:ekr.20090516135452.5776:g.removeLeading/Trailing & tests
 # Warning: g.removeTrailingWs already exists.
@@ -6515,7 +6544,7 @@ def cantImport (moduleName,pluginName=None,verbose=True):
     if pluginName: s = s + " from plugin %s" % pluginName
 
     if not g.app or not g.app.gui:
-        print s
+        print (s)
     elif g.unitTesting:
         # print s
         return
@@ -6856,8 +6885,8 @@ def computeLeadingWhitespace (width, tab_width):
     if width <= 0:
         return ""
     if tab_width > 1:
-        tabs   = width / tab_width
-        blanks = width % tab_width
+        tabs   = int(width / tab_width)
+        blanks = int(width % tab_width)
         return ('\t' * tabs) + (' ' * blanks)
     else: # 7/3/02: negative tab width always gets converted to blanks.
         return (' ' * width)

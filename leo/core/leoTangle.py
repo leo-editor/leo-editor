@@ -1314,7 +1314,8 @@ class baseTangleCommands:
 
     def oblanks (self,n):
         if abs(n) > 0:
-            self.output_file.write(' ' * abs(n))
+            s = g.toEncodedString(' ' * abs(n),encoding=self.encoding)
+            self.output_file.write(s)
 
     def onl(self):
         # 3/18/03: Don't mess with g.body_ignored_newline.
@@ -1333,7 +1334,8 @@ class baseTangleCommands:
 
     def otabs (self,n):
         if abs(n) > 0:
-            self.output_file.write('\t' * abs(n))
+            s = g.toEncodedString('\t' * abs(n),self.encoding,reportErrors=True)
+            self.output_file.write(s)
     #@-node:ekr.20031218072017.1488:oblank, oblanks, os, otab, otabs (Tangle)
     #@+node:ekr.20031218072017.1151:tangle.put_all_roots
     #@+at
@@ -3395,7 +3397,7 @@ class baseTangleCommands:
         # Find the first '>'
         while i < n and name [i] != '>':
             i += 1
-        name = string.strip(name[j:i])
+        name = name[j:i].strip()
 
         return name
     #@-node:ekr.20031218072017.3598:standardize_name

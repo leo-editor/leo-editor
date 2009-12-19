@@ -283,16 +283,15 @@ def doHandlersForTag (tag,keywords):
     return None
 #@-node:ekr.20031218072017.3442:doHandlersForTag
 #@+node:ekr.20041001161108:doPlugins
+ignoringMessageGiven = False
+
 def doPlugins(tag,keywords):
+
+    global ignoringMessageGiven
 
     if g.app.killed:
         return
 
-    if g.isPython3:
-        g.trace('ignoring all plugins')
-        return
-
-    # g.trace(tag)
     if tag in ('start1','open0'):
         loadHandlers(tag)
 
@@ -303,7 +302,7 @@ def getHandlersForTag(tags):
 
     import types
 
-    if type(tags) in (types.TupleType,types.ListType):
+    if type(tags) in (type((),),type([])): ### types.TupleType,types.ListType):
         result = []
         for tag in tags:
             aList = getHandlersForOneTag(tag) 
@@ -488,7 +487,6 @@ if g.unitTesting:
     x = StubConfig()
     assert not x.getBool(c,'mySetting')
     assert not x.enabledPluginsFileName
-#@nonl
 #@-node:ekr.20090522161156.5886:@test class StubConfig
 #@-node:ekr.20041113113140:loadOnePlugin & test
 #@+node:ekr.20050110191444:printHandlers
@@ -571,7 +569,7 @@ def registerExclusiveHandler(tags, fn):
 
     import types
 
-    if type(tags) in (types.TupleType,types.ListType):
+    if type(tags) in (type((),),type([])): ### types.TupleType,types.ListType):
         for tag in tags:
             registerOneExclusiveHandler(tag,fn)
     else:
@@ -606,7 +604,7 @@ def registerHandler(tags,fn):
 
     import types
 
-    if type(tags) in (types.TupleType,types.ListType):
+    if type(tags) in (type((),),type([])): ### types.TupleType,types.ListType):
         for tag in tags:
             registerOneHandler(tag,fn)
     else:
@@ -659,7 +657,7 @@ def unregisterHandler(tags,fn):
 
     import types
 
-    if type(tags) in (types.TupleType,types.ListType):
+    if type(tags) in (type((),),type([])): ### types.TupleType,types.ListType):
         for tag in tags:
             unregisterOneHandler(tag,fn)
     else:
@@ -722,10 +720,12 @@ class CommandChainDispatcher:
             try:
                 ret = cmd(*args, **kw)
                 return ret
-            except TryNext, exc:
+            ### except TryNext, exc:
+            except TryNext as exc:
                 if exc.args or exc.kwargs:
                     args = exc.args
                     kw = exc.kwargs
+
         # if no function will accept it, raise TryNext up to the caller
         raise TryNext
 

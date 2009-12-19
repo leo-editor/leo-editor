@@ -261,7 +261,7 @@ class undoer:
             g.pr('-' * 20)
 
         # bunch is not a dict, so bunch.keys() is required.
-        for key in bunch.keys(): 
+        for key in list(bunch.keys()): 
             val = bunch.get(key)
             # g.trace(key,val)
             setattr(u,key,val)

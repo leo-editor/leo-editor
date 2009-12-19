@@ -13,7 +13,13 @@
 import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest
 import string
-import StringIO
+
+try:
+    import StringIO
+except ImportError:
+    import io
+    StringIO = io.StringIO
+    # BytesIO = io.BytesIO
 
 #@<< class scanUtility >>
 #@+node:sps.20081112093624.1:<< class scanUtility >>
@@ -359,7 +365,7 @@ class leoImportCommands (scanUtility):
     #@+node:ekr.20031218072017.1462:exportHeadlines
     def exportHeadlines (self,fileName):
 
-        c = self.c ; nl = self.output_newline
+        c = self.c ; nl = g.u(self.output_newline)
         p = c.p
         if not p: return
         self.setEncoding()
@@ -374,14 +380,14 @@ class leoImportCommands (scanUtility):
             return
         for p in p.self_and_subtree():
             head = p.moreHead(firstLevel,useVerticalBar=True)
-            head = g.toEncodedString(head,self.encoding,reportErrors=True)
-            theFile.write(head + nl)
+            s = g.toEncodedString(head + nl,self.encoding,reportErrors=True)
+            theFile.write(s)
         theFile.close()
     #@-node:ekr.20031218072017.1462:exportHeadlines
     #@+node:ekr.20031218072017.1147:flattenOutline
     def flattenOutline (self,fileName):
 
-        c = self.c ; nl = self.output_newline
+        c = self.c ; nl = g.u(self.output_newline)
         p = c.currentVnode()
         if not p: return
         self.setEncoding()
@@ -399,12 +405,12 @@ class leoImportCommands (scanUtility):
 
         for p in p.self_and_subtree():
             head = p.moreHead(firstLevel)
-            head = g.toEncodedString(head,self.encoding,reportErrors=True)
-            theFile.write(head + nl)
+            s = g.toEncodedString(head + nl,encoding=self.encoding,reportErrors=True)
+            theFile.write(s)
             body = p.moreBody() # Inserts escapes.
             if len(body) > 0:
-                body = g.toEncodedString(body,self.encoding,reportErrors=True)
-                theFile.write(body + nl)
+                s = g.toEncodedString(body + nl,self.encoding,reportErrors=True)
+                theFile.write(s)
         theFile.close()
     #@-node:ekr.20031218072017.1147:flattenOutline
     #@+node:ekr.20031218072017.1148:outlineToWeb
@@ -467,7 +473,8 @@ class leoImportCommands (scanUtility):
             #@+node:ekr.20031218072017.3302:<< set delims from the header line >>
             # Skip any non @+leo lines.
             i = 0
-            while i < len(s) and not g.find_on_line(s,i,"@+leo"):
+            ### while i < len(s) and not g.find_on_line(s,i,"@+leo"):
+            while i < len(s) and g.find_on_line(s,i,"@+leo") == -1:
                 i = g.skip_line(s,i)
 
             # Get the comment delims from the @+leo sentinel line.
@@ -3243,6 +3250,7 @@ class elispScanner (baseScannerClass):
         '''Return True if s[i:] starts a function.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
 
+        self.startSigIndent = self.getLeadingIndent(s,i)
         self.sigStart = i
         self.codeEnd = self.sigEnd = self.sigId = None
         if not g.match(s,i,'('): return False

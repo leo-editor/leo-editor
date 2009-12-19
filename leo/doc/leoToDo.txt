@@ -1824,7 +1824,7 @@ def setAllAncestorAtFileNodesDirty (self):
 
     if trace and verbose:
         for v in nodes:
-            print v.isDirty(),v.isAnyAtFileNode(),v
+            print (v.isDirty(),v.isAnyAtFileNode(),v)
 
     dirtyVnodeList = [v for v in nodes
         if not v.isDirty() and v.isAnyAtFileNode()]
@@ -2044,7 +2044,10 @@ def put (self,s):
     # Improved code: self.outputFile (a cStringIO object) always exists.
     if s:
         self.putCount += 1
-        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+        if g.isPython3:
+            pass
+        else:
+            s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
         self.outputFile.write(s)
 
 def put_dquote (self):
@@ -2383,6 +2386,7 @@ self.language_delims_dict = {
     "fortran"       : "C",
     "fortran90"     : "!",
     "haskell"       : "--_ {-_ _-}",
+    "haxe"          : "//",
     "html"          : "<!-- -->",
     "ini"           : ";",
     "java"          : "// /* */",
@@ -2429,6 +2433,7 @@ self.language_extension_dict = {
     "fortran"       : "f",
     "fortran90"     : "f90",
     "haskell"       : "hs",
+    "haxe"          : "hx",
     "html"          : "html",
     "ini"           : "ini",
     "java"          : "java",
@@ -2519,6 +2524,7 @@ self.extra_extension_dict = {
     'cpp'   : 'c',
     'el'    : 'lisp',
     'f'     : 'fortran90',
+    'hx'    : 'none',
     'ksh'   : 'none', # Leo 4.5.1
     'nw'    : 'none', # noweb.
     'otl'   : 'none', # vimoutline.
@@ -5266,7 +5272,7 @@ for key,name in (
     ):
         d = k.masterBindingsDict.get(key,{})
         if trace: g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-        # g.trace(key,'keys',g.listToString(d.keys(),sort=True)) # [:5])
+        # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
         if d:
             b = d.get(stroke)
             if b:

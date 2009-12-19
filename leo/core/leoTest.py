@@ -18,26 +18,25 @@ import leo.core.leoGui as leoGui
 import leo.core.leoNodes as leoNodes
 
 import doctest
+import gc
 import glob
 import os
-
+import cProfile as profile
+# import pstats
 import sys
+import timeit
 import tokenize
 import unittest
+
+if g.isPython3:
+    import py_compile as compiler
+else:
+    import compiler
 
 try:
     import tabnanny # Does not exist in jython.
 except ImportError:
     tabnanny = None
-
-try:
-    import compiler
-    import gc
-    import profile
-    import pstats
-    import timeit
-except ImportError:
-    pass
 #@-node:ekr.20051104075904.1:<< leoTest imports >>
 #@nl
 
@@ -187,18 +186,10 @@ class generalTestCase(unittest.TestCase):
         # g.trace(type(script),script)
 
         # Execute the script. Let unit test handle any errors!
-
         if writeScriptFile:
             scriptFile = c.writeScriptFile(script)
-            execfile(scriptFile,d)
-        else:
-            exec(script,d)
 
-        # if 0: # debug
-            # import pdb
-            # pdb.run(script+'\n',d)
-        # else:
-            # exec script + '\n' in d
+        exec(script,d)
     #@-node:ekr.20051104075904.10:runTest
     #@+node:ekr.20051104075904.11:shortDescription
     def shortDescription (self):
@@ -224,7 +215,6 @@ def makeTestSuite (c,p):
 
     """Create a suite of test cases by executing the script in an @suite node."""
 
-    # import leo.core.leoGlobals as g
     p = p.copy()
 
     script = g.getScript(c,p).strip()
@@ -235,7 +225,7 @@ def makeTestSuite (c,p):
         if 0: #debugging
             n,lines = 0,g.splitLines(script)
             for line in lines:
-                print n,line,
+                print(n,line)
                 n += 1
         exec(script + '\n',{'c':c,'g':g,'p':p})
         suite = g.app.scriptDict.get("suite")
@@ -554,7 +544,7 @@ class testUtils:
 
         if False and breakOnError: # useful for debugging.
             aList = [repr(z.copy()) for z in c.p.parent().self_and_siblings()]
-            print '\n'.join(aList)
+            print('\n'.join(aList))
             g.pdb()
 
         return c.nullPosition()
@@ -979,6 +969,7 @@ def createUnitTestsFromDoctests (modules,verbose=True):
                 if verbose:
                     g.pr("found %2d doctests for %s" % (n,module.__name__))
         except ValueError:
+            g.pr('no doctests in %s' % module.__name__)
             pass # No tests found.
 
     return g.choose(created,suite,None)
@@ -1692,6 +1683,7 @@ def throwAssertionError():
 #@-node:ekr.20051104075904.43:Specific to particular unit tests...
 #@+node:ekr.20051104075904.96:Test of doctest
 #@+node:ekr.20051104075904.97:factorial
+# Some of these will fail now for Python 2.x.
 def factorial(n):
     """Return the factorial of n, an exact integer >= 0.
 
@@ -1700,12 +1692,8 @@ def factorial(n):
 
     >>> [factorial(n) for n in range(6)]
     [1, 1, 2, 6, 24, 120]
-    >>> [factorial(long(n)) for n in range(6)]
-    [1, 1, 2, 6, 24, 120]
     >>> factorial(30)
-    265252859812191058636308480000000L
-    >>> factorial(30L)
-    265252859812191058636308480000000L
+    265252859812191058636308480000000
     >>> factorial(-1)
     Traceback (most recent call last):
         ...
@@ -1717,7 +1705,7 @@ def factorial(n):
         ...
     ValueError: n must be exact integer
     >>> factorial(30.0)
-    265252859812191058636308480000000L
+    265252859812191058636308480000000
 
     It must also not be ridiculously large:
     >>> factorial(1e100)
@@ -1799,6 +1787,7 @@ def importAllModulesInPath (path,exclude=[]):
         if module:
             modules.append(module)
 
+    # g.trace(modules)
     return modules
 #@nonl
 #@-node:ekr.20051104075904.102:importAllModulesInPath
@@ -1825,11 +1814,20 @@ def safeImportModule (fileName):
             g.unitTesting = False # Disable @test nodes!
             g.app.unitTesting = False
             try:
-                return __import__(moduleName)
+                # for base in ('leo.core','leo.plugins','leo.external',):
+                    # fullName = '%s.%s' % (base,moduleName)
+                    # m = __import__(fullName) # 'leo.core.%s' % moduleName)
+                    # if m is not None:
+                        # return sys.modules.get(fullName)
+                fullName = 'leo.core.%s' % (moduleName)
+                __import__(fullName)
+                return sys.modules.get(fullName)
             finally:
                 g.unitTesting = oldUnitTesting
                 g.app.unitTesting = oldUnitTesting
-        except Exception: # leoScriptModule.py, for example, can throw other exceptions.
+        except Exception:
+            # g.trace('can not import',moduleName,fileName)
+            # leoScriptModule.py, for example, can throw other exceptions.
             return None
     else:
         g.pr("Not a .py file:",fileName)

@@ -24,9 +24,20 @@ import leo.core.leoTest as leoTest
 import leo.core.leoCommands as commands
 
 import os
-import HTMLParser
+
+# try:
+    # import HTMLParser
+# except ImportError:
+    # import html.parser
+
 import pprint
-import StringIO
+
+try:
+    import StringIO
+except ImportError:
+    import io
+    StringIO = io.StringIO
+
 import sys
 
 try:
@@ -314,7 +325,8 @@ class rstCommands:
     def dumpSettings (self):
 
         d = self.optionsDict
-        keys = d.keys() ; keys.sort()
+        # keys = list(d.keys()) ; keys.sort()
+        keys = sorted(d)
 
         g.pr('present settings...')
         for key in keys:
@@ -520,7 +532,7 @@ class rstCommands:
         if data:
             name,val = data
             fullName = 'rst3_' + self.munge(name)
-            if fullName in self.defaultOptionsDict.keys():
+            if fullName in list(self.defaultOptionsDict.keys()):
                 if   val.lower() == 'true': val = True
                 elif val.lower() == 'false': val = False
                 # g.trace('%24s %8s %s' % (self.munge(name),val,p.h))
@@ -583,7 +595,8 @@ class rstCommands:
     def initOptionsFromSettings (self):
 
         c = self.c ; d = self.defaultOptionsDict
-        keys = d.keys() ; keys.sort()
+        # keys = list(d.keys()) ; keys.sort()
+        keys = sorted(d)
 
         for key in keys:
             for getter,kind in (
@@ -626,7 +639,7 @@ class rstCommands:
 
         # bwm = False
         # if bwm:
-            # if not self.optionsDict.has_key(ivar):
+            # if ivar not in self.optionsDict:
                 # g.trace('init %24s %20s %s %s' % (ivar, val, tag, self))
             # elif self.optionsDict.get(ivar) != val:
                 # g.trace('set  %24s %20s %s %s' % (ivar, val, tag, self))
@@ -938,7 +951,7 @@ class rstCommands:
                     parser_name='restructuredtext',
                     writer_name=writer,
                     settings_overrides=overrides)
-        except docutils.ApplicationError, error:
+        except docutils.ApplicationError as error:
             # g.es_print('Docutils error (%s):' % (
                 # error.__class__.__name__),color='red')
             g.es_print('Docutils error:',color='red')
@@ -953,9 +966,7 @@ class rstCommands:
         '''Parse the publish_argv_for_missing_stylesheets option,
         returning a dict containing the parsed args.'''
 
-        trace = False and not g.unitTesting
         force = False
-
         if force:
             # See http://docutils.sourceforge.net/docs/user/config.html#documentclass
             return {'documentclass':'report', 'documentoptions':'english,12pt,lettersize'}
@@ -970,44 +981,44 @@ class rstCommands:
         while s:
             s = s.strip()
             if not s.startswith('--'): break
-            s = s[2:] ; i = s.find('=')
-            if i == -1: break
-            key = s[:i] ; s = s[i+1:] ; i = s.find('--')
-            if i == -1:
-                val = s ; s = ''
-            else:
-                val = s[:i] ; s = s[i:]
-            # g.trace('s',repr(s))
-            if val.endswith(','): val = val[:-1]
-            if val.startswith('[') and val.endswith(']'): val = val[1:-1]
-            val = val.strip()
-            if not val: val = '1'
+            s = s[2:].strip()
+            eq = s.find('=')
+            cm = s.find(',')
+            if eq == -1 or (-1 < cm < eq): # key[nl] or key,
+                val = ''
+                cm = s.find(',')
+                if cm == -1:
+                    key = s.strip()
+                    s = ''
+                else:
+                    key = s[:cm].strip()
+                    s = s[cm+1:].strip()
+            else: # key = val
+                key = s[:eq].strip()
+                s = s[eq+1:].strip()
+                if s.startswith('['): # [...]
+                    rb = s.find(']')
+                    if rb == -1: break # Bad argument.
+                    val = s[:rb+1]
+                    s = s[rb+1:].strip()
+                    if s.startswith(','):
+                        s = s[1:].strip()
+                else: # val[nl] or val,
+                    cm = s.find(',')
+                    if cm == -1:
+                        val = s
+                        s = ''
+                    else:
+                        val = s[:cm].strip()
+                        s = s[cm+1:].strip()
+
+            # g.trace('key',repr(key),'val',repr(val),'s',repr(s))
+            if not key: break
+            if not val.strip(): val = '1'
             d[str(key)] = str(val)
 
-        if trace: g.trace(d)
         return d
-
-        # if args.find(',') == -1:
-            # args = [args]
-        # else:
-            # args = args.split(',')
-
-        # for arg in args:
-            # data = arg.split('=')
-            # if len(data) == 1:
-                # key = data[0]
-                # d[str(key)] = "1" # New in Leo 4.7: empty arg defaults to "1".
-            # elif len(data) == 2:
-                # key,value = data
-                # value = value.strip()
-                # if value.startswith('[') and value.endswith(']'):
-                    # value = value[1:-1]
-                # d[str(key)] = str(value)
-            # else:
-                # g.es_print('bad option: %s' % s,color='red')
-                # break
-
-        # return d
+    #@nonl
     #@-node:ekr.20090502071837.66:handleMissingStyleSheetArgs
     #@-node:ekr.20090502071837.65:writeToDocutils (sets argv) & helper
     #@+node:ekr.20090502071837.67:writeNodeToString (New in 4.4.1)
@@ -1651,27 +1662,6 @@ class rstCommands:
         f.close()
     #@nonl
     #@-node:ekr.20090502071837.98:set_initial_http_attributes
-    #@+node:ekr.20090502071837.99:find_anchors
-    def find_anchors (self, p):
-
-        '''Find the anchors in all the nodes.'''
-
-        for p1, attrs in self.http_attribute_iter(p):
-            html = mod_http.reconstruct_html_from_attrs(attrs)
-            # g.trace(pprint.pprint(html))
-            parser = anchor_htmlParserClass(self, p1)
-            for line in html:
-                try:
-                    parser.feed(line)
-                # bwm: changed to unicode(line)
-                except:
-                    line = ''.join([ch for ch in line if ord(ch) <= 127])
-                    # filter out non-ascii characters.
-                    # bwm: not quite sure what's going on here.
-                    parser.feed(line)        
-        # g.trace(g.dictToString(self.anchor_map,tag='anchor_map'))
-    #@nonl
-    #@-node:ekr.20090502071837.99:find_anchors
     #@+node:ekr.20090502071837.100:relocate_references
     #@+at 
     #@nonl
@@ -1716,20 +1706,44 @@ class rstCommands:
                 marker_parts = href.split("#")
                 if len(marker_parts) == 2:
                     marker = marker_parts [1]
-                    replacement = u"%s#%s" % (http_node_ref,marker)
+                    # replacement = u"%s#%s" % (http_node_ref,marker)
+                    replacement = '%s#%s' % (http_node_ref,marker)
                     try:
-                        attr [line + 2] = attr [line + 2].replace(u'href="%s"' % href, u'href="%s"' % replacement)
+                        # attr [line + 2] = attr [line + 2].replace(u'href="%s"' % href, u'href="%s"' % replacement)
+                        attr [line + 2] = attr [line + 2].replace('href="%s"' % href, 'href="%s"' % replacement)
                     except:
                         g.es("Skipped ", attr[line + 2])
                 else:
                     filename = marker_parts [0]
                     try:
-                        attr [line + 2] = attr [line + 2].replace(u'href="%s"' % href,u'href="%s"' % http_node_ref)
+                        # attr [line + 2] = attr [line + 2].replace(u'href="%s"' % href,u'href="%s"' % http_node_ref)
+                        attr [line + 2] = attr [line + 2].replace('href="%s"' % href,'href="%s"' % http_node_ref)
                     except:
                         g.es("Skipped", attr[line+2])
         # g.trace('after %s\n\n\n',attr)
     #@nonl
     #@-node:ekr.20090502071837.100:relocate_references
+    #@+node:ekr.20090502071837.99:find_anchors
+    def find_anchors (self, p):
+
+        '''Find the anchors in all the nodes.'''
+
+        for p1, attrs in self.http_attribute_iter(p):
+            html = mod_http.reconstruct_html_from_attrs(attrs)
+            # g.trace(pprint.pprint(html))
+            parser = anchor_htmlParserClass(self, p1)
+            for line in html:
+                try:
+                    parser.feed(line)
+                # bwm: changed to unicode(line)
+                except:
+                    line = ''.join([ch for ch in line if ord(ch) <= 127])
+                    # filter out non-ascii characters.
+                    # bwm: not quite sure what's going on here.
+                    parser.feed(line)        
+        # g.trace(g.dictToString(self.anchor_map,tag='anchor_map'))
+    #@nonl
+    #@-node:ekr.20090502071837.99:find_anchors
     #@+node:ekr.20090502071837.101:http_attribute_iter
     def http_attribute_iter (self, p):
         """

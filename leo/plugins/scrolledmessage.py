@@ -539,7 +539,7 @@ class ScrolledMessageDialog(object):
     def updateDialog(self, kw):
 
         # update ivars
-        for k in kw.keys():
+        for k in list(kw.keys()):
             setattr(self, k, kw[k])
 
         if not isinstance(self.msg, basestring):
@@ -562,7 +562,7 @@ class ScrolledMessageDialog(object):
         # update the ui check box controls
         ff = self.controlFlags 
 
-        for flag in ff.keys():
+        for flag in list(ff.keys()):
             if flag in flags:
                 ff[flag] = True
             else:
