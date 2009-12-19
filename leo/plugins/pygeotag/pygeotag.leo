@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="0" left="0" height="836" width="1332"/>
+	<global_window_position top="0" left="0" height="919" width="1214"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -17,6 +17,6 @@ expanded="tbrown.20091110094118.1581,"><vh>@shadow pygeotag.py</vh></v>
 <v t="tbrown.20091109110830.7417" tnodeList="tbrown.20091109110830.7417"><vh>@edit template.html</vh></v>
 </vnodes>
 <tnodes>
-<t tx="tbrown.20091109110830.7415" str_leo_pos="1,1,9"></t>
+<t tx="tbrown.20091109110830.7415" str_leo_pos="3,3"></t>
 </tnodes>
 </leo_file>
