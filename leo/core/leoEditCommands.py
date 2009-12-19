@@ -895,7 +895,7 @@ class bufferCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20051215164823:findBuffer
     def findBuffer (self,name):
 
-        v = self.tnodes.get(name) ###
+        v = self.tnodes.get(name)
 
         for p in self.c.all_unique_positions():
             if p.v == v:

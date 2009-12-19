@@ -73,7 +73,7 @@ import types
 #@-node:ekr.20050208101229:<< imports >>
 #@nl
 
-print('*** isPython3',isPython3)
+print('*** isPython3: %s' % isPython3)
 #@<< define general constants >>
 #@+node:ekr.20031218072017.3094:<< define general constants >>
 body_newline = '\n'
@@ -300,8 +300,6 @@ def computeLoadDir():
     except:
         g.pr("Exception getting load directory")
         raise
-        #import traceback ; traceback.print_exc()
-        #return None
 #@-node:ekr.20031218072017.1937:computeLoadDir
 #@+node:dan.20080410121257.1:computeMachineName
 def computeMachineName():
@@ -2240,9 +2238,7 @@ def trace (*args,**keys):
             result.append(arg)
     s = ''.join(result)
 
-    # Not valid syntax in Python 3.x.
-    # print s,
-    # if newline: print
+    # 'print s,' is not valid syntax in Python 3.x.
     g.pr(s,newline=newline)
 #@-node:ekr.20031218072017.2317:g.trace (revised)
 #@+node:ekr.20031218072017.2318:trace_tag
@@ -2497,6 +2493,7 @@ def create_temp_file (textMode=False):
     theFile: a file object open for writing.
     theFileName: the name of the temporary file.'''
 
+    ### To do: simplify this code.
     # mktemp is deprecated, but we can't get rid of it
     # because mkstemp does not exist in Python 2.2.1.
     try:
@@ -2747,7 +2744,7 @@ def openLeoOrZipFile (fileName):
         if isZipped:
             theFile = zipfile.ZipFile(fileName,'r')
             if not theFile: return None,False
-            # New in Leo 4.6 b2: read the file into an StringIO file.
+            # Read the file into an StringIO file.
             aList = theFile.namelist()
             name = aList and len(aList) == 1 and aList[0]
             if not name: return None,False
@@ -2755,8 +2752,6 @@ def openLeoOrZipFile (fileName):
             theStringFile =  StringIO(g.u(s))
             return theStringFile,True
         else:
-            # mode = g.choose(g.isPython3,'r','rb')
-            # 9/19/08: always use binary mode??
             mode = 'rb'
             theFile = open(fileName,mode)
         return theFile,isZipped
@@ -4755,8 +4750,6 @@ def find_on_line(s,i,pattern):
     if j == -1: j = len(s)
     k = s.find(pattern,i,j)
     return k
-    # if k > -1: return k
-    # else: return None
 #@-node:ekr.20031218072017.3176:find_on_line
 #@+node:ekr.20031218072017.3177:is_c_id
 def is_c_id(ch):
@@ -5131,8 +5124,7 @@ def executeFile(filename, options= ''):
     else:
         if fdir: os.chdir(fdir)
         d = {'__name__': '__main__'}
-        ### execfile(fname, d)
-        ### exec(compile(open(fname).read(),fname, 'exec'),d)
+        # execfile(fname, d)
         os.system('%s %s' % (sys.executable, fname))
         if fdir: os.chdir(cwd)
 #@-node:ekr.20050503112513.7:g.executeFile
@@ -5347,10 +5339,6 @@ if g.unitTesting:
     c,p = g.getTestVars()
     at = c.atFileCommands
     at.errors = 0
-
-    # s = u'La Pe\xf1a'
-    # s = u'La Peña'
-    # s = u'Ă: U+0102: Latin Capital Letter A With Breve'
     s = 'La Peña'
     at.printError('test of at.printError:',s)
 #@-node:ekr.20090517020744.5862:@test atFile.printError
@@ -5562,7 +5550,7 @@ def isValidEncoding (encoding):
 #@+node:ekr.20031218072017.1501:reportBadChars & test
 def reportBadChars (s,encoding):
 
-    if g.isPython3:  ### To do
+    if g.isPython3:
         errors = 0
         if g.isUnicode(s):
             for ch in s:
@@ -5716,26 +5704,6 @@ def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
             s = f(s,encoding,'replace')
             ok = False
     return s,ok
-
-    # if isPython3:
-        # if s is None:
-            # s = ''
-        # if g.isString(s):
-            # s = repr(s)
-        # else:
-            # pass # Leave s unchanged.
-    # else:
-        # if s is None:
-            # s = unicode('')
-        # if type(s) != types.UnicodeType:
-            # try:
-                # s = unicode(s,encoding,"strict")
-            # except UnicodeError:
-                # if reportErrors:
-                    # g.reportBadChars(s,encoding)
-                # s = unicode(s,encoding,"replace")
-                # ok = False
-    # return s,ok
 #@-node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
 #@-node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
 #@-node:ekr.20031218072017.1498:Unicode utils...
@@ -6147,20 +6115,7 @@ bunch = Bunch
 # From the Python cookbook, recipe 5.23
 
 # This is now defined at the start of this file.
-
-    # class nullObject:
-
-        # """An object that does nothing, and does it very well."""
-
-        # def __init__   (self,*args,**keys): pass
-        # def __call__   (self,*args,**keys): return self
-        # # def __len__    (self): return 0
-        # def __repr__   (self): return "nullObject"
-        # def __nonzero__ (self): return 0
-
-        # def __delattr__(self,attr):     return self
-        # def __getattr__(self,attr):     return self
-        # def __setattr__(self,attr,val): return self
+#@nonl
 #@-node:ekr.20031219074948.1:class nullObject
 #@+node:ekr.20031218072017.3103:g.computeWindowTitle
 def computeWindowTitle (fileName):
@@ -6383,18 +6338,13 @@ def makeDict(**keys):
 def prettyPrintType (obj):
 
     if g.isPython3:
-        if type(obj) in (
-            types.MethodType,
-            # types.UnboundMethodType,
-            types.BuiltinMethodType):
+        if type(obj) in (types.MethodType,types.BuiltinMethodType):
             return 'method'
         elif type(obj) in (types.BuiltinFunctionType,types.FunctionType):
             return 'function'
         elif type(obj) == types.ModuleType:
             return 'module'
-        # elif type(obj) == types.InstanceType:
-            # return 'object'
-        elif g.isString(obj): # type(obj) in (types.UnicodeType,types.StringType):
+        elif g.isString(obj):
             return 'string'
         else:
             theType = str(type(obj))

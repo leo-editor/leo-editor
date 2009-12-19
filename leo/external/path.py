@@ -67,13 +67,6 @@ else:
     except NameError:
         basestring = (str, unicode)
 
-# _base = str
-# try:
-    # if os.path.supports_unicode_filenames:
-        # _base = unicode
-# except AttributeError:
-    # pass
-
 # Universal newline support
 _textmode = 'r'
 if not isPython3:
@@ -563,13 +556,6 @@ class path(_base):
                 replace(f('\x85'), f('\n')).
                 replace(f('\u2028'), f('\n'))
             )
-
-            # return (t.replace(u'\r\n', u'\n')
-                     # .replace(u'\r\x85', u'\n')
-                     # .replace(u'\r', u'\n')
-                     # .replace(u'\x85', u'\n')
-                     # .replace(u'\u2028', u'\n'))
-
     #@-node:ekr.20091204132801.2724:text
     #@+node:ekr.20091204132801.2725:write_text
     def write_text(self, text, encoding=None, errors='strict', linesep=os.linesep, append=False):
@@ -647,12 +633,6 @@ class path(_base):
                     replace(f('\x85'), f('\n')).
                     replace(f('\u2028'), f('\n'))
                 )
-                # text = (text.replace(u'\r\n', u'\n')
-                            # .replace(u'\r\x85', u'\n')
-                            # .replace(u'\r', u'\n')
-                            # .replace(u'\x85', u'\n')
-                            # .replace(u'\u2028', u'\n'))
-                # text = text.replace(u'\n', linesep)
                 text = text.replace(f('\n'),linesep)
             if encoding is None:
                 encoding = sys.getdefaultencoding()

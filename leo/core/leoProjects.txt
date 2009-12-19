@@ -1945,10 +1945,6 @@ def moveToVisNext (self,c):
             p.moveToNext()
         else:
             p.moveToThreadNext()
-        # if p.hasNext() and (not p.hasChildren() or not p.isExpanded()):
-            # p.moveToNext()
-        # else:
-            # p.moveToThreadNext()
         if trace: g.trace('2',p.h)
         if p:
             done,val = self.checkVisNextLimit(limit,p)
@@ -1956,7 +1952,6 @@ def moveToVisNext (self,c):
             if p.isVisible(c):
                 return p.copy()
     else:
-        # assert not p.
         return p
 #@+node:ekr.20090715145956.6167:checkVisNextLimit
 def checkVisNextLimit (self,limit,p):
@@ -2589,15 +2584,9 @@ def executeScript(self,event=None,args=None,p=None,script=None,
                 # (This can happen when there are multiple event loops.)
                 # This does not prevent zombie windows if the script puts up a dialog...
                 c.inCommand = False
-                # g.trace('**** before',writeScriptFile)
                 if writeScriptFile:
                     scriptFile = self.writeScriptFile(script)
-                    ### execfile(scriptFile,d)
-                    exec(script,d)
-                    ### exec(compile(open(scriptFile).read(),scriptFile,'exec'),d)
-                else:
-                    exec(script,d)
-                # g.trace('**** after')
+                exec(script,d)
                 if 0: # This message switches panes, and can be disruptive.
                     if not script1 and not silent:
                         # Careful: the script may have changed the log tab.
@@ -4125,8 +4114,6 @@ def find_on_line(s,i,pattern):
     if j == -1: j = len(s)
     k = s.find(pattern,i,j)
     return k
-    # if k > -1: return k
-    # else: return None
 #@-node:ekr.20031218072017.3176:find_on_line
 #@+node:ekr.20031218072017.3231:scanWebFile (handles limbo)
 def scanWebFile (self,fileName,parent):
@@ -4474,26 +4461,6 @@ def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
             s = f(s,encoding,'replace')
             ok = False
     return s,ok
-
-    # if isPython3:
-        # if s is None:
-            # s = ''
-        # if g.isString(s):
-            # s = repr(s)
-        # else:
-            # pass # Leave s unchanged.
-    # else:
-        # if s is None:
-            # s = unicode('')
-        # if type(s) != types.UnicodeType:
-            # try:
-                # s = unicode(s,encoding,"strict")
-            # except UnicodeError:
-                # if reportErrors:
-                    # g.reportBadChars(s,encoding)
-                # s = unicode(s,encoding,"replace")
-                # ok = False
-    # return s,ok
 #@-node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
 #@-node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
 #@-node:ekr.20091206224118.6260:unicode failures
@@ -5385,18 +5352,13 @@ if g.unitTesting:
 def prettyPrintType (obj):
 
     if g.isPython3:
-        if type(obj) in (
-            types.MethodType,
-            # types.UnboundMethodType,
-            types.BuiltinMethodType):
+        if type(obj) in (types.MethodType,types.BuiltinMethodType):
             return 'method'
         elif type(obj) in (types.BuiltinFunctionType,types.FunctionType):
             return 'function'
         elif type(obj) == types.ModuleType:
             return 'module'
-        # elif type(obj) == types.InstanceType:
-            # return 'object'
-        elif g.isString(obj): # type(obj) in (types.UnicodeType,types.StringType):
+        elif g.isString(obj):
             return 'string'
         else:
             theType = str(type(obj))

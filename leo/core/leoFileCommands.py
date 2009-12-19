@@ -798,7 +798,6 @@ class baseFileCommands:
 
             self.setPositionsFromVnodes()
             c.selectVnode(c.p) # load body pane
-            # self.initAllParents()
             if c.config.getBool('check_outline_after_read'):
                 c.checkOutline(event=None,verbose=True,unittest=False,full=True)
         finally:
@@ -1892,13 +1891,11 @@ class baseFileCommands:
     #@+node:ekr.20031218072017.1577:putTnode
     def putTnode (self,v):
 
-        # New in Leo 4.4.2 b2: call put just once.
+        # Call put just once.
         gnx = g.app.nodeIndices.toString(v.fileIndex)
         ua = hasattr(v,'unknownAttributes') and self.putUnknownAttributes(v) or ''
         b = v.b
         if b:
-            # Convert to encoded string ????
-            # b = g.toEncodedString(b,self.leo_file_encoding,reportErrors=True)
             body = xml.sax.saxutils.escape(b)
         else:
             body = ''
@@ -2045,7 +2042,6 @@ class baseFileCommands:
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
             # We put the entire tree when using the clipboard, so no need for this.
             if not isAuto: # Bug fix: 2008/8/7.
-                ### attrs.append(self.putDescendentTnodeUas(p))
                 attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
                 attrs.append(self.putDescendentAttributes(p))
         #@nonl

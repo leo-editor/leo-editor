@@ -2490,10 +2490,6 @@ class position (object):
                 p.moveToNext()
             else:
                 p.moveToThreadNext()
-            # if p.hasNext() and (not p.hasChildren() or not p.isExpanded()):
-                # p.moveToNext()
-            # else:
-                # p.moveToThreadNext()
             if trace: g.trace('2',p.h)
             if p:
                 done,val = self.checkVisNextLimit(limit,p)
@@ -2501,7 +2497,6 @@ class position (object):
                 if p.isVisible(c):
                     return p.copy()
         else:
-            # assert not p.
             return p
     #@+node:ekr.20090715145956.6167:checkVisNextLimit
     def checkVisNextLimit (self,limit,p):

@@ -3080,15 +3080,6 @@ class colorizer:
         '''Remove all references to previous images.
         In Tk, this will cause all images to disappear.'''
 
-        # for photo,image,line_index,i in self.image_references:
-                # s = self.allBodyText
-                # w = c.frame.body.bodyCtrl
-                # index = g.convertRowColToPythonIndex(s,line_index,i)
-                # w.delete(index)
-                # self.allBodyText = w.getAllText()
-            # except:
-                # pass # The image may have been deleted earlier.
-
         self.image_references = []
     #@-node:ekr.20031218072017.1944:removeAllImages (leoColor)
     #@+node:ekr.20080828103146.8:scanColorDirectives (leoColor)
@@ -3214,12 +3205,6 @@ class colorizer:
         return w.rowColToGuiIndex(s,self.line_index-1,i)
 
     def tag (self,name,i,j):
-
-        # if False and not g.unitTesting:
-            # x = g.convertRowColToPythonIndex(
-                # self.allBodyText,self.line_index-1,0)
-            # g.trace('%3s %3s %3s %12s %s' % (
-                # x,i,j,name,repr(self.allBodyText[x+i:x+j])))
 
         self.c.frame.body.tag_add(name,self.index(i),self.index(j))
     #@-node:ekr.20031218072017.1609:index & tag (leoColor)

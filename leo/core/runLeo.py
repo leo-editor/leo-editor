@@ -171,14 +171,6 @@ def adjustSysPath ():
 
     2  Plugins now do fully qualified imports.
     '''
-
-    # leoDirs = ('config','doc','extensions','modes','plugins','core','test')
-
-    # for theDir in leoDirs:
-        # path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
-        # if path not in sys.path:
-            # sys.path.append(path)
-#@nonl
 #@-node:ekr.20070306085724:adjustSysPath
 #@+node:ekr.20071117060958:getFileName & helper
 def getFileName (fileName,script):

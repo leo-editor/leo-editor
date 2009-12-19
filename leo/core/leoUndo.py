@@ -461,7 +461,6 @@ class undoer:
         u = self ; topLevel = (treeInfo == None)
         if topLevel: treeInfo = []
 
-        ### What is the status of this in the one-node world?
         # Add info for p.v.  Duplicate tnode info is harmless.
         data = (p.v,u.createVnodeUndoInfo(p.v),u.createTnodeUndoInfo(p.v))
         treeInfo.append(data)
@@ -835,8 +834,6 @@ class undoer:
         bunch.newDirty = p.isDirty()
         bunch.newMarked = p.isMarked()
 
-        # bunch.newBack   = p.back()
-        # bunch.newParent = p.parent()
         bunch.newN = p.childIndex()
         bunch.newParent_v = p._parentVnode()
         bunch.newP = p.copy()
@@ -996,8 +993,6 @@ class undoer:
 
         bunch = u.createCommonBunch(p)
 
-        # bunch.oldBack = p.back()
-        # bunch.oldParent = p.parent()
         bunch.oldN = p.childIndex()
         bunch.oldParent_v = p._parentVnode()
 

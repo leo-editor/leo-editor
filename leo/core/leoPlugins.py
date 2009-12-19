@@ -302,7 +302,7 @@ def getHandlersForTag(tags):
 
     import types
 
-    if type(tags) in (type((),),type([])): ### types.TupleType,types.ListType):
+    if type(tags) in (type((),),type([])):
         result = []
         for tag in tags:
             aList = getHandlersForOneTag(tag) 
@@ -569,7 +569,7 @@ def registerExclusiveHandler(tags, fn):
 
     import types
 
-    if type(tags) in (type((),),type([])): ### types.TupleType,types.ListType):
+    if type(tags) in (type((),),type([])):
         for tag in tags:
             registerOneExclusiveHandler(tag,fn)
     else:
@@ -604,7 +604,7 @@ def registerHandler(tags,fn):
 
     import types
 
-    if type(tags) in (type((),),type([])): ### types.TupleType,types.ListType):
+    if type(tags) in (type((),),type([])):
         for tag in tags:
             registerOneHandler(tag,fn)
     else:
@@ -657,7 +657,7 @@ def unregisterHandler(tags,fn):
 
     import types
 
-    if type(tags) in (type((),),type([])): ### types.TupleType,types.ListType):
+    if type(tags) in (type((),),type([])):
         for tag in tags:
             unregisterOneHandler(tag,fn)
     else:
@@ -720,8 +720,7 @@ class CommandChainDispatcher:
             try:
                 ret = cmd(*args, **kw)
                 return ret
-            ### except TryNext, exc:
-            except TryNext as exc:
+            except TryNext(exc):
                 if exc.args or exc.kwargs:
                     args = exc.args
                     kw = exc.kwargs

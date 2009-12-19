@@ -2048,15 +2048,9 @@ class baseCommands (object):
                     # (This can happen when there are multiple event loops.)
                     # This does not prevent zombie windows if the script puts up a dialog...
                     c.inCommand = False
-                    # g.trace('**** before',writeScriptFile)
                     if writeScriptFile:
                         scriptFile = self.writeScriptFile(script)
-                        ### execfile(scriptFile,d)
-                        exec(script,d)
-                        ### exec(compile(open(scriptFile).read(),scriptFile,'exec'),d)
-                    else:
-                        exec(script,d)
-                    # g.trace('**** after')
+                    exec(script,d)
                     if 0: # This message switches panes, and can be disruptive.
                         if not script1 and not silent:
                             # Careful: the script may have changed the log tab.
@@ -2218,16 +2212,10 @@ class baseCommands (object):
 
         c = self
 
-        # if scriptFind:
-            # p,found = c.scanForVnodeName(root,vnodeName
-
         if gnx:
             p,found = c.goto_findGnx(root,gnx,vnodeName)
         else:
             p,found = c.goto_scanTnodeList(root,delim,lines,n,vnodeName)
-
-        # if not found:
-            # g.es("not found:",vnodeName,color="red")
 
         return p,found
     #@+node:ekr.20080904071003.18:goto_findGnx
@@ -6481,8 +6469,6 @@ class baseCommands (object):
                 g.choose(c.incrementalRecolorFlag,'','full ')))
             # This should be the only call to c.recolor_now.
             c.recolor_now(incremental=c.incrementalRecolorFlag)
-            # c.frame.body.colorizer.colorize(c.p,
-                # incremental=c.incrementalRecolorFlag,interruptable=True)
 
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget

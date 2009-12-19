@@ -473,7 +473,6 @@ class leoImportCommands (scanUtility):
             #@+node:ekr.20031218072017.3302:<< set delims from the header line >>
             # Skip any non @+leo lines.
             i = 0
-            ### while i < len(s) and not g.find_on_line(s,i,"@+leo"):
             while i < len(s) and g.find_on_line(s,i,"@+leo") == -1:
                 i = g.skip_line(s,i)
 
@@ -1639,17 +1638,6 @@ class leoImportCommands (scanUtility):
 
         scanner = phpScanner(importCommands=self,atAuto=atAuto)
         scanner.run(s,parent)
-
-        # if scanner.isPurePHP(s):
-            # scanner.run(s,parent)
-        # else:
-            # fileName = scanner.fileName
-            # if atAuto:
-                # g.pr('seems to be mixed HTML and PHP:',fileName)
-            # else:
-                # g.es_print('seems to be mixed HTML and PHP:',fileName)
-            # scanner.createHeadline(
-                # parent,body=s,headline=fileName)
     #@-node:ekr.20070711090122:scanPHPText
     #@+node:ekr.20070703122141.99:scanPythonText
     def scanPythonText (self,s,parent,atAuto=False):
@@ -2423,12 +2411,6 @@ class baseScannerClass (scanUtility):
 
         if self.isRst:
             return s # Never unindent rst code.
-
-        # Copy an @code line as is.
-        # i = 0
-        # if g.match(s,i,'@code'):
-            # j = i ; i = g.skip_line(s,i) # don't use get_line: it is only for dumping.
-            # result += s[j:i]
 
         # Calculate the amount to be removed from each line.
         undentVal = self.getLeadingIndent(s,0,ignoreComments=ignoreComments)
@@ -3360,7 +3342,7 @@ class javaScriptScanner (baseScannerClass):
                 n += 1
                 j -= 1
             return (n % 2) == 0
-        elif g.match(s,i,'//'): ##  or g.match(s,i,'/\\'):
+        elif g.match(s,i,'//'):
             # Neither of these are valid in regexp literals.
             return False
         elif g.match(s,i,'/'):
@@ -4013,7 +3995,7 @@ class rstScanner (baseScannerClass):
         self.sectionLevel = self.computeSectionLevel(ch,kind)
         self.sigStart = g.find_line_start(s,i)
         self.sigEnd = next
-        self.sigId = name ##.strip()
+        self.sigId = name
         i = next + 1
 
         if trace: g.trace('sigId',self.sigId,'next',next)

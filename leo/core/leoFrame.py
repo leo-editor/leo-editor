@@ -1444,8 +1444,6 @@ class leoBody:
     def seeInsertPoint (self):              self.bodyCtrl.seeInsertPoint()
     def selectAllText (self,event=None): # This is a command.
         return self.bodyCtrl.selectAllText()
-        # w = g.app.gui.eventWidget(event) or self.bodyCtrl
-        # return w.selectAllText()
     def setInsertPoint (self,pos):          return self.bodyCtrl.setInsertPoint(pos) # was getInsertPoint.
     def setFocus(self):                     return self.bodyCtrl.setFocus()
     def setSelectionRange (self,sel):       i,j = sel ; self.bodyCtrl.setSelectionRange(i,j)
@@ -1697,10 +1695,6 @@ class leoFrame:
     def scanForTabWidth (self,p):
 
         c = self.c ; w = c.tab_width
-
-        # aList = g.get_directives_dict_list(p)
-        # w = g.scanAtTabwidthDirectives(aList)
-
         w = g.findTabWidthDirectives(c,p)
         if w is None: w = c.tab_width
         c.frame.setTabWidth(w)

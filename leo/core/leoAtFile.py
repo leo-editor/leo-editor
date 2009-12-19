@@ -922,7 +922,6 @@ class atFile:
             copies = n - clonedSibs
             if trace: g.trace(copies,headline)
         else:
-            ### if indices.areEqual(gnx,lastIndex):
             if gnx == lastIndex:
                 last.setVisited() # Supress warning/deletion of unvisited nodes.
                 if trace:g.trace('found last',last)
@@ -4580,7 +4579,7 @@ class atFile:
         # Replace
         try:
             f = open(fn,'wb')
-            s = g.toEncodedString(s,encoding=self.encoding) ###
+            s = g.toEncodedString(s,encoding=self.encoding)
             f.write(s)
             f.close()
             if not testing:

@@ -580,13 +580,6 @@ class chapterController:
             h = p.h
             if h == s:
                 return p
-            # elif h.startswith('@chapter '):
-                # body = p.b
-                # if body:
-                    # lines = g.splitLines(body)
-                    # line = lines[0].strip()
-                    # if line == chapterName:
-                        # return p
 
         if giveError:
             cc.error('*** findChapterNode: no @chapter node for: %s' % (chapterName))

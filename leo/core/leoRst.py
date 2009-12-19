@@ -24,12 +24,6 @@ import leo.core.leoTest as leoTest
 import leo.core.leoCommands as commands
 
 import os
-
-# try:
-    # import HTMLParser
-# except ImportError:
-    # import html.parser
-
 import pprint
 
 try:

@@ -344,16 +344,10 @@ def goto_findPosition(self,root,lines,vnodeName,gnx,n,delim):
 
     c = self
 
-    # if scriptFind:
-        # p,found = c.scanForVnodeName(root,vnodeName
-
     if gnx:
         p,found = c.goto_findGnx(root,gnx,vnodeName)
     else:
         p,found = c.goto_scanTnodeList(root,delim,lines,n,vnodeName)
-
-    # if not found:
-        # g.es("not found:",vnodeName,color="red")
 
     return p,found
 #@+node:ekr.20080904071003.18:goto_findGnx
@@ -2023,13 +2017,11 @@ of the nodes would load from the file.
 #@+node:ekr.20031218072017.1577:putTnode
 def putTnode (self,v):
 
-    # New in Leo 4.4.2 b2: call put just once.
+    # Call put just once.
     gnx = g.app.nodeIndices.toString(v.fileIndex)
     ua = hasattr(v,'unknownAttributes') and self.putUnknownAttributes(v) or ''
     b = v.b
     if b:
-        # Convert to encoded string ????
-        # b = g.toEncodedString(b,self.leo_file_encoding,reportErrors=True)
         body = xml.sax.saxutils.escape(b)
     else:
         body = ''
