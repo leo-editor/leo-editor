@@ -3460,8 +3460,9 @@ class keyHandlerClass:
                 key in ('button','all')
             ):
                 d = k.masterBindingsDict.get(key,{})
-                if trace: g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-                # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
+                if trace:
+                    g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+                    # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
                 if d:
                     b = d.get(stroke)
                     if b:

@@ -7521,9 +7521,9 @@ class leoQtEventFilter(QtCore.QObject):
 
         trace = False and not g.unitTesting
         verbose = True
-        traceEvent = True
+        traceEvent = False
         traceKey = True
-        traceFocus = True
+        traceFocus = False
         c = self.c ; k = c.k
         eventType = event.type()
         ev = QtCore.QEvent
@@ -7666,9 +7666,13 @@ class leoQtEventFilter(QtCore.QObject):
         if not ch: ch = ''
 
         if 'Shift' in mods:
+            if trace: g.trace(repr(ch))
             if len(ch) == 1 and ch.isalpha():
                 mods.remove('Shift')
                 ch = ch.upper()
+            # 2009/12/19: Speculative.
+            if ch in ('parenright','parenleft','braceright','braceleft'):
+                mods.remove('Shift')
         elif len(ch) == 1:
             ch = ch.lower()
 

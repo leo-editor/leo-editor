@@ -2493,23 +2493,11 @@ def create_temp_file (textMode=False):
     theFile: a file object open for writing.
     theFileName: the name of the temporary file.'''
 
-    ### To do: simplify this code.
-    # mktemp is deprecated, but we can't get rid of it
-    # because mkstemp does not exist in Python 2.2.1.
     try:
         # fd is an handle to an open file as would be returned by os.open()
         fd,theFileName = tempfile.mkstemp(text=textMode)
         mode = g.choose(textMode,'w','wb')
         theFile = os.fdopen(fd,mode)
-        # g.trace(fd,theFile)
-    except AttributeError:
-        # g.trace("mkstemp doesn't exist")
-        theFileName = tempfile.mktemp()
-        try:
-            mode = g.choose(textMode,'w','wb')
-            theFile = open(theFileName,mode)
-        except IOError:
-            theFile,theFileName = None,''
     except Exception:
         g.es('unexpected exception in g.create_temp_file',color='red')
         g.es_exception()

@@ -1270,8 +1270,9 @@ for key,name in (
         key in ('button','all')
     ):
         d = k.masterBindingsDict.get(key,{})
-        if trace: g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-        # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
+        if trace:
+            g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+            # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
         if d:
             b = d.get(stroke)
             if b:
@@ -3551,6 +3552,38 @@ def putDescendentTnodeUas (self,p):
         torv=p.v,val=d,tag="descendentTnodeUnknownAttributes") or ''
 #@-node:ekr.20080805071954.1:putDescendentTnodeUas
 #@-node:ekr.20091001141621.6042:iters -> generators & code cleanup
+#@+node:ekr.20091219151045.6361:Simplified g.create_temp_file
+# We can do this now that we require Python 2.5+
+#@nonl
+#@+node:ekr.20031218072017.3117:g.create_temp_file & test
+def create_temp_file (textMode=False):
+    '''Return a tuple (theFile,theFileName)
+
+    theFile: a file object open for writing.
+    theFileName: the name of the temporary file.'''
+
+    try:
+        # fd is an handle to an open file as would be returned by os.open()
+        fd,theFileName = tempfile.mkstemp(text=textMode)
+        mode = g.choose(textMode,'w','wb')
+        theFile = os.fdopen(fd,mode)
+    except Exception:
+        g.es('unexpected exception in g.create_temp_file',color='red')
+        g.es_exception()
+        theFile,theFileName = None,''
+
+    return theFile,theFileName
+#@+node:ekr.20090517020744.5873:@test g.create_temp_file
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    theFile,fn = g.create_temp_file()
+    assert theFile
+    assert g.isString(fn)
+#@-node:ekr.20090517020744.5873:@test g.create_temp_file
+#@-node:ekr.20031218072017.3117:g.create_temp_file & test
+#@-node:ekr.20091219151045.6361:Simplified g.create_temp_file
 #@-node:ekr.20091007104807.6470:Code
 #@-node:ekr.20090718091653.5982:Leo 4.7 projects
 #@+node:ekr.20091203060018.6100:leo-3k
