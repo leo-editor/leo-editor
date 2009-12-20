@@ -61,7 +61,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -295,7 +295,7 @@
 <v t="ekr.20050828061501.38"><vh>@lineending</vh></v>
 <v t="ekr.20050828064254"><vh>@others</vh></v>
 <v t="ekr.20050828174453.1"><vh>\@nosent</vh></v>
-<v t="ekr.20050828061501.39"><vh>@path</vh></v>
+<v t="ekr.20050828061501.39"><vh>\@path</vh></v>
 <v t="ekr.20050828210721.1"><vh>@pagewidth</vh></v>
 <v t="ekr.20050828061501.40"><vh>@raw and @end_raw</vh></v>
 <v t="ekr.20080730212711.51"><vh>\@root</vh></v>
@@ -387,8 +387,8 @@
 <v t="EKR.20040524104904.181"><vh>How Leo Changes the Notion of Literate Programming</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.4" a="E"><vh>Chapter 7: Scripting Leo with Python</vh>
-<v t="ekr.20040403171740" a="E"><vh>@rst html\scripting.html</vh>
+<v t="ekr.20050831195331.4"><vh>Chapter 7: Scripting Leo with Python</vh>
+<v t="ekr.20040403171740"><vh>@rst html\scripting.html</vh>
 <v t="ekr.20091104200540.6566"><vh>@rst-ignore</vh>
 <v t="ekr.20091107181442.26607"><vh>old, too complicated intro</vh></v>
 <v t="ekr.20091104200540.6567"><vh>details for later</vh></v>
@@ -1576,7 +1576,7 @@
 </v>
 </v>
 <v t="ekr.20050122090311"><vh>4.3-a1</vh>
-<v t="ekr.20050123112834"><vh>Defining features of 4.3</vh>
+<v t="ekr.20050123112834" a="E"><vh>Defining features of 4.3</vh>
 <v t="ekr.20050123110009"><vh>Using @settings trees and leoSettings.leo</vh>
 <v t="ekr.20050122084954"><vh>Using leoSettings.leo and @settings trees</vh></v>
 <v t="ekr.20050122091036"><vh>Unfinished configuration features</vh></v>
@@ -10818,8 +10818,8 @@ The valid forms of the ``@lineending`` directive are:
 ======================= ======================================================</t>
 <t tx="ekr.20050828061501.39">The ``@path`` directives override the deprecated ``default_tangle_directory`` setting.
 
-The form of the @path directive is ``@path`` *filename*,
-where *filename* is taken to be everything following @path to the end of the line.
+The form of the \@path directive is ``@path`` *filename*,
+where *filename* is taken to be everything following \@path to the end of the line.
 
 If *filename* is an absolute filename the location of the external file is specified only by the filename.
 Otherwise, if *filename* is a relative filename, the location of the external file is relative to:
@@ -23025,7 +23025,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="2,10,0,24"></t>
+<t tx="ekr.20070610174018" str_leo_pos="4"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -28514,7 +28514,7 @@ What's New in Leo 4.6
 </t>
 <t tx="ekr.20090324145450.46">- Added @nocolor-node directive.
 
-- Improved @path handling.
+- Improved \@path handling.
 </t>
 <t tx="ekr.20090324145450.49">- @string default_leo_file = ~/.leo/workbook.leo
 
@@ -31701,12 +31701,12 @@ node body. While (**line**, **col**) in status area show the line and column
 containing the body text's cursor, **fcol** shows the cursor coordinate
 relative to the external file, not to the curent node. The relation
 **fcol &gt;= col** is always true.</t>
-<t tx="tbrown.20091203211538.14165">Makes @path nodes "active".
+<t tx="tbrown.20091203211538.14165">Makes \@path nodes "active".
 
-With this plugin running, double clicking on @path nodes
+With this plugin running, double clicking on \@path nodes
 and their descendents synchronizes the node with the
 filesystem.  If the node refers to a fodler (as the top
-level @path node always will), the folder's contents are
+level \@path node always will), the folder's contents are
 loaded as child nodes.  If it refers to a file, the file is
 loaded as an @auto node.
 
@@ -31748,7 +31748,7 @@ If you want to use an input other than double clicking a node's status-iconbox
 set active_path_event to a value like 'iconrclick1' or 'iconclick1'.
 
 
-active_path is a rewrite of the at_directory plugin to use @path directives (which influence
+active_path is a rewrite of the at_directory plugin to use \@path directives (which influence
 @auto and other @file type directives), and to handle sub-folders more automatically.
 '''</t>
 <t tx="tbrown.20091203211538.20637">  @string active_path_attype = auto
