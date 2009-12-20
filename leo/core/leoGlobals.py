@@ -2737,7 +2737,10 @@ def openLeoOrZipFile (fileName):
             name = aList and len(aList) == 1 and aList[0]
             if not name: return None,False
             s = theFile.read(name)
-            theStringFile =  StringIO(g.ue(s,'utf-8'))
+            if g.isPython3:
+                theStringFile = StringIO(g.ue(s,'utf-8'))
+            else:
+                theStringFile =  StringIO(s)
             return theStringFile,True
         else:
             mode = 'rb'
@@ -2765,8 +2768,9 @@ if g.unitTesting:
 
     # Open the file, and use read (with no args) to get the contents.
     theFile,ok = g.openLeoOrZipFile(path)
-    assert ok
-    assert theFile.read() == s
+    assert ok,'not ok'
+    s2 = theFile.read()
+    assert s == s2,'s:  %s\ns2: %s' % (repr(s),repr(s2))
 #@-node:ekr.20090526083112.5838:@test g.openLeoOrZipFile
 #@-node:ekr.20070412082527:g.openLeoOrZipFile & tests
 #@+node:ekr.20090520055433.5945:g.openWithFileName & helpers
