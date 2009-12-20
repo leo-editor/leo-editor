@@ -2448,7 +2448,8 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
                 # Use the open binary file, opened by g.openLeoOrZipFile.
                 pass
             else:
-                s = str(s,encoding='utf-8')
+                s = str(s,encoding='utf-8') ### NEW
+                ### s = str(s) ###
                 s = self.cleanSaxInputString(s)
                 theFile = StringIO(s)
         else:
@@ -4289,7 +4290,10 @@ TypeError: expected an object with the buffer interface
 def outputStringWithLineEndings (self,s):
 
     # Calling self.onl() runs afoul of queued newlines.
-    s = g.u(s).replace(g.u('\n'),g.u(self.output_newline))
+    if g.isPython3:
+        s = g.u(s).replace(g.u('\n'),g.u(self.output_newline)) ### NEW
+    else:
+        s = s.replace('\n',self.output_newline)
     self.os(s)
 #@-node:ekr.20041005105605.205:outputStringWithLineEndings
 #@-node:ekr.20091206150342.6189:outputStringWithLineEndings
@@ -4308,7 +4312,8 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
                 # Use the open binary file, opened by g.openLeoOrZipFile.
                 pass
             else:
-                s = str(s,encoding='utf-8')
+                s = str(s,encoding='utf-8') ### NEW
+                ### s = str(s) ###
                 s = self.cleanSaxInputString(s)
                 theFile = StringIO(s)
         else:
@@ -4706,7 +4711,8 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
                 # Use the open binary file, opened by g.openLeoOrZipFile.
                 pass
             else:
-                s = str(s,encoding='utf-8')
+                s = str(s,encoding='utf-8') ### NEW
+                ### s = str(s) ###
                 s = self.cleanSaxInputString(s)
                 theFile = StringIO(s)
         else:
@@ -5912,6 +5918,83 @@ if g.unitTesting:
 #@-node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
 #@-node:ekr.20091210082012.6231:Comparing positions
 #@-node:ekr.20091211111443.6264:Batch operations on nodes
+#@+node:ekr.20091220103056.6363:pylint
+@nocolor-node
+
+pylint is a python script in /usr/bin
+
+python is in /usr/lib/
+
+pylint sources are **not** in /usr/lib/pymodules/python2.6
+(these are just links !!)
+
+Shared sources are in usr/share/pyshared/pylint
+
+$ echo $PATH
+/usr/local/sbin: (empty)
+/usr/local/bin: (4 items, no leo)
+/usr/sbin: (256 items, no leo)
+/usr/bin: (1876 items, no leo)
+/sbin: (162 items, no leo)
+/bin: (118 items, no leo)
+/usr/games (28 items, no leo)
+
+_psyco.so is in /usr/local/lib/python2.6
+#@nonl
+#@+node:ekr.20050405141130:<< imports >> (leoFileCommands)
+import leo.core.leoGlobals as g
+
+if g.app and g.app.use_psyco:
+    # g.pr("enabled psyco classes",__file__)
+    try: from psyco.classes import *
+    except ImportError: pass
+
+import leo.core.leoNodes as leoNodes
+
+import binascii
+
+if g.isPython3:
+    import io # Python 3.x
+    StringIO = io.StringIO
+    BytesIO = io.BytesIO
+else:
+    import cStringIO # Python 2.x
+    StringIO = cStringIO.StringIO
+
+import os
+import pickle
+import string
+import sys
+import types
+import zipfile
+
+try:
+    # IronPython has problems with this.
+    import xml.sax
+    import xml.sax.saxutils
+except Exception:
+    pass
+
+# The following is sometimes used.
+# import time
+#@-node:ekr.20050405141130:<< imports >> (leoFileCommands)
+#@+node:ekr.20091220130303.6365:Linux messages
+@nocolor-node
+
+************* Module leo.core.leoApp
+E0611:346:LeoApp.createDefaultGui: No name 'QtGui' in module 'PyQt4'
+E1101:757:LeoApp.computeSignon: Module 'sys' has no 'getwindowsversion' member
+************* Module leo.core.leoAtFile
+E0211:4045:atFile.syntaxErrorTest: Method has no argument
+************* Module leo.core.leoCommands
+E1101:1079:baseCommands.openWith: Module 'os' has no 'startfile' member
+************* Module leo.core.leoFileCommands
+E1101:1066:baseFileCommands.cleanSaxInputString: Class 'str' has no 'maketrans' member
+************* Module leo.core.leoGlobals
+E1101:4249:os_startfile: Module 'os' has no 'startfile' member
+E1101:5473:getpreferredencoding: Module '_locale' has no '_getdefaultlocale' member
+#@-node:ekr.20091220130303.6365:Linux messages
+#@-node:ekr.20091220103056.6363:pylint
 #@-all
 #@nonl
 #@-node:EKR.20040429143933:@thin leoProjects.txt

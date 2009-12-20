@@ -1444,7 +1444,8 @@ class baseFileCommands:
                     # Use the open binary file, opened by g.openLeoOrZipFile.
                     pass
                 else:
-                    s = str(s,encoding='utf-8')
+                    s = str(s,encoding='utf-8') ### NEW
+                    ### s = str(s) ###
                     s = self.cleanSaxInputString(s)
                     theFile = StringIO(s)
             else:

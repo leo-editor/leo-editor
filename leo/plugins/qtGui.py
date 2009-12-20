@@ -904,7 +904,12 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         w = self.widget
 
-        s = g.u(w.toPlainText())
+        if g.isPython3:
+            s = str(w.toPlainText())
+        else:
+            s = unicode(w.toPlainText())
+
+        ### s = g.u(w.toPlainText())
 
         return s
     #@-node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
@@ -1244,7 +1249,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         # common case, e.g. one character    
         if bl.contains(j):
-            s = g.u(bl.text())
+            if g.isPython3:
+                s = str(bl.text())
+            else:
+                s = unicode(bl.text())
+            ### s = g.u(bl.text())
             offset = i - bl.position()
             ret = s[ offset : offset + (j-i)]
             #print "fastget",ret
@@ -6251,7 +6260,11 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         '''Return the text of the item.'''
 
         if item:
-            return g.u(item.text(0))
+            ### return g.u(item.text(0))
+            if g.isPython3:
+                return str(item.text(0))
+            else:
+                return unicode(item.text(0))
         else:
             return '<no item>'
     #@nonl
@@ -6885,7 +6898,11 @@ class leoQtGui(leoGui.leoGui):
 
         if multiple:
             lst = QtGui.QFileDialog.getOpenFileNames(parent,title,os.curdir,filter)
-            return [g.u(s) for s in lst]
+            if isPython3:
+                return [str(s) for s in lst]
+            else:
+                return [unicode(s) for s in lst]
+            ### return [g.u(s) for s in lst]
 
         s = QtGui.QFileDialog.getOpenFileName(parent,title,os.curdir,filter)
         s = g.app.gui.toUnicode(s)
@@ -7204,13 +7221,17 @@ class leoQtGui(leoGui.leoGui):
     #@-node:ekr.20090406111739.12:setWidgetColor (qtGui)
     #@-node:ekr.20090406111739.14:Style Sheets
     #@+node:ekr.20081121105001.502:toUnicode (qtGui)
-    def toUnicode (self,s,encoding=None,reportErrors=True):
+    def toUnicode (self,s): ### ,encoding=None,reportErrors=True):
 
         try:
-            s = g.u(s)
+            if g.isPython3:
+                s = str(s)
+            else:
+                s = unicode(s)
+            ### s = g.u(s)
             return s
         except Exception:
-            # g.trace('Warning - toUnicode does encoding (bugs possible)')
+            g.trace('*** Unicode Error: bugs possible')
             return g.toUnicode(s,'utf-8',reportErrors='replace')
     #@-node:ekr.20081121105001.502:toUnicode (qtGui)
     #@+node:ekr.20081121105001.503:widget_name (qtGui)
@@ -8100,7 +8121,12 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         """ Called by QSyntaxHiglighter """
 
         if self.hasCurrentBlock and not self.colorizer.killColorFlag:
-            self.colorer.recolor(g.u(s))
+            if g.isPython3:
+                s = str(s)
+            else:
+                s = unicode(s)
+            self.colorer.recolor(s)
+            ### self.colorer.recolor(g.u(s))
     #@-node:ekr.20081205131308.11:highlightBlock
     #@+node:ekr.20081206062411.15:rehighlight
     def rehighlight (self,p):

@@ -4306,7 +4306,7 @@ class atFile:
                 if s.startswith(tag):
                     junk,s = self.parseUnderindentTag(s)
                 # Bug fix: this must be done last.
-                s = g.toEncodedString(s,at.encoding,reportErrors=True)
+                s = g.toEncodedString(s,at.encoding,reportErrors=True) ###
                 f.write(s)
             except Exception:
                 at.exception("exception writing:" + s)
@@ -4318,7 +4318,10 @@ class atFile:
     def outputStringWithLineEndings (self,s):
 
         # Calling self.onl() runs afoul of queued newlines.
-        s = g.u(s).replace(g.u('\n'),g.u(self.output_newline))
+        if g.isPython3:
+            s = g.u(s).replace(g.u('\n'),g.u(self.output_newline)) ### NEW
+        else:
+            s = s.replace('\n',self.output_newline)
         self.os(s)
     #@-node:ekr.20041005105605.205:outputStringWithLineEndings
     #@+node:ekr.20050506090446.1:putAtFirstLines
@@ -4579,7 +4582,8 @@ class atFile:
         # Replace
         try:
             f = open(fn,'wb')
-            s = g.toEncodedString(s,encoding=self.encoding)
+            if g.isPython3:
+                s = g.toEncodedString(s,encoding=self.encoding) ### NEW
             f.write(s)
             f.close()
             if not testing:
