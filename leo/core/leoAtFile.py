@@ -4319,9 +4319,11 @@ class atFile:
 
         # Calling self.onl() runs afoul of queued newlines.
         at = self
-        s = s.replace('\n',self.output_newline)
         if g.isPython3:
             s = g.ue(s,at.encoding)
+            s = s.replace(g.u('\n'),g.u(at.output_newline))
+        else:
+            s = s.replace('\n',at.output_newline)
         self.os(s)
     #@-node:ekr.20041005105605.205:outputStringWithLineEndings
     #@+node:ekr.20050506090446.1:putAtFirstLines
