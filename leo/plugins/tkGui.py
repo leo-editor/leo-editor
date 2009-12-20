@@ -9312,7 +9312,7 @@ class leoTkTextWidget (Tk.Text):
         s = Tk.Text.get(w,"1.0","end-1c") # New in 4.4.1: use end-1c.
 
         if s is None:
-            return g.emptyString()
+            return g.u('')
         else:
             return g.toUnicode(s,g.app.tkEncoding)
     #@-node:ekr.20081121110412.327:getAllText
@@ -9341,7 +9341,7 @@ class leoTkTextWidget (Tk.Text):
             s = Tk.Text.get(w,i,j)
             return g.toUnicode(s,g.app.tkEncoding)
         else:
-            return g.emptyString()
+            return g.u('')
     #@-node:ekr.20081121110412.330:getSelectedText
     #@+node:ekr.20081121110412.331:getSelectionRange
     def getSelectionRange (self,sort=True): # tkTextWidget.
