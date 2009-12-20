@@ -1408,7 +1408,7 @@ class position (object):
     def getFirstChild    (self): return self.copy().moveToFirstChild()
     def getLastChild     (self): return self.copy().moveToLastChild()
     def getLastNode      (self): return self.copy().moveToLastNode()
-    def getLastVisible   (self): return self.copy().moveToLastVisible()
+    # def getLastVisible   (self): return self.copy().moveToLastVisible()
     def getNext          (self): return self.copy().moveToNext()
     def getNodeAfterTree (self): return self.copy().moveToNodeAfterTree()
     def getNthChild    (self,n): return self.copy().moveToNthChild(n)
@@ -1426,7 +1426,7 @@ class position (object):
     firstChild    = getFirstChild
     lastChild     = getLastChild
     lastNode      = getLastNode
-    lastVisible   = getLastVisible # New in 4.2 (was in tk tree code).
+    # lastVisible   = getLastVisible # New in 4.2 (was in tk tree code).
     next          = getNext
     nodeAfterTree = getNodeAfterTree
     nthChild      = getNthChild
