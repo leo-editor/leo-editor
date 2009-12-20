@@ -947,11 +947,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             if trace and verbose: g.trace('** not editing')
             return
 
-        ### s = g.u(e.text())
-        if g.isPython3:
-            s = str(e.text())
-        else:
-            s = unicode(e.text())
+        s = g.u(e.text())
 
         if g.doHook("headkey1",c=c,p=c.p,v=c.p,s=s):
             return

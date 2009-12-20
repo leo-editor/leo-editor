@@ -1444,8 +1444,7 @@ class baseFileCommands:
                     # Use the open binary file, opened by g.openLeoOrZipFile.
                     pass
                 else:
-                    s = str(s,encoding='utf-8') ### NEW
-                    ### s = str(s) ###
+                    s = str(s,encoding='utf-8')
                     s = self.cleanSaxInputString(s)
                     theFile = StringIO(s)
             else:
@@ -2439,7 +2438,7 @@ class baseFileCommands:
         try:
             s = pickle.dumps(val,protocol=1)
             s2 = binascii.hexlify(s)
-            s3 = g.u(s2)
+            s3 = g.ue(s2,'utf-8')
             if trace: g.trace('\n',
                 type(val),val,'\n',type(s),repr(s),'\n',
                 type(s2),s2,'\n',type(s3),s3)

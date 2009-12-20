@@ -904,12 +904,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         w = self.widget
 
-        if g.isPython3:
-            s = str(w.toPlainText())
-        else:
-            s = unicode(w.toPlainText())
-
-        ### s = g.u(w.toPlainText())
+        s = g.u(w.toPlainText())
 
         return s
     #@-node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
@@ -1249,11 +1244,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         # common case, e.g. one character    
         if bl.contains(j):
-            if g.isPython3:
-                s = str(bl.text())
-            else:
-                s = unicode(bl.text())
-            ### s = g.u(bl.text())
+            s = g.u(bl.text())
             offset = i - bl.position()
             ret = s[ offset : offset + (j-i)]
             #print "fastget",ret
@@ -6260,11 +6251,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         '''Return the text of the item.'''
 
         if item:
-            ### return g.u(item.text(0))
-            if g.isPython3:
-                return str(item.text(0))
-            else:
-                return unicode(item.text(0))
+            return g.u(item.text(0))
         else:
             return '<no item>'
     #@nonl
@@ -6898,11 +6885,7 @@ class leoQtGui(leoGui.leoGui):
 
         if multiple:
             lst = QtGui.QFileDialog.getOpenFileNames(parent,title,os.curdir,filter)
-            if isPython3:
-                return [str(s) for s in lst]
-            else:
-                return [unicode(s) for s in lst]
-            ### return [g.u(s) for s in lst]
+            return [g.u(s) for s in lst]
 
         s = QtGui.QFileDialog.getOpenFileName(parent,title,os.curdir,filter)
         s = g.app.gui.toUnicode(s)
@@ -7221,14 +7204,10 @@ class leoQtGui(leoGui.leoGui):
     #@-node:ekr.20090406111739.12:setWidgetColor (qtGui)
     #@-node:ekr.20090406111739.14:Style Sheets
     #@+node:ekr.20081121105001.502:toUnicode (qtGui)
-    def toUnicode (self,s): ### ,encoding=None,reportErrors=True):
+    def toUnicode (self,s):
 
         try:
-            if g.isPython3:
-                s = str(s)
-            else:
-                s = unicode(s)
-            ### s = g.u(s)
+            s = g.u(s)
             return s
         except Exception:
             g.trace('*** Unicode Error: bugs possible')
@@ -7624,25 +7603,18 @@ class leoQtEventFilter(QtCore.QObject):
         text   = event.text() # This is the unicode text.
         toString = QtGui.QKeySequence(keynum).toString()
 
-        # Do *not* use g.u here: ch1 is a wrapper type.
-        # Convert the Qt wrapper to a Python unicode string.
-        if g.isPython3:
-            u = str
-        else:
-            u = unicode
-
         try:
             ch1 = chr(keynum)
         except ValueError:
             ch1 = ''
 
         try:
-            ch = u(ch1) # Do not use g.u here!
+            ch = g.u(ch1)
         except UnicodeError:
             ch = ch1
 
-        text     = u(text)
-        toString = u(toString)
+        text     = g.u(text)
+        toString = g.u(toString)
 
         if trace and self.keyIsActive: g.trace(
             'keynum %s ch %s ch1 %s toString %s' % (
