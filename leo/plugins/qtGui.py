@@ -7651,6 +7651,13 @@ class leoQtEventFilter(QtCore.QObject):
 
         trace = False and not g.unitTesting
         ch1 = ch # For tracing.
+        use_shift = {
+            'Home','End','Tab',
+            'Up','Down','Left','Right',
+            # Dubious...
+            # 'Backspace','Delete','Ins',
+            # 'F1',...'F12',
+        }
 
         # Convert '&' to 'ampersand', etc.
         # *Do* allow shift-bracketleft, etc.
@@ -7663,8 +7670,8 @@ class leoQtEventFilter(QtCore.QObject):
             if len(ch) == 1 and ch.isalpha():
                 mods.remove('Shift')
                 ch = ch.upper()
-            elif len(ch) > 1:
-                # Experimental!plu
+            elif len(ch) > 1 and ch not in use_shift:
+                # Experimental!
                 mods.remove('Shift')
             # 2009/12/19: Speculative.
             # if ch in ('parenright','parenleft','braceright','braceleft'):
