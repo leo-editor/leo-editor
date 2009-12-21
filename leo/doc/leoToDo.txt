@@ -8,6 +8,7 @@
 The following "undo" functionality should be fixed:
 
 Bug 498692: Undo deleted node renames current node's headline
+
 Bug 498688: Undo back to last saved content still shows file as
 modified ("*" in title)
 

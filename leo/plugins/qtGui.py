@@ -5964,6 +5964,14 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         self.headlineWrapper = leoQtHeadlineWidget # This is a class.
         self.treeWidget = w = frame.top.ui.treeWidget # An internal ivar.
 
+        # Works, but the scroll bar is useless!
+        # w.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+
+        # Allows proper horizontal scrollbar operation.
+        w.setColumnCount(2)
+        # w.setColumnHidden(1,True) # Disables scrolling.
+        w.setColumnWidth(1,1)
+
         # Early inits...
         try: w.headerItem().setHidden(True)
         except Exception: pass
@@ -7651,13 +7659,13 @@ class leoQtEventFilter(QtCore.QObject):
 
         trace = False and not g.unitTesting
         ch1 = ch # For tracing.
-        use_shift = {
+        use_shift = (
             'Home','End','Tab',
             'Up','Down','Left','Right',
             # Dubious...
             # 'Backspace','Delete','Ins',
             # 'F1',...'F12',
-        }
+        )
 
         # Convert '&' to 'ampersand', etc.
         # *Do* allow shift-bracketleft, etc.

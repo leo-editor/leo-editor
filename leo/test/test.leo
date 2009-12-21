@@ -390,6 +390,17 @@
 </v>
 <v t="ekr.20091217210418.1873"><vh>@auto at-auto-rst-test.txt</vh></v>
 <v t="ekr.20091221113040.1868"><vh>keys</vh></v>
+<v t="ekr.20091221123642.1870" a="E"><vh>newHeadline</vh>
+<v t="ekr.20091221123642.1871" a="E"><vh>newHeadline</vh>
+<v t="ekr.20091221123642.1872" a="E"><vh>newHeadline</vh>
+<v t="ekr.20091221123642.1873" a="E"><vh>newHeadline</vh>
+<v t="ekr.20091221123642.1874" a="E"><vh>newHeadline</vh>
+<v t="ekr.20091221123642.1875"><vh>newHeadline</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -810,7 +821,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="7"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8,0,0,0,0,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -3587,5 +3598,11 @@ http://webpages.charter.net/edreamleo/front.html</t>
 
 []\;',./
 {}|:"&lt;&gt;?</t>
+<t tx="ekr.20091221123642.1870"></t>
+<t tx="ekr.20091221123642.1871"></t>
+<t tx="ekr.20091221123642.1872"></t>
+<t tx="ekr.20091221123642.1873"></t>
+<t tx="ekr.20091221123642.1874"></t>
+<t tx="ekr.20091221123642.1875"></t>
 </tnodes>
 </leo_file>
