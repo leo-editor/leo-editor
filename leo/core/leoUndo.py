@@ -1415,6 +1415,7 @@ class undoer:
         c.recolor()
         c.bodyWantsFocusNow()
         w.setSelectionRange(i,j,insert=ins)
+        w.seeInsertPoint()
         u.redoing = False
         u.bead += 1
         u.setUndoTypes()
@@ -1738,7 +1739,7 @@ class undoer:
             c.selectPosition(c.p)
         else:
             c.setCurrentPosition(c.p)
-        c.setChanged(True)
+        c.setChanged(self.oldChanged) ### True)
         # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
         i,j = w.getSelectionRange()
         ins = w.getInsertPoint()
@@ -1746,6 +1747,7 @@ class undoer:
         c.recolor()
         c.bodyWantsFocusNow()
         w.setSelectionRange(i,j,insert=ins)
+        w.seeInsertPoint()
         u.undoing = False
         u.bead -= 1
         u.setUndoTypes()
