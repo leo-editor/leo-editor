@@ -67,9 +67,6 @@ import string
 import tempfile
 import traceback
 import types
-
-# g.pr('(types.FrameType)',repr(types.FrameType))
-# g.pr('(types.StringTypes)',repr(types.StringTypes))
 #@-node:ekr.20050208101229:<< imports >>
 #@nl
 

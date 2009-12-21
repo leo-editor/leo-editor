@@ -171,7 +171,10 @@ class autoCompleterClass:
 
         if g.isPython3:
             for z in gc.get_objects():
-                name = z.__class__.__name__
+                try:
+                    name = z.__class__.__name__
+                except ReferenceError:
+                    pass
                 self.allClassesDict [name] = z
         else:
             for z in gc.get_objects():
@@ -212,7 +215,7 @@ class autoCompleterClass:
             (['g'],                 'object',g),       
             (['gui'],               'object',g.app.gui),
             (['k'],                 'object',k),
-            (['p','p1','p2'],       'object',p),             
+            (['p','p1','p2'],       'object',p.copy()), # 2009/12/21
             (['s','s1','s2','ch'],  'object','aString'),
             (['string'],            'object',string), # Python's string module.
             # (['t','t1','t2'],       'object',p.v.t),  
@@ -542,7 +545,10 @@ class autoCompleterClass:
         if not s:
             #@        << get s using inspect >>
             #@+node:ekr.20061031131434.22:<< get s using inspect >>
-            isStringMethod = self.prevObjects and type(self.prevObjects[-1]) == types.StringType
+            isStringMethod = (
+                self.prevObjects and
+                # type(self.prevObjects[-1]) == types.StringType
+                g.isString(self.prevObjects[-1]))
 
             # g.trace(self.prevObjects)
 

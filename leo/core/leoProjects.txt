@@ -5429,7 +5429,10 @@ def defineClassesDict (self):
 
     if g.isPython3:
         for z in gc.get_objects():
-            name = z.__class__.__name__
+            try:
+                name = z.__class__.__name__
+            except ReferenceError:
+                pass
             self.allClassesDict [name] = z
     else:
         for z in gc.get_objects():

@@ -2,6 +2,253 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20091221094815.6383:Urgent (voted up) bugs to fix
+#@+node:ekr.20091221145433.6384:Calltips don't work on leo3k
+@nocolor-node
+
+They wipe out the newly-inserted selection range.
+
+  File "/home/edreamleo/leo.repo/trunk/leo/core/leoKeys.py", line 545, in calltip
+    isStringMethod = self.prevObjects and type(self.prevObjects[-1]) == types.StringType
+AttributeError: 'module' object has no attribute 'StringType'
+
+-----------------
+
+Traceback (most recent call last):
+
+  File "/home/edreamleo/leo.repo/trunk/leo/core/leoKeys.py", line 174, in defineClassesDict
+    name = z.__class__.__name__
+
+ReferenceError: weakly-referenced object no longer exists
+
+
+
+#@nonl
+#@+node:ekr.20061031131434.20:calltip
+def calltip (self,obj=None):
+
+    c = self.c
+    w = self.widget
+    isStringMethod = False ; s = None
+    # g.trace(self.leadinWord,obj)
+
+    if self.leadinWord and (not obj or type(obj) == types.BuiltinFunctionType):
+        << try to set s from a Python global function >>
+
+    if not s:
+        << get s using inspect >>
+
+    << remove 'self' from s, but not from args >>
+    if isStringMethod:
+        << remove 's' from s *and* args >>
+
+    # s = s.rstrip(')') # Not so convenient.
+    << insert the text and set j1 and j2 >>
+
+    # End autocompletion mode, putting the insertion point after the suggested calltip.
+    self.finish()
+    c.widgetWantsFocusNow(w)
+    if 1: # Seems to be more useful.
+        w.setSelectionRange(j1,j2,insert=j2)
+    else:
+        w.setInsertPoint(j2)
+    << put the status line >>
+#@+node:ekr.20061031131434.21:<< try to set s from a Python global function >>
+# The first line of the docstring is good enough, except for classes.
+f = __builtins__.get(self.leadinWord)
+doc = f and type(f) != types.ClassType and f.__doc__
+if doc:
+    # g.trace(doc)
+    s = g.splitLines(doc)
+    s = args = s and s [0] or ''
+    i = s.find('(')
+    if i > -1: s = s [i:]
+    else: s = '(' + s
+    s = s and s.strip() or ''
+#@-node:ekr.20061031131434.21:<< try to set s from a Python global function >>
+#@+node:ekr.20061031131434.22:<< get s using inspect >>
+isStringMethod = (
+    self.prevObjects and
+    # type(self.prevObjects[-1]) == types.StringType
+    g.isString(self.prevObjects[-1]))
+
+# g.trace(self.prevObjects)
+
+if isStringMethod and hasattr(string,obj.__name__):
+    # A hack. String functions are builtins, and getargspec doesn't handle them.
+    # Get the corresponding string function instead, and remove the s arg later.
+    obj = getattr(string,obj.__name__)
+
+try:
+    s1,s2,s3,s4 = inspect.getargspec(obj)
+except:
+    self.extendSelection('(')
+    self.finish()
+    return # Not a function.  Just '('.
+
+s = args = inspect.formatargspec(s1,s2,s3,s4)
+#@-node:ekr.20061031131434.22:<< get s using inspect >>
+#@+node:ekr.20061031131434.23:<< remove 'self' from s, but not from args >>
+if g.match(s,1,'self,'):
+    s = s[0] + s[6:].strip()
+elif g.match_word(s,1,'self'):
+    s = s[0] + s[5:].strip()
+#@-node:ekr.20061031131434.23:<< remove 'self' from s, but not from args >>
+#@+node:ekr.20061031131434.24:<< remove 's' from s *and* args >>
+if g.match(s,1,'s,'):
+    s = s[0] + s[3:]
+    args = args[0] + args[3:]
+elif g.match_word(s,1,'s'):
+    s = s[0] + s[2:]
+    args = args[0] + args[2:]
+#@-node:ekr.20061031131434.24:<< remove 's' from s *and* args >>
+#@+node:ekr.20061031131434.25:<< insert the text and set j1 and j2 >>
+junk,j = w.getSelectionRange() # Returns insert point if no selection.
+w.insert(j,s)
+c.frame.body.onBodyChanged('Typing')
+j1 = j + 1 ; j2 = j + len(s)
+#@-node:ekr.20061031131434.25:<< insert the text and set j1 and j2 >>
+#@+node:ekr.20061031131434.26:<< put the status line >>
+c.frame.clearStatusLine()
+if obj:
+    name = hasattr(obj,'__name__') and obj.__name__ or repr(obj)
+else:
+    name = self.leadinWord
+c.frame.putStatusLine('%s %s' % (name,args))
+#@-node:ekr.20061031131434.26:<< put the status line >>
+#@-node:ekr.20061031131434.20:calltip
+#@+node:ekr.20061031131434.5: ctor (autocompleter)
+def __init__ (self,k):
+
+    self.c = c = k.c
+    self.k = k
+    self.allClassesDict = {} # Will be completed after more classes exist.
+    self.attrDictDict = {}  # Keys are languages (strings); values are anonymous attrDicts.
+        # attrDicts: keys are strings; values are list of strings (attributes).
+    self.calltips = {} # Keys are language, values are dicts: keys are ids, values are signatures.
+    self.classScanner = self.classScannerClass(c)
+    self.forgivingParser = self.forgivingParserClass(c)
+    self.globalPythonFunctionsDict = {}
+    self.language = None
+    self.leadinWord = None
+    self.membersList = None
+    self.objectDict = {} # Created on first use of the autocompleter.
+    self.selection = None # The selection range on entry to autocompleter or calltips.
+    self.selectedText = None # The selected text on entry to autocompleter or calltips.
+    self.selfClassName = None
+    self.selfObjectsDict = {} # Keys are classNames, values are real proxy objects.
+    self.selfVnodesDict = {} # Keys are tnodes, values are real proxy objects.
+    self.prefix = None
+    self.prevObjects = []
+    self.tabList = []
+    self.tabListIndex = -1
+    self.tabName = None # The name of the main completion tab.
+    self.theObject = None # The previously found object, for . chaining.
+    self.trace = c.config.getBool('trace_autocompleter')
+    self.useTabs = True # True: show results in autocompleter tab.
+    self.verbose = False # True: print all members.
+    self.watchwords = {} # Keys are ids, values are lists of ids that can follow a id dot.
+    self.widget = None # The widget that should get focus after autocomplete is done.
+#@+node:ekr.20061031131434.6:defineClassesDict
+def defineClassesDict (self):
+
+    self.allClassesDict = {}
+
+    # gc may not exist.
+    try: import gc
+    except ImportError: return
+
+    if g.isPython3:
+        for z in gc.get_objects():
+            try:
+                name = z.__class__.__name__
+            except ReferenceError:
+                pass
+            self.allClassesDict [name] = z
+    else:
+        for z in gc.get_objects():
+            t = type(z)
+            if t == types.ClassType:
+                name = z.__name__
+            elif t == types.InstanceType:
+                name = z.__class__.__name__
+            elif repr(t).startswith('<class'): # A wretched kludge.
+                name = z.__class__.__name__
+            elif t == types.TypeType:
+                name = z.__name__
+            else:
+                name = None
+            if name:
+                # if name == 'position': g.trace(t,z)
+                self.allClassesDict [name] = z
+
+    # g.printList(list(self.allClassesDict.keys()),tag='Classes',sort=True)
+    # g.trace(len(list(self.allClassesDict.keys())))
+    # g.trace('position:',self.allClassesDict.get('position'))
+#@-node:ekr.20061031131434.6:defineClassesDict
+#@+node:ekr.20061031131434.7:defineObjectDict
+def defineObjectDict (self,table=None):
+
+    c = self.c ; k = c.k ; p = c.p
+
+    # g.trace(g.callers(4))
+
+    if table is None: table = [
+        # Python globals...
+        (['aList','bList'],     'python','list'),
+        (['aString'],           'object','aString'), # An actual string object.
+        (['cc'],                'object',c.chapterController),
+        (['c','old_c','new_c'], 'object',c),            
+        (['d','d1','d2'],       'python','dict'),
+        (['f'],                 'object',c.frame), 
+        (['g'],                 'object',g),       
+        (['gui'],               'object',g.app.gui),
+        (['k'],                 'object',k),
+        (['p','p1','p2'],       'object',p.copy()), # 2009/12/21
+        (['s','s1','s2','ch'],  'object','aString'),
+        (['string'],            'object',string), # Python's string module.
+        # (['t','t1','t2'],       'object',p.v.t),  
+        (['v','v1','v2'],       'object',p.v),
+        (['w','widget'],        'object',c.frame.body.bodyCtrl),
+    ]
+
+    if 0: # Not useful at this point.
+        for key in __builtins__.keys():
+            obj = __builtins__.get(key)
+            if obj in (True,False,None): continue
+            data = [key],'object',obj
+            table.append(data)
+
+    d = {'dict':{},'int':1,'list':[],'string':''}
+
+    for idList,kind,nameOrObject in table:
+        if kind == 'object':
+            # Works, but hard to generalize for settings.
+            obj = nameOrObject
+        elif kind == 'python':
+            className = nameOrObject
+            o = d.get(className)
+            obj = o is not None and o.__class__
+        else:
+            module = g.importModule (kind,verbose=True)
+            if not module:
+                g.trace('Can not import ',nameOrObject)
+                continue
+            self.appendToKnownObjects(module)
+            if nameOrObject:
+                className = nameOrObject
+                obj = hasattr(module,className) and getattr(module,className) or None
+                if not obj:
+                    g.trace('%s module has no class %s' % (kind,nameOrObject))
+                else:
+                    self.appendToKnownObjects(getattr(module,className))
+            else:
+                obj = module
+        for z in idList:
+            if obj:
+                self.objectDict[z]=obj
+#@-node:ekr.20061031131434.7:defineObjectDict
+#@-node:ekr.20061031131434.5: ctor (autocompleter)
+#@-node:ekr.20091221145433.6384:Calltips don't work on leo3k
 #@+node:ekr.20091221123255.6375:Fixed
 #@+node:ekr.20091221094815.6385:zpcspm Headline scrolling
 @nocolor-node
@@ -2238,6 +2485,7 @@ def redo (self,event=None):
     c.recolor()
     c.bodyWantsFocusNow()
     w.setSelectionRange(i,j,insert=ins)
+    w.seeInsertPoint()
     u.redoing = False
     u.bead += 1
     u.setUndoTypes()
@@ -2561,7 +2809,7 @@ def undo (self,event=None):
         c.selectPosition(c.p)
     else:
         c.setCurrentPosition(c.p)
-    c.setChanged(True)
+    c.setChanged(self.oldChanged) ### True)
     # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
     i,j = w.getSelectionRange()
     ins = w.getInsertPoint()
@@ -2569,6 +2817,7 @@ def undo (self,event=None):
     c.recolor()
     c.bodyWantsFocusNow()
     w.setSelectionRange(i,j,insert=ins)
+    w.seeInsertPoint()
     u.undoing = False
     u.bead -= 1
     u.setUndoTypes()
@@ -2986,12 +3235,6 @@ if u.debug_print:
 #@-node:ekr.20061106105812.1:<< Compute the result using p's body text >>
 #@-node:ekr.20031218072017.1493:undoRedoText
 #@-node:ekr.20091221145433.6380:TL Undo messes with selection & view
-#@+node:ekr.20091221145433.6378:TL undo bug: window dirty bit not preserved
-@nocolor-node
-
-Bug 498688: Undo back to last saved content still shows file as
-modified ("*" in title)
-#@-node:ekr.20091221145433.6378:TL undo bug: window dirty bit not preserved
 #@+node:ekr.20091221094815.6386:Rob s @auto-rst problems
 @nocolor-node
 
