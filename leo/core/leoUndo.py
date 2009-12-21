@@ -2032,6 +2032,7 @@ class undoer:
         i,j = sel
         w.setSelectionRange(i,j,insert=j)
         c.frame.body.recolor(p,incremental=False)
+        w.seeInsertPoint() # 2009/12/21
     #@-node:ekr.20031218072017.1493:undoRedoText
     #@+node:ekr.20050408100042:undoRedoTree
     def undoRedoTree (self,p,new_data,old_data):
