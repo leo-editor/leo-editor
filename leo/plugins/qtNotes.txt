@@ -1182,13 +1182,13 @@ def tkKey (self,event,mods,keynum,text,toString,ch):
 
     trace = False and not g.unitTesting
     ch1 = ch # For tracing.
-    use_shift = {
+    use_shift = (
         'Home','End','Tab',
         'Up','Down','Left','Right',
         # Dubious...
         # 'Backspace','Delete','Ins',
         # 'F1',...'F12',
-    }
+    )
 
     # Convert '&' to 'ampersand', etc.
     # *Do* allow shift-bracketleft, etc.
@@ -1359,13 +1359,13 @@ def tkKey (self,event,mods,keynum,text,toString,ch):
 
     trace = False and not g.unitTesting
     ch1 = ch # For tracing.
-    use_shift = {
+    use_shift = (
         'Home','End','Tab',
         'Up','Down','Left','Right',
         # Dubious...
         # 'Backspace','Delete','Ins',
         # 'F1',...'F12',
-    }
+    )
 
     # Convert '&' to 'ampersand', etc.
     # *Do* allow shift-bracketleft, etc.

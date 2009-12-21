@@ -5970,7 +5970,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         # Allows proper horizontal scrollbar operation.
         w.setColumnCount(2)
         # w.setColumnHidden(1,True) # Disables scrolling.
-        w.setColumnWidth(1,1)
+        w.setColumnWidth(1,1) # A small width works.
 
         # Early inits...
         try: w.headerItem().setHidden(True)
