@@ -1407,7 +1407,7 @@ class undoer:
             c.selectPosition(c.p)
         else:
             c.setCurrentPosition(c.p)
-        c.setChanged(True)
+        c.setChanged(u.newChanged) # 2009/12/21
         # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
         i,j = w.getSelectionRange()
         ins = w.getInsertPoint()
@@ -1739,7 +1739,7 @@ class undoer:
             c.selectPosition(c.p)
         else:
             c.setCurrentPosition(c.p)
-        c.setChanged(self.oldChanged) ### True)
+        c.setChanged(u.oldChanged) # 2009/12/21
         # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
         i,j = w.getSelectionRange()
         ins = w.getInsertPoint()
