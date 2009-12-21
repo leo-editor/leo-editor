@@ -4316,15 +4316,21 @@ class atFile:
     # Write the string s as-is except that we replace '\n' with the proper line ending.
 
     def outputStringWithLineEndings (self,s):
-
-        # Calling self.onl() runs afoul of queued newlines.
         at = self
-        if g.isPython3:
-            s = g.ue(s,at.encoding)
-            s = s.replace(g.u('\n'),g.u(at.output_newline))
-        else:
+        # Calling self.onl() runs afoul of queued newlines.
+
+        if 1: # g.u(s) == s when isPython3.
+            if g.isPython3:
+                s = g.ue(s,at.encoding)
             s = s.replace('\n',at.output_newline)
-        self.os(s)
+            self.os(s)
+        else:
+            if g.isPython3:
+                s = g.ue(s,at.encoding)
+                s = s.replace(g.u('\n'),g.u(at.output_newline))
+            else:
+                s = s.replace('\n',at.output_newline)
+            self.os(s)
     #@-node:ekr.20041005105605.205:outputStringWithLineEndings
     #@+node:ekr.20050506090446.1:putAtFirstLines
     def putAtFirstLines (self,s):
