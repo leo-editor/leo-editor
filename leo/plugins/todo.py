@@ -55,7 +55,7 @@ __version__ = "0.30"
 def init():
 
     if g.app.gui.guiName() != "qt":
-        print 'todo.py plugin not loading because gui is not Qt'
+        print('todo.py plugin not loading because gui is not Qt')
         return False
 
     leoPlugins.registerHandler('after-create-leo-frame',onCreate)

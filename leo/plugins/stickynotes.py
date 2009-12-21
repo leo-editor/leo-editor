@@ -105,7 +105,7 @@ class SimpleRichText(QtGui.QTextEdit):
 
     def focusInEvent ( self, event ):        
         self.focusin()
-    
+
 
     def closeEvent(self, event):
         event.accept()        
@@ -154,11 +154,11 @@ class SimpleRichText(QtGui.QTextEdit):
         self.mergeCurrentCharFormat(format)
 
     def bold(self):
-        print "bold"
-        
-    
+        print("bold")
+
+
     def italic(self):
-        print "italic"
+        print("italic")
 
 
 
@@ -217,7 +217,7 @@ def stickynoter_f(event):
     p = c.p
     v = p.v
     def focusin():
-        print "focus in"
+        print("focus in")
         if v is c.p.v:
             nf.setHtml(v.b)
             nf.setWindowTitle(p.h)
@@ -225,7 +225,7 @@ def stickynoter_f(event):
 
 
     def focusout():
-        print "focus out"
+        print("focus out")
         if not nf.dirty:
             return
         v.b = nf.toHtml()

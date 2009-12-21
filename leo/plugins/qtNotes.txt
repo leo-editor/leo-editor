@@ -922,8 +922,6 @@ def redraw_after_select (self,p=None):
 #@-node:ekr.20091006142109.3700:Fixed @nosent dirty bug
 #@-node:ekr.20090813101852.3643:Bugs
 #@-node:ekr.20090717095154.3729:Leo 4.7 devel projects
-#@+node:ekr.20081208155215.12:Unused
-#@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl
 #@-node:ekr.20081121105001.147:@thin qtNotes.txt

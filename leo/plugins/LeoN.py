@@ -216,7 +216,7 @@ class ConcurrentEditable:
 
         # receive an operation to execute
         if dbg >=1:
-            print "Site %i;%s; '%s'; receiving %s"%(self.site_index, self.state_vector, self.get_text(), t_op)
+            print("Site %i;%s; '%s'; receiving %s"%(self.site_index, self.state_vector, self.get_text(), t_op)
 
 
         if is_causally_ready(t_op, self): 		# check if it is causally ready
@@ -237,8 +237,10 @@ class ConcurrentEditable:
             self.delayed_operations.append(t_op)
 
         if dbg >=1:
-            print "Site %i; HB %s"%(self.site_index, self.HB)
-            print "Site %i;%s; '%s'; delayed_ops: %s\n"%(self.site_index, self.state_vector, self.get_text(), self.delayed_operations)
+            print("Site %i; HB %s"%(self.site_index, self.HB))
+            print("Site %i;%s; '%s'; delayed_ops: %s\n"%(
+                self.site_index, self.state_vector,
+                self.get_text(), self.delayed_operations))
 
 
         return
@@ -270,7 +272,8 @@ class ConcurrentEditable:
         assert T(Onew) in ["Insert", "Delete"], "Invalid operation request."
 
         if dbg >=1:
-            print "Site %i;%s; '%s'; applying %s"%(self.site_index, self.state_vector, self.get_text(), Onew)
+            print("Site %i;%s; '%s'; applying %s"%(
+                self.site_index, self.state_vector, self.get_text(), Onew))
 
 
         HB = self.HB
@@ -290,7 +293,7 @@ class ConcurrentEditable:
 
         if HB and len(undoed) == len(HB):
             if dbg>=2:
-                print "No previous op found !"
+                print("No previous op found !")
             m = -1 # to indicate that no previous op was found
 
         # 2.
@@ -298,13 +301,14 @@ class ConcurrentEditable:
         self.execute(EOnew)
         # EOnew will be inserted after step 3 to follow better the paper notation.
         if dbg>=2:
-            print "m %i; [EO1, ..., EOm ] %s; HB[m+1:] %s"%(m,  HB[:m+1],  HB[m+1:])
+            print("m %i; [EO1, ..., EOm ] %s; HB[m+1:] %s"%(m,  HB[:m+1],  HB[m+1:]))
 
 
         # 3.
         if undoed: # if there was an undo, then redo
             if dbg>=1:
-                print "Site %i; '%s'; undoed %s; executed %s;"%(self.site_index, self.get_text(), undoed, EOnew) # just for debugging
+                print("Site %i; '%s'; undoed %s; executed %s;"%(
+                    self.site_index, self.get_text(), undoed, EOnew) # just for debugging
             EOoL = [] # EO'm+1 List
 
             EOoL.append( IT( HB[m+1], EOnew ) ) 
@@ -414,7 +418,7 @@ class ConcurrentEditable:
             MSV[i] = min( [ sv[i] for sv in SVT ] )
 
         if dbg >=1:
-            print "Site %i; MSV %s; SVT %s;"%(self.site_index, MSV, SVT)
+            print("Site %i; MSV %s; SVT %s;"%(self.site_index, MSV, SVT))
 
         # collect the garbage
         for EO in HB:
@@ -426,7 +430,7 @@ class ConcurrentEditable:
             if condition:
                 HB.remove(EO)
                 if dbg>=1:
-                    print "Site %i; removing %s"%(self.site_index, EO)
+                    print("Site %i; removing %s"%(self.site_index, EO))
             else:
                 break
 
@@ -462,7 +466,7 @@ class ConcurrentEditable:
             t_op[k] = kws[k]
 
         if dbg>=1:
-            print "Site %i; generating %s"%(self.site_index, t_op)
+            print("Site %i; generating %s"%(self.site_index, t_op))
 
         self.receive_op(t_op)
 
@@ -713,7 +717,7 @@ def IT (Oa, Ob):
     Ooa["timestamp"]   = list(Oa["timestamp"]) # copy
 
     if dbg>=2:	
-        print "IT(\n\t%s, \n\t%s\n)\t\t=> %s;"%(Oa, Ob,Ooa) # just for debugging
+        print("IT(\n\t%s, \n\t%s\n)\t\t=> %s;"%(Oa, Ob,Ooa)) # just for debugging
 
     return Ooa
 
@@ -800,7 +804,7 @@ def ET(Oa, Ob):
     Ooa["timestamp"]   = list(Oa["timestamp"]) # copy
 
     if dbg>=2:		
-        print "ET(\n\t%s, \n\t%s\n)\t\t=> %s;"%(Oa, Ob,Ooa) # just for debugging
+        print("ET(\n\t%s, \n\t%s\n)\t\t=> %s;"%(Oa, Ob,Ooa)) # just for debugging
 
     return Ooa
 
@@ -1160,19 +1164,16 @@ def Tests():
     dbg = 0
 
     if 0: # hand made unittest 
-        print "Starting tests"
+        print("Starting tests")
         TestConcurrentEditable1()
-        print "-"	* 30
+        print("-"	* 30)
         TestConcurrentEditable2()
-        print "-"	* 30	
+        print("-"	* 30)
         TestConcurrentEditableServer()
-        print "end of tests"
+        print("end of tests")
         return
 
-
-
     import unittest
-
 
     TestSuite = unittest.TestSuite()
     TestSuite.addTest(unittest.FunctionTestCase(TestConcurrentEditable1))
@@ -1204,8 +1205,8 @@ def TestConcurrentEditable1():
     It also test the garbage collector as indicated in the figure 3 of sun98achieving.pdf, page 20.
     """
 
-    print "-"*15
-    print "Read docstring of TestConcurrentEditable for more info about this test.\n"
+    print("-"*15)
+    print("Read docstring of TestConcurrentEditable for more info about this test.\n")
 
     # Create three site instances
     num_sites = 3
@@ -1232,7 +1233,7 @@ def TestConcurrentEditable1():
 
     if dbg>=4:
         for t_op in [ O1, O2, O3, O4]:
-            print t_op
+            print(t_op)
 
     if 1:
         # this messages are the same of figure 3. sun98achieving.pdf, page 20.
@@ -1244,31 +1245,31 @@ def TestConcurrentEditable1():
         site2.collect_garbage()
 
     if dbg>=1:
-        print "\nFinal HBs"
+        print("\nFinal HBs")
         for t_site in [site0, site1, site2]:
-            print "Site %i;%s;HB %s"%(t_site.site_index, t_site.state_vector, t_site.HB)
+            print("Site %i;%s;HB %s"%(t_site.site_index, t_site.state_vector, t_site.HB))
 
     # Show the final result at each site (expecting "ABCC'D")
 
     res_text = lambda x: "OK."*x or "FAILED."*(not x)
 
-    print "\nFinal results:"	
+    print("\nFinal results:")
 
     success = 1
     for t_site in [site0, site1, site2]:
         t_res = (t_site.get_text() == "ABCcD" and not t_site.delayed_operations)
         success = success and t_res
-        print "Site %i;%s; '%s'; delayed_ops: %s; %s"%(
+        print("Site %i;%s; '%s'; delayed_ops: %s; %s"%(
             t_site.site_index,
             t_site.state_vector,
             t_site.get_text(),
             t_site.delayed_operations,
-            res_text(t_res))
+            res_text(t_res)))
 
     if success:
-        print "\nTest successfull."
+        print("\nTest successfull.")
     else:
-        print "\nTest FAILED. Expecting the same result at the three sites: 'ABCcD', and no delayed operations left in the buffer."
+        print("\nTest FAILED. Expecting the same result at the three sites: 'ABCcD', and no delayed operations left in the buffer.")
 
     return success
 #@-node:ekr.20050402080206.36:TestConcurrentEditable1
@@ -1296,7 +1297,7 @@ def TestConcurrentEditable2():
     """
 
     print "-"*15
-    print "Read docstring of TestConcurrentEditable for more info about this test.\n"
+    print("Read docstring of TestConcurrentEditable for more info about this test.")
 
     # Create three site instances
     num_sites = 3
@@ -1331,32 +1332,32 @@ def TestConcurrentEditable2():
 
     if dbg>=4:
         for t_op in [ O1, O2, O3, O4]:
-            print t_op
+            print(t_op)
 
     if dbg>=1:
-        print "\nFinal HBs"
+        print("\nFinal HBs")
         for t_site in [site0, site1, site2]:
-            print "Site %i;%s;HB %s"%(t_site.site_index, t_site.state_vector, t_site.HB)
+            print("Site %i;%s;HB %s"%(t_site.site_index, t_site.state_vector, t_site.HB))
 
     # Show the final result at each site (expecting "ABCC'D")
 
     res_text = lambda x: "OK."*x or "FAILED."*(not x)
 
-    print "\nFinal results:"	
+    print("\nFinal results:")
 
     success = 1
     for t_site in [site0, site1, site2]:
         t_res = (t_site.get_text() == "ABCc" and not t_site.delayed_operations)
         success = success and t_res
-        print "Site %i;%s; '%s'; delayed_ops: %s; %s"%(
+        print("Site %i;%s; '%s'; delayed_ops: %s; %s"%(
             t_site.site_index, t_site.state_vector,
             t_site.get_text(), t_site.delayed_operations,
-            res_text(t_res))
+            res_text(t_res)))
 
     if success:
-        print "\nTest successfull."
+        print("\nTest successfull.")
     else:
-        print "\nTest FAILED. Expecting the same result at the three sites: 'ABCc', and no delayed operations left in the buffer."
+        print("\nTest FAILED. Expecting the same result at the three sites: 'ABCc', and no delayed operations left in the buffer.")
 
     return success
 #@nonl

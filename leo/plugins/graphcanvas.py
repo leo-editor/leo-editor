@@ -357,7 +357,7 @@ class graphcanvasController(object):
         # blc will call our update(), so in retaliation...
         blc.updateTabInt()
 
-        print 'done'
+        print('done')
     def unLoad(self):
 
         if not self.lastNodeItem:

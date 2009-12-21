@@ -100,7 +100,7 @@ class ContextSniffer:
 
 
     def declare(self, var, klass):
-        print "declare",var,klass
+        print("declare",var,klass)
         vars = self.vars.get(var, [])
         if not vars:
             self.vars[var] = vars
@@ -187,7 +187,7 @@ def codewise_complete(event):
     p = c.p
     w = event['mb_event'].widget
     # w : leoQTextEditWidget
-    #print w
+    #print(w)
 
     head, tail = get_current_line(w)
     m = get_attr_target_python(head)
@@ -276,7 +276,7 @@ def codewise_suggest(event):
     p = c.p
     w = event['mb_event'].widget
     # w : leoQTextEditWidget
-    #print w
+    #print(w)
 
     head, tail = get_current_line(w)
     m = get_attr_target_python(head)

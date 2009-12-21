@@ -144,7 +144,7 @@ __version__ = "0.1"
 def init():
 
     if g.app.gui.guiName() != "qt":
-        print 'attrib_edit.py plugin not loading because gui is not Qt'
+        print('attrib_edit.py plugin not loading because gui is not Qt')
         return False
 
     leoPlugins.registerHandler('after-create-leo-frame',onCreate)

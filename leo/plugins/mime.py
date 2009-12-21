@@ -144,7 +144,7 @@ def init ():
     ok = not g.app.unitTesting
 
     if ok:
-        print ('mime.py enabled')
+        print('mime.py enabled')
 
         # Open on double click
         leoPlugins.registerHandler('icondclick1', open_mimetype)

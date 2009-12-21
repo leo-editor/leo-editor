@@ -5643,6 +5643,350 @@ self.extra_extension_dict = {
 self.global_commands_dict = {}
 #@-node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
 #@-node:ekr.20091218182246.6722:Added entries for haxe language
+#@+node:ekr.20091220131901.6364:Unicode bug
+#@+node:ekr.20091206161352.6232:g.u & g.ue
+if 1:
+    if isPython3: # g.not defined yet.
+        def u(s):
+            return s
+        def ue(s,encoding):
+            return str(s,encoding)
+    else:
+        def u(s):
+            return unicode(s)
+        def ue(s,encoding):
+            return unicode(s,encoding)
+else:
+    def u(s,encoding='utf-8'):
+        '''Convert the string s to unicode if necessary.'''
+        if g.isUnicode(s):
+            return s
+        elif g.isPython3:
+            return str(s)
+        else:
+            return unicode(s)
+
+    def ue(s,encoding):
+        '''Convert the string s to unicode if necessary.'''
+        if g.isUnicode(s):
+            return s
+        elif g.isPython3:
+            return str(s,encoding)
+        else:
+            return unicode(s,encoding)
+#@-node:ekr.20091206161352.6232:g.u & g.ue
+#@+node:ekr.20070412082527:g.openLeoOrZipFile & tests
+# This is used in several places besides g.openWithFileName.
+
+def openLeoOrZipFile (fileName):
+
+    try:
+        isZipped = zipfile.is_zipfile(fileName)
+        if isZipped:
+            theFile = zipfile.ZipFile(fileName,'r')
+            if not theFile: return None,False
+            # Read the file into an StringIO file.
+            aList = theFile.namelist()
+            name = aList and len(aList) == 1 and aList[0]
+            if not name: return None,False
+            s = theFile.read(name)
+            if g.isPython3:
+                theStringFile = StringIO(g.ue(s,'utf-8'))
+            else:
+                theStringFile =  StringIO(s)
+            return theStringFile,True
+        else:
+            mode = 'rb'
+            theFile = open(fileName,mode)
+        return theFile,isZipped
+    except IOError:
+        # Do not use string + here: it will fail for non-ascii strings!
+        if not g.unitTesting:
+            g.es_print("can not open:",fileName,color="blue")
+        return None,False
+#@nonl
+#@+node:ekr.20090526083112.5838:@test g.openLeoOrZipFile
+if g.unitTesting:
+
+    import zipfile
+
+    # Create a zip file for testing.
+    s = 'this is a test file'
+    testDir = g.os_path_join(g.app.loadDir,'..','test')
+    assert g.os_path_exists(testDir)
+    path = g.os_path_finalize_join(testDir,'testzip.zip')
+    theFile = zipfile.ZipFile(path,'w')
+    theFile.writestr('leo-zip-file',s)
+    theFile.close()
+
+    # Open the file, and use read (with no args) to get the contents.
+    theFile,ok = g.openLeoOrZipFile(path)
+    assert ok,'not ok'
+    s2 = theFile.read()
+    assert s == s2,'s:  %s\ns2: %s' % (repr(s),repr(s2))
+#@-node:ekr.20090526083112.5838:@test g.openLeoOrZipFile
+#@-node:ekr.20070412082527:g.openLeoOrZipFile & tests
+#@+node:ekr.20091220131901.6365:leoAtFile
+#@+node:ekr.20090525144314.6526:cleanSaxInputString & test
+def cleanSaxInputString(self,s):
+
+    badchars = [chr(ch) for ch in range(32)]
+    badchars.remove('\t')
+    badchars.remove('\r')
+    badchars.remove('\n')
+
+    flatten = ''.join(badchars)
+    pad = ' ' * len(flatten)
+
+    if g.isPython3:
+        flatten = bytes(flatten,'utf-8')
+        pad = bytes(pad,'utf-8')
+        transtable = bytes.maketrans(flatten,pad)
+    else:
+        transtable = string.maketrans(flatten,pad)
+
+    return s.translate(transtable)
+
+# for i in range(32): print i,repr(chr(i))
+#@+node:ekr.20090525144314.6527:@test cleanSaxInputString
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    s = 'test%cthis' % 27
+
+    assert c.fileCommands.cleanSaxInputString(s) == 'test this'
+#@-node:ekr.20090525144314.6527:@test cleanSaxInputString
+#@-node:ekr.20090525144314.6526:cleanSaxInputString & test
+#@+node:ekr.20041005105605.205:outputStringWithLineEndings
+# Write the string s as-is except that we replace '\n' with the proper line ending.
+
+def outputStringWithLineEndings (self,s):
+    at = self
+    # Calling self.onl() runs afoul of queued newlines.
+
+    if 1: # g.u(s) == s when isPython3.
+        if g.isPython3:
+            s = g.ue(s,at.encoding)
+        s = s.replace('\n',at.output_newline)
+        self.os(s)
+    else:
+        if g.isPython3:
+            s = g.ue(s,at.encoding)
+            s = s.replace(g.u('\n'),g.u(at.output_newline))
+        else:
+            s = s.replace('\n',at.output_newline)
+        self.os(s)
+#@-node:ekr.20041005105605.205:outputStringWithLineEndings
+#@+node:ekr.20080712150045.1:replaceFileWithString (atFile)
+def replaceFileWithString (self,fn,s):
+
+    '''Replace the file with s if s is different from theFile's contents.
+
+    Return True if theFile was changed.
+    '''
+
+    at = self ; testing = g.app.unitTesting
+
+    # g.trace('fn',fn,'s','\n',s)
+    # g.trace(g.callers())
+
+    exists = g.os_path_exists(fn)
+
+    if exists: # Read the file.  Return if it is the same.
+        try:
+            f = open(fn,'rb')
+            s2 = f.read()
+            f.close()
+        except IOError:
+            at.error('unexpected exception creating %s' % fn)
+            g.es_exception()
+            return False
+        if s == s2:
+            if not testing: g.es('unchanged:',fn)
+            return False
+
+    # Issue warning if directory does not exist.
+    theDir = g.os_path_dirname(fn)
+    if theDir and not g.os_path_exists(theDir):
+        if not g.unitTesting:
+            g.es('not written: %s directory not found' % fn,color='red')
+        return False
+
+    # Replace
+    try:
+        f = open(fn,'wb')
+        if g.isPython3:
+            s = g.toEncodedString(s,encoding=self.encoding)
+        f.write(s)
+        f.close()
+        if not testing:
+            if exists:
+                g.es('wrote:    ',fn)
+            else:
+                # g.trace('created:',fn,g.callers())
+                g.es('created:',fn)
+        return True
+    except IOError:
+        at.error('unexpected exception writing file: %s' % (fn))
+        g.es_exception()
+        return False
+#@+node:ekr.20090530055015.6873:@test at.replaceFileWithString
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    at = c.atFileCommands
+
+    fn = 'does/not/exist'
+    assert not g.os_path_exists(fn)
+    assert not at.replaceFileWithString (fn,'abc')
+#@-node:ekr.20090530055015.6873:@test at.replaceFileWithString
+#@-node:ekr.20080712150045.1:replaceFileWithString (atFile)
+#@+node:ekr.20041005105605.204:os
+def os (self,s):
+
+    """Write a string to the output stream.
+
+    All output produced by leoAtFile module goes here."""
+
+    trace = False
+    at = self ; tag = self.underindentEscapeString
+    f = at.outputFile
+
+    if s and f:
+        try:
+            if trace: g.trace(repr(s))
+            if s.startswith(tag):
+                junk,s = self.parseUnderindentTag(s)
+            # Bug fix: this must be done last.
+            s = g.toEncodedString(s,at.encoding,reportErrors=True)
+            f.write(s)
+        except Exception:
+            at.exception("exception writing:" + s)
+#@-node:ekr.20041005105605.204:os
+#@-node:ekr.20091220131901.6365:leoAtFile
+#@+node:ekr.20091220131901.6366:leoFileCommands
+#@+node:ekr.20060919110638.14:parse_leo_file
+def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
+
+    c = self.c
+    try:
+        if g.isPython3:
+            if theFile:
+                # Use the open binary file, opened by g.openLeoOrZipFile.
+                pass
+            else:
+                s = str(s,encoding='utf-8')
+                s = self.cleanSaxInputString(s)
+                theFile = StringIO(s)
+        else:
+            if theFile: s = theFile.read()
+            s = self.cleanSaxInputString(s)
+            theFile = cStringIO.StringIO(s)
+        parser = xml.sax.make_parser()
+        parser.setFeature(xml.sax.handler.feature_external_ges,1)
+            # Include external general entities, esp. xml-stylesheet lines.
+        if 0: # Expat does not read external features.
+            parser.setFeature(xml.sax.handler.feature_external_pes,1)
+                # Include all external parameter entities
+                # Hopefully the parser can figure out the encoding from the <?xml> element.
+        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
+        parser.setContentHandler(handler)
+        parser.parse(theFile) # expat does not support parseString
+        # g.trace('parsing done')
+        sax_node = handler.getRootNode()
+    except xml.sax.SAXParseException:
+        g.es_print('error parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+    except Exception:
+        g.es_print('unexpected exception parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+
+    return sax_node
+#@-node:ekr.20060919110638.14:parse_leo_file
+#@+node:ekr.20031218072017.1575:putTnodes
+def putTnodes (self):
+
+    """Puts all tnodes as required for copy or save commands"""
+
+    c = self.c
+
+    self.put("<tnodes>\n")
+    << write only those tnodes that were referenced >>
+    self.put("</tnodes>\n")
+#@+node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
+if self.usingClipboard: # write the current tree.
+    theIter = c.p.self_and_subtree()
+else: # write everything
+    theIter = c.all_unique_positions()
+
+# Populate tnodes
+tnodes = {}
+nodeIndices = g.app.nodeIndices
+for p in theIter:
+    # Make *sure* the file index has the proper form.
+    # g.trace(p.v.fileIndex)
+    try:
+        theId,t,n = p.v.fileIndex
+    except ValueError:
+        try:
+            theId,t,n = p.v.fileIndex,''
+        except Exception:
+            raise BadLeoFile('bad p.v.fileIndex' % repr(p.v.fileIndex))
+
+    if n is None:
+        n = g.u('0')
+    elif g.isPython3:
+        n = str(n)
+    else:
+        n = unicode(n)
+    index = theId,t,n
+    tnodes[index] = p.v
+
+# Put all tnodes in index order.
+for index in sorted(tnodes):
+    # g.trace(index)
+    v = tnodes.get(index)
+    if v:
+        # Write only those tnodes whose vnodes were written.
+        if v.isWriteBit():
+            self.putTnode(v)
+    else:
+        g.trace('can not happen: no vnode for',repr(index))
+        # This prevents the file from being written.
+        raise BadLeoFile('no vnode for %s' % repr(index))
+#@-node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
+#@-node:ekr.20031218072017.1575:putTnodes
+#@+node:ekr.20080805085257.2:pickle
+def pickle (self,torv,val,tag):
+
+    '''Pickle val and return the hexlified result.'''
+
+    trace = False and g.unitTesting
+    try:
+        s = pickle.dumps(val,protocol=1)
+        s2 = binascii.hexlify(s)
+        s3 = g.ue(s2,'utf-8')
+        if trace: g.trace('\n',
+            type(val),val,'\n',type(s),repr(s),'\n',
+            type(s2),s2,'\n',type(s3),s3)
+        field = ' %s="%s"' % (tag,s3)
+        return field
+
+    except pickle.PicklingError:
+        if tag: # The caller will print the error if tag is None.
+            g.es_print("ignoring non-pickleable value",val,"in",torv,color="blue")
+        return ''
+
+    except Exception:
+        g.es("fc.pickle: unexpected exception in",torv,color='red')
+        g.es_exception()
+        return ''
+#@-node:ekr.20080805085257.2:pickle
+#@-node:ekr.20091220131901.6366:leoFileCommands
+#@-node:ekr.20091220131901.6364:Unicode bug
 #@-node:ekr.20091203060018.6100:leo-3k
 #@+node:ekr.20091211111443.6264:Batch operations on nodes
 #@+node:ekr.20091211111443.6265:c.doBatchOperations & helpers
