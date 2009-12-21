@@ -4870,6 +4870,26 @@ if False: # Never used in either Leo2k or Leo3k.
     def __len__(self):
         return len(self.keys())
 #@-node:ekr.20091216103214.6298:fourth-level (python 2.6)
+#@+node:ekr.20091221144651.6377:old g.u and g.ue
+
+def u(s,encoding='utf-8'):
+    '''Convert the string s to unicode if necessary.'''
+    if g.isUnicode(s):
+        return s
+    elif g.isPython3:
+        return str(s)
+    else:
+        return unicode(s)
+
+def ue(s,encoding):
+    '''Convert the string s to unicode if necessary.'''
+    if g.isUnicode(s):
+        return s
+    elif g.isPython3:
+        return str(s,encoding)
+    else:
+        return unicode(s,encoding)
+#@-node:ekr.20091221144651.6377:old g.u and g.ue
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node
