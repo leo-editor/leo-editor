@@ -7664,7 +7664,7 @@ class leoQtEventFilter(QtCore.QObject):
                 mods.remove('Shift')
                 ch = ch.upper()
             elif len(ch) > 1:
-                # Experimental!
+                # Experimental!plu
                 mods.remove('Shift')
             # 2009/12/19: Speculative.
             # if ch in ('parenright','parenleft','braceright','braceleft'):
