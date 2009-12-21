@@ -305,10 +305,11 @@ class undoer:
         else:
             return "Undo " + name
     #@-node:ekr.20031218072017.3613:redoMenuName, undoMenuName
-    #@+node:ekr.20031218072017.3614:setRedoType, setUndoType
+    #@+node:ekr.20031218072017.3614:setRedoType
     # These routines update both the ivar and the menu label.
     def setRedoType (self,theType):
-        # g.trace(theType,g.callers())
+        trace = False and not g.unitTesting
+        if trace: g.trace(theType,g.callers(4))
         u = self ; frame = u.c.frame
 
         if type(theType) != type(''):
@@ -329,10 +330,11 @@ class undoer:
             frame.menu.setMenuLabel(menu,u.realRedoMenuLabel,realLabel,underline=underline)
             u.redoMenuLabel = name
             u.realRedoMenuLabel = realLabel
-
+    #@-node:ekr.20031218072017.3614:setRedoType
+    #@+node:ekr.20091221145433.6381:setUndoType
     def setUndoType (self,theType):
-        # g.trace(theType,g.callers(4))
-
+        trace = False and not g.unitTesting
+        if trace: g.trace(theType,g.callers(4))
         u = self ; frame = u.c.frame
         if type(theType) != type(''):
             g.trace('oops: expected string for command, got %s' % repr(theType))
@@ -352,7 +354,7 @@ class undoer:
             u.undoType = theType
             u.undoMenuLabel = name
             u.realUndoMenuLabel = realLabel
-    #@-node:ekr.20031218072017.3614:setRedoType, setUndoType
+    #@-node:ekr.20091221145433.6381:setUndoType
     #@+node:ekr.20031218072017.3616:setUndoTypes
     def setUndoTypes (self):
 

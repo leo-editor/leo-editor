@@ -2371,7 +2371,7 @@ class leoTree:
         '''Officially change a headline.
         Set the old undo text to the previous revert point.'''
 
-        trace = False and g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c ; u = c.undoer
         w = self.edit_widget(p)
 
@@ -2385,7 +2385,9 @@ class leoTree:
             return # The hook claims to have handled the event.
 
         if s is None: s = w.getAllText()
-        if trace: g.trace('w',repr(w),'s',repr(s))
+        if trace:
+            g.trace('*** leoTree',g.callers(5))
+            g.trace(p and p.h,'w',repr(w),'s',repr(s))
         #@    << truncate s if it has multiple lines >>
         #@+node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
         # Remove one or two trailing newlines before warning of truncation.

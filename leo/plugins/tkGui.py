@@ -7281,11 +7281,12 @@ class leoTkinterTree (leoFrame.leoTree):
                     g.clear_stats()
 
         # New in 4.4b2: Call endEditLabel, but suppress the redraw.
-        self.beginUpdate()
-        try:
-            self.endEditLabel()
-        finally:
-            self.endUpdate(False)
+        if 0: #### A major change.
+            self.beginUpdate()
+            try:
+                self.endEditLabel()
+            finally:
+                self.endUpdate(False)
 
         # Do the actual redraw. (c.redraw has called c.expandAllAncestors.)
         if self.idle_redraw:

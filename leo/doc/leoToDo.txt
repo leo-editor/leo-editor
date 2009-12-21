@@ -34,20 +34,18 @@ beyond your problem.
 #@nonl
 #@-node:ekr.20091221094815.6385:zpcspm Headline scrolling
 #@-node:ekr.20091221123255.6375:Fixed
-#@+node:ekr.20091221094815.6384:TL (undo bugs)
+#@+node:ekr.20091221145433.6380:TL Undo messes with selection & view
 @nocolor-node
-
-The following "undo" functionality should be fixed:
-
-Bug 498692: Undo deleted node renames current node's headline
-
-Bug 498688: Undo back to last saved content still shows file as
-modified ("*" in title)
 
 Bug 362950: during body text undo selection goes nuts and view moves
 +1 by Terry Brown.
+#@-node:ekr.20091221145433.6380:TL Undo messes with selection & view
+#@+node:ekr.20091221145433.6378:TL undo bug: window dirty bit not preserved
+@nocolor-node
 
-#@-node:ekr.20091221094815.6384:TL (undo bugs)
+Bug 498688: Undo back to last saved content still shows file as
+modified ("*" in title)
+#@-node:ekr.20091221145433.6378:TL undo bug: window dirty bit not preserved
 #@+node:ekr.20091221094815.6386:Rob s @auto-rst problems
 @nocolor-node
 
@@ -3978,7 +3976,7 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
     '''Officially change a headline.
     Set the old undo text to the previous revert point.'''
 
-    trace = False and g.unitTesting
+    trace = False and not g.unitTesting
     c = self.c ; u = c.undoer
     w = self.edit_widget(p)
 
@@ -3992,7 +3990,9 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
         return # The hook claims to have handled the event.
 
     if s is None: s = w.getAllText()
-    if trace: g.trace('w',repr(w),'s',repr(s))
+    if trace:
+        g.trace('*** leoTree',g.callers(5))
+        g.trace(p and p.h,'w',repr(w),'s',repr(s))
     << truncate s if it has multiple lines >>
     # Make the change official, but undo to the *old* revert point.
     oldRevert = self.revertHeadline

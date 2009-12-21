@@ -1471,6 +1471,486 @@ def eventFilter(self, obj, event):
     return override
 #@-node:ekr.20081121105001.168:eventFilter
 #@-node:ekr.20091219172504.3642:Remove shift from shift-(, etc.
+#@+node:ekr.20091221122450.3656:Allow horizontal scrolling in QtTree
+#@+node:ekr.20081121105001.400:class leoQtTree (baseNativeTree)
+class leoQtTree (baseNativeTree.baseNativeTreeWidget):
+
+    """Leo qt tree class, a subclass of baseNativeTreeWidget."""
+
+    callbacksInjected = False # A class var.
+
+    @others
+#@+node:ekr.20090124174652.118: Birth (leoQtTree)
+#@+node:ekr.20090124174652.119:ctor
+def __init__(self,c,frame):
+
+    # Init the base class.
+    baseNativeTree.baseNativeTreeWidget.__init__(self,c,frame)
+
+    # Components.
+    self.headlineWrapper = leoQtHeadlineWidget # This is a class.
+    self.treeWidget = w = frame.top.ui.treeWidget # An internal ivar.
+
+    # Works, but the scroll bar is useless!
+    # w.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+
+    # Allows proper horizontal scrollbar operation.
+    w.setColumnCount(2)
+    # w.setColumnHidden(1,True) # Disables scrolling.
+    w.setColumnWidth(1,1) # A small width works.
+
+    # Early inits...
+    try: w.headerItem().setHidden(True)
+    except Exception: pass
+
+    w.setIconSize(QtCore.QSize(160,16))
+#@-node:ekr.20090124174652.119:ctor
+#@+node:ekr.20090124174652.120:qtTree.initAfterLoad
+def initAfterLoad (self):
+
+    '''Do late-state inits.'''
+
+    # Called by Leo's core.
+
+    c = self.c ; frame = c.frame
+    w = c.frame.top ; tw = self.treeWidget
+
+    if not leoQtTree.callbacksInjected:
+        leoQtTree.callbacksInjected = True
+        self.injectCallbacks() # A base class method.
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemDoubleClicked(QTreeWidgetItem*, int)"),
+        self.onItemDoubleClicked)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemClicked(QTreeWidgetItem*, int)"),
+        self.onItemClicked)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemSelectionChanged()"),
+        self.onTreeSelect)
+
+    # We don't need this.  Hooray!
+    # w.connect(self.treeWidget,QtCore.SIGNAL(
+            # "itemChanged(QTreeWidgetItem*, int)"),
+        # self.onItemChanged)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemCollapsed(QTreeWidgetItem*)"),
+        self.onItemCollapsed)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemExpanded(QTreeWidgetItem*)"),
+        self.onItemExpanded)
+
+    w.connect(self.treeWidget, QtCore.SIGNAL(
+            "customContextMenuRequested(QPoint)"),
+        self.onContextMenu)    
+
+    self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
+    tw.installEventFilter(self.ev_filter)
+
+    c.setChanged(False)
+#@-node:ekr.20090124174652.120:qtTree.initAfterLoad
+#@-node:ekr.20090124174652.118: Birth (leoQtTree)
+#@+node:ekr.20090124174652.102:Widget-dependent helpers (leoQtTree)
+#@+node:ekr.20090126120517.11:Drawing
+def clear (self):
+    '''Clear all widgets in the tree.'''
+    w = self.treeWidget
+    w.clear()
+
+def repaint (self):
+    '''Repaint the widget.'''
+    w = self.treeWidget
+    w.repaint()
+#@nonl
+#@-node:ekr.20090126120517.11:Drawing
+#@+node:ekr.20090124174652.109:Icons (qtTree)
+#@+node:ekr.20090124174652.110:drawIcon
+def drawIcon (self,p):
+
+    '''Redraw the icon at p.'''
+
+    w = self.treeWidget
+    itemOrTree = self.position2item(p) or w
+    item = QtGui.QTreeWidgetItem(itemOrTree)
+    icon = self.getIcon(p)
+    self.setItemIcon(item,icon)
+
+#@-node:ekr.20090124174652.110:drawIcon
+#@+node:ekr.20090124174652.111:getIcon & helper (qtTree)
+def getIcon(self,p):
+
+    '''Return the proper icon for position p.'''
+
+    p.v.iconVal = val = p.v.computeIcon()
+    return self.getCompositeIconImage(p,val)
+#@+node:ekr.20090701122113.3736:getCompositeIconImage
+def getCompositeIconImage(self,p,val):
+
+    trace = False and not g.unitTesting
+    userIcons = self.c.editCommands.getIconList(p)
+    if not userIcons:
+        return self.getStatusIconImage(p)
+
+    hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
+    hash.append(str(val))
+    hash.extend([i['file'] for i in userIcons if i['where'] == 'beforeHeadline'])
+    hash = ':'.join(hash)
+
+    if hash in g.app.gui.iconimages:
+        icon = g.app.gui.iconimages[hash]
+        if trace: g.trace('cached %s' % (icon))
+        return icon
+
+    images = [g.app.gui.getImageImage(i['file']) for i in userIcons
+             if i['where'] == 'beforeIcon']
+    images.append(g.app.gui.getImageImage("box%02d.GIF" % val))
+    images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
+                  if i['where'] == 'beforeHeadline'])
+    width = sum([i.width() for i in images])
+    height = max([i.height() for i in images])
+
+    pix = QtGui.QPixmap(width,height)
+    pix.fill()
+    pix.setAlphaChannel(pix)
+    painter = QtGui.QPainter(pix)
+    x = 0
+    for i in images:
+        painter.drawPixmap(x,(height-i.height())//2,i)
+        x += i.width()
+    painter.end()
+
+    icon = QtGui.QIcon(pix)
+    g.app.gui.iconimages[hash] = icon
+    if trace: g.trace('new %s' % (icon))
+    return icon
+#@-node:ekr.20090701122113.3736:getCompositeIconImage
+#@-node:ekr.20090124174652.111:getIcon & helper (qtTree)
+#@+node:ekr.20090124174652.112:setItemIconHelper (qtTree)
+def setItemIconHelper (self,item,icon):
+
+    # Generates an item-changed event.
+    # g.trace(id(icon))
+    if item:
+        item.setIcon(0,icon)
+#@-node:ekr.20090124174652.112:setItemIconHelper (qtTree)
+#@-node:ekr.20090124174652.109:Icons (qtTree)
+#@+node:ekr.20090124174652.115:Items
+#@+node:ekr.20090124174652.67:childIndexOfItem
+def childIndexOfItem (self,item):
+
+    parent = item and item.parent()
+
+    if parent:
+        n = parent.indexOfChild(item)
+    else:
+        w = self.treeWidget
+        n = w.indexOfTopLevelItem(item)
+
+    return n
+
+#@-node:ekr.20090124174652.67:childIndexOfItem
+#@+node:ekr.20090124174652.66:childItems
+def childItems (self,parent_item):
+
+    '''Return the list of child items of the parent item,
+    or the top-level items if parent_item is None.'''
+
+    if parent_item:
+        n = parent_item.childCount()
+        items = [parent_item.child(z) for z in range(n)]
+    else:
+        w = self.treeWidget
+        n = w.topLevelItemCount()
+        items = [w.topLevelItem(z) for z in range(n)]
+
+    return items
+#@-node:ekr.20090124174652.66:childItems
+#@+node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
+def closeEditorHelper (self,e,item):
+
+    w = self.treeWidget
+
+    if e:
+        w.closeEditor(e,QtGui.QAbstractItemDelegate.NoHint)
+        w.setCurrentItem(item)
+#@-node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
+#@+node:ekr.20090322190318.10:connectEditorWidget & helper
+def connectEditorWidget(self,e,item):
+
+    c = self.c ; w = self.treeWidget
+
+    if not e: return g.trace('can not happen: no e')
+
+    wrapper = self.getWrapper(e,item)
+
+    # Hook up the widget.
+    def editingFinishedCallback(e=e,item=item,self=self,wrapper=wrapper):
+        # g.trace(wrapper,g.callers(5))
+        c = self.c ; w = self.treeWidget
+        self.onHeadChanged(p=c.p,e=e)
+        w.setCurrentItem(item)
+
+    e.connect(e,QtCore.SIGNAL(
+        "editingFinished()"),
+        editingFinishedCallback)
+#@nonl
+#@-node:ekr.20090322190318.10:connectEditorWidget & helper
+#@+node:ekr.20090124174652.18:contractItem & expandItem
+def contractItem (self,item):
+
+    # g.trace(g.callers(4))
+
+    self.treeWidget.collapseItem(item)
+
+def expandItem (self,item):
+
+    # g.trace(g.callers(4))
+
+    self.treeWidget.expandItem(item)
+#@-node:ekr.20090124174652.18:contractItem & expandItem
+#@+node:ekr.20090124174652.104:createTreeEditorForItem (leoQtTree)
+def createTreeEditorForItem(self,item):
+
+    trace = False and not g.unitTesting
+
+    w = self.treeWidget
+    w.setCurrentItem(item) # Must do this first.
+    w.editItem(item)
+    e = w.itemWidget(item,0)
+    e.setObjectName('headline')
+    self.connectEditorWidget(e,item)
+
+    return e
+#@nonl
+#@-node:ekr.20090124174652.104:createTreeEditorForItem (leoQtTree)
+#@+node:ekr.20090124174652.103:createTreeItem
+def createTreeItem(self,p,parent_item):
+
+    trace = False and not g.unitTesting
+
+    w = self.treeWidget
+    itemOrTree = parent_item or w
+    item = QtGui.QTreeWidgetItem(itemOrTree)
+    item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+
+    if trace: g.trace(id(item),p.h,g.callers(4))
+    try:
+        g.visit_tree_item(self.c, p, item)
+    except leoPlugins.TryNext:
+        pass
+    #print "item",item
+    return item
+#@-node:ekr.20090124174652.103:createTreeItem
+#@+node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
+def editLabelHelper (self,item,selectAll=False,selection=None):
+
+    '''Called by nativeTree.editLabel to do
+    gui-specific stuff.'''
+
+    w = self.treeWidget
+    w.setCurrentItem(item) # Must do this first.
+    w.editItem(item)
+        # Generates focus-in event that tree doesn't report.
+    e = w.itemWidget(item,0) # A QLineEdit.
+
+    if e:
+        s = e.text() ; len_s = len(s)
+        if s == 'newHeadline': selectAll=True
+        if selection:
+            i,j,ins = selection
+            start,n = i,abs(i-j)
+                # Not right for backward searches.
+        elif selectAll: start,n,ins = 0,len_s,len_s
+        else:           start,n,ins = len_s,0,len_s
+        e.setObjectName('headline')
+        e.setSelection(start,n)
+        # e.setCursorPosition(ins) # Does not work.
+        e.setFocus()
+        self.connectEditorWidget(e,item) # Hook up the widget.
+
+    return e
+#@-node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
+#@+node:ekr.20090124174652.105:getCurrentItem
+def getCurrentItem (self):
+
+    w = self.treeWidget
+    return w.currentItem()
+#@-node:ekr.20090124174652.105:getCurrentItem
+#@+node:ekr.20090126120517.22:getItemText
+def getItemText (self,item):
+
+    '''Return the text of the item.'''
+
+    if item:
+        return g.u(item.text(0))
+    else:
+        return '<no item>'
+#@nonl
+#@-node:ekr.20090126120517.22:getItemText
+#@+node:ekr.20090126120517.19:getParentItem
+def getParentItem(self,item):
+
+    return item and item.parent()
+#@nonl
+#@-node:ekr.20090126120517.19:getParentItem
+#@+node:ville.20090525205736.3927:getSelectedItems
+def getSelectedItems(self):
+    w = self.treeWidget    
+    return w.selectedItems()
+#@nonl
+#@-node:ville.20090525205736.3927:getSelectedItems
+#@+node:ekr.20090124174652.106:getTreeEditorForItem (leoQtTree)
+def getTreeEditorForItem(self,item):
+
+    '''Return the edit widget if it exists.
+    Do *not* create one if it does not exist.'''
+
+    w = self.treeWidget
+    e = w.itemWidget(item,0)
+    return e
+#@-node:ekr.20090124174652.106:getTreeEditorForItem (leoQtTree)
+#@+node:ekr.20090602083443.3817:getWrapper (leoQtTree)
+def getWrapper (self,e,item):
+
+    '''Return headlineWrapper that wraps e (a QLineEdit).'''
+
+    c = self.c
+
+    if e:
+        wrapper = self.editWidgetsDict.get(e)
+        if not wrapper:
+            wrapper = self.headlineWrapper(c,item,name='head',widget=e)
+            self.editWidgetsDict[e] = wrapper
+
+        return wrapper
+    else:
+        return None
+#@-node:ekr.20090602083443.3817:getWrapper (leoQtTree)
+#@+node:ekr.20090124174652.69:nthChildItem
+def nthChildItem (self,n,parent_item):
+
+    children = self.childItems(parent_item)
+
+    if n < len(children):
+        item = children[n]
+    else:
+        # This is **not* an error.
+        # It simply means that we need to redraw the tree.
+        item = None
+
+    return item
+#@-node:ekr.20090124174652.69:nthChildItem
+#@+node:ekr.20090201080444.12:scrollToItem
+def scrollToItem (self,item):
+
+    w = self.treeWidget
+
+    # g.trace(self.traceItem(item),g.callers(4))
+
+    hPos,vPos = self.getScroll()
+
+    w.scrollToItem(item,w.PositionAtCenter)
+
+    self.setHScroll(0)
+#@-node:ekr.20090201080444.12:scrollToItem
+#@+node:ekr.20090124174652.107:setCurrentItemHelper (leoQtTree)
+def setCurrentItemHelper(self,item):
+
+    w = self.treeWidget
+    w.setCurrentItem(item)
+#@-node:ekr.20090124174652.107:setCurrentItemHelper (leoQtTree)
+#@+node:ekr.20090124174652.108:setItemText
+def setItemText (self,item,s):
+
+    if item:
+        item.setText(0,s)
+#@-node:ekr.20090124174652.108:setItemText
+#@-node:ekr.20090124174652.115:Items
+#@+node:ekr.20090124174652.122:Scroll bars (leoQtTree)
+#@+node:ekr.20090531084925.3779:getSCroll
+def getScroll (self):
+
+    '''Return the hPos,vPos for the tree's scrollbars.'''
+
+    w = self.treeWidget
+    hScroll = w.horizontalScrollBar()
+    vScroll = w.verticalScrollBar()
+    hPos = hScroll.sliderPosition()
+    vPos = vScroll.sliderPosition()
+    return hPos,vPos
+#@-node:ekr.20090531084925.3779:getSCroll
+#@+node:ekr.20090531084925.3780:setH/VScroll
+def setHScroll (self,hPos):
+    w = self.treeWidget
+    hScroll = w.horizontalScrollBar()
+    hScroll.setValue(hPos)
+
+def setVScroll (self,vPos):
+    # g.trace(vPos)
+    w = self.treeWidget
+    vScroll = w.verticalScrollBar()
+    vScroll.setValue(vPos)
+#@nonl
+#@-node:ekr.20090531084925.3780:setH/VScroll
+#@+node:ekr.20090531084925.3774:scrollDelegate (leoQtTree)
+def scrollDelegate (self,kind):
+
+    '''Scroll a QTreeWidget up or down.
+    kind is in ('down-line','down-page','up-line','up-page')
+    '''
+    c = self.c ; w = self.treeWidget
+    vScroll = w.verticalScrollBar()
+    h = w.size().height()
+    lineSpacing = w.fontMetrics().lineSpacing()
+    n = h/lineSpacing
+    if   kind == 'down-half-page': delta = n/2
+    elif kind == 'down-line':      delta = 1
+    elif kind == 'down-page':      delta = n
+    elif kind == 'up-half-page':   delta = -n/2
+    elif kind == 'up-line':        delta = -1
+    elif kind == 'up-page':        delta = -n
+    else:
+        delta = 0 ; g.trace('bad kind:',kind)
+    val = vScroll.value()
+    # g.trace(kind,n,h,lineSpacing,delta,val)
+    vScroll.setValue(val+delta)
+    c.treeWantsFocus()
+#@-node:ekr.20090531084925.3774:scrollDelegate (leoQtTree)
+#@-node:ekr.20090124174652.122:Scroll bars (leoQtTree)
+#@+node:ville.20090630151546.3969:onContextMenu (nativeTree)
+def onContextMenu(self, point):
+    c = self.c
+    w = self.treeWidget
+    handlers = g.tree_popup_handlers    
+    menu = QtGui.QMenu()
+    menuPos = w.mapToGlobal(point)
+    if not handlers:
+        menu.addAction("No popup handlers")
+
+    p = c.currentPosition().copy()
+    done = set()
+    for h in handlers:
+        # every handler has to add it's QActions by itself
+        if h in done:
+            # do not run the same handler twice
+            continue
+        h(c,p,menu)
+
+    a = menu.popup(menuPos)
+    self._contextmenu = menu
+
+
+
+
+
+#@-node:ville.20090630151546.3969:onContextMenu (nativeTree)
+#@-node:ekr.20090124174652.102:Widget-dependent helpers (leoQtTree)
+#@-node:ekr.20081121105001.400:class leoQtTree (baseNativeTree)
+#@-node:ekr.20091221122450.3656:Allow horizontal scrolling in QtTree
 #@-node:ekr.20090813101852.3643:Bugs
 #@-node:ekr.20090717095154.3729:Leo 4.7 devel projects
 #@-all

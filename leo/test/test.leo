@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="114" left="13" height="626" width="1008"/>
+	<global_window_position top="181" left="3" height="502" width="1008"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -390,17 +390,9 @@
 </v>
 <v t="ekr.20091217210418.1873"><vh>@auto at-auto-rst-test.txt</vh></v>
 <v t="ekr.20091221113040.1868"><vh>keys</vh></v>
-<v t="ekr.20091221123642.1870" a="E"><vh>newHeadline</vh>
-<v t="ekr.20091221123642.1871" a="E"><vh>newHeadline</vh>
-<v t="ekr.20091221123642.1872" a="E"><vh>newHeadline</vh>
-<v t="ekr.20091221123642.1873" a="E"><vh>newHeadline</vh>
-<v t="ekr.20091221123642.1874" a="E"><vh>newHeadline</vh>
-<v t="ekr.20091221123642.1875"><vh>newHeadline</vh></v>
-</v>
-</v>
-</v>
-</v>
-</v>
+<v t="ekr.20091221123642.1870"><vh>node 1</vh></v>
+<v t="ekr.20091221155654.1882"><vh>node 2</vh></v>
+<v t="ekr.20091221155654.1883"><vh>node 3</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -821,7 +813,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8,0,0,0,0,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="9"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -3598,11 +3590,8 @@ http://webpages.charter.net/edreamleo/front.html</t>
 
 []\;',./
 {}|:"&lt;&gt;?</t>
-<t tx="ekr.20091221123642.1870"></t>
-<t tx="ekr.20091221123642.1871"></t>
-<t tx="ekr.20091221123642.1872"></t>
-<t tx="ekr.20091221123642.1873"></t>
-<t tx="ekr.20091221123642.1874"></t>
-<t tx="ekr.20091221123642.1875"></t>
+<t tx="ekr.20091221123642.1870">node 1</t>
+<t tx="ekr.20091221155654.1882">node 2</t>
+<t tx="ekr.20091221155654.1883">node 3</t>
 </tnodes>
 </leo_file>
