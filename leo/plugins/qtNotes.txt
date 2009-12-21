@@ -1491,13 +1491,15 @@ def __init__(self,c,frame):
     self.headlineWrapper = leoQtHeadlineWidget # This is a class.
     self.treeWidget = w = frame.top.ui.treeWidget # An internal ivar.
 
-    # Works, but the scroll bar is useless!
-    # w.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+    if c.config.getBool('outline_pane_scrolls_horizontally'):
 
-    # Allows proper horizontal scrollbar operation.
-    w.setColumnCount(2)
-    # w.setColumnHidden(1,True) # Disables scrolling.
-    w.setColumnWidth(1,1) # A small width works.
+        # Works, but the scroll bar is useless!
+        # w.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+
+        # Allows proper horizontal scrollbar operation.
+        w.setColumnCount(2)
+        # w.setColumnHidden(1,True) # Disables scrolling.
+        w.setColumnWidth(1,1) # A small width works.
 
     # Early inits...
     try: w.headerItem().setHidden(True)
