@@ -2,20 +2,7 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20091221094815.6383:Urgent (voted up) bugs to fix
-#@+node:ekr.20091221094815.6384:TL (undo bugs)
-@nocolor-node
-
-The following "undo" functionality should be fixed:
-
-Bug 498692: Undo deleted node renames current node's headline
-
-Bug 498688: Undo back to last saved content still shows file as
-modified ("*" in title)
-
-Bug 362950: during body text undo selection goes nuts and view moves
-+1 by Terry Brown.
-
-#@-node:ekr.20091221094815.6384:TL (undo bugs)
+#@+node:ekr.20091221123255.6375:Fixed
 #@+node:ekr.20091221094815.6385:zpcspm Headline scrolling
 @nocolor-node
 
@@ -46,6 +33,21 @@ So this is not a simple fix for your problem, it has implications
 beyond your problem. 
 #@nonl
 #@-node:ekr.20091221094815.6385:zpcspm Headline scrolling
+#@-node:ekr.20091221123255.6375:Fixed
+#@+node:ekr.20091221094815.6384:TL (undo bugs)
+@nocolor-node
+
+The following "undo" functionality should be fixed:
+
+Bug 498692: Undo deleted node renames current node's headline
+
+Bug 498688: Undo back to last saved content still shows file as
+modified ("*" in title)
+
+Bug 362950: during body text undo selection goes nuts and view moves
++1 by Terry Brown.
+
+#@-node:ekr.20091221094815.6384:TL (undo bugs)
 #@+node:ekr.20091221094815.6386:Rob s @auto-rst problems
 @nocolor-node
 
