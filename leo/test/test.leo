@@ -390,31 +390,7 @@
 </v>
 <v t="ekr.20091217210418.1873"><vh>@auto at-auto-rst-test.txt</vh></v>
 <v t="ekr.20091221113040.1868"><vh>keys</vh></v>
-<v t="ekr.20091221123642.1870"><vh>node 1</vh></v>
-<v t="ekr.20091221155654.1882"><vh>node 2</vh></v>
-<v t="ekr.20091221155654.1883"><vh>node 3</vh></v>
-<v t="ekr.20091221180849.1878"><vh>Example</vh></v>
-<v t="ekr.20091222055147.1881" a="E"><vh>newHeadline</vh>
-<v t="ekr.20091222055147.1882" a="E"><vh>newHeadline</vh>
-<v t="ekr.20091222055147.1883" a="E"><vh>newHeadline</vh>
-<v t="ekr.20091222055147.1884" a="E"><vh>newHeadline</vh>
-<v t="ekr.20091222055147.1885" a="E"><vh>newHeadline</vh>
-<v t="ekr.20091222055147.1886" a="E"><vh>newHeadline</vh>
-<v t="ekr.20091222055147.1887" a="E"><vh>newHeadline</vh>
-<v t="ekr.20091222055147.1888" a="E"><vh>newHeadline</vh>
-<v t="ekr.20091222055147.1889" a="E"><vh>newHeadline</vh>
-<v t="ekr.20091222055147.1890" a="E"><vh>newHeadline</vh>
-<v t="ekr.20091222055147.1891"><vh>newHeadline</vh></v>
-</v>
-</v>
-</v>
-</v>
-</v>
-</v>
-</v>
-</v>
-</v>
-</v>
+<v t="ekr.20091222114015.1901"><vh>Example</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -835,7 +811,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="12,0,0,0,0,0,0,0,0,0,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -3612,86 +3588,22 @@ http://webpages.charter.net/edreamleo/front.html</t>
 
 []\;',./
 {}|:"&lt;&gt;?</t>
-<t tx="ekr.20091221123642.1870">node 1</t>
-<t tx="ekr.20091221155654.1882">node 2</t>
-<t tx="ekr.20091221155654.1883">node 3</t>
-<t tx="ekr.20091221180849.1878">a
-a
-a
-a
-a
-a
-a
-b
-b
-b
-b
-b
-b
-b
-b
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-</t>
-<t tx="ekr.20091222055147.1881"></t>
-<t tx="ekr.20091222055147.1882"></t>
-<t tx="ekr.20091222055147.1883"></t>
-<t tx="ekr.20091222055147.1884"></t>
-<t tx="ekr.20091222055147.1885"></t>
-<t tx="ekr.20091222055147.1886"></t>
-<t tx="ekr.20091222055147.1887"></t>
-<t tx="ekr.20091222055147.1888"></t>
-<t tx="ekr.20091222055147.1889"></t>
-<t tx="ekr.20091222055147.1890"></t>
-<t tx="ekr.20091222055147.1891"></t>
+<t tx="ekr.20091222114015.1901">@nocolor-node
+
+so, I guess that particular kind of editing isn't interacting with the undo
+system the same way other editing does.
+
+But undo is working, its just its recreation of the selection / insert point
+that's missing. So it's picking up the changes, but perhaps only as whole text
+changes?
+
+Maybe, and I'm trying to be as helpful as possible here because I'm sure you'll
+want to curse all mouse users and leave it as is :-), maybe, if I'm right that
+this style of editing looks like atomic whole text changes to the undo system,
+and that can't be addressed directly, and the situation can be detected (one way
+would be that the selection is the whole text and the cursor position is the
+beginning of the body), a best attempt at not confusing the user would be to (a)
+not select the whole text, because it never was wholly selected, and (b), move
+the insert point to the first difference between the new and old text.</t>
 </tnodes>
 </leo_file>

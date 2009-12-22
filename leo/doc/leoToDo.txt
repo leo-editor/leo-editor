@@ -2,8 +2,6 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20091221094815.6383:Urgent (voted up) bugs to fix
-#@+node:ekr.20091222102020.6533:Add conclusions section to Leo intro
-#@-node:ekr.20091222102020.6533:Add conclusions section to Leo intro
 #@+node:ekr.20091221123255.6375:Fixed
 #@+node:ekr.20091221145433.6384:Calltips don't work on leo3k
 @nocolor-node
@@ -1151,6 +1149,7 @@ def __init__ (self,c):
     self.kind = None
     self.newBack = None
     self.newBody = None
+    self.newChanged = None
     self.newChildren = None
     self.newHead = None
     self.newMarked = None
@@ -1162,6 +1161,7 @@ def __init__ (self,c):
     self.newTree = None
     self.oldBack = None
     self.oldBody = None
+    self.oldChanged = None
     self.oldChildren = None
     self.oldHead = None
     self.oldMarked = None
@@ -2405,6 +2405,7 @@ def redo (self,event=None):
         c.selectPosition(c.p)
     else:
         c.setCurrentPosition(c.p)
+    if u.newChanged is None: u.newChanged = True
     c.setChanged(u.newChanged) # 2009/12/21
     # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
     i,j = w.getSelectionRange()
@@ -2737,6 +2738,7 @@ def undo (self,event=None):
         c.selectPosition(c.p)
     else:
         c.setCurrentPosition(c.p)
+    if u.oldChanged is None: u.oldChanged = True
     c.setChanged(u.oldChanged) # 2009/12/21
     # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
     i,j = w.getSelectionRange()
@@ -3197,6 +3199,7 @@ def writeWaitingLog (self,c,forceLog=False):
 #@-node:ekr.20031218072017.2619:app.writeWaitingLog
 #@-node:ekr.20091222102020.6532:no log when notebook does not exist
 #@-node:ekr.20091221123255.6375:Fixed
+#@+node:ekr.20091222104138.6538:Waiting for help
 #@+node:ekr.20091221145433.6380:TL Undo messes with selection & view
 @nocolor-node
 
@@ -3221,66 +3224,67 @@ in odd selection extents and the view returning to the top of the text, both of
 which make it impossible to keep track of how much has been undone. After each
 step in undoing the cursor needs to be at the end of the region where the undo
 occurred, and the view should only shift if necessary to include the cursor.
+
+============
+
+I've posted a small movie of the problem here:
+
+http://131.212.123.124/~tbrown/tmp/out.avi
+
+There's some editing, and then I start undoing it, and when the whole text
+becomes selected (which never happened during the editing), that's the problem.
+
+Note, this was done with the editor window detached to make the video small,
+although I suppose having the rest of the leo window in frame would make no
+difference if it doesn't change, frame compression wise.
+
+=============
+
+Hmm, the only way I'm getting it now (just pulled the trunk prior to trying) is
+to use mouse select / drag editing.
+
+- Paste some paras into the body
+
+- Select some text with the mouse
+
+- click-drag the text somewhere else with the mouse
+
+so, I guess that particular kind of editing isn't interacting with the undo
+system the same way other editing does.
+
+But undo is working, its just its recreation of the selection / insert point
+that's missing. So it's picking up the changes, but perhaps only as whole text
+changes?
+
+Maybe, and I'm trying to be as helpful as possible here because I'm sure you'll
+want to curse all mouse users and leave it as is :-), maybe, if I'm right that
+this style of editing looks like atomic whole text changes to the undo system,
+and that can't be addressed directly, and the situation can be detected (one way
+would be that the selection is the whole text and the cursor position is the
+beginning of the body), a best attempt at not confusing the user would be to (a)
+not select the whole text, because it never was wholly selected, and (b), move
+the insert point to the first difference between the new and old text.
 #@nonl
 #@+node:ekr.20091221145433.6383:Example
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
+@nocolor-node
+
+
+so, I guess that particular kind of editing isn't interacting with the undo
+system the same way other editing does.
+
+But undo is working, its just its recreation of the selection / insert point
+that's missing. So it's picking up the changes, but perhaps only as whole text
+changes?
+
+Maybe, and I'm trying to be as helpful as possible here because I'm sure you'll
+want to curse all mouse users and leave it as is :-), maybe, if I'm right that
+this style of editing looks like atomic whole text changes to the undo system,
+and that can't be addressed directly, and the situation can be detected (one way
+would be that the selection is the whole text and the cursor position is the
+beginning of the body), a best attempt at not confusing the user would be to (a)
+not select the whole text, because it never was wholly selected, and (b), move
+the insert point to the first difference between the new and old text.
+#@nonl
 #@-node:ekr.20091221145433.6383:Example
 #@+node:ekr.20031218072017.3605:class undoer
 class undoer:
@@ -3327,6 +3331,7 @@ def __init__ (self,c):
     self.kind = None
     self.newBack = None
     self.newBody = None
+    self.newChanged = None
     self.newChildren = None
     self.newHead = None
     self.newMarked = None
@@ -3338,6 +3343,7 @@ def __init__ (self,c):
     self.newTree = None
     self.oldBack = None
     self.oldBody = None
+    self.oldChanged = None
     self.oldChildren = None
     self.oldHead = None
     self.oldMarked = None
@@ -4581,6 +4587,7 @@ def redo (self,event=None):
         c.selectPosition(c.p)
     else:
         c.setCurrentPosition(c.p)
+    if u.newChanged is None: u.newChanged = True
     c.setChanged(u.newChanged) # 2009/12/21
     # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
     i,j = w.getSelectionRange()
@@ -4913,6 +4920,7 @@ def undo (self,event=None):
         c.selectPosition(c.p)
     else:
         c.setCurrentPosition(c.p)
+    if u.oldChanged is None: u.oldChanged = True
     c.setChanged(u.oldChanged) # 2009/12/21
     # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
     i,j = w.getSelectionRange()
@@ -5339,6 +5347,7 @@ if u.debug_print:
 #@-node:ekr.20061106105812.1:<< Compute the result using p's body text >>
 #@-node:ekr.20031218072017.1493:undoRedoText
 #@-node:ekr.20091221145433.6380:TL Undo messes with selection & view
+#@-node:ekr.20091222104138.6538:Waiting for help
 #@+node:ekr.20091221094815.6386:Rob s @auto-rst problems
 @nocolor-node
 

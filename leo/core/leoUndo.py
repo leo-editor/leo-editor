@@ -117,6 +117,7 @@ class undoer:
         self.kind = None
         self.newBack = None
         self.newBody = None
+        self.newChanged = None
         self.newChildren = None
         self.newHead = None
         self.newMarked = None
@@ -128,6 +129,7 @@ class undoer:
         self.newTree = None
         self.oldBack = None
         self.oldBody = None
+        self.oldChanged = None
         self.oldChildren = None
         self.oldHead = None
         self.oldMarked = None
@@ -1407,6 +1409,7 @@ class undoer:
             c.selectPosition(c.p)
         else:
             c.setCurrentPosition(c.p)
+        if u.newChanged is None: u.newChanged = True
         c.setChanged(u.newChanged) # 2009/12/21
         # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
         i,j = w.getSelectionRange()
@@ -1739,6 +1742,7 @@ class undoer:
             c.selectPosition(c.p)
         else:
             c.setCurrentPosition(c.p)
+        if u.oldChanged is None: u.oldChanged = True
         c.setChanged(u.oldChanged) # 2009/12/21
         # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
         i,j = w.getSelectionRange()
