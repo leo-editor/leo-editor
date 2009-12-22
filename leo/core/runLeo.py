@@ -399,6 +399,8 @@ def createFrame (fileName,relativeFileName,script):
         relativeFileName=relativeFileName,
         initEditCommanders=True)
 
+    g.app.writeWaitingLog(c) # 2009/12/22: fixes bug 448886
+
     assert frame.c == c and c.frame == frame
     frame.setInitialWindowGeometry()
     frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
