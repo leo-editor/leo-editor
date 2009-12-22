@@ -5964,16 +5964,6 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         self.headlineWrapper = leoQtHeadlineWidget # This is a class.
         self.treeWidget = w = frame.top.ui.treeWidget # An internal ivar.
 
-        if c.config.getBool('outline_pane_scrolls_horizontally'):
-
-            # Works, but the scroll bar is useless!
-            # w.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-
-            # Allows proper horizontal scrollbar operation.
-            w.setColumnCount(2)
-            # w.setColumnHidden(1,True) # Disables scrolling.
-            w.setColumnWidth(1,1) # A small width works.
-
         # Early inits...
         try: w.headerItem().setHidden(True)
         except Exception: pass
@@ -6040,6 +6030,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         '''Repaint the widget.'''
         w = self.treeWidget
         w.repaint()
+        w.resizeColumnToContents(0) # 2009/12/22
     #@nonl
     #@-node:ekr.20090126120517.11:Drawing
     #@+node:ekr.20090124174652.109:Icons (qtTree)

@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="227" left="9" height="502" width="1008"/>
+	<global_window_position top="97" left="13" height="643" width="1008"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -394,7 +394,27 @@
 <v t="ekr.20091221155654.1882"><vh>node 2</vh></v>
 <v t="ekr.20091221155654.1883"><vh>node 3</vh></v>
 <v t="ekr.20091221180849.1878"><vh>Example</vh></v>
-<v t="ekr.20091221181438.1879"><vh>problems with autocompleter with leo3k</vh></v>
+<v t="ekr.20091222055147.1881" a="E"><vh>newHeadline</vh>
+<v t="ekr.20091222055147.1882" a="E"><vh>newHeadline</vh>
+<v t="ekr.20091222055147.1883" a="E"><vh>newHeadline</vh>
+<v t="ekr.20091222055147.1884" a="E"><vh>newHeadline</vh>
+<v t="ekr.20091222055147.1885" a="E"><vh>newHeadline</vh>
+<v t="ekr.20091222055147.1886" a="E"><vh>newHeadline</vh>
+<v t="ekr.20091222055147.1887" a="E"><vh>newHeadline</vh>
+<v t="ekr.20091222055147.1888" a="E"><vh>newHeadline</vh>
+<v t="ekr.20091222055147.1889" a="E"><vh>newHeadline</vh>
+<v t="ekr.20091222055147.1890" a="E"><vh>newHeadline</vh>
+<v t="ekr.20091222055147.1891"><vh>newHeadline</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -815,7 +835,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="12"></t>
+<t tx="ekr.20070416075121" str_leo_pos="12,0,0,0,0,0,0,0,0,0,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -3662,6 +3682,16 @@ a
 a
 a
 </t>
-<t tx="ekr.20091221181438.1879">w.seeInsertPoint()</t>
+<t tx="ekr.20091222055147.1881"></t>
+<t tx="ekr.20091222055147.1882"></t>
+<t tx="ekr.20091222055147.1883"></t>
+<t tx="ekr.20091222055147.1884"></t>
+<t tx="ekr.20091222055147.1885"></t>
+<t tx="ekr.20091222055147.1886"></t>
+<t tx="ekr.20091222055147.1887"></t>
+<t tx="ekr.20091222055147.1888"></t>
+<t tx="ekr.20091222055147.1889"></t>
+<t tx="ekr.20091222055147.1890"></t>
+<t tx="ekr.20091222055147.1891"></t>
 </tnodes>
 </leo_file>

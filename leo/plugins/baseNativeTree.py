@@ -233,7 +233,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         return item
     #@-node:ekr.20090124174652.20:drawNode
-    #@+node:ekr.20090129062500.12:drawTopTree (qt)
+    #@+node:ekr.20090129062500.12:drawTopTree
     def drawTopTree (self,p):
 
         c = self.c
@@ -262,7 +262,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         self.repaint()
     #@nonl
-    #@-node:ekr.20090129062500.12:drawTopTree (qt)
+    #@-node:ekr.20090129062500.12:drawTopTree
     #@+node:ekr.20090124174652.21:drawTree
     def drawTree (self,p,parent_item=None):
 

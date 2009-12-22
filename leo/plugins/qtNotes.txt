@@ -747,7 +747,7 @@ def drawNode (self,p,parent_item):
 
     return item
 #@-node:ekr.20090124174652.20:drawNode
-#@+node:ekr.20090129062500.12:drawTopTree (qt)
+#@+node:ekr.20090129062500.12:drawTopTree
 def drawTopTree (self,p):
 
     c = self.c
@@ -776,7 +776,7 @@ def drawTopTree (self,p):
 
     self.repaint()
 #@nonl
-#@-node:ekr.20090129062500.12:drawTopTree (qt)
+#@-node:ekr.20090129062500.12:drawTopTree
 #@+node:ekr.20090124174652.21:drawTree
 def drawTree (self,p,parent_item=None):
 
@@ -1491,16 +1491,6 @@ def __init__(self,c,frame):
     self.headlineWrapper = leoQtHeadlineWidget # This is a class.
     self.treeWidget = w = frame.top.ui.treeWidget # An internal ivar.
 
-    if c.config.getBool('outline_pane_scrolls_horizontally'):
-
-        # Works, but the scroll bar is useless!
-        # w.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-
-        # Allows proper horizontal scrollbar operation.
-        w.setColumnCount(2)
-        # w.setColumnHidden(1,True) # Disables scrolling.
-        w.setColumnWidth(1,1) # A small width works.
-
     # Early inits...
     try: w.headerItem().setHidden(True)
     except Exception: pass
@@ -1567,6 +1557,7 @@ def repaint (self):
     '''Repaint the widget.'''
     w = self.treeWidget
     w.repaint()
+    w.resizeColumnToContents(0) # 2009/12/22
 #@nonl
 #@-node:ekr.20090126120517.11:Drawing
 #@+node:ekr.20090124174652.109:Icons (qtTree)
@@ -1952,6 +1943,19 @@ def onContextMenu(self, point):
 #@-node:ville.20090630151546.3969:onContextMenu (nativeTree)
 #@-node:ekr.20090124174652.102:Widget-dependent helpers (leoQtTree)
 #@-node:ekr.20081121105001.400:class leoQtTree (baseNativeTree)
+#@+node:ekr.20090126120517.11:Drawing
+def clear (self):
+    '''Clear all widgets in the tree.'''
+    w = self.treeWidget
+    w.clear()
+
+def repaint (self):
+    '''Repaint the widget.'''
+    w = self.treeWidget
+    w.repaint()
+    w.resizeColumnToContents(0) # 2009/12/22
+#@nonl
+#@-node:ekr.20090126120517.11:Drawing
 #@-node:ekr.20091221122450.3656:Allow horizontal scrolling in QtTree
 #@-node:ekr.20090813101852.3643:Bugs
 #@-node:ekr.20090717095154.3729:Leo 4.7 devel projects
