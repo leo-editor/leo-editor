@@ -2537,8 +2537,7 @@ class leoQtBody (leoFrame.leoBody):
 
             w.showCompleter(['hello', 'helloworld'], mycallback )
 
-        Here, 'hello' and 'helloworld' are the presented options, and 'he' is something
-        that was already typed.
+        Here, 'hello' and 'helloworld' are the presented options.
 
         selected_cb should typically insert the selected text (it receives as arg) to 
         the body
