@@ -2529,6 +2529,36 @@ class leoQtBody (leoFrame.leoBody):
     def toPythonIndexRowCol(self,index):    return self.widget.toPythonIndexRowCol(index)
     #@nonl
     #@-node:ekr.20081121105001.211:High-level interface (qtBody)
+    #@+node:vivainio.20091223153142.4072:Completer (qtBody)
+    def showCompleter(self, alternatives, prefix):
+        wdg = self.widget.widget
+
+        # wdg:QTextEdit
+
+        cpl = self.completer = QtGui.QCompleter(alternatives)
+        cpl.setWidget(wdg)
+
+        def mkins(completer, body):
+
+            def insertCompletion(completion):
+                cmpl = unicode(completion).split(None,1)[0]
+
+                tc = body.textCursor()
+                extra = len(cmpl) - completer.completionPrefix().length()
+                tc.movePosition(QtGui.QTextCursor.Left)
+                tc.movePosition(QtGui.QTextCursor.EndOfWord)
+                tc.insertText(cmpl[-extra:])
+                body.setTextCursor(tc)
+                self.completer = None
+
+            return insertCompletion
+
+        f = mkins(cpl, wdg)
+        cpl.setCompletionPrefix(prefix)
+        cpl.connect(cpl, QtCore.SIGNAL("activated(QString)"), f)    
+        cpl.complete()
+
+    #@-node:vivainio.20091223153142.4072:Completer (qtBody)
     #@+node:ekr.20081121105001.212:Editors (qtBody)
     #@+node:ekr.20081121105001.214:packEditorLabelWidget
     def packEditorLabelWidget (self,w):
