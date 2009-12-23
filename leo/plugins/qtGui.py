@@ -2530,33 +2530,30 @@ class leoQtBody (leoFrame.leoBody):
     #@nonl
     #@-node:ekr.20081121105001.211:High-level interface (qtBody)
     #@+node:vivainio.20091223153142.4072:Completer (qtBody)
-    def showCompleter(self, alternatives, prefix):
+    def showCompleter(self, alternatives, selected_cb):
+        """ Show 'autocompleter' widget in body
+
+        For example::
+
+            w.showCompleter(['hello', 'helloworld'], mycallback )
+
+        Here, 'hello' and 'helloworld' are the presented options, and 'he' is something
+        that was already typed.
+
+        selected_cb should typically insert the selected text (it receives as arg) to 
+        the body
+
+        """
         wdg = self.widget.widget
 
         # wdg:QTextEdit
 
         cpl = self.completer = QtGui.QCompleter(alternatives)
         cpl.setWidget(wdg)
-
-        def mkins(completer, body):
-
-            def insertCompletion(completion):
-                cmpl = unicode(completion).split(None,1)[0]
-
-                tc = body.textCursor()
-                extra = len(cmpl) - completer.completionPrefix().length()
-                tc.movePosition(QtGui.QTextCursor.Left)
-                tc.movePosition(QtGui.QTextCursor.EndOfWord)
-                tc.insertText(cmpl[-extra:])
-                body.setTextCursor(tc)
-                self.completer = None
-
-            return insertCompletion
-
-        f = mkins(cpl, wdg)
-        cpl.setCompletionPrefix(prefix)
+        f = selected_cb
         cpl.connect(cpl, QtCore.SIGNAL("activated(QString)"), f)    
         cpl.complete()
+        return cpl
 
     #@-node:vivainio.20091223153142.4072:Completer (qtBody)
     #@+node:ekr.20081121105001.212:Editors (qtBody)
