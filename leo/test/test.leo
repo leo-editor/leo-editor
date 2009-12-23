@@ -391,6 +391,7 @@
 <v t="ekr.20091217210418.1873"><vh>@auto at-auto-rst-test.txt</vh></v>
 <v t="ekr.20091221113040.1868"><vh>keys</vh></v>
 <v t="ekr.20091222114015.1901"><vh>Example</vh></v>
+<v t="ekr.20091223061318.1873"><vh>Simple example</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -811,7 +812,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8"></t>
+<t tx="ekr.20070416075121" str_leo_pos="9"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -3605,5 +3606,15 @@ would be that the selection is the whole text and the cursor position is the
 beginning of the body), a best attempt at not confusing the user would be to (a)
 not select the whole text, because it never was wholly selected, and (b), move
 the insert point to the first difference between the new and old text.</t>
+<t tx="ekr.20091223061318.1873">a line 1
+b line 2
+c line 3
+d line 4
+
+
+- double click select a word
+- middle click paste it somewhere else
+- undo -&gt; whole text is selected, insertion's at start
+</t>
 </tnodes>
 </leo_file>

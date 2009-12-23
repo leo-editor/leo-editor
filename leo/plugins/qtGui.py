@@ -402,7 +402,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         self.selecting is guaranteed to be True during
         the entire selection process.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         verbose = False
         c = self.c ; p = c.p
         tree = c.frame.tree ; w = self
@@ -434,11 +434,12 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             # g.trace('*** unexpected non-change',color="red")
             return
 
-        if trace: g.trace('**',len(newText),p.h,'\n',g.callers(8))
+        # g.trace('**',len(newText),p.h,'\n',g.callers(8))
 
         oldIns  = p.v.insertSpot
         i,j = p.v.selectionStart,p.v.selectionLength
-        oldSel  = (i,j-i)
+        oldSel  = (i,i+j)
+        if trace: g.trace('oldSel',oldSel,'newSel',newSel)
         oldYview = None
         undoType = 'Typing'
         c.undoer.setUndoTypingParams(p,undoType,
