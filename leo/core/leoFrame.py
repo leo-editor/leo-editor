@@ -2812,6 +2812,7 @@ class leoTree:
             spot = p.v.insertSpot
             w.setInsertPoint(spot)
             w.see(spot)
+            # g.trace(spot)
         else:
             w.setInsertPoint(0)
     #@-node:ekr.20090608081524.6109:setBodyTextAfterSelect

@@ -1417,6 +1417,7 @@ class undoer:
         c.redraw()
         c.recolor()
         c.bodyWantsFocusNow()
+        # g.trace(i,j,ins)
         w.setSelectionRange(i,j,insert=ins)
         w.seeInsertPoint()
         u.redoing = False
@@ -1750,6 +1751,7 @@ class undoer:
         c.redraw()
         c.recolor()
         c.bodyWantsFocusNow()
+        # g.trace(i,j,ins)
         w.setSelectionRange(i,j,insert=ins)
         w.seeInsertPoint()
         u.undoing = False
