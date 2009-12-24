@@ -4854,11 +4854,6 @@ if False: # Never used in either Leo2k or Leo3k.
                 self[k] = v
         if kwargs:
             self.update(kwargs)
-    def get(self, key, default=None):
-        try:
-            return self[key]
-        except KeyError:
-            return default
     # def __repr__(self):
         # return repr(dict(self.iteritems()))
     def __cmp__(self, other):
