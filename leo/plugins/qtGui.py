@@ -407,8 +407,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         c = self.c ; p = c.p
         tree = c.frame.tree ; w = self
 
-        # The linux events are different from xp events.
-        if w.changingText: ### and not sys.platform.startswith('linux'):
+        if w.changingText: 
             if trace and verbose: g.trace('already changing')
             return
         if tree.tree_select_lockout:
@@ -448,11 +447,12 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         # Update the vnode.
         p.v.setBodyString(newText)
-        p.v.insertSpot = newInsert
-        i,j = newSel
-        i,j = self.toGuiIndex(i),self.toGuiIndex(j)
-        if i > j: i,j = j,i
-        p.v.selectionStart,p.v.selectionLength = (i,j-i)
+        if True:
+            p.v.insertSpot = newInsert
+            i,j = newSel
+            i,j = self.toGuiIndex(i),self.toGuiIndex(j)
+            if i > j: i,j = j,i
+            p.v.selectionStart,p.v.selectionLength = (i,j-i)
 
         # No need to redraw the screen.
         if not self.useScintilla:
