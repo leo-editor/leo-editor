@@ -14,12 +14,20 @@ import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest
 import string
 
-try:
-    import StringIO
-except ImportError:
-    import io
+# try:
+    # import StringIO
+# except ImportError:
+    # import io
+    # StringIO = io.StringIO
+    # # BytesIO = io.BytesIO
+
+if g.isPython3:
+    import io # Python 3.x
     StringIO = io.StringIO
-    # BytesIO = io.BytesIO
+    BytesIO = io.BytesIO
+else:
+    import StringIO # Python 2.x
+    # StringIO = cStringIO.StringIO
 
 #@<< class scanUtility >>
 #@+node:sps.20081112093624.1:<< class scanUtility >>
@@ -1822,7 +1830,7 @@ class baseScannerClass (scanUtility):
 
         if s1 is None and s2 is None:
             if self.isRst: # Errors writing file at present...
-                outputFile = StringIO.StringIO()
+                outputFile = StringIO() ### StringIO.StringIO()
                 c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile,trialWrite=True)
                 s1,s2 = self.file_s,outputFile.getvalue()
             else:
