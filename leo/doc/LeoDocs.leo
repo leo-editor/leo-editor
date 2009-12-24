@@ -218,8 +218,8 @@
 <v t="ekr.20060105145125"><vh>How to install the Aspell spell checker</vh></v>
 </v>
 </v>
-<v t="ekr.20091130111843.6787" a="E"><vh>Chapter 2: The Leo Tutorial</vh>
-<v t="ekr.20091130111843.6788" a="E"><vh>@rst html\intro.html</vh>
+<v t="ekr.20091130111843.6787"><vh>Chapter 2: The Leo Tutorial</vh>
+<v t="ekr.20091130111843.6788"><vh>@rst html\intro.html</vh>
 <v t="ekr.20091130111843.6810"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20091130111843.6814"><vh>Leo's main window</vh></v>
 <v t="ekr.20091130111843.6816"><vh>Outline commands</vh></v>
@@ -3217,7 +3217,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20091222125456.6640" a="E"><vh>Revise</vh>
+<v t="ekr.20091222125456.6640"><vh>Revise</vh>
 <v t="ekr.20050903161843"></v>
 </v>
 </vnodes>
@@ -23027,7 +23027,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="2,5,0,8"></t>
+<t tx="ekr.20070610174018" str_leo_pos="2,5"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
