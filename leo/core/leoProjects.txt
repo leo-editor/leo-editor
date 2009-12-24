@@ -5104,6 +5104,14 @@ def _normalized(self, p):
     return str(self.root.relpathto(p)).replace('\\','/')
 
 #@-node:ekr.20091204132346.6089:_normalized
+#@+node:ekr.20091224075120.6536:get
+def get(self, key, default=None):
+    try:
+        return self[key]
+    except KeyError:
+        return default
+#@nonl
+#@-node:ekr.20091224075120.6536:get
 #@+node:ekr.20091204132346.6093:getlink
 def getlink(self,folder):
     """ Get a convenient link for accessing items  """
