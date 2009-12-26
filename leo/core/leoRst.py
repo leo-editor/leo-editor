@@ -31,6 +31,7 @@ if g.isPython3:
     StringIO = io.StringIO
 else:
     import StringIO
+    StringIO = StringIO.StringIO
 
 import sys
 
