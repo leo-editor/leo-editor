@@ -8,27 +8,22 @@
 #@@tabwidth -4
 #@@pagewidth 80
 #@@encoding utf-8
-    # Required so the unit test that simulates an @auto leoImport.py will work!
 
+#@<< imports >>
+#@+node:ekr.20091224155043.6539:<< imports >>
+# Required so the unit test that simulates an @auto leoImport.py will work!
 import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest
 import string
 
-# try:
-    # import StringIO
-# except ImportError:
-    # import io
-    # StringIO = io.StringIO
-    # # BytesIO = io.BytesIO
-
 if g.isPython3:
-    import io # Python 3.x
+    import io
     StringIO = io.StringIO
-    BytesIO = io.BytesIO
+    # BytesIO = io.BytesIO
 else:
-    import StringIO # Python 2.x
-    # StringIO = cStringIO.StringIO
-
+    import StringIO
+#@-node:ekr.20091224155043.6539:<< imports >>
+#@nl
 #@<< class scanUtility >>
 #@+node:sps.20081112093624.1:<< class scanUtility >>
 class scanUtility:

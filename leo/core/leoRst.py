@@ -26,11 +26,11 @@ import leo.core.leoCommands as commands
 import os
 import pprint
 
-try:
-    import StringIO
-except ImportError:
+if g.isPython3:
     import io
     StringIO = io.StringIO
+else:
+    import StringIO
 
 import sys
 
