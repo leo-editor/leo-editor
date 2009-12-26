@@ -102,8 +102,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050831195331.1"><vh>FAQ</vh>
-<v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
+<v t="ekr.20050831195331.1" a="E"><vh>FAQ</vh>
+<v t="ekr.20050830115714" a="E"><vh>@rst html\FAQ.html</vh>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20090212054250.5"><vh>Getting Leo</vh>
 <v t="ekr.20090501091345.2"><vh>@rst-option show-sections = False</vh>
@@ -169,8 +169,8 @@
 <v t="ekr.20060822111759"><vh>How can I reuse @button nodes in multiple files?</vh></v>
 </v>
 </v>
-<v t="ekr.20050830115714.76"><vh>Trouble shooting</vh>
-<v t="ekr.20090501093330.6"><vh>@rst-option show-sections = False</vh>
+<v t="ekr.20050830115714.76" a="E"><vh>Trouble shooting</vh>
+<v t="ekr.20090501093330.6" a="E"><vh>@rst-option show-sections = False</vh>
 <v t="ekr.20090130144433.1"><vh>How do I get help?</vh></v>
 <v t="ekr.20090130144433.2"><vh>How do I report bugs?</vh></v>
 <v t="ekr.20080813064908.2"><vh>My old .leo files won't load using Leo 4.5 or later. What should I do?</vh></v>
@@ -23027,7 +23027,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="2,5"></t>
+<t tx="ekr.20070610174018" str_leo_pos="2,3,0,9,0,2"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -27293,7 +27293,7 @@ What's New in Leo 4.5
   Leo uses os.path.expanduser("~") if there is no home setting.</t>
 <t tx="ekr.20080813064908.2">In version 4.5, Leo changed to using a sax parser for .leo files. This can cause
 problems if your .leo file contains invalid characters.
-Bugs in previous versions of Leo permitted these bad charactgers to appear.
+Bugs in previous versions of Leo permitted these bad characters to appear.
 
 The sax parser complains that these characters are not valid in .xml files.
 Remove these invalid characters as follows:
