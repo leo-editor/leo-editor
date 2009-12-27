@@ -407,7 +407,7 @@ class atFile:
         thinFile = at.scanHeaderForThin (theFile,fn)
         at.initReadIvars(root,fn,thinFile=thinFile)
         if at.errors: return
-        at.openFileForReading(fn,fromString=s)
+        at.openFileForReading(fromString=s)
         if not at.inputFile: return
         at.readOpenFile(root,at.inputFile,fn)
         at.inputFile.close()
@@ -415,7 +415,10 @@ class atFile:
             g.es_print('check-derived-file passed',color='blue')
     #@-node:ekr.20070919133659:checkDerivedFile (atFile)
     #@+node:ekr.20041005105605.19:openFileForReading (atFile) helper & test
-    def openFileForReading(self,fn,fromString=False): ### fn not used!
+    def openFileForReading(self,fromString=False):
+
+        '''Open the file given by at.root.
+        This will be the private file for @shadow nodes.'''
 
         trace = False and not g.app.unitTesting
         verbose = False
@@ -496,7 +499,7 @@ class atFile:
         at.initReadIvars(root,fileName,
             importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
         if at.errors: return False
-        fileName = at.openFileForReading(fileName,fromString=fromString)
+        fileName = at.openFileForReading(fromString=fromString)
         if at.inputFile:
             c.setFileTimeStamp(fileName)
         else:
