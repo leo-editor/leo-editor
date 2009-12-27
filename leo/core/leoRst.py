@@ -68,7 +68,7 @@ def code_block (name,arguments,options,
         module = SilverCity and getattr(SilverCity,language)
         generator = module and getattr(module,language+"HTMLGenerator")
         if generator:
-            io = StringIO() ### StringIO.StringIO()
+            io = StringIO()
             generator().generate_html(io,'\n'.join(content))
             html = '<div class="code-block">\n%s\n</div>\n' % io.getvalue()
         else:
@@ -736,7 +736,7 @@ class rstCommands:
         self.initWrite(p)
 
         # Always write to a string first.
-        self.outputFile = StringIO() ### StringIO.StringIO()
+        self.outputFile = StringIO()
         self.writeTree(p)
         self.source = self.stringOutput = self.outputFile.getvalue()
 
@@ -817,7 +817,7 @@ class rstCommands:
                 g.es('SilverCity not present so no syntax highlighting')
 
         self.initWrite(p,encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
-        self.outputFile = StringIO() ### StringIO.StringIO()
+        self.outputFile = StringIO()
         self.writeTree(p)
         self.source = self.outputFile.getvalue()
         self.outputFile = None
