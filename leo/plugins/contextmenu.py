@@ -117,8 +117,9 @@ def openwith_rclick(c,p, menu):
     def openfolder_rclick_cb():
         g.os_startfile(path)
 
-    action = menu.addAction("Edit " + bname + " in " + os.path.basename(editor))
-    action.connect(action, QtCore.SIGNAL("triggered()"), openwith_rclick_cb)
+    if editor:
+        action = menu.addAction("Edit " + bname + " in " + os.path.basename(editor))
+        action.connect(action, QtCore.SIGNAL("triggered()"), openwith_rclick_cb)
 
     action = menu.addAction("Open " + path)
     action.connect(action, QtCore.SIGNAL("triggered()"), openfolder_rclick_cb)
