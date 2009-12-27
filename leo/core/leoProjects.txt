@@ -362,7 +362,7 @@ def read(self,root,
     at.initReadIvars(root,fileName,
         importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
     if at.errors: return False
-    fileName = at.openFileForReading(fileName,fromString=fromString)
+    fileName = at.openFileForReading(fromString=fromString)
     if at.inputFile:
         c.setFileTimeStamp(fileName)
     else:
@@ -4878,7 +4878,7 @@ def read(self,root,
     at.initReadIvars(root,fileName,
         importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
     if at.errors: return False
-    fileName = at.openFileForReading(fileName,fromString=fromString)
+    fileName = at.openFileForReading(fromString=fromString)
     if at.inputFile:
         c.setFileTimeStamp(fileName)
     else:
