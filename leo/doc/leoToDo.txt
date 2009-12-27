@@ -3201,7 +3201,6 @@ def writeWaitingLog (self,c,forceLog=False):
         print('writeWaitingLog: still no log!')
 #@-node:ekr.20031218072017.2619:app.writeWaitingLog
 #@-node:ekr.20091222102020.6532:no log when notebook does not exist
-#@-node:ekr.20091221123255.6375:Fixed
 #@+node:ekr.20091221145433.6380:TL Undo messes with selection & view
 @nocolor-node
 
@@ -5751,6 +5750,139 @@ if u.debug_print:
 #@-node:ekr.20061106105812.1:<< Compute the result using p's body text >>
 #@-node:ekr.20031218072017.1493:undoRedoText
 #@-node:ekr.20091221145433.6380:TL Undo messes with selection & view
+#@+node:ekr.20091227085627.6538:Removed unsettling @auto warning
+#@+node:ville.20090701144325.14942:g.guessExternalEditor
+def guessExternalEditor():
+    """ Return a 'sensible' external editor """
+
+    editor = (
+        os.environ.get("LEO_EDITOR") or
+        os.environ.get("EDITOR") or
+        g.app.db.get("LEO_EDITOR"))
+
+    if editor: return editor
+
+    g.es('''No editor set!
+Please set LEO_EDITOR or EDITOR environment variable,
+or do g.app.db['LEO_EDITOR'] = "gvim"''')
+
+    # fallbacks
+    if sys.platform == 'win32':
+        return "notepad"
+
+    # linux still has no default editor, one that would work without terminal at least ;-)
+    return None
+#@nonl
+#@-node:ville.20090701144325.14942:g.guessExternalEditor
+#@+node:ekr.20070806105721.1:readAtAutoNodes (commands)
+def readAtAutoNodes (self,event=None):
+
+    '''Read all @auto nodes in the presently selected outline.'''
+
+    c = self ; u = c.undoer ; p = c.p
+    c.endEditing()
+
+    undoData = u.beforeChangeTree(p)
+    c.importCommands.readAtAutoNodes()
+    u.afterChangeTree(p,'Read @auto Nodes',undoData)
+    c.redraw()
+#@-node:ekr.20070806105721.1:readAtAutoNodes (commands)
+#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    try:
+        fileContent = open(fileName, "rb").read()
+        cachefile = self._contentHashFile(p, fileContent)
+    except IOError:
+        cachefile = None
+
+    # Remember that we have read this file.
+    p.v.at_auto_read = True # Create the attribute
+
+    if cachefile is not None and cachefile in c.db:        
+        # g.es('uncache:',p.h)
+        aList = c.db[cachefile]
+        p.v.createOutlineFromCacheList(c,aList)
+        return
+
+    if not g.unitTesting:
+        g.es("reading:",p.h)
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        # Note: the file contains an @ignore,
+        # so no unintended write can happen.
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        # c.setBodyString(p,'')
+        p.clearDirty()
+        c.setChanged(oldChanged)
+    else:
+        self.writeCachedTree(p, cachefile)
+        g.doHook('after-auto', p = p)  # call after-auto callbacks
+#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+#@+node:ekr.20070806111212:readAtAutoNodes (importCommands) & helper
+def readAtAutoNodes (self):
+
+    c = self.c
+    p = c.p ; after = p.nodeAfterTree()
+
+    found = False
+    while p and p != after:
+        if p.isAtAutoNode():
+            if p.isAtIgnoreNode():
+                g.es_print('ignoring',p.h,color='blue')
+                p.moveToThreadNext()
+            else:
+                self.readOneAtAutoNode(p)
+                found = True
+                p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+    message = g.choose(found,'finished','no @auto nodes in the selected tree')
+    g.es(message,color='blue')
+    c.redraw()
+
+#@+node:ekr.20070807084545:readOneAtAutoNode (leoImport)
+def readOneAtAutoNode(self,p):
+
+    '''Read the @auto node at p'''
+
+    c = self.c
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    self.createOutline(
+        fileName=p.atAutoNodeName(),
+        parent=p.copy(),
+        atAuto=True)
+
+    # Remember that we have read this file.
+    # Fixes bug 488894: unsettling dialog when saving Leo file
+    # after creating and populating an @auto node  
+    p.v.at_auto_read = True # Create the attribute
+
+    # Force an update of the body pane.
+    self.setBodyString(p,p.b)
+    c.frame.body.onBodyChanged(undoType=None)
+#@-node:ekr.20070807084545:readOneAtAutoNode (leoImport)
+#@-node:ekr.20070806111212:readAtAutoNodes (importCommands) & helper
+#@-node:ekr.20091227085627.6538:Removed unsettling @auto warning
+#@-node:ekr.20091221123255.6375:Fixed
 #@+node:ekr.20091221094815.6386:Rob s @auto-rst problems
 @nocolor-node
 
