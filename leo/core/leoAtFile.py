@@ -2714,7 +2714,8 @@ class atFile:
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
         if ok:
             if root.isAtAutoRstNode():
-                c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
+                ok2 = c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
+                if not ok2: at.errors += 1
             else:
                 at.writeOpenFile(root,nosentinels=True,toString=toString)
             at.closeWriteFile() # Sets stringOutput if toString is True.
