@@ -388,7 +388,7 @@
 <v t="ekr.20091217210235.1867"><vh>section 1</vh></v>
 <v t="ekr.20091217210235.1868"><vh>section 2</vh></v>
 </v>
-<v t="ekr.20091227201929.1898"><vh>@auto-rst at-auto-rst-test.txt</vh></v>
+<v t="ekr.20091228102258.1896" a="E"><vh>@auto-rst at-auto-rst-test.txt</vh></v>
 <v t="ekr.20091227100355.1875"><vh>@auto-rst ../doc/html/intro.html.txt</vh></v>
 <v t="ekr.20091221113040.1868"><vh>keys</vh></v>
 <v t="ekr.20091222114015.1901"><vh>Example</vh></v>

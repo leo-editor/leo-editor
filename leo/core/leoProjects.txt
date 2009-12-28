@@ -5799,6 +5799,94 @@ if u.debug_print:
 #@-node:ekr.20031218072017.1493:undoRedoText
 #@-node:ekr.20091221145433.6380:TL Undo messes with selection & view
 #@+node:ekr.20091227085627.6538:Removed unsettling @auto warning
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,
+    atAuto=False,atShadow=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+    w = c.frame.body
+    # New in Leo 4.4.7: honor @path directives.
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = c.os_path_finalize_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
+        func = self.scanRstText
+    else:
+        func = self.importDispatchDict.get(ext)
+
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
+    else:
+        # Just copy the file to the parent node.
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    if atAuto:
+        # Remember that we have read this file.
+        # Fixes bug 488894: unsettling dialog when saving Leo file
+        # after creating and populating an @auto node
+        p.v.at_auto_read = True # Create the attribute
+
+    p.contract()
+    w.setInsertPoint(0)
+    w.seeInsertPoint()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = c.os_path_finalize(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    if atShadow: kind = '@shadow '
+    elif atAuto: kind = '@auto '
+    else: kind = ''
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (kind,fileName),color='red')
+    # g.trace(g.callers())
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # g.pr('found',e,'in',line1)
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
 #@+node:ville.20090701144325.14942:g.guessExternalEditor
 def guessExternalEditor():
     """ Return a 'sensible' external editor """
@@ -5918,11 +6006,6 @@ def readOneAtAutoNode(self,p):
         fileName=p.atAutoNodeName(),
         parent=p.copy(),
         atAuto=True)
-
-    # Remember that we have read this file.
-    # Fixes bug 488894: unsettling dialog when saving Leo file
-    # after creating and populating an @auto node  
-    p.v.at_auto_read = True # Create the attribute
 
     # Force an update of the body pane.
     self.setBodyString(p,p.b)
@@ -6067,6 +6150,12 @@ def createOutline (self,fileName,parent,
     else:
         # Just copy the file to the parent node.
         self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    if atAuto:
+        # Remember that we have read this file.
+        # Fixes bug 488894: unsettling dialog when saving Leo file
+        # after creating and populating an @auto node
+        p.v.at_auto_read = True # Create the attribute
 
     p.contract()
     w.setInsertPoint(0)
@@ -8285,21 +8374,17 @@ def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
     The caller will close the output file.'''
 
     try:
-        ok = True
         self.trialWrite = trialWrite
         self.atAutoWrite = True
         self.initAtAutoWrite(p,fileName,outputFile)
         self.topNode = p.copy() # Indicate the top of this tree.
         self.topLevel = p.level()
         after = p.nodeAfterTree()
-        if p.hasChildren():
-            p = p.firstChild() # A (temporary?) hack: ignore the root node.
-        else:
-            if not trialWrite:
-                g.es('',p.h,'has no children',color='red')
-                ok = False
-        while p and p != after:
-            self.writeNode(p) # side effect: advances p
+        ok = self.isSafeWrite(p)
+        if ok:
+            p = p.firstChild() # A hack: ignore the root node.
+            while p and p != after:
+                self.writeNode(p) # side effect: advances p
     finally:
         self.atAutoWrite = False
     return ok
@@ -8337,7 +8422,6 @@ def initAtAutoWrite(self,p,fileName,outputFile):
         self.atAutoWriteUnderlines = underlines2 + underlines1
         self.underlines1 = underlines1
         self.underlines2 = underlines2
-
 #@+node:ekr.20090702084917.6033:@test initAtAutoWrite
 if g.unitTesting:
 
@@ -8358,6 +8442,25 @@ if g.unitTesting:
         rst.atAutoWriteUnderlines
 #@-node:ekr.20090702084917.6033:@test initAtAutoWrite
 #@-node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
+#@+node:ekr.20091228080620.6499:isSafeWrite
+def isSafeWrite (self,p):
+
+    '''Return True if node p contributes nothing but
+    rst-options to the write.'''
+
+    if self.trialWrite:
+        return False # Trial writes are always safe.
+
+    lines = g.splitLines(p.b)
+    for z in lines:
+        if z.strip() and not z.startswith('@') and not z.startswith('.. '):
+            # A real line that will not be written.
+            g.es('unsafe @auto-rst',color='red')
+            g.es('body text will be ignored in\n',p.h)
+            return False
+    else:
+        return True
+#@-node:ekr.20091228080620.6499:isSafeWrite
 #@-node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
 #@+node:ekr.20090502071837.58:write methods (leoRst)
 #@+node:ekr.20090502071837.68:getDocPart
@@ -9104,6 +9207,103 @@ if g.unitTesting:
 #@-node:ekr.20090517020744.5785:@test reportMismatch
 #@-node:ekr.20070911110507:reportMismatch & test
 #@-node:ekr.20091227115606.6467:Comparison
+#@+node:ekr.20091228080620.6498:Warn about dangerous writes
+#@+node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
+def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
+
+    '''Write an @auto tree containing imported rST code.
+    The caller will close the output file.'''
+
+    try:
+        self.trialWrite = trialWrite
+        self.atAutoWrite = True
+        self.initAtAutoWrite(p,fileName,outputFile)
+        self.topNode = p.copy() # Indicate the top of this tree.
+        self.topLevel = p.level()
+        after = p.nodeAfterTree()
+        ok = self.isSafeWrite(p)
+        if ok:
+            p = p.firstChild() # A hack: ignore the root node.
+            while p and p != after:
+                self.writeNode(p) # side effect: advances p
+    finally:
+        self.atAutoWrite = False
+    return ok
+#@nonl
+#@+node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
+def initAtAutoWrite(self,p,fileName,outputFile):
+
+    # Set up for a standard write.
+    self.createDefaultOptionsDict()
+    self.tnodeOptionDict = {}
+    self.scanAllOptions(p)
+    self.initWrite(p)
+    self.preprocessTree(p) # Allow @ @rst-options, for example.
+
+    # Do the overrides.
+    self.outputFile = outputFile
+    self.outputFileName = fileName
+
+    # Set underlining characters.
+    d = self.tnodeOptionDict.get(p.v) # Set by preprocessTree.
+    underlines = d.get('underline_characters')
+    if underlines:
+        self.atAutoWriteUnderlines = underlines
+    else:
+        d = p.v.u.get('rst-import',{})
+        underlines2 = d.get('underlines2')
+        if not underlines2: underlines2 = '#'
+        underlines1 = d.get('underlines1')
+        if not underlines1: underlines1 = '=+*^~"\'`-:><_'
+            # The standard defaults.
+        if len(underlines2) > 1:
+            underlines2 = underlines2[0]
+            g.trace('too many top-level underlines, using %s' % (
+                underlines2),color='blue')
+        self.atAutoWriteUnderlines = underlines2 + underlines1
+        self.underlines1 = underlines1
+        self.underlines2 = underlines2
+#@+node:ekr.20090702084917.6033:@test initAtAutoWrite
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    rst = c.rstCommands
+    rst.initAtAutoWrite(p,fileName='<test file>',outputFile=None)
+
+    # Ensure we are actually testing the default logic.
+    d = p.v.u.get('rst-import',{})
+    underlines = d.get('underline_characters')
+    assert underlines is None,underlines
+    assert d == {},d
+    # Now test the logic.
+    assert rst.underlines2 == '#',rst.underlines2
+    assert rst.underlines1 == '=+*^~"\'`-:><_',rst.underlines1
+    assert rst.atAutoWriteUnderlines == '#=+*^~"\'`-:><_',\
+        rst.atAutoWriteUnderlines
+#@-node:ekr.20090702084917.6033:@test initAtAutoWrite
+#@-node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
+#@+node:ekr.20091228080620.6499:isSafeWrite
+def isSafeWrite (self,p):
+
+    '''Return True if node p contributes nothing but
+    rst-options to the write.'''
+
+    if self.trialWrite:
+        return False # Trial writes are always safe.
+
+    lines = g.splitLines(p.b)
+    for z in lines:
+        if z.strip() and not z.startswith('@') and not z.startswith('.. '):
+            # A real line that will not be written.
+            g.es('unsafe @auto-rst',color='red')
+            g.es('body text will be ignored in\n',p.h)
+            return False
+    else:
+        return True
+#@-node:ekr.20091228080620.6499:isSafeWrite
+#@-node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
+#@-node:ekr.20091228080620.6498:Warn about dangerous writes
 #@-node:ekr.20091221094815.6386:at-auto-rst problems
 #@-node:ekr.20091221123255.6375:Fixed
 #@-node:ekr.20091221094815.6383:Urgent (voted up) bugs to fix
