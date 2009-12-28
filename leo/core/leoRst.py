@@ -664,21 +664,17 @@ class rstCommands:
         The caller will close the output file.'''
 
         try:
-            ok = True
             self.trialWrite = trialWrite
             self.atAutoWrite = True
             self.initAtAutoWrite(p,fileName,outputFile)
             self.topNode = p.copy() # Indicate the top of this tree.
             self.topLevel = p.level()
             after = p.nodeAfterTree()
-            if p.hasChildren():
-                p = p.firstChild() # A (temporary?) hack: ignore the root node.
-            else:
-                if not trialWrite:
-                    g.es('',p.h,'has no children',color='red')
-                    ok = False
-            while p and p != after:
-                self.writeNode(p) # side effect: advances p
+            ok = self.isSafeWrite(p)
+            if ok:
+                p = p.firstChild() # A hack: ignore the root node.
+                while p and p != after:
+                    self.writeNode(p) # side effect: advances p
         finally:
             self.atAutoWrite = False
         return ok
@@ -716,7 +712,6 @@ class rstCommands:
             self.atAutoWriteUnderlines = underlines2 + underlines1
             self.underlines1 = underlines1
             self.underlines2 = underlines2
-
     #@+node:ekr.20090702084917.6033:@test initAtAutoWrite
     if g.unitTesting:
 
@@ -737,6 +732,25 @@ class rstCommands:
             rst.atAutoWriteUnderlines
     #@-node:ekr.20090702084917.6033:@test initAtAutoWrite
     #@-node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
+    #@+node:ekr.20091228080620.6499:isSafeWrite
+    def isSafeWrite (self,p):
+
+        '''Return True if node p contributes nothing but
+        rst-options to the write.'''
+
+        if self.trialWrite:
+            return False # Trial writes are always safe.
+
+        lines = g.splitLines(p.b)
+        for z in lines:
+            if z.strip() and not z.startswith('@') and not z.startswith('.. '):
+                # A real line that will not be written.
+                g.es('unsafe @auto-rst',color='red')
+                g.es('body text will be ignored in\n',p.h)
+                return False
+        else:
+            return True
+    #@-node:ekr.20091228080620.6499:isSafeWrite
     #@-node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
     #@+node:ekr.20090502071837.61:writeNormalTree
     def writeNormalTree (self,p,toString=False):
