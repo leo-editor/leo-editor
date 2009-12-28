@@ -664,17 +664,25 @@ class rstCommands:
         The caller will close the output file.'''
 
         try:
+            ok = True
             self.trialWrite = trialWrite
             self.atAutoWrite = True
             self.initAtAutoWrite(p,fileName,outputFile)
             self.topNode = p.copy() # Indicate the top of this tree.
             self.topLevel = p.level()
             after = p.nodeAfterTree()
-            p = p.firstChild() # A (temporary?) hack: ignore the root node.
+            if p.hasChildren():
+                p = p.firstChild() # A (temporary?) hack: ignore the root node.
+            else:
+                if not trialWrite:
+                    g.es('',p.h,'has no children',color='red')
+                    ok = False
             while p and p != after:
                 self.writeNode(p) # side effect: advances p
         finally:
             self.atAutoWrite = False
+        return ok
+    #@nonl
     #@+node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
     def initAtAutoWrite(self,p,fileName,outputFile):
 
@@ -1327,7 +1335,19 @@ class rstCommands:
         return n, result
     #@nonl
     #@-node:ekr.20090502071837.70:skip_literal_block
-    #@+node:ekr.20090502071837.71:writeBody & helpers
+    #@+node:ekr.20090502071837.94:write (leoRst)
+    def write (self,s):
+
+        if self.trialWrite:
+            pass
+        else:
+            s = self.encode(s)
+
+        # g.trace(repr(s),g.callers(2))
+
+        self.outputFile.write(s)
+    #@-node:ekr.20090502071837.94:write (leoRst)
+    #@+node:ekr.20090502071837.71:writeBody
     def writeBody (self,p):
 
         # g.trace(p.h,p.b)
@@ -1368,10 +1388,13 @@ class rstCommands:
 
         # Write the lines.
         s = ''.join(lines)
-        s = g.ensureLeadingNewlines(s,1)
+
+        # We no longer add newlines to the start of nodes because
+        # we write a blank line after all sections.
+        # s = g.ensureLeadingNewlines(s,1)
         s = g.ensureTrailingNewlines(s,2)
         self.write(s)
-    #@-node:ekr.20090502071837.71:writeBody & helpers
+    #@-node:ekr.20090502071837.71:writeBody
     #@+node:ekr.20090502071837.83:writeHeadline & helper
     def writeHeadline (self,p):
 
@@ -1585,9 +1608,9 @@ class rstCommands:
             n = max(4,len(s))
             if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
             if level == 0:
-                return '%s\n%s\n%s\n' % (ch*n,p.h,ch*n)
+                return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
             else:
-                return '%s\n%s\n' % (p.h,ch*n)
+                return '%s\n%s\n\n' % (p.h,ch*n)
         else:
             # The user is responsible for top-level overlining.
             u = self.getOption('underline_characters') #  '''#=+*^~"'`-:><_'''
@@ -1598,18 +1621,6 @@ class rstCommands:
             n = max(4,len(s))
             return '%s\n%s\n\n' % (p.h.strip(),ch*n)
     #@-node:ekr.20090502071837.93:underline (leoRst)
-    #@+node:ekr.20090502071837.94:write (leoRst)
-    def write (self,s):
-
-        if g.isPython3:
-            pass
-        else:
-            s = self.encode(s)
-
-        # g.trace(repr(s),g.callers(2))
-
-        self.outputFile.write(s)
-    #@-node:ekr.20090502071837.94:write (leoRst)
     #@-node:ekr.20090502071837.88:Utils
     #@+node:ekr.20090502071837.95:Support for http plugin
     #@+node:ekr.20090502071837.96:http_addNodeMarker

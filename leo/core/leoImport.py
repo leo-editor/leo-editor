@@ -19,9 +19,9 @@ import string
 if g.isPython3:
     import io
     StringIO = io.StringIO
-    # BytesIO = io.BytesIO
 else:
     import StringIO
+    StringIO = StringIO.StringIO
 #@-node:ekr.20091224155043.6539:<< imports >>
 #@nl
 #@<< class scanUtility >>
@@ -1743,6 +1743,7 @@ class baseScannerClass (scanUtility):
         self.errors = 0
         ic.errors = 0
         self.errorLines = []
+        self.escapeSectionRefs = True
         self.extraIdChars = ''
         self.fileName = ic.fileName # The original filename.
         self.fileType = ic.fileType # The extension,  '.py', '.c', etc.
@@ -1830,7 +1831,7 @@ class baseScannerClass (scanUtility):
 
         if s1 is None and s2 is None:
             if self.isRst: # Errors writing file at present...
-                outputFile = StringIO() ### StringIO.StringIO()
+                outputFile = StringIO()
                 c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile,trialWrite=True)
                 s1,s2 = self.file_s,outputFile.getvalue()
             else:
@@ -1850,8 +1851,14 @@ class baseScannerClass (scanUtility):
 
         if s1 == s2: return True
 
-        lines1 = g.splitLines(s1) ; n1 = len(lines1)
-        lines2 = g.splitLines(s2) ; n2 = len(lines2)
+        lines1 = g.splitLines(s1)
+        lines2 = g.splitLines(s2)
+
+        if self.isRst:
+            lines1 = self.adjustRstLines(lines1)
+            lines2 = self.adjustRstLines(lines2)
+
+        n1,n2 = len(lines1), len(lines2)
 
         # g.trace('lines1',lines1)
         # g.trace('lines2',lines2)
@@ -1875,7 +1882,7 @@ class baseScannerClass (scanUtility):
 
         return ok
     #@-node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
-    #@+node:ekr.20070730093735:compareHelper & helper
+    #@+node:ekr.20070730093735:compareHelper & helpers
     def compareHelper (self,lines1,lines2,i,strict):
 
         '''Compare lines1[i] and lines2[i].
@@ -1897,8 +1904,8 @@ class baseScannerClass (scanUtility):
         messageKind = None
 
         if i >= len(lines1):
-            if self.isRst:
-                return True # ignore extra lines.
+            ### if self.isRst:
+            ###    return True # ignore extra lines.
             if i != expectedMismatch or not g.unitTesting:
                 pr('extra lines')
                 for line in lines2[i:]:
@@ -1957,6 +1964,15 @@ class baseScannerClass (scanUtility):
                 self.warning('mismatch in leading whitespace')
                 pr_mismatch(i,line1,line2)
             return messageKind in ('comment','warning') # Only errors are invalid.
+    #@+node:ekr.20091227115606.6468:adjustRstLines
+    def adjustRstLines(self,lines):
+
+        '''Ignore newlines.
+
+        This fudge allows the rst code generators to insert needed newlines freely.'''
+
+        return [z for z in lines if z.strip(' \t') != '\n']
+    #@-node:ekr.20091227115606.6468:adjustRstLines
     #@+node:ekr.20090513073632.5735:compareRstUnderlines
     def compareRstUnderlines(self,s1,s2):
 
@@ -1976,7 +1992,7 @@ class baseScannerClass (scanUtility):
 
         return val
     #@-node:ekr.20090513073632.5735:compareRstUnderlines
-    #@-node:ekr.20070730093735:compareHelper & helper
+    #@-node:ekr.20070730093735:compareHelper & helpers
     #@+node:ekr.20071110144948:checkLeadingWhitespace
     def checkLeadingWhitespace (self,line):
 
@@ -2004,12 +2020,13 @@ class baseScannerClass (scanUtility):
             '%s did not import %s perfectly\nfirst mismatched line: %d\n%s' % (
                 kind,self.root.h,bad_i,repr(lines2[x2])))
 
-        maxlines = 200
-        if trace or len(lines1) < maxlines:
+        # maxlines = 300
+        if trace: # or len(lines1) < maxlines:
             aList = []
             if True: # intermix lines.
                 n1,n2 = len(lines1),len(lines2)
-                for i in range(min(maxlines,max(n1,n2))):
+                # for i in range(min(maxlines,max(n1,n2))):
+                for i in range(max(0,bad_i-2),min(bad_i+3,max(n1,n2))):
                     if i < n1: line1 = repr(lines1[i])
                     else:      line1 = '<eof>'
                     if i < n2: line2 = repr(lines2[i])
@@ -3075,7 +3092,8 @@ class baseScannerClass (scanUtility):
         changed = c.isChanged()
 
         # Use @verbatim to escape section references
-        s = self.escapeFalseSectionReferences(s)
+        if self.escapeSectionRefs: # 2009/12/27
+            s = self.escapeFalseSectionReferences(s)
 
         # Check for intermixed blanks and tabs.
         if self.strict or self.atAutoWarnsAboutLeadingWhitespace:
@@ -3847,6 +3865,7 @@ class rstScanner (baseScannerClass):
         # Scanner overrides
         self.blockDelim1 = self.blockDelim2 = None
         self.classTags = []
+        self.escapeSectionRefs = False
         self.functionSpelling = 'section'
         self.functionTags = []
         self.hasClasses = False
@@ -4043,19 +4062,27 @@ class rstScanner (baseScannerClass):
 
         trace = False and not g.unitTesting
         i1,j = g.getLine(s,i)
-        line = s[i1:j].strip()
+        # 2009/12/27: sections can not begin with whitespace.
+
+        ### line = s[i1:j].strip() #
+        line = s[i1:j]
+        nows = i1 == g.skip_ws(s,i1)
+        line = line.strip()
         ch,kind = '','plain' # defaults.
 
-        if self.isUnderLine(line): # an overline.
+        if nows and self.isUnderLine(line): # an overline.
             name_i = g.skip_line(s,i1)
             name_i,name_j = g.getLine(s,name_i)
             name = s[name_i:name_j].strip()
             next_i = g.skip_line(s,name_i)
             i,j = g.getLine(s,next_i)
-            line2 = s[i:j].strip()
+            # line2 = s[i:j].strip() #
+            line2 = s[i:j]
+            nows = i == g.skip_ws(s,i)
+            line2 = line2.strip()
             n1,n2,n3 = len(line),len(name),len(line2)
             ch1,ch3 = line[0],line2 and line2[0]
-            ok = (self.isUnderLine(line2) and
+            ok = (nows and self.isUnderLine(line2) and
                 n1 >= n2 and n2 > 0 and n3 >= n2 and ch1 == ch3)
             if ok:
                 i += n3
@@ -4071,19 +4098,25 @@ class rstScanner (baseScannerClass):
             name = line.strip()
             i = g.skip_line(s,i1)
             i,j = g.getLine(s,i)
-            line2 = s[i:j].strip()
+            # line2 = s[i:j].strip() #
+            line2 = s[i:j]
+            nows2 = i == g.skip_ws(s,i)
+            line2 = line2.strip()
             n1,n2 = len(name),len(line2)
             # look ahead two lines.
             i3,j3 = g.getLine(s,j)
             name2 = s[i3:j3].strip()
             i4,j4 = g.getLine(s,j3)
-            line4 = s[i4:j4].strip()
+            # line4 = s[i4:j4].strip() #
+            line4 = s[i4:j4]
+            nows4 = i4 == g.skip_ws(s,i4)
+            line4 = line4.strip()
             n3,n4 = len(name2),len(line4)
             overline = (
-                self.isUnderLine(line2) and
-                self.isUnderLine(line4) and
+                nows2 and self.isUnderLine(line2) and
+                nows4 and self.isUnderLine(line4) and
                 n3 > 0 and n2 >= n3 and n4 >= n3)
-            ok = (not overline and self.isUnderLine(line2) and
+            ok = (not overline and nows2 and self.isUnderLine(line2) and
                 n1 > 0 and n2 >= n1)
             if ok:
                 i += n2
