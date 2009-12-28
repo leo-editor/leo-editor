@@ -867,6 +867,12 @@ class leoImportCommands (scanUtility):
             # Just copy the file to the parent node.
             self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
 
+        if atAuto:
+            # Remember that we have read this file.
+            # Fixes bug 488894: unsettling dialog when saving Leo file
+            # after creating and populating an @auto node
+            p.v.at_auto_read = True # Create the attribute
+
         p.contract()
         w.setInsertPoint(0)
         w.seeInsertPoint()
@@ -909,11 +915,6 @@ class leoImportCommands (scanUtility):
             fileName=p.atAutoNodeName(),
             parent=p.copy(),
             atAuto=True)
-
-        # Remember that we have read this file.
-        # Fixes bug 488894: unsettling dialog when saving Leo file
-        # after creating and populating an @auto node  
-        p.v.at_auto_read = True # Create the attribute
 
         # Force an update of the body pane.
         self.setBodyString(p,p.b)
