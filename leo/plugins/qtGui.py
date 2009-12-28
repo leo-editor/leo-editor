@@ -7521,7 +7521,7 @@ class leoQtEventFilter(QtCore.QObject):
         'Backtab':  'Tab', # The shift mod will convert to 'Shift+Tab',
         'Esc':      'Escape',
         'Del':      'Delete',
-        'Ins':      'Return',
+        'Ins':      'Insert', # was 'Return',
         # Comment these out to pass the key to the QTextWidget.
         # Use these to enable Leo's page-up/down commands.
         'PgDown':    'Next',
@@ -7533,6 +7533,7 @@ class leoQtEventFilter(QtCore.QObject):
         'F6':'F6','F7':'F7','F8':'F8','F9':'F9',
         'F10':'F10','F11':'F11','F12':'F12',
         'Home':'Home',
+        # 'Insert':'Insert',
         'Return':'Return',
         # 'Tab':'Tab',
         'Tab':'\t', # A hack for QLineEdit.
@@ -7607,7 +7608,8 @@ class leoQtEventFilter(QtCore.QObject):
                 ret = k.masterKeyHandler(leoEvent,stroke=stroke)
                 c.outerUpdate()
             else:
-                if trace and traceKey and verbose: g.trace(self.tag,'unbound',tkKey,stroke)
+                if trace and traceKey and verbose:
+                    g.trace(self.tag,'unbound',tkKey,stroke)
 
         if trace and traceEvent: self.traceEvent(obj,event,tkKey,override)
 

@@ -1871,7 +1871,8 @@ class keyHandlerClass:
     # KP_Add, KP_Decimal, KP_Divide, KP_Enter, KP_Equal,
     # KP_Multiply, KP_Separator,KP_Space, KP_Subtract, KP_Tab,
     # KP_F1,KP_F2,KP_F3,KP_F4,
-    # KP_0,KP_1,KP_2,KP_3,KP_4,KP_5,KP_6,KP_7,KP_8,KP_9
+    # KP_0,KP_1,KP_2,KP_3,KP_4,KP_5,KP_6,KP_7,KP_8,KP_9,
+    # Insert
     #@-at
     #@-node:ekr.20070123143428:k.defineTkNames
     #@+node:ekr.20080509064108.6:k.defineSingleLineCommands
@@ -3576,8 +3577,8 @@ class keyHandlerClass:
             if trace: g.trace('ignoring unbound non-ascii key')
             return 'break'
 
-        elif keysym.find('Escape') != -1:
-            # Never insert escape characters.
+        elif keysym.find('Escape') != -1 or stroke.find('Insert') != -1:
+            # Never insert escape or insert characters.
             return 'break'
 
         else:

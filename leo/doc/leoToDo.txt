@@ -5379,8 +5379,8 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
         if trace: g.trace('ignoring unbound non-ascii key')
         return 'break'
 
-    elif keysym.find('Escape') != -1:
-        # Never insert escape characters.
+    elif keysym.find('Escape') != -1 or stroke.find('Insert') != -1:
+        # Never insert escape or insert characters.
         return 'break'
 
     else:

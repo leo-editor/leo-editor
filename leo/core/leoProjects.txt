@@ -10633,8 +10633,8 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
         if trace: g.trace('ignoring unbound non-ascii key')
         return 'break'
 
-    elif keysym.find('Escape') != -1:
-        # Never insert escape characters.
+    elif keysym.find('Escape') != -1 or stroke.find('Insert') != -1:
+        # Never insert escape or insert characters.
         return 'break'
 
     else:
@@ -11737,6 +11737,130 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
     return sax_node
 #@-node:ekr.20060919110638.14:parse_leo_file
 #@-node:ekr.20091217190731.6075:Recover from bad chars in .leo files
+#@+node:ekr.20091228133644.6221:Handle Insert key properly
+# This is now bound in the EKR bindings to insert-node.
+
+g.es(c.k.ignore_unbound_non_ascii_keys)
+#@nonl
+#@+node:ekr.20061031131434.182:isPlainKey
+def isPlainKey (self,shortcut):
+
+    '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
+
+    k = self ; shortcut = shortcut or ''
+
+    # altgr combos (Alt+Ctrl) are always plain keys
+    if shortcut.startswith('Alt+Ctrl+') and not self.enable_alt_ctrl_bindings:
+        return True
+
+    for s in ('Alt','Ctrl','Command','Meta'):
+        if shortcut.find(s) != -1:            
+            return False
+    else:
+        # Careful, allow bare angle brackets for unit tests.
+        if shortcut.startswith('<') and shortcut.endswith('>'):
+            shortcut = shortcut[1:-1]
+
+        isPlain = (
+            len(shortcut) == 1 or
+            len(k.guiBindNamesInverseDict.get(shortcut,'')) == 1 or
+            # A hack: allow Return to be bound to command.
+            shortcut in ('Tab','\t')
+        )
+
+        # g.trace(isPlain,repr(shortcut))
+        return isPlain and not self.isFKey(shortcut)
+#@-node:ekr.20061031131434.182:isPlainKey
+#@+node:ekr.20080510095819.1:k.handleUnboudKeys
+def handleUnboundKeys (self,event,char,keysym,stroke):
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    modesTuple = ('insert','overwrite')
+
+    if trace: g.trace('ch: %s keysym: %s stroke %s' % (
+        repr(event.char),repr(event.keysym),repr(stroke)))
+
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
+        return 'break'
+
+    elif k.isFKey(stroke):
+        return 'break'
+
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  <Return> is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
+        # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
+        if trace: g.trace('ignoring unbound non-ascii key')
+        return 'break'
+
+    elif keysym.find('Escape') != -1 or stroke.find('Insert') != -1:
+        # Never insert escape or insert characters.
+        return 'break'
+
+    else:
+        if trace: g.trace(repr(stroke),'no func')
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+#@-node:ekr.20080510095819.1:k.handleUnboudKeys
+#@+node:ekr.20070123143428:k.defineTkNames
+def defineTkNames (self):
+
+    k = self
+
+    # These names are used in Leo's core *regardless* of the gui actually in effect.
+    # The gui is responsible for translating gui-dependent keycodes into these values.
+    k.tkNamesList = (
+        'BackSpace','Begin','Break',
+        'Caps_Lock','Clear',
+        'Delete','Down',
+        'End','Escape',
+        'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
+        'Home',
+        'Left','Linefeed',
+        'Next','Num_Lock',
+        'Prior',
+        'Return','Right',
+        'Tab',
+        'Up',
+        # 'space',
+    )
+
+    # These keys settings that may be specied in leoSettings.leo.
+    # Keys are lowercase, so that case is not significant *for these items only* in leoSettings.leo.
+    k.settingsNameDict = {
+        'bksp'    : 'BackSpace',
+        'dnarrow' : 'Down',
+        'esc'     : 'Escape',
+        'ltarrow' : 'Left',
+        'pageup'  : 'Prior',
+        'pagedn'  : 'Next',
+        'rtarrow' : 'Right',
+        'uparrow' : 'Up',
+    }
+
+    # Add lowercase version of special keys.
+    for s in k.tkNamesList:
+        k.settingsNameDict [s.lower()] = s
+
+
+@  The following are not translated, so what appears in the menu is the same as what is passed to Tk.  Case is significant.
+Note: the Tk documentation states that not all of these may be available on all platforms.
+
+Num_Lock, Pause, Scroll_Lock, Sys_Req,
+KP_Add, KP_Decimal, KP_Divide, KP_Enter, KP_Equal,
+KP_Multiply, KP_Separator,KP_Space, KP_Subtract, KP_Tab,
+KP_F1,KP_F2,KP_F3,KP_F4,
+KP_0,KP_1,KP_2,KP_3,KP_4,KP_5,KP_6,KP_7,KP_8,KP_9,
+Insert
+#@-node:ekr.20070123143428:k.defineTkNames
+#@-node:ekr.20091228133644.6221:Handle Insert key properly
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin

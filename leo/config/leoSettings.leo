@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="0" left="0" height="929" width="1356"/>
+	<global_window_position top="48" left="0" height="694" width="1024"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -94,7 +94,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20090703122042.7463"><vh>@@button a-common-button</vh></v>
@@ -407,7 +407,7 @@
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
+<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings</vh>
 <v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
 <v t="ekr.20080510121331.16"><vh>@@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
@@ -1014,7 +1014,7 @@
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
+<v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1172,7 +1172,7 @@
 <v t="ekr.20060904211808"><vh>zodb plugin</vh>
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
-<v t="tbrown.20091129085043.11789" a="E"><vh>active_path plugin</vh>
+<v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
 <v t="tbrown.20091129085043.11790"><vh>@string active_path_attype = auto</vh></v>
 <v t="tbrown.20091129085043.11792"><vh>@string active_path_event = icondclick1</vh></v>
 <v t="tbrown.20091129085043.11793"><vh>@data active_path_ignore</vh></v>
@@ -1440,7 +1440,7 @@
 <v t="TL.20091006194534.6395"><vh>@mode vim-window-commands</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208"></v>
+<v t="ekr.20060603215208" a="E"></v>
 <v t="ekr.20070224073109.1"></v>
 <v t="ekr.20090930151626.8534"><vh>add/delete-comments...</vh>
 <v t="ekr.20060925060533.4"></v>
@@ -3550,31 +3550,6 @@ vertical: body pane on the botton</t>
 <t tx="ekr.20041119034357.1">@nocolor
 
 The @settings tree contains all active settings.  Settings outside this tree have no effect.</t>
-<t tx="ekr.20041119034357.5">False: Leo writes leoSettings.leo files.</t>
-<t tx="ekr.20041119034357.7"></t>
-<t tx="ekr.20041119034357.8">Example:
-
-"Created by Leo at @date"
-
-A comment to be iserted in derived files just after the initial @+leo line.
-The comment will appear in an @comment sentinel.
-Notes:
-1. Leo replaces @date with the date and time that the derived file was created.
-2. Use \n to separate lines.
-3. This must be empty for compatibility with older versions of Leo.
-4. Please use an empty comment when updating to CVS!</t>
-<t tx="ekr.20041119034357.9">A string, s.  If present, .leo files will contain an xml-stylesheet line following
-the opening xml line. 
-For example:
-  &lt;?xml ....?&gt; 
-  &lt;?xml-stylesheet ekr_stylesheet?&gt;
-  
-Notes:
-- The string s should contain any needed XML escapes.
-- Leo writes the line &lt;?xml-stylesheet s ?&gt;
-  where s is the value of this setting.
-- Please set this field empty when uploading to CVS.
-- Very old versions of Leo did not support reading files containing xml-stylesheet lines.</t>
 <t tx="ekr.20041119034357.10"></t>
 <t tx="ekr.20041119034357.11"></t>
 <t tx="ekr.20041119034357.12"></t>
@@ -3664,6 +3639,7 @@ Note: this setting can be overridden by the x_mode_fg_color settings.</t>
 #ffecea
 
 Note: this setting can be overridden by the x_mode_bg_color settings.</t>
+<t tx="ekr.20041119034357.5">False: Leo writes leoSettings.leo files.</t>
 <t tx="ekr.20041119034357.50">Color of insertion cursor
 
 </t>
@@ -3749,6 +3725,7 @@ always uses this ratio when opening a file that is being split vertically.</t>
 <t tx="ekr.20041119034357.67">The color of the split bar. gray90 also looks good.</t>
 <t tx="ekr.20041119034357.68">The Tk -relief option for the split bar.</t>
 <t tx="ekr.20041119034357.69">The width of the split bar, in pixels (must be an integer).</t>
+<t tx="ekr.20041119034357.7"></t>
 <t tx="ekr.20041119034357.70">Syntax colors may be any valid Tk color name or color value.
 
 For example, "00aa00" is the dark green used by IDLE.
@@ -3774,6 +3751,17 @@ Only functional if use_hyperlinks = 0
 False: (recommended): Underline undefined section names.</t>
 <t tx="ekr.20041119034357.78">The color of comments in code parts.</t>
 <t tx="ekr.20041119034357.79">The color of name in @&lt;name@&gt;</t>
+<t tx="ekr.20041119034357.8">Example:
+
+"Created by Leo at @date"
+
+A comment to be iserted in derived files just after the initial @+leo line.
+The comment will appear in an @comment sentinel.
+Notes:
+1. Leo replaces @date with the date and time that the derived file was created.
+2. Use \n to separate lines.
+3. This must be empty for compatibility with older versions of Leo.
+4. Please use an empty comment when updating to CVS!</t>
 <t tx="ekr.20041119034357.80">The color of C/C++ preprocessor directive lines.</t>
 <t tx="ekr.20041119034357.81">The color of text in doc parts.</t>
 <t tx="ekr.20041119034357.82">The color of keywords of the present language.
@@ -3790,6 +3778,18 @@ For example, the color of "if", "try" and "except" in Python.</t>
 
 </t>
 <t tx="ekr.20041119034357.89">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.</t>
+<t tx="ekr.20041119034357.9">A string, s.  If present, .leo files will contain an xml-stylesheet line following
+the opening xml line. 
+For example:
+  &lt;?xml ....?&gt; 
+  &lt;?xml-stylesheet ekr_stylesheet?&gt;
+  
+Notes:
+- The string s should contain any needed XML escapes.
+- Leo writes the line &lt;?xml-stylesheet s ?&gt;
+  where s is the value of this setting.
+- Please set this field empty when uploading to CVS.
+- Very old versions of Leo did not support reading files containing xml-stylesheet lines.</t>
 <t tx="ekr.20041119035137">@nocolor
 @pagewidth 80
 
@@ -3891,19 +3891,6 @@ True:  Leo strips blanks and tabs from otherwise blank lines.
 False: Leo retains whitespace even in otherwise blank lines.</t>
 <t tx="ekr.20041119042929"></t>
 <t tx="ekr.20041119042929.1"></t>
-<t tx="ekr.20041119042929.2">Same as @directory.</t>
-<t tx="ekr.20041119042929.3"></t>
-<t tx="ekr.20041119042929.4"></t>
-<t tx="ekr.20041119042929.5">Valid values:
-    
-weight: bold, normal, None
-slant: roman, italic, None
-
-Use the show-fonts command to pick fonts, then copy the values shown by the show-fonts command to the values here.</t>
-<t tx="ekr.20041119042929.7"></t>
-<t tx="ekr.20041119042929.9">The encoding used for derived files if no @encoding directive is in effect.
-This setting is also used to encode files created by the Tangle commands.
-Default is UTF-8 (case not important).</t>
 <t tx="ekr.20041119042929.10">The encoding specified in the following line of new .leo files:
 
 &lt;?xml version="1.0" encoding="UTF-8"&gt;
@@ -3922,6 +3909,19 @@ Leo assumes that Tk text widgets return:
 1. The value specified by the tk_encoding parameter, if it exists.
 2. locale.getdefaultlocale()[1] if it is exists.
 3. sys.getdefaultencoding()</t>
+<t tx="ekr.20041119042929.2">Same as @directory.</t>
+<t tx="ekr.20041119042929.3"></t>
+<t tx="ekr.20041119042929.4"></t>
+<t tx="ekr.20041119042929.5">Valid values:
+    
+weight: bold, normal, None
+slant: roman, italic, None
+
+Use the show-fonts command to pick fonts, then copy the values shown by the show-fonts command to the values here.</t>
+<t tx="ekr.20041119042929.7"></t>
+<t tx="ekr.20041119042929.9">The encoding used for derived files if no @encoding directive is in effect.
+This setting is also used to encode files created by the Tangle commands.
+Default is UTF-8 (case not important).</t>
 <t tx="ekr.20041119043902">The path to the first file or directory to be compared.
 
 Directory compares ignore a filename part of the path, if present.
@@ -3932,6 +3932,27 @@ E.g., c:/directory2/spam.py is valid for directory compares</t>
 Directory compares ignore a filename part of the path, if present.
 
 E.g., c:/directory2/spam.py is valid for directory compares</t>
+<t tx="ekr.20041119043902.10">0: Show lines regardless of the number of mismatches.
+
+n: Stop showing lines after n mismatches.
+
+</t>
+<t tx="ekr.20041119043902.11">
+1: Show blanks as [ ] and tabs as [t]
+
+</t>
+<t tx="ekr.20041119043902.12">True:  Print lines of both files when showing matching lines.
+
+False: Print only the line of compare_file_1 when showing matching lines.
+
+</t>
+<t tx="ekr.20041119043902.13">True: Print lines that match using the print_both_lines_for_matches option.
+
+</t>
+<t tx="ekr.20041119043902.14">True: Print lines that do not compare equal to each other.
+
+</t>
+<t tx="ekr.20041119043902.15">True: Print lines all lines in one file after an end-of-file is seen on the other file.</t>
 <t tx="ekr.20041119043902.2">The path to the output file.
 
 Leo will silently write to this file, regardless of whether it already exists, creating the file if needed.
@@ -3956,27 +3977,6 @@ False: The recommended setting when comparing Python source files.
 <t tx="ekr.20041119043902.9">True: Ignore sentinel lines when comparing files.
 
 Leo sets sentinel comment delimiters from the first line of each file.  This option has no effect if the first line is not a @+leo line.</t>
-<t tx="ekr.20041119043902.10">0: Show lines regardless of the number of mismatches.
-
-n: Stop showing lines after n mismatches.
-
-</t>
-<t tx="ekr.20041119043902.11">
-1: Show blanks as [ ] and tabs as [t]
-
-</t>
-<t tx="ekr.20041119043902.12">True:  Print lines of both files when showing matching lines.
-
-False: Print only the line of compare_file_1 when showing matching lines.
-
-</t>
-<t tx="ekr.20041119043902.13">True: Print lines that match using the print_both_lines_for_matches option.
-
-</t>
-<t tx="ekr.20041119043902.14">True: Print lines that do not compare equal to each other.
-
-</t>
-<t tx="ekr.20041119043902.15">True: Print lines all lines in one file after an end-of-file is seen on the other file.</t>
 <t tx="ekr.20041119044139"></t>
 <t tx="ekr.20041119050105">These options affecting how Leo shows the results of file compares.
 
@@ -3984,6 +3984,15 @@ Leo gathers statistics regardless of these options.</t>
 <t tx="ekr.20041119050105.1">The change string (without the quotes unless quotes are part of the string).
 
 N.B. Leo requires utf-8 encoding for any non-ascii characters.</t>
+<t tx="ekr.20041119050105.10"></t>
+<t tx="ekr.20041119050105.11"></t>
+<t tx="ekr.20041119050105.12"></t>
+<t tx="ekr.20041119050105.14">When checked, the Find and Change commands search body text.
+</t>
+<t tx="ekr.20041119050105.15">When checked, the Find and Change commands search headline text.
+</t>
+<t tx="ekr.20041119050105.16">When checked, the Find and Change commands search only the currently selected headline and its offspring.
+</t>
 <t tx="ekr.20041119050105.2">The find string (without the quotes unless quotes are part of the string).
 
 N.B. Leo requires utf-8 encoding for any non-ascii characters.
@@ -4010,38 +4019,6 @@ The pattern "^a" matches any line starting with "A".
 The pattern "a$" matches any line ending with "a".
 The pattern "^*$" matches any line at all.</t>
 <t tx="ekr.20041119050105.9"></t>
-<t tx="ekr.20041119050105.10"></t>
-<t tx="ekr.20041119050105.11"></t>
-<t tx="ekr.20041119050105.12"></t>
-<t tx="ekr.20041119050105.14">When checked, the Find and Change commands search body text.
-</t>
-<t tx="ekr.20041119050105.15">When checked, the Find and Change commands search headline text.
-</t>
-<t tx="ekr.20041119050105.16">When checked, the Find and Change commands search only the currently selected headline and its offspring.
-</t>
-<t tx="ekr.20041119050749.3">True:  Allows control-dragging to create clones.
-False: All drags move nodes.
-
-See also: look_for_control_drag_on_mouse_down
-Setting this setting to False allows Leo to be used on Aqua.</t>
-<t tx="ekr.20041119050749.4">True:  Tell whether drags will move nodes or clone nodes.
-False: Don't issue such messages.
-
-</t>
-<t tx="ekr.20041119050749.5">1: Click near a node expands or contracts the node.
-0: Only clicks in a node's plus/minus box expands or contracts the node.
-
-Note:  @bool expanded_click_area = True conflicts with the UniversalScrolling plugin.</t>
-<t tx="ekr.20041119050749.6">Foreground color of unselected headline text.</t>
-<t tx="ekr.20041119050749.7">Foreground color of selected headline text that is not being edited.
-
-DodgerBlue4</t>
-<t tx="ekr.20041119050749.8">Foreground color of unselected headline text in a headline that is being edited.
-
-Background color must also be specified for either setting to take effect.</t>
-<t tx="ekr.20041119050749.9">Foreground color of selected text headline text in a headline that is being edited.
-
-Background must also be specified for either setting to take effect.</t>
 <t tx="ekr.20041119050749.10">The format string used when creating the Time/Date string for the Insert Time/Date command.
 
 See the Python documentation for time.strftime for full details.
@@ -4071,6 +4048,29 @@ True: A drag is a control-drag if the control key is down at the start of the dr
 
 False: A drag is a control-drag if the control key is down at the end of the drag.</t>
 <t tx="ekr.20041119050749.18">True: Use horizontal scrollbar in outline pane.</t>
+<t tx="ekr.20041119050749.3">True:  Allows control-dragging to create clones.
+False: All drags move nodes.
+
+See also: look_for_control_drag_on_mouse_down
+Setting this setting to False allows Leo to be used on Aqua.</t>
+<t tx="ekr.20041119050749.4">True:  Tell whether drags will move nodes or clone nodes.
+False: Don't issue such messages.
+
+</t>
+<t tx="ekr.20041119050749.5">1: Click near a node expands or contracts the node.
+0: Only clicks in a node's plus/minus box expands or contracts the node.
+
+Note:  @bool expanded_click_area = True conflicts with the UniversalScrolling plugin.</t>
+<t tx="ekr.20041119050749.6">Foreground color of unselected headline text.</t>
+<t tx="ekr.20041119050749.7">Foreground color of selected headline text that is not being edited.
+
+DodgerBlue4</t>
+<t tx="ekr.20041119050749.8">Foreground color of unselected headline text in a headline that is being edited.
+
+Background color must also be specified for either setting to take effect.</t>
+<t tx="ekr.20041119050749.9">Foreground color of selected text headline text in a headline that is being edited.
+
+Background must also be specified for either setting to take effect.</t>
 <t tx="ekr.20041119051246.1"></t>
 <t tx="ekr.20041119051246.2">Background color of unselected headline text.
 
@@ -6082,6 +6082,8 @@ menu_text_font_weight = None</t>
 <t tx="ekr.20060804095015.1">Important: the order the open_flash_brackets and close_flash_brackets settings must be consistent.</t>
 <t tx="ekr.20060807103220"></t>
 <t tx="ekr.20060807103220.1">This is the body text of a single day node.</t>
+<t tx="ekr.20060807103220.10">True: Omit saturdays if a whole year is inserted</t>
+<t tx="ekr.20060807103220.11">True: Omit sundays if a whole year is inserted</t>
 <t tx="ekr.20060807103220.2">This is the format of the headline if a single day node is inserted.</t>
 <t tx="ekr.20060807103220.3">This is the format of day node headline if a whole month is inserted.</t>
 <t tx="ekr.20060807103220.4">This is the format of the month node headline if a whole month is inserted.</t>
@@ -6090,8 +6092,6 @@ menu_text_font_weight = None</t>
 <t tx="ekr.20060807103220.7">This is the format of the day node headline if a whole year is inserted.</t>
 <t tx="ekr.20060807103220.8">This is the format of the month node headline if a whole year is inserted.</t>
 <t tx="ekr.20060807103220.9">This is the format of the year node headline if a whole year is inserted.</t>
-<t tx="ekr.20060807103220.10">True: Omit saturdays if a whole year is inserted</t>
-<t tx="ekr.20060807103220.11">True: Omit sundays if a whole year is inserted</t>
 <t tx="ekr.20060822101942.1">Overrides body_text_foreground_color.</t>
 <t tx="ekr.20060826152759"></t>
 <t tx="ekr.20060827102902"></t>
@@ -6208,6 +6208,7 @@ extract-names               = Shift-Ctrl-N
 extract-section             = Shift-Ctrl-S  # Shift-Ctrl-E: end-of-line-extend-selection
 goto-next-clone             = Alt-N
 insert-node                 = Ctrl-I
+insert-node                 = Insert
 mark                        = Ctrl-M
 move-node-to-chapter        = None
 move-outline-down           = Ctrl-D
@@ -6600,7 +6601,7 @@ propagate-key-event = Alt-O
 propagate-key-event = Alt-W
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="4,14,19,2"></t>
+<t tx="ekr.20070622214401" str_leo_pos="7,12"></t>
 <t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070919125633">button_text_font_family = verdana
@@ -6610,103 +6611,7 @@ button_text_font_weight = bold
 </t>
 <t tx="ekr.20070925144534"></t>
 <t tx="ekr.20070925144534.1"></t>
-<t tx="ekr.20070925144534.2"></t>
-<t tx="ekr.20070925144534.3">&amp;Open...</t>
-<t tx="ekr.20070925144534.4"></t>
-<t tx="ekr.20070925144534.5"></t>
-<t tx="ekr.20070925144534.6">&amp;Close</t>
-<t tx="ekr.20070925144534.7">&amp;Save</t>
-<t tx="ekr.20070925144534.8">Save &amp;As</t>
-<t tx="ekr.20070925144534.9">Save As &amp;Unzipped</t>
 <t tx="ekr.20070925144534.10">Save As &amp;Zipped</t>
-<t tx="ekr.20070925144534.11">Save &amp;To</t>
-<t tx="ekr.20070925144534.12">Re&amp;vert To Saved</t>
-<t tx="ekr.20070925144534.13"></t>
-<t tx="ekr.20070925144534.14"></t>
-<t tx="ekr.20070925144534.15"></t>
-<t tx="ekr.20070925144534.16"></t>
-<t tx="ekr.20070925144534.17">Read @auto Nodes</t>
-<t tx="ekr.20070925144534.18">Write @auto Nodes</t>
-<t tx="ekr.20070925144534.19">Write Dirty @auto Nodes</t>
-<t tx="ekr.20070925144534.21">Read @&lt;file&gt; Nodes</t>
-<t tx="ekr.20070925144534.22">Write Dirty @&lt;file&gt; Nodes</t>
-<t tx="ekr.20070925144534.23">Write Missing @file Nodes</t>
-<t tx="ekr.20070925144534.24">Write @&lt;file&gt; Nodes</t>
-<t tx="ekr.20070925144534.25"></t>
-<t tx="ekr.20070925144534.26"></t>
-<t tx="ekr.20070925144534.27"></t>
-<t tx="ekr.20070925144534.28"></t>
-<t tx="ekr.20070925144534.29"></t>
-<t tx="ekr.20070925144534.30"></t>
-<t tx="ekr.20070925144534.31"></t>
-<t tx="ekr.20070925144534.32"></t>
-<t tx="ekr.20070925144534.33"></t>
-<t tx="ekr.20070925144534.34"></t>
-<t tx="ekr.20070925144534.35">Import To @&amp;file</t>
-<t tx="ekr.20070925144534.36">Import To @&amp;root</t>
-<t tx="ekr.20070925144534.37"></t>
-<t tx="ekr.20070925144534.38"></t>
-<t tx="ekr.20070925144534.39"></t>
-<t tx="ekr.20070925144534.40"></t>
-<t tx="ekr.20070925144534.41"></t>
-<t tx="ekr.20070925144534.42"></t>
-<t tx="ekr.20070925144534.43"></t>
-<t tx="ekr.20070925144534.44"></t>
-<t tx="ekr.20070925144534.45"></t>
-<t tx="ekr.20070925144534.46"></t>
-<t tx="ekr.20070925144534.47">E&amp;xit</t>
-<t tx="ekr.20070925144534.48"></t>
-<t tx="ekr.20070925144534.49">Can't Undo</t>
-<t tx="ekr.20070925144534.50">Can't Redo</t>
-<t tx="ekr.20070925144534.51"></t>
-<t tx="ekr.20070925144534.52">Cu&amp;t</t>
-<t tx="ekr.20070925144534.53">Cop&amp;y</t>
-<t tx="ekr.20070925144534.54">&amp;Paste</t>
-<t tx="ekr.20070925144534.55">&amp;Delete</t>
-<t tx="ekr.20070925144534.56">Select &amp;All</t>
-<t tx="ekr.20070925144534.57"></t>
-<t tx="ekr.20070925144534.58"></t>
-<t tx="ekr.20070925144534.59"></t>
-<t tx="ekr.20070925144534.60"></t>
-<t tx="ekr.20070925144534.61"></t>
-<t tx="ekr.20070925144534.62"></t>
-<t tx="ekr.20070925144534.63"></t>
-<t tx="ekr.20070925144534.64"></t>
-<t tx="ekr.20070925144534.65"></t>
-<t tx="ekr.20070925144534.66"></t>
-<t tx="ekr.20070925144534.67"></t>
-<t tx="ekr.20070925144534.68"></t>
-<t tx="ekr.20070925144534.69"></t>
-<t tx="ekr.20070925144534.70"></t>
-<t tx="ekr.20070925144534.71"></t>
-<t tx="ekr.20070925144534.72"></t>
-<t tx="ekr.20070925144534.73"></t>
-<t tx="ekr.20070925144534.74"></t>
-<t tx="ekr.20070925144534.75"></t>
-<t tx="ekr.20070925144534.76"></t>
-<t tx="ekr.20070925144534.77"></t>
-<t tx="ekr.20070925144534.78"></t>
-<t tx="ekr.20070925144534.79"></t>
-<t tx="ekr.20070925144534.80"></t>
-<t tx="ekr.20070925144534.81"></t>
-<t tx="ekr.20070925144534.82"></t>
-<t tx="ekr.20070925144534.83"></t>
-<t tx="ekr.20070925144534.84"></t>
-<t tx="ekr.20070925144534.85"></t>
-<t tx="ekr.20070925144534.86"></t>
-<t tx="ekr.20070925144534.87"></t>
-<t tx="ekr.20070925144534.88"></t>
-<t tx="ekr.20070925144534.89"></t>
-<t tx="ekr.20070925144534.90"></t>
-<t tx="ekr.20070925144534.91"></t>
-<t tx="ekr.20070925144534.92"></t>
-<t tx="ekr.20070925144534.93"></t>
-<t tx="ekr.20070925144534.94"></t>
-<t tx="ekr.20070925144534.95"></t>
-<t tx="ekr.20070925144534.96"></t>
-<t tx="ekr.20070925144534.97"></t>
-<t tx="ekr.20070925144534.98"></t>
-<t tx="ekr.20070925144534.99"></t>
 <t tx="ekr.20070925144534.100"></t>
 <t tx="ekr.20070925144534.101"></t>
 <t tx="ekr.20070925144534.102"></t>
@@ -6717,6 +6622,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.107">Show In&amp;visibles</t>
 <t tx="ekr.20070925144534.108">Setti&amp;ngs</t>
 <t tx="ekr.20070925144534.109"></t>
+<t tx="ekr.20070925144534.11">Save &amp;To</t>
 <t tx="ekr.20070925144534.110"></t>
 <t tx="ekr.20070925144534.111"></t>
 <t tx="ekr.20070925144534.112"></t>
@@ -6727,6 +6633,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.117"></t>
 <t tx="ekr.20070925144534.118"></t>
 <t tx="ekr.20070925144534.119"></t>
+<t tx="ekr.20070925144534.12">Re&amp;vert To Saved</t>
 <t tx="ekr.20070925144534.120"></t>
 <t tx="ekr.20070925144534.121"></t>
 <t tx="ekr.20070925144534.122">D&amp;e-Hoist</t>
@@ -6737,6 +6644,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.127"></t>
 <t tx="ekr.20070925144534.128"></t>
 <t tx="ekr.20070925144534.129"></t>
+<t tx="ekr.20070925144534.13"></t>
 <t tx="ekr.20070925144534.130"></t>
 <t tx="ekr.20070925144534.131"></t>
 <t tx="ekr.20070925144534.132"></t>
@@ -6747,6 +6655,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.137"></t>
 <t tx="ekr.20070925144534.138"></t>
 <t tx="ekr.20070925144534.139"></t>
+<t tx="ekr.20070925144534.14"></t>
 <t tx="ekr.20070925144534.140"></t>
 <t tx="ekr.20070925144534.141"></t>
 <t tx="ekr.20070925144534.142"></t>
@@ -6757,6 +6666,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.147"></t>
 <t tx="ekr.20070925144534.148"></t>
 <t tx="ekr.20070925144534.149"></t>
+<t tx="ekr.20070925144534.15"></t>
 <t tx="ekr.20070925144534.150"></t>
 <t tx="ekr.20070925144534.151"></t>
 <t tx="ekr.20070925144534.152"></t>
@@ -6767,6 +6677,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.157"></t>
 <t tx="ekr.20070925144534.158"></t>
 <t tx="ekr.20070925144534.159"></t>
+<t tx="ekr.20070925144534.16"></t>
 <t tx="ekr.20070925144534.160"></t>
 <t tx="ekr.20070925144534.161"></t>
 <t tx="ekr.20070925144534.162"></t>
@@ -6777,6 +6688,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.167"></t>
 <t tx="ekr.20070925144534.168">Go To &amp;First Node</t>
 <t tx="ekr.20070925144534.169">Go To First V&amp;isible</t>
+<t tx="ekr.20070925144534.17">Read @auto Nodes</t>
 <t tx="ekr.20070925144534.170">Go To First Si&amp;bling</t>
 <t tx="ekr.20070925144534.171"></t>
 <t tx="ekr.20070925144534.172">Go To Next C&amp;hanged</t>
@@ -6787,6 +6699,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.177">Go To Next Visibl&amp;e</t>
 <t tx="ekr.20070925144534.178">Go To Next Visite&amp;d</t>
 <t tx="ekr.20070925144534.179"></t>
+<t tx="ekr.20070925144534.18">Write @auto Nodes</t>
 <t tx="ekr.20070925144534.180">Go To P&amp;arent</t>
 <t tx="ekr.20070925144534.181"></t>
 <t tx="ekr.20070925144534.182">Go To &amp;Prev Node</t>
@@ -6797,6 +6710,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.187">Go To Last Node</t>
 <t tx="ekr.20070925144534.188">Go To Last Siblin&amp;g</t>
 <t tx="ekr.20070925144534.189">Go To &amp;Last Visible</t>
+<t tx="ekr.20070925144534.19">Write Dirty @auto Nodes</t>
 <t tx="ekr.20070925144534.190"></t>
 <t tx="ekr.20070925144534.191"></t>
 <t tx="ekr.20070925144534.192"></t>
@@ -6807,6 +6721,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.197"></t>
 <t tx="ekr.20070925144534.198"></t>
 <t tx="ekr.20070925144534.199"></t>
+<t tx="ekr.20070925144534.2"></t>
 <t tx="ekr.20070925144534.200"></t>
 <t tx="ekr.20070925144534.201"></t>
 <t tx="ekr.20070925144534.202"></t>
@@ -6817,6 +6732,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.207"></t>
 <t tx="ekr.20070925144534.208"></t>
 <t tx="ekr.20070925144534.209"></t>
+<t tx="ekr.20070925144534.21">Read @&lt;file&gt; Nodes</t>
 <t tx="ekr.20070925144534.210"></t>
 <t tx="ekr.20070925144534.211"></t>
 <t tx="ekr.20070925144534.212"></t>
@@ -6827,6 +6743,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.217"></t>
 <t tx="ekr.20070925144534.218"></t>
 <t tx="ekr.20070925144534.219"></t>
+<t tx="ekr.20070925144534.22">Write Dirty @&lt;file&gt; Nodes</t>
 <t tx="ekr.20070925144534.220"></t>
 <t tx="ekr.20070925144534.221"></t>
 <t tx="ekr.20070925144534.222"></t>
@@ -6837,6 +6754,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.227"></t>
 <t tx="ekr.20070925144534.228"></t>
 <t tx="ekr.20070925144534.229"></t>
+<t tx="ekr.20070925144534.23">Write Missing @file Nodes</t>
 <t tx="ekr.20070925144534.230"></t>
 <t tx="ekr.20070925144534.231"></t>
 <t tx="ekr.20070925144534.232"></t>
@@ -6847,6 +6765,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.237"></t>
 <t tx="ekr.20070925144534.238"></t>
 <t tx="ekr.20070925144534.239"></t>
+<t tx="ekr.20070925144534.24">Write @&lt;file&gt; Nodes</t>
 <t tx="ekr.20070925144534.240"></t>
 <t tx="ekr.20070925144534.241"></t>
 <t tx="ekr.20070925144534.242"></t>
@@ -6857,6 +6776,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.247"></t>
 <t tx="ekr.20070925144534.248"></t>
 <t tx="ekr.20070925144534.249"></t>
+<t tx="ekr.20070925144534.25"></t>
 <t tx="ekr.20070925144534.250"></t>
 <t tx="ekr.20070925144534.251"></t>
 <t tx="ekr.20070925144534.252"></t>
@@ -6867,6 +6787,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.257"></t>
 <t tx="ekr.20070925144534.258"></t>
 <t tx="ekr.20070925144534.259"></t>
+<t tx="ekr.20070925144534.26"></t>
 <t tx="ekr.20070925144534.260"></t>
 <t tx="ekr.20070925144534.261"></t>
 <t tx="ekr.20070925144534.262"></t>
@@ -6877,6 +6798,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.267"></t>
 <t tx="ekr.20070925144534.268"></t>
 <t tx="ekr.20070925144534.269"></t>
+<t tx="ekr.20070925144534.27"></t>
 <t tx="ekr.20070925144534.270"></t>
 <t tx="ekr.20070925144534.271"></t>
 <t tx="ekr.20070925144534.272"></t>
@@ -6887,6 +6809,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.277"></t>
 <t tx="ekr.20070925144534.278"></t>
 <t tx="ekr.20070925144534.279"></t>
+<t tx="ekr.20070925144534.28"></t>
 <t tx="ekr.20070925144534.280"></t>
 <t tx="ekr.20070925144534.281"></t>
 <t tx="ekr.20070925144534.282"></t>
@@ -6896,6 +6819,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.287"></t>
 <t tx="ekr.20070925144534.288"></t>
 <t tx="ekr.20070925144534.289"></t>
+<t tx="ekr.20070925144534.29"></t>
 <t tx="ekr.20070925144534.290"></t>
 <t tx="ekr.20070925144534.291"></t>
 <t tx="ekr.20070925144534.292"></t>
@@ -6906,6 +6830,8 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.297"></t>
 <t tx="ekr.20070925144534.298"></t>
 <t tx="ekr.20070925144534.299"></t>
+<t tx="ekr.20070925144534.3">&amp;Open...</t>
+<t tx="ekr.20070925144534.30"></t>
 <t tx="ekr.20070925144534.300"></t>
 <t tx="ekr.20070925144534.301"></t>
 <t tx="ekr.20070925144534.302"></t>
@@ -6916,6 +6842,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.307"></t>
 <t tx="ekr.20070925144534.308"></t>
 <t tx="ekr.20070925144534.309"></t>
+<t tx="ekr.20070925144534.31"></t>
 <t tx="ekr.20070925144534.310"></t>
 <t tx="ekr.20070925144534.311"></t>
 <t tx="ekr.20070925144534.312"></t>
@@ -6926,6 +6853,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.317"></t>
 <t tx="ekr.20070925144534.318"></t>
 <t tx="ekr.20070925144534.319"></t>
+<t tx="ekr.20070925144534.32"></t>
 <t tx="ekr.20070925144534.320"></t>
 <t tx="ekr.20070925144534.321"></t>
 <t tx="ekr.20070925144534.322"></t>
@@ -6936,6 +6864,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.327"></t>
 <t tx="ekr.20070925144534.328"></t>
 <t tx="ekr.20070925144534.329"></t>
+<t tx="ekr.20070925144534.33"></t>
 <t tx="ekr.20070925144534.330"></t>
 <t tx="ekr.20070925144534.334"></t>
 <t tx="ekr.20070925144534.335"></t>
@@ -6943,6 +6872,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.337"></t>
 <t tx="ekr.20070925144534.338"></t>
 <t tx="ekr.20070925144534.339"></t>
+<t tx="ekr.20070925144534.34"></t>
 <t tx="ekr.20070925144534.340"></t>
 <t tx="ekr.20070925144534.341"></t>
 <t tx="ekr.20070925144534.342"></t>
@@ -6953,6 +6883,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.347"></t>
 <t tx="ekr.20070925144534.348"></t>
 <t tx="ekr.20070925144534.349"></t>
+<t tx="ekr.20070925144534.35">Import To @&amp;file</t>
 <t tx="ekr.20070925144534.350"></t>
 <t tx="ekr.20070925144534.351"></t>
 <t tx="ekr.20070925144534.352"></t>
@@ -6963,6 +6894,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.357"></t>
 <t tx="ekr.20070925144534.358"></t>
 <t tx="ekr.20070925144534.359"></t>
+<t tx="ekr.20070925144534.36">Import To @&amp;root</t>
 <t tx="ekr.20070925144534.360"></t>
 <t tx="ekr.20070925144534.361"></t>
 <t tx="ekr.20070925144534.362"># accel: a,b,c,d,e,f,h,i,m,p,r,s,t,u,v,w,x</t>
@@ -6973,6 +6905,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.367"></t>
 <t tx="ekr.20070925144534.368"></t>
 <t tx="ekr.20070925144534.369"></t>
+<t tx="ekr.20070925144534.37"></t>
 <t tx="ekr.20070925144534.370"></t>
 <t tx="ekr.20070925144534.371"></t>
 <t tx="ekr.20070925144534.372"></t>
@@ -6983,6 +6916,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.377"></t>
 <t tx="ekr.20070925144534.378"></t>
 <t tx="ekr.20070925144534.379"></t>
+<t tx="ekr.20070925144534.38"></t>
 <t tx="ekr.20070925144534.380"></t>
 <t tx="ekr.20070925144534.381"></t>
 <t tx="ekr.20070925144534.382"></t>
@@ -6993,6 +6927,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.387"></t>
 <t tx="ekr.20070925144534.388"></t>
 <t tx="ekr.20070925144534.389"></t>
+<t tx="ekr.20070925144534.39"></t>
 <t tx="ekr.20070925144534.390"></t>
 <t tx="ekr.20070925144534.391"></t>
 <t tx="ekr.20070925144534.392"></t>
@@ -7003,6 +6938,8 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.397"></t>
 <t tx="ekr.20070925144534.398"></t>
 <t tx="ekr.20070925144534.399"></t>
+<t tx="ekr.20070925144534.4"></t>
+<t tx="ekr.20070925144534.40"></t>
 <t tx="ekr.20070925144534.400"></t>
 <t tx="ekr.20070925144534.401"></t>
 <t tx="ekr.20070925144534.402"></t>
@@ -7013,6 +6950,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.407">&amp;About Leo...</t>
 <t tx="ekr.20070925144534.408">Online &amp;Home Page</t>
 <t tx="ekr.20070925144534.409"></t>
+<t tx="ekr.20070925144534.41"></t>
 <t tx="ekr.20070925144534.410"></t>
 <t tx="ekr.20070925144534.411"></t>
 <t tx="ekr.20070925144534.412">Open Leo&amp;Docs.leo</t>
@@ -7023,6 +6961,7 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.417"></t>
 <t tx="ekr.20070925144534.418"></t>
 <t tx="ekr.20070925144534.419"></t>
+<t tx="ekr.20070925144534.42"></t>
 <t tx="ekr.20070925144534.420"></t>
 <t tx="ekr.20070925144534.421"></t>
 <t tx="ekr.20070925144534.422"></t>
@@ -7031,6 +6970,68 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.425"></t>
 <t tx="ekr.20070925144534.426"></t>
 <t tx="ekr.20070925144534.427"></t>
+<t tx="ekr.20070925144534.43"></t>
+<t tx="ekr.20070925144534.44"></t>
+<t tx="ekr.20070925144534.45"></t>
+<t tx="ekr.20070925144534.46"></t>
+<t tx="ekr.20070925144534.47">E&amp;xit</t>
+<t tx="ekr.20070925144534.48"></t>
+<t tx="ekr.20070925144534.49">Can't Undo</t>
+<t tx="ekr.20070925144534.5"></t>
+<t tx="ekr.20070925144534.50">Can't Redo</t>
+<t tx="ekr.20070925144534.51"></t>
+<t tx="ekr.20070925144534.52">Cu&amp;t</t>
+<t tx="ekr.20070925144534.53">Cop&amp;y</t>
+<t tx="ekr.20070925144534.54">&amp;Paste</t>
+<t tx="ekr.20070925144534.55">&amp;Delete</t>
+<t tx="ekr.20070925144534.56">Select &amp;All</t>
+<t tx="ekr.20070925144534.57"></t>
+<t tx="ekr.20070925144534.58"></t>
+<t tx="ekr.20070925144534.59"></t>
+<t tx="ekr.20070925144534.6">&amp;Close</t>
+<t tx="ekr.20070925144534.60"></t>
+<t tx="ekr.20070925144534.61"></t>
+<t tx="ekr.20070925144534.62"></t>
+<t tx="ekr.20070925144534.63"></t>
+<t tx="ekr.20070925144534.64"></t>
+<t tx="ekr.20070925144534.65"></t>
+<t tx="ekr.20070925144534.66"></t>
+<t tx="ekr.20070925144534.67"></t>
+<t tx="ekr.20070925144534.68"></t>
+<t tx="ekr.20070925144534.69"></t>
+<t tx="ekr.20070925144534.7">&amp;Save</t>
+<t tx="ekr.20070925144534.70"></t>
+<t tx="ekr.20070925144534.71"></t>
+<t tx="ekr.20070925144534.72"></t>
+<t tx="ekr.20070925144534.73"></t>
+<t tx="ekr.20070925144534.74"></t>
+<t tx="ekr.20070925144534.75"></t>
+<t tx="ekr.20070925144534.76"></t>
+<t tx="ekr.20070925144534.77"></t>
+<t tx="ekr.20070925144534.78"></t>
+<t tx="ekr.20070925144534.79"></t>
+<t tx="ekr.20070925144534.8">Save &amp;As</t>
+<t tx="ekr.20070925144534.80"></t>
+<t tx="ekr.20070925144534.81"></t>
+<t tx="ekr.20070925144534.82"></t>
+<t tx="ekr.20070925144534.83"></t>
+<t tx="ekr.20070925144534.84"></t>
+<t tx="ekr.20070925144534.85"></t>
+<t tx="ekr.20070925144534.86"></t>
+<t tx="ekr.20070925144534.87"></t>
+<t tx="ekr.20070925144534.88"></t>
+<t tx="ekr.20070925144534.89"></t>
+<t tx="ekr.20070925144534.9">Save As &amp;Unzipped</t>
+<t tx="ekr.20070925144534.90"></t>
+<t tx="ekr.20070925144534.91"></t>
+<t tx="ekr.20070925144534.92"></t>
+<t tx="ekr.20070925144534.93"></t>
+<t tx="ekr.20070925144534.94"></t>
+<t tx="ekr.20070925144534.95"></t>
+<t tx="ekr.20070925144534.96"></t>
+<t tx="ekr.20070925144534.97"></t>
+<t tx="ekr.20070925144534.98"></t>
+<t tx="ekr.20070925144534.99"></t>
 <t tx="ekr.20070925144552">New in Leo 4.4.4. Leo creates its menus using @menus trees. Within @menus trees,
 @menu nodes create menus and @item nodes create menu items.
 
@@ -7146,6 +7147,12 @@ rst3_show_headline_prefix =    @rst-head</t>
 <t tx="ekr.20071213061930.4"></t>
 <t tx="ekr.20071213062019"></t>
 <t tx="ekr.20071213062019.1"></t>
+<t tx="ekr.20071213062019.10"></t>
+<t tx="ekr.20071213062019.11"></t>
+<t tx="ekr.20071213062019.12"></t>
+<t tx="ekr.20071213062019.13"></t>
+<t tx="ekr.20071213062019.14"></t>
+<t tx="ekr.20071213062019.15"></t>
 <t tx="ekr.20071213062019.2"></t>
 <t tx="ekr.20071213062019.3"></t>
 <t tx="ekr.20071213062019.4"># Enter code mode.</t>
@@ -7154,12 +7161,6 @@ rst3_show_headline_prefix =    @rst-head</t>
 <t tx="ekr.20071213062019.7"></t>
 <t tx="ekr.20071213062019.8"></t>
 <t tx="ekr.20071213062019.9"></t>
-<t tx="ekr.20071213062019.10"></t>
-<t tx="ekr.20071213062019.11"></t>
-<t tx="ekr.20071213062019.12"></t>
-<t tx="ekr.20071213062019.13"></t>
-<t tx="ekr.20071213062019.14"></t>
-<t tx="ekr.20071213062019.15"></t>
 <t tx="ekr.20071213190345"></t>
 <t tx="ekr.20071213190345.1"></t>
 <t tx="ekr.20071214132254"></t>
@@ -7501,17 +7502,6 @@ probably find that your bindings are much easier to understand.
 #fdf5f5 A light pink.
 #f0fde1 A light green.
 #f9e6dd A light orange.</t>
-<t tx="ekr.20080515053412.3"></t>
-<t tx="ekr.20080515053412.4"></t>
-<t tx="ekr.20080515053412.5">@popup body is the default menu for
-right clicks in the body pane.
-</t>
-<t tx="ekr.20080515053412.6">edit-menu
-
-# This will include the contents of @popup edit-text </t>
-<t tx="ekr.20080515053412.7"></t>
-<t tx="ekr.20080515053412.8"></t>
-<t tx="ekr.20080515053412.9">Indent</t>
 <t tx="ekr.20080515053412.10">Dedent</t>
 <t tx="ekr.20080515053412.11"></t>
 <t tx="ekr.20080515053412.12"></t>
@@ -7549,6 +7539,7 @@ widget.</t>
 <t tx="ekr.20080515053412.27"></t>
 <t tx="ekr.20080515053412.28"></t>
 <t tx="ekr.20080515053412.29"></t>
+<t tx="ekr.20080515053412.3"></t>
 <t tx="ekr.20080515053412.30">@popup headline is the default menu
 for right clicks in the text part of the headline.</t>
 <t tx="ekr.20080515053412.31">@popup iconbox is the default menu
@@ -7571,6 +7562,7 @@ icon = Tango/16x16/actions/editpaste.png</t>
 <t tx="ekr.20080515053412.39">Select All
 #First line must be blank as we want to work out the
 #label based on the command, key = value pairs may follow.</t>
+<t tx="ekr.20080515053412.4"></t>
 <t tx="ekr.20080515053412.40">@popup recent-files-menu is a
 fragment meant to be included in other menus.
 
@@ -7585,8 +7577,17 @@ recent files. </t>
 <t tx="ekr.20080515053412.47">copy-node-to-chapter-menu</t>
 <t tx="ekr.20080515053412.48"></t>
 <t tx="ekr.20080515053412.49">move-node-to-chapter-menu</t>
+<t tx="ekr.20080515053412.5">@popup body is the default menu for
+right clicks in the body pane.
+</t>
 <t tx="ekr.20080515053412.50"></t>
 <t tx="ekr.20080515053412.51">select-chapter-menu</t>
+<t tx="ekr.20080515053412.6">edit-menu
+
+# This will include the contents of @popup edit-text </t>
+<t tx="ekr.20080515053412.7"></t>
+<t tx="ekr.20080515053412.8"></t>
+<t tx="ekr.20080515053412.9">Indent</t>
 <t tx="ekr.20080602174756.1"></t>
 <t tx="ekr.20080703071815.3"></t>
 <t tx="ekr.20080703111151.12"># bold words in forth
