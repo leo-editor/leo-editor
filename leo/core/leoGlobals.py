@@ -3049,17 +3049,17 @@ def guessExternalEditor():
 
     if editor: return editor
 
-    g.es('''No editor set!
+    # fallbacks
+    platform = sys.platform.lower()
+    if platform.startwith('win'):
+        return "notepad"
+    elif platform.startswith('linux'):
+        return 'gedit'
+    else:
+        g.es('''No editor set.
 Please set LEO_EDITOR or EDITOR environment variable,
 or do g.app.db['LEO_EDITOR'] = "gvim"''')
-
-    # fallbacks
-    if sys.platform == 'win32':
-        return "notepad"
-
-    # linux still has no default editor, one that would work without terminal at least ;-)
-    return None
-#@nonl
+        return None
 #@-node:ville.20090701144325.14942:g.guessExternalEditor
 #@+node:ekr.20050104135720:Used by tangle code & leoFileCommands
 #@+node:ekr.20031218072017.1241:g.update_file_if_changed
@@ -5061,7 +5061,8 @@ def skip_ws_and_nl(s,i):
 #@+node:ekr.20031218072017.3195:splitLines & joinLines
 def splitLines (s):
 
-    '''Split s into lines, preserving the number of lines and the ending of the last line.'''
+    '''Split s into lines, preserving the number of lines and
+    the endings of all lines, including the last line.'''
 
     # g.stat()
 
