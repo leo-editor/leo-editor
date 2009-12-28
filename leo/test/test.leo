@@ -388,7 +388,8 @@
 <v t="ekr.20091217210235.1867"><vh>section 1</vh></v>
 <v t="ekr.20091217210235.1868"><vh>section 2</vh></v>
 </v>
-<v t="ekr.20091217210418.1873"><vh>@auto at-auto-rst-test.txt</vh></v>
+<v t="ekr.20091227201929.1898"><vh>@auto-rst at-auto-rst-test.txt</vh></v>
+<v t="ekr.20091227100355.1875"><vh>@auto-rst ../doc/html/intro.html.txt</vh></v>
 <v t="ekr.20091221113040.1868"><vh>keys</vh></v>
 <v t="ekr.20091222114015.1901"><vh>Example</vh></v>
 <v t="ekr.20091223061318.1873"><vh>Simple example</vh></v>
@@ -812,7 +813,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="9"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -1408,6 +1409,7 @@ leoTest.doTests (c,all=False)</t>
 # attrib_edit.py
 # ctagscompleter.py
 codewisecompleter.py
+contextmenu.py
 
 plugins_menu.py
 #open_with.py
