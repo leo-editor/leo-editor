@@ -402,7 +402,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         self.selecting is guaranteed to be True during
         the entire selection process.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = False
         c = self.c ; p = c.p
         tree = c.frame.tree ; w = self
