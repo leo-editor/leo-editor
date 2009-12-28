@@ -61,7 +61,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -203,8 +203,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050831195331.2"><vh>Chapter 1: Installing Leo</vh>
-<v t="edream.110203163054.48"><vh>@rst html\install.html</vh>
+<v t="ekr.20050831195331.2" a="E"><vh>Chapter 1: Installing Leo</vh>
+<v t="edream.110203163054.48" a="E"><vh>@rst html\install.html</vh>
 <v t="ekr.20050901110110"><vh>@rst-no-head links</vh></v>
 <v t="edream.110203163054.49"><vh>System requirements</vh></v>
 <v t="ekr.20080408060320.784"><vh>Leo's HOME directory</vh></v>
@@ -218,8 +218,8 @@
 <v t="ekr.20060105145125"><vh>How to install the Aspell spell checker</vh></v>
 </v>
 </v>
-<v t="ekr.20091130111843.6787"><vh>Chapter 2: The Leo Tutorial</vh>
-<v t="ekr.20091130111843.6788"><vh>@rst html\intro.html</vh>
+<v t="ekr.20091130111843.6787" a="E"><vh>Chapter 2: The Leo Tutorial</vh>
+<v t="ekr.20091130111843.6788" a="E"><vh>@rst html\intro.html</vh>
 <v t="ekr.20091130111843.6810"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20091130111843.6814"><vh>Leo's main window</vh></v>
 <v t="ekr.20091130111843.6816"><vh>Outline commands</vh></v>
@@ -6373,7 +6373,7 @@ This chapter tells how to install and run_ Leo.
 **Important**:
 
 If you have *any* problems installing Leo,
-please ask for help on Leo's help forum:
+please ask for help on `Leo's help forum`_.
 </t>
 <t tx="edream.110203163054.49">Leo will work on any platform that supports Python 2.5 or later and Tk 8.4 or later. For
 Qt ui, Qt 4.4 or newer (and compatible PyQt) is required.
@@ -13412,6 +13412,7 @@ This chapter will be of use primarily to those wanting to change Leo's code.
 .. _run:                    `Running Leo`_
 .. _`run Leo`:              `Running Leo`_
 .. _`Leo's download page`:  http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+.. _`Leo's help forum`:         http://groups.google.com/group/leo-editor-users
 
 .. .. _`associating leo with .leo files`:   `How to associate Leo with .leo files on Windows`_
 .. .. _`associated .leo files with Leo`:   `How to associate Leo with .leo files on Windows`_
@@ -23027,7 +23028,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="2"></t>
+<t tx="ekr.20070610174018" str_leo_pos="2,4,0"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
