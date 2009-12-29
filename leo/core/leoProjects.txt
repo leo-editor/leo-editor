@@ -49,2560 +49,6 @@ Improved plugin: contextmenu.py
 #@-node:ekr.20090907080624.6083:Added new plugins
 #@-node:ekr.20090907080624.6082:Leo 4.6.4
 #@+node:ekr.20090718091653.5982:Leo 4.7 projects
-#@+node:ekr.20090721093155.5986:Bugs
-#@+node:ekr.20090721091726.5982:Fixed crasher when writing to a newly-deleted file
-#@+node:bwmulder.20050101094804:openForWrite (atFile)
-def openForWrite (self, filename, wb='wb'):
-
-    '''Open a file for writes, handling shadow files.'''
-
-    trace = False and not g.unitTesting
-    at = self ; c = at.c ; x = c.shadowController
-
-    try:
-        shadow_filename = x.shadowPathName(filename)
-        self.writing_to_shadow_directory = os.path.exists(shadow_filename)
-        open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
-        self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
-
-        if self.writing_to_shadow_directory:
-            if trace: g.trace(filename,shadow_filename)
-            x.message('writing %s' % shadow_filename)
-            return 'shadow',open(open_file_name,wb)
-        else:
-            ok = c.checkFileTimeStamp(at.targetFileName)
-            return 'check',ok and open(open_file_name,wb)
-
-    except IOError:
-        if not g.app.unitTesting:
-            g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
-            g.es_exception()
-        return 'error',None
-#@-node:bwmulder.20050101094804:openForWrite (atFile)
-#@+node:ekr.20090103070824.11:c.checkFileTimeStamp
-def checkFileTimeStamp (self,fn):
-
-    '''
-    Return True if the file given by fn has not been changed
-    since Leo read it or if the user agrees to overwrite it.
-    '''
-
-    trace = False and not g.unitTesting
-    c = self
-
-    # Don't assume the file still exists.
-    if not g.os_path_exists(fn):
-        if trace: g.trace('file no longer exists',fn)
-        return True
-
-    timeStamp = c.timeStampDict.get(fn)
-    if not timeStamp:
-        if trace: g.trace('no time stamp',fn)
-        return True
-
-    timeStamp2 = os.path.getmtime(fn)
-    if timeStamp == timeStamp2:
-        if trace: g.trace('time stamps match',fn,timeStamp)
-        return True
-
-    if g.app.unitTesting:
-        return False
-
-    if trace:
-        g.trace('mismatch',timeStamp,timeStamp2)
-
-    message = '%s\n%s\n%s' % (
-        fn,
-        g.tr('has been modified outside of Leo.'),
-        g.tr('Overwrite this file?'))
-    ok = g.app.gui.runAskYesNoCancelDialog(c,
-        title = 'Overwrite modified file?',
-        message = message)
-
-    return ok == 'yes'
-#@-node:ekr.20090103070824.11:c.checkFileTimeStamp
-#@-node:ekr.20090721091726.5982:Fixed crasher when writing to a newly-deleted file
-#@+node:ekr.20090812165611.5973:Fixed registerHandler bug
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/8616f4e171e1a24b
-
-On Aug 10, 12:25 pm, tfer <tfethers...@aol.com> wrote:
-> Well from vim.py:
-> When properly installed, this plugin does the following:
->
-> 1. - Double clicking on a node's icon opens that node in VIM. You can
-> open nodes in VIM with
->         a single-click if you set useDoubleClick = False.
-
-I tried setting "useDoubleClick = False" under the vim plugin node in
-leoPluginsRef.leo work. It doesn't seem to work. I get the message:
-
-exception loading plugin
-Traceback (most recent call last):
-
- File "C:\Program Files\Leo-4-6-2-final\leo\core\leoPlugins.py", line
-437, in loadOnePlugin
-   init_result = result.init()
-
- File "C:\Program Files\Leo-4-6-2-final\leo\plugins\vim.py", line
-232, in init
-   leoPlugins.registerHandler(event,open_in_vim,val=True)
-
-TypeError: registerHandler() got an unexpected keyword argument 'val'
-
-The variable val doesn't get modified in the "open_in_vim
-(tag,keywords,val=None)" function.
-- Show quoted text -
-#@nonl
-#@-node:ekr.20090812165611.5973:Fixed registerHandler bug
-#@+node:ekr.20090813084945.5977:Suppressed dangerous write prompt for clones
-# at_read attribute in the tnode, not the vnode.
-#@nonl
-#@+node:ekr.20090712050729.6017:promptForDangerousWrite
-def promptForDangerousWrite (self,fileName,kind):
-
-    c = self.c
-
-    if g.app.unitTesting:
-        val = g.app.unitTestDict.get('promptForDangerousWrite')
-        return val in (None,True)
-
-    # g.trace(timeStamp, timeStamp2)
-    message = '%s %s\n%s\n%s' % (
-        kind, fileName,
-        g.tr('already exists.'),
-        g.tr('Overwrite this file?'))
-
-    ok = g.app.gui.runAskYesNoCancelDialog(c,
-        title = 'Overwrite existing file?',
-        message = message)
-
-    return ok == 'yes'
-#@-node:ekr.20090712050729.6017:promptForDangerousWrite
-#@-node:ekr.20090813084945.5977:Suppressed dangerous write prompt for clones
-#@+node:ekr.20090804091109.5985:Fixed double prompt in c.close()
-#@+node:ekr.20091109103928.6372:Notes
-@nocolor
-
-This bug happens only on Linux.
-#@nonl
-#@-node:ekr.20091109103928.6372:Notes
-#@+node:ekr.20031218072017.2609:app.closeLeoWindow
-def closeLeoWindow (self,frame):
-
-    """Attempt to close a Leo window.
-
-    Return False if the user veto's the close."""
-
-    c = frame.c
-
-    # g.trace('frame',frame,g.callers(4))
-
-    c.endEditing() # Commit any open edits.
-
-    if c.promptingForClose:
-        # There is already a dialog open asking what to do.
-        return False
-
-    g.app.config.writeRecentFilesFile(c) # Make sure .leoRecentFiles.txt is written.
-
-    if c.changed:
-        c.promptingForClose = True
-        veto = frame.promptForSave()
-        c.promptingForClose = False
-        if veto: return False
-
-    g.app.setLog(None) # no log until we reactive a window.
-
-    g.doHook("close-frame",c=c) # This may remove frame from the window list.
-
-    if frame in g.app.windowList:
-        g.app.destroyWindow(frame)
-
-    if g.app.windowList:
-        # Pick a window to activate so we can set the log.
-        frame = g.app.windowList[0]
-        frame.deiconify()
-        frame.lift()
-        frame.c.setLog()
-        frame.c.bodyWantsFocus()
-        frame.c.outerUpdate()
-    elif not g.app.unitTesting:
-        g.app.finishQuit()
-
-    return True # The window has been closed.
-#@-node:ekr.20031218072017.2609:app.closeLeoWindow
-#@-node:ekr.20090804091109.5985:Fixed double prompt in c.close()
-#@+node:ekr.20090817080059.5995:Select main chapter initially
-It can be alarming to select a small chapter in a large outline.
-#@nonl
-#@-node:ekr.20090817080059.5995:Select main chapter initially
-#@+node:ekr.20090813084945.5978:Fixed scrolling problem with multiple editors
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/33e87adbff5d69d9
-
-Latest trunk.  qt gui
-
-I used multiple body editors (2) for the first time in a long time and the
-scroll position was moving at times that it shouldn't.
-
-For example if I scrolled partially down the page and copied some text and then
-pasted the text somewhere else that was visible without scrolling, the scroll
-position would change significantly although the new text would remain visible.
-
-It may not sound particularly serious but I found it very difficult to use.
-
-The fix was to leoQtGui.updateEditors.
-#@nonl
-#@-node:ekr.20090813084945.5978:Fixed scrolling problem with multiple editors
-#@+node:ekr.20090822060128.6035:Improved the install docs
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/add6242d6f4fc476
-
-From Matt Wilkie
-
-I've installed Leo several times on windows, yet this morning still
-took me a few minutes to find the section you reference above because
-there are at least two other document sections with phrases similar to
-"installing leo". Anyway, this is my simplified recipe for a virgin
-install:
-
--------------------------
-Installing Leo On Windows
--------------------------
-//skip any step not needed//
-
-1. Install Python - There are many sources, but from
-http://www.python.org/download/releases/ is good
-
-2. Install PyQt - acquire and run Binary Package from
-http://www.riverbankcomputing.co.uk/software/pyqt/download which
-matches installed Python version (so for python 2.5 scan for the
-"Py2.5" in filename)
-
-3. Install Leo
-   - Head to http://sourceforge.net/projects/leo/ and slap [Download Now]
-   - Unpack python *site-packages* folder, e.g.
-C:\Python25\Lib\site-packages\leo-4-6-2-final
-
-   - [optional] Generate/update a junction link from unpacked
-leo-4-6-2-final to ...\site-packages\leo
-
-      cd C:\Python25\Lib\site-packages\
-      junction leo leo-4-6-2-final
-
-   - Create windows shortcut (edit paths as necessary):
-
-      Target   =  C:\Python25\pythonw.exe
-"C:\Python25\Lib\site-packages\leo\launchLeo.py" --gui=qt
-      Start in =  D:\code
-
-   - Associate .leo filetype batch file:
-
-      ftype LeoFile=C:\Python25\pythonw.exe
-"C:\Python25\Lib\site-packages\leo\launchLeo.py" "--gui=qt" "%1"
-      assoc .leo=LeoFile
-
-   - [optional] Put this leo.bat in %PATH%:
-
-      @C:\Python25\python.exe -i
-"C:\Python25\Lib\site-packages\leo\launchLeo.py" --gui=qt %*
-
--------------------------
-
-Further reading / Sources used:
-
-   Junction links -
-http://technet.microsoft.com/en-gb/sysinternals/bb896768.aspx,
-http://groups.google.com/group/leo-editor/msg/30116f9193241dc4
-   FTYPE - http://ss64.com/nt/ftype.html
-   ASSOC - http://ss64.com/nt/assoc.html
-
-
-=====================
-Ville's comments
-
-On Thu, Aug 20, 2009 at 10:49 PM, Matt Wilkie<map...@gmail.com> wrote:
-> 3. Install Leo
->   - Head to http://sourceforge.net/projects/leo/ and slap [Download Now]
->   - Unpack python *site-packages* folder, e.g.
-> C:\Python25\Lib\site-packages\leo-4-6-2-final
-
-I don't think you need to use site-packages. Just extract it anywhere
-you want (e.g. c:/opt/leo). But I could be wrong.
-
->   - Associate .leo filetype batch file:
->n
->      ftype LeoFile=C:\Python25\pythonw.exe
-> "C:\Python25\Lib\site-packages\leo\launchLeo.py" "--gui=qt" "%1"
->      assoc .leo=LeoFile
-
---gui=qt us not needed anymore. 
-#@nonl
-#@-node:ekr.20090822060128.6035:Improved the install docs
-#@+node:ekr.20090829175108.6133:Marked @<file> nodes dirty if nodes change during read.
-#@+node:ekr.20041005105605.21:read (atFile) & helper
-def read(self,root,
-    importFileName=None,thinFile=False,
-    fromString=None,atShadow=False,
-    force=False
-):
-
-    """Read any @thin, @file and @noref trees."""
-
-    at = self ; c = at.c
-    << set fileName and isAtFile >>
-    if isAtFile:
-        # The @file node has file-like sentinels iff a tnodeList exists.
-        thinFile = not (hasattr(root.v,'tnodeList') and root.v.tnodeList)
-    doCache = g.enableDB and (thinFile or atShadow) and not force
-    at.initReadIvars(root,fileName,
-        importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
-    if at.errors: return False
-    fileName = at.openFileForReading(fromString=fromString)
-    if at.inputFile:
-        c.setFileTimeStamp(fileName)
-    else:
-        return False
-
-    fileContent = open(fileName, "rb").read()
-    cachefile = self._contentHashFile(root, fileContent)
-
-    # Remember that we have read this file.
-    root.v.at_read = True # Create the attribute for all clones.
-
-    if doCache and cachefile in c.db:
-        # Delete the previous tree, regardless of the @<file> type.
-        while root.hasChildren():
-            root.firstChild().doDelete()
-        aList = c.db[cachefile]
-        root.v.createOutlineFromCacheList(c,aList)
-        at.inputFile.close()
-        root.clearDirty()
-        return
-
-    # Delete all children, but **not** for @file and @nosent nodes!
-    # (We do delete all children for @file nodes with thin-like sentinels.)
-    if thinFile or atShadow:
-        root.v.at_read = True # Create the attribute for all clones.
-        while root.hasChildren():
-            root.firstChild().doDelete()
-
-    if not g.unitTesting:
-        g.es("reading:",root.h)
-
-    root.clearVisitedInTree()
-    at.scanAllDirectives(root,importing=at.importing,reading=True)
-    at.readOpenFile(root,at.inputFile,fileName)
-    at.inputFile.close()
-    root.clearDirty() # May be set dirty below.
-    if at.errors == 0:
-        << advise user to delete all unvisited nodes >>
-    if at.errors == 0 and not at.importing:
-        # Package this as a method for use by mod_labels plugin.
-        self.copyAllTempBodyStringsToTnodes(root,thinFile)
-
-    << delete all tempBodyStrings >>
-
-    # write out the cache version
-    self.writeCachedTree(root, cachefile)
-
-    return at.errors == 0
-#@+node:ekr.20041005105605.22:<< set fileName and isAtFile >>
-if fromString:
-    fileName = "<string-file>"
-elif importFileName:
-    fileName = importFileName
-elif root.isAnyAtFileNode():
-    fileName = root.anyAtFileNodeName()
-else:
-    fileName = None
-
-if not fileName:
-    at.error("Missing file name.  Restoring @file tree from .leo file.")
-    return False
-
-isAtFile = (
-    not thinFile and
-    not importFileName and
-    not atShadow and
-    not fromString and
-    root.h.startswith('@file'))
-#@nonl
-#@-node:ekr.20041005105605.22:<< set fileName and isAtFile >>
-#@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
-resurrected = 0
-for p in root.self_and_subtree():
-    if p.v.isVisited():
-        pass
-        # g.trace('visited',p.v,p.h)
-    else:
-        g.trace('**** not visited',p.v,p.h)
-        g.es('resurrected node:',p.h,color='blue')
-        g.es('in file:',fileName,color='blue')
-        resurrected += 1
-
-if resurrected:
-    g.es('you may want to delete ressurected nodes')
-
-#@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
-#@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
-for v in c.all_unique_nodes():
-
-    if hasattr(v,"tempBodyString"):
-        delattr(v,"tempBodyString")
-#@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
-#@-node:ekr.20041005105605.21:read (atFile) & helper
-#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
-def readOneAtAutoNode (self,fileName,p):
-
-    at = self ; c = at.c ; ic = c.importCommands
-
-    oldChanged = c.isChanged()
-    at.scanDefaultDirectory(p,importing=True) # Set default_directory
-    fileName = c.os_path_finalize_join(at.default_directory,fileName)
-
-    # Delete all children.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-    try:
-        fileContent = open(fileName, "rb").read()
-        cachefile = self._contentHashFile(p, fileContent)
-    except IOError:
-        cachefile = None
-
-    # Remember that we have read this file.
-    p.v.at_auto_read = True # Create the attribute
-
-    if cachefile is not None and cachefile in c.db:        
-        # g.es('uncache:',p.h)
-        aList = c.db[cachefile]
-        p.v.createOutlineFromCacheList(c,aList)
-        return
-
-    if not g.unitTesting:
-        g.es("reading:",p.h)
-
-    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
-
-    if ic.errors:
-        # Note: the file contains an @ignore,
-        # so no unintended write can happen.
-        g.es_print('errors inhibited read @auto',fileName,color='red')
-
-    if ic.errors or not g.os_path_exists(fileName):
-        # c.setBodyString(p,'')
-        p.clearDirty()
-        c.setChanged(oldChanged)
-    else:
-        self.writeCachedTree(p, cachefile)
-        g.doHook('after-auto', p = p)  # call after-auto callbacks
-#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
-#@+node:ekr.20040305162628:p.Dirty bits
-#@+node:ekr.20040311113514:p.clearDirty
-def clearDirty (self):
-
-    p = self
-    p.v.clearDirty()
-#@-node:ekr.20040311113514:p.clearDirty
-#@+node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
-def findAllPotentiallyDirtyNodes(self):
-
-    p = self
-    return p.v.findAllPotentiallyDirtyNodes()
-#@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
-#@+node:ekr.20040702104823:p.inAtIgnoreRange
-def inAtIgnoreRange (self):
-
-    """Returns True if position p or one of p's parents is an @ignore node."""
-
-    p = self
-
-    for p in p.self_and_parents():
-        if p.isAtIgnoreNode():
-            return True
-
-    return False
-#@-node:ekr.20040702104823:p.inAtIgnoreRange
-#@+node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
-def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
-
-    trace = False and not g.unitTesting
-    verbose = False
-    p = self
-    dirtyVnodeList = []
-
-    # Calculate all nodes that are joined to p or parents of such nodes.
-    nodes = p.findAllPotentiallyDirtyNodes()
-
-    if setDescendentsDirty:
-        # N.B. Only mark _direct_ descendents of nodes.
-        # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
-        for p2 in p.subtree():
-            # Only @thin nodes need to be marked.
-            if p2.v not in nodes and p2.isAtThinFileNode():
-                nodes.append(p2.v)
-
-    if trace and verbose:
-        for v in nodes:
-            print (v.isDirty(),v.isAnyAtFileNode(),v)
-
-    dirtyVnodeList = [v for v in nodes
-        if not v.isDirty() and v.isAnyAtFileNode()]
-    changed = len(dirtyVnodeList) > 0
-
-    for v in dirtyVnodeList:
-        v.setDirty()
-
-    if trace: g.trace("position",dirtyVnodeList,g.callers(5))
-
-    return dirtyVnodeList
-#@-node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
-#@+node:ekr.20040303163330:p.setDirty
-def setDirty (self,setDescendentsDirty=True):
-
-    '''Mark a node and all ancestor @file nodes dirty.'''
-
-    p = self ; dirtyVnodeList = []
-
-    # g.trace(p.h,g.callers(4))
-
-    if not p.v.isDirty():
-        p.v.setDirty()
-        dirtyVnodeList.append(p.v)
-
-    # Important: this must be called even if p.v is already dirty.
-    # Typing can change the @ignore state!
-    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty(setDescendentsDirty)
-    dirtyVnodeList.extend(dirtyVnodeList2)
-
-    return dirtyVnodeList
-#@-node:ekr.20040303163330:p.setDirty
-#@-node:ekr.20040305162628:p.Dirty bits
-#@+node:ekr.20090830051712.6151: v.Dirty bits
-#@+node:ekr.20031218072017.3390:v.clearDirty
-def clearDirty (self):
-    v = self
-    v.statusBits &= ~ v.dirtyBit
-
-#@-node:ekr.20031218072017.3390:v.clearDirty
-#@+node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
-def findAllPotentiallyDirtyNodes(self):
-
-    trace = False and not g.unitTesting
-    v = self ; c = v.context
-
-    # Set the starting nodes.
-    nodes = []
-    newNodes = [v]
-
-    # Add nodes until no more are added.
-    while newNodes:
-        addedNodes = []
-        nodes.extend(newNodes)
-        for v in newNodes:
-            for v2 in v.parents:
-                if v2 not in nodes and v2 not in addedNodes:
-                    addedNodes.append(v2)
-        newNodes = addedNodes[:]
-
-    # Remove the hidden vnode.
-    if c.hiddenRootNode in nodes:
-        if trace: g.trace('removing hidden root',c.hiddenRootNode)
-        nodes.remove(c.hiddenRootNode)
-
-    if trace: g.trace(nodes)
-    return nodes
-#@nonl
-#@-node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
-#@+node:ekr.20090830051712.6157:v.setAllAncestorAtFileNodesDirty
-# Unlike p.setAllAncestorAtFileNodesDirty,
-# there is no setDescendentsDirty arg.
-
-def setAllAncestorAtFileNodesDirty (self):
-
-    trace = False and not g.unitTesting
-    verbose = False
-    v = self
-    dirtyVnodeList = []
-
-    # Calculate all nodes that are joined to p or parents of such nodes.
-    nodes = v.findAllPotentiallyDirtyNodes()
-
-    if trace and verbose:
-        for v in nodes:
-            print (v.isDirty(),v.isAnyAtFileNode(),v)
-
-    dirtyVnodeList = [v for v in nodes
-        if not v.isDirty() and v.isAnyAtFileNode()]
-
-    changed = len(dirtyVnodeList) > 0
-
-    for v in dirtyVnodeList:
-        v.setDirty() # Do not call v.setDirty here!
-
-    if trace: g.trace("vnode",dirtyVnodeList)
-
-    return dirtyVnodeList
-#@-node:ekr.20090830051712.6157:v.setAllAncestorAtFileNodesDirty
-#@+node:ekr.20080429053831.12:v.setDirty
-def setDirty (self):
-
-    self.statusBits |= self.dirtyBit
-#@-node:ekr.20080429053831.12:v.setDirty
-#@-node:ekr.20090830051712.6151: v.Dirty bits
-#@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
-def createOutlineFromCacheList(self,c,aList):
-    """ Create outline structure from recursive aList
-    built by p.makeCacheList.
-
-    Clones will be automatically created by gnx,
-    but *not* for the top-level node.
-    """
-
-    parent_v = self
-
-    #import pprint ; pprint.pprint(tree)
-    parent_v = self
-    h,b,gnx,children = aList
-    if h is not None:
-        v = parent_v
-        v._headString = h    
-        v._bodyString = b
-
-    for z in children:
-        h,b,gnx,grandChildren = z
-        isClone,child_v = parent_v.fastAddLastChild(c,gnx)
-        if isClone:
-            if child_v.b != b: # or child_v.h
-                # Bug fix: the last seen clone rules.
-                child_v.h = h
-                child_v.b = b
-                # Bug fix: mark @<file> nodes dirty.
-                child_v.setAllAncestorAtFileNodesDirty()
-                child_v.setMarked()
-                g.es("changed:",child_v.h,color="blue")
-        else:
-            child_v.createOutlineFromCacheList(c,z)
-#@+node:ekr.20090829064400.6042:v.fastAddLastChild
-# Similar to createThinChild4
-def fastAddLastChild(self,c,gnxString):
-    '''Create new vnode as last child of the receiver.
-
-    If the gnx exists already, create a clone instead of new vnode.
-    '''
-
-    trace = False and not g.unitTesting
-    parent_v = self
-    indices = g.app.nodeIndices
-    gnxDict = c.fileCommands.gnxDict
-
-    if gnxString is None: v = None
-    else:                 v = gnxDict.get(gnxString)
-    is_clone = v is not None
-
-    if trace: g.trace(
-        'clone','%-5s' % (is_clone),
-        'parent_v',parent_v,'gnx',gnxString,'v',repr(v))
-
-    if not is_clone:
-        v = vnode(context=c)
-        if gnxString:
-            gnx = indices.scanGnx(gnxString,0)
-            v.fileIndex = gnx
-        gnxDict[gnxString] = v
-
-    child_v = v
-    child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
-    child_v.setVisited() # Supress warning/deletion of unvisited nodes.
-
-    return is_clone,child_v
-#@-node:ekr.20090829064400.6042:v.fastAddLastChild
-#@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
-#@-node:ekr.20090829175108.6133:Marked @<file> nodes dirty if nodes change during read.
-#@+node:ekr.20090901175503.6096:Fixed bug in g.adjustTripleString
-#@+node:ekr.20050211120242.2:g.removeExtraLws & test
-def removeExtraLws (s,tab_width):
-
-    '''Remove extra indentation from one or more lines.
-
-    Warning: used by getScript.  This is *not* the same as g.adjustTripleString.'''
-
-    lines = g.splitLines(s)
-
-    # Find the first non-blank line and compute w, the width of its leading whitespace.
-    for line in lines:
-        if line.strip():
-            lws = g.get_leading_ws(line)
-            w = g.computeWidth(lws,tab_width)
-            break
-    else: return s
-
-    # Remove the leading whitespace.
-    result = [g.removeLeadingWhitespace(line,w,tab_width) for line in lines]
-    result = ''.join(result)
-
-    if 0:
-        g.trace('lines...')
-        for line in g.splitLines(result):
-            g.pr(repr(line))
-
-    return result
-#@+node:ekr.20090517020744.5881:@test g.removeExtraLws
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    for s,expected in (
-        (' a\n b\n c', 'a\nb\nc'),
-        (' \n  A\n    B\n  C\n', '\nA\n  B\nC\n'),
-    ):
-        result = g.removeExtraLws(s,c.tab_width)
-        assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
-            repr(s),repr(expected),repr(result))
-#@-node:ekr.20090517020744.5881:@test g.removeExtraLws
-#@-node:ekr.20050211120242.2:g.removeExtraLws & test
-#@+node:ekr.20051014175117:g.adjustTripleString
-def adjustTripleString (s,tab_width):
-
-    '''Remove leading indentation from a triple-quoted string.
-
-    This works around the fact that Leo nodes can't represent underindented strings.
-    '''
-
-    # Compute the minimum leading whitespace of all non-blank lines.
-    trace = True and not g.unitTesting
-    lines = g.splitLines(s)
-    w = 0 ; val = -1
-    for line in lines:
-        if line.strip():
-            lws = g.get_leading_ws(line)
-            w2 = g.computeWidth(lws,tab_width)
-            # The sign of w does not matter.
-            if w == 0 or abs(w2) < w:
-                w = abs(w2)
-
-    if w == 0: return s
-
-    # Remove the leading whitespace.
-    result = [g.removeLeadingWhitespace(line,w,tab_width) for line in lines]
-    result = ''.join(result)
-    return result
-#@+node:ekr.20090901175503.6098:@test g.adjustTripleString
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    s = '''\
-    a
-      b
-
-c
-    d'''
-
-    s2 = 'a\n  b\n\nc\nd'
-
-    result = g.adjustTripleString(s,c.tab_width)
-    assert result == s2,repr(result)
-
-
-#@-node:ekr.20090901175503.6098:@test g.adjustTripleString
-#@-node:ekr.20051014175117:g.adjustTripleString
-#@+node:ekr.20031218072017.3202:removeLeadingWhitespace
-# Remove whitespace up to first_ws wide in s, given tab_width, the width of a tab.
-
-def removeLeadingWhitespace (s,first_ws,tab_width):
-
-    j = 0 ; ws = 0 ; first_ws = abs(first_ws)
-    for ch in s:
-        if ws >= first_ws:
-            break
-        elif ch == ' ':
-            j += 1 ; ws += 1
-        elif ch == '\t':
-            j += 1 ; ws += (abs(tab_width) - (ws % abs(tab_width)))
-        else: break
-    if j > 0:
-        s = s[j:]
-    return s
-#@-node:ekr.20031218072017.3202:removeLeadingWhitespace
-#@-node:ekr.20090901175503.6096:Fixed bug in g.adjustTripleString
-#@+node:ekr.20090907140408.6123:Fixed startup reversion when .leoID.txt does not exist
-#@+node:ekr.20041113113140:loadOnePlugin & test
-def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
-
-    trace = False # and not g.unitTesting
-
-    global loadedModules,loadingModuleNameStack
-
-    # Prevent Leo from crashing if .leoID.txt does not exist.
-    if g.app.config is None:
-        print ('No g.app.config, making stub...')
-        class StubConfig(g.nullObject):
-            pass
-        g.app.config = StubConfig()
-
-    # Fixed reversion: do this after possibly creating stub config class.
-    verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
-    warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
-
-    if moduleOrFileName.endswith('.py'):
-        moduleName = moduleOrFileName [:-3]
-    else:
-        moduleName = moduleOrFileName
-    moduleName = g.shortFileName(moduleName)
-
-    if isLoaded(moduleName):
-        module = loadedModules.get(moduleName)
-        if trace or verbose:
-            g.trace('plugin',moduleName,'already loaded',color="blue")
-        return module
-
-    assert g.app.loadDir
-
-    plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
-    moduleName = g.toUnicode(moduleName,g.app.tkEncoding)
-
-    # This import will typically result in calls to registerHandler.
-    # if the plugin does _not_ use the init top-level function.
-    loadingModuleNameStack.append(moduleName)
-    result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
-    loadingModuleNameStack.pop()
-
-    if result:
-        loadingModuleNameStack.append(moduleName)
-
-        if tag == 'unit-test-load':
-            pass # Keep the result, but do no more.
-        elif hasattr(result,'init'):
-            try:
-                # Indicate success only if init_result is True.
-                init_result = result.init()
-                # g.trace('result',result,'init_result',init_result)
-                if init_result:
-                    loadedModules[moduleName] = result
-                    loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
-                else:
-                    if verbose and not g.app.initing:
-                        g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")
-                    result = None
-            except Exception:
-                g.es_print('exception loading plugin',color='red')
-                g.es_exception()
-                result = None
-        else:
-            # No top-level init function.
-            # Guess that the module was loaded correctly,
-            # but do *not* load the plugin if we are unit testing.
-
-            if g.app.unitTesting:
-                result = None
-                loadedModules[moduleName] = None
-            else:
-                g.trace('no init()',moduleName)
-                loadedModules[moduleName] = result
-        loadingModuleNameStack.pop()
-
-    if g.app.batchMode or g.app.inBridge: # or g.unitTesting
-        pass
-    elif result:
-        if trace or verbose:
-            g.trace('loaded plugin:',moduleName,color="blue")
-    else:
-        if trace or warn_on_failure or (verbose and not g.app.initing):
-            if trace or tag == 'open0':
-                g.trace('can not load enabled plugin:',moduleName,color="red")
-
-    return result
-#@+node:ekr.20090522161156.5886:@test class StubConfig
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    class StubConfig(g.nullObject):
-        pass
-
-    x = StubConfig()
-    assert not x.getBool(c,'mySetting')
-    assert not x.enabledPluginsFileName
-#@-node:ekr.20090522161156.5886:@test class StubConfig
-#@-node:ekr.20041113113140:loadOnePlugin & test
-#@-node:ekr.20090907140408.6123:Fixed startup reversion when .leoID.txt does not exist
-#@+node:ekr.20090930103947.6085:Fixed elisp bug
-> Here is the fix:
-> 'startsFunction' in 'elispScanner' should use
->    j = self.skipId(s,i)
-> instead of
->    j = g.skip_id(s,i)
-> skip_id doesn't take extraIdChars ('-' in elisp case) into
-> consideration. 
-#@nonl
-#@+node:ekr.20070711060113:class elispScanner
-class elispScanner (baseScannerClass):
-
-    @others
-#@+node:ekr.20070711060113.1: __init__
-def __init__ (self,importCommands,atAuto):
-
-    # Init the base class.
-    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='elisp')
-
-    # Set the parser delims.
-    self.blockCommentDelim1 = None
-    self.blockCommentDelim2 = None
-    self.lineCommentDelim = ';'
-    self.lineCommentDelim2 = None
-    self.blockDelim1 = '('
-    self.blockDelim2 = ')'
-    self.extraIdChars = '-'
-
-#@-node:ekr.20070711060113.1: __init__
-#@+node:ekr.20070711060113.2:Overrides
-# skipClass/Function/Signature are defined in the base class.
-#@nonl
-#@+node:ekr.20070711060113.3:startsClass/Function & skipSignature
-def startsClass (self,unused_s,unused_i):
-    '''Return True if s[i:] starts a class definition.
-    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
-    return False
-
-def startsFunction(self,s,i):
-    '''Return True if s[i:] starts a function.
-    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
-
-    self.startSigIndent = self.getLeadingIndent(s,i)
-    self.sigStart = i
-    self.codeEnd = self.sigEnd = self.sigId = None
-    if not g.match(s,i,'('): return False
-
-    end = self.skipBlock(s,i)
-    # g.trace('%3s %15s block: %s' % (i,repr(s[i:i+10]),repr(s[i:end])))
-    if not g.match(s,end-1,')'): return False
-
-    i = g.skip_ws(s,i+1)
-    if not g.match_word(s,i,'defun'): return False
-
-    i += len('defun')
-    sigEnd = i = g.skip_ws_and_nl(s,i)
-    j = self.skipId(s,i) # Bug fix: 2009/09/30
-    word = s[i:j]
-    if not word: return False
-
-    self.codeEnd = end + 1
-    self.sigEnd = sigEnd
-    self.sigId = word
-    return True
-#@-node:ekr.20070711060113.3:startsClass/Function & skipSignature
-#@+node:ekr.20070711063339:startsString
-def startsString(self,s,i):
-
-    # Single quotes are not strings.
-    return g.match(s,i,'"')
-#@-node:ekr.20070711063339:startsString
-#@-node:ekr.20070711060113.2:Overrides
-#@-node:ekr.20070711060113:class elispScanner
-#@-node:ekr.20090930103947.6085:Fixed elisp bug
-#@+node:ekr.20090930151626.6086:Made add-comments and delete-comments commands work with shortcuts
-@language python
-
-ab
-#@nonl
-#@+node:ekr.20050312114529:insert/removeComments
-#@+node:ekr.20050312114529.1:addComments
-def addComments (self,event=None):
-
-    '''Convert all selected lines in the body text to comment lines.'''
-
-    c = self ; p = c.p
-    d = c.scanAllDirectives(p)
-    d1,d2,d3 = d.get('delims') # d1 is the line delim.
-    head,lines,tail,oldSel,oldYview = self.getBodyLines()
-    if not lines:
-        g.es('no text selected',color='blue')
-        return
-
-    d2 = d2 or '' ; d3 = d3 or ''
-    if d1: openDelim,closeDelim = d1+' ',''
-    else:  openDelim,closeDelim = d2+' ',d3+' '
-
-    # Comment out non-blank lines.
-    result = []
-    for line in lines:
-        if line.strip():
-            i = g.skip_ws(line,0)
-            result.append(line[0:i]+openDelim+line[i:]+closeDelim)
-        else:
-            result.append(line)
-
-    result = ''.join(result)
-    c.updateBodyPane(head,result,tail,undoType='Add Comments',oldSel=None,oldYview=oldYview)
-#@-node:ekr.20050312114529.1:addComments
-#@+node:ekr.20050312114529.2:deleteComments
-def deleteComments (self,event=None):
-
-    '''Remove one level of comment delimiters from all selected lines in the body text.'''
-
-    c = self ; p = c.p
-    d = c.scanAllDirectives(p)
-    # d1 is the line delim.
-    d1,d2,d3 = d.get('delims')
-
-    head,lines,tail,oldSel,oldYview = self.getBodyLines()
-    result = []
-    if not lines:
-        g.es('no text selected',color='blue')
-        return
-
-    if d1:
-        # Remove the single-line comment delim in front of each line
-        for line in lines:
-            i = g.skip_ws(line,0)
-            if g.match(line,i,d1):
-                j = g.skip_ws(line,i + len(d1))
-                result.append(line[0:i] + line[j:])
-            else:
-                result.append(line)
-    else:
-        n = len(lines)
-        for i in range(n):
-            line = lines[i]
-            if i not in (0,n-1):
-                result.append(line)
-            if i == 0:
-                j = g.skip_ws(line,0)
-                if g.match(line,j,d2):
-                    k = g.skip_ws(line,j + len(d2))
-                    result.append(line[0:j] + line[k:])
-                else:
-                    g.es('',"'%s'" % (d2),"not found",color='blue')
-                    return
-            if i == n-1:
-                if i == 0:
-                    line = result[0] ; result = []
-                s = line.rstrip()
-                if s.endswith(d3):
-                    result.append(s[:-len(d3)].rstrip())
-                else:
-                    g.es('',"'%s'" % (d3),"not found",color='blue')
-                    return
-
-    result = ''.join(result)
-    c.updateBodyPane(head,result,tail,undoType='Delete Comments',oldSel=None,oldYview=oldYview)
-#@-node:ekr.20050312114529.2:deleteComments
-#@-node:ekr.20050312114529:insert/removeComments
-#@+node:ekr.20061031131434.146:masterKeyHandler & helpers
-master_key_count = 0
-
-def masterKeyHandler (self,event,stroke=None):
-
-    '''This is the handler for almost all key bindings.'''
-
-    << define vars >>
-    trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
-    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
-    verbose = True
-
-    if keysym in special_keys:
-        if trace and verbose: g.trace('keysym',keysym)
-        return None
-    if traceGC: g.printNewObjects('masterKey 1')
-    if trace:
-        g.trace('stroke:',repr(stroke),'keysym:',
-            repr(event.keysym),'ch:',repr(event.char),'state',state)
-
-    # Handle keyboard-quit first.
-    if k.abortAllModesKey and stroke == k.abortAllModesKey:
-        # g.trace('special case')
-        if c.macroCommands.recordingMacro:
-            c.macroCommands.endKbdMacro()
-            return 'break'
-        else:
-            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
-
-    if k.inState():
-        # This will return unless k.autoCompleterStateHandler
-        # (called from k.callStateFunction) returns 'do-standard-keys'
-        << handle mode bindings >>
-
-    if traceGC: g.printNewObjects('masterKey 2')
-
-    if stroke and isPlain:
-        << handle special cases for plain keys >>
-
-    << handle per-pane bindings >>
-
-    if traceGC: g.printNewObjects('masterKey 5')
-
-    return k.handleUnboundKeys(event,char,keysym,stroke)
-#@+node:ekr.20061031131434.147:<< define vars >>
-k = self ; c = k.c ; gui = g.app.gui
-
-if event:
-    # This is a leoGui base class event.
-    event = gui.leoKeyEvent(event,c,stroke=stroke)
-
-w = event.widget
-char = event.char
-keysym = event.keysym
-if stroke and not keysym:
-    event.keysym = keysym = stroke
-
-w_name = c.widget_name(w)
-state = k.state.kind
-
-special_keys = (
-    'Alt_L','Alt_R',
-    'Caps_Lock','Control_L','Control_R',
-    'Meta_L','Meta_R', # Meta support.
-    'Num_Lock',
-    'Shift_L','Shift_R',
-    'Win_L','Win_R',
-)
-
-self.master_key_count += 1
-
-isPlain =  k.isPlainKey(stroke)
-#@nonl
-#@-node:ekr.20061031131434.147:<< define vars >>
-#@+node:ekr.20061031131434.149:<< handle mode bindings >>
-# First, honor minibuffer bindings for all except user modes.
-
-if state in ('getArg','getFileName','full-command','auto-complete'):
-    if k.handleMiniBindings(event,state,stroke):
-        return 'break'
-
-# Second, honor general modes.
-if state == 'getArg':
-    return k.getArg(event,stroke=stroke)
-elif state == 'getFileName':
-    return k.getFileName(event)
-elif state in ('full-command','auto-complete'):
-    # Do the default state action.
-    if trace: g.trace('calling state function',k.state.kind) # k.state.handler)
-    val = k.callStateFunction(event) # Calls end-command.
-    if val != 'do-standard-keys': return 'break'
-
-# Third, pass keys to user modes.
-else:
-    d =  k.masterBindingsDict.get(state)
-    if d:
-        b = d.get(stroke)
-        if b:
-            if trace: g.trace('calling generalModeHandler',stroke)
-            k.generalModeHandler (event,
-                commandName=b.commandName,func=b.func,
-                modeName=state,nextMode=b.nextMode)
-            return 'break'
-        else:
-            # New in Leo 4.5: unbound keys end mode.
-            if trace: g.trace('unbound key ends mode',stroke,state)
-            k.endMode(event)
-    else:
-        # New in 4.4b4.
-        handler = k.getStateHandler()
-        if handler:
-            handler(event)
-        else:
-            g.trace('No state handler for %s' % state)
-        return 'break'
-#@-node:ekr.20061031131434.149:<< handle mode bindings >>
-#@+node:ekr.20080510153327.4:<< handle special cases for plain keys >>
-#g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
-
-# Important: only keys bound somewhere have a stroke.
-# All unbound plain keys will be handled by handleUnboundKeys.
-
-if k.unboundKeyAction in ('insert','overwrite'):
-
-    for key in (k.unboundKeyAction,'body','log','text','all'):
-        # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
-        d = k.masterBindingsDict.get(key,{})
-        if d:
-            b = d.get(stroke)
-            if b and b.commandName == 'auto-complete':
-                if trace: g.trace('%s: auto-complete key in %s mode' % (stroke,k.unboundKeyAction))
-                k.masterCommand(event,b.func,b.stroke,b.commandName)
-                return 'break'
-
-    if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
-    k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-    return 'break'
-
-# Bound   plain keys in command mode are by the per-pane logic.
-# Unbound plain keys in command mode are ignored by handleUnboundKeys.
-
-# This code ignores all command-state keys if we are not in a text widget.
-elif k.unboundKeyAction == 'command':
-    if not g.app.gui.isTextWidget(w):
-        c.onCanvasKey(event)
-        return 'break'
-#@nonl
-#@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
-#@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
-keyStatesTuple = ('command','insert','overwrite')
-
-if True and trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
-    'isTextWidget(w)',g.app.gui.isTextWidget(w))
-
-for key,name in (
-    # Order here is similar to bindtags order.
-    ('command',None),
-    ('insert',None),
-    ('overwrite',None),
-    ('button',None),
-    ('body','body'),
-    ('text','head'), # Important: text bindings in head before tree bindings.
-    ('tree','head'),
-    ('tree','canvas'),
-    ('log', 'log'),
-    ('text','log'),
-    ('text',None),
-    ('all',None),
-):
-    if (
-        # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
-        name and w_name.startswith(name) or
-        key in ('text','all') and g.app.gui.isTextWidget(w) or
-        key in ('button','all')
-    ):
-        d = k.masterBindingsDict.get(key,{})
-        if trace:
-            g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-            # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
-        if d:
-            b = d.get(stroke)
-            if b:
-                if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
-                if traceGC: g.printNewObjects('masterKey 3')
-                return k.masterCommand(event,b.func,b.stroke,b.commandName)
-#@-node:ekr.20061031131434.150:<< handle per-pane bindings >>
-#@+node:ekr.20061031131434.108:callStateFunction
-def callStateFunction (self,event):
-
-    k = self ; val = None ; ch = g.app.gui.eventChar(event)
-
-    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
-
-    if k.state.kind:
-        if (
-            k.ignore_unbound_non_ascii_keys and
-            ch and ch not in ('\b','\n','\r','\t') and
-            (ord(ch) < 32 or ord(ch) > 128)
-        ):
-            # g.trace('non-ascii',ord(ch))
-            pass
-        elif k.state.handler:
-            val = k.state.handler(event)
-            if val != 'continue':
-                k.endCommand(event,k.commandName)
-        else:
-            g.es_print('no state function for',k.state.kind,color='red')
-
-    return val
-#@-node:ekr.20061031131434.108:callStateFunction
-#@+node:ekr.20061031131434.152:handleMiniBindings
-def handleMiniBindings (self,event,state,stroke):
-
-    k = self ; c = k.c
-    trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
-
-    # Special case for bindings handled in k.getArg:
-    if state in ('getArg','full-command'):
-        if stroke in ('BackSpace','Return','Tab','\t','Escape'):
-            return False
-
-    if not state.startswith('auto-'):
-        # New in Leo 4.5: ignore plain key binding in the minibuffer.
-        if not stroke or k.isPlainKey(stroke):
-            if trace: g.trace('plain key',stroke)
-            return False
-        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
-        # for all single-line editing commands.
-        for pane in ('mini','all','text'):
-            d = k.masterBindingsDict.get(pane)
-            if d:
-                b = d.get(stroke)
-                if b:
-                    if b.commandName == 'replace-string' and state == 'getArg':
-                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
-                        return False # Let getArg handle it.
-                    elif b.commandName not in k.singleLineCommandList:
-                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event,hideTabs=True)
-                    else:
-                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
-                        c.minibufferWantsFocusNow() # New in Leo 4.5.
-                    # Pass this on for macro recording.
-                    k.masterCommand(event,b.func,stroke,b.commandName)
-                    # Careful: the command could exit.
-                    if c.exists and not k.silentMode:
-                        c.minibufferWantsFocus()
-                    return True
-
-    return False
-#@-node:ekr.20061031131434.152:handleMiniBindings
-#@+node:ekr.20080510095819.1:k.handleUnboudKeys
-def handleUnboundKeys (self,event,char,keysym,stroke):
-
-    trace = False and not g.unitTesting
-    k = self ; c = k.c
-    modesTuple = ('insert','overwrite')
-
-    if trace: g.trace('ch: %s keysym: %s stroke %s' % (
-        repr(event.char),repr(event.keysym),repr(stroke)))
-
-    if k.unboundKeyAction == 'command':
-        # Ignore all unbound characters in command mode.
-        w = g.app.gui.get_focus(c)
-        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
-            c.onCanvasKey(event)
-        return 'break'
-
-    elif k.isFKey(stroke):
-        return 'break'
-
-    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
-        # insert/overwrite normal character.  <Return> is *not* a normal character.
-        if trace: g.trace('plain key in insert mode',repr(stroke))
-        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-
-    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
-        # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
-        if trace: g.trace('ignoring unbound non-ascii key')
-        return 'break'
-
-    elif keysym.find('Escape') != -1 or stroke.find('Insert') != -1:
-        # Never insert escape or insert characters.
-        return 'break'
-
-    else:
-        if trace: g.trace(repr(stroke),'no func')
-        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-#@-node:ekr.20080510095819.1:k.handleUnboudKeys
-#@-node:ekr.20061031131434.146:masterKeyHandler & helpers
-#@+node:ekr.20061031131434.102:makeBindingsFromCommandsDict
-def makeBindingsFromCommandsDict (self):
-
-    '''Add bindings for all entries in c.commandDict.'''
-
-    k = self ; c = k.c ; d = c.commandsDict
-
-    for commandName in sorted(d):
-        command = d.get(commandName)
-        key, bunchList = c.config.getShortcut(commandName)
-        # if commandName == 'keyboard-quit': g.trace(key,bunchList)
-        for bunch in bunchList:
-            accel = bunch.val ; pane = bunch.pane
-            # if pane.endswith('-mode'): g.trace('skipping',shortcut,commandName)
-            if accel and not pane.endswith('-mode'):
-                shortcut = k.shortcutFromSetting(accel)
-                k.bindKey(pane,shortcut,command,commandName)
-
-    # g.trace(g.listToString(sorted(k.bindingsDict))
-    # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
-#@-node:ekr.20061031131434.102:makeBindingsFromCommandsDict
-#@+node:ekr.20061031131434.89:bindKey
-def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False):
-
-    '''Bind the indicated shortcut (a Tk keystroke) to the callback.
-
-    No actual gui bindings are made: only entries in k.masterBindingsDict.'''
-
-    trace = False and not g.unitTesting
-    k = self ; c = k.c
-
-    # g.trace(pane,shortcut,commandName)
-    if not shortcut:
-        # g.trace('No shortcut for %s' % commandName)
-        return False
-    << give warning and return if we try to bind to Enter or Leave >>
-    if pane.endswith('-mode'):
-        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
-        return False
-    bunchList = k.bindingsDict.get(shortcut,[])
-    if trace: g.trace(pane,shortcut,commandName)
-    try:
-        k.bindKeyToDict(pane,shortcut,callback,commandName)
-        b = g.bunch(pane=pane,func=callback,commandName=commandName)
-        << remove previous conflicting definitions from bunchList >>
-        bunchList.append(b)
-        shortcut = g.stripBrackets(shortcut.strip())
-        k.bindingsDict [shortcut] = bunchList
-        return True
-    except Exception: # Could be a user error.
-        if not g.app.menuWarningsGiven:
-            g.es_print('exception binding',shortcut,'to',commandName)
-            g.es_exception()
-            g.app.menuWarningsGiven = True
-        return False
-
-bindShortcut = bindKey # For compatibility
-#@+node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
-if shortcut:
-    for s in ('enter','leave'):
-        if -1 != shortcut.lower().find(s):
-            g.es_print('ignoring invalid key binding:','%s = %s' % (
-                commandName,shortcut),color='blue')
-            return
-#@-node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
-#@+node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
-if not modeFlag and self.warn_about_redefined_shortcuts:
-    redefs = [str(b2.commandName) for b2 in bunchList
-        if b2.commandName != commandName and pane in ('button','all',b2.pane)
-            and not b2.pane.endswith('-mode')]
-    for z in redefs:
-        g.es_print ('redefining shortcut %30s from %s to %s in %s' % (
-            shortcut,
-            g.choose(pane=='button',z,commandName),
-            g.choose(pane=='button',commandName,z),
-            pane),color='red')
-
-if not modeFlag:
-    bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
-#@-node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
-#@-node:ekr.20061031131434.89:bindKey
-#@+node:ekr.20031218072017.1723:createMenuEntries
-def createMenuEntries (self,menu,table,dynamicMenu=False):
-
-    '''Create a menu entry from the table.
-    New in 4.4: this method shows the shortcut in the menu,
-    but this method **never** binds any shortcuts.'''
-
-    c = self.c ; f = c.frame ; k = c.k
-    if g.app.unitTesting: return
-
-    trace = False
-    for data in table:
-        << get label & command or continue >>
-        << compute commandName & accel from label & command >>
-        # Bug fix: 2009/09/30: use canonical stroke.
-        accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
-        stroke = k.shortcutFromSetting(accel,addKey=True) or ''
-        if accelerator:
-            accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
-        if trace: # and commandName == 'add-comments':
-            g.trace(bunch.val,repr(stroke),repr(accelerator),commandName)
-        def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName,event=None):
-            # if trace: g.trace('stroke',stroke)
-            return k.masterMenuHandler(stroke,command,commandName)
-
-        realLabel = self.getRealMenuName(label)
-        amp_index = realLabel.find("&")
-        realLabel = realLabel.replace("&","")
-        if sys.platform == 'darwin':
-            << clear accelerator if it is a plain key >>
-
-        # c.add_command ensures that c.outerUpdate is called.
-        if menu:
-            c.add_command(menu,label=realLabel,
-                accelerator=accelerator,
-                command=masterMenuCallback,
-                underline=amp_index)
-#@+node:ekr.20051021091958:<< get label & command or continue >>
-if g.isString(data):
-    # New in Leo 4.4.2: Can use the same string for both the label and the command string.
-    ok = True
-    s = data
-    removeHyphens = s and s[0]=='*'
-    if removeHyphens: s = s[1:]
-    label = self.capitalizeMinibufferMenuName(s,removeHyphens)
-    command = s.replace('&','').lower()
-    if label == '-':
-        self.add_separator(menu)
-        continue # That's all.
-else:
-    ok = type(data) in (type(()), type([])) and len(data) in (2,3)
-    if ok:
-        if len(data) == 2:
-            # New in 4.4b2: command can be a minibuffer-command name (a string)
-            label,command = data
-        else:
-            # New in 4.4: we ignore shortcuts bound in menu tables.
-            label,junk,command = data
-
-        if label in (None,'-'):
-            self.add_separator(menu)
-            continue # That's all.
-    else:
-        g.trace('bad data in menu table: %s' % repr(data))
-        continue # Ignore bad data
-#@nonl
-#@-node:ekr.20051021091958:<< get label & command or continue >>
-#@+node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
-# New in 4.4b2: command can be a minibuffer-command name (a string)
-minibufferCommand = type(command) == type('')
-accel = None
-if minibufferCommand:
-    commandName = command 
-    command = c.commandsDict.get(commandName)
-    if command:
-        rawKey,bunchList = c.config.getShortcut(commandName)
-        # Pick the first entry that is not a mode.
-        for bunch in bunchList:
-            if not bunch.pane.endswith('-mode'):
-                accel = bunch and bunch.val
-                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
-    else:
-        if not g.app.unitTesting and not dynamicMenu:
-            # Don't warn during unit testing.
-            # This may come from a plugin that normally isn't enabled.
-            if trace: g.trace('No inverse for %s' % commandName)
-        continue # There is no way to make this menu entry.
-else:
-    # First, get the old-style name.
-    commandName = self.computeOldStyleShortcutKey(label)
-    rawKey,bunchList = c.config.getShortcut(commandName)
-    for bunch in bunchList:
-        if not bunch.pane.endswith('-mode'):
-            if trace: g.trace('2','%20s' % (bunch.val),commandName)
-            accel = bunch and bunch.val ; break
-    # Second, get new-style name.
-    if not accel:
-        << compute emacs_name >>
-            # Contains the not-so-horrible kludge.
-        if emacs_name:
-            commandName = emacs_name
-            rawKey,bunchList = c.config.getShortcut(emacs_name)
-            # Pick the first entry that is not a mode.
-            for bunch in bunchList:
-                if not bunch.pane.endswith('-mode'):
-                    accel = bunch.val
-                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
-                    break
-        elif not dynamicMenu:
-            g.trace('No inverse for %s' % commandName)
-#@+node:ekr.20051021100806.1:<< compute emacs_name >>
-@ One not-so-horrible kludge remains.
-
-The cut/copy/paste commands in the menu tables are not the same as the methods
-actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
-of extra translation to discover whether the user has overridden their
-bindings.
-@c
-
-if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
-    emacs_name = '%s-text' % commandName
-else:
-    try: # User errors in the table can cause this.
-        emacs_name = k.inverseCommandsDict.get(command.__name__)
-    except Exception:
-        emacs_name = None
-#@-node:ekr.20051021100806.1:<< compute emacs_name >>
-#@-node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
-#@+node:ekr.20060216110502:<< clear accelerator if it is a plain key >>
-for z in ('Alt','Ctrl','Command'):
-    if accelerator.find(z) != -1:
-        break # Found.
-else:
-    accelerator = ''
-#@-node:ekr.20060216110502:<< clear accelerator if it is a plain key >>
-#@-node:ekr.20031218072017.1723:createMenuEntries
-#@+node:ekr.20061031131434.184:shortcutFromSetting (uses k.guiBindNamesDict)
-def shortcutFromSetting (self,setting,addKey=True):
-
-    k = self
-
-    trace = False and not g.unitTesting
-    if not setting:return None
-
-    s = g.stripBrackets(setting.strip())
-    << define cmd, ctrl, alt, shift >>
-    if k.swap_mac_keys and sys.platform == "darwin":
-        << swap cmd and ctrl keys >>
-    << convert minus signs to plus signs >>
-    << compute the last field >>
-    << compute shortcut >>
-    if trace: g.trace('%20s %s' % (setting,shortcut))
-    return shortcut
-
-canonicalizeShortcut = shortcutFromSetting # For compatibility.
-strokeFromSetting = shortcutFromSetting
-#@+node:ekr.20061031131434.185:<< define cmd, ctrl, alt, shift >>
-s2 = s.lower()
-
-cmd   = s2.find("cmd") >= 0     or s2.find("command") >= 0
-ctrl  = s2.find("control") >= 0 or s2.find("ctrl") >= 0
-alt   = s2.find("alt") >= 0
-shift = s2.find("shift") >= 0   or s2.find("shft") >= 0
-meta  = s2.find("meta") >= 0
-#@-node:ekr.20061031131434.185:<< define cmd, ctrl, alt, shift >>
-#@+node:ekr.20061031131434.186:<< swap cmd and ctrl keys >>
-if ctrl and not cmd:
-    cmd = True ; ctrl = False
-if alt and not ctrl:
-    ctrl = True ; alt = False
-#@-node:ekr.20061031131434.186:<< swap cmd and ctrl keys >>
-#@+node:ekr.20061031131434.187:<< convert minus signs to plus signs >>
-# Replace all minus signs by plus signs, except a trailing minus:
-if s.endswith('-'):
-    s = s[:-1].replace('-','+') + '-'
-else:
-    s = s.replace('-','+')
-#@-node:ekr.20061031131434.187:<< convert minus signs to plus signs >>
-#@+node:ekr.20061031131434.188:<< compute the last field >>
-if s.endswith('+'):
-    last = '+'
-else:
-    fields = s.split('+') # Don't lower this field.
-    last = fields and fields[-1]
-    if not last:
-        if not g.app.menuWarningsGiven:
-            g.pr("bad shortcut specifier:", s)
-        return None
-
-if len(last) == 1:
-    last2 = k.guiBindNamesDict.get(last) # Fix new bug introduced in 4.4b2.
-    if last2:
-        last = last2
-    else:
-        if last.isalpha():
-            if shift:
-                last = last.upper()
-                shift = False # It is Ctrl-A, not Ctrl-Shift-A.
-            else:
-                last = last.lower()
-        # New in Leo 4.4.2: Alt-2 is not a key event!
-        if addKey and last.isdigit():
-            last = 'Key-' + last
-else:
-    # Translate from a made-up (or lowercase) name to 'official' Tk binding name.
-    # This is a *one-way* translation, done only here.
-    d = k.settingsNameDict
-    last = d.get(last.lower(),last)
-#@-node:ekr.20061031131434.188:<< compute the last field >>
-#@+node:ekr.20061031131434.189:<< compute shortcut >>
-table = (
-    (alt, 'Alt+'),
-    (ctrl,'Ctrl+'),
-    (cmd, 'Command+'),
-    (meta,'Meta+'),
-    (shift,'Shift+'),
-    (True, last),
-)
-
-# new in 4.4b3: convert all characters to unicode first.
-shortcut = ''.join([g.toUnicode(val,g.app.tkEncoding) for flag,val in table if flag])
-#@-node:ekr.20061031131434.189:<< compute shortcut >>
-#@-node:ekr.20061031131434.184:shortcutFromSetting (uses k.guiBindNamesDict)
-#@-node:ekr.20090930151626.6086:Made add-comments and delete-comments commands work with shortcuts
-#@+node:ekr.20091003171114.6465:Fixed contractOrGoRight
-@nocolor-node
-
-The culprit was the sparse_goto_parent option.
-It never worked properly, and it caused the expansion
-state of nodes as seen by Leo to get out-of-synch
-with the expansion state as seen by the qt tree code.
-
-To exercise the bug, do the following in test.leo:
-
-- Expand the "prototypes" node.
-- Expand any child node.
-- Move beyond the now-expanded child node.
-- Hit Alt-Left.  This will select the prototype node.
-  The expanded child node will be marked by Leo as being contracted,
-  but it *wont* be contracted actually, which confuses moveToVisNext.
-#@nonl
-#@+node:ekr.20031218072017.2996:selectVisNext
-def selectVisNext (self,event=None):
-
-    '''Select the visible node following the presently selected node.'''
-
-    c = self ; p = c.p
-    if not p: return
-    if not c.canSelectVisNext(): return
-
-    p.moveToVisNext(c)
-    c.treeSelectHelper(p)
-#@-node:ekr.20031218072017.2996:selectVisNext
-#@+node:ekr.20031218072017.2995:selectVisBack
-# This has an up arrow for a control key.
-
-def selectVisBack (self,event=None):
-
-    '''Select the visible node preceding the presently selected node.'''
-
-    c = self ; p = c.p
-    if not p: return
-    if not c.canSelectVisBack(): return
-
-    p.moveToVisBack(c)
-
-    # g.trace(p.h)
-    c.treeSelectHelper(p)
-#@-node:ekr.20031218072017.2995:selectVisBack
-#@+node:ekr.20031218072017.2920:goToParent
-def goToParent (self,event=None):
-
-    '''Select the parent of the selected node.'''
-
-    c = self ; p = c.p
-
-    # g.trace(p.parent())
-
-    c.treeSelectHelper(p and p.parent())
-#@-node:ekr.20031218072017.2920:goToParent
-#@+node:ekr.20040930064232:contractNodeOrGoToParent
-def contractNodeOrGoToParent (self,event=None):
-
-    """Simulate the left Arrow Key in folder of Windows Explorer."""
-
-    trace = False and not g.unitTesting
-    c = self ; p = c.p
-    redraw = False ; fullRedraw = False
-    if p.hasChildren() and p.isExpanded():
-        if trace: g.trace('contract',p.h)
-        c.contractNode()
-        redraw = True # New in one-node world.
-    elif p.hasParent() and p.parent().isVisible(c):
-        redraw = False
-        p.contract() # Make sure we know this node is contracted.
-        # This "feature" is dubious.
-        # To work properly, it requires a full redraw.
-        if False: # self.sparse_goto_parent:
-            for child in p.self_and_siblings():
-                if child != p and child.isExpanded():
-                    child.contract()
-                    redraw = True ; fullRedraw = True
-        if trace: g.trace('goto parent',p.h)
-        c.goToParent()
-
-    if redraw:
-        if fullRedraw or p.isCloned():
-            if trace: g.trace('full redraw',p.h)
-            c.redraw()
-        else:
-            c.redraw_after_contract(p=p,setFocus=True)
-#@-node:ekr.20040930064232:contractNodeOrGoToParent
-#@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
-def expandNodeAndGoToFirstChild (self,event=None):
-
-    """If a node has children, expand it if needed and go to the first child."""
-
-    trace = False and not g.unitTesting
-    c = self ; p = c.p
-
-    # New code.
-    if p.hasChildren():
-        if p.isExpanded():
-            p.moveToFirstChild()
-            if trace: g.trace('select',p.h)
-            c.selectPosition(p)
-        else:
-            if trace: g.trace('expand',p.h)
-            c.expandNode() # Calls redraw_after_expand.
-    elif p.hasNext():
-        c.goToNextSibling()
-    else:
-        while p.hasParent():
-            p.moveToParent()
-            if p.hasNext():
-                p.moveToNext()
-                break
-        c.selectPosition(p)
-    c.treeFocusHelper()
-
-def expandNodeOrGoToFirstChild (self,event=None):
-
-    """Simulate the Right Arrow Key in folder of Windows Explorer."""
-
-    c = self ; p = c.p
-    if p.hasChildren():
-        if not p.isExpanded():
-            c.expandNode() # Calls redraw_after_expand.
-        else:
-            c.redraw_after_expand(p.firstChild(),setFocus=True)
-#@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
-#@+node:ekr.20031218072017.2901:contractNode
-def contractNode (self,event=None):
-
-    '''Contract the presently selected node.'''
-
-    c = self ; p = c.p
-
-    p.contract()
-
-    if p.isCloned():
-        c.redraw() # A full redraw is necessary to handle clones.
-    else:
-        c.redraw_after_contract(p=p,setFocus=True)
-#@-node:ekr.20031218072017.2901:contractNode
-#@+node:ekr.20031218072017.2907:expandNode
-def expandNode (self,event=None):
-
-    '''Expand the presently selected node.'''
-
-    trace = False and not g.unitTesting
-    c = self ; p = c.p
-
-    p.expand()
-
-    if p.isCloned():
-        if trace: g.trace('***redraw')
-        c.redraw() # Bug fix: 2009/10/03.
-    else:
-        c.redraw_after_expand(p,setFocus=True)
-
-#@-node:ekr.20031218072017.2907:expandNode
-#@+node:ekr.20070226113916: treeSelectHelper
-def treeSelectHelper (self,p):
-
-    c = self
-
-    if not p: p = c.p
-
-    if p:
-        # Do not call expandAllAncestors here.
-        c.selectPosition(p)
-        c.redraw_after_select(p)
-
-    c.treeFocusHelper()
-#@-node:ekr.20070226113916: treeSelectHelper
-#@+node:ekr.20080416161551.210:p.moveToVisBack
-def moveToVisBack (self,c):
-
-    """Move a position to the position of the previous visible node."""
-
-    trace = False and not g.unitTesting
-    verbose = True
-    p = self ; limit,limitIsVisible = c.visLimit()
-    if trace and verbose:
-        g.trace(p,'limit',limit,'limitIsVisible',limitIsVisible)
-    if trace: g.trace('***entry','parent',p.parent(),'p',p,g.callers(5))
-    while p:
-        # Short-circuit if possible.
-        back = p.back()
-        if trace: g.trace(
-            'back',back,'hasChildren',bool(back and back.hasChildren()),
-            'isExpanded',bool(back and back.isExpanded()))
-
-        if back and back.hasChildren() and back.isExpanded():
-            p.moveToThreadBack()
-        elif back:
-            p.moveToBack()
-        else:
-            p.moveToParent() # Same as p.moveToThreadBack()
-        # if back and (not back.hasChildren() or not back.isExpanded()):
-            # p.moveToBack()
-        # else:
-            # p.moveToThreadBack()
-        if trace: g.trace(p.parent(),p)
-        if p:
-            if trace and verbose: g.trace('**p',p)
-            done,val = self.checkVisBackLimit(limit,limitIsVisible,p)
-            if done:
-                if trace and verbose: g.trace('done',p)
-                return val
-            if p.isVisible(c):
-                if trace and verbose: g.trace('isVisible',p)
-                return p
-    else:
-        # assert not p.
-        return p
-#@+node:ekr.20090715145956.6166:checkVisBackLimit
-def checkVisBackLimit (self,limit,limitIsVisible,p):
-
-    '''Return done, return-val'''
-
-    trace = True and not g.unitTesting
-    c = p.v.context
-
-    if limit:
-        if limit == p:
-            if trace: g.trace('at limit',p)
-            if limitIsVisible and p.isVisible(c):
-                return True,p
-            else:
-                return True,None
-            #return True,g.choose(limitIsVisible and p.isVisible(c),p,None)
-        elif limit.isAncestorOf(p):
-            return False,None
-        else:
-            if trace: g.trace('outside limit tree',limit,p)
-            return True,None
-    else:
-        return False,None
-#@-node:ekr.20090715145956.6166:checkVisBackLimit
-#@-node:ekr.20080416161551.210:p.moveToVisBack
-#@+node:ekr.20080416161551.211:p.moveToVisNext
-def moveToVisNext (self,c):
-
-    """Move a position to the position of the next visible node."""
-
-    trace = False and not g.unitTesting
-    verbose = False
-    p = self ; limit,limitIsVisible = c.visLimit()
-    while p:
-        if trace: g.trace('1',p.h)
-        # if trace: g.trace('hasChildren %s, isExpanded %s %s' % (
-            # p.hasChildren(),p.isExpanded(),p.h))
-        # Short-circuit if possible.
-        if p.hasNext() and p.hasChildren() and p.isExpanded():
-            p.moveToFirstChild()
-        elif p.hasNext():
-            p.moveToNext()
-        else:
-            p.moveToThreadNext()
-        if trace: g.trace('2',p.h)
-        if p:
-            done,val = self.checkVisNextLimit(limit,p)
-            if done: return val
-            if p.isVisible(c):
-                return p.copy()
-    else:
-        return p
-#@+node:ekr.20090715145956.6167:checkVisNextLimit
-def checkVisNextLimit (self,limit,p):
-
-    '''Return done, return-val'''
-
-    trace = False and not g.unitTesting
-
-    if limit:
-        # Unlike moveToVisBack, being at the limit does not terminate.
-        if limit == p:
-            return False, None
-        elif limit.isAncestorOf(p):
-            return False,None
-        else:
-            if trace: g.trace('outside limit tree')
-            return True,None
-    else:
-        return False,None
-#@-node:ekr.20090715145956.6167:checkVisNextLimit
-#@-node:ekr.20080416161551.211:p.moveToVisNext
-#@-node:ekr.20091003171114.6465:Fixed contractOrGoRight
-#@+node:ekr.20091007105735.6462:Fixed bug: @nosent should warn about orphan nodes
-#@+node:ekr.20041005105605.154:asisWrite
-def asisWrite(self,root,toString=False):
-
-    at = self ; c = at.c
-    c.endEditing() # Capture the current headline.
-
-    try:
-        # Note: @asis always writes all nodes,
-        # so there can be no orphan or ignored nodes.
-        targetFileName = root.atAsisFileNodeName()
-        at.initWriteIvars(root,targetFileName,toString=toString)
-        if at.errors: return
-        if not at.openFileForWriting(root,targetFileName,toString):
-            # openFileForWriting calls root.setDirty() if there are errors.
-            return
-        for p in root.self_and_subtree():
-            << Write p's headline if it starts with @@ >>
-            << Write p's body >>
-        at.closeWriteFile()
-        at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
-    except Exception:
-        at.writeException(root) # Sets dirty and orphan bits.
-
-silentWrite = asisWrite # Compatibility with old scripts.
-#@+node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
-s = p.h
-
-if g.match(s,0,"@@"):
-    s = s[2:]
-    if s and len(s) > 0:
-        s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
-        at.outputFile.write(s)
-#@-node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
-#@+node:ekr.20041005105605.156:<< Write p's body >>
-s = p.b
-
-if s:
-    s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
-    at.outputStringWithLineEndings(s)
-#@-node:ekr.20041005105605.156:<< Write p's body >>
-#@-node:ekr.20041005105605.154:asisWrite
-#@+node:ekr.20041005105605.157:writeOpenFile
-# New in 4.3: must be inited before calling this method.
-# New in 4.3 b2: support for writing from a string.
-
-def writeOpenFile(self,root,
-    nosentinels=False,toString=False,fromString=''):
-
-    """Do all writes except asis writes."""
-
-    at = self ; s = g.choose(fromString,fromString,root.v._bodyString)
-
-    root.clearAllVisitedInTree()
-    at.putAtFirstLines(s)
-    at.putOpenLeoSentinel("@+leo-ver=4")
-    at.putInitialComment()
-    at.putOpenNodeSentinel(root)
-    at.putBody(root,fromString=fromString)
-    at.putCloseNodeSentinel(root)
-    at.putSentinel("@-leo")
-    root.setVisited()
-    at.putAtLastLines(s)
-    if not toString:
-        at.warnAboutOrphandAndIgnoredNodes()
-#@-node:ekr.20041005105605.157:writeOpenFile
-#@-node:ekr.20091007105735.6462:Fixed bug: @nosent should warn about orphan nodes
-#@+node:ekr.20091016055503.6059:Color sections references in @root trees
-#@+node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
-# The caller passes [root_node] or None as the second arg.
-# This allows us to distinguish between None and [None].
-
-g_noweb_root = re.compile('<'+'<'+'*'+'>'+'>'+'=',re.MULTILINE)
-
-def get_directives_dict(p,root=None):
-
-    """Scan p for @directives found in globalDirectiveList.
-
-    Returns a dict containing pointers to the start of each directive"""
-
-    trace = False and not g.unitTesting
-
-    if root: root_node = root[0]
-    d = {}
-
-    # Do this every time so plugins can add directives.
-    pat = g.compute_directives_re()
-    directives_pat = re.compile(pat,re.MULTILINE)
-
-    # The headline has higher precedence because it is more visible.
-    for kind,s in (('body',p.h),('head',p.b)):
-        anIter = directives_pat.finditer(s)
-        for m in anIter:
-            word = m.group(0)[1:] # Omit the @
-            i = m.start(0)
-            if word.strip() not in d:
-                j = i + 1 + len(word)
-                k = g.skip_line(s,j)
-                val = s[j:k].strip()
-                if trace: g.trace(word,repr(val))
-                d[word.strip()] = val
-
-    if root:
-        anIter = g_noweb_root.finditer(p.b)
-        for m in anIter:
-            if root_node:
-                d["root"]=0 # value not immportant
-            else:
-                g.es('%s= requires @root in the headline' % (
-                    g.angleBrackets('*')))
-            break
-
-    if trace: g.trace('%4d' % (len(p.h) + len(p.b)),g.callers(5))
-    return d
-#@+node:ekr.20090214075058.10:compute_directives_re
-def compute_directives_re ():
-
-    '''Return an re pattern which will match all Leo directives.'''
-
-    global globalDirectiveList
-
-    aList = ['^@%s' % z for z in globalDirectiveList
-                if z != 'others']
-
-    # @others can have leading whitespace.
-    aList.append(r'^\s@others')
-
-    return '|'.join(aList)
-#@-node:ekr.20090214075058.10:compute_directives_re
-#@-node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
-#@+node:ekr.20031218072017.1385:g.findReference
-# Called from the syntax coloring method that colorizes section references.
-
-def findReference(c,name,root):
-
-    '''Find the section definition for name.
-
-    If a search of the descendants fails,
-    and an ancestor is an @root node,
-    search all the descendants of the @root node.
-    '''
-
-    for p in root.subtree():
-        assert(p!=root)
-        if p.matchHeadline(name) and not p.isAtIgnoreNode():
-            return p
-
-    # New in Leo 4.7: expand the search for @root trees.
-    for p in root.self_and_parents():
-        d = g.get_directives_dict(p)
-        if 'root' in d:
-            for p2 in p.subtree():
-                if p2.matchHeadline(name) and not p2.isAtIgnoreNode():
-                    return p2
-
-    # g.trace("not found:",name,root)
-    return c.nullPosition()
-#@-node:ekr.20031218072017.1385:g.findReference
-#@-node:ekr.20091016055503.6059:Color sections references in @root trees
-#@+node:ekr.20091103082258.6084:Fixed bug: Sometimes 'redefining shortcut' message is backwards
-#@+node:ekr.20061031131434.131:k.registerCommand
-def registerCommand (self,commandName,shortcut,func,pane='all',verbose=False, wrap=True):
-
-    '''Make the function available as a minibuffer command,
-    and optionally attempt to bind a shortcut.
-
-    You can wrap any method in a callback function, so the
-    restriction to functions is not significant.
-
-    If wrap is True then func will be wrapped with c.universalCallback.
-
-    '''
-
-    trace = False and not g.unitTesting
-    k = self ; c = k.c
-
-    if wrap:
-        func = c.universalCallback(func)
-
-    f = c.commandsDict.get(commandName)
-    verbose = (False or verbose) and not g.app.unitTesting
-    if f and f.__name__ != 'dummyCallback' and verbose:
-        g.es_print('redefining',commandName, color='red')
-
-    c.commandsDict [commandName] = func
-    k.inverseCommandsDict [func.__name__] = commandName
-    if trace: g.trace('leoCommands %24s = %s' % (func.__name__,commandName))
-
-    if shortcut:
-        stroke = k.shortcutFromSetting(shortcut)
-    elif commandName.lower() == 'shortcut': # Causes problems.
-        stroke = None
-    else:
-        # Try to get a shortcut from leoSettings.leo.
-        junk,bunchList = c.config.getShortcut(commandName)
-        for bunch in bunchList:
-            accel2 = bunch.val ; pane2 = bunch.pane
-            if accel2 and not pane2.endswith('-mode'):
-                shortcut2 = accel2
-                stroke = k.shortcutFromSetting(shortcut2)
-                if stroke: break
-        else: stroke = None
-
-    if stroke:
-        if trace: g.trace('stroke',stroke,'pane',pane,commandName,g.callers(4))
-        ok = k.bindKey (pane,stroke,func,commandName) # Must be a stroke.
-        k.makeMasterGuiBinding(stroke) # Must be a stroke.
-        if verbose and ok and not g.app.silentMode:
-            # g.trace(g.callers())
-            g.es_print('','@command: %s = %s' % (
-                commandName,k.prettyPrintKey(stroke)),color='blue')
-            if 0:
-                d = k.masterBindingsDict.get('button',{})
-                g.print_dict(d)
-        c.frame.tree.setBindings()
-    elif verbose and not g.app.silentMode:
-        g.trace(g.callers())
-        g.es_print('','@command: %s' % (commandName),color='blue')
-
-    # Fixup any previous abbreviation to press-x-button commands.
-    if commandName.startswith('press-') and commandName.endswith('-button'):
-        d = c.config.getAbbrevDict()
-            # Keys are full command names, values are abbreviations.
-        if commandName in list(d.values()):
-            for key in d:
-                if d.get(key) == commandName:
-                    c.commandsDict [key] = c.commandsDict.get(commandName)
-                    break
-#@-node:ekr.20061031131434.131:k.registerCommand
-#@+node:ekr.20061031131434.89:bindKey
-def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False):
-
-    '''Bind the indicated shortcut (a Tk keystroke) to the callback.
-
-    No actual gui bindings are made: only entries in k.masterBindingsDict.'''
-
-    trace = False and not g.unitTesting
-    k = self ; c = k.c
-
-    # g.trace(pane,shortcut,commandName)
-    if not shortcut:
-        # g.trace('No shortcut for %s' % commandName)
-        return False
-    << give warning and return if we try to bind to Enter or Leave >>
-    if pane.endswith('-mode'):
-        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
-        return False
-    bunchList = k.bindingsDict.get(shortcut,[])
-    if trace: g.trace(pane,shortcut,commandName)
-    try:
-        k.bindKeyToDict(pane,shortcut,callback,commandName)
-        b = g.bunch(pane=pane,func=callback,commandName=commandName)
-        << remove previous conflicting definitions from bunchList >>
-        bunchList.append(b)
-        shortcut = g.stripBrackets(shortcut.strip())
-        k.bindingsDict [shortcut] = bunchList
-        return True
-    except Exception: # Could be a user error.
-        if not g.app.menuWarningsGiven:
-            g.es_print('exception binding',shortcut,'to',commandName)
-            g.es_exception()
-            g.app.menuWarningsGiven = True
-        return False
-
-bindShortcut = bindKey # For compatibility
-#@+node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
-if shortcut:
-    for s in ('enter','leave'):
-        if -1 != shortcut.lower().find(s):
-            g.es_print('ignoring invalid key binding:','%s = %s' % (
-                commandName,shortcut),color='blue')
-            return
-#@-node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
-#@+node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
-if not modeFlag and self.warn_about_redefined_shortcuts:
-    redefs = [str(b2.commandName) for b2 in bunchList
-        if b2.commandName != commandName and pane in ('button','all',b2.pane)
-            and not b2.pane.endswith('-mode')]
-    for z in redefs:
-        g.es_print ('redefining shortcut %30s from %s to %s in %s' % (
-            shortcut,
-            g.choose(pane=='button',z,commandName),
-            g.choose(pane=='button',commandName,z),
-            pane),color='red')
-
-if not modeFlag:
-    bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
-#@-node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
-#@-node:ekr.20061031131434.89:bindKey
-#@-node:ekr.20091103082258.6084:Fixed bug: Sometimes 'redefining shortcut' message is backwards
-#@+node:ekr.20091201125021.6067:Fixed publish-argv-for-missing-stylesheets
-# The parsing in writeToDocutils had to be rewritten.
-#@nonl
-#@+node:ekr.20090502071837.65:writeToDocutils (sets argv) & helper
-def writeToDocutils (self,s):
-
-    '''Send s to docutils using the writer implied by self.ext and return the result.'''
-
-    trace = True and not g.unitTesting
-    openDirectory = self.c.frame.openDirectory
-    overrides = {'output_encoding': self.encoding }
-
-    # Compute the args list if the stylesheet path does not exist.
-    styleSheetArgsDict = self.handleMissingStyleSheetArgs()
-
-    for ext,writer in (
-        ('.html','html'),
-        ('.htm','html'),
-        ('.tex','latex'),
-        ('.pdf','leo_pdf'),
-    ):
-        if self.ext == ext:
-            break
-    else:
-        g.es_print('unknown docutils extension: %s' % (self.ext),color='red')
-        return ''
-
-    # Make the stylesheet path relative to the directory containing the output file.
-    rel_stylesheet_path = self.getOption('stylesheet_path') or ''
-
-    # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
-    stylesheet_path = g.os_path_finalize_join(
-        self.c.frame.openDirectory,rel_stylesheet_path)
-
-    path = g.os_path_finalize_join(
-        stylesheet_path,self.getOption('stylesheet_name'))
-
-    res = ""
-    if self.getOption('stylesheet_embed') == False:
-        rel_path = g.os_path_join(
-            rel_stylesheet_path,self.getOption('stylesheet_name'))
-        overrides['stylesheet'] = rel_path
-        overrides['stylesheet_path'] = None
-        overrides['embed_stylesheet'] = None
-    elif g.os_path_exists(path):
-        if self.ext != '.pdf':
-            overrides['stylesheet'] = path
-            overrides['stylesheet_path'] = None
-    elif styleSheetArgsDict:
-        g.es_print('using publish_argv_for_missing_stylesheets',
-            styleSheetArgsDict)
-        overrides.update(styleSheetArgsDict)
-            # MWC add args to settings
-    elif rel_stylesheet_path == stylesheet_path:
-        g.es_print('stylesheet not found: %s' % (path),color='red')
-    else:
-        g.es_print('stylesheet not found\n',path,color='red')
-        if self.path:g.es_print('@path:', self.path)
-        g.es_print('open path:',self.c.frame.openDirectory)
-        if rel_stylesheet_path:
-            g.es_print('relative path:', rel_stylesheet_path)
-    try:
-        # All paths now come through here.
-        if trace: g.trace('overrides',overrides)
-        result = None # Ensure that result is defined.
-        result = docutils.core.publish_string(source=s,
-                reader_name='standalone',
-                parser_name='restructuredtext',
-                writer_name=writer,
-                settings_overrides=overrides)
-    except docutils.ApplicationError as error:
-        # g.es_print('Docutils error (%s):' % (
-            # error.__class__.__name__),color='red')
-        g.es_print('Docutils error:',color='red')
-        g.es_print(error,color='blue')
-    except Exception:
-        g.es_print('Unexpected docutils exception')
-        g.es_exception()
-    return result
-#@+node:ekr.20090502071837.66:handleMissingStyleSheetArgs
-def handleMissingStyleSheetArgs (self,s=None):
-
-    '''Parse the publish_argv_for_missing_stylesheets option,
-    returning a dict containing the parsed args.'''
-
-    force = False
-    if force:
-        # See http://docutils.sourceforge.net/docs/user/config.html#documentclass
-        return {'documentclass':'report', 'documentoptions':'english,12pt,lettersize'}
-
-    if not s:
-        s = self.getOption('publish_argv_for_missing_stylesheets')
-    if not s: return {}
-
-    # Handle argument lists such as this:
-    # --language=en,--documentclass=report,--documentoptions=[english,12pt,lettersize]
-    d = {}
-    while s:
-        s = s.strip()
-        if not s.startswith('--'): break
-        s = s[2:].strip()
-        eq = s.find('=')
-        cm = s.find(',')
-        if eq == -1 or (-1 < cm < eq): # key[nl] or key,
-            val = ''
-            cm = s.find(',')
-            if cm == -1:
-                key = s.strip()
-                s = ''
-            else:
-                key = s[:cm].strip()
-                s = s[cm+1:].strip()
-        else: # key = val
-            key = s[:eq].strip()
-            s = s[eq+1:].strip()
-            if s.startswith('['): # [...]
-                rb = s.find(']')
-                if rb == -1: break # Bad argument.
-                val = s[:rb+1]
-                s = s[rb+1:].strip()
-                if s.startswith(','):
-                    s = s[1:].strip()
-            else: # val[nl] or val,
-                cm = s.find(',')
-                if cm == -1:
-                    val = s
-                    s = ''
-                else:
-                    val = s[:cm].strip()
-                    s = s[cm+1:].strip()
-
-        # g.trace('key',repr(key),'val',repr(val),'s',repr(s))
-        if not key: break
-        if not val.strip(): val = '1'
-        d[str(key)] = str(val)
-
-    return d
-#@nonl
-#@-node:ekr.20090502071837.66:handleMissingStyleSheetArgs
-#@-node:ekr.20090502071837.65:writeToDocutils (sets argv) & helper
-#@-node:ekr.20091201125021.6067:Fixed publish-argv-for-missing-stylesheets
-#@+node:ekr.20091217190731.6075:Recover from bad chars in .leo files
-#@+node:ekr.20090525144314.6526:cleanSaxInputString & test
-def cleanSaxInputString(self,s):
-
-    badchars = [chr(ch) for ch in range(32)]
-    badchars.remove('\t')
-    badchars.remove('\r')
-    badchars.remove('\n')
-
-    flatten = ''.join(badchars)
-    pad = ' ' * len(flatten)
-
-    if g.isPython3:
-        flatten = bytes(flatten,'utf-8')
-        pad = bytes(pad,'utf-8')
-        transtable = bytes.maketrans(flatten,pad)
-    else:
-        transtable = string.maketrans(flatten,pad)
-
-    return s.translate(transtable)
-
-# for i in range(32): print i,repr(chr(i))
-#@+node:ekr.20090525144314.6527:@test cleanSaxInputString
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    s = 'test%cthis' % 27
-
-    assert c.fileCommands.cleanSaxInputString(s) == 'test this'
-#@-node:ekr.20090525144314.6527:@test cleanSaxInputString
-#@-node:ekr.20090525144314.6526:cleanSaxInputString & test
-#@+node:ekr.20060919110638.14:parse_leo_file
-def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
-
-    c = self.c
-    try:
-        if g.isPython3:
-            if theFile:
-                # Use the open binary file, opened by g.openLeoOrZipFile.
-                pass
-            else:
-                s = str(s,encoding='utf-8')
-                s = self.cleanSaxInputString(s)
-                theFile = StringIO(s)
-        else:
-            if theFile: s = theFile.read()
-            s = self.cleanSaxInputString(s)
-            theFile = cStringIO.StringIO(s)
-        parser = xml.sax.make_parser()
-        parser.setFeature(xml.sax.handler.feature_external_ges,1)
-            # Include external general entities, esp. xml-stylesheet lines.
-        if 0: # Expat does not read external features.
-            parser.setFeature(xml.sax.handler.feature_external_pes,1)
-                # Include all external parameter entities
-                # Hopefully the parser can figure out the encoding from the <?xml> element.
-        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
-        parser.setContentHandler(handler)
-        parser.parse(theFile) # expat does not support parseString
-        # g.trace('parsing done')
-        sax_node = handler.getRootNode()
-    except xml.sax.SAXParseException:
-        g.es_print('error parsing',inputFileName,color='red')
-        g.es_exception()
-        sax_node = None
-    except Exception:
-        g.es_print('unexpected exception parsing',inputFileName,color='red')
-        g.es_exception()
-        sax_node = None
-
-    return sax_node
-#@-node:ekr.20060919110638.14:parse_leo_file
-#@-node:ekr.20091217190731.6075:Recover from bad chars in .leo files
-#@+node:ekr.20091228133644.6221:Handle Insert key properly
-# This is now bound in the EKR bindings to insert-node.
-
-g.es(c.k.ignore_unbound_non_ascii_keys)
-#@nonl
-#@+node:ekr.20061031131434.182:isPlainKey
-def isPlainKey (self,shortcut):
-
-    '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
-
-    k = self ; shortcut = shortcut or ''
-
-    # altgr combos (Alt+Ctrl) are always plain keys
-    if shortcut.startswith('Alt+Ctrl+') and not self.enable_alt_ctrl_bindings:
-        return True
-
-    for s in ('Alt','Ctrl','Command','Meta'):
-        if shortcut.find(s) != -1:            
-            return False
-    else:
-        # Careful, allow bare angle brackets for unit tests.
-        if shortcut.startswith('<') and shortcut.endswith('>'):
-            shortcut = shortcut[1:-1]
-
-        isPlain = (
-            len(shortcut) == 1 or
-            len(k.guiBindNamesInverseDict.get(shortcut,'')) == 1 or
-            # A hack: allow Return to be bound to command.
-            shortcut in ('Tab','\t')
-        )
-
-        # g.trace(isPlain,repr(shortcut))
-        return isPlain and not self.isFKey(shortcut)
-#@-node:ekr.20061031131434.182:isPlainKey
-#@+node:ekr.20080510095819.1:k.handleUnboudKeys
-def handleUnboundKeys (self,event,char,keysym,stroke):
-
-    trace = False and not g.unitTesting
-    k = self ; c = k.c
-    modesTuple = ('insert','overwrite')
-
-    if trace: g.trace('ch: %s keysym: %s stroke %s' % (
-        repr(event.char),repr(event.keysym),repr(stroke)))
-
-    if k.unboundKeyAction == 'command':
-        # Ignore all unbound characters in command mode.
-        w = g.app.gui.get_focus(c)
-        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
-            c.onCanvasKey(event)
-        return 'break'
-
-    elif k.isFKey(stroke):
-        return 'break'
-
-    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
-        # insert/overwrite normal character.  <Return> is *not* a normal character.
-        if trace: g.trace('plain key in insert mode',repr(stroke))
-        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-
-    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
-        # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
-        if trace: g.trace('ignoring unbound non-ascii key')
-        return 'break'
-
-    elif keysym.find('Escape') != -1 or stroke.find('Insert') != -1:
-        # Never insert escape or insert characters.
-        return 'break'
-
-    else:
-        if trace: g.trace(repr(stroke),'no func')
-        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-#@-node:ekr.20080510095819.1:k.handleUnboudKeys
-#@+node:ekr.20070123143428:k.defineTkNames
-def defineTkNames (self):
-
-    k = self
-
-    # These names are used in Leo's core *regardless* of the gui actually in effect.
-    # The gui is responsible for translating gui-dependent keycodes into these values.
-    k.tkNamesList = (
-        'BackSpace','Begin','Break',
-        'Caps_Lock','Clear',
-        'Delete','Down',
-        'End','Escape',
-        'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
-        'Home',
-        'Left','Linefeed',
-        'Next','Num_Lock',
-        'Prior',
-        'Return','Right',
-        'Tab',
-        'Up',
-        # 'space',
-    )
-
-    # These keys settings that may be specied in leoSettings.leo.
-    # Keys are lowercase, so that case is not significant *for these items only* in leoSettings.leo.
-    k.settingsNameDict = {
-        'bksp'    : 'BackSpace',
-        'dnarrow' : 'Down',
-        'esc'     : 'Escape',
-        'ltarrow' : 'Left',
-        'pageup'  : 'Prior',
-        'pagedn'  : 'Next',
-        'rtarrow' : 'Right',
-        'uparrow' : 'Up',
-    }
-
-    # Add lowercase version of special keys.
-    for s in k.tkNamesList:
-        k.settingsNameDict [s.lower()] = s
-
-
-@  The following are not translated, so what appears in the menu is the same as what is passed to Tk.  Case is significant.
-Note: the Tk documentation states that not all of these may be available on all platforms.
-
-Num_Lock, Pause, Scroll_Lock, Sys_Req,
-KP_Add, KP_Decimal, KP_Divide, KP_Enter, KP_Equal,
-KP_Multiply, KP_Separator,KP_Space, KP_Subtract, KP_Tab,
-KP_F1,KP_F2,KP_F3,KP_F4,
-KP_0,KP_1,KP_2,KP_3,KP_4,KP_5,KP_6,KP_7,KP_8,KP_9,
-Insert
-#@-node:ekr.20070123143428:k.defineTkNames
-#@-node:ekr.20091228133644.6221:Handle Insert key properly
 #@+node:ekr.20091221094815.6383:Urgent (voted up) bugs
 #@+node:ekr.20091221123255.6375:Fixed
 #@+node:ekr.20091221145433.6384:Calltips don't work on leo3k
@@ -11950,6 +9396,2560 @@ if g.unitTesting:
 #@-node:ekr.20091228143718.6222:Fixed new at-auto-import bug
 #@-node:ekr.20091221123255.6375:Fixed
 #@-node:ekr.20091221094815.6383:Urgent (voted up) bugs
+#@+node:ekr.20090721093155.5986:Bugs
+#@+node:ekr.20090721091726.5982:Fixed crasher when writing to a newly-deleted file
+#@+node:bwmulder.20050101094804:openForWrite (atFile)
+def openForWrite (self, filename, wb='wb'):
+
+    '''Open a file for writes, handling shadow files.'''
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c ; x = c.shadowController
+
+    try:
+        shadow_filename = x.shadowPathName(filename)
+        self.writing_to_shadow_directory = os.path.exists(shadow_filename)
+        open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
+        self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
+
+        if self.writing_to_shadow_directory:
+            if trace: g.trace(filename,shadow_filename)
+            x.message('writing %s' % shadow_filename)
+            return 'shadow',open(open_file_name,wb)
+        else:
+            ok = c.checkFileTimeStamp(at.targetFileName)
+            return 'check',ok and open(open_file_name,wb)
+
+    except IOError:
+        if not g.app.unitTesting:
+            g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
+            g.es_exception()
+        return 'error',None
+#@-node:bwmulder.20050101094804:openForWrite (atFile)
+#@+node:ekr.20090103070824.11:c.checkFileTimeStamp
+def checkFileTimeStamp (self,fn):
+
+    '''
+    Return True if the file given by fn has not been changed
+    since Leo read it or if the user agrees to overwrite it.
+    '''
+
+    trace = False and not g.unitTesting
+    c = self
+
+    # Don't assume the file still exists.
+    if not g.os_path_exists(fn):
+        if trace: g.trace('file no longer exists',fn)
+        return True
+
+    timeStamp = c.timeStampDict.get(fn)
+    if not timeStamp:
+        if trace: g.trace('no time stamp',fn)
+        return True
+
+    timeStamp2 = os.path.getmtime(fn)
+    if timeStamp == timeStamp2:
+        if trace: g.trace('time stamps match',fn,timeStamp)
+        return True
+
+    if g.app.unitTesting:
+        return False
+
+    if trace:
+        g.trace('mismatch',timeStamp,timeStamp2)
+
+    message = '%s\n%s\n%s' % (
+        fn,
+        g.tr('has been modified outside of Leo.'),
+        g.tr('Overwrite this file?'))
+    ok = g.app.gui.runAskYesNoCancelDialog(c,
+        title = 'Overwrite modified file?',
+        message = message)
+
+    return ok == 'yes'
+#@-node:ekr.20090103070824.11:c.checkFileTimeStamp
+#@-node:ekr.20090721091726.5982:Fixed crasher when writing to a newly-deleted file
+#@+node:ekr.20090812165611.5973:Fixed registerHandler bug
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/8616f4e171e1a24b
+
+On Aug 10, 12:25 pm, tfer <tfethers...@aol.com> wrote:
+> Well from vim.py:
+> When properly installed, this plugin does the following:
+>
+> 1. - Double clicking on a node's icon opens that node in VIM. You can
+> open nodes in VIM with
+>         a single-click if you set useDoubleClick = False.
+
+I tried setting "useDoubleClick = False" under the vim plugin node in
+leoPluginsRef.leo work. It doesn't seem to work. I get the message:
+
+exception loading plugin
+Traceback (most recent call last):
+
+ File "C:\Program Files\Leo-4-6-2-final\leo\core\leoPlugins.py", line
+437, in loadOnePlugin
+   init_result = result.init()
+
+ File "C:\Program Files\Leo-4-6-2-final\leo\plugins\vim.py", line
+232, in init
+   leoPlugins.registerHandler(event,open_in_vim,val=True)
+
+TypeError: registerHandler() got an unexpected keyword argument 'val'
+
+The variable val doesn't get modified in the "open_in_vim
+(tag,keywords,val=None)" function.
+- Show quoted text -
+#@nonl
+#@-node:ekr.20090812165611.5973:Fixed registerHandler bug
+#@+node:ekr.20090813084945.5977:Suppressed dangerous write prompt for clones
+# at_read attribute in the tnode, not the vnode.
+#@nonl
+#@+node:ekr.20090712050729.6017:promptForDangerousWrite
+def promptForDangerousWrite (self,fileName,kind):
+
+    c = self.c
+
+    if g.app.unitTesting:
+        val = g.app.unitTestDict.get('promptForDangerousWrite')
+        return val in (None,True)
+
+    # g.trace(timeStamp, timeStamp2)
+    message = '%s %s\n%s\n%s' % (
+        kind, fileName,
+        g.tr('already exists.'),
+        g.tr('Overwrite this file?'))
+
+    ok = g.app.gui.runAskYesNoCancelDialog(c,
+        title = 'Overwrite existing file?',
+        message = message)
+
+    return ok == 'yes'
+#@-node:ekr.20090712050729.6017:promptForDangerousWrite
+#@-node:ekr.20090813084945.5977:Suppressed dangerous write prompt for clones
+#@+node:ekr.20090804091109.5985:Fixed double prompt in c.close()
+#@+node:ekr.20091109103928.6372:Notes
+@nocolor
+
+This bug happens only on Linux.
+#@nonl
+#@-node:ekr.20091109103928.6372:Notes
+#@+node:ekr.20031218072017.2609:app.closeLeoWindow
+def closeLeoWindow (self,frame):
+
+    """Attempt to close a Leo window.
+
+    Return False if the user veto's the close."""
+
+    c = frame.c
+
+    # g.trace('frame',frame,g.callers(4))
+
+    c.endEditing() # Commit any open edits.
+
+    if c.promptingForClose:
+        # There is already a dialog open asking what to do.
+        return False
+
+    g.app.config.writeRecentFilesFile(c) # Make sure .leoRecentFiles.txt is written.
+
+    if c.changed:
+        c.promptingForClose = True
+        veto = frame.promptForSave()
+        c.promptingForClose = False
+        if veto: return False
+
+    g.app.setLog(None) # no log until we reactive a window.
+
+    g.doHook("close-frame",c=c) # This may remove frame from the window list.
+
+    if frame in g.app.windowList:
+        g.app.destroyWindow(frame)
+
+    if g.app.windowList:
+        # Pick a window to activate so we can set the log.
+        frame = g.app.windowList[0]
+        frame.deiconify()
+        frame.lift()
+        frame.c.setLog()
+        frame.c.bodyWantsFocus()
+        frame.c.outerUpdate()
+    elif not g.app.unitTesting:
+        g.app.finishQuit()
+
+    return True # The window has been closed.
+#@-node:ekr.20031218072017.2609:app.closeLeoWindow
+#@-node:ekr.20090804091109.5985:Fixed double prompt in c.close()
+#@+node:ekr.20090817080059.5995:Select main chapter initially
+It can be alarming to select a small chapter in a large outline.
+#@nonl
+#@-node:ekr.20090817080059.5995:Select main chapter initially
+#@+node:ekr.20090813084945.5978:Fixed scrolling problem with multiple editors
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/33e87adbff5d69d9
+
+Latest trunk.  qt gui
+
+I used multiple body editors (2) for the first time in a long time and the
+scroll position was moving at times that it shouldn't.
+
+For example if I scrolled partially down the page and copied some text and then
+pasted the text somewhere else that was visible without scrolling, the scroll
+position would change significantly although the new text would remain visible.
+
+It may not sound particularly serious but I found it very difficult to use.
+
+The fix was to leoQtGui.updateEditors.
+#@nonl
+#@-node:ekr.20090813084945.5978:Fixed scrolling problem with multiple editors
+#@+node:ekr.20090822060128.6035:Improved the install docs
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/add6242d6f4fc476
+
+From Matt Wilkie
+
+I've installed Leo several times on windows, yet this morning still
+took me a few minutes to find the section you reference above because
+there are at least two other document sections with phrases similar to
+"installing leo". Anyway, this is my simplified recipe for a virgin
+install:
+
+-------------------------
+Installing Leo On Windows
+-------------------------
+//skip any step not needed//
+
+1. Install Python - There are many sources, but from
+http://www.python.org/download/releases/ is good
+
+2. Install PyQt - acquire and run Binary Package from
+http://www.riverbankcomputing.co.uk/software/pyqt/download which
+matches installed Python version (so for python 2.5 scan for the
+"Py2.5" in filename)
+
+3. Install Leo
+   - Head to http://sourceforge.net/projects/leo/ and slap [Download Now]
+   - Unpack python *site-packages* folder, e.g.
+C:\Python25\Lib\site-packages\leo-4-6-2-final
+
+   - [optional] Generate/update a junction link from unpacked
+leo-4-6-2-final to ...\site-packages\leo
+
+      cd C:\Python25\Lib\site-packages\
+      junction leo leo-4-6-2-final
+
+   - Create windows shortcut (edit paths as necessary):
+
+      Target   =  C:\Python25\pythonw.exe
+"C:\Python25\Lib\site-packages\leo\launchLeo.py" --gui=qt
+      Start in =  D:\code
+
+   - Associate .leo filetype batch file:
+
+      ftype LeoFile=C:\Python25\pythonw.exe
+"C:\Python25\Lib\site-packages\leo\launchLeo.py" "--gui=qt" "%1"
+      assoc .leo=LeoFile
+
+   - [optional] Put this leo.bat in %PATH%:
+
+      @C:\Python25\python.exe -i
+"C:\Python25\Lib\site-packages\leo\launchLeo.py" --gui=qt %*
+
+-------------------------
+
+Further reading / Sources used:
+
+   Junction links -
+http://technet.microsoft.com/en-gb/sysinternals/bb896768.aspx,
+http://groups.google.com/group/leo-editor/msg/30116f9193241dc4
+   FTYPE - http://ss64.com/nt/ftype.html
+   ASSOC - http://ss64.com/nt/assoc.html
+
+
+=====================
+Ville's comments
+
+On Thu, Aug 20, 2009 at 10:49 PM, Matt Wilkie<map...@gmail.com> wrote:
+> 3. Install Leo
+>   - Head to http://sourceforge.net/projects/leo/ and slap [Download Now]
+>   - Unpack python *site-packages* folder, e.g.
+> C:\Python25\Lib\site-packages\leo-4-6-2-final
+
+I don't think you need to use site-packages. Just extract it anywhere
+you want (e.g. c:/opt/leo). But I could be wrong.
+
+>   - Associate .leo filetype batch file:
+>n
+>      ftype LeoFile=C:\Python25\pythonw.exe
+> "C:\Python25\Lib\site-packages\leo\launchLeo.py" "--gui=qt" "%1"
+>      assoc .leo=LeoFile
+
+--gui=qt us not needed anymore. 
+#@nonl
+#@-node:ekr.20090822060128.6035:Improved the install docs
+#@+node:ekr.20090829175108.6133:Marked @<file> nodes dirty if nodes change during read.
+#@+node:ekr.20041005105605.21:read (atFile) & helper
+def read(self,root,
+    importFileName=None,thinFile=False,
+    fromString=None,atShadow=False,
+    force=False
+):
+
+    """Read any @thin, @file and @noref trees."""
+
+    at = self ; c = at.c
+    << set fileName and isAtFile >>
+    if isAtFile:
+        # The @file node has file-like sentinels iff a tnodeList exists.
+        thinFile = not (hasattr(root.v,'tnodeList') and root.v.tnodeList)
+    doCache = g.enableDB and (thinFile or atShadow) and not force
+    at.initReadIvars(root,fileName,
+        importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
+    if at.errors: return False
+    fileName = at.openFileForReading(fromString=fromString)
+    if at.inputFile:
+        c.setFileTimeStamp(fileName)
+    else:
+        return False
+
+    fileContent = open(fileName, "rb").read()
+    cachefile = self._contentHashFile(root, fileContent)
+
+    # Remember that we have read this file.
+    root.v.at_read = True # Create the attribute for all clones.
+
+    if doCache and cachefile in c.db:
+        # Delete the previous tree, regardless of the @<file> type.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+        aList = c.db[cachefile]
+        root.v.createOutlineFromCacheList(c,aList)
+        at.inputFile.close()
+        root.clearDirty()
+        return
+
+    # Delete all children, but **not** for @file and @nosent nodes!
+    # (We do delete all children for @file nodes with thin-like sentinels.)
+    if thinFile or atShadow:
+        root.v.at_read = True # Create the attribute for all clones.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+
+    if not g.unitTesting:
+        g.es("reading:",root.h)
+
+    root.clearVisitedInTree()
+    at.scanAllDirectives(root,importing=at.importing,reading=True)
+    at.readOpenFile(root,at.inputFile,fileName)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        << advise user to delete all unvisited nodes >>
+    if at.errors == 0 and not at.importing:
+        # Package this as a method for use by mod_labels plugin.
+        self.copyAllTempBodyStringsToTnodes(root,thinFile)
+
+    << delete all tempBodyStrings >>
+
+    # write out the cache version
+    self.writeCachedTree(root, cachefile)
+
+    return at.errors == 0
+#@+node:ekr.20041005105605.22:<< set fileName and isAtFile >>
+if fromString:
+    fileName = "<string-file>"
+elif importFileName:
+    fileName = importFileName
+elif root.isAnyAtFileNode():
+    fileName = root.anyAtFileNodeName()
+else:
+    fileName = None
+
+if not fileName:
+    at.error("Missing file name.  Restoring @file tree from .leo file.")
+    return False
+
+isAtFile = (
+    not thinFile and
+    not importFileName and
+    not atShadow and
+    not fromString and
+    root.h.startswith('@file'))
+#@nonl
+#@-node:ekr.20041005105605.22:<< set fileName and isAtFile >>
+#@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
+resurrected = 0
+for p in root.self_and_subtree():
+    if p.v.isVisited():
+        pass
+        # g.trace('visited',p.v,p.h)
+    else:
+        g.trace('**** not visited',p.v,p.h)
+        g.es('resurrected node:',p.h,color='blue')
+        g.es('in file:',fileName,color='blue')
+        resurrected += 1
+
+if resurrected:
+    g.es('you may want to delete ressurected nodes')
+
+#@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
+#@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+for v in c.all_unique_nodes():
+
+    if hasattr(v,"tempBodyString"):
+        delattr(v,"tempBodyString")
+#@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+#@-node:ekr.20041005105605.21:read (atFile) & helper
+#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    try:
+        fileContent = open(fileName, "rb").read()
+        cachefile = self._contentHashFile(p, fileContent)
+    except IOError:
+        cachefile = None
+
+    # Remember that we have read this file.
+    p.v.at_auto_read = True # Create the attribute
+
+    if cachefile is not None and cachefile in c.db:        
+        # g.es('uncache:',p.h)
+        aList = c.db[cachefile]
+        p.v.createOutlineFromCacheList(c,aList)
+        return
+
+    if not g.unitTesting:
+        g.es("reading:",p.h)
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        # Note: the file contains an @ignore,
+        # so no unintended write can happen.
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        # c.setBodyString(p,'')
+        p.clearDirty()
+        c.setChanged(oldChanged)
+    else:
+        self.writeCachedTree(p, cachefile)
+        g.doHook('after-auto', p = p)  # call after-auto callbacks
+#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+#@+node:ekr.20040305162628:p.Dirty bits
+#@+node:ekr.20040311113514:p.clearDirty
+def clearDirty (self):
+
+    p = self
+    p.v.clearDirty()
+#@-node:ekr.20040311113514:p.clearDirty
+#@+node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
+def findAllPotentiallyDirtyNodes(self):
+
+    p = self
+    return p.v.findAllPotentiallyDirtyNodes()
+#@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
+#@+node:ekr.20040702104823:p.inAtIgnoreRange
+def inAtIgnoreRange (self):
+
+    """Returns True if position p or one of p's parents is an @ignore node."""
+
+    p = self
+
+    for p in p.self_and_parents():
+        if p.isAtIgnoreNode():
+            return True
+
+    return False
+#@-node:ekr.20040702104823:p.inAtIgnoreRange
+#@+node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
+def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    p = self
+    dirtyVnodeList = []
+
+    # Calculate all nodes that are joined to p or parents of such nodes.
+    nodes = p.findAllPotentiallyDirtyNodes()
+
+    if setDescendentsDirty:
+        # N.B. Only mark _direct_ descendents of nodes.
+        # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
+        for p2 in p.subtree():
+            # Only @thin nodes need to be marked.
+            if p2.v not in nodes and p2.isAtThinFileNode():
+                nodes.append(p2.v)
+
+    if trace and verbose:
+        for v in nodes:
+            print (v.isDirty(),v.isAnyAtFileNode(),v)
+
+    dirtyVnodeList = [v for v in nodes
+        if not v.isDirty() and v.isAnyAtFileNode()]
+    changed = len(dirtyVnodeList) > 0
+
+    for v in dirtyVnodeList:
+        v.setDirty()
+
+    if trace: g.trace("position",dirtyVnodeList,g.callers(5))
+
+    return dirtyVnodeList
+#@-node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
+#@+node:ekr.20040303163330:p.setDirty
+def setDirty (self,setDescendentsDirty=True):
+
+    '''Mark a node and all ancestor @file nodes dirty.'''
+
+    p = self ; dirtyVnodeList = []
+
+    # g.trace(p.h,g.callers(4))
+
+    if not p.v.isDirty():
+        p.v.setDirty()
+        dirtyVnodeList.append(p.v)
+
+    # Important: this must be called even if p.v is already dirty.
+    # Typing can change the @ignore state!
+    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty(setDescendentsDirty)
+    dirtyVnodeList.extend(dirtyVnodeList2)
+
+    return dirtyVnodeList
+#@-node:ekr.20040303163330:p.setDirty
+#@-node:ekr.20040305162628:p.Dirty bits
+#@+node:ekr.20090830051712.6151: v.Dirty bits
+#@+node:ekr.20031218072017.3390:v.clearDirty
+def clearDirty (self):
+    v = self
+    v.statusBits &= ~ v.dirtyBit
+
+#@-node:ekr.20031218072017.3390:v.clearDirty
+#@+node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
+def findAllPotentiallyDirtyNodes(self):
+
+    trace = False and not g.unitTesting
+    v = self ; c = v.context
+
+    # Set the starting nodes.
+    nodes = []
+    newNodes = [v]
+
+    # Add nodes until no more are added.
+    while newNodes:
+        addedNodes = []
+        nodes.extend(newNodes)
+        for v in newNodes:
+            for v2 in v.parents:
+                if v2 not in nodes and v2 not in addedNodes:
+                    addedNodes.append(v2)
+        newNodes = addedNodes[:]
+
+    # Remove the hidden vnode.
+    if c.hiddenRootNode in nodes:
+        if trace: g.trace('removing hidden root',c.hiddenRootNode)
+        nodes.remove(c.hiddenRootNode)
+
+    if trace: g.trace(nodes)
+    return nodes
+#@nonl
+#@-node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
+#@+node:ekr.20090830051712.6157:v.setAllAncestorAtFileNodesDirty
+# Unlike p.setAllAncestorAtFileNodesDirty,
+# there is no setDescendentsDirty arg.
+
+def setAllAncestorAtFileNodesDirty (self):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    v = self
+    dirtyVnodeList = []
+
+    # Calculate all nodes that are joined to p or parents of such nodes.
+    nodes = v.findAllPotentiallyDirtyNodes()
+
+    if trace and verbose:
+        for v in nodes:
+            print (v.isDirty(),v.isAnyAtFileNode(),v)
+
+    dirtyVnodeList = [v for v in nodes
+        if not v.isDirty() and v.isAnyAtFileNode()]
+
+    changed = len(dirtyVnodeList) > 0
+
+    for v in dirtyVnodeList:
+        v.setDirty() # Do not call v.setDirty here!
+
+    if trace: g.trace("vnode",dirtyVnodeList)
+
+    return dirtyVnodeList
+#@-node:ekr.20090830051712.6157:v.setAllAncestorAtFileNodesDirty
+#@+node:ekr.20080429053831.12:v.setDirty
+def setDirty (self):
+
+    self.statusBits |= self.dirtyBit
+#@-node:ekr.20080429053831.12:v.setDirty
+#@-node:ekr.20090830051712.6151: v.Dirty bits
+#@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
+def createOutlineFromCacheList(self,c,aList):
+    """ Create outline structure from recursive aList
+    built by p.makeCacheList.
+
+    Clones will be automatically created by gnx,
+    but *not* for the top-level node.
+    """
+
+    parent_v = self
+
+    #import pprint ; pprint.pprint(tree)
+    parent_v = self
+    h,b,gnx,children = aList
+    if h is not None:
+        v = parent_v
+        v._headString = h    
+        v._bodyString = b
+
+    for z in children:
+        h,b,gnx,grandChildren = z
+        isClone,child_v = parent_v.fastAddLastChild(c,gnx)
+        if isClone:
+            if child_v.b != b: # or child_v.h
+                # Bug fix: the last seen clone rules.
+                child_v.h = h
+                child_v.b = b
+                # Bug fix: mark @<file> nodes dirty.
+                child_v.setAllAncestorAtFileNodesDirty()
+                child_v.setMarked()
+                g.es("changed:",child_v.h,color="blue")
+        else:
+            child_v.createOutlineFromCacheList(c,z)
+#@+node:ekr.20090829064400.6042:v.fastAddLastChild
+# Similar to createThinChild4
+def fastAddLastChild(self,c,gnxString):
+    '''Create new vnode as last child of the receiver.
+
+    If the gnx exists already, create a clone instead of new vnode.
+    '''
+
+    trace = False and not g.unitTesting
+    parent_v = self
+    indices = g.app.nodeIndices
+    gnxDict = c.fileCommands.gnxDict
+
+    if gnxString is None: v = None
+    else:                 v = gnxDict.get(gnxString)
+    is_clone = v is not None
+
+    if trace: g.trace(
+        'clone','%-5s' % (is_clone),
+        'parent_v',parent_v,'gnx',gnxString,'v',repr(v))
+
+    if not is_clone:
+        v = vnode(context=c)
+        if gnxString:
+            gnx = indices.scanGnx(gnxString,0)
+            v.fileIndex = gnx
+        gnxDict[gnxString] = v
+
+    child_v = v
+    child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
+    child_v.setVisited() # Supress warning/deletion of unvisited nodes.
+
+    return is_clone,child_v
+#@-node:ekr.20090829064400.6042:v.fastAddLastChild
+#@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
+#@-node:ekr.20090829175108.6133:Marked @<file> nodes dirty if nodes change during read.
+#@+node:ekr.20090901175503.6096:Fixed bug in g.adjustTripleString
+#@+node:ekr.20050211120242.2:g.removeExtraLws & test
+def removeExtraLws (s,tab_width):
+
+    '''Remove extra indentation from one or more lines.
+
+    Warning: used by getScript.  This is *not* the same as g.adjustTripleString.'''
+
+    lines = g.splitLines(s)
+
+    # Find the first non-blank line and compute w, the width of its leading whitespace.
+    for line in lines:
+        if line.strip():
+            lws = g.get_leading_ws(line)
+            w = g.computeWidth(lws,tab_width)
+            break
+    else: return s
+
+    # Remove the leading whitespace.
+    result = [g.removeLeadingWhitespace(line,w,tab_width) for line in lines]
+    result = ''.join(result)
+
+    if 0:
+        g.trace('lines...')
+        for line in g.splitLines(result):
+            g.pr(repr(line))
+
+    return result
+#@+node:ekr.20090517020744.5881:@test g.removeExtraLws
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    for s,expected in (
+        (' a\n b\n c', 'a\nb\nc'),
+        (' \n  A\n    B\n  C\n', '\nA\n  B\nC\n'),
+    ):
+        result = g.removeExtraLws(s,c.tab_width)
+        assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
+            repr(s),repr(expected),repr(result))
+#@-node:ekr.20090517020744.5881:@test g.removeExtraLws
+#@-node:ekr.20050211120242.2:g.removeExtraLws & test
+#@+node:ekr.20051014175117:g.adjustTripleString
+def adjustTripleString (s,tab_width):
+
+    '''Remove leading indentation from a triple-quoted string.
+
+    This works around the fact that Leo nodes can't represent underindented strings.
+    '''
+
+    # Compute the minimum leading whitespace of all non-blank lines.
+    trace = True and not g.unitTesting
+    lines = g.splitLines(s)
+    w = 0 ; val = -1
+    for line in lines:
+        if line.strip():
+            lws = g.get_leading_ws(line)
+            w2 = g.computeWidth(lws,tab_width)
+            # The sign of w does not matter.
+            if w == 0 or abs(w2) < w:
+                w = abs(w2)
+
+    if w == 0: return s
+
+    # Remove the leading whitespace.
+    result = [g.removeLeadingWhitespace(line,w,tab_width) for line in lines]
+    result = ''.join(result)
+    return result
+#@+node:ekr.20090901175503.6098:@test g.adjustTripleString
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    s = '''\
+    a
+      b
+
+c
+    d'''
+
+    s2 = 'a\n  b\n\nc\nd'
+
+    result = g.adjustTripleString(s,c.tab_width)
+    assert result == s2,repr(result)
+
+
+#@-node:ekr.20090901175503.6098:@test g.adjustTripleString
+#@-node:ekr.20051014175117:g.adjustTripleString
+#@+node:ekr.20031218072017.3202:removeLeadingWhitespace
+# Remove whitespace up to first_ws wide in s, given tab_width, the width of a tab.
+
+def removeLeadingWhitespace (s,first_ws,tab_width):
+
+    j = 0 ; ws = 0 ; first_ws = abs(first_ws)
+    for ch in s:
+        if ws >= first_ws:
+            break
+        elif ch == ' ':
+            j += 1 ; ws += 1
+        elif ch == '\t':
+            j += 1 ; ws += (abs(tab_width) - (ws % abs(tab_width)))
+        else: break
+    if j > 0:
+        s = s[j:]
+    return s
+#@-node:ekr.20031218072017.3202:removeLeadingWhitespace
+#@-node:ekr.20090901175503.6096:Fixed bug in g.adjustTripleString
+#@+node:ekr.20090907140408.6123:Fixed startup reversion when .leoID.txt does not exist
+#@+node:ekr.20041113113140:loadOnePlugin & test
+def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
+
+    trace = False # and not g.unitTesting
+
+    global loadedModules,loadingModuleNameStack
+
+    # Prevent Leo from crashing if .leoID.txt does not exist.
+    if g.app.config is None:
+        print ('No g.app.config, making stub...')
+        class StubConfig(g.nullObject):
+            pass
+        g.app.config = StubConfig()
+
+    # Fixed reversion: do this after possibly creating stub config class.
+    verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
+    warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+
+    if moduleOrFileName.endswith('.py'):
+        moduleName = moduleOrFileName [:-3]
+    else:
+        moduleName = moduleOrFileName
+    moduleName = g.shortFileName(moduleName)
+
+    if isLoaded(moduleName):
+        module = loadedModules.get(moduleName)
+        if trace or verbose:
+            g.trace('plugin',moduleName,'already loaded',color="blue")
+        return module
+
+    assert g.app.loadDir
+
+    plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
+    moduleName = g.toUnicode(moduleName,g.app.tkEncoding)
+
+    # This import will typically result in calls to registerHandler.
+    # if the plugin does _not_ use the init top-level function.
+    loadingModuleNameStack.append(moduleName)
+    result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
+    loadingModuleNameStack.pop()
+
+    if result:
+        loadingModuleNameStack.append(moduleName)
+
+        if tag == 'unit-test-load':
+            pass # Keep the result, but do no more.
+        elif hasattr(result,'init'):
+            try:
+                # Indicate success only if init_result is True.
+                init_result = result.init()
+                # g.trace('result',result,'init_result',init_result)
+                if init_result:
+                    loadedModules[moduleName] = result
+                    loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
+                else:
+                    if verbose and not g.app.initing:
+                        g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")
+                    result = None
+            except Exception:
+                g.es_print('exception loading plugin',color='red')
+                g.es_exception()
+                result = None
+        else:
+            # No top-level init function.
+            # Guess that the module was loaded correctly,
+            # but do *not* load the plugin if we are unit testing.
+
+            if g.app.unitTesting:
+                result = None
+                loadedModules[moduleName] = None
+            else:
+                g.trace('no init()',moduleName)
+                loadedModules[moduleName] = result
+        loadingModuleNameStack.pop()
+
+    if g.app.batchMode or g.app.inBridge: # or g.unitTesting
+        pass
+    elif result:
+        if trace or verbose:
+            g.trace('loaded plugin:',moduleName,color="blue")
+    else:
+        if trace or warn_on_failure or (verbose and not g.app.initing):
+            if trace or tag == 'open0':
+                g.trace('can not load enabled plugin:',moduleName,color="red")
+
+    return result
+#@+node:ekr.20090522161156.5886:@test class StubConfig
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    class StubConfig(g.nullObject):
+        pass
+
+    x = StubConfig()
+    assert not x.getBool(c,'mySetting')
+    assert not x.enabledPluginsFileName
+#@-node:ekr.20090522161156.5886:@test class StubConfig
+#@-node:ekr.20041113113140:loadOnePlugin & test
+#@-node:ekr.20090907140408.6123:Fixed startup reversion when .leoID.txt does not exist
+#@+node:ekr.20090930103947.6085:Fixed elisp bug
+> Here is the fix:
+> 'startsFunction' in 'elispScanner' should use
+>    j = self.skipId(s,i)
+> instead of
+>    j = g.skip_id(s,i)
+> skip_id doesn't take extraIdChars ('-' in elisp case) into
+> consideration. 
+#@nonl
+#@+node:ekr.20070711060113:class elispScanner
+class elispScanner (baseScannerClass):
+
+    @others
+#@+node:ekr.20070711060113.1: __init__
+def __init__ (self,importCommands,atAuto):
+
+    # Init the base class.
+    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='elisp')
+
+    # Set the parser delims.
+    self.blockCommentDelim1 = None
+    self.blockCommentDelim2 = None
+    self.lineCommentDelim = ';'
+    self.lineCommentDelim2 = None
+    self.blockDelim1 = '('
+    self.blockDelim2 = ')'
+    self.extraIdChars = '-'
+
+#@-node:ekr.20070711060113.1: __init__
+#@+node:ekr.20070711060113.2:Overrides
+# skipClass/Function/Signature are defined in the base class.
+#@nonl
+#@+node:ekr.20070711060113.3:startsClass/Function & skipSignature
+def startsClass (self,unused_s,unused_i):
+    '''Return True if s[i:] starts a class definition.
+    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
+    return False
+
+def startsFunction(self,s,i):
+    '''Return True if s[i:] starts a function.
+    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
+
+    self.startSigIndent = self.getLeadingIndent(s,i)
+    self.sigStart = i
+    self.codeEnd = self.sigEnd = self.sigId = None
+    if not g.match(s,i,'('): return False
+
+    end = self.skipBlock(s,i)
+    # g.trace('%3s %15s block: %s' % (i,repr(s[i:i+10]),repr(s[i:end])))
+    if not g.match(s,end-1,')'): return False
+
+    i = g.skip_ws(s,i+1)
+    if not g.match_word(s,i,'defun'): return False
+
+    i += len('defun')
+    sigEnd = i = g.skip_ws_and_nl(s,i)
+    j = self.skipId(s,i) # Bug fix: 2009/09/30
+    word = s[i:j]
+    if not word: return False
+
+    self.codeEnd = end + 1
+    self.sigEnd = sigEnd
+    self.sigId = word
+    return True
+#@-node:ekr.20070711060113.3:startsClass/Function & skipSignature
+#@+node:ekr.20070711063339:startsString
+def startsString(self,s,i):
+
+    # Single quotes are not strings.
+    return g.match(s,i,'"')
+#@-node:ekr.20070711063339:startsString
+#@-node:ekr.20070711060113.2:Overrides
+#@-node:ekr.20070711060113:class elispScanner
+#@-node:ekr.20090930103947.6085:Fixed elisp bug
+#@+node:ekr.20090930151626.6086:Made add-comments and delete-comments commands work with shortcuts
+@language python
+
+ab
+#@nonl
+#@+node:ekr.20050312114529:insert/removeComments
+#@+node:ekr.20050312114529.1:addComments
+def addComments (self,event=None):
+
+    '''Convert all selected lines in the body text to comment lines.'''
+
+    c = self ; p = c.p
+    d = c.scanAllDirectives(p)
+    d1,d2,d3 = d.get('delims') # d1 is the line delim.
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+    if not lines:
+        g.es('no text selected',color='blue')
+        return
+
+    d2 = d2 or '' ; d3 = d3 or ''
+    if d1: openDelim,closeDelim = d1+' ',''
+    else:  openDelim,closeDelim = d2+' ',d3+' '
+
+    # Comment out non-blank lines.
+    result = []
+    for line in lines:
+        if line.strip():
+            i = g.skip_ws(line,0)
+            result.append(line[0:i]+openDelim+line[i:]+closeDelim)
+        else:
+            result.append(line)
+
+    result = ''.join(result)
+    c.updateBodyPane(head,result,tail,undoType='Add Comments',oldSel=None,oldYview=oldYview)
+#@-node:ekr.20050312114529.1:addComments
+#@+node:ekr.20050312114529.2:deleteComments
+def deleteComments (self,event=None):
+
+    '''Remove one level of comment delimiters from all selected lines in the body text.'''
+
+    c = self ; p = c.p
+    d = c.scanAllDirectives(p)
+    # d1 is the line delim.
+    d1,d2,d3 = d.get('delims')
+
+    head,lines,tail,oldSel,oldYview = self.getBodyLines()
+    result = []
+    if not lines:
+        g.es('no text selected',color='blue')
+        return
+
+    if d1:
+        # Remove the single-line comment delim in front of each line
+        for line in lines:
+            i = g.skip_ws(line,0)
+            if g.match(line,i,d1):
+                j = g.skip_ws(line,i + len(d1))
+                result.append(line[0:i] + line[j:])
+            else:
+                result.append(line)
+    else:
+        n = len(lines)
+        for i in range(n):
+            line = lines[i]
+            if i not in (0,n-1):
+                result.append(line)
+            if i == 0:
+                j = g.skip_ws(line,0)
+                if g.match(line,j,d2):
+                    k = g.skip_ws(line,j + len(d2))
+                    result.append(line[0:j] + line[k:])
+                else:
+                    g.es('',"'%s'" % (d2),"not found",color='blue')
+                    return
+            if i == n-1:
+                if i == 0:
+                    line = result[0] ; result = []
+                s = line.rstrip()
+                if s.endswith(d3):
+                    result.append(s[:-len(d3)].rstrip())
+                else:
+                    g.es('',"'%s'" % (d3),"not found",color='blue')
+                    return
+
+    result = ''.join(result)
+    c.updateBodyPane(head,result,tail,undoType='Delete Comments',oldSel=None,oldYview=oldYview)
+#@-node:ekr.20050312114529.2:deleteComments
+#@-node:ekr.20050312114529:insert/removeComments
+#@+node:ekr.20061031131434.146:masterKeyHandler & helpers
+master_key_count = 0
+
+def masterKeyHandler (self,event,stroke=None):
+
+    '''This is the handler for almost all key bindings.'''
+
+    << define vars >>
+    trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
+    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
+    verbose = True
+
+    if keysym in special_keys:
+        if trace and verbose: g.trace('keysym',keysym)
+        return None
+    if traceGC: g.printNewObjects('masterKey 1')
+    if trace:
+        g.trace('stroke:',repr(stroke),'keysym:',
+            repr(event.keysym),'ch:',repr(event.char),'state',state)
+
+    # Handle keyboard-quit first.
+    if k.abortAllModesKey and stroke == k.abortAllModesKey:
+        # g.trace('special case')
+        if c.macroCommands.recordingMacro:
+            c.macroCommands.endKbdMacro()
+            return 'break'
+        else:
+            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+
+    if k.inState():
+        # This will return unless k.autoCompleterStateHandler
+        # (called from k.callStateFunction) returns 'do-standard-keys'
+        << handle mode bindings >>
+
+    if traceGC: g.printNewObjects('masterKey 2')
+
+    if stroke and isPlain:
+        << handle special cases for plain keys >>
+
+    << handle per-pane bindings >>
+
+    if traceGC: g.printNewObjects('masterKey 5')
+
+    return k.handleUnboundKeys(event,char,keysym,stroke)
+#@+node:ekr.20061031131434.147:<< define vars >>
+k = self ; c = k.c ; gui = g.app.gui
+
+if event:
+    # This is a leoGui base class event.
+    event = gui.leoKeyEvent(event,c,stroke=stroke)
+
+w = event.widget
+char = event.char
+keysym = event.keysym
+if stroke and not keysym:
+    event.keysym = keysym = stroke
+
+w_name = c.widget_name(w)
+state = k.state.kind
+
+special_keys = (
+    'Alt_L','Alt_R',
+    'Caps_Lock','Control_L','Control_R',
+    'Meta_L','Meta_R', # Meta support.
+    'Num_Lock',
+    'Shift_L','Shift_R',
+    'Win_L','Win_R',
+)
+
+self.master_key_count += 1
+
+isPlain =  k.isPlainKey(stroke)
+#@nonl
+#@-node:ekr.20061031131434.147:<< define vars >>
+#@+node:ekr.20061031131434.149:<< handle mode bindings >>
+# First, honor minibuffer bindings for all except user modes.
+
+if state in ('getArg','getFileName','full-command','auto-complete'):
+    if k.handleMiniBindings(event,state,stroke):
+        return 'break'
+
+# Second, honor general modes.
+if state == 'getArg':
+    return k.getArg(event,stroke=stroke)
+elif state == 'getFileName':
+    return k.getFileName(event)
+elif state in ('full-command','auto-complete'):
+    # Do the default state action.
+    if trace: g.trace('calling state function',k.state.kind) # k.state.handler)
+    val = k.callStateFunction(event) # Calls end-command.
+    if val != 'do-standard-keys': return 'break'
+
+# Third, pass keys to user modes.
+else:
+    d =  k.masterBindingsDict.get(state)
+    if d:
+        b = d.get(stroke)
+        if b:
+            if trace: g.trace('calling generalModeHandler',stroke)
+            k.generalModeHandler (event,
+                commandName=b.commandName,func=b.func,
+                modeName=state,nextMode=b.nextMode)
+            return 'break'
+        else:
+            # New in Leo 4.5: unbound keys end mode.
+            if trace: g.trace('unbound key ends mode',stroke,state)
+            k.endMode(event)
+    else:
+        # New in 4.4b4.
+        handler = k.getStateHandler()
+        if handler:
+            handler(event)
+        else:
+            g.trace('No state handler for %s' % state)
+        return 'break'
+#@-node:ekr.20061031131434.149:<< handle mode bindings >>
+#@+node:ekr.20080510153327.4:<< handle special cases for plain keys >>
+#g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
+
+# Important: only keys bound somewhere have a stroke.
+# All unbound plain keys will be handled by handleUnboundKeys.
+
+if k.unboundKeyAction in ('insert','overwrite'):
+
+    for key in (k.unboundKeyAction,'body','log','text','all'):
+        # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
+        d = k.masterBindingsDict.get(key,{})
+        if d:
+            b = d.get(stroke)
+            if b and b.commandName == 'auto-complete':
+                if trace: g.trace('%s: auto-complete key in %s mode' % (stroke,k.unboundKeyAction))
+                k.masterCommand(event,b.func,b.stroke,b.commandName)
+                return 'break'
+
+    if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
+    k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+    return 'break'
+
+# Bound   plain keys in command mode are by the per-pane logic.
+# Unbound plain keys in command mode are ignored by handleUnboundKeys.
+
+# This code ignores all command-state keys if we are not in a text widget.
+elif k.unboundKeyAction == 'command':
+    if not g.app.gui.isTextWidget(w):
+        c.onCanvasKey(event)
+        return 'break'
+#@nonl
+#@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
+#@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
+keyStatesTuple = ('command','insert','overwrite')
+
+if True and trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
+    'isTextWidget(w)',g.app.gui.isTextWidget(w))
+
+for key,name in (
+    # Order here is similar to bindtags order.
+    ('command',None),
+    ('insert',None),
+    ('overwrite',None),
+    ('button',None),
+    ('body','body'),
+    ('text','head'), # Important: text bindings in head before tree bindings.
+    ('tree','head'),
+    ('tree','canvas'),
+    ('log', 'log'),
+    ('text','log'),
+    ('text',None),
+    ('all',None),
+):
+    if (
+        # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+        name and w_name.startswith(name) or
+        key in ('text','all') and g.app.gui.isTextWidget(w) or
+        key in ('button','all')
+    ):
+        d = k.masterBindingsDict.get(key,{})
+        if trace:
+            g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+            # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
+        if d:
+            b = d.get(stroke)
+            if b:
+                if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
+                if traceGC: g.printNewObjects('masterKey 3')
+                return k.masterCommand(event,b.func,b.stroke,b.commandName)
+#@-node:ekr.20061031131434.150:<< handle per-pane bindings >>
+#@+node:ekr.20061031131434.108:callStateFunction
+def callStateFunction (self,event):
+
+    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+
+    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+
+    if k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(event,k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@-node:ekr.20061031131434.108:callStateFunction
+#@+node:ekr.20061031131434.152:handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('BackSpace','Return','Tab','\t','Escape'):
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName == 'replace-string' and state == 'getArg':
+                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
+                        return False # Let getArg handle it.
+                    elif b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit(event,hideTabs=True)
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocusNow() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+#@-node:ekr.20061031131434.152:handleMiniBindings
+#@+node:ekr.20080510095819.1:k.handleUnboudKeys
+def handleUnboundKeys (self,event,char,keysym,stroke):
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    modesTuple = ('insert','overwrite')
+
+    if trace: g.trace('ch: %s keysym: %s stroke %s' % (
+        repr(event.char),repr(event.keysym),repr(stroke)))
+
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
+        return 'break'
+
+    elif k.isFKey(stroke):
+        return 'break'
+
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  <Return> is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
+        # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
+        if trace: g.trace('ignoring unbound non-ascii key')
+        return 'break'
+
+    elif keysym.find('Escape') != -1 or stroke.find('Insert') != -1:
+        # Never insert escape or insert characters.
+        return 'break'
+
+    else:
+        if trace: g.trace(repr(stroke),'no func')
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+#@-node:ekr.20080510095819.1:k.handleUnboudKeys
+#@-node:ekr.20061031131434.146:masterKeyHandler & helpers
+#@+node:ekr.20061031131434.102:makeBindingsFromCommandsDict
+def makeBindingsFromCommandsDict (self):
+
+    '''Add bindings for all entries in c.commandDict.'''
+
+    k = self ; c = k.c ; d = c.commandsDict
+
+    for commandName in sorted(d):
+        command = d.get(commandName)
+        key, bunchList = c.config.getShortcut(commandName)
+        # if commandName == 'keyboard-quit': g.trace(key,bunchList)
+        for bunch in bunchList:
+            accel = bunch.val ; pane = bunch.pane
+            # if pane.endswith('-mode'): g.trace('skipping',shortcut,commandName)
+            if accel and not pane.endswith('-mode'):
+                shortcut = k.shortcutFromSetting(accel)
+                k.bindKey(pane,shortcut,command,commandName)
+
+    # g.trace(g.listToString(sorted(k.bindingsDict))
+    # g.trace('Ctrl+g',k.bindingsDict.get('Ctrl+g'))
+#@-node:ekr.20061031131434.102:makeBindingsFromCommandsDict
+#@+node:ekr.20061031131434.89:bindKey
+def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False):
+
+    '''Bind the indicated shortcut (a Tk keystroke) to the callback.
+
+    No actual gui bindings are made: only entries in k.masterBindingsDict.'''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+
+    # g.trace(pane,shortcut,commandName)
+    if not shortcut:
+        # g.trace('No shortcut for %s' % commandName)
+        return False
+    << give warning and return if we try to bind to Enter or Leave >>
+    if pane.endswith('-mode'):
+        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
+        return False
+    bunchList = k.bindingsDict.get(shortcut,[])
+    if trace: g.trace(pane,shortcut,commandName)
+    try:
+        k.bindKeyToDict(pane,shortcut,callback,commandName)
+        b = g.bunch(pane=pane,func=callback,commandName=commandName)
+        << remove previous conflicting definitions from bunchList >>
+        bunchList.append(b)
+        shortcut = g.stripBrackets(shortcut.strip())
+        k.bindingsDict [shortcut] = bunchList
+        return True
+    except Exception: # Could be a user error.
+        if not g.app.menuWarningsGiven:
+            g.es_print('exception binding',shortcut,'to',commandName)
+            g.es_exception()
+            g.app.menuWarningsGiven = True
+        return False
+
+bindShortcut = bindKey # For compatibility
+#@+node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
+if shortcut:
+    for s in ('enter','leave'):
+        if -1 != shortcut.lower().find(s):
+            g.es_print('ignoring invalid key binding:','%s = %s' % (
+                commandName,shortcut),color='blue')
+            return
+#@-node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
+#@+node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
+if not modeFlag and self.warn_about_redefined_shortcuts:
+    redefs = [str(b2.commandName) for b2 in bunchList
+        if b2.commandName != commandName and pane in ('button','all',b2.pane)
+            and not b2.pane.endswith('-mode')]
+    for z in redefs:
+        g.es_print ('redefining shortcut %30s from %s to %s in %s' % (
+            shortcut,
+            g.choose(pane=='button',z,commandName),
+            g.choose(pane=='button',commandName,z),
+            pane),color='red')
+
+if not modeFlag:
+    bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
+#@-node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
+#@-node:ekr.20061031131434.89:bindKey
+#@+node:ekr.20031218072017.1723:createMenuEntries
+def createMenuEntries (self,menu,table,dynamicMenu=False):
+
+    '''Create a menu entry from the table.
+    New in 4.4: this method shows the shortcut in the menu,
+    but this method **never** binds any shortcuts.'''
+
+    c = self.c ; f = c.frame ; k = c.k
+    if g.app.unitTesting: return
+
+    trace = False
+    for data in table:
+        << get label & command or continue >>
+        << compute commandName & accel from label & command >>
+        # Bug fix: 2009/09/30: use canonical stroke.
+        accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
+        stroke = k.shortcutFromSetting(accel,addKey=True) or ''
+        if accelerator:
+            accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
+        if trace: # and commandName == 'add-comments':
+            g.trace(bunch.val,repr(stroke),repr(accelerator),commandName)
+        def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName,event=None):
+            # if trace: g.trace('stroke',stroke)
+            return k.masterMenuHandler(stroke,command,commandName)
+
+        realLabel = self.getRealMenuName(label)
+        amp_index = realLabel.find("&")
+        realLabel = realLabel.replace("&","")
+        if sys.platform == 'darwin':
+            << clear accelerator if it is a plain key >>
+
+        # c.add_command ensures that c.outerUpdate is called.
+        if menu:
+            c.add_command(menu,label=realLabel,
+                accelerator=accelerator,
+                command=masterMenuCallback,
+                underline=amp_index)
+#@+node:ekr.20051021091958:<< get label & command or continue >>
+if g.isString(data):
+    # New in Leo 4.4.2: Can use the same string for both the label and the command string.
+    ok = True
+    s = data
+    removeHyphens = s and s[0]=='*'
+    if removeHyphens: s = s[1:]
+    label = self.capitalizeMinibufferMenuName(s,removeHyphens)
+    command = s.replace('&','').lower()
+    if label == '-':
+        self.add_separator(menu)
+        continue # That's all.
+else:
+    ok = type(data) in (type(()), type([])) and len(data) in (2,3)
+    if ok:
+        if len(data) == 2:
+            # New in 4.4b2: command can be a minibuffer-command name (a string)
+            label,command = data
+        else:
+            # New in 4.4: we ignore shortcuts bound in menu tables.
+            label,junk,command = data
+
+        if label in (None,'-'):
+            self.add_separator(menu)
+            continue # That's all.
+    else:
+        g.trace('bad data in menu table: %s' % repr(data))
+        continue # Ignore bad data
+#@nonl
+#@-node:ekr.20051021091958:<< get label & command or continue >>
+#@+node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
+# New in 4.4b2: command can be a minibuffer-command name (a string)
+minibufferCommand = type(command) == type('')
+accel = None
+if minibufferCommand:
+    commandName = command 
+    command = c.commandsDict.get(commandName)
+    if command:
+        rawKey,bunchList = c.config.getShortcut(commandName)
+        # Pick the first entry that is not a mode.
+        for bunch in bunchList:
+            if not bunch.pane.endswith('-mode'):
+                accel = bunch and bunch.val
+                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+    else:
+        if not g.app.unitTesting and not dynamicMenu:
+            # Don't warn during unit testing.
+            # This may come from a plugin that normally isn't enabled.
+            if trace: g.trace('No inverse for %s' % commandName)
+        continue # There is no way to make this menu entry.
+else:
+    # First, get the old-style name.
+    commandName = self.computeOldStyleShortcutKey(label)
+    rawKey,bunchList = c.config.getShortcut(commandName)
+    for bunch in bunchList:
+        if not bunch.pane.endswith('-mode'):
+            if trace: g.trace('2','%20s' % (bunch.val),commandName)
+            accel = bunch and bunch.val ; break
+    # Second, get new-style name.
+    if not accel:
+        << compute emacs_name >>
+            # Contains the not-so-horrible kludge.
+        if emacs_name:
+            commandName = emacs_name
+            rawKey,bunchList = c.config.getShortcut(emacs_name)
+            # Pick the first entry that is not a mode.
+            for bunch in bunchList:
+                if not bunch.pane.endswith('-mode'):
+                    accel = bunch.val
+                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                    break
+        elif not dynamicMenu:
+            g.trace('No inverse for %s' % commandName)
+#@+node:ekr.20051021100806.1:<< compute emacs_name >>
+@ One not-so-horrible kludge remains.
+
+The cut/copy/paste commands in the menu tables are not the same as the methods
+actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+of extra translation to discover whether the user has overridden their
+bindings.
+@c
+
+if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+    emacs_name = '%s-text' % commandName
+else:
+    try: # User errors in the table can cause this.
+        emacs_name = k.inverseCommandsDict.get(command.__name__)
+    except Exception:
+        emacs_name = None
+#@-node:ekr.20051021100806.1:<< compute emacs_name >>
+#@-node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
+#@+node:ekr.20060216110502:<< clear accelerator if it is a plain key >>
+for z in ('Alt','Ctrl','Command'):
+    if accelerator.find(z) != -1:
+        break # Found.
+else:
+    accelerator = ''
+#@-node:ekr.20060216110502:<< clear accelerator if it is a plain key >>
+#@-node:ekr.20031218072017.1723:createMenuEntries
+#@+node:ekr.20061031131434.184:shortcutFromSetting (uses k.guiBindNamesDict)
+def shortcutFromSetting (self,setting,addKey=True):
+
+    k = self
+
+    trace = False and not g.unitTesting
+    if not setting:return None
+
+    s = g.stripBrackets(setting.strip())
+    << define cmd, ctrl, alt, shift >>
+    if k.swap_mac_keys and sys.platform == "darwin":
+        << swap cmd and ctrl keys >>
+    << convert minus signs to plus signs >>
+    << compute the last field >>
+    << compute shortcut >>
+    if trace: g.trace('%20s %s' % (setting,shortcut))
+    return shortcut
+
+canonicalizeShortcut = shortcutFromSetting # For compatibility.
+strokeFromSetting = shortcutFromSetting
+#@+node:ekr.20061031131434.185:<< define cmd, ctrl, alt, shift >>
+s2 = s.lower()
+
+cmd   = s2.find("cmd") >= 0     or s2.find("command") >= 0
+ctrl  = s2.find("control") >= 0 or s2.find("ctrl") >= 0
+alt   = s2.find("alt") >= 0
+shift = s2.find("shift") >= 0   or s2.find("shft") >= 0
+meta  = s2.find("meta") >= 0
+#@-node:ekr.20061031131434.185:<< define cmd, ctrl, alt, shift >>
+#@+node:ekr.20061031131434.186:<< swap cmd and ctrl keys >>
+if ctrl and not cmd:
+    cmd = True ; ctrl = False
+if alt and not ctrl:
+    ctrl = True ; alt = False
+#@-node:ekr.20061031131434.186:<< swap cmd and ctrl keys >>
+#@+node:ekr.20061031131434.187:<< convert minus signs to plus signs >>
+# Replace all minus signs by plus signs, except a trailing minus:
+if s.endswith('-'):
+    s = s[:-1].replace('-','+') + '-'
+else:
+    s = s.replace('-','+')
+#@-node:ekr.20061031131434.187:<< convert minus signs to plus signs >>
+#@+node:ekr.20061031131434.188:<< compute the last field >>
+if s.endswith('+'):
+    last = '+'
+else:
+    fields = s.split('+') # Don't lower this field.
+    last = fields and fields[-1]
+    if not last:
+        if not g.app.menuWarningsGiven:
+            g.pr("bad shortcut specifier:", s)
+        return None
+
+if len(last) == 1:
+    last2 = k.guiBindNamesDict.get(last) # Fix new bug introduced in 4.4b2.
+    if last2:
+        last = last2
+    else:
+        if last.isalpha():
+            if shift:
+                last = last.upper()
+                shift = False # It is Ctrl-A, not Ctrl-Shift-A.
+            else:
+                last = last.lower()
+        # New in Leo 4.4.2: Alt-2 is not a key event!
+        if addKey and last.isdigit():
+            last = 'Key-' + last
+else:
+    # Translate from a made-up (or lowercase) name to 'official' Tk binding name.
+    # This is a *one-way* translation, done only here.
+    d = k.settingsNameDict
+    last = d.get(last.lower(),last)
+#@-node:ekr.20061031131434.188:<< compute the last field >>
+#@+node:ekr.20061031131434.189:<< compute shortcut >>
+table = (
+    (alt, 'Alt+'),
+    (ctrl,'Ctrl+'),
+    (cmd, 'Command+'),
+    (meta,'Meta+'),
+    (shift,'Shift+'),
+    (True, last),
+)
+
+# new in 4.4b3: convert all characters to unicode first.
+shortcut = ''.join([g.toUnicode(val,g.app.tkEncoding) for flag,val in table if flag])
+#@-node:ekr.20061031131434.189:<< compute shortcut >>
+#@-node:ekr.20061031131434.184:shortcutFromSetting (uses k.guiBindNamesDict)
+#@-node:ekr.20090930151626.6086:Made add-comments and delete-comments commands work with shortcuts
+#@+node:ekr.20091003171114.6465:Fixed contractOrGoRight
+@nocolor-node
+
+The culprit was the sparse_goto_parent option.
+It never worked properly, and it caused the expansion
+state of nodes as seen by Leo to get out-of-synch
+with the expansion state as seen by the qt tree code.
+
+To exercise the bug, do the following in test.leo:
+
+- Expand the "prototypes" node.
+- Expand any child node.
+- Move beyond the now-expanded child node.
+- Hit Alt-Left.  This will select the prototype node.
+  The expanded child node will be marked by Leo as being contracted,
+  but it *wont* be contracted actually, which confuses moveToVisNext.
+#@nonl
+#@+node:ekr.20031218072017.2996:selectVisNext
+def selectVisNext (self,event=None):
+
+    '''Select the visible node following the presently selected node.'''
+
+    c = self ; p = c.p
+    if not p: return
+    if not c.canSelectVisNext(): return
+
+    p.moveToVisNext(c)
+    c.treeSelectHelper(p)
+#@-node:ekr.20031218072017.2996:selectVisNext
+#@+node:ekr.20031218072017.2995:selectVisBack
+# This has an up arrow for a control key.
+
+def selectVisBack (self,event=None):
+
+    '''Select the visible node preceding the presently selected node.'''
+
+    c = self ; p = c.p
+    if not p: return
+    if not c.canSelectVisBack(): return
+
+    p.moveToVisBack(c)
+
+    # g.trace(p.h)
+    c.treeSelectHelper(p)
+#@-node:ekr.20031218072017.2995:selectVisBack
+#@+node:ekr.20031218072017.2920:goToParent
+def goToParent (self,event=None):
+
+    '''Select the parent of the selected node.'''
+
+    c = self ; p = c.p
+
+    # g.trace(p.parent())
+
+    c.treeSelectHelper(p and p.parent())
+#@-node:ekr.20031218072017.2920:goToParent
+#@+node:ekr.20040930064232:contractNodeOrGoToParent
+def contractNodeOrGoToParent (self,event=None):
+
+    """Simulate the left Arrow Key in folder of Windows Explorer."""
+
+    trace = False and not g.unitTesting
+    c = self ; p = c.p
+    redraw = False ; fullRedraw = False
+    if p.hasChildren() and p.isExpanded():
+        if trace: g.trace('contract',p.h)
+        c.contractNode()
+        redraw = True # New in one-node world.
+    elif p.hasParent() and p.parent().isVisible(c):
+        redraw = False
+        p.contract() # Make sure we know this node is contracted.
+        # This "feature" is dubious.
+        # To work properly, it requires a full redraw.
+        if False: # self.sparse_goto_parent:
+            for child in p.self_and_siblings():
+                if child != p and child.isExpanded():
+                    child.contract()
+                    redraw = True ; fullRedraw = True
+        if trace: g.trace('goto parent',p.h)
+        c.goToParent()
+
+    if redraw:
+        if fullRedraw or p.isCloned():
+            if trace: g.trace('full redraw',p.h)
+            c.redraw()
+        else:
+            c.redraw_after_contract(p=p,setFocus=True)
+#@-node:ekr.20040930064232:contractNodeOrGoToParent
+#@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
+def expandNodeAndGoToFirstChild (self,event=None):
+
+    """If a node has children, expand it if needed and go to the first child."""
+
+    trace = False and not g.unitTesting
+    c = self ; p = c.p
+
+    # New code.
+    if p.hasChildren():
+        if p.isExpanded():
+            p.moveToFirstChild()
+            if trace: g.trace('select',p.h)
+            c.selectPosition(p)
+        else:
+            if trace: g.trace('expand',p.h)
+            c.expandNode() # Calls redraw_after_expand.
+    elif p.hasNext():
+        c.goToNextSibling()
+    else:
+        while p.hasParent():
+            p.moveToParent()
+            if p.hasNext():
+                p.moveToNext()
+                break
+        c.selectPosition(p)
+    c.treeFocusHelper()
+
+def expandNodeOrGoToFirstChild (self,event=None):
+
+    """Simulate the Right Arrow Key in folder of Windows Explorer."""
+
+    c = self ; p = c.p
+    if p.hasChildren():
+        if not p.isExpanded():
+            c.expandNode() # Calls redraw_after_expand.
+        else:
+            c.redraw_after_expand(p.firstChild(),setFocus=True)
+#@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
+#@+node:ekr.20031218072017.2901:contractNode
+def contractNode (self,event=None):
+
+    '''Contract the presently selected node.'''
+
+    c = self ; p = c.p
+
+    p.contract()
+
+    if p.isCloned():
+        c.redraw() # A full redraw is necessary to handle clones.
+    else:
+        c.redraw_after_contract(p=p,setFocus=True)
+#@-node:ekr.20031218072017.2901:contractNode
+#@+node:ekr.20031218072017.2907:expandNode
+def expandNode (self,event=None):
+
+    '''Expand the presently selected node.'''
+
+    trace = False and not g.unitTesting
+    c = self ; p = c.p
+
+    p.expand()
+
+    if p.isCloned():
+        if trace: g.trace('***redraw')
+        c.redraw() # Bug fix: 2009/10/03.
+    else:
+        c.redraw_after_expand(p,setFocus=True)
+
+#@-node:ekr.20031218072017.2907:expandNode
+#@+node:ekr.20070226113916: treeSelectHelper
+def treeSelectHelper (self,p):
+
+    c = self
+
+    if not p: p = c.p
+
+    if p:
+        # Do not call expandAllAncestors here.
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+
+    c.treeFocusHelper()
+#@-node:ekr.20070226113916: treeSelectHelper
+#@+node:ekr.20080416161551.210:p.moveToVisBack
+def moveToVisBack (self,c):
+
+    """Move a position to the position of the previous visible node."""
+
+    trace = False and not g.unitTesting
+    verbose = True
+    p = self ; limit,limitIsVisible = c.visLimit()
+    if trace and verbose:
+        g.trace(p,'limit',limit,'limitIsVisible',limitIsVisible)
+    if trace: g.trace('***entry','parent',p.parent(),'p',p,g.callers(5))
+    while p:
+        # Short-circuit if possible.
+        back = p.back()
+        if trace: g.trace(
+            'back',back,'hasChildren',bool(back and back.hasChildren()),
+            'isExpanded',bool(back and back.isExpanded()))
+
+        if back and back.hasChildren() and back.isExpanded():
+            p.moveToThreadBack()
+        elif back:
+            p.moveToBack()
+        else:
+            p.moveToParent() # Same as p.moveToThreadBack()
+        # if back and (not back.hasChildren() or not back.isExpanded()):
+            # p.moveToBack()
+        # else:
+            # p.moveToThreadBack()
+        if trace: g.trace(p.parent(),p)
+        if p:
+            if trace and verbose: g.trace('**p',p)
+            done,val = self.checkVisBackLimit(limit,limitIsVisible,p)
+            if done:
+                if trace and verbose: g.trace('done',p)
+                return val
+            if p.isVisible(c):
+                if trace and verbose: g.trace('isVisible',p)
+                return p
+    else:
+        # assert not p.
+        return p
+#@+node:ekr.20090715145956.6166:checkVisBackLimit
+def checkVisBackLimit (self,limit,limitIsVisible,p):
+
+    '''Return done, return-val'''
+
+    trace = True and not g.unitTesting
+    c = p.v.context
+
+    if limit:
+        if limit == p:
+            if trace: g.trace('at limit',p)
+            if limitIsVisible and p.isVisible(c):
+                return True,p
+            else:
+                return True,None
+            #return True,g.choose(limitIsVisible and p.isVisible(c),p,None)
+        elif limit.isAncestorOf(p):
+            return False,None
+        else:
+            if trace: g.trace('outside limit tree',limit,p)
+            return True,None
+    else:
+        return False,None
+#@-node:ekr.20090715145956.6166:checkVisBackLimit
+#@-node:ekr.20080416161551.210:p.moveToVisBack
+#@+node:ekr.20080416161551.211:p.moveToVisNext
+def moveToVisNext (self,c):
+
+    """Move a position to the position of the next visible node."""
+
+    trace = False and not g.unitTesting
+    verbose = False
+    p = self ; limit,limitIsVisible = c.visLimit()
+    while p:
+        if trace: g.trace('1',p.h)
+        # if trace: g.trace('hasChildren %s, isExpanded %s %s' % (
+            # p.hasChildren(),p.isExpanded(),p.h))
+        # Short-circuit if possible.
+        if p.hasNext() and p.hasChildren() and p.isExpanded():
+            p.moveToFirstChild()
+        elif p.hasNext():
+            p.moveToNext()
+        else:
+            p.moveToThreadNext()
+        if trace: g.trace('2',p.h)
+        if p:
+            done,val = self.checkVisNextLimit(limit,p)
+            if done: return val
+            if p.isVisible(c):
+                return p.copy()
+    else:
+        return p
+#@+node:ekr.20090715145956.6167:checkVisNextLimit
+def checkVisNextLimit (self,limit,p):
+
+    '''Return done, return-val'''
+
+    trace = False and not g.unitTesting
+
+    if limit:
+        # Unlike moveToVisBack, being at the limit does not terminate.
+        if limit == p:
+            return False, None
+        elif limit.isAncestorOf(p):
+            return False,None
+        else:
+            if trace: g.trace('outside limit tree')
+            return True,None
+    else:
+        return False,None
+#@-node:ekr.20090715145956.6167:checkVisNextLimit
+#@-node:ekr.20080416161551.211:p.moveToVisNext
+#@-node:ekr.20091003171114.6465:Fixed contractOrGoRight
+#@+node:ekr.20091007105735.6462:Fixed bug: @nosent should warn about orphan nodes
+#@+node:ekr.20041005105605.154:asisWrite
+def asisWrite(self,root,toString=False):
+
+    at = self ; c = at.c
+    c.endEditing() # Capture the current headline.
+
+    try:
+        # Note: @asis always writes all nodes,
+        # so there can be no orphan or ignored nodes.
+        targetFileName = root.atAsisFileNodeName()
+        at.initWriteIvars(root,targetFileName,toString=toString)
+        if at.errors: return
+        if not at.openFileForWriting(root,targetFileName,toString):
+            # openFileForWriting calls root.setDirty() if there are errors.
+            return
+        for p in root.self_and_subtree():
+            << Write p's headline if it starts with @@ >>
+            << Write p's body >>
+        at.closeWriteFile()
+        at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+    except Exception:
+        at.writeException(root) # Sets dirty and orphan bits.
+
+silentWrite = asisWrite # Compatibility with old scripts.
+#@+node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
+s = p.h
+
+if g.match(s,0,"@@"):
+    s = s[2:]
+    if s and len(s) > 0:
+        s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
+        at.outputFile.write(s)
+#@-node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
+#@+node:ekr.20041005105605.156:<< Write p's body >>
+s = p.b
+
+if s:
+    s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
+    at.outputStringWithLineEndings(s)
+#@-node:ekr.20041005105605.156:<< Write p's body >>
+#@-node:ekr.20041005105605.154:asisWrite
+#@+node:ekr.20041005105605.157:writeOpenFile
+# New in 4.3: must be inited before calling this method.
+# New in 4.3 b2: support for writing from a string.
+
+def writeOpenFile(self,root,
+    nosentinels=False,toString=False,fromString=''):
+
+    """Do all writes except asis writes."""
+
+    at = self ; s = g.choose(fromString,fromString,root.v._bodyString)
+
+    root.clearAllVisitedInTree()
+    at.putAtFirstLines(s)
+    at.putOpenLeoSentinel("@+leo-ver=4")
+    at.putInitialComment()
+    at.putOpenNodeSentinel(root)
+    at.putBody(root,fromString=fromString)
+    at.putCloseNodeSentinel(root)
+    at.putSentinel("@-leo")
+    root.setVisited()
+    at.putAtLastLines(s)
+    if not toString:
+        at.warnAboutOrphandAndIgnoredNodes()
+#@-node:ekr.20041005105605.157:writeOpenFile
+#@-node:ekr.20091007105735.6462:Fixed bug: @nosent should warn about orphan nodes
+#@+node:ekr.20091016055503.6059:Color sections references in @root trees
+#@+node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
+# The caller passes [root_node] or None as the second arg.
+# This allows us to distinguish between None and [None].
+
+g_noweb_root = re.compile('<'+'<'+'*'+'>'+'>'+'=',re.MULTILINE)
+
+def get_directives_dict(p,root=None):
+
+    """Scan p for @directives found in globalDirectiveList.
+
+    Returns a dict containing pointers to the start of each directive"""
+
+    trace = False and not g.unitTesting
+
+    if root: root_node = root[0]
+    d = {}
+
+    # Do this every time so plugins can add directives.
+    pat = g.compute_directives_re()
+    directives_pat = re.compile(pat,re.MULTILINE)
+
+    # The headline has higher precedence because it is more visible.
+    for kind,s in (('body',p.h),('head',p.b)):
+        anIter = directives_pat.finditer(s)
+        for m in anIter:
+            word = m.group(0)[1:] # Omit the @
+            i = m.start(0)
+            if word.strip() not in d:
+                j = i + 1 + len(word)
+                k = g.skip_line(s,j)
+                val = s[j:k].strip()
+                if trace: g.trace(word,repr(val))
+                d[word.strip()] = val
+
+    if root:
+        anIter = g_noweb_root.finditer(p.b)
+        for m in anIter:
+            if root_node:
+                d["root"]=0 # value not immportant
+            else:
+                g.es('%s= requires @root in the headline' % (
+                    g.angleBrackets('*')))
+            break
+
+    if trace: g.trace('%4d' % (len(p.h) + len(p.b)),g.callers(5))
+    return d
+#@+node:ekr.20090214075058.10:compute_directives_re
+def compute_directives_re ():
+
+    '''Return an re pattern which will match all Leo directives.'''
+
+    global globalDirectiveList
+
+    aList = ['^@%s' % z for z in globalDirectiveList
+                if z != 'others']
+
+    # @others can have leading whitespace.
+    aList.append(r'^\s@others')
+
+    return '|'.join(aList)
+#@-node:ekr.20090214075058.10:compute_directives_re
+#@-node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
+#@+node:ekr.20031218072017.1385:g.findReference
+# Called from the syntax coloring method that colorizes section references.
+
+def findReference(c,name,root):
+
+    '''Find the section definition for name.
+
+    If a search of the descendants fails,
+    and an ancestor is an @root node,
+    search all the descendants of the @root node.
+    '''
+
+    for p in root.subtree():
+        assert(p!=root)
+        if p.matchHeadline(name) and not p.isAtIgnoreNode():
+            return p
+
+    # New in Leo 4.7: expand the search for @root trees.
+    for p in root.self_and_parents():
+        d = g.get_directives_dict(p)
+        if 'root' in d:
+            for p2 in p.subtree():
+                if p2.matchHeadline(name) and not p2.isAtIgnoreNode():
+                    return p2
+
+    # g.trace("not found:",name,root)
+    return c.nullPosition()
+#@-node:ekr.20031218072017.1385:g.findReference
+#@-node:ekr.20091016055503.6059:Color sections references in @root trees
+#@+node:ekr.20091103082258.6084:Fixed bug: Sometimes 'redefining shortcut' message is backwards
+#@+node:ekr.20061031131434.131:k.registerCommand
+def registerCommand (self,commandName,shortcut,func,pane='all',verbose=False, wrap=True):
+
+    '''Make the function available as a minibuffer command,
+    and optionally attempt to bind a shortcut.
+
+    You can wrap any method in a callback function, so the
+    restriction to functions is not significant.
+
+    If wrap is True then func will be wrapped with c.universalCallback.
+
+    '''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+
+    if wrap:
+        func = c.universalCallback(func)
+
+    f = c.commandsDict.get(commandName)
+    verbose = (False or verbose) and not g.app.unitTesting
+    if f and f.__name__ != 'dummyCallback' and verbose:
+        g.es_print('redefining',commandName, color='red')
+
+    c.commandsDict [commandName] = func
+    k.inverseCommandsDict [func.__name__] = commandName
+    if trace: g.trace('leoCommands %24s = %s' % (func.__name__,commandName))
+
+    if shortcut:
+        stroke = k.shortcutFromSetting(shortcut)
+    elif commandName.lower() == 'shortcut': # Causes problems.
+        stroke = None
+    else:
+        # Try to get a shortcut from leoSettings.leo.
+        junk,bunchList = c.config.getShortcut(commandName)
+        for bunch in bunchList:
+            accel2 = bunch.val ; pane2 = bunch.pane
+            if accel2 and not pane2.endswith('-mode'):
+                shortcut2 = accel2
+                stroke = k.shortcutFromSetting(shortcut2)
+                if stroke: break
+        else: stroke = None
+
+    if stroke:
+        if trace: g.trace('stroke',stroke,'pane',pane,commandName,g.callers(4))
+        ok = k.bindKey (pane,stroke,func,commandName) # Must be a stroke.
+        k.makeMasterGuiBinding(stroke) # Must be a stroke.
+        if verbose and ok and not g.app.silentMode:
+            # g.trace(g.callers())
+            g.es_print('','@command: %s = %s' % (
+                commandName,k.prettyPrintKey(stroke)),color='blue')
+            if 0:
+                d = k.masterBindingsDict.get('button',{})
+                g.print_dict(d)
+        c.frame.tree.setBindings()
+    elif verbose and not g.app.silentMode:
+        g.trace(g.callers())
+        g.es_print('','@command: %s' % (commandName),color='blue')
+
+    # Fixup any previous abbreviation to press-x-button commands.
+    if commandName.startswith('press-') and commandName.endswith('-button'):
+        d = c.config.getAbbrevDict()
+            # Keys are full command names, values are abbreviations.
+        if commandName in list(d.values()):
+            for key in d:
+                if d.get(key) == commandName:
+                    c.commandsDict [key] = c.commandsDict.get(commandName)
+                    break
+#@-node:ekr.20061031131434.131:k.registerCommand
+#@+node:ekr.20061031131434.89:bindKey
+def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False):
+
+    '''Bind the indicated shortcut (a Tk keystroke) to the callback.
+
+    No actual gui bindings are made: only entries in k.masterBindingsDict.'''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+
+    # g.trace(pane,shortcut,commandName)
+    if not shortcut:
+        # g.trace('No shortcut for %s' % commandName)
+        return False
+    << give warning and return if we try to bind to Enter or Leave >>
+    if pane.endswith('-mode'):
+        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
+        return False
+    bunchList = k.bindingsDict.get(shortcut,[])
+    if trace: g.trace(pane,shortcut,commandName)
+    try:
+        k.bindKeyToDict(pane,shortcut,callback,commandName)
+        b = g.bunch(pane=pane,func=callback,commandName=commandName)
+        << remove previous conflicting definitions from bunchList >>
+        bunchList.append(b)
+        shortcut = g.stripBrackets(shortcut.strip())
+        k.bindingsDict [shortcut] = bunchList
+        return True
+    except Exception: # Could be a user error.
+        if not g.app.menuWarningsGiven:
+            g.es_print('exception binding',shortcut,'to',commandName)
+            g.es_exception()
+            g.app.menuWarningsGiven = True
+        return False
+
+bindShortcut = bindKey # For compatibility
+#@+node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
+if shortcut:
+    for s in ('enter','leave'):
+        if -1 != shortcut.lower().find(s):
+            g.es_print('ignoring invalid key binding:','%s = %s' % (
+                commandName,shortcut),color='blue')
+            return
+#@-node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
+#@+node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
+if not modeFlag and self.warn_about_redefined_shortcuts:
+    redefs = [str(b2.commandName) for b2 in bunchList
+        if b2.commandName != commandName and pane in ('button','all',b2.pane)
+            and not b2.pane.endswith('-mode')]
+    for z in redefs:
+        g.es_print ('redefining shortcut %30s from %s to %s in %s' % (
+            shortcut,
+            g.choose(pane=='button',z,commandName),
+            g.choose(pane=='button',commandName,z),
+            pane),color='red')
+
+if not modeFlag:
+    bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
+#@-node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
+#@-node:ekr.20061031131434.89:bindKey
+#@-node:ekr.20091103082258.6084:Fixed bug: Sometimes 'redefining shortcut' message is backwards
+#@+node:ekr.20091201125021.6067:Fixed publish-argv-for-missing-stylesheets
+# The parsing in writeToDocutils had to be rewritten.
+#@nonl
+#@+node:ekr.20090502071837.65:writeToDocutils (sets argv) & helper
+def writeToDocutils (self,s):
+
+    '''Send s to docutils using the writer implied by self.ext and return the result.'''
+
+    trace = True and not g.unitTesting
+    openDirectory = self.c.frame.openDirectory
+    overrides = {'output_encoding': self.encoding }
+
+    # Compute the args list if the stylesheet path does not exist.
+    styleSheetArgsDict = self.handleMissingStyleSheetArgs()
+
+    for ext,writer in (
+        ('.html','html'),
+        ('.htm','html'),
+        ('.tex','latex'),
+        ('.pdf','leo_pdf'),
+    ):
+        if self.ext == ext:
+            break
+    else:
+        g.es_print('unknown docutils extension: %s' % (self.ext),color='red')
+        return ''
+
+    # Make the stylesheet path relative to the directory containing the output file.
+    rel_stylesheet_path = self.getOption('stylesheet_path') or ''
+
+    # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
+    stylesheet_path = g.os_path_finalize_join(
+        self.c.frame.openDirectory,rel_stylesheet_path)
+
+    path = g.os_path_finalize_join(
+        stylesheet_path,self.getOption('stylesheet_name'))
+
+    res = ""
+    if self.getOption('stylesheet_embed') == False:
+        rel_path = g.os_path_join(
+            rel_stylesheet_path,self.getOption('stylesheet_name'))
+        overrides['stylesheet'] = rel_path
+        overrides['stylesheet_path'] = None
+        overrides['embed_stylesheet'] = None
+    elif g.os_path_exists(path):
+        if self.ext != '.pdf':
+            overrides['stylesheet'] = path
+            overrides['stylesheet_path'] = None
+    elif styleSheetArgsDict:
+        g.es_print('using publish_argv_for_missing_stylesheets',
+            styleSheetArgsDict)
+        overrides.update(styleSheetArgsDict)
+            # MWC add args to settings
+    elif rel_stylesheet_path == stylesheet_path:
+        g.es_print('stylesheet not found: %s' % (path),color='red')
+    else:
+        g.es_print('stylesheet not found\n',path,color='red')
+        if self.path:g.es_print('@path:', self.path)
+        g.es_print('open path:',self.c.frame.openDirectory)
+        if rel_stylesheet_path:
+            g.es_print('relative path:', rel_stylesheet_path)
+    try:
+        # All paths now come through here.
+        if trace: g.trace('overrides',overrides)
+        result = None # Ensure that result is defined.
+        result = docutils.core.publish_string(source=s,
+                reader_name='standalone',
+                parser_name='restructuredtext',
+                writer_name=writer,
+                settings_overrides=overrides)
+    except docutils.ApplicationError as error:
+        # g.es_print('Docutils error (%s):' % (
+            # error.__class__.__name__),color='red')
+        g.es_print('Docutils error:',color='red')
+        g.es_print(error,color='blue')
+    except Exception:
+        g.es_print('Unexpected docutils exception')
+        g.es_exception()
+    return result
+#@+node:ekr.20090502071837.66:handleMissingStyleSheetArgs
+def handleMissingStyleSheetArgs (self,s=None):
+
+    '''Parse the publish_argv_for_missing_stylesheets option,
+    returning a dict containing the parsed args.'''
+
+    force = False
+    if force:
+        # See http://docutils.sourceforge.net/docs/user/config.html#documentclass
+        return {'documentclass':'report', 'documentoptions':'english,12pt,lettersize'}
+
+    if not s:
+        s = self.getOption('publish_argv_for_missing_stylesheets')
+    if not s: return {}
+
+    # Handle argument lists such as this:
+    # --language=en,--documentclass=report,--documentoptions=[english,12pt,lettersize]
+    d = {}
+    while s:
+        s = s.strip()
+        if not s.startswith('--'): break
+        s = s[2:].strip()
+        eq = s.find('=')
+        cm = s.find(',')
+        if eq == -1 or (-1 < cm < eq): # key[nl] or key,
+            val = ''
+            cm = s.find(',')
+            if cm == -1:
+                key = s.strip()
+                s = ''
+            else:
+                key = s[:cm].strip()
+                s = s[cm+1:].strip()
+        else: # key = val
+            key = s[:eq].strip()
+            s = s[eq+1:].strip()
+            if s.startswith('['): # [...]
+                rb = s.find(']')
+                if rb == -1: break # Bad argument.
+                val = s[:rb+1]
+                s = s[rb+1:].strip()
+                if s.startswith(','):
+                    s = s[1:].strip()
+            else: # val[nl] or val,
+                cm = s.find(',')
+                if cm == -1:
+                    val = s
+                    s = ''
+                else:
+                    val = s[:cm].strip()
+                    s = s[cm+1:].strip()
+
+        # g.trace('key',repr(key),'val',repr(val),'s',repr(s))
+        if not key: break
+        if not val.strip(): val = '1'
+        d[str(key)] = str(val)
+
+    return d
+#@nonl
+#@-node:ekr.20090502071837.66:handleMissingStyleSheetArgs
+#@-node:ekr.20090502071837.65:writeToDocutils (sets argv) & helper
+#@-node:ekr.20091201125021.6067:Fixed publish-argv-for-missing-stylesheets
+#@+node:ekr.20091217190731.6075:Recover from bad chars in .leo files
+#@+node:ekr.20090525144314.6526:cleanSaxInputString & test
+def cleanSaxInputString(self,s):
+
+    badchars = [chr(ch) for ch in range(32)]
+    badchars.remove('\t')
+    badchars.remove('\r')
+    badchars.remove('\n')
+
+    flatten = ''.join(badchars)
+    pad = ' ' * len(flatten)
+
+    if g.isPython3:
+        flatten = bytes(flatten,'utf-8')
+        pad = bytes(pad,'utf-8')
+        transtable = bytes.maketrans(flatten,pad)
+    else:
+        transtable = string.maketrans(flatten,pad)
+
+    return s.translate(transtable)
+
+# for i in range(32): print i,repr(chr(i))
+#@+node:ekr.20090525144314.6527:@test cleanSaxInputString
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    s = 'test%cthis' % 27
+
+    assert c.fileCommands.cleanSaxInputString(s) == 'test this'
+#@-node:ekr.20090525144314.6527:@test cleanSaxInputString
+#@-node:ekr.20090525144314.6526:cleanSaxInputString & test
+#@+node:ekr.20060919110638.14:parse_leo_file
+def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
+
+    c = self.c
+    try:
+        if g.isPython3:
+            if theFile:
+                # Use the open binary file, opened by g.openLeoOrZipFile.
+                pass
+            else:
+                s = str(s,encoding='utf-8')
+                s = self.cleanSaxInputString(s)
+                theFile = StringIO(s)
+        else:
+            if theFile: s = theFile.read()
+            s = self.cleanSaxInputString(s)
+            theFile = cStringIO.StringIO(s)
+        parser = xml.sax.make_parser()
+        parser.setFeature(xml.sax.handler.feature_external_ges,1)
+            # Include external general entities, esp. xml-stylesheet lines.
+        if 0: # Expat does not read external features.
+            parser.setFeature(xml.sax.handler.feature_external_pes,1)
+                # Include all external parameter entities
+                # Hopefully the parser can figure out the encoding from the <?xml> element.
+        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
+        parser.setContentHandler(handler)
+        parser.parse(theFile) # expat does not support parseString
+        # g.trace('parsing done')
+        sax_node = handler.getRootNode()
+    except xml.sax.SAXParseException:
+        g.es_print('error parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+    except Exception:
+        g.es_print('unexpected exception parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+
+    return sax_node
+#@-node:ekr.20060919110638.14:parse_leo_file
+#@-node:ekr.20091217190731.6075:Recover from bad chars in .leo files
+#@+node:ekr.20091228133644.6221:Handle Insert key properly
+# This is now bound in the EKR bindings to insert-node.
+
+g.es(c.k.ignore_unbound_non_ascii_keys)
+#@nonl
+#@+node:ekr.20061031131434.182:isPlainKey
+def isPlainKey (self,shortcut):
+
+    '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
+
+    k = self ; shortcut = shortcut or ''
+
+    # altgr combos (Alt+Ctrl) are always plain keys
+    if shortcut.startswith('Alt+Ctrl+') and not self.enable_alt_ctrl_bindings:
+        return True
+
+    for s in ('Alt','Ctrl','Command','Meta'):
+        if shortcut.find(s) != -1:            
+            return False
+    else:
+        # Careful, allow bare angle brackets for unit tests.
+        if shortcut.startswith('<') and shortcut.endswith('>'):
+            shortcut = shortcut[1:-1]
+
+        isPlain = (
+            len(shortcut) == 1 or
+            len(k.guiBindNamesInverseDict.get(shortcut,'')) == 1 or
+            # A hack: allow Return to be bound to command.
+            shortcut in ('Tab','\t')
+        )
+
+        # g.trace(isPlain,repr(shortcut))
+        return isPlain and not self.isFKey(shortcut)
+#@-node:ekr.20061031131434.182:isPlainKey
+#@+node:ekr.20080510095819.1:k.handleUnboudKeys
+def handleUnboundKeys (self,event,char,keysym,stroke):
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+    modesTuple = ('insert','overwrite')
+
+    if trace: g.trace('ch: %s keysym: %s stroke %s' % (
+        repr(event.char),repr(event.keysym),repr(stroke)))
+
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
+        return 'break'
+
+    elif k.isFKey(stroke):
+        return 'break'
+
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  <Return> is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
+        # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
+        if trace: g.trace('ignoring unbound non-ascii key')
+        return 'break'
+
+    elif keysym.find('Escape') != -1 or stroke.find('Insert') != -1:
+        # Never insert escape or insert characters.
+        return 'break'
+
+    else:
+        if trace: g.trace(repr(stroke),'no func')
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+#@-node:ekr.20080510095819.1:k.handleUnboudKeys
+#@+node:ekr.20070123143428:k.defineTkNames
+def defineTkNames (self):
+
+    k = self
+
+    # These names are used in Leo's core *regardless* of the gui actually in effect.
+    # The gui is responsible for translating gui-dependent keycodes into these values.
+    k.tkNamesList = (
+        'BackSpace','Begin','Break',
+        'Caps_Lock','Clear',
+        'Delete','Down',
+        'End','Escape',
+        'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
+        'Home',
+        'Left','Linefeed',
+        'Next','Num_Lock',
+        'Prior',
+        'Return','Right',
+        'Tab',
+        'Up',
+        # 'space',
+    )
+
+    # These keys settings that may be specied in leoSettings.leo.
+    # Keys are lowercase, so that case is not significant *for these items only* in leoSettings.leo.
+    k.settingsNameDict = {
+        'bksp'    : 'BackSpace',
+        'dnarrow' : 'Down',
+        'esc'     : 'Escape',
+        'ltarrow' : 'Left',
+        'pageup'  : 'Prior',
+        'pagedn'  : 'Next',
+        'rtarrow' : 'Right',
+        'uparrow' : 'Up',
+    }
+
+    # Add lowercase version of special keys.
+    for s in k.tkNamesList:
+        k.settingsNameDict [s.lower()] = s
+
+
+@  The following are not translated, so what appears in the menu is the same as what is passed to Tk.  Case is significant.
+Note: the Tk documentation states that not all of these may be available on all platforms.
+
+Num_Lock, Pause, Scroll_Lock, Sys_Req,
+KP_Add, KP_Decimal, KP_Divide, KP_Enter, KP_Equal,
+KP_Multiply, KP_Separator,KP_Space, KP_Subtract, KP_Tab,
+KP_F1,KP_F2,KP_F3,KP_F4,
+KP_0,KP_1,KP_2,KP_3,KP_4,KP_5,KP_6,KP_7,KP_8,KP_9,
+Insert
+#@-node:ekr.20070123143428:k.defineTkNames
+#@-node:ekr.20091228133644.6221:Handle Insert key properly
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin
