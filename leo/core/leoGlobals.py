@@ -6762,6 +6762,33 @@ def assertUi(uitype):
 #@-node:ville.20090827174345.9963:g.assertui
 #@-node:EKR.20040612114220:Utility classes, functions & objects...
 #@+node:ekr.20031218072017.3197:Whitespace...
+#@+node:ekr.20031218072017.3198:computeLeadingWhitespace
+# Returns optimized whitespace corresponding to width with the indicated tab_width.
+
+def computeLeadingWhitespace (width, tab_width):
+
+    if width <= 0:
+        return ""
+    if tab_width > 1:
+        tabs   = int(width / tab_width)
+        blanks = int(width % tab_width)
+        return ('\t' * tabs) + (' ' * blanks)
+    else: # 7/3/02: negative tab width always gets converted to blanks.
+        return (' ' * width)
+#@-node:ekr.20031218072017.3198:computeLeadingWhitespace
+#@+node:ekr.20031218072017.3199:computeWidth
+# Returns the width of s, assuming s starts a line, with indicated tab_width.
+
+def computeWidth (s, tab_width):
+
+    w = 0
+    for ch in s:
+        if ch == '\t':
+            w += (abs(tab_width) - (w % abs(tab_width)))
+        else:
+            w += 1
+    return w
+#@-node:ekr.20031218072017.3199:computeWidth
 #@+node:ekr.20051014175117:g.adjustTripleString
 def adjustTripleString (s,tab_width):
 
@@ -6808,118 +6835,6 @@ c
 
 #@-node:ekr.20090901175503.6098:@test g.adjustTripleString
 #@-node:ekr.20051014175117:g.adjustTripleString
-#@+node:ekr.20031218072017.3198:computeLeadingWhitespace
-# Returns optimized whitespace corresponding to width with the indicated tab_width.
-
-def computeLeadingWhitespace (width, tab_width):
-
-    if width <= 0:
-        return ""
-    if tab_width > 1:
-        tabs   = int(width / tab_width)
-        blanks = int(width % tab_width)
-        return ('\t' * tabs) + (' ' * blanks)
-    else: # 7/3/02: negative tab width always gets converted to blanks.
-        return (' ' * width)
-#@-node:ekr.20031218072017.3198:computeLeadingWhitespace
-#@+node:ekr.20031218072017.3199:computeWidth
-# Returns the width of s, assuming s starts a line, with indicated tab_width.
-
-def computeWidth (s, tab_width):
-
-    w = 0
-    for ch in s:
-        if ch == '\t':
-            w += (abs(tab_width) - (w % abs(tab_width)))
-        else:
-            w += 1
-    return w
-#@-node:ekr.20031218072017.3199:computeWidth
-#@+node:ekr.20031218072017.3200:get_leading_ws
-def get_leading_ws(s):
-
-    """Returns the leading whitespace of 's'."""
-
-    i = 0 ; n = len(s)
-    while i < n and s[i] in (' ','\t'):
-        i += 1
-    return s[0:i]
-#@-node:ekr.20031218072017.3200:get_leading_ws
-#@+node:ekr.20031218072017.3201:optimizeLeadingWhitespace
-# Optimize leading whitespace in s with the given tab_width.
-
-def optimizeLeadingWhitespace (line,tab_width):
-
-    i, width = g.skip_leading_ws_with_indent(line,0,tab_width)
-    s = g.computeLeadingWhitespace(width,tab_width) + line[i:]
-    return s
-#@-node:ekr.20031218072017.3201:optimizeLeadingWhitespace
-#@+node:ekr.20040723093558:regularizeTrailingNewlines
-#@+at
-# 
-# The caller should call g.stripBlankLines before calling this routine if 
-# desired.
-# 
-# This routine does _not_ simply call rstrip(): that would delete all trailing 
-# whitespace-only lines, and in some cases that would change the meaning of 
-# program or data.
-# 
-#@-at
-#@@c
-
-def regularizeTrailingNewlines(s,kind):
-
-    """Kind is 'asis', 'zero' or 'one'."""
-
-    pass
-#@-node:ekr.20040723093558:regularizeTrailingNewlines
-#@+node:ekr.20031218072017.3202:removeLeadingWhitespace
-# Remove whitespace up to first_ws wide in s, given tab_width, the width of a tab.
-
-def removeLeadingWhitespace (s,first_ws,tab_width):
-
-    j = 0 ; ws = 0 ; first_ws = abs(first_ws)
-    for ch in s:
-        if ws >= first_ws:
-            break
-        elif ch == ' ':
-            j += 1 ; ws += 1
-        elif ch == '\t':
-            j += 1 ; ws += (abs(tab_width) - (ws % abs(tab_width)))
-        else: break
-    if j > 0:
-        s = s[j:]
-    return s
-#@-node:ekr.20031218072017.3202:removeLeadingWhitespace
-#@+node:ekr.20091229075924.6235:removeLeadingBlankLines & test
-def removeLeadingBlankLines (s):
-
-    lines = g.splitLines(s)
-
-    result = [] ; remove = True
-    for line in lines:
-        if remove and not line.strip():
-            pass
-        else:
-            remove = False
-            result.append(line)
-
-    return ''.join(result)
-#@+node:ekr.20091229075924.6236:@test g.removeLeadingBlankLines
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    for s,expected in (
-        ('a\nb', 'a\nb'),
-        ('\n  \nb\n', 'b\n'),
-        (' \t \n\n\n c', ' c'),
-    ):
-        result = g.removeLeadingBlankLines(s)
-        assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
-            repr(s),repr(expected),repr(result))
-#@-node:ekr.20091229075924.6236:@test g.removeLeadingBlankLines
-#@-node:ekr.20091229075924.6235:removeLeadingBlankLines & test
 #@+node:ekr.20050211120242.2:g.removeExtraLws & test
 def removeExtraLws (s,tab_width):
 
@@ -6961,6 +6876,112 @@ if g.unitTesting:
             repr(s),repr(expected),repr(result))
 #@-node:ekr.20090517020744.5881:@test g.removeExtraLws
 #@-node:ekr.20050211120242.2:g.removeExtraLws & test
+#@+node:ekr.20031218072017.3200:get_leading_ws
+def get_leading_ws(s):
+
+    """Returns the leading whitespace of 's'."""
+
+    i = 0 ; n = len(s)
+    while i < n and s[i] in (' ','\t'):
+        i += 1
+    return s[0:i]
+#@-node:ekr.20031218072017.3200:get_leading_ws
+#@+node:ekr.20031218072017.3201:optimizeLeadingWhitespace
+# Optimize leading whitespace in s with the given tab_width.
+
+def optimizeLeadingWhitespace (line,tab_width):
+
+    i, width = g.skip_leading_ws_with_indent(line,0,tab_width)
+    s = g.computeLeadingWhitespace(width,tab_width) + line[i:]
+    return s
+#@-node:ekr.20031218072017.3201:optimizeLeadingWhitespace
+#@+node:ekr.20040723093558:regularizeTrailingNewlines
+#@+at
+# 
+# The caller should call g.stripBlankLines before calling this routine if 
+# desired.
+# 
+# This routine does _not_ simply call rstrip(): that would delete all trailing 
+# whitespace-only lines, and in some cases that would change the meaning of 
+# program or data.
+# 
+#@-at
+#@@c
+
+def regularizeTrailingNewlines(s,kind):
+
+    """Kind is 'asis', 'zero' or 'one'."""
+
+    pass
+#@-node:ekr.20040723093558:regularizeTrailingNewlines
+#@+node:ekr.20091229090857.11698:removeBlankLines & test
+def removeBlankLines (s):
+
+    lines = g.splitLines(s)
+    lines = [z for z in lines if z.strip()]
+    return ''.join(lines)
+#@+node:ekr.20091229090857.11699:@test g.removeBlankLines
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    for s,expected in (
+        ('a\nb', 'a\nb'),
+        ('\n  \n\nb\n', 'b\n'),
+        (' \t \n\n  \n c\n\t\n', ' c\n'),
+    ):
+        result = g.removeBlankLines(s)
+        assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
+            repr(s),repr(expected),repr(result))
+#@-node:ekr.20091229090857.11699:@test g.removeBlankLines
+#@-node:ekr.20091229090857.11698:removeBlankLines & test
+#@+node:ekr.20091229075924.6235:removeLeadingBlankLines & test
+def removeLeadingBlankLines (s):
+
+    lines = g.splitLines(s)
+
+    result = [] ; remove = True
+    for line in lines:
+        if remove and not line.strip():
+            pass
+        else:
+            remove = False
+            result.append(line)
+
+    return ''.join(result)
+#@+node:ekr.20091229075924.6236:@test g.removeLeadingBlankLines
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    for s,expected in (
+        ('a\nb', 'a\nb'),
+        ('\n  \nb\n', 'b\n'),
+        (' \t \n\n\n c', ' c'),
+    ):
+        result = g.removeLeadingBlankLines(s)
+        assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
+            repr(s),repr(expected),repr(result))
+#@-node:ekr.20091229075924.6236:@test g.removeLeadingBlankLines
+#@-node:ekr.20091229075924.6235:removeLeadingBlankLines & test
+#@+node:ekr.20031218072017.3202:removeLeadingWhitespace
+# Remove whitespace up to first_ws wide in s, given tab_width, the width of a tab.
+
+def removeLeadingWhitespace (s,first_ws,tab_width):
+
+    j = 0 ; ws = 0 ; first_ws = abs(first_ws)
+    for ch in s:
+        if ws >= first_ws:
+            break
+        elif ch == ' ':
+            j += 1 ; ws += 1
+        elif ch == '\t':
+            j += 1 ; ws += (abs(tab_width) - (ws % abs(tab_width)))
+        else: break
+    if j > 0:
+        s = s[j:]
+    return s
+#@-node:ekr.20031218072017.3202:removeLeadingWhitespace
 #@+node:ekr.20031218072017.3203:removeTrailingWs & test
 # Warning: string.rstrip also removes newlines!
 
