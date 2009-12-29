@@ -6891,6 +6891,35 @@ def removeLeadingWhitespace (s,first_ws,tab_width):
         s = s[j:]
     return s
 #@-node:ekr.20031218072017.3202:removeLeadingWhitespace
+#@+node:ekr.20091229075924.6235:removeLeadingBlankLines & test
+def removeLeadingBlankLines (s):
+
+    lines = g.splitLines(s)
+
+    result = [] ; remove = True
+    for line in lines:
+        if remove and not line.strip():
+            pass
+        else:
+            remove = False
+            result.append(line)
+
+    return ''.join(result)
+#@+node:ekr.20091229075924.6236:@test g.removeLeadingBlankLines
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    for s,expected in (
+        ('a\nb', 'a\nb'),
+        ('\n  \nb\n', 'b\n'),
+        (' \t \n\n\n c', ' c'),
+    ):
+        result = g.removeLeadingBlankLines(s)
+        assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
+            repr(s),repr(expected),repr(result))
+#@-node:ekr.20091229075924.6236:@test g.removeLeadingBlankLines
+#@-node:ekr.20091229075924.6235:removeLeadingBlankLines & test
 #@+node:ekr.20050211120242.2:g.removeExtraLws & test
 def removeExtraLws (s,tab_width):
 
