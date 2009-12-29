@@ -8303,15 +8303,17 @@ def writeOneAtAutoNode(self,p,toString,force):
         toString=toString)
 
     ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
+    isAtAuto = root.isAtAutoNode()
     if ok:
-        if root.isAtAutoRstNode():
+        if isAtAuto:
             ok2 = c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
             if not ok2: at.errors += 1
         else:
             at.writeOpenFile(root,nosentinels=True,toString=toString)
         at.closeWriteFile() # Sets stringOutput if toString is True.
         if at.errors == 0:
-            at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+            at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAuto)
+                # Sets/clears dirty and orphan bits.
         else:
             g.es("not written:",at.outputFileName)
             root.setDirty() # New in Leo 4.4.8.
@@ -9776,6 +9778,223 @@ def computeBody (self,s,start,sigStart,codeEnd):
 #@-node:ekr.20091229090857.11694:computeBody (rst)
 #@-node:ekr.20091229090857.11691:Underlining
 #@-node:ekr.20091221094815.6386:Fixed at-auto-rst problems
+#@+node:ekr.20091229090857.11695:Ignore blank rst lines in replaceTargetFileIfDifferent
+#@+node:ekr.20091229090857.11698:removeBlankLines & test
+def removeBlankLines (s):
+
+    lines = g.splitLines(s)
+    lines = [z for z in lines if z.strip()]
+    return ''.join(lines)
+#@+node:ekr.20091229090857.11699:@test g.removeBlankLines
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    for s,expected in (
+        ('a\nb', 'a\nb'),
+        ('\n  \n\nb\n', 'b\n'),
+        (' \t \n\n  \n c\n\t\n', ' c\n'),
+    ):
+        result = g.removeBlankLines(s)
+        assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
+            repr(s),repr(expected),repr(result))
+#@-node:ekr.20091229090857.11699:@test g.removeBlankLines
+#@-node:ekr.20091229090857.11698:removeBlankLines & test
+#@+node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
+def writeOneAtAutoNode(self,p,toString,force):
+
+    '''Write p, an @auto node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy()
+
+    fileName = p.atAutoNodeName()
+    if not fileName and not toString: return False
+
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+    exists = g.os_path_exists(fileName)
+
+    if not toString and not self.shouldWriteAtAutoNode(p,exists,force):
+        return False
+
+    # Prompt if writing a new @auto node would overwrite an existing file.
+    if (not toString and not hasattr(p.v,'at_auto_read') and
+        g.os_path_exists(fileName)
+    ):
+        ok = self.promptForDangerousWrite(fileName,kind='@auto')
+        if ok:
+            p.v.at_auto_read = True # Create the attribute
+        else:
+            g.es("not written:",fileName)
+            return False
+
+    # This code is similar to code in at.write.
+    c.endEditing() # Capture the current headline.
+    at.targetFileName = g.choose(toString,"<string-file>",fileName)
+    at.initWriteIvars(root,at.targetFileName,
+        atAuto=True,
+        nosentinels=True,thinFile=False,scriptWrite=False,
+        toString=toString)
+
+    ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
+    isAtAuto = root.isAtAutoNode()
+    if ok:
+        if isAtAuto:
+            ok2 = c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
+            if not ok2: at.errors += 1
+        else:
+            at.writeOpenFile(root,nosentinels=True,toString=toString)
+        at.closeWriteFile() # Sets stringOutput if toString is True.
+        if at.errors == 0:
+            at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAuto)
+                # Sets/clears dirty and orphan bits.
+        else:
+            g.es("not written:",at.outputFileName)
+            root.setDirty() # New in Leo 4.4.8.
+
+    elif not toString:
+        root.setDirty() # Make _sure_ we try to rewrite this file.
+        g.es("not written:",at.outputFileName)
+
+    return ok
+#@+node:ekr.20071019141745:shouldWriteAtAutoNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.  That's too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @auto x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @auto node which will be populated the next time the .leo file is opened.
+- We don't want minor import imperfections to be written to the @auto file.
+- The explicit commands that read and write @auto trees must always be honored.
+@c
+
+def shouldWriteAtAutoNode (self,p,exists,force):
+
+    '''Return True if we should write the @auto node at p.'''
+
+    if force: # We are executing write-at-auto-node or write-dirty-at-auto-nodes.
+        return True
+    elif not exists: # We can write a non-existent file without danger.
+        return True
+    elif not p.isDirty(): # There is nothing new to write.
+        return False
+    elif not self.isSignificantTree(p): # There is noting of value to write.
+        g.es_print(p.h,'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+        return False
+    else: # The @auto tree is dirty and contains significant info.
+        return True
+#@-node:ekr.20071019141745:shouldWriteAtAutoNode
+#@-node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
+#@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent (atFile)
+def replaceTargetFileIfDifferent (self,root,ignoreBlankLines=False):
+
+    '''Create target file as follows:
+    1. If target file does not exist, rename output file to target file.
+    2. If target file is identical to output file, remove the output file.
+    3. If target file is different from output file,
+       remove target file, then rename output file to be target file.
+
+    Return True if the original file was changed.
+    '''
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    assert(self.outputFile is None)
+
+    if self.toString:
+        # Do *not* change the actual file or set any dirty flag.
+        self.fileChangedFlag = False
+        return False
+
+    if root:
+        # The default: may be changed later.
+        root.clearOrphan()
+        root.clearDirty()
+
+    if trace: g.trace(self.outputFileName,self.targetFileName)
+
+    if g.os_path_exists(self.targetFileName):
+        if self.compareFiles(
+            self.outputFileName,
+            self.targetFileName,
+            ignoreLineEndings=not self.explicitLineEnding,
+            ignoreBlankLines=ignoreBlankLines):
+            # Files are identical.
+            ok = self.remove(self.outputFileName)
+            g.es('unchanged:',self.shortFileName)
+            if not ok:
+                # self.remove gives the error.
+                if root: root.setDirty() # New in 4.4.8.
+            self.fileChangedFlag = False
+            return False
+        else:
+            self.checkPythonCode(root)
+            << report if the files differ only in line endings >>
+            mode = self.stat(self.targetFileName)
+            ok = self.rename(self.outputFileName,self.targetFileName,mode)
+            if ok:
+                c.setFileTimeStamp(self.targetFileName)
+                g.es('wrote:',self.shortFileName)
+            else:
+                # self.rename gives the error.
+                g.es('unchanged:',self.shortFileName)
+                if root: root.setDirty() # New in 4.4.8.
+
+            self.fileChangedFlag = ok
+            return ok
+    else:
+        # Rename the output file.
+        ok = self.rename(self.outputFileName,self.targetFileName)
+        if ok:
+            c.setFileTimeStamp(self.targetFileName)
+            g.es('created:',self.targetFileName)
+        else:
+            # self.rename gives the error.
+            if root: root.setDirty() # New in 4.4.8.
+
+        # No original file to change. Return value tested by a unit test.
+        self.fileChangedFlag = False 
+        return False
+#@+node:ekr.20041019090322:<< report if the files differ only in line endings >>
+if (
+    self.explicitLineEnding and
+    self.compareFiles(
+        self.outputFileName,
+        self.targetFileName,
+        ignoreLineEndings=True)):
+
+    g.es("correcting line endings in:",self.targetFileName,color="blue")
+#@-node:ekr.20041019090322:<< report if the files differ only in line endings >>
+#@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent (atFile)
+#@+node:ekr.20041005105605.197:compareFiles
+# This routine is needed to handle cvs stupidities.
+
+def compareFiles (self,path1,path2,ignoreLineEndings,ignoreBlankLines=False):
+
+    """Compare two text files ignoring line endings."""
+
+    try:
+        # Opening both files in text mode converts all line endings to '\n'.
+        mode = g.choose(ignoreLineEndings,"r","rb")
+        f1 = open(path1,mode)
+        f2 = open(path2,mode)
+        s1,s2 = f1.read(), f2.read()
+        f1.close() ; f2.close()
+        equal = s1 == s2
+        if ignoreBlankLines and not equal:
+            s1 = g.removeBlankLines(s1)
+            s2 = g.removeBlankLines(s2)
+            equal = s1 == s2
+        return equal
+    except IOError:
+        return False # Should never happen
+#@-node:ekr.20041005105605.197:compareFiles
+#@-node:ekr.20091229090857.11695:Ignore blank rst lines in replaceTargetFileIfDifferent
 #@-node:ekr.20091221123255.6375:Fixed
 #@-node:ekr.20091221094815.6383:Urgent (voted up) bugs
 #@+node:ekr.20090721093155.5986:Bugs
@@ -11106,7 +11325,10 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
         if trace: g.trace('ignoring unbound non-ascii key')
         return 'break'
 
-    elif keysym.find('Escape') != -1 or stroke.find('Insert') != -1:
+    elif (
+        keysym and keysym.find('Escape') != -1 or
+        stroke and stroke.find('Insert') != -1
+    ):
         # Never insert escape or insert characters.
         return 'break'
 
@@ -12274,7 +12496,10 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
         if trace: g.trace('ignoring unbound non-ascii key')
         return 'break'
 
-    elif keysym.find('Escape') != -1 or stroke.find('Insert') != -1:
+    elif (
+        keysym and keysym.find('Escape') != -1 or
+        stroke and stroke.find('Insert') != -1
+    ):
         # Never insert escape or insert characters.
         return 'break'
 
