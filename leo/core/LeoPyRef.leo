@@ -97,8 +97,7 @@
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.3"><vh>Projects</vh>
-<v t="EKR.20040429143933" descendentVnodeUnknownAttributes="7d710058010000003071017d71025808000000616e6e6f7461746571037d71042858040000006e6f6465710558000000007106580200000062677107680658080000007072696f726974797108580400000039393939710958020000006667710a6806580800000070726f6772657373710b68065809000000617263686574797065710c68067573732e"
-marks="ekr.20090502071837.66,"><vh>@thin leoProjects.txt</vh></v>
+<v t="EKR.20040429143933" descendentVnodeUnknownAttributes="7d710058010000003071017d71025808000000616e6e6f7461746571037d71042858040000006e6f6465710558000000007106580200000062677107680658080000007072696f726974797108580400000039393939710958020000006667710a6806580800000070726f6772657373710b68065809000000617263686574797065710c68067573732e"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20040117181936"><vh>@thin ../doc/leoToDo.txt</vh></v>
@@ -146,8 +145,7 @@ marks="ekr.20090502071837.66,"><vh>@thin leoProjects.txt</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@thin leoNodes.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@thin leoPlugins.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@thin leoPymacs.py</vh></v>
-<v t="ekr.20090502071837.3"
-marks="ekr.20090502071837.66,"><vh>@thin leoRst.py</vh></v>
+<v t="ekr.20090502071837.3"><vh>@thin leoRst.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@thin leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@thin leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@thin leoUndo.py</vh></v>
@@ -248,7 +246,7 @@ Two (recently written) functions in leoGlobals.py support conversions from Pytho
 
 Important:  the first Tkinter index is '1.0', not '0.0', but the row returned by g.convertPythonIndexToRowCol is zero based, so the code that actually creates Tkinter indices from row/col must add 1 to the row.  Similar remarks apply when going in the reverse direction.
 </t>
-<t tx="ekr.20051031040240" str_leo_pos="4"></t>
+<t tx="ekr.20051031040240" str_leo_pos="5"></t>
 <t tx="ekr.20060217111834"></t>
 <t tx="ekr.20060531093331">@
 Ever have a clone that is difficult to understand outside the context of its
