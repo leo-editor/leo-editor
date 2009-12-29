@@ -695,14 +695,17 @@ class rstCommands:
 
         # Set underlining characters.
         d = self.tnodeOptionDict.get(p.v) # Set by preprocessTree.
-        underlines = d.get('underline_characters')
-        if underlines:
+
+        ### There is no way to use user-defined underlining characters!
+        ### underlines = d.get('underline_characters')
+        if False: ### underlines:
             self.atAutoWriteUnderlines = underlines
         else:
             d = p.v.u.get('rst-import',{})
-            underlines2 = d.get('underlines2')
-            if not underlines2: underlines2 = '#'
-            underlines1 = d.get('underlines1')
+            # g.trace(d,g.callers(4))
+            underlines2 = d.get('underlines2','')
+            ### if not underlines2: underlines2 = '#'
+            underlines1 = d.get('underlines1','')
             if not underlines1: underlines1 = '=+*^~"\'`-:><_'
                 # The standard defaults.
             if len(underlines2) > 1:
@@ -1477,7 +1480,6 @@ class rstCommands:
                 self.write('\n%s\n\n' % h)
         else:
             self.write('\n**%s**\n\n' % h.replace('*',''))
-    #@nonl
     #@-node:ekr.20090502071837.84:writeHeadlineHelper
     #@-node:ekr.20090502071837.83:writeHeadline & helper
     #@+node:ekr.20090502071837.85:writeNode (rst)
@@ -1602,6 +1604,8 @@ class rstCommands:
 
         trace = False and not g.unitTesting
 
+        if trace: g.trace(self.atAutoWrite,repr(self.underlines2),p.h)
+
         if self.atAutoWrite:
             # We *might* generate overlines for top-level sections.
             u = self.atAutoWriteUnderlines
@@ -1621,7 +1625,7 @@ class rstCommands:
                 ch = '#'
             n = max(4,len(s))
             if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
-            if level == 0:
+            if level == 0 and self.underlines2:
                 return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
             else:
                 return '%s\n%s\n\n' % (p.h,ch*n)

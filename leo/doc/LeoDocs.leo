@@ -203,8 +203,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050831195331.2" a="E"><vh>Chapter 1: Installing Leo</vh>
-<v t="edream.110203163054.48" a="E"><vh>@rst html\install.html</vh>
+<v t="ekr.20050831195331.2"><vh>Chapter 1: Installing Leo</vh>
+<v t="edream.110203163054.48"><vh>@rst html\install.html</vh>
 <v t="ekr.20050901110110"><vh>@rst-no-head links</vh></v>
 <v t="edream.110203163054.49"><vh>System requirements</vh></v>
 <v t="ekr.20080408060320.784"><vh>Leo's HOME directory</vh></v>
@@ -218,8 +218,8 @@
 <v t="ekr.20060105145125"><vh>How to install the Aspell spell checker</vh></v>
 </v>
 </v>
-<v t="ekr.20091130111843.6787" a="E"><vh>Chapter 2: The Leo Tutorial</vh>
-<v t="ekr.20091130111843.6788" a="E"><vh>@rst html\intro.html</vh>
+<v t="ekr.20091130111843.6787"><vh>Chapter 2: The Leo Tutorial</vh>
+<v t="ekr.20091130111843.6788"><vh>@rst html\intro.html</vh>
 <v t="ekr.20091130111843.6810"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20091130111843.6814"><vh>Leo's main window</vh></v>
 <v t="ekr.20091130111843.6816"><vh>Outline commands</vh></v>
@@ -23028,7 +23028,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="2,4,0"></t>
+<t tx="ekr.20070610174018" str_leo_pos="2,5"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 

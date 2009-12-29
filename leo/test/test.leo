@@ -384,14 +384,12 @@
 </v>
 </v>
 <v t="ekr.20091015191345.1856"><vh>ctags completion</vh></v>
-<v t="ekr.20091217210235.1866"><vh>@@auto at-auto-rst-test.txt</vh>
-<v t="ekr.20091217210235.1867"><vh>section 1</vh></v>
-<v t="ekr.20091217210235.1868"><vh>section 2</vh></v>
-</v>
-<v t="ekr.20091228102258.1896"><vh>@auto-rst at-auto-rst-test.txt</vh></v>
-<v t="ekr.20091227100355.1875"><vh>@auto-rst ../doc/html/intro.html.txt</vh></v>
+<v t="ekr.20091217210235.1866"><vh>@auto-rst at-auto-rst-test.txt</vh></v>
+<v t="ekr.20091229092257.1930"><vh>@auto-rst ../doc/html/intro.html.txt</vh></v>
+<v t="ekr.20091229101227.1902"><vh>@auto-rst quickstart.txt</vh></v>
+<v t="ekr.20091229092150.1939"><vh>@language rest</vh>
 <v t="ekr.20091228143431.1895"><vh>@@auto quickstart.txt</vh></v>
-<v t="ekr.20091228143535.1897" a="E"><vh>@auto-rst quickstart.txt</vh></v>
+</v>
 <v t="ekr.20091221113040.1868"><vh>keys</vh></v>
 <v t="ekr.20091222114015.1901"><vh>Example</vh></v>
 <v t="ekr.20091223061318.1873"><vh>Simple example</vh></v>
@@ -815,7 +813,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="9"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -3581,11 +3579,6 @@ http://webpages.charter.net/edreamleo/front.html</t>
     &lt;&lt; common section &gt;&gt;</t>
 <t tx="ekr.20091016060748.1860"># This is the common section</t>
 <t tx="ekr.20091016060748.1861"></t>
-<t tx="ekr.20091217210235.1866">@first #!python
-@language rest
-@others</t>
-<t tx="ekr.20091217210235.1867">This is section 1</t>
-<t tx="ekr.20091217210235.1868">This is section 2</t>
 <t tx="ekr.20091221113040.1868">@nocolor-node
 
 1234567890-=
@@ -4026,5 +4019,6 @@ list.
 .. _Docutils-users: ../mailing-lists.html#docutils-users
 .. _Docutils project web site: http://docutils.sourceforge.net/
 </t>
+<t tx="ekr.20091229092150.1939"></t>
 </tnodes>
 </leo_file>

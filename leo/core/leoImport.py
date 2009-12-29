@@ -1899,8 +1899,6 @@ class baseScannerClass (scanUtility):
         messageKind = None
 
         if i >= len(lines1):
-            ### if self.isRst:
-            ###    return True # ignore extra lines.
             if i != expectedMismatch or not g.unitTesting:
                 pr('extra lines')
                 for line in lines2[i:]:
@@ -1966,7 +1964,7 @@ class baseScannerClass (scanUtility):
 
         This fudge allows the rst code generators to insert needed newlines freely.'''
 
-        return [z for z in lines if z.strip(' \t') != '\n']
+        return [z for z in lines if z.strip() != '']
     #@-node:ekr.20091227115606.6468:adjustRstLines
     #@+node:ekr.20090513073632.5735:compareRstUnderlines
     def compareRstUnderlines(self,s1,s2):
@@ -2099,14 +2097,8 @@ class baseScannerClass (scanUtility):
             while start > 0 and s[start-1] in (' ','\t'):
                 start -= 1
 
-        if self.isRst:
-            # Never indent any text; discard the entire signature.
-            body1 = s[start:sigStart]
-            body2 = s[self.sigEnd+1:codeEnd]
-            if trace: g.trace('body1: %s body2: %s' % (repr(body1),repr(body2)))
-        else:
-            body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
-            body2 = self.undentBody(s[sigStart:codeEnd])
+        body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
+        body2 = self.undentBody(s[sigStart:codeEnd])
         body = body1 + body2
 
         if trace: g.trace('body: %s' % repr(body))
@@ -2118,7 +2110,6 @@ class baseScannerClass (scanUtility):
                 self.functionSpelling,self.sigId,g.get_line(s,codeEnd)))
 
         return body
-    #@nonl
     #@-node:ekr.20090512153903.5806:computeBody (baseScannerClass)
     #@+node:ekr.20090513073632.5737:createDeclsNode
     def createDeclsNode (self,parent,s):
@@ -3901,6 +3892,27 @@ class rstScanner (baseScannerClass):
         self.lastParent = parent.copy()
         return parent.copy()
     #@-node:ekr.20090512080015.5798:adjustParent
+    #@+node:ekr.20091229090857.11694:computeBody (rst)
+    def computeBody (self,s,start,sigStart,codeEnd):
+
+        trace = False and not g.unitTesting
+
+        body1 = s[start:sigStart]
+        # Adjust start backwards to get a better undent.
+        if body1.strip():
+            while start > 0 and s[start-1] in (' ','\t'):
+                start -= 1
+
+        # Never indent any text; discard the entire signature.
+        body1 = s[start:sigStart]
+        body2 = s[self.sigEnd+1:codeEnd]
+        body2 = g.removeLeadingBlankLines(body2) # 2009/12/28
+        body = body1 + body2
+
+        # Don't warn about missing tail newlines: they will be added.
+        if trace: g.trace('body: %s' % repr(body))
+        return body
+    #@-node:ekr.20091229090857.11694:computeBody (rst)
     #@+node:ekr.20090512080015.5797:computeSectionLevel
     def computeSectionLevel (self,ch,kind):
 
@@ -3934,6 +3946,7 @@ class rstScanner (baseScannerClass):
 
         '''Remember the underlining characters in the root's uA.'''
 
+        trace = False and not g.unitTesting
         p = self.root
         if p:
             tag = 'rst-import'
@@ -3944,7 +3957,7 @@ class rstScanner (baseScannerClass):
             d ['underlines2'] = underlines2
             self.underlines1 = underlines1
             self.underlines2 = underlines2
-            # g.trace(repr(underlines1),repr(underlines2))
+            if trace: g.trace(repr(underlines1),repr(underlines2),g.callers(4))
             p.v.u [tag] = d
 
         # Append a warning to the root node.
@@ -3984,11 +3997,11 @@ class rstScanner (baseScannerClass):
     #@+node:ekr.20090501095634.45:startsHelper
     def startsHelper(self,s,i,kind,tags):
 
-        '''return True if s[i:] starts a class or function.
+        '''return True if s[i:] starts an rST section.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
 
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         kind,name,next,ch = self.startsSection(s,i)
         if kind == 'plain': return False
 
@@ -4022,7 +4035,7 @@ class rstScanner (baseScannerClass):
                 g.trace('level %s %s' % (self.sectionLevel,self.sigId))
         return True
     #@-node:ekr.20090501095634.45:startsHelper
-    #@+node:ekr.20090501095634.47:startsSection
+    #@+node:ekr.20090501095634.47:startsSection & helper
     def startsSection (self,s,i):
 
         '''Scan a line and possible one or two other lines,
@@ -4036,13 +4049,10 @@ class rstScanner (baseScannerClass):
         '''
 
         trace = False and not g.unitTesting
-        i1,j = g.getLine(s,i)
-        # 2009/12/27: sections can not begin with whitespace.
+        verbose = False
 
-        ### line = s[i1:j].strip() #
-        line = s[i1:j]
-        nows = i1 == g.skip_ws(s,i1)
-        line = line.strip()
+        # 2009/12/27: sections can not begin with whitespace.
+        i1,j,nows,line = self.getLine(s,i)
         ch,kind = '','plain' # defaults.
 
         if nows and self.isUnderLine(line): # an overline.
@@ -4050,11 +4060,7 @@ class rstScanner (baseScannerClass):
             name_i,name_j = g.getLine(s,name_i)
             name = s[name_i:name_j].strip()
             next_i = g.skip_line(s,name_i)
-            i,j = g.getLine(s,next_i)
-            # line2 = s[i:j].strip() #
-            line2 = s[i:j]
-            nows = i == g.skip_ws(s,i)
-            line2 = line2.strip()
+            i,j,nows,line2 = self.getLine(s,next_i)
             n1,n2,n3 = len(line),len(name),len(line2)
             ch1,ch3 = line[0],line2 and line2[0]
             ok = (nows and self.isUnderLine(line2) and
@@ -4066,26 +4072,19 @@ class rstScanner (baseScannerClass):
                 ch,kind = ch1,'over'
                 if ch1 not in self.underlines2:
                     self.underlines2.append(ch1)
-                    # if trace: g.trace('underlines2',self.underlines2,name)
-                if trace: g.trace('\nline  %s\nname  %s\nline2 %s' % (
-                    repr(line),repr(name),repr(line2)))
+                    if trace: g.trace('*** underlines2',self.underlines2,name)
+                if trace and verbose:
+                    g.trace('\nline  %s\nname  %s\nline2 %s' % (
+                        repr(line),repr(name),repr(line2))) #,'\n',g.callers(4))
         else:
             name = line.strip()
             i = g.skip_line(s,i1)
-            i,j = g.getLine(s,i)
-            # line2 = s[i:j].strip() #
-            line2 = s[i:j]
-            nows2 = i == g.skip_ws(s,i)
-            line2 = line2.strip()
+            i,j,nows2,line2 = self.getLine(s,i)
             n1,n2 = len(name),len(line2)
             # look ahead two lines.
             i3,j3 = g.getLine(s,j)
             name2 = s[i3:j3].strip()
-            i4,j4 = g.getLine(s,j3)
-            # line4 = s[i4:j4].strip() #
-            line4 = s[i4:j4]
-            nows4 = i4 == g.skip_ws(s,i4)
-            line4 = line4.strip()
+            i4,j4,nows4,line4 = self.getLine(s,j3)
             n3,n4 = len(name2),len(line4)
             overline = (
                 nows2 and self.isUnderLine(line2) and
@@ -4094,17 +4093,29 @@ class rstScanner (baseScannerClass):
             ok = (not overline and nows2 and self.isUnderLine(line2) and
                 n1 > 0 and n2 >= n1)
             if ok:
+                old_i = i
                 i += n2
                 # Eliminate the need for the "little fib" in writeBody.
-                if i < len(s) and s[i] == '\n': i += 1
+                ### if i < len(s) and s[i] == '\n': i += 1
+                if trace: g.trace('***skipping',name,repr(s[old_i:i+1]))
                 ch,kind = line2[0],'under'
                 if ch not in self.underlines1:
                     self.underlines1.append(ch)
-                    # if trace: g.trace('underlines1',self.underlines1,name)
-                if trace: g.trace('\nname  %s\nline2 %s' % (
-                    repr(name),repr(line2)))
+                    if trace: g.trace('*** underlines1',self.underlines1,name)
+                if trace and verbose: g.trace('\nname  %s\nline2 %s' % (
+                    repr(name),repr(line2))) # ,'\n',g.callers(4))
         return kind,name,i,ch
-    #@-node:ekr.20090501095634.47:startsSection
+    #@+node:ekr.20091229075924.6234:getLine
+    def getLine (self,s,i):
+
+        i,j = g.getLine(s,i)
+        line = s[i:j]
+        nows = i == g.skip_ws(s,i)
+        line = line.strip()
+
+        return i,j,nows,line
+    #@-node:ekr.20091229075924.6234:getLine
+    #@-node:ekr.20090501095634.47:startsSection & helper
     #@-others
 #@-node:ekr.20090501095634.41:class rstScanner
 #@+node:ekr.20071214072145.1:class xmlScanner

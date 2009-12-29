@@ -4865,58 +4865,6 @@ if False: # Never used in either Leo2k or Leo3k.
     def __len__(self):
         return len(self.keys())
 #@-node:ekr.20091216103214.6298:fourth-level (python 2.6)
-#@+node:ekr.20091221144651.6377:old g.u and g.ue
-
-def u(s,encoding='utf-8'):
-    '''Convert the string s to unicode if necessary.'''
-    if g.isUnicode(s):
-        return s
-    elif g.isPython3:
-        return str(s)
-    else:
-        return unicode(s)
-
-def ue(s,encoding):
-    '''Convert the string s to unicode if necessary.'''
-    if g.isUnicode(s):
-        return s
-    elif g.isPython3:
-        return str(s,encoding)
-    else:
-        return unicode(s,encoding)
-#@-node:ekr.20091221144651.6377:old g.u and g.ue
-#@+node:ekr.20091228080620.6500:from rst.isSafeWrite
-    # No need for a trial write: just analyze the sources
-
-    # Save and restore the existing output file.
-    old_output_file = self.outputFile
-    old_trial_write = self.trialWrite
-    try:
-        self.outputFile = StringIO()
-        self.trialWrite = True
-        self.writeNode(p)
-        source = stringOutput = self.outputFile.getvalue()
-        g.trace(stringOutput)
-    finally:
-        self.trialWrite = old_trial_write
-        self.outputFile = old_output_file
-
-    # The original, feeble, check.
-    if not p.hasChildren() and not trialWrite:
-        g.es('',p.h,'has no children',color='red')
-        ok = False
-#@nonl
-#@-node:ekr.20091228080620.6500:from rst.isSafeWrite
-#@+node:ekr.20091228214639.6226:from reportMismatch
-        else:
-            aList.append('input...')
-            for i in range(len(lines1)):
-                aList.append('%3d %s' % (i,repr(lines1[i])))
-            aList.append('output...')
-            for i in range(len(lines2)):
-                aList.append('%3d %s' % (i,repr(lines2[i])))
-#@nonl
-#@-node:ekr.20091228214639.6226:from reportMismatch
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node

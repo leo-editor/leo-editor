@@ -6015,10 +6015,7 @@ def readOneAtAutoNode(self,p):
 #@-node:ekr.20070807084545:readOneAtAutoNode (leoImport)
 #@-node:ekr.20070806111212:readAtAutoNodes (importCommands) & helper
 #@-node:ekr.20091227085627.6538:Removed unsettling @auto warning
-#@+node:ekr.20091221094815.6386:at-auto-rst problems
-@nocolor-node
-
-
+#@+node:ekr.20091221094815.6386:Fixed at-auto-rst problems
 #@+node:ekr.20091227092342.6545:Description
 @nocolor-node
 
@@ -6391,7 +6388,6 @@ def __init__ (self,importCommands,atAuto,language):
         # For example, ';' and '=' in C.
 
     self.strict = False # True if leading whitespace is very significant.
-    self.writeEmptyBodies = True
 #@-node:ekr.20070703122141.66:baseScannerClass.__init__
 #@+node:ekr.20070808115837:Checking
 #@+node:ekr.20070703122141.102:check
@@ -6488,8 +6484,6 @@ def compareHelper (self,lines1,lines2,i,strict):
     messageKind = None
 
     if i >= len(lines1):
-        ### if self.isRst:
-        ###    return True # ignore extra lines.
         if i != expectedMismatch or not g.unitTesting:
             pr('extra lines')
             for line in lines2[i:]:
@@ -6555,7 +6549,7 @@ def adjustRstLines(self,lines):
 
     This fudge allows the rst code generators to insert needed newlines freely.'''
 
-    return [z for z in lines if z.strip(' \t') != '\n']
+    return [z for z in lines if z.strip() != '']
 #@-node:ekr.20091227115606.6468:adjustRstLines
 #@+node:ekr.20090513073632.5735:compareRstUnderlines
 def compareRstUnderlines(self,s1,s2):
@@ -6685,15 +6679,8 @@ def computeBody (self,s,start,sigStart,codeEnd):
         while start > 0 and s[start-1] in (' ','\t'):
             start -= 1
 
-    if self.isRst:
-        # Never indent any text; discard the entire signature.
-        body1 = s[start:sigStart]
-        body2 = s[self.sigEnd+1:codeEnd]
-        # body2 = g.removeLeadingBlankLines(body2) # 2009/12/28
-        if trace: g.trace('body1: %s body2: %s' % (repr(body1),repr(body2)))
-    else:
-        body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
-        body2 = self.undentBody(s[sigStart:codeEnd])
+    body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
+    body2 = self.undentBody(s[sigStart:codeEnd])
     body = body1 + body2
 
     if trace: g.trace('body: %s' % repr(body))
@@ -6705,7 +6692,6 @@ def computeBody (self,s,start,sigStart,codeEnd):
             self.functionSpelling,self.sigId,g.get_line(s,codeEnd)))
 
     return body
-#@nonl
 #@-node:ekr.20090512153903.5806:computeBody (baseScannerClass)
 #@+node:ekr.20090513073632.5737:createDeclsNode
 def createDeclsNode (self,parent,s):
@@ -6952,7 +6938,7 @@ def putFunction (self,s,sigStart,codeEnd,start,parent):
 
     '''Create a node of parent for a function defintion.'''
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     verbose = False
 
     # if trace: g.trace(start,sigStart,self.sigEnd,codeEnd)
@@ -7752,7 +7738,6 @@ def __init__ (self,importCommands,atAuto):
     self.outerBlockDelim1 = None
     self.sigFailTokens = []
     self.strict = False # Mismatches in leading whitespace are irrelevant.
-    self.writeEmptyBodies = False
 
     # Ivars unique to rst scanning & code generation.
     self.lastParent = None # The previous parent.
@@ -7805,6 +7790,27 @@ def adjustParent (self,parent,headline):
     self.lastParent = parent.copy()
     return parent.copy()
 #@-node:ekr.20090512080015.5798:adjustParent
+#@+node:ekr.20091229090857.11694:computeBody (rst)
+def computeBody (self,s,start,sigStart,codeEnd):
+
+    trace = False and not g.unitTesting
+
+    body1 = s[start:sigStart]
+    # Adjust start backwards to get a better undent.
+    if body1.strip():
+        while start > 0 and s[start-1] in (' ','\t'):
+            start -= 1
+
+    # Never indent any text; discard the entire signature.
+    body1 = s[start:sigStart]
+    body2 = s[self.sigEnd+1:codeEnd]
+    body2 = g.removeLeadingBlankLines(body2) # 2009/12/28
+    body = body1 + body2
+
+    # Don't warn about missing tail newlines: they will be added.
+    if trace: g.trace('body: %s' % repr(body))
+    return body
+#@-node:ekr.20091229090857.11694:computeBody (rst)
 #@+node:ekr.20090512080015.5797:computeSectionLevel
 def computeSectionLevel (self,ch,kind):
 
@@ -7838,6 +7844,7 @@ def endGen (self,s):
 
     '''Remember the underlining characters in the root's uA.'''
 
+    trace = False and not g.unitTesting
     p = self.root
     if p:
         tag = 'rst-import'
@@ -7848,7 +7855,7 @@ def endGen (self,s):
         d ['underlines2'] = underlines2
         self.underlines1 = underlines1
         self.underlines2 = underlines2
-        # g.trace(repr(underlines1),repr(underlines2))
+        if trace: g.trace(repr(underlines1),repr(underlines2),g.callers(4))
         p.v.u [tag] = d
 
     # Append a warning to the root node.
@@ -7891,8 +7898,8 @@ def startsHelper(self,s,i,kind,tags):
     '''return True if s[i:] starts an rST section.
     Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
 
-    trace = True and not g.unitTesting
-    verbose = False
+    trace = False and not g.unitTesting
+    verbose = True
     kind,name,next,ch = self.startsSection(s,i)
     if kind == 'plain': return False
 
@@ -7940,10 +7947,9 @@ def startsSection (self,s,i):
     '''
 
     trace = False and not g.unitTesting
+    verbose = False
 
     # 2009/12/27: sections can not begin with whitespace.
-    # i1,j = g.getLine(s,i)
-    # line = s[i1:j].strip()
     i1,j,nows,line = self.getLine(s,i)
     ch,kind = '','plain' # defaults.
 
@@ -7952,9 +7958,7 @@ def startsSection (self,s,i):
         name_i,name_j = g.getLine(s,name_i)
         name = s[name_i:name_j].strip()
         next_i = g.skip_line(s,name_i)
-        # i,j = g.getLine(s,next_i)
-        # line2 = s[i:j].strip()
-        i,j,nows,line2 = self.getLine(s,i)
+        i,j,nows,line2 = self.getLine(s,next_i)
         n1,n2,n3 = len(line),len(name),len(line2)
         ch1,ch3 = line[0],line2 and line2[0]
         ok = (nows and self.isUnderLine(line2) and
@@ -7966,21 +7970,18 @@ def startsSection (self,s,i):
             ch,kind = ch1,'over'
             if ch1 not in self.underlines2:
                 self.underlines2.append(ch1)
-                # if trace: g.trace('underlines2',self.underlines2,name)
-            if trace: g.trace('\nline  %s\nname  %s\nline2 %s' % (
-                repr(line),repr(name),repr(line2)))
+                if trace: g.trace('*** underlines2',self.underlines2,name)
+            if trace and verbose:
+                g.trace('\nline  %s\nname  %s\nline2 %s' % (
+                    repr(line),repr(name),repr(line2))) #,'\n',g.callers(4))
     else:
         name = line.strip()
         i = g.skip_line(s,i1)
-        # i,j = g.getLine(s,i)
-        # line2 = s[i:j].strip() #
         i,j,nows2,line2 = self.getLine(s,i)
         n1,n2 = len(name),len(line2)
         # look ahead two lines.
         i3,j3 = g.getLine(s,j)
         name2 = s[i3:j3].strip()
-        # i4,j4 = g.getLine(s,j3)
-        # line4 = s[i4:j4].strip() #
         i4,j4,nows4,line4 = self.getLine(s,j3)
         n3,n4 = len(name2),len(line4)
         overline = (
@@ -7990,15 +7991,17 @@ def startsSection (self,s,i):
         ok = (not overline and nows2 and self.isUnderLine(line2) and
             n1 > 0 and n2 >= n1)
         if ok:
+            old_i = i
             i += n2
             # Eliminate the need for the "little fib" in writeBody.
-            if i < len(s) and s[i] == '\n': i += 1
+            ### if i < len(s) and s[i] == '\n': i += 1
+            if trace: g.trace('***skipping',name,repr(s[old_i:i+1]))
             ch,kind = line2[0],'under'
             if ch not in self.underlines1:
                 self.underlines1.append(ch)
-                # if trace: g.trace('underlines1',self.underlines1,name)
-            if trace: g.trace('\nname  %s\nline2 %s' % (
-                repr(name),repr(line2)))
+                if trace: g.trace('*** underlines1',self.underlines1,name)
+            if trace and verbose: g.trace('\nname  %s\nline2 %s' % (
+                repr(name),repr(line2))) # ,'\n',g.callers(4))
     return kind,name,i,ch
 #@+node:ekr.20091229075924.6234:getLine
 def getLine (self,s,i):
@@ -8386,14 +8389,17 @@ def initAtAutoWrite(self,p,fileName,outputFile):
 
     # Set underlining characters.
     d = self.tnodeOptionDict.get(p.v) # Set by preprocessTree.
-    underlines = d.get('underline_characters')
-    if underlines:
+
+    ### There is no way to use user-defined underlining characters!
+    ### underlines = d.get('underline_characters')
+    if False: ### underlines:
         self.atAutoWriteUnderlines = underlines
     else:
         d = p.v.u.get('rst-import',{})
-        underlines2 = d.get('underlines2')
-        if not underlines2: underlines2 = '#'
-        underlines1 = d.get('underlines1')
+        # g.trace(d,g.callers(4))
+        underlines2 = d.get('underlines2','')
+        ### if not underlines2: underlines2 = '#'
+        underlines1 = d.get('underlines1','')
         if not underlines1: underlines1 = '=+*^~"\'`-:><_'
             # The standard defaults.
         if len(underlines2) > 1:
@@ -8858,7 +8864,6 @@ def writeHeadlineHelper (self,p):
             self.write('\n%s\n\n' % h)
     else:
         self.write('\n**%s**\n\n' % h.replace('*',''))
-#@nonl
 #@-node:ekr.20090502071837.84:writeHeadlineHelper
 #@-node:ekr.20090502071837.83:writeHeadline & helper
 #@+node:ekr.20090502071837.85:writeNode (rst)
@@ -8935,6 +8940,35 @@ def writeTree(self,p):
 #@-node:ekr.20090502071837.58:write methods (leoRst)
 #@-node:ekr.20091219132601.6354:Writing
 #@+node:ekr.20091227115606.6467:Comparison
+#@+node:ekr.20091229075924.6235:removeLeadingBlankLines & test
+def removeLeadingBlankLines (s):
+
+    lines = g.splitLines(s)
+
+    result = [] ; remove = True
+    for line in lines:
+        if remove and not line.strip():
+            pass
+        else:
+            remove = False
+            result.append(line)
+
+    return ''.join(result)
+#@+node:ekr.20091229075924.6236:@test g.removeLeadingBlankLines
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    for s,expected in (
+        ('a\nb', 'a\nb'),
+        ('\n  \nb\n', 'b\n'),
+        (' \t \n\n\n c', ' c'),
+    ):
+        result = g.removeLeadingBlankLines(s)
+        assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
+            repr(s),repr(expected),repr(result))
+#@-node:ekr.20091229075924.6236:@test g.removeLeadingBlankLines
+#@-node:ekr.20091229075924.6235:removeLeadingBlankLines & test
 #@+node:ekr.20031218072017.3195:splitLines & joinLines
 def splitLines (s):
 
@@ -9034,8 +9068,6 @@ def compareHelper (self,lines1,lines2,i,strict):
     messageKind = None
 
     if i >= len(lines1):
-        ### if self.isRst:
-        ###    return True # ignore extra lines.
         if i != expectedMismatch or not g.unitTesting:
             pr('extra lines')
             for line in lines2[i:]:
@@ -9101,7 +9133,7 @@ def adjustRstLines(self,lines):
 
     This fudge allows the rst code generators to insert needed newlines freely.'''
 
-    return [z for z in lines if z.strip(' \t') != '\n']
+    return [z for z in lines if z.strip() != '']
 #@-node:ekr.20091227115606.6468:adjustRstLines
 #@+node:ekr.20090513073632.5735:compareRstUnderlines
 def compareRstUnderlines(self,s1,s2):
@@ -9201,14 +9233,17 @@ def initAtAutoWrite(self,p,fileName,outputFile):
 
     # Set underlining characters.
     d = self.tnodeOptionDict.get(p.v) # Set by preprocessTree.
-    underlines = d.get('underline_characters')
-    if underlines:
+
+    ### There is no way to use user-defined underlining characters!
+    ### underlines = d.get('underline_characters')
+    if False: ### underlines:
         self.atAutoWriteUnderlines = underlines
     else:
         d = p.v.u.get('rst-import',{})
-        underlines2 = d.get('underlines2')
-        if not underlines2: underlines2 = '#'
-        underlines1 = d.get('underlines1')
+        # g.trace(d,g.callers(4))
+        underlines2 = d.get('underlines2','')
+        ### if not underlines2: underlines2 = '#'
+        underlines1 = d.get('underlines1','')
         if not underlines1: underlines1 = '=+*^~"\'`-:><_'
             # The standard defaults.
         if len(underlines2) > 1:
@@ -9259,36 +9294,384 @@ def isSafeWrite (self,p):
 #@-node:ekr.20091228080620.6499:isSafeWrite
 #@-node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
 #@-node:ekr.20091228080620.6498:Warn about dangerous writes
-#@-node:ekr.20091221094815.6386:at-auto-rst problems
-#@+node:ekr.20091228143718.6222:Fixed new at-auto-import bug
-@nocolor-node
+#@+node:ekr.20091229090857.11684:Major changes
+#@+node:ekr.20091227115606.6468:adjustRstLines
+def adjustRstLines(self,lines):
 
-- There was a blunder in isSafeWrite: it must return *True* for trial writes.
+    '''Ignore newlines.
 
-- Protected against index errors in reportMismatch and simplified the code.
-#@nonl
-#@+node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
-def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
+    This fudge allows the rst code generators to insert needed newlines freely.'''
 
-    '''Write an @auto tree containing imported rST code.
-    The caller will close the output file.'''
+    return [z for z in lines if z.strip() != '']
+#@-node:ekr.20091227115606.6468:adjustRstLines
+#@+node:ekr.20090502071837.84:writeHeadlineHelper
+def writeHeadlineHelper (self,p):
+
+    h = p.h
+    if not self.atAutoWrite:
+        h = h.strip()
+
+    # Remove any headline command before writing the headline.
+    i = g.skip_ws(h,0)
+    i = g.skip_id(h,0,chars='@-')
+    word = h [:i].strip()
+    if word:
+        # Never generate a section for @rst-option or @rst-options or @rst-no-head.
+        if word in (
+            self.getOption('option_prefix'),
+            self.getOption('options_prefix'),
+            self.getOption('ignore_headline_prefix'), # Bug fix: 2009-5-13
+            self.getOption('ignore_headlines_prefix'),  # Bug fix: 2009-5-13
+        ):
+            return
+        # Remove all other headline commands from the headline.
+        for prefix in self.headlineCommands:
+            if word == prefix:
+                h = h [len(word):].strip()
+                break
+
+        # New in Leo 4.4.4.
+        if word.startswith('@'):
+            if self.getOption('strip_at_file_prefixes'):
+                for s in ('@auto','@file','@nosent','@thin',):
+                    if g.match_word(word,0,s):
+                        h = h [len(s):].strip()
+
+    if not h.strip(): return
+
+    if self.getOption('show_sections'):
+        if self.getOption('generate_rst'):
+            self.write(self.underline(h,p)) # Used by @auto-rst.
+        else:
+            self.write('\n%s\n\n' % h)
+    else:
+        self.write('\n**%s**\n\n' % h.replace('*',''))
+#@-node:ekr.20090502071837.84:writeHeadlineHelper
+#@+node:ekr.20090501095634.47:startsSection & helper
+def startsSection (self,s,i):
+
+    '''Scan a line and possible one or two other lines,
+    looking for an underlined or overlined/underlined name.
+
+    Return (kind,name,i):
+        kind: in ('under','over','plain')
+        name: the name of the underlined or overlined line.
+        i: the following character if kind is not 'plain'
+        ch: the underlining and possibly overlining character.
+    '''
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    # 2009/12/27: sections can not begin with whitespace.
+    i1,j,nows,line = self.getLine(s,i)
+    ch,kind = '','plain' # defaults.
+
+    if nows and self.isUnderLine(line): # an overline.
+        name_i = g.skip_line(s,i1)
+        name_i,name_j = g.getLine(s,name_i)
+        name = s[name_i:name_j].strip()
+        next_i = g.skip_line(s,name_i)
+        i,j,nows,line2 = self.getLine(s,next_i)
+        n1,n2,n3 = len(line),len(name),len(line2)
+        ch1,ch3 = line[0],line2 and line2[0]
+        ok = (nows and self.isUnderLine(line2) and
+            n1 >= n2 and n2 > 0 and n3 >= n2 and ch1 == ch3)
+        if ok:
+            i += n3
+            # Eliminate the need for the "little fib" in writeBody.
+            if i < len(s) and s[i] == '\n': i += 1
+            ch,kind = ch1,'over'
+            if ch1 not in self.underlines2:
+                self.underlines2.append(ch1)
+                if trace: g.trace('*** underlines2',self.underlines2,name)
+            if trace and verbose:
+                g.trace('\nline  %s\nname  %s\nline2 %s' % (
+                    repr(line),repr(name),repr(line2))) #,'\n',g.callers(4))
+    else:
+        name = line.strip()
+        i = g.skip_line(s,i1)
+        i,j,nows2,line2 = self.getLine(s,i)
+        n1,n2 = len(name),len(line2)
+        # look ahead two lines.
+        i3,j3 = g.getLine(s,j)
+        name2 = s[i3:j3].strip()
+        i4,j4,nows4,line4 = self.getLine(s,j3)
+        n3,n4 = len(name2),len(line4)
+        overline = (
+            nows2 and self.isUnderLine(line2) and
+            nows4 and self.isUnderLine(line4) and
+            n3 > 0 and n2 >= n3 and n4 >= n3)
+        ok = (not overline and nows2 and self.isUnderLine(line2) and
+            n1 > 0 and n2 >= n1)
+        if ok:
+            old_i = i
+            i += n2
+            # Eliminate the need for the "little fib" in writeBody.
+            ### if i < len(s) and s[i] == '\n': i += 1
+            if trace: g.trace('***skipping',name,repr(s[old_i:i+1]))
+            ch,kind = line2[0],'under'
+            if ch not in self.underlines1:
+                self.underlines1.append(ch)
+                if trace: g.trace('*** underlines1',self.underlines1,name)
+            if trace and verbose: g.trace('\nname  %s\nline2 %s' % (
+                repr(name),repr(line2))) # ,'\n',g.callers(4))
+    return kind,name,i,ch
+#@+node:ekr.20091229075924.6234:getLine
+def getLine (self,s,i):
+
+    i,j = g.getLine(s,i)
+    line = s[i:j]
+    nows = i == g.skip_ws(s,i)
+    line = line.strip()
+
+    return i,j,nows,line
+#@-node:ekr.20091229075924.6234:getLine
+#@-node:ekr.20090501095634.47:startsSection & helper
+#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
 
     try:
-        self.trialWrite = trialWrite
-        self.atAutoWrite = True
-        self.initAtAutoWrite(p,fileName,outputFile)
-        self.topNode = p.copy() # Indicate the top of this tree.
-        self.topLevel = p.level()
-        after = p.nodeAfterTree()
-        ok = self.isSafeWrite(p)
+        fileContent = open(fileName, "rb").read()
+        cachefile = self._contentHashFile(p, fileContent)
+    except IOError:
+        cachefile = None
+
+    # Remember that we have read this file.
+    p.v.at_auto_read = True # Create the attribute
+
+    # Disable caching for test.leo.
+    if c.shortFileName() != 'test.leo':
+        if cachefile is not None and cachefile in c.db:        
+            # g.es('uncache:',p.h)
+            aList = c.db[cachefile]
+            p.v.createOutlineFromCacheList(c,aList)
+            return
+
+    if not g.unitTesting:
+        g.es("reading:",p.h)
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        # Note: the file contains an @ignore,
+        # so no unintended write can happen.
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        # c.setBodyString(p,'')
+        p.clearDirty()
+        c.setChanged(oldChanged)
+    else:
+        self.writeCachedTree(p, cachefile)
+        g.doHook('after-auto', p = p)  # call after-auto callbacks
+#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+#@-node:ekr.20091229090857.11684:Major changes
+#@+node:ekr.20091229090857.11691:Underlining
+#@+node:ekr.20090502071837.2:endGen
+def endGen (self,s):
+
+    '''Remember the underlining characters in the root's uA.'''
+
+    trace = False and not g.unitTesting
+    p = self.root
+    if p:
+        tag = 'rst-import'
+        d = p.v.u.get(tag,{})
+        underlines1 = ''.join([str(z) for z in self.underlines1])
+        underlines2 = ''.join([str(z) for z in self.underlines2])
+        d ['underlines1'] = underlines1
+        d ['underlines2'] = underlines2
+        self.underlines1 = underlines1
+        self.underlines2 = underlines2
+        if trace: g.trace(repr(underlines1),repr(underlines2),g.callers(4))
+        p.v.u [tag] = d
+
+    # Append a warning to the root node.
+    warningLines = (
+        'Warning: this node is ignored when writing this file.',
+        'However, @ @rst-options are recognized in this node.',
+    )
+    lines = ['.. %s' % (z) for z in warningLines]
+    warning = '\n%s\n' % '\n'.join(lines)
+    self.root.b = self.root.b + warning
+#@-node:ekr.20090502071837.2:endGen
+#@+node:ekr.20090501095634.45:startsHelper
+def startsHelper(self,s,i,kind,tags):
+
+    '''return True if s[i:] starts an rST section.
+    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
+
+    trace = False and not g.unitTesting
+    verbose = True
+    kind,name,next,ch = self.startsSection(s,i)
+    if kind == 'plain': return False
+
+    self.underlineCh = ch
+    self.lastSectionLevel = self.sectionLevel
+    self.sectionLevel = self.computeSectionLevel(ch,kind)
+    self.sigStart = g.find_line_start(s,i)
+    self.sigEnd = next
+    self.sigId = name
+    i = next + 1
+
+    if trace: g.trace('sigId',self.sigId,'next',next)
+
+    while i < len(s):
+        progress = i
+        i,j = g.getLine(s,i)
+        kind,name,next,ch = self.startsSection(s,i)
+        if trace and verbose: g.trace(kind,repr(s[i:j]))
+        if kind in ('over','under'):
+            break
+        else:
+            i = j
+        assert i > progress
+
+    self.codeEnd = i
+
+    if trace:
+        if verbose:
+            g.trace('found...\n%s' % s[self.sigStart:self.codeEnd])
+        else:
+            g.trace('level %s %s' % (self.sectionLevel,self.sigId))
+    return True
+#@-node:ekr.20090501095634.45:startsHelper
+#@+node:ekr.20090501095634.47:startsSection & helper
+def startsSection (self,s,i):
+
+    '''Scan a line and possible one or two other lines,
+    looking for an underlined or overlined/underlined name.
+
+    Return (kind,name,i):
+        kind: in ('under','over','plain')
+        name: the name of the underlined or overlined line.
+        i: the following character if kind is not 'plain'
+        ch: the underlining and possibly overlining character.
+    '''
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    # 2009/12/27: sections can not begin with whitespace.
+    i1,j,nows,line = self.getLine(s,i)
+    ch,kind = '','plain' # defaults.
+
+    if nows and self.isUnderLine(line): # an overline.
+        name_i = g.skip_line(s,i1)
+        name_i,name_j = g.getLine(s,name_i)
+        name = s[name_i:name_j].strip()
+        next_i = g.skip_line(s,name_i)
+        i,j,nows,line2 = self.getLine(s,next_i)
+        n1,n2,n3 = len(line),len(name),len(line2)
+        ch1,ch3 = line[0],line2 and line2[0]
+        ok = (nows and self.isUnderLine(line2) and
+            n1 >= n2 and n2 > 0 and n3 >= n2 and ch1 == ch3)
         if ok:
-            p = p.firstChild() # A hack: ignore the root node.
-            while p and p != after:
-                self.writeNode(p) # side effect: advances p
-    finally:
-        self.atAutoWrite = False
-    return ok
-#@nonl
+            i += n3
+            # Eliminate the need for the "little fib" in writeBody.
+            if i < len(s) and s[i] == '\n': i += 1
+            ch,kind = ch1,'over'
+            if ch1 not in self.underlines2:
+                self.underlines2.append(ch1)
+                if trace: g.trace('*** underlines2',self.underlines2,name)
+            if trace and verbose:
+                g.trace('\nline  %s\nname  %s\nline2 %s' % (
+                    repr(line),repr(name),repr(line2))) #,'\n',g.callers(4))
+    else:
+        name = line.strip()
+        i = g.skip_line(s,i1)
+        i,j,nows2,line2 = self.getLine(s,i)
+        n1,n2 = len(name),len(line2)
+        # look ahead two lines.
+        i3,j3 = g.getLine(s,j)
+        name2 = s[i3:j3].strip()
+        i4,j4,nows4,line4 = self.getLine(s,j3)
+        n3,n4 = len(name2),len(line4)
+        overline = (
+            nows2 and self.isUnderLine(line2) and
+            nows4 and self.isUnderLine(line4) and
+            n3 > 0 and n2 >= n3 and n4 >= n3)
+        ok = (not overline and nows2 and self.isUnderLine(line2) and
+            n1 > 0 and n2 >= n1)
+        if ok:
+            old_i = i
+            i += n2
+            # Eliminate the need for the "little fib" in writeBody.
+            ### if i < len(s) and s[i] == '\n': i += 1
+            if trace: g.trace('***skipping',name,repr(s[old_i:i+1]))
+            ch,kind = line2[0],'under'
+            if ch not in self.underlines1:
+                self.underlines1.append(ch)
+                if trace: g.trace('*** underlines1',self.underlines1,name)
+            if trace and verbose: g.trace('\nname  %s\nline2 %s' % (
+                repr(name),repr(line2))) # ,'\n',g.callers(4))
+    return kind,name,i,ch
+#@+node:ekr.20091229075924.6234:getLine
+def getLine (self,s,i):
+
+    i,j = g.getLine(s,i)
+    line = s[i:j]
+    nows = i == g.skip_ws(s,i)
+    line = line.strip()
+
+    return i,j,nows,line
+#@-node:ekr.20091229075924.6234:getLine
+#@-node:ekr.20090501095634.47:startsSection & helper
+#@+node:ekr.20090502071837.93:underline (leoRst)
+def underline (self,s,p):
+
+    '''Return the underlining string to be used at the given level for string s.
+    This includes the headline, and possibly a leading overlining line.
+    '''
+
+    trace = False and not g.unitTesting
+
+    if trace: g.trace(self.atAutoWrite,repr(self.underlines2),p.h)
+
+    if self.atAutoWrite:
+        # We *might* generate overlines for top-level sections.
+        u = self.atAutoWriteUnderlines
+        level = p.level()-self.topLevel
+
+        # This is tricky. The index n depends on several factors.
+        if self.underlines2:
+            level -= 1 # There *is* a double-underlined section.
+            n = level
+        else:
+            n = level-1
+        if 0 <= n < len(u): ch = u[n]
+        elif u:
+            ch = u[-1]
+        else:
+            g.trace('can not happen: no u')
+            ch = '#'
+        n = max(4,len(s))
+        if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
+        if level == 0 and self.underlines2:
+            return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
+        else:
+            return '%s\n%s\n\n' % (p.h,ch*n)
+    else:
+        # The user is responsible for top-level overlining.
+        u = self.getOption('underline_characters') #  '''#=+*^~"'`-:><_'''
+        level = max(0,p.level()-self.topLevel)
+        level = min(level+1,len(u)-1) # Reserve the first character for explicit titles.
+        ch = u [level]
+        if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
+        n = max(4,len(s))
+        return '%s\n%s\n\n' % (p.h.strip(),ch*n)
+#@-node:ekr.20090502071837.93:underline (leoRst)
 #@+node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
 def initAtAutoWrite(self,p,fileName,outputFile):
 
@@ -9305,14 +9688,17 @@ def initAtAutoWrite(self,p,fileName,outputFile):
 
     # Set underlining characters.
     d = self.tnodeOptionDict.get(p.v) # Set by preprocessTree.
-    underlines = d.get('underline_characters')
-    if underlines:
+
+    ### There is no way to use user-defined underlining characters!
+    ### underlines = d.get('underline_characters')
+    if False: ### underlines:
         self.atAutoWriteUnderlines = underlines
     else:
         d = p.v.u.get('rst-import',{})
-        underlines2 = d.get('underlines2')
-        if not underlines2: underlines2 = '#'
-        underlines1 = d.get('underlines1')
+        # g.trace(d,g.callers(4))
+        underlines2 = d.get('underlines2','')
+        ### if not underlines2: underlines2 = '#'
+        underlines1 = d.get('underlines1','')
         if not underlines1: underlines1 = '=+*^~"\'`-:><_'
             # The standard defaults.
         if len(underlines2) > 1:
@@ -9342,65 +9728,54 @@ if g.unitTesting:
         rst.atAutoWriteUnderlines
 #@-node:ekr.20090702084917.6033:@test initAtAutoWrite
 #@-node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
-#@+node:ekr.20091228080620.6499:isSafeWrite
-def isSafeWrite (self,p):
+#@+node:ekr.20090512153903.5806:computeBody (baseScannerClass)
+def computeBody (self,s,start,sigStart,codeEnd):
 
-    '''Return True if node p contributes nothing but
-    rst-options to the write.'''
+    trace = False and not g.unitTesting
 
-    if self.trialWrite:
-        return True # Trial writes are always safe.
+    body1 = s[start:sigStart]
+    # Adjust start backwards to get a better undent.
+    if body1.strip():
+        while start > 0 and s[start-1] in (' ','\t'):
+            start -= 1
 
-    lines = g.splitLines(p.b)
-    for z in lines:
-        if z.strip() and not z.startswith('@') and not z.startswith('.. '):
-            # A real line that will not be written.
-            g.es('unsafe @auto-rst',color='red')
-            g.es('body text will be ignored in\n',p.h)
-            return False
-    else:
-        return True
-#@-node:ekr.20091228080620.6499:isSafeWrite
-#@-node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
-#@+node:ekr.20070911110507:reportMismatch & test
-def reportMismatch (self,lines1,lines2,bad_i):
+    body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
+    body2 = self.undentBody(s[sigStart:codeEnd])
+    body = body1 + body2
 
-    kind = g.choose(self.atAuto,'@auto','import command')
-    n1,n2 = len(lines1),len(lines2)
-    self.error(
-        '%s did not import %s perfectly\nfirst mismatched line: %d' % (
-            kind,self.root.h,bad_i))
+    if trace: g.trace('body: %s' % repr(body))
 
-    if g.unitTesting:
-        assert '\n'.join(aList)
-    else:
-        aList = []
-        for i in range(max(0,bad_i-2),min(bad_i+3,max(n1,n2))):
-            for lines,n in ((lines1,n1),(lines2,n2)):
-                if i < n: line = repr(lines[i])
-                else: line = '<eof>'
-                aList.append('%4d %s' % (i,line))
-        g.es_print('\n'.join(aList),color='blue')
+    tail = body[len(body.rstrip()):]
+    if not '\n' in tail:
+        self.warning(
+            '%s %s does not end with a newline; one will be added\n%s' % (
+            self.functionSpelling,self.sigId,g.get_line(s,codeEnd)))
 
-    return False
-#@+node:ekr.20090517020744.5785:@test reportMismatch
-if g.unitTesting:
+    return body
+#@-node:ekr.20090512153903.5806:computeBody (baseScannerClass)
+#@+node:ekr.20091229090857.11694:computeBody (rst)
+def computeBody (self,s,start,sigStart,codeEnd):
 
-    import leo.core.leoImport as leoImport
-    c,p = g.getTestVars()
+    trace = False and not g.unitTesting
 
-    ic = c.importCommands
-    scanner = leoImport.rstScanner(importCommands=ic,atAuto=True)
-    scanner.root = p
-    s1 = ["abc",]
-    s2 = ["xyz",]
+    body1 = s[start:sigStart]
+    # Adjust start backwards to get a better undent.
+    if body1.strip():
+        while start > 0 and s[start-1] in (' ','\t'):
+            start -= 1
 
-    scanner.reportMismatch(s1,s2,1)
+    # Never indent any text; discard the entire signature.
+    body1 = s[start:sigStart]
+    body2 = s[self.sigEnd+1:codeEnd]
+    body2 = g.removeLeadingBlankLines(body2) # 2009/12/28
+    body = body1 + body2
 
-    # Why is leoSettings.leo scanned twice in dynamicUnitTest.leo?
-#@-node:ekr.20090517020744.5785:@test reportMismatch
-#@-node:ekr.20070911110507:reportMismatch & test
-#@-node:ekr.20091228143718.6222:Fixed new at-auto-import bug
+    # Don't warn about missing tail newlines: they will be added.
+    if trace: g.trace('body: %s' % repr(body))
+    return body
+#@-node:ekr.20091229090857.11694:computeBody (rst)
+#@-node:ekr.20091229090857.11691:Underlining
+#@-node:ekr.20091221094815.6386:Fixed at-auto-rst problems
 #@-node:ekr.20091221123255.6375:Fixed
 #@-node:ekr.20091221094815.6383:Urgent (voted up) bugs
 #@+node:ekr.20090721093155.5986:Bugs
@@ -11959,6 +12334,150 @@ KP_0,KP_1,KP_2,KP_3,KP_4,KP_5,KP_6,KP_7,KP_8,KP_9,
 Insert
 #@-node:ekr.20070123143428:k.defineTkNames
 #@-node:ekr.20091228133644.6221:Handle Insert key properly
+#@+node:ekr.20091228143718.6222:Fixed new at-auto-import bug
+@nocolor-node
+
+- There was a blunder in isSafeWrite: it must return *True* for trial writes.
+
+- Protected against index errors in reportMismatch and simplified the code.
+#@nonl
+#@+node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
+def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
+
+    '''Write an @auto tree containing imported rST code.
+    The caller will close the output file.'''
+
+    try:
+        self.trialWrite = trialWrite
+        self.atAutoWrite = True
+        self.initAtAutoWrite(p,fileName,outputFile)
+        self.topNode = p.copy() # Indicate the top of this tree.
+        self.topLevel = p.level()
+        after = p.nodeAfterTree()
+        ok = self.isSafeWrite(p)
+        if ok:
+            p = p.firstChild() # A hack: ignore the root node.
+            while p and p != after:
+                self.writeNode(p) # side effect: advances p
+    finally:
+        self.atAutoWrite = False
+    return ok
+#@nonl
+#@+node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
+def initAtAutoWrite(self,p,fileName,outputFile):
+
+    # Set up for a standard write.
+    self.createDefaultOptionsDict()
+    self.tnodeOptionDict = {}
+    self.scanAllOptions(p)
+    self.initWrite(p)
+    self.preprocessTree(p) # Allow @ @rst-options, for example.
+
+    # Do the overrides.
+    self.outputFile = outputFile
+    self.outputFileName = fileName
+
+    # Set underlining characters.
+    d = self.tnodeOptionDict.get(p.v) # Set by preprocessTree.
+
+    ### There is no way to use user-defined underlining characters!
+    ### underlines = d.get('underline_characters')
+    if False: ### underlines:
+        self.atAutoWriteUnderlines = underlines
+    else:
+        d = p.v.u.get('rst-import',{})
+        # g.trace(d,g.callers(4))
+        underlines2 = d.get('underlines2','')
+        ### if not underlines2: underlines2 = '#'
+        underlines1 = d.get('underlines1','')
+        if not underlines1: underlines1 = '=+*^~"\'`-:><_'
+            # The standard defaults.
+        if len(underlines2) > 1:
+            underlines2 = underlines2[0]
+            g.trace('too many top-level underlines, using %s' % (
+                underlines2),color='blue')
+        self.atAutoWriteUnderlines = underlines2 + underlines1
+        self.underlines1 = underlines1
+        self.underlines2 = underlines2
+#@+node:ekr.20090702084917.6033:@test initAtAutoWrite
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    rst = c.rstCommands
+    rst.initAtAutoWrite(p,fileName='<test file>',outputFile=None)
+
+    # Ensure we are actually testing the default logic.
+    d = p.v.u.get('rst-import',{})
+    underlines = d.get('underline_characters')
+    assert underlines is None,underlines
+    assert d == {},d
+    # Now test the logic.
+    assert rst.underlines2 == '#',rst.underlines2
+    assert rst.underlines1 == '=+*^~"\'`-:><_',rst.underlines1
+    assert rst.atAutoWriteUnderlines == '#=+*^~"\'`-:><_',\
+        rst.atAutoWriteUnderlines
+#@-node:ekr.20090702084917.6033:@test initAtAutoWrite
+#@-node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
+#@+node:ekr.20091228080620.6499:isSafeWrite
+def isSafeWrite (self,p):
+
+    '''Return True if node p contributes nothing but
+    rst-options to the write.'''
+
+    if self.trialWrite:
+        return True # Trial writes are always safe.
+
+    lines = g.splitLines(p.b)
+    for z in lines:
+        if z.strip() and not z.startswith('@') and not z.startswith('.. '):
+            # A real line that will not be written.
+            g.es('unsafe @auto-rst',color='red')
+            g.es('body text will be ignored in\n',p.h)
+            return False
+    else:
+        return True
+#@-node:ekr.20091228080620.6499:isSafeWrite
+#@-node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
+#@+node:ekr.20070911110507:reportMismatch & test
+def reportMismatch (self,lines1,lines2,bad_i):
+
+    kind = g.choose(self.atAuto,'@auto','import command')
+    n1,n2 = len(lines1),len(lines2)
+    self.error(
+        '%s did not import %s perfectly\nfirst mismatched line: %d' % (
+            kind,self.root.h,bad_i))
+
+    if g.unitTesting:
+        assert '\n'.join(aList)
+    else:
+        aList = []
+        for i in range(max(0,bad_i-2),min(bad_i+3,max(n1,n2))):
+            for lines,n in ((lines1,n1),(lines2,n2)):
+                if i < n: line = repr(lines[i])
+                else: line = '<eof>'
+                aList.append('%4d %s' % (i,line))
+        g.es_print('\n'.join(aList),color='blue')
+
+    return False
+#@+node:ekr.20090517020744.5785:@test reportMismatch
+if g.unitTesting:
+
+    import leo.core.leoImport as leoImport
+    c,p = g.getTestVars()
+
+    ic = c.importCommands
+    scanner = leoImport.rstScanner(importCommands=ic,atAuto=True)
+    scanner.root = p
+    s1 = ["abc",]
+    s2 = ["xyz",]
+
+    scanner.reportMismatch(s1,s2,1)
+
+    # Why is leoSettings.leo scanned twice in dynamicUnitTest.leo?
+#@-node:ekr.20090517020744.5785:@test reportMismatch
+#@-node:ekr.20070911110507:reportMismatch & test
+#@-node:ekr.20091228143718.6222:Fixed new at-auto-import bug
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin
