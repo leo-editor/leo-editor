@@ -4907,6 +4907,16 @@ def ue(s,encoding):
         ok = False
 #@nonl
 #@-node:ekr.20091228080620.6500:from rst.isSafeWrite
+#@+node:ekr.20091228214639.6226:from reportMismatch
+        else:
+            aList.append('input...')
+            for i in range(len(lines1)):
+                aList.append('%3d %s' % (i,repr(lines1[i])))
+            aList.append('output...')
+            for i in range(len(lines2)):
+                aList.append('%3d %s' % (i,repr(lines2[i])))
+#@nonl
+#@-node:ekr.20091228214639.6226:from reportMismatch
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node

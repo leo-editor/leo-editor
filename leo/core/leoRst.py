@@ -739,7 +739,7 @@ class rstCommands:
         rst-options to the write.'''
 
         if self.trialWrite:
-            return False # Trial writes are always safe.
+            return True # Trial writes are always safe.
 
         lines = g.splitLines(p.b)
         for z in lines:

@@ -1827,11 +1827,9 @@ class baseScannerClass (scanUtility):
         '''Return True if a trial write produces the original file.'''
 
         # s1 and s2 are for unit testing.
-
         c = self.c ; at = c.atFileCommands
-
         if s1 is None and s2 is None:
-            if self.isRst: # Errors writing file at present...
+            if self.isRst:
                 outputFile = StringIO()
                 c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile,trialWrite=True)
                 s1,s2 = self.file_s,outputFile.getvalue()
@@ -1860,10 +1858,6 @@ class baseScannerClass (scanUtility):
             lines2 = self.adjustRstLines(lines2)
 
         n1,n2 = len(lines1), len(lines2)
-
-        # g.trace('lines1',lines1)
-        # g.trace('lines2',lines2)
-
         ok = True ; bad_i = 0
         for i in range(max(n1,n2)):
             ok = self.compareHelper(lines1,lines2,i,self.strict)
@@ -2011,42 +2005,22 @@ class baseScannerClass (scanUtility):
     #@+node:ekr.20070911110507:reportMismatch & test
     def reportMismatch (self,lines1,lines2,bad_i):
 
-        trace = True and not g.unitTesting
-        verbose = True
-
         kind = g.choose(self.atAuto,'@auto','import command')
-
-        x2 = max(0,min(bad_i,len(lines2)-1))
+        n1,n2 = len(lines1),len(lines2)
         self.error(
-            '%s did not import %s perfectly\nfirst mismatched line: %d\n%s' % (
-                kind,self.root.h,bad_i,repr(lines2[x2])))
+            '%s did not import %s perfectly\nfirst mismatched line: %d' % (
+                kind,self.root.h,bad_i))
 
-        # maxlines = 300
-        if trace: # or len(lines1) < maxlines:
+        if g.unitTesting:
+            assert '\n'.join(aList)
+        else:
             aList = []
-            if True: # intermix lines.
-                n1,n2 = len(lines1),len(lines2)
-                # for i in range(min(maxlines,max(n1,n2))):
-                for i in range(max(0,bad_i-2),min(bad_i+3,max(n1,n2))):
-                    if i < n1: line1 = repr(lines1[i])
-                    else:      line1 = '<eof>'
-                    if i < n2: line2 = repr(lines2[i])
-                    else:      line2 = '<eof>'
-                    if verbose or line1 != line2:
-                        aList.append('%3d %s' % (i,line1))
-                        aList.append('%3d %s' % (i,line2))
-            else:
-                aList.append('input...')
-                for i in range(len(lines1)):
-                    aList.append('%3d %s' % (i,repr(lines1[i])))
-                aList.append('output...')
-                for i in range(len(lines2)):
-                    aList.append('%3d %s' % (i,repr(lines2[i])))
-
-            if g.unitTesting:
-                assert '\n'.join(aList)
-            else:
-                g.es_print('\n'.join(aList),color='blue')
+            for i in range(max(0,bad_i-2),min(bad_i+3,max(n1,n2))):
+                for lines,n in ((lines1,n1),(lines2,n2)):
+                    if i < n: line = repr(lines[i])
+                    else: line = '<eof>'
+                    aList.append('%4d %s' % (i,line))
+            g.es_print('\n'.join(aList),color='blue')
 
         return False
     #@+node:ekr.20090517020744.5785:@test reportMismatch
