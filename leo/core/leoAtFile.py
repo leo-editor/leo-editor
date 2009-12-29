@@ -2714,15 +2714,17 @@ class atFile:
             toString=toString)
 
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
+        isAtAuto = root.isAtAutoNode()
         if ok:
-            if root.isAtAutoRstNode():
+            if isAtAuto:
                 ok2 = c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
                 if not ok2: at.errors += 1
             else:
                 at.writeOpenFile(root,nosentinels=True,toString=toString)
             at.closeWriteFile() # Sets stringOutput if toString is True.
             if at.errors == 0:
-                at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+                at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAuto)
+                    # Sets/clears dirty and orphan bits.
             else:
                 g.es("not written:",at.outputFileName)
                 root.setDirty() # New in Leo 4.4.8.
@@ -4135,7 +4137,7 @@ class atFile:
     #@+node:ekr.20041005105605.197:compareFiles
     # This routine is needed to handle cvs stupidities.
 
-    def compareFiles (self,path1,path2,ignoreLineEndings):
+    def compareFiles (self,path1,path2,ignoreLineEndings,ignoreBlankLines=False):
 
         """Compare two text files ignoring line endings."""
 
@@ -4144,8 +4146,13 @@ class atFile:
             mode = g.choose(ignoreLineEndings,"r","rb")
             f1 = open(path1,mode)
             f2 = open(path2,mode)
-            equal = f1.read() == f2.read()
+            s1,s2 = f1.read(), f2.read()
             f1.close() ; f2.close()
+            equal = s1 == s2
+            if ignoreBlankLines and not equal:
+                s1 = g.removeBlankLines(s1)
+                s2 = g.removeBlankLines(s2)
+                equal = s1 == s2
             return equal
         except IOError:
             return False # Should never happen
@@ -4622,8 +4629,8 @@ class atFile:
         assert not at.replaceFileWithString (fn,'abc')
     #@-node:ekr.20090530055015.6873:@test at.replaceFileWithString
     #@-node:ekr.20080712150045.1:replaceFileWithString (atFile)
-    #@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent
-    def replaceTargetFileIfDifferent (self,root):
+    #@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent (atFile)
+    def replaceTargetFileIfDifferent (self,root,ignoreBlankLines=False):
 
         '''Create target file as follows:
         1. If target file does not exist, rename output file to target file.
@@ -4652,7 +4659,11 @@ class atFile:
         if trace: g.trace(self.outputFileName,self.targetFileName)
 
         if g.os_path_exists(self.targetFileName):
-            if self.compareFiles(self.outputFileName,self.targetFileName,not self.explicitLineEnding):
+            if self.compareFiles(
+                self.outputFileName,
+                self.targetFileName,
+                ignoreLineEndings=not self.explicitLineEnding,
+                ignoreBlankLines=ignoreBlankLines):
                 # Files are identical.
                 ok = self.remove(self.outputFileName)
                 g.es('unchanged:',self.shortFileName)
@@ -4700,7 +4711,7 @@ class atFile:
             # No original file to change. Return value tested by a unit test.
             self.fileChangedFlag = False 
             return False
-    #@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent
+    #@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent (atFile)
     #@+node:ekr.20041005105605.216:warnAboutOrpanAndIgnoredNodes
     # Called from writeOpenFile.
 
