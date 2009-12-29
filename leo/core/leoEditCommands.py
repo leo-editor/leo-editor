@@ -10,12 +10,13 @@ Modelled after Emacs and Vim commands.'''
 #@<< imports >>
 #@+node:ekr.20050710151017:<< imports >>
 import leo.core.leoGlobals as g
-
 import leo.core.leoFind as leoFind
 import leo.core.leoKeys as leoKeys
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoTest as leoTest
 
+import ctypes
+import ctypes.util
 import difflib
 import os
 import re
@@ -23,21 +24,12 @@ import string
 import sys
 
 if g.isPython3:
-    from functools import reduce
-
-if g.isPython3:
-    import pickle # Note: only pickle exists in Python 3.x
+    import pickle # Only pickle exists in Python 3.x.
 else:
     import cPickle as pickle 
 
 if g.isPython3:
-    ctypes = None
-else:
-    try:
-        import ctypes
-        import ctypes.util
-    except ImportError:
-        ctypes = None
+    from functools import reduce
 
 subprocess = g.importExtension('subprocess',pluginName=None,verbose=False)
 #@-node:ekr.20050710151017:<< imports >>
@@ -8644,14 +8636,14 @@ class AspellClass:
         if ctypes:
             self.getAspellWithCtypes()
         else:
-            self.getAspell()
+            self.getAspell() # Should never be needed.
     #@-node:ekr.20051025071455.8:__init__
     #@+node:ekr.20061017125710:getAspell
     def getAspell (self):
 
-        if sys.platform.startswith('linux'):
-            self.report('You must be using Python 2.5 or above to use aspell on Linux')
-            return
+        # if sys.platform.startswith('linux'):
+            # self.report('You must be using Python 2.5 or above to use aspell on Linux')
+            # return
 
         try:
             import aspell
@@ -8660,8 +8652,8 @@ class AspellClass:
             theDir = g.choose(sys.platform=='darwin',self.aspell_dir,self.aspell_bin_dir)
             aspell = g.importFromPath('aspell',theDir,pluginName=None,verbose=False)
 
-        if not aspell:
-            self.report('can not import aspell')
+        # if not aspell:
+            # self.report('can not import aspell')
 
         self.aspell = aspell
         self.sc = aspell and aspell.spell_checker(prefix=self.aspell_dir,lang=self.local_language_code)
