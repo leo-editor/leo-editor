@@ -3577,7 +3577,10 @@ class keyHandlerClass:
             if trace: g.trace('ignoring unbound non-ascii key')
             return 'break'
 
-        elif keysym.find('Escape') != -1 or stroke.find('Insert') != -1:
+        elif (
+            keysym and keysym.find('Escape') != -1 or
+            stroke and stroke.find('Insert') != -1
+        ):
             # Never insert escape or insert characters.
             return 'break'
 
