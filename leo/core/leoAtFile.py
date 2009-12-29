@@ -699,11 +699,13 @@ class atFile:
         # Remember that we have read this file.
         p.v.at_auto_read = True # Create the attribute
 
-        if cachefile is not None and cachefile in c.db:        
-            # g.es('uncache:',p.h)
-            aList = c.db[cachefile]
-            p.v.createOutlineFromCacheList(c,aList)
-            return
+        # Disable caching for test.leo.
+        if c.shortFileName() != 'test.leo':
+            if cachefile is not None and cachefile in c.db:        
+                # g.es('uncache:',p.h)
+                aList = c.db[cachefile]
+                p.v.createOutlineFromCacheList(c,aList)
+                return
 
         if not g.unitTesting:
             g.es("reading:",p.h)
