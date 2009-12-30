@@ -2714,16 +2714,16 @@ class atFile:
             toString=toString)
 
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
-        isAtAuto = root.isAtAutoNode()
+        isAtAutoRst = root.isAtAutoRstNode()
         if ok:
-            if isAtAuto:
+            if isAtAutoRst:
                 ok2 = c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
                 if not ok2: at.errors += 1
             else:
                 at.writeOpenFile(root,nosentinels=True,toString=toString)
             at.closeWriteFile() # Sets stringOutput if toString is True.
             if at.errors == 0:
-                at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAuto)
+                at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAutoRst)
                     # Sets/clears dirty and orphan bits.
             else:
                 g.es("not written:",at.outputFileName)
