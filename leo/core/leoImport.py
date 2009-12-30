@@ -4171,19 +4171,47 @@ class xmlScanner (baseScannerClass):
             aList.extend(aList2)
             if trace: g.trace(ivar,aList)
     #@-node:ekr.20071214131818:addTags
-    #@+node:ekr.20091230062012.6238:skipId (override base class)
+    #@+node:ekr.20091230062012.6238:skipId (override base class) & helper
+    #@+at  
+    #@nonl
+    # For characters valid in names see:
+    #    www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
+    #@-at
+    #@@c
+
     def skipId (self,s,i):
 
         # Fix bug 497332: @data import_xml_tags does not allow dashes in tag.
-        # For characters valid in names see:
-        # www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
         chars = '.-'
         n = len(s)
-        while i < n and (g.isWordChar(s[i]) or s[i] in chars):
+        if i < n and s[i] == ':': i += 1
+        while i < n and (self.isWordChar(s[i]) or s[i] in chars):
             i += 1
         return i
     #@nonl
-    #@-node:ekr.20091230062012.6238:skipId (override base class)
+    #@+node:ekr.20091230062012.6239:isWordChar
+    #@+at 
+    #@nonl
+    # From www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
+    # 
+    # NameStartChar	::= ":" | [A-Z] | "_" | [a-z] |
+    #     [#xC0-#xD6]     | [#xD8-#xF6]     | [#xF8-#x2FF]    |
+    #     [#x370-#x37D]   | [#x37F-#x1FFF]  | [#x200C-#x200D] |
+    #     [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] |
+    #     [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+    # 
+    # NameChar	::= NameStartChar | "-" | "." | [0-9] | #xB7 |
+    #     [#x0300-#x036F] | [#x203F-#x2040]
+    #@-at
+    #@@c
+
+    def isWordChar(self,ch):
+
+        # At present, same as g.isWordChar.
+        # This is not correct.
+        return ch and (ch.isalnum() or ch == '_')
+    #@-node:ekr.20091230062012.6239:isWordChar
+    #@-node:ekr.20091230062012.6238:skipId (override base class) & helper
     #@+node:ekr.20071214072924.4:startsHelper & helpers
     def startsHelper(self,s,i,kind,tags):
         '''return True if s[i:] starts a class or function.
