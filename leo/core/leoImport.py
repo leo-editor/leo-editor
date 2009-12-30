@@ -3831,6 +3831,7 @@ class rstScanner (baseScannerClass):
         baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='rest')
 
         # Scanner overrides
+        self.atAutoWarnsAboutLeadingWhitespace = True
         self.blockDelim1 = self.blockDelim2 = None
         self.classTags = []
         self.escapeSectionRefs = False
@@ -3974,12 +3975,16 @@ class rstScanner (baseScannerClass):
     #@+node:ekr.20090501095634.46:isUnderLine
     def isUnderLine(self,s):
 
-        '''Return True if s consists of only rST underline characters.'''
+        '''Return True if s consists of only the same rST underline character.'''
 
         if not s: return False
+        ch1 = s[0]
+
+        if not ch1 in self.underlines:
+            return False
 
         for ch in s:
-            if ch not in self.underlines:
+            if ch != ch1:
                 return False
 
         return True
@@ -4053,7 +4058,7 @@ class rstScanner (baseScannerClass):
         trace = False and not g.unitTesting
         verbose = False
 
-        # 2009/12/27: sections can not begin with whitespace.
+        # Under/overlines can not begin with whitespace.
         i1,j,nows,line = self.getLine(s,i)
         ch,kind = '','plain' # defaults.
 
@@ -4069,8 +4074,6 @@ class rstScanner (baseScannerClass):
                 n1 >= n2 and n2 > 0 and n3 >= n2 and ch1 == ch3)
             if ok:
                 i += n3
-                # Eliminate the need for the "little fib" in writeBody.
-                if i < len(s) and s[i] == '\n': i += 1
                 ch,kind = ch1,'over'
                 if ch1 not in self.underlines2:
                     self.underlines2.append(ch1)
@@ -4097,9 +4100,6 @@ class rstScanner (baseScannerClass):
             if ok:
                 old_i = i
                 i += n2
-                # Eliminate the need for the "little fib" in writeBody.
-                ### if i < len(s) and s[i] == '\n': i += 1
-                if trace: g.trace('***skipping',name,repr(s[old_i:i+1]))
                 ch,kind = line2[0],'under'
                 if ch not in self.underlines1:
                     self.underlines1.append(ch)
