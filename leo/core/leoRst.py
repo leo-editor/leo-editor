@@ -688,35 +688,25 @@ class rstCommands:
         self.scanAllOptions(p)
         self.initWrite(p)
         self.preprocessTree(p) # Allow @ @rst-options, for example.
-
         # Do the overrides.
         self.outputFile = outputFile
         self.outputFileName = fileName
-
         # Set underlining characters.
-        d = self.tnodeOptionDict.get(p.v) # Set by preprocessTree.
-
-        underlines = d.get('underline_charactersh')
-        if underlines and not self.trialWrite:
-            self.atAutoWriteUnderlines = underlines
-        else:
-            # We can *not* use user-defined underlining characters
-            # while performing a trial write.
-            d = p.v.u.get('rst-import',{})
-            # g.trace(d,g.callers(4))
-            underlines2 = d.get('underlines2','')
+        # It makes no sense to use user-defined
+        # underlining characters in @auto-rst.
+        d = p.v.u.get('rst-import',{})
+        underlines2 = d.get('underlines2','')
             # Do *not* set a default for overlining characters.
-            # if not underlines2: underlines2 = '#'
-            underlines1 = d.get('underlines1','')
-            if not underlines1: underlines1 = '=+*^~"\'`-:><_'
-                # The standard defaults.
-            if len(underlines2) > 1:
-                underlines2 = underlines2[0]
-                g.trace('too many top-level underlines, using %s' % (
-                    underlines2),color='blue')
-            self.atAutoWriteUnderlines = underlines2 + underlines1
-            self.underlines1 = underlines1
-            self.underlines2 = underlines2
+        if len(underlines2) > 1:
+            underlines2 = underlines2[0]
+            g.trace('too many top-level underlines, using %s' % (
+                underlines2),color='blue')
+        underlines1 = d.get('underlines1','')
+        if not underlines1: underlines1 = '=+*^~"\'`-:><_'
+            # The standard defaults.
+        self.atAutoWriteUnderlines = underlines2 + underlines1
+        self.underlines1 = underlines1
+        self.underlines2 = underlines2
     #@+node:ekr.20090702084917.6033:@test initAtAutoWrite
     if g.unitTesting:
 
