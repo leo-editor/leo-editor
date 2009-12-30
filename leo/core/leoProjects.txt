@@ -8302,16 +8302,16 @@ def writeOneAtAutoNode(self,p,toString,force):
         toString=toString)
 
     ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
-    isAtAuto = root.isAtAutoNode()
+    isAtAutoRst = root.isAtAutoRstNode()
     if ok:
-        if isAtAuto:
+        if isAtAutoRst:
             ok2 = c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
             if not ok2: at.errors += 1
         else:
             at.writeOpenFile(root,nosentinels=True,toString=toString)
         at.closeWriteFile() # Sets stringOutput if toString is True.
         if at.errors == 0:
-            at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAuto)
+            at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAutoRst)
                 # Sets/clears dirty and orphan bits.
         else:
             g.es("not written:",at.outputFileName)
@@ -9862,16 +9862,16 @@ def writeOneAtAutoNode(self,p,toString,force):
         toString=toString)
 
     ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
-    isAtAuto = root.isAtAutoNode()
+    isAtAutoRst = root.isAtAutoRstNode()
     if ok:
-        if isAtAuto:
+        if isAtAutoRst:
             ok2 = c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
             if not ok2: at.errors += 1
         else:
             at.writeOpenFile(root,nosentinels=True,toString=toString)
         at.closeWriteFile() # Sets stringOutput if toString is True.
         if at.errors == 0:
-            at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAuto)
+            at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAutoRst)
                 # Sets/clears dirty and orphan bits.
         else:
             g.es("not written:",at.outputFileName)
@@ -12717,6 +12717,215 @@ if g.unitTesting:
 #@-node:ekr.20090517020744.5785:@test reportMismatch
 #@-node:ekr.20070911110507:reportMismatch & test
 #@-node:ekr.20091228143718.6222:Fixed new at-auto-import bug
+#@+node:ekr.20091230062012.6236:Allow hyphens in xml tags
+@nocolor-node
+
+Fixes bug 497332: importing xml via @data import_xml_tags does not allow dashes in tag.
+
+For characters valid in names see:
+www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
+#@nonl
+#@+node:ekr.20071214072145.1:class xmlScanner
+class xmlScanner (baseScannerClass):
+
+    @others
+#@+node:ekr.20071214072451: __init__ (xmlScanner)
+def __init__ (self,importCommands,atAuto):
+
+    # Init the base class.
+    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='xml')
+        # sets self.c
+
+    # Set the parser delims.
+    self.blockCommentDelim1 = '<!--'
+    self.blockCommentDelim2 = '-->'
+    self.blockDelim1 = None 
+    self.blockDelim2 = None
+    self.classTags = [] # Inited by import_xml_tags setting.
+    self.extraIdChars = None
+    self.functionTags = []
+    self.lineCommentDelim = None
+    self.lineCommentDelim2 = None
+    self.outerBlockDelim1 = None
+    self.outerBlockDelim2 = None
+    self.outerBlockEndsDecls = False
+    self.sigHeadExtraTokens = []
+    self.sigFailTokens = []
+
+    # Overrides more attributes.
+    self.hasClasses = True
+    self.hasFunctions = False
+    self.strict = False
+    self.trace = False
+
+    self.addTags()
+#@nonl
+#@-node:ekr.20071214072451: __init__ (xmlScanner)
+#@+node:ekr.20071214131818:addTags
+def addTags (self):
+
+    '''Add items to self.class/functionTags and from settings.'''
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    for ivar,setting in (
+        ('classTags','import_xml_tags',),
+        # ('functionTags','import_xml_function_tags'),
+    ):
+        aList = getattr(self,ivar)
+        aList2 = c.config.getData(setting) or []
+        aList.extend(aList2)
+        if trace: g.trace(ivar,aList)
+#@-node:ekr.20071214131818:addTags
+#@+node:ekr.20091230062012.6238:skipId (override base class) & helper
+@  For characters valid in names see:
+   www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
+@c
+
+def skipId (self,s,i):
+
+    # Fix bug 497332: @data import_xml_tags does not allow dashes in tag.
+    chars = '.-:' # Allow : anywhere.
+    n = len(s)
+    while i < n and (self.isWordChar(s[i]) or s[i] in chars):
+        i += 1
+    return i
+#@nonl
+#@+node:ekr.20091230062012.6239:isWordChar
+@ From www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
+
+NameStartChar	::= ":" | [A-Z] | "_" | [a-z] |
+    [#xC0-#xD6]     | [#xD8-#xF6]     | [#xF8-#x2FF]    |
+    [#x370-#x37D]   | [#x37F-#x1FFF]  | [#x200C-#x200D] |
+    [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] |
+    [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+
+NameChar	::= NameStartChar | "-" | "." | [0-9] | #xB7 |
+    [#x0300-#x036F] | [#x203F-#x2040]
+@c
+
+def isWordChar(self,ch):
+
+    # At present, same as g.isWordChar.
+    # This is not correct.
+    return ch and (ch.isalnum() or ch == '_')
+#@-node:ekr.20091230062012.6239:isWordChar
+#@-node:ekr.20091230062012.6238:skipId (override base class) & helper
+#@+node:ekr.20071214072924.4:startsHelper & helpers
+def startsHelper(self,s,i,kind,tags):
+    '''return True if s[i:] starts a class or function.
+    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
+
+    trace = self.trace ; verbose = False
+    self.codeEnd = self.sigEnd = self.sigId = None
+
+    # Underindented lines can happen in any language, not just Python.
+    # The skipBlock method of the base class checks for such lines.
+    self.startSigIndent = self.getLeadingIndent(s,i)
+
+    # Get the tag that starts the class or function.
+    if not g.match(s,i,'<'): return False
+    self.sigStart = i
+    i += 1
+    j = g.skip_ws_and_nl(s,i)
+    i = self.skipId(s,j)
+    self.sigId = theId = s[j:i] # Set sigId ivar 'early' for error messages.
+    if not theId: return False
+
+    if theId not in tags:
+        if trace and verbose: g.trace('**** %s theId: %s not in tags: %s' % (kind,theId,tags))
+        return False
+
+    if trace and verbose: g.trace(theId)
+    classId = '' 
+    sigId = theId
+
+    # Complete the opening tag.
+    i, ok = self.skipToEndOfTag(s,i)
+    if not ok:
+        if trace and verbose: g.trace('no tail',g.get_line(s,i))
+        return False
+    sigEnd = i
+
+    # A trick: make sure the signature ends in a newline,
+    # even if it overlaps the start of the block.
+    if 0:
+        if not g.match(s,sigEnd,'\n') and not g.match(s,sigEnd-1,'\n'):
+            if trace and verbose: g.trace('extending sigEnd')
+            sigEnd = g.skip_line(s,sigEnd)
+
+    i,ok = self.skipToMatchingTag(s,i,theId)
+    if not ok:
+        if trace: g.trace('no matching tag',theId)
+        return False
+
+    # Success: set the ivars.
+    self.sigStart = self.adjustDefStart(s,self.sigStart)
+    self.codeEnd = i
+    self.sigEnd = sigEnd
+    self.sigId = sigId
+    self.classId = classId
+
+    # Note: backing up here is safe because
+    # we won't back up past scan's 'start' point.
+    # Thus, characters will never be output twice.
+    k = self.sigStart
+    if not g.match(s,k,'\n'):
+        self.sigStart = g.find_line_start(s,k)
+
+    # Issue this warning only if we have a real class or function.
+    if 0: # wrong.if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
+        if s[self.sigStart:k].strip():
+            self.error('%s definition does not start a line\n%s' % (
+                kind,g.get_line(s,k)))
+
+    if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
+    return True
+#@+node:ekr.20071214072924.3:skipToEndOfTag
+def skipToEndOfTag(self,s,i):
+
+    '''Skip to the end of an open tag.'''
+
+    while i < len(s):
+        progress = i
+        if i == '"':
+            i = self.skipString(s,i)
+        elif g.match(s,i,'/>'):
+            return i,False # Starts a self-contained tag.
+        elif g.match(s,i,'>'):
+            i += 1
+            if g.match(s,i,'\n'): i += 1
+            return i,True
+        else:
+            i += 1
+        assert progress < i
+
+    return i,False
+#@-node:ekr.20071214072924.3:skipToEndOfTag
+#@+node:ekr.20071214075117:skipToMatchingTag
+def skipToMatchingTag (self,s,i,tag):
+
+    while i < len(s):
+        progress = i
+        if i == '"':
+            i = self.skipString(s,i)
+        elif g.match(s,i,'</'):
+            i += 2 ; j = i
+            i = self.skipId(s,j)
+            tag2 = s[j:i]
+            if tag2.lower() == tag.lower():
+                i,ok = self.skipToEndOfTag(s,i)
+                return i,ok
+        else:
+            i += 1
+        assert progress < i
+
+    return i,False
+#@-node:ekr.20071214075117:skipToMatchingTag
+#@-node:ekr.20071214072924.4:startsHelper & helpers
+#@-node:ekr.20071214072145.1:class xmlScanner
+#@-node:ekr.20091230062012.6236:Allow hyphens in xml tags
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin
