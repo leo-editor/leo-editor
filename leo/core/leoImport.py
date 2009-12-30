@@ -1665,6 +1665,8 @@ class leoImportCommands (scanUtility):
     #@+node:ekr.20071214072145:scanXmlText
     def scanXmlText (self,s,parent,atAuto=False):
 
+        g.trace(atAuto,parent.h)
+
         scanner = xmlScanner(importCommands=self,atAuto=atAuto)
 
         scanner.run(s,parent)
@@ -4182,9 +4184,8 @@ class xmlScanner (baseScannerClass):
     def skipId (self,s,i):
 
         # Fix bug 497332: @data import_xml_tags does not allow dashes in tag.
-        chars = '.-'
+        chars = '.-:' # Allow : anywhere.
         n = len(s)
-        if i < n and s[i] == ':': i += 1
         while i < n and (self.isWordChar(s[i]) or s[i] in chars):
             i += 1
         return i
