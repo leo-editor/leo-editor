@@ -733,7 +733,7 @@ class rstCommands:
         '''Return True if node p contributes nothing but
         rst-options to the write.'''
 
-        if self.trialWrite:
+        if self.trialWrite or not p.isAtAutoRstNode():
             return True # Trial writes are always safe.
 
         lines = g.splitLines(p.b)
