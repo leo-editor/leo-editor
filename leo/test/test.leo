@@ -4060,23 +4060,20 @@ test-b
 <t tx="ekr.20091230081322.1919">import unicodedata as u
 table = ('a','9','_',':','.',)
 table2 = (
-    (0xc0,0xd6),
+    (0xc0,0xd6),(0xd8,0xf6),(0xf8,0x2ff),(0x370,0x37d),(0x37f,0x1fff),
+    (0x200c,0x200d),(0x2070,0x218f),(0x2c00,0x2fef),(0x3001,0xd7ff),
+    (0xf900,0xfdcf),(0xfdf0,0xfffd),(0x10000,0xeffff),
+    # Valid only after the start of a word.
+    (0xb7,0xb7+1),(0x0300,0x036f),(0x203f,0x2040),
 )
-    # [#xC0-#xD6]     | [#xD8-#xF6]     | [#xF8-#x2FF]    |
-    # [#x370-#x37D]   | [#x37F-#x1FFF]  | [#x200C-#x200D] |
-    # [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] |
-    # [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
-    # | #xB7          | [#x0300-#x036F] | [#x203F-#x2040]
 for ch in table:
+    ch = g.u(ch)
     g.es(ch,u.category(ch))
-for data in table2:
-    i,j = data
-    for n in range(i,j):
-        if g.isPython3:
-            ch = chr(n)
-        else:
-            ch = unichr(n)
-        g.es(ch,u.category(ch))
-        break # Easier</t>
+for i,j in table2:
+    g.es('*** range %xd %xd' % (i,j))
+    for n in range(i,min(i+5,j)):
+        if g.isPython3: ch = chr(n)
+        else: ch = unichr(n)
+        g.es(ch,u.category(ch))</t>
 </tnodes>
 </leo_file>
