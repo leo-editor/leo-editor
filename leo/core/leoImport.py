@@ -4171,6 +4171,19 @@ class xmlScanner (baseScannerClass):
             aList.extend(aList2)
             if trace: g.trace(ivar,aList)
     #@-node:ekr.20071214131818:addTags
+    #@+node:ekr.20091230062012.6238:skipId (override base class)
+    def skipId (self,s,i):
+
+        # Fix bug 497332: @data import_xml_tags does not allow dashes in tag.
+        # For characters valid in names see:
+        # www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
+        chars = '.-'
+        n = len(s)
+        while i < n and (g.isWordChar(s[i]) or s[i] in chars):
+            i += 1
+        return i
+    #@nonl
+    #@-node:ekr.20091230062012.6238:skipId (override base class)
     #@+node:ekr.20071214072924.4:startsHelper & helpers
     def startsHelper(self,s,i,kind,tags):
         '''return True if s[i:] starts a class or function.
