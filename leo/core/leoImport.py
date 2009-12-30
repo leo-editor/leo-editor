@@ -1665,7 +1665,7 @@ class leoImportCommands (scanUtility):
     #@+node:ekr.20071214072145:scanXmlText
     def scanXmlText (self,s,parent,atAuto=False):
 
-        g.trace(atAuto,parent.h)
+        # g.trace(atAuto,parent.h)
 
         scanner = xmlScanner(importCommands=self,atAuto=atAuto)
 
