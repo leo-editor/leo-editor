@@ -166,6 +166,7 @@
 </v>
 </v>
 <v t="ekr.20071025193940"></v>
+<v t="ekr.20091230064146.1911"></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
 <v t="ekr.20070929122956"><vh>Data trees</vh>
@@ -388,12 +389,8 @@
 <v t="ekr.20091217210235.1866"><vh>@auto-rst at-auto-rst-test.txt</vh></v>
 <v t="ekr.20091229092257.1930"><vh>@auto-rst ../doc/html/intro.html.txt</vh></v>
 <v t="ekr.20091229101227.1902"><vh>@auto-rst quickstart.txt</vh></v>
-<v t="ekr.20091230064146.1912"><vh>@auto xml-tags-test.xml</vh>
-<v t="ekr.20091230081322.1915"><vh>xml-tags-test declarations</vh></v>
-<v t="ekr.20091230081322.1916"><vh>xml</vh></v>
-<v t="ekr.20091230081322.1917"><vh>test.a</vh></v>
-<v t="ekr.20091230081322.1918"><vh>test-b</vh></v>
-</v>
+<v t="ekr.20091230064146.1912"><vh>@auto xml-tags-test.xml</vh></v>
+<v t="ekr.20091230090645.1925"><vh>@auto layout.html</vh></v>
 <v t="ekr.20091229092150.1939"><vh>@language rest</vh>
 <v t="ekr.20091228143431.1895"><vh>@@auto quickstart.txt</vh></v>
 </v>
@@ -821,7 +818,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="13"></t>
+<t tx="ekr.20070416075121" str_leo_pos="9"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -4028,34 +4025,18 @@ list.
 .. _Docutils project web site: http://docutils.sourceforge.net/
 </t>
 <t tx="ekr.20091229092150.1939"></t>
-<t tx="ekr.20091230064146.1911">xml
+<t tx="ekr.20091230064146.1911"># For xml-tags-test.xml
+xml
 test.a
-test-b</t>
-<t tx="ekr.20091230064146.1912">@language xml
-@tabwidth -4
-@others
-
-@ignore</t>
-<t tx="ekr.20091230081322.1915">xml
-====
-
-</t>
-<t tx="ekr.20091230081322.1916">&lt;xml&gt;
-changed
-@others
-&lt;/xml&gt;
-</t>
-<t tx="ekr.20091230081322.1917">
-test.a
-++++++
-
-&lt;test.a&gt;&lt;/test.a&gt;
-</t>
-<t tx="ekr.20091230081322.1918">
 test-b
-++++++
 
-&lt;test-b&gt;&lt;/test-b&gt;
+# For layout.html
+html
+body
+head
+py:if
+py:match
+script
 </t>
 <t tx="ekr.20091230081322.1919">import unicodedata as u
 table = ('a','9','_',':','.',)
