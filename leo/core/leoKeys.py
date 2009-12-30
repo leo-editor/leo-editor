@@ -1626,6 +1626,7 @@ class keyHandlerClass:
         # g.trace('base keyHandler',g.callers())
 
         self.c = c
+        self.dispatchEvent = None
         self.inited = False # Set at end of finishCreate.
         self.widget = c.frame.miniBufferWidget
         self.useGlobalKillbuffer = useGlobalKillbuffer
@@ -2491,7 +2492,7 @@ class keyHandlerClass:
 
         if trace: #  and interesting:
             g.trace(
-                # 'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),'keysym:',repr(keysym),
+                'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),'keysym:',repr(keysym),
                 'w:',w and c.widget_name(w),'func:',func and func.__name__
             )
 
@@ -3339,13 +3340,11 @@ class keyHandlerClass:
             if trace and verbose: g.trace('keysym',keysym)
             return None
         if traceGC: g.printNewObjects('masterKey 1')
-        if trace:
-            g.trace('stroke:',repr(stroke),'keysym:',
-                repr(event.keysym),'ch:',repr(event.char),'state',state)
+        if trace: g.trace('stroke:',repr(stroke),'keysym:',
+            repr(event.keysym),'ch:',repr(event.char),'state',state)
 
         # Handle keyboard-quit first.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
-            # g.trace('special case')
             if c.macroCommands.recordingMacro:
                 c.macroCommands.endKbdMacro()
                 return 'break'
@@ -3353,96 +3352,137 @@ class keyHandlerClass:
                 return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
 
         if k.inState():
-            # This will return unless k.autoCompleterStateHandler
-            # (called from k.callStateFunction) returns 'do-standard-keys'
-            #@        << handle mode bindings >>
-            #@+node:ekr.20061031131434.149:<< handle mode bindings >>
-            # First, honor minibuffer bindings for all except user modes.
-
-            if state in ('getArg','getFileName','full-command','auto-complete'):
-                if k.handleMiniBindings(event,state,stroke):
-                    return 'break'
-
-            # Second, honor general modes.
-            if state == 'getArg':
-                return k.getArg(event,stroke=stroke)
-            elif state == 'getFileName':
-                return k.getFileName(event)
-            elif state in ('full-command','auto-complete'):
-                # Do the default state action.
-                if trace: g.trace('calling state function',k.state.kind) # k.state.handler)
-                val = k.callStateFunction(event) # Calls end-command.
-                if val != 'do-standard-keys': return 'break'
-
-            # Third, pass keys to user modes.
-            else:
-                d =  k.masterBindingsDict.get(state)
-                if d:
-                    b = d.get(stroke)
-                    if b:
-                        if trace: g.trace('calling generalModeHandler',stroke)
-                        k.generalModeHandler (event,
-                            commandName=b.commandName,func=b.func,
-                            modeName=state,nextMode=b.nextMode)
-                        return 'break'
-                    else:
-                        # New in Leo 4.5: unbound keys end mode.
-                        if trace: g.trace('unbound key ends mode',stroke,state)
-                        k.endMode(event)
-                else:
-                    # New in 4.4b4.
-                    handler = k.getStateHandler()
-                    if handler:
-                        handler(event)
-                    else:
-                        g.trace('No state handler for %s' % state)
-                    return 'break'
-            #@-node:ekr.20061031131434.149:<< handle mode bindings >>
-            #@nl
+            done,val = k.doMode(event,state,stroke)
+            if done: return val
 
         if traceGC: g.printNewObjects('masterKey 2')
 
         if stroke and isPlain:
-            #@        << handle special cases for plain keys >>
-            #@+node:ekr.20080510153327.4:<< handle special cases for plain keys >>
-            #g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
+            done,b = k.doPlainKey(event,stroke,w)
+            if b: k.masterCommand(event,b.func,b.stroke,b.commandName)
+            if done: return 'break'
 
-            # Important: only keys bound somewhere have a stroke.
-            # All unbound plain keys will be handled by handleUnboundKeys.
+        b = k.getPaneBinding(stroke,w)
+        if b:
+            if traceGC: g.printNewObjects('masterKey 3')
+            return k.masterCommand(event,b.func,b.stroke,b.commandName)
+        else:
+            if traceGC: g.printNewObjects('masterKey 4')
+            return k.handleUnboundKeys(event,char,keysym,stroke)
+    #@+node:ekr.20061031131434.108:callStateFunction
+    def callStateFunction (self,event):
 
-            if k.unboundKeyAction in ('insert','overwrite'):
+        k = self ; val = None ; ch = g.app.gui.eventChar(event)
 
-                for key in (k.unboundKeyAction,'body','log','text','all'):
-                    # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
-                    d = k.masterBindingsDict.get(key,{})
-                    if d:
-                        b = d.get(stroke)
-                        if b and b.commandName == 'auto-complete':
-                            if trace: g.trace('%s: auto-complete key in %s mode' % (stroke,k.unboundKeyAction))
-                            k.masterCommand(event,b.func,b.stroke,b.commandName)
-                            return 'break'
+        # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
 
-                if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
-                k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-                return 'break'
+        if k.state.kind:
+            if (
+                k.ignore_unbound_non_ascii_keys and
+                ch and ch not in ('\b','\n','\r','\t') and
+                (ord(ch) < 32 or ord(ch) > 128)
+            ):
+                # g.trace('non-ascii',ord(ch))
+                pass
+            elif k.state.handler:
+                val = k.state.handler(event)
+                if val != 'continue':
+                    k.endCommand(event,k.commandName)
+            else:
+                g.es_print('no state function for',k.state.kind,color='red')
 
-            # Bound   plain keys in command mode are by the per-pane logic.
-            # Unbound plain keys in command mode are ignored by handleUnboundKeys.
+        return val
+    #@-node:ekr.20061031131434.108:callStateFunction
+    #@+node:ekr.20091230094319.6244:doMode
+    def doMode (self,event,state,stroke):
 
-            # This code ignores all command-state keys if we are not in a text widget.
-            elif k.unboundKeyAction == 'command':
-                if not g.app.gui.isTextWidget(w):
-                    c.onCanvasKey(event)
-                    return 'break'
-            #@nonl
-            #@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
-            #@nl
+        trace = False and not g.unitTesting
+        k = self
 
-        #@    << handle per-pane bindings >>
-        #@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
+        # First, honor minibuffer bindings for all except user modes.
+        if state in ('getArg','getFileName','full-command','auto-complete'):
+            if k.handleMiniBindings(event,state,stroke):
+                return True,'break'
+
+        # Second, honor general modes.
+        if state == 'getArg':
+            return True,k.getArg(event,stroke=stroke)
+        elif state == 'getFileName':
+            return True,k.getFileName(event)
+        elif state in ('full-command','auto-complete'):
+            # Do the default state action.
+            if trace: g.trace('calling state function',k.state.kind)
+            val = k.callStateFunction(event) # Calls end-command.
+            if val != 'do-standard-keys':
+                return True,'break'
+
+        # Third, pass keys to user modes.
+        d =  k.masterBindingsDict.get(state)
+        if d:
+            b = d.get(stroke)
+            if b:
+                if trace: g.trace('calling generalModeHandler',stroke)
+                k.generalModeHandler (event,
+                    commandName=b.commandName,func=b.func,
+                    modeName=state,nextMode=b.nextMode)
+                return True,'break'
+            else:
+                # New in Leo 4.5: unbound keys end mode.
+                if trace: g.trace('unbound key ends mode',stroke,state)
+                k.endMode(event)
+                return False,None
+        else:
+            # New in 4.4b4.
+            handler = k.getStateHandler()
+            if handler:
+                handler(event)
+            else:
+                g.trace('No state handler for %s' % state)
+            return True,'break'
+    #@-node:ekr.20091230094319.6244:doMode
+    #@+node:ekr.20091230094319.6242:doPlainKey
+    def doPlainKey (self,event,stroke,w):
+
+        '''Handle a plain key.  Return done,b.'''
+
+        trace = False and not g.unitTesting
+        k = self ; c = k.c
+
+        # Important: only keys bound somewhere have a stroke.
+        # All unbound plain keys will be handled by handleUnboundKeys.
+        if k.unboundKeyAction in ('insert','overwrite'):
+            for key in (k.unboundKeyAction,'body','log','text','all'):
+                # Ignore bindings for all plain keys in insert/overwrite mode
+                # *except* auto-complete.
+                d = k.masterBindingsDict.get(key,{})
+                if d:
+                    b = d.get(stroke)
+                    if b and b.commandName == 'auto-complete':
+                        if trace: g.trace('%s: auto-complete key in %s mode' % (
+                            stroke,k.unboundKeyAction))
+                        return True,b
+
+            if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
+            return True,g.bunch(func=None,stroke=stroke,commandName=None)
+
+        # Ignore all command-state keys if we are not in a text widget.
+        elif k.unboundKeyAction == 'command':
+            if g.app.gui.isTextWidget(w):
+                return False,None
+            else:
+                c.onCanvasKey(event)
+                return True,None
+        else:
+            return False,None
+    #@-node:ekr.20091230094319.6242:doPlainKey
+    #@+node:ekr.20091230094319.6240:getPaneBinding
+    def getPaneBinding (self,stroke,w):
+
+        trace = False and not g.unitTesting
+        k = self ; w_name = k.c.widget_name(w)
         keyStatesTuple = ('command','insert','overwrite')
 
-        if True and trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
+        if trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
             'isTextWidget(w)',g.app.gui.isTextWidget(w))
 
         for key,name in (
@@ -3474,38 +3514,8 @@ class keyHandlerClass:
                     b = d.get(stroke)
                     if b:
                         if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
-                        if traceGC: g.printNewObjects('masterKey 3')
-                        return k.masterCommand(event,b.func,b.stroke,b.commandName)
-        #@-node:ekr.20061031131434.150:<< handle per-pane bindings >>
-        #@nl
-
-        if traceGC: g.printNewObjects('masterKey 5')
-
-        return k.handleUnboundKeys(event,char,keysym,stroke)
-    #@+node:ekr.20061031131434.108:callStateFunction
-    def callStateFunction (self,event):
-
-        k = self ; val = None ; ch = g.app.gui.eventChar(event)
-
-        # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
-
-        if k.state.kind:
-            if (
-                k.ignore_unbound_non_ascii_keys and
-                ch and ch not in ('\b','\n','\r','\t') and
-                (ord(ch) < 32 or ord(ch) > 128)
-            ):
-                # g.trace('non-ascii',ord(ch))
-                pass
-            elif k.state.handler:
-                val = k.state.handler(event)
-                if val != 'continue':
-                    k.endCommand(event,k.commandName)
-            else:
-                g.es_print('no state function for',k.state.kind,color='red')
-
-        return val
-    #@-node:ekr.20061031131434.108:callStateFunction
+                        return b
+    #@-node:ekr.20091230094319.6240:getPaneBinding
     #@+node:ekr.20061031131434.152:handleMiniBindings
     def handleMiniBindings (self,event,state,stroke):
 
@@ -4859,36 +4869,38 @@ class keyHandlerClass:
         state = k.getState('u-arg')
 
         if state == 0:
+            k.dispatchEvent = event
             # The call should set the label.
             k.setState('u-arg',1,k.universalDispatcher)
             k.repeatCount = 1
         elif state == 1:
-            stroke = k.stroke ; keysym = gui.eventKeysym(event)
-                # Stroke is <Key> for plain keys, <Control-u> (k.universalArgKey)
-            # g.trace(state,stroke)
-            if stroke == k.universalArgKey:
+            # stroke = k.stroke # Warning: k.stroke is always Alt-u
+            keysym = gui.eventKeysym(event)
+            # g.trace(state,keysym)
+            if keysym == 'Escape':
+                k.keyboardQuit(event)
+            elif keysym == k.universalArgKey:
                 k.repeatCount = k.repeatCount * 4
-            elif stroke == '<Key>' and (keysym.isdigit() or keysym == '-'):
+            elif keysym.isdigit() or keysym == '-':
                 k.updateLabel(event)
-            elif stroke == '<Key>' and keysym in (
+            elif keysym in (
                 'Alt_L','Alt_R',
                 'Control_L','Control_R',
                 'Meta_L','Meta_R',
                 'Shift_L','Shift_R',
             ):
-                 # g.trace('stroke',k.stroke,'keysym',keysym)
                  k.updateLabel(event)
             else:
                 # *Anything* other than C-u, '-' or a numeral is taken to be a command.
-                # g.trace('stroke',k.stroke,'keysym',keysym)
                 val = k.getLabel(ignorePrompt=True)
                 try:                n = int(val) * k.repeatCount
                 except ValueError:  n = 1
-                # g.trace('val',repr(val),'n',n,'k.repeatCount',k.repeatCount)
                 k.clearState()
-                k.executeNTimes(event,n)
-                k.clearState()
-                k.setLabelGrey()
+                event = k.dispatchEvent
+                k.executeNTimes(event,n,stroke=keysym)
+                k.keyboardQuit(event)
+                # k.clearState()
+                # k.setLabelGrey()
                 if 0: # Not ready yet.
                     # This takes us to macro state.
                     # For example Control-u Control-x ( will execute the last macro and begin editing of it.
@@ -4900,35 +4912,34 @@ class keyHandlerClass:
 
         return 'break'
     #@+node:ekr.20061031131434.202:executeNTimes
-    def executeNTimes (self,event,n):
+    def executeNTimes (self,event,n,stroke):
 
-        k = self ; stroke = k.stroke ; w = event.widget
-        # g.trace('stroke',stroke,'keycode',event.keycode,'n',n)
+        trace = False and not g.unitTesting
+        k = self
 
         if stroke == k.fullCommandKey:
             for z in range(n):
                 k.fullCommand()
         else:
             stroke = g.stripBrackets(stroke)
-            bunchList = k.bindingsDict.get(stroke,[])
-            if bunchList:
-                b = bunchList[0]
-                g.trace('method',b.f)
+            b = k.getPaneBinding(stroke,event.widget)
+            if b:
+                if trace: g.trace('repeat',n,'method',b.func.__name__,
+                    'stroke',stroke,'widget',event.widget)
                 for z in range(n):
-                    if 1: # No need to do this: commands never alter events.
-                        # ev = Tk.Event()
-                        event = g.Bunch(
-                            c = self.c,
-                            widget = event.widget,
-                            keysym = event.keysym,
-                            keycode = event.keycode,
-                            char = event.char,
-                        )
-                    k.masterCommand(event,b.f,'<%s>' % stroke)
+                    # event = g.Bunch(
+                        # c = self.c,
+                        # widget = event.widget,
+                        # keysym = event.keysym,
+                        # stroke = event.stroke,
+                        # char = event.char,
+                    # )
+                    k.masterCommand(event,b.func,'<%s>' % stroke)
             else:
+                # This does nothing for Qt gui.
+                w = event.widget
                 for z in range(n):
-                    g.app.gui.event_generate(w,'<Key>',keycode=event.keycode,keysym=event.keysym)
-
+                    g.app.gui.event_generate(w,'<Key>',keysym=event.keysym)
     #@-node:ekr.20061031131434.202:executeNTimes
     #@+node:ekr.20061031131434.203:doControlU
     def doControlU (self,event,stroke):

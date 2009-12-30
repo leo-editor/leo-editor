@@ -5114,13 +5114,11 @@ def masterKeyHandler (self,event,stroke=None):
         if trace and verbose: g.trace('keysym',keysym)
         return None
     if traceGC: g.printNewObjects('masterKey 1')
-    if trace:
-        g.trace('stroke:',repr(stroke),'keysym:',
-            repr(event.keysym),'ch:',repr(event.char),'state',state)
+    if trace: g.trace('stroke:',repr(stroke),'keysym:',
+        repr(event.keysym),'ch:',repr(event.char),'state',state)
 
     # Handle keyboard-quit first.
     if k.abortAllModesKey and stroke == k.abortAllModesKey:
-        # g.trace('special case')
         if c.macroCommands.recordingMacro:
             c.macroCommands.endKbdMacro()
             return 'break'
@@ -5128,20 +5126,23 @@ def masterKeyHandler (self,event,stroke=None):
             return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
 
     if k.inState():
-        # This will return unless k.autoCompleterStateHandler
-        # (called from k.callStateFunction) returns 'do-standard-keys'
-        << handle mode bindings >>
+        done,val = k.doMode(event,state,stroke)
+        if done: return val
 
     if traceGC: g.printNewObjects('masterKey 2')
 
     if stroke and isPlain:
-        << handle special cases for plain keys >>
+        done,b = k.doPlainKey(event,stroke,w)
+        if b: k.masterCommand(event,b.func,b.stroke,b.commandName)
+        if done: return 'break'
 
-    << handle per-pane bindings >>
-
-    if traceGC: g.printNewObjects('masterKey 5')
-
-    return k.handleUnboundKeys(event,char,keysym,stroke)
+    b = k.getPaneBinding(stroke,w)
+    if b:
+        if traceGC: g.printNewObjects('masterKey 3')
+        return k.masterCommand(event,b.func,b.stroke,b.commandName)
+    else:
+        if traceGC: g.printNewObjects('masterKey 4')
+        return k.handleUnboundKeys(event,char,keysym,stroke)
 #@+node:ekr.20061031131434.147:<< define vars >>
 k = self ; c = k.c ; gui = g.app.gui
 
@@ -5172,118 +5173,6 @@ self.master_key_count += 1
 isPlain =  k.isPlainKey(stroke)
 #@nonl
 #@-node:ekr.20061031131434.147:<< define vars >>
-#@+node:ekr.20061031131434.149:<< handle mode bindings >>
-# First, honor minibuffer bindings for all except user modes.
-
-if state in ('getArg','getFileName','full-command','auto-complete'):
-    if k.handleMiniBindings(event,state,stroke):
-        return 'break'
-
-# Second, honor general modes.
-if state == 'getArg':
-    return k.getArg(event,stroke=stroke)
-elif state == 'getFileName':
-    return k.getFileName(event)
-elif state in ('full-command','auto-complete'):
-    # Do the default state action.
-    if trace: g.trace('calling state function',k.state.kind) # k.state.handler)
-    val = k.callStateFunction(event) # Calls end-command.
-    if val != 'do-standard-keys': return 'break'
-
-# Third, pass keys to user modes.
-else:
-    d =  k.masterBindingsDict.get(state)
-    if d:
-        b = d.get(stroke)
-        if b:
-            if trace: g.trace('calling generalModeHandler',stroke)
-            k.generalModeHandler (event,
-                commandName=b.commandName,func=b.func,
-                modeName=state,nextMode=b.nextMode)
-            return 'break'
-        else:
-            # New in Leo 4.5: unbound keys end mode.
-            if trace: g.trace('unbound key ends mode',stroke,state)
-            k.endMode(event)
-    else:
-        # New in 4.4b4.
-        handler = k.getStateHandler()
-        if handler:
-            handler(event)
-        else:
-            g.trace('No state handler for %s' % state)
-        return 'break'
-#@-node:ekr.20061031131434.149:<< handle mode bindings >>
-#@+node:ekr.20080510153327.4:<< handle special cases for plain keys >>
-#g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
-
-# Important: only keys bound somewhere have a stroke.
-# All unbound plain keys will be handled by handleUnboundKeys.
-
-if k.unboundKeyAction in ('insert','overwrite'):
-
-    for key in (k.unboundKeyAction,'body','log','text','all'):
-        # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
-        d = k.masterBindingsDict.get(key,{})
-        if d:
-            b = d.get(stroke)
-            if b and b.commandName == 'auto-complete':
-                if trace: g.trace('%s: auto-complete key in %s mode' % (stroke,k.unboundKeyAction))
-                k.masterCommand(event,b.func,b.stroke,b.commandName)
-                return 'break'
-
-    if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
-    k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-    return 'break'
-
-# Bound   plain keys in command mode are by the per-pane logic.
-# Unbound plain keys in command mode are ignored by handleUnboundKeys.
-
-# This code ignores all command-state keys if we are not in a text widget.
-elif k.unboundKeyAction == 'command':
-    if not g.app.gui.isTextWidget(w):
-        c.onCanvasKey(event)
-        return 'break'
-#@nonl
-#@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
-#@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
-keyStatesTuple = ('command','insert','overwrite')
-
-if True and trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
-    'isTextWidget(w)',g.app.gui.isTextWidget(w))
-
-for key,name in (
-    # Order here is similar to bindtags order.
-    ('command',None),
-    ('insert',None),
-    ('overwrite',None),
-    ('button',None),
-    ('body','body'),
-    ('text','head'), # Important: text bindings in head before tree bindings.
-    ('tree','head'),
-    ('tree','canvas'),
-    ('log', 'log'),
-    ('text','log'),
-    ('text',None),
-    ('all',None),
-):
-    if (
-        # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
-        name and w_name.startswith(name) or
-        key in ('text','all') and g.app.gui.isTextWidget(w) or
-        key in ('button','all')
-    ):
-        d = k.masterBindingsDict.get(key,{})
-        if trace:
-            g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-            # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
-        if d:
-            b = d.get(stroke)
-            if b:
-                if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
-                if traceGC: g.printNewObjects('masterKey 3')
-                return k.masterCommand(event,b.func,b.stroke,b.commandName)
-#@-node:ekr.20061031131434.150:<< handle per-pane bindings >>
 #@+node:ekr.20061031131434.108:callStateFunction
 def callStateFunction (self,event):
 
@@ -5308,6 +5197,129 @@ def callStateFunction (self,event):
 
     return val
 #@-node:ekr.20061031131434.108:callStateFunction
+#@+node:ekr.20091230094319.6244:doMode
+def doMode (self,event,state,stroke):
+
+    trace = False and not g.unitTesting
+    k = self
+
+    # First, honor minibuffer bindings for all except user modes.
+    if state in ('getArg','getFileName','full-command','auto-complete'):
+        if k.handleMiniBindings(event,state,stroke):
+            return True,'break'
+
+    # Second, honor general modes.
+    if state == 'getArg':
+        return True,k.getArg(event,stroke=stroke)
+    elif state == 'getFileName':
+        return True,k.getFileName(event)
+    elif state in ('full-command','auto-complete'):
+        # Do the default state action.
+        if trace: g.trace('calling state function',k.state.kind)
+        val = k.callStateFunction(event) # Calls end-command.
+        if val != 'do-standard-keys':
+            return True,'break'
+
+    # Third, pass keys to user modes.
+    d =  k.masterBindingsDict.get(state)
+    if d:
+        b = d.get(stroke)
+        if b:
+            if trace: g.trace('calling generalModeHandler',stroke)
+            k.generalModeHandler (event,
+                commandName=b.commandName,func=b.func,
+                modeName=state,nextMode=b.nextMode)
+            return True,'break'
+        else:
+            # New in Leo 4.5: unbound keys end mode.
+            if trace: g.trace('unbound key ends mode',stroke,state)
+            k.endMode(event)
+            return False,None
+    else:
+        # New in 4.4b4.
+        handler = k.getStateHandler()
+        if handler:
+            handler(event)
+        else:
+            g.trace('No state handler for %s' % state)
+        return True,'break'
+#@-node:ekr.20091230094319.6244:doMode
+#@+node:ekr.20091230094319.6242:doPlainKey
+def doPlainKey (self,event,stroke,w):
+
+    '''Handle a plain key.  Return done,b.'''
+
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
+
+    # Important: only keys bound somewhere have a stroke.
+    # All unbound plain keys will be handled by handleUnboundKeys.
+    if k.unboundKeyAction in ('insert','overwrite'):
+        for key in (k.unboundKeyAction,'body','log','text','all'):
+            # Ignore bindings for all plain keys in insert/overwrite mode
+            # *except* auto-complete.
+            d = k.masterBindingsDict.get(key,{})
+            if d:
+                b = d.get(stroke)
+                if b and b.commandName == 'auto-complete':
+                    if trace: g.trace('%s: auto-complete key in %s mode' % (
+                        stroke,k.unboundKeyAction))
+                    return True,b
+
+        if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
+        return True,g.bunch(func=None,stroke=stroke,commandName=None)
+
+    # Ignore all command-state keys if we are not in a text widget.
+    elif k.unboundKeyAction == 'command':
+        if g.app.gui.isTextWidget(w):
+            return False,None
+        else:
+            c.onCanvasKey(event)
+            return True,None
+    else:
+        return False,None
+#@-node:ekr.20091230094319.6242:doPlainKey
+#@+node:ekr.20091230094319.6240:getPaneBinding
+def getPaneBinding (self,stroke,w):
+
+    trace = False and not g.unitTesting
+    k = self ; w_name = k.c.widget_name(w)
+    keyStatesTuple = ('command','insert','overwrite')
+
+    if trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
+        'isTextWidget(w)',g.app.gui.isTextWidget(w))
+
+    for key,name in (
+        # Order here is similar to bindtags order.
+        ('command',None),
+        ('insert',None),
+        ('overwrite',None),
+        ('button',None),
+        ('body','body'),
+        ('text','head'), # Important: text bindings in head before tree bindings.
+        ('tree','head'),
+        ('tree','canvas'),
+        ('log', 'log'),
+        ('text','log'),
+        ('text',None),
+        ('all',None),
+    ):
+        if (
+            # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+            name and w_name.startswith(name) or
+            key in ('text','all') and g.app.gui.isTextWidget(w) or
+            key in ('button','all')
+        ):
+            d = k.masterBindingsDict.get(key,{})
+            if trace:
+                g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+                # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
+                    return b
+#@-node:ekr.20091230094319.6240:getPaneBinding
 #@+node:ekr.20061031131434.152:handleMiniBindings
 def handleMiniBindings (self,event,state,stroke):
 
@@ -5420,7 +5432,7 @@ def masterCommand (self,event,func,stroke,commandName=None):
 
     if trace: #  and interesting:
         g.trace(
-            # 'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),'keysym:',repr(keysym),
+            'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),'keysym:',repr(keysym),
             'w:',w and c.widget_name(w),'func:',func and func.__name__
         )
 
