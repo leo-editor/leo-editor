@@ -50,7 +50,6 @@ Improved plugin: contextmenu.py
 #@-node:ekr.20090907080624.6082:Leo 4.6.4
 #@+node:ekr.20090718091653.5982:Leo 4.7 projects
 #@+node:ekr.20091221094815.6383:Urgent (voted up) bugs
-#@+node:ekr.20091221123255.6375:Fixed
 #@+node:ekr.20091221145433.6384:Calltips don't work on leo3k
 @nocolor-node
 
@@ -8392,15 +8391,17 @@ def initAtAutoWrite(self,p,fileName,outputFile):
     # Set underlining characters.
     d = self.tnodeOptionDict.get(p.v) # Set by preprocessTree.
 
-    ### There is no way to use user-defined underlining characters!
-    ### underlines = d.get('underline_characters')
-    if False: ### underlines:
+    underlines = d.get('underline_charactersh')
+    if underlines and not self.trialWrite:
         self.atAutoWriteUnderlines = underlines
     else:
+        # We can *not* use user-defined underlining characters
+        # while performing a trial write.
         d = p.v.u.get('rst-import',{})
         # g.trace(d,g.callers(4))
         underlines2 = d.get('underlines2','')
-        ### if not underlines2: underlines2 = '#'
+        # Do *not* set a default for overlining characters.
+        # if not underlines2: underlines2 = '#'
         underlines1 = d.get('underlines1','')
         if not underlines1: underlines1 = '=+*^~"\'`-:><_'
             # The standard defaults.
@@ -9236,15 +9237,17 @@ def initAtAutoWrite(self,p,fileName,outputFile):
     # Set underlining characters.
     d = self.tnodeOptionDict.get(p.v) # Set by preprocessTree.
 
-    ### There is no way to use user-defined underlining characters!
-    ### underlines = d.get('underline_characters')
-    if False: ### underlines:
+    underlines = d.get('underline_charactersh')
+    if underlines and not self.trialWrite:
         self.atAutoWriteUnderlines = underlines
     else:
+        # We can *not* use user-defined underlining characters
+        # while performing a trial write.
         d = p.v.u.get('rst-import',{})
         # g.trace(d,g.callers(4))
         underlines2 = d.get('underlines2','')
-        ### if not underlines2: underlines2 = '#'
+        # Do *not* set a default for overlining characters.
+        # if not underlines2: underlines2 = '#'
         underlines1 = d.get('underlines1','')
         if not underlines1: underlines1 = '=+*^~"\'`-:><_'
             # The standard defaults.
@@ -9478,6 +9481,64 @@ def readOneAtAutoNode (self,fileName,p):
         self.writeCachedTree(p, cachefile)
         g.doHook('after-auto', p = p)  # call after-auto callbacks
 #@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+#@+node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
+def initAtAutoWrite(self,p,fileName,outputFile):
+
+    # Set up for a standard write.
+    self.createDefaultOptionsDict()
+    self.tnodeOptionDict = {}
+    self.scanAllOptions(p)
+    self.initWrite(p)
+    self.preprocessTree(p) # Allow @ @rst-options, for example.
+
+    # Do the overrides.
+    self.outputFile = outputFile
+    self.outputFileName = fileName
+
+    # Set underlining characters.
+    d = self.tnodeOptionDict.get(p.v) # Set by preprocessTree.
+
+    underlines = d.get('underline_charactersh')
+    if underlines and not self.trialWrite:
+        self.atAutoWriteUnderlines = underlines
+    else:
+        # We can *not* use user-defined underlining characters
+        # while performing a trial write.
+        d = p.v.u.get('rst-import',{})
+        # g.trace(d,g.callers(4))
+        underlines2 = d.get('underlines2','')
+        # Do *not* set a default for overlining characters.
+        # if not underlines2: underlines2 = '#'
+        underlines1 = d.get('underlines1','')
+        if not underlines1: underlines1 = '=+*^~"\'`-:><_'
+            # The standard defaults.
+        if len(underlines2) > 1:
+            underlines2 = underlines2[0]
+            g.trace('too many top-level underlines, using %s' % (
+                underlines2),color='blue')
+        self.atAutoWriteUnderlines = underlines2 + underlines1
+        self.underlines1 = underlines1
+        self.underlines2 = underlines2
+#@+node:ekr.20090702084917.6033:@test initAtAutoWrite
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    rst = c.rstCommands
+    rst.initAtAutoWrite(p,fileName='<test file>',outputFile=None)
+
+    # Ensure we are actually testing the default logic.
+    d = p.v.u.get('rst-import',{})
+    underlines = d.get('underline_characters')
+    assert underlines is None,underlines
+    assert d == {},d
+    # Now test the logic.
+    assert rst.underlines2 == '#',rst.underlines2
+    assert rst.underlines1 == '=+*^~"\'`-:><_',rst.underlines1
+    assert rst.atAutoWriteUnderlines == '#=+*^~"\'`-:><_',\
+        rst.atAutoWriteUnderlines
+#@-node:ekr.20090702084917.6033:@test initAtAutoWrite
+#@-node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
 #@-node:ekr.20091229090857.11684:Major changes
 #@+node:ekr.20091229090857.11691:Underlining
 #@+node:ekr.20090502071837.2:endGen
@@ -9691,15 +9752,17 @@ def initAtAutoWrite(self,p,fileName,outputFile):
     # Set underlining characters.
     d = self.tnodeOptionDict.get(p.v) # Set by preprocessTree.
 
-    ### There is no way to use user-defined underlining characters!
-    ### underlines = d.get('underline_characters')
-    if False: ### underlines:
+    underlines = d.get('underline_charactersh')
+    if underlines and not self.trialWrite:
         self.atAutoWriteUnderlines = underlines
     else:
+        # We can *not* use user-defined underlining characters
+        # while performing a trial write.
         d = p.v.u.get('rst-import',{})
         # g.trace(d,g.callers(4))
         underlines2 = d.get('underlines2','')
-        ### if not underlines2: underlines2 = '#'
+        # Do *not* set a default for overlining characters.
+        # if not underlines2: underlines2 = '#'
         underlines1 = d.get('underlines1','')
         if not underlines1: underlines1 = '=+*^~"\'`-:><_'
             # The standard defaults.
@@ -9995,7 +10058,6 @@ def compareFiles (self,path1,path2,ignoreLineEndings,ignoreBlankLines=False):
         return False # Should never happen
 #@-node:ekr.20041005105605.197:compareFiles
 #@-node:ekr.20091229090857.11695:Ignore blank rst lines in replaceTargetFileIfDifferent
-#@-node:ekr.20091221123255.6375:Fixed
 #@-node:ekr.20091221094815.6383:Urgent (voted up) bugs
 #@+node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090721091726.5982:Fixed crasher when writing to a newly-deleted file
@@ -12605,15 +12667,17 @@ def initAtAutoWrite(self,p,fileName,outputFile):
     # Set underlining characters.
     d = self.tnodeOptionDict.get(p.v) # Set by preprocessTree.
 
-    ### There is no way to use user-defined underlining characters!
-    ### underlines = d.get('underline_characters')
-    if False: ### underlines:
+    underlines = d.get('underline_charactersh')
+    if underlines and not self.trialWrite:
         self.atAutoWriteUnderlines = underlines
     else:
+        # We can *not* use user-defined underlining characters
+        # while performing a trial write.
         d = p.v.u.get('rst-import',{})
         # g.trace(d,g.callers(4))
         underlines2 = d.get('underlines2','')
-        ### if not underlines2: underlines2 = '#'
+        # Do *not* set a default for overlining characters.
+        # if not underlines2: underlines2 = '#'
         underlines1 = d.get('underlines1','')
         if not underlines1: underlines1 = '=+*^~"\'`-:><_'
             # The standard defaults.

@@ -696,15 +696,17 @@ class rstCommands:
         # Set underlining characters.
         d = self.tnodeOptionDict.get(p.v) # Set by preprocessTree.
 
-        ### There is no way to use user-defined underlining characters!
-        ### underlines = d.get('underline_characters')
-        if False: ### underlines:
+        underlines = d.get('underline_charactersh')
+        if underlines and not self.trialWrite:
             self.atAutoWriteUnderlines = underlines
         else:
+            # We can *not* use user-defined underlining characters
+            # while performing a trial write.
             d = p.v.u.get('rst-import',{})
             # g.trace(d,g.callers(4))
             underlines2 = d.get('underlines2','')
-            ### if not underlines2: underlines2 = '#'
+            # Do *not* set a default for overlining characters.
+            # if not underlines2: underlines2 = '#'
             underlines1 = d.get('underlines1','')
             if not underlines1: underlines1 = '=+*^~"\'`-:><_'
                 # The standard defaults.

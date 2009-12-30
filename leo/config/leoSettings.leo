@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="48" left="0" height="694" width="1024"/>
+	<global_window_position top="48" left="3" height="692" width="1018"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -407,7 +407,7 @@
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings</vh>
+<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
 <v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
 <v t="ekr.20080510121331.16"><vh>@@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
@@ -1440,7 +1440,7 @@
 <v t="TL.20091006194534.6395"><vh>@mode vim-window-commands</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208" a="E"></v>
+<v t="ekr.20060603215208"></v>
 <v t="ekr.20070224073109.1"></v>
 <v t="ekr.20090930151626.8534"><vh>add/delete-comments...</vh>
 <v t="ekr.20060925060533.4"></v>
@@ -6601,7 +6601,7 @@ propagate-key-event = Alt-O
 propagate-key-event = Alt-W
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="7,12"></t>
+<t tx="ekr.20070622214401" str_leo_pos="4"></t>
 <t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070919125633">button_text_font_family = verdana

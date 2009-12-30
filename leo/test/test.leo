@@ -384,7 +384,7 @@
 </v>
 </v>
 <v t="ekr.20091015191345.1856"><vh>ctags completion</vh></v>
-<v t="ekr.20091217210235.1866" a="E"><vh>@auto-rst at-auto-rst-test.txt</vh></v>
+<v t="ekr.20091217210235.1866"><vh>@auto-rst at-auto-rst-test.txt</vh></v>
 <v t="ekr.20091229092257.1930"><vh>@auto-rst ../doc/html/intro.html.txt</vh></v>
 <v t="ekr.20091229101227.1902"><vh>@auto-rst quickstart.txt</vh></v>
 <v t="ekr.20091229092150.1939"><vh>@language rest</vh>
@@ -813,7 +813,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
