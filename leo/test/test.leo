@@ -24,6 +24,7 @@
 </v>
 </v>
 <v t="ekr.20070224123943"><vh>@settings</vh>
+<v t="ekr.20091230064146.1911"><vh>@data import_xml_tags</vh></v>
 <v t="ekr.20090815161520.1815"><vh>@string vim_trigger_event = select2</vh></v>
 <v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
 <v t="ekr.20090629105832.1790"><vh>@@bool big_outline_pane = True</vh></v>
@@ -387,12 +388,19 @@
 <v t="ekr.20091217210235.1866"><vh>@auto-rst at-auto-rst-test.txt</vh></v>
 <v t="ekr.20091229092257.1930"><vh>@auto-rst ../doc/html/intro.html.txt</vh></v>
 <v t="ekr.20091229101227.1902"><vh>@auto-rst quickstart.txt</vh></v>
+<v t="ekr.20091230064146.1912"><vh>@auto xml-tags-test.xml</vh>
+<v t="ekr.20091230081322.1915"><vh>xml-tags-test declarations</vh></v>
+<v t="ekr.20091230081322.1916"><vh>xml</vh></v>
+<v t="ekr.20091230081322.1917"><vh>test.a</vh></v>
+<v t="ekr.20091230081322.1918"><vh>test-b</vh></v>
+</v>
 <v t="ekr.20091229092150.1939"><vh>@language rest</vh>
 <v t="ekr.20091228143431.1895"><vh>@@auto quickstart.txt</vh></v>
 </v>
 <v t="ekr.20091221113040.1868"><vh>keys</vh></v>
 <v t="ekr.20091222114015.1901"><vh>Example</vh></v>
 <v t="ekr.20091223061318.1873"><vh>Simple example</vh></v>
+<v t="ekr.20091230081322.1919"><vh>unicode categories</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -813,7 +821,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5"></t>
+<t tx="ekr.20070416075121" str_leo_pos="13"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -4020,5 +4028,55 @@ list.
 .. _Docutils project web site: http://docutils.sourceforge.net/
 </t>
 <t tx="ekr.20091229092150.1939"></t>
+<t tx="ekr.20091230064146.1911">xml
+test.a
+test-b</t>
+<t tx="ekr.20091230064146.1912">@language xml
+@tabwidth -4
+@others
+
+@ignore</t>
+<t tx="ekr.20091230081322.1915">xml
+====
+
+</t>
+<t tx="ekr.20091230081322.1916">&lt;xml&gt;
+changed
+@others
+&lt;/xml&gt;
+</t>
+<t tx="ekr.20091230081322.1917">
+test.a
+++++++
+
+&lt;test.a&gt;&lt;/test.a&gt;
+</t>
+<t tx="ekr.20091230081322.1918">
+test-b
+++++++
+
+&lt;test-b&gt;&lt;/test-b&gt;
+</t>
+<t tx="ekr.20091230081322.1919">import unicodedata as u
+table = ('a','9','_',':','.',)
+table2 = (
+    (0xc0,0xd6),
+)
+    # [#xC0-#xD6]     | [#xD8-#xF6]     | [#xF8-#x2FF]    |
+    # [#x370-#x37D]   | [#x37F-#x1FFF]  | [#x200C-#x200D] |
+    # [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] |
+    # [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+    # | #xB7          | [#x0300-#x036F] | [#x203F-#x2040]
+for ch in table:
+    g.es(ch,u.category(ch))
+for data in table2:
+    i,j = data
+    for n in range(i,j):
+        if g.isPython3:
+            ch = chr(n)
+        else:
+            ch = unichr(n)
+        g.es(ch,u.category(ch))
+        break # Easier</t>
 </tnodes>
 </leo_file>
