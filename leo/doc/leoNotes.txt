@@ -17,13 +17,18 @@ How to create/use private branches
 
 ===== Do this first: creates a branch directly, **without** having to use launchpad.
 
+b push lp:leo-editor/whatever (private)
+b push lp:~leo-editor-team/leo-editor/whatever (public)
+
+bzr push bzr+ssh://edreamleo@bazaar.launchpad.net/leo-editor-team/leo-editor/whatever  (private)
 bzr push bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor-team/leo-editor/whatever  (public)
 
-bzr push bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever (private)
 
 ===== pushes a branch after it has been created on launchpad
 
-bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
+bzr push --use-existing-dir lp:leo-editor/whatever (private)
+
+bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever (private)
 
 ====== remembers the push
 
@@ -31,11 +36,10 @@ bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-edit
 
 ===== creates branch on local machine: do this from leo.repo directory
 
-bzr branch bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever
-
--- OR --
-
 bzr branch lp:leo-editor new-branch-name 
+
+bzr branch bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever new-branch-name
+
 
 ====== To resolve conflicts
 

@@ -6735,8 +6735,6 @@ class rectangleCommandsClass (baseEditCommandsClass):
             w = self.w
             self.beginCommand('string-rectangle')
             r1, r2, r3, r4 = self.stringRect
-
-            #g.trace(self.stringRect)
             s = w.getAllText()
             for r in range(r1,r3+1):
                 i = g.convertRowColToPythonIndex(s,r-1,r2)
@@ -6746,15 +6744,11 @@ class rectangleCommandsClass (baseEditCommandsClass):
             i = g.convertRowColToPythonIndex(s,r1-1,r2)
             j = g.convertRowColToPythonIndex(s,r3-1,r2+len(k.arg))
             w.setSelectionRange(i,j)
-
-            # Can be very slow.
-            # for r in range(r1,r3+1):
-                # w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
-                # w.insert('%s.%s' % (r,r2),k.arg)
-            # w.setSelectionRange('%d.%d' % (r1,r2),'%d.%d' % (r3,r2+len(k.arg)))
-
             self.endCommand()
-    #@nonl
+            # 2010/1/1: Fix bug 480422:
+            # string-rectangle kills syntax highlighting.
+            c.frame.body.recolor(c.p,incremental=False)
+
     #@-node:ekr.20050920084036.232:stringRectangle
     #@+node:ekr.20050920084036.229:yankRectangle
     def yankRectangle (self,event,killRect=None):
