@@ -309,6 +309,7 @@
 <v t="ekr.20070528111805"><vh>FrontWindowCapture.pyw</vh></v>
 <v t="ekr.20070609085533"><vh>@@url c:\prog\wink\ChangeViewMenu.htm</vh></v>
 </v>
+<v t="ekr.20091230081322.1919"><vh>unicode categories</vh></v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20080930114036.1"><vh>Icon stuff</vh>
@@ -356,17 +357,77 @@
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
+<v t="ekr.20091230121016.1931"><vh>at-auto stuff</vh>
+<v t="ekr.20090706044257.1784"><vh>@@auto ../../install</vh></v>
+<v t="ekr.20091217210235.1866"><vh>@@auto-rst at-auto-rst-test.txt</vh>
+<v t="ekr.20100101100043.1846"><vh>section 1</vh></v>
+<v t="ekr.20100101100043.1847"><vh>section 2</vh></v>
 </v>
-<v t="ekr.20091230121016.1931" a="E"><vh>at-auto stuff</vh>
-<v t="ekr.20090706044257.1784"><vh>@auto ../../install</vh></v>
-<v t="ekr.20091217210235.1866"><vh>@auto-rst at-auto-rst-test.txt</vh></v>
-<v t="ekr.20091229092257.1930"><vh>@auto-rst ../doc/html/intro.html.txt</vh></v>
-<v t="ekr.20091229101227.1902"><vh>@auto-rst quickstart.txt</vh></v>
-<v t="ekr.20091230064146.1912"><vh>@auto xml-tags-test.xml</vh></v>
-<v t="ekr.20091230090645.1925"><vh>@auto layout.html</vh></v>
-<v t="ekr.20091230160238.1922"><vh>@auto-rst cheatsheet.txt</vh></v>
+<v t="ekr.20091229092257.1930"><vh>@@auto-rst ../doc/html/intro.html.txt</vh>
+<v t="ekr.20100101100043.1848"><vh>@rst-no-head intro.html declarations</vh></v>
+<v t="ekr.20100101100043.1849"><vh>Chapter 2: The Leo Tutorial</vh>
+<v t="ekr.20100101100043.1850"><vh>Leo's main window</vh></v>
+<v t="ekr.20100101100043.1851"><vh>Outline commands</vh></v>
+<v t="ekr.20100101100043.1852"><vh>External files and @file nodes</vh></v>
+<v t="ekr.20100101100043.1853"><vh>Creating external files from outlines</vh>
+<v t="ekr.20100101100043.1854"><vh>Section references</vh></v>
+<v t="ekr.20100101100043.1855"><vh>The @others directive</vh></v>
+<v t="ekr.20100101100043.1856"><vh>The @all directive</vh></v>
+<v t="ekr.20100101100043.1857"><vh>Choosing between @others and sections</vh></v>
+<v t="ekr.20100101100043.1858"><vh>Organizing programs as outlines</vh></v>
 </v>
-<v t="ekr.20091230081322.1919"><vh>unicode categories</vh></v>
+<v t="ekr.20100101100043.1859"><vh>Clones &amp; views</vh></v>
+<v t="ekr.20100101100043.1860"><vh>More about directives</vh></v>
+<v t="ekr.20100101100043.1861"><vh>Scripting, extending and customizing Leo</vh></v>
+<v t="ekr.20100101100043.1862"><vh>Summary</vh></v>
+<v t="ekr.20100101100043.1863"><vh>Further study</vh></v>
+</v>
+</v>
+<v t="ekr.20091229101227.1902"><vh>@@auto-rst quickstart.txt</vh>
+<v t="ekr.20100101100043.1864"><vh>A ReStructuredText Primer</vh>
+<v t="ekr.20100101100043.1865"><vh>Structure</vh></v>
+<v t="ekr.20100101100043.1866"><vh>Text styles</vh></v>
+<v t="ekr.20100101100043.1867"><vh>Lists</vh></v>
+<v t="ekr.20100101100043.1868"><vh>Preformatting (code samples)</vh></v>
+<v t="ekr.20100101100043.1869"><vh>Sections</vh>
+<v t="ekr.20100101100043.1870"><vh>Document Title / Subtitle</vh></v>
+</v>
+<v t="ekr.20100101100043.1871"><vh>Images</vh></v>
+<v t="ekr.20100101100043.1872"><vh>What Next?</vh></v>
+</v>
+</v>
+<v t="ekr.20091230064146.1912"><vh>@@auto xml-tags-test.xml</vh>
+<v t="ekr.20100101100043.1873"><vh>xml</vh></v>
+<v t="ekr.20100101100043.1874"><vh>test.a</vh></v>
+<v t="ekr.20100101100043.1875"><vh>test-b</vh></v>
+</v>
+<v t="ekr.20091230090645.1925"><vh>@@auto layout.html</vh>
+<v t="ekr.20100101100043.1876"><vh>layout declarations</vh></v>
+<v t="ekr.20100101100043.1877"><vh>html</vh>
+<v t="ekr.20100101100043.1878"><vh>py:match</vh>
+<v t="ekr.20100101100043.1879"><vh>head</vh>
+<v t="ekr.20100101100043.1880"><vh>py:if</vh></v>
+</v>
+</v>
+<v t="ekr.20100101100043.1881"><vh>py:match</vh>
+<v t="ekr.20100101100043.1882"><vh>body</vh></v>
+</v>
+<v t="ekr.20100101100043.1883"><vh>py:match</vh></v>
+<v t="ekr.20100101100043.1884"><vh>py:match</vh></v>
+</v>
+</v>
+<v t="ekr.20091230160238.1922"><vh>@@auto-rst cheatsheet.txt</vh>
+<v t="ekr.20100101100043.1885"><vh>The reStructuredText_ Cheat Sheet: Syntax Reminders</vh>
+<v t="ekr.20100101100043.1886"><vh>Section Structure</vh></v>
+<v t="ekr.20100101100043.1887"><vh>Body Elements</vh></v>
+<v t="ekr.20100101100043.1888"><vh>Inline Markup</vh></v>
+<v t="ekr.20100101100043.1889"><vh>Directive Quick Reference</vh></v>
+<v t="ekr.20100101100043.1890"><vh>Interpreted Text Role Quick Reference</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20100101100043.1891"><vh>string-rectangle</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -787,7 +848,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="6,5"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -2608,6 +2669,65 @@ c.bodyWantsFocusNow()</t>
             icon = g.app.gui.getIconImage(fn)
             print('t %s icon %s %s' % (id(t),id(icon),fn))
 print('done')</t>
+<t tx="ekr.20090706044257.1784">@language unknown_language
+#!/bin/sh
+#@+leo-ver=4-thin
+#@+node:EKR.20040519082027.33:@file-thin ../../install
+#@@first
+
+# This script installs Leo on *nix.
+# Initial version by by Frank Merenda (fmerenda@yahoo.com)
+
+# Variables...
+LEO_PREFIX=${LEO_PREFIX:-/usr/local}
+LEO_RUN_SCRIPT_OUTPUT="${LEO_PREFIX}/bin/leo"
+
+# Bug fix: 2008/4/8: replace /lib/leo by /lib.
+LEO_LIB_DIR="${LEO_PREFIX}/lib"
+
+echo ""
+echo "Prefix directory set to \"$LEO_PREFIX\""
+
+# Make the directory structure
+if [ ! -d $LEO_LIB_DIR ] ; then
+    echo ""
+    echo Making directory structure $LEO_LIB_DIR
+
+    RESULTS=`mkdir -p -m755 $LEO_LIB_DIR 2&gt;&amp;1`
+    if [ $? -ne 0 ]; then
+        echo Failure making directory $LEO_LIB_DIR!
+        exit 1;
+    fi
+fi
+
+if [ ! -d $LEO_PREFIX/bin ] ; then
+    echo ""
+    echo Making directory structure $LEO_PREFIX/bin
+    RESULTS=`mkdir -p -m755 $LEO_PREFIX/bin 2&gt;&amp;1`
+    if [ $? -ne 0 ]; then
+        echo Failure making directory $LEO_PREFIX/bin!
+        exit 1;
+    fi
+fi
+
+# Copy the files
+cp -rp leo $LEO_LIB_DIR
+chown -R root:root $LEO_LIB_DIR
+
+echo "PYTHONPATH=${LEO_PREFIX}/lib python ${LEO_PREFIX}/lib/leo/core/runLeo.py \"\$@\"" &gt; $LEO_RUN_SCRIPT_OUTPUT
+
+RESULTS=`chmod 755 $LEO_RUN_SCRIPT_OUTPUT`   
+
+echo ""
+echo "Leo installed successfully"
+echo "Make sure ${LEO_PREFIX}/bin is in your path then"
+echo "type 'leo filename.leo' to use it."   
+echo ""
+
+exit 0;
+#@-node:EKR.20040519082027.33:@file-thin ../../install
+#@-leo
+</t>
 <t tx="ekr.20090715064044.1782">@language python
 
 b = p.b
@@ -3411,6 +3531,27 @@ State of the prototype code:
   containing an icon-like script, would create *another* @button node,
   say "@button pat-find pat a" that would (interactively?) find all
   nodes matched by the script in "pat a".  This isn't going to be easy.</t>
+<t tx="ekr.20091217210235.1866" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e657331710358010000003d7104752e">@language rest
+@tabwidth -4
+@others
+
+.. Warning: this node is ignored when writing this file.
+.. However, @ @rst-options are recognized in this node.
+</t>
+<t tx="ekr.20091229092257.1930" rst-import="7d710028580b000000756e6465726c696e65733271015801000000237102580b000000756e6465726c696e657331710358020000002b2a7104752e">@language rest
+@tabwidth -4
+@others
+
+.. Warning: this node is ignored when writing this file.
+.. However, @ @rst-options are recognized in this node.
+</t>
+<t tx="ekr.20091229101227.1902" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e657331710358030000003d2d607104752e">@language rest
+@tabwidth -4
+@others
+
+.. Warning: this node is ignored when writing this file.
+.. However, @ @rst-options are recognized in this node.
+</t>
 <t tx="ekr.20091230064146.1911"># For xml-tags-test.xml
 xml
 test.a
@@ -3423,6 +3564,10 @@ head
 py:if
 py:match
 script
+</t>
+<t tx="ekr.20091230064146.1912">@language xml
+@tabwidth -4
+@others
 </t>
 <t tx="ekr.20091230081322.1919">import unicodedata as u
 table = ('a','9','_',':','.',)
@@ -3442,6 +3587,1245 @@ for i,j in table2:
         if g.isPython3: ch = chr(n)
         else: ch = unichr(n)
         g.es(ch,u.category(ch))</t>
+<t tx="ekr.20091230090645.1925">@language xml
+@tabwidth -4
+@others
+</t>
 <t tx="ekr.20091230121016.1931"></t>
+<t tx="ekr.20091230160238.1922" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e65733171036802752e">@language rest
+@tabwidth -4
+@others
+
+.. Warning: this node is ignored when writing this file.
+.. However, @ @rst-options are recognized in this node.
+</t>
+<t tx="ekr.20100101100043.1846"></t>
+<t tx="ekr.20100101100043.1847">section 2
+
+</t>
+<t tx="ekr.20100101100043.1848">.. rst3: filename: html\intro.html
+
+</t>
+<t tx="ekr.20100101100043.1849">Leo is a power tool for people who want to organize, study and work with data,
+especially complex data like computer programs, books, web sites and data bases.
+Superficially, Leo may look like other outlining programs, code folding editors
+or class browsers, but it most certainly is not.
+
+People say Leo is a revolutionary tool, and that Leo is fun to use, even
+additive. There is a unique "Leo way" of managing data; the term **Leonine**
+describes how people treat data in "the world according to Leo". Leo definitely
+takes a bit of work to understand. Leo's users speak of an "Aha" moment, when
+they see how these pieces fit together: outline structure is significant
+everywhere.
+
+Leo is freely available in source or binary form for all major platforms. You
+may download Leo from http://sourceforge.net/projects/leo/files/Leo/ Leo is Open
+Software and may be freely distributed.
+
+`Leo's home page`_ contains additional documentation and links to other
+resources. For another introduction to Leo, open the file quickstart.leo in the
+leo/doc folder.
+
+This tutorial introduces the reader to the basic concepts and features of Leo.
+It helps to have Leo running for hands-on experience, but all examples here are
+self-contained, so the tutorial can be read off-line as well.
+See `Leo's Installation Guide`_. for detailed installation instructions. If you
+have problems installing Leo, please ask for help on `Leo's help forum`_. 
+
+This tutorial does not attempt to be comprehensive and cover every single
+feature of Leo, or even every commonly used feature. Instead, it introduces many
+of Leo's most noteworthy features, and will give you a good idea of Leo's flavor
+and style. After reading it, you will be able to use Leo in basic ways to create
+external files, organize data and run simple scripts. You will then be ready to
+learn more about Leo's many advanced features in `Leo's Users Guide`_.
+
+.. The :ref:`glossary` is also worth going through.
+
+.. contents::
+
+.. Links used in this document...
+
+.. ----- External references.
+
+.. _`LaTeX`:                    http://www.latex-project.org/
+.. _`Leo's help forum`:         http://groups.google.com/group/leo-editor-users
+.. _`Leo's home page`:          http://webpages.charter.net/edreamleo/front.html
+.. _`Literate Programming`:     http://www.literateprogramming.com/
+.. _`MySQL`:                    http://www.mysql.com/
+.. _`noweb`:                    http://www.eecs.harvard.edu/~nr/noweb/
+.. _`Python`:                   http://www.python.org/
+.. _`reStructuredText`:         http://docutils.sourceforge.net/rst.html
+.. _`XML`:                      http://en.wikipedia.org/wiki/XML
+
+.. ----- Relative links....
+
+.. _`external file`:        `external files`_
+.. _glossary:               glossary.html
+.. _`Good style and bad`:   `style`_
+.. _outline:                `Leo's main window`_
+.. _outlines:               `Leo's main window`_
+.. _plugin:                 `extending`_
+.. _plugins:                `extending`_
+.. .. _quickstart:             `Quick start for programmers`_
+.. _scripts:                `scripting`_
+.. _settings:               `config`_
+.. _`Configuring Leo`:      `config`_
+
+.. ----- References to other chapters.
+
+.. _`What people are saying about Leo`:             testimonials.html
+.. _`@auto trees`:                                  directives.html#auto-trees
+.. _command:                                        commands.html
+.. _commands:                                       commands.html
+.. _directive:                                      directives.html
+.. _directives:                                     directives.html
+.. _`Leo directives`:                               directives.html
+.. _`editing commands`:                             commands.html#the-edit-menu
+.. _front:                                          front.html
+.. _`install Leo`:                                  install.html
+.. _`launch Leo`:                                   install.html#running-leo
+.. _`Leo's Users Guide`:                            leo_TOC.html
+.. _`Leo's Installation Guide`:                     install.html
+.. _`Chapter 4: Writing Programs in Leo`:           directives.html
+.. _`Chapter 5: Using Leo's Commands`:              commands.html
+.. _`Chapter 6: Leo and Literate Programming`:      design.html
+.. _`Chapter 7: Scripting Leo with Python`:         scripting.html
+.. _`Chapter 8: Customizing Leo`:                   customizing.html
+
+.. ----- References to the glossary
+
+.. _`@auto`:                    glossary.html#auto
+.. _`@file`:                    glossary.html#file
+.. _`@nosent`:                  glossary.html#nosent
+.. _`@others`:                  glossary.html#others
+.. _`@thin`:                    glossary.html#thin
+.. _`@thin trees`:              glossary.html#thin-trees
+.. _`body text`:                glossary.html#body-text
+.. _ancestor:                   glossary.html#ancestor
+.. _children:                   glossary.html#child
+.. _clone:                      glossary.html#clone
+.. _cloned:                     glossary.html#cloned
+.. _cloning:                    glossary.html#clone
+.. _clones:                     glossary.html#clones
+.. _`code part`:                glossary.html#code-part
+.. _`doc part`:                 glossary.html#doc-part
+.. _descendant:                 glossary.html#descendant
+.. _descendants:                glossary.html#descendants
+.. _`doc part`:                 glossary.html#doc-part
+.. _grandchildren:              glossary.html#grandchildren
+.. _headline:                   glossary.html#headline
+.. _headlines:                  glossary.html#headlines
+.. _`organizer node`:           glossary.html#organizer-node
+.. _`organizer nodes`:          glossary.html#organizer-nodes
+.. _`outline order`:            glossary.html#outline-order
+.. _node:                       glossary.html#node
+.. _nodes:                      glossary.html#nodes
+.. _reference:                  glossary.html#reference
+.. _references:                 glossary.html#references
+.. _root:                       glossary.html#root
+.. _`root node`:   	            glossary.html#root
+.. _section:                    glossary.html#section
+.. _sections:                   glossary.html#section
+.. _`section definition`:       glossary.html#section-definition
+.. _`section definitions`:      glossary.html#section-definitions
+.. _`section definition nodes`: glossary.html#section-definition-nodes
+.. _`section name`:             glossary.html#section-name
+.. _`section names`:            glossary.html#section-names
+.. _`section reference`:        glossary.html#section-reference
+.. _`section references`:       glossary.html#section-references
+.. _siblings:                   glossary.html#siblings
+
+.. For reasons unknown, this image must appear in the _images folder on the web site.
+.. |leoMainWindow| image:: screen-shots/leo-qt-main-window.JPG
+
+</t>
+<t tx="ekr.20100101100043.1850">Let's start looking at Leo in detail. We'll start with what you see when you
+first open Leo, Leo's main window. Leo's main window, shown below, represents an
+entire project. As you can see, the main window contains three panes: the
+**outline pane** at the top left, the **log pane** at the top right, and the
+**body pane** at the bottom. The window also contains an **icon area** at the
+very top, a **status area** and a **mini-buffer** at the very bottom.
+
+|leoMainWindow|
+
+The outline pane
+    The outline pane shows your project as an outline. The outline
+    contains all your project's data. An outline consists of **nodes**. The
+    **icon box** is a small icon directly to the left of the headline text. If a
+    node contains children, a smaller icon appears to the left of the icon box.
+    This icon contains a '+' or '-' symbol. Clicking this **expansion box**
+    expands or contracts the node.
+    
+Nodes
+    Nodes have two parts, a **headline** and **body text**. The outline pane
+    shows headlines. Selecting a headline selects the entire node; the node's
+    body text appears in the body pane. Leo uses standard terminology to
+    describe the relationships of nodes in an outline. We speak of **parent**
+    nodes, **child** nodes, **ancestor** nodes and **descendant** nodes.
+
+Body pane
+    The body pane contains the body text of the node selected in the
+    outline pane.
+
+Log pane
+    The log pane contains informational messages from Leo or your scripts.
+
+Icon area Depending on what plugins are enabled, the icon area may contain
+    buttons and other widgets that extend what Leo can do. The scripting plugin
+    makes it easy to add buttons to the icon area.
+
+Status area
+    The status area shows the line and column containing the body text's cursor,
+    and the **UNL** (Uniform Node Location), the path from the top of the outline
+    to the selected node.  This path will change as you change outline nodes.
+
+Mini-buffer
+    You can type command and search strings in the minibuffer. It works much
+    like the Emacs mini-buffer. To enter a command, type &lt;Alt-x&gt; followed by the
+    command name and then &lt;return&gt;. To type a search string, type &lt;ctrl-f&gt;
+    followed by the search string and then &lt;return&gt;. For full details, see
+    `Chapter 5: Using Leo's Commands`_.
+
+</t>
+<t tx="ekr.20100101100043.1851">You can use Leo as fairly typical outliner. Play around with some of the
+commands from the Outline menu:
+
+- Click the expansion box of nodes to show and hide their children.
+
+- The Insert Node command (Ctrl+I) inserts a new headline into the outline.
+
+- The Cut Node command (Ctrl+Shift+X) deletes a headline and all its children,
+  and copies the structure to clipboard - ready to paste with Paste Node command
+  (Ctrl+Shift+V). Use the Copy Node command (Ctrl+Shift+C) to copy node to
+  clipboard without deleting it from outline. Copy-paste command family works
+  across different Leo documents.
+
+- The Move Up (Ctrl+U), Move Down (Ctrl+D), Move Left (Ctrl+L) and Move Right
+  (Ctrl+R) commands move the currently selected node, along with all its
+  descendants.
+
+- The Promote (Ctrl+}) command makes all the children of a headline siblings of
+  the headline. The Demote (Ctrl+{) command makes all following siblings of a
+  headline children of the headline.
+
+- Move around the tree and expand/collapse nodes by pressing Alt + arrow keys.
+  This also moves the focus to tree, so, after pressing Alt + arrow, you can
+  move around by using arrow keys alone. Return the focus to the body control by
+  pressing Enter.
+
+- To edit the headline, use press Ctrl+H. This works regardless of whether body
+  or headline has focus.
+
+- We'll discuss the Clone Node command in the next section.
+
+You enter body text for any node by selecting the node's headline in the outline
+pane and then typing in the body pane. Leo has a full range of `editing
+commands`_ that apply to the body pane.
+
+</t>
+<t tx="ekr.20100101100043.1852">.. _`external files`:
+
+Leo stores outline data on your file system in **.leo files**. The format of
+these files is `XML`_. You don't have to store all your data in .leo files: Leo
+allows you to store parts of your outline data **external files**, that is,
+other files on your file system.
+
+**@file nodes** create external files. \@file nodes have headlines starting with
+\@file followed by a file name. Some examples::
+
+    @file leoNodes.py
+    @file ../../notes.text
+    
+The file name can be an absolute path or a relative path to the file that starts
+at Leo's **load directory**, the directory containing the .leo file.
+
+Leo reads and writes external files automatically when you open or save your Leo
+outline:
+
+- When you open an outline (.leo file) Leo reads all the external files created
+  by the \@file nodes in the outline. If you have changed an external file
+  outside of Leo, Leo will update the corresponding \@file tree to reflect those
+  changes when Leo next opens the outline.
+
+- When you save your outline, Leo writes all **dirty** \@file nodes. An \@file
+  is dirty if the node or any of its descendant nodes has changed.
+  **Important**: When Leo writes an external file, Leo writes all the essential
+  information in the \@file tree to the external file, *not* to the .leo file.
+  The only nodes that gets written to the .leo file are nodes that are not
+  contained in any \@file tree.
+
+</t>
+<t tx="ekr.20100101100043.1853">We come now to one of Leo's most important and unusual features. When Leo writes
+an external file, it does so in a flexible manner, directed by **outline-based
+markup**. This markup tells Leo exactly how to create the external file from an
+\@file node.
+
+The **obvious** way to write an external file would be to write the \@file node
+itself followed by all the descendant nodes in **outline order** (the order in
+which nodes appear in the outline). But Leo does *not* write external files
+exactly this way.
+
+Yes, Leo does indeed start by writing the \@file node itself. But Leo writes the
+\@file node's descendants only only when it sees one of three kinds of Leo
+markup: section references, the \@others directive and the \@all directive.
+We'll discuss these three kinds of markup in the next section.
+
+Section references and the \@others and \@all directives tell Leo to write the
+**expansion** of one or more descendant nodes to the external file. Programmers
+will recognize this process as akin to macro expansion. The following sections
+will explain this process in detail.
+
+</t>
+<t tx="ekr.20100101100043.1854">A **section reference** is a line of body text of the form::
+
+    &lt;&lt; a section name &gt;&gt;
+    
+Here, "a section name" can be any descriptive text not containing "&gt;&gt;". When Leo
+encounters a section reference, Leo searches all the descendants of the node
+containing the reference looking for a node whose headline matches the section
+reference. That is, Leo looks for a descendant node whose headline starts with::
+
+     &lt;&lt; a section name &gt;&gt;
+     
+We call such nodes **named nodes**. Leo doesn't require an exact match. Leo
+ignores whitespace and the case of letters when comparing headlines to section
+reference. Also, Leo ignores anything that may follow the section name in a
+named node. For example, the following headline will match the section reference
+above::
+
+    &lt;&lt; A Section Name &gt;&gt; (to do)
+
+If Leo does find a match, Leo *replaces* the section reference ("&lt;&lt; a section
+name&gt;&gt;") by the *expansion* of the body text of the matched node. That is, Leo
+replaces the section reference by the body text of the matched node, but Leo
+**expands all markup** in the matched node *before* making the replacement. The
+entire expansion of the matched node replaces the original section reference.
+Programmers will recognize this process as recursive macro expansion.
+
+We have just discussed what happens if Leo does find a descendant named node
+that matches the section reference. If no such match is found the section
+reference is said to be **undefined** and Leo does not write any data to the
+external file. This is *not* a serious error: Leo will will save the erroneous
+\@&lt;file&gt; tree in the .leo file instead of the external file. No information is
+lost. By the way, Leo's syntax coloring will indicate undefined section
+reference by underlining the section name.
+
+**Important**: the indentation of section references matters. When expanding a
+section reference, Leo indents every line of the expansion by the leading
+whitespace that occurs before the section reference. Note also that you can't
+write something after a section reference and expect it to end up on the same
+line after expansion--Leo always writes a newline after the expansion.
+
+</t>
+<t tx="ekr.20100101100043.1855">The **@others directive** is the second (and most common) way of including
+descendant nodes in an external files. When Leo encounters the \@others
+directive it replaces the \@others directive by the *expansion* of all
+**unnamed** descendant nodes. As with section references, Leo replaces all
+markup in the descendant nodes, and the entire expansion replaces the \@others
+directive.
+
+In short, section references write *named* nodes; \@others directives write all
+*unnamed* nodes. By the way, no node may contain more than one \@others
+directive because there would be no way to "apportion" descendant nodes to more
+than one \@others directive. However, nodes may contain as many section
+references as you like.
+
+As with section references, the indentation of the \@others directive matters.
+This allows Leo to handle Python source code properly. For exmple, the following
+is a common way of representing a Python class::
+
+    class myClass:
+        '''a docstring'''
+        @others
+        
+When Leo writes this node to an external file, Leo will write the first two
+lines to the external file, with the indentation in effect for the node. Leo
+will then write all descendant nodes to the external files, with *additional*
+indentation equal to the leading whitespace appearing before the \@others
+directive.
+
+</t>
+<t tx="ekr.20100101100043.1856">The \@all directive is the third, simplest (and least common) way of including
+descendant nodes. This directive causes Leo to write all descendant nodes in
+outline order, regardless of whether they are named or not. Furthermore, the
+\@all directive does not expand any markup in descendant nodes. This results in
+Leo writing the external file in the "obvious" way. That is, Leo writes all
+descendant nodes in outline order.
+
+Use the all directive if your external file contains unrelated nodes. For
+example, I use an external file to store programming notes. These notes
+typically contain snippets of programming source code, but there is no real
+relationships between the snippets--the file is simply a grab bag of
+information. The \@all directive is designed for this situation.
+
+</t>
+<t tx="ekr.20100101100043.1857">.. _style:
+
+Newcomers to Leo frequently ask when to use the \@others directive and when to
+use sections. It is good style to use section references only when the order of
+text within a external file matters. For example, Python programmers put
+docstrings and imports at the start of files. So the body text of
+\@file nodes typically look something like this::
+
+    &lt;&lt; docstring &gt;&gt;
+    @language python
+    @tabwidth -4
+    &lt;&lt; imports &gt;&gt;
+    @others
+
+This ensures that the docstring is first in the file, followed by imports,
+followed by everything else. Note that the order in which functions are defined
+in a file, or methods defined within a class, typically does *not* matter. Thus,
+it is good style to define classes like this::
+
+  class myClass:
+        &lt;&lt; class attributes &gt;&gt;
+        @others
+
+It would be bad style to define a class like this::
+
+  class myClass:
+        &lt;&lt; class attributes &gt;&gt;
+        &lt;&lt; method 1 &gt;&gt;
+        &lt;&lt; method 2 &gt;&gt;
+        ...
+
+Not only does this over-specify the order in which methods are defined, but it
+requires lots of extra typing. Not only must you add a line for each method, but
+headlines must contain section names such as &lt;&lt; method 1 &gt;&gt;, &lt;&lt;method 2&gt;&gt;, etc.
+When using \@others it is good style simply to put the name of each method in the
+headline.
+
+</t>
+<t tx="ekr.20100101100043.1858">A few more words about style:
+
+- It is good style to put each class, function or method in its own node. This
+  makes it easy to see the shape of your code.
+
+- It is good style to use organizer nodes to group related functions or methods.
+  An organizer node has no content except maybe for comments. Like this::
+
+    + myClass
+        + birth and death
+            + __init__
+            etc.
+        + getters
+            etc.
+        + setters
+            etc.
+        + misc methods
+            etc.
+
+  (In this notation, '+' denotes a headline.) This organization is far superior
+  to using hideous comments like::
+
+    ###########
+    # Getters #
+    ###########
+
+- It is bad style to use \@others in organizer nodes. There is no need to do so.
+
+- It is bad style to use \@others when order does matter. The reason is that it
+  is very easy to move nodes in a tree by mistake, say by alphabetizing nodes.
+  One wants to make the meaning of a external file immune from such movements.
+
+One last word about style. The world won't end if you happen to use bad style by
+mistake: you just might cause a bit more work for yourself than was strictly
+necessary. Feel free to invent your own style of using Leo. Still, it would be
+wise to "know the rules before you break them."
+
+</t>
+<t tx="ekr.20100101100043.1859">A **clone** is a node that appears in more than one place in a Leo outline.
+Clones are marked with a small red arrow in the icon box. All clones of a node
+are actually *the same node*, so any change to one clone affects all clones. For
+example, inserting, moving or deleting any child of a clone will change all
+other clones on the screen.
+
+Please take a few moments to experiment with clones. Create a node whose
+headline is A. Clone node A using the Clone Node command in Leo's Outline menu.
+Type some text into the body of either clone of A. The same text appears in the
+bodies of all other clones of A. Now insert a node, say B, as a child of any of
+the A nodes. All the A nodes now have a B child. See what happens if you clone
+B. See what happens if you insert, delete or move nodes that are children of A.
+Verify that when you delete the penultimate clone, the last clone becomes a
+regular node again.
+
+Clones are much more than a cute feature. Clones allow multiple views of data to
+exist **within a single outline**. With Leo, there is no such thing as a single,
+"correct" view of data. You can have as many views of data as you like.
+
+To create a new view of the data in your outline, just do the following:
+
+1. Create an *ordinary* node, that will represent the view. We call these nodes
+   **view nodes** merely to indicate they represent a view.
+   
+2. Clone all the nodes from the outline that you want the view to contain. Move
+   these clones so they become children of the view node.
+   
+3. (Optional) You can add regular nodes as children of the view node too.
+   
+For example, when I fix a bug in Leo, I create an ordinary node to represent the
+bug. This **bug node** is my view of all the data in Leo's source code that
+relates to the bug. As I discover code related to the bug, I clone their nodes
+and move them under the bug node. I'll also add ordinary nodes as children of
+the bug node. These nodes contain the original bug report, descriptions of how I
+fixed the bug, test data, or any other notes I might want to keep.
+
+Once I have created the bug node, I concentrate *only* on that node and its
+children. I can examine the bug node and its children without having to jump
+around the outline. Everything I need is in one place. When I get around to
+actually fixing the bug I can do so by changing the clones. Again, I do not have
+to jump around the outline. It doesn't matter how big or complex the entire
+outline is: I am only dealing with the bug node and its children. This extremely
+narrow focus makes it *much* easier to fix bugs.
+
+By the way, I never have to remember to save external files. When I change any
+clone, Leo marks all instances of that clone throughout the entire outline as
+dirty (changed). When I save the Leo outline, Leo automatically writes all the
+external files that contain dirty nodes.
+
+Views have an unlimited number of uses. Use them whenever you want to focus your
+attention on some smaller set of nodes. For example, I often create view nodes
+when studying other people's code. The view node helps me concentrate on just
+the part of the code that interests me at the moment.
+
+</t>
+<t tx="ekr.20100101100043.1860">Leo's **directives** control such things as syntax coloring, line wrapping
+within the body pane and the width of tabs. Leo directives may appear in
+headlines or body text. Leo directives start with '@' in the leftmost column,
+followed by the name of the directive. Here are some of Leo's directives::
+
+    @language python
+    @tabwidth -4
+    @wrap
+    @nowrap
+    @color
+    @nocolor
+    @killcolor
+    
+Directives apply until overridden in a subtree. All of these directives apply to
+the node they are contained in, and also to the entire tree of descendant nodes,
+unless **over-ridden** by a similar directive in a descendant node. For example,
+the directive::
+
+    @language python
+    
+tells Leo to syntax color the node and all descendant nodes as Python code.
+However, some descendant node mignt contain::
+
+    @language rest
+    
+which tells Leo to color that node and all of *its* decendants as
+reStructureText. This principle applies to almost all of Leo's directives: the
+directive is in effect throughout a tree, unless overridden in some subtree.
+
+- **\@color**, **\@nocolor** and **\@killcolor** control syntax coloring.
+
+  You can mix \@nocolor and \@color directives in a single node, but these
+  directives apply to descendant nodes only if they are **unambiguous**, that
+  is, only if the ancestor node contains exactly one \@color or \@nocolor
+  directive.
+
+- **\@encoding** Sets the Unicode encoding used in external files.
+
+- **\@first** directives orces lines to appear before the first sentinel of a
+  external file.
+
+    This directive may only appear in \@&lt;file&gt; nodes. A common use of \@first
+    directives is to add shebang lines::
+    
+        @first #! /usr/bin/env python
+        
+    or Python encoding specifications::
+    
+        @first # -*- coding: utf-8 -*-
+
+- **\@language** Sets the language used for syntax coloring **and** sets the
+  comment delimiters used in sentinel lines and in doc parts. Some examples::
+
+    @language python
+    @language c
+    @language rest # restructured text
+    @language plain # text, that is, no syntax coloring.
+
+- **\@last** Forces lines to appear after the last sentinel of a external file.
+
+- **\@lineending** Specifies the line ending to be used in external files.
+
+- **\@pagewidth** Sets the page width used to break doc parts into lines.
+
+- **\@path** Sets the path to be prepended to filenames in descendant \@file
+  nodes.
+
+- **\@tabwidth** sets the width of tabs.
+
+  Negative tab widths cause Leo to convert tabs to spaces and are highly
+  recommended for Python programming.
+
+- **\@wrap** and **\@nowrap** enable or disable line wrapping the Leo's body pane.
+
+Leo treats lines starting with \@ as a normal code line unless the \@ starts a
+Leo directive. In particular, Leo will output Python decorators correctly,
+provided the name of the decorator does not conflict with a Leo directive.
+
+</t>
+<t tx="ekr.20100101100043.1861">.. _scripting:
+
+Leo is fully scriptable using the Python language. Leo can execute any body text
+as a Python script. To run the entire body text as a script, simply choose the
+node and execute the Execute Script command (Ctrl+B). If text is selected, the
+Execute Script command will run just the selected text as the script.
+
+The Execute Script command **preprocesses** the script before executing it, in
+exactly the same way that Leo writes external files. Leo expands section
+references and processes \@others directives before executing the script. This
+allows you to use all of Leo's outlining capabilities to organize your scripts.
+
+Your Python scripts can easily access data in an outline. Leo's execute-script
+(Ctrl-B) command predefines three variables, c, g and p, that scripts can use to
+easily access any part of any Leo outline, and Leo's own source code. For
+example, the following script will print all the headlines in an outline::
+
+    for p in c.all_positions():
+        print ' '*p.level(),p.h
+
+The example above is only the beginning of what scripts can do. See `Chapter 7:
+Scripting Leo with Python`_ for a complete discussion of scripting Leo.
+
+.. _extending:
+
+**Plugins** are Python modules that change how Leo works. Leo's user have
+contributed dozens of plugins that have extended Leo's capabilities in many new
+directions. The file leoPlugins.leo contains all plugins that are included in
+Leo distributions.
+
+.. _config:
+
+Plugins and other parts of Leo can get options from **@settings** trees.
+\@settings trees allow plugins to get options without any further support from
+Leo's core code. For a full discussion of \@settings trees, see `Chapter 8:
+Customizing Leo`_.
+
+</t>
+<t tx="ekr.20100101100043.1862">Using Leo quickly becomes second nature:
+
+- You can use Leo like any ordinary outliner, as a filing cabinet, but Leo's
+  clones makes this filing cabinet much more flexible and useful than usual.
+
+- You create external files using \@file trees. Within \@file trees, you use
+  section references and the \@others directive to tell Leo how to write nodes
+  to the external file. Directives such as \@tabwidth and \@language provide other
+  information to Leo. Leo's \@file trees allow you to organize your scripts
+  and programs with Leo's outline structure.
+  
+- You can execute Python scripts from any node in a Leo outline. Leo scripts
+  have full, easy, access to all the information in the outline. Using scripts
+  and plugins, you can easily add new features to Leo.
+
+</t>
+<t tx="ekr.20100101100043.1863">LeoPyRef.leo (in the core subdirectory of the leo folder) contains almost all of
+Leo's source code. It provides hundreds of examples of everything discussed
+here. This file will repay close study. For full details on all aspects of Leo
+see LeoDocs.leo or `Leo's Users Guide`_.
+
+</t>
+<t tx="ekr.20100101100043.1864">:Author: Richard Jones
+:Version: $Revision: 5801 $
+:Copyright: This document has been placed in the public domain.
+
+.. contents::
+
+
+The text below contains links that look like "(quickref__)".  These
+are relative links that point to the `Quick reStructuredText`_ user
+reference.  If these links don't work, please refer to the `master
+quick reference`_ document.
+
+__
+.. _Quick reStructuredText: quickref.html
+.. _master quick reference:
+   http://docutils.sourceforge.net/docs/user/rst/quickref.html
+
+.. Note:: This document is an informal introduction to
+   reStructuredText.  The `What Next?`_ section below has links to
+   further resources, including a formal reference.
+
+</t>
+<t tx="ekr.20100101100043.1865">From the outset, let me say that "Structured Text" is probably a bit
+of a misnomer.  It's more like "Relaxed Text" that uses certain
+consistent patterns.  These patterns are interpreted by a HTML
+converter to produce "Very Structured Text" that can be used by a web
+browser.
+
+The most basic pattern recognised is a **paragraph** (quickref__).
+That's a chunk of text that is separated by blank lines (one is
+enough).  Paragraphs must have the same indentation -- that is, line
+up at their left edge.  Paragraphs that start indented will result in
+indented quote paragraphs. For example::
+
+  This is a paragraph.  It's quite
+  short.
+
+     This paragraph will result in an indented block of
+     text, typically used for quoting other text.
+
+  This is another one.
+
+Results in:
+
+  This is a paragraph.  It's quite
+  short.
+
+     This paragraph will result in an indented block of
+     text, typically used for quoting other text.
+
+  This is another one.
+
+__ quickref.html#paragraphs
+
+</t>
+<t tx="ekr.20100101100043.1866">(quickref__)
+
+__ quickref.html#inline-markup
+
+Inside paragraphs and other bodies of text, you may additionally mark
+text for *italics* with "``*italics*``" or **bold** with
+"``**bold**``".  This is called "inline markup".
+
+If you want something to appear as a fixed-space literal, use
+"````double back-quotes````".  Note that no further fiddling is done
+inside the double back-quotes -- so asterisks "``*``" etc. are left
+alone.
+
+If you find that you want to use one of the "special" characters in
+text, it will generally be OK -- reStructuredText is pretty smart.
+For example, this lone asterisk * is handled just fine, as is the
+asterisk in this equation: 5*6=30.  If you actually
+want text \*surrounded by asterisks* to **not** be italicised, then
+you need to indicate that the asterisk is not special.  You do this by
+placing a backslash just before it, like so "``\*``" (quickref__), or
+by enclosing it in double back-quotes (inline literals), like this::
+
+    ``*``
+
+__ quickref.html#escaping
+
+.. Tip:: Think of inline markup as a form of (parentheses) and use it
+   the same way: immediately before and after the text being marked
+   up.  Inline markup by itself (surrounded by whitespace) or in the
+   middle of a word won't be recognized.  See the `markup spec`__ for
+   full details.
+
+__ ../../ref/rst/restructuredtext.html#inline-markup
+
+</t>
+<t tx="ekr.20100101100043.1867">Lists of items come in three main flavours: **enumerated**,
+**bulleted** and **definitions**.  In all list cases, you may have as
+many paragraphs, sublists, etc. as you want, as long as the left-hand
+side of the paragraph or whatever aligns with the first line of text
+in the list item.
+
+Lists must always start a new paragraph -- that is, they must appear
+after a blank line.
+
+**enumerated** lists (numbers, letters or roman numerals; quickref__)
+  __ quickref.html#enumerated-lists
+
+  Start a line off with a number or letter followed by a period ".",
+  right bracket ")" or surrounded by brackets "( )" -- whatever you're
+  comfortable with.  All of the following forms are recognised::
+
+    1. numbers
+
+    A. upper-case letters
+       and it goes over many lines
+
+       with two paragraphs and all!
+
+    a. lower-case letters
+
+       3. with a sub-list starting at a different number
+       4. make sure the numbers are in the correct sequence though!
+
+    I. upper-case roman numerals
+
+    i. lower-case roman numerals
+
+    (1) numbers again
+
+    1) and again
+
+  Results in (note: the different enumerated list styles are not
+  always supported by every web browser, so you may not get the full
+  effect here):
+
+  1. numbers
+
+  A. upper-case letters
+     and it goes over many lines
+
+     with two paragraphs and all!
+
+  a. lower-case letters
+
+     3. with a sub-list starting at a different number
+     4. make sure the numbers are in the correct sequence though!
+
+  I. upper-case roman numerals
+
+  i. lower-case roman numerals
+
+  (1) numbers again
+
+  1) and again
+
+**bulleted** lists (quickref__)
+  __ quickref.html#bullet-lists
+
+  Just like enumerated lists, start the line off with a bullet point
+  character - either "-", "+" or "*"::
+
+    * a bullet point using "*"
+
+      - a sub-list using "-"
+
+        + yet another sub-list
+
+      - another item
+
+  Results in:
+
+  * a bullet point using "*"
+
+    - a sub-list using "-"
+
+      + yet another sub-list
+
+    - another item
+
+**definition** lists (quickref__)
+  __ quickref.html#definition-lists
+
+  Unlike the other two, the definition lists consist of a term, and
+  the definition of that term.  The format of a definition list is::
+
+    what
+      Definition lists associate a term with a definition.
+
+    *how*
+      The term is a one-line phrase, and the definition is one or more
+      paragraphs or body elements, indented relative to the term.
+      Blank lines are not allowed between term and definition.
+
+  Results in:
+
+  what
+    Definition lists associate a term with a definition.
+
+  *how*
+    The term is a one-line phrase, and the definition is one or more
+    paragraphs or body elements, indented relative to the term.
+    Blank lines are not allowed between term and definition.
+
+</t>
+<t tx="ekr.20100101100043.1868">(quickref__)
+
+__ quickref.html#literal-blocks
+
+To just include a chunk of preformatted, never-to-be-fiddled-with
+text, finish the prior paragraph with "``::``".  The preformatted
+block is finished when the text falls back to the same indentation
+level as a paragraph prior to the preformatted block.  For example::
+
+  An example::
+
+      Whitespace, newlines, blank lines, and all kinds of markup
+        (like *this* or \this) is preserved by literal blocks.
+    Lookie here, I've dropped an indentation level
+    (but not far enough)
+
+  no more example
+
+Results in:
+
+  An example::
+
+      Whitespace, newlines, blank lines, and all kinds of markup
+        (like *this* or \this) is preserved by literal blocks.
+    Lookie here, I've dropped an indentation level
+    (but not far enough)
+
+  no more example
+
+Note that if a paragraph consists only of "``::``", then it's removed
+from the output::
+
+  ::
+
+      This is preformatted text, and the
+      last "::" paragraph is removed
+
+Results in:
+
+::
+
+    This is preformatted text, and the
+    last "::" paragraph is removed
+
+</t>
+<t tx="ekr.20100101100043.1869">(quickref__)
+
+__ quickref.html#section-structure
+
+To break longer text up into sections, you use **section headers**.
+These are a single line of text (one or more words) with adornment: an
+underline alone, or an underline and an overline together, in dashes
+"``-----``", equals "``======``", tildes "``~~~~~~``" or any of the
+non-alphanumeric characters ``= - ` : ' " ~ ^ _ * + # &lt; &gt;`` that you
+feel comfortable with.  An underline-only adornment is distinct from
+an overline-and-underline adornment using the same character.  The
+underline/overline must be at least as long as the title text.  Be
+consistent, since all sections marked with the same adornment style
+are deemed to be at the same level::
+
+  Chapter 1 Title
+  ===============
+
+  Section 1.1 Title
+  -----------------
+
+  Subsection 1.1.1 Title
+  ~~~~~~~~~~~~~~~~~~~~~~
+
+  Section 1.2 Title
+  -----------------
+
+  Chapter 2 Title
+  ===============
+
+This results in the following structure, illustrated by simplified
+pseudo-XML::
+
+    &lt;section&gt;
+        &lt;title&gt;
+            Chapter 1 Title
+        &lt;section&gt;
+            &lt;title&gt;
+                Section 1.1 Title
+            &lt;section&gt;
+                &lt;title&gt;
+                    Subsection 1.1.1 Title
+        &lt;section&gt;
+            &lt;title&gt;
+                Section 1.2 Title
+    &lt;section&gt;
+        &lt;title&gt;
+            Chapter 2 Title
+
+(Pseudo-XML uses indentation for nesting and has no end-tags.  It's
+not possible to show actual processed output, as in the other
+examples, because sections cannot exist inside block quotes.  For a
+concrete example, compare the section structure of this document's
+source text and processed output.)
+
+Note that section headers are available as link targets, just using
+their name.  To link to the Lists_ heading, I write "``Lists_``".  If
+the heading has a space in it like `text styles`_, we need to quote
+the heading "```text styles`_``".
+
+</t>
+<t tx="ekr.20100101100043.1870">The title of the whole document is distinct from section titles and
+may be formatted somewhat differently (e.g. the HTML writer by default
+shows it as a centered heading).
+
+To indicate the document title in reStructuredText, use a unique adornment
+style at the beginning of the document.  To indicate the document subtitle,
+use another unique adornment style immediately after the document title.  For
+example::
+
+    ================
+     Document Title
+    ================
+    ----------
+     Subtitle
+    ----------
+
+    Section Title
+    =============
+
+    ...
+
+Note that "Document Title" and "Section Title" above both use equals
+signs, but are distict and unrelated styles.  The text of
+overline-and-underlined titles (but not underlined-only) may be inset
+for aesthetics.
+
+</t>
+<t tx="ekr.20100101100043.1871">(quickref__)
+
+__ quickref.html#directives
+
+To include an image in your document, you use the the ``image`` directive__.
+For example::
+
+  .. image:: images/biohazard.png
+
+results in:
+
+.. image:: images/biohazard.png
+
+The ``images/biohazard.png`` part indicates the filename of the image
+you wish to appear in the document. There's no restriction placed on
+the image (format, size etc).  If the image is to appear in HTML and
+you wish to supply additional information, you may::
+
+  .. image:: images/biohazard.png
+     :height: 100
+     :width: 200
+     :scale: 50
+     :alt: alternate text
+
+See the full `image directive documentation`__ for more info.
+
+__ ../../ref/rst/directives.html
+__ ../../ref/rst/directives.html#images
+
+</t>
+<t tx="ekr.20100101100043.1872">This primer introduces the most common features of reStructuredText,
+but there are a lot more to explore.  The `Quick reStructuredText`_
+user reference is a good place to go next.  For complete details, the
+`reStructuredText Markup Specification`_ is the place to go [#]_.
+
+Users who have questions or need assistance with Docutils or
+reStructuredText should post a message to the Docutils-users_ mailing
+list.
+
+.. [#] If that relative link doesn't work, try the master document:
+   http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html.
+
+.. _reStructuredText Markup Specification:
+   ../../ref/rst/restructuredtext.html
+.. _Docutils-users: ../mailing-lists.html#docutils-users
+.. _Docutils project web site: http://docutils.sourceforge.net/
+
+</t>
+<t tx="ekr.20100101100043.1873">&lt;xml&gt;
+&lt;/xml&gt;
+</t>
+<t tx="ekr.20100101100043.1874">&lt;test.a&gt;
+a
+&lt;/test.a&gt;
+</t>
+<t tx="ekr.20100101100043.1875">&lt;test-b&gt;
+b
+&lt;/test-b&gt;
+</t>
+<t tx="ekr.20100101100043.1876">&lt;!DOCTYPE xml&gt;
+</t>
+<t tx="ekr.20100101100043.1877">&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/" py:strip=""&gt;
+  &lt;?python v=value_of; import time?&gt;
+  @others
+&lt;/html&gt;
+</t>
+<t tx="ekr.20100101100043.1878">&lt;py:match path="head"&gt;
+  @others
+&lt;/py:match&gt;
+</t>
+<t tx="ekr.20100101100043.1879">&lt;head py:attrs="select('@*')"&gt;
+  @others
+  &lt;script py:for="i in v('jscripts',[])" 
+    type='text/javascript' src="${url('/js/'+i)}"/&gt;
+  &lt;link rel="stylesheet" href="${url('/css/main.css')}" type="text/css"/&gt;
+  &lt;link py:for="i in v('css',[])" 
+    rel="stylesheet" type='text/javascript' href="${url('/css/'+i)}"/&gt;
+  ${select('node()')}
+&lt;/head&gt;
+</t>
+<t tx="ekr.20100101100043.1880">&lt;py:if test="v('jscripts',[])"&gt;
+  &lt;script type='text/javascript' src="${url('/js/jquery.js')}"/&gt;
+  &lt;!--! CSS for JQuery UI --&gt;
+  &lt;link rel="stylesheet" href="${url('/js/themes/flora/flora.all.css')}" type="text/css"/&gt;
+  &lt;script type='text/javascript' src="${url('/js/ui.calendar.js')}"/&gt;
+&lt;/py:if&gt;
+</t>
+<t tx="ekr.20100101100043.1881">&lt;py:match path="body"&gt;
+  @others
+&lt;/py:match&gt;
+</t>
+<t tx="ekr.20100101100043.1882">&lt;body py:attrs="select('@*')"&gt;
+  &lt;div class="sections"&gt;${select('node()')}&lt;/div&gt;
+  &lt;div class="site-footer"&gt;Generated ${time.ctime()}&lt;/div&gt;
+&lt;/body&gt;
+</t>
+<t tx="ekr.20100101100043.1883">&lt;py:match path="xh1"&gt;
+  &lt;div class="h1"&gt;
+    &lt;h1 py:attrs="select('@*')" &gt;${select('node()')}&lt;/h1&gt;
+  &lt;/div&gt;
+&lt;/py:match&gt;
+</t>
+<t tx="ekr.20100101100043.1884">&lt;py:match path="NOTp"&gt;
+  &lt;div py:for="i in range(2)" class="slide" style="border: solid red 3px;"&gt;
+    &lt;p py:attrs="select('@*')"&gt;${i}. ${select('node()')}&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/py:match&gt;
+</t>
+<t tx="ekr.20100101100043.1885">:Info: See &lt;http://docutils.sf.net/rst.html&gt; for introductory docs.
+:Author: David Goodger &lt;goodger@python.org&gt;
+:Date: $Date: 2006-01-23 02:13:55 +0100 (Mon, 23 Jän 2006) $
+:Revision: $Revision: 4321 $
+:Description: This is a "docinfo block", or bibliographic field list
+
+</t>
+<t tx="ekr.20100101100043.1886">Section titles are underlined or overlined &amp; underlined.
+
+</t>
+<t tx="ekr.20100101100043.1887">Grid table:
+
++--------------------------------+-----------------------------------+
+| Paragraphs are flush-left,     | Literal block, preceded by "::":: |
+| separated by blank lines.      |                                   |
+|                                |     Indented                      |
+|     Block quotes are indented. |                                   |
++--------------------------------+ or::                              |
+| &gt;&gt;&gt; print 'Doctest block'      |                                   |
+| Doctest block                  | &gt; Quoted                          |
++--------------------------------+-----------------------------------+
+| | Line blocks preserve line breaks &amp; indents. [new in 0.3.6]       |
+| |     Useful for addresses, verse, and adornment-free lists; long  |
+|       lines can be wrapped with continuation lines.                |
++--------------------------------------------------------------------+
+
+Simple tables:
+
+================  ============================================================
+List Type         Examples
+================  ============================================================
+Bullet list       * items begin with "-", "+", or "*"
+Enumerated list   1. items use any variation of "1.", "A)", and "(i)"
+                  #. also auto-enumerated
+Definition list   Term is flush-left : optional classifier
+                      Definition is indented, no blank line between
+Field list        :field name: field body
+Option list       -o  at least 2 spaces between option &amp; description
+================  ============================================================
+
+================  ============================================================
+Explicit Markup   Examples (visible in the `text source &lt;cheatsheet.txt&gt;`_)
+================  ============================================================
+Footnote          .. [1] Manually numbered or [#] auto-numbered
+                     (even [#labelled]) or [*] auto-symbol
+Citation          .. [CIT2002] A citation.
+Hyperlink Target  .. _reStructuredText: http://docutils.sf.net/rst.html
+                  .. _indirect target: reStructuredText_
+                  .. _internal target:
+Anonymous Target  __ http://docutils.sf.net/docs/ref/rst/restructuredtext.html
+Directive ("::")  .. image:: images/biohazard.png
+Substitution Def  .. |substitution| replace:: like an inline directive
+Comment           .. is anything else
+Empty Comment     (".." on a line by itself, with blank lines before &amp; after,
+                  used to separate indentation contexts)
+================  ============================================================
+
+</t>
+<t tx="ekr.20100101100043.1888">*emphasis*; **strong emphasis**; `interpreted text`; `interpreted text
+with role`:emphasis:; ``inline literal text``; standalone hyperlink,
+http://docutils.sourceforge.net; named reference, reStructuredText_;
+`anonymous reference`__; footnote reference, [1]_; citation reference,
+[CIT2002]_; |substitution|; _`inline internal target`.
+</t>
+<t tx="ekr.20100101100043.1889">See &lt;http://docutils.sf.net/docs/ref/rst/directives.html&gt; for full info.
+
+================  ============================================================
+Directive Name    Description (Docutils version added to, in [brackets])
+================  ============================================================
+attention         Specific admonition; also "caution", "danger",
+                  "error", "hint", "important", "note", "tip", "warning"
+admonition        Generic titled admonition: ``.. admonition:: By The Way``
+image             ``.. image:: picture.png``; many options possible
+figure            Like "image", but with optional caption and legend
+topic             ``.. topic:: Title``; like a mini section
+sidebar           ``.. sidebar:: Title``; like a mini parallel document
+parsed-literal    A literal block with parsed inline markup
+rubric            ``.. rubric:: Informal Heading``
+epigraph          Block quote with class="epigraph"
+highlights        Block quote with class="highlights"
+pull-quote        Block quote with class="pull-quote"
+compound          Compound paragraphs [0.3.6]
+container         Generic block-level container element [0.3.10]
+table             Create a titled table [0.3.1]
+list-table        Create a table from a uniform two-level bullet list [0.3.8]
+csv-table         Create a table from CSV data (requires Python 2.3+) [0.3.4]
+contents          Generate a table of contents
+sectnum           Automatically number sections, subsections, etc.
+header, footer    Create document decorations [0.3.8]
+target-notes      Create an explicit footnote for each external target
+meta              HTML-specific metadata
+include           Read an external reST file as if it were inline
+raw               Non-reST data passed untouched to the Writer
+replace           Replacement text for substitution definitions
+unicode           Unicode character code conversion for substitution defs
+date              Generates today's date; for substitution defs
+class             Set a "class" attribute on the next element
+role              Create a custom interpreted text role [0.3.2]
+default-role      Set the default interpreted text role [0.3.10]
+title             Set the metadata document title [0.3.10]
+================  ============================================================
+
+</t>
+<t tx="ekr.20100101100043.1890">See &lt;http://docutils.sf.net/docs/ref/rst/roles.html&gt; for full info.
+
+================  ============================================================
+Role Name         Description
+================  ============================================================
+emphasis          Equivalent to *emphasis*
+literal           Equivalent to ``literal`` but processes backslash escapes
+PEP               Reference to a numbered Python Enhancement Proposal
+RFC               Reference to a numbered Internet Request For Comments
+raw               For non-reST data; cannot be used directly (see docs) [0.3.6]
+strong            Equivalent to **strong**
+sub               Subscript
+sup               Superscript
+title             Title reference (book, etc.); standard default role
+================  ============================================================
+
+</t>
+<t tx="ekr.20100101100043.1891">@language python
+
+def stringRectangle (self,event):
+
+    '''Prompt for a string, then replace the contents of a rectangle
+    with a string on each line.'''
+
+    c = self.c ; k = self.k ; state = k.getState('string-rect')
+    if g.app.unitTesting:
+        state = 1 ; k.arg = 's...s' # This string is known to the unit test.
+        w = self.editWidget(event)
+        self.stringRect = self.getRectanglePoints(w)
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if not w or not self.check(event): return
+        self.stringRect = self.getRectanglePoints(w)
+        k.setLabelBlue('String rectangle: ',protect=True)
+        k.getArg(event,'string-rect',1,self.stringRectangle)
+    else:
+        k.clearState()
+        k.resetLabel()
+        c.bodyWantsFocus()
+        w = self.w
+        self.beginCommand('string-rectangle')
+        r1, r2, r3, r4 = self.stringRect
+        s = w.getAllText()
+        for r in range(r1,r3+1):
+            i = g.convertRowColToPythonIndex(s,r-1,r2)
+            j = g.convertRowColToPythonIndex(s,r-1,r4)
+            s = s[:i] + k.arg + s[j:]
+        w.setAllText(s)
+        i = g.convertRowColToPythonIndex(s,r1-1,r2)
+        j = g.convertRowColToPythonIndex(s,r3-1,r2+len(k.arg))
+        w.setSelectionRange(i,j)
+        # 2010/1/1: Fix bug 480422: string-rectangle kills syntax highlighting.
+        c.frame.body.recolor(c.p,incremental=False)
+        self.endCommand()</t>
 </tnodes>
 </leo_file>
