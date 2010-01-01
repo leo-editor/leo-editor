@@ -15328,6 +15328,150 @@ def stringRectangle (self,event):
 
 #@-node:ekr.20050920084036.232:stringRectangle
 #@-node:ekr.20100101094915.6248:Fixed bug 480422 string-rectangle kills syntax highlighting
+#@+node:ekr.20100101094915.8720:Fixed bug 408886: qttabs gui doesn't mark commanders dirty properly
+@nocolor-node
+
+EKR: This applies to --gui=qttabs
+
+Leo's window title should start with a '*' when any node is marked dirty.
+
+Ville: I've fixed the more serious problem of not being prompted when closing
+tabs on trunk. The other problem, not having * in titles (these should be in tab
+titles too btw) is not fixed yet.
+
+Checking log for rev 2615:
+
+The present code marks the tabs as expected, but there something weird is going
+on that prevents the window's title from changing when gui==qttabs. To work
+around this, the present code always shows the tab name.
+#@nonl
+#@+node:ekr.20091007103358.6061:scanOptions
+def scanOptions():
+
+    '''Handle all options and remove them from sys.argv.'''
+    trace = False
+
+    # Note: this automatically implements the --help option.
+    parser = optparse.OptionParser()
+    parser.add_option('-c', '--config', dest="one_config_path")
+    parser.add_option('-f', '--file',   dest="fileName")
+    parser.add_option('--gui',          dest="gui",help = 'gui to use (qt/tk/qttabs)')
+    #parser.add_option('--help',         action="store_true",dest="help_option")
+    parser.add_option('--ipython',      action="store_true",dest="use_ipython")
+    parser.add_option('--no-cache',     action="store_true",dest='no_cache')
+    parser.add_option('--silent',       action="store_true",dest="silent")
+    parser.add_option('--script',       dest="script")
+    parser.add_option('--script-window',dest="script_window")
+    parser.add_option('--version',      action="store_true",dest="version")
+
+    # Parse the options, and remove them from sys.argv.
+    options, args = parser.parse_args()
+    sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
+    if trace: print('scanOptions',sys.argv)
+
+    # Handle the args...
+
+    # -c or --config
+    path = options.one_config_path
+    if path:
+        path = g.os_path_finalize_join(os.getcwd(),path)
+        if g.os_path_exists(path):
+            g.app.oneConfigFilename = path
+        else:
+            g.es_print('Invalid -c option: file not found:',path,color='red')
+
+    # --no-cache
+    if options.no_cache:
+        g.trace('disabling caching')
+        g.enableDB = False
+
+    # -f or --file
+    fileName = options.fileName
+
+    # --gui
+    gui = options.gui
+    g.app.qt_use_tabs = False
+    if gui:
+        gui = gui.lower()
+        if gui == 'qttabs':
+            gui = 'qt'
+            g.app.qt_use_tabs = True
+
+        if gui not in ('tk','qt','wx'):
+            g.trace('unknown gui: %s' % gui)
+            gui = None
+
+    # --ipython
+    g.app.useIpython = options.use_ipython
+
+    # --script
+    script_path = options.script
+    script_path_w = options.script_window
+    if script_path and script_path_w:
+        parser.error("--script and script-window are mutually exclusive")
+
+    script_name = script_path or script_path_w
+    if script_name:
+        script_name = g.os_path_finalize_join(g.app.loadDir,script_name)
+        try:
+            f = None
+            try:
+                if trace: print("scan_options: script: %s" % script_name)
+                f = open(script_name,'r')
+                script = f.read()
+            except IOError:
+                print("can not open script file: %s" % script_name)
+                script = None
+        finally:
+            if f: f.close()
+    else:
+        script = None
+        # if trace: print('scanOptions: no script')
+
+    # --silent
+    g.app.silentMode = options.silent
+    # g.trace('silentMode',g.app.silentMode)
+
+    # --version: print the version and exit.
+    versionFlag = options.version
+
+    # Compute the return values.
+    windowFlag = script and script_path_w
+    if trace:
+        print('scanOptions: fileName',fileName)
+        print('scanOptions: argv',sys.argv)
+    return fileName,gui,script,versionFlag,windowFlag
+#@-node:ekr.20091007103358.6061:scanOptions
+#@+node:ekr.20031218072017.2989:c.setChanged
+def setChanged (self,changedFlag):
+
+    trace = False and not g.unitTesting
+    c = self
+    if not c.frame: return
+    c.changed = changedFlag
+    if c.loading: return # don't update while loading.
+
+    if trace: g.trace('Commands',changedFlag) # ,c.frame,g.callers(4))
+
+    # Clear all dirty bits _before_ setting the caption.
+    # Clear all dirty bits except orphaned @file nodes
+    if not changedFlag:
+        # g.trace("clearing all dirty bits")
+        for p in c.all_unique_positions():
+            if p.isDirty() and not (p.isAtFileNode() or p.isAtNorefFileNode()):
+                p.clearDirty()
+
+    if g.app.qt_use_tabs and hasattr(c.frame,'top'):
+        c.frame.top.master.setChanged(c,changedFlag)
+
+    s = c.frame.getTitle()
+    if len(s) > 2:
+        if changedFlag:
+            if s [0] != '*': c.frame.setTitle("* " + s)
+        else:
+            if s[0:2]=="* ": c.frame.setTitle(s[2:])
+#@-node:ekr.20031218072017.2989:c.setChanged
+#@-node:ekr.20100101094915.8720:Fixed bug 408886: qttabs gui doesn't mark commanders dirty properly
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin
