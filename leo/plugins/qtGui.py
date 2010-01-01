@@ -2399,16 +2399,7 @@ class leoQtBody (leoFrame.leoBody):
 
         # Config stuff.
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
-        wrap = c.config.getBool('body_pane_wraps')
-        # g.trace('wrap',wrap,self.widget.widget)
-        if self.useScintilla:
-            pass
-        else:
-            self.widget.widget.setWordWrapMode(g.choose(wrap,
-                QtGui.QTextOption.WordWrap,
-                QtGui.QTextOption.NoWrap))
-        wrap = g.choose(wrap,"word","none")
-        self.wrapState = wrap
+        self.setWrap(c.p)
 
         # For multiple body editors.
         self.editor_name = None
@@ -2417,6 +2408,22 @@ class leoQtBody (leoFrame.leoBody):
         self.totalNumberOfEditors = 1
 
         if trace: print('qtBody.__init__ %s' % self.widget)
+    #@+node:ekr.20100101172327.3661:setWrap (qtBody)
+    def setWrap (self,p):
+
+        if not p: return
+        if self.useScintilla: return
+
+        c = self.c
+        w = c.frame.body.widget.widget
+        d = c.scanAllDirectives(p)
+        if d is None: return
+        wrap = d.get('wrap')
+        w.setWordWrapMode(
+            g.choose(wrap,
+                QtGui.QTextOption.WordWrap,
+                QtGui.QTextOption.NoWrap))
+    #@-node:ekr.20100101172327.3661:setWrap (qtBody)
     #@+node:ekr.20081121105001.208:createBindings (qtBody)
     def createBindings (self,w=None):
 
@@ -4290,28 +4297,7 @@ class leoQtFrame (leoFrame.leoFrame):
     #@+node:ekr.20081121105001.285:setWrap (qtFrame)
     def setWrap (self,p):
 
-        c = self.c
-        theDict = c.scanAllDirectives(p)
-        if not theDict: return
-
-        return
-
-        # wrap = theDict.get("wrap")
-        # if self.body.wrapState == wrap: return
-
-        # self.body.wrapState = wrap
-        # w = self.body.bodyCtrl
-
-        # # g.trace(wrap)
-        # if wrap:
-            # w.configure(wrap="word") # 2007/10/25
-            # w.leo_bodyXBar.pack_forget() # 2007/10/31
-        # else:
-            # w.configure(wrap="none")
-            # # Bug fix: 3/10/05: We must unpack the text area to make the scrollbar visible.
-            # w.pack_forget()  # 2007/10/25
-            # w.leo_bodyXBar.pack(side="bottom", fill="x") # 2007/10/31
-            # w.pack(expand=1,fill="both")  # 2007/10/25
+        self.c.frame.body.setWrap(p)
     #@-node:ekr.20081121105001.285:setWrap (qtFrame)
     #@+node:ekr.20081121105001.286:reconfigurePanes (qtFrame)
     def reconfigurePanes (self):

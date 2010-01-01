@@ -15287,7 +15287,7 @@ def doControlU (self,event,stroke):
 #@-node:ekr.20061031131434.203:doControlU
 #@-node:ekr.20061031131434.200:universalDispatcher & helpers
 #@-node:ekr.20091230094319.6239:Fixed Alt-u bug and refactored k.masterKeyHandler
-#@+node:ekr.20100101094915.6248:Fixed bug 480422 string-rectangle kills syntax highlighting
+#@+node:ekr.20100101094915.6248:Fixed bug 480422: string-rectangle kills syntax highlighting
 #@+node:ekr.20050920084036.232:stringRectangle
 def stringRectangle (self,event):
 
@@ -15327,7 +15327,7 @@ def stringRectangle (self,event):
         c.frame.body.recolor(c.p,incremental=False)
 
 #@-node:ekr.20050920084036.232:stringRectangle
-#@-node:ekr.20100101094915.6248:Fixed bug 480422 string-rectangle kills syntax highlighting
+#@-node:ekr.20100101094915.6248:Fixed bug 480422: string-rectangle kills syntax highlighting
 #@+node:ekr.20100101094915.8720:Fixed bug 408886: qttabs gui doesn't mark commanders dirty properly
 @nocolor-node
 
@@ -15472,6 +15472,9 @@ def setChanged (self,changedFlag):
             if s[0:2]=="* ": c.frame.setTitle(s[2:])
 #@-node:ekr.20031218072017.2989:c.setChanged
 #@-node:ekr.20100101094915.8720:Fixed bug 408886: qttabs gui doesn't mark commanders dirty properly
+#@+node:ekr.20100101172153.6252:Fixed bug 476653: @nowrap isn't working for qt / @edit nodes
+# The fix was in qtGui.py
+#@-node:ekr.20100101172153.6252:Fixed bug 476653: @nowrap isn't working for qt / @edit nodes
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin

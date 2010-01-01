@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="48" left="3" height="657" width="996"/>
+	<global_window_position top="71" left="439" height="657" width="563"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -176,7 +176,7 @@
 </v>
 <v t="ekr.20071025193940"></v>
 <v t="ekr.20091230064146.1911"></v>
-<v t="ekr.20090309064612.1"><vh>Future features/bug fixes (do not delete)</vh>
+<v t="ekr.20090309064612.1" a="E"><vh>Future features/bug fixes (do not delete)</vh>
 <v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions</vh></v>
 <v t="ekr.20080610144233.1"><vh>Wrap test</vh></v>
 </v>
@@ -848,7 +848,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5"></t>
+<t tx="ekr.20070416075121" str_leo_pos="3,1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -1781,7 +1781,9 @@ The valid values are::
 command:  Leo ignores the key (like Vim).
 insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
-<t tx="ekr.20080610144233.1">aaaaaaaaaaaa bbbbbbbbbbbbbbbbbb cccccccccccccccc ddddddddddddddddddd eeeeeeeeeeeeeee ffffffffffffffffff ggggggggggggggggggggg hhhhhhhhhhhhhhhh iiiiiiiiiiiii jjjjjjjjjjjjjjjj kkkkkkkkkkkkkk llllllllllllll mmmmmmmmmmmmmmmmm nnnnnnnnnnnn ooooooooo</t>
+<t tx="ekr.20080610144233.1">@wrap
+
+aaaaaaaaaaaa bbbbbbbbbbbbbbbbbb cccccccccccccccc ddddddddddddddddddd eeeeeeeeeeeeeee ffffffffffffffffff ggggggggggggggggggggg hhhhhhhhhhhhhhhh iiiiiiiiiiiii jjjjjjjjjjjjjjjj kkkkkkkkkkkkkk llllllllllllll mmmmmmmmmmmmmmmmm nnnnnnnnnnnn ooooooooo</t>
 <t tx="ekr.20080617170334.1">@first # -*- coding: utf-8 -*-
 
 import Tkinter as Tk
