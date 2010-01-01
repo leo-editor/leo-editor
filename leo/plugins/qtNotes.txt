@@ -486,7 +486,7 @@ def editLabelHelper (self,item,selectAll=False,selection=None):
 def bringToFront (self):
     self.lift()
 def deiconify (self):
-    if self.top.isMinimized(): # Buf 400739.
+    if self.top.isMinimized(): # Bug fix: 400739.
         self.lift()
 def getFocus(self):
     return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
@@ -508,8 +508,12 @@ def lift (self):
 def update (self):
     pass
 def getTitle (self):
-    return g.app.gui.toUnicode(self.top.windowTitle())
+    s = g.u(self.top.windowTitle())
+    # g.trace('qtFrame',repr(s))
+    return s
 def setTitle (self,s):
+    # g.trace('qtFrame',repr(s))
+    # self.top.c.frame.title = s
     self.top.setWindowTitle(s)
 def setTopGeometry(self,w,h,x,y,adjustSize=True):
     # g.trace(x,y,w,y,g.callers(5))
@@ -4639,8 +4643,10 @@ def onTextChanged (self):
     self.selecting is guaranteed to be True during
     the entire selection process.'''
 
+    # Important: usually w.changingText is True.
+    # This method very seldom does anything.
     trace = False and not g.unitTesting
-    verbose = False
+    verbose = True
     c = self.c ; p = c.p
     tree = c.frame.tree ; w = self
 
@@ -4694,8 +4700,13 @@ def onTextChanged (self):
     # No need to redraw the screen.
     if not self.useScintilla:
         c.recolor()
+
+    if g.app.qt_use_tabs:
+        if trace: g.trace(c.frame.top)
+
     if not c.changed and c.frame.initComplete:
         c.setChanged(True)
+
     c.frame.body.updateEditors()
     c.frame.tree.updateIcon(p)
 
@@ -4707,7 +4718,6 @@ def onTextChanged (self):
         # Allow incremental recoloring.
         c.incrementalRecolorFlag = True
         c.outerUpdate()
-#@nonl
 #@-node:ekr.20081121105001.536:onTextChanged (qtText)
 #@-node:ekr.20091221161510.3679:Undo bugs
 #@+node:ekr.20091228111211.3647:Correct binding of insert key
@@ -4728,8 +4738,10 @@ def onTextChanged (self):
     self.selecting is guaranteed to be True during
     the entire selection process.'''
 
+    # Important: usually w.changingText is True.
+    # This method very seldom does anything.
     trace = False and not g.unitTesting
-    verbose = False
+    verbose = True
     c = self.c ; p = c.p
     tree = c.frame.tree ; w = self
 
@@ -4783,8 +4795,13 @@ def onTextChanged (self):
     # No need to redraw the screen.
     if not self.useScintilla:
         c.recolor()
+
+    if g.app.qt_use_tabs:
+        if trace: g.trace(c.frame.top)
+
     if not c.changed and c.frame.initComplete:
         c.setChanged(True)
+
     c.frame.body.updateEditors()
     c.frame.tree.updateIcon(p)
 
@@ -4796,7 +4813,6 @@ def onTextChanged (self):
         # Allow incremental recoloring.
         c.incrementalRecolorFlag = True
         c.outerUpdate()
-#@nonl
 #@-node:ekr.20081121105001.536:onTextChanged (qtText)
 #@+node:ekr.20081121105001.166:class leoQtEventFilter
 class leoQtEventFilter(QtCore.QObject):

@@ -402,8 +402,10 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         self.selecting is guaranteed to be True during
         the entire selection process.'''
 
+        # Important: usually w.changingText is True.
+        # This method very seldom does anything.
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         c = self.c ; p = c.p
         tree = c.frame.tree ; w = self
 
@@ -457,8 +459,13 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         # No need to redraw the screen.
         if not self.useScintilla:
             c.recolor()
+
+        if g.app.qt_use_tabs:
+            if trace: g.trace(c.frame.top)
+
         if not c.changed and c.frame.initComplete:
             c.setChanged(True)
+
         c.frame.body.updateEditors()
         c.frame.tree.updateIcon(p)
 
@@ -470,7 +477,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             # Allow incremental recoloring.
             c.incrementalRecolorFlag = True
             c.outerUpdate()
-    #@nonl
     #@-node:ekr.20081121105001.536:onTextChanged (qtText)
     #@+node:ekr.20081121105001.537:indexWarning
     warningsDict = {}
@@ -1679,13 +1685,13 @@ class DynamicWindow(QtGui.QMainWindow):
 
         QtGui.QMainWindow.__init__(self,parent)
         self.c = c
-
     #@-node:ekr.20081121105001.201: ctor (DynamicWindow)
     #@+node:ville.20090806213440.3689:construct
-    def construct(self):
+    def construct(self,master=None):
         """ Factor 'heavy duty' code out from ctor """
 
         c = self.c; top = c.frame.top
+        self.master=master # Exists for tabbed windows.
         # print('DynamicWindow.__init__ %s' % c)
 
         # Init the base class.
@@ -1713,7 +1719,6 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setSplitDirection(orientation)
         self.setStyleSheets()
         #self.setLeoWindowIcon()
-
     #@-node:ville.20090806213440.3689:construct
     #@+node:ekr.20081121105001.202:closeEvent (DynanicWindow)
     def closeEvent (self,event):
@@ -3497,9 +3502,8 @@ class SDIFrameFactory:
     #@    @+others
     #@+node:ville.20090803130409.3680:frame creation & null deletion
     def createFrame(self, leoFrame):
-        #f.top = DynamicWindow(c, g.app.gui.masterFrame)
-        c = leoFrame.c
 
+        c = leoFrame.c
         dw = DynamicWindow(c)    
         dw.construct()
         g.app.gui.attachLeoIcon(dw)
@@ -3513,11 +3517,31 @@ class SDIFrameFactory:
     #@-node:ville.20090803130409.3680:frame creation & null deletion
     #@-others
 #@-node:ville.20090803130409.3679:class SDIFrameFactory
-#@+node:ville.20090804182114.8400:class LeoTabbedTopLevel
+#@+node:ville.20090804182114.8400:class LeoTabbedTopLevel (QtGui.QTabWidget)
 class LeoTabbedTopLevel(QtGui.QTabWidget):
     """ Toplevel frame for tabbed ui """
 
     #@    @+others
+    #@+node:ekr.20100101104934.3662:setChanged
+    def setChanged (self,c,changed):
+
+        i = self.currentIndex()
+        if i < 0: return
+
+        s = self.tabText(i)
+        s = g.u(s)
+        # g.trace('LeoTabbedTopLevel',changed,repr(s))
+
+        if len(s) > 2:
+            if changed:
+                if not s.startswith('* '):
+                    title = "* " + s
+                    self.setTabText(i,title)
+            else:
+                if s.startswith('* '):
+                    title = s[2:]
+                    self.setTabText(i,title)
+    #@-node:ekr.20100101104934.3662:setChanged
     #@+node:ville.20090804182114.8401:closeEvent (leoTabbedTopLevel)
     def closeEvent(self, event):
 
@@ -3537,7 +3561,7 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
 
 
 
-#@-node:ville.20090804182114.8400:class LeoTabbedTopLevel
+#@-node:ville.20090804182114.8400:class LeoTabbedTopLevel (QtGui.QTabWidget)
 #@+node:ville.20090803130409.3685:class TabbedFrameFactory
 class TabbedFrameFactory:
     """ 'Toplevel' frame builder for tabbed toplevel interface
@@ -3556,45 +3580,43 @@ class TabbedFrameFactory:
         self.masterFrame = None
         self.createTabCommands()
     #@-node:ville.20090803132402.3685:ctor
-    #@+node:ville.20090803130409.3686:frame creation & destruction
+    #@+node:ekr.20100101104934.3658:createFrame
     def createFrame(self, leoFrame):
-        #f.top = DynamicWindow(c, g.app.gui.masterFrame)    
-        c = leoFrame.c
 
+        c = leoFrame.c
         if self.masterFrame is None:
             self.createMaster()
-
         tabw = self.masterFrame
-        dw = DynamicWindow(c, tabw )
-
+        dw = DynamicWindow(c,tabw)
         self.leoFrames[dw] = leoFrame
 
-        # make the title shorter
-
-
+        # Shorten the title.
         fname = c.mFileName
         if fname:
             title, tip = os.path.basename(fname), leoFrame.title
         else:
             title, tip = leoFrame.title, None
+        # g.trace('title',title,'tip',tip)
 
+        dw.setWindowTitle(tip) # 2010/1/1
         idx = tabw.addTab(dw, title)
-        if tip:
-            tabw.setTabToolTip(idx, tip)
+        if tip: tabw.setTabToolTip(idx, tip)
 
-        dw.construct()
+        dw.construct(master=tabw)
         tabw.setCurrentIndex(idx)            
 
-        if tabw.count() > 1:
+        # Work around the problem with missing dirty indicator
+        # by always showing the tab.
+        if True: # tabw.count() > 1:
             tabw.tabBar().setVisible(True)
         else:
             tabw.tabBar().setVisible(False)
 
         dw.show()
         tabw.show()
-
         return dw
-
+    #@-node:ekr.20100101104934.3658:createFrame
+    #@+node:ekr.20100101104934.3659:deleteFrame
     def deleteFrame(self, wdg):
         if wdg not in self.leoFrames:
             # probably detached tab
@@ -3605,27 +3627,28 @@ class TabbedFrameFactory:
         del self.leoFrames[wdg]
         if tabw.count() < 2:
             tabw.tabBar().setVisible(False)
-    #@-node:ville.20090803130409.3686:frame creation & destruction
-    #@+node:ville.20090803132402.3684:createMaster & signal handlers
+    #@-node:ekr.20100101104934.3659:deleteFrame
+    #@+node:ville.20090803132402.3684:createMaster
     def createMaster(self):
         mf = self.masterFrame = LeoTabbedTopLevel()
         mf.resize(1000, 700)
         g.app.gui.attachLeoIcon(mf)
-
         tabbar = mf.tabBar()
 
         try:
             tabbar.setTabsClosable(True)
-            tabbar.connect(tabbar,QtCore.SIGNAL('tabCloseRequested(int)'),self.slotCloseRequest)
-
+            tabbar.connect(tabbar,
+                QtCore.SIGNAL('tabCloseRequested(int)'),
+                self.slotCloseRequest)
         except AttributeError:
-            # Qt 4.4 does not support setTabsClosable
-            pass
+            pass # Qt 4.4 does not support setTabsClosable
 
-        mf.connect(mf, QtCore.SIGNAL('currentChanged(int)'), self.slotCurrentChanged)
+        mf.connect(mf,
+            QtCore.SIGNAL('currentChanged(int)'),
+            self.slotCurrentChanged)
         mf.show()
-
-
+    #@-node:ville.20090803132402.3684:createMaster
+    #@+node:ekr.20100101104934.3660:signal handlers
     def slotCloseRequest(self,idx):
         tabw = self.masterFrame
         w = tabw.widget(idx)
@@ -3638,8 +3661,9 @@ class TabbedFrameFactory:
         w = tabw.widget(idx)
         f = self.leoFrames.get(w)
         if f:
+            # g.trace(f and f.title or '<no frame>')
             tabw.setWindowTitle(f.title)
-    #@-node:ville.20090803132402.3684:createMaster & signal handlers
+    #@-node:ekr.20100101104934.3660:signal handlers
     #@+node:ville.20090803201708.3694:utilities
     def focusCurrentBody(self):
         """ Focus body control of current tab """
@@ -3650,7 +3674,6 @@ class TabbedFrameFactory:
         f = self.leoFrames[w]
         c = f.c
         c.bodyWantsFocusNow()
-    #@nonl
     #@-node:ville.20090803201708.3694:utilities
     #@+node:ville.20090803164510.3688:createTabCommands
     def detachTab(self, wdg):
@@ -3695,7 +3718,6 @@ class TabbedFrameFactory:
             tabw.setCurrentIndex(cur)
             self.focusCurrentBody()
 
-
         @g.command('tab-cycle-next')
         def tab_cycle_next(event):
             """ Cycle to next tab """
@@ -3705,11 +3727,6 @@ class TabbedFrameFactory:
         def tab_cycle_previous(event):
             """ Cycle to next tab """
             tab_cycle(-1)
-
-
-
-
-
         #@-node:ville.20090803184912.3685:<< Commands for tabs >>
         #@nl
 
@@ -3794,19 +3811,17 @@ class leoQtFrame (leoFrame.leoFrame):
         self.use_chapters      = c.config.getBool('use_chapters')
         self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
 
-        # returns DynamicgWindow
+        # returns DynamicWindow
         f.top = g.app.gui.frameFactory.createFrame(f)
 
         # hiding would remove flicker, but doesn't work with all
         # window managers
 
-        #f.top.hide()
         f.createIconBar() # A base class method.
         f.createSplitterComponents()
         f.createStatusLine() # A base class method.
         f.createFirstTreeNode() # Call the base-class method.
         f.menu = leoQtMenu(f)
-        #f.top.show()
         c.setLog()
         g.app.windowList.append(f)
         f.miniBufferWidget = leoQtMinibuffer(c)
@@ -4804,7 +4819,7 @@ class leoQtFrame (leoFrame.leoFrame):
     def bringToFront (self):
         self.lift()
     def deiconify (self):
-        if self.top.isMinimized(): # Buf 400739.
+        if self.top.isMinimized(): # Bug fix: 400739.
             self.lift()
     def getFocus(self):
         return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
@@ -4826,8 +4841,12 @@ class leoQtFrame (leoFrame.leoFrame):
     def update (self):
         pass
     def getTitle (self):
-        return g.app.gui.toUnicode(self.top.windowTitle())
+        s = g.u(self.top.windowTitle())
+        # g.trace('qtFrame',repr(s))
+        return s
     def setTitle (self,s):
+        # g.trace('qtFrame',repr(s))
+        # self.top.c.frame.title = s
         self.top.setWindowTitle(s)
     def setTopGeometry(self,w,h,x,y,adjustSize=True):
         # g.trace(x,y,w,y,g.callers(5))
@@ -6584,23 +6603,17 @@ class leoQtGui(leoGui.leoGui):
         # Initialize the base class.
         leoGui.leoGui.__init__(self,'qt')
 
-
         self.qtApp = app = QtGui.QApplication(sys.argv)
-
         self.bodyTextWidget  = leoQtBaseTextWidget
         self.plainTextWidget = leoQtBaseTextWidget
-
         self.iconimages = {} # Image cache set by getIconImage().
-
         self.mGuiName = 'qt'
-
         self.defaultEncoding = None # Set by toUnicode as needed.    
 
         if g.app.qt_use_tabs:    
             self.frameFactory = TabbedFrameFactory()
         else:
             self.frameFactory = SDIFrameFactory()
-
     #@-node:ekr.20081121105001.474: qtGui.__init__
     #@+node:ekr.20081121105001.475:createKeyHandlerClass (qtGui)
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):

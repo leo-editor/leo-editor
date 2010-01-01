@@ -7380,10 +7380,13 @@ class baseCommands (object):
     #@+node:ekr.20031218072017.2989:c.setChanged
     def setChanged (self,changedFlag):
 
+        trace = False and not g.unitTesting
         c = self
         if not c.frame: return
+        c.changed = changedFlag
+        if c.loading: return # don't update while loading.
 
-        # if changedFlag: g.trace('***',g.callers())
+        if trace: g.trace('Commands',changedFlag) # ,c.frame,g.callers(4))
 
         # Clear all dirty bits _before_ setting the caption.
         # Clear all dirty bits except orphaned @file nodes
@@ -7393,10 +7396,11 @@ class baseCommands (object):
                 if p.isDirty() and not (p.isAtFileNode() or p.isAtNorefFileNode()):
                     p.clearDirty()
 
-        # Update all derived changed markers.
-        c.changed = changedFlag
+        if g.app.qt_use_tabs and hasattr(c.frame,'top'):
+            c.frame.top.master.setChanged(c,changedFlag)
+
         s = c.frame.getTitle()
-        if len(s) > 2 and not c.loading: # don't update while loading.
+        if len(s) > 2:
             if changedFlag:
                 if s [0] != '*': c.frame.setTitle("* " + s)
             else:
