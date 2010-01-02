@@ -3600,9 +3600,10 @@ class TabbedFrameFactory:
         # Shorten the title.
         fname = c.mFileName
         if fname:
-            title, tip = os.path.basename(fname), leoFrame.title
+            title = os.path.basename(fname)
         else:
-            title, tip = leoFrame.title, None
+            title = leoFrame.title
+        tip = leoFrame.title
         # g.trace('title',title,'tip',tip)
 
         dw.setWindowTitle(tip) # 2010/1/1
