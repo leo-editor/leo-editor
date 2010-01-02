@@ -6419,6 +6419,114 @@ def setChanged (self,c,changed):
 #@-node:ekr.20100101104934.3662:setChanged
 #@-node:ekr.20100101104934.3661:Changed
 #@-node:ekr.20100101104934.3657:Update tab names when the commander is dirty
+#@+node:ekr.20100101172327.3660:Made @nowrap work
+#@+node:ekr.20081121105001.207: ctor (qtBody)
+def __init__ (self,frame,parentFrame):
+
+    trace = False and not g.unitTesting
+
+    # Call the base class constructor.
+    leoFrame.leoBody.__init__(self,frame,parentFrame)
+
+    c = self.c
+    assert c.frame == frame and frame.c == c
+
+    self.useScintilla = c.config.getBool('qt-use-scintilla')
+    self.selectedBackgroundColor = c.config.getString('selected-background-color')
+    self.unselectedBackgroundColor = c.config.getString('unselected-background-color')
+
+    # Set the actual gui widget.
+    if self.useScintilla:
+        self.widget = w = leoQScintillaWidget(
+            c.frame.top.textEdit,
+            name='body',c=c)
+        self.bodyCtrl = w # The widget as seen from Leo's core.
+        self.colorizer = leoColor.nullColorizer(c)
+    else:
+        top = c.frame.top
+        sw = top.ui.stackedWidget
+        qtWidget = top.ui.richTextEdit # A QTextEdit or QTextBrowser.
+        # g.trace(qtWidget)
+        sw.setCurrentIndex(1)
+        self.widget = w = leoQTextEditWidget(
+            qtWidget,name = 'body',c=c)
+        self.bodyCtrl = w # The widget as seen from Leo's core.
+
+        # Hook up the QSyntaxHighlighter
+        self.colorizer = leoQtColorizer(c,w.widget)
+        qtWidget.setAcceptRichText(False)
+
+    # Config stuff.
+    self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
+    self.setWrap(c.p)
+
+    # For multiple body editors.
+    self.editor_name = None
+    self.editor_v = None
+    self.numberOfEditors = 1
+    self.totalNumberOfEditors = 1
+
+    if trace: print('qtBody.__init__ %s' % self.widget)
+#@+node:ekr.20100101172327.3661:setWrap (qtBody)
+def setWrap (self,p):
+
+    if not p: return
+    if self.useScintilla: return
+
+    c = self.c
+    w = c.frame.body.widget.widget
+    d = c.scanAllDirectives(p)
+    if d is None: return
+    wrap = d.get('wrap')
+    w.setWordWrapMode(
+        g.choose(wrap,
+            QtGui.QTextOption.WordWrap,
+            QtGui.QTextOption.NoWrap))
+#@-node:ekr.20100101172327.3661:setWrap (qtBody)
+#@+node:ekr.20081121105001.208:createBindings (qtBody)
+def createBindings (self,w=None):
+
+    '''(qtBody) Create gui-dependent bindings.
+    These are *not* made in nullBody instances.'''
+
+    # frame = self.frame ; c = self.c ; k = c.k
+    # if not w: w = self.widget
+
+    # c.bind(w,'<Key>', k.masterKeyHandler)
+
+    # table = [
+        # ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
+        # ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
+        # ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
+        # ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
+        # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    # ]
+
+    # table2 = (
+        # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    # )
+
+    # if c.config.getBool('allow_middle_button_paste'):
+        # table.extend(table2)
+
+    # for kind,func,handler in table:
+        # def bodyClickCallback(event,handler=handler,func=func):
+            # return handler(event,func)
+
+        # c.bind(w,kind,bodyClickCallback)
+#@-node:ekr.20081121105001.208:createBindings (qtBody)
+#@+node:ekr.20081121105001.209:get_name
+def getName (self):
+
+    return 'body-widget'
+#@-node:ekr.20081121105001.209:get_name
+#@-node:ekr.20081121105001.207: ctor (qtBody)
+#@+node:ekr.20081121105001.285:setWrap (qtFrame)
+def setWrap (self,p):
+
+    self.c.frame.body.setWrap(p)
+#@-node:ekr.20081121105001.285:setWrap (qtFrame)
+#@-node:ekr.20100101172327.3660:Made @nowrap work
 #@-node:ekr.20090813101852.3643:Bugs
 #@-node:ekr.20090717095154.3729:Leo 4.7 devel projects
 #@-all

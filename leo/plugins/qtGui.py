@@ -5697,30 +5697,23 @@ class leoQtMenu (leoMenu.leoMenu):
         '''Return the index of the menu item whose name (or offset) is given.
         Return None if there is no such menu item.'''
 
-        g.trace('menu',menu,'name',name)
+        # At present, it is valid to always return None.
 
-        actions = menu.actions()
-        for action in actions:
-            g.trace(action.label())
+        # g.trace('menu',menu,'name',name)
 
-        # try:
-            # index = menu.index(name)
-        # except:
-            # index = None
-
-        # return index
+        # actions = menu.actions()
+        # for action in actions:
+            # g.trace(action)
     #@-node:ekr.20081121105001.376:getMenuLabel
     #@+node:ekr.20081121105001.377:setMenuLabel
     def setMenuLabel (self,menu,name,label,underline=-1):
 
         def munge(s):
-            s = g.app.gui.toUnicode(s)
-            return s.replace('&','')
+            # s = g.app.gui.toUnicode(s)
+            return g.u(s or '').replace('&','')
 
         # menu is a qtMenuWrapper.
-
         # g.trace('menu',menu,'name: %20s label: %s' % (name,label))
-
         if not menu: return
 
         realName  = munge(self.getRealMenuName(name))
@@ -6913,10 +6906,10 @@ class leoQtGui(leoGui.leoGui):
         if multiple:
             lst = QtGui.QFileDialog.getOpenFileNames(parent,title,os.curdir,filter)
             return [g.u(s) for s in lst]
-
-        s = QtGui.QFileDialog.getOpenFileName(parent,title,os.curdir,filter)
-        s = g.app.gui.toUnicode(s)
-        return s
+        else:
+            s = QtGui.QFileDialog.getOpenFileName(parent,title,os.curdir,filter)
+            s = g.app.gui.toUnicode(s)
+            return s
     #@nonl
     #@-node:ekr.20081121105001.488:runOpenFileDialog
     #@+node:ekr.20090722094828.3653:runPropertiesDialog (qtGui)
@@ -7881,7 +7874,7 @@ class leoQtColorizer:
         self.killColorFlag = False
         self.language = 'python' # set by scanColorDirectives.
         self.max_chars_to_colorize = c.config.getInt('qt_max_colorized_chars') or 0
-
+        self.showInvisibles = False # 2010/1/2
 
         # Step 2: create the highlighter.
         self.highlighter = leoQtSyntaxHighlighter(c,w,colorizer=self)
@@ -8194,13 +8187,13 @@ class jEditColorizer:
     # generic
     # restarter methods.
     # 
-    # We only create restarters as needed. In actuality, very few restarters 
-    # are
-    # needed. For example, for Python, we need restarters for that look for 
+    # In actuality, very few restarters are needed. For example, for Python, 
+    # we need
+    # restarters for that look for continued strings, and both flavors of 
     # continued
-    # strings, and both flavors of continued triple-quoted strings. For 
-    # python, these
-    # turn out to be three separate lambda bindings for restart_match_span.
+    # triple-quoted strings. For python, these turn out to be three separate 
+    # lambda
+    # bindings for restart_match_span.
     # 
     # When a jEdit pattern matcher partially succeeds, it creates the lambda 
     # binding
@@ -8249,7 +8242,10 @@ class jEditColorizer:
         self.ignore_case = True
         self.no_word_sep = ''
         # Config settings...
-        self.showInvisibles = False # True: show "invisible" characters.
+        self.showInvisibles = c.config.getBool("show_invisibles_by_default")
+        self.colorizer.showInvisibles = self.showInvisibles
+        # g.trace(self.showInvisibles)
+            # Also set in init().
         self.underline_undefined = c.config.getBool("underline_undefined_section_names")
         self.use_hyperlinks = c.config.getBool("use_hyperlinks")
         # Debugging...
@@ -8315,6 +8311,8 @@ class jEditColorizer:
 
         self.default_colors_dict = {
             # tag name       :(     option name,           default color),
+            'blank'          :('blank_color',                 'black'), # 2010/1/2
+            'tab'            :('tab_color',                   'black'), # 2010/1/2
             'comment'        :('comment_color',               'red'),
             'cwebName'       :('cweb_section_name_color',     'red'),
             'pp'             :('directive_color',             'blue'),
@@ -8630,6 +8628,8 @@ class jEditColorizer:
         self.restartDict = {}
         self.init_mode(self.colorizer.language)
         self.clearState()
+        self.showInvisibles = self.colorizer.showInvisibles
+            # The show/hide-invisible commands changes this.
 
         # Used by matchers.
         self.prev = None
@@ -8676,12 +8676,6 @@ class jEditColorizer:
                     properties      = {},
                     rulesDict       = {},
                     rulesetName     = rulesetName,
-                    # State stuff.
-                    # currentState    = -1,
-                    # nextState       = 1,
-                    # restartDict     = {},
-                    # stateDict       = {},
-                    # stateNameDict   = {},
                 )
                 # g.trace('No colorizer file: %s.py' % language)
                 self.rulesetName = rulesetName
@@ -8707,25 +8701,10 @@ class jEditColorizer:
                 properties      = self.properties,
                 rulesDict       = self.rulesDict,
                 rulesetName     = self.rulesetName,
-                # State stuff.
-                # currentState    = h.currentBlockState(),
-                # nextState       = self.nextState,
-                # restartDict     = self.restartDict,
-                # stateDict       = self.stateDict,
-                # stateNameDict   = self.stateNameDict,
             )
             # Do this after 'officially' initing the mode, to limit recursion.
             self.addImportedRules(mode,self.rulesDict,rulesetName)
             self.updateDelimsTables()
-
-            # Init the new state.
-            # h.setCurrentBlockState(-1)
-            # self.nextState = 1
-            # self.restartDict = {}
-            # self.stateDict = {}
-            # self.stateNameDict = {}
-            # self.clearState()
-
             initialDelegate = self.properties.get('initialModeDelegate')
             if initialDelegate:
                 # g.trace('initialDelegate',initialDelegate)
@@ -9054,7 +9033,8 @@ class jEditColorizer:
     #@+node:ekr.20090614134853.3722:match_blanks
     def match_blanks (self,s,i):
 
-        # g.trace(self,s,i)
+        if not self.showInvisibles:
+            return 0 # 2010/12/2
 
         j = i ; n = len(s)
 
@@ -9062,7 +9042,6 @@ class jEditColorizer:
             j += 1
 
         if j > i:
-            # g.trace(i,j)
             if self.showInvisibles:
                 self.colorRangeWithTag(s,i,j,'blank')
             return j - i
@@ -9180,6 +9159,9 @@ class jEditColorizer:
     #@+node:ekr.20090614134853.3727:match_tabs
     def match_tabs (self,s,i):
 
+        if not self.showInvisibles:
+            return 0 # 2010/12/2
+
         if self.trace_leo_matches: g.trace()
 
         j = i ; n = len(s)
@@ -9188,12 +9170,10 @@ class jEditColorizer:
             j += 1
 
         if j > i:
-            # g.trace(i,j)
             self.colorRangeWithTag(s,i,j,'tab')
             return j - i
         else:
             return 0
-    #@nonl
     #@-node:ekr.20090614134853.3727:match_tabs
     #@-node:ekr.20090614134853.3717:Leo rule functions
     #@+node:ekr.20090614134853.3728:match_eol_span
@@ -9989,10 +9969,17 @@ class jEditColorizer:
             self.tagCount += 1
             g.trace(
                 '%3s %3s %3s' % (i,j,len(s)),colorName,
-                '%-10s %-25s' % (tag,s[i:j]),g.callers(4))
+                '%-10s %-25s' % (tag,s[i:j])) # ,g.callers(4))
 
         underline = w.configUnderlineDict.get(tag)
-        if underline:
+        if tag in ('blank','tab'):
+            format = QtGui.QTextCharFormat()
+            if tag == 'tab' or colorName == 'black':
+                format.setFontUnderline(True)
+            if colorName != 'black':
+                format.setBackground(color)
+            self.highlighter.setFormat(i,j-i,format)
+        elif underline:
             format = QtGui.QTextCharFormat()
             format.setForeground(color)
             format.setFontUnderline(True)

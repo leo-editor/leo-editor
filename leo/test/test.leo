@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="71" left="439" height="657" width="563"/>
+	<global_window_position top="83" left="442" height="657" width="563"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -428,6 +428,7 @@
 </v>
 <v t="ekr.20100101100043.1891"><vh>string-rectangle</vh></v>
 </v>
+<v t="ekr.20100102104458.1938"><vh>Show invisibles</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -848,7 +849,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="3,1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -4829,5 +4830,11 @@ def stringRectangle (self,event):
         # 2010/1/1: Fix bug 480422: string-rectangle kills syntax highlighting.
         c.frame.body.recolor(c.p,incremental=False)
         self.endCommand()</t>
+<t tx="ekr.20100102104458.1938">@tabwidth 8
+
+# hard tab
+a	b
+# spaces
+a    b</t>
 </tnodes>
 </leo_file>
