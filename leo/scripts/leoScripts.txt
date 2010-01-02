@@ -9616,7 +9616,7 @@ This has implications with rule-ordering; see the section called “Rule Orderin
 Requirements”.
 #@nonl
 #@-node:ekr.20060824111500.39:Attributes for 'import': delegate
-#@+node:ekr.20060824111500.40:Attributes for 'mark' 
+#@+node:ekr.20060824111500.40:Attributes for 'mark'
 Atribute            Elements used in
 --------            ----------------
 AT_LINE_START       MARK_FOLLOWING,MARK_PREVIOUS
@@ -9625,7 +9625,7 @@ AT_WORD_START       MARK_FOLLOWING,MARK_PREVIOUS
 EXCLUDE_MATCH       MARK_FOLLOWING,MARK_PREVIOUS
 TYPE                MARK_FOLLOWING,MARK_PREVIOUS
 #@nonl
-#@-node:ekr.20060824111500.40:Attributes for 'mark' 
+#@-node:ekr.20060824111500.40:Attributes for 'mark'
 #@+node:ekr.20060824111500.41:Attributes for 'property': name, value
 Atribute            Elements used in
 --------            ----------------
@@ -9688,7 +9688,7 @@ NO_WORD_BREAK       plain_spans
 TYPE                all_spans
 #@nonl
 #@-node:ekr.20060824111500.43:Attributes for 'span'
-#@+node:ekr.20060824111500.44:Attributes for 'seq' 
+#@+node:ekr.20060824111500.44:Attributes for 'seq'
 Atribute            Elements used in
 --------            ----------------
 AT_LINE_START       SEQ,SEQ_REGEXP
@@ -9698,7 +9698,7 @@ DELEGATE            SEQ,SEQ_REGEXP
 HASH_CHAR           SEQ_REGEXP (must be specified)
 TYPE                SEQ,SEQ_REGEXP
 #@nonl
-#@-node:ekr.20060824111500.44:Attributes for 'seq' 
+#@-node:ekr.20060824111500.44:Attributes for 'seq'
 #@-node:ekr.20060824111500.17:Attributes
 #@+node:ekr.20060824111500.45:Elements
 @language html
@@ -16298,7 +16298,7 @@ for p in c.all_unique_positions():
 
 pages = ((nodes * 10) + lines) / 50
 s = "%d nodes,  %d lines, %d pages" % (nodes,lines,pages)
-print s ; g.es(s)
+print(s); g.es(s)
 #@nonl
 #@-node:EKR.20040517074600.8:Count pages
 #@+node:ekr.20051110105027.104:Count separate nodes

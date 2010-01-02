@@ -66,6 +66,7 @@
 <v t="ekr.20070611081718.4"><vh>firstChild</vh></v>
 </v>
 </v>
+<v t="ekr.20100102164959.5088"><vh>Count pages</vh></v>
 </v>
 <v t="ekr.20070303143846.1"></v>
 <v t="ekr.20051012104957"><vh>Docs</vh>
@@ -21883,6 +21884,14 @@ for s in (
     result = x.handleMissingStyleSheetArgs(s=s)
     assert result == expected,'expected %s\ngot %s' % (expected,result)</t>
 <t tx="ekr.20091219122958.5066"></t>
+<t tx="ekr.20100102164959.5088">nodes = 0 ; lines = 0
+for p in c.all_unique_positions():
+    nodes += 1
+    lines += len(g.splitLines(p.b))
+
+pages = ((nodes * 10) + lines) / 50
+s = "%d nodes,  %d lines, %d pages" % (nodes,lines,pages)
+print(s); g.es(s)</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

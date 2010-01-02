@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="75" left="83" height="832" width="1166"/>
+	<global_window_position top="48" left="0" height="694" width="1024"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070615131954" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20070615131954"><vh>Startup</vh>
 <v t="ekr.20070427110751"><vh>@chapters</vh></v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20051020124457"><vh>Disabled buttons</vh>
@@ -31,9 +31,9 @@
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
 </v>
 </v>
-<v t="ekr.20061008055616"><vh>Scripts</vh>
-<v t="ekr.20051110111150"
-expanded="ekr.20060824111500.10,ekr.20060824111500.65,ekr.20060808103945,"><vh>@thin leoScripts.txt</vh></v>
+<v t="ekr.20061008055616" a="E"><vh>Scripts</vh>
+<v t="ekr.20051110111150" a="E"
+expanded="ekr.20051104082151,"><vh>@thin leoScripts.txt</vh></v>
 </v>
 <v t="edward.20081226095234.1"><vh>@button lispCall @key=alt+6</vh>
 <v t="edward.20081226095234.2"><vh>ctor</vh></v>
@@ -131,123 +131,6 @@ x.run()</t>
     calls.sort()
     g.trace('defs...\n',g.listToString(defs))
     g.trace('calls...\n',g.listToString(calls))
-</t>
-<t tx="edward.20081226101808.4">class token:
-
-    '''Representing one elisp syntactic entity,
-    with a list of preceding comments.'''
-
-    def __init__ (self,comments,kind,val):
-        self.comments = comments[:]
-        self.kind = kind
-        self.val = val
-            # For blocks, a list of tokens.
-            # For all other tokens, the spelling of the token.
-
-    def __repr__ (self):
-        return '&lt;token kind: %s, val: %s&gt;' % (self.kind,self.val)
-
-    def __str__ (self):
-        if self.kind == 'block:':
-            return 'block: [snip]'
-        elif self.kind == 'string:':
-            return '%s%s' % (self.kind,self.val[:20])
-        else:
-            return '%s%s' % (self.kind,self.val)
-</t>
-<t tx="edward.20081226101808.5">def choose(self,cond,a,b): # warning: evaluates all arguments
-
-    if cond: return a
-    else: return b
-</t>
-<t tx="edward.20081226101808.6">def dumpList(self,aList):
-
-    if type(aList) == type([]):
-        result = self.dumpListHelper(aList,indent=0)
-        return '\n'.join(result)
-    else:
-        return repr(aList)
-
-def dumpListHelper(self,aList,indent):
-
-    result = []
-    leading = ' ' * (4 * indent)
-
-    for z in aList:
-        if z is None:
-            result.append('%s%s' % (leading,'None'))
-        elif z == []:
-            result.append('%s%s' % (leading,'[]'))
-        elif type(z) == type([]):
-            result.append('%s%s' % (leading,'['))
-            result.extend(self.dumpListHelper(z,indent+1))
-            result.append('%s%s' % (leading,']'))
-        elif isinstance(z,self.token):
-            if z.kind=='block:':
-                result.append('%s%s' % (leading,'block:'))
-                result.extend(self.dumpListHelper(z.val,indent+1))
-                # result.append('%s%s' % (leading,'block:]'))
-            else:
-                result.append('%s%s' % (leading,str(z)))
-        else:
-            result.append('%s%s' % (leading,str(z)))
-
-    return result
-
-listToString = dumpList</t>
-<t tx="edward.20081226101808.7"></t>
-<t tx="edward.20081226101808.8">def parse(self,s):
-
-    # Generate the nodes, including directive and section references.
-    return self.scanForest(s)
-</t>
-<t tx="edward.20081226101808.9">def scan(self,s,i):
-
-    '''Scan an elisp expression.'''
-
-    start = i ; end = len(s) ; result = []
-    comments = [] ; token = self.token
-    # A hack. ignore initial @language lisp
-    tag = '@language lisp'
-    if i == 0 and s[i:i+len(tag)]==tag:
-        i += len(tag)
-    while i &lt; end:
-        progress = i
-        ch = s[i]
-        if ch == ';':
-            j = self.skipComment(s,i)
-            start = i = j
-        elif ch == '"':
-            j = self.skipString(s,i)
-            start = i = j
-        elif ch.isalnum() or ch == u'_':
-            j = self.skipId(s,i)
-            result.append(token(comments,'id:',s[i:j]))
-            start = i = j
-        elif ch =='(':
-            i += 1
-            j,aList = self.scan(s,i)
-            result.append(token(comments,'block:',aList))
-            start = i = j
-        elif ch == ')':
-            i += 1
-            return i,result
-        else:
-            # if ch == "'": ch = 'quote'
-            # if ch not in (' ','\t','\n','\r'):
-                # result.append(token(comments,'op:',ch))
-            i += 1
-        assert progress &lt; i,'i: %d, ch: %s' % (i,repr(s[i]))
-
-    if start &lt; end:
-        tail = s[start:end].strip()
-        if tail:
-            result.append(token(comments,'tail:',tail))
-            comment = []
-    if comments:
-        result.append(token(comments,'trailing-comment:',''))
-
-    return i,result
 </t>
 <t tx="edward.20081226101808.10">def skipComment (self,s,i):
 
@@ -591,6 +474,123 @@ def put_code (self,s):
         self.put_code(token.val)
 
 </t>
+<t tx="edward.20081226101808.4">class token:
+
+    '''Representing one elisp syntactic entity,
+    with a list of preceding comments.'''
+
+    def __init__ (self,comments,kind,val):
+        self.comments = comments[:]
+        self.kind = kind
+        self.val = val
+            # For blocks, a list of tokens.
+            # For all other tokens, the spelling of the token.
+
+    def __repr__ (self):
+        return '&lt;token kind: %s, val: %s&gt;' % (self.kind,self.val)
+
+    def __str__ (self):
+        if self.kind == 'block:':
+            return 'block: [snip]'
+        elif self.kind == 'string:':
+            return '%s%s' % (self.kind,self.val[:20])
+        else:
+            return '%s%s' % (self.kind,self.val)
+</t>
+<t tx="edward.20081226101808.5">def choose(self,cond,a,b): # warning: evaluates all arguments
+
+    if cond: return a
+    else: return b
+</t>
+<t tx="edward.20081226101808.6">def dumpList(self,aList):
+
+    if type(aList) == type([]):
+        result = self.dumpListHelper(aList,indent=0)
+        return '\n'.join(result)
+    else:
+        return repr(aList)
+
+def dumpListHelper(self,aList,indent):
+
+    result = []
+    leading = ' ' * (4 * indent)
+
+    for z in aList:
+        if z is None:
+            result.append('%s%s' % (leading,'None'))
+        elif z == []:
+            result.append('%s%s' % (leading,'[]'))
+        elif type(z) == type([]):
+            result.append('%s%s' % (leading,'['))
+            result.extend(self.dumpListHelper(z,indent+1))
+            result.append('%s%s' % (leading,']'))
+        elif isinstance(z,self.token):
+            if z.kind=='block:':
+                result.append('%s%s' % (leading,'block:'))
+                result.extend(self.dumpListHelper(z.val,indent+1))
+                # result.append('%s%s' % (leading,'block:]'))
+            else:
+                result.append('%s%s' % (leading,str(z)))
+        else:
+            result.append('%s%s' % (leading,str(z)))
+
+    return result
+
+listToString = dumpList</t>
+<t tx="edward.20081226101808.7"></t>
+<t tx="edward.20081226101808.8">def parse(self,s):
+
+    # Generate the nodes, including directive and section references.
+    return self.scanForest(s)
+</t>
+<t tx="edward.20081226101808.9">def scan(self,s,i):
+
+    '''Scan an elisp expression.'''
+
+    start = i ; end = len(s) ; result = []
+    comments = [] ; token = self.token
+    # A hack. ignore initial @language lisp
+    tag = '@language lisp'
+    if i == 0 and s[i:i+len(tag)]==tag:
+        i += len(tag)
+    while i &lt; end:
+        progress = i
+        ch = s[i]
+        if ch == ';':
+            j = self.skipComment(s,i)
+            start = i = j
+        elif ch == '"':
+            j = self.skipString(s,i)
+            start = i = j
+        elif ch.isalnum() or ch == u'_':
+            j = self.skipId(s,i)
+            result.append(token(comments,'id:',s[i:j]))
+            start = i = j
+        elif ch =='(':
+            i += 1
+            j,aList = self.scan(s,i)
+            result.append(token(comments,'block:',aList))
+            start = i = j
+        elif ch == ')':
+            i += 1
+            return i,result
+        else:
+            # if ch == "'": ch = 'quote'
+            # if ch not in (' ','\t','\n','\r'):
+                # result.append(token(comments,'op:',ch))
+            i += 1
+        assert progress &lt; i,'i: %d, ch: %s' % (i,repr(s[i]))
+
+    if start &lt; end:
+        tail = s[start:end].strip()
+        if tail:
+            result.append(token(comments,'tail:',tail))
+            comment = []
+    if comments:
+        result.append(token(comments,'trailing-comment:',''))
+
+    return i,result
+</t>
 <t tx="edward.20081227122708.1">def stripComments(self,s):
 
     result = []
@@ -851,7 +851,7 @@ g.es('%s nodes checked' % count)</t>
 </t>
 <t tx="ekr.20061008055616"></t>
 <t tx="ekr.20070427110751"></t>
-<t tx="ekr.20070615131954" str_leo_pos="2"></t>
+<t tx="ekr.20070615131954" str_leo_pos="1,0,7,0"></t>
 <t tx="ville.20090508224531.9799">""" Dump nodes to ~/.leo/dump git repository.
 
 Before using this, you need to:
