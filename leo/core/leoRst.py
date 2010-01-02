@@ -803,6 +803,8 @@ class rstCommands:
                     self.topLevel = p.level() # Define toplevel separately for each rst file.
                     if toString:
                         self.ext = ext
+                        if not self.ext.startswith('.'):
+                            self.ext = '.'+self.ext
                     else:
                         self.ext = g.os_path_splitext(self.outputFileName)[1].lower()
                     # g.trace('ext',self.ext,self.outputFileName)
