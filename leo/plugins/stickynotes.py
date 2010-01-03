@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20100103093121.5329:@thin stickynotes.py
+#@+node:ville.20091008210853.5241:@thin stickynotes.py
 #@<< docstring >>
 #@+node:vivainio2.20091008133028.5821:<< docstring >>
 ''' Simple "sticky notes" feature (popout editors)
@@ -25,7 +25,7 @@ __version__ = '0.0'
 #@<< imports >>
 #@+node:vivainio2.20091008133028.5823:<< imports >>
 import leo.core.leoGlobals as g
-from leo.core import leoPlugins 
+from leo.core import leoPlugins
 
 # Whatever other imports your plugins uses.
 
@@ -33,7 +33,7 @@ g.assertUi('qt')
 
 import sys
 import webbrowser
-import markdown
+
 from PyQt4.QtCore import (QSize, QString, QVariant, Qt, SIGNAL,QTimer)
 from PyQt4.QtGui import (QAction, QApplication, QColor, QFont,
         QFontMetrics, QIcon, QKeySequence, QMenu, QPixmap, QTextCursor,
@@ -262,5 +262,5 @@ def stickynoter_f(event):
 #@-node:ville.20091023181249.5266:g.command('stickynoter')
 #@-others
 #@nonl
-#@-node:ekr.20100103093121.5329:@thin stickynotes.py
+#@-node:ville.20091008210853.5241:@thin stickynotes.py
 #@-leo
