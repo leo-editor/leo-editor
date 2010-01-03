@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="0" left="0" height="696" width="996"/>
+	<global_window_position top="48" left="25" height="692" width="996"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -27,12 +27,12 @@
 </v>
 <v t="ekr.20080515173014.1"><vh>regex: replace w.bind by c.bind(w...)</vh></v>
 <v t="ekr.20080519084304.2"><vh>@@button change leo imports</vh></v>
+<v t="ekr.20100102164842.5328"><vh>Count pages</vh></v>
 </v>
 <v t="ekr.20090430075506.4"><vh>Notes &amp; to-do</vh>
-<v t="ekr.20090430075506.3"
-marks="ekr.20050808064245,ekr.20050809082854.1,"><vh>@thin leoPluginNotes.txt</vh></v>
+<v t="ekr.20090430075506.3"><vh>@thin leoPluginNotes.txt</vh></v>
 </v>
-<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
+<v t="edream.110203113231.618"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
 <v t="ekr.20041114102139"><vh>Notes</vh>
@@ -60,9 +60,12 @@ marks="ekr.20050808064245,ekr.20050809082854.1,"><vh>@thin leoPluginNotes.txt</v
 </v>
 </v>
 </v>
+<v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
+<v t="ekr.20091118065749.5261"><vh>@thin ctagscompleter.py</vh></v>
+<v t="ville.20091204224145.5355"><vh>@thin codewisecompleter.py</vh></v>
+</v>
 <v t="ekr.20040722135402.1"><vh>Body pane</vh>
 <v t="edream.110403140857.8"><vh>@thin color_markup.py</vh></v>
-<v t="ekr.20090701111504.5294"><vh>@thin contextmenu.py</vh></v>
 <v t="ekr.20060506070443.1"><vh>@thin detect_urls.py</vh></v>
 <v t="edream.110203113231.753"><vh>@thin image.py</vh></v>
 <v t="edream.110203113231.925"><vh>@thin script_io_to_body.py</vh></v>
@@ -304,7 +307,6 @@ marks="ekr.20050808064245,ekr.20050809082854.1,"><vh>@thin leoPluginNotes.txt</v
 <v t="ville.20090503124249.1"><vh>@thin tomboy_import.py</vh></v>
 </v>
 <v t="EKR.20040517080049"><vh>Files</vh>
-<v t="tbrown.20080613095157.2"><vh>@thin active_path.py</vh></v>
 <v t="EKR.20040517080049.1"><vh>@thin empty_leo_file.py</vh></v>
 <v t="danr7.20060902215215.1"><vh>@thin leo_to_html.py</vh></v>
 <v t="danr7.20060902083957"><vh>@thin leo_to_rtf.py</vh></v>
@@ -324,7 +326,7 @@ marks="ekr.20050808064245,ekr.20050809082854.1,"><vh>@thin leoPluginNotes.txt</v
 <v t="ekr.20060328125925"><vh>@thin chapter_hoist.py</vh></v>
 <v t="ekr.20040331072607"><vh>@thin hoist.py</vh></v>
 <v t="edream.110203113231.758"><vh>@thin nav_buttons.py</vh></v>
-<v t="ville.20090518182905.5419" a="M"><vh>@thin nav_qt.py</vh></v>
+<v t="ville.20090518182905.5419"><vh>@thin nav_qt.py</vh></v>
 <v t="pap.20051010170720"><vh>@thin newButtons.py</vh></v>
 <v t="ekr.20040108062655"><vh>@thin nodenavigator.py</vh></v>
 <v t="ekr.20040108095351"><vh>@thin rowcol.py</vh></v>
@@ -349,25 +351,26 @@ marks="ekr.20050808064245,ekr.20050809082854.1,"><vh>@thin leoPluginNotes.txt</v
 <v t="ekr.20050402080206.8"><vh>@thin LeoN.py</vh></v>
 </v>
 <v t="EKR.20040517080555"><vh>Menus &amp; translations</vh>
-<v t="EKR.20040517080555.36"><vh>@thin scripts_menu.py</vh></v>
+<v t="ekr.20090701111504.5294"><vh>@thin contextmenu.py</vh></v>
 <v t="ekr.20040828122150"><vh>@thin pie_menus.py</vh></v>
+<v t="EKR.20040517080555.36"><vh>@thin scripts_menu.py</vh></v>
 </v>
 <v t="ekr.20060530091119"><vh>New colorizer</vh>
 <v t="ekr.20071010193720"><vh>@thin threading_colorizer.py	</vh></v>
 <v t="ekr.20080707101341.1"><vh>@thin ../modes/forth.py</vh></v>
 </v>
-<v t="edream.110203113231.872" a="E"><vh>Nodes...</vh>
-<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710455055f6564697471057d7106550474686973710755126f6b20686f77206120626f757420746869737108737373732e"><vh>@thin attrib_edit.py</vh></v>
+<v t="edream.110203113231.872"><vh>Nodes...</vh>
+<v t="tbrown.20080613095157.2"><vh>@thin active_path.py</vh></v>
 <v t="edream.110203113231.873"><vh>@thin at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@thin at_produce.py</vh></v>
 <v t="ktenney.20041211072654.1"><vh>@thin at_view.py</vh></v>
+<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005803000000302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@thin attrib_edit.py</vh></v>
 <v t="mork.20041020082242.1"><vh>@thin base64Packager.py</vh></v>
 <v t="tbrown.20070322113635"><vh>@thin bookmarks.py</vh></v>
 <v t="ekr.20060807103814.1"><vh>@thin datenodes.py</vh></v>
 <v t="ajones.20070122153625"><vh>@thin expfolder.py</vh></v>
 <v t="mork.20041018091414.1"><vh>@thin fastGotoNode.py</vh></v>
-<v t="tbrown.20091214233510.5347"
-expanded="tbrown.20091214233510.5353,"><vh>@thin geotag.py</vh></v>
+<v t="tbrown.20091214233510.5347"><vh>@thin geotag.py</vh></v>
 <v t="dan.20090217132953.1"><vh>@thin mime.py</vh></v>
 <v t="ekr.20050301095332"><vh>@thin mod_labels.py</vh></v>
 <v t="edream.110203113231.876"><vh>@thin read_only_nodes.py</vh></v>
@@ -715,7 +718,7 @@ expanded="tbrown.20091214233510.5353,"><vh>@thin geotag.py</vh></v>
 </v>
 <v t="ekr.20050111122605"><vh>Servers</vh>
 <v t="EKR.20040517080250.1"><vh>@thin mod_http.py</vh></v>
-<v t="ville.20091009202416.10040" a="M"><vh>@thin leoremote.py</vh></v>
+<v t="ville.20091009202416.10040"><vh>@thin leoremote.py</vh></v>
 </v>
 <v t="ekr.20071113084440"><vh>Testing</vh>
 <v t="ekr.20071113084440.1"><vh>@thin test/syntax_error_plugin.py</vh></v>
@@ -794,9 +797,12 @@ expanded="tbrown.20091214233510.5353,"><vh>@thin geotag.py</vh></v>
 </v>
 <v t="ekr.20050817132814"><vh>rst3</vh>
 <v t="ekr.20090704103932.5160"><vh>@thin leo_pdf.py</vh></v>
-<v t="ekr.20050805162550"
-marks="ekr.20050808064245,ekr.20050809082854.1,"><vh>@thin rst3.py</vh></v>
+<v t="ekr.20050805162550"><vh>@thin rst3.py</vh></v>
 </v>
+<v t="ekr.20100103093121.5329"
+marks="vivainio2.20091008133028.5823,vivainio2.20091008140054.14555,ville.20091008210853.7616,ville.20091023181249.5264,vivainio2.20091008133028.5825,ville.20091023181249.5266,"><vh>@thin stickynotes.py</vh></v>
+<v t="ekr.20100103093121.5339"
+marks="vivainio2.20091008133028.5823,vivainio2.20091008140054.14555,ville.20091008210853.7616,ville.20091023181249.5264,vivainio2.20091008133028.5825,ville.20091023181249.5266,"><vh>@thin stickynotes_plus.py</vh></v>
 <v t="ekr.20070119094733.1"><vh>@thin dtest.py</vh></v>
 </v>
 <v t="ekr.20061023142737"><vh>UNL plugin</vh>
@@ -864,12 +870,9 @@ marks="ekr.20050808064245,ekr.20050809082854.1,"><vh>@thin rst3.py</vh></v>
 <v t="ekr.20060506070443.1"></v>
 <v t="ville.20090310191936.10"><vh>@thin colorize_headlines.py</vh></v>
 <v t="ville.20090314215508.4"><vh>@thin quicksearch.py</vh></v>
-<v t="ville.20090808222331.5229"><vh>@thin qtframecommands.py</vh></v>
 <v t="ville.20091008210853.5241"><vh>@thin stickynotes.py</vh></v>
 </v>
 </v>
-<v t="ekr.20091118065749.5261"><vh>@thin ctagscompleter.py</vh></v>
-<v t="ville.20091204224145.5355"><vh>@thin codewisecompleter.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040517075715"></t>
@@ -1070,343 +1073,6 @@ Marshall Research
 michael_dawson at marshallresearch dot com
 ---
 @code</t>
-<t tx="ekr.20040331071919.2">@doc
-@ascskip # Time-stamp: "Fri, Jan  9 15:19 CST 2004  michael@redpriest About_this_document_140583820.txt"
-
-If you are reading this document in HTML (in a web browser) or as a
-PDF file (usually in Adobe Acrobat Reader), it may interest you to
-know that this document was generated from a Leo outline.
-
-The Leo outline (in the file mod_leo2ascd.leo) contained the
-Leo2AsciiDoc Users Guide, the Leo2AsciiDoc Developers Guide, and all
-the Leo2AsciiDoc source code.  All of them were created by simply
-typing plain text.
-
-The working source code was exported by Leo using the "File; Tangle;
-Tangle" menu selection, which created the Python program file
-"mod_leo2ascd.py".
-
-The Users Guide and the Developers Guide were created by exporting
-the text from Leo, using the menu selection "File; Export; Export
-All to AsciiDoc".  This created the plain text files
-"mod_asc_user.asc" and "mod_asc_dev.asc" (which are the file names I
-told Leo to use.)
-
-I then typed "make all" at the console in the directory, and the
-make program:
-
-    - ran the AsciiDoc program to produce the DocBook XML files.
-    - ran the xsltproc program to produce the HTML files from the
-      XML files.
-    - ran the xsltproc program to produce "fo" files, and ran the
-      fop program to produce PDF files from the fo files.
-
-Everything was generated automatically without any further work on
-my part.
-
-@code</t>
-<t tx="ekr.20040331071919.3">@doc
-@ascskip # Time-stamp: "Mon, Jan 19 15:28 CST 2004  michael@redpriest License_141615068.txt"
-
-This is part of the Leo2AsciiDoc software package, which is released
-as open source.  
-
-The license is the most "open" I know of, and is sometimes referred
-to as the "X11" or "MIT" license.  Boiled down, in non-legal terms:
-
-    - the software is yours for free -- to run, modify and
-      distribute as you will
-    - I have no legal liability for any of it
-    - you may not use my name.
-
-Michael Dawson
-Marshall Research
-michael_dawson at marshallresearch dot com
-
-NOTE: The following license is often referred to as the "MIT/X
-Consortium License", as the "MIT license" and as the "X11" license.
-My source for the exact wording is the copy at the Open Source
-Initiative:  http://opensource.org/licenses/mit-license.html[]
-
-
-@code
-</t>
-<t tx="ekr.20040331071919.4">@doc
-@ascskip # Time-stamp: "Fri, Jan  9 09:18 CST 2004  michael@redpriest License_document_140581532.txt"
----
-Terms and Conditions
- 
-COPYRIGHT AND PERMISSION NOTICE
-
-Copyright (c) 1999,2000,2001,2002,2003,2004 Michael W. Dawson
-
-All rights reserved.
-
-Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation files
-(the "Software"), to deal in the Software without restriction,
-including without limitation the rights to use, copy, modify, merge,
-publish, distribute, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, provided
-that the above copyright notice(s) and this permission notice appear
-in all copies of the Software and that both the above copyright
-notice(s) and this permission notice appear in supporting
-documentation.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT OF THIRD PARTY RIGHTS. IN NO EVENT SHALL THE
-COPYRIGHT HOLDER OR HOLDERS INCLUDED IN THIS NOTICE BE LIABLE FOR
-ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL DAMAGES, OR ANY
-DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
-ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
-OF THIS SOFTWARE.
-
-Except as contained in this notice, the name of a copyright holder
-shall not be used in advertising or otherwise to promote the sale,
-use or other dealings in this Software without prior written
-authorization of the copyright holder.
----
-@code</t>
-<t tx="ekr.20040331071919.5">@doc
-@ascskip # Time-stamp: "Fri, Jan  9 16:13 CST 2004  michael@redpriest Version_Requirements_140584132.txt"
-
-This is version 0.4 of Leo2AsciiDoc.  The major version of zero
-indicates that it is an in-house version, not suitable for
-production use elsewhere.
-
-It was created and tested using:
-
-    - Leo version 4.1 (release candidate 3).  Leo2AsciiDoc was
-      upgraded to use the new features in 4.1 and is no longer
-      compatible with previous versions.
-    - AsciiDoc version 5.0.2.  Leo2AsciiDoc was upgraded to use the
-      new features in 5.0.2, and is no longer compatible with older
-      versions of AsciiDoc.
-    - DocBook XML DTD version 4.2 and DocBook XSL stylesheets 1.60.1
-    - xsltproc 1.0.30
-    - fop 0.20.5
-
-The last three items are the DocBook tool chain I'm currently using.
-Any working DocBook XML tool chain you may have is likely to work,
-since the major Leo2AsciiDoc effort is in producing the XML files
-the tool chain uses as input.
-
-@code</t>
-<t tx="ekr.20040331071919.6">@language plain
-@doc
-@ascskip # Time-stamp: "Fri, Jan  9 16:00 CST 2004  michael@redpriest The_General_Approach_140588436.txt"
-
-Leo2AsciiDoc simply copies the text from a portion of a Leo outline
-to a text file.  That text file can then be processed by other
-programs to produce HTML, PDF's, etc.
-
-The text will be copied from each outline item, in outline order,
-though you can skip individual nodes or sub-trees.
-
-The idea is that you write the outline as a book, or series of
-books.
-
-If your book contains source code, you can break it up into pieces
-that make it convenient to review with the reader.  Additionally,
-you can discuss the pieces in any order that you like.  Using the
-"tangle" command, Leo will be able to assemble and reorder the
-pieces in the order required for a file of compilable source code.
-
-As the text is copied from the outline, Leo2AsciiDoc adds minimal markup,
-generally:
-
-    - It marks up node headlines as Titles and Section Headings
-      in the AsciiDoc format.
-    - Program listings have AsciiDoc section markers inserted before
-      and after.
-
-A specific list follows.
-
-@code</t>
-<t tx="ekr.20040331071919.7">@language plain
-@doc
-@ascskip # Time-stamp: "Fri, Jan  9 16:05 CST 2004  michael@redpriest Markup_Added_140589620.txt"
-
-    - headings:
-        * By default, all outline node headings are underlined with
-          the appropriate section underline character, which
-          AsciiDoc will use to transform the headings into titles:
-          chapter, section1, section2, etc.
-        * code extracts are given an "example" heading.
-    - source code sections are marked with delimiters, so that they
-      can be assigned to the DocBook "programlisting" element.
-    - source code sections are line-wrapped in the document output,
-      for convenient html display.
-    - wherever source code is exported to a source code file, the
-      document with note this with an automatically generated "note"
-      element.
-
-@code
-</t>
-<t tx="ekr.20040331071919.8">@language python
-@tabwidth -4
-
-@doc
-@ascskip on
- @silent
-NB: remove leading space from above silent directive for final clean
-code.
-
-@ascskip off
-@ascskip # Time-stamp: "Thu, Dec  4 11:58 CST 2003  michael@redpriest _The_Code__140751676.py"
-
-This chapter contains all the source code for the Leo2AsciiDoc program.
-The code is arranged in an order that is convenient for discussion.
-
-On its way from the Leo outline to this document, the code has been
-reformatted for printing.  Please note that:
-
-    - code lines that are longer than the current publishing limit
-      are wrapped.  Wrapped lines end in a "\" character and have
-      the remainder of the text on the next line, preceeded by 4
-      spaces. The real working code is not changed in this way when
-      exported for actual use.
-    - Some code has been extracted as Examples, and has a title
-      saying something like "Example: Interesting Code".  Rather
-      than repeat that code in the main code body, there is simply a
-      reference to the name, enclosed in double angle brackets:
-      \&lt;&lt;Interesting Code&gt;&gt;. All extracts are indexed, see "Python
-      code, extracts used" in the Index at the end of the document.
-
-@ascskip on
-@root "mod_leo2ascd.py"
-__version__ = ".5" # Set version for the plugin handler.
-&lt;&lt; Declarations and Utilities &gt;&gt;
-&lt;&lt; Write the outline tree as AsciiDoc file &gt;&gt;
-&lt;&lt; Write a node &gt;&gt;
-&lt;&lt; Key Functions &gt;&gt;
-@code</t>
-<t tx="ekr.20040331071919.9">@doc
-@ascskip # Time-stamp: "Thu, Dec  4 16:05 CST 2003  michael@redpriest _Key_Functions__141128028.py"
-
-These are the top-level functions that can be called from the Leo menu.
-
-The next function writes the Leo outline tree of the current node to
-a text file.  It first checks to see that there is an ascfile
-directive in the current node, or above it, and then calls the
-WriteTreeAsAsc function to write the tree starting at the ascfile
-node.
-
-If you have several documents in one Leo outline, this function will
-write out the current one.
-
-@code
-
-def WriteTreeOfCurrentNode(c):
-    f = c.frame
-    vnode = c.currentVnode() # get the current vnode.
-    while vnode:
-        ascFileN = GetAscFilename(vnode)
-        if ascFileN == None:
-            vnode = vnode.parent()
-        else:
-            break
-
-    if ascFileN == None:
-        g.es("Sorry, there was no @ascfile directive in this outline tree.")
-    else:
-        WriteTreeAsAsc(vnode, ascFileN)
-
-@doc
-
-The next function exports all Leo2AsciiDoc documents in the entire Leo
-outline, starting at the top and working through all nodes.
-
-@code
-def WriteAll(c):
-    f = c.frame
-    v = c.rootVnode()
-    while v:
-        ascFileN = GetAscFilename(v)
-        if ascFileN != None:
-            WriteTreeAsAsc(v, ascFileN)
-            v = v.nodeAfterTree()
-        else:
-            v = v.threadNext()
-@doc
-
-This function is handy to see all the Leo2AsciiDoc sub-trees and source
-code sub-trees in a Leo outline.  It prints the results in the log pane.
-
-@code
-
-def WriteAllRoots(c):
-    "Writes @root directive and/or @ascfile directive to log pane."
-
-    patternAscDirectiveFile = re.compile(r'^@ascfile')
-    patternRoot = re.compile(r'^@root')
-
-    g.es('Looking for @root or @ascfile.')
-    f = c.frame
-    vnode = c.rootVnode()
-    while vnode:
-        bodyString = vnode.bodyString()
-        lines = bodyString.splitlines()
-        printedHeading = False
-        for line in lines:
-            printLine = False
-            containsAscFileDirective = patternAscDirectiveFile.match(line)
-            if containsAscFileDirective:
-                printLine = True
-            containsRootDirective = patternRoot.match(line)
-            if containsRootDirective:
-                printLine = True
-            if printLine:
-                if not printedHeading:
-                    g.es(vnode.headString())
-                    printedHeading = True
-                g.es('  ' + line)
-        vnode = vnode.threadNext()
-
-@doc
-
-Next, we simply create Leo menu items for the above functions,
-assuming Leo is loading this code as a module (i.e. the Python
-source has been placed in the Leo plugins directory.)  As a module,
-the phrase "if 0:" must be changed to "if 1:" to activate the
-module.
-
-But while the "if 0:" is left, this code can be used as a script
-from the Leo scripts menu (assuming a copy of the code has been
-placed in the Leo scripts directory), implementing the WriteAll
-function above. This is useful in testing.
-
-@code
-def CreateAscMenu(tag,keywords):
-
-    """Create the Outline to AsciiDoc menu item in the Export menu."""
-    
-    c = keywords.get('c')
-    if not c: return
-
-    exportMenu = c.frame.menu.getMenu('export')
-    newEntries = (
-        ("-", None, None),
-        ("Export all to &amp;AsciiDoc","Alt+Shift+A",WriteAll),
-        ("Export current tree to AsciiDoc","Alt+Shift+T",WriteTreeOfCurrentNode),
-        ("Log all root and ascfile to log pane","Alt+Shift+L",WriteAllRoots),
-    )
-
-    c.frame.menu.createMenuEntries(exportMenu, newEntries,dynamicMenu=True)
-    
-if 1:
-    def init():
-        ok = True
-        leoPlugins.registerHandler(('new','open2'), CreateAscMenu)
-        g.plugin_signon(__name__)
-        return ok
-else:
-    WriteTreeOfCurrentNode()
-
-@doc</t>
 <t tx="ekr.20040331071919.10">@doc
 @ascskip # Time-stamp: "Tue, Nov 25 11:25 CST 2003  michael@redpriest _Declarations_and_Utilities__140958380.py"
 
@@ -2419,6 +2085,41 @@ For example: "make all".
 There are many, many choices of tools to put in your DocBook tool
 chain.  You can even purchase complete packages, from text editing
 to PDF generation.
+
+@code</t>
+<t tx="ekr.20040331071919.2">@doc
+@ascskip # Time-stamp: "Fri, Jan  9 15:19 CST 2004  michael@redpriest About_this_document_140583820.txt"
+
+If you are reading this document in HTML (in a web browser) or as a
+PDF file (usually in Adobe Acrobat Reader), it may interest you to
+know that this document was generated from a Leo outline.
+
+The Leo outline (in the file mod_leo2ascd.leo) contained the
+Leo2AsciiDoc Users Guide, the Leo2AsciiDoc Developers Guide, and all
+the Leo2AsciiDoc source code.  All of them were created by simply
+typing plain text.
+
+The working source code was exported by Leo using the "File; Tangle;
+Tangle" menu selection, which created the Python program file
+"mod_leo2ascd.py".
+
+The Users Guide and the Developers Guide were created by exporting
+the text from Leo, using the menu selection "File; Export; Export
+All to AsciiDoc".  This created the plain text files
+"mod_asc_user.asc" and "mod_asc_dev.asc" (which are the file names I
+told Leo to use.)
+
+I then typed "make all" at the console in the directory, and the
+make program:
+
+    - ran the AsciiDoc program to produce the DocBook XML files.
+    - ran the xsltproc program to produce the HTML files from the
+      XML files.
+    - ran the xsltproc program to produce "fo" files, and ran the
+      fop program to produce PDF files from the fo files.
+
+Everything was generated automatically without any further work on
+my part.
 
 @code</t>
 <t tx="ekr.20040331071919.20">@language plain
@@ -3482,6 +3183,32 @@ used by a Formatting Object processor to produce a PDF file.
 
 
 </t>
+<t tx="ekr.20040331071919.3">@doc
+@ascskip # Time-stamp: "Mon, Jan 19 15:28 CST 2004  michael@redpriest License_141615068.txt"
+
+This is part of the Leo2AsciiDoc software package, which is released
+as open source.  
+
+The license is the most "open" I know of, and is sometimes referred
+to as the "X11" or "MIT" license.  Boiled down, in non-legal terms:
+
+    - the software is yours for free -- to run, modify and
+      distribute as you will
+    - I have no legal liability for any of it
+    - you may not use my name.
+
+Michael Dawson
+Marshall Research
+michael_dawson at marshallresearch dot com
+
+NOTE: The following license is often referred to as the "MIT/X
+Consortium License", as the "MIT license" and as the "X11" license.
+My source for the exact wording is the copy at the Open Source
+Initiative:  http://opensource.org/licenses/mit-license.html[]
+
+
+@code
+</t>
 <t tx="ekr.20040331071919.30">@language plain
 @doc
 @ascskip # Time-stamp: "Tue, Jan 13 10:21 CST 2004  michael@redpriest Appendix_XEmacs_Text_Editor_140657924.txt"
@@ -4160,6 +3887,45 @@ version 4.1:
       items called something like "Export to AsciiDoc".
 
 @code</t>
+<t tx="ekr.20040331071919.4">@doc
+@ascskip # Time-stamp: "Fri, Jan  9 09:18 CST 2004  michael@redpriest License_document_140581532.txt"
+---
+Terms and Conditions
+ 
+COPYRIGHT AND PERMISSION NOTICE
+
+Copyright (c) 1999,2000,2001,2002,2003,2004 Michael W. Dawson
+
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation files
+(the "Software"), to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge,
+publish, distribute, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, provided
+that the above copyright notice(s) and this permission notice appear
+in all copies of the Software and that both the above copyright
+notice(s) and this permission notice appear in supporting
+documentation.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT OF THIRD PARTY RIGHTS. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER OR HOLDERS INCLUDED IN THIS NOTICE BE LIABLE FOR
+ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL DAMAGES, OR ANY
+DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
+ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
+OF THIS SOFTWARE.
+
+Except as contained in this notice, the name of a copyright holder
+shall not be used in advertising or otherwise to promote the sale,
+use or other dealings in this Software without prior written
+authorization of the copyright holder.
+---
+@code</t>
 <t tx="ekr.20040331071919.40">@language plain
 @doc
 @ascskip # Time-stamp: "Thu, Oct 16 13:46 CST 2003  michael@redpriest Operation_140791428.txt"
@@ -4376,6 +4142,243 @@ http://www.docbook.org[The official home page for DocBook: The Definitive Guide.
 
 
 @code</t>
+<t tx="ekr.20040331071919.5">@doc
+@ascskip # Time-stamp: "Fri, Jan  9 16:13 CST 2004  michael@redpriest Version_Requirements_140584132.txt"
+
+This is version 0.4 of Leo2AsciiDoc.  The major version of zero
+indicates that it is an in-house version, not suitable for
+production use elsewhere.
+
+It was created and tested using:
+
+    - Leo version 4.1 (release candidate 3).  Leo2AsciiDoc was
+      upgraded to use the new features in 4.1 and is no longer
+      compatible with previous versions.
+    - AsciiDoc version 5.0.2.  Leo2AsciiDoc was upgraded to use the
+      new features in 5.0.2, and is no longer compatible with older
+      versions of AsciiDoc.
+    - DocBook XML DTD version 4.2 and DocBook XSL stylesheets 1.60.1
+    - xsltproc 1.0.30
+    - fop 0.20.5
+
+The last three items are the DocBook tool chain I'm currently using.
+Any working DocBook XML tool chain you may have is likely to work,
+since the major Leo2AsciiDoc effort is in producing the XML files
+the tool chain uses as input.
+
+@code</t>
+<t tx="ekr.20040331071919.6">@language plain
+@doc
+@ascskip # Time-stamp: "Fri, Jan  9 16:00 CST 2004  michael@redpriest The_General_Approach_140588436.txt"
+
+Leo2AsciiDoc simply copies the text from a portion of a Leo outline
+to a text file.  That text file can then be processed by other
+programs to produce HTML, PDF's, etc.
+
+The text will be copied from each outline item, in outline order,
+though you can skip individual nodes or sub-trees.
+
+The idea is that you write the outline as a book, or series of
+books.
+
+If your book contains source code, you can break it up into pieces
+that make it convenient to review with the reader.  Additionally,
+you can discuss the pieces in any order that you like.  Using the
+"tangle" command, Leo will be able to assemble and reorder the
+pieces in the order required for a file of compilable source code.
+
+As the text is copied from the outline, Leo2AsciiDoc adds minimal markup,
+generally:
+
+    - It marks up node headlines as Titles and Section Headings
+      in the AsciiDoc format.
+    - Program listings have AsciiDoc section markers inserted before
+      and after.
+
+A specific list follows.
+
+@code</t>
+<t tx="ekr.20040331071919.7">@language plain
+@doc
+@ascskip # Time-stamp: "Fri, Jan  9 16:05 CST 2004  michael@redpriest Markup_Added_140589620.txt"
+
+    - headings:
+        * By default, all outline node headings are underlined with
+          the appropriate section underline character, which
+          AsciiDoc will use to transform the headings into titles:
+          chapter, section1, section2, etc.
+        * code extracts are given an "example" heading.
+    - source code sections are marked with delimiters, so that they
+      can be assigned to the DocBook "programlisting" element.
+    - source code sections are line-wrapped in the document output,
+      for convenient html display.
+    - wherever source code is exported to a source code file, the
+      document with note this with an automatically generated "note"
+      element.
+
+@code
+</t>
+<t tx="ekr.20040331071919.8">@language python
+@tabwidth -4
+
+@doc
+@ascskip on
+ @silent
+NB: remove leading space from above silent directive for final clean
+code.
+
+@ascskip off
+@ascskip # Time-stamp: "Thu, Dec  4 11:58 CST 2003  michael@redpriest _The_Code__140751676.py"
+
+This chapter contains all the source code for the Leo2AsciiDoc program.
+The code is arranged in an order that is convenient for discussion.
+
+On its way from the Leo outline to this document, the code has been
+reformatted for printing.  Please note that:
+
+    - code lines that are longer than the current publishing limit
+      are wrapped.  Wrapped lines end in a "\" character and have
+      the remainder of the text on the next line, preceeded by 4
+      spaces. The real working code is not changed in this way when
+      exported for actual use.
+    - Some code has been extracted as Examples, and has a title
+      saying something like "Example: Interesting Code".  Rather
+      than repeat that code in the main code body, there is simply a
+      reference to the name, enclosed in double angle brackets:
+      \&lt;&lt;Interesting Code&gt;&gt;. All extracts are indexed, see "Python
+      code, extracts used" in the Index at the end of the document.
+
+@ascskip on
+@root "mod_leo2ascd.py"
+__version__ = ".5" # Set version for the plugin handler.
+&lt;&lt; Declarations and Utilities &gt;&gt;
+&lt;&lt; Write the outline tree as AsciiDoc file &gt;&gt;
+&lt;&lt; Write a node &gt;&gt;
+&lt;&lt; Key Functions &gt;&gt;
+@code</t>
+<t tx="ekr.20040331071919.9">@doc
+@ascskip # Time-stamp: "Thu, Dec  4 16:05 CST 2003  michael@redpriest _Key_Functions__141128028.py"
+
+These are the top-level functions that can be called from the Leo menu.
+
+The next function writes the Leo outline tree of the current node to
+a text file.  It first checks to see that there is an ascfile
+directive in the current node, or above it, and then calls the
+WriteTreeAsAsc function to write the tree starting at the ascfile
+node.
+
+If you have several documents in one Leo outline, this function will
+write out the current one.
+
+@code
+
+def WriteTreeOfCurrentNode(c):
+    f = c.frame
+    vnode = c.currentVnode() # get the current vnode.
+    while vnode:
+        ascFileN = GetAscFilename(vnode)
+        if ascFileN == None:
+            vnode = vnode.parent()
+        else:
+            break
+
+    if ascFileN == None:
+        g.es("Sorry, there was no @ascfile directive in this outline tree.")
+    else:
+        WriteTreeAsAsc(vnode, ascFileN)
+
+@doc
+
+The next function exports all Leo2AsciiDoc documents in the entire Leo
+outline, starting at the top and working through all nodes.
+
+@code
+def WriteAll(c):
+    f = c.frame
+    v = c.rootVnode()
+    while v:
+        ascFileN = GetAscFilename(v)
+        if ascFileN != None:
+            WriteTreeAsAsc(v, ascFileN)
+            v = v.nodeAfterTree()
+        else:
+            v = v.threadNext()
+@doc
+
+This function is handy to see all the Leo2AsciiDoc sub-trees and source
+code sub-trees in a Leo outline.  It prints the results in the log pane.
+
+@code
+
+def WriteAllRoots(c):
+    "Writes @root directive and/or @ascfile directive to log pane."
+
+    patternAscDirectiveFile = re.compile(r'^@ascfile')
+    patternRoot = re.compile(r'^@root')
+
+    g.es('Looking for @root or @ascfile.')
+    f = c.frame
+    vnode = c.rootVnode()
+    while vnode:
+        bodyString = vnode.bodyString()
+        lines = bodyString.splitlines()
+        printedHeading = False
+        for line in lines:
+            printLine = False
+            containsAscFileDirective = patternAscDirectiveFile.match(line)
+            if containsAscFileDirective:
+                printLine = True
+            containsRootDirective = patternRoot.match(line)
+            if containsRootDirective:
+                printLine = True
+            if printLine:
+                if not printedHeading:
+                    g.es(vnode.headString())
+                    printedHeading = True
+                g.es('  ' + line)
+        vnode = vnode.threadNext()
+
+@doc
+
+Next, we simply create Leo menu items for the above functions,
+assuming Leo is loading this code as a module (i.e. the Python
+source has been placed in the Leo plugins directory.)  As a module,
+the phrase "if 0:" must be changed to "if 1:" to activate the
+module.
+
+But while the "if 0:" is left, this code can be used as a script
+from the Leo scripts menu (assuming a copy of the code has been
+placed in the Leo scripts directory), implementing the WriteAll
+function above. This is useful in testing.
+
+@code
+def CreateAscMenu(tag,keywords):
+
+    """Create the Outline to AsciiDoc menu item in the Export menu."""
+    
+    c = keywords.get('c')
+    if not c: return
+
+    exportMenu = c.frame.menu.getMenu('export')
+    newEntries = (
+        ("-", None, None),
+        ("Export all to &amp;AsciiDoc","Alt+Shift+A",WriteAll),
+        ("Export current tree to AsciiDoc","Alt+Shift+T",WriteTreeOfCurrentNode),
+        ("Log all root and ascfile to log pane","Alt+Shift+L",WriteAllRoots),
+    )
+
+    c.frame.menu.createMenuEntries(exportMenu, newEntries,dynamicMenu=True)
+    
+if 1:
+    def init():
+        ok = True
+        leoPlugins.registerHandler(('new','open2'), CreateAscMenu)
+        g.plugin_signon(__name__)
+        return ok
+else:
+    WriteTreeOfCurrentNode()
+
+@doc</t>
 <t tx="ekr.20040722134535"># Warning: these plugins are not ready for prime time.</t>
 <t tx="ekr.20040722135402"></t>
 <t tx="ekr.20040722135402.1"></t>
@@ -4493,7 +4496,7 @@ your plugin.</t>
 <t tx="ekr.20041114103913.1">PLEASE define each function or method in a separate node! To make this work,
 just put @others in the root of your plugin as shown. Note that @others may be
 nested, as shown in class myClass.</t>
-<t tx="ekr.20041211035618" str_leo_pos="2,18,9"></t>
+<t tx="ekr.20041211035618" str_leo_pos="2"></t>
 <t tx="ekr.20041231134702"># This is called from plugins_menu plugin.
 
 # It should only be defined if the extension has been registered.
@@ -4526,7 +4529,7 @@ def topLevelMenu(c):
 
     return ok</t>
 <t tx="ekr.20050217093214">@nocolor</t>
-<t tx="ekr.20050227071948" annotate="5404010000376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333464306632373632353530343665366636343635373130353238363830323666373130363535303734363635363137343735373236353731303736323535303236323637373130383238363830323666373130393535303037313061363235353039363137323633363836353734373937303635373130623238363830323666373130633638306136323535303236363637373130643238363830323666373130653638306136323735326571002e"></t>
+<t tx="ekr.20050227071948" annotate="5804010000376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333464306632373632353530343665366636343635373130353238363830323666373130363535303734363635363137343735373236353731303736323535303236323637373130383238363830323666373130393535303037313061363235353039363137323633363836353734373937303635373130623238363830323666373130633638306136323535303236363637373130643238363830323666373130653638306136323735326571002e"></t>
 <t tx="ekr.20050227071948.1" annotate="7d71002e">
 - move the clone marker to the same place as the blue square
   content indicator. They can overlap.  Make room for annotations.
@@ -4535,37 +4538,16 @@ def topLevelMenu(c):
 
 
 </t>
-<t tx="ekr.20050227071948.2" annotate="7d71002e">
-copy icons from freemind.
-
-expandable box of icons at the head of a headline.
-but manipulation vnode's iconx and icony positions.
-vnode.computeIcon &amp; setIcon
-
-icons in popup menus too ?
-
-</t>
-<t tx="ekr.20050227071948.3" annotate="7d71002e">
-There seems to be a colour selector in leo.
-</t>
-<t tx="ekr.20050227071948.4" annotate="55f037643731303032383535303837303732363936663732363937343739373130313238363336313665366536663734363137343635306135343662353036393633366236633635353636313732306137313032366637313033346236343632353530343665366636343635373130353238363830323666373130363535303037313037363235353032363236373731303832383638303236663731303936383037363235353039363137323633363836353734373937303635373130613238363830323666373130623638303736323535303236363637373130633238363830323666373130643638303736323735326571002e"></t>
-<t tx="ekr.20050227071948.5" annotate="5592376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333462303136323535303936313732363336383635373437393730363537313035323836383032366637313036353530303731303736323735326571002e">
-He haven't thought about it.
-</t>
-<t tx="ekr.20050227071948.6" annotate="5592376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333462303136323535303936313732363336383635373437393730363537313035323836383032366637313036353530303731303736323735326571002e"></t>
-<t tx="ekr.20050227071948.7" annotate="7d71002e"></t>
-<t tx="ekr.20050227071948.8" annotate="7d71002e"></t>
-<t tx="ekr.20050227071948.9" annotate="7d71002e"></t>
 <t tx="ekr.20050227071948.10" annotate="7d71002e">
 font
 size
 style
 </t>
-<t tx="ekr.20050227071948.11" annotate="55f037643731303032383535303837303732363936663732363937343739373130313238363336313665366536663734363137343635306135343662353036393633366236633635353636313732306137313032366637313033346230323632353530343665366636343635373130353238363830323666373130363535303037313037363235353032363236373731303832383638303236663731303936383037363235353039363137323633363836353734373937303635373130613238363830323666373130623638303736323535303236363637373130633238363830323666373130643638303736323735326571002e"></t>
-<t tx="ekr.20050227071948.12" annotate="54000100003764373130303238353530383730373236393666373236393734373937313031323836333631366536653666373436313734363530613534366235303639363336623663363535363631373230613731303236663731303334623634363235353034366536663634363537313035323836383032366637313036353530303731303736323535303236323637373130383238363830323666373130393535303635303735373237303663363537313061363235353039363137323633363836353734373937303635373130623238363830323666373130633638303736323535303236363637373130643238363830323666373130653638303736323735326571002e"></t>
-<t tx="ekr.20050227071948.13" annotate="7d71005509617474656e74696f6e71014930300a732e"></t>
-<t tx="ekr.20050227071948.15" annotate="5592376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333462363436323535303936313732363336383635373437393730363537313035323836383032366637313036353530303731303736323735326571002e"></t>
-<t tx="ekr.20050227071948.16" annotate="55f037643731303032383535303837303732363936663732363937343739373130313238363336313665366536663734363137343635306135343662353036393633366236633635353636313732306137313032366637313033346236343632353530343665366636343635373130353238363830323666373130363535303037313037363235353032363236373731303832383638303236663731303936383037363235353039363137323633363836353734373937303635373130613238363830323666373130623638303736323535303236363637373130633238363830323666373130643638303736323735326571002e"></t>
+<t tx="ekr.20050227071948.11" annotate="58f000000037643731303032383535303837303732363936663732363937343739373130313238363336313665366536663734363137343635306135343662353036393633366236633635353636313732306137313032366637313033346230323632353530343665366636343635373130353238363830323666373130363535303037313037363235353032363236373731303832383638303236663731303936383037363235353039363137323633363836353734373937303635373130613238363830323666373130623638303736323535303236363637373130633238363830323666373130643638303736323735326571002e"></t>
+<t tx="ekr.20050227071948.12" annotate="58000100003764373130303238353530383730373236393666373236393734373937313031323836333631366536653666373436313734363530613534366235303639363336623663363535363631373230613731303236663731303334623634363235353034366536663634363537313035323836383032366637313036353530303731303736323535303236323637373130383238363830323666373130393535303635303735373237303663363537313061363235353039363137323633363836353734373937303635373130623238363830323666373130633638303736323535303236363637373130643238363830323666373130653638303736323735326571002e"></t>
+<t tx="ekr.20050227071948.13" annotate="7d71005809000000617474656e74696f6e71014930300a732e"></t>
+<t tx="ekr.20050227071948.15" annotate="5892000000376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333462363436323535303936313732363336383635373437393730363537313035323836383032366637313036353530303731303736323735326571002e"></t>
+<t tx="ekr.20050227071948.16" annotate="58f000000037643731303032383535303837303732363936663732363937343739373130313238363336313665366536663734363137343635306135343662353036393633366236633635353636313732306137313032366637313033346236343632353530343665366636343635373130353238363830323666373130363535303037313037363235353032363236373731303832383638303236663731303936383037363235353039363137323633363836353734373937303635373130613238363830323666373130623638303736323535303236363637373130633238363830323666373130643638303736323735326571002e"></t>
 <t tx="ekr.20050227071948.17" annotate="7d71002e">
 Store semantics instead of colours.  Semantics then map to colours.
 
@@ -4581,7 +4563,7 @@ setUnselectedLabelState (self,v): # not selected.
 
 
 </t>
-<t tx="ekr.20050227071948.18" annotate="7d71005509617474656e74696f6e71014930300a732e">
+<t tx="ekr.20050227071948.18" annotate="7d71005809000000617474656e74696f6e71014930300a732e">
 Different coloured arrows for different priorities.
 
 VeryHigh Red
@@ -4590,16 +4572,26 @@ High Orange
 Low Blue  (whatever)
 Done  (tick)
 </t>
-<t tx="ekr.20050227071948.19" annotate="7d71005509617474656e74696f6e71014930300a732e">
+<t tx="ekr.20050227071948.19" annotate="7d71005809000000617474656e74696f6e71014930300a732e">
 archtetype based vnode attributes, not colour.
 </t>
+<t tx="ekr.20050227071948.2" annotate="7d71002e">
+copy icons from freemind.
+
+expandable box of icons at the head of a headline.
+but manipulation vnode's iconx and icony positions.
+vnode.computeIcon &amp; setIcon
+
+icons in popup menus too ?
+
+</t>
 <t tx="ekr.20050227071948.20" annotate="7d71002e"></t>
-<t tx="ekr.20050227071948.21" annotate="5592376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333462303236323535303936313732363336383635373437393730363537313035323836383032366637313036353530303731303736323735326571002e">
+<t tx="ekr.20050227071948.21" annotate="5892000000376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333462303236323535303936313732363336383635373437393730363537313035323836383032366637313036353530303731303736323735326571002e">
 The colouring conflicts.
 </t>
 <t tx="ekr.20050227071948.22" annotate="7d71002e"></t>
-<t tx="ekr.20050227071948.23" annotate="5404010000376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333464306632373632353530343665366636343635373130353238363830323666373130363535303734363635363137343735373236353731303736323535303236323637373130383238363830323666373130393535303037313061363235353039363137323633363836353734373937303635373130623238363830323666373130633638306136323535303236363637373130643238363830323666373130653638306136323735326571002e"></t>
-<t tx="ekr.20050227071948.24" annotate="55f037643731303032383535303837303732363936663732363937343739373130313238363336313665366536663734363137343635306135343662353036393633366236633635353636313732306137313032366637313033346236343632353530343665366636343635373130353238363830323666373130363535303037313037363235353032363236373731303832383638303236663731303936383037363235353039363137323633363836353734373937303635373130613238363830323666373130623638303736323535303236363637373130633238363830323666373130643638303736323735326571002e">Not always predictable.
+<t tx="ekr.20050227071948.23" annotate="5804010000376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333464306632373632353530343665366636343635373130353238363830323666373130363535303734363635363137343735373236353731303736323535303236323637373130383238363830323666373130393535303037313061363235353039363137323633363836353734373937303635373130623238363830323666373130633638306136323535303236363637373130643238363830323666373130653638306136323735326571002e"></t>
+<t tx="ekr.20050227071948.24" annotate="58f000000037643731303032383535303837303732363936663732363937343739373130313238363336313665366536663734363137343635306135343662353036393633366236633635353636313732306137313032366637313033346236343632353530343665366636343635373130353238363830323666373130363535303037313037363235353032363236373731303832383638303236663731303936383037363235353039363137323633363836353734373937303635373130613238363830323666373130623638303736323535303236363637373130633238363830323666373130643638303736323735326571002e">Not always predictable.
 
 src/leoTkinterTree.py: menu.post(event.x_root, event.y_root)
 
@@ -4651,7 +4643,7 @@ Role/Interface/Participation/Trait  =&gt; Straw/Khaki
 Dynamic Stuff, Moment/Interaction   =&gt; Pinkish
 
 </t>
-<t tx="ekr.20050227071948.28" annotate="54060100003764373130303238353530383730373236393666373236393734373937313031323836333631366536653666373436313734363530613534366235303639363336623663363535363631373230613731303236663731303334643066323736323535303436653666363436353731303532383638303236663731303635353038343336663664366436353665373437333731303736323535303236323637373130383238363830323666373130393535303037313061363235353039363137323633363836353734373937303635373130623238363830323666373130633638306136323535303236363637373130643238363830323666373130653638306136323735326571002e">3. Various drawing hooks. I've restored the drawing hooks that used to exists. These are so-called "stub" hooks. The entries of these hooks in leoDocs.leo and leoPlugins.leo are as follows:
+<t tx="ekr.20050227071948.28" annotate="58060100003764373130303238353530383730373236393666373236393734373937313031323836333631366536653666373436313734363530613534366235303639363336623663363535363631373230613731303236663731303334643066323736323535303436653666363436353731303532383638303236663731303635353038343336663664366436353665373437333731303736323535303236323637373130383238363830323666373130393535303037313061363235353039363137323633363836353734373937303635373130623238363830323666373130633638306136323535303236363637373130643238363830323666373130653638306136323735326571002e">3. Various drawing hooks. I've restored the drawing hooks that used to exists. These are so-called "stub" hooks. The entries of these hooks in leoDocs.leo and leoPlugins.leo are as follows:
  
  tag argument keys in keywords
  (hook name) overrides when called dictionary argument
@@ -4707,6 +4699,17 @@ yay ! they work with the CVS version.
 
 #registerHandler("iconrclick1",show_colour_menu)
 </t>
+<t tx="ekr.20050227071948.3" annotate="7d71002e">
+There seems to be a colour selector in leo.
+</t>
+<t tx="ekr.20050227071948.4" annotate="58f000000037643731303032383535303837303732363936663732363937343739373130313238363336313665366536663734363137343635306135343662353036393633366236633635353636313732306137313032366637313033346236343632353530343665366636343635373130353238363830323666373130363535303037313037363235353032363236373731303832383638303236663731303936383037363235353039363137323633363836353734373937303635373130613238363830323666373130623638303736323535303236363637373130633238363830323666373130643638303736323735326571002e"></t>
+<t tx="ekr.20050227071948.5" annotate="5892000000376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333462303136323535303936313732363336383635373437393730363537313035323836383032366637313036353530303731303736323735326571002e">
+He haven't thought about it.
+</t>
+<t tx="ekr.20050227071948.6" annotate="5892000000376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333462303136323535303936313732363336383635373437393730363537313035323836383032366637313036353530303731303736323735326571002e"></t>
+<t tx="ekr.20050227071948.7" annotate="7d71002e"></t>
+<t tx="ekr.20050227071948.8" annotate="7d71002e"></t>
+<t tx="ekr.20050227071948.9" annotate="7d71002e"></t>
 <t tx="ekr.20050227072121"></t>
 <t tx="ekr.20050303051035">@
 
@@ -4865,394 +4868,7 @@ If a plugin catches exceptions during startup it should do one of the following:
 </t>
 <t tx="ekr.20050329082101"></t>
 <t tx="ekr.20050329082101.1">@nocolor</t>
-<t tx="ekr.20050329082101.2">The AutoTrees plugin is a helper plugin designed to make it very easy to write "hanlder" plugins to manage dynamic content in Leo outlines. 
-
-AutoTrees provides 
-
-- convenient handler base classes which can be specialized for particular uses
-- a manager to turn handlers on and off
-- a set of example handlers to show the kinds of things that are possible
-
-AutoTrees doesn't do anything that you cannot do in other ways, but it does provide a consistent way of adding dynamic content. This means that individual plugin writers don't have to rewrite all the same kinds of code each time and also makes it easier to maintain Leo, since it standardizes the way that certain classes of plugin interact with the Leo core.
-
-</t>
-<t tx="ekr.20050329082101.3">I'm a plugin writer and I want to write a plugin to display dynamic content - ie content not directly contained in the .leo or derived files, eg
-
-- email messages 
-- news feeds
-- news groups
-- documentation
-- remote files
-- statistics
-- file system data
-- data base records
-
-You can do this as a standard plugin, but as an AutoTrees handler you,
-
-- don't need to write code that interacts with the tree (this is done for you)
-- get centralized management
-- can still do everything else you could as a normal plugin
-
-</t>
-<t tx="ekr.20050329082101.4">AutoTrees is itself a plugin. When it starts it,
-
-1. Scans the leo\plugins\trees folder to find handlers
-2. Activates specific handlers (this is managed via a plugin manager type window)
-3. Waits for clicks and double-clicks on special nodes
-
-To create an AutoTree node, you add a node with @auto-my_handler. The @auto tells the plugin to go and look for the "my_handler" handler, if it is enabled. The handler is then called and this is then used to populate the node body and child nodes below this node.
-
-eg, for an @auto-rss node, the node headline is "@auto-rss http://myurl/news.xml". The handler goes to the URL mentioned and downloads the news stories. It then creates child nodes for each story and populates the bodies. 
-
-The handler doesn't have to worry about interacting with the Leo tree view, it just returns a tree object. 
-
-</t>
-<t tx="ekr.20050329082101.5">The best way is to use the existing examples as templates. Look at the "test" handler first as this is the "Hello world" of trees.
-
-</t>
-<t tx="ekr.20050329082101.6" annotate="7d71002e">@nocolor</t>
-<t tx="ekr.20050329082101.7">Just some simple testing nodes</t>
-<t tx="ekr.20050329082101.8" annotate="7d71002e"></t>
-<t tx="ekr.20050329082101.9">this is one</t>
 <t tx="ekr.20050329082101.10">this is two !!!</t>
-<t tx="ekr.20050329082101.11">this is three</t>
-<t tx="ekr.20050329082101.12"></t>
-<t tx="ekr.20050329082101.13"></t>
-<t tx="ekr.20050329082101.14"></t>
-<t tx="ekr.20050329082101.15">Reads a remote news service.
-
-@auto-rss &lt;url to news service&gt;
-
-Requires feedparser installed:
-    http://sourceforge.net/projects/feedparser/</t>
-<t tx="ekr.20050329082101.16">title
-
-summary_detail</t>
-<t tx="ekr.20050329082101.40" annotate="7d71002e">title (slash_section, category)
-
-summary_detail
-
-link</t>
-<t tx="ekr.20050329082101.51">title (modified)
-
-link</t>
-<t tx="ekr.20050329082101.52">Python 2.4.1 (release candhttp://www.python.org/2.4.1/index.htmlate 1) (2005-03-10)
-
-http://www.python.org/2.4.1/index.html</t>
-<t tx="ekr.20050329082101.53">Greg Stein, of Google and Apache Software Foundation, to deliver keynote at PyCon (2005-03-06)
-
-http://www.python.org/pycon/2005/keynotes.html</t>
-<t tx="ekr.20050329082101.54">New RSS feed for python-dev summaries (2005-02-24)
-
-http://www.python.org/dev/summary/channews.rdf</t>
-<t tx="ekr.20050329082101.55">Guhttp://www.sdforum.org/SDForum/Templates/CalendarEvent.aspx?CID=1547&amp;mo=2&amp;yr=2005o van Rossum speaking in Palo Alto (2005-02-17)
-
-http://www.sdforum.org/SDForum/Templates/CalendarEvent.aspx?CID=1547&amp;mo=2&amp;yr=2005</t>
-<t tx="ekr.20050329082101.56">Python 2.3.5 (final) (2005-02-08)
-
-http://www.python.org/2.3.5/index.html</t>
-<t tx="ekr.20050329082101.57">Security advisory for SimpleXMLRPCServer.py. (2005-02-03)
-
-http://python.org/security/PSF-2005-001/</t>
-<t tx="ekr.20050329082101.58">Deadline for OSCON proposals (2005-02-01)
-
-http://mail.python.org/pipermail/python-announce-list/2005-January/003683.html</t>
-<t tx="ekr.20050329082101.59">PyCon abstracts now available (2005-01-23)
-
-http://www.python.org/moin/PyConDC2005/Presentations</t>
-<t tx="ekr.20050329082101.60">PyCon preliminary schedule now available (2005-01-20)
-
-http://www.python.org/pycon/2005/schedule.html</t>
-<t tx="ekr.20050329082101.61">PSF has awarded three grants (2004-12-30)
-
-http://www.python.org/psf/grants/index.html</t>
-<t tx="ekr.20050329082101.62">Python for Nokia Series 60 now available (2004-12-23)
-
-http://www.forum.nokia.com/main/0,,034-821,00.html</t>
-<t tx="ekr.20050329082101.63">Python 2.4 (final) (2004-11-30)
-
-http://www.python.org/2.4/index.html</t>
-<t tx="ekr.20050329082101.64">PyZine issue 7 (2004-11-23)
-
-http://www.pyzine.com/Issue007/</t>
-<t tx="ekr.20050329082101.65">PyCon 2005 Call for Proposals (2004-10-23)
-
-http://www.python.org/pycon/2005/cfp.html</t>
-<t tx="ekr.20050329082101.66">Cameron Laird receives the Frank Willison Award (2004-10-18)
-
-http://press.oreilly.com/pub/pr/1237</t>
-<t tx="ekr.20050329082101.67">Reads a remote file
-
-@auto-remote &lt;url to file&gt;
-
-Requires pyCurl:
-    http://pycurl.sourceforge.net/</t>
-<t tx="ekr.20050329082101.68">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&gt;
-&lt;html&gt;
-&lt;head&gt;
-&lt;title&gt;BBC - Error 404: Page not found&lt;/title&gt;
-&lt;meta name="description" content="Error 404 - page not found" /&gt;
-&lt;meta name="keywords" content="" /&gt;
-&lt;meta name="created" content="20040506" /&gt;
-&lt;meta name="updated" content="20040506" /&gt;
-&lt;base href="http://www.bbc.co.uk" /&gt;
-&lt;style&gt;
-body {margin:0; padding:0;}
-em {color:#900;}
-p, ul {font-size:80%}
-h4,h3,h2,h1,p, ul {font-family: verdana,arial,helvetica,sans-serif;}
-h4,h3 {font-size:100%}
-h4,h1 {margin:0}
-div.main {padding:8px;margin:0px;width:770;}
-form {margin:0;padding:0;}
-&lt;/style&gt;
-&lt;/head&gt;
-&lt;body bgcolor="#ffffff" link="#333366" text="#000000" vlink="#333366" alink="#000000" marginheight="0" marginwidth="0"&gt;
-
-&lt;!-- toolbar 1.4 toolbar.page 770 666666 --&gt;&lt;table width="100%" cellpadding="0" cellspacing="0" border="0"&gt;&lt;tr&gt;&lt;td colspan="2" style="background-color:#828282;" &gt;&lt;a name="top"&gt;&lt;img src="/f/t.gif" width="590" height="2" alt="" /&gt;&lt;/a&gt;&lt;/td&gt;&lt;td style="background-color:#828282;"&gt;&lt;img src="/f/t.gif" width="1" height="2" alt="" /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;form action="http://www.bbc.co.uk/cgi-bin/search/results.pl"&gt;&lt;tr&gt;&lt;td style="border-left:2px solid #828282;background-color:#999999;" width="54"&gt;&lt;a href="http://www.bbc.co.uk/go/toolbar/-/"&gt;&lt;img src="/images/logo04.gif" width="50" height="20" alt="BBC" border="0" hspace="2" vspace="5" /&gt;&lt;/a&gt;&lt;/td&gt;&lt;td style="background:#999999;" align="right"&gt;&lt;table cellpadding="0" cellspacing="0" border="0" style="float:right;"&gt;&lt;tr&gt;&lt;td style="background:#999999;"&gt;&lt;font size="1"&gt;&lt;b&gt;&lt;a href="http://www.bbc.co.uk/go/toolbar/text/-/" style="color:#ffffff;text-decoration:none;font-family:verdana,arial,helvetica,sans-serif;padding:1px 4px;"&gt;Home&lt;/a&gt;&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;td style="background:#999999 url(/images/v.gif) repeat-y;" width="6"&gt;&lt;br /&gt;&lt;/td&gt;&lt;td&gt;&lt;font size="1"&gt;&lt;b&gt;&lt;a href="/go/toolbar/-/tv/" style="color:#ffffff;text-decoration:none;font-family:verdana,arial,helvetica,sans-serif;padding:1px 4px;"&gt;TV&lt;/a&gt;&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;td style="background:#999999 url(/images/v.gif) repeat-y;" width="6"&gt;&lt;br /&gt;&lt;/td&gt;&lt;td&gt;&lt;font size="1"&gt;&lt;b&gt;&lt;a href="/go/toolbar/-/radio/" style="color:#ffffff;text-decoration:none;font-family:verdana,arial,helvetica,sans-serif;padding:1px 4px;"&gt;Radio&lt;/a&gt;&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;td style="background:#999999 url(/images/v.gif) repeat-y;" width="6"&gt;&lt;br /&gt;&lt;/td&gt;&lt;td&gt;&lt;font size="1"&gt;&lt;b&gt;&lt;a href="/go/toolbar/-/talk/" style="color:#ffffff;text-decoration:none;font-family:verdana,arial,helvetica,sans-serif;padding:1px 4px;"&gt;Talk&lt;/a&gt;&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;td style="background:#999999 url(/images/v.gif) repeat-y;" width="6"&gt;&lt;br /&gt;&lt;/td&gt;&lt;td&gt;&lt;font size="1"&gt;&lt;b&gt;&lt;a href="/go/toolbar/-/whereilive/" style="color:#ffffff;text-decoration:none;font-family:verdana,arial,helvetica,sans-serif;padding:1px 4px;"&gt;Where&amp;nbsp;I&amp;nbsp;Live&lt;/a&gt;&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;td style="background:#999999 url(/images/v.gif) repeat-y;" width="6"&gt;&lt;br /&gt;&lt;/td&gt;&lt;td&gt;&lt;nobr&gt;&lt;font size="1"&gt;&lt;b&gt;&lt;a href="/go/toolbar/-/a-z/" style="color:#ffffff;text-decoration:none;font-family:verdana,arial,helvetica,sans-serif;padding:1px 4px;"&gt;A-Z&amp;nbsp;Index&lt;/a&gt;&lt;/b&gt;&lt;/font&gt;&lt;/nobr&gt;&lt;/td&gt;&lt;td style="background:#666666 url(/images/sl3.gif) no-repeat;" width="8"&gt;&lt;br /&gt;&lt;/td&gt;&lt;td style="background:#666666 url(/images/st.gif) repeat-x 0 0;"&gt;&lt;input type="text" id="bbcpageSearchbox" name="q" size="6" style="margin:3px 0 0;font-family:arial,helvetica,sans-serif;width:100px;" title="BBC Search" /&gt;&lt;/td&gt;&lt;td style="background:#666666 url(/images/st.gif) repeat-x;"&gt;&lt;input type="image" src="/images/srchb.gif" name="go" value="go" alt="Search" width="64" height="25" border="0" /&gt;&lt;/td&gt;&lt;td style="background:#999999 url(/images/sra.gif) no-repeat;" width="1"&gt;&lt;img src="/f/t.gif" width="1" height="30" alt="" /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;td style="background:#999999 url(/images/srb.gif) no-repeat;"&gt;&lt;img src="/f/t.gif" width="1" height="1" alt="" /&gt;&lt;input type="hidden" name="uri" value="/news.html" /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/form&gt;&lt;tr&gt;&lt;td colspan="2" style="background-color:#000000;"&gt;&lt;img src="/f/t.gif" width="770" height="1" alt="" /&gt;&lt;/td&gt;&lt;td width="100%" style="background-color:#000000;"&gt;&lt;img src="/f/t.gif" width="1" height="1" alt="" /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;!-- end toolbar 1.4 --&gt;
-
-&lt;table cellspacing="0" cellpadding="8" border="0" width="770" bgcolor="#cccccc"&gt;&lt;tr&gt;&lt;td width="335"&gt;&lt;font size="-2" face="arial,helvetica"&gt;TUESDAY&lt;br /&gt;29th March 2005&lt;br /&gt;&lt;a href="/cgi-bin/education/betsie/parser.pl"&gt;Text only&lt;/a&gt; &lt;/font&gt;&lt;/td&gt;&lt;td width="435"&gt;&lt;h1&gt;404&lt;/h1&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;div class="main"&gt;
-&lt;div align="center"&gt;
-&lt;h2&gt;Page not found&lt;/h2&gt;
-&lt;p&gt;Unfortunately the following page was not available:&lt;br /&gt;
-&lt;em&gt;http://www.bbc.co.uk/news.html&lt;/em&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;h3&gt;This might be because:&lt;/h3&gt;
-&lt;ul&gt;&lt;li&gt;You may have typed the web address incorrectly. Please check the address and spelling ensuring that it does &lt;b&gt;not&lt;/b&gt; contain capital letters or spaces&lt;/li&gt;
-&lt;li&gt;It is possible that the page you were looking for may have been moved, updated or deleted.&lt;/li&gt;&lt;/ul&gt;
-
-&lt;h3&gt;Please try the following options instead:&lt;/h3&gt;
-
-&lt;form action="/cgi-bin/search/results.pl"&gt;
-&lt;table cellpadding="4" cellspacing="2" border="0" align="center" bgcolor="#000000"&gt;
-&lt;tr&gt;&lt;td bgcolor="#99ccff"&gt;&lt;h4&gt;Search bbc.co.uk&lt;/h4&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td bgcolor="#ffffcc"&gt;&lt;input type="text" name="q" size="45" /&gt;&amp;nbsp;&lt;input type="submit" value="Go" /&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;/table&gt;
-&lt;/form&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Return to the &lt;a href="/"&gt;bbc.co.uk Home Page&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Use our &lt;a href="/a-z/"&gt;site index&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;If you still encounter problems then please try the &lt;a href="/help/"&gt;help&lt;/a&gt; section.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;/div&gt;
-&lt;!-- inc.footer.page --&gt;&lt;br clear="all" /&gt;&lt;table width="770" cellpadding="0" cellspacing="0" border="0"&gt;&lt;tr&gt;&lt;td width="110"&gt;&lt;img src="/furniture/tiny.gif" alt="" width="110" height="1"&gt;&lt;/td&gt;&lt;td width="10"&gt;&lt;img src="/furniture/tiny.gif" alt="" width="10" height="1"&gt;&lt;/td&gt;&lt;td align="center" width="100%"&gt;&lt;font face="arial, helvetica, sans-serif" size="1"&gt;&lt;a href="/terms/"&gt;Terms of Use&lt;/a&gt; | &lt;a href="/privacy/"&gt;Privacy&lt;/a&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;!-- end inc.footer.page --&gt;
-
-&lt;/body&gt;
-&lt;/html&gt;
-</t>
-<t tx="ekr.20050329082101.69">Produces documentation for a module
-
-@auto-doc &lt;module name&gt;</t>
-<t tx="ekr.20050329082101.70"></t>
-<t tx="ekr.20050329082101.71">Base class for Docutils components.</t>
-<t tx="ekr.20050329082101.72"></t>
-<t tx="ekr.20050329082101.73">tuple() -&gt; an empty tuple
-tuple(sequence) -&gt; tuple initialized from sequence's items
-
-If the argument is a tuple, the return value is the same object.</t>
-<t tx="ekr.20050329082101.74">
-        Is `format` supported by this component?
-
-        To be used by transforms to ask the dependent component if it supports
-        a certain input context or output format.
-        </t>
-<t tx="ekr.20050329082101.75"></t>
-<t tx="ekr.20050329082101.76">No documentation for OPTCRE</t>
-<t tx="ekr.20050329082101.77">No documentation for SECTCRE</t>
-<t tx="ekr.20050329082101.78">Create a new section in the configuration.
-
-        Raise DuplicateSectionError if a section by the specified name
-        already exists.
-        </t>
-<t tx="ekr.20050329082101.79">tuple() -&gt; an empty tuple
-tuple(sequence) -&gt; tuple initialized from sequence's items
-
-If the argument is a tuple, the return value is the same object.</t>
-<t tx="ekr.20050329082101.80">dict() -&gt; new empty dictionary.
-dict(mapping) -&gt; new dictionary initialized from a mapping object's
-    (key, value) pairs.
-dict(seq) -&gt; new dictionary initialized as if via:
-    d = {}
-    for k, v in seq:
-        d[k] = v
-dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
-    in the keyword argument list.  For example:  dict(one=1, two=2)</t>
-<t tx="ekr.20050329082101.81">
-    Parser for command-line and library use.  The `settings_spec`
-    specification here and in other Docutils components are merged to build
-    the set of command-line options and runtime settings for this process.
-
-    Common settings (defined below) and component-specific settings must not
-    conflict.  Short options are reserved for common settings, and components
-    are restrict to using long options.
-    </t>
-<t tx="ekr.20050329082101.82">str(object) -&gt; string
-
-Return a nice string representation of the object.
-If the argument is a string, the return value is the same object.</t>
-<t tx="ekr.20050329082101.83">tuple() -&gt; an empty tuple
-tuple(sequence) -&gt; tuple initialized from sequence's items
-
-If the argument is a tuple, the return value is the same object.</t>
-<t tx="ekr.20050329082101.84">dict() -&gt; new empty dictionary.
-dict(mapping) -&gt; new dictionary initialized from a mapping object's
-    (key, value) pairs.
-dict(seq) -&gt; new dictionary initialized as if via:
-    d = {}
-    for k, v in seq:
-        d[k] = v
-dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
-    in the keyword argument list.  For example:  dict(one=1, two=2)</t>
-<t tx="ekr.20050329082101.85">tuple() -&gt; an empty tuple
-tuple(sequence) -&gt; tuple initialized from sequence's items
-
-If the argument is a tuple, the return value is the same object.</t>
-<t tx="ekr.20050329082101.86">list() -&gt; new list
-list(sequence) -&gt; new list initialized from sequence's items</t>
-<t tx="ekr.20050329082101.87">list() -&gt; new list
-list(sequence) -&gt; new list initialized from sequence's items</t>
-<t tx="ekr.20050329082101.88">dict() -&gt; new empty dictionary.
-dict(mapping) -&gt; new dictionary initialized from a mapping object's
-    (key, value) pairs.
-dict(seq) -&gt; new dictionary initialized as if via:
-    d = {}
-    for k, v in seq:
-        d[k] = v
-dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
-    in the keyword argument list.  For example:  dict(one=1, two=2)</t>
-<t tx="ekr.20050329082101.89">str(object) -&gt; string
-
-Return a nice string representation of the object.
-If the argument is a string, the return value is the same object.</t>
-<t tx="ekr.20050329082101.90">
-    A facade encapsulating the high-level logic of a Docutils system.
-    </t>
-<t tx="ekr.20050329082101.91">str(object) -&gt; string
-
-Return a nice string representation of the object.
-If the argument is a string, the return value is the same object.</t>
-<t tx="ekr.20050329082101.92">str(object) -&gt; string
-
-Return a nice string representation of the object.
-If the argument is a string, the return value is the same object.</t>
-<t tx="ekr.20050329082101.93">
-Command-line and common processing for Docutils front-end tools.
-
-Exports the following classes:
-
-- `OptionParser`: Standard Docutils command-line processing.
-- `Values`: Runtime settings; objects are simple structs
-  (``object.attribute``).
-- `ConfigParser`: Standard Docutils config file processing.
-</t>
-<t tx="ekr.20050329082101.94">
-I/O classes provide a uniform API for low-level input and output.  Subclasses
-will exist for a variety of input/output mechanisms.
-</t>
-<t tx="ekr.20050329082101.95">
-This package contains Docutils parser modules.
-</t>
-<t tx="ekr.20050329082101.96">
-    Set up &amp; run a `Publisher`.  For command-line front ends.
-
-    Parameters:
-
-    - `reader`: A `docutils.readers.Reader` object.
-    - `reader_name`: Name or alias of the Reader class to be instantiated if
-      no `reader` supplied.
-    - `parser`: A `docutils.parsers.Parser` object.
-    - `parser_name`: Name or alias of the Parser class to be instantiated if
-      no `parser` supplied.
-    - `writer`: A `docutils.writers.Writer` object.
-    - `writer_name`: Name or alias of the Writer class to be instantiated if
-      no `writer` supplied.
-    - `settings`: Runtime settings object.
-    - `settings_spec`: Extra settings specification; a `docutils.SettingsSpec`
-      subclass.  Used only if no `settings` specified.
-    - `settings_overrides`: A dictionary containing program-specific overrides
-      of component settings.
-    - `enable_exit`: Boolean; enable exit status at end of processing?
-    - `argv`: Command-line argument list to use instead of ``sys.argv[1:]``.
-    - `usage`: Usage string, output if there's a problem parsing the command
-      line.
-    - `description`: Program description, output for the "--help" option
-      (along with command-line option descriptions).
-    </t>
-<t tx="ekr.20050329082101.97">
-    Set up &amp; run a `Publisher`.  For programmatic use with file-like I/O.
-
-    Parameters:
-
-    - `source`: A file-like object (must have "read" and "close" methods).
-    - `source_path`: Path to the input file.  Opened if no `source` supplied.
-      If neither `source` nor `source_path` are supplied, `sys.stdin` is used.
-    - `destination`: A file-like object (must have "write" and "close"
-      methods).
-    - `destination_path`: Path to the input file.  Opened if no `destination`
-      supplied.  If neither `destination` nor `destination_path` are supplied,
-      `sys.stdout` is used.
-    - `reader`: A `docutils.readers.Reader` object.
-    - `reader_name`: Name or alias of the Reader class to be instantiated if
-      no `reader` supplied.
-    - `parser`: A `docutils.parsers.Parser` object.
-    - `parser_name`: Name or alias of the Parser class to be instantiated if
-      no `parser` supplied.
-    - `writer`: A `docutils.writers.Writer` object.
-    - `writer_name`: Name or alias of the Writer class to be instantiated if
-      no `writer` supplied.
-    - `settings`: Runtime settings object.
-    - `settings_spec`: Extra settings specification; a `docutils.SettingsSpec`
-      subclass.  Used only if no `settings` specified.
-    - `settings_overrides`: A dictionary containing program-specific overrides
-      of component settings.
-    - `enable_exit`: Boolean; enable exit status at end of processing?
-    </t>
-<t tx="ekr.20050329082101.98">
-    Set up &amp; run a `Publisher`, and return the string output.
-    For programmatic use with string I/O.
-
-    For encoded string output, be sure to set the "output_encoding" setting to
-    the desired encoding.  Set it to "unicode" for unencoded Unicode string
-    output.  Here's how::
-
-        publish_string(..., settings_overrides={'output_encoding': 'unicode'})
-
-    Similarly for Unicode string input (`source`)::
-
-        publish_string(..., settings_overrides={'input_encoding': 'unicode'})
-
-    Parameters:
-
-    - `source`: An input string; required.  This can be an encoded 8-bit
-      string (set the "input_encoding" setting to the correct encoding) or a
-      Unicode string (set the "input_encoding" setting to "unicode").
-    - `source_path`: Path to the file or object that produced `source`;
-      optional.  Only used for diagnostic output.
-    - `destination_path`: Path to the file or object which will receive the
-      output; optional.  Used for determining relative paths (stylesheets,
-      source links, etc.).
-    - `reader`: A `docutils.readers.Reader` object.
-    - `reader_name`: Name or alias of the Reader class to be instantiated if
-      no `reader` supplied.
-    - `parser`: A `docutils.parsers.Parser` object.
-    - `parser_name`: Name or alias of the Parser class to be instantiated if
-      no `parser` supplied.
-    - `writer`: A `docutils.writers.Writer` object.
-    - `writer_name`: Name or alias of the Writer class to be instantiated if
-      no `writer` supplied.
-    - `settings`: Runtime settings object.
-    - `settings_spec`: Extra settings specification; a `docutils.SettingsSpec`
-      subclass.  Used only if no `settings` specified.
-    - `settings_overrides`: A dictionary containing program-specific overrides
-      of component settings.
-    - `enable_exit`: Boolean; enable exit status at end of processing?
-    </t>
-<t tx="ekr.20050329082101.99">
-This package contains Docutils Reader modules.
-</t>
 <t tx="ekr.20050329082101.100">This module provides access to some objects used or maintained by the
 interpreter and to functions that interact strongly with the interpreter.
 
@@ -5545,6 +5161,7 @@ bill.mill at gmail.com
 &gt; --
 &gt; http://mail.python.org/mailman/listinfo/python-list
 &gt;</t>
+<t tx="ekr.20050329082101.11">this is three</t>
 <t tx="ekr.20050329082101.110">news-server.houston.rr.com/comp.lang.python</t>
 <t tx="ekr.20050329082101.111">
 
@@ -5573,38 +5190,399 @@ Los Angeles, CA 90095</t>
 <t tx="ekr.20050329082101.112">news-server.houston.rr.com/comp.lang.python</t>
 <t tx="ekr.20050329082101.113">news-server.houston.rr.com/comp.lang.python</t>
 <t tx="ekr.20050329082101.114"></t>
+<t tx="ekr.20050329082101.12"></t>
+<t tx="ekr.20050329082101.13"></t>
+<t tx="ekr.20050329082101.14"></t>
 <t tx="ekr.20050329082101.146"></t>
+<t tx="ekr.20050329082101.15">Reads a remote news service.
+
+@auto-rss &lt;url to news service&gt;
+
+Requires feedparser installed:
+    http://sourceforge.net/projects/feedparser/</t>
+<t tx="ekr.20050329082101.16">title
+
+summary_detail</t>
+<t tx="ekr.20050329082101.2">The AutoTrees plugin is a helper plugin designed to make it very easy to write "hanlder" plugins to manage dynamic content in Leo outlines. 
+
+AutoTrees provides 
+
+- convenient handler base classes which can be specialized for particular uses
+- a manager to turn handlers on and off
+- a set of example handlers to show the kinds of things that are possible
+
+AutoTrees doesn't do anything that you cannot do in other ways, but it does provide a consistent way of adding dynamic content. This means that individual plugin writers don't have to rewrite all the same kinds of code each time and also makes it easier to maintain Leo, since it standardizes the way that certain classes of plugin interact with the Leo core.
+
+</t>
+<t tx="ekr.20050329082101.3">I'm a plugin writer and I want to write a plugin to display dynamic content - ie content not directly contained in the .leo or derived files, eg
+
+- email messages 
+- news feeds
+- news groups
+- documentation
+- remote files
+- statistics
+- file system data
+- data base records
+
+You can do this as a standard plugin, but as an AutoTrees handler you,
+
+- don't need to write code that interacts with the tree (this is done for you)
+- get centralized management
+- can still do everything else you could as a normal plugin
+
+</t>
+<t tx="ekr.20050329082101.4">AutoTrees is itself a plugin. When it starts it,
+
+1. Scans the leo\plugins\trees folder to find handlers
+2. Activates specific handlers (this is managed via a plugin manager type window)
+3. Waits for clicks and double-clicks on special nodes
+
+To create an AutoTree node, you add a node with @auto-my_handler. The @auto tells the plugin to go and look for the "my_handler" handler, if it is enabled. The handler is then called and this is then used to populate the node body and child nodes below this node.
+
+eg, for an @auto-rss node, the node headline is "@auto-rss http://myurl/news.xml". The handler goes to the URL mentioned and downloads the news stories. It then creates child nodes for each story and populates the bodies. 
+
+The handler doesn't have to worry about interacting with the Leo tree view, it just returns a tree object. 
+
+</t>
+<t tx="ekr.20050329082101.40" annotate="7d71002e">title (slash_section, category)
+
+summary_detail
+
+link</t>
+<t tx="ekr.20050329082101.5">The best way is to use the existing examples as templates. Look at the "test" handler first as this is the "Hello world" of trees.
+
+</t>
+<t tx="ekr.20050329082101.51">title (modified)
+
+link</t>
+<t tx="ekr.20050329082101.52">Python 2.4.1 (release candhttp://www.python.org/2.4.1/index.htmlate 1) (2005-03-10)
+
+http://www.python.org/2.4.1/index.html</t>
+<t tx="ekr.20050329082101.53">Greg Stein, of Google and Apache Software Foundation, to deliver keynote at PyCon (2005-03-06)
+
+http://www.python.org/pycon/2005/keynotes.html</t>
+<t tx="ekr.20050329082101.54">New RSS feed for python-dev summaries (2005-02-24)
+
+http://www.python.org/dev/summary/channews.rdf</t>
+<t tx="ekr.20050329082101.55">Guhttp://www.sdforum.org/SDForum/Templates/CalendarEvent.aspx?CID=1547&amp;mo=2&amp;yr=2005o van Rossum speaking in Palo Alto (2005-02-17)
+
+http://www.sdforum.org/SDForum/Templates/CalendarEvent.aspx?CID=1547&amp;mo=2&amp;yr=2005</t>
+<t tx="ekr.20050329082101.56">Python 2.3.5 (final) (2005-02-08)
+
+http://www.python.org/2.3.5/index.html</t>
+<t tx="ekr.20050329082101.57">Security advisory for SimpleXMLRPCServer.py. (2005-02-03)
+
+http://python.org/security/PSF-2005-001/</t>
+<t tx="ekr.20050329082101.58">Deadline for OSCON proposals (2005-02-01)
+
+http://mail.python.org/pipermail/python-announce-list/2005-January/003683.html</t>
+<t tx="ekr.20050329082101.59">PyCon abstracts now available (2005-01-23)
+
+http://www.python.org/moin/PyConDC2005/Presentations</t>
+<t tx="ekr.20050329082101.6" annotate="7d71002e">@nocolor</t>
+<t tx="ekr.20050329082101.60">PyCon preliminary schedule now available (2005-01-20)
+
+http://www.python.org/pycon/2005/schedule.html</t>
+<t tx="ekr.20050329082101.61">PSF has awarded three grants (2004-12-30)
+
+http://www.python.org/psf/grants/index.html</t>
+<t tx="ekr.20050329082101.62">Python for Nokia Series 60 now available (2004-12-23)
+
+http://www.forum.nokia.com/main/0,,034-821,00.html</t>
+<t tx="ekr.20050329082101.63">Python 2.4 (final) (2004-11-30)
+
+http://www.python.org/2.4/index.html</t>
+<t tx="ekr.20050329082101.64">PyZine issue 7 (2004-11-23)
+
+http://www.pyzine.com/Issue007/</t>
+<t tx="ekr.20050329082101.65">PyCon 2005 Call for Proposals (2004-10-23)
+
+http://www.python.org/pycon/2005/cfp.html</t>
+<t tx="ekr.20050329082101.66">Cameron Laird receives the Frank Willison Award (2004-10-18)
+
+http://press.oreilly.com/pub/pr/1237</t>
+<t tx="ekr.20050329082101.67">Reads a remote file
+
+@auto-remote &lt;url to file&gt;
+
+Requires pyCurl:
+    http://pycurl.sourceforge.net/</t>
+<t tx="ekr.20050329082101.68">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;BBC - Error 404: Page not found&lt;/title&gt;
+&lt;meta name="description" content="Error 404 - page not found" /&gt;
+&lt;meta name="keywords" content="" /&gt;
+&lt;meta name="created" content="20040506" /&gt;
+&lt;meta name="updated" content="20040506" /&gt;
+&lt;base href="http://www.bbc.co.uk" /&gt;
+&lt;style&gt;
+body {margin:0; padding:0;}
+em {color:#900;}
+p, ul {font-size:80%}
+h4,h3,h2,h1,p, ul {font-family: verdana,arial,helvetica,sans-serif;}
+h4,h3 {font-size:100%}
+h4,h1 {margin:0}
+div.main {padding:8px;margin:0px;width:770;}
+form {margin:0;padding:0;}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body bgcolor="#ffffff" link="#333366" text="#000000" vlink="#333366" alink="#000000" marginheight="0" marginwidth="0"&gt;
+
+&lt;!-- toolbar 1.4 toolbar.page 770 666666 --&gt;&lt;table width="100%" cellpadding="0" cellspacing="0" border="0"&gt;&lt;tr&gt;&lt;td colspan="2" style="background-color:#828282;" &gt;&lt;a name="top"&gt;&lt;img src="/f/t.gif" width="590" height="2" alt="" /&gt;&lt;/a&gt;&lt;/td&gt;&lt;td style="background-color:#828282;"&gt;&lt;img src="/f/t.gif" width="1" height="2" alt="" /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;form action="http://www.bbc.co.uk/cgi-bin/search/results.pl"&gt;&lt;tr&gt;&lt;td style="border-left:2px solid #828282;background-color:#999999;" width="54"&gt;&lt;a href="http://www.bbc.co.uk/go/toolbar/-/"&gt;&lt;img src="/images/logo04.gif" width="50" height="20" alt="BBC" border="0" hspace="2" vspace="5" /&gt;&lt;/a&gt;&lt;/td&gt;&lt;td style="background:#999999;" align="right"&gt;&lt;table cellpadding="0" cellspacing="0" border="0" style="float:right;"&gt;&lt;tr&gt;&lt;td style="background:#999999;"&gt;&lt;font size="1"&gt;&lt;b&gt;&lt;a href="http://www.bbc.co.uk/go/toolbar/text/-/" style="color:#ffffff;text-decoration:none;font-family:verdana,arial,helvetica,sans-serif;padding:1px 4px;"&gt;Home&lt;/a&gt;&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;td style="background:#999999 url(/images/v.gif) repeat-y;" width="6"&gt;&lt;br /&gt;&lt;/td&gt;&lt;td&gt;&lt;font size="1"&gt;&lt;b&gt;&lt;a href="/go/toolbar/-/tv/" style="color:#ffffff;text-decoration:none;font-family:verdana,arial,helvetica,sans-serif;padding:1px 4px;"&gt;TV&lt;/a&gt;&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;td style="background:#999999 url(/images/v.gif) repeat-y;" width="6"&gt;&lt;br /&gt;&lt;/td&gt;&lt;td&gt;&lt;font size="1"&gt;&lt;b&gt;&lt;a href="/go/toolbar/-/radio/" style="color:#ffffff;text-decoration:none;font-family:verdana,arial,helvetica,sans-serif;padding:1px 4px;"&gt;Radio&lt;/a&gt;&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;td style="background:#999999 url(/images/v.gif) repeat-y;" width="6"&gt;&lt;br /&gt;&lt;/td&gt;&lt;td&gt;&lt;font size="1"&gt;&lt;b&gt;&lt;a href="/go/toolbar/-/talk/" style="color:#ffffff;text-decoration:none;font-family:verdana,arial,helvetica,sans-serif;padding:1px 4px;"&gt;Talk&lt;/a&gt;&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;td style="background:#999999 url(/images/v.gif) repeat-y;" width="6"&gt;&lt;br /&gt;&lt;/td&gt;&lt;td&gt;&lt;font size="1"&gt;&lt;b&gt;&lt;a href="/go/toolbar/-/whereilive/" style="color:#ffffff;text-decoration:none;font-family:verdana,arial,helvetica,sans-serif;padding:1px 4px;"&gt;Where&amp;nbsp;I&amp;nbsp;Live&lt;/a&gt;&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;td style="background:#999999 url(/images/v.gif) repeat-y;" width="6"&gt;&lt;br /&gt;&lt;/td&gt;&lt;td&gt;&lt;nobr&gt;&lt;font size="1"&gt;&lt;b&gt;&lt;a href="/go/toolbar/-/a-z/" style="color:#ffffff;text-decoration:none;font-family:verdana,arial,helvetica,sans-serif;padding:1px 4px;"&gt;A-Z&amp;nbsp;Index&lt;/a&gt;&lt;/b&gt;&lt;/font&gt;&lt;/nobr&gt;&lt;/td&gt;&lt;td style="background:#666666 url(/images/sl3.gif) no-repeat;" width="8"&gt;&lt;br /&gt;&lt;/td&gt;&lt;td style="background:#666666 url(/images/st.gif) repeat-x 0 0;"&gt;&lt;input type="text" id="bbcpageSearchbox" name="q" size="6" style="margin:3px 0 0;font-family:arial,helvetica,sans-serif;width:100px;" title="BBC Search" /&gt;&lt;/td&gt;&lt;td style="background:#666666 url(/images/st.gif) repeat-x;"&gt;&lt;input type="image" src="/images/srchb.gif" name="go" value="go" alt="Search" width="64" height="25" border="0" /&gt;&lt;/td&gt;&lt;td style="background:#999999 url(/images/sra.gif) no-repeat;" width="1"&gt;&lt;img src="/f/t.gif" width="1" height="30" alt="" /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;td style="background:#999999 url(/images/srb.gif) no-repeat;"&gt;&lt;img src="/f/t.gif" width="1" height="1" alt="" /&gt;&lt;input type="hidden" name="uri" value="/news.html" /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/form&gt;&lt;tr&gt;&lt;td colspan="2" style="background-color:#000000;"&gt;&lt;img src="/f/t.gif" width="770" height="1" alt="" /&gt;&lt;/td&gt;&lt;td width="100%" style="background-color:#000000;"&gt;&lt;img src="/f/t.gif" width="1" height="1" alt="" /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;!-- end toolbar 1.4 --&gt;
+
+&lt;table cellspacing="0" cellpadding="8" border="0" width="770" bgcolor="#cccccc"&gt;&lt;tr&gt;&lt;td width="335"&gt;&lt;font size="-2" face="arial,helvetica"&gt;TUESDAY&lt;br /&gt;29th March 2005&lt;br /&gt;&lt;a href="/cgi-bin/education/betsie/parser.pl"&gt;Text only&lt;/a&gt; &lt;/font&gt;&lt;/td&gt;&lt;td width="435"&gt;&lt;h1&gt;404&lt;/h1&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;div class="main"&gt;
+&lt;div align="center"&gt;
+&lt;h2&gt;Page not found&lt;/h2&gt;
+&lt;p&gt;Unfortunately the following page was not available:&lt;br /&gt;
+&lt;em&gt;http://www.bbc.co.uk/news.html&lt;/em&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;h3&gt;This might be because:&lt;/h3&gt;
+&lt;ul&gt;&lt;li&gt;You may have typed the web address incorrectly. Please check the address and spelling ensuring that it does &lt;b&gt;not&lt;/b&gt; contain capital letters or spaces&lt;/li&gt;
+&lt;li&gt;It is possible that the page you were looking for may have been moved, updated or deleted.&lt;/li&gt;&lt;/ul&gt;
+
+&lt;h3&gt;Please try the following options instead:&lt;/h3&gt;
+
+&lt;form action="/cgi-bin/search/results.pl"&gt;
+&lt;table cellpadding="4" cellspacing="2" border="0" align="center" bgcolor="#000000"&gt;
+&lt;tr&gt;&lt;td bgcolor="#99ccff"&gt;&lt;h4&gt;Search bbc.co.uk&lt;/h4&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td bgcolor="#ffffcc"&gt;&lt;input type="text" name="q" size="45" /&gt;&amp;nbsp;&lt;input type="submit" value="Go" /&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/form&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Return to the &lt;a href="/"&gt;bbc.co.uk Home Page&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Use our &lt;a href="/a-z/"&gt;site index&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;If you still encounter problems then please try the &lt;a href="/help/"&gt;help&lt;/a&gt; section.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;/div&gt;
+&lt;!-- inc.footer.page --&gt;&lt;br clear="all" /&gt;&lt;table width="770" cellpadding="0" cellspacing="0" border="0"&gt;&lt;tr&gt;&lt;td width="110"&gt;&lt;img src="/furniture/tiny.gif" alt="" width="110" height="1"&gt;&lt;/td&gt;&lt;td width="10"&gt;&lt;img src="/furniture/tiny.gif" alt="" width="10" height="1"&gt;&lt;/td&gt;&lt;td align="center" width="100%"&gt;&lt;font face="arial, helvetica, sans-serif" size="1"&gt;&lt;a href="/terms/"&gt;Terms of Use&lt;/a&gt; | &lt;a href="/privacy/"&gt;Privacy&lt;/a&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;!-- end inc.footer.page --&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20050329082101.69">Produces documentation for a module
+
+@auto-doc &lt;module name&gt;</t>
+<t tx="ekr.20050329082101.7">Just some simple testing nodes</t>
+<t tx="ekr.20050329082101.70"></t>
+<t tx="ekr.20050329082101.71">Base class for Docutils components.</t>
+<t tx="ekr.20050329082101.72"></t>
+<t tx="ekr.20050329082101.73">tuple() -&gt; an empty tuple
+tuple(sequence) -&gt; tuple initialized from sequence's items
+
+If the argument is a tuple, the return value is the same object.</t>
+<t tx="ekr.20050329082101.74">
+        Is `format` supported by this component?
+
+        To be used by transforms to ask the dependent component if it supports
+        a certain input context or output format.
+        </t>
+<t tx="ekr.20050329082101.75"></t>
+<t tx="ekr.20050329082101.76">No documentation for OPTCRE</t>
+<t tx="ekr.20050329082101.77">No documentation for SECTCRE</t>
+<t tx="ekr.20050329082101.78">Create a new section in the configuration.
+
+        Raise DuplicateSectionError if a section by the specified name
+        already exists.
+        </t>
+<t tx="ekr.20050329082101.79">tuple() -&gt; an empty tuple
+tuple(sequence) -&gt; tuple initialized from sequence's items
+
+If the argument is a tuple, the return value is the same object.</t>
+<t tx="ekr.20050329082101.8" annotate="7d71002e"></t>
+<t tx="ekr.20050329082101.80">dict() -&gt; new empty dictionary.
+dict(mapping) -&gt; new dictionary initialized from a mapping object's
+    (key, value) pairs.
+dict(seq) -&gt; new dictionary initialized as if via:
+    d = {}
+    for k, v in seq:
+        d[k] = v
+dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
+    in the keyword argument list.  For example:  dict(one=1, two=2)</t>
+<t tx="ekr.20050329082101.81">
+    Parser for command-line and library use.  The `settings_spec`
+    specification here and in other Docutils components are merged to build
+    the set of command-line options and runtime settings for this process.
+
+    Common settings (defined below) and component-specific settings must not
+    conflict.  Short options are reserved for common settings, and components
+    are restrict to using long options.
+    </t>
+<t tx="ekr.20050329082101.82">str(object) -&gt; string
+
+Return a nice string representation of the object.
+If the argument is a string, the return value is the same object.</t>
+<t tx="ekr.20050329082101.83">tuple() -&gt; an empty tuple
+tuple(sequence) -&gt; tuple initialized from sequence's items
+
+If the argument is a tuple, the return value is the same object.</t>
+<t tx="ekr.20050329082101.84">dict() -&gt; new empty dictionary.
+dict(mapping) -&gt; new dictionary initialized from a mapping object's
+    (key, value) pairs.
+dict(seq) -&gt; new dictionary initialized as if via:
+    d = {}
+    for k, v in seq:
+        d[k] = v
+dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
+    in the keyword argument list.  For example:  dict(one=1, two=2)</t>
+<t tx="ekr.20050329082101.85">tuple() -&gt; an empty tuple
+tuple(sequence) -&gt; tuple initialized from sequence's items
+
+If the argument is a tuple, the return value is the same object.</t>
+<t tx="ekr.20050329082101.86">list() -&gt; new list
+list(sequence) -&gt; new list initialized from sequence's items</t>
+<t tx="ekr.20050329082101.87">list() -&gt; new list
+list(sequence) -&gt; new list initialized from sequence's items</t>
+<t tx="ekr.20050329082101.88">dict() -&gt; new empty dictionary.
+dict(mapping) -&gt; new dictionary initialized from a mapping object's
+    (key, value) pairs.
+dict(seq) -&gt; new dictionary initialized as if via:
+    d = {}
+    for k, v in seq:
+        d[k] = v
+dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
+    in the keyword argument list.  For example:  dict(one=1, two=2)</t>
+<t tx="ekr.20050329082101.89">str(object) -&gt; string
+
+Return a nice string representation of the object.
+If the argument is a string, the return value is the same object.</t>
+<t tx="ekr.20050329082101.9">this is one</t>
+<t tx="ekr.20050329082101.90">
+    A facade encapsulating the high-level logic of a Docutils system.
+    </t>
+<t tx="ekr.20050329082101.91">str(object) -&gt; string
+
+Return a nice string representation of the object.
+If the argument is a string, the return value is the same object.</t>
+<t tx="ekr.20050329082101.92">str(object) -&gt; string
+
+Return a nice string representation of the object.
+If the argument is a string, the return value is the same object.</t>
+<t tx="ekr.20050329082101.93">
+Command-line and common processing for Docutils front-end tools.
+
+Exports the following classes:
+
+- `OptionParser`: Standard Docutils command-line processing.
+- `Values`: Runtime settings; objects are simple structs
+  (``object.attribute``).
+- `ConfigParser`: Standard Docutils config file processing.
+</t>
+<t tx="ekr.20050329082101.94">
+I/O classes provide a uniform API for low-level input and output.  Subclasses
+will exist for a variety of input/output mechanisms.
+</t>
+<t tx="ekr.20050329082101.95">
+This package contains Docutils parser modules.
+</t>
+<t tx="ekr.20050329082101.96">
+    Set up &amp; run a `Publisher`.  For command-line front ends.
+
+    Parameters:
+
+    - `reader`: A `docutils.readers.Reader` object.
+    - `reader_name`: Name or alias of the Reader class to be instantiated if
+      no `reader` supplied.
+    - `parser`: A `docutils.parsers.Parser` object.
+    - `parser_name`: Name or alias of the Parser class to be instantiated if
+      no `parser` supplied.
+    - `writer`: A `docutils.writers.Writer` object.
+    - `writer_name`: Name or alias of the Writer class to be instantiated if
+      no `writer` supplied.
+    - `settings`: Runtime settings object.
+    - `settings_spec`: Extra settings specification; a `docutils.SettingsSpec`
+      subclass.  Used only if no `settings` specified.
+    - `settings_overrides`: A dictionary containing program-specific overrides
+      of component settings.
+    - `enable_exit`: Boolean; enable exit status at end of processing?
+    - `argv`: Command-line argument list to use instead of ``sys.argv[1:]``.
+    - `usage`: Usage string, output if there's a problem parsing the command
+      line.
+    - `description`: Program description, output for the "--help" option
+      (along with command-line option descriptions).
+    </t>
+<t tx="ekr.20050329082101.97">
+    Set up &amp; run a `Publisher`.  For programmatic use with file-like I/O.
+
+    Parameters:
+
+    - `source`: A file-like object (must have "read" and "close" methods).
+    - `source_path`: Path to the input file.  Opened if no `source` supplied.
+      If neither `source` nor `source_path` are supplied, `sys.stdin` is used.
+    - `destination`: A file-like object (must have "write" and "close"
+      methods).
+    - `destination_path`: Path to the input file.  Opened if no `destination`
+      supplied.  If neither `destination` nor `destination_path` are supplied,
+      `sys.stdout` is used.
+    - `reader`: A `docutils.readers.Reader` object.
+    - `reader_name`: Name or alias of the Reader class to be instantiated if
+      no `reader` supplied.
+    - `parser`: A `docutils.parsers.Parser` object.
+    - `parser_name`: Name or alias of the Parser class to be instantiated if
+      no `parser` supplied.
+    - `writer`: A `docutils.writers.Writer` object.
+    - `writer_name`: Name or alias of the Writer class to be instantiated if
+      no `writer` supplied.
+    - `settings`: Runtime settings object.
+    - `settings_spec`: Extra settings specification; a `docutils.SettingsSpec`
+      subclass.  Used only if no `settings` specified.
+    - `settings_overrides`: A dictionary containing program-specific overrides
+      of component settings.
+    - `enable_exit`: Boolean; enable exit status at end of processing?
+    </t>
+<t tx="ekr.20050329082101.98">
+    Set up &amp; run a `Publisher`, and return the string output.
+    For programmatic use with string I/O.
+
+    For encoded string output, be sure to set the "output_encoding" setting to
+    the desired encoding.  Set it to "unicode" for unencoded Unicode string
+    output.  Here's how::
+
+        publish_string(..., settings_overrides={'output_encoding': 'unicode'})
+
+    Similarly for Unicode string input (`source`)::
+
+        publish_string(..., settings_overrides={'input_encoding': 'unicode'})
+
+    Parameters:
+
+    - `source`: An input string; required.  This can be an encoded 8-bit
+      string (set the "input_encoding" setting to the correct encoding) or a
+      Unicode string (set the "input_encoding" setting to "unicode").
+    - `source_path`: Path to the file or object that produced `source`;
+      optional.  Only used for diagnostic output.
+    - `destination_path`: Path to the file or object which will receive the
+      output; optional.  Used for determining relative paths (stylesheets,
+      source links, etc.).
+    - `reader`: A `docutils.readers.Reader` object.
+    - `reader_name`: Name or alias of the Reader class to be instantiated if
+      no `reader` supplied.
+    - `parser`: A `docutils.parsers.Parser` object.
+    - `parser_name`: Name or alias of the Parser class to be instantiated if
+      no `parser` supplied.
+    - `writer`: A `docutils.writers.Writer` object.
+    - `writer_name`: Name or alias of the Writer class to be instantiated if
+      no `writer` supplied.
+    - `settings`: Runtime settings object.
+    - `settings_spec`: Extra settings specification; a `docutils.SettingsSpec`
+      subclass.  Used only if no `settings` specified.
+    - `settings_overrides`: A dictionary containing program-specific overrides
+      of component settings.
+    - `enable_exit`: Boolean; enable exit status at end of processing?
+    </t>
+<t tx="ekr.20050329082101.99">
+This package contains Docutils Reader modules.
+</t>
 <t tx="ekr.20050329092553">Hundreds die in Indonesia quake
 
 Hundreds are believed to have died in Indonesia after a strong earthquake which sparked fears of a tsunami.</t>
 <t tx="ekr.20050329092553.1">Ousted Kyrgyz preshttp://news.bbc.co.uk/1/hi/world/asia-pacific/4391139.stment defiant
 
 Ousted Kyrgyz leader Askar Akayev says he remains the "sole legitimate preshttp://news.bbc.co.uk/1/hi/world/asia-pacific/4391139.stment" of his country.</t>
-<t tx="ekr.20050329092553.2">Hair 'good source of stem cells'
-
-Scientists have found hair follicles are a plentiful source of stem cells, which can become body tissue.</t>
-<t tx="ekr.20050329092553.3">Ashdown sacks top Bosnian Croat
-
-The top administrator in Bosnia, Lord Ashdown, sacks the Croat member of Bosnia's joint preshttp://news.bbc.co.uk/1/hi/world/europe/4390635.stmency.</t>
-<t tx="ekr.20050329092553.4">Splits paralyse Iraqi parliament
-
-Iraq's parliament reconvenes, but remains deadlocked over the formation of a new government.</t>
-<t tx="ekr.20050329092553.5">Mongolians protest for new poll
-
-Activists in Mongolia call for fresh elections, 
-in an action apparently inspired by the situation in Kyrgyzstan.</t>
-<t tx="ekr.20050329092553.6">Libya's Bulgarian medics appeal
-
-Six medics appeal against the death sentence imposed in Libya for deliberately infecting children with HIV.</t>
-<t tx="ekr.20050329092553.7">Schiavo rivals 'agree to autopsy'
-
-Terri Schiavo's husband and parents seek to discover the extent of her brain-damage after her death.</t>
-<t tx="ekr.20050329092553.8">Would-be sex tourist, 87, jailed
-
-An octogenarian US man is jailed for 20 years for trying to travel to the Philippines for sex with young girls.</t>
-<t tx="ekr.20050329092553.9">Golf: Funk claims Players title
-
-Fred Funk's final-round 70 gives him victory in the lucrative Players Championship at Sawgrass.</t>
 <t tx="ekr.20050329092553.10">Cricket: Series win for Aussies
 
 Australia beat New Zealand by nine wickets in the third Test to wrap up a 2-0 series win.</t>
@@ -5635,6 +5613,9 @@ Paul Wolfowitz, the US's controversial nomination to head the World Bank, is exp
 <t tx="ekr.20050329092553.19">Knesset rejects Gaza referendum
 
 Israel's parliament rejects an attempt by opponents of the planned Gaza pullout to force a referendum.</t>
+<t tx="ekr.20050329092553.2">Hair 'good source of stem cells'
+
+Scientists have found hair follicles are a plentiful source of stem cells, which can become body tissue.</t>
 <t tx="ekr.20050329092553.20">Militants to attend PLO meeting
 
 Islamic Jihad is to sit in on a meeting of the top Palestinian decision-making body for the first time.</t>
@@ -5677,6 +5658,9 @@ http://linux.slashdot.org/article.pl?shttp://linux.slashdot.org/article.pl?sid=0
 An anonymous reader writes "Microsoft has agreed with European Union antitrust regulators on a new name for Windows software sold in Europe. Officials at the U.S. software giant sahttp://slashdot.org/article.pl?sid=05/03/28/1951251&amp;from=rss they had accepted the European Union's offer to call the European version of Windows sold without Media Player "Windows XP Home Edition N" - with "N" standing for "not with media player." Microsoft's "XP Professional Edition" will also include the "N" for versions sold without the media player. The prior nme for the OS was Windows XP Reduced Media Edition." News.com also mentions the choice.
 
 http://slashdot.org/article.pl?shttp://slashdot.org/article.pl?sid=05/03/28/1951251&amp;from=rss=05/03/28/1951251&amp;from=rss</t>
+<t tx="ekr.20050329092553.3">Ashdown sacks top Bosnian Croat
+
+The top administrator in Bosnia, Lord Ashdown, sacks the Croat member of Bosnia's joint preshttp://news.bbc.co.uk/1/hi/world/europe/4390635.stmency.</t>
 <t tx="ekr.20050329092553.30">Blackbox (Finally) Updated (mainpage, gui)
 
 mpeg4codec writes "OSNews reported earlier this month that the lightweight Blackbox window manager has been updated to 0.70. Among the new features are EWMH compliance, anti-aliased fonts, unicode support, and backwards compatibility with previous versions' styles. Of course, it brings you all these new features (well, some are optional) while retaining its small binary size, small memory footprint, and short list of dependencies. I for one think it's about time."
@@ -5697,6 +5681,25 @@ http://hardware.slashdot.org/article.pl?shttp://hardware.slashdot.org/article.pl
 Memorize writes "A company called Daystartech has released a new type of photovoltaic cell which, unlike almost all the cells currently in use, does not silicon. This is based on a thin titanium film. Given the current shortage of solar-grade silicon, and all-time high oil prices, maybe titanium solar panels are here at the right time. The questions are, will they release it as a consumer solar product, and what will be the price per kilowatt hour?"
 
 http://science.slashdot.org/article.pl?shttp://science.slashdot.org/article.pl?sid=05/03/28/2320211&amp;from=rss=05/03/28/2320211&amp;from=rss</t>
+<t tx="ekr.20050329092553.4">Splits paralyse Iraqi parliament
+
+Iraq's parliament reconvenes, but remains deadlocked over the formation of a new government.</t>
+<t tx="ekr.20050329092553.5">Mongolians protest for new poll
+
+Activists in Mongolia call for fresh elections, 
+in an action apparently inspired by the situation in Kyrgyzstan.</t>
+<t tx="ekr.20050329092553.6">Libya's Bulgarian medics appeal
+
+Six medics appeal against the death sentence imposed in Libya for deliberately infecting children with HIV.</t>
+<t tx="ekr.20050329092553.7">Schiavo rivals 'agree to autopsy'
+
+Terri Schiavo's husband and parents seek to discover the extent of her brain-damage after her death.</t>
+<t tx="ekr.20050329092553.8">Would-be sex tourist, 87, jailed
+
+An octogenarian US man is jailed for 20 years for trying to travel to the Philippines for sex with young girls.</t>
+<t tx="ekr.20050329092553.9">Golf: Funk claims Players title
+
+Fred Funk's final-round 70 gives him victory in the lucrative Players Championship at Sawgrass.</t>
 <t tx="ekr.20050402080206">@
 
 This is LeoN-0.0.1 as created by Rodrigo Benenson, very slightly reorganized form.
@@ -5868,6 +5871,9 @@ Todo
 <t tx="ekr.20050724100334">c.prettyPrintPythonNode()</t>
 <t tx="ekr.20050817132814">@nocolor
 
+Important: the rst3 plugin has largely been superceded by similar
+commands built into Leo's core.
+
 To activate the rst3 plugin, do the following:
 
 1. Go to http://silvercity.sourceforge.net/.
@@ -5898,456 +5904,6 @@ def __init__ (self,c):
     self.c = c</t>
 <t tx="ekr.20060109114710">c.openLeoSettings()</t>
 <t tx="ekr.20060110125615"></t>
-<t tx="ekr.20060513122450.53">class ConfigClass:
-    @others</t>
-<t tx="ekr.20060513122450.54">class PageClass(Tk.Canvas):
-    @others
-</t>
-<t tx="ekr.20060513122450.55">class CHECK:
-    @others
-</t>
-<t tx="ekr.20060513122450.56">def __init__(self,master,n,x=0,y=0):
-
-    self.Check = Tk.StringVar()
-    self.Name = n
-    c = Tk.Checkbutton(master,text=n,onvalue="True",offvalue="False",variable=self.Check)
-    master.create_window(x,y,anchor='nw',window=c)</t>
-<t tx="ekr.20060513122450.57">def Get(self):
-    return self.Check.get()
-</t>
-<t tx="ekr.20060513122450.58">def Set(self,value):
-    self.Check.set(value)
-</t>
-<t tx="ekr.20060513122450.59">class ENTRY:
-    @others
-</t>
-<t tx="ekr.20060513122450.60">def __init__(self,c,n,w=175,h=22,e=1,a='nw',x=0,y=0,re=False,vs=False):
-    self.Name = n
-
-    if re != False: fg = RegExpFgColor
-    else: fg = "black"
-
-    if vs != False: bg = VarSupBgColor
-    else: bg = "white"
-
-    self.MasterFrame = mf = Tk.Frame(c,relief='groove',height=h,width=w)
-    self.ID = c.create_window(x,y,anchor=a,window=mf,height=h,width=w)	
-
-    self.Entry = Tk.Entry(mf,width=1,bg=bg)
-    self.Entry.pack(side="right",fill="x",expand=e)
-    l = Tk.Label(mf,text=n+":",fg=fg).pack(side="right")
-</t>
-<t tx="ekr.20060513122450.61">def Get(self):
-    return self.Entry.get()
-</t>
-<t tx="ekr.20060513122450.62">def Set(self,text):
-    self.Entry.delete(0,'end')
-    self.Entry.insert('end',text)
-</t>
-<t tx="ekr.20060513122450.63">class TEXT:
-    @others
-</t>
-<t tx="ekr.20060513122450.64">def __init__(self,c,n,w=350,h=80,a='nw',x=0,y=0,re=False,vs=False):#text are 3 column wide
-
-    self.Name = n
-
-    if re != False: fg = RegExpFgColor
-    else: fg = "black"
-
-    if vs != False: bg = VarSupBgColor
-    else: bg = "white"
-
-    self.MasterFrame = mf = Tk.Frame(c,relief='groove')
-    self.ID = c.create_window(x,y+1,anchor=a,window=mf,width=w,height=h)
-
-    lf = Tk.Frame(mf,relief='flat')
-    lf.pack(side="top",fill="x",expand=1)			
-    Tk.Label(lf,text=n+":",fg=fg).pack(side="left")
-
-    self.Text = Tk.Text(mf,bg=bg)
-    self.Text.pack(side="top",fill="x",expand=1)
-</t>
-<t tx="ekr.20060513122450.65">def Get(self):
-    s = self.Text.get(1.0,'end')
-    lines = s.splitlines()
-    res = ""
-    for l in lines:
-        if l != "":
-            res += l+"\n"
-    return res
-</t>
-<t tx="ekr.20060513122450.66">def Set(self,text):
-    self.Text.delete(1.0,'end')
-    self.Text.insert('end',text)
-</t>
-<t tx="ekr.20060513122450.67">class LABEL:
-    @others
-</t>
-<t tx="ekr.20060513122450.68">def __init__(self,c,text,w=175,h=22,e=1,a='nw',x=0,y=0,color="#%02x%02x%02x" % (150,150,150)):
-
-    self.MasterFrame = mf = Tk.Frame(c,relief='groove',height=h,width=w)
-    self.ID = c.create_window(x,y,anchor=a,window=mf,height=h,width=w)	
-
-    self.Label = Tk.Label(c,text=text,justify='left',fg=color)
-    self.ID = c.create_window(x,y,anchor=a,window=self.Label)
-</t>
-<t tx="ekr.20060513122450.69">class HELP(Tk.Button):
-    @others</t>
-<t tx="ekr.20060513122450.70">def __init__(self,c,buttontext="Help",boxtitle="Help",msg="!",x=5,y=0):
-
-    self.Title = boxtitle
-    self.Message = msg
-    Tk.Button.__init__(self,c,text=buttontext,command=self.Help)
-    self.ID = c.create_window(x,y,anchor='nw',window=self)</t>
-<t tx="ekr.20060513122450.71">def Help(self):
-    tkMessageBox.showinfo(self.Title,self.Message)</t>
-<t tx="ekr.20060513122450.72">def __init__(self,cc,name):
-
-    self.cc = cc
-    self.name = name
-    self.Objects = []
-    Tk.Canvas.__init__(self,cc.LeoFrame.split1Pane2)
-    self.X=self.Y=self.W=self.H = 0
-    self.CreateObjects(self)</t>
-<t tx="ekr.20060513122450.73">def AddObject(self,o):
-
-    if o != None:
-        self.Objects.append(o)
-        self.X,self.Y,self.W,self.H = self.bbox('all')
-</t>
-<t tx="ekr.20060513122450.74">def BBox(self):
-    self.X,self.Y,self.W,self.H = self.bbox('all')
-</t>
-<t tx="ekr.20060513122450.75">def AddSep(self,length=380,color="black"):
-
-    if length != None:
-        l = length
-    else:
-        l = self.W
-    self.create_line(5,self.H+4,l+5,self.H+4,fill=color)
-    self.H += 10
-</t>
-<t tx="ekr.20060513122450.76">def CreateObjects(self,master):#must overide
-    pass
-</t>
-<t tx="ekr.20060513122450.77">def SaveObjects(self,pd=None):
-
-    cc = self.cc
-
-    if pd == None:
-        pd = cc.sGet(self.name,init={})
-
-    for o in self.Objects:
-        pd[o.Name] = o.Get()
-</t>
-<t tx="ekr.20060513122450.78">def LoadObjects(self,pd=None):	
-
-    cc = self.cc
-    if pd == None:
-        pd = cc.sGet(self.name,{})
-
-    g.trace(self.name,pd)
-
-    for o in self.Objects:
-        if o.Name not in pd:				
-            pd[o.Name] = o.Get()
-        else:
-            o.Set(pd[o.Name])</t>
-<t tx="ekr.20060513122450.79">def ClearObjects(self,value=""):
-    for o in self.Objects:
-        o.Set(value)</t>
-<t tx="ekr.20060513122450.80">def Hide(self):
-
-    cc = self.cc
-    self.pack_forget()
-
-    b = cc.Config.GetButton(self.name)
-    b.config(relief='groove',fg="black")
-
-    cc.LeoYBodyBar.config(command=cc.LeoBodyText.yview)
-    cc.LeoBodyText.config(yscrollcommand=cc.LeoYBodyBar.set)</t>
-<t tx="ekr.20060513122450.81">def Show(self):
-
-    cc = self.cc
-
-    if cc.Config.ActivePage:
-        cc.Config.ActivePage.Hide()
-
-    cc.Config.ActivePage = self
-    b = cc.Config.GetButton(self.name)
-    b.config(relief='sunken',fg="blue")	
-
-    self.config(scrollregion=self.bbox('all'))
-    self.config(yscrollcommand=cc.LeoYBodyBar.set)
-
-    cc.LeoYBodyBar.config(command=self.yview)
-    cc.LeoYBodyBar.pack(side="right",fill="y")
-    self.pack(expand=1,fill="both")</t>
-<t tx="ekr.20060513122450.82">def __init__(self,cc):
-
-    self.cc = cc
-    self.Pages = []
-    self.Buttons = []
-    self.ActivePage = None
-
-    #switch frame
-    self.SwitchFrame = Tk.Frame(
-        cc.LeoFrame.split1Pane2,relief='groove',bd=2,height=40,width=100)
-
-    #title
-    self.Title = Tk.Entry(self.SwitchFrame,justify='center')
-    self.Title.pack(side="top",fill="x",expand=1)	
-
-    self.AddPages()	
-    #add pages switches
-    for page in self.Pages:
-        if page:
-            b = Tk.Button(self.SwitchFrame,text=page.name,width=10,command=page.Show,relief='groove')
-            self.Buttons.append(b)
-            b.pack(side="left")
-            if not self.ActivePage:
-                self.ActivePage = page
-
-    if 0: #Cancel button
-        # Not needed.
-        b = Tk.Button(self.SwitchFrame,text="Cancel",command=lambda: self.Hide(False))
-        b.pack(side="right")
-
-    #Load button
-    b = Tk.Button(self.SwitchFrame,text="Load...",command=self.LoadFromFile)
-    b.pack(side="right")
-
-    #Save button
-    b = Tk.Button(self.SwitchFrame,text="Save...",command=self.SaveToFile)
-    b.pack(side="right")	
-
-    self.BreakTags = {}
-    self.visible = False</t>
-<t tx="ekr.20060513122450.83">def GetPage(self,name):
-
-    for p in self.Pages:
-        if p and p.name == name:
-            return p</t>
-<t tx="ekr.20060513122450.84">def GetButton(self,name):
-
-    for b in self.Buttons:
-        if b and b["text"] == name:
-            return b</t>
-<t tx="ekr.20060513122450.85">def Hide(self,save=True):
-
-    cc = self.cc
-
-    if self.visible == True:
-        self.ActivePage.Hide()	
-        self.SwitchFrame.pack_forget()
-        cc.LeoYBodyBar.config(command=cc.LeoBodyText.yview)
-        cc.LeoBodyText.config(yscrollcommand=cc.LeoYBodyBar.set)
-        cc.LeoXBodyBar.pack(side = "bottom",fill="x")
-        if cc.CHILD_NODE:
-            cc.BreakBar.Show()
-        cc.LeoBodyText.pack(expand=1, fill="both")
-
-        if save == True:
-            self.SaveToNode()
-        cc.ToolBar.ConfigButton.config(command=self.Show,relief='raised')
-        cc.ToolBar.DisplayFrame.pack(side="top",fill="x",expand=1)
-        self.visible = False</t>
-<t tx="ekr.20060513122450.86">def Show(self):
-
-    cc = self.cc
-    if cc.Watcher.visible:
-        cc.Watcher.Hide()			
-    if cc.BreakBar.visible:
-        cc.BreakBar.Hide()
-    cc.ToolBar.DisplayFrame.pack_forget()
-    cc.LeoBodyText.pack_forget()
-    cc.LeoXBodyBar.pack_forget()
-    cc.LeoYBodyBar.pack_forget()
-
-    self.SwitchFrame.pack(side="top", fill="x")
-    self.LoadFromNode()
-    self.ActivePage.Show()
-    cc.ToolBar.ConfigButton.config(command=self.Hide,relief='sunken')
-    self.visible = True
-    cc.c.redraw()</t>
-<t tx="ekr.20060513122450.87">def ClearConfig(self):
-    for p in self.Pages:
-        if p.name == "Options":
-            p.ClearObjects("False")
-        else:
-            p.ClearObjects()
-</t>
-<t tx="ekr.20060513122450.88">def LoadFromNode(self):
-
-    cc = self.cc
-    self.Title.delete(0,'end')
-    self.Title.insert('end',cc.sGet("Title"))
-
-    for p in self.Pages:
-        if p:
-            p.LoadObjects()</t>
-<t tx="ekr.20060513122450.89">def SaveToNode(self):
-
-    cc = self.cc
-
-    cc.sSet("Title",self.Title.get())
-
-    for p in self.Pages:
-        p and p.SaveObjects()</t>
-<t tx="ekr.20060513122450.90">def LoadFromFile(self):
-    try:
-        ft = ('XCC Config files', '.xcc'),
-        s = tkFileDialog.askopenfilename(filetypes=ft,title="Open xcc connfiguration file...")
-
-        if s == "":
-            Error("xcc: ","Load action canceled by user!")
-            return
-
-        #read file and compose code
-        f = file(s,"r")
-        td = None
-        code = "td ="+f.readline()
-        f.close()
-
-        # load in temp dict
-        try:
-            exec code
-        except Exception:
-            TraceBack()
-            Error("xcc: ","File content is invalid!")
-            return
-
-        #	load each pages
-        for p in self.Pages:
-            if p.name in td:
-                p.LoadObjects(td[p.name])
-
-        #set title to file name
-        name,ext = os.path.splitext(s)
-        path,name = os.path.split(name)		
-        self.Title.delete(0,'end')
-        self.Title.insert('end',name)		
-
-        #save to node to ensure integrity
-        self.SaveToNode()
-
-    except Exception:
-        TraceBack()
-
-
-
-
-</t>
-<t tx="ekr.20060513122450.91">def SaveToFile(self):
-    try:
-
-
-        ft = ('XCC Config files', '.xcc'),
-        s = tkFileDialog.asksaveasfilename(
-        filetypes=ft,
-        title="Save xcc connfiguration file...",
-        initialfile = self.Title.get()
-        )
-
-        if s == "":
-            Error("xcc: ","Save action canceled by user!")
-            return		
-
-        name,ext = os.path.splitext(s)
-
-        td = {}
-
-        # save each pages
-        for p in self.Pages:
-            td[p.name] = {}
-            p.SaveObjects(td[p.name])	
-
-        #write the dict to file
-        f = file(name+".xcc","w+")
-        Message("xcc: ","Writing config in "+name+".xcc")
-        f.write(str(td))
-        f.close()
-
-        # reset title to file name
-        path,name = os.path.split(name)		
-        self.Title.delete(0,'end')
-        self.Title.insert('end',name)
-
-        # save to node
-        self.SaveToNode()
-    except Exception:
-        TraceBack()
-
-
-
-
-
-
-
-</t>
-<t tx="ekr.20060513122450.92">def Apply(self):
-    self.SaveToNode()
-    self.Hide()
-</t>
-<t tx="ekr.20060513122450.93">def AddPages(self):
-
-    cc = self.cc
-    self.Pages.append(self.OptPageClass(cc))
-    self.Pages.append(self.CplPageClass(cc))
-    self.Pages.append(self.DbgPageClass(cc))
-    self.Pages.append(self.ExePageClass(cc))
-    #self.Pages.append(self.CodePageClass(cc))</t>
-<t tx="ekr.20060513122450.94">class OptPageClass(PageClass):
-
-    @others
-</t>
-<t tx="ekr.20060513122450.95">def __init__(self,cc):
-
-    self.cc = cc
-    ConfigClass.PageClass.__init__(self,cc,"Options")
-</t>
-<t tx="ekr.20060513122450.96">def CreateObjects(self,master): # must overide
-
-    @others
-
-    self.AddSep(length=self.W)</t>
-<t tx="ekr.20060513122450.97">s1 = self.CHECK(master,"Create files",x=5,y=5)
-s2 = self.CHECK(master,"Auto include header",x=100,y=5)
-self.AddObject(s1)
-self.AddObject(s2)
-
-self.AddSep(length=self.W)
-s1 = self.CHECK(master,"Compile",x=5,y=self.H)
-s2 = self.CHECK(master,"Seek first error",x=100,y=self.H)
-self.AddObject(s1)
-self.AddObject(s2)
-
-self.AddSep(length=self.W)
-s1 = self.CHECK(master,"Execute",x=5,y=self.H)
-s2 = self.CHECK(master,"Connect to pipe",x=100,y=self.H)
-self.AddObject(s1)
-self.AddObject(s2)
-
-self.AddSep(length=self.W)
-s1 = self.CHECK(master,"Debug",x=5,y=self.H)
-s2 = self.CHECK(master,"Seek breakpoints",x=100,y=self.H)
-self.AddObject(s1)
-self.AddObject(s2)
-
-#-------------------------------------------------------------
-self.AddSep(self.W)
-self.AddObject(self.CHECK(master,"Xcc verbose",x=5,y=self.H))
-self.AddObject(self.CHECK(master,"Filter output",x=5,y=self.H))</t>
-<t tx="ekr.20060513122450.98">#self.AddSep(self.W)
-#b = Tk.Button(master,text="Import...",width=10,default='disabled',command = ImportFiles)
-#master.create_window(self.X+5,self.H,width=60,height=20,anchor='nw',window=b)
-#c1 = self.CHECK(master,"Merge",x=80,y=self.H)
-#c2 = self.CHECK(master,"Use corresponding source/header",x=150,y=self.H)
-#self.AddObject(c1)
-#self.AddObject(c2)</t>
-<t tx="ekr.20060513122450.99">class CplPageClass(PageClass):
-    @others
-</t>
 <t tx="ekr.20060513122450.100">def __init__(self,cc):
 
     self.cc = cc
@@ -6988,6 +6544,456 @@ if cc.DEBUG:
     if not cc.CHILD_NODE:
         l,c = cc.LeoBodyText.index("end").split(".")
         cc.LeoBodyText.see(l+".0")</t>
+<t tx="ekr.20060513122450.53">class ConfigClass:
+    @others</t>
+<t tx="ekr.20060513122450.54">class PageClass(Tk.Canvas):
+    @others
+</t>
+<t tx="ekr.20060513122450.55">class CHECK:
+    @others
+</t>
+<t tx="ekr.20060513122450.56">def __init__(self,master,n,x=0,y=0):
+
+    self.Check = Tk.StringVar()
+    self.Name = n
+    c = Tk.Checkbutton(master,text=n,onvalue="True",offvalue="False",variable=self.Check)
+    master.create_window(x,y,anchor='nw',window=c)</t>
+<t tx="ekr.20060513122450.57">def Get(self):
+    return self.Check.get()
+</t>
+<t tx="ekr.20060513122450.58">def Set(self,value):
+    self.Check.set(value)
+</t>
+<t tx="ekr.20060513122450.59">class ENTRY:
+    @others
+</t>
+<t tx="ekr.20060513122450.60">def __init__(self,c,n,w=175,h=22,e=1,a='nw',x=0,y=0,re=False,vs=False):
+    self.Name = n
+
+    if re != False: fg = RegExpFgColor
+    else: fg = "black"
+
+    if vs != False: bg = VarSupBgColor
+    else: bg = "white"
+
+    self.MasterFrame = mf = Tk.Frame(c,relief='groove',height=h,width=w)
+    self.ID = c.create_window(x,y,anchor=a,window=mf,height=h,width=w)	
+
+    self.Entry = Tk.Entry(mf,width=1,bg=bg)
+    self.Entry.pack(side="right",fill="x",expand=e)
+    l = Tk.Label(mf,text=n+":",fg=fg).pack(side="right")
+</t>
+<t tx="ekr.20060513122450.61">def Get(self):
+    return self.Entry.get()
+</t>
+<t tx="ekr.20060513122450.62">def Set(self,text):
+    self.Entry.delete(0,'end')
+    self.Entry.insert('end',text)
+</t>
+<t tx="ekr.20060513122450.63">class TEXT:
+    @others
+</t>
+<t tx="ekr.20060513122450.64">def __init__(self,c,n,w=350,h=80,a='nw',x=0,y=0,re=False,vs=False):#text are 3 column wide
+
+    self.Name = n
+
+    if re != False: fg = RegExpFgColor
+    else: fg = "black"
+
+    if vs != False: bg = VarSupBgColor
+    else: bg = "white"
+
+    self.MasterFrame = mf = Tk.Frame(c,relief='groove')
+    self.ID = c.create_window(x,y+1,anchor=a,window=mf,width=w,height=h)
+
+    lf = Tk.Frame(mf,relief='flat')
+    lf.pack(side="top",fill="x",expand=1)			
+    Tk.Label(lf,text=n+":",fg=fg).pack(side="left")
+
+    self.Text = Tk.Text(mf,bg=bg)
+    self.Text.pack(side="top",fill="x",expand=1)
+</t>
+<t tx="ekr.20060513122450.65">def Get(self):
+    s = self.Text.get(1.0,'end')
+    lines = s.splitlines()
+    res = ""
+    for l in lines:
+        if l != "":
+            res += l+"\n"
+    return res
+</t>
+<t tx="ekr.20060513122450.66">def Set(self,text):
+    self.Text.delete(1.0,'end')
+    self.Text.insert('end',text)
+</t>
+<t tx="ekr.20060513122450.67">class LABEL:
+    @others
+</t>
+<t tx="ekr.20060513122450.68">def __init__(self,c,text,w=175,h=22,e=1,a='nw',x=0,y=0,color="#%02x%02x%02x" % (150,150,150)):
+
+    self.MasterFrame = mf = Tk.Frame(c,relief='groove',height=h,width=w)
+    self.ID = c.create_window(x,y,anchor=a,window=mf,height=h,width=w)	
+
+    self.Label = Tk.Label(c,text=text,justify='left',fg=color)
+    self.ID = c.create_window(x,y,anchor=a,window=self.Label)
+</t>
+<t tx="ekr.20060513122450.69">class HELP(Tk.Button):
+    @others</t>
+<t tx="ekr.20060513122450.70">def __init__(self,c,buttontext="Help",boxtitle="Help",msg="!",x=5,y=0):
+
+    self.Title = boxtitle
+    self.Message = msg
+    Tk.Button.__init__(self,c,text=buttontext,command=self.Help)
+    self.ID = c.create_window(x,y,anchor='nw',window=self)</t>
+<t tx="ekr.20060513122450.71">def Help(self):
+    tkMessageBox.showinfo(self.Title,self.Message)</t>
+<t tx="ekr.20060513122450.72">def __init__(self,cc,name):
+
+    self.cc = cc
+    self.name = name
+    self.Objects = []
+    Tk.Canvas.__init__(self,cc.LeoFrame.split1Pane2)
+    self.X=self.Y=self.W=self.H = 0
+    self.CreateObjects(self)</t>
+<t tx="ekr.20060513122450.73">def AddObject(self,o):
+
+    if o != None:
+        self.Objects.append(o)
+        self.X,self.Y,self.W,self.H = self.bbox('all')
+</t>
+<t tx="ekr.20060513122450.74">def BBox(self):
+    self.X,self.Y,self.W,self.H = self.bbox('all')
+</t>
+<t tx="ekr.20060513122450.75">def AddSep(self,length=380,color="black"):
+
+    if length != None:
+        l = length
+    else:
+        l = self.W
+    self.create_line(5,self.H+4,l+5,self.H+4,fill=color)
+    self.H += 10
+</t>
+<t tx="ekr.20060513122450.76">def CreateObjects(self,master):#must overide
+    pass
+</t>
+<t tx="ekr.20060513122450.77">def SaveObjects(self,pd=None):
+
+    cc = self.cc
+
+    if pd == None:
+        pd = cc.sGet(self.name,init={})
+
+    for o in self.Objects:
+        pd[o.Name] = o.Get()
+</t>
+<t tx="ekr.20060513122450.78">def LoadObjects(self,pd=None):	
+
+    cc = self.cc
+    if pd == None:
+        pd = cc.sGet(self.name,{})
+
+    g.trace(self.name,pd)
+
+    for o in self.Objects:
+        if o.Name not in pd:				
+            pd[o.Name] = o.Get()
+        else:
+            o.Set(pd[o.Name])</t>
+<t tx="ekr.20060513122450.79">def ClearObjects(self,value=""):
+    for o in self.Objects:
+        o.Set(value)</t>
+<t tx="ekr.20060513122450.80">def Hide(self):
+
+    cc = self.cc
+    self.pack_forget()
+
+    b = cc.Config.GetButton(self.name)
+    b.config(relief='groove',fg="black")
+
+    cc.LeoYBodyBar.config(command=cc.LeoBodyText.yview)
+    cc.LeoBodyText.config(yscrollcommand=cc.LeoYBodyBar.set)</t>
+<t tx="ekr.20060513122450.81">def Show(self):
+
+    cc = self.cc
+
+    if cc.Config.ActivePage:
+        cc.Config.ActivePage.Hide()
+
+    cc.Config.ActivePage = self
+    b = cc.Config.GetButton(self.name)
+    b.config(relief='sunken',fg="blue")	
+
+    self.config(scrollregion=self.bbox('all'))
+    self.config(yscrollcommand=cc.LeoYBodyBar.set)
+
+    cc.LeoYBodyBar.config(command=self.yview)
+    cc.LeoYBodyBar.pack(side="right",fill="y")
+    self.pack(expand=1,fill="both")</t>
+<t tx="ekr.20060513122450.82">def __init__(self,cc):
+
+    self.cc = cc
+    self.Pages = []
+    self.Buttons = []
+    self.ActivePage = None
+
+    #switch frame
+    self.SwitchFrame = Tk.Frame(
+        cc.LeoFrame.split1Pane2,relief='groove',bd=2,height=40,width=100)
+
+    #title
+    self.Title = Tk.Entry(self.SwitchFrame,justify='center')
+    self.Title.pack(side="top",fill="x",expand=1)	
+
+    self.AddPages()	
+    #add pages switches
+    for page in self.Pages:
+        if page:
+            b = Tk.Button(self.SwitchFrame,text=page.name,width=10,command=page.Show,relief='groove')
+            self.Buttons.append(b)
+            b.pack(side="left")
+            if not self.ActivePage:
+                self.ActivePage = page
+
+    if 0: #Cancel button
+        # Not needed.
+        b = Tk.Button(self.SwitchFrame,text="Cancel",command=lambda: self.Hide(False))
+        b.pack(side="right")
+
+    #Load button
+    b = Tk.Button(self.SwitchFrame,text="Load...",command=self.LoadFromFile)
+    b.pack(side="right")
+
+    #Save button
+    b = Tk.Button(self.SwitchFrame,text="Save...",command=self.SaveToFile)
+    b.pack(side="right")	
+
+    self.BreakTags = {}
+    self.visible = False</t>
+<t tx="ekr.20060513122450.83">def GetPage(self,name):
+
+    for p in self.Pages:
+        if p and p.name == name:
+            return p</t>
+<t tx="ekr.20060513122450.84">def GetButton(self,name):
+
+    for b in self.Buttons:
+        if b and b["text"] == name:
+            return b</t>
+<t tx="ekr.20060513122450.85">def Hide(self,save=True):
+
+    cc = self.cc
+
+    if self.visible == True:
+        self.ActivePage.Hide()	
+        self.SwitchFrame.pack_forget()
+        cc.LeoYBodyBar.config(command=cc.LeoBodyText.yview)
+        cc.LeoBodyText.config(yscrollcommand=cc.LeoYBodyBar.set)
+        cc.LeoXBodyBar.pack(side = "bottom",fill="x")
+        if cc.CHILD_NODE:
+            cc.BreakBar.Show()
+        cc.LeoBodyText.pack(expand=1, fill="both")
+
+        if save == True:
+            self.SaveToNode()
+        cc.ToolBar.ConfigButton.config(command=self.Show,relief='raised')
+        cc.ToolBar.DisplayFrame.pack(side="top",fill="x",expand=1)
+        self.visible = False</t>
+<t tx="ekr.20060513122450.86">def Show(self):
+
+    cc = self.cc
+    if cc.Watcher.visible:
+        cc.Watcher.Hide()			
+    if cc.BreakBar.visible:
+        cc.BreakBar.Hide()
+    cc.ToolBar.DisplayFrame.pack_forget()
+    cc.LeoBodyText.pack_forget()
+    cc.LeoXBodyBar.pack_forget()
+    cc.LeoYBodyBar.pack_forget()
+
+    self.SwitchFrame.pack(side="top", fill="x")
+    self.LoadFromNode()
+    self.ActivePage.Show()
+    cc.ToolBar.ConfigButton.config(command=self.Hide,relief='sunken')
+    self.visible = True
+    cc.c.redraw()</t>
+<t tx="ekr.20060513122450.87">def ClearConfig(self):
+    for p in self.Pages:
+        if p.name == "Options":
+            p.ClearObjects("False")
+        else:
+            p.ClearObjects()
+</t>
+<t tx="ekr.20060513122450.88">def LoadFromNode(self):
+
+    cc = self.cc
+    self.Title.delete(0,'end')
+    self.Title.insert('end',cc.sGet("Title"))
+
+    for p in self.Pages:
+        if p:
+            p.LoadObjects()</t>
+<t tx="ekr.20060513122450.89">def SaveToNode(self):
+
+    cc = self.cc
+
+    cc.sSet("Title",self.Title.get())
+
+    for p in self.Pages:
+        p and p.SaveObjects()</t>
+<t tx="ekr.20060513122450.90">def LoadFromFile(self):
+    try:
+        ft = ('XCC Config files', '.xcc'),
+        s = tkFileDialog.askopenfilename(filetypes=ft,title="Open xcc connfiguration file...")
+
+        if s == "":
+            Error("xcc: ","Load action canceled by user!")
+            return
+
+        #read file and compose code
+        f = file(s,"r")
+        td = None
+        code = "td ="+f.readline()
+        f.close()
+
+        # load in temp dict
+        try:
+            exec code
+        except Exception:
+            TraceBack()
+            Error("xcc: ","File content is invalid!")
+            return
+
+        #	load each pages
+        for p in self.Pages:
+            if p.name in td:
+                p.LoadObjects(td[p.name])
+
+        #set title to file name
+        name,ext = os.path.splitext(s)
+        path,name = os.path.split(name)		
+        self.Title.delete(0,'end')
+        self.Title.insert('end',name)		
+
+        #save to node to ensure integrity
+        self.SaveToNode()
+
+    except Exception:
+        TraceBack()
+
+
+
+
+</t>
+<t tx="ekr.20060513122450.91">def SaveToFile(self):
+    try:
+
+
+        ft = ('XCC Config files', '.xcc'),
+        s = tkFileDialog.asksaveasfilename(
+        filetypes=ft,
+        title="Save xcc connfiguration file...",
+        initialfile = self.Title.get()
+        )
+
+        if s == "":
+            Error("xcc: ","Save action canceled by user!")
+            return		
+
+        name,ext = os.path.splitext(s)
+
+        td = {}
+
+        # save each pages
+        for p in self.Pages:
+            td[p.name] = {}
+            p.SaveObjects(td[p.name])	
+
+        #write the dict to file
+        f = file(name+".xcc","w+")
+        Message("xcc: ","Writing config in "+name+".xcc")
+        f.write(str(td))
+        f.close()
+
+        # reset title to file name
+        path,name = os.path.split(name)		
+        self.Title.delete(0,'end')
+        self.Title.insert('end',name)
+
+        # save to node
+        self.SaveToNode()
+    except Exception:
+        TraceBack()
+
+
+
+
+
+
+
+</t>
+<t tx="ekr.20060513122450.92">def Apply(self):
+    self.SaveToNode()
+    self.Hide()
+</t>
+<t tx="ekr.20060513122450.93">def AddPages(self):
+
+    cc = self.cc
+    self.Pages.append(self.OptPageClass(cc))
+    self.Pages.append(self.CplPageClass(cc))
+    self.Pages.append(self.DbgPageClass(cc))
+    self.Pages.append(self.ExePageClass(cc))
+    #self.Pages.append(self.CodePageClass(cc))</t>
+<t tx="ekr.20060513122450.94">class OptPageClass(PageClass):
+
+    @others
+</t>
+<t tx="ekr.20060513122450.95">def __init__(self,cc):
+
+    self.cc = cc
+    ConfigClass.PageClass.__init__(self,cc,"Options")
+</t>
+<t tx="ekr.20060513122450.96">def CreateObjects(self,master): # must overide
+
+    @others
+
+    self.AddSep(length=self.W)</t>
+<t tx="ekr.20060513122450.97">s1 = self.CHECK(master,"Create files",x=5,y=5)
+s2 = self.CHECK(master,"Auto include header",x=100,y=5)
+self.AddObject(s1)
+self.AddObject(s2)
+
+self.AddSep(length=self.W)
+s1 = self.CHECK(master,"Compile",x=5,y=self.H)
+s2 = self.CHECK(master,"Seek first error",x=100,y=self.H)
+self.AddObject(s1)
+self.AddObject(s2)
+
+self.AddSep(length=self.W)
+s1 = self.CHECK(master,"Execute",x=5,y=self.H)
+s2 = self.CHECK(master,"Connect to pipe",x=100,y=self.H)
+self.AddObject(s1)
+self.AddObject(s2)
+
+self.AddSep(length=self.W)
+s1 = self.CHECK(master,"Debug",x=5,y=self.H)
+s2 = self.CHECK(master,"Seek breakpoints",x=100,y=self.H)
+self.AddObject(s1)
+self.AddObject(s2)
+
+#-------------------------------------------------------------
+self.AddSep(self.W)
+self.AddObject(self.CHECK(master,"Xcc verbose",x=5,y=self.H))
+self.AddObject(self.CHECK(master,"Filter output",x=5,y=self.H))</t>
+<t tx="ekr.20060513122450.98">#self.AddSep(self.W)
+#b = Tk.Button(master,text="Import...",width=10,default='disabled',command = ImportFiles)
+#master.create_window(self.X+5,self.H,width=60,height=20,anchor='nw',window=b)
+#c1 = self.CHECK(master,"Merge",x=80,y=self.H)
+#c2 = self.CHECK(master,"Use corresponding source/header",x=150,y=self.H)
+#self.AddObject(c1)
+#self.AddObject(c2)</t>
+<t tx="ekr.20060513122450.99">class CplPageClass(PageClass):
+    @others
+</t>
 <t tx="ekr.20060513122613"></t>
 <t tx="ekr.20060513122613.1">@
 opengl.h is just a test for long files
@@ -6996,13 +7002,417 @@ cltest\testprog is an xcc project to test functionality under win32 compile env,
 no plugin conflicts detected with core plugins, read-only nodes, unl or linecol plugin.
 should work with most plugins...
 </t>
-<t tx="ekr.20060513122613.2" xcc_cfg="7d710028550a45786563757461626c6571017d710228550a446c6c2063616c6c65727103550071045513457865637574696f6e20617267756d656e747371056804755504436f64657106680455074144445f4c4f477107680455055469746c65710868045508446562756767657271097d710a28550e4964656e7469667920627265616b710b6804550f54617267657420706964207461736b710c680455085069706520656f6c710d68045509417267756d656e7473710e6804550e50726f6d7074207061747465726e710f6804550e5175657279206c6f636174696f6e71106804550846696e642070696471116804550b436c65617220627265616b7112680455084576616c7561746571136804550453746f707114680455045374657071156804550b4c69737420627265616b737116680455045461736b71176804550f427265616b20646574656374696f6e71186804550853746570206f757471196804550953657420627265616b711a6804550d46696e64206c6f636174696f6e711b680455075374657020696e711c6804680968045512526567756c61722065787072657373696f6e711d68045508436f6e74696e7565711e68045502476f711f6804550c53746172747570207461736b71206804550953746570206f766572712155046e65787471227555075345545f4c4f47712368045506494e495445447124550454727565712555074f7074696f6e7371267d712728550b58636320766572626f73657128550546616c73657129550745786563757465712a550546616c7365712b550c4372656174652066696c6573712c550454727565712d55105365656b20627265616b706f696e7473712e550546616c7365712f550f436f6e6e65637420746f20706970657130550546616c736571315507436f6d70696c657132550546616c73657133550d46696c746572206f75747075747134550546616c7365713555134175746f20696e636c756465206865616465727136550546616c73657137550544656275677138550546616c7365713955105365656b206669727374206572726f72713a550546616c7365713b550c436f6c6f72697a65206c6f67713c550546616c7365713d755508436f6d70696c6572713e7d713f285514496e636c7564652073656172636820706174687371406804550f4572726f7220646574656374696f6e71416804550b557365206c69627261727971426804550e55736564206c696272617269657371436804550f446562756720617267756d656e747371446804550d436865636b2073796e7461786571456804550c4c696272617279207061746871466804680e680455094275696c6420646c6c714768045507557365207063687148680455094275696c64206578657149680455144c69627261727920736561726368207061746873714a6804550c496e636c7564652070617468714b6804550b436f6d70696c6520706368714c6804683e680475752e">@language c++
+<t tx="ekr.20060513122613.10">#ifndef GL_DEFS
+GL_EXT(void,glBlendColor,(GLclampf, GLclampf, GLclampf, GLclampf))
+GL_EXT(void,glBlendEquation,(GLenum))
+GL_EXT(void,glDrawRangeElements,(GLenum, GLuint, GLuint, GLsizei, GLenum, const GLvoid *))
+GL_EXT(void,glColorTable,(GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid *))
+GL_EXT(void,glColorTableParameterfv,(GLenum, GLenum, const GLfloat *))
+GL_EXT(void,glColorTableParameteriv,(GLenum, GLenum, const GLint *))
+GL_EXT(void,glCopyColorTable,(GLenum, GLenum, GLint, GLint, GLsizei))
+GL_EXT(void,glGetColorTable,(GLenum, GLenum, GLenum, GLvoid *))
+GL_EXT(void,glGetColorTableParameterfv,(GLenum, GLenum, GLfloat *))
+GL_EXT(void,glGetColorTableParameteriv,(GLenum, GLenum, GLint *))
+GL_EXT(void,glColorSubTable,(GLenum, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *))
+GL_EXT(void,glCopyColorSubTable,(GLenum, GLsizei, GLint, GLint, GLsizei))
+GL_EXT(void,glConvolutionFilter1D,(GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid *))
+GL_EXT(void,glConvolutionFilter2D,(GLenum, GLenum, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *))
+GL_EXT(void,glConvolutionParameterf,(GLenum, GLenum, GLfloat))
+GL_EXT(void,glConvolutionParameterfv,(GLenum, GLenum, const GLfloat *))
+GL_EXT(void,glConvolutionParameteri,(GLenum, GLenum, GLint))
+GL_EXT(void,glConvolutionParameteriv,(GLenum, GLenum, const GLint *))
+GL_EXT(void,glCopyConvolutionFilter1D,(GLenum, GLenum, GLint, GLint, GLsizei))
+GL_EXT(void,glCopyConvolutionFilter2D,(GLenum, GLenum, GLint, GLint, GLsizei, GLsizei))
+GL_EXT(void,glGetConvolutionFilter,(GLenum, GLenum, GLenum, GLvoid *))
+GL_EXT(void,glGetConvolutionParameterfv,(GLenum, GLenum, GLfloat *))
+GL_EXT(void,glGetConvolutionParameteriv,(GLenum, GLenum, GLint *))
+GL_EXT(void,glGetSeparableFilter,(GLenum, GLenum, GLenum, GLvoid *, GLvoid *, GLvoid *))
+GL_EXT(void,glSeparableFilter2D,(GLenum, GLenum, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *, const GLvoid *))
+GL_EXT(void,glGetHistogram,(GLenum, GLboolean, GLenum, GLenum, GLvoid *))
+GL_EXT(void,glGetHistogramParameterfv,(GLenum, GLenum, GLfloat *))
+GL_EXT(void,glGetHistogramParameteriv,(GLenum, GLenum, GLint *))
+GL_EXT(void,glGetMinmax,(GLenum, GLboolean, GLenum, GLenum, GLvoid *))
+GL_EXT(void,glGetMinmaxParameterfv,(GLenum, GLenum, GLfloat *))
+GL_EXT(void,glGetMinmaxParameteriv,(GLenum, GLenum, GLint *))
+GL_EXT(void,glHistogram,(GLenum, GLsizei, GLenum, GLboolean))
+GL_EXT(void,glMinmax,(GLenum, GLenum, GLboolean))
+GL_EXT(void,glResetHistogram,(GLenum))
+GL_EXT(void,glResetMinmax,(GLenum))
+GL_EXT(void,glTexImage3D,(GLenum, GLint, GLint, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid *))
+GL_EXT(void,glTexSubImage3D,(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *))
+GL_EXT(void,glCopyTexSubImage3D,(GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei))
+#endif</t>
+<t tx="ekr.20060513122613.11">#if USE_OPENGL &gt;= 3
+	@others
+#endif</t>
+<t tx="ekr.20060513122613.12">#ifdef GL_DEFS
+#define GL_TEXTURE0                       0x84C0
+#define GL_TEXTURE1                       0x84C1
+#define GL_TEXTURE2                       0x84C2
+#define GL_TEXTURE3                       0x84C3
+#define GL_TEXTURE4                       0x84C4
+#define GL_TEXTURE5                       0x84C5
+#define GL_TEXTURE6                       0x84C6
+#define GL_TEXTURE7                       0x84C7
+#define GL_TEXTURE8                       0x84C8
+#define GL_TEXTURE9                       0x84C9
+#define GL_TEXTURE10                      0x84CA
+#define GL_TEXTURE11                      0x84CB
+#define GL_TEXTURE12                      0x84CC
+#define GL_TEXTURE13                      0x84CD
+#define GL_TEXTURE14                      0x84CE
+#define GL_TEXTURE15                      0x84CF
+#define GL_TEXTURE16                      0x84D0
+#define GL_TEXTURE17                      0x84D1
+#define GL_TEXTURE18                      0x84D2
+#define GL_TEXTURE19                      0x84D3
+#define GL_TEXTURE20                      0x84D4
+#define GL_TEXTURE21                      0x84D5
+#define GL_TEXTURE22                      0x84D6
+#define GL_TEXTURE23                      0x84D7
+#define GL_TEXTURE24                      0x84D8
+#define GL_TEXTURE25                      0x84D9
+#define GL_TEXTURE26                      0x84DA
+#define GL_TEXTURE27                      0x84DB
+#define GL_TEXTURE28                      0x84DC
+#define GL_TEXTURE29                      0x84DD
+#define GL_TEXTURE30                      0x84DE
+#define GL_TEXTURE31                      0x84DF
+#define GL_ACTIVE_TEXTURE                 0x84E0
+#define GL_CLIENT_ACTIVE_TEXTURE          0x84E1
+#define GL_MAX_TEXTURE_UNITS              0x84E2
+#define GL_TRANSPOSE_MODELVIEW_MATRIX     0x84E3
+#define GL_TRANSPOSE_PROJECTION_MATRIX    0x84E4
+#define GL_TRANSPOSE_TEXTURE_MATRIX       0x84E5
+#define GL_TRANSPOSE_COLOR_MATRIX         0x84E6
+#define GL_MULTISAMPLE                    0x809D
+#define GL_SAMPLE_ALPHA_TO_COVERAGE       0x809E
+#define GL_SAMPLE_ALPHA_TO_ONE            0x809F
+#define GL_SAMPLE_COVERAGE                0x80A0
+#define GL_SAMPLE_BUFFERS                 0x80A8
+#define GL_SAMPLES                        0x80A9
+#define GL_SAMPLE_COVERAGE_VALUE          0x80AA
+#define GL_SAMPLE_COVERAGE_INVERT         0x80AB
+#define GL_MULTISAMPLE_BIT                0x20000000
+#define GL_NORMAL_MAP                     0x8511
+#define GL_REFLECTION_MAP                 0x8512
+#define GL_TEXTURE_CUBE_MAP               0x8513
+#define GL_TEXTURE_BINDING_CUBE_MAP       0x8514
+#define GL_TEXTURE_CUBE_MAP_POSITIVE_X    0x8515
+#define GL_TEXTURE_CUBE_MAP_NEGATIVE_X    0x8516
+#define GL_TEXTURE_CUBE_MAP_POSITIVE_Y    0x8517
+#define GL_TEXTURE_CUBE_MAP_NEGATIVE_Y    0x8518
+#define GL_TEXTURE_CUBE_MAP_POSITIVE_Z    0x8519
+#define GL_TEXTURE_CUBE_MAP_NEGATIVE_Z    0x851A
+#define GL_PROXY_TEXTURE_CUBE_MAP         0x851B
+#define GL_MAX_CUBE_MAP_TEXTURE_SIZE      0x851C
+#define GL_COMPRESSED_ALPHA               0x84E9
+#define GL_COMPRESSED_LUMINANCE           0x84EA
+#define GL_COMPRESSED_LUMINANCE_ALPHA     0x84EB
+#define GL_COMPRESSED_INTENSITY           0x84EC
+#define GL_COMPRESSED_RGB                 0x84ED
+#define GL_COMPRESSED_RGBA                0x84EE
+#define GL_TEXTURE_COMPRESSION_HINT       0x84EF
+#define GL_TEXTURE_COMPRESSED_IMAGE_SIZE  0x86A0
+#define GL_TEXTURE_COMPRESSED             0x86A1
+#define GL_NUM_COMPRESSED_TEXTURE_FORMATS 0x86A2
+#define GL_COMPRESSED_TEXTURE_FORMATS     0x86A3
+#define GL_CLAMP_TO_BORDER                0x812D
+#define GL_CLAMP_TO_BORDER_SGIS           0x812D
+#define GL_COMBINE                        0x8570
+#define GL_COMBINE_RGB                    0x8571
+#define GL_COMBINE_ALPHA                  0x8572
+#define GL_SOURCE0_RGB                    0x8580
+#define GL_SOURCE1_RGB                    0x8581
+#define GL_SOURCE2_RGB                    0x8582
+#define GL_SOURCE0_ALPHA                  0x8588
+#define GL_SOURCE1_ALPHA                  0x8589
+#define GL_SOURCE2_ALPHA                  0x858A
+#define GL_OPERAND0_RGB                   0x8590
+#define GL_OPERAND1_RGB                   0x8591
+#define GL_OPERAND2_RGB                   0x8592
+#define GL_OPERAND0_ALPHA                 0x8598
+#define GL_OPERAND1_ALPHA                 0x8599
+#define GL_OPERAND2_ALPHA                 0x859A
+#define GL_RGB_SCALE                      0x8573
+#define GL_ADD_SIGNED                     0x8574
+#define GL_INTERPOLATE                    0x8575
+#define GL_SUBTRACT                       0x84E7
+#define GL_CONSTANT                       0x8576
+#define GL_PRIMARY_COLOR                  0x8577
+#define GL_PREVIOUS                       0x8578
+#define GL_DOT3_RGB                       0x86AE
+#define GL_DOT3_RGBA                      0x86AF
+#endif
+</t>
+<t tx="ekr.20060513122613.13">#ifndef GL_DEFS
+GL_EXT(void,glActiveTexture,(GLenum))
+GL_EXT(void,glClientActiveTexture,(GLenum))
+GL_EXT(void,glMultiTexCoord1d,(GLenum,GLdouble))
+GL_EXT(void,glMultiTexCoord1dv,(GLenum,const GLdouble *))
+GL_EXT(void,glMultiTexCoord1f,(GLenum,GLfloat))
+GL_EXT(void,glMultiTexCoord1fv,(GLenum,const GLfloat *))
+GL_EXT(void,glMultiTexCoord1i,(GLenum,GLint))
+GL_EXT(void,glMultiTexCoord1iv,(GLenum,const GLint*))
+GL_EXT(void,glMultiTexCoord1s,(GLenum,GLshort))
+GL_EXT(void,glMultiTexCoord1sv,(GLenum,const GLshort*))
+GL_EXT(void,glMultiTexCoord2d,(GLenum,GLdouble,GLdouble))
+GL_EXT(void,glMultiTexCoord2dv,(GLenum,const GLdouble*))
+GL_EXT(void,glMultiTexCoord2f,(GLenum,GLfloat,GLfloat))
+GL_EXT(void,glMultiTexCoord2fv,(GLenum,const GLfloat*))
+GL_EXT(void,glMultiTexCoord2i,(GLenum,GLint,GLint))
+GL_EXT(void,glMultiTexCoord2iv,(GLenum,const GLint*))
+GL_EXT(void,glMultiTexCoord2s,(GLenum,GLshort,GLshort))
+GL_EXT(void,glMultiTexCoord2sv,(GLenum,const GLshort*))
+GL_EXT(void,glMultiTexCoord3d,(GLenum,GLdouble,GLdouble,GLdouble))
+GL_EXT(void,glMultiTexCoord3dv,(GLenum,const GLdouble*))
+GL_EXT(void,glMultiTexCoord3f,(GLenum,GLfloat,GLfloat,GLfloat))
+GL_EXT(void,glMultiTexCoord3fv,(GLenum,const GLfloat*))
+GL_EXT(void,glMultiTexCoord3i,(GLenum,GLint,GLint,GLint))
+GL_EXT(void,glMultiTexCoord3iv,(GLenum,const GLint*))
+GL_EXT(void,glMultiTexCoord3s,(GLenum,GLshort,GLshort,GLshort))
+GL_EXT(void,glMultiTexCoord3sv,(GLenum,const GLshort*))
+GL_EXT(void,glMultiTexCoord4d,(GLenum,GLdouble,GLdouble,GLdouble,GLdouble))
+GL_EXT(void,glMultiTexCoord4dv,(GLenum,const GLdouble *))
+GL_EXT(void,glMultiTexCoord4f,(GLenum,GLfloat,GLfloat,GLfloat,GLfloat))
+GL_EXT(void,glMultiTexCoord4fv,(GLenum,const GLfloat *))
+GL_EXT(void,glMultiTexCoord4i,(GLenum,GLint,GLint,GLint,GLint))
+GL_EXT(void,glMultiTexCoord4iv,(GLenum,const GLint *))
+GL_EXT(void,glMultiTexCoord4s,(GLenum,GLshort,GLshort,GLshort,GLshort))
+GL_EXT(void,glMultiTexCoord4sv,(GLenum,const GLshort *))
+GL_EXT(void,glLoadTransposeMatrixf,(const GLfloat *))
+GL_EXT(void,glLoadTransposeMatrixd,(const GLdouble *))
+GL_EXT(void,glMultTransposeMatrixf,(const GLfloat *))
+GL_EXT(void,glMultTransposeMatrixd,(const GLdouble *))
+GL_EXT(void,glSampleCoverage,(GLclampf,GLboolean))
+GL_EXT(void,glCompressedTexImage3D,(GLenum,GLint,GLenum,GLsizei,GLsizei,GLsizei,GLint,GLsizei,const GLvoid *))
+GL_EXT(void,glCompressedTexImage2D,(GLenum,GLint,GLenum,GLsizei,GLsizei,GLint,GLsizei,const GLvoid *))
+GL_EXT(void,glCompressedTexImage1D,(GLenum,GLint,GLenum,GLsizei,GLint,GLsizei,const GLvoid *))
+GL_EXT(void,glCompressedTexSubImage3D,(GLenum,GLint,GLint,GLint,GLint,GLsizei,GLsizei,GLsizei,GLenum,GLsizei,const GLvoid *))
+GL_EXT(void,glCompressedTexSubImage2D,(GLenum,GLint,GLint,GLint,GLsizei,GLsizei,GLenum,GLsizei,const GLvoid *))
+GL_EXT(void,glCompressedTexSubImage1D,(GLenum,GLint,GLint,GLsizei,GLenum,GLsizei,const GLvoid *))
+GL_EXT(void,glGetCompressedTexImage,(GLenum,GLint,GLvoid *))
+#endif</t>
+<t tx="ekr.20060513122613.14">#if USE_OPENGL &gt;= 4
+	@others
+#endif</t>
+<t tx="ekr.20060513122613.15">#ifdef GL_DEFS
+#define GL_BLEND_DST_RGB                  0x80C8
+#define GL_BLEND_SRC_RGB                  0x80C9
+#define GL_BLEND_DST_ALPHA                0x80CA
+#define GL_BLEND_SRC_ALPHA                0x80CB
+#define GL_POINT_SIZE_MIN                 0x8126
+#define GL_POINT_SIZE_MAX                 0x8127
+#define GL_POINT_FADE_THRESHOLD_SIZE      0x8128
+#define GL_POINT_DISTANCE_ATTENUATION     0x8129
+#define GL_GENERATE_MIPMAP                0x8191
+#define GL_GENERATE_MIPMAP_HINT           0x8192
+#define GL_DEPTH_COMPONENT16              0x81A5
+#define GL_DEPTH_COMPONENT24              0x81A6
+#define GL_DEPTH_COMPONENT32              0x81A7
+#define GL_MIRRORED_REPEAT                0x8370
+#define GL_FOG_COORDINATE_SOURCE          0x8450
+#define GL_FOG_COORDINATE                 0x8451
+#define GL_FRAGMENT_DEPTH                 0x8452
+#define GL_CURRENT_FOG_COORDINATE         0x8453
+#define GL_FOG_COORDINATE_ARRAY_TYPE      0x8454
+#define GL_FOG_COORDINATE_ARRAY_STRIDE    0x8455
+#define GL_FOG_COORDINATE_ARRAY_POINTER   0x8456
+#define GL_FOG_COORDINATE_ARRAY           0x8457
+#define GL_COLOR_SUM                      0x8458
+#define GL_CURRENT_SECONDARY_COLOR        0x8459
+#define GL_SECONDARY_COLOR_ARRAY_SIZE     0x845A
+#define GL_SECONDARY_COLOR_ARRAY_TYPE     0x845B
+#define GL_SECONDARY_COLOR_ARRAY_STRIDE   0x845C
+#define GL_SECONDARY_COLOR_ARRAY_POINTER  0x845D
+#define GL_SECONDARY_COLOR_ARRAY          0x845E
+#define GL_MAX_TEXTURE_LOD_BIAS           0x84FD
+#define GL_TEXTURE_FILTER_CONTROL         0x8500
+#define GL_TEXTURE_LOD_BIAS               0x8501
+#define GL_INCR_WRAP                      0x8507
+#define GL_DECR_WRAP                      0x8508
+#define GL_TEXTURE_DEPTH_SIZE             0x884A
+#define GL_DEPTH_TEXTURE_MODE             0x884B
+#define GL_TEXTURE_COMPARE_MODE           0x884C
+#define GL_TEXTURE_COMPARE_FUNC           0x884D
+#define GL_COMPARE_R_TO_TEXTURE           0x884E
+#endif</t>
+<t tx="ekr.20060513122613.16">#ifndef GL_DEFS
+GL_EXT(void,glBlendFuncSeparate,(GLenum,GLenum,GLenum,GLenum))
+GL_EXT(void,glFogCoordf,(GLfloat))
+GL_EXT(void,glFogCoordfv,(const GLfloat *))
+GL_EXT(void,glFogCoordd,(GLdouble))
+GL_EXT(void,glFogCoorddv,(const GLdouble *))
+GL_EXT(void,glFogCoordPointer,(GLenum,GLsizei,const GLvoid *))
+GL_EXT(void,glMultiDrawArrays,(GLenum,GLint *,GLsizei *,GLsizei))
+GL_EXT(void,glMultiDrawElements,(GLenum,const GLsizei *,GLenum,const GLvoid* *,GLsizei))
+GL_EXT(void,glPointParameterf,(GLenum,GLfloat))
+GL_EXT(void,glPointParameterfv,(GLenum,const GLfloat *))
+GL_EXT(void,glPointParameteri,(GLenum,GLint))
+GL_EXT(void,glPointParameteriv,(GLenum,const GLint *))
+GL_EXT(void,glSecondaryColor3b,(GLbyte,GLbyte,GLbyte))
+GL_EXT(void,glSecondaryColor3bv,(const GLbyte *))
+GL_EXT(void,glSecondaryColor3d,(GLdouble,GLdouble,GLdouble))
+GL_EXT(void,glSecondaryColor3dv,(const GLdouble *))
+GL_EXT(void,glSecondaryColor3f,(GLfloat,GLfloat,GLfloat))
+GL_EXT(void,glSecondaryColor3fv,(const GLfloat *))
+GL_EXT(void,glSecondaryColor3i,(GLint,GLint,GLint))
+GL_EXT(void,glSecondaryColor3iv,(const GLint *))
+GL_EXT(void,glSecondaryColor3s,(GLshort,GLshort,GLshort))
+GL_EXT(void,glSecondaryColor3sv,(const GLshort *))
+GL_EXT(void,glSecondaryColor3ub,(GLubyte,GLubyte,GLubyte))
+GL_EXT(void,glSecondaryColor3ubv,(const GLubyte *))
+GL_EXT(void,glSecondaryColor3ui,(GLuint,GLuint,GLuint))
+GL_EXT(void,glSecondaryColor3uiv,(const GLuint *))
+GL_EXT(void,glSecondaryColor3us,(GLushort,GLushort,GLushort))
+GL_EXT(void,glSecondaryColor3usv,(const GLushort *))
+GL_EXT(void,glSecondaryColorPointer,(GLint,GLenum,GLsizei,const GLvoid *))
+GL_EXT(void,glWindowPos2d,(GLdouble,GLdouble))
+GL_EXT(void,glWindowPos2dv,(const GLdouble *))
+GL_EXT(void,glWindowPos2f,(GLfloat,GLfloat))
+GL_EXT(void,glWindowPos2fv,(const GLfloat *))
+GL_EXT(void,glWindowPos2i,(GLint,GLint))
+GL_EXT(void,glWindowPos2iv,(const GLint *))
+GL_EXT(void,glWindowPos2s,(GLshort,GLshort))
+GL_EXT(void,glWindowPos2sv,(const GLshort *))
+GL_EXT(void,glWindowPos3d,(GLdouble,GLdouble,GLdouble))
+GL_EXT(void,glWindowPos3dv,(const GLdouble *))
+GL_EXT(void,glWindowPos3f,(GLfloat,GLfloat,GLfloat))
+GL_EXT(void,glWindowPos3fv,(const GLfloat *))
+GL_EXT(void,glWindowPos3i,(GLint,GLint,GLint))
+GL_EXT(void,glWindowPos3iv,(const GLint *))
+GL_EXT(void,glWindowPos3s,(GLshort,GLshort,GLshort))
+GL_EXT(void,glWindowPos3sv,(const GLshort *))
+#endif</t>
+<t tx="ekr.20060513122613.17" xcc_child_cfg="7d7100580b000000427265616b506f696e747371017d7102732e">#if USE_OPENGL &gt;= 5
+	@others
+#endif</t>
+<t tx="ekr.20060513122613.18" xcc_child_cfg="7d7100580b000000427265616b506f696e747371017d7102732e">#ifdef GL_DEFS
+#define GL_BUFFER_SIZE                    0x8764
+#define GL_BUFFER_USAGE                   0x8765
+#define GL_QUERY_COUNTER_BITS             0x8864
+#define GL_CURRENT_QUERY                  0x8865
+#define GL_QUERY_RESULT                   0x8866
+#define GL_QUERY_RESULT_AVAILABLE         0x8867
+#define GL_ARRAY_BUFFER                   0x8892
+#define GL_ELEMENT_ARRAY_BUFFER           0x8893
+#define GL_ARRAY_BUFFER_BINDING           0x8894
+#define GL_ELEMENT_ARRAY_BUFFER_BINDING   0x8895
+#define GL_VERTEX_ARRAY_BUFFER_BINDING    0x8896
+#define GL_NORMAL_ARRAY_BUFFER_BINDING    0x8897
+#define GL_COLOR_ARRAY_BUFFER_BINDING     0x8898
+#define GL_INDEX_ARRAY_BUFFER_BINDING     0x8899
+#define GL_TEXTURE_COORD_ARRAY_BUFFER_BINDING 0x889A
+#define GL_EDGE_FLAG_ARRAY_BUFFER_BINDING 0x889B
+#define GL_SECONDARY_COLOR_ARRAY_BUFFER_BINDING 0x889C
+#define GL_FOG_COORDINATE_ARRAY_BUFFER_BINDING 0x889D
+#define GL_WEIGHT_ARRAY_BUFFER_BINDING    0x889E
+#define GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING 0x889F
+#define GL_READ_ONLY                      0x88B8
+#define GL_WRITE_ONLY                     0x88B9
+#define GL_READ_WRITE                     0x88BA
+#define GL_BUFFER_ACCESS                  0x88BB
+#define GL_BUFFER_MAPPED                  0x88BC
+#define GL_BUFFER_MAP_POINTER             0x88BD
+#define GL_STREAM_DRAW                    0x88E0
+#define GL_STREAM_READ                    0x88E1
+#define GL_STREAM_COPY                    0x88E2
+#define GL_STATIC_DRAW                    0x88E4
+#define GL_STATIC_READ                    0x88E5
+#define GL_STATIC_COPY                    0x88E6
+#define GL_DYNAMIC_DRAW                   0x88E8
+#define GL_DYNAMIC_READ                   0x88E9
+#define GL_DYNAMIC_COPY                   0x88EA
+#define GL_SAMPLES_PASSED                 0x8914
+#define GL_FOG_COORD_SOURCE               GL_FOG_COORDINATE_SOURCE
+#define GL_FOG_COORD                      GL_FOG_COORDINATE
+#define GL_CURRENT_FOG_COORD              GL_CURRENT_FOG_COORDINATE
+#define GL_FOG_COORD_ARRAY_TYPE           GL_FOG_COORDINATE_ARRAY_TYPE
+#define GL_FOG_COORD_ARRAY_STRIDE         GL_FOG_COORDINATE_ARRAY_STRIDE
+#define GL_FOG_COORD_ARRAY_POINTER        GL_FOG_COORDINATE_ARRAY_POINTER
+#define GL_FOG_COORD_ARRAY                GL_FOG_COORDINATE_ARRAY
+#define GL_FOG_COORD_ARRAY_BUFFER_BINDING GL_FOG_COORDINATE_ARRAY_BUFFER_BINDING
+#define GL_SRC0_RGB                       GL_SOURCE0_RGB
+#define GL_SRC1_RGB                       GL_SOURCE1_RGB
+#define GL_SRC2_RGB                       GL_SOURCE2_RGB
+#define GL_SRC0_ALPHA                     GL_SOURCE0_ALPHA
+#define GL_SRC1_ALPHA                     GL_SOURCE1_ALPHA
+#define GL_SRC2_ALPHA                     GL_SOURCE2_ALPHA
+#endif</t>
+<t tx="ekr.20060513122613.19" xcc_child_cfg="7d7100580b000000427265616b506f696e747371017d7102732e">#ifndef GL_DEFS
+GL_EXT(void,glGenQueries,(GLsizei,GLuint *))
+GL_EXT(void,glDeleteQueries,(GLsizei,const GLuint *))
+GL_EXT(GLboolean,glIsQuery,(GLuint))
+GL_EXT(void,glBeginQuery,(GLenum,GLuint))
+GL_EXT(void,glEndQuery,(GLenum))
+GL_EXT(void,glGetQueryiv,(GLenum,GLenum,GLint *))
+GL_EXT(void,glGetQueryObjectiv,(GLuint,GLenum,GLint *))
+GL_EXT(void,glGetQueryObjectuiv,(GLuint,GLenum,GLuint *))
+GL_EXT(void,glBindBuffer,(GLenum,GLuint))
+GL_EXT(void,glDeleteBuffers,(GLsizei,const GLuint *))
+GL_EXT(void,glGenBuffers,(GLsizei,GLuint *))
+GL_EXT(GLboolean,glIsBuffer,(GLuint))
+GL_EXT(void,glBufferData,(GLenum,GLsizeiptr,const GLvoid *,GLenum))
+GL_EXT(void,glBufferSubData,(GLenum,GLintptr,GLsizeiptr,const GLvoid *))
+GL_EXT(void,glGetBufferSubData,(GLenum,GLintptr,GLsizeiptr,GLvoid *))
+GL_EXT(GLvoid*,glMapBuffer,(GLenum,GLenum))
+GL_EXT(GLboolean,glUnmapBuffer,(GLenum))
+GL_EXT(void,glGetBufferParameteriv,(GLenum,GLenum,GLint *))
+GL_EXT(void,glGetBufferPointerv,(GLenum,GLenum,GLvoid* *))
+#endif</t>
+<t tx="ekr.20060513122613.2" xcc_cfg="7d710028580a00000045786563757461626c6571017d710228580a000000446c6c2063616c6c65727103580000000071045813000000457865637574696f6e20617267756d656e747371056804755804000000436f64657106680458070000004144445f4c4f477107680458050000005469746c65710868045808000000446562756767657271097d710a28580e0000004964656e7469667920627265616b710b6804580f00000054617267657420706964207461736b710c680458080000005069706520656f6c710d68045809000000417267756d656e7473710e6804580e00000050726f6d7074207061747465726e710f6804580e0000005175657279206c6f636174696f6e71106804580800000046696e642070696471116804580b000000436c65617220627265616b7112680458080000004576616c7561746571136804580400000053746f707114680458040000005374657071156804580b0000004c69737420627265616b737116680458040000005461736b71176804580f000000427265616b20646574656374696f6e71186804580800000053746570206f757471196804580900000053657420627265616b711a6804580d00000046696e64206c6f636174696f6e711b680458070000005374657020696e711c6804680968045812000000526567756c61722065787072657373696f6e711d68045808000000436f6e74696e7565711e68045802000000476f711f6804580c00000053746172747570207461736b71206804580900000053746570206f766572712158040000006e65787471227558070000005345545f4c4f47712368045806000000494e495445447124580400000054727565712558070000004f7074696f6e7371267d712728580b00000058636320766572626f73657128580500000046616c73657129580700000045786563757465712a580500000046616c7365712b580c0000004372656174652066696c6573712c580400000054727565712d58100000005365656b20627265616b706f696e7473712e580500000046616c7365712f580f000000436f6e6e65637420746f20706970657130580500000046616c736571315807000000436f6d70696c657132580500000046616c73657133580d00000046696c746572206f75747075747134580500000046616c7365713558130000004175746f20696e636c756465206865616465727136580500000046616c73657137580500000044656275677138580500000046616c7365713958100000005365656b206669727374206572726f72713a580500000046616c7365713b580c000000436f6c6f72697a65206c6f67713c580500000046616c7365713d755808000000436f6d70696c6572713e7d713f285814000000496e636c7564652073656172636820706174687371406804580f0000004572726f7220646574656374696f6e71416804580b000000557365206c69627261727971426804580e00000055736564206c696272617269657371436804580f000000446562756720617267756d656e747371446804580d000000436865636b2073796e7461786571456804580c0000004c696272617279207061746871466804680e680458090000004275696c6420646c6c714768045807000000557365207063687148680458090000004275696c64206578657149680458140000004c69627261727920736561726368207061746873714a6804580c000000496e636c7564652070617468714b6804580b000000436f6d70696c6520706368714c6804683e680475752e">@language c++
 
 </t>
-<t tx="ekr.20060513122613.3" xcc_child_cfg="7d7100550b427265616b506f696e747371017d7102732e">#ifndef USE_OPENGL
+<t tx="ekr.20060513122613.20" xcc_child_cfg="7d7100580b000000427265616b506f696e747371017d7102732e">#ifndef GL_DEFS
+WGL_PROC(BOOL,wglCopyContext,(HGLRC,HGLRC,UINT))
+WGL_PROC(HGLRC,wglCreateContext,(HDC))
+WGL_PROC(HGLRC,wglCreateLayerContext,(HDC,int))
+WGL_PROC(BOOL,wglDeleteContext,(HGLRC))
+WGL_PROC(HGLRC,wglGetCurrentContext,(VOID))
+WGL_PROC(HDC,wglGetCurrentDC,(VOID))
+WGL_PROC(PROC,wglGetProcAddress,(LPCSTR))
+WGL_PROC(BOOL,wglMakeCurrent,(HDC,HGLRC))
+WGL_PROC(BOOL,wglShareLists,(HGLRC,HGLRC))
+WGL_PROC(BOOL,wglUseFontBitmapsA,(HDC,DWORD,DWORD,DWORD))
+WGL_PROC(BOOL,wglUseFontBitmapsW,(HDC,DWORD,DWORD,DWORD))
+WGL_PROC(BOOL,wglSwapBuffers,(HDC))
+WGL_PROC(BOOL,wglUseFontOutlinesA,(HDC,DWORD,DWORD,DWORD,FLOAT,FLOAT,int,LPGLYPHMETRICSFLOAT))
+WGL_PROC(BOOL,wglUseFontOutlinesW,(HDC,DWORD,DWORD,DWORD,FLOAT,FLOAT,int,LPGLYPHMETRICSFLOAT))
+WGL_PROC(BOOL,wglDescribeLayerPlane,(HDC,int,int,UINT,LPLAYERPLANEDESCRIPTOR))
+WGL_PROC(int,wglSetLayerPaletteEntries,(HDC,int,int,int,CONST COLORREF *))
+WGL_PROC(int,wglGetLayerPaletteEntries,(HDC,int,int,int,COLORREF *))
+WGL_PROC(BOOL,wglRealizeLayerPalette,(HDC,int,BOOL))
+WGL_PROC(BOOL,wglSwapLayerBuffers,(HDC,UINT))
+#if (WINVER &gt;= 0x0500)
+	WGL_PROC(DWORD,SwapMultipleBuffers,(UINT,CONST WGLSWAP *))
+#endif
+#endif
+</t>
+<t tx="ekr.20060513122613.21" xcc_cfg="7d710028580a00000045786563757461626c6571017d710228580a000000446c6c2063616c6c65727103580000000071045813000000457865637574696f6e20617267756d656e747371056804755804000000436f64657106680458070000004144445f4c4f477107680458050000005469746c6571085810000000636c5f6364625f77696e33325f657865710958050000005761746368710a5d710b580100000061710c61580b000000427265616b706f696e7473710d7d710e2858050000006370703a38710f5807000000456e61626c6564711058060000006370703a3138711168107558070000005345545f4c4f47711268045806000000494e4954454471135804000000547275657114580b000000427265616b506f696e747371157d71162858060000006370703a313571175807000000456e61626c6564711858060000006370703a313371195807000000456e61626c6564711a7558070000004f7074696f6e73711b7d711c28580b00000058636320766572626f7365711d580400000054727565711e580700000045786563757465711f580500000046616c73657120580c0000004372656174652066696c65737121580400000054727565712258100000005365656b20627265616b706f696e747371235804000000547275657124580f000000436f6e6e65637420746f2070697065712568045807000000436f6d70696c6571265804000000547275657127580d00000046696c746572206f75747075747128580500000046616c7365712958130000004175746f20696e636c75646520686561646572712a580400000054727565712b58050000004465627567712c580400000054727565712d58100000005365656b206669727374206572726f72712e580500000046616c7365712f755808000000446562756767657271307d713128580e0000004964656e7469667920627265616b7132582700000020283f503c49443e5b302d395d2b29202e2b5f46494c455f282040207c3a295f4c494e455f2e2b7133580f00000054617267657420706964207461736b713458090000002e746c697374202d63713558080000005069706520656f6c713658040000005c6e5c7271375809000000417267756d656e74737138585c0000002d6c696e6573202d47202d320a2d7372637061746820225f414253504154485f220a2d7920227372762a5f414253504154485f220a2d6920225f414253504154485f220a225f414253504154485f5c5c5f4e414d455f2e657865220a7139580e00000050726f6d7074207061747465726e713a58010000003e713b580e0000005175657279206c6f636174696f6e713c58090000006c732e203b206c7363713d580800000046696e6420706964713e5821000000306e283f503c5049443e5b302d395d2b29202e2a5f4e414d455f5c2e5f4558545f713f580b000000436c65617220627265616b714058070000006263205f49445f714158080000004576616c75617465714258020000003f3f7143580400000053746f707144580100000071714558040000005374657071465801000000707147580b0000004c69737420627265616b7371485802000000626c714958040000005461736b714a6804580f000000427265616b20646574656374696f6e714b5816000000427265616b706f696e74205b302d395d2b206869740a714c580800000053746570206f7574714d58020000006775714e580900000053657420627265616b714f5812000000627020605f46494c455f3a5f4c494e455f607150580d00000046696e64206c6f636174696f6e7151583200000043757272656e743a202e2a5f4e414d455f5c2e283f503c4558543e2e2b295c28283f503c4c494e453e5b302d395d2b295c29715258070000005374657020696e715358010000007471546830581e000000433a5c53444b5c437573746f6d33325c77696e6462675c6364622e65786571555812000000526567756c61722065787072657373696f6e7156580c000000507265737320454e5445520a71575808000000436f6e74696e7565715858010000006771595802000000476f715a6859580c00000053746172747570207461736b715b582b0000007371653b6c2b2a3b206c7370202d61203120303b206c737020303b2062702077696e6d61696e3b2020670a715c580900000053746570206f766572715d58040000006e657874715e755808000000436f6d70696c6572715f7d7160285814000000496e636c7564652073656172636820706174687371615832000000433a5c53444b5c437573746f6d33325c696e636c7564650a433a5c53444b5c437573746f6d33325c696e636c75646533320a7162580f0000004572726f7220646574656374696f6e71635849000000283f503c46494c453e5b5e5c5c5d2b295c28283f503c4c494e453e5b302d395d2b295c29203a206572726f7220283f503c49443e435b302d395d2b293a20283f503c4445463e2e2b297164580b000000557365206c6962726172797165580c0000002f44454641554c544c49423a7166580e00000055736564206c69627261726965737167580b0000007573657233322e6c69620a7168580f000000446562756720617267756d656e7473716958a5000000225f414253504154485f5c5f4e414d455f2e5f5352434558545f220a2f4665225f414253504154485f5c5f4e414d455f2e5f4558545f220a2f466f225f414253504154485f5c5f4e414d455f2e6f626a220a2f4664225f414253504154485f5c5f4e414d455f220a5f494e4350415448535f0a5f4255494c445f640a2f6e6f6c6f676f0a2f5a690a2f6c696e6b0a5f4c494250415448535f0a5f4c49425241524945535f0a716a580d000000436865636b2073796e74617865716b58030000002f5a73716c580c0000004c6962726172792070617468716d58090000002f4c4942504154483a716e6838588a000000225f414253504154485f5c5f4e414d455f2e5f5352434558545f220a2f4665225f414253504154485f5c5f4e414d455f2e5f4558545f220a2f466f225f414253504154485f5c5f4e414d455f2e6f626a220a5f494e4350415448535f0a5f4255494c445f0a2f6e6f6c6f676f0a2f6c696e6b0a5f4c494250415448535f0a5f4c49425241524945535f0a716f58090000004275696c6420646c6c717058030000002f4c447171580700000055736520706368717258030000002f5975717358090000004275696c6420657865717458030000002f4d4c717558140000004c696272617279207365617263682070617468737176582a000000433a5c53444b5c437573746f6d33325c6c69620a433a5c53444b5c437573746f6d33325c6c696233320a7177580c000000496e636c7564652070617468717858020000002f497179580b000000436f6d70696c6520706368717a58030000002f5963717b685f5816000000433a5c53444b5c437573746f6d33325c636c2e657865717c75752e">@language c++
+</t>
+<t tx="ekr.20060513122613.22" xcc_child_cfg="7d7100580b000000427265616b506f696e747371017d7102732e"></t>
+<t tx="ekr.20060513122613.23" xcc_child_cfg="7d71002858100000004865616465724c696e654e756d626572710158010000003071025810000000536f757263654c696e654e756d62657271036802580b000000427265616b506f696e747371047d7105752e">#define WIN32_LEAN_AND_MEAN
+#include &lt;windows.h&gt; // the main windows headers
+#include &lt;windowsx.h&gt; // a lot of cool macros</t>
+<t tx="ekr.20060513122613.24" xcc_child_cfg="7d71002858100000004865616465724c696e654e756d626572710158010000003571025810000000536f757263654c696e654e756d62657271035801000000347104580b000000427265616b506f696e747371057d71062858010000003171075807000000456e61626c65647108580200000031317109680875752e">char* a ="allo";
+// call message box api with NULL for parent window handle
+MessageBox(NULL, "THERE CAN BE ONLY ONE!!!",
+"MY FIRST WINDOWS PROGRAM",
+MB_OK | MB_ICONEXCLAMATION);
+a="salut";
+a="jean";
+a="pierre";
+a="pierre";
+// exit program
+return(0);
+
+</t>
+<t tx="ekr.20060513122613.25" xcc_cfg="7d710028580a00000045786563757461626c6571017d710228580a000000446c6c2063616c6c65727103580000000071045813000000457865637574696f6e20617267756d656e747371056804755804000000436f64657106680458070000004144445f4c4f477107680458050000005469746c657108580b0000006763635f6764625f657865710958050000005761746368710a5d710b580100000061710c61580b000000427265616b706f696e7473710d7d710e2858050000006370703a38710f5807000000456e61626c6564711058060000006370703a3138711168107558070000005345545f4c4f4771125811000000406c616e677561676520632b2b0a20430a71135806000000494e4954454471145804000000547275657115580b000000427265616b506f696e747371167d71172858050000006370703a3871185807000000456e61626c6564711958060000006370703a3135711a5807000000456e61626c6564711b58060000006370703a3132711c5807000000456e61626c6564711d7558070000004f7074696f6e73711e7d711f28580b00000058636320766572626f7365712058040000005472756571215807000000457865637574657122580500000046616c73657123580c0000004372656174652066696c65737124580400000054727565712558100000005365656b20627265616b706f696e747371265804000000547275657127580f000000436f6e6e65637420746f2070697065712868045807000000436f6d70696c657129580400000054727565712a580d00000046696c746572206f7574707574712b580500000046616c7365712c58130000004175746f20696e636c75646520686561646572712d580400000054727565712e58050000004465627567712f580400000054727565713058100000005365656b206669727374206572726f7271315804000000547275657132755808000000446562756767657271337d713428580e0000004964656e7469667920627265616b71356804580f00000054617267657420706964207461736b713658320000007368656c6c207461736b6c697374202f6e68202f66692022494d4147454e414d45206571205f4e414d455f2e5f4558545f22713758080000005069706520656f6c713858020000005c6e71395809000000417267756d656e7473713a5819000000225f414253504154485f5c5c5f4e414d455f2e65786522200a713b580e00000050726f6d7074207061747465726e713c58030000005b295d713d580e0000005175657279206c6f636174696f6e713e580100000066713f580800000046696e6420706964714058210000005f4e414d455f5c2e5f4558545f202b283f503c5049443e5b302d395d2b29202e2b7141580b000000436c65617220627265616b71425813000000636c656172205f46494c455f3a5f4c494e455f714358080000004576616c75617465714458060000007072696e74207145580400000053746f707146580100000071714758040000005374657071485804000000737465707149580b0000004c69737420627265616b73714a680458040000005461736b714b5802000000710a714c580f000000427265616b20646574656374696f6e714d5816000000427265616b706f696e74205b302d395d2b2c202e2b0a714e580800000053746570206f7574714f580600000066696e6973687150580900000053657420627265616b71515813000000627265616b205f46494c455f3a5f4c494e455f7152580d00000046696e64206c6f636174696f6e7153582800000061742e2b5f4e414d455f5c2e283f503c4558543e2e2b293a283f503c4c494e453e5b302d395d2b29715458070000005374657020696e7155580400000073746570715668335818000000433a5c53444b5c4d696e47575c62696e5c6764622e65786571575812000000526567756c61722065787072657373696f6e7158580f00000050726f6772616d206578697465640a71595808000000436f6e74696e7565715a5808000000636f6e74696e7565715b5802000000476f715c580300000072756e715d580c00000053746172747570207461736b715e582e000000627265616b206d61696e0a736574206c69737473697a6520310a73657420636f6e6669726d206f66660a72756e0a715f580900000053746570206f766572716058040000006e6578747161755808000000436f6d70696c657271627d7163285814000000496e636c7564652073656172636820706174687371645815000000433a5c53444b5c4d696e47575c696e636c7564650a7165580f0000004572726f7220646574656374696f6e71665849000000283f503c46494c453e5b5e5c5c5d2b295c28283f503c4c494e453e5b302d395d2b295c29203a206572726f7220283f503c49443e435b302d395d2b293a20283f503c4445463e2e2b297167580b000000557365206c696272617279716858020000002d6c7169580e00000055736564206c6962726172696573716a6804580f000000446562756720617267756d656e7473716b585c000000225f414253504154485f5c5f4e414d455f2e5f5352434558545f220a2d6f225f414253504154485f5c5f4e414d455f2e5f4558545f220a5f494e4350415448535f0a2d670a5f4c494250415448535f0a5f4c49425241524945535f0a716c580d000000436865636b2073796e74617865716d58030000002f5a73716e580c0000004c6962726172792070617468716f58020000002d4c7170683a5859000000225f414253504154485f5c5f4e414d455f2e5f5352434558545f220a2d6f225f414253504154485f5c5f4e414d455f2e5f4558545f220a5f494e4350415448535f0a5f4c494250415448535f0a5f4c49425241524945535f0a717158090000004275696c6420646c6c717258030000002f4c447173580700000055736520706368717458030000002f5975717558090000004275696c6420657865717658030000002f4d4c717758140000004c6962726172792073656172636820706174687371785811000000433a5c53444b5c4d696e47575c6c69620a7179580c000000496e636c7564652070617468717a58020000002d49717b580b000000436f6d70696c6520706368717c58030000002f5963717d68625818000000433a5c53444b5c4d696e47575c62696e5c6763632e657865717e75752e">@language c++
+</t>
+<t tx="ekr.20060513122613.3" xcc_child_cfg="7d7100580b000000427265616b506f696e747371017d7102732e">#ifndef USE_OPENGL
 	#define USE_OPENGL 1
 #endif</t>
-<t tx="ekr.20060513122613.4" xcc_child_cfg="7d7100550b427265616b506f696e747371017d7102732e">#ifdef GL_DEFS
+<t tx="ekr.20060513122613.4" xcc_child_cfg="7d7100580b000000427265616b506f696e747371017d7102732e">#ifdef GL_DEFS
 typedef unsigned int GLenum;
 typedef unsigned char GLboolean;
 typedef unsigned int GLbitfield;
@@ -7021,10 +7431,10 @@ typedef void GLvoid;
 typedef unsigned int GLintptr;
 typedef unsigned int GLsizeiptr;
 #endif</t>
-<t tx="ekr.20060513122613.5" xcc_child_cfg="7d7100550b427265616b506f696e747371017d7102732e">#if USE_OPENGL &gt;= 1
+<t tx="ekr.20060513122613.5" xcc_child_cfg="7d7100580b000000427265616b506f696e747371017d7102732e">#if USE_OPENGL &gt;= 1
 	@others
 #endif</t>
-<t tx="ekr.20060513122613.6" xcc_child_cfg="7d7100550b427265616b506f696e747371017d7102732e">#ifdef GL_DEFS
+<t tx="ekr.20060513122613.6" xcc_child_cfg="7d7100580b000000427265616b506f696e747371017d7102732e">#ifdef GL_DEFS
 #define GL_VERSION_1_1                    1
 #define GL_ACCUM                          0x0100
 #define GL_LOAD                           0x0101
@@ -7553,7 +7963,7 @@ typedef unsigned int GLsizeiptr;
 #define GL_T2F_C4F_N3F_V3F                0x2A2C
 #define GL_T4F_C4F_N3F_V4F                0x2A2D
 #endif</t>
-<t tx="ekr.20060513122613.7" xcc_child_cfg="7d7100550b427265616b506f696e747371017d7102732e">#ifndef GL_DEFS
+<t tx="ekr.20060513122613.7" xcc_child_cfg="7d7100580b000000427265616b506f696e747371017d7102732e">#ifndef GL_DEFS
 GL_PROC(void,glAccum,(GLenum op, GLfloat value))
 GL_PROC(void,glAlphaFunc,(GLenum func, GLclampf ref))
 GL_PROC(GLboolean,glAreTexturesResident,(GLsizei n, const GLuint *textures, GLboolean *residences))
@@ -7891,7 +8301,7 @@ GL_PROC(void,glVertex4sv,(const GLshort *v))
 GL_PROC(void,glVertexPointer,(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer))
 GL_PROC(void,glViewport,(GLint x, GLint y, GLsizei width, GLsizei height))
 #endif</t>
-<t tx="ekr.20060513122613.8" xcc_child_cfg="7d7100550b427265616b506f696e747371017d7102732e">#if USE_OPENGL &gt;= 2
+<t tx="ekr.20060513122613.8" xcc_child_cfg="7d7100580b000000427265616b506f696e747371017d7102732e">#if USE_OPENGL &gt;= 2
 	@others
 #endif</t>
 <t tx="ekr.20060513122613.9">#ifdef GL_DEFS
@@ -7937,410 +8347,6 @@ GL_PROC(void,glViewport,(GLint x, GLint y, GLsizei width, GLsizei height))
 #define GL_ALIASED_POINT_SIZE_RANGE       0x846D
 #define GL_ALIASED_LINE_WIDTH_RANGE       0x846E
 #endif</t>
-<t tx="ekr.20060513122613.10">#ifndef GL_DEFS
-GL_EXT(void,glBlendColor,(GLclampf, GLclampf, GLclampf, GLclampf))
-GL_EXT(void,glBlendEquation,(GLenum))
-GL_EXT(void,glDrawRangeElements,(GLenum, GLuint, GLuint, GLsizei, GLenum, const GLvoid *))
-GL_EXT(void,glColorTable,(GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid *))
-GL_EXT(void,glColorTableParameterfv,(GLenum, GLenum, const GLfloat *))
-GL_EXT(void,glColorTableParameteriv,(GLenum, GLenum, const GLint *))
-GL_EXT(void,glCopyColorTable,(GLenum, GLenum, GLint, GLint, GLsizei))
-GL_EXT(void,glGetColorTable,(GLenum, GLenum, GLenum, GLvoid *))
-GL_EXT(void,glGetColorTableParameterfv,(GLenum, GLenum, GLfloat *))
-GL_EXT(void,glGetColorTableParameteriv,(GLenum, GLenum, GLint *))
-GL_EXT(void,glColorSubTable,(GLenum, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *))
-GL_EXT(void,glCopyColorSubTable,(GLenum, GLsizei, GLint, GLint, GLsizei))
-GL_EXT(void,glConvolutionFilter1D,(GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid *))
-GL_EXT(void,glConvolutionFilter2D,(GLenum, GLenum, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *))
-GL_EXT(void,glConvolutionParameterf,(GLenum, GLenum, GLfloat))
-GL_EXT(void,glConvolutionParameterfv,(GLenum, GLenum, const GLfloat *))
-GL_EXT(void,glConvolutionParameteri,(GLenum, GLenum, GLint))
-GL_EXT(void,glConvolutionParameteriv,(GLenum, GLenum, const GLint *))
-GL_EXT(void,glCopyConvolutionFilter1D,(GLenum, GLenum, GLint, GLint, GLsizei))
-GL_EXT(void,glCopyConvolutionFilter2D,(GLenum, GLenum, GLint, GLint, GLsizei, GLsizei))
-GL_EXT(void,glGetConvolutionFilter,(GLenum, GLenum, GLenum, GLvoid *))
-GL_EXT(void,glGetConvolutionParameterfv,(GLenum, GLenum, GLfloat *))
-GL_EXT(void,glGetConvolutionParameteriv,(GLenum, GLenum, GLint *))
-GL_EXT(void,glGetSeparableFilter,(GLenum, GLenum, GLenum, GLvoid *, GLvoid *, GLvoid *))
-GL_EXT(void,glSeparableFilter2D,(GLenum, GLenum, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *, const GLvoid *))
-GL_EXT(void,glGetHistogram,(GLenum, GLboolean, GLenum, GLenum, GLvoid *))
-GL_EXT(void,glGetHistogramParameterfv,(GLenum, GLenum, GLfloat *))
-GL_EXT(void,glGetHistogramParameteriv,(GLenum, GLenum, GLint *))
-GL_EXT(void,glGetMinmax,(GLenum, GLboolean, GLenum, GLenum, GLvoid *))
-GL_EXT(void,glGetMinmaxParameterfv,(GLenum, GLenum, GLfloat *))
-GL_EXT(void,glGetMinmaxParameteriv,(GLenum, GLenum, GLint *))
-GL_EXT(void,glHistogram,(GLenum, GLsizei, GLenum, GLboolean))
-GL_EXT(void,glMinmax,(GLenum, GLenum, GLboolean))
-GL_EXT(void,glResetHistogram,(GLenum))
-GL_EXT(void,glResetMinmax,(GLenum))
-GL_EXT(void,glTexImage3D,(GLenum, GLint, GLint, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid *))
-GL_EXT(void,glTexSubImage3D,(GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *))
-GL_EXT(void,glCopyTexSubImage3D,(GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei))
-#endif</t>
-<t tx="ekr.20060513122613.11">#if USE_OPENGL &gt;= 3
-	@others
-#endif</t>
-<t tx="ekr.20060513122613.12">#ifdef GL_DEFS
-#define GL_TEXTURE0                       0x84C0
-#define GL_TEXTURE1                       0x84C1
-#define GL_TEXTURE2                       0x84C2
-#define GL_TEXTURE3                       0x84C3
-#define GL_TEXTURE4                       0x84C4
-#define GL_TEXTURE5                       0x84C5
-#define GL_TEXTURE6                       0x84C6
-#define GL_TEXTURE7                       0x84C7
-#define GL_TEXTURE8                       0x84C8
-#define GL_TEXTURE9                       0x84C9
-#define GL_TEXTURE10                      0x84CA
-#define GL_TEXTURE11                      0x84CB
-#define GL_TEXTURE12                      0x84CC
-#define GL_TEXTURE13                      0x84CD
-#define GL_TEXTURE14                      0x84CE
-#define GL_TEXTURE15                      0x84CF
-#define GL_TEXTURE16                      0x84D0
-#define GL_TEXTURE17                      0x84D1
-#define GL_TEXTURE18                      0x84D2
-#define GL_TEXTURE19                      0x84D3
-#define GL_TEXTURE20                      0x84D4
-#define GL_TEXTURE21                      0x84D5
-#define GL_TEXTURE22                      0x84D6
-#define GL_TEXTURE23                      0x84D7
-#define GL_TEXTURE24                      0x84D8
-#define GL_TEXTURE25                      0x84D9
-#define GL_TEXTURE26                      0x84DA
-#define GL_TEXTURE27                      0x84DB
-#define GL_TEXTURE28                      0x84DC
-#define GL_TEXTURE29                      0x84DD
-#define GL_TEXTURE30                      0x84DE
-#define GL_TEXTURE31                      0x84DF
-#define GL_ACTIVE_TEXTURE                 0x84E0
-#define GL_CLIENT_ACTIVE_TEXTURE          0x84E1
-#define GL_MAX_TEXTURE_UNITS              0x84E2
-#define GL_TRANSPOSE_MODELVIEW_MATRIX     0x84E3
-#define GL_TRANSPOSE_PROJECTION_MATRIX    0x84E4
-#define GL_TRANSPOSE_TEXTURE_MATRIX       0x84E5
-#define GL_TRANSPOSE_COLOR_MATRIX         0x84E6
-#define GL_MULTISAMPLE                    0x809D
-#define GL_SAMPLE_ALPHA_TO_COVERAGE       0x809E
-#define GL_SAMPLE_ALPHA_TO_ONE            0x809F
-#define GL_SAMPLE_COVERAGE                0x80A0
-#define GL_SAMPLE_BUFFERS                 0x80A8
-#define GL_SAMPLES                        0x80A9
-#define GL_SAMPLE_COVERAGE_VALUE          0x80AA
-#define GL_SAMPLE_COVERAGE_INVERT         0x80AB
-#define GL_MULTISAMPLE_BIT                0x20000000
-#define GL_NORMAL_MAP                     0x8511
-#define GL_REFLECTION_MAP                 0x8512
-#define GL_TEXTURE_CUBE_MAP               0x8513
-#define GL_TEXTURE_BINDING_CUBE_MAP       0x8514
-#define GL_TEXTURE_CUBE_MAP_POSITIVE_X    0x8515
-#define GL_TEXTURE_CUBE_MAP_NEGATIVE_X    0x8516
-#define GL_TEXTURE_CUBE_MAP_POSITIVE_Y    0x8517
-#define GL_TEXTURE_CUBE_MAP_NEGATIVE_Y    0x8518
-#define GL_TEXTURE_CUBE_MAP_POSITIVE_Z    0x8519
-#define GL_TEXTURE_CUBE_MAP_NEGATIVE_Z    0x851A
-#define GL_PROXY_TEXTURE_CUBE_MAP         0x851B
-#define GL_MAX_CUBE_MAP_TEXTURE_SIZE      0x851C
-#define GL_COMPRESSED_ALPHA               0x84E9
-#define GL_COMPRESSED_LUMINANCE           0x84EA
-#define GL_COMPRESSED_LUMINANCE_ALPHA     0x84EB
-#define GL_COMPRESSED_INTENSITY           0x84EC
-#define GL_COMPRESSED_RGB                 0x84ED
-#define GL_COMPRESSED_RGBA                0x84EE
-#define GL_TEXTURE_COMPRESSION_HINT       0x84EF
-#define GL_TEXTURE_COMPRESSED_IMAGE_SIZE  0x86A0
-#define GL_TEXTURE_COMPRESSED             0x86A1
-#define GL_NUM_COMPRESSED_TEXTURE_FORMATS 0x86A2
-#define GL_COMPRESSED_TEXTURE_FORMATS     0x86A3
-#define GL_CLAMP_TO_BORDER                0x812D
-#define GL_CLAMP_TO_BORDER_SGIS           0x812D
-#define GL_COMBINE                        0x8570
-#define GL_COMBINE_RGB                    0x8571
-#define GL_COMBINE_ALPHA                  0x8572
-#define GL_SOURCE0_RGB                    0x8580
-#define GL_SOURCE1_RGB                    0x8581
-#define GL_SOURCE2_RGB                    0x8582
-#define GL_SOURCE0_ALPHA                  0x8588
-#define GL_SOURCE1_ALPHA                  0x8589
-#define GL_SOURCE2_ALPHA                  0x858A
-#define GL_OPERAND0_RGB                   0x8590
-#define GL_OPERAND1_RGB                   0x8591
-#define GL_OPERAND2_RGB                   0x8592
-#define GL_OPERAND0_ALPHA                 0x8598
-#define GL_OPERAND1_ALPHA                 0x8599
-#define GL_OPERAND2_ALPHA                 0x859A
-#define GL_RGB_SCALE                      0x8573
-#define GL_ADD_SIGNED                     0x8574
-#define GL_INTERPOLATE                    0x8575
-#define GL_SUBTRACT                       0x84E7
-#define GL_CONSTANT                       0x8576
-#define GL_PRIMARY_COLOR                  0x8577
-#define GL_PREVIOUS                       0x8578
-#define GL_DOT3_RGB                       0x86AE
-#define GL_DOT3_RGBA                      0x86AF
-#endif
-</t>
-<t tx="ekr.20060513122613.13">#ifndef GL_DEFS
-GL_EXT(void,glActiveTexture,(GLenum))
-GL_EXT(void,glClientActiveTexture,(GLenum))
-GL_EXT(void,glMultiTexCoord1d,(GLenum,GLdouble))
-GL_EXT(void,glMultiTexCoord1dv,(GLenum,const GLdouble *))
-GL_EXT(void,glMultiTexCoord1f,(GLenum,GLfloat))
-GL_EXT(void,glMultiTexCoord1fv,(GLenum,const GLfloat *))
-GL_EXT(void,glMultiTexCoord1i,(GLenum,GLint))
-GL_EXT(void,glMultiTexCoord1iv,(GLenum,const GLint*))
-GL_EXT(void,glMultiTexCoord1s,(GLenum,GLshort))
-GL_EXT(void,glMultiTexCoord1sv,(GLenum,const GLshort*))
-GL_EXT(void,glMultiTexCoord2d,(GLenum,GLdouble,GLdouble))
-GL_EXT(void,glMultiTexCoord2dv,(GLenum,const GLdouble*))
-GL_EXT(void,glMultiTexCoord2f,(GLenum,GLfloat,GLfloat))
-GL_EXT(void,glMultiTexCoord2fv,(GLenum,const GLfloat*))
-GL_EXT(void,glMultiTexCoord2i,(GLenum,GLint,GLint))
-GL_EXT(void,glMultiTexCoord2iv,(GLenum,const GLint*))
-GL_EXT(void,glMultiTexCoord2s,(GLenum,GLshort,GLshort))
-GL_EXT(void,glMultiTexCoord2sv,(GLenum,const GLshort*))
-GL_EXT(void,glMultiTexCoord3d,(GLenum,GLdouble,GLdouble,GLdouble))
-GL_EXT(void,glMultiTexCoord3dv,(GLenum,const GLdouble*))
-GL_EXT(void,glMultiTexCoord3f,(GLenum,GLfloat,GLfloat,GLfloat))
-GL_EXT(void,glMultiTexCoord3fv,(GLenum,const GLfloat*))
-GL_EXT(void,glMultiTexCoord3i,(GLenum,GLint,GLint,GLint))
-GL_EXT(void,glMultiTexCoord3iv,(GLenum,const GLint*))
-GL_EXT(void,glMultiTexCoord3s,(GLenum,GLshort,GLshort,GLshort))
-GL_EXT(void,glMultiTexCoord3sv,(GLenum,const GLshort*))
-GL_EXT(void,glMultiTexCoord4d,(GLenum,GLdouble,GLdouble,GLdouble,GLdouble))
-GL_EXT(void,glMultiTexCoord4dv,(GLenum,const GLdouble *))
-GL_EXT(void,glMultiTexCoord4f,(GLenum,GLfloat,GLfloat,GLfloat,GLfloat))
-GL_EXT(void,glMultiTexCoord4fv,(GLenum,const GLfloat *))
-GL_EXT(void,glMultiTexCoord4i,(GLenum,GLint,GLint,GLint,GLint))
-GL_EXT(void,glMultiTexCoord4iv,(GLenum,const GLint *))
-GL_EXT(void,glMultiTexCoord4s,(GLenum,GLshort,GLshort,GLshort,GLshort))
-GL_EXT(void,glMultiTexCoord4sv,(GLenum,const GLshort *))
-GL_EXT(void,glLoadTransposeMatrixf,(const GLfloat *))
-GL_EXT(void,glLoadTransposeMatrixd,(const GLdouble *))
-GL_EXT(void,glMultTransposeMatrixf,(const GLfloat *))
-GL_EXT(void,glMultTransposeMatrixd,(const GLdouble *))
-GL_EXT(void,glSampleCoverage,(GLclampf,GLboolean))
-GL_EXT(void,glCompressedTexImage3D,(GLenum,GLint,GLenum,GLsizei,GLsizei,GLsizei,GLint,GLsizei,const GLvoid *))
-GL_EXT(void,glCompressedTexImage2D,(GLenum,GLint,GLenum,GLsizei,GLsizei,GLint,GLsizei,const GLvoid *))
-GL_EXT(void,glCompressedTexImage1D,(GLenum,GLint,GLenum,GLsizei,GLint,GLsizei,const GLvoid *))
-GL_EXT(void,glCompressedTexSubImage3D,(GLenum,GLint,GLint,GLint,GLint,GLsizei,GLsizei,GLsizei,GLenum,GLsizei,const GLvoid *))
-GL_EXT(void,glCompressedTexSubImage2D,(GLenum,GLint,GLint,GLint,GLsizei,GLsizei,GLenum,GLsizei,const GLvoid *))
-GL_EXT(void,glCompressedTexSubImage1D,(GLenum,GLint,GLint,GLsizei,GLenum,GLsizei,const GLvoid *))
-GL_EXT(void,glGetCompressedTexImage,(GLenum,GLint,GLvoid *))
-#endif</t>
-<t tx="ekr.20060513122613.14">#if USE_OPENGL &gt;= 4
-	@others
-#endif</t>
-<t tx="ekr.20060513122613.15">#ifdef GL_DEFS
-#define GL_BLEND_DST_RGB                  0x80C8
-#define GL_BLEND_SRC_RGB                  0x80C9
-#define GL_BLEND_DST_ALPHA                0x80CA
-#define GL_BLEND_SRC_ALPHA                0x80CB
-#define GL_POINT_SIZE_MIN                 0x8126
-#define GL_POINT_SIZE_MAX                 0x8127
-#define GL_POINT_FADE_THRESHOLD_SIZE      0x8128
-#define GL_POINT_DISTANCE_ATTENUATION     0x8129
-#define GL_GENERATE_MIPMAP                0x8191
-#define GL_GENERATE_MIPMAP_HINT           0x8192
-#define GL_DEPTH_COMPONENT16              0x81A5
-#define GL_DEPTH_COMPONENT24              0x81A6
-#define GL_DEPTH_COMPONENT32              0x81A7
-#define GL_MIRRORED_REPEAT                0x8370
-#define GL_FOG_COORDINATE_SOURCE          0x8450
-#define GL_FOG_COORDINATE                 0x8451
-#define GL_FRAGMENT_DEPTH                 0x8452
-#define GL_CURRENT_FOG_COORDINATE         0x8453
-#define GL_FOG_COORDINATE_ARRAY_TYPE      0x8454
-#define GL_FOG_COORDINATE_ARRAY_STRIDE    0x8455
-#define GL_FOG_COORDINATE_ARRAY_POINTER   0x8456
-#define GL_FOG_COORDINATE_ARRAY           0x8457
-#define GL_COLOR_SUM                      0x8458
-#define GL_CURRENT_SECONDARY_COLOR        0x8459
-#define GL_SECONDARY_COLOR_ARRAY_SIZE     0x845A
-#define GL_SECONDARY_COLOR_ARRAY_TYPE     0x845B
-#define GL_SECONDARY_COLOR_ARRAY_STRIDE   0x845C
-#define GL_SECONDARY_COLOR_ARRAY_POINTER  0x845D
-#define GL_SECONDARY_COLOR_ARRAY          0x845E
-#define GL_MAX_TEXTURE_LOD_BIAS           0x84FD
-#define GL_TEXTURE_FILTER_CONTROL         0x8500
-#define GL_TEXTURE_LOD_BIAS               0x8501
-#define GL_INCR_WRAP                      0x8507
-#define GL_DECR_WRAP                      0x8508
-#define GL_TEXTURE_DEPTH_SIZE             0x884A
-#define GL_DEPTH_TEXTURE_MODE             0x884B
-#define GL_TEXTURE_COMPARE_MODE           0x884C
-#define GL_TEXTURE_COMPARE_FUNC           0x884D
-#define GL_COMPARE_R_TO_TEXTURE           0x884E
-#endif</t>
-<t tx="ekr.20060513122613.16">#ifndef GL_DEFS
-GL_EXT(void,glBlendFuncSeparate,(GLenum,GLenum,GLenum,GLenum))
-GL_EXT(void,glFogCoordf,(GLfloat))
-GL_EXT(void,glFogCoordfv,(const GLfloat *))
-GL_EXT(void,glFogCoordd,(GLdouble))
-GL_EXT(void,glFogCoorddv,(const GLdouble *))
-GL_EXT(void,glFogCoordPointer,(GLenum,GLsizei,const GLvoid *))
-GL_EXT(void,glMultiDrawArrays,(GLenum,GLint *,GLsizei *,GLsizei))
-GL_EXT(void,glMultiDrawElements,(GLenum,const GLsizei *,GLenum,const GLvoid* *,GLsizei))
-GL_EXT(void,glPointParameterf,(GLenum,GLfloat))
-GL_EXT(void,glPointParameterfv,(GLenum,const GLfloat *))
-GL_EXT(void,glPointParameteri,(GLenum,GLint))
-GL_EXT(void,glPointParameteriv,(GLenum,const GLint *))
-GL_EXT(void,glSecondaryColor3b,(GLbyte,GLbyte,GLbyte))
-GL_EXT(void,glSecondaryColor3bv,(const GLbyte *))
-GL_EXT(void,glSecondaryColor3d,(GLdouble,GLdouble,GLdouble))
-GL_EXT(void,glSecondaryColor3dv,(const GLdouble *))
-GL_EXT(void,glSecondaryColor3f,(GLfloat,GLfloat,GLfloat))
-GL_EXT(void,glSecondaryColor3fv,(const GLfloat *))
-GL_EXT(void,glSecondaryColor3i,(GLint,GLint,GLint))
-GL_EXT(void,glSecondaryColor3iv,(const GLint *))
-GL_EXT(void,glSecondaryColor3s,(GLshort,GLshort,GLshort))
-GL_EXT(void,glSecondaryColor3sv,(const GLshort *))
-GL_EXT(void,glSecondaryColor3ub,(GLubyte,GLubyte,GLubyte))
-GL_EXT(void,glSecondaryColor3ubv,(const GLubyte *))
-GL_EXT(void,glSecondaryColor3ui,(GLuint,GLuint,GLuint))
-GL_EXT(void,glSecondaryColor3uiv,(const GLuint *))
-GL_EXT(void,glSecondaryColor3us,(GLushort,GLushort,GLushort))
-GL_EXT(void,glSecondaryColor3usv,(const GLushort *))
-GL_EXT(void,glSecondaryColorPointer,(GLint,GLenum,GLsizei,const GLvoid *))
-GL_EXT(void,glWindowPos2d,(GLdouble,GLdouble))
-GL_EXT(void,glWindowPos2dv,(const GLdouble *))
-GL_EXT(void,glWindowPos2f,(GLfloat,GLfloat))
-GL_EXT(void,glWindowPos2fv,(const GLfloat *))
-GL_EXT(void,glWindowPos2i,(GLint,GLint))
-GL_EXT(void,glWindowPos2iv,(const GLint *))
-GL_EXT(void,glWindowPos2s,(GLshort,GLshort))
-GL_EXT(void,glWindowPos2sv,(const GLshort *))
-GL_EXT(void,glWindowPos3d,(GLdouble,GLdouble,GLdouble))
-GL_EXT(void,glWindowPos3dv,(const GLdouble *))
-GL_EXT(void,glWindowPos3f,(GLfloat,GLfloat,GLfloat))
-GL_EXT(void,glWindowPos3fv,(const GLfloat *))
-GL_EXT(void,glWindowPos3i,(GLint,GLint,GLint))
-GL_EXT(void,glWindowPos3iv,(const GLint *))
-GL_EXT(void,glWindowPos3s,(GLshort,GLshort,GLshort))
-GL_EXT(void,glWindowPos3sv,(const GLshort *))
-#endif</t>
-<t tx="ekr.20060513122613.17" xcc_child_cfg="7d7100550b427265616b506f696e747371017d7102732e">#if USE_OPENGL &gt;= 5
-	@others
-#endif</t>
-<t tx="ekr.20060513122613.18" xcc_child_cfg="7d7100550b427265616b506f696e747371017d7102732e">#ifdef GL_DEFS
-#define GL_BUFFER_SIZE                    0x8764
-#define GL_BUFFER_USAGE                   0x8765
-#define GL_QUERY_COUNTER_BITS             0x8864
-#define GL_CURRENT_QUERY                  0x8865
-#define GL_QUERY_RESULT                   0x8866
-#define GL_QUERY_RESULT_AVAILABLE         0x8867
-#define GL_ARRAY_BUFFER                   0x8892
-#define GL_ELEMENT_ARRAY_BUFFER           0x8893
-#define GL_ARRAY_BUFFER_BINDING           0x8894
-#define GL_ELEMENT_ARRAY_BUFFER_BINDING   0x8895
-#define GL_VERTEX_ARRAY_BUFFER_BINDING    0x8896
-#define GL_NORMAL_ARRAY_BUFFER_BINDING    0x8897
-#define GL_COLOR_ARRAY_BUFFER_BINDING     0x8898
-#define GL_INDEX_ARRAY_BUFFER_BINDING     0x8899
-#define GL_TEXTURE_COORD_ARRAY_BUFFER_BINDING 0x889A
-#define GL_EDGE_FLAG_ARRAY_BUFFER_BINDING 0x889B
-#define GL_SECONDARY_COLOR_ARRAY_BUFFER_BINDING 0x889C
-#define GL_FOG_COORDINATE_ARRAY_BUFFER_BINDING 0x889D
-#define GL_WEIGHT_ARRAY_BUFFER_BINDING    0x889E
-#define GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING 0x889F
-#define GL_READ_ONLY                      0x88B8
-#define GL_WRITE_ONLY                     0x88B9
-#define GL_READ_WRITE                     0x88BA
-#define GL_BUFFER_ACCESS                  0x88BB
-#define GL_BUFFER_MAPPED                  0x88BC
-#define GL_BUFFER_MAP_POINTER             0x88BD
-#define GL_STREAM_DRAW                    0x88E0
-#define GL_STREAM_READ                    0x88E1
-#define GL_STREAM_COPY                    0x88E2
-#define GL_STATIC_DRAW                    0x88E4
-#define GL_STATIC_READ                    0x88E5
-#define GL_STATIC_COPY                    0x88E6
-#define GL_DYNAMIC_DRAW                   0x88E8
-#define GL_DYNAMIC_READ                   0x88E9
-#define GL_DYNAMIC_COPY                   0x88EA
-#define GL_SAMPLES_PASSED                 0x8914
-#define GL_FOG_COORD_SOURCE               GL_FOG_COORDINATE_SOURCE
-#define GL_FOG_COORD                      GL_FOG_COORDINATE
-#define GL_CURRENT_FOG_COORD              GL_CURRENT_FOG_COORDINATE
-#define GL_FOG_COORD_ARRAY_TYPE           GL_FOG_COORDINATE_ARRAY_TYPE
-#define GL_FOG_COORD_ARRAY_STRIDE         GL_FOG_COORDINATE_ARRAY_STRIDE
-#define GL_FOG_COORD_ARRAY_POINTER        GL_FOG_COORDINATE_ARRAY_POINTER
-#define GL_FOG_COORD_ARRAY                GL_FOG_COORDINATE_ARRAY
-#define GL_FOG_COORD_ARRAY_BUFFER_BINDING GL_FOG_COORDINATE_ARRAY_BUFFER_BINDING
-#define GL_SRC0_RGB                       GL_SOURCE0_RGB
-#define GL_SRC1_RGB                       GL_SOURCE1_RGB
-#define GL_SRC2_RGB                       GL_SOURCE2_RGB
-#define GL_SRC0_ALPHA                     GL_SOURCE0_ALPHA
-#define GL_SRC1_ALPHA                     GL_SOURCE1_ALPHA
-#define GL_SRC2_ALPHA                     GL_SOURCE2_ALPHA
-#endif</t>
-<t tx="ekr.20060513122613.19" xcc_child_cfg="7d7100550b427265616b506f696e747371017d7102732e">#ifndef GL_DEFS
-GL_EXT(void,glGenQueries,(GLsizei,GLuint *))
-GL_EXT(void,glDeleteQueries,(GLsizei,const GLuint *))
-GL_EXT(GLboolean,glIsQuery,(GLuint))
-GL_EXT(void,glBeginQuery,(GLenum,GLuint))
-GL_EXT(void,glEndQuery,(GLenum))
-GL_EXT(void,glGetQueryiv,(GLenum,GLenum,GLint *))
-GL_EXT(void,glGetQueryObjectiv,(GLuint,GLenum,GLint *))
-GL_EXT(void,glGetQueryObjectuiv,(GLuint,GLenum,GLuint *))
-GL_EXT(void,glBindBuffer,(GLenum,GLuint))
-GL_EXT(void,glDeleteBuffers,(GLsizei,const GLuint *))
-GL_EXT(void,glGenBuffers,(GLsizei,GLuint *))
-GL_EXT(GLboolean,glIsBuffer,(GLuint))
-GL_EXT(void,glBufferData,(GLenum,GLsizeiptr,const GLvoid *,GLenum))
-GL_EXT(void,glBufferSubData,(GLenum,GLintptr,GLsizeiptr,const GLvoid *))
-GL_EXT(void,glGetBufferSubData,(GLenum,GLintptr,GLsizeiptr,GLvoid *))
-GL_EXT(GLvoid*,glMapBuffer,(GLenum,GLenum))
-GL_EXT(GLboolean,glUnmapBuffer,(GLenum))
-GL_EXT(void,glGetBufferParameteriv,(GLenum,GLenum,GLint *))
-GL_EXT(void,glGetBufferPointerv,(GLenum,GLenum,GLvoid* *))
-#endif</t>
-<t tx="ekr.20060513122613.20" xcc_child_cfg="7d7100550b427265616b506f696e747371017d7102732e">#ifndef GL_DEFS
-WGL_PROC(BOOL,wglCopyContext,(HGLRC,HGLRC,UINT))
-WGL_PROC(HGLRC,wglCreateContext,(HDC))
-WGL_PROC(HGLRC,wglCreateLayerContext,(HDC,int))
-WGL_PROC(BOOL,wglDeleteContext,(HGLRC))
-WGL_PROC(HGLRC,wglGetCurrentContext,(VOID))
-WGL_PROC(HDC,wglGetCurrentDC,(VOID))
-WGL_PROC(PROC,wglGetProcAddress,(LPCSTR))
-WGL_PROC(BOOL,wglMakeCurrent,(HDC,HGLRC))
-WGL_PROC(BOOL,wglShareLists,(HGLRC,HGLRC))
-WGL_PROC(BOOL,wglUseFontBitmapsA,(HDC,DWORD,DWORD,DWORD))
-WGL_PROC(BOOL,wglUseFontBitmapsW,(HDC,DWORD,DWORD,DWORD))
-WGL_PROC(BOOL,wglSwapBuffers,(HDC))
-WGL_PROC(BOOL,wglUseFontOutlinesA,(HDC,DWORD,DWORD,DWORD,FLOAT,FLOAT,int,LPGLYPHMETRICSFLOAT))
-WGL_PROC(BOOL,wglUseFontOutlinesW,(HDC,DWORD,DWORD,DWORD,FLOAT,FLOAT,int,LPGLYPHMETRICSFLOAT))
-WGL_PROC(BOOL,wglDescribeLayerPlane,(HDC,int,int,UINT,LPLAYERPLANEDESCRIPTOR))
-WGL_PROC(int,wglSetLayerPaletteEntries,(HDC,int,int,int,CONST COLORREF *))
-WGL_PROC(int,wglGetLayerPaletteEntries,(HDC,int,int,int,COLORREF *))
-WGL_PROC(BOOL,wglRealizeLayerPalette,(HDC,int,BOOL))
-WGL_PROC(BOOL,wglSwapLayerBuffers,(HDC,UINT))
-#if (WINVER &gt;= 0x0500)
-	WGL_PROC(DWORD,SwapMultipleBuffers,(UINT,CONST WGLSWAP *))
-#endif
-#endif
-</t>
-<t tx="ekr.20060513122613.21" xcc_cfg="7d710028550a45786563757461626c6571017d710228550a446c6c2063616c6c65727103550071045513457865637574696f6e20617267756d656e747371056804755504436f64657106680455074144445f4c4f477107680455055469746c6571085510636c5f6364625f77696e33325f657865710955055761746368710a5d710b550161710c61550b427265616b706f696e7473710d7d710e2855056370703a38710f5507456e61626c6564711055066370703a3138711168107555075345545f4c4f47711268045506494e4954454471135504547275657114550b427265616b506f696e747371157d71162855066370703a313571175507456e61626c6564711855066370703a313371195507456e61626c6564711a7555074f7074696f6e73711b7d711c28550b58636320766572626f7365711d550454727565711e550745786563757465711f550546616c73657120550c4372656174652066696c65737121550454727565712255105365656b20627265616b706f696e747371235504547275657124550f436f6e6e65637420746f2070697065712568045507436f6d70696c6571265504547275657127550d46696c746572206f75747075747128550546616c7365712955134175746f20696e636c75646520686561646572712a550454727565712b55054465627567712c550454727565712d55105365656b206669727374206572726f72712e550546616c7365712f755508446562756767657271307d713128550e4964656e7469667920627265616b7132552720283f503c49443e5b302d395d2b29202e2b5f46494c455f282040207c3a295f4c494e455f2e2b7133550f54617267657420706964207461736b713455092e746c697374202d63713555085069706520656f6c713655045c6e5c7271375509417267756d656e74737138555c2d6c696e6573202d47202d320a2d7372637061746820225f414253504154485f220a2d7920227372762a5f414253504154485f220a2d6920225f414253504154485f220a225f414253504154485f5c5c5f4e414d455f2e657865220a7139550e50726f6d7074207061747465726e713a55013e713b550e5175657279206c6f636174696f6e713c55096c732e203b206c7363713d550846696e6420706964713e5521306e283f503c5049443e5b302d395d2b29202e2a5f4e414d455f5c2e5f4558545f713f550b436c65617220627265616b714055076263205f49445f714155084576616c75617465714255023f3f7143550453746f707144550171714555045374657071465501707147550b4c69737420627265616b7371485502626c714955045461736b714a6804550f427265616b20646574656374696f6e714b5516427265616b706f696e74205b302d395d2b206869740a714c550853746570206f7574714d55026775714e550953657420627265616b714f5512627020605f46494c455f3a5f4c494e455f607150550d46696e64206c6f636174696f6e7151553243757272656e743a202e2a5f4e414d455f5c2e283f503c4558543e2e2b295c28283f503c4c494e453e5b302d395d2b295c29715255075374657020696e715355017471546830551e433a5c53444b5c437573746f6d33325c77696e6462675c6364622e65786571555512526567756c61722065787072657373696f6e7156550c507265737320454e5445520a71575508436f6e74696e7565715855016771595502476f715a6859550c53746172747570207461736b715b552b7371653b6c2b2a3b206c7370202d61203120303b206c737020303b2062702077696e6d61696e3b2020670a715c550953746570206f766572715d55046e657874715e755508436f6d70696c6572715f7d7160285514496e636c7564652073656172636820706174687371615532433a5c53444b5c437573746f6d33325c696e636c7564650a433a5c53444b5c437573746f6d33325c696e636c75646533320a7162550f4572726f7220646574656374696f6e71635549283f503c46494c453e5b5e5c5c5d2b295c28283f503c4c494e453e5b302d395d2b295c29203a206572726f7220283f503c49443e435b302d395d2b293a20283f503c4445463e2e2b297164550b557365206c6962726172797165550c2f44454641554c544c49423a7166550e55736564206c69627261726965737167550b7573657233322e6c69620a7168550f446562756720617267756d656e7473716955a5225f414253504154485f5c5f4e414d455f2e5f5352434558545f220a2f4665225f414253504154485f5c5f4e414d455f2e5f4558545f220a2f466f225f414253504154485f5c5f4e414d455f2e6f626a220a2f4664225f414253504154485f5c5f4e414d455f220a5f494e4350415448535f0a5f4255494c445f640a2f6e6f6c6f676f0a2f5a690a2f6c696e6b0a5f4c494250415448535f0a5f4c49425241524945535f0a716a550d436865636b2073796e74617865716b55032f5a73716c550c4c6962726172792070617468716d55092f4c4942504154483a716e6838558a225f414253504154485f5c5f4e414d455f2e5f5352434558545f220a2f4665225f414253504154485f5c5f4e414d455f2e5f4558545f220a2f466f225f414253504154485f5c5f4e414d455f2e6f626a220a5f494e4350415448535f0a5f4255494c445f0a2f6e6f6c6f676f0a2f6c696e6b0a5f4c494250415448535f0a5f4c49425241524945535f0a716f55094275696c6420646c6c717055032f4c447171550755736520706368717255032f5975717355094275696c6420657865717455032f4d4c717555144c696272617279207365617263682070617468737176552a433a5c53444b5c437573746f6d33325c6c69620a433a5c53444b5c437573746f6d33325c6c696233320a7177550c496e636c7564652070617468717855022f497179550b436f6d70696c6520706368717a55032f5963717b685f5516433a5c53444b5c437573746f6d33325c636c2e657865717c75752e">@language c++
-</t>
-<t tx="ekr.20060513122613.22" xcc_child_cfg="7d7100550b427265616b506f696e747371017d7102732e"></t>
-<t tx="ekr.20060513122613.23" xcc_child_cfg="7d71002855104865616465724c696e654e756d626572710155013071025510536f757263654c696e654e756d62657271036802550b427265616b506f696e747371047d7105752e">#define WIN32_LEAN_AND_MEAN
-#include &lt;windows.h&gt; // the main windows headers
-#include &lt;windowsx.h&gt; // a lot of cool macros</t>
-<t tx="ekr.20060513122613.24" xcc_child_cfg="7d71002855104865616465724c696e654e756d626572710155013571025510536f757263654c696e654e756d62657271035501347104550b427265616b506f696e747371057d71062855013171075507456e61626c65647108550231317109680875752e">char* a ="allo";
-// call message box api with NULL for parent window handle
-MessageBox(NULL, "THERE CAN BE ONLY ONE!!!",
-"MY FIRST WINDOWS PROGRAM",
-MB_OK | MB_ICONEXCLAMATION);
-a="salut";
-a="jean";
-a="pierre";
-a="pierre";
-// exit program
-return(0);
-
-</t>
-<t tx="ekr.20060513122613.25" xcc_cfg="7d710028550a45786563757461626c6571017d710228550a446c6c2063616c6c65727103550071045513457865637574696f6e20617267756d656e747371056804755504436f64657106680455074144445f4c4f477107680455055469746c657108550b6763635f6764625f657865710955055761746368710a5d710b550161710c61550b427265616b706f696e7473710d7d710e2855056370703a38710f5507456e61626c6564711055066370703a3138711168107555075345545f4c4f4771125511406c616e677561676520632b2b0a20430a71135506494e4954454471145504547275657115550b427265616b506f696e747371167d71172855056370703a3871185507456e61626c6564711955066370703a3135711a5507456e61626c6564711b55066370703a3132711c5507456e61626c6564711d7555074f7074696f6e73711e7d711f28550b58636320766572626f7365712055045472756571215507457865637574657122550546616c73657123550c4372656174652066696c65737124550454727565712555105365656b20627265616b706f696e747371265504547275657127550f436f6e6e65637420746f2070697065712868045507436f6d70696c657129550454727565712a550d46696c746572206f7574707574712b550546616c7365712c55134175746f20696e636c75646520686561646572712d550454727565712e55054465627567712f550454727565713055105365656b206669727374206572726f7271315504547275657132755508446562756767657271337d713428550e4964656e7469667920627265616b71356804550f54617267657420706964207461736b713655327368656c6c207461736b6c697374202f6e68202f66692022494d4147454e414d45206571205f4e414d455f2e5f4558545f22713755085069706520656f6c713855025c6e71395509417267756d656e7473713a5519225f414253504154485f5c5c5f4e414d455f2e65786522200a713b550e50726f6d7074207061747465726e713c55035b295d713d550e5175657279206c6f636174696f6e713e550166713f550846696e6420706964714055215f4e414d455f5c2e5f4558545f202b283f503c5049443e5b302d395d2b29202e2b7141550b436c65617220627265616b71425513636c656172205f46494c455f3a5f4c494e455f714355084576616c75617465714455067072696e74207145550453746f707146550171714755045374657071485504737465707149550b4c69737420627265616b73714a680455045461736b714b5502710a714c550f427265616b20646574656374696f6e714d5516427265616b706f696e74205b302d395d2b2c202e2b0a714e550853746570206f7574714f550666696e6973687150550953657420627265616b71515513627265616b205f46494c455f3a5f4c494e455f7152550d46696e64206c6f636174696f6e7153552861742e2b5f4e414d455f5c2e283f503c4558543e2e2b293a283f503c4c494e453e5b302d395d2b29715455075374657020696e7155550473746570715668335518433a5c53444b5c4d696e47575c62696e5c6764622e65786571575512526567756c61722065787072657373696f6e7158550f50726f6772616d206578697465640a71595508436f6e74696e7565715a5508636f6e74696e7565715b5502476f715c550372756e715d550c53746172747570207461736b715e552e627265616b206d61696e0a736574206c69737473697a6520310a73657420636f6e6669726d206f66660a72756e0a715f550953746570206f766572716055046e6578747161755508436f6d70696c657271627d7163285514496e636c7564652073656172636820706174687371645515433a5c53444b5c4d696e47575c696e636c7564650a7165550f4572726f7220646574656374696f6e71665549283f503c46494c453e5b5e5c5c5d2b295c28283f503c4c494e453e5b302d395d2b295c29203a206572726f7220283f503c49443e435b302d395d2b293a20283f503c4445463e2e2b297167550b557365206c696272617279716855022d6c7169550e55736564206c6962726172696573716a6804550f446562756720617267756d656e7473716b555c225f414253504154485f5c5f4e414d455f2e5f5352434558545f220a2d6f225f414253504154485f5c5f4e414d455f2e5f4558545f220a5f494e4350415448535f0a2d670a5f4c494250415448535f0a5f4c49425241524945535f0a716c550d436865636b2073796e74617865716d55032f5a73716e550c4c6962726172792070617468716f55022d4c7170683a5559225f414253504154485f5c5f4e414d455f2e5f5352434558545f220a2d6f225f414253504154485f5c5f4e414d455f2e5f4558545f220a5f494e4350415448535f0a5f4c494250415448535f0a5f4c49425241524945535f0a717155094275696c6420646c6c717255032f4c447173550755736520706368717455032f5975717555094275696c6420657865717655032f4d4c717755144c6962726172792073656172636820706174687371785511433a5c53444b5c4d696e47575c6c69620a7179550c496e636c7564652070617468717a55022d49717b550b436f6d70696c6520706368717c55032f5963717d68625518433a5c53444b5c4d696e47575c62696e5c6763632e657865717e75752e">@language c++
-</t>
 <t tx="ekr.20060514125256"></t>
 <t tx="ekr.20060530091119"></t>
 <t tx="ekr.20060703162826"></t>
@@ -8410,6 +8416,15 @@ for p in p.self_and_subtree_iter():
 <t tx="ekr.20080619090226.4"></t>
 <t tx="ekr.20081121105001.2080"># All gui plugins are now in leoGuiPluginsRef.leo</t>
 <t tx="ekr.20090430075506.4"></t>
+<t tx="ekr.20100102164842.5328">nodes = 0 ; lines = 0
+for p in c.all_unique_positions():
+    nodes += 1
+    lines += len(g.splitLines(p.b))
+
+pages = ((nodes * 10) + lines) / 50
+s = "%d nodes,  %d lines, %d pages" % (nodes,lines,pages)
+print(s); g.es(s)</t>
+<t tx="ekr.20100103093121.5365"></t>
 <t tx="pap.20041006184225">"""
 A plugin to manage Leo's Plugins:
 
