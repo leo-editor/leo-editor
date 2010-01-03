@@ -14099,6 +14099,10 @@ def handleMissingStyleSheetArgs (self,s=None):
 #@+node:ekr.20090525144314.6526:cleanSaxInputString & test
 def cleanSaxInputString(self,s):
 
+    '''Clean control characters from s.
+    s may be a bytes or a (unicode) string.'''
+
+    # Note: form-feed ('\f') is 12 decimal.
     badchars = [chr(ch) for ch in range(32)]
     badchars.remove('\t')
     badchars.remove('\r')
@@ -14135,7 +14139,9 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
         if g.isPython3:
             if theFile:
                 # Use the open binary file, opened by g.openLeoOrZipFile.
-                pass
+                s = theFile.read() # type(s) is bytes.
+                s = self.cleanSaxInputString(s)
+                theFile = BytesIO(s)
             else:
                 s = str(s,encoding='utf-8')
                 s = self.cleanSaxInputString(s)
@@ -15475,6 +15481,252 @@ def setChanged (self,changedFlag):
 #@+node:ekr.20100101172153.6252:Fixed bug 476653: @nowrap isn't working for qt / @edit nodes
 # The fix was in qtGui.py
 #@-node:ekr.20100101172153.6252:Fixed bug 476653: @nowrap isn't working for qt / @edit nodes
+#@+node:ekr.20100102171721.6271:Fixed bug in writeNodeToString
+# Leo now adds a leading period if needed.
+#@nonl
+#@+node:ekr.20090502071837.67:writeNodeToString (New in 4.4.1)
+def writeNodeToString (self,p=None,ext=None):
+
+    '''Scan p's tree (defaults to presently selected tree) looking for @rst nodes.
+    Convert the first node found to an ouput of the type specified by ext.
+
+    The @rst may or may not be followed by a filename; the filename is *ignored*,
+    and its type does not affect ext or the output generated in any way.
+
+    ext should start with a period: .html, .tex or None (specifies rst output).
+
+    Returns p, s, where p is the position of the @rst node and s is the converted text.'''
+
+    c = self.c ; current = p or c.p
+
+    for p in current.self_and_parents():
+        if p.h.startswith('@rst'):
+            return self.processTree(p,ext=ext,toString=True,justOneFile=True)
+    else:
+        return self.processTree(current,ext=ext,toString=True,justOneFile=True)
+#@nonl
+#@-node:ekr.20090502071837.67:writeNodeToString (New in 4.4.1)
+#@+node:ekr.20090502071837.63:processTree
+def processTree(self,p,ext,toString,justOneFile):
+
+    '''Process all @rst nodes in a tree.'''
+
+    self.preprocessTree(p)
+    found = False ; self.stringOutput = ''
+    p = p.copy() ; after= p.nodeAfterTree()
+    while p and p != after:
+        h = p.h.strip()
+        if g.match_word(h,0,"@rst"):
+            self.outputFileName = h[4:].strip()
+            if (
+                (self.outputFileName and self.outputFileName[0] != '-') or
+                (toString and not self.outputFileName)
+            ):
+                found = True
+                self.topLevel = p.level() # Define toplevel separately for each rst file.
+                if toString:
+                    self.ext = ext
+                    if not self.ext.startswith('.'):
+                        self.ext = '.'+self.ext
+                else:
+                    self.ext = g.os_path_splitext(self.outputFileName)[1].lower()
+                # g.trace('ext',self.ext,self.outputFileName)
+                if self.ext in ('.htm','.html','.tex','.pdf'):
+                    ok = self.writeSpecialTree(p,toString=toString,justOneFile=justOneFile)
+                else:
+                    ok = self.writeNormalTree(p,toString=toString)
+                self.scanAllOptions(p) # Restore the top-level verbose setting.
+                if toString:
+                    return p.copy(),self.stringOutput
+                else:
+                    if ok: self.report(self.outputFileName)
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        else: p.moveToThreadNext()
+    if not found:
+        g.es('No @rst nodes in selected tree',color='blue')
+    return None,None
+#@-node:ekr.20090502071837.63:processTree
+#@+node:ekr.20090502071837.64:writeSpecialTree
+def writeSpecialTree (self,p,toString,justOneFile):
+
+    c = self.c
+    isHtml = self.ext in ('.html','.htm')
+    if isHtml and not SilverCity:
+        if not self.silverCityWarningGiven:
+            self.silverCityWarningGiven = True
+            g.es('SilverCity not present so no syntax highlighting')
+
+    self.initWrite(p,encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
+    self.outputFile = StringIO()
+    self.writeTree(p)
+    self.source = self.outputFile.getvalue()
+    self.outputFile = None
+
+    if not toString:
+        # Compute this here for use by intermediate file.
+        self.outputFileName = self.computeOutputFileName(self.outputFileName)
+
+        # Create the directory if it doesn't exist.
+        theDir, junk = g.os_path_split(self.outputFileName)
+        theDir = c.os_path_finalize(theDir)
+        if not g.os_path_exists(theDir):
+            ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
+            if not ok:
+                g.es_print('did not create:',theDir,color='red')
+                return False
+
+        # if not os.access(theDir,os.F_OK):
+            # os.mkdir(theDir)
+
+        if self.getOption('write_intermediate_file'):
+            name = self.outputFileName + '.txt'
+            f = open(name,'w')
+            f.write(self.source)
+            f.close()
+            self.report(name)
+
+    try:
+        output = self.writeToDocutils(self.source)
+        ok = output is not None
+    except Exception:
+        g.pr('Exception in docutils')
+        g.es_exception()
+        ok = False
+
+    if ok:
+        if isHtml:
+            import re
+            idxTitle = output.find('<title></title>')
+            if idxTitle > -1:
+                m = re.search('<h1>([^<]*)</h1>', output)
+                if not m:
+                    m = re.search('<h1><[^>]+>([^<]*)</a></h1>', output)
+                if m:
+                    output = output.replace(
+                        '<title></title>',
+                        '<title>%s</title>' % m.group(1)
+                    )
+
+
+        if toString:
+            self.stringOutput = output
+        else:
+            # Write the file to the directory containing the .leo file.
+            f = open(self.outputFileName,'w')
+            f.write(output)
+            f.close()
+            self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
+
+    return ok
+#@-node:ekr.20090502071837.64:writeSpecialTree
+#@-node:ekr.20100102171721.6271:Fixed bug in writeNodeToString
+#@+node:ekr.20100101150822.8719:parse_leo_file now always calls cleanSaxInputString
+# Form-feed characters were causing problems with Python 3k.
+#@nonl
+#@+node:ekr.20100103110349.6274:Error message
+reading: /home/edreamleo/leo.repo/trunk/leo/test/test.leo
+error parsing /home/edreamleo/leo.repo/trunk/leo/test/test.leo
+Traceback (most recent call last):
+  File "/usr/lib/python3.1/xml/sax/expatreader.py", line 207, in feed
+    self._parser.Parse(data, isFinal)
+xml.parsers.expat.ExpatError: not well-formed (invalid token): line 4736, column 0
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/edreamleo/leo.repo/trunk/leo/core/leoFileCommands.py", line 1463, in parse_leo_file
+    parser.parse(theFile) # expat does not support parseString
+  File "/usr/lib/python3.1/xml/sax/expatreader.py", line 107, in parse
+    xmlreader.IncrementalParser.parse(self, source)
+  File "/usr/lib/python3.1/xml/sax/xmlreader.py", line 123, in parse
+    self.feed(buffer)
+  File "/usr/lib/python3.1/xml/sax/expatreader.py", line 211, in feed
+    self._err_handler.fatalError(exc)
+  File "/usr/lib/python3.1/xml/sax/handler.py", line 38, in fatalError
+    raise exception
+xml.sax._exceptions.SAXParseException: /home/edreamleo/leo.repo/trunk/leo/test/test.leo:4736:0: not well-formed (invalid token)
+#@nonl
+#@-node:ekr.20100103110349.6274:Error message
+#@+node:ekr.20060919110638.14:parse_leo_file
+def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
+
+    c = self.c
+    try:
+        if g.isPython3:
+            if theFile:
+                # Use the open binary file, opened by g.openLeoOrZipFile.
+                s = theFile.read() # type(s) is bytes.
+                s = self.cleanSaxInputString(s)
+                theFile = BytesIO(s)
+            else:
+                s = str(s,encoding='utf-8')
+                s = self.cleanSaxInputString(s)
+                theFile = StringIO(s)
+        else:
+            if theFile: s = theFile.read()
+            s = self.cleanSaxInputString(s)
+            theFile = cStringIO.StringIO(s)
+        parser = xml.sax.make_parser()
+        parser.setFeature(xml.sax.handler.feature_external_ges,1)
+            # Include external general entities, esp. xml-stylesheet lines.
+        if 0: # Expat does not read external features.
+            parser.setFeature(xml.sax.handler.feature_external_pes,1)
+                # Include all external parameter entities
+                # Hopefully the parser can figure out the encoding from the <?xml> element.
+        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
+        parser.setContentHandler(handler)
+        parser.parse(theFile) # expat does not support parseString
+        # g.trace('parsing done')
+        sax_node = handler.getRootNode()
+    except xml.sax.SAXParseException:
+        g.es_print('error parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+    except Exception:
+        g.es_print('unexpected exception parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+
+    return sax_node
+#@-node:ekr.20060919110638.14:parse_leo_file
+#@+node:ekr.20090525144314.6526:cleanSaxInputString & test
+def cleanSaxInputString(self,s):
+
+    '''Clean control characters from s.
+    s may be a bytes or a (unicode) string.'''
+
+    # Note: form-feed ('\f') is 12 decimal.
+    badchars = [chr(ch) for ch in range(32)]
+    badchars.remove('\t')
+    badchars.remove('\r')
+    badchars.remove('\n')
+
+    flatten = ''.join(badchars)
+    pad = ' ' * len(flatten)
+
+    if g.isPython3:
+        flatten = bytes(flatten,'utf-8')
+        pad = bytes(pad,'utf-8')
+        transtable = bytes.maketrans(flatten,pad)
+    else:
+        transtable = string.maketrans(flatten,pad)
+
+    return s.translate(transtable)
+
+# for i in range(32): print i,repr(chr(i))
+#@+node:ekr.20090525144314.6527:@test cleanSaxInputString
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    s = 'test%cthis' % 27
+
+    assert c.fileCommands.cleanSaxInputString(s) == 'test this'
+#@-node:ekr.20090525144314.6527:@test cleanSaxInputString
+#@-node:ekr.20090525144314.6526:cleanSaxInputString & test
+#@-node:ekr.20100101150822.8719:parse_leo_file now always calls cleanSaxInputString
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin
@@ -17313,7 +17565,9 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
         if g.isPython3:
             if theFile:
                 # Use the open binary file, opened by g.openLeoOrZipFile.
-                pass
+                s = theFile.read() # type(s) is bytes.
+                s = self.cleanSaxInputString(s)
+                theFile = BytesIO(s)
             else:
                 s = str(s,encoding='utf-8')
                 s = self.cleanSaxInputString(s)
@@ -17676,6 +17930,10 @@ for index in sorted(tnodes):
 #@+node:ekr.20090525144314.6526:cleanSaxInputString & test
 def cleanSaxInputString(self,s):
 
+    '''Clean control characters from s.
+    s may be a bytes or a (unicode) string.'''
+
+    # Note: form-feed ('\f') is 12 decimal.
     badchars = [chr(ch) for ch in range(32)]
     badchars.remove('\t')
     badchars.remove('\r')
@@ -17712,7 +17970,9 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
         if g.isPython3:
             if theFile:
                 # Use the open binary file, opened by g.openLeoOrZipFile.
-                pass
+                s = theFile.read() # type(s) is bytes.
+                s = self.cleanSaxInputString(s)
+                theFile = BytesIO(s)
             else:
                 s = str(s,encoding='utf-8')
                 s = self.cleanSaxInputString(s)
@@ -18699,6 +18959,10 @@ if g.unitTesting:
 #@+node:ekr.20090525144314.6526:cleanSaxInputString & test
 def cleanSaxInputString(self,s):
 
+    '''Clean control characters from s.
+    s may be a bytes or a (unicode) string.'''
+
+    # Note: form-feed ('\f') is 12 decimal.
     badchars = [chr(ch) for ch in range(32)]
     badchars.remove('\t')
     badchars.remove('\r')
@@ -18843,7 +19107,9 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
         if g.isPython3:
             if theFile:
                 # Use the open binary file, opened by g.openLeoOrZipFile.
-                pass
+                s = theFile.read() # type(s) is bytes.
+                s = self.cleanSaxInputString(s)
+                theFile = BytesIO(s)
             else:
                 s = str(s,encoding='utf-8')
                 s = self.cleanSaxInputString(s)

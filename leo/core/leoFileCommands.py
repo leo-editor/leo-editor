@@ -1052,6 +1052,10 @@ class baseFileCommands:
     #@+node:ekr.20090525144314.6526:cleanSaxInputString & test
     def cleanSaxInputString(self,s):
 
+        '''Clean control characters from s.
+        s may be a bytes or a (unicode) string.'''
+
+        # Note: form-feed ('\f') is 12 decimal.
         badchars = [chr(ch) for ch in range(32)]
         badchars.remove('\t')
         badchars.remove('\r')
@@ -1442,7 +1446,9 @@ class baseFileCommands:
             if g.isPython3:
                 if theFile:
                     # Use the open binary file, opened by g.openLeoOrZipFile.
-                    pass
+                    s = theFile.read() # type(s) is bytes.
+                    s = self.cleanSaxInputString(s)
+                    theFile = BytesIO(s)
                 else:
                     s = str(s,encoding='utf-8')
                     s = self.cleanSaxInputString(s)
