@@ -3051,7 +3051,7 @@ def guessExternalEditor():
 
     # fallbacks
     platform = sys.platform.lower()
-    if platform.startwith('win'):
+    if platform.startswith('win'):
         return "notepad"
     elif platform.startswith('linux'):
         return 'gedit'
