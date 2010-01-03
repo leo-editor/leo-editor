@@ -1,35 +1,35 @@
 #@+leo-ver=4-thin
-#@+node:ville.20090808222331.5229:@thin qtframecommands.py
+#@+node:ekr.20100103094733.3709:@thin qtframecommands.py
 #@<< docstring >>
-#@+node:ville.20090808222331.5230:<< docstring >>
+#@+node:ekr.20100103094733.3710:<< docstring >>
 ''' Various commands to manipulate GUI under qt
 '''
-#@-node:ville.20090808222331.5230:<< docstring >>
+#@-node:ekr.20100103094733.3710:<< docstring >>
 #@nl
 
 __version__ = '0.0'
 #@<< version history >>
-#@+node:ville.20090808222331.5231:<< version history >>
+#@+node:ekr.20100103094733.3711:<< version history >>
 #@@killcolor
 #@+at
 # 
 # Put notes about each version here.
 #@-at
 #@nonl
-#@-node:ville.20090808222331.5231:<< version history >>
+#@-node:ekr.20100103094733.3711:<< version history >>
 #@nl
 
 #@<< imports >>
-#@+node:ville.20090808222331.5232:<< imports >>
+#@+node:ekr.20100103094733.3712:<< imports >>
 import leo.core.leoGlobals as g
 from leo.core import leoPlugins 
 # Whatever other imports your plugins uses.
 #@nonl
-#@-node:ville.20090808222331.5232:<< imports >>
+#@-node:ekr.20100103094733.3712:<< imports >>
 #@nl
 
 #@+others
-#@+node:ville.20090808222331.5233:init
+#@+node:ekr.20100103094733.3713:init
 def init ():
 
     ok = True
@@ -46,8 +46,8 @@ def onSelect(tag,keywords):
     wdg = c.frame.top.leo_body_frame
     wdg.setWindowTitle(c.p.h)
 
-#@-node:ville.20090808222331.5233:init
-#@+node:ville.20090808222331.5236:detach-editor-toggle
+#@-node:ekr.20100103094733.3713:init
+#@+node:ekr.20100103094733.3714:detach-editor-toggle
 @g.command('detach-editor-toggle-max')
 def detach_editor_toggle_max(event):
     """ Detach editor, maximize """
@@ -100,8 +100,8 @@ def undetach_editor(c):
     parent.setSizes(sizes)
     c.frame.detached_body_info = None
 
-#@-node:ville.20090808222331.5236:detach-editor-toggle
+#@-node:ekr.20100103094733.3714:detach-editor-toggle
 #@-others
 #@nonl
-#@-node:ville.20090808222331.5229:@thin qtframecommands.py
+#@-node:ekr.20100103094733.3709:@thin qtframecommands.py
 #@-leo
