@@ -3583,6 +3583,9 @@ class TabbedFrameFactory:
         # will be created when first frame appears    
 
         # DynamicWindow => Leo frame map
+        self.alwaysShowTabs = True
+            # Set to true to workaround a problem
+            # setting the window title when tabs are shown.
         self.leoFrames = {} 
         self.masterFrame = None
         self.createTabCommands()
@@ -3615,10 +3618,8 @@ class TabbedFrameFactory:
 
         # Work around the problem with missing dirty indicator
         # by always showing the tab.
-        if True: # tabw.count() > 1:
-            tabw.tabBar().setVisible(True)
-        else:
-            tabw.tabBar().setVisible(False)
+        tabw.tabBar().setVisible(
+            self.alwaysShowTabs or tabw.count() > 1)
 
         dw.show()
         tabw.show()
@@ -3633,8 +3634,8 @@ class TabbedFrameFactory:
         idx = tabw.indexOf(wdg)
         tabw.removeTab(idx)
         del self.leoFrames[wdg]
-        if tabw.count() < 2:
-            tabw.tabBar().setVisible(False)
+        tabw.tabBar().setVisible(
+            self.alwaysShowTabs or tabw.count() > 1)
     #@-node:ekr.20100101104934.3659:deleteFrame
     #@+node:ville.20090803132402.3684:createMaster
     def createMaster(self):
