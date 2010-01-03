@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ville.20091008210853.5241:@thin stickynotes.py
+#@+node:ekr.20100103093121.5329:@thin stickynotes.py
 #@<< docstring >>
 #@+node:vivainio2.20091008133028.5821:<< docstring >>
 ''' Simple "sticky notes" feature (popout editors)
@@ -31,7 +31,13 @@ from leo.core import leoPlugins
 
 g.assertUi('qt')
 
-from PyQt4 import QtGui, QtCore
+import sys
+import webbrowser
+import markdown
+from PyQt4.QtCore import (QSize, QString, QVariant, Qt, SIGNAL,QTimer)
+from PyQt4.QtGui import (QAction, QApplication, QColor, QFont,
+        QFontMetrics, QIcon, QKeySequence, QMenu, QPixmap, QTextCursor,
+        QTextCharFormat, QTextBlockFormat, QTextListFormat,QTextEdit,QPlainTextEdit)
 #@nonl
 #@-node:vivainio2.20091008133028.5823:<< imports >>
 #@nl
@@ -54,7 +60,7 @@ QPlainTextEdit {
 
 def decorate_window(w):
     w.setStyleSheet(stickynote_stylesheet)
-    w.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
+    w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
     w.resize(600, 300)
 
 #@-node:vivainio2.20091008140054.14555:styling
@@ -71,18 +77,18 @@ def init ():
     return ok
 #@-node:vivainio2.20091008133028.5824:init
 #@+node:ville.20091008210853.7616:class FocusingPlainTextEdit
-class FocusingPlaintextEdit(QtGui.QPlainTextEdit):
+class FocusingPlaintextEdit(QPlainTextEdit):
 
     def __init__(self, focusin, focusout):
-        QtGui.QPlainTextEdit.__init__(self)        
+        QPlainTextEdit.__init__(self)        
         self.focusin = focusin
         self.focusout = focusout
 
-    def focusOutEvent ( self, event ):
+    def focusOutEvent (self, event):
         #print "focus out"
         self.focusout()
 
-    def focusInEvent ( self, event ):        
+    def focusInEvent (self, event):        
         self.focusin()
 
     def closeEvent(self, event):
@@ -92,12 +98,14 @@ class FocusingPlaintextEdit(QtGui.QPlainTextEdit):
 
 #@-node:ville.20091008210853.7616:class FocusingPlainTextEdit
 #@+node:ville.20091023181249.5264:class SimpleRichText
-class SimpleRichText(QtGui.QTextEdit):
+class SimpleRichText(QTextEdit):
     def __init__(self, focusin, focusout):
-        QtGui.QTextEdit.__init__(self)        
+        QTextEdit.__init__(self)        
         self.focusin = focusin
         self.focusout = focusout
         self.createActions()
+
+        #self.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
     def focusOutEvent ( self, event ):
         #print "focus out"
@@ -111,41 +119,41 @@ class SimpleRichText(QtGui.QTextEdit):
         event.accept()        
 
     def createActions(self):
-        self.boldAct = QtGui.QAction(self.tr("&Bold"), self)
+        self.boldAct = QAction(self.tr("&Bold"), self)
         self.boldAct.setCheckable(True)
         self.boldAct.setShortcut(self.tr("Ctrl+B"))
         self.boldAct.setStatusTip(self.tr("Make the text bold"))
-        self.connect(self.boldAct, QtCore.SIGNAL("triggered()"), self.setBold)
+        self.connect(self.boldAct, SIGNAL("triggered()"), self.setBold)
         self.addAction(self.boldAct)
 
         boldFont = self.boldAct.font()
         boldFont.setBold(True)
         self.boldAct.setFont(boldFont)
 
-        self.italicAct = QtGui.QAction(self.tr("&Italic"), self)
+        self.italicAct = QAction(self.tr("&Italic"), self)
         self.italicAct.setCheckable(True)
         self.italicAct.setShortcut(self.tr("Ctrl+I"))
         self.italicAct.setStatusTip(self.tr("Make the text italic"))
-        self.connect(self.italicAct, QtCore.SIGNAL("triggered()"), self.setItalic)
+        self.connect(self.italicAct, SIGNAL("triggered()"), self.setItalic)
         self.addAction(self.italicAct)
 
     def setBold(self):
-        format = QtGui.QTextCharFormat()
+        format = QTextCharFormat()
         if self.boldAct.isChecked():
-                weight = QtGui.QFont.Bold
+                weight = QFont.Bold
         else:
-                weight = QtGui.QFont.Normal
+                weight = QFont.Normal
         format.setFontWeight(weight)
         self.setFormat(format)
 
     def setItalic(self):
-        format = QtGui.QTextCharFormat()
+        format = QTextCharFormat()
         #format.setFontItalic(self.__italic.isChecked())
         format.setFontItalic(self.italicAct.isChecked())
         self.setFormat(format)
 
     def setUnderline(self):
-        format = QtGui.QTextCharFormat()
+        format = QTextCharFormat()
         format.setFontUnderline(self.__underline.isChecked())
         self.setFormat(format)
 
@@ -155,7 +163,6 @@ class SimpleRichText(QtGui.QTextEdit):
 
     def bold(self):
         print("bold")
-
 
     def italic(self):
         print("italic")
@@ -202,7 +209,7 @@ def stickynote_f(event):
         nf.dirty = True
 
     nf.connect(nf,
-        QtCore.SIGNAL("textChanged()"),textchanged_cb)
+        SIGNAL("textChanged()"),textchanged_cb)
 
     nf.show()
 
@@ -236,7 +243,7 @@ def stickynoter_f(event):
             c.selectPosition(c.p)
 
 
-    nf = SimpleRichText(focusin, focusout)
+    nf = LessSimpleRichText(focusin, focusout)
     nf.dirty = False
     decorate_window(nf)
     nf.setWindowTitle(p.h)
@@ -247,7 +254,7 @@ def stickynoter_f(event):
         nf.dirty = True
 
     nf.connect(nf,
-        QtCore.SIGNAL("textChanged()"),textchanged_cb)
+        SIGNAL("textChanged()"),textchanged_cb)
 
     nf.show()
 
@@ -255,5 +262,5 @@ def stickynoter_f(event):
 #@-node:ville.20091023181249.5266:g.command('stickynoter')
 #@-others
 #@nonl
-#@-node:ville.20091008210853.5241:@thin stickynotes.py
+#@-node:ekr.20100103093121.5329:@thin stickynotes.py
 #@-leo

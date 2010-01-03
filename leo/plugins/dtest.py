@@ -64,10 +64,10 @@ class DT(baseLeoPlugin):
     """Sends code to the doctest module and reports the result
     If text is selected, tests only the selection.
 
-    >>> print "hello world"
+    >>> print("hello world")
     hello world
     >>> g.es('hello world')
-    >>> print c.p.h
+    >>> print(c.p.h)
     Docstring
     >>> import notfound
     Traceback (most recent call last):
