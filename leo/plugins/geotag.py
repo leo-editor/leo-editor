@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:tbrown.20091214233510.5347:@thin geotag.py
+#@+node:tbrown.20091219105234.6178:@thin /mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/geotag/leo/plugins/geotag.py
 #@<< docstring >>
 #@+node:tbrown.20091214233510.5348:<< docstring >>
 '''
@@ -74,17 +74,26 @@ class geotag_Controller:
         for i in self.handlers:
             leoPlugins.unregisterHandler(i[0], i[1])
     #@-node:tbrown.20091214233510.5355:__del__
+    #@+node:tbrown.20091215204347.11403:getAttr
+    @staticmethod
+    def getAttr(p):
+        for nd in p.children():
+            if nd.h.startswith('@LatLng '):
+                break
+        else:
+            nd = p.insertAsLastChild()
+        return nd
+    #@nonl
+    #@-node:tbrown.20091215204347.11403:getAttr
     #@+node:tbrown.20091214233510.5356:callback
     def callback(self, data):
 
         c = self.c
         p = c.p
 
-        for nd in p.children():
-            if nd.h.startswith('@LatLng '):
-                break
-        else:
-            nd = p.insertAsLastChild()
+        nd = self.getAttr(p)
+
+
 
         nd.h = '@LatLng %(lat)f %(lng)f %(zoom)d %(maptype)s  %(description)s ' % data
         c.setChanged(True)
@@ -105,7 +114,24 @@ def cmd_TagNode(c):
     data = g.pygeotag.get_position({'description':c.p.h})
     c.geotag.callback(data)
 #@-node:tbrown.20091214233510.5358:cmd_tag_node
+#@+node:tbrown.20091215204347.11402:cmd_show_node
+def cmd_ShowNode(c):
+    nd = geotag_Controller.getAttr(c.p)
+    try:
+        txt = nd.h.split(None, 5)
+        what = 'dummy', 'lat', 'lng', 'zoom', 'maptype', 'description'
+        data = dict(zip(what, txt))
+        data['lat'] = float(data['lat'])
+        data['lng'] = float(data['lng'])
+        if 'zoom' in data:
+            data['zoom'] = int(data['zoom'])
+        if 'description' not in data or not data['description'].strip():
+            data['description'] = c.p.h
+    except ValueError, TypeError:
+        data = {'description':c.p.h}
+    g.pygeotag.show_position(data)
+#@-node:tbrown.20091215204347.11402:cmd_show_node
 #@-others
 #@nonl
-#@-node:tbrown.20091214233510.5347:@thin geotag.py
+#@-node:tbrown.20091219105234.6178:@thin /mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/geotag/leo/plugins/geotag.py
 #@-leo

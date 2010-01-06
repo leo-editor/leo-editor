@@ -98,6 +98,13 @@ class PyGeoTag(object):
         print data
     def _store(self, data):
         self.data = data
+    def show_position(self, data={}):
+
+        print 'SHOWING',data
+
+        data["__msg_type"] = "show_position"
+
+        self.request_queue.put(data)
     def request_position(self, data={}):
 
         print 'REQUESTING',data
