@@ -569,7 +569,8 @@ class atFile:
         #@nl
 
         # write out the cache version
-        self.writeCachedTree(root, cachefile)
+        if at.errors == 0: # 2010/01/07
+            self.writeCachedTree(root, cachefile)
 
         return at.errors == 0
     #@-node:ekr.20041005105605.21:read (atFile) & helper
@@ -1037,7 +1038,8 @@ class atFile:
                 else:
                     i = at.skipSentinelStart4(s,0)
                 func = at.dispatch_dict[kind]
-                if trace: g.trace(at.sentinelName(kind),s.strip(),func.__name__)
+                if trace: g.trace('%15s %16s %s' % (
+                    at.sentinelName(kind),func.__name__,repr(s)))
                 func(s,i)
         except AssertionError:
             junk, message, junk = sys.exc_info()
@@ -1478,6 +1480,8 @@ class atFile:
     #@-node:ekr.20041005105605.99:readLastDocLine
     #@-node:ekr.20041005105605.90:end sentinels
     #@+node:ekr.20041005105605.100:Unpaired sentinels
+    # Ooops: shadow files are cleared if there is a read error!!
+    #@nonl
     #@+node:ekr.20041005105605.101:ignoreOldSentinel
     def  ignoreOldSentinel (self,s,unused_i):
 
@@ -1572,6 +1576,7 @@ class atFile:
 
         """Read an @@sentinel."""
 
+        trace = False and not g.unitTesting
         at = self
         assert g.match(s,i,"@"),'missing @@ sentinel' # The first '@' has already been eaten.
 
@@ -1605,8 +1610,9 @@ class atFile:
 
                 delim1,delim2,delim3 = g.set_delims_from_language(language)
 
-                g.trace(g.get_line(s,i))
-                g.trace(delim1,delim2,delim3)
+                if trace:
+                    g.trace(g.get_line(s,i))
+                    g.trace(delim1,delim2,delim3)
 
                 # Returns a tuple (single,start,end) of comment delims
                 if delim1:
@@ -1668,15 +1674,17 @@ class atFile:
 
         if at.inCode:
             s = ''.join(at.out)
-            if s and s[-1] == '\n':
-                at.out = [s[:-1]]
-            else:
-                g.trace("out:",s)
-                at.readError("unexpected @nonl directive in code part")
+            # 2010/01/07: protect against a mostly-harmless read error.
+            if s:
+                if s[-1] == '\n':
+                    at.out = [s[:-1]]
+                else:
+                    g.trace("out:",s)
+                    at.readError("unexpected @nonl directive in code part")
         else:
             s = ''.join(at.pending)
             if s:
-                if s and s[-1] == '\n':
+                if s[-1] == '\n':
                     at.pending = [s[:-1]]
                 else:
                     g.trace("docOut:",s)
@@ -2158,8 +2166,49 @@ class atFile:
     #@-node:ekr.20041005105605.17:at.Reading
     #@+node:ekr.20041005105605.132:at.Writing
     #@+node:ekr.20041005105605.133:Writing (top level)
-    #@+node:ekr.20041005105605.134:Don't override in plugins
-    # Plugins probably should not need to override these methods.
+    #@+node:ekr.20041005105605.154:asisWrite
+    def asisWrite(self,root,toString=False):
+
+        at = self ; c = at.c
+        c.endEditing() # Capture the current headline.
+
+        try:
+            # Note: @asis always writes all nodes,
+            # so there can be no orphan or ignored nodes.
+            targetFileName = root.atAsisFileNodeName()
+            at.initWriteIvars(root,targetFileName,toString=toString)
+            if at.errors: return
+            if not at.openFileForWriting(root,targetFileName,toString):
+                # openFileForWriting calls root.setDirty() if there are errors.
+                return
+            for p in root.self_and_subtree():
+                #@            << Write p's headline if it starts with @@ >>
+                #@+node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
+                s = p.h
+
+                if g.match(s,0,"@@"):
+                    s = s[2:]
+                    if s and len(s) > 0:
+                        s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
+                        at.outputFile.write(s)
+                #@-node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
+                #@nl
+                #@            << Write p's body >>
+                #@+node:ekr.20041005105605.156:<< Write p's body >>
+                s = p.b
+
+                if s:
+                    s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
+                    at.outputStringWithLineEndings(s)
+                #@-node:ekr.20041005105605.156:<< Write p's body >>
+                #@nl
+            at.closeWriteFile()
+            at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+        except Exception:
+            at.writeException(root) # Sets dirty and orphan bits.
+
+    silentWrite = asisWrite # Compatibility with old scripts.
+    #@-node:ekr.20041005105605.154:asisWrite
     #@+node:ekr.20041005105605.136:norefWrite
     def norefWrite(self,root,toString=False):
 
@@ -2774,91 +2823,6 @@ class atFile:
     #@-node:ekr.20071019141745:shouldWriteAtAutoNode
     #@-node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
     #@-node:ekr.20070806105859:writeAtAutoNodes & writeDirtyAtAutoNodes (atFile) & helpers
-    #@+node:ekr.20090225080846.5:writeOneAtEditNode
-    # Similar to writeOneAtAutoNode.
-
-    def writeOneAtEditNode(self,p,toString,force=False):
-
-        '''Write p, an @edit node.
-
-        File indices *must* have already been assigned.'''
-
-        at = self ; c = at.c ; root = p.copy()
-
-        fn = p.atEditNodeName()
-
-        if fn:
-            at.scanDefaultDirectory(p,importing=True) # Set default_directory
-            fn = c.os_path_finalize_join(at.default_directory,fn)
-            exists = g.os_path_exists(fn)
-            if not self.shouldWriteAtEditNode(p,exists,force):
-                return False
-        elif not toString:
-            return False
-
-        # This code is similar to code in at.write.
-        c.endEditing() # Capture the current headline.
-        at.targetFileName = g.choose(toString,"<string-file>",fn)
-        at.initWriteIvars(root,at.targetFileName,
-            atAuto=True,
-            atEdit=True,
-            nosentinels=True,thinFile=False,scriptWrite=False,
-            toString=toString)
-
-        ok = at.openFileForWriting(root,fileName=fn,toString=toString)
-        if ok:
-            at.writeOpenFile(root,nosentinels=True,toString=toString)
-            at.closeWriteFile() # Sets stringOutput if toString is True.
-            if at.errors == 0:
-                at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
-            else:
-                g.es("not written:",at.outputFileName)
-                root.setDirty()
-
-        elif not toString:
-            root.setDirty() # Make _sure_ we try to rewrite this file.
-            g.es("not written:",at.outputFileName)
-
-        return ok
-    #@+node:ekr.20090225080846.6:shouldWriteAtEditNode
-    #@+at 
-    #@nonl
-    # Much thought went into this decision tree:
-    # 
-    # - We do not want decisions to depend on past history.  That's too 
-    # confusing.
-    # - We must ensure that the file will be written if the user does 
-    # significant work.
-    # - We must ensure that the user can create an @edit x node at any time
-    #   without risk of of replacing x with empty or insignificant 
-    # information.
-    # - We want the user to be able to create an @edit node which will be read
-    #   the next time the .leo file is opened.
-    # - We don't want minor import imperfections to be written to the @edit 
-    # file.
-    # - The explicit commands that read and write @edit trees must always be 
-    # honored.
-    #@-at
-    #@@c
-
-    def shouldWriteAtEditNode (self,p,exists,force):
-
-        '''Return True if we should write the @auto node at p.'''
-
-        if force: # We are executing write-at-auto-node or write-dirty-at-auto-nodes.
-            return True
-        elif not exists: # We can write a non-existent file without danger.
-            return True
-        elif not p.isDirty(): # There is nothing new to write.
-            return False
-        elif not self.isSignificantTree(p): # There is noting of value to write.
-            g.es_print(p.h,'not written:',color='red')
-            g.es_print('no children and less than 10 characters (excluding directives)',color='red')
-            return False
-        else: # The @auto tree is dirty and contains significant info.
-            return True
-    #@-node:ekr.20090225080846.6:shouldWriteAtEditNode
-    #@-node:ekr.20090225080846.5:writeOneAtEditNode
     #@+node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
     def writeAtShadowNodes (self,event=None):
 
@@ -2915,6 +2879,7 @@ class atFile:
         at = self ; c = at.c ; root = p.copy() ; x = c.shadowController
 
         fn = p.atShadowFileNodeName()
+        if trace: g.trace(p.h,fn)
         if not fn:
             g.es_print('can not happen: not an @shadow node',p.h,color='red')
             return False
@@ -2969,6 +2934,7 @@ class atFile:
         if at.errors == 0 and not toString:
             # Write the public and private files.
             private_fn = x.shadowPathName(fn)
+            if trace: g.trace('writing',fn)
             x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
             at.replaceFileWithString(private_fn,at.private_s)
             at.replaceFileWithString(fn,at.public_s)
@@ -3132,61 +3098,91 @@ class atFile:
 
         return changedFiles # So caller knows whether to do an auto-save.
     #@-node:ekr.20041005105605.151:writeMissing
-    #@-node:ekr.20041005105605.134:Don't override in plugins
-    #@+node:ekr.20041005105605.153:Override in plugins...
-    #@+at
-    # 
-    # All writing eventually goes through the asisWrite or writeOpenFile 
-    # methods, so
-    # plugins should need only to override these two methods.
-    # 
-    # In particular, plugins should not need to override the write, writeAll 
-    # or
-    # writeMissing methods.
-    #@-at
-    #@+node:ekr.20041005105605.154:asisWrite
-    def asisWrite(self,root,toString=False):
+    #@+node:ekr.20090225080846.5:writeOneAtEditNode
+    # Similar to writeOneAtAutoNode.
 
-        at = self ; c = at.c
+    def writeOneAtEditNode(self,p,toString,force=False):
+
+        '''Write p, an @edit node.
+
+        File indices *must* have already been assigned.'''
+
+        at = self ; c = at.c ; root = p.copy()
+
+        fn = p.atEditNodeName()
+
+        if fn:
+            at.scanDefaultDirectory(p,importing=True) # Set default_directory
+            fn = c.os_path_finalize_join(at.default_directory,fn)
+            exists = g.os_path_exists(fn)
+            if not self.shouldWriteAtEditNode(p,exists,force):
+                return False
+        elif not toString:
+            return False
+
+        # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.
+        at.targetFileName = g.choose(toString,"<string-file>",fn)
+        at.initWriteIvars(root,at.targetFileName,
+            atAuto=True,
+            atEdit=True,
+            nosentinels=True,thinFile=False,scriptWrite=False,
+            toString=toString)
 
-        try:
-            # Note: @asis always writes all nodes,
-            # so there can be no orphan or ignored nodes.
-            targetFileName = root.atAsisFileNodeName()
-            at.initWriteIvars(root,targetFileName,toString=toString)
-            if at.errors: return
-            if not at.openFileForWriting(root,targetFileName,toString):
-                # openFileForWriting calls root.setDirty() if there are errors.
-                return
-            for p in root.self_and_subtree():
-                #@            << Write p's headline if it starts with @@ >>
-                #@+node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
-                s = p.h
+        ok = at.openFileForWriting(root,fileName=fn,toString=toString)
+        if ok:
+            at.writeOpenFile(root,nosentinels=True,toString=toString)
+            at.closeWriteFile() # Sets stringOutput if toString is True.
+            if at.errors == 0:
+                at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+            else:
+                g.es("not written:",at.outputFileName)
+                root.setDirty()
 
-                if g.match(s,0,"@@"):
-                    s = s[2:]
-                    if s and len(s) > 0:
-                        s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
-                        at.outputFile.write(s)
-                #@-node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
-                #@nl
-                #@            << Write p's body >>
-                #@+node:ekr.20041005105605.156:<< Write p's body >>
-                s = p.b
+        elif not toString:
+            root.setDirty() # Make _sure_ we try to rewrite this file.
+            g.es("not written:",at.outputFileName)
 
-                if s:
-                    s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
-                    at.outputStringWithLineEndings(s)
-                #@-node:ekr.20041005105605.156:<< Write p's body >>
-                #@nl
-            at.closeWriteFile()
-            at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
-        except Exception:
-            at.writeException(root) # Sets dirty and orphan bits.
+        return ok
+    #@+node:ekr.20090225080846.6:shouldWriteAtEditNode
+    #@+at 
+    #@nonl
+    # Much thought went into this decision tree:
+    # 
+    # - We do not want decisions to depend on past history.  That's too 
+    # confusing.
+    # - We must ensure that the file will be written if the user does 
+    # significant work.
+    # - We must ensure that the user can create an @edit x node at any time
+    #   without risk of of replacing x with empty or insignificant 
+    # information.
+    # - We want the user to be able to create an @edit node which will be read
+    #   the next time the .leo file is opened.
+    # - We don't want minor import imperfections to be written to the @edit 
+    # file.
+    # - The explicit commands that read and write @edit trees must always be 
+    # honored.
+    #@-at
+    #@@c
 
-    silentWrite = asisWrite # Compatibility with old scripts.
-    #@-node:ekr.20041005105605.154:asisWrite
+    def shouldWriteAtEditNode (self,p,exists,force):
+
+        '''Return True if we should write the @auto node at p.'''
+
+        if force: # We are executing write-at-auto-node or write-dirty-at-auto-nodes.
+            return True
+        elif not exists: # We can write a non-existent file without danger.
+            return True
+        elif not p.isDirty(): # There is nothing new to write.
+            return False
+        elif not self.isSignificantTree(p): # There is noting of value to write.
+            g.es_print(p.h,'not written:',color='red')
+            g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+            return False
+        else: # The @auto tree is dirty and contains significant info.
+            return True
+    #@-node:ekr.20090225080846.6:shouldWriteAtEditNode
+    #@-node:ekr.20090225080846.5:writeOneAtEditNode
     #@+node:ekr.20041005105605.157:writeOpenFile
     # New in 4.3: must be inited before calling this method.
     # New in 4.3 b2: support for writing from a string.
@@ -3211,7 +3207,6 @@ class atFile:
         if not toString:
             at.warnAboutOrphandAndIgnoredNodes()
     #@-node:ekr.20041005105605.157:writeOpenFile
-    #@-node:ekr.20041005105605.153:Override in plugins...
     #@-node:ekr.20041005105605.133:Writing (top level)
     #@+node:ekr.20041005105605.160:Writing 4.x
     #@+node:ekr.20041005105605.161:putBody
@@ -4774,10 +4769,8 @@ class atFile:
     def error(self,*args):
 
         at = self
-
         if args:
             at.printError(*args)
-
         at.errors += 1
 
     def printError (self,*args):
@@ -4785,9 +4778,7 @@ class atFile:
         '''Print an error message that may contain non-ascii characters.'''
 
         at = self
-
         keys = {'color': g.choose(at.errors,'blue','red')}
-
         g.es_print_error(*args,**keys)
     #@-node:ekr.20041005105605.220:atFile.error & printError
     #@+node:ekr.20080923070954.4:atFile.scanAllDirectives & test
