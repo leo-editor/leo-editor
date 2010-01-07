@@ -871,7 +871,7 @@ class leoImportCommands (scanUtility):
             # Remember that we have read this file.
             # Fixes bug 488894: unsettling dialog when saving Leo file
             # after creating and populating an @auto node
-            p.v.at_auto_read = True # Create the attribute
+            p.v.at_read = True # Create the attribute
 
         p.contract()
         w.setInsertPoint(0)

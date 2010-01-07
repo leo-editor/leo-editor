@@ -5848,7 +5848,7 @@ def createOutline (self,fileName,parent,
         # Remember that we have read this file.
         # Fixes bug 488894: unsettling dialog when saving Leo file
         # after creating and populating an @auto node
-        p.v.at_auto_read = True # Create the attribute
+        p.v.at_read = True # Create the attribute
 
     p.contract()
     w.setInsertPoint(0)
@@ -5942,7 +5942,7 @@ def readOneAtAutoNode (self,fileName,p):
         cachefile = None
 
     # Remember that we have read this file.
-    p.v.at_auto_read = True # Create the attribute
+    p.v.at_read = True # Create the attribute
 
     # Disable caching for test.leo.
     if c.shortFileName() != 'test.leo':
@@ -6153,7 +6153,7 @@ def createOutline (self,fileName,parent,
         # Remember that we have read this file.
         # Fixes bug 488894: unsettling dialog when saving Leo file
         # after creating and populating an @auto node
-        p.v.at_auto_read = True # Create the attribute
+        p.v.at_read = True # Create the attribute
 
     p.contract()
     w.setInsertPoint(0)
@@ -8288,7 +8288,7 @@ def writeOneAtAutoNode(self,p,toString,force):
     ):
         ok = self.promptForDangerousWrite(fileName,kind='@auto')
         if ok:
-            p.v.at_auto_read = True # Create the attribute
+            p.v.at_read = True # Create the attribute
         else:
             g.es("not written:",fileName)
             return False
@@ -9428,7 +9428,7 @@ def readOneAtAutoNode (self,fileName,p):
         cachefile = None
 
     # Remember that we have read this file.
-    p.v.at_auto_read = True # Create the attribute
+    p.v.at_read = True # Create the attribute
 
     # Disable caching for test.leo.
     if c.shortFileName() != 'test.leo':
@@ -9838,7 +9838,7 @@ def writeOneAtAutoNode(self,p,toString,force):
     ):
         ok = self.promptForDangerousWrite(fileName,kind='@auto')
         if ok:
-            p.v.at_auto_read = True # Create the attribute
+            p.v.at_read = True # Create the attribute
         else:
             g.es("not written:",fileName)
             return False
@@ -12149,7 +12149,7 @@ def readOneAtAutoNode (self,fileName,p):
         cachefile = None
 
     # Remember that we have read this file.
-    p.v.at_auto_read = True # Create the attribute
+    p.v.at_read = True # Create the attribute
 
     # Disable caching for test.leo.
     if c.shortFileName() != 'test.leo':

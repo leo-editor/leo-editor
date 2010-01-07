@@ -698,7 +698,7 @@ class atFile:
             cachefile = None
 
         # Remember that we have read this file.
-        p.v.at_auto_read = True # Create the attribute
+        p.v.at_read = True # Create the attribute
 
         # Disable caching for test.leo.
         if c.shortFileName() != 'test.leo':
@@ -2749,7 +2749,7 @@ class atFile:
         ):
             ok = self.promptForDangerousWrite(fileName,kind='@auto')
             if ok:
-                p.v.at_auto_read = True # Create the attribute
+                p.v.at_read = True # Create the attribute
             else:
                 g.es("not written:",fileName)
                 return False
