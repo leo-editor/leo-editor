@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="132" left="7" height="608" width="1014"/>
+	<global_window_position top="211" left="233" height="608" width="1014"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -727,7 +727,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20071113203234"><vh> Test files</vh>
+<v t="ekr.20071113203234" a="E"><vh> Test files</vh>
 <v t="ekr.20090704085350.5028"><vh>@asis ../test/unittest/at-asis-test.py</vh>
 <v t="ekr.20090704085350.5029"><vh>spam</vh></v>
 <v t="ekr.20090704085350.5030"><vh>eggs</vh></v>
@@ -2312,6 +2312,16 @@
 <v t="ekr.20090529115704.4497"><vh>new</vh>
 <v t="ekr.20090529115704.4498"><vh>node 1</vh></v>
 <v t="ekr.20090529115704.4499"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20100107110353.5105"><vh>@shadow-test NEW multiple-NODE changes</vh>
+<v t="ekr.20100107110353.5106"><vh>old</vh>
+<v t="ekr.20100107110353.5107"><vh>node 1</vh></v>
+<v t="ekr.20100107110353.5108"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20100107110353.5109"><vh>new</vh>
+<v t="ekr.20100107110353.5110"><vh>node 1</vh></v>
+<v t="ekr.20100107110353.5111"><vh>node 2</vh></v>
 </v>
 </v>
 <v t="ekr.20090529115704.4500"><vh>@shadow-test multiple-line delete between nodes: at end of prev node</vh>
@@ -14455,13 +14465,16 @@ A
 
 d = c.tangleCommands.scanAllDirectives(p)
 
-assert d.get('encoding') == 'utf-8'
-assert d.get('language') == 'python'
-assert d.get('pagewidth') == 80
-assert d.get('path') == g.os_path_finalize_join(g.app.loadDir,'..','test')
-assert d.get('tabwidth') == -4
+assert d.get('encoding') == 'utf-8','fail encoding'
+assert d.get('language') == 'python','fail language'
+assert d.get('pagewidth') == 80,'fail pagewidth'
+path1 = d.get('path').lower()
+path2 = g.os_path_finalize_join(g.app.loadDir,'..','test').lower()
+assert path1==path2,'fail path: expected %s, got %s' % (path1,path2)
+assert d.get('tabwidth') == -4,'fail tabwidth'
 
-assert c.tangleCommands.print_mode=='silent',c.tangleCommands.print_mode
+assert c.tangleCommands.print_mode=='silent','fail print_mode: %s' % (
+    c.tangleCommands.print_mode)
 </t>
 <t tx="ekr.20071113090055.4"># This will work regardless of where this method is.
 @language python
@@ -21813,7 +21826,7 @@ for p2,h2 in table:
     assert len(p2.b) &gt; 10</t>
 <t tx="ekr.20090704093658.5062">h = '@root ../test/unittest/at-root-test.py'
 p = g.findNodeAnywhere(c,h)
-assert p
+assert p,'fail 1: no p'
 
 c.selectPosition(p)
 c.tangleCommands.tangle()
@@ -21827,11 +21840,11 @@ d = g.app.unitTestDict
 assert d.get('tangle') is True
 
 tangle_dir = d.get('tangle_directory')
-assert  tangle_dir == expectedDir,'expected: %s got: %s' % (
+assert  tangle_dir.lower() == expectedDir.lower(),'fail 2: expected: %s got: %s' % (
     expectedDir,tangle_dir)
 
 tangle_fn = d.get('tangle_output_fn')
-assert expectedFn == tangle_fn,'expected: %s got: %s' % (
+assert expectedFn.lower() == tangle_fn.lower(),'fail 3: expected: %s got: %s' % (
     expectedFn,tangle_fn)</t>
 <t tx="ekr.20091206090247.5060"># Use these with caution.</t>
 <t tx="ekr.20091206090247.5061">count = 0
@@ -21892,6 +21905,17 @@ for p in c.all_unique_positions():
 pages = ((nodes * 10) + lines) / 50
 s = "%d nodes,  %d lines, %d pages" % (nodes,lines,pages)
 print(s); g.es(s)</t>
+<t tx="ekr.20100107110353.5105"></t>
+<t tx="ekr.20100107110353.5106">@others</t>
+<t tx="ekr.20100107110353.5107">node 1 line 1
+node 1 line 2</t>
+<t tx="ekr.20100107110353.5108">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20100107110353.5109">@others</t>
+<t tx="ekr.20100107110353.5110">node 1 line 1
+node 1 line 2 changed</t>
+<t tx="ekr.20100107110353.5111">node 2 line 1 changed
+node 2 line 2 changed</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
