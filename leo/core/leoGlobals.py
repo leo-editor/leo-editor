@@ -2059,7 +2059,7 @@ def print_list(aList,tag=None,sort=False,indent=''):
 
 printList = print_list
 
-def listToString(aList,tag=None,sort=False,indent=''):
+def listToString(aList,tag=None,sort=False,indent='',toRepr=False):
 
     if not aList:
         if tag: return '%s...{}' % tag
@@ -2071,6 +2071,7 @@ def listToString(aList,tag=None,sort=False,indent=''):
         bList = aList
     lines = ["%s%s" % (indent,repr(e).strip()) for e in bList]
     s = '\n'.join(lines)
+    if toRepr: s = repr(s)
     if tag:
         return '[%s...\n%s\n]' % (tag,s)
     else:
