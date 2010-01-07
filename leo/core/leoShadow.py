@@ -308,7 +308,7 @@ class shadowController:
                     # g.trace('put line',repr(line))
                     writer.put(line,tag='copy sent %s:%s' % (start,limit))
     #@-node:ekr.20080708094444.37:x.copy_sentinels
-    #@+node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
+    #@+node:ekr.20080708094444.38:x.propagate_changed_lines (the main loop)
     def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
 
         '''Propagate changes from 'new_public_lines' to 'old_private_lines.
@@ -318,11 +318,14 @@ class shadowController:
 
         We have two invariants:
         1. We *never* delete any sentinels.
+           New at 2010/01/07: Replacements preserve sentinel locations.
         2. Insertions that happen at the boundary between nodes will be put at
            the end of a node.  However, insertions must always be done within sentinels.
         '''
 
-        x = self ; trace = False ; verbose = True
+        trace = False and not g.unitTesting
+        verbose = True
+        x = self ; 
         # mapping tells which line of old_private_lines each line of old_public_lines comes from.
         old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
 
@@ -432,29 +435,28 @@ class shadowController:
             # In this special case, we must do the insert before the sentinels.
             limit=mapping[old_i]
 
-            if trace: g.trace(tag,'old_i',old_i,'limit',limit)
-
-            if tag == 'insert' and limit >= old_private_lines_rdr.size():
-                pass
-            else:
-                # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
-                # Because of this, nothing has to be explicitly deleted below.
-                self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+            if trace: g.trace('tag',tag,'old_i',old_i,'limit',limit)
 
             if tag == 'equal':
+                # Copy sentinels up to the limit = mapping[old_i]
+                self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
                 # Copy all lines (including sentinels) from the old private file to the new private file.
-                start = old_private_lines_rdr.index()
+                start = old_private_lines_rdr.index() # Only used for tag.
                 while old_private_lines_rdr.index() <= mapping[old_j-1]:
                     line = old_private_lines_rdr.get()
-                    new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+                    new_private_lines_wtr.put(line,tag='%s %s:%s' % (
+                        tag,start,mapping[old_j-1]))
 
                 # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
                 new_public_lines_rdr.sync(new_j)
 
-            elif tag in ('insert','replace'):
+            elif tag == 'insert':
+                if limit < old_private_lines_rdr.size():
+                    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
                 # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
                 # Copy lines from new_public_lines_rdr up to new_j.
-                start = new_public_lines_rdr.index()
+                start = new_public_lines_rdr.index() # Only used for tag.
                 while new_public_lines_rdr.index() < new_j:
                     line = new_public_lines_rdr.get()
                     if marker.isSentinel(line):
@@ -463,16 +465,30 @@ class shadowController:
                             tag='%s %s:%s' % ('new sent',start,new_j))
                     new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
 
+            elif tag == 'replace':
+                # 2010/01/07: This case is new: it was the same as the 'insert' case.
+                start = old_private_lines_rdr.index() # Only used for tag.
+                while old_private_lines_rdr.index() <= mapping[old_j-1]:
+                    old_line = old_private_lines_rdr.get()
+                    if marker.isSentinel(old_line):
+                        # Important: this should work for @verbatim sentinels
+                        # because the next line will also be replaced.
+                        new_private_lines_wtr.put(old_line,tag='%s %s:%s' % (
+                            'replace: copy sentinel',start,new_j))
+                    else:
+                        new_line = new_public_lines_rdr.get()
+                        new_private_lines_wtr.put(new_line,tag='%s %s:%s' % (
+                            'replace: new line',start,new_j))
+
             elif tag=='delete':
-                # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+                # Copy sentinels up to the limit = mapping[old_i]
+                self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
                 # Leave new_public_lines_rdr unchanged.
-                pass
 
             else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
 
             if trace and verbose:
                 print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
-            #@nonl
             #@-node:ekr.20080708192807.5:<< Handle the opcode >>
             #@nl
 
@@ -503,14 +519,16 @@ class shadowController:
             #@-node:ekr.20080708094444.45:<< do final correctness check >>
             #@nl
         return result
-    #@-node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
+    #@-node:ekr.20080708094444.38:x.propagate_changed_lines (the main loop)
     #@+node:ekr.20080708094444.36:x.propagate_changes
     def propagate_changes(self, old_public_file, old_private_file):
 
         '''Propagate the changes from the public file (without_sentinels)
         to the private file (with_sentinels)'''
 
-        x = self ; trace = False
+        trace = False and not g.unitTesting
+        x = self ; at = self.c.atFileCommands
+        at.errors = 0
 
         old_public_lines  = open(old_public_file).readlines()
         old_private_lines = open(old_private_file).readlines()
@@ -520,9 +538,11 @@ class shadowController:
             g.trace(
                 'marker',marker,
                 '\npublic_file',old_public_file,
-                '\npublic lines...\n%s' %(g.listToString(old_public_lines)),
+                '\npublic lines...\n%s' %(
+                    g.listToString(old_public_lines,toRepr=True)),
                 '\nprivate_file',old_private_file,
-                '\nprivate lines...\n%s\n' %(g.listToString(old_private_lines)))
+                '\nprivate lines...\n%s\n' %(
+                    g.listToString(old_private_lines,toRepr=True)))
 
         new_private_lines = x.propagate_changed_lines(
             old_public_lines,old_private_lines,marker)
@@ -531,7 +551,8 @@ class shadowController:
         fn = old_private_file
         copy = os.path.exists(fn) and new_private_lines != old_private_lines
 
-        if copy and x.errors == 0:
+        # 2010/01/07: check at.errors also.
+        if copy and x.errors == 0 and at.errors == 0:
             s = ''.join(new_private_lines)
             ok = x.replaceFileWithString(fn,s)
             # g.trace('ok',ok,'writing private file',fn)
@@ -1013,7 +1034,7 @@ class shadowController:
         '''A class representing comment delims in @shadow files.'''
 
         #@    @+others
-        #@+node:ekr.20090529061522.6257:markerClass.ctor
+        #@+node:ekr.20090529061522.6257:markerClass.ctor & repr
         def __init__(self,delims):
 
             delim1,delim2,delim3 = delims
@@ -1022,7 +1043,16 @@ class shadowController:
             self.delim3 = delim3 # Block comment ending delim.
             if not delim1 and not delim2:
                 self.delim1 = g.app.language_delims_dict.get('unknown_language')
-        #@-node:ekr.20090529061522.6257:markerClass.ctor
+
+        def __repr__ (self):
+
+            if self.delim1:
+                delims = self.delim1
+            else:
+                delims = '%s %s' % (self.delim2,self.delim2)
+
+            return '<markerClass: delims: %s>' % repr(delims)
+        #@-node:ekr.20090529061522.6257:markerClass.ctor & repr
         #@+node:ekr.20090529061522.6258:getDelims
         def getDelims(self):
 
@@ -1190,7 +1220,7 @@ class shadowController:
             # g.pr('self.i',self.i)
             for i, line in enumerate(self.lines):
                 marker = g.choose(i==self.i,'**','  ')
-                g.pr("%s %3s:%s" % (marker, i, line),)
+                g.pr("%s %3s:%s" % (marker, i, repr(line)),)
         #@nonl
         #@-node:ekr.20080708094444.20:dump
         #@-others
@@ -1226,7 +1256,7 @@ class shadowController:
             self.lines.append(line)
             self.i+=1
 
-            if trace: g.trace('%16s %s' % (tag,repr(line)))
+            if trace: g.trace('%30s %s' % (tag,repr(line)))
         #@-node:ekr.20080708094444.23:put
         #@+node:ekr.20080708094444.24:index
         def index (self):

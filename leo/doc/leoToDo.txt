@@ -4474,7 +4474,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
 
 @color
 #@nonl
-#@+node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
+#@+node:ekr.20080708094444.38:x.propagate_changed_lines (the main loop)
 def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
 
     '''Propagate changes from 'new_public_lines' to 'old_private_lines.
@@ -4484,11 +4484,14 @@ def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=Non
 
     We have two invariants:
     1. We *never* delete any sentinels.
+       New at 2010/01/07: Replacements preserve sentinel locations.
     2. Insertions that happen at the boundary between nodes will be put at
        the end of a node.  However, insertions must always be done within sentinels.
     '''
 
-    x = self ; trace = False ; verbose = True
+    trace = False and not g.unitTesting
+    verbose = True
+    x = self ; 
     # mapping tells which line of old_private_lines each line of old_public_lines comes from.
     old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
 
@@ -4602,29 +4605,28 @@ old_private_lines_rdr explicitly. This explains why opcode handlers for the
 # In this special case, we must do the insert before the sentinels.
 limit=mapping[old_i]
 
-if trace: g.trace(tag,'old_i',old_i,'limit',limit)
-
-if tag == 'insert' and limit >= old_private_lines_rdr.size():
-    pass
-else:
-    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
-    # Because of this, nothing has to be explicitly deleted below.
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+if trace: g.trace('tag',tag,'old_i',old_i,'limit',limit)
 
 if tag == 'equal':
+    # Copy sentinels up to the limit = mapping[old_i]
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
     # Copy all lines (including sentinels) from the old private file to the new private file.
-    start = old_private_lines_rdr.index()
+    start = old_private_lines_rdr.index() # Only used for tag.
     while old_private_lines_rdr.index() <= mapping[old_j-1]:
         line = old_private_lines_rdr.get()
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (
+            tag,start,mapping[old_j-1]))
 
     # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
     new_public_lines_rdr.sync(new_j)
 
-elif tag in ('insert','replace'):
+elif tag == 'insert':
+    if limit < old_private_lines_rdr.size():
+        self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
     # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
     # Copy lines from new_public_lines_rdr up to new_j.
-    start = new_public_lines_rdr.index()
+    start = new_public_lines_rdr.index() # Only used for tag.
     while new_public_lines_rdr.index() < new_j:
         line = new_public_lines_rdr.get()
         if marker.isSentinel(line):
@@ -4633,16 +4635,30 @@ elif tag in ('insert','replace'):
                 tag='%s %s:%s' % ('new sent',start,new_j))
         new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
 
+elif tag == 'replace':
+    # 2010/01/07: This case is new: it was the same as the 'insert' case.
+    start = old_private_lines_rdr.index() # Only used for tag.
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        old_line = old_private_lines_rdr.get()
+        if marker.isSentinel(old_line):
+            # Important: this should work for @verbatim sentinels
+            # because the next line will also be replaced.
+            new_private_lines_wtr.put(old_line,tag='%s %s:%s' % (
+                'replace: copy sentinel',start,new_j))
+        else:
+            new_line = new_public_lines_rdr.get()
+            new_private_lines_wtr.put(new_line,tag='%s %s:%s' % (
+                'replace: new line',start,new_j))
+
 elif tag=='delete':
-    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy sentinels up to the limit = mapping[old_i]
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
     # Leave new_public_lines_rdr unchanged.
-    pass
 
 else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
 
 if trace and verbose:
     print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
-#@nonl
 #@-node:ekr.20080708192807.5:<< Handle the opcode >>
 #@+node:ekr.20080708094444.45:<< do final correctness check >>
 t_sourcelines, t_sentinel_lines = self.separate_sentinels(
@@ -4654,7 +4670,7 @@ self.check_the_final_output(
     sentinel_lines      = t_sentinel_lines,
     marker              = marker)
 #@-node:ekr.20080708094444.45:<< do final correctness check >>
-#@-node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
+#@-node:ekr.20080708094444.38:x.propagate_changed_lines (the main loop)
 #@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
 #@+node:ekr.20090402072059.13:Create a general mechanism for aux (shadow, _db) files
 @nocolor-node
