@@ -430,6 +430,12 @@
 </v>
 <v t="ekr.20100102104458.1938"><vh>Show invisibles</vh></v>
 <v t="ekr.20100103112623.1951"><vh>Insert form-feed</vh></v>
+<v t="ekr.20100107073103.1950" a="E"><vh>at-shadow problem</vh>
+<v t="ekr.20100107073103.1951"><vh>report</vh></v>
+<v t="ekr.20100107081251.1957"><vh>@@shadow simple-at-shadow-test.c</vh>
+<v t="ekr.20100107081251.1958"><vh>world</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -850,7 +856,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="7"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -4843,6 +4849,24 @@ a    b</t>
 p.b = s + '\n#\f'
 
 # 
-#</t>
+# </t>
+<t tx="ekr.20100107073103.1950"></t>
+<t tx="ekr.20100107073103.1951">@nocolor-node
+
+Now if one exits Leo, adds a single space in every line in the public
+file, and re-opens Leo, the error is:
+
+updated private H:\temp\.leo_shadow\xsimple.c from public H:\temp
+\simple.c
+reading: @shadow simple.c
+----- read error. line: 9, file: simple.c
+unexpected @nonl directive in code part
+</t>
+<t tx="ekr.20100107081251.1957">Hello
+
+@others
+
+!</t>
+<t tx="ekr.20100107081251.1958">World3</t>
 </tnodes>
 </leo_file>
