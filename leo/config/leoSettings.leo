@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="48" left="3" height="692" width="1018"/>
+	<global_window_position top="187" left="413" height="692" width="1018"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -94,7 +94,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20090703122042.7463"><vh>@@button a-common-button</vh></v>
@@ -106,7 +106,7 @@
 <v t="ekr.20080312075451.1"><vh>Common @command nodes</vh>
 <v t="ekr.20080312075451.2"><vh>@commands</vh></v>
 </v>
-<v t="ekr.20041213105007.1" a="E"><vh>Colors</vh>
+<v t="ekr.20041213105007.1"><vh>Colors</vh>
 <v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
 <v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
 <v t="ekr.20041119052015.2"><vh>@color log_text_foreground_color = None</vh></v>
@@ -143,7 +143,7 @@
 <v t="ekr.20041119051901.1"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
 <v t="ekr.20041119050749.12"><vh>@color outline_pane_background_color = #ffffec</vh></v>
 </v>
-<v t="ekr.20041119034357.70" a="E"><vh>Syntax colors &amp; options</vh>
+<v t="ekr.20041119034357.70"><vh>Syntax colors &amp; options</vh>
 <v t="ekr.20060201111002"></v>
 <v t="ekr.20060828145228"><vh>Options for old colorizer</vh>
 <v t="ekr.20041119034357.73"><vh>@bool color_cweb_comments_with_latex = True</vh></v>
@@ -167,7 +167,7 @@
 <v t="ekr.20041119034357.89"><vh>@color undefined_section_name_color = red</vh></v>
 <v t="ekr.20060829085840"><vh>@font php keyword fonts (old colorizer)</vh></v>
 </v>
-<v t="ekr.20060504131831" a="E"><vh>Options for jEdit colorer</vh>
+<v t="ekr.20060504131831"><vh>Options for jEdit colorer</vh>
 <v t="ekr.20100102121150.6344"><vh>@bool show-invisibles-by-default = False</vh></v>
 <v t="ekr.20060513100933"><vh>@int colorizer_interrupt_count1 = 10</vh></v>
 <v t="ekr.20060513100933.1"><vh>@int colorizer_interrupt_count2 = 5000</vh></v>
@@ -1084,7 +1084,8 @@
 <v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
-<v t="ekr.20081018053140.11"><vh>qtGui plugin</vh>
+<v t="ekr.20081018053140.11" a="E"><vh>qtGui plugin</vh>
+<v t="ekr.20100107060708.6390"><vh>@bool qt-tree-multiple-selection = True</vh></v>
 <v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 200000</vh></v>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
@@ -1266,7 +1267,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20081018053140.11"></v>
+<v t="ekr.20081018053140.11" a="E"></v>
 <v t="TL.20091006194534.6246"><vh>@keys Vim bindings</vh>
 <v t="TL.20091006194534.6247"><vh>Vim User Documentation</vh></v>
 <v t="TL.20091006194534.6248"><vh>Vim History</vh></v>
@@ -1443,12 +1444,8 @@
 <v t="TL.20091006194534.6395"><vh>@mode vim-window-commands</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208"></v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20090930151626.8534"><vh>add/delete-comments...</vh>
-<v t="ekr.20060925060533.4"></v>
-<v t="ekr.20070925144534.58"></v>
-</v>
+<v t="ekr.20060603215208"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -6604,7 +6601,7 @@ propagate-key-event = Alt-O
 propagate-key-event = Alt-W
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="4,2,3,2,0"></t>
+<t tx="ekr.20070622214401" str_leo_pos="5,0"></t>
 <t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070919125633">button_text_font_family = verdana
@@ -7959,11 +7956,11 @@ Change to your Python's default encoding if you have unicode problems.</t>
 <t tx="ekr.20090724102842.2492">If zero, all nodes are colorized, regardless of length of body text.
 If &gt; 0, only nodes whose body text are smaller than this limit are colorized.</t>
 <t tx="ekr.20090905151712.8546"></t>
-<t tx="ekr.20090930151626.8534"></t>
 <t tx="ekr.20100102100353.8705"></t>
 <t tx="ekr.20100102100353.8706"></t>
 <t tx="ekr.20100102121150.6344">
 </t>
+<t tx="ekr.20100107060708.6390"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

@@ -2100,18 +2100,26 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setName(w,name)
         return w
     #@-node:ekr.20090426083450.16:createText
-    #@+node:ekr.20090426083450.15:createTreeWidget
+    #@+node:ekr.20090426083450.15:createTreeWidget (DynamicWindow)
     def createTreeWidget (self,parent,name):
 
+        c = self.c
         w = QtGui.QTreeWidget(parent)
         self.setSizePolicy(w)
-        w.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-        w.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+
+        # 12/01/07: add new config setting.
+        multiple_selection = c.config.getBool('qt-tree-multiple-selection',default=True)
+        if multiple_selection:
+            w.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+            w.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        else:
+            w.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+            w.setSelectionBehavior(QtGui.QAbstractItemView.SelectItems)
         w.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         w.setHeaderHidden(False)
         self.setName(w,name)
         return w
-    #@-node:ekr.20090426083450.15:createTreeWidget
+    #@-node:ekr.20090426083450.15:createTreeWidget (DynamicWindow)
     #@-node:ekr.20090426183711.11:widgets
     #@+node:ekr.20090426183711.12:log tabs
     #@+node:ekr.20090424085523.38:createFindTab
@@ -6414,7 +6422,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         c.treeWantsFocus()
     #@-node:ekr.20090531084925.3774:scrollDelegate (leoQtTree)
     #@-node:ekr.20090124174652.122:Scroll bars (leoQtTree)
-    #@+node:ville.20090630151546.3969:onContextMenu (nativeTree)
+    #@+node:ville.20090630151546.3969:onContextMenu (leoQtTree)
     def onContextMenu(self, point):
         c = self.c
         w = self.treeWidget
@@ -6435,12 +6443,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         a = menu.popup(menuPos)
         self._contextmenu = menu
-
-
-
-
-
-    #@-node:ville.20090630151546.3969:onContextMenu (nativeTree)
+    #@-node:ville.20090630151546.3969:onContextMenu (leoQtTree)
     #@-node:ekr.20090124174652.102:Widget-dependent helpers (leoQtTree)
     #@-others
 #@-node:ekr.20081121105001.400:class leoQtTree (baseNativeTree)
@@ -7544,7 +7547,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         trace = False and not g.unitTesting
         verbose = True
-        traceEvent = False
+        traceEvent = True
         traceKey = True
         traceFocus = False
         c = self.c ; k = c.k
