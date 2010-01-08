@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="83" left="12" height="657" width="996"/>
+	<global_window_position top="30" left="968" height="1002" width="944"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -32,6 +32,7 @@
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20100108135636.1980"><vh>@keys</vh></v>
 <v t="ekr.20080529111617.1"><vh>plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
 <v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
@@ -427,15 +428,27 @@
 </v>
 </v>
 <v t="ekr.20100101100043.1891"><vh>string-rectangle</vh></v>
-</v>
-<v t="ekr.20100102104458.1938"><vh>Show invisibles</vh></v>
-<v t="ekr.20100103112623.1951"><vh>Insert form-feed</vh></v>
-<v t="ekr.20100107073103.1950" a="E"><vh>at-shadow problem</vh>
+<v t="ekr.20100107073103.1950"><vh>at-shadow problem</vh>
 <v t="ekr.20100107073103.1951"><vh>report</vh></v>
 <v t="ekr.20100107081251.1957"><vh>@@shadow simple-at-shadow-test.c</vh>
 <v t="ekr.20100107081251.1958"><vh>world</vh></v>
 </v>
 </v>
+<v t="ekr.20100103112623.1951"><vh>Insert form-feed</vh></v>
+<v t="ekr.20100102104458.1938"><vh>Show invisibles</vh></v>
+</v>
+<v t="ekr.20100108090658.1956"><vh>Keystroke tests</vh></v>
+<v t="ekr.20100108090658.1958"><vh>generate key events</vh>
+<v t="ekr.20100108090658.1959"><vh>Reference</vh></v>
+<v t="ekr.20100108111728.2077"><vh>Binding dicts</vh></v>
+<v t="ekr.20100108102030.1962"><vh>&lt;&lt; imports&gt;&gt;</vh></v>
+<v t="ekr.20100108102030.1963"><vh>&lt;&lt; constants &gt;&gt;</vh></v>
+<v t="ekr.20100108111728.2076"><vh>adjustBindings</vh></v>
+<v t="ekr.20100108102217.1966"><vh>overrideCommand</vh></v>
+<v t="ekr.20100108102217.1967"><vh>setKeyAndMods</vh></v>
+<v t="ekr.20100108102217.1968"><vh>testKeys</vh></v>
+</v>
+<v t="ekr.20100108135636.1981"><vh>commands</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -4845,7 +4858,9 @@ def stringRectangle (self,event):
 a	b
 # spaces
 a    b</t>
-<t tx="ekr.20100103112623.1951">s = p.b
+<t tx="ekr.20100103112623.1951"># This script insert a raw form-feed into the Leo outline.
+# Leo's atFile write code should remove this.
+s = p.b
 p.b = s + '\n#\f'
 
 # 
@@ -4868,5 +4883,805 @@ unexpected @nonl directive in code part
 
 !</t>
 <t tx="ekr.20100107081251.1958">World3</t>
+<t tx="ekr.20100108090658.1956"></t>
+<t tx="ekr.20100108090658.1958">&lt;&lt; imports&gt;&gt;
+&lt;&lt; constants &gt;&gt;
+
+@others
+
+ec = leoEditCommands.editCommandsClass
+table = (
+    (ec,'next-line','Down'),
+    (ec,'previous-line','Up'),
+    (ec,'next-line-extend-selection','Shift+Down'),
+    (ec,'previous-line-extend-selection','Shift+Up'),
+)
+
+for theClass,command,stroke in table:
+    overrideCommand(command,theClass,stroke)
+
+# testKeys()
+
+# aa
+</t>
+<t tx="ekr.20100108090658.1959">@nocolor-node
+@
+
+For a list of official key symbols, see
+http://doc.trolltech.com/4.4/qt.html#Key-enum
+
+QKeyEvent::QKeyEvent (
+    Type type, int key,
+    Qt::KeyboardModifiers modifiers,
+    const QString &amp; text = QString(),
+    bool autorep = false, ushort count = 1 )
+
+Modifiers
+Qt::NoModifier	0x00000000	    No modifier key.
+Qt::ShiftModifier	0x02000000	  A Shift key on the keyboard.
+Qt::ControlModifier	0x04000000  A Ctrl key on the keyboard.
+Qt::AltModifier	0x08000000	  An Alt key on the keyboard.
+Qt::MetaModifier	0x10000000	  A Meta key on the keyboard.
+</t>
+<t tx="ekr.20100108102030.1962">import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
+Qt = QtCore.Qt
+
+import leo.core.leoEditCommands as leoEditCommands</t>
+<t tx="ekr.20100108102030.1963">noMod = Qt.NoModifier
+shift = Qt.ShiftModifier
+ctrl  = Qt.ControlModifier
+alt   = Qt.AltModifier
+meta  = Qt.MetaModifier</t>
+<t tx="ekr.20100108102217.1966">def overrideCommand(command,theClass,stroke): # mods,key):
+
+    qtKey,qtMods = setKeyAndMods(stroke)
+
+    # Do the actual override
+    f = c.commandsDict.get(command)
+    if f:
+        # Capture the lambda bindings.
+        def qt_command_callback(self,event=None,qtKey=qtKey,qtMods=qtMods):
+            g.trace(event,command,stroke)
+            text=''
+            qtKey = QtGui.QKeyEvent(QtCore.QEvent.KeyPress,qtKey,qtMods,text)
+            w = c.frame.body.bodyCtrl.widget ### should be event.widget
+            QtCore.QCoreApplication.sendEvent(w,qtKey)
+
+        callback = qt_command_callback
+        # g.trace(id(f),command,stroke)
+        adjustBindings(command,callback,f,stroke,theClass)
+
+    else:
+        g.trace('no such command:',command)
+
+
+
+</t>
+<t tx="ekr.20100108102217.1967">def setKeyAndMods(stroke):
+
+    d = {'Up':Qt.Key_Up,'Down':Qt.Key_Down,}
+
+    mods = stroke.split('+')
+    key = mods[-1]
+    mods = mods[:-1]
+
+    qtMods = Qt.NoModifier
+    if mods:
+        for mod in mods:
+            mod = mod.lower()
+            if mod.startswith('s'):
+                qtMods |= Qt.ShiftModifier
+            elif mod.startswith('c'):
+                qtMods |= Qt.ControlModifier
+            elif mod.startswith('a'):
+                qtMods |= Qt.AltModifier
+            elif mod.startswith('m'):
+                qtMods |= Qt.MetaModifier
+            else:
+                tags.append('Unknown modifier: %s' % mod)
+
+    qtKey = d.get(key,key)
+    return qtKey,qtMods
+</t>
+<t tx="ekr.20100108102217.1968">def testKeys():
+
+    table = (
+        (ord('a'),noMod,'a'),
+        (Qt.Key_Up,shift,''),
+    )
+
+    # Put new characters at end.
+    w = c.frame.body.bodyCtrl
+    w.setInsertPoint('end')
+
+    for key,mod,text in table:
+        key = QtGui.QKeyEvent(QtCore.QEvent.KeyPress,key,mod,text)
+        for w in (
+            # c.frame.top, # a DynamicWindow. Nothing happens.
+            c.frame.body.bodyCtrl.widget,
+            # c.frame.log.logCtrl.widget, # works
+        ):
+            QtCore.QCoreApplication.sendEvent(w,key)
+</t>
+<t tx="ekr.20100108111728.2076"># This will become something like k.replaceCommand
+
+def adjustBindings (command,callback,f,stroke,theClass):
+
+    # f is the *old* function, to be replaced by callback.
+    trace = True and not g.unitTesting
+    k = c.k
+    g.funcToMethod(callback,theClass,name=f.__name__)
+    if trace: g.trace('=====',command,id(f),f.__name__)
+
+
+    stroke = c.k.shortcutFromSetting(stroke)
+    bindStroke = c.k.tkbindingFromStroke(stroke)
+
+    # Replace all entries for command in all bindings dicts...
+    c.commandsDict [command] = None ### callback
+
+    # k.masterGuiBindingsDict:
+    # Keys are strokes; value is a list of widgets for which stroke is bound.
+    k.masterGuiBindingsDict[bindStroke] = []
+
+    # k.bindingsDict:
+    # Keys are shortcuts;
+    # values are *lists* of g.bunch(func,name,warningGiven)
+    d = k.bindingsDict
+    aList = d.get(stroke,[])
+    if aList:
+        result = []
+        for b in aList:
+            # g.trace(id(b.func),b.func.__name__)
+            if b.func == f:
+                if trace: g.trace('*** removing k.bindingsDict',stroke)
+                ### b.func = callback
+            else:
+                result.append(b)
+        d[stroke] = result
+
+    # k.masterBindingsDict:
+    # Keys are scope names: 'all','text',etc. or mode names.
+    # Values are dicts:  keys are strokes,
+    # values are g.Bunch(commandName,func,pane,stroke)
+    d = k.masterBindingsDict
+    for key in list(k.masterBindingsDict.keys()):
+        d2 = k.masterBindingsDict.get(key,{})
+        b = d2.get(stroke,None)
+        if b:
+            # g.trace(b.pane,id(b.func),b.func.__name__)
+            if b.func == f:
+                if trace: g.trace('*** removing k.masterBindingsDict',stroke)
+                b.func = callback
+                d2[stroke] = None ### b
+</t>
+<t tx="ekr.20100108111728.2077">@nocolor-node
+
+@
+c.commandsDict:
+    Keys are emacs command names; values are functions f.
+
+k.inverseCommandsDict:
+    Keys are f.__name__; values are emacs command names.
+
+k.bindingsDict:
+    Keys are shortcuts; values are *lists* of g.bunch(func,name,warningGiven)
+
+k.masterBindingsDict:
+    Keys are scope names: 'all','text',etc. or mode names.
+    Values are dicts:  keys are strokes, values are g.Bunch(commandName,func,pane,stroke)
+
+k.masterGuiBindingsDict:
+    Keys are strokes; value is a list of widgets for which stroke is bound.
+
+k.settingsNameDict:
+    Keys are lowercase settings; values are 'real' Tk key specifiers.
+    Important: this table has no inverse.
+
+not an ivar (computed by k.computeInverseBindingDict):
+
+inverseBindingDict
+    Keys are emacs command names; values are *lists* of shortcuts.
+</t>
+<t tx="ekr.20100108135636.1980"></t>
+<t tx="ekr.20100108135636.1981">                     abbrev-mode
+                     abort-edit-headline
+                     about-leo
+                     act-on-node
+                     activate-cmds-menu
+                     activate-edit-menu
+                     activate-file-menu
+                     activate-help-menu
+                     activate-outline-menu
+                     activate-plugins-menu
+                     activate-window-menu
+all:    Ctrl+(       add-comments
+all:    Ctrl+Shift+Key+9 add-comments
+                     add-editor
+                     add-global-abbrev
+                     add-space-to-lines
+                     add-tab-to-lines
+                     advertised-undo
+                     append-to-buffer
+                     append-to-register
+                     apropos-autocompletion
+                     apropos-bindings
+                     apropos-debugging-commands
+                     apropos-find-commands
+all:    .            auto-complete
+                     auto-complete-force
+                     back-char
+                     back-char-extend-selection
+                     back-page
+                     back-page-extend-selection
+                     back-paragraph
+                     back-paragraph-extend-selection
+                     back-sentence
+                     back-sentence-extend-selection
+all:    Home         back-to-home
+all:    Ctrl+        back-to-indentation
+all:    Alt+B        back-word
+all:    Ctrl+Left    back-word
+all:    Alt+Shift+B  back-word-extend-selection
+all:    Ctrl+Shift+Left back-word-extend-selection
+all:    BackSpace    backward-delete-char
+all:    Alt+Q        backward-find-character
+all:    Alt+Shift+Q  backward-find-character-extend-selection
+                     backward-kill-paragraph
+                     backward-kill-sentence
+all:    Alt+Delete   backward-kill-word
+                     beautify
+                     beautify-all
+                     beautify-tree
+all:    Ctrl+Home    beginning-of-buffer
+all:    Ctrl+Shift+Home beginning-of-buffer-extend-selection
+all:    Ctrl+A       beginning-of-line
+all:    Ctrl+Shift+A beginning-of-line-extend-selection
+all:    Shift+Home   beginning-of-line-extend-selection
+                     call-kbd-macro
+                     call-last-kbd-macro
+                     capitalize-word
+                     cascade-windows
+                     center-line
+                     center-region
+all:    Ctrl+=       change
+                     change-all
+all:    Ctrl+-       change-then-find
+                     check-all-python-code
+                     check-derived-file
+                     check-leo-file
+                     check-outline
+                     check-python-code
+                     clean-all-lines
+                     clean-lines
+                     clean-recent-files
+                     clear-extend-mode
+                     clear-kill-ring
+                     clear-recent-files
+                     clear-rectangle
+                     clear-selected-text
+                     click-click-box
+                     click-headline
+                     click-icon-box
+                     clone-find-all
+                     clone-marked
+all:    Ctrl+`       clone-node
+                     clone-node-to-chapter
+                     close-rectangle
+all:    Alt+F4       close-window
+all:    Alt+V        cm-external-editor
+all:    Alt+Key+0    codewise-complete
+                     codewise-suggest
+                     collect-garbage
+                     compare-leo-files
+all:    Alt+-        contract-all
+                     contract-all-other-nodes
+                     contract-body-pane
+                     contract-log-pane
+                     contract-node
+text:   Left         contract-or-go-left
+tree:   Left         contract-or-go-left
+                     contract-outline-pane
+all:    Alt+Ctrl+-   contract-pane
+                     contract-parent
+                     convert-all-blanks
+                     convert-all-tabs
+                     convert-blanks
+                     convert-node-to-chapter
+                     convert-tabs
+all:    Ctrl+Shift+C copy-node
+                     copy-node-to-chapter
+                     copy-rectangle-to-register
+all:    Ctrl+C       copy-text
+                     copy-to-register
+                     count-region
+                     create-chapter
+                     create-chapter-from-node
+all:    Ctrl+Shift+X cut-node
+all:    Ctrl+X       cut-text
+all:    Ctrl+Shift+Tab cycle-all-focus
+                     cycle-editor-focus
+all:    Ctrl+Tab     cycle-focus
+                     dabbrev-completion
+                     dabbrev-expands
+                     de-hoist
+                     debug
+all:    Delete       delete-char
+all:    Ctrl+Shift+Key+0 delete-comments
+all:    Ctrl+)       delete-comments
+                     delete-detach-body-button
+                     delete-editor
+                     delete-file
+                     delete-first-icon
+                     delete-indentation
+                     delete-last-icon
+                     delete-node
+                     delete-node-icons
+                     delete-print-sep-button
+                     delete-rectangle
+                     delete-render-as-sphinx-button
+                     delete-run-test-leo-tests-button
+                     delete-script-button-button
+                     delete-show-rst-button
+                     delete-spaces
+all:    Ctrl+]       demote
+all:    Ctrl+}       demote
+all:    Ctrl+Shift+] demote
+                     detach-body
+                     diff
+                     digit-argument
+                     disable-autocompleter
+                     disable-calltips
+                     disable-gc-trace
+                     do-nothing
+                     double-click-headline
+                     double-click-icon-box
+                     downcase-region
+                     downcase-word
+                     dump-all-objects
+                     dump-new-objects
+                     dump-outline
+all:    Ctrl+H       edit-headline
+                     enable-autocompleter
+                     enable-calltips
+                     enable-gc-trace
+                     end-edit-headline
+all:    Ctrl+End     end-of-buffer
+all:    Ctrl+Shift+End end-of-buffer-extend-selection
+all:    Ctrl+E       end-of-line
+all:    End          end-of-line
+all:    Ctrl+Shift+E end-of-line-extend-selection
+all:    Shift+End    end-of-line-extend-selection
+                     enter-quick-command-mode
+                     equal-sized-panes
+                     escape
+                     eval-expression
+all:    Alt+M        exchange-point-mark
+all:    Ctrl+B       execute-script
+all:    Ctrl+Q       exit-leo
+                     exit-named-mode
+                     expand-all
+                     expand-ancestors-only
+all:    Alt+Right    expand-and-go-right
+                     expand-body-pane
+                     expand-log-pane
+                     expand-next-level
+all:    Alt+]        expand-node
+                     expand-or-go-right
+                     expand-outline-pane
+all:    Alt+Ctrl+=   expand-pane
+                     expand-prev-level
+                     expand-to-level-1
+                     expand-to-level-2
+                     expand-to-level-3
+                     expand-to-level-4
+                     expand-to-level-5
+                     expand-to-level-6
+                     expand-to-level-7
+                     expand-to-level-8
+                     expand-to-level-9
+                     export-headlines
+all:    Alt+L        extend-to-line
+                     extend-to-paragraph
+                     extend-to-sentence
+all:    Ctrl+W       extend-to-word
+all:    Ctrl+Shift+D extract
+all:    Ctrl+Shift+N extract-names
+all:    Ctrl+Shift+S extract-section
+                     fill-paragraph
+                     fill-region
+                     fill-region-as-paragraph
+                     find-all
+                     find-character
+                     find-character-extend-selection
+                     find-clone-all
+all:    F3           find-next
+                     find-next-clone
+all:    F2           find-prev
+all:    Ctrl+Shift+F find-quick
+                     find-quick-test-failures
+                     find-word
+                     find-word-in-line
+                     flatten-outline
+                     flush-lines
+all:    Alt+D        focus-to-body
+                     focus-to-log
+                     focus-to-minibuffer
+                     focus-to-nav
+all:    Alt+T        focus-to-tree
+tree:   Right        forward-char
+text:   Right        forward-char
+                     forward-char-extend-selection
+                     forward-end-word
+                     forward-end-word-extend-selection
+                     forward-page
+                     forward-page-extend-selection
+all:    Alt+}        forward-paragraph
+all:    Alt+Shift+}  forward-paragraph-extend-selection
+                     forward-sentence
+                     forward-sentence-extend-selection
+all:    Ctrl+Right   forward-word
+all:    Ctrl+Shift+Right forward-word-extend-selection
+                     free-tree-widgets
+all:    Alt+X        full-command
+                     fully-expand-body-pane
+                     fully-expand-log-pane
+                     fully-expand-outline-pane
+                     fully-expand-pane
+                     go-back
+                     go-forward
+                     goto-char
+                     goto-first-node
+                     goto-first-sibling
+all:    Alt+Home     goto-first-visible-node
+all:    Alt+G        goto-global-line
+                     goto-last-node
+                     goto-last-sibling
+all:    Alt+End      goto-last-visible-node
+                     goto-line
+                     goto-next-changed
+all:    Alt+N        goto-next-clone
+                     goto-next-marked
+                     goto-next-node
+                     goto-next-sibling
+all:    Alt+Down     goto-next-visible
+                     goto-parent
+                     goto-prev-node
+                     goto-prev-sibling
+all:    Alt+Up       goto-prev-visible
+tree:   Up           goto-prev-visible
+text:   Up           goto-prev-visible
+all:    F1           help-for-command
+                     help-for-minibuffer
+                     hide-body-pane
+                     hide-find-tab
+                     hide-invisibles
+                     hide-log-pane
+                     hide-mini-buffer
+                     hide-outline-pane
+                     hide-pane
+                     hide-spell-tab
+                     history
+                     hoist
+                     how-many
+                     iconify-frame
+                     import-at-file
+                     import-at-root
+                     import-cweb-files
+                     import-derived-file
+                     import-flattened-outline
+                     import-noweb-files
+                     increment-register
+                     indent-region
+                     indent-relative
+                     indent-rigidly
+                     indent-to-comment-column
+                     insert-body-time
+                     insert-child
+                     insert-file
+                     insert-headline-time
+                     insert-icon
+tree:   Return       insert-newline
+body:   Return       insert-newline
+all:    Ctrl+I       insert-node
+all:    Insert       insert-node
+                     insert-parentheses
+                     insert-register
+                     inverse-add-global-abbrev
+all:    Alt+R        isearch-backward
+                     isearch-backward-regexp
+all:    Alt+S        isearch-forward
+                     isearch-forward-regexp
+                     isearch-with-present-options
+                     jump-to-register
+                     keep-lines
+all:    Ctrl+G       keyboard-quit
+                     kill-all-abbrevs
+                     kill-buffer
+all:    Ctrl+K       kill-line
+                     kill-paragraph
+                     kill-rectangle
+                     kill-region
+                     kill-region-save
+                     kill-sentence
+                     kill-word
+                     kill-ws
+                     line-number
+                     list-abbrevs
+                     list-buffers
+                     list-buffers-alphabetically
+                     load-kbd-macros
+                     make-directory
+all:    Ctrl+M       mark
+                     mark-changed-items
+                     mark-changed-roots
+                     mark-clones
+                     mark-subheads
+                     marked-list
+                     match-brackets
+                     minimize-all
+                     mode-help
+                     move-lines-down
+                     move-lines-up
+                     move-node-to-chapter
+all:    Ctrl+D       move-outline-down
+all:    Alt+Shift+Down move-outline-down
+tree:   Shift+Down   move-outline-down
+text:   Shift+Down   move-outline-down
+text:   Shift+Left   move-outline-left
+tree:   Shift+Left   move-outline-left
+all:    Alt+Shift+Left move-outline-left
+text:   Shift+Right  move-outline-right
+tree:   Shift+Right  move-outline-right
+all:    Alt+Shift+Right move-outline-right
+all:    Ctrl+U       move-outline-up
+tree:   Shift+Up     move-outline-up
+text:   Shift+Up     move-outline-up
+all:    Alt+Shift+Up move-outline-up
+all:    Alt+)        move-past-close
+all:    Alt+Shift+Key+0 move-past-close
+                     move-past-close-extend-selection
+                     name-last-kbd-macro
+                     negative-argument
+all:    Ctrl+N       new
+all:    Ctrl+J       newline-and-indent
+tree:   Down         next-line
+text:   Down         next-line
+all:    Ctrl+D       next-line-extend-selection
+all:    Alt+Shift+Down next-line-extend-selection
+tree:   Shift+Down   next-line-extend-selection
+text:   Shift+Down   next-line-extend-selection
+                     number-command
+                     number-command-0
+                     number-command-1
+                     number-command-2
+                     number-command-3
+                     number-command-4
+                     number-command-5
+                     number-command-6
+                     number-command-7
+                     number-command-8
+                     number-command-9
+                     open-compare-window
+                     open-find-dialog
+                     open-find-tab
+                     open-leoDocs-leo
+                     open-leoPlugins-leo
+                     open-leoSettings-leo
+                     open-myLeoSettings-leo
+                     open-offline-tutorial
+                     open-online-home
+                     open-online-tutorial
+all:    Ctrl+O       open-outline
+                     open-outline-by-name
+                     open-python-window
+                     open-quickstart-leo
+                     open-rectangle
+                     open-scripts-leo
+all:    F7           open-spell-tab
+                     open-users-guide
+                     open-with
+                     outline-to-cweb
+                     outline-to-noweb
+all:    Ctrl+Shift+V paste-node
+                     paste-retaining-clones
+all:    Ctrl+V       paste-text
+                     pdb
+                     point-to-register
+                     prepend-to-buffer
+                     prepend-to-register
+                     pretty-print-all-python-code
+                     pretty-print-python-code
+all:    Alt+Up       previous-line
+tree:   Up           previous-line
+text:   Up           previous-line
+all:    Ctrl+U       previous-line-extend-selection
+tree:   Shift+Up     previous-line-extend-selection
+text:   Shift+Up     previous-line-extend-selection
+all:    Alt+Shift+Up previous-line-extend-selection
+                     print-bindings
+                     print-commands
+                     print-focus
+                     print-gc-summary
+                     print-macros
+                     print-plugin-handlers
+                     print-plugins-info
+                     print-sep
+                     print-settings
+                     print-stats
+all:    Ctrl+{       promote
+all:    Ctrl+[       promote
+all:    Ctrl+Shift+[ promote
+all:    Alt+E        propagate-key-event
+all:    Alt+F        propagate-key-event
+all:    Alt+C        propagate-key-event
+all:    Alt+H        propagate-key-event
+all:    Alt+W        propagate-key-event
+all:    Alt+P        propagate-key-event
+all:    Alt+O        propagate-key-event
+                     python-help
+                     re-search-backward
+                     re-search-forward
+                     read-abbrev-file
+                     read-at-auto-nodes
+                     read-at-file-nodes
+                     read-at-shadow-nodes
+                     read-file-into-node
+                     read-outline-only
+all:    Ctrl+Shift+Z redo
+all:    Ctrl+Shift+P reformat-paragraph
+                     remove-blank-lines
+                     remove-chapter
+                     remove-directory
+                     remove-sentinels
+                     remove-space-from-lines
+                     remove-tab-from-lines
+                     rename-buffer
+                     rename-chapter
+                     render-as-sphinx
+all:    Ctrl+P       repeat-complex-command
+all:    Ctrl+Shift+R replace-string
+                     resize-to-screen
+                     reverse-region
+                     reverse-sort-lines
+                     reverse-sort-lines-ignoring-case
+                     revert
+                     rst3
+                     run-all-unit-tests
+                     run-all-unit-tests-locally
+button: Alt+Key+7    run-test-leo-tests
+all:    Alt+Key+5    run-unit-tests
+all:    Alt+Key+4    run-unit-tests-locally
+                     save-buffers-kill-leo
+all:    Ctrl+S       save-file
+                     save-file-as
+                     save-file-as-unzipped
+                     save-file-as-zipped
+                     save-file-to
+                     save-kbd-macros
+                     script-button
+text:   Shift+Next   scroll-down-half-page
+tree:   Shift+Next   scroll-down-half-page
+                     scroll-down-line
+text:   Next         scroll-down-page
+tree:   Next         scroll-down-page
+                     scroll-outline-down-line
+                     scroll-outline-down-page
+                     scroll-outline-left
+                     scroll-outline-right
+                     scroll-outline-up-line
+                     scroll-outline-up-page
+text:   Shift+Prior  scroll-up-half-page
+tree:   Shift+Prior  scroll-up-half-page
+                     scroll-up-line
+text:   Prior        scroll-up-page
+tree:   Prior        scroll-up-page
+                     search-again
+                     search-backward
+                     search-forward
+all:    Ctrl+F       search-with-present-options
+all:    Alt+Shift+A  select-all
+                     select-chapter
+                     set-colors
+                     set-command-state
+                     set-comment-column
+                     set-extend-mode
+                     set-fill-column
+                     set-fill-prefix
+all:    Alt+Ctrl+E   set-find-everywhere
+all:    Alt+Ctrl+N   set-find-node-only
+all:    Alt+Ctrl+S   set-find-suboutline-only
+                     set-font
+                     set-insert-state
+                     set-overwrite-state
+                     set-silent-mode
+                     settings
+                     shell-command
+                     shell-command-on-region
+all:    (            show-calltips
+                     show-calltips-force
+                     show-colors
+                     show-find-options
+                     show-fonts
+                     show-invisibles
+                     show-mini-buffer
+                     show-rst
+                     simulate-begin-drag
+                     simulate-end-drag
+                     sort-children
+                     sort-columns
+                     sort-fields
+                     sort-lines
+                     sort-lines-ignoring-case
+                     sort-recent-files
+all:    Alt+A        sort-siblings
+                     spell-change
+                     spell-change-then-find
+                     spell-find
+                     spell-ignore
+                     split-line
+                     start-kbd-macro
+                     string-rectangle
+                     suspend
+                     switch-to-buffer
+                     tabify
+                     tangle
+                     tangle-all
+                     tangle-marked
+all:    Ctrl+T       toggle-active-pane
+                     toggle-angle-brackets
+all:    Alt+Key+1    toggle-autocompleter
+all:    Alt+Key+2    toggle-calltips
+all:    Alt+Key+3    toggle-extend-mode
+                     toggle-find-collapses_nodes
+all:    Alt+Ctrl+I   toggle-find-ignore-case-option
+all:    Alt+Ctrl+B   toggle-find-in-body-option
+all:    Alt+Ctrl+H   toggle-find-in-headline-option
+all:    Alt+Ctrl+C   toggle-find-mark-changes-option
+all:    Alt+Ctrl+F   toggle-find-mark-finds-option
+all:    Alt+Ctrl+X   toggle-find-regex-option
+all:    Alt+Ctrl+R   toggle-find-reverse-option
+all:    Alt+Ctrl+W   toggle-find-word-option
+all:    Alt+Ctrl+A   toggle-find-wrap-around-option
+                     toggle-input-state
+                     toggle-invisibles
+                     toggle-mini-buffer
+                     toggle-sparce-move
+                     toggle-split-direction
+                     transpose-chars
+                     transpose-lines
+                     transpose-words
+all:    Ctrl+Z       undo
+all:    Shift+Tab    unindent-region
+all:    Alt+U        universal-argument
+                     unmark-all
+                     untabify
+                     untangle
+                     untangle-all
+                     untangle-marked
+                     upcase-region
+                     upcase-word
+                     verbose-dump-objects
+                     view-lossage
+                     view-register
+                     weave
+                     what-line
+                     word-search-backward
+                     word-search-forward
+                     write-abbrev-file
+                     write-at-auto-nodes
+all:    Ctrl+Shift+W write-at-file-nodes
+                     write-at-shadow-nodes
+                     write-dirty-at-auto-nodes
+all:    Ctrl+Shift+Q write-dirty-at-file-nodes
+                     write-dirty-at-shadow-nodes
+                     write-file-from-node
+                     write-missing-at-file-nodes
+                     write-outline-only
+all:    Ctrl+Y       yank
+all:    Alt+Y        yank-pop
+                     yank-rectangle
+all:    Alt+Z        zap-to-character</t>
 </tnodes>
 </leo_file>

@@ -398,6 +398,28 @@ def editLabelHelper (self,item,selectAll=False,selection=None):
     return e
 #@-node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
 #@-node:ekr.20091006164957.3701:Select all text if headline is newHeadline
+#@+node:ekr.20100107060708.3717:Added option to disable multiple tree selections
+#@+node:ekr.20090426083450.15:createTreeWidget (DynamicWindow)
+def createTreeWidget (self,parent,name):
+
+    c = self.c
+    w = QtGui.QTreeWidget(parent)
+    self.setSizePolicy(w)
+
+    # 12/01/07: add new config setting.
+    multiple_selection = c.config.getBool('qt-tree-multiple-selection',default=True)
+    if multiple_selection:
+        w.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        w.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+    else:
+        w.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        w.setSelectionBehavior(QtGui.QAbstractItemView.SelectItems)
+    w.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+    w.setHeaderHidden(False)
+    self.setName(w,name)
+    return w
+#@-node:ekr.20090426083450.15:createTreeWidget (DynamicWindow)
+#@-node:ekr.20100107060708.3717:Added option to disable multiple tree selections
 #@-node:ekr.20090813101852.3644:Features
 #@+node:ekr.20090813101852.3643:Bugs
 #@+node:ekr.20090718070434.3641:Fixed file-open focus problem
@@ -974,9 +996,9 @@ def char2tkName (self,ch):
 #@+node:ekr.20081121105001.168:eventFilter
 def eventFilter(self, obj, event):
 
-    trace = False and not g.unitTesting
+    trace = True and not g.unitTesting
     verbose = True
-    traceEvent = True
+    traceEvent = False
     traceKey = True
     traceFocus = False
     c = self.c ; k = c.k
@@ -1011,12 +1033,14 @@ def eventFilter(self, obj, event):
         aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
         if ignore:
             override = False
+        #### This is extremely bad.  At present, it is needed to handle tab properly.
         elif self.isSpecialOverride(tkKey,ch):
             override = True
         elif k.inState():
             override = not ignore # allow all keystrokes.
         else:
             override = len(aList) > 0
+        g.trace(tkKey,len(aList),'ignore',ignore,'override',override)
     else:
         override = False ; tkKey = '<no key>'
         if self.tag == 'body':
@@ -1024,6 +1048,7 @@ def eventFilter(self, obj, event):
                 c.frame.body.onFocusIn(obj)
             elif eventType == ev.FocusOut:
                 c.frame.body.onFocusOut(obj)
+
     if self.keyIsActive:
         stroke = self.toStroke(tkKey,ch)
         if override:
@@ -1329,9 +1354,9 @@ def tkKey (self,event,mods,keynum,text,toString,ch):
 #@+node:ekr.20081121105001.168:eventFilter
 def eventFilter(self, obj, event):
 
-    trace = False and not g.unitTesting
+    trace = True and not g.unitTesting
     verbose = True
-    traceEvent = True
+    traceEvent = False
     traceKey = True
     traceFocus = False
     c = self.c ; k = c.k
@@ -1366,12 +1391,14 @@ def eventFilter(self, obj, event):
         aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
         if ignore:
             override = False
+        #### This is extremely bad.  At present, it is needed to handle tab properly.
         elif self.isSpecialOverride(tkKey,ch):
             override = True
         elif k.inState():
             override = not ignore # allow all keystrokes.
         else:
             override = len(aList) > 0
+        g.trace(tkKey,len(aList),'ignore',ignore,'override',override)
     else:
         override = False ; tkKey = '<no key>'
         if self.tag == 'body':
@@ -1379,6 +1406,7 @@ def eventFilter(self, obj, event):
                 c.frame.body.onFocusIn(obj)
             elif eventType == ev.FocusOut:
                 c.frame.body.onFocusOut(obj)
+
     if self.keyIsActive:
         stroke = self.toStroke(tkKey,ch)
         if override:
@@ -4856,9 +4884,9 @@ def char2tkName (self,ch):
 #@+node:ekr.20081121105001.168:eventFilter
 def eventFilter(self, obj, event):
 
-    trace = False and not g.unitTesting
+    trace = True and not g.unitTesting
     verbose = True
-    traceEvent = True
+    traceEvent = False
     traceKey = True
     traceFocus = False
     c = self.c ; k = c.k
@@ -4893,12 +4921,14 @@ def eventFilter(self, obj, event):
         aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
         if ignore:
             override = False
+        #### This is extremely bad.  At present, it is needed to handle tab properly.
         elif self.isSpecialOverride(tkKey,ch):
             override = True
         elif k.inState():
             override = not ignore # allow all keystrokes.
         else:
             override = len(aList) > 0
+        g.trace(tkKey,len(aList),'ignore',ignore,'override',override)
     else:
         override = False ; tkKey = '<no key>'
         if self.tag == 'body':
@@ -4906,6 +4936,7 @@ def eventFilter(self, obj, event):
                 c.frame.body.onFocusIn(obj)
             elif eventType == ev.FocusOut:
                 c.frame.body.onFocusOut(obj)
+
     if self.keyIsActive:
         stroke = self.toStroke(tkKey,ch)
         if override:

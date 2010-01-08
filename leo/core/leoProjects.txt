@@ -18143,6 +18143,14 @@ self.check_the_final_output(
 #@-node:ekr.20080708094444.45:<< do final correctness check >>
 #@-node:ekr.20080708094444.38:x.propagate_changed_lines (the main loop)
 #@-node:ekr.20100107051445.6193:Fixed at-shadow error
+#@+node:ekr.20100107064059.6199:Set read bit when writing @auto/@shadow files
+@nocolor-node
+
+Leo warns about "externally changed" file after writing the file for the first time.
+
+The solution was to change the at_auto_read ivar to the at_read ivar.
+#@nonl
+#@-node:ekr.20100107064059.6199:Set read bit when writing @auto/@shadow files
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20090815073537.5991:Added options to vim plugin

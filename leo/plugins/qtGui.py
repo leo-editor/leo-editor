@@ -7545,9 +7545,9 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081121105001.168:eventFilter
     def eventFilter(self, obj, event):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         verbose = True
-        traceEvent = True
+        traceEvent = False
         traceKey = True
         traceFocus = False
         c = self.c ; k = c.k
@@ -7582,12 +7582,14 @@ class leoQtEventFilter(QtCore.QObject):
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
             if ignore:
                 override = False
+            #### This is extremely bad.  At present, it is needed to handle tab properly.
             elif self.isSpecialOverride(tkKey,ch):
                 override = True
             elif k.inState():
                 override = not ignore # allow all keystrokes.
             else:
                 override = len(aList) > 0
+            g.trace(tkKey,len(aList),'ignore',ignore,'override',override)
         else:
             override = False ; tkKey = '<no key>'
             if self.tag == 'body':
@@ -7595,6 +7597,7 @@ class leoQtEventFilter(QtCore.QObject):
                     c.frame.body.onFocusIn(obj)
                 elif eventType == ev.FocusOut:
                     c.frame.body.onFocusOut(obj)
+
         if self.keyIsActive:
             stroke = self.toStroke(tkKey,ch)
             if override:
