@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="48" left="25" height="692" width="996"/>
+	<global_window_position top="48" left="10" height="692" width="1024"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -32,7 +32,7 @@
 <v t="ekr.20090430075506.4"><vh>Notes &amp; to-do</vh>
 <v t="ekr.20090430075506.3"><vh>@thin leoPluginNotes.txt</vh></v>
 </v>
-<v t="edream.110203113231.618"><vh>Plugins</vh>
+<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
 <v t="ekr.20041114102139"><vh>Notes</vh>
@@ -64,9 +64,9 @@
 <v t="ekr.20091118065749.5261"><vh>@thin ctagscompleter.py</vh></v>
 <v t="ville.20091204224145.5355"><vh>@thin codewisecompleter.py</vh></v>
 </v>
-<v t="ekr.20040722135402.1"><vh>Body pane</vh>
+<v t="ekr.20040722135402.1" a="E"><vh>Body pane</vh>
 <v t="edream.110403140857.8"><vh>@thin color_markup.py</vh></v>
-<v t="ekr.20060506070443.1"><vh>@thin detect_urls.py</vh></v>
+<v t="ekr.20060506070443.1" a="E"><vh>@thin detect_urls.py</vh></v>
 <v t="edream.110203113231.753"><vh>@thin image.py</vh></v>
 <v t="edream.110203113231.925"><vh>@thin script_io_to_body.py</vh></v>
 <v t="ekr.20080619090226.4"><vh>rClick plugin</vh>
@@ -364,7 +364,7 @@
 <v t="edream.110203113231.873"><vh>@thin at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@thin at_produce.py</vh></v>
 <v t="ktenney.20041211072654.1"><vh>@thin at_view.py</vh></v>
-<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005803000000302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@thin attrib_edit.py</vh></v>
+<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@thin attrib_edit.py</vh></v>
 <v t="mork.20041020082242.1"><vh>@thin base64Packager.py</vh></v>
 <v t="tbrown.20070322113635"><vh>@thin bookmarks.py</vh></v>
 <v t="ekr.20060807103814.1"><vh>@thin datenodes.py</vh></v>
@@ -801,8 +801,7 @@
 </v>
 <v t="ekr.20100103093121.5329"
 marks="vivainio2.20091008133028.5823,vivainio2.20091008140054.14555,ville.20091008210853.7616,ville.20091023181249.5264,vivainio2.20091008133028.5825,ville.20091023181249.5266,"><vh>@thin stickynotes.py</vh></v>
-<v t="ekr.20100103093121.5339"
-marks="vivainio2.20091008133028.5823,vivainio2.20091008140054.14555,ville.20091008210853.7616,ville.20091023181249.5264,vivainio2.20091008133028.5825,ville.20091023181249.5266,"><vh>@thin stickynotes_plus.py</vh></v>
+<v t="ekr.20100103093121.5339"><vh>@thin stickynotes_plus.py</vh></v>
 <v t="ekr.20070119094733.1"><vh>@thin dtest.py</vh></v>
 </v>
 <v t="ekr.20061023142737"><vh>UNL plugin</vh>
@@ -867,10 +866,11 @@ marks="vivainio2.20091008133028.5823,vivainio2.20091008140054.14555,ville.200910
 <v t="ekr.20040915075530"><vh>@thin UASearch.py</vh></v>
 <v t="ekr.20040831122004"><vh>@thin UniversalScrolling.py</vh></v>
 <v t="ekr.20040831115238"><vh>@thin URLloader.py</vh></v>
-<v t="ekr.20060506070443.1"></v>
+<v t="ekr.20060506070443.1" a="E"></v>
 <v t="ville.20090310191936.10"><vh>@thin colorize_headlines.py</vh></v>
 <v t="ville.20090314215508.4"><vh>@thin quicksearch.py</vh></v>
-<v t="ville.20091008210853.5241"><vh>@thin stickynotes.py</vh></v>
+<v t="ville.20091008210853.5241"
+marks="vivainio2.20091008133028.5823,vivainio2.20091008140054.14555,ville.20091008210853.7616,ville.20091023181249.5264,vivainio2.20091008133028.5825,ville.20091023181249.5266,"><vh>@thin stickynotes.py</vh></v>
 </v>
 </v>
 </vnodes>
@@ -4496,7 +4496,7 @@ your plugin.</t>
 <t tx="ekr.20041114103913.1">PLEASE define each function or method in a separate node! To make this work,
 just put @others in the root of your plugin as shown. Note that @others may be
 nested, as shown in class myClass.</t>
-<t tx="ekr.20041211035618" str_leo_pos="2"></t>
+<t tx="ekr.20041211035618" str_leo_pos="2,3,1"></t>
 <t tx="ekr.20041231134702"># This is called from plugins_menu plugin.
 
 # It should only be defined if the extension has been registered.
