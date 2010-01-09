@@ -3,14 +3,15 @@
 #@<< docstring >>
 #@+node:vpe.20060426084738:<< docstring >>
 """
-Colorizes URLs everywhere in node's body on node selection. 
+Colorizes URLs everywhere in node's body on node selection
+or saving.
+
 Double click on any URL launches it in default browser.
 
-URL regex:  (http|https|ftp)://[^\s'"]+[\w=/]
+URL regex:  (http|https|file|ftp)://[^\s'"]+[\w=/]
 
 Related plugins:  color_markup.py; rClick.py
 """
-#@nonl
 #@-node:vpe.20060426084738:<< docstring >>
 #@nl
 #@@language python
@@ -18,7 +19,8 @@ Related plugins:  color_markup.py; rClick.py
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import re
-url_regex = re.compile(r"""(http|https|ftp)://[^\s'"]+[\w=/]""")
+#VR20100108: url_regex = re.compile(r"""(http|https|ftp)://[^\s'"]+[\w=/]""")
+url_regex = re.compile(r"""(http|https|file|ftp)://[^\s'"]+[\w=/]""")
 
 #@+others
 #@+node:vpe.20060305064323.5:openURL()
@@ -71,6 +73,7 @@ def colorizeURLs(tag,keywords):
 if 1:
     leoPlugins.registerHandler("bodydclick1", openURL)
     leoPlugins.registerHandler("select2", colorizeURLs)
+    leoPlugins.registerHandler("save2", colorizeURLs) #VR20100108
     g.plugin_signon(__name__)
 #@-node:ekr.20060506070443.1:@thin detect_urls.py
 #@-leo
