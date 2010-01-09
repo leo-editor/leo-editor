@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="30" left="968" height="1002" width="944"/>
+	<global_window_position top="5" left="814" height="956" width="944"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -311,6 +311,13 @@
 <v t="ekr.20070609085533"><vh>@@url c:\prog\wink\ChangeViewMenu.htm</vh></v>
 </v>
 <v t="ekr.20091230081322.1919"><vh>unicode categories</vh></v>
+<v t="ekr.20100109084336.1996"><vh>Prototypes of gui-dependent cursor move helpers</vh>
+<v t="ekr.20100109081612.1984"><vh>@@button up</vh></v>
+<v t="ekr.20100109081746.1990"><vh>@@button up-extend</vh></v>
+<v t="ekr.20100109081746.1993"><vh>@@button up-page-extend</vh></v>
+<v t="ekr.20100109081746.1988"><vh>@@button down</vh></v>
+<v t="ekr.20100109081746.1992"><vh>@@button down-extend</vh></v>
+</v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20080930114036.1"><vh>Icon stuff</vh>
@@ -449,6 +456,7 @@
 <v t="ekr.20100108102217.1968"><vh>testKeys</vh></v>
 </v>
 <v t="ekr.20100108135636.1981"><vh>commands</vh></v>
+<v t="ekr.20100109081746.1986"><vh>long lines</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -869,7 +877,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8"></t>
+<t tx="ekr.20070416075121" str_leo_pos="9"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5683,5 +5691,77 @@ all:    Ctrl+Y       yank
 all:    Alt+Y        yank-pop
                      yank-rectangle
 all:    Alt+Z        zap-to-character</t>
+<t tx="ekr.20100109081612.1984">import PyQt4.QtGui as QtGui
+
+w = c.frame.body.bodyCtrl.widget
+w.moveCursor(QtGui.QTextCursor.Up)
+c.bodyWantsFocusNow()</t>
+<t tx="ekr.20100109081746.1986">@wrap
+
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
+aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee</t>
+<t tx="ekr.20100109081746.1988">import PyQt4.QtGui as QtGui
+
+w = c.frame.body.bodyCtrl.widget
+w.moveCursor(QtGui.QTextCursor.Down)
+c.bodyWantsFocusNow()</t>
+<t tx="ekr.20100109081746.1990">import PyQt4.QtGui as QtGui
+
+w = c.frame.body.bodyCtrl.widget
+w.moveCursor(QtGui.QTextCursor.Up,QtGui.QTextCursor.KeepAnchor)
+c.bodyWantsFocusNow()</t>
+<t tx="ekr.20100109081746.1992">import PyQt4.QtGui as QtGui
+
+w = c.frame.body.bodyCtrl.widget
+w.moveCursor(QtGui.QTextCursor.Down,QtGui.QTextCursor.KeepAnchor)
+c.bodyWantsFocusNow()</t>
+<t tx="ekr.20100109081746.1993">import PyQt4.QtGui as QtGui
+
+w = c.frame.body.bodyCtrl.widget
+cursor = w.textCursor()
+cursor.movePosition(QtGui.QTextCursor.Up,QtGui.QTextCursor.KeepAnchor,15)
+w.setTextCursor(cursor)
+c.bodyWantsFocusNow()</t>
+<t tx="ekr.20100109084336.1996"></t>
 </tnodes>
 </leo_file>

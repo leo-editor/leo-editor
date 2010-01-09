@@ -2011,16 +2011,13 @@ class baseScannerClass (scanUtility):
             '%s did not import %s perfectly\nfirst mismatched line: %d' % (
                 kind,self.root.h,bad_i))
 
-        if g.unitTesting:
-            assert '\n'.join(aList)
-        else:
-            aList = []
-            for i in range(max(0,bad_i-2),min(bad_i+3,max(n1,n2))):
-                for lines,n in ((lines1,n1),(lines2,n2)):
-                    if i < n: line = repr(lines[i])
-                    else: line = '<eof>'
-                    aList.append('%4d %s' % (i,line))
-            g.es_print('\n'.join(aList),color='blue')
+        aList = []
+        for i in range(max(0,bad_i-2),min(bad_i+3,max(n1,n2))):
+            for lines,n in ((lines1,n1),(lines2,n2)):
+                if i < n: line = repr(lines[i])
+                else: line = '<eof>'
+                aList.append('%4d %s' % (i,line))
+        g.es_print('\n'.join(aList),color='blue')
 
         return False
     #@+node:ekr.20090517020744.5785:@test reportMismatch
