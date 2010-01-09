@@ -9255,6 +9255,53 @@ class leoTkTextWidget (Tk.Text):
     #@nonl
     #@-node:ekr.20081121110412.322:w.rowColToGuiIndex
     #@-node:ekr.20081121110412.319:Index conversion (leoTextWidget)
+    #@+node:ekr.20100109114406.3729:leoMoveCursorHelper (TK)
+    def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
+
+        '''Move the cursor in a QTextEdit.'''
+
+        trace = True and not g.unitTesting
+        w = self
+        anchor = ins = Tk.Text.index(w,'insert')
+        if hasattr(w,'leo_text_anchor') and w.leo_text_anchor:
+            anchor = w.leo_text_anchor
+        si,sj = ins.split('.')
+        i,j = int(si),int(sj)
+        d = {
+            'down':     '%s.%s' % (i+1,j),
+            'end':      'end',
+            'end-line': '%s.end' % (i),
+            'home':     '1.0',
+            'left':
+                g.choose(j==0,
+                    g.choose(i>1,'%s.end' % (i-1),'1.0'), # start of line.
+                    '%s.%s' % (i,j-1)),
+            'page-down':'%s.%s' % (i+linesPerPage,j),
+            'page-up':  '%s.%s' % (max(1,i-linesPerPage),j),
+            'right':
+                g.choose(Tk.Text.compare(w,"%s.%s" % (i,j+1),">=",'%s.end' % (i)),
+                    '%s.%s' % (i+1,0),
+                    '%s.%s' % (i,j+1)),
+            'start-line':'%s.0' % (i),
+            'up':       '%s.%s' % (max(1,i-1),j),
+        }
+
+        kind = kind.lower()
+        newIns = d.get(kind)
+        if trace: g.trace('**Tk**',kind,'extend',extend,anchor,newIns)
+
+        if newIns:
+            Tk.Text.tag_remove(w,'sel','1.0','end')
+            Tk.Text.mark_set(w,'insert',newIns)
+            if extend:
+                if Tk.Text.compare(w,anchor,'>',newIns):
+                    Tk.Text.tag_add(w,'sel',newIns,anchor)
+                else:
+                    Tk.Text.tag_add(w,'sel',anchor,newIns)
+            w.leo_text_anchor = g.choose(extend,anchor,None)
+        else:
+            g.trace('can not happen: bad kind: %s' % kind)
+    #@-node:ekr.20100109114406.3729:leoMoveCursorHelper (TK)
     #@+node:ekr.20081121110412.323:Wrapper methods (leoTextWidget)
     #@+node:ekr.20081121110412.324:delete
     def delete(self,i,j=None):
@@ -9474,6 +9521,8 @@ class leoTkTextWidget (Tk.Text):
         i = w.toGuiIndex(i)
         # g.trace(i,g.callers())
         Tk.Text.mark_set(w,'insert',i)
+        w.leo_text_anchor = None
+
     #@-node:ekr.20081121110412.344:setInsertPoint
     #@+node:ekr.20081121110412.345:setSelectionRange
     def setSelectionRange (self,i,j,insert=None): # tkTextWidget

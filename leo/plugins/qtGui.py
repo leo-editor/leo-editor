@@ -820,6 +820,36 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         w.setTabStopWidth(24)
     #@-node:ekr.20081121105001.577:setConfig
     #@-node:ekr.20081121105001.573:Birth
+    #@+node:ekr.20100109082023.3734:leoMoveCursorHelper (Qt)
+    def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
+
+        '''Move the cursor in a QTextEdit.'''
+
+        trace = True and not g.unitTesting
+        if trace: g.trace(kind,'extend',extend)
+
+        w = self.widget
+        tc = QtGui.QTextCursor
+        d = {
+            'down':tc.Down,'end':tc.End,'end-line':tc.EndOfLine,
+            'home':tc.Start,'left':tc.Left,'page-down':tc.Down,
+            'page-up':tc.Up,'right':tc.Right,'start-line':tc.StartOfLine,
+            'up':tc.Up,
+        }
+        kind = kind.lower()
+        op = d.get(kind)
+        mode = g.choose(extend,tc.KeepAnchor,tc.MoveAnchor)
+
+        if not op:
+            return g.trace('can not happen: bad kind: %s' % kind)
+
+        if kind in ('page-down','page-up'):
+            cursor = w.textCursor()
+            cursor.movePosition(op,mode,linesPerPage)
+            w.setTextCursor(cursor)
+        else:
+            w.moveCursor(op,mode)
+    #@-node:ekr.20100109082023.3734:leoMoveCursorHelper (Qt)
     #@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
     #@+node:ekr.20090205153624.11:delete (avoid call to setAllText)
     def delete(self,i,j=None):
@@ -7545,7 +7575,7 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081121105001.168:eventFilter
     def eventFilter(self, obj, event):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = True
         traceEvent = False
         traceKey = True
@@ -7589,7 +7619,8 @@ class leoQtEventFilter(QtCore.QObject):
                 override = not ignore # allow all keystrokes.
             else:
                 override = len(aList) > 0
-            g.trace(tkKey,len(aList),'ignore',ignore,'override',override)
+            if trace and verbose: g.trace(
+                tkKey,len(aList),'ignore',ignore,'override',override)
         else:
             override = False ; tkKey = '<no key>'
             if self.tag == 'body':
