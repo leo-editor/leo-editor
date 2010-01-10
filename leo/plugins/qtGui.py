@@ -8776,9 +8776,10 @@ class jEditColorizer:
             delegate = name[i+2:]
             rulesetName = self.munge('%s_%s' % (language,delegate))
 
+        # if rulesetName == 'php_main': rulesetName = 'php_php'
+
         # g.trace(name,language,rulesetName)
         return language,rulesetName
-    #@nonl
     #@-node:ekr.20090614134853.3707:nameToRulesetName
     #@+node:ekr.20090614134853.3708:setKeywords
     def setKeywords (self):
