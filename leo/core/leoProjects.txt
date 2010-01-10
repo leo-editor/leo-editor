@@ -11713,6 +11713,195 @@ def getLine (self,s,i):
 #@-node:ekr.20090501095634.41:class rstScanner
 #@-node:ekr.20091230141112.6265:Fixed cheatsheet.txt problem
 #@-node:ekr.20091221094815.6383: Urgent (voted up) bugs
+#@+node:ekr.20091006063434.24624:Fixed bug: at-nosent nodes were not being dirty when headline changes
+#@+node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
+def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    p = self
+    dirtyVnodeList = []
+
+    # Calculate all nodes that are joined to p or parents of such nodes.
+    nodes = p.findAllPotentiallyDirtyNodes()
+
+    if setDescendentsDirty:
+        # N.B. Only mark _direct_ descendents of nodes.
+        # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
+        for p2 in p.subtree():
+            # Only @thin nodes need to be marked.
+            if p2.v not in nodes and p2.isAtThinFileNode():
+                nodes.append(p2.v)
+
+    if trace and verbose:
+        for v in nodes:
+            print (v.isDirty(),v.isAnyAtFileNode(),v)
+
+    dirtyVnodeList = [v for v in nodes
+        if not v.isDirty() and v.isAnyAtFileNode()]
+    changed = len(dirtyVnodeList) > 0
+
+    for v in dirtyVnodeList:
+        v.setDirty()
+
+    if trace: g.trace("position",dirtyVnodeList,g.callers(5))
+
+    return dirtyVnodeList
+#@-node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
+#@+node:ekr.20090830051712.6157:v.setAllAncestorAtFileNodesDirty
+# Unlike p.setAllAncestorAtFileNodesDirty,
+# there is no setDescendentsDirty arg.
+
+def setAllAncestorAtFileNodesDirty (self):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    v = self
+    dirtyVnodeList = []
+
+    # Calculate all nodes that are joined to p or parents of such nodes.
+    nodes = v.findAllPotentiallyDirtyNodes()
+
+    if trace and verbose:
+        for v in nodes:
+            print (v.isDirty(),v.isAnyAtFileNode(),v)
+
+    dirtyVnodeList = [v for v in nodes
+        if not v.isDirty() and v.isAnyAtFileNode()]
+
+    changed = len(dirtyVnodeList) > 0
+
+    for v in dirtyVnodeList:
+        v.setDirty() # Do not call v.setDirty here!
+
+    if trace: g.trace("vnode",dirtyVnodeList)
+
+    return dirtyVnodeList
+#@-node:ekr.20090830051712.6157:v.setAllAncestorAtFileNodesDirty
+#@+node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
+def findAllPotentiallyDirtyNodes(self):
+
+    trace = False and not g.unitTesting
+    v = self ; c = v.context
+
+    # Set the starting nodes.
+    nodes = []
+    newNodes = [v]
+
+    # Add nodes until no more are added.
+    while newNodes:
+        addedNodes = []
+        nodes.extend(newNodes)
+        for v in newNodes:
+            for v2 in v.parents:
+                if v2 not in nodes and v2 not in addedNodes:
+                    addedNodes.append(v2)
+        newNodes = addedNodes[:]
+
+    # Remove the hidden vnode.
+    if c.hiddenRootNode in nodes:
+        if trace: g.trace('removing hidden root',c.hiddenRootNode)
+        nodes.remove(c.hiddenRootNode)
+
+    if trace: g.trace(nodes)
+    return nodes
+#@nonl
+#@-node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
+#@+node:ekr.20040803072955.91:onHeadChanged (leoTree)
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None):
+
+    '''Officially change a headline.
+    Set the old undo text to the previous revert point.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; u = c.undoer
+    w = self.edit_widget(p)
+
+    if c.suppressHeadChanged: return
+    if not w:
+        if trace: g.trace('****** no w for p: %s',repr(p))
+        return
+
+    ch = '\n' # New in 4.4: we only report the final keystroke.
+    if g.doHook("headkey1",c=c,p=p,v=p,ch=ch):
+        return # The hook claims to have handled the event.
+
+    if s is None: s = w.getAllText()
+    if trace:
+        g.trace('*** leoTree',g.callers(5))
+        g.trace(p and p.h,'w',repr(w),'s',repr(s))
+    << truncate s if it has multiple lines >>
+    # Make the change official, but undo to the *old* revert point.
+    oldRevert = self.revertHeadline
+    changed = s != oldRevert
+    self.revertHeadline = s
+    p.initHeadString(s)
+    if trace: g.trace('changed',changed,'new',repr(s))
+    if changed:
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldRevert)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.scanForTabWidth(p)
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+    if changed:
+        c.redraw_after_head_changed()
+        if self.stayInTree:
+            c.treeWantsFocus()
+        else:
+            c.bodyWantsFocus()
+    else:
+        c.frame.tree.setSelectedLabelState(p)
+
+    g.doHook("headkey2",c=c,p=p,v=p,ch=ch)
+#@+node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
+# Remove one or two trailing newlines before warning of truncation.
+for i in (0,1):
+    if s and s[-1] == '\n':
+        if len(s) > 1: s = s[:-1]
+        else: s = ''
+
+# Warn if there are multiple lines.
+i = s.find('\n')
+if i > -1:
+    # g.trace(i,len(s),repr(s))
+    g.es("truncating headline to one line",color="blue")
+    s = s[:i]
+
+limit = 1000
+if len(s) > limit:
+    g.es("truncating headline to",limit,"characters",color="blue")
+    s = s[:limit]
+
+s = g.toUnicode(s or '',g.app.tkEncoding)
+#@-node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
+#@-node:ekr.20040803072955.91:onHeadChanged (leoTree)
+#@+node:ekr.20040303163330:p.setDirty
+def setDirty (self,setDescendentsDirty=True):
+
+    '''Mark a node and all ancestor @file nodes dirty.'''
+
+    p = self ; dirtyVnodeList = []
+
+    # g.trace(p.h,g.callers(4))
+
+    if not p.v.isDirty():
+        p.v.setDirty()
+        dirtyVnodeList.append(p.v)
+
+    # Important: this must be called even if p.v is already dirty.
+    # Typing can change the @ignore state!
+    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty(setDescendentsDirty)
+    dirtyVnodeList.extend(dirtyVnodeList2)
+
+    return dirtyVnodeList
+#@-node:ekr.20040303163330:p.setDirty
+#@-node:ekr.20091006063434.24624:Fixed bug: at-nosent nodes were not being dirty when headline changes
 #@+node:ekr.20091230062012.6236:Allow hyphens in xml tags
 @nocolor-node
 
@@ -19158,6 +19347,17 @@ def moveToBufferHelper (self,event,spot,extend):
 #@-node:ekr.20100109094541.6227:moveToBufferHelper
 #@-node:ekr.20100109094541.6234:new
 #@-node:ekr.20100109094541.6218:Use w.leoMoveCursorHeler if it exists
+#@+node:ekr.20090714085914.5992:Fixed bug 452303 @auto-rst can be dangerous
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b84659e608ba44d5
+
+The data is lost because @auto-rst mostly ignores the top-level node.
+
+This was fixed 2009/12/29.  See bug 452303 @auto-rst can be dangerous:
+https://bugs.launchpad.net/leo-editor/+bug/452303
+#@nonl
+#@-node:ekr.20090714085914.5992:Fixed bug 452303 @auto-rst can be dangerous
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20091219151045.6361:Simplified g.create_temp_file

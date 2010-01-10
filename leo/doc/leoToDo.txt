@@ -97,31 +97,7 @@ that section of the docs.
 #@nonl
 #@-node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
 #@-node:ekr.20091005145253.6060:Docs
-#@+node:ekr.20091005145253.6059:Urgent bugs
-#@+node:ekr.20091006063434.22069:rst problems
-#@+node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/b84659e608ba44d5
-
-The data is lost because @auto-rst mostly ignores the top-level node.
-#@nonl
-#@-node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
-#@+node:ekr.20090709101224.6040:Fix rst bug
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/73db1b3109cc94b6
-
-Apparently, the problem is with this line::
-
-<p>Greet the world, politely**code**:.. class:: code..::   g.es (&quot;Hello, world&quot;)</p>
-
-Presumably, the ..class:: code..:: should start a new line. There have been
-changes recently to how newlines are handled. I'll put this on the list of
-things to fix for Leo 4.6 final.
-
-
-#@-node:ekr.20090709101224.6040:Fix rst bug
+#@+node:ekr.20091005145253.6059:Urgent
 #@+node:ekr.20090907080624.6077:Fix underlining problem in rst
 @nocolor-node
 
@@ -134,106 +110,85 @@ the the underlines is not long enough, because the underline for one Japanese
 char need two marks.
 #@nonl
 #@-node:ekr.20090907080624.6077:Fix underlining problem in rst
-#@-node:ekr.20091006063434.22069:rst problems
 #@+node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
+Update the panel as soon as the user completes the find string
 #@-node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
-#@+node:ekr.20090822054806.6001:Fix cursor up/down bug
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/731b9c541f3a3ab0
-
-sequence::
-
- type """ <cr> """ <up>
-
-the cursor is at the end of the first line
-
-type <down>
-
-the cursor is now between the 2nd and 3rd quote. 
-#@nonl
-#@-node:ekr.20090822054806.6001:Fix cursor up/down bug
-#@+node:ekr.20090909093330.6124:Investigate "multiple parts not allowed" tangle errors
-@nocolor-node
-
-I'm waiting for example code from Graham Chiu.
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/181533467503ef48
-
-#@+node:ekr.20031218072017.3494:<< Define a section for a leading code part >>
-if self.header_name:
-    # Tangle code.
-    part = self.st_enter_section_name(
-        self.header_name,code,doc,allow_multiple_parts=code_seen)
-    # Untangle code.
-    if not self.tangling: 
-        head = s[:j] ; tail = s[i:]
-        s,i,changed = self.update_def(self.header,part,head,code,tail)
-        if changed: anyChanged = True
-    code_seen = True
-    code = doc = None
-#@-node:ekr.20031218072017.3494:<< Define a section for a leading code part >>
-#@+node:ekr.20031218072017.3493:<< Define a section containing only an @doc part >>
-@ It's valid for an @doc directive to appear under a headline that does not contain a section name.  In that case, no section is defined.
-@c
-
-if self.header_name:
-    # Tangle code.
-    part = self.st_enter_section_name(self.header_name,code,doc,allow_multiple_parts=code_seen)
-    # Untangle code.
-    if not self.tangling: 
-        # Untangle no longer updates doc parts.
-        # 12/03/02: Mark the part as having been updated to suppress warning.
-        junk,junk = self.ust_lookup(self.header_name,part,update_flag=True)
-
-doc = None
-#@-node:ekr.20031218072017.3493:<< Define a section containing only an @doc part >>
-#@+node:ekr.20031218072017.3495:<< Scan and define a section definition >>
-# We enter the code part and any preceding doc part into the symbol table.
-
-# Skip the section definition line.
-k = i ; i, kind, junk = self.skip_section_name(s,i)
-section_name = s[k:i]
-# g.trace(section_name)
-assert(kind == section_def)
-i = g.skip_to_end_of_line(s,i)
-
-# Tangle code: enter the section name even if the code part is empty.
-j = g.skip_blank_lines(s,i)
-i, code = self.skip_code(s,j)
-part = self.st_enter_section_name(section_name,code,doc,allow_multiple_parts=(kind==section_def))
-
-if not self.tangling: # Untangle code.
-    head = s[:j] ; tail = s[i:]
-    s,i,changed = self.update_def(section_name,part,head,code,tail)
-    if changed: anyChanged = True
-
-code = doc = None
-#@-node:ekr.20031218072017.3495:<< Scan and define a section definition >>
-#@+node:ekr.20031218072017.3496:<< Scan and define an @code defininition >>
-# All @c or @code directives denote < < headline_name > > =
-if self.header_name:
-
-    # Tangle code.
-    j = g.skip_blank_lines(s,i)
-    i, code = self.skip_code(s,j)
-    part = self.st_enter_section_name(self.header_name,code,doc,allow_multiple_parts=code_seen)
-    # Untangle code.
-    if not self.tangling: 
-        head = s[:j] ; tail = s[i:]
-        s,i,changed = self.update_def(self.header,part,head,code,tail)
-        if changed: anyChanged = True
-else:
-    self.error("@c expects the headline: " + self.header + " to contain a section name")
-
-code_seen = True
-code = doc = None
-#@-node:ekr.20031218072017.3496:<< Scan and define an @code defininition >>
-#@-node:ekr.20090909093330.6124:Investigate "multiple parts not allowed" tangle errors
-#@-node:ekr.20091005145253.6059:Urgent bugs
-#@+node:ekr.20090811090022.6029:Bugs
 #@+node:ekr.20090907080624.6071:Install to site-packages, not "c:\program files"
 #@-node:ekr.20090907080624.6071:Install to site-packages, not "c:\program files"
+#@-node:ekr.20091005145253.6059:Urgent
+#@+node:ekr.20090811090022.6029:Bugs
+#@+node:ekr.20080517102922.1:File bugs & features
+#@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
+
+If a @path directive is within the body text of an @thin node then the
+file write uses the @path directive but the file read does not.  Since
+the file read cannot know of the @path directive until after it has
+read the file it has no choice but to not use it.  The @thin file
+write code should not use any @path declarations found in its body
+text.
+#@nonl
+#@-node:ekr.20081204091750.4:Fix inconsistency in how @path works
+#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+@nocolor
+
+I also unhappily discovered that any file named somedoc.leo.bak will
+get deleted whenever you save a file named somedoc.leo.
+
+@color
+#@nonl
+#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+#@+node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
+#@-node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
+#@+node:ekr.20080918164844.14:Protect @shadow and @auto files from overwriting external changes
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bac65cb75484f7cb
+
+BTW, I think we should prevent shadow files from accidentally
+overwriting valuable stuff:
+
+- Store modification time of the file on shadow import
+
+- When you "save", check if modification time has changed and ask the
+user if they really want to overwrite the changes. Or, reuse to do it
+altogether and require explicit save-at-shadow-nodes in those
+occasions. That's considered "good form" in editors in general, and
+since pressing ctrl+S in leo has even more significant implications we
+should be absolutely certain everything happens safely. 
+#@nonl
+#@-node:ekr.20080918164844.14:Protect @shadow and @auto files from overwriting external changes
+#@+node:ekr.20080412053100.1:Look into undefined-section behavior
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
+
+1) Create an @thin file based outline.
+2) In the @thin file, create an unreferenced section (something like a
+  header <<This Section Is Bogus>>).
+3) Now, File->Exit
+4) A dialog box pops up
+  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
+5) Click "Yes"
+6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
+  and in the console window, you see "undefined section: ..."
+
+However, the application is still running. The only way to really quit
+is to click "No" to the Save dialog.
+
+> Iirc, this is the intended behavior.  It would be possible to build in some
+> state behavior to only ask once, but I'd rather not do that.
+
+The point is that I can't kill Leo if I keep saying "Yes" to the
+"Save change before quitting" dialog. This is definitely not the
+intended behavior. The correct behavior would be to save the file,
+give me the warning about the undefined section, and exit.
+#@nonl
+#@-node:ekr.20080412053100.1:Look into undefined-section behavior
+#@-node:ekr.20080517102922.1:File bugs & features
+#@+node:ekr.20100109214940.6227:Other bugs
 #@+node:ekr.20090907080624.6081:Spell checker should check headlines
 #@-node:ekr.20090907080624.6081:Spell checker should check headlines
 #@+node:ekr.20090813112405.5980:Delete resurrected nodes
@@ -245,1357 +200,6 @@ This problem is hard.
 It may be simpler in the one-node world.
 #@nonl
 #@-node:ekr.20090813112405.5980:Delete resurrected nodes
-#@+node:ekr.20080812072419.1:goto-line doesn't work for @nosent & @auto files
-@nocolor
-
-A pretty feeble start for support for goto-global-line for @nosent files.
-
-A better solution would be to create a string file containing sentinels,
-offset the line number by scanned sentinels, then use the existing logic
-to get the correct node and line.
-
-@color
-#@nonl
-#@+node:ekr.20080710082231.10:c.gotoLineNumber and helpers
-def goToLineNumber (self,n,p=None,scriptData=None):
-
-    '''Place the cursor on the n'th line of a derived file or script.
-    When present scriptData is a dict with 'root' and 'lines' keys.'''
-
-    trace = False and not g.unitTesting
-    c = self
-    delim = None ; gnx = None ; vnodeName = None
-    if n < 0: return
-    if n == 0: n = 1
-
-    fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
-    if trace: g.trace(isRaw,g.listToString(lines,sort=False))
-
-    if n==1 and not isRaw:
-        p = root ; n2 = 1 ; found = True
-    elif n > len(lines): # was >=
-        p = root ; n2 = root.b.count('\n') ; found = False
-    elif isRaw:
-        p,n2,found = c.goto_countLines(root,n)
-    else:
-        vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n,ignoreSentinels)
-        if delim:
-            p,found = c.goto_findPosition(
-                root,lines,vnodeName,gnx,n,delim)
-        else:
-            p,found = root,False
-    if 0:
-        << trace gotoLineNumber results >>
-    c.goto_showResults(found,p or root,n,n2,lines)
-#@+node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
-g.trace(
-    '\n  found',found,'n2',n2,'gnx',gnx,'delim',repr(delim),
-    '\n  vnodeName',vnodeName,
-    '\n  p        ',p and p.h,
-    '\n  root     ',root and root.h)
-#@-node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
-#@+node:ekr.20080708094444.65:goto_applyLineNumberMapping
-def goto_applyLineNumberMapping(self, n):
-
-    c = self ; x = c.shadowController
-
-    if len(x.line_mapping) > n:
-        return x.line_mapping[n]
-    else:
-        return n
-#@-node:ekr.20080708094444.65:goto_applyLineNumberMapping
-#@+node:ekr.20080904071003.12:goto_countLines
-def goto_countLines (self,root,n):
-
-    '''Scan through root's outline, looking for line n.
-    Return (p,n2,found) where p is the found node,
-    n2 is the actural line found, and found is True if the line was found.'''
-
-    trace = False and not g.unitTesting
-    p = lastv = root
-    prev = 0 ; found = False
-    isNosent = root.isAtNoSentFileNode()
-    isAuto = root.isAtAutoNode()
-
-    if trace: g.trace('=' * 10)
-    for p in p.self_and_subtree():
-        lastv = p.copy()
-        s = p.b
-        if isNosent or isAuto:
-            lines = [z for z in g.splitLines(s) if not z.startswith('@')]
-            s = ''.join(lines)
-        else:
-            lines = g.splitLines(s)
-        n_lines = len(lines)
-        if trace: g.trace('prev: %3s node: %s lines...\n%s' % (
-            prev,p.h,g.listToString(lines)))
-        if prev + n_lines >= n:
-            if trace: g.trace('***found',n-prev)
-            found = True ; break
-        prev += n_lines
-
-    p = lastv
-    n2 = max(0,n-prev)
-
-    return p,n2,found
-#@-node:ekr.20080904071003.12:goto_countLines
-#@+node:ekr.20080904071003.4:goto_findPosition & helpers
-def goto_findPosition(self,root,lines,vnodeName,gnx,n,delim):
-
-    c = self
-
-    if gnx:
-        p,found = c.goto_findGnx(root,gnx,vnodeName)
-    else:
-        p,found = c.goto_scanTnodeList(root,delim,lines,n,vnodeName)
-
-    return p,found
-#@+node:ekr.20080904071003.18:goto_findGnx
-def goto_findGnx (self,root,gnx,vnodeName):
-
-    '''Scan root's tree for a node with the given gnx and vnodeName.
-
-    return (p,found)'''
-
-    gnx = g.app.nodeIndices.scanGnx(gnx,0)
-
-    for p in root.self_and_subtree():
-        if p.matchHeadline(vnodeName):
-            if p.v.fileIndex == gnx:
-                return p.copy(),True
-
-    return None,False
-#@-node:ekr.20080904071003.18:goto_findGnx
-#@+node:ekr.20080904071003.19:goto_scanTnodeList
-def goto_scanTnodeList (self,root,delim,lines,n,vnodeName):
-
-    # This is about the best that can be done without replicating
-    # the entire atFile write logic.
-    found = False
-    ok = hasattr(root.v,"tnodeList")
-
-    if ok:
-        # Use getattr to keep pylint happy.
-        tnodeList = getattr(root.v,'tnodeList')
-        << set tnodeIndex to the number of +node sentinels before line n >>
-        tnodeIndex = max(0,tnodeIndex)
-        << set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = False >>
-    else:
-        g.es_print("no child index for",root.h,color="red")
-
-    if not ok:
-        # Fall back to the old logic.
-        << set p to the first node whose headline matches vnodeName >>
-
-    return p,found
-#@+node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
-
-tnodeIndex = -1 # Don't count the @file node.
-scanned = 0 # count of lines scanned.
-
-for s in lines:
-    if scanned >= n:
-        break
-    i = g.skip_ws(s,0)
-    if g.match(s,i,delim):
-        i += len(delim)
-        if g.match(s,i,"+node"):
-            # g.trace(tnodeIndex,s.rstrip())
-            tnodeIndex += 1
-    scanned += 1
-#@-node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
-#@+node:ekr.20080904071003.9:<< set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = false >>
-# g.trace("tnodeIndex",tnodeIndex)
-if tnodeIndex < len(tnodeList):
-    v = tnodeList[tnodeIndex]
-    # Find v.
-    for p in root.self_and_subtree():
-        if p.v == v:
-            found = True ; break
-    if not found:
-        s = "vnode not found for " + vnodeName
-        g.es_print(s, color="red") ; ok = False
-    elif p.h.strip() != vnodeName:
-        if 0: # Apparently this error doesn't prevent a later scan for working properly.
-            s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.h,vnodeName)
-            g.es_print(s, color="red")
-        ok = False
-else:
-    if root is None: # Kludge: disable this message when called by goToScriptLineNumber.
-        s = "Invalid computed tnodeIndex: %d" % tnodeIndex
-        g.es_print(s, color = "red")
-    ok = False
-#@-node:ekr.20080904071003.9:<< set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = false >>
-#@+node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
-for p in root.self_and_subtree():
-    if p.matchHeadline(vnodeName):
-        found = True ; break
-#@-node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
-#@-node:ekr.20080904071003.19:goto_scanTnodeList
-#@-node:ekr.20080904071003.4:goto_findPosition & helpers
-#@+node:ekr.20031218072017.2877:goto_findVnode
-def goto_findVnode (self,root,lines,n,ignoreSentinels):
-
-    '''Search the lines of a derived file containing sentinels for a vnode.
-    return (vnodeName,gnx,offset,delim):
-
-    vnodeName:  the name found in the previous @+body sentinel.
-    gnx:        the gnx of the found node.
-    offset:     the offset within the node of the desired line.
-    delim:      the comment delim from the @+leo sentinel.
-    '''
-
-    c = self ; at = c.atFileCommands
-    # g.trace('lines...\n',g.listToString(lines))
-    gnx = None
-    << set delim, leoLine from the @+leo line >>
-    if not delim:
-        g.es('no sentinels in:',root.h)
-        return None,None,None,None
-
-    << scan back to @+node, setting offset,nodeSentinelLine >>
-    if nodeSentinelLine == -1:
-        # The line precedes the first @+node sentinel
-        g.trace('no @+node!!')
-        return root.h,gnx,1,delim
-
-    s = lines[nodeSentinelLine]
-
-    << set gnx and vnodeName from s >>
-    if delim and vnodeName:
-        # g.trace('offset',offset)
-        return vnodeName,gnx,offset,delim
-    else:
-        g.es("bad @+node sentinel")
-        return None,None,None,None
-#@+node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
-# Find the @+leo line.
-tag = "@+leo"
-i = 0 
-while i < len(lines) and lines[i].find(tag)==-1:
-    i += 1
-leoLine = i # Index of the line containing the leo sentinel
-
-# Set delim from the @+leo line.
-delim = None
-if leoLine < len(lines):
-    s = lines[leoLine]
-    valid,newDerivedFile,start,end,thinFile = at.parseLeoSentinel(s)
-    # New in Leo 4.5.1: only support 4.x files.
-    if valid and newDerivedFile:
-        delim = start + '@'
-#@-node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
-#@+node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
-@
-Scan backwards from the requested line, looking for an @-body line. When found,
-we get the vnode's name from that line and set p to the indicated vnode. This
-will fail if vnode names have been changed, and that can't be helped.
-
-We compute the offset of the requested line **within the found node**.
-@c
-
-offset = 0 # This is essentially the Tk line number.
-nodeSentinelLine = -1
-line = n - 1 # Start with the requested line.
-while line >= 0:
-    progress = line
-    s = lines[line]
-    i = g.skip_ws(s,0)
-    if g.match(s,i,delim):
-        << handle delim while scanning backward >>
-    else:
-        # offset += 1 # Assume the line is real.  A dubious assumption.
-        line -= 1
-    assert line < progress
-#@+node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
-if line == n:
-    g.es("line",str(n),"is a sentinel line")
-i += len(delim)
-
-if g.match(s,i,"-node"):
-    # The end of a nested section.
-    old_line = line
-    line = c.goto_skipToMatchingNodeSentinel(lines,line,delim)
-    assert line < old_line
-    # g.trace('found',repr(lines[line]))
-    nodeSentinelLine = line
-    offset = n-line
-    break
-elif g.match(s,i,"+node"):
-    # g.trace('found',repr(lines[line]))
-    nodeSentinelLine = line
-    offset = n-line
-    break
-elif g.match(s,i,"<<") or g.match(s,i,"@first"):
-    # if not ignoreSentinels:
-        # offset += 1 # Count these as a "real" lines.
-    line -= 1
-else:
-    line -= 1
-#@-node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
-#@-node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
-#@+node:ekr.20031218072017.2881:<< set gnx and vnodeName from s >>
-i = 0 ; gnx = None ; vnodeName = None
-
-if thinFile:
-    # gnx is lies between the first and second ':':
-    i = s.find(':',i)
-    if i > 0:
-        i += 1
-        j = s.find(':',i)
-        if j > 0:   gnx = s[i:j]
-        else:       i = len(s) # Force an error.
-    else:
-        i = len(s) # Force an error.
-
-# vnode name is everything following the first or second':'
-i = s.find(':',i)
-if i > -1:
-    vnodeName = s[i+1:].strip()
-else:
-    vnodeName = None
-    g.es_print("bad @+node sentinel",color='red')
-#@-node:ekr.20031218072017.2881:<< set gnx and vnodeName from s >>
-#@-node:ekr.20031218072017.2877:goto_findVnode
-#@+node:ekr.20080904071003.28:goto_setup & helpers
-def goto_setup (self,n,p=None,scriptData=None):
-
-    '''Return (fileName,isRaw,lines,n,p,root) where:
-
-    fileName is the name of the nearest @<file> node, or None.
-    isRaw is True if there are no sentinels in the file.
-    lines are the lines to be scanned.
-    n is the effective line number (munged for @shadow nodes).
-    root is the nearest @file node, or c.currentPosition.'''
-
-    c = self
-
-    # First, find the root and lines.
-    if scriptData:
-        assert p is None
-        lines = scriptData.get('lines')
-        p = scriptData.get('p')
-        root,fileName = c.goto_findRoot(p)
-    else:
-        # p is for unit testing only!
-        if not p: p = c.p
-        root,fileName = c.goto_findRoot(p)
-        if root and fileName:
-            c.shadowController.line_mapping = [] # Set by goto_open.
-            lines = c.goto_getFileLines(root,fileName)
-            n = c.goto_applyLineNumberMapping(n)
-        else:
-            lines = c.goto_getScriptLines(p)
-
-    isRaw = not root or (
-        root.isAtEditNode() or
-        root.isAtAsisFileNode() or
-        root.isAtAutoNode() or
-        root.isAtNoSentFileNode())
-
-    ignoreSentinels = root and root.isAtNoSentFileNode()
-
-    if scriptData:
-        if not root: root = p.copy()
-    else:
-        if not root: root = c.p
-
-    return fileName,ignoreSentinels,isRaw,lines,n,root
-#@+node:ekr.20080904071003.25:goto_findRoot
-def goto_findRoot (self,p):
-
-    '''Find the closest ancestor @<file> node, except @all nodes.
-
-    return root, fileName.'''
-
-    c = self ; p1 = p.copy()
-
-    # First look for ancestor @file node.
-    for p in p.self_and_parents():
-        fileName = not p.isAtAllNode() and p.anyAtFileNodeName()
-        if fileName:
-            return p.copy(),fileName
-
-    # Search the entire tree for joined nodes.
-    # Bug fix: Leo 4.5.1: *must* search *all* positions.
-    for p in c.all_positions():
-        if p.v == p1.v and p != p1:
-            # Found a joined position.
-            for p2 in p.self_and_parents():
-                fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
-                if fileName:
-                    return p2.copy(),fileName
-
-    return None,None
-#@-node:ekr.20080904071003.25:goto_findRoot
-#@+node:ekr.20080904071003.26:goto_getFileLines
-def goto_getFileLines (self,root,fileName):
-
-    '''Read the file into lines.'''
-
-    c = self
-
-    isAtEdit = root.isAtEditNode()
-    isAtNoSent = root.isAtNoSentFileNode()
-
-    if isAtNoSent or isAtEdit:
-        # Write a virtual file containing sentinels.
-        at = c.atFileCommands
-        kind = g.choose(isAtNoSent,'@nosent','@edit')
-        at.write(root,kind=kind,nosentinels=False,toString=True)
-        lines = g.splitLines(at.stringOutput)
-    else:
-        # Calculate the full path.
-        d = g.scanDirectives(c,p=root)
-        path = d.get("path")
-        # g.trace('path',path,'fileName',fileName)
-        fileName = c.os_path_finalize_join(path,fileName)
-        lines    = c.goto_open(fileName)
-
-    return lines
-#@-node:ekr.20080904071003.26:goto_getFileLines
-#@+node:ekr.20080904071003.27:goto_getScriptLines
-def goto_getScriptLines (self,p):
-
-    c = self
-
-    if not g.unitTesting:
-        g.es("no ancestor @file node: using script line numbers", color="blue")
-
-    lines = g.getScript (c,p,useSelectedText=False)
-    lines = g.splitLines(lines)
-
-    return lines
-#@-node:ekr.20080904071003.27:goto_getScriptLines
-#@+node:ekr.20080708094444.63:goto_open
-def goto_open (self,filename):
-    """
-    Open a file for "goto linenumber" command and check if a shadow file exists.
-    Construct a line mapping. This ivar is empty if no shadow file exists.
-    Otherwise it contains a mapping, shadow file number -> real file number.
-    """
-
-    c = self ; x = c.shadowController
-
-    try:
-        shadow_filename = x.shadowPathName(filename)
-        if os.path.exists(shadow_filename):
-            fn = shadow_filename
-            lines = open(shadow_filename).readlines()
-            x.line_mapping = x.push_filter_mapping(
-                lines,
-                x.markerFromFileLines(lines,shadow_filename))
-        else:
-            # Just open the original file.  This is not an error!
-            fn = filename
-            c.line_mapping = []
-            lines = open(filename).readlines()
-    except Exception:
-        # Make sure failures to open a file generate clear messages.
-        g.es_print('can not open',fn,color='blue')
-        # g.es_exception()
-        lines = []
-
-    return lines
-#@-node:ekr.20080708094444.63:goto_open
-#@-node:ekr.20080904071003.28:goto_setup & helpers
-#@+node:ekr.20080904071003.14:goto_showResults
-def goto_showResults(self,found,p,n,n2,lines):
-
-    c = self ; w = c.frame.body.bodyCtrl
-
-    # Select p and make it visible.
-    c.redraw(p)
-
-    # Put the cursor on line n2 of the body text.
-    s = w.getAllText()
-    if found:
-        ins = g.convertRowColToPythonIndex(s,n2-1,0)    
-    else:
-        ins = len(s)
-        if len(lines) < n and not g.unitTesting:
-            g.es('only',len(lines),'lines',color="blue")
-
-    # g.trace(p.h,g.callers())
-
-    w.setInsertPoint(ins)
-    c.bodyWantsFocusNow()
-    w.seeInsertPoint()
-#@nonl
-#@-node:ekr.20080904071003.14:goto_showResults
-#@+node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
-def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
-
-    s = lines[n]
-    i = g.skip_ws(s,0)
-    assert(g.match(s,i,delim))
-    i += len(delim)
-    if g.match(s,i,"+node"):
-        start="+node" ; end="-node" ; delta=1
-    else:
-        assert(g.match(s,i,"-node"))
-        start="-node" ; end="+node" ; delta=-1
-    # Scan to matching @+-node delim.
-    n += delta ; level = 0
-    while 0 <= n < len(lines):
-        s = lines[n] ; i = g.skip_ws(s,0)
-        if g.match(s,i,delim):
-            i += len(delim)
-            if g.match(s,i,start):
-                level += 1
-            elif g.match(s,i,end):
-                if level == 0: break
-                else: level -= 1
-        n += delta
-
-    # g.trace(n)
-    return n
-#@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
-#@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
-#@-node:ekr.20080812072419.1:goto-line doesn't work for @nosent & @auto files
-#@+node:ekr.20080519062109.2:Improve how Leo handles long lines
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ae52bf0ed8e04a59
-
-'ve just downloaded leo and been very impressed.  Probably I'll use
-leo mostly for editing text (as opposed to programs).  Which means
-I've turned on text wrapping.
-
-But now, up and down arrows take me to the next line in the file, not
-the next line on the screen.  That means I'm always reaching for the
-mouse.
-
-Is there a way I can change the arrow key behaviour?
-Or should I be editing paragraphs differently (i.e., without text
-wrapping)? 
-
-Reply:
-
-I have a vague memory of writing code to get the behavior you describe, but
-all details are fuzzy.  I know what you are talking about--it may be one of
-the details I've learned to put up with.  In that case, a new option and new
-code will be a substantial improvement.  Thanks for this report.
-
-@color
-#@nonl
-#@+node:ekr.20060528100747.3:tkBody.createTextWidget
-def createTextWidget (self,parentFrame,p,name):
-
-    c = self.c
-
-    parentFrame.configure(bg='LightSteelBlue1')
-
-    wrap = c.config.getBool('body_pane_wraps')
-    wrap = g.choose(wrap,"word","none")
-
-    # Setgrid=1 cause severe problems with the font panel.
-    body = w = leoTkTextWidget (parentFrame,name='body-pane',
-        bd=2,bg="white",relief="flat",setgrid=0,wrap=wrap)
-
-    bodyBar = Tk.Scrollbar(parentFrame,name='bodyBar')
-
-    def yscrollCallback(x,y,bodyBar=bodyBar,w=w):
-        # g.trace(x,y,g.callers())
-        if hasattr(w,'leo_scrollBarSpot'):
-            w.leo_scrollBarSpot = (x,y)
-        return bodyBar.set(x,y)
-
-    body['yscrollcommand'] = yscrollCallback # bodyBar.set
-
-    bodyBar['command'] =  body.yview
-    bodyBar.pack(side="right", fill="y")
-
-    # Always create the horizontal bar.
-    bodyXBar = Tk.Scrollbar(
-        parentFrame,name='bodyXBar',orient="horizontal")
-    body['xscrollcommand'] = bodyXBar.set
-    bodyXBar['command'] = body.xview
-
-    if wrap == "none":
-        # g.trace(parentFrame)
-        bodyXBar.pack(side="bottom", fill="x")
-
-    body.pack(expand=1,fill="both")
-
-    self.wrapState = wrap
-
-    if 0: # Causes the cursor not to blink.
-        body.configure(insertofftime=0)
-
-    # Inject ivars
-    if name == '1':
-        w.leo_p = w.leo_v = None # Will be set when the second editor is created.
-    else:
-        w.leo_p = p.copy()
-        w.leo_v = w.leo_p.v
-
-    w.leo_active = True
-    # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
-    w.leo_bodyBar = bodyBar # 2007/10/31
-    w.leo_bodyXBar = bodyXBar # 2007/10/31
-    w.leo_chapter = None
-    w.leo_frame = parentFrame
-    w.leo_name = name
-    w.leo_label = None
-    w.leo_label_s = None
-    w.leo_scrollBarSpot = None
-    w.leo_insertSpot = None
-    w.leo_selection = None
-
-    return w
-#@-node:ekr.20060528100747.3:tkBody.createTextWidget
-#@+node:ekr.20050929114218:move cursor... (leoEditCommands)
-#@+node:ekr.20051218170358: helpers
-#@+node:ekr.20051213094517:backSentenceHelper
-def backSentenceHelper (self,event,extend):
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-    s = w.getAllText()
-    i = w.getInsertPoint()
-
-    while i >= 0:
-        if s[i] == '.': break
-        i -= 1
-    else: return
-
-    j = i-1
-    while j >= 0:
-        if s[j] == '.':
-            j += 1 ; break
-        j -= 1
-    else: j = 0
-
-    while j < i and s[j].isspace():
-        j += 1
-
-    if j < i:
-        self.moveToHelper(event,j,extend)
-#@-node:ekr.20051213094517:backSentenceHelper
-#@+node:ekr.20051218133207:backwardParagraphHelper
-def backwardParagraphHelper (self,event,extend):
-
-    w = self.editWidget(event)
-    if not w: return
-
-    s = w.getAllText()
-    i,j = w.getSelectionRange()
-    # A hack for wx gui: set the insertion point to the end of the selection range.
-    if g.app.unitTesting:
-        w.setInsertPoint(j)
-    i,j = g.getLine(s,j)
-    line = s[i:j]
-
-    if line.strip():
-        # Find the start of the present paragraph.
-        while i > 0:
-            i,j = g.getLine(s,i-1)
-            line = s[i:j]
-            if not line.strip(): break
-
-    # Find the end of the previous paragraph.
-    while i > 0:
-        i,j = g.getLine(s,i-1)
-        line = s[i:j]
-        if line.strip():
-            i = j-1 ; break
-
-    self.moveToHelper(event,i,extend)
-#@nonl
-#@-node:ekr.20051218133207:backwardParagraphHelper
-#@+node:ekr.20060113130510:extendHelper
-def extendHelper (self,w,extend,spot,upOrDown=False):
-    '''Handle the details of extending the selection.
-    This method is called for all cursor moves.
-
-    extend: Clear the selection unless this is True.
-    spot:   The *new* insert point.
-    '''
-
-    trace = False and not g.unitTesting
-    c = self.c ; p = c.p
-    extend = extend or self.extendMode
-
-    ins = w.getInsertPoint()
-    i,j = w.getSelectionRange()
-    if trace: g.trace(
-        'extend',extend,'ins',ins,'sel=',i,j,
-        'spot=',spot,'moveSpot',self.moveSpot)
-
-    # Reset the move spot if needed.
-    if self.moveSpot is None or p.v != self.moveSpotNode:
-        # g.trace('no spot')
-        self.setMoveCol(w,g.choose(extend,ins,spot)) # sets self.moveSpot.
-    elif extend:
-        if i == j or self.moveSpot not in (i,j):
-            # g.trace('spot not in sel')
-            self.setMoveCol(w,ins) # sets self.moveSpot.
-    else:
-        if upOrDown:
-            s = w.getAllText()
-            i2,j2 = g.getLine(s,spot)
-            line = s[i2:j2]
-            row,col = g.convertPythonIndexToRowCol(s,spot)
-            if True: # was j2 < len(s)-1:
-                n = min(self.moveCol,max(0,len(line)-1))
-            else:
-                n = min(self.moveCol,max(0,len(line))) # A tricky boundary.
-            # g.trace('using moveCol',self.moveCol,'line',repr(line),'n',n)
-            spot = g.convertRowColToPythonIndex(s,row,n)
-        else:  # Plain move forward or back.
-            # g.trace('plain forward/back move')
-            self.setMoveCol(w,spot) # sets self.moveSpot.
-
-    if extend:
-        if spot < self.moveSpot:
-            w.setSelectionRange(spot,self.moveSpot,insert=spot)
-        else:
-            w.setSelectionRange(self.moveSpot,spot,insert=spot)
-    else:
-        w.setSelectionRange(spot,spot,insert=spot)
-
-    w.seeInsertPoint()
-    c.frame.updateStatusLine()
-#@-node:ekr.20060113130510:extendHelper
-#@+node:ekr.20051218133207.1:forwardParagraphHelper
-def forwardParagraphHelper (self,event,extend):
-
-    w = self.editWidget(event)
-    if not w: return
-    s = w.getAllText()
-    ins = w.getInsertPoint()
-    i,j = g.getLine(s,ins)
-    line = s[i:j]
-
-    if line.strip(): # Skip past the present paragraph.
-        self.selectParagraphHelper(w,i)
-        i,j = w.getSelectionRange()
-        j += 1
-
-    # Skip to the next non-blank line.
-    i = j
-    while j < len(s):
-        i,j = g.getLine(s,j)
-        line = s[i:j]
-        if line.strip(): break
-
-    w.setInsertPoint(ins) # Restore the original insert point.
-    self.moveToHelper(event,i,extend)
-#@-node:ekr.20051218133207.1:forwardParagraphHelper
-#@+node:ekr.20050920084036.137:forwardSentenceHelper
-def forwardSentenceHelper (self,event,extend):
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-
-    s = w.getAllText()
-    ins = w.getInsertPoint()
-    i = s.find('.',ins) + 1
-    i = min(i,len(s))
-    self.moveToHelper(event,i,extend)
-#@-node:ekr.20050920084036.137:forwardSentenceHelper
-#@+node:ekr.20090530181848.6035:movePageHelper
-def movePageHelper(self,event,kind,extend): # kind in back/forward.
-
-    '''Move the cursor up/down one page, possibly extending the selection.'''
-
-    trace = False and not g.unitTesting
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-
-    linesPerPage = 15 # To do.
-
-    if hasattr(w,'leoMoveCursorHelper'):
-        w.leoMoveCursorHelper(
-            kind=g.choose(kind=='forward','page-down','page-up'),
-            extend=extend,linesPerPage=linesPerPage)
-        w.seeInsertPoint()
-        c.frame.updateStatusLine()
-    else:
-        ins = w.getInsertPoint()
-        s = w.getAllText()
-        lines = g.splitLines(s)
-        row,col = g.convertPythonIndexToRowCol(s,ins)
-        row2 = g.choose(kind=='back',
-            max(0,row-linesPerPage),
-            min(row+linesPerPage,len(lines)-1))
-        if row == row2: return
-        spot = g.convertRowColToPythonIndex(s,row2,col,lines=lines)
-        if trace: g.trace('spot',spot,'row2',row2)
-        self.extendHelper(w,extend,spot,upOrDown=True)
-#@-node:ekr.20090530181848.6035:movePageHelper
-#@+node:ekr.20051218171457:movePastCloseHelper
-def movePastCloseHelper (self,event,extend):
-
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-    s = w.getAllText()
-    ins = w.getInsertPoint()
-    # Scan backwards for i,j.
-    i = ins
-    while i >= 0 and s[i] != '\n':
-        if s[i] == '(': break
-        i -= 1
-    else: return
-    j = ins
-    while j >= 0 and s[j] != '\n':
-        if s[j] == '(': break
-        j -= 1
-    if i < j: return
-    # Scan forward for i2,j2.
-    i2 = ins
-    while i2 < len(s) and s[i2] != '\n':
-        if s[i2] == ')': break
-        i2 += 1
-    else: return
-    j2 = ins
-    while j2 < len(s) and s[j2] != '\n':
-        if s[j2] == ')': break
-        j2 += 1
-    if i2 > j2: return
-
-    self.moveToHelper(event,i2+1,extend)
-#@-node:ekr.20051218171457:movePastCloseHelper
-#@+node:ekr.20100109094541.6227:moveToBufferHelper
-def moveToBufferHelper (self,event,spot,extend):
-
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-
-    if hasattr(w,'leoMoveCursorHelper'):
-        w.leoMoveCursorHelper(kind=spot,extend=extend)
-        w.seeInsertPoint()
-        c.frame.updateStatusLine()
-    else:
-        if spot == 'home':
-            self.moveToHelper(event,0,extend=extend)
-        elif spot == 'end':
-            s = w.getAllText()
-            self.moveToHelper(event,len(s),extend=extend)
-        else:
-            g.trace('can not happen: bad spot',spot)
-#@-node:ekr.20100109094541.6227:moveToBufferHelper
-#@+node:ekr.20100109094541.6228:moveToCharacterHelper
-def moveToCharacterHelper (self,event,spot,extend):
-
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-
-    if hasattr(w,'leoMoveCursorHelper'):
-        w.leoMoveCursorHelper(kind=spot,extend=extend)
-        w.seeInsertPoint()
-        c.frame.updateStatusLine()
-    else:
-        i = w.getInsertPoint()
-        if spot == 'left':
-            i=max(0,i-1)
-            self.moveToHelper(event,i,extend=extend)
-        elif spot == 'right':
-            i = min(i+1,len(w.getAllText()))
-            self.moveToHelper(event,i,extend=extend)
-        else:
-            g.trace('can not happen: bad spot: %s' % spot)
-#@-node:ekr.20100109094541.6228:moveToCharacterHelper
-#@+node:ekr.20051218122116:moveToHelper
-def moveToHelper (self,event,spot,extend):
-
-    '''Common helper method for commands the move the cursor
-    in a way that can be described by a Tk Text expression.'''
-
-    c = self.c ; k = c.k ; w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-
-    # Put the request in the proper range.
-    if c.widget_name(w).startswith('mini'):
-        i,j = k.getEditableTextRange()
-        if   spot < i: spot = i
-        elif spot > j: spot = j
-
-    self.extendHelper(w,extend,spot,upOrDown=False)
-#@-node:ekr.20051218122116:moveToHelper
-#@+node:ekr.20060113105246.1:moveUpOrDownHelper
-def moveUpOrDownHelper (self,event,direction,extend):
-
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-    trace = False
-
-    ins = w.getInsertPoint()
-    s = w.getAllText()
-    w.seeInsertPoint()
-
-    if hasattr(w,'leoMoveCursorHelper'):
-        w.leoMoveCursorHelper(kind=direction,extend=extend)
-        w.seeInsertPoint()
-        c.frame.updateStatusLine()
-    else:
-        # Find the start of the next/prev line.
-        row,col = g.convertPythonIndexToRowCol(s,ins)
-        if trace:
-            gui_ins = w.toGuiIndex(ins)
-            bbox = w.bbox(gui_ins)
-            if bbox:
-                x,y,width,height = bbox
-                # bbox: x,y,width,height;  dlineinfo: x,y,width,height,offset
-                g.trace('gui_ins',gui_ins,'dlineinfo',w.dlineinfo(gui_ins),'bbox',bbox)
-                g.trace('ins',ins,'row',row,'col',col,'event.x',event.x,'event.y',event.y)
-                g.trace('subtracting line height',w.index('@%s,%s' % (x,y-height)))
-                g.trace('adding      line height',w.index('@%s,%s' % (x,y+height)))
-        i,j = g.getLine(s,ins)
-        if direction == 'down':
-            i2,j2 = g.getLine(s,j)
-        else:
-            i2,j2 = g.getLine(s,i-1)
-
-        # The spot is the start of the line plus the column index.
-        n = max(0,j2-i2-1) # The length of the new line.
-        col2 = min(col,n)
-        spot = i2 + col2
-        if trace: g.trace('spot',spot,'n',n,'col',col,'line',repr(s[i2:j2]))
-
-        self.extendHelper(w,extend,spot,upOrDown=True)
-#@-node:ekr.20060113105246.1:moveUpOrDownHelper
-#@+node:ekr.20100109094541.6231:moveWithinLineHelper
-def moveWithinLineHelper (self,event,spot,extend):
-
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-
-    if hasattr(w,'leoMoveCursorHelper'):
-        w.leoMoveCursorHelper(kind=spot,extend=extend)
-        w.seeInsertPoint()
-        c.frame.updateStatusLine()
-    else:
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        i,junk = g.getLine(s,ins)
-        if spot == 'start-line':
-            self.moveToHelper(event,i,extend=extend)
-        elif spot == 'end-line':
-            if g.match(s,i-1,'\n'): i -= 1
-            self.moveToHelper(event,i,extend=extend)
-        else:
-            g.trace('can not happen: bad spot: %s' % spot)
-#@-node:ekr.20100109094541.6231:moveWithinLineHelper
-#@+node:ekr.20051218121447:moveWordHelper
-def moveWordHelper (self,event,extend,forward,end=False):
-
-    '''Move the cursor to the next/previous word.
-    The cursor is placed at the start of the word unless end=True'''
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-    s = w.getAllText() ; n = len(s)
-    i = w.getInsertPoint()
-
-    if forward:
-        # Unlike backward-word moves, there are two options...
-        if end:
-            while 0 <= i < n and not g.isWordChar(s[i]):
-                i += 1
-            while 0 <= i < n and g.isWordChar(s[i]):
-                i += 1
-        else:
-            while 0 <= i < n and g.isWordChar(s[i]):
-                i += 1
-            while 0 <= i < n and not g.isWordChar(s[i]):
-                i += 1
-    else:
-        i -= 1
-        while 0 <= i < n and not g.isWordChar(s[i]):
-            i -= 1
-        while 0 <= i < n and g.isWordChar(s[i]):
-            i -= 1
-        i += 1
-
-    self.moveToHelper(event,i,extend)
-#@nonl
-#@-node:ekr.20051218121447:moveWordHelper
-#@+node:ekr.20060209095101:setMoveCol
-def setMoveCol (self,w,spot):
-
-    '''Set the column to which an up or down arrow will attempt to move.'''
-
-    c = self.c ; p = c.p
-
-    i,row,col = w.toPythonIndexRowCol(spot)
-
-    self.moveSpot = i
-    self.moveCol = col
-    self.moveSpotNode = p.v
-
-    # g.trace('moveSpot',i)
-#@nonl
-#@-node:ekr.20060209095101:setMoveCol
-#@-node:ekr.20051218170358: helpers
-#@+node:ekr.20081123102100.1:backToHome
-def backToHome (self,event):
-
-    '''Smart home:
-    Position the point at the first non-blank character on the line,
-    or the start of the line if already there.'''
-
-    w = self.editWidget(event)
-    if not w: return
-
-    s = w.getAllText()
-    ins = w.getInsertPoint()
-    if ins == 0 or not(s): return
-
-    # Toggle back and forth between start of line and first-non-blank character.
-    i,j = g.getLine(s,ins)
-    i1 = i
-    while i < j and s[i] in (' \t'):
-        i += 1
-    if i == ins:
-        i = i1
-
-    self.moveToHelper(event,i,extend=False)
-#@-node:ekr.20081123102100.1:backToHome
-#@+node:ekr.20050920084036.75:backToIndentation
-def backToIndentation (self,event):
-
-    '''Position the point at the first non-blank character on the line.'''
-
-    w = self.editWidget(event)
-    if not w: return
-
-    # None of the other cursor move commands are undoable.
-    # self.beginCommand(undoType='back-to-indentation')
-
-    s = w.getAllText()
-    ins = w.getInsertPoint()
-    i,j = g.getLine(s,ins)
-    while i < j and s[i] in (' \t'):
-        i += 1
-
-    self.moveToHelper(event,i,extend=False)
-
-    # self.endCommand(changed=True,setLabel=True)
-#@-node:ekr.20050920084036.75:backToIndentation
-#@+node:ekr.20051218141237:between lines
-def nextLine (self,event):
-    '''Move the cursor down, extending the selection if in extend mode.'''
-    self.moveUpOrDownHelper(event,'down',extend=False)
-
-def nextLineExtendSelection (self,event):
-    '''Extend the selection by moving the cursor down.'''
-    self.moveUpOrDownHelper(event,'down',extend=True)
-
-def prevLine (self,event):
-    '''Move the cursor up, extending the selection if in extend mode.'''
-    self.moveUpOrDownHelper(event,'up',extend=False)
-
-def prevLineExtendSelection (self,event):
-    '''Extend the selection by moving the cursor up.'''
-    self.moveUpOrDownHelper(event,'up',extend=True)
-#@-node:ekr.20051218141237:between lines
-#@+node:ekr.20050920084036.148:buffers
-def beginningOfBuffer (self,event):
-    '''Move the cursor to the start of the body text.'''
-    self.moveToBufferHelper(event,'home',extend=False)
-
-def beginningOfBufferExtendSelection (self,event):
-    '''Extend the text selection by moving the cursor to the start of the body text.'''
-    self.moveToBufferHelper(event,'home',extend=True)
-
-def endOfBuffer (self,event):
-    '''Move the cursor to the end of the body text.'''
-    self.moveToBufferHelper(event,'end',extend=False)
-
-def endOfBufferExtendSelection (self,event):
-    '''Extend the text selection by moving the cursor to the end of the body text.'''
-    self.moveToBufferHelper(event,'end',extend=True)
-#@-node:ekr.20050920084036.148:buffers
-#@+node:ekr.20051213080533:characters
-def backCharacter (self,event):
-    '''Move the cursor back one character, extending the selection if in extend mode.'''
-    self.moveToCharacterHelper(event,'left',extend=False)
-
-def backCharacterExtendSelection (self,event):
-    '''Extend the selection by moving the cursor back one character.'''
-    self.moveToCharacterHelper(event,'left',extend=True)
-
-def forwardCharacter (self,event):
-    '''Move the cursor forward one character, extending the selection if in extend mode.'''
-    self.moveToCharacterHelper(event,'right',extend=False)
-
-def forwardCharacterExtendSelection (self,event):
-    '''Extend the selection by moving the cursor forward one character.'''
-    self.moveToCharacterHelper(event,'right',extend=True)
-#@-node:ekr.20051213080533:characters
-#@+node:ekr.20051218174113:clear/set/ToggleExtendMode
-def clearExtendMode (self,event):
-    '''Turn off extend mode: cursor movement commands do not extend the selection.'''
-    self.extendModeHelper(event,False)
-
-def setExtendMode (self,event):
-    '''Turn on extend mode: cursor movement commands do extend the selection.'''
-    self.extendModeHelper(event,True)
-
-def toggleExtendMode (self,event):
-    '''Toggle extend mode, i.e., toggle whether cursor movement commands extend the selections.'''
-    self.extendModeHelper(event,not self.extendMode)
-
-def extendModeHelper (self,event,val):
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    self.extendMode = val
-    g.es('extend mode',g.choose(val,'on','off'),color='red')
-    c.widgetWantsFocusNow(w)
-#@-node:ekr.20051218174113:clear/set/ToggleExtendMode
-#@+node:ekr.20050920084036.136:exchangePointMark
-def exchangePointMark (self,event):
-
-    '''Exchange the point (insert point) with the mark (the other end of the selected text).'''
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    c.widgetWantsFocusNow(w)
-    i,j = w.getSelectionRange(sort=False)
-    if i == j: return
-
-    ins = w.getInsertPoint()
-    ins = g.choose(ins==i,j,i)
-    w.setInsertPoint(ins)
-    w.setSelectionRange(i,j,insert=None)
-#@-node:ekr.20050920084036.136:exchangePointMark
-#@+node:ekr.20061007082956:extend-to-line
-def extendToLine (self,event):
-
-    '''Select the line at the cursor.'''
-
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-
-    s = w.getAllText() ; n = len(s)
-    i = w.getInsertPoint()
-
-    while 0 <= i < n and not s[i] == '\n':
-        i -= 1
-    i += 1 ; i1 = i
-    while 0 <= i < n and not s[i] == '\n':
-        i += 1
-
-    w.setSelectionRange(i1,i)
-#@-node:ekr.20061007082956:extend-to-line
-#@+node:ekr.20061007214835.4:extend-to-sentence
-def extendToSentence (self,event):
-
-    '''Select the line at the cursor.'''
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    s = w.getAllText() ; n = len(s)
-    i = w.getInsertPoint()
-
-    i2 = 1 + s.find('.',i)
-    if i2 == -1: i2 = n
-    i1 = 1 + s.rfind('.',0,i2-1)
-
-    w.setSelectionRange(i1,i2)
-#@nonl
-#@-node:ekr.20061007214835.4:extend-to-sentence
-#@+node:ekr.20060116074839.2:extend-to-word
-def extendToWord (self,event,direction='forward'):
-
-    '''Select the word at the cursor.'''
-
-    c = self.c
-    w = self.editWidget(event)
-    if not w: return
-
-    s = w.getAllText() ; n = len(s)
-    i = w.getInsertPoint()
-
-    if direction == 'forward':
-        while i < n and not g.isWordChar(s[i]):
-            i += 1
-    else:
-        while 0 <= i < n and not g.isWordChar(s[i]):
-            i -= 1
-
-    while 0 <= i < n and g.isWordChar(s[i]):
-        i -= 1
-    i += 1
-    i1 = i
-
-    # Move to the end of the word.
-    while 0 <= i < n and g.isWordChar(s[i]):
-        i += 1
-
-    w.setSelectionRange(i1,i)
-#@nonl
-#@-node:ekr.20060116074839.2:extend-to-word
-#@+node:ekr.20050920084036.140:movePastClose
-def movePastClose (self,event):
-    '''Move the cursor past the closing parenthesis.'''
-    self.movePastCloseHelper(event,extend=False)
-
-def movePastCloseExtendSelection (self,event):
-    '''Extend the selection by moving the cursor past the closing parenthesis.'''
-    self.movePastCloseHelper(event,extend=True)
-#@-node:ekr.20050920084036.140:movePastClose
-#@+node:ekr.20090530181848.6034:pages
-def backPage (self,event):
-    '''Move the cursor back one page,
-    extending the selection if in extend mode.'''
-    self.movePageHelper(event,kind='back',extend=False)
-
-def backPageExtendSelection (self,event):
-    '''Extend the selection by moving the cursor back one page.'''
-    self.movePageHelper(event,kind='back',extend=True)
-
-def forwardPage (self,event):
-    '''Move the cursor forward one page,
-    extending the selection if in extend mode.'''
-    self.movePageHelper(event,kind='forward',extend=False)
-
-def forwardPageExtendSelection (self,event):
-    '''Extend the selection by moving the cursor forward one page.'''
-    self.movePageHelper(event,kind='forward',extend=True)
-#@-node:ekr.20090530181848.6034:pages
-#@+node:ekr.20050920084036.102:paragraphs
-def backwardParagraph (self,event):
-    '''Move the cursor to the previous paragraph.'''
-    self.backwardParagraphHelper (event,extend=False)
-
-def backwardParagraphExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the previous paragraph.'''
-    self.backwardParagraphHelper (event,extend=True)
-
-def forwardParagraph (self,event):
-    '''Move the cursor to the next paragraph.'''
-    self.forwardParagraphHelper(event,extend=False)
-
-def forwardParagraphExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the next paragraph.'''
-    self.forwardParagraphHelper(event,extend=True)
-#@-node:ekr.20050920084036.102:paragraphs
-#@+node:ekr.20050920084036.131:sentences
-def backSentence (self,event):
-    '''Move the cursor to the previous sentence.'''
-    self.backSentenceHelper(event,extend=False)
-
-def backSentenceExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the previous sentence.'''
-    self.backSentenceHelper(event,extend=True)
-
-def forwardSentence (self,event):
-    '''Move the cursor to the next sentence.'''
-    self.forwardSentenceHelper(event,extend=False)
-
-def forwardSentenceExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the next sentence.'''
-    self.forwardSentenceHelper(event,extend=True)
-#@-node:ekr.20050920084036.131:sentences
-#@+node:ekr.20100109094541.6232:within lines
-def beginningOfLine (self,event):
-    '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
-    self.moveWithinLineHelper(event,'start-line',extend=False)
-
-def beginningOfLineExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the start of the line.'''
-    self.moveWithinLineHelper(event,'start-line',extend=True)
-
-def endOfLine (self,event):
-    '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
-    self.moveWithinLineHelper(event,'end-line',extend=False)
-
-def endOfLineExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the end of the line.'''
-    self.moveWithinLineHelper(event,'end-line',extend=True)
-#@-node:ekr.20100109094541.6232:within lines
-#@+node:ekr.20050920084036.149:words
-def backwardWord (self,event):
-    '''Move the cursor to the previous word.'''
-    self.moveWordHelper(event,extend=False,forward=False)
-
-def backwardWordExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the next word.'''
-    self.moveWordHelper(event,extend=True,forward=False)
-
-def forwardEndWord (self,event): # New in Leo 4.4.2
-    '''Move the cursor to the next word.'''
-    self.moveWordHelper(event,extend=False,forward=True,end=True)
-
-def forwardEndWordExtendSelection (self,event): # New in Leo 4.4.2
-    '''Extend the selection by moving the cursor to the previous word.'''
-    self.moveWordHelper(event,extend=True,forward=True,end=True)
-
-def forwardWord (self,event):
-    '''Move the cursor to the next word.'''
-    self.moveWordHelper(event,extend=False,forward=True)
-
-def forwardWordExtendSelection (self,event):
-    '''Extend the selection by moving the cursor to the previous word.'''
-    self.moveWordHelper(event,extend=True,forward=True)
-#@-node:ekr.20050920084036.149:words
-#@-node:ekr.20050929114218:move cursor... (leoEditCommands)
-#@+node:ekr.20060113105246.1:moveUpOrDownHelper
-def moveUpOrDownHelper (self,event,direction,extend):
-
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-    trace = False
-
-    ins = w.getInsertPoint()
-    s = w.getAllText()
-    w.seeInsertPoint()
-
-    if hasattr(w,'leoMoveCursorHelper'):
-        w.leoMoveCursorHelper(kind=direction,extend=extend)
-        w.seeInsertPoint()
-        c.frame.updateStatusLine()
-    else:
-        # Find the start of the next/prev line.
-        row,col = g.convertPythonIndexToRowCol(s,ins)
-        if trace:
-            gui_ins = w.toGuiIndex(ins)
-            bbox = w.bbox(gui_ins)
-            if bbox:
-                x,y,width,height = bbox
-                # bbox: x,y,width,height;  dlineinfo: x,y,width,height,offset
-                g.trace('gui_ins',gui_ins,'dlineinfo',w.dlineinfo(gui_ins),'bbox',bbox)
-                g.trace('ins',ins,'row',row,'col',col,'event.x',event.x,'event.y',event.y)
-                g.trace('subtracting line height',w.index('@%s,%s' % (x,y-height)))
-                g.trace('adding      line height',w.index('@%s,%s' % (x,y+height)))
-        i,j = g.getLine(s,ins)
-        if direction == 'down':
-            i2,j2 = g.getLine(s,j)
-        else:
-            i2,j2 = g.getLine(s,i-1)
-
-        # The spot is the start of the line plus the column index.
-        n = max(0,j2-i2-1) # The length of the new line.
-        col2 = min(col,n)
-        spot = i2 + col2
-        if trace: g.trace('spot',spot,'n',n,'col',col,'line',repr(s[i2:j2]))
-
-        self.extendHelper(w,extend,spot,upOrDown=True)
-#@-node:ekr.20060113105246.1:moveUpOrDownHelper
-#@-node:ekr.20080519062109.2:Improve how Leo handles long lines
 #@+node:ekr.20090131200406.11:Remove remaining tk-isms from Leo's core
 @nocolor-node
 
@@ -1803,928 +407,10 @@ Drat.  I suppose building in unicode smarts: filtering 'general punctuation' cha
 http://www.fileformat.info/info/unicode/char/2026/index.htm
 #@nonl
 #@-node:ekr.20080509065556.2:Fix mod_tempfname plugin
-#@+node:ekr.20090202064534.1:Remove bad archived position message?
-bad archived position: bad index="3", len(children)="1"
-restoreDescendentAttributes: can not find vnode (duA):
-archivedPosition: 0.3.6.6.2.3, root_v: <vnode 168011244:'@thin
-test_core.txt'>
-#@nonl
-#@-node:ekr.20090202064534.1:Remove bad archived position message?
-#@+node:ekr.20091006063434.24624:Fixed bug: at-nosent nodes were not being dirty when headline changes
-#@+node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
-def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
-
-    trace = False and not g.unitTesting
-    verbose = False
-    p = self
-    dirtyVnodeList = []
-
-    # Calculate all nodes that are joined to p or parents of such nodes.
-    nodes = p.findAllPotentiallyDirtyNodes()
-
-    if setDescendentsDirty:
-        # N.B. Only mark _direct_ descendents of nodes.
-        # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
-        for p2 in p.subtree():
-            # Only @thin nodes need to be marked.
-            if p2.v not in nodes and p2.isAtThinFileNode():
-                nodes.append(p2.v)
-
-    if trace and verbose:
-        for v in nodes:
-            print (v.isDirty(),v.isAnyAtFileNode(),v)
-
-    dirtyVnodeList = [v for v in nodes
-        if not v.isDirty() and v.isAnyAtFileNode()]
-    changed = len(dirtyVnodeList) > 0
-
-    for v in dirtyVnodeList:
-        v.setDirty()
-
-    if trace: g.trace("position",dirtyVnodeList,g.callers(5))
-
-    return dirtyVnodeList
-#@-node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
-#@+node:ekr.20090830051712.6157:v.setAllAncestorAtFileNodesDirty
-# Unlike p.setAllAncestorAtFileNodesDirty,
-# there is no setDescendentsDirty arg.
-
-def setAllAncestorAtFileNodesDirty (self):
-
-    trace = False and not g.unitTesting
-    verbose = False
-    v = self
-    dirtyVnodeList = []
-
-    # Calculate all nodes that are joined to p or parents of such nodes.
-    nodes = v.findAllPotentiallyDirtyNodes()
-
-    if trace and verbose:
-        for v in nodes:
-            print (v.isDirty(),v.isAnyAtFileNode(),v)
-
-    dirtyVnodeList = [v for v in nodes
-        if not v.isDirty() and v.isAnyAtFileNode()]
-
-    changed = len(dirtyVnodeList) > 0
-
-    for v in dirtyVnodeList:
-        v.setDirty() # Do not call v.setDirty here!
-
-    if trace: g.trace("vnode",dirtyVnodeList)
-
-    return dirtyVnodeList
-#@-node:ekr.20090830051712.6157:v.setAllAncestorAtFileNodesDirty
-#@+node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
-def findAllPotentiallyDirtyNodes(self):
-
-    trace = False and not g.unitTesting
-    v = self ; c = v.context
-
-    # Set the starting nodes.
-    nodes = []
-    newNodes = [v]
-
-    # Add nodes until no more are added.
-    while newNodes:
-        addedNodes = []
-        nodes.extend(newNodes)
-        for v in newNodes:
-            for v2 in v.parents:
-                if v2 not in nodes and v2 not in addedNodes:
-                    addedNodes.append(v2)
-        newNodes = addedNodes[:]
-
-    # Remove the hidden vnode.
-    if c.hiddenRootNode in nodes:
-        if trace: g.trace('removing hidden root',c.hiddenRootNode)
-        nodes.remove(c.hiddenRootNode)
-
-    if trace: g.trace(nodes)
-    return nodes
-#@nonl
-#@-node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
-#@+node:ekr.20040803072955.91:onHeadChanged (leoTree)
-# Tricky code: do not change without careful thought and testing.
-
-def onHeadChanged (self,p,undoType='Typing',s=None):
-
-    '''Officially change a headline.
-    Set the old undo text to the previous revert point.'''
-
-    trace = False and not g.unitTesting
-    c = self.c ; u = c.undoer
-    w = self.edit_widget(p)
-
-    if c.suppressHeadChanged: return
-    if not w:
-        if trace: g.trace('****** no w for p: %s',repr(p))
-        return
-
-    ch = '\n' # New in 4.4: we only report the final keystroke.
-    if g.doHook("headkey1",c=c,p=p,v=p,ch=ch):
-        return # The hook claims to have handled the event.
-
-    if s is None: s = w.getAllText()
-    if trace:
-        g.trace('*** leoTree',g.callers(5))
-        g.trace(p and p.h,'w',repr(w),'s',repr(s))
-    << truncate s if it has multiple lines >>
-    # Make the change official, but undo to the *old* revert point.
-    oldRevert = self.revertHeadline
-    changed = s != oldRevert
-    self.revertHeadline = s
-    p.initHeadString(s)
-    if trace: g.trace('changed',changed,'new',repr(s))
-    if changed:
-        undoData = u.beforeChangeNodeContents(p,oldHead=oldRevert)
-        if not c.changed: c.setChanged(True)
-        # New in Leo 4.4.5: we must recolor the body because
-        # the headline may contain directives.
-        c.frame.scanForTabWidth(p)
-        c.frame.body.recolor(p,incremental=True)
-        dirtyVnodeList = p.setDirty()
-        u.afterChangeNodeContents(p,undoType,undoData,
-            dirtyVnodeList=dirtyVnodeList)
-    if changed:
-        c.redraw_after_head_changed()
-        if self.stayInTree:
-            c.treeWantsFocus()
-        else:
-            c.bodyWantsFocus()
-    else:
-        c.frame.tree.setSelectedLabelState(p)
-
-    g.doHook("headkey2",c=c,p=p,v=p,ch=ch)
-#@+node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
-# Remove one or two trailing newlines before warning of truncation.
-for i in (0,1):
-    if s and s[-1] == '\n':
-        if len(s) > 1: s = s[:-1]
-        else: s = ''
-
-# Warn if there are multiple lines.
-i = s.find('\n')
-if i > -1:
-    # g.trace(i,len(s),repr(s))
-    g.es("truncating headline to one line",color="blue")
-    s = s[:i]
-
-limit = 1000
-if len(s) > limit:
-    g.es("truncating headline to",limit,"characters",color="blue")
-    s = s[:limit]
-
-s = g.toUnicode(s or '',g.app.tkEncoding)
-#@-node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
-#@-node:ekr.20040803072955.91:onHeadChanged (leoTree)
-#@+node:ekr.20040303163330:p.setDirty
-def setDirty (self,setDescendentsDirty=True):
-
-    '''Mark a node and all ancestor @file nodes dirty.'''
-
-    p = self ; dirtyVnodeList = []
-
-    # g.trace(p.h,g.callers(4))
-
-    if not p.v.isDirty():
-        p.v.setDirty()
-        dirtyVnodeList.append(p.v)
-
-    # Important: this must be called even if p.v is already dirty.
-    # Typing can change the @ignore state!
-    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty(setDescendentsDirty)
-    dirtyVnodeList.extend(dirtyVnodeList2)
-
-    return dirtyVnodeList
-#@-node:ekr.20040303163330:p.setDirty
-#@-node:ekr.20091006063434.24624:Fixed bug: at-nosent nodes were not being dirty when headline changes
+#@-node:ekr.20100109214940.6227:Other bugs
 #@-node:ekr.20090811090022.6029:Bugs
-#@+node:ekr.20080517102922.1:File bugs & features
-#@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
-
-If a @path directive is within the body text of an @thin node then the
-file write uses the @path directive but the file read does not.  Since
-the file read cannot know of the @path directive until after it has
-read the file it has no choice but to not use it.  The @thin file
-write code should not use any @path declarations found in its body
-text.
-#@nonl
-#@-node:ekr.20081204091750.4:Fix inconsistency in how @path works
-#@+node:ekr.20090105083748.1:Fix xml write bug
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/2b3b621b36760579
-
-I am a new user of leo and find it most powerful and useful. I did run
-into a XML parsing problem that was able to track down and figure out
-and I thought to post what I found.
-
-The problem came from pasting in a block of text from a PDF file into
-a a node text window and the text happened to have an  'unprintable'
-character. After saving the .leo file and reading back the file the
-next day, in the whole outline and file became unusable until I
-manually tracked down and deleted the bad character in the XML file.
-
-The log ( python ) error was:
-
-reading: C:\x2.leo
-error parsing C:\x2.leo
-Traceback (most recent call last):
-  File "C:\Leo-4-5-1-final\leo\core\leoFileCommands.py", line 1266, in
-parse_leo_file
-    parser.parse(theFile) # expat does not support parseString
-  File "C:\Python24\lib\xml\sax\expatreader.py", line 107, in parse
-    xmlreader.IncrementalParser.parse(self, source)
-  File "C:\Python24\lib\xml\sax\xmlreader.py", line 123, in parse
-    self.feed(buffer)
-  File "C:\Python24\lib\xml\sax\expatreader.py", line 211, in feed
-    self._err_handler.fatalError(exc)
-  File "C:\Python24\lib\xml\sax\handler.py", line 38, in fatalError
-    raise exception
-SAXParseException: <unknown>:51:55: not well-formed (invalid token)
-
-I can attach leo files with the error if anyone wants to look at it.
-The character does show in Notepad but not the leo text window.
-
-At least this showed the value of plain text XML for leo files for
-finding and correcting the problem. And the problem could be called a
-python SAX xmlreader problem, and I am not sure if it is possible to
-fix in leo code, but my suggestion is to add a .leo reading step that
-shows the exact location of characters that can not be translated.
-Fortunately my outline was small enough to find the problem character,
-but in larger files it would have been very hard to find because none
-of the nodes would load from the file. 
-#@nonl
-#@+node:ekr.20031218072017.1577:putTnode
-def putTnode (self,v):
-
-    # Call put just once.
-    gnx = g.app.nodeIndices.toString(v.fileIndex)
-    ua = hasattr(v,'unknownAttributes') and self.putUnknownAttributes(v) or ''
-    b = v.b
-    if b:
-        body = xml.sax.saxutils.escape(b)
-    else:
-        body = ''
-
-    self.put('<t tx="%s"%s>%s</t>\n' % (gnx,ua,body))
-#@-node:ekr.20031218072017.1577:putTnode
-#@+node:ekr.20031218072017.1470:put
-def put (self,s):
-
-    '''Put string s to self.outputFile. All output eventually comes here.'''
-
-    # Improved code: self.outputFile (a cStringIO object) always exists.
-    if s:
-        self.putCount += 1
-        if g.isPython3:
-            pass
-        else:
-            s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
-        self.outputFile.write(s)
-
-def put_dquote (self):
-    self.put('"')
-
-def put_dquoted_bool (self,b):
-    if b: self.put('"1"')
-    else: self.put('"0"')
-
-def put_flag (self,a,b):
-    if a:
-        self.put(" ") ; self.put(b) ; self.put('="1"')
-
-def put_in_dquotes (self,a):
-    self.put('"')
-    if a: self.put(a) # will always be True if we use backquotes.
-    else: self.put('0')
-    self.put('"')
-
-def put_nl (self):
-    self.put("\n")
-
-def put_tab (self):
-    self.put("\t")
-
-def put_tabs (self,n):
-    while n > 0:
-        self.put("\t")
-        n -= 1
-#@nonl
-#@-node:ekr.20031218072017.1470:put
-#@-node:ekr.20090105083748.1:Fix xml write bug
-#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-@nocolor
-
-I also unhappily discovered that any file named somedoc.leo.bak will
-get deleted whenever you save a file named somedoc.leo.
-
-@color
-#@nonl
-#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-#@+node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
-#@-node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
-#@+node:ekr.20080918164844.14:Protect @shadow and @auto files from overwriting external changes
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/bac65cb75484f7cb
-
-BTW, I think we should prevent shadow files from accidentally
-overwriting valuable stuff:
-
-- Store modification time of the file on shadow import
-
-- When you "save", check if modification time has changed and ask the
-user if they really want to overwrite the changes. Or, reuse to do it
-altogether and require explicit save-at-shadow-nodes in those
-occasions. That's considered "good form" in editors in general, and
-since pressing ctrl+S in leo has even more significant implications we
-should be absolutely certain everything happens safely. 
-#@nonl
-#@-node:ekr.20080918164844.14:Protect @shadow and @auto files from overwriting external changes
-#@+node:ekr.20080412053100.1:Look into undefined-section behavior
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
-
-1) Create an @thin file based outline.
-2) In the @thin file, create an unreferenced section (something like a
-  header <<This Section Is Bogus>>).
-3) Now, File->Exit
-4) A dialog box pops up
-  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
-5) Click "Yes"
-6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
-  and in the console window, you see "undefined section: ..."
-
-However, the application is still running. The only way to really quit
-is to click "No" to the Save dialog.
-
-> Iirc, this is the intended behavior.  It would be possible to build in some
-> state behavior to only ask once, but I'd rather not do that.
-
-The point is that I can't kill Leo if I keep saying "Yes" to the
-"Save change before quitting" dialog. This is definitely not the
-intended behavior. The correct behavior would be to save the file,
-give me the warning about the undefined section, and exit.
-#@nonl
-#@-node:ekr.20080412053100.1:Look into undefined-section behavior
-#@+node:ekr.20090622020908.6058:Add lite sentinels
-http://groups.google.com/group/leo-editor/browse_thread/thread/c4f2cf250600e4a9
-#@nonl
-#@-node:ekr.20090622020908.6058:Add lite sentinels
-#@-node:ekr.20080517102922.1:File bugs & features
-#@+node:ekr.20090811141250.5955:Harder features
-#@+node:ekr.20090724081340.5987:Improve recursive import script and @auto
-@nocolor-node
-
-Instead of adding an @ignore directive, it might be better
-to change @auto to @@auto.
-
-Should @auto be more lenient with C files?
-
-Improve the recursive import script.
-    - Minimize the path names
-    - Option to include/exclude the @auto itself
-
-#@-node:ekr.20090724081340.5987:Improve recursive import script and @auto
-#@+node:ekr.20090714085914.5991:Add drag and drop to qt gui
-#@-node:ekr.20090714085914.5991:Add drag and drop to qt gui
-#@+node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
-#@-node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
-#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
-This probably should wait until the one-node world works.
-#@nonl
-#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
-#@+node:ekr.20090801103907.6018:Add entries to global dicts for more languages
-http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
-
-Especially languages in leo/modes.
-#@nonl
-#@+node:ekr.20090816125009.5993:@url http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
-#@-node:ekr.20090816125009.5993:@url http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
-#@+node:ekr.20090814190307.5983:print all modes/*.py files
-import glob
-
-theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
-
-aList = glob.glob(theDir)
-
-for z in aList:
-    print g.os_path_basename(z)
-
-@
-Exist:
-
-    "ada"   : "ada",
-    "adb"   : "ada",
-    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
-    "as"    : "actionscript",
-    "bas"   : "rapidq",
-    "bat"   : "batch",
-    "c"     : "c",
-    "cfg"   : "config",
-    "cpp"   : "cpp",
-    "css"   : "css",
-    "el"    : "elisp",
-    "forth" : "forth",
-    "f"     : "fortran",
-    "f90"   : "fortran90",
-    "h"     : "c",
-    "html"  : "html",
-    "ini"   : "ini",
-    "java"  : "java",
-    "ksh"   : "kshell", # Leo 4.5.1.
-    "lua"   : "lua",  # ddm 13/02/06
-    "nw"    : "noweb",
-    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
-    "p"     : "pascal",
-    "pl"    : "perl",   # 11/7/05
-    "pod"   : "perlpod", # 11/7/05
-    "php"   : "php",
-    "py"    : "python",
-    "sql"   : "plsql", # qt02537 2005-05-27
-    "r"     : "rebol",
-    "rb"    : "ruby", # thyrsus 2008-11-05
-    "rest"  : "rst",
-    "rst"   : "rst",
-    "sh"    : "shell",
-    "tex"   : "tex",
-    "txt"   : "plain",
-    "tcl"   : "tcltk",
-    "vim"   : "vim",
-"w"     : "cweb",
-"xml"   : "xml",
-"xsl"   : "xslt",
-
-Add first:
-
-
-ada95.py
-antlr.py
-apacheconf.py
-apdl.py
-applescript.py
-asp.py
-aspect_j.py
-assembly_macro32.py
-assembly_mcs51.py
-assembly_parrot.py
-assembly_r2000.py
-assembly_x86.py
-awk.py
-b.py
-batch.py
-bbj.py
-bcel.py
-bibtex.py
-c.py
-chill.py
-cobol.py
-coldfusion.py
-cplusplus.py
-csharp.py
-css.py
-cvs_commit.py
-d.py
-doxygen.py
-dsssl.py
-eiffel.py
-embperl.py
-erlang.py
-factor.py
-forth.py
-fortran.py
-fortran90.py
-foxpro.py
-freemarker.py
-gettext.py
-groovy.py
-haskell.py
-hex.py
-html.py
-i4gl.py
-icon.py
-idl.py
-inform.py
-ini.py
-inno_setup.py
-interlis.py
-io.py
-java.py
-javascript.py
-jcl.py
-jhtml.py
-jmk.py
-jsp.py
-latex.py
-lilypond.py
-lisp.py
-lotos.py
-lua.py
-mail.py
-makefile.py
-maple.py
-matlab.py
-ml.py
-modula3.py
-moin.py
-mqsc.py
-netrexx.py
-nqc.py
-nsis2.py
-objective_c.py
-objectrexx.py
-occam.py
-omnimark.py
-pascal.py
-patch.py
-perl.py
-php.py
-phpsection.py
-pike.py
-pl1.py
-plain.py
-plsql.py
-pop11.py
-postscript.py
-povray.py
-powerdynamo.py
-progress.py
-prolog.py
-props.py
-psp.py
-ptl.py
-pvwave.py
-pyrex.py
-python.py
-r.py
-rebol.py
-redcode.py
-relax_ng_compact.py
-rest.py
-rhtml.py
-rib.py
-rpmspec.py
-rtf.py
-ruby.py
-rview.py
-sas.py
-scheme.py
-sdl_pr.py
-sgml.py
-shell.py
-shellscript.py
-shtml.py
-smalltalk.py
-smi_mib.py
-splus.py
-sqr.py
-squidconf.py
-ssharp.py
-svn_commit.py
-swig.py
-tcl.py
-tex.py
-texinfo.py
-text.py
-tpl.py
-tsql.py
-uscript.py
-vbscript.py
-velocity.py
-verilog.py
-vhdl.py
-xml.py
-xsl.py
-zpt.py
-__init__.py
-#@-node:ekr.20090814190307.5983:print all modes/*.py files
-#@+node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
-# Internally, lower case is used for all language names.
-self.language_delims_dict = {
-    # Keys are languages, values are 1,2 or 3-tuples of delims.
-    "ada"           : "--",
-    "batch"         : "REM_", # Use the REM hack.
-    "actionscript"  : "// /* */", #jason 2003-07-03
-    "autohotkey"    : "; /* */", #TL - AutoHotkey language
-    "c"             : "// /* */", # C, C++ or objective C.
-    "config"        : "#", # Leo 4.5.1
-    "csharp"        : "// /* */", # C#
-    "cpp"           : "// /* */",# C++.
-    "css"           : "/* */", # 4/1/04
-    "cweb"          : "@q@ @>", # Use the "cweb hack"
-    "elisp"         : ";",
-    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
-    "fortran"       : "C",
-    "fortran90"     : "!",
-    "haskell"       : "--_ {-_ _-}",
-    "haxe"          : "//",
-    "html"          : "<!-- -->",
-    "ini"           : ";",
-    "java"          : "// /* */",
-    "kshell"        : "#", # Leo 4.5.1.
-    "latex"         : "%",
-    "lua"           : "--",  # ddm 13/02/06
-    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
-    "pascal"        : "// { }",
-    "perl"          : "#",
-    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
-    "php"           : "// /* */", # 6/23/07: was "//",
-    "plain"         : "#", # We must pick something.
-    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
-    "python"        : "#",
-    "rapidq"        : "'", # fil 2004-march-11
-    "rebol"         : ";",  # jason 2003-07-03
-    "rest"          : ".._",
-    "rst"           : ".._",
-    "ruby"          : "#",  # thyrsus 2008-11-05
-    "shell"         : "#",  # shell scripts
-    "tcltk"         : "#",
-    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
-    "unknown"       : "#", # Set when @comment is seen.
-    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
-    "vim"           : "\"",
-    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
-    "xml"           : "<!-- -->",
-    "xslt"          : "<!-- -->",
-}
-
-self.language_extension_dict = {
-    # Keys are languages, values are extensions.
-    "ada"           : "ada",
-    "actionscript"  : "as", #jason 2003-07-03
-    "autohotkey"    : "ahk", #TL - AutoHotkey language
-    "batch"         : "bat", # Leo 4.5.1.
-    "c"             : "c",
-    "config"        : "cfg",
-    "cpp"           : "cpp",
-    "css"           : "css", # 4/1/04
-    "cweb"          : "w",
-    "elisp"         : "el",
-    "forth"         : "forth",
-    "fortran"       : "f",
-    "fortran90"     : "f90",
-    "haskell"       : "hs",
-    "haxe"          : "hx",
-    "html"          : "html",
-    "ini"           : "ini",
-    "java"          : "java",
-    "kshell"        : "ksh", # Leo 4.5.1.
-    "latex"         : "tex", # 1/8/04
-    "lua"           : "lua",  # ddm 13/02/06
-    "noweb"         : "nw",
-    "pascal"        : "p",
-    "perl"          : "pl",      # 11/7/05
-    "perlpod"       : "pod",  # 11/7/05
-    "php"           : "php",
-    "plain"         : "txt",
-    "python"        : "py",
-    "plsql"         : "sql", # qt02537 2005-05-27
-    "rapidq"        : "bas", # fil 2004-march-11
-    "rebol"         : "r",    # jason 2003-07-03
-    "rst"           : "rst",
-    "rst"           : "rest",
-    "ruby"          : "rb",   # thyrsus 2008-11-05
-    "shell"         : "sh",   # DS 4/1/04
-    "tex"           : "tex",
-    "tcltk"         : "tcl",
-    "unknown"       : "txt", # Set when @comment is seen.
-    "vim"           : "vim",
-    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
-    "xml"           : "xml",
-    "xslt"          : "xsl",
-}
-
-self.extension_dict = {
-    # Keys are extensions, values are languages.
-    "ada"   : "ada",
-    "adb"   : "ada",
-    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
-    "as"    : "actionscript",
-    "bas"   : "rapidq",
-    "bat"   : "batch",
-    "c"     : "c",
-    "cfg"   : "config",
-    "cpp"   : "cpp",
-    "css"   : "css",
-    "el"    : "elisp",
-    "forth" : "forth",
-    "f"     : "fortran",
-    "f90"   : "fortran90",
-    "h"     : "c",
-    "html"  : "html",
-    "hs"    : "haskell",
-    "ini"   : "ini",
-    "java"  : "java",
-    "ksh"   : "kshell", # Leo 4.5.1.
-    "lua"   : "lua",  # ddm 13/02/06
-    "nw"    : "noweb",
-    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
-    "p"     : "pascal",
-    "pl"    : "perl",   # 11/7/05
-    "pod"   : "perlpod", # 11/7/05
-    "php"   : "php",
-    "py"    : "python",
-    "sql"   : "plsql", # qt02537 2005-05-27
-    "r"     : "rebol",
-    "rb"    : "ruby", # thyrsus 2008-11-05
-    "rest"  : "rst",
-    "rst"   : "rst",
-    "sh"    : "shell",
-    "tex"   : "tex",
-    "txt"   : "plain",
-    "tcl"   : "tcltk",
-    "vim"   : "vim",
-    "w"     : "cweb",
-    "xml"   : "xml",
-    "xsl"   : "xslt",
-    "hx"    : "haxe",
-}
-
-# Extra language extensions, used to associate extensions with mode files.
-# Used by importCommands.languageForExtension.
-# Keys are extensions, values are corresponding mode file (without .py)
-# A value of 'none' is a signal to unit tests that no extension file exists.
-self.extra_extension_dict = {
-    'actionscript': 'actionscript',
-    'ada'   : 'ada95',
-    'adb'   : 'none', # ada??
-    'awk'   : 'awk',
-    'bas'   : 'none', # rapidq
-    'bat'   : 'none', # batch
-    'cfg'   : 'none', # Leo 4.5.1
-    'cpp'   : 'c',
-    'el'    : 'lisp',
-    'f'     : 'fortran90',
-    'hx'    : 'none',
-    'ksh'   : 'none', # Leo 4.5.1
-    'nw'    : 'none', # noweb.
-    'otl'   : 'none', # vimoutline.
-    'pod'   : 'perl',
-    'tcl'   : 'tcl',
-    'unknown_language': 'none',
-    'w'     : 'none', # cweb
-}
-
-self.global_commands_dict = {}
-#@-node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
-#@+node:ekr.20031218072017.3210:createOutline (leoImport)
-def createOutline (self,fileName,parent,
-    atAuto=False,atShadow=False,s=None,ext=None):
-
-    c = self.c ; u = c.undoer ; s1 = s
-    w = c.frame.body
-    # New in Leo 4.4.7: honor @path directives.
-    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-    fileName = c.os_path_finalize_join(self.default_directory,fileName)
-    junk,self.fileName = g.os_path_split(fileName)
-    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
-    self.setEncoding(p=parent,atAuto=atAuto)
-    if not ext: ext = self.fileType
-    ext = ext.lower()
-    if not s:
-        << Read file into s >>
-    << convert s to the proper encoding >>
-
-    # Create the top-level headline.
-    if atAuto:
-        p = parent.copy()
-        p.setBodyString('')
-    else:
-        undoData = u.beforeInsertNode(parent)
-        p = parent.insertAsLastChild()
-
-        if self.treeType == "@file":
-            p.initHeadString("@file " + fileName)
-        else:
-            # @root nodes don't have @root in the headline.
-            p.initHeadString(fileName)
-        u.afterInsertNode(p,'Import',undoData)
-
-    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
-
-    if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
-        func = self.scanRstText
-    else:
-        func = self.importDispatchDict.get(ext)
-
-    if func and not c.config.getBool('suppress_import_parsing',default=False):
-        func(s,p,atAuto=atAuto)
-    else:
-        # Just copy the file to the parent node.
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-
-    if atAuto:
-        # Remember that we have read this file.
-        # Fixes bug 488894: unsettling dialog when saving Leo file
-        # after creating and populating an @auto node
-        p.v.at_read = True # Create the attribute
-
-    p.contract()
-    w.setInsertPoint(0)
-    w.seeInsertPoint()
-    return p
-#@+node:ekr.20031218072017.3211:<< Read file into s >>
-try:
-    fileName = c.os_path_finalize(fileName)
-    theFile = open(fileName)
-    s = theFile.read()
-    theFile.close()
-except IOError:
-    if atShadow: kind = '@shadow '
-    elif atAuto: kind = '@auto '
-    else: kind = ''
-    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
-    g.es("can not open", "%s%s" % (kind,fileName),color='red')
-    # g.trace(g.callers())
-    leoTest.fail()
-    return None
-#@-node:ekr.20031218072017.3211:<< Read file into s >>
-#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
-if s and fileName.endswith('.py'):
-    # Python's encoding comments override everything else.
-    lines = g.splitLines(s)
-    tag = '# -*- coding:' ; tag2 = '-*-'
-    n1,n2 = len(tag),len(tag2)
-    line1 = lines[0].strip()
-    if line1.startswith(tag) and line1.endswith(tag2):
-        e = line1[n1:-n2].strip()
-        if e and g.isValidEncoding(e):
-            # g.pr('found',e,'in',line1)
-            self.encoding = e
-
-s = g.toUnicode(s,self.encoding)
-#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
-#@-node:ekr.20031218072017.3210:createOutline (leoImport)
-#@+node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
-def scanUnknownFileType (self,s,p,ext,atAuto=False):
-
-    c = self.c
-    changed = c.isChanged()
-    body = g.choose(atAuto,'','@ignore\n')
-    if ext in ('.html','.htm'):   body += '@language html\n'
-    elif ext in ('.txt','.text'): body += '@nocolor\n'
-    else:
-        language = self.languageForExtension(ext)
-        if language: body += '@language %s\n' % language
-
-    self.setBodyString(p,body + self.rootLine + self.escapeFalseSectionReferences(s))
-    if atAuto:
-        for p in p.self_and_subtree():
-            p.clearDirty()
-        if not changed:
-            c.setChanged(False)
-
-    g.app.unitTestDict = {'result':True}
-#@+node:ekr.20080811174246.1:languageForExtension
-def languageForExtension (self,ext):
-
-    '''Return the language corresponding to the extensiion ext.'''
-
-    unknown = 'unknown_language'
-
-    if ext.startswith('.'): ext = ext[1:]
-
-    if ext:
-        z = g.app.extra_extension_dict.get(ext)
-        if z not in (None,'none','None'):
-            language = z
-        else:
-            language = g.app.extension_dict.get(ext)
-        if language in (None,'none','None'):
-            language = unknown
-    else:
-        language = unknown
-
-    # g.trace(ext,repr(language))
-
-    # Return the language even if there is no colorizer mode for it.
-    return language
-#@-node:ekr.20080811174246.1:languageForExtension
-#@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
-#@-node:ekr.20090801103907.6018:Add entries to global dicts for more languages
-#@+node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
-@nocolor-node
-
-I use Visual Studio 2008, the same that is used for Python 2.5/2.6.
-
-A few days ago, I submitted a patch that allows you to use Mingw32 as a
-compiler, too. If you use it, then you need to produce libpython26.a.
-
-For doing this, there is a tool pexport.exe which can do that. I found a website
-with those hints, but lost that, again :-) pexport is not included with mingw32.
-#@nonl
-#@+node:ekr.20090730165955.6014:Notes
-http://www.emmestech.com/software/pexports-0.43/download_pexports.html
-#@nonl
-#@-node:ekr.20090730165955.6014:Notes
-#@-node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
-#@-node:ekr.20090811141250.5955:Harder features
+#@-node:ekr.20071211093011:4.7 One-node world, Leo3K
+#@+node:ekr.20100109214940.6225:4.8 Autocompletion, vim
 #@+node:ekr.20090131200406.14:autocompletion
 #@+node:ekr.20081005065934.12:Links from Ville re Scintilla
 @nocolor-node
@@ -3632,6 +1318,553 @@ delete-node does not copy node to clipboard:
 #@-node:ekr.20090629183608.8446:Notes
 #@-node:ekr.20090628190015.6003:Other problems, from leoSettings.leo
 #@-node:ekr.20080603052650.466:Fix vim problems
+#@+node:ekr.20090811141250.5955:Other features
+#@+node:ekr.20090724081340.5987:Improve recursive import script and @auto
+@nocolor-node
+
+Instead of adding an @ignore directive, it might be better
+to change @auto to @@auto.
+
+Should @auto be more lenient with C files?
+
+Improve the recursive import script.
+    - Minimize the path names
+    - Option to include/exclude the @auto itself
+
+#@-node:ekr.20090724081340.5987:Improve recursive import script and @auto
+#@+node:ekr.20090714085914.5991:Add drag and drop to qt gui
+#@-node:ekr.20090714085914.5991:Add drag and drop to qt gui
+#@+node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
+#@-node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
+#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
+This probably should wait until the one-node world works.
+#@nonl
+#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
+#@+node:ekr.20090801103907.6018:Add entries to global dicts for more languages
+http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
+
+Especially languages in leo/modes.
+#@nonl
+#@+node:ekr.20090816125009.5993:@url http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
+#@-node:ekr.20090816125009.5993:@url http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
+#@+node:ekr.20090814190307.5983:print all modes/*.py files
+import glob
+
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
+
+aList = glob.glob(theDir)
+
+for z in aList:
+    print g.os_path_basename(z)
+
+@
+Exist:
+
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+"w"     : "cweb",
+"xml"   : "xml",
+"xsl"   : "xslt",
+
+Add first:
+
+
+ada95.py
+antlr.py
+apacheconf.py
+apdl.py
+applescript.py
+asp.py
+aspect_j.py
+assembly_macro32.py
+assembly_mcs51.py
+assembly_parrot.py
+assembly_r2000.py
+assembly_x86.py
+awk.py
+b.py
+batch.py
+bbj.py
+bcel.py
+bibtex.py
+c.py
+chill.py
+cobol.py
+coldfusion.py
+cplusplus.py
+csharp.py
+css.py
+cvs_commit.py
+d.py
+doxygen.py
+dsssl.py
+eiffel.py
+embperl.py
+erlang.py
+factor.py
+forth.py
+fortran.py
+fortran90.py
+foxpro.py
+freemarker.py
+gettext.py
+groovy.py
+haskell.py
+hex.py
+html.py
+i4gl.py
+icon.py
+idl.py
+inform.py
+ini.py
+inno_setup.py
+interlis.py
+io.py
+java.py
+javascript.py
+jcl.py
+jhtml.py
+jmk.py
+jsp.py
+latex.py
+lilypond.py
+lisp.py
+lotos.py
+lua.py
+mail.py
+makefile.py
+maple.py
+matlab.py
+ml.py
+modula3.py
+moin.py
+mqsc.py
+netrexx.py
+nqc.py
+nsis2.py
+objective_c.py
+objectrexx.py
+occam.py
+omnimark.py
+pascal.py
+patch.py
+perl.py
+php.py
+phpsection.py
+pike.py
+pl1.py
+plain.py
+plsql.py
+pop11.py
+postscript.py
+povray.py
+powerdynamo.py
+progress.py
+prolog.py
+props.py
+psp.py
+ptl.py
+pvwave.py
+pyrex.py
+python.py
+r.py
+rebol.py
+redcode.py
+relax_ng_compact.py
+rest.py
+rhtml.py
+rib.py
+rpmspec.py
+rtf.py
+ruby.py
+rview.py
+sas.py
+scheme.py
+sdl_pr.py
+sgml.py
+shell.py
+shellscript.py
+shtml.py
+smalltalk.py
+smi_mib.py
+splus.py
+sqr.py
+squidconf.py
+ssharp.py
+svn_commit.py
+swig.py
+tcl.py
+tex.py
+texinfo.py
+text.py
+tpl.py
+tsql.py
+uscript.py
+vbscript.py
+velocity.py
+verilog.py
+vhdl.py
+xml.py
+xsl.py
+zpt.py
+__init__.py
+#@-node:ekr.20090814190307.5983:print all modes/*.py files
+#@+node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM_", # Use the REM hack.
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "haskell"       : "--_ {-_ _-}",
+    "haxe"          : "//",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lua"           : "--",  # ddm 13/02/06
+    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "rest"          : ".._",
+    "rst"           : ".._",
+    "ruby"          : "#",  # thyrsus 2008-11-05
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+    "vim"           : "\"",
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+    "xslt"          : "<!-- -->",
+}
+
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f90",
+    "haskell"       : "hs",
+    "haxe"          : "hx",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    "rst"           : "rst",
+    "rst"           : "rest",
+    "ruby"          : "rb",   # thyrsus 2008-11-05
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vim"           : "vim",
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+    "xslt"          : "xsl",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran",
+    "f90"   : "fortran90",
+    "h"     : "c",
+    "html"  : "html",
+    "hs"    : "haskell",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "rest"  : "rst",
+    "rst"   : "rst",
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "vim"   : "vim",
+    "w"     : "cweb",
+    "xml"   : "xml",
+    "xsl"   : "xslt",
+    "hx"    : "haxe",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran90',
+    'hx'    : 'none',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
+
+self.global_commands_dict = {}
+#@-node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,
+    atAuto=False,atShadow=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+    w = c.frame.body
+    # New in Leo 4.4.7: honor @path directives.
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = c.os_path_finalize_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
+        func = self.scanRstText
+    else:
+        func = self.importDispatchDict.get(ext)
+
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
+    else:
+        # Just copy the file to the parent node.
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    if atAuto:
+        # Remember that we have read this file.
+        # Fixes bug 488894: unsettling dialog when saving Leo file
+        # after creating and populating an @auto node
+        p.v.at_read = True # Create the attribute
+
+    p.contract()
+    w.setInsertPoint(0)
+    w.seeInsertPoint()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = c.os_path_finalize(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    if atShadow: kind = '@shadow '
+    elif atAuto: kind = '@auto '
+    else: kind = ''
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (kind,fileName),color='red')
+    # g.trace(g.callers())
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # g.pr('found',e,'in',line1)
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@+node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
+def scanUnknownFileType (self,s,p,ext,atAuto=False):
+
+    c = self.c
+    changed = c.isChanged()
+    body = g.choose(atAuto,'','@ignore\n')
+    if ext in ('.html','.htm'):   body += '@language html\n'
+    elif ext in ('.txt','.text'): body += '@nocolor\n'
+    else:
+        language = self.languageForExtension(ext)
+        if language: body += '@language %s\n' % language
+
+    self.setBodyString(p,body + self.rootLine + self.escapeFalseSectionReferences(s))
+    if atAuto:
+        for p in p.self_and_subtree():
+            p.clearDirty()
+        if not changed:
+            c.setChanged(False)
+
+    g.app.unitTestDict = {'result':True}
+#@+node:ekr.20080811174246.1:languageForExtension
+def languageForExtension (self,ext):
+
+    '''Return the language corresponding to the extensiion ext.'''
+
+    unknown = 'unknown_language'
+
+    if ext.startswith('.'): ext = ext[1:]
+
+    if ext:
+        z = g.app.extra_extension_dict.get(ext)
+        if z not in (None,'none','None'):
+            language = z
+        else:
+            language = g.app.extension_dict.get(ext)
+        if language in (None,'none','None'):
+            language = unknown
+    else:
+        language = unknown
+
+    # g.trace(ext,repr(language))
+
+    # Return the language even if there is no colorizer mode for it.
+    return language
+#@-node:ekr.20080811174246.1:languageForExtension
+#@-node:ekr.20070713075352:scanUnknownFileType (default scanner) & helper
+#@-node:ekr.20090801103907.6018:Add entries to global dicts for more languages
+#@+node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
+@nocolor-node
+
+I use Visual Studio 2008, the same that is used for Python 2.5/2.6.
+
+A few days ago, I submitted a patch that allows you to use Mingw32 as a
+compiler, too. If you use it, then you need to produce libpython26.a.
+
+For doing this, there is a tool pexport.exe which can do that. I found a website
+with those hints, but lost that, again :-) pexport is not included with mingw32.
+#@nonl
+#@+node:ekr.20090730165955.6014:Notes
+http://www.emmestech.com/software/pexports-0.43/download_pexports.html
+#@nonl
+#@-node:ekr.20090730165955.6014:Notes
+#@-node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
+#@-node:ekr.20090811141250.5955:Other features
 #@+node:ekr.20080730212711.7:Improve config & plugins
 @nocolor-node
 
@@ -3814,6 +2047,10 @@ the current behaviour.
 #@-node:ekr.20090714085914.5993:Most important features
 #@+node:ekr.20091005145253.6058:Optional...
 #@+node:ekr.20090131200406.15:Optional file features
+#@+node:ekr.20090622020908.6058:Add lite sentinels
+http://groups.google.com/group/leo-editor/browse_thread/thread/c4f2cf250600e4a9
+#@nonl
+#@-node:ekr.20090622020908.6058:Add lite sentinels
 #@+node:ekr.20080311135649.2:Allow different .leo formats
 @nocolor
 
@@ -4918,7 +3155,7 @@ Edward
 P.S.  I think it would be good style to append "Class" to the name of each command class. This makes it clear that self.myCommandClass(self) is a ctor.
 #@-node:ekr.20080628095358.1:Make each Leo command a class
 #@-node:ekr.20090210093316.1:Optional features
-#@+node:ekr.20090714085914.5994:Optionsal new commands
+#@+node:ekr.20090714085914.5994:Optional new commands
 #@+node:ekr.20071004120359.2:Do expand-region-abbrevs from
 See: regionalExpandAbbrev.
 #@nonl
@@ -5898,9 +4135,9 @@ def startKbdMacro (self,event):
 #@-node:ekr.20050920084036.204:startKbdMacro
 #@-node:ekr.20050920084036.190:macroCommandsClass
 #@-node:ekr.20090201122309.5:Improve macro commands
-#@-node:ekr.20090714085914.5994:Optionsal new commands
+#@-node:ekr.20090714085914.5994:Optional new commands
 #@-node:ekr.20091005145253.6058:Optional...
-#@-node:ekr.20071211093011:4.7 One-node world, Leo3K
+#@-node:ekr.20100109214940.6225:4.8 Autocompletion, vim
 #@+node:ekr.20060306194040:Leo Video
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=3615177
