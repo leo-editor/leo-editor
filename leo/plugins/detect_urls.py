@@ -3,8 +3,7 @@
 #@<< docstring >>
 #@+node:vpe.20060426084738:<< docstring >>
 """
-Colorizes URLs everywhere in node's body on node selection
-or saving.
+Colorizes URLs everywhere in node's body on node selection or saving.
 
 Double click on any URL launches it in default browser.
 
@@ -16,13 +15,45 @@ Related plugins:  color_markup.py; rClick.py
 #@nl
 #@@language python
 #@@tabwidth -4
+
+__version__ = "0.3"
+#@<< version history >>
+#@+node:RV20090910.20100110154407.7439:<< version history >>
+#@+at
+# 
+# Originally written by ???
+# 
+# 0.1 ???: Initial version.
+# 
+# 0.2 VR: Detect URLs with protocol type 'file' and detect a new URL also
+#         after a save operation.
+# 
+# 0.3 VR: Display info about this plugin, when executing cmd 
+# 'print-plugins-info'.
+#@-at
+#@-node:RV20090910.20100110154407.7439:<< version history >>
+#@nl
+#@<< imports >>
+#@+node:RV20090910.20100110154407.7437:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import re
-#VR20100108: url_regex = re.compile(r"""(http|https|ftp)://[^\s'"]+[\w=/]""")
+#@-node:RV20090910.20100110154407.7437:<< imports >>
+#@nl
+
 url_regex = re.compile(r"""(http|https|file|ftp)://[^\s'"]+[\w=/]""")
 
 #@+others
+#@+node:RV20090910.20100110154407.7438:init()
+def init():
+    ok = not g.app.unitTesting
+    if ok:
+        leoPlugins.registerHandler("bodydclick1", openURL)
+        leoPlugins.registerHandler("select2", colorizeURLs)
+        leoPlugins.registerHandler("save2", colorizeURLs)
+        g.plugin_signon(__name__)
+    return ok
+#@-node:RV20090910.20100110154407.7438:init()
 #@+node:vpe.20060305064323.5:openURL()
 def openURL(tag,keywords):
     c = keywords.get("c")
@@ -69,11 +100,5 @@ def colorizeURLs(tag,keywords):
         n += len(line) + 1
 #@-node:vpe.20060426062042:colorizeURLs()
 #@-others
-
-if 1:
-    leoPlugins.registerHandler("bodydclick1", openURL)
-    leoPlugins.registerHandler("select2", colorizeURLs)
-    leoPlugins.registerHandler("save2", colorizeURLs) #VR20100108
-    g.plugin_signon(__name__)
 #@-node:ekr.20060506070443.1:@thin detect_urls.py
 #@-leo
