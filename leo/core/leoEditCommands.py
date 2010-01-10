@@ -3914,14 +3914,19 @@ class editCommandsClass (baseEditCommandsClass):
         w = self.editWidget(event)
         if not w: return
 
-        c.widgetWantsFocusNow(w)
-        i,j = w.getSelectionRange(sort=False)
-        if i == j: return
+        if hasattr(w,'leoMoveCursorHelper'):
+            w.leoMoveCursorHelper(kind='exchange',extend=False)
+            w.seeInsertPoint()
+            c.frame.updateStatusLine()
+        else:
+            c.widgetWantsFocusNow(w)
+            i,j = w.getSelectionRange(sort=False)
+            if i == j: return
 
-        ins = w.getInsertPoint()
-        ins = g.choose(ins==i,j,i)
-        w.setInsertPoint(ins)
-        w.setSelectionRange(i,j,insert=None)
+            ins = w.getInsertPoint()
+            ins = g.choose(ins==i,j,i)
+            w.setInsertPoint(ins)
+            w.setSelectionRange(i,j,insert=None)
     #@-node:ekr.20050920084036.136:exchangePointMark
     #@+node:ekr.20061007082956:extend-to-line
     def extendToLine (self,event):

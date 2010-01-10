@@ -831,6 +831,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         w = self.widget
         tc = QtGui.QTextCursor
         d = {
+            'exchange': True, # Dummy.
             'down':tc.Down,'end':tc.End,'end-line':tc.EndOfLine,
             'home':tc.Start,'left':tc.Left,'page-down':tc.Down,
             'page-up':tc.Up,'right':tc.Right,'start-line':tc.StartOfLine,
@@ -846,6 +847,13 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         if kind in ('page-down','page-up'):
             cursor = w.textCursor()
             cursor.movePosition(op,mode,linesPerPage)
+            w.setTextCursor(cursor)
+        elif kind == 'exchange': # exchange-point-and-mark
+            cursor = w.textCursor()
+            anchor = cursor.anchor()
+            pos = cursor.position()
+            cursor.setPosition(pos,tc.MoveAnchor)
+            cursor.setPosition(anchor,tc.KeepAnchor)
             w.setTextCursor(cursor)
         else:
             w.moveCursor(op,mode)

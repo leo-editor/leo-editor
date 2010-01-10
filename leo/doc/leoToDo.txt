@@ -11,8 +11,6 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20091005145253.6059:Before b2
-#@+node:ekr.20100110064516.11600:Make sure *all* cursor move commands use the gui helper
-#@-node:ekr.20100110064516.11600:Make sure *all* cursor move commands use the gui helper
 #@+node:ekr.20100110064516.6229:Fix bug: overwrite modified file message
 #@+node:ekr.20100107064059.6199:Set read bit when writing @auto/@shadow files
 @nocolor-node

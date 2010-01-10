@@ -9260,7 +9260,7 @@ class leoTkTextWidget (Tk.Text):
 
         '''Move the cursor in a QTextEdit.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         w = self
         anchor = ins = Tk.Text.index(w,'insert')
         if hasattr(w,'leo_text_anchor') and w.leo_text_anchor:
@@ -9268,6 +9268,7 @@ class leoTkTextWidget (Tk.Text):
         si,sj = ins.split('.')
         i,j = int(si),int(sj)
         d = {
+            'exchange': True, # dummy
             'down':     '%s.%s' % (i+1,j),
             'end':      'end',
             'end-line': '%s.end' % (i),
@@ -9288,7 +9289,22 @@ class leoTkTextWidget (Tk.Text):
 
         kind = kind.lower()
         newIns = d.get(kind)
-        if trace: g.trace('**Tk**',kind,'extend',extend,anchor,newIns)
+        if trace: g.trace('**Tk**',kind,'extend',extend,anchor,ins,newIns)
+
+        if kind == 'exchange': # exchange-point-and-mark.
+            if w.hasSelection():
+                sel = Tk.Text.tag_ranges(w,"sel")
+                i,j = sel
+                # This is required for the unit test.
+                anchor = g.choose(
+                    hasattr(w,'leo_text_anchor') and w.leo_text_anchor,
+                    w.leo_text_anchor,i)
+                extend = True
+                anchor,ins = ins,anchor
+                newIns = ins
+            else:
+                w.leo_text_anchor = None
+                return
 
         if newIns:
             Tk.Text.tag_remove(w,'sel','1.0','end')
@@ -9298,7 +9314,9 @@ class leoTkTextWidget (Tk.Text):
                     Tk.Text.tag_add(w,'sel',newIns,anchor)
                 else:
                     Tk.Text.tag_add(w,'sel',anchor,newIns)
-            w.leo_text_anchor = g.choose(extend,anchor,None)
+                w.leo_text_anchor = anchor
+            else:
+                w.leo_text_anchor = None
         else:
             g.trace('can not happen: bad kind: %s' % kind)
     #@-node:ekr.20100109114406.3729:leoMoveCursorHelper (TK)

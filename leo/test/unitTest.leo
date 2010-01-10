@@ -727,7 +727,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20071113203234" a="E"><vh> Test files</vh>
+<v t="ekr.20071113203234"><vh> Test files</vh>
 <v t="ekr.20090704085350.5028"><vh>@asis ../test/unittest/at-asis-test.py</vh>
 <v t="ekr.20090704085350.5029"><vh>spam</vh></v>
 <v t="ekr.20090704085350.5030"><vh>eggs</vh></v>

@@ -434,6 +434,7 @@ def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
     w = self.widget
     tc = QtGui.QTextCursor
     d = {
+        'exchange': True, # Dummy.
         'down':tc.Down,'end':tc.End,'end-line':tc.EndOfLine,
         'home':tc.Start,'left':tc.Left,'page-down':tc.Down,
         'page-up':tc.Up,'right':tc.Right,'start-line':tc.StartOfLine,
@@ -450,6 +451,13 @@ def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
         cursor = w.textCursor()
         cursor.movePosition(op,mode,linesPerPage)
         w.setTextCursor(cursor)
+    elif kind == 'exchange': # exchange-point-and-mark
+        cursor = w.textCursor()
+        anchor = cursor.anchor()
+        pos = cursor.position()
+        cursor.setPosition(pos,tc.MoveAnchor)
+        cursor.setPosition(anchor,tc.KeepAnchor)
+        w.setTextCursor(cursor)
     else:
         w.moveCursor(op,mode)
 #@-node:ekr.20100109082023.3734:leoMoveCursorHelper (Qt)
@@ -458,7 +466,7 @@ def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
 
     '''Move the cursor in a QTextEdit.'''
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     w = self
     anchor = ins = Tk.Text.index(w,'insert')
     if hasattr(w,'leo_text_anchor') and w.leo_text_anchor:
@@ -466,6 +474,7 @@ def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
     si,sj = ins.split('.')
     i,j = int(si),int(sj)
     d = {
+        'exchange': True, # dummy
         'down':     '%s.%s' % (i+1,j),
         'end':      'end',
         'end-line': '%s.end' % (i),
@@ -486,7 +495,22 @@ def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
 
     kind = kind.lower()
     newIns = d.get(kind)
-    if trace: g.trace('**Tk**',kind,'extend',extend,anchor,newIns)
+    if trace: g.trace('**Tk**',kind,'extend',extend,anchor,ins,newIns)
+
+    if kind == 'exchange': # exchange-point-and-mark.
+        if w.hasSelection():
+            sel = Tk.Text.tag_ranges(w,"sel")
+            i,j = sel
+            # This is required for the unit test.
+            anchor = g.choose(
+                hasattr(w,'leo_text_anchor') and w.leo_text_anchor,
+                w.leo_text_anchor,i)
+            extend = True
+            anchor,ins = ins,anchor
+            newIns = ins
+        else:
+            w.leo_text_anchor = None
+            return
 
     if newIns:
         Tk.Text.tag_remove(w,'sel','1.0','end')
@@ -496,7 +520,9 @@ def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
                 Tk.Text.tag_add(w,'sel',newIns,anchor)
             else:
                 Tk.Text.tag_add(w,'sel',anchor,newIns)
-        w.leo_text_anchor = g.choose(extend,anchor,None)
+            w.leo_text_anchor = anchor
+        else:
+            w.leo_text_anchor = None
     else:
         g.trace('can not happen: bad kind: %s' % kind)
 #@-node:ekr.20100109114406.3729:leoMoveCursorHelper (TK)
@@ -6566,6 +6592,183 @@ def setWrap (self,p):
     self.c.frame.body.setWrap(p)
 #@-node:ekr.20081121105001.285:setWrap (qtFrame)
 #@-node:ekr.20100101172327.3660:Made @nowrap work
+#@+node:ekr.20100110092116.3732:Added leoMoveCursorHelper
+@nocolor-node
+
+Notes:
+
+1. setSelectionRange is a base (gui) class method.It calls
+setSelectionRangeHelper.
+
+2. w.setSelectionRangeHelper *will* suffice, provided, that the selection args
+passed to it are correct. Leo's core needs to call leoMoveCursorHelper only when
+it can not otherwise properly compute the selection range.
+#@+node:ekr.20100109114406.3729:leoMoveCursorHelper (TK)
+def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
+
+    '''Move the cursor in a QTextEdit.'''
+
+    trace = False and not g.unitTesting
+    w = self
+    anchor = ins = Tk.Text.index(w,'insert')
+    if hasattr(w,'leo_text_anchor') and w.leo_text_anchor:
+        anchor = w.leo_text_anchor
+    si,sj = ins.split('.')
+    i,j = int(si),int(sj)
+    d = {
+        'exchange': True, # dummy
+        'down':     '%s.%s' % (i+1,j),
+        'end':      'end',
+        'end-line': '%s.end' % (i),
+        'home':     '1.0',
+        'left':
+            g.choose(j==0,
+                g.choose(i>1,'%s.end' % (i-1),'1.0'), # start of line.
+                '%s.%s' % (i,j-1)),
+        'page-down':'%s.%s' % (i+linesPerPage,j),
+        'page-up':  '%s.%s' % (max(1,i-linesPerPage),j),
+        'right':
+            g.choose(Tk.Text.compare(w,"%s.%s" % (i,j+1),">=",'%s.end' % (i)),
+                '%s.%s' % (i+1,0),
+                '%s.%s' % (i,j+1)),
+        'start-line':'%s.0' % (i),
+        'up':       '%s.%s' % (max(1,i-1),j),
+    }
+
+    kind = kind.lower()
+    newIns = d.get(kind)
+    if trace: g.trace('**Tk**',kind,'extend',extend,anchor,ins,newIns)
+
+    if kind == 'exchange': # exchange-point-and-mark.
+        if w.hasSelection():
+            sel = Tk.Text.tag_ranges(w,"sel")
+            i,j = sel
+            # This is required for the unit test.
+            anchor = g.choose(
+                hasattr(w,'leo_text_anchor') and w.leo_text_anchor,
+                w.leo_text_anchor,i)
+            extend = True
+            anchor,ins = ins,anchor
+            newIns = ins
+        else:
+            w.leo_text_anchor = None
+            return
+
+    if newIns:
+        Tk.Text.tag_remove(w,'sel','1.0','end')
+        Tk.Text.mark_set(w,'insert',newIns)
+        if extend:
+            if Tk.Text.compare(w,anchor,'>',newIns):
+                Tk.Text.tag_add(w,'sel',newIns,anchor)
+            else:
+                Tk.Text.tag_add(w,'sel',anchor,newIns)
+            w.leo_text_anchor = anchor
+        else:
+            w.leo_text_anchor = None
+    else:
+        g.trace('can not happen: bad kind: %s' % kind)
+#@-node:ekr.20100109114406.3729:leoMoveCursorHelper (TK)
+#@+node:ekr.20100109082023.3734:leoMoveCursorHelper (Qt)
+def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
+
+    '''Move the cursor in a QTextEdit.'''
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(kind,'extend',extend)
+
+    w = self.widget
+    tc = QtGui.QTextCursor
+    d = {
+        'exchange': True, # Dummy.
+        'down':tc.Down,'end':tc.End,'end-line':tc.EndOfLine,
+        'home':tc.Start,'left':tc.Left,'page-down':tc.Down,
+        'page-up':tc.Up,'right':tc.Right,'start-line':tc.StartOfLine,
+        'up':tc.Up,
+    }
+    kind = kind.lower()
+    op = d.get(kind)
+    mode = g.choose(extend,tc.KeepAnchor,tc.MoveAnchor)
+
+    if not op:
+        return g.trace('can not happen: bad kind: %s' % kind)
+
+    if kind in ('page-down','page-up'):
+        cursor = w.textCursor()
+        cursor.movePosition(op,mode,linesPerPage)
+        w.setTextCursor(cursor)
+    elif kind == 'exchange': # exchange-point-and-mark
+        cursor = w.textCursor()
+        anchor = cursor.anchor()
+        pos = cursor.position()
+        cursor.setPosition(pos,tc.MoveAnchor)
+        cursor.setPosition(anchor,tc.KeepAnchor)
+        w.setTextCursor(cursor)
+    else:
+        w.moveCursor(op,mode)
+#@-node:ekr.20100109082023.3734:leoMoveCursorHelper (Qt)
+#@+node:ekr.20081121105001.533:setSelectionRange & dummy helper
+def setSelectionRange(self,*args,**keys):
+
+    # A kludge to allow a single arg containing i,j
+    w = self.widget
+
+    if len(args) == 1:
+        i,j = args[0]
+    elif len(args) == 2:
+        i,j = args
+    else:
+        g.trace('can not happen',args)
+
+    insert = keys.get('insert')
+    i,j = self.toGuiIndex(i),self.toGuiIndex(j)
+
+    return self.setSelectionRangeHelper(i,j,insert)
+#@+node:ekr.20081121105001.534:setSelectionRangeHelper
+def setSelectionRangeHelper(self,i,j,insert):
+
+    self.oops()
+#@-node:ekr.20081121105001.534:setSelectionRangeHelper
+#@-node:ekr.20081121105001.533:setSelectionRange & dummy helper
+#@+node:ekr.20081121105001.589:setSelectionRangeHelper & helper
+def setSelectionRangeHelper(self,i,j,insert):
+
+    w = self.widget
+    # g.trace('i',i,'j',j,'insert',insert,g.callers(4))
+    e = QtGui.QTextCursor
+    i = self.toPythonIndex(i)
+    j = self.toPythonIndex(j)
+    if insert is not None:
+        insert = self.toPythonIndex(insert)
+    if i > j: i,j = j,i
+    n = self.lengthHelper()
+    i = max(0,min(i,n))
+    j = max(0,min(j,n))
+    k = max(0,min(j-i,n))
+    cursor = w.textCursor()
+    if i == j:
+        cursor.setPosition(i)
+    elif insert in (j,None):
+        cursor.setPosition(i)
+        cursor.movePosition(e.Right,e.KeepAnchor,k)
+    else:
+        cursor.setPosition(j)
+        cursor.movePosition(e.Left,e.KeepAnchor,k)
+
+    w.setTextCursor(cursor)
+#@+node:ekr.20081121105001.590:lengthHelper
+def lengthHelper(self):
+
+    '''Return the length of the text.'''
+
+    w = self.widget
+    cursor = w.textCursor()
+    cursor.movePosition(QtGui.QTextCursor.End)
+    n = cursor.position()
+    return n
+
+#@-node:ekr.20081121105001.590:lengthHelper
+#@-node:ekr.20081121105001.589:setSelectionRangeHelper & helper
+#@-node:ekr.20100110092116.3732:Added leoMoveCursorHelper
 #@-node:ekr.20090813101852.3643:Bugs
 #@-node:ekr.20090717095154.3729:Leo 4.7 devel projects
 #@-all
