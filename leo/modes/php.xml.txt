@@ -2,6 +2,11 @@
 
 <!DOCTYPE MODE SYSTEM "xmode.dtd">
 
+<!--
+**Important**: this file, php.xml.txt, is no longer used.
+Instead, you should modify php.py directly
+-->
+
 <MODE>
 	<PROPS>
 		<PROPERTY NAME="indentOpenBrackets" VALUE="{" />
