@@ -366,18 +366,6 @@ So here is what worked for me:
                os.system("open '%s'" % (fname,))
 QQQ
 #@-node:ekr.20100110064516.6228:Fix bug 451377: Make Leo frienly to mac apps
-#@+node:ekr.20090907080624.6077:Fix underlining problem in rst
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/cdf78cbca5c526be
-
-@auto-rst will product underline marks just as long as the section title.
-
-When I use Japanese in the section title, it will product many warnings claiming
-the the underlines is not long enough, because the underline for one Japanese
-char need two marks.
-#@nonl
-#@-node:ekr.20090907080624.6077:Fix underlining problem in rst
 #@+node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
 Update the panel as soon as the user completes the find string
 #@-node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse

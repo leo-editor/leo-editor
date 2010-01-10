@@ -1617,7 +1617,10 @@ class rstCommands:
             else:
                 g.trace('can not happen: no u')
                 ch = '#'
-            n = max(4,len(s))
+
+            # 2010/01/10: write longer underlines for non-ascii characters.
+            # n = max(4,len(s))
+            n = max(4,len(g.toEncodedString(s,encoding='utf-8',reportErrors=False)))
             if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
             if level == 0 and self.underlines2:
                 return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
@@ -1630,7 +1633,9 @@ class rstCommands:
             level = min(level+1,len(u)-1) # Reserve the first character for explicit titles.
             ch = u [level]
             if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
-            n = max(4,len(s))
+            # 2010/01/10: write longer underlines for non-ascii characters.
+            # n = max(4,len(s))
+            n = max(4,len(g.toEncodedString(s,encoding='utf-8',reportErrors=False)))
             return '%s\n%s\n\n' % (p.h.strip(),ch*n)
     #@-node:ekr.20090502071837.93:underline (leoRst)
     #@-node:ekr.20090502071837.88:Utils

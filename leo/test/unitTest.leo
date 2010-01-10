@@ -2167,7 +2167,7 @@
 </v>
 <v t="ekr.20071113202452"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
+<v t="ekr.20091219122958.5066" a="E"><vh>leoRst</vh>
 <v t="ekr.20091219121039.5065"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
 </v>
 <v t="ekr.20090529115704.4396"><vh>leoShadow</vh>

@@ -9674,7 +9674,10 @@ def underline (self,s,p):
         else:
             g.trace('can not happen: no u')
             ch = '#'
-        n = max(4,len(s))
+
+        # 2010/01/10: write longer underlines for non-ascii characters.
+        # n = max(4,len(s))
+        n = max(4,len(g.toEncodedString(s,encoding='utf-8',reportErrors=False)))
         if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
         if level == 0 and self.underlines2:
             return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
@@ -9687,7 +9690,9 @@ def underline (self,s,p):
         level = min(level+1,len(u)-1) # Reserve the first character for explicit titles.
         ch = u [level]
         if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
-        n = max(4,len(s))
+        # 2010/01/10: write longer underlines for non-ascii characters.
+        # n = max(4,len(s))
+        n = max(4,len(g.toEncodedString(s,encoding='utf-8',reportErrors=False)))
         return '%s\n%s\n\n' % (p.h.strip(),ch*n)
 #@-node:ekr.20090502071837.93:underline (leoRst)
 #@+node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
@@ -20085,6 +20090,71 @@ def forwardWordExtendSelection (self,event):
 #@-node:ekr.20050920084036.149:words
 #@-node:ekr.20050929114218:move cursor... (leoEditCommands)
 #@-node:ekr.20100110064516.11600:Finished cursor work
+#@+node:ekr.20090907080624.6077:Fixed underlining problem in rst
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/cdf78cbca5c526be
+
+@auto-rst will product underline marks just as long as the section title.
+
+When I use Japanese in the section title, it will product many warnings claiming
+the the underlines is not long enough, because the underline for one Japanese
+char need two marks.
+
+=====
+
+Perhaps we should use the length of the *encoded* string, rather than the unicode string.
+#@nonl
+#@+node:ekr.20090502071837.93:underline (leoRst)
+def underline (self,s,p):
+
+    '''Return the underlining string to be used at the given level for string s.
+    This includes the headline, and possibly a leading overlining line.
+    '''
+
+    trace = False and not g.unitTesting
+
+    if trace: g.trace(self.atAutoWrite,repr(self.underlines2),p.h)
+
+    if self.atAutoWrite:
+        # We *might* generate overlines for top-level sections.
+        u = self.atAutoWriteUnderlines
+        level = p.level()-self.topLevel
+
+        # This is tricky. The index n depends on several factors.
+        if self.underlines2:
+            level -= 1 # There *is* a double-underlined section.
+            n = level
+        else:
+            n = level-1
+        if 0 <= n < len(u): ch = u[n]
+        elif u:
+            ch = u[-1]
+        else:
+            g.trace('can not happen: no u')
+            ch = '#'
+
+        # 2010/01/10: write longer underlines for non-ascii characters.
+        # n = max(4,len(s))
+        n = max(4,len(g.toEncodedString(s,encoding='utf-8',reportErrors=False)))
+        if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
+        if level == 0 and self.underlines2:
+            return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
+        else:
+            return '%s\n%s\n\n' % (p.h,ch*n)
+    else:
+        # The user is responsible for top-level overlining.
+        u = self.getOption('underline_characters') #  '''#=+*^~"'`-:><_'''
+        level = max(0,p.level()-self.topLevel)
+        level = min(level+1,len(u)-1) # Reserve the first character for explicit titles.
+        ch = u [level]
+        if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
+        # 2010/01/10: write longer underlines for non-ascii characters.
+        # n = max(4,len(s))
+        n = max(4,len(g.toEncodedString(s,encoding='utf-8',reportErrors=False)))
+        return '%s\n%s\n\n' % (p.h.strip(),ch*n)
+#@-node:ekr.20090502071837.93:underline (leoRst)
+#@-node:ekr.20090907080624.6077:Fixed underlining problem in rst
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20091219151045.6361:Simplified g.create_temp_file
