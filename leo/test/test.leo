@@ -877,7 +877,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5"></t>
+<t tx="ekr.20070416075121" str_leo_pos="1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -1471,10 +1471,10 @@ leoTest.doTests (c,all=False)</t>
 # tkGui.py
 
 # stickynotes.py
-stickynotes_plus.py
+# stickynotes_plus.py
 # attrib_edit.py
 # ctagscompleter.py
-codewisecompleter.py
+# codewisecompleter.py
 contextmenu.py
 
 plugins_menu.py

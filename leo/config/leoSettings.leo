@@ -94,7 +94,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20090703122042.7463"><vh>@@button a-common-button</vh></v>
@@ -429,7 +429,7 @@
 <v t="ville.20090701225947.3902"><vh>@shortcuts Default plugins</vh></v>
 </v>
 </v>
-<v t="ekr.20070925144552"><vh>Menus</vh>
+<v t="ekr.20070925144552" a="E"><vh>Menus</vh>
 <v t="ekr.20071010123015"><vh>@@menu 文件</vh>
 <v t="ekr.20071010123015.1"><vh>@item new</vh></v>
 <v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
@@ -1013,7 +1013,7 @@
 </v>
 </v>
 </v>
-<v t="ville.20091008201813.3909"><vh>Qt context menu</vh>
+<v t="ville.20091008201813.3909" a="E"><vh>Qt context menu</vh>
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
@@ -1084,7 +1084,7 @@
 <v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
-<v t="ekr.20081018053140.11" a="E"><vh>qtGui plugin</vh>
+<v t="ekr.20081018053140.11"><vh>qtGui plugin</vh>
 <v t="ekr.20100107060708.6390"><vh>@bool qt-tree-multiple-selection = True</vh></v>
 <v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 200000</vh></v>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
@@ -1267,7 +1267,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20081018053140.11" a="E"></v>
+<v t="ekr.20081018053140.11"></v>
 <v t="TL.20091006194534.6246"><vh>@keys Vim bindings</vh>
 <v t="TL.20091006194534.6247"><vh>Vim User Documentation</vh></v>
 <v t="TL.20091006194534.6248"><vh>Vim History</vh></v>
@@ -6601,7 +6601,7 @@ propagate-key-event = Alt-O
 propagate-key-event = Alt-W
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="5,0"></t>
+<t tx="ekr.20070622214401" str_leo_pos="4,13,3"></t>
 <t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070919125633">button_text_font_family = verdana
@@ -8000,12 +8000,16 @@ loading files</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
-a single @date contextmenu_commands node. </t>
-<t tx="ville.20091008201813.3911"># Add commands to contextmenu
+a single @data contextmenu_commands node. </t>
+<t tx="ville.20091008201813.3911"># Important: the contextmenu.py plugin must be enabled
+# for these settings to take effect.
+
+# Add commands to contextmenu
 # The format is &lt;command&gt; SPACE &lt;description&gt;
 
 # stickynote Create a sticky note
-# read-at-file-nodes Read in file nodes</t>
+# read-at-file-nodes Read in file nodes
+</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>

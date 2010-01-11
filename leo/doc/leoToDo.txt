@@ -419,6 +419,14 @@ Leo 4.6.2 final, build 2278, August 3, 2009
 Python 2.6.2, qt version 263426
 linux2
 #@-node:ekr.20100111094359.6210:Fix bug: 420988 (low) @tabwith 8 not honored, but -8 is ok
+#@+node:ekr.20100111094359.6211:Finish bug: 486433 non-breaking space (and other invisible characters) are invisible
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/486433
+
+Allow font specs for colorizer.
+#@nonl
+#@-node:ekr.20100111094359.6211:Finish bug: 486433 non-breaking space (and other invisible characters) are invisible
 #@+node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
 @nocolor-node
 
