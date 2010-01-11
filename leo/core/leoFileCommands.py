@@ -352,17 +352,23 @@ if sys.platform != 'cli':
         #@+node:ekr.20060919110638.37:startGlobals
         def startGlobals (self,attrs):
 
-            for bunch in self.attrsToList(attrs):
-                name = bunch.name ; val = bunch.val
+            c = self.c
 
-                if name == 'body_outline_ratio':
-                    # self.body_outline_ratio = val
-                    if not self.inClipboard:
-                        self.c.ratio = val
-                    # g.trace(name,val)
-                elif 0:
-                    g.trace(name,len(val))
-        #@nonl
+            if self.inClipboard:
+                return
+
+            try:
+                for bunch in self.attrsToList(attrs):
+                    name = bunch.name ; val = bunch.val
+
+                    if name == 'body_outline_ratio':
+                        c.frame.ratio = float(val) # 2010/01/11
+                    elif name == 'body_secondary_ratio':
+                        c.frame.secondary_ratio = float(val) # 2010/01/11
+                    elif 0:
+                        g.trace(name,len(val))
+            except Exception:
+                pass
         #@-node:ekr.20060919110638.37:startGlobals
         #@+node:ekr.20060919110638.38:startWinPos
         def startWinPos (self,attrs):
@@ -402,7 +408,7 @@ if sys.platform != 'cli':
             c.frame.update()
 
             # Causes window to appear.
-            # g.trace('ratio',c.frame.ratio,c.frame.secondary_ratio)
+            # g.trace('ratio',c.frame.ratio,c)
             c.frame.resizePanesToRatio(c.frame.ratio,c.frame.secondary_ratio)
             if not self.silent and not g.unitTesting:
                 g.es("reading:",self.fileName)
@@ -805,7 +811,7 @@ class baseFileCommands:
 
         c.setChanged(c.changed) # Refresh the changed marker.
         self.initReadIvars()
-        return ok, self.ratio
+        return ok, c.frame.ratio
     #@+node:ekr.20090526081836.5841:getLeoFileHelper
     def getLeoFileHelper(self,theFile,fileName,silent):
 
@@ -1790,8 +1796,8 @@ class baseFileCommands:
 
         c = self.c
         self.put("<globals")
-        #@    << put the body/outline ratio >>
-        #@+node:ekr.20031218072017.3038:<< put the body/outline ratio >>
+        #@    << put the body/outline ratios >>
+        #@+node:ekr.20031218072017.3038:<< put the body/outline ratios >>
         # Puts an innumerate number of digits
 
         self.put(" body_outline_ratio=")
@@ -1799,7 +1805,15 @@ class baseFileCommands:
         # New in Leo 4.5: support fixed .leo files.
         self.put_in_dquotes(
             str(g.choose(c.fixed,0.5,c.frame.ratio)))
-        #@-node:ekr.20031218072017.3038:<< put the body/outline ratio >>
+
+        # New in Leo 4.7: remember the secondary ratio.
+        self.put(" body_secondary_ratio=")
+        self.put_in_dquotes(
+            str(g.choose(c.fixed,0.5,c.frame.secondary_ratio)))
+
+        # g.trace('fixed',c.fixed,c.frame.ratio,c.frame.secondary_ratio)
+
+        #@-node:ekr.20031218072017.3038:<< put the body/outline ratios >>
         #@nl
         self.put(">") ; self.put_nl()
         #@    << put the position of this frame >>
