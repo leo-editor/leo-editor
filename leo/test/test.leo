@@ -3918,7 +3918,13 @@ cursor.movePosition(QtGui.QTextCursor.Up,QtGui.QTextCursor.KeepAnchor,15)
 w.setTextCursor(cursor)
 c.bodyWantsFocusNow()</t>
 <t tx="ekr.20100109084336.1996"></t>
-<t tx="ekr.20100110124039.2003">http://groups.google.com/group/leo-editor/browse_thread/thread/08e6cbd45f9e3f1c</t>
+<t tx="ekr.20100110124039.2003">http://groups.google.com/group/leo-editor/browse_thread/thread/08e6cbd45f9e3f1c
+
+
+
+
+
+</t>
 <t tx="ekr.20100110124039.2004">def nameToRulesetName (self,name):
 
     '''Compute language and rulesetName from name, which is either a language or a delegate name.'''

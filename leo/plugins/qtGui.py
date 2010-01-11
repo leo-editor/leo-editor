@@ -7723,6 +7723,7 @@ class leoQtEventFilter(QtCore.QObject):
         use_shift = (
             'Home','End','Tab',
             'Up','Down','Left','Right',
+            'Next','Prior', # 2010/01/10: Allow Shift-PageUp and Shift-PageDn.
             # Dubious...
             # 'Backspace','Delete','Ins',
             # 'F1',...'F12',
