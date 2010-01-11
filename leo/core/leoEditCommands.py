@@ -7191,7 +7191,7 @@ class registerCommandsClass (baseEditCommandsClass):
     #@-others
 #@-node:ekr.20050920084036.234:registerCommandsClass
 #@+node:ekr.20051023094009:Search classes
-#@+node:ekr.20060123125256:class minibufferFind( (the findHandler)
+#@+node:ekr.20060123125256:class minibufferFind (the findHandler)
 class minibufferFind (baseEditCommandsClass):
 
     '''An adapter class that implements minibuffer find commands using the (hidden) Find Tab.'''
@@ -7321,6 +7321,8 @@ class minibufferFind (baseEditCommandsClass):
     #@+node:ekr.20060205105950:setupChangePattern
     def setupChangePattern (self,pattern):
 
+        # g.trace('pattern',g.callers(4))
+
         h = self.finder ; w = h.change_ctrl
 
         s = g.toUnicode(pattern,g.app.tkEncoding)
@@ -7335,7 +7337,7 @@ class minibufferFind (baseEditCommandsClass):
 
         h = self.finder ; w = h.find_ctrl
 
-        # g.trace('pattern',pattern)
+        # g.trace(pattern,g.callers(4))
 
         s = g.toUnicode(pattern,g.app.tkEncoding)
 
@@ -7607,6 +7609,7 @@ class minibufferFind (baseEditCommandsClass):
                 escapes=[self.replaceStringShortcut])
         elif k.getArgEscape:
             # Switch to the replace command.
+            self.setupSearchPattern(k.arg) # 2010/01/10: update the find text immediately.
             k.setState('replace-string',1,self.replaceString)
             self.replaceString(event=None)
         else:
@@ -7691,7 +7694,7 @@ class minibufferFind (baseEditCommandsClass):
             self.generalSearchHelper(k.arg)
     #@-node:ekr.20060124140224.2:wordSearchBackward/Forward
     #@-others
-#@-node:ekr.20060123125256:class minibufferFind( (the findHandler)
+#@-node:ekr.20060123125256:class minibufferFind (the findHandler)
 #@+node:ekr.20050920084036.257:class searchCommandsClass
 class searchCommandsClass (baseEditCommandsClass):
 
