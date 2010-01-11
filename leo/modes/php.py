@@ -3120,11 +3120,6 @@ rulesDictDict = {
 	"php_tags": rulesDict2,
 	"php_tags_literal": rulesDict3,
 }
-	
-#	rulesDict1 = {
-#	"&": [php_rule9,],
-#	"<": [php_rule0,php_rule1,php_rule2,php_rule3,php_rule5,php_rule6,php_rule7,php_rule8,],
-#	"< ": [php_rule4,],}
 
 # Import dict for php mode.
 importDict = {
