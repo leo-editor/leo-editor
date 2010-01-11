@@ -820,6 +820,44 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         w.setTabStopWidth(24)
     #@-node:ekr.20081121105001.577:setConfig
     #@-node:ekr.20081121105001.573:Birth
+    #@+node:ekr.20100109082023.3734:leoMoveCursorHelper (Qt)
+    def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
+
+        '''Move the cursor in a QTextEdit.'''
+
+        trace = False and not g.unitTesting
+        if trace: g.trace(kind,'extend',extend)
+
+        w = self.widget
+        tc = QtGui.QTextCursor
+        d = {
+            'exchange': True, # Dummy.
+            'down':tc.Down,'end':tc.End,'end-line':tc.EndOfLine,
+            'home':tc.Start,'left':tc.Left,'page-down':tc.Down,
+            'page-up':tc.Up,'right':tc.Right,'start-line':tc.StartOfLine,
+            'up':tc.Up,
+        }
+        kind = kind.lower()
+        op = d.get(kind)
+        mode = g.choose(extend,tc.KeepAnchor,tc.MoveAnchor)
+
+        if not op:
+            return g.trace('can not happen: bad kind: %s' % kind)
+
+        if kind in ('page-down','page-up'):
+            cursor = w.textCursor()
+            cursor.movePosition(op,mode,linesPerPage)
+            w.setTextCursor(cursor)
+        elif kind == 'exchange': # exchange-point-and-mark
+            cursor = w.textCursor()
+            anchor = cursor.anchor()
+            pos = cursor.position()
+            cursor.setPosition(pos,tc.MoveAnchor)
+            cursor.setPosition(anchor,tc.KeepAnchor)
+            w.setTextCursor(cursor)
+        else:
+            w.moveCursor(op,mode)
+    #@-node:ekr.20100109082023.3734:leoMoveCursorHelper (Qt)
     #@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
     #@+node:ekr.20090205153624.11:delete (avoid call to setAllText)
     def delete(self,i,j=None):
@@ -3429,6 +3467,9 @@ class leoQtFindTab (leoFind.findTab):
 
             '''Init the svar and update the radio buttons.'''
 
+            trace = False and not g.unitTesting
+            if trace: g.trace(val)
+
             self.init(val)
 
             if self.ivar in self.radioButtons:
@@ -3481,7 +3522,8 @@ class leoQtFindTab (leoFind.findTab):
     #@+node:ekr.20081121105001.247:setOption
     def setOption (self,ivar,val):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
+        if trace: g.trace(ivar,val)
 
         if ivar in self.intKeys:
             if val is not None:
@@ -7589,7 +7631,8 @@ class leoQtEventFilter(QtCore.QObject):
                 override = not ignore # allow all keystrokes.
             else:
                 override = len(aList) > 0
-            g.trace(tkKey,len(aList),'ignore',ignore,'override',override)
+            if trace and verbose: g.trace(
+                tkKey,len(aList),'ignore',ignore,'override',override)
         else:
             override = False ; tkKey = '<no key>'
             if self.tag == 'body':
@@ -7684,6 +7727,7 @@ class leoQtEventFilter(QtCore.QObject):
         use_shift = (
             'Home','End','Tab',
             'Up','Down','Left','Right',
+            'Next','Prior', # 2010/01/10: Allow Shift-PageUp and Shift-PageDn.
             # Dubious...
             # 'Backspace','Delete','Ins',
             # 'F1',...'F12',
@@ -8737,9 +8781,10 @@ class jEditColorizer:
             delegate = name[i+2:]
             rulesetName = self.munge('%s_%s' % (language,delegate))
 
+        # if rulesetName == 'php_main': rulesetName = 'php_php'
+
         # g.trace(name,language,rulesetName)
         return language,rulesetName
-    #@nonl
     #@-node:ekr.20090614134853.3707:nameToRulesetName
     #@+node:ekr.20090614134853.3708:setKeywords
     def setKeywords (self):

@@ -1040,7 +1040,7 @@ def eventFilter(self, obj, event):
             override = not ignore # allow all keystrokes.
         else:
             override = len(aList) > 0
-        g.trace(tkKey,len(aList),'ignore',ignore,'override',override)
+        # g.trace(tkKey,len(aList),'ignore',ignore,'override',override)
     else:
         override = False ; tkKey = '<no key>'
         if self.tag == 'body':
@@ -1398,7 +1398,7 @@ def eventFilter(self, obj, event):
             override = not ignore # allow all keystrokes.
         else:
             override = len(aList) > 0
-        g.trace(tkKey,len(aList),'ignore',ignore,'override',override)
+        # g.trace(tkKey,len(aList),'ignore',ignore,'override',override)
     else:
         override = False ; tkKey = '<no key>'
         if self.tag == 'body':
@@ -4928,7 +4928,7 @@ def eventFilter(self, obj, event):
             override = not ignore # allow all keystrokes.
         else:
             override = len(aList) > 0
-        g.trace(tkKey,len(aList),'ignore',ignore,'override',override)
+        # g.trace(tkKey,len(aList),'ignore',ignore,'override',override)
     else:
         override = False ; tkKey = '<no key>'
         if self.tag == 'body':
