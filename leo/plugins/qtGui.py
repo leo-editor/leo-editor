@@ -7545,7 +7545,7 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081121105001.168:eventFilter
     def eventFilter(self, obj, event):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = True
         traceEvent = False
         traceKey = True
