@@ -1900,6 +1900,8 @@ class DynamicWindow(QtGui.QMainWindow):
     #@+node:ekr.20090424085523.41:createMainLayout (DynamicWindow)
     def createMainLayout (self,parent):
 
+        c = self.c
+
         vLayout = self.createVLayout(parent,'mainVLayout',margin=3)
 
         # Splitter two is the "main" splitter, containing splitter.
@@ -1907,9 +1909,17 @@ class DynamicWindow(QtGui.QMainWindow):
         splitter2.setOrientation(QtCore.Qt.Vertical)
         splitter2.setObjectName("splitter_2")
 
+        splitter2.connect(splitter2,
+            QtCore.SIGNAL("splitterMoved(int,int)"),
+            self.onSplitter2Moved)
+
         splitter = QtGui.QSplitter(splitter2)
         splitter.setOrientation(QtCore.Qt.Horizontal)
         splitter.setObjectName("splitter")
+
+        splitter.connect(splitter,
+            QtCore.SIGNAL("splitterMoved(int,int)"),
+            self.onSplitter1Moved)
 
         # g.trace('splitter %s splitter2 %s' % (id(splitter),id(splitter2)))
 
@@ -2397,6 +2407,27 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     #@nonl
     #@-node:ville.20090702214819.4211:setLeoWindowIcon
+    #@+node:ekr.20100111143038.3727:splitter event handlers
+    def onSplitter1Moved (self,pos,index):
+
+        c = self.c
+        c.frame.secondary_ratio = self.splitterMovedHelper(
+            self.splitter,pos,index)
+
+    def onSplitter2Moved (self,pos,index):
+
+        c = self.c
+        c.frame.ratio = self.splitterMovedHelper(
+            self.splitter_2,pos,index)
+
+    def splitterMovedHelper(self,splitter,pos,index):
+
+        i,j = splitter.getRange(index)
+        ratio = float(pos)/float(j-i)
+        # g.trace(pos,j,ratio)
+        return ratio
+    #@nonl
+    #@-node:ekr.20100111143038.3727:splitter event handlers
     #@-others
 
 #@-node:ekr.20081121105001.200:class  DynamicWindow (QtGui.QMainWindow)
@@ -4375,13 +4406,15 @@ class leoQtFrame (leoFrame.leoFrame):
 
         trace = False and not g.unitTesting
 
-        f = self
+        f = self ; c = self.c
 
         if trace: g.trace('%5s, %0.2f %0.2f' % (
             self.splitVerticalFlag,ratio,ratio2),g.callers(4))
 
         f.divideLeoSplitter(self.splitVerticalFlag,ratio)
         f.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
+
+        # g.trace(ratio,c)
     #@-node:ekr.20081121105001.287:resizePanesToRatio (qtFrame)
     #@+node:leohag.20081208130321.12:divideLeoSplitter
     # Divides the main or secondary splitter, using the key invariant.
@@ -7589,7 +7622,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         trace = False and not g.unitTesting
         verbose = True
-        traceEvent = False
+        traceEvent = True
         traceKey = True
         traceFocus = False
         c = self.c ; k = c.k
