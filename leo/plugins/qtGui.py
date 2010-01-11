@@ -3467,6 +3467,9 @@ class leoQtFindTab (leoFind.findTab):
 
             '''Init the svar and update the radio buttons.'''
 
+            trace = False and not g.unitTesting
+            if trace: g.trace(val)
+
             self.init(val)
 
             if self.ivar in self.radioButtons:
@@ -3519,7 +3522,8 @@ class leoQtFindTab (leoFind.findTab):
     #@+node:ekr.20081121105001.247:setOption
     def setOption (self,ivar,val):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
+        if trace: g.trace(ivar,val)
 
         if ivar in self.intKeys:
             if val is not None:
