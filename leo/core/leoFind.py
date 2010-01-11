@@ -1451,8 +1451,8 @@ class leoFind:
         self.v = self.p.v
 
         for key in self.intKeys:
-            # g.trace(self.svarDict.get(key))
             val = self.svarDict[key].get()
+            # if trace: g.trace(self.svarDict.get(key),val)
             setattr(self, key, val) # No more _flag hack.
 
         # Set ivars from radio buttons. Convert these to 1 or 0.
@@ -1466,7 +1466,7 @@ class leoFind:
         # Among other things, this allows Leo to search for a single trailing space.
         s = self.find_ctrl.getAllText()
         s = g.toUnicode(s,g.app.tkEncoding)
-        # g.trace(repr(s))
+        if trace: g.trace('find',repr(s))
         if s and s[-1] in ('\r','\n'):
             s = s[:-1]
         self.find_text = s
@@ -1476,6 +1476,7 @@ class leoFind:
             s = s[:-1]
         s = g.toUnicode(s,g.app.tkEncoding)
         self.change_text = s
+        if trace: g.trace('change',repr(s))
     #@-node:ekr.20031218072017.1460:update_ivars (leoFind)
     #@-node:ekr.20031218072017.3082:Initing & finalizing
     #@-others
