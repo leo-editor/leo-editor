@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5">
-	<global_window_position top="211" left="233" height="608" width="1014"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.498392282958">
+	<global_window_position top="30" left="968" height="1002" width="944"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -2167,7 +2167,7 @@
 </v>
 <v t="ekr.20071113202452"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20091219122958.5066" a="E"><vh>leoRst</vh>
+<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
 <v t="ekr.20091219121039.5065"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
 </v>
 <v t="ekr.20090529115704.4396"><vh>leoShadow</vh>

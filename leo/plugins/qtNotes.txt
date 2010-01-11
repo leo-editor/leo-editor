@@ -1105,7 +1105,7 @@ def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
     verbose = True
-    traceEvent = False
+    traceEvent = True
     traceKey = True
     traceFocus = False
     c = self.c ; k = c.k
@@ -1466,7 +1466,7 @@ def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
     verbose = True
-    traceEvent = False
+    traceEvent = True
     traceKey = True
     traceFocus = False
     c = self.c ; k = c.k
@@ -4997,7 +4997,7 @@ def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
     verbose = True
-    traceEvent = False
+    traceEvent = True
     traceKey = True
     traceFocus = False
     c = self.c ; k = c.k
@@ -5895,6 +5895,8 @@ def createLogPane (self,parent):
 #@+node:ekr.20090424085523.41:createMainLayout (DynamicWindow)
 def createMainLayout (self,parent):
 
+    c = self.c
+
     vLayout = self.createVLayout(parent,'mainVLayout',margin=3)
 
     # Splitter two is the "main" splitter, containing splitter.
@@ -5902,9 +5904,17 @@ def createMainLayout (self,parent):
     splitter2.setOrientation(QtCore.Qt.Vertical)
     splitter2.setObjectName("splitter_2")
 
+    splitter2.connect(splitter2,
+        QtCore.SIGNAL("splitterMoved(int,int)"),
+        self.onSplitter2Moved)
+
     splitter = QtGui.QSplitter(splitter2)
     splitter.setOrientation(QtCore.Qt.Horizontal)
     splitter.setObjectName("splitter")
+
+    splitter.connect(splitter,
+        QtCore.SIGNAL("splitterMoved(int,int)"),
+        self.onSplitter1Moved)
 
     # g.trace('splitter %s splitter2 %s' % (id(splitter),id(splitter2)))
 
@@ -6392,6 +6402,27 @@ def setLeoWindowIcon(self):
     self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
 #@nonl
 #@-node:ville.20090702214819.4211:setLeoWindowIcon
+#@+node:ekr.20100111143038.3727:splitter event handlers
+def onSplitter1Moved (self,pos,index):
+
+    c = self.c
+    c.frame.secondary_ratio = self.splitterMovedHelper(
+        self.splitter,pos,index)
+
+def onSplitter2Moved (self,pos,index):
+
+    c = self.c
+    c.frame.ratio = self.splitterMovedHelper(
+        self.splitter_2,pos,index)
+
+def splitterMovedHelper(self,splitter,pos,index):
+
+    i,j = splitter.getRange(index)
+    ratio = float(pos)/float(j-i)
+    # g.trace(pos,j,ratio)
+    return ratio
+#@nonl
+#@-node:ekr.20100111143038.3727:splitter event handlers
 #@-node:ekr.20081121105001.200:class  DynamicWindow (QtGui.QMainWindow)
 #@+node:ekr.20100101104934.3661:Changed
 #@+node:ekr.20081121105001.317:Qt bindings... (qtFrame)

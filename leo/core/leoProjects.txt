@@ -12295,12 +12295,16 @@ def masterCommand (self,event,func,stroke,commandName=None):
         elif commandName.startswith('specialCallback'):
             # The callback function will call c.doCommand
             if trace: g.trace('calling specialCallback for',commandName)
+            # if commandName != 'repeat-complex-command': # 2010/01/11
+                # k.mb_history.insert(0,commandName)
             val = func(event)
             # k.simulateCommand uses k.funcReturn.
             k.funcReturn = k.funcReturn or val # For unit tests.
         else:
             # Call c.doCommand directly
             if trace: g.trace('calling command directly',commandName)
+            # if commandName != 'repeat-complex-command': # 2010/01/11
+                # k.mb_history.insert(0,commandName)
             c.doCommand(func,commandName,event=event)
         if c.exists:
             k.endCommand(event,commandName)
@@ -21005,6 +21009,104 @@ def updateTab (self,p,w,smartTab=True):
 #@-node:ekr.20051026092433:updateTab
 #@-node:ekr.20051125080855:selfInsertCommand, helpers
 #@-node:ekr.20100106170105.8657:Fixed qt key problems
+#@+node:ekr.20100111094359.6205:Fixed bug: 381895 qtGui Split ratio is not saved in .leo file
+@nocolor-node
+
+http://bugs.launchpad.net/leo-editor/+bug/381895
+
+What I did:
+
+- Added splitter-moved event handlers to qt gui.
+- putGlobals now writes both splitter ratios.
+- startGlobals now reads both splitter ratios.
+#@+node:ekr.20100111142347.6219:Changes
+#@+node:ekr.20031218072017.3037:putGlobals
+# Changed for Leo 4.0.
+
+def putGlobals (self):
+
+    c = self.c
+    self.put("<globals")
+    << put the body/outline ratios >>
+    self.put(">") ; self.put_nl()
+    << put the position of this frame >>
+    << put the position of the log window >>
+    self.put("</globals>") ; self.put_nl()
+#@+node:ekr.20031218072017.3038:<< put the body/outline ratios >>
+# Puts an innumerate number of digits
+
+self.put(" body_outline_ratio=")
+
+# New in Leo 4.5: support fixed .leo files.
+self.put_in_dquotes(
+    str(g.choose(c.fixed,0.5,c.frame.ratio)))
+
+# New in Leo 4.7: remember the secondary ratio.
+self.put(" body_secondary_ratio=")
+self.put_in_dquotes(
+    str(g.choose(c.fixed,0.5,c.frame.secondary_ratio)))
+
+# g.trace('fixed',c.fixed,c.frame.ratio,c.frame.secondary_ratio)
+
+#@-node:ekr.20031218072017.3038:<< put the body/outline ratios >>
+#@+node:ekr.20031218072017.3039:<< put the position of this frame >>
+# New in Leo 4.5: support fixed .leo files.
+
+if c.fixed:
+    width,height,left,top = 700,500,50,50
+        # Put fixed, immutable, reasonable defaults.
+        # Leo 4.5 and later will ignore these when reading.
+        # These should be reasonable defaults so that the
+        # file will be opened properly by older versions
+        # of Leo that do not support fixed .leo files.
+else:
+    width,height,left,top = c.frame.get_window_info()
+
+# g.trace(width,height,left,top)
+
+self.put_tab()
+self.put("<global_window_position")
+self.put(" top=") ; self.put_in_dquotes(str(top))
+self.put(" left=") ; self.put_in_dquotes(str(left))
+self.put(" height=") ; self.put_in_dquotes(str(height))
+self.put(" width=") ; self.put_in_dquotes(str(width))
+self.put("/>") ; self.put_nl()
+#@-node:ekr.20031218072017.3039:<< put the position of this frame >>
+#@+node:ekr.20031218072017.3040:<< put the position of the log window >>
+top = left = height = width = 0 # no longer used
+
+self.put_tab()
+self.put("<global_log_window_position")
+self.put(" top=") ; self.put_in_dquotes(str(top))
+self.put(" left=") ; self.put_in_dquotes(str(left))
+self.put(" height=") ; self.put_in_dquotes(str(height))
+self.put(" width=") ; self.put_in_dquotes(str(width))
+self.put("/>") ; self.put_nl()
+#@-node:ekr.20031218072017.3040:<< put the position of the log window >>
+#@-node:ekr.20031218072017.3037:putGlobals
+#@+node:ekr.20060919110638.37:startGlobals
+def startGlobals (self,attrs):
+
+    c = self.c
+
+    if self.inClipboard:
+        return
+
+    try:
+        for bunch in self.attrsToList(attrs):
+            name = bunch.name ; val = bunch.val
+
+            if name == 'body_outline_ratio':
+                c.frame.ratio = float(val) # 2010/01/11
+            elif name == 'body_secondary_ratio':
+                c.frame.secondary_ratio = float(val) # 2010/01/11
+            elif 0:
+                g.trace(name,len(val))
+    except Exception:
+        pass
+#@-node:ekr.20060919110638.37:startGlobals
+#@-node:ekr.20100111142347.6219:Changes
+#@-node:ekr.20100111094359.6205:Fixed bug: 381895 qtGui Split ratio is not saved in .leo file
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20091219151045.6361:Simplified g.create_temp_file
@@ -22940,6 +23042,219 @@ def searchWithPresentOptions (self,event):
         self.generalSearchHelper(k.arg)
 #@-node:ekr.20060125093807:searchWithPresentOptions
 #@-node:ekr.20090705062946.6037:Update the panel as soon as the user completes the find string
+#@+node:ekr.20100111115044.14051:Allow repeat-complex commands for *all* commands
+#@+node:ekr.20061031131434.122:repeatComplexCommand & helper
+def repeatComplexCommand (self,event):
+
+    '''Repeat the previously executed minibuffer command.'''
+    k = self
+    if k.mb_history:
+        k.setState('last-full-command',1,handler=k.repeatComplexCommandHelper)
+        k.setLabelBlue("Redo: %s" % str(k.mb_history[0]))
+    else:
+        g.es('no previous command',color='blue')
+    return 'break'
+
+def repeatComplexCommandHelper (self,event):
+
+    k = self ; c = k.c ; gui = g.app.gui
+
+    keysym = gui.eventKeysym(event)
+    # g.trace('state',k.state.kind,'event',repr(event),g.callers())
+    if keysym == 'Return' and k.mb_history:
+    # if k.mb_history:
+        last = k.mb_history [0]
+        k.resetLabel()
+        k.clearState() # Bug fix.
+        c.commandsDict [last](event)
+        return 'break'
+    else:
+        # g.trace('oops')
+        return k.keyboardQuit(event)
+#@-node:ekr.20061031131434.122:repeatComplexCommand & helper
+#@+node:ekr.20061031131434.105:masterCommand & helpers
+def masterCommand (self,event,func,stroke,commandName=None):
+
+    '''This is the central dispatching method.
+    All commands and keystrokes pass through here.'''
+
+    k = self ; c = k.c ; gui = g.app.gui
+    trace = (False or k.traceMasterCommand) and not g.unitTesting
+    verbose = False
+    traceGC = False
+    if traceGC: g.printNewObjects('masterCom 1')
+
+    c.setLog()
+    c.startRedrawCount = c.frame.tree.redrawCount
+    k.stroke = stroke # Set this global for general use.
+    keysym = gui.eventKeysym(event)
+    ch = gui.eventChar(event)
+    w = gui.eventWidget(event)
+    state = event and hasattr(event,'state') and event.state or 0
+    k.func = func
+    k.funcReturn = None # For unit testing.
+    commandName = commandName or func and func.__name__ or '<no function>'
+    << define specialKeysyms >>
+    special = keysym in specialKeysyms
+    interesting = func is not None
+    inserted = not special
+
+    if trace: #  and interesting:
+        g.trace(
+            'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),'keysym:',repr(keysym),
+            'w:',w and c.widget_name(w),'func:',func and func.__name__
+        )
+
+    if inserted:
+        # g.trace(stroke,keysym)
+        << add character to history >>
+
+    # We *must not* interfere with the global state in the macro class.
+    if c.macroCommands.recordingMacro:
+        c.macroCommands.startKbdMacro(event)
+        return 'break'
+
+    # g.trace(stroke,k.abortAllModesKey)
+
+    if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
+        k.keyboardQuit(event)
+        k.endCommand(event,commandName)
+        return 'break'
+
+    if special: # Don't pass these on.
+        return 'break' 
+
+    if 0: # *** This is now handled by k.masterKeyHandler.
+        if k.inState():
+            val = k.callStateFunction(event) # Calls end-command.
+            if val != 'do-func': return 'break'
+            g.trace('Executing key outside of mode')
+
+    if k.regx.iter:
+        try:
+            k.regXKey = keysym
+            k.regx.iter.next() # EKR: next() may throw StopIteration.
+        except StopIteration:
+            pass
+        return 'break'
+
+    if k.abbrevOn:
+        expanded = c.abbrevCommands.expandAbbrev(event)
+        if expanded: return 'break'
+
+    if func: # Func is an argument.
+        if commandName == 'propagate-key-event':
+            # Do *nothing* with the event.
+            return k.propagateKeyEvent(event)
+        elif commandName.startswith('specialCallback'):
+            # The callback function will call c.doCommand
+            if trace: g.trace('calling specialCallback for',commandName)
+            # if commandName != 'repeat-complex-command': # 2010/01/11
+                # k.mb_history.insert(0,commandName)
+            val = func(event)
+            # k.simulateCommand uses k.funcReturn.
+            k.funcReturn = k.funcReturn or val # For unit tests.
+        else:
+            # Call c.doCommand directly
+            if trace: g.trace('calling command directly',commandName)
+            # if commandName != 'repeat-complex-command': # 2010/01/11
+                # k.mb_history.insert(0,commandName)
+            c.doCommand(func,commandName,event=event)
+        if c.exists:
+            k.endCommand(event,commandName)
+            c.frame.updateStatusLine()
+        if traceGC: g.printNewObjects('masterCom 2')
+        return 'break'
+    elif k.inState():
+        return 'break' #Ignore unbound keys in a state.
+    else:
+        if traceGC: g.printNewObjects('masterCom 3')
+        val = k.handleDefaultChar(event,stroke)
+        if c.exists:
+            c.frame.updateStatusLine()
+        if traceGC: g.printNewObjects('masterCom 4')
+        return val
+#@nonl
+#@+node:ekr.20061031131434.106:<< define specialKeysyms >>
+specialKeysyms = (
+    'Alt_L','Alt_R',
+    'Meta_L','Meta_R', # Meta support.
+    'Caps_Lock','Control_L','Control_R',
+    'Num_Lock',
+    'Shift_L','Shift_R',
+)
+#@nonl
+#@-node:ekr.20061031131434.106:<< define specialKeysyms >>
+#@+node:ekr.20061031131434.107:<< add character to history >>
+if stroke or len(ch) > 0:
+    if len(keyHandlerClass.lossage) > 99:
+        keyHandlerClass.lossage.pop()
+
+    # This looks like a memory leak, but isn't.
+    keyHandlerClass.lossage.insert(0,(ch,stroke),)
+#@-node:ekr.20061031131434.107:<< add character to history >>
+#@+node:ekr.20061031131434.109:callKeystrokeFunction (not used)
+def callKeystrokeFunction (self,event):
+
+    '''Handle a quick keystroke function.
+    Return the function or None.'''
+
+    k = self
+    numberOfArgs, func = k.keystrokeFunctionDict [k.stroke]
+
+    if func:
+        func(event)
+        commandName = k.inverseCommandsDict.get(func) # Get the emacs command name.
+        k.endCommand(event,commandName)
+
+    return func
+#@-node:ekr.20061031131434.109:callKeystrokeFunction (not used)
+#@+node:ekr.20061031131434.110:k.handleDefaultChar
+def handleDefaultChar(self,event,stroke):
+    k = self ; c = k.c
+    w = event and event.widget
+    name = c.widget_name(w)
+    trace = False
+
+    if trace: g.trace('widget_name',name,'stroke',stroke)
+
+    if stroke and not (stroke.startswith('Alt+Ctrl') and not self.enable_alt_ctrl_bindings) and (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1):
+        if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
+        return 'break'
+
+    if name.startswith('body'):
+        action = k.unboundKeyAction
+        if action in ('insert','overwrite'):
+            c.editCommands.selfInsertCommand(event,action=action)
+        else: # Ignore the key
+            if trace: g.trace('ignoring',stroke)
+        return 'break'
+    elif name.startswith('head'):
+        c.frame.tree.onHeadlineKey(event)
+        return 'break'
+    elif name.startswith('canvas'):
+        if not stroke: # Not exactly right, but it seems to be good enough.
+            c.onCanvasKey(event) # New in Leo 4.4.2
+        return 'break'
+    elif name.startswith('log'):
+        if g.app.gui.guiName() == 'tkinter':
+            return None
+        else:
+            if trace: g.trace(w)
+            i = w.logCtrl.getInsertPoint()
+            if stroke.lower() == 'return': stroke = '\n'
+            elif stroke.lower() == 'tab': stroke = '\t'
+            elif stroke.lower() == 'backspace': stroke = '\b'
+            w.logCtrl.insert(i,stroke)
+            return None
+    else:
+        # Let the widget handle the event.
+        # ch = event and event.char ; g.trace('to tk:',name,repr(stroke))
+        return None
+#@nonl
+#@-node:ekr.20061031131434.110:k.handleDefaultChar
+#@-node:ekr.20061031131434.105:masterCommand & helpers
+#@-node:ekr.20100111115044.14051:Allow repeat-complex commands for *all* commands
 #@-node:ekr.20090817080059.5996:Features
 #@+node:ekr.20091203060018.6100:leo-3k
 @nocolor-node
