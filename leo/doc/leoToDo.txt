@@ -366,11 +366,6 @@ So here is what worked for me:
                os.system("open '%s'" % (fname,))
 QQQ
 #@-node:ekr.20100110064516.6228:Fix bug 451377: Make Leo frienly to mac apps
-#@+node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
-Update the panel as soon as the user completes the find string
-#@-node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
-#@+node:ekr.20100108101415.6196:To do: insert-tab command
-#@-node:ekr.20100108101415.6196:To do: insert-tab command
 #@+node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
 @nocolor-node
 
@@ -421,6 +416,10 @@ debian/ubuntu, and the rest can run launchLeo.py. We can mostly forget
 that section of the docs.
 #@nonl
 #@-node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
+#@+node:ekr.20100108101415.6196:Create insert-tab commands (not urgent)
+# insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
+#@nonl
+#@-node:ekr.20100108101415.6196:Create insert-tab commands (not urgent)
 #@-node:ekr.20091005145253.6059:Before b2
 #@+node:ekr.20090811090022.6029:Bugs
 #@+node:ekr.20080517102922.1:File bugs & features

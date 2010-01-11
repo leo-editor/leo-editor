@@ -22407,6 +22407,539 @@ def writeScriptFile (self,script):
 #@-node:ekr.20070115135502:writeScriptFile
 #@-node:ekr.20031218072017.2140:c.executeScript & helpers
 #@-node:ekr.20091103082258.6085:Removed 'end of script' message
+#@+node:ekr.20090705062946.6037:Update the panel as soon as the user completes the find string
+@nocolor-node
+
+The change was to searchWithPresentOptions.
+#@nonl
+#@+node:ekr.20060123125256:class minibufferFind (the findHandler)
+class minibufferFind (baseEditCommandsClass):
+
+    '''An adapter class that implements minibuffer find commands using the (hidden) Find Tab.'''
+
+    @others
+#@+node:ekr.20060123125317.2: ctor (minibufferFind)
+def __init__(self,c,finder):
+
+    baseEditCommandsClass.__init__(self,c) # init the base class.
+
+    # g.trace('minibufferFind: finder',finder)
+
+    self.c = c
+    self.k = k = c.k
+    self.w = None
+    self.finder = finder
+    self.findTextList = []
+    self.changeTextList = []
+
+    commandName = 'replace-string'
+    s = k.getShortcutForCommandName(commandName)
+    s = k.prettyPrintKey(s)
+    s = k.shortcutFromSetting(s)
+    # g.trace('replaceStringShortcut',s)
+    self.replaceStringShortcut = s
+#@-node:ekr.20060123125317.2: ctor (minibufferFind)
+#@+node:ekr.20090126063121.1:editWidget (minibufferFind)
+def editWidget (self,event):
+
+    '''An override of baseEditCommands.editWidget
+
+    that does *not* set focus when using anything other than the tk gui.
+
+    This prevents this class from caching an edit widget
+    that is about to be deallocated.'''
+
+    c = self.c ; w = event and event.widget
+    bodyCtrl = self.c.frame.body and self.c.frame.body.bodyCtrl
+
+    # g.trace('isText',g.app.gui.isTextWidget(w),'w',w,g.app.gui.widget_name(w))
+
+    if g.app.gui.guiName() == 'tkinter':
+
+        # New in Leo 4.5: single-line editing commands apply to minibuffer widget.
+        if w and g.app.gui.isTextWidget(w):
+            self.w = w
+        else:
+            self.w = bodyCtrl
+        if self.w:
+            c.widgetWantsFocusNow(self.w)
+    else:
+        # Do not cache a pointer to a headline!
+        # It will die when the minibuffer is selected.
+        self.w = bodyCtrl
+
+    return self.w
+#@-node:ekr.20090126063121.1:editWidget (minibufferFind)
+#@+node:ekr.20060124140114: Options (minibufferFind)
+#@+node:ekr.20060124123133:setFindScope
+def setFindScope(self,where):
+
+    '''Set the find-scope radio buttons.
+
+    `where` must be in ('node-only','entire-outline','suboutline-only'). '''
+
+    h = self.finder
+
+    if where in ('node-only','entire-outline','suboutline-only'):
+        var = h.svarDict['radio-search-scope'].get()
+        if var:
+            h.svarDict["radio-search-scope"].set(where)
+    else:
+        g.trace('oops: bad `where` value: %s' % where)
+#@-node:ekr.20060124123133:setFindScope
+#@+node:ekr.20060124122844:get/set/toggleOption (minibufferFind)
+# This redirection is required to remove gui-dependencies.
+
+def getOption (self,ivar):          return self.finder.getOption(ivar)
+def setOption (self,ivar,val):      self.finder.setOption(ivar,val)
+def toggleOption (self,ivar):       self.finder.toggleOption(ivar)
+#@-node:ekr.20060124122844:get/set/toggleOption (minibufferFind)
+#@+node:ekr.20060125074939:showFindOptions
+def showFindOptions (self):
+
+    '''Show the present find options in the status line.'''
+
+    frame = self.c.frame ; z = []
+    # Set the scope field.
+    head  = self.getOption('search_headline')
+    body  = self.getOption('search_body')
+    scope = self.getOption('radio-search-scope')
+    d = {'entire-outline':'all','suboutline-only':'tree','node-only':'node'}
+    scope = d.get(scope) or ''
+    head = g.choose(head,'head','')
+    body = g.choose(body,'body','')
+    sep = g.choose(head and body,'+','')
+
+    frame.clearStatusLine()
+    s = '%s%s%s %s  ' % (head,sep,body,scope)
+    frame.putStatusLine(s,color='blue')
+
+    # Set the type field.
+    script = self.getOption('script_search')
+    regex  = self.getOption('pattern_match')
+    change = self.getOption('script_change')
+    if script:
+        s1 = '*Script-find'
+        s2 = g.choose(change,'-change*','*')
+        z.append(s1+s2)
+    elif regex: z.append('regex')
+
+    table = (
+        ('reverse',         'reverse'),
+        ('ignore_case',     'noCase'),
+        ('whole_word',      'word'),
+        ('wrap',            'wrap'),
+        ('mark_changes',    'markChg'),
+        ('mark_finds',      'markFnd'),
+    )
+
+    for ivar,s in table:
+        val = self.getOption(ivar)
+        if val: z.append(s)
+
+    frame.putStatusLine(' '.join(z))
+#@-node:ekr.20060125074939:showFindOptions
+#@+node:ekr.20060205105950:setupChangePattern
+def setupChangePattern (self,pattern):
+
+    # g.trace('pattern',g.callers(4))
+
+    h = self.finder ; w = h.change_ctrl
+
+    s = g.toUnicode(pattern,g.app.tkEncoding)
+
+    w.delete(0,'end')
+    w.insert(0,s)
+
+    h.update_ivars()
+#@-node:ekr.20060205105950:setupChangePattern
+#@+node:ekr.20060125091234:setupSearchPattern
+def setupSearchPattern (self,pattern):
+
+    h = self.finder ; w = h.find_ctrl
+
+    # g.trace(pattern,g.callers(4))
+
+    s = g.toUnicode(pattern,g.app.tkEncoding)
+
+    w.delete(0,'end')
+    w.insert(0,s)
+
+    h.update_ivars()
+#@-node:ekr.20060125091234:setupSearchPattern
+#@-node:ekr.20060124140114: Options (minibufferFind)
+#@+node:ekr.20060210180352:addChangeStringToLabel
+def addChangeStringToLabel (self,protect=True):
+
+    c = self.c ; k = c.k ; h = self.finder ; w = h.change_ctrl
+
+    c.frame.log.selectTab('Find')
+    c.minibufferWantsFocusNow()
+
+    s = w.getAllText()
+
+    while s.endswith('\n') or s.endswith('\r'):
+        s = s[:-1]
+
+    k.extendLabel(s,select=True,protect=protect)
+#@-node:ekr.20060210180352:addChangeStringToLabel
+#@+node:ekr.20060210164421:addFindStringToLabel
+def addFindStringToLabel (self,protect=True):
+
+    c = self.c ; k = c.k ; h = self.finder ; w = h.find_ctrl
+
+    c.frame.log.selectTab('Find')
+    c.minibufferWantsFocusNow()
+
+    s = w.getAllText()
+    while s.endswith('\n') or s.endswith('\r'):
+        s = s[:-1]
+
+    k.extendLabel(s,select=True,protect=protect)
+#@-node:ekr.20060210164421:addFindStringToLabel
+#@+node:ekr.20070105123800:changeAll (minibufferFind)
+def changeAll (self,event):
+
+    k = self.k ; tag = 'change-all' ; state = k.getState(tag)
+
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if not w: return
+        # Bug fix: 2009-5-31.
+        # None denotes that we use the present value of the option.
+        self.setupArgs(forward=None,regexp=None,word=None)
+        k.setLabelBlue('Change All From: ',protect=True)
+        k.getArg(event,tag,1,self.changeAll)
+    elif state == 1:
+        self._sString = k.arg
+        self.updateFindList(k.arg)
+        s = 'Change All: %s With: ' % (self._sString)
+        k.setLabelBlue(s,protect=True)
+        self.addChangeStringToLabel()
+        k.getArg(event,tag,2,self.changeAll,completion=False,prefix=s)
+    elif state == 2:
+        self.updateChangeList(k.arg)
+        self.lastStateHelper()
+        self.generalChangeHelper(self._sString,k.arg,changeAll=True)
+#@nonl
+#@-node:ekr.20070105123800:changeAll (minibufferFind)
+#@+node:ekr.20060128080201:cloneFindAll
+def cloneFindAll (self,event):
+
+    c = self.c ; k = self.k ; tag = 'clone-find-all'
+    state = k.getState(tag)
+
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if not w: return
+        self.setupArgs(forward=None,regexp=None,word=None)
+        k.setLabelBlue('Clone Find All: ',protect=True)
+        k.getArg(event,tag,1,self.cloneFindAll)
+    else:
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg,cloneFindAll=True)
+        c.treeWantsFocus()
+#@-node:ekr.20060128080201:cloneFindAll
+#@+node:ekr.20060204120158:findAgain
+def findAgain (self,event):
+
+    f = self.finder
+
+    f.p = self.c.p
+    f.v = self.finder.p.v
+
+    # This handles the reverse option.
+    return f.findAgainCommand()
+#@-node:ekr.20060204120158:findAgain
+#@+node:ekr.20060209064140:findAll
+def findAll (self,event):
+
+    k = self.k ; state = k.getState('find-all')
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if not w: return
+        self.setupArgs(forward=True,regexp=False,word=True)
+        k.setLabelBlue('Find All: ',protect=True)
+        k.getArg(event,'find-all',1,self.findAll)
+    else:
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg,findAll=True)
+#@-node:ekr.20060209064140:findAll
+#@+node:ekr.20060205105950.1:generalChangeHelper (minibufferFind)
+def generalChangeHelper (self,find_pattern,change_pattern,changeAll=False):
+
+    # g.trace(repr(change_pattern))
+
+    c = self.c
+
+    self.setupSearchPattern(find_pattern)
+    self.setupChangePattern(change_pattern)
+
+    c.widgetWantsFocusNow(self.w)
+
+    self.finder.p = self.c.p
+    self.finder.v = self.finder.p.v
+
+    # Bug fix: 2007-12-14: remove call to self.finder.findNextCommand.
+    # This was the cause of replaces not starting in the right place!
+
+    if changeAll:
+        self.finder.changeAllCommand()
+    else:
+        # This handles the reverse option.
+        self.finder.findNextCommand()
+#@-node:ekr.20060205105950.1:generalChangeHelper (minibufferFind)
+#@+node:ekr.20060124181213.4:generalSearchHelper
+def generalSearchHelper (self,pattern,cloneFindAll=False,findAll=False):
+
+    c = self.c
+
+    self.setupSearchPattern(pattern)
+
+    c.widgetWantsFocusNow(self.w)
+
+    self.finder.p = self.c.p
+    self.finder.v = self.finder.p.v
+
+    if findAll:
+        self.finder.findAllCommand()
+    elif cloneFindAll:
+        self.finder.cloneFindAllCommand()
+    else:
+        # This handles the reverse option.
+        self.finder.findNextCommand()
+#@-node:ekr.20060124181213.4:generalSearchHelper
+#@+node:ekr.20060210174441:lastStateHelper
+def lastStateHelper (self):
+
+    k = self.k
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+#@-node:ekr.20060210174441:lastStateHelper
+#@+node:ekr.20050920084036.113:replaceString
+def replaceString (self,event):
+
+    k = self.k ; tag = 'replace-string' ; state = k.getState(tag)
+    pattern_match = self.getOption ('pattern_match')
+    prompt = 'Replace ' + g.choose(pattern_match,'Regex','String')
+    if state == 0:
+        self.setupArgs(forward=None,regexp=None,word=None)
+        prefix = '%s: ' % prompt
+        self.stateZeroHelper(event,tag,prefix,self.replaceString)
+    elif state == 1:
+        self._sString = k.arg
+        self.updateFindList(k.arg)
+        s = '%s: %s With: ' % (prompt,self._sString)
+        k.setLabelBlue(s,protect=True)
+        self.addChangeStringToLabel()
+        k.getArg(event,'replace-string',2,self.replaceString,completion=False,prefix=s)
+    elif state == 2:
+        self.updateChangeList(k.arg)
+        self.lastStateHelper()
+        self.generalChangeHelper(self._sString,k.arg)
+#@-node:ekr.20050920084036.113:replaceString
+#@+node:ekr.20060124140224.3:reSearchBackward/Forward
+def reSearchBackward (self,event):
+
+    k = self.k ; tag = 're-search-backward' ; state = k.getState(tag)
+
+    if state == 0:
+        self.setupArgs(forward=False,regexp=True,word=None)
+        self.stateZeroHelper(
+            event,tag,'Regexp Search Backward:',self.reSearchBackward,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+
+def reSearchForward (self,event):
+
+    k = self.k ; tag = 're-search-forward' ; state = k.getState(tag)
+    if state == 0:
+        self.setupArgs(forward=True,regexp=True,word=None)
+        self.stateZeroHelper(
+            event,tag,'Regexp Search:',self.reSearchForward,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+#@-node:ekr.20060124140224.3:reSearchBackward/Forward
+#@+node:ekr.20060124140224.1:seachForward/Backward
+def searchBackward (self,event):
+
+    k = self.k ; tag = 'search-backward' ; state = k.getState(tag)
+
+    if state == 0:
+        self.setupArgs(forward=False,regexp=False,word=False)
+        self.stateZeroHelper(
+            event,tag,'Search Backward: ',self.searchBackward,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+
+def searchForward (self,event):
+
+    k = self.k ; tag = 'search-forward' ; state = k.getState(tag)
+
+    if state == 0:
+        self.setupArgs(forward=True,regexp=False,word=False)
+        self.stateZeroHelper(
+            event,tag,'Search: ',self.searchForward,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+#@-node:ekr.20060124140224.1:seachForward/Backward
+#@+node:ekr.20060125093807:searchWithPresentOptions
+def searchWithPresentOptions (self,event):
+
+    k = self.k ; tag = 'search-with-present-options'
+    state = k.getState(tag)
+
+    # g.trace('state',state)
+    if state == 0:
+        self.setupArgs(forward=None,regexp=None,word=None)
+        self.stateZeroHelper(
+            event,tag,'Search: ',self.searchWithPresentOptions,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        self.setupSearchPattern(k.arg) # 2010/01/10: update the find text immediately.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg)
+#@-node:ekr.20060125093807:searchWithPresentOptions
+#@+node:ekr.20060124134356:setupArgs
+def setupArgs (self,forward=False,regexp=False,word=False):
+
+    h = self.finder ; k = self.k
+
+    if forward is None:
+        reverse = None
+    else:
+        reverse = not forward
+
+    for ivar,val,in (
+        ('reverse', reverse),
+        ('pattern_match',regexp),
+        ('whole_word',word),
+    ):
+        if val is not None:
+            self.setOption(ivar,val)
+
+    h.p = p = self.c.p
+    h.v = p.v
+    h.update_ivars()
+    self.showFindOptions()
+#@-node:ekr.20060124134356:setupArgs
+#@+node:ekr.20060210173041:stateZeroHelper
+def stateZeroHelper (self,event,tag,prefix,handler,escapes=None):
+
+    k = self.k
+    self.w = self.editWidget(event)
+    if not self.w: return
+
+    k.setLabelBlue(prefix,protect=True)
+    self.addFindStringToLabel(protect=False)
+
+    # g.trace(escapes,g.callers())
+    if escapes is None: escapes = []
+    k.getArgEscapes = escapes
+    k.getArgEscape = None # k.getArg may set this.
+    k.getArg(event,tag,1,handler, # enter state 1
+        tabList=self.findTextList,completion=True,prefix=prefix)
+#@-node:ekr.20060210173041:stateZeroHelper
+#@+node:ekr.20060224171851:updateChange/FindList
+def updateChangeList (self,s):
+
+    if s not in self.changeTextList:
+        self.changeTextList.append(s)
+
+def updateFindList (self,s):
+
+    if s not in self.findTextList:
+        self.findTextList.append(s)
+#@-node:ekr.20060224171851:updateChange/FindList
+#@+node:ekr.20060124140224.2:wordSearchBackward/Forward
+def wordSearchBackward (self,event):
+
+    k = self.k ; tag = 'word-search-backward' ; state = k.getState(tag)
+
+    if state == 0:
+        self.setupArgs(forward=False,regexp=False,word=True)
+        self.stateZeroHelper(event,tag,'Word Search Backward: ',self.wordSearchBackward)
+    else:
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+
+def wordSearchForward (self,event):
+
+    k = self.k ; tag = 'word-search-forward' ; state = k.getState(tag)
+
+    if state == 0:
+        self.setupArgs(forward=True,regexp=False,word=True)
+        self.stateZeroHelper(event,tag,'Word Search: ',self.wordSearchForward)
+    else:
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+#@-node:ekr.20060124140224.2:wordSearchBackward/Forward
+#@-node:ekr.20060123125256:class minibufferFind (the findHandler)
+#@+node:ekr.20060125093807:searchWithPresentOptions
+def searchWithPresentOptions (self,event):
+
+    k = self.k ; tag = 'search-with-present-options'
+    state = k.getState(tag)
+
+    # g.trace('state',state)
+    if state == 0:
+        self.setupArgs(forward=None,regexp=None,word=None)
+        self.stateZeroHelper(
+            event,tag,'Search: ',self.searchWithPresentOptions,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        self.setupSearchPattern(k.arg) # 2010/01/10: update the find text immediately.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg)
+#@-node:ekr.20060125093807:searchWithPresentOptions
+#@-node:ekr.20090705062946.6037:Update the panel as soon as the user completes the find string
 #@-node:ekr.20090817080059.5996:Features
 #@+node:ekr.20091203060018.6100:leo-3k
 @nocolor-node
