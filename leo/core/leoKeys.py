@@ -2549,12 +2549,16 @@ class keyHandlerClass:
             elif commandName.startswith('specialCallback'):
                 # The callback function will call c.doCommand
                 if trace: g.trace('calling specialCallback for',commandName)
+                # if commandName != 'repeat-complex-command': # 2010/01/11
+                    # k.mb_history.insert(0,commandName)
                 val = func(event)
                 # k.simulateCommand uses k.funcReturn.
                 k.funcReturn = k.funcReturn or val # For unit tests.
             else:
                 # Call c.doCommand directly
                 if trace: g.trace('calling command directly',commandName)
+                # if commandName != 'repeat-complex-command': # 2010/01/11
+                    # k.mb_history.insert(0,commandName)
                 c.doCommand(func,commandName,event=event)
             if c.exists:
                 k.endCommand(event,commandName)
@@ -2995,7 +2999,7 @@ class keyHandlerClass:
             c.commandsDict [last](event)
             return 'break'
         else:
-            g.trace('oops')
+            # g.trace('oops')
             return k.keyboardQuit(event)
     #@-node:ekr.20061031131434.122:repeatComplexCommand & helper
     #@+node:ekr.20061031131434.123:set-xxx-State
