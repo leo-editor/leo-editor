@@ -9144,8 +9144,8 @@ class leoTkinterTreeTab (leoFrame.leoTreeTab):
         # since this was crashing on Windows as well,
         # we'll disable it completely for time being
 
-        #if not sys.platform.startswith('linux'):
-        #    tt.chapterMenu.setitems(names)
+        # if not sys.platform.startswith('linux'):
+            # tt.chapterMenu.setitems(names)
     #@nonl
     #@-node:ekr.20081121110412.316:tt.setNames
     #@-node:ekr.20081121110412.311:Tabs...
