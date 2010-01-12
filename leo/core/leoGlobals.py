@@ -56,6 +56,7 @@ else:
 
 import operator
 import re
+import subprocess
 # import sys
 import time
 import zipfile
@@ -290,7 +291,11 @@ def computeLoadDir():
             not g.os_path_isdir(loadDir,encoding)
         ):
             loadDir = os.getcwd()
-            g.pr("Exception getting load directory")
+            # From Marc-Antoine Parent.
+            if loadDir.endswith("Contents/Resources"):
+                loadDir += "/leo/plugins"
+            else:
+                g.pr("Exception getting load directory")
         loadDir = g.os_path_finalize(loadDir,encoding=encoding)
         # g.es("load dir:",loadDir,color="blue")
         return loadDir
@@ -4249,8 +4254,17 @@ def os_path_splitext(path,encoding=None):
 def os_startfile(fname):
     if sys.platform.startswith('win'):
         os.startfile(fname)
+    elif sys.platform == 'darwin':
+        # From Marc-Antoine Parent.
+        try:
+            subprocess.call(['open', fname])
+        except OSError:
+            pass # There may be a spurious "Interrupted system call"
+        except ImportError:
+            os.system("open '%s'" % (fname,))
     else:
         os.system('xdg-open ' + fname)
+#@nonl
 #@-node:ekr.20090829140232.6036:os_startfile
 #@+node:ekr.20031218072017.2160:toUnicodeFileEncoding
 def toUnicodeFileEncoding(path,encoding):

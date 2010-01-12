@@ -266,7 +266,7 @@
   <customwidget>
    <class>QWebView</class>
    <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
+   <header>PyQt4.QWebKit</header> <!-- Marc-Antoine Parent -->
   </customwidget>
  </customwidgets>
  <resources/>

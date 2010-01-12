@@ -1476,7 +1476,6 @@ leoTest.doTests (c,all=False)</t>
 # ctagscompleter.py
 # codewisecompleter.py
 contextmenu.py
-
 plugins_menu.py
 #open_with.py
 quicksearch.py
