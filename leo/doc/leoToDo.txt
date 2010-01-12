@@ -11,6 +11,12 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20091005145253.6059:Before b2
+#@+node:ekr.20100112051224.6243:Run unit tests on Linux
+#@-node:ekr.20100112051224.6243:Run unit tests on Linux
+#@+node:ekr.20100112051224.6244:Ask Qt people about Ctrl-) bug
+#@-node:ekr.20100112051224.6244:Ask Qt people about Ctrl-) bug
+#@+node:ekr.20100112051224.6245:Help install qt on MacOS
+#@-node:ekr.20100112051224.6245:Help install qt on MacOS
 #@+node:ekr.20100110064516.6229:Fix bug: overwrite modified file message
 #@+node:ekr.20100107064059.6199:Set read bit when writing @auto/@shadow files
 @nocolor-node
@@ -248,6 +254,244 @@ goto-global-line doesn't work with @edit nodes
 https://bugs.launchpad.net/leo-editor/+bug/399720
 #@nonl
 #@-node:ekr.20100111094359.6208:Fix goto-line bugs
+#@+node:ekr.20080603052650.466:Fix vim problems
+@nocolor
+#@nonl
+#@+node:ekr.20090709133307.6040:Top vim improvements
+http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
+
+Vim mode users: your top 3 complaints, please
+#@nonl
+#@+node:ekr.20080626081829.1:Fix headline undo problem (with vim bindings)
+http://groups.google.com/group/leo-editor/browse_thread/thread/794ca596f7c58ae5
+
+Running the latest trunk with the Vim key bindings shows the following
+behavior:
+
+Note: all steps below should leave current node in the Command state
+(light blue background)
+
+1. Select a node
+2. Delete a character ('x' key)
+  ! Undo menu item dimmed
+3. Go to next node ('Ctrl-J' key)
+  ! Undo menu item active
+4. Delete a character ('x' key)
+5. undo delete ('u' key)
+  ! Restores previous node's character
+
+In summary, it appears that any changes to a node's headline are not
+placed in the edit history used by the undo command until after
+another node has been selected.
+#@nonl
+#@-node:ekr.20080626081829.1:Fix headline undo problem (with vim bindings)
+#@+node:ekr.20080616110054.2:Support vim dot command
+The ability to repeat the last editing related command by pressing the period
+key is not supported and there is no workaround in place.
+
+Binding keys within nodes:
+
+Some commands can be "easily" repeated by having the command's mode
+bind itself to the period key.  This is not currently working.
+
+Support commands requesting input:
+
+Add companion commands that reuse input.  For example, a zap-to-
+character-again command could exist which will reuse the key entered
+in the last zap-to-character command.  With this support, the mode
+that performs the initial command would assign the period key to a
+companion mode that is identical to the initial mode but with the zap-
+to-character command replaced by the zap-to-character-again command.
+
+Commands requiring companion commands are:
+  zap-to-character
+  find-character
+  backward-find-character
+  (Any others?)
+
+Notes:
+
+- The copy of the character should be saved somewhere that does NOT affect the
+  contents of the clipboard.
+
+- The same or a separate storage location can be used for all commands to retain
+  a copy of the character entered by the user. It doesn't matter since only the
+  last command is assigned to the period key to be re-executed.
+#@nonl
+#@-node:ekr.20080616110054.2:Support vim dot command
+#@-node:ekr.20090709133307.6040:Top vim improvements
+#@+node:ekr.20090628190015.6003:Other problems, from leoSettings.leo
+
+#@+node:ekr.20100112051224.6222:Commands requesting user input
+Commands requesting user input must be the last command executed within an @mode
+node. This prevents the implementation of commands such as "yank to <character>"
+that requires a "copy to clipboard" operation after the "find-character"
+command.
+#@nonl
+#@-node:ekr.20100112051224.6222:Commands requesting user input
+#@+node:ekr.20100112051224.6223:Editing node headlines using @mode nodes
+Commands modifying or selecting headline text do not work correctly within a
+@mode node.
+
+This eliminates accurate implementation of vi's delete/change/substitute/yank
+object commands. As a workaround, the commands are currently written to only
+select the text. The user must perform the subsequent delete, change,
+substitute, and yank.
+#@nonl
+#@-node:ekr.20100112051224.6223:Editing node headlines using @mode nodes
+#@+node:ekr.20100112051224.6225:Repeat last cursor movement command
+The ability to repeat the last "To character" or "Find character" command by
+selecting the ";" key is not supported and there is no workaround in place.
+#@nonl
+#@-node:ekr.20100112051224.6225:Repeat last cursor movement command
+#@+node:ekr.20100112051224.6226:Range prefix to commands
+The ability to specify a numeric range prefix is not supported. For example,
+entering "3dd" will not delete the next three lines and "20G" will not move the
+cursor to the 20th line in the file.
+
+#@-node:ekr.20100112051224.6226:Range prefix to commands
+#@+node:ekr.20100112051224.6227:Range prefix to objects
+The ability to specify a numeric range prefix to an object is not supported. For
+example, the "d2fx" command should Delete up to and including the 2nd Found "x"
+character.
+#@nonl
+#@-node:ekr.20100112051224.6227:Range prefix to objects
+#@+node:ekr.20100112051224.6228:Binding numeric keys
+Mapping a number to a command or an @mode node works but can not be used as it
+prevents the number from being entered as text while in Vi's insert state.
+#@nonl
+#@-node:ekr.20100112051224.6228:Binding numeric keys
+#@+node:ekr.20100112051224.6229:Binding Arrow keys
+Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
+commands or @mode nodes have no effect.
+#@nonl
+#@-node:ekr.20100112051224.6229:Binding Arrow keys
+#@+node:ekr.20100112051224.6230:Binding 'bksp' key
+Binding 'bksp' key to back-char to move back a character in command mode
+prevents 'bksp' from deleting characters in text edit mode.
+#@nonl
+#@-node:ekr.20100112051224.6230:Binding 'bksp' key
+#@+node:ekr.20100112051224.6231:Undo command
+Using the "undo" command (key 'u') to undo a change to a node's headline text
+only works correctly after another node has been selected. It appears that
+changes made to a node's headline text are not recorded in Leo's change history
+until the edited node has lost focus.
+#@nonl
+#@-node:ekr.20100112051224.6231:Undo command
+#@-node:ekr.20090628190015.6003:Other problems, from leoSettings.leo
+#@+node:ekr.20100112051224.6246:Missing commands
+#@+node:ekr.20090629183608.8445:Current character
+Vi normally uses two different "current character" designators depending on the
+current state.
+
+Insert state:
+
+In the Insert state, a vertical bar is placed between two characters to indicate
+where the next key will be inserted. Leo's cursor is of this type.
+
+Command state: 
+
+In the Command state, vi expects that the cursor is highlighting a current
+character and provides commands to enter the insert state or paste text either
+before or after that current character. Leo's vi emulation currently does not
+support a "current character" cursor. As a result, inserting and pasting before
+or after is replaced by inserting or pasting "at" the current cursor location.
+For example, the 'i' and 'a' command are both mapped to enter the insert state
+at the current cursor location.
+#@nonl
+#@-node:ekr.20090629183608.8445:Current character
+#@+node:ekr.20100112051224.6232:Toggle case command
+Leo provides support for switching to upper or lower case but no method exists
+to toggle between cases (used by Vi's "~" command).
+
+#@-node:ekr.20100112051224.6232:Toggle case command
+#@+node:ekr.20100112051224.6233:Replace current character command
+Vi's "r" command allows user to replace the current character with the next
+entered character.
+#@nonl
+#@-node:ekr.20100112051224.6233:Replace current character command
+#@+node:ekr.20100112051224.6234:Move current line
+Vi has a collection of "z<movement>" commands that will move the
+current line to the top, middle, and bottom of the screen.  They are
+not supported in Leo.
+#@nonl
+#@-node:ekr.20100112051224.6234:Move current line
+#@+node:ekr.20100112051224.6235:Move buffer up/down
+Vi maps keys to scroll the text up/down one line and by half the
+number of visible lines.  Leo does not support this.
+
+#@-node:ekr.20100112051224.6235:Move buffer up/down
+#@+node:ekr.20100112051224.6236:Word-related commands
+Vi supports two types of words in its commands: Words that consist
+of only a subset of the character set and words that considers all
+characters except the space and tab characters as part of a word.
+
+Leo's always considers a word to consist of a subset of characters
+although some word related commands include different characters
+than others.
+#@nonl
+#@-node:ekr.20100112051224.6236:Word-related commands
+#@+node:ekr.20100112051224.6237:Forward and backward by sentences
+Leo's sentence related functions do not stop at empty lines nor do
+they skip over periods within words nor do they stop at sentences
+ending in non-periods nor do they stop at the end or beginning of
+the buffer. Note: see forwardSentenceHelper and backSentenceHelper
+functions.
+#@nonl
+#@-node:ekr.20100112051224.6237:Forward and backward by sentences
+#@+node:ekr.20100112051224.6238:Focus to body pane
+Leo functions exist which unconditionally set focus to the body pane
+regardless of the active pane.
+
+For example, bracket matching commands ("%" key) do not work within
+a node's headline text.  Instead, the command is performed on the
+node's body text.
+#@nonl
+#@-node:ekr.20100112051224.6238:Focus to body pane
+#@+node:ekr.20100112051224.6239:Displaying mode help
+The "--> mode-help" command has the following issues related to the
+display of the "Help" tab:
+
+1. Key label always capitalized.
+
+Vim commands are mapped to both lower-case and upper-case keys but always appear
+mapped to upper-case keys within the "Help" tab.
+
+2. Layout of tab's contents.
+
+To improve readability and better support narrow tab cards, display the mode's
+label without the "enter-" and "-mode" text and place the key label before the
+mode label.
+
+For example, the following entries would change from::
+    enter-vi-delete-line-mode d
+    enter-vi-delete-to-begin-of-word-mode b
+to::
+    d : vi-delete-line
+    b : vi-delete-to-begin-of-word
+#@nonl
+#@-node:ekr.20100112051224.6239:Displaying mode help
+#@+node:ekr.20090629183608.8446:Notes about commands
+Yank vs. Yank:
+Vi's "yank" commands copy the selected text TO the clipboard.
+Leo's "yank" commands insert text FROM the clipboard.
+
+copy-text in modes:
+Leo's copy-text command does not work within a mode.  As a result,
+all "copy to clipboard" capability is being implemented using the
+kill-<object> command followed by Leo's "yank" command to put the
+text back.
+
+paste-text in modes:
+The paste-text command does not work within an @mode node.  Leo's
+"yank" command is used instead.
+
+delete-node does not copy node to clipboard:
+A copy-node command is issued to copy the node to the clipboard
+followed by the delete-node command.
+#@-node:ekr.20090629183608.8446:Notes about commands
+#@-node:ekr.20100112051224.6246:Missing commands
+#@-node:ekr.20080603052650.466:Fix vim problems
 #@+node:ekr.20100111164531.6226:Minor...
 #@-node:ekr.20100111164531.6226:Minor...
 #@+node:ekr.20100111094359.6210:Fix bug: 420988 (low) @tabwith 8 not honored, but -8 is ok
@@ -1313,15 +1557,14 @@ could specify autocompleter conventions, say in an @autocompleter node in an
 #@-node:ekr.20071106083149:Recent post
 #@-node:ekr.20090131200406.14:autocompletion
 #@+node:ekr.20080603052650.466:Fix vim problems
+@nocolor
+#@nonl
 #@+node:ekr.20090709133307.6040:Top vim improvements
 http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
 
 Vim mode users: your top 3 complaints, please
 #@nonl
-#@-node:ekr.20090709133307.6040:Top vim improvements
 #@+node:ekr.20080626081829.1:Fix headline undo problem (with vim bindings)
-@nocolor
-
 http://groups.google.com/group/leo-editor/browse_thread/thread/794ca596f7c58ae5
 
 Running the latest trunk with the Vim key bindings shows the following
@@ -1345,195 +1588,211 @@ another node has been selected.
 #@nonl
 #@-node:ekr.20080626081829.1:Fix headline undo problem (with vim bindings)
 #@+node:ekr.20080616110054.2:Support vim dot command
-@nocolor
-
-4. Repeat last command using the period
+The ability to repeat the last editing related command by pressing the period
+key is not supported and there is no workaround in place.
 
 Binding keys within nodes:
+
 Some commands can be "easily" repeated by having the command's mode
 bind itself to the period key.  This is not currently working.
 
 Support commands requesting input:
+
 Add companion commands that reuse input.  For example, a zap-to-
 character-again command could exist which will reuse the key entered
 in the last zap-to-character command.  With this support, the mode
 that performs the initial command would assign the period key to a
 companion mode that is identical to the initial mode but with the zap-
 to-character command replaced by the zap-to-character-again command.
+
 Commands requiring companion commands are:
   zap-to-character
   find-character
   backward-find-character
   (Any others?)
-Note: The copy of the character should be saved somewhere that does
-NOT affect the contents of the clipboard.
-Note: The same or a separate storage location can be used for all
-commands to retain a copy of the character entered by the user.  It
-doesn't matter since only the last command is assigned to the period
-key to be re-executed.
 
-@color
+Notes:
+
+- The copy of the character should be saved somewhere that does NOT affect the
+  contents of the clipboard.
+
+- The same or a separate storage location can be used for all commands to retain
+  a copy of the character entered by the user. It doesn't matter since only the
+  last command is assigned to the period key to be re-executed.
 #@nonl
 #@-node:ekr.20080616110054.2:Support vim dot command
+#@-node:ekr.20090709133307.6040:Top vim improvements
 #@+node:ekr.20090628190015.6003:Other problems, from leoSettings.leo
-@nocolor
-#@+node:ekr.20090629183608.8444:Current issues
-Commands requesting user input:
-| Commands requesting user input must be the last command executed within
-| an @mode node.  This prevents the implementation of commands such as
-| "yank to <character>" that requires a "copy to clipboard" operation
-| after the "find-character" command.
 
-Editing node headlines using @mode nodes:
-| Commands modifying or selecting headline text do not work correctly
-| within a @mode node.  This eliminates accurate implementation of
-| vi's delete/change/substitute/yank object commands.  As a workaround,
-| the commands are currently written to only select the text.  The user
-| must perform the subsequent delete, change, substitute, and yank.
-
-Repeat last editing command:
-| The ability to repeat the last editing related command by pressing the
-| period key is not supported and there is no workaround in place.
-
-Repeat last cursor movement command:
-| The ability to repeat the last "To character" or "Find character"
-| command by selecting the ";" key is not supported and there is no
-| workaround in place.
-
-Range prefix to commands:
-| The ability to specify a numeric range prefix is not supported.  For
-| example, entering "3dd" will not delete the next three lines and "20G"
-| will not move the cursor to the 20th line in the file.
-
-Range prefix to objects:
-| The ability to specify a numeric range prefix to an object is not
-| supported.  For example, the "d2fx" command should Delete up to and
-| including the 2nd Found "x" character.
-
-Binding numeric keys:
-| Mapping a number to a command or an @mode node works but can not be
-| used as it prevents the number from being entered as text while in Vi's
-| insert state.
-
-Binding Arrow keys:
-| Binding arrow keys, with or without Shift, Ctrl, Alt, and their
-| combinations, to commands or @mode nodes have no effect. 
-
-Binding 'bksp' key:
-| Binding 'bksp' key to back-char to move back a character in command
-| mode prevents 'bksp' from deleting characters in text edit mode.
-
-Undo command:
-| Using the "undo" command (key 'u') to undo a change to a node's
-| headline text only works correctly after another node has been
-| selected.  It appears that changes made to a node's headline text are
-| not recorded in Leo's change history until the edited node has lost
-| focus.
+#@+node:ekr.20100112051224.6222:Commands requesting user input
+Commands requesting user input must be the last command executed within an @mode
+node. This prevents the implementation of commands such as "yank to <character>"
+that requires a "copy to clipboard" operation after the "find-character"
+command.
 #@nonl
-#@-node:ekr.20090629183608.8444:Current issues
+#@-node:ekr.20100112051224.6222:Commands requesting user input
+#@+node:ekr.20100112051224.6223:Editing node headlines using @mode nodes
+Commands modifying or selecting headline text do not work correctly within a
+@mode node.
+
+This eliminates accurate implementation of vi's delete/change/substitute/yank
+object commands. As a workaround, the commands are currently written to only
+select the text. The user must perform the subsequent delete, change,
+substitute, and yank.
+#@nonl
+#@-node:ekr.20100112051224.6223:Editing node headlines using @mode nodes
+#@+node:ekr.20100112051224.6225:Repeat last cursor movement command
+The ability to repeat the last "To character" or "Find character" command by
+selecting the ";" key is not supported and there is no workaround in place.
+#@nonl
+#@-node:ekr.20100112051224.6225:Repeat last cursor movement command
+#@+node:ekr.20100112051224.6226:Range prefix to commands
+The ability to specify a numeric range prefix is not supported. For example,
+entering "3dd" will not delete the next three lines and "20G" will not move the
+cursor to the 20th line in the file.
+
+#@-node:ekr.20100112051224.6226:Range prefix to commands
+#@+node:ekr.20100112051224.6227:Range prefix to objects
+The ability to specify a numeric range prefix to an object is not supported. For
+example, the "d2fx" command should Delete up to and including the 2nd Found "x"
+character.
+#@nonl
+#@-node:ekr.20100112051224.6227:Range prefix to objects
+#@+node:ekr.20100112051224.6228:Binding numeric keys
+Mapping a number to a command or an @mode node works but can not be used as it
+prevents the number from being entered as text while in Vi's insert state.
+#@nonl
+#@-node:ekr.20100112051224.6228:Binding numeric keys
+#@+node:ekr.20100112051224.6229:Binding Arrow keys
+Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
+commands or @mode nodes have no effect.
+#@nonl
+#@-node:ekr.20100112051224.6229:Binding Arrow keys
+#@+node:ekr.20100112051224.6230:Binding 'bksp' key
+Binding 'bksp' key to back-char to move back a character in command mode
+prevents 'bksp' from deleting characters in text edit mode.
+#@nonl
+#@-node:ekr.20100112051224.6230:Binding 'bksp' key
+#@+node:ekr.20100112051224.6231:Undo command
+Using the "undo" command (key 'u') to undo a change to a node's headline text
+only works correctly after another node has been selected. It appears that
+changes made to a node's headline text are not recorded in Leo's change history
+until the edited node has lost focus.
+#@nonl
+#@-node:ekr.20100112051224.6231:Undo command
+#@-node:ekr.20090628190015.6003:Other problems, from leoSettings.leo
+#@+node:ekr.20100112051224.6246:Missing commands
 #@+node:ekr.20090629183608.8445:Current character
-| Vi normally uses two different "current character" designators
-| depending on the current state.
+Vi normally uses two different "current character" designators depending on the
+current state.
 
 Insert state:
-| In the Insert state, a vertical bar is placed between two
-| characters to indicate where the next key will be inserted.
-| Leo's cursor is of this type.
+
+In the Insert state, a vertical bar is placed between two characters to indicate
+where the next key will be inserted. Leo's cursor is of this type.
 
 Command state: 
-| In the Command state, vi expects that the cursor is highlighting
-| a current character and provides commands to enter the insert
-| state or paste text either before or after that current
-| character.  Leo's vi emulation currently does not support a
-| "current character" cursor. As a result, inserting and pasting
-| before or after is replaced by inserting or pasting "at" the
-| current cursor location.  For example, the 'i' and 'a' command
-| are both mapped to enter the insert state at the current cursor
-| location.
+
+In the Command state, vi expects that the cursor is highlighting a current
+character and provides commands to enter the insert state or paste text either
+before or after that current character. Leo's vi emulation currently does not
+support a "current character" cursor. As a result, inserting and pasting before
+or after is replaced by inserting or pasting "at" the current cursor location.
+For example, the 'i' and 'a' command are both mapped to enter the insert state
+at the current cursor location.
 #@nonl
 #@-node:ekr.20090629183608.8445:Current character
-#@+node:ekr.20090629183608.8447:Missing function or functions requiring changes
-Toggle case:
-| Leo provides support for switching to upper or lower case but no
-| method exists to toggle between cases (used by Vi's "~" command).
+#@+node:ekr.20100112051224.6232:Toggle case command
+Leo provides support for switching to upper or lower case but no method exists
+to toggle between cases (used by Vi's "~" command).
 
-Replace current character:
-| Vi's "r" command allows user to replace the current character with
-| the next entered character.
-
-Move current line:
-| Vi has a collection of "z<movement>" commands that will move the
-| current line to the top, middle, and bottom of the screen.  They are
-| not supported in Leo.
-
-Move buffer up/down:
-| Vi maps keys to scroll the text up/down one line and by half the
-| number of visible lines.  Leo does not support this.
-
-Word related commands:
-| Vi supports two types of words in its commands: Words that consist
-| of only a subset of the character set and words that considers all
-| characters except the space and tab characters as part of a word.
-|
-| Leo's always considers a word to consist of a subset of characters
-| although some word related commands include different characters
-| than others.
-
-Forward and backward by sentences:
-| Leo's sentence related functions do not stop at empty lines nor do
-| they skip over periods within words nor do they stop at sentences
-| ending in non-periods nor do they stop at the end or beginning of
-| the buffer. Note: see forwardSentenceHelper and backSentenceHelper
-| functions.
-
-Focus to Body pane:
-| Leo functions exist which unconditionally set focus to the body pane
-| regardless of the active pane.
-|
-| For example, bracket matching commands ("%" key) do not work within
-| a node's headline text.  Instead, the command is performed on the
-| node's body text.
-
-Displaying mode help:
-| The "--> mode-help" command has the following issues related to the
-| display of the "Help" tab:
-    Key label always capitalized:
-    | Vim commands are mapped to both lower-case and upper-case keys
-    | but always appear mapped to upper-case keys within the "Help"
-    | tab.
-    Layout of tab's contents:
-    | To improve readability and better support narrow tab cards,
-    | display the mode's label without the "enter-" and "-mode" text
-    | and place the key label before the mode label.
-    |
-    | For example, the following entries would change from:
-    | 		enter-vi-delete-line-mode d
-    | 		enter-vi-delete-to-begin-of-word-mode b
-    | to:
-    | 		d : vi-delete-line
-    | 		b : vi-delete-to-begin-of-word
+#@-node:ekr.20100112051224.6232:Toggle case command
+#@+node:ekr.20100112051224.6233:Replace current character command
+Vi's "r" command allows user to replace the current character with the next
+entered character.
 #@nonl
-#@-node:ekr.20090629183608.8447:Missing function or functions requiring changes
-#@+node:ekr.20090629183608.8446:Notes
+#@-node:ekr.20100112051224.6233:Replace current character command
+#@+node:ekr.20100112051224.6234:Move current line
+Vi has a collection of "z<movement>" commands that will move the
+current line to the top, middle, and bottom of the screen.  They are
+not supported in Leo.
+#@nonl
+#@-node:ekr.20100112051224.6234:Move current line
+#@+node:ekr.20100112051224.6235:Move buffer up/down
+Vi maps keys to scroll the text up/down one line and by half the
+number of visible lines.  Leo does not support this.
+
+#@-node:ekr.20100112051224.6235:Move buffer up/down
+#@+node:ekr.20100112051224.6236:Word-related commands
+Vi supports two types of words in its commands: Words that consist
+of only a subset of the character set and words that considers all
+characters except the space and tab characters as part of a word.
+
+Leo's always considers a word to consist of a subset of characters
+although some word related commands include different characters
+than others.
+#@nonl
+#@-node:ekr.20100112051224.6236:Word-related commands
+#@+node:ekr.20100112051224.6237:Forward and backward by sentences
+Leo's sentence related functions do not stop at empty lines nor do
+they skip over periods within words nor do they stop at sentences
+ending in non-periods nor do they stop at the end or beginning of
+the buffer. Note: see forwardSentenceHelper and backSentenceHelper
+functions.
+#@nonl
+#@-node:ekr.20100112051224.6237:Forward and backward by sentences
+#@+node:ekr.20100112051224.6238:Focus to body pane
+Leo functions exist which unconditionally set focus to the body pane
+regardless of the active pane.
+
+For example, bracket matching commands ("%" key) do not work within
+a node's headline text.  Instead, the command is performed on the
+node's body text.
+#@nonl
+#@-node:ekr.20100112051224.6238:Focus to body pane
+#@+node:ekr.20100112051224.6239:Displaying mode help
+The "--> mode-help" command has the following issues related to the
+display of the "Help" tab:
+
+1. Key label always capitalized.
+
+Vim commands are mapped to both lower-case and upper-case keys but always appear
+mapped to upper-case keys within the "Help" tab.
+
+2. Layout of tab's contents.
+
+To improve readability and better support narrow tab cards, display the mode's
+label without the "enter-" and "-mode" text and place the key label before the
+mode label.
+
+For example, the following entries would change from::
+    enter-vi-delete-line-mode d
+    enter-vi-delete-to-begin-of-word-mode b
+to::
+    d : vi-delete-line
+    b : vi-delete-to-begin-of-word
+#@nonl
+#@-node:ekr.20100112051224.6239:Displaying mode help
+#@+node:ekr.20090629183608.8446:Notes about commands
 Yank vs. Yank:
-| Vi's "yank" commands copy the selected text TO the clipboard.
-| Leo's "yank" commands insert text FROM the clipboard.
+Vi's "yank" commands copy the selected text TO the clipboard.
+Leo's "yank" commands insert text FROM the clipboard.
 
 copy-text in modes:
-| Leo's copy-text command does not work within a mode.  As a result,
-| all "copy to clipboard" capability is being implemented using the
-| kill-<object> command followed by Leo's "yank" command to put the
-| text back.
+Leo's copy-text command does not work within a mode.  As a result,
+all "copy to clipboard" capability is being implemented using the
+kill-<object> command followed by Leo's "yank" command to put the
+text back.
 
 paste-text in modes:
-| The paste-text command does not work within an @mode node.  Leo's
-| "yank" command is used instead.
+The paste-text command does not work within an @mode node.  Leo's
+"yank" command is used instead.
 
 delete-node does not copy node to clipboard:
-| A copy-node command is issued to copy the node to the clipboard
-| followed by the delete-node command.
-#@-node:ekr.20090629183608.8446:Notes
-#@-node:ekr.20090628190015.6003:Other problems, from leoSettings.leo
+A copy-node command is issued to copy the node to the clipboard
+followed by the delete-node command.
+#@-node:ekr.20090629183608.8446:Notes about commands
+#@-node:ekr.20100112051224.6246:Missing commands
 #@-node:ekr.20080603052650.466:Fix vim problems
 #@+node:ekr.20090811141250.5955:Other features
 #@+node:ekr.20090724081340.5987:Improve recursive import script and @auto
