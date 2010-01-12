@@ -337,7 +337,7 @@ if sys.platform != 'cli':
 
             d = {}
 
-            if c.db and c.mFileName:
+            if g.enableDB and c.db and c.mFileName:
                 key = c.atFileCommands._contentHashFile(c.mFileName,'globals')
                 data = c.db.get('window_position_%s' % (key))
                 if data:
@@ -376,7 +376,7 @@ if sys.platform != 'cli':
 
             if trace: g.trace(len(list(c.db.keys())),c.mFileName)
 
-            if c.db and c.mFileName:
+            if g.enableDB and c.db and c.mFileName:
                 key = c.atFileCommands._contentHashFile(c.mFileName,'globals')
                 c.frame.ratio = float(c.db.get(
                     'body_outline_ratio_%s' % (key),'0.5'))
@@ -1823,7 +1823,7 @@ class baseFileCommands:
         trace = False and not g.unitTesting
         c = self.c
 
-        use_db = c.db and c.mFileName
+        use_db = g.enableDB and c.db and c.mFileName
 
         if use_db:
             key = c.atFileCommands._contentHashFile(c.mFileName,'globals')
