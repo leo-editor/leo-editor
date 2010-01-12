@@ -5938,7 +5938,7 @@ def readOneAtAutoNode (self,fileName,p):
 
     try:
         fileContent = open(fileName, "rb").read()
-        cachefile = self._contentHashFile(p, fileContent)
+        cachefile = self._contentHashFile(p.h,fileContent)
     except IOError:
         cachefile = None
 
@@ -9418,7 +9418,7 @@ def readOneAtAutoNode (self,fileName,p):
 
     try:
         fileContent = open(fileName, "rb").read()
-        cachefile = self._contentHashFile(p, fileContent)
+        cachefile = self._contentHashFile(p.h,fileContent)
     except IOError:
         cachefile = None
 
@@ -14925,7 +14925,7 @@ def read(self,root,
         return False
 
     fileContent = open(fileName, "rb").read()
-    cachefile = self._contentHashFile(root, fileContent)
+    cachefile = self._contentHashFile(root.h,fileContent)
 
     # Remember that we have read this file.
     root.v.at_read = True # Create the attribute for all clones.
@@ -17758,7 +17758,7 @@ def read(self,root,
         return False
 
     fileContent = open(fileName, "rb").read()
-    cachefile = self._contentHashFile(root, fileContent)
+    cachefile = self._contentHashFile(root.h,fileContent)
 
     # Remember that we have read this file.
     root.v.at_read = True # Create the attribute for all clones.
@@ -17861,7 +17861,7 @@ def readOneAtAutoNode (self,fileName,p):
 
     try:
         fileContent = open(fileName, "rb").read()
-        cachefile = self._contentHashFile(p, fileContent)
+        cachefile = self._contentHashFile(p.h,fileContent)
     except IOError:
         cachefile = None
 
@@ -21025,34 +21025,55 @@ What I did:
 
 def putGlobals (self):
 
+    trace = False and not g.unitTesting
     c = self.c
-    self.put("<globals")
-    << put the body/outline ratios >>
-    self.put(">") ; self.put_nl()
-    << put the position of this frame >>
-    << put the position of the log window >>
-    self.put("</globals>") ; self.put_nl()
+
+    use_db = c.db and c.mFileName
+
+    if use_db:
+        key = c.atFileCommands._contentHashFile(c.mFileName,'globals')
+        if trace: g.trace(len(list(c.db.keys())),c.mFileName,key)
+        << put all data to c.db >>
+        self.put('<globals/>')
+        self.put_nl()
+
+    if 1: # Always put dummy postions, to trigger sax methods.
+        self.put("<globals")
+        << put the body/outline ratios >>
+        self.put(">") ; self.put_nl()
+        << put the position of this frame >>
+        << put the position of the log window >>
+        self.put("</globals>") ; self.put_nl()
+#@+node:ekr.20100112095623.6267:<< put all data to c.db >>
+c.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
+c.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
+
+if trace: g.trace('ratios: %1.2f %1.2f' % (
+    c.frame.ratio,c.frame.secondary_ratio))
+
+width,height,left,top = c.frame.get_window_info()
+
+c.db['window_position_%s' % key] = (
+    str(top),str(left),str(height),str(width))
+
+if trace: g.trace('top',top,'left',left,'height',height,'width',width)
+#@-node:ekr.20100112095623.6267:<< put all data to c.db >>
 #@+node:ekr.20031218072017.3038:<< put the body/outline ratios >>
-# Puts an innumerate number of digits
-
 self.put(" body_outline_ratio=")
+self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
+    c.frame.ratio)))
 
-# New in Leo 4.5: support fixed .leo files.
-self.put_in_dquotes(
-    str(g.choose(c.fixed,0.5,c.frame.ratio)))
-
-# New in Leo 4.7: remember the secondary ratio.
 self.put(" body_secondary_ratio=")
-self.put_in_dquotes(
-    str(g.choose(c.fixed,0.5,c.frame.secondary_ratio)))
+self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
+    c.frame.secondary_ratio)))
 
-# g.trace('fixed',c.fixed,c.frame.ratio,c.frame.secondary_ratio)
-
+if trace: g.trace('fixed or use_db',c.fixed or use_db,
+    '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
 #@-node:ekr.20031218072017.3038:<< put the body/outline ratios >>
 #@+node:ekr.20031218072017.3039:<< put the position of this frame >>
 # New in Leo 4.5: support fixed .leo files.
 
-if c.fixed:
+if c.fixed or use_db:
     width,height,left,top = 700,500,50,50
         # Put fixed, immutable, reasonable defaults.
         # Leo 4.5 and later will ignore these when reading.
@@ -21087,23 +21108,36 @@ self.put("/>") ; self.put_nl()
 #@+node:ekr.20060919110638.37:startGlobals
 def startGlobals (self,attrs):
 
+    trace = False and not g.unitTesting
     c = self.c
 
     if self.inClipboard:
         return
 
-    try:
-        for bunch in self.attrsToList(attrs):
-            name = bunch.name ; val = bunch.val
+    c.frame.ratio,c.frame.secondary_ratio = 0.5,0.5 # Set defaults.
 
-            if name == 'body_outline_ratio':
-                c.frame.ratio = float(val) # 2010/01/11
-            elif name == 'body_secondary_ratio':
-                c.frame.secondary_ratio = float(val) # 2010/01/11
-            elif 0:
-                g.trace(name,len(val))
-    except Exception:
-        pass
+    if trace: g.trace(len(list(c.db.keys())),c.mFileName)
+
+    if c.db and c.mFileName:
+        key = c.atFileCommands._contentHashFile(c.mFileName,'globals')
+        c.frame.ratio = float(c.db.get(
+            'body_outline_ratio_%s' % (key),'0.5'))
+        c.frame.secondary_ratio = float(c.db.get(
+            'body_secondary_ratio_%s' % (key),'0.5'))
+        if trace: g.trace('key',key,
+            '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
+    else:
+        try:
+            for bunch in self.attrsToList(attrs):
+                name = bunch.name ; val = bunch.val
+                if name == 'body_outline_ratio':
+                    c.frame.ratio = float(val) # 2010/01/11
+                elif name == 'body_secondary_ratio':
+                    c.frame.secondary_ratio = float(val) # 2010/01/11
+            if trace: g.trace('** no c.db:','%1.2f %1.2f' % (
+                c.frame.ratio,c.frame.secondary_ratio))
+        except Exception:
+            pass
 #@-node:ekr.20060919110638.37:startGlobals
 #@-node:ekr.20100111142347.6219:Changes
 #@-node:ekr.20100111094359.6205:Fixed bug: 381895 qtGui Split ratio is not saved in .leo file
@@ -25049,7 +25083,7 @@ def read(self,root,
         return False
 
     fileContent = open(fileName, "rb").read()
-    cachefile = self._contentHashFile(root, fileContent)
+    cachefile = self._contentHashFile(root.h,fileContent)
 
     # Remember that we have read this file.
     root.v.at_read = True # Create the attribute for all clones.
