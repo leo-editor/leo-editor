@@ -946,7 +946,7 @@ class baseCommands (object):
     #@nonl
     #@-node:ekr.20090212054250.9:c.createNodeFromExternalFile
     #@-node:ekr.20031218072017.2821:c.open & helper
-    #@+node:ekr.20031218072017.2823:openWith and allies
+    #@+node:ekr.20031218072017.2823:openWith and helpers
     def openWith(self,event=None,data=None):
 
         """This routine handles the items in the Open With... menu.
@@ -972,17 +972,27 @@ class baseCommands (object):
                 #@            << set ext based on the present language >>
                 #@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
                 if not ext:
+                    # if node is part of @<file> tree, get ext from file name
+                    for p2 in p.self_and_parents():
+                        if p2.isAnyAtFileNode():
+                            fn = p2.h.split(None,1)[1]
+                            ext = g.os_path_splitext(fn)[1]
+                            g.trace(ext)
+                            break
+
+                if not ext:
                     theDict = c.scanAllDirectives()
                     language = theDict.get("language")
                     ext = g.app.language_extension_dict.get(language)
-                    # g.pr(language,ext)
-                    if ext == None:
-                        ext = "txt"
+                    # g.trace(language,ext)
+
+                if not ext:
+                    ext = ".txt"
 
                 if ext[0] != ".":
                     ext = "."+ext
 
-                # g.pr("ext",ext)
+                # g.trace("ext",ext)
                 #@-node:ekr.20031218072017.2824:<< set ext based on the present language >>
                 #@nl
                 #@            << create or reopen temp file, testing for conflicting changes >>
@@ -1197,7 +1207,7 @@ class baseCommands (object):
 
         return path
     #@-node:ekr.20031218072017.2832:c.openWithTempFilePath
-    #@-node:ekr.20031218072017.2823:openWith and allies
+    #@-node:ekr.20031218072017.2823:openWith and helpers
     #@+node:ekr.20031218072017.2833:close
     def close (self,event=None):
 
