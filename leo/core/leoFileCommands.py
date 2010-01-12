@@ -335,20 +335,21 @@ if sys.platform != 'cli':
 
             if trace: g.trace(len(list(c.db.keys())),c.mFileName,self.fileName)
 
+            d = {}
+
             if c.db and c.mFileName:
                 key = c.atFileCommands._contentHashFile(c.mFileName,'globals')
                 data = c.db.get('window_position_%s' % (key))
                 if data:
                     top,left,height,width = data
                     top,left,height,width = int(top),int(left),int(height),int(width)
-                else:
-                    top,left,height,width = 50,50,700,500
-                d = {'top':top,'left':left,'height':height,'width':width}
-            elif c.fixed and c.fixedWindowPosition:
+                    d = {'top':top,'left':left,'height':height,'width':width}
+
+            if not d and c.fixed and c.fixedWindowPosition:
                 width,height,left,top = c.fixedWindowPosition
                 d = {'top':top,'left':left,'width':width,'height':height}
-            else:
-                d = {}
+
+            if not d:
                 for bunch in self.attrsToList(attrs):
                     name = bunch.name ; val = bunch.val
                     if name in ('top','left','width','height'):
@@ -1843,65 +1844,63 @@ class baseFileCommands:
             if trace: g.trace('top',top,'left',left,'height',height,'width',width)
             #@-node:ekr.20100112095623.6267:<< put all data to c.db >>
             #@nl
-            self.put('<globals/>')
-            self.put_nl()
 
-        if 1: # Always put dummy postions, to trigger sax methods.
-            self.put("<globals")
-            #@        << put the body/outline ratios >>
-            #@+node:ekr.20031218072017.3038:<< put the body/outline ratios >>
-            self.put(" body_outline_ratio=")
-            self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
-                c.frame.ratio)))
+        # Always put postions, to trigger sax methods.
+        self.put("<globals")
+        #@    << put the body/outline ratios >>
+        #@+node:ekr.20031218072017.3038:<< put the body/outline ratios >>
+        self.put(" body_outline_ratio=")
+        self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
+            c.frame.ratio)))
 
-            self.put(" body_secondary_ratio=")
-            self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
-                c.frame.secondary_ratio)))
+        self.put(" body_secondary_ratio=")
+        self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
+            c.frame.secondary_ratio)))
 
-            if trace: g.trace('fixed or use_db',c.fixed or use_db,
-                '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
-            #@-node:ekr.20031218072017.3038:<< put the body/outline ratios >>
-            #@nl
-            self.put(">") ; self.put_nl()
-            #@        << put the position of this frame >>
-            #@+node:ekr.20031218072017.3039:<< put the position of this frame >>
-            # New in Leo 4.5: support fixed .leo files.
+        if trace: g.trace('fixed or use_db',c.fixed or use_db,
+            '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
+        #@-node:ekr.20031218072017.3038:<< put the body/outline ratios >>
+        #@nl
+        self.put(">") ; self.put_nl()
+        #@    << put the position of this frame >>
+        #@+node:ekr.20031218072017.3039:<< put the position of this frame >>
+        # New in Leo 4.5: support fixed .leo files.
 
-            if c.fixed or use_db:
-                width,height,left,top = 700,500,50,50
-                    # Put fixed, immutable, reasonable defaults.
-                    # Leo 4.5 and later will ignore these when reading.
-                    # These should be reasonable defaults so that the
-                    # file will be opened properly by older versions
-                    # of Leo that do not support fixed .leo files.
-            else:
-                width,height,left,top = c.frame.get_window_info()
+        if c.fixed or use_db:
+            width,height,left,top = 700,500,50,50
+                # Put fixed, immutable, reasonable defaults.
+                # Leo 4.5 and later will ignore these when reading.
+                # These should be reasonable defaults so that the
+                # file will be opened properly by older versions
+                # of Leo that do not support fixed .leo files.
+        else:
+            width,height,left,top = c.frame.get_window_info()
 
-            # g.trace(width,height,left,top)
+        # g.trace(width,height,left,top)
 
-            self.put_tab()
-            self.put("<global_window_position")
-            self.put(" top=") ; self.put_in_dquotes(str(top))
-            self.put(" left=") ; self.put_in_dquotes(str(left))
-            self.put(" height=") ; self.put_in_dquotes(str(height))
-            self.put(" width=") ; self.put_in_dquotes(str(width))
-            self.put("/>") ; self.put_nl()
-            #@-node:ekr.20031218072017.3039:<< put the position of this frame >>
-            #@nl
-            #@        << put the position of the log window >>
-            #@+node:ekr.20031218072017.3040:<< put the position of the log window >>
-            top = left = height = width = 0 # no longer used
+        self.put_tab()
+        self.put("<global_window_position")
+        self.put(" top=") ; self.put_in_dquotes(str(top))
+        self.put(" left=") ; self.put_in_dquotes(str(left))
+        self.put(" height=") ; self.put_in_dquotes(str(height))
+        self.put(" width=") ; self.put_in_dquotes(str(width))
+        self.put("/>") ; self.put_nl()
+        #@-node:ekr.20031218072017.3039:<< put the position of this frame >>
+        #@nl
+        #@    << put the position of the log window >>
+        #@+node:ekr.20031218072017.3040:<< put the position of the log window >>
+        top = left = height = width = 0 # no longer used
 
-            self.put_tab()
-            self.put("<global_log_window_position")
-            self.put(" top=") ; self.put_in_dquotes(str(top))
-            self.put(" left=") ; self.put_in_dquotes(str(left))
-            self.put(" height=") ; self.put_in_dquotes(str(height))
-            self.put(" width=") ; self.put_in_dquotes(str(width))
-            self.put("/>") ; self.put_nl()
-            #@-node:ekr.20031218072017.3040:<< put the position of the log window >>
-            #@nl
-            self.put("</globals>") ; self.put_nl()
+        self.put_tab()
+        self.put("<global_log_window_position")
+        self.put(" top=") ; self.put_in_dquotes(str(top))
+        self.put(" left=") ; self.put_in_dquotes(str(left))
+        self.put(" height=") ; self.put_in_dquotes(str(height))
+        self.put(" width=") ; self.put_in_dquotes(str(width))
+        self.put("/>") ; self.put_nl()
+        #@-node:ekr.20031218072017.3040:<< put the position of the log window >>
+        #@nl
+        self.put("</globals>") ; self.put_nl()
     #@-node:ekr.20031218072017.3037:putGlobals
     #@+node:ekr.20031218072017.3041:putHeader
     def putHeader (self):

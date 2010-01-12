@@ -209,16 +209,14 @@ def putGlobals (self):
         key = c.atFileCommands._contentHashFile(c.mFileName,'globals')
         if trace: g.trace(len(list(c.db.keys())),c.mFileName,key)
         << put all data to c.db >>
-        self.put('<globals/>')
-        self.put_nl()
 
-    if 1: # Always put dummy postions, to trigger sax methods.
-        self.put("<globals")
-        << put the body/outline ratios >>
-        self.put(">") ; self.put_nl()
-        << put the position of this frame >>
-        << put the position of the log window >>
-        self.put("</globals>") ; self.put_nl()
+    # Always put postions, to trigger sax methods.
+    self.put("<globals")
+    << put the body/outline ratios >>
+    self.put(">") ; self.put_nl()
+    << put the position of this frame >>
+    << put the position of the log window >>
+    self.put("</globals>") ; self.put_nl()
 #@+node:ekr.20100112095623.6267:<< put all data to c.db >>
 c.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
 c.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
@@ -554,20 +552,21 @@ def getPositionAttributes (self,attrs):
 
     if trace: g.trace(len(list(c.db.keys())),c.mFileName,self.fileName)
 
+    d = {}
+
     if c.db and c.mFileName:
         key = c.atFileCommands._contentHashFile(c.mFileName,'globals')
         data = c.db.get('window_position_%s' % (key))
         if data:
             top,left,height,width = data
             top,left,height,width = int(top),int(left),int(height),int(width)
-        else:
-            top,left,height,width = 50,50,700,500
-        d = {'top':top,'left':left,'height':height,'width':width}
-    elif c.fixed and c.fixedWindowPosition:
+            d = {'top':top,'left':left,'height':height,'width':width}
+
+    if not d and c.fixed and c.fixedWindowPosition:
         width,height,left,top = c.fixedWindowPosition
         d = {'top':top,'left':left,'width':width,'height':height}
-    else:
-        d = {}
+
+    if not d:
         for bunch in self.attrsToList(attrs):
             name = bunch.name ; val = bunch.val
             if name in ('top','left','width','height'):
@@ -820,20 +819,21 @@ def getPositionAttributes (self,attrs):
 
     if trace: g.trace(len(list(c.db.keys())),c.mFileName,self.fileName)
 
+    d = {}
+
     if c.db and c.mFileName:
         key = c.atFileCommands._contentHashFile(c.mFileName,'globals')
         data = c.db.get('window_position_%s' % (key))
         if data:
             top,left,height,width = data
             top,left,height,width = int(top),int(left),int(height),int(width)
-        else:
-            top,left,height,width = 50,50,700,500
-        d = {'top':top,'left':left,'height':height,'width':width}
-    elif c.fixed and c.fixedWindowPosition:
+            d = {'top':top,'left':left,'height':height,'width':width}
+
+    if not d and c.fixed and c.fixedWindowPosition:
         width,height,left,top = c.fixedWindowPosition
         d = {'top':top,'left':left,'width':width,'height':height}
-    else:
-        d = {}
+
+    if not d:
         for bunch in self.attrsToList(attrs):
             name = bunch.name ; val = bunch.val
             if name in ('top','left','width','height'):
@@ -954,6 +954,8 @@ def openWithFileName(fileName,old_c,
     enableLog=True,gui=None,readAtFileNodesFlag=True):
 
     """Create a Leo Frame for the indicated fileName if the file exists."""
+
+    trace = False and not g.unitTesting
 
     if not fileName: return False, None
     isLeo,fn,relFn = g.mungeFileName(fileName)
