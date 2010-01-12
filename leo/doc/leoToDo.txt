@@ -238,8 +238,6 @@ def readOneAtAutoNode(self,p):
 #@-node:ekr.20070806111212:readAtAutoNodes (importCommands) & helper
 #@-node:ekr.20091227085627.6538:Removed unsettling @auto warning
 #@-node:ekr.20100110064516.6229:Fix bug: overwrite modified file message
-#@+node:ekr.20100111094359.6207:Fix bug: 394445 Chapters selection button: in qt, missing, in Tk, only one option
-#@-node:ekr.20100111094359.6207:Fix bug: 394445 Chapters selection button: in qt, missing, in Tk, only one option
 #@+node:ekr.20100111094359.6208:Fix goto-line bugs
 @nocolor-node
 

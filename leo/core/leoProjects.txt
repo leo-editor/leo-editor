@@ -21302,6 +21302,10 @@ def os_startfile(fname):
 #@nonl
 #@-node:ekr.20090829140232.6036:os_startfile
 #@-node:ekr.20100110064516.6228:Applied patches to fix bug: 451377 Make Leo frienly to mac apps
+#@+node:ekr.20100111094359.6207:Fixed bug: 394445 Chapters selection button: in qt, missing, in Tk, only one option
+The Tk part of this bug can not be fixed.
+#@nonl
+#@-node:ekr.20100111094359.6207:Fixed bug: 394445 Chapters selection button: in qt, missing, in Tk, only one option
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20091219151045.6361:Simplified g.create_temp_file
