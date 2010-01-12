@@ -506,7 +506,7 @@ class atFile:
             return False
 
         fileContent = open(fileName, "rb").read()
-        cachefile = self._contentHashFile(root, fileContent)
+        cachefile = self._contentHashFile(root.h,fileContent)
 
         # Remember that we have read this file.
         root.v.at_read = True # Create the attribute for all clones.
@@ -592,15 +592,20 @@ class atFile:
     #@nonl
     #@-node:ville.20090606131405.6362:writeCachedTree (atFile)
     #@+node:ville.20090606150238.6351:_contentHashFile (atFile)
-    def _contentHashFile(self, p, content):
+    def _contentHashFile(self,s,content):
+
+        '''Compute the has of s (usually a headline) and content.'''
+
+        # We add s (usually the headline) to the hash,
+        # to distinguish @auto foo.py from @thin foo.py
+
         c = self.c
         m = hashlib.md5()
-        # note that we also consider the headline in hash, to separate @auto foo.py from @thin foo.py
         if g.isPython3:
-            m.update(g.toEncodedString(p.h,encoding='utf-8'))
+            m.update(g.toEncodedString(s,encoding='utf-8'))
             m.update(g.toEncodedString(content,encoding='utf-8'))
         else:
-            m.update(p.h)
+            m.update(s)
             m.update(content)
         return "fcache/" + m.hexdigest()
 
@@ -693,7 +698,7 @@ class atFile:
 
         try:
             fileContent = open(fileName, "rb").read()
-            cachefile = self._contentHashFile(p, fileContent)
+            cachefile = self._contentHashFile(p.h,fileContent)
         except IOError:
             cachefile = None
 
