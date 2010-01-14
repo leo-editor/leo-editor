@@ -45,17 +45,11 @@ __version__ = '0.7'
 #@nonl
 #@-node:tbrown.20070117104409.6:<< version history >>
 #@nl
-#@<< to do >>
-#@+node:tbrown.20070117104409.7:<< to do >>
-#@+at
-# Add append/insert clone/copy flavours, as well as move?
-#@-at
-#@nonl
-#@-node:tbrown.20070117104409.7:<< to do >>
-#@nl
 
 #@<< imports >>
 #@+node:tbrown.20070117104409.2:<< imports >>
+from types import MethodType
+
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 from mod_scripting import scriptingController
@@ -77,23 +71,28 @@ def onCreate(tag, keywords):
 #@nonl
 #@-node:tbrown.20070117104409.3:init and onCreate
 #@+node:tbrown.20070117104409.4:class quickMove
-class quickMove:
+class quickMove(object):
 
     """quickMove binds to a controller, adds menu entries for
        creating buttons, and creates buttons as needed
     """
+
+    flavors = [
+      # name   first/last  long  short
+      ('move', True, "Move", "to"),
+      ('copy', True, "Copy", "to"),
+      ('clone', True, "Clone", "to"),
+      ('bkmk', True, "Bookmark", "to"),
+      ('linkTo', False, "Link", "to"),
+      ('linkFrom', False, "Link", "from"),
+      ('jump', False, "Jump to", ""),
+    ]
 
     #@    @+others
     #@+node:ekr.20070117113133:ctor
     def __init__(self, c):
 
         self.table = (
-            ("Move To First Child Button",None,self.addToFirstChildButton),
-            ("Move To Last Child Button",None,self.addToLastChildButton),
-            ("Clone To First Child Button",None,self.cloneToFirstChildButton),
-            ("Clone To Last Child Button",None,self.cloneToLastChildButton),
-            ("Copy To First Child Button",None,self.copyToFirstChildButton),
-            ("Copy To Last Child Button",None,self.copyToLastChildButton),
             ("Make Buttons Here Permanent",None,self.permanentButton),
             ("Clear Permanent Buttons Here",None,self.clearButton),
         )
@@ -106,11 +105,20 @@ class quickMove:
 
         for nd in c.all_unique_nodes():
             if 'quickMove' in nd.u:
-                for first,clone,copy in nd.u['quickMove']:
-                    self.addButton(first,clone,copy,v=nd)
+                for rec in nd.u['quickMove']:
+                    if len(rec) != 2:
+                        continue  # silently drop old style permanent button
+                    first,type_ = rec
+                    self.addButton(first,type_,v=nd)
 
         c.frame.menu.createNewMenu('Move', 'Outline')
 
+        self.local_imps = []  # make table for createMenuItemsFromTable()
+        for name, text in self.imps:
+            # lookup this instance's bound versions of the methods
+            self.local_imps.append((text, None, getattr(self, name)))
+
+        self.local_imps.extend(self.table)
         c.frame.menu.createMenuItemsFromTable('Move', self.table)
 
         if g.app.gui.guiName() == "qt":
@@ -122,26 +130,8 @@ class quickMove:
         if g.app.gui.guiName() == "qt":
                 g.tree_popup_handlers.remove(self.popup)
     #@-node:tbrown.20091207120031.5356:dtor
-    #@+node:ekr.20070117113133.2:addTarget/AppendButton
-    def addToFirstChildButton (self,event=None):
-        self.addButton(first=True)
-
-    def addToLastChildButton (self,event=None):
-        self.addButton(first=False)
-
-    def cloneToFirstChildButton (self,event=None):
-        self.addButton(first=True, clone=True)
-
-    def cloneToLastChildButton (self,event=None):
-        self.addButton(first=False, clone=True)
-
-    def copyToFirstChildButton (self,event=None):
-        self.addButton(first=True, copy=True)
-
-    def copyToLastChildButton (self,event=None):
-        self.addButton(first=False, copy=True)
-
-    def addButton (self,first,clone=False,copy=False,v=None):
+    #@+node:ekr.20070117113133.2:addButton
+    def addButton (self, first, type_="move", v=None):
 
         '''Add a button that creates a target for future moves.'''
 
@@ -150,10 +140,12 @@ class quickMove:
             v = p.v
         sc = scriptingController(c)
 
-        mb = quickMoveButton(self,v,first,clone,copy)
+        mb = quickMoveButton(self,v,first,type_=type_)
+
+        txt=self.txts[type_]
 
         b = sc.createIconButton(
-            text = 'to:' + v.h, # createButton truncates text.
+            text = txt + ":" + v.h, # createButton truncates text.
             command = mb.moveCurrentNodeToTarget,
             shortcut = None,
             statusLine = 'Move current node to %s child of %s' % (g.choose(first,'first','last'),v.h),
@@ -161,7 +153,7 @@ class quickMove:
         )
 
         self.buttons.append((mb,b))
-    #@-node:ekr.20070117113133.2:addTarget/AppendButton
+    #@-node:ekr.20070117113133.2:addButton
     #@+node:tbrown.20091217114654.5372:permanentButton
     def permanentButton (self,event=None):
         """make buttons on this node permanent
@@ -175,7 +167,7 @@ class quickMove:
         p.v.u['quickMove'] = []
         for mover, button in qm.buttons:
             if mover.target == p.v:
-                p.v.u['quickMove'].append((mover.first, mover.clone, mover.copy))
+                p.v.u['quickMove'].append((mover.first, mover.type_))
 
         g.es('Set {0} buttons'.format(len(p.v.u['quickMove'])))
     #@-node:tbrown.20091217114654.5372:permanentButton
@@ -196,12 +188,37 @@ class quickMove:
 
         pathmenu = menu.addMenu("Move")
 
-        for name,dummy,command in self.table:
+        for name,dummy,command in self.local_imps:
             a = pathmenu.addAction(name)
             a.connect(a, QtCore.SIGNAL("triggered()"), command)
     #@-node:tbrown.20091207102637.11494:popup
     #@-others
-#@nonl
+
+    imps = []  # implementations, (name,text)
+    txts = {}  # get short from name, for permanent buttons
+               # filled in below
+
+# build methods for this class
+
+for name, first_last, long, short in quickMove.flavors:
+
+    quickMove.txts[name] = short
+
+    if first_last:
+        todo = [(True, 'first'), (False, 'last')]
+    else:
+        todo = [(None, '')]
+
+    for ftrue, which in todo:
+
+        def func(self, ftrue=ftrue, name=name, event=None):
+            self.addButton(first=ftrue, type_=name)
+        func = MethodType(func, None, quickMove)
+        fname = 'func_'+name+'_'+short+'_' +which
+        setattr(quickMove, fname, func)
+        if which:
+            which = " "+which.title()+" Child"
+        quickMove.imps.append((fname, long+" "+short+which+" Button"))
 #@-node:tbrown.20070117104409.4:class quickMove
 #@+node:tbrown.20070117104409.5:class quickMoveButton
 class quickMoveButton:
@@ -210,15 +227,14 @@ class quickMoveButton:
 
     #@    @+others
     #@+node:ekr.20070117121326:ctor
-    def __init__(self, owner, target, first, clone, copy):
+    def __init__(self, owner, target, first, type_):
 
         self.c = owner.c
         self.owner = owner
         self.target = target
         self.targetHeadString = target.h
         self.first = first
-        self.clone = clone
-        self.copy = copy
+        self.type_ = type_
     #@-node:ekr.20070117121326:ctor
     #@+node:ekr.20070117121326.1:moveCurrentNodeToTarget
     def moveCurrentNodeToTarget(self):
@@ -234,9 +250,10 @@ class quickMoveButton:
             g.es('Target no longer exists: %s' % self.targetHeadString,color='red')
             return
 
-        if p.v == p2.v or not self.checkMove(p,p2):
-            g.es('Invalid move: %s' % (self.targetHeadString),color='red')
-            return
+        if self.type_ in ('clone', 'move'):  # all others are always valid?
+            if p.v == p2.v or not self.checkMove(p,p2):
+                g.es('Invalid move: %s' % (self.targetHeadString),color='red')
+                return
 
         bunch = c.undoer.beforeMoveNode(p)
         p2.expand()
@@ -244,15 +261,24 @@ class quickMoveButton:
         nxt = nxt.v
         # store a vnode instead of position as positions are too easily lost
 
-        if self.clone:
+        if self.type_ == 'clone':
             p = p.clone()
 
-        if not self.copy:
+        if self.type_ in ('move', 'clone'):
             if self.first:
                 p.moveToFirstChildOf(p2)
             else:
                 p.moveToLastChildOf(p2)
-        else:
+        elif self.type_ == 'bkmk':
+            unl = self.computeUNL(p)  # before tree changes
+            if self.first:
+                nd = p2.insertAsNthChild(0)
+            else:
+                nd = p2.insertAsLastChild()
+            nd.h = p.h
+            nd.b = unl
+
+        elif self.type_ == 'copy':
             if self.first:
                 nd = p2.insertAsNthChild(0)
                 p.copyTreeFromSelfTo(nd)
@@ -260,8 +286,24 @@ class quickMoveButton:
                 nd = p2.insertAsLastChild()
                 p.copyTreeFromSelfTo(nd)
 
-        nxt = c.vnode2position(nxt)
-        if c.positionExists(nxt):
+        elif self.type_ in ('linkTo', 'linkFrom'):
+            blc = getattr(c, 'backlinkController', None)
+            if blc is None:
+                g.es("Linking requires backlink.py plugin")
+                return
+            if self.type_ == 'linkTo':
+                blc.vlink(p.v, p2.v)
+            else:
+                blc.vlink(p2.v, p.v)
+
+        if self.type_ in ('bkmk', 'clone', 'copy', 'move'):
+            nxt = c.vnode2position(nxt)
+        elif self.type_ == 'jump':
+            nxt = c.vnode2position(self.target)
+        else:
+            nxt = None  # linkTo / linkFrom don't move
+
+        if nxt is not None and c.positionExists(nxt):
             c.selectPosition(nxt)
         c.undoer.afterMoveNode(p,'Quick Move', bunch)
         c.redraw()
@@ -280,6 +322,16 @@ class quickMoveButton:
             c.checkMoveWithParentWithWarning (p2,p,warningFlag=False)
         )
     #@-node:ekr.20070123061606:checkMove
+    #@+node:tbrown.20100114111020.15726:computeUNL
+    def computeUNL(self, p):
+
+        p = p.copy()
+        heads = []
+        while p:
+            heads.insert(0, p.h)
+            p = p.parent()
+        return "@url "+"-->".join(heads)
+    #@-node:tbrown.20100114111020.15726:computeUNL
     #@-others
 #@-node:tbrown.20070117104409.5:class quickMoveButton
 #@-others
