@@ -2749,7 +2749,7 @@ class atFile:
             return False
 
         # Prompt if writing a new @auto node would overwrite an existing file.
-        if (not toString and not hasattr(p.v,'at_auto_read') and
+        if (not toString and not hasattr(p.v,'at_read') and
             g.os_path_exists(fileName)
         ):
             ok = self.promptForDangerousWrite(fileName,kind='@auto')
