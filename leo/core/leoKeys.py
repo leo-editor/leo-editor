@@ -2559,6 +2559,7 @@ class keyHandlerClass:
                 if trace: g.trace('calling command directly',commandName)
                 # if commandName != 'repeat-complex-command': # 2010/01/11
                     # k.mb_history.insert(0,commandName)
+                if commandName == 'select-all': g.pdb()
                 c.doCommand(func,commandName,event=event)
             if c.exists:
                 k.endCommand(event,commandName)
@@ -2697,7 +2698,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.112:callAltXFunction
     def callAltXFunction (self,event):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         k = self ; c = k.c ; s = k.getLabel()
         k.mb_tabList = []
         commandName = s[len(k.mb_prefix):].strip()
@@ -2705,7 +2706,6 @@ class keyHandlerClass:
         k.newMinibufferWidget = None
 
         # g.trace(func and func.__name__,'mb_event',event.widget.widgetName)
-
         if func:
             # These must be done *after* getting the command.
             k.clearState()

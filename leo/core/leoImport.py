@@ -870,7 +870,9 @@ class leoImportCommands (scanUtility):
         if atAuto:
             # Remember that we have read this file.
             # Fixes bug 488894: unsettling dialog when saving Leo file
-            # after creating and populating an @auto node
+            # after creating and populating an @auto node.
+            # Important: this often sets the bit in the wrong node:
+            # The caller may have to set the bit in the "real" root node.
             p.v.at_read = True # Create the attribute
 
         p.contract()
@@ -915,6 +917,11 @@ class leoImportCommands (scanUtility):
             fileName=p.atAutoNodeName(),
             parent=p.copy(),
             atAuto=True)
+
+        # 2010/01/15: Remember that we have read this file.
+        # http://groups.google.com/group/leo-editor/browse_thread/thread/b77b5260854ffbf6
+        # Important: createOutline usually sets the bit in the wrong node.
+        p.v.at_read = True # Create the attribute
 
         # Force an update of the body pane.
         self.setBodyString(p,p.b)
