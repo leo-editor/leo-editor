@@ -335,7 +335,8 @@ def openFile(c,parent,d):
     # parent.h = '@auto '+hdr
     # parent.b = file(d).read()
     c.importCommands.createOutline(d,parent=parent,atAuto=True)
-    parent.h = '@auto '+parent.h
+    atType = c.config.getString('active_path_attype') or 'auto'
+    parent.h = '@' + atType + ' ' + parent.h
 
     c.bodyWantsFocusNow()
 #@-node:tbrown.20080613095157.9:openFile
