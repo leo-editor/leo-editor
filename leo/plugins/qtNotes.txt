@@ -571,7 +571,7 @@ def finishCreate (self,c):
 
     f.createIconBar() # A base class method.
     f.createSplitterComponents()
-    if f.use_chapters:
+    if f.use_chapters and f.use_chapter_tabs:
         c.chapterController.tt = leoQtTreeTab(c,f.iconBar)
     f.createStatusLine() # A base class method.
     f.createFirstTreeNode() # Call the base-class method.
@@ -1617,7 +1617,7 @@ def finishCreate (self,c):
 
     f.createIconBar() # A base class method.
     f.createSplitterComponents()
-    if f.use_chapters:
+    if f.use_chapters and f.use_chapter_tabs:
         c.chapterController.tt = leoQtTreeTab(c,f.iconBar)
     f.createStatusLine() # A base class method.
     f.createFirstTreeNode() # Call the base-class method.
@@ -6567,7 +6567,7 @@ def finishCreate (self,c):
 
     f.createIconBar() # A base class method.
     f.createSplitterComponents()
-    if f.use_chapters:
+    if f.use_chapters and f.use_chapter_tabs:
         c.chapterController.tt = leoQtTreeTab(c,f.iconBar)
     f.createStatusLine() # A base class method.
     f.createFirstTreeNode() # Call the base-class method.
@@ -9185,6 +9185,53 @@ def splitterMovedHelper(self,splitter,pos,index):
 #@nonl
 #@-node:ekr.20100111143038.3727:splitter event handlers
 #@-node:ekr.20100111143038.3728:Remember the ratios when the user moves splitters by hand.
+#@+node:ekr.20100115090940.3743:Chapter tabs require both_chapters and use_chapters_tabs
+#@+node:ekr.20081121105001.254:qtFrame.finishCreate & helpers
+def finishCreate (self,c):
+
+    f = self ; f.c = c
+
+    # g.trace('***qtFrame')
+
+    # self.bigTree         = c.config.getBool('big_outline_pane')
+    self.trace_status_line = c.config.getBool('trace_status_line')
+    self.use_chapters      = c.config.getBool('use_chapters')
+    self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
+
+    # returns DynamicWindow
+    f.top = g.app.gui.frameFactory.createFrame(f)
+
+    # hiding would remove flicker, but doesn't work with all
+    # window managers
+
+    f.createIconBar() # A base class method.
+    f.createSplitterComponents()
+    if f.use_chapters and f.use_chapter_tabs:
+        c.chapterController.tt = leoQtTreeTab(c,f.iconBar)
+    f.createStatusLine() # A base class method.
+    f.createFirstTreeNode() # Call the base-class method.
+    f.menu = leoQtMenu(f)
+    c.setLog()
+    g.app.windowList.append(f)
+    f.miniBufferWidget = leoQtMinibuffer(c)
+    c.bodyWantsFocusNow()
+#@+node:ekr.20081121105001.255:createSplitterComponents (qtFrame)
+def createSplitterComponents (self):
+
+    f = self ; c = f.c
+
+    f.tree  = leoQtTree(c,f)
+    f.log   = leoQtLog(f,None)
+    f.body  = leoQtBody(f,None)
+
+    if f.use_chapters:
+        c.chapterController = cc = leoChapters.chapterController(c)
+
+    f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
+    f.resizePanesToRatio(f.ratio,f.secondary_ratio)
+#@-node:ekr.20081121105001.255:createSplitterComponents (qtFrame)
+#@-node:ekr.20081121105001.254:qtFrame.finishCreate & helpers
+#@-node:ekr.20100115090940.3743:Chapter tabs require both_chapters and use_chapters_tabs
 #@-node:ekr.20090813101852.3643:Bugs
 #@-node:ekr.20090717095154.3729:Leo 4.7 devel projects
 #@-all

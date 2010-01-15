@@ -24039,6 +24039,14 @@ def getPositionAttributes (self,attrs):
 #@-node:ekr.20060919110638.36:getPositionAttributes
 #@-node:ekr.20100112095623.6269:Reading
 #@-node:ekr.20100112095623.6266:Write <globals> data to c.db
+#@+node:ekr.20100115051404.6243:Fix bug 50711: use_chapters = False doesn't suppress chapters
+https://bugs.launchpad.net/leo-editor/+bug/507155
+
+This bug was mostly invalid, but now both must be True:
+
+@bool use_chapters = False
+@bool use_chapter_tabs = False
+#@-node:ekr.20100115051404.6243:Fix bug 50711: use_chapters = False doesn't suppress chapters
 #@-node:ekr.20090817080059.5996:Features
 #@+node:ekr.20091203060018.6100:leo-3k
 @nocolor-node

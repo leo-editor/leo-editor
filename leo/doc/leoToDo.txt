@@ -11,15 +11,8 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20091005145253.6059:Before b2
-#@+node:ekr.20100115051404.6243:Support use_chapters settings in qtGui.py
-https://bugs.launchpad.net/leo-editor/+bug/507155
-
-Both must be True:
-
-@bool use_chapters = False
-@bool use_chapter_tabs = False
-#@nonl
-#@-node:ekr.20100115051404.6243:Support use_chapters settings in qtGui.py
+#@+node:ekr.20100115091643.6249:<alt-x> select-all crashes python when focus is in headline
+#@-node:ekr.20100115091643.6249:<alt-x> select-all crashes python when focus is in headline
 #@+node:ekr.20100115051404.6244:Fix auto-save problem
 @nocolor-node
 
@@ -75,8 +68,10 @@ but although the drag select works, the body text isn't responsive (no insert po
 
 i.e. like the original bug, except instead of transferring focus to the body with a click, it's being transferred with a drag-select.
 #@-node:ekr.20100115051404.6245:Fix 349027: body doesn't get focus after headline edit
-#@+node:ekr.20100113160021.6255:Fix June Kim bugs
+#@+node:ekr.20100113160021.6255:Fix ctrl-tab bug
 @nocolor-node
+
+June Kim
 
 ctrl-tab (currently binded to cycle-focus) doesn't work in windows with pyqt.
 The event isn't generated at all. Manually calling with alt-x "cycle-focus"
@@ -85,7 +80,11 @@ Strangely, though, ctrl-shift-tab (cycle-all-focus) works just fine.
 
 tk gui(launched with --gui option) works just fine with ctrl-tab.
 
-=====
+#@-node:ekr.20100113160021.6255:Fix ctrl-tab bug
+#@+node:ekr.20100115090030.6247:Fix tab binding bug
+@nocolor-node
+
+June Kim
 
 Now I found another problem. It's about cycle-focus' functionality. It has a
 bug.
@@ -128,7 +127,7 @@ properly(it prints "TAB" string in the edit line instead), whereas
 ctrl-tab works just fine to travel around(except that log pane bug
 that I mentioned earlier).
 #@nonl
-#@-node:ekr.20100113160021.6255:Fix June Kim bugs
+#@-node:ekr.20100115090030.6247:Fix tab binding bug
 #@+node:ekr.20100111094359.6208:Fix goto-line bugs
 @nocolor-node
 

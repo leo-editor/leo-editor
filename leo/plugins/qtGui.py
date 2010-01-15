@@ -3663,7 +3663,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         f.createIconBar() # A base class method.
         f.createSplitterComponents()
-        if f.use_chapters:
+        if f.use_chapters and f.use_chapter_tabs:
             c.chapterController.tt = leoQtTreeTab(c,f.iconBar)
         f.createStatusLine() # A base class method.
         f.createFirstTreeNode() # Call the base-class method.
