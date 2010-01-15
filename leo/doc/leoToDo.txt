@@ -11,8 +11,70 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20091005145253.6059:Before b2
-#@+node:ekr.20100112051224.6245:Help install qt on MacOS
-#@-node:ekr.20100112051224.6245:Help install qt on MacOS
+#@+node:ekr.20100115051404.6243:Support use_chapters settings in qtGui.py
+https://bugs.launchpad.net/leo-editor/+bug/507155
+
+Both must be True:
+
+@bool use_chapters = False
+@bool use_chapter_tabs = False
+#@nonl
+#@-node:ekr.20100115051404.6243:Support use_chapters settings in qtGui.py
+#@+node:ekr.20100115051404.6244:Fix auto-save problem
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b77b5260854ffbf6
+
+- rclick on @auto <file> node, choose "Edit <file> in gvim"
+- edit in gvim
+- rclick on @auto <file> node, choose "Refresh from disk"
+- save Leo file
+- get dialog "<file> has been modified outside Leo, overwrite?"
+
+This warning seems unnecessary and misleading.
+#@nonl
+#@-node:ekr.20100115051404.6244:Fix auto-save problem
+#@+node:ekr.20100115051404.6245:Fix 349027: body doesn't get focus after headline edit
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/349027
+
+Original bug: fixed
+
+I want to make a node by modifying an existing node, so I:
+
+  - copy/paste the exiting node
+  - dbl-click the copy's headline
+  - drag select part of the headline
+  - type new text to replace the selected text in the headline
+  - drag select text in the body
+  - type new text to replace the selected text in the body
+
+Last step fails, because while I was able to drag select text in the body, it somehow failed to gain
+true focus (i.e. get the blinking cursor).
+
+----------------
+
+Actually I think the bug's simpler than my description above - when you're
+editing a headline and use a mouse click to transfer focus to the body it takes
+two clicks to get the focus into the body, rather than just one.
+
+New bug: =======================
+
+eh, a form of this bug still exists
+
+Here's a common editing pattern for me:
+
+- shift-ctrl-c copy a node
+- shift-ctrl-v paste a copy of the node
+- ctrl-h edit the node's name
+- drag select the function name in the body text
+- type to change the function name
+
+but although the drag select works, the body text isn't responsive (no insert point), you need an extra click to make it active.
+
+i.e. like the original bug, except instead of transferring focus to the body with a click, it's being transferred with a drag-select.
+#@-node:ekr.20100115051404.6245:Fix 349027: body doesn't get focus after headline edit
 #@+node:ekr.20100113160021.6255:Fix June Kim bugs
 @nocolor-node
 
@@ -78,6 +140,10 @@ https://bugs.launchpad.net/leo-editor/+bug/399720
 #@nonl
 #@-node:ekr.20100111094359.6208:Fix goto-line bugs
 #@+node:ekr.20100113075303.6270:Easiest vim problems
+@nocolor-node
+
+These may not make it into b2 or even Leo 4.7 final.
+#@nonl
 #@+node:ekr.20100112051224.6239:Displaying mode help
 @nocolor-node
 
@@ -141,6 +207,10 @@ until the edited node has lost focus.
 #@-node:ekr.20100112051224.6231:Undo command (fixed?)
 #@-node:ekr.20100113075303.6270:Easiest vim problems
 #@+node:ekr.20100111164531.6226:Minor...
+@nocolor-node
+
+These may not make it into b2 or even Leo 4.7 final.
+#@nonl
 #@+node:ekr.20100112051224.6247:Make sure appropriate key bindings work in log pane
 #@-node:ekr.20100112051224.6247:Make sure appropriate key bindings work in log pane
 #@+node:ekr.20100112051224.6248:Make sure Leo handles activation event properly
@@ -534,6 +604,10 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
 Vim mode users: your top 3 complaints, please
 #@nonl
 #@+node:ekr.20100113075303.6270:Easiest vim problems
+@nocolor-node
+
+These may not make it into b2 or even Leo 4.7 final.
+#@nonl
 #@+node:ekr.20100112051224.6239:Displaying mode help
 @nocolor-node
 
