@@ -122,73 +122,6 @@ goto-global-line doesn't work with @edit nodes
 https://bugs.launchpad.net/leo-editor/+bug/399720
 #@nonl
 #@-node:ekr.20100111094359.6208:Fix goto-line bugs
-#@+node:ekr.20100113075303.6270:Easiest vim problems
-@nocolor-node
-
-These may not make it into b2 or even Leo 4.7 final.
-#@nonl
-#@+node:ekr.20100112051224.6239:Displaying mode help
-@nocolor-node
-
-The "--> mode-help" command has the following issues related to the
-display of the "Help" tab:
-
-1. Key label always capitalized.
-
-Vim commands are mapped to both lower-case and upper-case keys but always appear
-mapped to upper-case keys within the "Help" tab.
-
-2. Layout of tab's contents.
-
-To improve readability and better support narrow tab cards, display the mode's
-label without the "enter-" and "-mode" text and place the key label before the
-mode label.
-
-For example, the following entries would change from::
-    enter-vi-delete-line-mode d
-    enter-vi-delete-to-begin-of-word-mode b
-to::
-    d : vi-delete-line
-    b : vi-delete-to-begin-of-word
-#@nonl
-#@-node:ekr.20100112051224.6239:Displaying mode help
-#@+node:ekr.20100112051224.6225:Repeat last cursor movement command
-Support the ';' key: repeat the last "To character" or "Find character" command.
-#@nonl
-#@-node:ekr.20100112051224.6225:Repeat last cursor movement command
-#@+node:ekr.20090629183608.8445:Cursors (easiest)
-Vi normally uses two different "current character" designators depending on the
-current state.
-
-Insert state:
-
-In the Insert state, a vertical bar is placed between two characters to indicate
-where the next key will be inserted. Leo's cursor is of this type.
-
-Command state: 
-
-In the Command state, vi expects that the cursor is highlighting a current
-character and provides commands to enter the insert state or paste text either
-before or after that current character. Leo's vi emulation currently does not
-support a "current character" cursor. As a result, inserting and pasting before
-or after is replaced by inserting or pasting "at" the current cursor location.
-For example, the 'i' and 'a' command are both mapped to enter the insert state
-at the current cursor location.
-#@nonl
-#@-node:ekr.20090629183608.8445:Cursors (easiest)
-#@+node:ekr.20100112051224.6229:Binding Arrow keys (fixed?)
-Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
-commands or @mode nodes have no effect.
-#@nonl
-#@-node:ekr.20100112051224.6229:Binding Arrow keys (fixed?)
-#@+node:ekr.20100112051224.6231:Undo command (fixed?)
-Using the "undo" command (key 'u') to undo a change to a node's headline text
-only works correctly after another node has been selected. It appears that
-changes made to a node's headline text are not recorded in Leo's change history
-until the edited node has lost focus.
-#@nonl
-#@-node:ekr.20100112051224.6231:Undo command (fixed?)
-#@-node:ekr.20100113075303.6270:Easiest vim problems
 #@+node:ekr.20100115091643.6249:<alt-x> select-all crashes python when focus is in headline
 @
 The problem occurs because the QtGui.QLineEdit object goes away
@@ -314,6 +247,73 @@ def callAltXFunction (self,event):
             c.bodyWantsFocus()
 #@-node:ekr.20061031131434.112:callAltXFunction
 #@-node:ekr.20100115091643.6249:<alt-x> select-all crashes python when focus is in headline
+#@+node:ekr.20100113075303.6270:Easiest vim problems
+@nocolor-node
+
+These may not make it into b2 or even Leo 4.7 final.
+#@nonl
+#@+node:ekr.20100112051224.6239:Displaying mode help
+@nocolor-node
+
+The "--> mode-help" command has the following issues related to the
+display of the "Help" tab:
+
+1. Key label always capitalized.
+
+Vim commands are mapped to both lower-case and upper-case keys but always appear
+mapped to upper-case keys within the "Help" tab.
+
+2. Layout of tab's contents.
+
+To improve readability and better support narrow tab cards, display the mode's
+label without the "enter-" and "-mode" text and place the key label before the
+mode label.
+
+For example, the following entries would change from::
+    enter-vi-delete-line-mode d
+    enter-vi-delete-to-begin-of-word-mode b
+to::
+    d : vi-delete-line
+    b : vi-delete-to-begin-of-word
+#@nonl
+#@-node:ekr.20100112051224.6239:Displaying mode help
+#@+node:ekr.20100112051224.6225:Repeat last cursor movement command
+Support the ';' key: repeat the last "To character" or "Find character" command.
+#@nonl
+#@-node:ekr.20100112051224.6225:Repeat last cursor movement command
+#@+node:ekr.20090629183608.8445:Cursors (easiest)
+Vi normally uses two different "current character" designators depending on the
+current state.
+
+Insert state:
+
+In the Insert state, a vertical bar is placed between two characters to indicate
+where the next key will be inserted. Leo's cursor is of this type.
+
+Command state: 
+
+In the Command state, vi expects that the cursor is highlighting a current
+character and provides commands to enter the insert state or paste text either
+before or after that current character. Leo's vi emulation currently does not
+support a "current character" cursor. As a result, inserting and pasting before
+or after is replaced by inserting or pasting "at" the current cursor location.
+For example, the 'i' and 'a' command are both mapped to enter the insert state
+at the current cursor location.
+#@nonl
+#@-node:ekr.20090629183608.8445:Cursors (easiest)
+#@+node:ekr.20100112051224.6229:Binding Arrow keys (fixed?)
+Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
+commands or @mode nodes have no effect.
+#@nonl
+#@-node:ekr.20100112051224.6229:Binding Arrow keys (fixed?)
+#@+node:ekr.20100112051224.6231:Undo command (fixed?)
+Using the "undo" command (key 'u') to undo a change to a node's headline text
+only works correctly after another node has been selected. It appears that
+changes made to a node's headline text are not recorded in Leo's change history
+until the edited node has lost focus.
+#@nonl
+#@-node:ekr.20100112051224.6231:Undo command (fixed?)
+#@-node:ekr.20100113075303.6270:Easiest vim problems
 #@+node:ekr.20100111164531.6226:Minor...
 @nocolor-node
 

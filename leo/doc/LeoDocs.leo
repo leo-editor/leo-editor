@@ -11,7 +11,7 @@
 <vnodes>
 <v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
-<v t="ekr.20050404094627"><vh>Buttons</vh>
+<v t="ekr.20050404094627" a="E"><vh>Buttons</vh>
 <v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
 <v t="ekr.20050812090111"><vh>@@button rst3</vh></v>
@@ -61,7 +61,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -23028,7 +23028,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="2,5"></t>
+<t tx="ekr.20070610174018" str_leo_pos="2"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -31872,7 +31872,7 @@ And call this in your plugin *once*::
 
     g.tree_popup_handlers.append(nextclone_rclick)    </t>
 <t tx="ville.20090705224948.5734">import os
-pos = c.find_h("@thin leoUserGuide.txt")[0]
+pos = c.find_h("Users Guide")[0]
 c.selectPosition(pos)
 c.k.simulateCommand('rst3')
 &lt;&lt; html manual &gt;&gt;
