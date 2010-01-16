@@ -71,12 +71,16 @@ class vnode (baseVnode):
     def __init__ (self,context):
 
         # The primary data: headline and body text.
-        if g.isPython3:
-            self._headString = 'newHeadline'
-            self._bodyString = ''
-        else:
-            self._headString = unicode('newHeadline')
-            self._bodyString = unicode('')
+        self._headString = g.u('newHeadline')
+        self._bodyString = g.u('')
+
+        ### 2010/01/16
+        # if g.isPython3:
+            # self._headString = 'newHeadline'
+            # self._bodyString = ''
+        # else:
+            # self._headString = unicode('newHeadline')
+            # self._bodyString = unicode('')
 
         # Structure data...
         self.children = [] # Ordered list of all children of this node.
