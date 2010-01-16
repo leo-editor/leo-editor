@@ -429,7 +429,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         newText = w.getAllText() # Converts to unicode.
 
         # Get the previous values from the vnode.
-        oldText = g.app.gui.toUnicode(p.v._bodyString)
+        oldText = p.v._bodyString ### already unicode ### g.app.gui.toUnicode(p.v._bodyString)
         if oldText == newText:
             # This can happen as the result of undo.
             # g.trace('*** unexpected non-change',color="red")
@@ -669,7 +669,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
 
         w = self.widget
         s = w.text()
-        return g.app.gui.toUnicode(s)
+        return g.u(s) ### g.app.gui.toUnicode(s)
     #@nonl
     #@-node:ekr.20081121105001.551:getAllText
     #@+node:ekr.20081121105001.552:getInsertPoint
@@ -687,7 +687,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         if w.hasSelectedText():
             i = w.selectionStart()
             s = w.selectedText()
-            s = g.app.gui.toUnicode(s)
+            s = g.u(s) ### (s)
             j = i + len(s)
         else:
             i = j = w.cursorPosition()
@@ -722,7 +722,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
 
         w = self.widget
         s = w.text()
-        s = g.app.gui.toUnicode(s)
+        s = g.u(s) ### g.app.gui.toUnicode(s)
         i = w.toPythonIndex(i)
         i = max(0,min(i,len(s)))
         w.setCursorPosition(i)
@@ -734,7 +734,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         # g.trace(i,j,insert,w)
         if i > j: i,j = j,i
         s = w.text()
-        s = g.app.gui.toUnicode(s)
+        s = g.u(s) ### g.app.gui.toUnicode(s)
         n = len(s)
         i = max(0,min(i,n))
         j = max(0,min(j,n))
@@ -1407,7 +1407,7 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
 
         w = self.widget
         s = w.text()
-        s = g.app.gui.toUnicode(s)
+        s = g.u(s) ### g.app.gui.toUnicode(s)
         return s
     #@-node:ekr.20081121105001.564:getAllText
     #@+node:ekr.20081121105001.565:getInsertPoint
@@ -1538,7 +1538,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         if self.check():
             w = self.widget
             s = w.text()
-            return g.app.gui.toUnicode(s)
+            return g.u(s) ### g.app.gui.toUnicode(s)
         else:
             return ''
     #@nonl
@@ -1561,7 +1561,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
             if w.hasSelectedText():
                 i = w.selectionStart()
                 s = w.selectedText()
-                s = g.app.gui.toUnicode(s)
+                s = g.u(s) ### g.app.gui.toUnicode(s)
                 j = i + len(s)
             else:
                 i = j = w.cursorPosition()
@@ -1608,7 +1608,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
 
         w = self.widget
         s = w.text()
-        s = g.app.gui.toUnicode(s)
+        s = g.u(s) ### g.app.gui.toUnicode(s)
         i = self.toPythonIndex(i)
         i = max(0,min(i,len(s)))
         w.setCursorPosition(i)
@@ -1621,7 +1621,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         # g.trace(i,j,insert,w)
         if i > j: i,j = j,i
         s = w.text()
-        s = g.app.gui.toUnicode(s)
+        s = g.u(s) ### g.app.gui.toUnicode(s)
         n = len(s)
         i = max(0,min(i,n))
         j = max(0,min(j,n))
@@ -5551,7 +5551,6 @@ class leoQtMenu (leoMenu.leoMenu):
     def setMenuLabel (self,menu,name,label,underline=-1):
 
         def munge(s):
-            # s = g.app.gui.toUnicode(s)
             return g.u(s or '').replace('&','')
 
         # menu is a qtMenuWrapper.
@@ -6878,8 +6877,9 @@ class leoQtGui(leoGui.leoGui):
         cb = self.qtApp.clipboard()
         if cb:
             # cb.clear()  # unnecessary, breaks on some Qt versions
-            if type(s) == type(''):
-                s = g.app.gui.toUnicode(s)
+            ###
+            ###if type(s) == type(''):
+            ###    s = g.app.gui.toUnicode(s)
 
             QtGui.QApplication.processEvents()
             cb.setText(s)
@@ -6898,7 +6898,7 @@ class leoQtGui(leoGui.leoGui):
             QtGui.QApplication.processEvents()
             s = cb.text()
             if trace: g.trace (len(s),type(s))
-            s = g.app.gui.toUnicode(s)
+            s = g.app.gui.toUnicode(s) # Assume nothing about the type of s.
             return s
         else:
             g.trace('no clipboard!')
@@ -7017,7 +7017,7 @@ class leoQtGui(leoGui.leoGui):
         parent = None
         title = 'Enter Leo id'
         s,ok = QtGui.QInputDialog.getText(parent,title,message)
-        return g.app.gui.toUnicode(s)
+        return g.u(s) ### g.app.gui.toUnicode(s)
     #@nonl
     #@-node:ekr.20081121105001.484:runAskLeoIDDialog
     #@+node:ekr.20081121105001.485:runAskOkDialog
@@ -7099,9 +7099,7 @@ class leoQtGui(leoGui.leoGui):
             return [g.u(s) for s in lst]
         else:
             s = QtGui.QFileDialog.getOpenFileName(parent,title,os.curdir,filter)
-            s = g.app.gui.toUnicode(s)
-            return s
-    #@nonl
+            return g.u(s) ### g.app.gui.toUnicode(s)
     #@-node:ekr.20081121105001.488:runOpenFileDialog
     #@+node:ekr.20090722094828.3653:runPropertiesDialog (qtGui)
     def runPropertiesDialog(self,
@@ -7125,7 +7123,7 @@ class leoQtGui(leoGui.leoGui):
         parent = None
         filter_ = self.makeFilter(filetypes)
         s = QtGui.QFileDialog.getSaveFileName(parent,title,os.curdir,filter_)
-        return g.app.gui.toUnicode(s)
+        return g.u(s) ### g.app.gui.toUnicode(s)
     #@-node:ekr.20081121105001.489:runSaveFileDialog
     #@+node:ekr.20081121105001.490:runScrolledMessageDialog
     def runScrolledMessageDialog (self, title='Message', label= '', msg='', c=None, **kw):
@@ -7421,7 +7419,7 @@ class leoQtGui(leoGui.leoGui):
             s = g.u(s)
             return s
         except Exception:
-            g.trace('*** Unicode Error: bugs possible')
+            # g.trace('*** Unicode Error: bugs possible')
             return g.toUnicode(s,'utf-8',reportErrors='replace')
     #@-node:ekr.20081121105001.502:toUnicode (qtGui)
     #@+node:ekr.20081121105001.503:widget_name (qtGui)
