@@ -545,7 +545,6 @@ class testUtils:
         if False and breakOnError: # useful for debugging.
             aList = [repr(z.copy()) for z in c.p.parent().self_and_siblings()]
             print('\n'.join(aList))
-            g.pdb()
 
         return c.nullPosition()
     #@-node:ekr.20051104075904.31:findNodeAnywhere

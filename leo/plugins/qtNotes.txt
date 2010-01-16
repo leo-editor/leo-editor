@@ -5946,7 +5946,7 @@ def onTextChanged (self):
     newText = w.getAllText() # Converts to unicode.
 
     # Get the previous values from the vnode.
-    oldText = g.app.gui.toUnicode(p.v._bodyString)
+    oldText = p.v._bodyString ### already unicode ### g.app.gui.toUnicode(p.v._bodyString)
     if oldText == newText:
         # This can happen as the result of undo.
         # g.trace('*** unexpected non-change',color="red")
@@ -6041,7 +6041,7 @@ def onTextChanged (self):
     newText = w.getAllText() # Converts to unicode.
 
     # Get the previous values from the vnode.
-    oldText = g.app.gui.toUnicode(p.v._bodyString)
+    oldText = p.v._bodyString ### already unicode ### g.app.gui.toUnicode(p.v._bodyString)
     if oldText == newText:
         # This can happen as the result of undo.
         # g.trace('*** unexpected non-change',color="red")
@@ -6627,7 +6627,7 @@ def onTextChanged (self):
     newText = w.getAllText() # Converts to unicode.
 
     # Get the previous values from the vnode.
-    oldText = g.app.gui.toUnicode(p.v._bodyString)
+    oldText = p.v._bodyString ### already unicode ### g.app.gui.toUnicode(p.v._bodyString)
     if oldText == newText:
         # This can happen as the result of undo.
         # g.trace('*** unexpected non-change',color="red")
@@ -9045,7 +9045,6 @@ def getMenuLabel (self,menu,name):
 def setMenuLabel (self,menu,name,label,underline=-1):
 
     def munge(s):
-        # s = g.app.gui.toUnicode(s)
         return g.u(s or '').replace('&','')
 
     # menu is a qtMenuWrapper.
