@@ -2559,7 +2559,7 @@ class keyHandlerClass:
                 if trace: g.trace('calling command directly',commandName)
                 # if commandName != 'repeat-complex-command': # 2010/01/11
                     # k.mb_history.insert(0,commandName)
-                if commandName == 'select-all': g.pdb()
+                # if commandName == 'select-all': g.pdb()
                 c.doCommand(func,commandName,event=event)
             if c.exists:
                 k.endCommand(event,commandName)
