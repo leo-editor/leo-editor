@@ -133,7 +133,8 @@ def on_idle (tag,keywords):
 
                     if update:
                         g.es("updated from: " + g.shortFileName(path),color="blue")
-                        c.setBodyString(p,s,encoding)
+                        s = g.toUnicode(s,encoding=encoding)
+                        c.setBodyString(p,s)
                         #TL - 7/2/08 Converted to configurable 'goto node...'
                         if c.config.getBool('open_with_goto_node_on_update'):
                             c.selectPosition(p)

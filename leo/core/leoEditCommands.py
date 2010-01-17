@@ -2987,7 +2987,7 @@ class editCommandsClass (baseEditCommandsClass):
         oldText = name.startswith('body') and p.b or ''
         undoType = 'Typing'
         brackets = self.openBracketsList + self.closeBracketsList
-        inBrackets = ch and g.toUnicode(ch,g.app.tkEncoding) in brackets
+        inBrackets = ch and g.toUnicode(ch) in brackets
         # if trace: g.trace(name,repr(ch),ch and ch in brackets)
         #@nonl
         #@-node:ekr.20061103114242:<< set local vars >>
@@ -6134,25 +6134,23 @@ class leoCommandsClass (baseEditCommandsClass):
             'abort-edit-headline':          f.abortEditLabelCommand,
             'about-leo':                    c.about,
             'add-comments':                 c.addComments,     
+            'beautify':                     c.beautifyPythonCode,
             'beautify-all':                 c.beautifyAllPythonCode,
             'beautify-tree':                c.beautifyPythonTree,
-            'beautify':                     c.beautifyPythonCode,
             'cascade-windows':              f.cascade,
+            'check-all-python-code':        c.checkAllPythonCode,
             'check-derived-file':           c.atFileCommands.checkDerivedFile,
             'check-leo-file':               c.fileCommands.checkLeoFile,
-            'clear-recent-files':           c.clearRecentFiles,
-            'clean-recent-files':           c.cleanRecentFiles,
-            'sort-recent-files':            c.sortRecentFiles,
-            'close-window':                 c.close,
-            'contract-or-go-left':          c.contractNodeOrGoToParent,
-            'check-python-code':            c.checkPythonCode,
-            'check-all-python-code':        c.checkAllPythonCode,
             'check-outline':                c.checkOutline,
+            'check-python-code':            c.checkPythonCode,
+            'clean-recent-files':           c.cleanRecentFiles,
             'clear-recent-files':           c.clearRecentFiles,
             'clone-node':                   c.clone,
-            'contract-node':                c.contractNode,
+            'close-window':                 c.close,
             'contract-all':                 c.contractAllHeadlines,
             'contract-all-other-nodes':     c.contractAllOtherNodes,
+            'contract-node':                c.contractNode,
+            'contract-or-go-left':          c.contractNodeOrGoToParent,
             'contract-parent':              c.contractParent,
             'convert-all-blanks':           c.convertAllBlanks,
             'convert-all-tabs':             c.convertAllTabs,
@@ -6173,10 +6171,10 @@ class leoCommandsClass (baseEditCommandsClass):
             'execute-script':               c.executeScript,
             'exit-leo':                     g.app.onQuit,
             'expand-all':                   c.expandAllHeadlines,
+            'expand-ancestors-only':        c.expandOnlyAncestorsOfNode,
+            'expand-and-go-right':          c.expandNodeAndGoToFirstChild,
             'expand-next-level':            c.expandNextLevel,
             'expand-node':                  c.expandNode,
-            'expand-and-go-right':          c.expandNodeAndGoToFirstChild,
-            'expand-ancestors-only':        c.expandOnlyAncestorsOfNode,
             'expand-or-go-right':           c.expandNodeOrGoToFirstChild,
             'expand-prev-level':            c.expandPrevLevel,
             'expand-to-level-1':            c.expandLevel1,
@@ -6197,8 +6195,8 @@ class leoCommandsClass (baseEditCommandsClass):
             'go-back':                      c.goPrevVisitedNode,
             'go-forward':                   c.goNextVisitedNode,
             'goto-first-node':              c.goToFirstNode,
-            'goto-first-visible-node':      c.goToFirstVisibleNode,
             'goto-first-sibling':           c.goToFirstSibling,
+            'goto-first-visible-node':      c.goToFirstVisibleNode,
             'goto-last-node':               c.goToLastNode,
             'goto-last-sibling':            c.goToLastSibling,
             'goto-last-visible-node':       c.goToLastVisibleNode,
@@ -6221,10 +6219,10 @@ class leoCommandsClass (baseEditCommandsClass):
             'import-flattened-outline':     c.importFlattenedOutline,
             'import-noweb-files':           c.importNowebFiles,
             'indent-region':                c.indentBody,
-            'insert-child':                 c.insertChild,
-            'insert-node':                  c.insertHeadline,
             'insert-body-time':             c.insertBodyTime,
+            'insert-child':                 c.insertChild,
             'insert-headline-time':         f.insertHeadlineTime,
+            'insert-node':                  c.insertHeadline,
             'mark':                         c.markHeadline,
             'mark-changed-items':           c.markChangedHeadlines,
             'mark-changed-roots':           c.markChangedRoots,
@@ -6243,9 +6241,9 @@ class leoCommandsClass (baseEditCommandsClass):
             'open-leoPlugins-leo':          c.openLeoPlugins,
             'open-leoSettings-leo':         c.openLeoSettings,
             'open-myLeoSettings-leo':       c.openMyLeoSettings,
+            'open-offline-tutorial':        f.leoHelp,
             'open-online-home':             c.leoHome,
             'open-online-tutorial':         c.leoTutorial,
-            'open-offline-tutorial':        f.leoHelp,
             'open-outline':                 c.open,
             'open-python-window':           c.openPythonWindow,
             'open-quickstart-leo':          c.leoQuickStart,
@@ -6262,10 +6260,9 @@ class leoCommandsClass (baseEditCommandsClass):
             'promote':                      c.promote,
             'read-at-auto-nodes':           c.readAtAutoNodes,
             'read-at-file-nodes':           c.readAtFileNodes,
-                # Write @<file> Nodes.
             'read-at-shadow-nodes':         c.readAtShadowNodes,
-            'read-outline-only':            c.readOutlineOnly,
             'read-file-into-node':          c.readFileIntoNode,
+            'read-outline-only':            c.readOutlineOnly,
             'redo':                         c.undoer.redo,
             'reformat-paragraph':           c.reformatParagraph,
             'remove-sentinels':             c.removeSentinels,
@@ -6276,11 +6273,12 @@ class leoCommandsClass (baseEditCommandsClass):
             'save-file-as-unzipped':        c.saveAsUnzipped,
             'save-file-as-zipped':          c.saveAsZipped,
             'save-file-to':                 c.saveTo,
-            'settings':                     c.preferences,
             'set-colors':                   c.colorPanel,
             'set-font':                     c.fontPanel,
+            'settings':                     c.preferences,
             'show-invisibles':              c.showInvisibles,
             'sort-children':                c.sortChildren,
+            'sort-recent-files':            c.sortRecentFiles,
             'sort-siblings':                c.sortSiblings,
             'tangle':                       c.tangle,
             'tangle-all':                   c.tangleAll,
@@ -6299,14 +6297,13 @@ class leoCommandsClass (baseEditCommandsClass):
             'weave':                        c.weave,
             'write-at-auto-nodes':          c.atFileCommands.writeAtAutoNodes,
             'write-at-file-nodes':          c.fileCommands.writeAtFileNodes,
-                # Write @<file> Nodes.
             'write-at-shadow-nodes':        c.fileCommands.writeAtShadowNodes,
             'write-dirty-at-auto-nodes':    c.atFileCommands.writeDirtyAtAutoNodes,
             'write-dirty-at-file-nodes':    c.fileCommands.writeDirtyAtFileNodes,
             'write-dirty-at-shadow-nodes':  c.fileCommands.writeDirtyAtShadowNodes,
+            'write-file-from-node':         c.writeFileFromNode,
             'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
             'write-outline-only':           c.fileCommands.writeOutlineOnly,
-            'write-file-from-node':         c.writeFileFromNode,
         }
         #@-node:ekr.20050920084036.189:<< define dictionary d of names and Leo commands >>
         #@nl
@@ -7325,7 +7322,7 @@ class minibufferFind (baseEditCommandsClass):
 
         h = self.finder ; w = h.change_ctrl
 
-        s = g.toUnicode(pattern,g.app.tkEncoding)
+        s = g.toUnicode(pattern)
 
         w.delete(0,'end')
         w.insert(0,s)
@@ -7339,7 +7336,7 @@ class minibufferFind (baseEditCommandsClass):
 
         # g.trace(pattern,g.callers(4))
 
-        s = g.toUnicode(pattern,g.app.tkEncoding)
+        s = g.toUnicode(pattern)
 
         w.delete(0,'end')
         w.insert(0,s)
@@ -8412,7 +8409,7 @@ class spellTabHandler (leoFind.leoFind):
             # Create the dictionary - there are better ways to do this
             # in later Python's but we stick with this method for compatibility
             for word in f.readlines():
-                word = g.toUnicode(word,'utf-8', reportErrors=True)
+                word = g.toUnicode(word,reportErrors=True)
                 d [word.strip().lower()] = 0
         finally:
             f.close()

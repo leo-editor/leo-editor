@@ -315,10 +315,10 @@ class vnode (baseVnode):
 
         v = self
 
-        h = g.toUnicode(v.headString(),'utf-8')
+        h = g.toUnicode(v.headString())
         h = h.lower().replace(' ','').replace('\t','')
 
-        pattern = g.toUnicode(pattern,'utf-8')
+        pattern = g.toUnicode(pattern)
         pattern = pattern.lower().replace(' ','').replace('\t','')
 
         return h.startswith(pattern)
@@ -329,12 +329,12 @@ class vnode (baseVnode):
     def bodyString (self):
 
         # This message should never be printed and we want to avoid crashing here!
-        if not g.isUnicode(self._bodyString):
+        if g.isUnicode(self._bodyString):
+            return self._bodyString
+        else:
             s = "v.bodyString: Leo internal error: not unicode:" + repr(self._bodyString)
             g.es_print('',s,color="red")
-
-        # Make _sure_ we return a unicode string.
-        return g.toUnicode(self._bodyString,g.app.tkEncoding)
+            return g.toUnicode(self._bodyString)
 
     getBody = bodyString
     #@nonl
@@ -409,7 +409,7 @@ class vnode (baseVnode):
             g.es_print('',s,color="red")
 
         # Make _sure_ we return a unicode string.
-        return g.toUnicode(self._headString,g.app.tkEncoding)
+        return g.toUnicode(self._headString)
 
     def cleanHeadString (self):
 
@@ -640,7 +640,7 @@ class vnode (baseVnode):
     #@-node:ekr.20080429053831.9:v.setWriteBit
     #@-node:ekr.20031218072017.3386: v.Status bits
     #@+node:ekr.20040315032144:v .setBodyString & v.setHeadString
-    def setBodyString (self,s,encoding="utf-8"):
+    def setBodyString (self,s):
 
         trace = False and not g.unitTesting
         v = self
@@ -648,11 +648,11 @@ class vnode (baseVnode):
             g.trace('v %s %s -> %s %s\nold: %s\nnew: %s' % (
                 v.h, len(v._bodyString),len(s),g.callers(5),
                 v._bodyString,s))
-        v._bodyString = g.toUnicode(s,encoding,reportErrors=True)
+        v._bodyString = g.toUnicode(s,reportErrors=True)
 
-    def setHeadString (self,s,encoding="utf-8"):
+    def setHeadString (self,s):
         v = self
-        v._headString = g.toUnicode(s,encoding,reportErrors=True)
+        v._headString = g.toUnicode(s,reportErrors=True)
 
     initBodyString = setBodyString
     initHeadString = setHeadString
@@ -1653,24 +1653,24 @@ class position (object):
     #@-node:ekr.20040306220634.29:p.setSelection
     #@-node:ekr.20040306220634:p.Vnode proxies
     #@+node:ekr.20040315034158:p.setBodyString & setHeadString
-    def setBodyString (self,s,encoding="utf-8"):
+    def setBodyString (self,s):
 
         p = self
-        return p.v.setBodyString(s,encoding)
+        return p.v.setBodyString(s)
 
     initBodyString = setBodyString
     setTnodeText = setBodyString
     scriptSetBodyString = setBodyString
 
-    def initHeadString (self,s,encoding="utf-8"):
+    def initHeadString (self,s):
 
         p = self
-        p.v.initHeadString(s,encoding)
+        p.v.initHeadString(s)
 
-    def setHeadString (self,s,encoding="utf-8"):
+    def setHeadString (self,s):
 
         p = self
-        p.v.initHeadString(s,encoding)
+        p.v.initHeadString(s)
         p.setDirty()
     #@-node:ekr.20040315034158:p.setBodyString & setHeadString
     #@+node:ekr.20040312015908:p.Visited bits

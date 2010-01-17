@@ -1154,8 +1154,8 @@ class ToolbarScriptButton(ToolbarIconButton):
             if i != -1:
                 s = s[:i].strip()
         if 1: # Not great, but spaces, etc. interfere with tab completion.
-            chars = g.toUnicode(string.letters + string.digits,g.app.tkEncoding)
-            aList = [g.choose(ch in chars,ch,'-') for ch in g.toUnicode(s,g.app.tkEncoding)]
+            chars = g.toUnicode(string.letters + string.digits)
+            aList = [g.choose(ch in chars,ch,'-') for ch in g.toUnicode(s)]
             s = ''.join(aList)
             s = s.replace('--','-')
         while s.startswith('-'):

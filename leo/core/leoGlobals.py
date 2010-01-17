@@ -331,7 +331,7 @@ def computeStandardDirectories():
         for s in sys.path: g.trace(s)
 
     g.app.loadDir = g.computeLoadDir()
-        # Depends on g.app.tkEncoding: uses utf-8 for now.
+        # Depends on g.app.defaultEncoding: uses utf-8 for now.
 
     g.app.leoDir = g.computeLeoDir()
 
@@ -365,7 +365,7 @@ def startupEncoding ():
     elif sys.platform=="dawwin":
         encoding = "utf-8"
     else:
-        encoding = g.app.tkEncoding
+        encoding = g.app.defaultEncoding
 
     return encoding
 #@-node:ekr.20041117151301.1:startupEncoding
@@ -2232,7 +2232,7 @@ def trace (*args,**keys):
         if g.isString(arg):
             pass
         elif g.isBytes(arg):
-            arg = g.toUnicode(arg,'utf-8')
+            arg = g.toUnicode(arg)
         else:
             arg = repr(arg)
         if result:
@@ -4276,7 +4276,7 @@ def toUnicodeFileEncoding(path,encoding):
             # encoding = "mbcs" # Leo 4.2 and previous.
             encoding = 'utf-8' # New in Leo 4.3
         else:
-            encoding = app.tkEncoding
+            encoding = app.defaultEncoding
 
     # Yes, this is correct.  All os_path_x functions return Unicode strings.
     return g.toUnicode(path,encoding)
@@ -4856,7 +4856,7 @@ def skip_c_id(s,i):
 #@+node:ekr.20040705195048:skip_id
 def skip_id(s,i,chars=None):
 
-    chars = chars and g.toUnicode(chars,encoding='ascii') or ''
+    chars = chars and g.toUnicode(chars) or ''
     n = len(s)
     while i < n and (g.isWordChar(s[i]) or s[i] in chars):
         i += 1
@@ -5305,7 +5305,7 @@ if g.unitTesting:
     for ivar in ('c','g','p'):
         assert ivar in dir()
 
-    assert hasattr(g.app,'tkEncoding')
+    assert hasattr(g.app,'defaultEncoding')
 #@nonl
 #@-node:ekr.20090517020744.5888:@test pre-definition of g in scripts
 #@-node:ekr.20040327103735.2:Script Tools (leoGlobals.py)
@@ -5468,70 +5468,6 @@ def isWordChar1 (ch):
     return ch and (ch.isalpha() or ch == '_')
 #@nonl
 #@-node:ekr.20061006152327:g.isWordChar & g.isWordChar1
-#@+node:ekr.20031218072017.1503:getpreferredencoding from 2.3a2
-try:
-    # Use Python's version of getpreferredencoding if it exists.
-    # It is new in Python 2.3.
-    import locale
-    getpreferredencoding = locale.getpreferredencoding
-except Exception:
-    # Use code copied from locale.py in Python 2.3alpha2.
-    if sys.platform in ('win32', 'darwin', 'mac'):
-        #@        << define getpreferredencoding using _locale >>
-        #@+node:ekr.20031218072017.1504:<< define getpreferredencoding using _locale >>
-        # On Win32, this will return the ANSI code page
-        # On the Mac, it should return the system encoding;
-        # it might return "ascii" instead.
-
-        def getpreferredencoding(do_setlocale = True):
-            """Return the charset that the user is likely using."""
-            try:
-                import _locale
-                return _locale._getdefaultlocale()[1]
-            except Exception:
-                return None
-        #@-node:ekr.20031218072017.1504:<< define getpreferredencoding using _locale >>
-        #@nl
-    else:
-        #@        << define getpreferredencoding for *nix >>
-        #@+node:ekr.20031218072017.1505:<< define getpreferredencoding for *nix >>
-        # Avoid pylint complaints about CODESET, LC_CTYPE and nl_langinfo.
-        if (
-            hasattr(locale,'CODESET') and
-            hasattr(locale,'LC_CTYPE') and
-            hasattr(locale,'nl_langinfo')
-        ):
-            codeset =  getattr(locale,'CODESET')
-            lc_ctype = getattr(locale,'LC_CTYPE')
-            nl_langinfo = getattr(locale,'nl_langinfo')
-
-            def getpreferredencoding(do_setlocale=True):
-                """Return the charset that the user is likely using,
-                according to the system configuration."""
-                try:
-                    if do_setlocale:
-                        oldloc = locale.setlocale(lc_ctype)
-                        locale.setlocale(lc_ctype, "")
-                        result = nl_langinfo(codeset)
-                        locale.setlocale(lc_ctype, oldloc)
-                        return result
-                    else:
-                        return nl_langinfo(codeset)
-                except Exception:
-                    return None
-        else:
-            # Fall back to parsing environment variables :-(
-            def getpreferredencoding(do_setlocale = True):
-                """Return the charset that the user is likely using,
-                by looking at environment variables."""
-                try:
-                    return locale.getdefaultlocale()[1]
-                except Exception:
-                    return None
-
-        #@-node:ekr.20031218072017.1505:<< define getpreferredencoding for *nix >>
-        #@nl
-#@-node:ekr.20031218072017.1503:getpreferredencoding from 2.3a2
 #@+node:ekr.20031218072017.1500:isValidEncoding
 def isValidEncoding (encoding):
 
@@ -5648,7 +5584,12 @@ def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
     return s, ok
 #@-node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
 #@+node:ekr.20050208093800.1:g.toUnicode
-def toUnicode (s,encoding,reportErrors=False):
+def toUnicode (s,encoding=None,reportErrors=False):
+
+    # The encoding is usually g.app.defaultEncoding,
+    # but is may be different while importing or reading files.
+    if encoding is None:
+        encoding = g.app.defaultEncoding
 
     if isPython3:
         convert,mustConvert,nullVal = str,g.isBytes,''
@@ -5669,7 +5610,6 @@ def toUnicode (s,encoding,reportErrors=False):
         pass
 
     return s
-#@nonl
 #@-node:ekr.20050208093800.1:g.toUnicode
 #@+node:ekr.20091206161352.6232:g.u & g.ue
 if isPython3: # g.not defined yet.
@@ -6697,7 +6637,7 @@ def importFromPath (name,path,pluginName=None,verbose=False):
     fn = g.shortFileName(name)
     moduleName,ext = g.os_path_splitext(fn)
     path = g.os_path_normpath(path)
-    path = g.toEncodedString(path,app and app.tkEncoding or 'ascii')
+    path = g.toEncodedString(path,app and app.defaultEncoding or 'ascii')
 
     module = sys.modules.get(moduleName)
     if module:

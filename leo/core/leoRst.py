@@ -161,9 +161,9 @@ class rstCommands:
         # For writing.
         self.atAutoWrite = False # True, special cases for writeAtAutoFile.
         self.atAutoWriteUnderlines = '' # Forced underlines for writeAtAutoFile.
-        self.defaultEncoding = 'utf-8'
+        ### self.defaultEncoding = 'utf-8' ### Use g.app.defaultEncoding.
         self.leoDirectivesList = g.globalDirectiveList
-        self.encoding = self.defaultEncoding
+        self.encoding = g.app.defaultEncoding ### self.defaultEncoding
         self.ext = None # The file extension.
         self.outputFileName = None # The name of the file being written.
         self.outputFile = None # The open file being written.
@@ -652,7 +652,7 @@ class rstCommands:
         # This can be overridden by @rst-option encoding=whatever.
         c = self.c
         d = c.scanAllDirectives(p)
-        self.encoding = encoding or d.get('encoding') or self.defaultEncoding
+        self.encoding = encoding or d.get('encoding') or g.app.defaultEncoding
         self.path = d.get('path') or ''
 
         # g.trace('path:',self.path)

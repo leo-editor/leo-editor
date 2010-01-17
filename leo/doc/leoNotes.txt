@@ -4982,6 +4982,68 @@ else:
         return 'break'
 #@-node:ekr.20061031131434.149:<< handle mode bindings >>
 #@-node:ekr.20091230094319.6241:from k.masterKeyHandler
+#@+node:ekr.20100116085803.6259:getpreferredencoding from 2.3a2
+try:
+    # Use Python's version of getpreferredencoding if it exists.
+    # It is new in Python 2.3.
+    import locale
+    getpreferredencoding = locale.getpreferredencoding
+except Exception:
+    # Use code copied from locale.py in Python 2.3alpha2.
+    if sys.platform in ('win32', 'darwin', 'mac'):
+        << define getpreferredencoding using _locale >>
+    else:
+        << define getpreferredencoding for *nix >>
+#@+node:ekr.20100116085803.6260:<< define getpreferredencoding using _locale >>
+# On Win32, this will return the ANSI code page
+# On the Mac, it should return the system encoding;
+# it might return "ascii" instead.
+
+def getpreferredencoding(do_setlocale = True):
+    """Return the charset that the user is likely using."""
+    try:
+        import _locale
+        return _locale._getdefaultlocale()[1]
+    except Exception:
+        return None
+#@-node:ekr.20100116085803.6260:<< define getpreferredencoding using _locale >>
+#@+node:ekr.20100116085803.6261:<< define getpreferredencoding for *nix >>
+# Avoid pylint complaints about CODESET, LC_CTYPE and nl_langinfo.
+if (
+    hasattr(locale,'CODESET') and
+    hasattr(locale,'LC_CTYPE') and
+    hasattr(locale,'nl_langinfo')
+):
+    codeset =  getattr(locale,'CODESET')
+    lc_ctype = getattr(locale,'LC_CTYPE')
+    nl_langinfo = getattr(locale,'nl_langinfo')
+
+    def getpreferredencoding(do_setlocale=True):
+        """Return the charset that the user is likely using,
+        according to the system configuration."""
+        try:
+            if do_setlocale:
+                oldloc = locale.setlocale(lc_ctype)
+                locale.setlocale(lc_ctype, "")
+                result = nl_langinfo(codeset)
+                locale.setlocale(lc_ctype, oldloc)
+                return result
+            else:
+                return nl_langinfo(codeset)
+        except Exception:
+            return None
+else:
+    # Fall back to parsing environment variables :-(
+    def getpreferredencoding(do_setlocale = True):
+        """Return the charset that the user is likely using,
+        by looking at environment variables."""
+        try:
+            return locale.getdefaultlocale()[1]
+        except Exception:
+            return None
+
+#@-node:ekr.20100116085803.6261:<< define getpreferredencoding for *nix >>
+#@-node:ekr.20100116085803.6259:getpreferredencoding from 2.3a2
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node

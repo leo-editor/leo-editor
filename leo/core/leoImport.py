@@ -56,7 +56,7 @@ class leoImportCommands (scanUtility):
 
         self.c = c
         self.default_directory = None # For @path logic.
-        self.encoding = g.app.tkEncoding
+        self.encoding = g.app.defaultEncoding
         self.errors = 0
         self.fileName = None # The original file name, say x.cpp
         self.fileType = None # ".py", ".c", etc.
@@ -601,8 +601,8 @@ class leoImportCommands (scanUtility):
     #@-node:ekr.20031218072017.1464:weave
     #@-node:ekr.20031218072017.3289:Export
     #@+node:ekr.20031218072017.3305:Utilities
-    #@+node:ekr.20090122201952.4:appendStringToBody & setBodyString (baseScannerClass)
-    def appendStringToBody (self,p,s,encoding="utf-8"):
+    #@+node:ekr.20090122201952.4:appendStringToBody & setBodyString (leoImport)
+    def appendStringToBody (self,p,s):
 
         '''Similar to c.appendStringToBody,
         but does not recolor the text or redraw the screen.'''
@@ -610,10 +610,10 @@ class leoImportCommands (scanUtility):
         if s:
             body = p.b
             assert(g.isUnicode(body))
-            s = g.toUnicode(s,encoding)
-            self.setBodyString(p,body + s,encoding)
+            s = g.toUnicode(s,self.encoding)
+            self.setBodyString(p,body + s)
 
-    def setBodyString (self,p,s,encoding="utf-8"):
+    def setBodyString (self,p,s):
 
         '''Similar to c.setBodyString,
         but does not recolor the text or redraw the screen.'''
@@ -621,7 +621,7 @@ class leoImportCommands (scanUtility):
         c = self.c ; v = p.v
         if not c or not p: return
 
-        s = g.toUnicode(s,encoding)
+        s = g.toUnicode(s,self.encoding)
         current = c.p
         if current and p.v==current.v:
             c.frame.body.setSelectionAreas(s,None,None)
@@ -636,19 +636,23 @@ class leoImportCommands (scanUtility):
             p.setDirty()
             if not c.isChanged():
                 c.setChanged(True)
-    #@-node:ekr.20090122201952.4:appendStringToBody & setBodyString (baseScannerClass)
-    #@+node:ekr.20031218072017.3306:createHeadline
+    #@-node:ekr.20090122201952.4:appendStringToBody & setBodyString (leoImport)
+    #@+node:ekr.20031218072017.3306:createHeadline (leoImport)
     def createHeadline (self,parent,body,headline):
 
         # g.trace("parent,headline:",parent,headline)
         # Create the vnode.
-        v = parent.insertAsLastChild()
-        v.initHeadString(headline,self.encoding)
-        # Set the body.
+        p = parent.insertAsLastChild()
+
+        body = g.u(body)
+        headline = g.u(headline)
+
+        p.initHeadString(headline)
         if len(body) > 0:
-            self.setBodyString(v,body,self.encoding)
-        return v
-    #@-node:ekr.20031218072017.3306:createHeadline
+            self.setBodyString(p,body)
+
+        return p
+    #@-node:ekr.20031218072017.3306:createHeadline (leoImport)
     #@+node:ekr.20031218072017.3307:error
     def error (self,s):
         g.es('',s)
@@ -781,8 +785,7 @@ class leoImportCommands (scanUtility):
         elif atAuto:
             self.encoding = c.config.default_at_auto_file_encoding
         else:
-            # This is not great.
-            self.encoding = g.app.tkEncoding
+            self.encoding = g.app.defaultEncoding
 
         # g.trace(self.encoding)
     #@-node:ekr.20031218072017.1463:setEncoding (leoImport)
@@ -1749,7 +1752,7 @@ class baseScannerClass (scanUtility):
         self.codeEnd = None
             # The character after the last character of the class, method or function.
             # An error will be given if this is not a newline.
-        self.encoding = ic.encoding # g.app.tkEncoding
+        self.encoding = ic.encoding
         self.errors = 0
         ic.errors = 0
         self.errorLines = []
@@ -2078,19 +2081,19 @@ class baseScannerClass (scanUtility):
                 g.angleBrackets(' ' + self.methodName + ' methods ') + '\n\n')
     #@-node:ekr.20070707073044.1:addRef
     #@+node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
-    def appendStringToBody (self,p,s,encoding="utf-8"):
+    def appendStringToBody (self,p,s):
 
         '''Similar to c.appendStringToBody,
         but does not recolor the text or redraw the screen.'''
 
-        return self.importCommands.appendStringToBody(p,s,encoding)
+        return self.importCommands.appendStringToBody(p,s)
 
-    def setBodyString (self,p,s,encoding="utf-8"):
+    def setBodyString (self,p,s):
 
         '''Similar to c.setBodyString,
         but does not recolor the text or redraw the screen.'''
 
-        return self.importCommands.setBodyString(p,s,encoding)
+        return self.importCommands.setBodyString(p,s)
     #@-node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
     #@+node:ekr.20090512153903.5806:computeBody (baseScannerClass)
     def computeBody (self,s,start,sigStart,codeEnd):
@@ -2141,20 +2144,11 @@ class baseScannerClass (scanUtility):
         return self.createHeadline(parent,prefix + body,headline)
 
     #@-node:ekr.20070707085612:createFunctionNode
-    #@+node:ekr.20070703122141.77:createHeadline
+    #@+node:ekr.20070703122141.77:createHeadline (baseScannerClass)
     def createHeadline (self,parent,body,headline):
 
-        # g.trace('parent,headline:',parent.h,headline)
-
-        # Create the node.
-        p = parent.insertAsLastChild()
-        p.initHeadString(headline,self.encoding)
-
-        # Set the body.
-        if body:
-            self.setBodyString(p,body,self.encoding)
-        return p
-    #@-node:ekr.20070703122141.77:createHeadline
+        return self.importCommands.createHeadline(parent,body,headline)
+    #@-node:ekr.20070703122141.77:createHeadline (baseScannerClass)
     #@+node:ekr.20090502071837.1:endGen
     def endGen (self,s):
 

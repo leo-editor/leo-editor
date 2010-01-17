@@ -15,14 +15,21 @@ REM goto good_plugins
 REM goto bad_plugins
 
 REM goto essential_plugins
-REM goto errors
+goto errors
 goto all
 
 :errors
 
 echo leoEditCommands.py (Supress W0511: Fixme)
 rem W0511:2380: FIXME lineYOffset is expected to be on a tnode in drawing code
-call pylint.bat leo\core\leoEditCommands.py  --disable-msg=W0511 --rcfile=leo\test\pylint-leo-rc.txt
+REM call pylint.bat "--disable-msg=W0511 --rcfile=c:\leo.repo\trunk\leo\test\pylint-leo-rc.txt c:\leo.repo\trunk\leo\core\leoEditCommands.py"
+
+call pylint.bat "--rcfile=c:\leo.repo\trunk\leo\test\pylint-leo-rc.txt c:\leo.repo\trunk\leo\core\leoEditCommands.py"
+
+echo runLeo.py (suppress W0611)
+rem Harmless: W0611 (import pychecker)
+call pylint.bat "--disable-msg=W0611 --rcfile=leo\test\pylint-leo-rc.txt leo\core\runLeo.py"
+
 
 goto done
 

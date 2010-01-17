@@ -2317,8 +2317,8 @@ class baseTangleCommands:
             g.trace(name,part,
                 "\n1:",g.get_line(s1,0),
                 "\n2:",g.get_line(s2,0))
-        s1 = g.toUnicode(s1,self.encoding) # 4/4/03
-        s2 = g.toUnicode(s2,self.encoding) # 4/4/03
+        s1 = g.toUnicode(s1,self.encoding)
+        s2 = g.toUnicode(s2,self.encoding)
         #@    << Define forgiving_compare vars >>
         #@+node:ekr.20031218072017.3549:<< Define forgiving_compare vars >>
         # scan_derived_file has set the ivars describing comment delims.
@@ -2894,7 +2894,7 @@ class baseTangleCommands:
         part, found = self.ust_lookup(name,part_number,is_root_flag,update_flag=True)
         if not found:
             return false_ret  # Not an error.
-        ucode = g.toUnicode(part.code,self.encoding) # 4/4/03
+        ucode = g.toUnicode(part.code,self.encoding)
         #@    << Remove leading blank lines and comments from ucode >>
         #@+node:ekr.20031218072017.3574:<< Remove leading blank lines and comments from ucode >>
         #@+at

@@ -423,7 +423,7 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
     assert g.app.loadDir
 
     plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
-    moduleName = g.toUnicode(moduleName,g.app.tkEncoding)
+    moduleName = g.toUnicode(moduleName)
 
     # This import will typically result in calls to registerHandler.
     # if the plugin does _not_ use the init top-level function.

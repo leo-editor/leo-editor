@@ -383,7 +383,7 @@ def insert_read_only_node (c,v,name):
             #@nl
         previous = v._bodyString
         c.setBodyString(v,new)
-        changed = (g.toUnicode(new,'ascii') != g.toUnicode(previous,'ascii'))
+        changed = (g.toUnicode(new) != g.toUnicode(previous))
         if changed and previous != "":
             g.es("changed: %s" % name) # A real change.
         return changed

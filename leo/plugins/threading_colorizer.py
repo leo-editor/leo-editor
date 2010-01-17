@@ -802,13 +802,13 @@ class colorizer:
                 d [key] = 'leoKeyword'
 
         # Create the word_chars list. 
-        self.word_chars = [g.toUnicode(ch,encoding='UTF-8') for ch in (string.letters + string.digits)]
+        self.word_chars = [g.toUnicode(ch) for ch in (string.letters + string.digits)]
 
         for key in d.keys():
             for ch in key:
                 # if ch == ' ': g.trace('blank in key: %s' % repr (key))
                 if ch not in self.word_chars:
-                    self.word_chars.append(g.toUnicode(ch,encoding='UTF-8'))
+                    self.word_chars.append(g.toUnicode(ch))
 
         # jEdit2Py now does this check, so this isn't really needed.
         # But it is needed for forth.py.

@@ -1465,7 +1465,7 @@ class leoFind:
         # New in 4.3: The caller is responsible for removing most trailing cruft.
         # Among other things, this allows Leo to search for a single trailing space.
         s = self.find_ctrl.getAllText()
-        s = g.toUnicode(s,g.app.tkEncoding)
+        s = g.toUnicode(s)
         if trace: g.trace('find',repr(s))
         if s and s[-1] in ('\r','\n'):
             s = s[:-1]
@@ -1474,7 +1474,7 @@ class leoFind:
         s = self.change_ctrl.getAllText()
         if s and s[-1] in ('\r','\n'):
             s = s[:-1]
-        s = g.toUnicode(s,g.app.tkEncoding)
+        s = g.toUnicode(s)
         self.change_text = s
         if trace: g.trace('change',repr(s))
     #@-node:ekr.20031218072017.1460:update_ivars (leoFind)

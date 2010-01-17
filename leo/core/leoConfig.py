@@ -1145,7 +1145,7 @@ class configClass:
         ("default_derived_file_encoding","string","utf-8"),
         ("new_leo_file_encoding","string","UTF-8"),
             # Upper case for compatibility with previous versions.
-        ("tkEncoding","string",None),
+        ("defaultEncoding","string",None),
             # Defaults to None so it doesn't override better defaults.
     )
     #@-node:ekr.20041118062709:define encodingIvarsDict
@@ -1995,7 +1995,7 @@ class configClass:
             if lines and self.munge(lines[0])=='readonly':
                 lines = lines[1:]
             if lines:
-                lines = [g.toUnicode(g.os_path_normpath(line),'utf-8') for line in lines]
+                lines = [g.toUnicode(g.os_path_normpath(line)) for line in lines]
                 self.appendToRecentFiles(lines)
 
         return ok

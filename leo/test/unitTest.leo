@@ -4134,7 +4134,7 @@ if not g.isPython3: # Does not work with Python 3.x
 for ivar in ('c','g','p'):
     assert ivar in dir()
 
-assert hasattr(g.app,'tkEncoding')</t>
+assert hasattr(g.app,'defaultEncoding')</t>
 <t tx="ekr.20050218015346">import glob
 import inspect
 import unittest

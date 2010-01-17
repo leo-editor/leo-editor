@@ -443,7 +443,7 @@ class Library(object):
 
         data = self.db [name]
         data = zlib.decompress(data)
-        return g.toUnicode(data,"utf-8",reportErrors=True)
+        return g.toUnicode(data,reportErrors=True)
     #@nonl
     #@-node:ekr.20050328092641.23:retrieve
     #@+node:ekr.20050328092641.26:shutdown

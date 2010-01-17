@@ -38,7 +38,7 @@ import os
 import re # For colorizer
 import string
 import sys
-import types
+# import types
 
 try:
     # import PyQt4.Qt as Qt # Loads all modules of Qt.
@@ -429,7 +429,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         newText = w.getAllText() # Converts to unicode.
 
         # Get the previous values from the vnode.
-        oldText = p.v._bodyString ### already unicode ### g.app.gui.toUnicode(p.v._bodyString)
+        oldText = p.v._bodyString ### already unicode
         if oldText == newText:
             # This can happen as the result of undo.
             # g.trace('*** unexpected non-change',color="red")
@@ -669,7 +669,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
 
         w = self.widget
         s = w.text()
-        return g.u(s) ### g.app.gui.toUnicode(s)
+        return g.u(s)
     #@nonl
     #@-node:ekr.20081121105001.551:getAllText
     #@+node:ekr.20081121105001.552:getInsertPoint
@@ -722,7 +722,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
 
         w = self.widget
         s = w.text()
-        s = g.u(s) ### g.app.gui.toUnicode(s)
+        s = g.u(s)
         i = w.toPythonIndex(i)
         i = max(0,min(i,len(s)))
         w.setCursorPosition(i)
@@ -734,7 +734,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         # g.trace(i,j,insert,w)
         if i > j: i,j = j,i
         s = w.text()
-        s = g.u(s) ### g.app.gui.toUnicode(s)
+        s = g.u(s)
         n = len(s)
         i = max(0,min(i,n))
         j = max(0,min(j,n))
@@ -1200,9 +1200,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         w = self.widget
         sb = w.verticalScrollBar()
-        if pos is None: pos = 0
-        # elif type(pos) == types.TupleType:
-            # pos = pos[0]
+        if pos is None:
+            pos = 0
         else:
             try:
                 n1,n2 = pos
@@ -1407,7 +1406,7 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
 
         w = self.widget
         s = w.text()
-        s = g.u(s) ### g.app.gui.toUnicode(s)
+        s = g.u(s)
         return s
     #@-node:ekr.20081121105001.564:getAllText
     #@+node:ekr.20081121105001.565:getInsertPoint
@@ -1538,7 +1537,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         if self.check():
             w = self.widget
             s = w.text()
-            return g.u(s) ### g.app.gui.toUnicode(s)
+            return g.u(s)
         else:
             return ''
     #@nonl
@@ -1561,7 +1560,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
             if w.hasSelectedText():
                 i = w.selectionStart()
                 s = w.selectedText()
-                s = g.u(s) ### g.app.gui.toUnicode(s)
+                s = g.u(s)
                 j = i + len(s)
             else:
                 i = j = w.cursorPosition()
@@ -1608,7 +1607,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
 
         w = self.widget
         s = w.text()
-        s = g.u(s) ### g.app.gui.toUnicode(s)
+        s = g.u(s)
         i = self.toPythonIndex(i)
         i = max(0,min(i,len(s)))
         w.setCursorPosition(i)
@@ -1621,7 +1620,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         # g.trace(i,j,insert,w)
         if i > j: i,j = j,i
         s = w.text()
-        s = g.u(s) ### g.app.gui.toUnicode(s)
+        s = g.u(s)
         n = len(s)
         i = max(0,min(i,n))
         j = max(0,min(j,n))
@@ -6278,103 +6277,6 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
     #@-node:ekr.20090124174652.102:Widget-dependent helpers (leoQtTree)
     #@-others
 #@-node:ekr.20081121105001.400:class leoQtTree (baseNativeTree)
-#@+node:ekr.20081121105001.459:class leoQtTreeTab
-class leoQtTreeTab (leoFrame.leoTreeTab):
-
-    '''A class representing a tabbed outline pane drawn with Qt.'''
-
-    #@    @+others
-    #@+node:ekr.20081121105001.460: Birth & death
-    #@+node:ekr.20081121105001.461: ctor (leoTreeTab)
-    def __init__ (self,c,parentFrame,chapterController):
-
-        leoFrame.leoTreeTab.__init__ (self,c,chapterController,parentFrame)
-            # Init the base class.  Sets self.c, self.cc and self.parentFrame.
-
-        self.tabNames = [] # The list of tab names.  Changes when tabs are renamed.
-
-        self.createControl()
-    #@-node:ekr.20081121105001.461: ctor (leoTreeTab)
-    #@+node:ekr.20081121105001.462:tt.createControl
-    def createControl (self):
-
-        return None
-
-        # tt = self ; c = tt.c
-
-        # # Create the main container, possibly in a new row.
-        # tt.frame = c.frame.getNewIconFrame()
-
-        # # Create the chapter menu.
-        # self.chapterVar = var = qt.StringVar()
-        # var.set('main')
-
-        # tt.chapterMenu = menu = Pmw.OptionMenu(tt.frame,
-            # labelpos = 'w', label_text = 'chapter',
-            # menubutton_textvariable = var,
-            # items = [],
-            # command = tt.selectTab,
-        # )
-        # menu.pack(side='left',padx=5)
-
-        # # Actually add tt.frame to the icon row.
-        # c.frame.addIconWidget(tt.frame)
-    #@-node:ekr.20081121105001.462:tt.createControl
-    #@-node:ekr.20081121105001.460: Birth & death
-    #@+node:ekr.20081121105001.463:Tabs...
-    #@+node:ekr.20081121105001.464:tt.createTab
-    def createTab (self,tabName,select=True):
-
-        tt = self
-
-        # if tabName not in tt.tabNames:
-            # tt.tabNames.append(tabName)
-            # tt.setNames()
-    #@-node:ekr.20081121105001.464:tt.createTab
-    #@+node:ekr.20081121105001.465:tt.destroyTab
-    def destroyTab (self,tabName):
-
-        tt = self
-
-        # if tabName in tt.tabNames:
-            # tt.tabNames.remove(tabName)
-            # tt.setNames()
-    #@-node:ekr.20081121105001.465:tt.destroyTab
-    #@+node:ekr.20081121105001.466:tt.selectTab
-    def selectTab (self,tabName):
-
-        tt = self
-
-        # if tabName not in self.tabNames:
-            # tt.createTab(tabName)
-
-        # tt.cc.selectChapterByName(tabName)
-
-        # self.c.redraw()
-        # self.c.outerUpdate()
-    #@-node:ekr.20081121105001.466:tt.selectTab
-    #@+node:ekr.20081121105001.467:tt.setTabLabel
-    def setTabLabel (self,tabName):
-
-        tt = self
-    #     tt.chapterVar.set(tabName)
-    #@-node:ekr.20081121105001.467:tt.setTabLabel
-    #@+node:ekr.20081121105001.468:tt.setNames
-    def setNames (self):
-
-        '''Recreate the list of items.'''
-
-        # tt = self
-        # names = tt.tabNames[:]
-        # if 'main' in names: names.remove('main')
-        # names.sort()
-        # names.insert(0,'main')
-        # tt.chapterMenu.setitems(names)
-    #@-node:ekr.20081121105001.468:tt.setNames
-    #@-node:ekr.20081121105001.463:Tabs...
-    #@-others
-#@nonl
-#@-node:ekr.20081121105001.459:class leoQtTreeTab
 #@+node:ekr.20100111202913.3765:class leoQtTreeTab
 class leoQtTreeTab:
 
@@ -6877,10 +6779,6 @@ class leoQtGui(leoGui.leoGui):
         cb = self.qtApp.clipboard()
         if cb:
             # cb.clear()  # unnecessary, breaks on some Qt versions
-            ###
-            ###if type(s) == type(''):
-            ###    s = g.app.gui.toUnicode(s)
-
             QtGui.QApplication.processEvents()
             cb.setText(s)
             QtGui.QApplication.processEvents()
@@ -7017,7 +6915,7 @@ class leoQtGui(leoGui.leoGui):
         parent = None
         title = 'Enter Leo id'
         s,ok = QtGui.QInputDialog.getText(parent,title,message)
-        return g.u(s) ### g.app.gui.toUnicode(s)
+        return g.u(s)
     #@nonl
     #@-node:ekr.20081121105001.484:runAskLeoIDDialog
     #@+node:ekr.20081121105001.485:runAskOkDialog
@@ -7099,7 +6997,7 @@ class leoQtGui(leoGui.leoGui):
             return [g.u(s) for s in lst]
         else:
             s = QtGui.QFileDialog.getOpenFileName(parent,title,os.curdir,filter)
-            return g.u(s) ### g.app.gui.toUnicode(s)
+            return g.u(s)
     #@-node:ekr.20081121105001.488:runOpenFileDialog
     #@+node:ekr.20090722094828.3653:runPropertiesDialog (qtGui)
     def runPropertiesDialog(self,
@@ -7123,7 +7021,7 @@ class leoQtGui(leoGui.leoGui):
         parent = None
         filter_ = self.makeFilter(filetypes)
         s = QtGui.QFileDialog.getSaveFileName(parent,title,os.curdir,filter_)
-        return g.u(s) ### g.app.gui.toUnicode(s)
+        return g.u(s)
     #@-node:ekr.20081121105001.489:runSaveFileDialog
     #@+node:ekr.20081121105001.490:runScrolledMessageDialog
     def runScrolledMessageDialog (self, title='Message', label= '', msg='', c=None, **kw):
@@ -7420,7 +7318,7 @@ class leoQtGui(leoGui.leoGui):
             return s
         except Exception:
             # g.trace('*** Unicode Error: bugs possible')
-            return g.toUnicode(s,'utf-8',reportErrors='replace')
+            return g.toUnicode(s,reportErrors='replace')
     #@-node:ekr.20081121105001.502:toUnicode (qtGui)
     #@+node:ekr.20081121105001.503:widget_name (qtGui)
     def widget_name (self,w):
@@ -8562,7 +8460,6 @@ class jEditColorizer:
 
             # Tags used by forth.
             'bracketRange'   :'bracketRange_font',
-            'keyword5'       :'keyword5_font',
 
              # jEdit tags.
             'comment1'      :'comment1_font',
@@ -8945,14 +8842,12 @@ class jEditColorizer:
                 d [key] = 'leoKeyword'
 
         # Create a temporary chars list.  It will be converted to a dict later.
-        chars = [g.toUnicode(ch,encoding='UTF-8')
-            ### for ch in (string.letters + string.digits)]
-            for ch in (string.ascii_letters + string.digits)]
+        chars = [g.toUnicode(ch) for ch in (string.ascii_letters + string.digits)]
 
         for key in list(d.keys()):
             for ch in key:
                 if ch not in chars:
-                    chars.append(g.toUnicode(ch,encoding='UTF-8'))
+                    chars.append(g.toUnicode(ch))
 
         # jEdit2Py now does this check, so this isn't really needed.
         # But it is needed for forth.py.

@@ -323,13 +323,13 @@ ivars = (
         # 'afterHandler','count','positions',
         # 'menuWarningsGiven','unicodeErrorGiven',
     'batchMode','config',
-    'debug','debugSwitch','disableSave',
+    'debug','debugSwitch','defaultEncoding','disableSave',
     'gui','hasOpenWithMenu','hookError','hookFunction',
     'idle_imported','idleTimeDelay','idleTimeHook','initing','killed',
     'leoID','loadedPlugins','log','logIsLocked','logWaiting',
     'nodeIndices','numberOfWindows',
     'quitting','realMenuNameDict','searchDict','scriptDict',
-    'trace','tracePositions','trace_list','tkEncoding',
+    'trace','tracePositions','trace_list',
     'unitTestDict','unitTesting','use_psyco','windowList',
 )
 

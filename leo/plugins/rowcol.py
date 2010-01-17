@@ -95,7 +95,7 @@ class rowColClass:
 
         if col > 0:
             s2 = s[index-col:index]
-            s2 = g.toUnicode(s2,g.app.tkEncoding)
+            s2 = g.toUnicode(s2)
             col = g.computeWidth (s2,c.tab_width)
 
         if row != self.lastRow or col != self.lastCol:

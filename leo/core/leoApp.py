@@ -10,6 +10,7 @@
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoVersion as leoVersion
+import locale
 import os
 import sys
 import leo.external.pickleshare
@@ -36,6 +37,8 @@ class LeoApp:
             # 0: default behavior
             # 1: full traces in g.es_exception.
             # 2: call pdb.set_trace in g.es_exception, etc.
+        self.defaultEncoding = 'utf-8' # set later during starup.
+        ### self.tkEncoding = self.defaultEncoding ### Compatibility.
         self.disableSave = False
         self.enableUnitTest = True
         self.extensionsDir = None
@@ -87,7 +90,7 @@ class LeoApp:
         self.tracePositions = False
         self.trace_list = [] # "Sherlock" argument list for tracing().
         self.translateToUpperCase = False
-        self.tkEncoding = "utf-8"
+        self.defaultEncoding = "utf-8"
         self.unicodeErrorGiven = True # True: suppres unicode tracebacks.
         self.unitTestDict = {} # For communication between unit tests and code.
         self.unitTesting = False # True if unit testing.
@@ -193,7 +196,7 @@ class LeoApp:
             "plsql"         : "sql", # qt02537 2005-05-27
             "rapidq"        : "bas", # fil 2004-march-11
             "rebol"         : "r",    # jason 2003-07-03
-            "rst"           : "rst",
+            # "rst"           : "rst", # caught by pylint.
             "rst"           : "rest",
             "ruby"          : "rb",   # thyrsus 2008-11-05
             "shell"         : "sh",   # DS 4/1/04
@@ -554,37 +557,31 @@ class LeoApp:
             g.app.quitting = False # If we get here the quit has been disabled.
     #@-node:ekr.20031218072017.2617:app.onQuit
     #@+node:ekr.20031218072017.2618:app.setEncoding
-    #@+at 
-    #@nonl
-    # According to Martin v. Löwis, getdefaultlocale() is broken, and cannot 
-    # be fixed. The workaround is to copy the g.getpreferredencoding() 
-    # function from locale.py in Python 2.3a2.  This function is now in 
-    # leoGlobals.py.
-    #@-at
-    #@@c
+    # According to Martin v. Löwis, getdefaultlocale() cannot be fixed.
+    # We use getpreferredencoding() instead.
 
     def setEncoding (self):
 
-        """Set g.app.tkEncoding."""
+        """Set g.app.defaultEncoding."""
 
-        try: locale_encoding = g.getpreferredencoding()
-        except Exception: locale_encoding = None
+        app = self
+        locale_encoding = locale.getpreferredencoding()
 
         try: sys_encoding = sys.getdefaultencoding()
         except Exception: sys_encoding = None
 
         for (encoding,src) in (
-            (self.config.tkEncoding,"config"),
+            (app.config.defaultEncoding,"config"),
             (locale_encoding,"locale"),
             (sys_encoding,"sys"),
             ("utf-8","default")):
 
             if g.isValidEncoding (encoding):
-                self.tkEncoding = encoding
-                # g.trace(self.tkEncoding,src)
+                app.defaultEncoding = encoding
+                # g.trace(app.defaultEncoding,src)
                 break
             elif encoding:
-                color = g.choose(self.tkEncoding=="ascii","red","blue")
+                color = g.choose(app.defaultEncoding=="ascii","red","blue")
                 g.trace("ignoring invalid %s encoding: %s" % (src,encoding),color=color)
     #@-node:ekr.20031218072017.2618:app.setEncoding
     #@+node:ekr.20031218072017.1978:app.setLeoID

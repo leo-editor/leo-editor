@@ -325,7 +325,7 @@ class shadowController:
 
         trace = False and not g.unitTesting
         verbose = True
-        x = self ; 
+        x = self
         # mapping tells which line of old_private_lines each line of old_public_lines comes from.
         old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
 
@@ -425,9 +425,9 @@ class shadowController:
 
             # Verify that SequenceMatcher never leaves gaps.
             if old_i != prev_old_j: # assert old_i == prev_old_j
-                x.error('can not happen: gap in old:',old_i,prev_old_j)
+                x.error('can not happen: gap in old: %s %s' % (old_i,prev_old_j))
             if new_i != prev_new_j: # assert new_i == prev_new_j
-                x.error('can not happen: gap in new:',new_i,prev_new_j)
+                x.error('can not happen: gap in new: %s %s' % (new_i,prev_new_j))
 
             #@        << Handle the opcode >>
             #@+node:ekr.20080708192807.5:<< Handle the opcode >>
@@ -1000,15 +1000,15 @@ class shadowController:
             x = self.shadowController
 
             results = x.propagate_changed_lines(
-                self.new_public_lines,
-                self.old_private_lines,
-                marker = self.marker,
-                p = self.p.copy())
+                self.new_public_lines,self.old_private_lines,self.marker,p = self.p.copy())
 
             if not self.lax and results != self.expected_private_lines:
 
                 g.pr('%s atShadowTestCase.runTest:failure' % ('*' * 40))
-                for aList,tag in ((results,'results'),(self.expected_private_lines,'expected_private_lines')):
+                for aList,tag in (
+                    (results,'results'),
+                    (self.expected_private_lines,'expected_private_lines')
+                ):
                     g.pr('%s...' % tag)
                     for i, line in enumerate(aList):
                         g.pr('%3s %s' % (i,repr(line)))

@@ -632,7 +632,7 @@ if len(s) > limit:
     g.es("truncating headline to",limit,"characters",color="blue")
     s = s[:limit]
 
-s = g.toUnicode(s or '',g.app.tkEncoding)
+s = g.toUnicode(s or '')
 #@-node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
 #@-node:ekr.20040803072955.91:onHeadChanged (leoTree)
 #@+node:ekr.20040803072955.88:onHeadlineKey
@@ -982,7 +982,7 @@ def setBodyTextAfterSelect (self,p,old_p):
 
     # Always do this.  Otherwise there can be problems with trailing newlines.
     c = self.c ; w = c.frame.body.bodyCtrl
-    s = g.toUnicode(p.v._bodyString,"utf-8")
+    s = g.toUnicode(p.v._bodyString)
     old_s = w.getAllText()
 
     if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
@@ -1135,7 +1135,7 @@ if len(s) > limit:
     g.es("truncating headline to",limit,"characters",color="blue")
     s = s[:limit]
 
-s = g.toUnicode(s or '',g.app.tkEncoding)
+s = g.toUnicode(s or '')
 #@-node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
 #@-node:ekr.20040803072955.91:onHeadChanged (leoTree)
 #@-node:ekr.20091221145433.6379:TL Undo renames headline (tk only)
@@ -3063,7 +3063,7 @@ def undoRedoText (self,p,
 #@+node:ekr.20061106105812.1:<< Compute the result using p's body text >>
 # Recreate the text using the present body text.
 body = p.b
-body = g.toUnicode(body,"utf-8")
+body = g.toUnicode(body)
 body_lines = body.split('\n')
 s = []
 if leading > 0:
@@ -3319,7 +3319,7 @@ def setBodyTextAfterSelect (self,p,old_p):
 
     # Always do this.  Otherwise there can be problems with trailing newlines.
     c = self.c ; w = c.frame.body.bodyCtrl
-    s = g.toUnicode(p.v._bodyString,"utf-8")
+    s = g.toUnicode(p.v._bodyString)
     old_s = w.getAllText()
 
     if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
@@ -5378,7 +5378,7 @@ def undoRedoText (self,p,
 #@+node:ekr.20061106105812.1:<< Compute the result using p's body text >>
 # Recreate the text using the present body text.
 body = p.b
-body = g.toUnicode(body,"utf-8")
+body = g.toUnicode(body)
 body_lines = body.split('\n')
 s = []
 if leading > 0:
@@ -5774,7 +5774,7 @@ def undoRedoText (self,p,
 #@+node:ekr.20061106105812.1:<< Compute the result using p's body text >>
 # Recreate the text using the present body text.
 body = p.b
-body = g.toUnicode(body,"utf-8")
+body = g.toUnicode(body)
 body_lines = body.split('\n')
 s = []
 if leading > 0:
@@ -6112,7 +6112,7 @@ def __init__ (self,importCommands,atAuto,language):
     self.codeEnd = None
         # The character after the last character of the class, method or function.
         # An error will be given if this is not a newline.
-    self.encoding = ic.encoding # g.app.tkEncoding
+    self.encoding = ic.encoding
     self.errors = 0
     ic.errors = 0
     self.errorLines = []
@@ -6438,19 +6438,19 @@ def addRef (self,parent):
             g.angleBrackets(' ' + self.methodName + ' methods ') + '\n\n')
 #@-node:ekr.20070707073044.1:addRef
 #@+node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
-def appendStringToBody (self,p,s,encoding="utf-8"):
+def appendStringToBody (self,p,s):
 
     '''Similar to c.appendStringToBody,
     but does not recolor the text or redraw the screen.'''
 
-    return self.importCommands.appendStringToBody(p,s,encoding)
+    return self.importCommands.appendStringToBody(p,s)
 
-def setBodyString (self,p,s,encoding="utf-8"):
+def setBodyString (self,p,s):
 
     '''Similar to c.setBodyString,
     but does not recolor the text or redraw the screen.'''
 
-    return self.importCommands.setBodyString(p,s,encoding)
+    return self.importCommands.setBodyString(p,s)
 #@-node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
 #@+node:ekr.20090512153903.5806:computeBody (baseScannerClass)
 def computeBody (self,s,start,sigStart,codeEnd):
@@ -6501,20 +6501,11 @@ def createFunctionNode (self,headline,body,parent):
     return self.createHeadline(parent,prefix + body,headline)
 
 #@-node:ekr.20070707085612:createFunctionNode
-#@+node:ekr.20070703122141.77:createHeadline
+#@+node:ekr.20070703122141.77:createHeadline (baseScannerClass)
 def createHeadline (self,parent,body,headline):
 
-    # g.trace('parent,headline:',parent.h,headline)
-
-    # Create the node.
-    p = parent.insertAsLastChild()
-    p.initHeadString(headline,self.encoding)
-
-    # Set the body.
-    if body:
-        self.setBodyString(p,body,self.encoding)
-    return p
-#@-node:ekr.20070703122141.77:createHeadline
+    return self.importCommands.createHeadline(parent,body,headline)
+#@-node:ekr.20070703122141.77:createHeadline (baseScannerClass)
 #@+node:ekr.20090502071837.1:endGen
 def endGen (self,s):
 
@@ -9231,7 +9222,6 @@ def readOneAtAutoNode (self,fileName,p):
         g.es_print('errors inhibited read @auto',fileName,color='red')
 
     if ic.errors or not g.os_path_exists(fileName):
-        # c.setBodyString(p,'')
         p.clearDirty()
         c.setChanged(oldChanged)
     else:
@@ -9816,7 +9806,7 @@ def __init__ (self,importCommands,atAuto,language):
     self.codeEnd = None
         # The character after the last character of the class, method or function.
         # An error will be given if this is not a newline.
-    self.encoding = ic.encoding # g.app.tkEncoding
+    self.encoding = ic.encoding
     self.errors = 0
     ic.errors = 0
     self.errorLines = []
@@ -10142,19 +10132,19 @@ def addRef (self,parent):
             g.angleBrackets(' ' + self.methodName + ' methods ') + '\n\n')
 #@-node:ekr.20070707073044.1:addRef
 #@+node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
-def appendStringToBody (self,p,s,encoding="utf-8"):
+def appendStringToBody (self,p,s):
 
     '''Similar to c.appendStringToBody,
     but does not recolor the text or redraw the screen.'''
 
-    return self.importCommands.appendStringToBody(p,s,encoding)
+    return self.importCommands.appendStringToBody(p,s)
 
-def setBodyString (self,p,s,encoding="utf-8"):
+def setBodyString (self,p,s):
 
     '''Similar to c.setBodyString,
     but does not recolor the text or redraw the screen.'''
 
-    return self.importCommands.setBodyString(p,s,encoding)
+    return self.importCommands.setBodyString(p,s)
 #@-node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
 #@+node:ekr.20090512153903.5806:computeBody (baseScannerClass)
 def computeBody (self,s,start,sigStart,codeEnd):
@@ -10205,20 +10195,11 @@ def createFunctionNode (self,headline,body,parent):
     return self.createHeadline(parent,prefix + body,headline)
 
 #@-node:ekr.20070707085612:createFunctionNode
-#@+node:ekr.20070703122141.77:createHeadline
+#@+node:ekr.20070703122141.77:createHeadline (baseScannerClass)
 def createHeadline (self,parent,body,headline):
 
-    # g.trace('parent,headline:',parent.h,headline)
-
-    # Create the node.
-    p = parent.insertAsLastChild()
-    p.initHeadString(headline,self.encoding)
-
-    # Set the body.
-    if body:
-        self.setBodyString(p,body,self.encoding)
-    return p
-#@-node:ekr.20070703122141.77:createHeadline
+    return self.importCommands.createHeadline(parent,body,headline)
+#@-node:ekr.20070703122141.77:createHeadline (baseScannerClass)
 #@+node:ekr.20090502071837.1:endGen
 def endGen (self,s):
 
@@ -11670,7 +11651,7 @@ if len(s) > limit:
     g.es("truncating headline to",limit,"characters",color="blue")
     s = s[:limit]
 
-s = g.toUnicode(s or '',g.app.tkEncoding)
+s = g.toUnicode(s or '')
 #@-node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
 #@-node:ekr.20040803072955.91:onHeadChanged (leoTree)
 #@+node:ekr.20040303163330:p.setDirty
@@ -13028,7 +13009,7 @@ def readEndNode (self,unused_s,unused_i,middle=False):
 
     # Set the temporary body text.
     s = ''.join(at.out)
-    s = g.toUnicode(s,g.app.tkEncoding) # 9/28/03
+    s = g.toUnicode(s)
 
     if at.importing:
         at.v._bodyString = s
@@ -13734,7 +13715,7 @@ def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=Non
 
     trace = False and not g.unitTesting
     verbose = True
-    x = self ; 
+    x = self
     # mapping tells which line of old_private_lines each line of old_public_lines comes from.
     old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
 
@@ -13751,9 +13732,9 @@ def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=Non
 
         # Verify that SequenceMatcher never leaves gaps.
         if old_i != prev_old_j: # assert old_i == prev_old_j
-            x.error('can not happen: gap in old:',old_i,prev_old_j)
+            x.error('can not happen: gap in old: %s %s' % (old_i,prev_old_j))
         if new_i != prev_new_j: # assert new_i == prev_new_j
-            x.error('can not happen: gap in new:',new_i,prev_new_j)
+            x.error('can not happen: gap in new: %s %s' % (new_i,prev_new_j))
 
         << Handle the opcode >>
 
@@ -14395,15 +14376,15 @@ def runTest (self,define_g = True):
     x = self.shadowController
 
     results = x.propagate_changed_lines(
-        self.new_public_lines,
-        self.old_private_lines,
-        marker = self.marker,
-        p = self.p.copy())
+        self.new_public_lines,self.old_private_lines,self.marker,p = self.p.copy())
 
     if not self.lax and results != self.expected_private_lines:
 
         g.pr('%s atShadowTestCase.runTest:failure' % ('*' * 40))
-        for aList,tag in ((results,'results'),(self.expected_private_lines,'expected_private_lines')):
+        for aList,tag in (
+            (results,'results'),
+            (self.expected_private_lines,'expected_private_lines')
+        ):
             g.pr('%s...' % tag)
             for i, line in enumerate(aList):
                 g.pr('%3s %s' % (i,repr(line)))
@@ -14881,7 +14862,7 @@ def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=Non
 
     trace = False and not g.unitTesting
     verbose = True
-    x = self ; 
+    x = self
     # mapping tells which line of old_private_lines each line of old_public_lines comes from.
     old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
 
@@ -14898,9 +14879,9 @@ def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=Non
 
         # Verify that SequenceMatcher never leaves gaps.
         if old_i != prev_old_j: # assert old_i == prev_old_j
-            x.error('can not happen: gap in old:',old_i,prev_old_j)
+            x.error('can not happen: gap in old: %s %s' % (old_i,prev_old_j))
         if new_i != prev_new_j: # assert new_i == prev_new_j
-            x.error('can not happen: gap in new:',new_i,prev_new_j)
+            x.error('can not happen: gap in new: %s %s' % (new_i,prev_new_j))
 
         << Handle the opcode >>
 
@@ -16542,7 +16523,7 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
     assert g.app.loadDir
 
     plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
-    moduleName = g.toUnicode(moduleName,g.app.tkEncoding)
+    moduleName = g.toUnicode(moduleName)
 
     # This import will typically result in calls to registerHandler.
     # if the plugin does _not_ use the init top-level function.
@@ -17516,7 +17497,7 @@ table = (
 )
 
 # new in 4.4b3: convert all characters to unicode first.
-shortcut = ''.join([g.toUnicode(val,g.app.tkEncoding) for flag,val in table if flag])
+shortcut = ''.join([g.toUnicode(val) for flag,val in table if flag])
 #@-node:ekr.20061031131434.189:<< compute shortcut >>
 #@-node:ekr.20061031131434.184:shortcutFromSetting (uses k.guiBindNamesDict)
 #@-node:ekr.20090930151626.6086:Made add-comments and delete-comments commands work with shortcuts
@@ -17675,7 +17656,6 @@ def readOneAtAutoNode (self,fileName,p):
         g.es_print('errors inhibited read @auto',fileName,color='red')
 
     if ic.errors or not g.os_path_exists(fileName):
-        # c.setBodyString(p,'')
         p.clearDirty()
         c.setChanged(oldChanged)
     else:
@@ -20591,7 +20571,7 @@ oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
 oldText = name.startswith('body') and p.b or ''
 undoType = 'Typing'
 brackets = self.openBracketsList + self.closeBracketsList
-inBrackets = ch and g.toUnicode(ch,g.app.tkEncoding) in brackets
+inBrackets = ch and g.toUnicode(ch) in brackets
 # if trace: g.trace(name,repr(ch),ch and ch in brackets)
 #@nonl
 #@-node:ekr.20061103114242:<< set local vars >>
@@ -21267,7 +21247,6 @@ def readOneAtAutoNode (self,fileName,p):
         g.es_print('errors inhibited read @auto',fileName,color='red')
 
     if ic.errors or not g.os_path_exists(fileName):
-        # c.setBodyString(p,'')
         p.clearDirty()
         c.setChanged(oldChanged)
     else:
@@ -22495,9 +22474,10 @@ def putDescendentTnodeUas (self,p):
 #@-node:ekr.20091001141621.6042:iters -> generators & code cleanup
 #@+node:ekr.20091211111443.6264:Batch operations on nodes
 #@+node:ekr.20091211111443.6265:c.doBatchOperations & helpers
-def doBatchOperations (self,aList):
+def doBatchOperations (self,aList=None):
     # Validate aList and create the parents dict
-    ok, d = self.checkBatchOperationsList()
+    if aList is None: aList = []
+    ok, d = self.checkBatchOperationsList(aList)
     if not ok:
         return g.es('do-batch-operations: invalid list argument',
             color='red')
@@ -23111,7 +23091,7 @@ def setupChangePattern (self,pattern):
 
     h = self.finder ; w = h.change_ctrl
 
-    s = g.toUnicode(pattern,g.app.tkEncoding)
+    s = g.toUnicode(pattern)
 
     w.delete(0,'end')
     w.insert(0,s)
@@ -23125,7 +23105,7 @@ def setupSearchPattern (self,pattern):
 
     # g.trace(pattern,g.callers(4))
 
-    s = g.toUnicode(pattern,g.app.tkEncoding)
+    s = g.toUnicode(pattern)
 
     w.delete(0,'end')
     w.insert(0,s)
@@ -23996,7 +23976,7 @@ def openWithTempFilePath (self,p,ext):
         g.sanitize_filename(p.headString()),
         str(id(p.v)),ext)
 
-    name = g.toUnicode(name,g.app.tkEncoding)
+    name = g.toUnicode(name)
 
     td = g.os_path_finalize(tempfile.gettempdir())
 
@@ -25056,7 +25036,12 @@ def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
     return s, ok
 #@-node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
 #@+node:ekr.20050208093800.1:g.toUnicode
-def toUnicode (s,encoding,reportErrors=False):
+def toUnicode (s,encoding=None,reportErrors=False):
+
+    # The encoding is usually g.app.defaultEncoding,
+    # but is may be different while importing or reading files.
+    if encoding is None:
+        encoding = g.app.defaultEncoding
 
     if isPython3:
         convert,mustConvert,nullVal = str,g.isBytes,''
@@ -25077,7 +25062,6 @@ def toUnicode (s,encoding,reportErrors=False):
         pass
 
     return s
-#@nonl
 #@-node:ekr.20050208093800.1:g.toUnicode
 #@+node:ekr.20091206161352.6232:g.u & g.ue
 if isPython3: # g.not defined yet.
@@ -26167,7 +26151,7 @@ self.language_extension_dict = {
     "plsql"         : "sql", # qt02537 2005-05-27
     "rapidq"        : "bas", # fil 2004-march-11
     "rebol"         : "r",    # jason 2003-07-03
-    "rst"           : "rst",
+    # "rst"           : "rst", # caught by pylint.
     "rst"           : "rest",
     "ruby"          : "rb",   # thyrsus 2008-11-05
     "shell"         : "sh",   # DS 4/1/04
@@ -26653,15 +26637,14 @@ except Exception:
 ************* Module leo.core.leoApp
 E0611:346:LeoApp.createDefaultGui: No name 'QtGui' in module 'PyQt4'
 E1101:757:LeoApp.computeSignon: Module 'sys' has no 'getwindowsversion' member
-************* Module leo.core.leoAtFile
-E0211:4045:atFile.syntaxErrorTest: Method has no argument
+
 ************* Module leo.core.leoCommands
 E1101:1079:baseCommands.openWith: Module 'os' has no 'startfile' member
+
+Invalid-----
+
 ************* Module leo.core.leoFileCommands
 E1101:1066:baseFileCommands.cleanSaxInputString: Class 'str' has no 'maketrans' member
-************* Module leo.core.leoGlobals
-E1101:4249:os_startfile: Module 'os' has no 'startfile' member
-E1101:5473:getpreferredencoding: Module '_locale' has no '_getdefaultlocale' member
 #@-node:ekr.20091220130303.6365:Linux messages
 #@-node:ekr.20091220103056.6363:pylint
 #@-all

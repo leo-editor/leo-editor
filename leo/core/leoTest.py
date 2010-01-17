@@ -932,7 +932,7 @@ def runAtFileTest(c,p):
     else:
         at.write(child1,thinFile=thinFile,nosentinels=nosentinels,toString=True)
     try:
-        result = g.toUnicode(at.stringOutput,"ascii")
+        result = g.toUnicode(at.stringOutput)
         assert(result == expected)
     except AssertionError:
         #@        << dump result and expected >>
@@ -1095,7 +1095,7 @@ class editBodyTestCase(unittest.TestCase):
 
         text = self.before.b
 
-        tempNode.setBodyString(text,g.app.tkEncoding)
+        tempNode.setBodyString(text)
         c.selectPosition(self.tempNode)
 
         w = c.frame.body.bodyCtrl
@@ -1122,7 +1122,7 @@ class editBodyTestCase(unittest.TestCase):
         c.selectVnode(tempNode)
 
         if not self.failFlag:
-            tempNode.setBodyString("",g.app.tkEncoding)
+            tempNode.setBodyString("")
 
             # Delete all children of temp node.
             while tempNode.firstChild():
@@ -1222,7 +1222,7 @@ class importExportTestCase(unittest.TestCase):
 
         c = self.c ; temp_p = self.temp_p ; d = self.dialog
 
-        temp_p.setBodyString('',g.app.tkEncoding)
+        temp_p.setBodyString('')
 
         # Create a node under temp_p.
         child = temp_p.insertAsLastChild()
@@ -1271,7 +1271,7 @@ class importExportTestCase(unittest.TestCase):
             self.gui.destroySelf()
             self.gui = None
 
-        temp_p.setBodyString("",g.app.tkEncoding)
+        temp_p.setBodyString("")
         temp_p.clearDirty()
 
         if not self.wasChanged:
@@ -1417,7 +1417,7 @@ class reformatParagraphTest:
 
         # Copy the before node text to the temp node.
         text = self.before.b
-        tempNode.setBodyString(text,g.app.tkEncoding)
+        tempNode.setBodyString(text)
 
         # create the child node that holds the text.
         self.tempChild = self.tempNode.insertAsNthChild(0)
@@ -1425,7 +1425,7 @@ class reformatParagraphTest:
 
         # copy the before text to the temp text.
         text = self.before.b
-        self.tempChild.setBodyString(text,g.app.tkEncoding)
+        self.tempChild.setBodyString(text)
 
         # Make the temp child node current, and put the cursor at the beginning.
         c.selectPosition(self.tempChild)
@@ -1448,7 +1448,7 @@ class reformatParagraphTest:
         # Adjust col position for tabs.
         if col > 0:
             s2 = s[index-col:index]
-            s2 = g.toUnicode(s2,g.app.tkEncoding)
+            s2 = g.toUnicode(s2)
             col = g.computeWidth(s2,tab_width)
 
         return row,col
@@ -1484,7 +1484,7 @@ class reformatParagraphTest:
         c = self.c ; tempNode = self.tempNode
 
         # clear the temp node and mark it unchanged
-        tempNode.setBodyString("",g.app.tkEncoding)
+        tempNode.setBodyString("")
         tempNode.clearDirty()
 
         if 1: # Disabling this is good for debugging.

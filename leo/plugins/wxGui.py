@@ -3196,7 +3196,7 @@ class wxLeoFrame(leoFrame.leoFrame):
         return ##
 
         file = os.path.join(g.app.loadDir,"..","doc","sbooks.chm")
-        file = g.toUnicode(file,g.app.tkEncoding) # 10/20/03
+        file = g.toUnicode(file)
 
         if os.path.exists(file):
             os.startfile(file)
@@ -4274,7 +4274,7 @@ class wxLeoStatusLine:
         row,col = g.convertPythonIndexToRowCol(s,index)
         if col > 0:
             s2 = s[index-col:index]
-            s2 = g.toUnicode(s2,g.app.tkEncoding)
+            s2 = g.toUnicode(s2)
             col = g.computeWidth (s2,c.tab_width)
 
         # Important: this does not change the focus because labels never get focus.

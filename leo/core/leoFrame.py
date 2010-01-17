@@ -401,7 +401,7 @@ class baseTextWidget:
         j = w.toPythonIndex(j)
 
         s = w._get(i,j)
-        return g.toUnicode(s,g.app.tkEncoding)
+        return g.toUnicode(s)
     #@-node:ekr.20070228074312.18:get
     #@+node:ekr.20070228074312.19:getAllText
     def getAllText (self):
@@ -409,7 +409,7 @@ class baseTextWidget:
         w = self
 
         s = w._getAllText()
-        return g.toUnicode(s,g.app.tkEncoding)
+        return g.toUnicode(s)
     #@-node:ekr.20070228074312.19:getAllText
     #@+node:ekr.20070228074312.17:getFocus
     def getFocus (self):
@@ -444,7 +444,7 @@ class baseTextWidget:
 
         w = self
         s = w._getSelectedText()
-        return g.toUnicode(s,g.app.tkEncoding)
+        return g.toUnicode(s)
     #@-node:ekr.20070228074312.21:getSelectedText
     #@+node:ekr.20070228074312.22:getSelectionRange
     def getSelectionRange (self,sort=True):
@@ -1242,7 +1242,7 @@ class leoBody:
         p = c.p
         insert = w.getInsertPoint()
         ch = g.choose(insert==0,'',w.get(insert-1))
-        ch = g.toUnicode(ch,g.app.tkEncoding)
+        ch = g.toUnicode(ch)
         newText = w.getAllText() # Note: getAllText converts to unicode.
         newSel = w.getSelectionRange()
         if not oldText:
@@ -1335,9 +1335,9 @@ class leoBody:
         ins = s[i:j]
         after = s[j:]
 
-        before = g.toUnicode(before,g.app.tkEncoding)
-        ins    = g.toUnicode(ins,   g.app.tkEncoding)
-        after  = g.toUnicode(after ,g.app.tkEncoding)
+        before = g.toUnicode(before)
+        ins    = g.toUnicode(ins)
+        after  = g.toUnicode(after)
 
         return before,ins,after
     #@-node:ekr.20031218072017.4030:getInsertLines
@@ -1361,9 +1361,9 @@ class leoBody:
         sel    = s[i:j]
         after  = s[j:]
 
-        before = g.toUnicode(before,g.app.tkEncoding)
-        sel    = g.toUnicode(sel,   g.app.tkEncoding)
-        after  = g.toUnicode(after ,g.app.tkEncoding)
+        before = g.toUnicode(before)
+        sel    = g.toUnicode(sel)
+        after  = g.toUnicode(after)
         return before,sel,after
     #@nonl
     #@-node:ekr.20031218072017.4031:getSelectionAreas
@@ -1394,9 +1394,9 @@ class leoBody:
             junk,j = g.getLine(s,j)
 
 
-        before = g.toUnicode(s[0:i],g.app.tkEncoding)
-        sel    = g.toUnicode(s[i:j],g.app.tkEncoding)
-        after  = g.toUnicode(s[j:len(s)],g.app.tkEncoding)
+        before = g.toUnicode(s[0:i])
+        sel    = g.toUnicode(s[i:j])
+        after  = g.toUnicode(s[j:len(s)])
 
         # g.trace(i,j,'sel',repr(s[i:j]),'after',repr(after))
         return before,sel,after # 3 strings.
@@ -1843,7 +1843,7 @@ class leoFrame:
         else:
             s = s1 = g.app.gui.getTextFromClipboard()
 
-        s = g.toUnicode(s,encoding=g.app.tkEncoding)
+        s = g.toUnicode(s)
 
         # g.trace('pasteText','wname',wname,'s',s,g.callers())
 
@@ -2408,7 +2408,7 @@ class leoTree:
             g.es("truncating headline to",limit,"characters",color="blue")
             s = s[:limit]
 
-        s = g.toUnicode(s or '',g.app.tkEncoding)
+        s = g.toUnicode(s or '')
         #@-node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
         #@nl
         # Make the change official, but undo to the *old* revert point.
@@ -2791,7 +2791,7 @@ class leoTree:
 
         # Always do this.  Otherwise there can be problems with trailing newlines.
         c = self.c ; w = c.frame.body.bodyCtrl
-        s = g.toUnicode(p.v._bodyString,"utf-8")
+        s = g.toUnicode(p.v._bodyString)
         old_s = w.getAllText()
 
         if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:

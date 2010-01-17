@@ -5946,7 +5946,7 @@ def onTextChanged (self):
     newText = w.getAllText() # Converts to unicode.
 
     # Get the previous values from the vnode.
-    oldText = p.v._bodyString ### already unicode ### g.app.gui.toUnicode(p.v._bodyString)
+    oldText = p.v._bodyString ### already unicode
     if oldText == newText:
         # This can happen as the result of undo.
         # g.trace('*** unexpected non-change',color="red")
@@ -6041,7 +6041,7 @@ def onTextChanged (self):
     newText = w.getAllText() # Converts to unicode.
 
     # Get the previous values from the vnode.
-    oldText = p.v._bodyString ### already unicode ### g.app.gui.toUnicode(p.v._bodyString)
+    oldText = p.v._bodyString ### already unicode
     if oldText == newText:
         # This can happen as the result of undo.
         # g.trace('*** unexpected non-change',color="red")
@@ -6627,7 +6627,7 @@ def onTextChanged (self):
     newText = w.getAllText() # Converts to unicode.
 
     # Get the previous values from the vnode.
-    oldText = p.v._bodyString ### already unicode ### g.app.gui.toUnicode(p.v._bodyString)
+    oldText = p.v._bodyString ### already unicode
     if oldText == newText:
         # This can happen as the result of undo.
         # g.trace('*** unexpected non-change',color="red")
@@ -8190,7 +8190,6 @@ self.default_font_dict = {
 
     # Tags used by forth.
     'bracketRange'   :'bracketRange_font',
-    'keyword5'       :'keyword5_font',
 
      # jEdit tags.
     'comment1'      :'comment1_font',
@@ -8565,14 +8564,12 @@ def setKeywords (self):
             d [key] = 'leoKeyword'
 
     # Create a temporary chars list.  It will be converted to a dict later.
-    chars = [g.toUnicode(ch,encoding='UTF-8')
-        ### for ch in (string.letters + string.digits)]
-        for ch in (string.ascii_letters + string.digits)]
+    chars = [g.toUnicode(ch) for ch in (string.ascii_letters + string.digits)]
 
     for key in list(d.keys()):
         for ch in key:
             if ch not in chars:
-                chars.append(g.toUnicode(ch,encoding='UTF-8'))
+                chars.append(g.toUnicode(ch))
 
     # jEdit2Py now does this check, so this isn't really needed.
     # But it is needed for forth.py.
@@ -8890,7 +8887,6 @@ self.default_font_dict = {
 
     # Tags used by forth.
     'bracketRange'   :'bracketRange_font',
-    'keyword5'       :'keyword5_font',
 
      # jEdit tags.
     'comment1'      :'comment1_font',

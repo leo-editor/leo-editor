@@ -724,7 +724,6 @@ class atFile:
             g.es_print('errors inhibited read @auto',fileName,color='red')
 
         if ic.errors or not g.os_path_exists(fileName):
-            # c.setBodyString(p,'')
             p.clearDirty()
             c.setChanged(oldChanged)
         else:
@@ -1348,7 +1347,7 @@ class atFile:
 
         # Set the temporary body text.
         s = ''.join(at.out)
-        s = g.toUnicode(s,g.app.tkEncoding) # 9/28/03
+        s = g.toUnicode(s)
 
         if at.importing:
             at.v._bodyString = s
@@ -4054,7 +4053,7 @@ class atFile:
 
         '''Used to test Leo's handling of the following syntax error'''
 
-        # g.app.gui.toUnicode(c=None,'whatever')
+        # xxx(c=None,'whatever')
     #@nonl
     #@-node:ekr.20090620121836.6073:syntaxErrorTest
     #@-node:ekr.20090514111518.5666:syntaxError & test

@@ -1631,7 +1631,7 @@ class leoSwingFrame (leoFrame.leoFrame):
             row,col = g.convertPythonIndexToRowCol(s,index)
             if col > 0:
                 s2 = s[index-col:index]
-                s2 = g.toUnicode(s2,g.app.tkEncoding)
+                s2 = g.toUnicode(s2)
                 col = g.computeWidth (s2,c.tab_width)
 
             # Important: this does not change the focus because labels never get focus.
@@ -4908,13 +4908,12 @@ class leoSwingTextWidget: ### (leoFrame.baseTextWidget):
         """Return all the text of Tk.Text widget w converted to unicode."""
 
         w = self
-        ### s = Tk.Text.get(w,"1.0","end-1c") # New in 4.4.1: use end-1c.
-        s = '' ###
+        s = ''
 
         if s is None:
-            return u""
+            return g.u('')
         else:
-            return g.toUnicode(s,g.app.tkEncoding)
+            return g.toUnicode(s)
     #@-node:ekr.20081121105001.883:getAllText
     #@+node:ekr.20081121105001.884:getInsertPoint
     def getInsertPoint(self): # swingTextWidget.
@@ -4932,7 +4931,7 @@ class leoSwingTextWidget: ### (leoFrame.baseTextWidget):
         if i != j:
             i,j = w.toGuiIndex(i),w.toGuiIndex(j)
             s = '' ### s = Tk.Text.get(w,i,j)
-            return g.toUnicode(s,g.app.tkEncoding)
+            return g.toUnicode(s)
         else:
             return u""
     #@-node:ekr.20081121105001.885:getSelectedText

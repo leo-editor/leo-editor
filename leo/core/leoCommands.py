@@ -620,9 +620,10 @@ class baseCommands (object):
     #@-node:ekr.20081006100835.1:c.getNodePath & c.getNodeFileName
     #@-node:ekr.20080901124540.1:c.Directive scanning
     #@+node:ekr.20091211111443.6265:c.doBatchOperations & helpers
-    def doBatchOperations (self,aList):
+    def doBatchOperations (self,aList=None):
         # Validate aList and create the parents dict
-        ok, d = self.checkBatchOperationsList()
+        if aList is None: aList = []
+        ok, d = self.checkBatchOperationsList(aList)
         if not ok:
             return g.es('do-batch-operations: invalid list argument',
                 color='red')
@@ -1199,7 +1200,7 @@ class baseCommands (object):
             g.sanitize_filename(p.headString()),
             str(id(p.v)),ext)
 
-        name = g.toUnicode(name,g.app.tkEncoding)
+        name = g.toUnicode(name)
 
         td = g.os_path_finalize(tempfile.gettempdir())
 
@@ -4471,7 +4472,7 @@ class baseCommands (object):
         #@+node:ekr.20040713064323:dumpLines
         def dumpLines (self,p,lines):
 
-            encoding = g.app.tkEncoding
+            encoding = g.app.defaultEncoding
 
             g.pr('\n','-'*10,p.cleanHeadString())
 
@@ -7321,16 +7322,16 @@ class baseCommands (object):
     #@-node:ekr.20060906211747:Getters
     #@+node:ekr.20060906211747.1:Setters
     #@+node:ekr.20040315032503:c.appendStringToBody
-    def appendStringToBody (self,p,s,encoding="utf-8"):
+    def appendStringToBody (self,p,s):
 
         c = self
         if not s: return
 
         body = p.b
         assert(g.isUnicode(body))
-        s = g.toUnicode(s,encoding)
+        s = g.toUnicode(s)
 
-        c.setBodyString(p,body + s,encoding)
+        c.setBodyString(p,body + s)
     #@-node:ekr.20040315032503:c.appendStringToBody
     #@+node:ekr.20031218072017.2984:c.clearAllMarked
     def clearAllMarked (self):
@@ -7358,12 +7359,12 @@ class baseCommands (object):
     #@nonl
     #@-node:ekr.20060906211138:c.clearMarked
     #@+node:ekr.20040305223522:c.setBodyString
-    def setBodyString (self,p,s,encoding="utf-8"):
+    def setBodyString (self,p,s):
 
         c = self ; v = p.v
         if not c or not v: return
 
-        s = g.toUnicode(s,encoding)
+        s = g.toUnicode(s)
         current = c.p
         # 1/22/05: Major change: the previous test was: 'if p == current:'
         # This worked because commands work on the presently selected node.
@@ -7449,7 +7450,7 @@ class baseCommands (object):
     #@nonl
     #@-node:ekr.20040803140033.1:c.setCurrentPosition
     #@+node:ekr.20040305223225:c.setHeadString
-    def setHeadString (self,p,s,encoding="utf-8"):
+    def setHeadString (self,p,s):
 
         '''Set the p's headline and the corresponding tree widget to s.
 
@@ -7457,7 +7458,7 @@ class baseCommands (object):
 
         c = self
 
-        p.initHeadString(s,encoding)
+        p.initHeadString(s)
         p.setDirty()
 
         # Change the actual tree widget so
@@ -7829,7 +7830,7 @@ class configSettings:
         self.default_derived_file_encoding = None
         self.new_leo_file_encoding = None
         self.redirect_execute_script_output_to_log_pane = None
-        self.tkEncoding = None
+        ### self.defaultEncoding = None
 
         self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
         self.defaultLogFontSize  = g.app.config.defaultLogFontSize

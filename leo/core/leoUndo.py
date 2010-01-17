@@ -2010,7 +2010,7 @@ class undoer:
         #@+node:ekr.20061106105812.1:<< Compute the result using p's body text >>
         # Recreate the text using the present body text.
         body = p.b
-        body = g.toUnicode(body,"utf-8")
+        body = g.toUnicode(body)
         body_lines = body.split('\n')
         s = []
         if leading > 0:

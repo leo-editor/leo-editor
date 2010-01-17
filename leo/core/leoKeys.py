@@ -4549,7 +4549,7 @@ class keyHandlerClass:
         )
 
         # new in 4.4b3: convert all characters to unicode first.
-        shortcut = ''.join([g.toUnicode(val,g.app.tkEncoding) for flag,val in table if flag])
+        shortcut = ''.join([g.toUnicode(val) for flag,val in table if flag])
         #@-node:ekr.20061031131434.189:<< compute shortcut >>
         #@nl
         if trace: g.trace('%20s %s' % (setting,shortcut))

@@ -11,6 +11,8 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20091005145253.6059:Before b2
+#@+node:ekr.20100116085803.7490:Fix all docutils warnings in leoDocs.leo
+#@-node:ekr.20100116085803.7490:Fix all docutils warnings in leoDocs.leo
 #@+node:ekr.20100115051404.6245:Fix 349027: body doesn't get focus after headline edit
 @nocolor-node
 
@@ -122,6 +124,34 @@ goto-global-line doesn't work with @edit nodes
 https://bugs.launchpad.net/leo-editor/+bug/399720
 #@nonl
 #@-node:ekr.20100111094359.6208:Fix goto-line bugs
+#@+node:ekr.20100111094359.6210:Fix bug: 420988 (low) @tabwith 8 not honored, but -8 is ok
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/420988
+
+Creating new insert-tab commands may help
+
+======
+
+Leo shows @tabwith 8 always as indents of 4 and only pushes tabs of 4, but works
+ok with spaces of -8 at pushing indents of -8. This bug also renders poorly when
+then code block consists of the Tabs and Spaces indent type, also known as Soft
+tab support in some other editors, where Hard tabs are 8 and soft tabs are -4
+and the mixture ends up in Leo with the soft tabbed blocks not indented into
+their container code.
+
+Leo 4.6.2 final, build 2278, August 3, 2009
+Python 2.6.2, qt version 263426
+linux2
+#@-node:ekr.20100111094359.6210:Fix bug: 420988 (low) @tabwith 8 not honored, but -8 is ok
+#@+node:ekr.20100111094359.6211:Finish bug: 486433 non-breaking space (and other invisible characters) are invisible
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/486433
+
+Allow font specs for colorizer.
+#@nonl
+#@-node:ekr.20100111094359.6211:Finish bug: 486433 non-breaking space (and other invisible characters) are invisible
 #@+node:ekr.20100115091643.6249:<alt-x> select-all crashes python when focus is in headline
 @
 The problem occurs because the QtGui.QLineEdit object goes away
@@ -323,34 +353,6 @@ These may not make it into b2 or even Leo 4.7 final.
 #@-node:ekr.20100112051224.6247:Make sure appropriate key bindings work in log pane
 #@+node:ekr.20100112051224.6248:Make sure Leo handles activation event properly
 #@-node:ekr.20100112051224.6248:Make sure Leo handles activation event properly
-#@+node:ekr.20100111094359.6210:Fix bug: 420988 (low) @tabwith 8 not honored, but -8 is ok
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/420988
-
-Creating new insert-tab commands may help
-
-======
-
-Leo shows @tabwith 8 always as indents of 4 and only pushes tabs of 4, but works
-ok with spaces of -8 at pushing indents of -8. This bug also renders poorly when
-then code block consists of the Tabs and Spaces indent type, also known as Soft
-tab support in some other editors, where Hard tabs are 8 and soft tabs are -4
-and the mixture ends up in Leo with the soft tabbed blocks not indented into
-their container code.
-
-Leo 4.6.2 final, build 2278, August 3, 2009
-Python 2.6.2, qt version 263426
-linux2
-#@-node:ekr.20100111094359.6210:Fix bug: 420988 (low) @tabwith 8 not honored, but -8 is ok
-#@+node:ekr.20100111094359.6211:Finish bug: 486433 non-breaking space (and other invisible characters) are invisible
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/486433
-
-Allow font specs for colorizer.
-#@nonl
-#@-node:ekr.20100111094359.6211:Finish bug: 486433 non-breaking space (and other invisible characters) are invisible
 #@+node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
 @nocolor-node
 
@@ -1922,7 +1924,7 @@ self.language_extension_dict = {
     "plsql"         : "sql", # qt02537 2005-05-27
     "rapidq"        : "bas", # fil 2004-march-11
     "rebol"         : "r",    # jason 2003-07-03
-    "rst"           : "rst",
+    # "rst"           : "rst", # caught by pylint.
     "rst"           : "rest",
     "ruby"          : "rb",   # thyrsus 2008-11-05
     "shell"         : "sh",   # DS 4/1/04
@@ -2744,7 +2746,7 @@ def openWithTempFilePath (self,p,ext):
         g.sanitize_filename(p.headString()),
         str(id(p.v)),ext)
 
-    name = g.toUnicode(name,g.app.tkEncoding)
+    name = g.toUnicode(name)
 
     td = g.os_path_finalize(tempfile.gettempdir())
 
@@ -3078,7 +3080,7 @@ def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=Non
 
     trace = False and not g.unitTesting
     verbose = True
-    x = self ; 
+    x = self
     # mapping tells which line of old_private_lines each line of old_public_lines comes from.
     old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
 
@@ -3095,9 +3097,9 @@ def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=Non
 
         # Verify that SequenceMatcher never leaves gaps.
         if old_i != prev_old_j: # assert old_i == prev_old_j
-            x.error('can not happen: gap in old:',old_i,prev_old_j)
+            x.error('can not happen: gap in old: %s %s' % (old_i,prev_old_j))
         if new_i != prev_new_j: # assert new_i == prev_new_j
-            x.error('can not happen: gap in new:',new_i,prev_new_j)
+            x.error('can not happen: gap in new: %s %s' % (new_i,prev_new_j))
 
         << Handle the opcode >>
 

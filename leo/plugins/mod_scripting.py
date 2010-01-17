@@ -589,7 +589,7 @@ class scriptingController:
         theFile = h[len(tag):].strip()
         if theFile[-3:] == ".py":
             theFile = theFile[:-3]
-        theFile = g.toUnicode(theFile,g.app.tkEncoding)
+        theFile = g.toUnicode(theFile)
 
         if not self.atPluginNodes:
             g.es("disabled @plugin: %s" % (theFile),color="blue")
@@ -646,8 +646,8 @@ class scriptingController:
             if i != -1:
                 s = s[:i].strip()
         if 1: # Not great, but spaces, etc. interfere with tab completion.
-            chars = g.toUnicode(string.ascii_letters + string.digits,g.app.tkEncoding)
-            aList = [g.choose(ch in chars,ch,'-') for ch in g.toUnicode(s,g.app.tkEncoding)]
+            chars = g.toUnicode(string.ascii_letters + string.digits)
+            aList = [g.choose(ch in chars,ch,'-') for ch in g.toUnicode(s)]
             s = ''.join(aList)
             s = s.replace('--','-')
         while s.startswith('-'):

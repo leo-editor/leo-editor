@@ -4194,7 +4194,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
             row,col = g.convertPythonIndexToRowCol(s,index)
             if col > 0:
                 s2 = s[index-col:index]
-                s2 = g.toUnicode(s2,g.app.tkEncoding)
+                s2 = g.toUnicode(s2)
                 col = g.computeWidth (s2,c.tab_width)
             p = c.currentPosition()
             fcol = col + p.textOffset()
@@ -9380,7 +9380,7 @@ class leoTkTextWidget (Tk.Text):
         if s is None:
             return g.u('')
         else:
-            return g.toUnicode(s,g.app.tkEncoding)
+            return g.toUnicode(s)
     #@-node:ekr.20081121110412.327:getAllText
     #@+node:ekr.20081121110412.328:getInsertPoint
     def getInsertPoint(self): # tkTextWidget.
@@ -9405,7 +9405,7 @@ class leoTkTextWidget (Tk.Text):
         if i != j:
             i,j = w.toGuiIndex(i),w.toGuiIndex(j)
             s = Tk.Text.get(w,i,j)
-            return g.toUnicode(s,g.app.tkEncoding)
+            return g.toUnicode(s)
         else:
             return g.u('')
     #@-node:ekr.20081121110412.330:getSelectedText
