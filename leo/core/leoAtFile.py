@@ -2896,6 +2896,11 @@ class atFile:
         exists = g.os_path_exists(fn)
         if trace: g.trace('exists %s fn %s' % (exists,fn))
 
+        # Bug fix 2010/01/18: Make sure we can compute the shadow directory.
+        private_fn = x.shadowPathName(fn)
+        if not private_fn:
+            return False
+
         if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
             if trace: g.trace('ignoring',fn)
             return False
@@ -2937,7 +2942,6 @@ class atFile:
 
         if at.errors == 0 and not toString:
             # Write the public and private files.
-            private_fn = x.shadowPathName(fn)
             if trace: g.trace('writing',fn)
             x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
             at.replaceFileWithString(private_fn,at.private_s)
