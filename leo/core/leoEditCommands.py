@@ -3563,6 +3563,7 @@ class editCommandsClass (baseEditCommandsClass):
         linesPerPage = 15 # To do.
 
         if hasattr(w,'leoMoveCursorHelper'):
+            extend = extend or self.extendMode
             w.leoMoveCursorHelper(
                 kind=g.choose(kind=='forward','page-down','page-up'),
                 extend=extend,linesPerPage=linesPerPage)
@@ -3622,6 +3623,7 @@ class editCommandsClass (baseEditCommandsClass):
         if not w: return
 
         if hasattr(w,'leoMoveCursorHelper'):
+            extend = extend or self.extendMode
             w.leoMoveCursorHelper(kind=spot,extend=extend)
             w.seeInsertPoint()
             c.frame.updateStatusLine()
@@ -3641,6 +3643,7 @@ class editCommandsClass (baseEditCommandsClass):
         if not w: return
 
         if hasattr(w,'leoMoveCursorHelper'):
+            extend = extend or self.extendMode
             w.leoMoveCursorHelper(kind=spot,extend=extend)
             w.seeInsertPoint()
             c.frame.updateStatusLine()
@@ -3686,6 +3689,7 @@ class editCommandsClass (baseEditCommandsClass):
         w.seeInsertPoint()
 
         if hasattr(w,'leoMoveCursorHelper'):
+            extend = extend or self.extendMode
             w.leoMoveCursorHelper(kind=direction,extend=extend)
             w.seeInsertPoint()
             c.frame.updateStatusLine()
@@ -3725,6 +3729,7 @@ class editCommandsClass (baseEditCommandsClass):
         # g.trace(hasattr(w,'leoMoveCursorHelper'))
 
         if hasattr(w,'leoMoveCursorHelper'):
+            extend = extend or self.extendMode
             w.leoMoveCursorHelper(kind=spot,extend=extend)
             w.seeInsertPoint()
             c.frame.updateStatusLine()

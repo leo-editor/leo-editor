@@ -18250,6 +18250,7 @@ def movePageHelper(self,event,kind,extend): # kind in back/forward.
     linesPerPage = 15 # To do.
 
     if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
         w.leoMoveCursorHelper(
             kind=g.choose(kind=='forward','page-down','page-up'),
             extend=extend,linesPerPage=linesPerPage)
@@ -18309,6 +18310,7 @@ def moveToBufferHelper (self,event,spot,extend):
     if not w: return
 
     if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
         w.leoMoveCursorHelper(kind=spot,extend=extend)
         w.seeInsertPoint()
         c.frame.updateStatusLine()
@@ -18328,6 +18330,7 @@ def moveToCharacterHelper (self,event,spot,extend):
     if not w: return
 
     if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
         w.leoMoveCursorHelper(kind=spot,extend=extend)
         w.seeInsertPoint()
         c.frame.updateStatusLine()
@@ -18373,6 +18376,7 @@ def moveUpOrDownHelper (self,event,direction,extend):
     w.seeInsertPoint()
 
     if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
         w.leoMoveCursorHelper(kind=direction,extend=extend)
         w.seeInsertPoint()
         c.frame.updateStatusLine()
@@ -18412,6 +18416,7 @@ def moveWithinLineHelper (self,event,spot,extend):
     # g.trace(hasattr(w,'leoMoveCursorHelper'))
 
     if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
         w.leoMoveCursorHelper(kind=spot,extend=extend)
         w.seeInsertPoint()
         c.frame.updateStatusLine()
@@ -18936,6 +18941,7 @@ def movePageHelper(self,event,kind,extend): # kind in back/forward.
     linesPerPage = 15 # To do.
 
     if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
         w.leoMoveCursorHelper(
             kind=g.choose(kind=='forward','page-down','page-up'),
             extend=extend,linesPerPage=linesPerPage)
@@ -18966,6 +18972,7 @@ def moveUpOrDownHelper (self,event,direction,extend):
     w.seeInsertPoint()
 
     if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
         w.leoMoveCursorHelper(kind=direction,extend=extend)
         w.seeInsertPoint()
         c.frame.updateStatusLine()
@@ -19041,6 +19048,7 @@ def moveToCharacterHelper (self,event,spot,extend):
     if not w: return
 
     if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
         w.leoMoveCursorHelper(kind=spot,extend=extend)
         w.seeInsertPoint()
         c.frame.updateStatusLine()
@@ -19064,6 +19072,7 @@ def moveWithinLineHelper (self,event,spot,extend):
     # g.trace(hasattr(w,'leoMoveCursorHelper'))
 
     if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
         w.leoMoveCursorHelper(kind=spot,extend=extend)
         w.seeInsertPoint()
         c.frame.updateStatusLine()
@@ -19086,6 +19095,7 @@ def moveToBufferHelper (self,event,spot,extend):
     if not w: return
 
     if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
         w.leoMoveCursorHelper(kind=spot,extend=extend)
         w.seeInsertPoint()
         c.frame.updateStatusLine()
@@ -19287,6 +19297,7 @@ def movePageHelper(self,event,kind,extend): # kind in back/forward.
     linesPerPage = 15 # To do.
 
     if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
         w.leoMoveCursorHelper(
             kind=g.choose(kind=='forward','page-down','page-up'),
             extend=extend,linesPerPage=linesPerPage)
@@ -19346,6 +19357,7 @@ def moveToBufferHelper (self,event,spot,extend):
     if not w: return
 
     if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
         w.leoMoveCursorHelper(kind=spot,extend=extend)
         w.seeInsertPoint()
         c.frame.updateStatusLine()
@@ -19365,6 +19377,7 @@ def moveToCharacterHelper (self,event,spot,extend):
     if not w: return
 
     if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
         w.leoMoveCursorHelper(kind=spot,extend=extend)
         w.seeInsertPoint()
         c.frame.updateStatusLine()
@@ -19410,6 +19423,7 @@ def moveUpOrDownHelper (self,event,direction,extend):
     w.seeInsertPoint()
 
     if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
         w.leoMoveCursorHelper(kind=direction,extend=extend)
         w.seeInsertPoint()
         c.frame.updateStatusLine()
@@ -19449,6 +19463,7 @@ def moveWithinLineHelper (self,event,spot,extend):
     # g.trace(hasattr(w,'leoMoveCursorHelper'))
 
     if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
         w.leoMoveCursorHelper(kind=spot,extend=extend)
         w.seeInsertPoint()
         c.frame.updateStatusLine()
@@ -21980,6 +21995,7 @@ def moveWithinLineHelper (self,event,spot,extend):
     # g.trace(hasattr(w,'leoMoveCursorHelper'))
 
     if hasattr(w,'leoMoveCursorHelper'):
+        extend = extend or self.extendMode
         w.leoMoveCursorHelper(kind=spot,extend=extend)
         w.seeInsertPoint()
         c.frame.updateStatusLine()

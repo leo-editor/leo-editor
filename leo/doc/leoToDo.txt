@@ -11,6 +11,8 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20091005145253.6059:Before b2
+@language rest
+#@nonl
 #@+node:ekr.20100118091954.6256:Rename chapter commands
 They should all start with chapter-
 #@nonl
@@ -152,11 +154,28 @@ def callAltXFunction (self,event):
             c.bodyWantsFocus()
 #@-node:ekr.20061031131434.112:callAltXFunction
 #@-node:ekr.20100115091643.6249:<alt-x> select-all crashes python when focus is in headline
+#@+node:ekr.20100118143729.6256:Fix bug 508108: No methods sub-nodes in PHP class import
+https://bugs.launchpad.net/leo-editor/+bug/508108
+
+When importing a PHP class file, I get two nodes: the first is just some Leo
+definitions (@language, @tab, @others), while the second is the whole class. I
+expect Leo to create a node for each method in the class as it does for
+"classless" file of functions (not sure how it is done in other languages). This
+kind of change would also make @auto a lot more useful for PHP.
+#@nonl
+#@-node:ekr.20100118143729.6256:Fix bug 508108: No methods sub-nodes in PHP class import
+#@+node:ekr.20100118143729.6257:Don't colorize @others and @all unless they start a line
+#@-node:ekr.20100118143729.6257:Don't colorize @others and @all unless they start a line
 #@+node:ekr.20100113075303.6270:Easiest vim problems
 @nocolor-node
 
 These may not make it into b2 or even Leo 4.7 final.
 #@nonl
+#@+node:ekr.20100112051224.6229:Binding Arrow keys (fixed?)
+Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
+commands or @mode nodes have no effect.
+#@nonl
+#@-node:ekr.20100112051224.6229:Binding Arrow keys (fixed?)
 #@+node:ekr.20100112051224.6239:Displaying mode help
 @nocolor-node
 
@@ -206,11 +225,6 @@ For example, the 'i' and 'a' command are both mapped to enter the insert state
 at the current cursor location.
 #@nonl
 #@-node:ekr.20090629183608.8445:Cursors (easiest)
-#@+node:ekr.20100112051224.6229:Binding Arrow keys (fixed?)
-Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
-commands or @mode nodes have no effect.
-#@nonl
-#@-node:ekr.20100112051224.6229:Binding Arrow keys (fixed?)
 #@+node:ekr.20100112051224.6231:Undo command (fixed?)
 Using the "undo" command (key 'u') to undo a change to a node's headline text
 only works correctly after another node has been selected. It appears that
@@ -219,15 +233,15 @@ until the edited node has lost focus.
 #@nonl
 #@-node:ekr.20100112051224.6231:Undo command (fixed?)
 #@-node:ekr.20100113075303.6270:Easiest vim problems
+#@+node:ekr.20100112051224.6247:Make sure appropriate key bindings work in log pane
+#@-node:ekr.20100112051224.6247:Make sure appropriate key bindings work in log pane
+#@+node:ekr.20100112051224.6248:Make sure Leo handles activation event properly
+#@-node:ekr.20100112051224.6248:Make sure Leo handles activation event properly
 #@+node:ekr.20100111164531.6226:Minor...
 @nocolor-node
 
 These may not make it into b2 or even Leo 4.7 final.
 #@nonl
-#@+node:ekr.20100112051224.6247:Make sure appropriate key bindings work in log pane
-#@-node:ekr.20100112051224.6247:Make sure appropriate key bindings work in log pane
-#@+node:ekr.20100112051224.6248:Make sure Leo handles activation event properly
-#@-node:ekr.20100112051224.6248:Make sure Leo handles activation event properly
 #@+node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
 @nocolor-node
 
@@ -593,6 +607,11 @@ Vim mode users: your top 3 complaints, please
 
 These may not make it into b2 or even Leo 4.7 final.
 #@nonl
+#@+node:ekr.20100112051224.6229:Binding Arrow keys (fixed?)
+Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
+commands or @mode nodes have no effect.
+#@nonl
+#@-node:ekr.20100112051224.6229:Binding Arrow keys (fixed?)
 #@+node:ekr.20100112051224.6239:Displaying mode help
 @nocolor-node
 
@@ -642,11 +661,6 @@ For example, the 'i' and 'a' command are both mapped to enter the insert state
 at the current cursor location.
 #@nonl
 #@-node:ekr.20090629183608.8445:Cursors (easiest)
-#@+node:ekr.20100112051224.6229:Binding Arrow keys (fixed?)
-Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
-commands or @mode nodes have no effect.
-#@nonl
-#@-node:ekr.20100112051224.6229:Binding Arrow keys (fixed?)
 #@+node:ekr.20100112051224.6231:Undo command (fixed?)
 Using the "undo" command (key 'u') to undo a change to a node's headline text
 only works correctly after another node has been selected. It appears that
