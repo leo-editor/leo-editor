@@ -3226,9 +3226,10 @@ class colorizer:
 
         n = len(s)
 
-        ###
         # if not g.isPython3:
             # chars = chars and g.toUnicode(chars,encoding='ascii') or unicode('')
+
+        chars = chars or g.u('')
 
         while i < n and (g.isWordChar(s[i]) or s[i] in chars):
                 i += 1
