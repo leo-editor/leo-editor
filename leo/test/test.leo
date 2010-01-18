@@ -24,6 +24,9 @@
 </v>
 </v>
 <v t="ekr.20070224123943"><vh>@settings</vh>
+<v t="ekr.20100118141712.2011"><vh>@int qt_tab_width = 80</vh></v>
+<v t="ekr.20100118122048.2003"><vh>@@font python keyword1 fonts</vh></v>
+<v t="ekr.20100118133026.2008"><vh>@@font python keyword3 fonts</vh></v>
 <v t="ekr.20091230064146.1911"><vh>@data import_xml_tags</vh></v>
 <v t="ekr.20090815161520.1815"><vh>@string vim_trigger_event = select2</vh></v>
 <v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
@@ -176,6 +179,9 @@
 </v>
 </v>
 <v t="ekr.20071025193940"></v>
+<v t="ekr.20100118141712.2011"></v>
+<v t="ekr.20100118122048.2003"></v>
+<v t="ekr.20100118133026.2008"></v>
 <v t="ekr.20090309064612.1"><vh>Future features/bug fixes (do not delete)</vh>
 <v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions</vh></v>
 <v t="ekr.20080610144233.1"><vh>Wrap test</vh></v>
@@ -457,6 +463,7 @@
 <v t="ekr.20100110124039.2007"><vh>with hack</vh></v>
 </v>
 </v>
+<v t="ekr.20100118123807.2003"><vh>font test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -877,7 +884,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="9"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5160,5 +5167,34 @@ title             Title reference (book, etc.); standard default role
 <t tx="ekr.20100110172917.1961">Section 1: Ę
 
 </t>
+<t tx="ekr.20100118122048.2003"># For new colorizer
+
+python_keyword1_font_family = DejaVu Sans Mono
+python_keyword1_font_size = 12
+python_keyword1_font_slant = roman
+    # roman, italic
+python_keyword1_font_weight = bold
+    # normal, bold</t>
+<t tx="ekr.20100118123807.2003">@language python
+
+@tabwidth 8
+
+def spam():
+	a
+	if True:
+        	return False
+    
+</t>
+<t tx="ekr.20100118133026.2008">python_keyword3_font_family = DejaVu Sans Mono
+python_keyword3_font_size = 12
+python_keyword3_font_slant = italic
+    # roman, italic
+python_keyword3_font_weight = bold
+    # normal, bold
+</t>
+<t tx="ekr.20100118141712.2011">@nocolor-node
+
+Use 40 for @tabwidth 4
+Use 80 for @tabwidth 8</t>
 </tnodes>
 </leo_file>

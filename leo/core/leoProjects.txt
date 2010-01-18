@@ -22020,6 +22020,34 @@ def backToHome (self,event):
     self.moveToHelper(event,i,extend=False)
 #@-node:ekr.20081123102100.1:backToHome
 #@-node:ekr.20100118091954.6261:Fixed bug 507559: Can't use End key while editing node headline
+#@+node:ekr.20100111094359.6211:Finished bug: 486433 non-breaking space (and other invisible characters) are invisible
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/486433
+
+Allow font specs for colorizer.
+#@nonl
+#@-node:ekr.20100111094359.6211:Finished bug: 486433 non-breaking space (and other invisible characters) are invisible
+#@+node:ekr.20100111094359.6210:Fixed bug: 420988 @tabwith 8 not honored, but -8 is ok
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/420988
+
+Creating new insert-tab commands may help
+
+======
+
+Leo shows @tabwith 8 always as indents of 4 and only pushes tabs of 4, but works
+ok with spaces of -8 at pushing indents of -8. This bug also renders poorly when
+then code block consists of the Tabs and Spaces indent type, also known as Soft
+tab support in some other editors, where Hard tabs are 8 and soft tabs are -4
+and the mixture ends up in Leo with the soft tabbed blocks not indented into
+their container code.
+
+Leo 4.6.2 final, build 2278, August 3, 2009
+Python 2.6.2, qt version 263426
+linux2
+#@-node:ekr.20100111094359.6210:Fixed bug: 420988 @tabwith 8 not honored, but -8 is ok
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20091219151045.6361:Simplified g.create_temp_file

@@ -8396,19 +8396,27 @@ class jEditColorizer:
             'markup','operator',
         ]
 
-        #@    << define leoKeywordsDict >>
-        #@+node:ekr.20090614134853.3698:<< define leoKeywordsDict >>
+        self.defineLeoKeywordsDict()
+        self.defineDefaultColorsDict()
+        self.defineDefaultFontDict()
+
+        # New in Leo 4.6: configure tags only once here.
+        # Some changes will be needed for multiple body editors.
+        if 1: # This is reported to be too slow.
+            # Must do this every time to support multiple editors.
+            self.configure_tags()
+    #@+node:ekr.20090614134853.3698:defineLeoKeywordsDict
+    def defineLeoKeywordsDict(self):
+
         self.leoKeywordsDict = {}
 
         for key in g.globalDirectiveList:
             self.leoKeywordsDict [key] = 'leoKeyword'
-        #@nonl
-        #@-node:ekr.20090614134853.3698:<< define leoKeywordsDict >>
-        #@nl
-        #@    << define default_colors_dict >>
-        #@+node:ekr.20090614134853.3699:<< define default_colors_dict >>
-        # These defaults are sure to exist.
+    #@-node:ekr.20090614134853.3698:defineLeoKeywordsDict
+    #@+node:ekr.20090614134853.3699:defineDefaultColorsDict
+    def defineDefaultColorsDict (self):
 
+        # These defaults are sure to exist.
         self.default_colors_dict = {
             # tag name       :(     option name,           default color),
             'blank'          :('blank_color',                 'black'), # 2010/1/2
@@ -8426,10 +8434,9 @@ class jEditColorizer:
             'latexBackground':('latex_background_color',      'white'),
 
             # Tags used by forth.
-            'keyword5'       :('keyword5_color',              'blue'),
-            'bracketRange'   :('bracket_range_color',         'orange'),
-            # jEdit tags.
+            'bracketRange'   :('bracket_range_color','orange'),
 
+            # jEdit tags.
             'comment1'       :('comment1_color', 'red'),
             'comment2'       :('comment2_color', 'red'),
             'comment3'       :('comment3_color', 'red'),
@@ -8439,6 +8446,7 @@ class jEditColorizer:
             'keyword2'       :('keyword2_color', 'blue'),
             'keyword3'       :('keyword3_color', 'blue'),
             'keyword4'       :('keyword4_color', 'blue'),
+            'keyword5'       :('keyword5_color', 'blue'),
             'label'          :('label_color',    'black'),
             'literal1'       :('literal1_color', '#00aa00'),
             'literal2'       :('literal2_color', '#00aa00'),
@@ -8447,11 +8455,11 @@ class jEditColorizer:
             'markup'         :('markup_color',   'red'),
             'null'           :('null_color',     'black'),
             'operator'       :('operator_color', 'black'),
-            }
-        #@-node:ekr.20090614134853.3699:<< define default_colors_dict >>
-        #@nl
-        #@    << define default_font_dict >>
-        #@+node:ekr.20090614134853.3700:<< define default_font_dict >>
+        }
+    #@-node:ekr.20090614134853.3699:defineDefaultColorsDict
+    #@+node:ekr.20090614134853.3700:defineDefaultFontDict
+    def defineDefaultFontDict (self):
+
         self.default_font_dict = {
             # tag name      : option name
             'comment'       :'comment_font',
@@ -8465,6 +8473,7 @@ class jEditColorizer:
             'string'        :'string_font',
             'name'          :'undefined_section_name_font',
             'latexBackground':'latex_background_font',
+            'tab'           : 'tab_font',
 
             # Tags used by forth.
             'bracketRange'   :'bracketRange_font',
@@ -8489,16 +8498,8 @@ class jEditColorizer:
             # 'nocolor' This tag is used, but never generates code.
             'null'          :'null_font',
             'operator'      :'operator_font',
-            }
-        #@-node:ekr.20090614134853.3700:<< define default_font_dict >>
-        #@nl
-
-        # New in Leo 4.6: configure tags only once here.
-        # Some changes will be needed for multiple body editors.
-        if 1: # This is reported to be too slow.
-            # Must do this every time to support multiple editors.
-            self.configure_tags()
-    #@nonl
+        }
+    #@-node:ekr.20090614134853.3700:defineDefaultFontDict
     #@-node:ekr.20090614134853.3697:__init__ (jeditColorizer)
     #@+node:ekr.20090614134853.3701:addImportedRules
     def addImportedRules (self,mode,rulesDict,rulesetName):
@@ -8576,9 +8577,13 @@ class jEditColorizer:
 
         trace = False and not g.unitTesting
         verbose = False
+        traceColor = False
+        traceFonts = True
         c = self.c ; w = self.w
 
-        if trace: g.trace(w,g.callers(4))
+        # The stated default is 40, but apparently it must be set explicitly.
+        tabWidth = c.config.getInt('qt-tab-width') or 40
+        w.widget.setTabStopWidth(tabWidth)
 
         if w and hasattr(w,'start_tag_configure'):
             w.start_tag_configure()
@@ -8600,7 +8605,8 @@ class jEditColorizer:
             for name in ('%s_%s' % (self.colorizer.language,option_name),(option_name)):
                 font = self.fonts.get(name)
                 if font:
-                    if trace and verbose: g.trace('found',name,id(font))
+                    if trace and traceFonts:
+                        g.trace('**found',name,id(font))
                     w.tag_config(key,font=font)
                     break
                 else:
@@ -8615,14 +8621,18 @@ class jEditColorizer:
                         weight = weight or 'normal'
                         font = g.app.gui.getFontFromParams(family,size,slant,weight)
                         # Save a reference to the font so it 'sticks'.
-                        self.fonts[name] = font 
-                        if trace and verbose: g.trace(key,name,family,size,slant,weight,id(font))
+                        self.fonts[key] = font
+                        if trace and traceFonts:
+                            g.trace('**found',key,name,family,size,slant,weight,id(font))
                         w.tag_config(key,font=font)
                         break
             else: # Neither the general setting nor the language-specific setting exists.
                 if list(self.fonts.keys()): # Restore the default font.
-                    if trace and verbose: g.trace('default',key)
+                    if trace and verbose and traceFonts: g.trace('default',key)
                     w.tag_config(key,font=defaultBodyfont)
+                else:
+                    if trace and traceFonts:
+                        g.trace('no fonts')
 
         keys = list(self.default_colors_dict.keys()) ; keys.sort()
         for name in keys:
@@ -8632,7 +8642,7 @@ class jEditColorizer:
                 c.config.getColor(option_name) or
                 default_color
             )
-            if trace and verbose: g.trace(option_name,color)
+            if trace and traceColor: g.trace(option_name,color)
 
             # Must use foreground, not fg.
             try:
@@ -9132,7 +9142,7 @@ class jEditColorizer:
     def match_blanks (self,s,i):
 
         if not self.showInvisibles:
-            return 0 # 2010/12/2
+            return 0
 
         j = i ; n = len(s)
 
@@ -9140,8 +9150,7 @@ class jEditColorizer:
             j += 1
 
         if j > i:
-            if self.showInvisibles:
-                self.colorRangeWithTag(s,i,j,'blank')
+            self.colorRangeWithTag(s,i,j,'blank')
             return j - i
         else:
             return 0
@@ -9258,7 +9267,7 @@ class jEditColorizer:
     def match_tabs (self,s,i):
 
         if not self.showInvisibles:
-            return 0 # 2010/12/2
+            return 0
 
         if self.trace_leo_matches: g.trace()
 
@@ -10063,27 +10072,33 @@ class jEditColorizer:
             else:
                 return g.trace('unknown color name',colorName)
 
+        underline = w.configUnderlineDict.get(tag)
+
+        format = QtGui.QTextCharFormat()
+
+        font = self.fonts.get(tag)
+        if font:
+            format.setFont(font)
+
         if trace:
             self.tagCount += 1
             g.trace(
-                '%3s %3s %3s' % (i,j,len(s)),colorName,
+                '%3s %3s %3s %9s %7s' % (i,j,len(s),font and id(font) or '<no font>',colorName),
                 '%-10s %-25s' % (tag,s[i:j])) # ,g.callers(4))
 
-        underline = w.configUnderlineDict.get(tag)
         if tag in ('blank','tab'):
-            format = QtGui.QTextCharFormat()
             if tag == 'tab' or colorName == 'black':
                 format.setFontUnderline(True)
             if colorName != 'black':
                 format.setBackground(color)
-            self.highlighter.setFormat(i,j-i,format)
         elif underline:
-            format = QtGui.QTextCharFormat()
             format.setForeground(color)
             format.setFontUnderline(True)
-            self.highlighter.setFormat (i,j-i,format)
         else:
-            self.highlighter.setFormat(i,j-i,color)
+            format.setForeground(color)
+
+        self.highlighter.setFormat (i,j-i,format)
+
     #@-node:ekr.20090614134853.3813:setTag
     #@-others
 #@-node:ekr.20090614134853.3637:class jeditColorizer
