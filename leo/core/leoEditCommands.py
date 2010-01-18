@@ -938,17 +938,30 @@ class chapterCommandsClass (baseEditCommandsClass):
         # g.trace('cc',cc,g.callers())
 
         if cc:
-            return {
-                'clone-node-to-chapter':    cc.cloneNodeToChapter,
-                'convert-node-to-chapter':  cc.convertNodeToChapter,
-                'copy-node-to-chapter':     cc.copyNodeToChapter,
-                'create-chapter':           cc.createChapter,
-                'create-chapter-from-node': cc.createChapterFromNode,
-                'move-node-to-chapter':     cc.moveNodeToChapter,
-                'remove-chapter':           cc.removeChapter,
-                'rename-chapter':           cc.renameChapter,
-                'select-chapter':           cc.selectChapter,
-            }
+            if 1: # new names
+                return {
+                    'chapter-clone-node-to':    cc.cloneNodeToChapter,
+                    'chapter-convert-node-to':  cc.convertNodeToChapter,
+                    'chapter-copy-node-to':     cc.copyNodeToChapter,
+                    'chapter-create':           cc.createChapter,
+                    'chapter-create-from-node': cc.createChapterFromNode,
+                    'chapter-move-node-to':     cc.moveNodeToChapter,
+                    'chapter-remove':           cc.removeChapter,
+                    'chapter-rename':           cc.renameChapter,
+                    'chapter-select':           cc.selectChapter,
+                }
+            else:
+                return {
+                    'clone-node-to-chapter':    cc.cloneNodeToChapter,
+                    'convert-node-to-chapter':  cc.convertNodeToChapter,
+                    'copy-node-to-chapter':     cc.copyNodeToChapter,
+                    'create-chapter':           cc.createChapter,
+                    'create-chapter-from-node': cc.createChapterFromNode,
+                    'move-node-to-chapter':     cc.moveNodeToChapter,
+                    'remove-chapter':           cc.removeChapter,
+                    'rename-chapter':           cc.renameChapter,
+                    'select-chapter':           cc.selectChapter,
+                }
         else:
             return {}
     #@-node:ekr.20070522085429: getPublicCommands (chapterCommandsClass)
