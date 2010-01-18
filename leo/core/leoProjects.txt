@@ -19,36 +19,7 @@
 #@@tabwidth -4
 
 #@+all
-#@+node:ekr.20090831095817.6067:Leo 4.6.3
-- Put caching bug fixes into 46-maint branch
-- Fixed bug in g.adjustTripleString.
-- Created .nsi script.
-#@nonl
-#@-node:ekr.20090831095817.6067:Leo 4.6.3
-#@+node:ekr.20090907080624.6082:Leo 4.6.4
-#@+node:ekr.20090907080624.6083:Added new plugins
-@nocolor-node
-
-New command-line option
-    --gui=qttabs
-
-new plugins:
-    spydershell,
-    qtframecommands
-    mod_framesize.
-
-Improved plugin:  "show folder" in rclick menu.
-
-Improved plugin: contextmenu.py
-
-    If you rclick on @thin / whatever item, you should see "open
-    /home/ville/foo" (or equivalent) menu entry. It open up the file manager on
-    that folder (using xdg-open on linux, os.startfile on windows). I have no
-    idea what to do with mac, now it runs xdg-open and probably fails.
-#@nonl
-#@-node:ekr.20090907080624.6083:Added new plugins
-#@-node:ekr.20090907080624.6082:Leo 4.6.4
-#@+node:ekr.20090718091653.5982:Leo 4.7 projects
+#@+node:ekr.20090718091653.5982:Leo 4.7 b2 projects
 #@+node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20091221094815.6383: Urgent (voted up) bugs
 #@+node:ekr.20091221145433.6384:Calltips don't work on leo3k
@@ -18438,6 +18409,8 @@ def moveWithinLineHelper (self,event,spot,extend):
     c = self.c ; w = self.editWidget(event)
     if not w: return
 
+    # g.trace(hasattr(w,'leoMoveCursorHelper'))
+
     if hasattr(w,'leoMoveCursorHelper'):
         w.leoMoveCursorHelper(kind=spot,extend=extend)
         w.seeInsertPoint()
@@ -18445,12 +18418,12 @@ def moveWithinLineHelper (self,event,spot,extend):
     else:
         s = w.getAllText()
         ins = w.getInsertPoint()
-        i,junk = g.getLine(s,ins)
+        i,j = g.getLine(s,ins)
         if spot == 'start-line':
             self.moveToHelper(event,i,extend=extend)
         elif spot == 'end-line':
-            if g.match(s,i-1,'\n'): i -= 1
-            self.moveToHelper(event,i,extend=extend)
+            # if g.match(s,i-1,'\n'): i -= 1
+            self.moveToHelper(event,j,extend=extend)
         else:
             g.trace('can not happen: bad spot: %s' % spot)
 #@-node:ekr.20100109094541.6231:moveWithinLineHelper
@@ -19088,6 +19061,8 @@ def moveWithinLineHelper (self,event,spot,extend):
     c = self.c ; w = self.editWidget(event)
     if not w: return
 
+    # g.trace(hasattr(w,'leoMoveCursorHelper'))
+
     if hasattr(w,'leoMoveCursorHelper'):
         w.leoMoveCursorHelper(kind=spot,extend=extend)
         w.seeInsertPoint()
@@ -19095,12 +19070,12 @@ def moveWithinLineHelper (self,event,spot,extend):
     else:
         s = w.getAllText()
         ins = w.getInsertPoint()
-        i,junk = g.getLine(s,ins)
+        i,j = g.getLine(s,ins)
         if spot == 'start-line':
             self.moveToHelper(event,i,extend=extend)
         elif spot == 'end-line':
-            if g.match(s,i-1,'\n'): i -= 1
-            self.moveToHelper(event,i,extend=extend)
+            # if g.match(s,i-1,'\n'): i -= 1
+            self.moveToHelper(event,j,extend=extend)
         else:
             g.trace('can not happen: bad spot: %s' % spot)
 #@-node:ekr.20100109094541.6231:moveWithinLineHelper
@@ -19471,6 +19446,8 @@ def moveWithinLineHelper (self,event,spot,extend):
     c = self.c ; w = self.editWidget(event)
     if not w: return
 
+    # g.trace(hasattr(w,'leoMoveCursorHelper'))
+
     if hasattr(w,'leoMoveCursorHelper'):
         w.leoMoveCursorHelper(kind=spot,extend=extend)
         w.seeInsertPoint()
@@ -19478,12 +19455,12 @@ def moveWithinLineHelper (self,event,spot,extend):
     else:
         s = w.getAllText()
         ins = w.getInsertPoint()
-        i,junk = g.getLine(s,ins)
+        i,j = g.getLine(s,ins)
         if spot == 'start-line':
             self.moveToHelper(event,i,extend=extend)
         elif spot == 'end-line':
-            if g.match(s,i-1,'\n'): i -= 1
-            self.moveToHelper(event,i,extend=extend)
+            # if g.match(s,i-1,'\n'): i -= 1
+            self.moveToHelper(event,j,extend=extend)
         else:
             g.trace('can not happen: bad spot: %s' % spot)
 #@-node:ekr.20100109094541.6231:moveWithinLineHelper
@@ -21932,8 +21909,117 @@ def cycleFocus (self,event):
     c.widgetWantsFocusNow(pane)
     k.newMinibufferWidget = pane
     k.showStateAndMode()
+#@nonl
 #@-node:ekr.20051022144825.1:cycleFocus
 #@-node:ekr.20100115090030.6247:Fixed cycle-focus bug
+#@+node:ekr.20100115051404.6245:Fixed 349027: body doesn't get focus after headline edit
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/349027
+
+Original bug: fixed
+
+I want to make a node by modifying an existing node, so I:
+
+  - copy/paste the exiting node
+  - dbl-click the copy's headline
+  - drag select part of the headline
+  - type new text to replace the selected text in the headline
+  - drag select text in the body
+  - type new text to replace the selected text in the body
+
+Last step fails, because while I was able to drag select text in the body, it somehow failed to gain
+true focus (i.e. get the blinking cursor).
+
+----------------
+
+Actually I think the bug's simpler than my description above - when you're
+editing a headline and use a mouse click to transfer focus to the body it takes
+two clicks to get the focus into the body, rather than just one.
+
+New bug: =======================
+
+eh, a form of this bug still exists
+
+Here's a common editing pattern for me:
+
+- shift-ctrl-c copy a node
+- shift-ctrl-v paste a copy of the node
+- ctrl-h edit the node's name
+- drag select the function name in the body text
+- type to change the function name
+
+but although the drag select works, the body text isn't responsive (no insert point), you need an extra click to make it active.
+
+i.e. like the original bug, except instead of transferring focus to the body with a click, it's being transferred with a drag-select.
+#@-node:ekr.20100115051404.6245:Fixed 349027: body doesn't get focus after headline edit
+#@+node:ekr.20100118091954.6261:Fixed bug 507559: Can't use End key while editing node headline
+#@+node:ekr.20100109094541.6232:within lines
+def beginningOfLine (self,event):
+    '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
+    self.moveWithinLineHelper(event,'start-line',extend=False)
+
+def beginningOfLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the start of the line.'''
+    self.moveWithinLineHelper(event,'start-line',extend=True)
+
+def endOfLine (self,event):
+    '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
+    self.moveWithinLineHelper(event,'end-line',extend=False)
+
+def endOfLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the end of the line.'''
+    self.moveWithinLineHelper(event,'end-line',extend=True)
+#@-node:ekr.20100109094541.6232:within lines
+#@+node:ekr.20100109094541.6231:moveWithinLineHelper
+def moveWithinLineHelper (self,event,spot,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    # g.trace(hasattr(w,'leoMoveCursorHelper'))
+
+    if hasattr(w,'leoMoveCursorHelper'):
+        w.leoMoveCursorHelper(kind=spot,extend=extend)
+        w.seeInsertPoint()
+        c.frame.updateStatusLine()
+    else:
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i,j = g.getLine(s,ins)
+        if spot == 'start-line':
+            self.moveToHelper(event,i,extend=extend)
+        elif spot == 'end-line':
+            # if g.match(s,i-1,'\n'): i -= 1
+            self.moveToHelper(event,j,extend=extend)
+        else:
+            g.trace('can not happen: bad spot: %s' % spot)
+#@-node:ekr.20100109094541.6231:moveWithinLineHelper
+#@+node:ekr.20081123102100.1:backToHome
+def backToHome (self,event):
+
+    '''Smart home:
+    Position the point at the first non-blank character on the line,
+    or the start of the line if already there.'''
+
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    if ins == 0 or not(s): return
+
+    # Toggle back and forth between start of line and first-non-blank character.
+    i,j = g.getLine(s,ins)
+    i1 = i
+    while i < j and s[i] in (' \t'):
+        i += 1
+    if i == ins:
+        i = i1
+
+    self.moveToHelper(event,i,extend=False)
+#@-node:ekr.20081123102100.1:backToHome
+#@-node:ekr.20100118091954.6261:Fixed bug 507559: Can't use End key while editing node headline
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20091219151045.6361:Simplified g.create_temp_file
@@ -27260,7 +27346,7 @@ getBody = bodyString
 #@-node:ekr.20031218072017.3378:v.bodyString
 #@-node:ekr.20100116055811.6251:use g.u in more places
 #@-node:ekr.20100118062736.6275:Mass update to clean unicode-related code
-#@-node:ekr.20090718091653.5982:Leo 4.7 projects
+#@-node:ekr.20090718091653.5982:Leo 4.7 b2 projects
 #@+node:ekr.20091220103056.6363:pylint
 @nocolor-node
 

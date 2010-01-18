@@ -3722,6 +3722,8 @@ class editCommandsClass (baseEditCommandsClass):
         c = self.c ; w = self.editWidget(event)
         if not w: return
 
+        # g.trace(hasattr(w,'leoMoveCursorHelper'))
+
         if hasattr(w,'leoMoveCursorHelper'):
             w.leoMoveCursorHelper(kind=spot,extend=extend)
             w.seeInsertPoint()
@@ -3729,12 +3731,12 @@ class editCommandsClass (baseEditCommandsClass):
         else:
             s = w.getAllText()
             ins = w.getInsertPoint()
-            i,junk = g.getLine(s,ins)
+            i,j = g.getLine(s,ins)
             if spot == 'start-line':
                 self.moveToHelper(event,i,extend=extend)
             elif spot == 'end-line':
-                if g.match(s,i-1,'\n'): i -= 1
-                self.moveToHelper(event,i,extend=extend)
+                # if g.match(s,i-1,'\n'): i -= 1
+                self.moveToHelper(event,j,extend=extend)
             else:
                 g.trace('can not happen: bad spot: %s' % spot)
     #@-node:ekr.20100109094541.6231:moveWithinLineHelper

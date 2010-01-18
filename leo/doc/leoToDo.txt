@@ -11,48 +11,11 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20091005145253.6059:Before b2
-#@+node:ekr.20100115051404.6245:Fix 349027: body doesn't get focus after headline edit
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/349027
-
-Original bug: fixed
-
-I want to make a node by modifying an existing node, so I:
-
-  - copy/paste the exiting node
-  - dbl-click the copy's headline
-  - drag select part of the headline
-  - type new text to replace the selected text in the headline
-  - drag select text in the body
-  - type new text to replace the selected text in the body
-
-Last step fails, because while I was able to drag select text in the body, it somehow failed to gain
-true focus (i.e. get the blinking cursor).
-
-----------------
-
-Actually I think the bug's simpler than my description above - when you're
-editing a headline and use a mouse click to transfer focus to the body it takes
-two clicks to get the focus into the body, rather than just one.
-
-New bug: =======================
-
-eh, a form of this bug still exists
-
-Here's a common editing pattern for me:
-
-- shift-ctrl-c copy a node
-- shift-ctrl-v paste a copy of the node
-- ctrl-h edit the node's name
-- drag select the function name in the body text
-- type to change the function name
-
-but although the drag select works, the body text isn't responsive (no insert point), you need an extra click to make it active.
-
-i.e. like the original bug, except instead of transferring focus to the body with a click, it's being transferred with a drag-select.
-#@-node:ekr.20100115051404.6245:Fix 349027: body doesn't get focus after headline edit
-#@+node:ekr.20100111094359.6210:Fix bug: 420988 (low) @tabwith 8 not honored, but -8 is ok
+#@+node:ekr.20100118091954.6256:Rename chapter commands
+They should all start with chapter-
+#@nonl
+#@-node:ekr.20100118091954.6256:Rename chapter commands
+#@+node:ekr.20100111094359.6210:Fix bug: 420988 @tabwith 8 not honored, but -8 is ok
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/420988
@@ -71,7 +34,7 @@ their container code.
 Leo 4.6.2 final, build 2278, August 3, 2009
 Python 2.6.2, qt version 263426
 linux2
-#@-node:ekr.20100111094359.6210:Fix bug: 420988 (low) @tabwith 8 not honored, but -8 is ok
+#@-node:ekr.20100111094359.6210:Fix bug: 420988 @tabwith 8 not honored, but -8 is ok
 #@+node:ekr.20100111094359.6211:Finish bug: 486433 non-breaking space (and other invisible characters) are invisible
 @nocolor-node
 

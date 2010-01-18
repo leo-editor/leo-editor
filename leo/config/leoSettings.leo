@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5">
-	<global_window_position top="187" left="413" height="692" width="1018"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -94,7 +94,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20090703122042.7463"><vh>@@button a-common-button</vh></v>
@@ -429,7 +429,7 @@
 <v t="ville.20090701225947.3902"><vh>@shortcuts Default plugins</vh></v>
 </v>
 </v>
-<v t="ekr.20070925144552" a="E"><vh>Menus</vh>
+<v t="ekr.20070925144552"><vh>Menus</vh>
 <v t="ekr.20071010123015"><vh>@@menu 文件</vh>
 <v t="ekr.20071010123015.1"><vh>@item new</vh></v>
 <v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
@@ -1013,7 +1013,7 @@
 </v>
 </v>
 </v>
-<v t="ville.20091008201813.3909" a="E"><vh>Qt context menu</vh>
+<v t="ville.20091008201813.3909"><vh>Qt context menu</vh>
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
@@ -6601,7 +6601,7 @@ propagate-key-event = Alt-O
 propagate-key-event = Alt-W
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="4,13,3"></t>
+<t tx="ekr.20070622214401" str_leo_pos="4"></t>
 <t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070919125633">button_text_font_family = verdana
