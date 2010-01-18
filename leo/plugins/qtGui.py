@@ -3198,7 +3198,7 @@ class leoQtBody (leoFrame.leoBody):
     #@-node:ekr.20090614060655.3660:unpackWidget
     #@-node:ekr.20081121105001.227:utils
     #@-node:ekr.20081121105001.212:Editors (qtBody)
-    #@+node:ekr.20090406071640.13:Event handlers called from eventFilter (qtBody)
+    #@+node:ekr.20090406071640.13:Event handlers (qtBody) (not used)
     def onFocusIn (self,obj):
 
         '''Handle a focus-in event in the body pane.'''
@@ -3246,7 +3246,7 @@ class leoQtBody (leoFrame.leoBody):
             self.badFocusColors.append(colorName)
             g.es_print('invalid body background color: %s' % (colorName),color='blue')
     #@-node:ekr.20090608052916.3810:onFocusColorHelper
-    #@-node:ekr.20090406071640.13:Event handlers called from eventFilter (qtBody)
+    #@-node:ekr.20090406071640.13:Event handlers (qtBody) (not used)
     #@-others
 #@-node:ekr.20081121105001.205:class leoQtBody (leoBody)
 #@+node:ekr.20081121105001.235:class leoQtFindTab (findTab)
@@ -4243,17 +4243,8 @@ class leoQtFrame (leoFrame.leoFrame):
     #@+node:ekr.20081121105001.291:OnActivateBody (qtFrame)
     def OnActivateBody (self,event=None):
 
-        # try:
-            # frame = self ; c = frame.c
-            # c.setLog()
-            # w = c.get_focus()
-            # if w != c.frame.body.bodyCtrl:
-                # frame.tree.OnDeactivate()
-            # c.bodyWantsFocusNow()
-        # except:
-            # g.es_event_exception("activate body")
-
-        return 'break'
+        pass
+    #@nonl
     #@-node:ekr.20081121105001.291:OnActivateBody (qtFrame)
     #@+node:ekr.20081121105001.292:OnActivateLeoEvent, OnDeactivateLeoEvent
     def OnActivateLeoEvent(self,event=None):
@@ -4269,21 +4260,10 @@ class leoQtFrame (leoFrame.leoFrame):
     #@+node:ekr.20081121105001.293:OnActivateTree
     def OnActivateTree (self,event=None):
 
-        trace = False and not g.unitTesting
-        if trace: g.trace()
-
-        try:
-            frame = self ; c = frame.c
-            c.setLog()
-
-            if 0: # Do NOT do this here!
-                # OnActivateTree can get called when the tree gets DE-activated!!
-                c.bodyWantsFocus()
-
-        except:
-            g.es_event_exception("activate tree")
+        pass
+    #@nonl
     #@-node:ekr.20081121105001.293:OnActivateTree
-    #@+node:ekr.20081121105001.294:OnBodyClick, OnBodyRClick (Events)
+    #@+node:ekr.20081121105001.294:OnBodyClick, OnBodyRClick (not used)
     # At present, these are not called,
     # but they could be called by QTextBrowserSubclass.
 
@@ -4303,8 +4283,6 @@ class leoQtFrame (leoFrame.leoFrame):
 
     def OnBodyRClick(self,event=None):
 
-        # g.trace(event,self.c)
-
         try:
             c = self.c ; p = c.currentPosition()
             if g.doHook("bodyrclick1",c=c,p=p,v=p,event=event):
@@ -4315,8 +4293,10 @@ class leoQtFrame (leoFrame.leoFrame):
                 g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
         except:
             g.es_event_exception("iconrclick")
-    #@-node:ekr.20081121105001.294:OnBodyClick, OnBodyRClick (Events)
-    #@+node:ekr.20081121105001.295:OnBodyDoubleClick (Events)
+    #@-node:ekr.20081121105001.294:OnBodyClick, OnBodyRClick (not used)
+    #@+node:ekr.20081121105001.295:OnBodyDoubleClick (Events) (not used)
+    # Not called
+
     def OnBodyDoubleClick (self,event=None):
 
         try:
@@ -4329,7 +4309,7 @@ class leoQtFrame (leoFrame.leoFrame):
             g.es_event_exception("bodydclick")
 
         return "break" # Restore this to handle proper double-click logic.
-    #@-node:ekr.20081121105001.295:OnBodyDoubleClick (Events)
+    #@-node:ekr.20081121105001.295:OnBodyDoubleClick (Events) (not used)
     #@-node:ekr.20081121105001.288:Event handlers (qtFrame)
     #@+node:ekr.20081121105001.296:Gui-dependent commands
     #@+node:ekr.20081121105001.297:Minibuffer commands... (qtFrame)
@@ -6693,21 +6673,18 @@ class leoQtGui(leoGui.leoGui):
         return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
     #@-node:ekr.20081121105001.475:createKeyHandlerClass (qtGui)
     #@+node:ekr.20090123150451.11:onActivateEvent (qtGui)
+    # Called from eventFilter
+
     def onActivateEvent (self,event,c,obj,tag):
 
         '''Put the focus in the body pane when the Leo window is
         activated, say as the result of an Alt-tab or click.'''
 
-        trace = False and not g.unitTesting
-
         # This is called several times for each window activation.
         # We only need to set the focus once.
 
-        if trace: g.trace(tag)
-
         if c.exists and tag == 'body':
-            ### Possible bug fix.  Some claim that this redraw is irritating.
-            ### c.redraw_now()
+            # g.trace(tag)
             c.bodyWantsFocusNow()
             c.outerUpdate() # Required because this is an event handler.
     #@-node:ekr.20090123150451.11:onActivateEvent (qtGui)

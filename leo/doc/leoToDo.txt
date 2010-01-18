@@ -13,6 +13,8 @@
 #@+node:ekr.20091005145253.6059:Before b2
 @language rest
 #@nonl
+#@+node:ekr.20100112051224.6248:Make sure Leo handles activation event properly
+#@-node:ekr.20100112051224.6248:Make sure Leo handles activation event properly
 #@+node:ekr.20100118091954.6256:Rename chapter commands
 They should all start with chapter-
 #@nonl
@@ -231,10 +233,6 @@ until the edited node has lost focus.
 #@nonl
 #@-node:ekr.20100112051224.6231:Undo command (fixed?)
 #@-node:ekr.20100113075303.6270:Easiest vim problems
-#@+node:ekr.20100112051224.6247:Make sure appropriate key bindings work in log pane
-#@-node:ekr.20100112051224.6247:Make sure appropriate key bindings work in log pane
-#@+node:ekr.20100112051224.6248:Make sure Leo handles activation event properly
-#@-node:ekr.20100112051224.6248:Make sure Leo handles activation event properly
 #@+node:ekr.20100111164531.6226:Minor...
 @nocolor-node
 
