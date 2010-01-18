@@ -5179,6 +5179,8 @@ python_keyword1_font_weight = bold
 
 @tabwidth 8
 
+@others
+
 def spam():
 	a
 	if True:

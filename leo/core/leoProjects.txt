@@ -22064,6 +22064,8 @@ Leo 4.6.2 final, build 2278, August 3, 2009
 Python 2.6.2, qt version 263426
 linux2
 #@-node:ekr.20100111094359.6210:Fixed bug: 420988 @tabwith 8 not honored, but -8 is ok
+#@+node:ekr.20100118143729.6257:Don't colorize @others and @all unless they start a line
+#@-node:ekr.20100118143729.6257:Don't colorize @others and @all unless they start a line
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20091219151045.6361:Simplified g.create_temp_file

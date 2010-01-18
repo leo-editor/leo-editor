@@ -9196,12 +9196,19 @@ class jEditColorizer:
 
         self.totalLeoKeywordsCalls += 1
 
-        # We must be at the start of a word.
-        if i > 0 and s[i-1] in self.word_chars:
-            return 0
-
         if s[i] != '@':
             return 0
+
+        # fail if something besides whitespace precedes the word on the line.
+        i2 = i-1
+        while i2 >= 0:
+            ch = s[i2]
+            if ch == '\n':
+                break
+            elif ch in (' ','\t'):
+                i2 -= 1
+            else:
+                return 0
 
         # Get the word as quickly as possible.
         j = i+1

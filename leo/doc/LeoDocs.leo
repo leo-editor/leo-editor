@@ -11,7 +11,7 @@
 <vnodes>
 <v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
-<v t="ekr.20050404094627" a="E"><vh>Buttons</vh>
+<v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
 <v t="ekr.20050812090111"><vh>@@button rst3</vh></v>
@@ -7364,7 +7364,9 @@ please keep in mind that your scripts have complete access to all of Leo's
 source code, that is, all the code in LeoPy.leo.
 
 **Note**: If you are reading this documentation in leoDocs.leo you can execute
-all code examples in this chapter by running the Execute Script command (Ctrl-B).
+all code examples in this chapter by running the Execute Script command
+(Ctrl-B). You may have to select the actual code to execute if a node contains
+comments interspersed with the code.
 
 .. .. contents::</t>
 <t tx="ekr.20040403173920.10" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d313322206e616d653d22687474702d6e6f64652d6d61726b65722d3133223e710158040000003c2f613e71025d710328582e0000003c64697620636c6173733d2273656374696f6e222069643d2274726176657273696e672d6f75746c696e6573223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e65656565582b0000003c64697620636c6173733d2273656374696f6e222069643d22632d616c6c6e6f6465732d69746572223e0a710f58570000003c68323e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643722206e616d653d22632d616c6c6e6f6465732d69746572223e632e616c6c4e6f6465735f697465723c2f613e3c2f68323e0a7110652e">The c.all_positions generator returns a list of all positions in the outline.
@@ -7667,23 +7669,23 @@ c.all_positions() generator returns every position in c's tree, one after
 another. You can use the generator directly, like this::
 
     for p  in c.all_positions():
-        print p.h
+        print(p.h)
         
 You can create actual lists from generators in several ways::
 
     aList = list(c.all_positions()] # Use the list built-in function.
-    print aList
+    print(aList)
     
 or::
 
     aList = [p.copy() for p in c.all_positions()] # Use list comprehension.
-    print aList
+    print(aList)
 
     
 Using the list is simpler, but list comprehensions can be more flexible.  For example::
 
     aList = [p.copy().h for p in c.all_positions() if p.h.startswith('@thin')]
-    print aList</t>
+    print(aList)</t>
 <t tx="ekr.20040403175157.1" rst_http_attribute="5d71002858440000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3722206e616d653d22687474702d6e6f64652d6d61726b65722d37223e710158040000003c2f613e71025d71032858350000003c64697620636c6173733d2273656374696f6e222069643d22672d65732d77726974652d746f2d7468652d6c6f672d70616e65223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f58460000003c64697620636c6173733d2273656374696f6e222069643d226170702d77696e646f776c6973742d7468652d6c6973742d6f662d616c6c2d6f70656e2d6672616d6573223e0a7110588e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643422206e616d653d226170702d77696e646f776c6973742d7468652d6c6973742d6f662d616c6c2d6f70656e2d6672616d6573223e6170702e77696e646f774c6973743a20746865206c697374206f6620616c6c206f70656e206672616d65733c2f613e3c2f68313e0a7111652e">The windowlist attribute of the application instance contains the list of the
 frames of all open windows. The commands ivar of the frame gives the commander
 for that frame::
@@ -22313,7 +22315,7 @@ The following code will find a position p2 having the same vnode as p::
             if p2.v == p.v: # found
                 c.selectPosition(p2)
         else:
-            print ('position no longer exists')
+            print('position no longer exists')
 </t>
 <t tx="ekr.20070122104240">http://sourceforge.net/forum/message.php?msg_id=4113315
 </t>
@@ -31715,7 +31717,7 @@ line when it gets written to the external file?
 
 **Answer**: If a node belongs to a external file hierarchy, its body might get
 indented when it is written to the external file. It happens when an
-@others directive or a section name appears indented in a higher-level
+\@others directive or a section name appears indented in a higher-level
 node body. While (**line**, **col**) in status area show the line and column
 containing the body text's cursor, **fcol** shows the cursor coordinate
 relative to the external file, not to the curent node. The relation

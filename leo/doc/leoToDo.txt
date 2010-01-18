@@ -164,8 +164,6 @@ expect Leo to create a node for each method in the class as it does for
 kind of change would also make @auto a lot more useful for PHP.
 #@nonl
 #@-node:ekr.20100118143729.6256:Fix bug 508108: No methods sub-nodes in PHP class import
-#@+node:ekr.20100118143729.6257:Don't colorize @others and @all unless they start a line
-#@-node:ekr.20100118143729.6257:Don't colorize @others and @all unless they start a line
 #@+node:ekr.20100113075303.6270:Easiest vim problems
 @nocolor-node
 
