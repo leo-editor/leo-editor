@@ -1808,7 +1808,7 @@ class leoMenu:
     def insert_cascade (self,parent,index,label,menu,underline):
         self.oops()
 
-    def new_menu(self,parent,tearoff=0):
+    def new_menu(self,parent,tearoff=0,label=''): # 2010: added label arg for pylint.
         self.oops() ; return None
     #@-node:ekr.20031218072017.3809:9 Routines with Tk spellings
     #@+node:ekr.20031218072017.3810:9 Routines with new spellings

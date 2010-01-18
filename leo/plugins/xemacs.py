@@ -87,7 +87,7 @@ def init ():
     if useDoubleClick: # Open on double click
         leoPlugins.registerHandler("icondclick2", open_in_emacs)
     else: # Open on single click: interferes with dragging.
-        leoPlugins.registerHandler("iconclick2", open_in_emacs,val=True)
+        leoPlugins.registerHandler("iconclick2", open_in_emacs_return_true)
 
     if g.app.unitTesting:
         os.system(_emacs_cmd)
@@ -98,7 +98,7 @@ def init ():
 #@nonl
 #@-node:ekr.20050218023308:init
 #@+node:ekr.20050313071202:open_in_emacs
-def open_in_emacs (tag,keywords,val=None):
+def open_in_emacs (tag,keywords):
 
     c = keywords.get('c')
     p = keywords.get('p')
@@ -113,7 +113,7 @@ def open_in_emacs (tag,keywords,val=None):
     else: path = ''
 
     # g.trace('config',c.config.getString('xemacs_exe'))
-    emacs_cmd = c.config.getString('xemacs_exe') or _exemacs_cmd
+    emacs_cmd = c.config.getString('xemacs_exe') or _emacs_cmd # 2010/01/18: found by pylint.
 
     if (
         not g.os_path_exists(path) or
@@ -135,7 +135,9 @@ def open_in_emacs (tag,keywords,val=None):
         # Reopen the old temp file.
         os.system(emacs_cmd)
 
-    return val
+def open_in_emacs_return_true(tag,keywords):
+    open_in_emacs(tag,keywords)
+    return True
 #@-node:ekr.20050313071202:open_in_emacs
 #@-others
 #@nonl

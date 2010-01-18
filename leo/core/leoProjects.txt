@@ -26850,6 +26850,311 @@ def pickle (self,torv,val,tag):
 #@-node:ekr.20091220131901.6366:leoFileCommands
 #@-node:ekr.20091220131901.6364:Unicode bug
 #@-node:ekr.20091203060018.6100:leo-3k
+#@+node:ekr.20100118062736.6275:Mass update to clean unicode-related code
+#@+node:ekr.20100116085803.6262:Remove most encoding params
+# Removed encoding param from g.toUnicode, setBodyString and appendStringToBody.
+#@nonl
+#@+node:ekr.20070703122141.77:createHeadline (baseScannerClass)
+def createHeadline (self,parent,body,headline):
+
+    return self.importCommands.createHeadline(parent,body,headline)
+#@-node:ekr.20070703122141.77:createHeadline (baseScannerClass)
+#@+node:ekr.20031218072017.3306:createHeadline (leoImport)
+def createHeadline (self,parent,body,headline):
+
+    # g.trace("parent,headline:",parent,headline)
+    # Create the vnode.
+    p = parent.insertAsLastChild()
+
+    body = g.u(body)
+    headline = g.u(headline)
+
+    p.initHeadString(headline)
+    if len(body) > 0:
+        self.setBodyString(p,body)
+
+    return p
+#@-node:ekr.20031218072017.3306:createHeadline (leoImport)
+#@+node:ekr.20040305223522:c.setBodyString
+def setBodyString (self,p,s):
+
+    c = self ; v = p.v
+    if not c or not v: return
+
+    s = g.toUnicode(s)
+    current = c.p
+    # 1/22/05: Major change: the previous test was: 'if p == current:'
+    # This worked because commands work on the presently selected node.
+    # But setRecentFiles may change a _clone_ of the selected node!
+    if current and p.v==current.v:
+        # Revert to previous code, but force an empty selection.
+        c.frame.body.setSelectionAreas(s,None,None)
+        w = c.frame.body.bodyCtrl
+        i = w.getInsertPoint()
+        w.setSelectionRange(i,i)
+        # This code destoys all tags, so we must recolor.
+        c.recolor()
+
+    # Keep the body text in the vnode up-to-date.
+    if v._bodyString != s:
+        v.setBodyString(s)
+        v.setSelection(0,0)
+        p.setDirty()
+        if not c.isChanged():
+            c.setChanged(True)
+        c.redraw_after_icons_changed()
+#@nonl
+#@-node:ekr.20040305223522:c.setBodyString
+#@+node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
+def appendStringToBody (self,p,s):
+
+    '''Similar to c.appendStringToBody,
+    but does not recolor the text or redraw the screen.'''
+
+    return self.importCommands.appendStringToBody(p,s)
+
+def setBodyString (self,p,s):
+
+    '''Similar to c.setBodyString,
+    but does not recolor the text or redraw the screen.'''
+
+    return self.importCommands.setBodyString(p,s)
+#@-node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
+#@+node:ekr.20040315032503:c.appendStringToBody
+def appendStringToBody (self,p,s):
+
+    c = self
+    if not s: return
+
+    body = p.b
+    assert(g.isUnicode(body))
+    s = g.toUnicode(s)
+
+    c.setBodyString(p,body + s)
+#@-node:ekr.20040315032503:c.appendStringToBody
+#@+node:ekr.20090122201952.4:appendStringToBody & setBodyString (leoImport)
+def appendStringToBody (self,p,s):
+
+    '''Similar to c.appendStringToBody,
+    but does not recolor the text or redraw the screen.'''
+
+    if s:
+        body = p.b
+        assert(g.isUnicode(body))
+        s = g.toUnicode(s,self.encoding)
+        self.setBodyString(p,body + s)
+
+def setBodyString (self,p,s):
+
+    '''Similar to c.setBodyString,
+    but does not recolor the text or redraw the screen.'''
+
+    c = self.c ; v = p.v
+    if not c or not p: return
+
+    s = g.toUnicode(s,self.encoding)
+    current = c.p
+    if current and p.v==current.v:
+        c.frame.body.setSelectionAreas(s,None,None)
+        w = c.frame.body.bodyCtrl
+        i = w.getInsertPoint()
+        w.setSelectionRange(i,i)
+
+    # Keep the body text up-to-date.
+    if v._bodyString != s:
+        v.setBodyString(s)
+        v.setSelection(0,0)
+        p.setDirty()
+        if not c.isChanged():
+            c.setChanged(True)
+#@-node:ekr.20090122201952.4:appendStringToBody & setBodyString (leoImport)
+#@+node:ekr.20040315034158:p.setBodyString & setHeadString
+def setBodyString (self,s):
+
+    p = self
+    return p.v.setBodyString(s)
+
+initBodyString = setBodyString
+setTnodeText = setBodyString
+scriptSetBodyString = setBodyString
+
+def initHeadString (self,s):
+
+    p = self
+    p.v.initHeadString(s)
+
+def setHeadString (self,s):
+
+    p = self
+    p.v.initHeadString(s)
+    p.setDirty()
+#@-node:ekr.20040315034158:p.setBodyString & setHeadString
+#@+node:ekr.20040315032144:v .setBodyString & v.setHeadString
+def setBodyString (self,s):
+
+    trace = False and not g.unitTesting
+    v = self
+    if trace and v._bodyString != s:
+        g.trace('v %s %s -> %s %s\nold: %s\nnew: %s' % (
+            v.h, len(v._bodyString),len(s),g.callers(5),
+            v._bodyString,s))
+    v._bodyString = g.toUnicode(s,reportErrors=True)
+
+def setHeadString (self,s):
+    v = self
+    v._headString = g.toUnicode(s,reportErrors=True)
+
+initBodyString = setBodyString
+initHeadString = setHeadString
+setHeadText = setHeadString
+setTnodeText = setBodyString
+#@-node:ekr.20040315032144:v .setBodyString & v.setHeadString
+#@-node:ekr.20100116085803.6262:Remove most encoding params
+#@+node:ekr.20100116055811.6251:use g.u in more places
+# Changed g.app.tkEncoding to g.app.defaultEncoding.
+
+# Removed g.getPreferredEncoding.
+
+#@+node:ekr.20050208093800.1:g.toUnicode
+def toUnicode (s,encoding=None,reportErrors=False):
+
+    # The encoding is usually g.app.defaultEncoding,
+    # but is may be different while importing or reading files.
+    if encoding is None:
+        encoding = g.app.defaultEncoding
+
+    if isPython3:
+        convert,mustConvert,nullVal = str,g.isBytes,''
+    else:
+        convert,nullVal = unicode,unicode('')
+        def mustConvert (s):
+            return type(s) != types.UnicodeType
+
+    if not s:
+        s = nullVal
+    elif mustConvert(s):
+        try:
+            s = convert(s,encoding,'strict')
+        except UnicodeError:
+            s = convert(s,encoding,'replace')
+            if reportErrors: g.reportBadChars(s,encoding)
+    else:
+        pass
+
+    return s
+#@-node:ekr.20050208093800.1:g.toUnicode
+#@+node:ekr.20031218072017.2160:toUnicodeFileEncoding
+def toUnicodeFileEncoding(path,encoding):
+
+    if path: path = path.replace('\\', os.sep)
+
+    if not encoding:
+        if sys.platform == "win32" or sys.platform.lower().startswith('java'):
+            # encoding = "mbcs" # Leo 4.2 and previous.
+            encoding = 'utf-8' # New in Leo 4.3
+        else:
+            encoding = app.defaultEncoding
+
+    # Yes, this is correct.  All os_path_x functions return Unicode strings.
+    return g.toUnicode(path,encoding)
+#@-node:ekr.20031218072017.2160:toUnicodeFileEncoding
+#@+node:ekr.20031218072017.2618:app.setEncoding
+# According to Martin v. Löwis, getdefaultlocale() cannot be fixed.
+# We use getpreferredencoding() instead.
+
+def setEncoding (self):
+
+    """Set g.app.defaultEncoding."""
+
+    app = self
+    locale_encoding = locale.getpreferredencoding()
+
+    try: sys_encoding = sys.getdefaultencoding()
+    except Exception: sys_encoding = None
+
+    for (encoding,src) in (
+        (app.config.defaultEncoding,"config"),
+        (locale_encoding,"locale"),
+        (sys_encoding,"sys"),
+        ("utf-8","default")):
+
+        if g.isValidEncoding (encoding):
+            app.defaultEncoding = encoding
+            # g.trace(app.defaultEncoding,src)
+            break
+        elif encoding:
+            color = g.choose(app.defaultEncoding=="ascii","red","blue")
+            g.trace("ignoring invalid %s encoding: %s" % (src,encoding),color=color)
+#@-node:ekr.20031218072017.2618:app.setEncoding
+#@+node:ekr.20091206161352.6232:g.u & g.ue
+if isPython3: # g.not defined yet.
+    def u(s):
+        return s
+    def ue(s,encoding):
+        return str(s,encoding)
+else:
+    def u(s):
+        return unicode(s)
+    def ue(s,encoding):
+        return unicode(s,encoding)
+#@-node:ekr.20091206161352.6232:g.u & g.ue
+#@+node:ekr.20031218072017.3344:v.__init
+# To support ZODB, the code must set v._p_changed = 1 whenever
+# v.unknownAttributes or any mutable vnode object changes.
+
+def __init__ (self,context):
+
+    # The primary data: headline and body text.
+    self._headString = g.u('newHeadline')
+    self._bodyString = g.u('')
+
+    ### 2010/01/16
+    # if g.isPython3:
+        # self._headString = 'newHeadline'
+        # self._bodyString = ''
+    # else:
+        # self._headString = unicode('newHeadline')
+        # self._bodyString = unicode('')
+
+    # Structure data...
+    self.children = [] # Ordered list of all children of this node.
+    self.parents = [] # Unordered list of all parents of this node.
+
+    # Other essential data...
+    self.fileIndex = g.app.nodeIndices.getNewIndex()
+        # The immutable file index for this vnode.
+        # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
+    self.iconVal = 0 # The present value of the node's icon.
+    self.statusBits = 0 # status bits
+
+    # v.t no longer exists.  All code must now be aware of the one-node world.
+    # self.t = self # For compatibility with scripts and plugins.
+
+    # Information that is never written to any file...
+    self.context = context # The context containing context.hiddenRootNode.
+        # Required so we can compute top-level siblings.
+        # It is named .context rather than .c to emphasize its limited usage.
+    self.insertSpot = None # Location of previous insert point.
+    self.scrollBarSpot = None # Previous value of scrollbar position.
+    self.selectionLength = 0 # The length of the selected body text.
+    self.selectionStart = 0 # The start of the selected body text.
+#@-node:ekr.20031218072017.3344:v.__init
+#@+node:ekr.20031218072017.3378:v.bodyString
+def bodyString (self):
+
+    # This message should never be printed and we want to avoid crashing here!
+    if g.isUnicode(self._bodyString):
+        return self._bodyString
+    else:
+        s = "v.bodyString: Leo internal error: not unicode:" + repr(self._bodyString)
+        g.es_print('',s,color="red")
+        return g.toUnicode(self._bodyString)
+
+getBody = bodyString
+#@nonl
+#@-node:ekr.20031218072017.3378:v.bodyString
+#@-node:ekr.20100116055811.6251:use g.u in more places
+#@-node:ekr.20100118062736.6275:Mass update to clean unicode-related code
 #@-node:ekr.20090718091653.5982:Leo 4.7 projects
 #@+node:ekr.20091220103056.6363:pylint
 @nocolor-node

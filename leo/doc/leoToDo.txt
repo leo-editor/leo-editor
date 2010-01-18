@@ -11,8 +11,6 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20091005145253.6059:Before b2
-#@+node:ekr.20100116085803.7490:Fix all docutils warnings in leoDocs.leo
-#@-node:ekr.20100116085803.7490:Fix all docutils warnings in leoDocs.leo
 #@+node:ekr.20100115051404.6245:Fix 349027: body doesn't get focus after headline edit
 @nocolor-node
 
@@ -152,6 +150,8 @@ https://bugs.launchpad.net/leo-editor/+bug/486433
 Allow font specs for colorizer.
 #@nonl
 #@-node:ekr.20100111094359.6211:Finish bug: 486433 non-breaking space (and other invisible characters) are invisible
+#@+node:ekr.20100116085803.7490:Fix all docutils warnings in leoDocs.leo
+#@-node:ekr.20100116085803.7490:Fix all docutils warnings in leoDocs.leo
 #@+node:ekr.20100115091643.6249:<alt-x> select-all crashes python when focus is in headline
 @
 The problem occurs because the QtGui.QLineEdit object goes away

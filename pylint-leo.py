@@ -15,10 +15,10 @@ core_table = (
     # ('leoGlobals.py',''), # E0602:4528:isBytes: Undefined variable 'bytes'
     # ('leoGui.py','W0511'), # W0511: to do
     # ('leoImport.py',''),
-    ('leoMenu.py',''),
+    # ('leoMenu.py',''),
     # ('leoNodes.py',''),
     # ('leoPlugins.py',''),
-    ('leoShadow.py',''),
+    # ('leoShadow.py',''),
     # ('leoTangle.py',''),
     # ('leoUndo.py',''),
 )
@@ -29,13 +29,13 @@ plugins_table = (
         # Harmless: E0611:489:scriptingController.runDebugScriptCommand:
         # No name 'leoScriptModule' in module 'leo.core'
     # ('open_with.py',''),
-    ('toolbar.py','E1101,W0221,W0511'),
+    # ('toolbar.py','E1101,W0221,W0511'),
         # Dangerous: many erroneous E1101 errors
         # Harmless: W0221: Arguments number differs from overridden method
         # Harmless: W0511: Fixme and to-do.
     # ('UNL.py',''),
     # ('vim.py',''),
-    ('xemacs.py',''),
+    # ('xemacs.py',''),
 )
 
 def run(fn,suppress):
