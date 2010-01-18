@@ -3315,6 +3315,7 @@ class keyHandlerClass:
         w = event.widget
         char = event.char
         keysym = event.keysym
+        stroke = event.stroke ### 2010/10/18
         if stroke and not keysym:
             event.keysym = keysym = stroke
 
@@ -3483,6 +3484,7 @@ class keyHandlerClass:
     def getPaneBinding (self,stroke,w):
 
         trace = False and not g.unitTesting
+        verbose = False
         k = self ; w_name = k.c.widget_name(w)
         keyStatesTuple = ('command','insert','overwrite')
 
@@ -3511,7 +3513,7 @@ class keyHandlerClass:
                 key in ('button','all')
             ):
                 d = k.masterBindingsDict.get(key,{})
-                if trace:
+                if trace and verbose:
                     g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
                     # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
                 if d:

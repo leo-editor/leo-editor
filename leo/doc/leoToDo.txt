@@ -52,76 +52,6 @@ but although the drag select works, the body text isn't responsive (no insert po
 
 i.e. like the original bug, except instead of transferring focus to the body with a click, it's being transferred with a drag-select.
 #@-node:ekr.20100115051404.6245:Fix 349027: body doesn't get focus after headline edit
-#@+node:ekr.20100113160021.6255:Fix ctrl-tab bug
-@nocolor-node
-
-June Kim
-
-ctrl-tab (currently binded to cycle-focus) doesn't work in windows with pyqt.
-The event isn't generated at all. Manually calling with alt-x "cycle-focus"
-works. It seems that there is some problem with key binding and event catching.
-Strangely, though, ctrl-shift-tab (cycle-all-focus) works just fine.
-
-tk gui(launched with --gui option) works just fine with ctrl-tab.
-
-#@-node:ekr.20100113160021.6255:Fix ctrl-tab bug
-#@+node:ekr.20100115090030.6247:Fix tab binding bug
-@nocolor-node
-
-June Kim
-
-Now I found another problem. It's about cycle-focus' functionality. It has a
-bug.
-
-As I cycle-focus repeatedly, I don't travel around the three
-panes(body,log,outline). Once I get into the log pane, it always goes back to
-the body pane.
-
-        body = c.frame.body.bodyCtrl
-        log  = c.frame.log.logCtrl
-        tree = c.frame.tree.canvas
-        panes = [body,log,tree]
-
-        if w in panes:
-            i = panes.index(w) + 1
-            if i >= len(panes): i = 0
-            pane = panes[i]
-        else:
-            pane = body
-
-The problem is, the variable "log" and the log pane is different from each other
-and hence the if body is by-passed
-
-For example, "log" holds "leoQTextEditWidget: 31135264", whereas w(current pane)
-holds <leo.plugins.qtGui.leoQtLog instance at 0x01DF9788> on one running.
-
-=====
-
-
-I seem to have found the cause of this bug:
-
-    # 'Tab':'Tab',
-    'Tab':'\t', # A hack for QLineEdit.
-
-in qtGui.py
-
-When 'Tab':'Tab' is uncommented and the next line is commented
-instead, tab key in outline editing(using QLineEdit) isn't working
-properly(it prints "TAB" string in the edit line instead), whereas
-ctrl-tab works just fine to travel around(except that log pane bug
-that I mentioned earlier).
-#@nonl
-#@-node:ekr.20100115090030.6247:Fix tab binding bug
-#@+node:ekr.20100111094359.6208:Fix goto-line bugs
-@nocolor-node
-
-goto global line doesn't seem to be working in @auto files
-https://bugs.launchpad.net/leo-editor/+bug/363406
-
-goto-global-line doesn't work with @edit nodes
-https://bugs.launchpad.net/leo-editor/+bug/399720
-#@nonl
-#@-node:ekr.20100111094359.6208:Fix goto-line bugs
 #@+node:ekr.20100111094359.6210:Fix bug: 420988 (low) @tabwith 8 not honored, but -8 is ok
 @nocolor-node
 
@@ -152,6 +82,16 @@ Allow font specs for colorizer.
 #@-node:ekr.20100111094359.6211:Finish bug: 486433 non-breaking space (and other invisible characters) are invisible
 #@+node:ekr.20100116085803.7490:Fix all docutils warnings in leoDocs.leo
 #@-node:ekr.20100116085803.7490:Fix all docutils warnings in leoDocs.leo
+#@+node:ekr.20100111094359.6208:Fix goto-line bugs
+@nocolor-node
+
+goto global line doesn't seem to be working in @auto files
+https://bugs.launchpad.net/leo-editor/+bug/363406
+
+goto-global-line doesn't work with @edit nodes
+https://bugs.launchpad.net/leo-editor/+bug/399720
+#@nonl
+#@-node:ekr.20100111094359.6208:Fix goto-line bugs
 #@+node:ekr.20100115091643.6249:<alt-x> select-all crashes python when focus is in headline
 @
 The problem occurs because the QtGui.QLineEdit object goes away
@@ -3758,6 +3698,7 @@ if event:
 w = event.widget
 char = event.char
 keysym = event.keysym
+stroke = event.stroke ### 2010/10/18
 if stroke and not keysym:
     event.keysym = keysym = stroke
 
@@ -3888,6 +3829,7 @@ def doPlainKey (self,event,stroke,w):
 def getPaneBinding (self,stroke,w):
 
     trace = False and not g.unitTesting
+    verbose = False
     k = self ; w_name = k.c.widget_name(w)
     keyStatesTuple = ('command','insert','overwrite')
 
@@ -3916,7 +3858,7 @@ def getPaneBinding (self,stroke,w):
             key in ('button','all')
         ):
             d = k.masterBindingsDict.get(key,{})
-            if trace:
+            if trace and verbose:
                 g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
                 # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
             if d:

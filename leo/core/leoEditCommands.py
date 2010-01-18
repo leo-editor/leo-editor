@@ -1705,11 +1705,17 @@ class editCommandsClass (baseEditCommandsClass):
 
         c = self.c ; k = c.k ; w = event.widget
 
-
         body = c.frame.body.bodyCtrl
         log  = c.frame.log.logCtrl
         tree = c.frame.tree.canvas
+
+        # A hack for the Qt gui.
+        if hasattr(w,'logCtrl'):
+            w = w.logCtrl
+
         panes = [body,log,tree]
+
+        # g.trace(w in panes,event.widget,panes)
 
         if w in panes:
             i = panes.index(w) + 1

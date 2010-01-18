@@ -7459,11 +7459,17 @@ class leoKeyEvent:
 
     def __init__ (self,event,c,w,ch,tkKey,stroke):
 
-        # g.trace('ch: %s, tkKey: %s' % (repr(ch),repr(tkKey)))
+        trace = False and not g.unitTesting
+
+        if trace: print(
+            'leoKeyEvent.__init__: ch: %s, tkKey: %s, stroke: %s' % (
+                repr(ch),repr(tkKey),repr(stroke)))
 
         # Last minute-munges to keysym.
         if tkKey in ('Return','Tab','Escape'):
             ch = tkKey
+        stroke = stroke.replace('\t','Tab')
+        tkKey = tkKey.replace('\t','Tab')
 
         # The main ivars.
         self.actualEvent = event
@@ -7628,8 +7634,8 @@ class leoQtEventFilter(QtCore.QObject):
     def eventFilter(self, obj, event):
 
         trace = False and not g.unitTesting
-        verbose = True
-        traceEvent = True
+        verbose = False
+        traceEvent = False
         traceKey = True
         traceFocus = False
         c = self.c ; k = c.k
@@ -7637,6 +7643,8 @@ class leoQtEventFilter(QtCore.QObject):
         ev = QtCore.QEvent
         gui = g.app.gui
         aList = []
+
+        # if trace and verbose: g.trace('*****',eventType)
 
         kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
 

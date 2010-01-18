@@ -2327,8 +2327,8 @@ def char2tkName (self,ch):
 def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
-    verbose = True
-    traceEvent = True
+    verbose = False
+    traceEvent = False
     traceKey = True
     traceFocus = False
     c = self.c ; k = c.k
@@ -2336,6 +2336,8 @@ def eventFilter(self, obj, event):
     ev = QtCore.QEvent
     gui = g.app.gui
     aList = []
+
+    # if trace and verbose: g.trace('*****',eventType)
 
     kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
 
@@ -2688,8 +2690,8 @@ def tkKey (self,event,mods,keynum,text,toString,ch):
 def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
-    verbose = True
-    traceEvent = True
+    verbose = False
+    traceEvent = False
     traceKey = True
     traceFocus = False
     c = self.c ; k = c.k
@@ -2697,6 +2699,8 @@ def eventFilter(self, obj, event):
     ev = QtCore.QEvent
     gui = g.app.gui
     aList = []
+
+    # if trace and verbose: g.trace('*****',eventType)
 
     kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
 
@@ -4055,7 +4059,7 @@ def headWidth(self,p=None,s=''):
 
 def widthInPixels(self,s):
 
-    s = g.toEncodedString(s,g.app.tkEncoding)
+    s = g.toEncodedString(s,g.app.defaultEncoding)
 
     return self.font.measure(s)
 #@-node:ekr.20081121110412.465:headWidth & widthInPixels
@@ -6219,8 +6223,8 @@ def char2tkName (self,ch):
 def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
-    verbose = True
-    traceEvent = True
+    verbose = False
+    traceEvent = False
     traceKey = True
     traceFocus = False
     c = self.c ; k = c.k
@@ -6228,6 +6232,8 @@ def eventFilter(self, obj, event):
     ev = QtCore.QEvent
     gui = g.app.gui
     aList = []
+
+    # if trace and verbose: g.trace('*****',eventType)
 
     kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
 

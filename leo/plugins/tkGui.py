@@ -7164,7 +7164,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
     def widthInPixels(self,s):
 
-        s = g.toEncodedString(s,g.app.tkEncoding)
+        s = g.toEncodedString(s,g.app.defaultEncoding)
 
         return self.font.measure(s)
     #@-node:ekr.20081121110412.465:headWidth & widthInPixels

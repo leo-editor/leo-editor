@@ -12224,6 +12224,7 @@ if event:
 w = event.widget
 char = event.char
 keysym = event.keysym
+stroke = event.stroke ### 2010/10/18
 if stroke and not keysym:
     event.keysym = keysym = stroke
 
@@ -12354,6 +12355,7 @@ def doPlainKey (self,event,stroke,w):
 def getPaneBinding (self,stroke,w):
 
     trace = False and not g.unitTesting
+    verbose = False
     k = self ; w_name = k.c.widget_name(w)
     keyStatesTuple = ('command','insert','overwrite')
 
@@ -12382,7 +12384,7 @@ def getPaneBinding (self,stroke,w):
             key in ('button','all')
         ):
             d = k.masterBindingsDict.get(key,{})
-            if trace:
+            if trace and verbose:
                 g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
                 # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
             if d:
@@ -16946,6 +16948,7 @@ if event:
 w = event.widget
 char = event.char
 keysym = event.keysym
+stroke = event.stroke ### 2010/10/18
 if stroke and not keysym:
     event.keysym = keysym = stroke
 
@@ -17076,6 +17079,7 @@ def doPlainKey (self,event,stroke,w):
 def getPaneBinding (self,stroke,w):
 
     trace = False and not g.unitTesting
+    verbose = False
     k = self ; w_name = k.c.widget_name(w)
     keyStatesTuple = ('command','insert','overwrite')
 
@@ -17104,7 +17108,7 @@ def getPaneBinding (self,stroke,w):
             key in ('button','all')
         ):
             d = k.masterBindingsDict.get(key,{})
-            if trace:
+            if trace and verbose:
                 g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
                 # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
             if d:
@@ -20200,6 +20204,7 @@ if event:
 w = event.widget
 char = event.char
 keysym = event.keysym
+stroke = event.stroke ### 2010/10/18
 if stroke and not keysym:
     event.keysym = keysym = stroke
 
@@ -20330,6 +20335,7 @@ def doPlainKey (self,event,stroke,w):
 def getPaneBinding (self,stroke,w):
 
     trace = False and not g.unitTesting
+    verbose = False
     k = self ; w_name = k.c.widget_name(w)
     keyStatesTuple = ('command','insert','overwrite')
 
@@ -20358,7 +20364,7 @@ def getPaneBinding (self,stroke,w):
             key in ('button','all')
         ):
             d = k.masterBindingsDict.get(key,{})
-            if trace:
+            if trace and verbose:
                 g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
                 # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
             if d:
@@ -21829,6 +21835,105 @@ def adjustTargetLanguage (self,fn):
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers & tests
 #@-node:ekr.20100118062736.6273:Fixed old at-shadow problem
+#@+node:ekr.20100113160021.6255:Fixed ctrl-tab bug
+@nocolor-node
+
+June Kim
+
+ctrl-tab (currently binded to cycle-focus) doesn't work in windows with pyqt.
+The event isn't generated at all. Manually calling with alt-x "cycle-focus"
+works. It seems that there is some problem with key binding and event catching.
+Strangely, though, ctrl-shift-tab (cycle-all-focus) works just fine.
+
+tk gui(launched with --gui option) works just fine with ctrl-tab.
+
+=====
+
+I seem to have found the cause of this bug:
+
+    # 'Tab':'Tab',
+    'Tab':'\t', # A hack for QLineEdit.
+
+in qtGui.py
+
+When 'Tab':'Tab' is uncommented and the next line is commented
+instead, tab key in outline editing(using QLineEdit) isn't working
+properly(it prints "TAB" string in the edit line instead), whereas
+ctrl-tab works just fine to travel around(except that log pane bug
+that I mentioned earlier).
+
+===============
+
+What I did:
+
+- added stroke = event.stroke in init logic in masterKeyHandler.
+- leoKeyEvent in qtGui now converts \t to Tab in stroke and tkSym.
+#@-node:ekr.20100113160021.6255:Fixed ctrl-tab bug
+#@+node:ekr.20100115090030.6247:Fixed cycle-focus bug
+@nocolor-node
+
+June Kim
+
+Now I found another problem. It's about cycle-focus' functionality. It has a
+bug.
+
+As I cycle-focus repeatedly, I don't travel around the three
+panes(body,log,outline). Once I get into the log pane, it always goes back to
+the body pane.
+
+        body = c.frame.body.bodyCtrl
+        log  = c.frame.log.logCtrl
+        tree = c.frame.tree.canvas
+        panes = [body,log,tree]
+
+        if w in panes:
+            i = panes.index(w) + 1
+            if i >= len(panes): i = 0
+            pane = panes[i]
+        else:
+            pane = body
+
+The problem is, the variable "log" and the log pane is different from each other
+and hence the if body is by-passed
+
+For example, "log" holds "leoQTextEditWidget: 31135264", whereas w(current pane)
+holds <leo.plugins.qtGui.leoQtLog instance at 0x01DF9788> on one running.
+
+#@+node:ekr.20051022144825.1:cycleFocus
+def cycleFocus (self,event):
+
+    '''Cycle the keyboard focus between Leo's outline, body and log panes.'''
+
+    c = self.c ; k = c.k ; w = event.widget
+
+    body = c.frame.body.bodyCtrl
+    log  = c.frame.log.logCtrl
+    tree = c.frame.tree.canvas
+
+    # A hack for the Qt gui.
+    if hasattr(w,'logCtrl'):
+        w = w.logCtrl
+
+    panes = [body,log,tree]
+
+    # g.trace(w in panes,event.widget,panes)
+
+    if w in panes:
+        i = panes.index(w) + 1
+        if i >= len(panes): i = 0
+        pane = panes[i]
+    else:
+        pane = body
+
+    # Warning: traces mess up the focus
+    # g.pr(g.app.gui.widget_name(w),g.app.gui.widget_name(pane))
+
+    # This works from the minibuffer *only* if there is no typing completion.
+    c.widgetWantsFocusNow(pane)
+    k.newMinibufferWidget = pane
+    k.showStateAndMode()
+#@-node:ekr.20051022144825.1:cycleFocus
+#@-node:ekr.20100115090030.6247:Fixed cycle-focus bug
 #@-node:ekr.20090721093155.5986:Bugs
 #@+node:ekr.20090817080059.5996:Features
 #@+node:ekr.20091219151045.6361:Simplified g.create_temp_file
