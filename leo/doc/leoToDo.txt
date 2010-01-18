@@ -13,8 +13,6 @@
 #@+node:ekr.20091005145253.6059:Before b2
 @language rest
 #@nonl
-#@+node:ekr.20100112051224.6248:Make sure Leo handles activation event properly
-#@-node:ekr.20100112051224.6248:Make sure Leo handles activation event properly
 #@+node:ekr.20100118091954.6256:Rename chapter commands
 They should all start with chapter-
 #@nonl
@@ -166,6 +164,57 @@ expect Leo to create a node for each method in the class as it does for
 kind of change would also make @auto a lot more useful for PHP.
 #@nonl
 #@-node:ekr.20100118143729.6256:Fix bug 508108: No methods sub-nodes in PHP class import
+#@+node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
+@nocolor-node
+
+Following Edward's suggestion that I could suggest where the
+documentation might be hard to follow:
+
+"If you are using Debian/Ubuntu, find and install the debian package."
+is a bit too abbreviated.  It would help to say where it can be found
+(not, as far as  I can see, in packages.ubuntu.com).
+
+I find the bits on literate programming hard to follow. (Far from being turned
+off by LP I have been using it for over 15 years, mainly FWEB but trying noweb
+for Python.) Chapter 6 says that Leo is great for LP, but is short on details of
+how to make it work. One of the attractions of noweb or FWEB is that the natural
+order for describing a program need have nothing to do with syntactically
+correct order. Leo appears to require syntactically correct order -- though I
+guess this is where clones come in: if I want a view of a few sections "out of
+order" then I create a view to do just that. But I seem to lose the automatic
+cross-referencing that *web offers.
+
+A related point, there seems to be no documentation on how Export to noweb is
+supposed to work. If I have two classes, and I use @others for assembling
+methods within each, then Export to noweb seems to produce a single @others
+section which is not what was wanted. So, some more explanation of what is
+supposed to happen and how to make it happen would be useful.
+
+====== Ville's comments
+
+> "If you are using Debian/Ubuntu, find and install the debian package."
+> is a bit too abbreviated.  It would help to say where it can be found
+> (not, as far as  I can see, in packages.ubuntu.com).
+
+That's because it was not obvious at the time this snippet was written
+where the user would get the deb file :-).
+
+Currently, it's available at the leo download page. I've been trying
+to get it to debian official repos (that's the way to get it to
+Ubuntu), but so far nobody on debian side has picked up the
+sponsorship (which means the task of uploading it to official debian
+archive). I figure I'll make a new upload to "debian mentors" when we
+get 4.6.3 out, and try to attract some attention by hanging on IRC.
+
+However, getting your hands on the .deb is as easy as getting the
+other installers
+
+With any luck, 4.6.3 will have exe installer for windows, deb for
+debian/ubuntu, and the rest can run launchLeo.py. We can mostly forget
+that section of the docs.
+#@nonl
+#@-node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
+#@+node:ekr.20100118162051.6257:Later...
 #@+node:ekr.20100113075303.6270:Easiest vim problems
 @nocolor-node
 
@@ -233,66 +282,11 @@ until the edited node has lost focus.
 #@nonl
 #@-node:ekr.20100112051224.6231:Undo command (fixed?)
 #@-node:ekr.20100113075303.6270:Easiest vim problems
-#@+node:ekr.20100111164531.6226:Minor...
-@nocolor-node
-
-These may not make it into b2 or even Leo 4.7 final.
-#@nonl
-#@+node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
-@nocolor-node
-
-Following Edward's suggestion that I could suggest where the
-documentation might be hard to follow:
-
-"If you are using Debian/Ubuntu, find and install the debian package."
-is a bit too abbreviated.  It would help to say where it can be found
-(not, as far as  I can see, in packages.ubuntu.com).
-
-I find the bits on literate programming hard to follow. (Far from being turned
-off by LP I have been using it for over 15 years, mainly FWEB but trying noweb
-for Python.) Chapter 6 says that Leo is great for LP, but is short on details of
-how to make it work. One of the attractions of noweb or FWEB is that the natural
-order for describing a program need have nothing to do with syntactically
-correct order. Leo appears to require syntactically correct order -- though I
-guess this is where clones come in: if I want a view of a few sections "out of
-order" then I create a view to do just that. But I seem to lose the automatic
-cross-referencing that *web offers.
-
-A related point, there seems to be no documentation on how Export to noweb is
-supposed to work. If I have two classes, and I use @others for assembling
-methods within each, then Export to noweb seems to produce a single @others
-section which is not what was wanted. So, some more explanation of what is
-supposed to happen and how to make it happen would be useful.
-
-====== Ville's comments
-
-> "If you are using Debian/Ubuntu, find and install the debian package."
-> is a bit too abbreviated.  It would help to say where it can be found
-> (not, as far as  I can see, in packages.ubuntu.com).
-
-That's because it was not obvious at the time this snippet was written
-where the user would get the deb file :-).
-
-Currently, it's available at the leo download page. I've been trying
-to get it to debian official repos (that's the way to get it to
-Ubuntu), but so far nobody on debian side has picked up the
-sponsorship (which means the task of uploading it to official debian
-archive). I figure I'll make a new upload to "debian mentors" when we
-get 4.6.3 out, and try to attract some attention by hanging on IRC.
-
-However, getting your hands on the .deb is as easy as getting the
-other installers
-
-With any luck, 4.6.3 will have exe installer for windows, deb for
-debian/ubuntu, and the rest can run launchLeo.py. We can mostly forget
-that section of the docs.
-#@nonl
-#@-node:ekr.20090907080624.6076:Documentation suggestions from Geoff Evans
 #@+node:ekr.20100108101415.6196:Create insert-tab commands (not urgent)
 # insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
 #@nonl
 #@-node:ekr.20100108101415.6196:Create insert-tab commands (not urgent)
-#@-node:ekr.20100111164531.6226:Minor...
+#@-node:ekr.20100118162051.6257:Later...
 #@-node:ekr.20091005145253.6059:Before b2
 #@+node:ekr.20090811090022.6029:Bugs (maybe in 4.7.1)
 #@+node:ekr.20080517102922.1:File bugs & features

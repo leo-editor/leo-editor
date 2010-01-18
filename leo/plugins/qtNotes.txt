@@ -9140,6 +9140,143 @@ def match_leo_keywords(self,s,i):
         return -(j-i+1) # An important optimization.
 #@-node:ekr.20090614134853.3724:match_leo_keywords
 #@-node:ekr.20100118153311.3697:Don't colorize directives unless they start a line
+#@+node:ekr.20100118155531.3700:Made sure activation events work
+#@+node:ekr.20090406071640.13:Event handlers (qtBody) (not used)
+def onFocusIn (self,obj):
+
+    '''Handle a focus-in event in the body pane.'''
+
+    trace = False and not g.unitTesting
+
+    if trace: g.trace(obj,obj.objectName())
+
+    if obj.objectName() == 'richTextEdit':
+        wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
+        if wrapper and wrapper != self.bodyCtrl:
+            self.selectEditor(wrapper)
+        self.onFocusColorHelper('focus-in',obj)
+        obj.setReadOnly(False)
+        obj.setFocus() # Weird, but apparently necessary.
+
+def onFocusOut (self,obj):
+
+    '''Handle a focus-out event in the body pane.'''
+
+    if obj.objectName() == 'richTextEdit':
+        self.onFocusColorHelper('focus-out',obj)
+        obj.setReadOnly(True)
+#@+node:ekr.20090608052916.3810:onFocusColorHelper
+badFocusColors = []
+
+def onFocusColorHelper(self,kind,obj):
+
+    trace = False and not g.unitTesting
+
+    colorName = g.choose(kind=='focus-in',
+        self.selectedBackgroundColor,
+        self.unselectedBackgroundColor)
+
+    if not colorName: return
+
+    if trace: g.trace(id(obj),'%9s' % (kind),str(obj.objectName()))
+
+    styleSheet = 'QTextEdit#richTextEdit { background-color: %s; }' % (
+        colorName)
+
+    if QtGui.QColor(colorName).isValid():
+        obj.setStyleSheet(styleSheet)
+    elif colorName not in self.badFocusColors:
+        self.badFocusColors.append(colorName)
+        g.es_print('invalid body background color: %s' % (colorName),color='blue')
+#@-node:ekr.20090608052916.3810:onFocusColorHelper
+#@-node:ekr.20090406071640.13:Event handlers (qtBody) (not used)
+#@+node:ekr.20081121105001.295:OnBodyDoubleClick (Events) (not used)
+# Not called
+
+def OnBodyDoubleClick (self,event=None):
+
+    try:
+        c = self.c ; p = c.currentPosition()
+        if event and not g.doHook("bodydclick1",c=c,p=p,v=p,event=event):
+            c.editCommands.extendToWord(event) # Handles unicode properly.
+            c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
+        g.doHook("bodydclick2",c=c,p=p,v=p,event=event)
+    except:
+        g.es_event_exception("bodydclick")
+
+    return "break" # Restore this to handle proper double-click logic.
+#@-node:ekr.20081121105001.295:OnBodyDoubleClick (Events) (not used)
+#@+node:ekr.20081121105001.294:OnBodyClick, OnBodyRClick (not used)
+# At present, these are not called,
+# but they could be called by QTextBrowserSubclass.
+
+def OnBodyClick (self,event=None):
+
+    try:
+        c = self.c ; p = c.currentPosition()
+        if g.doHook("bodyclick1",c=c,p=p,v=p,event=event):
+            g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
+            return 'break'
+        else:
+            self.OnActivateBody(event=event)
+            c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
+            g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
+    except:
+        g.es_event_exception("bodyclick")
+
+def OnBodyRClick(self,event=None):
+
+    try:
+        c = self.c ; p = c.currentPosition()
+        if g.doHook("bodyrclick1",c=c,p=p,v=p,event=event):
+            g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
+            return 'break'
+        else:
+            c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
+            g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
+    except:
+        g.es_event_exception("iconrclick")
+#@-node:ekr.20081121105001.294:OnBodyClick, OnBodyRClick (not used)
+#@+node:ekr.20081121105001.291:OnActivateBody (qtFrame)
+def OnActivateBody (self,event=None):
+
+    pass
+#@nonl
+#@-node:ekr.20081121105001.291:OnActivateBody (qtFrame)
+#@+node:ekr.20081121105001.292:OnActivateLeoEvent, OnDeactivateLeoEvent
+def OnActivateLeoEvent(self,event=None):
+
+    '''Handle a click anywhere in the Leo window.'''
+
+    self.c.setLog()
+
+def OnDeactivateLeoEvent(self,event=None):
+
+    pass # This causes problems on the Mac.
+#@-node:ekr.20081121105001.292:OnActivateLeoEvent, OnDeactivateLeoEvent
+#@+node:ekr.20081121105001.293:OnActivateTree
+def OnActivateTree (self,event=None):
+
+    pass
+#@nonl
+#@-node:ekr.20081121105001.293:OnActivateTree
+#@+node:ekr.20090123150451.11:onActivateEvent (qtGui)
+# Called from eventFilter
+
+def onActivateEvent (self,event,c,obj,tag):
+
+    '''Put the focus in the body pane when the Leo window is
+    activated, say as the result of an Alt-tab or click.'''
+
+    # This is called several times for each window activation.
+    # We only need to set the focus once.
+
+    if c.exists and tag == 'body':
+        # g.trace(tag)
+        c.bodyWantsFocusNow()
+        c.outerUpdate() # Required because this is an event handler.
+#@-node:ekr.20090123150451.11:onActivateEvent (qtGui)
+#@-node:ekr.20100118155531.3700:Made sure activation events work
 #@-node:ekr.20090813101852.3643:Bugs
 #@-node:ekr.20090717095154.3729:Leo 4.7 devel projects
 #@-all
