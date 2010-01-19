@@ -28,6 +28,26 @@ Traceback (most recent call last):
  File "C:\Python31\Lib\site-packages\leo-editor\leo\core\leoKeys.py", line 2947, in printBindingsHelper
    data.sort(lambda x,y: cmp(x[1],y[1]))
 TypeError: must use keyword argument for key function
+#@+node:ekr.20061031131434.120:printBindingsHelper
+def printBindingsHelper (self,result,data,n1,n2,prefix):
+
+    n = prefix and len(prefix)+1 or 0 # Add 1 for the '+' after the prefix.
+
+    data1 = [z for z in data if z and z[1] and len(z[1][n:]) == 1]
+        # The list of all items with only one character following the prefix.
+    data2 = [z for z in data if z and z[1] and len(z[1][n:]) >  1]
+        # The list of all other items.
+
+    # This isn't perfect in variable-width fonts.
+    for data in (data1,data2):
+        if g.isPython3:
+            data.sort(key=lambda x: x[1]) # key is a function used to extract args.
+        else:
+            data.sort(lambda x,y: cmp(x[1],y[1])) # the function is a comparison.
+        for s1,s2,s3 in data:
+            # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
+            result.append('%*s %*s %s\n' % (-n1,s1,-(min(12,n2)),s2,s3))
+#@-node:ekr.20061031131434.120:printBindingsHelper
 #@-node:ekr.20100119175348.6128:Fix print-bindings crasher w/ leo3k
 #@+node:ekr.20100111094359.6208:Fix goto-line bugs
 @nocolor-node

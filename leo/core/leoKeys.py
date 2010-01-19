@@ -2944,7 +2944,10 @@ class keyHandlerClass:
 
         # This isn't perfect in variable-width fonts.
         for data in (data1,data2):
-            data.sort(lambda x,y: cmp(x[1],y[1]))
+            if g.isPython3:
+                data.sort(key=lambda x: x[1]) # key is a function used to extract args.
+            else:
+                data.sort(lambda x,y: cmp(x[1],y[1])) # the function is a comparison.
             for s1,s2,s3 in data:
                 # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
                 result.append('%*s %*s %s\n' % (-n1,s1,-(min(12,n2)),s2,s3))
