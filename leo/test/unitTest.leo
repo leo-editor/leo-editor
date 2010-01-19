@@ -1172,6 +1172,10 @@
 <v t="ekr.20071113201854"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113192611"><vh>leoEditCommands</vh>
+<v t="ekr.20100119102849.5108"><vh>@test toggle-extend-mode</vh>
+<v t="ekr.20100119102849.5109"><vh>&lt;&lt; define table &gt;&gt;</vh></v>
+<v t="ekr.20100119102849.5110"><vh>work</vh></v>
+</v>
 <v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
 <v t="ekr.20080905125317.1"><vh>Unused</vh>
 <v t="ekr.20080904120258.7"><vh>@@test goto_scanTnodeList</vh></v>
@@ -21916,6 +21920,57 @@ node 2 line 2</t>
 node 1 line 2 changed</t>
 <t tx="ekr.20100107110353.5111">node 2 line 1 changed
 node 2 line 2 changed</t>
+<t tx="ekr.20100119102849.5108"># backward-find-character and find-character
+# can't be tested this way because they require k.getarg.
+# They pass hand tests.
+
+&lt;&lt; define table &gt;&gt;
+
+w = c.frame.body.bodyCtrl
+child = g.findNodeInChildren(c,p,'work')
+assert child
+c.selectPosition(child)
+
+for commandName in table:
+    # Put the cursor in the middle of the middle line
+    # so all cursor moves will actually do something.
+    w.setInsertPoint(15) # for move-past-close
+    try:
+        c.editCommands.extendMode = True
+        c.keyHandler.simulateCommand(commandName)
+        i,j = w.getSelectionRange()
+        assert i != j,'i == j: %s %s' % (i,commandName)
+    finally:
+        c.editCommands.extendMode = False
+
+</t>
+<t tx="ekr.20100119102849.5109"># Cursor movement commands affected by extend mode.
+# The x-extend-selection commands are not so affected.
+table = (
+    'back-to-indentation',
+    'back-to-home',
+    'back-char',
+    'back-page',
+    'back-paragraph',
+    'back-sentence',
+    'back-word',
+    'beginning-of-buffer',
+    'beginning-of-line',
+    'end-of-buffer',
+    'end-of-line',
+    'forward-char',
+    'forward-page',
+    'forward-paragraph',
+    'forward-sentence',
+    'forward-end-word',
+    'forward-word',
+    'move-past-close',
+    'next-line',
+    'previous-line',
+)</t>
+<t tx="ekr.20100119102849.5110">line 1.
+line 2(xxx).
+line 3.</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
