@@ -3248,6 +3248,23 @@
 <v t="ekr.20100118181428.8523"><vh>Fixed bug: 420988 @tabwith 8 not honored</vh></v>
 <v t="ekr.20100118181428.8524"><vh>Don't colorize @others and @all unless they start a line</vh></v>
 </v>
+<v t="ekr.20100119145003.7319"><vh>Gui bugs</vh>
+<v t="ekr.20100119145003.7320"><vh>Fixed file-open focus problem</vh></v>
+<v t="ekr.20100119145003.7322"><vh>Eliminate double close prompt</vh></v>
+<v t="ekr.20100119145003.7324"><vh>Fixed scrolling problem with multiple editors</vh></v>
+<v t="ekr.20100119145003.7325"><vh>Fixed crash in quicksearch plugin</vh></v>
+<v t="ekr.20100119145003.7327"><vh>Fixed @nosent dirty bug</vh></v>
+<v t="ekr.20100119145003.7358"><vh>Allow horizontal scrolling in QtTree</vh></v>
+<v t="ekr.20100119145003.7531"><vh>Correct binding of insert key</vh></v>
+<v t="ekr.20100119145003.7546"><vh>Update tab names when the commander is dirty</vh></v>
+<v t="ekr.20100119145003.7612"><vh>Made @nowrap work</vh></v>
+<v t="ekr.20100119145003.7618"><vh>Added leoMoveCursorHelper</vh></v>
+<v t="ekr.20100119145003.7625"><vh>Remember the ratios when the user moves splitters by hand.</vh></v>
+<v t="ekr.20100119145003.7629"><vh>Chapter tabs require both_chapters and use_chapters_tabs</vh></v>
+<v t="ekr.20100119145003.7632"><vh>Don't colorize directives unless they start a line</vh></v>
+<v t="ekr.20100119145003.7643"><vh>Config coloring tags whenever the language changes</vh></v>
+<v t="ekr.20100119145003.7718"><vh>Update qttabs when saving a new file</vh></v>
+</v>
 <v t="ekr.20100118181428.8525"><vh>Features</vh>
 <v t="ekr.20100118181428.8815"><vh>Leo now works with both Python 2.x and Python 3.x</vh></v>
 <v t="ekr.20100118181428.8582"><vh>Batch operations on nodes</vh></v>
@@ -31527,17 +31544,15 @@ to force the conversion of all your legacy @file nodes.  Please back
 up your .leo file and all your external files first.</t>
 <t tx="ekr.20100118181428.8671">Leo writes outline-size and orientation to a local database in your .leo directory.
 This eliminates unnecessary changes to .leo files.</t>
-<t tx="ekr.20100118181428.8813">Leo 4.7 beta 2                       January 23, 2009
+<t tx="ekr.20100118181428.8813">Leo 4.7 release candidate 1                       January 23, 2009
 
-Leo 4.7 beta 2 is now available at:
+Leo 4.7 rc1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
 
-The beta 2 version of Leo 4.7 fixes all known serious bugs in Leo.
-
-The release candidate 1 release will happen in about one week.
+Leo 4.7 rc1 fixes all known serious bugs in Leo.
 
 The highlights of Leo 4.7:
 --------------------------
@@ -31561,6 +31576,23 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20100118181428.8815"></t>
 <t tx="ekr.20100118181428.8826"></t>
 <t tx="ekr.20100118181428.8827"></t>
+<t tx="ekr.20100119145003.7319"></t>
+<t tx="ekr.20100119145003.7320"></t>
+<t tx="ekr.20100119145003.7322"></t>
+<t tx="ekr.20100119145003.7324"></t>
+<t tx="ekr.20100119145003.7325"></t>
+<t tx="ekr.20100119145003.7327">Note: changing a headline as *no effect* on an @nosent file!
+The only bug was that redraw_after_head_changed must update icons.</t>
+<t tx="ekr.20100119145003.7358"></t>
+<t tx="ekr.20100119145003.7531"></t>
+<t tx="ekr.20100119145003.7546"></t>
+<t tx="ekr.20100119145003.7612"></t>
+<t tx="ekr.20100119145003.7618"></t>
+<t tx="ekr.20100119145003.7625"></t>
+<t tx="ekr.20100119145003.7629"></t>
+<t tx="ekr.20100119145003.7632"></t>
+<t tx="ekr.20100119145003.7643"></t>
+<t tx="ekr.20100119145003.7718"></t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?
