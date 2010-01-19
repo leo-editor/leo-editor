@@ -626,8 +626,11 @@ class baseFileCommands:
             'expanded','marks','t','tnodeList',
             # 'vtag',
         )
+
+        self.checkOutlineBeforeSave = c.config.getBool(
+            'check_outline_before_save',default=False)
+
         self.initIvars()
-    #@nonl
     #@-node:ekr.20031218072017.3019:leoFileCommands._init_
     #@+node:ekr.20090218115025.5:initIvars
     def initIvars(self):
@@ -2213,156 +2216,189 @@ class baseFileCommands:
         return None
     #@nonl
     #@-node:ekr.20060919064401:putToOPML
-    #@+node:ekr.20031218072017.3046:write_Leo_file
+    #@+node:ekr.20031218072017.3046:write_Leo_file & helpers
     def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
 
         c = self.c
-        self.putCount = 0
-        self.toString = toString
-        theActualFile = None
-        toZip = False
-        atOk = True
-
-        if c.config.getBool('check_outline_before_save'):
-            g.trace('@bool check_outline_before_save = True',color='blue')
-            errors = c.checkOutline(event=None,verbose=True,unittest=False,full=True)
-            if errors > 0:
-                g.es_print('outline not written',color='red')
-                return False
-
+        if self.checkOutlineBeforeSave and not self.checkOutline():
+            return False
         if not outlineOnlyFlag or toOPML:
-            # Update .leoRecentFiles.txt if possible.
             g.app.config.writeRecentFilesFile(c)
-            #@        << write all @file nodes >>
-            #@+node:ekr.20040324080359:<< write all @file nodes >>
-            try:
-                # Write all @file nodes and set orphan bits.
-                # An important optimization: we have already assign the file indices.
-                # 2010/01/19: Do *not* signal failure if there are problems writing @file nodes.
-                changedFiles,ignored_atOk = c.atFileCommands.writeAll()
-            except Exception:
-                g.es_error("exception writing derived files")
-                g.es_exception()
-                return False
-            #@-node:ekr.20040324080359:<< write all @file nodes >>
-            #@nl
-        #@    << return if the .leo file is read-only >>
-        #@+node:ekr.20040324080359.1:<< return if the .leo file is read-only >>
+            self.writeAllAtFileNodesHelper() # Ignore any errors.
+        if self.isReadOnly(fileName):
+            return False
+        try:
+            self.putCount = 0 ; self.toString = toString
+            if toString:
+                atOk = self.writeToStringHelper(fileName)
+            else:
+                atOk = self.writeToFileHelper(fileName,toOPML)
+        finally:
+            self.outputFile = None
+            self.toString = False
+        return atOk
+
+    write_LEO_file = write_Leo_file # For compatibility with old plugins.
+    #@nonl
+    #@+node:ekr.20100119145629.6109:checkOutline
+    def checkOutline (self):
+
+        c = self.c
+
+        g.trace('@bool check_outline_before_save = True',color='blue')
+
+        errors = c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+        ok = errors == 0
+        if not ok:
+            g.es_print('outline not written',color='red')
+
+        return ok
+    #@-node:ekr.20100119145629.6109:checkOutline
+    #@+node:ekr.20040324080359.1:isReadOnly
+    def isReadOnly (self,fileName):
+
         # self.read_only is not valid for Save As and Save To commands.
 
         if g.os_path_exists(fileName):
             try:
                 if not os.access(fileName,os.W_OK):
                     g.es("can not write: read only:",fileName,color="red")
-                    return False
+                    return True
             except Exception:
                 pass # os.access() may not exist on all platforms.
-        #@-node:ekr.20040324080359.1:<< return if the .leo file is read-only >>
-        #@nl
+
+        return False
+    #@-node:ekr.20040324080359.1:isReadOnly
+    #@+node:ekr.20100119145629.6114:writeAllAtFileNodesHelper
+    def writeAllAtFileNodesHelper (self):
+
+        '''Write all @file nodes and set orphan bits.
+        '''
+
+        c = self.c
+
         try:
-            #@        << create backup file >>
-            #@+node:ekr.20031218072017.3047:<< create backup file >>
-            backupName = None
+            # 2010/01/19: Do *not* signal failure here.
+            # This allows Leo to quit properly.
+            c.atFileCommands.writeAll()
+            return True
+        except Exception:
+            g.es_error("exception writing derived files")
+            g.es_exception()
+            return False
+    #@-node:ekr.20100119145629.6114:writeAllAtFileNodesHelper
+    #@+node:ekr.20100119145629.6111:writeToFileHelper & helpers
+    def writeToFileHelper (self,fileName,toOPML):
 
-            # rename fileName to fileName.bak if fileName exists.
-            if not toString and g.os_path_exists(fileName):
+        c = self.c ; toZip = c.isZipped
+        ok,backupName = self.createBackupFile(fileName)
+        if not ok: return False
+        fileName,theActualFile = self.createActualFile(fileName,toOPML,toZip)
+        self.mFileName = fileName
+        self.outputFile = StringIO() # Always write to a string.
 
-                backupName = g.os_path_join(g.app.loadDir,fileName)
-                backupName = fileName + ".bak"
-
-                if g.os_path_exists(backupName):
-                    g.utils_remove(backupName)
-
-                ok = g.utils_rename(c,fileName,backupName)
-
-                if not ok:
-                    if self.read_only:
-                        g.es("read only",color="red")
-                    return False
-            #@nonl
-            #@-node:ekr.20031218072017.3047:<< create backup file >>
-            #@nl
-            self.mFileName = fileName
-            if toOPML:
-                #@            << ensure that filename ends with .opml >>
-                #@+node:ekr.20060919070145:<< ensure that filename ends with .opml >>
-                if not self.mFileName.endswith('opml'):
-                    self.mFileName = self.mFileName + '.opml'
-                fileName = self.mFileName
-                #@nonl
-                #@-node:ekr.20060919070145:<< ensure that filename ends with .opml >>
-                #@nl
-            self.outputFile = StringIO()
-            #@        << create theActualFile >>
-            #@+node:ekr.20060929103258:<< create theActualFile >>
-            if toString:
-                theActualFile = None
-            elif c.isZipped:
-                self.toString = toString = True
-                theActualFile = None
-                toZip = True
-            else:
-                if g.isPython3:
-                    mode = 'w'
-                else:
-                    mode = 'wb'
-                theActualFile = open(fileName,mode)
-            #@-node:ekr.20060929103258:<< create theActualFile >>
-            #@nl
-            # t1 = time.clock()
+        try:
             if toOPML:
                 self.putToOPML()
             else:
-                # An important optimization: we have already assign the file indices.
                 self.putLeoFile()
-            # t2 = time.clock()
             s = self.outputFile.getvalue()
-            # g.trace(self.leo_file_encoding)
+            g.app.write_Leo_file_string = s # 2010/01/19: always set this.
             if toZip:
                 self.writeZipFile(s)
-            elif toString:
-                # For support of chapters plugin.
-                g.app.write_Leo_file_string = s
             else:
                 theActualFile.write(s)
                 theActualFile.close()
                 c.setFileTimeStamp(fileName)
-                #@            << delete backup file >>
-                #@+node:ekr.20031218072017.3048:<< delete backup file >>
+                # raise AttributeError # To test handleWriteLeoFileException.
+                # Delete backup file.
                 if backupName and g.os_path_exists(backupName):
-
                     self.deleteFileWithMessage(backupName,'backup')
-                #@-node:ekr.20031218072017.3048:<< delete backup file >>
-                #@nl
-                # t3 = time.clock()
-                # g.es_print('len',len(s),'putCount',self.putCount) # 'put',t2-t1,'write&close',t3-t2)
-            self.outputFile = None
-            self.toString = False
-            return atOk
+            return True
+        except Exception:
+            self.handleWriteLeoFileException(
+                fileName,backupName,theActualFile)
+            return False
+    #@+node:ekr.20100119145629.6106:createActualFile
+    def createActualFile (self,fileName,toOPML,toZip):
+
+        c = self.c
+
+        if toOPML and not self.mFileName.endswith('opml'):
+            fileName = self.mFileName + '.opml'
+
+        if toZip:
+            self.toString = True
+            theActualFile = None
+        else:
+            mode = g.choose(g.isPython3,'w','wb')
+            try:
+                theActualFile = open(fileName,mode)
+            except IOError:
+                theActualFile = None
+
+        return fileName,theActualFile
+    #@-node:ekr.20100119145629.6106:createActualFile
+    #@+node:ekr.20031218072017.3047:createBackupFile
+    def createBackupFile (self,fileName):
+
+        '''rename fileName to fileName.bak if fileName exists.
+        '''
+
+        c = self.c
+        backupName = g.os_path_join(g.app.loadDir,fileName)
+        backupName = fileName + ".bak"
+
+        if g.os_path_exists(backupName):
+            g.utils_remove(backupName)
+
+        ok = g.utils_rename(c,fileName,backupName)
+
+        if not ok and self.read_only:
+            g.es("read only",color="red")
+
+        return ok,backupName
+    #@-node:ekr.20031218072017.3047:createBackupFile
+    #@+node:ekr.20100119145629.6108:handleWriteLeoFileException
+    def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
+
+        c = self.c
+
+        g.es("exception writing:",fileName)
+        g.es_exception(full=True)
+
+        if theActualFile:
+            theActualFile.close()
+
+        # Delete fileName.
+        if fileName and g.os_path_exists(fileName):
+            self.deleteFileWithMessage(fileName,'')
+
+        # Rename backupName to fileName.
+        if backupName and g.os_path_exists(backupName):
+            g.es("restoring",fileName,"from",backupName)
+            g.utils_rename(c,backupName,fileName)
+        else:
+            g.es_print('does not exist!',backupName)
+
+    #@-node:ekr.20100119145629.6108:handleWriteLeoFileException
+    #@-node:ekr.20100119145629.6111:writeToFileHelper & helpers
+    #@+node:ekr.20100119145629.6110:writeToStringHelper
+    def writeToStringHelper (self,fileName):
+
+        try:
+            self.mFileName = fileName
+            self.outputFile = StringIO()
+            self.putLeoFile()
+            s = self.outputFile.getvalue()
+            g.app.write_Leo_file_string = s
+            return True
         except Exception:
             g.es("exception writing:",fileName)
             g.es_exception(full=True)
-            if theActualFile: theActualFile.close()
-            self.outputFile = None
-            if backupName:
-                #@            << delete fileName >>
-                #@+node:ekr.20050405103712:<< delete fileName >>
-                if fileName and g.os_path_exists(fileName):
-
-                    self.deleteFileWithMessage(fileName,'')
-                #@-node:ekr.20050405103712:<< delete fileName >>
-                #@nl
-                #@            << rename backupName to fileName >>
-                #@+node:ekr.20050405103712.1:<< rename backupName to fileName >>
-                if backupName:
-                    g.es("restoring",fileName,"from",backupName)
-                    g.utils_rename(c,backupName,fileName)
-                #@-node:ekr.20050405103712.1:<< rename backupName to fileName >>
-                #@nl
-            self.toString = False
+            g.app.write_Leo_file_string = ''
             return False
-
-    write_LEO_file = write_Leo_file # For compatibility with old plugins.
+    #@-node:ekr.20100119145629.6110:writeToStringHelper
     #@+node:ekr.20070412095520:writeZipFile
     def writeZipFile (self,s):
 
@@ -2381,7 +2417,7 @@ class baseFileCommands:
         theFile.writestr(contentsName,s)
         theFile.close()
     #@-node:ekr.20070412095520:writeZipFile
-    #@-node:ekr.20031218072017.3046:write_Leo_file
+    #@-node:ekr.20031218072017.3046:write_Leo_file & helpers
     #@+node:ekr.20031218072017.2012:writeAtFileNodes (fileCommands)
     def writeAtFileNodes (self,event=None):
 
