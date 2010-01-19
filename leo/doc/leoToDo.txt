@@ -523,27 +523,273 @@ def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
 #@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
 #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 #@-node:ekr.20100111094359.6208:Fix goto-line bugs
-#@+node:ekr.20100118143729.6256:Fix bug 508108: No methods sub-nodes in PHP class import
-https://bugs.launchpad.net/leo-editor/+bug/508108
-
-When importing a PHP class file, I get two nodes: the first is just some Leo
-definitions (@language, @tab, @others), while the second is the whole class. I
-expect Leo to create a node for each method in the class as it does for
-"classless" file of functions (not sure how it is done in other languages). This
-kind of change would also make @auto a lot more useful for PHP.
-#@nonl
-#@-node:ekr.20100118143729.6256:Fix bug 508108: No methods sub-nodes in PHP class import
-#@+node:ekr.20100118162051.6257:Later...
-#@+node:ekr.20100113075303.6270:Easiest vim problems
+#@+node:ekr.20080412053100.1:Allow saving .leo files with undefined-sections
 @nocolor-node
 
-These may not make it into b2 or even Leo 4.7 final.
+http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
+
+1) Create an @thin file based outline.
+2) In the @thin file, create an unreferenced section (something like a
+  header <<This Section Is Bogus>>).
+3) Now, File->Exit
+4) A dialog box pops up
+  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
+5) Click "Yes"
+6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
+  and in the console window, you see "undefined section: ..."
+
+The point is that I can't kill Leo if I keep saying "Yes" to the
+"Save change before quitting" dialog. This is definitely not the
+intended behavior. The correct behavior would be to save the file,
+give me the warning about the undefined section, and exit.
+
+EKR: The fix was simple: write_leo_file ignores the status returned from
+c.atFileCommands.writeAll.
+
+Note that Leo writes the write error to the console as well as the log pane,
+so this should be safe enough.
 #@nonl
-#@+node:ekr.20100112051224.6229:Binding Arrow keys (fixed?)
+#@+node:ekr.20031218072017.3692:promptForSave (leoFrame)
+def promptForSave (self):
+
+    """Prompt the user to save changes.
+
+    Return True if the user vetos the quit or save operation."""
+
+    c = self.c
+    name = g.choose(c.mFileName,c.mFileName,self.title)
+    theType = g.choose(g.app.quitting, "quitting?", "closing?")
+
+    answer = g.app.gui.runAskYesNoCancelDialog(c,
+        "Confirm",
+        'Save changes to %s before %s' % (name,theType))
+
+    # g.pr(answer)
+    if answer == "cancel":
+        return True # Veto.
+    elif answer == "no":
+        return False # Don't save and don't veto.
+    else:
+        if not c.mFileName:
+            << Put up a file save dialog to set mFileName >>
+        if c.mFileName:
+            ok = c.fileCommands.save(c.mFileName)
+            return not ok # New in 4.2: Veto if the save did not succeed.
+        else:
+            return True # Veto.
+#@+node:ekr.20031218072017.3693:<< Put up a file save dialog to set mFileName >>
+# Make sure we never pass None to the ctor.
+if not c.mFileName:
+    c.mFileName = ""
+
+c.mFileName = g.app.gui.runSaveFileDialog(
+    initialfile = c.mFileName,
+    title="Save",
+    filetypes=[("Leo files", "*.leo")],
+    defaultextension=".leo")
+c.bringToFront()
+#@-node:ekr.20031218072017.3693:<< Put up a file save dialog to set mFileName >>
+#@-node:ekr.20031218072017.3692:promptForSave (leoFrame)
+#@+node:ekr.20031218072017.1720:save (fileCommands)
+def save(self,fileName):
+
+    c = self.c ; v = c.currentVnode()
+
+    # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
+    ok = g.doHook("save1",c=c,p=v,v=v,fileName=fileName)
+
+    if ok is None:
+        c.endEditing() # Set the current headline text.
+        self.setDefaultDirectoryForNewFiles(fileName)
+        ok = c.checkFileTimeStamp(fileName)
+        if ok:
+            ok = self.write_Leo_file(fileName,False) # outlineOnlyFlag
+        if ok:
+            self.putSavedMessage(fileName)
+            c.setChanged(False) # Clears all dirty bits.
+            if c.config.save_clears_undo_buffer:
+                g.es("clearing undo")
+                c.undoer.clearUndoState()
+
+        c.redraw_after_icons_changed()
+
+    g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
+    return ok
+#@-node:ekr.20031218072017.1720:save (fileCommands)
+#@+node:ekr.20031218072017.3046:write_Leo_file
+def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
+
+    c = self.c
+    self.putCount = 0
+    self.toString = toString
+    theActualFile = None
+    toZip = False
+    atOk = True
+
+    if c.config.getBool('check_outline_before_save'):
+        g.trace('@bool check_outline_before_save = True',color='blue')
+        errors = c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+        if errors > 0:
+            g.es_print('outline not written',color='red')
+            return False
+
+    if not outlineOnlyFlag or toOPML:
+        # Update .leoRecentFiles.txt if possible.
+        g.app.config.writeRecentFilesFile(c)
+        << write all @file nodes >>
+    << return if the .leo file is read-only >>
+    try:
+        << create backup file >>
+        self.mFileName = fileName
+        if toOPML:
+            << ensure that filename ends with .opml >>
+        self.outputFile = StringIO()
+        << create theActualFile >>
+        # t1 = time.clock()
+        if toOPML:
+            self.putToOPML()
+        else:
+            # An important optimization: we have already assign the file indices.
+            self.putLeoFile()
+        # t2 = time.clock()
+        s = self.outputFile.getvalue()
+        # g.trace(self.leo_file_encoding)
+        if toZip:
+            self.writeZipFile(s)
+        elif toString:
+            # For support of chapters plugin.
+            g.app.write_Leo_file_string = s
+        else:
+            theActualFile.write(s)
+            theActualFile.close()
+            c.setFileTimeStamp(fileName)
+            << delete backup file >>
+            # t3 = time.clock()
+            # g.es_print('len',len(s),'putCount',self.putCount) # 'put',t2-t1,'write&close',t3-t2)
+        self.outputFile = None
+        self.toString = False
+        return atOk
+    except Exception:
+        g.es("exception writing:",fileName)
+        g.es_exception(full=True)
+        if theActualFile: theActualFile.close()
+        self.outputFile = None
+        if backupName:
+            << delete fileName >>
+            << rename backupName to fileName >>
+        self.toString = False
+        return False
+
+write_LEO_file = write_Leo_file # For compatibility with old plugins.
+#@+node:ekr.20040324080359:<< write all @file nodes >>
+try:
+    # Write all @file nodes and set orphan bits.
+    # An important optimization: we have already assign the file indices.
+    # 2010/01/19: Do *not* signal failure if there are problems writing @file nodes.
+    changedFiles,ignored_atOk = c.atFileCommands.writeAll()
+except Exception:
+    g.es_error("exception writing derived files")
+    g.es_exception()
+    return False
+#@-node:ekr.20040324080359:<< write all @file nodes >>
+#@+node:ekr.20040324080359.1:<< return if the .leo file is read-only >>
+# self.read_only is not valid for Save As and Save To commands.
+
+if g.os_path_exists(fileName):
+    try:
+        if not os.access(fileName,os.W_OK):
+            g.es("can not write: read only:",fileName,color="red")
+            return False
+    except Exception:
+        pass # os.access() may not exist on all platforms.
+#@-node:ekr.20040324080359.1:<< return if the .leo file is read-only >>
+#@+node:ekr.20031218072017.3047:<< create backup file >>
+backupName = None
+
+# rename fileName to fileName.bak if fileName exists.
+if not toString and g.os_path_exists(fileName):
+
+    backupName = g.os_path_join(g.app.loadDir,fileName)
+    backupName = fileName + ".bak"
+
+    if g.os_path_exists(backupName):
+        g.utils_remove(backupName)
+
+    ok = g.utils_rename(c,fileName,backupName)
+
+    if not ok:
+        if self.read_only:
+            g.es("read only",color="red")
+        return False
+#@nonl
+#@-node:ekr.20031218072017.3047:<< create backup file >>
+#@+node:ekr.20060919070145:<< ensure that filename ends with .opml >>
+if not self.mFileName.endswith('opml'):
+    self.mFileName = self.mFileName + '.opml'
+fileName = self.mFileName
+#@nonl
+#@-node:ekr.20060919070145:<< ensure that filename ends with .opml >>
+#@+node:ekr.20060929103258:<< create theActualFile >>
+if toString:
+    theActualFile = None
+elif c.isZipped:
+    self.toString = toString = True
+    theActualFile = None
+    toZip = True
+else:
+    if g.isPython3:
+        mode = 'w'
+    else:
+        mode = 'wb'
+    theActualFile = open(fileName,mode)
+#@-node:ekr.20060929103258:<< create theActualFile >>
+#@+node:ekr.20031218072017.3048:<< delete backup file >>
+if backupName and g.os_path_exists(backupName):
+
+    self.deleteFileWithMessage(backupName,'backup')
+#@-node:ekr.20031218072017.3048:<< delete backup file >>
+#@+node:ekr.20050405103712:<< delete fileName >>
+if fileName and g.os_path_exists(fileName):
+
+    self.deleteFileWithMessage(fileName,'')
+#@-node:ekr.20050405103712:<< delete fileName >>
+#@+node:ekr.20050405103712.1:<< rename backupName to fileName >>
+if backupName:
+    g.es("restoring",fileName,"from",backupName)
+    g.utils_rename(c,backupName,fileName)
+#@-node:ekr.20050405103712.1:<< rename backupName to fileName >>
+#@+node:ekr.20070412095520:writeZipFile
+def writeZipFile (self,s):
+
+    # The name of the file in the archive.
+    contentsName = g.toEncodedString(
+        g.shortFileName(self.mFileName),
+        self.leo_file_encoding,reportErrors=True)
+
+    # The name of the archive itself.
+    fileName = g.toEncodedString(
+        self.mFileName,
+        self.leo_file_encoding,reportErrors=True)
+
+    # Write the archive.
+    theFile = zipfile.ZipFile(fileName,'w',zipfile.ZIP_DEFLATED)
+    theFile.writestr(contentsName,s)
+    theFile.close()
+#@-node:ekr.20070412095520:writeZipFile
+#@-node:ekr.20031218072017.3046:write_Leo_file
+#@-node:ekr.20080412053100.1:Allow saving .leo files with undefined-sections
+#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+@nocolor-node
+
+I also unhappily discovered that any file named somedoc.leo.bak will
+get deleted whenever you save a file named somedoc.leo.
+#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+#@+node:ekr.20100113075303.6270:Easiest vim problems
+#@+node:ekr.20100112051224.6229:(vim) Binding Arrow keys (fixed?)
 Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
 commands or @mode nodes have no effect.
 #@nonl
-#@-node:ekr.20100112051224.6229:Binding Arrow keys (fixed?)
+#@-node:ekr.20100112051224.6229:(vim) Binding Arrow keys (fixed?)
 #@+node:ekr.20100112051224.6239:Displaying mode help
 @nocolor-node
 
@@ -601,97 +847,45 @@ until the edited node has lost focus.
 #@nonl
 #@-node:ekr.20100112051224.6231:Undo command (fixed?)
 #@-node:ekr.20100113075303.6270:Easiest vim problems
-#@+node:ekr.20100108101415.6196:Create insert-tab commands (not urgent)
-# insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
+#@+node:ekr.20100119145629.6105:later...
+#@+node:ekr.20100118143729.6256:Fix bug 508108: No methods sub-nodes in PHP class import
+https://bugs.launchpad.net/leo-editor/+bug/508108
+
+When importing a PHP class file, I get two nodes: the first is just some Leo
+definitions (@language, @tab, @others), while the second is the whole class. I
+expect Leo to create a node for each method in the class as it does for
+"classless" file of functions (not sure how it is done in other languages). This
+kind of change would also make @auto a lot more useful for PHP.
 #@nonl
-#@-node:ekr.20100108101415.6196:Create insert-tab commands (not urgent)
-#@-node:ekr.20100118162051.6257:Later...
+#@-node:ekr.20100118143729.6256:Fix bug 508108: No methods sub-nodes in PHP class import
+#@+node:ekr.20080509065556.2:Fix mod_tempfname plugin
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ad23258d1a46234c
+
+On Fri, May 9, 2008 at 5:56 AM, bobjack <bobjack@post.com> wrote:
+
+> If a headline ending in ... (ellipses) is an ancestor of a node to be edited
+the file path formed is invalid (at least on windows vista), so the node can not
+be edited.
+
+
+Hmm.  mod_tempfname has a problem.  If it filters out non-ascii unicode characters it will have problem with, say, Chinese file names.  So the naive plan of filtering all characters *except* the valid ascii characters is flawed.
+
+Drat.  I suppose building in unicode smarts: filtering 'general punctuation' characters is needed.  See:
+
+http://www.fileformat.info/info/unicode/char/2026/index.htm
+#@nonl
+#@-node:ekr.20080509065556.2:Fix mod_tempfname plugin
+#@-node:ekr.20100119145629.6105:later...
 #@-node:ekr.20091005145253.6059:Before rc1
 #@-node:ekr.20071211093011:4.7 One-node world, Leo3K
 #@+node:ekr.20100109214940.6225:4.8 Autocompletion, vim
-#@+node:ekr.20080517102922.1:File bugs & features
-#@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
-
-If a @path directive is within the body text of an @thin node then the
-file write uses the @path directive but the file read does not.  Since
-the file read cannot know of the @path directive until after it has
-read the file it has no choice but to not use it.  The @thin file
-write code should not use any @path declarations found in its body
-text.
+#@+node:ekr.20100119145629.6104:First
+#@+node:ekr.20100108101415.6196:Create insert-tab commands
+insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
 #@nonl
-#@-node:ekr.20081204091750.4:Fix inconsistency in how @path works
-#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-@nocolor
-
-I also unhappily discovered that any file named somedoc.leo.bak will
-get deleted whenever you save a file named somedoc.leo.
-
-@color
-#@nonl
-#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-#@+node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
-#@-node:ekr.20080815063811.1:Write fixed-window size when writing .leo files
-#@+node:ekr.20080918164844.14:Protect @shadow and @auto files from overwriting external changes
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/bac65cb75484f7cb
-
-BTW, I think we should prevent shadow files from accidentally
-overwriting valuable stuff:
-
-- Store modification time of the file on shadow import
-
-- When you "save", check if modification time has changed and ask the
-user if they really want to overwrite the changes. Or, reuse to do it
-altogether and require explicit save-at-shadow-nodes in those
-occasions. That's considered "good form" in editors in general, and
-since pressing ctrl+S in leo has even more significant implications we
-should be absolutely certain everything happens safely. 
-#@nonl
-#@-node:ekr.20080918164844.14:Protect @shadow and @auto files from overwriting external changes
-#@+node:ekr.20080412053100.1:Look into undefined-section behavior
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
-
-1) Create an @thin file based outline.
-2) In the @thin file, create an unreferenced section (something like a
-  header <<This Section Is Bogus>>).
-3) Now, File->Exit
-4) A dialog box pops up
-  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
-5) Click "Yes"
-6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
-  and in the console window, you see "undefined section: ..."
-
-However, the application is still running. The only way to really quit
-is to click "No" to the Save dialog.
-
-> Iirc, this is the intended behavior.  It would be possible to build in some
-> state behavior to only ask once, but I'd rather not do that.
-
-The point is that I can't kill Leo if I keep saying "Yes" to the
-"Save change before quitting" dialog. This is definitely not the
-intended behavior. The correct behavior would be to save the file,
-give me the warning about the undefined section, and exit.
-#@nonl
-#@-node:ekr.20080412053100.1:Look into undefined-section behavior
-#@-node:ekr.20080517102922.1:File bugs & features
-#@+node:ekr.20100109214940.6227:Other bugs
-#@+node:ekr.20090907080624.6081:Spell checker should check headlines
-#@-node:ekr.20090907080624.6081:Spell checker should check headlines
-#@+node:ekr.20090813112405.5980:Delete resurrected nodes
-@nocolor-node
-
-https://sourceforge.net/forum/message.php?msg_id=3525277
-
-This problem is hard.
-It may be simpler in the one-node world.
-#@nonl
-#@-node:ekr.20090813112405.5980:Delete resurrected nodes
+#@-node:ekr.20100108101415.6196:Create insert-tab commands
 #@+node:ekr.20090131200406.11:Remove remaining tk-isms from Leo's core
 @nocolor-node
 
@@ -867,6 +1061,30 @@ def copyToRegister (self,event):
     c.bodyWantsFocus()
 #@-node:ekr.20050920084036.240:copyToRegister
 #@-node:ekr.20090131200406.11:Remove remaining tk-isms from Leo's core
+#@+node:ekr.20090907080624.6081:Spell checker should check headlines
+#@-node:ekr.20090907080624.6081:Spell checker should check headlines
+#@+node:ekr.20090813112405.5980:Delete resurrected nodes
+@nocolor-node
+
+https://sourceforge.net/forum/message.php?msg_id=3525277
+
+This problem is hard.
+It may be simpler in the one-node world.
+#@nonl
+#@-node:ekr.20090813112405.5980:Delete resurrected nodes
+#@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
+
+If a @path directive is within the body text of an @thin node then the
+file write uses the @path directive but the file read does not.  Since
+the file read cannot know of the @path directive until after it has
+read the file it has no choice but to not use it.  The @thin file
+write code should not use any @path declarations found in its body
+text.
+#@nonl
+#@-node:ekr.20081204091750.4:Fix inconsistency in how @path works
 #@+node:ekr.20081208102356.1:Threading colorizer doesn't handle multiple body editors
 @nocolor-node
 
@@ -880,26 +1098,7 @@ with the threading colorizer.  A workaround is to disable the
 threading colorizer plugin. 
 #@nonl
 #@-node:ekr.20081208102356.1:Threading colorizer doesn't handle multiple body editors
-#@+node:ekr.20080509065556.2:Fix mod_tempfname plugin
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ad23258d1a46234c
-
-On Fri, May 9, 2008 at 5:56 AM, bobjack <bobjack@post.com> wrote:
-
-> If a headline ending in ... (ellipses) is an ancestor of a node to be edited
-the file path formed is invalid (at least on windows vista), so the node can not
-be edited.
-
-
-Hmm.  mod_tempfname has a problem.  If it filters out non-ascii unicode characters it will have problem with, say, Chinese file names.  So the naive plan of filtering all characters *except* the valid ascii characters is flawed.
-
-Drat.  I suppose building in unicode smarts: filtering 'general punctuation' characters is needed.  See:
-
-http://www.fileformat.info/info/unicode/char/2026/index.htm
-#@nonl
-#@-node:ekr.20080509065556.2:Fix mod_tempfname plugin
-#@-node:ekr.20100109214940.6227:Other bugs
+#@-node:ekr.20100119145629.6104:First
 #@+node:ekr.20080603052650.466:Fix vim problems
 @nocolor
 
@@ -910,15 +1109,11 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
 Vim mode users: your top 3 complaints, please
 #@nonl
 #@+node:ekr.20100113075303.6270:Easiest vim problems
-@nocolor-node
-
-These may not make it into b2 or even Leo 4.7 final.
-#@nonl
-#@+node:ekr.20100112051224.6229:Binding Arrow keys (fixed?)
+#@+node:ekr.20100112051224.6229:(vim) Binding Arrow keys (fixed?)
 Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
 commands or @mode nodes have no effect.
 #@nonl
-#@-node:ekr.20100112051224.6229:Binding Arrow keys (fixed?)
+#@-node:ekr.20100112051224.6229:(vim) Binding Arrow keys (fixed?)
 #@+node:ekr.20100112051224.6239:Displaying mode help
 @nocolor-node
 

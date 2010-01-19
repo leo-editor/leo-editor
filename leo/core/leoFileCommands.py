@@ -2238,7 +2238,8 @@ class baseFileCommands:
             try:
                 # Write all @file nodes and set orphan bits.
                 # An important optimization: we have already assign the file indices.
-                changedFiles,atOk = c.atFileCommands.writeAll()
+                # 2010/01/19: Do *not* signal failure if there are problems writing @file nodes.
+                changedFiles,ignored_atOk = c.atFileCommands.writeAll()
             except Exception:
                 g.es_error("exception writing derived files")
                 g.es_exception()
