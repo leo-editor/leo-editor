@@ -137,7 +137,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def __init__ (self,widget,name='leoQtBaseTextWidget',c=None):
 
         self.widget = widget
-        self.c = c or self.widget.c
+        self.c = c or self.widget.leo_c
 
         # g.trace('leoQtBaseTextWidget',name) # widget,g.callers(5))
 
@@ -1708,6 +1708,10 @@ class DynamicWindow(QtGui.QMainWindow):
 
     c.frame.top is a DynamciWindow object.
 
+    For --gui==qttabs:
+        c.frame.top.parent is a TabbedFrameFactory
+        c.frame.top.master is a LeoTabbedTopLevel
+
     All leoQtX classes use the ivars of this Window class to
     support operations requested by Leo's core.
     '''
@@ -1720,15 +1724,18 @@ class DynamicWindow(QtGui.QMainWindow):
 
         '''Create Leo's main window, c.frame.top'''
 
+        # g.trace('(DynamicWindow)','parent',parent)
+
         QtGui.QMainWindow.__init__(self,parent)
-        self.c = c
+
+        self.leo_c = c
     #@-node:ekr.20081121105001.201: ctor (DynamicWindow)
-    #@+node:ville.20090806213440.3689:construct
+    #@+node:ville.20090806213440.3689:construct (DynamicWindow)
     def construct(self,master=None):
         """ Factor 'heavy duty' code out from ctor """
 
-        c = self.c; top = c.frame.top
-        self.master=master # Exists for tabbed windows.
+        c = self.leo_c; top = c.frame.top
+        self.master=master # A LeoTabbedTopLevel for tabbed windows.
         # print('DynamicWindow.__init__ %s' % c)
 
         # Init the base class.
@@ -1756,12 +1763,12 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setSplitDirection(orientation)
         self.setStyleSheets()
         #self.setLeoWindowIcon()
-    #@-node:ville.20090806213440.3689:construct
+    #@-node:ville.20090806213440.3689:construct (DynamicWindow)
     #@+node:ekr.20081121105001.202:closeEvent (DynanicWindow)
     def closeEvent (self,event):
 
         trace = False and not g.unitTesting
-        c = self.c
+        c = self.leo_c
 
         if not c.exists:
             # Fixes double-prompt bug on Linux.
@@ -1899,7 +1906,7 @@ class DynamicWindow(QtGui.QMainWindow):
     #@+node:ekr.20090424085523.41:createMainLayout (DynamicWindow)
     def createMainLayout (self,parent):
 
-        c = self.c
+        c = self.leo_c
 
         vLayout = self.createVLayout(parent,'mainVLayout',margin=3)
 
@@ -2138,7 +2145,7 @@ class DynamicWindow(QtGui.QMainWindow):
     ):
 
         # w = QtGui.QTextBrowser(parent)
-        c = self.c
+        c = self.leo_c
         w = QTextBrowserSubclass(parent,c,None)
         # self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
         w.setFrameShape(shape)
@@ -2150,7 +2157,7 @@ class DynamicWindow(QtGui.QMainWindow):
     #@+node:ekr.20090426083450.15:createTreeWidget (DynamicWindow)
     def createTreeWidget (self,parent,name):
 
-        c = self.c
+        c = self.leo_c
         w = QtGui.QTreeWidget(parent)
         self.setSizePolicy(w)
 
@@ -2320,7 +2327,7 @@ class DynamicWindow(QtGui.QMainWindow):
     #@-node:ekr.20090423070717.14:createMainWindow & helpers
     #@+node:leohag.20081203210510.17:do_leo_spell_btn_*
     def doSpellBtn(self, btn):
-        getattr(self.c.spellCommands.handler.tab, btn)() 
+        getattr(self.leo_c.spellCommands.handler.tab, btn)() 
 
     def do_leo_spell_btn_Add(self):
         self.doSpellBtn('onAddButton')
@@ -2361,7 +2368,7 @@ class DynamicWindow(QtGui.QMainWindow):
     def setStyleSheets(self):
 
         trace = False
-        c = self.c
+        c = self.leo_c
 
         sheet = c.config.getData('qt-gui-plugin-style-sheet')
         if sheet:
@@ -2409,13 +2416,13 @@ class DynamicWindow(QtGui.QMainWindow):
     #@+node:ekr.20100111143038.3727:splitter event handlers
     def onSplitter1Moved (self,pos,index):
 
-        c = self.c
+        c = self.leo_c
         c.frame.secondary_ratio = self.splitterMovedHelper(
             self.splitter,pos,index)
 
     def onSplitter2Moved (self,pos,index):
 
-        c = self.c
+        c = self.leo_c
         c.frame.ratio = self.splitterMovedHelper(
             self.splitter_2,pos,index)
 
@@ -3656,6 +3663,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         # returns DynamicWindow
         f.top = g.app.gui.frameFactory.createFrame(f)
+        # g.trace('(leoQtFrame)',f.top)
 
         # hiding would remove flicker, but doesn't work with all
         # window managers
@@ -4653,7 +4661,6 @@ class leoQtFrame (leoFrame.leoFrame):
         return s
     def setTitle (self,s):
         # g.trace('qtFrame',repr(s))
-        # self.top.c.frame.title = s
         self.top.setWindowTitle(s)
     def setTopGeometry(self,w,h,x,y,adjustSize=True):
         # g.trace(x,y,w,y,g.callers(5))
@@ -6378,7 +6385,7 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
 
         s = self.tabText(i)
         s = g.u(s)
-        # g.trace('LeoTabbedTopLevel',changed,repr(s))
+        # g.trace('LeoTabbedTopLevel',changed,repr(s),g.callers(5))
 
         if len(s) > 2:
             if changed:
@@ -6390,6 +6397,19 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
                     title = s[2:]
                     self.setTabText(i,title)
     #@-node:ekr.20100101104934.3662:setChanged
+    #@+node:ekr.20100119113742.3714:setTabName (LeoTabbedTopLevel)
+    def setTabName (self,c,fileName):
+
+        '''Set the tab name for c's tab to fileName.'''
+
+        tabw = self # self is a LeoTabbedTopLevel
+        dw = c.frame.top # A DynamicWindow
+
+        # Find the tab in tabw corresponding to dw.
+        i = tabw.indexOf(dw)
+        if i > -1:
+            tabw.setTabText(i,g.shortFileName(fileName))
+    #@-node:ekr.20100119113742.3714:setTabName (LeoTabbedTopLevel)
     #@+node:ville.20090804182114.8401:closeEvent (leoTabbedTopLevel)
     def closeEvent(self, event):
 
@@ -6473,8 +6493,9 @@ class TabbedFrameFactory:
 
     #@    @+others
     #@+node:ville.20090803132402.3685:ctor
-    def __init__(self):    
-        # will be created when first frame appears    
+    def __init__(self):
+
+        # will be created when first frame appears 
 
         # DynamicWindow => Leo frame map
         self.alwaysShowTabs = True
@@ -6501,7 +6522,8 @@ class TabbedFrameFactory:
         else:
             title = leoFrame.title
         tip = leoFrame.title
-        # g.trace('title',title,'tip',tip)
+
+        # g.trace('TabbedFrameFactory: title',title,'tip',tip)
 
         dw.setWindowTitle(tip) # 2010/1/1
         idx = tabw.addTab(dw, title)

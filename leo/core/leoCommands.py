@@ -1251,6 +1251,8 @@ class baseCommands (object):
                 c.frame.setTitle(g.computeWindowTitle(c.mFileName))
                 c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
                     # Bug fix in 4.4b2.
+                if g.app.qt_use_tabs and hasattr(c.frame,'top'):
+                    c.frame.top.master.setTabName(c,c.mFileName)
                 c.fileCommands.save(c.mFileName)
                 c.updateRecentFiles(c.mFileName)
                 g.chdir(c.mFileName)
@@ -1259,7 +1261,7 @@ class baseCommands (object):
         # c.redraw_after_icons_changed()
         c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2834:save (commands)
-    #@+node:ekr.20031218072017.2835:saveAs
+    #@+node:ekr.20031218072017.2835:saveAs (commands)
     def saveAs (self,event=None):
 
         '''Save a Leo outline to a file with a new filename.'''
@@ -1290,6 +1292,8 @@ class baseCommands (object):
             c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
                 # Bug fix in 4.4b2.
             # Calls c.setChanged(False) if no error.
+            if g.app.qt_use_tabs and hasattr(c.frame,'top'):
+                c.frame.top.master.setTabName(c,c.mFileName)
             c.fileCommands.saveAs(c.mFileName)
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
@@ -1297,7 +1301,7 @@ class baseCommands (object):
         # Done in fileCommands.saveAs.
         # c.redraw_after_icons_changed()
         c.widgetWantsFocusNow(w)
-    #@-node:ekr.20031218072017.2835:saveAs
+    #@-node:ekr.20031218072017.2835:saveAs (commands)
     #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
     def saveAsUnzipped (self,event=None):
 
