@@ -8347,6 +8347,7 @@ class jEditColorizer:
         self.prev = None # The previous token.
         self.fonts = {} # Keys are config names.  Values are actual fonts.
         self.keywords = {} # Keys are keywords, values are 0..5.
+        self.last_language = None # The language for which configuration tags are valid.
         self.modes = {} # Keys are languages, values are modes.
         self.mode = None # The mode object for the present language.
         self.modeBunch = None # A bunch fully describing a mode.
@@ -8376,12 +8377,6 @@ class jEditColorizer:
         self.defineLeoKeywordsDict()
         self.defineDefaultColorsDict()
         self.defineDefaultFontDict()
-
-        # New in Leo 4.6: configure tags only once here.
-        # Some changes will be needed for multiple body editors.
-        if 1: # This is reported to be too slow.
-            # Must do this every time to support multiple editors.
-            self.configure_tags()
     #@+node:ekr.20090614134853.3698:defineLeoKeywordsDict
     def defineLeoKeywordsDict(self):
 
@@ -8558,6 +8553,8 @@ class jEditColorizer:
         traceFonts = True
         c = self.c ; w = self.w
 
+        if trace: g.trace(self.colorizer.language)
+
         # The stated default is 40, but apparently it must be set explicitly.
         tabWidth = c.config.getInt('qt-tab-width') or 40
         w.widget.setTabStopWidth(tabWidth)
@@ -8719,9 +8716,10 @@ class jEditColorizer:
 
         # Used by matchers.
         self.prev = None
-        if 0: # Too slow.
-            # Must do this every time to support multiple editors.
+        if self.last_language != self.colorizer.language:
+            # Must be done to support per-language @font/@color settings.
             self.configure_tags()
+            self.last_language = self.colorizer.language
     #@nonl
     #@-node:ekr.20090614134853.3705:init (jeditColorizer)
     #@+node:ekr.20090614134853.3706:init_mode & helpers

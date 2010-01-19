@@ -24,19 +24,20 @@
 </v>
 </v>
 <v t="ekr.20070224123943"><vh>@settings</vh>
-<v t="ekr.20100118141712.2011"><vh>@int qt_tab_width = 80</vh></v>
-<v t="ekr.20100118122048.2003"><vh>@@font python keyword1 fonts</vh></v>
-<v t="ekr.20100118133026.2008"><vh>@@font python keyword3 fonts</vh></v>
-<v t="ekr.20091230064146.1911"><vh>@data import_xml_tags</vh></v>
-<v t="ekr.20090815161520.1815"><vh>@string vim_trigger_event = select2</vh></v>
-<v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
-<v t="ekr.20090629105832.1790"><vh>@@bool big_outline_pane = True</vh></v>
-<v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
+<v t="ekr.20100118190256.2014"><vh> Chapters</vh>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
-<v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20100108135636.1980"><vh>@keys</vh></v>
-<v t="ekr.20080529111617.1"><vh>plugins</vh>
+</v>
+<v t="ekr.20100118190256.2015"><vh> Files &amp; directories</vh>
+<v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
+<v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
+</v>
+<v t="ekr.20080729153237.1"><vh> Gc settings</vh>
+<v t="ekr.20080729153237.2"><vh>@bool trace_gc = False</vh></v>
+<v t="ekr.20080729153237.3"><vh>@bool trace_gc_calls = False</vh></v>
+<v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = False</vh></v>
+</v>
+<v t="ekr.20080529111617.1"><vh> Plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
 <v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
 <v t="ekr.20070723091227.2"><vh>@int</vh>
@@ -55,13 +56,23 @@
 <v t="ekr.20080529111617.10"><vh>@string cleo_time_name = 'days'</vh></v>
 </v>
 </v>
-<v t="ekr.20080604104453.5"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
-<v t="ekr.20080729153237.1"><vh>Gc settings</vh>
-<v t="ekr.20080729153237.2"><vh>@bool trace_gc = False</vh></v>
-<v t="ekr.20080729153237.3"><vh>@bool trace_gc_calls = False</vh></v>
-<v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = False</vh></v>
+<v t="ekr.20100118190256.2012"><vh> Syntax coloring</vh>
+<v t="ekr.20100118141712.2011"><vh>@@int qt_tab_width = 80</vh></v>
+<v t="ekr.20100118122048.2003"><vh>@@font python keyword1 fonts</vh></v>
+<v t="ekr.20100118133026.2008"><vh>@@font python keyword3 fonts</vh></v>
+<v t="ekr.20100119095312.2041"><vh>@font rest keyword2 fonts</vh></v>
+<v t="ekr.20100119100926.2046"><vh>@font rest keyword4 fonts</vh></v>
 </v>
-<v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
+<v t="ekr.20100118190256.2016"><vh> Vim</vh>
+<v t="ekr.20090815161520.1815"><vh>@string vim_trigger_event = select2</vh></v>
+<v t="ekr.20080604104453.5"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
+</v>
+<v t="ekr.20100118190256.2013"><vh> Windows</vh>
+<v t="ekr.20090629105832.1790"><vh>@@bool big_outline_pane = True</vh></v>
+<v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
+</v>
+<v t="ekr.20091230064146.1911"><vh>@data import_xml_tags</vh></v>
+<v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20080915095329.1"><vh>@@button rst3</vh></v>
@@ -178,14 +189,7 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
-<v t="ekr.20071025193940"></v>
-<v t="ekr.20100118141712.2011"></v>
-<v t="ekr.20100118122048.2003"></v>
-<v t="ekr.20100118133026.2008"></v>
-<v t="ekr.20090309064612.1"><vh>Future features/bug fixes (do not delete)</vh>
-<v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions</vh></v>
-<v t="ekr.20080610144233.1"><vh>Wrap test</vh></v>
-</v>
+<v t="ekr.20070224123943"></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
 <v t="ekr.20080531131542.1"><vh>mxTextTools proto</vh>
@@ -335,6 +339,7 @@
 </v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
+<v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions (do not deletes)</vh></v>
 <v t="ekr.20080930114036.1"><vh>Icon stuff</vh>
 <v t="ekr.20090701133940.1767"><vh>print icons</vh></v>
 <v t="ekr.20090701125834.1765"><vh>@@button insert-inst-icon</vh></v>
@@ -381,8 +386,6 @@
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
 <v t="ekr.20100103112623.1951"><vh>Insert form-feed</vh></v>
-<v t="ekr.20100102104458.1938"><vh>Show invisibles</vh></v>
-<v t="ekr.20100109081746.1986"><vh>long lines</vh></v>
 <v t="ekr.20091230121016.1931"><vh>at-auto stuff</vh>
 <v t="ekr.20090706044257.1784"><vh>@@auto ../../install</vh></v>
 <v t="ekr.20091217210235.1866"><vh>@@auto-rst at-auto-rst-test.txt</vh>
@@ -456,14 +459,10 @@
 </v>
 </v>
 </v>
-<v t="ekr.20100110124039.2003"><vh>Hack for php</vh>
-<v t="ekr.20100110124039.2004"><vh>nameToRulesetName</vh></v>
-<v t="ekr.20100110124039.2005"><vh>php test</vh>
-<v t="ekr.20100110124039.2006"><vh>without hack</vh></v>
-<v t="ekr.20100110124039.2007"><vh>with hack</vh></v>
-</v>
-</v>
-<v t="ekr.20100118123807.2003"><vh>font test</vh></v>
+<v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
+<v t="ekr.20100118190902.2002"><vh>@auto C:\Python26\Lib\site-packages\pylint-0.19.0-py2.6.egg\pylint\lint.py</vh></v>
+<v t="ekr.20100118191455.2039"><vh>ed C:\Python26\Lib\site-packages\pylint-0.19.0-py2.6.egg\pylint\lint.py</vh></v>
+<v t="ekr.20100119095726.2043"><vh>rest colorizing</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -884,7 +883,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="9"></t>
+<t tx="ekr.20070416075121" str_leo_pos="7"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -1818,9 +1817,6 @@ The valid values are::
 command:  Leo ignores the key (like Vim).
 insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
-<t tx="ekr.20080610144233.1">@wrap
-
-aaaaaaaaaaaa bbbbbbbbbbbbbbbbbb cccccccccccccccc ddddddddddddddddddd eeeeeeeeeeeeeee ffffffffffffffffff ggggggggggggggggggggg hhhhhhhhhhhhhhhh iiiiiiiiiiiii jjjjjjjjjjjjjjjj kkkkkkkkkkkkkk llllllllllllll mmmmmmmmmmmmmmmmm nnnnnnnnnnnn ooooooooo</t>
 <t tx="ekr.20080617170334.1">@first # -*- coding: utf-8 -*-
 
 import Tkinter as Tk
@@ -2542,7 +2538,6 @@ g.es ('total characters: %s, keywords: %s, leo_keywords: %s' % (
     colorer.totalLeoKeywordsCalls))</t>
 <t tx="ekr.20090218112656.1"># 'self' is now defined in @test and @suite nodes.
 self.assertEqual(1,1)</t>
-<t tx="ekr.20090309064612.1"></t>
 <t tx="ekr.20090309064612.2"></t>
 <t tx="ekr.20090309064612.3"></t>
 <t tx="ekr.20090309064612.4"></t>
@@ -3638,12 +3633,6 @@ for i,j in table2:
 .. Warning: this node is ignored when writing this file.
 .. However, @ @rst-options are recognized in this node.
 </t>
-<t tx="ekr.20100102104458.1938">@tabwidth 8
-
-# hard tab
-a	b
-# spaces
-a    b</t>
 <t tx="ekr.20100103112623.1951"># This script insert a raw form-feed into the Leo outline.
 # Leo's atFile write code should remove this.
 s = p.b
@@ -3851,56 +3840,11 @@ not an ivar (computed by k.computeInverseBindingDict):
 inverseBindingDict
     Keys are emacs command names; values are *lists* of shortcuts.
 </t>
-<t tx="ekr.20100108135636.1980"></t>
 <t tx="ekr.20100109081612.1984">import PyQt4.QtGui as QtGui
 
 w = c.frame.body.bodyCtrl.widget
 w.moveCursor(QtGui.QTextCursor.Up)
 c.bodyWantsFocusNow()</t>
-<t tx="ekr.20100109081746.1986">@wrap
-
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee
-aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbb ccccccccccccccccccccc dddddddddddddddddddd eeeeeeeeeeeeeeeeeeeee</t>
 <t tx="ekr.20100109081746.1988">import PyQt4.QtGui as QtGui
 
 w = c.frame.body.bodyCtrl.widget
@@ -3924,47 +3868,6 @@ cursor.movePosition(QtGui.QTextCursor.Up,QtGui.QTextCursor.KeepAnchor,15)
 w.setTextCursor(cursor)
 c.bodyWantsFocusNow()</t>
 <t tx="ekr.20100109084336.1996"></t>
-<t tx="ekr.20100110124039.2003">http://groups.google.com/group/leo-editor/browse_thread/thread/08e6cbd45f9e3f1c
-
-
-
-
-
-</t>
-<t tx="ekr.20100110124039.2004">def nameToRulesetName (self,name):
-
-    '''Compute language and rulesetName from name, which is either a language or a delegate name.'''
-
-    if not name: return ''
-
-    i = name.find('::')
-    if i == -1:
-        language = name
-        rulesetName = '%s_main' % (language)
-    else:
-        language = name[:i]
-        delegate = name[i+2:]
-        rulesetName = self.munge('%s_%s' % (language,delegate))
-
-    g.trace(name,language,rulesetName)
-    return language,rulesetName</t>
-<t tx="ekr.20100110124039.2005">@language php
-
-&lt;?php
-class someClass {
-    @others
-}
-
-?&gt;
-</t>
-<t tx="ekr.20100110124039.2006">function someMethod() {
-    return 'someMethod';
-}</t>
-<t tx="ekr.20100110124039.2007">&lt;?
-function someMethod() {
-    return 'someMethod';
-}
-</t>
 <t tx="ekr.20100110151049.2004" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e657331710355013d7104752e">@language rest
 @tabwidth -4
 @others
@@ -5175,18 +5078,6 @@ python_keyword1_font_slant = roman
     # roman, italic
 python_keyword1_font_weight = bold
     # normal, bold</t>
-<t tx="ekr.20100118123807.2003">@language python
-
-@tabwidth 8
-
-@others
-
-def spam():
-	a
-	if True:
-        	return False
-    
-</t>
 <t tx="ekr.20100118133026.2008">python_keyword3_font_family = DejaVu Sans Mono
 python_keyword3_font_size = 12
 python_keyword3_font_slant = italic
@@ -5198,5 +5089,27 @@ python_keyword3_font_weight = bold
 
 Use 40 for @tabwidth 4
 Use 80 for @tabwidth 8</t>
+<t tx="ekr.20100118190256.2012"></t>
+<t tx="ekr.20100118190256.2013"></t>
+<t tx="ekr.20100118190256.2014"></t>
+<t tx="ekr.20100118190256.2015"></t>
+<t tx="ekr.20100118190256.2016"></t>
+<t tx="ekr.20100118191455.2039"></t>
+<t tx="ekr.20100119095312.2041"># bold
+
+rest_keyword2_font_size = 14
+rest_keyword2_font_family = Bitstream Charter
+rest_keyword2_font_slant = roman
+rest_keyword2_font_weight = bold</t>
+<t tx="ekr.20100119095726.2043">@language rest
+
+This is **bold** and this is *italic*.</t>
+<t tx="ekr.20100119100926.2046"># Italics
+rest_keyword4_font_size = 14
+rest_keyword4_font_family = Bitstream Charter
+rest_keyword4_font_slant = italic
+    # roman, italic
+rest_keyword4_font_weight = normal
+    # normal, bold</t>
 </tnodes>
 </leo_file>
