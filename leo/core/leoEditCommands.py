@@ -2191,7 +2191,7 @@ class editCommandsClass (baseEditCommandsClass):
             if not w: return
             self.event = event
             self.backward = backward
-            self.extend = extend or self.extendMode
+            self.extend = extend or self.extendMode # Bug fix: 2010/01/19
             self.insert = w.getInsertPoint()
             s = '%s character%s: ' % (
                 g.choose(backward,'Backward find','Find'),
