@@ -232,7 +232,8 @@ until the edited node has lost focus.
 #@-node:ekr.20100108101415.6196:Create insert-tab commands (not urgent)
 #@-node:ekr.20100118162051.6257:Later...
 #@-node:ekr.20091005145253.6059:Before b2
-#@+node:ekr.20090811090022.6029:Bugs (maybe in 4.7.1)
+#@-node:ekr.20071211093011:4.7 One-node world, Leo3K
+#@+node:ekr.20100109214940.6225:4.8 Autocompletion, vim
 #@+node:ekr.20080517102922.1:File bugs & features
 #@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
 @nocolor-node
@@ -524,9 +525,6 @@ http://www.fileformat.info/info/unicode/char/2026/index.htm
 #@nonl
 #@-node:ekr.20080509065556.2:Fix mod_tempfname plugin
 #@-node:ekr.20100109214940.6227:Other bugs
-#@-node:ekr.20090811090022.6029:Bugs (maybe in 4.7.1)
-#@-node:ekr.20071211093011:4.7 One-node world, Leo3K
-#@+node:ekr.20100109214940.6225:4.8 Autocompletion, vim
 #@+node:ekr.20080603052650.466:Fix vim problems
 @nocolor
 
