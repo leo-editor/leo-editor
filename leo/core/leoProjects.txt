@@ -254,6 +254,48 @@ def saveAs (self,event=None):
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs (commands)
 #@-node:ekr.20100119024225.6106:Fixed qttab problem
+#@+node:ekr.20100115091643.6249:<alt-x> select-all crashes python when focus is in headline
+@
+The problem occurs because the QtGui.QLineEdit object goes away
+when the minibuffer gets focus and the QTreeWidget loses focus.
+
+The fix: add a 'permanent' ivar to leoQtTextWidgets, and set
+this ivar to False for headline widgets.
+#@nonl
+#@+node:ekr.20061031131434.112:callAltXFunction
+def callAltXFunction (self,event):
+
+    trace = True and not g.unitTesting
+    k = self ; c = k.c ; s = k.getLabel()
+    k.mb_tabList = []
+    commandName = s[len(k.mb_prefix):].strip()
+    func = c.commandsDict.get(commandName)
+    k.newMinibufferWidget = None
+
+    # g.trace(func and func.__name__,'mb_event',event.widget.widgetName)
+    if func:
+        # These must be done *after* getting the command.
+        k.clearState()
+        k.resetLabel()
+        if commandName != 'repeat-complex-command':
+            k.mb_history.insert(0,commandName)
+        w = event.widget
+        if hasattr(w,'permanent') and not w.permanent:
+            g.es('Can not execute commands from headlines')
+        else:
+            c.widgetWantsFocusNow(event.widget) # Important, so cut-text works, e.g.
+            func(event)
+        k.endCommand(event,commandName)
+    else:
+        if 1: # Useful.
+            if trace: g.trace('*** tab completion')
+            k.doTabCompletion(list(c.commandsDict.keys()))
+        else: # Annoying.
+            k.keyboardQuit(event)
+            k.setLabel('Command does not exist: %s' % commandName)
+            c.bodyWantsFocus()
+#@-node:ekr.20061031131434.112:callAltXFunction
+#@-node:ekr.20100115091643.6249:<alt-x> select-all crashes python when focus is in headline
 #@-node:ekr.20100118163110.6256:Leo 4.7 rc1 projects
 #@-all
 #@nonl

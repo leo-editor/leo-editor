@@ -151,6 +151,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         # Init ivars.
         self.changingText = False # A lockout for onTextChanged.
         self.tags = {}
+        self.permanent = True # False if selecting the minibuffer will make the widget go away.
         self.configDict = {} # Keys are tags, values are colors (names or values).
         self.configUnderlineDict = {} # Keys are tags, values are True
         self.useScintilla = False # This is used!
@@ -1499,16 +1500,12 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
     #@+node:ekr.20090603073641.3841:Birth
     def __init__ (self,c,item,name,widget):
 
-        # g.trace('leoQtHeadlineWidget',item,widget)
+        # g.trace('(leoQtHeadlineWidget)',item,widget)
 
         # Init the base class.
         leoQtBaseTextWidget.__init__(self,widget,name,c)
         self.item=item
-
-        # Works, but it's probably best to use nativeTree.onHeadChanged.
-        # self.widget.connect(self.widget,
-            # QtCore.SIGNAL("textChanged(const QString&)"),
-                # self.onTextChanged)
+        self.permanent = False # Warn the minibuffer that we can go away.
 
     def __repr__ (self):
         return 'leoQtHeadlineWidget: %s' % id(self)

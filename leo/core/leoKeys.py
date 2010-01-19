@@ -2712,8 +2712,12 @@ class keyHandlerClass:
             k.resetLabel()
             if commandName != 'repeat-complex-command':
                 k.mb_history.insert(0,commandName)
-            c.widgetWantsFocusNow(event.widget) # Important, so cut-text works, e.g.
-            func(event)
+            w = event.widget
+            if hasattr(w,'permanent') and not w.permanent:
+                g.es('Can not execute commands from headlines')
+            else:
+                c.widgetWantsFocusNow(event.widget) # Important, so cut-text works, e.g.
+                func(event)
             k.endCommand(event,commandName)
         else:
             if 1: # Useful.
