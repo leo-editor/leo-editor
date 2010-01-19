@@ -155,6 +155,105 @@ def movePageHelper(self,event,kind,extend): # kind in back/forward.
 #@-node:ekr.20090530181848.6035:movePageHelper
 #@-node:ekr.20090530181848.6034:pages & helper
 #@-node:ekr.20100119024225.6108:support extend-mode for several commands
+#@+node:ekr.20100119024225.6106:Fixed qttab problem
+@nocolor-node
+
+On Mon, Jan 18, 2010 at 9:25 PM, tfer <tfetherston@aol.com> wrote:
+
+cmd.exe /k C:\PyDev\leo-editor\trunk\launchLeo.py --gui=qttabs -- ipython
+
+1) (??) the button removal menu just flash on right mouse click, disappears immediately.
+
+2) Leo opens up the workbook, I open a new doc in a tab, 'untitled', save it,
+   get saved ... in log, however, tab title does not change unless I close and
+   reload it.
+#@+node:ekr.20031218072017.2834:save (commands)
+def save (self,event=None):
+
+    '''Save a Leo outline to a file.'''
+
+    c = self ; p = c.currentPosition()
+    w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+        c.mFileName = ""
+
+    if c.mFileName:
+        # Calls c.setChanged(False) if no error.
+        c.fileCommands.save(c.mFileName)
+    else:
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            # Don't change mFileName until the dialog has suceeded.
+            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.frame.title = c.mFileName
+            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
+                # Bug fix in 4.4b2.
+            if g.app.qt_use_tabs and hasattr(c.frame,'top'):
+                c.frame.top.master.setTabName(c,c.mFileName)
+            c.fileCommands.save(c.mFileName)
+            c.updateRecentFiles(c.mFileName)
+            g.chdir(c.mFileName)
+
+    # Done in fileCommands.save.
+    # c.redraw_after_icons_changed()
+    c.widgetWantsFocusNow(w)
+#@-node:ekr.20031218072017.2834:save (commands)
+#@+node:ekr.20031218072017.2835:saveAs (commands)
+def saveAs (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename.'''
+
+    c = self ;  w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+        initialfile = c.mFileName,
+        title="Save As",
+        filetypes=[("Leo files", "*.leo")],
+        defaultextension=".leo")
+    c.bringToFront()
+
+    if fileName:
+        g.trace(fileName)
+        # 7/2/02: don't change mFileName until the dialog has suceeded.
+        c.mFileName = g.ensure_extension(fileName, ".leo")
+        c.frame.title = c.mFileName
+        c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+        c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
+            # Bug fix in 4.4b2.
+        # Calls c.setChanged(False) if no error.
+        if g.app.qt_use_tabs and hasattr(c.frame,'top'):
+            c.frame.top.master.setTabName(c,c.mFileName)
+        c.fileCommands.saveAs(c.mFileName)
+        c.updateRecentFiles(c.mFileName)
+        g.chdir(c.mFileName)
+
+    # Done in fileCommands.saveAs.
+    # c.redraw_after_icons_changed()
+    c.widgetWantsFocusNow(w)
+#@-node:ekr.20031218072017.2835:saveAs (commands)
+#@-node:ekr.20100119024225.6106:Fixed qttab problem
 #@-node:ekr.20100118163110.6256:Leo 4.7 rc1 projects
 #@-all
 #@nonl
