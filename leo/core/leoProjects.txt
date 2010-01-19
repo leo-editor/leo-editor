@@ -19,9 +19,35 @@
 #@@tabwidth -4
 
 #@+all
-#@+node:ekr.20100118163110.6255:Leo 4.7 b2 projects
-#@-node:ekr.20100118163110.6255:Leo 4.7 b2 projects
 #@+node:ekr.20100118163110.6256:Leo 4.7 rc1 projects
+#@+node:ekr.20100119024225.6107:Fixed colorizer bug affecting per-language @font settings
+@nocolor-node
+
+It looks like you should be able to put the following in an
+@font node, and get restructured text bold to appear in bold onscreen:
+
+rest_keyword2_font_size = 16
+rest_keyword2_font_family = Bitstream Charter
+rest_keyword2_font_slant = roman
+rest_keyword2_font_weight = bold
+
+However nothing happens when I do this. The python examples in the
+test.leo file work fine for me, so I'm not sure what's gone wrong.
+
+I think that the following should also work, but it's also currently
+not doing anything for me:
+
+@color rest_keyword2_color = black
+
+==================
+
+Rev 2706 fixes a significant colorizer bug that caused your problem.
+Previously, the colorizer inited the so-called configuration tags only
+once, which is wrong. These tags are what the @font settings specify.
+Now, the colorizer inits the tags when the language changes when
+switching nodes.  Usually the language doesn't change, so the new code
+will be approximately as fast as the old. 
+#@-node:ekr.20100119024225.6107:Fixed colorizer bug affecting per-language @font settings
 #@-node:ekr.20100118163110.6256:Leo 4.7 rc1 projects
 #@-all
 #@nonl
