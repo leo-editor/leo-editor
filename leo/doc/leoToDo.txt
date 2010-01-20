@@ -13,19 +13,28 @@
 #@+node:ekr.20091005145253.6059:Before rc1
 @language rest
 #@nonl
-#@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
-@nocolor-node
+#@+node:ekr.20100119175348.6128:Fix print-bindings crasher w/ leo3k
+#@+node:ekr.20061031131434.120:printBindingsHelper
+def printBindingsHelper (self,result,data,n1,n2,prefix):
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
+    n = prefix and len(prefix)+1 or 0 # Add 1 for the '+' after the prefix.
 
-If a @path directive is within the body text of an @thin node then the
-file write uses the @path directive but the file read does not.  Since
-the file read cannot know of the @path directive until after it has
-read the file it has no choice but to not use it.  The @thin file
-write code should not use any @path declarations found in its body
-text.
-#@nonl
-#@-node:ekr.20081204091750.4:Fix inconsistency in how @path works
+    data1 = [z for z in data if z and z[1] and len(z[1][n:]) == 1]
+        # The list of all items with only one character following the prefix.
+    data2 = [z for z in data if z and z[1] and len(z[1][n:]) >  1]
+        # The list of all other items.
+
+    # This isn't perfect in variable-width fonts.
+    for data in (data1,data2):
+        if g.isPython3:
+            data.sort(key=lambda x: x[1]) # key is a function used to extract args.
+        else:
+            data.sort(lambda x,y: cmp(x[1],y[1])) # the function is a comparison.
+        for s1,s2,s3 in data:
+            # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
+            result.append('%*s %*s %s\n' % (-n1,s1,-(min(12,n2)),s2,s3))
+#@-node:ekr.20061031131434.120:printBindingsHelper
+#@-node:ekr.20100119175348.6128:Fix print-bindings crasher w/ leo3k
 #@+node:ekr.20100111094359.6208:Fix goto-line bugs
 @nocolor-node
 
@@ -536,6 +545,56 @@ def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
 #@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
 #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 #@-node:ekr.20100111094359.6208:Fix goto-line bugs
+#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+#@+node:ekr.20031218072017.3117:g.create_temp_file
+def create_temp_file (textMode=False):
+    '''Return a tuple (theFile,theFileName)
+
+    theFile: a file object open for writing.
+    theFileName: the name of the temporary file.'''
+
+    try:
+        # fd is an handle to an open file as would be returned by os.open()
+        fd,theFileName = tempfile.mkstemp(text=textMode)
+        mode = g.choose(textMode,'w','wb')
+        theFile = os.fdopen(fd,mode)
+    except Exception:
+        g.es('unexpected exception in g.create_temp_file',color='red')
+        g.es_exception()
+        theFile,theFileName = None,''
+
+    return theFile,theFileName
+#@-node:ekr.20031218072017.3117:g.create_temp_file
+#@+node:ekr.20031218072017.3047:createBackupFile
+def createBackupFile (self,fileName):
+
+    '''Create a closed backup file and copy fileName to it.
+    '''
+
+    c = self.c
+    fd,backupName = tempfile.mkstemp(text=False)
+    os.close(fd)
+    ok = g.utils_rename(c,fileName,backupName)
+
+    if not ok and self.read_only:
+        g.es("read only",color="red")
+
+    return ok,backupName
+#@-node:ekr.20031218072017.3047:createBackupFile
+#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+#@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
+
+If a @path directive is within the body text of an @thin node then the
+file write uses the @path directive but the file read does not.  Since
+the file read cannot know of the @path directive until after it has
+read the file it has no choice but to not use it.  The @thin file
+write code should not use any @path declarations found in its body
+text.
+#@nonl
+#@-node:ekr.20081204091750.4:Fix inconsistency in how @path works
 #@+node:ekr.20100113075303.6270:Easiest vim problems
 #@+node:ekr.20100112051224.6229:(vim) Binding Arrow keys (fixed?)
 Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to

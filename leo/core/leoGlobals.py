@@ -2489,7 +2489,7 @@ def chdir (path):
     if g.os_path_isdir(path) and g.os_path_exists(path):
         os.chdir(path)
 #@-node:ekr.20080606074139.2:g.chdir
-#@+node:ekr.20031218072017.3117:g.create_temp_file & test
+#@+node:ekr.20031218072017.3117:g.create_temp_file
 def create_temp_file (textMode=False):
     '''Return a tuple (theFile,theFileName)
 
@@ -2507,16 +2507,7 @@ def create_temp_file (textMode=False):
         theFile,theFileName = None,''
 
     return theFile,theFileName
-#@+node:ekr.20090517020744.5873:@test g.create_temp_file
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    theFile,fn = g.create_temp_file()
-    assert theFile
-    assert g.isString(fn)
-#@-node:ekr.20090517020744.5873:@test g.create_temp_file
-#@-node:ekr.20031218072017.3117:g.create_temp_file & test
+#@-node:ekr.20031218072017.3117:g.create_temp_file
 #@+node:ekr.20031218072017.3118:g.ensure_extension
 def ensure_extension (name, ext):
 
