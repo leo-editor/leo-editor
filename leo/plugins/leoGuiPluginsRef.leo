@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5">
-	<global_window_position top="48" left="299" height="692" width="722"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -40,11 +40,11 @@
 <v t="ekr.20081121110412.2"><vh>@thin tkGui.py</vh></v>
 <v t="ekr.20090126093408.1"><vh>@thin wxGui.py</vh></v>
 </v>
-<v t="ekr.20081121105001.1092" a="E"><vh>Qt gui</vh>
+<v t="ekr.20081121105001.1092"><vh>Qt gui</vh>
 <v t="ekr.20090124174652.7"><vh>@thin baseNativeTree.py</vh></v>
 <v t="ekr.20100103094733.3709"><vh>@thin qtframecommands.py</vh></v>
 <v t="ekr.20081121105001.188"
-marks="ekr.20081121105001.220,ekr.20081121105001.264,ekr.20081121105001.373,"><vh>@thin qtGui.py</vh></v>
+marks="ekr.20081121105001.502,"><vh>@thin qtGui.py</vh></v>
 <v t="leohag.20081204085551.1"><vh>@thin scrolledmessage.py</vh></v>
 <v t="ekr.20081121105001.1093"><vh>QDesigner files</vh>
 <v t="ekr.20081121105001.1094"><vh>@auto ../test/qtui_generate.py</vh></v>
@@ -57,9 +57,9 @@ marks="ekr.20081121105001.220,ekr.20081121105001.264,ekr.20081121105001.373,"><v
 <v t="ekr.20100102100353.3668"><vh>Show invisibles</vh>
 <v t="ekr.20090614134853.3696"><vh> Birth &amp; init</vh>
 <v t="ekr.20090614134853.3697"><vh>__init__ (jeditColorizer)</vh>
-<v t="ekr.20090614134853.3698"><vh>&lt;&lt; define leoKeywordsDict &gt;&gt;</vh></v>
-<v t="ekr.20090614134853.3699"><vh>&lt;&lt; define default_colors_dict &gt;&gt;</vh></v>
-<v t="ekr.20090614134853.3700"><vh>&lt;&lt; define default_font_dict &gt;&gt;</vh></v>
+<v t="ekr.20090614134853.3698"><vh>defineLeoKeywordsDict</vh></v>
+<v t="ekr.20090614134853.3699"><vh>defineDefaultColorsDict</vh></v>
+<v t="ekr.20090614134853.3700"><vh>defineDefaultFontDict</vh></v>
 </v>
 <v t="ekr.20090614134853.3701"><vh>addImportedRules</vh></v>
 <v t="ekr.20090614134853.3702"><vh>addLeoRules</vh></v>
@@ -89,7 +89,7 @@ marks="ekr.20081121105001.220,ekr.20081121105001.264,ekr.20081121105001.373,"><v
 <v t="ekr.20100102121559.3762"><vh>support colorizer fonts?</vh></v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20081121105001.1076" str_leo_pos="3,1"></t>
+<t tx="ekr.20081121105001.1076" str_leo_pos="3"></t>
 <t tx="ekr.20081121105001.1077"></t>
 <t tx="ekr.20081121105001.1078">@nocolor</t>
 <t tx="ekr.20081121105001.1079"> 
@@ -176,7 +176,6 @@ for p in p.self_and_subtree_iter():
 <t tx="ekr.20081121105001.377">def setMenuLabel (self,menu,name,label,underline=-1):
 
     def munge(s):
-        # s = g.app.gui.toUnicode(s)
         return g.u(s or '').replace('&amp;','')
 
     # menu is a qtMenuWrapper.
@@ -268,6 +267,7 @@ tag_configure = tag_config
     self.prev = None # The previous token.
     self.fonts = {} # Keys are config names.  Values are actual fonts.
     self.keywords = {} # Keys are keywords, values are 0..5.
+    self.last_language = None # The language for which configuration tags are valid.
     self.modes = {} # Keys are languages, values are modes.
     self.mode = None # The mode object for the present language.
     self.modeBunch = None # A bunch fully describing a mode.
@@ -294,99 +294,100 @@ tag_configure = tag_config
         'markup','operator',
     ]
 
-    &lt;&lt; define leoKeywordsDict &gt;&gt;
-    &lt;&lt; define default_colors_dict &gt;&gt;
-    &lt;&lt; define default_font_dict &gt;&gt;
+    self.defineLeoKeywordsDict()
+    self.defineDefaultColorsDict()
+    self.defineDefaultFontDict()
+</t>
+<t tx="ekr.20090614134853.3698">def defineLeoKeywordsDict(self):
 
-    # New in Leo 4.6: configure tags only once here.
-    # Some changes will be needed for multiple body editors.
-    if 1: # This is reported to be too slow.
-        # Must do this every time to support multiple editors.
-        self.configure_tags()</t>
-<t tx="ekr.20090614134853.3698">self.leoKeywordsDict = {}
+    self.leoKeywordsDict = {}
 
-for key in g.globalDirectiveList:
-    self.leoKeywordsDict [key] = 'leoKeyword'</t>
-<t tx="ekr.20090614134853.3699"># These defaults are sure to exist.
+    for key in g.globalDirectiveList:
+        self.leoKeywordsDict [key] = 'leoKeyword'
+</t>
+<t tx="ekr.20090614134853.3699">def defineDefaultColorsDict (self):
 
-self.default_colors_dict = {
-    # tag name       :(     option name,           default color),
-    'blank'          :('blank_color',                 'black'), # 2010/1/2
-    'tab'            :('tab_color',                   'black'), # 2010/1/2
-    'comment'        :('comment_color',               'red'),
-    'cwebName'       :('cweb_section_name_color',     'red'),
-    'pp'             :('directive_color',             'blue'),
-    'docPart'        :('doc_part_color',              'red'),
-    'keyword'        :('keyword_color',               'blue'),
-    'leoKeyword'     :('leo_keyword_color',           'blue'),
-    'link'           :('section_name_color',          'red'),
-    'nameBrackets'   :('section_name_brackets_color', 'blue'),
-    'string'         :('string_color',                '#00aa00'), # Used by IDLE.
-    'name'           :('undefined_section_name_color','red'),
-    'latexBackground':('latex_background_color',      'white'),
+    # These defaults are sure to exist.
+    self.default_colors_dict = {
+        # tag name       :(     option name,           default color),
+        'blank'          :('blank_color',                 'black'), # 2010/1/2
+        'tab'            :('tab_color',                   'black'), # 2010/1/2
+        'comment'        :('comment_color',               'red'),
+        'cwebName'       :('cweb_section_name_color',     'red'),
+        'pp'             :('directive_color',             'blue'),
+        'docPart'        :('doc_part_color',              'red'),
+        'keyword'        :('keyword_color',               'blue'),
+        'leoKeyword'     :('leo_keyword_color',           'blue'),
+        'link'           :('section_name_color',          'red'),
+        'nameBrackets'   :('section_name_brackets_color', 'blue'),
+        'string'         :('string_color',                '#00aa00'), # Used by IDLE.
+        'name'           :('undefined_section_name_color','red'),
+        'latexBackground':('latex_background_color',      'white'),
 
-    # Tags used by forth.
-    'keyword5'       :('keyword5_color',              'blue'),
-    'bracketRange'   :('bracket_range_color',         'orange'),
-    # jEdit tags.
+        # Tags used by forth.
+        'bracketRange'   :('bracket_range_color','orange'),
 
-    'comment1'       :('comment1_color', 'red'),
-    'comment2'       :('comment2_color', 'red'),
-    'comment3'       :('comment3_color', 'red'),
-    'comment4'       :('comment4_color', 'red'),
-    'function'       :('function_color', 'black'),
-    'keyword1'       :('keyword1_color', 'blue'),
-    'keyword2'       :('keyword2_color', 'blue'),
-    'keyword3'       :('keyword3_color', 'blue'),
-    'keyword4'       :('keyword4_color', 'blue'),
-    'label'          :('label_color',    'black'),
-    'literal1'       :('literal1_color', '#00aa00'),
-    'literal2'       :('literal2_color', '#00aa00'),
-    'literal3'       :('literal3_color', '#00aa00'),
-    'literal4'       :('literal4_color', '#00aa00'),
-    'markup'         :('markup_color',   'red'),
-    'null'           :('null_color',     'black'),
-    'operator'       :('operator_color', 'black'),
+        # jEdit tags.
+        'comment1'       :('comment1_color', 'red'),
+        'comment2'       :('comment2_color', 'red'),
+        'comment3'       :('comment3_color', 'red'),
+        'comment4'       :('comment4_color', 'red'),
+        'function'       :('function_color', 'black'),
+        'keyword1'       :('keyword1_color', 'blue'),
+        'keyword2'       :('keyword2_color', 'blue'),
+        'keyword3'       :('keyword3_color', 'blue'),
+        'keyword4'       :('keyword4_color', 'blue'),
+        'keyword5'       :('keyword5_color', 'blue'),
+        'label'          :('label_color',    'black'),
+        'literal1'       :('literal1_color', '#00aa00'),
+        'literal2'       :('literal2_color', '#00aa00'),
+        'literal3'       :('literal3_color', '#00aa00'),
+        'literal4'       :('literal4_color', '#00aa00'),
+        'markup'         :('markup_color',   'red'),
+        'null'           :('null_color',     'black'),
+        'operator'       :('operator_color', 'black'),
     }
 </t>
-<t tx="ekr.20090614134853.3700">self.default_font_dict = {
-    # tag name      : option name
-    'comment'       :'comment_font',
-    'cwebName'      :'cweb_section_name_font',
-    'pp'            :'directive_font',
-    'docPart'       :'doc_part_font',
-    'keyword'       :'keyword_font',
-    'leoKeyword'    :'leo_keyword_font',
-    'link'          :'section_name_font',
-    'nameBrackets'  :'section_name_brackets_font',
-    'string'        :'string_font',
-    'name'          :'undefined_section_name_font',
-    'latexBackground':'latex_background_font',
+<t tx="ekr.20090614134853.3700">def defineDefaultFontDict (self):
 
-    # Tags used by forth.
-    'bracketRange'   :'bracketRange_font',
-    'keyword5'       :'keyword5_font',
+    self.default_font_dict = {
+        # tag name      : option name
+        'comment'       :'comment_font',
+        'cwebName'      :'cweb_section_name_font',
+        'pp'            :'directive_font',
+        'docPart'       :'doc_part_font',
+        'keyword'       :'keyword_font',
+        'leoKeyword'    :'leo_keyword_font',
+        'link'          :'section_name_font',
+        'nameBrackets'  :'section_name_brackets_font',
+        'string'        :'string_font',
+        'name'          :'undefined_section_name_font',
+        'latexBackground':'latex_background_font',
+        'tab'           : 'tab_font',
 
-     # jEdit tags.
-    'comment1'      :'comment1_font',
-    'comment2'      :'comment2_font',
-    'comment3'      :'comment3_font',
-    'comment4'      :'comment4_font',
-    'function'      :'function_font',
-    'keyword1'      :'keyword1_font',
-    'keyword2'      :'keyword2_font',
-    'keyword3'      :'keyword3_font',
-    'keyword4'      :'keyword4_font',
-    'keyword5'      :'keyword5_font',
-    'label'         :'label_font',
-    'literal1'      :'literal1_font',
-    'literal2'      :'literal2_font',
-    'literal3'      :'literal3_font',
-    'literal4'      :'literal4_font',
-    'markup'        :'markup_font',
-    # 'nocolor' This tag is used, but never generates code.
-    'null'          :'null_font',
-    'operator'      :'operator_font',
+        # Tags used by forth.
+        'bracketRange'   :'bracketRange_font',
+
+         # jEdit tags.
+        'comment1'      :'comment1_font',
+        'comment2'      :'comment2_font',
+        'comment3'      :'comment3_font',
+        'comment4'      :'comment4_font',
+        'function'      :'function_font',
+        'keyword1'      :'keyword1_font',
+        'keyword2'      :'keyword2_font',
+        'keyword3'      :'keyword3_font',
+        'keyword4'      :'keyword4_font',
+        'keyword5'      :'keyword5_font',
+        'label'         :'label_font',
+        'literal1'      :'literal1_font',
+        'literal2'      :'literal2_font',
+        'literal3'      :'literal3_font',
+        'literal4'      :'literal4_font',
+        'markup'        :'markup_font',
+        # 'nocolor' This tag is used, but never generates code.
+        'null'          :'null_font',
+        'operator'      :'operator_font',
     }
 </t>
 <t tx="ekr.20090614134853.3701">def addImportedRules (self,mode,rulesDict,rulesetName):
@@ -460,9 +461,15 @@ self.default_colors_dict = {
 
     trace = False and not g.unitTesting
     verbose = False
+    traceColor = False
+    traceFonts = True
     c = self.c ; w = self.w
 
-    if trace: g.trace(w,g.callers(4))
+    if trace: g.trace(self.colorizer.language)
+
+    # The stated default is 40, but apparently it must be set explicitly.
+    tabWidth = c.config.getInt('qt-tab-width') or 40
+    w.widget.setTabStopWidth(tabWidth)
 
     if w and hasattr(w,'start_tag_configure'):
         w.start_tag_configure()
@@ -484,7 +491,8 @@ self.default_colors_dict = {
         for name in ('%s_%s' % (self.colorizer.language,option_name),(option_name)):
             font = self.fonts.get(name)
             if font:
-                if trace and verbose: g.trace('found',name,id(font))
+                if trace and traceFonts:
+                    g.trace('**found',name,id(font))
                 w.tag_config(key,font=font)
                 break
             else:
@@ -499,14 +507,18 @@ self.default_colors_dict = {
                     weight = weight or 'normal'
                     font = g.app.gui.getFontFromParams(family,size,slant,weight)
                     # Save a reference to the font so it 'sticks'.
-                    self.fonts[name] = font 
-                    if trace and verbose: g.trace(key,name,family,size,slant,weight,id(font))
+                    self.fonts[key] = font
+                    if trace and traceFonts:
+                        g.trace('**found',key,name,family,size,slant,weight,id(font))
                     w.tag_config(key,font=font)
                     break
         else: # Neither the general setting nor the language-specific setting exists.
             if list(self.fonts.keys()): # Restore the default font.
-                if trace and verbose: g.trace('default',key)
+                if trace and verbose and traceFonts: g.trace('default',key)
                 w.tag_config(key,font=defaultBodyfont)
+            else:
+                if trace and traceFonts:
+                    g.trace('no fonts')
 
     keys = list(self.default_colors_dict.keys()) ; keys.sort()
     for name in keys:
@@ -516,7 +528,7 @@ self.default_colors_dict = {
             c.config.getColor(option_name) or
             default_color
         )
-        if trace and verbose: g.trace(option_name,color)
+        if trace and traceColor: g.trace(option_name,color)
 
         # Must use foreground, not fg.
         try:
@@ -614,9 +626,10 @@ self.default_colors_dict = {
 
     # Used by matchers.
     self.prev = None
-    if 0: # Too slow.
-        # Must do this every time to support multiple editors.
-        self.configure_tags()</t>
+    if self.last_language != self.colorizer.language:
+        # Must be done to support per-language @font/@color settings.
+        self.configure_tags()
+        self.last_language = self.colorizer.language</t>
 <t tx="ekr.20090614134853.3706">def init_mode (self,name):
 
     '''Name may be a language name or a delegate name.'''
@@ -707,8 +720,11 @@ self.default_colors_dict = {
         delegate = name[i+2:]
         rulesetName = self.munge('%s_%s' % (language,delegate))
 
+    # if rulesetName == 'php_main': rulesetName = 'php_php'
+
     # g.trace(name,language,rulesetName)
-    return language,rulesetName</t>
+    return language,rulesetName
+</t>
 <t tx="ekr.20090614134853.3708">def setKeywords (self):
 
     '''Initialize the keywords for the present language.
@@ -725,14 +741,12 @@ self.default_colors_dict = {
             d [key] = 'leoKeyword'
 
     # Create a temporary chars list.  It will be converted to a dict later.
-    chars = [g.toUnicode(ch,encoding='UTF-8')
-        ### for ch in (string.letters + string.digits)]
-        for ch in (string.ascii_letters + string.digits)]
+    chars = [g.toUnicode(ch) for ch in (string.ascii_letters + string.digits)]
 
     for key in list(d.keys()):
         for ch in key:
             if ch not in chars:
-                chars.append(g.toUnicode(ch,encoding='UTF-8'))
+                chars.append(g.toUnicode(ch))
 
     # jEdit2Py now does this check, so this isn't really needed.
     # But it is needed for forth.py.
@@ -860,7 +874,7 @@ self.default_colors_dict = {
 <t tx="ekr.20090614134853.3722">def match_blanks (self,s,i):
 
     if not self.showInvisibles:
-        return 0 # 2010/12/2
+        return 0
 
     j = i ; n = len(s)
 
@@ -868,8 +882,7 @@ self.default_colors_dict = {
         j += 1
 
     if j &gt; i:
-        if self.showInvisibles:
-            self.colorRangeWithTag(s,i,j,'blank')
+        self.colorRangeWithTag(s,i,j,'blank')
         return j - i
     else:
         return 0
@@ -877,7 +890,7 @@ self.default_colors_dict = {
 <t tx="ekr.20090614134853.3727">def match_tabs (self,s,i):
 
     if not self.showInvisibles:
-        return 0 # 2010/12/2
+        return 0
 
     if self.trace_leo_matches: g.trace()
 
@@ -920,27 +933,33 @@ self.default_colors_dict = {
         else:
             return g.trace('unknown color name',colorName)
 
+    underline = w.configUnderlineDict.get(tag)
+
+    format = QtGui.QTextCharFormat()
+
+    font = self.fonts.get(tag)
+    if font:
+        format.setFont(font)
+
     if trace:
         self.tagCount += 1
         g.trace(
-            '%3s %3s %3s' % (i,j,len(s)),colorName,
+            '%3s %3s %3s %9s %7s' % (i,j,len(s),font and id(font) or '&lt;no font&gt;',colorName),
             '%-10s %-25s' % (tag,s[i:j])) # ,g.callers(4))
 
-    underline = w.configUnderlineDict.get(tag)
     if tag in ('blank','tab'):
-        format = QtGui.QTextCharFormat()
         if tag == 'tab' or colorName == 'black':
             format.setFontUnderline(True)
         if colorName != 'black':
             format.setBackground(color)
-        self.highlighter.setFormat(i,j-i,format)
     elif underline:
-        format = QtGui.QTextCharFormat()
         format.setForeground(color)
         format.setFontUnderline(True)
-        self.highlighter.setFormat (i,j-i,format)
     else:
-        self.highlighter.setFormat(i,j-i,color)
+        format.setForeground(color)
+
+    self.highlighter.setFormat (i,j-i,format)
+
 </t>
 <t tx="ekr.20090620053541.3858">u = c.undoer
 w = c.frame.body.bodyCtrl

@@ -7313,7 +7313,7 @@ class leoQtGui(leoGui.leoGui):
             s = g.u(s)
             return s
         except Exception:
-            # g.trace('*** Unicode Error: bugs possible')
+            g.trace('*** Unicode Error: bugs possible')
             return g.toUnicode(s,reportErrors='replace')
     #@-node:ekr.20081121105001.502:toUnicode (qtGui)
     #@+node:ekr.20081121105001.503:widget_name (qtGui)
