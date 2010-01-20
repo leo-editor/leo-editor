@@ -623,7 +623,7 @@ class backlinkController(object):
                 v = p.v
                 p.moveToParent()
                 # Major bug fix: 2009/1/2
-                if v not in p.v.t.children:
+                if v not in p.v.children:
                     return False
             else:
                 p.moveToBack()  # ???

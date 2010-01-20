@@ -61,7 +61,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -433,10 +433,10 @@
 <v t="ville.20090603183524.5672"><vh>Creating Leo commands with the @g.command decorator</vh></v>
 </v>
 </v>
-<v t="EKR.20040524104904.211"><vh>Chapter 8: Customizing Leo</vh>
-<v t="ekr.20050901101608.4"><vh>@rst html\customizing.html</vh>
+<v t="EKR.20040524104904.211" a="E"><vh>Chapter 8: Customizing Leo</vh>
+<v t="ekr.20050901101608.4" a="E"><vh>@rst html\customizing.html</vh>
 <v t="ekr.20050901102055"><vh>@rst-no-head links</vh></v>
-<v t="EKR.20040524104904.140"><vh>Specifying settings</vh>
+<v t="EKR.20040524104904.140" a="E"><vh>Specifying settings</vh>
 <v t="ekr.20090116130002.1"><vh>Configuration directories</vh></v>
 <v t="ekr.20090116094356.2"><vh>Search order for settings files</vh></v>
 <v t="ekr.20090116094356.3"><vh>Safe rules for local settings</vh></v>
@@ -1040,7 +1040,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
+<v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -4551,7 +4551,7 @@ subtree of both clones. Thus, the _firstChild link had to reside in
 Prior to Leo version 4.2, Leo duplicated all the descendants of vnode v when
 cloning v. This created many complications that were removed in the shared tnode
 world. In particular, in the shared tnode scheme a vnode v is cloned if and only
-if len(v.t.vnodeList) &gt; 1.</t>
+if len(v.vnodeList) &gt; 1.</t>
 <t tx="EKR.20040524104904.266">The find and change commands are tricky; there are many details that must be
 handled properly. The following principles govern the LeoFind class:
 
@@ -9187,21 +9187,6 @@ dictionaries, a plugin could put the tnode's gnx (a string) in the dictionary.
 **Note**: Leo does *not* pickle members of inner dictionaries whose name (key) starts with str\_.
 The values of such members should be a Python string.
 This convention allows strings to appear in .leo files in a more readable format.
-
-..  **Important**: Plugins must *not* use v.unknownAttributes inside @thin
-..  trees. Indeed Leo uses **hidden machinery** to write t.unknownAttributes.
-..  Leo does *not* write t.unknownAttributes to thin external files. Instead Leo
-..  writes a representation of all t.unknownAttributes contained in the
-..  @thin tree to a special xml attribute called
-..  descendentTnodeUnknownAttributes in the &lt;v&gt; element corresponding to the
-..  @thin node. Yes, this is complicated, but it works. Leo can *not* write
-..  v.unknownAttributes in @thin trees because **only tnodes have gnx's in
-..  thin external files**. In effect, vnodes are anonymous.
-
-..  Plugins that must associate attributes with vnodes should support only @file
-..  trees. A completely different alternative would be for the plugin to extend how
-..  Leo reads and writes &lt;v&gt; elements in .leo files, but that would be much more
-..  complicated than using t.unknownAttributes
 
 Here is how Leo associates uA's with &lt;v&gt; elements in .leo files:
 
@@ -23091,7 +23076,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="4,1,0"></t>
+<t tx="ekr.20070610174018" str_leo_pos="2,11,0,1,4"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 

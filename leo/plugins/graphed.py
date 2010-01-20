@@ -239,19 +239,12 @@ class tGraph:
 
         def makeTree(pos, node0):
 
-            # This does not work, all nodes become clones and things
-            # get parsed more than once.
-            #
-            # t = None
-            # if hasattr(node0, 'vnode'):
-            #     t = node0.vnode.t
-
             nd = pos.insertAsLastChild()
             nd.expand()
             nd.setDirty()
             self._setIndex(nd)
-            node2tnode[node0] = str(nd.v.t.fileIndex)
-            node0.writetnode(nd.v.t, vnode = nd.v)
+            node2tnode[node0] = str(nd.v.fileIndex)
+            node0.writetnode(nd.v, vnode = nd.v)
             #X if hasattr(node0, 'vnode'):
             #X     if node0.vnode != None:
             #X         if not hasattr(nd.v, 'unknownAttributes'):
@@ -293,9 +286,9 @@ class tGraph:
         """Add nodes and simple descendent links from p"""
 
         gn = gNode()
-        gn.readtnode(p.v.t, splitLabels = self.splitLabels, vnode = p.v)
+        gn.readtnode(p.v, splitLabels = self.splitLabels, vnode = p.v)
         self.addNode(gn)
-        self._gnxStr2tnode[str(p.v.t.fileIndex)] = gn
+        self._gnxStr2tnode[str(p.v.fileIndex)] = gn
 
         for nd0 in p.children():
             if nd0.h.startswith('@link'): continue
@@ -309,7 +302,7 @@ class tGraph:
         """Collect the @links from p, now we know the nodes are in
         self._gnxStr2tnode"""
 
-        s0 = str(p.v.t.fileIndex)
+        s0 = str(p.v.fileIndex)
         for nd0 in p.children():
             if nd0.h.startswith('@link'):
                 s1 = self._indexStrFromStr(nd0.h)
@@ -327,9 +320,9 @@ class tGraph:
     def _setIndex(self, p):
         """fresh tnodes may not have .fileIndex, this adds it"""
         try:
-            theId,time,n = p.v.t.fileIndex
+            theId,time,n = p.v.fileIndex
         except TypeError:
-            p.v.t.fileIndex = g.app.nodeIndices.getNewIndex()
+            p.v.fileIndex = g.app.nodeIndices.getNewIndex()
     #@-node:tbrown.20071004141911:_setIndex
     #@+node:tbrown.20071004141931:_indexStrFromStr
     def _indexStrFromStr(self, s):
@@ -416,9 +409,9 @@ class GraphEd:
     #@+node:ekr.20071004090250.14:setIndex
     def setIndex(self, p):
         try:
-            theId,time,n = p.v.t.fileIndex
+            theId,time,n = p.v.fileIndex
         except TypeError:
-            p.v.t.fileIndex = g.app.nodeIndices.getNewIndex()
+            p.v.fileIndex = g.app.nodeIndices.getNewIndex()
     #@-node:ekr.20071004090250.14:setIndex
     #@+node:ekr.20071004090250.15:indexStrFromStr
     def indexStrFromStr(self, s):
@@ -615,7 +608,7 @@ class GraphEd:
         p = c.p
         self.setIndex(p)
         nn = p.insertAfter()
-        nn.setHeadString(self.formatLink(p.v.t.fileIndex, p.h))
+        nn.setHeadString(self.formatLink(p.v.fileIndex, p.h))
         c.selectPosition(nn)
         c.cutOutline()
         c.selectPosition(p)
@@ -627,7 +620,7 @@ class GraphEd:
         s = c.p.h
         s = self.indexStrFromStr(s)
         for p in c.all_positions():
-            if self.indexStrFromStr(str(p.v.t.fileIndex)) == s:
+            if self.indexStrFromStr(str(p.v.fileIndex)) == s:
                 c.selectPosition(p)
                 break
         g.es('Not found')

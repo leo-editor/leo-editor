@@ -160,9 +160,9 @@ def search( name, value, stype, c ):
 # def getT( node ):
 
     # if str( node.__class__ )== 'leoNodes.vnode':
-        # return node.t
+        # return node
     # else:
-        # return node.v.t
+        # return node.v
 #@nonl
 #@-node:ekr.20040915075530.5:getV
 #@-others
