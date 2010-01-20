@@ -29,6 +29,7 @@ import os
 import pickle
 import string
 import sys
+import tempfile
 import types
 import zipfile
 
@@ -2342,16 +2343,12 @@ class baseFileCommands:
     #@+node:ekr.20031218072017.3047:createBackupFile
     def createBackupFile (self,fileName):
 
-        '''rename fileName to fileName.bak if fileName exists.
+        '''Create a closed backup file and copy fileName to it.
         '''
 
         c = self.c
-        backupName = g.os_path_join(g.app.loadDir,fileName)
-        backupName = fileName + ".bak"
-
-        if g.os_path_exists(backupName):
-            g.utils_remove(backupName)
-
+        fd,backupName = tempfile.mkstemp(text=False)
+        os.close(fd)
         ok = g.utils_rename(c,fileName,backupName)
 
         if not ok and self.read_only:

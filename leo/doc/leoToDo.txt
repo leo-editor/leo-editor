@@ -523,64 +523,6 @@ def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
 #@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
 #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 #@-node:ekr.20100111094359.6208:Fix goto-line bugs
-#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-@nocolor-node
-
-I also unhappily discovered that any file named somedoc.leo.bak will
-get deleted whenever you save a file named somedoc.leo.
-
-===========
-
-This turned into a major refactoring of write_Leo_file.
-#@+node:ekr.20031218072017.3117:g.create_temp_file & test
-def create_temp_file (textMode=False):
-    '''Return a tuple (theFile,theFileName)
-
-    theFile: a file object open for writing.
-    theFileName: the name of the temporary file.'''
-
-    try:
-        # fd is an handle to an open file as would be returned by os.open()
-        fd,theFileName = tempfile.mkstemp(text=textMode)
-        mode = g.choose(textMode,'w','wb')
-        theFile = os.fdopen(fd,mode)
-    except Exception:
-        g.es('unexpected exception in g.create_temp_file',color='red')
-        g.es_exception()
-        theFile,theFileName = None,''
-
-    return theFile,theFileName
-#@+node:ekr.20090517020744.5873:@test g.create_temp_file
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    theFile,fn = g.create_temp_file()
-    assert theFile
-    assert g.isString(fn)
-#@-node:ekr.20090517020744.5873:@test g.create_temp_file
-#@-node:ekr.20031218072017.3117:g.create_temp_file & test
-#@+node:ekr.20031218072017.3047:createBackupFile
-def createBackupFile (self,fileName):
-
-    '''rename fileName to fileName.bak if fileName exists.
-    '''
-
-    c = self.c
-    backupName = g.os_path_join(g.app.loadDir,fileName)
-    backupName = fileName + ".bak"
-
-    if g.os_path_exists(backupName):
-        g.utils_remove(backupName)
-
-    ok = g.utils_rename(c,fileName,backupName)
-
-    if not ok and self.read_only:
-        g.es("read only",color="red")
-
-    return ok,backupName
-#@-node:ekr.20031218072017.3047:createBackupFile
-#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
 #@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
 @nocolor-node
 

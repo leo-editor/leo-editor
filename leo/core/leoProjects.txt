@@ -515,16 +515,12 @@ def createActualFile (self,fileName,toOPML,toZip):
 #@+node:ekr.20031218072017.3047:createBackupFile
 def createBackupFile (self,fileName):
 
-    '''rename fileName to fileName.bak if fileName exists.
+    '''Create a closed backup file and copy fileName to it.
     '''
 
     c = self.c
-    backupName = g.os_path_join(g.app.loadDir,fileName)
-    backupName = fileName + ".bak"
-
-    if g.os_path_exists(backupName):
-        g.utils_remove(backupName)
-
+    fd,backupName = tempfile.mkstemp(text=False)
+    os.close(fd)
     ok = g.utils_rename(c,fileName,backupName)
 
     if not ok and self.read_only:
@@ -719,16 +715,12 @@ def createActualFile (self,fileName,toOPML,toZip):
 #@+node:ekr.20031218072017.3047:createBackupFile
 def createBackupFile (self,fileName):
 
-    '''rename fileName to fileName.bak if fileName exists.
+    '''Create a closed backup file and copy fileName to it.
     '''
 
     c = self.c
-    backupName = g.os_path_join(g.app.loadDir,fileName)
-    backupName = fileName + ".bak"
-
-    if g.os_path_exists(backupName):
-        g.utils_remove(backupName)
-
+    fd,backupName = tempfile.mkstemp(text=False)
+    os.close(fd)
     ok = g.utils_rename(c,fileName,backupName)
 
     if not ok and self.read_only:
@@ -832,6 +824,32 @@ def printBindingsHelper (self,result,data,n1,n2,prefix):
             result.append('%*s %*s %s\n' % (-n1,s1,-(min(12,n2)),s2,s3))
 #@-node:ekr.20061031131434.120:printBindingsHelper
 #@-node:ekr.20100119175348.6128:Fixed print-bindings crasher w/ leo3k
+#@+node:ekr.20080406075855.2:Fixed problem with already-existing .leo.bak files
+@nocolor-node
+
+I also unhappily discovered that any file named somedoc.leo.bak will
+get deleted whenever you save a file named somedoc.leo.
+
+===========
+
+This turned into a major refactoring of write_Leo_file.
+#@+node:ekr.20031218072017.3047:createBackupFile
+def createBackupFile (self,fileName):
+
+    '''Create a closed backup file and copy fileName to it.
+    '''
+
+    c = self.c
+    fd,backupName = tempfile.mkstemp(text=False)
+    os.close(fd)
+    ok = g.utils_rename(c,fileName,backupName)
+
+    if not ok and self.read_only:
+        g.es("read only",color="red")
+
+    return ok,backupName
+#@-node:ekr.20031218072017.3047:createBackupFile
+#@-node:ekr.20080406075855.2:Fixed problem with already-existing .leo.bak files
 #@-node:ekr.20100118163110.6256:Leo 4.7 rc1 projects
 #@-all
 #@nonl
