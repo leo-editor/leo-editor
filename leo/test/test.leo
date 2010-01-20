@@ -464,6 +464,7 @@
 <v t="ekr.20100118191455.2039"><vh>ed C:\Python26\Lib\site-packages\pylint-0.19.0-py2.6.egg\pylint\lint.py</vh></v>
 <v t="ekr.20100119095726.2043"><vh>rest colorizing</vh></v>
 <v t="ekr.20100119151232.2047"><vh>@@thin undefined-section-test</vh></v>
+<v t="ekr.20100120093218.2049"><vh>ipy_leo</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -884,7 +885,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8"></t>
+<t tx="ekr.20070416075121" str_leo_pos="9"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5115,5 +5116,6 @@ rest_keyword4_font_weight = normal
 <t tx="ekr.20100119151232.2047">&lt;&lt; undefined section &gt;&gt;
 
 changed 2</t>
+<t tx="ekr.20100120093218.2049">import leo.external.ipy_leo as ileo</t>
 </tnodes>
 </leo_file>

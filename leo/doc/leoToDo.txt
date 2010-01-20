@@ -113,7 +113,6 @@ On Fri, May 9, 2008 at 5:56 AM, bobjack <bobjack@post.com> wrote:
 the file path formed is invalid (at least on windows vista), so the node can not
 be edited.
 
-
 Hmm.  mod_tempfname has a problem.  If it filters out non-ascii unicode characters it will have problem with, say, Chinese file names.  So the naive plan of filtering all characters *except* the valid ascii characters is flawed.
 
 Drat.  I suppose building in unicode smarts: filtering 'general punctuation' characters is needed.  See:
