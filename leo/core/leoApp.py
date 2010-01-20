@@ -570,6 +570,8 @@ class LeoApp:
         try: sys_encoding = sys.getdefaultencoding()
         except Exception: sys_encoding = None
 
+        # g.trace('locale:',locale_encoding,'sys',sys_encoding)
+
         for (encoding,src) in (
             (app.config.defaultEncoding,"config"),
             (locale_encoding,"locale"),
@@ -578,6 +580,7 @@ class LeoApp:
 
             if g.isValidEncoding (encoding):
                 app.defaultEncoding = encoding
+                g.es('default encoding:',encoding,color='orange')
                 # g.trace(app.defaultEncoding,src)
                 break
             elif encoding:
