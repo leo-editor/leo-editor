@@ -90,7 +90,6 @@ class LeoApp:
         self.tracePositions = False
         self.trace_list = [] # "Sherlock" argument list for tracing().
         self.translateToUpperCase = False
-        self.defaultEncoding = "utf-8"
         self.unicodeErrorGiven = True # True: suppres unicode tracebacks.
         self.unitTestDict = {} # For communication between unit tests and code.
         self.unitTesting = False # True if unit testing.
@@ -580,7 +579,7 @@ class LeoApp:
 
             if g.isValidEncoding (encoding):
                 app.defaultEncoding = encoding
-                g.es('default encoding:',encoding,color='orange')
+                g.es('default encoding %s from %s' % (encoding,src),color='orange')
                 # g.trace(app.defaultEncoding,src)
                 break
             elif encoding:
