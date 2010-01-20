@@ -788,7 +788,7 @@ def writeZipFile (self,s):
 #@-node:ekr.20070412095520:writeZipFile
 #@-node:ekr.20031218072017.3046:write_Leo_file & helpers
 #@-node:ekr.20100119175348.6127:Refactored write_Leo_file
-#@+node:ekr.20100119175348.6128:Fix print-bindings crasher w/ leo3k
+#@+node:ekr.20100119175348.6128:Fixed print-bindings crasher w/ leo3k
 #@+node:ekr.20061031131434.120:printBindingsHelper
 def printBindingsHelper (self,result,data,n1,n2,prefix):
 
@@ -809,9 +809,18 @@ def printBindingsHelper (self,result,data,n1,n2,prefix):
             # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
             result.append('%*s %*s %s\n' % (-n1,s1,-(min(12,n2)),s2,s3))
 #@-node:ekr.20061031131434.120:printBindingsHelper
-#@-node:ekr.20100119175348.6128:Fix print-bindings crasher w/ leo3k
-#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-#@+node:ekr.20031218072017.3117:g.create_temp_file
+#@-node:ekr.20100119175348.6128:Fixed print-bindings crasher w/ leo3k
+#@+node:ekr.20080406075855.2:Fixed problem with already-existing .leo.bak files
+@nocolor-node
+
+I also unhappily discovered that any file named somedoc.leo.bak will
+get deleted whenever you save a file named somedoc.leo.
+
+===========
+
+This turned into a major refactoring of write_Leo_file.
+#@nonl
+#@+node:ekr.20031218072017.3117:g.create_temp_file & test
 def create_temp_file (textMode=False):
     '''Return a tuple (theFile,theFileName)
 
@@ -829,7 +838,17 @@ def create_temp_file (textMode=False):
         theFile,theFileName = None,''
 
     return theFile,theFileName
-#@-node:ekr.20031218072017.3117:g.create_temp_file
+#@+node:ekr.20100119194413.6097:@test g.create_temp_file
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    theFile,fn = g.create_temp_file()
+    assert theFile
+    assert g.isString(fn)
+#@nonl
+#@-node:ekr.20100119194413.6097:@test g.create_temp_file
+#@-node:ekr.20031218072017.3117:g.create_temp_file & test
 #@+node:ekr.20031218072017.3047:createBackupFile
 def createBackupFile (self,fileName):
 
@@ -846,7 +865,7 @@ def createBackupFile (self,fileName):
 
     return ok,backupName
 #@-node:ekr.20031218072017.3047:createBackupFile
-#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+#@-node:ekr.20080406075855.2:Fixed problem with already-existing .leo.bak files
 #@-node:ekr.20100118163110.6256:Leo 4.7 rc1 projects
 #@-all
 #@nonl
