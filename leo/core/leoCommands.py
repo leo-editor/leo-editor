@@ -4007,6 +4007,12 @@ class baseCommands (object):
         if cmp: newChildren.sort(cmp,key=key)
         else:   newChildren.sort(key=key)
 
+        if oldChildren == newChildren:
+            return
+
+        # 2010/01/20. Fix bug 510148.
+        c.setChanged(True)
+
         # g.trace(g.listToString(newChildren))
 
         bunch = u.beforeSort(p,undoType,oldChildren,newChildren,sortChildren)
