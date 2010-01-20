@@ -2230,13 +2230,13 @@ class baseFileCommands:
         try:
             self.putCount = 0 ; self.toString = toString
             if toString:
-                atOk = self.writeToStringHelper(fileName)
+                ok = self.writeToStringHelper(fileName)
             else:
-                atOk = self.writeToFileHelper(fileName,toOPML)
+                ok = self.writeToFileHelper(fileName,toOPML)
         finally:
             self.outputFile = None
             self.toString = False
-        return atOk
+        return ok
 
     write_LEO_file = write_Leo_file # For compatibility with old plugins.
     #@nonl

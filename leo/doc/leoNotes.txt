@@ -4735,315 +4735,55 @@ def stateHandler (self,event):
 #@-node:ekr.20050920084036.215:stateHandler
 #@-node:ekr.20051005151838:Helpers
 #@-node:ekr.20050920084036.207:queryReplaceCommandsClass (limited to single node)
-#@+node:ekr.20081204091750.2:g.emptyString
-def emptyString():
+#@+node:ekr.20100119145629.6107:from write_Leo_file
+#@+node:ekr.20031218072017.3048:<< delete backup file >>
+if backupName and g.os_path_exists(backupName):
 
-    '''Return an empty unicode string.'''
+    self.deleteFileWithMessage(backupName,'backup')
+#@-node:ekr.20031218072017.3048:<< delete backup file >>
+#@+node:ekr.20050405103712:<< delete fileName >>
+if fileName and g.os_path_exists(fileName):
 
-    return g.u('')
-#@-node:ekr.20081204091750.2:g.emptyString
-#@+node:ekr.20091218121326.6311:from UserDict (python3.1)
-if 0:
-    class UserDict(MutableMapping):
+    self.deleteFileWithMessage(fileName,'')
+#@-node:ekr.20050405103712:<< delete fileName >>
+#@+node:ekr.20050405103712.1:<< rename backupName to fileName >>
+if backupName:
+    g.es("restoring",fileName,"from",backupName)
+    g.utils_rename(c,backupName,fileName)
+#@-node:ekr.20050405103712.1:<< rename backupName to fileName >>
+#@+node:ekr.20060929103258:<< create theActualFile >>
+if toString:
+    theActualFile = None
+elif c.isZipped:
+    self.toString = toString = True
+    theActualFile = None
+    toZip = True
+else:
+    if g.isPython3:
+        mode = 'w'
+    else:
+        mode = 'wb'
+    theActualFile = open(fileName,mode)
+#@-node:ekr.20060929103258:<< create theActualFile >>
+#@+node:ekr.20060919070145:<< ensure that filename ends with .opml >>
+if not self.mFileName.endswith('opml'):
+    self.mFileName = self.mFileName + '.opml'
 
-        # Start by filling-out the abstract methods
-        def __init__(self, dict=None, **kwargs):
-            self.data = {}
-            if dict is not None:
-                self.update(dict)
-            if len(kwargs):
-                self.update(kwargs)
-
-if False and isPython3:
-    def __len__(self): return len(self.data)
-    # def __getitem__(self, key):
-        # if key in self.data:
-            # return self.data[key]
-        # if hasattr(self.__class__, "__missing__"):
-            # return self.__class__.__missing__(self, key)
-        # raise KeyError(key)
-    # def __setitem__(self, key, item): self.data[key] = item
-    # def __delitem__(self, key): del self.data[key]
-
-    # Now, add the methods in dicts but not in MutableMapping
-    # def __repr__(self): return repr(self.data)
-    def copy(self):
-        if self.__class__ is UserDict:
-            return UserDict(self.data.copy())
-        import copy
-        data = self.data
-        try:
-            self.data = {}
-            c = copy.copy(self)
-        finally:
-            self.data = data
-        c.update(self)
-        return c
-    @classmethod
-    def fromkeys(cls, iterable, value=None):
-        d = cls()
-        for key in iterable:
-            d[key] = value
-        return d
-#@+node:ekr.20091218122038.6313:second-level
-def __iter__(self):
-    return iter(self.data)
-
-# Modify __contains__ to work correctly when __missing__ is present
-def __contains__(self, key):
-    return key in self.data
-
-### From 2.6.
-def has_key(self, key):
-    try:
-        value = self[key]
-    except KeyError:
-        return False
-
-    return True
-#@-node:ekr.20091218122038.6313:second-level
-#@-node:ekr.20091218121326.6311:from UserDict (python3.1)
-#@+node:ekr.20091216103214.6298:fourth-level (python 2.6)
-# fourth level uses definitions from lower levels.
-
-if False: # Never used in either Leo2k or Leo3k.
-
-    def itervalues(self):
-        for _, v in self.iteritems():
-            yield v
-    def values(self):
-        return [v for _, v in self.iteritems()]
-    def items(self):
-        return list(self.iteritems())
-    def clear(self):
-        for key in self.keys():
-            del self[key]
-    def setdefault(self, key, default=None):
-        try:
-            return self[key]
-        except KeyError:
-            self[key] = default
-        return default
-    def pop(self, key, *args):
-        if len(args) > 1:
-            raise TypeError("pop expected at most 2 arguments, got " % (
-                repr(1 + len(args))))
-        try:
-            value = self[key]
-        except KeyError:
-            if args:
-                return args[0]
-            raise
-        del self[key]
-        return value
-    def popitem(self):
-        try:
-            k, v = self.iteritems().next()
-        except StopIteration:
-            raise KeyError('container is empty') # EKR: syntax change.
-        del self[k]
-        return (k, v)
-    def update(self, other=None, **kwargs):
-        # Make progressively weaker assumptions about "other"
-        if other is None:
-            pass
-        elif hasattr(other, 'iteritems'):  # iteritems saves memory and lookups
-            for k, v in other.iteritems():
-                self[k] = v
-        elif hasattr(other, 'keys'):
-            for k in other.keys():
-                self[k] = other[k]
-        else:
-            for k, v in other:
-                self[k] = v
-        if kwargs:
-            self.update(kwargs)
-    # def __repr__(self):
-        # return repr(dict(self.iteritems()))
-    def __cmp__(self, other):
-        if other is None:
-            return 1
-        if isinstance(other, DictMixin):
-            other = dict(other.iteritems())
-        return cmp(dict(self.iteritems()), other)
-    def __len__(self):
-        return len(self.keys())
-#@-node:ekr.20091216103214.6298:fourth-level (python 2.6)
-#@+node:ekr.20091230094319.6241:from k.masterKeyHandler
-#@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
-keyStatesTuple = ('command','insert','overwrite')
-
-if True and trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
-    'isTextWidget(w)',g.app.gui.isTextWidget(w))
-
-for key,name in (
-    # Order here is similar to bindtags order.
-    ('command',None),
-    ('insert',None),
-    ('overwrite',None),
-    ('button',None),
-    ('body','body'),
-    ('text','head'), # Important: text bindings in head before tree bindings.
-    ('tree','head'),
-    ('tree','canvas'),
-    ('log', 'log'),
-    ('text','log'),
-    ('text',None),
-    ('all',None),
-):
-    if (
-        # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
-        name and w_name.startswith(name) or
-        key in ('text','all') and g.app.gui.isTextWidget(w) or
-        key in ('button','all')
-    ):
-        d = k.masterBindingsDict.get(key,{})
-        if trace:
-            g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-            # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
-        if d:
-            b = d.get(stroke)
-            if b:
-                if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
-                if traceGC: g.printNewObjects('masterKey 3')
-                return k.masterCommand(event,b.func,b.stroke,b.commandName)
-#@-node:ekr.20061031131434.150:<< handle per-pane bindings >>
-#@+node:ekr.20080510153327.4:<< handle special cases for plain keys >>
-#g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
-
-# Important: only keys bound somewhere have a stroke.
-# All unbound plain keys will be handled by handleUnboundKeys.
-
-if k.unboundKeyAction in ('insert','overwrite'):
-
-    for key in (k.unboundKeyAction,'body','log','text','all'):
-        # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
-        d = k.masterBindingsDict.get(key,{})
-        if d:
-            b = d.get(stroke)
-            if b and b.commandName == 'auto-complete':
-                if trace: g.trace('%s: auto-complete key in %s mode' % (stroke,k.unboundKeyAction))
-                k.masterCommand(event,b.func,b.stroke,b.commandName)
-                return 'break'
-
-    if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
-    k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-    return 'break'
-
-# Bound   plain keys in command mode are by the per-pane logic.
-# Unbound plain keys in command mode are ignored by handleUnboundKeys.
-
-# This code ignores all command-state keys if we are not in a text widget.
-elif k.unboundKeyAction == 'command':
-    if not g.app.gui.isTextWidget(w):
-        c.onCanvasKey(event)
-        return 'break'
+fileName = self.mFileName
 #@nonl
-#@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
-#@+node:ekr.20061031131434.149:<< handle mode bindings >>
-# First, honor minibuffer bindings for all except user modes.
-if state in ('getArg','getFileName','full-command','auto-complete'):
-    if k.handleMiniBindings(event,state,stroke):
-        return 'break'
-
-# Second, honor general modes.
-if state == 'getArg':
-    return k.getArg(event,stroke=stroke)
-elif state == 'getFileName':
-    return k.getFileName(event)
-elif state in ('full-command','auto-complete'):
-    # Do the default state action.
-    if trace: g.trace('calling state function',k.state.kind) # k.state.handler)
-    val = k.callStateFunction(event) # Calls end-command.
-    if val != 'do-standard-keys': return 'break'
-
-# Third, pass keys to user modes.
-else:
-    d =  k.masterBindingsDict.get(state)
-    if d:
-        b = d.get(stroke)
-        if b:
-            if trace: g.trace('calling generalModeHandler',stroke)
-            k.generalModeHandler (event,
-                commandName=b.commandName,func=b.func,
-                modeName=state,nextMode=b.nextMode)
-            return 'break'
-        else:
-            # New in Leo 4.5: unbound keys end mode.
-            if trace: g.trace('unbound key ends mode',stroke,state)
-            k.endMode(event)
-    else:
-        # New in 4.4b4.
-        handler = k.getStateHandler()
-        if handler:
-            handler(event)
-        else:
-            g.trace('No state handler for %s' % state)
-        return 'break'
-#@-node:ekr.20061031131434.149:<< handle mode bindings >>
-#@-node:ekr.20091230094319.6241:from k.masterKeyHandler
-#@+node:ekr.20100116085803.6259:getpreferredencoding from 2.3a2
+#@-node:ekr.20060919070145:<< ensure that filename ends with .opml >>
+#@+node:ekr.20040324080359:<< write all @file nodes >>
 try:
-    # Use Python's version of getpreferredencoding if it exists.
-    # It is new in Python 2.3.
-    import locale
-    getpreferredencoding = locale.getpreferredencoding
+    # Write all @file nodes and set orphan bits.
+    # An important optimization: we have already assign the file indices.
+    # 2010/01/19: Do *not* signal failure if there are problems writing @file nodes.
+    changedFiles,ignored_atOk = c.atFileCommands.writeAll()
 except Exception:
-    # Use code copied from locale.py in Python 2.3alpha2.
-    if sys.platform in ('win32', 'darwin', 'mac'):
-        << define getpreferredencoding using _locale >>
-    else:
-        << define getpreferredencoding for *nix >>
-#@+node:ekr.20100116085803.6260:<< define getpreferredencoding using _locale >>
-# On Win32, this will return the ANSI code page
-# On the Mac, it should return the system encoding;
-# it might return "ascii" instead.
-
-def getpreferredencoding(do_setlocale = True):
-    """Return the charset that the user is likely using."""
-    try:
-        import _locale
-        return _locale._getdefaultlocale()[1]
-    except Exception:
-        return None
-#@-node:ekr.20100116085803.6260:<< define getpreferredencoding using _locale >>
-#@+node:ekr.20100116085803.6261:<< define getpreferredencoding for *nix >>
-# Avoid pylint complaints about CODESET, LC_CTYPE and nl_langinfo.
-if (
-    hasattr(locale,'CODESET') and
-    hasattr(locale,'LC_CTYPE') and
-    hasattr(locale,'nl_langinfo')
-):
-    codeset =  getattr(locale,'CODESET')
-    lc_ctype = getattr(locale,'LC_CTYPE')
-    nl_langinfo = getattr(locale,'nl_langinfo')
-
-    def getpreferredencoding(do_setlocale=True):
-        """Return the charset that the user is likely using,
-        according to the system configuration."""
-        try:
-            if do_setlocale:
-                oldloc = locale.setlocale(lc_ctype)
-                locale.setlocale(lc_ctype, "")
-                result = nl_langinfo(codeset)
-                locale.setlocale(lc_ctype, oldloc)
-                return result
-            else:
-                return nl_langinfo(codeset)
-        except Exception:
-            return None
-else:
-    # Fall back to parsing environment variables :-(
-    def getpreferredencoding(do_setlocale = True):
-        """Return the charset that the user is likely using,
-        by looking at environment variables."""
-        try:
-            return locale.getdefaultlocale()[1]
-        except Exception:
-            return None
-
-#@-node:ekr.20100116085803.6261:<< define getpreferredencoding for *nix >>
-#@-node:ekr.20100116085803.6259:getpreferredencoding from 2.3a2
+    g.es_error("exception writing derived files")
+    g.es_exception()
+    return False
+#@-node:ekr.20040324080359:<< write all @file nodes >>
+#@-node:ekr.20100119145629.6107:from write_Leo_file
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node
