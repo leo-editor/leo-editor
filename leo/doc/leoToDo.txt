@@ -26,6 +26,82 @@ write code should not use any @path declarations found in its body
 text.
 #@nonl
 #@-node:ekr.20081204091750.4:Fix inconsistency in how @path works
+#@+node:ekr.20100111094359.6208:Fix goto-line bugs
+#@+node:ekr.20080710082231.10:c.gotoLineNumber and helpers
+def goToLineNumber (self,n,p=None,scriptData=None):
+
+    '''Place the cursor on the n'th line of a derived file or script.
+    When present scriptData is a dict with 'root' and 'lines' keys.'''
+
+    trace = False and not g.unitTesting
+    c = self
+    delim = None ; gnx = None ; vnodeName = None
+    if n < 0: return
+    if n == 0: n = 1
+
+    fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
+    if trace: g.trace(isRaw,g.listToString(lines,sort=False))
+
+    if n==1 and not isRaw:
+        p = root ; n2 = 1 ; found = True
+    elif n > len(lines): # was >=
+        p = root ; n2 = root.b.count('\n') ; found = False
+    elif isRaw:
+        p,n2,found = c.goto_countLines(root,n)
+    else:
+        vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n,ignoreSentinels)
+        if delim:
+            p,found = c.goto_findPosition(
+                root,lines,vnodeName,gnx,n,delim)
+        else:
+            p,found = root,False
+    if 0:
+        << trace gotoLineNumber results >>
+    c.goto_showResults(found,p or root,n,n2,lines)
+#@+node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
+#@-node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
+#@+node:ekr.20080708094444.65:goto_applyLineNumberMapping
+#@-node:ekr.20080708094444.65:goto_applyLineNumberMapping
+#@+node:ekr.20080904071003.12:goto_countLines
+#@-node:ekr.20080904071003.12:goto_countLines
+#@+node:ekr.20080904071003.4:goto_findPosition & helpers
+#@+node:ekr.20080904071003.18:goto_findGnx
+#@-node:ekr.20080904071003.18:goto_findGnx
+#@+node:ekr.20080904071003.19:goto_scanTnodeList
+#@+node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
+#@-node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
+#@+node:ekr.20080904071003.9:<< set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = false >>
+#@-node:ekr.20080904071003.9:<< set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = false >>
+#@+node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
+#@-node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
+#@-node:ekr.20080904071003.19:goto_scanTnodeList
+#@-node:ekr.20080904071003.4:goto_findPosition & helpers
+#@+node:ekr.20031218072017.2877:goto_findVnode
+#@+node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
+#@-node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
+#@+node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
+#@+node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
+#@-node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
+#@-node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
+#@+node:ekr.20031218072017.2881:<< set gnx and vnodeName from s >>
+#@-node:ekr.20031218072017.2881:<< set gnx and vnodeName from s >>
+#@-node:ekr.20031218072017.2877:goto_findVnode
+#@+node:ekr.20080904071003.28:goto_setup & helpers
+#@+node:ekr.20080904071003.25:goto_findRoot
+#@-node:ekr.20080904071003.25:goto_findRoot
+#@+node:ekr.20080904071003.26:goto_getFileLines
+#@-node:ekr.20080904071003.26:goto_getFileLines
+#@+node:ekr.20080904071003.27:goto_getScriptLines
+#@-node:ekr.20080904071003.27:goto_getScriptLines
+#@+node:ekr.20080708094444.63:goto_open
+#@-node:ekr.20080708094444.63:goto_open
+#@-node:ekr.20080904071003.28:goto_setup & helpers
+#@+node:ekr.20080904071003.14:goto_showResults
+#@-node:ekr.20080904071003.14:goto_showResults
+#@+node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
+#@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
+#@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
+#@-node:ekr.20100111094359.6208:Fix goto-line bugs
 #@+node:ekr.20100113075303.6270:Easiest vim problems
 #@+node:ekr.20100112051224.6229:(vim) Binding Arrow keys (fixed?)
 Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
