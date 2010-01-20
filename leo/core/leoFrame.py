@@ -2629,8 +2629,6 @@ class leoTree:
         c,p = g.getTestVars()
 
         c.frame.tree.OnIconDoubleClick(p.firstChild())
-    #@+node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html
-    #@-node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html
     #@-node:ekr.20090529205043.6027:@test OnIconDoubleClick
     #@-node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper & test
     #@-node:ekr.20061109165848:Must be defined in base class
