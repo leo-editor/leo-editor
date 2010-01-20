@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5">
-	<global_window_position top="48" left="228" height="692" width="793"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -96,11 +96,11 @@
 <v t="ekr.20060217111834"><vh>@url http://docs.python.org/lib/re-syntax.html</vh></v>
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
-<v t="EKR.20040519090151.3"><vh>Projects</vh>
-<v t="EKR.20040429143933" descendentVnodeUnknownAttributes="7d710058010000003071017d71025808000000616e6e6f7461746571037d71042858040000006e6f6465710558000000007106580200000062677107680658080000007072696f726974797108580400000039393939710958020000006667710a6806580800000070726f6772657373710b68065809000000617263686574797065710c68067573732e"><vh>@thin leoProjects.txt</vh></v>
+<v t="ekr.20100119205347.6222"><vh>Projects</vh>
+<v t="ekr.20100119205347.6223"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
-<v t="ekr.20040117181936"><vh>@thin ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20100119205347.6015"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
 <v t="ekr.20090113083258.3"><vh>Unit tests &amp; helper files</vh>
@@ -118,7 +118,7 @@
 <v t="ekr.20090517020744.5904"><vh>@@thin ../test/unittest/at-path-test1.py</vh></v>
 </v>
 </v>
-<v t="ekr.20090113083258.1" descendentVnodeUnknownAttributes="7d7100285807000000302e322e372e3471017d71025808000000616e6e6f7461746571037d7104735803000000302e3071057d71065808000000616e6e6f7461746571077d7108735807000000302e322e302e3571097d710a5808000000616e6e6f74617465710b7d710c735807000000302e322e362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e322e332e333571117d71125808000000616e6e6f7461746571137d711473752e"><vh>@thin test_core.txt</vh></v>
+<v t="ekr.20090113083258.1" descendentVnodeUnknownAttributes="7d7100285507302e322e372e3471017d71025808000000616e6e6f7461746571037d7104735503302e3071057d71065808000000616e6e6f7461746571077d7108735507302e322e302e3571097d710a5808000000616e6e6f74617465710b7d710c735507302e322e362e33710d7d710e5808000000616e6e6f74617465710f7d7110735508302e322e332e333571117d71125808000000616e6e6f7461746571137d711473752e"><vh>@thin test_core.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
@@ -136,11 +136,12 @@
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@thin leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@thin leoColor.py</vh></v>
-<v t="ekr.20031218072017.2810"><vh>@thin leoCommands.py</vh></v>
+<v t="ekr.20031218072017.2810"
+marks="ekr.20080710082231.10,"><vh>@thin leoCommands.py</vh></v>
 <v t="ekr.20041117062700"><vh>@thin leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@thin leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31352e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@thin leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31352e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@thin leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@thin leoImport.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@thin leoNodes.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@thin leoPlugins.py</vh></v>
@@ -162,14 +163,13 @@
 <v t="ekr.20080730161153.8"><vh>Test classes</vh>
 <v t="ekr.20080730161153.2"><vh>@thin leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@thin leoDynamicTest.py</vh></v>
-<v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710058010000003071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@thin leoTest.py</vh></v>
+<v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@thin leoTest.py</vh></v>
 </v>
 </v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943"></t>
 <t tx="EKR.20040519090151.2"></t>
-<t tx="EKR.20040519090151.3"></t>
 <t tx="ekr.20031218072017.2406">@tabwidth -4
 @pagewidth 80
 
@@ -246,7 +246,7 @@ Two (recently written) functions in leoGlobals.py support conversions from Pytho
 
 Important:  the first Tkinter index is '1.0', not '0.0', but the row returned by g.convertPythonIndexToRowCol is zero based, so the code that actually creates Tkinter indices from row/col must add 1 to the row.  Similar remarks apply when going in the reverse direction.
 </t>
-<t tx="ekr.20051031040240" str_leo_pos="5"></t>
+<t tx="ekr.20051031040240" str_leo_pos="3"></t>
 <t tx="ekr.20060217111834"></t>
 <t tx="ekr.20060531093331">@
 Ever have a clone that is difficult to understand outside the context of its
@@ -960,5 +960,6 @@ c.outerUpdate()
 </t>
 <t tx="ekr.20090802181029.5988"></t>
 <t tx="ekr.20090802181029.5989"></t>
+<t tx="ekr.20100119205347.6222"></t>
 </tnodes>
 </leo_file>
