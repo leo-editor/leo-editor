@@ -74,15 +74,8 @@
 </v>
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
-<v t="ekr.20100118163110.6256"><vh>Leo 4.7 rc1 projects</vh>
-<v t="ekr.20100119024225.6107"><vh>Fixed colorizer bug affecting per-language @font settings</vh></v>
-<v t="ekr.20100119024225.6108"><vh>support extend-mode for several commands</vh></v>
-<v t="ekr.20100119024225.6106"><vh>Fixed qttab problem</vh></v>
-<v t="ekr.20100115091643.6249"><vh>&lt;alt-x&gt; select-all crashes python when focus is in headline</vh></v>
-<v t="ekr.20080412053100.1"><vh>Allow saving .leo files with undefined-sections</vh></v>
-<v t="ekr.20100119175348.6127"><vh>Refactored write_Leo_file</vh></v>
-<v t="ekr.20100119175348.6128"><vh>Fixed print-bindings crasher w/ leo3k</vh></v>
-<v t="ekr.20080406075855.2"><vh>Fixed problem with already-existing .leo.bak files</vh></v>
+<v t="ekr.20100120072650.6088"><vh>Projects</vh>
+<v t="ekr.20100120072650.6089"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@thin ../doc/leoToDo.txt</vh></v>
@@ -747,38 +740,6 @@ self.statements.append("g.es_print('','%s %s',color='red')" % ('-'*20,h))</t>
 </t>
 <t tx="ekr.20080312060129.5"></t>
 <t tx="ekr.20080312060129.6"></t>
-<t tx="ekr.20080406075855.2">@nocolor-node
-
-I also unhappily discovered that any file named somedoc.leo.bak will
-get deleted whenever you save a file named somedoc.leo.
-
-===========
-
-This turned into a major refactoring of write_Leo_file.</t>
-<t tx="ekr.20080412053100.1">@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
-
-1) Create an @thin file based outline.
-2) In the @thin file, create an unreferenced section (something like a
-  header &lt;&lt;This Section Is Bogus&gt;&gt;).
-3) Now, File-&gt;Exit
-4) A dialog box pops up
-  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
-5) Click "Yes"
-6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
-  and in the console window, you see "undefined section: ..."
-
-The point is that I can't kill Leo if I keep saying "Yes" to the
-"Save change before quitting" dialog. This is definitely not the
-intended behavior. The correct behavior would be to save the file,
-give me the warning about the undefined section, and exit.
-
-EKR: The fix was simple: write_leo_file ignores the status returned from
-c.atFileCommands.writeAll.
-
-Note that Leo writes the write error to the console as well as the log pane,
-so this should be safe enough.</t>
 <t tx="ekr.20080412053100.4"></t>
 <t tx="ekr.20080412053100.5"></t>
 <t tx="ekr.20080730161153.8"></t>
@@ -876,56 +837,6 @@ c.outerUpdate()
 </t>
 <t tx="ekr.20090802181029.5988"></t>
 <t tx="ekr.20090802181029.5989"></t>
-<t tx="ekr.20100115091643.6249">@
-The problem occurs because the QtGui.QLineEdit object goes away
-when the minibuffer gets focus and the QTreeWidget loses focus.
-
-The fix: add a 'permanent' ivar to leoQtTextWidgets, and set
-this ivar to False for headline widgets.</t>
-<t tx="ekr.20100118163110.6256"></t>
-<t tx="ekr.20100119024225.6106">@nocolor-node
-
-On Mon, Jan 18, 2010 at 9:25 PM, tfer &lt;tfetherston@aol.com&gt; wrote:
-
-cmd.exe /k C:\PyDev\leo-editor\trunk\launchLeo.py --gui=qttabs -- ipython
-
-1) (??) the button removal menu just flash on right mouse click, disappears immediately.
-
-2) Leo opens up the workbook, I open a new doc in a tab, 'untitled', save it,
-   get saved ... in log, however, tab title does not change unless I close and
-   reload it.
-</t>
-<t tx="ekr.20100119024225.6107">@nocolor-node
-
-It looks like you should be able to put the following in an
-@font node, and get restructured text bold to appear in bold onscreen:
-
-rest_keyword2_font_size = 16
-rest_keyword2_font_family = Bitstream Charter
-rest_keyword2_font_slant = roman
-rest_keyword2_font_weight = bold
-
-However nothing happens when I do this. The python examples in the
-test.leo file work fine for me, so I'm not sure what's gone wrong.
-
-I think that the following should also work, but it's also currently
-not doing anything for me:
-
-@color rest_keyword2_color = black
-
-==================
-
-Rev 2706 fixes a significant colorizer bug that caused your problem.
-Previously, the colorizer inited the so-called configuration tags only
-once, which is wrong. These tags are what the @font settings specify.
-Now, the colorizer inits the tags when the language changes when
-switching nodes.  Usually the language doesn't change, so the new code
-will be approximately as fast as the old. 
-</t>
-<t tx="ekr.20100119024225.6108">'backward-find-character'
-'find-character'
-</t>
-<t tx="ekr.20100119175348.6127"></t>
-<t tx="ekr.20100119175348.6128"></t>
+<t tx="ekr.20100120072650.6088"></t>
 </tnodes>
 </leo_file>
