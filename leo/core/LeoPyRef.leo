@@ -59,30 +59,6 @@
 </v>
 <v t="ekr.20071024180738"><vh>@@command ext-unit-test @key=Alt+6</vh></v>
 <v t="ekr.20071024171346"><vh>@@command unit-test @key=Alt+4</vh></v>
-<v t="ekr.20081202093528.33"><vh>@@command complete-next</vh>
-<v t="ekr.20081202093528.20"><vh>WordCompleter</vh>
-<v t="ekr.20081202093528.21"><vh>complete_word</vh>
-<v t="ekr.20081202093528.22"><vh>&lt;&lt;backward search&gt;&gt;</vh>
-<v t="ekr.20081202093528.23"><vh>&lt;&lt;counter check&gt;&gt;</vh></v>
-</v>
-<v t="ekr.20081202093528.24"><vh>&lt;&lt;forward search&gt;&gt;</vh>
-<v t="ekr.20081202093528.23"></v>
-</v>
-<v t="ekr.20081202093528.25"><vh>&lt;&lt;clean up and exit&gt;&gt;</vh></v>
-</v>
-<v t="ekr.20081202093528.26"><vh>acceptable_word</vh></v>
-<v t="ekr.20081202093528.27"><vh>undo_replacement</vh></v>
-<v t="ekr.20081202093528.28"><vh>redo_replacement</vh></v>
-<v t="ekr.20081202093528.29"><vh>exit</vh></v>
-<v t="ekr.20081202093528.30"><vh>run</vh></v>
-<v t="ekr.20081202093528.31"><vh>adjust</vh></v>
-</v>
-<v t="ekr.20081202093528.32"><vh>getCurrentWord</vh></v>
-</v>
-<v t="ekr.20081202093528.19"><vh>@@command complete-previous</vh>
-<v t="ekr.20081202093528.20"></v>
-<v t="ekr.20081202093528.32"></v>
-</v>
 </v>
 <v t="ekr.20070605104410"><vh>@chapters</vh></v>
 <v t="ekr.20080121092503"><vh>Scripts</vh>
@@ -93,11 +69,20 @@
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
+<v t="ekr.20090105132011.6"><vh>Regex notes</vh>
 <v t="ekr.20060217111834"><vh>@url http://docs.python.org/lib/re-syntax.html</vh></v>
+</v>
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
-<v t="ekr.20100119205347.6222"><vh>Projects</vh>
-<v t="ekr.20100119205347.6223"><vh>@thin leoProjects.txt</vh></v>
+<v t="ekr.20100118163110.6256"><vh>Leo 4.7 rc1 projects</vh>
+<v t="ekr.20100119024225.6107"><vh>Fixed colorizer bug affecting per-language @font settings</vh></v>
+<v t="ekr.20100119024225.6108"><vh>support extend-mode for several commands</vh></v>
+<v t="ekr.20100119024225.6106"><vh>Fixed qttab problem</vh></v>
+<v t="ekr.20100115091643.6249"><vh>&lt;alt-x&gt; select-all crashes python when focus is in headline</vh></v>
+<v t="ekr.20080412053100.1"><vh>Allow saving .leo files with undefined-sections</vh></v>
+<v t="ekr.20100119175348.6127"><vh>Refactored write_Leo_file</vh></v>
+<v t="ekr.20100119175348.6128"><vh>Fixed print-bindings crasher w/ leo3k</vh></v>
+<v t="ekr.20080406075855.2"><vh>Fixed problem with already-existing .leo.bak files</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@thin ../doc/leoToDo.txt</vh></v>
@@ -246,7 +231,7 @@ Two (recently written) functions in leoGlobals.py support conversions from Pytho
 
 Important:  the first Tkinter index is '1.0', not '0.0', but the row returned by g.convertPythonIndexToRowCol is zero based, so the code that actually creates Tkinter indices from row/col must add 1 to the row.  Similar remarks apply when going in the reverse direction.
 </t>
-<t tx="ekr.20051031040240" str_leo_pos="3"></t>
+<t tx="ekr.20051031040240" str_leo_pos="5"></t>
 <t tx="ekr.20060217111834"></t>
 <t tx="ekr.20060531093331">@
 Ever have a clone that is difficult to understand outside the context of its
@@ -762,164 +747,95 @@ self.statements.append("g.es_print('','%s %s',color='red')" % ('-'*20,h))</t>
 </t>
 <t tx="ekr.20080312060129.5"></t>
 <t tx="ekr.20080312060129.6"></t>
+<t tx="ekr.20080406075855.2">@nocolor-node
+
+I also unhappily discovered that any file named somedoc.leo.bak will
+get deleted whenever you save a file named somedoc.leo.
+
+===========
+
+This turned into a major refactoring of write_Leo_file.</t>
+<t tx="ekr.20080412053100.1">@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
+
+1) Create an @thin file based outline.
+2) In the @thin file, create an unreferenced section (something like a
+  header &lt;&lt;This Section Is Bogus&gt;&gt;).
+3) Now, File-&gt;Exit
+4) A dialog box pops up
+  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
+5) Click "Yes"
+6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
+  and in the console window, you see "undefined section: ..."
+
+The point is that I can't kill Leo if I keep saying "Yes" to the
+"Save change before quitting" dialog. This is definitely not the
+intended behavior. The correct behavior would be to save the file,
+give me the warning about the undefined section, and exit.
+
+EKR: The fix was simple: write_leo_file ignores the status returned from
+c.atFileCommands.writeAll.
+
+Note that Leo writes the write error to the console as well as the log pane,
+so this should be safe enough.</t>
 <t tx="ekr.20080412053100.4"></t>
 <t tx="ekr.20080412053100.5"></t>
 <t tx="ekr.20080730161153.8"></t>
-<t tx="ekr.20081202093528.19">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
-word_completer_key = 'back_word_completer'
-@others
-completer = g.app.config.get(c,word_completer_key,'WordCompleter')
-if completer is None:
-    completer = WordCompleter(p,c,back=True)
-    g.app.config.set(c,word_completer_key,'WordCompleter',completer)
-    completer.run()
-else:
-    completer.adjust(p, c.frame.body.getInsertPoint())
-    completer.complete_word()
-</t>
-<t tx="ekr.20081202093528.20">class WordCompleter:
-    def __init__(self, p, c, back=True):
-        self.p = p.copy()
-        self.c = c
-        self.back = back
-        self.pos = -1
-    @others
-</t>
-<t tx="ekr.20081202093528.21">def complete_word(self):
-    txt = self.chunk
-    word = self.word
-    try:
-        if self.back:
-            &lt;&lt;backward search&gt;&gt;
-        else:
-            &lt;&lt;forward search&gt;&gt;
-        &lt;&lt;clean up and exit&gt;&gt;
-    except:
-        self.exit()
-        g.es_exception()</t>
-<t tx="ekr.20081202093528.22">p = self.search_pos
-start = -1
-counter = 0
-while p:
-    &lt;&lt;counter check&gt;&gt;
-    i = txt.rfind(word, 0, start)
-    if i == -1:
-        p.moveToThreadBack()
-        if p:self.chunk = txt = p.b
-        start = -1
-    else:
-        if self.acceptable_word(i, txt, word):
-            self.chunk = txt[:i+len(word)-1]
-            return
-        start = i+len(word)-1</t>
-<t tx="ekr.20081202093528.23">counter+=1
-if counter &gt; 10000:
-    g.es_trace("counter max")
-    break</t>
-<t tx="ekr.20081202093528.24">p = self.search_pos
-start = 0
-counter = 0
-while p:
-    &lt;&lt;counter check&gt;&gt;
-    i = txt.find(word, start)
-    if i == -1:
-        p.moveToThreadNext()
-        if p:self.chunk = txt = p.b
-        start = 0
-    else:
-        if self.acceptable_word(i, txt, word):
-            self.chunk = txt[i+1:]
-            return
-        start = i+1</t>
-<t tx="ekr.20081202093528.25">if len(self.tried) &gt; 1:
-    # there was some tries so we need to restore
-    self.c.setBodyString(self.p, self.before+self.word+self.after)
-    self.c.frame.body.setInsertPoint(self.pos)
-return self.exit()</t>
-<t tx="ekr.20081202093528.26">@ if found word for the first time then try it
-@c
-def acceptable_word(self, i, txt, word):
-    if i == 0 or wordsep.find(txt[i-1]) != -1:
-        j = i+len(word)
-        while j &lt; len(txt) and wordsep.find(txt[j]) &lt; 0:
-            j += 1
-        nword = txt[i:j]
-        if nword not in self.tried:
-            self.tried[nword] = 1
-            u = self.c.undoer
-            bunch = u.createCommonBunch(p)
-            bunch.oldBody = p.b
-            bunch.insertPos = self.pos
-            # Set the type &amp; helpers.
-            bunch.kind = 'node'
-            bunch.undoType = 'complete word'
-            bunch.undoHelper = self.undo_replacement
-            bunch.redoHelper = self.redo_replacement
-            bunch.newBody = newBody = self.before+nword+self.after
+<t tx="ekr.20090105132011.6">@nocolor-node
 
-            self.c.setBodyString(self.p, newBody)
-            self.c.frame.body.setInsertPoint(self.pos)
+.  any char
+^  start line
+$  end of line
+\w alphanum: [a-zA-Z0-9_]
+\W non-alphanum
+\s whitespace
+\S non-whitespace
 
-            bunch.dirtyVnodeList = [p.v]
-            bunch.newChanged = u.c.isChanged()
-            bunch.newDirty = p.isDirty()
-            bunch.newMarked = p.isMarked()
+These can be done with regexps:
 
-            u.pushBead(bunch)
+copy-to-end-of-each-line:   (.)$        --&gt;  \1x
+copy-to-start-of-each-line: ^([ \t]+)   --&gt;  \1x
+remove-leading-ws:  ^[ \t]+             --&gt;  empty
+remove-trailing-ws: [ \t]+$             --&gt;  empty
+paste-at-column:    ^(.{4})             --&gt;  \1x
+paste-after-lws:    ^([ \t]+)           --&gt;  \1x
 
-            return True
-    return False
-</t>
-<t tx="ekr.20081202093528.27">def undo_replacement(self):
-    u = self.c.undoer; c=self.c; p=u.p
-    bunch = u.getBead(u.bead)
-    c.setBodyString(p, bunch.oldBody)
-    c.frame.body.setInsertPoint(bunch.insertPos)</t>
-<t tx="ekr.20081202093528.28">def redo_replacement(self):
-    c = self.c; u=c.undoer; bunch=u.getBead(u.bead+1)
-    c.setBodyString(bunch.p, bunch.newBody)
-    c.frame.body.setInsertPoint(bunch.insertPos)</t>
-<t tx="ekr.20081202093528.29">def exit(self):
-    #g.app.config.set(c,word_completer_key,'WordCompleter',None)
-    #g.app.config.set(c,'next_word_completer','WordCompleter',None)
-    self.pos = -1</t>
-<t tx="ekr.20081202093528.30">def run(self):
-    self.adjust(self.p, c.frame.body.getInsertPoint())
-    self.complete_word()
-</t>
-<t tx="ekr.20081202093528.31">def adjust(self, p, pos):
-    if p != self.p or pos != self.pos:
-        self.p = p.copy()
-        self.pos = pos
-        bs = p.b
-        word = getCurrentWord(bs, pos)
-        self.word = word
-        self.before = bs[:pos-len(word)]
-        self.after = bs[pos:]
-        self.search_pos = p.copy()
-        if self.back:
-            self.chunk = self.before
-        else:
-            self.chunk = self.after
-        self.tried = {word:1}</t>
-<t tx="ekr.20081202093528.32">def getCurrentWord(s, pos):
-    i = pos-1
-    while i&gt;=0 and wordsep.find(s[i]) &lt; 0:
-         i -= 1
-    return s[i+1:pos]</t>
-<t tx="ekr.20081202093528.33">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
-word_completer_key = 'next_word_completer'
-@others
-completer = g.app.config.get(c,word_completer_key,'WordCompleter')
-if completer is None:
-    completer = WordCompleter(p, c, back=False)
-    g.app.config.set(c, word_completer_key, 'WordCompleter', completer)
-    completer.run()
-else:
-    completer.adjust(p, c.frame.body.getInsertPoint())
-    completer.complete_word()
+[]
+    Used to indicate a set of characters. Characters can be listed individually,
+    or a range of characters can be indicated by giving two characters and
+    separating them by a '-'. Special characters are not active inside sets.
 
-</t>
+    [akm$] will match any of the characters 'a', 'k', 'm', or '$';
+    [a-z] will match any lowercase letter.
+    [a-zA-Z0-9] matches any letter or digit.
+
+    Character classes such as \w or \S (defined below) are also
+    acceptable inside a range, although the characters they match depends on
+    whether LOCALE or UNICODE mode is in force. If you want to include a ']' or
+    a '-' inside a set, precede it with a backslash, or place it as the first
+    character. The pattern []] will match ']', for example.
+
+    You can match the characters not within a range by complementing the set.
+    This is indicated by including a '^' as the first character of the set; '^'
+    elsewhere will simply match the '^' character. For example, [^5] will match
+    any character except '5', and [^^] will match any character except '^'.
+
+(?=...)
+    Matches if ... matches next, but doesnt consume any of the string.
+    This is called a lookahead assertion.
+    For example, Isaac (?=Asimov) will match 'Isaac ' only if it's followed by 'Asimov'.
+
+(?!...)
+    Matches if ... doesn't match next.
+    This is a negative lookahead assertion.
+    For example, Isaac (?!Asimov) will match 'Isaac ' only if it is not followed by 'Asimov'.
+
+(?&lt;=...)
+    Matches if the current position in the string is preceded by a match for ...
+    that ends at the current position. This is called a positive lookbehind assertion.
+    The contained pattern must only match strings of some fixed length,
+    meaning that abc or a|b are allowed, but a* and a{3,4} are not.</t>
 <t tx="ekr.20090113083258.3"># These should all pass with Alt-5 or Alt-6.
 # They will pass with Alt-4 only if the code has not been changed.</t>
 <t tx="ekr.20090514093345.6053">'''
@@ -960,6 +876,56 @@ c.outerUpdate()
 </t>
 <t tx="ekr.20090802181029.5988"></t>
 <t tx="ekr.20090802181029.5989"></t>
-<t tx="ekr.20100119205347.6222"></t>
+<t tx="ekr.20100115091643.6249">@
+The problem occurs because the QtGui.QLineEdit object goes away
+when the minibuffer gets focus and the QTreeWidget loses focus.
+
+The fix: add a 'permanent' ivar to leoQtTextWidgets, and set
+this ivar to False for headline widgets.</t>
+<t tx="ekr.20100118163110.6256"></t>
+<t tx="ekr.20100119024225.6106">@nocolor-node
+
+On Mon, Jan 18, 2010 at 9:25 PM, tfer &lt;tfetherston@aol.com&gt; wrote:
+
+cmd.exe /k C:\PyDev\leo-editor\trunk\launchLeo.py --gui=qttabs -- ipython
+
+1) (??) the button removal menu just flash on right mouse click, disappears immediately.
+
+2) Leo opens up the workbook, I open a new doc in a tab, 'untitled', save it,
+   get saved ... in log, however, tab title does not change unless I close and
+   reload it.
+</t>
+<t tx="ekr.20100119024225.6107">@nocolor-node
+
+It looks like you should be able to put the following in an
+@font node, and get restructured text bold to appear in bold onscreen:
+
+rest_keyword2_font_size = 16
+rest_keyword2_font_family = Bitstream Charter
+rest_keyword2_font_slant = roman
+rest_keyword2_font_weight = bold
+
+However nothing happens when I do this. The python examples in the
+test.leo file work fine for me, so I'm not sure what's gone wrong.
+
+I think that the following should also work, but it's also currently
+not doing anything for me:
+
+@color rest_keyword2_color = black
+
+==================
+
+Rev 2706 fixes a significant colorizer bug that caused your problem.
+Previously, the colorizer inited the so-called configuration tags only
+once, which is wrong. These tags are what the @font settings specify.
+Now, the colorizer inits the tags when the language changes when
+switching nodes.  Usually the language doesn't change, so the new code
+will be approximately as fast as the old. 
+</t>
+<t tx="ekr.20100119024225.6108">'backward-find-character'
+'find-character'
+</t>
+<t tx="ekr.20100119175348.6127"></t>
+<t tx="ekr.20100119175348.6128"></t>
 </tnodes>
 </leo_file>
