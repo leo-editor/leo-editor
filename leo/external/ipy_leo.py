@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20100120092047.6087:@file ../external/ipy_leo.py
+#@+node:ekr.20100120092047.6087:@thin ../external/ipy_leo.py
 #@@language python
 #@@tabwidth -4
 #@+others
@@ -880,5 +880,5 @@ def mkbutton(text, node_to_push):
 
 #@-node:ekr.20100120092047.6151:mkbutton
 #@-others
-#@-node:ekr.20100120092047.6087:@file ../external/ipy_leo.py
+#@-node:ekr.20100120092047.6087:@thin ../external/ipy_leo.py
 #@-leo

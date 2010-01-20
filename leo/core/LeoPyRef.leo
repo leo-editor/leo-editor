@@ -102,11 +102,12 @@
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
 <v t="ekr.20090717092906.12765"><vh>@thin leoVersion.py</vh></v>
 </v>
-<v t="ekr.20090802181029.5989"><vh>Startup &amp; external files</vh>
+<v t="ekr.20090802181029.5989" a="E"><vh>Startup &amp; external files</vh>
 <v t="ville.20091010232339.6117"><vh>@thin ../external/lproto.py</vh></v>
 <v t="ekr.20091204131831.6103"><vh>@thin ../external/path.py</vh></v>
 <v t="ekr.20090831103504.6069"><vh>@thin ../external/pickleshare.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@thin runLeo.py </vh></v>
+<v t="ekr.20100120092047.6087"><vh>@thin ../external/ipy_leo.py</vh></v>
 </v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@thin leoApp.py</vh></v>

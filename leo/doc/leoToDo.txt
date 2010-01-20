@@ -13,6 +13,10 @@
 #@+node:ekr.20091005145253.6059:Before rc1
 @language rest
 #@nonl
+#@+node:ekr.20100120073530.6083:Fix unicode problems
+- 'encoding' arg removed from appendStringToBody, setBodyString
+#@nonl
+#@-node:ekr.20100120073530.6083:Fix unicode problems
 #@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
 @nocolor-node
 
