@@ -430,7 +430,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         newText = w.getAllText() # Converts to unicode.
 
         # Get the previous values from the vnode.
-        oldText = p.v._bodyString ### already unicode
+        oldText = p.bodyString() # Never use _bodyString directly.
         if oldText == newText:
             # This can happen as the result of undo.
             # g.trace('*** unexpected non-change',color="red")
@@ -6775,6 +6775,8 @@ class leoQtGui(leoGui.leoGui):
         cb = self.qtApp.clipboard()
         if cb:
             # cb.clear()  # unnecessary, breaks on some Qt versions
+            s = g.toUnicode(s,encoding='utf-8')
+                # 2010/01/21: Omitted by mistake in rev 2686.
             QtGui.QApplication.processEvents()
             cb.setText(s)
             QtGui.QApplication.processEvents()
@@ -7314,7 +7316,8 @@ class leoQtGui(leoGui.leoGui):
             return s
         except Exception:
             g.trace('*** Unicode Error: bugs possible')
-            return g.toUnicode(s,reportErrors='replace')
+            # The mass update omitted the encoding param.
+            return g.toUnicode(s,encoding='utf-8',reportErrors='replace')
     #@-node:ekr.20081121105001.502:toUnicode (qtGui)
     #@+node:ekr.20081121105001.503:widget_name (qtGui)
     def widget_name (self,w):

@@ -464,7 +464,7 @@
 <v t="ekr.20100118191455.2039"><vh>ed C:\Python26\Lib\site-packages\pylint-0.19.0-py2.6.egg\pylint\lint.py</vh></v>
 <v t="ekr.20100119095726.2043"><vh>rest colorizing</vh></v>
 <v t="ekr.20100119151232.2047"><vh>@@thin undefined-section-test</vh></v>
-<v t="ekr.20100120093218.2049"><vh>ipy_leo</vh></v>
+<v t="ekr.20100121091254.2051"><vh>g.u test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -3567,21 +3567,21 @@ State of the prototype code:
   containing an icon-like script, would create *another* @button node,
   say "@button pat-find pat a" that would (interactively?) find all
   nodes matched by the script in "pat a".  This isn't going to be easy.</t>
-<t tx="ekr.20091217210235.1866" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e657331710355013d7104752e">@language rest
+<t tx="ekr.20091217210235.1866" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e657331710358010000003d7104752e">@language rest
 @tabwidth -4
 @others
 
 .. Warning: this node is ignored when writing this file.
 .. However, @ @rst-options are recognized in this node.
 </t>
-<t tx="ekr.20091229092257.1930" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355022b2a7104752e">@language rest
+<t tx="ekr.20091229092257.1930" rst-import="7d710028580b000000756e6465726c696e65733271015801000000237102580b000000756e6465726c696e657331710358020000002b2a7104752e">@language rest
 @tabwidth -4
 @others
 
 .. Warning: this node is ignored when writing this file.
 .. However, @ @rst-options are recognized in this node.
 </t>
-<t tx="ekr.20091229101227.1902" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e657331710355033d2d607104752e">@language rest
+<t tx="ekr.20091229101227.1902" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e657331710358030000003d2d607104752e">@language rest
 @tabwidth -4
 @others
 
@@ -3628,7 +3628,7 @@ for i,j in table2:
 @others
 </t>
 <t tx="ekr.20091230121016.1931"></t>
-<t tx="ekr.20091230160238.1922" rst-import="7d710028550b756e6465726c696e657332710155013d7102550b756e6465726c696e65733171036802752e">@language rest
+<t tx="ekr.20091230160238.1922" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e65733171036802752e">@language rest
 @tabwidth -4
 @others
 
@@ -3870,7 +3870,7 @@ cursor.movePosition(QtGui.QTextCursor.Up,QtGui.QTextCursor.KeepAnchor,15)
 w.setTextCursor(cursor)
 c.bodyWantsFocusNow()</t>
 <t tx="ekr.20100109084336.1996"></t>
-<t tx="ekr.20100110151049.2004" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e657331710355013d7104752e">@language rest
+<t tx="ekr.20100110151049.2004" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e657331710358010000003d7104752e">@language rest
 @tabwidth -4
 @others
 
@@ -5116,6 +5116,11 @@ rest_keyword4_font_weight = normal
 <t tx="ekr.20100119151232.2047">&lt;&lt; undefined section &gt;&gt;
 
 changed 2</t>
-<t tx="ekr.20100120093218.2049">import leo.external.ipy_leo as ileo</t>
+<t tx="ekr.20100121091254.2051">s = 'Peña'
+s2 = g.u(s)
+s3 = g.u(s2)
+g.es_print(type(s),type(s2),type(s3))
+g.es_print(s,s2,s3)
+</t>
 </tnodes>
 </leo_file>

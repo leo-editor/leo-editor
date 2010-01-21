@@ -3914,6 +3914,9 @@ def pr(*args,**keys):
     # However, the following must appear in Python\Lib\sitecustomize.py:
     #    sys.setdefaultencoding('utf-8')
     s = g.translateArgs(args,d) # Translates everything to unicode.
+    if app.logInited:
+        s = s + '\n'
+
     if g.isPython3:
         s2 = s
     else:
@@ -3921,7 +3924,7 @@ def pr(*args,**keys):
 
     if app.logInited:
         try: # We can't use any print keyword args in Python 2.x!
-            sys.stdout.write(s2+nl)
+            sys.stdout.write(s2)
         except Exception:
             if not g.pr_warning_given:
                 g.pr_warning_given = True
@@ -3931,7 +3934,9 @@ def pr(*args,**keys):
                 g.es_exception()
                 g.trace(g.callers())
             s2 = s.encode('ascii',"replace")
-            sys.stdout.write(s2+nl)
+            if g.isPython3:
+                s2 = str(s2,'ascii','replace')
+            sys.stdout.write(s2)
     else:
         app.printWaiting.append(s2)
 #@-node:ekr.20080710101653.1:g.pr
@@ -5604,7 +5609,7 @@ def toUnicode (s,encoding=None,reportErrors=False):
     elif mustConvert(s):
         try:
             s = convert(s,encoding,'strict')
-        except UnicodeError:
+        except (UnicodeError,Exception):
             s = convert(s,encoding,'replace')
             if reportErrors: g.reportBadChars(s,encoding)
     else:

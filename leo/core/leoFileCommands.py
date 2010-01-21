@@ -1729,11 +1729,10 @@ class baseFileCommands:
         '''Put string s to self.outputFile. All output eventually comes here.'''
 
         # Improved code: self.outputFile (a cStringIO object) always exists.
+        # g.trace(g.callers(1),repr(s))
         if s:
             self.putCount += 1
-            if g.isPython3:
-                pass
-            else:
+            if not g.isPython3:
                 s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
             self.outputFile.write(s)
 
@@ -2308,6 +2307,8 @@ class baseFileCommands:
             if toZip:
                 self.writeZipFile(s)
             else:
+                if g.isPython3:
+                    s = bytes(s,self.leo_file_encoding,'replace')
                 theActualFile.write(s)
                 theActualFile.close()
                 c.setFileTimeStamp(fileName)
@@ -2332,9 +2333,9 @@ class baseFileCommands:
             self.toString = True
             theActualFile = None
         else:
-            mode = g.choose(g.isPython3,'w','wb')
             try:
-                theActualFile = open(fileName,mode)
+                # 2010/01/21: always write in binary mode.
+                theActualFile = open(fileName,'wb')
             except IOError:
                 theActualFile = None
 
