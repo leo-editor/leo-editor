@@ -465,6 +465,7 @@
 <v t="ekr.20100119095726.2043"><vh>rest colorizing</vh></v>
 <v t="ekr.20100119151232.2047"><vh>@@thin undefined-section-test</vh></v>
 <v t="ekr.20100121091254.2051"><vh>g.u test</vh></v>
+<v t="ekr.20100121155322.2051"><vh>@@file at-file-test.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -885,7 +886,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="9"></t>
+<t tx="ekr.20070416075121" str_leo_pos="10"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5122,5 +5123,6 @@ s3 = g.u(s2)
 g.es_print(type(s),type(s2),type(s3))
 g.es_print(s,s2,s3)
 </t>
+<t tx="ekr.20100121155322.2051"># Will findChild4 be called?</t>
 </tnodes>
 </leo_file>

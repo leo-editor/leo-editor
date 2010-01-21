@@ -975,6 +975,10 @@ class atFile:
         trace = False and not g.unitTesting
         at = self ; v = at.root.v
 
+        if not g.unitTesting:
+            if v.isAtFileNode():
+                g.es_print('Warning: @file logic',v.h)
+
         if trace: g.trace('%s %s %s' % (
             at.tnodeListIndex,
             v.tnodeList[at.tnodeListIndex],headline))
