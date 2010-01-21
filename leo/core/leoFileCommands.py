@@ -2344,16 +2344,22 @@ class baseFileCommands:
     #@+node:ekr.20031218072017.3047:createBackupFile
     def createBackupFile (self,fileName):
 
-        '''Create a closed backup file and copy fileName to it.
+        '''
+            Create a closed backup file and copy the file to it,
+            but only if the original file exists.
         '''
 
         c = self.c
-        fd,backupName = tempfile.mkstemp(text=False)
-        os.close(fd)
-        ok = g.utils_rename(c,fileName,backupName)
 
-        if not ok and self.read_only:
-            g.es("read only",color="red")
+        if g.os_path_exists(fileName):
+            # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
+            fd,backupName = tempfile.mkstemp(text=False)
+            os.close(fd)
+            ok = g.utils_rename(c,fileName,backupName)
+            if not ok and self.read_only:
+                g.es("read only",color="red")
+        else:
+            ok,backupName = True,None
 
         return ok,backupName
     #@-node:ekr.20031218072017.3047:createBackupFile

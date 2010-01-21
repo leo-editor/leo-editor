@@ -26,6 +26,121 @@ write code should not use any @path declarations found in its body
 text.
 #@nonl
 #@-node:ekr.20081204091750.4:Fix inconsistency in how @path works
+#@+node:ekr.20100121050224.6140:Delete resurrected nodes
+#@+node:ekr.20041005105605.21:read (atFile) & helper
+def read(self,root,
+    importFileName=None,thinFile=False,
+    fromString=None,atShadow=False,
+    force=False
+):
+
+    """Read any @thin, @file and @noref trees."""
+
+    at = self ; c = at.c
+    << set fileName and isAtFile >>
+    if isAtFile:
+        # The @file node has file-like sentinels iff a tnodeList exists.
+        thinFile = not (hasattr(root.v,'tnodeList') and root.v.tnodeList)
+    doCache = g.enableDB and (thinFile or atShadow) and not force
+    at.initReadIvars(root,fileName,
+        importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
+    if at.errors: return False
+    fileName = at.openFileForReading(fromString=fromString)
+    if at.inputFile:
+        c.setFileTimeStamp(fileName)
+    else:
+        return False
+
+    fileContent = open(fileName, "rb").read()
+    cachefile = self._contentHashFile(root.h,fileContent)
+
+    # Remember that we have read this file.
+    root.v.at_read = True # Create the attribute for all clones.
+
+    if doCache and cachefile in c.db:
+        # Delete the previous tree, regardless of the @<file> type.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+        aList = c.db[cachefile]
+        root.v.createOutlineFromCacheList(c,aList)
+        at.inputFile.close()
+        root.clearDirty()
+        return
+
+    # Delete all children, but **not** for @file and @nosent nodes!
+    # (We do delete all children for @file nodes with thin-like sentinels.)
+    if thinFile or atShadow:
+        root.v.at_read = True # Create the attribute for all clones.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+
+    if not g.unitTesting:
+        g.es("reading:",root.h)
+
+    root.clearVisitedInTree()
+    at.scanAllDirectives(root,importing=at.importing,reading=True)
+    at.readOpenFile(root,at.inputFile,fileName)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        << advise user to delete all unvisited nodes >>
+    if at.errors == 0 and not at.importing:
+        # Package this as a method for use by mod_labels plugin.
+        self.copyAllTempBodyStringsToTnodes(root,thinFile)
+
+    << delete all tempBodyStrings >>
+
+    # write out the cache version
+    if at.errors == 0: # 2010/01/07
+        self.writeCachedTree(root, cachefile)
+
+    return at.errors == 0
+#@+node:ekr.20041005105605.22:<< set fileName and isAtFile >>
+if fromString:
+    fileName = "<string-file>"
+elif importFileName:
+    fileName = importFileName
+elif root.isAnyAtFileNode():
+    fileName = root.anyAtFileNodeName()
+else:
+    fileName = None
+
+if not fileName:
+    at.error("Missing file name.  Restoring @file tree from .leo file.")
+    return False
+
+isAtFile = (
+    not thinFile and
+    not importFileName and
+    not atShadow and
+    not fromString and
+    root.h.startswith('@file'))
+#@nonl
+#@-node:ekr.20041005105605.22:<< set fileName and isAtFile >>
+#@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
+resurrected = 0
+for p in root.self_and_subtree():
+    if p.v.isVisited():
+        pass
+        # g.trace('visited',p.v,p.h)
+    else:
+        g.trace('**** not visited',p.v,p.h)
+        g.es('resurrected node:',p.h,color='blue')
+        g.es('in file:',fileName,color='blue')
+        resurrected += 1
+
+if resurrected:
+    g.es('you may want to delete ressurected nodes')
+
+#@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
+#@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+for v in c.all_unique_nodes():
+
+    if hasattr(v,"tempBodyString"):
+        delattr(v,"tempBodyString")
+#@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+#@-node:ekr.20041005105605.21:read (atFile) & helper
+#@-node:ekr.20100121050224.6140:Delete resurrected nodes
 #@+node:ekr.20100111094359.6208:Fix goto-line bugs
 #@-node:ekr.20100111094359.6208:Fix goto-line bugs
 #@+node:ekr.20100113075303.6270:Easiest vim problems
