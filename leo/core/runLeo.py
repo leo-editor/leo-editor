@@ -249,6 +249,7 @@ def scanOptions():
     # Note: this automatically implements the --help option.
     parser = optparse.OptionParser()
     parser.add_option('-c', '--config', dest="one_config_path")
+    parser.add_option('--debug',        action="store_true",dest="debug")
     parser.add_option('-f', '--file',   dest="fileName")
     parser.add_option('--gui',          dest="gui",help = 'gui to use (qt/tk/qttabs)')
     #parser.add_option('--help',         action="store_true",dest="help_option")
@@ -275,10 +276,10 @@ def scanOptions():
         else:
             g.es_print('Invalid -c option: file not found:',path,color='red')
 
-    # --no-cache
-    if options.no_cache:
-        g.trace('disabling caching')
-        g.enableDB = False
+    # --debug
+    if options.debug:
+        g.debug = True
+        g.trace('*** debug mode on')
 
     # -f or --file
     fileName = options.fileName
@@ -298,6 +299,11 @@ def scanOptions():
 
     # --ipython
     g.app.useIpython = options.use_ipython
+
+    # --no-cache
+    if options.no_cache:
+        g.trace('disabling caching')
+        g.enableDB = False
 
     # --script
     script_path = options.script

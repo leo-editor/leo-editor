@@ -13,23 +13,6 @@
 #@+node:ekr.20091005145253.6059:Before rc1
 @language rest
 #@nonl
-#@+node:ekr.20100120095741.6134:Fix mkstemp bug
-https://bugs.launchpad.net/leo-editor/+bug/510145
-
-Current leo trunk, r2732, Slackware Linux
-
-- I go to /tmp in terminal
-- there is no aaa.leo there (this is important, see below why)
-- I launch leo (the current working directory is /tmp)
-- I select "File->Save as" menu item
-- the save file dialog opens in /tmp, this is correct
-- I type in the file name "aaa" then hit "Save" button
-- leo dumps an error in the log pane:
-
-exception renaming /tmp/aaa.leo to /tmp/tmpbNydoS
-IOError: [Errno 2] No such file or directory: u'/tmp/aaa.leo'
-#@nonl
-#@-node:ekr.20100120095741.6134:Fix mkstemp bug
 #@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
 @nocolor-node
 
