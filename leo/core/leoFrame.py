@@ -2789,7 +2789,8 @@ class leoTree:
 
         # Always do this.  Otherwise there can be problems with trailing newlines.
         c = self.c ; w = c.frame.body.bodyCtrl
-        s = g.toUnicode(p.v._bodyString)
+        ### s = g.toUnicode(p.v.b)
+        s = p.v.b # Guaranteed to be unicode.
         old_s = w.getAllText()
 
         if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
@@ -3310,7 +3311,7 @@ class nullTree (leoTree):
         for key in d:
             # keys are vnodes, values are stringTextWidgets.
             w = d.get(key)
-            g.pr('w',w,'v._headString:',key.headString,'s:',repr(w.s))
+            g.pr('w',w,'v.h:',key.headString,'s:',repr(w.s))
 
     #@-node:ekr.20070228173611:printWidgets
     #@+node:ekr.20031218072017.2236:Overrides

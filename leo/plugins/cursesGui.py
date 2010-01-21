@@ -610,8 +610,7 @@ class textTree(leoFrame.leoTree):
 
     # This is also where the body-text control is given the text of the selected node...
     # Always do this.  Otherwise there can be problems with trailing hewlines.
-    s = g.toUnicode(p.v.t._bodyString)
-    w.setAllText(s)
+    w.setAllText(p.b)
     # and something to do with undo?
   #@-node:ekr.20081121105001.77:select
   #@+node:ekr.20081121105001.78:editLabel & edit_widget

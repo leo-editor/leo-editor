@@ -952,7 +952,7 @@ class atFile:
                     g.trace('can not happen: v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx))
             else:
                 v = leoNodes.vnode(context=c)
-                v._headString = headline
+                v._headString = headline # Allowed use of v._headString.
                 v.fileIndex = gnx
                 gnxDict[gnxString] = v
 
@@ -1354,7 +1354,7 @@ class atFile:
         s = g.toUnicode(s)
 
         if at.importing:
-            at.v._bodyString = s
+            at.v._bodyString = s # Allowed use of _bodyString.
         elif middle: 
             pass # Middle sentinels never alter text.
         else:
@@ -1398,7 +1398,8 @@ class atFile:
                     #@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
                     #@nl
                     # p.setMarked()
-                    at.v._bodyString = s # Just setting at.v.tempBodyString won't work here.
+                    at.v._bodyString = s # Allowed use of _bodyString.
+                        # Just setting at.v.tempBodyString won't work here.
                     at.v.setDirty() # Mark the node dirty.  Ancestors will be marked dirty later.
                     at.c.setChanged(True)
                 else:
@@ -2234,15 +2235,10 @@ class atFile:
             #@+node:ekr.20041005105605.137:<< write root's tree >>
             #@<< put all @first lines in root >>
             #@+node:ekr.20041005105605.138:<< put all @first lines in root >>
-            #@+at 
-            #@nonl
-            # Write any @first lines.  These lines are also converted to 
-            # @verbatim lines, so the read logic simply ignores lines 
-            # preceding the @+leo sentinel.
-            #@-at
-            #@@c
+            # Write any @first lines.  These lines are also converted to @verbatim lines,
+            # so the read logic simply ignores lines preceding the @+leo sentinel.
 
-            s = root.v._bodyString
+            s = root.v.b
             tag = "@first"
             i = 0
             while g.match(s,i,tag):
@@ -2301,7 +2297,7 @@ class atFile:
             #@@c
 
             tag = "@last"
-            lines = root.v._bodyString.split('\n')
+            lines = root.v.b.split('\n')
             n = len(lines) ; j = k = n - 1
             # Don't write an empty last line.
             if j >= 0 and len(lines[j])==0:
@@ -3204,8 +3200,8 @@ class atFile:
 
         """Do all writes except asis writes."""
 
-        at = self ; s = g.choose(fromString,fromString,root.v._bodyString)
-
+        at = self
+        s = g.choose(fromString,fromString,root.v.b)
         root.clearAllVisitedInTree()
         at.putAtFirstLines(s)
         at.putOpenLeoSentinel("@+leo-ver=4")

@@ -56,6 +56,137 @@ present in the qt plugin (both with and without scintilla)
 #@+node:ekr.20090717095154.3729:Leo 4.7 devel projects
 #@+node:ekr.20100119112903.3701:Update qttabs when saving a new file
 #@-node:ekr.20100119112903.3701:Update qttabs when saving a new file
+#@+node:ekr.20100121082850.3696:Fixed unicode bug
+#@+node:ekr.20081121105001.536:onTextChanged (qtText)
+def onTextChanged (self):
+
+    '''Update Leo after the body has been changed.
+
+    self.selecting is guaranteed to be True during
+    the entire selection process.'''
+
+    # Important: usually w.changingText is True.
+    # This method very seldom does anything.
+    trace = False and not g.unitTesting
+    verbose = True
+    c = self.c ; p = c.p
+    tree = c.frame.tree ; w = self
+
+    if w.changingText: 
+        if trace and verbose: g.trace('already changing')
+        return
+    if tree.tree_select_lockout:
+        if trace and verbose: g.trace('selecting lockout')
+        return
+    if tree.selecting:
+        if trace and verbose: g.trace('selecting')
+        return
+    if tree.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+    if not p:
+        return g.trace('*** no p')
+
+    newInsert = w.getInsertPoint()
+    newSel = w.getSelectionRange()
+    newText = w.getAllText() # Converts to unicode.
+
+    # Get the previous values from the vnode.
+    oldText = p.b
+    if oldText == newText:
+        # This can happen as the result of undo.
+        # g.trace('*** unexpected non-change',color="red")
+        return
+
+    # g.trace('**',len(newText),p.h,'\n',g.callers(8))
+
+    oldIns  = p.v.insertSpot
+    i,j = p.v.selectionStart,p.v.selectionLength
+    oldSel  = (i,i+j)
+    if trace: g.trace('oldSel',oldSel,'newSel',newSel)
+    oldYview = None
+    undoType = 'Typing'
+    c.undoer.setUndoTypingParams(p,undoType,
+        oldText=oldText,newText=newText,
+        oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+
+    # Update the vnode.
+    p.v.setBodyString(newText)
+    if True:
+        p.v.insertSpot = newInsert
+        i,j = newSel
+        i,j = self.toGuiIndex(i),self.toGuiIndex(j)
+        if i > j: i,j = j,i
+        p.v.selectionStart,p.v.selectionLength = (i,j-i)
+
+    # No need to redraw the screen.
+    if not self.useScintilla:
+        c.recolor()
+
+    if g.app.qt_use_tabs:
+        if trace: g.trace(c.frame.top)
+
+    if not c.changed and c.frame.initComplete:
+        c.setChanged(True)
+
+    c.frame.body.updateEditors()
+    c.frame.tree.updateIcon(p)
+
+    if 1: # This works, and is probably better.
+        # Set a hook for the old jEdit colorer.
+        colorer = c.frame.body.colorizer.highlighter.colorer
+        colorer.initFlag = True
+    else:
+        # Allow incremental recoloring.
+        c.incrementalRecolorFlag = True
+        c.outerUpdate()
+#@-node:ekr.20081121105001.536:onTextChanged (qtText)
+#@+node:ekr.20081121105001.183:Clipboard (qtGui)
+def replaceClipboardWith (self,s):
+
+    '''Replace the clipboard with the string s.'''
+
+    trace = False and not g.unitTesting
+    cb = self.qtApp.clipboard()
+    if cb:
+        # cb.clear()  # unnecessary, breaks on some Qt versions
+        s = g.toUnicode(s,encoding='utf-8')
+            # 2010/01/21: Omitted by mistake in rev 2686.
+        QtGui.QApplication.processEvents()
+        cb.setText(s)
+        QtGui.QApplication.processEvents()
+        if trace: g.trace(len(s),type(s))
+    else:
+        g.trace('no clipboard!')
+
+def getTextFromClipboard (self):
+
+    '''Get a unicode string from the clipboard.'''
+
+    trace = False and not g.unitTesting
+    cb = self.qtApp.clipboard()
+    if cb:
+        QtGui.QApplication.processEvents()
+        s = cb.text()
+        if trace: g.trace (len(s),type(s))
+        s = g.app.gui.toUnicode(s) # Assume nothing about the type of s.
+        return s
+    else:
+        g.trace('no clipboard!')
+        return ''
+#@-node:ekr.20081121105001.183:Clipboard (qtGui)
+#@+node:ekr.20081121105001.502:toUnicode (qtGui)
+def toUnicode (self,s):
+
+    try:
+        s = g.u(s)
+        return s
+    except Exception:
+        g.trace('*** Unicode Error: bugs possible')
+        # The mass update omitted the encoding param.
+        return g.toUnicode(s,encoding='utf-8',reportErrors='replace')
+#@-node:ekr.20081121105001.502:toUnicode (qtGui)
+#@-node:ekr.20100121082850.3696:Fixed unicode bug
 #@-node:ekr.20090717095154.3729:Leo 4.7 devel projects
 #@-all
 #@nonl

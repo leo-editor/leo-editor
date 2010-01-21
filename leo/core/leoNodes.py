@@ -74,14 +74,6 @@ class vnode (baseVnode):
         self._headString = g.u('newHeadline')
         self._bodyString = g.u('')
 
-        ### 2010/01/16
-        # if g.isPython3:
-            # self._headString = 'newHeadline'
-            # self._bodyString = ''
-        # else:
-            # self._headString = unicode('newHeadline')
-            # self._bodyString = unicode('')
-
         # Structure data...
         self.children = [] # Ordered list of all children of this node.
         self.parents = [] # Unordered list of all parents of this node.
@@ -642,12 +634,12 @@ class vnode (baseVnode):
     #@+node:ekr.20040315032144:v .setBodyString & v.setHeadString
     def setBodyString (self,s):
 
-        trace = False and not g.unitTesting
+        # trace = False and not g.unitTesting
         v = self
-        if trace and v._bodyString != s:
-            g.trace('v %s %s -> %s %s\nold: %s\nnew: %s' % (
-                v.h, len(v._bodyString),len(s),g.callers(5),
-                v._bodyString,s))
+        # if trace and v._bodyString != s:
+            # g.trace('v %s %s -> %s %s\nold: %s\nnew: %s' % (
+                # v.h, len(v._bodyString),len(s),g.callers(5),
+                # v._bodyString,s))
         v._bodyString = g.toUnicode(s,reportErrors=True)
 
     def setHeadString (self,s):

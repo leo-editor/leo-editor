@@ -414,8 +414,8 @@ class undoer:
     def restoreTnodeUndoInfo (self,bunch):
 
         v = bunch.v
-        v._headString  = bunch.headString
-        v._bodyString  = bunch.bodyString
+        v.h  = bunch.headString
+        v.b  = bunch.bodyString
         v.statusBits  = bunch.statusBits
 
         uA = bunch.get('unknownAttributes')
@@ -501,8 +501,8 @@ class undoer:
 
         bunch = g.Bunch(
             v = v,
-            headString = v._headString,
-            bodyString = v._bodyString,
+            headString = v.h,
+            bodyString = v.b,
             statusBits = v.statusBits,
         )
 
@@ -790,7 +790,7 @@ class undoer:
             for bunch2 in beforeTree:
                 v = bunch2.v
                 afterTree.append(
-                    g.Bunch(v=v,head=v._headString[:],body=v._bodyString[:]))
+                    g.Bunch(v=v,head=v.h[:],body=v.b[:]))
             bunch.afterTree=afterTree
             # g.trace(afterTree)
 

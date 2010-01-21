@@ -2745,8 +2745,8 @@ class baseCommands (object):
                     dirtyVnodeList.extend(dirtyVnodeList2)
             else:
                 changed = False ; result = []
-                text = p.v._bodyString
-                assert(g.isUnicode(text))
+                text = p.v.b
+                # assert(g.isUnicode(text))
                 lines = text.split('\n')
                 for line in lines:
                     i,w = g.skip_leading_ws_with_indent(line,0,tabWidth)
@@ -2791,8 +2791,8 @@ class baseCommands (object):
                     dirtyVnodeList.extend(dirtyVnodeList2)
             else:
                 result = [] ; changed = False
-                text = p.v._bodyString
-                assert(g.isUnicode(text))
+                text = p.v.b
+                # assert(g.isUnicode(text))
                 lines = text.split('\n')
                 for line in lines:
                     i,w = g.skip_leading_ws_with_indent(line,0,tabWidth)
@@ -7389,7 +7389,7 @@ class baseCommands (object):
             c.recolor()
 
         # Keep the body text in the vnode up-to-date.
-        if v._bodyString != s:
+        if v.b != s:
             v.setBodyString(s)
             v.setSelection(0,0)
             p.setDirty()

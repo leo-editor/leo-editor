@@ -430,7 +430,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         newText = w.getAllText() # Converts to unicode.
 
         # Get the previous values from the vnode.
-        oldText = p.bodyString() # Never use _bodyString directly.
+        oldText = p.b
         if oldText == newText:
             # This can happen as the result of undo.
             # g.trace('*** unexpected non-change',color="red")

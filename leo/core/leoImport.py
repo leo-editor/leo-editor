@@ -630,7 +630,7 @@ class leoImportCommands (scanUtility):
             w.setSelectionRange(i,i)
 
         # Keep the body text up-to-date.
-        if v._bodyString != s:
+        if v.b != s:
             v.setBodyString(s)
             v.setSelection(0,0)
             p.setDirty()
