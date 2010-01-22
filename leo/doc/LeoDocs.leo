@@ -436,7 +436,7 @@
 <v t="EKR.20040524104904.211" a="E"><vh>Chapter 8: Customizing Leo</vh>
 <v t="ekr.20050901101608.4" a="E"><vh>@rst html\customizing.html</vh>
 <v t="ekr.20050901102055"><vh>@rst-no-head links</vh></v>
-<v t="EKR.20040524104904.140" a="E"><vh>Specifying settings</vh>
+<v t="EKR.20040524104904.140"><vh>Specifying settings</vh>
 <v t="ekr.20090116130002.1"><vh>Configuration directories</vh></v>
 <v t="ekr.20090116094356.2"><vh>Search order for settings files</vh></v>
 <v t="ekr.20090116094356.3"><vh>Safe rules for local settings</vh></v>
@@ -460,6 +460,7 @@
 <v t="ekr.20050306090601"><vh>Adding extensible attributes to nodes and .leo files</vh></v>
 <v t="ekr.20050620150517"><vh>Specifying Tk options using .leo_xresources</vh></v>
 <v t="ekr.20080310093038.4"><vh>Translating Leo's menus and messages</vh></v>
+<v t="ekr.20100122073254.11655"><vh>Writing new importers</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.245"><vh>Chapter 9: History of Leo</vh>
@@ -687,7 +688,7 @@
 </v>
 </v>
 <v t="ekr.20060612102055"><vh>Chapter 13: Writing Plugins</vh>
-<v t="ekr.20060612103240"><vh>@rst html\writingPlugins.html</vh>
+<v t="ekr.20060612103240" a="E"><vh>@rst html\writingPlugins.html</vh>
 <v t="ekr.20060612103824"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050903075144"><vh>Overview</vh></v>
 <v t="EKR.20040524104904.240"><vh>Support for unit testing</vh></v>
@@ -1040,7 +1041,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46"><vh>Release Notes</vh>
+<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -3193,7 +3194,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20100118181428.8813"><vh>4.7 beta 2</vh>
 <v t="ekr.20100118181428.7557"><vh>Bugs</vh>
 <v t="ekr.20100118181428.7559"><vh>Fixed calltips on leo3k</vh></v>
@@ -23076,7 +23077,7 @@ image.py
 leo_to_html.py
 
 I left out cleo because it has been reported not to be fully functional with Leo 4.4.3.</t>
-<t tx="ekr.20070610174018" str_leo_pos="2,11,0,1,4"></t>
+<t tx="ekr.20070610174018" str_leo_pos="2,11,0,6"></t>
 <t tx="ekr.20070611161859">http://sourceforge.net/forum/message.php?msg_id=4356197</t>
 <t tx="ekr.20070622090350">Leo 4.4.3 beta 3                                June 23, 2006
 
@@ -31578,6 +31579,77 @@ The only bug was that redraw_after_head_changed must update icons.</t>
 <t tx="ekr.20100119145003.7632"></t>
 <t tx="ekr.20100119145003.7643"></t>
 <t tx="ekr.20100119145003.7718"></t>
+<t tx="ekr.20100122073254.11655">@language rest
+
+This section describes the process of creating an importer for a new language.
+There are a set of "importers" in leoImport.py, all based on the
+baseScannerClass class. You can define your own importer by creating a subclass.
+This shouldn't be too difficult: baseScannerClass is supposed to do almost all
+the work. With luck, your subclass might be very simple, as with class cScanner.
+
+**Important** As I write this, I realize that I remember very little about the
+code, but I do remember its general organization and the process of creating a
+new importer. The following should be all you need to write any importer.
+
+This base class has three main parts:
+
+1. The "parser" that recognizes where nodes begin and end.
+
+2. The "code generator" the actually creates the imported nodes.
+
+3. Checking code that ensures that the imported code is equivalent
+   to the original code.
+
+You should never have to change the code generators or the checking code.
+Confine your attention to the parser.
+
+The parser thinks it is looking for classes, and within classes,
+method definitions.  Your job is to tell the parser how to do this.
+Let's look at part of the ctor for baseScannerClass for clues::
+
+   # May be overridden in subclasses.
+   self.anonymousClasses = [] # For Delphi Pascal interfaces.
+   self.blockCommentDelim1 = None
+   self.blockCommentDelim2 = None
+   self.blockCommentDelim1_2 = None
+   self.blockCommentDelim2_2 = None
+   self.blockDelim1 = '{'
+   self.blockDelim2 = '}'
+   self.blockDelim2Cruft = [] # Stuff that can follow .blockDelim2.
+   self.classTags = ['class',] # tags that start a tag.
+   self.functionTags = []
+   self.hasClasses = True
+   self.hasFunctions = True
+   self.lineCommentDelim = None
+   self.lineCommentDelim2 = None
+   self.outerBlockDelim1 = None
+   self.outerBlockDelim2 = None
+   self.outerBlockEndsDecls = True
+   self.sigHeadExtraTokens = [] # Extra tokens valid in head of signature.
+   self.sigFailTokens = []
+       # A list of strings that abort a signature when seen in a tail.
+       # For example, ';' and '=' in C.
+   self.strict = False # True if leading whitespace is very significant.
+
+Naturally, this looks like gibberish at first. I do *not* remember what all
+these things do in detail, although obviously the names mean something. What I
+*do* remember is that these ivars control the operation of the startsFunction
+and startsClass methods and their helpers (especially startsHelper) and
+the methods that call them, scan and scanHelper. Most of these methods have a
+trace var that will enable tracing during importing.
+
+So the strategy is simple: study startsHelper in detail, set the ivars above to
+make startsHelper do what you want, and trace until things work as you want.
+
+There is one more detail. Sometimes the ivars above are not sufficient to get
+the job done. In that case, subclasses will override various methods of the
+parser, but *not* the code generator. If indentation is important, you will want
+to look at the Python importer. Notice that it overrides skipCodeBlock, called
+by startsHelper.
+
+That's about it. It would be pointless to give you more details, because those
+details would lead you *away* from the process you need to follow. Having said
+that, feel free to ask further questions. I'll be glad to answer them.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?
