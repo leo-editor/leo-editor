@@ -1486,7 +1486,7 @@ class baseFileCommands:
                     s = self.cleanSaxInputString(s)
                     theFile = BytesIO(s)
                 else:
-                    s = str(s,encoding='utf-8') ####
+                    s = str(s,encoding='utf-8')
                     s = self.cleanSaxInputString(s)
                     theFile = StringIO(s)
             else:

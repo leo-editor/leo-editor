@@ -466,6 +466,7 @@
 <v t="ekr.20100119151232.2047"><vh>@@thin undefined-section-test</vh></v>
 <v t="ekr.20100121091254.2051"><vh>g.u test</vh></v>
 <v t="ekr.20100121155322.2051"><vh>@@file at-file-test.py</vh></v>
+<v t="ekr.20100122125233.2053"><vh>@test zcpspm</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -886,7 +887,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="10"></t>
+<t tx="ekr.20070416075121" str_leo_pos="11"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5126,5 +5127,23 @@ g.es_print(s,s2,s3)
 <t tx="ekr.20100121155322.2051"># Will findChild4 be called?
 
 print(g.debug)</t>
+<t tx="ekr.20100122125233.2053">root = p.copy()
+while p.hasChildren():
+   p.firstChild().doDelete(newNode = None)
+
+print(g.app.gui.guiName())
+
+try:
+   p1 = p.insertAsLastChild()
+   p1.expand()
+   body = 'foo'
+   # p1.setBodyString(body)
+   p1.b = body
+   c.selectPosition(p1)
+   c.copyOutline()
+   c.pasteOutline()
+finally:
+   c.redraw_now()
+</t>
 </tnodes>
 </leo_file>

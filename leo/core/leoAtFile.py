@@ -246,7 +246,6 @@ class atFile:
     def initReadIvars(self,root,fileName,
         importFileName=None,
         perfectImportRoot=None,
-        thinFile=False,
         atShadow=False,
     ):
 
@@ -290,7 +289,7 @@ class atFile:
         self.importing = importing
         self.root = root
         self.targetFileName = fileName
-        self.thinFile = thinFile
+        self.thinFile = False # 2010/01/22: was thinFile
         self.atShadow = atShadow
     #@-node:ekr.20041005105605.13:initReadIvars
     #@+node:ekr.20041005105605.15:initWriteIvars
@@ -404,8 +403,8 @@ class atFile:
         root_v = leoNodes.vnode(context=c)
         root = leoNodes.position(root_v)
         theFile = g.fileLikeObject(fromString=s)
-        thinFile = at.scanHeaderForThin (theFile,fn)
-        at.initReadIvars(root,fn,thinFile=thinFile)
+        # 2010/01/22: readOpenFiles now determines whether a file is thin or not.
+        at.initReadIvars(root,fn)
         if at.errors: return
         at.openFileForReading(fromString=s)
         if not at.inputFile: return
@@ -458,18 +457,76 @@ class atFile:
 
         return fn
     #@-node:ekr.20041005105605.19:openFileForReading (atFile) helper & test
-    #@+node:ekr.20041005105605.21:read (atFile) & helper
-    def read(self,root,
-        importFileName=None,thinFile=False,
-        fromString=None,atShadow=False,
-        force=False
+    #@+node:ekr.20041005105605.21:read (atFile) & helpers
+    def read(self,root,importFileName=None,
+        fromString=None,atShadow=False,force=False
     ):
 
         """Read any @thin, @file and @noref trees."""
 
         at = self ; c = at.c
-        #@    << set fileName and isAtFile >>
-        #@+node:ekr.20041005105605.22:<< set fileName and isAtFile >>
+        fileName = at.initFileName(fromString,importFileName,root)
+        if not fileName:
+            at.error("Missing file name.  Restoring @file tree from .leo file.")
+            return False
+        at.initReadIvars(root,fileName,
+            importFileName=importFileName,atShadow=atShadow)
+        if at.errors:
+            return False
+        fileName = at.openFileForReading(fromString=fromString)
+        if at.inputFile:
+            c.setFileTimeStamp(fileName)
+        else:
+            return False
+        root.v.at_read = True # Remember that we have read this file.
+        # Get the file from the cache if possible.
+        ok,cachefile = self.readFromCache(fileName,force,root)
+        if ok:
+            return True
+        if not g.unitTesting:
+            g.es("reading:",root.h)
+        root.clearVisitedInTree()
+        at.scanAllDirectives(root,importing=at.importing,reading=True)
+        thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
+        at.inputFile.close()
+        root.clearDirty() # May be set dirty below.
+        if at.errors == 0:
+            at.warnAboutUnvisitedNodes(root)
+            at.deleteTnodeList(root)
+        if at.errors == 0 and not at.importing:
+            # Used by mod_labels plugin.
+            self.copyAllTempBodyStringsToTnodes(root,thinFile)
+        at.deleteAllTempBodyStrings()
+        if at.errors == 0:
+            self.writeCachedTree(root,cachefile)
+
+        return at.errors == 0
+    #@+node:ekr.20041005105605.25:deleteAllTempBodyStrings
+    def deleteAllTempBodyStrings(self):
+
+        for v in self.c.all_unique_nodes():
+            if hasattr(v,"tempBodyString"):
+                delattr(v,"tempBodyString")
+    #@-node:ekr.20041005105605.25:deleteAllTempBodyStrings
+    #@+node:ekr.20100122130101.6174:deleteTnodeList
+    def deleteTnodeList (self,p):
+
+        '''Remove p's tnodeList.'''
+
+        v = p.v
+
+        if hasattr(v,"tnodeList"):
+
+            if True: # Not an error, but a useful trace.
+                s = "deleting tnodeList for " + repr(v)
+                g.es_print(s,color="blue")
+
+            delattr(v,"tnodeList")
+            v._p_changed = True
+    #@-node:ekr.20100122130101.6174:deleteTnodeList
+    #@+node:ekr.20041005105605.22:initFileName
+    def initFileName (self,fromString,importFileName,root):
+
         if fromString:
             fileName = "<string-file>"
         elif importFileName:
@@ -479,101 +536,53 @@ class atFile:
         else:
             fileName = None
 
-        if not fileName:
-            at.error("Missing file name.  Restoring @file tree from .leo file.")
-            return False
+        return fileName
 
-        isAtFile = (
-            not thinFile and
-            not importFileName and
-            not atShadow and
-            not fromString and
-            root.h.startswith('@file'))
-        #@nonl
-        #@-node:ekr.20041005105605.22:<< set fileName and isAtFile >>
-        #@nl
-        if isAtFile:
-            # The @file node has file-like sentinels iff a tnodeList exists.
-            thinFile = not (hasattr(root.v,'tnodeList') and root.v.tnodeList)
-        doCache = g.enableDB and (thinFile or atShadow) and not force
-        at.initReadIvars(root,fileName,
-            importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
-        if at.errors: return False
-        fileName = at.openFileForReading(fromString=fromString)
-        if at.inputFile:
-            c.setFileTimeStamp(fileName)
-        else:
-            return False
+        # isAtFile = (
+            # not thinFile and
+            # not importFileName and
+            # not atShadow and
+            # not fromString and
+            # root.h.startswith('@file'))
+    #@-node:ekr.20041005105605.22:initFileName
+    #@+node:ekr.20100122130101.6176:readFromCache
+    def readFromCache (self,fileName,force,root):
 
-        fileContent = open(fileName, "rb").read()
-        cachefile = self._contentHashFile(root.h,fileContent)
+        at = self ; c = at.c
+        s = open(fileName, "rb").read()
+        cachefile = self._contentHashFile(root.h,s)
 
-        # Remember that we have read this file.
-        root.v.at_read = True # Create the attribute for all clones.
-
-        if doCache and cachefile in c.db:
+        # 2010/01/22: uncache *any* file provided 'force' is False.
+        doCache = g.enableDB and not force
+        ok = doCache and cachefile in c.db
+        if ok:
             # Delete the previous tree, regardless of the @<file> type.
             while root.hasChildren():
                 root.firstChild().doDelete()
+            # Recreate the file from the cache.
             aList = c.db[cachefile]
             root.v.createOutlineFromCacheList(c,aList)
             at.inputFile.close()
             root.clearDirty()
-            return
 
-        # Delete all children, but **not** for @file and @nosent nodes!
-        # (We do delete all children for @file nodes with thin-like sentinels.)
-        if thinFile or atShadow:
-            root.v.at_read = True # Create the attribute for all clones.
-            while root.hasChildren():
-                root.firstChild().doDelete()
+        return ok,cachefile
+    #@-node:ekr.20100122130101.6176:readFromCache
+    #@+node:ekr.20071105164407:warnAboutUnvisitedNodes
+    def warnAboutUnvisitedNodes (self,root):
 
-        if not g.unitTesting:
-            g.es("reading:",root.h)
+        resurrected = 0
 
-        root.clearVisitedInTree()
-        at.scanAllDirectives(root,importing=at.importing,reading=True)
-        at.readOpenFile(root,at.inputFile,fileName)
-        at.inputFile.close()
-        root.clearDirty() # May be set dirty below.
-        if at.errors == 0:
-            #@        << advise user to delete all unvisited nodes >>
-            #@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
-            resurrected = 0
-            for p in root.self_and_subtree():
-                if p.v.isVisited():
-                    pass
-                    # g.trace('visited',p.v,p.h)
-                else:
-                    g.trace('**** not visited',p.v,p.h)
-                    g.es('resurrected node:',p.h,color='blue')
-                    g.es('in file:',fileName,color='blue')
-                    resurrected += 1
+        for p in root.self_and_subtree():
+            if not p.v.isVisited():
+                g.trace('**** not visited',p.v,p.h)
+                g.es('resurrected node:',p.h,color='blue')
+                g.es('in file:',root.h,color='blue')
+                resurrected += 1
 
-            if resurrected:
-                g.es('you may want to delete ressurected nodes')
-
-            #@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >> atFile.read
-            #@nl
-        if at.errors == 0 and not at.importing:
-            # Package this as a method for use by mod_labels plugin.
-            self.copyAllTempBodyStringsToTnodes(root,thinFile)
-
-        #@    << delete all tempBodyStrings >>
-        #@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
-        for v in c.all_unique_nodes():
-
-            if hasattr(v,"tempBodyString"):
-                delattr(v,"tempBodyString")
-        #@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
-        #@nl
-
-        # write out the cache version
-        if at.errors == 0: # 2010/01/07
-            self.writeCachedTree(root, cachefile)
-
-        return at.errors == 0
-    #@-node:ekr.20041005105605.21:read (atFile) & helper
+        if resurrected:
+            g.es('you may want to delete ressurected nodes')
+    #@-node:ekr.20071105164407:warnAboutUnvisitedNodes
+    #@-node:ekr.20041005105605.21:read (atFile) & helpers
     #@+node:ville.20090606131405.6362:writeCachedTree (atFile)
     def writeCachedTree(self, p, cachefile):
 
@@ -650,7 +659,7 @@ class atFile:
                 p.moveToNodeAfterTree()
             elif p.isAtThinFileNode():
                 anyRead = True
-                at.read(p,thinFile=True,force=force)
+                at.read(p,force=force)
                 p.moveToNodeAfterTree()
             elif p.isAtAutoNode():
                 fileName = p.atAutoNodeName()
@@ -771,21 +780,27 @@ class atFile:
         g.doHook('after-edit',p=p)
     #@-node:ekr.20090225080846.3:readOneAtEditNode (atFile)
     #@+node:ekr.20041005105605.27:readOpenFile
-    def readOpenFile(self,root,theFile,fileName):
+    def readOpenFile(self,root,theFile,fileName,deleteNodes=False):
 
         '''Read an open derived file.
 
         Leo 4.5 and later can only read 4.x derived files.'''
 
-        at = self ; ok = True
+        at = self
 
-        firstLines,read_new,junk = at.scanHeader(theFile,fileName)
+        firstLines,read_new,thinFile = at.scanHeader(theFile,fileName)
+        at.thinFile = thinFile
+            # 2010/01/22: use *only* the header to set self.thinFile.
+
+        if deleteNodes and at.shouldDeleteChildren(root,thinFile):
+            root.v.at_read = True # Create the attribute for all clones.
+            while root.hasChildren():
+                root.firstChild().doDelete()
 
         if read_new:
             lastLines = at.scanText4(theFile,fileName,root)
         else:
             firstLines = [] ; lastLines = []
-            ok = False
             if at.atShadow:
                 g.trace(g.callers())
                 g.trace('invalid @shadow private file',fileName)
@@ -813,24 +828,22 @@ class atFile:
         #@-node:ekr.20041005105605.28:<< handle first and last lines >>
         #@nl
 
-        return ok
+        return thinFile
+    #@+node:ekr.20100122130101.6175:shouldDeleteChildren
+    def shouldDeleteChildren (self,root,thinFile):
+
+        '''Return True if we should delete all children before a read.'''
+
+        # Delete all children except for old-style @file nodes
+
+        if root.isAtNoSentFileNode():
+            return False
+        elif root.isAtFileNode() and not thinFile:
+            return False
+        else:
+            return True
+    #@-node:ekr.20100122130101.6175:shouldDeleteChildren
     #@-node:ekr.20041005105605.27:readOpenFile
-    #@+node:ekr.20050103163224:scanHeaderForThin
-    def scanHeaderForThin (self,theFile,fileName):
-
-        '''Scan the header of a derived file and return True if it is a thin file.
-
-        N.B. We are not interested in @first lines, so any encoding will do.'''
-
-        at = self
-
-        # The encoding doesn't matter.  No error messages are given.
-        at.encoding = at.c.config.default_derived_file_encoding
-
-        junk,junk,isThin = at.scanHeader(theFile,fileName)
-
-        return isThin
-    #@-node:ekr.20050103163224:scanHeaderForThin
     #@+node:ekr.20080801071227.7:readAtShadowNodes (atFile)
     def readAtShadowNodes (self,p):
 
@@ -867,7 +880,7 @@ class atFile:
             p.firstChild().doDelete()
 
         if shadow_exists:
-            at.read(p,thinFile=True,atShadow=True)
+            at.read(p,atShadow=True)
         else:
             if not g.unitTesting: g.es("reading:",p.h)
             ok = at.importAtShadowNode(fn,p)
@@ -1853,107 +1866,6 @@ class atFile:
     #@-node:ekr.20041005105605.115:skipSentinelStart4
     #@-node:ekr.20041005105605.71:Reading (4.x)
     #@+node:ekr.20041005105605.116:Reading utils...
-    #@+node:ekr.20041005105605.117:completeFirstDirectives
-    # 14-SEP-2002 DTHEIN: added for use by atFile.read()
-
-    # this function scans the lines in the list 'out' for @first directives
-    # and appends the corresponding line from 'firstLines' to each @first 
-    # directive found.  NOTE: the @first directives must be the very first
-    # lines in 'out'.
-    def completeFirstDirectives(self,out,firstLines):
-
-        tag = "@first"
-        foundAtFirstYet = 0
-        outRange = range(len(out))
-        j = 0
-        for k in outRange:
-            # skip leading whitespace lines
-            if (not foundAtFirstYet) and (len(out[k].strip()) == 0): continue
-            # quit if something other than @first directive
-            i = 0
-            if not g.match(out[k],i,tag): break
-            foundAtFirstYet = 1
-            # quit if no leading lines to apply
-            if j >= len(firstLines): break
-            # make the new @first directive
-            #18-SEP-2002 DTHEIN: remove trailing newlines because they are inserted later
-            # 21-SEP-2002 DTHEIN: no trailing whitespace on empty @first directive
-            leadingLine = " " + firstLines[j]
-            out[k] = tag + leadingLine.rstrip() ; j += 1
-    #@-node:ekr.20041005105605.117:completeFirstDirectives
-    #@+node:ekr.20041005105605.118:completeLastDirectives
-    # 14-SEP-2002 DTHEIN: added for use by atFile.read()
-
-    # this function scans the lines in the list 'out' for @last directives
-    # and appends the corresponding line from 'lastLines' to each @last 
-    # directive found.  NOTE: the @last directives must be the very last
-    # lines in 'out'.
-    def completeLastDirectives(self,out,lastLines):
-
-        tag = "@last"
-        foundAtLastYet = 0
-        outRange = range(-1,-len(out),-1)
-        j = -1
-        for k in outRange:
-            # skip trailing whitespace lines
-            if (not foundAtLastYet) and (len(out[k].strip()) == 0): continue
-            # quit if something other than @last directive
-            i = 0
-            if not g.match(out[k],i,tag): break
-            foundAtLastYet = 1
-            # quit if no trailing lines to apply
-            if j < -len(lastLines): break
-            # make the new @last directive
-            #18-SEP-2002 DTHEIN: remove trailing newlines because they are inserted later
-            # 21-SEP-2002 DTHEIN: no trailing whitespace on empty @last directive
-            trailingLine = " " + lastLines[j]
-            out[k] = tag + trailingLine.rstrip() ; j -= 1
-    #@-node:ekr.20041005105605.118:completeLastDirectives
-    #@+node:ekr.20050301105854:copyAllTempBodyStringsToTnodes
-    def  copyAllTempBodyStringsToTnodes (self,root,thinFile):
-
-        c = self.c
-        for p in root.self_and_subtree():
-            try: s = p.v.tempBodyString
-            except Exception: s = ""
-            old_body = p.b
-            if s != old_body:
-                if False and old_body: # For debugging.
-                    g.pr("\nchanged: " + p.h)
-                    g.pr("\nnew:",s)
-                    g.pr("\nold:",p.b)
-                if thinFile:
-                    p.v.setBodyString(s)
-                    if p.v.isDirty():
-                        p.setAllAncestorAtFileNodesDirty()
-                else:
-                    c.setBodyString(p,s) # Sets c and p dirty.
-
-                if not thinFile or (thinFile and p.v.isDirty()):
-                    # New in Leo 4.3: support for mod_labels plugin:
-                    try:
-                        c.mod_label_controller.add_label(p,"before change:",old_body)
-                    except Exception:
-                        pass
-                    g.es("changed:",p.h,color="blue")
-                    # p.setMarked()
-    #@-node:ekr.20050301105854:copyAllTempBodyStringsToTnodes
-    #@+node:ekr.20041005105605.119:createImportedNode
-    def createImportedNode (self,root,headline):
-
-        at = self
-
-        if at.importRootSeen:
-            p = root.insertAsLastChild()
-            p.initHeadString(headline)
-        else:
-            # Put the text into the already-existing root node.
-            p = root
-            at.importRootSeen = True
-
-        p.v.setVisited() # Suppress warning about unvisited node.
-        return p
-    #@-node:ekr.20041005105605.119:createImportedNode
     #@+node:ekr.20041005105605.120:at.parseLeoSentinel
     def parseLeoSentinel (self,s):
 
@@ -2071,32 +1983,6 @@ class atFile:
             g.trace('not new_df(!)',repr(s))
         return valid,new_df,start,end,isThinDerivedFile
     #@-node:ekr.20041005105605.120:at.parseLeoSentinel
-    #@+node:ekr.20041005105605.127:readError
-    def readError(self,message):
-
-        # This is useful now that we don't print the actual messages.
-        if self.errors == 0:
-            self.printError("----- read error. line: %s, file: %s" % (
-                self.lineNumber,self.targetFileName,))
-
-        # g.trace(self.root,g.callers())
-        self.error(message)
-
-        # Delete all of root's tree.
-        self.root.v.children = []
-        self.root.setOrphan()
-        self.root.setDirty()
-    #@-node:ekr.20041005105605.127:readError
-    #@+node:ekr.20041005105605.128:readLine
-    def readLine (self,theFile):
-
-        """Reads one line from file using the present encoding"""
-
-        s = g.readlineForceUnixNewline(theFile) # calls theFile.readline
-        # g.trace(repr(s),g.callers(4))
-        u = g.toUnicode(s,self.encoding)
-        return u
-    #@-node:ekr.20041005105605.128:readLine
     #@+node:ekr.20041005105605.129:at.scanHeader
     def scanHeader(self,theFile,fileName):
 
@@ -2157,6 +2043,151 @@ class atFile:
         # g.trace("start,end",repr(at.startSentinelComment),repr(at.endSentinelComment))
         return firstLines,new_df,isThinDerivedFile
     #@-node:ekr.20041005105605.129:at.scanHeader
+    #@+node:ekr.20041005105605.117:completeFirstDirectives
+    # 14-SEP-2002 DTHEIN: added for use by atFile.read()
+
+    # this function scans the lines in the list 'out' for @first directives
+    # and appends the corresponding line from 'firstLines' to each @first 
+    # directive found.  NOTE: the @first directives must be the very first
+    # lines in 'out'.
+    def completeFirstDirectives(self,out,firstLines):
+
+        tag = "@first"
+        foundAtFirstYet = 0
+        outRange = range(len(out))
+        j = 0
+        for k in outRange:
+            # skip leading whitespace lines
+            if (not foundAtFirstYet) and (len(out[k].strip()) == 0): continue
+            # quit if something other than @first directive
+            i = 0
+            if not g.match(out[k],i,tag): break
+            foundAtFirstYet = 1
+            # quit if no leading lines to apply
+            if j >= len(firstLines): break
+            # make the new @first directive
+            #18-SEP-2002 DTHEIN: remove trailing newlines because they are inserted later
+            # 21-SEP-2002 DTHEIN: no trailing whitespace on empty @first directive
+            leadingLine = " " + firstLines[j]
+            out[k] = tag + leadingLine.rstrip() ; j += 1
+    #@-node:ekr.20041005105605.117:completeFirstDirectives
+    #@+node:ekr.20041005105605.118:completeLastDirectives
+    # 14-SEP-2002 DTHEIN: added for use by atFile.read()
+
+    # this function scans the lines in the list 'out' for @last directives
+    # and appends the corresponding line from 'lastLines' to each @last 
+    # directive found.  NOTE: the @last directives must be the very last
+    # lines in 'out'.
+    def completeLastDirectives(self,out,lastLines):
+
+        tag = "@last"
+        foundAtLastYet = 0
+        outRange = range(-1,-len(out),-1)
+        j = -1
+        for k in outRange:
+            # skip trailing whitespace lines
+            if (not foundAtLastYet) and (len(out[k].strip()) == 0): continue
+            # quit if something other than @last directive
+            i = 0
+            if not g.match(out[k],i,tag): break
+            foundAtLastYet = 1
+            # quit if no trailing lines to apply
+            if j < -len(lastLines): break
+            # make the new @last directive
+            #18-SEP-2002 DTHEIN: remove trailing newlines because they are inserted later
+            # 21-SEP-2002 DTHEIN: no trailing whitespace on empty @last directive
+            trailingLine = " " + lastLines[j]
+            out[k] = tag + trailingLine.rstrip() ; j -= 1
+    #@-node:ekr.20041005105605.118:completeLastDirectives
+    #@+node:ekr.20050301105854:copyAllTempBodyStringsToTnodes
+    def  copyAllTempBodyStringsToTnodes (self,root,thinFile):
+
+        c = self.c
+        for p in root.self_and_subtree():
+            try: s = p.v.tempBodyString
+            except Exception: s = ""
+            old_body = p.b
+            if s != old_body:
+                if False and old_body: # For debugging.
+                    g.pr("\nchanged: " + p.h)
+                    g.pr("\nnew:",s)
+                    g.pr("\nold:",p.b)
+                if thinFile:
+                    p.v.setBodyString(s)
+                    if p.v.isDirty():
+                        p.setAllAncestorAtFileNodesDirty()
+                else:
+                    c.setBodyString(p,s) # Sets c and p dirty.
+
+                if not thinFile or (thinFile and p.v.isDirty()):
+                    # New in Leo 4.3: support for mod_labels plugin:
+                    try:
+                        c.mod_label_controller.add_label(p,"before change:",old_body)
+                    except Exception:
+                        pass
+                    g.es("changed:",p.h,color="blue")
+                    # p.setMarked()
+    #@-node:ekr.20050301105854:copyAllTempBodyStringsToTnodes
+    #@+node:ekr.20041005105605.119:createImportedNode
+    def createImportedNode (self,root,headline):
+
+        at = self
+
+        if at.importRootSeen:
+            p = root.insertAsLastChild()
+            p.initHeadString(headline)
+        else:
+            # Put the text into the already-existing root node.
+            p = root
+            at.importRootSeen = True
+
+        p.v.setVisited() # Suppress warning about unvisited node.
+        return p
+    #@-node:ekr.20041005105605.119:createImportedNode
+    #@+node:ekr.20041005105605.127:readError
+    def readError(self,message):
+
+        # This is useful now that we don't print the actual messages.
+        if self.errors == 0:
+            self.printError("----- read error. line: %s, file: %s" % (
+                self.lineNumber,self.targetFileName,))
+
+        # g.trace(self.root,g.callers())
+        self.error(message)
+
+        # Delete all of root's tree.
+        self.root.v.children = []
+        self.root.setOrphan()
+        self.root.setDirty()
+    #@-node:ekr.20041005105605.127:readError
+    #@+node:ekr.20041005105605.128:readLine
+    def readLine (self,theFile):
+
+        """Reads one line from file using the present encoding"""
+
+        s = g.readlineForceUnixNewline(theFile) # calls theFile.readline
+        # g.trace(repr(s),g.callers(4))
+        u = g.toUnicode(s,self.encoding)
+        return u
+    #@-node:ekr.20041005105605.128:readLine
+    #@+node:ekr.20050103163224:scanHeaderForThin (used by import code)
+    # Note: Import code uses this.
+
+    def scanHeaderForThin (self,theFile,fileName):
+
+        '''Scan the header of a derived file and return True if it is a thin file.
+
+        N.B. We are not interested in @first lines, so any encoding will do.'''
+
+        at = self
+
+        # The encoding doesn't matter.  No error messages are given.
+        at.encoding = at.c.config.default_derived_file_encoding
+
+        junk,junk,isThin = at.scanHeader(theFile,fileName)
+
+        return isThin
+    #@-node:ekr.20050103163224:scanHeaderForThin (used by import code)
     #@+node:ekr.20041005105605.131:skipIndent
     # Skip past whitespace equivalent to width spaces.
 

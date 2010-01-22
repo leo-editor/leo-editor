@@ -958,7 +958,7 @@ class leoImportCommands (scanUtility):
             p = parent.insertAfter()
             if isThin:
                 p.initHeadString("@thin " + fileName)
-                at.read(p,thinFile=True)
+                at.read(p)
             else:
                 p.initHeadString("Imported @file " + fileName)
                 at.read(p,importFileName=fileName)

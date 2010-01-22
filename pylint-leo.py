@@ -5,10 +5,10 @@ from pylint import lint
 core_table = (
     # ('leoGlobals.py',''),
     # ('leoApp.py',''),
-    # ('leoAtFile.py',''),
+    ('leoAtFile.py',''),
     #  ('leoChapters.py',''),
-    # ('leoCommands.py',''),
-    # ('leoEditCommands.py','W0511'),
+    #  ('leoCommands.py',''),
+    #  ('leoEditCommands.py','W0511'),
     # ('leoFileCommands.py',''),
     # ('leoFind.py',''),
     # ('leoFrame.py',''),
