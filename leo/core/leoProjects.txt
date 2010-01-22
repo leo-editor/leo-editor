@@ -1,0 +1,1198 @@
+#@+leo-ver=4-thin
+#@+node:ekr.20100120072650.6089:@thin leoProjects.txt
+#@+at 
+#@nonl
+# This part of the tree shows views of the outline related to specific 
+# projects or tasks.  I put such headlines in parentheses, and that is just my 
+# convention.
+# 
+# I create a new view by cloning headlines that relate to its task, and moving 
+# the cloned headlines under the task headline.  This greatly increases my 
+# focus.  Any changes made in a task view to clone headlines affect the other 
+# clones scattered throughout the outline.  In particular, all @file nodes 
+# containing changed clones become marked as dirty, so they will be written 
+# when the entire outline is saved.
+#@-at
+#@@c
+
+#@@language python 
+#@@tabwidth -4
+
+#@+all
+#@+node:ekr.20100118163110.6256:Leo 4.7 rc1 projects
+#@+node:ekr.20100121105450.6175:Bugs
+#@+node:ekr.20100119024225.6107:Fixed colorizer bug affecting per-language @font settings
+@nocolor-node
+
+It looks like you should be able to put the following in an
+@font node, and get restructured text bold to appear in bold onscreen:
+
+rest_keyword2_font_size = 16
+rest_keyword2_font_family = Bitstream Charter
+rest_keyword2_font_slant = roman
+rest_keyword2_font_weight = bold
+
+However nothing happens when I do this. The python examples in the
+test.leo file work fine for me, so I'm not sure what's gone wrong.
+
+I think that the following should also work, but it's also currently
+not doing anything for me:
+
+@color rest_keyword2_color = black
+
+==================
+
+Rev 2706 fixes a significant colorizer bug that caused your problem.
+Previously, the colorizer inited the so-called configuration tags only
+once, which is wrong. These tags are what the @font settings specify.
+Now, the colorizer inits the tags when the language changes when
+switching nodes.  Usually the language doesn't change, so the new code
+will be approximately as fast as the old. 
+#@-node:ekr.20100119024225.6107:Fixed colorizer bug affecting per-language @font settings
+#@+node:ekr.20100119024225.6108:support extend-mode for several commands
+'backward-find-character'
+'find-character'
+#@-node:ekr.20100119024225.6108:support extend-mode for several commands
+#@+node:ekr.20100119024225.6106:Fixed qttab problem
+@nocolor-node
+
+On Mon, Jan 18, 2010 at 9:25 PM, tfer <tfetherston@aol.com> wrote:
+
+cmd.exe /k C:\PyDev\leo-editor\trunk\launchLeo.py --gui=qttabs -- ipython
+
+1) (??) the button removal menu just flash on right mouse click, disappears immediately.
+
+2) Leo opens up the workbook, I open a new doc in a tab, 'untitled', save it,
+   get saved ... in log, however, tab title does not change unless I close and
+   reload it.
+#@-node:ekr.20100119024225.6106:Fixed qttab problem
+#@+node:ekr.20100115091643.6249:<alt-x> select-all crashes python when focus is in headline
+@
+The problem occurs because the QtGui.QLineEdit object goes away
+when the minibuffer gets focus and the QTreeWidget loses focus.
+
+The fix: add a 'permanent' ivar to leoQtTextWidgets, and set
+this ivar to False for headline widgets.
+#@nonl
+#@-node:ekr.20100115091643.6249:<alt-x> select-all crashes python when focus is in headline
+#@+node:ekr.20080412053100.1:Allow saving .leo files with undefined-sections
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
+
+1) Create an @thin file based outline.
+2) In the @thin file, create an unreferenced section (something like a
+  header <<This Section Is Bogus>>).
+3) Now, File->Exit
+4) A dialog box pops up
+  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
+5) Click "Yes"
+6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
+  and in the console window, you see "undefined section: ..."
+
+The point is that I can't kill Leo if I keep saying "Yes" to the
+"Save change before quitting" dialog. This is definitely not the
+intended behavior. The correct behavior would be to save the file,
+give me the warning about the undefined section, and exit.
+
+EKR: The fix was simple: write_leo_file ignores the status returned from
+c.atFileCommands.writeAll.
+
+Note that Leo writes the write error to the console as well as the log pane,
+so this should be safe enough.
+#@nonl
+#@-node:ekr.20080412053100.1:Allow saving .leo files with undefined-sections
+#@+node:ekr.20100119175348.6127:Refactored write_Leo_file
+#@-node:ekr.20100119175348.6127:Refactored write_Leo_file
+#@+node:ekr.20100119175348.6128:Fixed print-bindings crasher w/ leo3k
+#@-node:ekr.20100119175348.6128:Fixed print-bindings crasher w/ leo3k
+#@+node:ekr.20080406075855.2:Fixed problem with already-existing .leo.bak files
+@nocolor-node
+
+I also unhappily discovered that any file named somedoc.leo.bak will
+get deleted whenever you save a file named somedoc.leo.
+
+===========
+
+This turned into a major refactoring of write_Leo_file.
+#@nonl
+#@-node:ekr.20080406075855.2:Fixed problem with already-existing .leo.bak files
+#@+node:ekr.20100120095741.6135:Fixed sort children bug
+https://bugs.launchpad.net/leo-editor/+bug/510148
+
+The fix was in sortSiblings.
+#@-node:ekr.20100120095741.6135:Fixed sort children bug
+#@+node:ekr.20100120073530.6083:Fixed unicode problems
+@nocolor-node
+
+- 'encoding' arg removed from appendStringToBody, setBodyString
+
+- There are too many usages of _bodyString !!
+
+- There is no way to give an encoding to setBodyString:
+    It should give an internal error if the s arg is not unicode.
+#@nonl
+#@+node:ekr.20080710101653.1:g.pr
+# see: http://www.diveintopython.org/xml_processing/unicode.html
+
+pr_warning_given = False
+
+def pr(*args,**keys):
+
+    '''Print all non-keyword args, and put them to the log pane.
+    The first, third, fifth, etc. arg translated by g.translateString.
+    Supports color, comma, newline, spaces and tabName keyword arguments.
+    '''
+
+    # Compute the effective args.
+    d = {'commas':False,'newline':True,'spaces':True}
+    d = g.doKeywordArgs(keys,d)
+    newline = d.get('newline')
+    nl = g.choose(newline,'\n','')
+    if hasattr(sys.stdout,'encoding') and sys.stdout.encoding:
+        encoding = sys.stdout.encoding
+    else:
+        encoding = 'utf-8'
+
+    # Important:  Python's print statement *can* handle unicode.
+    # However, the following must appear in Python\Lib\sitecustomize.py:
+    #    sys.setdefaultencoding('utf-8')
+    s = g.translateArgs(args,d) # Translates everything to unicode.
+    if app.logInited:
+        s = s + '\n'
+
+    if g.isPython3:
+        s2 = s
+    else:
+        s2 = g.toEncodedString(s,encoding)
+
+    if app.logInited:
+        try: # We can't use any print keyword args in Python 2.x!
+            sys.stdout.write(s2)
+        except Exception:
+            if not g.pr_warning_given:
+                g.pr_warning_given = True
+                print('unexpected Exception in g.pr')
+                print('make sure your sitecustomize.py contains::')
+                print('    sys.setdefaultencoding("utf-8")')
+                g.es_exception()
+                g.trace(g.callers())
+            s2 = s.encode('ascii',"replace")
+            if g.isPython3:
+                s2 = str(s2,'ascii','replace')
+            sys.stdout.write(s2)
+    else:
+        app.printWaiting.append(s2)
+#@-node:ekr.20080710101653.1:g.pr
+#@+node:ekr.20100120095741.6136:qtGui diff
+
+c:\leo.repo\trunk>bzr di -r2685..2686 leo\plugins\qtGui.py   
+=== modified file 'leo/plugins/qtGui.py'
+--- leo/plugins/qtGui.py	2010-01-15 15:18:58 +0000
++++ leo/plugins/qtGui.py	2010-01-16 14:51:14 +0000
+@@ -429,7 +429,7 @@
+         newText = w.getAllText() # Converts to unicode.
+
+         # Get the previous values from the vnode.
+-        oldText = g.app.gui.toUnicode(p.v._bodyString)
++        oldText = p.v._bodyString ### already unicode ### g.app.gui.toUnicode(p.v._bodyString)
+         if oldText == newText:
+             # This can happen as the result of undo.
+             # g.trace('*** unexpected non-change',color="red")
+@@ -669,7 +669,7 @@
+
+         w = self.widget
+         s = w.text()
+-        return g.app.gui.toUnicode(s)
++        return g.u(s) ### g.app.gui.toUnicode(s)
+#@verbatim
+     #@nonl
+#@verbatim
+     #@-node:ekr.20081121105001.551:getAllText
+#@verbatim
+     #@+node:ekr.20081121105001.552:getInsertPoint
+@@ -687,7 +687,7 @@
+         if w.hasSelectedText():
+             i = w.selectionStart()
+             s = w.selectedText()
+-            s = g.app.gui.toUnicode(s)
++            s = g.u(s) ### (s)
+             j = i + len(s)
+         else:
+             i = j = w.cursorPosition()
+@@ -722,7 +722,7 @@
+
+         w = self.widget
+         s = w.text()
+-        s = g.app.gui.toUnicode(s)
++        s = g.u(s) ### g.app.gui.toUnicode(s)
+         i = w.toPythonIndex(i)
+         i = max(0,min(i,len(s)))
+         w.setCursorPosition(i)
+@@ -734,7 +734,7 @@
+         # g.trace(i,j,insert,w)
+         if i > j: i,j = j,i
+         s = w.text()
+-        s = g.app.gui.toUnicode(s)
++        s = g.u(s) ### g.app.gui.toUnicode(s)
+         n = len(s)
+         i = max(0,min(i,n))
+         j = max(0,min(j,n))
+@@ -1407,7 +1407,7 @@
+
+         w = self.widget
+         s = w.text()
+-        s = g.app.gui.toUnicode(s)
++        s = g.u(s) ### g.app.gui.toUnicode(s)
+         return s
+#@verbatim
+     #@-node:ekr.20081121105001.564:getAllText
+#@verbatim
+     #@+node:ekr.20081121105001.565:getInsertPoint
+@@ -1538,7 +1538,7 @@
+         if self.check():
+             w = self.widget
+             s = w.text()
+-            return g.app.gui.toUnicode(s)
++            return g.u(s) ### g.app.gui.toUnicode(s)
+         else:
+             return ''
+#@verbatim
+     #@nonl
+@@ -1561,7 +1561,7 @@
+             if w.hasSelectedText():
+                 i = w.selectionStart()
+                 s = w.selectedText()
+-                s = g.app.gui.toUnicode(s)
++                s = g.u(s) ### g.app.gui.toUnicode(s)
+                 j = i + len(s)
+             else:
+                 i = j = w.cursorPosition()
+@@ -1608,7 +1608,7 @@
+
+         w = self.widget
+         s = w.text()
+-        s = g.app.gui.toUnicode(s)
++        s = g.u(s) ### g.app.gui.toUnicode(s)
+         i = self.toPythonIndex(i)
+         i = max(0,min(i,len(s)))
+         w.setCursorPosition(i)
+@@ -1621,7 +1621,7 @@
+         # g.trace(i,j,insert,w)
+         if i > j: i,j = j,i
+         s = w.text()
+-        s = g.app.gui.toUnicode(s)
++        s = g.u(s) ### g.app.gui.toUnicode(s)
+         n = len(s)
+         i = max(0,min(i,n))
+         j = max(0,min(j,n))
+@@ -5551,7 +5551,6 @@
+     def setMenuLabel (self,menu,name,label,underline=-1):
+
+         def munge(s):
+-            # s = g.app.gui.toUnicode(s)
+             return g.u(s or '').replace('&','')
+
+         # menu is a qtMenuWrapper.
+@@ -6878,8 +6877,9 @@
+         cb = self.qtApp.clipboard()
+         if cb:
+             # cb.clear()  # unnecessary, breaks on some Qt versions
+-            if type(s) == type(''):
+-                s = g.app.gui.toUnicode(s)
++            ###
++            ###if type(s) == type(''):
++            ###    s = g.app.gui.toUnicode(s)
+
+             QtGui.QApplication.processEvents()
+             cb.setText(s)
+@@ -6898,7 +6898,7 @@
+             QtGui.QApplication.processEvents()
+             s = cb.text()
+             if trace: g.trace (len(s),type(s))
+-            s = g.app.gui.toUnicode(s)
++            s = g.app.gui.toUnicode(s) # Assume nothing about the type of s.
+             return s
+         else:
+             g.trace('no clipboard!')
+@@ -7017,7 +7017,7 @@
+         parent = None
+         title = 'Enter Leo id'
+         s,ok = QtGui.QInputDialog.getText(parent,title,message)
+-        return g.app.gui.toUnicode(s)
++        return g.u(s) ### g.app.gui.toUnicode(s)
+#@verbatim
+     #@nonl
+#@verbatim
+     #@-node:ekr.20081121105001.484:runAskLeoIDDialog
+#@verbatim
+     #@+node:ekr.20081121105001.485:runAskOkDialog
+@@ -7099,9 +7099,7 @@
+             return [g.u(s) for s in lst]
+         else:
+             s = QtGui.QFileDialog.getOpenFileName(parent,title,os.curdir,filter)
+-            s = g.app.gui.toUnicode(s)
+-            return s
+-    #@nonl
++            return g.u(s) ### g.app.gui.toUnicode(s)
+#@verbatim
+     #@-node:ekr.20081121105001.488:runOpenFileDialog
+#@verbatim
+     #@+node:ekr.20090722094828.3653:runPropertiesDialog (qtGui)
+     def runPropertiesDialog(self,
+@@ -7125,7 +7123,7 @@
+         parent = None
+         filter_ = self.makeFilter(filetypes)
+         s = QtGui.QFileDialog.getSaveFileName(parent,title,os.curdir,filter_)
+-        return g.app.gui.toUnicode(s)
++        return g.u(s) ### g.app.gui.toUnicode(s)
+#@verbatim
+     #@-node:ekr.20081121105001.489:runSaveFileDialog
+#@verbatim
+     #@+node:ekr.20081121105001.490:runScrolledMessageDialog
+     def runScrolledMessageDialog (self, title='Message', label= '', msg='', c=None, **kw):
+@@ -7421,7 +7419,7 @@
+             s = g.u(s)
+             return s
+         except Exception:
+-            g.trace('*** Unicode Error: bugs possible')
++            # g.trace('*** Unicode Error: bugs possible')
+             return g.toUnicode(s,'utf-8',reportErrors='replace')
+#@verbatim
+     #@-node:ekr.20081121105001.502:toUnicode (qtGui)
+#@verbatim
+     #@+node:ekr.20081121105001.503:widget_name (qtGui)
+
+#@-node:ekr.20100120095741.6136:qtGui diff
+#@+node:ekr.20060919110638.14:parse_leo_file
+def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
+
+    c = self.c
+    try:
+        if g.isPython3:
+            if theFile:
+                # Use the open binary file, opened by g.openLeoOrZipFile.
+                s = theFile.read() # type(s) is bytes.
+                s = self.cleanSaxInputString(s)
+                theFile = BytesIO(s)
+            else:
+                s = str(s,encoding='utf-8') ####
+                s = self.cleanSaxInputString(s)
+                theFile = StringIO(s)
+        else:
+            if theFile: s = theFile.read()
+            s = self.cleanSaxInputString(s)
+            theFile = cStringIO.StringIO(s)
+        parser = xml.sax.make_parser()
+        parser.setFeature(xml.sax.handler.feature_external_ges,1)
+            # Include external general entities, esp. xml-stylesheet lines.
+        if 0: # Expat does not read external features.
+            parser.setFeature(xml.sax.handler.feature_external_pes,1)
+                # Include all external parameter entities
+                # Hopefully the parser can figure out the encoding from the <?xml> element.
+        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
+        parser.setContentHandler(handler)
+        parser.parse(theFile) # expat does not support parseString
+        # g.trace('parsing done')
+        sax_node = handler.getRootNode()
+    except xml.sax.SAXParseException:
+        g.es_print('error parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+    except Exception:
+        g.es_print('unexpected exception parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+
+    return sax_node
+#@-node:ekr.20060919110638.14:parse_leo_file
+#@+node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
+#@+node:ekr.20050208093800:g.toEncodedString
+def toEncodedString (s,encoding,reportErrors=False):
+
+    if g.isUnicode(s):
+        try:
+            s = s.encode(encoding,"strict")
+        except UnicodeError:
+            if reportErrors: g.reportBadChars(s,encoding)
+            s = s.encode(encoding,"replace")
+    return s
+#@-node:ekr.20050208093800:g.toEncodedString
+#@+node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
+def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
+
+    ok = True
+
+    if g.isUnicode(s):
+        try:
+            s = s.encode(encoding,"strict")
+        except UnicodeError:
+            if reportErrors: g.reportBadChars(s,encoding)
+            s = s.encode(encoding,"replace")
+            ok = False
+    return s, ok
+#@-node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
+#@+node:ekr.20050208093800.1:g.toUnicode
+def toUnicode (s,encoding=None,reportErrors=False):
+
+    # The encoding is usually g.app.defaultEncoding,
+    # but is may be different while importing or reading files.
+    if encoding is None:
+        encoding = g.app.defaultEncoding
+
+    if isPython3:
+        convert,mustConvert,nullVal = str,g.isBytes,''
+    else:
+        convert,nullVal = unicode,unicode('')
+        def mustConvert (s):
+            return type(s) != types.UnicodeType
+
+    if not s:
+        s = nullVal
+    elif mustConvert(s):
+        try:
+            s = convert(s,encoding,'strict')
+        except (UnicodeError,Exception):
+            s = convert(s,encoding,'replace')
+            if reportErrors: g.reportBadChars(s,encoding)
+    else:
+        pass
+
+    return s
+#@-node:ekr.20050208093800.1:g.toUnicode
+#@+node:ekr.20091206161352.6232:g.u & g.ue
+if isPython3: # g.not defined yet.
+    def u(s):
+        return s
+    def ue(s,encoding):
+        return str(s,encoding)
+else:
+    def u(s):
+        return unicode(s)
+    def ue(s,encoding):
+        return unicode(s,encoding)
+#@-node:ekr.20091206161352.6232:g.u & g.ue
+#@+node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
+def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
+
+    ok = True
+    if g.isPython3: f = str
+    else: f = unicode
+    if s is None:
+        s = g.u('')
+    if not g.isUnicode(s):
+        try:
+            s = f(s,encoding,'strict')
+        except (UnicodeError,ValueError):
+            if reportErrors:
+                g.reportBadChars(s,encoding)
+            s = f(s,encoding,'replace')
+            ok = False
+    return s,ok
+#@-node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
+#@-node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
+#@-node:ekr.20100120073530.6083:Fixed unicode problems
+#@+node:ekr.20100121050224.6141:Fixed crash in writeToFileHelper
+#@+node:ekr.20031218072017.1470:put
+def put (self,s):
+
+    '''Put string s to self.outputFile. All output eventually comes here.'''
+
+    # Improved code: self.outputFile (a cStringIO object) always exists.
+    # g.trace(g.callers(1),repr(s))
+    if s:
+        self.putCount += 1
+        if not g.isPython3:
+            s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+        self.outputFile.write(s)
+
+def put_dquote (self):
+    self.put('"')
+
+def put_dquoted_bool (self,b):
+    if b: self.put('"1"')
+    else: self.put('"0"')
+
+def put_flag (self,a,b):
+    if a:
+        self.put(" ") ; self.put(b) ; self.put('="1"')
+
+def put_in_dquotes (self,a):
+    self.put('"')
+    if a: self.put(a) # will always be True if we use backquotes.
+    else: self.put('0')
+    self.put('"')
+
+def put_nl (self):
+    self.put("\n")
+
+def put_tab (self):
+    self.put("\t")
+
+def put_tabs (self,n):
+    while n > 0:
+        self.put("\t")
+        n -= 1
+#@nonl
+#@-node:ekr.20031218072017.1470:put
+#@+node:ekr.20100119145629.6111:writeToFileHelper & helpers
+def writeToFileHelper (self,fileName,toOPML):
+
+    c = self.c ; toZip = c.isZipped
+    ok,backupName = self.createBackupFile(fileName)
+    if not ok: return False
+    fileName,theActualFile = self.createActualFile(fileName,toOPML,toZip)
+    self.mFileName = fileName
+    self.outputFile = StringIO() # Always write to a string.
+
+    try:
+        if toOPML:
+            self.putToOPML()
+        else:
+            self.putLeoFile()
+        s = self.outputFile.getvalue()
+        g.app.write_Leo_file_string = s # 2010/01/19: always set this.
+        if toZip:
+            self.writeZipFile(s)
+        else:
+            if g.isPython3:
+                s = bytes(s,self.leo_file_encoding,'replace')
+            theActualFile.write(s)
+            theActualFile.close()
+            c.setFileTimeStamp(fileName)
+            # raise AttributeError # To test handleWriteLeoFileException.
+            # Delete backup file.
+            if backupName and g.os_path_exists(backupName):
+                self.deleteFileWithMessage(backupName,'backup')
+        return True
+    except Exception:
+        self.handleWriteLeoFileException(
+            fileName,backupName,theActualFile)
+        return False
+#@+node:ekr.20100119145629.6106:createActualFile
+def createActualFile (self,fileName,toOPML,toZip):
+
+    c = self.c
+
+    if toOPML and not self.mFileName.endswith('opml'):
+        fileName = self.mFileName + '.opml'
+
+    if toZip:
+        self.toString = True
+        theActualFile = None
+    else:
+        try:
+            # 2010/01/21: always write in binary mode.
+            theActualFile = open(fileName,'wb')
+        except IOError:
+            theActualFile = None
+
+    return fileName,theActualFile
+#@-node:ekr.20100119145629.6106:createActualFile
+#@+node:ekr.20031218072017.3047:createBackupFile
+def createBackupFile (self,fileName):
+
+    '''
+        Create a closed backup file and copy the file to it,
+        but only if the original file exists.
+    '''
+
+    c = self.c
+
+    if g.os_path_exists(fileName):
+        # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
+        fd,backupName = tempfile.mkstemp(text=False)
+        os.close(fd)
+        ok = g.utils_rename(c,fileName,backupName)
+        if not ok and self.read_only:
+            g.es("read only",color="red")
+    else:
+        ok,backupName = True,None
+
+    return ok,backupName
+#@-node:ekr.20031218072017.3047:createBackupFile
+#@+node:ekr.20100119145629.6108:handleWriteLeoFileException
+def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
+
+    c = self.c
+
+    g.es("exception writing:",fileName)
+    g.es_exception(full=True)
+
+    if theActualFile:
+        theActualFile.close()
+
+    # Delete fileName.
+    if fileName and g.os_path_exists(fileName):
+        self.deleteFileWithMessage(fileName,'')
+
+    # Rename backupName to fileName.
+    if backupName and g.os_path_exists(backupName):
+        g.es("restoring",fileName,"from",backupName)
+        g.utils_rename(c,backupName,fileName)
+    else:
+        g.es_print('does not exist!',backupName)
+
+#@-node:ekr.20100119145629.6108:handleWriteLeoFileException
+#@-node:ekr.20100119145629.6111:writeToFileHelper & helpers
+#@-node:ekr.20100121050224.6141:Fixed crash in writeToFileHelper
+#@+node:ekr.20100121105450.6173:Add warnings when @file logic happens
+#@+node:ekr.20041005105605.73:findChild4
+def findChild4 (self,headline):
+
+    """Return the next vnode in at.root.tnodeList.
+    This is called only for @file/@noref nodes"""
+
+    # Note: tnodeLists are used _only_ when reading @file (not @thin) nodes.
+    # tnodeLists compensate (a hack) for not having gnx's in derived files! 
+
+    trace = False and not g.unitTesting
+    at = self ; v = at.root.v
+
+    if not g.unitTesting:
+        if v.isAtFileNode():
+            g.es_print('Warning: @file logic',v.h)
+
+    if trace: g.trace('%s %s %s' % (
+        at.tnodeListIndex,
+        v.tnodeList[at.tnodeListIndex],headline))
+
+    if not hasattr(v,"tnodeList"):
+        at.readError("no tnodeList for " + repr(v))
+        g.es("write the @file node or use the Import Derived File command")
+        g.trace("no tnodeList for ",v,g.callers())
+        return None
+
+    if at.tnodeListIndex >= len(v.tnodeList):
+        at.readError("bad tnodeList index: %d, %s" % (at.tnodeListIndex,repr(v)))
+        g.trace("bad tnodeList index",at.tnodeListIndex,len(v.tnodeList),v)
+        return None
+
+    v = v.tnodeList[at.tnodeListIndex]
+    assert(v)
+    at.tnodeListIndex += 1
+
+    # Don't check the headline.  It simply causes problems.
+    v.setVisited() # Supress warning/deletion of unvisited nodes.
+    return v
+#@-node:ekr.20041005105605.73:findChild4
+#@-node:ekr.20100121105450.6173:Add warnings when @file logic happens
+#@+node:ekr.20100120095741.6134:Fixed mkstemp bug
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/510145
+
+Current leo trunk, r2732, Slackware Linux
+
+- I go to /tmp in terminal
+- there is no aaa.leo there (this is important, see below why)
+- I launch leo (the current working directory is /tmp)
+- I select "File->Save as" menu item
+- the save file dialog opens in /tmp, this is correct
+- I type in the file name "aaa" then hit "Save" button
+- leo dumps an error in the log pane:
+
+exception renaming /tmp/aaa.leo to /tmp/tmpbNydoS
+IOError: [Errno 2] No such file or directory: u'/tmp/aaa.leo'
+
+=============
+
+The solution was to create the backup file only if fileName exists.
+#@nonl
+#@+node:ekr.20100119145629.6111:writeToFileHelper & helpers
+def writeToFileHelper (self,fileName,toOPML):
+
+    c = self.c ; toZip = c.isZipped
+    ok,backupName = self.createBackupFile(fileName)
+    if not ok: return False
+    fileName,theActualFile = self.createActualFile(fileName,toOPML,toZip)
+    self.mFileName = fileName
+    self.outputFile = StringIO() # Always write to a string.
+
+    try:
+        if toOPML:
+            self.putToOPML()
+        else:
+            self.putLeoFile()
+        s = self.outputFile.getvalue()
+        g.app.write_Leo_file_string = s # 2010/01/19: always set this.
+        if toZip:
+            self.writeZipFile(s)
+        else:
+            if g.isPython3:
+                s = bytes(s,self.leo_file_encoding,'replace')
+            theActualFile.write(s)
+            theActualFile.close()
+            c.setFileTimeStamp(fileName)
+            # raise AttributeError # To test handleWriteLeoFileException.
+            # Delete backup file.
+            if backupName and g.os_path_exists(backupName):
+                self.deleteFileWithMessage(backupName,'backup')
+        return True
+    except Exception:
+        self.handleWriteLeoFileException(
+            fileName,backupName,theActualFile)
+        return False
+#@+node:ekr.20100119145629.6106:createActualFile
+def createActualFile (self,fileName,toOPML,toZip):
+
+    c = self.c
+
+    if toOPML and not self.mFileName.endswith('opml'):
+        fileName = self.mFileName + '.opml'
+
+    if toZip:
+        self.toString = True
+        theActualFile = None
+    else:
+        try:
+            # 2010/01/21: always write in binary mode.
+            theActualFile = open(fileName,'wb')
+        except IOError:
+            theActualFile = None
+
+    return fileName,theActualFile
+#@-node:ekr.20100119145629.6106:createActualFile
+#@+node:ekr.20031218072017.3047:createBackupFile
+def createBackupFile (self,fileName):
+
+    '''
+        Create a closed backup file and copy the file to it,
+        but only if the original file exists.
+    '''
+
+    c = self.c
+
+    if g.os_path_exists(fileName):
+        # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
+        fd,backupName = tempfile.mkstemp(text=False)
+        os.close(fd)
+        ok = g.utils_rename(c,fileName,backupName)
+        if not ok and self.read_only:
+            g.es("read only",color="red")
+    else:
+        ok,backupName = True,None
+
+    return ok,backupName
+#@-node:ekr.20031218072017.3047:createBackupFile
+#@+node:ekr.20100119145629.6108:handleWriteLeoFileException
+def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
+
+    c = self.c
+
+    g.es("exception writing:",fileName)
+    g.es_exception(full=True)
+
+    if theActualFile:
+        theActualFile.close()
+
+    # Delete fileName.
+    if fileName and g.os_path_exists(fileName):
+        self.deleteFileWithMessage(fileName,'')
+
+    # Rename backupName to fileName.
+    if backupName and g.os_path_exists(backupName):
+        g.es("restoring",fileName,"from",backupName)
+        g.utils_rename(c,backupName,fileName)
+    else:
+        g.es_print('does not exist!',backupName)
+
+#@-node:ekr.20100119145629.6108:handleWriteLeoFileException
+#@-node:ekr.20100119145629.6111:writeToFileHelper & helpers
+#@-node:ekr.20100120095741.6134:Fixed mkstemp bug
+#@+node:ekr.20100121162122.6142:Removed most usage of _bodyString & _headString
+@nocolor-node
+
+Made sure _bodyString _headString used only in leoNodes.py.
+
+We allow setting this vars in file reading code.
+
+*** p.b/p.h setters call c.setBody/HeadString,
+    which are very slow!
+#@+node:ekr.20040306220230:p.Headline & body strings
+def bodyString (self):
+
+    return self.v.bodyString()
+
+def headString (self):
+
+    return self.v.headString()
+
+def cleanHeadString (self):
+
+    return self.v.cleanHeadString()
+#@-node:ekr.20040306220230:p.Headline & body strings
+#@+node:ekr.20090128083459.74:p.Properties
+#@+node:ekr.20090128083459.75:p.b property
+def __get_b(self):
+
+    p = self
+    return p.bodyString()
+
+def __set_b(self,val):
+
+    p = self ; c = p.v and p.v.context
+    if c:
+        c.setBodyString(p, val)
+        # Don't redraw the screen: p.b must be fast.
+        # c.redraw_after_icons_changed()
+
+b = property(
+    __get_b, __set_b,
+    doc = "position body string property")
+#@-node:ekr.20090128083459.75:p.b property
+#@+node:ekr.20090128083459.76:p.h property
+def __get_h(self):
+
+    p = self
+    return p.headString()
+
+def __set_h(self,val):
+
+    p = self ; c = p.v and p.v.context
+    if c:
+        c.setHeadString(p,val)
+        # Don't redraw the screen: p.h must be fast.
+        # c.redraw_after_head_changed()
+
+h = property(
+    __get_h, __set_h,
+    doc = "position headline string property")  
+#@-node:ekr.20090128083459.76:p.h property
+#@+node:ekr.20090215165030.3:p.gnx property
+def __get_gnx(self):
+    p = self
+    return g.app.nodeIndices.toString(p.v.fileIndex)
+
+gnx = property(
+    __get_gnx, # __set_gnx,
+    doc = "position gnx property")
+#@-node:ekr.20090215165030.3:p.gnx property
+#@-node:ekr.20090128083459.74:p.Properties
+#@+node:ekr.20090130065000.1:v.Properties
+#@+node:ekr.20090130114732.5:v.b Property
+def __get_b(self):
+
+    v = self
+    return v.bodyString()
+
+def __set_b(self,val):
+
+    v = self
+    v.setBodyString(val)
+
+b = property(
+    __get_b, __set_b,
+    doc = "vnode body string property")
+#@-node:ekr.20090130114732.5:v.b Property
+#@+node:ekr.20090130125002.1:v.h property
+def __get_h(self):
+
+    v = self
+    return v.headString()
+
+def __set_h(self,val):
+
+    v = self
+    v.setHeadString(val)
+
+h = property(
+    __get_h, __set_h,
+    doc = "vnode headline string property")  
+#@-node:ekr.20090130125002.1:v.h property
+#@+node:ekr.20090130114732.6:v.u Property
+def __get_u(self):
+    v = self
+    if not hasattr(v,'unknownAttributes'):
+        v.unknownAttributes = {}
+    return v.unknownAttributes
+
+def __set_u(self,val):
+    v = self
+    if val is None:
+        if hasattr(v,'unknownAttributes'):
+            delattr(v,'unknownAttributes')
+    elif type(val) == type({}):
+        v.unknownAttributes = val
+    else:
+        raise ValueError
+
+u = property(
+    __get_u, __set_u,
+    doc = "vnode unknownAttribute property")
+#@-node:ekr.20090130114732.6:v.u Property
+#@+node:ekr.20090215165030.1:v.gnx Property
+def __get_gnx(self):
+    v = self
+    return g.app.nodeIndices.toString(v.fileIndex)
+
+gnx = property(
+    __get_gnx, # __set_gnx,
+    doc = "vnode gnx property")
+#@-node:ekr.20090215165030.1:v.gnx Property
+#@-node:ekr.20090130065000.1:v.Properties
+#@+node:ekr.20040315032144:v .setBodyString & v.setHeadString
+def setBodyString (self,s):
+
+    # trace = False and not g.unitTesting
+    v = self
+    # if trace and v._bodyString != s:
+        # g.trace('v %s %s -> %s %s\nold: %s\nnew: %s' % (
+            # v.h, len(v._bodyString),len(s),g.callers(5),
+            # v._bodyString,s))
+    v._bodyString = g.toUnicode(s,reportErrors=True)
+
+def setHeadString (self,s):
+    v = self
+    v._headString = g.toUnicode(s,reportErrors=True)
+
+initBodyString = setBodyString
+initHeadString = setHeadString
+setHeadText = setHeadString
+setTnodeText = setBodyString
+#@-node:ekr.20040315032144:v .setBodyString & v.setHeadString
+#@+node:ekr.20040305223522:c.setBodyString
+def setBodyString (self,p,s):
+
+    c = self ; v = p.v
+    if not c or not v: return
+
+    s = g.toUnicode(s)
+    current = c.p
+    # 1/22/05: Major change: the previous test was: 'if p == current:'
+    # This worked because commands work on the presently selected node.
+    # But setRecentFiles may change a _clone_ of the selected node!
+    if current and p.v==current.v:
+        # Revert to previous code, but force an empty selection.
+        c.frame.body.setSelectionAreas(s,None,None)
+        w = c.frame.body.bodyCtrl
+        i = w.getInsertPoint()
+        w.setSelectionRange(i,i)
+        # This code destoys all tags, so we must recolor.
+        c.recolor()
+
+    # Keep the body text in the vnode up-to-date.
+    if v.b != s:
+        v.setBodyString(s)
+        v.setSelection(0,0)
+        p.setDirty()
+        if not c.isChanged():
+            c.setChanged(True)
+        c.redraw_after_icons_changed()
+#@nonl
+#@-node:ekr.20040305223522:c.setBodyString
+#@+node:ekr.20050411193627.9:afterInsertNode
+def afterInsertNode (self,p,command,bunch,dirtyVnodeList=[]):
+
+    u = self ; c = u.c
+    if u.redoing or u.undoing: return
+
+    # Set types & helpers
+    bunch.kind = 'insert'
+    bunch.undoType = command
+    # g.trace(repr(command),g.callers())
+
+    # Set helpers
+    bunch.undoHelper = u.undoInsertNode
+    bunch.redoHelper = u.redoInsertNode
+
+    bunch.newP = p.copy()
+    bunch.dirtyVnodeList = dirtyVnodeList
+
+    bunch.newBack = p.back()
+    bunch.newParent = p.parent()
+
+    bunch.newChanged = c.isChanged()
+    bunch.newDirty = p.isDirty()
+    bunch.newMarked = p.isMarked()
+
+    if bunch.pasteAsClone:
+        beforeTree=bunch.beforeTree
+        afterTree = []
+        for bunch2 in beforeTree:
+            v = bunch2.v
+            afterTree.append(
+                g.Bunch(v=v,head=v.h[:],body=v.b[:]))
+        bunch.afterTree=afterTree
+        # g.trace(afterTree)
+
+    u.pushBead(bunch)
+#@-node:ekr.20050411193627.9:afterInsertNode
+#@-node:ekr.20100121162122.6142:Removed most usage of _bodyString & _headString
+#@-node:ekr.20100121105450.6175:Bugs
+#@+node:ekr.20100121105450.6174:Added --debug switch
+#@+node:ekr.20091007103358.6061:scanOptions
+def scanOptions():
+
+    '''Handle all options and remove them from sys.argv.'''
+    trace = False
+
+    # Note: this automatically implements the --help option.
+    parser = optparse.OptionParser()
+    parser.add_option('-c', '--config', dest="one_config_path")
+    parser.add_option('--debug',        action="store_true",dest="debug")
+    parser.add_option('-f', '--file',   dest="fileName")
+    parser.add_option('--gui',          dest="gui",help = 'gui to use (qt/tk/qttabs)')
+    #parser.add_option('--help',         action="store_true",dest="help_option")
+    parser.add_option('--ipython',      action="store_true",dest="use_ipython")
+    parser.add_option('--no-cache',     action="store_true",dest='no_cache')
+    parser.add_option('--silent',       action="store_true",dest="silent")
+    parser.add_option('--script',       dest="script")
+    parser.add_option('--script-window',dest="script_window")
+    parser.add_option('--version',      action="store_true",dest="version")
+
+    # Parse the options, and remove them from sys.argv.
+    options, args = parser.parse_args()
+    sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
+    if trace: print('scanOptions',sys.argv)
+
+    # Handle the args...
+
+    # -c or --config
+    path = options.one_config_path
+    if path:
+        path = g.os_path_finalize_join(os.getcwd(),path)
+        if g.os_path_exists(path):
+            g.app.oneConfigFilename = path
+        else:
+            g.es_print('Invalid -c option: file not found:',path,color='red')
+
+    # --debug
+    if options.debug:
+        g.debug = True
+        g.trace('*** debug mode on')
+
+    # -f or --file
+    fileName = options.fileName
+
+    # --gui
+    gui = options.gui
+    g.app.qt_use_tabs = False
+    if gui:
+        gui = gui.lower()
+        if gui == 'qttabs':
+            gui = 'qt'
+            g.app.qt_use_tabs = True
+
+        if gui not in ('tk','qt','wx'):
+            g.trace('unknown gui: %s' % gui)
+            gui = None
+
+    # --ipython
+    g.app.useIpython = options.use_ipython
+
+    # --no-cache
+    if options.no_cache:
+        g.trace('disabling caching')
+        g.enableDB = False
+
+    # --script
+    script_path = options.script
+    script_path_w = options.script_window
+    if script_path and script_path_w:
+        parser.error("--script and script-window are mutually exclusive")
+
+    script_name = script_path or script_path_w
+    if script_name:
+        script_name = g.os_path_finalize_join(g.app.loadDir,script_name)
+        try:
+            f = None
+            try:
+                if trace: print("scan_options: script: %s" % script_name)
+                f = open(script_name,'r')
+                script = f.read()
+            except IOError:
+                print("can not open script file: %s" % script_name)
+                script = None
+        finally:
+            if f: f.close()
+    else:
+        script = None
+        # if trace: print('scanOptions: no script')
+
+    # --silent
+    g.app.silentMode = options.silent
+    # g.trace('silentMode',g.app.silentMode)
+
+    # --version: print the version and exit.
+    versionFlag = options.version
+
+    # Compute the return values.
+    windowFlag = script and script_path_w
+    if trace:
+        print('scanOptions: fileName',fileName)
+        print('scanOptions: argv',sys.argv)
+    return fileName,gui,script,versionFlag,windowFlag
+#@-node:ekr.20091007103358.6061:scanOptions
+#@-node:ekr.20100121105450.6174:Added --debug switch
+#@+node:ekr.20100122073254.6162:Eliminated node-changed marks
+# These marks are just annoying.
+#@nonl
+#@+node:ekr.20050301105854:copyAllTempBodyStringsToTnodes
+def  copyAllTempBodyStringsToTnodes (self,root,thinFile):
+
+    c = self.c
+    for p in root.self_and_subtree():
+        try: s = p.v.tempBodyString
+        except Exception: s = ""
+        old_body = p.b
+        if s != old_body:
+            if False and old_body: # For debugging.
+                g.pr("\nchanged: " + p.h)
+                g.pr("\nnew:",s)
+                g.pr("\nold:",p.b)
+            if thinFile:
+                p.v.setBodyString(s)
+                if p.v.isDirty():
+                    p.setAllAncestorAtFileNodesDirty()
+            else:
+                c.setBodyString(p,s) # Sets c and p dirty.
+
+            if not thinFile or (thinFile and p.v.isDirty()):
+                # New in Leo 4.3: support for mod_labels plugin:
+                try:
+                    c.mod_label_controller.add_label(p,"before change:",old_body)
+                except Exception:
+                    pass
+                g.es("changed:",p.h,color="blue")
+                # p.setMarked()
+#@-node:ekr.20050301105854:copyAllTempBodyStringsToTnodes
+#@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
+def tabNannyNode (self,p,body):
+
+    import parser,tabnanny,tokenize
+
+    try:
+        readline = g.readLinesClass(body).next
+        tabnanny.process_tokens(tokenize.generate_tokens(readline))
+    except parser.ParserError:
+        junk, msg, junk = sys.exc_info()
+        g.es("ParserError in",p.h,color="red")
+        g.es('',str(msg))
+        # p.setMarked()
+    except tokenize.TokenError:
+        junk, msg, junk = sys.exc_info()
+        g.es("TokenError in",p.h,color="red")
+        g.es('',str(msg))
+        # p.setMarked()
+    except tabnanny.NannyNag:
+        junk, nag, junk = sys.exc_info()
+        badline = nag.get_lineno()
+        line    = nag.get_line()
+        message = nag.get_msg()
+        g.es("indentation error in",p.h,"line",badline,color="red")
+        g.es(message)
+        line2 = repr(str(line))[1:-1]
+        g.es("offending line:\n",line2)
+        # p.setMarked()
+    except Exception:
+        g.trace("unexpected exception")
+        g.es_exception()
+#@nonl
+#@-node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
+#@-node:ekr.20100122073254.6162:Eliminated node-changed marks
+#@-node:ekr.20100118163110.6256:Leo 4.7 rc1 projects
+#@-all
+#@nonl
+#@-node:ekr.20100120072650.6089:@thin leoProjects.txt
+#@-leo
