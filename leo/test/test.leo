@@ -5123,6 +5123,8 @@ s3 = g.u(s2)
 g.es_print(type(s),type(s2),type(s3))
 g.es_print(s,s2,s3)
 </t>
-<t tx="ekr.20100121155322.2051"># Will findChild4 be called?</t>
+<t tx="ekr.20100121155322.2051"># Will findChild4 be called?
+
+print(g.debug)</t>
 </tnodes>
 </leo_file>

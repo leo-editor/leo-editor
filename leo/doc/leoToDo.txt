@@ -11,22 +11,7 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20091005145253.6059:Before rc1
-@language rest
-#@nonl
-#@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
-
-If a @path directive is within the body text of an @thin node then the
-file write uses the @path directive but the file read does not.  Since
-the file read cannot know of the @path directive until after it has
-read the file it has no choice but to not use it.  The @thin file
-write code should not use any @path declarations found in its body
-text.
-#@nonl
-#@-node:ekr.20081204091750.4:Fix inconsistency in how @path works
-#@+node:ekr.20100121050224.6140:Delete resurrected nodes
+#@+node:ekr.20100122073254.6165:Don't use tnodeList to separate old/new @file nodes
 #@+node:ekr.20041005105605.21:read (atFile) & helper
 def read(self,root,
     importFileName=None,thinFile=False,
@@ -140,7 +125,20 @@ for v in c.all_unique_nodes():
         delattr(v,"tempBodyString")
 #@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
 #@-node:ekr.20041005105605.21:read (atFile) & helper
-#@-node:ekr.20100121050224.6140:Delete resurrected nodes
+#@-node:ekr.20100122073254.6165:Don't use tnodeList to separate old/new @file nodes
+#@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
+
+If a @path directive is within the body text of an @thin node then the
+file write uses the @path directive but the file read does not.  Since
+the file read cannot know of the @path directive until after it has
+read the file it has no choice but to not use it.  The @thin file
+write code should not use any @path declarations found in its body
+text.
+#@nonl
+#@-node:ekr.20081204091750.4:Fix inconsistency in how @path works
 #@+node:ekr.20100111094359.6208:Fix goto-line bugs
 #@-node:ekr.20100111094359.6208:Fix goto-line bugs
 #@+node:ekr.20100113075303.6270:Easiest vim problems

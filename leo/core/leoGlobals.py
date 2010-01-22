@@ -124,9 +124,8 @@ class nullObject:
 #@nl
 g = nullObject() # Set later by startup logic to this module.
 app = None # The singleton app object.
+debug = False # Set early in startup by the --debug command-line option.
 unitTesting = False # A synonym for app.unitTesting.
-convert_at_file = True # True: write @file nodes like @thin nodes
-# if convert_at_file: print('*** convert_at_file')
 
 enableDB = True
 if not enableDB:

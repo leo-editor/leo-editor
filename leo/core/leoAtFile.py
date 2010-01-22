@@ -1397,7 +1397,6 @@ class atFile:
                         g.es("correcting hidden node: v=",repr(at.v),color="red")
                     #@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
                     #@nl
-                    # p.setMarked()
                     at.v._bodyString = s # Allowed use of _bodyString.
                         # Just setting at.v.tempBodyString won't work here.
                     at.v.setDirty() # Mark the node dirty.  Ancestors will be marked dirty later.
@@ -1937,7 +1936,7 @@ class atFile:
                     except Exception:
                         pass
                     g.es("changed:",p.h,color="blue")
-                    p.setMarked()
+                    # p.setMarked()
     #@-node:ekr.20050301105854:copyAllTempBodyStringsToTnodes
     #@+node:ekr.20041005105605.119:createImportedNode
     def createImportedNode (self,root,headline):
@@ -2511,7 +2510,7 @@ class atFile:
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
                 if has_list:
-                    if at.errors == 0 and g.convert_at_file:
+                    if at.errors == 0:
                         # Clear the tnodeList in the root.
                         # Future writes will write thin-like sentinels.
                         # This will also clear the tnodeList attributes in
@@ -2652,14 +2651,11 @@ class atFile:
                         at.write(p,kind='@thin',thinFile=True,toString=toString)
                         writtenFiles.append(p.v) # No need for autosave.
                     elif p.isAtFileNode():
-                        if g.convert_at_file:
-                            at.write(p,kind='@file',thinFile=True,toString=toString)
-                            writtenFiles.append(p.v)
-                            autoSave = True # Clears root.v.tnodeList, so we must save.
-                        else:
-                            at.write(p,kind='@file',thinFile=False,toString=toString)
-                            writtenFiles.append(p.v)
-                            autoSave = True # Updates root.v.tnodeList, so we must save.
+                        # Write old @file nodes using @thin format.
+                        # if g.convert_at_file:
+                        at.write(p,kind='@file',thinFile=True,toString=toString)
+                        writtenFiles.append(p.v)
+                        autoSave = True # Clears root.v.tnodeList, so we must save.
 
                     if at.errors: atOk = False
 
@@ -4025,7 +4021,6 @@ class atFile:
                 compiler.parse(body + '\n')
         except (parser.ParserError,SyntaxError):
             self.syntaxError(p,body)
-            # p.setMarked()
             ok = False
         except Exception:
             g.trace("unexpected exception")
@@ -4074,12 +4069,12 @@ class atFile:
             junk, msg, junk = sys.exc_info()
             g.es("ParserError in",p.h,color="red")
             g.es('',str(msg))
-            p.setMarked()
+            # p.setMarked()
         except tokenize.TokenError:
             junk, msg, junk = sys.exc_info()
             g.es("TokenError in",p.h,color="red")
             g.es('',str(msg))
-            p.setMarked()
+            # p.setMarked()
         except tabnanny.NannyNag:
             junk, nag, junk = sys.exc_info()
             badline = nag.get_lineno()
@@ -4089,7 +4084,7 @@ class atFile:
             g.es(message)
             line2 = repr(str(line))[1:-1]
             g.es("offending line:\n",line2)
-            p.setMarked()
+            # p.setMarked()
         except Exception:
             g.trace("unexpected exception")
             g.es_exception()
