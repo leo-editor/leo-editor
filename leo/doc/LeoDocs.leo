@@ -688,7 +688,7 @@
 </v>
 </v>
 <v t="ekr.20060612102055"><vh>Chapter 13: Writing Plugins</vh>
-<v t="ekr.20060612103240" a="E"><vh>@rst html\writingPlugins.html</vh>
+<v t="ekr.20060612103240"><vh>@rst html\writingPlugins.html</vh>
 <v t="ekr.20060612103824"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050903075144"><vh>Overview</vh></v>
 <v t="EKR.20040524104904.240"><vh>Support for unit testing</vh></v>
@@ -1041,7 +1041,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
+<v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -31579,9 +31579,7 @@ The only bug was that redraw_after_head_changed must update icons.</t>
 <t tx="ekr.20100119145003.7632"></t>
 <t tx="ekr.20100119145003.7643"></t>
 <t tx="ekr.20100119145003.7718"></t>
-<t tx="ekr.20100122073254.11655">@language rest
-
-This section describes the process of creating an importer for a new language.
+<t tx="ekr.20100122073254.11655">This section describes the process of creating an importer for a new language.
 There are a set of "importers" in leoImport.py, all based on the
 baseScannerClass class. You can define your own importer by creating a subclass.
 This shouldn't be too difficult: baseScannerClass is supposed to do almost all
