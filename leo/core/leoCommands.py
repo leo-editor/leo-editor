@@ -7407,7 +7407,7 @@ class baseCommands (object):
         c.changed = changedFlag
         if c.loading: return # don't update while loading.
 
-        if trace: g.trace('Commands',changedFlag) # ,c.frame,g.callers(4))
+        if trace: g.trace('Commands',changedFlag,c,g.callers(4))
 
         # Clear all dirty bits _before_ setting the caption.
         if not changedFlag:

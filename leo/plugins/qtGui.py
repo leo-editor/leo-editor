@@ -5865,7 +5865,9 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
         tw.installEventFilter(self.ev_filter)
 
-        c.setChanged(False)
+        # 2010/01/24: Do not set this here.
+        # The read logic sets c.changed to indicate nodes have changed.
+        # c.setChanged(False)
     #@-node:ekr.20090124174652.120:qtTree.initAfterLoad
     #@-node:ekr.20090124174652.118: Birth (leoQtTree)
     #@+node:ekr.20090124174652.102:Widget-dependent helpers (leoQtTree)

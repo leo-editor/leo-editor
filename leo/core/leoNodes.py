@@ -768,6 +768,7 @@ class vnode (baseVnode):
         but *not* for the top-level node.
         """
 
+        trace = False and not g.unitTesting
         parent_v = self
 
         #import pprint ; pprint.pprint(tree)
@@ -786,31 +787,40 @@ class vnode (baseVnode):
             else:
                 atAll = False
         else:
-            assert atAll is not None
+            assert atAll in (True,False,)
 
         for z in children:
             h,b,gnx,grandChildren = z
-            isClone,child_v = parent_v.fastAddLastChild(c,gnx,atAll)
+            isClone,child_v = parent_v.fastAddLastChild(c,gnx)
             if isClone:
+                # The cached file can not have changed,
+                # otherwise the file would not be in the cache!?
                 if child_v.b != b: # or child_v.h
-                    # Bug fix: the last seen clone rules.
-                    child_v.h = h
-                    child_v.b = b
-                    # Bug fix: mark @<file> nodes dirty.
-                    child_v.setAllAncestorAtFileNodesDirty()
-                    # child_v.setMarked()
-                    g.es("changed:",child_v.h,color="blue")
+                    if atAll: # Bug fix: the last seen clone rules.
+                        if trace: g.trace('***not changed\nold: %s\nnew: %s' % (
+                            child_v.b,b))
+                    else:
+                        g.es_print("cached read node changed:",child_v.h,color="red")
+                        # g.trace(g.callers(5))
+                        child_v.h = h
+                        child_v.b = b
+                        child_v.setDirty()
+                            # 2010/01/24: just mark chid_v dirty.
+                            # getLeoFile will call setAllAncestorAtFileNodesDirty.
+                        c.changed = True
+                            # Tell getLeoFile that it must scan for dirty nodes.
             else:
                 child_v.createOutlineFromCacheList(c,z,top=False,atAll=atAll)
     #@+node:ekr.20090829064400.6042:v.fastAddLastChild
     # Similar to createThinChild4
-    def fastAddLastChild(self,c,gnxString,atAll):
+    def fastAddLastChild(self,c,gnxString):
         '''Create new vnode as last child of the receiver.
 
         If the gnx exists already, create a clone instead of new vnode.
         '''
 
         trace = False and not g.unitTesting
+        verbose = False
         parent_v = self
         indices = g.app.nodeIndices
         gnxDict = c.fileCommands.gnxDict
@@ -823,7 +833,9 @@ class vnode (baseVnode):
             'clone','%-5s' % (is_clone),
             'parent_v',parent_v,'gnx',gnxString,'v',repr(v))
 
-        if not is_clone:
+        if is_clone:
+            pass
+        else:
             v = vnode(context=c)
             if gnxString:
                 gnx = indices.scanGnx(gnxString,0)

@@ -801,7 +801,7 @@ class baseFileCommands:
         return True
     #@-node:ekr.20080410115129.1:checkPaste
     #@-node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
-    #@+node:ekr.20031218072017.1553:getLeoFile & helpers
+    #@+node:ekr.20031218072017.1553:fc.getLeoFile & helpers
     # The caller should follow this with a call to c.redraw().
 
     def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
@@ -839,6 +839,8 @@ class baseFileCommands:
         finally:
             c.loading = False # reenable c.changed
 
+        if c.changed:
+            self.propegateDirtyNodes()
         c.setChanged(c.changed) # Refresh the changed marker.
         self.initReadIvars()
         return ok, c.frame.ratio
@@ -872,6 +874,15 @@ class baseFileCommands:
 
         return ok
     #@-node:ekr.20090526081836.5841:getLeoFileHelper
+    #@+node:ekr.20100124110832.6212:propegateDirtyNodes
+    def propegateDirtyNodes (self):
+
+        fc = self ; c = fc.c
+
+        aList = [z.copy() for z in c.all_positions() if z.isDirty()]
+        for p in aList:
+            p.setAllAncestorAtFileNodesDirty()
+    #@-node:ekr.20100124110832.6212:propegateDirtyNodes
     #@+node:ekr.20031218072017.1554:warnOnReadOnlyFiles
     def warnOnReadOnlyFiles (self,fileName):
 
@@ -902,7 +913,7 @@ class baseFileCommands:
             fc.warnOnReadOnlyFiles(path)
     #@-node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
     #@-node:ekr.20031218072017.1554:warnOnReadOnlyFiles
-    #@-node:ekr.20031218072017.1553:getLeoFile & helpers
+    #@-node:ekr.20031218072017.1553:fc.getLeoFile & helpers
     #@+node:ekr.20031218072017.3029:readAtFileNodes (fileCommands)
     def readAtFileNodes (self):
 
@@ -1120,7 +1131,7 @@ class baseFileCommands:
         assert c.fileCommands.cleanSaxInputString(s) == 'test this'
     #@-node:ekr.20090525144314.6527:@test cleanSaxInputString
     #@-node:ekr.20090525144314.6526:cleanSaxInputString & test
-    #@+node:ekr.20060919110638.5:createSaxChildren & helpers
+    #@+node:ekr.20060919110638.5:fc.createSaxChildren & helpers
     def createSaxChildren (self, sax_node, parent_v):
 
         c = self.c
@@ -1148,18 +1159,27 @@ class baseFileCommands:
                 'len(child.parents)',len(child.parents))
 
         return children
-    #@+node:ekr.20060919110638.7:createSaxVnode & helpers
+    #@+node:ekr.20060919110638.7:fc.createSaxVnode & helpers
     def createSaxVnode (self,sax_node,parent_v,v=None):
 
         c = self.c
-        trace = False and not g.unitTesting # and c.shortFileName().find('small') > -1
+        trace = False and not g.unitTesting and c.shortFileName().find('test') > -1
+        verbose = False
         h = sax_node.headString
         b = sax_node.bodyString
 
         if v:
             # The body of the later node overrides the earlier.
             # Don't set t.h: h is always empty.
-            v.b = b 
+            # This may be an internal error.
+            if v.b == b:
+                pass
+                if trace and verbose: g.trace(
+                    '***no update\nold: %s\nnew: %s' % (v.b,b))
+            else:
+                if trace: g.trace(
+                    '***update\nold: %s\nnew: %s' % (v.b,b))
+                v.b = b 
         else:
             v = leoNodes.vnode(context=c)
             v.setBodyString(b)
@@ -1171,7 +1191,7 @@ class baseFileCommands:
         index = self.canonicalTnodeIndex(sax_node.tnx)
         self.gnxDict [index] = v
 
-        if trace: g.trace(
+        if trace and verbose: g.trace(
             'tnx','%-22s' % (index),'v',id(v),
             'len(body)','%-4d' % (len(b)),h)
 
@@ -1357,8 +1377,8 @@ class baseFileCommands:
                     p.firstChild().doDelete()
     #@-node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
     #@-node:ekr.20061004053644:handleVnodeSaxAttributes
-    #@-node:ekr.20060919110638.7:createSaxVnode & helpers
-    #@-node:ekr.20060919110638.5:createSaxChildren & helpers
+    #@-node:ekr.20060919110638.7:fc.createSaxVnode & helpers
+    #@-node:ekr.20060919110638.5:fc.createSaxChildren & helpers
     #@+node:ekr.20060919110638.2:dumpSaxTree
     def dumpSaxTree (self,root,dummy):
 
@@ -1520,18 +1540,18 @@ class baseFileCommands:
     def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
 
         dump = False and not g.unitTesting
-        at = self ; c = self.c
+        fc = self ; c = fc.c
 
         # Pass one: create the intermediate nodes.
-        saxRoot = self.parse_leo_file(theFile,fileName,
+        saxRoot = fc.parse_leo_file(theFile,fileName,
             silent=silent,inClipboard=inClipboard,s=s)
 
-        if dump: self.dumpSaxTree(saxRoot,dummy=True)
+        if dump: fc.dumpSaxTree(saxRoot,dummy=True)
 
         # Pass two: create the tree of vnodes and tnodes from the intermediate nodes.
         if saxRoot:
             parent_v = c.hiddenRootNode
-            children = at.createSaxChildren(saxRoot,parent_v)
+            children = fc.createSaxChildren(saxRoot,parent_v)
             assert c.hiddenRootNode.children == children
             v = children and children[0] or None
             return v

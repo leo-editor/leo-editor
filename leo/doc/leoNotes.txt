@@ -4773,6 +4773,18 @@ def putTnodeList (self,v):
 #@nonl
 #@-node:ekr.20031218072017.2002:putTnodeList
 #@-node:ekr.20100123044506.7115:tnodeList stuff...
+#@+node:ekr.20100122162752.6187:g.scanAtAllDirectives (not used)
+def scanAtAllDirectives(aList):
+
+    '''Scan aList for @all directives.'''
+
+    for d in aList:
+        s = d.get('all')
+        if s is not None:
+            return True
+    else:
+        return None
+#@-node:ekr.20100122162752.6187:g.scanAtAllDirectives (not used)
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node

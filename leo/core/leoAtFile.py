@@ -128,7 +128,7 @@ class atFile:
 
     #@    @+others
     #@+node:ekr.20041005105605.7:at.Birth & init
-    #@+node:ekr.20041005105605.8:atFile.__init__ & initIvars
+    #@+node:ekr.20041005105605.8:atFile.__init__
     def __init__(self,c):
 
         # **Warning**: all these ivars must **also** be inited in initCommonIvars.
@@ -181,7 +181,7 @@ class atFile:
             self.startVerbatimAfterRef: self.ignoreOldSentinel }
         #@-node:ekr.20041005105605.9:<< define the dispatch dictionary used by scanText4 >>
         #@nl
-    #@-node:ekr.20041005105605.8:atFile.__init__ & initIvars
+    #@-node:ekr.20041005105605.8:atFile.__init__
     #@+node:ekr.20041005105605.10:initCommonIvars
     def initCommonIvars (self):
 
@@ -255,7 +255,7 @@ class atFile:
 
         #@    << init ivars for reading >>
         #@+node:ekr.20041005105605.14:<< init ivars for reading >>
-
+        self.atAllFlag = False # True if @all seen.
         self.cloneSibCount = 0 # n > 1: Make sure n cloned sibs exists at next @+node sentinel
         self.correctedLines = 0
         self.docOut = [] # The doc part being accumulated.
@@ -546,7 +546,7 @@ class atFile:
             # not fromString and
             # root.h.startswith('@file'))
     #@-node:ekr.20041005105605.22:initFileName
-    #@+node:ekr.20100122130101.6176:readFromCache
+    #@+node:ekr.20100122130101.6176:at.readFromCache
     def readFromCache (self,fileName,force,root):
 
         at = self ; c = at.c
@@ -567,7 +567,7 @@ class atFile:
             root.clearDirty()
 
         return ok,cachefile
-    #@-node:ekr.20100122130101.6176:readFromCache
+    #@-node:ekr.20100122130101.6176:at.readFromCache
     #@+node:ekr.20071105164407:warnAboutUnvisitedNodes
     def warnAboutUnvisitedNodes (self,root):
 
@@ -913,7 +913,7 @@ class atFile:
     #@-node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
     #@-node:ekr.20041005105605.18:Reading (top level)
     #@+node:ekr.20041005105605.71:Reading (4.x)
-    #@+node:ekr.20041005105605.72:createThinChild4
+    #@+node:ekr.20041005105605.72:at.createThinChild4
     def createThinChild4 (self,gnxString,headline):
 
         """Find or create a new *vnode* whose parent (also a vnode) is at.lastThinNode.
@@ -974,7 +974,7 @@ class atFile:
         if trace and verbose: g.trace('new node: %s' % child)
         child.setVisited() # Supress warning/deletion of unvisited nodes.
         return child
-    #@-node:ekr.20041005105605.72:createThinChild4
+    #@-node:ekr.20041005105605.72:at.createThinChild4
     #@+node:ekr.20041005105605.73:findChild4
     def findChild4 (self,headline):
 
@@ -1113,7 +1113,7 @@ class atFile:
             #@nl
     #@-node:ekr.20041005105605.77:readNormalLine
     #@+node:ekr.20041005105605.80:start sentinels
-    #@+node:ekr.20041005105605.81:readStartAll (4.2)
+    #@+node:ekr.20041005105605.81:at.readStartAll
     def readStartAll (self,s,i):
 
         """Read an @+all sentinel."""
@@ -1126,13 +1126,14 @@ class atFile:
         else:
             assert g.match(s,j,"+all"),'missing +all'
 
-        g.trace('root_seen',at.root_seen,at.root.h,repr(s))
+        # g.trace('root_seen',at.root_seen,at.root.h,repr(s))
+        at.atAllFlag = True
 
         # Make sure that the generated at-all is properly indented.
         at.out.append(leadingWs + "@all\n")
 
         at.endSentinelStack.append(at.endAll)
-    #@-node:ekr.20041005105605.81:readStartAll (4.2)
+    #@-node:ekr.20041005105605.81:at.readStartAll
     #@+node:ekr.20041005105605.82:readStartAt & readStartDoc
     def readStartAt (self,s,i):
         """Read an @+at sentinel."""
@@ -1188,7 +1189,7 @@ class atFile:
 
         at.readStartNode(s,i,middle=True)
     #@-node:ekr.20041005105605.84:readStartMiddle
-    #@+node:ekr.20041005105605.85:readStartNode (4.x)
+    #@+node:ekr.20041005105605.85:at.readStartNode
     def readStartNode (self,s,i,middle=False):
 
         """Read an @+node or @+middle sentinel."""
@@ -1261,7 +1262,7 @@ class atFile:
         if trace: g.trace('scanning',at.v)
 
         at.endSentinelStack.append(at.endNode)
-    #@-node:ekr.20041005105605.85:readStartNode (4.x)
+    #@-node:ekr.20041005105605.85:at.readStartNode
     #@+node:ekr.20041005105605.89:readStartOthers
     def readStartOthers (self,s,i):
 
@@ -1334,11 +1335,12 @@ class atFile:
 
         at.readEndNode(s,i,middle=True)
     #@-node:ekr.20041005105605.94:readEndMiddle
-    #@+node:ekr.20041005105605.95:readEndNode (4.x)
+    #@+node:ekr.20041005105605.95:at.readEndNode
     def readEndNode (self,unused_s,unused_i,middle=False):
 
         """Handle end-of-node processing for @-others and @-ref sentinels."""
 
+        trace = False and not g.unitTesting
         at = self ; c = at.c
 
         # End raw mode.
@@ -1347,6 +1349,8 @@ class atFile:
         # Set the temporary body text.
         s = ''.join(at.out)
         s = g.toUnicode(s)
+
+        # g.trace(repr(s))
 
         if at.importing:
             at.v._bodyString = s # Allowed use of _bodyString.
@@ -1360,7 +1364,7 @@ class atFile:
             else:
                 old = None
             # 9/4/04: Suppress this warning for the root: @first complicates matters.
-            if old and not g.app.unitTesting and at.v != at.root.v:
+            if old and at.v != at.root.v: # and not g.app.unitTesting
                 #@            << indicate that the node has been changed >>
                 #@+node:ekr.20041005105605.96:<< indicate that the node has been changed >>
                 if at.perfectImportRoot:
@@ -1397,21 +1401,29 @@ class atFile:
                     at.v.setDirty() # Mark the node dirty.  Ancestors will be marked dirty later.
                     at.c.setChanged(True)
                 else:
-                    if 0: # New in 4.4.1 final.  This warning can be very confusing.
-                        if not at.updateWarningGiven:
-                            at.updateWarningGiven = True
-                            # g.pr("***",at.v,at.root.v)
-                            g.es("warning: updating changed text in",at.root.h,color="blue")
+                    # New in Leo 4.4.1 final.  This warning can be very confusing.
+                    # New in Leo 4.7 b2: We suppress warning for trees containing '@all'
+                    if at.atAllFlag: # Give the warning if we are not in an '@all' tree.
+                        pass
+                    # elif not at.updateWarningGiven:
+                    else:
+                        # at.updateWarningGiven = True
+                        # g.pr("***",at.v,at.root.v)
+                        g.es_print("uncached read node changed",at.v.h,color="red") # was at.root.h
                     # Just set the dirty bit. Ancestors will be marked dirty later.
                     at.v.setDirty()
-                    if 1: # We must avoid the full setChanged logic here!
-                        c.changed = True
-                    else: # Far too slow for mass changes.
-                        at.c.setChanged(True)
+                    # Important: the dirty bits won't stick unless we set c.changed here.
+                    # Do *not* call c.setChanged(True) here: that would be too slow.
+                    c.changed = True
                 #@nonl
                 #@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
                 #@nl
-            at.v.tempBodyString = s
+            if old and at.atAllFlag:
+                if trace: g.trace('*** no update\nold: %s\nnew: %s' % (repr(old),repr(s)))
+                pass # Don't change.
+            else:
+                if trace: g.trace('*** update\nold: %s\nnew: %s' % (repr(old),repr(s)))
+                at.v.tempBodyString = s
 
         # Indicate that the vnode has been set in the derived file.
         at.v.setVisited()
@@ -1425,7 +1437,7 @@ class atFile:
             at.lastThinNode = at.thinNodeStack.pop()
 
         at.popSentinelStack(at.endNode)
-    #@-node:ekr.20041005105605.95:readEndNode (4.x)
+    #@-node:ekr.20041005105605.95:at.readEndNode
     #@+node:ekr.20041005105605.98:readEndOthers
     def readEndOthers (self,unused_s,unused_i):
 

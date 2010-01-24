@@ -1124,7 +1124,7 @@ def initFileName (self,fromString,importFileName,root):
         # not fromString and
         # root.h.startswith('@file'))
 #@-node:ekr.20041005105605.22:initFileName
-#@+node:ekr.20100122130101.6176:readFromCache
+#@+node:ekr.20100122130101.6176:at.readFromCache
 def readFromCache (self,fileName,force,root):
 
     at = self ; c = at.c
@@ -1145,7 +1145,7 @@ def readFromCache (self,fileName,force,root):
         root.clearDirty()
 
     return ok,cachefile
-#@-node:ekr.20100122130101.6176:readFromCache
+#@-node:ekr.20100122130101.6176:at.readFromCache
 #@+node:ekr.20071105164407:warnAboutUnvisitedNodes
 def warnAboutUnvisitedNodes (self,root):
 
@@ -1250,7 +1250,7 @@ def initReadIvars(self,root,fileName,
     self.thinFile = False # 2010/01/22: was thinFile
     self.atShadow = atShadow
 #@+node:ekr.20041005105605.14:<< init ivars for reading >>
-
+self.atAllFlag = False # True if @all seen.
 self.cloneSibCount = 0 # n > 1: Make sure n cloned sibs exists at next @+node sentinel
 self.correctedLines = 0
 self.docOut = [] # The doc part being accumulated.
@@ -1527,7 +1527,7 @@ else:
 #@-node:ekr.20041005105605.79:<< Append s to docOut >>
 #@-node:ekr.20041005105605.77:readNormalLine
 #@+node:ekr.20041005105605.80:start sentinels
-#@+node:ekr.20041005105605.81:readStartAll (4.2)
+#@+node:ekr.20041005105605.81:at.readStartAll
 def readStartAll (self,s,i):
 
     """Read an @+all sentinel."""
@@ -1540,13 +1540,14 @@ def readStartAll (self,s,i):
     else:
         assert g.match(s,j,"+all"),'missing +all'
 
-    g.trace('root_seen',at.root_seen,at.root.h,repr(s))
+    # g.trace('root_seen',at.root_seen,at.root.h,repr(s))
+    at.atAllFlag = True
 
     # Make sure that the generated at-all is properly indented.
     at.out.append(leadingWs + "@all\n")
 
     at.endSentinelStack.append(at.endAll)
-#@-node:ekr.20041005105605.81:readStartAll (4.2)
+#@-node:ekr.20041005105605.81:at.readStartAll
 #@+node:ekr.20041005105605.82:readStartAt & readStartDoc
 def readStartAt (self,s,i):
     """Read an @+at sentinel."""
@@ -1602,7 +1603,7 @@ def readStartMiddle (self,s,i):
 
     at.readStartNode(s,i,middle=True)
 #@-node:ekr.20041005105605.84:readStartMiddle
-#@+node:ekr.20041005105605.85:readStartNode (4.x)
+#@+node:ekr.20041005105605.85:at.readStartNode
 def readStartNode (self,s,i,middle=False):
 
     """Read an @+node or @+middle sentinel."""
@@ -1673,7 +1674,7 @@ else:
 if at.startSentinelComment[-1:] == '@':
     headline = headline.replace('@@','@')
 #@-node:ekr.20041005105605.87:<< Set headline, undoing the CWEB hack >>
-#@-node:ekr.20041005105605.85:readStartNode (4.x)
+#@-node:ekr.20041005105605.85:at.readStartNode
 #@+node:ekr.20041005105605.89:readStartOthers
 def readStartOthers (self,s,i):
 
@@ -1746,11 +1747,12 @@ def readEndMiddle (self,s,i):
 
     at.readEndNode(s,i,middle=True)
 #@-node:ekr.20041005105605.94:readEndMiddle
-#@+node:ekr.20041005105605.95:readEndNode (4.x)
+#@+node:ekr.20041005105605.95:at.readEndNode
 def readEndNode (self,unused_s,unused_i,middle=False):
 
     """Handle end-of-node processing for @-others and @-ref sentinels."""
 
+    trace = False and not g.unitTesting
     at = self ; c = at.c
 
     # End raw mode.
@@ -1759,6 +1761,8 @@ def readEndNode (self,unused_s,unused_i,middle=False):
     # Set the temporary body text.
     s = ''.join(at.out)
     s = g.toUnicode(s)
+
+    # g.trace(repr(s))
 
     if at.importing:
         at.v._bodyString = s # Allowed use of _bodyString.
@@ -1772,9 +1776,14 @@ def readEndNode (self,unused_s,unused_i,middle=False):
         else:
             old = None
         # 9/4/04: Suppress this warning for the root: @first complicates matters.
-        if old and not g.app.unitTesting and at.v != at.root.v:
+        if old and at.v != at.root.v: # and not g.app.unitTesting
             << indicate that the node has been changed >>
-        at.v.tempBodyString = s
+        if old and at.atAllFlag:
+            if trace: g.trace('*** no update\nold: %s\nnew: %s' % (repr(old),repr(s)))
+            pass # Don't change.
+        else:
+            if trace: g.trace('*** update\nold: %s\nnew: %s' % (repr(old),repr(s)))
+            at.v.tempBodyString = s
 
     # Indicate that the vnode has been set in the derived file.
     at.v.setVisited()
@@ -1796,17 +1805,20 @@ if at.perfectImportRoot:
     at.v.setDirty() # Mark the node dirty.  Ancestors will be marked dirty later.
     at.c.setChanged(True)
 else:
-    if 0: # New in 4.4.1 final.  This warning can be very confusing.
-        if not at.updateWarningGiven:
-            at.updateWarningGiven = True
-            # g.pr("***",at.v,at.root.v)
-            g.es("warning: updating changed text in",at.root.h,color="blue")
+    # New in Leo 4.4.1 final.  This warning can be very confusing.
+    # New in Leo 4.7 b2: We suppress warning for trees containing '@all'
+    if at.atAllFlag: # Give the warning if we are not in an '@all' tree.
+        pass
+    # elif not at.updateWarningGiven:
+    else:
+        # at.updateWarningGiven = True
+        # g.pr("***",at.v,at.root.v)
+        g.es_print("uncached read node changed",at.v.h,color="red") # was at.root.h
     # Just set the dirty bit. Ancestors will be marked dirty later.
     at.v.setDirty()
-    if 1: # We must avoid the full setChanged logic here!
-        c.changed = True
-    else: # Far too slow for mass changes.
-        at.c.setChanged(True)
+    # Important: the dirty bits won't stick unless we set c.changed here.
+    # Do *not* call c.setChanged(True) here: that would be too slow.
+    c.changed = True
 #@nonl
 #@+node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
 # Report the number of corrected nodes.
@@ -1835,7 +1847,7 @@ else:
     g.es("correcting hidden node: v=",repr(at.v),color="red")
 #@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
 #@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
-#@-node:ekr.20041005105605.95:readEndNode (4.x)
+#@-node:ekr.20041005105605.95:at.readEndNode
 #@+node:ekr.20041005105605.98:readEndOthers
 def readEndOthers (self,unused_s,unused_i):
 
@@ -2485,7 +2497,7 @@ def setChanged (self,changedFlag):
     c.changed = changedFlag
     if c.loading: return # don't update while loading.
 
-    if trace: g.trace('Commands',changedFlag) # ,c.frame,g.callers(4))
+    if trace: g.trace('Commands',changedFlag,c,g.callers(4))
 
     # Clear all dirty bits _before_ setting the caption.
     if not changedFlag:
@@ -2753,7 +2765,7 @@ def initFileName (self,fromString,importFileName,root):
         # not fromString and
         # root.h.startswith('@file'))
 #@-node:ekr.20041005105605.22:initFileName
-#@+node:ekr.20100122130101.6176:readFromCache
+#@+node:ekr.20100122130101.6176:at.readFromCache
 def readFromCache (self,fileName,force,root):
 
     at = self ; c = at.c
@@ -2774,7 +2786,7 @@ def readFromCache (self,fileName,force,root):
         root.clearDirty()
 
     return ok,cachefile
-#@-node:ekr.20100122130101.6176:readFromCache
+#@-node:ekr.20100122130101.6176:at.readFromCache
 #@+node:ekr.20071105164407:warnAboutUnvisitedNodes
 def warnAboutUnvisitedNodes (self,root):
 
@@ -3118,7 +3130,7 @@ writtenFiles = True
 #@+node:ekr.20100123044506.6238:Eliminated tnodeLists
 #@+node:ekr.20100123044506.6240:Keep
 #@+node:ekr.20041005105605.14:<< init ivars for reading >>
-
+self.atAllFlag = False # True if @all seen.
 self.cloneSibCount = 0 # n > 1: Make sure n cloned sibs exists at next @+node sentinel
 self.correctedLines = 0
 self.docOut = [] # The doc part being accumulated.
@@ -4186,7 +4198,7 @@ def setHeadString (self,s):
     p.setDirty()
 #@nonl
 #@-node:ekr.20040315034158:p.setBodyString & setHeadString
-#@+node:ekr.20041005105605.72:createThinChild4
+#@+node:ekr.20041005105605.72:at.createThinChild4
 def createThinChild4 (self,gnxString,headline):
 
     """Find or create a new *vnode* whose parent (also a vnode) is at.lastThinNode.
@@ -4247,8 +4259,993 @@ def createThinChild4 (self,gnxString,headline):
     if trace and verbose: g.trace('new node: %s' % child)
     child.setVisited() # Supress warning/deletion of unvisited nodes.
     return child
-#@-node:ekr.20041005105605.72:createThinChild4
+#@-node:ekr.20041005105605.72:at.createThinChild4
 #@-node:ekr.20100124092134.6247:checked for p.setDirty
+#@+node:ekr.20100122162421.6240:Clones in @all files now have low priority
+To do: create cloneTest.leo and related files.
+#@nonl
+#@+node:ekr.20100124110832.6214:unchanged...
+# These may have changed, but not for this particular project.
+#@nonl
+#@+node:ekr.20041005105605.72:at.createThinChild4
+def createThinChild4 (self,gnxString,headline):
+
+    """Find or create a new *vnode* whose parent (also a vnode) is at.lastThinNode.
+    This is called only for @thin trees."""
+
+    trace = False and not g.unitTesting
+    verbose = False
+    at = self ; c = at.c ; indices = g.app.nodeIndices
+    last = at.lastThinNode
+    lastIndex = last.fileIndex
+    gnx = indices.scanGnx(gnxString,0)
+
+    if trace and verbose: g.trace("last %s, gnx %s %s" % (
+        last,gnxString,headline))
+
+    parent = at.lastThinNode # A vnode.
+    children = parent.children
+    for child in children:
+        if gnx == child.fileIndex:
+            break
+    else:
+        child = None
+
+    if at.cloneSibCount > 1:
+        n = at.cloneSibCount ; at.cloneSibCount = 0
+        if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
+        else: clonedSibs = 0
+        copies = n - clonedSibs
+        if trace: g.trace(copies,headline)
+    else:
+        if gnx == lastIndex:
+            last.setVisited() # Supress warning/deletion of unvisited nodes.
+            if trace:g.trace('found last',last)
+            return last
+        if child:
+            child.setVisited() # Supress warning/deletion of unvisited nodes.
+            if trace: g.trace('found child',child)
+            return child
+        copies = 1 # Create exactly one copy.
+
+    while copies > 0:
+        copies -= 1
+        # Create the vnode only if it does not already exist.
+        gnxDict = c.fileCommands.gnxDict
+        v = gnxDict.get(gnxString)
+        if v:
+            if gnx != v.fileIndex:
+                g.trace('can not happen: v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx))
+        else:
+            v = leoNodes.vnode(context=c)
+            v._headString = headline # Allowed use of v._headString.
+            v.fileIndex = gnx
+            gnxDict[gnxString] = v
+
+        child = v
+        child._linkAsNthChild(parent,parent.numberOfChildren())
+
+    if trace and verbose: g.trace('new node: %s' % child)
+    child.setVisited() # Supress warning/deletion of unvisited nodes.
+    return child
+#@-node:ekr.20041005105605.72:at.createThinChild4
+#@+node:ekr.20100122130101.6176:at.readFromCache
+def readFromCache (self,fileName,force,root):
+
+    at = self ; c = at.c
+    s = open(fileName, "rb").read()
+    cachefile = self._contentHashFile(root.h,s)
+
+    # 2010/01/22: uncache *any* file provided 'force' is False.
+    doCache = g.enableDB and not force
+    ok = doCache and cachefile in c.db
+    if ok:
+        # Delete the previous tree, regardless of the @<file> type.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+        # Recreate the file from the cache.
+        aList = c.db[cachefile]
+        root.v.createOutlineFromCacheList(c,aList)
+        at.inputFile.close()
+        root.clearDirty()
+
+    return ok,cachefile
+#@-node:ekr.20100122130101.6176:at.readFromCache
+#@+node:ekr.20041005105605.85:at.readStartNode
+def readStartNode (self,s,i,middle=False):
+
+    """Read an @+node or @+middle sentinel."""
+
+    trace = False and not g.unitTesting
+    at = self
+    if middle:
+        assert g.match(s,i,"+middle:"),'missing +middle'
+        i += 8
+    else:
+        assert g.match(s,i,"+node:"),'missing +node'
+        i += 6
+
+    if at.thinFile:
+        << set gnx and bump i >>
+    << Set headline, undoing the CWEB hack >>
+    if not at.root_seen:
+        # g.trace(repr(s[0:i+20]))
+        at.root_seen = True
+
+    i,newIndent = g.skip_leading_ws_with_indent(s,0,at.tab_width)
+    at.indentStack.append(at.indent) ; at.indent = newIndent
+
+    at.outStack.append(at.out) ; at.out = []
+    at.tStack.append(at.v)
+
+    if trace: g.trace(at.root)
+    if at.importing:
+        p = at.createImportedNode(at.root,headline)
+        at.v = p.v
+    elif at.thinFile:
+        if at.thinNodeStack:
+            at.thinNodeStack.append(at.lastThinNode)
+            v = at.createThinChild4(gnx,headline)
+        else:
+            v = at.root.v
+            at.thinNodeStack.append(v)
+        at.lastThinNode = v
+        at.v = v
+    else:
+        at.v = at.findChild4(headline)
+
+    if trace: g.trace('scanning',at.v)
+
+    at.endSentinelStack.append(at.endNode)
+#@+node:ekr.20041005105605.86:<< set gnx and bump i >>
+# We have skipped past the opening colon of the gnx.
+j = s.find(':',i)
+if j == -1:
+    g.trace("no closing colon",g.get_line(s,i))
+    at.readError("Expecting gnx in @+node sentinel")
+    return # 5/17/04
+else:
+    gnx = s[i:j]
+    i = j + 1 # Skip the i
+#@-node:ekr.20041005105605.86:<< set gnx and bump i >>
+#@+node:ekr.20041005105605.87:<< Set headline, undoing the CWEB hack >>
+# Set headline to the rest of the line.
+# Don't strip leading whitespace."
+
+if len(at.endSentinelComment) == 0:
+    headline = s[i:-1].rstrip()
+else:
+    k = s.rfind(at.endSentinelComment,i)
+    headline = s[i:k].rstrip() # works if k == -1
+
+# Undo the CWEB hack: undouble @ signs if the opening comment delim ends in '@'.
+if at.startSentinelComment[-1:] == '@':
+    headline = headline.replace('@@','@')
+#@-node:ekr.20041005105605.87:<< Set headline, undoing the CWEB hack >>
+#@-node:ekr.20041005105605.85:at.readStartNode
+#@+node:ekr.20031218072017.2989:c.setChanged
+def setChanged (self,changedFlag):
+
+    trace = False and not g.unitTesting
+    c = self
+    if not c.frame: return
+    c.changed = changedFlag
+    if c.loading: return # don't update while loading.
+
+    if trace: g.trace('Commands',changedFlag,c,g.callers(4))
+
+    # Clear all dirty bits _before_ setting the caption.
+    if not changedFlag:
+        for v in c.all_unique_nodes():
+            if v.isDirty():
+                v.clearDirty()
+
+    if g.app.qt_use_tabs and hasattr(c.frame,'top'):
+        c.frame.top.master.setChanged(c,changedFlag)
+
+    s = c.frame.getTitle()
+    if len(s) > 2:
+        if changedFlag:
+            if s [0] != '*': c.frame.setTitle("* " + s)
+        else:
+            if s[0:2]=="* ": c.frame.setTitle(s[2:])
+#@-node:ekr.20031218072017.2989:c.setChanged
+#@+node:ekr.20060919110638.5:fc.createSaxChildren & helpers
+def createSaxChildren (self, sax_node, parent_v):
+
+    c = self.c
+    trace = False and not g.unitTesting # and c.shortFileName().find('small') > -1
+    children = []
+
+    for sax_child in sax_node.children:
+        tnx = sax_child.tnx
+        v = self.gnxDict.get(tnx)
+
+        if v: # A clone.
+            if trace: g.trace('**clone',v)
+            v = self.createSaxVnode(sax_child,parent_v,v=v)   
+        else:
+            v = self.createSaxVnode(sax_child,parent_v)
+            self.createSaxChildren(sax_child,v)
+
+        children.append(v)
+
+    parent_v.children = children
+    for child in children:
+        child.parents.append(parent_v)
+        if trace: g.trace(
+            '*** added parent',parent_v,'to',child,
+            'len(child.parents)',len(child.parents))
+
+    return children
+#@+node:ekr.20060919110638.7:fc.createSaxVnode & helpers
+def createSaxVnode (self,sax_node,parent_v,v=None):
+
+    c = self.c
+    trace = False and not g.unitTesting and c.shortFileName().find('test') > -1
+    verbose = False
+    h = sax_node.headString
+    b = sax_node.bodyString
+
+    if v:
+        # The body of the later node overrides the earlier.
+        # Don't set t.h: h is always empty.
+        # This may be an internal error.
+        if v.b == b:
+            pass
+            if trace and verbose: g.trace(
+                '***no update\nold: %s\nnew: %s' % (v.b,b))
+        else:
+            if trace: g.trace(
+                '***update\nold: %s\nnew: %s' % (v.b,b))
+            v.b = b 
+    else:
+        v = leoNodes.vnode(context=c)
+        v.setBodyString(b)
+        v.setHeadString(h)
+
+        if sax_node.tnx:
+            v.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
+
+    index = self.canonicalTnodeIndex(sax_node.tnx)
+    self.gnxDict [index] = v
+
+    if trace and verbose: g.trace(
+        'tnx','%-22s' % (index),'v',id(v),
+        'len(body)','%-4d' % (len(b)),h)
+
+    self.handleVnodeSaxAttributes(sax_node,v)
+    self.handleTnodeSaxAttributes(sax_node,v)
+
+    return v
+#@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
+def handleTnodeSaxAttributes (self,sax_node,v):
+
+    trace = False and not g.unitTesting
+    d = sax_node.tnodeAttributes
+    if trace and d: g.trace(sax_node,list(d.keys()))
+
+    aDict = {}
+    for key in d:
+        val = d.get(key)
+        val2 = self.getSaxUa(key,val)
+        # g.trace(key,val,val2)
+        aDict[key] = val2
+
+    if aDict:
+        if trace: g.trace('uA',v,list(aDict.keys()))
+        v.unknownAttributes = aDict
+#@+node:ekr.20090702070510.6028:@test handleTnodeSaxAttributes
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    sax_node = g.bunch(
+        tnodeAttributes={
+# The 'tx' attribute is handled by contentHandler.tnodeAttributes.
+# 'tx':"ekr.20090701133940.1767",
+'lineYOffset':"4b032e",
+# A real icon attribute, see the tests below for what we expect
+'icons':"5d7100287d71012855026f6e71025505746e6f6465710355047479\
+70657104550466696c6571055507796f666673657471064b006805583700000\
+0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
+676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
+471084b01550577686572657109550e6265666f7265486561646c696e65710a\
+5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
+e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
+55026f6e710f68035504747970657110550466696c6571115507796f6666736\
+57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
+656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
+4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
+65666f7265486561646c696e6571165507786f666673657471174b025507726\
+56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
+5c626f74746f6d2e706e67711975652e"
+})
+    try:
+        p2 = p.insertAsLastChild()
+        v = p2.v
+        c.fileCommands.handleTnodeSaxAttributes(sax_node,v)
+        # print v,v.u
+        d = v.u
+        for attr in ('lineYOffset','icons'):
+            assert d.get(attr),attr
+        for attr in ('tx','a'):
+            assert d.get(attr) is None,attr # A known attribute.
+    finally:
+        if 1:
+            while p.hasChildren():
+                # print('deleting',p.firstChild())
+                p.firstChild().doDelete()
+#@-node:ekr.20090702070510.6028:@test handleTnodeSaxAttributes
+#@-node:ekr.20060919110638.8:handleTnodeSaxAttributes
+#@+node:ekr.20061004053644:handleVnodeSaxAttributes
+# The native attributes of <v> elements are a, t, vtag, tnodeList,
+# marks, expanded, and descendentTnodeUnknownAttributes.
+# New in Leo 4.5: added descendentVnodeUnknownAttributes to native attributes.
+
+def handleVnodeSaxAttributes (self,sax_node,v):
+
+    trace = False and not g.unitTesting
+    d = sax_node.attributes
+    # if trace and d: g.trace(d)
+
+    s = d.get('a')
+    if s:
+        # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
+        # 'C' (clone) and 'D' bits are not used.
+        if 'M' in s: v.setMarked()
+        if 'E' in s: v.expand()
+        if 'O' in s: v.setOrphan()
+        # if 'T' in s: self.topVnode = v
+        if 'V' in s:
+            # g.trace('setting currentVnode',v,color='red')
+            self.currentVnode = v
+
+    s = d.get('tnodeList','')
+    tnodeList = s and s.split(',')
+    if tnodeList:
+        # This tnodeList will be resolved later.
+        if trace: g.trace('found tnodeList',v.headString(),tnodeList)
+        v.tempTnodeList = tnodeList
+
+    s = d.get('descendentTnodeUnknownAttributes')
+    if s: 
+        aDict = self.getDescendentUnknownAttributes(s)
+        if aDict:
+            # g.trace('descendentTnodeUaDictList',aDict)
+            self.descendentTnodeUaDictList.append(aDict)
+
+    s = d.get('descendentVnodeUnknownAttributes')
+    if s: 
+        aDict = self.getDescendentUnknownAttributes(s)
+        if aDict:
+            # g.trace('descendentVnodeUaDictList',aDict)
+            self.descendentVnodeUaDictList.append((v,aDict),)
+
+    s = d.get('expanded')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="expanded")
+        # g.trace('expanded list',len(aList))
+        self.descendentExpandedList.extend(aList)
+
+    s = d.get('marks')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="marks")
+        # g.trace('marks list',len(aList))
+        self.descendentMarksList.extend(aList)
+
+    aDict = {}
+    for key in d:
+        if key in self.nativeVnodeAttributes:
+            # This is not a bug.
+            if False and trace: g.trace(
+                '****ignoring***',key,d.get(key))
+        else:
+            val = d.get(key)
+            val2 = self.getSaxUa(key,val)
+            aDict[key] = val2
+            # g.trace(key,val,val2)
+    if aDict:
+        # if trace: g.trace('uA',v,aDict)
+        v.unknownAttributes = aDict
+#@+node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    sax_node = g.bunch(
+        attributes={
+'a':'M',
+'lineYOffset':"4b032e",
+# A real icon attribute, see the tests below for what we expect
+'icons':"5d7100287d71012855026f6e71025505746e6f6465710355047479\
+70657104550466696c6571055507796f666673657471064b006805583700000\
+0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
+676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
+471084b01550577686572657109550e6265666f7265486561646c696e65710a\
+5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
+e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
+55026f6e710f68035504747970657110550466696c6571115507796f6666736\
+57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
+656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
+4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
+65666f7265486561646c696e6571165507786f666673657471174b025507726\
+56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
+5c626f74746f6d2e706e67711975652e"
+    })
+    try:
+        p2 = p.insertAsLastChild()
+        v = p2.v
+        c.fileCommands.handleVnodeSaxAttributes(sax_node,v)
+        # print v,v.u
+        d = v.u
+        for attr in ('lineYOffset','icons'):
+            assert d.get(attr) is not None,attr
+        # The a:M attribute should mark the node.
+        assert d.get('a') is None
+        assert v.isMarked()
+        aList = d.get('icons')
+        assert aList
+        assert len(aList) == 2
+        for d2 in aList:
+            for key in ('on','where','yoffset','file'):
+                assert d2.get(key) is not None,key
+    finally:
+        if 1:
+            while p.hasChildren():
+                # print('deleting',p.firstChild())
+                p.firstChild().doDelete()
+#@-node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
+#@-node:ekr.20061004053644:handleVnodeSaxAttributes
+#@-node:ekr.20060919110638.7:fc.createSaxVnode & helpers
+#@-node:ekr.20060919110638.5:fc.createSaxChildren & helpers
+#@-node:ekr.20100124110832.6214:unchanged...
+#@+node:ekr.20100124110832.6213:changed...
+#@+node:ekr.20041005105605.95:at.readEndNode
+def readEndNode (self,unused_s,unused_i,middle=False):
+
+    """Handle end-of-node processing for @-others and @-ref sentinels."""
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c
+
+    # End raw mode.
+    at.raw = False
+
+    # Set the temporary body text.
+    s = ''.join(at.out)
+    s = g.toUnicode(s)
+
+    # g.trace(repr(s))
+
+    if at.importing:
+        at.v._bodyString = s # Allowed use of _bodyString.
+    elif middle: 
+        pass # Middle sentinels never alter text.
+    else:
+        if hasattr(at.v,"tempBodyString") and s != at.v.tempBodyString:
+            old = at.v.tempBodyString
+        elif at.v.hasBody() and s != at.v.getBody():
+            old = at.v.getBody()
+        else:
+            old = None
+        # 9/4/04: Suppress this warning for the root: @first complicates matters.
+        if old and at.v != at.root.v: # and not g.app.unitTesting
+            << indicate that the node has been changed >>
+        if old and at.atAllFlag:
+            if trace: g.trace('*** no update\nold: %s\nnew: %s' % (repr(old),repr(s)))
+            pass # Don't change.
+        else:
+            if trace: g.trace('*** update\nold: %s\nnew: %s' % (repr(old),repr(s)))
+            at.v.tempBodyString = s
+
+    # Indicate that the vnode has been set in the derived file.
+    at.v.setVisited()
+    # g.trace('visit',at.v)
+
+    # End the previous node sentinel.
+    at.indent = at.indentStack.pop()
+    at.out = at.outStack.pop()
+    at.v = at.tStack.pop()
+    if at.thinFile and not at.importing:
+        at.lastThinNode = at.thinNodeStack.pop()
+
+    at.popSentinelStack(at.endNode)
+#@+node:ekr.20041005105605.96:<< indicate that the node has been changed >>
+if at.perfectImportRoot:
+    << bump at.correctedLines and tell about the correction >>
+    at.v._bodyString = s # Allowed use of _bodyString.
+        # Just setting at.v.tempBodyString won't work here.
+    at.v.setDirty() # Mark the node dirty.  Ancestors will be marked dirty later.
+    at.c.setChanged(True)
+else:
+    # New in Leo 4.4.1 final.  This warning can be very confusing.
+    # New in Leo 4.7 b2: We suppress warning for trees containing '@all'
+    if at.atAllFlag: # Give the warning if we are not in an '@all' tree.
+        pass
+    # elif not at.updateWarningGiven:
+    else:
+        # at.updateWarningGiven = True
+        # g.pr("***",at.v,at.root.v)
+        g.es_print("uncached read node changed",at.v.h,color="red") # was at.root.h
+    # Just set the dirty bit. Ancestors will be marked dirty later.
+    at.v.setDirty()
+    # Important: the dirty bits won't stick unless we set c.changed here.
+    # Do *not* call c.setChanged(True) here: that would be too slow.
+    c.changed = True
+#@nonl
+#@+node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
+# Report the number of corrected nodes.
+at.correctedLines += 1
+
+found = False
+for p in at.perfectImportRoot.self_and_subtree():
+    if p.v == at.v:
+        found = True ; break
+
+if found:
+    if 0: # For debugging.
+        g.pr('\n','-' * 40)
+        g.pr("old",len(old))
+        for line in g.splitLines(old):
+            #line = line.replace(' ','< >').replace('\t','<TAB>')
+            g.pr(repr(str(line)))
+        g.pr('\n','-' * 40)
+        g.pr("new",len(s))
+        for line in g.splitLines(s):
+            #line = line.replace(' ','< >').replace('\t','<TAB>')
+            g.pr(repr(str(line)))
+        g.pr('\n','-' * 40)
+else:
+    # This should never happen.
+    g.es("correcting hidden node: v=",repr(at.v),color="red")
+#@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
+#@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
+#@-node:ekr.20041005105605.95:at.readEndNode
+#@+node:ekr.20041005105605.81:at.readStartAll
+def readStartAll (self,s,i):
+
+    """Read an @+all sentinel."""
+
+    at = self
+    j = g.skip_ws(s,i)
+    leadingWs = s[i:j]
+    if leadingWs:
+        assert g.match(s,j,"@+all"),'missing @+all'
+    else:
+        assert g.match(s,j,"+all"),'missing +all'
+
+    # g.trace('root_seen',at.root_seen,at.root.h,repr(s))
+    at.atAllFlag = True
+
+    # Make sure that the generated at-all is properly indented.
+    at.out.append(leadingWs + "@all\n")
+
+    at.endSentinelStack.append(at.endAll)
+#@-node:ekr.20041005105605.81:at.readStartAll
+#@+node:ekr.20060919110638.7:fc.createSaxVnode & helpers
+def createSaxVnode (self,sax_node,parent_v,v=None):
+
+    c = self.c
+    trace = False and not g.unitTesting and c.shortFileName().find('test') > -1
+    verbose = False
+    h = sax_node.headString
+    b = sax_node.bodyString
+
+    if v:
+        # The body of the later node overrides the earlier.
+        # Don't set t.h: h is always empty.
+        # This may be an internal error.
+        if v.b == b:
+            pass
+            if trace and verbose: g.trace(
+                '***no update\nold: %s\nnew: %s' % (v.b,b))
+        else:
+            if trace: g.trace(
+                '***update\nold: %s\nnew: %s' % (v.b,b))
+            v.b = b 
+    else:
+        v = leoNodes.vnode(context=c)
+        v.setBodyString(b)
+        v.setHeadString(h)
+
+        if sax_node.tnx:
+            v.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
+
+    index = self.canonicalTnodeIndex(sax_node.tnx)
+    self.gnxDict [index] = v
+
+    if trace and verbose: g.trace(
+        'tnx','%-22s' % (index),'v',id(v),
+        'len(body)','%-4d' % (len(b)),h)
+
+    self.handleVnodeSaxAttributes(sax_node,v)
+    self.handleTnodeSaxAttributes(sax_node,v)
+
+    return v
+#@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
+def handleTnodeSaxAttributes (self,sax_node,v):
+
+    trace = False and not g.unitTesting
+    d = sax_node.tnodeAttributes
+    if trace and d: g.trace(sax_node,list(d.keys()))
+
+    aDict = {}
+    for key in d:
+        val = d.get(key)
+        val2 = self.getSaxUa(key,val)
+        # g.trace(key,val,val2)
+        aDict[key] = val2
+
+    if aDict:
+        if trace: g.trace('uA',v,list(aDict.keys()))
+        v.unknownAttributes = aDict
+#@+node:ekr.20090702070510.6028:@test handleTnodeSaxAttributes
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    sax_node = g.bunch(
+        tnodeAttributes={
+# The 'tx' attribute is handled by contentHandler.tnodeAttributes.
+# 'tx':"ekr.20090701133940.1767",
+'lineYOffset':"4b032e",
+# A real icon attribute, see the tests below for what we expect
+'icons':"5d7100287d71012855026f6e71025505746e6f6465710355047479\
+70657104550466696c6571055507796f666673657471064b006805583700000\
+0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
+676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
+471084b01550577686572657109550e6265666f7265486561646c696e65710a\
+5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
+e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
+55026f6e710f68035504747970657110550466696c6571115507796f6666736\
+57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
+656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
+4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
+65666f7265486561646c696e6571165507786f666673657471174b025507726\
+56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
+5c626f74746f6d2e706e67711975652e"
+})
+    try:
+        p2 = p.insertAsLastChild()
+        v = p2.v
+        c.fileCommands.handleTnodeSaxAttributes(sax_node,v)
+        # print v,v.u
+        d = v.u
+        for attr in ('lineYOffset','icons'):
+            assert d.get(attr),attr
+        for attr in ('tx','a'):
+            assert d.get(attr) is None,attr # A known attribute.
+    finally:
+        if 1:
+            while p.hasChildren():
+                # print('deleting',p.firstChild())
+                p.firstChild().doDelete()
+#@-node:ekr.20090702070510.6028:@test handleTnodeSaxAttributes
+#@-node:ekr.20060919110638.8:handleTnodeSaxAttributes
+#@+node:ekr.20061004053644:handleVnodeSaxAttributes
+# The native attributes of <v> elements are a, t, vtag, tnodeList,
+# marks, expanded, and descendentTnodeUnknownAttributes.
+# New in Leo 4.5: added descendentVnodeUnknownAttributes to native attributes.
+
+def handleVnodeSaxAttributes (self,sax_node,v):
+
+    trace = False and not g.unitTesting
+    d = sax_node.attributes
+    # if trace and d: g.trace(d)
+
+    s = d.get('a')
+    if s:
+        # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
+        # 'C' (clone) and 'D' bits are not used.
+        if 'M' in s: v.setMarked()
+        if 'E' in s: v.expand()
+        if 'O' in s: v.setOrphan()
+        # if 'T' in s: self.topVnode = v
+        if 'V' in s:
+            # g.trace('setting currentVnode',v,color='red')
+            self.currentVnode = v
+
+    s = d.get('tnodeList','')
+    tnodeList = s and s.split(',')
+    if tnodeList:
+        # This tnodeList will be resolved later.
+        if trace: g.trace('found tnodeList',v.headString(),tnodeList)
+        v.tempTnodeList = tnodeList
+
+    s = d.get('descendentTnodeUnknownAttributes')
+    if s: 
+        aDict = self.getDescendentUnknownAttributes(s)
+        if aDict:
+            # g.trace('descendentTnodeUaDictList',aDict)
+            self.descendentTnodeUaDictList.append(aDict)
+
+    s = d.get('descendentVnodeUnknownAttributes')
+    if s: 
+        aDict = self.getDescendentUnknownAttributes(s)
+        if aDict:
+            # g.trace('descendentVnodeUaDictList',aDict)
+            self.descendentVnodeUaDictList.append((v,aDict),)
+
+    s = d.get('expanded')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="expanded")
+        # g.trace('expanded list',len(aList))
+        self.descendentExpandedList.extend(aList)
+
+    s = d.get('marks')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="marks")
+        # g.trace('marks list',len(aList))
+        self.descendentMarksList.extend(aList)
+
+    aDict = {}
+    for key in d:
+        if key in self.nativeVnodeAttributes:
+            # This is not a bug.
+            if False and trace: g.trace(
+                '****ignoring***',key,d.get(key))
+        else:
+            val = d.get(key)
+            val2 = self.getSaxUa(key,val)
+            aDict[key] = val2
+            # g.trace(key,val,val2)
+    if aDict:
+        # if trace: g.trace('uA',v,aDict)
+        v.unknownAttributes = aDict
+#@+node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    sax_node = g.bunch(
+        attributes={
+'a':'M',
+'lineYOffset':"4b032e",
+# A real icon attribute, see the tests below for what we expect
+'icons':"5d7100287d71012855026f6e71025505746e6f6465710355047479\
+70657104550466696c6571055507796f666673657471064b006805583700000\
+0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
+676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
+471084b01550577686572657109550e6265666f7265486561646c696e65710a\
+5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
+e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
+55026f6e710f68035504747970657110550466696c6571115507796f6666736\
+57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
+656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
+4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
+65666f7265486561646c696e6571165507786f666673657471174b025507726\
+56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
+5c626f74746f6d2e706e67711975652e"
+    })
+    try:
+        p2 = p.insertAsLastChild()
+        v = p2.v
+        c.fileCommands.handleVnodeSaxAttributes(sax_node,v)
+        # print v,v.u
+        d = v.u
+        for attr in ('lineYOffset','icons'):
+            assert d.get(attr) is not None,attr
+        # The a:M attribute should mark the node.
+        assert d.get('a') is None
+        assert v.isMarked()
+        aList = d.get('icons')
+        assert aList
+        assert len(aList) == 2
+        for d2 in aList:
+            for key in ('on','where','yoffset','file'):
+                assert d2.get(key) is not None,key
+    finally:
+        if 1:
+            while p.hasChildren():
+                # print('deleting',p.firstChild())
+                p.firstChild().doDelete()
+#@-node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
+#@-node:ekr.20061004053644:handleVnodeSaxAttributes
+#@-node:ekr.20060919110638.7:fc.createSaxVnode & helpers
+#@+node:ekr.20031218072017.1553:fc.getLeoFile & helpers
+# The caller should follow this with a call to c.redraw().
+
+def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
+
+    c = self.c
+    c.setChanged(False) # May be set when reading @file nodes.
+    self.warnOnReadOnlyFiles(fileName)
+    self.checking = False
+    self.mFileName = c.mFileName
+    self.initReadIvars()
+
+    try:
+        c.loading = True # disable c.changed
+        ok = self.getLeoFileHelper(theFile,fileName,silent)
+
+        # Do this before reading derived files.
+        self.resolveTnodeLists()
+
+        if ok and readAtFileNodesFlag:
+            # Redraw before reading the @file nodes so the screen isn't blank.
+            # This is important for big files like LeoPy.leo.
+            c.redraw()
+            c.setFileTimeStamp(fileName)
+            c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+
+        # Do this after reading derived files.
+        if readAtFileNodesFlag:
+            # The descendent nodes won't exist unless we have read the @thin nodes!
+            self.restoreDescendentAttributes()
+
+        self.setPositionsFromVnodes()
+        c.selectVnode(c.p) # load body pane
+        if c.config.getBool('check_outline_after_read'):
+            c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+    finally:
+        c.loading = False # reenable c.changed
+
+    if c.changed:
+        self.propegateDirtyNodes()
+    c.setChanged(c.changed) # Refresh the changed marker.
+    self.initReadIvars()
+    return ok, c.frame.ratio
+#@+node:ekr.20090526081836.5841:getLeoFileHelper
+def getLeoFileHelper(self,theFile,fileName,silent):
+
+    '''Read the .leo file and create the outline.'''
+
+    c = self.c
+
+    try:
+        ok = True
+        v = self.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
+        if v: # v is None for minimal .leo files.
+            c.setRootVnode(v)
+            self.rootVnode = v
+        else:
+            v = leoNodes.vnode(context=c)
+            v.setHeadString('created root node')
+            p = leoNodes.position(v)
+            p._linkAsRoot(oldRoot=None)
+            self.rootVnode = v
+            c.setRootPosition(p)
+            c.changed = False
+    except BadLeoFile:
+        junk, message, junk = sys.exc_info()
+        if not silent:
+            g.es_exception()
+            g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
+        ok = False
+
+    return ok
+#@-node:ekr.20090526081836.5841:getLeoFileHelper
+#@+node:ekr.20100124110832.6212:propegateDirtyNodes
+def propegateDirtyNodes (self):
+
+    fc = self ; c = fc.c
+
+    aList = [z.copy() for z in c.all_positions() if z.isDirty()]
+    for p in aList:
+        p.setAllAncestorAtFileNodesDirty()
+#@-node:ekr.20100124110832.6212:propegateDirtyNodes
+#@+node:ekr.20031218072017.1554:warnOnReadOnlyFiles
+def warnOnReadOnlyFiles (self,fileName):
+
+    # os.access may not exist on all platforms.
+
+    try:
+        self.read_only = not os.access(fileName,os.W_OK)
+    except AttributeError:
+        self.read_only = False
+    except UnicodeError:
+        self.read_only = False
+
+    if self.read_only and not g.unitTesting:
+        g.es("read only:",fileName,color="red")
+#@+node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
+if g.unitTesting:
+
+    import os,stat
+    c,p = g.getTestVars()
+    fc = c.fileCommands
+
+    path = g.os_path_finalize_join(g.app.loadDir,'..','test','test-read-only.txt')
+    if os.path.exists(path):
+        os.chmod(path, stat.S_IREAD)
+        fc.warnOnReadOnlyFiles(path)
+        assert fc.read_only
+    else:
+        fc.warnOnReadOnlyFiles(path)
+#@-node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
+#@-node:ekr.20031218072017.1554:warnOnReadOnlyFiles
+#@-node:ekr.20031218072017.1553:fc.getLeoFile & helpers
+#@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
+def createOutlineFromCacheList(self,c,aList,top=True,atAll=None):
+    """ Create outline structure from recursive aList
+    built by p.makeCacheList.
+
+    Clones will be automatically created by gnx,
+    but *not* for the top-level node.
+    """
+
+    trace = False and not g.unitTesting
+    parent_v = self
+
+    #import pprint ; pprint.pprint(tree)
+    parent_v = self
+    h,b,gnx,children = aList
+    if h is not None:
+        v = parent_v
+        v._headString = h    
+        v._bodyString = b
+
+    if top:
+        # Scan the body for @all directives.
+        for line in g.splitLines(b):
+            if line.startswith('@all'):
+                atAll = True ; break
+        else:
+            atAll = False
+    else:
+        assert atAll in (True,False,)
+
+    for z in children:
+        h,b,gnx,grandChildren = z
+        isClone,child_v = parent_v.fastAddLastChild(c,gnx)
+        if isClone:
+            # The cached file can not have changed,
+            # otherwise the file would not be in the cache!?
+            if child_v.b != b: # or child_v.h
+                if atAll: # Bug fix: the last seen clone rules.
+                    if trace: g.trace('***not changed\nold: %s\nnew: %s' % (
+                        child_v.b,b))
+                else:
+                    g.es_print("cached read node changed:",child_v.h,color="red")
+                    # g.trace(g.callers(5))
+                    child_v.h = h
+                    child_v.b = b
+                    child_v.setDirty()
+                        # 2010/01/24: just mark chid_v dirty.
+                        # getLeoFile will call setAllAncestorAtFileNodesDirty.
+                    c.changed = True
+                        # Tell getLeoFile that it must scan for dirty nodes.
+        else:
+            child_v.createOutlineFromCacheList(c,z,top=False,atAll=atAll)
+#@+node:ekr.20090829064400.6042:v.fastAddLastChild
+# Similar to createThinChild4
+def fastAddLastChild(self,c,gnxString):
+    '''Create new vnode as last child of the receiver.
+
+    If the gnx exists already, create a clone instead of new vnode.
+    '''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    parent_v = self
+    indices = g.app.nodeIndices
+    gnxDict = c.fileCommands.gnxDict
+
+    if gnxString is None: v = None
+    else:                 v = gnxDict.get(gnxString)
+    is_clone = v is not None
+
+    if trace: g.trace(
+        'clone','%-5s' % (is_clone),
+        'parent_v',parent_v,'gnx',gnxString,'v',repr(v))
+
+    if is_clone:
+        pass
+    else:
+        v = vnode(context=c)
+        if gnxString:
+            gnx = indices.scanGnx(gnxString,0)
+            v.fileIndex = gnx
+        gnxDict[gnxString] = v
+
+    child_v = v
+    child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
+    child_v.setVisited() # Supress warning/deletion of unvisited nodes.
+
+    return is_clone,child_v
+#@-node:ekr.20090829064400.6042:v.fastAddLastChild
+#@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
+#@-node:ekr.20100124110832.6213:changed...
+#@-node:ekr.20100122162421.6240:Clones in @all files now have low priority
 #@-node:ekr.20100118163110.6256:Leo 4.7 rc1 projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt

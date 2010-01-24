@@ -1,0 +1,11 @@
+#@+leo-ver=4-thin
+#@+node:ekr.20100124110656.2062:@thin testCloneUpdate.txt
+#@+others
+#@+node:ekr.20100124110656.2063:node
+Node line 1. changed 5.
+#@nonl
+#@-node:ekr.20100124110656.2063:node
+#@-others
+
+#@-node:ekr.20100124110656.2062:@thin testCloneUpdate.txt
+#@-leo
