@@ -2488,13 +2488,10 @@ def setChanged (self,changedFlag):
     if trace: g.trace('Commands',changedFlag) # ,c.frame,g.callers(4))
 
     # Clear all dirty bits _before_ setting the caption.
-    # Clear all dirty bits except orphaned @file nodes
-    if False: ### no longer use tnodeLists.
-        if not changedFlag:
-            # g.trace("clearing all dirty bits")
-            for p in c.all_unique_positions():
-                if p.isDirty() and not (p.isAtFileNode() or p.isAtNorefFileNode()):
-                    p.clearDirty()
+    if not changedFlag:
+        for v in c.all_unique_nodes():
+            if v.isDirty():
+                v.clearDirty()
 
     if g.app.qt_use_tabs and hasattr(c.frame,'top'):
         c.frame.top.master.setChanged(c,changedFlag)
