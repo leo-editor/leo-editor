@@ -678,7 +678,7 @@ class atFile:
                 ok = at.read(p,force=force)
                 if wasOrphan and not partialFlag and not ok:
                     # Remind the user to fix the problem.
-                    p.setDirty()
+                    p.setDirty() # Expensive, but it can't be helped.
                     c.setChanged(True)
                 p.moveToNodeAfterTree()
             else: p.moveToThreadNext()

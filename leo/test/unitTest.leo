@@ -740,7 +740,7 @@
 <v t="ekr.20090704085350.5008"><vh>spam</vh></v>
 <v t="ekr.20090704085350.5009"><vh>eggs</vh></v>
 </v>
-<v t="ekr.20090704085350.5040"><vh>@noref ../test/unittest/at-noref-test.py</vh>
+<v t="ekr.20090704085350.5040"><vh>@@noref ../test/unittest/at-noref-test.py</vh>
 <v t="ekr.20100123093044.5115"><vh>spam</vh></v>
 <v t="ekr.20100123093044.5117"><vh>eggs</vh></v>
 </v>

@@ -760,7 +760,7 @@ class vnode (baseVnode):
         v._addLink(n,parent_v)
     #@-node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
     #@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
-    def createOutlineFromCacheList(self,c,aList):
+    def createOutlineFromCacheList(self,c,aList,top=True,atAll=None):
         """ Create outline structure from recursive aList
         built by p.makeCacheList.
 
@@ -778,9 +778,19 @@ class vnode (baseVnode):
             v._headString = h    
             v._bodyString = b
 
+        if top:
+            # Scan the body for @all directives.
+            for line in g.splitLines(b):
+                if line.startswith('@all'):
+                    atAll = True ; break
+            else:
+                atAll = False
+        else:
+            assert atAll is not None
+
         for z in children:
             h,b,gnx,grandChildren = z
-            isClone,child_v = parent_v.fastAddLastChild(c,gnx)
+            isClone,child_v = parent_v.fastAddLastChild(c,gnx,atAll)
             if isClone:
                 if child_v.b != b: # or child_v.h
                     # Bug fix: the last seen clone rules.
@@ -791,10 +801,10 @@ class vnode (baseVnode):
                     # child_v.setMarked()
                     g.es("changed:",child_v.h,color="blue")
             else:
-                child_v.createOutlineFromCacheList(c,z)
+                child_v.createOutlineFromCacheList(c,z,top=False,atAll=atAll)
     #@+node:ekr.20090829064400.6042:v.fastAddLastChild
     # Similar to createThinChild4
-    def fastAddLastChild(self,c,gnxString):
+    def fastAddLastChild(self,c,gnxString,atAll):
         '''Create new vnode as last child of the receiver.
 
         If the gnx exists already, create a clone instead of new vnode.
@@ -1312,7 +1322,7 @@ class position (object):
     def atEditNodeName            (self): return self.v.atEditNodeName()
     def atFileNodeName            (self): return self.v.atFileNodeName()
     def atNoSentinelsFileNodeName (self): return self.v.atNoSentinelsFileNodeName()
-    def atRawFileNodeName         (self): return self.v.atRawFileNodeName()
+    # def atRawFileNodeName         (self): return self.v.atRawFileNodeName()
     def atShadowFileNodeName      (self): return self.v.atShadowFileNodeName()
     def atSilentFileNodeName      (self): return self.v.atSilentFileNodeName()
     def atThinFileNodeName        (self): return self.v.atThinFileNodeName()
@@ -1331,7 +1341,7 @@ class position (object):
     def isAtIgnoreNode          (self): return self.v.isAtIgnoreNode()
     def isAtNoSentinelsFileNode (self): return self.v.isAtNoSentinelsFileNode()
     def isAtOthersNode          (self): return self.v.isAtOthersNode()
-    def isAtRawFileNode         (self): return self.v.isAtRawFileNode()
+    # def isAtRawFileNode         (self): return self.v.isAtRawFileNode()
     def isAtSilentFileNode      (self): return self.v.isAtSilentFileNode()
     def isAtShadowFileNode      (self): return self.v.isAtShadowFileNode()
     def isAtThinFileNode        (self): return self.v.isAtThinFileNode()
@@ -1663,7 +1673,11 @@ class position (object):
 
         p = self
         p.v.initHeadString(s)
+        # Note: p.setDirty is expensive.
+        # We can't change this because Leo's core uses
+        # p.setDirty and c.setDirty interchangeably.
         p.setDirty()
+    #@nonl
     #@-node:ekr.20040315034158:p.setBodyString & setHeadString
     #@+node:ekr.20040312015908:p.Visited bits
     #@+node:ekr.20040306220634.17:p.clearVisitedInTree

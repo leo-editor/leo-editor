@@ -2511,7 +2511,7 @@ def atAutoNodeName            (self): return self.v.atAutoNodeName()
 def atEditNodeName            (self): return self.v.atEditNodeName()
 def atFileNodeName            (self): return self.v.atFileNodeName()
 def atNoSentinelsFileNodeName (self): return self.v.atNoSentinelsFileNodeName()
-def atRawFileNodeName         (self): return self.v.atRawFileNodeName()
+# def atRawFileNodeName         (self): return self.v.atRawFileNodeName()
 def atShadowFileNodeName      (self): return self.v.atShadowFileNodeName()
 def atSilentFileNodeName      (self): return self.v.atSilentFileNodeName()
 def atThinFileNodeName        (self): return self.v.atThinFileNodeName()
@@ -2530,7 +2530,7 @@ def isAtFileNode            (self): return self.v.isAtFileNode()
 def isAtIgnoreNode          (self): return self.v.isAtIgnoreNode()
 def isAtNoSentinelsFileNode (self): return self.v.isAtNoSentinelsFileNode()
 def isAtOthersNode          (self): return self.v.isAtOthersNode()
-def isAtRawFileNode         (self): return self.v.isAtRawFileNode()
+# def isAtRawFileNode         (self): return self.v.isAtRawFileNode()
 def isAtSilentFileNode      (self): return self.v.isAtSilentFileNode()
 def isAtShadowFileNode      (self): return self.v.isAtShadowFileNode()
 def isAtThinFileNode        (self): return self.v.isAtThinFileNode()
@@ -4156,6 +4156,99 @@ def writeAllHelper (self,p,
 #@-node:ekr.20041005105605.147:writeAll (atFile) & helper
 #@-node:ekr.20100123044506.6243:changed
 #@-node:ekr.20100123044506.6238:Eliminated tnodeLists
+#@+node:ekr.20100124092134.6247:checked for p.setDirty
+@
+This is surprising. It should be the same as p.v.setDirty, but it calls
+c.setDirty instead! However, in Leo's code p.setDirty is used by commands, so it
+can't be changed. We must make *sure* not to call p.setDirty when reading files.
+#@+node:ekr.20040315034158:p.setBodyString & setHeadString
+def setBodyString (self,s):
+
+    p = self
+    return p.v.setBodyString(s)
+
+initBodyString = setBodyString
+setTnodeText = setBodyString
+scriptSetBodyString = setBodyString
+
+def initHeadString (self,s):
+
+    p = self
+    p.v.initHeadString(s)
+
+def setHeadString (self,s):
+
+    p = self
+    p.v.initHeadString(s)
+    # Note: p.setDirty is expensive.
+    # We can't change this because Leo's core uses
+    # p.setDirty and c.setDirty interchangeably.
+    p.setDirty()
+#@nonl
+#@-node:ekr.20040315034158:p.setBodyString & setHeadString
+#@+node:ekr.20041005105605.72:createThinChild4
+def createThinChild4 (self,gnxString,headline):
+
+    """Find or create a new *vnode* whose parent (also a vnode) is at.lastThinNode.
+    This is called only for @thin trees."""
+
+    trace = False and not g.unitTesting
+    verbose = False
+    at = self ; c = at.c ; indices = g.app.nodeIndices
+    last = at.lastThinNode
+    lastIndex = last.fileIndex
+    gnx = indices.scanGnx(gnxString,0)
+
+    if trace and verbose: g.trace("last %s, gnx %s %s" % (
+        last,gnxString,headline))
+
+    parent = at.lastThinNode # A vnode.
+    children = parent.children
+    for child in children:
+        if gnx == child.fileIndex:
+            break
+    else:
+        child = None
+
+    if at.cloneSibCount > 1:
+        n = at.cloneSibCount ; at.cloneSibCount = 0
+        if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
+        else: clonedSibs = 0
+        copies = n - clonedSibs
+        if trace: g.trace(copies,headline)
+    else:
+        if gnx == lastIndex:
+            last.setVisited() # Supress warning/deletion of unvisited nodes.
+            if trace:g.trace('found last',last)
+            return last
+        if child:
+            child.setVisited() # Supress warning/deletion of unvisited nodes.
+            if trace: g.trace('found child',child)
+            return child
+        copies = 1 # Create exactly one copy.
+
+    while copies > 0:
+        copies -= 1
+        # Create the vnode only if it does not already exist.
+        gnxDict = c.fileCommands.gnxDict
+        v = gnxDict.get(gnxString)
+        if v:
+            if gnx != v.fileIndex:
+                g.trace('can not happen: v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx))
+        else:
+            v = leoNodes.vnode(context=c)
+            v._headString = headline # Allowed use of v._headString.
+            v.fileIndex = gnx
+            gnxDict[gnxString] = v
+
+        child = v
+        child._linkAsNthChild(parent,parent.numberOfChildren())
+
+    if trace and verbose: g.trace('new node: %s' % child)
+    child.setVisited() # Supress warning/deletion of unvisited nodes.
+    return child
+#@-node:ekr.20041005105605.72:createThinChild4
+#@-node:ekr.20100124092134.6247:checked for p.setDirty
 #@-node:ekr.20100118163110.6256:Leo 4.7 rc1 projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt
