@@ -4654,6 +4654,125 @@ except Exception:
     return False
 #@-node:ekr.20040324080359:<< write all @file nodes >>
 #@-node:ekr.20100119145629.6107:from write_Leo_file
+#@+node:ekr.20031218072017.3094:<< define general constants >> leoGlobals.py
+body_newline = '\n'
+body_ignored_newline = '\r'
+#@-node:ekr.20031218072017.3094:<< define general constants >> leoGlobals.py
+#@+node:ekr.20100123044506.7115:tnodeList stuff...
+#@+node:ekr.20031218072017.3152:g.scanAtFileOptions (used in 3.x read code)
+def scanAtFileOptions (h,err_flag=False):
+
+    assert(g.match(h,0,"@file"))
+    i = len("@file")
+    atFileType = "@file"
+    optionsList = []
+
+    while g.match(h,i,'-'):
+        << scan another @file option >>
+
+    # Convert atFileType to a list of options.
+    for fileType,option in (
+        ("@silentfile","asis"),
+        ("@nosentinelsfile","nosent"),
+        # ("@rawfile","noref"),
+        ("@thinfile","thin")
+    ):
+        if atFileType == fileType and option not in optionsList:
+            optionsList.append(option)
+
+    # g.trace(atFileType,optionsList)
+
+    return i,atFileType,optionsList
+#@+node:ekr.20031218072017.3153:<< scan another @file option >>
+i += 1 ; err = -1
+
+if g.match_word(h,i,"asis"):
+    if atFileType == "@file":
+        atFileType = "@silentfile"
+    elif err_flag:
+        g.es("using -asis option in:",h)
+# elif g.match(h,i,"noref"): # Just match the prefix.
+    # if atFileType == "@file":
+        # atFileType = "@rawfile"
+    # elif atFileType == "@nosentinelsfile":
+        # atFileType = "@silentfile"
+    # elif err_flag:
+        # g.es("ignoring redundant -noref in:",h)
+elif g.match(h,i,"nosent"): # Just match the prefix.
+    if atFileType == "@file":
+        atFileType = "@nosentinelsfile"
+    elif atFileType == "@rawfile":
+        atFileType = "@silentfile"
+    elif err_flag:
+        g.es("ignoring redundant -nosent in:",h)
+elif g.match_word(h,i,"thin"):
+    if atFileType == "@file":
+        atFileType = "@thinfile"
+    elif err_flag:
+        g.es("using -thin option in:",h)
+else:
+    if 0: # doesn't work
+        for option in ("fat","new","now","old","thin","wait"):
+            if g.match_word(h,i,option):
+                optionsList.append(option)
+        if len(option) == 0:
+            err = i-1
+# Scan to the next minus sign.
+while i < len(h) and h[i] not in (' ','\t','-'):
+    i += 1
+if err > -1:
+    z_opt = h[err:i]
+    g.es("unknown option:",z_opt,"in",h)
+#@-node:ekr.20031218072017.3153:<< scan another @file option >>
+#@-node:ekr.20031218072017.3152:g.scanAtFileOptions (used in 3.x read code)
+#@+node:ekr.20041005105605.88:<< Check the filename in the sentinel >>
+if 0: # This doesn't work so well in cooperative environments.
+    if not at.importing:
+
+        h = headline.strip()
+
+        if h[:5] == "@file":
+            i,junk,junk = g.scanAtFileOptions(h)
+            fileName = h[i:].strip()
+            if fileName != at.targetFileName:
+                at.readError("File name in @node sentinel does not match file's name")
+        elif h[:8] == "@rawfile":
+            fileName = h[8:].strip()
+            if fileName != at.targetFileName:
+                at.readError("File name in @node sentinel does not match file's name")
+        else:
+            at.readError("Missing @file in root @node sentinel")
+#@-node:ekr.20041005105605.88:<< Check the filename in the sentinel >>
+#@+node:ekr.20100123044506.6249:<< Append tnodeList to attrs >> putVnode
+# Write the tnodeList only for @file nodes.
+if hasattr(v,"tnodeList") and len(v.tnodeList) > 0 and v.isAnyAtFileNode():
+    if isThin or isShadow or isAuto:  # Bug fix: 2008/8/7.
+        if isThin or isShadow: # Never issue warning for @auto.
+            if g.app.unitTesting:
+                g.app.unitTestDict["warning"] = True
+            g.es("deleting tnodeList for",p.h,color="blue")
+        # This is safe: cloning can't change the type of this node!
+        delattr(v,"tnodeList")
+    else:
+        attrs.append(fc.putTnodeList(v)) # New in 4.0
+#@-node:ekr.20100123044506.6249:<< Append tnodeList to attrs >> putVnode
+#@+node:ekr.20031218072017.2002:putTnodeList
+def putTnodeList (self,v):
+
+    """Put the tnodeList attribute of a vnode."""
+
+    # Remember: entries in the tnodeList correspond to @+node sentinels, _not_ to tnodes!
+    nodeIndices = g.app.nodeIndices
+    tnodeList = v.tnodeList
+
+    if tnodeList:
+        s = ','.join([nodeIndices.toString(v.fileIndex) for v in tnodeList])
+        return ' tnodeList="%s"' % (s)
+    else:
+        return ''
+#@nonl
+#@-node:ekr.20031218072017.2002:putTnodeList
+#@-node:ekr.20100123044506.7115:tnodeList stuff...
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node

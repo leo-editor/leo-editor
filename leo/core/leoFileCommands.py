@@ -1556,7 +1556,9 @@ class baseFileCommands:
                         result.append(v)
                     else:
                         g.trace('*** No vnode for %s' % tnx)
-                p.v.tnodeList = result
+                if result:
+                    p.v.tnodeList = result
+                    g.trace('*** tnodeList for',p.h,result)
                 delattr(p.v,'tempTnodeList')
     #@nonl
     #@-node:ekr.20060919110638.11:resolveTnodeLists
@@ -2063,13 +2065,6 @@ class baseFileCommands:
             if v.isExpanded() and v.hasChildren(): attr += "E"
             if v.isMarked():   attr += "M"
             if v.isOrphan():   attr += "O"
-
-            # No longer a bottleneck now that we use p.equal rather than p.__cmp__
-            # Almost 30% of the entire writing time came from here!!!
-            # if not self.use_sax:
-                # if p.equal(self.topPosition):     attr += "T" # was a bottleneck
-                # if p.equal(self.currentPosition): attr += "V" # was a bottleneck
-
             if attr:
                 attrs.append(' a="%s"' % attr)
 
@@ -2089,24 +2084,9 @@ class baseFileCommands:
                 v.unknownAttributes = d
         #@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
         #@nl
-        #@    << Append tnodeList and unKnownAttributes to attrs >>
-        #@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
-        # Write the tnodeList only for @file nodes.
-        if hasattr(v,"tnodeList") and len(v.tnodeList) > 0 and v.isAnyAtFileNode():
-            if isThin or isShadow or isAuto:  # Bug fix: 2008/8/7.
-                if isThin or isShadow: # Never issue warning for @auto.
-                    if g.app.unitTesting:
-                        g.app.unitTestDict["warning"] = True
-                    g.es("deleting tnodeList for",p.h,color="blue")
-                # This is safe: cloning can't change the type of this node!
-                delattr(v,"tnodeList")
-            else:
-                attrs.append(fc.putTnodeList(v)) # New in 4.0
-
-        if False: # These are now put in <t> elements.
-            if hasattr(v,"unknownAttributes"): # New in 4.0
-                # g.trace('v',v,'v.uA',v.unknownAttributes)
-                attrs.append(self.putUnknownAttributes(v))
+        #@    << Append unKnownAttributes to attrs >>
+        #@+node:ekr.20040324082713:<< Append unKnownAttributes to attrs>> putVnode
+        # v.unknownAttributes are now put in <t> elements.
 
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
             # We put the entire tree when using the clipboard, so no need for this.
@@ -2114,7 +2094,7 @@ class baseFileCommands:
                 attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
                 attrs.append(self.putDescendentAttributes(p))
         #@nonl
-        #@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>> fc.put
+        #@-node:ekr.20040324082713:<< Append unKnownAttributes to attrs>> putVnode
         #@nl
         attrs = ''.join(attrs)
         v_head = '<v t="%s"%s>' % (gnx,attrs)
@@ -2272,7 +2252,7 @@ class baseFileCommands:
     #@+node:ekr.20100119145629.6114:writeAllAtFileNodesHelper
     def writeAllAtFileNodesHelper (self):
 
-        '''Write all @file nodes and set orphan bits.
+        '''Write all @<file> nodes and set orphan bits.
         '''
 
         c = self.c
@@ -2283,7 +2263,7 @@ class baseFileCommands:
             c.atFileCommands.writeAll()
             return True
         except Exception:
-            g.es_error("exception writing derived files")
+            g.es_error("exception writing external files")
             g.es_exception()
             return False
     #@-node:ekr.20100119145629.6114:writeAllAtFileNodesHelper
@@ -2427,65 +2407,39 @@ class baseFileCommands:
 
         '''Write all @file nodes in the selected outline.'''
 
-        c = self.c
-
-        changedFiles,atOk = c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
-
-        if changedFiles:
-            g.es("auto-saving outline",color="blue")
-            c.save() # Must be done to set or clear tnodeList.
+        self.c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
     #@-node:ekr.20031218072017.2012:writeAtFileNodes (fileCommands)
     #@+node:ekr.20080801071227.5:writeAtShadowNodes (fileCommands)
     def writeAtShadowNodes (self,event=None):
 
         '''Write all @file nodes in the selected outline.'''
 
-        c = self.c
-
-        changedFiles,atOk = c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
-
-        if changedFiles:
-            g.es("auto-saving outline",color="blue")
-            c.save() # Must be done to set or clear tnodeList.
+        self.c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
     #@-node:ekr.20080801071227.5:writeAtShadowNodes (fileCommands)
     #@+node:ekr.20031218072017.1666:writeDirtyAtFileNodes (fileCommands)
     def writeDirtyAtFileNodes (self,event=None):
 
         '''Write all changed @file Nodes.'''
 
-        c = self.c
-
-        changedFiles,atOk = c.atFileCommands.writeAll(writeDirtyAtFileNodesFlag=True)
-
-        if changedFiles:
-            g.es("auto-saving outline",color="blue")
-            c.save() # Must be done to set or clear tnodeList.
+        self.c.atFileCommands.writeAll(writeDirtyAtFileNodesFlag=True)
     #@-node:ekr.20031218072017.1666:writeDirtyAtFileNodes (fileCommands)
     #@+node:ekr.20080801071227.6:writeDirtyAtShadowNodes (fileCommands)
     def writeDirtyAtShadowNodes (self,event=None):
 
         '''Write all changed @shadow Nodes.'''
 
-        c = self.c ; at = c.atFileCommands
+        self.c.atFileCommands.writeDirtyAtShadowNodes()
 
-        changed = at.writeDirtyAtShadowNodes()
-
-        if changed:
-            g.es("auto-saving outline",color="blue")
-            c.save() # Must be done to set or clear tnodeList.
     #@-node:ekr.20080801071227.6:writeDirtyAtShadowNodes (fileCommands)
     #@+node:ekr.20031218072017.2013:writeMissingAtFileNodes
     def writeMissingAtFileNodes (self,event=None):
 
         '''Write all missing @file nodes.'''
 
-        c = self.c ; at = c.atFileCommands ; p = c.p
+        c = self.c
 
-        if p:
-            changedFiles = at.writeMissing(p)
-            if changedFiles:
-                g.es("auto-saving outline",color="blue")
-                c.save() # Must be done to set or clear tnodeList.
+        if c.p:
+            c.atFileCommands.writeMissing(c.p)
     #@-node:ekr.20031218072017.2013:writeMissingAtFileNodes
     #@+node:ekr.20031218072017.3050:writeOutlineOnly
     def writeOutlineOnly (self,event=None):
@@ -2623,22 +2577,6 @@ class baseFileCommands:
         return d and self.pickle(
             torv=p.v,val=d,tag='descendentVnodeUnknownAttributes') or ''
     #@-node:ekr.20080805071954.2:putDescendentVnodeUas
-    #@+node:ekr.20031218072017.2002:putTnodeList
-    def putTnodeList (self,v):
-
-        """Put the tnodeList attribute of a vnode."""
-
-        # Remember: entries in the tnodeList correspond to @+node sentinels, _not_ to tnodes!
-        nodeIndices = g.app.nodeIndices
-        tnodeList = v.tnodeList
-
-        if tnodeList:
-            s = ','.join([nodeIndices.toString(v.fileIndex) for v in tnodeList])
-            return ' tnodeList="%s"' % (s)
-        else:
-            return ''
-    #@nonl
-    #@-node:ekr.20031218072017.2002:putTnodeList
     #@+node:ekr.20050418161620.2:putUaHelper
     def putUaHelper (self,torv,key,val):
 

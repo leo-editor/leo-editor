@@ -3,24 +3,24 @@ import sys
 from pylint import lint
 
 core_table = (
-    # ('leoGlobals.py',''),
+    # (leoGlobals.py',''),
     # ('leoApp.py',''),
     ('leoAtFile.py',''),
-    #  ('leoChapters.py',''),
-    #  ('leoCommands.py',''),
-    #  ('leoEditCommands.py','W0511'),
-    # ('leoFileCommands.py',''),
-    # ('leoFind.py',''),
-    # ('leoFrame.py',''),
-    # ('leoGlobals.py',''), # E0602:4528:isBytes: Undefined variable 'bytes'
-    # ('leoGui.py','W0511'), # W0511: to do
-    # ('leoImport.py',''),
-    # ('leoMenu.py',''),
-    # ('leoNodes.py',''),
-    # ('leoPlugins.py',''),
-    # ('leoShadow.py',''),
-    # ('leoTangle.py',''),
-    # ('leoUndo.py',''),
+    # (leoChapters.py',''),
+    # (leoCommands.py',''),
+    # (leoEditCommands.py','W0511'),
+    ('leoFileCommands.py',''),
+    # (leoFind.py',''),
+    # (leoFrame.py',''),
+    # (leoGlobals.py',''), # E0602:4528:isBytes: Undefined variable 'bytes'
+    # (leoGui.py','W0511'), # W0511: to do
+    # (leoImport.py',''),
+    # (leoMenu.py',''),
+    # (leoNodes.py',''),
+    # (leoPlugins.py',''),
+    # (leoShadow.py',''),
+    # (leoTangle.py',''),
+    # (leoUndo.py',''),
 )
 
 plugins_table = (

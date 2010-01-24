@@ -830,7 +830,7 @@ class baseTangleCommands:
             f = open(path)
             if f:
                 file_buf = f.read()
-                file_buf = file_buf.replace(g.body_ignored_newline,'')
+                file_buf = file_buf.replace('\r','')
         except:
             if f: f.close()
             g.es("error reading:",path)
@@ -1318,14 +1318,12 @@ class baseTangleCommands:
             self.output_file.write(s)
 
     def onl(self):
-        # 3/18/03: Don't mess with g.body_ignored_newline.
-        # self.os(self.output_newline)
         s = self.output_newline
         s = g.toEncodedString(s,self.encoding,reportErrors=True)
         self.output_file.write(s)
 
     def os (self,s):
-        s = s.replace(g.body_ignored_newline,g.body_newline)
+        s = s.replace('\r','\n')
         s = g.toEncodedString(s,self.encoding,reportErrors=True)
         self.output_file.write(s)
 
@@ -1521,9 +1519,9 @@ class baseTangleCommands:
                     else: self.os("@") ; i += 1
                     #@-node:ekr.20031218072017.3509:<< handle noweb @ < < convention >>
                     #@nl
-            elif ch == g.body_ignored_newline:
+            elif ch == '\r':
                 i += 1
-            elif ch == g.body_newline:
+            elif ch == '\n':
                 i += 1 ; self.onl()
                 i = self.put_newline(s,i,False) # Put full lws
                 if self.use_cweb_flag and g.match(s,i,"@@"):
@@ -2698,9 +2696,9 @@ class baseTangleCommands:
         self.push_new_def_node(self.root_name,indent,1,1,True)
         while i < len(s):
             ch = s[i]
-            if ch == g.body_ignored_newline:
+            if ch == '\r':
                 i += 1 # ignore
-            elif ch == g.body_newline:
+            elif ch == '\n':
                 #@            << handle the start of a new line >>
                 #@+node:ekr.20031218072017.3565:<< handle the start of a new line >>
                 self.copy(ch) ; i += 1 # This works because we have one-character newlines.
@@ -3262,14 +3260,14 @@ class baseTangleCommands:
             i += 1 ; delim = '"'
         elif s[i] == '<':
             i += 1 ; delim = '>'
-        else: delim = g.body_newline
+        else: delim = '\n'
 
         root1 = i # The name does not include the delimiter.
         while i < len(s) and s[i] != delim and not g.is_nl(s,i):
             i += 1
         root2 = i
 
-        if delim != g.body_newline and not g.match(s,i,delim):
+        if delim != '\n' and not g.match(s,i,delim):
             if report_errors:
                 g.scanError("bad filename in @root " + s[:i])
         else:

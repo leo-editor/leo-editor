@@ -70,16 +70,9 @@ import traceback
 import types
 #@-node:ekr.20050208101229:<< imports >>
 #@nl
-
 print('*** isPython3: %s' % isPython3)
-#@<< define general constants >>
-#@+node:ekr.20031218072017.3094:<< define general constants >>
-body_newline = '\n'
-body_ignored_newline = '\r'
-#@-node:ekr.20031218072017.3094:<< define general constants >>
-#@nl
-#@<< define global data structures >>
-#@+node:EKR.20040610094819:<< define global data structures >>
+#@<< define globalDirectiveList >>
+#@+node:EKR.20040610094819:<< define globalDirectiveList >>
 # Visible externally so plugins may add to the list of directives.
 
 globalDirectiveList = [
@@ -98,7 +91,7 @@ globalDirectiveList = [
     'unit','verbose', 'wrap',
 ]
 #@nonl
-#@-node:EKR.20040610094819:<< define global data structures >>
+#@-node:EKR.20040610094819:<< define globalDirectiveList >>
 #@nl
 #@<< define the nullObject class >>
 #@+node:ekr.20090521175848.5881:<< define the nullObject class >>
@@ -122,12 +115,13 @@ class nullObject:
     def __setattr__(self,attr,val): return self
 #@-node:ekr.20090521175848.5881:<< define the nullObject class >>
 #@nl
-g = nullObject() # Set later by startup logic to this module.
+g = nullObject() # Set early in startup logic to this module.
 app = None # The singleton app object.
 debug = False # Set early in startup by the --debug command-line option.
 unitTesting = False # A synonym for app.unitTesting.
-
 enableDB = True
+    # Don't even think about eliminating this constant:
+    # it is needed for debugging.
 if not enableDB:
     print('** leoGlobals.py: caching disabled')
 
@@ -4288,73 +4282,6 @@ def toUnicodeFileEncoding(path,encoding):
 #@-node:ekr.20031218072017.2160:toUnicodeFileEncoding
 #@-node:ekr.20031218072017.2145:os.path wrappers (leoGlobals.py)
 #@+node:ekr.20031218072017.3151:Scanning... (leoGlobals.py)
-#@+node:ekr.20031218072017.3152:g.scanAtFileOptions (used in 3.x read code)
-def scanAtFileOptions (h,err_flag=False):
-
-    assert(g.match(h,0,"@file"))
-    i = len("@file")
-    atFileType = "@file"
-    optionsList = []
-
-    while g.match(h,i,'-'):
-        #@        << scan another @file option >>
-        #@+node:ekr.20031218072017.3153:<< scan another @file option >>
-        i += 1 ; err = -1
-
-        if g.match_word(h,i,"asis"):
-            if atFileType == "@file":
-                atFileType = "@silentfile"
-            elif err_flag:
-                g.es("using -asis option in:",h)
-        elif g.match(h,i,"noref"): # Just match the prefix.
-            if atFileType == "@file":
-                atFileType = "@rawfile"
-            elif atFileType == "@nosentinelsfile":
-                atFileType = "@silentfile"
-            elif err_flag:
-                g.es("ignoring redundant -noref in:",h)
-        elif g.match(h,i,"nosent"): # Just match the prefix.
-            if atFileType == "@file":
-                atFileType = "@nosentinelsfile"
-            elif atFileType == "@rawfile":
-                atFileType = "@silentfile"
-            elif err_flag:
-                g.es("ignoring redundant -nosent in:",h)
-        elif g.match_word(h,i,"thin"):
-            if atFileType == "@file":
-                atFileType = "@thinfile"
-            elif err_flag:
-                g.es("using -thin option in:",h)
-        else:
-            if 0: # doesn't work
-                for option in ("fat","new","now","old","thin","wait"):
-                    if g.match_word(h,i,option):
-                        optionsList.append(option)
-                if len(option) == 0:
-                    err = i-1
-        # Scan to the next minus sign.
-        while i < len(h) and h[i] not in (' ','\t','-'):
-            i += 1
-        if err > -1:
-            z_opt = h[err:i]
-            g.es("unknown option:",z_opt,"in",h)
-        #@-node:ekr.20031218072017.3153:<< scan another @file option >>
-        #@nl
-
-    # Convert atFileType to a list of options.
-    for fileType,option in (
-        ("@silentfile","asis"),
-        ("@nosentinelsfile","nosent"),
-        ("@rawfile","noref"),
-        ("@thinfile","thin")
-    ):
-        if atFileType == fileType and option not in optionsList:
-            optionsList.append(option)
-
-    # g.trace(atFileType,optionsList)
-
-    return i,atFileType,optionsList
-#@-node:ekr.20031218072017.3152:g.scanAtFileOptions (used in 3.x read code)
 #@+node:ekr.20031218072017.3156:scanError
 # It is dubious to bump the Tangle error count here, but it really doesn't hurt.
 
@@ -7068,5 +6995,6 @@ def init_zodb (pathToZodbStorage,verbose=True):
 #@-node:ekr.20060913090832.1:g.init_zodb
 #@-node:ekr.20060913091602:ZODB support
 #@-others
+
 #@-node:ekr.20031218072017.3093:@thin leoGlobals.py
 #@-leo

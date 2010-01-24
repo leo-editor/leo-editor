@@ -4057,7 +4057,7 @@ class baseCommands (object):
 
         """Report any possible clone errors in the outline.
 
-        Remove any unused tnodeLists."""
+        Remove any tnodeLists."""
 
         c = self ; count = 1 ; errors = 0
         isTkinter = g.app.gui and g.app.gui.guiName() == "tkinter"
@@ -4071,18 +4071,18 @@ class baseCommands (object):
         for p in iter():
             try:
                 count += 1
-                #@            << remove unused tnodeList >>
-                #@+node:ekr.20040313150633:<< remove unused tnodeList >>
+                #@            << remove tnodeList >>
+                #@+node:ekr.20040313150633:<< remove tnodeList >>
                 # Empty tnodeLists are not errors.
                 v = p.v
 
-                if hasattr(v,"tnodeList") and len(v.tnodeList) > 0 and not v.isAnyAtFileNode():
+                if hasattr(v,"tnodeList"): # and len(v.tnodeList) > 0 and not v.isAnyAtFileNode():
                     if 0:
                         s = "deleting tnodeList for " + repr(v)
                         g.es_print(s,color="blue")
                     delattr(v,"tnodeList")
                     v._p_changed = True
-                #@-node:ekr.20040313150633:<< remove unused tnodeList >>
+                #@-node:ekr.20040313150633:<< remove tnodeList >>
                 #@nl
                 if full: # Unit tests usually set this false.
                     #@                << do full tests >>
@@ -7411,11 +7411,12 @@ class baseCommands (object):
 
         # Clear all dirty bits _before_ setting the caption.
         # Clear all dirty bits except orphaned @file nodes
-        if not changedFlag:
-            # g.trace("clearing all dirty bits")
-            for p in c.all_unique_positions():
-                if p.isDirty() and not (p.isAtFileNode() or p.isAtNorefFileNode()):
-                    p.clearDirty()
+        if False: ### no longer use tnodeLists.
+            if not changedFlag:
+                # g.trace("clearing all dirty bits")
+                for p in c.all_unique_positions():
+                    if p.isDirty() and not (p.isAtFileNode() or p.isAtNorefFileNode()):
+                        p.clearDirty()
 
         if g.app.qt_use_tabs and hasattr(c.frame,'top'):
             c.frame.top.master.setChanged(c,changedFlag)
@@ -7726,7 +7727,7 @@ class baseCommands (object):
 
         # New feature: search for first non-blank character after @x for common x.
         if ch != '@' and h.startswith('@'):
-            for s in ('button','command','file','thin','asis','nosent','noref'):
+            for s in ('button','command','file','thin','asis','nosent',): # 'noref'):
                 prefix = '@'+s
                 if h.startswith('@'+s):
                     while 1:

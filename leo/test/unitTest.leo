@@ -66,7 +66,10 @@
 <v t="ekr.20070611081718.4"><vh>firstChild</vh></v>
 </v>
 </v>
+<v t="ekr.20100123172713.5114"><vh>Scripts</vh>
 <v t="ekr.20100102164959.5088"><vh>Count pages</vh></v>
+<v t="ekr.20100123172713.5116"><vh>Clean all tnodeLists</vh></v>
+</v>
 </v>
 <v t="ekr.20070303143846.1"></v>
 <v t="ekr.20051012104957"><vh>Docs</vh>
@@ -737,17 +740,11 @@
 <v t="ekr.20090704085350.5008"><vh>spam</vh></v>
 <v t="ekr.20090704085350.5009"><vh>eggs</vh></v>
 </v>
-<v t="ekr.20090704085350.5040" tnodeList="ekr.20090704085350.5040,ekr.20090704085350.5041,ekr.20090704085350.5042"><vh>@noref ../test/unittest/at-noref-test.py</vh>
-<v t="ekr.20090704085350.5041"><vh>spam</vh></v>
-<v t="ekr.20090704085350.5042"><vh>eggs</vh></v>
-<v t="ekr.20090704085350.5041"></v>
-<v t="ekr.20090704085350.5042"></v>
-<v t="ekr.20090704085350.5041"></v>
-<v t="ekr.20090704085350.5042"></v>
-<v t="ekr.20090704085350.5041"></v>
-<v t="ekr.20090704085350.5042"></v>
+<v t="ekr.20090704085350.5040"><vh>@noref ../test/unittest/at-noref-test.py</vh>
+<v t="ekr.20100123093044.5115"><vh>spam</vh></v>
+<v t="ekr.20100123093044.5117"><vh>eggs</vh></v>
 </v>
-<v t="ekr.20090704085350.5034" tnodeList="ekr.20090704085350.5034,ekr.20090704085350.5035,ekr.20090704085350.5036"><vh>@nosent ../test/unittest/at-nosent-test.py</vh>
+<v t="ekr.20090704085350.5034"><vh>@nosent ../test/unittest/at-nosent-test.py</vh>
 <v t="ekr.20090704085350.5035"><vh>spam</vh></v>
 <v t="ekr.20090704085350.5036"><vh>eggs</vh></v>
 </v>
@@ -847,8 +844,8 @@
 <v t="ekr.20090704085350.5044"><vh>@test @asis: shape of tree</vh></v>
 <v t="ekr.20090704085350.5052"><vh>@test @auto: shape of tree</vh></v>
 <v t="ekr.20090704085350.5010"><vh>@test @file: shape of tree</vh></v>
-<v t="ekr.20090704085350.5048"><vh>@test @noref: shape of tree</vh></v>
-<v t="ekr.20090704085350.5050"><vh>@test @nosent: shape of tree</vh></v>
+<v t="ekr.20090704085350.5048"><vh>@@test @noref: shape of tree</vh></v>
+<v t="ekr.20090704085350.5050"><vh>@@test @nosent: shape of tree</vh></v>
 <v t="ekr.20090704093658.5061"><vh>@test @root: shape of tree</vh></v>
 <v t="ekr.20090704093658.5062"><vh>@test @root: tangle works</vh></v>
 <v t="ekr.20090704085350.5046"><vh>@test @thin: shape of tree</vh></v>
@@ -865,14 +862,14 @@
 <v t="ekr.20040712101754.110"><vh>#@file</vh></v>
 <v t="ekr.20040712101754.111"><vh>Output</vh></v>
 </v>
-<v t="ekr.20041021062800"><vh>@test @noref</vh>
+<v t="ekr.20041021062800"><vh>@@test @noref</vh>
 <v t="ekr.20041021063220"><vh>#@noref</vh>
 <v t="ekr.20041021063220.1"><vh>&lt;&lt; section &gt;&gt;</vh></v>
 <v t="ekr.20041021063220.2"><vh>unnamed node</vh></v>
 </v>
 <v t="ekr.20041021063220.3"><vh>Output</vh></v>
 </v>
-<v t="ekr.20041020100733"><vh>@test @nosent</vh>
+<v t="ekr.20041020100733"><vh>@@test @nosent</vh>
 <v t="ekr.20041020100733.1"><vh>#@nosent</vh>
 <v t="ekr.20041020100918"><vh>&lt;&lt; section &gt;&gt;</vh></v>
 <v t="ekr.20041020100918.1"><vh>unnamed node</vh></v>
@@ -1791,7 +1788,7 @@
 </v>
 <v t="ekr.20061001114637"><vh>leoFileCommands</vh>
 <v t="ekr.20071113145804.18"><vh>@test fc.deleteFileWithMessage</vh></v>
-<v t="ekr.20061001124008"><vh>@test minimal test of putTnodeList</vh>
+<v t="ekr.20061001124008"><vh>@@test minimal test of putTnodeList</vh>
 <v t="ekr.20061001124008.1"><vh>child</vh>
 <v t="ekr.20061001124008.2"><vh>grandchild</vh></v>
 </v>
@@ -11484,7 +11481,8 @@ expected = g.u(' unit_test="58040000006162636471002e"')
 assert s == expected, '\nexpected: %s\ngot:      %s' % (repr(expected),repr(s))
 </t>
 <t tx="ekr.20061001114637"># 3 failures with Alt-5</t>
-<t tx="ekr.20061001124008">fc = c.fileCommands
+<t tx="ekr.20061001124008"># New in Leo 4.7 b2: Leo never sets the tnodeList of any node.
+fc = c.fileCommands
 v = p.v
 child = p.firstChild()
 assert child,'no child'
@@ -21733,10 +21731,6 @@ for p2,h2 in table:
     pass</t>
 <t tx="ekr.20090704085350.5040">@language python
 @others</t>
-<t tx="ekr.20090704085350.5041">def spam():
-    pass</t>
-<t tx="ekr.20090704085350.5042">def eggs():
-    pass</t>
 <t tx="ekr.20090704085350.5044">h = '@asis ../test/unittest/at-asis-test.py'
 p = g.findNodeAnywhere(c,h)
 assert p
@@ -21765,7 +21759,8 @@ assert not p.isDirty(),p.h # Do not ignore this failure!
 for p2,h2 in table:
     assert p2.h == h2
     assert len(p2.b) &gt; 10</t>
-<t tx="ekr.20090704085350.5048">h = '@noref ../test/unittest/at-noref-test.py'
+<t tx="ekr.20090704085350.5048"># Leo no longer supports @noref
+h = '@noref ../test/unittest/at-noref-test.py'
 p = g.findNodeAnywhere(c,h)
 assert p
 
@@ -21779,7 +21774,8 @@ assert not p.isDirty(),p.h # Do not ignore this failure!
 for p2,h2 in table:
     assert p2.h == h2
     assert len(p2.b) &gt; 10</t>
-<t tx="ekr.20090704085350.5050">h = '@nosent ../test/unittest/at-nosent-test.py'
+<t tx="ekr.20090704085350.5050"># No longer used: Leo no longer supports @nosent
+h = '@nosent ../test/unittest/at-nosent-test.py'
 p = g.findNodeAnywhere(c,h)
 assert p
 
@@ -21971,6 +21967,23 @@ table = (
 <t tx="ekr.20100119102849.5110">line 1.
 line 2(xxx).
 line 3.</t>
+<t tx="ekr.20100123093044.5115">def spam():
+    pass</t>
+<t tx="ekr.20100123093044.5117">def eggs():
+    pass</t>
+<t tx="ekr.20100123172713.5114"></t>
+<t tx="ekr.20100123172713.5116">count = 0
+for p in c.all_unique_positions():
+    count += 1
+    # Empty tnodeLists are not errors because they never get written to the .leo file.
+    v = p.v
+    if hasattr(v,"tnodeList"): # and len(v.tnodeList) &gt; 0 and not v.isAnyAtFileNode():
+        g.es("deleting tnodeList for " + `v`,color="blue")
+        delattr(v,"tnodeList")
+        c.setChanged(True)
+
+s = "%d nodes" % count
+print s ; g.es(s)</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
@@ -22024,37 +22037,38 @@ assert chi_b[0].h == chi_b[1].h == 'b'
 chi_e = chi.select_h('d').select_h('e')
 assert len(chi_e) == 1
 assert chi_e[0].h == 'e'</t>
-<t tx="ville.20090313183551.2"># test the controller-specific pickleshare db
-v = [1212,121131313, { 'hello' : (121,'world')} ]
-c.db['leo_utest'] = v
-c.db['leo_utest2'] = 1
-c.db['leotest/foo'] = 2
-c.db['leotest/bar'] = 3
-assert c.db['leo_utest'] == v
-assert c.db['leo_utest2'] == 1
-assert c.db['leotest/foo'] == 2
-assert c.db['leotest/bar'] == 3
+<t tx="ville.20090313183551.2">if g.enableDB:
 
-assert len(c.db.keys()) &gt; 1
-del c.db['leo_utest']
-del c.db['leo_utest2']
-
-try:
-    c.db['leo_utest']
-    assert false
-except KeyError:
-    pass
-
-ltest = c.db.keys('leotest/*')
-assert len(ltest) &gt;= 2
-
-for k in ltest:
-    del c.db[k]
-
-ltest = c.db.keys('leotest/*')
-assert len(ltest) == 0
-
-     </t>
+    # test the controller-specific pickleshare db
+    v = [1212,121131313, { 'hello' : (121,'world')} ]
+    c.db['leo_utest'] = v
+    c.db['leo_utest2'] = 1
+    c.db['leotest/foo'] = 2
+    c.db['leotest/bar'] = 3
+    assert c.db['leo_utest'] == v
+    assert c.db['leo_utest2'] == 1
+    assert c.db['leotest/foo'] == 2
+    assert c.db['leotest/bar'] == 3
+    
+    assert len(c.db.keys()) &gt; 1
+    del c.db['leo_utest']
+    del c.db['leo_utest2']
+    
+    try:
+        c.db['leo_utest']
+        assert false
+    except KeyError:
+        pass
+    
+    ltest = c.db.keys('leotest/*')
+    assert len(ltest) &gt;= 2
+    
+    for k in ltest:
+        del c.db[k]
+    
+    ltest = c.db.keys('leotest/*')
+    assert len(ltest) == 0
+</t>
 <t tx="ville.20090602190735.4770">_foo = 0
 
 @g.command('my-test-command')
