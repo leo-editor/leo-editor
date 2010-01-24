@@ -115,12 +115,11 @@
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@thin leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@thin leoColor.py</vh></v>
-<v t="ekr.20031218072017.2810"
-marks="ekr.20080710082231.10,"><vh>@thin leoCommands.py</vh></v>
+<v t="ekr.20031218072017.2810"><vh>@thin leoCommands.py</vh></v>
 <v t="ekr.20041117062700"><vh>@thin leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@thin leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31352e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@thin leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31342e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@thin leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@thin leoImport.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@thin leoNodes.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@thin leoPlugins.py</vh></v>
@@ -145,7 +144,6 @@ marks="ekr.20080710082231.10,"><vh>@thin leoCommands.py</vh></v>
 <v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@thin leoTest.py</vh></v>
 </v>
 </v>
-<v t="ekr.20100121161400.6159"><vh>Copying this file to LeoPyRef.leo generates path changed messages</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943"></t>
@@ -182,7 +180,9 @@ c.frame.iconBar         The icon bar.
 c.frame.log             The log pane.
 c.frame.tree            The tree pane.
 </t>
-<t tx="ekr.20031218072017.2604"></t>
+<t tx="ekr.20031218072017.2604">
+
+</t>
 <t tx="ekr.20031218072017.3625">&lt;&lt; about gui classes and gui plugins &gt;&gt;
 </t>
 <t tx="ekr.20050721093241">@nocolor
@@ -226,7 +226,7 @@ Two (recently written) functions in leoGlobals.py support conversions from Pytho
 
 Important:  the first Tkinter index is '1.0', not '0.0', but the row returned by g.convertPythonIndexToRowCol is zero based, so the code that actually creates Tkinter indices from row/col must add 1 to the row.  Similar remarks apply when going in the reverse direction.
 </t>
-<t tx="ekr.20051031040240" str_leo_pos="6"></t>
+<t tx="ekr.20051031040240" str_leo_pos="5"></t>
 <t tx="ekr.20060217111834"></t>
 <t tx="ekr.20060531093331">@
 Ever have a clone that is difficult to understand outside the context of its
@@ -840,6 +840,5 @@ c.outerUpdate()
 <t tx="ekr.20090802181029.5988"></t>
 <t tx="ekr.20090802181029.5989"></t>
 <t tx="ekr.20100120072650.6088"></t>
-<t tx="ekr.20100121161400.6159"></t>
 </tnodes>
 </leo_file>
