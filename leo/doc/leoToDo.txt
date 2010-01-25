@@ -15,6 +15,31 @@
 #@-node:ekr.20100124141558.6196:Update docs re @file and @noref
 #@+node:ekr.20100124142131.6222:Can we preserve expansion state of present node on startup?
 #@-node:ekr.20100124142131.6222:Can we preserve expansion state of present node on startup?
+#@+node:ekr.20100125073206.6233:Investigate Kent's @auto problem
+@nocolor-node
+
+I'm not sure if this is a bug or not.
+
+If I create an
+@auto <file>
+node and 2 levels of subnodes
+
+@auto /tmp/foo.py
+ \
+ class foo:
+    ...
+  \
+   def __init__(self):
+      ....
+
+Leo won't save /tmp/foo.py unless I add an
+@others directive to the @auto
+
+@other is required for Leo to provide indentation in foo.py
+
+Is this expected?
+#@nonl
+#@-node:ekr.20100125073206.6233:Investigate Kent's @auto problem
 #@+node:ekr.20100122104234.6167:cache current position
 @nocolor-node
 

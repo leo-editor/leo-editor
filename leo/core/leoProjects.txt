@@ -409,7 +409,7 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
 
     return sax_node
 #@-node:ekr.20060919110638.14:parse_leo_file
-#@+node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
+#@+node:ekr.20031218072017.1502:g.toUnicode & toEncodedString (and tests)
 #@+node:ekr.20050208093800:g.toEncodedString
 def toEncodedString (s,encoding,reportErrors=False):
 
@@ -493,7 +493,7 @@ def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
             ok = False
     return s,ok
 #@-node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
-#@-node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
+#@-node:ekr.20031218072017.1502:g.toUnicode & toEncodedString (and tests)
 #@-node:ekr.20100120073530.6083:Fixed unicode problems
 #@+node:ekr.20100121050224.6141:Fixed crash in writeToFileHelper
 #@+node:ekr.20031218072017.1470:put
@@ -1128,7 +1128,10 @@ def initFileName (self,fromString,importFileName,root):
 def readFromCache (self,fileName,force,root):
 
     at = self ; c = at.c
-    s = open(fileName, "rb").read()
+    s,e = g.readFileIntoString(fileName)
+    if s is None:
+        return False,None
+
     cachefile = self._contentHashFile(root.h,s)
 
     # 2010/01/22: uncache *any* file provided 'force' is False.
@@ -2358,17 +2361,7 @@ def scanOptions():
     script_name = script_path or script_path_w
     if script_name:
         script_name = g.os_path_finalize_join(g.app.loadDir,script_name)
-        try:
-            f = None
-            try:
-                if trace: print("scan_options: script: %s" % script_name)
-                f = open(script_name,'r')
-                script = f.read()
-            except IOError:
-                print("can not open script file: %s" % script_name)
-                script = None
-        finally:
-            if f: f.close()
+        script,e = g.readFileIntoString(script_name,kind='script:')
     else:
         script = None
         # if trace: print('scanOptions: no script')
@@ -2771,7 +2764,10 @@ def initFileName (self,fromString,importFileName,root):
 def readFromCache (self,fileName,force,root):
 
     at = self ; c = at.c
-    s = open(fileName, "rb").read()
+    s,e = g.readFileIntoString(fileName)
+    if s is None:
+        return False,None
+
     cachefile = self._contentHashFile(root.h,s)
 
     # 2010/01/22: uncache *any* file provided 'force' is False.
@@ -4191,7 +4187,10 @@ def createThinChild4 (self,gnxString,headline):
 def readFromCache (self,fileName,force,root):
 
     at = self ; c = at.c
-    s = open(fileName, "rb").read()
+    s,e = g.readFileIntoString(fileName)
+    if s is None:
+        return False,None
+
     cachefile = self._contentHashFile(root.h,s)
 
     # 2010/01/22: uncache *any* file provided 'force' is False.

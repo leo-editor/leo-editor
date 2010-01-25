@@ -2946,14 +2946,9 @@ def openWrapperLeoFile (old_c,fileName,gui):
     frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
 
     if True: # Just read the file into the node.
-        try:
-            fileName = g.os_path_finalize(fileName)
-            f = open(fileName)
-            s = f.read()
-            f.close()
-        except IOError:
-            g.es_print("can not open: ",fileName,color='red')
-            return None
+        fileName = g.os_path_finalize(fileName)
+        s,e = g.readFileIntoString(fileName)
+        if s is None: return None
         p = c.rootPosition()
         if p:
             p.setHeadString('@edit %s' % fileName)
@@ -2980,7 +2975,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
     return c
 #@-node:ekr.20080921154026.1:g.openWrapperLeoFile
 #@-node:ekr.20090520055433.5945:g.openWithFileName & helpers
-#@+node:ekr.20031218072017.3120:g.readlineForceUnixNewline (Steven P. Schaefer)
+#@+node:ekr.20031218072017.3120:g.readlineForceUnixNewline
 #@+at 
 #@nonl
 # Stephen P. Schaefer 9/7/2002
@@ -2997,7 +2992,44 @@ def readlineForceUnixNewline(f):
     if len(s) >= 2 and s[-2] == "\r" and s[-1] == "\n":
         s = s[0:-2] + "\n"
     return s
-#@-node:ekr.20031218072017.3120:g.readlineForceUnixNewline (Steven P. Schaefer)
+#@-node:ekr.20031218072017.3120:g.readlineForceUnixNewline
+#@+node:ekr.20100125073206.8710:g.readFileIntoString (Leo 4.7)
+def readFileIntoString (fn,encoding='utf-8',kind=None,mode='rb'):
+
+    '''Return the contents of the file whose full path is fn,
+    converted to unicode.
+
+    Return (s,e)
+    s is the string, or None if there was an error.
+    e the encoding line for Python files: it is usually None.
+    '''
+
+    try:
+        e = None
+        f = open(fn,mode)
+        s = f.read()
+        f.close()
+        # Python's encoding comments override everything else.
+        if s:
+            junk,ext = g.os_path_splitext(fn)
+            if ext == '.py':
+                e = g.getPythonEncodingFromString(s)
+        s = g.toUnicode(s,encoding=e or encoding)
+        return s,e
+    except IOError:
+        # Translate 'can not open' and kind, but not fn.
+        if kind:
+            g.es('can not open','',kind,fn,color='red')
+        else:
+            g.es('can not open',fn,color='red')
+    except Exception:
+        g.trace('unexpected exception reading %s' % (fn),color='red')
+        g.es_exception()
+
+    import leo.core.leoTest as leoTest
+    leoTest.fail()
+    return None,None
+#@-node:ekr.20100125073206.8710:g.readFileIntoString (Leo 4.7)
 #@+node:ekr.20031218072017.3124:g.sanitize_filename
 def sanitize_filename(s):
 
@@ -3207,9 +3239,7 @@ if g.unitTesting:
 
     assert g.utils_rename(c,path,path2,verbose=True)
     assert exists(path2)
-    f = open(path2)
-    s = f.read()
-    f.close()
+    s,e = g.readFileIntoString(path2)
     # print('Contents of %s: %s' % (path2,s))
     assert s == 'test %s' % path
     os.remove(path2)
@@ -5356,6 +5386,27 @@ if g.unitTesting:
                 assert s3 == s, 'Round-trip two failed for %s' %s
 #@-node:ekr.20090517020744.5867:@test round trip toUnicode toEncodedString
 #@-node:ekr.20090517020744.5859: Unicode tests
+#@+node:ekr.20100125073206.8709:g.getPythonEncodingFromString
+def getPythonEncodingFromString(s):
+
+    '''Return the encoding given by Python's encoding line.
+    s is the entire file.
+    '''
+
+    encoding = None
+    tag,tag2 = '# -*- coding:','-*-'
+    n1,n2 = len(tag),len(tag2)
+
+    if s:
+        lines = g.splitLines(s)
+        line1 = lines[0].strip()
+        if line1.startswith(tag) and line1.endswith(tag2):
+            e = line1[n1:-n2].strip()
+            if e and g.isValidEncoding(e):
+                encoding = e
+
+    return encoding
+#@-node:ekr.20100125073206.8709:g.getPythonEncodingFromString
 #@+node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
 # The syntax of these functions must be valid on Python2K and Python3K.
 
@@ -5388,19 +5439,7 @@ def isUnicode(s):
     else:
         return type(s) == types.UnicodeType
 #@-node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
-#@+node:ekr.20061006152327:g.isWordChar & g.isWordChar1
-def isWordChar (ch):
-
-    '''Return True if ch should be considered a letter.'''
-
-    return ch and (ch.isalnum() or ch == '_')
-
-def isWordChar1 (ch):
-
-    return ch and (ch.isalpha() or ch == '_')
-#@nonl
-#@-node:ekr.20061006152327:g.isWordChar & g.isWordChar1
-#@+node:ekr.20031218072017.1500:isValidEncoding
+#@+node:ekr.20031218072017.1500:g.isValidEncoding
 def isValidEncoding (encoding):
 
     if not encoding:
@@ -5419,8 +5458,20 @@ def isValidEncoding (encoding):
     except AttributeError: # Linux.
         return False
 #@nonl
-#@-node:ekr.20031218072017.1500:isValidEncoding
-#@+node:ekr.20031218072017.1501:reportBadChars & test
+#@-node:ekr.20031218072017.1500:g.isValidEncoding
+#@+node:ekr.20061006152327:g.isWordChar & g.isWordChar1
+def isWordChar (ch):
+
+    '''Return True if ch should be considered a letter.'''
+
+    return ch and (ch.isalnum() or ch == '_')
+
+def isWordChar1 (ch):
+
+    return ch and (ch.isalpha() or ch == '_')
+#@nonl
+#@-node:ekr.20061006152327:g.isWordChar & g.isWordChar1
+#@+node:ekr.20031218072017.1501:g.reportBadChars & test
 def reportBadChars (s,encoding):
 
     if g.isPython3:
@@ -5488,8 +5539,8 @@ if g.unitTesting:
 
         g.reportBadChars(s,encoding)
 #@-node:ekr.20090517020744.5882:@test g.reportBadChars
-#@-node:ekr.20031218072017.1501:reportBadChars & test
-#@+node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
+#@-node:ekr.20031218072017.1501:g.reportBadChars & test
+#@+node:ekr.20031218072017.1502:g.toUnicode & toEncodedString (and tests)
 #@+node:ekr.20050208093800:g.toEncodedString
 def toEncodedString (s,encoding,reportErrors=False):
 
@@ -5573,7 +5624,7 @@ def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
             ok = False
     return s,ok
 #@-node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
-#@-node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
+#@-node:ekr.20031218072017.1502:g.toUnicode & toEncodedString (and tests)
 #@-node:ekr.20031218072017.1498:Unicode utils...
 #@+node:ekr.20070524083513:Unit testing (leoGlobals.py)
 #@+node:ekr.20070619173330:g.getTestVars

@@ -5170,16 +5170,17 @@ class editFileCommandsClass (baseEditCommandsClass):
         k = self.k
         w = self.editWidget(event)
         if not w: return
-
-        try:
-            f, name = self.getReadableTextFile()
-            txt1 = f.read() ; f.close()
-            f2, name2 = self.getReadableTextFile()
-            txt2 = f2.read() ; f2.close()
-        except IOError: return
+        fn = self.getReadableTextFile()
+        if not fn: return
+        fn2 = self.getReadableTextFile()
+        if not fn2: return
+        s1,e = g.readFileIntoString(fn)
+        if s1 is None: return
+        s2,e = g.readFileIntoString(fn2)
+        if s2 is None: return
 
         ### self.switchToBuffer(event,"*diff* of ( %s , %s )" % (name,name2))
-        data = difflib.ndiff(txt1,txt2)
+        data = difflib.ndiff(s1,s2)
         idata = []
         for z in data:
             idata.append(z)
@@ -5189,19 +5190,12 @@ class editFileCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20050920084036.166:getReadableTextFile
     def getReadableTextFile (self):
 
-        fileName = g.app.gui.runOpenFileDialog(
+        fn = g.app.gui.runOpenFileDialog(
             title = 'Open Text File',
             filetypes = [("Text","*.txt"), ("All files","*")],
             defaultextension = ".txt")
 
-        if not fileName: return None, None
-
-        try:
-            f = open(fileName,'rt')
-            return f, fileName
-        except IOError:
-            g.es('can not open',fileName)
-            return None,None
+        return fn
     #@-node:ekr.20050920084036.166:getReadableTextFile
     #@+node:ekr.20050920084036.167:insertFile
     def insertFile (self,event):
@@ -5211,17 +5205,17 @@ class editFileCommandsClass (baseEditCommandsClass):
         k = self.k ; c = k.c ; w = self.editWidget(event)
         if not w: return
 
-        f, name = self.getReadableTextFile()
-        if f:
-            self.beginCommand(undoType='insert-file')
+        fn = self.getReadableTextFile()
+        if not fn: return
 
-            txt = f.read()
-            f.close()
-            i = w.getInsertPoint()
-            w.insert(i,txt)
-            w.seeInsertPoint()
+        s,e = g.readFileIntoString(fn)
+        if s is None: return
 
-            self.endCommand(changed=True,setLabel=True)
+        self.beginCommand(undoType='insert-file')
+        i = w.getInsertPoint()
+        w.insert(i,s)
+        w.seeInsertPoint()
+        self.endCommand(changed=True,setLabel=True)
     #@-node:ekr.20050920084036.167:insertFile
     #@+node:ekr.20050920084036.168:makeDirectory
     def makeDirectory (self,event):

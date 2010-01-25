@@ -921,15 +921,8 @@ class baseCommands (object):
 
         c = self
 
-        f = None
-        try:
-            f = open(fn)
-            s = f.read()
-            f.close()
-        except IOError:
-            g.es('can not open %s' % fn)
-            return
-
+        s,e = g.readFileIntoString(fn)
+        if s is None: return
         head,ext = g.os_path_splitext(fn)
         if ext.startswith('.'): ext = ext[1:]
         language = g.app.extension_dict.get(ext)
@@ -1578,21 +1571,18 @@ class baseCommands (object):
         filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
         fileName = g.app.gui.runOpenFileDialog(
             title="Read File Into Node",filetypes=filetypes,defaultextension=None)
+        if not fileName:return
+        s,e = g.readFileIntoString(fileName)
+        if s is None: return
 
-        if fileName:    
-            try:
-                theFile = open(fileName,'r')
-                g.chdir(fileName)
-                s = theFile.read()
-                s = '@nocolor\n' + s
-                w = c.frame.body.bodyCtrl
-                p = c.insertHeadline(op_name=undoType)
-                p.setHeadString('@read-file-into-node ' + fileName)
-                p.setBodyString(s)
-                w.setAllText(s)
-                c.redraw(p)
-            except:
-                g.es("can not open:",fileName)
+        g.chdir(fileName)
+        s = '@nocolor\n' + s
+        w = c.frame.body.bodyCtrl
+        p = c.insertHeadline(op_name=undoType)
+        p.setHeadString('@read-file-into-node ' + fileName)
+        p.setBodyString(s)
+        w.setAllText(s)
+        c.redraw(p)
     #@-node:ekr.20070915134101:readFileIntoNode
     #@+node:ekr.20070806105721.1:readAtAutoNodes (commands)
     def readAtAutoNodes (self,event=None):

@@ -151,14 +151,10 @@ class shadowController:
         x = self
         exists = g.os_path_exists(fn)
 
-        if exists: # Read the file.  Return if it is the same.
-            try:
-                f = open(fn,'rb')
-                s2 = f.read()
-                f.close()
-            except IOError:
-                x.error('unexpected exception creating %s' % fn)
-                g.es_exception()
+        if exists:
+            # Read the file.  Return if it is the same.
+            s2,e = g.readFileIntoString(fn)
+            if s2 is None:
                 return False
             if s == s2:
                 if not g.unitTesting: g.es('unchanged:',fn)

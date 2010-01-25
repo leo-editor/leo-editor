@@ -314,17 +314,7 @@ def scanOptions():
     script_name = script_path or script_path_w
     if script_name:
         script_name = g.os_path_finalize_join(g.app.loadDir,script_name)
-        try:
-            f = None
-            try:
-                if trace: print("scan_options: script: %s" % script_name)
-                f = open(script_name,'r')
-                script = f.read()
-            except IOError:
-                print("can not open script file: %s" % script_name)
-                script = None
-        finally:
-            if f: f.close()
+        script,e = g.readFileIntoString(script_name,kind='script:')
     else:
         script = None
         # if trace: print('scanOptions: no script')

@@ -13,7 +13,7 @@
 #@<< imports >>
 #@+node:ekr.20041005105605.2:<< imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoTest as leoTest
+# import leo.core.leoTest as leoTest
 
 if g.app and g.app.use_psyco:
     # print("enabled psyco classes",__file__)
@@ -391,10 +391,8 @@ class atFile:
         if not g.os_path_exists(fn):
             return g.es_print('file not found: %s' % (fn),color='red')
 
-        try:
-            s = open(fn,'r').read()
-        except IOError:
-            return g.es_print('can not open %s' % (fn),color='red')
+        s,e = g.readFileIntoString(fn)
+        if s is None: return
 
         # Create a dummy, unconnected, vnode as the root.
         root_v = leoNodes.vnode(context=c)
@@ -549,7 +547,10 @@ class atFile:
     def readFromCache (self,fileName,force,root):
 
         at = self ; c = at.c
-        s = open(fileName, "rb").read()
+        s,e = g.readFileIntoString(fileName)
+        if s is None:
+            return False,None
+
         cachefile = self._contentHashFile(root.h,s)
 
         # 2010/01/22: uncache *any* file provided 'force' is False.
@@ -703,11 +704,11 @@ class atFile:
         while p.hasChildren():
             p.firstChild().doDelete()
 
-        try:
-            fileContent = open(fileName, "rb").read()
-            cachefile = self._contentHashFile(p.h,fileContent)
-        except IOError:
+        s,e = g.readFileIntoString(fileName)
+        if s is None:
             cachefile = None
+        else:
+            cachefile = self._contentHashFile(p.h,s)
 
         # Remember that we have read this file.
         p.v.at_read = True # Create the attribute
@@ -749,13 +750,9 @@ class atFile:
         if not g.unitTesting:
             g.es("reading @edit:", g.shortFileName(fn))
 
-        # Read the file into s.
-        try:
-            s = open(fn,'rb').read() # U: Universal newline mode.
-        except IOError:
-            g.es("can not open @edit ",fn,color='red')
-            leoTest.fail()
-            return
+        s,e = g.readFileIntoString(fn,kind='@edit')
+        if s is None: return
+        encoding = g.choose(e is None,'utf-8',e)
 
         # Delete all children.
         while p.hasChildren():
@@ -773,8 +770,7 @@ class atFile:
             else:
                 head = '@nocolor\n'
 
-        # Guess utf-8 encoding.  We may need a user option.
-        p.b = g.u(head) + g.toUnicode(s,encoding='utf-8',reportErrors='True')
+        p.b = g.u(head) + g.toUnicode(s,encoding=encoding,reportErrors='True')
 
         if not changed: c.setChanged(False)
         g.doHook('after-edit',p=p)
@@ -3896,18 +3892,16 @@ class atFile:
         if not targetFn: targetFn = self.targetFileName
 
         if targetFn and targetFn.endswith('.py') and self.checkPythonCodeOnWrite:
-            try:
-                if not s: s = open(self.outputFileName).read()
-            except IOError:
-                g.trace('can not happen',g.callers(4))
-                return
+
+            if not s:
+                s,e = g.readFileIntoString(self.outputFileName)
+                if s is None: return
 
             # It's too slow to check each node separately.
             ok = self.checkPythonSyntax(root,s)
 
             # Syntax checking catches most indentation problems.
             if False and ok: self.tabNannyNode(root,s)
-    #@nonl
     #@+node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
     def checkPythonSyntax (self,p,body):
 
@@ -4477,13 +4471,8 @@ class atFile:
         exists = g.os_path_exists(fn)
 
         if exists: # Read the file.  Return if it is the same.
-            try:
-                f = open(fn,'rb')
-                s2 = f.read()
-                f.close()
-            except IOError:
-                at.error('unexpected exception creating %s' % fn)
-                g.es_exception()
+            s2,e = g.readFileIntoString(fn)
+            if s is None:
                 return False
             if s == s2:
                 if not testing: g.es('unchanged:',fn)

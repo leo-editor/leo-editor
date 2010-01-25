@@ -459,19 +459,9 @@ class leoImportCommands (scanUtility):
         for fileName in paths:
             g.setGlobalOpenDir(fileName)
             path, self.fileName = g.os_path_split(fileName)
-            #@        << Read file into s >>
-            #@+node:ekr.20031218072017.3301:<< Read file into s >>
-            try:
-                theFile = open(fileName)
-                s = theFile.read()
-                s = g.toUnicode(s,self.encoding)
-                theFile.close()
-            except IOError:
-                g.es("can not open",fileName, color="blue")
-                leoTest.fail()
-                return
-            #@-node:ekr.20031218072017.3301:<< Read file into s >>
-            #@nl
+            s,e = g.readFileIntoString(fileName,self.encoding)
+            if s is None: return
+            if e: self.encoding = e
             #@        << set delims from the header line >>
             #@+node:ekr.20031218072017.3302:<< set delims from the header line >>
             # Skip any non @+leo lines.
@@ -806,41 +796,12 @@ class leoImportCommands (scanUtility):
         if not ext: ext = self.fileType
         ext = ext.lower()
         if not s:
-            #@        << Read file into s >>
-            #@+node:ekr.20031218072017.3211:<< Read file into s >>
-            try:
-                fileName = c.os_path_finalize(fileName)
-                theFile = open(fileName)
-                s = theFile.read()
-                theFile.close()
-            except IOError:
-                if atShadow: kind = '@shadow '
-                elif atAuto: kind = '@auto '
-                else: kind = ''
-                # g.trace('c.frame.openDirectory',c.frame.openDirectory)
-                g.es("can not open", "%s%s" % (kind,fileName),color='red')
-                # g.trace(g.callers())
-                leoTest.fail()
-                return None
-            #@-node:ekr.20031218072017.3211:<< Read file into s >>
-            #@nl
-        #@    << convert s to the proper encoding >>
-        #@+node:ekr.20080212092908:<< convert s to the proper encoding >>
-        if s and fileName.endswith('.py'):
-            # Python's encoding comments override everything else.
-            lines = g.splitLines(s)
-            tag = '# -*- coding:' ; tag2 = '-*-'
-            n1,n2 = len(tag),len(tag2)
-            line1 = lines[0].strip()
-            if line1.startswith(tag) and line1.endswith(tag2):
-                e = line1[n1:-n2].strip()
-                if e and g.isValidEncoding(e):
-                    # g.pr('found',e,'in',line1)
-                    self.encoding = e
-
-        s = g.toUnicode(s,self.encoding)
-        #@-node:ekr.20080212092908:<< convert s to the proper encoding >>
-        #@nl
+            if atShadow: kind = '@shadow '
+            elif atAuto: kind = '@auto '
+            else: kind = ''
+            s,e = g.readFileIntoString(fileName,encoding=self.encoding,kind=kind)
+            if s is None: return None
+            if e: self.encoding = e
 
         # Create the top-level headline.
         if atAuto:
@@ -1122,21 +1083,9 @@ class leoImportCommands (scanUtility):
         self.setEncoding()
         fileName = files[0] # files contains at most one file.
         g.setGlobalOpenDir(fileName)
-        #@    << Read the file into array >>
-        #@+node:ekr.20031218072017.3221:<< Read the file into array >>
-        try:
-            theFile = open(fileName)
-            s = theFile.read()
-            s = s.replace("\r","")
-            s = g.toUnicode(s,self.encoding)
-            array = s.split("\n")
-            theFile.close()
-        except IOError:
-            g.es("can not open",fileName, color="blue")
-            leoTest.fail()
-            return
-        #@-node:ekr.20031218072017.3221:<< Read the file into array >>
-        #@nl
+        s,e = g.readFileIntoString(fileName)
+        if s is None: return
+        array = s.split("\n")
 
         # Convert the string to an outline and insert it after the current node.
         undoData = u.beforeInsertNode(current)
@@ -1328,12 +1277,8 @@ class leoImportCommands (scanUtility):
         lb = g.choose(theType=="cweb","@<","<<")
         rb = g.choose(theType=="cweb","@>",">>")
 
-        try: # Read the file into s.
-            f = open(fileName)
-            s = f.read()
-        except Exception:
-            g.es("can not import",fileName, color="blue")
-            return
+        s,e = g.readFileIntoString(fileName)
+        if s is None: return
 
         #@    << Create a symbol table of all section names >>
         #@+node:ekr.20031218072017.3232:<< Create a symbol table of all section names >>
@@ -1448,7 +1393,6 @@ class leoImportCommands (scanUtility):
             #@-node:ekr.20031218072017.3234:<< Create a node for the next module >>
             #@nl
             assert(i > outer_progress)
-    #@nonl
     #@-node:ekr.20031218072017.3231:scanWebFile (handles limbo)
     #@+node:ekr.20031218072017.3236:Symbol table
     #@+node:ekr.20031218072017.3237:cstCanonicalize

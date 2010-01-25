@@ -822,23 +822,14 @@ class baseTangleCommands:
             return
         #@-node:ekr.20031218072017.3482:<< return if @silent or unknown language >>
         #@nl
-        #@    << Read the file into file_buf >>
-        #@+node:ekr.20031218072017.3484:<< Read the file into file_buf  >> in untangleRoot
-        f = None
-        try:
-            path = c.os_path_finalize_join(self.tangle_directory,path)
-            f = open(path)
-            if f:
-                file_buf = f.read()
-                file_buf = file_buf.replace('\r','')
-        except:
-            if f: f.close()
-            g.es("error reading:",path)
-            g.es_exception()
+        path = c.os_path_finalize_join(self.tangle_directory,path)
+        file_buf,e = g.readFileIntoString(path)
+        if file_buf is None:
             self.cleanup()
             return
-        #@-node:ekr.20031218072017.3484:<< Read the file into file_buf  >> in untangleRoot
-        #@nl
+        else:
+            file_buf = file_buf.replace('\r','')
+
         g.es('','@root ' + path)
         # Pass 1: Scan the C file, creating the UST
         self.scan_derived_file(file_buf)
