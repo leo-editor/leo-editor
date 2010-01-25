@@ -464,10 +464,12 @@
 <v t="ekr.20100118191455.2039"><vh>ed C:\Python26\Lib\site-packages\pylint-0.19.0-py2.6.egg\pylint\lint.py</vh></v>
 <v t="ekr.20100119095726.2043"><vh>rest colorizing</vh></v>
 <v t="ekr.20100119151232.2047"><vh>@@thin undefined-section-test</vh></v>
-<v t="ekr.20100122170405.2055" a="E"><vh>@thin @all-test.txt</vh></v>
+<v t="ekr.20100122170405.2055"><vh>@thin @all-test.txt</vh></v>
 <v t="ekr.20100121091254.2051"><vh>g.u test</vh></v>
 <v t="ekr.20100121155322.2051"><vh>@@file at-file-test.py</vh></v>
 <v t="ekr.20100122125233.2053"><vh>@test zcpspm</vh></v>
+<v t="ekr.20100125055502.2059"><vh>@edit rhythmbox.desktop</vh></v>
+<v t="ekr.20100125064546.2062"><vh>@edit unicode-test.txt.desktop</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -888,7 +890,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="9,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="14"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui

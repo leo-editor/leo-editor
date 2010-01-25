@@ -365,7 +365,6 @@ class atFile:
 
         # Init all other ivars even if there is an error.
         if not self.errors and self.root:
-            # self.root.v.tnodeList = []
             if hasattr(self.root.v,'tnodeList'):
                 delattr(self.root.v,'tnodeList')
             self.root.v._p_changed = True
@@ -752,7 +751,7 @@ class atFile:
 
         # Read the file into s.
         try:
-            s = open(fn).read()
+            s = open(fn,'rb').read() # U: Universal newline mode.
         except IOError:
             g.es("can not open @edit ",fn,color='red')
             leoTest.fail()
@@ -774,7 +773,9 @@ class atFile:
             else:
                 head = '@nocolor\n'
 
-        p.b = head + s
+        # Guess utf-8 encoding.  We may need a user option.
+        p.b = g.u(head) + g.toUnicode(s,encoding='utf-8',reportErrors='True')
+
         if not changed: c.setChanged(False)
         g.doHook('after-edit',p=p)
     #@-node:ekr.20090225080846.3:readOneAtEditNode (atFile)
@@ -1419,10 +1420,12 @@ class atFile:
                 #@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
                 #@nl
             if old and at.atAllFlag:
-                if trace: g.trace('*** no update\nold: %s\nnew: %s' % (repr(old),repr(s)))
-                pass # Don't change.
+                # Don't change.
+                if trace: g.trace('*** no update\nold: %s\nnew: %s' % (
+                    repr(old),repr(s)))
             else:
-                if trace: g.trace('*** update\nold: %s\nnew: %s' % (repr(old),repr(s)))
+                if trace: g.trace('*** update\nold: %s\nnew: %s' % (
+                    repr(old),repr(s)))
                 at.v.tempBodyString = s
 
         # Indicate that the vnode has been set in the derived file.
@@ -2407,7 +2410,6 @@ class atFile:
                 at.closeWriteFile() # sets self.stringOutput
                 # Major bug: failure to clear this wipes out headlines!
                 # Minor bug: sometimes this causes slight problems...
-                # root.v.tnodeList = []
                 if hasattr(self.root.v,'tnodeList'):
                     delattr(self.root.v,'tnodeList')
                 root.v._p_changed = True
@@ -3018,6 +3020,8 @@ class atFile:
                 return False
         elif not toString:
             return False
+
+        g.trace(fn)
 
         # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.

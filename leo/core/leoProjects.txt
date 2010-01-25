@@ -22,7 +22,7 @@
 #@@tabwidth -4
 
 #@+all
-#@+node:ekr.20100118163110.6256:Leo 4.7 rc1 projects
+#@+node:ekr.20100118163110.6256:Leo 4.7 b2 projects
 #@+node:ekr.20100121105450.6175:Bugs
 #@+node:ekr.20100119024225.6107:Fixed colorizer bug affecting per-language @font settings
 @nocolor-node
@@ -444,19 +444,19 @@ def toUnicode (s,encoding=None,reportErrors=False):
         encoding = g.app.defaultEncoding
 
     if isPython3:
-        convert,mustConvert,nullVal = str,g.isBytes,''
+        f,mustConvert = str,g.isBytes
     else:
-        convert,nullVal = unicode,unicode('')
+        f = unicode
         def mustConvert (s):
             return type(s) != types.UnicodeType
 
     if not s:
-        s = nullVal
+        s = g.u('')
     elif mustConvert(s):
         try:
-            s = convert(s,encoding,'strict')
+            s = f(s,encoding,'strict')
         except (UnicodeError,Exception):
-            s = convert(s,encoding,'replace')
+            s = f(s,encoding,'replace')
             if reportErrors: g.reportBadChars(s,encoding)
     else:
         pass
@@ -1779,10 +1779,12 @@ def readEndNode (self,unused_s,unused_i,middle=False):
         if old and at.v != at.root.v: # and not g.app.unitTesting
             << indicate that the node has been changed >>
         if old and at.atAllFlag:
-            if trace: g.trace('*** no update\nold: %s\nnew: %s' % (repr(old),repr(s)))
-            pass # Don't change.
+            # Don't change.
+            if trace: g.trace('*** no update\nold: %s\nnew: %s' % (
+                repr(old),repr(s)))
         else:
-            if trace: g.trace('*** update\nold: %s\nnew: %s' % (repr(old),repr(s)))
+            if trace: g.trace('*** update\nold: %s\nnew: %s' % (
+                repr(old),repr(s)))
             at.v.tempBodyString = s
 
     # Indicate that the vnode has been set in the derived file.
@@ -3517,168 +3519,6 @@ def resolveTnodeLists (self):
 #@nonl
 #@-node:ekr.20060919110638.11:resolveTnodeLists
 #@-node:ekr.20100123044506.6240:Keep
-#@+node:ekr.20100123044506.6241:To be deleted
-#@+node:ekr.20080904071003.4:goto_findPosition & helpers
-def goto_findPosition(self,root,lines,vnodeName,gnx,n,delim):
-
-    c = self
-
-    if gnx:
-        p,found = c.goto_findGnx(root,gnx,vnodeName)
-    else:
-        p,found = c.goto_scanTnodeList(root,delim,lines,n,vnodeName)
-
-    return p,found
-#@+node:ekr.20080904071003.18:goto_findGnx
-def goto_findGnx (self,root,gnx,vnodeName):
-
-    '''Scan root's tree for a node with the given gnx and vnodeName.
-
-    return (p,found)'''
-
-    gnx = g.app.nodeIndices.scanGnx(gnx,0)
-
-    for p in root.self_and_subtree():
-        if p.matchHeadline(vnodeName):
-            if p.v.fileIndex == gnx:
-                return p.copy(),True
-
-    return None,False
-#@-node:ekr.20080904071003.18:goto_findGnx
-#@+node:ekr.20080904071003.19:goto_scanTnodeList
-def goto_scanTnodeList (self,root,delim,lines,n,vnodeName):
-
-    # This is about the best that can be done without replicating
-    # the entire atFile write logic.
-    found = False
-    ok = hasattr(root.v,"tnodeList")
-
-    if ok:
-        # Use getattr to keep pylint happy.
-        tnodeList = getattr(root.v,'tnodeList')
-        << set tnodeIndex to the number of +node sentinels before line n >>
-        tnodeIndex = max(0,tnodeIndex)
-        << set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = False >>
-    else:
-        g.es_print("no child index for",root.h,color="red")
-
-    if not ok:
-        # Fall back to the old logic.
-        << set p to the first node whose headline matches vnodeName >>
-
-    return p,found
-#@+node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
-
-tnodeIndex = -1 # Don't count the @file node.
-scanned = 0 # count of lines scanned.
-
-for s in lines:
-    if scanned >= n:
-        break
-    i = g.skip_ws(s,0)
-    if g.match(s,i,delim):
-        i += len(delim)
-        if g.match(s,i,"+node"):
-            # g.trace(tnodeIndex,s.rstrip())
-            tnodeIndex += 1
-    scanned += 1
-#@-node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
-#@+node:ekr.20080904071003.9:<< set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = false >>
-# g.trace("tnodeIndex",tnodeIndex)
-if tnodeIndex < len(tnodeList):
-    v = tnodeList[tnodeIndex]
-    # Find v.
-    for p in root.self_and_subtree():
-        if p.v == v:
-            found = True ; break
-    if not found:
-        s = "vnode not found for " + vnodeName
-        g.es_print(s, color="red") ; ok = False
-    elif p.h.strip() != vnodeName:
-        if 0: # Apparently this error doesn't prevent a later scan for working properly.
-            s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.h,vnodeName)
-            g.es_print(s, color="red")
-        ok = False
-else:
-    if root is None: # Kludge: disable this message when called by goToScriptLineNumber.
-        s = "Invalid computed tnodeIndex: %d" % tnodeIndex
-        g.es_print(s, color = "red")
-    ok = False
-#@-node:ekr.20080904071003.9:<< set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = false >>
-#@+node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
-for p in root.self_and_subtree():
-    if p.matchHeadline(vnodeName):
-        found = True ; break
-#@-node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
-#@-node:ekr.20080904071003.19:goto_scanTnodeList
-#@-node:ekr.20080904071003.4:goto_findPosition & helpers
-#@+node:ekr.20080904071003.19:goto_scanTnodeList
-def goto_scanTnodeList (self,root,delim,lines,n,vnodeName):
-
-    # This is about the best that can be done without replicating
-    # the entire atFile write logic.
-    found = False
-    ok = hasattr(root.v,"tnodeList")
-
-    if ok:
-        # Use getattr to keep pylint happy.
-        tnodeList = getattr(root.v,'tnodeList')
-        << set tnodeIndex to the number of +node sentinels before line n >>
-        tnodeIndex = max(0,tnodeIndex)
-        << set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = False >>
-    else:
-        g.es_print("no child index for",root.h,color="red")
-
-    if not ok:
-        # Fall back to the old logic.
-        << set p to the first node whose headline matches vnodeName >>
-
-    return p,found
-#@+node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
-
-tnodeIndex = -1 # Don't count the @file node.
-scanned = 0 # count of lines scanned.
-
-for s in lines:
-    if scanned >= n:
-        break
-    i = g.skip_ws(s,0)
-    if g.match(s,i,delim):
-        i += len(delim)
-        if g.match(s,i,"+node"):
-            # g.trace(tnodeIndex,s.rstrip())
-            tnodeIndex += 1
-    scanned += 1
-#@-node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
-#@+node:ekr.20080904071003.9:<< set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = false >>
-# g.trace("tnodeIndex",tnodeIndex)
-if tnodeIndex < len(tnodeList):
-    v = tnodeList[tnodeIndex]
-    # Find v.
-    for p in root.self_and_subtree():
-        if p.v == v:
-            found = True ; break
-    if not found:
-        s = "vnode not found for " + vnodeName
-        g.es_print(s, color="red") ; ok = False
-    elif p.h.strip() != vnodeName:
-        if 0: # Apparently this error doesn't prevent a later scan for working properly.
-            s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.h,vnodeName)
-            g.es_print(s, color="red")
-        ok = False
-else:
-    if root is None: # Kludge: disable this message when called by goToScriptLineNumber.
-        s = "Invalid computed tnodeIndex: %d" % tnodeIndex
-        g.es_print(s, color = "red")
-    ok = False
-#@-node:ekr.20080904071003.9:<< set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = false >>
-#@+node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
-for p in root.self_and_subtree():
-    if p.matchHeadline(vnodeName):
-        found = True ; break
-#@-node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
-#@-node:ekr.20080904071003.19:goto_scanTnodeList
-#@-node:ekr.20100123044506.6241:To be deleted
 #@+node:ekr.20100123044506.6243:changed
 #@+node:ekr.20031218072017.1863:putVnode
 def putVnode (self,p,isIgnore=False):
@@ -3879,7 +3719,6 @@ def initWriteIvars(self,root,targetFileName,
 
     # Init all other ivars even if there is an error.
     if not self.errors and self.root:
-        # self.root.v.tnodeList = []
         if hasattr(self.root.v,'tnodeList'):
             delattr(self.root.v,'tnodeList')
         self.root.v._p_changed = True
@@ -3962,7 +3801,6 @@ def write (self,root,
             at.closeWriteFile() # sets self.stringOutput
             # Major bug: failure to clear this wipes out headlines!
             # Minor bug: sometimes this causes slight problems...
-            # root.v.tnodeList = []
             if hasattr(self.root.v,'tnodeList'):
                 delattr(self.root.v,'tnodeList')
             root.v._p_changed = True
@@ -4173,6 +4011,26 @@ def writeAllHelper (self,p,
 This is surprising. It should be the same as p.v.setDirty, but it calls
 c.setDirty instead! However, in Leo's code p.setDirty is used by commands, so it
 can't be changed. We must make *sure* not to call p.setDirty when reading files.
+#@+node:ekr.20040303163330:p.setDirty
+def setDirty (self,setDescendentsDirty=True):
+
+    '''Mark a node and all ancestor @file nodes dirty.'''
+
+    p = self ; dirtyVnodeList = []
+
+    # g.trace(p.h,g.callers(4))
+
+    if not p.v.isDirty():
+        p.v.setDirty()
+        dirtyVnodeList.append(p.v)
+
+    # Important: this must be called even if p.v is already dirty.
+    # Typing can change the @ignore state!
+    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty(setDescendentsDirty)
+    dirtyVnodeList.extend(dirtyVnodeList2)
+
+    return dirtyVnodeList
+#@-node:ekr.20040303163330:p.setDirty
 #@+node:ekr.20040315034158:p.setBodyString & setHeadString
 def setBodyString (self,s):
 
@@ -4492,7 +4350,6 @@ def createSaxVnode (self,sax_node,parent_v,v=None):
         # Don't set t.h: h is always empty.
         # This may be an internal error.
         if v.b == b:
-            pass
             if trace and verbose: g.trace(
                 '***no update\nold: %s\nnew: %s' % (v.b,b))
         else:
@@ -4732,10 +4589,12 @@ def readEndNode (self,unused_s,unused_i,middle=False):
         if old and at.v != at.root.v: # and not g.app.unitTesting
             << indicate that the node has been changed >>
         if old and at.atAllFlag:
-            if trace: g.trace('*** no update\nold: %s\nnew: %s' % (repr(old),repr(s)))
-            pass # Don't change.
+            # Don't change.
+            if trace: g.trace('*** no update\nold: %s\nnew: %s' % (
+                repr(old),repr(s)))
         else:
-            if trace: g.trace('*** update\nold: %s\nnew: %s' % (repr(old),repr(s)))
+            if trace: g.trace('*** update\nold: %s\nnew: %s' % (
+                repr(old),repr(s)))
             at.v.tempBodyString = s
 
     # Indicate that the vnode has been set in the derived file.
@@ -4836,7 +4695,6 @@ def createSaxVnode (self,sax_node,parent_v,v=None):
         # Don't set t.h: h is always empty.
         # This may be an internal error.
         if v.b == b:
-            pass
             if trace and verbose: g.trace(
                 '***no update\nold: %s\nnew: %s' % (v.b,b))
         else:
@@ -5246,7 +5104,7 @@ def fastAddLastChild(self,c,gnxString):
 #@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
 #@-node:ekr.20100124110832.6213:changed...
 #@-node:ekr.20100122162421.6240:Clones in @all files now have low priority
-#@-node:ekr.20100118163110.6256:Leo 4.7 rc1 projects
+#@-node:ekr.20100118163110.6256:Leo 4.7 b2 projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt
 #@-leo

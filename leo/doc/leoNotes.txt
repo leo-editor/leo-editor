@@ -4785,6 +4785,86 @@ def scanAtAllDirectives(aList):
     else:
         return None
 #@-node:ekr.20100122162752.6187:g.scanAtAllDirectives (not used)
+#@+node:ekr.20080904071003.4:goto_findPosition & helpers (no longer used)
+# p,found = c.goto_findPosition(root,lines,vnodeName,gnx,n,delim)
+
+def goto_findPosition(self,root,lines,vnodeName,gnx,n,delim):
+
+    c = self
+
+    if gnx:
+        p,found = c.goto_findGnx(root,gnx,vnodeName)
+    else:
+        p,found = c.goto_scanTnodeList(root,delim,lines,n,vnodeName)
+
+    return p,found
+#@+node:ekr.20080904071003.19:goto_scanTnodeList
+def goto_scanTnodeList (self,root,delim,lines,n,vnodeName):
+
+    # This is about the best that can be done without replicating
+    # the entire atFile write logic.
+    found = False
+    ok = hasattr(root.v,"tnodeList")
+
+    if ok:
+        # Use getattr to keep pylint happy.
+        tnodeList = getattr(root.v,'tnodeList')
+        << set tnodeIndex to the number of +node sentinels before line n >>
+        tnodeIndex = max(0,tnodeIndex)
+        << set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = False >>
+    else:
+        g.es_print("no child index for",root.h,color="red")
+
+    if not ok:
+        # Fall back to the old logic.
+        << set p to the first node whose headline matches vnodeName >>
+
+    return p,found
+#@+node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
+
+tnodeIndex = -1 # Don't count the @file node.
+scanned = 0 # count of lines scanned.
+
+for s in lines:
+    if scanned >= n:
+        break
+    i = g.skip_ws(s,0)
+    if g.match(s,i,delim):
+        i += len(delim)
+        if g.match(s,i,"+node"):
+            # g.trace(tnodeIndex,s.rstrip())
+            tnodeIndex += 1
+    scanned += 1
+#@-node:ekr.20080904071003.8:<< set tnodeIndex to the number of +node sentinels before line n >>
+#@+node:ekr.20080904071003.9:<< set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = false >>
+# g.trace("tnodeIndex",tnodeIndex)
+if tnodeIndex < len(tnodeList):
+    v = tnodeList[tnodeIndex]
+    # Find v.
+    for p in root.self_and_subtree():
+        if p.v == v:
+            found = True ; break
+    if not found:
+        s = "vnode not found for " + vnodeName
+        g.es_print(s, color="red") ; ok = False
+    elif p.h.strip() != vnodeName:
+        if 0: # Apparently this error doesn't prevent a later scan for working properly.
+            s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.h,vnodeName)
+            g.es_print(s, color="red")
+        ok = False
+else:
+    if root is None: # Kludge: disable this message when called by goToScriptLineNumber.
+        s = "Invalid computed tnodeIndex: %d" % tnodeIndex
+        g.es_print(s, color = "red")
+    ok = False
+#@-node:ekr.20080904071003.9:<< set p to the first vnode whose vnode is tnodeList[tnodeIndex] or set ok = false >>
+#@+node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
+for p in root.self_and_subtree():
+    if p.matchHeadline(vnodeName):
+        found = True ; break
+#@-node:ekr.20080904071003.10:<< set p to the first node whose headline matches vnodeName >>
+#@-node:ekr.20080904071003.19:goto_scanTnodeList
+#@-node:ekr.20080904071003.4:goto_findPosition & helpers (no longer used)
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node

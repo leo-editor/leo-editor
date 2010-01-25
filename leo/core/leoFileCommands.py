@@ -1173,7 +1173,6 @@ class baseFileCommands:
             # Don't set t.h: h is always empty.
             # This may be an internal error.
             if v.b == b:
-                pass
                 if trace and verbose: g.trace(
                     '***no update\nold: %s\nnew: %s' % (v.b,b))
             else:

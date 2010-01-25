@@ -5524,19 +5524,19 @@ def toUnicode (s,encoding=None,reportErrors=False):
         encoding = g.app.defaultEncoding
 
     if isPython3:
-        convert,mustConvert,nullVal = str,g.isBytes,''
+        f,mustConvert = str,g.isBytes
     else:
-        convert,nullVal = unicode,unicode('')
+        f = unicode
         def mustConvert (s):
             return type(s) != types.UnicodeType
 
     if not s:
-        s = nullVal
+        s = g.u('')
     elif mustConvert(s):
         try:
-            s = convert(s,encoding,'strict')
+            s = f(s,encoding,'strict')
         except (UnicodeError,Exception):
-            s = convert(s,encoding,'replace')
+            s = f(s,encoding,'replace')
             if reportErrors: g.reportBadChars(s,encoding)
     else:
         pass
