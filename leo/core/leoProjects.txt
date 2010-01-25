@@ -1128,9 +1128,8 @@ def initFileName (self,fromString,importFileName,root):
 def readFromCache (self,fileName,force,root):
 
     at = self ; c = at.c
-    s,e = g.readFileIntoString(fileName)
-    if s is None:
-        return False,None
+    s,e = g.readFileIntoString(fileName,raw=True)
+    if s is None: return False,None
 
     cachefile = self._contentHashFile(root.h,s)
 
@@ -2764,9 +2763,8 @@ def initFileName (self,fromString,importFileName,root):
 def readFromCache (self,fileName,force,root):
 
     at = self ; c = at.c
-    s,e = g.readFileIntoString(fileName)
-    if s is None:
-        return False,None
+    s,e = g.readFileIntoString(fileName,raw=True)
+    if s is None: return False,None
 
     cachefile = self._contentHashFile(root.h,s)
 
@@ -4187,9 +4185,8 @@ def createThinChild4 (self,gnxString,headline):
 def readFromCache (self,fileName,force,root):
 
     at = self ; c = at.c
-    s,e = g.readFileIntoString(fileName)
-    if s is None:
-        return False,None
+    s,e = g.readFileIntoString(fileName,raw=True)
+    if s is None: return False,None
 
     cachefile = self._contentHashFile(root.h,s)
 
@@ -5103,6 +5100,1195 @@ def fastAddLastChild(self,c,gnxString):
 #@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
 #@-node:ekr.20100124110832.6213:changed...
 #@-node:ekr.20100122162421.6240:Clones in @all files now have low priority
+#@+node:ekr.20100125073206.8711:use g.readFileIntoString
+
+    try:
+        s = open(fn,'rb').read()
+    except IOError:
+        g.es("can not open %s" % (fn),color='red')
+#@+node:ekr.20100125073206.8710:g.readFileIntoString (Leo 4.7)
+def readFileIntoString (fn,encoding='utf-8',kind=None,mode='rb',raw=False):
+
+    '''Return the contents of the file whose full path is fn.
+
+    Return (s,e)
+    s is the string, converted to unicode, or None if there was an error.
+    e the encoding line for Python files: it is usually None.
+    '''
+
+    try:
+        e = None
+        f = open(fn,mode)
+        s = f.read()
+        f.close()
+        if raw:
+            return s,None
+        else:
+            # Python's encoding comments override everything else.
+            if s:
+                junk,ext = g.os_path_splitext(fn)
+                if ext == '.py':
+                    e = g.getPythonEncodingFromString(s)
+            s = g.toUnicode(s,encoding=e or encoding)
+            return s,e
+    except IOError:
+        # Translate 'can not open' and kind, but not fn.
+        if kind:
+            g.es('can not open','',kind,fn,color='red')
+        else:
+            g.es('can not open',fn,color='red')
+    except Exception:
+        g.trace('unexpected exception reading %s' % (fn),color='red')
+        g.es_exception()
+
+    import leo.core.leoTest as leoTest
+    leoTest.fail()
+    return None,None
+#@-node:ekr.20100125073206.8710:g.readFileIntoString (Leo 4.7)
+#@+node:ekr.20100125073206.8713:Old code...
+#@+node:ekr.20031218072017.3301:<< Read file into s >> (removeSentinelsCommand)
+try:
+    theFile = open(fileName)
+    s = theFile.read()
+    s = g.toUnicode(s,self.encoding)
+    theFile.close()
+except IOError:
+    g.es("can not open",fileName, color="blue")
+    leoTest.fail()
+    return
+#@-node:ekr.20031218072017.3301:<< Read file into s >> (removeSentinelsCommand)
+#@+node:ekr.20031218072017.3211:<< Read file into s >> (leoImport)
+try:
+    fileName = c.os_path_finalize(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    if atShadow: kind = '@shadow '
+    elif atAuto: kind = '@auto '
+    else: kind = ''
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (kind,fileName),color='red')
+    # g.trace(g.callers())
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >> (leoImport)
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >> (leoImport)
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    e = g.getPythonEncodingFromString(s)
+    if e: self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >> (leoImport)
+#@+node:ekr.20100125073206.8712:from scanOptions
+        try:
+            f = None
+            try:
+                if trace: print("scan_options: script: %s" % script_name)
+                f = open(script_name,'r')
+                script = f.read()
+            except IOError:
+                print("can not open script file: %s" % script_name)
+                script = None
+        finally:
+            if f: f.close()
+#@nonl
+#@-node:ekr.20100125073206.8712:from scanOptions
+#@+node:ekr.20100125073206.8714:from createNodeFromExternalFile
+
+    f = None
+    try:
+        f = open(fn)
+        s = f.read()
+        f.close()
+    except IOError:
+        g.es('can not open %s' % fn)
+        return
+#@-node:ekr.20100125073206.8714:from createNodeFromExternalFile
+#@+node:ekr.20100125073206.8716:from getReadableTextFile
+    if not fileName: return None, None
+
+    try:
+        f = open(fileName,'rt')
+        return f, fileName
+    except IOError:
+        g.es('can not open',fileName)
+        return None,None
+#@-node:ekr.20100125073206.8716:from getReadableTextFile
+#@+node:ekr.20100125073206.8717:from diff
+    try:
+        f, name = self.getReadableTextFile()
+        txt1 = f.read() ; f.close()
+        f2, name2 = self.getReadableTextFile()
+        txt2 = f2.read() ; f2.close()
+    except IOError: return
+#@nonl
+#@-node:ekr.20100125073206.8717:from diff
+#@+node:ekr.20100125073206.8718:From openWrapperLeoFile
+
+        try:
+            fileName = g.os_path_finalize(fileName)
+            f = open(fileName)
+            s = f.read()
+            f.close()
+        except IOError:
+            g.es_print("can not open: ",fileName,color='red')
+            return None
+#@nonl
+#@-node:ekr.20100125073206.8718:From openWrapperLeoFile
+#@+node:ekr.20100125073206.8719:from x.replaceFileWithString
+
+        try:
+            f = open(fn,'rb')
+            s2 = f.read()
+            f.close()
+        except IOError:
+            x.error('unexpected exception creating %s' % fn)
+            g.es_exception()
+            return False
+#@nonl
+#@-node:ekr.20100125073206.8719:from x.replaceFileWithString
+#@+node:ekr.20031218072017.3484:<< Read the file into file_buf  >> in untangleRoot
+f = None
+try:
+    path = c.os_path_finalize_join(self.tangle_directory,path)
+    f = open(path)
+    if f:
+        file_buf = f.read()
+        file_buf = file_buf.replace('\r','')
+except:
+    if f: f.close()
+    g.es("error reading:",path)
+    g.es_exception()
+    self.cleanup()
+    return
+#@-node:ekr.20031218072017.3484:<< Read the file into file_buf  >> in untangleRoot
+#@+node:ekr.20031218072017.3221:<< Read the file into array >> (importFlattenedOutline)
+try:
+    theFile = open(fileName)
+    s = theFile.read()
+    s = s.replace("\r","")
+    s = g.toUnicode(s,self.encoding)
+    array = s.split("\n")
+    theFile.close()
+except IOError:
+    g.es("can not open",fileName, color="blue")
+    leoTest.fail()
+    return
+#@-node:ekr.20031218072017.3221:<< Read the file into array >> (importFlattenedOutline)
+#@+node:ekr.20100125073206.8721:from scanWebFile
+    try: # Read the file into s.
+        f = open(fileName)
+        s = f.read()
+    except Exception:
+        g.es("can not import",fileName, color="blue")
+        return
+#@nonl
+#@-node:ekr.20100125073206.8721:from scanWebFile
+#@+node:ekr.20100125073206.8722:from checkDerivedFile
+
+    try:
+        s = open(fn,'r').read()
+    except IOError:
+        return g.es_print('can not open %s' % (fn),color='red')
+#@nonl
+#@-node:ekr.20100125073206.8722:from checkDerivedFile
+#@+node:ekr.20100125073206.8723:from readFromCache
+# s = open(fileName, "rb").read()
+#@nonl
+#@-node:ekr.20100125073206.8723:from readFromCache
+#@+node:ekr.20100125073206.8724:from readOneAtAutoNode
+    try:
+        fileContent = open(fileName, "rb").read()
+        cachefile = self._contentHashFile(p.h,fileContent)
+    except IOError:
+        cachefile = None
+#@nonl
+#@-node:ekr.20100125073206.8724:from readOneAtAutoNode
+#@+node:ekr.20100125073206.8725:from readOneAtEditNode
+
+    # Read the file into s.
+    try:
+        s = open(fn,'rb').read() # U: Universal newline mode.
+    except IOError:
+        g.es("can not open @edit ",fn,color='red')
+        leoTest.fail()
+        return
+#@nonl
+#@-node:ekr.20100125073206.8725:from readOneAtEditNode
+#@+node:ekr.20100125073206.8726:from checkPythonCode
+
+    try:
+        if not s: s = open(self.outputFileName).read()
+    except IOError:
+        g.trace('can not happen',g.callers(4))
+        return
+#@-node:ekr.20100125073206.8726:from checkPythonCode
+#@+node:ekr.20100125073206.8727:from replaceFileWithString
+
+try:
+            f = open(fn,'rb')
+            s2 = f.read()
+            f.close()
+        except IOError:
+            at.error('unexpected exception creating %s' % fn)
+            g.es_exception()
+            return False
+#@nonl
+#@-node:ekr.20100125073206.8727:from replaceFileWithString
+#@-node:ekr.20100125073206.8713:Old code...
+#@+node:ekr.20100125073206.8720:Changed...
+#@+node:ekr.20031218072017.3300:removeSentinelsCommand
+def removeSentinelsCommand (self,paths,toString=False):
+
+    c = self.c
+
+    self.setEncoding()
+
+    for fileName in paths:
+        g.setGlobalOpenDir(fileName)
+        path, self.fileName = g.os_path_split(fileName)
+        s,e = g.readFileIntoString(fileName,self.encoding)
+        if s is None: return
+        if e: self.encoding = e
+        << set delims from the header line >>
+        # g.trace("line: '%s', start: '%s', end: '%s'" % (line_delim,start_delim,end_delim))
+        s = self.removeSentinelLines(s,line_delim,start_delim,end_delim)
+        ext = c.config.remove_sentinels_extension
+        if not ext:
+            ext = ".txt"
+        if ext[0] == '.':
+            newFileName = c.os_path_finalize_join(path,fileName+ext)
+        else:
+            head,ext2 = g.os_path_splitext(fileName) 
+            newFileName = c.os_path_finalize_join(path,head+ext+ext2)
+        if toString:
+            return s
+        else:
+            << Write s into newFileName >>
+            return None
+#@+node:ekr.20031218072017.3302:<< set delims from the header line >>
+# Skip any non @+leo lines.
+i = 0
+while i < len(s) and g.find_on_line(s,i,"@+leo") == -1:
+    i = g.skip_line(s,i)
+
+# Get the comment delims from the @+leo sentinel line.
+at = self.c.atFileCommands
+j = g.skip_line(s,i) ; line = s[i:j]
+
+valid,junk,start_delim,end_delim,junk = at.parseLeoSentinel(line)
+if not valid:
+    if not toString: g.es("invalid @+leo sentinel in",fileName)
+    return
+
+if end_delim:
+    line_delim = None
+else:
+    line_delim,start_delim = start_delim,None
+#@-node:ekr.20031218072017.3302:<< set delims from the header line >>
+#@+node:ekr.20031218072017.1149:<< Write s into newFileName >>
+try:
+    mode = c.config.output_newline
+    mode = g.choose(mode=="platform",'w','wb')
+    theFile = open(newFileName,mode)
+    s = g.toEncodedString(s,self.encoding,reportErrors=True)
+    theFile.write(s)
+    theFile.close()
+    if not g.unitTesting:
+        g.es("created:",newFileName)
+except Exception:
+    g.es("exception creating:",newFileName)
+    g.es_exception()
+#@-node:ekr.20031218072017.1149:<< Write s into newFileName >>
+#@-node:ekr.20031218072017.3300:removeSentinelsCommand
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,
+    atAuto=False,atShadow=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+    w = c.frame.body
+    # New in Leo 4.4.7: honor @path directives.
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = c.os_path_finalize_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        if atShadow: kind = '@shadow '
+        elif atAuto: kind = '@auto '
+        else: kind = ''
+        s,e = g.readFileIntoString(fileName,encoding=self.encoding,kind=kind)
+        if s is None: return None
+        if e: self.encoding = e
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
+        func = self.scanRstText
+    else:
+        func = self.importDispatchDict.get(ext)
+
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
+    else:
+        # Just copy the file to the parent node.
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    if atAuto:
+        # Remember that we have read this file.
+        # Fixes bug 488894: unsettling dialog when saving Leo file
+        # after creating and populating an @auto node.
+        # Important: this often sets the bit in the wrong node:
+        # The caller may have to set the bit in the "real" root node.
+        p.v.at_read = True # Create the attribute
+
+    p.contract()
+    w.setInsertPoint(0)
+    w.seeInsertPoint()
+    return p
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@+node:ekr.20091007103358.6061:scanOptions
+def scanOptions():
+
+    '''Handle all options and remove them from sys.argv.'''
+    trace = False
+
+    # Note: this automatically implements the --help option.
+    parser = optparse.OptionParser()
+    parser.add_option('-c', '--config', dest="one_config_path")
+    parser.add_option('--debug',        action="store_true",dest="debug")
+    parser.add_option('-f', '--file',   dest="fileName")
+    parser.add_option('--gui',          dest="gui",help = 'gui to use (qt/tk/qttabs)')
+    #parser.add_option('--help',         action="store_true",dest="help_option")
+    parser.add_option('--ipython',      action="store_true",dest="use_ipython")
+    parser.add_option('--no-cache',     action="store_true",dest='no_cache')
+    parser.add_option('--silent',       action="store_true",dest="silent")
+    parser.add_option('--script',       dest="script")
+    parser.add_option('--script-window',dest="script_window")
+    parser.add_option('--version',      action="store_true",dest="version")
+
+    # Parse the options, and remove them from sys.argv.
+    options, args = parser.parse_args()
+    sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
+    if trace: print('scanOptions',sys.argv)
+
+    # Handle the args...
+
+    # -c or --config
+    path = options.one_config_path
+    if path:
+        path = g.os_path_finalize_join(os.getcwd(),path)
+        if g.os_path_exists(path):
+            g.app.oneConfigFilename = path
+        else:
+            g.es_print('Invalid -c option: file not found:',path,color='red')
+
+    # --debug
+    if options.debug:
+        g.debug = True
+        g.trace('*** debug mode on')
+
+    # -f or --file
+    fileName = options.fileName
+
+    # --gui
+    gui = options.gui
+    g.app.qt_use_tabs = False
+    if gui:
+        gui = gui.lower()
+        if gui == 'qttabs':
+            gui = 'qt'
+            g.app.qt_use_tabs = True
+
+        if gui not in ('tk','qt','wx'):
+            g.trace('unknown gui: %s' % gui)
+            gui = None
+
+    # --ipython
+    g.app.useIpython = options.use_ipython
+
+    # --no-cache
+    if options.no_cache:
+        g.trace('disabling caching')
+        g.enableDB = False
+
+    # --script
+    script_path = options.script
+    script_path_w = options.script_window
+    if script_path and script_path_w:
+        parser.error("--script and script-window are mutually exclusive")
+
+    script_name = script_path or script_path_w
+    if script_name:
+        script_name = g.os_path_finalize_join(g.app.loadDir,script_name)
+        script,e = g.readFileIntoString(script_name,kind='script:')
+    else:
+        script = None
+        # if trace: print('scanOptions: no script')
+
+    # --silent
+    g.app.silentMode = options.silent
+    # g.trace('silentMode',g.app.silentMode)
+
+    # --version: print the version and exit.
+    versionFlag = options.version
+
+    # Compute the return values.
+    windowFlag = script and script_path_w
+    if trace:
+        print('scanOptions: fileName',fileName)
+        print('scanOptions: argv',sys.argv)
+    return fileName,gui,script,versionFlag,windowFlag
+#@-node:ekr.20091007103358.6061:scanOptions
+#@+node:ekr.20090212054250.9:c.createNodeFromExternalFile
+def createNodeFromExternalFile(self,fn):
+
+    '''Read the file into a node.
+    Return None, indicating that c.open should set focus.'''
+
+    c = self
+
+    s,e = g.readFileIntoString(fn)
+    if s is None: return
+    head,ext = g.os_path_splitext(fn)
+    if ext.startswith('.'): ext = ext[1:]
+    language = g.app.extension_dict.get(ext)
+    if language:
+        prefix = '@color\n@language %s\n\n' % language
+    else:
+        prefix = '@killcolor\n\n'
+    p2 = c.insertHeadline(op_name='Open File', as_child=False)
+    p2.h = '@edit %s' % fn # g.shortFileName(fn)
+    p2.b = prefix + s
+    w = c.frame.body.bodyCtrl
+    if w: w.setInsertPoint(0)
+    c.redraw()
+    c.recolor()
+#@nonl
+#@-node:ekr.20090212054250.9:c.createNodeFromExternalFile
+#@+node:ekr.20070915134101:readFileIntoNode
+def readFileIntoNode (self,event=None):
+
+    '''Read a file into a single node.'''
+
+    c = self ; undoType = 'Read File Into Node'
+    c.endEditing()
+
+    filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
+    fileName = g.app.gui.runOpenFileDialog(
+        title="Read File Into Node",filetypes=filetypes,defaultextension=None)
+    if not fileName:return
+    s,e = g.readFileIntoString(fileName)
+    if s is None: return
+
+    g.chdir(fileName)
+    s = '@nocolor\n' + s
+    w = c.frame.body.bodyCtrl
+    p = c.insertHeadline(op_name=undoType)
+    p.setHeadString('@read-file-into-node ' + fileName)
+    p.setBodyString(s)
+    w.setAllText(s)
+    c.redraw(p)
+#@-node:ekr.20070915134101:readFileIntoNode
+#@+node:ekr.20050920084036.166:getReadableTextFile
+def getReadableTextFile (self):
+
+    fn = g.app.gui.runOpenFileDialog(
+        title = 'Open Text File',
+        filetypes = [("Text","*.txt"), ("All files","*")],
+        defaultextension = ".txt")
+
+    return fn
+#@-node:ekr.20050920084036.166:getReadableTextFile
+#@+node:ekr.20050920084036.167:insertFile
+def insertFile (self,event):
+
+    '''Prompt for the name of a file and put the selected text into it.'''
+
+    k = self.k ; c = k.c ; w = self.editWidget(event)
+    if not w: return
+
+    fn = self.getReadableTextFile()
+    if not fn: return
+
+    s,e = g.readFileIntoString(fn)
+    if s is None: return
+
+    self.beginCommand(undoType='insert-file')
+    i = w.getInsertPoint()
+    w.insert(i,s)
+    w.seeInsertPoint()
+    self.endCommand(changed=True,setLabel=True)
+#@-node:ekr.20050920084036.167:insertFile
+#@+node:ekr.20050920084036.165:diff (revise)
+def diff (self,event):
+
+    '''Creates a node and puts the diff between 2 files into it.'''
+
+    k = self.k
+    w = self.editWidget(event)
+    if not w: return
+    fn = self.getReadableTextFile()
+    if not fn: return
+    fn2 = self.getReadableTextFile()
+    if not fn2: return
+    s1,e = g.readFileIntoString(fn)
+    if s1 is None: return
+    s2,e = g.readFileIntoString(fn2)
+    if s2 is None: return
+
+    ### self.switchToBuffer(event,"*diff* of ( %s , %s )" % (name,name2))
+    data = difflib.ndiff(s1,s2)
+    idata = []
+    for z in data:
+        idata.append(z)
+    w.delete(0,'end')
+    w.insert(0,''.join(idata))
+#@-node:ekr.20050920084036.165:diff (revise)
+#@+node:ekr.20080921154026.1:g.openWrapperLeoFile
+def openWrapperLeoFile (old_c,fileName,gui):
+
+    '''Open a wrapper .leo file for the given file,
+    and import the file into .leo file.'''
+
+    # This code is similar to c.new, but different enough to be separate.
+    if not g.os_path_exists(fileName):
+        if not g.unitTesting:
+            g.es_print("can not open:",fileName,color="blue")
+        return None
+
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    if 0: # This causes duplicate common buttons.
+        g.doHook("new",old_c=old_c,c=c,new_c=c)
+
+    # Use the config params to set the size and location of the window.
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+
+    if True: # Just read the file into the node.
+        fileName = g.os_path_finalize(fileName)
+        s,e = g.readFileIntoString(fileName)
+        if s is None: return None
+        p = c.rootPosition()
+        if p:
+            p.setHeadString('@edit %s' % fileName)
+            p.setBodyString(s)
+            c.selectPosition(p)
+    else:  # Import the file into the new outline.
+        junk,ext = g.os_path_splitext(fileName)
+        p = c.p
+        p = c.importCommands.createOutline(fileName,parent=p,atAuto=False,ext=ext)
+        c.setCurrentPosition(p)
+        c.moveOutlineLeft()
+        p = c.p
+        c.setCurrentPosition(p.back())
+        c.deleteOutline(op_name=None)
+        p = c.p
+        p.expand()
+
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
+
+    frame.c.setChanged(True) # Mark the outline dirty.
+    return c
+#@-node:ekr.20080921154026.1:g.openWrapperLeoFile
+#@+node:ekr.20080713091247.1:x.replaceFileWithString & test
+def replaceFileWithString (self,fn,s):
+
+    '''Replace the file with s if s is different from theFile's contents.
+
+    Return True if theFile was changed.
+    '''
+
+    trace = False and not g.unitTesting
+    x = self
+    exists = g.os_path_exists(fn)
+
+    if exists:
+        # Read the file.  Return if it is the same.
+        s2,e = g.readFileIntoString(fn)
+        if s2 is None:
+            return False
+        if s == s2:
+            if not g.unitTesting: g.es('unchanged:',fn)
+            return False
+
+    # Issue warning if directory does not exist.
+    theDir = g.os_path_dirname(fn)
+    if theDir and not g.os_path_exists(theDir):
+        if not g.unitTesting:
+            x.error('not written: %s directory not found' % fn)
+        return False
+
+    # Replace the file.
+    try:
+        f = open(fn,'wb')
+        f.write(g.toEncodedString(s,encoding='utf-8'))
+        if trace: g.trace('fn',fn,
+            '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
+            '\ncallers',g.callers(4))
+        f.close()
+        if not g.unitTesting:
+            # g.trace('created:',fn,g.callers())
+            if exists:  g.es('wrote:',fn)
+            else:       g.es('created:',fn)
+        return True
+    except IOError:
+        x.error('unexpected exception writing file: %s' % (fn))
+        g.es_exception()
+        return False
+#@+node:ekr.20090530055015.6862:@test x.replaceFileWithString
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    x = c.shadowController
+
+    fn = 'does/not/exist'
+    assert not g.os_path_exists(fn)
+    assert not x.replaceFileWithString (fn,'abc')
+#@-node:ekr.20090530055015.6862:@test x.replaceFileWithString
+#@-node:ekr.20080713091247.1:x.replaceFileWithString & test
+#@+node:ekr.20031218072017.3481:untangleRoot (calls cleanup)
+@ This method untangles the derived files in a vnode known to contain at least one @root directive. The work is done in two passes. The first pass creates the UST by scanning the derived file. The second pass updates the outline using the UST and a TST that is created during the pass.
+
+We assume that all sections from root to end are contained in the derived file, and we attempt to update all such sections. The begin/end params indicate the range of nodes to be scanned when building the TST.
+@c
+
+def untangleRoot(self,root,begin,end):
+
+    # g.trace("root,begin,end:",root,begin,end)
+    c = self.c
+    << Set path & root_name to the file specified in the @root directive >>
+    << return if @silent or unknown language >>
+    path = c.os_path_finalize_join(self.tangle_directory,path)
+    file_buf,e = g.readFileIntoString(path)
+    if file_buf is None:
+        self.cleanup()
+        return
+    else:
+        file_buf = file_buf.replace('\r','')
+
+    g.es('','@root ' + path)
+    # Pass 1: Scan the C file, creating the UST
+    self.scan_derived_file(file_buf)
+    # g.trace(self.ust_dump())
+    if self.errors + g.app.scanErrors == 0:
+        << Pass 2: Untangle the outline using the UST and a newly-created TST >>
+    self.cleanup()
+#@+node:ekr.20031218072017.3483:<< Set path & root_name to the file specified in the @root directive >>
+s = root.b
+i = 0
+while i < len(s):
+    code, junk = self.token_type(s,i,report_errors=True)
+    if code == at_root:
+        # token_type sets root_name unless there is a syntax error.
+        if self.root_name: path = self.root_name
+        break
+    else: i = g.skip_line(s,i)
+
+if not self.root_name:
+    # A bad @root command.  token_type has already given an error.
+    self.cleanup()
+    return
+#@-node:ekr.20031218072017.3483:<< Set path & root_name to the file specified in the @root directive >>
+#@+node:ekr.20031218072017.3482:<< return if @silent or unknown language >>
+if self.language == "unknown":
+    g.es("@comment disables untangle for",path, color="blue")
+    return
+
+if self.print_mode in ("quiet","silent"):
+    g.es('','@%s' % (self.print_mode),"inhibits untangle for",path, color="blue")
+    return
+#@-node:ekr.20031218072017.3482:<< return if @silent or unknown language >>
+#@+node:ekr.20031218072017.3485:<< Pass 2:  Untangle the outline using the UST and a newly-created TST >>
+@
+This code untangles the root and all its siblings. We don't call tangleTree here
+because we must handle all siblings. tanglePass1 handles an entire tree. It also
+handles @ignore.
+@c
+
+p = begin
+while p and p != end: # Don't use iterator.
+    self.tanglePass1(p)
+    if self.errors + g.app.scanErrors != 0:
+        break
+    p.moveToNodeAfterTree()
+
+self.ust_warn_about_orphans()
+#@-node:ekr.20031218072017.3485:<< Pass 2:  Untangle the outline using the UST and a newly-created TST >>
+#@-node:ekr.20031218072017.3481:untangleRoot (calls cleanup)
+#@+node:ekr.20031218072017.3220:importFlattenedOutline
+def importFlattenedOutline (self,files): # Not a command, so no event arg.
+
+    c = self.c ; u = c.undoer ; current = c.p
+    if current == None: return
+    if len(files) < 1: return
+
+    self.setEncoding()
+    fileName = files[0] # files contains at most one file.
+    g.setGlobalOpenDir(fileName)
+    s,e = g.readFileIntoString(fileName)
+    if s is None: return
+    array = s.split("\n")
+
+    # Convert the string to an outline and insert it after the current node.
+    undoData = u.beforeInsertNode(current)
+    p = self.convertMoreStringsToOutlineAfter(array,current)
+    if p:
+        c.endEditing()
+        c.validateOutline()
+        c.redrawAndEdit(p)
+        p.setDirty()
+        c.setChanged(True)
+        u.afterInsertNode(p,'Import',undoData)
+    else:
+        g.es("not a valid MORE file",fileName)
+#@-node:ekr.20031218072017.3220:importFlattenedOutline
+#@+node:ekr.20031218072017.3231:scanWebFile (handles limbo)
+def scanWebFile (self,fileName,parent):
+
+    theType = self.webType
+    lb = g.choose(theType=="cweb","@<","<<")
+    rb = g.choose(theType=="cweb","@>",">>")
+
+    s,e = g.readFileIntoString(fileName)
+    if s is None: return
+
+    << Create a symbol table of all section names >>
+    << Create nodes for limbo text and the root section >>
+    while i < len(s):
+        outer_progress = i
+        << Create a node for the next module >>
+        assert(i > outer_progress)
+#@+node:ekr.20031218072017.3232:<< Create a symbol table of all section names >>
+i = 0 ; self.web_st = []
+
+while i < len(s):
+    progress = i
+    i = g.skip_ws_and_nl(s,i)
+    # line = g.get_line(s,i) ; g.trace(line)
+    if self.isDocStart(s,i):
+        if theType == "cweb": i += 2
+        else: i = g.skip_line(s,i)
+    elif theType == "cweb" and g.match(s,i,"@@"):
+        i += 2
+    elif g.match(s,i,lb):
+        i += 2 ; j = i ; k = g.find_on_line(s,j,rb)
+        if k > -1: self.cstEnter(s[j:k])
+    else: i += 1
+    assert (i > progress)
+
+# g.trace(self.cstDump())
+#@-node:ekr.20031218072017.3232:<< Create a symbol table of all section names >>
+#@+node:ekr.20031218072017.3233:<< Create nodes for limbo text and the root section >>
+i = 0
+while i < len(s):
+    progress = i
+    i = g.skip_ws_and_nl(s,i)
+    if self.isModuleStart(s,i) or g.match(s,i,lb):
+        break
+    else: i = g.skip_line(s,i)
+    assert(i > progress)
+
+j = g.skip_ws(s,0)
+if j < i:
+    self.createHeadline(parent,"@ " + s[j:i],"Limbo")
+
+j = i
+if g.match(s,i,lb):
+    while i < len(s):
+        progress = i
+        i = g.skip_ws_and_nl(s,i)
+        if self.isModuleStart(s,i):
+            break
+        else: i = g.skip_line(s,i)
+        assert(i > progress)
+    self.createHeadline(parent,s[j:i],g.angleBrackets(" @ "))
+
+# g.trace(g.get_line(s,i))
+#@-node:ekr.20031218072017.3233:<< Create nodes for limbo text and the root section >>
+#@+node:ekr.20031218072017.3234:<< Create a node for the next module >>
+if theType=="cweb":
+    assert(self.isModuleStart(s,i))
+    start = i
+    if self.isDocStart(s,i):
+        i += 2
+        while i < len(s):
+            progress = i
+            i = g.skip_ws_and_nl(s,i)
+            if self.isModuleStart(s,i): break
+            else: i = g.skip_line(s,i)
+            assert (i > progress)
+    << Handle cweb @d, @f, @c and @p directives >>
+else:
+    assert(self.isDocStart(s,i)) # isModuleStart == isDocStart for noweb.
+    start = i ; i = g.skip_line(s,i)
+    while i < len(s):
+        progress = i
+        i = g.skip_ws_and_nl(s,i)
+        if self.isDocStart(s,i): break
+        else: i = g.skip_line(s,i)
+        assert (i > progress)
+
+body = s[start:i]
+body = self.massageWebBody(body)
+headline = self.scanBodyForHeadline(body)
+self.createHeadline(parent,body,headline)
+#@+node:ekr.20031218072017.3235:<< Handle cweb @d, @f, @c and @p directives >>
+if g.match(s,i,"@d") or g.match(s,i,"@f"):
+    i += 2 ; i = g.skip_line(s,i)
+    # Place all @d and @f directives in the same node.
+    while i < len(s):
+        progress = i
+        i = g.skip_ws_and_nl(s,i)
+        if g.match(s,i,"@d") or g.match(s,i,"@f"): i = g.skip_line(s,i)
+        else: break
+        assert (i > progress)
+    i = g.skip_ws_and_nl(s,i)
+
+while i < len(s) and not self.isModuleStart(s,i):
+    progress = i
+    i = g.skip_line(s,i)
+    i = g.skip_ws_and_nl(s,i)
+    assert (i > progress)
+
+if g.match(s,i,"@c") or g.match(s,i,"@p"):
+    i += 2
+    while i < len(s):
+        progress = i
+        i = g.skip_line(s,i)
+        i = g.skip_ws_and_nl(s,i)
+        if self.isModuleStart(s,i):
+            break
+        assert (i > progress)
+#@-node:ekr.20031218072017.3235:<< Handle cweb @d, @f, @c and @p directives >>
+#@-node:ekr.20031218072017.3234:<< Create a node for the next module >>
+#@-node:ekr.20031218072017.3231:scanWebFile (handles limbo)
+#@+node:ekr.20070919133659:checkDerivedFile (atFile)
+def checkDerivedFile (self, event=None):
+
+    at = self ; c = at.c ; p = c.p
+
+    if not p.isAtFileNode() and not p.isAtThinFileNode():
+        return g.es('Please select an @thin or @file node',color='red')
+
+    fn = p.anyAtFileNodeName()
+    path = g.os_path_dirname(c.mFileName)
+    fn = g.os_path_finalize_join(g.app.loadDir,path,fn)
+    if not g.os_path_exists(fn):
+        return g.es_print('file not found: %s' % (fn),color='red')
+
+    s,e = g.readFileIntoString(fn)
+    if s is None: return
+
+    # Create a dummy, unconnected, vnode as the root.
+    root_v = leoNodes.vnode(context=c)
+    root = leoNodes.position(root_v)
+    theFile = g.fileLikeObject(fromString=s)
+    # 2010/01/22: readOpenFiles now determines whether a file is thin or not.
+    at.initReadIvars(root,fn)
+    if at.errors: return
+    at.openFileForReading(fromString=s)
+    if not at.inputFile: return
+    at.readOpenFile(root,at.inputFile,fn)
+    at.inputFile.close()
+    if at.errors == 0:
+        g.es_print('check-derived-file passed',color='blue')
+#@-node:ekr.20070919133659:checkDerivedFile (atFile)
+#@+node:ekr.20100122130101.6176:at.readFromCache
+def readFromCache (self,fileName,force,root):
+
+    at = self ; c = at.c
+    s,e = g.readFileIntoString(fileName,raw=True)
+    if s is None: return False,None
+
+    cachefile = self._contentHashFile(root.h,s)
+
+    # 2010/01/22: uncache *any* file provided 'force' is False.
+    doCache = g.enableDB and not force
+    ok = doCache and cachefile in c.db
+    if ok:
+        # Delete the previous tree, regardless of the @<file> type.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+        # Recreate the file from the cache.
+        aList = c.db[cachefile]
+        root.v.createOutlineFromCacheList(c,aList)
+        at.inputFile.close()
+        root.clearDirty()
+
+    return ok,cachefile
+#@-node:ekr.20100122130101.6176:at.readFromCache
+#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    s,e = g.readFileIntoString(fileName,raw=True)
+    if s is None:
+        cachefile = None
+    else:
+        cachefile = self._contentHashFile(p.h,s)
+
+    # Remember that we have read this file.
+    p.v.at_read = True # Create the attribute
+
+    # Disable caching for test.leo.
+    if c.shortFileName() != 'test.leo':
+        if cachefile is not None and cachefile in c.db:        
+            # g.es('uncache:',p.h)
+            aList = c.db[cachefile]
+            p.v.createOutlineFromCacheList(c,aList)
+            return
+
+    if not g.unitTesting:
+        g.es("reading:",p.h)
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        # Note: the file contains an @ignore,
+        # so no unintended write can happen.
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        p.clearDirty()
+        c.setChanged(oldChanged)
+    else:
+        self.writeCachedTree(p, cachefile)
+        g.doHook('after-auto', p = p)  # call after-auto callbacks
+#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+#@+node:ekr.20090225080846.3:readOneAtEditNode (atFile)
+def readOneAtEditNode (self,fn,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fn = c.os_path_finalize_join(at.default_directory,fn)
+    junk,ext = g.os_path_splitext(fn)
+
+    if not g.unitTesting:
+        g.es("reading @edit:", g.shortFileName(fn))
+
+    s,e = g.readFileIntoString(fn,kind='@edit')
+    if s is None: return
+    encoding = g.choose(e is None,'utf-8',e)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    changed = c.isChanged()
+    head = ''
+    ext = ext.lower()
+    if ext in ('.html','.htm'):   head = '@language html\n'
+    elif ext in ('.txt','.text'): head = '@nocolor\n'
+    else:
+        language = ic.languageForExtension(ext)
+        if language and language != 'unknown_language':
+            head = '@language %s\n' % language
+        else:
+            head = '@nocolor\n'
+
+    p.b = g.u(head) + g.toUnicode(s,encoding=encoding,reportErrors='True')
+
+    if not changed: c.setChanged(False)
+    g.doHook('after-edit',p=p)
+#@-node:ekr.20090225080846.3:readOneAtEditNode (atFile)
+#@+node:ekr.20090514111518.5661:checkPythonCode (leoAtFile) & helpers
+def checkPythonCode (self,root,s=None,targetFn=None):
+
+    c = self.c
+
+    if not targetFn: targetFn = self.targetFileName
+
+    if targetFn and targetFn.endswith('.py') and self.checkPythonCodeOnWrite:
+
+        if not s:
+            s,e = g.readFileIntoString(self.outputFileName)
+            if s is None: return
+
+        # It's too slow to check each node separately.
+        ok = self.checkPythonSyntax(root,s)
+
+        # Syntax checking catches most indentation problems.
+        if False and ok: self.tabNannyNode(root,s)
+#@+node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
+def checkPythonSyntax (self,p,body):
+
+    try:
+        ok = True
+        if g.isPython3:
+            code.compile_command(body + '\n')
+        else:
+            compiler.parse(body + '\n')
+    except (parser.ParserError,SyntaxError):
+        self.syntaxError(p,body)
+        ok = False
+    except Exception:
+        g.trace("unexpected exception")
+        g.es_exception()
+        ok = False
+
+    return ok
+#@+node:ekr.20090514111518.5666:syntaxError & test
+def syntaxError(self,p,body):
+
+    g.es_print("Syntax error in: %s" % (p.h),color="red")
+    typ,val,tb = sys.exc_info()
+    message = hasattr(val,'message') and val.message
+    if message: g.es_print(message)
+    lines = g.splitLines(body)
+    n = val.lineno
+    if n is None:
+        # for z in dir(val): print z,repr(getattr(val,z))
+        return
+    i = val.lineno-1
+    for j in range(max(0,i-3),min(i+3,len(lines)-1)):
+        g.es_print('%5s:%s %s' % (
+            j,g.choose(j==i,'*',' '),lines[j].rstrip()))
+        if j == i:
+            g.es_print(' '*(7+val.offset)+'^')
+#@nonl
+#@+node:ekr.20090620121836.6073:syntaxErrorTest
+def syntaxErrorTest():
+
+    '''Used to test Leo's handling of the following syntax error'''
+
+    # xxx(c=None,'whatever')
+#@nonl
+#@-node:ekr.20090620121836.6073:syntaxErrorTest
+#@-node:ekr.20090514111518.5666:syntaxError & test
+#@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
+#@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
+def tabNannyNode (self,p,body):
+
+    import parser,tabnanny,tokenize
+
+    try:
+        readline = g.readLinesClass(body).next
+        tabnanny.process_tokens(tokenize.generate_tokens(readline))
+    except parser.ParserError:
+        junk, msg, junk = sys.exc_info()
+        g.es("ParserError in",p.h,color="red")
+        g.es('',str(msg))
+        # p.setMarked()
+    except tokenize.TokenError:
+        junk, msg, junk = sys.exc_info()
+        g.es("TokenError in",p.h,color="red")
+        g.es('',str(msg))
+        # p.setMarked()
+    except tabnanny.NannyNag:
+        junk, nag, junk = sys.exc_info()
+        badline = nag.get_lineno()
+        line    = nag.get_line()
+        message = nag.get_msg()
+        g.es("indentation error in",p.h,"line",badline,color="red")
+        g.es(message)
+        line2 = repr(str(line))[1:-1]
+        g.es("offending line:\n",line2)
+        # p.setMarked()
+    except Exception:
+        g.trace("unexpected exception")
+        g.es_exception()
+#@nonl
+#@-node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
+#@-node:ekr.20090514111518.5661:checkPythonCode (leoAtFile) & helpers
+#@+node:ekr.20080712150045.1:replaceFileWithString (atFile)
+def replaceFileWithString (self,fn,s):
+
+    '''Replace the file with s if s is different from theFile's contents.
+
+    Return True if theFile was changed.
+    '''
+
+    at = self ; testing = g.app.unitTesting
+
+    # g.trace('fn',fn,'s','\n',s)
+    # g.trace(g.callers())
+
+    exists = g.os_path_exists(fn)
+
+    if exists: # Read the file.  Return if it is the same.
+        s2,e = g.readFileIntoString(fn)
+        if s is None:
+            return False
+        if s == s2:
+            if not testing: g.es('unchanged:',fn)
+            return False
+
+    # Issue warning if directory does not exist.
+    theDir = g.os_path_dirname(fn)
+    if theDir and not g.os_path_exists(theDir):
+        if not g.unitTesting:
+            g.es('not written: %s directory not found' % fn,color='red')
+        return False
+
+    # Replace
+    try:
+        f = open(fn,'wb')
+        if g.isPython3:
+            s = g.toEncodedString(s,encoding=self.encoding)
+        f.write(s)
+        f.close()
+        if not testing:
+            if exists:
+                g.es('wrote:    ',fn)
+            else:
+                # g.trace('created:',fn,g.callers())
+                g.es('created:',fn)
+        return True
+    except IOError:
+        at.error('unexpected exception writing file: %s' % (fn))
+        g.es_exception()
+        return False
+#@+node:ekr.20090530055015.6873:@test at.replaceFileWithString
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    at = c.atFileCommands
+
+    fn = 'does/not/exist'
+    assert not g.os_path_exists(fn)
+    assert not at.replaceFileWithString (fn,'abc')
+#@-node:ekr.20090530055015.6873:@test at.replaceFileWithString
+#@-node:ekr.20080712150045.1:replaceFileWithString (atFile)
+#@-node:ekr.20100125073206.8720:Changed...
+#@-node:ekr.20100125073206.8711:use g.readFileIntoString
 #@-node:ekr.20100118163110.6256:Leo 4.7 b2 projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt

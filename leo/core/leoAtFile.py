@@ -547,9 +547,8 @@ class atFile:
     def readFromCache (self,fileName,force,root):
 
         at = self ; c = at.c
-        s,e = g.readFileIntoString(fileName)
-        if s is None:
-            return False,None
+        s,e = g.readFileIntoString(fileName,raw=True)
+        if s is None: return False,None
 
         cachefile = self._contentHashFile(root.h,s)
 
@@ -704,7 +703,7 @@ class atFile:
         while p.hasChildren():
             p.firstChild().doDelete()
 
-        s,e = g.readFileIntoString(fileName)
+        s,e = g.readFileIntoString(fileName,raw=True)
         if s is None:
             cachefile = None
         else:
@@ -3016,8 +3015,6 @@ class atFile:
                 return False
         elif not toString:
             return False
-
-        g.trace(fn)
 
         # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.

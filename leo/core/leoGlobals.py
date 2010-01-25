@@ -2994,13 +2994,12 @@ def readlineForceUnixNewline(f):
     return s
 #@-node:ekr.20031218072017.3120:g.readlineForceUnixNewline
 #@+node:ekr.20100125073206.8710:g.readFileIntoString (Leo 4.7)
-def readFileIntoString (fn,encoding='utf-8',kind=None,mode='rb'):
+def readFileIntoString (fn,encoding='utf-8',kind=None,mode='rb',raw=False):
 
-    '''Return the contents of the file whose full path is fn,
-    converted to unicode.
+    '''Return the contents of the file whose full path is fn.
 
     Return (s,e)
-    s is the string, or None if there was an error.
+    s is the string, converted to unicode, or None if there was an error.
     e the encoding line for Python files: it is usually None.
     '''
 
@@ -3009,13 +3008,16 @@ def readFileIntoString (fn,encoding='utf-8',kind=None,mode='rb'):
         f = open(fn,mode)
         s = f.read()
         f.close()
-        # Python's encoding comments override everything else.
-        if s:
-            junk,ext = g.os_path_splitext(fn)
-            if ext == '.py':
-                e = g.getPythonEncodingFromString(s)
-        s = g.toUnicode(s,encoding=e or encoding)
-        return s,e
+        if raw:
+            return s,None
+        else:
+            # Python's encoding comments override everything else.
+            if s:
+                junk,ext = g.os_path_splitext(fn)
+                if ext == '.py':
+                    e = g.getPythonEncodingFromString(s)
+            s = g.toUnicode(s,encoding=e or encoding)
+            return s,e
     except IOError:
         # Translate 'can not open' and kind, but not fn.
         if kind:
