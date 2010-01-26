@@ -15,39 +15,18 @@
 #@-node:ekr.20100124141558.6196:Update docs re @file and @noref
 #@+node:ekr.20100125190708.6258:Better screen shots
 #@-node:ekr.20100125190708.6258:Better screen shots
-#@+node:ekr.20100124142131.6222:Can we preserve expansion state of present node on startup?
-#@-node:ekr.20100124142131.6222:Can we preserve expansion state of present node on startup?
-#@+node:ekr.20100125073206.6233:Investigate Kent's @auto problem
-@nocolor-node
-
-I'm not sure if this is a bug or not.
-
-If I create an
-@auto <file>
-node and 2 levels of subnodes
-
-@auto /tmp/foo.py
- \
- class foo:
-    ...
-  \
-   def __init__(self):
-      ....
-
-Leo won't save /tmp/foo.py unless I add an
-@others directive to the @auto
-
-@other is required for Leo to provide indentation in foo.py
-
-Is this expected?
-#@nonl
-#@-node:ekr.20100125073206.6233:Investigate Kent's @auto problem
 #@+node:ekr.20100122104234.6167:cache current position
 @nocolor-node
 
 - Don't write it to the .leo file.
 #@nonl
 #@-node:ekr.20100122104234.6167:cache current position
+#@+node:ekr.20100124142131.6222:Can we preserve expansion state of present node on startup?
+#@-node:ekr.20100124142131.6222:Can we preserve expansion state of present node on startup?
+#@+node:ekr.20100123044506.7116:Fix path-changed message
+#@-node:ekr.20100123044506.7116:Fix path-changed message
+#@-node:ekr.20091005145253.6059:Before b2
+#@+node:ekr.20100126110826.6253:before rc1
 #@+node:ekr.20100111094359.6208:Simplify goto-line and fix bugs
 #@+node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 def goToLineNumber (self,n,p=None,scriptData=None):
@@ -682,8 +661,6 @@ write code should not use any @path declarations found in its body
 text.
 #@nonl
 #@-node:ekr.20081204091750.4:Fix inconsistency in how @path works
-#@+node:ekr.20100123044506.7116:Fix path-changed message
-#@-node:ekr.20100123044506.7116:Fix path-changed message
 #@+node:ekr.20100113075303.6270:Easiest vim problems
 #@+node:ekr.20100112051224.6229:(vim) Binding Arrow keys (fixed?)
 Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
@@ -777,7 +754,7 @@ http://www.fileformat.info/info/unicode/char/2026/index.htm
 #@nonl
 #@-node:ekr.20080509065556.2:Fix mod_tempfname plugin
 #@-node:ekr.20100119145629.6105:later...
-#@-node:ekr.20091005145253.6059:Before b2
+#@-node:ekr.20100126110826.6253:before rc1
 #@-node:ekr.20071211093011:4.7 One-node world, Leo3K
 #@+node:ekr.20100109214940.6225:4.8 Autocompletion, vim
 #@+node:ekr.20100119145629.6104:First
