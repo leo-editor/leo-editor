@@ -814,6 +814,18 @@
 </v>
 </v>
 </v>
+<v t="ekr.20050208051418"><vh>Unicode tests</vh>
+<v t="ekr.20050206201145"><vh>@test % operator with unicode</vh></v>
+<v t="ekr.20050208051854"><vh>@test atFile.printError</vh></v>
+<v t="ekr.20050208051418.1"><vh>@test can't open message in g.openWithFileName</vh></v>
+<v t="ekr.20050208111037"><vh>@test failure to convert unicode characters to ascii</vh></v>
+<v t="ekr.20071113143844.6"><vh>@test failure with ascii encodings</vh></v>
+<v t="ekr.20100125145638.5119"><vh>@test g._contentHashFile</vh></v>
+<v t="ekr.20071113145804.23"><vh>@test g.reportBadChars</vh></v>
+<v t="ekr.20050208104202"><vh>@test of round-tripping toUnicode &amp; toEncodedString</vh></v>
+<v t="ekr.20050206090416"><vh>@test open non-existent non-ascii directory</vh></v>
+<v t="ekr.20071113145804.24"><vh>@test round trip toUnicode toEncodedString</vh></v>
+</v>
 <v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
@@ -2000,17 +2012,6 @@
 <v t="ekr.20090529141856.4793"><vh>@@test test imports for modes</vh></v>
 </v>
 <v t="ekr.20071113194033.3"><vh>leoGlobals</vh>
-<v t="ekr.20050208051418"><vh> Unicode tests</vh>
-<v t="ekr.20050206201145"><vh>@test % operator with unicode</vh></v>
-<v t="ekr.20050208051854"><vh>@test atFile.printError</vh></v>
-<v t="ekr.20050208051418.1"><vh>@test can't open message in g.openWithFileName</vh></v>
-<v t="ekr.20050208111037"><vh>@test failure to convert unicode characters to ascii</vh></v>
-<v t="ekr.20071113143844.6"><vh>@test failure with ascii encodings</vh></v>
-<v t="ekr.20100125145638.5119"><vh>@test g._contentHashFile</vh></v>
-<v t="ekr.20050208104202"><vh>@test of round-tripping toUnicode &amp; toEncodedString</vh></v>
-<v t="ekr.20050206090416"><vh>@test open non-existent non-ascii directory</vh></v>
-<v t="ekr.20071113145804.24"><vh>@test round trip toUnicode toEncodedString</vh></v>
-</v>
 <v t="ekr.20071113143844.9"><vh>@test CheckVersionToInt</vh></v>
 <v t="ekr.20040917062206"><vh>@test g.cantImport returns None</vh></v>
 <v t="ekr.20060921115303"><vh>@test g.checkVersion</vh></v>
@@ -2025,7 +2026,6 @@
 <v t="ekr.20061104172236.11"><vh>@test g.getWord</vh></v>
 <v t="ekr.20071113145804.19"><vh>@test g.pdb</vh></v>
 <v t="ekr.20071113145804.29"><vh>@test g.removeExtraLws</vh></v>
-<v t="ekr.20071113145804.23"><vh>@test g.reportBadChars</vh></v>
 <v t="ekr.20061104172236.15"><vh>@test g.skip_line</vh></v>
 <v t="ekr.20061104172236.16"><vh>@test g.skip_to_end_of_line</vh></v>
 <v t="ekr.20061104172236.17"><vh>@test g.skip_to_start_of_line</vh></v>
@@ -4046,7 +4046,12 @@ assert c.page_width == 80</t>
 assert w == 132</t>
 <t tx="ekr.20050206090416">@first # -*- coding: utf-8 -*-
 
-theFile = g.ue('Ỗ','utf-8')
+if g.isPython3:
+    # Do not call g.ue: it will crash.
+    theFile = 'Ỗ'
+else:
+    theFile = g.ue('Ỗ','utf-8')
+
 path = g.os_path_join('Ỗ','Ỗ')
 # print(g.toEncodedString(theFile,'utf-8'))
 
@@ -4070,7 +4075,11 @@ assert(not ok)</t>
 at = c.atFileCommands
 at.errors = 0
 
-s = g.ue('La Peña','utf-8')
+if g.isPython3:
+    # Do not call g.ue: it will crash.
+    s = 'La Peña'
+else:
+    s = g.ue('La Peña','utf-8')
 
 at.printError('test of at.printError:',s)
 
@@ -4121,11 +4130,17 @@ if not g.isPython3: # Does not work with Python 3.x
             assert s3 == s, 'Round-trip two fails for %s' %s</t>
 <t tx="ekr.20050208111037">@first # -*- coding: utf-8 -*-
 
-if not g.isPython3: # Does not work with Python 3.x
+encoding = 'ascii'
 
-    encoding = 'ascii'
+if g.isPython3:
+    s = '炰' # This is already unicode.
+    s2,ok = g.toUnicodeWithErrorCode(s,encoding)
+    assert ok, 'toUnicodeWithErrorCode returns False for %s with ascii encoding' % s
     
-    s = '炰'
+    s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
+    assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
+else:
+    s = '炰' # An encoded string.
     s2,ok = g.toUnicodeWithErrorCode(s,encoding)
     assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
     
@@ -14034,7 +14049,7 @@ b</t>
 <t tx="ekr.20070315065849.3">a
 
 b</t>
-<t tx="ekr.20070417092935" str_leo_pos="5"></t>
+<t tx="ekr.20070417092935" str_leo_pos="7"></t>
 <t tx="ekr.20070417092935.1"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070515150433"></t>
@@ -15625,10 +15640,16 @@ if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
 </t>
 <t tx="ekr.20071113143844.6">@first # -*- coding: utf-8 -*-
 
-if not g.isPython3: # Does not work with Python 3.x
+encoding = 'ascii'
 
-    encoding = 'ascii'
+if g.isPython3:
+    s = '炰'
+    s2,ok = g.toUnicodeWithErrorCode(s,encoding)
+    assert ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
     
+    s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
+    assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
+else:
     s = '炰'
     s2,ok = g.toUnicodeWithErrorCode(s,encoding)
     assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
@@ -15720,18 +15741,25 @@ if 0: # Not usually enabled.
 </t>
 <t tx="ekr.20071113145804.23">@first # -*- coding: utf-8 -*-
 
-for s,encoding in (
-    ('aĂbĂ',                    'ascii'),
-    (g.ue('aĂbĂ','utf-8'),      'ascii'),
-    ('炰',                       'ascii'),
-    (g.ue('炰','utf-8'),         'ascii'),
-
-    ('aĂbĂ',                    'utf-8'),
-    (g.ue('aĂbĂ','utf-8'),       'utf-8'),
-    ('炰',                       'utf-8'),
-    (g.ue('炰','utf-8'),         'utf-8'),
-):
-
+if g.isPython3:
+    table = (
+        ('aĂbĂ',    'ascii'),
+        ('炰',               'ascii'),
+        ('aĂbĂ',            'utf-8'),
+        ('炰',               'utf-8'),
+    ) 
+else:
+    table = (
+        ('aĂbĂ',                    'ascii'),
+        (g.ue('aĂbĂ','utf-8'),      'ascii'),
+        ('炰',                       'ascii'),
+        (g.ue('炰','utf-8'),         'ascii'),
+        ('aĂbĂ',                     'utf-8'),
+        (g.ue('aĂbĂ','utf-8'),       'utf-8'),
+        ('炰',                       'utf-8'),
+        (g.ue('炰','utf-8'),         'utf-8'),
+    )
+for s,encoding in table:
     g.reportBadChars(s,encoding)
 </t>
 <t tx="ekr.20071113145804.24">@first # -*- coding: utf-8 -*-
@@ -21990,17 +22018,10 @@ print s ; g.es(s)</t>
 
 at = c.atFileCommands
 
-if 1:
-    # The correct arguments to _contentHashFile are encoded strings.
-    h = 'La Peña'
-    s = 'La Peña'
-    val = at._contentHashFile(h,s)
-else:
-    # This fails if there is no call to
-    # sys.setdefaultencoding('utf-8') in sitecustomize.py
-    h = g.ue('La Peña','utf-8')
-    s = g.ue('La Peña','utf-8')
-    val = at._contentHashFile(h,s)
+# The correct arguments to _contentHashFile are encoded strings.
+h = 'La Peña'
+content = g.toEncodedString('La Peña','utf-8')
+val = at._contentHashFile(h,content)
 </t>
 <t tx="ekr.20100125180231.5120">@first # -*- coding: utf-8 -*-
 

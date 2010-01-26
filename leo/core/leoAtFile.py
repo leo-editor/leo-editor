@@ -603,27 +603,21 @@ class atFile:
     #@+node:ville.20090606150238.6351:_contentHashFile (atFile)
     def _contentHashFile(self,s,content):
 
-        '''Compute the has of s (usually a headline) and content.'''
+        '''Compute the hash of s (usually a headline) and content.
+        s may be unicode, content must be bytes (or plain string in Python 2.x'''
 
-        # We add s (usually the headline) to the hash,
-        # to distinguish @auto foo.py from @thin foo.py
-
-        c = self.c
         m = hashlib.md5()
-        if g.isPython3:
-            m.update(g.toEncodedString(s,encoding='utf-8'))
-            m.update(g.toEncodedString(content,encoding='utf-8'))
-        else:
-            if g.isUnicode(s):
-                s = g.toEncodedString(s,encoding='utf-8')
-            if g.isUnicode(content):
-                content = g.toEncodedString(content,encoding='utf-8')
-            m.update(s)
-            m.update(content)
+
+        if g.isUnicode(s):
+            s = g.toEncodedString(s,encoding='utf-8')
+
+        if g.isUnicode(content):
+            g.internalError('content arg must be str/bytes')
+            content = g.toEncodedString(content,encoding='utf-8')
+
+        m.update(s)
+        m.update(content)
         return "fcache/" + m.hexdigest()
-
-
-
 
     #@-node:ville.20090606150238.6351:_contentHashFile (atFile)
     #@+node:ekr.20041005105605.26:readAll (atFile)
@@ -4221,20 +4215,14 @@ class atFile:
 
     def outputStringWithLineEndings (self,s):
         at = self
-        # Calling self.onl() runs afoul of queued newlines.
 
-        if 1: # g.u(s) == s when isPython3.
-            if g.isPython3:
-                s = g.ue(s,at.encoding)
-            s = s.replace('\n',at.output_newline)
-            self.os(s)
-        else:
-            if g.isPython3:
-                s = g.ue(s,at.encoding)
-                s = s.replace(g.u('\n'),g.u(at.output_newline))
-            else:
-                s = s.replace('\n',at.output_newline)
-            self.os(s)
+        # Calling self.onl() runs afoul of queued newlines.
+        if g.isPython3:
+            s = g.ue(s,at.encoding)
+
+        s = s.replace('\n',at.output_newline)
+        self.os(s)
+
     #@-node:ekr.20041005105605.205:outputStringWithLineEndings
     #@+node:ekr.20050506090446.1:putAtFirstLines
     def putAtFirstLines (self,s):

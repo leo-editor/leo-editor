@@ -3848,6 +3848,15 @@ if g.unitTesting:
         g.es_trace('\ntest of es_trace: Ă',color='red')
 #@-node:ekr.20090517020744.5875:@test g.es_trace
 #@-node:ekr.20050707065530:g.es_trace & test
+#@+node:ekr.20100126062623.6240:g.internalError
+def internalError (*args):
+
+    callers = g.callers(5).split(',')
+    caller = callers[-1]
+    g.es_print('Internal Leo error in',caller,color='red')
+    g.es_print(*args)
+    g.es_print('Called from',','.join(callers[:-1]))
+#@-node:ekr.20100126062623.6240:g.internalError
 #@+node:ekr.20090128083459.82:g.posList
 class posList(list):
     #@    << docstring for posList >>
@@ -5400,6 +5409,10 @@ def getPythonEncodingFromString(s):
     n1,n2 = len(tag),len(tag2)
 
     if s:
+        # For Python 3.x we must convert to unicode before calling startswith.
+        # The encoding doesn't matter: we only look at the first line, and if
+        # the first line is an encoding line, it will contain only ascii characters.
+        s = g.toUnicode(s,encoding='ascii',reportErrors=False)
         lines = g.splitLines(s)
         line1 = lines[0].strip()
         if line1.startswith(tag) and line1.endswith(tag2):

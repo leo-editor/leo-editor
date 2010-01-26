@@ -339,7 +339,9 @@ if sys.platform != 'cli':
             d = {}
 
             if g.enableDB and c.db and c.mFileName:
-                key = c.atFileCommands._contentHashFile(c.mFileName,'globals')
+                globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+                globals_tag = g.toEncodedString(globals_tag,'ascii')
+                key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
                 data = c.db.get('window_position_%s' % (key))
                 if data:
                     top,left,height,width = data
@@ -378,7 +380,9 @@ if sys.platform != 'cli':
             if trace: g.trace(len(list(c.db.keys())),c.mFileName)
 
             if g.enableDB and c.db and c.mFileName:
-                key = c.atFileCommands._contentHashFile(c.mFileName,'globals')
+                globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+                globals_tag = g.toEncodedString(globals_tag,'ascii')
+                key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
                 c.frame.ratio = float(c.db.get(
                     'body_outline_ratio_%s' % (key),'0.5'))
                 c.frame.secondary_ratio = float(c.db.get(
@@ -1850,7 +1854,9 @@ class baseFileCommands:
         use_db = g.enableDB and c.db and c.mFileName
 
         if use_db:
-            key = c.atFileCommands._contentHashFile(c.mFileName,'globals')
+            globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+            globals_tag = g.toEncodedString(globals_tag,'ascii')
+            key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
             if trace: g.trace(len(list(c.db.keys())),c.mFileName,key)
             #@        << put all data to c.db >>
             #@+node:ekr.20100112095623.6267:<< put all data to c.db >>

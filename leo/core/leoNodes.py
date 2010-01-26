@@ -324,8 +324,7 @@ class vnode (baseVnode):
         if g.isUnicode(self._bodyString):
             return self._bodyString
         else:
-            s = "v.bodyString: Leo internal error: not unicode:" + repr(self._bodyString)
-            g.es_print('',s,color="red")
+            g.internalError('not unicode:',repr(self._bodyString))
             return g.toUnicode(self._bodyString)
 
     getBody = bodyString
@@ -397,8 +396,7 @@ class vnode (baseVnode):
 
         # This message should never be printed and we want to avoid crashing here!
         if not g.isUnicode(self._headString):
-            s = "Leo internal error: not unicode:" + repr(self._headString)
-            g.es_print('',s,color="red")
+            g.internalError('not unicode',repr(self._headString))
 
         # Make _sure_ we return a unicode string.
         return g.toUnicode(self._headString)

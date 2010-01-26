@@ -6332,6 +6332,10 @@ def getPythonEncodingFromString(s):
     n1,n2 = len(tag),len(tag2)
 
     if s:
+        # For Python 3.x we must convert to unicode before calling startswith.
+        # The encoding doesn't matter: we only look at the first line, and if
+        # the first line is an encoding line, it will contain only ascii characters.
+        s = g.toUnicode(s,encoding='ascii',reportErrors=False)
         lines = g.splitLines(s)
         line1 = lines[0].strip()
         if line1.startswith(tag) and line1.endswith(tag2):
@@ -6561,30 +6565,53 @@ def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
 #@+node:ville.20090606150238.6351:_contentHashFile (atFile)
 def _contentHashFile(self,s,content):
 
-    '''Compute the has of s (usually a headline) and content.'''
+    '''Compute the hash of s (usually a headline) and content.
+    s may be unicode, content must be bytes (or plain string in Python 2.x'''
 
-    # We add s (usually the headline) to the hash,
-    # to distinguish @auto foo.py from @thin foo.py
-
-    c = self.c
     m = hashlib.md5()
-    if g.isPython3:
-        m.update(g.toEncodedString(s,encoding='utf-8'))
-        m.update(g.toEncodedString(content,encoding='utf-8'))
-    else:
-        if g.isUnicode(s):
-            s = g.toEncodedString(s,encoding='utf-8')
-        if g.isUnicode(content):
-            content = g.toEncodedString(content,encoding='utf-8')
-        m.update(s)
-        m.update(content)
+
+    if g.isUnicode(s):
+        s = g.toEncodedString(s,encoding='utf-8')
+
+    if g.isUnicode(content):
+        g.internalError('content arg must be str/bytes')
+        content = g.toEncodedString(content,encoding='utf-8')
+
+    m.update(s)
+    m.update(content)
     return "fcache/" + m.hexdigest()
-
-
-
 
 #@-node:ville.20090606150238.6351:_contentHashFile (atFile)
 #@-node:ekr.20100125143136.6235:Fixed unicode failures without sys.setdefaultencoding('utf-8')
+#@+node:ekr.20100125190708.6259:Fixed Leo3k problem with g.getPythonEncodingFromString
+- g.getPythonEncodingFromString fails with Python 3.x on both Windows and ubuntu.
+#@nonl
+#@+node:ekr.20100125073206.8709:g.getPythonEncodingFromString
+def getPythonEncodingFromString(s):
+
+    '''Return the encoding given by Python's encoding line.
+    s is the entire file.
+    '''
+
+    encoding = None
+    tag,tag2 = '# -*- coding:','-*-'
+    n1,n2 = len(tag),len(tag2)
+
+    if s:
+        # For Python 3.x we must convert to unicode before calling startswith.
+        # The encoding doesn't matter: we only look at the first line, and if
+        # the first line is an encoding line, it will contain only ascii characters.
+        s = g.toUnicode(s,encoding='ascii',reportErrors=False)
+        lines = g.splitLines(s)
+        line1 = lines[0].strip()
+        if line1.startswith(tag) and line1.endswith(tag2):
+            e = line1[n1:-n2].strip()
+            if e and g.isValidEncoding(e):
+                encoding = e
+
+    return encoding
+#@-node:ekr.20100125073206.8709:g.getPythonEncodingFromString
+#@-node:ekr.20100125190708.6259:Fixed Leo3k problem with g.getPythonEncodingFromString
 #@-node:ekr.20100118163110.6256:Leo 4.7 b2 projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt

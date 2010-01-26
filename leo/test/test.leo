@@ -470,6 +470,7 @@
 <v t="ekr.20100122125233.2053"><vh>@test zcpspm</vh></v>
 <v t="ekr.20100125055502.2059"><vh>@edit rhythmbox.desktop</vh></v>
 <v t="ekr.20100125064546.2062"><vh>@edit unicode-test.txt.desktop</vh></v>
+<v t="ekr.20100126093214.2064"><vh>test internal error</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -890,7 +891,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="14"></t>
+<t tx="ekr.20070416075121" str_leo_pos="15"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5147,6 +5148,11 @@ try:
    c.pasteOutline()
 finally:
    c.redraw_now()
+</t>
+<t tx="ekr.20100126093214.2064">def xyzzy():
+    g.internalError('oops','abc')
+
+xyzzy()
 </t>
 </tnodes>
 </leo_file>
