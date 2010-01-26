@@ -362,6 +362,7 @@ def doPostPluginsInit(args,fileName,relativeFileName,script,versionFlag):
     # Do the final inits.
     finishInitApp(c)
     p = c.p
+
     g.app.initComplete = True
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
     if c.config.getBool('allow_idle_time_hook'):

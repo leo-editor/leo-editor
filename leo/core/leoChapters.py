@@ -63,12 +63,9 @@ class chapterController:
                     else:
                         cc.chaptersDict[tabName] = chapter(c=c,chapterController=cc,name=tabName,root=p)
 
-        p = c.p
-
         # Always select the main chapter.
         # It can be alarming to open a small chapter in a large .leo file.
         cc.selectChapterByName('main')
-    #@nonl
     #@-node:ekr.20070325104904:cc.finishCreate
     #@-node:ekr.20070530075604:Birth
     #@+node:ekr.20070317085437.30:Commands (chapters)
@@ -451,8 +448,6 @@ class chapterController:
 
         cc = self ; c = cc.c
 
-        # g.trace(g.callers(5))
-
         chapter = cc.chaptersDict.get(name)
 
         if chapter:
@@ -479,7 +474,7 @@ class chapterController:
             # New in Leo 4.6 b2: clean up, but not initially.
             if collapse and chapter.name == 'main':
                 for p in c.all_unique_positions():
-                    if p != c.p:
+                    if p.v != c.p.v:
                         p.contract()
 
             # New in Leo 4.6 b2: *do* call c.redraw.
