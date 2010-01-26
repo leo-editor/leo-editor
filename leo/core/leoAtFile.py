@@ -614,6 +614,10 @@ class atFile:
             m.update(g.toEncodedString(s,encoding='utf-8'))
             m.update(g.toEncodedString(content,encoding='utf-8'))
         else:
+            if g.isUnicode(s):
+                s = g.toEncodedString(s,encoding='utf-8')
+            if g.isUnicode(content):
+                content = g.toEncodedString(content,encoding='utf-8')
             m.update(s)
             m.update(content)
         return "fcache/" + m.hexdigest()

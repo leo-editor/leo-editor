@@ -5542,7 +5542,6 @@ if g.unitTesting:
         g.reportBadChars(s,encoding)
 #@-node:ekr.20090517020744.5882:@test g.reportBadChars
 #@-node:ekr.20031218072017.1501:g.reportBadChars & test
-#@+node:ekr.20031218072017.1502:g.toUnicode & toEncodedString (and tests)
 #@+node:ekr.20050208093800:g.toEncodedString
 def toEncodedString (s,encoding,reportErrors=False):
 
@@ -5554,20 +5553,6 @@ def toEncodedString (s,encoding,reportErrors=False):
             s = s.encode(encoding,"replace")
     return s
 #@-node:ekr.20050208093800:g.toEncodedString
-#@+node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
-def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
-
-    ok = True
-
-    if g.isUnicode(s):
-        try:
-            s = s.encode(encoding,"strict")
-        except UnicodeError:
-            if reportErrors: g.reportBadChars(s,encoding)
-            s = s.encode(encoding,"replace")
-            ok = False
-    return s, ok
-#@-node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
 #@+node:ekr.20050208093800.1:g.toUnicode
 def toUnicode (s,encoding=None,reportErrors=False):
 
@@ -5608,6 +5593,20 @@ else:
     def ue(s,encoding):
         return unicode(s,encoding)
 #@-node:ekr.20091206161352.6232:g.u & g.ue
+#@+node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
+def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
+
+    ok = True
+
+    if g.isUnicode(s):
+        try:
+            s = s.encode(encoding,"strict")
+        except Exception:
+            if reportErrors: g.reportBadChars(s,encoding)
+            s = s.encode(encoding,"replace")
+            ok = False
+    return s, ok
+#@-node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
 #@+node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
 def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
 
@@ -5619,14 +5618,13 @@ def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
     if not g.isUnicode(s):
         try:
             s = f(s,encoding,'strict')
-        except (UnicodeError,ValueError):
+        except Exception:
             if reportErrors:
                 g.reportBadChars(s,encoding)
             s = f(s,encoding,'replace')
             ok = False
     return s,ok
 #@-node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
-#@-node:ekr.20031218072017.1502:g.toUnicode & toEncodedString (and tests)
 #@-node:ekr.20031218072017.1498:Unicode utils...
 #@+node:ekr.20070524083513:Unit testing (leoGlobals.py)
 #@+node:ekr.20070619173330:g.getTestVars

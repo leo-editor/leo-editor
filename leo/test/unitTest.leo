@@ -762,6 +762,7 @@
 <v t="ekr.20051104081502.109"></v>
 <v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 <v t="ekr.20040712101813"><vh>@@test checkAllPythonCode</vh></v>
+<v t="ekr.20100125180231.5120"><vh>Print a unicode character</vh></v>
 </v>
 <v t="ekr.20040712101754.2"><vh>Load tests for .leo files</vh>
 <v t="ekr.20040712101754.3"><vh>@test test.leo</vh></v>
@@ -2000,13 +2001,14 @@
 </v>
 <v t="ekr.20071113194033.3"><vh>leoGlobals</vh>
 <v t="ekr.20050208051418"><vh> Unicode tests</vh>
-<v t="ekr.20050206090416"><vh>@test open non-existent non-ascii directory</vh></v>
-<v t="ekr.20050208051418.1"><vh>@test can't open message in g.openWithFileName</vh></v>
-<v t="ekr.20050208051854"><vh>@test atFile.printError</vh></v>
 <v t="ekr.20050206201145"><vh>@test % operator with unicode</vh></v>
+<v t="ekr.20050208051854"><vh>@test atFile.printError</vh></v>
+<v t="ekr.20050208051418.1"><vh>@test can't open message in g.openWithFileName</vh></v>
 <v t="ekr.20050208111037"><vh>@test failure to convert unicode characters to ascii</vh></v>
-<v t="ekr.20050208104202"><vh>@test of round-tripping toUnicode &amp; toEncodedString</vh></v>
 <v t="ekr.20071113143844.6"><vh>@test failure with ascii encodings</vh></v>
+<v t="ekr.20100125145638.5119"><vh>@test g._contentHashFile</vh></v>
+<v t="ekr.20050208104202"><vh>@test of round-tripping toUnicode &amp; toEncodedString</vh></v>
+<v t="ekr.20050206090416"><vh>@test open non-existent non-ascii directory</vh></v>
 <v t="ekr.20071113145804.24"><vh>@test round trip toUnicode toEncodedString</vh></v>
 </v>
 <v t="ekr.20071113143844.9"><vh>@test CheckVersionToInt</vh></v>
@@ -2514,21 +2516,22 @@
 Running unit tests from test.leo is easy, provided you have enabled the
 Scripting plugin. When this plugin is enabled Leo will create a blue 'script
 button' in the icon bar called 'unit test'. 
- 
+
 - To run all unit tests, select the node in test.leo called 'Unit tests...',
 then do &lt;alt-4&gt; 
- 
+
 - To run a single test, select an @test node and do &lt;alt-4&gt;.
- 
+
 - To run a suite of tests, select an @suite node and do &lt;alt-4&gt;.
- 
+
 - To run any other collection of tests, create an outline containing those @test
 or @suite nodes, select the root of that tree and do &lt;alt-4&gt; .
 
 Several nodes in the tree @thin ../src/leoTest.py (in test.leo) contain support
 code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
-run method is the body of the @suite or @test node.</t>
+run method is the body of the @suite or @test node.
+</t>
 <t tx="ekr.20040707141957.12">import leo.core.leoTest as leoTest
 
 leoTest.runAtFileTest(c,p)</t>
@@ -4043,7 +4046,7 @@ assert c.page_width == 80</t>
 assert w == 132</t>
 <t tx="ekr.20050206090416">@first # -*- coding: utf-8 -*-
 
-theFile = g.u('Ỗ')
+theFile = g.ue('Ỗ','utf-8')
 path = g.os_path_join('Ỗ','Ỗ')
 # print(g.toEncodedString(theFile,'utf-8'))
 
@@ -4067,9 +4070,8 @@ assert(not ok)</t>
 at = c.atFileCommands
 at.errors = 0
 
-# s = g.u('La Pe\xf1a')
-s = g.u('La Peña')
-# s = g.u('Ă: U+0102: Latin Capital Letter A With Breve')
+s = g.ue('La Peña','utf-8')
+
 at.printError('test of at.printError:',s)
 
 # important: this test will fail if sitecustomize.py
@@ -4127,7 +4129,7 @@ if not g.isPython3: # Does not work with Python 3.x
     s2,ok = g.toUnicodeWithErrorCode(s,encoding)
     assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
     
-    s = g.u('炰')
+    s = g.ue('炰','utf-8') # Must use utf-8 encoding *here*
     s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
     assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s</t>
 <t tx="ekr.20050208135429"># print(g.listToString(dir()))
@@ -14032,7 +14034,7 @@ b</t>
 <t tx="ekr.20070315065849.3">a
 
 b</t>
-<t tx="ekr.20070417092935" str_leo_pos="7"></t>
+<t tx="ekr.20070417092935" str_leo_pos="5"></t>
 <t tx="ekr.20070417092935.1"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070515150433"></t>
@@ -15631,7 +15633,7 @@ if not g.isPython3: # Does not work with Python 3.x
     s2,ok = g.toUnicodeWithErrorCode(s,encoding)
     assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
     
-    s = g.u('炰')
+    s = g.ue('炰','utf-8')
     s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
     assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
 </t>
@@ -15719,15 +15721,15 @@ if 0: # Not usually enabled.
 <t tx="ekr.20071113145804.23">@first # -*- coding: utf-8 -*-
 
 for s,encoding in (
-    ('aĂbĂ',         'ascii'),
-    (g.u('aĂbĂ'),    'ascii'),
-    ('炰',           'ascii'),
-    (g.u('炰'),      'ascii'),
+    ('aĂbĂ',                    'ascii'),
+    (g.ue('aĂbĂ','utf-8'),      'ascii'),
+    ('炰',                       'ascii'),
+    (g.ue('炰','utf-8'),         'ascii'),
 
-    ('aĂbĂ',         'utf-8'),
-    (g.u('aĂbĂ'),    'utf-8'),
-    ('炰',           'utf-8'),
-    (g.u('炰'),      'utf-8'),
+    ('aĂbĂ',                    'utf-8'),
+    (g.ue('aĂbĂ','utf-8'),       'utf-8'),
+    ('炰',                       'utf-8'),
+    (g.ue('炰','utf-8'),         'utf-8'),
 ):
 
     g.reportBadChars(s,encoding)
@@ -21984,6 +21986,30 @@ for p in c.all_unique_positions():
 
 s = "%d nodes" % count
 print s ; g.es(s)</t>
+<t tx="ekr.20100125145638.5119">@first # -*- coding: utf-8 -*-
+
+at = c.atFileCommands
+
+if 1:
+    # The correct arguments to _contentHashFile are encoded strings.
+    h = 'La Peña'
+    s = 'La Peña'
+    val = at._contentHashFile(h,s)
+else:
+    # This fails if there is no call to
+    # sys.setdefaultencoding('utf-8') in sitecustomize.py
+    h = g.ue('La Peña','utf-8')
+    s = g.ue('La Peña','utf-8')
+    val = at._contentHashFile(h,s)
+</t>
+<t tx="ekr.20100125180231.5120">@first # -*- coding: utf-8 -*-
+
+s = g.ue('炰','utf-8')
+g.es(s)
+g.pr(s)
+s = '炰'
+g.pr(s)
+</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
