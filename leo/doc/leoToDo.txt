@@ -11,6 +11,12 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20091005145253.6059:Before b2
+#@+node:ekr.20100122104234.6167:cache current position
+@nocolor-node
+
+- Don't write it to the .leo file.
+#@nonl
+#@-node:ekr.20100122104234.6167:cache current position
 #@+node:ekr.20100124141558.6196:Update docs re @file and @noref
 #@-node:ekr.20100124141558.6196:Update docs re @file and @noref
 #@+node:ekr.20100125190708.6258:Better screen shots

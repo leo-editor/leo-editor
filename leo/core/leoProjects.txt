@@ -6920,6 +6920,35 @@ def writeScriptFile (self,script):
 #@nonl
 #@-node:ekr.20070115135502:writeScriptFile
 #@-node:ekr.20100126110826.6254:Removed unit test message
+#@+node:ekr.20100124142131.6222:Preserve expansion state of present node on startup
+@nocolor-node
+
+After much tracing, we see the bug was in selectChapterByNameHelper.
+We must compare the vnodes, not the positions!
+#@nonl
+#@+node:ekr.20090306060344.2:selectChapterHelper
+def selectChapterByNameHelper (self,chapter,collapse=True):
+
+    cc = self ; c = cc.c
+
+    if chapter != cc.selectedChapter:
+        if cc.selectedChapter:
+            cc.selectedChapter.unselect()
+        chapter.select()
+        c.setCurrentPosition(chapter.p)
+        cc.selectedChapter = chapter
+
+        # New in Leo 4.6 b2: clean up, but not initially.
+        if collapse and chapter.name == 'main':
+            for p in c.all_unique_positions():
+                # 2010/01/26: compare vnodes, not positions.
+                if p.v != c.p.v:
+                    p.contract()
+
+        # New in Leo 4.6 b2: *do* call c.redraw.
+        c.redraw()
+#@-node:ekr.20090306060344.2:selectChapterHelper
+#@-node:ekr.20100124142131.6222:Preserve expansion state of present node on startup
 #@-node:ekr.20100118163110.6256:Leo 4.7 b2 projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt

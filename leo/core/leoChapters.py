@@ -474,6 +474,7 @@ class chapterController:
             # New in Leo 4.6 b2: clean up, but not initially.
             if collapse and chapter.name == 'main':
                 for p in c.all_unique_positions():
+                    # 2010/01/26: compare vnodes, not positions.
                     if p.v != c.p.v:
                         p.contract()
 
