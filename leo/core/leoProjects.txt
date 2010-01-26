@@ -6204,6 +6204,387 @@ if g.unitTesting:
 #@-node:ekr.20080712150045.1:replaceFileWithString (atFile)
 #@-node:ekr.20100125073206.8720:Changed...
 #@-node:ekr.20100125073206.8711:use g.readFileIntoString
+#@+node:ekr.20100125143136.6235:Fixed unicode failures without sys.setdefaultencoding('utf-8')
+#@+node:ekr.20031218072017.1498:Unicode utils...
+#@+node:ekr.20090517020744.5859: Unicode tests
+#@+node:ekr.20090517020744.5860:@test open non-existent non-ascii directory
+@first
+
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    # file = u'Ỗ'
+    path = g.os_path_join('Ỗ','Ỗ')
+    # print(g.toEncodedString(file,'utf-8'))
+
+    ok,frame = g.openWithFileName(path,c)
+
+    assert not ok and not frame
+#@-node:ekr.20090517020744.5860:@test open non-existent non-ascii directory
+#@+node:ekr.20090517020744.5861:@test can't open message in g.openWithFileName
+@first
+
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    old_c = c
+    filename = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
+    ok,frame = g.openWithFileName(filename,old_c)
+    assert(not ok)
+#@-node:ekr.20090517020744.5861:@test can't open message in g.openWithFileName
+#@+node:ekr.20090517020744.5862:@test atFile.printError
+@first
+
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    at = c.atFileCommands
+    at.errors = 0
+    s = 'La Peña'
+    at.printError('test of at.printError:',s)
+#@-node:ekr.20090517020744.5862:@test atFile.printError
+#@+node:ekr.20090517020744.5863:@test % operator with unicode
+@first
+
+if g.unitTesting:
+
+    s = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
+
+    s2 = 'test: %s' % s
+#@-node:ekr.20090517020744.5863:@test % operator with unicode
+#@+node:ekr.20090517020744.5864:@test failure to convert unicode characters to ascii
+@first
+
+if g.unitTesting:
+
+    if not g.isPython3:
+        encoding = 'ascii'
+        s = '炰'
+        s2,ok = g.toUnicodeWithErrorCode(s,encoding)
+        assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
+#@-node:ekr.20090517020744.5864:@test failure to convert unicode characters to ascii
+#@+node:ekr.20090517020744.5865:@test of round-tripping toUnicode & toEncodedString
+@first
+
+if g.unitTesting:
+
+    if not g.isPython3:
+
+        for s,encoding in (
+            ('a',    'utf-8'),
+            ('a',    'ascii'),
+            ('äöü',  'utf-8'),
+            ('äöü',  'mbcs'),
+            ('炰',    'utf-8'),
+            ('炰',    'mbcs'),
+        ):
+            if g.isValidEncoding(encoding):
+                s2,ok = g.toUnicodeWithErrorCode(s,encoding)
+                assert ok, 'toUnicodeWithErrorCode fails for %s' %s
+                s3,ok = g.toEncodedStringWithErrorCode(s2,encoding)
+                assert ok, 'toEncodedStringWithErrorCode fails for %s' % s2
+                assert s3 == s, 'Round-trip one fails for %s' %s
+
+                s2 = g.toUnicode(s,encoding)
+                s3 = g.toEncodedString(s2,encoding)
+                assert s3 == s, 'Round-trip two fails for %s' %s
+#@-node:ekr.20090517020744.5865:@test of round-tripping toUnicode & toEncodedString
+#@+node:ekr.20090517020744.5867:@test round trip toUnicode toEncodedString
+@first
+
+if g.unitTesting:
+
+    if not g.isPython3:
+        table = [
+            ('a',    'utf-8'),
+            ('a',    'ascii'),
+            ('äöü',  'utf-8'),
+            ('äöü',  'mbcs'),
+            ('炰',   'utf-8'),
+        ]
+        import sys
+        if sys.platform.startswith('win'):
+            data = '炰','mbcs'
+            table.append(data)
+
+        for s,encoding in table:
+            if g.isValidEncoding(encoding):
+                s2,ok = g.toUnicodeWithErrorCode(s,encoding)
+                assert ok, 'toUnicodeWithErrorCode fails for %s' %s
+                s3,ok = g.toEncodedStringWithErrorCode(s2,encoding)
+                assert ok, 'toEncodedStringWithErrorCode fails for %s' % s2
+                assert s3 == s, 'Round-trip one failed for %s' %s
+
+                s2 = g.toUnicode(s,encoding)
+                s3 = g.toEncodedString(s2,encoding)
+                assert s3 == s, 'Round-trip two failed for %s' %s
+#@-node:ekr.20090517020744.5867:@test round trip toUnicode toEncodedString
+#@-node:ekr.20090517020744.5859: Unicode tests
+#@+node:ekr.20100125073206.8709:g.getPythonEncodingFromString
+def getPythonEncodingFromString(s):
+
+    '''Return the encoding given by Python's encoding line.
+    s is the entire file.
+    '''
+
+    encoding = None
+    tag,tag2 = '# -*- coding:','-*-'
+    n1,n2 = len(tag),len(tag2)
+
+    if s:
+        lines = g.splitLines(s)
+        line1 = lines[0].strip()
+        if line1.startswith(tag) and line1.endswith(tag2):
+            e = line1[n1:-n2].strip()
+            if e and g.isValidEncoding(e):
+                encoding = e
+
+    return encoding
+#@-node:ekr.20100125073206.8709:g.getPythonEncodingFromString
+#@+node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
+# The syntax of these functions must be valid on Python2K and Python3K.
+
+def isBytes(s):
+    '''Return True if s is Python3k bytes type.'''
+    if g.isPython3:
+        # Generates a pylint warning, but that can't be helped.
+        return type(s) == type(bytes('a','utf-8'))
+    else:
+        return False
+
+def isChar(s):
+    '''Return True if s is a Python2K character type.'''
+    if g.isPython3:
+        return False
+    else:
+        return type(s) == types.StringType
+
+def isString(s):
+    '''Return True if s is any string, but not bytes.'''
+    if g.isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) in types.StringTypes
+
+def isUnicode(s):
+    '''Return True if s is a unicode string.'''
+    if g.isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) == types.UnicodeType
+#@-node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
+#@+node:ekr.20031218072017.1500:g.isValidEncoding
+def isValidEncoding (encoding):
+
+    if not encoding:
+        return False
+
+    if sys.platform == 'cli':
+        return True
+
+    import codecs
+
+    try:
+        codecs.lookup(encoding)
+        return True
+    except LookupError: # Windows.
+        return False
+    except AttributeError: # Linux.
+        return False
+#@nonl
+#@-node:ekr.20031218072017.1500:g.isValidEncoding
+#@+node:ekr.20061006152327:g.isWordChar & g.isWordChar1
+def isWordChar (ch):
+
+    '''Return True if ch should be considered a letter.'''
+
+    return ch and (ch.isalnum() or ch == '_')
+
+def isWordChar1 (ch):
+
+    return ch and (ch.isalpha() or ch == '_')
+#@nonl
+#@-node:ekr.20061006152327:g.isWordChar & g.isWordChar1
+#@+node:ekr.20031218072017.1501:g.reportBadChars & test
+def reportBadChars (s,encoding):
+
+    if g.isPython3:
+        errors = 0
+        if g.isUnicode(s):
+            for ch in s:
+                try: ch.encode(encoding,"strict")
+                except UnicodeEncodeError:
+                    errors += 1
+            if errors:
+                s2 = "%d errors converting %s to %s" % (
+                    errors, s.encode(encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                if not g.unitTesting:
+                    g.es(s2,color='red')
+        elif g.isChar(s):
+            for ch in s:
+                try: unicode(ch,encoding,"strict")
+                except Exception: errors += 1
+            if errors:
+                s2 = "%d errors converting %s (%s encoding) to unicode" % (
+                    errors, unicode(s,encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                if not g.unitTesting:
+                    g.es(s2,color='red')
+    else:
+        errors = 0
+        if g.isUnicode(s):
+            for ch in s:
+                try: ch.encode(encoding,"strict")
+                except UnicodeEncodeError:
+                    errors += 1
+            if errors:
+                s2 = "%d errors converting %s to %s" % (
+                    errors, s.encode(encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                if not g.unitTesting:
+                    g.es(s2,color='red')
+        elif g.isChar(s):
+            for ch in s:
+                try: unicode(ch,encoding,"strict")
+                except Exception: errors += 1
+            if errors:
+                s2 = "%d errors converting %s (%s encoding) to unicode" % (
+                    errors, unicode(s,encoding,'replace'),
+                    encoding.encode('ascii','replace'))
+                if not g.unitTesting:
+                    g.es(s2,color='red')
+#@+node:ekr.20090517020744.5882:@test g.reportBadChars
+@first
+
+if g.unitTesting:
+
+    for s,encoding in (
+        ('aĂbĂ',  'ascii'),
+        #(u'aĂbĂ', 'ascii'),
+        ('炰',    'ascii'),
+        #(u'炰',   'ascii'),
+
+        ('aĂbĂ',  'utf-8'),
+        #(u'aĂbĂ', 'utf-8'),
+        ('炰',    'utf-8'),
+        #(u'炰',   'utf-8'),
+    ):
+
+        g.reportBadChars(s,encoding)
+#@-node:ekr.20090517020744.5882:@test g.reportBadChars
+#@-node:ekr.20031218072017.1501:g.reportBadChars & test
+#@+node:ekr.20050208093800:g.toEncodedString
+def toEncodedString (s,encoding,reportErrors=False):
+
+    if g.isUnicode(s):
+        try:
+            s = s.encode(encoding,"strict")
+        except UnicodeError:
+            if reportErrors: g.reportBadChars(s,encoding)
+            s = s.encode(encoding,"replace")
+    return s
+#@-node:ekr.20050208093800:g.toEncodedString
+#@+node:ekr.20050208093800.1:g.toUnicode
+def toUnicode (s,encoding=None,reportErrors=False):
+
+    # The encoding is usually g.app.defaultEncoding,
+    # but is may be different while importing or reading files.
+    if encoding is None:
+        encoding = g.app.defaultEncoding
+
+    if isPython3:
+        f,mustConvert = str,g.isBytes
+    else:
+        f = unicode
+        def mustConvert (s):
+            return type(s) != types.UnicodeType
+
+    if not s:
+        s = g.u('')
+    elif mustConvert(s):
+        try:
+            s = f(s,encoding,'strict')
+        except (UnicodeError,Exception):
+            s = f(s,encoding,'replace')
+            if reportErrors: g.reportBadChars(s,encoding)
+    else:
+        pass
+
+    return s
+#@-node:ekr.20050208093800.1:g.toUnicode
+#@+node:ekr.20091206161352.6232:g.u & g.ue
+if isPython3: # g.not defined yet.
+    def u(s):
+        return s
+    def ue(s,encoding):
+        return str(s,encoding)
+else:
+    def u(s):
+        return unicode(s)
+    def ue(s,encoding):
+        return unicode(s,encoding)
+#@-node:ekr.20091206161352.6232:g.u & g.ue
+#@+node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
+def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
+
+    ok = True
+
+    if g.isUnicode(s):
+        try:
+            s = s.encode(encoding,"strict")
+        except Exception:
+            if reportErrors: g.reportBadChars(s,encoding)
+            s = s.encode(encoding,"replace")
+            ok = False
+    return s, ok
+#@-node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
+#@+node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
+def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
+
+    ok = True
+    if g.isPython3: f = str
+    else: f = unicode
+    if s is None:
+        s = g.u('')
+    if not g.isUnicode(s):
+        try:
+            s = f(s,encoding,'strict')
+        except Exception:
+            if reportErrors:
+                g.reportBadChars(s,encoding)
+            s = f(s,encoding,'replace')
+            ok = False
+    return s,ok
+#@-node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
+#@-node:ekr.20031218072017.1498:Unicode utils...
+#@+node:ville.20090606150238.6351:_contentHashFile (atFile)
+def _contentHashFile(self,s,content):
+
+    '''Compute the has of s (usually a headline) and content.'''
+
+    # We add s (usually the headline) to the hash,
+    # to distinguish @auto foo.py from @thin foo.py
+
+    c = self.c
+    m = hashlib.md5()
+    if g.isPython3:
+        m.update(g.toEncodedString(s,encoding='utf-8'))
+        m.update(g.toEncodedString(content,encoding='utf-8'))
+    else:
+        if g.isUnicode(s):
+            s = g.toEncodedString(s,encoding='utf-8')
+        if g.isUnicode(content):
+            content = g.toEncodedString(content,encoding='utf-8')
+        m.update(s)
+        m.update(content)
+    return "fcache/" + m.hexdigest()
+
+
+
+
+#@-node:ville.20090606150238.6351:_contentHashFile (atFile)
+#@-node:ekr.20100125143136.6235:Fixed unicode failures without sys.setdefaultencoding('utf-8')
 #@-node:ekr.20100118163110.6256:Leo 4.7 b2 projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt
