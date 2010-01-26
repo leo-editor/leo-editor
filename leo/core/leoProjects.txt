@@ -6875,6 +6875,51 @@ self.put("/>") ; self.put_nl()
 #@-node:ekr.20031218072017.3037:putGlobals
 #@-node:ekr.20100126062623.6239:Found: _contentHashFile
 #@-node:ekr.20100126062623.6237:Ensure the contents arg to _contentHashFile is bytes
+#@+node:ekr.20100126110826.6254:Removed unit test message
+Check your configuration of script_file_path.
+#@nonl
+#@+node:ekr.20070115135502:writeScriptFile
+def writeScriptFile (self,script):
+
+    # Get the path to the file.
+    c = self
+    path = c.config.getString('script_file_path')
+    if path:
+        isAbsPath = os.path.isabs(path)
+        driveSpec, path = os.path.splitdrive(path)
+        parts = path.split('/')
+        # xxx bad idea, loadDir is often read only!
+        path = g.app.loadDir
+        if isAbsPath:
+            # make the first element absolute
+            parts[0] = driveSpec + os.sep + parts[0]
+        allParts = [path] + parts
+        path = c.os_path_finalize_join(*allParts)
+    else:
+        path = c.os_path_finalize_join(
+            g.app.homeLeoDir,'scriptFile.py')                    
+
+    # Write the file.
+    try:
+        if g.isPython3:
+            # Use the default encoding.
+            # script = g.toUnicode(script,'utf-8'reportErrors=False)
+            f = open(path,encoding='utf-8',mode='w')
+        else:
+            f = open(path,'w')
+        f.write(script)
+        f.close()
+    except Exception:
+        g.es_exception()
+        g.es("Failed to write script to %s" % path)
+        # g.es("Check your configuration of script_file_path, currently %s" %
+            # c.config.getString('script_file_path'))
+        path = None
+
+    return path
+#@nonl
+#@-node:ekr.20070115135502:writeScriptFile
+#@-node:ekr.20100126110826.6254:Removed unit test message
 #@-node:ekr.20100118163110.6256:Leo 4.7 b2 projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt

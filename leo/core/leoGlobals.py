@@ -6749,7 +6749,6 @@ def adjustTripleString (s,tab_width):
     '''
 
     # Compute the minimum leading whitespace of all non-blank lines.
-    trace = True and not g.unitTesting
     lines = g.splitLines(s)
     w = 0 ; val = -1
     for line in lines:

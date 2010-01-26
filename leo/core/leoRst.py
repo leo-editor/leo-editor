@@ -903,7 +903,7 @@ class rstCommands:
 
         '''Send s to docutils using the writer implied by self.ext and return the result.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         openDirectory = self.c.frame.openDirectory
         overrides = {'output_encoding': self.encoding }
 

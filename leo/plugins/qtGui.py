@@ -965,7 +965,10 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         w = self.widget
         tc = w.textCursor()
         i,j = tc.selectionStart(),tc.selectionEnd()
-        # g.trace(i,j,g.callers(4))
+        # s = tc.selectedText()
+        # if s: n = len(s)
+        # else: n = 0
+        # g.trace(i,j,n)
         return i,j
     #@nonl
     #@-node:ekr.20081121105001.582:getSelectionRange

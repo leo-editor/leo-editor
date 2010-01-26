@@ -2471,7 +2471,7 @@ class position (object):
 
         '''Return done, return-val'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = p.v.context
 
         if limit:

@@ -2116,12 +2116,19 @@ class baseCommands (object):
 
         # Write the file.
         try:
-            f = open(path,'w')
+            if g.isPython3:
+                # Use the default encoding.
+                # script = g.toUnicode(script,'utf-8'reportErrors=False)
+                f = open(path,encoding='utf-8',mode='w')
+            else:
+                f = open(path,'w')
             f.write(script)
             f.close()
         except Exception:
+            g.es_exception()
             g.es("Failed to write script to %s" % path)
-            g.es("Check your configuration of script_file_path, currently %s" % c.config.getString('script_file_path'))
+            # g.es("Check your configuration of script_file_path, currently %s" %
+                # c.config.getString('script_file_path'))
             path = None
 
         return path

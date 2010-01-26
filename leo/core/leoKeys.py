@@ -2597,7 +2597,7 @@ class keyHandlerClass:
         k = self ; c = k.c
         w = event and event.widget
         name = c.widget_name(w)
-        trace = False
+        trace = False and not g.unitTesting
 
         if trace: g.trace('widget_name',name,'stroke',stroke)
 
@@ -2698,7 +2698,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.112:callAltXFunction
     def callAltXFunction (self,event):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         k = self ; c = k.c ; s = k.getLabel()
         k.mb_tabList = []
         commandName = s[len(k.mb_prefix):].strip()
@@ -3346,7 +3346,7 @@ class keyHandlerClass:
         #@nl
         trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
         traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
-        verbose = True
+        verbose = False
 
         if keysym in special_keys:
             if trace and verbose: g.trace('keysym',keysym)

@@ -458,19 +458,13 @@
 <v t="ekr.20100110172917.1961"><vh>section 1: Ę</vh></v>
 </v>
 </v>
+<v t="ekr.20100119095726.2043"><vh>rest colorizing</vh></v>
 </v>
 <v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
 <v t="ekr.20100118190902.2002"><vh>@auto C:\Python26\Lib\site-packages\pylint-0.19.0-py2.6.egg\pylint\lint.py</vh></v>
-<v t="ekr.20100118191455.2039"><vh>ed C:\Python26\Lib\site-packages\pylint-0.19.0-py2.6.egg\pylint\lint.py</vh></v>
-<v t="ekr.20100119095726.2043"><vh>rest colorizing</vh></v>
-<v t="ekr.20100119151232.2047"><vh>@@thin undefined-section-test</vh></v>
-<v t="ekr.20100122170405.2055"><vh>@thin @all-test.txt</vh></v>
-<v t="ekr.20100121091254.2051"><vh>g.u test</vh></v>
-<v t="ekr.20100121155322.2051"><vh>@@file at-file-test.py</vh></v>
 <v t="ekr.20100122125233.2053"><vh>@test zcpspm</vh></v>
-<v t="ekr.20100125055502.2059"><vh>@edit rhythmbox.desktop</vh></v>
 <v t="ekr.20100125064546.2062"><vh>@edit unicode-test.txt.desktop</vh></v>
-<v t="ekr.20100126093214.2064"><vh>test internal error</vh></v>
+<v t="ekr.20100126111634.2065"><vh>@thin thin-unicode-test.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -891,7 +885,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="15"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5102,7 +5096,6 @@ Use 80 for @tabwidth 8</t>
 <t tx="ekr.20100118190256.2014"></t>
 <t tx="ekr.20100118190256.2015"></t>
 <t tx="ekr.20100118190256.2016"></t>
-<t tx="ekr.20100118191455.2039"></t>
 <t tx="ekr.20100119095312.2041"># bold
 
 rest_keyword2_font_size = 14
@@ -5119,18 +5112,6 @@ rest_keyword4_font_slant = italic
     # roman, italic
 rest_keyword4_font_weight = normal
     # normal, bold</t>
-<t tx="ekr.20100119151232.2047">&lt;&lt; undefined section &gt;&gt;
-
-changed 2</t>
-<t tx="ekr.20100121091254.2051">s = 'Peña'
-s2 = g.u(s)
-s3 = g.u(s2)
-g.es_print(type(s),type(s2),type(s3))
-g.es_print(s,s2,s3)
-</t>
-<t tx="ekr.20100121155322.2051"># Will findChild4 be called?
-
-print(g.debug)</t>
 <t tx="ekr.20100122125233.2053">root = p.copy()
 while p.hasChildren():
    p.firstChild().doDelete(newNode = None)
@@ -5148,11 +5129,6 @@ try:
    c.pasteOutline()
 finally:
    c.redraw_now()
-</t>
-<t tx="ekr.20100126093214.2064">def xyzzy():
-    g.internalError('oops','abc')
-
-xyzzy()
 </t>
 </tnodes>
 </leo_file>

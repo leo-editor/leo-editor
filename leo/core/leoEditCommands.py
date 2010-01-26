@@ -2888,7 +2888,7 @@ class editCommandsClass (baseEditCommandsClass):
             w.setInsertPoint(w1)
             self.endCommand(changed=True,setLabel=True)
     #@-node:ekr.20050920084036.135:deleteSpaces
-    #@+node:ekr.20050920084036.138:insertNewLine (changed)
+    #@+node:ekr.20050920084036.138:insertNewLine
     def insertNewLine (self,event):
 
         '''Insert a newline at the cursor.'''
@@ -2913,7 +2913,7 @@ class editCommandsClass (baseEditCommandsClass):
         self.endCommand()
 
     insertNewline = insertNewLine
-    #@-node:ekr.20050920084036.138:insertNewLine (changed)
+    #@-node:ekr.20050920084036.138:insertNewLine
     #@+node:ekr.20050920084036.86:insertNewLineAndTab (changed)
     def insertNewLineAndTab (self,event):
 
@@ -2984,7 +2984,7 @@ class editCommandsClass (baseEditCommandsClass):
         This is the default binding for all keys in the body pane.'''
 
         trace = False and not g.unitTesting # or c.config.getBool('trace_masterCommand')
-        verbose = False
+        verbose = True
         w = self.editWidget(event)
         if not w: return 'break'
         #@    << set local vars >>
@@ -3115,8 +3115,10 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20051026171121:insertNewlineHelper
     def insertNewlineHelper (self,w,oldSel,undoType):
 
+        trace = False and not g.unitTesting
         c = self.c ; p = c.p
         i,j = oldSel ; ch = '\n'
+        if trace: g.trace(i,j)
 
         if i != j:
             # No auto-indent if there is selected text.
