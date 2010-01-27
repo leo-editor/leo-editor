@@ -895,8 +895,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             if i == old_i and j == old_j:
                 # Work around an apparent bug in cursor.movePosition.
                 cursor.removeSelectedText()
+                # w.setTextCursor(cursor) # Has no effect.
+            elif i == j:
+                pass
             else:
-                if trace: g.trace('*** using bugging code')
+                # g.trace('*** using dubious code')
                 cursor.setPosition(i)
                 moveCount = abs(j-i)
                 cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)

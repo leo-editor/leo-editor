@@ -18,7 +18,7 @@
 #@+node:ekr.20100127064113.6205:unit tests for recent changes
 #@-node:ekr.20100127064113.6205:unit tests for recent changes
 #@-node:ekr.20091005145253.6059:Before b2
-#@+node:ekr.20100126110826.6253:before rc1
+#@+node:ekr.20100126110826.6253:Before rc1
 #@+node:ekr.20100111094359.6208:Simplify goto-line and fix bugs
 #@+node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 def goToLineNumber (self,n,p=None,scriptData=None):
@@ -753,7 +753,7 @@ http://www.fileformat.info/info/unicode/char/2026/index.htm
 #@nonl
 #@-node:ekr.20080509065556.2:Fix mod_tempfname plugin
 #@-node:ekr.20100119145629.6105:later...
-#@-node:ekr.20100126110826.6253:before rc1
+#@-node:ekr.20100126110826.6253:Before rc1
 #@-node:ekr.20071211093011:4.7 One-node world, Leo3K
 #@+node:ekr.20100109214940.6225:4.8 Autocompletion, vim
 #@+node:ekr.20100119145629.6104:First

@@ -7440,6 +7440,462 @@ while 1:
 #@-node:ekr.20080923124254.17:<< Collect @first attributes >>
 #@-node:ekr.20080923124254.16:tangle.scanAllDirectives
 #@-node:ekr.20100127074338.6249:Fixed Tangle problem with latext files
+#@+node:ekr.20100127113901.6244:created g.scanAllAtTabWidthDirectives
+#@+node:ekr.20080827175609.39:c.scanAllDirectives
+def scanAllDirectives(self,p=None):
+
+    '''Scan p and ancestors for directives.
+
+    Returns a dict containing the results, including defaults.'''
+
+    c = self ; p = p or c.p
+
+    # Set defaults
+    language = c.target_language and c.target_language.lower()
+    lang_dict = {
+        'language':language,
+        'delims':g.set_delims_from_language(language),
+    }
+    wrap = c.config.getBool("body_pane_wraps")
+
+    table = (
+        ('encoding',    None,           g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+        ('wrap',        wrap,           g.scanAtWrapDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    # Post process: do *not* set commander ivars.
+    lang_dict = d.get('lang-dict')
+
+    return {
+        "delims"        : lang_dict.get('delims'),
+        "encoding"      : d.get('encoding'),
+        "language"      : lang_dict.get('language'),
+        "lineending"    : d.get('lineending'),
+        "pagewidth"     : d.get('pagewidth'),
+        "path"          : d.get('path') or g.getBaseDirectory(c),
+        "tabwidth"      : d.get('tabwidth'),
+        "pluginsList"   : [], # No longer used.
+        "wrap"          : d.get('wrap'),
+    }
+#@nonl
+#@-node:ekr.20080827175609.39:c.scanAllDirectives
+#@+node:ekr.20080831084419.4:g.scanAtWrapDirectives & scanAllAtWrapDirectives
+def scanAtWrapDirectives(aList,issue_error_flag=False):
+
+    '''Scan aList for @wrap and @nowrap directives.'''
+
+    for d in aList:
+        if d.get('wrap') is not None:
+            return True
+        elif d.get('nowrap') is not None:
+            return False
+
+    return None
+
+def scanAllAtWrapDirectives(c,p):
+
+    '''Scan p and all ancestors looking for @wrap/@nowrap directives.'''
+
+    if c and p:
+        default = c and c.config.getBool("body_pane_wraps")
+        aList = g.get_directives_dict_list(p)
+
+        val = g.scanAtWrapDirectives(aList)
+        ret = g.choose(val is None,default,val)
+    else:
+        ret = None
+    # g.trace(ret,p.h)
+    return ret
+#@-node:ekr.20080831084419.4:g.scanAtWrapDirectives & scanAllAtWrapDirectives
+#@+node:ekr.20080827175609.37:g.scanAtTabwidthDirectives & scanAllTabWidthDirectives
+def scanAtTabwidthDirectives(aList,issue_error_flag=False):
+
+    '''Scan aList for @tabwidth directives.'''
+
+    for d in aList:
+        s = d.get('tabwidth')
+        if s is not None:
+            junk,val = g.skip_long(s,0)
+            if val not in (None,0):
+                return val
+            else:
+                if issue_error_flag and not g.app.unitTesting:
+                    g.es("ignoring @tabwidth",s,color="red")
+    return None
+
+def scanAllAtTabWidthDirectives(c,p):
+
+    '''Scan p and all ancestors looking for @tabwidth directives.'''
+
+    if c and p:
+        aList = g.get_directives_dict_list(p)
+        val = g.scanAtTabwidthDirectives(aList)
+        ret = g.choose(val is None,c.tab_width,val)
+        # g.trace(ret,p.h)
+    else:
+        ret = None
+    return ret
+#@-node:ekr.20080827175609.37:g.scanAtTabwidthDirectives & scanAllTabWidthDirectives
+#@+node:ekr.20041126042730:getTabWidth
+def getTabWidth (self,p=None):
+
+    c = self.c
+    if 1:
+        # Faster, more self-contained.
+        val = g.scanAllAtTabWidthDirectives(c,p)
+        return val
+    else:
+        d = c.scanAllDirectives(p)
+        w = d.get("tabwidth")
+        if w not in (0,None):
+            return w
+        else:
+            return self.c.tab_width
+#@-node:ekr.20041126042730:getTabWidth
+#@-node:ekr.20100127113901.6244:created g.scanAllAtTabWidthDirectives
+#@+node:ekr.20100124142131.6223:Fixed Terry's unicode problem
+@nocolor-node
+
+Deleting a range of line containing unicode characters deletes too much.
+
+Happens on both @edit and @thin files.
+#@+node:ekr.20051125080855:selfInsertCommand, helpers
+def selfInsertCommand(self,event,action='insert'):
+
+    '''Insert a character in the body pane.
+    This is the default binding for all keys in the body pane.'''
+
+    trace = False and not g.unitTesting # or c.config.getBool('trace_masterCommand')
+    verbose = True
+    w = self.editWidget(event)
+    if not w: return 'break'
+    << set local vars >>
+    if trace: g.trace('ch',repr(ch),'keysym',repr(keysym)) # ,'stroke',repr(stroke))
+    if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
+        return "break" # The hook claims to have handled the event.
+    if ch == '\t':
+        self.updateTab(p,w)
+    elif ch == '\b':
+        # This is correct: we only come here if there no bindngs for this key. 
+        self.backwardDeleteCharacter(event)
+    elif ch in ('\r','\n'):
+        ch = '\n'
+        self.insertNewlineHelper(w,oldSel,undoType)
+    elif inBrackets and self.autocompleteBrackets:
+        self.updateAutomatchBracket(p,w,ch,oldSel)
+    elif ch: # Null chars must not delete the selection.
+        i,j = oldSel
+        if i > j: i,j = j,i
+        # Use raw insert/delete to retain the coloring.
+        if i != j:                  w.delete(i,j)
+        elif action == 'overwrite': w.delete(i)
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+        if inBrackets and self.flashMatchingBrackets:
+            self.flashMatchingBracketsHelper(w,i,ch)               
+    else:
+        return 'break' # This method *always* returns 'break'
+
+    # Set the column for up and down keys.
+    spot = w.getInsertPoint()
+    c.editCommands.setMoveCol(w,spot)
+
+    # Update the text and handle undo.
+    newText = w.getAllText()
+    changed = newText != oldText
+    if trace and verbose:
+        g.trace('ch',repr(ch),'changed',changed,'newText',repr(newText[-10:]))
+    if changed:
+        # g.trace('ins',w.getInsertPoint())
+        c.frame.body.onBodyChanged(undoType=undoType,
+            oldSel=oldSel,oldText=oldText,oldYview=None)
+
+    g.doHook("bodykey2",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType)
+    return 'break'
+#@+node:ekr.20061103114242:<< set local vars >>
+c = self.c
+p = c.p
+gui = g.app.gui
+ch = gui.eventChar(event)
+keysym = gui.eventKeysym(event)
+# stroke = gui.eventStroke(event)
+if keysym == 'Return':
+    ch = '\n' # This fixes the MacOS return bug.
+if keysym == 'Tab': # Support for wx_alt_gui plugin.
+    ch = '\t'
+name = c.widget_name(w)
+oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
+oldText = name.startswith('body') and p.b or ''
+undoType = 'Typing'
+brackets = self.openBracketsList + self.closeBracketsList
+inBrackets = ch and g.toUnicode(ch) in brackets
+# if trace: g.trace(name,repr(ch),ch and ch in brackets)
+#@nonl
+#@-node:ekr.20061103114242:<< set local vars >>
+#@+node:ekr.20090213065933.14:doPlainTab
+def doPlainTab(self,s,i,tab_width,w):
+
+    '''Insert spaces equivalent to one tab.'''
+
+    start,end = g.getLine(s,i)
+    s2 = s[start:i]
+    width = g.computeWidth(s2,tab_width)
+
+    if tab_width > 0:
+        w.insert(i,'\t')
+        ins = i+1
+    else:
+        n = abs(tab_width) - (width % abs(tab_width))
+        w.insert(i,' ' * n)
+        ins = i+n
+
+    w.setSelectionRange(ins,ins,insert=ins)
+#@-node:ekr.20090213065933.14:doPlainTab
+#@+node:ekr.20060627091557:flashCharacter
+def flashCharacter(self,w,i):
+
+    bg      = self.bracketsFlashBg or 'DodgerBlue1'
+    fg      = self.bracketsFlashFg or 'white'
+    flashes = self.bracketsFlashCount or 3
+    delay   = self.bracketsFlashDelay or 75
+
+    w.flashCharacter(i,bg,fg,flashes,delay)
+#@-node:ekr.20060627091557:flashCharacter
+#@+node:ekr.20060627083506:flashMatchingBracketsHelper
+def flashMatchingBracketsHelper (self,w,i,ch):
+
+    d = {}
+    if ch in self.openBracketsList:
+        for z in range(len(self.openBracketsList)):
+            d [self.openBracketsList[z]] = self.closeBracketsList[z]
+        reverse = False # Search forward
+    else:
+        for z in range(len(self.openBracketsList)):
+            d [self.closeBracketsList[z]] = self.openBracketsList[z]
+        reverse = True # Search backward
+
+    delim2 = d.get(ch)
+
+    s = w.getAllText()
+    j = g.skip_matching_python_delims(s,i,ch,delim2,reverse=reverse)
+    if j != -1:
+        self.flashCharacter(w,j)
+#@-node:ekr.20060627083506:flashMatchingBracketsHelper
+#@+node:ekr.20060804095512:initBracketMatcher
+def initBracketMatcher (self,c):
+
+    if len(self.openBracketsList) != len(self.closeBracketsList):
+
+        g.es_print('bad open/close_flash_brackets setting: using defaults')
+        self.openBracketsList  = '([{'
+        self.closeBracketsList = ')]}'
+
+    # g.trace('self.openBrackets',openBrackets)
+    # g.trace('self.closeBrackets',closeBrackets)
+#@-node:ekr.20060804095512:initBracketMatcher
+#@+node:ekr.20051026171121:insertNewlineHelper
+def insertNewlineHelper (self,w,oldSel,undoType):
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = c.p
+    i,j = oldSel ; ch = '\n'
+    if trace:
+        s = w.widget.toPlainText()
+        g.trace(i,j,len(s),w)
+
+    if i != j:
+        # No auto-indent if there is selected text.
+        w.delete(i,j)
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+    else:
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+
+        if (c.autoindent_in_nocolor or 
+            (c.frame.body.colorizer.useSyntaxColoring(p) and
+            undoType != "Change")
+        ):
+            # No auto-indent if in @nocolor mode or after a Change command.
+            self.updateAutoIndent(p,w)
+
+    w.seeInsertPoint()
+#@-node:ekr.20051026171121:insertNewlineHelper
+#@+node:ekr.20051026171121.1:updateAutoIndent (leoEditCommands)
+def updateAutoIndent (self,p,w):
+
+    c = self.c ; d = c.scanAllDirectives(p)
+    tab_width = d.get("tabwidth",c.tab_width)
+    # Get the previous line.
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i = g.skip_to_start_of_line(s,ins)
+    i,j = g.getLine(s,i-1)
+    s = s[i:j-1]
+    # g.trace(i,j,repr(s))
+
+    # Add the leading whitespace to the present line.
+    junk, width = g.skip_leading_ws_with_indent(s,0,tab_width)
+    # g.trace('width',width,'tab_width',tab_width)
+
+    if s and s [-1] == ':':
+        # For Python: increase auto-indent after colons.
+        if g.findLanguageDirectives(c,p) == 'python':
+            width += abs(tab_width)
+    if self.smartAutoIndent:
+        # Determine if prev line has unclosed parens/brackets/braces
+        bracketWidths = [width] ; tabex = 0
+        for i in range(0,len(s)):
+            if s [i] == '\t':
+                tabex += tab_width-1
+            if s [i] in '([{':
+                bracketWidths.append(i+tabex+1)
+            elif s [i] in '}])' and len(bracketWidths) > 1:
+                bracketWidths.pop()
+        width = bracketWidths.pop()
+    ws = g.computeLeadingWhitespace(width,tab_width)
+    if ws:
+        i = w.getInsertPoint()
+        w.insert(i,ws)
+        w.setInsertPoint(i+len(ws))
+#@-node:ekr.20051026171121.1:updateAutoIndent (leoEditCommands)
+#@+node:ekr.20051027172949:updateAutomatchBracket
+def updateAutomatchBracket (self,p,w,ch,oldSel):
+
+    # assert ch in ('(',')','[',']','{','}')
+
+    c = self.c ; d = c.scanAllDirectives(p)
+    i,j = oldSel
+    language = d.get('language')
+    s = w.getAllText()
+
+    if ch in ('(','[','{',):
+        automatch = language not in ('plain',)
+        if automatch:
+            ch = ch + {'(':')','[':']','{':'}'}.get(ch)
+        if i != j: w.delete(i,j)
+        w.insert(i,ch)
+        if automatch:
+            ins = w.getInsertPoint()
+            w.setInsertPoint(ins-1)
+    else:
+        ins = w.getInsertPoint()
+        ch2 = ins<len(s) and s[ins] or ''
+        if ch2 in (')',']','}'):
+            ins = w.getInsertPoint()
+            w.setInsertPoint(ins+1)
+        else:
+            if i != j: w.delete(i,j)
+            w.insert(i,ch)
+            w.setInsertPoint(i+1)
+#@-node:ekr.20051027172949:updateAutomatchBracket
+#@+node:ekr.20051026092433:updateTab
+def updateTab (self,p,w,smartTab=True):
+
+    c = self.c
+
+    # g.trace('tab_width',tab_width)
+    i,j = w.getSelectionRange()
+        # Returns insert point if no selection, with i <= j.
+
+    if i != j:
+        # w.delete(i,j)
+        c.indentBody()
+    else:
+        d = c.scanAllDirectives(p)
+        tab_width = d.get("tabwidth",c.tab_width)
+        # Get the preceeding characters.
+        s = w.getAllText()
+        # start = g.skip_to_start_of_line(s,i)
+        start,end = g.getLine(s,i)
+        before = s[start:i]
+        after = s[i:end]
+        if after.endswith('\n'): after = after[:-1]
+        ws = g.get_leading_ws(before)
+        s2 = s[start:i] # The characters before the insert point.
+
+        # Only do smart tab at the start of a blank line.
+        doSmartTab = (smartTab and c.smart_tab and i == start)
+            # Truly at the start of the line.
+            # and not after # Nothing *at all* after the cursor.
+        # g.trace(doSmartTab,'i %s start %s after %s' % (i,start,repr(after)))
+
+        if doSmartTab:
+            self.updateAutoIndent(p,w)
+            # Add a tab if otherwise nothing would happen.
+            if s == w.getAllText():
+                self.doPlainTab(s,i,tab_width,w)
+        else:
+            self.doPlainTab(s,i,tab_width,w)
+#@-node:ekr.20051026092433:updateTab
+#@-node:ekr.20051125080855:selfInsertCommand, helpers
+#@+node:ekr.20050920084036.138:insertNewLine
+def insertNewLine (self,event):
+
+    '''Insert a newline at the cursor.'''
+
+    c = self.c ; k = c.k ; w = self.editWidget(event)
+    if not w: return
+
+    assert g.app.gui.isTextWidget(w)
+    name = c.widget_name(w)
+    if name.startswith('head'): return
+
+    oldSel = w.getSelectionRange()
+    # g.trace('oldSel',oldSel)
+
+    self.beginCommand(undoType='newline')
+
+    # New in Leo 4.5: use the same logic as in selfInsertCommand.
+    self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
+    k.setInputState('insert')
+    k.showStateAndMode()
+
+    self.endCommand()
+
+insertNewline = insertNewLine
+#@-node:ekr.20050920084036.138:insertNewLine
+#@+node:ekr.20051026171121:insertNewlineHelper
+def insertNewlineHelper (self,w,oldSel,undoType):
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = c.p
+    i,j = oldSel ; ch = '\n'
+    if trace:
+        s = w.widget.toPlainText()
+        g.trace(i,j,len(s),w)
+
+    if i != j:
+        # No auto-indent if there is selected text.
+        w.delete(i,j)
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+    else:
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+
+        if (c.autoindent_in_nocolor or 
+            (c.frame.body.colorizer.useSyntaxColoring(p) and
+            undoType != "Change")
+        ):
+            # No auto-indent if in @nocolor mode or after a Change command.
+            self.updateAutoIndent(p,w)
+
+    w.seeInsertPoint()
+#@-node:ekr.20051026171121:insertNewlineHelper
+#@-node:ekr.20100124142131.6223:Fixed Terry's unicode problem
 #@-node:ekr.20100118163110.6256:Leo 4.7 b2 projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt
