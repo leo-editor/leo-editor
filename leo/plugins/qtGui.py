@@ -826,7 +826,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         '''Move the cursor in a QTextEdit.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = True
         w = self.widget
         if trace:

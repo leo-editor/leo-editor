@@ -464,7 +464,7 @@
 <v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
 <v t="ekr.20100122125233.2053"><vh>@test zcpspm</vh></v>
 <v t="ekr.20100127111425.2062"><vh>search script</vh></v>
-<v t="ekr.20100127122240.2063" a="E"><vh>Terry's unicode problem</vh>
+<v t="ekr.20100127122240.2063"><vh>Terry's unicode problem</vh>
 <v t="ekr.20100127123120.2016"><vh>The text</vh></v>
 <v t="ekr.20100127123336.2018"><vh>Copy</vh></v>
 </v>

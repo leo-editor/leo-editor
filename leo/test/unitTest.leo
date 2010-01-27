@@ -2509,6 +2509,7 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20100127162342.5123"><vh>Import all plugins</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -13633,7 +13634,8 @@ if not g.os_path_exists(s):
 </t>
 <t tx="ekr.20070114140212"># Important: many unit tests are now in leoPy.leo.
 # All the following should pass when run locally (Alt-4).
-# All the following have errors when run externally (Alt-5).</t>
+# All the following have errors when run externally (Alt-5).
+@language python</t>
 <t tx="ekr.20070131162935">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070131162935.1">first line
@@ -22030,6 +22032,60 @@ g.es(s)
 g.pr(s)
 s = '炰'
 g.pr(s)
+</t>
+<t tx="ekr.20100127162342.5123">import glob
+import os
+tkList = (
+    'EditAttributes','URLloader','UniversalScrolling','UASearch',
+    'at_view','chapter_hoist','cleo','graphed','groupOperations','image',
+    'hoist','keybindings','maximizeNewWindows','mnplugins',
+    'mod_labels','mod_read_dir_outline','nodenavigator',
+    'open_with','pie_menus','pluginsTest','rowcol','scheduler',
+    'script_io_to_body','searchbox','table','tkGui',
+)
+passList = (
+    '__init__','UNL','active_path','add_directives','attrib_edit',
+    'backlink','baseNativeTree',
+    'codewisecompleter','colorize_headlines','contextmenu',
+    'ctagscompleter','cursesGui','datenodes','debugger_pudb',
+    'detect_urls','dtest','initinclass','leo_to_html','leoremote',
+    'macros','mime','mod_autosave','mod_framesize','mod_scripting',
+    'mod_speedups','nav_buttons','nav_qt','open_shell',
+    'plugins_menu','projectwizard','qtGui','qt_main',
+    'qt_quicksearch','qtframecommands','quicksearch',
+    'rClickBasePluginClasses','scrolledmessage','setHomeDirectory',
+    'slideshow','spydershell','testRegisterCommand',
+    'todo','trace_tags','vim','xemacs',
+    
+)
+passWithImportProblems = ( # Other than tk input problems.
+    'ipython',
+)
+dead = ('LeoN',)
+error = ('at_folder','at_produce','niceNosent',)
+fail = (
+    'ConceptualSort','FileActions','Library',
+    'autocompleter','autotrees',
+)
+
+plugins = g.os_path_join(g.app.loadDir,'..','plugins','*.py')
+plugins = g.os_path_abspath(plugins)
+files = glob.glob(plugins)
+files = [g.os_path_abspath(f) for f in files]
+files.sort()
+
+os.system('cls')
+for fn in files:
+    m = g.shortFileName(fn)[:-3]
+    if m in fail:
+        fn = 'leo.plugins.%s' % m
+        try:
+            __import__(fn)
+            print('pass',fn)
+        except ImportError:
+            print('failed',fn)
+        except Exception:
+            print('error',fn)
 </t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
