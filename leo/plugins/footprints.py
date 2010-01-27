@@ -38,13 +38,17 @@ leoTkinterTree = tkGui.leoTkinterTree
 try: 
     import Tkinter as Tk 
 except ImportError: 
-    Tk = g.cantImport("Tkinter") 
+    Tk = g.cantImport("Tkinter")
 
+if g.isPython3:
+    import configparser as ConfigParser
+else:
+    import ConfigParser
 
 import threading 
 import sets 
 import time 
-import ConfigParser 
+
 #@-node:pap.20041020001240.2:<< imports >>
 #@nl
 #@<< todo >>

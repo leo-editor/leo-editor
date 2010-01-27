@@ -5421,7 +5421,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         menu = self.getMenu(menuName)
         if menu and label:
-            n = underline
+            n = underline or 0
             if -1 > n > len(label):
                 label = label[:n] + '&' + label[n:]
             action = menu.addAction(label)

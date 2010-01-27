@@ -87,7 +87,7 @@ else:
     Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=False)
 
 if g.isPython3:
-    import configparser as ConfigParse
+    import configparser as ConfigParser
 else:
     import ConfigParser
 

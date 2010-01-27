@@ -189,9 +189,13 @@ In particular, the default export path, "c:\" must be changed for *nix systems.
 #@+node:danr7.20060902215215.4:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
-import ConfigParser
+
+if g.isPython3:
+    import configparser as ConfigParser
+else:
+    import ConfigParser
+
 import webbrowser
-# import re
 import tempfile
 import os
 

@@ -146,7 +146,11 @@ if 0:
     langdict = {}
 
     def loadLanguages (lkpm):
-        import ConfigParser
+        if g.isPython3:
+            import configparser as ConfigParser
+        else:
+            import ConfigParser
+
         cp = ConfigParser.ConfigParser()
         cp.read(lkpm)
         which = ''

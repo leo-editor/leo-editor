@@ -113,7 +113,6 @@ __version__ = ".5"
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import anydbm
-# import ConfigParser
 import whichdb
 
 Tk   = g.importExtension('Tkinter',pluginName=__name__,verbose=True)

@@ -62,11 +62,21 @@ Davide Salomoni
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
-import cStringIO
+if g.isPython3:
+    import io
+    StringIO = io.StringIO
+else:
+    import cStringIO
+    StringIO = cStringIO.StringIO
+
 import ftplib
 import os
 import urllib
-import urlparse
+
+if g.isPython3:
+    import urllib.parse as urlparse
+else:
+    import urlparse 
 
 from formatter import AbstractFormatter, DumbWriter
 from htmllib   import HTMLParser
@@ -195,7 +205,7 @@ class FTPurl:
                 self.ftp.retrlines('RETR %s' % self.path, slist.append)
                 s = '\n'.join(slist)
             else: # mode='b': binary mode
-                file = cStringIO.StringIO()
+                file = StringIO()
                 self.ftp.retrbinary('RETR %s' % self.path, file.write)
                 s = file.getvalue()
                 file.close()
@@ -231,7 +241,7 @@ class FTPurl:
             raise IOError, 'filename not specified'
 
         try:
-            file = cStringIO.StringIO(s)
+            file = StringIO(s)
             if self.mode == '':  # mode='': ASCII mode
                 self.ftp.storlines('STOR %s' % self.path, file)
             else: # mode='b': binary mode
@@ -357,7 +367,7 @@ def insert_read_only_node (c,v,name):
         if ext.lower() in ['.htm', '.html']:
             #@            << convert HTML to text >>
             #@+node:edream.110203113231.895:<< convert HTML to text >>
-            fh = cStringIO.StringIO()
+            fh = StringIO()
             fmt = AbstractFormatter(DumbWriter(fh))
             # the parser stores parsed data into fh (file-like handle)
             parser = HTMLParser(fmt)

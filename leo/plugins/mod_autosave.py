@@ -17,7 +17,11 @@ The time between saves is given in seconds in autosave.ini."""
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
-import ConfigParser
+if g.isPython3:
+    import configparser as ConfigParser
+else:
+    import ConfigParser
+
 import os
 import time
 #@nonl

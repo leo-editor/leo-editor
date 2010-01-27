@@ -21,7 +21,12 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import os
 import os.path
-import ConfigParser
+
+if g.isPython3:
+    import configparser as ConfigParser
+else:
+    import ConfigParser
+
 from leo.plugins.textnode import savetextnode
 
 __version__ = "1.0"

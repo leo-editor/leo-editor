@@ -50,8 +50,24 @@ import leo.core.leoPlugins as leoPlugins
 import asynchat
 import asyncore
 import cgi
-import ConfigParser
-import cStringIO
+
+if g.isPython3:
+    import configparser as ConfigParser
+else:
+    import ConfigParser
+
+if g.isPython3:
+    import io
+    StringIO = io.StringIO
+else:
+    import cStringIO
+    StringIO = cStringIO.StringIO
+
+if g.isPython3:
+    import urllib.parse as urlparse
+else:
+    import urlparse
+
 import exceptions
 from StringIO import StringIO
 import os
@@ -63,8 +79,7 @@ import socket
 import sys
 import time
 import urllib
-import urlparse
-#@nonl
+
 #@-node:EKR.20040517080250.3:<< imports >>
 #@nl
 #@<< version history >>
@@ -630,7 +645,7 @@ class RequestHandler(
         # http request is complete ; control will be passed to
         # self.found_terminator
         self.set_terminator ('\r\n\r\n')
-        self.buffer=cStringIO.StringIO()
+        self.buffer=StringIO()
         self.found_terminator=self.handle_request_line
     #@-node:EKR.20040517080250.14:__init__
     #@+node:EKR.20040517080250.15:copyfile
@@ -683,14 +698,14 @@ class RequestHandler(
         bytesToRead = int(self.headers.getheader('content-length'))
         # set terminator to length (will read bytesToRead bytes)
         self.set_terminator(bytesToRead)
-        self.buffer=cStringIO.StringIO()
+        self.buffer=StringIO()
         # control will be passed to a new found_terminator
         self.found_terminator=self.handle_post_data
     #@-node:EKR.20040517080250.18:prepare_POST
     #@+node:EKR.20040517080250.19:handle_post_data
     def handle_post_data(self):
         """Called when a POST request body has been read"""
-        self.rfile=cStringIO.StringIO(self.buffer.getvalue())
+        self.rfile=StringIO(self.buffer.getvalue())
         self.do_POST()
         self.finish()
     #@-node:EKR.20040517080250.19:handle_post_data
@@ -752,7 +767,7 @@ class RequestHandler(
         """Called when the http request line and headers have been received"""
 
         # prepare attributes needed in parse_request()
-        self.rfile=cStringIO.StringIO(self.buffer.getvalue())
+        self.rfile=StringIO(self.buffer.getvalue())
         self.raw_requestline=self.rfile.readline()
         self.parse_request()
 

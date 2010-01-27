@@ -57,14 +57,13 @@ __version__ = ".5"
 #@+node:ekr.20041022165647:<< imports >>
 import leo.core.leoNodes as leoNodes 
 import leo.core.leoPlugins as leoPlugins 
-import leo.core.leoGlobals as g 
+import leo.core.leoGlobals as g
 
 try:
     import_succeed = True 
     import Pmw 
     import Tkinter 
     import sets 
-    import cStringIO 
     import weakref 
 
 except Exception, x:

@@ -11,12 +11,16 @@ value in being able to quickly execute commands they do not use very often"""
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
+if g.isPython3:
+    import configparser as ConfigParser
+else:
+    import ConfigParser
+
 load_ok=True
 try:
     import Pmw
     import weakref
     import Tkinter as Tk
-    import ConfigParser
     import os.path
 except Exception, x:
     g.es( 'Could not load because of %s' % x )

@@ -30,6 +30,13 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 from xml.dom import minidom
 
+if g.isPython3:
+    import io
+    StringIO = io.StringIO
+else:
+    import cStringIO
+    StringIO = cStringIO.StringIO
+
 try:
     import Ft
     from Ft.Xml import InputSource 
@@ -39,9 +46,7 @@ except ImportError:
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
-import weakref 
-import cStringIO
-#@nonl
+import weakref
 #@-node:mork.20041025113509:<< imports >>
 #@nl
 #@<<parser problems>>
@@ -243,7 +248,7 @@ def getString (c):
     '''This def turns a node into a string based off of Leo's file-nosent write logic'''
     at = c.atFileCommands
     pos = c.p
-    cS = cStringIO.StringIO()
+    cS = StringIO()
 
     if not hasattr( at, 'new_df' ):
     #if new_at_file: # 4.3 code base.
@@ -385,13 +390,20 @@ r'''
 </vnodes>
 <tnodes>
 <t tx="mork.20041015144717">@path /boboo/leo-4.2-final/plugins</t>
-<t tx="mork.20041015144717.1">import Tkinter as Tk
+<t tx="mork.20041015144717.1">
+if g.isPython3:
+    import io
+    StringIO = io.StringIO
+else:
+    import cStringIO
+    StringIO = cStringIO.StringIO
+
+import Tkinter as Tk
 import tktable as tktab
 import leo.core.leoGlobals as g
 from leoPlugins import *
 import leo.core.leoNodes as leoNodes
 import csv
-import cStringIO
 import weakref
 import Pmw
 
@@ -450,7 +462,7 @@ def addMenu( tag, keywords ):
     c = self.c
     pos = c.p
     data = pos.b
-    cS = cStringIO.StringIO()
+    cS = StringIO()
     cS.write( data )
     cS.seek( 0 )
     sniff = csv.Sniffer()
@@ -504,7 +516,7 @@ def addMenu( tag, keywords ):
         for z2 in range( n ):
             ndata.append( self.arr.get( "%s,%s" % ( z, z2 ) ) )        
         data.append( ndata )
-    cS = cStringIO.StringIO()
+    cS = StringIO()
     csv_write = csv.writer( cS, self.type )
     for z in data:
         csv_write.writerow( z )

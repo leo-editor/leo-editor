@@ -47,7 +47,11 @@ try:
 except ImportError:
     client = g.cantImport('win32com.client')
 
-import ConfigParser
+if g.isPython3:
+    import configparser as ConfigParser
+else:
+    import ConfigParser
+
 import sys
 #@nonl
 #@-node:ekr.20040909105522:<< imports >>

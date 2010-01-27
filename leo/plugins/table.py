@@ -28,8 +28,14 @@ Pmw    = g.importExtension("Pmw",    pluginName=__name__,verbose=True)
 Tk     = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 tktab  = g.importExtension('tktable',pluginName=__name__,verbose=True)
 
+if g.isPython3:
+    import io
+    StringIO = io.StringIO
+else:
+    import cStringIO 
+    StringIO = cStringIO.StringIO
+
 import csv
-import cStringIO
 import weakref
 #@nonl
 #@-node:ekr.20041017035937.1:<< imports >>
@@ -106,7 +112,7 @@ class CSVVisualizer:
         c = self.c
         pos = c.p
         data = pos.b
-        cS = cStringIO.StringIO()
+        cS = StringIO()
         cS.write( data )
         cS.seek( 0 )
         sniff = csv.Sniffer()
@@ -126,7 +132,7 @@ class CSVVisualizer:
             for z2 in range( n ):
                 ndata.append( self.arr.get( "%s,%s" % ( z, z2 ) ) )        
             data.append( ndata )
-        cS = cStringIO.StringIO()
+        cS = StringIO()
         csv_write = csv.writer( cS, self.type )
         for z in data:
             csv_write.writerow( z )

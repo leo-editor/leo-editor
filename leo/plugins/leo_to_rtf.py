@@ -40,7 +40,12 @@ you may need to modify it depending on your system.
 #@+node:danr7.20060902083957.1:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
-import ConfigParser
+
+if g.isPython3:
+    import configparser as ConfigParser
+else:
+    import ConfigParser
+
 
 #@-node:danr7.20060902083957.1:<< imports >>
 #@nl
