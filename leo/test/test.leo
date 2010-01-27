@@ -462,16 +462,11 @@
 <v t="ekr.20100127111116.2059"><vh>wrapping</vh></v>
 </v>
 <v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
-<v t="ekr.20100118190902.2002"><vh>@auto C:\Python26\Lib\site-packages\pylint-0.19.0-py2.6.egg\pylint\lint.py</vh></v>
 <v t="ekr.20100122125233.2053"><vh>@test zcpspm</vh></v>
-<v t="ekr.20100125064546.2062"><vh>@edit unicode-test.txt.desktop</vh></v>
-<v t="ekr.20100126111634.2065"><vh>@thin thin-unicode-test.txt</vh></v>
-<v t="ekr.20100127075221.2052"><vh>@@edit C:\Python26\Lib\site-packages\pylint-0.19.0-py2.6.egg\pylint\checkers\exceptions.py</vh></v>
 <v t="ekr.20100127111425.2062"><vh>search script</vh></v>
-<v t="ekr.20100127102234.2053"><vh>latex example</vh>
-<v t="ekr.20100127102234.2055"><vh>root latex-test.tex</vh>
-<v t="ekr.20100127102234.2054"><vh>&lt;&lt; preamble &gt;&gt;</vh></v>
-</v>
+<v t="ekr.20100127122240.2063" a="E"><vh>Terry's unicode problem</vh>
+<v t="ekr.20100127123120.2016"><vh>The text</vh></v>
+<v t="ekr.20100127123336.2018"><vh>Copy</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -5138,40 +5133,6 @@ try:
 finally:
    c.redraw_now()
 </t>
-<t tx="ekr.20100127075221.2052"></t>
-<t tx="ekr.20100127102234.2053">@nocolor-node
-
-As a result I got a file that contains:
-    
-+----------8&lt;------------------
-# &lt;&lt;preamble&gt;&gt;
-\documentclass[a4paper,10pt]{article}
-# -- end -- &lt;&lt;preamble&gt;&gt;
-
-\begin{document}
-test
-\end{document}
-+----------8&lt;------------------
-
-Obviously, the sign "#" is not correct comment delimiter, so the
-result file is not a correct LaTeX source.
-The questions are: why there is "# &lt;&lt;preamble&gt;&gt;" and not "%
-&lt;&lt;preamble&gt;&gt;", while @language is latex?
-and how to repair it?
-</t>
-<t tx="ekr.20100127102234.2054">@c
-\documentclass[a4paper,10pt]{article}
-
-</t>
-<t tx="ekr.20100127102234.2055">@language latex
-@terse
-@root Intro.tex
-
- &lt;&lt;preamble&gt;&gt;
-\begin{document}
-test
-\end{document}
-</t>
 <t tx="ekr.20100127111116.2059">@nowrap
 
 aaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbb cccccccccccccccccccccc ddddddddddddddddddddddd eeeeeeeeeeeeeeeeeee fffffffffffffffffffffff
@@ -5209,5 +5170,16 @@ for path in paths:
                 found = True
             g.pr(s[n1:n2-1])
 </t>
+<t tx="ekr.20100127122240.2063">@nocolor</t>
+<t tx="ekr.20100127123120.2016">"Example 1. Suppose we select the following string: 연주기 This string
+consists of 3 unicode characters.  Typing any character works
+properly, including backspace or return.
+Example 2. Suppose we select the following string: वादक.  This string
+consists of 4 characters.  Typing any character removes too much.</t>
+<t tx="ekr.20100127123336.2018">"Example 1. Suppose we select the following string: 연주기 This string
+consists of 3 unicode characters.  Typing any character works
+properly, including backspace or return.
+Example 2. Suppose we select the following string: वादक.  This string
+consists of 4 characters.  Typing any character removes too much.</t>
 </tnodes>
 </leo_file>

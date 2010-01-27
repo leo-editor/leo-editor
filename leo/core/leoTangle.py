@@ -1378,7 +1378,7 @@ class baseTangleCommands:
             # Stephen P. Schaefer, 9/13/2002
             self.first_lines = section.root_attributes.first_lines
 
-            g.trace(self.single_comment_string)
+            # g.trace(self.single_comment_string)
             #@-node:ekr.20031218072017.1152:<<Get root specific attributes>>
             #@nl
             #@        <<Put @first lines>>

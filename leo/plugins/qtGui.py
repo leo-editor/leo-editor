@@ -826,10 +826,14 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         '''Move the cursor in a QTextEdit.'''
 
-        trace = False and not g.unitTesting
-        if trace: g.trace(kind,'extend',extend)
-
+        trace = True and not g.unitTesting
+        verbose = True
         w = self.widget
+        if trace:
+            g.trace(kind,'extend',extend)
+            if verbose:
+                g.trace(len(w.toPlainText()))
+
         tc = QtGui.QTextCursor
         d = {
             'exchange': True, # Dummy.
@@ -868,9 +872,14 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         colorer = c.frame.body.colorizer.highlighter.colorer
         n = colorer.recolorCount
 
+        if trace: g.trace(self.getSelectionRange())
+
         i = self.toGuiIndex(i)
         if j is None: j = i+1
         j = self.toGuiIndex(j)
+        if i > j: i,j = j,i
+
+        if trace: g.trace(i,j)
 
         # Set a hook for the colorer.
         colorer.initFlag = True
@@ -881,18 +890,28 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         try:
             self.changingText = True # Disable onTextChanged
-            cursor.setPosition(i)
-            moveCount = abs(j-i)
-            cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)
-            cursor.removeSelectedText()
+
+            old_i,old_j = self.getSelectionRange()
+            if i == old_i and j == old_j:
+                # Work around an apparent bug in cursor.movePosition.
+                cursor.removeSelectedText()
+            else:
+                if trace: g.trace('*** using bugging code')
+                cursor.setPosition(i)
+                moveCount = abs(j-i)
+                cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)
+                w.setTextCursor(cursor)  # Bug fix: 2010/01/27
+                if trace:
+                    i,j = self.getSelectionRange()
+                    g.trace(i,j)
+                cursor.removeSelectedText()
+                if trace: g.trace(self.getSelectionRange())
         finally:
             self.changingText = False
 
         sb.setSliderPosition(pos)
 
-        if trace:
-            g.trace('%s calls to recolor' % (
-                colorer.recolorCount-n))
+        # g.trace('%s calls to recolor' % (colorer.recolorCount-n))
     #@-node:ekr.20090205153624.11:delete (avoid call to setAllText)
     #@+node:ekr.20081121105001.579:flashCharacter (leoQTextEditWidget)
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
@@ -1049,6 +1068,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             self.changingText = True # Disable onTextChanged.
             cursor.setPosition(i)
             cursor.insertText(s) # This cause an incremental call to recolor.
+            w.setTextCursor(cursor) # Bug fix: 2010/01/27
         finally:
             self.changingText = False
 
@@ -1151,10 +1171,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         i = self.toPythonIndex(i)
         i = max(0,min(i,len(s)))
         cursor = w.textCursor()
-
-        # block = cursor.block()
-        # i = max(0,min(i,block.length()))
-
         cursor.setPosition(i)
         w.setTextCursor(cursor)
     #@-node:ekr.20081121105001.588:setInsertPoint

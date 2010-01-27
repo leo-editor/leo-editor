@@ -3118,7 +3118,9 @@ class editCommandsClass (baseEditCommandsClass):
         trace = False and not g.unitTesting
         c = self.c ; p = c.p
         i,j = oldSel ; ch = '\n'
-        if trace: g.trace(i,j)
+        if trace:
+            s = w.widget.toPlainText()
+            g.trace(i,j,len(s),w)
 
         if i != j:
             # No auto-indent if there is selected text.

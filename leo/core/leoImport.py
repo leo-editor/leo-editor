@@ -651,12 +651,17 @@ class leoImportCommands (scanUtility):
     def getTabWidth (self,p=None):
 
         c = self.c
-        d = c.scanAllDirectives(p)
-        w = d.get("tabwidth")
-        if w not in (0,None):
-            return w
+        if 1:
+            # Faster, more self-contained.
+            val = g.scanAllAtTabWidthDirectives(c,p)
+            return val
         else:
-            return self.c.tab_width
+            d = c.scanAllDirectives(p)
+            w = d.get("tabwidth")
+            if w not in (0,None):
+                return w
+            else:
+                return self.c.tab_width
     #@-node:ekr.20041126042730:getTabWidth
     #@+node:ekr.20031218072017.3309:isDocStart and isModuleStart
     # The start of a document part or module in a noweb or cweb file.

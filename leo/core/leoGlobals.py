@@ -613,16 +613,18 @@ def get_directives_dict_list(p1):
 
     if trace: time1 = g.getTime()
 
-    result = [] ; p1 = p1.copy()
+    result = []
 
-    for p in p1.self_and_parents():
-        if p.hasParent(): root = None
-        else:             root = [p.copy()]
-        result.append(g.get_directives_dict(p,root=root))
+    if p1:
+        p1 = p1.copy()
+        for p in p1.self_and_parents():
+            if p.hasParent(): root = None
+            else:             root = [p.copy()]
+            result.append(g.get_directives_dict(p,root=root))
 
-    if trace:
-        n = len(p1.h) + len(p1.b)
-        g.trace('%4d %s' % (n,g.timeSince(time1)))
+        if trace:
+            n = len(p1.h) + len(p1.b)
+            g.trace('%4d %s' % (n,g.timeSince(time1)))
 
     return result
 #@-node:ekr.20080827175609.1:g.get_directives_dict_list (must be fast)
@@ -781,7 +783,7 @@ def scanAtRootOptions (s,i,err_flag=False):
 
     return i,mode
 #@-node:ekr.20031218072017.3154:g.scanAtRootOptions
-#@+node:ekr.20080827175609.37:g.scanAtTabwidthDirectives
+#@+node:ekr.20080827175609.37:g.scanAtTabwidthDirectives & scanAllTabWidthDirectives
 def scanAtTabwidthDirectives(aList,issue_error_flag=False):
 
     '''Scan aList for @tabwidth directives.'''
@@ -790,16 +792,26 @@ def scanAtTabwidthDirectives(aList,issue_error_flag=False):
         s = d.get('tabwidth')
         if s is not None:
             junk,val = g.skip_long(s,0)
-
             if val not in (None,0):
-                # g.trace(val)
                 return val
             else:
                 if issue_error_flag and not g.app.unitTesting:
                     g.es("ignoring @tabwidth",s,color="red")
-
     return None
-#@-node:ekr.20080827175609.37:g.scanAtTabwidthDirectives
+
+def scanAllAtTabWidthDirectives(c,p):
+
+    '''Scan p and all ancestors looking for @tabwidth directives.'''
+
+    if c and p:
+        aList = g.get_directives_dict_list(p)
+        val = g.scanAtTabwidthDirectives(aList)
+        ret = g.choose(val is None,c.tab_width,val)
+        # g.trace(ret,p.h)
+    else:
+        ret = None
+    return ret
+#@-node:ekr.20080827175609.37:g.scanAtTabwidthDirectives & scanAllTabWidthDirectives
 #@+node:ekr.20080831084419.4:g.scanAtWrapDirectives & scanAllAtWrapDirectives
 def scanAtWrapDirectives(aList,issue_error_flag=False):
 
@@ -815,13 +827,18 @@ def scanAtWrapDirectives(aList,issue_error_flag=False):
 
 def scanAllAtWrapDirectives(c,p):
 
-    aList = g.get_directives_dict_list(p)
-    default = c.config.getBool("body_pane_wraps")
-    val = g.scanAtWrapDirectives(aList)
-    ret = g.choose(val is None,default,val)
+    '''Scan p and all ancestors looking for @wrap/@nowrap directives.'''
+
+    if c and p:
+        default = c and c.config.getBool("body_pane_wraps")
+        aList = g.get_directives_dict_list(p)
+
+        val = g.scanAtWrapDirectives(aList)
+        ret = g.choose(val is None,default,val)
+    else:
+        ret = None
     # g.trace(ret,p.h)
     return ret
-
 #@-node:ekr.20080831084419.4:g.scanAtWrapDirectives & scanAllAtWrapDirectives
 #@+node:ekr.20080901195858.4:g.scanDirectives  (for compatibility only)
 def scanDirectives(c,p=None):

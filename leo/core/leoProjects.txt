@@ -7335,13 +7335,18 @@ def scanAtWrapDirectives(aList,issue_error_flag=False):
 
 def scanAllAtWrapDirectives(c,p):
 
-    aList = g.get_directives_dict_list(p)
-    default = c.config.getBool("body_pane_wraps")
-    val = g.scanAtWrapDirectives(aList)
-    ret = g.choose(val is None,default,val)
+    '''Scan p and all ancestors looking for @wrap/@nowrap directives.'''
+
+    if c and p:
+        default = c and c.config.getBool("body_pane_wraps")
+        aList = g.get_directives_dict_list(p)
+
+        val = g.scanAtWrapDirectives(aList)
+        ret = g.choose(val is None,default,val)
+    else:
+        ret = None
     # g.trace(ret,p.h)
     return ret
-
 #@-node:ekr.20080831084419.4:g.scanAtWrapDirectives & scanAllAtWrapDirectives
 #@+node:ekr.20080923124254.16:tangle.scanAllDirectives
 def scanAllDirectives(self,p):
