@@ -1583,7 +1583,7 @@ class baseFileCommands:
                         g.trace('*** No vnode for %s' % tnx)
                 if result:
                     p.v.tnodeList = result
-                    g.trace('*** tnodeList for',p.h,result)
+                    # g.trace('*** tnodeList for',p.h,result)
                 delattr(p.v,'tempTnodeList')
     #@nonl
     #@-node:ekr.20060919110638.11:resolveTnodeLists
