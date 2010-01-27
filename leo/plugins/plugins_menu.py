@@ -81,16 +81,19 @@ Some names defined at the top level have special significance.
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
-Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
+Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=False)
 
-import ConfigParser
+if g.isPython3:
+    import configparser as ConfigParse
+else:
+    import ConfigParser
 import glob
 import os
 import sys
 #@nonl
 #@-node:ekr.20050101090207.10:<< imports >>
 #@nl
-__version__ = "1.16"
+__version__ = "2.1"
 #@<< version history >>
 #@+node:ekr.20050101100033:<< version history >>
 #@@nocolor
@@ -131,6 +134,7 @@ __version__ = "1.16"
 # 1.16 bobjack:
 # - Added 'Text to HTML' and 'RST to HTML' buttons to TkScrolledMessageDialog.
 # - Converted docstring to RST.
+# 2.0 EKR: Now works with Python 3.x.
 #@-at
 #@nonl
 #@-node:ekr.20050101100033:<< version history >>
@@ -282,7 +286,7 @@ class _PluginDatabase:
     #@+node:pap.20050305152751.3:getGroups
     def getGroups(self):
         """Return a list of groups"""
-        groups = self.plugins_by_group.keys()
+        groups = list(self.plugins_by_group.keys())
         groups.sort()
         return groups
     #@nonl
