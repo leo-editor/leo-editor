@@ -51,7 +51,7 @@ def run(fn,suppress):
 for fn,suppress in core_table:
     fn = os.path.join('c:\leo.repo','trunk','leo','core',fn)
     run(fn,suppress)
-    
+
 for fn,suppress in plugins_table:
     fn = os.path.join('c:\leo.repo','trunk','leo','plugins',fn)
     run(fn,suppress)

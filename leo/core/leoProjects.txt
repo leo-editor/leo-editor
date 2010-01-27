@@ -2949,19 +2949,21 @@ def writeAllHelper (self,p,
     force,toString,writeAtFileNodesFlag,writtenFiles
 ):
 
-    at = self
+    trace = False and not g.unitTesting
+    at = self ; c = at.c
 
     if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
         pathChanged = False
     else:
-        oldPath = at.getPathUa(p)
-        newPath = at.fullPath(p)
-        # if trace: g.trace('p %s\noldPath %s\nnewPath %s' % (
-            # p.h,repr(oldPath),repr(newPath)))
+        oldPath = at.getPathUa(p).lower()
+        newPath = at.fullPath(p).lower()
         pathChanged = oldPath and oldPath != newPath
-        if pathChanged:
+        # 2010/01/27: suppress this message during save-as and save-to commands.
+        if pathChanged and not c.ignoreChangedPaths:
             at.setPathUa(p,newPath) # Remember that we have changed paths.
             g.es_print('path changed for',p.h,color='blue')
+            if trace: g.trace('p %s\noldPath %s\nnewPath %s' % (
+                p.h,repr(oldPath),repr(newPath)))
 
     if p.v.isDirty() or pathChanged or writeAtFileNodesFlag or p.v in writtenFiles:
 
@@ -3507,7 +3509,7 @@ if p == self.rootPosition:
         c.db['current_position_%s' % key] = str_pos
         if d.get('str_leo_pos'): del d['str_leo_pos']
         # g.trace('to c.db',str_pos,key)
-    elif fixed:
+    elif c.fixed:
         if d.get('str_leo_pos'): del d['str_leo_pos']
     else:
         d['str_leo_pos'] = str_pos
@@ -3882,19 +3884,21 @@ def writeAllHelper (self,p,
     force,toString,writeAtFileNodesFlag,writtenFiles
 ):
 
-    at = self
+    trace = False and not g.unitTesting
+    at = self ; c = at.c
 
     if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
         pathChanged = False
     else:
-        oldPath = at.getPathUa(p)
-        newPath = at.fullPath(p)
-        # if trace: g.trace('p %s\noldPath %s\nnewPath %s' % (
-            # p.h,repr(oldPath),repr(newPath)))
+        oldPath = at.getPathUa(p).lower()
+        newPath = at.fullPath(p).lower()
         pathChanged = oldPath and oldPath != newPath
-        if pathChanged:
+        # 2010/01/27: suppress this message during save-as and save-to commands.
+        if pathChanged and not c.ignoreChangedPaths:
             at.setPathUa(p,newPath) # Remember that we have changed paths.
             g.es_print('path changed for',p.h,color='blue')
+            if trace: g.trace('p %s\noldPath %s\nnewPath %s' % (
+                p.h,repr(oldPath),repr(newPath)))
 
     if p.v.isDirty() or pathChanged or writeAtFileNodesFlag or p.v in writtenFiles:
 
@@ -6993,7 +6997,7 @@ if p == self.rootPosition:
         c.db['current_position_%s' % key] = str_pos
         if d.get('str_leo_pos'): del d['str_leo_pos']
         # g.trace('to c.db',str_pos,key)
-    elif fixed:
+    elif c.fixed:
         if d.get('str_leo_pos'): del d['str_leo_pos']
     else:
         d['str_leo_pos'] = str_pos
@@ -7060,6 +7064,259 @@ def archivedPositionToPosition (self,s):
 #@-node:ekr.20061006104837.1:archivedPositionToPosition
 #@-node:ekr.20060919110638.13:setPositionsFromVnodes & helper
 #@-node:ekr.20100122104234.6167:cache current position
+#@+node:ekr.20100126215837.15931:Suppress path changed message in save-as and save-to
+#@+node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
+self._currentPosition = self.nullPosition()
+self._rootPosition    = self.nullPosition()
+self._topPosition     = self.nullPosition()
+
+# Delayed focus.
+self.doubleClickFlag = False
+self.hasFocusWidget = None
+self.requestedFocusWidget = None
+
+# Official ivars.
+self.gui = g.app.gui
+self.ipythonController = None # Set only by the ipython plugin.
+
+# Interlock to prevent setting c.changed when switching chapters.
+c.suppressHeadChanged = False
+
+# Interlocks to prevent premature closing of a window.
+self.inCommand = False
+self.requestCloseWindow = False
+
+# For emacs/vim key handling.
+self.commandsDict = None
+self.keyHandler = self.k = None
+self.miniBufferWidget = None
+
+# per-document info...
+self.disableCommandsMessage = ''
+    # The presence of this message disables all commands.
+self.hookFunction = None
+self.openDirectory = None
+self.timeStampDict = {} # New in Leo 4.6.
+
+self.expansionLevel = 0  # The expansion level of this outline.
+self.expansionNode = None # The last node we expanded or contracted.
+self.changed = False # True if any data has been changed since the last save.
+self.loading = False # True if we are loading a file: disables c.setChanged()
+self.outlineToNowebDefaultFileName = "noweb.nw" # For Outline To Noweb dialog.
+self.promptingForClose = False # To lock out additional closing dialogs.
+self.ignoreChangedPaths = False # True: disable path changed message in at.WriteAllHelper.
+
+# For tangle/untangle
+self.tangle_errors = 0
+
+# Global options
+self.fixed = False
+self.page_width = 132
+self.tab_width = -4
+self.tangle_batch_flag = False
+self.untangle_batch_flag = False
+
+# Default Tangle options
+self.use_header_flag = False
+self.output_doc_flag = False
+
+# Default Target Language
+self.target_language = "python" # Required if leoConfig.txt does not exist.
+
+# For hoist/dehoist commands.
+self.hoistStack = []
+    # Stack of nodes to be root of drawn tree.
+    # Affects drawing routines and find commands.
+self.recentFiles = [] # List of recent files
+
+# For outline navigation.
+self.navPrefix = g.u('') # Must always be a string.
+self.navTime = None
+
+pth, bname = os.path.split(self.mFileName)
+if pth and bname and g.enableDB:
+    fn = self.mFileName.lower()
+    fn = g.toEncodedString(fn,'utf-8') # Required for Python 3.x.
+    dbdirname = '%s/db/%s_%s' % (
+        g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
+    # Use compressed pickles (handy for @thin caches)
+    self.db = leo.external.pickleshare.PickleShareDB(dbdirname,protocol='picklez')
+else:
+    self.db = {}
+#@nonl
+#@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
+#@+node:ekr.20031218072017.3043:saveAs (leoFileCommands)
+def saveAs(self,fileName):
+
+    c = self.c ; v = c.currentVnode()
+
+    if not g.doHook("save1",c=c,p=v,v=v,fileName=fileName):
+        c.endEditing() # Set the current headline text.
+        self.setDefaultDirectoryForNewFiles(fileName)
+        # Disable path-changed messages in writeAllHelper.
+        c.ignoreChangedPaths = True
+        try:
+            if self.write_Leo_file(fileName,outlineOnlyFlag=False):
+                c.setChanged(False) # Clears all dirty bits.
+                self.putSavedMessage(fileName)
+        finally:
+            c.ignoreChangedPaths = True
+
+        c.redraw_after_icons_changed()
+
+    g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
+#@-node:ekr.20031218072017.3043:saveAs (leoFileCommands)
+#@+node:ekr.20031218072017.3044:saveTo (leoFileCommands)
+def saveTo (self,fileName):
+
+    c = self.c ; v = c.currentVnode()
+
+    if not g.doHook("save1",c=c,p=v,v=v,fileName=fileName):
+        c.endEditing()# Set the current headline text.
+        self.setDefaultDirectoryForNewFiles(fileName)
+        # Disable path-changed messages in writeAllHelper.
+        c.ignoreChangedPaths = True
+        try:
+            self.write_Leo_file(fileName,outlineOnlyFlag=False)
+        finally:
+            c.ignoreChangedPaths = False
+        self.putSavedMessage(fileName)
+
+        c.redraw_after_icons_changed()
+
+    g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
+#@-node:ekr.20031218072017.3044:saveTo (leoFileCommands)
+#@+node:ekr.20041005105605.149:writeAllHelper (atFile)
+def writeAllHelper (self,p,
+    force,toString,writeAtFileNodesFlag,writtenFiles
+):
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c
+
+    if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
+        pathChanged = False
+    else:
+        oldPath = at.getPathUa(p).lower()
+        newPath = at.fullPath(p).lower()
+        pathChanged = oldPath and oldPath != newPath
+        # 2010/01/27: suppress this message during save-as and save-to commands.
+        if pathChanged and not c.ignoreChangedPaths:
+            at.setPathUa(p,newPath) # Remember that we have changed paths.
+            g.es_print('path changed for',p.h,color='blue')
+            if trace: g.trace('p %s\noldPath %s\nnewPath %s' % (
+                p.h,repr(oldPath),repr(newPath)))
+
+    if p.v.isDirty() or pathChanged or writeAtFileNodesFlag or p.v in writtenFiles:
+
+        # Tricky: @ignore not recognised in @asis nodes.
+        if p.isAtAsisFileNode():
+            at.asisWrite(p,toString=toString)
+            writtenFiles.append(p.v)
+        elif p.isAtIgnoreNode():
+            pass
+        elif p.isAtAutoNode():
+            at.writeOneAtAutoNode(p,toString=toString,force=force)
+            writtenFiles.append(p.v)
+        elif p.isAtEditNode():
+            at.writeOneAtEditNode(p,toString=toString)
+            writtenFiles.append(p.v)
+        elif p.isAtNoSentFileNode():
+            at.write(p,kind='@nosent',nosentinels=True,toString=toString)
+            writtenFiles.append(p.v)
+        elif p.isAtShadowFileNode():
+            at.writeOneAtShadowNode(p,toString=toString,force=force or pathChanged)
+            writtenFiles.append(p.v)
+        elif p.isAtThinFileNode():
+            at.write(p,kind='@thin',thinFile=True,toString=toString)
+            writtenFiles.append(p.v)
+        elif p.isAtFileNode():
+            # Write old @file nodes using @thin format.
+            at.write(p,kind='@file',thinFile=True,toString=toString)
+            writtenFiles.append(p.v)
+#@-node:ekr.20041005105605.149:writeAllHelper (atFile)
+#@-node:ekr.20100126215837.15931:Suppress path changed message in save-as and save-to
+#@+node:ekr.20100127045907.6221:Fixed 3.x crash when replacing files
+@nocolor-node
+
+exception writing: C:\Users\edreamleo\Desktop\thin-unicode-test.txt
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 2424, in write
+    at.replaceTargetFileIfDifferent(root)
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 4541, in replaceTargetFileIfDifferent
+    ignoreBlankLines=ignoreBlankLines):
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 4035, in compareFiles
+    s1,s2 = f1.read(), f2.read()
+  File "c:\python31\lib\encodings\cp1252.py", line 23, in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+UnicodeDecodeError: 'charmap' codec can't decode byte 0x8d in position 326: character maps to <undefined>
+exception removing: C:\Users\edreamleo\Desktop\thin-unicode-test.txt.tmp
+#@+node:ekr.20100125073206.8710:g.readFileIntoString (Leo 4.7)
+def readFileIntoString (fn,encoding='utf-8',kind=None,mode='rb',raw=False):
+
+    '''Return the contents of the file whose full path is fn.
+
+    Return (s,e)
+    s is the string, converted to unicode, or None if there was an error.
+    e the encoding line for Python files: it is usually None.
+    '''
+
+    try:
+        e = None
+        f = open(fn,mode)
+        s = f.read()
+        f.close()
+        if raw:
+            return s,None
+        else:
+            # Python's encoding comments override everything else.
+            if s:
+                junk,ext = g.os_path_splitext(fn)
+                if ext == '.py':
+                    e = g.getPythonEncodingFromString(s)
+            s = g.toUnicode(s,encoding=e or encoding)
+            return s,e
+    except IOError:
+        # Translate 'can not open' and kind, but not fn.
+        if kind:
+            g.es('can not open','',kind,fn,color='red')
+        else:
+            g.es('can not open',fn,color='red')
+    except Exception:
+        g.trace('unexpected exception reading %s' % (fn),color='red')
+        g.es_exception()
+
+    import leo.core.leoTest as leoTest
+    leoTest.fail()
+    return None,None
+#@-node:ekr.20100125073206.8710:g.readFileIntoString (Leo 4.7)
+#@+node:ekr.20041005105605.197:compareFiles
+def compareFiles (self,path1,path2,ignoreLineEndings,ignoreBlankLines=False):
+
+    """Compare two text files."""
+    at = self
+
+    # We can't use 'U' mode because of encoding issues (Python 2.x only).
+    s1,e = g.readFileIntoString(path1,mode='rb',raw=True)
+    if s1 is None: return False # Should never happen.
+    s2,e = g.readFileIntoString(path2,mode='rb',raw=True)
+    if s2 is None: return False # Should never happen.
+    equal = s1 == s2
+    if ignoreBlankLines and not equal:
+        s1 = g.removeBlankLines(s1)
+        s2 = g.removeBlankLines(s2)
+        equal = s1 == s2
+    if ignoreLineEndings and not equal:
+        s1 = g.toUnicode(s1,encoding=at.encoding)
+        s2 = g.toUnicode(s2,encoding=at.encoding)
+        s1 = s1.replace('\n','').replace('\r','')
+        s2 = s2.replace('\n','').replace('\r','')
+        equal = s1 == s2
+    # g.trace('equal',equal,'ignoreLineEndings',ignoreLineEndings,'encoding',at.encoding)
+    return equal
+#@nonl
+#@-node:ekr.20041005105605.197:compareFiles
+#@-node:ekr.20100127045907.6221:Fixed 3.x crash when replacing files
 #@-node:ekr.20100118163110.6256:Leo 4.7 b2 projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt

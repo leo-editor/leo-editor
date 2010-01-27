@@ -15,7 +15,7 @@
 #@-node:ekr.20100124141558.6196:Update docs re @file and @noref
 #@+node:ekr.20100125190708.6258:Better screen shots
 #@-node:ekr.20100125190708.6258:Better screen shots
-#@+node:ekr.20100124142131.6223:Fix Terry's unicode problem
+#@+node:ekr.20100124142131.6223:demonstrate Terry's unicode problem
 @nocolor-node
 
 Deleting a range of line containing unicode characters deletes too much.
@@ -831,7 +831,7 @@ def insertNewlineHelper (self,w,oldSel,undoType):
 
     w.seeInsertPoint()
 #@-node:ekr.20051026171121:insertNewlineHelper
-#@-node:ekr.20100124142131.6223:Fix Terry's unicode problem
+#@-node:ekr.20100124142131.6223:demonstrate Terry's unicode problem
 #@-node:ekr.20091005145253.6059:Before b2
 #@+node:ekr.20100126110826.6253:before rc1
 #@+node:ekr.20100111094359.6208:Simplify goto-line and fix bugs

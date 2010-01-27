@@ -2533,19 +2533,21 @@ class atFile:
         force,toString,writeAtFileNodesFlag,writtenFiles
     ):
 
-        at = self
+        trace = False and not g.unitTesting
+        at = self ; c = at.c
 
         if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
             pathChanged = False
         else:
-            oldPath = at.getPathUa(p)
-            newPath = at.fullPath(p)
-            # if trace: g.trace('p %s\noldPath %s\nnewPath %s' % (
-                # p.h,repr(oldPath),repr(newPath)))
+            oldPath = at.getPathUa(p).lower()
+            newPath = at.fullPath(p).lower()
             pathChanged = oldPath and oldPath != newPath
-            if pathChanged:
+            # 2010/01/27: suppress this message during save-as and save-to commands.
+            if pathChanged and not c.ignoreChangedPaths:
                 at.setPathUa(p,newPath) # Remember that we have changed paths.
                 g.es_print('path changed for',p.h,color='blue')
+                if trace: g.trace('p %s\noldPath %s\nnewPath %s' % (
+                    p.h,repr(oldPath),repr(newPath)))
 
         if p.v.isDirty() or pathChanged or writeAtFileNodesFlag or p.v in writtenFiles:
 
@@ -4020,27 +4022,30 @@ class atFile:
             return None
     #@-node:ekr.20041005105605.135:closeWriteFile
     #@+node:ekr.20041005105605.197:compareFiles
-    # This routine is needed to handle cvs stupidities.
-
     def compareFiles (self,path1,path2,ignoreLineEndings,ignoreBlankLines=False):
 
-        """Compare two text files ignoring line endings."""
+        """Compare two text files."""
+        at = self
 
-        try:
-            # Opening both files in text mode converts all line endings to '\n'.
-            mode = g.choose(ignoreLineEndings,"r","rb")
-            f1 = open(path1,mode)
-            f2 = open(path2,mode)
-            s1,s2 = f1.read(), f2.read()
-            f1.close() ; f2.close()
+        # We can't use 'U' mode because of encoding issues (Python 2.x only).
+        s1,e = g.readFileIntoString(path1,mode='rb',raw=True)
+        if s1 is None: return False # Should never happen.
+        s2,e = g.readFileIntoString(path2,mode='rb',raw=True)
+        if s2 is None: return False # Should never happen.
+        equal = s1 == s2
+        if ignoreBlankLines and not equal:
+            s1 = g.removeBlankLines(s1)
+            s2 = g.removeBlankLines(s2)
             equal = s1 == s2
-            if ignoreBlankLines and not equal:
-                s1 = g.removeBlankLines(s1)
-                s2 = g.removeBlankLines(s2)
-                equal = s1 == s2
-            return equal
-        except IOError:
-            return False # Should never happen
+        if ignoreLineEndings and not equal:
+            s1 = g.toUnicode(s1,encoding=at.encoding)
+            s2 = g.toUnicode(s2,encoding=at.encoding)
+            s1 = s1.replace('\n','').replace('\r','')
+            s2 = s2.replace('\n','').replace('\r','')
+            equal = s1 == s2
+        # g.trace('equal',equal,'ignoreLineEndings',ignoreLineEndings,'encoding',at.encoding)
+        return equal
+    #@nonl
     #@-node:ekr.20041005105605.197:compareFiles
     #@+node:ekr.20041005105605.198:directiveKind4
     def directiveKind4(self,s,i):

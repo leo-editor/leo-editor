@@ -1704,7 +1704,7 @@ class baseFileCommands:
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
         return ok
     #@-node:ekr.20031218072017.1720:save (fileCommands)
-    #@+node:ekr.20031218072017.3043:saveAs
+    #@+node:ekr.20031218072017.3043:saveAs (leoFileCommands)
     def saveAs(self,fileName):
 
         c = self.c ; v = c.currentVnode()
@@ -1712,15 +1712,20 @@ class baseFileCommands:
         if not g.doHook("save1",c=c,p=v,v=v,fileName=fileName):
             c.endEditing() # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
-            if self.write_Leo_file(fileName,False): # outlineOnlyFlag
-                c.setChanged(False) # Clears all dirty bits.
-                self.putSavedMessage(fileName)
+            # Disable path-changed messages in writeAllHelper.
+            c.ignoreChangedPaths = True
+            try:
+                if self.write_Leo_file(fileName,outlineOnlyFlag=False):
+                    c.setChanged(False) # Clears all dirty bits.
+                    self.putSavedMessage(fileName)
+            finally:
+                c.ignoreChangedPaths = True
 
             c.redraw_after_icons_changed()
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
-    #@-node:ekr.20031218072017.3043:saveAs
-    #@+node:ekr.20031218072017.3044:saveTo
+    #@-node:ekr.20031218072017.3043:saveAs (leoFileCommands)
+    #@+node:ekr.20031218072017.3044:saveTo (leoFileCommands)
     def saveTo (self,fileName):
 
         c = self.c ; v = c.currentVnode()
@@ -1728,13 +1733,18 @@ class baseFileCommands:
         if not g.doHook("save1",c=c,p=v,v=v,fileName=fileName):
             c.endEditing()# Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
-            self.write_Leo_file(fileName,False) # outlineOnlyFlag
+            # Disable path-changed messages in writeAllHelper.
+            c.ignoreChangedPaths = True
+            try:
+                self.write_Leo_file(fileName,outlineOnlyFlag=False)
+            finally:
+                c.ignoreChangedPaths = False
             self.putSavedMessage(fileName)
 
             c.redraw_after_icons_changed()
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
-    #@-node:ekr.20031218072017.3044:saveTo
+    #@-node:ekr.20031218072017.3044:saveTo (leoFileCommands)
     #@+node:ekr.20070413061552:putSavedMessage
     def putSavedMessage (self,fileName):
 
@@ -2094,7 +2104,7 @@ class baseFileCommands:
                 c.db['current_position_%s' % key] = str_pos
                 if d.get('str_leo_pos'): del d['str_leo_pos']
                 # g.trace('to c.db',str_pos,key)
-            elif fixed:
+            elif c.fixed:
                 if d.get('str_leo_pos'): del d['str_leo_pos']
             else:
                 d['str_leo_pos'] = str_pos

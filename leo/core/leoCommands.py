@@ -286,11 +286,13 @@ class baseCommands (object):
         self.loading = False # True if we are loading a file: disables c.setChanged()
         self.outlineToNowebDefaultFileName = "noweb.nw" # For Outline To Noweb dialog.
         self.promptingForClose = False # To lock out additional closing dialogs.
+        self.ignoreChangedPaths = False # True: disable path changed message in at.WriteAllHelper.
 
         # For tangle/untangle
         self.tangle_errors = 0
 
         # Global options
+        self.fixed = False
         self.page_width = 132
         self.tab_width = -4
         self.tangle_batch_flag = False
@@ -1277,7 +1279,6 @@ class baseCommands (object):
         c.bringToFront()
 
         if fileName:
-            g.trace(fileName)
             # 7/2/02: don't change mFileName until the dialog has suceeded.
             c.mFileName = g.ensure_extension(fileName, ".leo")
             c.frame.title = c.mFileName
