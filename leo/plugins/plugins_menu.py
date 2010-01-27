@@ -81,12 +81,16 @@ Some names defined at the top level have special significance.
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
-Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=False)
+if g.isPython3:
+    pass
+else:
+    Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=False)
 
 if g.isPython3:
     import configparser as ConfigParse
 else:
     import ConfigParser
+
 import glob
 import os
 import sys
