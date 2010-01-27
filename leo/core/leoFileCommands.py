@@ -1048,10 +1048,12 @@ class baseFileCommands:
     #@+node:EKR.20040627120120:restoreDescendentAttributes
     def restoreDescendentAttributes (self):
 
-        c = self.c ; trace = False ; verbose = True and not g.unitTesting
+        trace = False and not g.unitTesting
+        verbose = False
+        c = self.c
 
         for resultDict in self.descendentTnodeUaDictList:
-            if trace: g.trace('t.dict',resultDict)
+            if trace and verbose: g.trace('t.dict',resultDict)
             for gnx in resultDict:
                 tref = self.canonicalTnodeIndex(gnx)
                 v = self.gnxDict.get(tref)
@@ -1622,17 +1624,27 @@ class baseFileCommands:
     #@+node:ekr.20060919110638.13:setPositionsFromVnodes & helper
     def setPositionsFromVnodes (self):
 
+        trace = False and not g.unitTesting
         c = self.c ; p = c.rootPosition()
+        current,str_pos = None,None
+        use_db = g.enableDB and c.db and c.mFileName
 
-        current = None
-        d = hasattr(p.v,'unknownAttributes') and p.v.unknownAttributes
-        if d:
-            s = d.get('str_leo_pos')
-            if s:
-                current = self.archivedPositionToPosition(s)
+        if use_db:
+            globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+            globals_tag = g.toEncodedString(globals_tag,'ascii')
+            key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+            str_pos = c.db.get('current_position_%s' % key)
+            if trace: g.trace('from c.db',str_pos,key)
+
+        if not str_pos:
+            d = hasattr(p.v,'unknownAttributes') and p.v.unknownAttributes
+            if d: str_pos = d.get('str_leo_pos')
+            if trace: g.trace('from p.v.u',str_pos)
+
+        if str_pos:
+            current = self.archivedPositionToPosition(str_pos)
 
         c.setCurrentPosition(current or c.rootPosition())
-    #@nonl
     #@+node:ekr.20061006104837.1:archivedPositionToPosition
     def archivedPositionToPosition (self,s):
 
@@ -1793,33 +1805,8 @@ class baseFileCommands:
     #@+node:ekr.20031218072017.1971:putClipboardHeader
     def putClipboardHeader (self):
 
-        c = self.c ; tnodes = 0
-
-        if 1: # Put the minimum header for sax.
-            self.put('<leo_header file_format="2"/>\n')
-
-        else: # Put the header for the old read code.
-            #@        << count the number of tnodes >>
-            #@+node:ekr.20031218072017.1972:<< count the number of tnodes >>
-            c.clearAllVisited()
-
-            for p in c.p.self_and_subtree():
-                v = p.v
-                if v and not v.isWriteBit():
-                    v.setWriteBit()
-                    tnodes += 1
-            #@-node:ekr.20031218072017.1972:<< count the number of tnodes >>
-            #@nl
-            self.put('<leo_header file_format="1" tnodes=')
-            self.put_in_dquotes(str(tnodes))
-            self.put(" max_tnode_index=")
-            self.put_in_dquotes(str(tnodes))
-            self.put("/>") ; self.put_nl()
-
-            # New in Leo 4.4.3: Add dummy elements so copied nodes form a valid .leo file.
-            self.put('<globals/>\n')
-            self.put('<preferences/>\n')
-            self.put('<find_panel_settings/>\n')
+        # Put the minimum header for sax.
+        self.put('<leo_header file_format="2"/>\n')
     #@-node:ekr.20031218072017.1971:putClipboardHeader
     #@+node:ekr.20040324080819.1:putLeoFile & helpers
     def putLeoFile (self):
@@ -1875,7 +1862,7 @@ class baseFileCommands:
             #@-node:ekr.20100112095623.6267:<< put all data to c.db >>
             #@nl
 
-        # Always put postions, to trigger sax methods.
+        # Always put positions, to trigger sax methods.
         self.put("<globals")
         #@    << put the body/outline ratios >>
         #@+node:ekr.20031218072017.3038:<< put the body/outline ratios >>
@@ -2070,7 +2057,7 @@ class baseFileCommands:
         elif isEdit:   forceWrite = False     # Never write non-ignored @edit trees.
         elif isShadow: forceWrite = False     # Never write non-ignored @shadow trees.
         elif isThin:   forceWrite = isOrphan  # Only write orphan @thin trees.
-        else:          forceWrite = True      # Write all other @file trees.
+        else:          forceWrite = True      # Write all other @<file> trees.
 
         #@    << Set gnx = vnode index >>
         #@+node:ekr.20031218072017.1864:<< Set gnx = vnode index >>
@@ -2082,7 +2069,7 @@ class baseFileCommands:
         #@nl
         attrs = []
         #@    << Append attribute bits to attrs >>
-        #@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
+        #@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >> putVnode
         # These string catenations are benign because they rarely happen.
         attr = ""
         # New in Leo 4.5: support fixed .leo files.
@@ -2097,8 +2084,20 @@ class baseFileCommands:
         if p == self.rootPosition:
             aList = [str(z) for z in self.currentPosition.archivedPosition()]
             d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
-            if not c.fixed:
-                d['str_leo_pos'] = ','.join(aList)
+            str_pos = ','.join(aList)
+            # 2010/01/26: don't write the current position if we can cache it.
+            use_db = g.enableDB and c.db and c.mFileName
+            if use_db:
+                globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+                globals_tag = g.toEncodedString(globals_tag,'ascii')
+                key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+                c.db['current_position_%s' % key] = str_pos
+                if d.get('str_leo_pos'): del d['str_leo_pos']
+                g.trace('to c.db',str_pos,key)
+            elif fixed:
+                if d.get('str_leo_pos'): del d['str_leo_pos']
+            else:
+                d['str_leo_pos'] = str_pos
             # g.trace(aList,d)
             v.unknownAttributes = d
         elif hasattr(v,"unknownAttributes"):
@@ -2107,7 +2106,7 @@ class baseFileCommands:
                 # g.trace("clearing str_leo_pos",v)
                 del d['str_leo_pos']
                 v.unknownAttributes = d
-        #@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
+        #@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >> putVnode
         #@nl
         #@    << Append unKnownAttributes to attrs >>
         #@+node:ekr.20040324082713:<< Append unKnownAttributes to attrs>> putVnode
