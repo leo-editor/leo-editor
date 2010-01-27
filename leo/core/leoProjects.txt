@@ -7317,6 +7317,124 @@ def compareFiles (self,path1,path2,ignoreLineEndings,ignoreBlankLines=False):
 #@nonl
 #@-node:ekr.20041005105605.197:compareFiles
 #@-node:ekr.20100127045907.6221:Fixed 3.x crash when replacing files
+#@+node:ekr.20100127074338.6249:Fixed Tangle problem with latext files
+tangle.scanAllDirectives now properly updates the delim ivars.
+#@nonl
+#@+node:ekr.20080831084419.4:g.scanAtWrapDirectives & scanAllAtWrapDirectives
+def scanAtWrapDirectives(aList,issue_error_flag=False):
+
+    '''Scan aList for @wrap and @nowrap directives.'''
+
+    for d in aList:
+        if d.get('wrap') is not None:
+            return True
+        elif d.get('nowrap') is not None:
+            return False
+
+    return None
+
+def scanAllAtWrapDirectives(c,p):
+
+    aList = g.get_directives_dict_list(p)
+    default = c.config.getBool("body_pane_wraps")
+    val = g.scanAtWrapDirectives(aList)
+    ret = g.choose(val is None,default,val)
+    # g.trace(ret,p.h)
+    return ret
+
+#@-node:ekr.20080831084419.4:g.scanAtWrapDirectives & scanAllAtWrapDirectives
+#@+node:ekr.20080923124254.16:tangle.scanAllDirectives
+def scanAllDirectives(self,p):
+
+    """Scan vnode p and p's ancestors looking for directives,
+    setting corresponding tangle ivars and globals.
+    """
+
+    c = self.c
+    self.init_directive_ivars()
+    if p:
+        s = p.b
+        << Collect @first attributes >>
+
+    # delims = (self.single_comment_string,self.start_comment_string,self.end_comment_string)
+    lang_dict = {'language':self.language,'delims':None,} # Delims not used
+
+    table = (
+        ('encoding',    self.encoding,  g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives), 
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    # Post process.
+    lang_dict       = d.get('lang-dict')
+    lineending      = d.get('lineending')
+    if lineending:
+        self.output_newline = lineending
+    self.encoding             = d.get('encoding')
+    self.language             = lang_dict.get('language')
+    self.page_width           = d.get('pagewidth')
+    self.tangle_directory     = d.get('path')
+    self.tab_width            = d.get('tabwidth')
+
+    # Handle the print-mode directives.
+    self.print_mode = None
+    for d in aList:
+        for key in ('verbose','terse','quiet','silent'):
+            if d.get(key) is not None:
+                self.print_mode = key ; break
+        if self.print_mode: break
+    if not self.print_mode: self.print_mode = 'verbose'
+
+    # 2010/01/27: bug fix: make sure to set the ivars.
+    delim1,delim2,delim3 = g.set_delims_from_language(self.language)
+    self.single_comment_string = delim1
+    self.start_comment_string = delim2
+    self.end_comment_string = delim3
+
+    # g.trace(self.tangle_directory)
+
+    # For unit testing.
+    return {
+        "encoding"  : self.encoding,
+        "language"  : self.language,
+        "lineending": self.output_newline,
+        "pagewidth" : self.page_width,
+        "path"      : self.tangle_directory,
+        "tabwidth"  : self.tab_width,
+    }
+#@+node:ekr.20080923124254.17:<< Collect @first attributes >>
+@ Stephen P. Schaefer 9/13/2002: Add support for @first.
+Unlike other root attributes, does *NOT* inherit from parent nodes.
+@c
+tag = "@first"
+sizeString = len(s) # DTHEIN 13-OCT-2002: use to detect end-of-string
+i = 0
+while 1:
+    # DTHEIN 13-OCT-2002: directives must start at beginning of a line
+    if not g.match_word(s,i,tag):
+        i = g.skip_line(s,i)
+    else:
+        i = i + len(tag)
+        j = i = g.skip_ws(s,i)
+        i = g.skip_to_end_of_line(s,i)
+        if i>j:
+            self.first_lines += s[j:i] + '\n'
+        i = g.skip_nl(s,i)
+    if i >= sizeString:  # DTHEIN 13-OCT-2002: get out when end of string reached
+        break
+#@-node:ekr.20080923124254.17:<< Collect @first attributes >>
+#@-node:ekr.20080923124254.16:tangle.scanAllDirectives
+#@-node:ekr.20100127074338.6249:Fixed Tangle problem with latext files
 #@-node:ekr.20100118163110.6256:Leo 4.7 b2 projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt

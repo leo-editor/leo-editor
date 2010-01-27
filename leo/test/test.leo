@@ -459,12 +459,20 @@
 </v>
 </v>
 <v t="ekr.20100119095726.2043"><vh>rest colorizing</vh></v>
+<v t="ekr.20100127111116.2059"><vh>wrapping</vh></v>
 </v>
 <v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
 <v t="ekr.20100118190902.2002"><vh>@auto C:\Python26\Lib\site-packages\pylint-0.19.0-py2.6.egg\pylint\lint.py</vh></v>
 <v t="ekr.20100122125233.2053"><vh>@test zcpspm</vh></v>
 <v t="ekr.20100125064546.2062"><vh>@edit unicode-test.txt.desktop</vh></v>
 <v t="ekr.20100126111634.2065"><vh>@thin thin-unicode-test.txt</vh></v>
+<v t="ekr.20100127075221.2052"><vh>@@edit C:\Python26\Lib\site-packages\pylint-0.19.0-py2.6.egg\pylint\checkers\exceptions.py</vh></v>
+<v t="ekr.20100127111425.2062"><vh>search script</vh></v>
+<v t="ekr.20100127102234.2053"><vh>latex example</vh>
+<v t="ekr.20100127102234.2055"><vh>root latex-test.tex</vh>
+<v t="ekr.20100127102234.2054"><vh>&lt;&lt; preamble &gt;&gt;</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5129,6 +5137,77 @@ try:
    c.pasteOutline()
 finally:
    c.redraw_now()
+</t>
+<t tx="ekr.20100127075221.2052"></t>
+<t tx="ekr.20100127102234.2053">@nocolor-node
+
+As a result I got a file that contains:
+    
++----------8&lt;------------------
+# &lt;&lt;preamble&gt;&gt;
+\documentclass[a4paper,10pt]{article}
+# -- end -- &lt;&lt;preamble&gt;&gt;
+
+\begin{document}
+test
+\end{document}
++----------8&lt;------------------
+
+Obviously, the sign "#" is not correct comment delimiter, so the
+result file is not a correct LaTeX source.
+The questions are: why there is "# &lt;&lt;preamble&gt;&gt;" and not "%
+&lt;&lt;preamble&gt;&gt;", while @language is latex?
+and how to repair it?
+</t>
+<t tx="ekr.20100127102234.2054">@c
+\documentclass[a4paper,10pt]{article}
+
+</t>
+<t tx="ekr.20100127102234.2055">@language latex
+@terse
+@root Intro.tex
+
+ &lt;&lt;preamble&gt;&gt;
+\begin{document}
+test
+\end{document}
+</t>
+<t tx="ekr.20100127111116.2059">@nowrap
+
+aaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbb cccccccccccccccccccccc ddddddddddddddddddddddd eeeeeeeeeeeeeeeeeee fffffffffffffffffffffff
+aaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbb cccccccccccccccccccccc ddddddddddddddddddddddd eeeeeeeeeeeeeeeeeee fffffffffffffffffffffff
+aaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbb cccccccccccccccccccccc ddddddddddddddddddddddd eeeeeeeeeeeeeeeeeee fffffffffffffffffffffff</t>
+<t tx="ekr.20100127111425.2062"># Searching on Windows 7 is absolutely wretched.
+import glob
+import os
+
+pattern = 'Exception'
+ignoreCase = True
+paths = (
+    'C:\Python26\Lib\site-packages\pylint-0.19.0-py2.6.egg\pylint',
+    'C:\Python26\Lib\site-packages\pylint-0.19.0-py2.6.egg\pylint\checkers',
+)
+
+os.system('CLS')
+print('\n','-'*20,pattern)
+for path in paths:
+    files = glob.glob(g.os_path_join(path,'*.py'))
+    for fn in files:
+        found = False
+        s,e = g.readFileIntoString(fn)
+        if ignoreCase:
+            s = s.lower()
+            pattern = pattern.lower()
+        i = 0
+        while i &lt; len(s):
+            i = s.find(pattern,i)
+            if i == -1: break
+            n1,n2 = g.getLine(s,i)
+            i = n2
+            if not found:
+                g.pr('\n','-' * 10,g.shortFileName(fn))
+                found = True
+            g.pr(s[n1:n2-1])
 </t>
 </tnodes>
 </leo_file>

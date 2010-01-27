@@ -2499,9 +2499,13 @@ class leoQtBody (leoFrame.leoBody):
 
         c = self.c
         w = c.frame.body.widget.widget
-        d = c.scanAllDirectives(p)
-        if d is None: return
-        wrap = d.get('wrap')
+        if 1:
+            # Quicker, more self-contained.
+            wrap = g.scanAllAtWrapDirectives(c,p)
+        else:
+            d = c.scanAllDirectives(p)
+            if d is None: return
+            wrap = d.get('wrap')
         w.setWordWrapMode(
             g.choose(wrap,
                 QtGui.QTextOption.WordWrap,

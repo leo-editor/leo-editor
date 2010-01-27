@@ -800,7 +800,7 @@ def scanAtTabwidthDirectives(aList,issue_error_flag=False):
 
     return None
 #@-node:ekr.20080827175609.37:g.scanAtTabwidthDirectives
-#@+node:ekr.20080831084419.4:g.scanAtWrapDirectives
+#@+node:ekr.20080831084419.4:g.scanAtWrapDirectives & scanAllAtWrapDirectives
 def scanAtWrapDirectives(aList,issue_error_flag=False):
 
     '''Scan aList for @wrap and @nowrap directives.'''
@@ -812,8 +812,17 @@ def scanAtWrapDirectives(aList,issue_error_flag=False):
             return False
 
     return None
-#@nonl
-#@-node:ekr.20080831084419.4:g.scanAtWrapDirectives
+
+def scanAllAtWrapDirectives(c,p):
+
+    aList = g.get_directives_dict_list(p)
+    default = c.config.getBool("body_pane_wraps")
+    val = g.scanAtWrapDirectives(aList)
+    ret = g.choose(val is None,default,val)
+    # g.trace(ret,p.h)
+    return ret
+
+#@-node:ekr.20080831084419.4:g.scanAtWrapDirectives & scanAllAtWrapDirectives
 #@+node:ekr.20080901195858.4:g.scanDirectives  (for compatibility only)
 def scanDirectives(c,p=None):
 
@@ -872,13 +881,15 @@ def scanForAtSettings(p):
 
 def set_delims_from_language(language):
 
-    # g.trace(g.callers())
+    trace = False and not g.unitTesting
 
     val = g.app.language_delims_dict.get(language)
     # if language.startswith('huh'): g.pdb()
 
     if val:
         delim1,delim2,delim3 = g.set_delims_from_string(val)
+        if trace: g.trace(repr(language),
+            repr(delim1),repr(delim2),repr(delim3),g.callers(5))
         if delim2 and not delim3:
             return '',delim1,delim2
         else: # 0,1 or 3 params.

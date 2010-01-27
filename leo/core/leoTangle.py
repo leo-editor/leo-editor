@@ -388,6 +388,8 @@ class baseTangleCommands:
         self.end_comment_string = "*/"
         self.sentinel = None
 
+        # g.trace(self.single_comment_string)
+
         # The filename following @root in a headline.
         # The code that checks for < < * > > = uses these globals.
         self.root = None
@@ -462,6 +464,8 @@ class baseTangleCommands:
         self.single_comment_string = delim1
         self.start_comment_string = delim2
         self.end_comment_string = delim3
+
+        # g.trace(self.single_comment_string)
 
         # Abbreviations for self.language.
         # Warning: these must also be initialized in tangle.scanAllDirectives.
@@ -1373,6 +1377,8 @@ class baseTangleCommands:
             self.tab_width = section.root_attributes.tab_width
             # Stephen P. Schaefer, 9/13/2002
             self.first_lines = section.root_attributes.first_lines
+
+            g.trace(self.single_comment_string)
             #@-node:ekr.20031218072017.1152:<<Get root specific attributes>>
             #@nl
             #@        <<Put @first lines>>
@@ -3467,6 +3473,12 @@ class baseTangleCommands:
                     self.print_mode = key ; break
             if self.print_mode: break
         if not self.print_mode: self.print_mode = 'verbose'
+
+        # 2010/01/27: bug fix: make sure to set the ivars.
+        delim1,delim2,delim3 = g.set_delims_from_language(self.language)
+        self.single_comment_string = delim1
+        self.start_comment_string = delim2
+        self.end_comment_string = delim3
 
         # g.trace(self.tangle_directory)
 
