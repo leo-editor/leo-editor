@@ -1,10 +1,29 @@
 #@+leo-ver=4-thin
-#@+node:ville.20091008210853.5241:@thin stickynotes.py
+#@+node:ekr.20100103093121.5329:@thin stickynotes.py
 #@<< docstring >>
 #@+node:vivainio2.20091008133028.5821:<< docstring >>
-''' Simple "sticky notes" feature (popout editors)
+'''Simple "sticky notes" feature (popout editors)
 
-alt-x stickynote to pop out current node as a note
+Adds the following (``Alt-X``) commands:
+
+``stickynote``
+  pop out current node as a sticky note
+``stickynoter``
+  pop out current node as a rich text note
+``stickynoteenc``
+  pop out current node as an encrypted note
+``stickynoteenckey``
+  enter a new en/decryption key
+
+Sticky notes are synchronized (both ways) with their parent Leo node.
+
+Encrypted mode requires the python-crypto module.
+
+The first time you open a note in encrypted mode you'll be asked for a pass phrase.  That phrase will be used for the rest of the session, you can change it with ``Alt-X`` ``stickynoteenckey``, but probably won't need to.
+
+The encrypted note is stored in base64 encoded *encrypted* text in the parent Leo node, if you forget the pass phrase there's no way to un-encrypt it again.  Also, you must not edit the text in the Leo node.
+
+When **creating an encrypted note**, you should **start with and empty node**.  If you want to encrypt text that already exists in a node, select-all cut it to empty the node, then paste it into the note.
 
 '''
 #@-node:vivainio2.20091008133028.5821:<< docstring >>
@@ -34,10 +53,22 @@ g.assertUi('qt')
 import sys
 import webbrowser
 
-from PyQt4.QtCore import (QSize, QString, QVariant, Qt, SIGNAL,QTimer)
+encOK = False
+try:
+    from Crypto.Cipher import AES
+    from Crypto.Hash import MD5, SHA
+    import base64
+    import textwrap
+    __ENCKEY = [None]
+    encOK = True
+except ImportError:
+    pass
+
+from PyQt4.QtCore import (QSize, QString, QVariant, Qt, SIGNAL, QTimer)
 from PyQt4.QtGui import (QAction, QApplication, QColor, QFont,
         QFontMetrics, QIcon, QKeySequence, QMenu, QPixmap, QTextCursor,
-        QTextCharFormat, QTextBlockFormat, QTextListFormat,QTextEdit,QPlainTextEdit)
+        QTextCharFormat, QTextBlockFormat, QTextListFormat,QTextEdit,
+        QPlainTextEdit, QInputDialog)
 #@nonl
 #@-node:vivainio2.20091008133028.5823:<< imports >>
 #@nl
@@ -260,7 +291,85 @@ def stickynoter_f(event):
 
     g.app.stickynotes[p.gnx] = nf
 #@-node:ville.20091023181249.5266:g.command('stickynoter')
+#@+node:tbrown.20100120100336.7829:g.command('stickynoteenc')
+if encOK:
+    @g.command('stickynoteenc')
+    def stickynoteenc_f(event):
+        """ Launch editable 'sticky note' for the encrypted node """
+
+        if not encOK:
+            g.es('no en/decryption - need python-crypto module')
+            return
+
+        if not __ENCKEY[0]:
+            sn_getenckey()
+
+        c= event['c']
+        p = c.p
+        v = p.v
+        def focusin():
+            #print "focus in"
+            if v is c.p.v:
+                nf.setPlainText(sn_decode(v.b))
+                nf.setWindowTitle(p.h)
+                nf.dirty = False
+
+        def focusout():
+            #print "focus out"
+            if not nf.dirty:
+                return
+            v.b = sn_encode(str(nf.toPlainText()))
+            v.setDirty()
+            nf.dirty = False
+            p = c.p
+            if p.v is v:
+                c.selectPosition(c.p)
+
+
+        nf = FocusingPlaintextEdit(focusin, focusout)
+        nf.dirty = False
+        decorate_window(nf)
+        nf.setWindowTitle(p.h)
+        nf.setPlainText(sn_decode(p.b))
+        p.setDirty()
+
+        def textchanged_cb():
+            nf.dirty = True
+
+        nf.connect(nf,
+            SIGNAL("textChanged()"),textchanged_cb)
+
+        nf.show()
+
+        g.app.stickynotes[p.gnx] = nf
+#@-node:tbrown.20100120100336.7829:g.command('stickynoteenc')
+#@+node:tbrown.20100120100336.7830:sn_de/encode
+if encOK:
+    def sn_decode(s):
+        return AES.new(__ENCKEY[0]).decrypt(base64.b64decode(s)).strip()
+
+    def sn_encode(s):
+        pad = ' '*(16-len(s)%16)
+        return '\n'.join(textwrap.wrap(
+            base64.b64encode(AES.new(__ENCKEY[0]).encrypt(s+pad)),
+            break_long_words = True
+        ))
+
+    @g.command('stickynoteenckey')
+    def sn_getenckey(dummy=None):
+        txt,ok = QInputDialog.getText(None, 'Enter key', 'Enter key.\nData lost if key is lost.')
+        if not ok:
+            return
+        # arbitrary kludge to convert string to 256 bits - don't change
+        sha = SHA.new()
+        md5 = MD5.new()
+        sha.update(txt)
+        md5.update(txt)
+        __ENCKEY[0] = sha.digest()[:16] + md5.digest()[:16]
+        if len(__ENCKEY[0]) != 32:
+            raise Exception("sn_getenckey failed to build key")
+#@-node:tbrown.20100120100336.7830:sn_de/encode
 #@-others
 #@nonl
-#@-node:ville.20091008210853.5241:@thin stickynotes.py
+#@-node:ekr.20100103093121.5329:@thin stickynotes.py
 #@-leo
