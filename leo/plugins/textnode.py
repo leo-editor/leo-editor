@@ -88,7 +88,7 @@ def readtextnode(c, p):
         p.clearDirty()
         c.setChanged(changed)
         file.close()
-    except IOError,msg:
+    except IOError as msg:
         g.es("error reading %s: %s" % (name, msg))
         g.es("...not found: " + name)
         c.setBodyString(p,"") # Clear the body text.
@@ -102,7 +102,7 @@ def savetextnode(c, p):
         g.es("writing " + name)
         file.write(p.b)
         file.close()
-    except IOError,msg:
+    except IOError as msg:
         g.es("error writing %s: %s" % (name, msg))
         p.setDirty()
         p.setMarked(1)

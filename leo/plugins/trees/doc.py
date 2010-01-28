@@ -43,7 +43,7 @@ class Doc(BaseTreeHandler):
         self.done = sets.Set()
         try:
             module = __import__(parameter)
-        except Exception, err:
+        except Exception as err:
             g.es("Failed: %s" % (err,), color="red")
         else:
             components = parameter.split('.')

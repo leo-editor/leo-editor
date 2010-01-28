@@ -1328,7 +1328,6 @@ class pluginController(baseClasses.basePluginController):
 
             return contextCommands
 
-        #@-node:bobjack.20080516105903.33:get_sections
         #@+node:bobjack.20080516105903.34:get_help
         def get_help(self, word):
             """Create a menu item to apply python's help() to `word`.
@@ -1389,13 +1388,14 @@ class pluginController(baseClasses.basePluginController):
                     if 'print' in flags:
                         g.pr(doc)
 
-                except Exception, value:
+                except Exception as value:
                     g.es(str(value),color="red")
 
 
             menu_item=('Help on: '+ self.crop(word,30), help_command)
             return [ menu_item ]
         #@-node:bobjack.20080516105903.34:get_help
+        #@-node:bobjack.20080516105903.33:get_sections
         #@+node:bobjack.20080516105903.35:Utils for context sensitive commands
         #@+node:bobjack.20080516105903.36:get_text_and_word_from_body_text
         def get_text_and_word_from_body_text(self, widget):

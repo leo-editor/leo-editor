@@ -451,7 +451,7 @@ if 0:
                 n = c.p
                 h = n.h	
 
-        except Exception,e:
+        except Exception as e:
             TraceBack()
 #@nonl
 #@-node:ekr.20060513122450.396:OnStart2 (No longer used)
@@ -600,7 +600,7 @@ def AddText(text,node):
 # 		f = file(name+".lit","wb")
 # 		f.write(pdata)
 # 		f.close()
-# except Exception,e:
+# except Exception as e:
 # 	g.es(str(e))
 #@-at
 #@nonl
@@ -2532,7 +2532,7 @@ class ProcessClass:
                     self.Lock.release()
                     s=self.File.read(1)
 
-            except IOError, ioerr:
+            except IOError as ioerr:
                 self.Buffer = self.Buffer +"\n"+ "[@run] ioerror :"+str(ioerr)
         #@nonl
         #@-node:ekr.20060513122450.46:run

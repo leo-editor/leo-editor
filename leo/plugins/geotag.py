@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:tbrown.20091219105234.6178:@thin /mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/geotag/leo/plugins/geotag.py
+#@+node:tbrown.20091214233510.5347:@thin geotag.py
 #@<< docstring >>
 #@+node:tbrown.20091214233510.5348:<< docstring >>
 '''
@@ -127,11 +127,11 @@ def cmd_ShowNode(c):
             data['zoom'] = int(data['zoom'])
         if 'description' not in data or not data['description'].strip():
             data['description'] = c.p.h
-    except ValueError, TypeError:
+    except (ValueError,TypeError):
         data = {'description':c.p.h}
     g.pygeotag.show_position(data)
 #@-node:tbrown.20091215204347.11402:cmd_show_node
 #@-others
 #@nonl
-#@-node:tbrown.20091219105234.6178:@thin /mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/geotag/leo/plugins/geotag.py
+#@-node:tbrown.20091214233510.5347:@thin geotag.py
 #@-leo

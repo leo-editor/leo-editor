@@ -92,7 +92,7 @@ def getWordConnection():
         word.Visible = 1
         word.Documents.Add()
         return word
-    except Exception, err:
+    except Exception as err:
         g.es("Failed to connect to Word",color="blue")
         raise
         # return None
@@ -167,7 +167,7 @@ def cmd_Export(c):
                 config.get("Main", "use_section_numbers") == "Yes",
                 "")						 
             g.es("Done!")
-    except Exception,err:
+    except Exception as err:
         g.es("Exception writing Word",color="blue")
         g.es_exception()
 #@nonl

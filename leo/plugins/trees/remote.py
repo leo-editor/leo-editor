@@ -53,7 +53,7 @@ class Remote(BaseTreeHandler):
         #
         try:
             connection.perform()
-        except Exception, err:
+        except Exception as err:
             g.es("Failed: %s" % (err,), color="red")
             self.children.append(TreeNode("error", str(err)))
         #

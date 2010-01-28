@@ -57,13 +57,13 @@ def getConnection(parameter):
     #
     try:
         connection = nntplib.NNTP(server)
-    except Exception, err:
+    except Exception as err:
         g.es("Unable to connect to '%s': %s" % (server, err), color="red")
         raise NewsTreeError
     #
     try:
         resp, count, first, last, name = connection.group(group)
-    except Exception, err:
+    except Exception as err:
         g.es("Unable to talk to group '%s': %s" % (group, err), color="red")
         raise NewsTreeError
     #

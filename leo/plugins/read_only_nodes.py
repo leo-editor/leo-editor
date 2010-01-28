@@ -357,7 +357,7 @@ def insert_read_only_node (c,v,name):
         g.es("..." + name)
         new = file.read()
         file.close()
-    except IOError,msg:
+    except IOError as msg:
         # g.es("error reading %s: %s" % (name, msg))
         # g.es("...not found: " + name)
         c.setBodyString(v,"") # Clear the body text.

@@ -287,7 +287,7 @@ class pluginController:
             # Get the manager
             try:
                 self.plugin_manager = __import__("plugin_manager")
-            except ImportError, err:
+            except ImportError as err:
                 g.es("Autotrees did not load plugin manager: %s" % (err,), color="red")
                 self.plugin_manager = None
             #@-node:ekr.20050329082101.135:<< Get plugin manager module >>
@@ -300,7 +300,7 @@ class pluginController:
                 g.es("... looking in %s" % handler_name, color="blue")
                 try:
                     self.loadHandlersFrom(handler_name)
-                except BadHandler, err:
+                except BadHandler as err:
                     g.es("... unable to load '%s' handler: %s" % (handler_name, err), color="red")
             #@nonl
             #@-node:ekr.20050329082101.136:<< Find all handlers >>
@@ -313,7 +313,7 @@ class pluginController:
         """Load handlers from a module"""
         try:
             module = __import__(name)
-        except Exception, err:
+        except Exception as err:
             raise BadHandler("Failed import: %s" % err)
         #
         # Look for handler classes

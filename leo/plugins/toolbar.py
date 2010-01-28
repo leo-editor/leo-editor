@@ -2481,7 +2481,7 @@ class pluginController(baseClasses.basePluginController):
             try:
                 keywords['button'].deleteButton()
 
-            except Exception, e:
+            except Exception as e:
                 g.es_error('failed to delete button')
                 g.es_exception()
     #@-node:bobjack.20080426190702.3:toolbar-delete-button

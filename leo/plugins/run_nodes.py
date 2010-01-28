@@ -136,7 +136,7 @@ def OnBodyKey(tag,keywords):
             In.write(p.b.encode(Encoding))
             In.flush()
             g.es(p.b)
-        except IOError,ioerr:
+        except IOError as ioerr:
             g.es("[@run] IOError: "+str(ioerr),color="red")
             return
         c.setBodyText(p,"")
@@ -182,7 +182,7 @@ def OnIconDoubleClick(tag,keywords):
                 In.write(b.encode(Encoding)+"\n")
                 In.flush()
                 g.es(b)
-            except IOError,ioerr:
+            except IOError as ioerr:
                 g.es("@run IOError: "+str(ioerr),color="red")
             #@nonl
             #@-node:ekr.20040910102554.1:<< handle double click in @in icon >>
@@ -248,7 +248,7 @@ class readingThread(threading.Thread):
                 self.TextLock.acquire()
                 try:
                     self.Text = self.Text + unicode(s,Encoding)
-                except IOError, ioerr:
+                except IOError as ioerr:
                     self.Text = self.Text +"\n"+ "[@run] ioerror :"+str(ioerr)
                 self.TextLock.release()
             s=self.File.readline()

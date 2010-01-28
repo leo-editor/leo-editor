@@ -1185,9 +1185,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         e = QtGui.QTextCursor
         i = self.toPythonIndex(i)
         j = self.toPythonIndex(j)
-        if insert is not None:
-            insert = self.toPythonIndex(insert)
         if i > j: i,j = j,i
+        if insert is None:
+            insert = j
+        else:
+            insert = self.toPythonIndex(insert)
         n = self.lengthHelper()
         i = max(0,min(i,n))
         j = max(0,min(j,n))

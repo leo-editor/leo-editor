@@ -210,7 +210,7 @@ def processDocumentNode( c ):
         p2.setHeadString(nhline)
         c.redraw()
 
-    except Exception, x:
+    except Exception as x:
         g.es( 'exception ' + str( x ))
     c.redraw()
 #@nonl
@@ -275,7 +275,7 @@ def doMinidomTest( c ):
     s = getString( c )
     try:
         mdom = minidom.parseString( s )
-    except Exception, x:
+    except Exception as x:
         g.es( "Minidom could not parse node because of:\n %s" % x, color='red' )
         return
     g.es( "Minidom could parse the node", color='blue'  )

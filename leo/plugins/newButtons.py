@@ -142,7 +142,7 @@ def onCreate (tag, keywords):
     folder = g.os_path_join(g.app.loadDir,"..","plugins", "templates")
     try:
         os.mkdir(folder)
-    except OSError, err:
+    except OSError as err:
         pass # Ok if it is there already
 
     global helpers
@@ -650,7 +650,7 @@ class Template:
         def replacer(match):
             try:
                 result = eval(match.groups()[1], namespace)
-            except Exception, err:
+            except Exception as err:
                 g.es("Unable to replace '%s': %s" % (match.groups()[1], err), color="red")
                 result = "*ERROR*"
             return "%s%s%s" % (match.groups()[0], result, match.groups()[2])

@@ -57,7 +57,7 @@ class RSS(BaseTreeHandler):
         g.es("Starting download", color="blue")
         try:
             feed = feedparser.parse(parameter)
-        except Exception, err:
+        except Exception as err:
             g.es("Failed: %s" % (err,), color="red")
             self.children.append(TreeNode("error", str(err)))
         #

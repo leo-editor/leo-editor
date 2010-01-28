@@ -1125,7 +1125,7 @@ def writeToDocutils (self,s):
                 parser_name='restructuredtext',
                 writer_name=writer,
                 settings_overrides=overrides)
-    except docutils.ApplicationError, error:
+    except docutils.ApplicationError as error:
         g.es_print('Error (%s): %s' % (error.__class__.__name__, error))
     return res
 #@+node:ekr.20090428082801.64:handleMissingStyleSheetArgs

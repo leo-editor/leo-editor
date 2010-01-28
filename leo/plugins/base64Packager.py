@@ -44,7 +44,7 @@ try:
     import tkFileDialog
     import weakref
     importok = True
-except Exception, x:
+except Exception as x:
     g.es( "Cant Import %s" % x )
     importok = False
 #@nonl

@@ -128,7 +128,7 @@ class LeoUpdater:
         # Get the manager
         try:
             self.plugin_manager = __import__("plugin_manager")
-        except ImportError, err:
+        except ImportError as err:
             g.es("LeoUpdate did not load plugin manager: %s" % (err,), color="red")
             self.plugin_manager = None
     #@-node:pap.20050605183206.18:__init__

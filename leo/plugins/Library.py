@@ -480,7 +480,7 @@ class Library(object):
                 self.trace('Library creating: %s' % path)
                 self.db = anydbm.open(path,"c")
             self.path = path
-        except Exception, err:
+        except Exception as err:
             g.es('Library: Exception creating database: %s' % (err,))
 
         ok = (self.path and self.db and

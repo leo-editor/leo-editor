@@ -22,7 +22,7 @@ try:
     import weakref
     import Tkinter as Tk
     import os.path
-except Exception, x:
+except Exception as x:
     g.es( 'Could not load because of %s' % x )
     load_ok = False
 #@nonl
@@ -397,14 +397,14 @@ usehelp=1
             cf.write( data )
             cf.close()
             g.es( "Added nodebar.ini to plugin directory", color='blue' )
-        except Exception, x:
+        except Exception as x:
             g.es( "Could not create nodebar.init because of : %s" % x, color='red' )
             return None
     try:
         cp = ConfigParser.ConfigParser()
         cp.read(aini)
         return cp
-    except Exception, x:
+    except Exception as x:
         g.es( "Could not read nodebar.ini because of : %s "%x, color='red' )
         return None
 #@nonl

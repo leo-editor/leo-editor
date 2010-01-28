@@ -66,7 +66,7 @@ try:
     import sets 
     import weakref 
 
-except Exception, x:
+except Exception as x:
     g.es("Cant load plugin %s: %s"%(__name__,x))
     import_succeed = False 
 #@nonl
