@@ -775,6 +775,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
+<v t="ekr.20100127162342.5123"><vh>Import all plugins script</vh></v>
 <v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20090703080553.5000"><vh>@suite run all doctests</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
@@ -2509,7 +2510,6 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20100127162342.5123"><vh>Import all plugins script</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
