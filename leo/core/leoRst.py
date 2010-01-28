@@ -37,7 +37,12 @@ import sys
 
 try:
     import leo.plugins.mod_http as mod_http
+except ImportError:
+    mod_http = None
 except Exception:
+    # Don't let a problem with a plugin crash Leo's core!
+    g.es_print('leoRst: can not import leo.plugins.mod_http')
+    g.es_exception()
     mod_http = None
 
 try:

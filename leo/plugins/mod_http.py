@@ -58,12 +58,12 @@ else:
 
 if g.isPython3:
     import io
-    StringIOClass = io.StringIO
+    from io import StringIO as StringIOClass
     StringIO = io.StringIO
 else:
     import cStringIO
-    StringIOClass = cStringIO
     StringIO = cStringIO.StringIO
+    from StringIO import StringIO as StringIOClass
 
 if g.isPython3:
     import urllib.parse as urlparse
