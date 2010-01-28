@@ -22037,10 +22037,12 @@ g.pr(s)
 import os
 tkList = (
     'EditAttributes','URLloader','UniversalScrolling','UASearch',
-    'at_view','chapter_hoist','cleo','graphed','groupOperations','image',
+    'at_view','chapter_hoist','cleo','dump_globals',
+    'geotag','graphed','groupOperations','image',
     'hoist','keybindings','maximizeNewWindows','mnplugins',
-    'mod_labels','mod_read_dir_outline','nodenavigator',
+    'mod_labels','mod_read_dir_outline','mod_tempfname','nodenavigator',
     'open_with','pie_menus','pluginsTest','rowcol','scheduler',
+    'searchbar','searchbox','shortcut_button',
     'script_io_to_body','searchbox','table','tkGui',
 )
 passList = (
@@ -22056,36 +22058,50 @@ passList = (
     'rClickBasePluginClasses','scrolledmessage','setHomeDirectory',
     'slideshow','spydershell','testRegisterCommand',
     'todo','trace_tags','vim','xemacs',
-    
 )
 passWithImportProblems = ( # Other than tk input problems.
     'ipython',
 )
-dead = ('LeoN',)
-error = ('at_folder','at_produce','niceNosent',)
+dead = (
+    'exampleTemacsExtension','ironPythonGui','LeoN','rst2','rst3',
+    'swing_gui','temacs','usetemacs','wxGui',)
+examples = (
+    'enable_gc','redirect_to_log','trace_gc_plugin','trace_keys',
+)
+error = (
+    'at_folder','autocompleter','autotrees',
+    'base64Packager','bibtex','bookmarks',
+    'empty_leo_file','expfolder',
+    'import_cisco_config',
+    'leoOPML','leo_interface','leo_pdf','leo_to_rtf','leoupdate',
+    'lineNumbers','mod_leo2ascd','mod_timestamp','multifile',
+    'newButtons','niceNosent','nodeActions','nodebar',
+    'outline_export','paste_as_headlines','pretty_print',
+    'quickMove','quit_leo','rClick','read_only_nodes',
+    'run_nodes','startfile','stickynotes_plus','templates',
+    'textnode','toolbar','word_export',
+    'xcc_nodes','xsltWithNodes','zenity_file_dialogs',
+)
 fail = (
     'ConceptualSort','FileActions','Library',
-    'autocompleter','autotrees',
+    'at_produce','autocompleter','autotrees',
 )
-
-plugins = g.os_path_join(g.app.loadDir,'..','plugins','*.py')
-plugins = g.os_path_abspath(plugins)
+plugins = g.os_path_abspath(g.os_path_join(
+    g.app.loadDir,'..','plugins','*.py'))
 files = glob.glob(plugins)
-files = [g.os_path_abspath(f) for f in files]
 files.sort()
-
-os.system('cls')
+os.system('cls') # Clear the screen on windows.
 for fn in files:
     m = g.shortFileName(fn)[:-3]
-    if m in fail:
-        fn = 'leo.plugins.%s' % m
+    # Change the next line to choose different plugins.
+    if m not in tkList and m not in dead and m in error:
         try:
-            __import__(fn)
-            print('pass',fn)
+            __import__('leo.plugins.%s' % m)
+            if 1: print('pass',m)
         except ImportError:
-            print('failed',fn)
+            if 1: print('fail',m)
         except Exception:
-            print('error',fn)
+            if 1: print('error',m)
 </t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
