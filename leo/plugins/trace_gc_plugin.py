@@ -8,10 +8,30 @@
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
+__version__ = "1.3"
+
 g.debugGC = True # Force debugging on.
 gcCount = 0
 
 #@+others
+#@+node:ekr.20100128091412.5386:init
+def init():
+
+    ok = not g.app.unitTesting # Not for unit testing.
+
+    if ok: # Register the handlers...
+
+        if 1: # Very effective.
+            leoPlugins.registerHandler("idle", printIdleGC)
+        else: # Very precise.
+            leoPlugins.registerHandler("all", printIdleGC)
+        if 0: # Another idea.
+            leoPlugins.registerHandler("command2", printIdleRefs)
+
+        g.plugin_signon(__name__)
+
+    return ok
+#@-node:ekr.20100128091412.5386:init
 #@+node:ekr.20050111084900:printIdleRefs
 def printIdleRefs(tag,keywords):
 
@@ -33,19 +53,5 @@ def printIdleGC(tag,keywords):
 #@nonl
 #@-node:ekr.20050111084900.1:printIdleGC
 #@-others
-
-if not g.app.unitTesting: # Not for unit testing.
-
-    # Register the handlers...
-    if 1: # Very effective.
-        leoPlugins.registerHandler("idle", printIdleGC)
-    else: # Very precise.
-        leoPlugins.registerHandler("all", printIdleGC)
-    if 0: # Another idea.
-        leoPlugins.registerHandler("command2", printIdleRefs)
-
-    __version__ = "1.3"
-    g.plugin_signon(__name__)
-#@nonl
 #@-node:edream.110203113231.735:@thin trace_gc_plugin.py
 #@-leo

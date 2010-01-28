@@ -17,7 +17,27 @@ import os
 #@-node:ekr.20050101090207.11:<< imports >>
 #@nl
 
+__version__ = "1.1"
+
 #@+others
+#@+node:ekr.20100128091412.5384:init
+def init():
+
+    ok = Tk and not g.app.unitTesting
+
+    if ok: # Register the handlers...
+
+        if g.app.gui is None:
+            g.app.createTkGui(__file__)
+
+        ok = g.app.gui.guiName() == "tkinter"
+        if ok:
+            leoPlugins.registerHandler("select2", onSelect)
+            leoPlugins.registerHandler("unselect1", onUnselect)
+            g.plugin_signon(__name__)
+
+    return ok
+#@-node:ekr.20100128091412.5384:init
 #@+node:EKR.20040517080555.26:applyConfiguration
 def applyConfiguration(config):
 
@@ -109,19 +129,5 @@ def onUnselect (tag,keywords):
 #@nonl
 #@-node:EKR.20040517080555.30:onUnselect
 #@-others
-
-if Tk and not g.app.unitTesting: # Register the handlers...
-
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    if g.app.gui.guiName() == "tkinter":
-
-        leoPlugins.registerHandler("select2", onSelect)
-        leoPlugins.registerHandler("unselect1", onUnselect)
-
-        __version__ = "1.1"
-        g.plugin_signon(__name__)
-#@nonl
 #@-node:EKR.20040517080555.25:@thin pluginsTest.py
 #@-leo

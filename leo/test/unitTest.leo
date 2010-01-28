@@ -22034,17 +22034,18 @@ s = '炰'
 g.pr(s)
 </t>
 <t tx="ekr.20100127162342.5123">import glob,os
+
 tkPass = (
     'EditAttributes','Library',
     'URLloader','UniversalScrolling','UASearch',
-    'chapter_hoist','cleo',
+    'autotrees','chapter_hoist','cleo','dump_globals',
     'expfolder','geotag','graphed','groupOperations',
     'hoist','import_cisco_config',
     'keybindings','leoupdate',
-    'maximizeNewWindows','mod_labels',
-    'mod_read_dir_outline','multifile',
+    'maximizeNewWindows', 'mnplugins','mod_labels',
+    'mod_read_dir_outline','mod_tempfname','multifile',
     'newButtons','nodeActions','nodenavigator',
-    'open_with',
+    'open_with','pie_menus','pluginsTest',
     'read_only_nodes','rClick',
     'scheduler','searchbar','searchbox','shortcut_button',
     'script_io_to_body','searchbox',
@@ -22066,23 +22067,24 @@ passList = (
     'backlink','base64Packager','baseNativeTree','bibtex','bookmarks',
     'codewisecompleter','colorize_headlines','contextmenu',
     'ctagscompleter','cursesGui','datenodes','debugger_pudb',
-    'detect_urls','dtest','empty_leo_file','initinclass',
+    'detect_urls','dtest','empty_leo_file','enable_gc','initinclass',
     'leo_to_html','leo_interface','leo_pdf','leo_to_rtf',
     'leoOPML','leoremote','lineNumbers',
     'macros','mime','mod_autosave','mod_framesize','mod_leo2ascd',
     'mod_scripting','mod_speedups','mod_timestamp',
     'nav_buttons','nav_qt','niceNosent','nodeActions','nodebar',
-    'open_shell','outline_export',
+    'open_shell','outline_export','quit_leo',
     'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
     'qtGui','qt_main','qt_quicksearch','qtframecommands',
     'quickMove',
         # Warning: changed this line by guessing!
         # func = types.MethodType(func, quickMove)
-    'quicksearch','rClickBasePluginClasses',
+    'quicksearch','redirect_to_log','rClickBasePluginClasses',
     'run_nodes', # Changed thread.allocate_lock to threading.lock().acquire()
     'rst3',
     'scrolledmessage','setHomeDirectory','slideshow','spydershell','startfile',
-    'testRegisterCommand','todo','trace_tags','vim','xemacs',
+    'testRegisterCommand','todo','trace_gc_plugin','trace_keys','trace_tags',
+    'vim','xemacs',
 )
 passWithImportProblems = ( # Other than tk input problems.
     'ipython','word_export',
@@ -22090,10 +22092,6 @@ passWithImportProblems = ( # Other than tk input problems.
 dead = (
     'at_folder','exampleTemacsExtension','ironPythonGui','LeoN',
     'rst2','swing_gui','temacs','usetemacs','wxGui',)
-examples = (
-    'enable_gc','quit_leo','redirect_to_log',
-    'trace_gc_plugin','trace_keys',
-)
 error = ( # Real errors with tracebacks.
 )
 fail = (
@@ -22105,12 +22103,6 @@ noAttribute = (
     # This was a sign of a missing init top-level function.
 )
 changed = (
-    'autotrees', # the sets module is deprecated
-    'dump_globals', # no top-level init.
-    'mnplugins',  # no top-level init.
-    'mod_tempfname', # no top-level init.
-    'pie_menus', # no top-level init.
-    'pluginsTest', # no top-level init.
 )
 plugins = g.os_path_abspath(g.os_path_join(
     g.app.loadDir,'..','plugins','*.py'))

@@ -8,7 +8,22 @@
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
+__version__ = "1.2"
+
 #@+others
+#@+node:ekr.20100128091412.5387:newHeadline
+def init():
+
+    ok = not g.app.unitTesting # Not for unit testing.
+
+    if ok:
+        # Register the handlers...
+        leoPlugins.registerHandler(("bodykey1","bodykey2","headkey1","headkey2"), onKey)
+        g.plugin_signon(__name__)
+
+    return ok
+#@nonl
+#@-node:ekr.20100128091412.5387:newHeadline
 #@+node:edream.110203113231.737:onKey
 def onKey (tag,keywords):
 
@@ -18,14 +33,5 @@ def onKey (tag,keywords):
 #@nonl
 #@-node:edream.110203113231.737:onKey
 #@-others
-
-if not g.app.unitTesting: # Not for unit testing.
-
-    # Register the handlers...
-    leoPlugins.registerHandler(("bodykey1","bodykey2","headkey1","headkey2"), onKey)
-
-    __version__ = "1.2"
-    g.plugin_signon(__name__)
-#@nonl
 #@-node:edream.110203113231.736:@thin trace_keys.py
 #@-leo

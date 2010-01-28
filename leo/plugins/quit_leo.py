@@ -8,26 +8,25 @@
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
-if not g.app.unitTesting: # Not for unit testing.
+__version__ = "1.2"
 
-    def forceLeoToQuit(tag,keywords):
-        if not g.app.initing:
-            g.pr("forceLeoToQuit",tag)
-            g.app.forceShutdown()
+def init():
 
-    if 0: # Force a shutdown during startup.
-        g.pr("quitting during startup")
-        g.app.forceShutdown()
+    ok = not g.app.unitTesting # Not for unit testing.
 
-    if 1: # Force a shutdown at any other time, even "idle" time.
+    if ok:
+        def forceLeoToQuit(tag,keywords):
+            if not g.app.initing:
+                g.pr("forceLeoToQuit",tag)
+                g.app.forceShutdown()
 
+        # Force a shutdown at any other time, even "idle" time.
         # Exception: do not call g.app.forceShutdown in a "start2" hook.
-
         g.pr(__doc__)
         leoPlugins.registerHandler("idle",forceLeoToQuit)
-
-        __version__ = "1.2"
         g.plugin_signon(__name__)
+
+    return ok
 #@nonl
 #@-node:edream.110203113231.734:@thin quit_leo.py
 #@-leo

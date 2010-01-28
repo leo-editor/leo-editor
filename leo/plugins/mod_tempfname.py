@@ -19,7 +19,23 @@ import getpass
 import os
 import tempfile
 
+__version__ = "1.3"
+
 #@+others
+#@+node:ekr.20100128091412.5382:init
+def init():
+
+    ok = not g.app.unitTesting
+        # Not Ok for unit testing: it changes Leo's core.
+
+    if ok:
+        # Register the handlers...
+        leoPlugins.registerHandler("start2", onStart)
+        g.plugin_signon(__name__)
+
+    return ok
+#@nonl
+#@-node:ekr.20100128091412.5382:init
 #@+node:EKR.20040517075715.2:onStart
 def onStart (tag,keywords):
 
@@ -114,14 +130,5 @@ def openWithTempFilePath (self,v,ext):
 
 #@-node:EKR.20040517075715.3:openWithTempFilePath
 #@-others
-
-if not g.app.unitTesting: # Not Ok for unit testing: it changes Leo's core.
-
-    # Register the handlers...
-    leoPlugins.registerHandler("start2", onStart)
-
-    __version__ = "1.3"
-    g.plugin_signon(__name__)
-#@nonl
 #@-node:EKR.20040517075715.1:@thin mod_tempfname.py
 #@-leo

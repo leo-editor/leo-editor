@@ -40,6 +40,18 @@ fas = weakref.WeakKeyDictionary()
 createCanvas = leoTkinterFrame.createCanvas
 
 #@+others
+#@+node:ekr.20100128091412.5383:init
+def init():
+
+    ok = Tk and not g.app.unitTesting # Changes Leo's core.
+
+    if ok:
+        tkGui.leoTkinterFrame.createCanvas = addPMenu
+        g.plugin_signon( __name__ )
+
+    return ok
+#@nonl
+#@-node:ekr.20100128091412.5383:init
 #@+node:ekr.20040828122150.2:moving
 def moving( event, c ):
 
@@ -498,11 +510,5 @@ def addPMenu( self, parentFrame ):
 #@nonl
 #@-node:ekr.20040828122150.12:addPMenu
 #@-others
-
-if Tk and not g.app.unitTesting:  # Changes Leo's core.
-
-    tkGui.leoTkinterFrame.createCanvas = addPMenu
-    g.plugin_signon( __name__ )
-#@nonl
 #@-node:ekr.20040828122150:@thin pie_menus.py
 #@-leo

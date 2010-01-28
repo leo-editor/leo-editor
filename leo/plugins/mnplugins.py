@@ -39,6 +39,26 @@ __version__ = "0.2"
     # 0.2: EKR: added c arg to setOK: fixes bug reported by pylint.
 
 #@+others
+#@+node:ekr.20100128091412.5381:init
+def init():
+
+    ok = Tk and not g.app.unitTesting # Not (yet) for unit testing.
+
+    if ok:
+
+        if g.app.gui is None:
+            g.app.createTkGui(__file__)
+
+        if g.app.gui.guiName() == "tkinter":
+            leoPlugins.registerHandler("start1", onStart)
+            leoPlugins.registerHandler("create-optional-menus",create_UserMenu)
+            leoPlugins.registerHandler("iconrclick2", onRclick)
+            g.plugin_signon(__name__)
+            g.es('mnplug OK+Commands+Menu aktiv',color='green')
+
+    return ok
+#@nonl
+#@-node:ekr.20100128091412.5381:init
 #@+node:ekr.20040205071616.1:mnstamp
 def mnstamp():
 
@@ -146,18 +166,5 @@ def create_UserMenu (tag,keywords):
 #@nonl
 #@-node:ekr.20040205071616.10:create_UserMenu
 #@-others
-
-if Tk and not g.app.unitTesting: # Not (yet) for unit testing.
-
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    if g.app.gui.guiName() == "tkinter":
-        leoPlugins.registerHandler("start1", onStart)
-        leoPlugins.registerHandler("create-optional-menus",create_UserMenu)
-        leoPlugins.registerHandler("iconrclick2", onRclick)
-        g.plugin_signon(__name__)
-        g.es('mnplug OK+Commands+Menu aktiv',color='green')
-#@nonl
 #@-node:ekr.20040205071616:@thin mnplugins.py
 #@-leo
