@@ -58,9 +58,11 @@ else:
 
 if g.isPython3:
     import io
+    StringIOClass = io.StringIO
     StringIO = io.StringIO
 else:
     import cStringIO
+    StringIOClass = cStringIO
     StringIO = cStringIO.StringIO
 
 if g.isPython3:
@@ -249,7 +251,7 @@ class noLeoNodePath(Exception):
     pass
 #@-node:bwmulder.20061014153544:class noLeoNodePath
 #@+node:EKR.20040517080250.11:class escaped_StringIO
-class escaped_StringIO(StringIO):
+class escaped_StringIO(StringIOClass):
     #@    @+others
     #@+node:EKR.20040517080250.12:write_escaped
     def write_escaped(self, s):

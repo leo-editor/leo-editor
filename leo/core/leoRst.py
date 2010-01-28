@@ -37,7 +37,7 @@ import sys
 
 try:
     import leo.plugins.mod_http as mod_http
-except ImportError:
+except Exception:
     mod_http = None
 
 try:
