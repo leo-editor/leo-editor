@@ -31,8 +31,6 @@ import sys
 import glob
 
 Tk   = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-sets = g.importExtension('sets',pluginName=__name__,verbose=True)
-#@nonl
 #@-node:pap.20050605183206.2:<< imports >>
 #@nl
 

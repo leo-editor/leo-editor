@@ -739,6 +739,8 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         n = len(s)
         i = max(0,min(i,n))
         j = max(0,min(j,n))
+        if j < i: i,j = j,i
+        if insert is None: insert = j
         insert = max(0,min(insert,n))
         if i == j:
             w.setCursorPosition(i)

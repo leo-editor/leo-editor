@@ -46,7 +46,6 @@ else:
     import ConfigParser
 
 import threading 
-import sets 
 import time 
 
 #@-node:pap.20041020001240.2:<< imports >>
@@ -80,7 +79,7 @@ def init ():
         if ok:
             # Internal controls 
             click_registry = {} 
-            coloured_nodes = sets.Set() 
+            coloured_nodes = set() 
             applyConfiguration(getConfiguration()) 
             # 
             leoPlugins.registerHandler("start2", installDrawMethod) 
@@ -181,7 +180,7 @@ def updateNodes():
         # 
         # Look for nodes about to expire 
         try: 
-            expired = sets.Set(); done = sets.Set() 
+            expired = set(); done = set() 
             #g.pr(coloured_nodes )
             for node in coloured_nodes: 
                 if node.v not in done: 

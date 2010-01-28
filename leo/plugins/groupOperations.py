@@ -34,7 +34,6 @@ import leo.core.leoNodes as leoNodes
 import copy
 import base64
 
-sets    = g.importExtension('sets',   pluginName=__name__,verbose=True)
 Tkinter = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@nonl
 #@-node:mork.20041018131258.2:<< imports >>
@@ -58,7 +57,7 @@ __version__ = ".10"
 # to
 # another window. Will work on for next version.
 # .2 EKR:
-# - Use g.importExtension to import Pmw and sets.
+# - Use g.importExtension to import Pmw.
 # - Added init function.
 # .3 EKR:
 # - Removed start2 hook.
@@ -327,7 +326,7 @@ class Lassoer(object):
         self.mvForCopy = []
         self.mvForClone = []
         self.moveNode = None
-        self.canvases = sets.Set()
+        self.canvases = set()
 
         for commandName, func in (
             ('group-operations-clear-marked',self.clear),

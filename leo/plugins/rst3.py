@@ -135,7 +135,6 @@ except ImportError:
 # 
 # Later or never:
 #     - show_context option.
-#     - Support named options sets.
 #     - encoding option: can override @encoding directives
 #     - Support docutils config files.
 # 

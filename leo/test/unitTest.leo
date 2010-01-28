@@ -22034,23 +22034,31 @@ s = '炰'
 g.pr(s)
 </t>
 <t tx="ekr.20100127162342.5123">import glob,os
-tkList = (
-    'ConceptualSort','EditAttributes','Library',
+tkPass = (
+    'EditAttributes','Library',
     'URLloader','UniversalScrolling','UASearch',
-    'at_produce','at_view','autocompleter','autotrees',
-    'chapter_hoist','cleo','dump_globals',
+    'chapter_hoist','cleo',
     'expfolder','geotag','graphed','groupOperations',
-    'hoist','image','import_cisco_config',
+    'hoist','import_cisco_config',
     'keybindings','leoupdate',
-    'maximizeNewWindows','mnplugins','mod_labels',
-    'mod_read_dir_outline','mod_tempfname','multifile',
+    'maximizeNewWindows','mod_labels',
+    'mod_read_dir_outline','multifile',
     'newButtons','nodeActions','nodenavigator',
-    'open_with','pie_menus','pluginsTest',
-    'read_only_nodes','rClick','rowcol',
+    'open_with',
+    'read_only_nodes','rClick',
     'scheduler','searchbar','searchbox','shortcut_button',
     'script_io_to_body','searchbox',
-    'table','templates','textnode','tkGui','toolbar',
-    'xcc_nodes','xsltWithNodes',
+    'templates','textnode','tkGui','toolbar',
+    'xcc_nodes',
+)
+tkPassWithProblems = (
+    'at_view', # at_view plugin not loaded: win32Clipboard not present.
+    'image', # can not import ImageTk.
+    'table', # failed to import 'tktable'
+    'xsltWithNodes', # Can not import Ft from plugin leo.plugins.xsltWithNodes.
+)
+tkFail = (
+    'ConceptualSort','at_produce','autocompleter','rowcol',
 )
 passList = (
     '__init__','FileActions','UNL',
@@ -22097,6 +22105,12 @@ noAttribute = (
     # This was a sign of a missing init top-level function.
 )
 changed = (
+    'autotrees', # the sets module is deprecated
+    'dump_globals', # no top-level init.
+    'mnplugins',  # no top-level init.
+    'mod_tempfname', # no top-level init.
+    'pie_menus', # no top-level init.
+    'pluginsTest', # no top-level init.
 )
 plugins = g.os_path_abspath(g.os_path_join(
     g.app.loadDir,'..','plugins','*.py'))
@@ -22106,7 +22120,7 @@ os.system('cls') # Clear the screen on windows.
 for fn in files:
     m = g.shortFileName(fn)[:-3]
     # Change the next line to choose different plugins.
-    if m not in tkList and m not in dead and m in fail:
+    if m in passList:
         try:
             __import__('leo.plugins.%s' % m)
             if 1: print('pass %s' % m)

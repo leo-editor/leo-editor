@@ -21,7 +21,6 @@ from autotrees import BaseTreeHandler, TreeNode
 import feedparser
 import leo.core.leoGlobals as g
 import nntplib
-import sets
 
 __version__ = "0.1"
 __plugin_requires__ = ["autotrees"]
@@ -106,7 +105,7 @@ class News(BaseTreeHandler):
 class NewsItem(BaseTreeHandler):
     """Handlers news item bodies"""
 
-    handles = sets.Set(["headclick1"])    
+    handles = set(["headclick1"])    
 
     #@    @+others
     #@+node:ekr.20050329082101.161:initFrom

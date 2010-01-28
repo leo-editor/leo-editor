@@ -12,7 +12,6 @@ The parameter in the @auto-doc headline is the module to document.
 
 from autotrees import BaseTreeHandler, TreeNode
 import inspect
-import sets
 
 import leo.core.leoGlobals as g
 
@@ -40,7 +39,7 @@ class Doc(BaseTreeHandler):
         """Initialize the tree"""
         self.c = c
         self.children = []
-        self.done = sets.Set()
+        self.done = set()
         try:
             module = __import__(parameter)
         except Exception as err:

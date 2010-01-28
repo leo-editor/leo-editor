@@ -59,14 +59,12 @@ import leo.core.leoNodes as leoNodes
 import leo.core.leoPlugins as leoPlugins 
 import leo.core.leoGlobals as g
 
-import sets
 import weakref 
 
 try:
     import_succeed = True 
     import Pmw 
     import Tkinter 
-
 
 except Exception as x:
     g.es("Cant load plugin %s: %s"%(__name__,x))
@@ -75,7 +73,7 @@ except Exception as x:
 #@-node:ekr.20041022165647:<< imports >>
 #@nl
 
-templates = sets.Set()
+templates = set()
 haveseen = weakref.WeakKeyDictionary()
 
 #@+others

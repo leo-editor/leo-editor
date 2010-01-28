@@ -171,8 +171,7 @@ class CSFrontend:
     #@-node:ekr.20040916074337.1:__init__
     #@+node:ekr.20040916074337.2:_makeAttrList
     def _makeAttrList( self, nodes ):
-        from sets import Set
-        atts = Set()
+        atts = set()
         for child in nodes:
             if hasattr(child.v, 'unknownAttributes' ):
                 uAs = child.v.unknownAttributes.keys()

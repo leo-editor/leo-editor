@@ -76,8 +76,6 @@ import sys
 import glob
 
 Tk   = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-sets = g.importExtension('sets',pluginName=__name__,verbose=True)
-#@nonl
 #@-node:ekr.20050329082101.117:<< imports >>
 #@nl
 
@@ -90,7 +88,6 @@ sets = g.importExtension('sets',pluginName=__name__,verbose=True)
 #     - Initial version
 # 0.2 EKR:
 #     - Set ok in init function.
-#     - use g.importExtension to import sets.
 # 0.3 EKR:
 #     - Add c argument to topLevelMenu function and showManagerDialog ctor.
 #@-at
@@ -131,7 +128,7 @@ class BadHandler(AutoTreeError):
 #@+node:ekr.20050329082101.121:init
 def init():
 
-    ok = Tk and sets
+    ok = Tk is not None
 
     if ok:
         if g.app.gui is None:
@@ -193,7 +190,7 @@ class BaseTreeHandler:
     """Base handler for all trees"""
 
     # Set this to every event you want to handle
-    handles = sets.Set(["icondclick1"])
+    handles = set(["icondclick1"])
 
     #@    @+others
     #@+node:ekr.20050329082101.127:__init__
