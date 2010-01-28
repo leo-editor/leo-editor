@@ -42,8 +42,14 @@ nosentNodes = []
 #@+node:ekr.20050917082031:init
 def init ():
 
-    # Don't bother with unit testing.
-    return not g.app.unitTesting
+    ok = not g.unitTesting
+
+    if ok:
+        leoPlugins.registerHandler("save1",onPreSave)
+        leoPlugins.registerHandler("save2",onPostSave)
+        g.plugin_signon(__name__)
+
+    return ok
 #@nonl
 #@-node:ekr.20050917082031:init
 #@+node:ekr.20040331151007.1:onPreSave
@@ -107,12 +113,5 @@ def onPostSave(tag=None, keywords=None):
 #@nonl
 #@-node:ekr.20040331151007.2:onPostSave
 #@-others
-
-if 1: # Should be safe for unit testing.  Only works on @nosent files.
-
-    leoPlugins.registerHandler("save1",onPreSave)
-    leoPlugins.registerHandler("save2",onPostSave)
-    g.plugin_signon(__name__)
-#@nonl
 #@-node:ekr.20040331151007:@thin niceNosent.py
 #@-leo

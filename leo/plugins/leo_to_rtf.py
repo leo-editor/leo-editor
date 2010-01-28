@@ -53,6 +53,15 @@ else:
 __version__ = "1.0"
 
 #@+others
+#@+node:ekr.20100128073941.5373:newHeadline
+def init():
+
+    # Ok for unit testing: creates menu.
+    leoPlugins.registerHandler("create-optional-menus",createExportMenu)
+    g.plugin_signon(__name__)
+    return True
+#@nonl
+#@-node:ekr.20100128073941.5373:newHeadline
 #@+node:danr7.20060902083957.2:createExportMenu (leo_to_rtf)
 def createExportMenu (tag,keywords):
 
@@ -176,10 +185,5 @@ def export_rtf( c ):
     g.es(" Leo -> RTF completed.",color="turquoise4")
 #@-node:danr7.20060902083957.3:export_rtf
 #@-others
-
-if 1: # Ok for unit testing: creates menu.
-    leoPlugins.registerHandler("create-optional-menus",createExportMenu)
-    g.plugin_signon(__name__)
-#@nonl
 #@-node:danr7.20060902083957:@thin leo_to_rtf.py
 #@-leo

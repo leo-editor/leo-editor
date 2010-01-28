@@ -26,6 +26,20 @@ empty_leo_file = """<?xml version="1.0" encoding="UTF-8"?>
 #@nl
 
 #@+others
+#@+node:ekr.20100128073941.5372:init
+def init():
+
+    # Ok for unit testing.  Only rewrites empty files.
+
+    # Register the handlers...
+    leoPlugins.registerHandler("open1", onOpen)
+
+    __version__ = "1.2"
+    g.plugin_signon(__name__)
+
+    return True
+#@nonl
+#@-node:ekr.20100128073941.5372:init
 #@+node:EKR.20040517080049.3:onOpen
 def onOpen (tag,keywords):
 
@@ -41,14 +55,5 @@ def onOpen (tag,keywords):
 
 #@-node:EKR.20040517080049.3:onOpen
 #@-others
-
-if 1:  # Ok for unit testing.  Only rewrites empty files.
-
-    # Register the handlers...
-    leoPlugins.registerHandler("open1", onOpen)
-
-    __version__ = "1.2"
-    g.plugin_signon(__name__)
-#@nonl
 #@-node:EKR.20040517080049.1:@thin empty_leo_file.py
 #@-leo

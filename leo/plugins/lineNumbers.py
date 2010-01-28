@@ -43,42 +43,44 @@ __version__ = "0.3"
 
 linere = re.compile("^#line 1 \".*\"$")
 
-if not g.app.unitTesting: # Not safe for unit testing.  Changes core class.
+def init():
+    ok = not g.app.unitTesting # Not safe for unit testing.  Changes core class.
+    if ok:
+        #@        << override write methods >>
+        #@+node:ekr.20040419105219.1:<< override write methods >>
+        oldOpenNodeSentinel = leoAtFile.atFile.putOpenNodeSentinel
 
-    #@    << override write methods >>
-    #@+node:ekr.20040419105219.1:<< override write methods >>
-    oldOpenNodeSentinel = leoAtFile.atFile.putOpenNodeSentinel
+        def putLineNumberDirective(self,v,inAtAll=False,inAtOthers=False,middle=False):
 
-    def putLineNumberDirective(self,v,inAtAll=False,inAtOthers=False,middle=False):
+            oldOpenNodeSentinel(self,v,inAtAll,inAtOthers,middle)
 
-        oldOpenNodeSentinel(self,v,inAtAll,inAtOthers,middle)
+            if self.language in ("perl","perlpod"):
+                line = 'line 1 "node:%s (%s)"' % (self.nodeSentinelText(v),self.shortFileName)
+                self.putSentinel(line)
 
-        if self.language in ("perl","perlpod"):
-            line = 'line 1 "node:%s (%s)"' % (self.nodeSentinelText(v),self.shortFileName)
-            self.putSentinel(line)
+        g.funcToMethod(putLineNumberDirective,	
+            leoAtFile.atFile,"putOpenNodeSentinel")
+        #@nonl
+        #@-node:ekr.20040419105219.1:<< override write methods >>
+        #@nl
+        #@        << override read methods >>
+        #@+node:ekr.20040419105219.2:<< override read methods >>
+        readNormalLine = leoAtFile.atFile.readNormalLine
 
-    g.funcToMethod(putLineNumberDirective,	
-        leoAtFile.atFile,"putOpenNodeSentinel")
-    #@nonl
-    #@-node:ekr.20040419105219.1:<< override write methods >>
-    #@nl
-    #@    << override read methods >>
-    #@+node:ekr.20040419105219.2:<< override read methods >>
-    readNormalLine = leoAtFile.atFile.readNormalLine
+        def skipLineNumberDirective(self, s, i):
 
-    def skipLineNumberDirective(self, s, i):
+            if linere.search(s): 
+                return  # Skipt the line.
+            else:		
+                readNormalLine(self,s,i)
 
-        if linere.search(s): 
-            return  # Skipt the line.
-        else:		
-            readNormalLine(self,s,i)
-
-    g.funcToMethod(skipLineNumberDirective,
-        leoAtFile.atFile,"readNormalLine")
-    #@nonl
-    #@-node:ekr.20040419105219.2:<< override read methods >>
-    #@nl
-    g.plugin_signon(__name__)
+        g.funcToMethod(skipLineNumberDirective,
+            leoAtFile.atFile,"readNormalLine")
+        #@nonl
+        #@-node:ekr.20040419105219.2:<< override read methods >>
+        #@nl
+        g.plugin_signon(__name__)
+    return ok
 #@nonl
 #@-node:ekr.20040419105219:@thin lineNumbers.py
 #@-leo

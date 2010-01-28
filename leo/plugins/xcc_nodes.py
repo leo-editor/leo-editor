@@ -257,8 +257,6 @@
 #@nl
 #@<< imports >>
 #@+node:ekr.20060513122450.4:<< imports >>
-# from leoPlugins import *
-# from leoGlobals import *
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoGlobals as g
 

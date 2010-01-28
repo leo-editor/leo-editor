@@ -317,12 +317,16 @@ try:
     import reportlab.platypus.para
     import stylesheet # To do: get this a better way.
 
-    # General imports...
-    import StringIO
-    # import time
-    import types
 except ImportError:
     docutils = None
+
+if g.isPython3:
+    import io
+    StringIO = io.StringIO
+else:
+    import StringIO
+
+import types
 
 #@-node:ekr.20090704103932.5162:<< imports >>
 #@nl

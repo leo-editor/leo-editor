@@ -27,15 +27,12 @@ debug = False
 # to set debug to true.
 
 #@+others
-#@+node:imports
-from string import replace
 
-#@-node:imports
 #@+node:escape
 def escape(s):
-    s = replace(s, '&', "&amp;")
-    s = replace(s, '<', "&lt;")
-    s = replace(s, '>', "&gt;")
+    s = s.replace('&', "&amp;")
+    s = s.replace('<', "&lt;")
+    s = s.replace('>', "&gt;")
     return s
 #@-node:escape
 #@+node:class node_with_parent

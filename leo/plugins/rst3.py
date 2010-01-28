@@ -55,11 +55,19 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoTest as leoTest
 
+if g.isPython3:
+    import html.parser as HTMLParser
+else:
+    import HTMLParser
+
 import os
-import HTMLParser
-# import optparse
 import pprint
-import StringIO
+
+if g.isPython3:
+    import io
+    StringIO = io.StringIO
+else:
+    import StringIO
 import sys
 
 # Make sure the present directory in in sys.path.
@@ -77,6 +85,8 @@ try:
     import docutils.core
     import docutils.io
 except ImportError:
+    # This message given in init.
+    # g.pr('rst3 plugin: can not import docutils')
     docutils = None
 
 try:
@@ -236,7 +246,7 @@ def code_block (name,arguments,options,content,lineno,content_offset,block_text,
         module = SilverCity and getattr(SilverCity,language)
         generator = module and getattr(module,language+"HTMLGenerator")
         if generator:
-            io = StringIO.StringIO()
+            io = StringIO()
             generator().generate_html(io,'\n'.join(content))
             html = '<div class="code-block">\n%s\n</div>\n' % io.getvalue()
         else:
@@ -1154,7 +1164,7 @@ class rstClass:
         self.initWrite(p)
 
         # Always write to a string first.
-        self.outputFile = StringIO.StringIO()
+        self.outputFile = StringIO()
         self.writeTree(p)
         self.source = self.stringOutput = self.outputFile.getvalue()
 
@@ -1235,7 +1245,7 @@ class rstClass:
                 g.es('SilverCity not present so no syntax highlighting')
 
         self.initWrite(p,encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
-        self.outputFile = StringIO.StringIO()
+        self.outputFile = StringIO()
         self.writeTree(p)
         self.source = self.outputFile.getvalue()
         self.outputFile = None
@@ -2053,7 +2063,7 @@ class rstClass:
                 marker_parts = href.split("#")
                 if len(marker_parts) == 2:
                     marker = marker_parts [1]
-                    replacement = u"%s#%s" % (http_node_ref,marker)
+                    replacement = "%s#%s" % (http_node_ref,marker)
                     try:
                         attr [line + 2] = attr [line + 2].replace(
                             'href="%s"' % href,'href="%s"' % replacement)

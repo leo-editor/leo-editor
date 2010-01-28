@@ -22050,35 +22050,38 @@ tkList = (
     'scheduler','searchbar','searchbox','shortcut_button',
     'script_io_to_body','searchbox',
     'table','templates','textnode','tkGui','toolbar',
-    'xsltWithNodes',
+    'xcc_nodes','xsltWithNodes',
 )
 passList = (
     '__init__','FileActions','UNL',
     'active_path','add_directives','attrib_edit',
-    'backlink','base64Packager','baseNativeTree',
+    'backlink','base64Packager','baseNativeTree','bibtex','bookmarks',
     'codewisecompleter','colorize_headlines','contextmenu',
     'ctagscompleter','cursesGui','datenodes','debugger_pudb',
-    'detect_urls','dtest','initinclass',
-    'leo_to_html','leo_pdf','leoOPML','leoremote',
-    'macros','mime','mod_autosave','mod_framesize',
-    'mod_leo2ascd','mod_scripting','mod_speedups',
-    'nav_buttons','nav_qt','nodeActions','nodebar',
-    'open_shell','plugins_menu','projectwizard',
+    'detect_urls','dtest','empty_leo_file','initinclass',
+    'leo_to_html','leo_interface','leo_pdf','leo_to_rtf',
+    'leoOPML','leoremote','lineNumbers',
+    'macros','mime','mod_autosave','mod_framesize','mod_leo2ascd',
+    'mod_scripting','mod_speedups','mod_timestamp',
+    'nav_buttons','nav_qt','niceNosent','nodeActions','nodebar',
+    'open_shell','outline_export',
+    'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
     'qtGui','qt_main','qt_quicksearch','qtframecommands',
     'quickMove',
         # Warning: changed this line by guessing!
         # func = types.MethodType(func, quickMove)
-    'quicksearch',
-    'rClickBasePluginClasses','scrolledmessage','setHomeDirectory',
-    'slideshow','spydershell','testRegisterCommand',
-    'todo','trace_tags','vim','xcc_nodes','xemacs',
+    'quicksearch','rClickBasePluginClasses',
+    'run_nodes', # Changed thread.allocate_lock to threading.lock().acquire()
+    'rst3',
+    'scrolledmessage','setHomeDirectory','slideshow','spydershell','startfile',
+    'testRegisterCommand','todo','trace_tags','vim','xemacs',
 )
 passWithImportProblems = ( # Other than tk input problems.
     'ipython','word_export',
 )
 dead = (
-    'exampleTemacsExtension','ironPythonGui','LeoN','rst2','rst3',
-    'swing_gui','temacs','usetemacs','wxGui',)
+    'at_folder','exampleTemacsExtension','ironPythonGui','LeoN',
+    'rst2','swing_gui','temacs','usetemacs','wxGui',)
 examples = (
     'enable_gc','quit_leo','redirect_to_log',
     'trace_gc_plugin','trace_keys',
@@ -22086,18 +22089,15 @@ examples = (
 error = ( # Real errors with tracebacks.
 )
 fail = (
-    'leo_interface'
-    'run_nodes', # Imports may need to change.
     'stickynotes_plus', # requires markdown.
     'zenity_file_dialogs', # requires zenity, and probably ubuntu.
 )
 noAttribute = (
     # AttributeError: 'module' object has no attribute &lt;module name&gt;
-    'at_folder','bibtex','bookmarks','empty_leo_file',
-    'leo_to_rtf','lineNumbers','mod_timestamp','niceNosent',
-    'outline_export','paste_as_headlines','pretty_print','startfile',
+    # This was a sign of a missing init top-level function.
 )
-changed = ()
+changed = (
+)
 plugins = g.os_path_abspath(g.os_path_join(
     g.app.loadDir,'..','plugins','*.py'))
 files = glob.glob(plugins)
@@ -22106,7 +22106,7 @@ os.system('cls') # Clear the screen on windows.
 for fn in files:
     m = g.shortFileName(fn)[:-3]
     # Change the next line to choose different plugins.
-    if m not in tkList and m not in dead and m in error:
+    if m not in tkList and m not in dead and m in passList:
         try:
             __import__('leo.plugins.%s' % m)
             if 1: print('pass',m)

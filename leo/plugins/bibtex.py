@@ -111,6 +111,9 @@ __version__ = "0.4" # Set version for the plugin handler.
 #@nl
 #@<< imports >>
 #@+node:timo.20050213193129:<<imports>>
+
+# import pdb ; pdb.set_trace()
+
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -166,6 +169,19 @@ entrytypes.append('@string')
 #@nl
 
 #@+others
+#@+node:ekr.20100128073941.5370:init
+def init():
+
+    ok = not g.app.unitTesting
+    if ok:
+        # Register the handlers...
+        leoPlugins.registerHandler("icondclick1",onIconDoubleClick)
+        leoPlugins.registerHandler("headkey2",onHeadKey)
+        g.plugin_signon(__name__)
+
+    return ok
+#@nonl
+#@-node:ekr.20100128073941.5370:init
 #@+node:timo.20050213160555.3:onIconDoubleClick
 #
 # this does not check for proper filename syntax.
@@ -307,12 +323,5 @@ def readBibTexFileIntoTree(bibFile, c):
 #@-node:timo.20050214174623.1:readBibTexFileIntoTree
 #@-others
 
-if not g.app.unitTesting:
-
-    # Register the handlers...
-    leoPlugins.registerHandler("icondclick1",onIconDoubleClick)
-    leoPlugins.registerHandler("headkey2",onHeadKey)
-    g.plugin_signon(__name__)
-#@nonl
 #@-node:timo.20050213160555:@thin bibtex.py
 #@-leo

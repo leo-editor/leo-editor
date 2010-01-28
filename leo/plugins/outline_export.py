@@ -8,11 +8,23 @@
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
-def onStart (tag,keywords):
-    import leo.core.leoNodes as leoNodes
-    g.funcToMethod(newMoreHead,leoNodes.vnode,"moreHead")
+__version__ = "1.2" # Set version for the plugin handler.
 
 #@+others
+#@+node:ekr.20100128073941.5375:init
+def init():
+
+    ok = not g.app.unitTesting # Not for unit testing: modifies core class.
+
+    if ok:
+
+        # Register the handlers...
+        leoPlugins.registerHandler("start2", onStart)
+        g.plugin_signon(__name__)
+
+    return ok
+#@nonl
+#@-node:ekr.20100128073941.5375:init
 #@+node:edream.110203113231.721:newMoreHead
 # Returns the headline string in MORE format.
 
@@ -33,15 +45,14 @@ def newMoreHead (self,firstLevel,useVerticalBar=True):
     s += v.h
     return s
 #@-node:edream.110203113231.721:newMoreHead
-#@-others
+#@+node:ekr.20100128073941.5376:onStart
+def onStart (tag,keywords):
 
-if not g.app.unitTesting: # Not for unit testing: modifies core class.
+    import leo.core.leoNodes as leoNodes
 
-    # Register the handlers...
-    leoPlugins.registerHandler("start2", onStart)
-
-    __version__ = "1.2" # Set version for the plugin handler.
-    g.plugin_signon(__name__)
+    g.funcToMethod(newMoreHead,leoNodes.vnode,"moreHead")
 #@nonl
+#@-node:ekr.20100128073941.5376:onStart
+#@-others
 #@-node:edream.110203113231.720:@thin outline_export.py
 #@-leo

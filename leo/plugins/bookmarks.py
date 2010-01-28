@@ -35,6 +35,15 @@ import leo.core.leoPlugins as leoPlugins
 #@nl
 
 #@+others
+#@+node:ekr.20100128073941.5371:init
+def init():
+
+    leoPlugins.registerHandler("icondclick1", onDClick1)
+
+    g.plugin_signon(__name__)
+
+    return True
+#@-node:ekr.20100128073941.5371:init
 #@+node:tbrown.20070322113635.4:onDClick1
 def onDClick1 (tag,keywords):
 
@@ -57,9 +66,5 @@ def onDClick1 (tag,keywords):
         return None
 #@-node:tbrown.20070322113635.4:onDClick1
 #@-others
-
-leoPlugins.registerHandler("icondclick1", onDClick1)
-# check for bookmark          
-g.plugin_signon(__name__)
 #@-node:tbrown.20070322113635:@thin bookmarks.py
 #@-leo

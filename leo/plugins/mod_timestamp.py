@@ -11,7 +11,19 @@ import leo.core.leoPlugins as leoPlugins
 
 import time
 
+__version__ = "0.1"
+
 #@+others
+#@+node:ekr.20100128073941.5374:init
+def init():
+
+    # Register the handlers...
+    leoPlugins.registerHandler("command1", timestamp)
+
+    g.plugin_signon(__name__)
+
+    return True # OK for unit testing.
+#@-node:ekr.20100128073941.5374:init
 #@+node:edream.110203113231.728:timestamp
 def timestamp(tag=None, keywords=None):
 
@@ -21,13 +33,5 @@ def timestamp(tag=None, keywords=None):
         g.es("%s: %s" % (cmd, time.ctime()))
 #@-node:edream.110203113231.728:timestamp
 #@-others
-
-if 1: # OK for unit testing.
-
-    # Register the handlers...
-    leoPlugins.registerHandler("command1", timestamp)
-    __version__ = "0.1"
-    g.plugin_signon(__name__)
-#@nonl
 #@-node:edream.110203113231.727:@thin mod_timestamp.py
 #@-leo

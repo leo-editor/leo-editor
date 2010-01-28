@@ -15,10 +15,17 @@ Requires pyCurl:
 #@-node:ekr.20050329082101.163:<< docstring >>
 #@nl
 
-from autotrees import BaseTreeHandler, TreeNode
-import pycurl
-import StringIO
 import leo.core.leoGlobals as g
+
+from autotrees import BaseTreeHandler, TreeNode
+
+import pycurl
+
+if g.isPython3:
+    import io
+    StringIO = io.StringIO
+else:
+    import StringIO
 
 __version__ = "0.1"
 __plugin_requires__ = ["pycurl", "autotrees", "plugin_manager"]

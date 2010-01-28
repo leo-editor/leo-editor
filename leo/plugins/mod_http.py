@@ -69,7 +69,6 @@ else:
     import urlparse
 
 import exceptions
-from StringIO import StringIO
 import os
 import posixpath
 import select

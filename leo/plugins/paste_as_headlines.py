@@ -44,6 +44,16 @@ import leo.core.leoPlugins as leoPlugins
 __version__ = "1.1"
 
 #@+others
+#@+node:ekr.20100128073941.5377:init
+def init():
+
+    leoPlugins.registerHandler("create-optional-menus",
+        createPasteAsHeadlinesMenu)
+
+    g.plugin_signon(__name__)
+
+    return True # Ok for unit testing: creates menu.
+#@-node:ekr.20100128073941.5377:init
 #@+node:danr7.20060912105041.5:createPasteAsHeadlinesMenu
 def createPasteAsHeadlinesMenu (tag,keywords):
 
@@ -88,10 +98,5 @@ def paste_as_headlines(c):
     c.redraw()
 #@-node:danr7.20060912105041.6:paste_as_headlines
 #@-others
-
-if 1: # Ok for unit testing: creates menu.
-    leoPlugins.registerHandler("create-optional-menus",createPasteAsHeadlinesMenu)
-    g.plugin_signon(__name__)
-#@nonl
 #@-node:danr7.20060912105041.1:@thin paste_as_headlines.py
 #@-leo

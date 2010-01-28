@@ -19,6 +19,8 @@ Otherwise the path is relative to the Leo file.
 
 # By Josef Dalcolmo: contributed under the same license as Leo.py itself.
 
+__version__ = "1.4"
+
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoGlobals as g
 import os
@@ -62,6 +64,19 @@ import os
 #@nl
 
 #@+others
+#@+node:ekr.20100128073941.5379:init
+def init():
+
+    ok = hasattr(os,"startfile")
+        # Ok for unit testing, but may be icondclick1 conflicts.
+
+    if ok:
+        # Register the handlers...
+        leoPlugins.registerHandler("icondclick1",onIconDoubleClick)
+        g.plugin_signon(__name__)
+
+    return ok
+#@-node:ekr.20100128073941.5379:init
 #@+node:ekr.20040828103325.3:onIconDoubleClick
 def onIconDoubleClick(tag,keywords):
 
@@ -114,14 +129,5 @@ def onIconDoubleClick(tag,keywords):
 #@nonl
 #@-node:ekr.20040828103325.3:onIconDoubleClick
 #@-others
-
-if hasattr(os,"startfile"): # Ok for unit testing, but may be icondclick1 conflicts.
-
-    # Register the handlers...
-    leoPlugins.registerHandler("icondclick1",onIconDoubleClick)
-
-    __version__ = "1.4"
-    g.plugin_signon(__name__)
-#@nonl
 #@-node:ekr.20040828103325:@thin startfile.py
 #@-leo

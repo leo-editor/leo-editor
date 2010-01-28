@@ -70,11 +70,16 @@ __version__ = "0.15"
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
+
 import os
 import string
 # import sys
-import thread
-import threading
+if g.isPython3:
+    import threading
+else:
+    import thread
+    import threading
+
 import time
 #@-node:ekr.20040910070811.4:<< imports >>
 #@nl
@@ -233,7 +238,10 @@ def OnQuit(tag,keywords=None):
 class readingThread(threading.Thread):
 
     File = None
-    TextLock = thread.allocate_lock()
+    if g.isPython3:
+        TextLock = threading.Lock().acquire()
+    else:
+        TextLock = thread.allocate_lock()
     Text = ""
 
     #@    @+others

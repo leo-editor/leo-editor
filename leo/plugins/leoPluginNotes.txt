@@ -924,7 +924,7 @@ def writeNormalTree (self,p,toString=False):
     self.initWrite(p)
 
     # Always write to a string first.
-    self.outputFile = StringIO.StringIO()
+    self.outputFile = StringIO()
     self.writeTree(p)
     self.source = self.stringOutput = self.outputFile.getvalue()
 
@@ -1005,7 +1005,7 @@ def writeSpecialTree (self,p,toString,justOneFile):
             g.es('SilverCity not present so no syntax highlighting')
 
     self.initWrite(p,encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
-    self.outputFile = StringIO.StringIO()
+    self.outputFile = StringIO()
     self.writeTree(p)
     self.source = self.outputFile.getvalue()
     self.outputFile = None
@@ -1818,7 +1818,7 @@ def relocate_references (self, iterator_generator):
             marker_parts = href.split("#")
             if len(marker_parts) == 2:
                 marker = marker_parts [1]
-                replacement = u"%s#%s" % (http_node_ref,marker)
+                replacement = "%s#%s" % (http_node_ref,marker)
                 try:
                     attr [line + 2] = attr [line + 2].replace(
                         'href="%s"' % href,'href="%s"' % replacement)

@@ -32,6 +32,17 @@ __version__ = "1.1" # 8/1/05: updated example code to match latest code in leoCo
 oldPrettyPrinter = leoCommands.Commands.prettyPrinter
 
 #@+others
+#@+node:ekr.20100128073941.5378:init
+def init():
+
+    ok = not g.app.unitTesting # Not for unit testing:  modifies core.
+
+    if ok:
+        leoCommands.Commands.prettyPrinter = myPrettyPrinter
+        g.plugin_signon(__name__)
+
+    return ok
+#@-node:ekr.20100128073941.5378:init
 #@+node:ekr.20041021120454:class myPrettyPrinter
 class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
 
@@ -280,11 +291,5 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
 #@nonl
 #@-node:ekr.20041021120454:class myPrettyPrinter
 #@-others
-
-if not g.app.unitTesting: # Not for unit testing:  modifies core.
-
-    leoCommands.Commands.prettyPrinter = myPrettyPrinter
-    g.plugin_signon(__name__)
-#@nonl
 #@-node:ekr.20041021120118:@thin pretty_print.py
 #@-leo
