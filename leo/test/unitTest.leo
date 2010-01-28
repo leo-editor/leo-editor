@@ -22106,15 +22106,15 @@ os.system('cls') # Clear the screen on windows.
 for fn in files:
     m = g.shortFileName(fn)[:-3]
     # Change the next line to choose different plugins.
-    if m not in tkList and m not in dead and m in passList:
+    if m not in tkList and m not in dead and m in fail:
         try:
             __import__('leo.plugins.%s' % m)
-            if 1: print('pass',m)
+            if 1: print('pass %s' % m)
         except ImportError:
-            if 1: print('fail',m)
+            if 1: print('fail %s' % m)
         except Exception:
             if 1: g.es_exception()
-            if 1: print('error',m)
+            if 1: print('error %s' % m)
 </t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly

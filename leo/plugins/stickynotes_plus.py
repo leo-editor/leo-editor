@@ -31,7 +31,6 @@ from leo.core import leoPlugins
 
 g.assertUi('qt')
 
-import sets
 import sys
 import webbrowser
 
