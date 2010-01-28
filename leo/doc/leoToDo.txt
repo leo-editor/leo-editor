@@ -15,8 +15,6 @@
 #@-node:ekr.20100124141558.6196:Update docs re @file and @noref
 #@+node:ekr.20100125190708.6258:Better screen shots
 #@-node:ekr.20100125190708.6258:Better screen shots
-#@+node:ekr.20100127064113.6205:unit tests for recent changes
-#@-node:ekr.20100127064113.6205:unit tests for recent changes
 #@-node:ekr.20091005145253.6059:Before b2
 #@+node:ekr.20100126110826.6253:Before rc1
 #@+node:ekr.20100111094359.6208:Simplify goto-line and fix bugs

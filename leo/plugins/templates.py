@@ -59,12 +59,14 @@ import leo.core.leoNodes as leoNodes
 import leo.core.leoPlugins as leoPlugins 
 import leo.core.leoGlobals as g
 
+import sets
+import weakref 
+
 try:
     import_succeed = True 
     import Pmw 
     import Tkinter 
-    import sets 
-    import weakref 
+
 
 except Exception as x:
     g.es("Cant load plugin %s: %s"%(__name__,x))

@@ -197,8 +197,8 @@ class leo_file(node):
    def header(self, file):
        self.mark_with_attributes_short(file, "leo_header",
                                  (("file_format", "1"),
-                                  ("tnodes", `self.nr_tnodes()`),
-                                  ("max_tnode_index", `self.max_tnode_index()`),
+                                  ("tnodes", repr(self.nr_tnodes())),
+                                  ("max_tnode_index", repr(self.max_tnode_index())),
                                   ("clone_windows", "0")))
    #@-node:header
    #@+node:max_tnode_index
@@ -251,7 +251,7 @@ class leo_node(node, node_with_parent):
    #@+node:gen_tnodes
    def gen_tnodes(self, file):
        self.mark_with_attributes(file, "t", (
-           ("tx", "T" + `self.nr`),
+           ("tx", "T" + repr(self.nr)),
            ), self.gen_tnodes1, newline=False)
        for child in self.children:
            child.gen_tnodes(file)
@@ -262,7 +262,7 @@ class leo_node(node, node_with_parent):
    #@-node:gen_tnodes1
    #@+node:gen_vnodes
    def gen_vnodes(self, file):
-      attributes = [("t", "T" + `self.nr`)]
+      attributes = [("t", "T" + repr(self.nr))]
       if debug:
          """
          For debugging, make sure that we are not getting
@@ -271,15 +271,15 @@ class leo_node(node, node_with_parent):
          """
          vnode_stack.append(self)
          if allvnodes.has_key(self):
-            print "Fix this; This is an endless recursive call in leo_interface.leo_node.gen_vnodes"
+            print("Fix this; This is an endless recursive call in leo_interface.leo_node.gen_vnodes")
             x = vnode_stack[:]
             x.reverse()
             for i in x:
-               print i.headline
+               print(i.headline)
             import pdb; pdb.set_trace()
             return
          global vnode_count
-         attributes.append(('model_node_number', `vnode_count`))
+         attributes.append(('model_node_number', repr(vnode_count)))
          vnode_count += 1
          allvnodes[self]=None
       self.mark_with_attributes(file, "v", attributes, self.gen_vnodes1)

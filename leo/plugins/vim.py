@@ -299,8 +299,8 @@ def open_in_vim (tag,keywords):
     global locationMessageGiven
     if not locationMessageGiven:
         locationMessageGiven = True
-        print ('vim_cmd: %s' % vim_cmd)
-        print ('vim_exe: %s' % vim_exe)
+        print('vim_cmd: %s' % vim_cmd)
+        print('vim_exe: %s' % vim_exe)
 
     #Cursor positioning
     Lnum = ""

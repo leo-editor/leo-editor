@@ -2,7 +2,7 @@
 #@+node:ekr.20060904103412:@thin leoOPML.py
 #@<< docstring >>
 #@+node:ekr.20060904103412.1:<< docstring >>
-'''A plugin to read and write Leo outlines in .opml (http://en.wikipedia.org/wiki/OPML) format.
+r'''A plugin to read and write Leo outlines in .opml (http://en.wikipedia.org/wiki/OPML) format.
 
 Warning: the OPML plugin is not fully functional at present. Use with caution.
 
@@ -760,10 +760,10 @@ class nodeClass:
     #@+node:ekr.20060913220507:dump
     def dump (self):
 
-        print
-        print 'node: tnx: %s %s' % (self.tnx,self.headString)
-        print 'children:',[child for child in self.children]
-        print 'attrs:',self.attributes.values()
+        print()
+        print('node: tnx: %s %s' % (self.tnx,self.headString))
+        print('children:',[child for child in self.children])
+        print('attrs:',self.attributes.values())
     #@nonl
     #@-node:ekr.20060913220507:dump
     #@-others
@@ -825,10 +825,10 @@ class contentHandler (xml.sax.saxutils.XMLGenerator):
     #@+node:ekr.20060904134958.170:error
     def error (self, message):
 
-        print
-        print
-        print 'XML error: %s' % (message)
-        print
+        print()
+        print()
+        print('XML error: %s' % (message))
+        print()
 
         self.errors += 1
     #@nonl
@@ -845,14 +845,14 @@ class contentHandler (xml.sax.saxutils.XMLGenerator):
         indent = '\t' * self.level or ''
 
         if attrs.getLength() > 0:
-            print '%s<%s %s>' % (
+            print('%s<%s %s>' % (
                 indent,
                 self.clean(name).strip(),
-                self.attrsToString(attrs,sep=' ')),
+                self.attrsToString(attrs,sep=' ')))
         else:
-            print '%s<%s>' % (
+            print('%s<%s>' % (
                 indent,
-                self.clean(name).strip()),
+                self.clean(name).strip()))
 
         if name.lower() in ['outline','head','body',]:
             print
@@ -928,7 +928,7 @@ class contentHandler (xml.sax.saxutils.XMLGenerator):
                 self.error('No node for leo:body content')
         else:
             if content.strip():
-                print 'content:',name,repr(content)
+                print('content:',name,repr(content))
     #@nonl
     #@-node:ekr.20060904134958.178:characters
     #@+node:ekr.20060904134958.179:endElement & helpers
@@ -937,7 +937,7 @@ class contentHandler (xml.sax.saxutils.XMLGenerator):
         name = name.lower()
         if name in printElements or 'all' in printElements:
             indent = '\t' * (self.level-1) or ''
-            print '%s</%s>' % (indent,self.clean(name).strip())
+            print('%s</%s>' % (indent,self.clean(name).strip()))
 
         data = self.dispatchDict.get(name)
 

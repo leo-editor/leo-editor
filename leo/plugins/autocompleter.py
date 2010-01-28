@@ -484,7 +484,7 @@ def readConfigFile (aini):
         fp = open( aini, 'rt' )
         cp.readfp( fp )
         fp.close()
-    except Exception, x:
+    except Exception(x):
         g.es( "Could not open %s because of %s" % ( aini, x ), color = 'red' )
     ac = None 
 
@@ -515,7 +515,7 @@ def readConfigFile (aini):
                 try:
                     pats[ z ] = re.compile( cp.get( nl, z ) )
                     g.es( 'added %s to autocompleter languages' % z , color = 'blue' )
-                except Exception, x:
+                except Exception(x):
                     g.es( "Could not add %s pattern, because of %s " %( z, x ) , color = 'red')
 
         break
@@ -533,7 +533,7 @@ def createConfigFile( aini ):
         cp.write( ini )
         ini.close()
         g.es( "autocompleter .ini file created in %s" % aini, color = 'blue' )
-    except Exception, x:
+    except Exception(x):
         g.es( "Error in creating %s, caused by %s" % ( aini, x ) , color = 'red' )
 
 
@@ -545,7 +545,7 @@ def readLanguageFiles (bankpath):
     if not os.path.exists( bankpath ):
         try:
             os.mkdir( bankpath )
-        except Exception, x:
+        except Exception(x):
             g.es( "Could not make %s because of %s" %( bankpath, x ) )
     for z in pats:
         bpath = bankpath+z+'.ato'

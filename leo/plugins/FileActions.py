@@ -2,7 +2,7 @@
 #@+node:ekr.20040915105758.13:@thin FileActions.py
 #@<< docstring >>
 #@+node:ekr.20050912180106:<< docstring >>
-""" A Leo plugin that permits the definition of actions for double-clicking on
+r""" A Leo plugin that permits the definition of actions for double-clicking on
 file nodes. Written by Konrad Hinsen <konrad.hinsen@laposte.net> Distributed
 under the same licence as Leo.
 
@@ -89,10 +89,10 @@ import tempfile
 #@@c
 
 file_directives = [
-    "@file",
+   "@file",
    "@thin",   "@file-thin",   "@thinfile",
    "@asis",   "@file-asis",   "@silentfile",
-   "@noref",  "@file-noref",  "@rawfile",
+   # "@noref",  "@file-noref",  "@rawfile",
    "@nosent", "@file-nosent", "@nosentinelsfile",
    "@file-ref", "@shadow",
 ]
@@ -188,7 +188,8 @@ def applyFileAction(p, filename, c):
                 'c':c, 'g':g,
                 'filename': filename,
                 'shellScriptInWindow': shellScriptInWindow }
-            exec script in namespace
+            # exec script in namespace
+            exec(script,namespace)
             #@            << unredirect output >>
             #@+node:ekr.20040915105758.18:<< unredirect output >>
             if c.config.redirect_execute_script_output_to_log_pane:
@@ -225,7 +226,7 @@ def shellScriptInWindow(c,script):
         script = ("cd %s\n" % directory) + script + '\n' + ("rm -f %s\n" % path)
         os.write(handle, script)
         os.close(handle)
-        os.chmod(path, 0700)
+        os.chmod(path,0x700)
         #@nonl
         #@-node:ekr.20040915105758.22:<< write script to temporary MacOS file >>
         #@nl
@@ -242,7 +243,7 @@ def shellScriptInWindow(c,script):
         script = ("cd %s\n" % directory) + script + '\n' + ("rm -f %s\n" % path)
         os.write(handle, script)
         os.close(handle)
-        os.chmod(path, 0700)
+        os.chmod(path,0x700)
         #@nonl
         #@-node:ekr.20040915105758.25:<< write script to temporary Unix file >>
         #@nl

@@ -37,12 +37,12 @@ import leo.core.leoGlobals as g
 # import leo.core.leoNodes as leoNodes
 import os.path
 import base64
+import weakref
 
 try:
     import Tkinter as Tk
     import Pmw
     import tkFileDialog
-    import weakref
     importok = True
 except Exception as x:
     g.es( "Cant Import %s" % x )

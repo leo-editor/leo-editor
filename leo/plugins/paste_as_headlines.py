@@ -71,7 +71,7 @@ def paste_as_headlines(c):
     currentPos = c.p 
     clipText = g.app.gui.getTextFromClipboard()
     # Leo won't display curly quotes properly, so replace them with normal quotes
-    clipText = clipText.replace(u'” “', '" "')
+    clipText = clipText.replace(g.u('” “'),'" "')
     # Split clipboard text elements into a list
     clipList = clipText.split("\n")
     for tempHead in clipList:

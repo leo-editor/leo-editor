@@ -2,7 +2,7 @@
 #@+node:mork.20041018204908.1:@thin multifile.py
 #@<< docstring >>
 #@+node:ekr.20050226114732:<< docstring >>
-'''Multipath enables the ability to write a file to multiple locations.
+r'''Multipath enables the ability to write a file to multiple locations.
 
 It acts as a post-write mechanism, a file must be written to the filesystem for
 it to work. At this point it is not a replacement for @path or an absolute path,
@@ -46,7 +46,6 @@ The @multiprefix stays in effect for the entire tree until reset with another
 an ancestor a copy of the file is created. These directives must at the
 beginning of the line and by themselves.
 '''
-#@nonl
 #@-node:ekr.20050226114732:<< docstring >>
 #@nl
 
@@ -60,13 +59,14 @@ import leo.core.leoGlobals as g
 import leo.core.leoAtFile as leoAtFile
 import leo.core.leoPlugins as leoPlugins
 
+
 import os.path
 import shutil
 # import sys
+import weakref
 
 try:
     import tkFileDialog
-    import weakref
     ok = True
 except ImportError:
     ok = False

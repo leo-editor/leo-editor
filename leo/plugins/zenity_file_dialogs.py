@@ -47,7 +47,7 @@ except:
 
 if trace:
     if ok:
-        print 'subprocess imported ok'
+        print('subprocess imported ok')
     else:
         g.trace('failed to import subprocess')
 
@@ -72,7 +72,7 @@ def testForZenity():
 
     if trace:
         g.trace('\n\texecutable', repr(filename))
-        print '\n\treturncode', ret
+        print('\n\treturncode', ret)
 
     if trace and ret:
         g.trace('\n\tCan\'t find Zenity!')
@@ -130,7 +130,7 @@ def callZenity(title, multiple=False, save=False, test=False):
 
     if trace:
         g.trace('\n\tfiles', repr(filename))
-        print '\treturncode', ret
+        print('\treturncode', ret)
 
     if ret:
         trace and g.trace(g.choose(save,'save','open'), 'cancelled')

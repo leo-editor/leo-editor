@@ -2509,7 +2509,7 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20100127162342.5123"><vh>Import all plugins</vh></v>
+<v t="ekr.20100127162342.5123"><vh>Import all plugins script</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -22035,30 +22035,43 @@ g.pr(s)
 </t>
 <t tx="ekr.20100127162342.5123">import glob,os
 tkList = (
-    'EditAttributes','URLloader','UniversalScrolling','UASearch',
-    'at_view','chapter_hoist','cleo','dump_globals',
+    'ConceptualSort','EditAttributes','Library',
+    'URLloader','UniversalScrolling','UASearch',
+    'at_produce','at_view','autocompleter','autotrees',
+    'chapter_hoist','cleo','dump_globals',
     'expfolder','geotag','graphed','groupOperations',
     'hoist','image','import_cisco_config',
-    'keybindings','maximizeNewWindows','mnplugins',
-    'mod_labels','mod_read_dir_outline','mod_tempfname','nodenavigator',
-    'open_with','pie_menus','pluginsTest','rClick','rowcol',
+    'keybindings','leoupdate',
+    'maximizeNewWindows','mnplugins','mod_labels',
+    'mod_read_dir_outline','mod_tempfname','multifile',
+    'newButtons','nodeActions','nodenavigator',
+    'open_with','pie_menus','pluginsTest',
+    'read_only_nodes','rClick','rowcol',
     'scheduler','searchbar','searchbox','shortcut_button',
     'script_io_to_body','searchbox',
-    'table','textnode','tkGui','toolbar','xsltWithNodes',
+    'table','templates','textnode','tkGui','toolbar',
+    'xsltWithNodes',
 )
 passList = (
-    '__init__','UNL','active_path','add_directives','attrib_edit',
-    'backlink','baseNativeTree',
+    '__init__','FileActions','UNL',
+    'active_path','add_directives','attrib_edit',
+    'backlink','base64Packager','baseNativeTree',
     'codewisecompleter','colorize_headlines','contextmenu',
     'ctagscompleter','cursesGui','datenodes','debugger_pudb',
-    'detect_urls','dtest','initinclass','leo_to_html','leoremote',
-    'macros','mime','mod_autosave','mod_framesize','mod_scripting',
-    'mod_speedups','nav_buttons','nav_qt','nodebar','open_shell',
-    'plugins_menu','projectwizard','qtGui','qt_main',
-    'qt_quicksearch','qtframecommands','quicksearch',
+    'detect_urls','dtest','initinclass',
+    'leo_to_html','leo_pdf','leoOPML','leoremote',
+    'macros','mime','mod_autosave','mod_framesize',
+    'mod_leo2ascd','mod_scripting','mod_speedups',
+    'nav_buttons','nav_qt','nodeActions','nodebar',
+    'open_shell','plugins_menu','projectwizard',
+    'qtGui','qt_main','qt_quicksearch','qtframecommands',
+    'quickMove',
+        # Warning: changed this line by guessing!
+        # func = types.MethodType(func, quickMove)
+    'quicksearch',
     'rClickBasePluginClasses','scrolledmessage','setHomeDirectory',
     'slideshow','spydershell','testRegisterCommand',
-    'todo','trace_tags','vim','xemacs',
+    'todo','trace_tags','vim','xcc_nodes','xemacs',
 )
 passWithImportProblems = ( # Other than tk input problems.
     'ipython','word_export',
@@ -22067,27 +22080,24 @@ dead = (
     'exampleTemacsExtension','ironPythonGui','LeoN','rst2','rst3',
     'swing_gui','temacs','usetemacs','wxGui',)
 examples = (
-    'enable_gc','redirect_to_log','trace_gc_plugin','trace_keys',
+    'enable_gc','quit_leo','redirect_to_log',
+    'trace_gc_plugin','trace_keys',
 )
-error_bad_syntax = (
-    'autotrees','leoupdate',
-)
-error = (
-    'at_folder','autocompleter',
-    'base64Packager','bibtex','bookmarks',
-    'empty_leo_file',
-    'leoOPML','leo_interface','leo_pdf','leo_to_rtf',
-    'lineNumbers','mod_leo2ascd','mod_timestamp','multifile',
-    'newButtons','niceNosent','nodeActions',
-    'outline_export','paste_as_headlines','pretty_print',
-    'quickMove','quit_leo','read_only_nodes',
-    'startfile','stickynotes_plus','templates',
-    'xcc_nodes','zenity_file_dialogs',
+error = ( # Real errors with tracebacks.
 )
 fail = (
-    'ConceptualSort','FileActions','Library',
-    'at_produce','autocompleter','autotrees','run_nodes',
+    'leo_interface'
+    'run_nodes', # Imports may need to change.
+    'stickynotes_plus', # requires markdown.
+    'zenity_file_dialogs', # requires zenity, and probably ubuntu.
 )
+noAttribute = (
+    # AttributeError: 'module' object has no attribute &lt;module name&gt;
+    'at_folder','bibtex','bookmarks','empty_leo_file',
+    'leo_to_rtf','lineNumbers','mod_timestamp','niceNosent',
+    'outline_export','paste_as_headlines','pretty_print','startfile',
+)
+changed = ()
 plugins = g.os_path_abspath(g.os_path_join(
     g.app.loadDir,'..','plugins','*.py'))
 files = glob.glob(plugins)
@@ -22103,7 +22113,7 @@ for fn in files:
         except ImportError:
             if 1: print('fail',m)
         except Exception:
-            # if 1: g.es_exception()
+            if 1: g.es_exception()
             if 1: print('error',m)
 </t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,

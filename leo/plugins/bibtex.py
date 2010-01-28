@@ -3,7 +3,7 @@
 
 #@<< docstring >>
 #@+node:ekr.20050912175750:<< docstring >>
-'''This plugin manages BibTeX files with Leo. Create a bibliographic database by
+r'''This plugin manages BibTeX files with Leo. Create a bibliographic database by
 putting '@bibtex filename' in a headline. Entries are added as nodes, with
 '@entrytype key' as the headline, and the contents of the entry in body text.
 The plugin will automatically insert a template for the entry in the body pane
@@ -136,7 +136,7 @@ templates = {'@article':'author       = {},\ntitle        = {},\njournal      = 
              '@unpublished':'author       = {},\ntitle        = {},\nnote         = {}'
              }
 
-entrytypes = templates.keys()
+entrytypes = list(templates.keys())
 entrytypes.append('@string') 
 #@nonl
 #@-node:timo.20050215183130:<<globals>>

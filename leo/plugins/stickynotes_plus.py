@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20100103100944.5388:@thin stickynotes_plus.py
+#@+node:ekr.20100103093121.5339:@thin stickynotes_plus.py
 #@<< docstring >>
 #@+node:ekr.20100103100944.5389:<< docstring >>
 ''' Simple "sticky notes" feature (popout editors)
@@ -31,6 +31,7 @@ from leo.core import leoPlugins
 
 g.assertUi('qt')
 
+import sets
 import sys
 import webbrowser
 
@@ -557,7 +558,7 @@ class notetextedit(QTextEdit):
     def insertFromMimeData(self, source):
         # not sure really necessary since it actually appears to paste URLs correctly
         # I am stripping the http
-        print "Paste"
+        print("Paste")
         text = unicode(source.text())
         if len(text.split())==1 and (text.startswith('http://') or 'www' in text or '.com' in text or '.html' in text):
             if text.startswith('http://'):
@@ -764,5 +765,5 @@ def stickynoter_f(event):
 #@-node:ekr.20100103100944.5422:g.command('stickynoteplus')
 #@-others
 #@nonl
-#@-node:ekr.20100103100944.5388:@thin stickynotes_plus.py
+#@-node:ekr.20100103093121.5339:@thin stickynotes_plus.py
 #@-leo

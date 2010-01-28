@@ -1820,13 +1820,15 @@ def relocate_references (self, iterator_generator):
                 marker = marker_parts [1]
                 replacement = u"%s#%s" % (http_node_ref,marker)
                 try:
-                    attr [line + 2] = attr [line + 2].replace(u'href="%s"' % href, u'href="%s"' % replacement)
+                    attr [line + 2] = attr [line + 2].replace(
+                        'href="%s"' % href,'href="%s"' % replacement)
                 except:
                     g.es("Skipped ", attr[line + 2])
             else:
                 filename = marker_parts [0]
                 try:
-                    attr [line + 2] = attr [line + 2].replace(u'href="%s"' % href,u'href="%s"' % http_node_ref)
+                    attr [line + 2] = attr [line + 2].replace(
+                        'href="%s"' % href,'href="%s"' % http_node_ref)
                 except:
                     g.es("Skipped", attr[line+2])
     # g.trace('after %s\n\n\n',attr)

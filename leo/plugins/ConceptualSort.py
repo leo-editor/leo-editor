@@ -208,7 +208,8 @@ class CSFrontend:
                 usort = compile( code, 'user_sort', 'exec' )
                 def lcsort2( a, b, atts =atts ):
                     z = {}
-                    exec usort in {}, z
+                    # exec usort in {}, z
+                    exec(usort,{},z)
                     rv = z[ 'user_sort' ]( a, b, atts )
                     return rv
                 self.children.sort( lcsort2 )

@@ -1296,7 +1296,7 @@ def TestConcurrentEditable2():
     It also test the garbage collector as indicated in the figure 3 of sun98achieving.pdf, page 20.
     """
 
-    print "-"*15
+    print("-"*15)
     print("Read docstring of TestConcurrentEditable for more info about this test.")
 
     # Create three site instances

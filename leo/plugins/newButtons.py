@@ -213,7 +213,7 @@ class FlatOptionMenu(Tk.OptionMenu):
         if kwargs.has_key('command'):
             del kwargs['command']
         if kwargs:
-            raise Tk.TclError, 'unknown option -'+kwargs.keys()[0]
+            raise Tk.TclError('unknown option -'+kwargs.keys()[0])
         self["menu"] = menu
         self.__variable = variable
         self.__callback = callback

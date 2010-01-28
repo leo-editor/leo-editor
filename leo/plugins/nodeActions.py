@@ -220,7 +220,8 @@ def applyNodeAction(pScript, pClicked, c):
               'pClicked': pClicked,
               'pScript' : pScript,
               'shellScriptInWindowNA': shellScriptInWindowNA }
-           exec script in namespace
+           # exec script in namespace
+           exec(script,namespace)
            #Unredirect output
            if c.config.redirect_execute_script_output_to_log_pane:
                g.restoreStderr()
@@ -246,7 +247,7 @@ def shellScriptInWindowNA(c,script):
         script = ("cd %s\n" % directory) + script + '\n' + ("rm -f %s\n" % path)
         os.write(handle, script)
         os.close(handle)
-        os.chmod(path, 0700)
+        os.chmod(path,0x700)
         #@nonl
         #@-node:TL.20080507213950.14:<< write script to temporary MacOS file >>
         #@nl
@@ -263,7 +264,7 @@ def shellScriptInWindowNA(c,script):
         script = ("cd %s\n" % directory) + script + '\n' + ("rm -f %s\n" % path)
         os.write(handle, script)
         os.close(handle)
-        os.chmod(path, 0700)
+        os.chmod(path,0x700)
         #@nonl
         #@-node:TL.20080507213950.15:<< write script to temporary Unix file >>
         #@nl

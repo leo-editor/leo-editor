@@ -1591,7 +1591,7 @@ class controllerClass:
 
         eol = "" ; code = "eol = \""+cc.DBG["Pipe eol"]+"\""
         try:
-            exec code
+            exec(code)
         except:
             TraceBack()
         if eol == "": eol = "\n"
@@ -3456,7 +3456,7 @@ class ConfigClass:
 
             # load in temp dict
             try:
-                exec code
+                exec(code)
             except Exception:
                 TraceBack()
                 Error("xcc: ","File content is invalid!")

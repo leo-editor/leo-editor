@@ -5,8 +5,8 @@ __version__ = ".5" # Set version for the plugin handler.
 
 # << Declarations and Utilities >> (3 of 3)
 # <<The Code -- Declarations and Utilities>> (1 of 5)
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import re
 import os
@@ -22,9 +22,10 @@ class   _AssignUniqueConstantValue:
 
     class ConstError(TypeError): pass
     def __setattr__(self,name,value):
-        if self.__dict__.has_key(name):
+        # if self.__dict__.has_key(name):
+        if name in self.__dict__:
             if name != "UniqueInternalValue":
-                raise self.ConstError, "Can't rebind const(%s)"%name
+                raise self.ConstError("Can't rebind const(%s)"%name)
         self.__dict__[name]=value
 
     def Assign_at_start(self):
@@ -192,7 +193,7 @@ def WriteTreeAsAsc(vnode, ascFileN):
             v = v.threadNext()
 
     CleanUp()
-    g.es('Wrote: '+repr(ascFileN))
+    g.es('Wrote: '+ repr(ascFileN))
 # -- end -- << Write the outline tree as AsciiDoc file >>
 # << Write a node >> (1 of 7)
 def WriteNode(v,startinglevel, ascFile):

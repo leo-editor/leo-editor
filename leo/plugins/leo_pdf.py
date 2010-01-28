@@ -562,8 +562,8 @@ if docutils:
             """Encode special characters in `text` & return."""
 
             if type(text) is types.UnicodeType:
-                text = text.replace(u'\u2020', u' ')
-                text = text.replace(u'\xa0', u' ')
+                text = text.replace(g.u('\u2020'),g.u(' '))
+                text = text.replace(g.u('\xa0'), g.u(' '))
                 text = text.encode('utf-8')
 
             return text
@@ -1051,8 +1051,8 @@ if docutils:
 
             """Encode special characters in `text` & return."""
             if type(text) is types.UnicodeType:
-                text = text.replace(u'\u2020', u' ')
-                text = text.replace(u'\xa0', u' ')
+                text = text.replace(g.u('\u2020'),g.u(' '))
+                text = text.replace(g.u('\xa0'), g.u(' '))
                 text = text.encode('utf-8')
             #text = text.replace("&", "&amp;")
             #text = text.replace("<", '"')
