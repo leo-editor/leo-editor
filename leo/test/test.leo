@@ -23,7 +23,7 @@
 <v t="ekr.20071206070207"></v>
 </v>
 </v>
-<v t="ekr.20070224123943"><vh>@settings</vh>
+<v t="ekr.20070224123943" a="E"><vh>@settings</vh>
 <v t="ekr.20100118190256.2014"><vh> Chapters</vh>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
@@ -189,7 +189,7 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
-<v t="ekr.20070224123943"></v>
+<v t="ekr.20070224123943" a="E"></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
 <v t="ekr.20080531131542.1"><vh>mxTextTools proto</vh>
@@ -1486,6 +1486,7 @@ leoTest.doTests (c,all=False)</t>
 # attrib_edit.py
 # ctagscompleter.py
 # codewisecompleter.py
+# rst3.py
 contextmenu.py
 plugins_menu.py
 #open_with.py

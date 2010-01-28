@@ -941,6 +941,7 @@ class rstCommands:
         if self.getOption('stylesheet_embed') == False:
             rel_path = g.os_path_join(
                 rel_stylesheet_path,self.getOption('stylesheet_name'))
+            rel_path = rel_path.replace('\\','/') # 2010/01/28
             overrides['stylesheet'] = rel_path
             overrides['stylesheet_path'] = None
             overrides['embed_stylesheet'] = None
