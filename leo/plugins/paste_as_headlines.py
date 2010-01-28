@@ -80,20 +80,36 @@ def paste_as_headlines(c):
 
     currentPos = c.p 
     clipText = g.app.gui.getTextFromClipboard()
-    # Leo won't display curly quotes properly, so replace them with normal quotes
-    clipText = clipText.replace(g.u('” “'),'" "')
+
     # Split clipboard text elements into a list
     clipList = clipText.split("\n")
+
+    init_indent = len(clipList[0]) - len(clipList[0].lstrip())
+    cur_pos = currentPos.copy()
+    ancestors = [(init_indent,cur_pos)]
+
     for tempHead in clipList:
+        indent = len(tempHead) - len(tempHead.lstrip())
         tempHead = tempHead.strip()
         # Make sure list item has some content
         if tempHead:
-            insertNode = currentPos.insertAsLastChild()
+            if indent > ancestors[-1][0]:
+                ancestors.append((indent,cur_pos))
+            else:
+                while indent < ancestors[-1][0] and indent >= init_indent:
+                    ancestors.pop()
+
+            cur_indent = indent
+
+            insertNode = ancestors[-1][1].insertAsLastChild()
+            cur_pos = insertNode.copy()
+
             if len(tempHead)>50:
                 c.setHeadString(insertNode,tempHead[:50])
                 c.setBodyString(insertNode,tempHead)
             else:
                 c.setHeadString(insertNode,tempHead)
+
     currentPos.expand()
     c.redraw()
 #@-node:danr7.20060912105041.6:paste_as_headlines
