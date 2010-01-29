@@ -13,11 +13,30 @@
 #@+node:ekr.20100126110826.6253:Before rc1
 #@+node:ekr.20100128094926.6228: First
 #@+node:ekr.20100128124511.6236:Eliminate most imports from leo/extensions
+@nocolor-node
+
+Eliminate cruft in leo/extensions
+    - sets folder
+    - subprocess folder
+- optparse.py
+- aspell23/24.pyd files can also go.
+
+Don't know about Gato.
+#@nonl
 #@-node:ekr.20100128124511.6236:Eliminate most imports from leo/extensions
 #@+node:ekr.20100128094926.6225:use g.app.moduleTesting to disable actual loads
 The plugin manager will not registers pluings when g.app.moduleTesting is True.
 #@nonl
 #@-node:ekr.20100128094926.6225:use g.app.moduleTesting to disable actual loads
+#@+node:ekr.20100128094926.6227:Reduce size of distribution
+#@-node:ekr.20100128094926.6227:Reduce size of distribution
+#@+node:ekr.20100129131524.6190:improve caching
+@nocolor-node
+
+- Cache expansion states.
+- Use common key for globals??
+#@nonl
+#@-node:ekr.20100129131524.6190:improve caching
 #@+node:ekr.20100122130101.6172:Fix bug in c.pasteOutline when run from unit tests
 @nocolor-node
 
@@ -222,21 +241,6 @@ def checkPaste (self,parent,p):
 #@-node:ekr.20080410115129.1:checkPaste
 #@-node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
 #@-node:ekr.20100122130101.6172:Fix bug in c.pasteOutline when run from unit tests
-#@+node:ekr.20100128094926.6227:Reduce size of distribution
-@nocolor-node
-
-Now that Leo requires Python 2.6 or above, several items in the leo/
-extensions folder should be removed.  These include sets and
-subprocess subfolders.
-
-Also, optparse.py and the aspell23/24.pyd files can also go.  Don't
-know about Gato.  As for Pmw, I will probably make it compatible with
-Python 3x fairly soon.
-
-I would like to clean up this folder before rc1.  I'll do so just
-after b2 goes out. 
-#@nonl
-#@-node:ekr.20100128094926.6227:Reduce size of distribution
 #@+node:ekr.20100111094359.6208:Simplify goto-line and fix bugs
 #@+node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 def goToLineNumber (self,n,p=None,scriptData=None):
@@ -667,8 +671,6 @@ write code should not use any @path declarations found in its body
 text.
 #@nonl
 #@-node:ekr.20081204091750.4:Fix inconsistency in how @path works (or not???)
-#@+node:ekr.20100128094926.12299:Use common key for window position??
-#@-node:ekr.20100128094926.12299:Use common key for window position??
 #@-node:ekr.20100128094926.6228: First
 #@+node:ekr.20100125190708.6258:Better screen shots
 #@-node:ekr.20100125190708.6258:Better screen shots

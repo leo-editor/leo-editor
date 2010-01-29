@@ -1845,7 +1845,7 @@ class baseFileCommands:
 
     def putGlobals (self):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
 
         use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
@@ -2103,7 +2103,7 @@ class baseFileCommands:
                 key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
                 c.db['current_position_%s' % key] = str_pos
                 if d.get('str_leo_pos'): del d['str_leo_pos']
-                g.trace('to c.db',str_pos,key)
+                # g.trace('to c.db',str_pos,key)
             elif c.fixed:
                 if d.get('str_leo_pos'): del d['str_leo_pos']
             else:
