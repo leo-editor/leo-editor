@@ -3206,7 +3206,7 @@
 </v>
 </v>
 <v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
-<v t="ekr.20100118181428.8813" a="E"><vh>4.7 beta 2</vh>
+<v t="ekr.20100118181428.8813"><vh>4.7 beta 2</vh>
 <v t="ekr.20100118181428.7557"><vh>Bugs</vh>
 <v t="ekr.20100118181428.7559"><vh>Fixed calltips on leo3k</vh></v>
 <v t="ekr.20100118181428.7570"><vh>Fixed headline scrolling</vh></v>
