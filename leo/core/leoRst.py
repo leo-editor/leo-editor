@@ -909,6 +909,11 @@ class rstCommands:
         '''Send s to docutils using the writer implied by self.ext and return the result.'''
 
         trace = False and not g.unitTesting
+
+        if not docutils:
+            g.es('docutils not present',color='red')
+            return
+
         openDirectory = self.c.frame.openDirectory
         overrides = {'output_encoding': self.encoding }
 
@@ -1356,6 +1361,8 @@ class rstCommands:
     def write (self,s):
 
         if self.trialWrite:
+            pass
+        elif g.isPython3:
             pass
         else:
             s = self.encode(s)

@@ -41,6 +41,7 @@ Contents:
    atShadow
    appendices
    glossary
+   new-4-7
    new-4-6
    new-4-5
    new-4-4-8

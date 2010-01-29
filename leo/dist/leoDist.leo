@@ -2,14 +2,14 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5">
-	<global_window_position top="41" left="463" height="968" width="798"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20050315084904"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -95,7 +95,7 @@
 <v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
 </v>
 </v>
-<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
 <v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
@@ -210,17 +210,14 @@ rm -f  $LEO_RUN_SCRIPT_OUTPUT
 
 Do a search and replace on this suffix.
 
-Latest suffix:  -final
-
-
-</t>
+Latest suffix:  -b2</t>
 <t tx="EKR.20040519090846.1">Leo is Open Software and is distributed under the terms of the Python License.
 The gist of the license is that Leo is absolutely free, even for commercial use
 (including resale). There is no GNU-like "copyleft" restriction. The Open Source
 Initiative board has voted to certify the Python license as Open Source. This
 license is compatible with the GPL.
 
-Copyright (c) 1997-2009 by Edward K. Ream. All Rights Reserved.
+Copyright (c) 1997-2010 by Edward K. Ream. All Rights Reserved.
 
 Permission to use, copy, modify, and distribute this software and its
 documentation for any purpose and without fee is hereby granted, provided that
@@ -239,13 +236,15 @@ NO EVENT SHALL REAM BE LIABLE FOR ANY LOSS OF PROFIT OR ANY COMMERCIAL DAMAGE,
 INCLUDING BUT NOT LIMITED TO SPECIAL, INCIDENTAL, CONSEQUENTIAL OR OTHER
 DAMAGES.</t>
 <t tx="EKR.20040519090846.2"></t>
-<t tx="EKR.20040519090846.3">System requirements for leo.py
-------------------------------
+<t tx="EKR.20040519090846.3">System requirements
+-------------------
 
-leo.py requires Python 2.5 or above and tcl/tk 8.4 or above.
+Leo equires Python 2.6 or above and tcl/tk 8.4 or above.
+Leo will also work with PyQt instead of tcl/tk.
 
 	Download Python from http://python.org/ 
 	Download tcl/Tk from http://tcl.activestate.com/software/tcltk/
+    Download PyQt from http://www.riverbankcomputing.co.uk/news
 
 Warning: When building Tcl on Linux, do not specify "--enable-threads" .
 Only use Tcl with the default "threads not enabled" case.
@@ -265,8 +264,8 @@ You can add  ~/leo-4-5 to your path, or you can create an alias that executes::
     python ~/leo-4-5/launchLeo.py
 </t>
 <t tx="EKR.20040519090846.5">
-Installing the leo.py on Windows
---------------------------------
+Installing Leo on Windows
+--------------------------
 
 There are now two ways to install Leo on Windows:
     
@@ -355,53 +354,45 @@ Thanks to Randall Voth for these instructions.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.7-beta-1
+Version: 4.7-beta-2
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
 Author-email: edreamleo@charter.net
 License: Python
-Description: Leo is an outline-oriented editor written in 100% pure Python.
-		Leo works on any platform that supports Python 2.5 or above.
-     Leo will work with either Qt or Tk guis.
-		You may download Python from http://python.org/ and
-		tcl/Tk from http://tcl.activestate.com/software/tcltk/
-		Leo features a multi-window outlining editor, Python colorizing,
-		powerful outline commands and many other things, including 
-		Unlimited Undo/Redo and an integrated Python shell(IDLE) window.
-		Leo will place its own icon in Leo windows provided that you have
-		installed Fredrik Lundh's PIL and tkIcon packages:
-		Download PIL from http://www.pythonware.com/downloads/index.htm#pil
-		Download tkIcon from http://www.effbot.org/downloads/#tkIcon
+Description:
+    Leo is an outline-oriented editor written in 100% pure Python.
+	Leo features a multi-window outlining editor, Python colorizing,
+	powerful outline commands and many other things, including 
+	Unlimited Undo/Redo and an integrated Python shell(IDLE) window.
+    Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.7 beta 1                          September 9, 2009
+<t tx="EKR.20040519090846.9">Leo 4.7 beta 2                       January 29, 2009
 
-Leo 4.7 beta 1 is now available at:
+Leo 4.7 beta 2 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo 4.7 beta 2 fixes all known serious bugs in Leo.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
 
-This version of Leo is labeled a beta version because it contains some new,
-relatively untested plugins.  However, Leo's core should be quite reliable.
-
-In particular, Leo 4.7 beta 1 fixes a bug that caused Leo 4.6 releases to crash
-if .leoID.txt did not exist. Usually this file does exist, but Leo will prompt
-for the contents of this file (a user id) the very first time somebody uses Leo.
-Alas, an unfortunate reversion of code caused Leo to crash. Not exactly the best
-introduction to Leo!
-
 The highlights of Leo 4.7:
 --------------------------
 
-- A major simplification of internal data model: the so-called
-  one-node world. Note: this is **disabled** in the beta 1 release.
-- A new executable Windows installer, whose manifest is created from
-  the files that bzr actively manages.
-- Leo no longer adds directories to sys.path on startup.
-- New plugins.
-- The usual assortment of bug fixes.
+- Leo now uses the simplest possible internal data model.
+  This is the so-called "one-node" world.
+- Leo supports Python 3.x.
+- Leo requires Python 2.6 or above.
+- Several important improvements in file handling.
+    - Leo converts @file nodes to @thin nodes automatically.
+    - @auto-rst now works much more reliably reliably.
+    - Leo no longer @noref trees.  Such trees are not
+      reliable in cooperative environments.
+- A new Windows installer.
+- Many other features, including new command line options and new plugins.
+- Dozens of bug fixes.
 
 Links:
 ------
@@ -409,7 +400,8 @@ Leo:      http://webpages.charter.net/edreamleo/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+</t>
 <t tx="EKR.20040519091259">@pagewidth 70
 @killcolor</t>
 <t tx="EKR.20040519091259.1">4.4.5       setup: 547  zip: 379  2007-12-11
@@ -445,6 +437,7 @@ have not yet tried Leo, you are wrong...I rate Leo as a "must have"
 for Python programmers. The code makes for a good read.
 -- John Tobler  http://weblogs.asp.net/Jtobler/
 </t>
+<t tx="EKR.20040519091259.30"></t>
 <t tx="EKR.20040519091259.4">I've written documentation in WordPerfert, Ventura, Word, PageMaker, and
 FrameMaker and even though they create wonderfully looking and useful
 documents, they've never been able to do what I've been looking for. HTML,
@@ -454,7 +447,6 @@ of discrete parts that can be re-organized on the fly to meet the needs of a
 varying audience...Being a convert for less than a day I've still got a lot to
 learn, but just the possibility of keeping system maintenance scripts in the IT
 manual is mind boggling.  -- David Nichols dnichols@amci.com</t>
-<t tx="EKR.20040519091259.30"></t>
 <t tx="ekr.20040630210818">HTML Editing in Leo is soooo much easier then with NoNodeEditors. Ive
 had a blast working on a web page. Usually I had to look at a bunch of
 gunk all at once. Now I can look at little pieces of gunk! :) 
@@ -489,7 +481,7 @@ makes the system more flexible...
 now for about 2 -- 3 months. It has totally changed not only the way that I
 program, but also the way that I store and organise all of the information that
 I need for the job that I do. -- Ian Mulvany</t>
-<t tx="ekr.20050315084904" str_leo_pos="4"></t>
+<t tx="ekr.20050315084904"></t>
 <t tx="ekr.20050315084922">c.spellCommands.openSpellTab()</t>
 <t tx="ekr.20060213160806">"Thanks for a wonderful program – everybody should be using it! It blows the
 socks off that Java Mind mapping software that won project of the month a while
@@ -849,8 +841,8 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
     - Run pylint-leo.bat.
 LeoDocs.leo:
     ** Update version on home page.
-    - Remove top-level clones.
-    - Select the readme node.
+    - (done) Remove top-level clones.
+    - (done) Select the readme node.
 LeoPlugins.leo:
     - Remove top-level clones.
 LeoPy.leo:
@@ -1708,7 +1700,7 @@ FunctionEnd
     @others
 </t>
 <t tx="ekr.20090902092112.1481"># Used by both @button make leo.nsi and @button make leo.zip.
-app_version = version = '4.7-beta-1'</t>
+app_version = version = '4.7-beta-2'</t>
 <t tx="ekr.20090902092112.1482">try:
     inLeo = g is not None
 except AttributeError:
