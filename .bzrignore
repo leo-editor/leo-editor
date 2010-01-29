@@ -7,6 +7,7 @@
 *.pyo
 *.leo_db
 *Thumbs.db
+*.zip
 
 ./*.zip
 ./*.exe

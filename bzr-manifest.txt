@@ -2244,6 +2244,7 @@ leo/test/qtui_generate.py
 leo/test/rhythmbox.desktop
 leo/test/rope.leo
 leo/test/rst-test.txt
+leo/test/scriptFile.py
 leo/test/server.py
 leo/test/slide-show-file.py
 leo/test/test.leo

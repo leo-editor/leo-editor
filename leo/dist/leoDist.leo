@@ -82,7 +82,7 @@
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
 <v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
-<v t="ekr.20090901092556.1609" a="E"><vh>head boilerplate</vh>
+<v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1590"><vh>putOnInit</vh></v>
 </v>
@@ -96,9 +96,9 @@
 <v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
 </v>
 </v>
-<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
-<v t="ekr.20090901092556.1574" a="E"><vh>genInstallData &amp; helpers</vh>
+<v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
 </v>
 <v t="ekr.20090901092556.1575"><vh>genMiddle</vh></v>
@@ -1145,13 +1145,14 @@ def deleteFiles (self,lines,deleteList):
 
     '''Filter lines from the input manifest file.'''
 
-    trace = False
+    trace = True
 
     # Remove blank lines, comments, and .pyc and .pyo files.
     lines = self.deleteBlankLines(lines)
     lines = self.deleteComments(lines)
     lines = self.deleteExt(lines,'.pyc')
     lines = self.deleteExt(lines,'.pyo')
+    lines = self.deleteExt(lines,'.zip') # Don't include the zip file.
     lines = self.deleteExt(lines,'.exe') # Don't include the installer.
 
     # Remove specific files.
