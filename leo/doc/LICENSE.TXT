@@ -4,7 +4,7 @@ The gist of the license is that Leo is absolutely free, even for commercial use
 Initiative board has voted to certify the Python license as Open Source. This
 license is compatible with the GPL.
 
-Copyright (c) 1997-2009 by Edward K. Ream. All Rights Reserved.
+Copyright (c) 1997-2010 by Edward K. Ream. All Rights Reserved.
 
 Permission to use, copy, modify, and distribute this software and its
 documentation for any purpose and without fee is hereby granted, provided that

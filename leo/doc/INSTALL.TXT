@@ -1,10 +1,12 @@
-System requirements for leo.py
-------------------------------
+System requirements
+-------------------
 
-leo.py requires Python 2.5 or above and tcl/tk 8.4 or above.
+Leo equires Python 2.6 or above and tcl/tk 8.4 or above.
+Leo will also work with PyQt instead of tcl/tk.
 
 	Download Python from http://python.org/ 
 	Download tcl/Tk from http://tcl.activestate.com/software/tcltk/
+    Download PyQt from http://www.riverbankcomputing.co.uk/news
 
 Warning: When building Tcl on Linux, do not specify "--enable-threads" .
 Only use Tcl with the default "threads not enabled" case.
@@ -28,8 +30,8 @@ You can add  ~/leo-4-5 to your path, or you can create an alias that executes::
 
     python ~/leo-4-5/launchLeo.py
 
-Installing the leo.py on Windows
---------------------------------
+Installing Leo on Windows
+--------------------------
 
 There are now two ways to install Leo on Windows:
     

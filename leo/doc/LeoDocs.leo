@@ -263,12 +263,12 @@
 <v t="ekr.20050828061213"><vh>@rst html\directives.html</vh>
 <v t="ekr.20050828160132"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050828061501.1"><vh>@rst-no-head Intro.</vh></v>
-<v t="ekr.20050828163557"><vh>Overview: the 9 ways of accessing external files</vh></v>
+<v t="ekr.20050828163557"><vh>Overview: creating and using external files</vh></v>
 <v t="ekr.20050828211507"><vh>Overview: summary of directives</vh></v>
 <v t="ekr.20050828061501.30"><vh>Reference: all about directives</vh>
 <v t="ekr.20050828173234"><vh>@ and @doc</vh></v>
 <v t="ekr.20050828061501.31"><vh>@all</vh></v>
-<v t="ekr.20050828174453.2"><vh>\@asis and @noref</vh></v>
+<v t="ekr.20050828174453.2"><vh>\@asis</vh></v>
 <v t="ekr.20080730212711.47"><vh>\@auto</vh></v>
 <v t="ekr.20050828173234.1"><vh>@c and @code</vh></v>
 <v t="ekr.20050828061501.32"><vh>@color, @nocolor, @nocolor-node and @killcolor</vh></v>
@@ -296,7 +296,7 @@
 <v t="ekr.20050828061501.50"><vh>@verbose, @terse, @quiet and @silent</vh></v>
 <v t="ekr.20050828061501.42"><vh>@wrap and @nowrap</vh></v>
 </v>
-<v t="ekr.20050828062751"><vh>Reference: the 9 ways of accessing external files</vh>
+<v t="ekr.20050828062751"><vh>Reference: creating and using external files</vh>
 <v t="ekr.20070814090306"><vh>\@auto</vh>
 <v t="ekr.20070814090306.2"><vh>Perfect import checks</vh></v>
 <v t="ekr.20070814090306.3"><vh>Commands related to @auto</vh></v>
@@ -861,12 +861,6 @@
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
 </v>
 </v>
-<v t="EKR.20040524104904.380"><vh>OLD Glossary</vh>
-<v t="ekr.20050901071041"><vh>@rst html\glossary.html</vh>
-<v t="ekr.20050901071300"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20050901073048"><vh>@rst-no-head glossary</vh></v>
-</v>
-</v>
 <v t="ekr.20091111112709.6671"><vh>Glossary</vh>
 <v t="ekr.20091111112709.6672"><vh>@rst html\glossary.txt</vh>
 <v t="ekr.20091111112709.6676"><vh>@rst-no-head links</vh></v>
@@ -874,6 +868,16 @@
 <v t="ekr.20091111112709.6677"><vh>To be rewritten</vh></v>
 </v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
+<v t="ekr.20100129054823.11924"><vh>What's New in Leo 4.7</vh>
+<v t="ekr.20100129054823.11925"><vh>@rst html\new-4-7.html</vh>
+<v t="ekr.20100129054823.11926"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20100129054823.17680"><vh>Leo supports Python 3.x</vh></v>
+<v t="ekr.20100129054823.11928"><vh>Improved file handling</vh></v>
+<v t="ekr.20100129054823.11931"><vh>New command-line options</vh></v>
+<v t="ekr.20100129054823.11934"><vh>New settings</vh></v>
+<v t="ekr.20100129054823.11935"><vh>Improved plugins</vh></v>
+</v>
+</v>
 <v t="ekr.20090324145450.20"><vh>What's New in Leo 4.6</vh>
 <v t="ekr.20090324145450.21"><vh>@rst html\new-4-6.html</vh>
 <v t="ekr.20090324145450.22"><vh>@rst-no-head links</vh></v>
@@ -884,7 +888,7 @@
 <v t="ekr.20090324145450.36"><vh>New command-line options</vh></v>
 <v t="ekr.20090324145450.40"><vh>New commands</vh></v>
 <v t="ekr.20090324145450.46"><vh>New and improved directives</vh></v>
-<v t="ekr.20090324145450.49" a="M"><vh>New settings</vh></v>
+<v t="ekr.20090324145450.49"><vh>New settings</vh></v>
 <v t="ekr.20090324145450.54"><vh>Plugins</vh></v>
 </v>
 </v>
@@ -991,6 +995,13 @@
 </v>
 </v>
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
+<v t="ekr.20090428101858.1"><vh> How to generate Leo's Sphinx docs</vh></v>
+<v t="EKR.20040524104904.380"><vh>OLD Glossary</vh>
+<v t="ekr.20050901071041"><vh>@@rst html\glossary.html</vh>
+<v t="ekr.20050901071300"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20050901073048"><vh>@rst-no-head glossary</vh></v>
+</v>
+</v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
@@ -1005,7 +1016,6 @@
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
-<v t="ekr.20090428101858.1"><vh>How to generate Leo's Sphinx docs</vh></v>
 <v t="ekr.20090526102407.10028"><vh>Important notes about Leo's code</vh>
 <v t="ekr.20090526102407.10029"><vh>How to profile Leo</vh></v>
 <v t="ekr.20090526102407.10030"><vh>High-level code notes</vh>
@@ -1041,7 +1051,8 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46"><vh>Release Notes</vh>
+<v t="ekr.20100129054823.11924"></v>
+<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -3248,7 +3259,6 @@
 <v t="ekr.20100118181428.8522"><vh>Finished bug 486433: non-breaking space etc. are invisible</vh></v>
 <v t="ekr.20100118181428.8523"><vh>Fixed bug: 420988 @tabwith 8 not honored</vh></v>
 <v t="ekr.20100118181428.8524"><vh>Don't colorize @others and @all unless they start a line</vh></v>
-</v>
 <v t="ekr.20100119145003.7319"><vh>Gui bugs</vh>
 <v t="ekr.20100119145003.7320"><vh>Fixed file-open focus problem</vh></v>
 <v t="ekr.20100119145003.7322"><vh>Eliminate double close prompt</vh></v>
@@ -3266,17 +3276,6 @@
 <v t="ekr.20100119145003.7643"><vh>Config coloring tags whenever the language changes</vh></v>
 <v t="ekr.20100119145003.7718"><vh>Update qttabs when saving a new file</vh></v>
 </v>
-<v t="ekr.20100118181428.8525"><vh>Features</vh>
-<v t="ekr.20100118181428.8815"><vh>Leo now works with both Python 2.x and Python 3.x</vh></v>
-<v t="ekr.20100118181428.8582"><vh>Batch operations on nodes</vh></v>
-<v t="ekr.20100118181428.8614"><vh>Added options to vim plugin</vh></v>
-<v t="ekr.20100118181428.8616"><vh>Added support for --version</vh></v>
-<v t="ekr.20100118181428.8617"><vh>Convert @file nodes so they use file-like sentinels</vh></v>
-<v t="ekr.20100118181428.8671"><vh>Leo minimizes unnecessary changes to .leo files</vh></v>
-<v t="ekr.20100118181428.8826"><vh>The qt colorizer now supports font specifications</vh></v>
-<v t="ekr.20100124164700.12030"><vh>Added --debug switch</vh></v>
-</v>
-<v t="ekr.20100124164700.11918"><vh>Bugs</vh>
 <v t="ekr.20100124164700.11919"><vh>Fixed colorizer bug affecting per-language @font settings</vh></v>
 <v t="ekr.20100124164700.11920"><vh>support extend-mode for several commands</vh></v>
 <v t="ekr.20100124164700.11921"><vh>Fixed qttab problem</vh></v>
@@ -3411,9 +3410,18 @@
 <v t="ekr.20100124164700.12028"><vh>warnAboutOrpanAndIgnoredNodes</vh></v>
 <v t="ekr.20100124164700.12029"><vh>putAtAllChild</vh></v>
 </v>
-<v t="ekr.20100124164700.12125"><vh>Clones in @all files now have low priority</vh></v>
+<v t="ekr.20100128094926.12524"><vh>Eliminated node-changed marks</vh></v>
+<v t="ekr.20100128094926.12739"><vh>Suppress path changed message in save-as and save-to</vh></v>
+<v t="ekr.20100128094926.12747"><vh>Fixed Tangle problem with latext files</vh></v>
+<v t="ekr.20100128094926.12756"><vh>Fixed Terry's unicode problem</vh></v>
 </v>
-<v t="ekr.20100124164700.12035"><vh>Eliminated support for @noref</vh></v>
+<v t="ekr.20100118181428.8525"><vh>Features</vh>
+<v t="ekr.20100118181428.8815"><vh>Leo supports Python 3.x</vh></v>
+<v t="ekr.20100129054823.11928"></v>
+<v t="ekr.20100129054823.17683"><vh>New command-line options</vh></v>
+<v t="ekr.20100129054823.11935"></v>
+<v t="ekr.20100129054823.17685"><vh>New settings</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -4881,42 +4889,45 @@ the original node will change as well. A cloned nodes becomes a regular node
 again when its penultimate clone is deleted. Clones are useful for making
 alternate views of a program. See `Clones and views`_ for full details.</t>
 <t tx="EKR.20040524104904.274">@language rest</t>
-<t tx="EKR.20040524104904.282">To convert an @root tree to an @file tree, choose the root of the tree to be converted,
-then do the following in the Python window::
+<t tx="EKR.20040524104904.282">To convert an @root tree to an @file tree, choose the root of the tree to be
+converted, then do the following in the Python window::
 
 	import c2py
 	c2py.leo1to2()
 
-This script makes numerous changes throughout the tree.
-It does not, however, change @root to @file, or insert the needed @others directives.
-You must do that by hand.
+This script makes numerous changes throughout the tree. It does not, however,
+change @root to @file, or insert the needed @others directives. You must do that
+by hand.
 
 To convert @root trees to @file trees by hand:
 
-1.  Change the @root node to an @file node.
-    That is, delete the @root &lt;filename&gt; from the body text and insert @file &lt;filename&gt; in the headline.
-    Typically, the root node contains a reference like &lt;&lt;methods of class x&gt;&gt; as the last body text.
-    Replace this reference with the @others directive.
-    The expansion of @others is all text that is not part of a section definition.
+1. Change the @root node to an @file node. That is, delete the @root &lt;filename&gt;
+    from the body text and insert @file &lt;filename&gt; in the headline. Typically,
+    the root node contains a reference like &lt;&lt;methods of class x&gt;&gt; as the last
+    body text. Replace this reference with the @others directive. The expansion
+    of @others is all text that is not part of a section definition.
 
-2.  Add @ to the start of all doc parts.
-    Leo starts syntax coloring in code mode rather than doc mode,
-    so if a doc part starts body text it should start with @
+2. Add @ to the start of all doc parts. Leo starts syntax coloring in code mode
+   rather than doc mode, so if a doc part starts body text it should start with
+   an '@' sign.
+   
+3. Replace all section definition lines (like &lt;&lt;name&gt;&gt;=) by @c. This results in
+   the node being added to the expansion of @others.
 
-3.  Replace all section definition lines (like &lt;&lt;name&gt;&gt;=) by @c.
-    This results in the node being added to the expansion of @others.
+4. Remove all unused code from the @file tree. Leo does not write external files
+   whose @file trees contain orphan or @ignore nodes.
 
-4.  Remove all unused code from the @file tree.
-    Leo does not write external files whose @file trees contain orphan or @ignore nodes.
+5. Make sure that all nodes defining a section have a headline that starts with
+   &lt;&lt;section&gt;&gt;. This will typically be true when converting @root trees that use
+   the @code directive.
 
-5.  Make sure that all nodes defining a section have a headline that starts with &lt;&lt;section&gt;&gt;.
-    This will typically be true when converting @root trees that use the @code directive.
+6. If a section is referenced in more than one node (a rare occurrence in my
+    code), clone the defining node and move one clone under each referencing
+    node.
 
-6.  If a section is referenced in more than one node (a rare occurrence in my code),
-    clone the defining node and move one clone under each referencing node.
-
-7.  If a node contains the definitions of several sections,
-    place each different definition in a different node.</t>
+7. If a node contains the definitions of several sections, place each different
+   definition in a different node.
+</t>
 <t tx="EKR.20040524104904.307">The following error messages may be generated by the Tangle commands.
 
 Can not re-open temp file
@@ -10874,7 +10885,7 @@ If only one delimiter is given, Leo does not write any documentation parts while
 If two delimiters are given, block-style comments are used instead of single-line comments.
 For example, the @comment { } directive could be used to tangle Pascal files.
 
-The @comment directive is only recognized in @root, @unit or @file nodes,
+The @comment directive is only recognized in @root, @unit, @file and @thin nodes,
 and the @comment directive must precede the first section name or @code directive.
 An @comment directive in the body text of an @unit directive specifies the current global defaults.
 An @comment directive in the body text of an @root directive affects comments generated for one root only.
@@ -11016,61 +11027,57 @@ Otherwise, if *filename* is a relative filename, the location of the external fi
 
 An error occurs if no absolute path can be computed according to these rules,
 or if *filename* does not exist.</t>
-<t tx="ekr.20050828061501.40">The @raw and @end_raw directives are valid only within @file trees.
-The @raw directive starts a section of "raw" text.
-The @end_raw directive ends such a section, as does the end of body text.
-No section references are recognized within raw text,
-and no additional leading whitespace is generated within raw text when writing the external file.
-</t>
-<t tx="ekr.20050828061501.41">Leo allows you to choose whether body text in @root trees will start in code mode or doc mode by default.
-@root-doc *filename* and @root-code *filename* directives
-specify that body text is assumed to start in doc mode or code mode respectively.
-The options (-doc and -code) must follow @root immediately with no intervening whitespace.
-In effect, @root-code and @root-doc are two new directives.
+<t tx="ekr.20050828061501.40">The @raw and @end_raw directives are valid only within @file and @thin trees.
+The @raw directive starts a section of "raw" text. The @end_raw directive ends
+such a section, as does the end of body text. No section references are
+recognized within raw text, and no additional leading whitespace is generated
+within raw text when writing the external file.</t>
+<t tx="ekr.20050828061501.41">Leo allows you to choose whether body text in @root trees will start in code
+mode or doc mode by default. The @root-doc *filename* and @root-code *filename*
+directives specify that body text is assumed to start in doc mode or code mode
+respectively. The options (-doc and -code) must follow @root immediately with no
+intervening whitespace. In effect, @root-code and @root-doc are two new
+directives.
 
-These @root options override the at_root_bodies_start_in_doc_mode setting.
-This setting affects only @root trees without options.
-Such "plain" @root trees are now deprecated,
-which only means that it is better style to use either @root-code or @root-doc.
-The reason is simple:
-the meaning of plain @root trees will depend on the at_root_bodies_start_in_doc_mode setting.
-It's better to be explicit.
-By default, at_root_bodies_start_in_doc_mode = 1 for compatibility for old @root trees.
-I actually don't think this option is good for much;
-I created it before I created @root-doc and @root-code settings,
-and I decided it wouldn't hurt to leave it in.
-Anyway, you now have complete flexibility about how @root works,
-and in particular you can make @root work just like @file.</t>
+These @root options override the at_root_bodies_start_in_doc_mode setting. This
+setting affects only @root trees without options. Such "plain" @root trees are
+now deprecated, which only means that it is better style to use either the
+@root-code or @root-doc directive. The reason is simple: the meaning of plain
+@root trees will depend on the at_root_bodies_start_in_doc_mode setting. It's
+better to be explicit. By default, at_root_bodies_start_in_doc_mode = 1 for
+compatibility for old @root trees. I actually don't think this option is good
+for much; I created it before I created @root-doc and @root-code settings, and I
+decided it wouldn't hurt to leave it in. Anyway, you now have complete
+flexibility about how @root works, and in particular you can make @root work
+just like @file.</t>
 <t tx="ekr.20050828061501.42">By default, the body_pane_wraps setting controls whether body text wraps.
 You may override this setting for a particular tree using the @wrap and @nowrap directives.
 Only the first @wrap or @nowrap directive in a node has any effect.</t>
-<t tx="ekr.20050828061501.43">See `CWEB`_ for a discussion of the CWEB language.
-CWEB mode refers to how Leo tangles an outline when @language cweb is in effect or
-the cweb setting is in effect.
-Leo treats *all* cweb code in cweb mode as unevaluated text.
-That is, Leo treats cweb control codes, including
-@&lt;...@&gt;, @&lt;..@&gt;=, @c, @, @* and @** as "raw" text within cweb mode.
-Leo does *not* expand *cweb* section references when writing external files in cweb mode.
-However, Leo *does* expand *noweb* section references,
-so you may use noweb sections to organize cweb files!
-You can create *noweb* code and doc sections using the @code and @doc directives
-in place of @c and @ directives.
+<t tx="ekr.20050828061501.43">See `CWEB`_ for a discussion of the CWEB language. CWEB mode refers to how Leo
+tangles an outline when @language cweb is in effect or the cweb setting is in
+effect. Leo treats *all* cweb code in cweb mode as unevaluated text. That is,
+Leo treats cweb control codes, including @&lt;...@&gt;, @&lt;..@&gt;=, @c, @, @* and @** as
+"raw" text within cweb mode. Leo does *not* expand *cweb* section references
+when writing external files in cweb mode. However, Leo *does* expand *noweb*
+section references, so you may use noweb sections to organize cweb files! You
+can create *noweb* code and doc sections using the @code and @doc directives in
+place of @c and @ directives.
 
-By default, cweb colors @, @* and @** sections using the same syntax coloring as for LaTeX.
-In addition, cweb colors C // and /*..*/ comments using LaTeX coloring by default.
-You may change these defaults using the
-color_cweb_doc_parts_with_latex and color_cweb_comments_with_latex settings.</t>
-<t tx="ekr.20050828061501.45">This section discusses all aspects of @root trees.
-You should carefully consider whether the extra flexibility afforded by
-@root trees is worth the extra bother.
+By default, cweb colors @, @* and @** sections using the same syntax coloring as
+for LaTeX. In addition, cweb colors C // and /*..*/ comments using LaTeX
+coloring by default. You may change these defaults using the
+color_cweb_doc_parts_with_latex and color_cweb_comments_with_latex settings.
+</t>
+<t tx="ekr.20050828061501.45">This section discusses all aspects of @root trees. You should carefully consider
+whether the extra flexibility afforded by @root trees is worth the extra bother.
 Indeed, @file trees are much easier to use than @root trees:
 
-- @file trees use less markup than @root trees.
-  In particular, the @others directive is valid only within @file trees.
+- @file and @thin trees use less markup than @root trees.
+  In particular, the @others directive is valid only within @file and @thin trees.
 
 - You must explicitly tangle and untangle @root trees using the Tangle and Untangle commands.
 
-However, @root trees are more flexible than @file trees:
+However, @root trees are more flexible than @file and @thin trees:
 
 - Sections may be defined anywhere within @root trees.
   Moreover, the @unit directive expands the scope of section definitions in @root trees
@@ -11141,35 +11148,36 @@ If we convert the doc part to a comment we are left with::
 
 The following escape convention applies only in @root trees.
 Within a code part @@ in the first column (and only in the first column) stands for a single @ sign.</t>
-<t tx="ekr.20050828061501.48">Each @root tree represents a single external file.
-**Tangling** is the process of creating external files from @file or @root trees.
-Leo tangles @file trees automatically whenever an outline is saved.
-The user must tangle @root trees explicitly using one of the Tangle commands.
+<t tx="ekr.20050828061501.48">Each @root tree represents a single external file. **Tangling** is the process
+of creating external files from @file, @thin or @root trees. Leo tangles @file
+and @thin trees automatically whenever an outline is saved. The user must tangle
+@root trees explicitly using one of the Tangle commands.
 
 Leo creates external files by expanding all section references in an @root node.
-Leo expands a section reference by substituting the code section itself for the section reference.
-This is a recursive process:
-the substituted code section may contain other code references which are themselves expanded, and so on.
+Leo expands a section reference by substituting the code section itself for the
+section reference. This is a recursive process: the substituted code section may
+contain other code references which are themselves expanded, and so on.
 
 The outline provides a natural way of organizing an sections as follows::
 
 	Place the definition of a section S in a child of
 	the node containing the reference to S.
 
-If a section is referenced in more than one node,
-I usually place its definition in a node containing all the nodes that refer to it.
-Using this rule of thumb creates an outline whose structure mirrors the intrinsic organization of a program.
+If a section is referenced in more than one node, I usually place its definition
+in a node containing all the nodes that refer to it. Using this rule of thumb
+creates an outline whose structure mirrors the intrinsic organization of a
+program.
 
-The Tangle command creates external files from @root node.
-The @root directive indicates which sections constitute an output file.
-The text following a @root directive forms the entire content of the file,
-that is, after section references are expanded.
-An outline can contain arbitrarily many @root directives:
-Leo's Tangle commands will create one output file for each.
-The process of creating external files is called "tangling" because
-the code from the outline is rearranged to create the external files.
+The Tangle command creates external files from @root node. The @root directive
+indicates which sections constitute an output file. The text following a @root
+directive forms the entire content of the file, that is, after section
+references are expanded. An outline can contain arbitrarily many @root
+directives: Leo's Tangle commands will create one output file for each. The
+process of creating external files is called "tangling" because the code from
+the outline is rearranged to create the external files.
 
-For example, the following @root section shows a typical way of specifying a header file xx.h::
+For example, the following @root section shows a typical way of specifying a
+header file xx.h::
 
     @root xx.h
     #ifndef xx_defined
@@ -11180,11 +11188,13 @@ For example, the following @root section shows a typical way of specifying a hea
     &lt;&lt; public prototypes of the xx class &gt;&gt;
     #endif
 
-The Tangle commands will create the file xx.h from this body text by expanding all the section references.
-Incidentally, the introductory documentation will be included in the header file:
-any text preceding the @root directive is treated just like the doc part of a section definition.
+The Tangle commands will create the file xx.h from this body text by expanding
+all the section references. Incidentally, the introductory documentation will be
+included in the header file: any text preceding the @root directive is treated
+just like the doc part of a section definition.
 
-As another example, the following shows a typical way of specifying the corresponding xx.c file::
+As another example, the following shows a typical way of specifying the
+corresponding xx.c file::
 
     @root xx.c
     &lt;&lt; public variables of the xx class &gt;&gt;
@@ -11193,14 +11203,14 @@ As another example, the following shows a typical way of specifying the correspo
     &lt;&lt; private function prototypes of the xx class &gt;&gt;
     &lt;&lt; methods of the xx class &gt;&gt;
 
-There are three menu commands that tangle an outline: Tangle, Tangle All and Tangle Marked.
-These commands are identical except for how much of the outline is tangled.
-The Tangle command tangles only the selected portion of the outline,
-the Tangle All command tangles the entire outline,
-and the Tangle Marked command tangles only marked headlines.
+There are three menu commands that tangle an outline: Tangle, Tangle All and
+Tangle Marked. These commands are identical except for how much of the outline
+is tangled. The Tangle command tangles only the selected portion of the outline,
+the Tangle All command tangles the entire outline, and the Tangle Marked command
+tangles only marked headlines.
 
-The @root directive has three forms.
-All three forms mean exactly the same thing::
+The @root directive has three forms. All three forms mean exactly the same
+thing::
 
     @root filename
     @root "filename"
@@ -11218,15 +11228,15 @@ Otherwise, if the @root node contains a relative filename, the location of the e
 An error occurs if no absolute path can be computed according to these rules,
 or if the filename or directory does not exist.
 
-The scope of a definition is the tree in which the definition is known.
-By default, Tangle commands look for section definitions only
-in the suboutline of the @root node being tangled.
-That is, all sections are assumed to be defined either in the body text of the headline,
-say h, containing the @root directive, or in the body texts of the descendants of h.
-The @unit directive explicitly indicates the scope of section definitions.
-When a Tangle command encounters the @unit directive it treats the suboutline containing
-the @unit command as the scope for all enclosed roots.
-This ensures that the group of roots in the subtree use the same section definitions.
+The scope of a definition is the tree in which the definition is known. By
+default, Tangle commands look for section definitions only in the suboutline of
+the @root node being tangled. That is, all sections are assumed to be defined
+either in the body text of the headline, say h, containing the @root directive,
+or in the body texts of the descendants of h. The @unit directive explicitly
+indicates the scope of section definitions. When a Tangle command encounters the
+@unit directive it treats the suboutline containing the @unit command as the
+scope for all enclosed roots. This ensures that the group of roots in the
+subtree use the same section definitions.
 
 For example, suppose we have a tree organized as follows::
 
@@ -11236,51 +11246,53 @@ For example, suppose we have a tree organized as follows::
 		+ @root B
 		    sections in B
 
-The @unit directive insures that
-only sections defined in the unit can affect files A and B and
-that all sections definitions in A and B are compatible with each other.
+The @unit directive insures that only sections defined in the unit can affect
+files A and B and that all sections definitions in A and B are compatible with
+each other.
 
-The Tangle commands ignore any tree containing an @ignore directive.
-This ensures that trees that contain cloned nodes or other subsidiary information
-do not cause the tangle commands to issue spurious error messages.
-It also ensures that a tree can never contribute a section definition to another part of the outline by mistake.</t>
-<t tx="ekr.20050828061501.49">The Untangle, Untangle All and Untangle Marked commands are the
-reverse of the corresponding Tangle commands.
-They update one or more @root nodes based on changes made to the corresponding external files.
+The Tangle commands ignore any tree containing an @ignore directive. This
+ensures that trees that contain cloned nodes or other subsidiary information do
+not cause the tangle commands to issue spurious error messages. It also ensures
+that a tree can never contribute a section definition to another part of the
+outline by mistake.</t>
+<t tx="ekr.20050828061501.49">The Untangle, Untangle All and Untangle Marked commands are the reverse of the
+corresponding Tangle commands. They update one or more @root nodes based on
+changes made to the corresponding external files.
 
-For example, suppose you create a new part of the outline and tangle it for the first time.
-When you compile external files for the first you are likely to get many syntax errors.
-You could fix those errors in the outline and tangle the outline again, but there is a much easier way:
-you fix the errors in the external files using the compiler's editor,
-then run the untangle command on the part of the outline that created the external file.
-The Untangle command updates the selected outline to match the changes in the external files.
-It's as simple as that.
-By the way, the Untangle command marks all the nodes in the outline that it updates,
-and you can examine all such nodes with the Go To Next Marked command in the Outline menu.
+For example, suppose you create a new part of the outline and tangle it for the
+first time. When you compile external files for the first you are likely to get
+many syntax errors. You could fix those errors in the outline and tangle the
+outline again, but there is a much easier way: you fix the errors in the
+external files using the compiler's editor, then run the untangle command on the
+part of the outline that created the external file. The Untangle command updates
+the selected outline to match the changes in the external files. It's as simple
+as that. By the way, the Untangle command marks all the nodes in the outline
+that it updates, and you can examine all such nodes with the Go To Next Marked
+command in the Outline menu.
 
-You cannot use Untangle to update doc parts, or leading comments in code parts or
-"trivial" whitespace in code parts.
-This is a limitation of the Untangle command that cannot be fixed;
-Untangle has no way of knowing whether leading comments came from doc parts or are just leading comments.
+You cannot use Untangle to update doc parts, or leading comments in code parts
+or "trivial" whitespace in code parts. This is a limitation of the Untangle
+command that cannot be fixed; Untangle has no way of knowing whether leading
+comments came from doc parts or are just leading comments.
 
-Untangle never changes the structure of an outline;
-it never inserts, deletes or moves nodes.
-Don't attempt to change the structure of an outline by modifying external files; it won't work.
-Also, never delete, move or alter the sentinel lines in external files written by the Tangle command.
-Such lines start with the comment delimiter followed by a section name.
+Untangle never changes the structure of an outline; it never inserts, deletes or
+moves nodes. Don't attempt to change the structure of an outline by modifying
+external files; it won't work. Also, never delete, move or alter the sentinel
+lines in external files written by the Tangle command. Such lines start with the
+comment delimiter followed by a section name.
 
-If you change the section name in a sentinel line Untangle will not update the code in the outline
-(with the old name) that generated the renamed section.
-Untangle warns about sections that appear in an external file but not in the outline.
-Untangle has no trouble with changed section references in external files;
-it is only changed sentinel lines that cause problems.
+If you change the section name in a sentinel line Untangle will not update the
+code in the outline (with the old name) that generated the renamed section.
+Untangle warns about sections that appear in an external file but not in the
+outline. Untangle has no trouble with changed section references in external
+files; it is only changed sentinel lines that cause problems.
 
-Cloned nodes that generate code in several files may cause problems for Untangle.
-If Untangle is run separately on these external files,
-Untangle will update all cloned nodes each time it is run,
-so only the code in the last Untangle run will take effect.
-Therefore, the safe way to update text in cloned nodes is to
-make the change in the .leo file rather than the external files.</t>
+Cloned nodes that generate code in several files may cause problems for
+Untangle. If Untangle is run separately on these external files, Untangle will
+update all cloned nodes each time it is run, so only the code in the last
+Untangle run will take effect. Therefore, the safe way to update text in cloned
+nodes is to make the change in the .leo file rather than the external files.
+</t>
 <t tx="ekr.20050828061501.50">The @verbose, @terse, @quiet and @silent directives determine
 how the Tangle command outputs comments in @root trees.
 Comments written by the user in code sections are always output.
@@ -11295,14 +11307,8 @@ The @quiet directive is like @silent except that it does output leading sentinel
 Like @silent, @quiet inhibits untangling. 
 @verbose is the default.
 If more than one of these directives appear in the same body text the "most verbose" of these options will be in effect.</t>
-<t tx="ekr.20050828061501.51">The @file directive is deprecated - use @thin instead. @file trees
-can be converted to @thin trees by replacing @file by @thin in
-outline.
-
-The @file directive creates an external file containing sentinels.
-External files contain sentinels different from @thin.
-The @file tree in the outline contains a copy of all information in the external file.
-</t>
+<t tx="ekr.20050828061501.51">The @file is a synonym for @thin. The @file directive creates an external file
+containing sentinels.</t>
 <t tx="ekr.20050828062751">In the following table all terms in each row are equivalent.
 The spelling in the first column is preferred:
 
@@ -11310,12 +11316,10 @@ The spelling in the first column is preferred:
 \@asis      \@file-asis     \@silent
 ----------- --------------- -----------------
 \@nosent    \@file-nosent   \@nosentinelsfile
------------ --------------- -----------------
-\@noref     \@file-noref    \@rawfile
 =========== =============== =================
 
-You can get any combination of sentinels/no sentinels and references/no references using
-@auto, @file, @thin, @nosent, @noref and @asis trees:
+The following table summarizes the differences between
+the various kinds of @&lt;file&gt; trees.
 
 +---------+------------+-------------------+
 |         |            | Sections and      |
@@ -11329,8 +11333,6 @@ You can get any combination of sentinels/no sentinels and references/no referenc
 +---------+------------+-------------------+
 | @file   | yes        | yes               |
 +---------+------------+-------------------+
-| @noref  | yes        | no                |
-+---------+------------+-------------------+
 | @nosent | no         | yes               |
 +---------+------------+-------------------+
 | @root   | yes        | yes               |
@@ -11340,30 +11342,37 @@ You can get any combination of sentinels/no sentinels and references/no referenc
 | @thin   | yes        | yes               |
 +---------+------------+-------------------+
 
-Leo can not update the outline from changes made from external files unless those files contain sentinels.
-The primary source for @nosent and @asis trees are the outlines from which those files were created.
+Leo can not update the outline from changes made from external files unless
+those files contain sentinels. The primary source for @nosent and @asis trees
+are the outlines from which those files were created.
 
-@shadow trees create *two* files, a **public** file without sentinels, and a **private** file (by default in the .leo_shadow subfolder) containing sentinels.  The primary sources for @shadow trees are the private files, updated by changes to the public file.</t>
-<t tx="ekr.20050828064254">The @others directive refers to the body text of all nodes *except* section definition nodes.
-The @others directive places the body text of section definition nodes in the external file in outline order.
+For @shadow trees, Leo creates *two* files, a **public** file without sentinels,
+and a **private** file (by default in the .leo_shadow subfolder) containing
+sentinels. The primary sources for @shadow trees are the private files, updated
+by changes to the public file.
+</t>
+<t tx="ekr.20050828064254">The @others directive refers to the body text of all nodes *except* section
+definition nodes. The @others directive places the body text of section
+definition nodes in the external file in outline order.
 
-An @file tree may contain more than one @others directive.
-@others directives that descend from other @others directives refer only to unnamed nodes that descend from them.
-The @others directive that occurs highest in the @file tree refers to all other unnamed nodes.
+An @file or @thin tree may contain more than one @others directive. @others
+directives that descend from other @others directives refer only to unnamed
+nodes that descend from them. The @others directive that occurs highest in the
+@file tree refers to all other unnamed nodes.
 
 **Notes**:
 
 - No node may contain more than one @others directive.
 
-- No section definition node may intervene between an non-section definition node containing body text and
-  an @others node.
-  In practice this is never a problem.
+- No section definition node may intervene between an non-section definition
+  node containing body text and an @others node. In practice this is never a
+  problem.
 
 - The @others directive is not valid in @root or @unit trees.</t>
 <t tx="ekr.20050828065955.3">Generally speaking, @ignore directive prevents nodes from being processed.
 
-1. In the root node of any @auto, @edit, @file, @noref, @nosent, @root, @thin or @shadow tree, 
-   @ignore prevents Leo from writing the external file. 
+1. In the root node of any @auto, @edit, @file, @nosent, @root, @thin or @shadow tree, 
+   the @ignore directive prevents Leo from writing the external file. 
 
 2. @auto trees are an exception.  Everything, including @ignore directives, are written.
    However, you can disable the writing of an @auto tree by putting an @ignore directive in an
@@ -11383,9 +11392,8 @@ The @others directive that occurs highest in the @file tree refers to all other 
 .. _`Leo's tutorial`:       intro.html
 .. _`@auto reference`:      directives#id1
 </t>
-<t tx="ekr.20050828163557">You can create external files using @&lt;file&gt; directives.
+<t tx="ekr.20050828163557">You create and use external files using @&lt;file&gt; directives.
 Most of these directives may only appear in headlines.
-
 Here are all the ways of creating external files:
 
 \@asis
@@ -11401,21 +11409,12 @@ Here are all the ways of creating external files:
   Reads the external file into a single node.
 
 \@file
-  @file is like @thin,
-  but @file sentinels are more readable than @thin sentinels.
-  However,@file is not as friendly to cvs or bzr as @thin.
-  Avoid @file in cooperative environments.
+  As of Leo 4.7 b2, @file works exactly like @thin.  See below.
 
 \@thin
   Creates external files containing sentinels that minimize conflicts
   in source code control systems such as bzr.
   Use @thin unless you have a good reason not to.
-
-\@noref
-  This directive produces external files with minimal sentinels.
-  Section references are not allowed.
-  This is the least often used way of producing external files.
-  Don't use this unless you are sure you must.
 
 \@nosent
   Creates external files without sentinels.
@@ -11439,7 +11438,7 @@ Here are all the ways of creating external files:
 \@shadow
    This directive writes *two* external files, a **public** file without sentinels,
    and a **private** file (by default in the .leo_shadow subfolder) containing sentinels.
-   This allows Leo to get the benefits of @thin or @file trees,
+   This allows Leo to get the benefits of @thin trees,
    without having sentinels in the public files that people care about.
 
 To complicate matters further,
@@ -11467,25 +11466,17 @@ The @bool force_newlines_in_at_nosent_bodies setting
 controls whether Leo writes a trailing newline if non-empty body text does not
 end in a newline. The default is True. In effect, the default value of this
 setting was False in previous versions of Leo.</t>
-<t tx="ekr.20050828174453.2">The only difference between @asis and @noref trees is that external
-files created from @noref contain sentinels while external files created
-from@asis do not.
+<t tx="ekr.20050828174453.2">Leo creates files from @asis trees by writing the body text of all nodes of the
+tree in outline order. Leo writes the body text *as is*, without recognizing
+section definitions, without expanding section references, and without treating
+directives specially in any way. In particular, Leo copies all directives,
+including @ or @c directives, to the external file as text.
 
-Leo creates files from @noref and @asis trees by writing the body text
-of all nodes of the tree in outline order. Leo writes the body text *as is*,
-without recognizing section definitions, without expanding section references,
-and without treating directives specially in any way. In particular, Leo copies
-all directives, including @ or @c directives, to the external file as
-text.
-
-Leo does recognize the @ignore directive in the *ancestors* of @noref or
-@asis nodes, so you may use the @ignore directive as usual to prevent
-Leo from writing @noref or @asis trees.
+Leo does recognize the @ignore directive in the *ancestors* of @asis nodes, so
+you may use the @ignore directive as usual to prevent Leo from writing @asis
+trees.
 
 **Notes**:
-
-- When writing @noref trees,
-  Leo writes only the @+leo, @-leo, @+node, @-node, @+body and @-body sentinels.
 
 - Within @asis trees only, if a headline starts with @@, Leo writes
   everything in the headline following the @@ just before the corresponding
@@ -11496,11 +11487,10 @@ Leo from writing @noref or @asis trees.
   newline, the first line from the next node will concatenated to the last line
   of the preceding node.</t>
 <t tx="ekr.20050828210721">The @last directive allows you to place lines at the very end of external files
-created from @file and @thin nodes.
-The @last directive is recognized only at the end of body text of @file and @thin nodes.
-No text may follow @last directives.
-More than one @last directive may exist.
-For example, here is how a PHP file might be set up::
+created from @file and @thin nodes. The @last directive is recognized only at
+the end of body text of @file and @thin nodes. No text may follow @last
+directives. More than one @last directive may exist. For example, here is how a
+PHP file might be set up::
 
 	@first &lt;?php
 	...
@@ -11552,7 +11542,7 @@ Negative values cause Leo to convert tabs to blanks.</t>
   Sets comment delimiters in @root and @unit trees.
 
 - **\@delims**
-  Sets comment delimiters in @file trees.
+  Sets comment delimiters in @thin and @file trees.
 
 - **\@edit**
   Reads an external file into a single node.
@@ -11561,16 +11551,13 @@ Negative values cause Leo to convert tabs to blanks.</t>
   Sets the Unicode encoding used in external files.
 
 - **\@file**
-  Creates an external file containing sentinels.
-  Thin external files contains simpler sentinels than @thin.
-  The @file tree in the outline contains a copy of all information in the external file.
+  A synonym for @thin.
 
 - **\@first**
   Forces lines to appear before the first sentinel of an external file.
 
 - **\@ignore**
   Causes Leo to ignore all or part of an external file.
-  Works differently in @file and @root trees.
 
 - **\@language**
   Sets the language used for syntax coloring **and**
@@ -11586,7 +11573,7 @@ Negative values cause Leo to convert tabs to blanks.</t>
   Copies all nodes *except* section definition nodes to the external file.
 
 - **\@nosent**
-  Same as @file, but the external file contains no sentinels.
+  Same as @thin, but the external file contains no sentinels.
 
 - **\@pagewidth**
   Sets the page width used to break doc parts into lines.
@@ -12376,20 +12363,11 @@ or not.
     Leo can't update the outline unless the external file contains sentinels,
     so Leo does not update @nosent trees or @asis trees automatically when
     you change the external file in an external editor.</t>
-<t tx="ekr.20050830115714.16">You have two options, depending on whether you want sentinel lines in your
-external file or not.
-
--   Use @noref trees.
-    Leo creates files derived from @noref trees by writing all the nodes of the
-    tree to the external file in outline order.
-    The external file *does* contain some sentinels,
-    so you *can* update @noref trees from changes made to external files.
-
--   Use @asis trees.
-    Files derived from @asis trees contain no sentinels.
-    Leo creates the external file simply by writing all body text in outline order.
-    Leo can't update the outline unless the external file contains sentinels,
-    so Leo does not update @asis trees automatically when you change the external file in an external editor.</t>
+<t tx="ekr.20050830115714.16">Use @asis trees. Files derived from @asis trees contain no sentinels. Leo
+creates the external file simply by writing all body text in outline order. Leo
+can't update the outline unless the external file contains sentinels, so Leo
+does not update @asis trees automatically when you change the external file in
+an external editor.</t>
 <t tx="ekr.20050830115714.17">The import commands insert @ignore directives_ in the top-level node_.
 Leo does this so that you won't accidentally overwrite your files after importing them.
 Change the filename following @thin or @root as desired,
@@ -12495,7 +12473,7 @@ More than one @first directive may exist, like this::
     @first # more comments.</t>
 <t tx="ekr.20050830115714.22">Leo has good support for `CWEB`_.
 @thin trees can organize any part of CWEB code using *noweb* sections.
-You can also use @asis, noref or @nosent trees to create cweb files.
+You can also use @asis or @nosent trees to create cweb files.
 See `CWEB mode`_ for full details.
 </t>
 <t tx="ekr.20050830115714.24">No. Everything in an @thin trees must be part of the external file: orphan and
@@ -12707,7 +12685,6 @@ tk_encoding
 .. _`@auto`:                glossary.html#auto-trees
 .. _`@file`:                glossary.html#file-trees
 .. _`@others directive`:    glossary.html#others
-.. _`@noref`:               glossary.html#noref
 .. _`@nosent`:              glossary.html#nosent
 .. _`@root`:                glossary.html#root
 .. _`@shadow`:              glossary.html#shadow-trees
@@ -26189,7 +26166,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.7 beta 1]&lt;/a&gt;</t>
+    Download Leo[4.7 beta 2]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
@@ -27262,28 +27239,29 @@ Step 3 is the clever part. To see all the details of how the algorithm works,
 please study the x.propagate_changed_lines method in leoShadow.py. This code is
 heavily commented.
 </t>
-<t tx="ekr.20080730212711.41">When writing an @shadow tree, Leo writes *two* files, a **public** file without sentinels,
-and a **private** file (by default in the .leo_shadow subfolder) containing sentinels.
-The primary sources for @shadow trees are the private files, updated by changes to the public file.
+<t tx="ekr.20080730212711.41">When writing an @shadow tree, Leo writes *two* files, a **public** file without
+sentinels, and a **private** file (by default in the .leo_shadow subfolder)
+containing sentinels. The primary sources for @shadow trees are the private
+files, updated by changes to the public file.
 
-When reading an @shadow tree,
-Leo will import the tree from the public file if the private file does not exist.
-**Important**: just as for @auto, the following exceptions apply:
+When reading an @shadow tree, Leo will import the tree from the public file if
+the private file does not exist. **Important**: just as for @auto, the following
+exceptions apply:
 
-1. Leo will never read (import) or write an @shadow tree if
-   the @shadow tree is under the influence of an @ignore directive.
+1. Leo will never read (import) or write an @shadow tree if the @shadow tree is
+   under the influence of an @ignore directive.
 
 2. Saving a .leo file does not save @shadow nodes if:
 
   a) they haven't been changed or,
 
   b) they do not contain a **significant** amount of information. An @auto tree
-     contains a significant amount of information if it has  children or if the
+     contains a significant amount of information if it has children or if the
      root node contains more than 10 characters.
 
-Leo imports shadow trees by parsing the corresponding public file,
-exactly as is done for @auto node.
-See the discussion of @auto above for details.</t>
+Leo imports shadow trees by parsing the corresponding public file, exactly as is
+done for @auto node. See the discussion of @auto above for details.
+</t>
 <t tx="ekr.20080730212711.42">The first step in creating an @shadow tree is to create a node whose headline is
 @shadow *&lt;filename&gt;*. This is always safe, even if *&lt;filename&gt;* already
 exists: Leo writes the @shadow tree to the public and private files only if the
@@ -27306,14 +27284,11 @@ After the first import, updates are made using the update algorithm.
 **Note**: just as for @auto, Leo will never read (import) or write an @shadow tree if
 the @shadow node is under the influence of an @ignore directive.
 </t>
-<t tx="ekr.20080730212711.44">Creates an external file containing sentinels.
-
-Thin exteral files contain all information needed to recreate the @thin tree in the outline.
-
-The @all directive is valid only in @thin trees, not @file trees.
-
-In a collaborative environment, where a version control system is utilized and everyone can use Leo
-for editing, @thin is the recommended way to hold most of the content.
+<t tx="ekr.20080730212711.44">Creates an external file containing sentinels. Thin exteral files contain all
+information needed to recreate the @thin tree in the outline. The @all directive
+is valid only in @thin trees, not @file trees. In a collaborative environment,
+where a version control system is utilized and everyone can use Leo for editing,
+@thin is the recommended way to hold most of the content.
 </t>
 <t tx="ekr.20080730212711.47">@auto trees allow people to use Leo in collaborative environments without using
 sentinels in the files Leo generates. In contrast to @nosent, @auto trees can
@@ -27350,8 +27325,7 @@ determines the language using the file's extension.  Notes:
 - Use the @data import_xml_tags setting in leoSettings.leo to specify the xml
   tags that create outline nodes. By default, the **organizer tags** are html,
   body, head, and div.</t>
-<t tx="ekr.20080730212711.51">@root creates external files that are more flexible than
-@file, @thin, @shadow, etc.
+<t tx="ekr.20080730212711.51">The @root directive creates external files that are more flexible than @file, @thin, @shadow, etc.
 
 - Sections may be defined anywhere within @root trees.
   Moreover, the @unit directive expands the scope of section definitions in @root trees
@@ -27361,8 +27335,8 @@ determines the language using the file's extension.  Notes:
 
 However, this flexibility comes at a cost:
 
-- @file trees use less markup than @root trees.
-  In particular, the @others directive is valid only within @file trees.
+- @thin and @file trees use less markup than @root trees.
+  In particular, the @others directive is valid only within @file and @thin trees.
 
 - You must explicitly tangle and untangle @root trees using the Tangle and Untangle commands.
 
@@ -30878,10 +30852,9 @@ For example, an @file node is a node whose headline starts with @file, etc.
 .. _`Writing plugins and hooks`:    writingPlugins.html
 
 .. _`programming reference`:    directives.html
-.. _`@asis`:                    directives.html#asis-and-noref
+.. _`@asis`:                    directives.html#asis
 .. _`@auto`:                    directives.html#auto
 .. _`@file`:                    directives.html#file-and-thin
-.. _`@noref`:                   directives.html#asis-and-noref
 .. _`@nosent`:                  directives.html#nosent
 .. _`@root`:                    directives.html#root
 .. _`@thin`:                    directives.html#file-and-thin
@@ -31635,59 +31608,28 @@ that's not really obvious. ESC should do it.
 <t tx="ekr.20100118181428.8523">https://bugs.launchpad.net/leo-editor/+bug/420988</t>
 <t tx="ekr.20100118181428.8524"></t>
 <t tx="ekr.20100118181428.8525"></t>
-<t tx="ekr.20100118181428.8582">Added c.doBatchOperations</t>
-<t tx="ekr.20100118181428.8614">The setting::
-
-    @string vim_trigger_event = icondclick2
-
-is the default.  It opens vim when the user double-clicks the icon box.
-
-Alternatives are::
-
-    @string vim_trigger_event = iconclick2
-    @string vim_trigger_event = select2
-
-The former opens vim on single clicks in the icon bar.
-The latter opens vim whenever a new node is selected in Leo.</t>
-<t tx="ekr.20100118181428.8616"></t>
-<t tx="ekr.20100118181428.8617">Leo will now automatically write @file nodes as if they were @thin nodes
-(thin-like sentinels). Leo will read @file correctly regardless of whether the
-corresponding external file has file-like (legacy) or thin-like (recommended)
-sentinels. Once thin-like sentinels are written, Leo deletes the problematic
-tnodeList attribute in the .leo file.
-
-**Important**: The conversion to thin-like sentinels happens *only* if Leo
-actually writes the @file node, and that happens only if the @file node or one
-of its descendants changes. As usual with @file nodes, writing any @file node
-forces Leo to write the .leo file. This is necessary so that the tnodeList
-attribute in the .leo file remains up- to-date. Thus, the conversion process
-should be as safe as using @file nodes ever was, which is to say, *usually* safe
-but subject to problems in a cooperative environment.
-
-In short, I recommend that you use Shift-Ctrl-W (write-at-files-nodes)
-to force the conversion of all your legacy @file nodes.  Please back
-up your .leo file and all your external files first.</t>
-<t tx="ekr.20100118181428.8671">Leo writes outline-size and orientation to a local database in your .leo directory.
-This eliminates unnecessary changes to .leo files.</t>
-<t tx="ekr.20100118181428.8813">Leo 4.7 beta 2                       January 30, 2009
+<t tx="ekr.20100118181428.8813">Leo 4.7 beta 2                       January 29, 2009
 
 Leo 4.7 beta 2 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
+Leo 4.7 beta 2 fixes all known serious bugs in Leo.
+
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
-
-Leo 4.7 beta 2 fixes all known serious bugs in Leo.
 
 The highlights of Leo 4.7:
 --------------------------
 
-- A major simplification of internal data model: the so-called
-  one-node world.
-- Leo's works on both Python 2.x and Python 3.x. Leo requires Python 2.6 or above.
-- Leo converts @file nodes to @thin nodes automatically.
-- @auto-rst now works reliably.
-- Eliminated support for @noref.
+- Leo now uses the simplest possible internal data model.
+  This is the so-called "one-node" world.
+- Leo supports Python 3.x.
+- Leo requires Python 2.6 or above.
+- Several important improvements in file handling.
+    - Leo converts @file nodes to @thin nodes automatically.
+    - @auto-rst now works much more reliably reliably.
+    - Leo no longer @noref trees.  Such trees are not
+      reliable in cooperative environments.
 - A new Windows installer.
 - Many other features, including new command line options and new plugins.
 - Dozens of bug fixes.
@@ -31699,8 +31641,7 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20100118181428.8815"></t>
-<t tx="ekr.20100118181428.8826"></t>
+<t tx="ekr.20100118181428.8815">Leo requires Python 2.6 or above, including Python 3.0 and above.</t>
 <t tx="ekr.20100118181428.8827"></t>
 <t tx="ekr.20100119145003.7319"></t>
 <t tx="ekr.20100119145003.7320"></t>
@@ -31788,7 +31729,6 @@ by startsHelper.
 That's about it. It would be pointless to give you more details, because those
 details would lead you *away* from the process you need to follow. Having said
 that, feel free to ask further questions. I'll be glad to answer them.</t>
-<t tx="ekr.20100124164700.11918"></t>
 <t tx="ekr.20100124164700.11919">@nocolor-node
 
 It looks like you should be able to put the following in an
@@ -33428,9 +33368,6 @@ def putAtAllChild(self,p):
 
     at.putCloseNodeSentinel(p)
 </t>
-<t tx="ekr.20100124164700.12030"></t>
-<t tx="ekr.20100124164700.12035">This was done because @noref implies an unreliable synchronization
-between .leo files and external files derived from @noref trees.</t>
 <t tx="ekr.20100124164700.12046"># This code no longer reads @noref trees.
 
 def read(self,root,importFileName=None,
@@ -33595,7 +33532,6 @@ self.updateWarningGiven = False
         delattr(v,"tnodeList")
         v._p_changed = True
 </t>
-<t tx="ekr.20100124164700.12125"></t>
 <t tx="ekr.20100124164700.12128">def readFromCache (self,fileName,force,root):
 
     at = self ; c = at.c
@@ -33802,6 +33738,67 @@ else:
 
     at.endSentinelStack.append(at.endAll)
 </t>
+<t tx="ekr.20100128094926.12524">These marks were just annoying.</t>
+<t tx="ekr.20100128094926.12739"></t>
+<t tx="ekr.20100128094926.12747"></t>
+<t tx="ekr.20100128094926.12756">Deleting a range of line containing unicode characters deletes too much.</t>
+<t tx="ekr.20100129054823.11924">@language rest</t>
+<t tx="ekr.20100129054823.11925">#######################################
+What's New in Leo 4.7
+#######################################
+
+.. .. contents::</t>
+<t tx="ekr.20100129054823.11926">.. Links used in this document.
+</t>
+<t tx="ekr.20100129054823.11928">Leo now treats @file nodes just like it treats @thin nodes. This makes Leo much
+safer to use in cooperative environments that use source code control systems.
+As part of this change, Leo no longer supports @noref nodes.
+
+@auto-rst now works much more reliably.
+
+Clones in files containing the @all directive now have low priority. That is,
+they no longer override clones defined in .leo files or external files generated
+from trees that do not contain the @all directive.
+
+Leo warns if two cloned @&lt;file&gt; nodes would write to different locations as the
+result of the cloned nodes being descendants of different @path nodes.
+
+Leo minimizes unnecessary changes to .leo files. Leo writes outline-size and
+orientation to the cache in your .leo directory. This eliminates unnecessary
+changes to .leo files.
+
+Leo now creates temporary files in the systems standard temporary directory.
+This prevents Leo from over-writing user-generated .bak files.
+</t>
+<t tx="ekr.20100129054823.11931">- The --debug command-line option sets g.debug.
+
+- The --version command-line option causes Leo
+  to print it's version and exit.
+
+</t>
+<t tx="ekr.20100129054823.11934">The qt colorizer now supports font specifications in @font nodes.</t>
+<t tx="ekr.20100129054823.11935">Added options for vim plugin. The setting::
+
+    @string vim_trigger_event = icondclick2
+
+is the default. It opens vim when the user double-clicks the icon box.
+Alternatives are::
+
+    @string vim_trigger_event = iconclick2
+    @string vim_trigger_event = select2
+
+The former opens vim on single clicks in the icon bar.
+The latter opens vim whenever a new node is selected in Leo.
+
+</t>
+<t tx="ekr.20100129054823.17680">Leo requires Python 2.6 or above, including Python 3.0 and above.</t>
+<t tx="ekr.20100129054823.17683">- The --debug command-line option sets g.debug.
+
+- The --version command-line option causes Leo
+  to print it's version and exit.
+
+</t>
+<t tx="ekr.20100129054823.17685">The qt colorizer now supports font specifications in @font nodes.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?

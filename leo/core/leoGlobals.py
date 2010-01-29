@@ -807,9 +807,9 @@ def scanAllAtTabWidthDirectives(c,p):
         aList = g.get_directives_dict_list(p)
         val = g.scanAtTabwidthDirectives(aList)
         ret = g.choose(val is None,c.tab_width,val)
-        # g.trace(ret,p.h)
     else:
         ret = None
+    # g.trace(ret,p and p.h,ret)
     return ret
 #@-node:ekr.20080827175609.37:g.scanAtTabwidthDirectives & scanAllTabWidthDirectives
 #@+node:ekr.20080831084419.4:g.scanAtWrapDirectives & scanAllAtWrapDirectives

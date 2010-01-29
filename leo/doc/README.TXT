@@ -1,30 +1,28 @@
-Leo 4.7 beta 1                          September 9, 2009
+Leo 4.7 beta 2                       January 29, 2009
 
-Leo 4.7 beta 1 is now available at:
+Leo 4.7 beta 2 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
+
+Leo 4.7 beta 2 fixes all known serious bugs in Leo.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
 
-This version of Leo is labeled a beta version because it contains some new,
-relatively untested plugins.  However, Leo's core should be quite reliable.
-
-In particular, Leo 4.7 beta 1 fixes a bug that caused Leo 4.6 releases to crash
-if .leoID.txt did not exist. Usually this file does exist, but Leo will prompt
-for the contents of this file (a user id) the very first time somebody uses Leo.
-Alas, an unfortunate reversion of code caused Leo to crash. Not exactly the best
-introduction to Leo!
-
 The highlights of Leo 4.7:
 --------------------------
 
-- A major simplification of internal data model: the so-called
-  one-node world. Note: this is **disabled** in the beta 1 release.
-- A new executable Windows installer, whose manifest is created from
-  the files that bzr actively manages.
-- Leo no longer adds directories to sys.path on startup.
-- New plugins.
-- The usual assortment of bug fixes.
+- Leo now uses the simplest possible internal data model.
+  This is the so-called "one-node" world.
+- Leo supports Python 3.x.
+- Leo requires Python 2.6 or above.
+- Several important improvements in file handling.
+    - Leo converts @file nodes to @thin nodes automatically.
+    - @auto-rst now works much more reliably reliably.
+    - Leo no longer @noref trees.  Such trees are not
+      reliable in cooperative environments.
+- A new Windows installer.
+- Many other features, including new command line options and new plugins.
+- Dozens of bug fixes.
 
 Links:
 ------
