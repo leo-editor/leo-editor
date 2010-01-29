@@ -4508,7 +4508,8 @@ RestoreBackup:
     ; ---- End of manifest related data.
 
 NoOwn:
-    MessageBox MB_YESNO|MB_ICONQUESTION             "Delete all files in $INSTDIR?" IDNO NoDelete
+    MessageBox MB_YESNO|MB_ICONQUESTION \
+        "Delete all files in $INSTDIR?" IDNO NoDelete
 
 NoDelete:
   Delete "$SMPROGRAMS\Leo\Uninstall.lnk"

@@ -1205,10 +1205,10 @@ def deleteFiles (self,lines,deleteList):
         aList = dirDict.get(theDir)
         if aList and trace:
             if verbose:
-                print ; print theDir
-                print g.listToString(aList)
+                print() ; print(theDir)
+                print(g.listToString(aList))
             else:
-                print theDir
+                print(theDir)
 
     # Create the inverse dict.
     filesDict = {}
@@ -1303,7 +1303,7 @@ def deleteFiles (self,lines,deleteList):
 
     '''Generate the manifest-specific uninstall data.'''
 
-    s = '''
+    s = r'''
 Section Uninstall
 
     DeleteRegKey HKEY_LOCAL_MACHINE "${hkey_local_machine}"
@@ -1330,7 +1330,7 @@ RestoreBackup:
         self.getUninstallVariableData(dirs,dirDict,filesDict),
         adjust = False)
 
-    s = '''
+    s = r'''
     ; ---- End of manifest related data.
 
 NoOwn:
@@ -1353,7 +1353,7 @@ SectionEnd
 </t>
 <t tx="ekr.20090901092556.1588">def putSettings (self):
 
-    s = '''
+    s = r'''
 ; Location of Pythonw.exe. Set by .onInit.
 var PythonExecutable
 ; Installation directory.  Set by .onInit.
@@ -1373,7 +1373,7 @@ LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 ; Default location.  May be changed in .onInit.
 InstallDir "${PROGRAMFILES}\${name}-${version}"
 Icon "${icon}"
-DirText "Setup will install ${name}-${version} in the following folder. $$\\n\\
+DirText "Setup will install ${name}-${version} in the following folder. $$\n\
 To install in a different folder, click Browse and select another folder."
 LicenseText "You must accept the agreement to install ${name}-${version}."
 LicenseData "${license}"
@@ -1418,7 +1418,7 @@ FunctionEnd
 </t>
 <t tx="ekr.20090901092556.1603">def genMenuShortcuts (self):
 
-    s = '''
+    s = r'''
 ; FIXME $SMPROGRAMS depends on the value of SetShellVarContext. Since that defaults to 'current'
 ; that means that this installer will make the app available for the current user only.
 ; Unless I am grossly mistaken this is a needless hindrance, and a Bad Thing since
@@ -1446,7 +1446,7 @@ SectionEnd
 </t>
 <t tx="ekr.20090901092556.1604">def genDesktopShortcuts(self):
 
-    s = '''
+    s = r'''
 Section "Desktop Shortcut" SEC03
   CreateShortCut "${DESKTOP}\${name}.lnk" '"${PythonExecutable}"' '"$INSTDIR\${exe}"' "$INSTDIR\${icon2}" 0
 SectionEnd
@@ -1455,7 +1455,7 @@ SectionEnd
     self.put(s,substitute=True)</t>
 <t tx="ekr.20090901092556.1605">def genFileAssociation(self):
 
-    s = '''
+    s = r'''
 Section "${ext} File Association"
   SectionIn 1
   SectionIn 2
@@ -1481,7 +1481,7 @@ SectionEnd
 </t>
 <t tx="ekr.20090901092556.1606">def genAdditionalIcons(self):
 
-    s = '''
+    s = r'''
 Section -AdditionalIcons
   SetOutPath $INSTDIR
   CreateDirectory "${SMPROGRAMS}\${name}"
@@ -1492,7 +1492,7 @@ SectionEnd
     self.put(s,substitute=True)</t>
 <t tx="ekr.20090901092556.1607">def genPost (self):
 
-    s = '''
+    s = r'''
 Section -Post
   WriteRegStr HKEY_LOCAL_MACHINE "${hkey_local_machine}" "" "$INSTDIR"
   WriteUninstaller "$INSTDIR\uninst.exe"
@@ -1514,7 +1514,7 @@ SectionEnd
     path = g.os_path_finalize_join(
         g.app.loadDir,'..','Icons','uninst.ico')
 
-    s = '''
+    s = r'''
 UninstallCaption "Uninstall ${name}"
 UninstallIcon "${path}"
 '''
@@ -1524,14 +1524,14 @@ UninstallIcon "${path}"
 </t>
 <t tx="ekr.20090901092556.1612">def genMiddleFunctions (self):
 
-    s = '''
+    s = r'''
 Function un.onUninstSuccess
   HideWindow
   MessageBox MB_ICONINFORMATION|MB_OK "${name}-${version} was successfully removed from your computer."
 FunctionEnd
 
 Function un.onInit
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 \\
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 \
   "Are you sure you want to completely remove ${name}-${version} and all of its components?" IDYES +2
   Abort
 FunctionEnd
@@ -1714,7 +1714,7 @@ app_version = version = '4.7-beta-2'</t>
 except AttributeError:
     inLeo = False
 
-# print 'inLeo',inLeo
+# print('inLeo',inLeo)
 </t>
 <t tx="ekr.20090902092112.1483">app_doc_icon = r'Icons\LeoDoc.ico'
 app_extension = '.leo'
