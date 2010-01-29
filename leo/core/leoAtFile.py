@@ -589,14 +589,12 @@ class atFile:
         trace = False and not g.unitTesting
         c = self.c
 
-        if not g.enableDB:
+        if not g.enableDB or g.app.unitTesting:
             if trace: g.trace('cache disabled')
         elif cachefile in c.db:
             if trace: g.trace('already cached')
         else:
             if trace: g.trace('caching ',p.h)
-            #tree = g.tree_at_position(p)
-            #c.db[cachefile] = tree
             c.db[cachefile] = p.makeCacheList()
     #@nonl
     #@-node:ville.20090606131405.6362:writeCachedTree (atFile)

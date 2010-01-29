@@ -1845,10 +1845,10 @@ class baseFileCommands:
 
     def putGlobals (self):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self.c
 
-        use_db = g.enableDB and c.db and c.mFileName
+        use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
 
         if use_db:
             globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
@@ -2096,14 +2096,14 @@ class baseFileCommands:
             d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
             str_pos = ','.join(aList)
             # 2010/01/26: don't write the current position if we can cache it.
-            use_db = g.enableDB and c.db and c.mFileName
+            use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
             if use_db:
                 globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
                 globals_tag = g.toEncodedString(globals_tag,'ascii')
                 key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
                 c.db['current_position_%s' % key] = str_pos
                 if d.get('str_leo_pos'): del d['str_leo_pos']
-                # g.trace('to c.db',str_pos,key)
+                g.trace('to c.db',str_pos,key)
             elif c.fixed:
                 if d.get('str_leo_pos'): del d['str_leo_pos']
             else:

@@ -17335,6 +17335,7 @@ g.app.unitTestDict['restoreSelectedNode']=False
 <t tx="ekr.20081111150402.11"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
+c.selectPosition(p)
 c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
