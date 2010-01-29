@@ -13,14 +13,14 @@ SetCompress auto ; FIXME this is disabled for solid compression, which comes wit
 SetDatablockOptimize on
 ; SetOverwrite ifnewer
 WindowIcon off
-OutFile "LeoSetup-4.7-beta-1.exe"
+OutFile "LeoSetup-4.7-beta-2.exe"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 ; Default location.  May be changed in .onInit.
-InstallDir "$PROGRAMFILES\Leo-4.7-beta-1"
+InstallDir "$PROGRAMFILES\Leo-4.7-beta-2"
 Icon "C:\leo.repo\trunk\leo\Icons\leo_inst.ico"
-DirText "Setup will install Leo-4.7-beta-1 in the following folder. $\n\
+DirText "Setup will install Leo-4.7-beta-2 in the following folder. $\n\
 To install in a different folder, click Browse and select another folder."
-LicenseText "You must accept the agreement to install Leo-4.7-beta-1."
+LicenseText "You must accept the agreement to install Leo-4.7-beta-2."
 LicenseData "C:\leo.repo\trunk\License.txt"
 ShowInstDetails show
 ShowUnInstDetails show
@@ -46,8 +46,8 @@ ok:
     MessageBox MB_OK "Found Python at $9"
     StrCpy $PythonExecutable "$9\pythonw.exe"
     ; Normal installation directory 
-    ;;;StrCpy $InstallDirectory "$9\Lib\site-packages\Leo-4.7-beta-1"
-    StrCpy $INSTDIR "$9\Lib\site-packages\Leo-4.7-beta-1"
+    ;;;StrCpy $InstallDirectory "$9\Lib\site-packages\Leo-4.7-beta-2"
+    StrCpy $INSTDIR "$9\Lib\site-packages\Leo-4.7-beta-2"
 done:
 
 ; End .onInit
@@ -2108,9 +2108,9 @@ SectionEnd
 Section -Post
   WriteRegStr HKEY_LOCAL_MACHINE "SOFTWARE\EKR\leo" "" "$INSTDIR"
   WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo" "DisplayName" "Leo-4.7-beta-1 (remove only)"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo" "DisplayName" "Leo-4.7-beta-2 (remove only)"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo" "DisplayVersion" "4.7-beta-1"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo" "DisplayVersion" "4.7-beta-2"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo" "URLInfoAbout" "http://webpages.charter.net/edreamleo/front.html"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo" "Publisher" "Edward K. Ream"
 SectionEnd
@@ -2120,12 +2120,12 @@ UninstallIcon "C:\leo.repo\trunk\leo\Icons\uninst.ico"
 
 Function un.onUninstSuccess
   HideWindow
-  MessageBox MB_ICONINFORMATION|MB_OK "Leo-4.7-beta-1 was successfully removed from your computer."
+  MessageBox MB_ICONINFORMATION|MB_OK "Leo-4.7-beta-2 was successfully removed from your computer."
 FunctionEnd
 
 Function un.onInit
   MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 \
-  "Are you sure you want to completely remove Leo-4.7-beta-1 and all of its components?" IDYES +2
+  "Are you sure you want to completely remove Leo-4.7-beta-2 and all of its components?" IDYES +2
   Abort
 FunctionEnd
 
@@ -4232,6 +4232,7 @@ RestoreBackup:
     RMDir "$INSTDIR\leo\extensions\Pmw"
     RMDir "$INSTDIR\leo\extensions\Gato"
     RMDir "$INSTDIR\leo\extensions"
+    RMDir "$INSTDIR\leo\doc\html\_static"
     RMDir "$INSTDIR\leo\doc\html\_build\html\_static"
     RMDir "$INSTDIR\leo\doc\html\_build\html\_sources"
     RMDir "$INSTDIR\leo\doc\html\_build\html\_images"
@@ -4245,18 +4246,6 @@ RestoreBackup:
     RMDir "$INSTDIR\leo\core"
     RMDir "$INSTDIR\leo\config"
     RMDir "$INSTDIR\leo"
-    RMDir "$INSTDIR\backup.bzr\repository\upload"
-    RMDir "$INSTDIR\backup.bzr\repository\packs"
-    RMDir "$INSTDIR\backup.bzr\repository\obsolete_packs"
-    RMDir "$INSTDIR\backup.bzr\repository\lock"
-    RMDir "$INSTDIR\backup.bzr\repository\indices"
-    RMDir "$INSTDIR\backup.bzr\repository"
-    RMDir "$INSTDIR\backup.bzr\checkout\lock"
-    RMDir "$INSTDIR\backup.bzr\checkout"
-    RMDir "$INSTDIR\backup.bzr\branch-lock"
-    RMDir "$INSTDIR\backup.bzr\branch\lock"
-    RMDir "$INSTDIR\backup.bzr\branch"
-    RMDir "$INSTDIR\backup.bzr"
     RMDir "$INSTDIR"
 
     ; ---- End of manifest related data.
@@ -4266,7 +4255,7 @@ NoOwn:
 
 NoDelete:
   Delete "$SMPROGRAMS\Leo\Uninstall.lnk"
-  RMDir "$SMPROGRAMS\Leo-4.7-beta-1"
+  RMDir "$SMPROGRAMS\Leo-4.7-beta-2"
   Delete "$DESKTOP\Leo.lnk"
 
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"

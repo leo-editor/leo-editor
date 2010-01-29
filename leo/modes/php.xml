@@ -3,8 +3,8 @@
 <!DOCTYPE MODE SYSTEM "xmode.dtd">
 
 <!--
-**Important**: this file, php.xml.txt, is no longer used.
-Instead, you should modify php.py directly
+**Important**: this file, php.xml, is no longer used.
+Instead, you should modify php.py directly.
 -->
 
 <MODE>
