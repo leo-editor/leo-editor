@@ -76,13 +76,13 @@
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
-<v t="ekr.20090826220933.1565"><vh>@button make leo.nsi</vh>
+<v t="ekr.20090826220933.1565" a="E"><vh>@button make leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
+<v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
 <v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
-<v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
+<v t="ekr.20090901092556.1609" a="E"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1590"><vh>putOnInit</vh></v>
 </v>
@@ -96,9 +96,9 @@
 <v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
 </v>
 </v>
-<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
-<v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
+<v t="ekr.20090901092556.1574" a="E"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
 </v>
 <v t="ekr.20090901092556.1575"><vh>genMiddle</vh></v>
@@ -111,7 +111,7 @@
 <v t="ekr.20090901092556.1572"><vh>openNsi</vh></v>
 <v t="ekr.20090831172520.1551"><vh>put</vh></v>
 </v>
-<v t="ekr.20090831172520.1554"><vh>run &amp; helpers</vh>
+<v t="ekr.20090831172520.1554" a="E"><vh>run &amp; helpers</vh>
 <v t="ekr.20090826220933.1569"><vh>directoryList</vh></v>
 <v t="ekr.20090901082242.1562"><vh>filterLines &amp; helpers</vh>
 <v t="ekr.20090826220933.1566"><vh>delete...</vh></v>
@@ -1155,11 +1155,13 @@ def deleteFiles (self,lines,deleteList):
     lines = self.deleteExt(lines,'.exe') # Don't include the installer.
 
     # Remove specific files.
-    deleteList = ('.bzrignore',
+    deleteList = (
+        '.bzrignore',
         'bzr-manifest.txt',
         'bzr-small-manifest.txt',
         'leo/test/unittest/.leo_shadow/',
         'nsi.log.txt', # Can't write log while we are creating it.
+        'leo/core/leoPy.leo',
     )
     lines = self.deleteFiles(lines,deleteList)
     if lines and lines[0].endswith('bzr ls -R'):
