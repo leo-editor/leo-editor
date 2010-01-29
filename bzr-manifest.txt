@@ -2011,7 +2011,6 @@ leo/test/unittest/read_test.py
 leo/test/unittest/replaceFileWithStringTestFile.py
 leo/test/unittest/shadowWriteTest-2.py
 leo/test/unittest/test_1.py
-leo/test/unittest/test_1.py.~1~
 leo/test/ut.bat
 leo/test/ut.leo
 leo/test/ut.py

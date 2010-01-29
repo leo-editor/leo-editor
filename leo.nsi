@@ -100,7 +100,6 @@ Section "Leo" SEC01
     File "C:\leo.repo\trunk\leo\core\leoNodes.py"
     File "C:\leo.repo\trunk\leo\core\leoPlugins.py"
     File "C:\leo.repo\trunk\leo\core\leoProjects.txt"
-    File "C:\leo.repo\trunk\leo\core\leoPy.leo"
     File "C:\leo.repo\trunk\leo\core\leoPymacs.py"
     File "C:\leo.repo\trunk\leo\core\leoRst.py"
     File "C:\leo.repo\trunk\leo\core\leoShadow.py"
@@ -2023,7 +2022,6 @@ Section "Leo" SEC01
     File "C:\leo.repo\trunk\leo\test\unittest\replaceFileWithStringTestFile.py"
     File "C:\leo.repo\trunk\leo\test\unittest\shadowWriteTest-2.py"
     File "C:\leo.repo\trunk\leo\test\unittest\test_1.py"
-    File "C:\leo.repo\trunk\leo\test\unittest\test_1.py.~1~"
 
     SetOutPath $INSTDIR\leo\test\unittest\input
     File "C:\leo.repo\trunk\leo\test\unittest\input\cweave.w"
@@ -2194,7 +2192,6 @@ RestoreBackup:
     Delete "$INSTDIR\leo\core\leoNodes.py"
     Delete "$INSTDIR\leo\core\leoPlugins.py"
     Delete "$INSTDIR\leo\core\leoProjects.txt"
-    Delete "$INSTDIR\leo\core\leoPy.leo"
     Delete "$INSTDIR\leo\core\leoPymacs.py"
     Delete "$INSTDIR\leo\core\leoRst.py"
     Delete "$INSTDIR\leo\core\leoShadow.py"
@@ -4154,7 +4151,6 @@ RestoreBackup:
     Delete "$INSTDIR\leo\test\unittest\replaceFileWithStringTestFile.py"
     Delete "$INSTDIR\leo\test\unittest\shadowWriteTest-2.py"
     Delete "$INSTDIR\leo\test\unittest\test_1.py"
-    Delete "$INSTDIR\leo\test\unittest\test_1.py.~1~"
 
     Delete "$INSTDIR\leo\test\unittest\input\*.pyc"
     Delete "$INSTDIR\leo\test\unittest\input\*.pyo"

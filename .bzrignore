@@ -1,9 +1,10 @@
 
 *.exe
 *.o
-*~
+*.~*
 *.tmp
-*.py[co]
+*.pyc
+*.pyo
 *.leo_db
 *Thumbs.db
 
