@@ -60,6 +60,9 @@ Installing leo.py on MacOs
 
 Leo works reliably only on MacOS X 10.3 and above.
 
+For the latest discussion of how to install Leo with PyQt, see
+http://groups.google.com/group/leo-editor/browse_thread/thread/2bae897436d3d70e/20d8b94ac3371074?lnk=gst&q=macos#20d8b94ac3371074
+
 To run Leo on Macintosh OS X 10.3 (There will be slight changes for later versions of Mac Os X):
 
 1) Download and install "MacPython 2.3 for Panther addons".
