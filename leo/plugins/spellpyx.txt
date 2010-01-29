@@ -34,6 +34,7 @@ Borland's
 Boshernitzan
 Breti
 Breuer
+Bzr
 CAA
 CC2
 CDATA
@@ -360,6 +361,7 @@ Prefs
 Prepass
 Preprocess
 Proj
+PyQt
 Pychecker
 Python21
 Python23
@@ -709,6 +711,7 @@ aClass
 aColor
 aComment
 aDirectory
+aFileName
 aKey
 aLeoScript
 aList
@@ -723,6 +726,7 @@ aa
 aaa
 aaaaaaaaaaaa
 abc
+abspath
 accel
 accept_connect
 actionscript
@@ -769,6 +773,7 @@ apacheconf
 apell
 api
 api's
+app_version
 append1
 append2
 applyConfiguration
@@ -1383,6 +1388,7 @@ f2
 f3
 fa4709969fc04d
 failedMethod
+fallback
 faq
 fastGotoNode
 fat_lines
@@ -2633,6 +2639,7 @@ rfc0791
 rfile
 rfind
 right_data
+riverbankcomputing
 rlpdf
 rogererens
 root1
@@ -3130,6 +3137,7 @@ uAs
 ubuntu
 uidaho
 uint
+uk
 ul
 ulong
 un

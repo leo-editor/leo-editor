@@ -1,7 +1,7 @@
 System requirements
 -------------------
 
-Leo equires Python 2.6 or above and tcl/tk 8.4 or above.
+Leo requires Python 2.6 or above and tcl/tk 8.4 or above.
 Leo will also work with PyQt instead of tcl/tk.
 
 	Download Python from http://python.org/ 
@@ -91,7 +91,7 @@ b) The OLD way: Download Leo-version-number.zip:
 
 Unzip the contents into the desired directory by double-clicking the downloaded file.
 
-5) Run Leo by ontrol-clicking on /path_to_unzipped_dir/leo/core/leo.py and open
+5) Run Leo by control-clicking on /path_to_unzipped_dir/leo/core/leo.py and open
 with PythonLauncher.
 
 6) It is a good idea to set PythonLauncher as the default program to  

@@ -36,6 +36,7 @@
 <v t="ekr.20090718093249.5927"><vh>ANN: Leo 4.6.1 final</vh></v>
 <v t="ekr.20090803090630.1408"><vh>ANN: Leo 4.6.2 final</vh></v>
 <v t="ekr.20090909091918.1463"><vh>ANN: Leo 4.7 b1</vh></v>
+<v t="ekr.20100129074111.1488"><vh>ANN: Leo 4.7 b2</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
 <v t="ekr.20090718093249.5928"><vh>4.6</vh>
 <v t="ekr.20090709085944.1401"><vh>ANN: Leo 4.6 rc1</vh></v>
@@ -95,7 +96,7 @@
 <v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
 </v>
 </v>
-<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
 <v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
@@ -239,7 +240,7 @@ DAMAGES.</t>
 <t tx="EKR.20040519090846.3">System requirements
 -------------------
 
-Leo equires Python 2.6 or above and tcl/tk 8.4 or above.
+Leo requires Python 2.6 or above and tcl/tk 8.4 or above.
 Leo will also work with PyQt instead of tcl/tk.
 
 	Download Python from http://python.org/ 
@@ -326,7 +327,7 @@ b) The OLD way: Download Leo-version-number.zip:
 
 Unzip the contents into the desired directory by double-clicking the downloaded file.
 
-5) Run Leo by ontrol-clicking on /path_to_unzipped_dir/leo/core/leo.py and open
+5) Run Leo by control-clicking on /path_to_unzipped_dir/leo/core/leo.py and open
 with PythonLauncher.
 
 6) It is a good idea to set PythonLauncher as the default program to  
@@ -1851,6 +1852,40 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 
+</t>
+<t tx="ekr.20100129074111.1488">Leo 4.7 beta 2                       January 29, 2009
+
+Leo 4.7 beta 2 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo 4.7 beta 2 fixes all known serious bugs in Leo.
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.7:
+--------------------------
+
+- Leo now uses the simplest possible internal data model.
+  This is the so-called "one-node" world.
+- Leo supports Python 3.x.
+- Leo requires Python 2.6 or above.
+- Several important improvements in file handling.
+    - Leo converts @file nodes to @thin nodes automatically.
+    - @auto-rst now works much more reliably reliably.
+    - Leo no longer @noref trees.  Such trees are not
+      reliable in cooperative environments.
+- A new Windows installer.
+- Many other features, including new command line options and new plugins.
+- Dozens of bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
 </t>
 </tnodes>
 </leo_file>
