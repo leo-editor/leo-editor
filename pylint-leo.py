@@ -41,6 +41,7 @@ plugins_table = (
 def run(fn,suppress):
     args = ['--rcfile=leo/test/pylint-leo-rc.txt']
     if suppress: args.append('--disable-msg=%s' % (suppress))
+    fn = os.path.abspath(fn)
     args.append(fn)
     if os.path.exists(fn):
         print('*****',fn,suppress)
@@ -49,9 +50,9 @@ def run(fn,suppress):
         print('file not found:',fn)
 
 for fn,suppress in core_table:
-    fn = os.path.join('c:\leo.repo','trunk','leo','core',fn)
+    fn = os.path.join('leo','core',fn)
     run(fn,suppress)
 
 for fn,suppress in plugins_table:
-    fn = os.path.join('c:\leo.repo','trunk','leo','plugins',fn)
+    fn = os.path.join('leo','plugins',fn)
     run(fn,suppress)
