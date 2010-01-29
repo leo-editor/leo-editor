@@ -76,7 +76,7 @@
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
-<v t="ekr.20090826220933.1565" a="E"><vh>@button make leo.nsi</vh>
+<v t="ekr.20090826220933.1565"><vh>@button make leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
@@ -1145,7 +1145,7 @@ def deleteFiles (self,lines,deleteList):
 
     '''Filter lines from the input manifest file.'''
 
-    trace = True
+    trace = False
 
     # Remove blank lines, comments, and .pyc and .pyo files.
     lines = self.deleteBlankLines(lines)
