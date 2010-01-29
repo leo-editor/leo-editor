@@ -197,10 +197,8 @@ __version__ = "1.17"
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import os
+import subprocess
 import sys
-
-subprocess = g.importExtension('subprocess',pluginName=__name__,verbose=True)
-#@nonl
 #@-node:ekr.20050226184411.2:<< imports >>
 #@nl
 

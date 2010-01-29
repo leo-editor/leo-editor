@@ -12,18 +12,6 @@
 #@nonl
 #@+node:ekr.20100126110826.6253:Before rc1
 #@+node:ekr.20100128094926.6228: First
-#@+node:ekr.20100128124511.6236:Eliminate most imports from leo/extensions
-@nocolor-node
-
-Eliminate cruft in leo/extensions
-    - sets folder
-    - subprocess folder
-- optparse.py
-- aspell23/24.pyd files can also go.
-
-Don't know about Gato.
-#@nonl
-#@-node:ekr.20100128124511.6236:Eliminate most imports from leo/extensions
 #@+node:ekr.20100128094926.6225:use g.app.moduleTesting to disable actual loads
 The plugin manager will not registers pluings when g.app.moduleTesting is True.
 #@nonl

@@ -114,11 +114,10 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import anydbm
 import whichdb
+import zlib
 
 Tk   = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 Pmw  = g.importExtension("Pmw",    pluginName=__name__,verbose=True)
-zlib = g.importExtension("zlib",   pluginName=__name__,verbose=True)
-#@nonl
 #@-node:ekr.20050328092641.7:<< imports >>
 #@nl
 

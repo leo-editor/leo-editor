@@ -66,9 +66,8 @@ import leo.core.leoPlugins as leoPlugins
 import mailcap
 import mimetypes
 import os
+import subprocess
 import sys
-
-subprocess = g.importExtension('subprocess',pluginName=__name__,verbose=True)
 #@-node:dan.20090203174248.29:<< imports >>
 #@nl
 
