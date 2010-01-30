@@ -38,7 +38,6 @@ class LeoApp:
             # 1: full traces in g.es_exception.
             # 2: call pdb.set_trace in g.es_exception, etc.
         self.defaultEncoding = 'utf-8' # set later during starup.
-        ### self.tkEncoding = self.defaultEncoding ### Compatibility.
         self.disableSave = False
         self.enableUnitTest = True
         self.extensionsDir = None
@@ -556,35 +555,33 @@ class LeoApp:
             g.app.quitting = False # If we get here the quit has been disabled.
     #@-node:ekr.20031218072017.2617:app.onQuit
     #@+node:ekr.20031218072017.2618:app.setEncoding
-    # According to Martin v. Löwis, getdefaultlocale() cannot be fixed.
-    # We use getpreferredencoding() instead.
-
     def setEncoding (self):
 
         """Set g.app.defaultEncoding."""
 
         app = self
-        locale_encoding = locale.getpreferredencoding()
 
-        try: sys_encoding = sys.getdefaultencoding()
-        except Exception: sys_encoding = None
-
-        # g.trace('locale:',locale_encoding,'sys',sys_encoding)
+        # According to Martin v. Löwis, getdefaultlocale() cannot be fixed.
+        # We use getpreferredencoding() instead.
+        # locale_encoding = locale.getpreferredencoding()
+        # try: sys_encoding = sys.getdefaultencoding()
+        # except Exception: sys_encoding = None
 
         for (encoding,src) in (
-            (app.config.defaultEncoding,"config"),
-            (locale_encoding,"locale"),
-            (sys_encoding,"sys"),
-            ("utf-8","default")):
+            (app.config.defaultEncoding," from config"),
+            # (locale_encoding," from locale"),
+            # (sys_encoding," from sys"),
+            ("utf-8","")):
 
             if g.isValidEncoding (encoding):
                 app.defaultEncoding = encoding
-                g.es('default encoding %s from %s' % (encoding,src),color='orange')
-                # g.trace(app.defaultEncoding,src)
+                g.es('default encoding %s%s' % (
+                    encoding,src),color='orange')
                 break
             elif encoding:
                 color = g.choose(app.defaultEncoding=="ascii","red","blue")
-                g.trace("ignoring invalid %s encoding: %s" % (src,encoding),color=color)
+                g.trace("ignoring invalid %s encoding: %s" % (
+                    src,encoding),color=color)
     #@-node:ekr.20031218072017.2618:app.setEncoding
     #@+node:ekr.20031218072017.1978:app.setLeoID
     def setLeoID (self,verbose=True):

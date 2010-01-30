@@ -7743,7 +7743,6 @@ class configSettings:
         self.default_derived_file_encoding = None
         self.new_leo_file_encoding = None
         self.redirect_execute_script_output_to_log_pane = None
-        ### self.defaultEncoding = None
 
         self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
         self.defaultLogFontSize  = g.app.config.defaultLogFontSize

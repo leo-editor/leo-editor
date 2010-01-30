@@ -134,7 +134,7 @@ class rstCommands:
 
         self.c = c
         #@    << init ivars >>
-        #@+node:ekr.20090502071837.36:<< init ivars >>
+        #@+node:ekr.20090502071837.36:<< init ivars >> (leoRst)
         self.silverCityWarningGiven = False
 
         # The options dictionary.
@@ -166,9 +166,8 @@ class rstCommands:
         # For writing.
         self.atAutoWrite = False # True, special cases for writeAtAutoFile.
         self.atAutoWriteUnderlines = '' # Forced underlines for writeAtAutoFile.
-        ### self.defaultEncoding = 'utf-8' ### Use g.app.defaultEncoding.
         self.leoDirectivesList = g.globalDirectiveList
-        self.encoding = g.app.defaultEncoding ### self.defaultEncoding
+        self.encoding = g.app.defaultEncoding
         self.ext = None # The file extension.
         self.outputFileName = None # The name of the file being written.
         self.outputFile = None # The open file being written.
@@ -176,7 +175,7 @@ class rstCommands:
         self.source = None # The written source as a string.
         self.trialWrite = False # True if doing a trialWrite.
         #@nonl
-        #@-node:ekr.20090502071837.36:<< init ivars >>
+        #@-node:ekr.20090502071837.36:<< init ivars >> (leoRst)
         #@nl
         self.createDefaultOptionsDict()
         self.initOptionsFromSettings() # Still needed.
@@ -648,7 +647,7 @@ class rstCommands:
     #@-node:ekr.20090502071837.57:setOption
     #@-node:ekr.20090502071837.41:options...
     #@+node:ekr.20090502071837.59:Top-level write code
-    #@+node:ekr.20090502071837.60:initWrite
+    #@+node:ekr.20090502071837.60:initWrite (rstCommands)
     def initWrite (self,p,encoding=None):
 
         self.initOptionsFromSettings() # Still needed.
@@ -661,7 +660,7 @@ class rstCommands:
         self.path = d.get('path') or ''
 
         # g.trace('path:',self.path)
-    #@-node:ekr.20090502071837.60:initWrite
+    #@-node:ekr.20090502071837.60:initWrite (rstCommands)
     #@+node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
     def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
 

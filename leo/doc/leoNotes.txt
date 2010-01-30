@@ -4605,15 +4605,6 @@ def stateHandler (self,event):
 #@-node:ekr.20050920084036.215:stateHandler
 #@-node:ekr.20051005151838:Helpers
 #@-node:ekr.20050920084036.207:queryReplaceCommandsClass (limited to single node)
-#@+node:ekr.20031218072017.1972:<< count the number of tnodes >> (putClipboardHeader)
-c.clearAllVisited()
-
-for p in c.p.self_and_subtree():
-    v = p.v
-    if v and not v.isWriteBit():
-        v.setWriteBit()
-        tnodes += 1
-#@-node:ekr.20031218072017.1972:<< count the number of tnodes >> (putClipboardHeader)
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node

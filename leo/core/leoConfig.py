@@ -1006,7 +1006,6 @@ class parserBaseClass:
             # g.trace('*****',key,val)
 
         d [key] = g.Bunch(path=c.mFileName,kind=kind,val=val,tag='setting')
-
     #@-node:ekr.20041120094940.9:set (parseBaseClass)
     #@+node:ekr.20041227071423:setShortcut (ParserBaseClass)
     def setShortcut (self,name,bunchList):

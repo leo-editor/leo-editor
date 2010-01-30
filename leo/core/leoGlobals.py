@@ -168,6 +168,31 @@ def createTopologyList (c,root=None,useHeadlines=False):
 #@-node:ekr.20031218072017.3095:Checking Leo Files...
 #@+node:ekr.20031218072017.3099:Commands & Directives
 #@+node:ekr.20050304072744:Compute directories... (leoGlobals)
+#@+node:ekr.20050328133444:g.computeStandardDirectories & helpers
+def computeStandardDirectories():
+
+    '''Set g.app.loadDir, g.app.homeDir, g.app.homeLeoDir and g.app.globalConfigDir.'''
+
+    g.app.loadDir = g.computeLoadDir()
+    g.app.leoDir = g.computeLeoDir()
+    g.app.homeDir = g.computeHomeDir()
+
+    g.app.homeLeoDir = homeLeoDir = g.os_path_finalize(
+        g.os_path_join(g.app.homeDir,'.leo'))
+
+    if not g.os_path_exists(homeLeoDir):
+        g.makeAllNonExistentDirectories(homeLeoDir,force=True)
+
+    g.app.extensionsDir = g.os_path_finalize(
+        g.os_path_join(g.app.loadDir,'..','extensions'))
+
+    g.app.globalConfigDir = g.computeGlobalConfigDir()
+
+    g.app.testDir = g.os_path_finalize(
+        g.os_path_join(g.app.loadDir,'..','test'))
+
+    g.app.user_xresources_path = g.os_path_join(
+        g.app.homeDir,'.leo_xresources')
 #@+node:ekr.20041117155521:computeGlobalConfigDir
 def computeGlobalConfigDir():
 
@@ -205,20 +230,15 @@ def computeHomeDir():
     import leo.core.leoGlobals as g
 
     encoding = g.startupEncoding()
-    # dotDir = g.os_path_finalize('./',encoding=encoding)
-    # home = os.getenv('HOME',default=None)
     home = os.path.expanduser("~")
         # Windows searches the HOME, HOMEPATH and HOMEDRIVE environment vars, then gives up.
-
-    # g.pr('computeHomeDir: %s' % repr(home))
-    # g.pr("computeHomeDir: os.path.expanduser('~'): %s" % os.path.expanduser('~'))
 
     if home and len(home) > 1 and home[0]=='%' and home[-1]=='%':
         # Get the indirect reference to the true home.
         home = os.getenv(home[1:-1],default=None)
 
     if home:
-        # N.B. This returns the _working_ directory if home is None!
+        # Important: This returns the _working_ directory if home is None!
         # This was the source of the 4.3 .leoID.txt problems.
         home = g.os_path_finalize(home,encoding=encoding)
         if (
@@ -227,7 +247,6 @@ def computeHomeDir():
         ):
             home = None
 
-    # g.trace(home)
     return home
 #@-node:ekr.20041117151301:computeHomeDir
 #@+node:ekr.20060416113431:computeLeoDir
@@ -239,11 +258,6 @@ def computeLeoDir ():
     # xxx remove this, we don't want to have this in sys.path
     if theDir not in sys.path:
         sys.path.append(theDir)
-
-    if 0: # This is required so we can do import leo.core.leo as leo (as a package)
-        theParentDir = g.os_path_dirname(theDir)
-        if theParentDir not in sys.path:
-            sys.path.append(theParentDir)
 
     return theDir
 #@-node:ekr.20060416113431:computeLeoDir
@@ -314,54 +328,26 @@ def computeMachineName():
 
     return name
 #@-node:dan.20080410121257.1:computeMachineName
-#@+node:ekr.20050328133444:computeStandardDirectories
-def computeStandardDirectories():
-
-    '''Set g.app.loadDir, g.app.homeDir, g.app.homeLeoDir and g.app.globalConfigDir.'''
-
-    if 0:
-        import sys
-        for s in sys.path: g.trace(s)
-
-    g.app.loadDir = g.computeLoadDir()
-        # Depends on g.app.defaultEncoding: uses utf-8 for now.
-
-    g.app.leoDir = g.computeLeoDir()
-
-    g.app.homeDir = g.computeHomeDir()
-
-    # New in Leo 4.5 b4: create homeLeoDir if needed.
-    g.app.homeLeoDir = homeLeoDir = g.os_path_finalize(
-        g.os_path_join(g.app.homeDir,'.leo'))
-
-    if not g.os_path_exists(homeLeoDir):
-        g.makeAllNonExistentDirectories(homeLeoDir,force=True)
-
-    g.app.extensionsDir = g.os_path_finalize(
-        g.os_path_join(g.app.loadDir,'..','extensions'))
-
-    g.app.globalConfigDir = g.computeGlobalConfigDir()
-
-    g.app.testDir = g.os_path_finalize(
-        g.os_path_join(g.app.loadDir,'..','test'))
-
-    g.app.user_xresources_path = g.os_path_join(g.app.homeDir,'.leo_xresources')
-#@-node:ekr.20050328133444:computeStandardDirectories
 #@+node:ekr.20041117151301.1:startupEncoding
 def startupEncoding ():
 
-    import leo.core.leoGlobals as g
-    import sys
+    '''Compute the encoding used by g.computeStandardDirectories.'''
 
-    if sys.platform=="win32": # "mbcs" exists only on Windows.
-        encoding = "mbcs"
-    elif sys.platform=="dawwin":
-        encoding = "utf-8"
-    else:
-        encoding = g.app.defaultEncoding
+    # import leo.core.leoGlobals as g
+    # import sys
+
+    # if sys.platform=="win32": # "mbcs" exists only on Windows.
+        # encoding = "mbcs"
+    # elif sys.platform=="dawwin":
+        # encoding = "utf-8"
+    # else:
+        # encoding = g.app.defaultEncoding
+
+    encoding = 'utf-8'
 
     return encoding
 #@-node:ekr.20041117151301.1:startupEncoding
+#@-node:ekr.20050328133444:g.computeStandardDirectories & helpers
 #@-node:ekr.20050304072744:Compute directories... (leoGlobals)
 #@+node:ekr.20031218072017.1380:g.Directive utils...
 # New in Leo 4.6:

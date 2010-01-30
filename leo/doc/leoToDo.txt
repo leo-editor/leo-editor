@@ -16,15 +16,16 @@
 The plugin manager will not registers pluings when g.app.moduleTesting is True.
 #@nonl
 #@-node:ekr.20100128094926.6225:use g.app.moduleTesting to disable actual loads
-#@+node:ekr.20100128094926.6227:Reduce size of distribution
-#@-node:ekr.20100128094926.6227:Reduce size of distribution
-#@+node:ekr.20100129131524.6190:improve caching
-@nocolor-node
-
-- Cache expansion states.
-- Use common key for globals??
-#@nonl
-#@-node:ekr.20100129131524.6190:improve caching
+#@+node:ekr.20100129133806.6236:Resolve Terry's unicode bug
+#@-node:ekr.20100129133806.6236:Resolve Terry's unicode bug
+#@+node:ekr.20100129133806.6237:Remove cruft from test folder
+#@-node:ekr.20100129133806.6237:Remove cruft from test folder
+#@+node:ekr.20100129133806.6238:Move unit tests from this file into unitTest.leo
+#@-node:ekr.20100129133806.6238:Move unit tests from this file into unitTest.leo
+#@+node:ekr.20100129133806.6239:Remove most icons
+#@-node:ekr.20100129133806.6239:Remove most icons
+#@+node:ekr.20100129133806.6240:Add warning in dist.leo to run bzr script
+#@-node:ekr.20100129133806.6240:Add warning in dist.leo to run bzr script
 #@+node:ekr.20100122130101.6172:Fix bug in c.pasteOutline when run from unit tests
 @nocolor-node
 
@@ -659,9 +660,6 @@ write code should not use any @path declarations found in its body
 text.
 #@nonl
 #@-node:ekr.20081204091750.4:Fix inconsistency in how @path works (or not???)
-#@-node:ekr.20100128094926.6228: First
-#@+node:ekr.20100125190708.6258:Better screen shots
-#@-node:ekr.20100125190708.6258:Better screen shots
 #@+node:ekr.20100127064113.6205:unit tests for recent changes
 #@+node:ekr.20080827175609.37:g.scanAtTabwidthDirectives & scanAllTabWidthDirectives
 def scanAtTabwidthDirectives(aList,issue_error_flag=False):
@@ -721,13 +719,10 @@ def scanAllAtWrapDirectives(c,p):
     return ret
 #@-node:ekr.20080831084419.4:g.scanAtWrapDirectives & scanAllAtWrapDirectives
 #@-node:ekr.20100127064113.6205:unit tests for recent changes
-#@+node:ekr.20100127064113.6206:fix unbound recursion error in pylint
-def unbound():
-    unbound()
-
-unbound()
-#@nonl
-#@-node:ekr.20100127064113.6206:fix unbound recursion error in pylint
+#@-node:ekr.20100128094926.6228: First
+#@+node:ekr.20100129133806.6234:Optional
+#@+node:ekr.20100125190708.6258:Better screen shots
+#@-node:ekr.20100125190708.6258:Better screen shots
 #@+node:ekr.20100113075303.6270:Easiest vim problems
 #@+node:ekr.20100112051224.6229:(vim) Binding Arrow keys (fixed?)
 Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
@@ -791,7 +786,6 @@ until the edited node has lost focus.
 #@nonl
 #@-node:ekr.20100112051224.6231:Undo command (fixed?)
 #@-node:ekr.20100113075303.6270:Easiest vim problems
-#@+node:ekr.20100119145629.6105:later...
 #@+node:ekr.20100118143729.6256:Fix bug 508108: No methods sub-nodes in PHP class import
 https://bugs.launchpad.net/leo-editor/+bug/508108
 
@@ -820,12 +814,21 @@ Drat.  I suppose building in unicode smarts: filtering 'general punctuation' cha
 http://www.fileformat.info/info/unicode/char/2026/index.htm
 #@nonl
 #@-node:ekr.20080509065556.2:Fix mod_tempfname plugin
-#@-node:ekr.20100119145629.6105:later...
+#@-node:ekr.20100129133806.6234:Optional
+#@+node:ekr.20100129133806.6235:Other programs
+#@+node:ekr.20100127064113.6206:fix unbound recursion error in pylint
+def unbound():
+    unbound()
+
+unbound()
+#@nonl
+#@-node:ekr.20100127064113.6206:fix unbound recursion error in pylint
 #@+node:ekr.20100128094926.6222:port pmw to py3k
 - Check web site first!
 - Create new branch for pmw work.
 #@nonl
 #@-node:ekr.20100128094926.6222:port pmw to py3k
+#@-node:ekr.20100129133806.6235:Other programs
 #@-node:ekr.20100126110826.6253:Before rc1
 #@-node:ekr.20071211093011:4.7 One-node world, Leo3K
 #@+node:ekr.20100109214940.6225:4.8 Autocompletion, vim
