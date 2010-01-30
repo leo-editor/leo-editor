@@ -986,7 +986,7 @@ class parserBaseClass:
         else:   return None,None
     #@-node:ekr.20060608222828:parseAbbrevLine (g.app.config)
     #@-node:ekr.20041213082558:parsers
-    #@+node:ekr.20041120094940.9:set (parseBaseClass)
+    #@+node:ekr.20041120094940.9:set (parserBaseClass)
     def set (self,p,kind,name,val):
 
         """Init the setting for name to val."""
@@ -1006,7 +1006,7 @@ class parserBaseClass:
             # g.trace('*****',key,val)
 
         d [key] = g.Bunch(path=c.mFileName,kind=kind,val=val,tag='setting')
-    #@-node:ekr.20041120094940.9:set (parseBaseClass)
+    #@-node:ekr.20041120094940.9:set (parserBaseClass)
     #@+node:ekr.20041227071423:setShortcut (ParserBaseClass)
     def setShortcut (self,name,bunchList):
 
@@ -1733,14 +1733,15 @@ class configClass:
     #@-node:ekr.20041120074536:settingsRoot
     #@-node:ekr.20041117081009:Getters... (g.app.config)
     #@+node:ekr.20041118084146:Setters (g.app.config)
-    #@+node:ekr.20041118084146.1:set (g.app.config)
+    #@+node:ekr.20041118084146.1:set (g.app.config) To be deleted??
     def set (self,c,setting,kind,val):
 
         '''Set the setting.  Not called during initialization.'''
 
-        # if kind.startswith('setting'): g.trace(val)
-
+        trace = False and not g.unitTesting
         found = False ;  key = self.munge(setting)
+        if trace: g.trace(setting,kind,val)
+
         if c:
             d = self.localOptionsDict.get(c.hash())
             if d: found = True
@@ -1760,7 +1761,7 @@ class configClass:
         if 0:
             dkind = d.get('_hash','<no hash: %s>' % c.hash())
             g.trace(dkind,setting,kind,val)
-    #@-node:ekr.20041118084146.1:set (g.app.config)
+    #@-node:ekr.20041118084146.1:set (g.app.config) To be deleted??
     #@+node:ekr.20041118084241:setString
     def setString (self,c,setting,val):
 
@@ -1774,14 +1775,15 @@ class configClass:
         - Called from readSettingsFiles with c = None to init g.app.config ivars.
         - Called from c.__init__ to init corresponding commmander ivars.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
 
         # Ingore temporary commanders created by readSettingsFiles.
         if not self.inited: return
 
-        # g.trace(c)
         d = self.ivarsDict
-        for key in d:
+        keys = list(d.keys())
+        keys.sort()
+        for key in keys:
             if key != '_hash':
                 bunch = d.get(key)
                 if bunch:
@@ -1789,10 +1791,12 @@ class configClass:
                     kind = bunch.kind
                     val = self.get(c,key,kind) # Don't use bunch.val!
                     if c:
-                        if trace: g.trace("%20s %s = %s" % (g.shortFileName(c.mFileName),ivar,val))
+                        if trace: g.trace("%20s %s = %s" % (
+                            g.shortFileName(c.mFileName),ivar,val))
                         setattr(c,ivar,val)
                     else:
-                        if trace: g.trace("%20s %s = %s" % ('g.app.config',ivar,val))
+                        if trace: g.trace("%20s %s = %s" % (
+                            'g.app.config',ivar,val))
                         setattr(self,ivar,val)
     #@-node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
     #@+node:ekr.20041201080436:appendToRecentFiles (g.app.config)
