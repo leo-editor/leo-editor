@@ -7756,7 +7756,7 @@ class configSettings:
         for key in g.app.config.ivarsDict:
             if key != '_hash':
                 self.initIvar(key)
-    #@+node:ekr.20041118104240:initIvar
+    #@+node:ekr.20041118104240:initIvar (c.configSettings)
     def initIvar(self,key):
 
         c = self.c
@@ -7769,7 +7769,7 @@ class configSettings:
         if val or not hasattr(self,ivarName):
             # g.trace('c.configSettings',c.shortFileName(),ivarName,val)
             setattr(self,ivarName,val)
-    #@-node:ekr.20041118104240:initIvar
+    #@-node:ekr.20041118104240:initIvar (c.configSettings)
     #@+node:ekr.20041118104414:initEncoding
     def initEncoding (self,key):
 

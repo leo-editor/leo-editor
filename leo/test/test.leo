@@ -468,6 +468,7 @@
 <v t="ekr.20100127123120.2016"><vh>The text</vh></v>
 <v t="ekr.20100127123336.2018"><vh>Copy</vh></v>
 </v>
+<v t="ekr.20100130095415.2023"><vh>Simulate startup code for non-ascii directories</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5182,5 +5183,15 @@ consists of 3 unicode characters.  Typing any character works
 properly, including backspace or return.
 Example 2. Suppose we select the following string: वादक.  This string
 consists of 4 characters.  Typing any character removes too much.</t>
+<t tx="ekr.20100130095415.2023"># @first # -*- coding: mbcs -*-
+# @first # -*- coding: utf-8 -*-
+
+path = 'c:\prog\Leo Stuff\chinese脖folder'
+
+for encoding in ('mbcs','utf-8'):
+    valid = g.isValidEncoding(encoding)
+    theDir = g.os_path_finalize(path,encoding='utf-8')
+    g.es(encoding,valid,theDir)
+    print(encoding,valid,g.os_path_exists(theDir))</t>
 </tnodes>
 </leo_file>
