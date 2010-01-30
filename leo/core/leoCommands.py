@@ -7736,8 +7736,11 @@ class configSettings:
     #@+node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
     def __init__ (self,c):
 
+        trace = False and not g.unitTesting
         self.c = c
-        # g.trace('(configSettings)',c,g.callers(5))
+
+        if trace: g.trace('+' * 20,'(c.configSettings)',
+            c and c.shortFileName(),g.callers(5))
 
         # Init these here to keep pylint happy.
         self.default_derived_file_encoding = None
@@ -7759,6 +7762,7 @@ class configSettings:
     #@+node:ekr.20041118104240:initIvar (c.configSettings)
     def initIvar(self,key):
 
+        trace = False and not g.unitTesting
         c = self.c
 
         # N.B. The key is munged.
@@ -7767,7 +7771,7 @@ class configSettings:
         val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
 
         if val or not hasattr(self,ivarName):
-            # g.trace('c.configSettings',c.shortFileName(),ivarName,val)
+            if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
             setattr(self,ivarName,val)
     #@-node:ekr.20041118104240:initIvar (c.configSettings)
     #@+node:ekr.20041118104414:initEncoding
@@ -7892,6 +7896,8 @@ class configSettings:
     #@-node:ekr.20041118195812.3:setRecentFiles (c.configSettings)
     #@+node:ekr.20041118195812.2:set & setString
     def set (self,p,setting,val):
+
+        g.trace('?' * 20,setting,val)
 
         return g.app.config.setString(self.c,setting,val)
 

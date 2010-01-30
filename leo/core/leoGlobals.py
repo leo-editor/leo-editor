@@ -1463,10 +1463,14 @@ def _callerName (n=1,files=False):
     try: # get the function name from the call stack.
         f1 = sys._getframe(n) # The stack frame, n levels up.
         code1 = f1.f_code # The code object
+        name = code1.co_name
+        if name == '__init__':
+            name = '__init__(%s,line %s)' % (
+                g.shortFileName(code1.co_filename),code1.co_firstlineno)
         if files:
-            return '%s:%s' % (g.shortFilename(code1.co_filename),code1.co_name)
+            return '%s:%s' % (g.shortFilename(code1.co_filename),name)
         else:
-            return code1.co_name # The code name
+            return name # The code name
     except ValueError:
         return '' # The stack is not deep enough.
     except Exception:

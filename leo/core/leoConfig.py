@@ -1255,6 +1255,9 @@ class configClass:
     #@+node:ekr.20041117065611.2:initIvarsFromSettings & helpers
     def initIvarsFromSettings (self):
 
+        trace = False and not g.unitTesting
+        if trace: g.trace('-' * 20,g.callers())
+
         for ivar in self.encodingIvarsDict:
             if ivar != '_hash':
                 self.initEncoding(ivar)
@@ -1775,10 +1778,20 @@ class configClass:
         - Called from readSettingsFiles with c = None to init g.app.config ivars.
         - Called from c.__init__ to init corresponding commmander ivars.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
+        verbose = True
 
         # Ingore temporary commanders created by readSettingsFiles.
-        if not self.inited: return
+        if self.inited:
+            if trace:
+                if c:
+                    g.trace('=' * 10, 'inited',c.shortFileName(),g.callers(4))
+                else:
+                    tag = '<no c: called at end of readSettingsFiles>'
+                    g.trace('=' * 10, 'inited',tag,g.callers(1))
+        else:
+            if trace and verbose: g.trace('*' * 10,'not inited.  do nothing')
+            return
 
         d = self.ivarsDict
         keys = list(d.keys())
@@ -1823,6 +1836,7 @@ class configClass:
     #@+node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
     def readSettingsFiles (self,fileName,verbose=True):
 
+        trace = False and not g.unitTesting
         seen = []
         self.write_recent_files_as_needed = False # Will be set later.
         #@    << define localDirectory, localConfigFile & myLocalConfigFile >>
@@ -1844,7 +1858,7 @@ class configClass:
         #@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
         #@nl
 
-        # g.trace(g.app.oneConfigFilename)
+        if trace: g.trace(g.callers(5))
         table = (
             (self.globalConfigFile,False),
             (self.homeFile,False),
@@ -1877,8 +1891,13 @@ class configClass:
                 if c:
                     self.updateSettings(c,localFlag)
                     g.app.destroyWindow(c.frame)
-                    self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
-                    self.setIvarsFromSettings(c)
+                    self.write_recent_files_as_needed = c.config.getBool(
+                        'write_recent_files_as_needed')
+                    if 0:
+                        # This is useless. setIvarsFromSettings does nothing
+                        # until the self.inited flag is True.
+                        g.trace('?' * 20,c)
+                        self.setIvarsFromSettings(c)
         self.readRecentFiles(localConfigFile)
         # self.createMyLeoSettingsFile(myLocalConfigFile)
         self.inited = True
@@ -1932,7 +1951,8 @@ class configClass:
 
         """Read settings from a file that may contain an @settings tree."""
 
-        # g.trace('=' * 20, c.fileName())
+        trace = False and not g.unitTesting
+        if trace: g.trace('=' * 20, c and c.fileName())
 
         # Create a settings dict for c for set()
         if c and self.localOptionsDict.get(c.hash()) is None:

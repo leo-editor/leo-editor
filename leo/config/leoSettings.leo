@@ -6601,7 +6601,7 @@ propagate-key-event = Alt-O
 propagate-key-event = Alt-W
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="4"></t>
+<t tx="ekr.20070622214401"></t>
 <t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070919125633">button_text_font_family = verdana
