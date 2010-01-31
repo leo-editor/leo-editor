@@ -48,7 +48,6 @@ __version__ = '0.7'
 
 #@<< imports >>
 #@+node:tbrown.20070117104409.2:<< imports >>
-# from types import MethodType
 import types
 
 import leo.core.leoGlobals as g
@@ -214,8 +213,7 @@ for name, first_last, long, short in quickMove.flavors:
 
         def func(self, ftrue=ftrue, name=name, event=None):
             self.addButton(first=ftrue, type_=name)
-        # func = types.MethodType(func, None, quickMove)
-        func = types.MethodType(func, quickMove)
+        func = types.MethodType(func, None, quickMove)
         fname = 'func_'+name+'_'+short+'_' +which
         setattr(quickMove, fname, func)
         if which:
