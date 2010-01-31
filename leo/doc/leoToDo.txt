@@ -24,8 +24,6 @@ The plugin manager will not registers pluings when g.app.moduleTesting is True.
 #@-node:ekr.20100129133806.6238:Move unit tests from this file into unitTest.leo
 #@+node:ekr.20100129133806.6239:Remove most icons
 #@-node:ekr.20100129133806.6239:Remove most icons
-#@+node:ekr.20100129133806.6240:Add warning in dist.leo to run bzr script
-#@-node:ekr.20100129133806.6240:Add warning in dist.leo to run bzr script
 #@+node:ekr.20100122130101.6172:Fix bug in c.pasteOutline when run from unit tests
 @nocolor-node
 
@@ -102,6 +100,14 @@ def pasteOutline(self,event=None,reassignIndices=True):
     if back and back.isExpanded():
         pasted.moveToNthChildOf(back,0)
     c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
+
+    if pasteAsClone:
+        # Set dirty bits for ancestors of *all* pasted nodes.
+        # Note: the setDescendentsDirty flag does not do what we want.
+        for p in pasted.self_and_subtree():
+            p.setAllAncestorAtFileNodesDirty(
+                setDescendentsDirty=False)
+
     u.afterInsertNode(pasted,undoType,undoData)
     c.redraw(pasted)
     c.recolor()

@@ -1577,6 +1577,9 @@ class rstCommands:
         else:
             path = g.os_path_finalize_join(fileName)
 
+        # g.trace('openDirectory %s\ndefault_path %s\npath %s' % (
+            # repr(openDirectory),repr(default_path),repr(path)))
+
         return path
     #@nonl
     #@-node:ekr.20090502071837.89:computeOutputFileName
