@@ -390,7 +390,7 @@ class baseCommands (object):
                     c.inCommand = False
                     c.k.funcReturn = val
                 # else: g.pr('c no longer exists',c)
-            except:
+            except Exception:
                 c.inCommand = False
                 if g.app.unitTesting:
                     raise
@@ -3652,6 +3652,14 @@ class baseCommands (object):
         if back and back.isExpanded():
             pasted.moveToNthChildOf(back,0)
         c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
+
+        if pasteAsClone:
+            # Set dirty bits for ancestors of *all* pasted nodes.
+            # Note: the setDescendentsDirty flag does not do what we want.
+            for p in pasted.self_and_subtree():
+                p.setAllAncestorAtFileNodesDirty(
+                    setDescendentsDirty=False)
+
         u.afterInsertNode(pasted,undoType,undoData)
         c.redraw(pasted)
         c.recolor()

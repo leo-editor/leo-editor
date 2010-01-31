@@ -8171,6 +8171,134 @@ def initWrite (self,p):
     # g.trace('path:',self.path)
 #@-node:ekr.20090502071837.60:initWrite (rstCommands)
 #@-node:ekr.20100130180828.6272:writeSpecialTree no longer uses ridiculous encoding defaults
+#@+node:ekr.20100131065400.6287:paste-node-as-clone now sets dirty bits properly
+# We must set ancestor dirty bits for *all* nodes of the pasted tree.
+#@nonl
+#@+node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
+def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    p = self
+    dirtyVnodeList = []
+
+    # Calculate all nodes that are joined to p or parents of such nodes.
+    nodes = p.findAllPotentiallyDirtyNodes()
+
+    if setDescendentsDirty:
+        # N.B. Only mark _direct_ descendents of nodes.
+        # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
+        for p2 in p.subtree():
+            # Only @thin nodes need to be marked.
+            if p2.v not in nodes and p2.isAtThinFileNode():
+                nodes.append(p2.v)
+
+    if trace and verbose:
+        for v in nodes:
+            print (v.isDirty(),v.isAnyAtFileNode(),v)
+
+    dirtyVnodeList = [v for v in nodes
+        if not v.isDirty() and v.isAnyAtFileNode()]
+    changed = len(dirtyVnodeList) > 0
+
+    for v in dirtyVnodeList:
+        v.setDirty()
+
+    if trace: g.trace("position",dirtyVnodeList,g.callers(5))
+
+    return dirtyVnodeList
+#@-node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
+#@+node:ekr.20031218072017.1551:pasteOutline
+# To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
+
+def pasteOutline(self,event=None,reassignIndices=True):
+
+    '''Paste an outline into the present outline from the clipboard.
+    Nodes do *not* retain their original identify.'''
+
+    c = self ; u = c.undoer ; current = c.p
+    s = g.app.gui.getTextFromClipboard()
+    pasteAsClone = not reassignIndices
+    undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
+
+    c.endEditing()
+
+    if not s or not c.canPasteOutline(s):
+        return # This should never happen.
+
+    isLeo = g.match(s,0,g.app.prolog_prefix_string)
+    vnodeInfoDict = {}
+    if pasteAsClone:
+        << remember all data for undo/redo Paste As Clone >>
+    # create a *position* to be pasted.
+    if isLeo:
+        pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
+    else:
+        pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
+
+    if not pasted: return
+
+    copiedBunchList = []
+    if pasteAsClone:
+        << put only needed info in copiedBunchList >>
+    undoData = u.beforeInsertNode(current,
+        pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
+
+    c.validateOutline()
+    c.selectPosition(pasted)
+    pasted.setDirty()
+    c.setChanged(True)
+    # paste as first child if back is expanded.
+    back = pasted.back()
+    if back and back.isExpanded():
+        pasted.moveToNthChildOf(back,0)
+    c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
+
+    if pasteAsClone:
+        # Set dirty bits for ancestors of *all* pasted nodes.
+        # Note: the setDescendentsDirty flag does not do what we want.
+        for p in pasted.self_and_subtree():
+            p.setAllAncestorAtFileNodesDirty(
+                setDescendentsDirty=False)
+
+    u.afterInsertNode(pasted,undoType,undoData)
+    c.redraw(pasted)
+    c.recolor()
+#@+node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
+@
+
+We don't know yet which nodes will be affected by the paste, so we remember
+everything. This is expensive, but foolproof.
+
+The alternative is to try to remember the 'before' values of tnodes in the
+fileCommands read logic. Several experiments failed, and the code is very ugly.
+In short, it seems wise to do things the foolproof way.
+
+@c
+
+for v in c.all_unique_nodes():
+    if v not in vnodeInfoDict:
+        vnodeInfoDict[v] = g.Bunch(
+            v=v,head=v.headString(),body=v.b)
+#@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
+#@+node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
+# Create a dict containing only copied tnodes.
+copiedVnodeDict = {}
+for p in pasted.self_and_subtree():
+    if p.v not in copiedVnodeDict:
+        copiedVnodeDict[p.v] = p.v
+
+# g.trace(list(copiedVnodeDict.keys()))
+
+for v in vnodeInfoDict:
+    bunch = vnodeInfoDict.get(v)
+    if copiedVnodeDict.get(v):
+        copiedBunchList.append(bunch)
+
+# g.trace('copiedBunchList',copiedBunchList)
+#@-node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
+#@-node:ekr.20031218072017.1551:pasteOutline
+#@-node:ekr.20100131065400.6287:paste-node-as-clone now sets dirty bits properly
 #@-node:ekr.20100129131524.6188:Leo 4.7 b3 projects
 #@+node:ekr.20100130164410.6332:Recent
 #@+node:ekr.20100129131524.6190:improve caching
