@@ -8081,6 +8081,96 @@ def completeFileName (fileName):
     return fileName,relativeFileName
 #@-node:ekr.20041124083125:completeFileName
 #@-node:ekr.20100130164946.8694:Removed all uses of mbcs encoding
+#@+node:ekr.20100130180828.6272:writeSpecialTree no longer uses ridiculous encoding defaults
+#@+node:ekr.20090502071837.64:writeSpecialTree
+def writeSpecialTree (self,p,toString,justOneFile):
+
+    c = self.c
+    isHtml = self.ext in ('.html','.htm')
+    if isHtml and not SilverCity:
+        if not self.silverCityWarningGiven:
+            self.silverCityWarningGiven = True
+            g.es('SilverCity not present so no syntax highlighting')
+
+    self.initWrite(p)
+        # was encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
+    self.outputFile = StringIO()
+    self.writeTree(p)
+    self.source = self.outputFile.getvalue()
+    self.outputFile = None
+
+    if not toString:
+        # Compute this here for use by intermediate file.
+        self.outputFileName = self.computeOutputFileName(self.outputFileName)
+
+        # Create the directory if it doesn't exist.
+        theDir, junk = g.os_path_split(self.outputFileName)
+        theDir = c.os_path_finalize(theDir)
+        if not g.os_path_exists(theDir):
+            ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
+            if not ok:
+                g.es_print('did not create:',theDir,color='red')
+                return False
+
+        # if not os.access(theDir,os.F_OK):
+            # os.mkdir(theDir)
+
+        if self.getOption('write_intermediate_file'):
+            name = self.outputFileName + '.txt'
+            f = open(name,'w')
+            f.write(self.source)
+            f.close()
+            self.report(name)
+
+    try:
+        output = self.writeToDocutils(self.source)
+        ok = output is not None
+    except Exception:
+        g.pr('Exception in docutils')
+        g.es_exception()
+        ok = False
+
+    if ok:
+        if isHtml:
+            import re
+            idxTitle = output.find('<title></title>')
+            if idxTitle > -1:
+                m = re.search('<h1>([^<]*)</h1>', output)
+                if not m:
+                    m = re.search('<h1><[^>]+>([^<]*)</a></h1>', output)
+                if m:
+                    output = output.replace(
+                        '<title></title>',
+                        '<title>%s</title>' % m.group(1)
+                    )
+
+
+        if toString:
+            self.stringOutput = output
+        else:
+            # Write the file to the directory containing the .leo file.
+            f = open(self.outputFileName,'w')
+            f.write(output)
+            f.close()
+            self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
+
+    return ok
+#@-node:ekr.20090502071837.64:writeSpecialTree
+#@+node:ekr.20090502071837.60:initWrite (rstCommands)
+def initWrite (self,p):
+
+    self.initOptionsFromSettings() # Still needed.
+
+    # Set the encoding from any parent @encoding directive.
+    # This can be overridden by @rst-option encoding=whatever.
+    c = self.c
+    d = c.scanAllDirectives(p)
+    self.encoding = d.get('encoding') or g.app.defaultEncoding
+    self.path = d.get('path') or ''
+
+    # g.trace('path:',self.path)
+#@-node:ekr.20090502071837.60:initWrite (rstCommands)
+#@-node:ekr.20100130180828.6272:writeSpecialTree no longer uses ridiculous encoding defaults
 #@-node:ekr.20100129131524.6188:Leo 4.7 b3 projects
 #@+node:ekr.20100130164410.6332:Recent
 #@+node:ekr.20100129131524.6190:improve caching
@@ -10697,7 +10787,7 @@ self.trialWrite = False # True if doing a trialWrite.
 #@nonl
 #@-node:ekr.20090502071837.36:<< init ivars >> (leoRst)
 #@+node:ekr.20090502071837.60:initWrite (rstCommands)
-def initWrite (self,p,encoding=None):
+def initWrite (self,p):
 
     self.initOptionsFromSettings() # Still needed.
 
@@ -10705,7 +10795,7 @@ def initWrite (self,p,encoding=None):
     # This can be overridden by @rst-option encoding=whatever.
     c = self.c
     d = c.scanAllDirectives(p)
-    self.encoding = encoding or d.get('encoding') or g.app.defaultEncoding
+    self.encoding = d.get('encoding') or g.app.defaultEncoding
     self.path = d.get('path') or ''
 
     # g.trace('path:',self.path)
@@ -10868,81 +10958,6 @@ def computeMachineName():
 #@-node:dan.20080410121257.1:computeMachineName
 #@-node:ekr.20050328133444:g.computeStandardDirectories & helpers
 #@-node:ekr.20100130035231.6254:app.defaultEncoding
-#@+node:ekr.20100130180828.6272:writeSpecialTree uses ridiculous encoding defaults
-#@+node:ekr.20090502071837.64:writeSpecialTree
-def writeSpecialTree (self,p,toString,justOneFile):
-
-    c = self.c
-    isHtml = self.ext in ('.html','.htm')
-    if isHtml and not SilverCity:
-        if not self.silverCityWarningGiven:
-            self.silverCityWarningGiven = True
-            g.es('SilverCity not present so no syntax highlighting')
-
-    self.initWrite(p,encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
-    self.outputFile = StringIO()
-    self.writeTree(p)
-    self.source = self.outputFile.getvalue()
-    self.outputFile = None
-
-    if not toString:
-        # Compute this here for use by intermediate file.
-        self.outputFileName = self.computeOutputFileName(self.outputFileName)
-
-        # Create the directory if it doesn't exist.
-        theDir, junk = g.os_path_split(self.outputFileName)
-        theDir = c.os_path_finalize(theDir)
-        if not g.os_path_exists(theDir):
-            ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
-            if not ok:
-                g.es_print('did not create:',theDir,color='red')
-                return False
-
-        # if not os.access(theDir,os.F_OK):
-            # os.mkdir(theDir)
-
-        if self.getOption('write_intermediate_file'):
-            name = self.outputFileName + '.txt'
-            f = open(name,'w')
-            f.write(self.source)
-            f.close()
-            self.report(name)
-
-    try:
-        output = self.writeToDocutils(self.source)
-        ok = output is not None
-    except Exception:
-        g.pr('Exception in docutils')
-        g.es_exception()
-        ok = False
-
-    if ok:
-        if isHtml:
-            import re
-            idxTitle = output.find('<title></title>')
-            if idxTitle > -1:
-                m = re.search('<h1>([^<]*)</h1>', output)
-                if not m:
-                    m = re.search('<h1><[^>]+>([^<]*)</a></h1>', output)
-                if m:
-                    output = output.replace(
-                        '<title></title>',
-                        '<title>%s</title>' % m.group(1)
-                    )
-
-
-        if toString:
-            self.stringOutput = output
-        else:
-            # Write the file to the directory containing the .leo file.
-            f = open(self.outputFileName,'w')
-            f.write(output)
-            f.close()
-            self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
-
-    return ok
-#@-node:ekr.20090502071837.64:writeSpecialTree
-#@-node:ekr.20100130180828.6272:writeSpecialTree uses ridiculous encoding defaults
 #@-node:ekr.20100130164410.6332:Recent
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt

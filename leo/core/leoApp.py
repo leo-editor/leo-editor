@@ -10,7 +10,7 @@
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoVersion as leoVersion
-import locale
+
 import os
 import sys
 import leo.external.pickleshare
