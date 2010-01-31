@@ -607,11 +607,11 @@ class atFile:
         m = hashlib.md5()
 
         if g.isUnicode(s):
-            s = g.toEncodedString(s,encoding='utf-8')
+            s = g.toEncodedString(s)
 
         if g.isUnicode(content):
             g.internalError('content arg must be str/bytes')
-            content = g.toEncodedString(content,encoding='utf-8')
+            content = g.toEncodedString(content)
 
         m.update(s)
         m.update(content)

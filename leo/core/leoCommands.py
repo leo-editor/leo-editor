@@ -2119,7 +2119,6 @@ class baseCommands (object):
         try:
             if g.isPython3:
                 # Use the default encoding.
-                # script = g.toUnicode(script,'utf-8'reportErrors=False)
                 f = open(path,encoding='utf-8',mode='w')
             else:
                 f = open(path,'w')
@@ -4387,18 +4386,16 @@ class baseCommands (object):
         #@+node:ekr.20040713064323:dumpLines
         def dumpLines (self,p,lines):
 
-            encoding = g.app.defaultEncoding
-
             g.pr('\n','-'*10,p.cleanHeadString())
 
             if 0:
                 for line in lines:
-                    line2 = g.toEncodedString(line,encoding,reportErrors=True)
+                    line2 = g.toEncodedString(line,reportErrors=True)
                     g.pr(line2,newline=False) # Don't add a trailing newline!)
             else:
                 for i in range(len(lines)):
                     line = lines[i]
-                    line = g.toEncodedString(line,encoding,reportErrors=True)
+                    line = g.toEncodedString(line,reportErrors=True)
                     g.pr("%3d" % i, repr(lines[i]))
         #@-node:ekr.20040713064323:dumpLines
         #@+node:ekr.20040711135244.7:dumpToken

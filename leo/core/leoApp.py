@@ -557,29 +557,23 @@ class LeoApp:
     #@+node:ekr.20031218072017.2618:app.setEncoding
     def setEncoding (self):
 
-        """Set g.app.defaultEncoding."""
+        """Set g.app.defaultEncoding.
+        runLeo.doPrePluginsInit calls this just after reading settings files.
+        """
 
-        app = self
-
-        # According to Martin v. Löwis, getdefaultlocale() cannot be fixed.
-        # We use getpreferredencoding() instead.
-        # locale_encoding = locale.getpreferredencoding()
-        # try: sys_encoding = sys.getdefaultencoding()
-        # except Exception: sys_encoding = None
+        a = self ; c = None
 
         for (encoding,src) in (
-            (app.config.defaultEncoding," from config"),
-            # (locale_encoding," from locale"),
-            # (sys_encoding," from sys"),
-            ("utf-8","")):
-
+            (g.app.config.getString(c,'default-encoding'),'from settings file'),
+            ("utf-8","")
+        ):
             if g.isValidEncoding (encoding):
-                app.defaultEncoding = encoding
+                a.defaultEncoding = encoding
                 g.es('default encoding %s%s' % (
                     encoding,src),color='orange')
                 break
             elif encoding:
-                color = g.choose(app.defaultEncoding=="ascii","red","blue")
+                color = g.choose(a.defaultEncoding=="ascii","red","blue")
                 g.trace("ignoring invalid %s encoding: %s" % (
                     src,encoding),color=color)
     #@-node:ekr.20031218072017.2618:app.setEncoding

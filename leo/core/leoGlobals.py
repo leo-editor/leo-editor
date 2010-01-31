@@ -198,8 +198,6 @@ def computeGlobalConfigDir():
 
     import leo.core.leoGlobals as g
 
-    encoding = g.startupEncoding()
-
     # To avoid pylint complaints that sys.leo_config_directory does not exist.
     leo_config_dir = (
         hasattr(sys,'leo_config_directory') and
@@ -215,8 +213,8 @@ def computeGlobalConfigDir():
 
     if (
         not theDir or
-        not g.os_path_exists(theDir,encoding) or
-        not g.os_path_isdir(theDir,encoding)
+        not g.os_path_exists(theDir) or
+        not g.os_path_isdir(theDir)
     ):
         theDir = None
 
@@ -229,7 +227,6 @@ def computeHomeDir():
 
     import leo.core.leoGlobals as g
 
-    encoding = g.startupEncoding()
     home = os.path.expanduser("~")
         # Windows searches the HOME, HOMEPATH and HOMEDRIVE environment vars, then gives up.
 
@@ -240,10 +237,10 @@ def computeHomeDir():
     if home:
         # Important: This returns the _working_ directory if home is None!
         # This was the source of the 4.3 .leoID.txt problems.
-        home = g.os_path_finalize(home,encoding=encoding)
+        home = g.os_path_finalize(home)
         if (
-            not g.os_path_exists(home,encoding) or
-            not g.os_path_isdir(home,encoding)
+            not g.os_path_exists(home) or
+            not g.os_path_isdir(home)
         ):
             home = None
 
@@ -286,16 +283,15 @@ def computeLoadDir():
             if len(path) > 2 and path[1]==':':
                 # Convert the drive name to upper case.
                 path = path[0].upper() + path[1:]
-        encoding = g.startupEncoding()
-        path = g.os_path_finalize(path,encoding=encoding)
+        path = g.os_path_finalize(path)
         if path:
-            loadDir = g.os_path_dirname(path,encoding)
+            loadDir = g.os_path_dirname(path)
         else: loadDir = None
 
         if (
             not loadDir or
-            not g.os_path_exists(loadDir,encoding) or
-            not g.os_path_isdir(loadDir,encoding)
+            not g.os_path_exists(loadDir) or
+            not g.os_path_isdir(loadDir)
         ):
             loadDir = os.getcwd()
             # From Marc-Antoine Parent.
@@ -303,7 +299,7 @@ def computeLoadDir():
                 loadDir += "/leo/plugins"
             else:
                 g.pr("Exception getting load directory")
-        loadDir = g.os_path_finalize(loadDir,encoding=encoding)
+        loadDir = g.os_path_finalize(loadDir)
         # g.es("load dir:",loadDir,color="blue")
         return loadDir
     except:
@@ -328,25 +324,6 @@ def computeMachineName():
 
     return name
 #@-node:dan.20080410121257.1:computeMachineName
-#@+node:ekr.20041117151301.1:startupEncoding
-def startupEncoding ():
-
-    '''Compute the encoding used by g.computeStandardDirectories.'''
-
-    # import leo.core.leoGlobals as g
-    # import sys
-
-    # if sys.platform=="win32": # "mbcs" exists only on Windows.
-        # encoding = "mbcs"
-    # elif sys.platform=="dawwin":
-        # encoding = "utf-8"
-    # else:
-        # encoding = g.app.defaultEncoding
-
-    encoding = 'utf-8'
-
-    return encoding
-#@-node:ekr.20041117151301.1:startupEncoding
 #@-node:ekr.20050328133444:g.computeStandardDirectories & helpers
 #@-node:ekr.20050304072744:Compute directories... (leoGlobals)
 #@+node:ekr.20031218072017.1380:g.Directive utils...
@@ -3980,9 +3957,9 @@ def pr(*args,**keys):
         except Exception:
             if not g.pr_warning_given:
                 g.pr_warning_given = True
-                print('unexpected Exception in g.pr')
-                print('make sure your sitecustomize.py contains::')
-                print('    sys.setdefaultencoding("utf-8")')
+                # print('unexpected Exception in g.pr')
+                # print('make sure your sitecustomize.py contains::')
+                # print('    sys.setdefaultencoding("utf-8")')
                 g.es_exception()
                 g.trace(g.callers())
             s2 = s.encode('ascii',"replace")
@@ -4061,50 +4038,50 @@ def windows():
 # convert to an encoded string as needed, say when opening a file.
 #@-at
 #@+node:ekr.20031218072017.2146:os_path_abspath
-def os_path_abspath(path,encoding=None):
+def os_path_abspath(path):
 
     """Convert a path to an absolute path."""
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     path = os.path.abspath(path)
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     return path
 #@-node:ekr.20031218072017.2146:os_path_abspath
 #@+node:ekr.20031218072017.2147:os_path_basename
-def os_path_basename(path,encoding=None):
+def os_path_basename(path):
 
     """Return the second half of the pair returned by split(path)."""
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     path = os.path.basename(path)
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     return path
 #@-node:ekr.20031218072017.2147:os_path_basename
 #@+node:ekr.20031218072017.2148:os_path_dirname
-def os_path_dirname(path,encoding=None):
+def os_path_dirname(path):
 
     """Return the first half of the pair returned by split(path)."""
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     path = os.path.dirname(path)
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     return path
 #@-node:ekr.20031218072017.2148:os_path_dirname
 #@+node:ekr.20031218072017.2149:os_path_exists
-def os_path_exists(path,encoding=None):
+def os_path_exists(path):
 
     """Normalize the path and convert it to an absolute path."""
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     return os.path.exists(path)
 #@-node:ekr.20031218072017.2149:os_path_exists
@@ -4139,15 +4116,13 @@ def os_path_expandExpression (s,**keys):
     return s
 #@-node:ekr.20080922124033.6:os_path_expandExpression
 #@+node:ekr.20080921060401.13:os_path_expanduser
-def os_path_expanduser(path,encoding=None):
+def os_path_expanduser(path):
 
     """wrap os.path.expanduser"""
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     result = os.path.normpath(os.path.expanduser(path))
-
-    # g.trace('path',path,'expanduser', result)
 
     return result
 #@-node:ekr.20080921060401.13:os_path_expanduser
@@ -4159,65 +4134,66 @@ def os_path_finalize (path,**keys):
 
     There is no corresponding os.path method'''
 
-    c,encoding = keys.get('c'),keys.get('encoding')
+    c = keys.get('c')
 
     if c: path = g.os_path_expandExpression(path,**keys)
 
-    path = g.os_path_expanduser(path,encoding=encoding)
+    path = g.os_path_expanduser(path)
     return os.path.normpath(os.path.abspath(path))
 
 def os_path_finalize_join (*args,**keys):
 
     '''Do os.path.join(*args), then finalize the result.'''
 
-    c,encoding = keys.get('c'),keys.get('encoding')
+    c = keys.get('c')
 
-    if c: args = [g.os_path_expandExpression(path,**keys)
-        for path in args if path]
+    if c:
+        args = [g.os_path_expandExpression(path,**keys)
+            for path in args if path]
 
     return os.path.normpath(os.path.abspath(
         g.os_path_join(*args,**keys))) # Handles expanduser
 #@-node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2150:os_path_getmtime
-def os_path_getmtime(path,encoding=None):
+def os_path_getmtime(path):
 
     """Normalize the path and convert it to an absolute path."""
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     return os.path.getmtime(path)
 #@-node:ekr.20031218072017.2150:os_path_getmtime
 #@+node:ekr.20080729142651.2:os_path_getsize
-def os_path_getsize (path,encoding=None):
+def os_path_getsize (path):
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     return os.path.getsize(path)
 #@-node:ekr.20080729142651.2:os_path_getsize
 #@+node:ekr.20031218072017.2151:os_path_isabs
-def os_path_isabs(path,encoding=None):
+def os_path_isabs(path):
 
     """Normalize the path and convert it to an absolute path."""
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     return os.path.isabs(path)
 #@-node:ekr.20031218072017.2151:os_path_isabs
 #@+node:ekr.20031218072017.2152:os_path_isdir
-def os_path_isdir(path,encoding=None):
+def os_path_isdir(path):
 
     """Normalize the path and convert it to an absolute path."""
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     return os.path.isdir(path)
 #@-node:ekr.20031218072017.2152:os_path_isdir
 #@+node:ekr.20031218072017.2153:os_path_isfile
-def os_path_isfile(path,encoding=None):
+def os_path_isfile(path):
 
     """Normalize the path and convert it to an absolute path."""
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     return os.path.isfile(path)
 #@-node:ekr.20031218072017.2153:os_path_isfile
@@ -4225,9 +4201,8 @@ def os_path_isfile(path,encoding=None):
 def os_path_join(*args,**keys):
 
     c = keys.get('c')
-    encoding = keys.get('encoding')
 
-    uargs = [g.toUnicodeFileEncoding(arg,encoding) for arg in args]
+    uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
 
     # Note:  This is exactly the same convention as used by getBaseDirectory.
     if uargs and uargs[0] == '!!':
@@ -4238,73 +4213,73 @@ def os_path_join(*args,**keys):
             uargs[0] = c.openDirectory
             # g.trace(c.openDirectory)
 
-    uargs = [g.os_path_expanduser(z,encoding=encoding) for z in uargs if z]
+    uargs = [g.os_path_expanduser(z) for z in uargs if z]
 
     path = os.path.join(*uargs)
 
     # May not be needed on some Pythons.
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
     return path
 #@-node:ekr.20031218072017.2154:os_path_join
 #@+node:ekr.20031218072017.2156:os_path_normcase
-def os_path_normcase(path,encoding=None):
+def os_path_normcase(path):
 
     """Normalize the path's case."""
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     path = os.path.normcase(path)
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     return path
 #@-node:ekr.20031218072017.2156:os_path_normcase
 #@+node:ekr.20031218072017.2157:os_path_normpath
-def os_path_normpath(path,encoding=None):
+def os_path_normpath(path):
 
     """Normalize the path."""
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     path = os.path.normpath(path)
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     return path
 #@-node:ekr.20031218072017.2157:os_path_normpath
 #@+node:ekr.20080605064555.2:os_path_realpath
-def os_path_realpath(path,encoding=None):
+def os_path_realpath(path):
 
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     path = os.path.realpath(path)
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     return path
 #@-node:ekr.20080605064555.2:os_path_realpath
 #@+node:ekr.20031218072017.2158:os_path_split
-def os_path_split(path,encoding=None):
+def os_path_split(path):
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     head,tail = os.path.split(path)
 
-    head = g.toUnicodeFileEncoding(head,encoding)
-    tail = g.toUnicodeFileEncoding(tail,encoding)
+    head = g.toUnicodeFileEncoding(head)
+    tail = g.toUnicodeFileEncoding(tail)
 
     return head,tail
 #@-node:ekr.20031218072017.2158:os_path_split
 #@+node:ekr.20031218072017.2159:os_path_splitext
-def os_path_splitext(path,encoding=None):
+def os_path_splitext(path):
 
-    path = g.toUnicodeFileEncoding(path,encoding)
+    path = g.toUnicodeFileEncoding(path)
 
     head,tail = os.path.splitext(path)
 
-    head = g.toUnicodeFileEncoding(head,encoding)
-    tail = g.toUnicodeFileEncoding(tail,encoding)
+    head = g.toUnicodeFileEncoding(head)
+    tail = g.toUnicodeFileEncoding(tail)
 
     return head,tail
 #@-node:ekr.20031218072017.2159:os_path_splitext
@@ -4325,19 +4300,12 @@ def os_startfile(fname):
 #@nonl
 #@-node:ekr.20090829140232.6036:os_startfile
 #@+node:ekr.20031218072017.2160:toUnicodeFileEncoding
-def toUnicodeFileEncoding(path,encoding):
+def toUnicodeFileEncoding(path):
 
     if path: path = path.replace('\\', os.sep)
 
-    if not encoding:
-        if sys.platform == "win32" or sys.platform.lower().startswith('java'):
-            # encoding = "mbcs" # Leo 4.2 and previous.
-            encoding = 'utf-8' # New in Leo 4.3
-        else:
-            encoding = app.defaultEncoding
-
     # Yes, this is correct.  All os_path_x functions return Unicode strings.
-    return g.toUnicode(path,encoding)
+    return g.toUnicode(path)
 #@-node:ekr.20031218072017.2160:toUnicodeFileEncoding
 #@-node:ekr.20031218072017.2145:os.path wrappers (leoGlobals.py)
 #@+node:ekr.20031218072017.3151:Scanning... (leoGlobals.py)
@@ -5301,120 +5269,6 @@ if g.unitTesting:
 #@-node:ekr.20090517020744.5888:@test pre-definition of g in scripts
 #@-node:ekr.20040327103735.2:Script Tools (leoGlobals.py)
 #@+node:ekr.20031218072017.1498:Unicode utils...
-#@+node:ekr.20090517020744.5859: Unicode tests
-#@+node:ekr.20090517020744.5860:@test open non-existent non-ascii directory
-#@@first
-
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-    # file = u'Ỗ'
-    path = g.os_path_join('Ỗ','Ỗ')
-    # print(g.toEncodedString(file,'utf-8'))
-
-    ok,frame = g.openWithFileName(path,c)
-
-    assert not ok and not frame
-#@-node:ekr.20090517020744.5860:@test open non-existent non-ascii directory
-#@+node:ekr.20090517020744.5861:@test can't open message in g.openWithFileName
-#@@first
-
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-    old_c = c
-    filename = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
-    ok,frame = g.openWithFileName(filename,old_c)
-    assert(not ok)
-#@-node:ekr.20090517020744.5861:@test can't open message in g.openWithFileName
-#@+node:ekr.20090517020744.5862:@test atFile.printError
-#@@first
-
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-    at = c.atFileCommands
-    at.errors = 0
-    s = 'La Peña'
-    at.printError('test of at.printError:',s)
-#@-node:ekr.20090517020744.5862:@test atFile.printError
-#@+node:ekr.20090517020744.5863:@test % operator with unicode
-#@@first
-
-if g.unitTesting:
-
-    s = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
-
-    s2 = 'test: %s' % s
-#@-node:ekr.20090517020744.5863:@test % operator with unicode
-#@+node:ekr.20090517020744.5864:@test failure to convert unicode characters to ascii
-#@@first
-
-if g.unitTesting:
-
-    if not g.isPython3:
-        encoding = 'ascii'
-        s = '炰'
-        s2,ok = g.toUnicodeWithErrorCode(s,encoding)
-        assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
-#@-node:ekr.20090517020744.5864:@test failure to convert unicode characters to ascii
-#@+node:ekr.20090517020744.5865:@test of round-tripping toUnicode & toEncodedString
-#@@first
-
-if g.unitTesting:
-
-    if not g.isPython3:
-
-        for s,encoding in (
-            ('a',    'utf-8'),
-            ('a',    'ascii'),
-            ('äöü',  'utf-8'),
-            ('äöü',  'mbcs'),
-            ('炰',    'utf-8'),
-            ('炰',    'mbcs'),
-        ):
-            if g.isValidEncoding(encoding):
-                s2,ok = g.toUnicodeWithErrorCode(s,encoding)
-                assert ok, 'toUnicodeWithErrorCode fails for %s' %s
-                s3,ok = g.toEncodedStringWithErrorCode(s2,encoding)
-                assert ok, 'toEncodedStringWithErrorCode fails for %s' % s2
-                assert s3 == s, 'Round-trip one fails for %s' %s
-
-                s2 = g.toUnicode(s,encoding)
-                s3 = g.toEncodedString(s2,encoding)
-                assert s3 == s, 'Round-trip two fails for %s' %s
-#@-node:ekr.20090517020744.5865:@test of round-tripping toUnicode & toEncodedString
-#@+node:ekr.20090517020744.5867:@test round trip toUnicode toEncodedString
-#@@first
-
-if g.unitTesting:
-
-    if not g.isPython3:
-        table = [
-            ('a',    'utf-8'),
-            ('a',    'ascii'),
-            ('äöü',  'utf-8'),
-            ('äöü',  'mbcs'),
-            ('炰',   'utf-8'),
-        ]
-        import sys
-        if sys.platform.startswith('win'):
-            data = '炰','mbcs'
-            table.append(data)
-
-        for s,encoding in table:
-            if g.isValidEncoding(encoding):
-                s2,ok = g.toUnicodeWithErrorCode(s,encoding)
-                assert ok, 'toUnicodeWithErrorCode fails for %s' %s
-                s3,ok = g.toEncodedStringWithErrorCode(s2,encoding)
-                assert ok, 'toEncodedStringWithErrorCode fails for %s' % s2
-                assert s3 == s, 'Round-trip one failed for %s' %s
-
-                s2 = g.toUnicode(s,encoding)
-                s3 = g.toEncodedString(s2,encoding)
-                assert s3 == s, 'Round-trip two failed for %s' %s
-#@-node:ekr.20090517020744.5867:@test round trip toUnicode toEncodedString
-#@-node:ekr.20090517020744.5859: Unicode tests
 #@+node:ekr.20100125073206.8709:g.getPythonEncodingFromString
 def getPythonEncodingFromString(s):
 
@@ -5504,7 +5358,7 @@ def isWordChar1 (ch):
     return ch and (ch.isalpha() or ch == '_')
 #@nonl
 #@-node:ekr.20061006152327:g.isWordChar & g.isWordChar1
-#@+node:ekr.20031218072017.1501:g.reportBadChars & test
+#@+node:ekr.20031218072017.1501:g.reportBadChars
 def reportBadChars (s,encoding):
 
     if g.isPython3:
@@ -5553,28 +5407,12 @@ def reportBadChars (s,encoding):
                     encoding.encode('ascii','replace'))
                 if not g.unitTesting:
                     g.es(s2,color='red')
-#@+node:ekr.20090517020744.5882:@test g.reportBadChars
-#@@first
-
-if g.unitTesting:
-
-    for s,encoding in (
-        ('aĂbĂ',  'ascii'),
-        #(u'aĂbĂ', 'ascii'),
-        ('炰',    'ascii'),
-        #(u'炰',   'ascii'),
-
-        ('aĂbĂ',  'utf-8'),
-        #(u'aĂbĂ', 'utf-8'),
-        ('炰',    'utf-8'),
-        #(u'炰',   'utf-8'),
-    ):
-
-        g.reportBadChars(s,encoding)
-#@-node:ekr.20090517020744.5882:@test g.reportBadChars
-#@-node:ekr.20031218072017.1501:g.reportBadChars & test
+#@-node:ekr.20031218072017.1501:g.reportBadChars
 #@+node:ekr.20050208093800:g.toEncodedString
-def toEncodedString (s,encoding,reportErrors=False):
+def toEncodedString (s,encoding=None,reportErrors=False):
+
+    if encoding is None:
+        encoding = g.app.defaultEncoding
 
     if g.isUnicode(s):
         try:

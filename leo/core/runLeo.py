@@ -197,12 +197,14 @@ def completeFileName (fileName):
         return None,None
 
     # This does not depend on config settings.
-    try:
-        if sys.platform.lower().startswith('win'):
-            fileName = g.toUnicode(fileName,'mbcs')
-        else:
-            fileName = g.toUnicode(fileName,'utf-8')
-    except Exception: pass
+    # try:
+        # if sys.platform.lower().startswith('win'):
+            # fileName = g.toUnicode(fileName,'mbcs')
+        # else:
+            # fileName = g.toUnicode(fileName,'utf-8')
+    # except Exception: pass
+
+    fileName = g.toUnicode(fileName,'utf-8')
 
     relativeFileName = fileName
     fileName = g.os_path_finalize(fileName)

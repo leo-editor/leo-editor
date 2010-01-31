@@ -4605,6 +4605,13 @@ def stateHandler (self,event):
 #@-node:ekr.20050920084036.215:stateHandler
 #@-node:ekr.20051005151838:Helpers
 #@-node:ekr.20050920084036.207:queryReplaceCommandsClass (limited to single node)
+#@+node:ekr.20041117151301.1:startupEncoding (no longer used)
+def startupEncoding ():
+
+    '''Compute the encoding used by g.computeStandardDirectories.'''
+
+    return 'utf-8'
+#@-node:ekr.20041117151301.1:startupEncoding (no longer used)
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node
