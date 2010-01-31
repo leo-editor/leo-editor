@@ -240,6 +240,16 @@ def deletenodes_rclick(c,p, menu):
 
         c.endEditing()
         cull = []
+
+        # try and find the best node to select when this is done
+        nextviz = []
+        tmp = pl[0].copy().moveToVisBack(c)
+        if tmp:
+            nextviz.append(tmp.v)
+        tmp = pl[-1].copy().moveToVisNext(c)
+        if tmp:
+            nextviz.append(tmp.v)
+
         for nd in pl:
             cull.append((nd.v, nd.parent().v or None))
         u.beforeChangeGroup(current,undoType)
@@ -252,6 +262,16 @@ def deletenodes_rclick(c,p, menu):
                     c.setChanged(True)
                     break
         u.afterChangeGroup(current,undoType)
+
+        # move to a node that still exists
+        g.es(nextviz)
+        for v in nextviz:
+            pos = c.vnode2position(v)
+            if c.positionExists(pos):
+                c.selectPosition(pos)
+                break
+        else:
+            c.selectPosition(c.allNodes_iter().next())
 
         c.redraw()                        
 
