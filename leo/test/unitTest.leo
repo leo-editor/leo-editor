@@ -2646,7 +2646,6 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20100131180007.5459"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -23504,9 +23503,9 @@ underlines = d.get('underline_characters')
 assert underlines is None,'fail 1: %s' % repr(underlines)
 assert d == {},'fail 2: %s' % repr(d)
 # Now test the logic.
-assert rst.underlines2 == '#','fail 3: %s' % repr(rst.underlines2)
+assert rst.underlines2 == '','fail 3: %s' % repr(rst.underlines2)
 assert rst.underlines1 == '=+*^~"\'`-:&gt;&lt;_', 'fail4 %s' % repr(rst.underlines1)
-assert rst.atAutoWriteUnderlines == '#=+*^~"\'`-:&gt;&lt;_', 'fail 5: %s' % (
+assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:&gt;&lt;_', 'fail 5: %s' % (
     repr(rst.atAutoWriteUnderlines))
 </t>
 <t tx="ekr.20100131180007.5460">if g.unitTesting:

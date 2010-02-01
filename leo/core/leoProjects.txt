@@ -7998,6 +7998,58 @@ for v in vnodeInfoDict:
   be the encoding param to g.toUnicode, etc.
 #@nonl
 #@-node:ekr.20100131155919.6297:Eliminated g.app.defaultEncoding
+#@+node:ekr.20100131161507.6304:Fixed crasher in sort-siblings
+TypeError: unorderable types: vnode() < vnode()
+
+This only happened if two nodes had the same headline.
+
+The fix was to consider only headlines in lowerKey.
+#@+node:ekr.20050415134809.1:c.sortSiblings
+def sortSiblings (self,event=None,cmp=None,key=None,p=None,sortChildren=False):
+
+    '''Sort the siblings of a node.'''
+
+    c = self ; u = c.undoer
+    if p is None: p = c.p
+    if not p: return
+
+    c.endEditing()
+
+    undoType = g.choose(sortChildren,'Sort Children','Sort Siblings')
+    parent_v = p._parentVnode()
+    parent = p.parent()
+    oldChildren = parent_v.children[:]
+    newChildren = parent_v.children[:]
+
+    if key == None:
+        def lowerKey (self):
+            return (self.h.lower())
+        key = lowerKey
+
+    if cmp: newChildren.sort(cmp,key=key)
+    else:   newChildren.sort(key=key)
+
+    if oldChildren == newChildren:
+        return
+
+    # 2010/01/20. Fix bug 510148.
+    c.setChanged(True)
+
+    # g.trace(g.listToString(newChildren))
+
+    bunch = u.beforeSort(p,undoType,oldChildren,newChildren,sortChildren)
+    parent_v.children = newChildren
+    if parent:
+        dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
+    else:
+        dirtyVnodeList = []
+    u.afterSort(p,bunch,dirtyVnodeList)
+
+    # Sorting destroys position p, and possibly the root position.
+    p = c.setPositionAfterSort(sortChildren)
+    c.redraw(p)
+#@-node:ekr.20050415134809.1:c.sortSiblings
+#@-node:ekr.20100131161507.6304:Fixed crasher in sort-siblings
 #@-node:ekr.20100129131524.6188:Leo 4.7 b3 projects
 #@+node:ekr.20100130164410.6332:Recent
 #@+node:ekr.20100129131524.6190:improve caching

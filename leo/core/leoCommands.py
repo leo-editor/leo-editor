@@ -3865,6 +3865,28 @@ class baseCommands (object):
     #@-node:ekr.20031218072017.1765:c.validateOutline
     #@-node:ekr.20031218072017.1759:Insert, Delete & Clone (Commands)
     #@+node:ekr.20080425060424.1:Sort...
+    #@+node:ekr.20080503055349.1:c.setPositionAfterSort
+    def setPositionAfterSort (self,sortChildren):
+
+        c = self
+        p = c.p
+        p_v = p.v
+        parent = p.parent()
+        parent_v = p._parentVnode()
+
+        if sortChildren:
+            p = parent or c.rootPosition()
+        else:
+            if parent:
+                p = parent.firstChild()
+            else:
+                p = leoNodes.position(parent_v.children[0])
+            while p and p.v != p_v:
+                p.moveToNext()
+            p = p or parent
+
+        return p
+    #@-node:ekr.20080503055349.1:c.setPositionAfterSort
     #@+node:ekr.20050415134809:c.sortChildren
     def sortChildren (self,event=None,cmp=None,key=None):
 
@@ -3894,7 +3916,7 @@ class baseCommands (object):
 
         if key == None:
             def lowerKey (self):
-                return (self.h.lower()) # , self)
+                return (self.h.lower())
             key = lowerKey
 
         if cmp: newChildren.sort(cmp,key=key)
@@ -3920,28 +3942,6 @@ class baseCommands (object):
         p = c.setPositionAfterSort(sortChildren)
         c.redraw(p)
     #@-node:ekr.20050415134809.1:c.sortSiblings
-    #@+node:ekr.20080503055349.1:c.setPositionAfterSort
-    def setPositionAfterSort (self,sortChildren):
-
-        c = self
-        p = c.p
-        p_v = p.v
-        parent = p.parent()
-        parent_v = p._parentVnode()
-
-        if sortChildren:
-            p = parent or c.rootPosition()
-        else:
-            if parent:
-                p = parent.firstChild()
-            else:
-                p = leoNodes.position(parent_v.children[0])
-            while p and p.v != p_v:
-                p.moveToNext()
-            p = p or parent
-
-        return p
-    #@-node:ekr.20080503055349.1:c.setPositionAfterSort
     #@-node:ekr.20080425060424.1:Sort...
     #@-node:ekr.20031218072017.2895: Top Level... (Commands)
     #@+node:ekr.20040711135959.2:Check Outline submenu...
