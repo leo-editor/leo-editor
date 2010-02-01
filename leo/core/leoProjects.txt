@@ -7839,6 +7839,91 @@ def positionExists(self,p,root=None):
 #@-node:ekr.20100131094008.6288:Fixed crasher in p.positionExists
 #@+node:ekr.20100131094008.6290:Fix crasher in scrolledMessage.py
 #@-node:ekr.20100131094008.6290:Fix crasher in scrolledMessage.py
+#@+node:ekr.20100131060335.6119:Fixed problem with colon following @path
+@nocolor-node
+
+The problem arises because an @path directive ended with ':':
+
+    @path: aPath
+
+What I did:
+
+- g.get_directives_dict now carefully checks for non-whitespace following a directive.
+- The qt colorizer does the same.
+- Added unit test to check for this.
+#@+node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
+# The caller passes [root_node] or None as the second arg.
+# This allows us to distinguish between None and [None].
+
+g_noweb_root = re.compile('<'+'<'+'*'+'>'+'>'+'=',re.MULTILINE)
+
+def get_directives_dict(p,root=None):
+
+    """Scan p for @directives found in globalDirectiveList.
+
+    Returns a dict containing pointers to the start of each directive"""
+
+    trace = False and not g.unitTesting
+    verbose = False
+    if trace: g.trace('*'*20,p.h)
+
+    if root: root_node = root[0]
+    d = {}
+
+    # Do this every time so plugins can add directives.
+    pat = g.compute_directives_re()
+    directives_pat = re.compile(pat,re.MULTILINE)
+
+    # The headline has higher precedence because it is more visible.
+    for kind,s in (('body',p.h),('head',p.b)):
+        anIter = directives_pat.finditer(s)
+        for m in anIter:
+            word = m.group(0)[1:] # Omit the @
+            i = m.start(0)
+            if word.strip() not in d:
+                j = i + 1 + len(word)
+                k = g.skip_line(s,j)
+                val = s[j:k].strip()
+                if j < len(s) and s[j] not in (' ','\t','\n'):
+                    # g.es_print('invalid character after directive',s[max(0,i-1):k-1],color='red')
+                    # if trace:g.trace(word,repr(val),s[i:i+20])
+                    pass # Not a valid directive: just ignore it.
+                else:
+                    d[word.strip()] = val
+                    if trace: g.trace(word.strip(),repr(val))
+
+    if root:
+        anIter = g_noweb_root.finditer(p.b)
+        for m in anIter:
+            if root_node:
+                d["root"]=0 # value not immportant
+            else:
+                g.es('%s= requires @root in the headline' % (
+                    g.angleBrackets('*')))
+            break
+
+    if trace and verbose: g.trace('%4d' % (len(p.h) + len(p.b)),g.callers(5))
+    return d
+#@+node:ekr.20090214075058.10:compute_directives_re
+def compute_directives_re ():
+
+    '''Return an re pattern which will match all Leo directives.'''
+
+    global globalDirectiveList
+
+    aList = ['^@%s' % z for z in globalDirectiveList
+                if z != 'others']
+
+    if 0: # 2010/02/01
+        # The code never this, and this regex is broken
+        # because it can confuse g.get_directives_dict.
+        # @others can have leading whitespace.
+        aList.append(r'^\s@others\s')
+
+    return '|'.join(aList)
+#@-node:ekr.20090214075058.10:compute_directives_re
+#@-node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
+#@-node:ekr.20100131060335.6119:Fixed problem with colon following @path
 #@-node:ekr.20100201062307.5876:Bugs
 #@+node:ekr.20100201062307.5877:Code cleanup
 #@+node:ekr.20100128124511.6236:Eliminate most imports from leo/extensions

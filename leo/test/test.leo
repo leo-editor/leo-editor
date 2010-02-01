@@ -470,7 +470,7 @@
 </v>
 <v t="ekr.20100127111425.2062"><vh>search script (do not delete)</vh></v>
 <v t="ekr.20100201071917.2055" a="E"><vh>Victors test</vh>
-<v t="ekr.20100201071917.2056"><vh>@rst LE-2010-01-31.html</vh>
+<v t="ekr.20100201071917.2056" a="E"><vh>@rst LE-2010-01-31.html</vh>
 <v t="ekr.20100201071917.2058"><vh>@rst-preformat</vh></v>
 </v>
 </v>

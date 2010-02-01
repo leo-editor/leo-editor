@@ -53,7 +53,7 @@ keyboard I get:
 present in the qt plugin (both with and without scintilla)
 #@-node:ekr.20081124094918.1:Fix problems with scim
 #@-node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090717095154.3729:Leo 4.7 devel projects
+#@+node:ekr.20090717095154.3729:Leo 4.7 b2
 #@+node:ekr.20100119112903.3701:Update qttabs when saving a new file
 #@-node:ekr.20100119112903.3701:Update qttabs when saving a new file
 #@+node:ekr.20100121082850.3696:Fixed unicode bug
@@ -187,7 +187,54 @@ def toUnicode (self,s):
         return g.toUnicode(s,reportErrors='replace')
 #@-node:ekr.20081121105001.502:toUnicode (qtGui)
 #@-node:ekr.20100121082850.3696:Fixed unicode bug
-#@-node:ekr.20090717095154.3729:Leo 4.7 devel projects
+#@-node:ekr.20090717095154.3729:Leo 4.7 b2
+#@+node:ekr.20100201113707.3728:Leo 4.7 b3 projects
+#@+node:ekr.20100201113707.3727:Made sure Leo keywords end with whitespace
+#@+node:ekr.20090614134853.3724:match_leo_keywords
+def match_leo_keywords(self,s,i):
+
+    '''Succeed if s[i:] is a Leo keyword.'''
+
+    # g.trace(i,g.get_line(s,i))
+
+    self.totalLeoKeywordsCalls += 1
+
+    if s[i] != '@':
+        return 0
+
+    # fail if something besides whitespace precedes the word on the line.
+    i2 = i-1
+    while i2 >= 0:
+        ch = s[i2]
+        if ch == '\n':
+            break
+        elif ch in (' ','\t'):
+            i2 -= 1
+        else:
+            return 0
+
+    # Get the word as quickly as possible.
+    j = i+1
+    while j < len(s) and s[j] in self.word_chars:
+        j += 1
+    word = s[i+1:j] # Bug fix: 10/17/07: entries in leoKeywordsDict do not start with '@'
+
+    if j < len(s) and s[j] not in (' ','\t','\n'):
+        return -(j-i+1) # Fail.
+
+    if self.leoKeywordsDict.get(word):
+        kind = 'leoKeyword'
+        self.colorRangeWithTag(s,i,j,kind)
+        self.prev = (i,j,kind)
+        result = j-i+1 # Bug fix: skip the last character.
+        self.trace_match(kind,s,i,j)
+        # g.trace('*** match',repr(s))
+        return result
+    else:
+        return -(j-i+1) # An important optimization.
+#@-node:ekr.20090614134853.3724:match_leo_keywords
+#@-node:ekr.20100201113707.3727:Made sure Leo keywords end with whitespace
+#@-node:ekr.20100201113707.3728:Leo 4.7 b3 projects
 #@-all
 #@nonl
 #@-node:ekr.20081121105001.147:@thin qtNotes.txt

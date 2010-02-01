@@ -9244,6 +9244,9 @@ class jEditColorizer:
             j += 1
         word = s[i+1:j] # Bug fix: 10/17/07: entries in leoKeywordsDict do not start with '@'
 
+        if j < len(s) and s[j] not in (' ','\t','\n'):
+            return -(j-i+1) # Fail.
+
         if self.leoKeywordsDict.get(word):
             kind = 'leoKeyword'
             self.colorRangeWithTag(s,i,j,kind)

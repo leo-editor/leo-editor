@@ -502,11 +502,13 @@ def get_directives_dict(p,root=None):
                 j = i + 1 + len(word)
                 k = g.skip_line(s,j)
                 val = s[j:k].strip()
-                # if j < len(s) and s[j] not in (' ','\t','\n'):
+                if j < len(s) and s[j] not in (' ','\t','\n'):
                     # g.es_print('invalid character after directive',s[max(0,i-1):k-1],color='red')
                     # if trace:g.trace(word,repr(val),s[i:i+20])
-                d[word.strip()] = val
-                if trace: g.trace(word.strip(),repr(val))
+                    pass # Not a valid directive: just ignore it.
+                else:
+                    d[word.strip()] = val
+                    if trace: g.trace(word.strip(),repr(val))
 
     if root:
         anIter = g_noweb_root.finditer(p.b)
@@ -527,8 +529,7 @@ def compute_directives_re ():
 
     global globalDirectiveList
 
-    # 2010/02/01: require whitespace after all directives!
-    aList = [r'^@%s\s' % z for z in globalDirectiveList
+    aList = ['^@%s' % z for z in globalDirectiveList
                 if z != 'others']
 
     if 0: # 2010/02/01
