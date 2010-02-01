@@ -8050,6 +8050,92 @@ def sortSiblings (self,event=None,cmp=None,key=None,p=None,sortChildren=False):
     c.redraw(p)
 #@-node:ekr.20050415134809.1:c.sortSiblings
 #@-node:ekr.20100131161507.6304:Fixed crasher in sort-siblings
+#@+node:ekr.20100131094008.6288:Fixed crasher in p.positionExists
+#@+node:ekr.20100131094008.6289:report
+@nocolor-node
+
+Public bug reported:
+
+rev. 2819
+
+Create an outline consisting *only* of three top level nodes called '1',
+'2', '3', in that order (i.e. delete/rename @chapters etc.)
+
+In the body of node '3', paste:
+
+try:
+   p = g.findNodeAnywhere(c,'1')
+   assert p.h == '1'
+   g.es(p)
+   v = p.copy().moveToVisNext(c).v
+   assert v.h == '2'
+   p.doDelete()
+   c.selectPosition(c.vnode2position(v))
+finally:
+   c.redraw()
+
+
+The try/finally is necessary because the bug otherwise prevents redraw which allows selection of a deleted node which leads to weirdness.
+
+Run the script, get "IndexError: list index out of range" out of range
+error.
+
+This comes from the line
+
+rootchildren = root.v.parents[0].children
+
+in LeoPyRef.leo-->Code-->Core classes-->@thin leoCommands.py-->class
+commands-->Getters & Setters-->Getters-->c.positionExists
+#@-node:ekr.20100131094008.6289:report
+#@+node:ekr.20080416161551.212:p._parentVnode
+def _parentVnode (self):
+
+    '''Return the parent vnode.
+    Return the hiddenRootNode if there is no other parent.'''
+
+    p = self
+
+    if p.v:
+        data = p.stack and p.stack[-1]
+        if data:
+            v, junk = data
+            return v
+        else:
+            return p.v.context.hiddenRootNode
+    else:
+        return None
+#@-node:ekr.20080416161551.212:p._parentVnode
+#@+node:ekr.20040307104131.3:c.positionExists
+def positionExists(self,p,root=None):
+
+    """Return True if a position exists in c's tree"""
+
+    c = self ; p = p.copy()
+
+    # This code must be fast.
+    if not root:
+        root = c.rootPosition()
+
+    while p:
+        if p == root:
+            return True
+        if p.hasParent():
+            old_v = p.v
+            i = p._childIndex
+            p.moveToParent()
+            children = p.v.children
+            # Major bug fix: 2009/1/2 and 2009/1/5
+            if i < 0 or i >= len(children) or children[i] != old_v:
+                return False
+        else:
+            # A top-level position, check from hidden root vnode.
+            i = p._childIndex
+            children = c.hiddenRootNode.children
+            return 0 <= i < len(children) and children[i] == p.v
+
+    return False
+#@-node:ekr.20040307104131.3:c.positionExists
+#@-node:ekr.20100131094008.6288:Fixed crasher in p.positionExists
 #@-node:ekr.20100129131524.6188:Leo 4.7 b3 projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt

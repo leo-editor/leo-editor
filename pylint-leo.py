@@ -25,6 +25,7 @@ core_table = (
 
 plugins_table = (
     ('qtGui.py','W0221'),
+    ('tkGui.py','W0221'),
     ('mod_scripting.py','E0611'),
         # Harmless: E0611:489:scriptingController.runDebugScriptCommand:
         # No name 'leoScriptModule' in module 'leo.core'

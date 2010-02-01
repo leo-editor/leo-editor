@@ -417,7 +417,7 @@ class Library(object):
     #@+node:ekr.20050328092641.22:add
     def add (self,name,data):
 
-        data = g.toEncodedString(data,"utf-8",reportErrors=True)
+        data = g.toEncodedString(data,reportErrors=True)
         data = zlib.compress(data,9)
         self.db [name] = data
         self.db.sync()

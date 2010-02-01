@@ -283,7 +283,7 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
 
                 g.trace("%10s: %s" % (
                     self.name,
-                    repr(g.toEncodedString(self.val,"utf-8"))
+                    repr(g.toEncodedString(self.val))
                 ))
     #@nonl
     #@-node:ekr.20041021123018.12:trace

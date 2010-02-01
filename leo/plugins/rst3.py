@@ -1144,7 +1144,7 @@ class rstClass:
     #@+node:ekr.20050809074827:write methods
     #@+node:ekr.20050809082854: Top-level write code
     #@+node:ekr.20050809075309:initWrite
-    def initWrite (self,p,encoding=None):
+    def initWrite (self,p):
 
         self.initOptionsFromSettings() # Still needed.
 
@@ -1152,7 +1152,7 @@ class rstClass:
         # This can be overridden by @rst-option encoding=whatever.
         c = self.c
         d = c.scanAllDirectives(p)
-        self.encoding = encoding or d.get('encoding') or self.defaultEncoding
+        self.encoding = d.get('encoding') or self.defaultEncoding
         self.path = d.get('path') or ''
 
         # g.trace('path:',self.path)
@@ -1243,7 +1243,8 @@ class rstClass:
                 self.silverCityWarningGiven = True
                 g.es('SilverCity not present so no syntax highlighting')
 
-        self.initWrite(p,encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
+        self.initWrite(p)
+            # was ,encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
         self.outputFile = StringIO()
         self.writeTree(p)
         self.source = self.outputFile.getvalue()
