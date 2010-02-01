@@ -264,7 +264,6 @@ def deletenodes_rclick(c,p, menu):
         u.afterChangeGroup(current,undoType)
 
         # move to a node that still exists
-        g.es(nextviz)
         for v in nextviz:
             pos = c.vnode2position(v)
             if c.positionExists(pos):
