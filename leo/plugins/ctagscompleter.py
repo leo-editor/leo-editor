@@ -182,7 +182,7 @@ def ctags_lookup(prefix):
 def mkins(completer, body):
 
     def insertCompletion(completion):
-        cmpl = unicode(completion).split(None,1)[0]
+        cmpl = g.u(completion).split(None,1)[0]
 
         tc = body.textCursor()
         extra = len(cmpl) - completer.completionPrefix().length()

@@ -944,8 +944,10 @@ class ToolbarIconButton(Tk.Button, object):
 
         kws = {}
         for k in sendkeys:
-            if isinstance(k, unicode):
-                k = k.encode()
+            # if isinstance(k,unicode):
+                # k = k.encode()
+            if g.isUnicode(k):
+                k = g.toEncodedString(k)
             kws[k] = keys[k]
 
         return kws

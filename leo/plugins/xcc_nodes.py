@@ -2526,7 +2526,7 @@ class ProcessClass:
                 s=self.File.read(1)	
                 while s:
                     self.Lock.acquire()			
-                    self.Buffer = self.Buffer + unicode(s,Encoding)
+                    self.Buffer = self.Buffer + g.ue(s,Encoding)
                     self.Lock.release()
                     s=self.File.read(1)
 

@@ -309,19 +309,13 @@ class notetextedit(QTextEdit):
 
         cursor.setCharFormat(char_format)
 
-        #The below also works but seems a little more kludgy
-        #text = unicode(cursor.selectedText()) # need unicode for if below
-        #text = '<code>{0}</code>'.format(text)
-        #cursor.removeSelectedText() #cursor.deleteChar()
-        #cursor.insertHtml(text) # also self.insertHtml should work
-
     #@-node:ekr.20100103100944.5405:toggleCode
     #@+node:ekr.20100103100944.5406:create_anchor
     def create_anchor(self):
         cursor = self.textCursor()
         if not cursor.hasSelection():
             return
-        text = unicode(cursor.selectedText()) # need unicode for if below
+        text = g.u(cursor.selectedText()) # need unicode for if below
 
         if text.startswith('http://'):
             text = '<a href="{0}">{1}</a> '.format(text, text[7:])
@@ -543,12 +537,12 @@ class notetextedit(QTextEdit):
     def mouseReleaseEvent(self, event):
         #print("mouseReleaseEvent")
         pos = event.pos()
-        url = unicode(self.anchorAt(pos))
+        url = g.u(self.anchorAt(pos))
 
         if url:            
             if not url.startswith('http://'): #linux seems to need this
                 url = 'http://{0}'.format(url)
-            webbrowser.open(unicode(x), new=2, autoraise=True)
+            webbrowser.open(g.u(x), new=2, autoraise=True)
         else:
             QTextEdit.mouseReleaseEvent(self, event)
 
@@ -558,7 +552,7 @@ class notetextedit(QTextEdit):
         # not sure really necessary since it actually appears to paste URLs correctly
         # I am stripping the http
         print("Paste")
-        text = unicode(source.text())
+        text = g.u(source.text())
         if len(text.split())==1 and (text.startswith('http://') or 'www' in text or '.com' in text or '.html' in text):
             if text.startswith('http://'):
                 text = '<a href="{0}">{1}</a> '.format(text, text[7:])
@@ -582,7 +576,7 @@ class notetextedit(QTextEdit):
             #elif block.textList():
                 #textList = block.textList()
                 #print block.textList().count()
-                #print unicode(block.textList().itemText(block))
+                #print g.u(block.textList().itemText(block))
                 #print block.textList().itemNumber(block)
                 #print block.textList().item(block.textList().itemNumber(block)).text()
                 #doc += textList.itemText(block) + ' ' + textList.item(textList.itemNumber(block)).text() + '\n\n'
@@ -595,7 +589,7 @@ class notetextedit(QTextEdit):
                     fragment = iterator.fragment()
                     if fragment.isValid():
                         char_format = fragment.charFormat()
-                        text = unicode(Qt.escape(fragment.text())) # turns chars like < into entities &lt;
+                        text = g.u(Qt.escape(fragment.text())) # turns chars like < into entities &lt;
                         font_size = char_format.font().pointSize()
                         # a fragment can only be an anchor, italics or bold
                         if char_format.isAnchor():

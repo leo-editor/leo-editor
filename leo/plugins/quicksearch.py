@@ -166,7 +166,7 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         self.c = c                  
 
     def returnPressed(self):
-        t = unicode(self.ui.lineEdit.text())
+        t = g.u(self.ui.lineEdit.text())
         if not t.strip():
             return
 
