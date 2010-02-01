@@ -389,8 +389,6 @@ Lewis
 The top-level folder is empty.  It just needs to be deleted.
 #@nonl
 #@-node:ekr.20100131094008.6291:Fix installer problem
-#@+node:ekr.20100131193028.5873:Is the unit test file being closed properly?
-#@-node:ekr.20100131193028.5873:Is the unit test file being closed properly?
 #@-node:ekr.20100131161507.6301:Before b3
 #@+node:ekr.20100126110826.6253:Before rc1
 #@+node:ekr.20100131161507.6303:Unit tests that all commands have docstrings

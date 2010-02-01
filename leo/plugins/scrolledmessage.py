@@ -448,20 +448,20 @@ class ScrolledMessageDialog(object):
     #@+node:leohag.20081203143921.10:findChkControls
     def findChkControls(self):
         s = 'leo_chk_'; ls = len(s)
-        for k, v in self.ui.__dict__.iteritems():
+        for k, v in self.ui.__dict__.items():
             if k.startswith(s):
                 self.controls[k[ls:]] = v
 
     #@-node:leohag.20081203143921.10:findChkControls
     #@+node:leohag.20081203143921.11:setFlagsFromControls
     def setFlagsFromControls(self):
-        for flag, control in self.controls.iteritems():
+        for flag, control in self.controls.items():
             self.controlFlags[flag] = bool(control.isChecked())
 
     #@-node:leohag.20081203143921.11:setFlagsFromControls
     #@+node:leohag.20081203143921.12:setControlsFromFlags
     def setControlsFromFlags(self):
-        for flag, value in self.controlFlags.iteritems():
+        for flag, value in self.controlFlags.items():
             self.controls[flag].setChecked(bool(value))
 
     #@-node:leohag.20081203143921.12:setControlsFromFlags
@@ -542,7 +542,7 @@ class ScrolledMessageDialog(object):
         for k in list(kw.keys()):
             setattr(self, k, kw[k])
 
-        if not isinstance(self.msg, basestring):
+        if not g.isString(self.msg):
             self.msg = '<h2 style="color:red" >Illegal! Message must be string.</h2>'
             self.flags = 'html'
 
@@ -650,7 +650,7 @@ class ScrolledMessageController(object):
     #@+node:leohag.20081203143921.26:scrolledMessageHandler
     def scrolledMessageHandler(self, tag, keywords):   
 
-        for k, v in self.kwDefaults.iteritems():
+        for k, v in self.kwDefaults.items():
             if k not in keywords:
                 keywords[k] = v 
 
