@@ -7107,15 +7107,13 @@ class baseCommands (object):
                 p.moveToParent()
                 children = p.v.children
                 # Major bug fix: 2009/1/2 and 2009/1/5
-                if i >= len(children) or children[i] != old_v:
+                if i < 0 or i >= len(children) or children[i] != old_v:
                     return False
             else:
-                # root position, check from hidden root vnode
+                # A top-level position, check from hidden root vnode.
                 i = p._childIndex
-                rootchildren = root.v.parents[0].children
-                if i >= len(rootchildren) or rootchildren[i] != p.v:
-                    return False
-                return True
+                children = c.hiddenRootNode.children
+                return 0 <= i < len(children) and children[i] == p.v
 
         return False
     #@-node:ekr.20040307104131.3:c.positionExists
@@ -7872,6 +7870,16 @@ class configSettings:
         return g.app.config.getString(self.c,setting)
     #@-node:ekr.20041118053731:Getters (c.configSettings)
     #@+node:ekr.20041118195812:Setters... (c.configSettings)
+    #@+node:ekr.20041118195812.2:set & setString (c.configSettings)
+    # This *is* used at present: search for config.set.
+    # It could be removed later, perhaps.
+
+    def set (self,p,setting,val):
+
+        return g.app.config.setString(self.c,setting,val)
+
+    setString = set
+    #@-node:ekr.20041118195812.2:set & setString (c.configSettings)
     #@+node:ekr.20041118195812.3:setRecentFiles (c.configSettings)
     def setRecentFiles (self,files):
 
@@ -7880,15 +7888,6 @@ class configSettings:
         # Append the files to the global list.
         g.app.config.appendToRecentFiles(files)
     #@-node:ekr.20041118195812.3:setRecentFiles (c.configSettings)
-    #@+node:ekr.20041118195812.2:set & setString
-    def set (self,p,setting,val):
-
-        g.trace('?' * 20,setting,val)
-
-        return g.app.config.setString(self.c,setting,val)
-
-    setString = set
-    #@-node:ekr.20041118195812.2:set & setString
     #@-node:ekr.20041118195812:Setters... (c.configSettings)
     #@-others
 #@-node:ekr.20041118104831.1:class configSettings (leoCommands)

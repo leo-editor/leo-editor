@@ -991,7 +991,11 @@ class parserBaseClass:
 
         """Init the setting for name to val."""
 
+        trace = False and not g.unitTesting
+        if trace: g.trace(kind,name,val)
+
         c = self.c ; key = self.munge(name)
+
         # if kind and kind.startswith('setting'): g.trace("settingsParser %10s %15s %s" %(kind,val,name))
         d = self.settingsDict
         bunch = d.get(key)

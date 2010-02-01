@@ -1976,7 +1976,9 @@ class baseScannerClass (scanUtility):
                 if i < n: line = repr(lines[i])
                 else: line = '<eof>'
                 aList.append('%4d %s' % (i,line))
-        g.es_print('\n'.join(aList),color='blue')
+
+        if not g.unitTesting:
+            g.es_print('\n'.join(aList),color='blue')
 
         return False
     #@-node:ekr.20070911110507:reportMismatch

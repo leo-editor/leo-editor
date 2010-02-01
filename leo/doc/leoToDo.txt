@@ -10,7 +10,2477 @@
 - Refactoring: rope, etc.
 - Flexitble file format.
 #@nonl
+#@+node:ekr.20100131161507.6301:Before b3
+#@+node:ekr.20100131060335.6119:Check g.makeAllNonExistentDirectories
+#@+node:ekr.20100131060335.6120:Victor's traceback
+#@-node:ekr.20100131060335.6120:Victor's traceback
+#@+node:ekr.20090502071837.64:writeSpecialTree
+def writeSpecialTree (self,p,toString,justOneFile):
+
+    c = self.c
+    isHtml = self.ext in ('.html','.htm')
+    if isHtml and not SilverCity:
+        if not self.silverCityWarningGiven:
+            self.silverCityWarningGiven = True
+            g.es('SilverCity not present so no syntax highlighting')
+
+    self.initWrite(p)
+        # was encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
+    self.outputFile = StringIO()
+    self.writeTree(p)
+    self.source = self.outputFile.getvalue()
+    self.outputFile = None
+
+    if not toString:
+        # Compute this here for use by intermediate file.
+        self.outputFileName = self.computeOutputFileName(self.outputFileName)
+
+        # Create the directory if it doesn't exist.
+        theDir, junk = g.os_path_split(self.outputFileName)
+        theDir = c.os_path_finalize(theDir)
+        if not g.os_path_exists(theDir):
+            ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
+            if not ok:
+                g.es_print('did not create:',theDir,color='red')
+                return False
+
+        # if not os.access(theDir,os.F_OK):
+            # os.mkdir(theDir)
+
+        if self.getOption('write_intermediate_file'):
+            name = self.outputFileName + '.txt'
+            f = open(name,'w')
+            f.write(self.source)
+            f.close()
+            self.report(name)
+
+    try:
+        output = self.writeToDocutils(self.source)
+        ok = output is not None
+    except Exception:
+        g.pr('Exception in docutils')
+        g.es_exception()
+        ok = False
+
+    if ok:
+        if isHtml:
+            import re
+            idxTitle = output.find('<title></title>')
+            if idxTitle > -1:
+                m = re.search('<h1>([^<]*)</h1>', output)
+                if not m:
+                    m = re.search('<h1><[^>]+>([^<]*)</a></h1>', output)
+                if m:
+                    output = output.replace(
+                        '<title></title>',
+                        '<title>%s</title>' % m.group(1)
+                    )
+
+
+        if toString:
+            self.stringOutput = output
+        else:
+            # Write the file to the directory containing the .leo file.
+            f = open(self.outputFileName,'w')
+            f.write(output)
+            f.close()
+            self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
+
+    return ok
+#@-node:ekr.20090502071837.64:writeSpecialTree
+#@+node:ekr.20090502071837.89:computeOutputFileName
+def computeOutputFileName (self,fileName):
+
+    openDirectory = self.c.frame.openDirectory
+    default_path = self.getOption('default_path')
+
+    if default_path:
+        path = g.os_path_finalize_join(self.path,default_path,fileName)
+    elif self.path:
+        path = g.os_path_finalize_join(self.path,fileName)
+    elif openDirectory:
+        path = g.os_path_finalize_join(self.path,openDirectory,fileName)
+    else:
+        path = g.os_path_finalize_join(fileName)
+
+    # g.trace('openDirectory %s\ndefault_path %s\npath %s' % (
+        # repr(openDirectory),repr(default_path),repr(path)))
+
+    return path
+#@nonl
+#@-node:ekr.20090502071837.89:computeOutputFileName
+#@+node:ekr.20090502071837.65:writeToDocutils (sets argv) & helper
+def writeToDocutils (self,s):
+
+    '''Send s to docutils using the writer implied by self.ext and return the result.'''
+
+    trace = False and not g.unitTesting
+
+    if not docutils:
+        g.es('docutils not present',color='red')
+        return
+
+    openDirectory = self.c.frame.openDirectory
+    overrides = {'output_encoding': self.encoding }
+
+    # Compute the args list if the stylesheet path does not exist.
+    styleSheetArgsDict = self.handleMissingStyleSheetArgs()
+
+    for ext,writer in (
+        ('.html','html'),
+        ('.htm','html'),
+        ('.tex','latex'),
+        ('.pdf','leo_pdf'),
+    ):
+        if self.ext == ext:
+            break
+    else:
+        g.es_print('unknown docutils extension: %s' % (self.ext),color='red')
+        return ''
+
+    # Make the stylesheet path relative to the directory containing the output file.
+    rel_stylesheet_path = self.getOption('stylesheet_path') or ''
+
+    # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
+    stylesheet_path = g.os_path_finalize_join(
+        self.c.frame.openDirectory,rel_stylesheet_path)
+
+    path = g.os_path_finalize_join(
+        stylesheet_path,self.getOption('stylesheet_name'))
+
+    res = ""
+    if self.getOption('stylesheet_embed') == False:
+        rel_path = g.os_path_join(
+            rel_stylesheet_path,self.getOption('stylesheet_name'))
+        rel_path = rel_path.replace('\\','/') # 2010/01/28
+        overrides['stylesheet'] = rel_path
+        overrides['stylesheet_path'] = None
+        overrides['embed_stylesheet'] = None
+    elif g.os_path_exists(path):
+        if self.ext != '.pdf':
+            overrides['stylesheet'] = path
+            overrides['stylesheet_path'] = None
+    elif styleSheetArgsDict:
+        g.es_print('using publish_argv_for_missing_stylesheets',
+            styleSheetArgsDict)
+        overrides.update(styleSheetArgsDict)
+            # MWC add args to settings
+    elif rel_stylesheet_path == stylesheet_path:
+        g.es_print('stylesheet not found: %s' % (path),color='red')
+    else:
+        g.es_print('stylesheet not found\n',path,color='red')
+        if self.path:g.es_print('@path:', self.path)
+        g.es_print('open path:',self.c.frame.openDirectory)
+        if rel_stylesheet_path:
+            g.es_print('relative path:', rel_stylesheet_path)
+    try:
+        # All paths now come through here.
+        if trace: g.trace('overrides',overrides)
+        result = None # Ensure that result is defined.
+        result = docutils.core.publish_string(source=s,
+                reader_name='standalone',
+                parser_name='restructuredtext',
+                writer_name=writer,
+                settings_overrides=overrides)
+    except docutils.ApplicationError as error:
+        # g.es_print('Docutils error (%s):' % (
+            # error.__class__.__name__),color='red')
+        g.es_print('Docutils error:',color='red')
+        g.es_print(error,color='blue')
+    except Exception:
+        g.es_print('Unexpected docutils exception')
+        g.es_exception()
+    return result
+#@+node:ekr.20090502071837.66:handleMissingStyleSheetArgs
+def handleMissingStyleSheetArgs (self,s=None):
+
+    '''Parse the publish_argv_for_missing_stylesheets option,
+    returning a dict containing the parsed args.'''
+
+    force = False
+    if force:
+        # See http://docutils.sourceforge.net/docs/user/config.html#documentclass
+        return {'documentclass':'report', 'documentoptions':'english,12pt,lettersize'}
+
+    if not s:
+        s = self.getOption('publish_argv_for_missing_stylesheets')
+    if not s: return {}
+
+    # Handle argument lists such as this:
+    # --language=en,--documentclass=report,--documentoptions=[english,12pt,lettersize]
+    d = {}
+    while s:
+        s = s.strip()
+        if not s.startswith('--'): break
+        s = s[2:].strip()
+        eq = s.find('=')
+        cm = s.find(',')
+        if eq == -1 or (-1 < cm < eq): # key[nl] or key,
+            val = ''
+            cm = s.find(',')
+            if cm == -1:
+                key = s.strip()
+                s = ''
+            else:
+                key = s[:cm].strip()
+                s = s[cm+1:].strip()
+        else: # key = val
+            key = s[:eq].strip()
+            s = s[eq+1:].strip()
+            if s.startswith('['): # [...]
+                rb = s.find(']')
+                if rb == -1: break # Bad argument.
+                val = s[:rb+1]
+                s = s[rb+1:].strip()
+                if s.startswith(','):
+                    s = s[1:].strip()
+            else: # val[nl] or val,
+                cm = s.find(',')
+                if cm == -1:
+                    val = s
+                    s = ''
+                else:
+                    val = s[:cm].strip()
+                    s = s[cm+1:].strip()
+
+        # g.trace('key',repr(key),'val',repr(val),'s',repr(s))
+        if not key: break
+        if not val.strip(): val = '1'
+        d[str(key)] = str(val)
+
+    return d
+#@nonl
+#@-node:ekr.20090502071837.66:handleMissingStyleSheetArgs
+#@-node:ekr.20090502071837.65:writeToDocutils (sets argv) & helper
+#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+# This is a generalization of os.makedir.
+
+def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
+
+    """Attempt to make all non-existent directories"""
+
+    trace = False and not g.unitTesting
+
+    if force:
+        create = True # Bug fix: g.app.config will not exist during startup.
+    elif c:
+        create = c.config and c.config.create_nonexistent_directories
+    else:
+        create = (g.app and g.app.config and
+            g.app.config.create_nonexistent_directories)
+
+    if trace: g.trace('c exists: %s force: %s create: %s dir: %s' % (
+        c is not None,force,create,theDir))
+
+    if not force and not create:
+        return None
+
+    if c: theDir = g.os_path_expandExpression(theDir,c=c)
+
+    dir1 = theDir = g.os_path_normpath(theDir)
+
+    # Split theDir into all its component parts.
+    paths = []
+    while len(theDir) > 0:
+        head,tail=g.os_path_split(theDir)
+        if len(tail) == 0:
+            paths.append(head)
+            break
+        else:
+            paths.append(tail)
+            theDir = head
+    path = ""
+    paths.reverse()
+    for s in paths:
+        path = g.os_path_join(path,s)
+        if not g.os_path_exists(path):
+            try:
+                os.mkdir(path)
+                if verbose and not g.app.unitTesting:
+                    # g.trace('***callers***',g.callers(5))
+                    g.es_print("created directory:",path,color='red')
+            except Exception:
+                # g.trace(g.callers())
+                if verbose: g.es_print("exception creating directory:",path,color='red')
+                g.es_exception()
+                return None
+    return dir1 # All have been created.
+#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+#@+node:ekr.20080922124033.6:os_path_expandExpression
+def os_path_expandExpression (s,**keys):
+
+    '''Expand {{anExpression}} in c's context.'''
+
+    c = keys.get('c')
+    if not c:
+        g.trace('can not happen: no c',g.callers())
+        return s
+
+    if not s: return ''
+
+    i = s.find('{{')
+    j = s.find('}}')
+    if -1 < i < j:
+        exp = s[i+2:j].strip()
+        if exp:
+            try:
+                import os
+                import sys
+                p = c.p
+                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
+                val = eval(exp,d)
+                s = s[:i] + str(val) + s[j+2:]
+            except Exception:
+                g.trace(g.callers())
+                g.es_exception(full=True, c=c, color='red')
+
+    return s
+#@-node:ekr.20080922124033.6:os_path_expandExpression
+#@-node:ekr.20100131060335.6119:Check g.makeAllNonExistentDirectories
+#@+node:ekr.20100131094008.6290:Fix crasher in scrolledMessageHandler
+@nocolor-node
+
+Public bug reported:
+
+Edward,
+
+I have just created myLeoSettings.leo file as per quickstart.leo.
+Now when I launch leo I receive new error messages.
+here is the log running branch 2818:
+
+Leo Log Window
+Leo 4.7 b2, build 2790, January 29, 2010
+Python 3.1.1, qt version 4.6.0
+Windows 6, 0, 6002, 2, Service Pack 2
+leoID=lewis (in C:\Users\Neal\.leo)
+load dir: C:\Python31\Lib\site-packages\leo-editor\leo\core
+global config dir: C:\Python31\Lib\site-packages\leo-editor\leo\config
+home dir: C:\Users\Neal
+reading settings in C:\Python31\Lib\site-packages\leo-editor\leo\config\leoSettings.leo
+using menus from: leoSettings.leo
+reading settings in C:\Users\Neal\.leo\myLeoSettings.leo
+default encoding utf-8
+opening default_leo_file: C:\Users\Neal\.leo\workbook.leo
+@enabled-plugins found in myLeoSettings.leo
+Can not load c:\aspell\bin\aspell-15.dll
+reading: C:\Users\Neal\.leo\workbook.leo
+scrolledmessage plugin loaded.
+Traceback (most recent call last):
+ File "C:\Python31\Lib\site-packages\leo-editor\leo\core\leoGlobals.py", line 3650, in doHook
+   return f(tag,keywords)
+ File "C:\Python31\Lib\site-packages\leo-editor\leo\core\leoPlugins.py", line 298, in doPlugins
+   return doHandlersForTag(tag,keywords)
+ File "C:\Python31\Lib\site-packages\leo-editor\leo\core\leoPlugins.py", line 274, in doHandlersForTag
+   val = callTagHandler(bunch,tag,keywords)
+ File "C:\Python31\Lib\site-packages\leo-editor\leo\core\leoPlugins.py", line 253, in callTagHandler
+   result = handler(tag,keywords)
+ File "C:\Python31\Lib\site-packages\leo-editor\leo\plugins\scrolledmessage.py", line 134, in scrolledMessageHandler
+   return controllers[c].scrolledMessageHandler(tag, keywords)
+ File "C:\Python31\Lib\site-packages\leo-editor\leo\plugins\scrolledmessage.py", line 653, in scrolledMessageHandler
+   for k, v in self.kwDefaults.iteritems():
+AttributeError: 'dict' object has no attribute 'iteritems'
+The handler for the "scrolledMessage" hook appears to be missing or not working.
+runMainLoop,add_command_callback,add_commandCallback,masterMenuCallback,masterMenuHandler,masterCommand,doCommand,about
+
+Regards
+Lewis
+#@-node:ekr.20100131094008.6290:Fix crasher in scrolledMessageHandler
+#@+node:ekr.20100131094008.6291:Fix installer problem
+The top-level folder is empty.  It just needs to be deleted.
+#@nonl
+#@-node:ekr.20100131094008.6291:Fix installer problem
+#@+node:ekr.20100131193028.5873:Is the unit test file being closed properly?
+#@-node:ekr.20100131193028.5873:Is the unit test file being closed properly?
+#@-node:ekr.20100131161507.6301:Before b3
 #@+node:ekr.20100126110826.6253:Before rc1
+#@+node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
+#@-node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
+#@+node:ekr.20100130042842.9009:Usage of g.app.config ivars
+#@+node:ekr.20100131161507.6302:Replace all of these by config.get methods
+c.config.default_at_auto_file_encoding
+c.config.default_derived_file_encoding
+#@nonl
+#@-node:ekr.20100131161507.6302:Replace all of these by config.get methods
+#@+node:ekr.20100130042842.9010:at_root_bodies_start_in_doc_mode
+@nocolor-node
+
+at_root_bodies_start_in_doc_mode
+
+c.scanAtRootDirectives
+    should use c.config.getBool instead of the weird code.
+
+g.scanAtRootOptions
+    Why doesn't this use c.config ivars??
+    Actually, this should be tangle.scanAtRootOptions.  We know c!
+
+leoImport.convertVnodeToWeb:
+    Uses c.config.at_root_bodies_start_in_doc_mode
+#@nonl
+#@+node:ekr.20080828103146.12:c.scanAtRootDirectives
+# Called only by scanColorDirectives.
+
+def scanAtRootDirectives(self,aList):
+
+    '''Scan aList for @root-code and @root-doc directives.'''
+
+    c = self
+
+    # To keep pylint happy.
+    tag = 'at_root_bodies_start_in_doc_mode'
+    start_in_doc = hasattr(c.config,tag) and getattr(c.config,tag)
+
+    # New in Leo 4.6: dashes are valid in directive names.
+    for d in aList:
+        if 'root-code' in d:
+            return 'code'
+        elif 'root-doc' in d:
+            return 'doc'
+        elif 'root' in d:
+            return g.choose(start_in_doc,'doc','code')
+
+    return None
+#@-node:ekr.20080828103146.12:c.scanAtRootDirectives
+#@+node:ekr.20031218072017.3154:g.scanAtRootOptions
+def scanAtRootOptions (s,i,err_flag=False):
+
+    # The @root has been eaten when called from tangle.scanAllDirectives.
+    if g.match(s,i,"@root"):
+        i += len("@root")
+        i = g.skip_ws(s,i)
+
+    mode = None 
+    while g.match(s,i,'-'):
+        << scan another @root option >>
+
+    if mode == None:
+        doc = app.config.at_root_bodies_start_in_doc_mode
+        mode = g.choose(doc,"doc","code")
+
+    return i,mode
+#@+node:ekr.20031218072017.3155:<< scan another @root option >>
+i += 1 ; err = -1
+
+if g.match_word(s,i,"code"): # Just match the prefix.
+    if not mode: mode = "code"
+    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
+elif g.match(s,i,"doc"): # Just match the prefix.
+    if not mode: mode = "doc"
+    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
+else:
+    err = i-1
+
+# Scan to the next minus sign.
+while i < len(s) and s[i] not in (' ','\t','-'):
+    i += 1
+
+if err > -1 and err_flag:
+    z_opt = s[err:i]
+    z_line = g.get_line(s,i)
+    g.es("unknown option:",z_opt,"in",z_line)
+#@-node:ekr.20031218072017.3155:<< scan another @root option >>
+#@-node:ekr.20031218072017.3154:g.scanAtRootOptions
+#@-node:ekr.20100130042842.9010:at_root_bodies_start_in_doc_mode
+#@-node:ekr.20100130042842.9009:Usage of g.app.config ivars
+#@+node:ekr.20100130164410.6332:Recent
+#@+node:ekr.20100129131524.6190:improve caching
+@nocolor-node
+
+- Cache expansion states.
+- Use common key for globals??
+#@nonl
+#@+node:ekr.20060919110638.14:parse_leo_file
+def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
+
+    c = self.c
+    try:
+        if g.isPython3:
+            if theFile:
+                # Use the open binary file, opened by g.openLeoOrZipFile.
+                s = theFile.read() # type(s) is bytes.
+                s = self.cleanSaxInputString(s)
+                theFile = BytesIO(s)
+            else:
+                s = str(s,encoding='utf-8')
+                s = self.cleanSaxInputString(s)
+                theFile = StringIO(s)
+        else:
+            if theFile: s = theFile.read()
+            s = self.cleanSaxInputString(s)
+            theFile = cStringIO.StringIO(s)
+        parser = xml.sax.make_parser()
+        parser.setFeature(xml.sax.handler.feature_external_ges,1)
+            # Include external general entities, esp. xml-stylesheet lines.
+        if 0: # Expat does not read external features.
+            parser.setFeature(xml.sax.handler.feature_external_pes,1)
+                # Include all external parameter entities
+                # Hopefully the parser can figure out the encoding from the <?xml> element.
+        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
+        parser.setContentHandler(handler)
+        parser.parse(theFile) # expat does not support parseString
+        # g.trace('parsing done')
+        sax_node = handler.getRootNode()
+    except xml.sax.SAXParseException:
+        g.es_print('error parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+    except Exception:
+        g.es_print('unexpected exception parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+
+    return sax_node
+#@-node:ekr.20060919110638.14:parse_leo_file
+#@+node:ekr.20100129133806.6242:Calls to _contentHashFile
+#@+node:ekr.20100129133806.6243:Reading
+#@+node:ekr.20100122130101.6176:at.readFromCache
+def readFromCache (self,fileName,force,root):
+
+    at = self ; c = at.c
+    s,e = g.readFileIntoString(fileName,raw=True)
+    if s is None: return False,None
+
+    cachefile = self._contentHashFile(root.h,s)
+
+    # 2010/01/22: uncache *any* file provided 'force' is False.
+    doCache = g.enableDB and not force
+    ok = doCache and cachefile in c.db
+    if ok:
+        # Delete the previous tree, regardless of the @<file> type.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+        # Recreate the file from the cache.
+        aList = c.db[cachefile]
+        root.v.createOutlineFromCacheList(c,aList)
+        at.inputFile.close()
+        root.clearDirty()
+
+    return ok,cachefile
+#@-node:ekr.20100122130101.6176:at.readFromCache
+#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    s,e = g.readFileIntoString(fileName,raw=True)
+    if s is None:
+        cachefile = None
+    else:
+        cachefile = self._contentHashFile(p.h,s)
+
+    # Remember that we have read this file.
+    p.v.at_read = True # Create the attribute
+
+    # Disable caching for test.leo.
+    if c.shortFileName() != 'test.leo':
+        if cachefile is not None and cachefile in c.db:        
+            # g.es('uncache:',p.h)
+            aList = c.db[cachefile]
+            p.v.createOutlineFromCacheList(c,aList)
+            return
+
+    if not g.unitTesting:
+        g.es("reading:",p.h)
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        # Note: the file contains an @ignore,
+        # so no unintended write can happen.
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        p.clearDirty()
+        c.setChanged(oldChanged)
+    else:
+        self.writeCachedTree(p, cachefile)
+        g.doHook('after-auto', p = p)  # call after-auto callbacks
+#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+#@+node:ekr.20060919110638.36:getPositionAttributes
+def getPositionAttributes (self,attrs):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    if trace: g.trace(len(list(c.db.keys())),c.mFileName,self.fileName)
+
+    d = {}
+
+    if g.enableDB and c.db and c.mFileName:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        data = c.db.get('window_position_%s' % (key))
+        if data:
+            top,left,height,width = data
+            top,left,height,width = int(top),int(left),int(height),int(width)
+            d = {'top':top,'left':left,'height':height,'width':width}
+
+    if not d and c.fixed and c.fixedWindowPosition:
+        width,height,left,top = c.fixedWindowPosition
+        d = {'top':top,'left':left,'width':width,'height':height}
+
+    if not d:
+        for bunch in self.attrsToList(attrs):
+            name = bunch.name ; val = bunch.val
+            if name in ('top','left','width','height'):
+                try:
+                    d[name] = int(val)
+                except ValueError:
+                    d[name] = 100 # A reasonable default.
+            else:
+                g.trace(name,len(val))
+
+    # if trace: g.trace(d)
+    return d
+#@-node:ekr.20060919110638.36:getPositionAttributes
+#@+node:ekr.20060919110638.13:setPositionsFromVnodes & helper
+def setPositionsFromVnodes (self):
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = c.rootPosition()
+    current,str_pos = None,None
+    use_db = g.enableDB and c.db and c.mFileName
+
+    if use_db:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        str_pos = c.db.get('current_position_%s' % key)
+        if trace: g.trace('from c.db',str_pos,key)
+
+    if not str_pos:
+        d = hasattr(p.v,'unknownAttributes') and p.v.unknownAttributes
+        if d: str_pos = d.get('str_leo_pos')
+        if trace: g.trace('from p.v.u',str_pos)
+
+    if str_pos:
+        current = self.archivedPositionToPosition(str_pos)
+
+    c.setCurrentPosition(current or c.rootPosition())
+#@+node:ekr.20061006104837.1:archivedPositionToPosition
+def archivedPositionToPosition (self,s):
+
+    c = self.c
+    aList = s.split(',')
+    try:
+        aList = [int(z) for z in aList]
+    except Exception:
+        # g.trace('oops: bad archived position. not an int:',aList,c)
+        aList = None
+    if not aList: return None
+    p = c.rootPosition() ; level = 0
+    while level < len(aList):
+        i = aList[level]
+        while i > 0:
+            if p.hasNext():
+                p.moveToNext()
+                i -= 1
+            else:
+                # g.trace('oops: bad archived position. no sibling:',aList,p.h,c)
+                return None
+        level += 1
+        if level < len(aList):
+            p.moveToFirstChild()
+            # g.trace('level',level,'index',aList[level],p.h)
+    return p
+#@nonl
+#@-node:ekr.20061006104837.1:archivedPositionToPosition
+#@-node:ekr.20060919110638.13:setPositionsFromVnodes & helper
+#@+node:ekr.20060919110638.37:startGlobals
+def startGlobals (self,attrs):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    if self.inClipboard:
+        return
+
+    c.frame.ratio,c.frame.secondary_ratio = 0.5,0.5 # Set defaults.
+
+    if trace: g.trace(len(list(c.db.keys())),c.mFileName)
+
+    if g.enableDB and c.db and c.mFileName:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        c.frame.ratio = float(c.db.get(
+            'body_outline_ratio_%s' % (key),'0.5'))
+        c.frame.secondary_ratio = float(c.db.get(
+            'body_secondary_ratio_%s' % (key),'0.5'))
+        if trace: g.trace('key',key,
+            '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
+    else:
+        try:
+            for bunch in self.attrsToList(attrs):
+                name = bunch.name ; val = bunch.val
+                if name == 'body_outline_ratio':
+                    c.frame.ratio = float(val) # 2010/01/11
+                elif name == 'body_secondary_ratio':
+                    c.frame.secondary_ratio = float(val) # 2010/01/11
+            if trace: g.trace('** no c.db:','%1.2f %1.2f' % (
+                c.frame.ratio,c.frame.secondary_ratio))
+        except Exception:
+            pass
+#@-node:ekr.20060919110638.37:startGlobals
+#@-node:ekr.20100129133806.6243:Reading
+#@+node:ekr.20100129133806.6244:Writing
+#@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >> putVnode
+# These string catenations are benign because they rarely happen.
+attr = ""
+# New in Leo 4.5: support fixed .leo files.
+if not c.fixed:
+    if v.isExpanded() and v.hasChildren(): attr += "E"
+    if v.isMarked():   attr += "M"
+    if v.isOrphan():   attr += "O"
+    if attr:
+        attrs.append(' a="%s"' % attr)
+
+# Put the archived *current* position in the *root* positions <v> element.
+if p == self.rootPosition:
+    aList = [str(z) for z in self.currentPosition.archivedPosition()]
+    d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
+    str_pos = ','.join(aList)
+    # 2010/01/26: don't write the current position if we can cache it.
+    use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
+    if use_db:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        c.db['current_position_%s' % key] = str_pos
+        if d.get('str_leo_pos'): del d['str_leo_pos']
+        # g.trace('to c.db',str_pos,key)
+    elif c.fixed:
+        if d.get('str_leo_pos'): del d['str_leo_pos']
+    else:
+        d['str_leo_pos'] = str_pos
+    # g.trace(aList,d)
+    v.unknownAttributes = d
+elif hasattr(v,"unknownAttributes"):
+    d = v.unknownAttributes
+    if d and not c.fixed and d.get('str_leo_pos'):
+        # g.trace("clearing str_leo_pos",v)
+        del d['str_leo_pos']
+        v.unknownAttributes = d
+#@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >> putVnode
+#@+node:ekr.20031218072017.3037:putGlobals
+# Changed for Leo 4.0.
+
+def putGlobals (self):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
+
+    if use_db:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        if trace: g.trace(len(list(c.db.keys())),c.mFileName,key)
+        << put all data to c.db >>
+
+    # Always put positions, to trigger sax methods.
+    self.put("<globals")
+    << put the body/outline ratios >>
+    self.put(">") ; self.put_nl()
+    << put the position of this frame >>
+    << put the position of the log window >>
+    self.put("</globals>") ; self.put_nl()
+#@+node:ekr.20100112095623.6267:<< put all data to c.db >>
+c.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
+c.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
+
+if trace: g.trace('ratios: %1.2f %1.2f' % (
+    c.frame.ratio,c.frame.secondary_ratio))
+
+width,height,left,top = c.frame.get_window_info()
+
+c.db['window_position_%s' % key] = (
+    str(top),str(left),str(height),str(width))
+
+if trace: g.trace('top',top,'left',left,'height',height,'width',width)
+#@-node:ekr.20100112095623.6267:<< put all data to c.db >>
+#@+node:ekr.20031218072017.3038:<< put the body/outline ratios >>
+self.put(" body_outline_ratio=")
+self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
+    c.frame.ratio)))
+
+self.put(" body_secondary_ratio=")
+self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
+    c.frame.secondary_ratio)))
+
+if trace: g.trace('fixed or use_db',c.fixed or use_db,
+    '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
+#@-node:ekr.20031218072017.3038:<< put the body/outline ratios >>
+#@+node:ekr.20031218072017.3039:<< put the position of this frame >>
+# New in Leo 4.5: support fixed .leo files.
+
+if c.fixed or use_db:
+    width,height,left,top = 700,500,50,50
+        # Put fixed, immutable, reasonable defaults.
+        # Leo 4.5 and later will ignore these when reading.
+        # These should be reasonable defaults so that the
+        # file will be opened properly by older versions
+        # of Leo that do not support fixed .leo files.
+else:
+    width,height,left,top = c.frame.get_window_info()
+
+# g.trace(width,height,left,top)
+
+self.put_tab()
+self.put("<global_window_position")
+self.put(" top=") ; self.put_in_dquotes(str(top))
+self.put(" left=") ; self.put_in_dquotes(str(left))
+self.put(" height=") ; self.put_in_dquotes(str(height))
+self.put(" width=") ; self.put_in_dquotes(str(width))
+self.put("/>") ; self.put_nl()
+#@-node:ekr.20031218072017.3039:<< put the position of this frame >>
+#@+node:ekr.20031218072017.3040:<< put the position of the log window >>
+top = left = height = width = 0 # no longer used
+
+self.put_tab()
+self.put("<global_log_window_position")
+self.put(" top=") ; self.put_in_dquotes(str(top))
+self.put(" left=") ; self.put_in_dquotes(str(left))
+self.put(" height=") ; self.put_in_dquotes(str(height))
+self.put(" width=") ; self.put_in_dquotes(str(width))
+self.put("/>") ; self.put_nl()
+#@-node:ekr.20031218072017.3040:<< put the position of the log window >>
+#@-node:ekr.20031218072017.3037:putGlobals
+#@-node:ekr.20100129133806.6244:Writing
+#@-node:ekr.20100129133806.6242:Calls to _contentHashFile
+#@-node:ekr.20100129131524.6190:improve caching
+#@+node:ekr.20100129133806.6245:Found: c.db
+#@+node:ekr.20100122130101.6176:at.readFromCache
+def readFromCache (self,fileName,force,root):
+
+    at = self ; c = at.c
+    s,e = g.readFileIntoString(fileName,raw=True)
+    if s is None: return False,None
+
+    cachefile = self._contentHashFile(root.h,s)
+
+    # 2010/01/22: uncache *any* file provided 'force' is False.
+    doCache = g.enableDB and not force
+    ok = doCache and cachefile in c.db
+    if ok:
+        # Delete the previous tree, regardless of the @<file> type.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+        # Recreate the file from the cache.
+        aList = c.db[cachefile]
+        root.v.createOutlineFromCacheList(c,aList)
+        at.inputFile.close()
+        root.clearDirty()
+
+    return ok,cachefile
+#@-node:ekr.20100122130101.6176:at.readFromCache
+#@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >> putVnode
+# These string catenations are benign because they rarely happen.
+attr = ""
+# New in Leo 4.5: support fixed .leo files.
+if not c.fixed:
+    if v.isExpanded() and v.hasChildren(): attr += "E"
+    if v.isMarked():   attr += "M"
+    if v.isOrphan():   attr += "O"
+    if attr:
+        attrs.append(' a="%s"' % attr)
+
+# Put the archived *current* position in the *root* positions <v> element.
+if p == self.rootPosition:
+    aList = [str(z) for z in self.currentPosition.archivedPosition()]
+    d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
+    str_pos = ','.join(aList)
+    # 2010/01/26: don't write the current position if we can cache it.
+    use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
+    if use_db:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        c.db['current_position_%s' % key] = str_pos
+        if d.get('str_leo_pos'): del d['str_leo_pos']
+        # g.trace('to c.db',str_pos,key)
+    elif c.fixed:
+        if d.get('str_leo_pos'): del d['str_leo_pos']
+    else:
+        d['str_leo_pos'] = str_pos
+    # g.trace(aList,d)
+    v.unknownAttributes = d
+elif hasattr(v,"unknownAttributes"):
+    d = v.unknownAttributes
+    if d and not c.fixed and d.get('str_leo_pos'):
+        # g.trace("clearing str_leo_pos",v)
+        del d['str_leo_pos']
+        v.unknownAttributes = d
+#@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >> putVnode
+#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    s,e = g.readFileIntoString(fileName,raw=True)
+    if s is None:
+        cachefile = None
+    else:
+        cachefile = self._contentHashFile(p.h,s)
+
+    # Remember that we have read this file.
+    p.v.at_read = True # Create the attribute
+
+    # Disable caching for test.leo.
+    if c.shortFileName() != 'test.leo':
+        if cachefile is not None and cachefile in c.db:        
+            # g.es('uncache:',p.h)
+            aList = c.db[cachefile]
+            p.v.createOutlineFromCacheList(c,aList)
+            return
+
+    if not g.unitTesting:
+        g.es("reading:",p.h)
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        # Note: the file contains an @ignore,
+        # so no unintended write can happen.
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        p.clearDirty()
+        c.setChanged(oldChanged)
+    else:
+        self.writeCachedTree(p, cachefile)
+        g.doHook('after-auto', p = p)  # call after-auto callbacks
+#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+#@+node:ekr.20060919110638.13:setPositionsFromVnodes & helper
+def setPositionsFromVnodes (self):
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = c.rootPosition()
+    current,str_pos = None,None
+    use_db = g.enableDB and c.db and c.mFileName
+
+    if use_db:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        str_pos = c.db.get('current_position_%s' % key)
+        if trace: g.trace('from c.db',str_pos,key)
+
+    if not str_pos:
+        d = hasattr(p.v,'unknownAttributes') and p.v.unknownAttributes
+        if d: str_pos = d.get('str_leo_pos')
+        if trace: g.trace('from p.v.u',str_pos)
+
+    if str_pos:
+        current = self.archivedPositionToPosition(str_pos)
+
+    c.setCurrentPosition(current or c.rootPosition())
+#@+node:ekr.20061006104837.1:archivedPositionToPosition
+def archivedPositionToPosition (self,s):
+
+    c = self.c
+    aList = s.split(',')
+    try:
+        aList = [int(z) for z in aList]
+    except Exception:
+        # g.trace('oops: bad archived position. not an int:',aList,c)
+        aList = None
+    if not aList: return None
+    p = c.rootPosition() ; level = 0
+    while level < len(aList):
+        i = aList[level]
+        while i > 0:
+            if p.hasNext():
+                p.moveToNext()
+                i -= 1
+            else:
+                # g.trace('oops: bad archived position. no sibling:',aList,p.h,c)
+                return None
+        level += 1
+        if level < len(aList):
+            p.moveToFirstChild()
+            # g.trace('level',level,'index',aList[level],p.h)
+    return p
+#@nonl
+#@-node:ekr.20061006104837.1:archivedPositionToPosition
+#@-node:ekr.20060919110638.13:setPositionsFromVnodes & helper
+#@+node:ekr.20031218072017.3037:putGlobals
+# Changed for Leo 4.0.
+
+def putGlobals (self):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
+
+    if use_db:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        if trace: g.trace(len(list(c.db.keys())),c.mFileName,key)
+        << put all data to c.db >>
+
+    # Always put positions, to trigger sax methods.
+    self.put("<globals")
+    << put the body/outline ratios >>
+    self.put(">") ; self.put_nl()
+    << put the position of this frame >>
+    << put the position of the log window >>
+    self.put("</globals>") ; self.put_nl()
+#@+node:ekr.20100112095623.6267:<< put all data to c.db >>
+c.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
+c.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
+
+if trace: g.trace('ratios: %1.2f %1.2f' % (
+    c.frame.ratio,c.frame.secondary_ratio))
+
+width,height,left,top = c.frame.get_window_info()
+
+c.db['window_position_%s' % key] = (
+    str(top),str(left),str(height),str(width))
+
+if trace: g.trace('top',top,'left',left,'height',height,'width',width)
+#@-node:ekr.20100112095623.6267:<< put all data to c.db >>
+#@+node:ekr.20031218072017.3038:<< put the body/outline ratios >>
+self.put(" body_outline_ratio=")
+self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
+    c.frame.ratio)))
+
+self.put(" body_secondary_ratio=")
+self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
+    c.frame.secondary_ratio)))
+
+if trace: g.trace('fixed or use_db',c.fixed or use_db,
+    '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
+#@-node:ekr.20031218072017.3038:<< put the body/outline ratios >>
+#@+node:ekr.20031218072017.3039:<< put the position of this frame >>
+# New in Leo 4.5: support fixed .leo files.
+
+if c.fixed or use_db:
+    width,height,left,top = 700,500,50,50
+        # Put fixed, immutable, reasonable defaults.
+        # Leo 4.5 and later will ignore these when reading.
+        # These should be reasonable defaults so that the
+        # file will be opened properly by older versions
+        # of Leo that do not support fixed .leo files.
+else:
+    width,height,left,top = c.frame.get_window_info()
+
+# g.trace(width,height,left,top)
+
+self.put_tab()
+self.put("<global_window_position")
+self.put(" top=") ; self.put_in_dquotes(str(top))
+self.put(" left=") ; self.put_in_dquotes(str(left))
+self.put(" height=") ; self.put_in_dquotes(str(height))
+self.put(" width=") ; self.put_in_dquotes(str(width))
+self.put("/>") ; self.put_nl()
+#@-node:ekr.20031218072017.3039:<< put the position of this frame >>
+#@+node:ekr.20031218072017.3040:<< put the position of the log window >>
+top = left = height = width = 0 # no longer used
+
+self.put_tab()
+self.put("<global_log_window_position")
+self.put(" top=") ; self.put_in_dquotes(str(top))
+self.put(" left=") ; self.put_in_dquotes(str(left))
+self.put(" height=") ; self.put_in_dquotes(str(height))
+self.put(" width=") ; self.put_in_dquotes(str(width))
+self.put("/>") ; self.put_nl()
+#@-node:ekr.20031218072017.3040:<< put the position of the log window >>
+#@-node:ekr.20031218072017.3037:putGlobals
+#@+node:ekr.20100112095623.6267:<< put all data to c.db >>
+c.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
+c.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
+
+if trace: g.trace('ratios: %1.2f %1.2f' % (
+    c.frame.ratio,c.frame.secondary_ratio))
+
+width,height,left,top = c.frame.get_window_info()
+
+c.db['window_position_%s' % key] = (
+    str(top),str(left),str(height),str(width))
+
+if trace: g.trace('top',top,'left',left,'height',height,'width',width)
+#@-node:ekr.20100112095623.6267:<< put all data to c.db >>
+#@+node:ekr.20051104075904.4:doTests...
+def doTests(c,all=None,p=None,verbosity=1):
+
+    trace = False
+    if all:
+        p = c.rootPosition()
+    elif not p:
+        p = c.p
+    p1 = p.copy()
+
+    try:
+        found = False ; verbose = True
+        g.unitTesting = g.app.unitTesting = True
+        g.app.unitTestDict["fail"] = False
+        g.app.unitTestDict['c'] = c
+        g.app.unitTestDict['g'] = g
+        g.app.unitTestDict['p'] = p and p.copy()
+
+        # c.undoer.clearUndoState() # New in 4.3.1.
+        changed = c.isChanged()
+        suite = unittest.makeSuite(unittest.TestCase)
+
+        # New in Leo 4.4.8: ignore everything in @ignore trees.
+        if all: last = None
+        else:   last = p.nodeAfterTree()
+        if trace: g.trace('all',all,'root',p.h)
+        while p and p != last:
+            if g.match_word(p.h,0,'@ignore'):
+                if trace: g.trace('ignoring',p.h)
+                p.moveToNodeAfterTree()
+            elif isTestNode(p): # @test
+                if trace: g.trace('adding',p.h)
+                test = makeTestCase(c,p)
+                if test:
+                    suite.addTest(test) ; found = True
+                p.moveToThreadNext()
+            elif isSuiteNode(p): # @suite
+                if trace: g.trace('adding',p.h)
+                test = makeTestSuite(c,p)
+                if test:
+                    suite.addTest(test) ; found = True
+                p.moveToThreadNext()
+            else:
+                if trace and verbose: g.trace('skipping',p.h)
+                p.moveToThreadNext()
+
+        # Verbosity: 1: print just dots.
+        if found:
+            res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
+            # put info to db as well
+            if g.enableDB:
+                key = 'unittest/cur/fail'
+                archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
+                c.db[key] = archive
+        else:
+            g.es_print('no @test or @suite nodes in %s outline' % (
+                g.choose(all,'entire','selected')),color='red')
+    finally:
+        c.setChanged(changed) # Restore changed state.
+        if g.app.unitTestDict.get('restoreSelectedNode',True):
+            c.redraw(p1)
+        g.unitTesting = g.app.unitTesting = False
+#@+node:ekr.20051104075904.5:class generalTestCase
+class generalTestCase(unittest.TestCase):
+
+    """Create a unit test from a snippet of code."""
+
+    @others
+#@+node:ekr.20051104075904.6:__init__
+def __init__ (self,c,p):
+
+     # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.p = p.copy()
+#@-node:ekr.20051104075904.6:__init__
+#@+node:ekr.20051104075904.7: fail
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    import leo.core.leoGlobals as g
+
+    g.app.unitTestDict["fail"] = g.callers()
+#@-node:ekr.20051104075904.7: fail
+#@+node:ekr.20051104075904.9:tearDown
+def tearDown (self):
+
+    pass
+
+    # Restore the outline.
+    self.c.outerUpdate()
+#@nonl
+#@-node:ekr.20051104075904.9:tearDown
+#@+node:ekr.20051104075904.8:setUp
+def setUp (self):
+
+    c = self.c ; p = self.p
+
+    c.selectPosition(p)
+#@-node:ekr.20051104075904.8:setUp
+#@+node:ekr.20051104075904.10:runTest
+def runTest (self,define_g = True):
+
+    c = self.c ; p = self.p.copy()
+    script = g.getScript(c,p).strip()
+    # print ('p',p,'len(script)',len(script))
+    self.assert_(script)
+    writeScriptFile = c.config.getBool('write_script_file')
+
+    # import leo.core.leoGlobals as g
+
+    # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
+
+    if define_g:
+        d = {'c':c,'g':g,'p':p,'self':self,}
+    else:
+        d = {'self':self,}
+
+    script = script + '\n'
+    # g.trace(type(script),script)
+
+    # Execute the script. Let unit test handle any errors!
+    if writeScriptFile:
+        scriptFile = c.writeScriptFile(script)
+
+    exec(script,d)
+#@-node:ekr.20051104075904.10:runTest
+#@+node:ekr.20051104075904.11:shortDescription
+def shortDescription (self):
+
+    s = self.p.h
+
+    # g.trace(s)
+
+    return s + '\n'
+#@-node:ekr.20051104075904.11:shortDescription
+#@-node:ekr.20051104075904.5:class generalTestCase
+#@+node:ekr.20051104075904.12:makeTestSuite
+@ This code executes the script in an @suite node.  This code assumes:
+- The script creates a one or more unit tests.
+- The script puts the result in g.app.scriptDict["suite"]
+@c
+
+def makeTestSuite (c,p):
+
+    """Create a suite of test cases by executing the script in an @suite node."""
+
+    p = p.copy()
+
+    script = g.getScript(c,p).strip()
+    if not script:
+        print("no script in %s" % h)
+        return None
+    try:
+        if 0: #debugging
+            n,lines = 0,g.splitLines(script)
+            for line in lines:
+                print(n,line)
+                n += 1
+        exec(script + '\n',{'c':c,'g':g,'p':p})
+        suite = g.app.scriptDict.get("suite")
+        if not suite:
+            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
+        return suite
+    except Exception:
+        print('makeTestSuite: exception creating test cases for %s' % p.h)
+        g.es_exception()
+        return None
+#@-node:ekr.20051104075904.12:makeTestSuite
+#@+node:ekr.20051104075904.13:makeTestCase
+def makeTestCase (c,p):
+
+    p = p.copy()
+
+    if p.b.strip():
+        return generalTestCase(c,p)
+    else:
+        return None
+#@-node:ekr.20051104075904.13:makeTestCase
+#@-node:ekr.20051104075904.4:doTests...
+#@+node:ekr.20060919110638.36:getPositionAttributes
+def getPositionAttributes (self,attrs):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    if trace: g.trace(len(list(c.db.keys())),c.mFileName,self.fileName)
+
+    d = {}
+
+    if g.enableDB and c.db and c.mFileName:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        data = c.db.get('window_position_%s' % (key))
+        if data:
+            top,left,height,width = data
+            top,left,height,width = int(top),int(left),int(height),int(width)
+            d = {'top':top,'left':left,'height':height,'width':width}
+
+    if not d and c.fixed and c.fixedWindowPosition:
+        width,height,left,top = c.fixedWindowPosition
+        d = {'top':top,'left':left,'width':width,'height':height}
+
+    if not d:
+        for bunch in self.attrsToList(attrs):
+            name = bunch.name ; val = bunch.val
+            if name in ('top','left','width','height'):
+                try:
+                    d[name] = int(val)
+                except ValueError:
+                    d[name] = 100 # A reasonable default.
+            else:
+                g.trace(name,len(val))
+
+    # if trace: g.trace(d)
+    return d
+#@-node:ekr.20060919110638.36:getPositionAttributes
+#@+node:ekr.20060919110638.37:startGlobals
+def startGlobals (self,attrs):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    if self.inClipboard:
+        return
+
+    c.frame.ratio,c.frame.secondary_ratio = 0.5,0.5 # Set defaults.
+
+    if trace: g.trace(len(list(c.db.keys())),c.mFileName)
+
+    if g.enableDB and c.db and c.mFileName:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        c.frame.ratio = float(c.db.get(
+            'body_outline_ratio_%s' % (key),'0.5'))
+        c.frame.secondary_ratio = float(c.db.get(
+            'body_secondary_ratio_%s' % (key),'0.5'))
+        if trace: g.trace('key',key,
+            '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
+    else:
+        try:
+            for bunch in self.attrsToList(attrs):
+                name = bunch.name ; val = bunch.val
+                if name == 'body_outline_ratio':
+                    c.frame.ratio = float(val) # 2010/01/11
+                elif name == 'body_secondary_ratio':
+                    c.frame.secondary_ratio = float(val) # 2010/01/11
+            if trace: g.trace('** no c.db:','%1.2f %1.2f' % (
+                c.frame.ratio,c.frame.secondary_ratio))
+        except Exception:
+            pass
+#@-node:ekr.20060919110638.37:startGlobals
+#@+node:ville.20090606131405.6362:writeCachedTree (atFile)
+def writeCachedTree(self, p, cachefile):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    if not g.enableDB or g.app.unitTesting:
+        if trace: g.trace('cache disabled')
+    elif cachefile in c.db:
+        if trace: g.trace('already cached')
+    else:
+        if trace: g.trace('caching ',p.h)
+        c.db[cachefile] = p.makeCacheList()
+#@nonl
+#@-node:ville.20090606131405.6362:writeCachedTree (atFile)
+#@-node:ekr.20100129133806.6245:Found: c.db
+#@+node:ekr.20100130042842.6404:Reading settings
+Here are the calls to g.app.getxxx
+
+# runLeo.createFrame
+fileName = g.app.config.getString(c=None,setting='default_leo_file')
+
+# c.configSettings.initIvar
+# Why not init these settings by hand???
+val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
+
+# g.es and g.es_print
+keys['color'] = g.app.config.getColor(None,"log_error_color") or 'red'
+
+# leoPlugins.loadHandlers
+warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+s = g.app.config.getEnabledPlugins()
+
+# leoPlugins.loadOnePlugin
+verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
+warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+
+#@+node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
+def readSettingsFiles (self,fileName,verbose=True):
+
+    trace = False and not g.unitTesting
+    seen = []
+    self.write_recent_files_as_needed = False # Will be set later.
+    << define localDirectory, localConfigFile & myLocalConfigFile >>
+
+    if trace: g.trace(g.callers(5))
+    table = (
+        (self.globalConfigFile,False),
+        (self.homeFile,False),
+        (localConfigFile,False),
+        (self.myGlobalConfigFile,False),
+        (self.myHomeConfigFile,False),
+        (self.machineConfigFile,False),
+        (myLocalConfigFile,False),
+        # New in Leo 4.6: the -c file is in *addition* to other config files.
+        (g.app.oneConfigFilename,False),
+        (fileName,True),
+    )
+
+    # Init settings from leoSettings.leo and myLeoSettings.leo files.
+    for path,localFlag in table:
+        if path:
+            path = g.os_path_realpath(g.os_path_finalize(path))
+            # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
+        isZipped = path and zipfile.is_zipfile(path)
+        isLeo = isZipped or (path and path.endswith('.leo'))
+        if isLeo and path and path.lower() not in seen and g.os_path_exists(path):
+            seen.append(path.lower())
+            if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
+                s = 'reading settings in %s' % path
+                # This occurs early in startup, so use the following instead of g.es_print.
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
+                g.es_print(s,color='blue')
+            c = self.openSettingsFile(path)
+            if c:
+                self.updateSettings(c,localFlag)
+                g.app.destroyWindow(c.frame)
+                self.write_recent_files_as_needed = c.config.getBool(
+                    'write_recent_files_as_needed')
+                if 0:
+                    # This is useless. setIvarsFromSettings does nothing
+                    # until the self.inited flag is True.
+                    g.trace('?' * 20,c)
+                    self.setIvarsFromSettings(c)
+    self.readRecentFiles(localConfigFile)
+    # self.createMyLeoSettingsFile(myLocalConfigFile)
+    self.inited = True
+    self.setIvarsFromSettings(None)
+#@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+# This can't be done in initSettingsFiles because
+# the local directory does not yet exist.
+localDirectory = g.os_path_dirname(fileName)
+
+#  Set the local leoSettings.leo file.
+localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
+if not g.os_path_exists(localConfigFile):
+    localConfigFile = None
+
+# Set the local myLeoSetting.leo file.
+myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
+if not g.os_path_exists(myLocalConfigFile):
+    myLocalConfigFile = None
+#@nonl
+#@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+#@+node:ekr.20041117085625:openSettingsFile
+def openSettingsFile (self,path):
+
+    theFile,isZipped = g.openLeoOrZipFile(path)
+    if not theFile: return None
+
+    # Similar to g.openWithFileName except it uses a null gui.
+    # Changing g.app.gui here is a major hack.
+    oldGui = g.app.gui
+    g.app.gui = leoGui.nullGui("nullGui")
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=path,relativeFileName=None,
+        initEditCommanders=False,updateRecentFiles=False)
+    frame.log.enable(False)
+    c.setLog()
+    g.app.lockLog()
+    ok = frame.c.fileCommands.open(
+        theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
+    g.app.unlockLog()
+    c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
+    g.app.gui = oldGui
+    return ok and c
+#@-node:ekr.20041117085625:openSettingsFile
+#@+node:ekr.20051013161232:updateSettings
+def updateSettings (self,c,localFlag):
+
+    d = self.readSettings(c,localFlag)
+
+    if d:
+        d['_hash'] = theHash = c.hash()
+        if localFlag:
+            self.localOptionsDict[theHash] = d
+        else:
+            self.localOptionsList.insert(0,d)
+
+    if 0: # Good trace.
+        if localFlag:
+            g.trace(c.fileName())
+            g.trace(d and list(d.keys()))
+#@-node:ekr.20051013161232:updateSettings
+#@-node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
+#@+node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+def __init__ (self,c):
+
+    trace = False and not g.unitTesting
+    self.c = c
+
+    if trace: g.trace('+' * 20,'(c.configSettings)',
+        c and c.shortFileName(),g.callers(5))
+
+    # Init these here to keep pylint happy.
+    self.default_derived_file_encoding = None
+    self.new_leo_file_encoding = None
+    self.redirect_execute_script_output_to_log_pane = None
+
+    self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
+    self.defaultLogFontSize  = g.app.config.defaultLogFontSize
+    self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
+    self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
+
+    for key in g.app.config.encodingIvarsDict:
+        if key != '_hash':
+            self.initEncoding(key)
+
+    for key in g.app.config.ivarsDict:
+        if key != '_hash':
+            self.initIvar(key)
+#@+node:ekr.20041118104240:initIvar (c.configSettings)
+def initIvar(self,key):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    # N.B. The key is munged.
+    bunch = g.app.config.ivarsDict.get(key)
+    ivarName = bunch.ivar
+    val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
+
+    if val or not hasattr(self,ivarName):
+        if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
+        setattr(self,ivarName,val)
+#@-node:ekr.20041118104240:initIvar (c.configSettings)
+#@+node:ekr.20041118104414:initEncoding
+def initEncoding (self,key):
+
+    c = self.c
+
+    # N.B. The key is munged.
+    bunch = g.app.config.encodingIvarsDict.get(key)
+    encodingName = bunch.ivar
+    encoding = g.app.config.get(c,encodingName,kind='string')
+
+    # New in 4.4b3: use the global setting as a last resort.
+    if encoding:
+        # g.trace('c.configSettings',c.shortFileName(),encodingName,encoding)
+        setattr(self,encodingName,encoding)
+    else:
+        encoding = getattr(g.app.config,encodingName)
+        # g.trace('g.app.config',c.shortFileName(),encodingName,encoding)
+        setattr(self,encodingName,encoding)
+
+    if encoding and not g.isValidEncoding(encoding):
+        g.es("bad", "%s: %s" % (encodingName,encoding))
+#@-node:ekr.20041118104414:initEncoding
+#@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+#@+node:ekr.20041118084146.1:set (g.app.config) To be deleted??
+def set (self,c,setting,kind,val):
+
+    '''Set the setting.  Not called during initialization.'''
+
+    trace = False and not g.unitTesting
+    found = False ;  key = self.munge(setting)
+    if trace: g.trace(setting,kind,val)
+
+    if c:
+        d = self.localOptionsDict.get(c.hash())
+        if d: found = True
+
+    if not found:
+        theHash = c.hash()
+        for d in self.localOptionsList:
+            hash2 = d.get('_hash')
+            if theHash == hash2:
+                found = True ; break
+
+    if not found:
+        d = self.dictList [0]
+
+    d[key] = g.Bunch(setting=setting,kind=kind,val=val,tag='setting')
+
+    if 0:
+        dkind = d.get('_hash','<no hash: %s>' % c.hash())
+        g.trace(dkind,setting,kind,val)
+#@-node:ekr.20041118084146.1:set (g.app.config) To be deleted??
+#@+node:ekr.20041118104240:initIvar (c.configSettings)
+def initIvar(self,key):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    # N.B. The key is munged.
+    bunch = g.app.config.ivarsDict.get(key)
+    ivarName = bunch.ivar
+    val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
+
+    if val or not hasattr(self,ivarName):
+        if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
+        setattr(self,ivarName,val)
+#@-node:ekr.20041118104240:initIvar (c.configSettings)
+#@+node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
+def setIvarsFromSettings (self,c):
+
+    '''Init g.app.config ivars or c's ivars from settings.
+
+    - Called from readSettingsFiles with c = None to init g.app.config ivars.
+    - Called from c.__init__ to init corresponding commmander ivars.'''
+
+    trace = False and not g.unitTesting
+    verbose = True
+
+    # Ingore temporary commanders created by readSettingsFiles.
+    if self.inited:
+        if trace:
+            if c:
+                g.trace('=' * 10, 'inited',c.shortFileName(),g.callers(4))
+            else:
+                tag = '<no c: called at end of readSettingsFiles>'
+                g.trace('=' * 10, 'inited',tag,g.callers(1))
+    else:
+        if trace and verbose: g.trace('*' * 10,'not inited.  do nothing')
+        return
+
+    d = self.ivarsDict
+    keys = list(d.keys())
+    keys.sort()
+    for key in keys:
+        if key != '_hash':
+            bunch = d.get(key)
+            if bunch:
+                ivar = bunch.ivar # The actual name of the ivar.
+                kind = bunch.kind
+                val = self.get(c,key,kind) # Don't use bunch.val!
+                if c:
+                    if trace: g.trace("%20s %s = %s" % (
+                        g.shortFileName(c.mFileName),ivar,val))
+                    setattr(c,ivar,val)
+                else:
+                    if trace: g.trace("%20s %s = %s" % (
+                        'g.app.config',ivar,val))
+                    setattr(self,ivar,val)
+#@-node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
+#@-node:ekr.20100130042842.6404:Reading settings
+#@+node:ekr.20100130042842.9008:Using g.app.config ivars
+@nocolor-node
+
+colorizeAnyLanguage.
+    g.app.config.defaultFontFamily
+
+c.scanAtPathDirectives:
+    relative_path_base_directory:
+
+** Methods that write recent files:
+    recentFileMessageWritten (Probabaly ok)
+
+c.configSettings.__init__:
+
+** copies these ivars by hand.
+    self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
+    self.defaultLogFontSize  = g.app.config.defaultLogFontSize
+    self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
+    self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
+** calls initIvar and initEncoding to copy other ivars.
+
+g.makeAllNonExistentDirectories:
+    # Uses one or the other, depending on the c arg.
+    c.create_nonexistent_directories
+    g.app.config.create_nonexistent_directories
+
+g.getOutputNewline:
+    # Uses one or the other, depending on the c arg.
+    c.config.output_newline
+    g.app.config.output_newline
+
+g.doHook:
+    g.app.config.use_plugins
+
+loadOnePlugin:
+    g.app.config.enabledPluginsFileName
+
+leoGui.getFontFromParams:
+    g.app.config.defaultFont
+
+k.addModeCommands and several other methods use:
+    g.app.config.modeCommandsDict
+#@nonl
+#@+node:ekr.20031218072017.1880:colorizeAnyLanguage & allies
+def colorizeAnyLanguage (self,p,leading=None,trailing=None):
+
+    """Color the body pane either incrementally or non-incrementally"""
+
+    c = self.c ; w = c.frame.body.bodyCtrl
+
+    if not c.config.getBool('use_syntax_coloring'):
+        # There have been reports of this trace causing crashes.
+        # Certainly it is not necessary.
+        # g.trace('no coloring')
+        return
+
+    if self.killFlag:
+        self.removeAllTags()
+        return
+    try:
+        # g.trace('incremental',self.incremental)
+        << initialize ivars & tags >>
+        g.doHook("init-color-markup",colorer=self,p=self.p,v=self.p)
+        if self.incremental and (
+            << all state ivars match >> ):
+            << incrementally color the text >>
+        else:
+            << non-incrementally color the text >>
+        << update state ivars >>
+        return "ok" # for testing.
+    except:
+        << set state ivars to "unknown" >>
+        if self.c:
+            g.es_exception()
+        else:
+            import traceback ; traceback.print_exc()
+        return "error" # for unit testing.
+#@+node:ekr.20031218072017.1602:<< initialize ivars & tags >> colorizeAnyLanguage
+# Copy the arguments.
+self.p = p
+
+# Get the body text, converted to unicode.
+self.allBodyText = w.getAllText()
+sel = w.getInsertPoint()
+start,end = g.convertPythonIndexToRowCol(self.allBodyText,sel)
+start += 1 # Simulate the old 1-based Tk scheme.  self.index undoes this hack.
+# g.trace('new',start,end)
+
+if self.language: self.language = self.language.lower()
+# g.trace(self.count,self.p)
+# g.trace(body.tag_names())
+
+if not self.incremental:
+    self.removeAllTags()
+    # self.removeAllImages()
+
+<< configure fonts >>
+<< configure tags >>
+<< configure language-specific settings >>
+
+self.hyperCount = 0 # Number of hypertext tags
+self.count += 1
+lines = self.allBodyText.split('\n')
+#@nonl
+#@+node:ekr.20060829084924:<< configure fonts >> (revise,maybe)
+# Get the default body font.
+defaultBodyfont = self.fonts.get('default_body_font')
+if not defaultBodyfont:
+    defaultBodyfont = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant",  "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    self.fonts['default_body_font'] = defaultBodyfont
+
+# Configure fonts.
+w = c.frame.body.bodyCtrl
+keys = sorted(default_font_dict)
+for key in keys:
+    option_name = default_font_dict[key]
+    # First, look for the language-specific setting, then the general setting.
+    for name in ('%s_%s' % (self.language,option_name),(option_name)):
+        font = self.fonts.get(name)
+        if font:
+            # g.trace('found',name,id(font))
+            w.tag_config(key,font=font)
+            break
+        else:
+            family = c.config.get(name + '_family','family')
+            size   = c.config.get(name + '_size',  'size')   
+            slant  = c.config.get(name + '_slant', 'slant')
+            weight = c.config.get(name + '_weight','weight')
+            if family or slant or weight or size:
+                family = family or g.app.config.defaultFontFamily
+                size   = size or str(c.config.defaultBodyFontSize)
+                slant  = slant or 'roman'
+                weight = weight or 'normal'
+                font = c.config.getFontFromParams(family,size,slant,weight)
+                # Save a reference to the font so it 'sticks'.
+                self.fonts[name] = font 
+                # g.trace(key,name,family,size,slant,weight,id(font))
+                w.tag_config(key,font=font)
+                break
+    else: # Neither the general setting nor the language-specific setting exists.
+        if len(list(self.fonts.keys())) > 1: # Restore the default font.
+            # g.trace('default',key)
+            w.tag_config(key,font=defaultBodyfont)
+#@nonl
+#@-node:ekr.20060829084924:<< configure fonts >> (revise,maybe)
+#@+node:ekr.20031218072017.1603:<< configure tags >>
+# g.trace('configure tags',self.c.frame.body.bodyCtrl)
+
+for name in default_colors_dict:
+    option_name,default_color = default_colors_dict[name]
+    option_color = c.config.getColor(option_name)
+    color = g.choose(option_color,option_color,default_color)
+    # g.trace(name,color)
+    # Must use foreground, not fg.
+    try:
+        c.frame.body.tag_configure(name, foreground=color)
+    except: # Recover after a user error.
+        c.frame.body.tag_configure(name, foreground=default_color)
+
+underline_undefined = c.config.getBool("underline_undefined_section_names")
+use_hyperlinks      = c.config.getBool("use_hyperlinks")
+self.use_hyperlinks = use_hyperlinks
+
+# underline=var doesn't seem to work.
+if 0: # use_hyperlinks: # Use the same coloring, even when hyperlinks are in effect.
+    c.frame.body.tag_configure("link",underline=1) # defined
+    c.frame.body.tag_configure("name",underline=0) # undefined
+else:
+    c.frame.body.tag_configure("link",underline=0)
+    if underline_undefined:
+        c.frame.body.tag_configure("name",underline=1)
+    else:
+        c.frame.body.tag_configure("name",underline=0)
+
+# 8/4/02: we only create tags for whitespace when showing invisibles.
+if self.showInvisibles:
+    for name,option_name,default_color in (
+        ("blank","show_invisibles_space_background_color","Gray90"),
+        ("tab",  "show_invisibles_tab_background_color",  "Gray80")):
+        option_color = c.config.getColor(option_name)
+        color = g.choose(option_color,option_color,default_color)
+        try:
+            c.frame.body.tag_configure(name,background=color)
+        except: # Recover after a user error.
+            c.frame.body.tag_configure(name,background=default_color)
+
+# 11/15/02: Colors for latex characters.  Should be user options...
+
+if 1: # Alas, the selection doesn't show if a background color is specified.
+    c.frame.body.tag_configure("latexModeBackground",foreground="black")
+    c.frame.body.tag_configure("latexModeKeyword",foreground="blue")
+    c.frame.body.tag_configure("latexBackground",foreground="black")
+    c.frame.body.tag_configure("latexKeyword",foreground="blue")
+else: # Looks cool, and good for debugging.
+    c.frame.body.tag_configure("latexModeBackground",foreground="black",background="seashell1")
+    c.frame.body.tag_configure("latexModeKeyword",foreground="blue",background="seashell1")
+    c.frame.body.tag_configure("latexBackground",foreground="black",background="white")
+    c.frame.body.tag_configure("latexKeyword",foreground="blue",background="white")
+
+# Tags for wiki coloring.
+if self.showInvisibles:
+    c.frame.body.tag_configure("elide",background="yellow")
+else:
+    c.frame.body.tag_configure("elide",elide="1")
+c.frame.body.tag_configure("bold",font=self.bold_font)
+c.frame.body.tag_configure("italic",font=self.italic_font)
+c.frame.body.tag_configure("bolditalic",font=self.bolditalic_font)
+for name in self.color_tags_list:
+    c.frame.body.tag_configure(name,foreground=name)
+#@-node:ekr.20031218072017.1603:<< configure tags >>
+#@+node:ekr.20031218072017.370:<< configure language-specific settings >> colorizer
+# Define has_string, keywords, single_comment_start, block_comment_start, block_comment_end.
+
+if self.language == "cweb": # Use C comments, not cweb sentinel comments.
+    delim1,delim2,delim3 = g.set_delims_from_language("c")
+elif self.comment_string:
+    delim1,delim2,delim3 = g.set_delims_from_string(self.comment_string)
+elif self.language == "plain": # 1/30/03
+    delim1,delim2,delim3 = None,None,None
+else:
+    delim1,delim2,delim3 = g.set_delims_from_language(self.language)
+
+self.single_comment_start = delim1
+self.block_comment_start = delim2
+self.block_comment_end = delim3
+
+# A strong case can be made for making this code as fast as possible.
+# Whether this is compatible with general language descriptions remains to be seen.
+self.case_sensitiveLanguage = self.language not in case_insensitiveLanguages
+self.has_string = self.language != "plain"
+if self.language == "plain":
+    self.string_delims = ()
+elif self.language in ("elisp","html"):
+    self.string_delims = ('"')
+else:
+    self.string_delims = ("'",'"')
+self.has_pp_directives = self.language in ("c","csharp","cweb","latex")
+
+# The list of languages for which keywords exist.
+# Eventually we might just use language_delims_dict.keys()
+languages = [
+    "actionscript","ada","c","csharp","css","cweb","elisp","html","java","latex","lua",
+    "pascal","perl","perlpod","php","plsql","python","rapidq","rebol","ruby","shell","tcltk"]
+
+self.keywords = []
+if self.language == "cweb":
+    for i in self.c_keywords:
+        self.keywords.append(i)
+    for i in self.cweb_keywords:
+        self.keywords.append(i)
+else:
+    for name in languages:
+        if self.language==name: 
+            # g.trace("setting keywords for",name)
+            self.keywords = getattr(self, name + "_keywords")
+
+# Color plain text unless we are under the control of @nocolor.
+# state = g.choose(self.flag,"normal","nocolor")
+state = self.setFirstLineState()
+
+if 1: # 10/25/02: we color both kinds of references in cweb mode.
+    self.lb = "<<"
+    self.rb = ">>"
+else:
+    self.lb = g.choose(self.language == "cweb","@<","<<")
+    self.rb = g.choose(self.language == "cweb","@>",">>")
+#@-node:ekr.20031218072017.370:<< configure language-specific settings >> colorizer
+#@-node:ekr.20031218072017.1602:<< initialize ivars & tags >> colorizeAnyLanguage
+#@+node:ekr.20031218072017.1881:<< all state ivars match >>
+self.flag == self.last_flag and
+self.last_language == self.language
+#@-node:ekr.20031218072017.1881:<< all state ivars match >>
+#@+node:ekr.20031218072017.1882:<< incrementally color the text >>
+@  Each line has a starting state.  The starting state for the first line is always "normal".
+
+We need remember only self.lines and self.states between colorizing.  It is not necessary to know where the text comes from, only what the previous text was!  We must always colorize everything when changing nodes, even if all lines match, because the context may be different.
+
+We compute the range of lines to be recolored by comparing leading lines and trailing lines of old and new text.  All other lines (the middle lines) must be colorized, as well as any trailing lines whose states may have changed as the result of changes to the middle lines.
+@c
+
+if self.trace: g.trace("incremental",self.language)
+
+# 6/30/03: make a copies of everything
+old_lines = self.lines[:]
+old_states = self.states[:]
+new_lines = lines[:]
+new_states = []
+
+new_len = len(new_lines)
+old_len = len(old_lines)
+
+if new_len == 0:
+    self.states = []
+    self.lines = []
+    return
+
+# Bug fix: 11/21/02: must test against None.
+if leading != None and trailing != None:
+    # g.pr("leading,trailing:",leading,trailing)
+    leading_lines = leading
+    trailing_lines = trailing
+else:
+    << compute leading, middle & trailing lines >>
+
+middle_lines = new_len - leading_lines - trailing_lines
+# g.pr("middle lines", middle_lines)
+
+<< clear leading_lines if middle lines involve @color or @recolor  >>
+<< initialize new states >>
+<< colorize until the states match >>
+#@+node:ekr.20031218072017.1883:<< compute leading, middle & trailing  lines >>
+@ The leading lines are the leading matching lines.  The trailing lines are the trailing matching lines.  The middle lines are all other new lines.  We will color at least all the middle lines.  There may be no middle lines if we delete lines.
+@c
+
+min_len = min(old_len,new_len)
+
+i = 0
+while i < min_len:
+    if old_lines[i] != new_lines[i]:
+        break
+    i += 1
+leading_lines = i
+
+if leading_lines == new_len:
+    # All lines match, and we must color _everything_.
+    # (several routine delete, then insert the text again,
+    # deleting all tags in the process).
+    # g.pr("recolor all")
+    leading_lines = trailing_lines = 0
+else:
+    i = 0
+    while i < min_len - leading_lines:
+        if old_lines[old_len-i-1] != new_lines[new_len-i-1]:
+            break
+        i += 1
+    trailing_lines = i
+#@-node:ekr.20031218072017.1883:<< compute leading, middle & trailing  lines >>
+#@+node:ekr.20031218072017.1884:<< clear leading_lines if middle lines involve @color or @recolor  >>
+@ 11/19/02: Changing @color or @nocolor directives requires we recolor all leading states as well.
+@c
+
+if trailing_lines == 0:
+    m1 = new_lines[leading_lines:]
+    m2 = old_lines[leading_lines:]
+else:
+    m1 = new_lines[leading_lines:-trailing_lines]
+    m2 = old_lines[leading_lines:-trailing_lines]
+m1.extend(m2) # m1 now contains all old and new middle lines.
+if m1:
+    for s in m1:
+        ### s = g.toUnicode(s)
+        i = g.skip_ws(s,0)
+        if g.match_word(s,i,"@color") or g.match_word(s,i,"@nocolor"):
+            leading_lines = 0
+            break
+#@-node:ekr.20031218072017.1884:<< clear leading_lines if middle lines involve @color or @recolor  >>
+#@+node:ekr.20031218072017.1885:<< initialize new states >>
+# Copy the leading states from the old to the new lines.
+i = 0
+while i < leading_lines and i < old_len: # 12/8/02
+    new_states.append(old_states[i])
+    i += 1
+
+# We know the starting state of the first middle line!
+if middle_lines > 0 and i < old_len:
+    new_states.append(old_states[i])
+    i += 1
+
+# Set the state of all other middle lines to "unknown".
+first_trailing_line = max(0,new_len - trailing_lines)
+while i < first_trailing_line:
+    new_states.append("unknown")
+    i += 1
+
+# Copy the trailing states from the old to the new lines.
+i = max(0,old_len - trailing_lines)
+while i < old_len and i < len(old_states):
+    new_states.append(old_states[i])
+    i += 1
+
+# 1/8/03: complete new_states by brute force.
+while len(new_states) < new_len:
+    new_states.append("unknown")
+#@-node:ekr.20031218072017.1885:<< initialize new states >>
+#@+node:ekr.20031218072017.1886:<< colorize until the states match >>
+# Colorize until the states match.
+# All middle lines have "unknown" state, so they will all be colored.
+
+# Start in the state _after_ the last leading line, which may be unknown.
+i = leading_lines
+while i > 0:
+    if i < old_len and i < new_len:
+        state = new_states[i]
+        # assert(state!="unknown") # This can fail.
+        break
+    else:
+        i -= 1
+
+if i == 0:
+    # Color plain text unless we are under the control of @nocolor.
+    # state = g.choose(self.flag,"normal","nocolor")
+    state = self.setFirstLineState()
+    new_states[0] = state
+
+# The new_states[] will be "unknown" unless the lines match,
+# so we do not need to compare lines here.
+while i < new_len:
+    self.line_index = i + 1
+    state = self.colorizeLine(new_lines[i],state)
+    i += 1
+    # Set the state of the _next_ line.
+    if i < new_len and state != new_states[i]:
+        new_states[i] = state
+    else: break
+
+# Update the ivars
+self.states = new_states
+self.lines = new_lines
+#@-node:ekr.20031218072017.1886:<< colorize until the states match >>
+#@-node:ekr.20031218072017.1882:<< incrementally color the text >>
+#@+node:ekr.20031218072017.1887:<< non-incrementally color the text >>
+if self.trace: g.trace("non-incremental",self.language)
+
+self.line_index = 1 # The Tk line number for indices, as in n.i
+for s in lines:
+    state = self.colorizeLine(s,state)
+    self.line_index += 1
+#@-node:ekr.20031218072017.1887:<< non-incrementally color the text >>
+#@+node:ekr.20031218072017.1888:<< update state ivars >>
+self.last_flag = self.flag
+self.last_language = self.language
+#@nonl
+#@-node:ekr.20031218072017.1888:<< update state ivars >>
+#@+node:ekr.20031218072017.1889:<< set state ivars to "unknown" >>
+self.last_flag = "unknown"
+self.last_language = "unknown"
+#@-node:ekr.20031218072017.1889:<< set state ivars to "unknown" >>
+#@-node:ekr.20031218072017.1880:colorizeAnyLanguage & allies
+#@+node:ekr.20080828103146.15:c.scanAtPathDirectives
+def scanAtPathDirectives(self,aList,force=False,createPath=True):
+
+    '''Scan aList for @path directives.
+    Return a reasonable default if no @path directive is found.'''
+
+    trace = False and not g.unitTesting
+    verbose = True
+
+    c = self
+
+    c.scanAtPathDirectivesCount += 1 # An important statistic.
+    if trace and verbose: g.trace('**entry',g.callers(4))
+
+    # Step 1: Compute the starting path.
+    # The correct fallback directory is the absolute path to the base.
+    if c.openDirectory:  # Bug fix: 2008/9/18
+        base = c.openDirectory
+    else:
+        base = g.app.config.relative_path_base_directory
+        if base and base == "!":    base = g.app.loadDir
+        elif base and base == ".":  base = c.openDirectory
+
+    if trace and verbose:
+        g.trace('base   ',base)
+        g.trace('loadDir',g.app.loadDir)
+
+    absbase = c.os_path_finalize_join(g.app.loadDir,base)
+
+    if trace and verbose: g.trace('absbase',absbase)
+
+    # Step 2: look for @path directives.
+    paths = [] ; fileName = None
+    for d in aList:
+        # Look for @path directives.
+        path = d.get('path')
+        if path is not None: # retain empty paths for warnings.
+            # Convert "path" or <path> to path.
+            path = g.stripPathCruft(path)
+            if path and path not in paths: paths.append(path)
+            # We will silently ignore empty @path directives.
+
+    # Add absbase and reverse the list.
+    paths.append(absbase)
+    paths.reverse()
+
+    if trace and verbose: g.trace('paths  ',paths)
+
+    # Step 3: Compute the full, effective, absolute path.
+    if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+    path = c.os_path_finalize_join(*paths)
+    if trace and verbose: g.trace('joined path:',path)
+
+    # Step 4: Make the path if necessary.
+    if path and createPath and not g.os_path_exists(path):
+        ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
+        if not ok:
+            if force:
+                g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+            path = absbase # Bug fix: 2008/9/18
+
+    if trace: g.trace('returns',path)
+
+    return path
+#@-node:ekr.20080828103146.15:c.scanAtPathDirectives
+#@+node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+def __init__ (self,c):
+
+    trace = False and not g.unitTesting
+    self.c = c
+
+    if trace: g.trace('+' * 20,'(c.configSettings)',
+        c and c.shortFileName(),g.callers(5))
+
+    # Init these here to keep pylint happy.
+    self.default_derived_file_encoding = None
+    self.new_leo_file_encoding = None
+    self.redirect_execute_script_output_to_log_pane = None
+
+    self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
+    self.defaultLogFontSize  = g.app.config.defaultLogFontSize
+    self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
+    self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
+
+    for key in g.app.config.encodingIvarsDict:
+        if key != '_hash':
+            self.initEncoding(key)
+
+    for key in g.app.config.ivarsDict:
+        if key != '_hash':
+            self.initIvar(key)
+#@+node:ekr.20041118104240:initIvar (c.configSettings)
+def initIvar(self,key):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    # N.B. The key is munged.
+    bunch = g.app.config.ivarsDict.get(key)
+    ivarName = bunch.ivar
+    val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
+
+    if val or not hasattr(self,ivarName):
+        if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
+        setattr(self,ivarName,val)
+#@-node:ekr.20041118104240:initIvar (c.configSettings)
+#@+node:ekr.20041118104414:initEncoding
+def initEncoding (self,key):
+
+    c = self.c
+
+    # N.B. The key is munged.
+    bunch = g.app.config.encodingIvarsDict.get(key)
+    encodingName = bunch.ivar
+    encoding = g.app.config.get(c,encodingName,kind='string')
+
+    # New in 4.4b3: use the global setting as a last resort.
+    if encoding:
+        # g.trace('c.configSettings',c.shortFileName(),encodingName,encoding)
+        setattr(self,encodingName,encoding)
+    else:
+        encoding = getattr(g.app.config,encodingName)
+        # g.trace('g.app.config',c.shortFileName(),encodingName,encoding)
+        setattr(self,encodingName,encoding)
+
+    if encoding and not g.isValidEncoding(encoding):
+        g.es("bad", "%s: %s" % (encodingName,encoding))
+#@-node:ekr.20041118104414:initEncoding
+#@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+# This is a generalization of os.makedir.
+
+def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
+
+    """Attempt to make all non-existent directories"""
+
+    trace = False and not g.unitTesting
+
+    if force:
+        create = True # Bug fix: g.app.config will not exist during startup.
+    elif c:
+        create = c.config and c.config.create_nonexistent_directories
+    else:
+        create = (g.app and g.app.config and
+            g.app.config.create_nonexistent_directories)
+
+    if trace: g.trace('c exists: %s force: %s create: %s dir: %s' % (
+        c is not None,force,create,theDir))
+
+    if not force and not create:
+        return None
+
+    if c: theDir = g.os_path_expandExpression(theDir,c=c)
+
+    dir1 = theDir = g.os_path_normpath(theDir)
+
+    # Split theDir into all its component parts.
+    paths = []
+    while len(theDir) > 0:
+        head,tail=g.os_path_split(theDir)
+        if len(tail) == 0:
+            paths.append(head)
+            break
+        else:
+            paths.append(tail)
+            theDir = head
+    path = ""
+    paths.reverse()
+    for s in paths:
+        path = g.os_path_join(path,s)
+        if not g.os_path_exists(path):
+            try:
+                os.mkdir(path)
+                if verbose and not g.app.unitTesting:
+                    # g.trace('***callers***',g.callers(5))
+                    g.es_print("created directory:",path,color='red')
+            except Exception:
+                # g.trace(g.callers())
+                if verbose: g.es_print("exception creating directory:",path,color='red')
+                g.es_exception()
+                return None
+    return dir1 # All have been created.
+#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+#@+node:ekr.20031218072017.1386:g.getOutputNewline
+def getOutputNewline (c=None,name=None):
+
+    '''Convert the name of a line ending to the line ending itself.
+
+    Priority:
+    - Use name if name given
+    - Use c.config.output_newline if c given,
+    - Otherwise use g.app.config.output_newline.'''
+
+    if name: s = name
+    elif c:  s = c.config.output_newline
+    else:    s = app.config.output_newline
+
+    if not s: s = ''
+    s = s.lower()
+    if s in ( "nl","lf"): s = '\n'
+    elif s == "cr": s = '\r'
+    elif s == "platform": s = os.linesep  # 12/2/03: emakital
+    elif s == "crlf": s = "\r\n"
+    else: s = '\n' # Default for erroneous values.
+    # g.trace(c,name,c.config.output_newline,'returns',repr(s))
+
+    if g.isPython3:
+        s = str(s)
+    return s
+#@-node:ekr.20031218072017.1386:g.getOutputNewline
+#@+node:ekr.20031218072017.1596:g.doHook
+@ This global function calls a hook routine.  Hooks are identified by the tag param.
+Returns the value returned by the hook routine, or None if the there is an exception.
+
+We look for a hook routine in three places:
+1. c.hookFunction
+2. app.hookFunction
+3. leoPlugins.doPlugins()
+We set app.hookError on all exceptions.  Scripts may reset app.hookError to try again.
+@c
+
+def doHook(tag,*args,**keywords):
+
+    trace = False ; verbose = False
+
+    if g.app.killed or g.app.hookError: # or (g.app.gui and g.app.gui.isNullGui):
+        return None
+
+    if args:
+        # A minor error in Leo's core.
+        g.pr("***ignoring args param.  tag = %s" % tag)
+
+    if not g.app.config.use_plugins:
+        if tag in ('open0','start1'):
+            s = "Plugins disabled: use_plugins is 0 in a leoSettings.leo file."
+            g.es_print(s,color="blue")
+        return None
+
+    # Get the hook handler function.  Usually this is doPlugins.
+    c = keywords.get("c")
+    f = (c and c.hookFunction) or g.app.hookFunction
+
+    if trace and (verbose or tag != 'idle'):
+        g.trace('tag',tag,'f',f and f.__name__)
+
+    if not f:
+        import leo.core.leoPlugins as leoPlugins
+        g.app.hookFunction = f = leoPlugins.doPlugins
+
+    try:
+        # Pass the hook to the hook handler.
+        # g.pr('doHook',f.__name__,keywords.get('c'))
+        return f(tag,keywords)
+    except Exception:
+        g.es_exception()
+        g.app.hookError = True # Supress this function.
+        g.app.idleTimeHook = False # Supress idle-time hook
+        return None # No return value
+#@-node:ekr.20031218072017.1596:g.doHook
+#@+node:ekr.20041113113140:loadOnePlugin
+def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
+
+    trace = False # and not g.unitTesting
+
+    global loadedModules,loadingModuleNameStack
+
+    # Prevent Leo from crashing if .leoID.txt does not exist.
+    if g.app.config is None:
+        print ('No g.app.config, making stub...')
+        class StubConfig(g.nullObject):
+            pass
+        g.app.config = StubConfig()
+
+    # Fixed reversion: do this after possibly creating stub config class.
+    verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
+    warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+
+    if moduleOrFileName.endswith('.py'):
+        moduleName = moduleOrFileName [:-3]
+    else:
+        moduleName = moduleOrFileName
+    moduleName = g.shortFileName(moduleName)
+
+    if isLoaded(moduleName):
+        module = loadedModules.get(moduleName)
+        if trace or verbose:
+            g.trace('plugin',moduleName,'already loaded',color="blue")
+        return module
+
+    assert g.app.loadDir
+
+    plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
+    moduleName = g.toUnicode(moduleName)
+
+    # This import will typically result in calls to registerHandler.
+    # if the plugin does _not_ use the init top-level function.
+    loadingModuleNameStack.append(moduleName)
+    result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
+    loadingModuleNameStack.pop()
+
+    if result:
+        loadingModuleNameStack.append(moduleName)
+
+        if tag == 'unit-test-load':
+            pass # Keep the result, but do no more.
+        elif hasattr(result,'init'):
+            try:
+                # Indicate success only if init_result is True.
+                init_result = result.init()
+                # g.trace('result',result,'init_result',init_result)
+                if init_result:
+                    loadedModules[moduleName] = result
+                    loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
+                else:
+                    if verbose and not g.app.initing:
+                        g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")
+                    result = None
+            except Exception:
+                g.es_print('exception loading plugin',color='red')
+                g.es_exception()
+                result = None
+        else:
+            # No top-level init function.
+            # Guess that the module was loaded correctly,
+            # but do *not* load the plugin if we are unit testing.
+
+            if g.app.unitTesting:
+                result = None
+                loadedModules[moduleName] = None
+            else:
+                g.trace('no init()',moduleName)
+                loadedModules[moduleName] = result
+        loadingModuleNameStack.pop()
+
+    if g.app.batchMode or g.app.inBridge: # or g.unitTesting
+        pass
+    elif result:
+        if trace or verbose:
+            g.trace('loaded plugin:',moduleName,color="blue")
+    else:
+        if trace or warn_on_failure or (verbose and not g.app.initing):
+            if trace or tag == 'open0':
+                g.trace('can not load enabled plugin:',moduleName,color="red")
+
+    return result
+#@-node:ekr.20041113113140:loadOnePlugin
+#@+node:ekr.20061031131434.100:addModeCommands (enterModeCallback)
+def addModeCommands (self):
+
+    '''Add commands created by @mode settings to c.commandsDict and k.inverseCommandsDict.'''
+
+    k = self ; c = k.c
+    d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
+
+    # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
+    for key in d:
+
+        def enterModeCallback (event=None,name=key):
+            k.enterNamedMode(event,name)
+
+        c.commandsDict[key] = f = enterModeCallback
+        k.inverseCommandsDict [f.__name__] = key
+        # g.trace('leoCommands %24s = %s' % (f.__name__,key))
+#@-node:ekr.20061031131434.100:addModeCommands (enterModeCallback)
+#@-node:ekr.20100130042842.9008:Using g.app.config ivars
+#@-node:ekr.20100130164410.6332:Recent
 #@+node:ekr.20100128094926.6228: First
 #@+node:ekr.20100128094926.6225:use g.app.moduleTesting to disable actual loads
 The plugin manager will not registers pluings when g.app.moduleTesting is True.

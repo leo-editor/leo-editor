@@ -871,7 +871,7 @@
 <v t="ekr.20050206090416"><vh>@test open non-existent non-ascii directory</vh></v>
 <v t="ekr.20071113145804.24"><vh>@test round trip toUnicode toEncodedString</vh></v>
 </v>
-<v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
 <v t="ekr.20100131171342.5506"><vh>leoApp</vh>
 <v t="ekr.20100131180007.5454"><vh>@test at.get/setPathUa</vh></v>
 <v t="ekr.20100131180007.5461"><vh>@test at.replaceFileWithString</vh></v>
@@ -2033,7 +2033,7 @@
 <v t="ekr.20100131171342.5602"><vh>@test leoTextWidget</vh></v>
 <v t="ekr.20100131171342.5603"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20090529141856.4682"><vh>leoImport</vh>
+<v t="ekr.20090529141856.4682" a="E"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh> Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
 <v t="ekr.20090529141856.4686"><vh>exportTests</vh>
@@ -2161,7 +2161,7 @@
 <v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
 </v>
-<v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784" a="E"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20090529141856.4786"><vh>@test rST import test (no double-underlines)</vh></v>
 <v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
@@ -2180,7 +2180,7 @@
 <v t="ekr.20100131171342.5608"><vh>@test strokeFromSetting</vh></v>
 <v t="ekr.20100131171342.5609"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
+<v t="ekr.20071113194424.1" a="E"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>Startup</vh></v>
@@ -2278,13 +2278,13 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040802071519"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519" a="E"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20100131180007.5391"><vh>@test v.atAutoNodeName &amp; v.atAutoRstNodeName</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20071113202452"><vh>@test zz restore the screen</vh></v>
-<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
@@ -2299,7 +2299,7 @@
 <v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
 <v t="ekr.20080503082625.4"><vh>@test promote</vh></v>
 </v>
-<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -2307,13 +2307,13 @@
 <v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5610"><vh>leoPlugins</vh>
+<v t="ekr.20100131171342.5610" a="E"><vh>leoPlugins</vh>
 <v t="ekr.20100131171342.5611"><vh>@test getHandlersForTag</vh></v>
 </v>
-<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
+<v t="ekr.20091219122958.5066" a="E"><vh>leoRst</vh>
 <v t="ekr.20091219121039.5065"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
 </v>
-<v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
+<v t="ekr.20090529115704.4396" a="E"><vh>leoShadow</vh>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 <v t="ekr.20090529115704.4569"><vh>@@test delete unittest shadow directory</vh></v>
 <v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
@@ -2560,7 +2560,7 @@
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="ekr.20071113200638.1"><vh>leoTangle</vh>
+<v t="ekr.20071113200638.1" a="E"><vh>leoTangle</vh>
 <v t="ekr.20090624125638.4963"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
 <v t="ekr.20071113090055.1"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
 <v t="ekr.20071127194743"><vh>@test @root</vh>
@@ -2572,12 +2572,12 @@
 <v t="ekr.20090624125638.4969"><vh>Output</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5612"><vh>leoTest</vh>
+<v t="ekr.20100131171342.5612" a="E"><vh>leoTest</vh>
 <v t="ekr.20100131171342.5613"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
-<v t="ekr.20040712101754.37"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38"><vh>editBodyTests</vh>
+<v t="ekr.20040712101754.37" a="E"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38" a="E"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
 <v t="ekr.20050417202713"><vh>addComments</vh>
 <v t="ekr.20050417202713.1"><vh>before</vh></v>
@@ -22902,135 +22902,120 @@ sendEmail(X)
     # xxx(c=None,'whatever')</t>
 <t tx="ekr.20100131180007.5359">c.frame.tree.OnIconDoubleClick(p)
 </t>
-<t tx="ekr.20100131180007.5361">if g.unitTesting:
-    c,p = g.getTestVars()
-    x = c.shadowController
-    table = (
-        ('python','abc',False),
-        ('python','#abc',False),
-        ('python','#verbatim',False),
-        ('python','#@verbatim',True),
-        ('c','abc',False),
-        ('c','//@',False),
-        ('c','//@verbatim',True),
-        ('html','#@abc',False),
-        ('html','&lt;!--abc--&gt;',False),
-        ('html','&lt;!--@verbatim --&gt;',True),
-        ('xxxx','#--unknown-language--@verbatim',True)
-    )
-    for language,s,expected in table:
-        delims = g.set_delims_from_language(language)
-        marker = x.markerClass(delims)
-        result = marker.isVerbatimSentinel(s)
-        assert result==expected,'language %s s: %s expected %s got %s' % (
-            language,s,expected,result)</t>
-<t tx="ekr.20100131180007.5362">if g.unitTesting:
-    c,p = g.getTestVars()
-    x = c.shadowController
-    table = (
-        ('python','abc',False),
-        ('python','#abc',False),
-        ('python','#@abc',True),
-        ('python','@abc#',False),
-        ('c','abc',False),
-        ('c','//@',True),
-        ('c','// @abc',False),
-        ('c','/*@ abc */',True),
-        ('c','/*@ abc',False),
-        ('html','#@abc',False),
-        ('html','&lt;!--abc--&gt;',False),
-        ('html','&lt;!--@ abc --&gt;',True),
-        ('html','&lt;!--@ abc -&gt;',False),
-        ('xxxx','#--unknown-language--@',True)
-    )
-    for language,s,expected in table:
-        delims = g.set_delims_from_language(language)
-        marker = x.markerClass(delims)
-        result = marker.isSentinel(s)
-        assert result==expected,'language %s s: %s expected %s got %s' % (
-            language,s,expected,result)</t>
-<t tx="ekr.20100131180007.5363">if g.unitTesting:
-    c,p = g.getTestVars()
-    x = c.shadowController
-    table = (
-        ('python','#',''),
-        ('c','//',''),
-        ('html','&lt;!--','--&gt;'),
-        ('xxxx','#--unknown-language--',''),
-    )
-    for language,delim1,delim2 in table:
-        delims = g.set_delims_from_language(language)
-        marker = x.markerClass(delims)
-        result = marker.getDelims()
-        expected = delim1,delim2
-        assert result==expected,'language %s expected %s got %s' % (
-            language,expected,result)</t>
-<t tx="ekr.20100131180007.5364">if g.unitTesting:
+<t tx="ekr.20100131180007.5361">x = c.shadowController
+table = (
+    ('python','abc',False),
+    ('python','#abc',False),
+    ('python','#verbatim',False),
+    ('python','#@verbatim',True),
+    ('c','abc',False),
+    ('c','//@',False),
+    ('c','//@verbatim',True),
+    ('html','#@abc',False),
+    ('html','&lt;!--abc--&gt;',False),
+    ('html','&lt;!--@verbatim --&gt;',True),
+    ('xxxx','#--unknown-language--@verbatim',True)
+)
+for language,s,expected in table:
+    delims = g.set_delims_from_language(language)
+    marker = x.markerClass(delims)
+    result = marker.isVerbatimSentinel(s)
+    assert result==expected,'language %s s: %s expected %s got %s' % (
+        language,s,expected,result)</t>
+<t tx="ekr.20100131180007.5362">x = c.shadowController
+table = (
+    ('python','abc',False),
+    ('python','#abc',False),
+    ('python','#@abc',True),
+    ('python','@abc#',False),
+    ('c','abc',False),
+    ('c','//@',True),
+    ('c','// @abc',False),
+    ('c','/*@ abc */',True),
+    ('c','/*@ abc',False),
+    ('html','#@abc',False),
+    ('html','&lt;!--abc--&gt;',False),
+    ('html','&lt;!--@ abc --&gt;',True),
+    ('html','&lt;!--@ abc -&gt;',False),
+    ('xxxx','#--unknown-language--@',True)
+)
+for language,s,expected in table:
+    delims = g.set_delims_from_language(language)
+    marker = x.markerClass(delims)
+    result = marker.isSentinel(s)
+    assert result==expected,'language %s s: %s expected %s got %s' % (
+        language,s,expected,result)</t>
+<t tx="ekr.20100131180007.5363">x = c.shadowController
+table = (
+    ('python','#',''),
+    ('c','//',''),
+    ('html','&lt;!--','--&gt;'),
+    ('xxxx','#--unknown-language--',''),
+)
+for language,delim1,delim2 in table:
+    delims = g.set_delims_from_language(language)
+    marker = x.markerClass(delims)
+    result = marker.getDelims()
+    expected = delim1,delim2
+    assert result==expected,'language %s expected %s got %s' % (
+        language,expected,result)</t>
+<t tx="ekr.20100131180007.5364">x = c.shadowController
 
-    c,p = g.getTestVars()
+table = (
+    ('ini',';','',),
+    ('c','//',''),
+    ('h','//',''),
+    ('py','#',''),
+    ('xyzzy','#--unknown-language--',''),
+)
 
-    x = c.shadowController
+for ext,delim1,delim2 in table:
+    filename = 'x.%s' % ext
+    marker = x.markerFromFileName(filename)
+    result1,result2 = marker.getDelims()
+    assert delim1==result1, 'ext=%s, got %s, expected %s' % (
+        ext,delim1,result1)
+    assert delim2==result2, 'ext=%s, got %s, expected %s' % (
+        ext,delim2,result2)
+</t>
+<t tx="ekr.20100131180007.5365">x = c.shadowController
+# Add -ver=4 so at.parseLeoSentinel does not complain.
+table = (
+    ('c',('//@+leo-ver=4','a'),                   '//',''),
+    ('c',('//@first','//@+leo-ver=4','b'),        '//',''),
+    ('c',('/*@+leo-ver=4*/','a'),                 '/*','*/'),
+    ('c',('/*@first*/','/*@+leo-ver=4*/','b'),    '/*','*/'),
+    ('python',('#@+leo-ver=4','a'),               '#',''),
+    ('python',('#@first','#@+leo-ver=4','b'),     '#',''),
+    ('error',('',),             '#--unknown-language--',''),
+    ('html',('&lt;!--@+leo-ver=4--&gt;','a'),                '&lt;!--','--&gt;'),
+    ('html',('&lt;!--@first--&gt;','&lt;!--@+leo-ver=4--&gt;','b'),'&lt;!--','--&gt;'),
+)
 
-    table = (
-        ('ini',';','',),
-        ('c','//',''),
-        ('h','//',''),
-        ('py','#',''),
-        ('xyzzy','#--unknown-language--',''),
-    )
-
-    for ext,delim1,delim2 in table:
-        filename = 'x.%s' % ext
-        marker = x.markerFromFileName(filename)
-        result1,result2 = marker.getDelims()
-        assert delim1==result1, 'ext=%s, got %s, expected %s' % (
-            ext,delim1,result1)
-        assert delim2==result2, 'ext=%s, got %s, expected %s' % (
-            ext,delim2,result2)</t>
-<t tx="ekr.20100131180007.5365">if g.unitTesting:
-
-    c,p = g.getTestVars()
-    x = c.shadowController
-    # Add -ver=4 so at.parseLeoSentinel does not complain.
-    table = (
-        ('c',('//@+leo-ver=4','a'),                   '//',''),
-        ('c',('//@first','//@+leo-ver=4','b'),        '//',''),
-        ('c',('/*@+leo-ver=4*/','a'),                 '/*','*/'),
-        ('c',('/*@first*/','/*@+leo-ver=4*/','b'),    '/*','*/'),
-        ('python',('#@+leo-ver=4','a'),               '#',''),
-        ('python',('#@first','#@+leo-ver=4','b'),     '#',''),
-        ('error',('',),             '#--unknown-language--',''),
-        ('html',('&lt;!--@+leo-ver=4--&gt;','a'),                '&lt;!--','--&gt;'),
-        ('html',('&lt;!--@first--&gt;','&lt;!--@+leo-ver=4--&gt;','b'),'&lt;!--','--&gt;'),
-    )
-
-    for language,lines,delim1,delim2 in table:
-        s = x.findLeoLine(lines)
-        marker = x.markerFromFileLines(lines,'test-file-name')
-        result1,result2 = marker.getDelims()
-        assert delim1==result1, 'language %s expected1 %s got %s lines %s' % (
-            language,delim1,result1,'\n'.join(lines))
-        assert delim2==result2, 'language %s expected2 %s got %s lines %s' % (
-            language,delim1,result1,'\n'.join(lines))</t>
-<t tx="ekr.20100131180007.5366">if g.unitTesting:
-
-    c,p = g.getTestVars()
-    x = c.shadowController
-    table = (
-        ('c',('//@+leo','a'),                   '//@+leo'),
-        ('c',('//@first','//@+leo','b'),        '//@+leo'),
-        ('c',('/*@+leo*/','a'),                 '/*@+leo*/'),
-        ('c',('/*@first*/','/*@+leo*/','b'),    '/*@+leo*/'),
-        ('python',('#@+leo','a'),               '#@+leo'),
-        ('python',('#@first','#@+leo','b'),     '#@+leo'),
-        ('error',('',),''),
-        ('html',('&lt;!--@+leo--&gt;','a'),                '&lt;!--@+leo--&gt;'),
-        ('html',('&lt;!--@first--&gt;','&lt;!--@+leo--&gt;','b'),'&lt;!--@+leo--&gt;'),
-    )
-    for language,lines,expected in table:
-        result = x.findLeoLine(lines)
-        assert expected==result, 'language %s expected %s got %s lines %s' % (
-            language,expected,result,'\n'.join(lines))</t>
+for language,lines,delim1,delim2 in table:
+    s = x.findLeoLine(lines)
+    marker = x.markerFromFileLines(lines,'test-file-name')
+    result1,result2 = marker.getDelims()
+    assert delim1==result1, 'language %s expected1 %s got %s lines %s' % (
+        language,delim1,result1,'\n'.join(lines))
+    assert delim2==result2, 'language %s expected2 %s got %s lines %s' % (
+        language,delim1,result1,'\n'.join(lines))</t>
+<t tx="ekr.20100131180007.5366">x = c.shadowController
+table = (
+    ('c',('//@+leo','a'),                   '//@+leo'),
+    ('c',('//@first','//@+leo','b'),        '//@+leo'),
+    ('c',('/*@+leo*/','a'),                 '/*@+leo*/'),
+    ('c',('/*@first*/','/*@+leo*/','b'),    '/*@+leo*/'),
+    ('python',('#@+leo','a'),               '#@+leo'),
+    ('python',('#@first','#@+leo','b'),     '#@+leo'),
+    ('error',('',),''),
+    ('html',('&lt;!--@+leo--&gt;','a'),                '&lt;!--@+leo--&gt;'),
+    ('html',('&lt;!--@first--&gt;','&lt;!--@+leo--&gt;','b'),'&lt;!--@+leo--&gt;'),
+)
+for language,lines,expected in table:
+    result = x.findLeoLine(lines)
+    assert expected==result, 'language %s expected %s got %s lines %s' % (
+        language,expected,result,'\n'.join(lines))</t>
 <t tx="ekr.20100131180007.5367">c,p = g.getTestVars()
 x = c.shadowController
 
@@ -23038,43 +23023,39 @@ fn = 'does/not/exist'
 assert not g.os_path_exists(fn)
 assert not x.replaceFileWithString (fn,'abc')
 </t>
-<t tx="ekr.20100131180007.5369">if g.unitTesting:
+<t tx="ekr.20100131180007.5369">table = (
+    '1',
+    '1-1','1-1-1','1-1-2',
+    '1-2','1-2-1','1-2-2',
+    '2',
+    '2-1','2-1-1','2-1-2',
+    '2-2','2-2-1','2-2-2',
+    '3',
+    '3-1','3-1-1','3-1-2',
+    '3-2','3-2-1','3-2-2',
+)
 
-    c,p = g.getTestVars()
+for suffix in table:
+    h = 'node %s' % suffix
+    p2 = g.findNodeInTree(c,p,h)
+    assert p2,h
 
-    table = (
-        '1',
-        '1-1','1-1-1','1-1-2',
-        '1-2','1-2-1','1-2-2',
-        '2',
-        '2-1','2-1-1','2-1-2',
-        '2-2','2-2-1','2-2-2',
-        '3',
-        '3-1','3-1-1','3-1-2',
-        '3-2','3-2-1','3-2-2',
-    )
+table2 = (
+    ('2-1-2','2-1-1','2-1-1'),
+    ('3','2','2'),
+)  
 
-    for suffix in table:
-        h = 'node %s' % suffix
-        p2 = g.findNodeInTree(c,p,h)
-        assert p2,h
+for h1,h2,h3 in table2:
+    p1 = g.findNodeInTree(c,p,'node %s' % h1)
+    p2 = g.findNodeInTree(c,p,'node %s' % h2)
+    p3 = g.findNodeInTree(c,p,'node %s' % h3)
+    p1._adjustPositionBeforeUnlink(p2)
+    result = p1
+    assert result.stack == p3.stack,'expected %s got %s' % (
+        p3.h,result and result.h or '&lt;none&gt;')
 
-    table2 = (
-        ('2-1-2','2-1-1','2-1-1'),
-        ('3','2','2'),
-    )  
-
-    for h1,h2,h3 in table2:
-        p1 = g.findNodeInTree(c,p,'node %s' % h1)
-        p2 = g.findNodeInTree(c,p,'node %s' % h2)
-        p3 = g.findNodeInTree(c,p,'node %s' % h3)
-        p1._adjustPositionBeforeUnlink(p2)
-        result = p1
-        assert result.stack == p3.stack,'expected %s got %s' % (
-            p3.h,result and result.h or '&lt;none&gt;')
-
-    # Data.
-    @others
+# Data.
+@others
 </t>
 <t tx="ekr.20100131180007.5370"># Node 1</t>
 <t tx="ekr.20100131180007.5371"># node 1-1</t>
@@ -23103,27 +23084,21 @@ assert not x.replaceFileWithString (fn,'abc')
 <t tx="ekr.20100131180007.5389"># node 3-2-1</t>
 <t tx="ekr.20100131180007.5390"># node 3-2-2
 </t>
-<t tx="ekr.20100131180007.5391">if g.unitTesting:
+<t tx="ekr.20100131180007.5391">table = (
+    ('@auto-rst rst-file','rst-file','rst-file'),
+    ('@auto x','x',''),
+    ('xyz','',''),
+)
 
-    c,p = g.getTestVars()
-
-    table = (
-        ('@auto-rst rst-file','rst-file','rst-file'),
-        ('@auto x','x',''),
-        ('xyz','',''),
-    )
-
-    for s,expected1,expected2 in table:
-        result1 = p.v.atAutoNodeName(h=s)
-        result2 = p.v.atAutoRstNodeName(h=s)
-        assert result1 == expected1,'fail1: given %s expected %s got %s' % (
-            repr(s),repr(expected1),repr(result1))
-        assert result2 == expected2,'fail2: given %s expected %s got %s' % (
-            repr(s),repr(expected2),repr(result2))
+for s,expected1,expected2 in table:
+    result1 = p.v.atAutoNodeName(h=s)
+    result2 = p.v.atAutoRstNodeName(h=s)
+    assert result1 == expected1,'fail1: given %s expected %s got %s' % (
+        repr(s),repr(expected1),repr(result1))
+    assert result2 == expected2,'fail2: given %s expected %s got %s' % (
+        repr(s),repr(expected2),repr(result2))
 </t>
-<t tx="ekr.20100131180007.5393">
-import leo.core.leoImport as leoImport
-c,p = g.getTestVars()
+<t tx="ekr.20100131180007.5393">import leo.core.leoImport as leoImport
 
 ic = c.importCommands
 scanner = leoImport.rstScanner(importCommands=ic,atAuto=True)
@@ -23361,36 +23336,32 @@ n = g.scanAtPagewidthDirectives(aList)
 # The @pagewidth directive in the parent should control.
 # Depending on how this test is run, the result could be 80 or None.
 assert n in (None,80),repr(n)</t>
-<t tx="ekr.20100131180007.5450">if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    expectedIconDictList = [
-    {
-        'on': 'tnode',
-        'where': 'beforeHeadline',
-        'yoffset': 0,
-        # 'file': u'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\add.png',
-        'file': 'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\add.png',
-        'xpad': 1,
-        'type': 'file',
-        'xoffset': 2,
-        # 'relPath': u'Tango\\16x16\\actions\\add.png',
-        'relPath': 'Tango\\16x16\\actions\\add.png',
-    },
-    {
-        'on': 'tnode',
-        'where': 'beforeHeadline',
-        'yoffset': 0,
-        # 'file': u'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\bottom.png',
-        'file': 'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\bottom.png',
-        'xpad': 1,
-        'type': 'file',
-        'xoffset': 2,
-        # 'relPath': u'Tango\\16x16\\actions\\bottom.png',
-        'relPath': 'Tango\\16x16\\actions\\bottom.png',
-    }]
-    table = (
+<t tx="ekr.20100131180007.5450">expectedIconDictList = [
+{
+    'on': 'tnode',
+    'where': 'beforeHeadline',
+    'yoffset': 0,
+    # 'file': u'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\add.png',
+    'file': 'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\add.png',
+    'xpad': 1,
+    'type': 'file',
+    'xoffset': 2,
+    # 'relPath': u'Tango\\16x16\\actions\\add.png',
+    'relPath': 'Tango\\16x16\\actions\\add.png',
+},
+{
+    'on': 'tnode',
+    'where': 'beforeHeadline',
+    'yoffset': 0,
+    # 'file': u'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\bottom.png',
+    'file': 'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\bottom.png',
+    'xpad': 1,
+    'type': 'file',
+    'xoffset': 2,
+    # 'relPath': u'Tango\\16x16\\actions\\bottom.png',
+    'relPath': 'Tango\\16x16\\actions\\bottom.png',
+}]
+table = (
 ('tx','raw',None,"ekr.20090701133940.1767"),
 ('lineYOffset',None,3,"4b032e"),
 # A real icon
@@ -23410,89 +23381,68 @@ e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
 56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
 5c626f74746f6d2e706e67711975652e"),
 )
-    for attr,kind,expected,val in table:
-        result = c.fileCommands.getSaxUa(attr,val,kind=kind)
-        if expected is None: expected = val
-        assert expected==result,'expected %s got %s' % (
-            expected,result)</t>
-<t tx="ekr.20100131180007.5451">if g.unitTesting:
+for attr,kind,expected,val in table:
+    result = c.fileCommands.getSaxUa(attr,val,kind=kind)
+    if expected is None: expected = val
+    assert expected==result,'expected %s got %s' % (
+        expected,result)</t>
+<t tx="ekr.20100131180007.5451">s = 'test%cthis' % 27
 
-    c,p = g.getTestVars()
-
-    s = 'test%cthis' % 27
-
-    assert c.fileCommands.cleanSaxInputString(s) == 'test this'
+assert c.fileCommands.cleanSaxInputString(s) == 'test this'
 </t>
-<t tx="ekr.20100131180007.5452">if g.unitTesting:
+<t tx="ekr.20100131180007.5452">import leo.core.leoFileCommands as leoFileCommands
 
-    import leo.core.leoFileCommands as leoFileCommands
-    c,p = g.getTestVars()
+class saxAttrsClass:
+    '''Simulating sax attributes'''
+    def __init__(self):
+        self.attrs = {
+            'tx':'ekr.123','testAttr':'abc',
+        }
+    def getNames(self):
+        return list(self.attrs.keys())
+    def getValue(self,key):
+        return self.attrs.get(key)
 
-    class saxAttrsClass:
-        '''Simulating sax attributes'''
-        def __init__(self):
-            self.attrs = {
-                'tx':'ekr.123','testAttr':'abc',
-            }
-        def getNames(self):
-            return list(self.attrs.keys())
-        def getValue(self,key):
-            return self.attrs.get(key)
-
-    handler = leoFileCommands.saxContentHandler(
-        c,fileName='&lt;test file&gt;',
-        silent=True,inClipboard=False)
-    attributes = saxAttrsClass()
-    handler.tnodeAttributes(attributes)
-    aList = handler.nodeList
-    assert len(aList) == 1,len(aList)
-    b = aList[0]
-    d = b.tnodeAttributes
-    assert d.get('testAttr')=='abc',d.get('testAttr')</t>
-<t tx="ekr.20100131180007.5453">if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    # A totally wimpy test.
-    c.abbrevCommands.dynamicExpandHelper(prefix='',rlist=None,w=None)
+handler = leoFileCommands.saxContentHandler(
+    c,fileName='&lt;test file&gt;',
+    silent=True,inClipboard=False)
+attributes = saxAttrsClass()
+handler.tnodeAttributes(attributes)
+aList = handler.nodeList
+assert len(aList) == 1,len(aList)
+b = aList[0]
+d = b.tnodeAttributes
+assert d.get('testAttr')=='abc',d.get('testAttr')</t>
+<t tx="ekr.20100131180007.5453"># A totally wimpy test.
+c.abbrevCommands.dynamicExpandHelper(prefix='',rlist=None,w=None)
 </t>
-<t tx="ekr.20100131180007.5454">if g.unitTesting:
+<t tx="ekr.20100131180007.5454">at = c.atFileCommands
 
-    c,p = g.getTestVars()
-    at = c.atFileCommands
+at.setPathUa(p,'abc')
+d = p.v.tempAttributes
+d2 = d.get('read-path')
+val1 = d2.get('path')
+val2 = at.getPathUa(p)
 
-    at.setPathUa(p,'abc')
-    d = p.v.tempAttributes
-    d2 = d.get('read-path')
-    val1 = d2.get('path')
-    val2 = at.getPathUa(p)
-
-    table = (
-        ('d2.get',val1),
-        ('at.getPathUa',val2),
-    )
-    for kind,val in table:
-        assert val == 'abc','kind %s expected %s got %s' % (
-            kind,'abc',val)
+table = (
+    ('d2.get',val1),
+    ('at.getPathUa',val2),
+)
+for kind,val in table:
+    assert val == 'abc','kind %s expected %s got %s' % (
+        kind,'abc',val)
 </t>
-<t tx="ekr.20100131180007.5455">if g.unitTesting:
+<t tx="ekr.20100131180007.5455">at = c.atFileCommands
 
-    c,p = g.getTestVars()
-    at = c.atFileCommands
-
-    p2 = p.firstChild().firstChild()
-    path = at.fullPath(p2,simulate=True)
-    end = g.os_path_normpath('abc/xyz')
-    assert path.endswith(end),repr(path)
-
+p2 = p.firstChild().firstChild()
+path = at.fullPath(p2,simulate=True)
+end = g.os_path_normpath('abc/xyz')
+assert path.endswith(end),repr(path)
 </t>
 <t tx="ekr.20100131180007.5456"></t>
 <t tx="ekr.20100131180007.5457"></t>
-<t tx="ekr.20100131180007.5458">if g.unitTesting:
-
-    c,p = g.getTestVars()
-    at = c.atFileCommands
-    d = at.scanAllDirectives(p)
+<t tx="ekr.20100131180007.5458">at = c.atFileCommands
+d = at.scanAllDirectives(p)
 </t>
 <t tx="ekr.20100131180007.5459">rst = c.rstCommands
 rst.initAtAutoWrite(p,fileName='&lt;test file&gt;',outputFile=None)
@@ -23508,11 +23458,8 @@ assert rst.underlines1 == '=+*^~"\'`-:&gt;&lt;_', 'fail4 %s' % repr(rst.underlin
 assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:&gt;&lt;_', 'fail 5: %s' % (
     repr(rst.atAutoWriteUnderlines))
 </t>
-<t tx="ekr.20100131180007.5460">if g.unitTesting:
-
-    c,p = g.getTestVars()
-    sax_node = g.bunch(
-        attributes={
+<t tx="ekr.20100131180007.5460">sax_node = g.bunch(
+    attributes={
 'a':'M',
 'lineYOffset':"4b032e",
 # A real icon attribute, see the tests below for what we expect
@@ -23530,55 +23477,46 @@ e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
 65666f7265486561646c696e6571165507786f666673657471174b025507726\
 56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
 5c626f74746f6d2e706e67711975652e"
-    })
-    try:
-        p2 = p.insertAsLastChild()
-        v = p2.v
-        c.fileCommands.handleVnodeSaxAttributes(sax_node,v)
-        # print v,v.u
-        d = v.u
-        for attr in ('lineYOffset','icons'):
-            assert d.get(attr) is not None,attr
-        # The a:M attribute should mark the node.
-        assert d.get('a') is None
-        assert v.isMarked()
-        aList = d.get('icons')
-        assert aList
-        assert len(aList) == 2
-        for d2 in aList:
-            for key in ('on','where','yoffset','file'):
-                assert d2.get(key) is not None,key
-    finally:
-        if 1:
-            while p.hasChildren():
-                # print('deleting',p.firstChild())
-                p.firstChild().doDelete()
+})
+try:
+    p2 = p.insertAsLastChild()
+    v = p2.v
+    c.fileCommands.handleVnodeSaxAttributes(sax_node,v)
+    # print v,v.u
+    d = v.u
+    for attr in ('lineYOffset','icons'):
+        assert d.get(attr) is not None,attr
+    # The a:M attribute should mark the node.
+    assert d.get('a') is None
+    assert v.isMarked()
+    aList = d.get('icons')
+    assert aList
+    assert len(aList) == 2
+    for d2 in aList:
+        for key in ('on','where','yoffset','file'):
+            assert d2.get(key) is not None,key
+finally:
+    if 1:
+        while p.hasChildren():
+            # print('deleting',p.firstChild())
+            p.firstChild().doDelete()
 </t>
-<t tx="ekr.20100131180007.5461">if g.unitTesting:
+<t tx="ekr.20100131180007.5461">at = c.atFileCommands
 
-    c,p = g.getTestVars()
-    at = c.atFileCommands
-
-    fn = 'does/not/exist'
-    assert not g.os_path_exists(fn)
-    assert not at.replaceFileWithString (fn,'abc')
+fn = 'does/not/exist'
+assert not g.os_path_exists(fn)
+assert not at.replaceFileWithString (fn,'abc')
 </t>
-<t tx="ekr.20100131180007.5462">if g.unitTesting:
-    c,p = g.getTestVars()
+<t tx="ekr.20100131180007.5462"># Here is something that should generate a verbtim sentinel::
 
-    # Here is something that should generate a verbtim sentinel::
+#@+leo-encoding=iso-8859-1.
 
-    #@+leo-encoding=iso-8859-1.
+# The length of this node should remain constant.
 
-    # The length of this node should remain constant.
-
-    assert len(p.b) == 235,len(p.b)</t>
-<t tx="ekr.20100131180007.5463">if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    sax_node = g.bunch(
-        tnodeAttributes={
+assert len(p.b) == 175,len(p.b)
+</t>
+<t tx="ekr.20100131180007.5463">sax_node = g.bunch(
+    tnodeAttributes={
 # The 'tx' attribute is handled by contentHandler.tnodeAttributes.
 # 'tx':"ekr.20090701133940.1767",
 'lineYOffset':"4b032e",
@@ -23598,44 +23536,37 @@ e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
 56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
 5c626f74746f6d2e706e67711975652e"
 })
-    try:
-        p2 = p.insertAsLastChild()
-        v = p2.v
-        c.fileCommands.handleTnodeSaxAttributes(sax_node,v)
-        # print v,v.u
-        d = v.u
-        for attr in ('lineYOffset','icons'):
-            assert d.get(attr),attr
-        for attr in ('tx','a'):
-            assert d.get(attr) is None,attr # A known attribute.
-    finally:
-        if 1:
-            while p.hasChildren():
-                # print('deleting',p.firstChild())
-                p.firstChild().doDelete()
+try:
+    p2 = p.insertAsLastChild()
+    v = p2.v
+    c.fileCommands.handleTnodeSaxAttributes(sax_node,v)
+    # print v,v.u
+    d = v.u
+    for attr in ('lineYOffset','icons'):
+        assert d.get(attr),attr
+    for attr in ('tx','a'):
+        assert d.get(attr) is None,attr # A known attribute.
+finally:
+    if 1:
+        while p.hasChildren():
+            # print('deleting',p.firstChild())
+            p.firstChild().doDelete()
 </t>
-<t tx="ekr.20100131180007.5465">if g.unitTesting:
+<t tx="ekr.20100131180007.5465">class StubConfig(g.nullObject):
+    pass
 
-    c,p = g.getTestVars()
-
-    class StubConfig(g.nullObject):
-        pass
-
-    x = StubConfig()
-    assert not x.getBool(c,'mySetting')
-    assert not x.enabledPluginsFileName
+x = StubConfig()
+assert not x.getBool(c,'mySetting')
+assert not x.enabledPluginsFileName
 </t>
-<t tx="ekr.20100131180007.5466">if g.unitTesting:
+<t tx="ekr.20100131180007.5466">p2 = p.firstChild().firstChild().firstChild()
 
-    c,p = g.getTestVars()
-    p2 = p.firstChild().firstChild().firstChild()
-
-    aList = g.get_directives_dict_list(p2)
-    path = c.scanAtPathDirectives(aList,createPath=False)
-    # print (path,p2.h)
-    endpath = g.os_path_normpath('one/two')
-    assert path and path.endswith(endpath),'expected ending %s got %s' % (
-        endpath,path)
+aList = g.get_directives_dict_list(p2)
+path = c.scanAtPathDirectives(aList,createPath=False)
+# print (path,p2.h)
+endpath = g.os_path_normpath('one/two')
+assert path and path.endswith(endpath),'expected ending %s got %s' % (
+    endpath,path)
 </t>
 <t tx="ekr.20100131180007.5467"></t>
 <t tx="ekr.20100131180007.5468"></t>
