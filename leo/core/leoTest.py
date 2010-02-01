@@ -1791,7 +1791,7 @@ def importAllModulesInPath (path,exclude=[]):
     return modules
 #@nonl
 #@-node:ekr.20051104075904.102:importAllModulesInPath
-#@+node:ekr.20051104075904.103:safeImportModule & test
+#@+node:ekr.20051104075904.103:safeImportModule
 #@+at 
 #@nonl
 # Warning: do NOT use g.importFromPath here!
@@ -1832,25 +1832,7 @@ def safeImportModule (fileName):
     else:
         g.pr("Not a .py file:",fileName)
         return None
-#@+node:ekr.20090703155133.6418:@test safeImportModule
-if g.unitTesting:
-
-    d = g.app.unitTestDict
-    c,p = g.getTestVars()
-    assert d.get('getTestVars') is True
-    d['getTestVars'] = False
-
-    # Do lots of imports.
-    import leo.core.leoTest as leoTest
-    path = g.os_path_join(g.app.loadDir,"..","core")
-    modules = leoTest.importAllModulesInPath(path)
-
-    # Assert that g.getTestVars has not been called.
-    val = d.get('getTestVars')
-    assert val is False, val
-
-#@-node:ekr.20090703155133.6418:@test safeImportModule
-#@-node:ekr.20051104075904.103:safeImportModule & test
+#@-node:ekr.20051104075904.103:safeImportModule
 #@-node:ekr.20051104075904.98:Utils
 #@-others
 #@-node:ekr.20051104075904:@thin leoTest.py

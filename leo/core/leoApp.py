@@ -37,7 +37,6 @@ class LeoApp:
             # 0: default behavior
             # 1: full traces in g.es_exception.
             # 2: call pdb.set_trace in g.es_exception, etc.
-        self.defaultEncoding = 'utf-8' # set later during starup.
         self.disableSave = False
         self.enableUnitTest = True
         self.extensionsDir = None
@@ -554,29 +553,6 @@ class LeoApp:
         if g.app.windowList:
             g.app.quitting = False # If we get here the quit has been disabled.
     #@-node:ekr.20031218072017.2617:app.onQuit
-    #@+node:ekr.20031218072017.2618:app.setEncoding
-    def setEncoding (self):
-
-        """Set g.app.defaultEncoding.
-        runLeo.doPrePluginsInit calls this just after reading settings files.
-        """
-
-        a = self ; c = None
-
-        for (encoding,src) in (
-            (g.app.config.getString(c,'default-encoding'),'from settings file'),
-            ("utf-8","")
-        ):
-            if g.isValidEncoding (encoding):
-                a.defaultEncoding = encoding
-                g.es('default encoding %s%s' % (
-                    encoding,src),color='orange')
-                break
-            elif encoding:
-                color = g.choose(a.defaultEncoding=="ascii","red","blue")
-                g.trace("ignoring invalid %s encoding: %s" % (
-                    src,encoding),color=color)
-    #@-node:ekr.20031218072017.2618:app.setEncoding
     #@+node:ekr.20031218072017.1978:app.setLeoID
     def setLeoID (self,verbose=True):
 

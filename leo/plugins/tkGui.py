@@ -5465,7 +5465,7 @@ class leoTkinterLog (leoFrame.leoLog):
                 g.pr(s,newline=False) # Don't add a newline.
             except UnicodeError:
                 # g.app may not be inited during scripts!
-                g.pr(g.toEncodedString(s,'utf-8'))
+                g.pr(g.toEncodedString(s))
         else:
             self.logCtrl.update_idletasks()
     #@-node:ekr.20081121110412.263:forceLogUpdate

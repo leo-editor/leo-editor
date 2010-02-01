@@ -408,7 +408,7 @@ class atFile:
         if at.errors == 0:
             g.es_print('check-derived-file passed',color='blue')
     #@-node:ekr.20070919133659:checkDerivedFile (atFile)
-    #@+node:ekr.20041005105605.19:openFileForReading (atFile) helper & test
+    #@+node:ekr.20041005105605.19:openFileForReading (atFile) helper
     def openFileForReading(self,fromString=False):
 
         '''Open the file given by at.root.
@@ -451,7 +451,7 @@ class atFile:
                 fn = None
 
         return fn
-    #@-node:ekr.20041005105605.19:openFileForReading (atFile) helper & test
+    #@-node:ekr.20041005105605.19:openFileForReading (atFile) helper
     #@+node:ekr.20041005105605.21:read (atFile) & helpers
     # This code no longer reads @noref trees.
 
@@ -1751,20 +1751,6 @@ class atFile:
         # Do **not** insert the verbatim line itself!
             # at.out.append("@verbatim\n")
         at.out.append(s[i:])
-    #@+node:ekr.20090620101138.6072:@test verbatim sentinel
-    if g.unitTesting:
-        c,p = g.getTestVars()
-
-        # Here is something that should generate a verbtim sentinel::
-
-    #@verbatim
-        #@+leo-encoding=iso-8859-1.
-
-        # The length of this node should remain constant.
-
-        assert len(p.b) == 235,len(p.b)
-    #@nonl
-    #@-node:ekr.20090620101138.6072:@test verbatim sentinel
     #@-node:ekr.20041005105605.112:readVerbatim
     #@-node:ekr.20041005105605.100:Unpaired sentinels
     #@+node:ekr.20041005105605.113:badEndSentinel, popSentinelStack
@@ -2762,7 +2748,7 @@ class atFile:
 
         return found
     #@-node:ekr.20080711093251.4:writeAtShadowNodesHelper
-    #@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers & tests
+    #@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
     def writeOneAtShadowNode(self,p,toString,force):
 
         '''Write p, an @shadow node.
@@ -2912,7 +2898,7 @@ class atFile:
                 # An unknown language.
                 pass # Use the default language, **not** 'unknown_language'
     #@-node:ekr.20080819075811.13:adjustTargetLanguage
-    #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers & tests
+    #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
     #@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
     #@+node:ekr.20050506084734:writeFromString
     # This is at.write specialized for scripting.
@@ -3915,7 +3901,7 @@ class atFile:
             ok = False
 
         return ok
-    #@+node:ekr.20090514111518.5666:syntaxError & test
+    #@+node:ekr.20090514111518.5666:syntaxError
     def syntaxError(self,p,body):
 
         g.es_print("Syntax error in: %s" % (p.h),color="red")
@@ -3934,15 +3920,7 @@ class atFile:
             if j == i:
                 g.es_print(' '*(7+val.offset)+'^')
     #@nonl
-    #@+node:ekr.20090620121836.6073:syntaxErrorTest
-    def syntaxErrorTest():
-
-        '''Used to test Leo's handling of the following syntax error'''
-
-        # xxx(c=None,'whatever')
-    #@nonl
-    #@-node:ekr.20090620121836.6073:syntaxErrorTest
-    #@-node:ekr.20090514111518.5666:syntaxError & test
+    #@-node:ekr.20090514111518.5666:syntaxError
     #@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
     #@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
     def tabNannyNode (self,p,body):
@@ -4495,16 +4473,6 @@ class atFile:
             at.error('unexpected exception writing file: %s' % (fn))
             g.es_exception()
             return False
-    #@+node:ekr.20090530055015.6873:@test at.replaceFileWithString
-    if g.unitTesting:
-
-        c,p = g.getTestVars()
-        at = c.atFileCommands
-
-        fn = 'does/not/exist'
-        assert not g.os_path_exists(fn)
-        assert not at.replaceFileWithString (fn,'abc')
-    #@-node:ekr.20090530055015.6873:@test at.replaceFileWithString
     #@-node:ekr.20080712150045.1:replaceFileWithString (atFile)
     #@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent (atFile)
     def replaceTargetFileIfDifferent (self,root,ignoreBlankLines=False):
@@ -4664,7 +4632,7 @@ class atFile:
         keys = {'color': g.choose(at.errors,'blue','red')}
         g.es_print_error(*args,**keys)
     #@-node:ekr.20041005105605.220:atFile.error & printError
-    #@+node:ekr.20080923070954.4:atFile.scanAllDirectives & test
+    #@+node:ekr.20080923070954.4:atFile.scanAllDirectives
     def scanAllDirectives(self,p,
         scripting=False,importing=False,
         reading=False,forcePythonSentinels=False,
@@ -4772,14 +4740,7 @@ class atFile:
         }
         if trace: g.trace(d)
         return d
-    #@+node:ekr.20090530055015.6069:@test at.scanAllDirectives
-    if g.unitTesting:
-
-        c,p = g.getTestVars()
-        at = c.atFileCommands
-        d = at.scanAllDirectives(p)
-    #@-node:ekr.20090530055015.6069:@test at.scanAllDirectives
-    #@-node:ekr.20080923070954.4:atFile.scanAllDirectives & test
+    #@-node:ekr.20080923070954.4:atFile.scanAllDirectives
     #@+node:ekr.20070529083836:cleanLines
     def cleanLines (self,p,s):
 
@@ -4902,7 +4863,7 @@ class atFile:
         return g.utils_stat(fileName)
     #@-node:ekr.20050104132026:stat
     #@-node:ekr.20050104131929:file operations...
-    #@+node:ekr.20090530055015.6050:fullPath (leoAtFile) & test
+    #@+node:ekr.20090530055015.6050:fullPath (leoAtFile)
     def fullPath (self,p,simulate=False):
 
         '''Return the full path (including fileName) in effect at p.
@@ -4927,24 +4888,8 @@ class atFile:
 
         # g.trace(p.h,repr(path))
         return path
-    #@+node:ekr.20090530055015.6051:@test fullDirectoryPath
-    if g.unitTesting:
-
-        c,p = g.getTestVars()
-        at = c.atFileCommands
-
-        p2 = p.firstChild().firstChild()
-        path = at.fullPath(p2,simulate=True)
-        end = g.os_path_normpath('abc/xyz')
-        assert path.endswith(end),repr(path)
-
-    #@+node:ekr.20090530055015.6146:@path abc
-    #@+node:ekr.20090530055015.6147:xyz
-    #@-node:ekr.20090530055015.6147:xyz
-    #@-node:ekr.20090530055015.6146:@path abc
-    #@-node:ekr.20090530055015.6051:@test fullDirectoryPath
-    #@-node:ekr.20090530055015.6050:fullPath (leoAtFile) & test
-    #@+node:ekr.20090530055015.6023:get/setPathUa (leoAtFile) & tests
+    #@-node:ekr.20090530055015.6050:fullPath (leoAtFile)
+    #@+node:ekr.20090530055015.6023:get/setPathUa (leoAtFile)
     def getPathUa (self,p):
 
         if hasattr(p.v,'tempAttributes'):
@@ -4961,27 +4906,7 @@ class atFile:
         d = p.v.tempAttributes.get('read-path',{})
         d['path'] = path
         p.v.tempAttributes ['read-path'] = d
-    #@+node:ekr.20090530055015.6024:@test at.get/setPathUa
-    if g.unitTesting:
-
-        c,p = g.getTestVars()
-        at = c.atFileCommands
-
-        at.setPathUa(p,'abc')
-        d = p.v.tempAttributes
-        d2 = d.get('read-path')
-        val1 = d2.get('path')
-        val2 = at.getPathUa(p)
-
-        table = (
-            ('d2.get',val1),
-            ('at.getPathUa',val2),
-        )
-        for kind,val in table:
-            assert val == 'abc','kind %s expected %s got %s' % (
-                kind,'abc',val)
-    #@-node:ekr.20090530055015.6024:@test at.get/setPathUa
-    #@-node:ekr.20090530055015.6023:get/setPathUa (leoAtFile) & tests
+    #@-node:ekr.20090530055015.6023:get/setPathUa (leoAtFile)
     #@+node:ekr.20081216090156.4:parseUnderindentTag
     def parseUnderindentTag (self,s):
 

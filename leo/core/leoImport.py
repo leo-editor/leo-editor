@@ -56,7 +56,7 @@ class leoImportCommands (scanUtility):
 
         self.c = c
         self.default_directory = None # For @path logic.
-        self.encoding = g.app.defaultEncoding
+        self.encoding = 'utf-8'
         self.errors = 0
         self.fileName = None # The original file name, say x.cpp
         self.fileType = None # ".py", ".c", etc.
@@ -780,7 +780,7 @@ class leoImportCommands (scanUtility):
         elif atAuto:
             self.encoding = c.config.default_at_auto_file_encoding
         else:
-            self.encoding = g.app.defaultEncoding
+            self.encoding = 'utf-8'
 
         # g.trace(self.encoding)
     #@-node:ekr.20031218072017.1463:setEncoding (leoImport)
@@ -1961,7 +1961,7 @@ class baseScannerClass (scanUtility):
 
         return ok
     #@-node:ekr.20071110144948:checkLeadingWhitespace
-    #@+node:ekr.20070911110507:reportMismatch & test
+    #@+node:ekr.20070911110507:reportMismatch
     def reportMismatch (self,lines1,lines2,bad_i):
 
         kind = g.choose(self.atAuto,'@auto','import command')
@@ -1979,23 +1979,7 @@ class baseScannerClass (scanUtility):
         g.es_print('\n'.join(aList),color='blue')
 
         return False
-    #@+node:ekr.20090517020744.5785:@test reportMismatch
-    if g.unitTesting:
-
-        import leo.core.leoImport as leoImport
-        c,p = g.getTestVars()
-
-        ic = c.importCommands
-        scanner = leoImport.rstScanner(importCommands=ic,atAuto=True)
-        scanner.root = p
-        s1 = ["abc",]
-        s2 = ["xyz",]
-
-        scanner.reportMismatch(s1,s2,1)
-
-        # Why is leoSettings.leo scanned twice in dynamicUnitTest.leo?
-    #@-node:ekr.20090517020744.5785:@test reportMismatch
-    #@-node:ekr.20070911110507:reportMismatch & test
+    #@-node:ekr.20070911110507:reportMismatch
     #@-node:ekr.20070808115837:Checking
     #@+node:ekr.20070706084535:Code generation
     #@+at 

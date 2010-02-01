@@ -150,8 +150,7 @@ def replaceClipboardWith (self,s):
     cb = self.qtApp.clipboard()
     if cb:
         # cb.clear()  # unnecessary, breaks on some Qt versions
-        s = g.toUnicode(s,encoding='utf-8')
-            # 2010/01/21: Omitted by mistake in rev 2686.
+        s = g.toUnicode(s)
         QtGui.QApplication.processEvents()
         cb.setText(s)
         QtGui.QApplication.processEvents()
@@ -169,7 +168,8 @@ def getTextFromClipboard (self):
         QtGui.QApplication.processEvents()
         s = cb.text()
         if trace: g.trace (len(s),type(s))
-        s = g.app.gui.toUnicode(s) # Assume nothing about the type of s.
+        s = g.app.gui.toUnicode(s)
+            # Same as g.u(s), but with error handling.
         return s
     else:
         g.trace('no clipboard!')
@@ -184,7 +184,7 @@ def toUnicode (self,s):
     except Exception:
         g.trace('*** Unicode Error: bugs possible')
         # The mass update omitted the encoding param.
-        return g.toUnicode(s,encoding='utf-8',reportErrors='replace')
+        return g.toUnicode(s,reportErrors='replace')
 #@-node:ekr.20081121105001.502:toUnicode (qtGui)
 #@-node:ekr.20100121082850.3696:Fixed unicode bug
 #@-node:ekr.20090717095154.3729:Leo 4.7 devel projects

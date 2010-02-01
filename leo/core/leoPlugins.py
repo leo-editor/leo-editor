@@ -390,7 +390,7 @@ def getEnabledFiles (s,plugins_path):
     return enabled_files
 #@-node:ekr.20070224082131:getEnabledFiles
 #@-node:ekr.20031218072017.3440:loadHandlers & helper
-#@+node:ekr.20041113113140:loadOnePlugin & test
+#@+node:ekr.20041113113140:loadOnePlugin
 def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
 
     trace = False # and not g.unitTesting
@@ -476,19 +476,7 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
                 g.trace('can not load enabled plugin:',moduleName,color="red")
 
     return result
-#@+node:ekr.20090522161156.5886:@test class StubConfig
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    class StubConfig(g.nullObject):
-        pass
-
-    x = StubConfig()
-    assert not x.getBool(c,'mySetting')
-    assert not x.enabledPluginsFileName
-#@-node:ekr.20090522161156.5886:@test class StubConfig
-#@-node:ekr.20041113113140:loadOnePlugin & test
+#@-node:ekr.20041113113140:loadOnePlugin
 #@+node:ekr.20050110191444:printHandlers
 def printHandlers (c,moduleName=None):
 

@@ -2079,20 +2079,6 @@ def readVerbatim (self,s,i):
     # Do **not** insert the verbatim line itself!
         # at.out.append("@verbatim\n")
     at.out.append(s[i:])
-#@+node:ekr.20090620101138.6072:@test verbatim sentinel
-if g.unitTesting:
-    c,p = g.getTestVars()
-
-    # Here is something that should generate a verbtim sentinel::
-
-#@verbatim
-    #@+leo-encoding=iso-8859-1.
-
-    # The length of this node should remain constant.
-
-    assert len(p.b) == 235,len(p.b)
-#@nonl
-#@-node:ekr.20090620101138.6072:@test verbatim sentinel
 #@-node:ekr.20041005105605.112:readVerbatim
 #@-node:ekr.20041005105605.100:Unpaired sentinels
 #@+node:ekr.20041005105605.113:badEndSentinel, popSentinelStack
@@ -2482,7 +2468,7 @@ def anyAtFileNodeName (self):
 
     return self.findAtFileName(names)
 #@-node:ekr.20031218072017.3350:anyAtFileNodeName
-#@+node:ekr.20031218072017.3348:at...FileNodeName & tests
+#@+node:ekr.20031218072017.3348:at...FileNodeName
 # These return the filename following @xxx, in v.headString.
 # Return the the empty string if v is not an @xxx node.
 
@@ -2528,26 +2514,7 @@ def atThinFileNodeName (self):
 atNoSentFileNodeName  = atNoSentinelsFileNodeName
 # atNorefFileNodeName   = atRawFileNodeName
 atAsisFileNodeName    = atSilentFileNodeName
-#@+node:ekr.20090521064955.5905:@test v.atAutoNodeName & v.atAutoRstNodeName
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    table = (
-        ('@auto-rst rst-file','rst-file','rst-file'),
-        ('@auto x','x',''),
-        ('xyz','',''),
-    )
-
-    for s,expected1,expected2 in table:
-        result1 = p.v.atAutoNodeName(h=s)
-        result2 = p.v.atAutoRstNodeName(h=s)
-        assert result1 == expected1,'fail1: given %s expected %s got %s' % (
-            repr(s),repr(expected1),repr(result1))
-        assert result2 == expected2,'fail2: given %s expected %s got %s' % (
-            repr(s),repr(expected2),repr(result2))
-#@-node:ekr.20090521064955.5905:@test v.atAutoNodeName & v.atAutoRstNodeName
-#@-node:ekr.20031218072017.3348:at...FileNodeName & tests
+#@-node:ekr.20031218072017.3348:at...FileNodeName
 #@+node:ekr.20040325073709:isAt...FileNode (vnode)
 def isAtAutoNode (self):
     return g.choose(self.atAutoNodeName(),True,False)
@@ -3357,53 +3324,6 @@ def handleVnodeSaxAttributes (self,sax_node,v):
     if aDict:
         # if trace: g.trace('uA',v,aDict)
         v.unknownAttributes = aDict
-#@+node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-    sax_node = g.bunch(
-        attributes={
-'a':'M',
-'lineYOffset':"4b032e",
-# A real icon attribute, see the tests below for what we expect
-'icons':"5d7100287d71012855026f6e71025505746e6f6465710355047479\
-70657104550466696c6571055507796f666673657471064b006805583700000\
-0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
-676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
-471084b01550577686572657109550e6265666f7265486561646c696e65710a\
-5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
-e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
-55026f6e710f68035504747970657110550466696c6571115507796f6666736\
-57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
-656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
-4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
-65666f7265486561646c696e6571165507786f666673657471174b025507726\
-56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
-5c626f74746f6d2e706e67711975652e"
-    })
-    try:
-        p2 = p.insertAsLastChild()
-        v = p2.v
-        c.fileCommands.handleVnodeSaxAttributes(sax_node,v)
-        # print v,v.u
-        d = v.u
-        for attr in ('lineYOffset','icons'):
-            assert d.get(attr) is not None,attr
-        # The a:M attribute should mark the node.
-        assert d.get('a') is None
-        assert v.isMarked()
-        aList = d.get('icons')
-        assert aList
-        assert len(aList) == 2
-        for d2 in aList:
-            for key in ('on','where','yoffset','file'):
-                assert d2.get(key) is not None,key
-    finally:
-        if 1:
-            while p.hasChildren():
-                # print('deleting',p.firstChild())
-                p.firstChild().doDelete()
-#@-node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
 #@-node:ekr.20061004053644:handleVnodeSaxAttributes
 #@+node:ekr.20060919110638.11:resolveTnodeLists
 def resolveTnodeLists (self):
@@ -4319,48 +4239,6 @@ def handleTnodeSaxAttributes (self,sax_node,v):
     if aDict:
         if trace: g.trace('uA',v,list(aDict.keys()))
         v.unknownAttributes = aDict
-#@+node:ekr.20090702070510.6028:@test handleTnodeSaxAttributes
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    sax_node = g.bunch(
-        tnodeAttributes={
-# The 'tx' attribute is handled by contentHandler.tnodeAttributes.
-# 'tx':"ekr.20090701133940.1767",
-'lineYOffset':"4b032e",
-# A real icon attribute, see the tests below for what we expect
-'icons':"5d7100287d71012855026f6e71025505746e6f6465710355047479\
-70657104550466696c6571055507796f666673657471064b006805583700000\
-0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
-676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
-471084b01550577686572657109550e6265666f7265486561646c696e65710a\
-5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
-e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
-55026f6e710f68035504747970657110550466696c6571115507796f6666736\
-57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
-656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
-4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
-65666f7265486561646c696e6571165507786f666673657471174b025507726\
-56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
-5c626f74746f6d2e706e67711975652e"
-})
-    try:
-        p2 = p.insertAsLastChild()
-        v = p2.v
-        c.fileCommands.handleTnodeSaxAttributes(sax_node,v)
-        # print v,v.u
-        d = v.u
-        for attr in ('lineYOffset','icons'):
-            assert d.get(attr),attr
-        for attr in ('tx','a'):
-            assert d.get(attr) is None,attr # A known attribute.
-    finally:
-        if 1:
-            while p.hasChildren():
-                # print('deleting',p.firstChild())
-                p.firstChild().doDelete()
-#@-node:ekr.20090702070510.6028:@test handleTnodeSaxAttributes
 #@-node:ekr.20060919110638.8:handleTnodeSaxAttributes
 #@+node:ekr.20061004053644:handleVnodeSaxAttributes
 # The native attributes of <v> elements are a, t, vtag, tnodeList,
@@ -4432,53 +4310,6 @@ def handleVnodeSaxAttributes (self,sax_node,v):
     if aDict:
         # if trace: g.trace('uA',v,aDict)
         v.unknownAttributes = aDict
-#@+node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-    sax_node = g.bunch(
-        attributes={
-'a':'M',
-'lineYOffset':"4b032e",
-# A real icon attribute, see the tests below for what we expect
-'icons':"5d7100287d71012855026f6e71025505746e6f6465710355047479\
-70657104550466696c6571055507796f666673657471064b006805583700000\
-0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
-676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
-471084b01550577686572657109550e6265666f7265486561646c696e65710a\
-5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
-e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
-55026f6e710f68035504747970657110550466696c6571115507796f6666736\
-57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
-656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
-4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
-65666f7265486561646c696e6571165507786f666673657471174b025507726\
-56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
-5c626f74746f6d2e706e67711975652e"
-    })
-    try:
-        p2 = p.insertAsLastChild()
-        v = p2.v
-        c.fileCommands.handleVnodeSaxAttributes(sax_node,v)
-        # print v,v.u
-        d = v.u
-        for attr in ('lineYOffset','icons'):
-            assert d.get(attr) is not None,attr
-        # The a:M attribute should mark the node.
-        assert d.get('a') is None
-        assert v.isMarked()
-        aList = d.get('icons')
-        assert aList
-        assert len(aList) == 2
-        for d2 in aList:
-            for key in ('on','where','yoffset','file'):
-                assert d2.get(key) is not None,key
-    finally:
-        if 1:
-            while p.hasChildren():
-                # print('deleting',p.firstChild())
-                p.firstChild().doDelete()
-#@-node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
 #@-node:ekr.20061004053644:handleVnodeSaxAttributes
 #@-node:ekr.20060919110638.7:fc.createSaxVnode & helpers
 #@-node:ekr.20060919110638.5:fc.createSaxChildren & helpers
@@ -4664,48 +4495,6 @@ def handleTnodeSaxAttributes (self,sax_node,v):
     if aDict:
         if trace: g.trace('uA',v,list(aDict.keys()))
         v.unknownAttributes = aDict
-#@+node:ekr.20090702070510.6028:@test handleTnodeSaxAttributes
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    sax_node = g.bunch(
-        tnodeAttributes={
-# The 'tx' attribute is handled by contentHandler.tnodeAttributes.
-# 'tx':"ekr.20090701133940.1767",
-'lineYOffset':"4b032e",
-# A real icon attribute, see the tests below for what we expect
-'icons':"5d7100287d71012855026f6e71025505746e6f6465710355047479\
-70657104550466696c6571055507796f666673657471064b006805583700000\
-0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
-676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
-471084b01550577686572657109550e6265666f7265486561646c696e65710a\
-5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
-e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
-55026f6e710f68035504747970657110550466696c6571115507796f6666736\
-57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
-656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
-4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
-65666f7265486561646c696e6571165507786f666673657471174b025507726\
-56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
-5c626f74746f6d2e706e67711975652e"
-})
-    try:
-        p2 = p.insertAsLastChild()
-        v = p2.v
-        c.fileCommands.handleTnodeSaxAttributes(sax_node,v)
-        # print v,v.u
-        d = v.u
-        for attr in ('lineYOffset','icons'):
-            assert d.get(attr),attr
-        for attr in ('tx','a'):
-            assert d.get(attr) is None,attr # A known attribute.
-    finally:
-        if 1:
-            while p.hasChildren():
-                # print('deleting',p.firstChild())
-                p.firstChild().doDelete()
-#@-node:ekr.20090702070510.6028:@test handleTnodeSaxAttributes
 #@-node:ekr.20060919110638.8:handleTnodeSaxAttributes
 #@+node:ekr.20061004053644:handleVnodeSaxAttributes
 # The native attributes of <v> elements are a, t, vtag, tnodeList,
@@ -4777,53 +4566,6 @@ def handleVnodeSaxAttributes (self,sax_node,v):
     if aDict:
         # if trace: g.trace('uA',v,aDict)
         v.unknownAttributes = aDict
-#@+node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-    sax_node = g.bunch(
-        attributes={
-'a':'M',
-'lineYOffset':"4b032e",
-# A real icon attribute, see the tests below for what we expect
-'icons':"5d7100287d71012855026f6e71025505746e6f6465710355047479\
-70657104550466696c6571055507796f666673657471064b006805583700000\
-0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
-676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
-471084b01550577686572657109550e6265666f7265486561646c696e65710a\
-5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
-e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
-55026f6e710f68035504747970657110550466696c6571115507796f6666736\
-57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
-656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
-4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
-65666f7265486561646c696e6571165507786f666673657471174b025507726\
-56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
-5c626f74746f6d2e706e67711975652e"
-    })
-    try:
-        p2 = p.insertAsLastChild()
-        v = p2.v
-        c.fileCommands.handleVnodeSaxAttributes(sax_node,v)
-        # print v,v.u
-        d = v.u
-        for attr in ('lineYOffset','icons'):
-            assert d.get(attr) is not None,attr
-        # The a:M attribute should mark the node.
-        assert d.get('a') is None
-        assert v.isMarked()
-        aList = d.get('icons')
-        assert aList
-        assert len(aList) == 2
-        for d2 in aList:
-            for key in ('on','where','yoffset','file'):
-                assert d2.get(key) is not None,key
-    finally:
-        if 1:
-            while p.hasChildren():
-                # print('deleting',p.firstChild())
-                p.firstChild().doDelete()
-#@-node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
 #@-node:ekr.20061004053644:handleVnodeSaxAttributes
 #@-node:ekr.20060919110638.7:fc.createSaxVnode & helpers
 #@+node:ekr.20031218072017.1553:fc.getLeoFile & helpers
@@ -4922,21 +4664,6 @@ def warnOnReadOnlyFiles (self,fileName):
 
     if self.read_only and not g.unitTesting:
         g.es("read only:",fileName,color="red")
-#@+node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
-if g.unitTesting:
-
-    import os,stat
-    c,p = g.getTestVars()
-    fc = c.fileCommands
-
-    path = g.os_path_finalize_join(g.app.loadDir,'..','test','test-read-only.txt')
-    if os.path.exists(path):
-        os.chmod(path, stat.S_IREAD)
-        fc.warnOnReadOnlyFiles(path)
-        assert fc.read_only
-    else:
-        fc.warnOnReadOnlyFiles(path)
-#@-node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
 #@-node:ekr.20031218072017.1554:warnOnReadOnlyFiles
 #@-node:ekr.20031218072017.1553:fc.getLeoFile & helpers
 #@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
@@ -5456,7 +5183,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
     frame.c.setChanged(True) # Mark the outline dirty.
     return c
 #@-node:ekr.20080921154026.1:g.openWrapperLeoFile
-#@+node:ekr.20080713091247.1:x.replaceFileWithString & test
+#@+node:ekr.20080713091247.1:x.replaceFileWithString
 def replaceFileWithString (self,fn,s):
 
     '''Replace the file with s if s is different from theFile's contents.
@@ -5487,7 +5214,7 @@ def replaceFileWithString (self,fn,s):
     # Replace the file.
     try:
         f = open(fn,'wb')
-        f.write(g.toEncodedString(s,encoding='utf-8'))
+        f.write(g.toEncodedString(s))
         if trace: g.trace('fn',fn,
             '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
             '\ncallers',g.callers(4))
@@ -5501,17 +5228,7 @@ def replaceFileWithString (self,fn,s):
         x.error('unexpected exception writing file: %s' % (fn))
         g.es_exception()
         return False
-#@+node:ekr.20090530055015.6862:@test x.replaceFileWithString
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-    x = c.shadowController
-
-    fn = 'does/not/exist'
-    assert not g.os_path_exists(fn)
-    assert not x.replaceFileWithString (fn,'abc')
-#@-node:ekr.20090530055015.6862:@test x.replaceFileWithString
-#@-node:ekr.20080713091247.1:x.replaceFileWithString & test
+#@-node:ekr.20080713091247.1:x.replaceFileWithString
 #@+node:ekr.20031218072017.3481:untangleRoot (calls cleanup)
 @ This method untangles the derived files in a vnode known to contain at least one @root directive. The work is done in two passes. The first pass creates the UST by scanning the derived file. The second pass updates the outline using the UST and a TST that is created during the pass.
 
@@ -5903,7 +5620,7 @@ def checkPythonSyntax (self,p,body):
         ok = False
 
     return ok
-#@+node:ekr.20090514111518.5666:syntaxError & test
+#@+node:ekr.20090514111518.5666:syntaxError
 def syntaxError(self,p,body):
 
     g.es_print("Syntax error in: %s" % (p.h),color="red")
@@ -5922,15 +5639,7 @@ def syntaxError(self,p,body):
         if j == i:
             g.es_print(' '*(7+val.offset)+'^')
 #@nonl
-#@+node:ekr.20090620121836.6073:syntaxErrorTest
-def syntaxErrorTest():
-
-    '''Used to test Leo's handling of the following syntax error'''
-
-    # xxx(c=None,'whatever')
-#@nonl
-#@-node:ekr.20090620121836.6073:syntaxErrorTest
-#@-node:ekr.20090514111518.5666:syntaxError & test
+#@-node:ekr.20090514111518.5666:syntaxError
 #@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
 #@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
 def tabNannyNode (self,p,body):
@@ -6014,16 +5723,6 @@ def replaceFileWithString (self,fn,s):
         at.error('unexpected exception writing file: %s' % (fn))
         g.es_exception()
         return False
-#@+node:ekr.20090530055015.6873:@test at.replaceFileWithString
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-    at = c.atFileCommands
-
-    fn = 'does/not/exist'
-    assert not g.os_path_exists(fn)
-    assert not at.replaceFileWithString (fn,'abc')
-#@-node:ekr.20090530055015.6873:@test at.replaceFileWithString
 #@-node:ekr.20080712150045.1:replaceFileWithString (atFile)
 #@-node:ekr.20100125073206.8720:Changed...
 #@-node:ekr.20100125073206.8711:use g.readFileIntoString
@@ -6169,10 +5868,10 @@ def reportBadChars (s,encoding):
                     g.es(s2,color='red')
 #@-node:ekr.20031218072017.1501:g.reportBadChars
 #@+node:ekr.20050208093800:g.toEncodedString
-def toEncodedString (s,encoding=None,reportErrors=False):
+def toEncodedString (s,encoding='utf-8',reportErrors=False):
 
     if encoding is None:
-        encoding = g.app.defaultEncoding
+        encoding = 'utf-8'
 
     if g.isUnicode(s):
         try:
@@ -6183,12 +5882,12 @@ def toEncodedString (s,encoding=None,reportErrors=False):
     return s
 #@-node:ekr.20050208093800:g.toEncodedString
 #@+node:ekr.20050208093800.1:g.toUnicode
-def toUnicode (s,encoding=None,reportErrors=False):
+def toUnicode (s,encoding='utf-8',reportErrors=False):
 
-    # The encoding is usually g.app.defaultEncoding,
+    # The encoding is usually 'utf-8'
     # but is may be different while importing or reading files.
     if encoding is None:
-        encoding = g.app.defaultEncoding
+        encoding = 'utf-8'
 
     if isPython3:
         f,mustConvert = str,g.isBytes
@@ -6580,7 +6279,7 @@ self.navTime = None
 pth, bname = os.path.split(self.mFileName)
 if pth and bname and g.enableDB:
     fn = self.mFileName.lower()
-    fn = g.toEncodedString(fn,'utf-8') # Required for Python 3.x.
+    fn = g.toEncodedString(fn) # Required for Python 3.x.
     dbdirname = '%s/db/%s_%s' % (
         g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
     # Use compressed pickles (handy for @thin caches)
@@ -8054,15 +7753,7 @@ def completeFileName (fileName):
     if not (fileName and fileName.strip()):
         return None,None
 
-    # This does not depend on config settings.
-    # try:
-        # if sys.platform.lower().startswith('win'):
-            # fileName = g.toUnicode(fileName,'mbcs')
-        # else:
-            # fileName = g.toUnicode(fileName,'utf-8')
-    # except Exception: pass
-
-    fileName = g.toUnicode(fileName,'utf-8')
+    fileName = g.toUnicode(fileName)
 
     relativeFileName = fileName
     fileName = g.os_path_finalize(fileName)
@@ -8165,7 +7856,7 @@ def initWrite (self,p):
     # This can be overridden by @rst-option encoding=whatever.
     c = self.c
     d = c.scanAllDirectives(p)
-    self.encoding = d.get('encoding') or g.app.defaultEncoding
+    self.encoding = d.get('encoding') or 'utf-8'
     self.path = d.get('path') or ''
 
     # g.trace('path:',self.path)
@@ -8299,6 +7990,14 @@ for v in vnodeInfoDict:
 #@-node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
 #@-node:ekr.20031218072017.1551:pasteOutline
 #@-node:ekr.20100131065400.6287:paste-node-as-clone now sets dirty bits properly
+#@+node:ekr.20100131155919.6297:Eliminated g.app.defaultEncoding
+- Make 'utf-8' the explicit, official default for the encoding param to
+  g.toUnicode, g.toEncodedString, etc.
+
+- Replace g.app.defaultEncoding by 'utf-8', or eliminate it entirely when it would
+  be the encoding param to g.toUnicode, etc.
+#@nonl
+#@-node:ekr.20100131155919.6297:Eliminated g.app.defaultEncoding
 #@-node:ekr.20100129131524.6188:Leo 4.7 b3 projects
 #@+node:ekr.20100130164410.6332:Recent
 #@+node:ekr.20100129131524.6190:improve caching
@@ -9934,7 +9633,7 @@ self.last_flag = "unknown"
 self.last_language = "unknown"
 #@-node:ekr.20031218072017.1889:<< set state ivars to "unknown" >>
 #@-node:ekr.20031218072017.1880:colorizeAnyLanguage & allies
-#@+node:ekr.20080828103146.15:c.scanAtPathDirectives & test
+#@+node:ekr.20080828103146.15:c.scanAtPathDirectives
 def scanAtPathDirectives(self,aList,force=False,createPath=True):
 
     '''Scan aList for @path directives.
@@ -9998,26 +9697,7 @@ def scanAtPathDirectives(self,aList,force=False,createPath=True):
     if trace: g.trace('returns',path)
 
     return path
-#@+node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-    p2 = p.firstChild().firstChild().firstChild()
-
-    aList = g.get_directives_dict_list(p2)
-    path = c.scanAtPathDirectives(aList,createPath=False)
-    # print (path,p2.h)
-    endpath = g.os_path_normpath('one/two')
-    assert path and path.endswith(endpath),'expected ending %s got %s' % (
-        endpath,path)
-#@+node:ekr.20090530055015.6121:@path one
-#@+node:ekr.20090530055015.6073:@path two
-#@+node:ekr.20090530055015.6074:xyz
-#@-node:ekr.20090530055015.6074:xyz
-#@-node:ekr.20090530055015.6073:@path two
-#@-node:ekr.20090530055015.6121:@path one
-#@-node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
-#@-node:ekr.20080828103146.15:c.scanAtPathDirectives & test
+#@-node:ekr.20080828103146.15:c.scanAtPathDirectives
 #@+node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
 def __init__ (self,c):
 
@@ -10212,7 +9892,7 @@ def doHook(tag,*args,**keywords):
         g.app.idleTimeHook = False # Supress idle-time hook
         return None # No return value
 #@-node:ekr.20031218072017.1596:g.doHook
-#@+node:ekr.20041113113140:loadOnePlugin & test
+#@+node:ekr.20041113113140:loadOnePlugin
 def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
 
     trace = False # and not g.unitTesting
@@ -10298,19 +9978,7 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
                 g.trace('can not load enabled plugin:',moduleName,color="red")
 
     return result
-#@+node:ekr.20090522161156.5886:@test class StubConfig
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    class StubConfig(g.nullObject):
-        pass
-
-    x = StubConfig()
-    assert not x.getBool(c,'mySetting')
-    assert not x.enabledPluginsFileName
-#@-node:ekr.20090522161156.5886:@test class StubConfig
-#@-node:ekr.20041113113140:loadOnePlugin & test
+#@-node:ekr.20041113113140:loadOnePlugin
 #@+node:ekr.20061031131434.100:addModeCommands (enterModeCallback)
 def addModeCommands (self):
 
@@ -10330,762 +9998,6 @@ def addModeCommands (self):
         # g.trace('leoCommands %24s = %s' % (f.__name__,key))
 #@-node:ekr.20061031131434.100:addModeCommands (enterModeCallback)
 #@-node:ekr.20100130042842.9008:Using g.app.config ivars
-#@+node:ekr.20100130042842.9009:Usage of g.app.config ivars
-#@+node:ekr.20100130042842.9010:at_root_bodies_start_in_doc_mode
-@nocolor-node
-
-at_root_bodies_start_in_doc_mode
-
-c.scanAtRootDirectives
-    should use c.config.getBool instead of the weird code.
-
-g.scanAtRootOptions
-    Why doesn't this use c.config ivars??
-    Actually, this should be tangle.scanAtRootOptions.  We know c!
-
-leoImport.convertVnodeToWeb:
-    Uses c.config.at_root_bodies_start_in_doc_mode
-#@nonl
-#@+node:ekr.20080828103146.12:c.scanAtRootDirectives
-# Called only by scanColorDirectives.
-
-def scanAtRootDirectives(self,aList):
-
-    '''Scan aList for @root-code and @root-doc directives.'''
-
-    c = self
-
-    # To keep pylint happy.
-    tag = 'at_root_bodies_start_in_doc_mode'
-    start_in_doc = hasattr(c.config,tag) and getattr(c.config,tag)
-
-    # New in Leo 4.6: dashes are valid in directive names.
-    for d in aList:
-        if 'root-code' in d:
-            return 'code'
-        elif 'root-doc' in d:
-            return 'doc'
-        elif 'root' in d:
-            return g.choose(start_in_doc,'doc','code')
-
-    return None
-#@-node:ekr.20080828103146.12:c.scanAtRootDirectives
-#@+node:ekr.20031218072017.3154:g.scanAtRootOptions
-def scanAtRootOptions (s,i,err_flag=False):
-
-    # The @root has been eaten when called from tangle.scanAllDirectives.
-    if g.match(s,i,"@root"):
-        i += len("@root")
-        i = g.skip_ws(s,i)
-
-    mode = None 
-    while g.match(s,i,'-'):
-        << scan another @root option >>
-
-    if mode == None:
-        doc = app.config.at_root_bodies_start_in_doc_mode
-        mode = g.choose(doc,"doc","code")
-
-    return i,mode
-#@+node:ekr.20031218072017.3155:<< scan another @root option >>
-i += 1 ; err = -1
-
-if g.match_word(s,i,"code"): # Just match the prefix.
-    if not mode: mode = "code"
-    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
-elif g.match(s,i,"doc"): # Just match the prefix.
-    if not mode: mode = "doc"
-    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
-else:
-    err = i-1
-
-# Scan to the next minus sign.
-while i < len(s) and s[i] not in (' ','\t','-'):
-    i += 1
-
-if err > -1 and err_flag:
-    z_opt = s[err:i]
-    z_line = g.get_line(s,i)
-    g.es("unknown option:",z_opt,"in",z_line)
-#@-node:ekr.20031218072017.3155:<< scan another @root option >>
-#@-node:ekr.20031218072017.3154:g.scanAtRootOptions
-#@-node:ekr.20100130042842.9010:at_root_bodies_start_in_doc_mode
-#@-node:ekr.20100130042842.9009:Usage of g.app.config ivars
-#@+node:ekr.20100130035231.6254:app.defaultEncoding
-#@+node:ekr.20031218072017.2618:app.setEncoding
-def setEncoding (self):
-
-    """Set g.app.defaultEncoding.
-    runLeo.doPrePluginsInit calls this just after reading settings files.
-    """
-
-    a = self ; c = None
-
-    for (encoding,src) in (
-        (g.app.config.getString(c,'default-encoding'),'from settings file'),
-        ("utf-8","")
-    ):
-        if g.isValidEncoding (encoding):
-            a.defaultEncoding = encoding
-            g.es('default encoding %s%s' % (
-                encoding,src),color='orange')
-            break
-        elif encoding:
-            color = g.choose(a.defaultEncoding=="ascii","red","blue")
-            g.trace("ignoring invalid %s encoding: %s" % (
-                src,encoding),color=color)
-#@-node:ekr.20031218072017.2618:app.setEncoding
-#@+node:ekr.20100130164946.6289:simplified
-# There is no need for an explicit encoding param now.
-#@nonl
-#@+node:ekr.20031218072017.2160:toUnicodeFileEncoding
-def toUnicodeFileEncoding(path):
-
-    if path: path = path.replace('\\', os.sep)
-
-    # Yes, this is correct.  All os_path_x functions return Unicode strings.
-    return g.toUnicode(path)
-#@-node:ekr.20031218072017.2160:toUnicodeFileEncoding
-#@+node:ekr.20040713064323:dumpLines
-def dumpLines (self,p,lines):
-
-    g.pr('\n','-'*10,p.cleanHeadString())
-
-    if 0:
-        for line in lines:
-            line2 = g.toEncodedString(line,reportErrors=True)
-            g.pr(line2,newline=False) # Don't add a trailing newline!)
-    else:
-        for i in range(len(lines)):
-            line = lines[i]
-            line = g.toEncodedString(line,reportErrors=True)
-            g.pr("%3d" % i, repr(lines[i]))
-#@-node:ekr.20040713064323:dumpLines
-#@+node:ekr.20050208093800:g.toEncodedString
-def toEncodedString (s,encoding=None,reportErrors=False):
-
-    if encoding is None:
-        encoding = g.app.defaultEncoding
-
-    if g.isUnicode(s):
-        try:
-            s = s.encode(encoding,"strict")
-        except UnicodeError:
-            if reportErrors: g.reportBadChars(s,encoding)
-            s = s.encode(encoding,"replace")
-    return s
-#@-node:ekr.20050208093800:g.toEncodedString
-#@-node:ekr.20100130164946.6289:simplified
-#@+node:ekr.20100130035231.6255:Found: .defaultEncoding
-#@+node:ekr.20050208093800.1:g.toUnicode
-def toUnicode (s,encoding=None,reportErrors=False):
-
-    # The encoding is usually g.app.defaultEncoding,
-    # but is may be different while importing or reading files.
-    if encoding is None:
-        encoding = g.app.defaultEncoding
-
-    if isPython3:
-        f,mustConvert = str,g.isBytes
-    else:
-        f = unicode
-        def mustConvert (s):
-            return type(s) != types.UnicodeType
-
-    if not s:
-        s = g.u('')
-    elif mustConvert(s):
-        try:
-            s = f(s,encoding,'strict')
-        except (UnicodeError,Exception):
-            s = f(s,encoding,'replace')
-            if reportErrors: g.reportBadChars(s,encoding)
-    else:
-        pass
-
-    return s
-#@-node:ekr.20050208093800.1:g.toUnicode
-#@+node:ekr.20031218072017.1416:app.__init__
-def __init__(self):
-
-    # These ivars are the global vars of this program.
-    self.afterHandler = None
-    self.batchMode = False # True: run in batch mode.
-    self.commandName = None # The name of the command being executed.
-    self.config = None # The leoConfig instance.
-    self.count = 0 # General purpose debugging count.
-    self.debug = False # True: enable extra debugging tests (not used at present).
-        # WARNING: this could greatly slow things down.
-    self.debugSwitch = 0
-        # 0: default behavior
-        # 1: full traces in g.es_exception.
-        # 2: call pdb.set_trace in g.es_exception, etc.
-    self.defaultEncoding = 'utf-8' # set later during starup.
-    self.disableSave = False
-    self.enableUnitTest = True
-    self.extensionsDir = None
-    self.globalConfigDir = None # The directory that is assumed to contain the global configuration files.
-    self.globalOpenDir = None # The directory last used to open a file.
-    self.gui = None # The gui class.
-    self.hasOpenWithMenu = False # True: open with plugin has been loaded.
-    self.hookError = False # True: suppress further calls to hooks.
-    self.hookFunction = None # Application wide hook function.
-    self.homeDir = None # The user's home directory.
-    self.homeLeoDir = None # The '.leo' subdirectory of the user's home directory. New in Leo 4.5b4.
-    self.homeSettingsPrefix = '.' # prepend to "myLeoSettings.leo" and <machineName>LeoSettings.leo
-    self.idle_imported = False # True: we have done an import idle
-    self.idleTimeDelay = 100 # Delay in msec between calls to "idle time" hook.
-    self.idleTimeHook = False # True: the global idleTimeHookHandler will reshedule itself.
-    self.inBridge = False # True: running from leoBridge module.
-    self.initing = True # True: we are initiing the app.
-    self.killed = False # True: we are about to destroy the root window.
-    self.leoID = None # The id part of gnx's.
-    self.loadDir = None # The directory from which Leo was loaded.
-    self.loadedPlugins = [] # List of loaded plugins that have signed on.
-    self.log = None # The LeoFrame containing the present log.
-    self.logInited = False # False: all log message go to logWaiting list.
-    self.logIsLocked = False # True: no changes to log are allowed.
-    self.logWaiting = [] # List of messages waiting to go to a log.
-    self.menuWarningsGiven = False # True: supress warnings in menu code.
-    self.nodeIndices = None # Singleton node indices instance.
-    self.numberOfWindows = 0 # Number of opened windows.
-    self.oneConfigFilename = '' # If non-empty, the name of a single configuration file.
-    self.openWithFiles = [] # List of data used by Open With command.
-    self.openWithFileNum = 0 # Used to generate temp file names for Open With command.
-    self.openWithTable = None # The table passed to createOpenWithMenuFromTable.
-    self.positions = 0 # Count of the number of positions generated.
-    self.printWaiting = [] # Queue of messages to be sent to the printer.
-    self.qt_use_tabs = False # True: allow tabbed main window.
-    self.quitting = False # True if quitting.  Locks out some events.
-    self.realMenuNameDict = {} # Contains translations of menu names and menu item names.
-    self.root = None # The hidden main window. Set later.
-    self.searchDict = {} # For communication between find/change scripts.
-    self.scanErrors = 0 # The number of errors seen by g.scanError.
-    self.scriptDict = {} # For communication between Execute Script command and scripts.
-    self.silentMode = False # True if signon is more silent.
-    self.statsDict = {} # Statistics dict used by g.stat, g.clear_stats, g.print_stats.
-    self.trace = False # True: enable debugging traces.
-    self.trace_gc = False # defined in run()
-    self.trace_gc_calls = False # defined in run()
-    self.trace_gc_verbose = False # defined in run()
-    self.trace_gc_inited = False
-    self.tracePositions = False
-    self.trace_list = [] # "Sherlock" argument list for tracing().
-    self.translateToUpperCase = False
-    self.unicodeErrorGiven = True # True: suppres unicode tracebacks.
-    self.unitTestDict = {} # For communication between unit tests and code.
-    self.unitTesting = False # True if unit testing.
-    self.useIpython = False
-    self.use_psyco = False # Can't be a config param because it is used before config module can be inited.
-    self.user_xresources_path = None # Resource file for Tk/tcl.
-    self.windowList = [] # Global list of all frames.  Does not include hidden root window.
-
-    # Global panels.  Destroyed when Leo ends.
-    self.pythonFrame = None
-
-    << Define global constants >>
-    << Define global data structures >>
-#@+node:ekr.20031218072017.1417:<< define global constants >>
-# self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-
-self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
-self.prolog_postfix_string = "?>"
-self.prolog_namespace_string = 'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
-#@nonl
-#@-node:ekr.20031218072017.1417:<< define global constants >>
-#@+node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
-# Internally, lower case is used for all language names.
-self.language_delims_dict = {
-    # Keys are languages, values are 1,2 or 3-tuples of delims.
-    "ada"           : "--",
-    "batch"         : "REM_", # Use the REM hack.
-    "actionscript"  : "// /* */", #jason 2003-07-03
-    "autohotkey"    : "; /* */", #TL - AutoHotkey language
-    "c"             : "// /* */", # C, C++ or objective C.
-    "config"        : "#", # Leo 4.5.1
-    "csharp"        : "// /* */", # C#
-    "cpp"           : "// /* */",# C++.
-    "css"           : "/* */", # 4/1/04
-    "cweb"          : "@q@ @>", # Use the "cweb hack"
-    "elisp"         : ";",
-    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
-    "fortran"       : "C",
-    "fortran90"     : "!",
-    "haskell"       : "--_ {-_ _-}",
-    "haxe"          : "//",
-    "html"          : "<!-- -->",
-    "ini"           : ";",
-    "java"          : "// /* */",
-    "kshell"        : "#", # Leo 4.5.1.
-    "latex"         : "%",
-    "lua"           : "--",  # ddm 13/02/06
-    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
-    "pascal"        : "// { }",
-    "perl"          : "#",
-    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
-    "php"           : "// /* */", # 6/23/07: was "//",
-    "plain"         : "#", # We must pick something.
-    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
-    "python"        : "#",
-    "rapidq"        : "'", # fil 2004-march-11
-    "rebol"         : ";",  # jason 2003-07-03
-    "rest"          : ".._",
-    "rst"           : ".._",
-    "ruby"          : "#",  # thyrsus 2008-11-05
-    "shell"         : "#",  # shell scripts
-    "tcltk"         : "#",
-    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
-    "unknown"       : "#", # Set when @comment is seen.
-    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
-    "vim"           : "\"",
-    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
-    "xml"           : "<!-- -->",
-    "xslt"          : "<!-- -->",
-}
-
-self.language_extension_dict = {
-    # Keys are languages, values are extensions.
-    "ada"           : "ada",
-    "actionscript"  : "as", #jason 2003-07-03
-    "autohotkey"    : "ahk", #TL - AutoHotkey language
-    "batch"         : "bat", # Leo 4.5.1.
-    "c"             : "c",
-    "config"        : "cfg",
-    "cpp"           : "cpp",
-    "css"           : "css", # 4/1/04
-    "cweb"          : "w",
-    "elisp"         : "el",
-    "forth"         : "forth",
-    "fortran"       : "f",
-    "fortran90"     : "f90",
-    "haskell"       : "hs",
-    "haxe"          : "hx",
-    "html"          : "html",
-    "ini"           : "ini",
-    "java"          : "java",
-    "kshell"        : "ksh", # Leo 4.5.1.
-    "latex"         : "tex", # 1/8/04
-    "lua"           : "lua",  # ddm 13/02/06
-    "noweb"         : "nw",
-    "pascal"        : "p",
-    "perl"          : "pl",      # 11/7/05
-    "perlpod"       : "pod",  # 11/7/05
-    "php"           : "php",
-    "plain"         : "txt",
-    "python"        : "py",
-    "plsql"         : "sql", # qt02537 2005-05-27
-    "rapidq"        : "bas", # fil 2004-march-11
-    "rebol"         : "r",    # jason 2003-07-03
-    # "rst"           : "rst", # caught by pylint.
-    "rst"           : "rest",
-    "ruby"          : "rb",   # thyrsus 2008-11-05
-    "shell"         : "sh",   # DS 4/1/04
-    "tex"           : "tex",
-    "tcltk"         : "tcl",
-    "unknown"       : "txt", # Set when @comment is seen.
-    "vim"           : "vim",
-    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
-    "xml"           : "xml",
-    "xslt"          : "xsl",
-}
-
-self.extension_dict = {
-    # Keys are extensions, values are languages.
-    "ada"   : "ada",
-    "adb"   : "ada",
-    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
-    "as"    : "actionscript",
-    "bas"   : "rapidq",
-    "bat"   : "batch",
-    "c"     : "c",
-    "cfg"   : "config",
-    "cpp"   : "cpp",
-    "css"   : "css",
-    "el"    : "elisp",
-    "forth" : "forth",
-    "f"     : "fortran",
-    "f90"   : "fortran90",
-    "h"     : "c",
-    "html"  : "html",
-    "hs"    : "haskell",
-    "ini"   : "ini",
-    "java"  : "java",
-    "ksh"   : "kshell", # Leo 4.5.1.
-    "lua"   : "lua",  # ddm 13/02/06
-    "nw"    : "noweb",
-    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
-    "p"     : "pascal",
-    "pl"    : "perl",   # 11/7/05
-    "pod"   : "perlpod", # 11/7/05
-    "php"   : "php",
-    "py"    : "python",
-    "sql"   : "plsql", # qt02537 2005-05-27
-    "r"     : "rebol",
-    "rb"    : "ruby", # thyrsus 2008-11-05
-    "rest"  : "rst",
-    "rst"   : "rst",
-    "sh"    : "shell",
-    "tex"   : "tex",
-    "txt"   : "plain",
-    "tcl"   : "tcltk",
-    "vim"   : "vim",
-    "w"     : "cweb",
-    "xml"   : "xml",
-    "xsl"   : "xslt",
-    "hx"    : "haxe",
-}
-
-# Extra language extensions, used to associate extensions with mode files.
-# Used by importCommands.languageForExtension.
-# Keys are extensions, values are corresponding mode file (without .py)
-# A value of 'none' is a signal to unit tests that no extension file exists.
-self.extra_extension_dict = {
-    'actionscript': 'actionscript',
-    'ada'   : 'ada95',
-    'adb'   : 'none', # ada??
-    'awk'   : 'awk',
-    'bas'   : 'none', # rapidq
-    'bat'   : 'none', # batch
-    'cfg'   : 'none', # Leo 4.5.1
-    'cpp'   : 'c',
-    'el'    : 'lisp',
-    'f'     : 'fortran90',
-    'hx'    : 'none',
-    'ksh'   : 'none', # Leo 4.5.1
-    'nw'    : 'none', # noweb.
-    'otl'   : 'none', # vimoutline.
-    'pod'   : 'perl',
-    'tcl'   : 'tcl',
-    'unknown_language': 'none',
-    'w'     : 'none', # cweb
-}
-
-self.global_commands_dict = {}
-#@-node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
-#@-node:ekr.20031218072017.1416:app.__init__
-#@+node:ekr.20031218072017.2278:g.importFromPath
-def importFromPath (name,path,pluginName=None,verbose=False):
-
-    trace = False # and not g.unitTesting
-    fn = g.shortFileName(name)
-    moduleName,ext = g.os_path_splitext(fn)
-    path = g.os_path_normpath(path)
-    path = g.toEncodedString(path,app and app.defaultEncoding or 'ascii')
-
-    module = sys.modules.get(moduleName)
-    if module:
-        if trace: g.trace('already loaded',moduleName,module)
-        return module
-
-    try:
-        theFile = None
-        import imp
-        try:
-            data = imp.find_module(moduleName,[path]) # This can open the file.
-            theFile,pathname,description = data
-            module = imp.load_module(moduleName,theFile,pathname,description)
-        except ImportError:
-            if trace: # or verbose:
-                g.es_print("exception in g.importFromPath",color='blue')
-                g.es_exception()
-        except UiTypeException:
-            g.es_print("Ui type not compatible for plugin (%s)" %
-                (name),color='blue')            
-        except Exception:
-            g.es_print("unexpected exception in g.importFromPath(%s)" %
-                (name),color='blue')
-            g.es_exception()
-    # Put no return statements before here!
-    finally: 
-        if theFile: theFile.close()
-
-    if module:
-        if trace: g.trace('loaded',moduleName)
-    else:
-        g.cantImport(moduleName,pluginName=pluginName,verbose=verbose)
-
-    return module
-#@-node:ekr.20031218072017.2278:g.importFromPath
-#@+node:ekr.20031218072017.3207:import.__init__ & helper
-def __init__ (self,c):
-
-    self.c = c
-    self.default_directory = None # For @path logic.
-    self.encoding = g.app.defaultEncoding
-    self.errors = 0
-    self.fileName = None # The original file name, say x.cpp
-    self.fileType = None # ".py", ".c", etc.
-    self.methodName = None # x, as in < < x methods > > =
-    self.output_newline = g.getOutputNewline(c=c) # Value of @bool output_newline
-    self.rootLine = "" # Empty or @root + self.fileName
-    self.tab_width = c.tab_width # The tab width in effect in the c.currentPosition.
-    self.trace = c.config.getBool('trace_import')
-    self.treeType = "@file" # "@root" or "@file"
-    self.webType = "@noweb" # "cweb" or "noweb"
-    self.web_st = [] # noweb symbol table.
-
-    self.createImportDispatchDict()
-#@+node:ekr.20080825131124.3:createImportDispatchDict
-def createImportDispatchDict (self):
-
-    self.importDispatchDict = {
-        # Keys are file extensions, values are text scanners.
-        # Text scanners must have the signature scanSomeText(self,s,parent,atAuto=False)
-        '.c':       self.scanCText,
-        '.h':       self.scanCText,
-        '.h++':     self.scanCText,
-        '.cc':      self.scanCText,
-        '.c++':     self.scanCText,
-        '.cpp':     self.scanCText,
-        '.cxx':     self.scanCText,
-        '.cs':      self.scanCSharpText,
-        '.el':      self.scanElispText,
-        '.htm':     self.scanXmlText,
-        '.html':    self.scanXmlText,
-        '.java':    self.scanJavaText,
-        '.js':      self.scanJavaScriptText,
-        '.php':     self.scanPHPText,
-        '.pas':     self.scanPascalText,
-        '.py':      self.scanPythonText,
-        '.pyw':     self.scanPythonText,
-        # '.txt':     self.scanRstText, # A reasonable default.
-        # '.rest':    self.scanRstText,
-        # '.rst':     self.scanRstText,
-        '.xml':     self.scanXmlText,
-    }
-#@-node:ekr.20080825131124.3:createImportDispatchDict
-#@-node:ekr.20031218072017.3207:import.__init__ & helper
-#@+node:ekr.20031218072017.1463:setEncoding (leoImport)
-def setEncoding (self,p=None,atAuto=False):
-
-    # c.scanAllDirectives checks the encoding: may return None.
-    c = self.c
-    if p is None: p = c.p
-    theDict = c.scanAllDirectives(p)
-    encoding = theDict.get("encoding")
-    if encoding and g.isValidEncoding(encoding):
-        self.encoding = encoding
-    elif atAuto:
-        self.encoding = c.config.default_at_auto_file_encoding
-    else:
-        self.encoding = g.app.defaultEncoding
-
-    # g.trace(self.encoding)
-#@-node:ekr.20031218072017.1463:setEncoding (leoImport)
-#@+node:ekr.20090502071837.36:<< init ivars >> (leoRst)
-self.silverCityWarningGiven = False
-
-# The options dictionary.
-self.optionsDict = {}
-self.option_prefix = '@rst-option'
-
-# Formatting...
-self.code_block_string = ''
-self.node_counter = 0
-self.topLevel = 0
-self.topNode = None
-self.use_alternate_code_block = SilverCity is None
-
-# Http support...
-self.nodeNumber = 0
-# All nodes are numbered so that unique anchors can be generated.
-
-self.http_map = {} 
-# Keys are named hyperlink targets.  Value are positions.
-# The targets mark the beginning of the html code specific
-# for this position.
-
-self.anchor_map = {}
-# Maps anchors (generated by this module) to positions
-
-self.rst3_all = False
-# Set to True by the button which processes all @rst trees.
-
-# For writing.
-self.atAutoWrite = False # True, special cases for writeAtAutoFile.
-self.atAutoWriteUnderlines = '' # Forced underlines for writeAtAutoFile.
-self.leoDirectivesList = g.globalDirectiveList
-self.encoding = g.app.defaultEncoding
-self.ext = None # The file extension.
-self.outputFileName = None # The name of the file being written.
-self.outputFile = None # The open file being written.
-self.path = '' # The path from any @path directive.
-self.source = None # The written source as a string.
-self.trialWrite = False # True if doing a trialWrite.
-#@nonl
-#@-node:ekr.20090502071837.36:<< init ivars >> (leoRst)
-#@+node:ekr.20090502071837.60:initWrite (rstCommands)
-def initWrite (self,p):
-
-    self.initOptionsFromSettings() # Still needed.
-
-    # Set the encoding from any parent @encoding directive.
-    # This can be overridden by @rst-option encoding=whatever.
-    c = self.c
-    d = c.scanAllDirectives(p)
-    self.encoding = d.get('encoding') or g.app.defaultEncoding
-    self.path = d.get('path') or ''
-
-    # g.trace('path:',self.path)
-#@-node:ekr.20090502071837.60:initWrite (rstCommands)
-#@-node:ekr.20100130035231.6255:Found: .defaultEncoding
-#@+node:ekr.20050328133444:g.computeStandardDirectories & helpers
-def computeStandardDirectories():
-
-    '''Set g.app.loadDir, g.app.homeDir, g.app.homeLeoDir and g.app.globalConfigDir.'''
-
-    g.app.loadDir = g.computeLoadDir()
-    g.app.leoDir = g.computeLeoDir()
-    g.app.homeDir = g.computeHomeDir()
-
-    g.app.homeLeoDir = homeLeoDir = g.os_path_finalize(
-        g.os_path_join(g.app.homeDir,'.leo'))
-
-    if not g.os_path_exists(homeLeoDir):
-        g.makeAllNonExistentDirectories(homeLeoDir,force=True)
-
-    g.app.extensionsDir = g.os_path_finalize(
-        g.os_path_join(g.app.loadDir,'..','extensions'))
-
-    g.app.globalConfigDir = g.computeGlobalConfigDir()
-
-    g.app.testDir = g.os_path_finalize(
-        g.os_path_join(g.app.loadDir,'..','test'))
-
-    g.app.user_xresources_path = g.os_path_join(
-        g.app.homeDir,'.leo_xresources')
-#@+node:ekr.20041117155521:computeGlobalConfigDir
-def computeGlobalConfigDir():
-
-    import leo.core.leoGlobals as g
-
-    # To avoid pylint complaints that sys.leo_config_directory does not exist.
-    leo_config_dir = (
-        hasattr(sys,'leo_config_directory') and
-        getattr(sys,'leo_config_directory'))
-
-    if leo_config_dir:
-        theDir = leo_config_dir
-    else:
-        theDir = g.os_path_join(g.app.loadDir,"..","config")
-
-    if theDir:
-        theDir = g.os_path_finalize(theDir)
-
-    if (
-        not theDir or
-        not g.os_path_exists(theDir) or
-        not g.os_path_isdir(theDir)
-    ):
-        theDir = None
-
-    return theDir
-#@-node:ekr.20041117155521:computeGlobalConfigDir
-#@+node:ekr.20041117151301:computeHomeDir
-def computeHomeDir():
-
-    """Returns the user's home directory."""
-
-    import leo.core.leoGlobals as g
-
-    home = os.path.expanduser("~")
-        # Windows searches the HOME, HOMEPATH and HOMEDRIVE environment vars, then gives up.
-
-    if home and len(home) > 1 and home[0]=='%' and home[-1]=='%':
-        # Get the indirect reference to the true home.
-        home = os.getenv(home[1:-1],default=None)
-
-    if home:
-        # Important: This returns the _working_ directory if home is None!
-        # This was the source of the 4.3 .leoID.txt problems.
-        home = g.os_path_finalize(home)
-        if (
-            not g.os_path_exists(home) or
-            not g.os_path_isdir(home)
-        ):
-            home = None
-
-    return home
-#@-node:ekr.20041117151301:computeHomeDir
-#@+node:ekr.20060416113431:computeLeoDir
-def computeLeoDir ():
-
-    loadDir = g.app.loadDir
-    theDir = g.os_path_dirname(loadDir)
-
-    # xxx remove this, we don't want to have this in sys.path
-    if theDir not in sys.path:
-        sys.path.append(theDir)
-
-    return theDir
-#@-node:ekr.20060416113431:computeLeoDir
-#@+node:ekr.20031218072017.1937:computeLoadDir
-def computeLoadDir():
-
-    """Returns the directory containing leo.py."""
-
-    import leo.core.leoGlobals as g
-    import sys
-
-    try:
-        # Fix a hangnail: on Windows the drive letter returned by
-        # __file__ is randomly upper or lower case!
-        # The made for an ugly recent files list.
-        path = g.__file__ # was leo.__file__
-        << resolve symlinks >>
-        if sys.platform=='win32':
-            if len(path) > 2 and path[1]==':':
-                # Convert the drive name to upper case.
-                path = path[0].upper() + path[1:]
-        path = g.os_path_finalize(path)
-        if path:
-            loadDir = g.os_path_dirname(path)
-        else: loadDir = None
-
-        if (
-            not loadDir or
-            not g.os_path_exists(loadDir) or
-            not g.os_path_isdir(loadDir)
-        ):
-            loadDir = os.getcwd()
-            # From Marc-Antoine Parent.
-            if loadDir.endswith("Contents/Resources"):
-                loadDir += "/leo/plugins"
-            else:
-                g.pr("Exception getting load directory")
-        loadDir = g.os_path_finalize(loadDir)
-        # g.es("load dir:",loadDir,color="blue")
-        return loadDir
-    except:
-        g.pr("Exception getting load directory")
-        raise
-#@+node:ville.20090703102253.6160:<< resolve symlinks >>
-if path.endswith('pyc'):
-    srcfile = path[:-1]
-    if os.path.islink(srcfile):
-        path = os.path.realpath(srcfile)    
-#@-node:ville.20090703102253.6160:<< resolve symlinks >>
-#@-node:ekr.20031218072017.1937:computeLoadDir
-#@+node:dan.20080410121257.1:computeMachineName
-def computeMachineName():
-    """Returns the name of the current machine, i.e, HOSTNAME"""
-    try:
-        import os
-        name = os.getenv('HOSTNAME')
-        if not name:
-            name = os.getenv('COMPUTERNAME')
-        if not name:
-            import socket
-            name = socket.gethostname()
-    except Exception:
-        name = ''
-
-    # g.trace(name)
-
-    return name
-#@-node:dan.20080410121257.1:computeMachineName
-#@-node:ekr.20050328133444:g.computeStandardDirectories & helpers
-#@-node:ekr.20100130035231.6254:app.defaultEncoding
 #@-node:ekr.20100130164410.6332:Recent
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt

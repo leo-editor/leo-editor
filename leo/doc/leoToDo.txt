@@ -835,6 +835,8 @@ unbound()
 #@nonl
 #@-node:ekr.20100128094926.6222:port pmw to py3k
 #@-node:ekr.20100129133806.6235:Other programs
+#@+node:ekr.20100131155919.6298:Add debugging rst-arg
+#@-node:ekr.20100131155919.6298:Add debugging rst-arg
 #@-node:ekr.20100126110826.6253:Before rc1
 #@-node:ekr.20071211093011:4.7 One-node world, Leo3K
 #@+node:ekr.20100109214940.6225:4.8 Autocompletion, vim

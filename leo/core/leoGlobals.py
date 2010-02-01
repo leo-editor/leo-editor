@@ -364,24 +364,8 @@ def comment_delims_from_extension(filename):
         g.trace("unknown extension: %s, filename: %s, root: %s" % (
             repr(ext),repr(filename),repr(root)))
         return '','',''
-#@+node:ekr.20090528072540.9983:@test g.comment_delims_from_extension
-if g.unitTesting:
-
-    # New in Leo 4.6, set_delims_from_language returns '' instead of None.
-    table = (
-        ('.c',      ('//','/*','*/')),
-        ('.html',   ('', '<!--', '-->')),
-        ('.py',     ('#','','')),
-        ('.xxx',    ('','','')),
-    )
-
-    for ext, expected in table:
-        result = g.comment_delims_from_extension(ext)
-        assert result==expected,'ext %s expected %s, got %s' % (
-            ext,expected,result)
-#@-node:ekr.20090528072540.9983:@test g.comment_delims_from_extension
 #@-node:EKR.20040504150046.4:g.comment_delims_from_extension
-#@+node:ekr.20071109165315:g.stripPathCruft & test
+#@+node:ekr.20071109165315:g.stripPathCruft
 def stripPathCruft (path):
 
     '''Strip cruft from a path name.'''
@@ -398,24 +382,7 @@ def stripPathCruft (path):
 
     # We want a *relative* path, not an absolute path.
     return path
-#@+node:ekr.20090527080219.5866:@test g.stripPathCruft
-if g.unitTesting:
-
-    table =  (
-        (None,None), # Retain empty paths for warnings.
-        ('',''),
-        (g.app.loadDir,g.app.loadDir),
-        ('<abc>','abc'),
-        ('"abc"','abc'),
-        ("'abc'",'abc'),
-    )
-
-    for path,expected in table:
-        result = g.stripPathCruft(path)
-        assert result == expected
-#@nonl
-#@-node:ekr.20090527080219.5866:@test g.stripPathCruft
-#@-node:ekr.20071109165315:g.stripPathCruft & test
+#@-node:ekr.20071109165315:g.stripPathCruft
 #@+node:ekr.20090214075058.8:g.findAtTabWidthDirectives (must be fast)
 g_tabwidth_pat = re.compile(r'(^@tabwidth)',re.MULTILINE)
 
@@ -876,23 +843,8 @@ def set_delims_from_language(language):
             return delim1,delim2,delim3
     else:
         return '','','' # Indicate that no change should be made
-#@+node:ekr.20090528072540.9962:@test g.set_delims_from_language
-if g.unitTesting:
-
-    # New in Leo 4.6, set_delims_from_language returns '' instead of None.
-    table = (
-        ('c',       ('//','/*','*/')),
-        ('python',  ('#','','')),
-        ('xxxyyy',  ('','','')),
-    )
-
-    for language, expected in table:
-        result = g.set_delims_from_language(language)
-        assert result==expected,'language %s expected %s, got %s' % (
-            language,expected,result)
-#@-node:ekr.20090528072540.9962:@test g.set_delims_from_language
 #@-node:ekr.20031218072017.1382:g.set_delims_from_language
-#@+node:ekr.20031218072017.1383:g.set_delims_from_string & test
+#@+node:ekr.20031218072017.1383:g.set_delims_from_string
 def set_delims_from_string(s):
 
     """Returns (delim1, delim2, delim2), the delims following the @comment directive.
@@ -927,25 +879,7 @@ def set_delims_from_string(s):
             delims[i] = delims[i].replace("__",'\n').replace('_',' ')
 
     return delims[0], delims[1], delims[2]
-#@+node:ekr.20090528072540.9976:@test g.set_delims_from_string
-if g.unitTesting:
-
-    # New in Leo 4.6, set_delims_from_string returns '' instead of None.
-    table = (
-        ('c','@comment // /* */',   ('//','/*','*/')),
-        ('c','// /* */',            ('//','/*','*/')),
-        ('python','@comment #',     ('#','','')),
-        ('python','#',              ('#','','')),
-        ('xxxyyy','@comment a b c', ('a','b','c')),
-        ('xxxyyy','a b c',          ('a','b','c')),
-    )
-
-    for language,s,expected in table:
-        result = g.set_delims_from_string(s)
-        assert result==expected,'language %s expected %s, got %s' % (
-            language,expected,result)
-#@-node:ekr.20090528072540.9976:@test g.set_delims_from_string
-#@-node:ekr.20031218072017.1383:g.set_delims_from_string & test
+#@-node:ekr.20031218072017.1383:g.set_delims_from_string
 #@+node:ekr.20031218072017.1384:g.set_language
 def set_language(s,i,issue_errors_flag=False):
 
@@ -1000,7 +934,7 @@ def setDefaultDirectory(c,p,importing=False):
         error = "No absolute directory specified anywhere."
 
     return default_dir, error
-#@+node:ekr.20081001062423.10:g.getAbsPathFromNode & test
+#@+node:ekr.20081001062423.10:g.getAbsPathFromNode
 # An absolute path in an @file node over-rides everything else.
 # A relative path gets appended to the relative path by the open logic.
 
@@ -1020,19 +954,8 @@ def getAbsPathFromNode(c,p,name=''): # Name is for unit testing.
 
     return default_dir
 #@nonl
-#@+node:ekr.20090527080219.5809:@test g.getAbsPathFromNode
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-    path = g.os_path_finalize_join(g.app.loadDir,'whatever')
-    result = g.getAbsPathFromNode(c,p=None,name=path)
-    expected = g.app.loadDir
-    assert expected == result,'expected %s, got %s' % (
-        expected,result)
-#@nonl
-#@-node:ekr.20090527080219.5809:@test g.getAbsPathFromNode
-#@-node:ekr.20081001062423.10:g.getAbsPathFromNode & test
-#@+node:ekr.20081001062423.11:g.getPathFromDirectives & test
+#@-node:ekr.20081001062423.10:g.getAbsPathFromNode
+#@+node:ekr.20081001062423.11:g.getPathFromDirectives
 def getPathFromDirectives(c,p):
 
     '''Scan for @path directives.'''
@@ -1053,16 +976,8 @@ def getPathFromDirectives(c,p):
                 error = "invalid @path: %s" % path
 
     return default_dir,error
-#@+node:ekr.20090527080219.5826:@test g.getPathFromDirectives
-if g.unitTesting:
-
-    result,error = g.getPathFromDirectives(c,p)
-    assert error==''
-    assert result
-#@nonl
-#@-node:ekr.20090527080219.5826:@test g.getPathFromDirectives
-#@-node:ekr.20081001062423.11:g.getPathFromDirectives & test
-#@+node:ekr.20081001062423.12:g.findDefaultDirectory & test (major change)
+#@-node:ekr.20081001062423.11:g.getPathFromDirectives
+#@+node:ekr.20081001062423.12:g.findDefaultDirectory (major change)
 # This code is executed if no valid absolute path was specified in
 # the @file node or in an @path directive.
 
@@ -1090,25 +1005,7 @@ def findDefaultDirectory(c):
             if default_dir: break
 
     return default_dir
-#@+node:ekr.20090526102407.10034:@test g.findDefaultDirectory
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-    theDir = g.findDefaultDirectory(c)
-    assert theDir == c.frame.openDirectory,theDir
-#@-node:ekr.20090526102407.10034:@test g.findDefaultDirectory
-#@-node:ekr.20081001062423.12:g.findDefaultDirectory & test (major change)
-#@+node:ekr.20090527121108.5845:@test g.setDefaultDirectory
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    result,error = g.setDefaultDirectory(c,p,importing=False)
-    assert error == ''
-    assert result == c.openDirectory,result
-
-
-#@-node:ekr.20090527121108.5845:@test g.setDefaultDirectory
+#@-node:ekr.20081001062423.12:g.findDefaultDirectory (major change)
 #@-node:ekr.20081001062423.9:g.setDefaultDirectory & helpers
 #@-node:ekr.20031218072017.1380:g.Directive utils...
 #@+node:ekr.20031218072017.3100:wrap_lines
@@ -1188,218 +1085,6 @@ def wrap_lines (lines,pageWidth,firstLineWidth=None):
     # g.trace(result)
     return result
 #@-node:ekr.20031218072017.3100:wrap_lines
-#@+node:ekr.20090517020744.5889:unit tests for new directives
-# Use this as a default for the test for @pagewidth -40
-#@@pagewidth 80
-
-if g.unitTesting:
-
-    #@    @+others
-    #@+node:ekr.20090517020744.5890:@test c.scanAllDirectives
-    #@@language python
-    #@@comment a b c
-        # @comment must follow @language
-    #@@tabwidth -4
-    #@@pagewidth 72
-    #@@encoding utf-8
-    #@@lineending crlf
-
-    c,p = g.getTestVars()
-    d = c.scanAllDirectives(p)
-    # print g.dictToString(d)
-
-    table = (
-        ('delims', ('a','b','c'),),
-        ('encoding','utf-8'),
-        ('language','python'),
-        ('lineending','\r\n'),
-        ('pagewidth',72),
-        ('tabwidth',-4),
-    )
-
-    for kind,expected in table:
-        got = d.get(kind)
-        assert got == expected, 'kind: %s, expected %s, got %s' % (
-            kind,repr(expected),repr(got))
-    #@-node:ekr.20090517020744.5890:@test c.scanAllDirectives
-    #@+node:ekr.20090517020744.5891:@test c.scanAtRootDirectives root-code
-    #@@root-code
-
-    c,p = g.getTestVars()
-    aList = g.get_directives_dict_list(p)
-    s = c.scanAtRootDirectives(aList)
-
-    assert s == 'code',repr(s)
-    #@nonl
-    #@-node:ekr.20090517020744.5891:@test c.scanAtRootDirectives root-code
-    #@+node:ekr.20090517020744.5892:@test c.scanAtRootDirectives root-doc
-    #@@root-doc
-
-    c,p = g.getTestVars()
-    aList = g.get_directives_dict_list(p)
-    s = c.scanAtRootDirectives(aList)
-
-    assert s == 'doc',repr(s)
-    #@nonl
-    #@-node:ekr.20090517020744.5892:@test c.scanAtRootDirectives root-doc
-    #@+node:ekr.20090517020744.5893:@test g.get_directives_dict
-    #@@language python
-    #@@comment a b c
-        # @comment must follow @language.
-    #@@tabwidth -8
-    #@@pagewidth 72
-    #@@encoding utf-8
-
-    # @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
-
-    c,p = g.getTestVars()
-    d = g.get_directives_dict(p)
-
-    # assert d.get('_p') == p # Never used, and a bad idea.
-    assert d.get('language') == 'python'
-    assert d.get('tabwidth') == '-8'
-    assert d.get('pagewidth') == '72'
-    assert d.get('encoding') == 'utf-8'
-    assert d.get('comment') == 'a b c'
-    # assert d.get('path').endswith('xyzzy')
-    #@-node:ekr.20090517020744.5893:@test g.get_directives_dict
-    #@+node:ekr.20090517020744.5894:@test g.scanAtHeaderDirectives header
-    #@@header
-
-    c,p = g.getTestVars()
-    aList = g.get_directives_dict_list(p)
-    g.scanAtHeaderDirectives(aList)
-    #@-node:ekr.20090517020744.5894:@test g.scanAtHeaderDirectives header
-    #@+node:ekr.20090517020744.5895:@test g.scanAtHeaderDirectives noheader
-    #@@noheader
-
-    c,p = g.getTestVars()
-    aList = g.get_directives_dict_list(p)
-    g.scanAtHeaderDirectives(aList)
-    #@-node:ekr.20090517020744.5895:@test g.scanAtHeaderDirectives noheader
-    #@+node:ekr.20090517020744.5896:@test g.scanAtLineendingDirectives cr
-    #@@lineending cr
-
-    c,p = g.getTestVars()
-    aList = g.get_directives_dict_list(p)
-    s = g.scanAtLineendingDirectives(aList)
-
-    assert s == '\r'
-    #@-node:ekr.20090517020744.5896:@test g.scanAtLineendingDirectives cr
-    #@+node:ekr.20090517020744.5897:@test g.scanAtLineendingDirectives crlf
-    #@@lineending crlf
-
-    c,p = g.getTestVars()
-    aList = g.get_directives_dict_list(p)
-    s = g.scanAtLineendingDirectives(aList)
-    # print ('@lineending: %s'%repr(s))
-
-    assert s == '\r\n'
-    #@-node:ekr.20090517020744.5897:@test g.scanAtLineendingDirectives crlf
-    #@+node:ekr.20090517020744.5898:@test g.scanAtLineendingDirectives lf
-    #@@lineending lf
-
-    c,p = g.getTestVars()
-    aList = g.get_directives_dict_list(p)
-    s = g.scanAtLineendingDirectives(aList)
-
-    assert s == '\n'
-    #@-node:ekr.20090517020744.5898:@test g.scanAtLineendingDirectives lf
-    #@+node:ekr.20090517020744.5899:@test g.scanAtLineendingDirectives nl
-    #@@lineending nl
-
-    c,p = g.getTestVars()
-    aList = g.get_directives_dict_list(p)
-    s = g.scanAtLineendingDirectives(aList)
-
-    assert s == '\n'
-    #@-node:ekr.20090517020744.5899:@test g.scanAtLineendingDirectives nl
-    #@+node:ekr.20090517020744.5900:@test g.scanAtLineendingDirectives platform
-    #@@lineending platform
-
-    import sys
-
-    c,p = g.getTestVars()
-    aList = g.get_directives_dict_list(p)
-    s = g.scanAtLineendingDirectives(aList)
-
-    if sys.platform.startswith('win'):
-        assert s == '\r\n'
-    else:
-        assert s == '\n'
-    #@-node:ekr.20090517020744.5900:@test g.scanAtLineendingDirectives platform
-    #@+node:ekr.20090517020744.5901:@test g.scanAtPagewidthDirectives -40
-    #@@pagewidth -40
-
-    c,p = g.getTestVars()
-    aList = g.get_directives_dict_list(p)
-    n = g.scanAtPagewidthDirectives(aList)
-
-    # The @pagewidth directive in the parent should control.
-    # Depending on how this test is run, the result could be 80 or None.
-    assert n in (None,80),repr(n)
-    #@nonl
-    #@-node:ekr.20090517020744.5901:@test g.scanAtPagewidthDirectives -40
-    #@+node:ekr.20090517020744.5902:@test g.scanAtPagewidthDirectives 40
-    #@@pagewidth 40
-
-    c,p = g.getTestVars()
-    aList = g.get_directives_dict_list(p)
-    n = g.scanAtPagewidthDirectives(aList)
-
-    assert n == 40,n
-    #@nonl
-    #@-node:ekr.20090517020744.5902:@test g.scanAtPagewidthDirectives 40
-    #@+node:ekr.20090517020744.5912:@test g.scanAtTabwidthDirectives +6
-    #@@tabwidth 6
-
-    c,p = g.getTestVars()
-    aList = g.get_directives_dict_list(p)
-    n = g.scanAtTabwidthDirectives(aList)
-
-    assert n == 6,repr(n)
-    #@nonl
-    #@-node:ekr.20090517020744.5912:@test g.scanAtTabwidthDirectives +6
-    #@+node:ekr.20090517020744.5913:@test g.scanAtTabwidthDirectives -6
-    #@@tabwidth -6
-
-    c,p = g.getTestVars()
-    aList = g.get_directives_dict_list(p)
-    n = g.scanAtTabwidthDirectives(aList)
-
-    assert n == -6
-    #@nonl
-    #@-node:ekr.20090517020744.5913:@test g.scanAtTabwidthDirectives -6
-    #@+node:ekr.20090517020744.5914:@test g.scanAtWrapDirectives nowrap
-    #@@nowrap
-
-    c,p = g.getTestVars()
-    aList = g.get_directives_dict_list(p)
-    s = g.scanAtWrapDirectives(aList)
-
-    assert s is False,repr(s)
-    #@nonl
-    #@-node:ekr.20090517020744.5914:@test g.scanAtWrapDirectives nowrap
-    #@+node:ekr.20090517020744.5915:@test g.scanAtWrapDirectives wrap
-    #@@wrap
-
-    c,p = g.getTestVars()
-    aList = g.get_directives_dict_list(p)
-    s = g.scanAtWrapDirectives(aList)
-
-    assert s is True,repr(s)
-    #@nonl
-    #@-node:ekr.20090517020744.5915:@test g.scanAtWrapDirectives wrap
-    #@+node:ekr.20090517020744.5916:@test g.scanAtWrapDirectives wrap
-    c,p = g.getTestVars()
-    aList = g.get_directives_dict_list(p)
-    s = g.scanAtWrapDirectives(aList)
-
-    assert s is None,repr(s)
-    #@nonl
-    #@-node:ekr.20090517020744.5916:@test g.scanAtWrapDirectives wrap
-    #@-others
-#@-node:ekr.20090517020744.5889:unit tests for new directives
 #@-node:ekr.20031218072017.3099:Commands & Directives
 #@+node:ekr.20031218072017.3104:Debugging, Dumping, Timing, Tracing & Sherlock
 #@+node:ekr.20031218072017.3105:alert
@@ -1455,7 +1140,7 @@ def _callerName (n=1,files=False):
         return '' # "<no caller name>"
 #@-node:ekr.20031218072017.3107:_callerName
 #@-node:ekr.20051023083258:callers & _callerName
-#@+node:ekr.20041105091148:g.pdb & test
+#@+node:ekr.20041105091148:g.pdb
 def pdb (message=''):
 
     """Fall into pdb."""
@@ -1465,39 +1150,7 @@ def pdb (message=''):
     if message:
         print(message)
     pdb.set_trace()
-#@+node:ekr.20090517020744.5880:@test g.pdb
-if g.unitTesting:
-
-    import sys
-
-    c,p = g.getTestVars()
-
-    # Not a good unit test; it probably will never fail.
-    def aFunction(): pass
-    assert type(g.pdb)==type(aFunction), 'wrong type for g.pdb: %s' % type(g.pdb)
-
-    class myStdout:
-        def write(self,s):
-            pass # g.es('From pdb:',s)
-
-    class myStdin:
-        def readline (self):
-            return 'c' # Return 'c' (continue) for all requests for input.
-
-    def restore():
-        sys.stdout,sys.stdin = sys.__stdout__,sys.__stdin__
-
-    try:
-        sys.stdin = myStdin() # Essential
-        sys.stdout=myStdout() # Optional
-        g.pdb()
-        restore()
-        # assert False,'test of reraising'
-    except Exception:
-        restore()
-        raise
-#@-node:ekr.20090517020744.5880:@test g.pdb
-#@-node:ekr.20041105091148:g.pdb & test
+#@-node:ekr.20041105091148:g.pdb
 #@+node:ekr.20031218072017.3108:Dumps
 #@+node:ekr.20031218072017.3109:dump
 def dump(s):
@@ -1570,7 +1223,7 @@ def es_event_exception (eventName,full=False):
     if not g.stdErrIsRedirected(): # 2/16/04
         traceback.print_exc()
 #@-node:ekr.20031218072017.3111:es_event_exception
-#@+node:ekr.20031218072017.3112:es_exception & test
+#@+node:ekr.20031218072017.3112:es_exception
 def es_exception (full=True,c=None,color="red"):
 
     typ,val,tb = sys.exc_info()
@@ -1597,33 +1250,7 @@ def es_exception (full=True,c=None,color="red"):
         pdb.set_trace()
 
     return fileName,n
-#@+node:ekr.20090517020744.5874:@test g.es_exception
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    if c.config.redirect_execute_script_output_to_log_pane:
-        pass # Test doesn't work when redirection is on.
-    else:
-        try:
-            import sys
-            # Catch the output of g.es_exception.
-            # We catch the AssertionError, so nothing gets written to stderr.
-            sys.stdout = fo = g.fileLikeObject()
-            try: # Create an exception to catch.
-                assert False, 'Assert False in test_g_es_exception'
-            except AssertionError:
-                g.es_exception(color='suppress')
-                result = fo.get()
-                s1 = 'Traceback (most recent call last):'
-                s2 = 'AssertionError: Assert False in test_g_es_exception'
-                assert result.find(s1) > -1, 'No traceback line: %s' % repr(result)
-                assert result.find(s2) > -1, 'No AssertionError line: %s' % repr(result)
-        finally:
-            # Not needed unless we execute this script as selected text.
-            sys.stdout = sys.__stdout__
-#@-node:ekr.20090517020744.5874:@test g.es_exception
-#@-node:ekr.20031218072017.3112:es_exception & test
+#@-node:ekr.20031218072017.3112:es_exception
 #@+node:ekr.20061015090538:es_exception_type
 def es_exception_type (c=None,color="red"):
 
@@ -2477,7 +2104,7 @@ def chdir (path):
     if g.os_path_isdir(path) and g.os_path_exists(path):
         os.chdir(path)
 #@-node:ekr.20080606074139.2:g.chdir
-#@+node:ekr.20031218072017.3117:g.create_temp_file & test
+#@+node:ekr.20031218072017.3117:g.create_temp_file
 def create_temp_file (textMode=False):
     '''Return a tuple (theFile,theFileName)
 
@@ -2495,17 +2122,7 @@ def create_temp_file (textMode=False):
         theFile,theFileName = None,''
 
     return theFile,theFileName
-#@+node:ekr.20100119194413.6097:@test g.create_temp_file
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    theFile,fn = g.create_temp_file()
-    assert theFile
-    assert g.isString(fn)
-#@nonl
-#@-node:ekr.20100119194413.6097:@test g.create_temp_file
-#@-node:ekr.20031218072017.3117:g.create_temp_file & test
+#@-node:ekr.20031218072017.3117:g.create_temp_file
 #@+node:ekr.20031218072017.3118:g.ensure_extension
 def ensure_extension (name, ext):
 
@@ -2714,7 +2331,7 @@ def makePathRelativeTo (fullPath,basePath):
     else:
         return fullPath
 #@-node:ekr.20071114113736:g.makePathRelativeTo
-#@+node:ekr.20070412082527:g.openLeoOrZipFile & tests
+#@+node:ekr.20070412082527:g.openLeoOrZipFile
 # This is used in several places besides g.openWithFileName.
 
 def openLeoOrZipFile (fileName):
@@ -2744,27 +2361,7 @@ def openLeoOrZipFile (fileName):
             g.es_print("can not open:",fileName,color="blue")
         return None,False
 #@nonl
-#@+node:ekr.20090526083112.5838:@test g.openLeoOrZipFile
-if g.unitTesting:
-
-    import zipfile
-
-    # Create a zip file for testing.
-    s = 'this is a test file'
-    testDir = g.os_path_join(g.app.loadDir,'..','test')
-    assert g.os_path_exists(testDir)
-    path = g.os_path_finalize_join(testDir,'testzip.zip')
-    theFile = zipfile.ZipFile(path,'w')
-    theFile.writestr('leo-zip-file',s)
-    theFile.close()
-
-    # Open the file, and use read (with no args) to get the contents.
-    theFile,ok = g.openLeoOrZipFile(path)
-    assert ok,'not ok'
-    s2 = theFile.read()
-    assert s == s2,'s:  %s\ns2: %s' % (repr(s),repr(s2))
-#@-node:ekr.20090526083112.5838:@test g.openLeoOrZipFile
-#@-node:ekr.20070412082527:g.openLeoOrZipFile & tests
+#@-node:ekr.20070412082527:g.openLeoOrZipFile
 #@+node:ekr.20090520055433.5945:g.openWithFileName & helpers
 def openWithFileName(fileName,old_c,
     enableLog=True,gui=None,readAtFileNodesFlag=True):
@@ -3119,7 +2716,7 @@ def update_file_if_changed(c,file_name,temp_name):
         g.es("rename failed: no file created!",color="red")
         g.es('',file_name," may be read-only or in use")
 #@-node:ekr.20031218072017.1241:g.update_file_if_changed
-#@+node:ekr.20050104123726.3:g.utils_remove & test
+#@+node:ekr.20050104123726.3:g.utils_remove
 def utils_remove (fileName,verbose=True):
 
     try:
@@ -3130,31 +2727,8 @@ def utils_remove (fileName,verbose=True):
             g.es("exception removing:",fileName)
             g.es_exception()
         return False
-#@+node:ekr.20090517020744.5886:@test g.utils_remove
-if g.unitTesting:
-
-    import os
-
-    c,p = g.getTestVars()
-    exists = g.os_path_exists
-
-    path = g.os_path_join(g.app.testDir,'xyzzy')
-    if exists(path):
-        os.remove(path)
-
-    assert not exists(path)
-    assert not g.utils_remove(path,verbose=False)
-
-    f = open(path,'w')
-    f.write('test')
-    f.close()
-
-    assert exists(path)
-    assert g.utils_remove(path,verbose=True)
-    assert not exists(path)
-#@-node:ekr.20090517020744.5886:@test g.utils_remove
-#@-node:ekr.20050104123726.3:g.utils_remove & test
-#@+node:ekr.20031218072017.1263:g.utils_rename & test
+#@-node:ekr.20050104123726.3:g.utils_remove
+#@+node:ekr.20031218072017.1263:g.utils_rename
 #@<< about os.rename >>
 #@+node:ekr.20050104123726.1:<< about os.rename >>
 #@+at 
@@ -3214,35 +2788,7 @@ def utils_rename (c,src,dst,mode=None,verbose=True):
             g.es('exception renaming',src,'to',dst,color='red')
             g.es_exception(full=False)
         return False
-#@+node:ekr.20090517020744.5887:@test g.utils_rename
-if g.unitTesting:
-
-    import os
-
-    c,p = g.getTestVars()
-    exists = g.os_path_exists
-    path = g.os_path_join(g.app.testDir,'xyzzy')
-    path2 = g.os_path_join(g.app.testDir,'xyzzy2')
-
-    # Create both paths.
-    for p in (path,path2):
-        if exists(p):
-            os.remove(p)
-        assert not exists(p)
-        f = open(p,'w')
-        f.write('test %s' % p)
-        f.close()
-        assert exists(p)
-
-    assert g.utils_rename(c,path,path2,verbose=True)
-    assert exists(path2)
-    s,e = g.readFileIntoString(path2)
-    # print('Contents of %s: %s' % (path2,s))
-    assert s == 'test %s' % path
-    os.remove(path2)
-    assert not exists(path)
-#@-node:ekr.20090517020744.5887:@test g.utils_rename
-#@-node:ekr.20031218072017.1263:g.utils_rename & test
+#@-node:ekr.20031218072017.1263:g.utils_rename
 #@+node:ekr.20050104124903:g.utils_chmod
 def utils_chmod (fileName,mode,verbose=True):
 
@@ -3823,7 +3369,7 @@ def es_print(*args,**keys):
     if not g.app.unitTesting:
         g.es(*args,**keys)
 #@-node:ekr.20050707064040:g.es_print
-#@+node:ekr.20050707065530:g.es_trace & test
+#@+node:ekr.20050707065530:g.es_trace
 def es_trace(*args,**keys):
 
     if args:
@@ -3834,15 +3380,7 @@ def es_trace(*args,**keys):
             pass
 
     g.es(*args,**keys)
-#@+node:ekr.20090517020744.5875:@test g.es_trace
-#@@first
-
-if g.unitTesting:
-
-    if 0: # Not usually enabled.
-        g.es_trace('\ntest of es_trace: Ă',color='red')
-#@-node:ekr.20090517020744.5875:@test g.es_trace
-#@-node:ekr.20050707065530:g.es_trace & test
+#@-node:ekr.20050707065530:g.es_trace
 #@+node:ekr.20100126062623.6240:g.internalError
 def internalError (*args):
 
@@ -4822,7 +4360,7 @@ def skip_id(s,i,chars=None):
     return i
 #@nonl
 #@-node:ekr.20040705195048:skip_id
-#@+node:ekr.20031218072017.3187:skip_line, skip_to_start/end_of_line & tests
+#@+node:ekr.20031218072017.3187:skip_line, skip_to_start/end_of_line
 #@+at 
 #@nonl
 # These methods skip to the next newline, regardless of whether the newline 
@@ -4854,62 +4392,7 @@ def skip_to_start_of_line (s,i):
     i = s.rfind('\n',0,i) # Don't find s[i], so it doesn't matter if s[i] is a newline.
     if i == -1: return 0
     else:       return i + 1
-#@+node:ekr.20090517020744.5883:@test g.skip_line
-if g.unitTesting:
-
-    # This is a crucial unit test.
-
-    s = 'a\n\nc'
-
-    for i,result in (
-        (-1,2), # One too few.
-        (0,2),(1,2),
-        (2,3),
-        (3,4),
-        (4,4), # One too many.
-    ):
-        j = g.skip_line(s,i)
-        assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
-#@-node:ekr.20090517020744.5883:@test g.skip_line
-#@+node:ekr.20090517020744.5884:@test g.skip_to_end_of_line
-if g.unitTesting:
-
-    # This is a crucial unit test.
-
-    s = 'a\n\nc'
-
-    for i,result in (
-        (-1,1), # One too few.
-        (0,1),(1,1),
-        (2,2),
-        (3,4),
-        (4,4), # One too many.
-    ):
-        j = g.skip_to_end_of_line(s,i)
-        assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
-#@-node:ekr.20090517020744.5884:@test g.skip_to_end_of_line
-#@+node:ekr.20090517020744.5885:@test g.skip_to_start_of_line
-if g.unitTesting:
-
-    # This is a crucial unit tests.
-
-    s1 = 'a\n\nc'
-    table1 = (
-        (-1,0), # One too few.
-        (0,0),(1,0),
-        (2,2),
-        (3,3),
-        (4,4), # One too many.
-    )
-    s2 = 'a\n'
-    table2 = ((1,0),(2,2)) # A special case at end.
-
-    for s,table in ((s1,table1),(s2,table2)):
-        for i,result in table:
-            j = g.skip_to_start_of_line(s,i)
-            assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
-#@-node:ekr.20090517020744.5885:@test g.skip_to_start_of_line
-#@-node:ekr.20031218072017.3187:skip_line, skip_to_start/end_of_line & tests
+#@-node:ekr.20031218072017.3187:skip_line, skip_to_start/end_of_line
 #@+node:ekr.20031218072017.3188:skip_long
 def skip_long(s,i):
 
@@ -5125,7 +4608,7 @@ def findTopLevelNode(c,headline):
             return p.copy()
     return c.nullPosition()
 #@-node:ekr.20040321065415:g.findNode... &,findTopLevelNode
-#@+node:EKR.20040614071102.1:g.getScript & test
+#@+node:EKR.20040614071102.1:g.getScript
 def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=True):
 
     '''Return the expansion of the selected text of node p.
@@ -5173,14 +4656,7 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
 
     # g.trace(type(script),repr(script))
     return script
-#@+node:ekr.20090517020744.5878:@test g.getScript strips crlf
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-    script = g.getScript(c,p) # This will get the text of this node.
-    assert script.find('\r\n') == -1, repr(script)
-#@-node:ekr.20090517020744.5878:@test g.getScript strips crlf
-#@-node:EKR.20040614071102.1:g.getScript & test
+#@-node:EKR.20040614071102.1:g.getScript
 #@+node:ekr.20060624085200:g.handleScriptException
 def handleScriptException (c,p,script,script1):
 
@@ -5256,17 +4732,6 @@ def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
     c.frame.findPanel.init(c)
     c.showFindPanel()
 #@-node:ekr.20031218072017.2418:g.initScriptFind (set up dialog)
-#@+node:ekr.20090517020744.5888:@test pre-definition of g in scripts
-if g.unitTesting:
-
-    # print(g.listToString(dir()))
-
-    for ivar in ('c','g','p'):
-        assert ivar in dir()
-
-    assert hasattr(g.app,'defaultEncoding')
-#@nonl
-#@-node:ekr.20090517020744.5888:@test pre-definition of g in scripts
 #@-node:ekr.20040327103735.2:Script Tools (leoGlobals.py)
 #@+node:ekr.20031218072017.1498:Unicode utils...
 #@+node:ekr.20100125073206.8709:g.getPythonEncodingFromString
@@ -5409,10 +4874,10 @@ def reportBadChars (s,encoding):
                     g.es(s2,color='red')
 #@-node:ekr.20031218072017.1501:g.reportBadChars
 #@+node:ekr.20050208093800:g.toEncodedString
-def toEncodedString (s,encoding=None,reportErrors=False):
+def toEncodedString (s,encoding='utf-8',reportErrors=False):
 
     if encoding is None:
-        encoding = g.app.defaultEncoding
+        encoding = 'utf-8'
 
     if g.isUnicode(s):
         try:
@@ -5423,12 +4888,12 @@ def toEncodedString (s,encoding=None,reportErrors=False):
     return s
 #@-node:ekr.20050208093800:g.toEncodedString
 #@+node:ekr.20050208093800.1:g.toUnicode
-def toUnicode (s,encoding=None,reportErrors=False):
+def toUnicode (s,encoding='utf-8',reportErrors=False):
 
-    # The encoding is usually g.app.defaultEncoding,
+    # The encoding is usually 'utf-8'
     # but is may be different while importing or reading files.
     if encoding is None:
-        encoding = g.app.defaultEncoding
+        encoding = 'utf-8'
 
     if isPython3:
         f,mustConvert = str,g.isBytes
@@ -5510,7 +4975,7 @@ def getTestVars ():
 #@-node:ekr.20070524083513:Unit testing (leoGlobals.py)
 #@+node:EKR.20040612114220:Utility classes, functions & objects...
 #@+node:ekr.20050315073003: Index utilities... (leoGlobals)
-#@+node:ekr.20050314140957:g.convertPythonIndexToRowCol & test
+#@+node:ekr.20050314140957:g.convertPythonIndexToRowCol
 def convertPythonIndexToRowCol (s,i):
 
     '''Convert index i into string s into zero-based row/col indices.'''
@@ -5528,47 +4993,8 @@ def convertPythonIndexToRowCol (s,i):
         prevNL = s.rfind('\n',0,i) # Don't include i
         # g.trace('prevNL',prevNL,'i',i,g.callers())
         return row,i-prevNL-1
-#@+node:ekr.20090517020744.5871:@test g.convertPythonIndexToRowCol
-if g.unitTesting:
-
-    s1 = 'abc\n\np\nxy'
-    table1 = (
-        (-1,(0,0)), # One too small.
-        (0,(0,0)),
-        (1,(0,1)),
-        (2,(0,2)),
-        (3,(0,3)), # The newline ends a row.
-        (4,(1,0)),
-        (5,(2,0)),
-        (6,(2,1)),
-        (7,(3,0)),
-        (8,(3,1)),
-        (9,(3,2)), # One too many.
-        (10,(3,2)), # Two too many.
-    )
-    s2 = 'abc\n\np\nxy\n'
-    table2 = (
-        (9,(3,2)),
-        (10,(4,0)), # One too many.
-        (11,(4,0)), # Two too many.
-    )
-    s3 = 'ab' # Test special case.  This was the cause of off-by-one problems.
-    table3 = (
-        (-1,(0,0)), # One too small.
-        (0,(0,0)),
-        (1,(0,1)),
-        (2,(0,2)), # One too many.
-        (3,(0,3)), # Two too many.
-    )
-
-    for s,table in ((s1,table1),(s2,table2)):
-        for i,result in table:
-            row,col = g.convertPythonIndexToRowCol(s,i)
-            assert row == result[0], 'i: %d, expected row %d, got %d' % (i,result[0],row)
-            assert col == result[1], 'i: %d, expected col %d, got %d' % (i,result[1],col)
-#@-node:ekr.20090517020744.5871:@test g.convertPythonIndexToRowCol
-#@-node:ekr.20050314140957:g.convertPythonIndexToRowCol & test
-#@+node:ekr.20050315071727:g.convertRowColToPythonIndex & test
+#@-node:ekr.20050314140957:g.convertPythonIndexToRowCol
+#@+node:ekr.20050315071727:g.convertRowColToPythonIndex
 def convertRowColToPythonIndex (s,row,col,lines=None):
 
     '''Convert zero-based row/col indices into a python index into string s.'''
@@ -5589,35 +5015,7 @@ def convertRowColToPythonIndex (s,row,col,lines=None):
         prev += len(line)
 
     return prev + col
-#@+node:ekr.20090517020744.5872:@test g.convertRowColToPythonIndex
-if g.unitTesting:
-
-    s1 = 'abc\n\np\nxy'
-    s2 = 'abc\n\np\nxy\n'
-    table1 = (
-        (0,(-1,0)), # One too small.
-        (0,(0,0)),
-        (1,(0,1)),
-        (2,(0,2)),
-        (3,(0,3)), # The newline ends a row.
-        (4,(1,0)),
-        (5,(2,0)),
-        (6,(2,1)),
-        (7,(3,0)),
-        (8,(3,1)),
-        (9,(3,2)), # One too large.
-    )
-    table2 = (
-        (9,(3,2)),
-        (10,(4,0)), # One two many.
-    )
-    for s,table in ((s1,table1),(s2,table2)):
-        for i,data in table:
-            row,col = data
-            result = g.convertRowColToPythonIndex(s,row,col)
-            assert i == result, 'row: %d, col: %d, expected: %d, got: %s' % (row,col,i,result)
-#@-node:ekr.20090517020744.5872:@test g.convertRowColToPythonIndex
-#@-node:ekr.20050315071727:g.convertRowColToPythonIndex & test
+#@-node:ekr.20050315071727:g.convertRowColToPythonIndex
 #@-node:ekr.20050315073003: Index utilities... (leoGlobals)
 #@+node:ekr.20031218072017.3140: List utilities...
 #@+node:ekr.20031218072017.3141:appendToList
@@ -5705,21 +5103,6 @@ def CheckVersionToInt (s):
             return 0
 #@nonl
 #@-node:ekr.20070120123930:CheckVersionToInt
-#@+node:ekr.20090517020744.5870:@test g.checkVersion
-if g.unitTesting:
-
-    for v1,condition,v2 in (
-        ('8.4.12','>','8.4.3'),
-        ('1','==','1.0'),
-        ('2','>','1'),
-        ('1.2','>','1'),
-        ('2','>','1.2.3'),
-        ('1.2.3','<','2'),
-        ('1','<','1.1'),
-    ):
-        assert g.CheckVersion(v1,v2,condition=condition,trace=False)
-#@nonl
-#@-node:ekr.20090517020744.5870:@test g.checkVersion
 #@-node:ekr.20060921100435:CheckVersion, helper
 #@+node:ekr.20060921100435.1:oldCheckVersion (Dave Hein)
 #@+at
@@ -5832,13 +5215,6 @@ def oldCheckVersion( version, againstVersion, condition=">=", stringCompare="0.0
     raise EnvironmentError("condition must be one of '>=', '>', '==', '!=', '<', or '<='.")
 #@nonl
 #@-node:ekr.20060921100435.1:oldCheckVersion (Dave Hein)
-#@+node:ekr.20090517020744.5868:@test CheckVersionToInt
-if g.unitTesting:
-
-    assert g.CheckVersionToInt('12') == 12,'fail 1'
-    assert g.CheckVersionToInt('2a5') == 2, 'fail 2'
-    assert g.CheckVersionToInt('b2') == 0, 'fail 3'
-#@-node:ekr.20090517020744.5868:@test CheckVersionToInt
 #@-node:ekr.20031218072017.3097:CheckVersion
 #@+node:ekr.20031218072017.3098:class Bunch (object)
 #@+at 
@@ -5918,7 +5294,7 @@ def computeWindowTitle (fileName):
             title = fn
         return title
 #@-node:ekr.20031218072017.3103:g.computeWindowTitle
-#@+node:ekr.20090516135452.5777:g.ensureLeading/TrailingNewlines & tests
+#@+node:ekr.20090516135452.5777:g.ensureLeading/TrailingNewlines
 def ensureLeadingNewlines (s,n):
 
     s = g.removeLeading(s,'\t\n\r ')
@@ -5930,31 +5306,7 @@ def ensureTrailingNewlines (s,n):
     return s + '\n' * n
 
 
-#@+node:ekr.20090516135452.5778:@test ensureLeadingNewlines
-if g.unitTesting:
-
-    s = ' \n \n\t\naa bc'
-    s2 = 'aa bc'
-
-    for i in range(3):
-        result = g.ensureLeadingNewlines(s,i)
-        val = ('\n' * i) + s2
-        assert result == val, 'expected %s, got %s' % (
-            repr(val),repr(result))
-#@-node:ekr.20090516135452.5778:@test ensureLeadingNewlines
-#@+node:ekr.20090525164505.5791:@test ensureTrailingNewlines
-if g.unitTesting:
-
-    s = 'aa bc \n \n\t\n'
-    s2 = 'aa bc'
-
-    for i in range(3):
-        result = g.ensureTrailingNewlines(s,i)
-        val = s2 + ('\n' * i)
-        assert result == val, 'expected %s, got %s' % (
-            repr(val),repr(result))
-#@-node:ekr.20090525164505.5791:@test ensureTrailingNewlines
-#@-node:ekr.20090516135452.5777:g.ensureLeading/TrailingNewlines & tests
+#@-node:ekr.20090516135452.5777:g.ensureLeading/TrailingNewlines
 #@+node:ekr.20031218072017.3138:g.executeScript
 def executeScript (name):
 
@@ -5994,7 +5346,7 @@ class fileLikeObject:
 
         # New in 4.2.1: allow the file to be inited from string s.
 
-        self.encoding = encoding
+        self.encoding = encoding or 'utf-8'
 
         if fromString:
             self.list = g.splitLines(fromString) # Must preserve newlines!
@@ -6157,7 +5509,7 @@ def prettyPrintType (obj):
             if theType.endswith("'>"): theType = theType[:-2]
             return theType
 #@-node:ekr.20060221083356:g.prettyPrintType
-#@+node:ekr.20090516135452.5776:g.removeLeading/Trailing & tests
+#@+node:ekr.20090516135452.5776:g.removeLeading/Trailing
 # Warning: g.removeTrailingWs already exists.
 # Do not change it!
 
@@ -6179,21 +5531,7 @@ def removeTrailing (s,chars):
         i -= 1
     i += 1
     return s[:i]
-#@+node:ekr.20090516135452.5779:@test removeTrailing
-if g.unitTesting:
-
-    s = 'aa bc \n \n\t\n'
-    table = (
-        ('\t\n ','aa bc'),
-        ('abc\t\n ',''),
-        ('c\t\n ','aa b'),
-    )
-
-    for arg,val in table:
-        result = g.removeTrailing(s,arg)
-        assert result == val, 'expected %s, got %s' % (val,result)
-#@-node:ekr.20090516135452.5779:@test removeTrailing
-#@-node:ekr.20090516135452.5776:g.removeLeading/Trailing & tests
+#@-node:ekr.20090516135452.5776:g.removeLeading/Trailing
 #@+node:ekr.20060410112600:g.stripBrackets
 def stripBrackets (s):
 
@@ -6205,7 +5543,7 @@ def stripBrackets (s):
         s = s[:-1]
     return s
 #@-node:ekr.20060410112600:g.stripBrackets
-#@+node:ekr.20061031102333.2:g.getWord & getLine & tests
+#@+node:ekr.20061031102333.2:g.getWord & getLine
 def getWord (s,i):
 
     '''Return i,j such that s[i:j] is the word surrounding s[i].'''
@@ -6240,30 +5578,7 @@ def getLine (s,i):
     # g.trace('i,j,k',i,j,k,repr(s[j:k]))
     return j,k
 #@nonl
-#@+node:ekr.20090517020744.5877:@test g.getLine
-if g.unitTesting:
-
-    s = 'a\ncd\n\ne'
-
-    for i,result in (
-        (-1,(0,2)), # One too few.
-        (0,(0,2)),(1,(0,2)),
-        (2,(2,5)),(3,(2,5)),(4,(2,5)),
-        (5,(5,6)),
-        (6,(6,7)),
-        (7,(6,7)), # One too many.
-    ):
-        j,k = g.getLine(s,i)
-        assert (j,k) == result, 'i: %d, expected %d,%d, got %d,%d' % (i,result[0],result[1],j,k)
-#@-node:ekr.20090517020744.5877:@test g.getLine
-#@+node:ekr.20090517020744.5879:@test g.getWord
-if g.unitTesting:
-
-    s = 'abc xy_z5 pdq'
-    i,j = g.getWord(s,5)
-    assert s[i:j] == 'xy_z5','got %s' % s[i:j]
-#@-node:ekr.20090517020744.5879:@test g.getWord
-#@-node:ekr.20061031102333.2:g.getWord & getLine & tests
+#@-node:ekr.20061031102333.2:g.getWord & getLine
 #@+node:ekr.20041219095213:import wrappers
 #@+at 
 #@nonl
@@ -6273,7 +5588,7 @@ if g.unitTesting:
 # The solutions is easy: simply return sys.modules.get(moduleName) if 
 # moduleName is in sys.modules!
 #@-at
-#@+node:ekr.20040917061619:g.cantImport & test
+#@+node:ekr.20040917061619:g.cantImport
 def cantImport (moduleName,pluginName=None,verbose=True):
 
     """Print a "Can't Import" message and return None."""
@@ -6291,12 +5606,7 @@ def cantImport (moduleName,pluginName=None,verbose=True):
     else:
         g.es_print('',s,color="blue")
 
-#@+node:ekr.20090517020744.5869:@test g.cantImport returns None
-if g.unitTesting:
-
-    assert(g.cantImport("xyzzy","during unit testing") is None)
-#@-node:ekr.20090517020744.5869:@test g.cantImport returns None
-#@-node:ekr.20040917061619:g.cantImport & test
+#@-node:ekr.20040917061619:g.cantImport
 #@+node:ekr.20041219095213.1:g.importModule
 def importModule (moduleName,pluginName=None,verbose=False):
 
@@ -6489,8 +5799,7 @@ def importFromPath (name,path,pluginName=None,verbose=False):
     fn = g.shortFileName(name)
     moduleName,ext = g.os_path_splitext(fn)
     path = g.os_path_normpath(path)
-    path = g.toEncodedString(path,app and app.defaultEncoding or 'ascii')
-
+    path = g.toEncodedString(path)
     module = sys.modules.get(moduleName)
     if module:
         if trace: g.trace('already loaded',moduleName,module)
@@ -6621,27 +5930,8 @@ def adjustTripleString (s,tab_width):
     result = [g.removeLeadingWhitespace(line,w,tab_width) for line in lines]
     result = ''.join(result)
     return result
-#@+node:ekr.20090901175503.6098:@test g.adjustTripleString
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    s = '''\
-    a
-      b
-
-c
-    d'''
-
-    s2 = 'a\n  b\n\nc\nd'
-
-    result = g.adjustTripleString(s,c.tab_width)
-    assert result == s2,repr(result)
-
-
-#@-node:ekr.20090901175503.6098:@test g.adjustTripleString
 #@-node:ekr.20051014175117:g.adjustTripleString
-#@+node:ekr.20050211120242.2:g.removeExtraLws & test
+#@+node:ekr.20050211120242.2:g.removeExtraLws
 def removeExtraLws (s,tab_width):
 
     '''Remove extra indentation from one or more lines.
@@ -6668,20 +5958,7 @@ def removeExtraLws (s,tab_width):
             g.pr(repr(line))
 
     return result
-#@+node:ekr.20090517020744.5881:@test g.removeExtraLws
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    for s,expected in (
-        (' a\n b\n c', 'a\nb\nc'),
-        (' \n  A\n    B\n  C\n', '\nA\n  B\nC\n'),
-    ):
-        result = g.removeExtraLws(s,c.tab_width)
-        assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
-            repr(s),repr(expected),repr(result))
-#@-node:ekr.20090517020744.5881:@test g.removeExtraLws
-#@-node:ekr.20050211120242.2:g.removeExtraLws & test
+#@-node:ekr.20050211120242.2:g.removeExtraLws
 #@+node:ekr.20031218072017.3200:get_leading_ws
 def get_leading_ws(s):
 
@@ -6720,28 +5997,14 @@ def regularizeTrailingNewlines(s,kind):
 
     pass
 #@-node:ekr.20040723093558:regularizeTrailingNewlines
-#@+node:ekr.20091229090857.11698:removeBlankLines & test
+#@+node:ekr.20091229090857.11698:removeBlankLines
 def removeBlankLines (s):
 
     lines = g.splitLines(s)
     lines = [z for z in lines if z.strip()]
     return ''.join(lines)
-#@+node:ekr.20091229090857.11699:@test g.removeBlankLines
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    for s,expected in (
-        ('a\nb', 'a\nb'),
-        ('\n  \n\nb\n', 'b\n'),
-        (' \t \n\n  \n c\n\t\n', ' c\n'),
-    ):
-        result = g.removeBlankLines(s)
-        assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
-            repr(s),repr(expected),repr(result))
-#@-node:ekr.20091229090857.11699:@test g.removeBlankLines
-#@-node:ekr.20091229090857.11698:removeBlankLines & test
-#@+node:ekr.20091229075924.6235:removeLeadingBlankLines & test
+#@-node:ekr.20091229090857.11698:removeBlankLines
+#@+node:ekr.20091229075924.6235:removeLeadingBlankLines
 def removeLeadingBlankLines (s):
 
     lines = g.splitLines(s)
@@ -6755,21 +6018,7 @@ def removeLeadingBlankLines (s):
             result.append(line)
 
     return ''.join(result)
-#@+node:ekr.20091229075924.6236:@test g.removeLeadingBlankLines
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-
-    for s,expected in (
-        ('a\nb', 'a\nb'),
-        ('\n  \nb\n', 'b\n'),
-        (' \t \n\n\n c', ' c'),
-    ):
-        result = g.removeLeadingBlankLines(s)
-        assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
-            repr(s),repr(expected),repr(result))
-#@-node:ekr.20091229075924.6236:@test g.removeLeadingBlankLines
-#@-node:ekr.20091229075924.6235:removeLeadingBlankLines & test
+#@-node:ekr.20091229075924.6235:removeLeadingBlankLines
 #@+node:ekr.20031218072017.3202:removeLeadingWhitespace
 # Remove whitespace up to first_ws wide in s, given tab_width, the width of a tab.
 
@@ -6788,7 +6037,7 @@ def removeLeadingWhitespace (s,first_ws,tab_width):
         s = s[j:]
     return s
 #@-node:ekr.20031218072017.3202:removeLeadingWhitespace
-#@+node:ekr.20031218072017.3203:removeTrailingWs & test
+#@+node:ekr.20031218072017.3203:removeTrailingWs
 # Warning: string.rstrip also removes newlines!
 
 def removeTrailingWs(s):
@@ -6797,21 +6046,7 @@ def removeTrailingWs(s):
     while j >= 0 and (s[j] == ' ' or s[j] == '\t'):
         j -= 1
     return s[:j+1]
-#@+node:ekr.20090516135452.5856:@test removeTrailingWs
-if g.unitTesting:
-
-    table = (
-        ('a a\t','a a'),
-        ('a a\t\n','a a\t\n'),
-        ('a a ','a a'),
-    )
-
-    for s,val in table:
-        result = g.removeTrailingWs(s)
-        assert result == val, 'expected %s, got %s' % (
-            repr(val),repr(result))
-#@-node:ekr.20090516135452.5856:@test removeTrailingWs
-#@-node:ekr.20031218072017.3203:removeTrailingWs & test
+#@-node:ekr.20031218072017.3203:removeTrailingWs
 #@+node:ekr.20031218072017.3204:skip_leading_ws
 # Skips leading up to width leading whitespace.
 

@@ -167,7 +167,7 @@ class rstCommands:
         self.atAutoWrite = False # True, special cases for writeAtAutoFile.
         self.atAutoWriteUnderlines = '' # Forced underlines for writeAtAutoFile.
         self.leoDirectivesList = g.globalDirectiveList
-        self.encoding = g.app.defaultEncoding
+        self.encoding = 'utf-8'
         self.ext = None # The file extension.
         self.outputFileName = None # The name of the file being written.
         self.outputFile = None # The open file being written.
@@ -656,7 +656,7 @@ class rstCommands:
         # This can be overridden by @rst-option encoding=whatever.
         c = self.c
         d = c.scanAllDirectives(p)
-        self.encoding = d.get('encoding') or g.app.defaultEncoding
+        self.encoding = d.get('encoding') or 'utf-8'
         self.path = d.get('path') or ''
 
         # g.trace('path:',self.path)
@@ -711,25 +711,6 @@ class rstCommands:
         self.atAutoWriteUnderlines = underlines2 + underlines1
         self.underlines1 = underlines1
         self.underlines2 = underlines2
-    #@+node:ekr.20090702084917.6033:@test initAtAutoWrite
-    if g.unitTesting:
-
-        c,p = g.getTestVars()
-
-        rst = c.rstCommands
-        rst.initAtAutoWrite(p,fileName='<test file>',outputFile=None)
-
-        # Ensure we are actually testing the default logic.
-        d = p.v.u.get('rst-import',{})
-        underlines = d.get('underline_characters')
-        assert underlines is None,underlines
-        assert d == {},d
-        # Now test the logic.
-        assert rst.underlines2 == '#',rst.underlines2
-        assert rst.underlines1 == '=+*^~"\'`-:><_',rst.underlines1
-        assert rst.atAutoWriteUnderlines == '#=+*^~"\'`-:><_',\
-            rst.atAutoWriteUnderlines
-    #@-node:ekr.20090702084917.6033:@test initAtAutoWrite
     #@-node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
     #@+node:ekr.20091228080620.6499:isSafeWrite
     def isSafeWrite (self,p):
@@ -1636,7 +1617,8 @@ class rstCommands:
 
             # 2010/01/10: write longer underlines for non-ascii characters.
             # n = max(4,len(s))
-            n = max(4,len(g.toEncodedString(s,encoding='utf-8',reportErrors=False)))
+            n = max(4,len(g.toEncodedString(s,encoding=self.encoding,reportErrors=False)))
+                ### Was encoding = 'utf-8'
             if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
             if level == 0 and self.underlines2:
                 return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
@@ -1651,7 +1633,8 @@ class rstCommands:
             if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
             # 2010/01/10: write longer underlines for non-ascii characters.
             # n = max(4,len(s))
-            n = max(4,len(g.toEncodedString(s,encoding='utf-8',reportErrors=False)))
+            n = max(4,len(g.toEncodedString(s,encoding=self.encoding,reportErrors=False)))
+                ### Was encoding = 'utf-8'
             return '%s\n%s\n\n' % (p.h.strip(),ch*n)
     #@-node:ekr.20090502071837.93:underline (leoRst)
     #@-node:ekr.20090502071837.88:Utils

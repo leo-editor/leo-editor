@@ -116,7 +116,8 @@ def doPrePluginsInit(fileName,pymacs):
     # Read settings *after* setting g.app.config and *before* opening plugins.
     # This means if-gui has effect only in per-file settings.
     g.app.config.readSettingsFiles(fileName,verbose)
-    g.app.setEncoding()
+    # New in Leo 4.7: the default encoding is always 'utf-8'.
+    # g.app.setEncoding()
     g.app.setGlobalDb()
     if gui is None:
         if script and not windowFlag:
@@ -196,15 +197,7 @@ def completeFileName (fileName):
     if not (fileName and fileName.strip()):
         return None,None
 
-    # This does not depend on config settings.
-    # try:
-        # if sys.platform.lower().startswith('win'):
-            # fileName = g.toUnicode(fileName,'mbcs')
-        # else:
-            # fileName = g.toUnicode(fileName,'utf-8')
-    # except Exception: pass
-
-    fileName = g.toUnicode(fileName,'utf-8')
+    fileName = g.toUnicode(fileName)
 
     relativeFileName = fileName
     fileName = g.os_path_finalize(fileName)

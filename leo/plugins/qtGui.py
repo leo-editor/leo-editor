@@ -6709,8 +6709,7 @@ class leoQtGui(leoGui.leoGui):
         self.bodyTextWidget  = leoQtBaseTextWidget
         self.plainTextWidget = leoQtBaseTextWidget
         self.iconimages = {} # Image cache set by getIconImage().
-        self.mGuiName = 'qt'
-        self.defaultEncoding = None # Set by toUnicode as needed.    
+        self.mGuiName = 'qt'  
 
         if g.app.qt_use_tabs:    
             self.frameFactory = TabbedFrameFactory()
@@ -6807,8 +6806,7 @@ class leoQtGui(leoGui.leoGui):
         cb = self.qtApp.clipboard()
         if cb:
             # cb.clear()  # unnecessary, breaks on some Qt versions
-            s = g.toUnicode(s,encoding='utf-8')
-                # 2010/01/21: Omitted by mistake in rev 2686.
+            s = g.toUnicode(s)
             QtGui.QApplication.processEvents()
             cb.setText(s)
             QtGui.QApplication.processEvents()
@@ -6826,7 +6824,8 @@ class leoQtGui(leoGui.leoGui):
             QtGui.QApplication.processEvents()
             s = cb.text()
             if trace: g.trace (len(s),type(s))
-            s = g.app.gui.toUnicode(s) # Assume nothing about the type of s.
+            s = g.app.gui.toUnicode(s)
+                # Same as g.u(s), but with error handling.
             return s
         else:
             g.trace('no clipboard!')
@@ -7349,7 +7348,7 @@ class leoQtGui(leoGui.leoGui):
         except Exception:
             g.trace('*** Unicode Error: bugs possible')
             # The mass update omitted the encoding param.
-            return g.toUnicode(s,encoding='utf-8',reportErrors='replace')
+            return g.toUnicode(s,reportErrors='replace')
     #@-node:ekr.20081121105001.502:toUnicode (qtGui)
     #@+node:ekr.20081121105001.503:widget_name (qtGui)
     def widget_name (self,w):

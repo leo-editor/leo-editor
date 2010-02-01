@@ -139,7 +139,7 @@ class shadowController:
 
         return ok
     #@-node:ekr.20080711063656.2:x.rename
-    #@+node:ekr.20080713091247.1:x.replaceFileWithString & test
+    #@+node:ekr.20080713091247.1:x.replaceFileWithString
     def replaceFileWithString (self,fn,s):
 
         '''Replace the file with s if s is different from theFile's contents.
@@ -170,7 +170,7 @@ class shadowController:
         # Replace the file.
         try:
             f = open(fn,'wb')
-            f.write(g.toEncodedString(s,encoding='utf-8'))
+            f.write(g.toEncodedString(s))
             if trace: g.trace('fn',fn,
                 '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
                 '\ncallers',g.callers(4))
@@ -184,17 +184,7 @@ class shadowController:
             x.error('unexpected exception writing file: %s' % (fn))
             g.es_exception()
             return False
-    #@+node:ekr.20090530055015.6862:@test x.replaceFileWithString
-    if g.unitTesting:
-
-        c,p = g.getTestVars()
-        x = c.shadowController
-
-        fn = 'does/not/exist'
-        assert not g.os_path_exists(fn)
-        assert not x.replaceFileWithString (fn,'abc')
-    #@-node:ekr.20090530055015.6862:@test x.replaceFileWithString
-    #@-node:ekr.20080713091247.1:x.replaceFileWithString & test
+    #@-node:ekr.20080713091247.1:x.replaceFileWithString
     #@+node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
     def shadowDirName (self,filename):
 
@@ -638,7 +628,7 @@ class shadowController:
         x.error('file syntax error: nothing follows verbatim sentinel')
         g.trace(g.callers())
     #@-node:ekr.20080708094444.85:x.error & message & verbatim_error
-    #@+node:ekr.20090529125512.6122:x.markerFromFileLines & helper & test
+    #@+node:ekr.20090529125512.6122:x.markerFromFileLines & helper
     def markerFromFileLines (self,lines,fn):  # fn used only for traces.
 
         '''Return the sentinel delimiter comment to be used for filename.'''
@@ -658,7 +648,7 @@ class shadowController:
 
         marker = x.markerClass(delims)
         return marker
-    #@+node:ekr.20090529125512.6125:x.findLeoLine & test
+    #@+node:ekr.20090529125512.6125:x.findLeoLine
     def findLeoLine (self,lines):
 
         '''Return the @+leo line, or ''.'''
@@ -669,58 +659,8 @@ class shadowController:
                 return line
         else:
             return ''
-    #@+node:ekr.20090529125512.6126:@test x.findAtLeoLine
-    if g.unitTesting:
-
-        c,p = g.getTestVars()
-        x = c.shadowController
-        table = (
-            ('c',('//@+leo','a'),                   '//@+leo'),
-            ('c',('//@first','//@+leo','b'),        '//@+leo'),
-            ('c',('/*@+leo*/','a'),                 '/*@+leo*/'),
-            ('c',('/*@first*/','/*@+leo*/','b'),    '/*@+leo*/'),
-            ('python',('#@+leo','a'),               '#@+leo'),
-            ('python',('#@first','#@+leo','b'),     '#@+leo'),
-            ('error',('',),''),
-            ('html',('<!--@+leo-->','a'),                '<!--@+leo-->'),
-            ('html',('<!--@first-->','<!--@+leo-->','b'),'<!--@+leo-->'),
-        )
-        for language,lines,expected in table:
-            result = x.findLeoLine(lines)
-            assert expected==result, 'language %s expected %s got %s lines %s' % (
-                language,expected,result,'\n'.join(lines))
-    #@nonl
-    #@-node:ekr.20090529125512.6126:@test x.findAtLeoLine
-    #@-node:ekr.20090529125512.6125:x.findLeoLine & test
-    #@+node:ekr.20090529125512.6128:@test x.markerFromFileLines
-    if g.unitTesting:
-
-        c,p = g.getTestVars()
-        x = c.shadowController
-        # Add -ver=4 so at.parseLeoSentinel does not complain.
-        table = (
-            ('c',('//@+leo-ver=4','a'),                   '//',''),
-            ('c',('//@first','//@+leo-ver=4','b'),        '//',''),
-            ('c',('/*@+leo-ver=4*/','a'),                 '/*','*/'),
-            ('c',('/*@first*/','/*@+leo-ver=4*/','b'),    '/*','*/'),
-            ('python',('#@+leo-ver=4','a'),               '#',''),
-            ('python',('#@first','#@+leo-ver=4','b'),     '#',''),
-            ('error',('',),             '#--unknown-language--',''),
-            ('html',('<!--@+leo-ver=4-->','a'),                '<!--','-->'),
-            ('html',('<!--@first-->','<!--@+leo-ver=4-->','b'),'<!--','-->'),
-        )
-
-        for language,lines,delim1,delim2 in table:
-            s = x.findLeoLine(lines)
-            marker = x.markerFromFileLines(lines,'test-file-name')
-            result1,result2 = marker.getDelims()
-            assert delim1==result1, 'language %s expected1 %s got %s lines %s' % (
-                language,delim1,result1,'\n'.join(lines))
-            assert delim2==result2, 'language %s expected2 %s got %s lines %s' % (
-                language,delim1,result1,'\n'.join(lines))
-    #@nonl
-    #@-node:ekr.20090529125512.6128:@test x.markerFromFileLines
-    #@-node:ekr.20090529125512.6122:x.markerFromFileLines & helper & test
+    #@-node:ekr.20090529125512.6125:x.findLeoLine
+    #@-node:ekr.20090529125512.6122:x.markerFromFileLines & helper
     #@+node:ekr.20080708094444.9:x.markerFromFileName
     def markerFromFileName (self,filename):
 
@@ -735,31 +675,6 @@ class shadowController:
         delims = g.comment_delims_from_extension(filename)
         marker = self.markerClass(delims)
         return marker
-    #@+node:ekr.20090529061522.6613:@test x.markerFromFileName
-    if g.unitTesting:
-
-        c,p = g.getTestVars()
-
-        x = c.shadowController
-
-        table = (
-            ('ini',';','',),
-            ('c','//',''),
-            ('h','//',''),
-            ('py','#',''),
-            ('xyzzy','#--unknown-language--',''),
-        )
-
-        for ext,delim1,delim2 in table:
-            filename = 'x.%s' % ext
-            marker = x.markerFromFileName(filename)
-            result1,result2 = marker.getDelims()
-            assert delim1==result1, 'ext=%s, got %s, expected %s' % (
-                ext,delim1,result1)
-            assert delim2==result2, 'ext=%s, got %s, expected %s' % (
-                ext,delim2,result2)
-    #@nonl
-    #@-node:ekr.20090529061522.6613:@test x.markerFromFileName
     #@-node:ekr.20080708094444.9:x.markerFromFileName
     #@+node:ekr.20080708094444.30:x.push_filter_mapping
     def push_filter_mapping (self,lines, marker):
@@ -849,7 +764,7 @@ class shadowController:
             try:
                 f1 = open(fileName, "w")
                 for line in lines:
-                    f1.write(g.toEncodedString(line,encoding='utf-8'))
+                    f1.write(g.toEncodedString(line))
                 f1.close()
             except IOError:
                 g.es_exception()
@@ -1024,7 +939,7 @@ class shadowController:
         #@-others
 
     #@-node:ekr.20080709062932.2:atShadowTestCase
-    #@+node:ekr.20090529061522.5727:class marker & tests
+    #@+node:ekr.20090529061522.5727:class marker
     class markerClass:
 
         '''A class representing comment delims in @shadow files.'''
@@ -1056,27 +971,8 @@ class shadowController:
                 return self.delim1,''
             else:
                 return self.delim2,self.delim3
-        #@+node:ekr.20090529061522.6235:@test class markerClass.getDelims
-        if g.unitTesting:
-            c,p = g.getTestVars()
-            x = c.shadowController
-            table = (
-                ('python','#',''),
-                ('c','//',''),
-                ('html','<!--','-->'),
-                ('xxxx','#--unknown-language--',''),
-            )
-            for language,delim1,delim2 in table:
-                delims = g.set_delims_from_language(language)
-                marker = x.markerClass(delims)
-                result = marker.getDelims()
-                expected = delim1,delim2
-                assert result==expected,'language %s expected %s got %s' % (
-                    language,expected,result)
-        #@nonl
-        #@-node:ekr.20090529061522.6235:@test class markerClass.getDelims
         #@-node:ekr.20090529061522.6258:getDelims
-        #@+node:ekr.20090529061522.6259:isSentinel & test
+        #@+node:ekr.20090529061522.6259:isSentinel
         def isSentinel(self,s,suffix=''):
             '''Return True is line s contains a valid sentinel comment.'''
 
@@ -1087,69 +983,16 @@ class shadowController:
                 return s.startswith(self.delim2+'@'+suffix) and s.endswith(self.delim3)
             else:
                 return False
-        #@+node:ekr.20090529061522.5728:@test class markerClass.isSentinel
-        if g.unitTesting:
-            c,p = g.getTestVars()
-            x = c.shadowController
-            table = (
-                ('python','abc',False),
-                ('python','#abc',False),
-                ('python','#@abc',True),
-                ('python','@abc#',False),
-                ('c','abc',False),
-                ('c','//@',True),
-                ('c','// @abc',False),
-                ('c','/*@ abc */',True),
-                ('c','/*@ abc',False),
-                ('html','#@abc',False),
-                ('html','<!--abc-->',False),
-                ('html','<!--@ abc -->',True),
-                ('html','<!--@ abc ->',False),
-                ('xxxx','#--unknown-language--@',True)
-            )
-            for language,s,expected in table:
-                delims = g.set_delims_from_language(language)
-                marker = x.markerClass(delims)
-                result = marker.isSentinel(s)
-                assert result==expected,'language %s s: %s expected %s got %s' % (
-                    language,s,expected,result)
-        #@nonl
-        #@-node:ekr.20090529061522.5728:@test class markerClass.isSentinel
-        #@-node:ekr.20090529061522.6259:isSentinel & test
-        #@+node:ekr.20090529061522.6260:isVerbatimSentinel & test
+        #@-node:ekr.20090529061522.6259:isSentinel
+        #@+node:ekr.20090529061522.6260:isVerbatimSentinel
         def isVerbatimSentinel(self,s):
 
             return self.isSentinel(s,suffix='verbatim')
         #@nonl
-        #@+node:ekr.20090529061522.6215:@test class markerClass.isVerbatimSentinel
-        if g.unitTesting:
-            c,p = g.getTestVars()
-            x = c.shadowController
-            table = (
-                ('python','abc',False),
-                ('python','#abc',False),
-                ('python','#verbatim',False),
-                ('python','#@verbatim',True),
-                ('c','abc',False),
-                ('c','//@',False),
-                ('c','//@verbatim',True),
-                ('html','#@abc',False),
-                ('html','<!--abc-->',False),
-                ('html','<!--@verbatim -->',True),
-                ('xxxx','#--unknown-language--@verbatim',True)
-            )
-            for language,s,expected in table:
-                delims = g.set_delims_from_language(language)
-                marker = x.markerClass(delims)
-                result = marker.isVerbatimSentinel(s)
-                assert result==expected,'language %s s: %s expected %s got %s' % (
-                    language,s,expected,result)
-        #@nonl
-        #@-node:ekr.20090529061522.6215:@test class markerClass.isVerbatimSentinel
-        #@-node:ekr.20090529061522.6260:isVerbatimSentinel & test
+        #@-node:ekr.20090529061522.6260:isVerbatimSentinel
         #@-others
 
-    #@-node:ekr.20090529061522.5727:class marker & tests
+    #@-node:ekr.20090529061522.5727:class marker
     #@+node:ekr.20080708094444.12:class sourcereader
     class sourcereader:
         """

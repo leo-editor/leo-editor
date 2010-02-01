@@ -2081,7 +2081,7 @@ class configClass:
                 s = '\n'.join(self.recentFiles)
                 theFile.write(s)
             else:
-                theFile.write(g.toEncodedString('\n','utf-8'))
+                theFile.write(g.toEncodedString('\n'))
 
         except IOError:
             # The user may have erased a file.  Not an error.

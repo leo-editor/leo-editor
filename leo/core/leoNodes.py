@@ -164,7 +164,7 @@ class vnode (baseVnode):
 
         return self.findAtFileName(names)
     #@-node:ekr.20031218072017.3350:anyAtFileNodeName
-    #@+node:ekr.20031218072017.3348:at...FileNodeName & tests
+    #@+node:ekr.20031218072017.3348:at...FileNodeName
     # These return the filename following @xxx, in v.headString.
     # Return the the empty string if v is not an @xxx node.
 
@@ -210,26 +210,7 @@ class vnode (baseVnode):
     atNoSentFileNodeName  = atNoSentinelsFileNodeName
     # atNorefFileNodeName   = atRawFileNodeName
     atAsisFileNodeName    = atSilentFileNodeName
-    #@+node:ekr.20090521064955.5905:@test v.atAutoNodeName & v.atAutoRstNodeName
-    if g.unitTesting:
-
-        c,p = g.getTestVars()
-
-        table = (
-            ('@auto-rst rst-file','rst-file','rst-file'),
-            ('@auto x','x',''),
-            ('xyz','',''),
-        )
-
-        for s,expected1,expected2 in table:
-            result1 = p.v.atAutoNodeName(h=s)
-            result2 = p.v.atAutoRstNodeName(h=s)
-            assert result1 == expected1,'fail1: given %s expected %s got %s' % (
-                repr(s),repr(expected1),repr(result1))
-            assert result2 == expected2,'fail2: given %s expected %s got %s' % (
-                repr(s),repr(expected2),repr(result2))
-    #@-node:ekr.20090521064955.5905:@test v.atAutoNodeName & v.atAutoRstNodeName
-    #@-node:ekr.20031218072017.3348:at...FileNodeName & tests
+    #@-node:ekr.20031218072017.3348:at...FileNodeName
     #@+node:EKR.20040430152000:isAtAllNode
     def isAtAllNode (self):
 
@@ -2586,124 +2567,6 @@ class position (object):
                 p.h,stack))
             p.stack = stack
     #@nonl
-    #@+node:ekr.20090713125326.6116:@test p.adjustPositionBeforeUnlink
-    if g.unitTesting:
-
-        c,p = g.getTestVars()
-
-        table = (
-            '1',
-            '1-1','1-1-1','1-1-2',
-            '1-2','1-2-1','1-2-2',
-            '2',
-            '2-1','2-1-1','2-1-2',
-            '2-2','2-2-1','2-2-2',
-            '3',
-            '3-1','3-1-1','3-1-2',
-            '3-2','3-2-1','3-2-2',
-        )
-
-        for suffix in table:
-            h = 'node %s' % suffix
-            p2 = g.findNodeInTree(c,p,h)
-            assert p2,h
-
-        table2 = (
-            ('2-1-2','2-1-1','2-1-1'),
-            ('3','2','2'),
-        )  
-
-        for h1,h2,h3 in table2:
-            p1 = g.findNodeInTree(c,p,'node %s' % h1)
-            p2 = g.findNodeInTree(c,p,'node %s' % h2)
-            p3 = g.findNodeInTree(c,p,'node %s' % h3)
-            p1._adjustPositionBeforeUnlink(p2)
-            result = p1
-            assert result.stack == p3.stack,'expected %s got %s' % (
-                p3.h,result and result.h or '<none>')
-
-        # Data.
-        #@    @+others
-        #@+node:ekr.20090713125326.6117:node 1
-        # Node 1
-        #@nonl
-        #@+node:ekr.20090713125326.6118:node 1-1
-        # node 1-1
-        #@nonl
-        #@+node:ekr.20090713125326.6119:node 1-1-1
-        # node 1-1-1
-        #@nonl
-        #@-node:ekr.20090713125326.6119:node 1-1-1
-        #@+node:ekr.20090713125326.6135:node 1-1-2
-        # node 1-1-2
-        #@nonl
-        #@-node:ekr.20090713125326.6135:node 1-1-2
-        #@-node:ekr.20090713125326.6118:node 1-1
-        #@+node:ekr.20090713125326.6133:node 1-2
-        # node 1-2
-        #@nonl
-        #@+node:ekr.20090713125326.6134:node 1-2-1
-        # node 1-2-1
-        #@nonl
-        #@-node:ekr.20090713125326.6134:node 1-2-1
-        #@+node:ekr.20090713125326.6136:node 1-2-2
-        # node 1-2-2
-        #@nonl
-        #@-node:ekr.20090713125326.6136:node 1-2-2
-        #@-node:ekr.20090713125326.6133:node 1-2
-        #@-node:ekr.20090713125326.6117:node 1
-        #@+node:ekr.20090713125326.6124:node 2
-        # node 2
-        #@nonl
-        #@+node:ekr.20090713125326.6125:node 2-1
-        # node 2-1
-        #@nonl
-        #@+node:ekr.20090713125326.6126:node 2-1-1
-        # node 2-1-1
-        #@nonl
-        #@-node:ekr.20090713125326.6126:node 2-1-1
-        #@+node:ekr.20090713125326.6137:node 2-1-2
-        # node 2-1-2
-        #@-node:ekr.20090713125326.6137:node 2-1-2
-        #@-node:ekr.20090713125326.6125:node 2-1
-        #@+node:ekr.20090713125326.6142:node 2-2
-        # node 2-2
-        #@nonl
-        #@+node:ekr.20090713125326.6143:node 2-2-1
-        # node 2-2-1
-        #@nonl
-        #@-node:ekr.20090713125326.6143:node 2-2-1
-        #@+node:ekr.20090713125326.6144:node 2-2-2
-        # node 2-2-2
-        #@-node:ekr.20090713125326.6144:node 2-2-2
-        #@-node:ekr.20090713125326.6142:node 2-2
-        #@-node:ekr.20090713125326.6124:node 2
-        #@+node:ekr.20090713125326.6130:node 3
-        # node 3
-        #@nonl
-        #@+node:ekr.20090713125326.6131:node 3-1
-        # node 3-1
-        #@+node:ekr.20090713125326.6132:node 3-1-1
-        # node 3-1-1
-        #@nonl
-        #@-node:ekr.20090713125326.6132:node 3-1-1
-        #@+node:ekr.20090713125326.6138:node 3-1-2
-        # node 3-1-2
-        #@-node:ekr.20090713125326.6138:node 3-1-2
-        #@-node:ekr.20090713125326.6131:node 3-1
-        #@+node:ekr.20090713125326.6148:node 3-2
-        # node 3-2
-        #@+node:ekr.20090713125326.6149:node 3-2-1
-        # node 3-2-1
-        #@nonl
-        #@-node:ekr.20090713125326.6149:node 3-2-1
-        #@+node:ekr.20090713125326.6150:node 3-2-2
-        # node 3-2-2
-        #@-node:ekr.20090713125326.6150:node 3-2-2
-        #@-node:ekr.20090713125326.6148:node 3-2
-        #@-node:ekr.20090713125326.6130:node 3
-        #@-others
-    #@-node:ekr.20090713125326.6116:@test p.adjustPositionBeforeUnlink
     #@-node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
     #@+node:ekr.20080416161551.214:p._linkAfter
     def _linkAfter (self,p_after,adjust=True):

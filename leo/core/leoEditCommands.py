@@ -399,7 +399,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 command='dabbrev-expands',bunch=b,dirtyVnodeList=[])
         else:
             self.dynamicExpandHelper(prefix,rlist,w)
-    #@+node:ekr.20070605110441:dynamicExpandHelper & test
+    #@+node:ekr.20070605110441:dynamicExpandHelper
     def dynamicExpandHelper (self,prefix=None,rlist=None,w=None):
 
         k = self.k ; tag = 'dabbrev-expand'
@@ -423,15 +423,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 w.delete(i,j)
                 w.insert(i,k.arg)
     #@nonl
-    #@+node:ekr.20090525144314.6511:@test dynamicExpandHelper
-    if g.unitTesting:
-
-        c,p = g.getTestVars()
-
-        # A totally wimpy test.
-        c.abbrevCommands.dynamicExpandHelper(prefix='',rlist=None,w=None)
-    #@-node:ekr.20090525144314.6511:@test dynamicExpandHelper
-    #@-node:ekr.20070605110441:dynamicExpandHelper & test
+    #@-node:ekr.20070605110441:dynamicExpandHelper
     #@-node:ekr.20050920084036.59:dynamicExpansion
     #@+node:ekr.20050920084036.61:getDynamicList (helper)
     def getDynamicList (self,w,txt,rlist):
@@ -8460,7 +8452,7 @@ class spellTabHandler (leoFind.leoFind):
                 words.sort()
                 f = open(self.dictionaryFileName, "w")
                 for word in words:
-                    f.write("%s\n" % g.toEncodedString(word,'utf-8',reportErrors=True))
+                    f.write("%s\n" % g.toEncodedString(word,reportErrors=True))
                 f.flush()
                 f.close()
                 if 1:
@@ -8845,7 +8837,7 @@ class AspellClass:
             return None
         elif ctypes:
             # g.trace(type(word),word)
-            word = g.toEncodedString(word,'utf-8')
+            word = g.toEncodedString(word)
             if self.check(self.spell_checker,word,len(word)):
                 return None
             else:

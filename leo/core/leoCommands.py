@@ -318,7 +318,7 @@ class baseCommands (object):
         pth, bname = os.path.split(self.mFileName)
         if pth and bname and g.enableDB:
             fn = self.mFileName.lower()
-            fn = g.toEncodedString(fn,'utf-8') # Required for Python 3.x.
+            fn = g.toEncodedString(fn) # Required for Python 3.x.
             dbdirname = '%s/db/%s_%s' % (
                 g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
             # Use compressed pickles (handy for @thin caches)
@@ -466,7 +466,7 @@ class baseCommands (object):
         }
     #@nonl
     #@-node:ekr.20080827175609.39:c.scanAllDirectives
-    #@+node:ekr.20080828103146.15:c.scanAtPathDirectives & test
+    #@+node:ekr.20080828103146.15:c.scanAtPathDirectives
     def scanAtPathDirectives(self,aList,force=False,createPath=True):
 
         '''Scan aList for @path directives.
@@ -530,26 +530,7 @@ class baseCommands (object):
         if trace: g.trace('returns',path)
 
         return path
-    #@+node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
-    if g.unitTesting:
-
-        c,p = g.getTestVars()
-        p2 = p.firstChild().firstChild().firstChild()
-
-        aList = g.get_directives_dict_list(p2)
-        path = c.scanAtPathDirectives(aList,createPath=False)
-        # print (path,p2.h)
-        endpath = g.os_path_normpath('one/two')
-        assert path and path.endswith(endpath),'expected ending %s got %s' % (
-            endpath,path)
-    #@+node:ekr.20090530055015.6121:@path one
-    #@+node:ekr.20090530055015.6073:@path two
-    #@+node:ekr.20090530055015.6074:xyz
-    #@-node:ekr.20090530055015.6074:xyz
-    #@-node:ekr.20090530055015.6073:@path two
-    #@-node:ekr.20090530055015.6121:@path one
-    #@-node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
-    #@-node:ekr.20080828103146.15:c.scanAtPathDirectives & test
+    #@-node:ekr.20080828103146.15:c.scanAtPathDirectives
     #@+node:ekr.20080828103146.12:c.scanAtRootDirectives
     # Called only by scanColorDirectives.
 
@@ -3913,7 +3894,7 @@ class baseCommands (object):
 
         if key == None:
             def lowerKey (self):
-                return (self.h.lower(), self)
+                return (self.h.lower()) # , self)
             key = lowerKey
 
         if cmp: newChildren.sort(cmp,key=key)
@@ -4680,7 +4661,7 @@ class baseCommands (object):
 
                 g.trace("%10s: %s" % (
                     self.name,
-                    repr(g.toEncodedString(self.val,"utf-8"))
+                    repr(g.toEncodedString(self.val))
                 ))
         #@-node:ekr.20041021101911.2:trace
         #@-node:ekr.20040711135244.10:putNormalToken & allies
