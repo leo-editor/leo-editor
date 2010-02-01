@@ -346,15 +346,17 @@ class rstCommands:
     #@+node:ekr.20090502071837.45:initCodeBlockString
     def initCodeBlockString(self,p):
 
-        # New in Leo 4.4.4: do this here, not in initWrite:
+        # New in Leo 4.4.4: do this here, not in initWrite.
+        trace = False and not g.unitTesting
         c = self.c
+        # if trace: os.system('cls')
         d = c.scanAllDirectives(p)
         language = d.get('language')
         if language is None: language = 'python'
         else: language = language.lower()
         syntax = SilverCity is not None
 
-        # g.trace('language',language,'language.title()',language.title(),p.h)
+        if trace: g.trace('language',language,'language.title()',language.title(),p.h)
 
         # Note: lines that end with '\n\n' are a signal to handleCodeMode.
         s = self.getOption('code_block_string')

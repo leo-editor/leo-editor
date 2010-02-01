@@ -482,6 +482,8 @@ def get_directives_dict(p,root=None):
     Returns a dict containing pointers to the start of each directive"""
 
     trace = False and not g.unitTesting
+    verbose = False
+    if trace: g.trace('*'*20,p.h)
 
     if root: root_node = root[0]
     d = {}
@@ -500,8 +502,11 @@ def get_directives_dict(p,root=None):
                 j = i + 1 + len(word)
                 k = g.skip_line(s,j)
                 val = s[j:k].strip()
-                if trace: g.trace(word,repr(val))
+                # if j < len(s) and s[j] not in (' ','\t','\n'):
+                    # g.es_print('invalid character after directive',s[max(0,i-1):k-1],color='red')
+                    # if trace:g.trace(word,repr(val),s[i:i+20])
                 d[word.strip()] = val
+                if trace: g.trace(word.strip(),repr(val))
 
     if root:
         anIter = g_noweb_root.finditer(p.b)
@@ -513,7 +518,7 @@ def get_directives_dict(p,root=None):
                     g.angleBrackets('*')))
             break
 
-    if trace: g.trace('%4d' % (len(p.h) + len(p.b)),g.callers(5))
+    if trace and verbose: g.trace('%4d' % (len(p.h) + len(p.b)),g.callers(5))
     return d
 #@+node:ekr.20090214075058.10:compute_directives_re
 def compute_directives_re ():
@@ -522,11 +527,15 @@ def compute_directives_re ():
 
     global globalDirectiveList
 
-    aList = ['^@%s' % z for z in globalDirectiveList
+    # 2010/02/01: require whitespace after all directives!
+    aList = [r'^@%s\s' % z for z in globalDirectiveList
                 if z != 'others']
 
-    # @others can have leading whitespace.
-    aList.append(r'^\s@others')
+    if 0: # 2010/02/01
+        # The code never this, and this regex is broken
+        # because it can confuse g.get_directives_dict.
+        # @others can have leading whitespace.
+        aList.append(r'^\s@others\s')
 
     return '|'.join(aList)
 #@-node:ekr.20090214075058.10:compute_directives_re
@@ -2274,6 +2283,7 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
     """Attempt to make all non-existent directories"""
 
     trace = False and not g.unitTesting
+    testing = False # True: don't actually make the directories.
 
     if force:
         create = True # Bug fix: g.app.config will not exist during startup.
@@ -2283,11 +2293,14 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
         create = (g.app and g.app.config and
             g.app.config.create_nonexistent_directories)
 
-    if trace: g.trace('c exists: %s force: %s create: %s dir: %s' % (
-        c is not None,force,create,theDir))
-
     if not force and not create:
+        if trace: g.trace('did not create: force and create are both false')
         return None
+
+    if trace:
+        g.trace('\n',theDir,'\n',g.callers(4))
+        # g.trace('c exists: %s force: %s create: %s dir: %s' % (
+            # c is not None,force,create,theDir))
 
     if c: theDir = g.os_path_expandExpression(theDir,c=c)
 
@@ -2305,12 +2318,16 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
             theDir = head
     path = ""
     paths.reverse()
+    if trace: g.trace('paths:',paths)
     for s in paths:
         path = g.os_path_join(path,s)
         if not g.os_path_exists(path):
             try:
-                os.mkdir(path)
-                if verbose and not g.app.unitTesting:
+                if testing:
+                    g.trace('***making',path)
+                else:
+                    os.mkdir(path)
+                if verbose and not testing and not g.app.unitTesting:
                     # g.trace('***callers***',g.callers(5))
                     g.es_print("created directory:",path,color='red')
             except Exception:
@@ -3677,6 +3694,7 @@ def os_path_finalize (path,**keys):
     if c: path = g.os_path_expandExpression(path,**keys)
 
     path = g.os_path_expanduser(path)
+
     return os.path.normpath(os.path.abspath(path))
 
 def os_path_finalize_join (*args,**keys):
@@ -3738,9 +3756,12 @@ def os_path_isfile(path):
 #@+node:ekr.20031218072017.2154:os_path_join
 def os_path_join(*args,**keys):
 
+    trace = False and not g.unitTesting
     c = keys.get('c')
 
     uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
+
+    if trace: g.trace('1',uargs)
 
     # Note:  This is exactly the same convention as used by getBaseDirectory.
     if uargs and uargs[0] == '!!':
@@ -3753,7 +3774,11 @@ def os_path_join(*args,**keys):
 
     uargs = [g.os_path_expanduser(z) for z in uargs if z]
 
+    if trace: g.trace('2',uargs)
+
     path = os.path.join(*uargs)
+
+    if trace: g.trace('3',path)
 
     # May not be needed on some Pythons.
     path = g.toUnicodeFileEncoding(path)

@@ -502,6 +502,9 @@ class baseCommands (object):
         for d in aList:
             # Look for @path directives.
             path = d.get('path')
+            if trace and path:
+                g.trace('**** d',d)
+                g.trace('**** @path path',path)
             if path is not None: # retain empty paths for warnings.
                 # Convert "path" or <path> to path.
                 path = g.stripPathCruft(path)
@@ -512,10 +515,9 @@ class baseCommands (object):
         paths.append(absbase)
         paths.reverse()
 
-        if trace and verbose: g.trace('paths  ',paths)
-
         # Step 3: Compute the full, effective, absolute path.
-        if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+        if trace and verbose:
+            g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
         path = c.os_path_finalize_join(*paths)
         if trace and verbose: g.trace('joined path:',path)
 
