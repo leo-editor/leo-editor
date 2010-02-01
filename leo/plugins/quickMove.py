@@ -97,6 +97,32 @@ class quickMove(object):
             ("Clear Permanent Buttons Here",None,self.clearButton),
         )
 
+        self.imps = []  # implementations, (func,name,text)
+        self.txts = {}  # get short from name, for permanent buttons
+                        # filled in below
+
+        # build callables for imp list
+
+        for name, first_last, long, short in quickMove.flavors:
+
+            self.txts[name] = short
+
+            if first_last:
+                todo = [(True, 'first'), (False, 'last')]
+            else:
+                todo = [(None, '')]
+
+            for ftrue, which in todo:
+
+                def func(self=self, ftrue=ftrue, name=name, event=None):
+                    self.addButton(first=ftrue, type_=name)
+                # func = types.MethodType(func, None, quickMove)
+                fname = 'func_'+name+'_'+short+'_' +which
+                # setattr(quickMove, fname, func)
+                if which:
+                    which = " "+which.title()+" Child"
+                self.imps.append((func, fname, long+" "+short+which+" Button"))
+
         self.c = c
 
         c.quickMove = self
@@ -114,9 +140,8 @@ class quickMove(object):
         c.frame.menu.createNewMenu('Move', 'Outline')
 
         self.local_imps = []  # make table for createMenuItemsFromTable()
-        for name, text in self.imps:
-            # lookup this instance's bound versions of the methods
-            self.local_imps.append((text, None, getattr(self, name)))
+        for func, name, text in self.imps:
+            self.local_imps.append((text, None, func))
 
         self.local_imps.extend(self.table)
         c.frame.menu.createMenuItemsFromTable('Move', self.table)
@@ -194,31 +219,6 @@ class quickMove(object):
     #@-node:tbrown.20091207102637.11494:popup
     #@-others
 
-    imps = []  # implementations, (name,text)
-    txts = {}  # get short from name, for permanent buttons
-               # filled in below
-
-# build methods for this class
-
-for name, first_last, long, short in quickMove.flavors:
-
-    quickMove.txts[name] = short
-
-    if first_last:
-        todo = [(True, 'first'), (False, 'last')]
-    else:
-        todo = [(None, '')]
-
-    for ftrue, which in todo:
-
-        def func(self, ftrue=ftrue, name=name, event=None):
-            self.addButton(first=ftrue, type_=name)
-        func = types.MethodType(func, None, quickMove)
-        fname = 'func_'+name+'_'+short+'_' +which
-        setattr(quickMove, fname, func)
-        if which:
-            which = " "+which.title()+" Child"
-        quickMove.imps.append((fname, long+" "+short+which+" Button"))
 #@-node:tbrown.20070117104409.4:class quickMove
 #@+node:tbrown.20070117104409.5:class quickMoveButton
 class quickMoveButton:
@@ -306,6 +306,7 @@ class quickMoveButton:
         if nxt is not None and c.positionExists(nxt):
             c.selectPosition(nxt)
         c.undoer.afterMoveNode(p,'Quick Move', bunch)
+        c.setChanged(True)
         c.redraw()
     #@-node:ekr.20070117121326.1:moveCurrentNodeToTarget
     #@+node:ekr.20070123061606:checkMove
