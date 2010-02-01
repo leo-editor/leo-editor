@@ -11,380 +11,6 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20100131161507.6301:Before b3
-#@+node:ekr.20100131060335.6119:Check g.makeAllNonExistentDirectories
-#@+node:ekr.20100131060335.6120:Victor's traceback
-#@-node:ekr.20100131060335.6120:Victor's traceback
-#@+node:ekr.20090502071837.64:writeSpecialTree
-def writeSpecialTree (self,p,toString,justOneFile):
-
-    c = self.c
-    isHtml = self.ext in ('.html','.htm')
-    if isHtml and not SilverCity:
-        if not self.silverCityWarningGiven:
-            self.silverCityWarningGiven = True
-            g.es('SilverCity not present so no syntax highlighting')
-
-    self.initWrite(p)
-        # was encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
-    self.outputFile = StringIO()
-    self.writeTree(p)
-    self.source = self.outputFile.getvalue()
-    self.outputFile = None
-
-    if not toString:
-        # Compute this here for use by intermediate file.
-        self.outputFileName = self.computeOutputFileName(self.outputFileName)
-
-        # Create the directory if it doesn't exist.
-        theDir, junk = g.os_path_split(self.outputFileName)
-        theDir = c.os_path_finalize(theDir)
-        if not g.os_path_exists(theDir):
-            ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
-            if not ok:
-                g.es_print('did not create:',theDir,color='red')
-                return False
-
-        # if not os.access(theDir,os.F_OK):
-            # os.mkdir(theDir)
-
-        if self.getOption('write_intermediate_file'):
-            name = self.outputFileName + '.txt'
-            f = open(name,'w')
-            f.write(self.source)
-            f.close()
-            self.report(name)
-
-    try:
-        output = self.writeToDocutils(self.source)
-        ok = output is not None
-    except Exception:
-        g.pr('Exception in docutils')
-        g.es_exception()
-        ok = False
-
-    if ok:
-        if isHtml:
-            import re
-            idxTitle = output.find('<title></title>')
-            if idxTitle > -1:
-                m = re.search('<h1>([^<]*)</h1>', output)
-                if not m:
-                    m = re.search('<h1><[^>]+>([^<]*)</a></h1>', output)
-                if m:
-                    output = output.replace(
-                        '<title></title>',
-                        '<title>%s</title>' % m.group(1)
-                    )
-
-
-        if toString:
-            self.stringOutput = output
-        else:
-            # Write the file to the directory containing the .leo file.
-            f = open(self.outputFileName,'w')
-            f.write(output)
-            f.close()
-            self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
-
-    return ok
-#@-node:ekr.20090502071837.64:writeSpecialTree
-#@+node:ekr.20090502071837.89:computeOutputFileName
-def computeOutputFileName (self,fileName):
-
-    openDirectory = self.c.frame.openDirectory
-    default_path = self.getOption('default_path')
-
-    if default_path:
-        path = g.os_path_finalize_join(self.path,default_path,fileName)
-    elif self.path:
-        path = g.os_path_finalize_join(self.path,fileName)
-    elif openDirectory:
-        path = g.os_path_finalize_join(self.path,openDirectory,fileName)
-    else:
-        path = g.os_path_finalize_join(fileName)
-
-    # g.trace('openDirectory %s\ndefault_path %s\npath %s' % (
-        # repr(openDirectory),repr(default_path),repr(path)))
-
-    return path
-#@nonl
-#@-node:ekr.20090502071837.89:computeOutputFileName
-#@+node:ekr.20090502071837.65:writeToDocutils (sets argv) & helper
-def writeToDocutils (self,s):
-
-    '''Send s to docutils using the writer implied by self.ext and return the result.'''
-
-    trace = False and not g.unitTesting
-
-    if not docutils:
-        g.es('docutils not present',color='red')
-        return
-
-    openDirectory = self.c.frame.openDirectory
-    overrides = {'output_encoding': self.encoding }
-
-    # Compute the args list if the stylesheet path does not exist.
-    styleSheetArgsDict = self.handleMissingStyleSheetArgs()
-
-    for ext,writer in (
-        ('.html','html'),
-        ('.htm','html'),
-        ('.tex','latex'),
-        ('.pdf','leo_pdf'),
-    ):
-        if self.ext == ext:
-            break
-    else:
-        g.es_print('unknown docutils extension: %s' % (self.ext),color='red')
-        return ''
-
-    # Make the stylesheet path relative to the directory containing the output file.
-    rel_stylesheet_path = self.getOption('stylesheet_path') or ''
-
-    # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
-    stylesheet_path = g.os_path_finalize_join(
-        self.c.frame.openDirectory,rel_stylesheet_path)
-
-    path = g.os_path_finalize_join(
-        stylesheet_path,self.getOption('stylesheet_name'))
-
-    res = ""
-    if self.getOption('stylesheet_embed') == False:
-        rel_path = g.os_path_join(
-            rel_stylesheet_path,self.getOption('stylesheet_name'))
-        rel_path = rel_path.replace('\\','/') # 2010/01/28
-        overrides['stylesheet'] = rel_path
-        overrides['stylesheet_path'] = None
-        overrides['embed_stylesheet'] = None
-    elif g.os_path_exists(path):
-        if self.ext != '.pdf':
-            overrides['stylesheet'] = path
-            overrides['stylesheet_path'] = None
-    elif styleSheetArgsDict:
-        g.es_print('using publish_argv_for_missing_stylesheets',
-            styleSheetArgsDict)
-        overrides.update(styleSheetArgsDict)
-            # MWC add args to settings
-    elif rel_stylesheet_path == stylesheet_path:
-        g.es_print('stylesheet not found: %s' % (path),color='red')
-    else:
-        g.es_print('stylesheet not found\n',path,color='red')
-        if self.path:g.es_print('@path:', self.path)
-        g.es_print('open path:',self.c.frame.openDirectory)
-        if rel_stylesheet_path:
-            g.es_print('relative path:', rel_stylesheet_path)
-    try:
-        # All paths now come through here.
-        if trace: g.trace('overrides',overrides)
-        result = None # Ensure that result is defined.
-        result = docutils.core.publish_string(source=s,
-                reader_name='standalone',
-                parser_name='restructuredtext',
-                writer_name=writer,
-                settings_overrides=overrides)
-    except docutils.ApplicationError as error:
-        # g.es_print('Docutils error (%s):' % (
-            # error.__class__.__name__),color='red')
-        g.es_print('Docutils error:',color='red')
-        g.es_print(error,color='blue')
-    except Exception:
-        g.es_print('Unexpected docutils exception')
-        g.es_exception()
-    return result
-#@+node:ekr.20090502071837.66:handleMissingStyleSheetArgs
-def handleMissingStyleSheetArgs (self,s=None):
-
-    '''Parse the publish_argv_for_missing_stylesheets option,
-    returning a dict containing the parsed args.'''
-
-    force = False
-    if force:
-        # See http://docutils.sourceforge.net/docs/user/config.html#documentclass
-        return {'documentclass':'report', 'documentoptions':'english,12pt,lettersize'}
-
-    if not s:
-        s = self.getOption('publish_argv_for_missing_stylesheets')
-    if not s: return {}
-
-    # Handle argument lists such as this:
-    # --language=en,--documentclass=report,--documentoptions=[english,12pt,lettersize]
-    d = {}
-    while s:
-        s = s.strip()
-        if not s.startswith('--'): break
-        s = s[2:].strip()
-        eq = s.find('=')
-        cm = s.find(',')
-        if eq == -1 or (-1 < cm < eq): # key[nl] or key,
-            val = ''
-            cm = s.find(',')
-            if cm == -1:
-                key = s.strip()
-                s = ''
-            else:
-                key = s[:cm].strip()
-                s = s[cm+1:].strip()
-        else: # key = val
-            key = s[:eq].strip()
-            s = s[eq+1:].strip()
-            if s.startswith('['): # [...]
-                rb = s.find(']')
-                if rb == -1: break # Bad argument.
-                val = s[:rb+1]
-                s = s[rb+1:].strip()
-                if s.startswith(','):
-                    s = s[1:].strip()
-            else: # val[nl] or val,
-                cm = s.find(',')
-                if cm == -1:
-                    val = s
-                    s = ''
-                else:
-                    val = s[:cm].strip()
-                    s = s[cm+1:].strip()
-
-        # g.trace('key',repr(key),'val',repr(val),'s',repr(s))
-        if not key: break
-        if not val.strip(): val = '1'
-        d[str(key)] = str(val)
-
-    return d
-#@nonl
-#@-node:ekr.20090502071837.66:handleMissingStyleSheetArgs
-#@-node:ekr.20090502071837.65:writeToDocutils (sets argv) & helper
-#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
-# This is a generalization of os.makedir.
-
-def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
-
-    """Attempt to make all non-existent directories"""
-
-    trace = False and not g.unitTesting
-
-    if force:
-        create = True # Bug fix: g.app.config will not exist during startup.
-    elif c:
-        create = c.config and c.config.create_nonexistent_directories
-    else:
-        create = (g.app and g.app.config and
-            g.app.config.create_nonexistent_directories)
-
-    if trace: g.trace('c exists: %s force: %s create: %s dir: %s' % (
-        c is not None,force,create,theDir))
-
-    if not force and not create:
-        return None
-
-    if c: theDir = g.os_path_expandExpression(theDir,c=c)
-
-    dir1 = theDir = g.os_path_normpath(theDir)
-
-    # Split theDir into all its component parts.
-    paths = []
-    while len(theDir) > 0:
-        head,tail=g.os_path_split(theDir)
-        if len(tail) == 0:
-            paths.append(head)
-            break
-        else:
-            paths.append(tail)
-            theDir = head
-    path = ""
-    paths.reverse()
-    for s in paths:
-        path = g.os_path_join(path,s)
-        if not g.os_path_exists(path):
-            try:
-                os.mkdir(path)
-                if verbose and not g.app.unitTesting:
-                    # g.trace('***callers***',g.callers(5))
-                    g.es_print("created directory:",path,color='red')
-            except Exception:
-                # g.trace(g.callers())
-                if verbose: g.es_print("exception creating directory:",path,color='red')
-                g.es_exception()
-                return None
-    return dir1 # All have been created.
-#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
-#@+node:ekr.20080922124033.6:os_path_expandExpression
-def os_path_expandExpression (s,**keys):
-
-    '''Expand {{anExpression}} in c's context.'''
-
-    c = keys.get('c')
-    if not c:
-        g.trace('can not happen: no c',g.callers())
-        return s
-
-    if not s: return ''
-
-    i = s.find('{{')
-    j = s.find('}}')
-    if -1 < i < j:
-        exp = s[i+2:j].strip()
-        if exp:
-            try:
-                import os
-                import sys
-                p = c.p
-                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
-                val = eval(exp,d)
-                s = s[:i] + str(val) + s[j+2:]
-            except Exception:
-                g.trace(g.callers())
-                g.es_exception(full=True, c=c, color='red')
-
-    return s
-#@-node:ekr.20080922124033.6:os_path_expandExpression
-#@-node:ekr.20100131060335.6119:Check g.makeAllNonExistentDirectories
-#@+node:ekr.20100131094008.6290:Fix crasher in scrolledMessageHandler
-@nocolor-node
-
-Public bug reported:
-
-Edward,
-
-I have just created myLeoSettings.leo file as per quickstart.leo.
-Now when I launch leo I receive new error messages.
-here is the log running branch 2818:
-
-Leo Log Window
-Leo 4.7 b2, build 2790, January 29, 2010
-Python 3.1.1, qt version 4.6.0
-Windows 6, 0, 6002, 2, Service Pack 2
-leoID=lewis (in C:\Users\Neal\.leo)
-load dir: C:\Python31\Lib\site-packages\leo-editor\leo\core
-global config dir: C:\Python31\Lib\site-packages\leo-editor\leo\config
-home dir: C:\Users\Neal
-reading settings in C:\Python31\Lib\site-packages\leo-editor\leo\config\leoSettings.leo
-using menus from: leoSettings.leo
-reading settings in C:\Users\Neal\.leo\myLeoSettings.leo
-default encoding utf-8
-opening default_leo_file: C:\Users\Neal\.leo\workbook.leo
-@enabled-plugins found in myLeoSettings.leo
-Can not load c:\aspell\bin\aspell-15.dll
-reading: C:\Users\Neal\.leo\workbook.leo
-scrolledmessage plugin loaded.
-Traceback (most recent call last):
- File "C:\Python31\Lib\site-packages\leo-editor\leo\core\leoGlobals.py", line 3650, in doHook
-   return f(tag,keywords)
- File "C:\Python31\Lib\site-packages\leo-editor\leo\core\leoPlugins.py", line 298, in doPlugins
-   return doHandlersForTag(tag,keywords)
- File "C:\Python31\Lib\site-packages\leo-editor\leo\core\leoPlugins.py", line 274, in doHandlersForTag
-   val = callTagHandler(bunch,tag,keywords)
- File "C:\Python31\Lib\site-packages\leo-editor\leo\core\leoPlugins.py", line 253, in callTagHandler
-   result = handler(tag,keywords)
- File "C:\Python31\Lib\site-packages\leo-editor\leo\plugins\scrolledmessage.py", line 134, in scrolledMessageHandler
-   return controllers[c].scrolledMessageHandler(tag, keywords)
- File "C:\Python31\Lib\site-packages\leo-editor\leo\plugins\scrolledmessage.py", line 653, in scrolledMessageHandler
-   for k, v in self.kwDefaults.iteritems():
-AttributeError: 'dict' object has no attribute 'iteritems'
-The handler for the "scrolledMessage" hook appears to be missing or not working.
-runMainLoop,add_command_callback,add_commandCallback,masterMenuCallback,masterMenuHandler,masterCommand,doCommand,about
-
-Regards
-Lewis
-#@-node:ekr.20100131094008.6290:Fix crasher in scrolledMessageHandler
 #@+node:ekr.20100131094008.6291:Fix installer problem
 The top-level folder is empty.  It just needs to be deleted.
 #@nonl
@@ -2149,6 +1775,9 @@ def scanAtPathDirectives(self,aList,force=False,createPath=True):
     for d in aList:
         # Look for @path directives.
         path = d.get('path')
+        if trace and path:
+            g.trace('**** d',d)
+            g.trace('**** @path path',path)
         if path is not None: # retain empty paths for warnings.
             # Convert "path" or <path> to path.
             path = g.stripPathCruft(path)
@@ -2159,10 +1788,9 @@ def scanAtPathDirectives(self,aList,force=False,createPath=True):
     paths.append(absbase)
     paths.reverse()
 
-    if trace and verbose: g.trace('paths  ',paths)
-
     # Step 3: Compute the full, effective, absolute path.
-    if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+    if trace and verbose:
+        g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
     path = c.os_path_finalize_join(*paths)
     if trace and verbose: g.trace('joined path:',path)
 
@@ -2250,6 +1878,7 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
     """Attempt to make all non-existent directories"""
 
     trace = False and not g.unitTesting
+    testing = False # True: don't actually make the directories.
 
     if force:
         create = True # Bug fix: g.app.config will not exist during startup.
@@ -2259,11 +1888,14 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
         create = (g.app and g.app.config and
             g.app.config.create_nonexistent_directories)
 
-    if trace: g.trace('c exists: %s force: %s create: %s dir: %s' % (
-        c is not None,force,create,theDir))
-
     if not force and not create:
+        if trace: g.trace('did not create: force and create are both false')
         return None
+
+    if trace:
+        g.trace('\n',theDir,'\n',g.callers(4))
+        # g.trace('c exists: %s force: %s create: %s dir: %s' % (
+            # c is not None,force,create,theDir))
 
     if c: theDir = g.os_path_expandExpression(theDir,c=c)
 
@@ -2281,12 +1913,16 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
             theDir = head
     path = ""
     paths.reverse()
+    if trace: g.trace('paths:',paths)
     for s in paths:
         path = g.os_path_join(path,s)
         if not g.os_path_exists(path):
             try:
-                os.mkdir(path)
-                if verbose and not g.app.unitTesting:
+                if testing:
+                    g.trace('***making',path)
+                else:
+                    os.mkdir(path)
+                if verbose and not testing and not g.app.unitTesting:
                     # g.trace('***callers***',g.callers(5))
                     g.es_print("created directory:",path,color='red')
             except Exception:

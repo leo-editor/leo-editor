@@ -7402,20 +7402,6 @@ if isOrphan and isThin:
 #@-node:ekr.20040702085529:<< issue informational messages >>
 #@-node:ekr.20031218072017.1863:putVnode
 #@-node:ekr.20100129131524.6187:Disable caching during unit tests
-#@+node:ekr.20100128124511.6236:Eliminate most imports from leo/extensions
-@nocolor-node
-
-Eliminated cruft in leo/extensions
-- sets folder
-- subprocess folder
-- optparse.py
-- aspell23/24.pyd files can also go.
-
-Eliminated calls to g.importExtenion for zlib,optparse,subprocess.
-
-Don't know about Gato.
-#@nonl
-#@-node:ekr.20100128124511.6236:Eliminate most imports from leo/extensions
 #@+node:ekr.20100130042842.9007:better traces for ctors
 #@+node:ekr.20051023083258:callers & _callerName
 def callers (n=8,count=0,excludeCaller=True,files=False):
@@ -7465,284 +7451,7 @@ def _callerName (n=1,files=False):
 #@-node:ekr.20031218072017.3107:_callerName
 #@-node:ekr.20051023083258:callers & _callerName
 #@-node:ekr.20100130042842.9007:better traces for ctors
-#@+node:ekr.20100130164946.8693:Removed encoding arg from g.os_path_xxx
-g.os_path.*\(.*,encoding=.*\)
-#@nonl
-#@+node:ekr.20031218072017.2145:os.path wrappers (leoGlobals.py)
-@ Note: all these methods return Unicode strings. It is up to the user to
-convert to an encoded string as needed, say when opening a file.
-#@+node:ekr.20031218072017.2146:os_path_abspath
-def os_path_abspath(path):
-
-    """Convert a path to an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.abspath(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-#@-node:ekr.20031218072017.2146:os_path_abspath
-#@+node:ekr.20031218072017.2147:os_path_basename
-def os_path_basename(path):
-
-    """Return the second half of the pair returned by split(path)."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.basename(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-#@-node:ekr.20031218072017.2147:os_path_basename
-#@+node:ekr.20031218072017.2148:os_path_dirname
-def os_path_dirname(path):
-
-    """Return the first half of the pair returned by split(path)."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.dirname(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-#@-node:ekr.20031218072017.2148:os_path_dirname
-#@+node:ekr.20031218072017.2149:os_path_exists
-def os_path_exists(path):
-
-    """Normalize the path and convert it to an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.exists(path)
-#@-node:ekr.20031218072017.2149:os_path_exists
-#@+node:ekr.20080922124033.6:os_path_expandExpression
-def os_path_expandExpression (s,**keys):
-
-    '''Expand {{anExpression}} in c's context.'''
-
-    c = keys.get('c')
-    if not c:
-        g.trace('can not happen: no c',g.callers())
-        return s
-
-    if not s: return ''
-
-    i = s.find('{{')
-    j = s.find('}}')
-    if -1 < i < j:
-        exp = s[i+2:j].strip()
-        if exp:
-            try:
-                import os
-                import sys
-                p = c.p
-                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
-                val = eval(exp,d)
-                s = s[:i] + str(val) + s[j+2:]
-            except Exception:
-                g.trace(g.callers())
-                g.es_exception(full=True, c=c, color='red')
-
-    return s
-#@-node:ekr.20080922124033.6:os_path_expandExpression
-#@+node:ekr.20080921060401.13:os_path_expanduser
-def os_path_expanduser(path):
-
-    """wrap os.path.expanduser"""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    result = os.path.normpath(os.path.expanduser(path))
-
-    return result
-#@-node:ekr.20080921060401.13:os_path_expanduser
-#@+node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
-def os_path_finalize (path,**keys):
-
-    '''
-    Expand '~', then return os.path.normpath, os.path.abspath of the path.
-
-    There is no corresponding os.path method'''
-
-    c = keys.get('c')
-
-    if c: path = g.os_path_expandExpression(path,**keys)
-
-    path = g.os_path_expanduser(path)
-    return os.path.normpath(os.path.abspath(path))
-
-def os_path_finalize_join (*args,**keys):
-
-    '''Do os.path.join(*args), then finalize the result.'''
-
-    c = keys.get('c')
-
-    if c:
-        args = [g.os_path_expandExpression(path,**keys)
-            for path in args if path]
-
-    return os.path.normpath(os.path.abspath(
-        g.os_path_join(*args,**keys))) # Handles expanduser
-#@-node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
-#@+node:ekr.20031218072017.2150:os_path_getmtime
-def os_path_getmtime(path):
-
-    """Normalize the path and convert it to an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.getmtime(path)
-#@-node:ekr.20031218072017.2150:os_path_getmtime
-#@+node:ekr.20080729142651.2:os_path_getsize
-def os_path_getsize (path):
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.getsize(path)
-#@-node:ekr.20080729142651.2:os_path_getsize
-#@+node:ekr.20031218072017.2151:os_path_isabs
-def os_path_isabs(path):
-
-    """Normalize the path and convert it to an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isabs(path)
-#@-node:ekr.20031218072017.2151:os_path_isabs
-#@+node:ekr.20031218072017.2152:os_path_isdir
-def os_path_isdir(path):
-
-    """Normalize the path and convert it to an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isdir(path)
-#@-node:ekr.20031218072017.2152:os_path_isdir
-#@+node:ekr.20031218072017.2153:os_path_isfile
-def os_path_isfile(path):
-
-    """Normalize the path and convert it to an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isfile(path)
-#@-node:ekr.20031218072017.2153:os_path_isfile
-#@+node:ekr.20031218072017.2154:os_path_join
-def os_path_join(*args,**keys):
-
-    c = keys.get('c')
-
-    uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
-
-    # Note:  This is exactly the same convention as used by getBaseDirectory.
-    if uargs and uargs[0] == '!!':
-        uargs[0] = g.app.loadDir
-    elif uargs and uargs[0] == '.':
-        c = keys.get('c')
-        if c and c.openDirectory:
-            uargs[0] = c.openDirectory
-            # g.trace(c.openDirectory)
-
-    uargs = [g.os_path_expanduser(z) for z in uargs if z]
-
-    path = os.path.join(*uargs)
-
-    # May not be needed on some Pythons.
-    path = g.toUnicodeFileEncoding(path)
-    return path
-#@-node:ekr.20031218072017.2154:os_path_join
-#@+node:ekr.20031218072017.2156:os_path_normcase
-def os_path_normcase(path):
-
-    """Normalize the path's case."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.normcase(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-#@-node:ekr.20031218072017.2156:os_path_normcase
-#@+node:ekr.20031218072017.2157:os_path_normpath
-def os_path_normpath(path):
-
-    """Normalize the path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.normpath(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-#@-node:ekr.20031218072017.2157:os_path_normpath
-#@+node:ekr.20080605064555.2:os_path_realpath
-def os_path_realpath(path):
-
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.realpath(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-#@-node:ekr.20080605064555.2:os_path_realpath
-#@+node:ekr.20031218072017.2158:os_path_split
-def os_path_split(path):
-
-    path = g.toUnicodeFileEncoding(path)
-
-    head,tail = os.path.split(path)
-
-    head = g.toUnicodeFileEncoding(head)
-    tail = g.toUnicodeFileEncoding(tail)
-
-    return head,tail
-#@-node:ekr.20031218072017.2158:os_path_split
-#@+node:ekr.20031218072017.2159:os_path_splitext
-def os_path_splitext(path):
-
-    path = g.toUnicodeFileEncoding(path)
-
-    head,tail = os.path.splitext(path)
-
-    head = g.toUnicodeFileEncoding(head)
-    tail = g.toUnicodeFileEncoding(tail)
-
-    return head,tail
-#@-node:ekr.20031218072017.2159:os_path_splitext
-#@+node:ekr.20090829140232.6036:os_startfile
-def os_startfile(fname):
-    if sys.platform.startswith('win'):
-        os.startfile(fname)
-    elif sys.platform == 'darwin':
-        # From Marc-Antoine Parent.
-        try:
-            subprocess.call(['open', fname])
-        except OSError:
-            pass # There may be a spurious "Interrupted system call"
-        except ImportError:
-            os.system("open '%s'" % (fname,))
-    else:
-        os.system('xdg-open ' + fname)
-#@nonl
-#@-node:ekr.20090829140232.6036:os_startfile
-#@+node:ekr.20031218072017.2160:toUnicodeFileEncoding
-def toUnicodeFileEncoding(path):
-
-    if path: path = path.replace('\\', os.sep)
-
-    # Yes, this is correct.  All os_path_x functions return Unicode strings.
-    return g.toUnicode(path)
-#@-node:ekr.20031218072017.2160:toUnicodeFileEncoding
-#@-node:ekr.20031218072017.2145:os.path wrappers (leoGlobals.py)
-#@-node:ekr.20100130164946.8693:Removed encoding arg from g.os_path_xxx
+#@+node:ekr.20100201062307.5876:Bugs
 #@+node:ekr.20100130164946.8694:Removed all uses of mbcs encoding
 #@+node:ekr.20041124083125:completeFileName
 def completeFileName (fileName):
@@ -7990,14 +7699,6 @@ for v in vnodeInfoDict:
 #@-node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
 #@-node:ekr.20031218072017.1551:pasteOutline
 #@-node:ekr.20100131065400.6287:paste-node-as-clone now sets dirty bits properly
-#@+node:ekr.20100131155919.6297:Eliminated g.app.defaultEncoding
-- Make 'utf-8' the explicit, official default for the encoding param to
-  g.toUnicode, g.toEncodedString, etc.
-
-- Replace g.app.defaultEncoding by 'utf-8', or eliminate it entirely when it would
-  be the encoding param to g.toUnicode, etc.
-#@nonl
-#@-node:ekr.20100131155919.6297:Eliminated g.app.defaultEncoding
 #@+node:ekr.20100131161507.6304:Fixed crasher in sort-siblings
 TypeError: unorderable types: vnode() < vnode()
 
@@ -8136,6 +7837,319 @@ def positionExists(self,p,root=None):
     return False
 #@-node:ekr.20040307104131.3:c.positionExists
 #@-node:ekr.20100131094008.6288:Fixed crasher in p.positionExists
+#@+node:ekr.20100131094008.6290:Fix crasher in scrolledMessage.py
+#@-node:ekr.20100131094008.6290:Fix crasher in scrolledMessage.py
+#@-node:ekr.20100201062307.5876:Bugs
+#@+node:ekr.20100201062307.5877:Code cleanup
+#@+node:ekr.20100128124511.6236:Eliminate most imports from leo/extensions
+@nocolor-node
+
+Eliminated cruft in leo/extensions
+- sets folder
+- subprocess folder
+- optparse.py
+- aspell23/24.pyd files can also go.
+
+Eliminated calls to g.importExtenion for zlib,optparse,subprocess.
+
+Don't know about Gato.
+#@nonl
+#@-node:ekr.20100128124511.6236:Eliminate most imports from leo/extensions
+#@+node:ekr.20100130164946.8693:Removed encoding arg from g.os_path_xxx
+g.os_path.*\(.*,encoding=.*\)
+#@nonl
+#@+node:ekr.20031218072017.2145:os.path wrappers (leoGlobals.py)
+@ Note: all these methods return Unicode strings. It is up to the user to
+convert to an encoded string as needed, say when opening a file.
+#@+node:ekr.20031218072017.2146:os_path_abspath
+def os_path_abspath(path):
+
+    """Convert a path to an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.abspath(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+#@-node:ekr.20031218072017.2146:os_path_abspath
+#@+node:ekr.20031218072017.2147:os_path_basename
+def os_path_basename(path):
+
+    """Return the second half of the pair returned by split(path)."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.basename(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+#@-node:ekr.20031218072017.2147:os_path_basename
+#@+node:ekr.20031218072017.2148:os_path_dirname
+def os_path_dirname(path):
+
+    """Return the first half of the pair returned by split(path)."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.dirname(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+#@-node:ekr.20031218072017.2148:os_path_dirname
+#@+node:ekr.20031218072017.2149:os_path_exists
+def os_path_exists(path):
+
+    """Normalize the path and convert it to an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.exists(path)
+#@-node:ekr.20031218072017.2149:os_path_exists
+#@+node:ekr.20080922124033.6:os_path_expandExpression
+def os_path_expandExpression (s,**keys):
+
+    '''Expand {{anExpression}} in c's context.'''
+
+    c = keys.get('c')
+    if not c:
+        g.trace('can not happen: no c',g.callers())
+        return s
+
+    if not s: return ''
+
+    i = s.find('{{')
+    j = s.find('}}')
+    if -1 < i < j:
+        exp = s[i+2:j].strip()
+        if exp:
+            try:
+                import os
+                import sys
+                p = c.p
+                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
+                val = eval(exp,d)
+                s = s[:i] + str(val) + s[j+2:]
+            except Exception:
+                g.trace(g.callers())
+                g.es_exception(full=True, c=c, color='red')
+
+    return s
+#@-node:ekr.20080922124033.6:os_path_expandExpression
+#@+node:ekr.20080921060401.13:os_path_expanduser
+def os_path_expanduser(path):
+
+    """wrap os.path.expanduser"""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    result = os.path.normpath(os.path.expanduser(path))
+
+    return result
+#@-node:ekr.20080921060401.13:os_path_expanduser
+#@+node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
+def os_path_finalize (path,**keys):
+
+    '''
+    Expand '~', then return os.path.normpath, os.path.abspath of the path.
+
+    There is no corresponding os.path method'''
+
+    c = keys.get('c')
+
+    if c: path = g.os_path_expandExpression(path,**keys)
+
+    path = g.os_path_expanduser(path)
+
+    return os.path.normpath(os.path.abspath(path))
+
+def os_path_finalize_join (*args,**keys):
+
+    '''Do os.path.join(*args), then finalize the result.'''
+
+    c = keys.get('c')
+
+    if c:
+        args = [g.os_path_expandExpression(path,**keys)
+            for path in args if path]
+
+    return os.path.normpath(os.path.abspath(
+        g.os_path_join(*args,**keys))) # Handles expanduser
+#@-node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
+#@+node:ekr.20031218072017.2150:os_path_getmtime
+def os_path_getmtime(path):
+
+    """Normalize the path and convert it to an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.getmtime(path)
+#@-node:ekr.20031218072017.2150:os_path_getmtime
+#@+node:ekr.20080729142651.2:os_path_getsize
+def os_path_getsize (path):
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.getsize(path)
+#@-node:ekr.20080729142651.2:os_path_getsize
+#@+node:ekr.20031218072017.2151:os_path_isabs
+def os_path_isabs(path):
+
+    """Normalize the path and convert it to an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isabs(path)
+#@-node:ekr.20031218072017.2151:os_path_isabs
+#@+node:ekr.20031218072017.2152:os_path_isdir
+def os_path_isdir(path):
+
+    """Normalize the path and convert it to an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isdir(path)
+#@-node:ekr.20031218072017.2152:os_path_isdir
+#@+node:ekr.20031218072017.2153:os_path_isfile
+def os_path_isfile(path):
+
+    """Normalize the path and convert it to an absolute path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return os.path.isfile(path)
+#@-node:ekr.20031218072017.2153:os_path_isfile
+#@+node:ekr.20031218072017.2154:os_path_join
+def os_path_join(*args,**keys):
+
+    trace = False and not g.unitTesting
+    c = keys.get('c')
+
+    uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
+
+    if trace: g.trace('1',uargs)
+
+    # Note:  This is exactly the same convention as used by getBaseDirectory.
+    if uargs and uargs[0] == '!!':
+        uargs[0] = g.app.loadDir
+    elif uargs and uargs[0] == '.':
+        c = keys.get('c')
+        if c and c.openDirectory:
+            uargs[0] = c.openDirectory
+            # g.trace(c.openDirectory)
+
+    uargs = [g.os_path_expanduser(z) for z in uargs if z]
+
+    if trace: g.trace('2',uargs)
+
+    path = os.path.join(*uargs)
+
+    if trace: g.trace('3',path)
+
+    # May not be needed on some Pythons.
+    path = g.toUnicodeFileEncoding(path)
+    return path
+#@-node:ekr.20031218072017.2154:os_path_join
+#@+node:ekr.20031218072017.2156:os_path_normcase
+def os_path_normcase(path):
+
+    """Normalize the path's case."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.normcase(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+#@-node:ekr.20031218072017.2156:os_path_normcase
+#@+node:ekr.20031218072017.2157:os_path_normpath
+def os_path_normpath(path):
+
+    """Normalize the path."""
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.normpath(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+#@-node:ekr.20031218072017.2157:os_path_normpath
+#@+node:ekr.20080605064555.2:os_path_realpath
+def os_path_realpath(path):
+
+
+    path = g.toUnicodeFileEncoding(path)
+
+    path = os.path.realpath(path)
+
+    path = g.toUnicodeFileEncoding(path)
+
+    return path
+#@-node:ekr.20080605064555.2:os_path_realpath
+#@+node:ekr.20031218072017.2158:os_path_split
+def os_path_split(path):
+
+    path = g.toUnicodeFileEncoding(path)
+
+    head,tail = os.path.split(path)
+
+    head = g.toUnicodeFileEncoding(head)
+    tail = g.toUnicodeFileEncoding(tail)
+
+    return head,tail
+#@-node:ekr.20031218072017.2158:os_path_split
+#@+node:ekr.20031218072017.2159:os_path_splitext
+def os_path_splitext(path):
+
+    path = g.toUnicodeFileEncoding(path)
+
+    head,tail = os.path.splitext(path)
+
+    head = g.toUnicodeFileEncoding(head)
+    tail = g.toUnicodeFileEncoding(tail)
+
+    return head,tail
+#@-node:ekr.20031218072017.2159:os_path_splitext
+#@+node:ekr.20090829140232.6036:os_startfile
+def os_startfile(fname):
+    if sys.platform.startswith('win'):
+        os.startfile(fname)
+    elif sys.platform == 'darwin':
+        # From Marc-Antoine Parent.
+        try:
+            subprocess.call(['open', fname])
+        except OSError:
+            pass # There may be a spurious "Interrupted system call"
+        except ImportError:
+            os.system("open '%s'" % (fname,))
+    else:
+        os.system('xdg-open ' + fname)
+#@nonl
+#@-node:ekr.20090829140232.6036:os_startfile
+#@+node:ekr.20031218072017.2160:toUnicodeFileEncoding
+def toUnicodeFileEncoding(path):
+
+    if path: path = path.replace('\\', os.sep)
+
+    # Yes, this is correct.  All os_path_x functions return Unicode strings.
+    return g.toUnicode(path)
+#@-node:ekr.20031218072017.2160:toUnicodeFileEncoding
+#@-node:ekr.20031218072017.2145:os.path wrappers (leoGlobals.py)
+#@-node:ekr.20100130164946.8693:Removed encoding arg from g.os_path_xxx
+#@+node:ekr.20100131155919.6297:Eliminated g.app.defaultEncoding
+- Make 'utf-8' the explicit, official default for the encoding param to
+  g.toUnicode, g.toEncodedString, etc.
+
+- Replace g.app.defaultEncoding by 'utf-8', or eliminate it entirely when it would
+  be the encoding param to g.toUnicode, etc.
+#@nonl
+#@-node:ekr.20100131155919.6297:Eliminated g.app.defaultEncoding
+#@-node:ekr.20100201062307.5877:Code cleanup
 #@-node:ekr.20100129131524.6188:Leo 4.7 b3 projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt
