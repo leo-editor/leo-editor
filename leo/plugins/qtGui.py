@@ -405,7 +405,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         # Important: usually w.changingText is True.
         # This method very seldom does anything.
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = True
         c = self.c ; p = c.p
         tree = c.frame.tree ; w = self
@@ -986,13 +986,14 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20081121105001.582:getSelectionRange
     def getSelectionRange(self,sort=True):
 
+        trace = False and not g.unitTesting
         w = self.widget
         tc = w.textCursor()
         i,j = tc.selectionStart(),tc.selectionEnd()
         # s = tc.selectedText()
         # if s: n = len(s)
         # else: n = 0
-        g.trace(i,j)
+        if trace: g.trace(i,j)
         return i,j
     #@nonl
     #@-node:ekr.20081121105001.582:getSelectionRange
@@ -1182,8 +1183,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20081121105001.589:setSelectionRangeHelper & helper
     def setSelectionRangeHelper(self,i,j,insert):
 
+        trace = False and not g.unitTesting
         w = self.widget
-        g.trace('**1','i',i,'j',j,'insert',insert) # ,g.callers(4))
+        if trace: g.trace('**1','i',i,'j',j,'insert',insert) # ,g.callers(4))
         e = QtGui.QTextCursor
         i = self.toPythonIndex(i)
         j = self.toPythonIndex(j)
@@ -1198,7 +1200,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         k = max(0,min(j-i,n))
         cursor = w.textCursor()
         moveRight = insert in (j,None)
-        g.trace('**2','i','length',k,'moveRight',moveRight)
+        if trace: g.trace('**2','i','length',k,'moveRight',moveRight)
         if i == j:
             cursor.setPosition(i)
         elif moveRight:

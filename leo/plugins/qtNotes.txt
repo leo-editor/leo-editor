@@ -67,7 +67,7 @@ def onTextChanged (self):
 
     # Important: usually w.changingText is True.
     # This method very seldom does anything.
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     verbose = True
     c = self.c ; p = c.p
     tree = c.frame.tree ; w = self

@@ -1236,7 +1236,7 @@ class leoBody:
 
         '''Update Leo after the body has been changed.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         body = self ; c = self.c
         bodyCtrl = w = body.bodyCtrl
         p = c.p
