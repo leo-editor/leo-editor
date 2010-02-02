@@ -1718,12 +1718,8 @@ class undoer:
         """Undo the operation described by the undo parameters."""
 
         trace = False and not g.unitTesting
-        sel_hack = False
         u = self ; c = u.c
         w = c.frame.body.bodyCtrl
-        if sel_hack:
-            self.sel_i,self.sel_j = None,None
-                # A bug workaround.  See undoTyping. Doesn't really work.
         if not u.canUndo():
             if trace: g.trace('cant undo',u.undoMenuLabel,u.redoMenuLabel)
             return
@@ -1754,10 +1750,6 @@ class undoer:
         c.redraw()
         c.recolor()
         c.bodyWantsFocusNow()
-        # g.trace(i,j,ins)
-        if sel_hack and self.sel_i is not None and self.sel_j is not None:
-            # Ignore w.getSelectionRange.
-            i,j,ins = self.sel_i,self.sel_j,None
         w.setSelectionRange(i,j,insert=ins)
         w.seeInsertPoint()
         u.undoing = False
@@ -2119,9 +2111,6 @@ class undoer:
         if u.oldSel:
             c.bodyWantsFocusNow()
             i,j = u.oldSel
-            self.sel_i,self.sel_j = i,j
-                # support for the sel_hack in undo().
-            # g.trace(i,j)
             w.setSelectionRange(i,j,insert=j)
         if u.yview:
             c.bodyWantsFocusNow()

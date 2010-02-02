@@ -55,7 +55,8 @@ def undo():
     tc = w.textCursor()
     if n1 > n2: n1,n2 = n2,n1
     tc.setPosition(n1)
-    tc.movePosition(tc.Right,tc.KeepAnchor,n2-n1)
+    tc.setPosition(n2,tc.KeepAnchor)
+    # tc.movePosition(tc.Right,tc.KeepAnchor,n2-n1)
     w.setTextCursor(tc)
 
 app.connect(w, Qt.SIGNAL("selectionChanged()"), showselect)

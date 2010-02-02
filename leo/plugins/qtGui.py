@@ -1185,41 +1185,44 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         trace = False and not g.unitTesting
         w = self.widget
-        if trace: g.trace('**1','i',i,'j',j,'insert',insert) # ,g.callers(4))
-        e = QtGui.QTextCursor
         i = self.toPythonIndex(i)
         j = self.toPythonIndex(j)
-        if i > j: i,j = j,i
-        if insert is None:
-            insert = j
-        else:
-            insert = self.toPythonIndex(insert)
+
         n = self.lengthHelper()
         i = max(0,min(i,n))
         j = max(0,min(j,n))
-        k = max(0,min(j-i,n))
-        cursor = w.textCursor()
-        moveRight = insert in (j,None)
-        if trace: g.trace('**2','i','length',k,'moveRight',moveRight)
-        if i == j:
-            cursor.setPosition(i)
-        elif moveRight:
-            cursor.setPosition(i)
-            cursor.movePosition(e.Right,e.KeepAnchor,k)
+        if insert is None:
+            ins = max(i,j)
         else:
-            cursor.setPosition(j)
-            cursor.movePosition(e.Left,e.KeepAnchor,k)
+            ins = self.toPythonIndex(insert)
+            ins = max(0,min(ins,n))
 
-        w.setTextCursor(cursor)
+        if trace:g.trace('i',i,'j',j,'insert',insert)
+
+        # 2010/02/02: Use only tc.setPosition here.
+        # Using tc.movePosition doesn't work.
+        tc = w.textCursor()
+        if i == j:
+            tc.setPosition(i)
+        elif ins == j:
+            # Put the insert point at j
+            tc.setPosition(i)
+            tc.setPosition(j,tc.KeepAnchor)
+        else:
+            # Put the insert point a i
+            tc.setPosition(j)
+            tc.setPosition(i,tc.KeepAnchor)
+
+        w.setTextCursor(tc)
     #@+node:ekr.20081121105001.590:lengthHelper
     def lengthHelper(self):
 
         '''Return the length of the text.'''
 
         w = self.widget
-        cursor = w.textCursor()
-        cursor.movePosition(QtGui.QTextCursor.End)
-        n = cursor.position()
+        tc = w.textCursor()
+        tc.movePosition(QtGui.QTextCursor.End)
+        n = tc.position()
         return n
 
     #@-node:ekr.20081121105001.590:lengthHelper
