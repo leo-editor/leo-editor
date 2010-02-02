@@ -32,7 +32,7 @@
 <v t="ekr.20090430075506.4"><vh>Notes &amp; to-do</vh>
 <v t="ekr.20090430075506.3"><vh>@thin leoPluginNotes.txt</vh></v>
 </v>
-<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
+<v t="edream.110203113231.618"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
 <v t="ekr.20041114102139"><vh>Notes</vh>
@@ -74,7 +74,7 @@
 <v t="bobjack.20080619110105.2"><vh>@thin rClickBasePluginClasses.py</vh></v>
 </v>
 </v>
-<v t="edream.110203113231.667" a="E"><vh>Commands &amp; directives</vh>
+<v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
 <v t="edream.110203113231.668"><vh> Importing Cisco configuration files</vh>
 <v t="edream.110203113231.669"><vh>@thin import_cisco_config.py</vh></v>
 </v>
@@ -91,7 +91,7 @@
 <v t="edream.110203113231.720"><vh>@thin outline_export.py</vh></v>
 <v t="danr7.20060912105041.1"><vh>@thin paste_as_headlines.py</vh></v>
 <v t="ekr.20041021120118"><vh>@thin pretty_print.py</vh></v>
-<v t="tbrown.20070117104409" a="E"><vh>@thin quickMove.py</vh></v>
+<v t="tbrown.20070117104409"><vh>@thin quickMove.py</vh></v>
 <v t="ekr.20040331153923"><vh>@thin scheduler.py</vh></v>
 <v t="mork.20041022090036.1"><vh>@thin templates.py</vh></v>
 <v t="danr7.20061010105952.1"><vh>@thin word_count.py</vh></v>
@@ -364,7 +364,7 @@
 <v t="edream.110203113231.873"><vh>@thin at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@thin at_produce.py</vh></v>
 <v t="ktenney.20041211072654.1"><vh>@thin at_view.py</vh></v>
-<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@thin attrib_edit.py</vh></v>
+<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005803000000302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@thin attrib_edit.py</vh></v>
 <v t="mork.20041020082242.1"><vh>@thin base64Packager.py</vh></v>
 <v t="tbrown.20070322113635"><vh>@thin bookmarks.py</vh></v>
 <v t="ekr.20060807103814.1"><vh>@thin datenodes.py</vh></v>
@@ -1106,7 +1106,7 @@ class   _AssignUniqueConstantValue:
     def __setattr__(self,name,value):
         if self.__dict__.has_key(name):
             if name != "UniqueInternalValue":
-                raise self.ConstError, "Can't rebind const(%s)"%name
+                raise self.ConstError("Can't rebind const(%s)"%name)
         self.__dict__[name]=value
 
     def Assign_at_start(self):
@@ -6855,7 +6855,7 @@ if cc.DEBUG:
 
         # load in temp dict
         try:
-            exec code
+            exec(code)
         except Exception:
             TraceBack()
             Error("xcc: ","File content is invalid!")
@@ -8475,7 +8475,6 @@ if __name__ == "__main__":
 - Added better import tests, and message when import fails.
 - Added an init method, although a simple raise would also work.
 0.8 EKR:
-- Put sets.py from Python 2.4 in extensions folder.
 - Use g.importExtension rather than import to get sets module.
 0.9 Paul Paterson:
 - Remove the "not referenced" status. All plugins are not active or inactive.
@@ -8549,7 +8548,6 @@ if ok:
     try:
         Pmw = g.importExtension("Pmw",    pluginName=__name__,verbose=True,required=True)
         Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True)
-        sets = g.importExtension('sets',  pluginName=__name__,verbose=True,required=True)
     except SystemExit:
         raise
     except Exception:
@@ -8628,7 +8626,7 @@ else:
         # Get details
         try:
             plugin.initFrom(plugin_file)
-        except Exception, err:
+        except Exception as err:
             errors.append((plugin_file, err))
         # Store anything that looks like a plugin
         if plugin.is_plugin:
@@ -8685,7 +8683,7 @@ else:
     try:
         text = self.getContents()
         self.getSummary(text)
-    except InvalidPlugin, err:
+    except InvalidPlugin as err:
         g.pr('InvalidPlugin',str(err))
         self.description = str(err)
     except:
@@ -8714,7 +8712,7 @@ class InvalidManager(Exception):
 
     try:
         f = file(self.filename, "r")
-    except (IOError, OSError), err:
+    except (IOError, OSError) as err:
         s = "Unable to open plugin file '%s': %s" % (self.name, err)
         g.pr(s)
         raise InvalidPlugin(s)
@@ -8723,7 +8721,7 @@ class InvalidManager(Exception):
             self.text = text = f.read()
         finally:
             f.close()
-    except Exception, err:
+    except Exception as err:
         s = "Unable to read plugin file '%s': %s" % (self.name, err)
         g.pr(s)
         raise InvalidPlugin(s)              
@@ -8757,13 +8755,13 @@ class InvalidManager(Exception):
         # Take whatever.
         self.description = pat1 or pat2 or 'Unknown'
     # g.trace('%4d %s' % (len(self.description),self.name))
-    self.commands = sets.Set(self.getPatterns(text, "def cmd_(\w*?)\("))
+    self.commands = set(self.getPatterns(text, "def cmd_(\w*?)\("))
     # Get a list of the handlers
     handler_list = self.getPattern(text, r'registerHandler\((.*?)\)')
     if handler_list:
-        self.handlers = sets.Set(self.getPatterns(handler_list, r'["\'](.*?)["\']'))
+        self.handlers = set(self.getPatterns(handler_list, r'["\'](.*?)["\']'))
     else:
-        self.handlers = sets.Set()
+        self.handlers = set()
     # Look for the matching .ini file.
     ini_file_name = g.os_path_join(
         g.app.loadDir,"..","plugins",
@@ -8822,7 +8820,7 @@ class InvalidManager(Exception):
     # Connect to CVS
     try:
         url = urllib.urlopen(r"http://%s" % location)
-    except Exception, err:
+    except Exception as err:
         raise InvalidCollection("Could not get connection to CVS: %s" % err)
     #
     # Get the page with files listed
@@ -8831,7 +8829,7 @@ class InvalidManager(Exception):
             text = url.read()
         finally:
             url.close()
-    except Exception, err:
+    except Exception as  err:
         raise InvalidCollection("Could not read from CVS: %s" % err)
     return text    </t>
 <t tx="pap.20041006203049">class CVSPlugin(Plugin):
@@ -8869,7 +8867,7 @@ class InvalidManager(Exception):
     # Connect to CVS
     try:
         url = urllib.urlopen(self.filename)
-    except Exception, err:
+    except Exception as err:
         raise InvalidPlugin("Could not get connection to CVS: %s" % err)
 
     # Get the page with file content
@@ -8878,7 +8876,7 @@ class InvalidManager(Exception):
             self.text = text = url.read()
         finally:
             url.close()
-    except Exception, err:
+    except Exception as err:
         raise InvalidPlugin("Could not read file '%s' from CVS: %s" % (self.filename, err))
 
     self.contents_valid = True
@@ -9030,7 +9028,7 @@ self.buttonBox.pack(side="top", padx=5)</t>
     self.remote_plugin_list.plugins = self.remote
     try: 
         errors = self.remote.initFrom(url,callbackPrint)    
-    except Exception, err:
+    except Exception as err:
         &lt;&lt; put up a  connection failed dialog &gt;&gt;
     else:
         if errors:
@@ -9067,7 +9065,7 @@ self.donebutton.pack(side="right", fill="none", expand=0)
     # Get the text of the plugin manager file
     try:
         f = file(manager_filename, "r")
-    except (IOError, OSError), err:
+    except (IOError, OSError) as err:
         raise InvalidManager("Unable to open plugin manager file '%s': %s" % 
                                 (manager_filename, err))
     try:
@@ -9075,7 +9073,7 @@ self.donebutton.pack(side="right", fill="none", expand=0)
             self.text = text = f.read()
         finally:
             f.close()
-    except Exception, err:
+    except Exception as err:
         raise InvalidManager("Unable to read manager file '%s': %s" % 
                                 (manager_filename, err))              
     self.parseManagerText(text)</t>
@@ -9367,7 +9365,7 @@ self.has_ini.pack(side="top", fill="x", expand=0)</t>
     # Get the text of the plugin manager file
     try:
         f = file(manager_filename, "w")
-    except (IOError, OSError), err:
+    except (IOError, OSError) as err:
         raise InvalidManager("Unable to open plugin manager file '%s': %s" % 
                                 (manager_filename, err))
     try:
@@ -9375,7 +9373,7 @@ self.has_ini.pack(side="top", fill="x", expand=0)</t>
             f.write(self.text)
         finally:
             f.close()
-    except Exception, err:
+    except Exception as err:
         raise InvalidManager("Unable to write manager file '%s': %s" % 
                                 (manager_filename, err))              
     self.parseManagerText(self.text)</t>
@@ -9451,7 +9449,7 @@ self.buttonBox.pack(side="top", padx=5)</t>
     filename = os.path.join(location, "%s.py" % self.name)
     try:
         f = file(filename, "w")
-    except (IOError, OSError), err:
+    except (IOError, OSError) as err:
         raise InvalidPlugin(
             "Unable to open plugin file '%s': %s" % (filename, err))
     try:
@@ -9459,7 +9457,7 @@ self.buttonBox.pack(side="top", padx=5)</t>
             f.write(self.text)
         finally:
             f.close()
-    except Exception, err:
+    except Exception as err:
         raise InvalidPlugin(
             "Unable to write plugin file '%s': %s" % (filename, err))
 </t>
@@ -9573,7 +9571,7 @@ self.requires.pack(side="left", fill='both', expand=1)
     &lt;&lt; Check UI toolkits &gt;&gt;
     &lt;&lt; Check other plugins &gt;&gt;
     &lt;&lt; Directives &gt;&gt;
-    self.requires = sets.Set(requires)</t>
+    self.requires = set(requires)</t>
 <t tx="pap.20041009230050"># Check for UI toolkits
 if self.hasImport(self.text, "Tkinter"):
     requires.append("Tkinter")
@@ -9609,7 +9607,8 @@ except:
     g.es("__plugin_requires__ not understood for %s: '%s'" % (
             self.name, directive_text))    
 else: 
-    if isinstance(directive, (str, unicode)):
+    # if isinstance(directive, (str,unicode)):
+    if g.isString(directive)
         requires.append(directive)
     else:
         requires.extend(directive)</t>
@@ -9664,7 +9663,7 @@ self.filter.pack(side="top")</t>
 <t tx="pap.20041009234850">def getFilterOptions(self, list_data):
     """Return a list of filter items"""
     splitter = re.compile("\s{3,}")
-    names = sets.Set()
+    names = set()
     for item in list_data:
         names.add(splitter.split(item)[1].strip())
     name_list = list(names)
@@ -9714,7 +9713,7 @@ self.group.pack(side="top", fill="x", expand=0)
 </t>
 <t tx="pap.20050305161126">def getGroups(self):
     """Return a list of the Plugin group names"""
-    groups = list(sets.Set([plugin.group for plugin in self.values()]))
+    groups = list(set([plugin.group for plugin in self.values()]))
     groups.sort()
     return groups</t>
 <t tx="pap.20050305165333">def getVersionHistory(self, text):
@@ -9859,7 +9858,7 @@ self.version_history.pack(side="top", fill='both', expand=1)
             &lt;&lt; Hooks to send &gt;&gt;
 	        &lt;&lt; Send hooks &gt;&gt;
             &lt;&lt; Add plugin menu &gt;&gt;
-        except Exception, err:
+        except Exception as err:
             g.es("Failed to dynamically enable '%s': %s" % (plugin.name, err),
                  color="red")
         else:

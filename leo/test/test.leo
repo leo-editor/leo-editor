@@ -169,6 +169,7 @@
 </v>
 </v>
 <v t="ekr.20071026102420.3"><vh>Scripts</vh>
+<v t="ekr.20100127111425.2062"><vh>search script (do not delete)</vh></v>
 <v t="ekr.20090309064612.2"><vh> Example scripts</vh>
 <v t="ekr.20080701130406.1"><vh>Run pylint on plugins</vh></v>
 <v t="ekr.20080617170334.1"><vh>Determining key values</vh></v>
@@ -463,17 +464,11 @@
 <v t="ekr.20100130095415.2023"><vh>Simulate startup code for non-ascii directories</vh></v>
 <v t="ekr.20100122125233.2053"><vh>@test zcpspm</vh></v>
 </v>
-<v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
 <v t="ekr.20100127122240.2063"><vh>Terry's unicode problem</vh>
 <v t="ekr.20100127123120.2016"><vh>The text</vh></v>
 <v t="ekr.20100127123336.2018"><vh>Copy</vh></v>
 </v>
-<v t="ekr.20100127111425.2062"><vh>search script (do not delete)</vh></v>
-<v t="ekr.20100201071917.2055" a="E"><vh>Victors test</vh>
-<v t="ekr.20100201071917.2056" a="E"><vh>@rst LE-2010-01-31.html</vh>
-<v t="ekr.20100201071917.2058"><vh>@rst-preformat</vh></v>
-</v>
-</v>
+<v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5198,21 +5193,5 @@ for encoding in ('mbcs','utf-8'):
     theDir = g.os_path_finalize(path,encoding='utf-8')
     g.es(encoding,valid,theDir)
     print(encoding,valid,g.os_path_exists(theDir))</t>
-<t tx="ekr.20100201071917.2055">@language rest
-
-@others
-
-@tabwidth -4</t>
-<t tx="ekr.20100201071917.2056">@ @rst-options
-default_path=./Leo-4.7-beta-tests/Logs/2010/01
-@c
-========================
-Log-Entry for 2010-01-31
-========================
-
-Test</t>
-<t tx="ekr.20100201071917.2058">@path: C:\Dokumente und Einstellungen\VR\Eigene Dateien\Tools\Leo
-
-Test2</t>
 </tnodes>
 </leo_file>

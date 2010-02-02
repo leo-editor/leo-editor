@@ -7924,6 +7924,24 @@ def compute_directives_re ():
 #@-node:ekr.20090214075058.10:compute_directives_re
 #@-node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
 #@-node:ekr.20100131060335.6119:Fixed problem with colon following @path
+#@+node:ekr.20100202050243.5739:Fixed crasher in untangle
+#@+node:ekr.20031218072017.3575:update_current_vnode
+def update_current_vnode (self,s):
+
+    """Called from within the Untangle logic to update the body text of self.p."""
+
+    c = self.c ; p = self.p
+    assert(self.p)
+    c.setBodyString(p,s)
+
+    c.setChanged(True)
+    p.setDirty()
+    p.setMarked()
+
+    # 2010/02/02: was update_after_icons_changed.
+    c.redraw_after_icons_changed()
+#@-node:ekr.20031218072017.3575:update_current_vnode
+#@-node:ekr.20100202050243.5739:Fixed crasher in untangle
 #@-node:ekr.20100201062307.5876:Bugs
 #@+node:ekr.20100201062307.5877:Code cleanup
 #@+node:ekr.20100128124511.6236:Eliminate most imports from leo/extensions
@@ -8236,6 +8254,8 @@ def toUnicodeFileEncoding(path):
 #@-node:ekr.20100131155919.6297:Eliminated g.app.defaultEncoding
 #@-node:ekr.20100201062307.5877:Code cleanup
 #@-node:ekr.20100129131524.6188:Leo 4.7 b3 projects
+#@+node:ekr.20100202050243.5740:Leo 4.7 rc1 projects
+#@-node:ekr.20100202050243.5740:Leo 4.7 rc1 projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt
 #@-leo
