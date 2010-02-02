@@ -69,7 +69,7 @@
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
 </v>
-<v t="ekr.20090620072519.1389"><vh>Distribution checklist</vh></v>
+<v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
 <v t="ekr.20090902092112.1481"><vh>&lt;&lt; define version &gt;&gt;</vh></v>
 <v t="ekr.20090905082405.1486"><vh>@button make leo.zip</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
@@ -81,9 +81,9 @@
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
-<v t="ekr.20090901092556.1608" a="E"><vh>Boilerplate</vh>
-<v t="ekr.20090901092556.1609" a="E"><vh>head boilerplate</vh>
+<v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
+<v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
+<v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
 <v t="ekr.20090901092556.1590"><vh>putOnInit</vh></v>
 </v>
@@ -840,46 +840,6 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20090620072519.1389">Testing:
-    - Run all unit tests.
-    - Run pylint-leo.bat.
-LeoDocs.leo:
-    ** Update version on home page.
-    - (done) Remove top-level clones.
-    - (done) Select the readme node.
-LeoPlugins.leo:
-    - Remove top-level clones.
-LeoPy.leo:
-    - Update version numbers.
-LeoDist.leo:
-    - Update version numbers.
-    - Update announcement.
-    - Update readme.txt
-Create a bzr tag:
-    - bzr tag leo-x-y
-    - bzr commit --unchanged -m "added tag"
-    - bzr push
-Create distribution files using to @button make scripts in leoDist.leo
-Test files
-	- test the files created in c:\Python\Lib\site-packages\leo-x-y folder
-    ** Open unitTest.leo: does it open without errors?
-    ** Open leoPlugins.leo: does it open without errors?
-
-@color
-# **** Scan all folders &amp; files before uploading.
-@nocolor
-
-Create Release on SourceForge:
-    https://sourceforge.net/project/admin/explorer.php?group_id=3458
-
-Announcements
-- Update version number on Leo's wikipedia site: http://en.wikipedia.org/wiki/Leo_(editor)
-    - Edit with the 'Edit this page' *tab* (not a link)
-- Update version number on web site.
-- Announce to SourceForge itself.
-- Announce to leo-editor.
-- Announce to comp.lang.python
-- Register Leo at http://www.python.org/pypi?:action=submit_form</t>
 <t tx="ekr.20090620084709.1387"></t>
 <t tx="ekr.20090620084709.1389">
 Installing the leo.py on Windows
@@ -1927,5 +1887,49 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20100202061222.1494">Testing:
+    - Run all unit tests.
+    - Run pylint-leo.bat.
+LeoDocs.leo:
+    ** Update version on home page.
+    - (done) Remove top-level clones.
+    - (done) Select the readme node.
+LeoPlugins.leo:
+    - Remove top-level clones.
+LeoPy.leo:
+    - Update version numbers.
+LeoDist.leo:
+    - Update version numbers.
+    - Update announcement.
+    - Update readme.txt
+Create distribution files using to @button make scripts in leoDist.leo
+    - Delete old distribution (.exe,.zip) files.
+    - review bzr-manifest file: remove .~?~ files.
+    - Make leo.nsi first.
+    - Make leo.
+Create a bzr tag:
+    - bzr tag leo-x-y
+    - bzr commit --unchanged -m "added tag"
+    - bzr push
+Test files
+	- test the files created in c:\Python\Lib\site-packages\leo-x-y folder
+    ** Open unitTest.leo: does it open without errors?
+    ** Open leoPlugins.leo: does it open without errors?
+
+@color
+# **** Scan all folders &amp; files before uploading.
+@nocolor
+
+Create Release on SourceForge:
+    https://sourceforge.net/project/admin/explorer.php?group_id=3458
+
+Announcements
+- Update version number on Leo's wikipedia site: http://en.wikipedia.org/wiki/Leo_(editor)
+    - Edit with the 'Edit this page' *tab* (not a link)
+- Update version number on web site.
+- Announce to SourceForge itself.
+- Announce to leo-editor.
+- Announce to comp.lang.python
+- Register Leo at http://www.python.org/pypi?:action=submit_form</t>
 </tnodes>
 </leo_file>
