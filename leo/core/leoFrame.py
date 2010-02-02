@@ -1236,7 +1236,7 @@ class leoBody:
 
         '''Update Leo after the body has been changed.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         body = self ; c = self.c
         bodyCtrl = w = body.bodyCtrl
         p = c.p
@@ -1249,8 +1249,10 @@ class leoBody:
             oldText = p.b ; changed = True
         else:
             changed = oldText != newText
-        if trace: g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
         if not changed: return
+        if trace:
+            # g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
+            g.trace('oldSel',oldSel,'newSel',newSel)
         c.undoer.setUndoTypingParams(p,undoType,
             oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
         p.v.setBodyString(newText)
