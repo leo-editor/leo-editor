@@ -1002,7 +1002,7 @@
 <v t="ekr.20050901073048"><vh>@rst-no-head glossary</vh></v>
 </v>
 </v>
-<v t="ekr.20080301071818"><vh>Home page</vh>
+<v t="ekr.20080301071818" a="E"><vh>Home page</vh>
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
@@ -3423,8 +3423,8 @@
 <v t="ekr.20100129054823.17685"><vh>New settings</vh></v>
 </v>
 </v>
-<v t="ekr.20100201192329.7018" a="E"><vh>4.7 beta 3</vh>
-<v t="ekr.20100201192329.7095" a="E"><vh>Bugs fixed in Leo 4.7 b3</vh>
+<v t="ekr.20100201192329.7018"><vh>4.7 beta 3</vh>
+<v t="ekr.20100201192329.7095"><vh>Bugs fixed in Leo 4.7 b3</vh>
 <v t="ekr.20100201192329.7141"><vh>Fixed unicode problems</vh></v>
 <v t="ekr.20100201192329.7101"><vh>paste-node-as-clone now sets dirty bits properly</vh></v>
 <v t="ekr.20100201192329.7106"><vh>Fixed crasher in sort-siblings</vh></v>
@@ -26177,7 +26177,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.7 beta 2]&lt;/a&gt;</t>
+    Download Leo[4.7 beta 3]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
