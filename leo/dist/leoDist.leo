@@ -76,7 +76,7 @@
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
-<v t="ekr.20090826220933.1565"><vh>@button make leo.nsi</vh>
+<v t="ekr.20090826220933.1565" a="E"><vh>@button make leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
@@ -211,7 +211,7 @@ rm -f  $LEO_RUN_SCRIPT_OUTPUT
 
 Do a search and replace on this suffix.
 
-Latest suffix:  -b2</t>
+Latest suffix:  -beta-3</t>
 <t tx="EKR.20040519090846.1">Leo is Open Software and is distributed under the terms of the Python License.
 The gist of the license is that Leo is absolutely free, even for commercial use
 (including resale). There is no GNU-like "copyleft" restriction. The Open Source
@@ -358,7 +358,7 @@ Thanks to Randall Voth for these instructions.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.7-beta-2
+Version: 4.7-beta-3
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -1711,7 +1711,7 @@ FunctionEnd
     @others
 </t>
 <t tx="ekr.20090902092112.1481"># Used by both @button make leo.nsi and @button make leo.zip.
-app_version = version = '4.7-beta-2'</t>
+app_version = version = '4.7-beta-3'</t>
 <t tx="ekr.20090902092112.1482">try:
     inLeo = g is not None
 except AttributeError:
