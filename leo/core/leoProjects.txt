@@ -8252,6 +8252,8 @@ def toUnicodeFileEncoding(path):
   be the encoding param to g.toUnicode, etc.
 #@nonl
 #@-node:ekr.20100131155919.6297:Eliminated g.app.defaultEncoding
+#@+node:ekr.20100129133806.6238:Moved unit tests from this file into unitTest.leo
+#@-node:ekr.20100129133806.6238:Moved unit tests from this file into unitTest.leo
 #@-node:ekr.20100201062307.5877:Code cleanup
 #@-node:ekr.20100129131524.6188:Leo 4.7 b3 projects
 #@+node:ekr.20100202050243.5740:Leo 4.7 rc1 projects
