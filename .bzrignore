@@ -2,6 +2,7 @@
 *.exe
 *.o
 *.~*
+*~
 *.tmp
 *.pyc
 *.pyo

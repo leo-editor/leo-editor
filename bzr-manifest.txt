@@ -1,7 +1,6 @@
 .bzrignore
 LICENSE.txt
 Leo-4.7-beta-2.zip
-LeoSetup-4.7-beta-2.exe
 bzr-manifest.txt
 launchLeo.py
 leo/
@@ -1007,7 +1006,6 @@ leo/__init__.py
 leo/__init__.pyc
 leo/config/
 leo/config/leoSettings.leo
-leo/config/leoSettings.leo.~1~
 leo/core/
 leo/core/LeoPyRef.leo
 leo/core/__init__.py
@@ -1039,8 +1037,6 @@ leo/core/leoDynamicTest.pyc
 leo/core/leoEditCommands.py
 leo/core/leoEditCommands.pyc
 leo/core/leoFileCommands.py
-leo/core/leoFileCommands.py.~1~
-leo/core/leoFileCommands.py.~2~
 leo/core/leoFileCommands.pyc
 leo/core/leoFind.py
 leo/core/leoFind.pyc
@@ -1091,7 +1087,6 @@ leo/core/runLeo.pyc
 leo/core/test_core.txt
 leo/dist/
 leo/dist/LeoPackage.pmsp
-leo/dist/leo-post-install-script.py
 leo/dist/leoDist.leo
 leo/doc/
 leo/doc/INSTALL.TXT
@@ -1216,7 +1211,6 @@ leo/doc/html/zodb.html.txt
 leo/doc/leoNotes.txt
 leo/doc/leoSlideShows.leo
 leo/doc/leoToDo.txt
-leo/doc/leoToDo.txt.~1~
 leo/doc/leoToDoLater.txt
 leo/doc/leoUserGuide.txt
 leo/doc/leo_rst.css
@@ -1529,18 +1523,12 @@ leo/extensions/Pmw/__init__.py
 leo/extensions/Pmw/__init__.pyc
 leo/extensions/__init__.py
 leo/extensions/asciidoc.py
-leo/extensions/aspell23.pyd
-leo/extensions/aspell24.pyd
 leo/extensions/colors.py
-leo/extensions/optparse.py
-leo/extensions/sets.py
-leo/extensions/subprocess.py
 leo/extensions/testExtension.py
 leo/external/
 leo/external/__init__.py
 leo/external/__init__.pyc
 leo/external/ipy_leo.py
-leo/external/ipy_leo.py.~1~
 leo/external/ipy_leo.pyc
 leo/external/lproto.py
 leo/external/lproto.pyc
@@ -2089,10 +2077,6 @@ leo/plugins/pygeotag/pygeotag.py
 leo/plugins/pygeotag/pygeotag.pyc
 leo/plugins/pygeotag/template.html
 leo/plugins/qtGui.py
-leo/plugins/qtGui.py.~1~
-leo/plugins/qtGui.py.~2~
-leo/plugins/qtGui.py.~3~
-leo/plugins/qtGui.py.~4~
 leo/plugins/qtGui.pyc
 leo/plugins/qtNotes.txt
 leo/plugins/qt_main.py
@@ -2136,7 +2120,6 @@ leo/plugins/script_io_to_body.pyc
 leo/plugins/scripts_menu.py
 leo/plugins/scripts_menu.pyc
 leo/plugins/scrolledmessage.py
-leo/plugins/scrolledmessage.py.~1~
 leo/plugins/scrolledmessage.pyc
 leo/plugins/searchbar.py
 leo/plugins/searchbar.pyc
@@ -2175,7 +2158,6 @@ leo/plugins/textnode.pyc
 leo/plugins/threading_colorizer.py
 leo/plugins/threading_colorizer.pyc
 leo/plugins/tkGui.py
-leo/plugins/tkGui.py.~1~
 leo/plugins/tkGui.pyc
 leo/plugins/todo.py
 leo/plugins/todo.pyc
@@ -2227,6 +2209,7 @@ leo/scripts/untangle_done.py
 leo/test/
 leo/test/.leo/
 leo/test/Intro.tex
+leo/test/Leo-4.7-beta-tests/
 leo/test/cgi-bin/
 leo/test/cgi-bin/edward.py
 leo/test/cgi-bin/leo.js
@@ -2236,12 +2219,11 @@ leo/test/hello.html
 leo/test/jyleo.py
 leo/test/komodo-test-data.py
 leo/test/komodo-test.py
-leo/test/oldTests.leo
+leo/test/leo-4.7-beta-tests.leo
 leo/test/pylint-leo-rc.txt
 leo/test/pythonServerClasses.leo
 leo/test/qttexttest.py
 leo/test/qtui_generate.py
-leo/test/rhythmbox.desktop
 leo/test/rope.leo
 leo/test/rst-test.txt
 leo/test/scriptFile.py
@@ -2305,9 +2287,6 @@ leo/test/unittest/read_test.py
 leo/test/unittest/replaceFileWithStringTestFile.py
 leo/test/unittest/shadowWriteTest-2.py
 leo/test/unittest/test_1.py
-leo/test/ut.bat
-leo/test/ut.leo
-leo/test/ut.py
 leo/www/
 leo/www/default.css
 leo/www/index.html
@@ -2315,7 +2294,7 @@ leo/www/leo_rst.css
 leo/www/silver_city.css
 leo.nsi
 leo_to_html.xsl
+out
 profileLeo.py
 pylint-leo.bat
 pylint-leo.py
-setup.py
