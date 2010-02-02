@@ -25,10 +25,1489 @@ unbound()
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20100126110826.6253:Before rc1
-#@+node:ekr.20100128094926.6228: First
-#@+node:ekr.20100129133806.6236:Resolve Terry's unicode bug
-#@-node:ekr.20100129133806.6236:Resolve Terry's unicode bug
 #@+node:ekr.20100130042842.9009:Remove config.set
+@nocolor-node
+
+To do:
+
+- Create appropriate ivars in commander.
+- Init them (late) using c.config.getBool.
+- Use (and toggle) the ivar.
+- Remove corresponding config ivar.
+#@nonl
+#@+node:ekr.20041118195812.2:set & setString (c.configSettings)
+# This *is* used at present: search for config.set.
+# It could be removed later, perhaps.
+
+def set (self,p,setting,val):
+
+    return g.app.config.setString(self.c,setting,val)
+
+setString = set
+#@-node:ekr.20041118195812.2:set & setString (c.configSettings)
+#@+node:ekr.20100202121529.5875:using config.getBool('sparse_move_outline_left')
+#@+node:ekr.20071213185710:c.toggleSparseMove
+def toggleSparseMove (self,event=None):
+
+    c = self ; p = c.p
+    tag = 'sparse_move_outline_left'
+
+    sparseMove = not c.config.getBool(tag)
+    c.config.set(p, tag, sparseMove)
+    g.es(tag,'=',sparseMove,color='blue')
+#@-node:ekr.20071213185710:c.toggleSparseMove
+#@+node:ekr.20031218072017.1768:moveOutlineDown
+@
+Moving down is more tricky than moving up; we can't move p to be a child of
+itself. An important optimization: we don't have to call
+checkMoveWithParentWithWarning() if the parent of the moved node remains the
+same.
+@c
+
+def moveOutlineDown (self,event=None):
+
+    '''Move the selected node down.'''
+
+    c = self ; u = c.undoer ; p = c.p
+    if not p: return
+
+    if not c.canMoveOutlineDown():
+        if c.hoistStack: self.cantMoveMessage()
+        c.treeFocusHelper()
+        return
+
+    inAtIgnoreRange = p.inAtIgnoreRange()
+    parent = p.parent()
+    next = p.visNext(c)
+
+    while next and p.isAncestorOf(next):
+        next = next.visNext(c)
+    if not next:
+        if c.hoistStack: self.cantMoveMessage()
+        c.treeFocusHelper()
+        return
+
+    sparseMove = c.config.getBool('sparse_move_outline_left')
+    c.endEditing()
+    undoData = u.beforeMoveNode(p)
+    << Move p down & set moved if successful >>
+    if moved:
+        if inAtIgnoreRange and not p.inAtIgnoreRange():
+            # The moved nodes have just become newly unignored.
+            p.setDirty() # Mark descendent @thin nodes dirty.
+        else: # No need to mark descendents dirty.
+            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+            dirtyVnodeList.extend(dirtyVnodeList2)
+        c.setChanged(True)
+        u.afterMoveNode(p,'Move Down',undoData,dirtyVnodeList)
+    c.redraw(p,setFocus=True)
+    c.updateSyntaxColorer(p) # Moving can change syntax coloring.
+#@+node:ekr.20031218072017.1769:<< Move p down & set moved if successful >>
+if next.hasChildren() and next.isExpanded():
+    # Attempt to move p to the first child of next.
+    moved = c.checkMoveWithParentWithWarning(p,next,True)
+    if moved:
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        p.moveToNthChildOf(next,0)
+
+else:
+    # Attempt to move p after next.
+    moved = c.checkMoveWithParentWithWarning(p,next.parent(),True)
+    if moved:
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        p.moveAfter(next)
+
+if moved and sparseMove and parent and not parent.isAncestorOf(p):
+    # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
+    parent.contract()
+#@-node:ekr.20031218072017.1769:<< Move p down & set moved if successful >>
+#@-node:ekr.20031218072017.1768:moveOutlineDown
+#@+node:ekr.20031218072017.1770:moveOutlineLeft
+def moveOutlineLeft (self,event=None):
+
+    '''Move the selected node left if possible.'''
+
+    c = self ; u = c.undoer ; p = c.p
+    if not p: return
+    if not c.canMoveOutlineLeft():
+        if c.hoistStack: self.cantMoveMessage()
+        c.treeFocusHelper()
+        return
+    if not p.hasParent():
+        c.treeFocusHelper()
+        return
+
+    inAtIgnoreRange = p.inAtIgnoreRange()
+    parent = p.parent()
+    sparseMove = c.config.getBool('sparse_move_outline_left')
+    c.endEditing()
+    undoData = u.beforeMoveNode(p)
+    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    p.moveAfter(parent)
+    if inAtIgnoreRange and not p.inAtIgnoreRange():
+        # The moved nodes have just become newly unignored.
+        p.setDirty() # Mark descendent @thin nodes dirty.
+    else: # No need to mark descendents dirty.
+        dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+        dirtyVnodeList.extend(dirtyVnodeList2)
+    c.setChanged(True)
+    u.afterMoveNode(p,'Move Left',undoData,dirtyVnodeList)
+    if sparseMove: # New in Leo 4.4.2
+        parent.contract()
+    c.redraw_now(p,setFocus=True)
+    c.recolor_now() # Moving can change syntax coloring.
+#@-node:ekr.20031218072017.1770:moveOutlineLeft
+#@+node:ekr.20031218072017.1772:moveOutlineUp
+def moveOutlineUp (self,event=None):
+
+    '''Move the selected node up if possible.'''
+
+    trace = False and not g.unitTesting
+    c = self ; u = c.undoer ; p = c.p
+    if not p: return
+    if not c.canMoveOutlineUp(): # Support for hoist.
+        if c.hoistStack: self.cantMoveMessage()
+        c.treeFocusHelper()
+        return
+
+    back = p.visBack(c)
+    if not back:
+        if trace: g.trace('no visBack')
+        return
+
+    inAtIgnoreRange = p.inAtIgnoreRange()
+    back2 = back.visBack(c)
+
+    sparseMove = c.config.getBool('sparse_move_outline_left')
+    c.endEditing()
+    undoData = u.beforeMoveNode(p)
+    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    moved = False
+    << Move p up >>
+    if moved:
+        if inAtIgnoreRange and not p.inAtIgnoreRange():
+            # The moved nodes have just become newly unignored.
+            dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
+        else: # No need to mark descendents dirty.
+            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+        dirtyVnodeList.extend(dirtyVnodeList2)
+        c.setChanged(True)
+        u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
+    c.redraw(p,setFocus=True)
+    c.updateSyntaxColorer(p) # Moving can change syntax coloring.
+#@+node:ekr.20031218072017.1773:<< Move p up >>
+if trace:
+    g.trace("visBack",back)
+    g.trace("visBack2",back2)
+    g.trace("back2.hasChildren",back2 and back2.hasChildren())
+    g.trace("back2.isExpanded",back2 and back2.isExpanded())
+
+parent = p.parent()
+
+if not back2:
+    if c.hoistStack: # hoist or chapter.
+        limit,limitIsVisible = c.visLimit()
+        assert limit
+        if limitIsVisible:
+            # canMoveOutlineUp should have caught this.
+            g.trace('can not happen. In hoist')
+        else:
+            # g.trace('chapter first child')
+            moved = True
+            p.moveToFirstChildOf(limit)
+    else:
+        # p will be the new root node
+        p.moveToRoot(oldRoot=c.rootPosition())
+        moved = True
+
+elif back2.hasChildren() and back2.isExpanded():
+    if c.checkMoveWithParentWithWarning(p,back2,True):
+        moved = True
+        p.moveToNthChildOf(back2,0)
+else:
+    if c.checkMoveWithParentWithWarning(p,back2.parent(),True):
+        moved = True
+        p.moveAfter(back2)
+
+if moved and sparseMove and parent and not parent.isAncestorOf(p):
+    # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
+    parent.contract()
+#@nonl
+#@-node:ekr.20031218072017.1773:<< Move p up >>
+#@-node:ekr.20031218072017.1772:moveOutlineUp
+#@-node:ekr.20100202121529.5875:using config.getBool('sparse_move_outline_left')
+#@+node:ekr.20100202121529.5876:using config.getBool('collapse_nodes_during_finds')
+#@+node:ekr.20060123115459:Find options wrappers
+def setFindScopeEveryWhere (self, event):
+    '''Set the 'Entire Outline' radio button in the Find tab.'''
+    return self.setFindScope('entire-outline')
+def setFindScopeNodeOnly  (self, event):
+    '''Set the 'Node Only' radio button in the Find tab.'''
+    return self.setFindScope('node-only')
+def setFindScopeSuboutlineOnly (self, event):
+    '''Set the 'Suboutline Only' radio button in the Find tab.'''
+    return self.setFindScope('suboutline-only')
+def showFindOptions (self,event):
+    '''Show all Find options in the minibuffer label area.'''
+    self.getHandler().showFindOptions()
+def toggleFindCollapesNodes(self,event):
+    '''Toggle the 'Collapse Nodes' checkbox in the find tab.'''
+    # return self.toggleOption('collapse_nodes')
+    c = self.c ; p = c.p
+    val = c.config.getBool('collapse_nodes_during_finds')
+    c.config.set(p,'collapse_nodes_during_finds',not val)
+    g.es('collapse_nodes_during_finds',c.config.getBool('collapse_nodes_during_finds'))
+def toggleIgnoreCaseOption     (self, event):
+    '''Toggle the 'Ignore Case' checkbox in the Find tab.'''
+    return self.toggleOption('ignore_case')
+def toggleMarkChangesOption (self, event):
+    '''Toggle the 'Mark Changes' checkbox in the Find tab.'''
+    return self.toggleOption('mark_changes')
+def toggleMarkFindsOption (self, event):
+    '''Toggle the 'Mark Finds' checkbox in the Find tab.'''
+    return self.toggleOption('mark_finds')
+def toggleRegexOption (self, event):
+    '''Toggle the 'Regexp' checkbox in the Find tab.'''
+    return self.toggleOption('pattern_match')
+def toggleReverseOption        (self, event):
+    '''Toggle the 'Reverse' checkbox in the Find tab.'''
+    return self.toggleOption('reverse')
+def toggleSearchBodyOption (self, event):
+    '''Set the 'Search Body' checkbox in the Find tab.'''
+    return self.toggleOption('search_body')
+def toggleSearchHeadlineOption (self, event):
+    '''Toggle the 'Search Headline' checkbox in the Find tab.'''
+    return self.toggleOption('search_headline')
+def toggleWholeWordOption (self, event):
+    '''Toggle the 'Whole Word' checkbox in the Find tab.'''
+    return self.toggleOption('whole_word')
+def toggleWrapSearchOption (self, event):
+    '''Toggle the 'Wrap Around' checkbox in the Find tab.'''
+    return self.toggleOption('wrap')
+def setFindScope (self, where):
+    self.getHandler().setFindScope(where)
+def toggleOption (self, ivar):
+    self.getHandler().toggleOption(ivar)
+#@-node:ekr.20060123115459:Find options wrappers
+#@+node:ekr.20031218072017.3091:showSuccess (leoFind)
+def showSuccess(self,pos,newpos,showState=True):
+
+    '''Display the result of a successful find operation.'''
+
+    trace = False
+    c = self.c ; p = self.p
+    if not p:
+        return g.trace('can not happen: self.p is None')
+
+    current = c.p
+    sparseFind = c.config.getBool('collapse_nodes_during_finds')
+    c.frame.bringToFront() # Needed on the Mac
+
+    # Expand ancestors and set redraw if a redraw is needed.
+    redraw1 = not p.isVisible(c)
+    if sparseFind:
+        # Show only the 'sparse' tree when redrawing.
+        for p2 in c.p.self_and_parents():
+            if p2.isAncestorOf(p):
+                break
+            p2.contract()
+            redraw1 = True # Important bug fix. Was redraw = True.
+
+    redraw2 = c.expandAllAncestors(self.p)
+    redraw = redraw1 or redraw2
+
+    # Set state vars.
+    # Ensure progress in backwards searches.
+    insert = g.choose(self.reverse,min(pos,newpos),max(pos,newpos))
+    if self.wrap and not self.wrapPosition:
+        self.wrapPosition = self.p
+
+    if trace: g.trace('in_headline',self.in_headline)
+    if self.in_headline:
+        selection = pos,newpos,insert
+        c.redrawAndEdit(p,
+            selection=selection,
+            keepMinibuffer=True)
+        w = c.edit_widget(p)
+    else:
+        w = c.frame.body.bodyCtrl
+        # This is like the logic in c.selectPosition.
+        if redraw:
+            c.redraw(p)
+        else:
+            c.selectPosition(p)
+            c.redraw_after_select(p)
+        c.bodyWantsFocus()
+        if showState:
+            c.k.showStateAndMode(w)
+        # g.trace(pos,newpos,insert)
+        w.setSelectionRange(pos,newpos,insert=insert)
+        w.seeInsertPoint()
+        c.outerUpdate()
+    return w # Support for isearch.
+#@-node:ekr.20031218072017.3091:showSuccess (leoFind)
+#@-node:ekr.20100202121529.5876:using config.getBool('collapse_nodes_during_finds')
+#@-node:ekr.20100130042842.9009:Remove config.set
+#@+node:ekr.20100202084948.5741:Next
+#@+node:ekr.20100122130101.6172:Fix bug in c.pasteOutline when run from unit tests
+@nocolor-node
+
+I'm trying to write a simple test that I'm running by selecting it and
+then typing 'run-unit-tests-locally'.
+
+Here is the @test node body:
+
+--- cut here ---
+root = p.copy()
+while p.hasChildren():
+   p.firstChild().doDelete(newNode = None)
+
+try:
+   p1 = p.insertAsLastChild()
+   body = 'foo'
+   p1.setBodyString(body)
+   c.selectPosition(p1)
+   c.copyOutline()
+   c.pasteOutline()
+finally:
+   c.redraw_now()
+--- cut here ---
+
+My problem: the node that is being created by c.pasteOutline() has an
+empty body. If after running the test I type 'paste-node' in the
+minibuffer, a new node appears, it has 'foo' in the body.
+
+Searching for "copyOutline" and "pasteOutline" in leo's html docs
+doesn't provide any usage examples, so I'm stuck.
+#@nonl
+#@+node:ekr.20031218072017.1551:pasteOutline
+# To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
+
+def pasteOutline(self,event=None,reassignIndices=True):
+
+    '''Paste an outline into the present outline from the clipboard.
+    Nodes do *not* retain their original identify.'''
+
+    c = self ; u = c.undoer ; current = c.p
+    s = g.app.gui.getTextFromClipboard()
+    pasteAsClone = not reassignIndices
+    undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
+
+    c.endEditing()
+
+    if not s or not c.canPasteOutline(s):
+        return # This should never happen.
+
+    isLeo = g.match(s,0,g.app.prolog_prefix_string)
+    vnodeInfoDict = {}
+    if pasteAsClone:
+        << remember all data for undo/redo Paste As Clone >>
+    # create a *position* to be pasted.
+    if isLeo:
+        pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
+    else:
+        pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
+
+    if not pasted: return
+
+    copiedBunchList = []
+    if pasteAsClone:
+        << put only needed info in copiedBunchList >>
+    undoData = u.beforeInsertNode(current,
+        pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
+
+    c.validateOutline()
+    c.selectPosition(pasted)
+    pasted.setDirty()
+    c.setChanged(True)
+    # paste as first child if back is expanded.
+    back = pasted.back()
+    if back and back.isExpanded():
+        pasted.moveToNthChildOf(back,0)
+    c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
+
+    if pasteAsClone:
+        # Set dirty bits for ancestors of *all* pasted nodes.
+        # Note: the setDescendentsDirty flag does not do what we want.
+        for p in pasted.self_and_subtree():
+            p.setAllAncestorAtFileNodesDirty(
+                setDescendentsDirty=False)
+
+    u.afterInsertNode(pasted,undoType,undoData)
+    c.redraw(pasted)
+    c.recolor()
+#@+node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
+@
+
+We don't know yet which nodes will be affected by the paste, so we remember
+everything. This is expensive, but foolproof.
+
+The alternative is to try to remember the 'before' values of tnodes in the
+fileCommands read logic. Several experiments failed, and the code is very ugly.
+In short, it seems wise to do things the foolproof way.
+
+@c
+
+for v in c.all_unique_nodes():
+    if v not in vnodeInfoDict:
+        vnodeInfoDict[v] = g.Bunch(
+            v=v,head=v.headString(),body=v.b)
+#@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
+#@+node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
+# Create a dict containing only copied tnodes.
+copiedVnodeDict = {}
+for p in pasted.self_and_subtree():
+    if p.v not in copiedVnodeDict:
+        copiedVnodeDict[p.v] = p.v
+
+# g.trace(list(copiedVnodeDict.keys()))
+
+for v in vnodeInfoDict:
+    bunch = vnodeInfoDict.get(v)
+    if copiedVnodeDict.get(v):
+        copiedBunchList.append(bunch)
+
+# g.trace('copiedBunchList',copiedBunchList)
+#@-node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
+#@-node:ekr.20031218072017.1551:pasteOutline
+#@+node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
+def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
+
+    '''Read a Leo outline from string s in clipboard format.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; current = c.p ; check = not reassignIndices
+    checkAfterRead = False or c.config.getBool('check_outline_after_read')
+
+    # Save the hidden root's children.
+    children = c.hiddenRootNode.children
+
+    # Always recreate the gnxDict
+    self.gnxDict = {}
+    if not reassignIndices:
+        x = g.app.nodeIndices
+        for v in c.all_unique_nodes():
+            index = x.toString(v.fileIndex)
+            self.gnxDict[index] = v
+
+    self.usingClipboard = True
+    try:
+        # This encoding must match the encoding used in putLeoOutline.
+        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+
+        # readSaxFile modifies the hidden root.
+        v = self.readSaxFile(
+            theFile=None, fileName='<clipboard>',
+            silent=True, # don't tell about stylesheet elements.
+            inClipboard=True,reassignIndices=reassignIndices,s=s)
+        if not v:
+            return g.es("the clipboard is not valid ",color="blue")
+    finally:
+        self.usingClipboard = False
+
+    # Restore the hidden root's children
+    c.hiddenRootNode.children = children
+
+    # Unlink v from the hidden root.
+    v.parents.remove(c.hiddenRootNode)
+
+    p = leoNodes.position(v)
+
+    # Important: we must not adjust links when linking v
+    # into the outline.  The read code has already done that.
+    if current.hasChildren() and current.isExpanded():
+        if check and not self.checkPaste(current,p):
+            return None
+        p._linkAsNthChild(current,0,adjust=False)
+    else:
+        if check and not self.checkPaste(current.parent(),p):
+            return None
+        p._linkAfter(current,adjust=False)
+
+    if reassignIndices:
+        for p2 in p.self_and_subtree():
+            p2.v.fileIndex = g.app.nodeIndices.getNewIndex()
+
+    if trace and verbose:
+        g.trace('**** dumping outline...')
+        c.dumpOutline()
+
+    if checkAfterRead:
+        g.trace('checking outline after paste',color='blue')
+        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+
+    c.selectPosition(p)
+    return p
+
+getLeoOutline = getLeoOutlineFromClipboard # for compatibility
+#@+node:ekr.20080410115129.1:checkPaste
+def checkPaste (self,parent,p):
+
+    '''Return True if p may be pasted as a child of parent.'''
+
+    if not parent: return True
+
+    parents = [z.copy() for z in parent.self_and_parents()]
+
+    for p in p.self_and_subtree():
+        for z in parents:
+            # g.trace(p.h,id(p.v),id(z.v))
+            if p.v == z.v:
+                g.es('Invalid paste: nodes may not descend from themselves',color="blue")
+                return False
+
+    return True
+#@-node:ekr.20080410115129.1:checkPaste
+#@-node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
+#@-node:ekr.20100122130101.6172:Fix bug in c.pasteOutline when run from unit tests
+#@+node:ekr.20100129133806.6237:Remove cruft from test folder
+#@-node:ekr.20100129133806.6237:Remove cruft from test folder
+#@+node:ekr.20081204091750.4:Fix inconsistency in how @path works??
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
+
+If a @path directive is within the body text of an @thin node then the
+file write uses the @path directive but the file read does not.  Since
+the file read cannot know of the @path directive until after it has
+read the file it has no choice but to not use it.  The @thin file
+write code should not use any @path declarations found in its body
+text.
+#@nonl
+#@-node:ekr.20081204091750.4:Fix inconsistency in how @path works??
+#@+node:ekr.20100111094359.6208:Simplify goto-line and fix bugs
+#@+node:ekr.20080710082231.10:c.gotoLineNumber and helpers
+def goToLineNumber (self,n,p=None,scriptData=None):
+
+    '''Place the cursor on the n'th line of a derived file or script.
+    When present scriptData is a dict with 'root' and 'lines' keys.'''
+
+    trace = False and not g.unitTesting
+    c = self
+    if n < 0: return
+    if n == 0: n = 1
+
+    fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
+
+    if n==1 and not isRaw:
+        p,n2,found = root,1,True
+    elif n > len(lines): # was >=
+        p,n2,found = root,root.b.count('\n'),False
+    elif isRaw:
+        p,n2,found = c.goto_countLines(root,n)
+    else:
+        vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n,ignoreSentinels)
+        p,found = c.goto_findGnx(delim,root,gnx,vnodeName)
+    c.goto_showResults(found,p or root,n,n2,lines)
+#@+node:ekr.20080904071003.12:goto_countLines
+def goto_countLines (self,root,n):
+
+    '''Scan through root's outline, looking for line n.
+    Return (p,n2,found) where p is the found node,
+    n2 is the actural line found, and found is True if the line was found.'''
+
+    trace = False and not g.unitTesting
+    p = lastv = root
+    prev = 0 ; found = False
+    isNosent = root.isAtNoSentFileNode()
+    isAuto = root.isAtAutoNode()
+
+    if trace: g.trace('=' * 10)
+    for p in p.self_and_subtree():
+        lastv = p.copy()
+        s = p.b
+        if isNosent or isAuto:
+            lines = [z for z in g.splitLines(s) if not z.startswith('@')]
+            s = ''.join(lines)
+        else:
+            lines = g.splitLines(s)
+        n_lines = len(lines)
+        if trace: g.trace('prev: %3s node: %s lines...\n%s' % (
+            prev,p.h,g.listToString(lines)))
+        if prev + n_lines >= n:
+            if trace: g.trace('***found',n-prev)
+            found = True ; break
+        prev += n_lines
+
+    p = lastv
+    n2 = max(0,n-prev)
+
+    return p,n2,found
+#@-node:ekr.20080904071003.12:goto_countLines
+#@+node:ekr.20080904071003.18:goto_findGnx
+def goto_findGnx (self,delim,root,gnx,vnodeName):
+
+    '''Scan root's tree for a node with the given gnx and vnodeName.
+
+    return (p,found)'''
+
+    if delim and gnx:
+        gnx = g.app.nodeIndices.scanGnx(gnx,0)
+        for p in root.self_and_subtree():
+            if p.matchHeadline(vnodeName):
+                if p.v.fileIndex == gnx:
+                    return p.copy(),True
+        return None,False
+    else:
+        return root,False
+#@-node:ekr.20080904071003.18:goto_findGnx
+#@+node:ekr.20031218072017.2877:goto_findVnode & helpers
+def goto_findVnode (self,root,lines,n,ignoreSentinels):
+
+    '''Search the lines of a derived file containing sentinels for a vnode.
+    return (vnodeName,gnx,offset,delim):
+
+    vnodeName:  the name found in the previous @+body sentinel.
+    gnx:        the gnx of the found node.
+    offset:     the offset within the node of the desired line.
+    delim:      the comment delim from the @+leo sentinel.
+    '''
+
+    c = self
+    # g.trace('lines...\n',g.listToString(lines))
+    gnx = None
+    delim,thinFile = c.goto_setDelimFromLines(lines)
+    if not delim:
+        g.es('no sentinels in:',root.h)
+        return None,None,None,None
+
+    nodeLine,offset = c.goto_findNodeSentinel(delim,lines,n)
+    if nodeLine == -1:
+        # The line precedes the first @+node sentinel
+        g.trace('no @+node!!')
+        return root.h,gnx,1,delim
+
+    s = lines[nodeLine]
+    gnx,vnodeName = c.goto_getNodeLineInfo(s,thinFile)
+    if delim and vnodeName:
+        # g.trace('offset',offset)
+        return vnodeName,gnx,offset,delim
+    else:
+        g.es("bad @+node sentinel")
+        return None,None,None,None
+#@+node:ekr.20100124164700.12156:goto_findNodeSentinel
+def goto_findNodeSentinel(self,delim,lines,n):
+
+    '''
+    Scan backwards from the line n, looking for an @-body line. When found,
+    get the vnode's name from that line and set p to the indicated vnode. This
+    will fail if vnode names have been changed, and that can't be helped.
+
+    We compute the offset of the requested line **within the found node**.
+    '''
+
+    c = self
+    offset = 0 # This is essentially the Tk line number.
+    nodeSentinelLine = -1
+    line = n - 1 # Start with the requested line.
+    while line >= 0:
+        progress = line
+        s = lines[line]
+        i = g.skip_ws(s,0)
+        if g.match(s,i,delim):
+            << handle delim while scanning backward >>
+        else:
+            # offset += 1 # Assume the line is real.  A dubious assumption.
+            line -= 1
+        assert line < progress
+    return nodeSentinelLine,offset
+#@+node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
+if line == n:
+    g.es("line",str(n),"is a sentinel line")
+i += len(delim)
+
+if g.match(s,i,"-node"):
+    # The end of a nested section.
+    old_line = line
+    line = c.goto_skipToMatchingNodeSentinel(lines,line,delim)
+    assert line < old_line
+    # g.trace('found',repr(lines[line]))
+    nodeSentinelLine = line
+    offset = n-line
+    break
+elif g.match(s,i,"+node"):
+    # g.trace('found',repr(lines[line]))
+    nodeSentinelLine = line
+    offset = n-line
+    break
+elif g.match(s,i,"<<") or g.match(s,i,"@first"):
+    # if not ignoreSentinels:
+        # offset += 1 # Count these as a "real" lines.
+    line -= 1
+else:
+    line -= 1
+#@-node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
+#@-node:ekr.20100124164700.12156:goto_findNodeSentinel
+#@+node:ekr.20031218072017.2881:goto_getNodeLineInfo
+def goto_getNodeLineInfo (self,s,thinFile):
+
+    i = 0 ; gnx = None ; vnodeName = None
+
+    if thinFile:
+        # gnx is lies between the first and second ':':
+        i = s.find(':',i)
+        if i > 0:
+            i += 1
+            j = s.find(':',i)
+            if j > 0:   gnx = s[i:j]
+            else:       i = len(s) # Force an error.
+        else:
+            i = len(s) # Force an error.
+
+    # vnode name is everything following the first or second':'
+    i = s.find(':',i)
+    if i > -1:
+        vnodeName = s[i+1:].strip()
+    else:
+        vnodeName = None
+        g.es_print("bad @+node sentinel",color='red')
+
+    return gnx,vnodeName
+#@-node:ekr.20031218072017.2881:goto_getNodeLineInfo
+#@+node:ekr.20031218072017.2878:goto_setDelimFromLines
+def goto_setDelimFromLines (self,lines):
+
+    # Find the @+leo line.
+    c = self ; at = c.atFileCommands
+    i = 0 
+    while i < len(lines) and lines[i].find("@+leo")==-1:
+        i += 1
+    leoLine = i # Index of the line containing the leo sentinel
+
+    # Set delim and thinFile from the @+leo line.
+    delim,thinFile = None,False
+
+    if leoLine < len(lines):
+        s = lines[leoLine]
+        valid,newDerivedFile,start,end,thinFile = at.parseLeoSentinel(s)
+        # New in Leo 4.5.1: only support 4.x files.
+        if valid and newDerivedFile:
+            delim = start + '@'
+
+    return delim,thinFile
+#@-node:ekr.20031218072017.2878:goto_setDelimFromLines
+#@+node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
+def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
+
+    s = lines[n]
+    i = g.skip_ws(s,0)
+    assert(g.match(s,i,delim))
+    i += len(delim)
+    if g.match(s,i,"+node"):
+        start="+node" ; end="-node" ; delta=1
+    else:
+        assert(g.match(s,i,"-node"))
+        start="-node" ; end="+node" ; delta=-1
+    # Scan to matching @+-node delim.
+    n += delta ; level = 0
+    while 0 <= n < len(lines):
+        s = lines[n] ; i = g.skip_ws(s,0)
+        if g.match(s,i,delim):
+            i += len(delim)
+            if g.match(s,i,start):
+                level += 1
+            elif g.match(s,i,end):
+                if level == 0: break
+                else: level -= 1
+        n += delta
+
+    # g.trace(n)
+    return n
+#@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
+#@-node:ekr.20031218072017.2877:goto_findVnode & helpers
+#@+node:ekr.20080904071003.28:goto_setup & helpers
+def goto_setup (self,n,p=None,scriptData=None):
+
+    '''Return (fileName,isRaw,lines,n,p,root) where:
+
+    fileName is the name of the nearest @<file> node, or None.
+    isRaw is True if there are no sentinels in the file.
+    lines are the lines to be scanned.
+    n is the effective line number (munged for @shadow nodes).
+    root is the nearest @file node, or c.currentPosition.'''
+
+    c = self
+
+    # First, find the root and lines.
+    if scriptData:
+        assert p is None
+        lines = scriptData.get('lines')
+        p = scriptData.get('p')
+        root,fileName = c.goto_findRoot(p)
+    else:
+        # p is for unit testing only!
+        if not p: p = c.p
+        root,fileName = c.goto_findRoot(p)
+        if root and fileName:
+            c.shadowController.line_mapping = [] # Set by goto_open.
+            lines = c.goto_getFileLines(root,fileName)
+            n = c.goto_applyLineNumberMapping(n)
+        else:
+            lines = c.goto_getScriptLines(p)
+
+    isRaw = not root or (
+        root.isAtEditNode() or
+        root.isAtAsisFileNode() or
+        root.isAtAutoNode() or
+        root.isAtNoSentFileNode())
+
+    ignoreSentinels = root and root.isAtNoSentFileNode()
+
+    if scriptData:
+        if not root: root = p.copy()
+    else:
+        if not root: root = c.p
+
+    # g.trace(isRaw,g.listToString(lines,sort=False))
+
+    return fileName,ignoreSentinels,isRaw,lines,n,root
+#@+node:ekr.20080708094444.65:goto_applyLineNumberMapping
+def goto_applyLineNumberMapping(self, n):
+
+    c = self ; x = c.shadowController
+
+    if len(x.line_mapping) > n:
+        return x.line_mapping[n]
+    else:
+        return n
+#@-node:ekr.20080708094444.65:goto_applyLineNumberMapping
+#@+node:ekr.20080904071003.25:goto_findRoot
+def goto_findRoot (self,p):
+
+    '''Find the closest ancestor @<file> node, except @all nodes.
+
+    return root, fileName.'''
+
+    c = self ; p1 = p.copy()
+
+    # First look for ancestor @file node.
+    for p in p.self_and_parents():
+        fileName = not p.isAtAllNode() and p.anyAtFileNodeName()
+        if fileName:
+            return p.copy(),fileName
+
+    # Search the entire tree for joined nodes.
+    # Bug fix: Leo 4.5.1: *must* search *all* positions.
+    for p in c.all_positions():
+        if p.v == p1.v and p != p1:
+            # Found a joined position.
+            for p2 in p.self_and_parents():
+                fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
+                if fileName:
+                    return p2.copy(),fileName
+
+    return None,None
+#@-node:ekr.20080904071003.25:goto_findRoot
+#@+node:ekr.20080904071003.26:goto_getFileLines
+def goto_getFileLines (self,root,fileName):
+
+    '''Read the file into lines.'''
+
+    c = self
+
+    isAtEdit = root.isAtEditNode()
+    isAtNoSent = root.isAtNoSentFileNode()
+
+    if isAtNoSent or isAtEdit:
+        # Write a virtual file containing sentinels.
+        at = c.atFileCommands
+        kind = g.choose(isAtNoSent,'@nosent','@edit')
+        at.write(root,kind=kind,nosentinels=False,toString=True)
+        lines = g.splitLines(at.stringOutput)
+    else:
+        # Calculate the full path.
+        d = g.scanDirectives(c,p=root)
+        path = d.get("path")
+        # g.trace('path',path,'fileName',fileName)
+        fileName = c.os_path_finalize_join(path,fileName)
+        lines    = c.goto_open(fileName)
+
+    return lines
+#@-node:ekr.20080904071003.26:goto_getFileLines
+#@+node:ekr.20080904071003.27:goto_getScriptLines
+def goto_getScriptLines (self,p):
+
+    c = self
+
+    if not g.unitTesting:
+        g.es("no ancestor @file node: using script line numbers", color="blue")
+
+    lines = g.getScript (c,p,useSelectedText=False)
+    lines = g.splitLines(lines)
+
+    return lines
+#@-node:ekr.20080904071003.27:goto_getScriptLines
+#@+node:ekr.20080708094444.63:goto_open
+def goto_open (self,filename):
+    """
+    Open a file for "goto linenumber" command and check if a shadow file exists.
+    Construct a line mapping. This ivar is empty if no shadow file exists.
+    Otherwise it contains a mapping, shadow file number -> real file number.
+    """
+
+    c = self ; x = c.shadowController
+
+    try:
+        shadow_filename = x.shadowPathName(filename)
+        if os.path.exists(shadow_filename):
+            fn = shadow_filename
+            lines = open(shadow_filename).readlines()
+            x.line_mapping = x.push_filter_mapping(
+                lines,
+                x.markerFromFileLines(lines,shadow_filename))
+        else:
+            # Just open the original file.  This is not an error!
+            fn = filename
+            c.line_mapping = []
+            lines = open(filename).readlines()
+    except Exception:
+        # Make sure failures to open a file generate clear messages.
+        g.es_print('can not open',fn,color='blue')
+        # g.es_exception()
+        lines = []
+
+    return lines
+#@-node:ekr.20080708094444.63:goto_open
+#@-node:ekr.20080904071003.28:goto_setup & helpers
+#@+node:ekr.20080904071003.14:goto_showResults
+def goto_showResults(self,found,p,n,n2,lines):
+
+    c = self ; w = c.frame.body.bodyCtrl
+
+    # Select p and make it visible.
+    c.redraw(p)
+
+    # Put the cursor on line n2 of the body text.
+    s = w.getAllText()
+    if found:
+        ins = g.convertRowColToPythonIndex(s,n2-1,0)    
+    else:
+        ins = len(s)
+        if len(lines) < n and not g.unitTesting:
+            g.es('only',len(lines),'lines',color="blue")
+
+    w.setInsertPoint(ins)
+    c.bodyWantsFocusNow()
+    w.seeInsertPoint()
+#@-node:ekr.20080904071003.14:goto_showResults
+#@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
+#@-node:ekr.20100111094359.6208:Simplify goto-line and fix bugs
+#@+node:ekr.20100202110617.5848:Resolve unicode issue
+http://groups.google.com/group/leo-editor/browse_thread/thread/61b28c65d3cd3ac1
+
+Should file Qt bug report.
+#@nonl
+#@+node:ekr.20031218072017.1329:onBodyChanged (leoBody)
+# This is the only key handler for the body pane.
+def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
+
+    '''Update Leo after the body has been changed.'''
+
+    trace = False and not g.unitTesting
+    body = self ; c = self.c
+    bodyCtrl = w = body.bodyCtrl
+    p = c.p
+    insert = w.getInsertPoint()
+    ch = g.choose(insert==0,'',w.get(insert-1))
+    ch = g.toUnicode(ch)
+    newText = w.getAllText() # Note: getAllText converts to unicode.
+    newSel = w.getSelectionRange()
+    if not oldText:
+        oldText = p.b ; changed = True
+    else:
+        changed = oldText != newText
+    if not changed: return
+    if trace:
+        # g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
+        g.trace('oldSel',oldSel,'newSel',newSel)
+    c.undoer.setUndoTypingParams(p,undoType,
+        oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+    p.v.setBodyString(newText)
+    p.v.insertSpot = body.getInsertPoint()
+    << recolor the body >>
+    if not c.changed: c.setChanged(True)
+    self.updateEditors()
+    << update icons if necessary >>
+#@+node:ekr.20051026083733.6:<< recolor the body >>
+body.colorizer.interrupt()
+c.frame.scanForTabWidth(p)
+body.recolor(p,incremental=not self.forceFullRecolorFlag)
+self.forceFullRecolorFlag = False
+
+if g.app.unitTesting:
+    g.app.unitTestDict['colorized'] = True
+#@-node:ekr.20051026083733.6:<< recolor the body >>
+#@+node:ekr.20051026083733.7:<< update icons if necessary >>
+
+redraw_flag = False
+# Update dirty bits.
+# p.setDirty() sets all cloned and @file dirty bits.
+if not p.isDirty() and p.setDirty():
+    redraw_flag = True
+
+# Update icons. p.v.iconVal may not exist during unit tests.
+val = p.computeIcon()
+# g.trace('new val:',val,'old val:',hasattr(p.v,'iconVal') and p.v.iconVal or '<None>')
+if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
+    p.v.iconVal = val
+    redraw_flag = True
+
+if redraw_flag:
+    c.redraw_after_icons_changed()
+#@-node:ekr.20051026083733.7:<< update icons if necessary >>
+#@-node:ekr.20031218072017.1329:onBodyChanged (leoBody)
+#@+node:EKR.20040526090701.4:undoTyping
+def undoTyping (self):
+
+    u = self ; c = u.c ; current = c.p
+    w = c.frame.body.bodyCtrl
+
+    # selectPosition causes recoloring, so don't do this unless needed.
+    if current != u.p:
+        c.selectPosition(u.p)
+    elif u.undoType in ("Cut","Paste",'Clear Recent Files'):
+        c.frame.body.forceFullRecolor()
+
+    self.undoRedoText(
+        u.p,u.leading,u.trailing,
+        u.oldMiddleLines,u.newMiddleLines,
+        u.oldNewlines,u.newNewlines,
+        tag="undo",undoType=u.undoType)
+
+    u.updateMarks('old')
+
+    for v in u.dirtyVnodeList:
+        v.setDirty() # Bug fix: Leo 4.4.6.
+
+    if u.oldSel:
+        c.bodyWantsFocusNow()
+        i,j = u.oldSel
+        self.sel_i,self.sel_j = i,j
+            # support for the sel_hack in undo().
+        # g.trace(i,j)
+        w.setSelectionRange(i,j,insert=j)
+    if u.yview:
+        c.bodyWantsFocusNow()
+        c.frame.body.setYScrollPosition(u.yview)
+#@-node:EKR.20040526090701.4:undoTyping
+#@+node:ekr.20031218072017.2039:undo & helpers...
+def undo (self,event=None):
+
+    """Undo the operation described by the undo parameters."""
+
+    trace = False and not g.unitTesting
+    sel_hack = False
+    u = self ; c = u.c
+    w = c.frame.body.bodyCtrl
+    if sel_hack:
+        self.sel_i,self.sel_j = None,None
+            # A bug workaround.  See undoTyping. Doesn't really work.
+    if not u.canUndo():
+        if trace: g.trace('cant undo',u.undoMenuLabel,u.redoMenuLabel)
+        return
+    if not u.getBead(u.bead):
+        g.trace('no bead') ; return
+    if not c.p:
+        g.trace('no current position') ; return
+
+    if trace: g.trace(u.dumpBead(u.bead))
+
+    u.undoing = True
+    u.groupCount = 0
+
+    c.endEditing()
+    if u.undoHelper: u.undoHelper()
+    else: g.trace('no undo helper for %s %s' % (u.kind,u.undoType))
+    c.frame.body.updateEditors() # New in Leo 4.4.8.
+    if 0: # Don't do this: it interferes with selection ranges.
+        # This strange code forces a recomputation of the root position.
+        c.selectPosition(c.p)
+    else:
+        c.setCurrentPosition(c.p)
+    if u.oldChanged is None: u.oldChanged = True
+    c.setChanged(u.oldChanged) # 2009/12/21
+    # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
+    i,j = w.getSelectionRange()
+    ins = w.getInsertPoint()
+    c.redraw()
+    c.recolor()
+    c.bodyWantsFocusNow()
+    # g.trace(i,j,ins)
+    if sel_hack and self.sel_i is not None and self.sel_j is not None:
+        # Ignore w.getSelectionRange.
+        i,j,ins = self.sel_i,self.sel_j,None
+    w.setSelectionRange(i,j,insert=ins)
+    w.seeInsertPoint()
+    u.undoing = False
+    u.bead -= 1
+    u.setUndoTypes()
+#@nonl
+#@+node:ekr.20050424170219.1:undoClearRecentFiles
+def undoClearRecentFiles (self):
+
+    u = self ; c = u.c
+
+    g.app.recentFiles = u.oldRecentFiles[:]
+    c.recentFiles = u.oldRecentFiles[:]
+
+    c.frame.menu.createRecentFilesMenuItems()
+#@-node:ekr.20050424170219.1:undoClearRecentFiles
+#@+node:ekr.20050412083057.1:undoCloneNode
+def undoCloneNode (self):
+
+    u = self ; c = u.c
+
+    c.selectPosition(u.newP)
+    c.deleteOutline()
+
+    for v in u.dirtyVnodeList:
+        v.setDirty() # Bug fix: Leo 4.4.6
+
+    c.selectPosition(u.p)
+#@-node:ekr.20050412083057.1:undoCloneNode
+#@+node:ekr.20050412084055:undoDeleteNode
+def undoDeleteNode (self):
+
+    u = self ; c = u.c
+
+    if u.oldBack:
+        u.p._linkAfter(u.oldBack)
+    elif u.oldParent:
+        u.p._linkAsNthChild(u.oldParent,0)
+    else:
+        oldRoot = c.rootPosition()
+        u.p._linkAsRoot(oldRoot)
+
+    u.p.setAllAncestorAtFileNodesDirty()
+    c.selectPosition(u.p)
+#@-node:ekr.20050412084055:undoDeleteNode
+#@+node:ekr.20080425060424.10:undoDemote
+def undoDemote (self):
+
+    u = self ; c = u.c
+    parent_v = u.p._parentVnode()
+    n = len(u.followingSibs)
+
+    # Remove the demoted nodes from p's children.
+    u.p.v.children = u.p.v.children[:-n]
+
+    # Add the demoted nodes to the parent's children.
+    parent_v.children.extend(u.followingSibs)
+
+    # Adjust the parent links.
+    # There is no need to adjust descendant links.
+    for sib in u.followingSibs:
+        sib.parents.remove(u.p.v)
+        sib.parents.append(parent_v)
+
+    c.setCurrentPosition(u.p)
+#@-node:ekr.20080425060424.10:undoDemote
+#@+node:ekr.20050318085713:undoGroup
+def undoGroup (self):
+
+    '''Process beads until the matching 'beforeGroup' bead is seen.'''
+
+    u = self
+
+    # Remember these values.
+    c = u.c
+    dirtyVnodeList = u.dirtyVnodeList or []
+    oldSel = u.oldSel
+    p = u.p.copy()
+
+    u.groupCount += 1
+
+    bunch = u.beads[u.bead] ; count = 0
+
+    if not hasattr(bunch,'items'):
+        g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
+    else:
+        # Important bug fix: 9/8/06: reverse the items first.
+        reversedItems = bunch.items[:]
+        reversedItems.reverse()
+        for z in reversedItems:
+            self.setIvarsFromBunch(z)
+            # g.trace(z.undoHelper)
+            if z.undoHelper:
+                z.undoHelper() ; count += 1
+            else:
+                g.trace('oops: no undo helper for %s' % u.undoType)
+
+    u.groupCount -= 1
+
+    u.updateMarks('old') # Bug fix: Leo 4.4.6.
+
+    for v in dirtyVnodeList:
+        v.setDirty() # Bug fix: Leo 4.4.6.
+
+    if not g.unitTesting:
+        g.es("undo",count,"instances")
+
+    c.selectPosition(p)
+    if oldSel: c.frame.body.setSelectionRange(oldSel)
+#@nonl
+#@-node:ekr.20050318085713:undoGroup
+#@+node:ekr.20050412083244:undoHoistNode & undoDehoistNode
+def undoHoistNode (self):
+
+    u = self ; c = u.c
+
+    c.selectPosition(u.p)
+    c.dehoist()
+
+def undoDehoistNode (self):
+
+    u = self ; c = u.c
+
+    c.selectPosition(u.p)
+    c.hoist()
+#@-node:ekr.20050412083244:undoHoistNode & undoDehoistNode
+#@+node:ekr.20050412085112:undoInsertNode
+def undoInsertNode (self):
+
+    u = self ; c = u.c
+
+    c.selectPosition(u.newP)
+
+    c.deleteOutline()
+
+    if u.pasteAsClone:
+        for bunch in u.beforeTree:
+            v = bunch.v
+            if u.p.v == v:
+                c.setBodyString(u.p,bunch.body)
+                c.setHeadString(u.p,bunch.head)
+            else:
+                v.setBodyString(bunch.body)
+                v.setHeadString(bunch.head)
+
+    c.selectPosition(u.p)
+#@-node:ekr.20050412085112:undoInsertNode
+#@+node:ekr.20050526124906:undoMark
+def undoMark (self):
+
+    u = self ; c = u.c
+
+    u.updateMarks('old')
+
+    if u.groupCount == 0:
+
+        for v in u.dirtyVnodeList:
+            v.setDirty() # Bug fix: Leo 4.4.6.
+
+        c.selectPosition(u.p)
+#@-node:ekr.20050526124906:undoMark
+#@+node:ekr.20050411112033:undoMove
+def undoMove (self):
+
+    u = self ; c = u.c ; v = u.p.v
+    assert(u.oldParent_v)
+    assert(u.newParent_v)
+    assert(v)
+
+    # Adjust the children arrays.
+    assert u.newParent_v.children[u.newN] == v
+    del u.newParent_v.children[u.newN]
+    u.oldParent_v.children.insert(u.oldN,v)
+
+    # Recompute the parent links.
+    v.parents.append(u.oldParent_v)
+    v.parents.remove(u.newParent_v)
+
+    u.updateMarks('old')
+
+    for v in u.dirtyVnodeList:
+        v.setDirty()
+
+    c.selectPosition(u.p)
+#@-node:ekr.20050411112033:undoMove
+#@+node:ekr.20050318085713.1:undoNodeContents
+def undoNodeContents (self):
+
+    '''Undo all changes to the contents of a node,
+    including headline and body text, and marked bits.
+    '''
+
+    u = self ; c = u.c ;  w = c.frame.body.bodyCtrl
+
+    u.p.setBodyString(u.oldBody)
+    w.setAllText(u.oldBody)
+    c.frame.body.recolor(u.p,incremental=False)
+
+    u.p.initHeadString(u.oldHead)
+
+    # This is required.  Otherwise c.redraw will revert the change!
+    c.frame.tree.setHeadline(u.p,u.oldHead)
+
+    if u.groupCount == 0 and u.oldSel:
+        u.c.frame.body.setSelectionRange(u.oldSel)
+
+    u.updateMarks('old')
+
+    for v in u.dirtyVnodeList:
+        v.setDirty() # Bug fix: Leo 4.4.6.
+#@-node:ekr.20050318085713.1:undoNodeContents
+#@+node:ekr.20080425060424.14:undoPromote
+def undoPromote (self):
+
+    u = self ; c = u.c
+    parent_v = u.p._parentVnode() # The parent of the all the *promoted* nodes.
+
+    # Remove the promoted nodes from parent_v's children.
+    n = u.p.childIndex() + 1
+
+    # Adjust the old parents children
+    old_children = parent_v.children
+    parent_v.children = old_children[:n]
+        # Add the nodes before the promoted nodes.
+    parent_v.children.extend(old_children[n+len(u.children):])
+        # Add the nodes after the promoted nodes.
+
+    # Add the demoted nodes to v's children.
+    u.p.v.children = u.children[:]
+
+    # Adjust the parent links.
+    # There is no need to adjust descendant links.
+    for child in u.children:
+        child.parents.remove(parent_v)
+        child.parents.append(u.p.v)
+
+    c.setCurrentPosition(u.p)
+#@-node:ekr.20080425060424.14:undoPromote
+#@+node:ekr.20031218072017.1493:undoRedoText
+def undoRedoText (self,p,
+    leading,trailing, # Number of matching leading & trailing lines.
+    oldMidLines,newMidLines, # Lists of unmatched lines.
+    oldNewlines,newNewlines, # Number of trailing newlines.
+    tag="undo", # "undo" or "redo"
+    undoType=None):
+
+    '''Handle text undo and redo: converts _new_ text into _old_ text.'''
+
+    # newNewlines is unused, but it has symmetry.
+
+    trace = False and not g.unitTesting
+
+    u = self ; c = u.c ; w = c.frame.body.bodyCtrl
+
+    << Compute the result using p's body text >>
+    p.setBodyString(result)
+    w.setAllText(result)
+    sel = g.choose(tag=='undo',u.oldSel,u.newSel)
+    if trace: g.trace(sel)
+    i,j = sel
+    w.setSelectionRange(i,j,insert=j)
+    c.frame.body.recolor(p,incremental=False)
+    w.seeInsertPoint() # 2009/12/21
+#@+node:ekr.20061106105812.1:<< Compute the result using p's body text >>
+# Recreate the text using the present body text.
+body = p.b
+body = g.toUnicode(body)
+body_lines = body.split('\n')
+s = []
+if leading > 0:
+    s.extend(body_lines[:leading])
+if len(oldMidLines) > 0:
+    s.extend(oldMidLines)
+if trailing > 0:
+    s.extend(body_lines[-trailing:])
+s = '\n'.join(s)
+# Remove trailing newlines in s.
+while len(s) > 0 and s[-1] == '\n':
+    s = s[:-1]
+# Add oldNewlines newlines.
+if oldNewlines > 0:
+    s = s + '\n' * oldNewlines
+result = s
+
+if u.debug_print:
+    g.pr("body:  ",body)
+    g.pr("result:",result)
+#@-node:ekr.20061106105812.1:<< Compute the result using p's body text >>
+#@-node:ekr.20031218072017.1493:undoRedoText
+#@+node:ekr.20050408100042:undoRedoTree
+def undoRedoTree (self,p,new_data,old_data):
+
+    '''Replace p and its subtree using old_data during undo.'''
+
+    # Same as undoReplace except uses g.Bunch.
+
+    u = self ; c = u.c
+
+    if new_data == None:
+        # This is the first time we have undone the operation.
+        # Put the new data in the bead.
+        bunch = u.beads[u.bead]
+        bunch.newTree = u.saveTree(p.copy())
+        u.beads[u.bead] = bunch
+
+    # Replace data in tree with old data.
+    u.restoreTree(old_data)
+    c.setBodyString(p,p.b)
+
+    return p # Nothing really changes.
+#@-node:ekr.20050408100042:undoRedoTree
+#@+node:ekr.20080425060424.5:undoSort
+def undoSort (self):
+
+    u = self ; c = u.c
+
+    parent_v = u.p._parentVnode()
+    parent_v.children = u.oldChildren
+    p = c.setPositionAfterSort(u.sortChildren)
+    c.setCurrentPosition(p)
+#@nonl
+#@-node:ekr.20080425060424.5:undoSort
+#@+node:ekr.20050318085713.2:undoTree
+def undoTree (self):
+
+    '''Redo replacement of an entire tree.'''
+
+    u = self ; c = u.c
+
+    u.p = self.undoRedoTree(u.p,u.newTree,u.oldTree)
+    c.selectPosition(u.p) # Does full recolor.
+    if u.oldSel:
+        c.frame.body.setSelectionRange(u.oldSel)
+#@-node:ekr.20050318085713.2:undoTree
+#@+node:EKR.20040526090701.4:undoTyping
+def undoTyping (self):
+
+    u = self ; c = u.c ; current = c.p
+    w = c.frame.body.bodyCtrl
+
+    # selectPosition causes recoloring, so don't do this unless needed.
+    if current != u.p:
+        c.selectPosition(u.p)
+    elif u.undoType in ("Cut","Paste",'Clear Recent Files'):
+        c.frame.body.forceFullRecolor()
+
+    self.undoRedoText(
+        u.p,u.leading,u.trailing,
+        u.oldMiddleLines,u.newMiddleLines,
+        u.oldNewlines,u.newNewlines,
+        tag="undo",undoType=u.undoType)
+
+    u.updateMarks('old')
+
+    for v in u.dirtyVnodeList:
+        v.setDirty() # Bug fix: Leo 4.4.6.
+
+    if u.oldSel:
+        c.bodyWantsFocusNow()
+        i,j = u.oldSel
+        self.sel_i,self.sel_j = i,j
+            # support for the sel_hack in undo().
+        # g.trace(i,j)
+        w.setSelectionRange(i,j,insert=j)
+    if u.yview:
+        c.bodyWantsFocusNow()
+        c.frame.body.setYScrollPosition(u.yview)
+#@-node:EKR.20040526090701.4:undoTyping
+#@-node:ekr.20031218072017.2039:undo & helpers...
+#@-node:ekr.20100202110617.5848:Resolve unicode issue
+#@+node:ekr.20100202121529.5873:Simplify or eliminate config ivars
 #@+node:ekr.20100130042842.9008: Notes
 @nocolor-node
 
@@ -929,653 +2408,7 @@ c.config.default_at_auto_file_encoding
 c.config.default_derived_file_encoding
 #@nonl
 #@-node:ekr.20100131161507.6302:Replace all of these by config.get methods
-#@-node:ekr.20100130042842.9009:Remove config.set
-#@-node:ekr.20100128094926.6228: First
-#@+node:ekr.20100202084948.5741:Next
-#@+node:ekr.20100129133806.6237:Remove cruft from test folder
-#@-node:ekr.20100129133806.6237:Remove cruft from test folder
-#@+node:ekr.20100122130101.6172:Fix bug in c.pasteOutline when run from unit tests
-@nocolor-node
-
-I'm trying to write a simple test that I'm running by selecting it and
-then typing 'run-unit-tests-locally'.
-
-Here is the @test node body:
-
---- cut here ---
-root = p.copy()
-while p.hasChildren():
-   p.firstChild().doDelete(newNode = None)
-
-try:
-   p1 = p.insertAsLastChild()
-   body = 'foo'
-   p1.setBodyString(body)
-   c.selectPosition(p1)
-   c.copyOutline()
-   c.pasteOutline()
-finally:
-   c.redraw_now()
---- cut here ---
-
-My problem: the node that is being created by c.pasteOutline() has an
-empty body. If after running the test I type 'paste-node' in the
-minibuffer, a new node appears, it has 'foo' in the body.
-
-Searching for "copyOutline" and "pasteOutline" in leo's html docs
-doesn't provide any usage examples, so I'm stuck.
-#@nonl
-#@+node:ekr.20031218072017.1551:pasteOutline
-# To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
-
-def pasteOutline(self,event=None,reassignIndices=True):
-
-    '''Paste an outline into the present outline from the clipboard.
-    Nodes do *not* retain their original identify.'''
-
-    c = self ; u = c.undoer ; current = c.p
-    s = g.app.gui.getTextFromClipboard()
-    pasteAsClone = not reassignIndices
-    undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
-
-    c.endEditing()
-
-    if not s or not c.canPasteOutline(s):
-        return # This should never happen.
-
-    isLeo = g.match(s,0,g.app.prolog_prefix_string)
-    vnodeInfoDict = {}
-    if pasteAsClone:
-        << remember all data for undo/redo Paste As Clone >>
-    # create a *position* to be pasted.
-    if isLeo:
-        pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
-    else:
-        pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
-
-    if not pasted: return
-
-    copiedBunchList = []
-    if pasteAsClone:
-        << put only needed info in copiedBunchList >>
-    undoData = u.beforeInsertNode(current,
-        pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
-
-    c.validateOutline()
-    c.selectPosition(pasted)
-    pasted.setDirty()
-    c.setChanged(True)
-    # paste as first child if back is expanded.
-    back = pasted.back()
-    if back and back.isExpanded():
-        pasted.moveToNthChildOf(back,0)
-    c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
-
-    if pasteAsClone:
-        # Set dirty bits for ancestors of *all* pasted nodes.
-        # Note: the setDescendentsDirty flag does not do what we want.
-        for p in pasted.self_and_subtree():
-            p.setAllAncestorAtFileNodesDirty(
-                setDescendentsDirty=False)
-
-    u.afterInsertNode(pasted,undoType,undoData)
-    c.redraw(pasted)
-    c.recolor()
-#@+node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
-@
-
-We don't know yet which nodes will be affected by the paste, so we remember
-everything. This is expensive, but foolproof.
-
-The alternative is to try to remember the 'before' values of tnodes in the
-fileCommands read logic. Several experiments failed, and the code is very ugly.
-In short, it seems wise to do things the foolproof way.
-
-@c
-
-for v in c.all_unique_nodes():
-    if v not in vnodeInfoDict:
-        vnodeInfoDict[v] = g.Bunch(
-            v=v,head=v.headString(),body=v.b)
-#@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
-#@+node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
-# Create a dict containing only copied tnodes.
-copiedVnodeDict = {}
-for p in pasted.self_and_subtree():
-    if p.v not in copiedVnodeDict:
-        copiedVnodeDict[p.v] = p.v
-
-# g.trace(list(copiedVnodeDict.keys()))
-
-for v in vnodeInfoDict:
-    bunch = vnodeInfoDict.get(v)
-    if copiedVnodeDict.get(v):
-        copiedBunchList.append(bunch)
-
-# g.trace('copiedBunchList',copiedBunchList)
-#@-node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
-#@-node:ekr.20031218072017.1551:pasteOutline
-#@+node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
-def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
-
-    '''Read a Leo outline from string s in clipboard format.'''
-
-    trace = False and not g.unitTesting
-    verbose = False
-    c = self.c ; current = c.p ; check = not reassignIndices
-    checkAfterRead = False or c.config.getBool('check_outline_after_read')
-
-    # Save the hidden root's children.
-    children = c.hiddenRootNode.children
-
-    # Always recreate the gnxDict
-    self.gnxDict = {}
-    if not reassignIndices:
-        x = g.app.nodeIndices
-        for v in c.all_unique_nodes():
-            index = x.toString(v.fileIndex)
-            self.gnxDict[index] = v
-
-    self.usingClipboard = True
-    try:
-        # This encoding must match the encoding used in putLeoOutline.
-        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
-
-        # readSaxFile modifies the hidden root.
-        v = self.readSaxFile(
-            theFile=None, fileName='<clipboard>',
-            silent=True, # don't tell about stylesheet elements.
-            inClipboard=True,reassignIndices=reassignIndices,s=s)
-        if not v:
-            return g.es("the clipboard is not valid ",color="blue")
-    finally:
-        self.usingClipboard = False
-
-    # Restore the hidden root's children
-    c.hiddenRootNode.children = children
-
-    # Unlink v from the hidden root.
-    v.parents.remove(c.hiddenRootNode)
-
-    p = leoNodes.position(v)
-
-    # Important: we must not adjust links when linking v
-    # into the outline.  The read code has already done that.
-    if current.hasChildren() and current.isExpanded():
-        if check and not self.checkPaste(current,p):
-            return None
-        p._linkAsNthChild(current,0,adjust=False)
-    else:
-        if check and not self.checkPaste(current.parent(),p):
-            return None
-        p._linkAfter(current,adjust=False)
-
-    if reassignIndices:
-        for p2 in p.self_and_subtree():
-            p2.v.fileIndex = g.app.nodeIndices.getNewIndex()
-
-    if trace and verbose:
-        g.trace('**** dumping outline...')
-        c.dumpOutline()
-
-    if checkAfterRead:
-        g.trace('checking outline after paste',color='blue')
-        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
-
-    c.selectPosition(p)
-    return p
-
-getLeoOutline = getLeoOutlineFromClipboard # for compatibility
-#@+node:ekr.20080410115129.1:checkPaste
-def checkPaste (self,parent,p):
-
-    '''Return True if p may be pasted as a child of parent.'''
-
-    if not parent: return True
-
-    parents = [z.copy() for z in parent.self_and_parents()]
-
-    for p in p.self_and_subtree():
-        for z in parents:
-            # g.trace(p.h,id(p.v),id(z.v))
-            if p.v == z.v:
-                g.es('Invalid paste: nodes may not descend from themselves',color="blue")
-                return False
-
-    return True
-#@-node:ekr.20080410115129.1:checkPaste
-#@-node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
-#@-node:ekr.20100122130101.6172:Fix bug in c.pasteOutline when run from unit tests
-#@+node:ekr.20081204091750.4:Fix inconsistency in how @path works??
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
-
-If a @path directive is within the body text of an @thin node then the
-file write uses the @path directive but the file read does not.  Since
-the file read cannot know of the @path directive until after it has
-read the file it has no choice but to not use it.  The @thin file
-write code should not use any @path declarations found in its body
-text.
-#@nonl
-#@-node:ekr.20081204091750.4:Fix inconsistency in how @path works??
-#@+node:ekr.20100111094359.6208:Simplify goto-line and fix bugs
-#@+node:ekr.20080710082231.10:c.gotoLineNumber and helpers
-def goToLineNumber (self,n,p=None,scriptData=None):
-
-    '''Place the cursor on the n'th line of a derived file or script.
-    When present scriptData is a dict with 'root' and 'lines' keys.'''
-
-    trace = False and not g.unitTesting
-    c = self
-    if n < 0: return
-    if n == 0: n = 1
-
-    fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
-
-    if n==1 and not isRaw:
-        p,n2,found = root,1,True
-    elif n > len(lines): # was >=
-        p,n2,found = root,root.b.count('\n'),False
-    elif isRaw:
-        p,n2,found = c.goto_countLines(root,n)
-    else:
-        vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n,ignoreSentinels)
-        p,found = c.goto_findGnx(delim,root,gnx,vnodeName)
-    c.goto_showResults(found,p or root,n,n2,lines)
-#@+node:ekr.20080904071003.12:goto_countLines
-def goto_countLines (self,root,n):
-
-    '''Scan through root's outline, looking for line n.
-    Return (p,n2,found) where p is the found node,
-    n2 is the actural line found, and found is True if the line was found.'''
-
-    trace = False and not g.unitTesting
-    p = lastv = root
-    prev = 0 ; found = False
-    isNosent = root.isAtNoSentFileNode()
-    isAuto = root.isAtAutoNode()
-
-    if trace: g.trace('=' * 10)
-    for p in p.self_and_subtree():
-        lastv = p.copy()
-        s = p.b
-        if isNosent or isAuto:
-            lines = [z for z in g.splitLines(s) if not z.startswith('@')]
-            s = ''.join(lines)
-        else:
-            lines = g.splitLines(s)
-        n_lines = len(lines)
-        if trace: g.trace('prev: %3s node: %s lines...\n%s' % (
-            prev,p.h,g.listToString(lines)))
-        if prev + n_lines >= n:
-            if trace: g.trace('***found',n-prev)
-            found = True ; break
-        prev += n_lines
-
-    p = lastv
-    n2 = max(0,n-prev)
-
-    return p,n2,found
-#@-node:ekr.20080904071003.12:goto_countLines
-#@+node:ekr.20080904071003.18:goto_findGnx
-def goto_findGnx (self,delim,root,gnx,vnodeName):
-
-    '''Scan root's tree for a node with the given gnx and vnodeName.
-
-    return (p,found)'''
-
-    if delim and gnx:
-        gnx = g.app.nodeIndices.scanGnx(gnx,0)
-        for p in root.self_and_subtree():
-            if p.matchHeadline(vnodeName):
-                if p.v.fileIndex == gnx:
-                    return p.copy(),True
-        return None,False
-    else:
-        return root,False
-#@-node:ekr.20080904071003.18:goto_findGnx
-#@+node:ekr.20031218072017.2877:goto_findVnode & helpers
-def goto_findVnode (self,root,lines,n,ignoreSentinels):
-
-    '''Search the lines of a derived file containing sentinels for a vnode.
-    return (vnodeName,gnx,offset,delim):
-
-    vnodeName:  the name found in the previous @+body sentinel.
-    gnx:        the gnx of the found node.
-    offset:     the offset within the node of the desired line.
-    delim:      the comment delim from the @+leo sentinel.
-    '''
-
-    c = self
-    # g.trace('lines...\n',g.listToString(lines))
-    gnx = None
-    delim,thinFile = c.goto_setDelimFromLines(lines)
-    if not delim:
-        g.es('no sentinels in:',root.h)
-        return None,None,None,None
-
-    nodeLine,offset = c.goto_findNodeSentinel(delim,lines,n)
-    if nodeLine == -1:
-        # The line precedes the first @+node sentinel
-        g.trace('no @+node!!')
-        return root.h,gnx,1,delim
-
-    s = lines[nodeLine]
-    gnx,vnodeName = c.goto_getNodeLineInfo(s,thinFile)
-    if delim and vnodeName:
-        # g.trace('offset',offset)
-        return vnodeName,gnx,offset,delim
-    else:
-        g.es("bad @+node sentinel")
-        return None,None,None,None
-#@+node:ekr.20100124164700.12156:goto_findNodeSentinel
-def goto_findNodeSentinel(self,delim,lines,n):
-
-    '''
-    Scan backwards from the line n, looking for an @-body line. When found,
-    get the vnode's name from that line and set p to the indicated vnode. This
-    will fail if vnode names have been changed, and that can't be helped.
-
-    We compute the offset of the requested line **within the found node**.
-    '''
-
-    c = self
-    offset = 0 # This is essentially the Tk line number.
-    nodeSentinelLine = -1
-    line = n - 1 # Start with the requested line.
-    while line >= 0:
-        progress = line
-        s = lines[line]
-        i = g.skip_ws(s,0)
-        if g.match(s,i,delim):
-            << handle delim while scanning backward >>
-        else:
-            # offset += 1 # Assume the line is real.  A dubious assumption.
-            line -= 1
-        assert line < progress
-    return nodeSentinelLine,offset
-#@+node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
-if line == n:
-    g.es("line",str(n),"is a sentinel line")
-i += len(delim)
-
-if g.match(s,i,"-node"):
-    # The end of a nested section.
-    old_line = line
-    line = c.goto_skipToMatchingNodeSentinel(lines,line,delim)
-    assert line < old_line
-    # g.trace('found',repr(lines[line]))
-    nodeSentinelLine = line
-    offset = n-line
-    break
-elif g.match(s,i,"+node"):
-    # g.trace('found',repr(lines[line]))
-    nodeSentinelLine = line
-    offset = n-line
-    break
-elif g.match(s,i,"<<") or g.match(s,i,"@first"):
-    # if not ignoreSentinels:
-        # offset += 1 # Count these as a "real" lines.
-    line -= 1
-else:
-    line -= 1
-#@-node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
-#@-node:ekr.20100124164700.12156:goto_findNodeSentinel
-#@+node:ekr.20031218072017.2881:goto_getNodeLineInfo
-def goto_getNodeLineInfo (self,s,thinFile):
-
-    i = 0 ; gnx = None ; vnodeName = None
-
-    if thinFile:
-        # gnx is lies between the first and second ':':
-        i = s.find(':',i)
-        if i > 0:
-            i += 1
-            j = s.find(':',i)
-            if j > 0:   gnx = s[i:j]
-            else:       i = len(s) # Force an error.
-        else:
-            i = len(s) # Force an error.
-
-    # vnode name is everything following the first or second':'
-    i = s.find(':',i)
-    if i > -1:
-        vnodeName = s[i+1:].strip()
-    else:
-        vnodeName = None
-        g.es_print("bad @+node sentinel",color='red')
-
-    return gnx,vnodeName
-#@-node:ekr.20031218072017.2881:goto_getNodeLineInfo
-#@+node:ekr.20031218072017.2878:goto_setDelimFromLines
-def goto_setDelimFromLines (self,lines):
-
-    # Find the @+leo line.
-    c = self ; at = c.atFileCommands
-    i = 0 
-    while i < len(lines) and lines[i].find("@+leo")==-1:
-        i += 1
-    leoLine = i # Index of the line containing the leo sentinel
-
-    # Set delim and thinFile from the @+leo line.
-    delim,thinFile = None,False
-
-    if leoLine < len(lines):
-        s = lines[leoLine]
-        valid,newDerivedFile,start,end,thinFile = at.parseLeoSentinel(s)
-        # New in Leo 4.5.1: only support 4.x files.
-        if valid and newDerivedFile:
-            delim = start + '@'
-
-    return delim,thinFile
-#@-node:ekr.20031218072017.2878:goto_setDelimFromLines
-#@+node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
-def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
-
-    s = lines[n]
-    i = g.skip_ws(s,0)
-    assert(g.match(s,i,delim))
-    i += len(delim)
-    if g.match(s,i,"+node"):
-        start="+node" ; end="-node" ; delta=1
-    else:
-        assert(g.match(s,i,"-node"))
-        start="-node" ; end="+node" ; delta=-1
-    # Scan to matching @+-node delim.
-    n += delta ; level = 0
-    while 0 <= n < len(lines):
-        s = lines[n] ; i = g.skip_ws(s,0)
-        if g.match(s,i,delim):
-            i += len(delim)
-            if g.match(s,i,start):
-                level += 1
-            elif g.match(s,i,end):
-                if level == 0: break
-                else: level -= 1
-        n += delta
-
-    # g.trace(n)
-    return n
-#@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
-#@-node:ekr.20031218072017.2877:goto_findVnode & helpers
-#@+node:ekr.20080904071003.28:goto_setup & helpers
-def goto_setup (self,n,p=None,scriptData=None):
-
-    '''Return (fileName,isRaw,lines,n,p,root) where:
-
-    fileName is the name of the nearest @<file> node, or None.
-    isRaw is True if there are no sentinels in the file.
-    lines are the lines to be scanned.
-    n is the effective line number (munged for @shadow nodes).
-    root is the nearest @file node, or c.currentPosition.'''
-
-    c = self
-
-    # First, find the root and lines.
-    if scriptData:
-        assert p is None
-        lines = scriptData.get('lines')
-        p = scriptData.get('p')
-        root,fileName = c.goto_findRoot(p)
-    else:
-        # p is for unit testing only!
-        if not p: p = c.p
-        root,fileName = c.goto_findRoot(p)
-        if root and fileName:
-            c.shadowController.line_mapping = [] # Set by goto_open.
-            lines = c.goto_getFileLines(root,fileName)
-            n = c.goto_applyLineNumberMapping(n)
-        else:
-            lines = c.goto_getScriptLines(p)
-
-    isRaw = not root or (
-        root.isAtEditNode() or
-        root.isAtAsisFileNode() or
-        root.isAtAutoNode() or
-        root.isAtNoSentFileNode())
-
-    ignoreSentinels = root and root.isAtNoSentFileNode()
-
-    if scriptData:
-        if not root: root = p.copy()
-    else:
-        if not root: root = c.p
-
-    # g.trace(isRaw,g.listToString(lines,sort=False))
-
-    return fileName,ignoreSentinels,isRaw,lines,n,root
-#@+node:ekr.20080708094444.65:goto_applyLineNumberMapping
-def goto_applyLineNumberMapping(self, n):
-
-    c = self ; x = c.shadowController
-
-    if len(x.line_mapping) > n:
-        return x.line_mapping[n]
-    else:
-        return n
-#@-node:ekr.20080708094444.65:goto_applyLineNumberMapping
-#@+node:ekr.20080904071003.25:goto_findRoot
-def goto_findRoot (self,p):
-
-    '''Find the closest ancestor @<file> node, except @all nodes.
-
-    return root, fileName.'''
-
-    c = self ; p1 = p.copy()
-
-    # First look for ancestor @file node.
-    for p in p.self_and_parents():
-        fileName = not p.isAtAllNode() and p.anyAtFileNodeName()
-        if fileName:
-            return p.copy(),fileName
-
-    # Search the entire tree for joined nodes.
-    # Bug fix: Leo 4.5.1: *must* search *all* positions.
-    for p in c.all_positions():
-        if p.v == p1.v and p != p1:
-            # Found a joined position.
-            for p2 in p.self_and_parents():
-                fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
-                if fileName:
-                    return p2.copy(),fileName
-
-    return None,None
-#@-node:ekr.20080904071003.25:goto_findRoot
-#@+node:ekr.20080904071003.26:goto_getFileLines
-def goto_getFileLines (self,root,fileName):
-
-    '''Read the file into lines.'''
-
-    c = self
-
-    isAtEdit = root.isAtEditNode()
-    isAtNoSent = root.isAtNoSentFileNode()
-
-    if isAtNoSent or isAtEdit:
-        # Write a virtual file containing sentinels.
-        at = c.atFileCommands
-        kind = g.choose(isAtNoSent,'@nosent','@edit')
-        at.write(root,kind=kind,nosentinels=False,toString=True)
-        lines = g.splitLines(at.stringOutput)
-    else:
-        # Calculate the full path.
-        d = g.scanDirectives(c,p=root)
-        path = d.get("path")
-        # g.trace('path',path,'fileName',fileName)
-        fileName = c.os_path_finalize_join(path,fileName)
-        lines    = c.goto_open(fileName)
-
-    return lines
-#@-node:ekr.20080904071003.26:goto_getFileLines
-#@+node:ekr.20080904071003.27:goto_getScriptLines
-def goto_getScriptLines (self,p):
-
-    c = self
-
-    if not g.unitTesting:
-        g.es("no ancestor @file node: using script line numbers", color="blue")
-
-    lines = g.getScript (c,p,useSelectedText=False)
-    lines = g.splitLines(lines)
-
-    return lines
-#@-node:ekr.20080904071003.27:goto_getScriptLines
-#@+node:ekr.20080708094444.63:goto_open
-def goto_open (self,filename):
-    """
-    Open a file for "goto linenumber" command and check if a shadow file exists.
-    Construct a line mapping. This ivar is empty if no shadow file exists.
-    Otherwise it contains a mapping, shadow file number -> real file number.
-    """
-
-    c = self ; x = c.shadowController
-
-    try:
-        shadow_filename = x.shadowPathName(filename)
-        if os.path.exists(shadow_filename):
-            fn = shadow_filename
-            lines = open(shadow_filename).readlines()
-            x.line_mapping = x.push_filter_mapping(
-                lines,
-                x.markerFromFileLines(lines,shadow_filename))
-        else:
-            # Just open the original file.  This is not an error!
-            fn = filename
-            c.line_mapping = []
-            lines = open(filename).readlines()
-    except Exception:
-        # Make sure failures to open a file generate clear messages.
-        g.es_print('can not open',fn,color='blue')
-        # g.es_exception()
-        lines = []
-
-    return lines
-#@-node:ekr.20080708094444.63:goto_open
-#@-node:ekr.20080904071003.28:goto_setup & helpers
-#@+node:ekr.20080904071003.14:goto_showResults
-def goto_showResults(self,found,p,n,n2,lines):
-
-    c = self ; w = c.frame.body.bodyCtrl
-
-    # Select p and make it visible.
-    c.redraw(p)
-
-    # Put the cursor on line n2 of the body text.
-    s = w.getAllText()
-    if found:
-        ins = g.convertRowColToPythonIndex(s,n2-1,0)    
-    else:
-        ins = len(s)
-        if len(lines) < n and not g.unitTesting:
-            g.es('only',len(lines),'lines',color="blue")
-
-    w.setInsertPoint(ins)
-    c.bodyWantsFocusNow()
-    w.seeInsertPoint()
-#@-node:ekr.20080904071003.14:goto_showResults
-#@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
-#@-node:ekr.20100111094359.6208:Simplify goto-line and fix bugs
+#@-node:ekr.20100202121529.5873:Simplify or eliminate config ivars
 #@-node:ekr.20100202084948.5741:Next
 #@+node:ekr.20100129133806.6234:Optional
 #@+node:ekr.20100125190708.6258:Better screen shots
