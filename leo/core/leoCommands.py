@@ -188,9 +188,6 @@ class baseCommands (object):
             # A leoSettings.leo file.
             c.commandsDict = {}
 
-        # Set settings ivars.
-        self.sparse_move = c.config.getBool('sparse_move_outline_left')
-
         c.frame.log.finishCreate()
         c.bodyWantsFocusNow()
     #@+node:ekr.20051007143620:printCommandsDict
@@ -228,22 +225,23 @@ class baseCommands (object):
 
         '''Init all cached commander config settings.'''
 
-        c = self ; cf = c.config
-
-        c.autoindent_in_nocolor = cf.getBool('autoindent_in_nocolor_mode')
-        c.contractVisitedNodes  = cf.getBool('contractVisitedNodes')
-        c.fixed                 = cf.getBool('fixedWindow',False)
-        c.fixedWindowPosition   = cf.getData('fixedWindowPosition')
-        c.showMinibuffer        = cf.getBool('useMinibuffer')
-        # c.sparse_goto_parent    = cf.getBool('sparse_goto_parent')
+        c = self
+        c.autoindent_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
+        c.contractVisitedNodes  = c.config.getBool('contractVisitedNodes')
+        c.fixed                 = c.config.getBool('fixedWindow',False)
+        c.fixedWindowPosition   = c.config.getData('fixedWindowPosition')
+        c.showMinibuffer        = c.config.getBool('useMinibuffer')
             # This option is a bad idea.
-        c.stayInTree            = cf.getBool('stayInTreeAfterSelect')
-        c.smart_tab             = cf.getBool('smart_tab')
+        c.sparse_move           = c.config.getBool('sparse_move_outline_left')
+        c.sparse_find           = c.config.getBool('collapse_nodes_during_finds')
+        c.sparce_spell          = c.config.getBool('collapse_nodes_while_spelling')
+        c.stayInTree            = c.config.getBool('stayInTreeAfterSelect')
+        c.smart_tab             = c.config.getBool('smart_tab')
             # Note: there is also a smart_auto_indent setting.
-        c.tab_width             = cf.getInt('tab_width') or -4
+        c.tab_width             = c.config.getInt('tab_width') or -4
 
         # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
-
+        # g.trace(c.sparse_move)
     #@-node:ekr.20090213065933.6:c.initConfigSettings
     #@+node:ekr.20040731071037:c.initIvars
     def initIvars(self):
@@ -294,10 +292,12 @@ class baseCommands (object):
         # For tangle/untangle
         self.tangle_errors = 0
 
-        # Global options
+        # Global options: set later in initConfigSettings
         self.fixed = False
         self.page_width = 132
-        self.sparse_move = True # Set later in finishCreate.
+        self.sparse_find = True # 2010/02/02: created ivar.
+        self.sparse_move = True # 2010/02/02: created ivar.
+        self.sparse_spell = True # 2010/02/02: created ivar.
         self.tab_width = -4
         self.tangle_batch_flag = False
         self.untangle_batch_flag = False
@@ -7872,24 +7872,10 @@ class configSettings:
         return g.app.config.getString(self.c,setting)
     #@-node:ekr.20041118053731:Getters (c.configSettings)
     #@+node:ekr.20041118195812:Setters... (c.configSettings)
-    #@+node:ekr.20041118195812.2:set & setString (c.configSettings)
-    # This *is* used at present: search for config.set.
-    # It could be removed later, perhaps.
-
-    def set (self,p,setting,val):
-
-        return g.app.config.setString(self.c,setting,val)
-
-    setString = set
-    #@-node:ekr.20041118195812.2:set & setString (c.configSettings)
-    #@+node:ekr.20041118195812.3:setRecentFiles (c.configSettings)
     def setRecentFiles (self,files):
-
         '''Update the recent files list.'''
-
         # Append the files to the global list.
         g.app.config.appendToRecentFiles(files)
-    #@-node:ekr.20041118195812.3:setRecentFiles (c.configSettings)
     #@-node:ekr.20041118195812:Setters... (c.configSettings)
     #@-others
 #@-node:ekr.20041118104831.1:class configSettings (leoCommands)

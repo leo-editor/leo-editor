@@ -7893,10 +7893,9 @@ class searchCommandsClass (baseEditCommandsClass):
     def toggleFindCollapesNodes(self,event):
         '''Toggle the 'Collapse Nodes' checkbox in the find tab.'''
         # return self.toggleOption('collapse_nodes')
-        c = self.c ; p = c.p
-        val = c.config.getBool('collapse_nodes_during_finds')
-        c.config.set(p,'collapse_nodes_during_finds',not val)
-        g.es('collapse_nodes_during_finds',c.config.getBool('collapse_nodes_during_finds'))
+        c = self.c
+        c.sparse_find = not c.sparse_find
+        g.es('sparse_find',c.sparce_find)
     def toggleIgnoreCaseOption     (self, event):
         '''Toggle the 'Ignore Case' checkbox in the Find tab.'''
         return self.toggleOption('ignore_case')
@@ -8534,11 +8533,10 @@ class spellTabHandler (leoFind.leoFind):
     def findNextMisspelledWord(self):
         """Find the next unknown word."""
 
+        trace = False and not g.unitTesting
         c = self.c ; p = c.p
         w = c.frame.body.bodyCtrl
         aspell = self.aspell ; alts = None ; word = None
-        sparseFind = c.config.getBool('collapse_nodes_while_spelling')
-        trace = False
         try:
             while 1:
                 i,j,p,word = self.findNextWord(p)
@@ -8569,7 +8567,7 @@ class spellTabHandler (leoFind.leoFind):
                 if alts:
                     redraw = not p.isVisible(c)
                     # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
-                    if sparseFind and not c.p.isAncestorOf(p):
+                    if c.sparse_spell and not c.p.isAncestorOf(p):
                         for p2 in c.p.self_and_parents():
                             p2.contract()
                             redraw = True

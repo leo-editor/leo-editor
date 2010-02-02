@@ -1386,18 +1386,17 @@ class leoFind:
 
         '''Display the result of a successful find operation.'''
 
-        trace = False
+        trace = False and not g.unitTesting
         c = self.c ; p = self.p
         if not p:
             return g.trace('can not happen: self.p is None')
 
         current = c.p
-        sparseFind = c.config.getBool('collapse_nodes_during_finds')
         c.frame.bringToFront() # Needed on the Mac
 
         # Expand ancestors and set redraw if a redraw is needed.
         redraw1 = not p.isVisible(c)
-        if sparseFind:
+        if c.sparse_find:
             # Show only the 'sparse' tree when redrawing.
             for p2 in c.p.self_and_parents():
                 if p2.isAncestorOf(p):

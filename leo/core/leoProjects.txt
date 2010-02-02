@@ -6252,10 +6252,12 @@ self.ignoreChangedPaths = False # True: disable path changed message in at.Write
 # For tangle/untangle
 self.tangle_errors = 0
 
-# Global options
+# Global options: set later in initConfigSettings
 self.fixed = False
 self.page_width = 132
-self.sparse_move = True # Set later in finishCreate.
+self.sparse_find = True # 2010/02/02: created ivar.
+self.sparse_move = True # 2010/02/02: created ivar.
+self.sparse_spell = True # 2010/02/02: created ivar.
 self.tab_width = -4
 self.tangle_batch_flag = False
 self.untangle_batch_flag = False
