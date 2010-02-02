@@ -8672,7 +8672,1369 @@ def showSuccess(self,pos,newpos,showState=True):
 #@-node:ekr.20031218072017.3091:showSuccess (leoFind)
 #@-node:ekr.20100202121529.5876:using config.getBool('collapse_nodes_during_finds')
 #@-node:ekr.20100130042842.9009:Removed config.set
+#@+node:ekr.20100202145902.5982:Alt-right should *not* go down
+#@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
+def expandNodeAndGoToFirstChild (self,event=None):
+
+    """If a node has children, expand it if needed and go to the first child."""
+
+    trace = False and not g.unitTesting
+    c = self ; p = c.p
+
+    if p.hasChildren():
+        if p.isExpanded():
+            p.moveToFirstChild()
+            if trace: g.trace('select',p.h)
+            c.selectPosition(p)
+        else:
+            if trace: g.trace('expand',p.h)
+            c.expandNode() # Calls redraw_after_expand.
+
+    # This is too confusing
+    # elif p.hasNext():
+        # c.goToNextSibling()
+    # else:
+        # while p.hasParent():
+            # p.moveToParent()
+            # if p.hasNext():
+                # p.moveToNext()
+                # break
+        # c.selectPosition(p)
+
+    c.treeFocusHelper()
+
+def expandNodeOrGoToFirstChild (self,event=None):
+
+    """Simulate the Right Arrow Key in folder of Windows Explorer."""
+
+    c = self ; p = c.p
+    if p.hasChildren():
+        if not p.isExpanded():
+            c.expandNode() # Calls redraw_after_expand.
+        else:
+            c.redraw_after_expand(p.firstChild(),setFocus=True)
+#@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
+#@-node:ekr.20100202145902.5982:Alt-right should *not* go down
+#@+node:ekr.20100202145902.6109:Experiments with Alt-left
+contract-or-go-left.
+
+No change was better than the present code.
+#@nonl
+#@+node:ekr.20031218072017.2901:contractNode
+def contractNode (self,event=None):
+
+    '''Contract the presently selected node.'''
+
+    c = self ; p = c.p
+
+    p.contract()
+
+    if p.isCloned():
+        c.redraw() # A full redraw is necessary to handle clones.
+    else:
+        c.redraw_after_contract(p=p,setFocus=True)
+#@-node:ekr.20031218072017.2901:contractNode
+#@+node:ekr.20040930064232:contractNodeOrGoToParent
+def contractNodeOrGoToParent (self,event=None):
+
+    """Simulate the left Arrow Key in folder of Windows Explorer."""
+
+    trace = False and not g.unitTesting
+    c = self ; p = c.p
+    redraw = True ; fullRedraw = False
+    if p.hasChildren() and p.isExpanded():
+        if trace: g.trace('contract',p.h)
+        p.contract()
+        redraw = True # New in one-node world.
+    elif p.hasParent() and p.parent().isVisible(c):
+        if 1: # Simpler code.  Probably best.
+            redraw = False
+            p.contract() # Make sure we know this node is contracted.
+            if trace: g.trace('goto parent',p.h)
+            c.goToParent()
+        else: # Contract any siblings if they exist.
+            contract = False
+            for child in p.parent().children():
+                if child.hasChildren() and child.isExpanded():
+                    contract = True
+                    child.contract()
+            if contract:
+                redraw = True
+                fullRedraw = True # Contracting the siblings is enough.
+            else:
+                redraw = False
+                p.contract() # Make sure we know this node is contracted.
+                if trace: g.trace('goto parent',p.h)
+                c.goToParent()
+    else:
+        redraw = False
+
+    if redraw:
+        if fullRedraw or p.isCloned():
+            if trace: g.trace('full redraw',p.h)
+            c.redraw()
+        else:
+            c.redraw_after_contract(p=p,setFocus=True)
+#@-node:ekr.20040930064232:contractNodeOrGoToParent
+#@-node:ekr.20100202145902.6109:Experiments with Alt-left
+#@+node:ekr.20100202145902.6110:Home key no longer clears the minibuffer
+@nocolor-node
+
+The fix: back-to-home is now included in k.singleLineCommandList.
+#@nonl
+#@+node:ekr.20080509064108.6:k.defineSingleLineCommands
+def defineSingleLineCommands (self):
+
+    k = self
+
+    # These commands can be executed in the minibuffer.
+    k.singleLineCommandList = [
+        # editCommandsClass
+        'back-to-indentation',
+        'back-to-home', # 2010/02/01
+        'back-char',
+        'back-char-extend-selection',
+        'back-word',
+        'back-word-extend-selection',
+        'backward-delete-char',
+        'backward-find-character',
+        'backward-find-character-extend-selection',
+        'beginning-of-line',
+        'beginning-of-line-extend-selection',
+        'capitalize-word',
+        'delete-char',
+        'delete-indentation',
+        'delete-spaces',
+        'downcase-word',
+        'end-of-line',
+        'end-of-line-extend-selection',
+        'escape',
+        'exchange-point-mark',
+        'extend-to-line',
+        'extend-to-word',
+        'find-character',
+        'find-character-extend-selection',
+        'find-word',
+        'find-word-in-line',
+        'forward-char',
+        'forward-char-extend-selection',
+        'forward-end-word',
+        'forward-end-word-extend-selection',
+        'forward-word',
+        'forward-word-extend-selection',
+        'insert-newline',
+        'insert-parentheses',
+        'move-past-close',
+        'move-past-close-extend-selection',
+        'newline-and-indent',
+        'select-all',
+        'transpose-chars',
+        'transpose-words',
+        'upcase-word',
+        # keyHandlerCommandsClass
+        # 'auto-complete',
+        'negative-argument',
+        'number-command',
+        'number-command-0',
+        'number-command-1',
+        'number-command-2',
+        'number-command-3',
+        'number-command-4',
+        'number-command-5',
+        'number-command-6',
+        'number-command-7',
+        'number-command-8',
+        'universal-argument',
+        # killBufferCommandsClass
+        'backward-kill-word',
+        'kill-line',
+        'kill-word',
+        'kill-ws',
+        'yank',
+        'yank-pop',
+        'zap-to-character',
+        # leoCommands
+        'cut-text',
+        'copy-text',
+        'paste-text',
+        # macroCommandsClass
+        'call-last-kbd-macro',
+        # search commands
+        # 'replace-string', # A special case so Shift-Ctrl-r will work after Ctrl-f.
+        'toggle-find-collapses_nodes',
+        'toggle-find-ignore-case-option',
+        'toggle-find-in-body-option',
+        'toggle-find-in-headline-option',
+        'toggle-find-mark-changes-option',
+        'toggle-find-mark-finds-option',
+        'toggle-find-regex-option',
+        'toggle-find-reverse-option',
+        'toggle-find-word-option',
+        'toggle-find-wrap-around-option',
+        # registerCommandsClass
+        'append-to-register',
+        'copy-to-register',
+        'insert-register',
+        'prepend-to-register',
+    ]
+#@-node:ekr.20080509064108.6:k.defineSingleLineCommands
+#@-node:ekr.20100202145902.6110:Home key no longer clears the minibuffer
 #@-node:ekr.20100202050243.5740:Leo 4.7 rc1 projects
+#@+node:ekr.20100130042842.6404:Reading settings (do not delete)
+Here are the calls to g.app.getxxx
+
+# runLeo.createFrame
+fileName = g.app.config.getString(c=None,setting='default_leo_file')
+
+# c.configSettings.initIvar
+# Why not init these settings by hand???
+val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
+
+# g.es and g.es_print
+keys['color'] = g.app.config.getColor(None,"log_error_color") or 'red'
+
+# leoPlugins.loadHandlers
+warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+s = g.app.config.getEnabledPlugins()
+
+# leoPlugins.loadOnePlugin
+verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
+warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+
+#@+node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
+def readSettingsFiles (self,fileName,verbose=True):
+
+    trace = False and not g.unitTesting
+    seen = []
+    self.write_recent_files_as_needed = False # Will be set later.
+    << define localDirectory, localConfigFile & myLocalConfigFile >>
+
+    if trace: g.trace(g.callers(5))
+    table = (
+        (self.globalConfigFile,False),
+        (self.homeFile,False),
+        (localConfigFile,False),
+        (self.myGlobalConfigFile,False),
+        (self.myHomeConfigFile,False),
+        (self.machineConfigFile,False),
+        (myLocalConfigFile,False),
+        # New in Leo 4.6: the -c file is in *addition* to other config files.
+        (g.app.oneConfigFilename,False),
+        (fileName,True),
+    )
+
+    # Init settings from leoSettings.leo and myLeoSettings.leo files.
+    for path,localFlag in table:
+        if path:
+            path = g.os_path_realpath(g.os_path_finalize(path))
+            # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
+        isZipped = path and zipfile.is_zipfile(path)
+        isLeo = isZipped or (path and path.endswith('.leo'))
+        if isLeo and path and path.lower() not in seen and g.os_path_exists(path):
+            seen.append(path.lower())
+            if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
+                s = 'reading settings in %s' % path
+                # This occurs early in startup, so use the following instead of g.es_print.
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
+                g.es_print(s,color='blue')
+            c = self.openSettingsFile(path)
+            if c:
+                self.updateSettings(c,localFlag)
+                g.app.destroyWindow(c.frame)
+                self.write_recent_files_as_needed = c.config.getBool(
+                    'write_recent_files_as_needed')
+                if 0:
+                    # This is useless. setIvarsFromSettings does nothing
+                    # until the self.inited flag is True.
+                    g.trace('?' * 20,c)
+                    self.setIvarsFromSettings(c)
+    self.readRecentFiles(localConfigFile)
+    # self.createMyLeoSettingsFile(myLocalConfigFile)
+    self.inited = True
+    self.setIvarsFromSettings(None)
+#@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+# This can't be done in initSettingsFiles because
+# the local directory does not yet exist.
+localDirectory = g.os_path_dirname(fileName)
+
+#  Set the local leoSettings.leo file.
+localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
+if not g.os_path_exists(localConfigFile):
+    localConfigFile = None
+
+# Set the local myLeoSetting.leo file.
+myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
+if not g.os_path_exists(myLocalConfigFile):
+    myLocalConfigFile = None
+#@nonl
+#@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+#@+node:ekr.20041117085625:openSettingsFile
+def openSettingsFile (self,path):
+
+    theFile,isZipped = g.openLeoOrZipFile(path)
+    if not theFile: return None
+
+    # Similar to g.openWithFileName except it uses a null gui.
+    # Changing g.app.gui here is a major hack.
+    oldGui = g.app.gui
+    g.app.gui = leoGui.nullGui("nullGui")
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=path,relativeFileName=None,
+        initEditCommanders=False,updateRecentFiles=False)
+    frame.log.enable(False)
+    c.setLog()
+    g.app.lockLog()
+    ok = frame.c.fileCommands.open(
+        theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
+    g.app.unlockLog()
+    c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
+    g.app.gui = oldGui
+    return ok and c
+#@-node:ekr.20041117085625:openSettingsFile
+#@+node:ekr.20051013161232:updateSettings
+def updateSettings (self,c,localFlag):
+
+    d = self.readSettings(c,localFlag)
+
+    if d:
+        d['_hash'] = theHash = c.hash()
+        if localFlag:
+            self.localOptionsDict[theHash] = d
+        else:
+            self.localOptionsList.insert(0,d)
+
+    if 0: # Good trace.
+        if localFlag:
+            g.trace(c.fileName())
+            g.trace(d and list(d.keys()))
+#@-node:ekr.20051013161232:updateSettings
+#@-node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
+#@+node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+def __init__ (self,c):
+
+    trace = False and not g.unitTesting
+    self.c = c
+
+    if trace: g.trace('+' * 20,'(c.configSettings)',
+        c and c.shortFileName(),g.callers(5))
+
+    # Init these here to keep pylint happy.
+    self.default_derived_file_encoding = None
+    self.new_leo_file_encoding = None
+    self.redirect_execute_script_output_to_log_pane = None
+
+    self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
+    self.defaultLogFontSize  = g.app.config.defaultLogFontSize
+    self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
+    self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
+
+    for key in g.app.config.encodingIvarsDict:
+        if key != '_hash':
+            self.initEncoding(key)
+
+    for key in g.app.config.ivarsDict:
+        if key != '_hash':
+            self.initIvar(key)
+#@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+#@+node:ekr.20041118084146.1:set (g.app.config) To be deleted??
+def set (self,c,setting,kind,val):
+
+    '''Set the setting.  Not called during initialization.'''
+
+    trace = False and not g.unitTesting
+    found = False ;  key = self.munge(setting)
+    if trace: g.trace(setting,kind,val)
+
+    if c:
+        d = self.localOptionsDict.get(c.hash())
+        if d: found = True
+
+    if not found:
+        theHash = c.hash()
+        for d in self.localOptionsList:
+            hash2 = d.get('_hash')
+            if theHash == hash2:
+                found = True ; break
+
+    if not found:
+        d = self.dictList [0]
+
+    d[key] = g.Bunch(setting=setting,kind=kind,val=val,tag='setting')
+
+    if 0:
+        dkind = d.get('_hash','<no hash: %s>' % c.hash())
+        g.trace(dkind,setting,kind,val)
+#@-node:ekr.20041118084146.1:set (g.app.config) To be deleted??
+#@+node:ekr.20041118104240:initIvar (c.configSettings)
+def initIvar(self,key):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    # N.B. The key is munged.
+    bunch = g.app.config.ivarsDict.get(key)
+    ivarName = bunch.ivar
+    val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
+
+    if val or not hasattr(self,ivarName):
+        if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
+        setattr(self,ivarName,val)
+#@-node:ekr.20041118104240:initIvar (c.configSettings)
+#@+node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
+def setIvarsFromSettings (self,c):
+
+    '''Init g.app.config ivars or c's ivars from settings.
+
+    - Called from readSettingsFiles with c = None to init g.app.config ivars.
+    - Called from c.__init__ to init corresponding commmander ivars.'''
+
+    trace = False and not g.unitTesting
+    verbose = True
+
+    # Ingore temporary commanders created by readSettingsFiles.
+    if self.inited:
+        if trace:
+            if c:
+                g.trace('=' * 10, 'inited',c.shortFileName(),g.callers(4))
+            else:
+                tag = '<no c: called at end of readSettingsFiles>'
+                g.trace('=' * 10, 'inited',tag,g.callers(1))
+    else:
+        if trace and verbose: g.trace('*' * 10,'not inited.  do nothing')
+        return
+
+    d = self.ivarsDict
+    keys = list(d.keys())
+    keys.sort()
+    for key in keys:
+        if key != '_hash':
+            bunch = d.get(key)
+            if bunch:
+                ivar = bunch.ivar # The actual name of the ivar.
+                kind = bunch.kind
+                val = self.get(c,key,kind) # Don't use bunch.val!
+                if c:
+                    if trace: g.trace("%20s %s = %s" % (
+                        g.shortFileName(c.mFileName),ivar,val))
+                    setattr(c,ivar,val)
+                else:
+                    if trace: g.trace("%20s %s = %s" % (
+                        'g.app.config',ivar,val))
+                    setattr(self,ivar,val)
+#@-node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
+#@-node:ekr.20100130042842.6404:Reading settings (do not delete)
+#@+node:ekr.20100129131524.6190:improve caching (do not delete)
+@nocolor-node
+
+- Cache expansion states.
+- Use common key for globals??
+#@nonl
+#@+node:ekr.20060919110638.14:parse_leo_file
+def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
+
+    c = self.c
+    try:
+        if g.isPython3:
+            if theFile:
+                # Use the open binary file, opened by g.openLeoOrZipFile.
+                s = theFile.read() # type(s) is bytes.
+                s = self.cleanSaxInputString(s)
+                theFile = BytesIO(s)
+            else:
+                s = str(s,encoding='utf-8')
+                s = self.cleanSaxInputString(s)
+                theFile = StringIO(s)
+        else:
+            if theFile: s = theFile.read()
+            s = self.cleanSaxInputString(s)
+            theFile = cStringIO.StringIO(s)
+        parser = xml.sax.make_parser()
+        parser.setFeature(xml.sax.handler.feature_external_ges,1)
+            # Include external general entities, esp. xml-stylesheet lines.
+        if 0: # Expat does not read external features.
+            parser.setFeature(xml.sax.handler.feature_external_pes,1)
+                # Include all external parameter entities
+                # Hopefully the parser can figure out the encoding from the <?xml> element.
+        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
+        parser.setContentHandler(handler)
+        parser.parse(theFile) # expat does not support parseString
+        # g.trace('parsing done')
+        sax_node = handler.getRootNode()
+    except xml.sax.SAXParseException:
+        g.es_print('error parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+    except Exception:
+        g.es_print('unexpected exception parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+
+    return sax_node
+#@-node:ekr.20060919110638.14:parse_leo_file
+#@+node:ekr.20100129133806.6242:Calls to _contentHashFile
+#@+node:ekr.20100129133806.6243:Reading
+#@+node:ekr.20100122130101.6176:at.readFromCache
+def readFromCache (self,fileName,force,root):
+
+    at = self ; c = at.c
+    s,e = g.readFileIntoString(fileName,raw=True)
+    if s is None: return False,None
+
+    cachefile = self._contentHashFile(root.h,s)
+
+    # 2010/01/22: uncache *any* file provided 'force' is False.
+    doCache = g.enableDB and not force
+    ok = doCache and cachefile in c.db
+    if ok:
+        # Delete the previous tree, regardless of the @<file> type.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+        # Recreate the file from the cache.
+        aList = c.db[cachefile]
+        root.v.createOutlineFromCacheList(c,aList)
+        at.inputFile.close()
+        root.clearDirty()
+
+    return ok,cachefile
+#@-node:ekr.20100122130101.6176:at.readFromCache
+#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    s,e = g.readFileIntoString(fileName,raw=True)
+    if s is None:
+        cachefile = None
+    else:
+        cachefile = self._contentHashFile(p.h,s)
+
+    # Remember that we have read this file.
+    p.v.at_read = True # Create the attribute
+
+    # Disable caching for test.leo.
+    if c.shortFileName() != 'test.leo':
+        if cachefile is not None and cachefile in c.db:        
+            # g.es('uncache:',p.h)
+            aList = c.db[cachefile]
+            p.v.createOutlineFromCacheList(c,aList)
+            return
+
+    if not g.unitTesting:
+        g.es("reading:",p.h)
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        # Note: the file contains an @ignore,
+        # so no unintended write can happen.
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        p.clearDirty()
+        c.setChanged(oldChanged)
+    else:
+        self.writeCachedTree(p, cachefile)
+        g.doHook('after-auto', p = p)  # call after-auto callbacks
+#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+#@+node:ekr.20060919110638.36:getPositionAttributes
+def getPositionAttributes (self,attrs):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    if trace: g.trace(len(list(c.db.keys())),c.mFileName,self.fileName)
+
+    d = {}
+
+    if g.enableDB and c.db and c.mFileName:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        data = c.db.get('window_position_%s' % (key))
+        if data:
+            top,left,height,width = data
+            top,left,height,width = int(top),int(left),int(height),int(width)
+            d = {'top':top,'left':left,'height':height,'width':width}
+
+    if not d and c.fixed and c.fixedWindowPosition:
+        width,height,left,top = c.fixedWindowPosition
+        d = {'top':top,'left':left,'width':width,'height':height}
+
+    if not d:
+        for bunch in self.attrsToList(attrs):
+            name = bunch.name ; val = bunch.val
+            if name in ('top','left','width','height'):
+                try:
+                    d[name] = int(val)
+                except ValueError:
+                    d[name] = 100 # A reasonable default.
+            else:
+                g.trace(name,len(val))
+
+    # if trace: g.trace(d)
+    return d
+#@-node:ekr.20060919110638.36:getPositionAttributes
+#@+node:ekr.20060919110638.13:setPositionsFromVnodes & helper
+def setPositionsFromVnodes (self):
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = c.rootPosition()
+    current,str_pos = None,None
+    use_db = g.enableDB and c.db and c.mFileName
+
+    if use_db:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        str_pos = c.db.get('current_position_%s' % key)
+        if trace: g.trace('from c.db',str_pos,key)
+
+    if not str_pos:
+        d = hasattr(p.v,'unknownAttributes') and p.v.unknownAttributes
+        if d: str_pos = d.get('str_leo_pos')
+        if trace: g.trace('from p.v.u',str_pos)
+
+    if str_pos:
+        current = self.archivedPositionToPosition(str_pos)
+
+    c.setCurrentPosition(current or c.rootPosition())
+#@+node:ekr.20061006104837.1:archivedPositionToPosition
+def archivedPositionToPosition (self,s):
+
+    c = self.c
+    aList = s.split(',')
+    try:
+        aList = [int(z) for z in aList]
+    except Exception:
+        # g.trace('oops: bad archived position. not an int:',aList,c)
+        aList = None
+    if not aList: return None
+    p = c.rootPosition() ; level = 0
+    while level < len(aList):
+        i = aList[level]
+        while i > 0:
+            if p.hasNext():
+                p.moveToNext()
+                i -= 1
+            else:
+                # g.trace('oops: bad archived position. no sibling:',aList,p.h,c)
+                return None
+        level += 1
+        if level < len(aList):
+            p.moveToFirstChild()
+            # g.trace('level',level,'index',aList[level],p.h)
+    return p
+#@nonl
+#@-node:ekr.20061006104837.1:archivedPositionToPosition
+#@-node:ekr.20060919110638.13:setPositionsFromVnodes & helper
+#@+node:ekr.20060919110638.37:startGlobals
+def startGlobals (self,attrs):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    if self.inClipboard:
+        return
+
+    c.frame.ratio,c.frame.secondary_ratio = 0.5,0.5 # Set defaults.
+
+    if trace: g.trace(len(list(c.db.keys())),c.mFileName)
+
+    if g.enableDB and c.db and c.mFileName:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        c.frame.ratio = float(c.db.get(
+            'body_outline_ratio_%s' % (key),'0.5'))
+        c.frame.secondary_ratio = float(c.db.get(
+            'body_secondary_ratio_%s' % (key),'0.5'))
+        if trace: g.trace('key',key,
+            '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
+    else:
+        try:
+            for bunch in self.attrsToList(attrs):
+                name = bunch.name ; val = bunch.val
+                if name == 'body_outline_ratio':
+                    c.frame.ratio = float(val) # 2010/01/11
+                elif name == 'body_secondary_ratio':
+                    c.frame.secondary_ratio = float(val) # 2010/01/11
+            if trace: g.trace('** no c.db:','%1.2f %1.2f' % (
+                c.frame.ratio,c.frame.secondary_ratio))
+        except Exception:
+            pass
+#@-node:ekr.20060919110638.37:startGlobals
+#@-node:ekr.20100129133806.6243:Reading
+#@+node:ekr.20100129133806.6244:Writing
+#@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >> putVnode
+# These string catenations are benign because they rarely happen.
+attr = ""
+# New in Leo 4.5: support fixed .leo files.
+if not c.fixed:
+    if v.isExpanded() and v.hasChildren(): attr += "E"
+    if v.isMarked():   attr += "M"
+    if v.isOrphan():   attr += "O"
+    if attr:
+        attrs.append(' a="%s"' % attr)
+
+# Put the archived *current* position in the *root* positions <v> element.
+if p == self.rootPosition:
+    aList = [str(z) for z in self.currentPosition.archivedPosition()]
+    d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
+    str_pos = ','.join(aList)
+    # 2010/01/26: don't write the current position if we can cache it.
+    use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
+    if use_db:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        c.db['current_position_%s' % key] = str_pos
+        if d.get('str_leo_pos'): del d['str_leo_pos']
+        # g.trace('to c.db',str_pos,key)
+    elif c.fixed:
+        if d.get('str_leo_pos'): del d['str_leo_pos']
+    else:
+        d['str_leo_pos'] = str_pos
+    # g.trace(aList,d)
+    v.unknownAttributes = d
+elif hasattr(v,"unknownAttributes"):
+    d = v.unknownAttributes
+    if d and not c.fixed and d.get('str_leo_pos'):
+        # g.trace("clearing str_leo_pos",v)
+        del d['str_leo_pos']
+        v.unknownAttributes = d
+#@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >> putVnode
+#@+node:ekr.20031218072017.3037:putGlobals
+# Changed for Leo 4.0.
+
+def putGlobals (self):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
+
+    if use_db:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        if trace: g.trace(len(list(c.db.keys())),c.mFileName,key)
+        << put all data to c.db >>
+
+    # Always put positions, to trigger sax methods.
+    self.put("<globals")
+    << put the body/outline ratios >>
+    self.put(">") ; self.put_nl()
+    << put the position of this frame >>
+    << put the position of the log window >>
+    self.put("</globals>") ; self.put_nl()
+#@+node:ekr.20100112095623.6267:<< put all data to c.db >>
+c.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
+c.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
+
+if trace: g.trace('ratios: %1.2f %1.2f' % (
+    c.frame.ratio,c.frame.secondary_ratio))
+
+width,height,left,top = c.frame.get_window_info()
+
+c.db['window_position_%s' % key] = (
+    str(top),str(left),str(height),str(width))
+
+if trace: g.trace('top',top,'left',left,'height',height,'width',width)
+#@-node:ekr.20100112095623.6267:<< put all data to c.db >>
+#@+node:ekr.20031218072017.3038:<< put the body/outline ratios >>
+self.put(" body_outline_ratio=")
+self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
+    c.frame.ratio)))
+
+self.put(" body_secondary_ratio=")
+self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
+    c.frame.secondary_ratio)))
+
+if trace: g.trace('fixed or use_db',c.fixed or use_db,
+    '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
+#@-node:ekr.20031218072017.3038:<< put the body/outline ratios >>
+#@+node:ekr.20031218072017.3039:<< put the position of this frame >>
+# New in Leo 4.5: support fixed .leo files.
+
+if c.fixed or use_db:
+    width,height,left,top = 700,500,50,50
+        # Put fixed, immutable, reasonable defaults.
+        # Leo 4.5 and later will ignore these when reading.
+        # These should be reasonable defaults so that the
+        # file will be opened properly by older versions
+        # of Leo that do not support fixed .leo files.
+else:
+    width,height,left,top = c.frame.get_window_info()
+
+# g.trace(width,height,left,top)
+
+self.put_tab()
+self.put("<global_window_position")
+self.put(" top=") ; self.put_in_dquotes(str(top))
+self.put(" left=") ; self.put_in_dquotes(str(left))
+self.put(" height=") ; self.put_in_dquotes(str(height))
+self.put(" width=") ; self.put_in_dquotes(str(width))
+self.put("/>") ; self.put_nl()
+#@-node:ekr.20031218072017.3039:<< put the position of this frame >>
+#@+node:ekr.20031218072017.3040:<< put the position of the log window >>
+top = left = height = width = 0 # no longer used
+
+self.put_tab()
+self.put("<global_log_window_position")
+self.put(" top=") ; self.put_in_dquotes(str(top))
+self.put(" left=") ; self.put_in_dquotes(str(left))
+self.put(" height=") ; self.put_in_dquotes(str(height))
+self.put(" width=") ; self.put_in_dquotes(str(width))
+self.put("/>") ; self.put_nl()
+#@-node:ekr.20031218072017.3040:<< put the position of the log window >>
+#@-node:ekr.20031218072017.3037:putGlobals
+#@-node:ekr.20100129133806.6244:Writing
+#@-node:ekr.20100129133806.6242:Calls to _contentHashFile
+#@+node:ekr.20100129133806.6245:Found: c.db
+#@+node:ekr.20100122130101.6176:at.readFromCache
+def readFromCache (self,fileName,force,root):
+
+    at = self ; c = at.c
+    s,e = g.readFileIntoString(fileName,raw=True)
+    if s is None: return False,None
+
+    cachefile = self._contentHashFile(root.h,s)
+
+    # 2010/01/22: uncache *any* file provided 'force' is False.
+    doCache = g.enableDB and not force
+    ok = doCache and cachefile in c.db
+    if ok:
+        # Delete the previous tree, regardless of the @<file> type.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+        # Recreate the file from the cache.
+        aList = c.db[cachefile]
+        root.v.createOutlineFromCacheList(c,aList)
+        at.inputFile.close()
+        root.clearDirty()
+
+    return ok,cachefile
+#@-node:ekr.20100122130101.6176:at.readFromCache
+#@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >> putVnode
+# These string catenations are benign because they rarely happen.
+attr = ""
+# New in Leo 4.5: support fixed .leo files.
+if not c.fixed:
+    if v.isExpanded() and v.hasChildren(): attr += "E"
+    if v.isMarked():   attr += "M"
+    if v.isOrphan():   attr += "O"
+    if attr:
+        attrs.append(' a="%s"' % attr)
+
+# Put the archived *current* position in the *root* positions <v> element.
+if p == self.rootPosition:
+    aList = [str(z) for z in self.currentPosition.archivedPosition()]
+    d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
+    str_pos = ','.join(aList)
+    # 2010/01/26: don't write the current position if we can cache it.
+    use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
+    if use_db:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        c.db['current_position_%s' % key] = str_pos
+        if d.get('str_leo_pos'): del d['str_leo_pos']
+        # g.trace('to c.db',str_pos,key)
+    elif c.fixed:
+        if d.get('str_leo_pos'): del d['str_leo_pos']
+    else:
+        d['str_leo_pos'] = str_pos
+    # g.trace(aList,d)
+    v.unknownAttributes = d
+elif hasattr(v,"unknownAttributes"):
+    d = v.unknownAttributes
+    if d and not c.fixed and d.get('str_leo_pos'):
+        # g.trace("clearing str_leo_pos",v)
+        del d['str_leo_pos']
+        v.unknownAttributes = d
+#@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >> putVnode
+#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    s,e = g.readFileIntoString(fileName,raw=True)
+    if s is None:
+        cachefile = None
+    else:
+        cachefile = self._contentHashFile(p.h,s)
+
+    # Remember that we have read this file.
+    p.v.at_read = True # Create the attribute
+
+    # Disable caching for test.leo.
+    if c.shortFileName() != 'test.leo':
+        if cachefile is not None and cachefile in c.db:        
+            # g.es('uncache:',p.h)
+            aList = c.db[cachefile]
+            p.v.createOutlineFromCacheList(c,aList)
+            return
+
+    if not g.unitTesting:
+        g.es("reading:",p.h)
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        # Note: the file contains an @ignore,
+        # so no unintended write can happen.
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        p.clearDirty()
+        c.setChanged(oldChanged)
+    else:
+        self.writeCachedTree(p, cachefile)
+        g.doHook('after-auto', p = p)  # call after-auto callbacks
+#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+#@+node:ekr.20060919110638.13:setPositionsFromVnodes & helper
+def setPositionsFromVnodes (self):
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = c.rootPosition()
+    current,str_pos = None,None
+    use_db = g.enableDB and c.db and c.mFileName
+
+    if use_db:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        str_pos = c.db.get('current_position_%s' % key)
+        if trace: g.trace('from c.db',str_pos,key)
+
+    if not str_pos:
+        d = hasattr(p.v,'unknownAttributes') and p.v.unknownAttributes
+        if d: str_pos = d.get('str_leo_pos')
+        if trace: g.trace('from p.v.u',str_pos)
+
+    if str_pos:
+        current = self.archivedPositionToPosition(str_pos)
+
+    c.setCurrentPosition(current or c.rootPosition())
+#@+node:ekr.20061006104837.1:archivedPositionToPosition
+def archivedPositionToPosition (self,s):
+
+    c = self.c
+    aList = s.split(',')
+    try:
+        aList = [int(z) for z in aList]
+    except Exception:
+        # g.trace('oops: bad archived position. not an int:',aList,c)
+        aList = None
+    if not aList: return None
+    p = c.rootPosition() ; level = 0
+    while level < len(aList):
+        i = aList[level]
+        while i > 0:
+            if p.hasNext():
+                p.moveToNext()
+                i -= 1
+            else:
+                # g.trace('oops: bad archived position. no sibling:',aList,p.h,c)
+                return None
+        level += 1
+        if level < len(aList):
+            p.moveToFirstChild()
+            # g.trace('level',level,'index',aList[level],p.h)
+    return p
+#@nonl
+#@-node:ekr.20061006104837.1:archivedPositionToPosition
+#@-node:ekr.20060919110638.13:setPositionsFromVnodes & helper
+#@+node:ekr.20031218072017.3037:putGlobals
+# Changed for Leo 4.0.
+
+def putGlobals (self):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
+
+    if use_db:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        if trace: g.trace(len(list(c.db.keys())),c.mFileName,key)
+        << put all data to c.db >>
+
+    # Always put positions, to trigger sax methods.
+    self.put("<globals")
+    << put the body/outline ratios >>
+    self.put(">") ; self.put_nl()
+    << put the position of this frame >>
+    << put the position of the log window >>
+    self.put("</globals>") ; self.put_nl()
+#@+node:ekr.20100112095623.6267:<< put all data to c.db >>
+c.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
+c.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
+
+if trace: g.trace('ratios: %1.2f %1.2f' % (
+    c.frame.ratio,c.frame.secondary_ratio))
+
+width,height,left,top = c.frame.get_window_info()
+
+c.db['window_position_%s' % key] = (
+    str(top),str(left),str(height),str(width))
+
+if trace: g.trace('top',top,'left',left,'height',height,'width',width)
+#@-node:ekr.20100112095623.6267:<< put all data to c.db >>
+#@+node:ekr.20031218072017.3038:<< put the body/outline ratios >>
+self.put(" body_outline_ratio=")
+self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
+    c.frame.ratio)))
+
+self.put(" body_secondary_ratio=")
+self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
+    c.frame.secondary_ratio)))
+
+if trace: g.trace('fixed or use_db',c.fixed or use_db,
+    '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
+#@-node:ekr.20031218072017.3038:<< put the body/outline ratios >>
+#@+node:ekr.20031218072017.3039:<< put the position of this frame >>
+# New in Leo 4.5: support fixed .leo files.
+
+if c.fixed or use_db:
+    width,height,left,top = 700,500,50,50
+        # Put fixed, immutable, reasonable defaults.
+        # Leo 4.5 and later will ignore these when reading.
+        # These should be reasonable defaults so that the
+        # file will be opened properly by older versions
+        # of Leo that do not support fixed .leo files.
+else:
+    width,height,left,top = c.frame.get_window_info()
+
+# g.trace(width,height,left,top)
+
+self.put_tab()
+self.put("<global_window_position")
+self.put(" top=") ; self.put_in_dquotes(str(top))
+self.put(" left=") ; self.put_in_dquotes(str(left))
+self.put(" height=") ; self.put_in_dquotes(str(height))
+self.put(" width=") ; self.put_in_dquotes(str(width))
+self.put("/>") ; self.put_nl()
+#@-node:ekr.20031218072017.3039:<< put the position of this frame >>
+#@+node:ekr.20031218072017.3040:<< put the position of the log window >>
+top = left = height = width = 0 # no longer used
+
+self.put_tab()
+self.put("<global_log_window_position")
+self.put(" top=") ; self.put_in_dquotes(str(top))
+self.put(" left=") ; self.put_in_dquotes(str(left))
+self.put(" height=") ; self.put_in_dquotes(str(height))
+self.put(" width=") ; self.put_in_dquotes(str(width))
+self.put("/>") ; self.put_nl()
+#@-node:ekr.20031218072017.3040:<< put the position of the log window >>
+#@-node:ekr.20031218072017.3037:putGlobals
+#@+node:ekr.20100112095623.6267:<< put all data to c.db >>
+c.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
+c.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
+
+if trace: g.trace('ratios: %1.2f %1.2f' % (
+    c.frame.ratio,c.frame.secondary_ratio))
+
+width,height,left,top = c.frame.get_window_info()
+
+c.db['window_position_%s' % key] = (
+    str(top),str(left),str(height),str(width))
+
+if trace: g.trace('top',top,'left',left,'height',height,'width',width)
+#@-node:ekr.20100112095623.6267:<< put all data to c.db >>
+#@+node:ekr.20051104075904.4:doTests...
+def doTests(c,all=None,p=None,verbosity=1):
+
+    trace = False
+    if all:
+        p = c.rootPosition()
+    elif not p:
+        p = c.p
+    p1 = p.copy()
+
+    try:
+        found = False ; verbose = True
+        g.unitTesting = g.app.unitTesting = True
+        g.app.unitTestDict["fail"] = False
+        g.app.unitTestDict['c'] = c
+        g.app.unitTestDict['g'] = g
+        g.app.unitTestDict['p'] = p and p.copy()
+
+        # c.undoer.clearUndoState() # New in 4.3.1.
+        changed = c.isChanged()
+        suite = unittest.makeSuite(unittest.TestCase)
+
+        # New in Leo 4.4.8: ignore everything in @ignore trees.
+        if all: last = None
+        else:   last = p.nodeAfterTree()
+        if trace: g.trace('all',all,'root',p.h)
+        while p and p != last:
+            if g.match_word(p.h,0,'@ignore'):
+                if trace: g.trace('ignoring',p.h)
+                p.moveToNodeAfterTree()
+            elif isTestNode(p): # @test
+                if trace: g.trace('adding',p.h)
+                test = makeTestCase(c,p)
+                if test:
+                    suite.addTest(test) ; found = True
+                p.moveToThreadNext()
+            elif isSuiteNode(p): # @suite
+                if trace: g.trace('adding',p.h)
+                test = makeTestSuite(c,p)
+                if test:
+                    suite.addTest(test) ; found = True
+                p.moveToThreadNext()
+            else:
+                if trace and verbose: g.trace('skipping',p.h)
+                p.moveToThreadNext()
+
+        # Verbosity: 1: print just dots.
+        if found:
+            res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
+            # put info to db as well
+            if g.enableDB:
+                key = 'unittest/cur/fail'
+                archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
+                c.db[key] = archive
+        else:
+            g.es_print('no @test or @suite nodes in %s outline' % (
+                g.choose(all,'entire','selected')),color='red')
+    finally:
+        c.setChanged(changed) # Restore changed state.
+        if g.app.unitTestDict.get('restoreSelectedNode',True):
+            c.redraw(p1)
+        g.unitTesting = g.app.unitTesting = False
+#@+node:ekr.20051104075904.5:class generalTestCase
+class generalTestCase(unittest.TestCase):
+
+    """Create a unit test from a snippet of code."""
+
+    @others
+#@+node:ekr.20051104075904.6:__init__
+def __init__ (self,c,p):
+
+     # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.p = p.copy()
+#@-node:ekr.20051104075904.6:__init__
+#@+node:ekr.20051104075904.7: fail
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    import leo.core.leoGlobals as g
+
+    g.app.unitTestDict["fail"] = g.callers()
+#@-node:ekr.20051104075904.7: fail
+#@+node:ekr.20051104075904.9:tearDown
+def tearDown (self):
+
+    pass
+
+    # Restore the outline.
+    self.c.outerUpdate()
+#@nonl
+#@-node:ekr.20051104075904.9:tearDown
+#@+node:ekr.20051104075904.8:setUp
+def setUp (self):
+
+    c = self.c ; p = self.p
+
+    c.selectPosition(p)
+#@-node:ekr.20051104075904.8:setUp
+#@+node:ekr.20051104075904.10:runTest
+def runTest (self,define_g = True):
+
+    c = self.c ; p = self.p.copy()
+    script = g.getScript(c,p).strip()
+    # print ('p',p,'len(script)',len(script))
+    self.assert_(script)
+    writeScriptFile = c.config.getBool('write_script_file')
+
+    # import leo.core.leoGlobals as g
+
+    # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
+
+    if define_g:
+        d = {'c':c,'g':g,'p':p,'self':self,}
+    else:
+        d = {'self':self,}
+
+    script = script + '\n'
+    # g.trace(type(script),script)
+
+    # Execute the script. Let unit test handle any errors!
+    if writeScriptFile:
+        scriptFile = c.writeScriptFile(script)
+
+    exec(script,d)
+#@-node:ekr.20051104075904.10:runTest
+#@+node:ekr.20051104075904.11:shortDescription
+def shortDescription (self):
+
+    s = self.p.h
+
+    # g.trace(s)
+
+    return s + '\n'
+#@-node:ekr.20051104075904.11:shortDescription
+#@-node:ekr.20051104075904.5:class generalTestCase
+#@+node:ekr.20051104075904.12:makeTestSuite
+@ This code executes the script in an @suite node.  This code assumes:
+- The script creates a one or more unit tests.
+- The script puts the result in g.app.scriptDict["suite"]
+@c
+
+def makeTestSuite (c,p):
+
+    """Create a suite of test cases by executing the script in an @suite node."""
+
+    p = p.copy()
+
+    script = g.getScript(c,p).strip()
+    if not script:
+        print("no script in %s" % h)
+        return None
+    try:
+        if 0: #debugging
+            n,lines = 0,g.splitLines(script)
+            for line in lines:
+                print(n,line)
+                n += 1
+        exec(script + '\n',{'c':c,'g':g,'p':p})
+        suite = g.app.scriptDict.get("suite")
+        if not suite:
+            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
+        return suite
+    except Exception:
+        print('makeTestSuite: exception creating test cases for %s' % p.h)
+        g.es_exception()
+        return None
+#@-node:ekr.20051104075904.12:makeTestSuite
+#@+node:ekr.20051104075904.13:makeTestCase
+def makeTestCase (c,p):
+
+    p = p.copy()
+
+    if p.b.strip():
+        return generalTestCase(c,p)
+    else:
+        return None
+#@-node:ekr.20051104075904.13:makeTestCase
+#@-node:ekr.20051104075904.4:doTests...
+#@+node:ekr.20060919110638.36:getPositionAttributes
+def getPositionAttributes (self,attrs):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    if trace: g.trace(len(list(c.db.keys())),c.mFileName,self.fileName)
+
+    d = {}
+
+    if g.enableDB and c.db and c.mFileName:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        data = c.db.get('window_position_%s' % (key))
+        if data:
+            top,left,height,width = data
+            top,left,height,width = int(top),int(left),int(height),int(width)
+            d = {'top':top,'left':left,'height':height,'width':width}
+
+    if not d and c.fixed and c.fixedWindowPosition:
+        width,height,left,top = c.fixedWindowPosition
+        d = {'top':top,'left':left,'width':width,'height':height}
+
+    if not d:
+        for bunch in self.attrsToList(attrs):
+            name = bunch.name ; val = bunch.val
+            if name in ('top','left','width','height'):
+                try:
+                    d[name] = int(val)
+                except ValueError:
+                    d[name] = 100 # A reasonable default.
+            else:
+                g.trace(name,len(val))
+
+    # if trace: g.trace(d)
+    return d
+#@-node:ekr.20060919110638.36:getPositionAttributes
+#@+node:ekr.20060919110638.37:startGlobals
+def startGlobals (self,attrs):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    if self.inClipboard:
+        return
+
+    c.frame.ratio,c.frame.secondary_ratio = 0.5,0.5 # Set defaults.
+
+    if trace: g.trace(len(list(c.db.keys())),c.mFileName)
+
+    if g.enableDB and c.db and c.mFileName:
+        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+        c.frame.ratio = float(c.db.get(
+            'body_outline_ratio_%s' % (key),'0.5'))
+        c.frame.secondary_ratio = float(c.db.get(
+            'body_secondary_ratio_%s' % (key),'0.5'))
+        if trace: g.trace('key',key,
+            '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
+    else:
+        try:
+            for bunch in self.attrsToList(attrs):
+                name = bunch.name ; val = bunch.val
+                if name == 'body_outline_ratio':
+                    c.frame.ratio = float(val) # 2010/01/11
+                elif name == 'body_secondary_ratio':
+                    c.frame.secondary_ratio = float(val) # 2010/01/11
+            if trace: g.trace('** no c.db:','%1.2f %1.2f' % (
+                c.frame.ratio,c.frame.secondary_ratio))
+        except Exception:
+            pass
+#@-node:ekr.20060919110638.37:startGlobals
+#@+node:ville.20090606131405.6362:writeCachedTree (atFile)
+def writeCachedTree(self, p, cachefile):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    if not g.enableDB or g.app.unitTesting:
+        if trace: g.trace('cache disabled')
+    elif cachefile in c.db:
+        if trace: g.trace('already cached')
+    else:
+        if trace: g.trace('caching ',p.h)
+        c.db[cachefile] = p.makeCacheList()
+#@nonl
+#@-node:ville.20090606131405.6362:writeCachedTree (atFile)
+#@-node:ekr.20100129133806.6245:Found: c.db
+#@-node:ekr.20100129131524.6190:improve caching (do not delete)
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt
 #@-leo

@@ -1885,6 +1885,7 @@ class keyHandlerClass:
         k.singleLineCommandList = [
             # editCommandsClass
             'back-to-indentation',
+            'back-to-home', # 2010/02/01
             'back-char',
             'back-char-extend-selection',
             'back-word',
@@ -3346,7 +3347,7 @@ class keyHandlerClass:
         #@nl
         trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
         traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
-        verbose = False
+        verbose = True
 
         if keysym in special_keys:
             if trace and verbose: g.trace('keysym',keysym)

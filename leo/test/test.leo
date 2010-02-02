@@ -380,6 +380,8 @@
 <v t="ekr.20090617083033.1813"><vh>Unicode characters: La Peña תּ</vh></v>
 </v>
 <v t="ekr.20090618102458.1816"><vh>Converting QString to unicode</vh></v>
+<v t="ekr.20100127122240.2063"><vh>Terry's unicode problem</vh></v>
+<v t="ekr.20100202115249.2023"><vh>@@thin qttexttest.py</vh></v>
 </v>
 <v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
 <v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
@@ -464,12 +466,7 @@
 <v t="ekr.20100130095415.2023"><vh>Simulate startup code for non-ascii directories</vh></v>
 <v t="ekr.20100122125233.2053"><vh>@test zcpspm</vh></v>
 </v>
-<v t="ekr.20100127122240.2063"><vh>Terry's unicode problem</vh>
-<v t="ekr.20100127123120.2016"><vh>The text</vh></v>
-<v t="ekr.20100127123336.2018"><vh>Copy</vh></v>
-</v>
 <v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
-<v t="ekr.20100202115249.2023"><vh>@thin qttexttest.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5173,17 +5170,10 @@ for path in paths:
                 found = True
             g.pr(s[n1:n2-1])
 </t>
-<t tx="ekr.20100127122240.2063">@nocolor</t>
-<t tx="ekr.20100127123120.2016">"Example 1. Suppose we select the following string: 연주기 This string
-consists of 3 unicode characters.  Typing any character works
-properly, including backspace or return.
-Example 2. Suppose we select the following string: वादक.  This string
-consists of 4 characters.  Typing any character removes too much.</t>
-<t tx="ekr.20100127123336.2018">"Example 1. Suppose we select the following string: 연주기 This string
-consists of 3 unicode characters.  Typing any character works
-properly, including backspace or return.
-Example 2. Suppose we select the following string: वादक.  This string
-consists of 4 characters.  Typing any character removes too much.</t>
+<t tx="ekr.20100127122240.2063">@nocolor
+
+Select the following string: वादक.
+Typing and undo now work.</t>
 <t tx="ekr.20100130095415.2023"># @first # -*- coding: mbcs -*-
 # @first # -*- coding: utf-8 -*-
 
@@ -5194,5 +5184,68 @@ for encoding in ('mbcs','utf-8'):
     theDir = g.os_path_finalize(path,encoding='utf-8')
     g.es(encoding,valid,theDir)
     print(encoding,valid,g.os_path_exists(theDir))</t>
+<t tx="ekr.20100202115249.2023">@first # -*- coding: utf-8 -*-
+@language python
+import sys
+from PyQt4 import Qt
+
+isPython3 = sys.version_info &gt;= (3,0,0)
+if isPython3:
+    def gu(s): return s
+else:
+    def gu(s): return unicode(s)
+
+s = gu('''Select the following string: वादक.
+This string consists of 4 characters, followed by a period.
+Hit do, then undo.
+Notice that the selection range now includes the period.
+''')
+
+n1,n2 = None,None # The selection range.
+app = Qt.QApplication(sys.argv) 
+f = Qt.QFrame()
+f.setLayout(Qt.QVBoxLayout())
+w = Qt.QTextEdit()
+w.setPlainText(s)
+
+b1 = Qt.QPushButton("Do")
+b2 = Qt.QPushButton("Undo")
+
+f.layout().addWidget(w)
+f.layout().addWidget(b1)
+f.layout().addWidget(b2)
+f.show()
+
+def showselect():
+    tc = w.textCursor()
+    s = w.toPlainText()
+    su = gu(s)
+    n1,n2 = tc.selectionStart(),tc.selectionEnd()
+    print(n1,n2,'length',abs(n2-n1),len(s),len(su),gu(s[n1:n2]).encode('utf-8'))
+
+def do():
+    # w.textCursor().removeSelectedText() # works
+    global n1,n2,w
+    tc = w.textCursor()
+    n1,n2 = tc.selectionStart(),tc.selectionEnd()
+    tc = w.textCursor()
+    tc.removeSelectedText()
+    w.setTextCursor(tc) # Has no effect.
+
+def undo():
+    global n1,n2,s,w
+    w.setPlainText(s)
+    tc = w.textCursor()
+    if n1 &gt; n2: n1,n2 = n2,n1
+    tc.setPosition(n1)
+    tc.setPosition(n2,tc.KeepAnchor)
+    # tc.movePosition(tc.Right,tc.KeepAnchor,n2-n1)
+    w.setTextCursor(tc)
+
+app.connect(w, Qt.SIGNAL("selectionChanged()"), showselect)
+app.connect(b1, Qt.SIGNAL("clicked()"), do)
+app.connect(b2, Qt.SIGNAL("clicked()"), undo)
+app.exec_()
+</t>
 </tnodes>
 </leo_file>
