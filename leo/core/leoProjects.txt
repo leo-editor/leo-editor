@@ -8260,6 +8260,418 @@ def toUnicodeFileEncoding(path):
 #@-node:ekr.20100201062307.5877:Code cleanup
 #@-node:ekr.20100129131524.6188:Leo 4.7 b3 projects
 #@+node:ekr.20100202050243.5740:Leo 4.7 rc1 projects
+#@+node:ekr.20100202145902.6107:Fixed unicode bug in setSelectionRangeHelper
+#@-node:ekr.20100202145902.6107:Fixed unicode bug in setSelectionRangeHelper
+#@+node:ekr.20100130042842.9009:Removed config.set
+@nocolor-node
+
+This is an important step towards simplifying the config logic.
+
+Eventually, all configuration-related ivars should be in the commander.
+#@nonl
+#@+node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
+self._currentPosition = self.nullPosition()
+self._rootPosition    = self.nullPosition()
+self._topPosition     = self.nullPosition()
+
+# Delayed focus.
+self.doubleClickFlag = False
+self.hasFocusWidget = None
+self.requestedFocusWidget = None
+
+# Official ivars.
+self.gui = g.app.gui
+self.ipythonController = None # Set only by the ipython plugin.
+
+# Interlock to prevent setting c.changed when switching chapters.
+c.suppressHeadChanged = False
+
+# Interlocks to prevent premature closing of a window.
+self.inCommand = False
+self.requestCloseWindow = False
+
+# For emacs/vim key handling.
+self.commandsDict = None
+self.keyHandler = self.k = None
+self.miniBufferWidget = None
+
+# per-document info...
+self.disableCommandsMessage = ''
+    # The presence of this message disables all commands.
+self.hookFunction = None
+self.openDirectory = None
+self.timeStampDict = {} # New in Leo 4.6.
+
+self.expansionLevel = 0  # The expansion level of this outline.
+self.expansionNode = None # The last node we expanded or contracted.
+self.changed = False # True if any data has been changed since the last save.
+self.loading = False # True if we are loading a file: disables c.setChanged()
+self.outlineToNowebDefaultFileName = "noweb.nw" # For Outline To Noweb dialog.
+self.promptingForClose = False # To lock out additional closing dialogs.
+self.ignoreChangedPaths = False # True: disable path changed message in at.WriteAllHelper.
+
+# For tangle/untangle
+self.tangle_errors = 0
+
+# Global options: set later in initConfigSettings
+self.fixed = False
+self.page_width = 132
+self.sparse_find = True # 2010/02/02: created ivar.
+self.sparse_move = True # 2010/02/02: created ivar.
+self.sparse_spell = True # 2010/02/02: created ivar.
+self.tab_width = -4
+self.tangle_batch_flag = False
+self.untangle_batch_flag = False
+
+# Default Tangle options
+self.use_header_flag = False
+self.output_doc_flag = False
+
+# Default Target Language
+self.target_language = "python" # Required if leoConfig.txt does not exist.
+
+# For hoist/dehoist commands.
+self.hoistStack = []
+    # Stack of nodes to be root of drawn tree.
+    # Affects drawing routines and find commands.
+self.recentFiles = [] # List of recent files
+
+# For outline navigation.
+self.navPrefix = g.u('') # Must always be a string.
+self.navTime = None
+
+pth, bname = os.path.split(self.mFileName)
+if pth and bname and g.enableDB:
+    fn = self.mFileName.lower()
+    fn = g.toEncodedString(fn) # Required for Python 3.x.
+    dbdirname = '%s/db/%s_%s' % (
+        g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
+    # Use compressed pickles (handy for @thin caches)
+    self.db = leo.external.pickleshare.PickleShareDB(dbdirname,protocol='picklez')
+else:
+    self.db = {}
+#@nonl
+#@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
+#@+node:ekr.20090213065933.6:c.initConfigSettings
+def initConfigSettings (self):
+
+    '''Init all cached commander config settings.'''
+
+    c = self
+    c.autoindent_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
+    c.contractVisitedNodes  = c.config.getBool('contractVisitedNodes')
+    c.fixed                 = c.config.getBool('fixedWindow',False)
+    c.fixedWindowPosition   = c.config.getData('fixedWindowPosition')
+    c.showMinibuffer        = c.config.getBool('useMinibuffer')
+        # This option is a bad idea.
+    c.sparse_move           = c.config.getBool('sparse_move_outline_left')
+    c.sparse_find           = c.config.getBool('collapse_nodes_during_finds')
+    c.sparce_spell          = c.config.getBool('collapse_nodes_while_spelling')
+    c.stayInTree            = c.config.getBool('stayInTreeAfterSelect')
+    c.smart_tab             = c.config.getBool('smart_tab')
+        # Note: there is also a smart_auto_indent setting.
+    c.tab_width             = c.config.getInt('tab_width') or -4
+
+    # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
+    # g.trace(c.sparse_move)
+#@-node:ekr.20090213065933.6:c.initConfigSettings
+#@+node:ekr.20100202121529.5875:using config.getBool('sparse_move_outline_left')
+#@+node:ekr.20071213185710:c.toggleSparseMove
+def toggleSparseMove (self,event=None):
+
+    c = self
+
+    c.sparse_move = not c.sparse_move
+
+    g.es('parse-move: %s' % c.sparse_move,color='blue')
+#@-node:ekr.20071213185710:c.toggleSparseMove
+#@+node:ekr.20031218072017.1768:moveOutlineDown
+@
+Moving down is more tricky than moving up; we can't move p to be a child of
+itself. An important optimization: we don't have to call
+checkMoveWithParentWithWarning() if the parent of the moved node remains the
+same.
+@c
+
+def moveOutlineDown (self,event=None):
+
+    '''Move the selected node down.'''
+
+    c = self ; u = c.undoer ; p = c.p
+    if not p: return
+
+    if not c.canMoveOutlineDown():
+        if c.hoistStack: self.cantMoveMessage()
+        c.treeFocusHelper()
+        return
+
+    inAtIgnoreRange = p.inAtIgnoreRange()
+    parent = p.parent()
+    next = p.visNext(c)
+
+    while next and p.isAncestorOf(next):
+        next = next.visNext(c)
+    if not next:
+        if c.hoistStack: self.cantMoveMessage()
+        c.treeFocusHelper()
+        return
+
+    c.endEditing()
+    undoData = u.beforeMoveNode(p)
+    << Move p down & set moved if successful >>
+    if moved:
+        if inAtIgnoreRange and not p.inAtIgnoreRange():
+            # The moved nodes have just become newly unignored.
+            p.setDirty() # Mark descendent @thin nodes dirty.
+        else: # No need to mark descendents dirty.
+            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+            dirtyVnodeList.extend(dirtyVnodeList2)
+        c.setChanged(True)
+        u.afterMoveNode(p,'Move Down',undoData,dirtyVnodeList)
+    c.redraw(p,setFocus=True)
+    c.updateSyntaxColorer(p) # Moving can change syntax coloring.
+#@+node:ekr.20031218072017.1769:<< Move p down & set moved if successful >>
+if next.hasChildren() and next.isExpanded():
+    # Attempt to move p to the first child of next.
+    moved = c.checkMoveWithParentWithWarning(p,next,True)
+    if moved:
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        p.moveToNthChildOf(next,0)
+
+else:
+    # Attempt to move p after next.
+    moved = c.checkMoveWithParentWithWarning(p,next.parent(),True)
+    if moved:
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        p.moveAfter(next)
+
+if moved and c.sparse_move and parent and not parent.isAncestorOf(p):
+    # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
+    parent.contract()
+#@-node:ekr.20031218072017.1769:<< Move p down & set moved if successful >>
+#@-node:ekr.20031218072017.1768:moveOutlineDown
+#@+node:ekr.20031218072017.1770:moveOutlineLeft
+def moveOutlineLeft (self,event=None):
+
+    '''Move the selected node left if possible.'''
+
+    c = self ; u = c.undoer ; p = c.p
+    if not p: return
+    if not c.canMoveOutlineLeft():
+        if c.hoistStack: self.cantMoveMessage()
+        c.treeFocusHelper()
+        return
+    if not p.hasParent():
+        c.treeFocusHelper()
+        return
+
+    inAtIgnoreRange = p.inAtIgnoreRange()
+    parent = p.parent()
+    c.endEditing()
+    undoData = u.beforeMoveNode(p)
+    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    p.moveAfter(parent)
+    if inAtIgnoreRange and not p.inAtIgnoreRange():
+        # The moved nodes have just become newly unignored.
+        p.setDirty() # Mark descendent @thin nodes dirty.
+    else: # No need to mark descendents dirty.
+        dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+        dirtyVnodeList.extend(dirtyVnodeList2)
+    c.setChanged(True)
+    u.afterMoveNode(p,'Move Left',undoData,dirtyVnodeList)
+    if c.sparse_move: # New in Leo 4.4.2
+        parent.contract()
+    c.redraw_now(p,setFocus=True)
+    c.recolor_now() # Moving can change syntax coloring.
+#@-node:ekr.20031218072017.1770:moveOutlineLeft
+#@+node:ekr.20031218072017.1772:moveOutlineUp
+def moveOutlineUp (self,event=None):
+
+    '''Move the selected node up if possible.'''
+
+    trace = False and not g.unitTesting
+    c = self ; u = c.undoer ; p = c.p
+    if not p: return
+    if not c.canMoveOutlineUp(): # Support for hoist.
+        if c.hoistStack: self.cantMoveMessage()
+        c.treeFocusHelper()
+        return
+
+    back = p.visBack(c)
+    if not back:
+        if trace: g.trace('no visBack')
+        return
+
+    inAtIgnoreRange = p.inAtIgnoreRange()
+    back2 = back.visBack(c)
+
+    c.endEditing()
+    undoData = u.beforeMoveNode(p)
+    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    moved = False
+    << Move p up >>
+    if moved:
+        if inAtIgnoreRange and not p.inAtIgnoreRange():
+            # The moved nodes have just become newly unignored.
+            dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
+        else: # No need to mark descendents dirty.
+            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+        dirtyVnodeList.extend(dirtyVnodeList2)
+        c.setChanged(True)
+        u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
+    c.redraw(p,setFocus=True)
+    c.updateSyntaxColorer(p) # Moving can change syntax coloring.
+#@+node:ekr.20031218072017.1773:<< Move p up >>
+if trace:
+    g.trace("visBack",back)
+    g.trace("visBack2",back2)
+    g.trace("back2.hasChildren",back2 and back2.hasChildren())
+    g.trace("back2.isExpanded",back2 and back2.isExpanded())
+
+parent = p.parent()
+
+if not back2:
+    if c.hoistStack: # hoist or chapter.
+        limit,limitIsVisible = c.visLimit()
+        assert limit
+        if limitIsVisible:
+            # canMoveOutlineUp should have caught this.
+            g.trace('can not happen. In hoist')
+        else:
+            # g.trace('chapter first child')
+            moved = True
+            p.moveToFirstChildOf(limit)
+    else:
+        # p will be the new root node
+        p.moveToRoot(oldRoot=c.rootPosition())
+        moved = True
+
+elif back2.hasChildren() and back2.isExpanded():
+    if c.checkMoveWithParentWithWarning(p,back2,True):
+        moved = True
+        p.moveToNthChildOf(back2,0)
+else:
+    if c.checkMoveWithParentWithWarning(p,back2.parent(),True):
+        moved = True
+        p.moveAfter(back2)
+
+if moved and c.sparse_move and parent and not parent.isAncestorOf(p):
+    # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
+    parent.contract()
+#@nonl
+#@-node:ekr.20031218072017.1773:<< Move p up >>
+#@-node:ekr.20031218072017.1772:moveOutlineUp
+#@-node:ekr.20100202121529.5875:using config.getBool('sparse_move_outline_left')
+#@+node:ekr.20100202121529.5876:using config.getBool('collapse_nodes_during_finds')
+#@+node:ekr.20060123115459:Find options wrappers
+def setFindScopeEveryWhere (self, event):
+    '''Set the 'Entire Outline' radio button in the Find tab.'''
+    return self.setFindScope('entire-outline')
+def setFindScopeNodeOnly  (self, event):
+    '''Set the 'Node Only' radio button in the Find tab.'''
+    return self.setFindScope('node-only')
+def setFindScopeSuboutlineOnly (self, event):
+    '''Set the 'Suboutline Only' radio button in the Find tab.'''
+    return self.setFindScope('suboutline-only')
+def showFindOptions (self,event):
+    '''Show all Find options in the minibuffer label area.'''
+    self.getHandler().showFindOptions()
+def toggleFindCollapesNodes(self,event):
+    '''Toggle the 'Collapse Nodes' checkbox in the find tab.'''
+    # return self.toggleOption('collapse_nodes')
+    c = self.c
+    c.sparse_find = not c.sparse_find
+    g.es('sparse_find',c.sparce_find)
+def toggleIgnoreCaseOption     (self, event):
+    '''Toggle the 'Ignore Case' checkbox in the Find tab.'''
+    return self.toggleOption('ignore_case')
+def toggleMarkChangesOption (self, event):
+    '''Toggle the 'Mark Changes' checkbox in the Find tab.'''
+    return self.toggleOption('mark_changes')
+def toggleMarkFindsOption (self, event):
+    '''Toggle the 'Mark Finds' checkbox in the Find tab.'''
+    return self.toggleOption('mark_finds')
+def toggleRegexOption (self, event):
+    '''Toggle the 'Regexp' checkbox in the Find tab.'''
+    return self.toggleOption('pattern_match')
+def toggleReverseOption        (self, event):
+    '''Toggle the 'Reverse' checkbox in the Find tab.'''
+    return self.toggleOption('reverse')
+def toggleSearchBodyOption (self, event):
+    '''Set the 'Search Body' checkbox in the Find tab.'''
+    return self.toggleOption('search_body')
+def toggleSearchHeadlineOption (self, event):
+    '''Toggle the 'Search Headline' checkbox in the Find tab.'''
+    return self.toggleOption('search_headline')
+def toggleWholeWordOption (self, event):
+    '''Toggle the 'Whole Word' checkbox in the Find tab.'''
+    return self.toggleOption('whole_word')
+def toggleWrapSearchOption (self, event):
+    '''Toggle the 'Wrap Around' checkbox in the Find tab.'''
+    return self.toggleOption('wrap')
+def setFindScope (self, where):
+    self.getHandler().setFindScope(where)
+def toggleOption (self, ivar):
+    self.getHandler().toggleOption(ivar)
+#@-node:ekr.20060123115459:Find options wrappers
+#@+node:ekr.20031218072017.3091:showSuccess (leoFind)
+def showSuccess(self,pos,newpos,showState=True):
+
+    '''Display the result of a successful find operation.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = self.p
+    if not p:
+        return g.trace('can not happen: self.p is None')
+
+    current = c.p
+    c.frame.bringToFront() # Needed on the Mac
+
+    # Expand ancestors and set redraw if a redraw is needed.
+    redraw1 = not p.isVisible(c)
+    if c.sparse_find:
+        # Show only the 'sparse' tree when redrawing.
+        for p2 in c.p.self_and_parents():
+            if p2.isAncestorOf(p):
+                break
+            p2.contract()
+            redraw1 = True # Important bug fix. Was redraw = True.
+
+    redraw2 = c.expandAllAncestors(self.p)
+    redraw = redraw1 or redraw2
+
+    # Set state vars.
+    # Ensure progress in backwards searches.
+    insert = g.choose(self.reverse,min(pos,newpos),max(pos,newpos))
+    if self.wrap and not self.wrapPosition:
+        self.wrapPosition = self.p
+
+    if trace: g.trace('in_headline',self.in_headline)
+    if self.in_headline:
+        selection = pos,newpos,insert
+        c.redrawAndEdit(p,
+            selection=selection,
+            keepMinibuffer=True)
+        w = c.edit_widget(p)
+    else:
+        w = c.frame.body.bodyCtrl
+        # This is like the logic in c.selectPosition.
+        if redraw:
+            c.redraw(p)
+        else:
+            c.selectPosition(p)
+            c.redraw_after_select(p)
+        c.bodyWantsFocus()
+        if showState:
+            c.k.showStateAndMode(w)
+        # g.trace(pos,newpos,insert)
+        w.setSelectionRange(pos,newpos,insert=insert)
+        w.seeInsertPoint()
+        c.outerUpdate()
+    return w # Support for isearch.
+#@-node:ekr.20031218072017.3091:showSuccess (leoFind)
+#@-node:ekr.20100202121529.5876:using config.getBool('collapse_nodes_during_finds')
+#@-node:ekr.20100130042842.9009:Removed config.set
 #@-node:ekr.20100202050243.5740:Leo 4.7 rc1 projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt

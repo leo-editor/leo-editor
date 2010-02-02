@@ -1072,7 +1072,7 @@ class parserBaseClass:
 class configClass:
     """A class to manage configuration settings."""
     #@    << class data >>
-    #@+node:ekr.20041122094813:<<  class data >>
+    #@+node:ekr.20041122094813:<<  class data >> (g.app.config)
     #@+others
     #@+node:ekr.20041117062717.1:defaultsDict
     #@+at 
@@ -1196,7 +1196,7 @@ class configClass:
 
     # Keys are setting names, values are type names.
     warningsDict = {} # Used by get() or allies.
-    #@-node:ekr.20041122094813:<<  class data >>
+    #@-node:ekr.20041122094813:<<  class data >> (g.app.config)
     #@nl
     #@    @+others
     #@+node:ekr.20041117083202:Birth... (g.app.config)

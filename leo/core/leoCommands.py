@@ -4773,23 +4773,33 @@ class baseCommands (object):
 
         trace = False and not g.unitTesting
         c = self ; p = c.p
-        redraw = False ; fullRedraw = False
+        redraw = True ; fullRedraw = False
         if p.hasChildren() and p.isExpanded():
             if trace: g.trace('contract',p.h)
-            c.contractNode()
+            p.contract()
             redraw = True # New in one-node world.
         elif p.hasParent() and p.parent().isVisible(c):
-            redraw = False
-            p.contract() # Make sure we know this node is contracted.
-            # This "feature" is dubious.
-            # To work properly, it requires a full redraw.
-            if False: # self.sparse_goto_parent:
-                for child in p.self_and_siblings():
-                    if child != p and child.isExpanded():
+            if 1: # Simpler code.  Probably best.
+                redraw = False
+                p.contract() # Make sure we know this node is contracted.
+                if trace: g.trace('goto parent',p.h)
+                c.goToParent()
+            else: # Contract any siblings if they exist.
+                contract = False
+                for child in p.parent().children():
+                    if child.hasChildren() and child.isExpanded():
+                        contract = True
                         child.contract()
-                        redraw = True ; fullRedraw = True
-            if trace: g.trace('goto parent',p.h)
-            c.goToParent()
+                if contract:
+                    redraw = True
+                    fullRedraw = True # Contracting the siblings is enough.
+                else:
+                    redraw = False
+                    p.contract() # Make sure we know this node is contracted.
+                    if trace: g.trace('goto parent',p.h)
+                    c.goToParent()
+        else:
+            redraw = False
 
         if redraw:
             if fullRedraw or p.isCloned():
@@ -4923,7 +4933,6 @@ class baseCommands (object):
         trace = False and not g.unitTesting
         c = self ; p = c.p
 
-        # New code.
         if p.hasChildren():
             if p.isExpanded():
                 p.moveToFirstChild()
@@ -4932,15 +4941,18 @@ class baseCommands (object):
             else:
                 if trace: g.trace('expand',p.h)
                 c.expandNode() # Calls redraw_after_expand.
-        elif p.hasNext():
-            c.goToNextSibling()
-        else:
-            while p.hasParent():
-                p.moveToParent()
-                if p.hasNext():
-                    p.moveToNext()
-                    break
-            c.selectPosition(p)
+
+        # This is too confusing
+        # elif p.hasNext():
+            # c.goToNextSibling()
+        # else:
+            # while p.hasParent():
+                # p.moveToParent()
+                # if p.hasNext():
+                    # p.moveToNext()
+                    # break
+            # c.selectPosition(p)
+
         c.treeFocusHelper()
 
     def expandNodeOrGoToFirstChild (self,event=None):
@@ -7745,6 +7757,7 @@ class configSettings:
         for key in g.app.config.ivarsDict:
             if key != '_hash':
                 self.initIvar(key)
+    #@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
     #@+node:ekr.20041118104240:initIvar (c.configSettings)
     def initIvar(self,key):
 
@@ -7782,7 +7795,6 @@ class configSettings:
         if encoding and not g.isValidEncoding(encoding):
             g.es("bad", "%s: %s" % (encodingName,encoding))
     #@-node:ekr.20041118104414:initEncoding
-    #@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
     #@+node:ekr.20041118053731:Getters (c.configSettings)
     def get (self,setting,theType):
         '''A helper function: return the commander's setting, checking the type.'''

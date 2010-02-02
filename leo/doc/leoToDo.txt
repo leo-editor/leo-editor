@@ -25,6 +25,7 @@ unbound()
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20100126110826.6253:Before rc1
+expand-and-go-right.
 #@+node:ekr.20100202084948.5741:Next
 #@+node:ekr.20100122130101.6172:Fix bug in c.pasteOutline when run from unit tests
 @nocolor-node
@@ -1840,43 +1841,6 @@ def __init__ (self,c):
     for key in g.app.config.ivarsDict:
         if key != '_hash':
             self.initIvar(key)
-#@+node:ekr.20041118104240:initIvar (c.configSettings)
-def initIvar(self,key):
-
-    trace = False and not g.unitTesting
-    c = self.c
-
-    # N.B. The key is munged.
-    bunch = g.app.config.ivarsDict.get(key)
-    ivarName = bunch.ivar
-    val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
-
-    if val or not hasattr(self,ivarName):
-        if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
-        setattr(self,ivarName,val)
-#@-node:ekr.20041118104240:initIvar (c.configSettings)
-#@+node:ekr.20041118104414:initEncoding
-def initEncoding (self,key):
-
-    c = self.c
-
-    # N.B. The key is munged.
-    bunch = g.app.config.encodingIvarsDict.get(key)
-    encodingName = bunch.ivar
-    encoding = g.app.config.get(c,encodingName,kind='string')
-
-    # New in 4.4b3: use the global setting as a last resort.
-    if encoding:
-        # g.trace('c.configSettings',c.shortFileName(),encodingName,encoding)
-        setattr(self,encodingName,encoding)
-    else:
-        encoding = getattr(g.app.config,encodingName)
-        # g.trace('g.app.config',c.shortFileName(),encodingName,encoding)
-        setattr(self,encodingName,encoding)
-
-    if encoding and not g.isValidEncoding(encoding):
-        g.es("bad", "%s: %s" % (encodingName,encoding))
-#@-node:ekr.20041118104414:initEncoding
 #@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
 #@+node:ekr.20041118084146.1:set (g.app.config) To be deleted??
 def set (self,c,setting,kind,val):
@@ -1970,6 +1934,1045 @@ def setIvarsFromSettings (self,c):
 #@-node:ekr.20071211093011:4.7 One-node world, Leo3K
 #@+node:ekr.20100109214940.6225:4.8 Autocompletion, vim
 #@+node:ekr.20100119145629.6104:First
+#@+node:ekr.20100202145902.6106:Init all settings in c.initConfigSettings
+@nocolor-node
+
+To do:
+
+- remove most of the logic in configSettings.__init__.
+- Move config ivars to the commander.
+#@nonl
+#@+node:ekr.20100130042842.9008: Notes
+@nocolor-node
+
+colorizeAnyLanguage.
+    g.app.config.defaultFontFamily
+
+c.scanAtPathDirectives:
+    relative_path_base_directory:
+
+** Methods that write recent files:
+    recentFileMessageWritten (Probabaly ok)
+
+c.configSettings.__init__:
+
+** copies these ivars by hand.
+    self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
+    self.defaultLogFontSize  = g.app.config.defaultLogFontSize
+    self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
+    self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
+** calls initIvar and initEncoding to copy other ivars.
+
+g.makeAllNonExistentDirectories:
+    # Uses one or the other, depending on the c arg.
+    c.create_nonexistent_directories
+    g.app.config.create_nonexistent_directories
+
+g.getOutputNewline:
+    # Uses one or the other, depending on the c arg.
+    c.config.output_newline
+    g.app.config.output_newline
+
+g.doHook:
+    g.app.config.use_plugins
+
+loadOnePlugin:
+    g.app.config.enabledPluginsFileName
+
+leoGui.getFontFromParams:
+    g.app.config.defaultFont
+
+k.addModeCommands and several other methods use:
+    g.app.config.modeCommandsDict
+#@nonl
+#@+node:ekr.20100130042842.9010:at_root_bodies_start_in_doc_mode
+@nocolor-node
+
+at_root_bodies_start_in_doc_mode
+
+c.scanAtRootDirectives
+    should use c.config.getBool instead of the weird code.
+
+g.scanAtRootOptions
+    Why doesn't this use c.config ivars??
+    Actually, this should be tangle.scanAtRootOptions.  We know c!
+
+leoImport.convertVnodeToWeb:
+    Uses c.config.at_root_bodies_start_in_doc_mode
+#@nonl
+#@+node:ekr.20080828103146.12:c.scanAtRootDirectives
+# Called only by scanColorDirectives.
+
+def scanAtRootDirectives(self,aList):
+
+    '''Scan aList for @root-code and @root-doc directives.'''
+
+    c = self
+
+    # To keep pylint happy.
+    tag = 'at_root_bodies_start_in_doc_mode'
+    start_in_doc = hasattr(c.config,tag) and getattr(c.config,tag)
+
+    # New in Leo 4.6: dashes are valid in directive names.
+    for d in aList:
+        if 'root-code' in d:
+            return 'code'
+        elif 'root-doc' in d:
+            return 'doc'
+        elif 'root' in d:
+            return g.choose(start_in_doc,'doc','code')
+
+    return None
+#@-node:ekr.20080828103146.12:c.scanAtRootDirectives
+#@+node:ekr.20031218072017.3154:g.scanAtRootOptions
+def scanAtRootOptions (s,i,err_flag=False):
+
+    # The @root has been eaten when called from tangle.scanAllDirectives.
+    if g.match(s,i,"@root"):
+        i += len("@root")
+        i = g.skip_ws(s,i)
+
+    mode = None 
+    while g.match(s,i,'-'):
+        << scan another @root option >>
+
+    if mode == None:
+        doc = app.config.at_root_bodies_start_in_doc_mode
+        mode = g.choose(doc,"doc","code")
+
+    return i,mode
+#@+node:ekr.20031218072017.3155:<< scan another @root option >>
+i += 1 ; err = -1
+
+if g.match_word(s,i,"code"): # Just match the prefix.
+    if not mode: mode = "code"
+    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
+elif g.match(s,i,"doc"): # Just match the prefix.
+    if not mode: mode = "doc"
+    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
+else:
+    err = i-1
+
+# Scan to the next minus sign.
+while i < len(s) and s[i] not in (' ','\t','-'):
+    i += 1
+
+if err > -1 and err_flag:
+    z_opt = s[err:i]
+    z_line = g.get_line(s,i)
+    g.es("unknown option:",z_opt,"in",z_line)
+#@-node:ekr.20031218072017.3155:<< scan another @root option >>
+#@-node:ekr.20031218072017.3154:g.scanAtRootOptions
+#@-node:ekr.20100130042842.9010:at_root_bodies_start_in_doc_mode
+#@+node:ekr.20100131161507.6302:Replace all of these by config.get methods
+c.config.default_at_auto_file_encoding
+c.config.default_derived_file_encoding
+#@nonl
+#@-node:ekr.20100131161507.6302:Replace all of these by config.get methods
+#@+node:ekr.20100202145902.6108:code
+#@+node:ekr.20031218072017.1880:colorizeAnyLanguage & allies
+def colorizeAnyLanguage (self,p,leading=None,trailing=None):
+
+    """Color the body pane either incrementally or non-incrementally"""
+
+    c = self.c ; w = c.frame.body.bodyCtrl
+
+    if not c.config.getBool('use_syntax_coloring'):
+        # There have been reports of this trace causing crashes.
+        # Certainly it is not necessary.
+        # g.trace('no coloring')
+        return
+
+    if self.killFlag:
+        self.removeAllTags()
+        return
+    try:
+        # g.trace('incremental',self.incremental)
+        << initialize ivars & tags >>
+        g.doHook("init-color-markup",colorer=self,p=self.p,v=self.p)
+        if self.incremental and (
+            << all state ivars match >> ):
+            << incrementally color the text >>
+        else:
+            << non-incrementally color the text >>
+        << update state ivars >>
+        return "ok" # for testing.
+    except:
+        << set state ivars to "unknown" >>
+        if self.c:
+            g.es_exception()
+        else:
+            import traceback ; traceback.print_exc()
+        return "error" # for unit testing.
+#@+node:ekr.20031218072017.1602:<< initialize ivars & tags >> colorizeAnyLanguage
+# Copy the arguments.
+self.p = p
+
+# Get the body text, converted to unicode.
+self.allBodyText = w.getAllText()
+sel = w.getInsertPoint()
+start,end = g.convertPythonIndexToRowCol(self.allBodyText,sel)
+start += 1 # Simulate the old 1-based Tk scheme.  self.index undoes this hack.
+# g.trace('new',start,end)
+
+if self.language: self.language = self.language.lower()
+# g.trace(self.count,self.p)
+# g.trace(body.tag_names())
+
+if not self.incremental:
+    self.removeAllTags()
+    # self.removeAllImages()
+
+<< configure fonts >>
+<< configure tags >>
+<< configure language-specific settings >>
+
+self.hyperCount = 0 # Number of hypertext tags
+self.count += 1
+lines = self.allBodyText.split('\n')
+#@nonl
+#@+node:ekr.20060829084924:<< configure fonts >> (revise,maybe)
+# Get the default body font.
+defaultBodyfont = self.fonts.get('default_body_font')
+if not defaultBodyfont:
+    defaultBodyfont = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant",  "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    self.fonts['default_body_font'] = defaultBodyfont
+
+# Configure fonts.
+w = c.frame.body.bodyCtrl
+keys = sorted(default_font_dict)
+for key in keys:
+    option_name = default_font_dict[key]
+    # First, look for the language-specific setting, then the general setting.
+    for name in ('%s_%s' % (self.language,option_name),(option_name)):
+        font = self.fonts.get(name)
+        if font:
+            # g.trace('found',name,id(font))
+            w.tag_config(key,font=font)
+            break
+        else:
+            family = c.config.get(name + '_family','family')
+            size   = c.config.get(name + '_size',  'size')   
+            slant  = c.config.get(name + '_slant', 'slant')
+            weight = c.config.get(name + '_weight','weight')
+            if family or slant or weight or size:
+                family = family or g.app.config.defaultFontFamily
+                size   = size or str(c.config.defaultBodyFontSize)
+                slant  = slant or 'roman'
+                weight = weight or 'normal'
+                font = c.config.getFontFromParams(family,size,slant,weight)
+                # Save a reference to the font so it 'sticks'.
+                self.fonts[name] = font 
+                # g.trace(key,name,family,size,slant,weight,id(font))
+                w.tag_config(key,font=font)
+                break
+    else: # Neither the general setting nor the language-specific setting exists.
+        if len(list(self.fonts.keys())) > 1: # Restore the default font.
+            # g.trace('default',key)
+            w.tag_config(key,font=defaultBodyfont)
+#@nonl
+#@-node:ekr.20060829084924:<< configure fonts >> (revise,maybe)
+#@+node:ekr.20031218072017.1603:<< configure tags >>
+# g.trace('configure tags',self.c.frame.body.bodyCtrl)
+
+for name in default_colors_dict:
+    option_name,default_color = default_colors_dict[name]
+    option_color = c.config.getColor(option_name)
+    color = g.choose(option_color,option_color,default_color)
+    # g.trace(name,color)
+    # Must use foreground, not fg.
+    try:
+        c.frame.body.tag_configure(name, foreground=color)
+    except: # Recover after a user error.
+        c.frame.body.tag_configure(name, foreground=default_color)
+
+underline_undefined = c.config.getBool("underline_undefined_section_names")
+use_hyperlinks      = c.config.getBool("use_hyperlinks")
+self.use_hyperlinks = use_hyperlinks
+
+# underline=var doesn't seem to work.
+if 0: # use_hyperlinks: # Use the same coloring, even when hyperlinks are in effect.
+    c.frame.body.tag_configure("link",underline=1) # defined
+    c.frame.body.tag_configure("name",underline=0) # undefined
+else:
+    c.frame.body.tag_configure("link",underline=0)
+    if underline_undefined:
+        c.frame.body.tag_configure("name",underline=1)
+    else:
+        c.frame.body.tag_configure("name",underline=0)
+
+# 8/4/02: we only create tags for whitespace when showing invisibles.
+if self.showInvisibles:
+    for name,option_name,default_color in (
+        ("blank","show_invisibles_space_background_color","Gray90"),
+        ("tab",  "show_invisibles_tab_background_color",  "Gray80")):
+        option_color = c.config.getColor(option_name)
+        color = g.choose(option_color,option_color,default_color)
+        try:
+            c.frame.body.tag_configure(name,background=color)
+        except: # Recover after a user error.
+            c.frame.body.tag_configure(name,background=default_color)
+
+# 11/15/02: Colors for latex characters.  Should be user options...
+
+if 1: # Alas, the selection doesn't show if a background color is specified.
+    c.frame.body.tag_configure("latexModeBackground",foreground="black")
+    c.frame.body.tag_configure("latexModeKeyword",foreground="blue")
+    c.frame.body.tag_configure("latexBackground",foreground="black")
+    c.frame.body.tag_configure("latexKeyword",foreground="blue")
+else: # Looks cool, and good for debugging.
+    c.frame.body.tag_configure("latexModeBackground",foreground="black",background="seashell1")
+    c.frame.body.tag_configure("latexModeKeyword",foreground="blue",background="seashell1")
+    c.frame.body.tag_configure("latexBackground",foreground="black",background="white")
+    c.frame.body.tag_configure("latexKeyword",foreground="blue",background="white")
+
+# Tags for wiki coloring.
+if self.showInvisibles:
+    c.frame.body.tag_configure("elide",background="yellow")
+else:
+    c.frame.body.tag_configure("elide",elide="1")
+c.frame.body.tag_configure("bold",font=self.bold_font)
+c.frame.body.tag_configure("italic",font=self.italic_font)
+c.frame.body.tag_configure("bolditalic",font=self.bolditalic_font)
+for name in self.color_tags_list:
+    c.frame.body.tag_configure(name,foreground=name)
+#@-node:ekr.20031218072017.1603:<< configure tags >>
+#@+node:ekr.20031218072017.370:<< configure language-specific settings >> colorizer
+# Define has_string, keywords, single_comment_start, block_comment_start, block_comment_end.
+
+if self.language == "cweb": # Use C comments, not cweb sentinel comments.
+    delim1,delim2,delim3 = g.set_delims_from_language("c")
+elif self.comment_string:
+    delim1,delim2,delim3 = g.set_delims_from_string(self.comment_string)
+elif self.language == "plain": # 1/30/03
+    delim1,delim2,delim3 = None,None,None
+else:
+    delim1,delim2,delim3 = g.set_delims_from_language(self.language)
+
+self.single_comment_start = delim1
+self.block_comment_start = delim2
+self.block_comment_end = delim3
+
+# A strong case can be made for making this code as fast as possible.
+# Whether this is compatible with general language descriptions remains to be seen.
+self.case_sensitiveLanguage = self.language not in case_insensitiveLanguages
+self.has_string = self.language != "plain"
+if self.language == "plain":
+    self.string_delims = ()
+elif self.language in ("elisp","html"):
+    self.string_delims = ('"')
+else:
+    self.string_delims = ("'",'"')
+self.has_pp_directives = self.language in ("c","csharp","cweb","latex")
+
+# The list of languages for which keywords exist.
+# Eventually we might just use language_delims_dict.keys()
+languages = [
+    "actionscript","ada","c","csharp","css","cweb","elisp","html","java","latex","lua",
+    "pascal","perl","perlpod","php","plsql","python","rapidq","rebol","ruby","shell","tcltk"]
+
+self.keywords = []
+if self.language == "cweb":
+    for i in self.c_keywords:
+        self.keywords.append(i)
+    for i in self.cweb_keywords:
+        self.keywords.append(i)
+else:
+    for name in languages:
+        if self.language==name: 
+            # g.trace("setting keywords for",name)
+            self.keywords = getattr(self, name + "_keywords")
+
+# Color plain text unless we are under the control of @nocolor.
+# state = g.choose(self.flag,"normal","nocolor")
+state = self.setFirstLineState()
+
+if 1: # 10/25/02: we color both kinds of references in cweb mode.
+    self.lb = "<<"
+    self.rb = ">>"
+else:
+    self.lb = g.choose(self.language == "cweb","@<","<<")
+    self.rb = g.choose(self.language == "cweb","@>",">>")
+#@-node:ekr.20031218072017.370:<< configure language-specific settings >> colorizer
+#@-node:ekr.20031218072017.1602:<< initialize ivars & tags >> colorizeAnyLanguage
+#@+node:ekr.20031218072017.1881:<< all state ivars match >>
+self.flag == self.last_flag and
+self.last_language == self.language
+#@-node:ekr.20031218072017.1881:<< all state ivars match >>
+#@+node:ekr.20031218072017.1882:<< incrementally color the text >>
+@  Each line has a starting state.  The starting state for the first line is always "normal".
+
+We need remember only self.lines and self.states between colorizing.  It is not necessary to know where the text comes from, only what the previous text was!  We must always colorize everything when changing nodes, even if all lines match, because the context may be different.
+
+We compute the range of lines to be recolored by comparing leading lines and trailing lines of old and new text.  All other lines (the middle lines) must be colorized, as well as any trailing lines whose states may have changed as the result of changes to the middle lines.
+@c
+
+if self.trace: g.trace("incremental",self.language)
+
+# 6/30/03: make a copies of everything
+old_lines = self.lines[:]
+old_states = self.states[:]
+new_lines = lines[:]
+new_states = []
+
+new_len = len(new_lines)
+old_len = len(old_lines)
+
+if new_len == 0:
+    self.states = []
+    self.lines = []
+    return
+
+# Bug fix: 11/21/02: must test against None.
+if leading != None and trailing != None:
+    # g.pr("leading,trailing:",leading,trailing)
+    leading_lines = leading
+    trailing_lines = trailing
+else:
+    << compute leading, middle & trailing lines >>
+
+middle_lines = new_len - leading_lines - trailing_lines
+# g.pr("middle lines", middle_lines)
+
+<< clear leading_lines if middle lines involve @color or @recolor  >>
+<< initialize new states >>
+<< colorize until the states match >>
+#@+node:ekr.20031218072017.1883:<< compute leading, middle & trailing  lines >>
+@ The leading lines are the leading matching lines.  The trailing lines are the trailing matching lines.  The middle lines are all other new lines.  We will color at least all the middle lines.  There may be no middle lines if we delete lines.
+@c
+
+min_len = min(old_len,new_len)
+
+i = 0
+while i < min_len:
+    if old_lines[i] != new_lines[i]:
+        break
+    i += 1
+leading_lines = i
+
+if leading_lines == new_len:
+    # All lines match, and we must color _everything_.
+    # (several routine delete, then insert the text again,
+    # deleting all tags in the process).
+    # g.pr("recolor all")
+    leading_lines = trailing_lines = 0
+else:
+    i = 0
+    while i < min_len - leading_lines:
+        if old_lines[old_len-i-1] != new_lines[new_len-i-1]:
+            break
+        i += 1
+    trailing_lines = i
+#@-node:ekr.20031218072017.1883:<< compute leading, middle & trailing  lines >>
+#@+node:ekr.20031218072017.1884:<< clear leading_lines if middle lines involve @color or @recolor  >>
+@ 11/19/02: Changing @color or @nocolor directives requires we recolor all leading states as well.
+@c
+
+if trailing_lines == 0:
+    m1 = new_lines[leading_lines:]
+    m2 = old_lines[leading_lines:]
+else:
+    m1 = new_lines[leading_lines:-trailing_lines]
+    m2 = old_lines[leading_lines:-trailing_lines]
+m1.extend(m2) # m1 now contains all old and new middle lines.
+if m1:
+    for s in m1:
+        ### s = g.toUnicode(s)
+        i = g.skip_ws(s,0)
+        if g.match_word(s,i,"@color") or g.match_word(s,i,"@nocolor"):
+            leading_lines = 0
+            break
+#@-node:ekr.20031218072017.1884:<< clear leading_lines if middle lines involve @color or @recolor  >>
+#@+node:ekr.20031218072017.1885:<< initialize new states >>
+# Copy the leading states from the old to the new lines.
+i = 0
+while i < leading_lines and i < old_len: # 12/8/02
+    new_states.append(old_states[i])
+    i += 1
+
+# We know the starting state of the first middle line!
+if middle_lines > 0 and i < old_len:
+    new_states.append(old_states[i])
+    i += 1
+
+# Set the state of all other middle lines to "unknown".
+first_trailing_line = max(0,new_len - trailing_lines)
+while i < first_trailing_line:
+    new_states.append("unknown")
+    i += 1
+
+# Copy the trailing states from the old to the new lines.
+i = max(0,old_len - trailing_lines)
+while i < old_len and i < len(old_states):
+    new_states.append(old_states[i])
+    i += 1
+
+# 1/8/03: complete new_states by brute force.
+while len(new_states) < new_len:
+    new_states.append("unknown")
+#@-node:ekr.20031218072017.1885:<< initialize new states >>
+#@+node:ekr.20031218072017.1886:<< colorize until the states match >>
+# Colorize until the states match.
+# All middle lines have "unknown" state, so they will all be colored.
+
+# Start in the state _after_ the last leading line, which may be unknown.
+i = leading_lines
+while i > 0:
+    if i < old_len and i < new_len:
+        state = new_states[i]
+        # assert(state!="unknown") # This can fail.
+        break
+    else:
+        i -= 1
+
+if i == 0:
+    # Color plain text unless we are under the control of @nocolor.
+    # state = g.choose(self.flag,"normal","nocolor")
+    state = self.setFirstLineState()
+    new_states[0] = state
+
+# The new_states[] will be "unknown" unless the lines match,
+# so we do not need to compare lines here.
+while i < new_len:
+    self.line_index = i + 1
+    state = self.colorizeLine(new_lines[i],state)
+    i += 1
+    # Set the state of the _next_ line.
+    if i < new_len and state != new_states[i]:
+        new_states[i] = state
+    else: break
+
+# Update the ivars
+self.states = new_states
+self.lines = new_lines
+#@-node:ekr.20031218072017.1886:<< colorize until the states match >>
+#@-node:ekr.20031218072017.1882:<< incrementally color the text >>
+#@+node:ekr.20031218072017.1887:<< non-incrementally color the text >>
+if self.trace: g.trace("non-incremental",self.language)
+
+self.line_index = 1 # The Tk line number for indices, as in n.i
+for s in lines:
+    state = self.colorizeLine(s,state)
+    self.line_index += 1
+#@-node:ekr.20031218072017.1887:<< non-incrementally color the text >>
+#@+node:ekr.20031218072017.1888:<< update state ivars >>
+self.last_flag = self.flag
+self.last_language = self.language
+#@nonl
+#@-node:ekr.20031218072017.1888:<< update state ivars >>
+#@+node:ekr.20031218072017.1889:<< set state ivars to "unknown" >>
+self.last_flag = "unknown"
+self.last_language = "unknown"
+#@-node:ekr.20031218072017.1889:<< set state ivars to "unknown" >>
+#@-node:ekr.20031218072017.1880:colorizeAnyLanguage & allies
+#@+node:ekr.20080828103146.15:c.scanAtPathDirectives
+def scanAtPathDirectives(self,aList,force=False,createPath=True):
+
+    '''Scan aList for @path directives.
+    Return a reasonable default if no @path directive is found.'''
+
+    trace = False and not g.unitTesting
+    verbose = True
+
+    c = self
+
+    c.scanAtPathDirectivesCount += 1 # An important statistic.
+    if trace and verbose: g.trace('**entry',g.callers(4))
+
+    # Step 1: Compute the starting path.
+    # The correct fallback directory is the absolute path to the base.
+    if c.openDirectory:  # Bug fix: 2008/9/18
+        base = c.openDirectory
+    else:
+        base = g.app.config.relative_path_base_directory
+        if base and base == "!":    base = g.app.loadDir
+        elif base and base == ".":  base = c.openDirectory
+
+    if trace and verbose:
+        g.trace('base   ',base)
+        g.trace('loadDir',g.app.loadDir)
+
+    absbase = c.os_path_finalize_join(g.app.loadDir,base)
+
+    if trace and verbose: g.trace('absbase',absbase)
+
+    # Step 2: look for @path directives.
+    paths = [] ; fileName = None
+    for d in aList:
+        # Look for @path directives.
+        path = d.get('path')
+        if trace and path:
+            g.trace('**** d',d)
+            g.trace('**** @path path',path)
+        if path is not None: # retain empty paths for warnings.
+            # Convert "path" or <path> to path.
+            path = g.stripPathCruft(path)
+            if path and path not in paths: paths.append(path)
+            # We will silently ignore empty @path directives.
+
+    # Add absbase and reverse the list.
+    paths.append(absbase)
+    paths.reverse()
+
+    # Step 3: Compute the full, effective, absolute path.
+    if trace and verbose:
+        g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+    path = c.os_path_finalize_join(*paths)
+    if trace and verbose: g.trace('joined path:',path)
+
+    # Step 4: Make the path if necessary.
+    if path and createPath and not g.os_path_exists(path):
+        ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
+        if not ok:
+            if force:
+                g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+            path = absbase # Bug fix: 2008/9/18
+
+    if trace: g.trace('returns',path)
+
+    return path
+#@-node:ekr.20080828103146.15:c.scanAtPathDirectives
+#@+node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+def __init__ (self,c):
+
+    trace = False and not g.unitTesting
+    self.c = c
+
+    if trace: g.trace('+' * 20,'(c.configSettings)',
+        c and c.shortFileName(),g.callers(5))
+
+    # Init these here to keep pylint happy.
+    self.default_derived_file_encoding = None
+    self.new_leo_file_encoding = None
+    self.redirect_execute_script_output_to_log_pane = None
+
+    self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
+    self.defaultLogFontSize  = g.app.config.defaultLogFontSize
+    self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
+    self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
+
+    for key in g.app.config.encodingIvarsDict:
+        if key != '_hash':
+            self.initEncoding(key)
+
+    for key in g.app.config.ivarsDict:
+        if key != '_hash':
+            self.initIvar(key)
+#@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+# This is a generalization of os.makedir.
+
+def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
+
+    """Attempt to make all non-existent directories"""
+
+    trace = False and not g.unitTesting
+    testing = False # True: don't actually make the directories.
+
+    if force:
+        create = True # Bug fix: g.app.config will not exist during startup.
+    elif c:
+        create = c.config and c.config.create_nonexistent_directories
+    else:
+        create = (g.app and g.app.config and
+            g.app.config.create_nonexistent_directories)
+
+    if not force and not create:
+        if trace: g.trace('did not create: force and create are both false')
+        return None
+
+    if trace:
+        g.trace('\n',theDir,'\n',g.callers(4))
+        # g.trace('c exists: %s force: %s create: %s dir: %s' % (
+            # c is not None,force,create,theDir))
+
+    if c: theDir = g.os_path_expandExpression(theDir,c=c)
+
+    dir1 = theDir = g.os_path_normpath(theDir)
+
+    # Split theDir into all its component parts.
+    paths = []
+    while len(theDir) > 0:
+        head,tail=g.os_path_split(theDir)
+        if len(tail) == 0:
+            paths.append(head)
+            break
+        else:
+            paths.append(tail)
+            theDir = head
+    path = ""
+    paths.reverse()
+    if trace: g.trace('paths:',paths)
+    for s in paths:
+        path = g.os_path_join(path,s)
+        if not g.os_path_exists(path):
+            try:
+                if testing:
+                    g.trace('***making',path)
+                else:
+                    os.mkdir(path)
+                if verbose and not testing and not g.app.unitTesting:
+                    # g.trace('***callers***',g.callers(5))
+                    g.es_print("created directory:",path,color='red')
+            except Exception:
+                # g.trace(g.callers())
+                if verbose: g.es_print("exception creating directory:",path,color='red')
+                g.es_exception()
+                return None
+    return dir1 # All have been created.
+#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+#@+node:ekr.20031218072017.1386:g.getOutputNewline
+def getOutputNewline (c=None,name=None):
+
+    '''Convert the name of a line ending to the line ending itself.
+
+    Priority:
+    - Use name if name given
+    - Use c.config.output_newline if c given,
+    - Otherwise use g.app.config.output_newline.'''
+
+    if name: s = name
+    elif c:  s = c.config.output_newline
+    else:    s = app.config.output_newline
+
+    if not s: s = ''
+    s = s.lower()
+    if s in ( "nl","lf"): s = '\n'
+    elif s == "cr": s = '\r'
+    elif s == "platform": s = os.linesep  # 12/2/03: emakital
+    elif s == "crlf": s = "\r\n"
+    else: s = '\n' # Default for erroneous values.
+    # g.trace(c,name,c.config.output_newline,'returns',repr(s))
+
+    if g.isPython3:
+        s = str(s)
+    return s
+#@-node:ekr.20031218072017.1386:g.getOutputNewline
+#@+node:ekr.20031218072017.1596:g.doHook
+@ This global function calls a hook routine.  Hooks are identified by the tag param.
+Returns the value returned by the hook routine, or None if the there is an exception.
+
+We look for a hook routine in three places:
+1. c.hookFunction
+2. app.hookFunction
+3. leoPlugins.doPlugins()
+We set app.hookError on all exceptions.  Scripts may reset app.hookError to try again.
+@c
+
+def doHook(tag,*args,**keywords):
+
+    trace = False ; verbose = False
+
+    if g.app.killed or g.app.hookError: # or (g.app.gui and g.app.gui.isNullGui):
+        return None
+
+    if args:
+        # A minor error in Leo's core.
+        g.pr("***ignoring args param.  tag = %s" % tag)
+
+    if not g.app.config.use_plugins:
+        if tag in ('open0','start1'):
+            s = "Plugins disabled: use_plugins is 0 in a leoSettings.leo file."
+            g.es_print(s,color="blue")
+        return None
+
+    # Get the hook handler function.  Usually this is doPlugins.
+    c = keywords.get("c")
+    f = (c and c.hookFunction) or g.app.hookFunction
+
+    if trace and (verbose or tag != 'idle'):
+        g.trace('tag',tag,'f',f and f.__name__)
+
+    if not f:
+        import leo.core.leoPlugins as leoPlugins
+        g.app.hookFunction = f = leoPlugins.doPlugins
+
+    try:
+        # Pass the hook to the hook handler.
+        # g.pr('doHook',f.__name__,keywords.get('c'))
+        return f(tag,keywords)
+    except Exception:
+        g.es_exception()
+        g.app.hookError = True # Supress this function.
+        g.app.idleTimeHook = False # Supress idle-time hook
+        return None # No return value
+#@-node:ekr.20031218072017.1596:g.doHook
+#@+node:ekr.20041113113140:loadOnePlugin
+def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
+
+    trace = False # and not g.unitTesting
+
+    global loadedModules,loadingModuleNameStack
+
+    # Prevent Leo from crashing if .leoID.txt does not exist.
+    if g.app.config is None:
+        print ('No g.app.config, making stub...')
+        class StubConfig(g.nullObject):
+            pass
+        g.app.config = StubConfig()
+
+    # Fixed reversion: do this after possibly creating stub config class.
+    verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
+    warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+
+    if moduleOrFileName.endswith('.py'):
+        moduleName = moduleOrFileName [:-3]
+    else:
+        moduleName = moduleOrFileName
+    moduleName = g.shortFileName(moduleName)
+
+    if isLoaded(moduleName):
+        module = loadedModules.get(moduleName)
+        if trace or verbose:
+            g.trace('plugin',moduleName,'already loaded',color="blue")
+        return module
+
+    assert g.app.loadDir
+
+    plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
+    moduleName = g.toUnicode(moduleName)
+
+    # This import will typically result in calls to registerHandler.
+    # if the plugin does _not_ use the init top-level function.
+    loadingModuleNameStack.append(moduleName)
+    result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
+    loadingModuleNameStack.pop()
+
+    if result:
+        loadingModuleNameStack.append(moduleName)
+
+        if tag == 'unit-test-load':
+            pass # Keep the result, but do no more.
+        elif hasattr(result,'init'):
+            try:
+                # Indicate success only if init_result is True.
+                init_result = result.init()
+                # g.trace('result',result,'init_result',init_result)
+                if init_result:
+                    loadedModules[moduleName] = result
+                    loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
+                else:
+                    if verbose and not g.app.initing:
+                        g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")
+                    result = None
+            except Exception:
+                g.es_print('exception loading plugin',color='red')
+                g.es_exception()
+                result = None
+        else:
+            # No top-level init function.
+            # Guess that the module was loaded correctly,
+            # but do *not* load the plugin if we are unit testing.
+
+            if g.app.unitTesting:
+                result = None
+                loadedModules[moduleName] = None
+            else:
+                g.trace('no init()',moduleName)
+                loadedModules[moduleName] = result
+        loadingModuleNameStack.pop()
+
+    if g.app.batchMode or g.app.inBridge: # or g.unitTesting
+        pass
+    elif result:
+        if trace or verbose:
+            g.trace('loaded plugin:',moduleName,color="blue")
+    else:
+        if trace or warn_on_failure or (verbose and not g.app.initing):
+            if trace or tag == 'open0':
+                g.trace('can not load enabled plugin:',moduleName,color="red")
+
+    return result
+#@-node:ekr.20041113113140:loadOnePlugin
+#@+node:ekr.20061031131434.100:addModeCommands (enterModeCallback)
+def addModeCommands (self):
+
+    '''Add commands created by @mode settings to c.commandsDict and k.inverseCommandsDict.'''
+
+    k = self ; c = k.c
+    d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
+
+    # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
+    for key in d:
+
+        def enterModeCallback (event=None,name=key):
+            k.enterNamedMode(event,name)
+
+        c.commandsDict[key] = f = enterModeCallback
+        k.inverseCommandsDict [f.__name__] = key
+        # g.trace('leoCommands %24s = %s' % (f.__name__,key))
+#@-node:ekr.20061031131434.100:addModeCommands (enterModeCallback)
+#@-node:ekr.20100202145902.6108:code
+#@-node:ekr.20100130042842.9008: Notes
+#@+node:ekr.20041118104831.1:class configSettings (leoCommands)
+class configSettings:
+
+    """A class to hold config settings for commanders."""
+
+    @others
+#@+node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+def __init__ (self,c):
+
+    trace = False and not g.unitTesting
+    self.c = c
+
+    if trace: g.trace('+' * 20,'(c.configSettings)',
+        c and c.shortFileName(),g.callers(5))
+
+    # Init these here to keep pylint happy.
+    self.default_derived_file_encoding = None
+    self.new_leo_file_encoding = None
+    self.redirect_execute_script_output_to_log_pane = None
+
+    self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
+    self.defaultLogFontSize  = g.app.config.defaultLogFontSize
+    self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
+    self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
+
+    for key in g.app.config.encodingIvarsDict:
+        if key != '_hash':
+            self.initEncoding(key)
+
+    for key in g.app.config.ivarsDict:
+        if key != '_hash':
+            self.initIvar(key)
+#@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+#@+node:ekr.20041118104240:initIvar (c.configSettings)
+def initIvar(self,key):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    # N.B. The key is munged.
+    bunch = g.app.config.ivarsDict.get(key)
+    ivarName = bunch.ivar
+    val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
+
+    if val or not hasattr(self,ivarName):
+        if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
+        setattr(self,ivarName,val)
+#@-node:ekr.20041118104240:initIvar (c.configSettings)
+#@+node:ekr.20041118104414:initEncoding
+def initEncoding (self,key):
+
+    c = self.c
+
+    # N.B. The key is munged.
+    bunch = g.app.config.encodingIvarsDict.get(key)
+    encodingName = bunch.ivar
+    encoding = g.app.config.get(c,encodingName,kind='string')
+
+    # New in 4.4b3: use the global setting as a last resort.
+    if encoding:
+        # g.trace('c.configSettings',c.shortFileName(),encodingName,encoding)
+        setattr(self,encodingName,encoding)
+    else:
+        encoding = getattr(g.app.config,encodingName)
+        # g.trace('g.app.config',c.shortFileName(),encodingName,encoding)
+        setattr(self,encodingName,encoding)
+
+    if encoding and not g.isValidEncoding(encoding):
+        g.es("bad", "%s: %s" % (encodingName,encoding))
+#@-node:ekr.20041118104414:initEncoding
+#@+node:ekr.20041118053731:Getters (c.configSettings)
+def get (self,setting,theType):
+    '''A helper function: return the commander's setting, checking the type.'''
+    return g.app.config.get(self.c,setting,theType)
+
+def getAbbrevDict (self):
+    '''return the commander's abbreviation dictionary.'''
+    return g.app.config.getAbbrevDict(self.c)
+
+def getBool (self,setting,default=None):
+    '''Return the value of @bool setting, or the default if the setting is not found.'''
+    return g.app.config.getBool(self.c,setting,default=default)
+
+def getButtons (self):
+    '''Return a list of tuples (x,y) for common @button nodes.'''
+    return g.app.config.atCommonButtonsList # unusual.
+
+def getColor (self,setting):
+    '''Return the value of @color setting.'''
+    return g.app.config.getColor(self.c,setting)
+
+def getCommands (self):
+    '''Return the list of tuples (headline,script) for common @command nodes.'''
+    return g.app.config.atCommonCommandsList # unusual.
+
+def getData (self,setting):
+    '''Return a list of non-comment strings in the body text of @data setting.'''
+    return g.app.config.getData(self.c,setting)
+
+def getDirectory (self,setting):
+    '''Return the value of @directory setting, or None if the directory does not exist.'''
+    return g.app.config.getDirectory(self.c,setting)
+
+def getFloat (self,setting):
+    '''Return the value of @float setting.'''
+    return g.app.config.getFloat(self.c,setting)
+
+def getFontFromParams (self,family,size,slant,weight,defaultSize=12):
+
+    '''Compute a font from font parameters.
+
+    Arguments are the names of settings to be use.
+    Default to size=12, slant="roman", weight="normal".
+
+    Return None if there is no family setting so we can use system default fonts.'''
+
+    return g.app.config.getFontFromParams(self.c,
+        family, size, slant, weight, defaultSize = defaultSize)
+
+def getInt (self,setting):
+    '''Return the value of @int setting.'''
+    return g.app.config.getInt(self.c,setting)
+
+def getLanguage (self,setting):
+    '''Return the value of @string setting.
+
+    The value of this setting should be a language known to Leo.'''
+    return g.app.config.getLanguage(self.c,setting)
+
+def getMenusList (self):
+    '''Return the list of entries for the @menus tree.'''
+    return g.app.config.getMenusList(self.c) # Changed in Leo 4.5.
+
+def getOpenWith (self):
+    '''Return a list of dictionaries corresponding to @openwith nodes.'''
+    return g.app.config.getOpenWith(self.c)
+
+def getRatio (self,setting):
+    '''Return the value of @float setting.
+    Warn if the value is less than 0.0 or greater than 1.0.'''
+    return g.app.config.getRatio(self.c,setting)
+
+def getRecentFiles (self):
+    '''Return the list of recently opened files.'''
+    return g.app.config.getRecentFiles()
+
+def getShortcut (self,shortcutName):
+    '''Return the tuple (rawKey,accel) for shortcutName in @shortcuts tree.'''
+    return g.app.config.getShortcut(self.c,shortcutName)
+
+def getSettingSource(self,setting):
+    '''return the name of the file responsible for setting.'''
+    return g.app.config.getSettingSource(self.c,setting)
+
+def getString (self,setting):
+    '''Return the value of @string setting.'''
+    return g.app.config.getString(self.c,setting)
+#@-node:ekr.20041118053731:Getters (c.configSettings)
+#@+node:ekr.20041118195812:Setters... (c.configSettings)
+def setRecentFiles (self,files):
+    '''Update the recent files list.'''
+    # Append the files to the global list.
+    g.app.config.appendToRecentFiles(files)
+#@-node:ekr.20041118195812:Setters... (c.configSettings)
+#@-node:ekr.20041118104831.1:class configSettings (leoCommands)
+#@-node:ekr.20100202145902.6106:Init all settings in c.initConfigSettings
 #@+node:ekr.20100108101415.6196:Create insert-tab commands
 insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
 #@nonl
@@ -1988,15 +2991,6 @@ These are marked with ###
 #@-node:ekr.20090131200406.11:Remove remaining tk-isms from Leo's core
 #@+node:ekr.20090907080624.6081:Spell checker should check headlines
 #@-node:ekr.20090907080624.6081:Spell checker should check headlines
-#@+node:ekr.20090813112405.5980:Delete resurrected nodes
-@nocolor-node
-
-https://sourceforge.net/forum/message.php?msg_id=3525277
-
-This problem is hard.
-It may be simpler in the one-node world.
-#@nonl
-#@-node:ekr.20090813112405.5980:Delete resurrected nodes
 #@+node:ekr.20081208102356.1:Threading colorizer doesn't handle multiple body editors
 @nocolor-node
 
@@ -2014,6 +3008,22 @@ threading colorizer plugin.
 Generalize?
 #@nonl
 #@-node:ekr.20100122104234.6168:Keystroke for add-nocolor-node ?
+#@+node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
+@nocolor-node
+
+I use Visual Studio 2008, the same that is used for Python 2.5/2.6.
+
+A few days ago, I submitted a patch that allows you to use Mingw32 as a
+compiler, too. If you use it, then you need to produce libpython26.a.
+
+For doing this, there is a tool pexport.exe which can do that. I found a website
+with those hints, but lost that, again :-) pexport is not included with mingw32.
+#@nonl
+#@+node:ekr.20090730165955.6014:Notes
+http://www.emmestech.com/software/pexports-0.43/download_pexports.html
+#@nonl
+#@-node:ekr.20090730165955.6014:Notes
+#@-node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
 #@-node:ekr.20100119145629.6104:First
 #@+node:ekr.20080603052650.466:Fix vim problems
 @nocolor
@@ -2875,12 +3885,6 @@ Improve the recursive import script.
 #@-node:ekr.20090724081340.5987:Improve recursive import script and @auto
 #@+node:ekr.20090714085914.5991:Add drag and drop to qt gui
 #@-node:ekr.20090714085914.5991:Add drag and drop to qt gui
-#@+node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
-#@-node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
-#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
-This probably should wait until the one-node world works.
-#@nonl
-#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
 #@+node:ekr.20090801103907.6018:Add entries to global dicts for more languages
 http://groups.google.com/group/leo-editor/browse_thread/thread/b41ddfeb3c84e780
 
@@ -3086,24 +4090,8 @@ zpt.py
 __init__.py
 #@-node:ekr.20090814190307.5983:print all modes/*.py files
 #@-node:ekr.20090801103907.6018:Add entries to global dicts for more languages
-#@+node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
-@nocolor-node
-
-I use Visual Studio 2008, the same that is used for Python 2.5/2.6.
-
-A few days ago, I submitted a patch that allows you to use Mingw32 as a
-compiler, too. If you use it, then you need to produce libpython26.a.
-
-For doing this, there is a tool pexport.exe which can do that. I found a website
-with those hints, but lost that, again :-) pexport is not included with mingw32.
-#@nonl
-#@+node:ekr.20090730165955.6014:Notes
-http://www.emmestech.com/software/pexports-0.43/download_pexports.html
-#@nonl
-#@-node:ekr.20090730165955.6014:Notes
-#@-node:ekr.20090730134219.6010:Help Tismer with XP install of psyco
 #@-node:ekr.20090811141250.5955:Other features
-#@+node:ekr.20080730212711.7:Improve config & plugins
+#@+node:ekr.20080730212711.7:Improve plugins handling
 @nocolor-node
 
 - Don't repeat "can not load <plugin>" messages.
@@ -3113,10 +4101,8 @@ http://www.emmestech.com/software/pexports-0.43/download_pexports.html
 - Fix the plugin mess.
 
     - Create a way to unload a plugin.  This should be relatively easy.
-#@+node:ekr.20090402072059.11:What should be done about @enabled-plugins nodes?
-# It's very confusing.
-#@nonl
-#@-node:ekr.20090402072059.11:What should be done about @enabled-plugins nodes?
+#@+node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
+#@-node:ekr.20090804105939.5993:Possibly redo how plugins are loaded
 #@+node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
 #@-node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
 #@+node:ekr.20080923200153.1:Support scan-directives hook again?
@@ -3124,29 +4110,6 @@ http://www.emmestech.com/software/pexports-0.43/download_pexports.html
 # Also, the color_markup plugin doesn't work with the threading colorizer.
 #@nonl
 #@-node:ekr.20080923200153.1:Support scan-directives hook again?
-#@+node:ekr.20080604060150.1:Clean up plugins
-Some scripting says the following are in .../plugins/ but not
-leoPluginsRef.leo:
-
-dyna_menu.py
-dynacommon.py
-exampleTemacsExtension.py
-gtkDialogs.py
-gtkGui.py
-initinclass.py
-leoOPML.py
-leo_interface.py
-leo_pdf.py
-mod_leo2ascd.py
-override_commands.py
-rst.py
-rst2.py
-temacs.py
-threading_colorizer.py
-threading_colorizer.py
-usetemacs.py
-zenity_file_dialogs.py
-#@-node:ekr.20080604060150.1:Clean up plugins
 #@+node:ekr.20080421140032.1:Fix multiple controllers problem in all plugins
 @nocolor
 
@@ -3155,7 +4118,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
 @color
 #@nonl
 #@-node:ekr.20080421140032.1:Fix multiple controllers problem in all plugins
-#@-node:ekr.20080730212711.7:Improve config & plugins
+#@-node:ekr.20080730212711.7:Improve plugins handling
 #@+node:ekr.20090714085914.5993:Most important features
 #@+node:ekr.20071001052501:Versioning for nodes
 @nocolor

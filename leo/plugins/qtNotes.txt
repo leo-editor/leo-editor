@@ -234,7 +234,6 @@ def match_leo_keywords(self,s,i):
         return -(j-i+1) # An important optimization.
 #@-node:ekr.20090614134853.3724:match_leo_keywords
 #@-node:ekr.20100201113707.3727:Made sure Leo keywords end with whitespace
-#@-node:ekr.20100201113707.3728:Leo 4.7 b3 projects
 #@+node:ekr.20100102100353.3668:Show invisibles
 #@+node:ekr.20090614134853.3696: Birth & init
 #@+node:ekr.20090614134853.3697:__init__ (jeditColorizer)
@@ -1331,6 +1330,100 @@ def setTag (self,tag,s,i,j):
 
 #@-node:ekr.20090614134853.3813:setTag
 #@-node:ekr.20100102100353.3668:Show invisibles
+#@-node:ekr.20100201113707.3728:Leo 4.7 b3 projects
+#@+node:ekr.20100202160247.3681:Leo 4.7 rc1 projects
+#@+node:ekr.20100127124405.3701:The unicode bug
+#@+node:ekr.20100109082023.3734:leoMoveCursorHelper (Qt)
+def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
+
+    '''Move the cursor in a QTextEdit.'''
+
+    trace = False and not g.unitTesting
+    verbose = True
+    w = self.widget
+    if trace:
+        g.trace(kind,'extend',extend)
+        if verbose:
+            g.trace(len(w.toPlainText()))
+
+    tc = QtGui.QTextCursor
+    d = {
+        'exchange': True, # Dummy.
+        'down':tc.Down,'end':tc.End,'end-line':tc.EndOfLine,
+        'home':tc.Start,'left':tc.Left,'page-down':tc.Down,
+        'page-up':tc.Up,'right':tc.Right,'start-line':tc.StartOfLine,
+        'up':tc.Up,
+    }
+    kind = kind.lower()
+    op = d.get(kind)
+    mode = g.choose(extend,tc.KeepAnchor,tc.MoveAnchor)
+
+    if not op:
+        return g.trace('can not happen: bad kind: %s' % kind)
+
+    if kind in ('page-down','page-up'):
+        cursor = w.textCursor()
+        cursor.movePosition(op,mode,linesPerPage)
+        w.setTextCursor(cursor)
+    elif kind == 'exchange': # exchange-point-and-mark
+        cursor = w.textCursor()
+        anchor = cursor.anchor()
+        pos = cursor.position()
+        cursor.setPosition(pos,tc.MoveAnchor)
+        cursor.setPosition(anchor,tc.KeepAnchor)
+        w.setTextCursor(cursor)
+    else:
+        w.moveCursor(op,mode)
+#@-node:ekr.20100109082023.3734:leoMoveCursorHelper (Qt)
+#@+node:ekr.20081121105001.589:setSelectionRangeHelper & helper
+def setSelectionRangeHelper(self,i,j,insert):
+
+    trace = False and not g.unitTesting
+    w = self.widget
+    i = self.toPythonIndex(i)
+    j = self.toPythonIndex(j)
+
+    n = self.lengthHelper()
+    i = max(0,min(i,n))
+    j = max(0,min(j,n))
+    if insert is None:
+        ins = max(i,j)
+    else:
+        ins = self.toPythonIndex(insert)
+        ins = max(0,min(ins,n))
+
+    if trace:g.trace('i',i,'j',j,'insert',insert)
+
+    # 2010/02/02: Use only tc.setPosition here.
+    # Using tc.movePosition doesn't work.
+    tc = w.textCursor()
+    if i == j:
+        tc.setPosition(i)
+    elif ins == j:
+        # Put the insert point at j
+        tc.setPosition(i)
+        tc.setPosition(j,tc.KeepAnchor)
+    else:
+        # Put the insert point a i
+        tc.setPosition(j)
+        tc.setPosition(i,tc.KeepAnchor)
+
+    w.setTextCursor(tc)
+#@+node:ekr.20081121105001.590:lengthHelper
+def lengthHelper(self):
+
+    '''Return the length of the text.'''
+
+    w = self.widget
+    tc = w.textCursor()
+    tc.movePosition(QtGui.QTextCursor.End)
+    n = tc.position()
+    return n
+
+#@-node:ekr.20081121105001.590:lengthHelper
+#@-node:ekr.20081121105001.589:setSelectionRangeHelper & helper
+#@-node:ekr.20100127124405.3701:The unicode bug
+#@-node:ekr.20100202160247.3681:Leo 4.7 rc1 projects
 #@-all
 #@nonl
 #@-node:ekr.20081121105001.147:@thin qtNotes.txt
