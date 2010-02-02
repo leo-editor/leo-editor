@@ -6255,6 +6255,7 @@ self.tangle_errors = 0
 # Global options
 self.fixed = False
 self.page_width = 132
+self.sparse_move = True # Set later in finishCreate.
 self.tab_width = -4
 self.tangle_batch_flag = False
 self.untangle_batch_flag = False

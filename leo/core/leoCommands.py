@@ -188,6 +188,9 @@ class baseCommands (object):
             # A leoSettings.leo file.
             c.commandsDict = {}
 
+        # Set settings ivars.
+        self.sparse_move = c.config.getBool('sparse_move_outline_left')
+
         c.frame.log.finishCreate()
         c.bodyWantsFocusNow()
     #@+node:ekr.20051007143620:printCommandsDict
@@ -294,6 +297,7 @@ class baseCommands (object):
         # Global options
         self.fixed = False
         self.page_width = 132
+        self.sparse_move = True # Set later in finishCreate.
         self.tab_width = -4
         self.tangle_batch_flag = False
         self.untangle_batch_flag = False
@@ -5323,7 +5327,6 @@ class baseCommands (object):
             c.treeFocusHelper()
             return
 
-        sparseMove = c.config.getBool('sparse_move_outline_left')
         c.endEditing()
         undoData = u.beforeMoveNode(p)
         #@    << Move p down & set moved if successful >>
@@ -5342,7 +5345,7 @@ class baseCommands (object):
                 dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
                 p.moveAfter(next)
 
-        if moved and sparseMove and parent and not parent.isAncestorOf(p):
+        if moved and c.sparse_move and parent and not parent.isAncestorOf(p):
             # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
             parent.contract()
         #@-node:ekr.20031218072017.1769:<< Move p down & set moved if successful >>
@@ -5376,7 +5379,6 @@ class baseCommands (object):
 
         inAtIgnoreRange = p.inAtIgnoreRange()
         parent = p.parent()
-        sparseMove = c.config.getBool('sparse_move_outline_left')
         c.endEditing()
         undoData = u.beforeMoveNode(p)
         dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
@@ -5389,7 +5391,7 @@ class baseCommands (object):
             dirtyVnodeList.extend(dirtyVnodeList2)
         c.setChanged(True)
         u.afterMoveNode(p,'Move Left',undoData,dirtyVnodeList)
-        if sparseMove: # New in Leo 4.4.2
+        if c.sparse_move: # New in Leo 4.4.2
             parent.contract()
         c.redraw_now(p,setFocus=True)
         c.recolor_now() # Moving can change syntax coloring.
@@ -5450,7 +5452,6 @@ class baseCommands (object):
         inAtIgnoreRange = p.inAtIgnoreRange()
         back2 = back.visBack(c)
 
-        sparseMove = c.config.getBool('sparse_move_outline_left')
         c.endEditing()
         undoData = u.beforeMoveNode(p)
         dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
@@ -5490,7 +5491,7 @@ class baseCommands (object):
                 moved = True
                 p.moveAfter(back2)
 
-        if moved and sparseMove and parent and not parent.isAncestorOf(p):
+        if moved and c.sparse_move and parent and not parent.isAncestorOf(p):
             # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
             parent.contract()
         #@nonl
@@ -5554,12 +5555,11 @@ class baseCommands (object):
     #@+node:ekr.20071213185710:c.toggleSparseMove
     def toggleSparseMove (self,event=None):
 
-        c = self ; p = c.p
-        tag = 'sparse_move_outline_left'
+        c = self
 
-        sparseMove = not c.config.getBool(tag)
-        c.config.set(p, tag, sparseMove)
-        g.es(tag,'=',sparseMove,color='blue')
+        c.sparse_move = not c.sparse_move
+
+        g.es('parse-move: %s' % c.sparse_move,color='blue')
     #@-node:ekr.20071213185710:c.toggleSparseMove
     #@-node:ekr.20031218072017.1766:Move... (Commands)
     #@+node:ekr.20031218072017.2913:Goto (Commands)
