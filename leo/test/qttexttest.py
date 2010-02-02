@@ -34,7 +34,7 @@ def showselect():
     s = w.toPlainText()
     su = gu(s)
     n1,n2 = tc.selectionStart(),tc.selectionEnd()
-    print(n1,n2,'length',abs(n2-n1),len(s),len(su))
+    print(n1,n2,'length',abs(n2-n1),len(s),len(su),gu(s[n1:n2]).encode('utf-8'))
 
 def do():
     # w.textCursor().removeSelectedText() # works
