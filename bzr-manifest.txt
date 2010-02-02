@@ -1,7 +1,5 @@
 .bzrignore
 LICENSE.txt
-Leo-4.7-beta-2.zip
-Leo-4.7-beta-3.zip
 bzr-manifest.txt
 launchLeo.py
 leo/
@@ -1136,7 +1134,6 @@ leo/doc/html/frontMatter.html
 leo/doc/html/frontMatter.html.txt
 leo/doc/html/glossary.html
 leo/doc/html/glossary.html.txt
-leo/doc/html/glossary.txt
 leo/doc/html/history.html
 leo/doc/html/history.html.txt
 leo/doc/html/install.html
@@ -2209,8 +2206,6 @@ leo/scripts/tangle_done.py
 leo/scripts/untangle_done.py
 leo/test/
 leo/test/.leo/
-leo/test/Intro.tex
-leo/test/Leo-4.7-beta-tests/
 leo/test/cgi-bin/
 leo/test/cgi-bin/edward.py
 leo/test/cgi-bin/leo.js
@@ -2220,12 +2215,9 @@ leo/test/hello.html
 leo/test/jyleo.py
 leo/test/komodo-test-data.py
 leo/test/komodo-test.py
-leo/test/leo-4.7-beta-tests.leo
 leo/test/pylint-leo-rc.txt
 leo/test/pythonServerClasses.leo
-leo/test/qttexttest.py
 leo/test/qtui_generate.py
-leo/test/rope.leo
 leo/test/rst-test.txt
 leo/test/scriptFile.py
 leo/test/server.py
@@ -2237,14 +2229,11 @@ leo/test/testCloneUpdate.leo
 leo/test/testCloneUpdate.txt
 leo/test/test_gui.txt
 leo/test/testzip.zip
-leo/test/thin-unicode-test.txt
 leo/test/tnodeList.py
 leo/test/uA_test_file.py
 leo/test/uA_test_shadow_file.py
-leo/test/unicode-test.txt.desktop
 leo/test/unitTest.leo
 leo/test/unittest/
-leo/test/unittest/.leo_shadow/
 leo/test/unittest/at-asis-test.py
 leo/test/unittest/at-auto-line-number-test.py
 leo/test/unittest/at-auto-test.py
@@ -2295,7 +2284,6 @@ leo/www/leo_rst.css
 leo/www/silver_city.css
 leo.nsi
 leo_to_html.xsl
-out
 profileLeo.py
 pylint-leo.bat
 pylint-leo.py
