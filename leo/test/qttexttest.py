@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+#@+leo-ver=4-thin
+#@+node:ekr.20100202115249.2023:@thin qttexttest.py
+#@@first
+#@@language python
 import sys
 from PyQt4 import Qt
 
@@ -9,9 +13,9 @@ else:
     def gu(s): return unicode(s)
 
 s = gu('''Select the following string: वादक.
-This stringconsists of 4 characters.
+This string consists of 4 characters, followed by a period.
 Hit do, then undo.
-Notice that the selection range is one too big.
+Notice that the selection range now includes the period.
 ''')
 
 n1,n2 = None,None # The selection range.
@@ -58,3 +62,5 @@ app.connect(w, Qt.SIGNAL("selectionChanged()"), showselect)
 app.connect(b1, Qt.SIGNAL("clicked()"), do)
 app.connect(b2, Qt.SIGNAL("clicked()"), undo)
 app.exec_()
+#@-node:ekr.20100202115249.2023:@thin qttexttest.py
+#@-leo

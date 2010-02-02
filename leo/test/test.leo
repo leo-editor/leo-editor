@@ -469,7 +469,7 @@
 <v t="ekr.20100127123336.2018"><vh>Copy</vh></v>
 </v>
 <v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
-<v t="ekr.20100202115249.2023"><vh>@edit qttexttest.py</vh></v>
+<v t="ekr.20100202115249.2023"><vh>@thin qttexttest.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
