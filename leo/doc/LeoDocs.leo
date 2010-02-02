@@ -3423,6 +3423,17 @@
 <v t="ekr.20100129054823.17685"><vh>New settings</vh></v>
 </v>
 </v>
+<v t="ekr.20100201192329.7018" a="E"><vh>4.7 beta 3</vh>
+<v t="ekr.20100201192329.7095" a="E"><vh>Bugs fixed in Leo 4.7 b3</vh>
+<v t="ekr.20100201192329.7141"><vh>Fixed unicode problems</vh></v>
+<v t="ekr.20100201192329.7101"><vh>paste-node-as-clone now sets dirty bits properly</vh></v>
+<v t="ekr.20100201192329.7106"><vh>Fixed crasher in sort-siblings</vh></v>
+<v t="ekr.20100201192329.7108"><vh>Fixed bug 515164: a crasher in p.positionExists</vh></v>
+<v t="ekr.20100201192329.7112"><vh>Fix crasher in scrolledMessage.py</vh></v>
+<v t="ekr.20100201192329.7113"><vh>Fixed problem with colon following @path</vh></v>
+<v t="ekr.20100201192329.7116"><vh>Code cleanup</vh></v>
+</v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -33799,6 +33810,66 @@ The latter opens vim whenever a new node is selected in Leo.
 
 </t>
 <t tx="ekr.20100129054823.17685">The qt colorizer now supports font specifications in @font nodes.</t>
+<t tx="ekr.20100201192329.7018">Leo 4.7 beta 3                       February 2, 2009
+
+Leo 4.7 beta 3 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo 4.7 beta 3 fixes all known serious bugs in Leo.
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.7:
+--------------------------
+
+- Leo now uses the simplest possible internal data model.
+  This is the so-called "one-node" world.
+- Leo supports Python 3.x.
+- Leo requires Python 2.6 or above.
+- Several important improvements in file handling.
+    - Leo converts @file nodes to @thin nodes automatically.
+    - @auto-rst now works much more reliably reliably.
+    - Leo no longer @noref trees.  Such trees are not
+      reliable in cooperative environments.
+- A new Windows installer.
+- Many other features, including new command line options and new plugins.
+- Dozens of bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20100201192329.7095"></t>
+<t tx="ekr.20100201192329.7101">This was a serious error.  It could cause clone clashes on later reloads.</t>
+<t tx="ekr.20100201192329.7106">This only happened if two nodes had the same headline.</t>
+<t tx="ekr.20100201192329.7108"></t>
+<t tx="ekr.20100201192329.7112"></t>
+<t tx="ekr.20100201192329.7113">@nocolor-node
+
+The problem arises because an @path directive ended with ':':
+
+    @path: aPath
+
+What I did:
+
+- g.get_directives_dict now carefully checks for non-whitespace following a directive.
+- The qt colorizer does the same.
+- Added unit test to check for this.
+</t>
+<t tx="ekr.20100201192329.7116">Eliminated most imports from the leo/extensions folder.
+
+</t>
+<t tx="ekr.20100201192329.7141">'utf-8' is now the official, explicit unicode encoding unless overridden when
+reading files.
+  
+This simplifies the code in several ways. In particular, the 'mbcs' encoding is
+never used by default, and there is no g.app.defaultEncoding argument.
+
+The rst3 command now uses 'utf-8' for all encodings unless explicitly overridden.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?

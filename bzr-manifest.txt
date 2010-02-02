@@ -1,6 +1,7 @@
 .bzrignore
 LICENSE.txt
 Leo-4.7-beta-2.zip
+Leo-4.7-beta-3.zip
 bzr-manifest.txt
 launchLeo.py
 leo/

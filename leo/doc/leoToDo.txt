@@ -10,12 +10,6 @@
 - Refactoring: rope, etc.
 - Flexitble file format.
 #@nonl
-#@+node:ekr.20100131161507.6301:Before b3
-#@+node:ekr.20100131094008.6291:Fix installer problem
-The top-level folder is empty.  It just needs to be deleted.
-#@nonl
-#@-node:ekr.20100131094008.6291:Fix installer problem
-#@-node:ekr.20100131161507.6301:Before b3
 #@+node:ekr.20100126110826.6253:Before rc1
 #@+node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
 #@-node:ekr.20100131161507.6303:Unit tests that all commands have docstrings

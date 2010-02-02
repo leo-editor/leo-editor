@@ -75,28 +75,11 @@
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
-<v t="ekr.20100120072650.6089" descendentVnodeUnknownAttributes="7d71005809000000302e302e382e302e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@thin leoProjects.txt</vh></v>
+<v t="ekr.20100120072650.6089" descendentVnodeUnknownAttributes="7d71005807000000302e302e392e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
-</v>
-<v t="ekr.20090113083258.3"><vh>Unit tests &amp; helper files</vh>
-<v t="ekr.20090514093345.6053"><vh>@button run-all-core-tests @key = Alt-7</vh></v>
-<v t="ekr.20090517102212.5874"><vh>Helper files</vh>
-<v t="ekr.20090517102548.5889"><vh>@@@mark-for-unit-tests</vh>
-<v t="ekr.20090517020744.5906"><vh>@path ../test/unittest</vh>
-<v t="ekr.20090517020744.5907"><vh>@@thin at-path-test2.py</vh></v>
-</v>
-<v t="ekr.20090517020744.5909"><vh>@path ../test</vh>
-<v t="ekr.20090517020744.5910"><vh>@path unittest</vh>
-<v t="ekr.20090517020744.5911"><vh>@@thin at-path-test3.py</vh></v>
-</v>
-</v>
-<v t="ekr.20090517020744.5904"><vh>@@thin ../test/unittest/at-path-test1.py</vh></v>
-</v>
-</v>
-<v t="ekr.20090113083258.1" descendentVnodeUnknownAttributes="7d7100285807000000302e322e372e3471017d71025808000000616e6e6f7461746571037d7104735803000000302e3071057d71065808000000616e6e6f7461746571077d7108735807000000302e322e302e3571097d710a5808000000616e6e6f74617465710b7d710c735807000000302e322e362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e322e332e333571117d71125808000000616e6e6f7461746571137d711473752e"><vh>@thin test_core.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
@@ -799,27 +782,7 @@ paste-after-lws:    ^([ \t]+)           --&gt;  \1x
     that ends at the current position. This is called a positive lookbehind assertion.
     The contained pattern must only match strings of some fixed length,
     meaning that abc or a|b are allowed, but a* and a{3,4} are not.</t>
-<t tx="ekr.20090113083258.3"># These should all pass with Alt-5 or Alt-6.
-# They will pass with Alt-4 only if the code has not been changed.</t>
-<t tx="ekr.20090514093345.6053">'''
-Run all the unit tests in the .leo file given by the path.
-The path is relative to the leo\test directory.
-'''
-
-import leo.core.leoTest as leoTest
-
-leoTest.runUnitTestLeoFile(gui='nullGui',path='../core/leoPy.leo')
-
-g.es_print('unit tests done',color='blue')</t>
 <t tx="ekr.20090514093345.6054"></t>
-<t tx="ekr.20090517020744.5904"></t>
-<t tx="ekr.20090517020744.5906"></t>
-<t tx="ekr.20090517020744.5907"></t>
-<t tx="ekr.20090517020744.5909"></t>
-<t tx="ekr.20090517020744.5910"></t>
-<t tx="ekr.20090517020744.5911"></t>
-<t tx="ekr.20090517102212.5874"></t>
-<t tx="ekr.20090517102548.5889"># Add the nodes in the following tree to external unit tests.</t>
 <t tx="ekr.20090620052003.8505">u = c.undoer
 w = c.frame.body.bodyCtrl
 p2 = p.insertAsNthChild(0)

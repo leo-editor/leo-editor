@@ -9,8 +9,8 @@
 #@@language python
 #@@tabwidth -4
 
-build = 2790
-date = "January 29, 2010"
-version = "4.7 b2"
+build = 2835
+date = "February 2, 2010"
+version = "4.7 beta 3"
 #@-node:ekr.20090717092906.12765:@thin leoVersion.py
 #@-leo

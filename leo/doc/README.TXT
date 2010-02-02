@@ -1,9 +1,9 @@
-Leo 4.7 beta 2                       January 29, 2009
+Leo 4.7 beta 3                       February 2, 2009
 
-Leo 4.7 beta 2 is now available at:
+Leo 4.7 beta 3 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
-Leo 4.7 beta 2 fixes all known serious bugs in Leo.
+Leo 4.7 beta 3 fixes all known serious bugs in Leo.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
