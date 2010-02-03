@@ -2650,6 +2650,7 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20100203163606.5365"><vh>2to3 script</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -23598,6 +23599,61 @@ for obj,val in table:
     val2 = g.isCallable(obj)
     assert val == val2,'%s, expected %s, got %s' % (
         repr(obj),val,val2)
+</t>
+<t tx="ekr.20100203163606.5365">import os
+
+def run(files):
+    args = [r'python c:\python26\Tools\Scripts\2to3.py']
+    args.extend(files)
+    args.append('-xprint')
+    args.append('&gt;out2')
+    args = ','.join(args)
+    os.system(args)
+
+plugins = (
+    # 'qtGui.py','tkGui.py',
+    # 'mod_scripting.py',
+    # 'open_with.py','UNL.py',
+    # 'vim.py','xemacs.py',
+)
+core_files = (
+    'leoApp.py',
+    # 'leoAtFile.py',
+    # 'leoChapters.py',
+    # 'leoCommands.py',
+    # 'leoEditCommands.py','W0511'),
+    # 'leoFileCommands.py',
+    # 'leoFind.py',
+    # 'leoFrame.py',
+    # 'leoGlobals.py',
+    # 'leoGui.py',
+    # 'leoImport.py',
+    # 'leoMenu.py',
+    # 'leoNodes.py',
+    # 'leoPlugins.py',
+    # 'leoShadow.py',
+    # 'leoTangle.py',
+    # 'leoUndo.py',
+)
+external_files = (
+    # 'ipy_leo.py',
+    # 'lproto.py',
+    # 'path.py',
+    # 'pickleshare.py',
+)
+table = (
+    ('plugins',plugins),
+    ('core',core_files),
+    ('external',external_files),
+)
+files = []
+for theDir,aList in table:
+    for z in aList:
+        fn = os.path.abspath(os.path.join('leo',theDir,z))
+        if os.path.exists(fn): files.append(fn)
+        else: print('file not found:',fn)
+
+run(files)
 </t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly

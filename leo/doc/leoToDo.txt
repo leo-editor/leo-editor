@@ -24,7 +24,7 @@ unbound()
 - Refactoring: rope, etc.
 - Flexitble file format.
 #@nonl
-#@+node:ekr.20100126110826.6253:Before rc1
+#@+node:ekr.20100126110826.6253:Before rc1 4 bugs
 expand-and-go-right.
 #@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
 @nocolor-node
@@ -253,7 +253,7 @@ def checkPaste (self,parent,p):
 #@-node:ekr.20080410115129.1:checkPaste
 #@-node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
 #@-node:ekr.20100122130101.6172:Fix bug in c.pasteOutline when run from unit tests
-#@+node:ekr.20100111094359.6208:Simplify goto-line and fix bugs
+#@+node:ekr.20100111094359.6208:Fix goto-line bugs
 #@+node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 def goToLineNumber (self,n,p=None,scriptData=None):
 
@@ -669,7 +669,7 @@ def goto_showResults(self,found,p,n,n2,lines):
     w.seeInsertPoint()
 #@-node:ekr.20080904071003.14:goto_showResults
 #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
-#@-node:ekr.20100111094359.6208:Simplify goto-line and fix bugs
+#@-node:ekr.20100111094359.6208:Fix goto-line bugs
 #@+node:ekr.20100118143729.6256:Fix bug 508108: No methods sub-nodes in PHP class import
 https://bugs.launchpad.net/leo-editor/+bug/508108
 
@@ -694,7 +694,7 @@ kind of change would also make @auto a lot more useful for PHP.
 #@+node:ekr.20100129133806.6237:Remove cruft from test folder
 #@-node:ekr.20100129133806.6237:Remove cruft from test folder
 #@-node:ekr.20100202145902.8709:Distribution
-#@-node:ekr.20100126110826.6253:Before rc1
+#@-node:ekr.20100126110826.6253:Before rc1 4 bugs
 #@-node:ekr.20071211093011:4.7 One-node world, Leo3K
 #@+node:ekr.20100109214940.6225:4.8 Autocompletion, vim
 #@+node:ekr.20100119145629.6104:First
