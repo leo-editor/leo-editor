@@ -334,10 +334,9 @@ from leo.plugins import rClickBasePluginClasses as baseClasses
 
 requiredIvars = (
     ('commandList', (list, tuple)),
-    ('commandPrefix', basestring),
+    ('commandPrefix', g.choose(g.isPython3,str,basestring)),
     ('grabWidget', False)
 )
-#@nonl
 #@-node:bobjack.20080424195922.85:<< required ivars >>
 #@nl
 
@@ -817,7 +816,8 @@ class ToolbarIconButton(Tk.Button, object):
         command = keys.get('command')
 
         # Rewrite to keep pylint happy.
-        if command and isinstance(command, basestring):
+        # if command and isinstance(command, basestring):
+        if command and g.isString(command):
             def commandCallback(c=self.c, command=command):
                 c.executeMinibufferCommand(command)
         elif command:
@@ -1040,7 +1040,8 @@ class ToolbarIconButton(Tk.Button, object):
     def setCommand(self, command):
 
         # Rewrite to keep pylint happy.
-        if command and isinstance(command, basestring):
+        # if command and isinstance(command, basestring):
+        if command and g.isString(command):
             def commandCallback(event,command=command):
                 self.c.executeMinibufferCommand(command)
         elif command:

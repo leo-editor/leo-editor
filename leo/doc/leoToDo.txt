@@ -26,8 +26,6 @@ unbound()
 #@nonl
 #@+node:ekr.20100126110826.6253:Before rc1
 expand-and-go-right.
-#@+node:ekr.20100203050306.5889:convert basestring to g.isString()
-#@-node:ekr.20100203050306.5889:convert basestring to g.isString()
 #@+node:ekr.20081204091750.4:Fix inconsistency in how @path works??
 @nocolor-node
 

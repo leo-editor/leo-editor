@@ -8973,6 +8973,7 @@ def idleTimeHookHandler(*args,**keys):
         g.app.afterHandler = g.idleTimeHookHandler
     else:
         g.app.afterHandler = None
+#@nonl
 #@-node:EKR.20040602125018.2:idleTimeHookHandler
 #@-node:ekr.20031218072017.1315:idle time functions (leoGlobals)
 #@+node:ekr.20031218072017.2823:c.openWith and helpers

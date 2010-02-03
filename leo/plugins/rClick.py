@@ -705,7 +705,7 @@ requiredIvars = (
     ('iconCache', dict),
 
     ('commandList', (tuple, dict)),
-    ('iconBasePath', basestring),
+    ('iconBasePath', g.choose(g.isPython3,str,basestring)),
 )
 #@-node:bobjack.20080424195922.5:<< required ivars >>
 #@nl
@@ -2006,7 +2006,8 @@ class pluginController(baseClasses.basePluginController):
             key = context_menu
             if isinstance(key, list):
                 top_menu_table = context_menu[:]
-            elif isinstance(key, basestring):
+            # elif isinstance(key, basestring):
+            elif g.isString(key):
                 top_menu_table = c.context_menus.get(key, [])[:]
         else:
 
@@ -2072,7 +2073,8 @@ class pluginController(baseClasses.basePluginController):
                     self.mb_retval = None
                     try:
                         try:
-                            if isinstance(cmd, basestring):
+                            # if isinstance(cmd, basestring):
+                            if g.isString(cmd):
                                 c.executeMinibufferCommand(cmd) 
                             elif cmd:
                                 self.mb_retval = cmd(keywords)
@@ -2106,10 +2108,12 @@ class pluginController(baseClasses.basePluginController):
                     rmenu.rc_columnbreak = 1
                     continue
 
-                elif isinstance(txt, basestring):
+                # elif isinstance(txt, basestring):
+                elif g.isString(txt):
                     #@            << add a named item >>
                     #@+node:bobjack.20080516105903.60:<< add a named item >>
-                    if isinstance(cmd, basestring):
+                    # if isinstance(cmd, basestring):
+                    if g.isString(cmd):
                         #@    << minibuffer command item >>
                         #@+node:bobjack.20080516105903.61:<< minibuffer command item >>
                         def invokeMinibufferMenuCommand(c=c, event=event, txt=txt, cmd=cmd, item_data=item_data, phase='invoke'):
@@ -2287,7 +2291,8 @@ class pluginController(baseClasses.basePluginController):
 
         """
 
-        assert isinstance(cmd, basestring)
+        # assert isinstance(cmd, basestring)
+        assert g.isString(cmd)
 
         cmds = cmd.splitlines()
         if not cmds:

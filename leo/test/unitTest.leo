@@ -1113,6 +1113,13 @@
 <v t="ekr.20040713123828.1"><vh>after</vh></v>
 </v>
 </v>
+<v t="ekr.20100203103015.5352"><vh> For open-with</vh>
+<v t="ekr.20100203103015.5353"><vh>@test open-with conflict dialog</vh></v>
+<v t="ekr.20100203103015.5354"><vh>@test c.openWithTempFilePath</vh></v>
+<v t="ekr.20100203103015.5355"><vh>@test c.getOpenWithExt</vh></v>
+<v t="ekr.20100203103015.5356"><vh>@test c.openTempFileInExternalEditor</vh></v>
+<v t="ekr.20100203103015.5357"><vh>@test g.isCallable</vh></v>
+</v>
 <v t="ekr.20071113194033"><vh> Mark commands</vh>
 <v t="ekr.20050512083807.1"><vh>Startup</vh></v>
 <v t="ekr.20050512083807.2"><vh>Docs</vh></v>
@@ -1231,7 +1238,7 @@
 <v t="ekr.20071113145804.10"><vh>@test c.contractAllHeadlines</vh></v>
 <v t="ville.20090313183551.2"><vh>@test c.db</vh></v>
 <v t="ekr.20061106112522"><vh>@test c.insertBodyTime</vh></v>
-<v t="ekr.20100131180007.5431"><vh>@test c.scanAllDirectives</vh></v>
+<v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
 <v t="ekr.20100131180007.5466"><vh>@test c.scanAtPathDirectives</vh>
 <v t="ekr.20100131180007.5467"><vh>@path one</vh>
 <v t="ekr.20100131180007.5468"><vh>@path two</vh>
@@ -2024,7 +2031,6 @@
 <v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
 <v t="ekr.20071113202153.2"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
 <v t="ekr.20100131171342.5599"><vh>leoGui</vh>
 <v t="ekr.20100131171342.5600"><vh>@test w.toGui/PythonIndex</vh></v>
 <v t="ekr.20100131171342.5601"><vh>@test w.toGuiIndex (test2)</vh></v>
@@ -2643,13 +2649,6 @@
 </v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20100203103015.5352"><vh>unit tests for open-with</vh>
-<v t="ekr.20100203103015.5353"><vh>@test open-with conflict dialog</vh></v>
-<v t="ekr.20100203103015.5354"><vh>@test c.openWithTempFilePath</vh></v>
-<v t="ekr.20100203103015.5355"><vh>@test c.getOpenWithExt</vh></v>
-<v t="ekr.20100203103015.5356"><vh>@test c.openTempFileInExternalEditor</vh></v>
-<v t="ekr.20100203103015.5357"><vh>@test g.isCallable</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -23255,32 +23254,6 @@ if os.path.exists(path):
     assert fc.read_only
 else:
     fc.warnOnReadOnlyFiles(path)
-</t>
-<t tx="ekr.20100131180007.5431">@language python
-@comment a b c
-    # @comment must follow @language
-@tabwidth -4
-@pagewidth 72
-@encoding utf-8
-@lineending crlf
-
-c,p = g.getTestVars()
-d = c.scanAllDirectives(p)
-# print g.dictToString(d)
-
-table = (
-    ('delims', ('a','b','c'),),
-    ('encoding','utf-8'),
-    ('language','python'),
-    ('lineending','\r\n'),
-    ('pagewidth',72),
-    ('tabwidth',-4),
-)
-
-for kind,expected in table:
-    got = d.get(kind)
-    assert got == expected, 'kind: %s, expected %s, got %s' % (
-        kind,repr(expected),repr(got))
 </t>
 <t tx="ekr.20100131180007.5434">@language python
 @comment a b c

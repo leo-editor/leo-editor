@@ -798,12 +798,9 @@ def getColor(name, default=None):
 
 
     """
-    if g.isPython3:
-        if not isinstance(name,str):
-            return name
-    else:
-        if not isinstance(name,basestring):
-            return name
+
+    if not g.isString(name):
+        return name
 
     #g.trace(name, default)
 
