@@ -9369,6 +9369,8 @@ for obj,val in table:
 #@-node:ekr.20100203050306.5890:@test g.isCallable
 #@-node:ekr.20100203050306.5800:unit tests for open-with
 #@-node:ekr.20080509065556.2:Refactored open-with
+#@+node:ekr.20100203050306.5889:converted basestring to g.isString()
+#@-node:ekr.20100203050306.5889:converted basestring to g.isString()
 #@-node:ekr.20100202050243.5740:Leo 4.7 rc1 projects
 #@+node:ekr.20100130042842.6404:Reading settings (do not delete)
 Here are the calls to g.app.getxxx
