@@ -670,8 +670,6 @@ def goto_showResults(self,found,p,n,n2,lines):
 #@-node:ekr.20080904071003.14:goto_showResults
 #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 #@-node:ekr.20100111094359.6208:Simplify goto-line and fix bugs
-#@+node:ekr.20100203125449.5791:Use 2to3 to check for 3x problems
-#@-node:ekr.20100203125449.5791:Use 2to3 to check for 3x problems
 #@+node:ekr.20100118143729.6256:Fix bug 508108: No methods sub-nodes in PHP class import
 https://bugs.launchpad.net/leo-editor/+bug/508108
 
@@ -682,6 +680,12 @@ expect Leo to create a node for each method in the class as it does for
 kind of change would also make @auto a lot more useful for PHP.
 #@nonl
 #@-node:ekr.20100118143729.6256:Fix bug 508108: No methods sub-nodes in PHP class import
+#@+node:ekr.20100203160817.5795:Testing
+#@+node:ekr.20100203160817.5793:Unit tests for all toggle commands
+#@-node:ekr.20100203160817.5793:Unit tests for all toggle commands
+#@+node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
+#@-node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
+#@-node:ekr.20100203160817.5795:Testing
 #@+node:ekr.20100202145902.8709:Distribution
 #@+node:ekr.20100129133806.6239:Remove icons?
 #@-node:ekr.20100129133806.6239:Remove icons?
@@ -690,75 +694,6 @@ kind of change would also make @auto a lot more useful for PHP.
 #@+node:ekr.20100129133806.6237:Remove cruft from test folder
 #@-node:ekr.20100129133806.6237:Remove cruft from test folder
 #@-node:ekr.20100202145902.8709:Distribution
-#@+node:ekr.20100129133806.6234:Optional
-#@+node:ekr.20100113075303.6270:Easiest vim problems
-#@+node:ekr.20100112051224.6229:(vim) Binding Arrow keys (fixed?)
-Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
-commands or @mode nodes have no effect.
-#@nonl
-#@-node:ekr.20100112051224.6229:(vim) Binding Arrow keys (fixed?)
-#@+node:ekr.20100112051224.6239:Displaying mode help
-@nocolor-node
-
-The "--> mode-help" command has the following issues related to the
-display of the "Help" tab:
-
-1. Key label always capitalized.
-
-Vim commands are mapped to both lower-case and upper-case keys but always appear
-mapped to upper-case keys within the "Help" tab.
-
-2. Layout of tab's contents.
-
-To improve readability and better support narrow tab cards, display the mode's
-label without the "enter-" and "-mode" text and place the key label before the
-mode label.
-
-For example, the following entries would change from::
-    enter-vi-delete-line-mode d
-    enter-vi-delete-to-begin-of-word-mode b
-to::
-    d : vi-delete-line
-    b : vi-delete-to-begin-of-word
-#@nonl
-#@-node:ekr.20100112051224.6239:Displaying mode help
-#@+node:ekr.20100112051224.6225:Repeat last cursor movement command
-Support the ';' key: repeat the last "To character" or "Find character" command.
-#@nonl
-#@-node:ekr.20100112051224.6225:Repeat last cursor movement command
-#@+node:ekr.20090629183608.8445:Cursors (easiest)
-Vi normally uses two different "current character" designators depending on the
-current state.
-
-Insert state:
-
-In the Insert state, a vertical bar is placed between two characters to indicate
-where the next key will be inserted. Leo's cursor is of this type.
-
-Command state: 
-
-In the Command state, vi expects that the cursor is highlighting a current
-character and provides commands to enter the insert state or paste text either
-before or after that current character. Leo's vi emulation currently does not
-support a "current character" cursor. As a result, inserting and pasting before
-or after is replaced by inserting or pasting "at" the current cursor location.
-For example, the 'i' and 'a' command are both mapped to enter the insert state
-at the current cursor location.
-#@nonl
-#@-node:ekr.20090629183608.8445:Cursors (easiest)
-#@+node:ekr.20100112051224.6231:Undo command (fixed?)
-Using the "undo" command (key 'u') to undo a change to a node's headline text
-only works correctly after another node has been selected. It appears that
-changes made to a node's headline text are not recorded in Leo's change history
-until the edited node has lost focus.
-#@nonl
-#@-node:ekr.20100112051224.6231:Undo command (fixed?)
-#@-node:ekr.20100113075303.6270:Easiest vim problems
-#@+node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
-#@-node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
-#@+node:ekr.20100131155919.6298:Add debugging rst-arg
-#@-node:ekr.20100131155919.6298:Add debugging rst-arg
-#@-node:ekr.20100129133806.6234:Optional
 #@-node:ekr.20100126110826.6253:Before rc1
 #@-node:ekr.20071211093011:4.7 One-node world, Leo3K
 #@+node:ekr.20100109214940.6225:4.8 Autocompletion, vim
@@ -1863,6 +1798,69 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
 
 Vim mode users: your top 3 complaints, please
 #@nonl
+#@+node:ekr.20100113075303.6270:Easiest vim problems
+#@+node:ekr.20100112051224.6229:(vim) Binding Arrow keys (fixed?)
+Binding arrow keys, with or without Shift, Ctrl, Alt, and their combinations, to
+commands or @mode nodes have no effect.
+#@nonl
+#@-node:ekr.20100112051224.6229:(vim) Binding Arrow keys (fixed?)
+#@+node:ekr.20100112051224.6239:Displaying mode help
+@nocolor-node
+
+The "--> mode-help" command has the following issues related to the
+display of the "Help" tab:
+
+1. Key label always capitalized.
+
+Vim commands are mapped to both lower-case and upper-case keys but always appear
+mapped to upper-case keys within the "Help" tab.
+
+2. Layout of tab's contents.
+
+To improve readability and better support narrow tab cards, display the mode's
+label without the "enter-" and "-mode" text and place the key label before the
+mode label.
+
+For example, the following entries would change from::
+    enter-vi-delete-line-mode d
+    enter-vi-delete-to-begin-of-word-mode b
+to::
+    d : vi-delete-line
+    b : vi-delete-to-begin-of-word
+#@nonl
+#@-node:ekr.20100112051224.6239:Displaying mode help
+#@+node:ekr.20100112051224.6225:Repeat last cursor movement command
+Support the ';' key: repeat the last "To character" or "Find character" command.
+#@nonl
+#@-node:ekr.20100112051224.6225:Repeat last cursor movement command
+#@+node:ekr.20090629183608.8445:Cursors (easiest)
+Vi normally uses two different "current character" designators depending on the
+current state.
+
+Insert state:
+
+In the Insert state, a vertical bar is placed between two characters to indicate
+where the next key will be inserted. Leo's cursor is of this type.
+
+Command state: 
+
+In the Command state, vi expects that the cursor is highlighting a current
+character and provides commands to enter the insert state or paste text either
+before or after that current character. Leo's vi emulation currently does not
+support a "current character" cursor. As a result, inserting and pasting before
+or after is replaced by inserting or pasting "at" the current cursor location.
+For example, the 'i' and 'a' command are both mapped to enter the insert state
+at the current cursor location.
+#@nonl
+#@-node:ekr.20090629183608.8445:Cursors (easiest)
+#@+node:ekr.20100112051224.6231:Undo command (fixed?)
+Using the "undo" command (key 'u') to undo a change to a node's headline text
+only works correctly after another node has been selected. It appears that
+changes made to a node's headline text are not recorded in Leo's change history
+until the edited node has lost focus.
+#@nonl
+#@-node:ekr.20100112051224.6231:Undo command (fixed?)
+#@-node:ekr.20100113075303.6270:Easiest vim problems
 #@+node:ekr.20100113075303.6271:Mode-oriented bindings
 #@+node:ekr.20100112051224.6228:Binding numeric keys (modes-oriented bindings)
 Mapping a number to a command or an @mode node works but can not be used as it
@@ -2699,6 +2697,8 @@ could specify autocompleter conventions, say in an @autocompleter node in an
 #@-node:ekr.20071106083149:Recent post
 #@-node:ekr.20090131200406.14:autocompletion
 #@+node:ekr.20090811141250.5955:Other features
+#@+node:ekr.20100131155919.6298:Add debugging rst-arg
+#@-node:ekr.20100131155919.6298:Add debugging rst-arg
 #@+node:ekr.20090724081340.5987:Improve recursive import script and @auto
 @nocolor-node
 

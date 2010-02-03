@@ -2,8 +2,6 @@ import os
 import sys
 from pylint import lint
 
-# changed.3
-
 core_table = (
     # ('leoGlobals.py',''),
     # ('leoApp.py',''),
@@ -25,20 +23,27 @@ core_table = (
     # ('leoUndo.py',''),
 )
 
+external_table = (
+    ('ipy_leo.py',''),
+    ('lproto.py',''),
+    ('path.py',''),
+    ('pickleshare.py',''),
+)
+
 plugins_table = (
-    # ('qtGui.py','W0221'),
-    # ('tkGui.py','W0221'),
-    # ('mod_scripting.py','E0611'),
+    ('qtGui.py','W0221'),
+    ('tkGui.py','W0221'),
+    ('mod_scripting.py','E0611'),
         # Harmless: E0611:489:scriptingController.runDebugScriptCommand:
         # No name 'leoScriptModule' in module 'leo.core'
     ('open_with.py',''),
-    # ('toolbar.py','E1101,W0221,W0511'),
+    ('toolbar.py','E1101,W0221,W0511'),
         # Dangerous: many erroneous E1101 errors
         # Harmless: W0221: Arguments number differs from overridden method
         # Harmless: W0511: Fixme and to-do.
-    # ('UNL.py',''),
-    # ('vim.py',''),
-    # ('xemacs.py',''),
+    ('UNL.py',''),
+    ('vim.py',''),
+    ('xemacs.py',''),
 )
 
 def run(fn,suppress):
@@ -52,10 +57,13 @@ def run(fn,suppress):
     else:
         print('file not found:',fn)
 
-for fn,suppress in core_table:
-    fn = os.path.join('leo','core',fn)
-    run(fn,suppress)
+tables_table = (
+    (core_table,'core'),
+    # (external_table,'external'),
+    (plugins_table,'plugins'),
+)
 
-for fn,suppress in plugins_table:
-    fn = os.path.join('leo','plugins',fn)
-    run(fn,suppress)
+for table,theDir in tables_table:
+    for fn,suppress in table:
+        fn = os.path.join('leo',theDir,fn)
+        run(fn,suppress)

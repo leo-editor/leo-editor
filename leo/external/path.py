@@ -15,6 +15,7 @@ for f in d.files('*.py'):
     f.chmod(0755)
 
 This module requires Python 2.2 or later.
+EKR: Modidications made for Python 3.x require Python 2.6 or later.
 
 
 URL:     http://www.jorendorff.com/articles/python/path
@@ -61,11 +62,6 @@ if isPython3:
     _base = str
 else:
     _base = unicode
-    # Pre-2.3 workaround for basestring.
-    try:
-        basestring
-    except NameError:
-        basestring = (str, unicode)
 
 # Universal newline support
 _textmode = 'r'
