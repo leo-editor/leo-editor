@@ -191,6 +191,7 @@
 </v>
 </v>
 <v t="ekr.20070224123943"></v>
+<v t="ekr.20071025193940"></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
 <v t="ekr.20080531131542.1"><vh>mxTextTools proto</vh>
@@ -1488,7 +1489,7 @@ leoTest.doTests (c,all=False)</t>
 # rst3.py
 contextmenu.py
 plugins_menu.py
-#open_with.py
+open_with.py
 quicksearch.py
 # ipython.py
 scrolledmessage.py

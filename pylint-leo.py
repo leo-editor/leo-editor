@@ -2,6 +2,8 @@ import os
 import sys
 from pylint import lint
 
+# changed.3
+
 core_table = (
     # ('leoGlobals.py',''),
     # ('leoApp.py',''),

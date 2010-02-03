@@ -2644,7 +2644,7 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20100203103015.5352" a="E"><vh>unit tests for open-with</vh>
+<v t="ekr.20100203103015.5352"><vh>unit tests for open-with</vh>
 <v t="ekr.20100203103015.5353"><vh>@test open-with conflict dialog</vh></v>
 <v t="ekr.20100203103015.5354"><vh>@test c.openWithTempFilePath</vh></v>
 <v t="ekr.20100203103015.5355"><vh>@test c.getOpenWithExt</vh></v>

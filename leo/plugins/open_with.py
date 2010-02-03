@@ -19,8 +19,9 @@ See the documentation for @openwith nodes in leoSettings.leo for details.
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
-Tk = g.importExtension('Tkinter',   pluginName=__name__,verbose=True)
+Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
+import os
 import subprocess
 import sys
 #@nonl
@@ -81,12 +82,14 @@ def init():
 
 def on_idle (tag,keywords):
 
-    #g.trace(tag,keywords)
+    # Tracing interfere with interprocess communication.
+    trace = False and not g.unitTesting
 
-    import os
     a = g.app
     if a.killed: return
-    # g.trace('open with plugin')
+
+    if trace: g.trace('open_with.py',tag,keywords)
+
     for dict in a.openWithFiles:
         path = dict.get("path")
         c = dict.get("c")
@@ -148,9 +151,8 @@ def on_idle (tag,keywords):
                     #@-node:EKR.20040517075715.6:<< update p's body text >>
                     #@nl
             except Exception:
-                # g.es_exception()
+                g.es_exception()
                 pass
-#@nonl
 #@-node:EKR.20040517075715.5:on_idle
 #@+node:EKR.20040517075715.8:create_open_with_menu & helpers
 #@+at 

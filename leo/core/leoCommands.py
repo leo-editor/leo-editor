@@ -960,7 +960,7 @@ class baseCommands (object):
     #@+node:ekr.20031218072017.2824:c.getOpenWithExt
     def getOpenWithExt (self,p,ext):
 
-        trace = True and not g.app.unitTesting
+        trace = False and not g.app.unitTesting
         c = self
 
         if not ext:
@@ -1177,9 +1177,11 @@ class baseCommands (object):
             f.write(s)
             f.flush()
             f.close()
-            try:    time = g.os_path_getmtime(fn)
-            except: time = None
-            if trace: g.es('time: ',time)
+            try:
+                time = g.os_path_getmtime(fn)
+                if time: g.es('time: ',time)
+            except:
+                time = None
 
             # Remove previous entry from app.openWithFiles if it exists.
             for d in g.app.openWithFiles[:]:
@@ -1196,8 +1198,10 @@ class baseCommands (object):
                 'body':s,
                 'encoding':encoding,
                 'time':time,
+                # Used by the open_with plugin.
+                'p':p.copy(),
                 # Used by c.openWithHelper, and below.
-                'v':p.v
+                'v':p.v,
             }
             g.app.openWithFiles.append(d)
             return fn

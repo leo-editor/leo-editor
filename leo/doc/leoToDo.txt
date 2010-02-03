@@ -50,6 +50,68 @@ Drat.  I suppose building in unicode smarts: filtering 'general punctuation' cha
 http://www.fileformat.info/info/unicode/char/2026/index.htm
 #@nonl
 #@-node:ekr.20100203050306.5793:Notes
+#@+node:ekr.20031218072017.1315:idle time functions (leoGlobals)
+#@+node:EKR.20040602125018:enableIdleTimeHook
+@ Enables the "idle" hook.
+After enableIdleTimeHook is called, Leo will call the "idle" hook
+approximately every g.idleTimeDelay milliseconds.
+@c
+
+def enableIdleTimeHook(idleTimeDelay=500):
+
+    if not g.app.idleTimeHook:
+        # g.trace('start idle-time hook: %d msec.' % idleTimeDelay)
+        # Start idle-time processing only after the first idle-time event.
+        g.app.gui.setIdleTimeHook(g.idleTimeHookHandler)
+        g.app.afterHandler = g.idleTimeHookHandler
+
+    # 1/4/05: Always update these.
+    g.app.idleTimeHook = True
+    g.app.idleTimeDelay = idleTimeDelay # Delay in msec.
+#@-node:EKR.20040602125018:enableIdleTimeHook
+#@+node:EKR.20040602125018.1:disableIdleTimeHook
+# Disables the "idle" hook.
+def disableIdleTimeHook():
+
+    g.app.idleTimeHook = False
+#@-node:EKR.20040602125018.1:disableIdleTimeHook
+#@+node:EKR.20040602125018.2:idleTimeHookHandler
+# An internal routine used to dispatch the "idle" hook.
+trace_count = 0
+
+def idleTimeHookHandler(*args,**keys):
+
+    trace = False and not g.unitTesting
+
+    if trace: # Do not use g.trace here!
+        global trace_count ; trace_count += 1
+        if 0:
+            g.pr('idleTimeHookHandler',trace_count)
+        else:
+            if trace_count % 10 == 0:
+                for z in g.app.windowList:
+                    c = z.c
+                    g.pr("idleTimeHookHandler",trace_count,c.shortFileName())
+
+    # New for Python 2.3: may be called during shutdown.
+    if g.app.killed: return
+
+    for z in g.app.windowList:
+        c = z.c
+        # Do NOT compute c.currentPosition.
+        # This would be a MAJOR leak of positions.
+        g.doHook("idle",c=c)
+
+    # Requeue this routine after g.app.idleTimeDelay msec.
+    # (This delay is set by g.enableIdleTimeHook.)
+    # Faster requeues overload the system.
+    if g.app.idleTimeHook:
+        g.app.gui.setIdleTimeHookAfterDelay(g.idleTimeHookHandler)
+        g.app.afterHandler = g.idleTimeHookHandler
+    else:
+        g.app.afterHandler = None
+#@-node:EKR.20040602125018.2:idleTimeHookHandler
+#@-node:ekr.20031218072017.1315:idle time functions (leoGlobals)
 #@+node:ekr.20031218072017.2823:c.openWith and helpers
 def openWith(self,event=None,data=None):
 
@@ -86,7 +148,7 @@ def openWith(self,event=None,data=None):
 #@+node:ekr.20031218072017.2824:c.getOpenWithExt
 def getOpenWithExt (self,p,ext):
 
-    trace = True and not g.app.unitTesting
+    trace = False and not g.app.unitTesting
     c = self
 
     if not ext:
@@ -303,9 +365,11 @@ def createOpenWithTempFile (self,p,ext):
         f.write(s)
         f.flush()
         f.close()
-        try:    time = g.os_path_getmtime(fn)
-        except: time = None
-        if trace: g.es('time: ',time)
+        try:
+            time = g.os_path_getmtime(fn)
+            if time: g.es('time: ',time)
+        except:
+            time = None
 
         # Remove previous entry from app.openWithFiles if it exists.
         for d in g.app.openWithFiles[:]:
@@ -322,8 +386,10 @@ def createOpenWithTempFile (self,p,ext):
             'body':s,
             'encoding':encoding,
             'time':time,
+            # Used by the open_with plugin.
+            'p':p.copy(),
             # Used by c.openWithHelper, and below.
-            'v':p.v
+            'v':p.v,
         }
         g.app.openWithFiles.append(d)
         return fn

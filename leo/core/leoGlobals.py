@@ -3133,9 +3133,11 @@ trace_count = 0
 
 def idleTimeHookHandler(*args,**keys):
 
-    if 0: # Do not use g.trace here!
+    trace = False and not g.unitTesting
+
+    if trace: # Do not use g.trace here!
         global trace_count ; trace_count += 1
-        if 1:
+        if 0:
             g.pr('idleTimeHookHandler',trace_count)
         else:
             if trace_count % 10 == 0:
