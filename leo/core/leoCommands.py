@@ -32,7 +32,6 @@ import leo.external.pickleshare
 import hashlib
 import keyword
 import os
-# import string
 import sys
 import tempfile
 import time
@@ -1165,7 +1164,7 @@ class baseCommands (object):
             #@nl
             g.app.openWithFiles.append(theDict)
             return path
-        except:
+        except Exception:
             if theFile:
                 theFile.close()
             theFile = None
@@ -1178,17 +1177,18 @@ class baseCommands (object):
 
         """Return the path to the temp file corresponding to p and ext."""
 
-        name = "%s_LeoTemp_%s%s" % (
-            g.sanitize_filename(p.headString()),
-            str(id(p.v)),ext)
-
-        name = g.toUnicode(name)
-
-        td = g.os_path_finalize(tempfile.gettempdir())
-
-        path = g.os_path_join(td,name)
-
-        return path
+        if 0: # This requires changes to the callers.
+            fd,fn = tempfile.mkstemp(text=False)
+            os.close(fd)
+            return g.toUnicode(fn)
+        else:
+            name = "%s_LeoTemp_%s%s" % (
+                g.sanitize_filename(p.headString()),
+                str(id(p.v)),ext)
+            name = g.toUnicode(name)
+            td = g.os_path_finalize(tempfile.gettempdir())
+            path = g.os_path_join(td,name)
+            return path
     #@-node:ekr.20031218072017.2832:c.openWithTempFilePath
     #@-node:ekr.20031218072017.2823:openWith and helpers
     #@+node:ekr.20031218072017.2833:close
