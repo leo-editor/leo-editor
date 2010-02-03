@@ -4605,36 +4605,6 @@ def stateHandler (self,event):
 #@-node:ekr.20050920084036.215:stateHandler
 #@-node:ekr.20051005151838:Helpers
 #@-node:ekr.20050920084036.207:queryReplaceCommandsClass (limited to single node)
-#@+node:ekr.20041117151301.1:startupEncoding (no longer used)
-def startupEncoding ():
-
-    '''Compute the encoding used by g.computeStandardDirectories.'''
-
-    return 'utf-8'
-#@-node:ekr.20041117151301.1:startupEncoding (no longer used)
-#@+node:ekr.20031218072017.2618:app.setEncoding
-def setEncoding (self):
-
-    """Set g.app.defaultEncoding.
-    runLeo.doPrePluginsInit calls this just after reading settings files.
-    """
-
-    a = self ; c = None
-
-    for (encoding,src) in (
-        (g.app.config.getString(c,'default-encoding'),'from settings file'),
-        ("utf-8","")
-    ):
-        if g.isValidEncoding (encoding):
-            a.defaultEncoding = encoding
-            g.es('default encoding %s%s' % (
-                encoding,src),color='orange')
-            break
-        elif encoding:
-            color = g.choose(a.defaultEncoding=="ascii","red","blue")
-            g.trace("ignoring invalid %s encoding: %s" % (
-                src,encoding),color=color)
-#@-node:ekr.20031218072017.2618:app.setEncoding
 #@+node:ekr.20041118195812.2:set & setString (c.configSettings)
 def set (self,p,setting,val):
 

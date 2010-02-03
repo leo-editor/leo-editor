@@ -2644,6 +2644,13 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20100203103015.5352" a="E"><vh>unit tests for open-with</vh>
+<v t="ekr.20100203103015.5353"><vh>@test open-with conflict dialog</vh></v>
+<v t="ekr.20100203103015.5354"><vh>@test c.openWithTempFilePath</vh></v>
+<v t="ekr.20100203103015.5355"><vh>@test c.getOpenWithExt</vh></v>
+<v t="ekr.20100203103015.5356"><vh>@test c.openTempFileInExternalEditor</vh></v>
+<v t="ekr.20100203103015.5357"><vh>@test g.isCallable</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -23545,6 +23552,80 @@ assert path and path.endswith(endpath),'expected ending %s got %s' % (
 <t tx="ekr.20100131180007.5467"></t>
 <t tx="ekr.20100131180007.5468"></t>
 <t tx="ekr.20100131180007.5469"></t>
+<t tx="ekr.20100203103015.5352"></t>
+<t tx="ekr.20100203103015.5353"># A copy of the code from c.createOrRecreateTempFileAsNeeded.
+# Not a perfect test, but stil significant.
+
+assert c.conflict_message,'fail 1'
+
+result = g.app.gui.runAskYesNoCancelDialog(c,
+    "Conflict!", c.conflict_message,
+    yesMessage = "Outline",
+    noMessage = "File",
+    defaultButton = "Cancel")
+
+assert result in (None,'cancel'),'fail 2: %s' % result</t>
+<t tx="ekr.20100203103015.5354">s = c.openWithTempFilePath(p,'.py')
+assert s.find('LeoTemp') &gt; -1
+assert s.endswith('.py')</t>
+<t tx="ekr.20100203103015.5355">@language python
+
+table = (
+    (None,'.py'),
+    ('','.py'),
+    ('txt','.txt'),
+    ('.txt','.txt'),
+)
+
+for ext,result in table:
+    result2 = c.getOpenWithExt(p,ext)
+    assert result==result2,'ext: %s, expected %s, got %s' % (
+        repr(ext),repr(result),repr(result2))
+</t>
+<t tx="ekr.20100203103015.5356">arg = ''
+arg0 = 'one'
+fn = '&lt;fn&gt;'
+filename = '' # g.os.path.basename(arg)
+vtuple = [arg0,fn]
+
+table = (
+    ('os.system',       'os.system(%s)' % (arg+fn)),
+    ('os.startfile',    'os.startfile(%s)' % (arg+fn)),
+    ('exec',            'exec(%s)' % (arg+fn)),
+    ('os.spawnl',       'os.spawnl(%s,%s,%s)' % (arg,filename,fn)),
+    ('os.spawnv',       'os.spawnv(%s,%s)' % (arg0,vtuple)),
+    ('subprocess.Popen','subprocess.Popen(%s)' % vtuple),
+    ('huh?',            'bad command:'+'huh?'),
+)
+
+for openType,result in table:
+    if openType in ('os.spawnv','subprocess.Popen'):
+        arg2 = ['one']
+    else:
+        arg2 = None
+    result2 = c.openTempFileInExternalEditor(
+        arg2,fn,openType,testing=True)
+    assert result==result2,'expected %s, got %s' % (
+        repr(result),repr(result2))</t>
+<t tx="ekr.20100203103015.5357">def spam(): pass
+lam = lambda a: None
+class aCallable:
+    def __call__ (self):
+        pass
+c = aCallable()
+
+table = (
+    ('abc',False),
+    (spam,True),
+    (lam,True),
+    (c,True)
+)
+
+for obj,val in table:
+    val2 = g.isCallable(obj)
+    assert val == val2,'%s, expected %s, got %s' % (
+        repr(obj),val,val2)
+</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

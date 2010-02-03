@@ -32,6 +32,7 @@ import leo.external.pickleshare
 import hashlib
 import keyword
 import os
+import subprocess
 import sys
 import tempfile
 import time
@@ -59,11 +60,6 @@ try:
     import parser # needed only for weird Python 2.2 parser errors.
 except Exception:
     pass
-
-try:
-    import subprocess
-except ImportError:
-    subprocess = g.importExtension('subprocess',None,verbose=False)
 
 # The following import _is_ used.
 import token    # for Check Python command
@@ -928,10 +924,10 @@ class baseCommands (object):
     #@nonl
     #@-node:ekr.20090212054250.9:c.createNodeFromExternalFile
     #@-node:ekr.20031218072017.2821:c.open & helper
-    #@+node:ekr.20031218072017.2823:openWith and helpers
+    #@+node:ekr.20031218072017.2823:c.openWith and helpers
     def openWith(self,event=None,data=None):
 
-        """This routine handles the items in the Open With... menu.
+        '''This routine handles the items in the Open With... menu.
 
         These items can only be created by createOpenWithMenuFromTable().
         Typically this would be done from the "open2" hook.
@@ -940,7 +936,7 @@ class baseCommands (object):
         using a list, e.g.:
 
         openWith("os.spawnv", ["c:/prog.exe","--parm1","frog","--switch2"], None)
-        """
+        '''
 
         c = self ; p = c.p
         n = data and len(data) or 0
@@ -949,248 +945,287 @@ class baseCommands (object):
             return
         try:
             openType,arg,ext=data
-            if not g.doHook("openwith1",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext):
-                g.enableIdleTimeHook(idleTimeDelay=500)
-                #@            << set ext based on the present language >>
-                #@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
-                if not ext:
-                    # if node is part of @<file> tree, get ext from file name
-                    for p2 in p.self_and_parents():
-                        if p2.isAnyAtFileNode():
-                            fn = p2.h.split(None,1)[1]
-                            ext = g.os_path_splitext(fn)[1]
-                            g.trace(ext)
-                            break
-
-                if not ext:
-                    theDict = c.scanAllDirectives()
-                    language = theDict.get("language")
-                    ext = g.app.language_extension_dict.get(language)
-                    # g.trace(language,ext)
-
-                if not ext:
-                    ext = ".txt"
-
-                if ext[0] != ".":
-                    ext = "."+ext
-
-                # g.trace("ext",ext)
-                #@-node:ekr.20031218072017.2824:<< set ext based on the present language >>
-                #@nl
-                #@            << create or reopen temp file, testing for conflicting changes >>
-                #@+node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
-                theDict = None ; path = None
-                #@<< set dict and path if a temp file already refers to p.v >>
-                #@+node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v >>
-                searchPath = c.openWithTempFilePath(p,ext)
-
-                if g.os_path_exists(searchPath):
-                    for theDict in g.app.openWithFiles:
-                        if p.v == theDict.get('v') and searchPath == theDict.get("path"):
-                            path = searchPath
-                            break
-                #@-node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v >>
-                #@nl
-                if path:
-                    #@    << create or recreate temp file as needed >>
-                    #@+node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
-                    #@+at 
-                    #@nonl
-                    # We test for changes in both p and the temp file:
-                    # 
-                    # - If only p's body text has changed, we recreate the 
-                    # temp file.
-                    # - If only the temp file has changed, do nothing here.
-                    # - If both have changed we must prompt the user to see 
-                    # which code to use.
-                    #@-at
-                    #@@c
-
-                    encoding = theDict.get("encoding")
-                    old_body = theDict.get("body")
-                    new_body = p.b
-                    new_body = g.toEncodedString(new_body,encoding,reportErrors=True)
-
-                    old_time = theDict.get("time")
-                    try:
-                        new_time = g.os_path_getmtime(path)
-                    except:
-                        new_time = None
-
-                    body_changed = old_body != new_body
-                    temp_changed = old_time != new_time
-
-                    if body_changed and temp_changed:
-                        #@    << Raise dialog about conflict and set result >>
-                        #@+node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
-                        message = (
-                            "Conflicting changes in outline and temp file\n\n" +
-                            "Do you want to use the code in the outline or the temp file?\n\n")
-
-                        result = g.app.gui.runAskYesNoCancelDialog(c,
-                            "Conflict!", message,
-                            yesMessage = "Outline",
-                            noMessage = "File",
-                            defaultButton = "Cancel")
-                        #@-node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
-                        #@nl
-                        if result == "cancel": return
-                        rewrite = result == "outline"
-                    else:
-                        rewrite = body_changed
-
-                    if rewrite:
-                        path = c.createOpenWithTempFile(p,ext)
-                    else:
-                        g.es("reopening:",g.shortFileName(path),color="blue")
-                    #@-node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
-                    #@nl
-                else:
-                    path = c.createOpenWithTempFile(p,ext)
-
-                if not path:
-                    return # An error has occured.
-                #@-node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
-                #@nl
-                #@            << execute a command to open path in external editor >>
-                #@+node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
-                try:
-                    if arg == None: arg = ""
-                    shortPath = path # g.shortFileName(path)
-                    if openType == "os.system":
-                        if 1:
-                            # This works, _provided_ that arg does not contain blanks.  Sheesh.
-                            command = 'os.system(%s)' % (arg+shortPath)
-                            os.system(arg+shortPath)
-                        else:
-                            # XP does not like this format!
-                            command = 'os.system("%s" "%s")' % (arg,shortPath)
-                            os.system('"%s" "%s"' % (arg,shortPath))
-                    elif openType == "os.startfile":
-                        command = "os.startfile(%s)" % (arg+shortPath)
-                        os.startfile(arg+path)
-                    elif openType == "exec":
-                        command = "exec(%s)" % (arg+shortPath)
-                        exec(arg+path,{},{})
-                    elif openType == "os.spawnl":
-                        filename = g.os_path_basename(arg)
-                        command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
-                        os.spawnl(os.P_NOWAIT,arg,filename,path)
-                    elif openType == "os.spawnv":
-                        filename = os.path.basename(arg[0]) 
-                        vtuple = arg[1:]
-                        vtuple.insert(0, filename)
-                            # add the name of the program as the first argument.
-                            # Change suggested by Jim Sizelove.
-                        vtuple.append(path)
-                        command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
-                        os.spawnv(os.P_NOWAIT,arg[0],vtuple)
-                    # This clause by Jim Sizelove.
-                    elif openType == "subprocess.Popen":
-                        use_shell = True
-                        if isinstance(arg, basestring):
-                            vtuple = arg + " " + path
-                        elif isinstance(arg, (list, tuple)):
-                            vtuple = arg[:]
-                            vtuple.append(path)
-                            use_shell = False
-                        command = "subprocess.Popen(%s)" % repr(vtuple)
-                        if subprocess:
-                            try:
-                                subprocess.Popen(vtuple, shell=use_shell)
-                            except OSError:
-                                g.es_print("vtuple",repr(vtuple))
-                                g.es_exception()
-                        else:
-                            g.trace('Can not import subprocess.  Skipping: "%s"' % command)
-                    elif callable(openType):
-                        # Invoke openWith like this:
-                        # c.openWith(data=[f,None,None])
-                        # f will be called with one arg, the filename
-                        openType(shortPath)
-
-                    else:
-                        command="bad command:"+str(openType)
-                        g.trace(command)
-                except Exception:
-                    g.es("exception executing:",command)
-                    g.es_exception()
-                #@-node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
-                #@nl
-            g.doHook("openwith2",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext)
+            if not g.doHook('openwith1',c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext):
+                ext = c.getOpenWithExt(p,ext)
+                fn = c.openWithHelper(p,ext)
+                if fn:
+                    g.enableIdleTimeHook(idleTimeDelay=500)
+                    c.openTempFileInExternalEditor(arg,fn,openType)
+            g.doHook('openwith2',c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext)
         except Exception:
-            g.es("unexpected exception in c.openWith")
+            g.es('unexpected exception in c.openWith')
             g.es_exception()
 
-        return "break"
-    #@+node:ekr.20031218072017.2830:createOpenWithTempFile
-    def createOpenWithTempFile (self,p,ext):
+        return 'break'
+    #@+node:ekr.20031218072017.2824:c.getOpenWithExt
+    def getOpenWithExt (self,p,ext):
+
+        trace = True and not g.app.unitTesting
+        c = self
+
+        if not ext:
+            # if node is part of @<file> tree, get ext from file name
+            for p2 in p.self_and_parents():
+                if p2.isAnyAtFileNode():
+                    fn = p2.h.split(None,1)[1]
+                    ext = g.os_path_splitext(fn)[1]
+                    if trace: g.trace('found node:',ext,p2.h)
+                    break
+
+        if not ext:
+            theDict = c.scanAllDirectives()
+            language = theDict.get('language')
+            ext = g.app.language_extension_dict.get(language)
+            if trace: g.trace('found directive',language,ext)
+
+        if not ext:
+            ext = '.txt'
+            if trace: g.trace('use default (.txt)')
+
+        if ext[0] != '.':
+            ext = '.'+ext
+
+        return ext
+    #@-node:ekr.20031218072017.2824:c.getOpenWithExt
+    #@+node:ekr.20031218072017.2829:c.openTempFileInExternalEditor
+    def openTempFileInExternalEditor(self,arg,fn,openType,testing=False):
+
+        '''Open the closed mkstemp file fn in an external editor.
+        The arg and openType args come from the data arg to c.openWith.
+        '''
+
+        trace = False and not g.unitTesting
+        testing = testing or g.unitTesting
+        if arg is None: arg = ''
+
+        try:
+            if trace: g.trace(repr(openType),repr(arg),repr(fn))
+            command = '<no command>'
+            if openType == 'os.system':
+                if 1:
+                    # This works, *provided* that arg does not contain blanks.  Sheesh.
+                    command = 'os.system(%s)' % (arg+fn)
+                    if trace: g.trace(command)
+                    if not testing: os.system(arg+fn)
+                else:
+                    # XP does not like this format!
+                    command = 'os.system("%s %s")' % (arg,fn)
+                    if not testing: os.system('"%s" "%s"' % (arg,fn))
+            elif openType == 'os.startfile':
+                command = 'os.startfile(%s)' % (arg+fn)
+                if trace: g.trace(command)
+                if not testing: os.startfile(arg+fn)
+            elif openType == 'exec':
+                command = 'exec(%s)' % (arg+fn)
+                if trace: g.trace(command)
+                if not testing: exec(arg+fn,{},{})
+            elif openType == 'os.spawnl':
+                filename = g.os_path_basename(arg)
+                command = 'os.spawnl(%s,%s,%s)' % (arg,filename,fn)
+                if trace: g.trace(command)
+                if not testing: os.spawnl(os.P_NOWAIT,arg,filename,fn)
+            elif openType == 'os.spawnv':
+                filename = os.path.basename(arg[0]) 
+                vtuple = arg[1:]
+                vtuple.insert(0, filename)
+                    # add the name of the program as the first argument.
+                    # Change suggested by Jim Sizelove.
+                vtuple.append(fn)
+                command = 'os.spawnv(%s,%s)' % (arg[0],repr(vtuple))
+                if trace: g.trace(command)
+                if not testing: os.spawnv(os.P_NOWAIT,arg[0],vtuple)
+            elif openType == 'subprocess.Popen':
+                use_shell = True
+                if g.isString(arg):
+                    if arg:
+                        vtuple = arg + ' ' + fn
+                    else:
+                        vtuple = fn
+                elif isinstance(arg,(list, tuple)):
+                    vtuple = arg[:]
+                    vtuple.append(fn)
+                    use_shell = False
+                command = 'subprocess.Popen(%s)' % repr(vtuple)
+                if trace: g.trace(command)
+                if not testing:
+                    try:
+                        subprocess.Popen(vtuple,shell=use_shell)
+                    except OSError:
+                        g.es_print('vtuple',repr(vtuple))
+                        g.es_exception()
+            elif g.isCallable(openType):
+                # Invoke openWith like this:
+                # c.openWith(data=[f,None,None])
+                # f will be called with one arg, the filename
+                if trace: g.trace('%s(%s)' % (openType,fn))
+                command = '%s(%s)' % (openType,fn)
+                if not testing: openType(fn)
+            else:
+                command='bad command:'+str(openType)
+                if not testing: g.trace(command)
+            return command # for unit testing.
+        except Exception:
+            g.es('exception executing open-with command:',command)
+            g.es_exception()
+            return 'oops: %s' % command
+    #@-node:ekr.20031218072017.2829:c.openTempFileInExternalEditor
+    #@+node:ekr.20100203050306.5797:c.openWithHelper
+    def openWithHelper (self,p,ext):
+
+        '''create or reopen a temp file for p,
+        testing for conflicting changes.
+        '''
 
         c = self
-        theFile = None # pylint complains if this is inited to ''.
-        path = c.openWithTempFilePath(p,ext)
+
+        # May be over-ridden by mod_tempfname plugin.
+        searchPath = c.openWithTempFilePath(p,ext)
+        if not searchPath:
+            # Check the mod_tempfname plugin.
+            return g.trace('c.openWithTempFilePath failed',color='red')
+
+        # Set d and path if a temp file already refers to p.v
+        path = None
+        if g.os_path_exists(searchPath):
+            for d in g.app.openWithFiles:
+                if p.v == d.get('v') and searchPath == d.get('path'):
+                    path = searchPath ; break
+
+        if path:
+            assert d.get('path') == searchPath
+            fn = c.createOrRecreateTempFileAsNeeded(p,d,ext)
+        else:
+            fn = c.createOpenWithTempFile(p,ext)
+
+        return fn # fn may be None.
+    #@+node:ekr.20031218072017.2827:c.createOrRecreateTempFileAsNeeded
+    conflict_message = '''
+    Conflicting changes in outline and temp file.
+    Do you want to use the data in the outline?
+    Yes: use the data in the outline.
+    No: use the data in the temp file.
+    Cancel or Escape or Return: do nothing.
+    '''
+
+    def createOrRecreateTempFileAsNeeded (self,p,d,ext):
+
+        '''test for changes in both p and the temp file:
+
+        - If only p's body text has changed, we recreate the temp file.
+        - If only the temp file has changed, do nothing here.
+        - If both have changed we must prompt the user to see which code to use.
+
+        Return the file name.
+        '''
+        c = self
+
+        fn = d.get('path')
+        # Get the old & new body text and modification times.
+        encoding = d.get('encoding')
+        old_body = d.get('body')
+        new_body = g.toEncodedString(p.b,encoding,reportErrors=True)
+        old_time = d.get('time')
         try:
-            if g.os_path_exists(path):
-                g.es("recreating:  ",g.shortFileName(path),color="red")
+            new_time = g.os_path_getmtime(fn)
+        except Exception:
+            new_time = None
+        body_changed = old_body != new_body
+        time_changed = old_time != new_time
+
+        if body_changed and time_changed:
+            g.es_print('Conflict in temp file for',p.h,color='red')
+            result = g.app.gui.runAskYesNoCancelDialog(c,
+                'Conflict!', c.conflict_message,
+                yesMessage = 'Outline',
+                noMessage = 'File',
+                defaultButton = 'Cancel')
+            if result is None or result.lower() == 'cancel':
+                return False
+            rewrite = result.lower() == 'yes'
+        else:
+            rewrite = body_changed
+
+        if rewrite:
+            # May be overridden by the mod_tempfname plugin.
+            fn = c.createOpenWithTempFile(p,ext)
+        else:
+            g.es('reopening:',g.shortFileName(fn),color='blue')
+
+        return fn
+    #@-node:ekr.20031218072017.2827:c.createOrRecreateTempFileAsNeeded
+    #@+node:ekr.20100203050306.5937:c.createOpenWithTempFile
+    def createOpenWithTempFile (self,p,ext):
+
+        trace = True and not g.unitTesting
+        c = self ; f = None
+
+        # May be over-ridden by mod_tempfname plugin.
+        fn = c.openWithTempFilePath(p,ext)
+
+        try:
+            if g.os_path_exists(fn):
+                g.es('recreating:  ',g.shortFileName(fn),color='red')
             else:
-                g.es("creating:  ",g.shortFileName(path),color="blue")
-            theFile = open(path,"w")
+                g.es('creating:  ',g.shortFileName(fn),color='blue')
+            f = open(fn,'w')
             # Convert s to whatever encoding is in effect.
-            s = p.b
-            theDict = c.scanAllDirectives(p)
-            encoding = theDict.get("encoding",None)
+            d = c.scanAllDirectives(p)
+            encoding = d.get('encoding',None)
             if encoding == None:
                 encoding = c.config.default_derived_file_encoding
-            s = g.toEncodedString(s,encoding,reportErrors=True) 
-            theFile.write(s)
-            theFile.flush()
-            theFile.close()
-            try:    time = g.os_path_getmtime(path)
+            s = g.toEncodedString(p.b,encoding,reportErrors=True) 
+            f.write(s)
+            f.flush()
+            f.close()
+            try:    time = g.os_path_getmtime(fn)
             except: time = None
-            # g.es("time: " + str(time))
-            # New in 4.3: theDict now contains both 'p' and 'v' entries, of the expected type.
-            theDict = {
-                "body":s, "c":c, "encoding":encoding,
-                "f":theFile, "path":path, "time":time,
-                "p":p, "v":p.v }
-            #@        << remove previous entry from app.openWithFiles if it exists >>
-            #@+node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
+            if trace: g.es('time: ',time)
+
+            # Remove previous entry from app.openWithFiles if it exists.
             for d in g.app.openWithFiles[:]:
-                p2 = d.get("p")
-                if p.v == p2.v:
-                    # g.pr("removing previous entry in g.app.openWithFiles for",p.h)
+                if p.v == d.get('v'):
+                    if trace: g.trace('removing',d.get('path'))
                     g.app.openWithFiles.remove(d)
-            #@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
-            #@nl
-            g.app.openWithFiles.append(theDict)
-            return path
-        except Exception:
-            if theFile:
-                theFile.close()
-            theFile = None
-            g.es("exception creating temp file",color="red")
+
+            d = {
+                # Used by app.destroyOpenWithFilesForFrame.
+                'c':c,
+                # Used here and by app.destroyOpenWithFileWithDict.
+                'path':fn,
+                # Used by c.testForConflicts.
+                'body':s,
+                'encoding':encoding,
+                'time':time,
+                # Used by c.openWithHelper, and below.
+                'v':p.v
+            }
+            g.app.openWithFiles.append(d)
+            return fn
+        except:
+            if f: f.close()
+            g.es('exception creating temp file',color='red')
             g.es_exception()
             return None
-    #@-node:ekr.20031218072017.2830:createOpenWithTempFile
-    #@+node:ekr.20031218072017.2832:c.openWithTempFilePath
+    #@-node:ekr.20100203050306.5937:c.createOpenWithTempFile
+    #@-node:ekr.20100203050306.5797:c.openWithHelper
+    #@+node:ekr.20031218072017.2832:c.openWithTempFilePath (may be over-ridden)
     def openWithTempFilePath (self,p,ext):
 
-        """Return the path to the temp file corresponding to p and ext."""
+        '''Return the path to the temp file corresponding to p and ext.
 
-        if 0: # This requires changes to the callers.
-            fd,fn = tempfile.mkstemp(text=False)
-            os.close(fd)
-            return g.toUnicode(fn)
-        else:
-            name = "%s_LeoTemp_%s%s" % (
-                g.sanitize_filename(p.headString()),
-                str(id(p.v)),ext)
-            name = g.toUnicode(name)
-            td = g.os_path_finalize(tempfile.gettempdir())
-            path = g.os_path_join(td,name)
-            return path
-    #@-node:ekr.20031218072017.2832:c.openWithTempFilePath
-    #@-node:ekr.20031218072017.2823:openWith and helpers
+         This is overridden in mod_tempfname plugin
+         '''
+
+        fn = '%s_LeoTemp_%s%s' % (
+            g.sanitize_filename(p.h),
+            str(id(p.v)),ext)
+        # fn = g.toUnicode(fn)
+        td = g.os_path_finalize(tempfile.gettempdir())
+        path = g.os_path_join(td,fn)
+
+        return path
+    #@-node:ekr.20031218072017.2832:c.openWithTempFilePath (may be over-ridden)
+    #@-node:ekr.20031218072017.2823:c.openWith and helpers
     #@+node:ekr.20031218072017.2833:close
     def close (self,event=None):
 

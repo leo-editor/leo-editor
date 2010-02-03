@@ -2167,6 +2167,29 @@ def getBaseDirectory(c):
     else:
         return "" # No relative base given.
 #@-node:ekr.20031218072017.1264:g.getBaseDirectory
+#@+node:ville.20090701144325.14942:g.guessExternalEditor
+def guessExternalEditor():
+    """ Return a 'sensible' external editor """
+
+    editor = (
+        os.environ.get("LEO_EDITOR") or
+        os.environ.get("EDITOR") or
+        g.app.db.get("LEO_EDITOR"))
+
+    if editor: return editor
+
+    # fallbacks
+    platform = sys.platform.lower()
+    if platform.startswith('win'):
+        return "notepad"
+    elif platform.startswith('linux'):
+        return 'gedit'
+    else:
+        g.es('''No editor set.
+Please set LEO_EDITOR or EDITOR environment variable,
+or do g.app.db['LEO_EDITOR'] = "gvim"''')
+        return None
+#@-node:ville.20090701144325.14942:g.guessExternalEditor
 #@+node:tbrown.20090219095555.61:g.handleUrlInUrlNode
 def handleUrlInUrlNode(url):
 
@@ -2585,24 +2608,6 @@ def openWrapperLeoFile (old_c,fileName,gui):
     return c
 #@-node:ekr.20080921154026.1:g.openWrapperLeoFile
 #@-node:ekr.20090520055433.5945:g.openWithFileName & helpers
-#@+node:ekr.20031218072017.3120:g.readlineForceUnixNewline
-#@+at 
-#@nonl
-# Stephen P. Schaefer 9/7/2002
-# 
-# The Unix readline() routine delivers "\r\n" line end strings verbatim, while 
-# the windows versions force the string to use the Unix convention of using 
-# only "\n".  This routine causes the Unix readline to do the same.
-#@-at
-#@@c
-
-def readlineForceUnixNewline(f):
-
-    s = f.readline()
-    if len(s) >= 2 and s[-2] == "\r" and s[-1] == "\n":
-        s = s[0:-2] + "\n"
-    return s
-#@-node:ekr.20031218072017.3120:g.readlineForceUnixNewline
 #@+node:ekr.20100125073206.8710:g.readFileIntoString (Leo 4.7)
 def readFileIntoString (fn,encoding='utf-8',kind=None,mode='rb',raw=False):
 
@@ -2642,6 +2647,24 @@ def readFileIntoString (fn,encoding='utf-8',kind=None,mode='rb',raw=False):
     leoTest.fail()
     return None,None
 #@-node:ekr.20100125073206.8710:g.readFileIntoString (Leo 4.7)
+#@+node:ekr.20031218072017.3120:g.readlineForceUnixNewline
+#@+at 
+#@nonl
+# Stephen P. Schaefer 9/7/2002
+# 
+# The Unix readline() routine delivers "\r\n" line end strings verbatim, while 
+# the windows versions force the string to use the Unix convention of using 
+# only "\n".  This routine causes the Unix readline to do the same.
+#@-at
+#@@c
+
+def readlineForceUnixNewline(f):
+
+    s = f.readline()
+    if len(s) >= 2 and s[-2] == "\r" and s[-1] == "\n":
+        s = s[0:-2] + "\n"
+    return s
+#@-node:ekr.20031218072017.3120:g.readlineForceUnixNewline
 #@+node:ekr.20031218072017.3124:g.sanitize_filename
 def sanitize_filename(s):
 
@@ -2682,29 +2705,6 @@ def shortFileName (fileName):
 
 shortFilename = shortFileName
 #@-node:ekr.20031218072017.3125:g.shortFileName & shortFilename
-#@+node:ville.20090701144325.14942:g.guessExternalEditor
-def guessExternalEditor():
-    """ Return a 'sensible' external editor """
-
-    editor = (
-        os.environ.get("LEO_EDITOR") or
-        os.environ.get("EDITOR") or
-        g.app.db.get("LEO_EDITOR"))
-
-    if editor: return editor
-
-    # fallbacks
-    platform = sys.platform.lower()
-    if platform.startswith('win'):
-        return "notepad"
-    elif platform.startswith('linux'):
-        return 'gedit'
-    else:
-        g.es('''No editor set.
-Please set LEO_EDITOR or EDITOR environment variable,
-or do g.app.db['LEO_EDITOR'] = "gvim"''')
-        return None
-#@-node:ville.20090701144325.14942:g.guessExternalEditor
 #@+node:ekr.20050104135720:Used by tangle code & leoFileCommands
 #@+node:ekr.20031218072017.1241:g.update_file_if_changed
 # This is part of the tangle code.
@@ -4785,7 +4785,7 @@ def getPythonEncodingFromString(s):
 
     return encoding
 #@-node:ekr.20100125073206.8709:g.getPythonEncodingFromString
-#@+node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
+#@+node:ekr.20080816125725.2:g.isBytes, isCallable, isChar, isString & isUnicode
 # The syntax of these functions must be valid on Python2K and Python3K.
 
 def isBytes(s):
@@ -4795,6 +4795,12 @@ def isBytes(s):
         return type(s) == type(bytes('a','utf-8'))
     else:
         return False
+
+def isCallable(obj):
+    if g.isPython3:
+        return hasattr(obj, '__call__')
+    else:
+        return callable(obj)
 
 def isChar(s):
     '''Return True if s is a Python2K character type.'''
@@ -4816,7 +4822,7 @@ def isUnicode(s):
         return type(s) == type('a')
     else:
         return type(s) == types.UnicodeType
-#@-node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
+#@-node:ekr.20080816125725.2:g.isBytes, isCallable, isChar, isString & isUnicode
 #@+node:ekr.20031218072017.1500:g.isValidEncoding
 def isValidEncoding (encoding):
 

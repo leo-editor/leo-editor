@@ -392,11 +392,13 @@ class LeoApp:
 
         """Try to remove temp files created with the Open With command.
 
-        This may fail if the files are still open."""
+        This may fail if the files are still open.
+
+        Called by g.app.finishQuit"""
 
         # We can't use g.es here because the log stream no longer exists.
 
-        for theDict in self.openWithFiles[:]: # 7/10/03.
+        for theDict in self.openWithFiles[:]:
             g.app.destroyOpenWithFileWithDict(theDict)
 
         # Delete the list so the gc can recycle Leo windows!
@@ -405,7 +407,10 @@ class LeoApp:
     #@+node:ekr.20031218072017.2613:app.destroyOpenWithFilesForFrame
     def destroyOpenWithFilesForFrame (self,frame):
 
-        """Close all "Open With" files associated with frame"""
+        """Close all "Open With" files associated with frame
+
+        Called by app.destroyWindow.
+        """
 
         # Make a copy of the list: it may change in the loop.
         openWithFiles = g.app.openWithFiles
@@ -417,6 +422,11 @@ class LeoApp:
     #@-node:ekr.20031218072017.2613:app.destroyOpenWithFilesForFrame
     #@+node:ekr.20031218072017.2614:app.destroyOpenWithFileWithDict
     def destroyOpenWithFileWithDict (self,theDict):
+
+        '''
+        A helper for app.destroyAllOpenWithFiles and
+        app.destroyOpenWithFilesForFrame.
+        '''
 
         path = theDict.get("path")
         if path and g.os_path_exists(path):

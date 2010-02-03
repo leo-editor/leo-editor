@@ -3,38 +3,38 @@ import sys
 from pylint import lint
 
 core_table = (
-    ('leoGlobals.py',''),
-    ('leoApp.py',''),
-    ('leoAtFile.py',''),
-    ('leoChapters.py',''),
+    # ('leoGlobals.py',''),
+    # ('leoApp.py',''),
+    # ('leoAtFile.py',''),
+    # ('leoChapters.py',''),
     ('leoCommands.py',''),
-    ('leoEditCommands.py','W0511'),
-    ('leoFileCommands.py',''),
-    ('leoFind.py',''),
-    ('leoFrame.py',''),
-    ('leoGlobals.py',''), # E0602:4528:isBytes: Undefined variable 'bytes'
-    ('leoGui.py','W0511'), # W0511: to do
-    ('leoImport.py',''),
-    ('leoMenu.py',''),
-    ('leoNodes.py',''),
-    ('leoPlugins.py',''),
-    ('leoShadow.py',''),
-    ('leoTangle.py',''),
-    ('leoUndo.py',''),
+    # ('leoEditCommands.py','W0511'),
+    # ('leoFileCommands.py',''),
+    # ('leoFind.py',''),
+    # ('leoFrame.py',''),
+    # ('leoGlobals.py',''), # E0602:4528:isBytes: Undefined variable 'bytes'
+    # ('leoGui.py','W0511'), # W0511: to do
+    # ('leoImport.py',''),
+    # ('leoMenu.py',''),
+    # ('leoNodes.py',''),
+    # ('leoPlugins.py',''),
+    # ('leoShadow.py',''),
+    # ('leoTangle.py',''),
+    # ('leoUndo.py',''),
 )
 
 plugins_table = (
-    ('qtGui.py','W0221'),
-    ('tkGui.py','W0221'),
-    ('mod_scripting.py','E0611'),
+    # ('qtGui.py','W0221'),
+    # ('tkGui.py','W0221'),
+    # ('mod_scripting.py','E0611'),
         # Harmless: E0611:489:scriptingController.runDebugScriptCommand:
         # No name 'leoScriptModule' in module 'leo.core'
-    # ('open_with.py',''),
+    ('open_with.py',''),
     # ('toolbar.py','E1101,W0221,W0511'),
         # Dangerous: many erroneous E1101 errors
         # Harmless: W0221: Arguments number differs from overridden method
         # Harmless: W0511: Fixme and to-do.
-    ('UNL.py',''),
+    # ('UNL.py',''),
     # ('vim.py',''),
     # ('xemacs.py',''),
 )
