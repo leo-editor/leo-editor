@@ -8266,8 +8266,407 @@ def toUnicodeFileEncoding(path):
 #@-node:ekr.20100201062307.5877:Code cleanup
 #@-node:ekr.20100129131524.6188:Leo 4.7 b3 projects
 #@+node:ekr.20100202050243.5740:Leo 4.7 rc1 projects
+#@+node:ekr.20100203173153.5797:Bugs
 #@+node:ekr.20100202145902.6107:Fixed unicode bug in setSelectionRangeHelper
 #@-node:ekr.20100202145902.6107:Fixed unicode bug in setSelectionRangeHelper
+#@+node:ekr.20100202145902.5982:Alt-right should *not* go down
+#@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
+def expandNodeAndGoToFirstChild (self,event=None):
+
+    """If a node has children, expand it if needed and go to the first child."""
+
+    trace = False and not g.unitTesting
+    c = self ; p = c.p
+
+    if p.hasChildren():
+        if p.isExpanded():
+            p.moveToFirstChild()
+            if trace: g.trace('select',p.h)
+            c.selectPosition(p)
+        else:
+            if trace: g.trace('expand',p.h)
+            c.expandNode() # Calls redraw_after_expand.
+
+    # This is too confusing
+    # elif p.hasNext():
+        # c.goToNextSibling()
+    # else:
+        # while p.hasParent():
+            # p.moveToParent()
+            # if p.hasNext():
+                # p.moveToNext()
+                # break
+        # c.selectPosition(p)
+
+    c.treeFocusHelper()
+
+def expandNodeOrGoToFirstChild (self,event=None):
+
+    """Simulate the Right Arrow Key in folder of Windows Explorer."""
+
+    c = self ; p = c.p
+    if p.hasChildren():
+        if not p.isExpanded():
+            c.expandNode() # Calls redraw_after_expand.
+        else:
+            c.redraw_after_expand(p.firstChild(),setFocus=True)
+#@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
+#@-node:ekr.20100202145902.5982:Alt-right should *not* go down
+#@+node:ekr.20100202145902.6109:Experiments with Alt-left
+contract-or-go-left.
+
+No change was better than the present code.
+#@nonl
+#@+node:ekr.20031218072017.2901:contractNode
+def contractNode (self,event=None):
+
+    '''Contract the presently selected node.'''
+
+    c = self ; p = c.p
+
+    p.contract()
+
+    if p.isCloned():
+        c.redraw() # A full redraw is necessary to handle clones.
+    else:
+        c.redraw_after_contract(p=p,setFocus=True)
+#@-node:ekr.20031218072017.2901:contractNode
+#@+node:ekr.20040930064232:contractNodeOrGoToParent
+def contractNodeOrGoToParent (self,event=None):
+
+    """Simulate the left Arrow Key in folder of Windows Explorer."""
+
+    trace = False and not g.unitTesting
+    c = self ; p = c.p
+    redraw = True ; fullRedraw = False
+    if p.hasChildren() and p.isExpanded():
+        if trace: g.trace('contract',p.h)
+        p.contract()
+        redraw = True # New in one-node world.
+    elif p.hasParent() and p.parent().isVisible(c):
+        if 1: # Simpler code.  Probably best.
+            redraw = False
+            p.contract() # Make sure we know this node is contracted.
+            if trace: g.trace('goto parent',p.h)
+            c.goToParent()
+        else: # Contract any siblings if they exist.
+            contract = False
+            for child in p.parent().children():
+                if child.hasChildren() and child.isExpanded():
+                    contract = True
+                    child.contract()
+            if contract:
+                redraw = True
+                fullRedraw = True # Contracting the siblings is enough.
+            else:
+                redraw = False
+                p.contract() # Make sure we know this node is contracted.
+                if trace: g.trace('goto parent',p.h)
+                c.goToParent()
+    else:
+        redraw = False
+
+    if redraw:
+        if fullRedraw or p.isCloned():
+            if trace: g.trace('full redraw',p.h)
+            c.redraw()
+        else:
+            c.redraw_after_contract(p=p,setFocus=True)
+#@-node:ekr.20040930064232:contractNodeOrGoToParent
+#@-node:ekr.20100202145902.6109:Experiments with Alt-left
+#@+node:ekr.20100202145902.6110:Home key no longer clears the minibuffer
+@nocolor-node
+
+The fix: back-to-home is now included in k.singleLineCommandList.
+#@nonl
+#@+node:ekr.20080509064108.6:k.defineSingleLineCommands
+def defineSingleLineCommands (self):
+
+    k = self
+
+    # These commands can be executed in the minibuffer.
+    k.singleLineCommandList = [
+        # editCommandsClass
+        'back-to-indentation',
+        'back-to-home', # 2010/02/01
+        'back-char',
+        'back-char-extend-selection',
+        'back-word',
+        'back-word-extend-selection',
+        'backward-delete-char',
+        'backward-find-character',
+        'backward-find-character-extend-selection',
+        'beginning-of-line',
+        'beginning-of-line-extend-selection',
+        'capitalize-word',
+        'delete-char',
+        'delete-indentation',
+        'delete-spaces',
+        'downcase-word',
+        'end-of-line',
+        'end-of-line-extend-selection',
+        'escape',
+        'exchange-point-mark',
+        'extend-to-line',
+        'extend-to-word',
+        'find-character',
+        'find-character-extend-selection',
+        'find-word',
+        'find-word-in-line',
+        'forward-char',
+        'forward-char-extend-selection',
+        'forward-end-word',
+        'forward-end-word-extend-selection',
+        'forward-word',
+        'forward-word-extend-selection',
+        'insert-newline',
+        'insert-parentheses',
+        'move-past-close',
+        'move-past-close-extend-selection',
+        'newline-and-indent',
+        'select-all',
+        'transpose-chars',
+        'transpose-words',
+        'upcase-word',
+        # keyHandlerCommandsClass
+        # 'auto-complete',
+        'negative-argument',
+        'number-command',
+        'number-command-0',
+        'number-command-1',
+        'number-command-2',
+        'number-command-3',
+        'number-command-4',
+        'number-command-5',
+        'number-command-6',
+        'number-command-7',
+        'number-command-8',
+        'universal-argument',
+        # killBufferCommandsClass
+        'backward-kill-word',
+        'kill-line',
+        'kill-word',
+        'kill-ws',
+        'yank',
+        'yank-pop',
+        'zap-to-character',
+        # leoCommands
+        'cut-text',
+        'copy-text',
+        'paste-text',
+        # macroCommandsClass
+        'call-last-kbd-macro',
+        # search commands
+        # 'replace-string', # A special case so Shift-Ctrl-r will work after Ctrl-f.
+        'toggle-find-collapses_nodes',
+        'toggle-find-ignore-case-option',
+        'toggle-find-in-body-option',
+        'toggle-find-in-headline-option',
+        'toggle-find-mark-changes-option',
+        'toggle-find-mark-finds-option',
+        'toggle-find-regex-option',
+        'toggle-find-reverse-option',
+        'toggle-find-word-option',
+        'toggle-find-wrap-around-option',
+        # registerCommandsClass
+        'append-to-register',
+        'copy-to-register',
+        'insert-register',
+        'prepend-to-register',
+    ]
+#@-node:ekr.20080509064108.6:k.defineSingleLineCommands
+#@-node:ekr.20100202145902.6110:Home key no longer clears the minibuffer
+#@+node:ekr.20100122130101.6172:Fixed bug in c.pasteOutline when run from unit tests
+There was code in tnodeAttributes that did something brain-dead when unit
+testing, just to support a unit test!
+#@nonl
+#@+node:ekr.20100203173153.5796:Report
+@nocolor-node
+
+I'm trying to write a simple test that I'm running by selecting it and
+then typing 'run-unit-tests-locally'.
+
+Here is the @test node body:
+
+--- cut here ---
+root = p.copy()
+while p.hasChildren():
+   p.firstChild().doDelete(newNode = None)
+
+try:
+   p1 = p.insertAsLastChild()
+   body = 'foo'
+   p1.setBodyString(body)
+   c.selectPosition(p1)
+   c.copyOutline()
+   c.pasteOutline()
+finally:
+   c.redraw_now()
+--- cut here ---
+
+My problem: the node that is being created by c.pasteOutline() has an
+empty body. If after running the test I type 'paste-node' in the
+minibuffer, a new node appears, it has 'foo' in the body.
+
+Searching for "copyOutline" and "pasteOutline" in leo's html docs
+doesn't provide any usage examples, so I'm stuck.
+#@nonl
+#@-node:ekr.20100203173153.5796:Report
+#@+node:ekr.20031218072017.1573:putLeoOutline (to clipboard)
+def putLeoOutline (self):
+
+    '''Return a string, *not unicode*, encoded with self.leo_file_encoding,
+    suitable for pasting to the clipboard.'''
+
+    trace = False and not g.unitTesting
+    self.outputFile = g.fileLikeObject()
+    self.usingClipboard = True
+
+    self.putProlog()
+    self.putClipboardHeader()
+    self.putVnodes()
+    self.putTnodes()
+    self.putPostlog()
+
+    s = self.outputFile.getvalue()
+    if trace: g.trace(s)
+    self.outputFile = None
+    self.usingClipboard = False
+    return s
+#@-node:ekr.20031218072017.1573:putLeoOutline (to clipboard)
+#@+node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
+def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
+
+    '''Read a Leo outline from string s in clipboard format.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; current = c.p ; check = not reassignIndices
+    checkAfterRead = False or c.config.getBool('check_outline_after_read')
+
+    # Save the hidden root's children.
+    children = c.hiddenRootNode.children
+
+    # Always recreate the gnxDict
+    self.gnxDict = {}
+    if not reassignIndices:
+        x = g.app.nodeIndices
+        for v in c.all_unique_nodes():
+            index = x.toString(v.fileIndex)
+            self.gnxDict[index] = v
+
+    self.usingClipboard = True
+    try:
+        # This encoding must match the encoding used in putLeoOutline.
+        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+        if trace: g.trace(s)
+
+        # readSaxFile modifies the hidden root.
+        v = self.readSaxFile(
+            theFile=None, fileName='<clipboard>',
+            silent=True, # don't tell about stylesheet elements.
+            inClipboard=True,reassignIndices=reassignIndices,s=s)
+        if not v:
+            return g.es("the clipboard is not valid ",color="blue")
+    finally:
+        self.usingClipboard = False
+
+    # Restore the hidden root's children
+    c.hiddenRootNode.children = children
+
+    # Unlink v from the hidden root.
+    v.parents.remove(c.hiddenRootNode)
+
+    p = leoNodes.position(v)
+
+    # Important: we must not adjust links when linking v
+    # into the outline.  The read code has already done that.
+    if current.hasChildren() and current.isExpanded():
+        if check and not self.checkPaste(current,p):
+            return None
+        p._linkAsNthChild(current,0,adjust=False)
+    else:
+        if check and not self.checkPaste(current.parent(),p):
+            return None
+        p._linkAfter(current,adjust=False)
+
+    if reassignIndices:
+        for p2 in p.self_and_subtree():
+            p2.v.fileIndex = g.app.nodeIndices.getNewIndex()
+
+    if trace and verbose:
+        g.trace('**** dumping outline...')
+        c.dumpOutline()
+
+    if checkAfterRead:
+        g.trace('checking outline after paste',color='blue')
+        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+
+    c.selectPosition(p)
+    return p
+
+getLeoOutline = getLeoOutlineFromClipboard # for compatibility
+#@+node:ekr.20080410115129.1:checkPaste
+def checkPaste (self,parent,p):
+
+    '''Return True if p may be pasted as a child of parent.'''
+
+    if not parent: return True
+
+    parents = [z.copy() for z in parent.self_and_parents()]
+
+    for p in p.self_and_subtree():
+        for z in parents:
+            # g.trace(p.h,id(p.v),id(z.v))
+            if p.v == z.v:
+                g.es('Invalid paste: nodes may not descend from themselves',color="blue")
+                return False
+
+    return True
+#@-node:ekr.20080410115129.1:checkPaste
+#@-node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
+#@+node:ekr.20060919110638.42:tnodeAttributes
+def tnodeAttributes (self,attrs):
+
+    # The vnode must have a tx attribute to associate content
+    # with the proper node.
+
+    trace = False and not g.unitTesting
+    verbose = False
+    node = self.node
+    self.nodeList = []
+    val = None
+
+    # Step one: find the tx attribute
+    for bunch in self.attrsToList(attrs):
+        name = bunch.name ; val = bunch.val
+        if name == 'tx':
+            # 2010/02/03: This code formerly did something
+            # different when unit testing just to support a unit test.
+            # Hahaha.  The unit test *caused* the bug!
+            self.nodeList = self.tnxToListDict.get(val,[])
+            if trace and verbose: g.trace('tx',self.nodeList)
+            break
+
+    if not self.nodeList:
+        self.error('Bad leo file: no node for <t tx=%s>' % (val))
+        return
+
+    # Step two: find all the other attributes:
+    for bunch in self.attrsToList(attrs):
+        name = bunch.name ; val = bunch.val
+        if name != 'tx':
+            # Huge bug fix: 2009/7/1: was node == self.node.
+            for node in self.nodeList:
+                if trace: g.trace('%s %s=%s...' % (node,name,val[:20]))
+                node.tnodeAttributes[name] = val
+
+    # if not self.nodeList:
+        # self.error('Bad leo file: no tx attribute for vnode')
+#@-node:ekr.20060919110638.42:tnodeAttributes
+#@-node:ekr.20100122130101.6172:Fixed bug in c.pasteOutline when run from unit tests
+#@-node:ekr.20100203173153.5797:Bugs
+#@+node:ekr.20100203173153.5798:Cleanup
 #@+node:ekr.20100130042842.9009:Removed config.set
 @nocolor-node
 
@@ -8678,213 +9077,6 @@ def showSuccess(self,pos,newpos,showState=True):
 #@-node:ekr.20031218072017.3091:showSuccess (leoFind)
 #@-node:ekr.20100202121529.5876:using config.getBool('collapse_nodes_during_finds')
 #@-node:ekr.20100130042842.9009:Removed config.set
-#@+node:ekr.20100202145902.5982:Alt-right should *not* go down
-#@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
-def expandNodeAndGoToFirstChild (self,event=None):
-
-    """If a node has children, expand it if needed and go to the first child."""
-
-    trace = False and not g.unitTesting
-    c = self ; p = c.p
-
-    if p.hasChildren():
-        if p.isExpanded():
-            p.moveToFirstChild()
-            if trace: g.trace('select',p.h)
-            c.selectPosition(p)
-        else:
-            if trace: g.trace('expand',p.h)
-            c.expandNode() # Calls redraw_after_expand.
-
-    # This is too confusing
-    # elif p.hasNext():
-        # c.goToNextSibling()
-    # else:
-        # while p.hasParent():
-            # p.moveToParent()
-            # if p.hasNext():
-                # p.moveToNext()
-                # break
-        # c.selectPosition(p)
-
-    c.treeFocusHelper()
-
-def expandNodeOrGoToFirstChild (self,event=None):
-
-    """Simulate the Right Arrow Key in folder of Windows Explorer."""
-
-    c = self ; p = c.p
-    if p.hasChildren():
-        if not p.isExpanded():
-            c.expandNode() # Calls redraw_after_expand.
-        else:
-            c.redraw_after_expand(p.firstChild(),setFocus=True)
-#@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
-#@-node:ekr.20100202145902.5982:Alt-right should *not* go down
-#@+node:ekr.20100202145902.6109:Experiments with Alt-left
-contract-or-go-left.
-
-No change was better than the present code.
-#@nonl
-#@+node:ekr.20031218072017.2901:contractNode
-def contractNode (self,event=None):
-
-    '''Contract the presently selected node.'''
-
-    c = self ; p = c.p
-
-    p.contract()
-
-    if p.isCloned():
-        c.redraw() # A full redraw is necessary to handle clones.
-    else:
-        c.redraw_after_contract(p=p,setFocus=True)
-#@-node:ekr.20031218072017.2901:contractNode
-#@+node:ekr.20040930064232:contractNodeOrGoToParent
-def contractNodeOrGoToParent (self,event=None):
-
-    """Simulate the left Arrow Key in folder of Windows Explorer."""
-
-    trace = False and not g.unitTesting
-    c = self ; p = c.p
-    redraw = True ; fullRedraw = False
-    if p.hasChildren() and p.isExpanded():
-        if trace: g.trace('contract',p.h)
-        p.contract()
-        redraw = True # New in one-node world.
-    elif p.hasParent() and p.parent().isVisible(c):
-        if 1: # Simpler code.  Probably best.
-            redraw = False
-            p.contract() # Make sure we know this node is contracted.
-            if trace: g.trace('goto parent',p.h)
-            c.goToParent()
-        else: # Contract any siblings if they exist.
-            contract = False
-            for child in p.parent().children():
-                if child.hasChildren() and child.isExpanded():
-                    contract = True
-                    child.contract()
-            if contract:
-                redraw = True
-                fullRedraw = True # Contracting the siblings is enough.
-            else:
-                redraw = False
-                p.contract() # Make sure we know this node is contracted.
-                if trace: g.trace('goto parent',p.h)
-                c.goToParent()
-    else:
-        redraw = False
-
-    if redraw:
-        if fullRedraw or p.isCloned():
-            if trace: g.trace('full redraw',p.h)
-            c.redraw()
-        else:
-            c.redraw_after_contract(p=p,setFocus=True)
-#@-node:ekr.20040930064232:contractNodeOrGoToParent
-#@-node:ekr.20100202145902.6109:Experiments with Alt-left
-#@+node:ekr.20100202145902.6110:Home key no longer clears the minibuffer
-@nocolor-node
-
-The fix: back-to-home is now included in k.singleLineCommandList.
-#@nonl
-#@+node:ekr.20080509064108.6:k.defineSingleLineCommands
-def defineSingleLineCommands (self):
-
-    k = self
-
-    # These commands can be executed in the minibuffer.
-    k.singleLineCommandList = [
-        # editCommandsClass
-        'back-to-indentation',
-        'back-to-home', # 2010/02/01
-        'back-char',
-        'back-char-extend-selection',
-        'back-word',
-        'back-word-extend-selection',
-        'backward-delete-char',
-        'backward-find-character',
-        'backward-find-character-extend-selection',
-        'beginning-of-line',
-        'beginning-of-line-extend-selection',
-        'capitalize-word',
-        'delete-char',
-        'delete-indentation',
-        'delete-spaces',
-        'downcase-word',
-        'end-of-line',
-        'end-of-line-extend-selection',
-        'escape',
-        'exchange-point-mark',
-        'extend-to-line',
-        'extend-to-word',
-        'find-character',
-        'find-character-extend-selection',
-        'find-word',
-        'find-word-in-line',
-        'forward-char',
-        'forward-char-extend-selection',
-        'forward-end-word',
-        'forward-end-word-extend-selection',
-        'forward-word',
-        'forward-word-extend-selection',
-        'insert-newline',
-        'insert-parentheses',
-        'move-past-close',
-        'move-past-close-extend-selection',
-        'newline-and-indent',
-        'select-all',
-        'transpose-chars',
-        'transpose-words',
-        'upcase-word',
-        # keyHandlerCommandsClass
-        # 'auto-complete',
-        'negative-argument',
-        'number-command',
-        'number-command-0',
-        'number-command-1',
-        'number-command-2',
-        'number-command-3',
-        'number-command-4',
-        'number-command-5',
-        'number-command-6',
-        'number-command-7',
-        'number-command-8',
-        'universal-argument',
-        # killBufferCommandsClass
-        'backward-kill-word',
-        'kill-line',
-        'kill-word',
-        'kill-ws',
-        'yank',
-        'yank-pop',
-        'zap-to-character',
-        # leoCommands
-        'cut-text',
-        'copy-text',
-        'paste-text',
-        # macroCommandsClass
-        'call-last-kbd-macro',
-        # search commands
-        # 'replace-string', # A special case so Shift-Ctrl-r will work after Ctrl-f.
-        'toggle-find-collapses_nodes',
-        'toggle-find-ignore-case-option',
-        'toggle-find-in-body-option',
-        'toggle-find-in-headline-option',
-        'toggle-find-mark-changes-option',
-        'toggle-find-mark-finds-option',
-        'toggle-find-regex-option',
-        'toggle-find-reverse-option',
-        'toggle-find-word-option',
-        'toggle-find-wrap-around-option',
-        # registerCommandsClass
-        'append-to-register',
-        'copy-to-register',
-        'insert-register',
-        'prepend-to-register',
-    ]
-#@-node:ekr.20080509064108.6:k.defineSingleLineCommands
-#@-node:ekr.20100202145902.6110:Home key no longer clears the minibuffer
 #@+node:ekr.20080509065556.2:Refactored open-with
 The goal: eliminate g.sanitize_filename and mod_tempfname plugin
 #@+node:ekr.20100203050306.5793:Notes
@@ -9371,6 +9563,7 @@ for obj,val in table:
 #@-node:ekr.20080509065556.2:Refactored open-with
 #@+node:ekr.20100203050306.5889:converted basestring to g.isString()
 #@-node:ekr.20100203050306.5889:converted basestring to g.isString()
+#@-node:ekr.20100203173153.5798:Cleanup
 #@-node:ekr.20100202050243.5740:Leo 4.7 rc1 projects
 #@+node:ekr.20100130042842.6404:Reading settings (do not delete)
 Here are the calls to g.app.getxxx
@@ -10256,7 +10449,7 @@ if trace: g.trace('top',top,'left',left,'height',height,'width',width)
 #@+node:ekr.20051104075904.4:doTests...
 def doTests(c,all=None,p=None,verbosity=1):
 
-    trace = False
+    trace = False ; verbose = False
     if all:
         p = c.rootPosition()
     elif not p:
@@ -10264,7 +10457,7 @@ def doTests(c,all=None,p=None,verbosity=1):
     p1 = p.copy()
 
     try:
-        found = False ; verbose = True
+        found = False
         g.unitTesting = g.app.unitTesting = True
         g.app.unitTestDict["fail"] = False
         g.app.unitTestDict['c'] = c
@@ -10278,19 +10471,19 @@ def doTests(c,all=None,p=None,verbosity=1):
         # New in Leo 4.4.8: ignore everything in @ignore trees.
         if all: last = None
         else:   last = p.nodeAfterTree()
-        if trace: g.trace('all',all,'root',p.h)
+        if trace and verbose: g.trace('all',all,'root',p.h)
         while p and p != last:
             if g.match_word(p.h,0,'@ignore'):
-                if trace: g.trace('ignoring',p.h)
+                if trace and verbose: g.trace('ignoring',p.h)
                 p.moveToNodeAfterTree()
             elif isTestNode(p): # @test
-                if trace: g.trace('adding',p.h)
+                if trace and verbose: g.trace('adding',p.h)
                 test = makeTestCase(c,p)
                 if test:
                     suite.addTest(test) ; found = True
                 p.moveToThreadNext()
             elif isSuiteNode(p): # @suite
-                if trace: g.trace('adding',p.h)
+                if trace and verbose: g.trace('adding',p.h)
                 test = makeTestSuite(c,p)
                 if test:
                     suite.addTest(test) ; found = True
@@ -10303,7 +10496,7 @@ def doTests(c,all=None,p=None,verbosity=1):
         if found:
             res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
             # put info to db as well
-            if g.enableDB:
+            if False and g.enableDB:
                 key = 'unittest/cur/fail'
                 archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
                 c.db[key] = archive
@@ -10353,29 +10546,27 @@ def setUp (self):
 
     c = self.c ; p = self.p
 
-    c.selectPosition(p)
+    c.selectPosition(p.copy()) # 2010/02/03
 #@-node:ekr.20051104075904.8:setUp
 #@+node:ekr.20051104075904.10:runTest
 def runTest (self,define_g = True):
 
+    trace = False
     c = self.c ; p = self.p.copy()
     script = g.getScript(c,p).strip()
-    # print ('p',p,'len(script)',len(script))
     self.assert_(script)
     writeScriptFile = c.config.getBool('write_script_file')
-
-    # import leo.core.leoGlobals as g
 
     # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
     g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
 
     if define_g:
-        d = {'c':c,'g':g,'p':p,'self':self,}
+        d = {'c':c,'g':g,'p':p and p.copy(),'self':self,}
     else:
         d = {'self':self,}
 
     script = script + '\n'
-    # g.trace(type(script),script)
+    if trace: g.trace('p',p and p.h,'\n',script)
 
     # Execute the script. Let unit test handle any errors!
     if writeScriptFile:

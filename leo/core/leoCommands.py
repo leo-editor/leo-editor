@@ -3591,7 +3591,6 @@ class baseCommands (object):
         c = self
         c.endEditing()
         s = c.fileCommands.putLeoOutline()
-        # g.trace('type(s)',type(s))
         g.app.gui.replaceClipboardWith(s)
     #@-node:ekr.20031218072017.1550:copyOutline
     #@+node:ekr.20031218072017.1551:pasteOutline

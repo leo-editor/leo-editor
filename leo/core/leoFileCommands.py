@@ -116,12 +116,15 @@ if sys.platform != 'cli':
             self.content = None
             self.elementStack = []
             self.errors = 0
-            self.tnxToListDict = {} # Keys are tnx's (strings), values are *lists* of saxNodeClass objects.
+            self.tnxToListDict = {}
+                # Keys are tnx's (strings)
+                # Values are *lists* of saxNodeClass objects.
             self.level = 0
             self.node = None
             self.nodeList = [] # List of saxNodeClass objects with the present vnode.
             self.nodeStack = []
             self.rootNode = None # a sax node.
+            self.trace = False # True and g.unitTesting
         #@nonl
         #@-node:ekr.20060919110638.20: __init__ & helpers
         #@+node:ekr.20060919110638.29: Do nothing
@@ -151,14 +154,6 @@ if sys.platform != 'cli':
             '''Convert the attributes to a list of g.Bunches.
 
             attrs: an Attributes item passed to startElement.'''
-
-            # if 0: # check for non-unicode attributes.
-                # for name in attrs.getNames():
-                    # val = attrs.getValue(name)
-                    # if type(val) != type(u''):
-                    #    g.trace('Non-unicode attribute',name,val)
-
-            # g.trace(g.listToString([repr(z) for z in attrs.getNames()]))
 
             return [
                 g.Bunch(name=name,val=attrs.getValue(name))
@@ -235,9 +230,12 @@ if sys.platform != 'cli':
                     g.trace('Non-unicode content',repr(content))
 
             content = content.replace('\r','')
+
             if not content: return
 
             elementName = self.elementStack and self.elementStack[-1].lower() or '<no element name>'
+
+            if self.trace: g.trace(elementName,content.strip())
 
             if elementName in ('t','vh'):
                 # if elementName == 'vh': g.trace(elementName,repr(content))
@@ -266,12 +264,14 @@ if sys.platform != 'cli':
 
             name2 = self.elementStack.pop()
             assert name == name2
+            if self.trace: g.trace('** pop',name2)
         #@nonl
         #@+node:ekr.20060919110638.32:endTnode
         def endTnode (self):
 
             for sax_node in self.nodeList:
                 sax_node.bodyString = ''.join(self.content)
+                if self.trace: g.trace(repr(sax_node))
 
             self.content = []
         #@nonl
@@ -281,6 +281,7 @@ if sys.platform != 'cli':
 
             self.level -= 1
             self.node = self.nodeStack.pop()
+            if self.trace: g.trace(repr(self.node))
         #@nonl
         #@-node:ekr.20060919110638.33:endVnode
         #@+node:ekr.20060919110638.34:endVH
@@ -288,7 +289,7 @@ if sys.platform != 'cli':
 
             if self.node:
                 self.node.headString = ''.join(self.content)
-                # g.trace(self.node.headString)
+                if self.trace: g.trace(repr(self.node))
 
             self.content = []
         #@nonl
@@ -296,6 +297,11 @@ if sys.platform != 'cli':
         #@-node:ekr.20060919110638.31:endElement & helpers
         #@+node:ekr.20060919110638.45:getRootNode
         def getRootNode (self):
+            if self.trace:
+                g.trace()
+                self.rootNode.dump()
+                for child in self.rootNode.children:
+                    child.dump()
             return self.rootNode
         #@-node:ekr.20060919110638.45:getRootNode
         #@+node:ekr.20061004054323:processingInstruction (stylesheet)
@@ -318,6 +324,7 @@ if sys.platform != 'cli':
                 self.printStartElement(name,attrs)
 
             self.elementStack.append(name)
+            if self.trace: g.trace('**push',name)
 
             data = self.dispatchDict.get(name)
 
@@ -470,10 +477,10 @@ if sys.platform != 'cli':
             for bunch in self.attrsToList(attrs):
                 name = bunch.name ; val = bunch.val
                 if name == 'tx':
-                    if g.unitTesting:
-                        self.nodeList = [saxNodeClass()] # For pylint.
-                    else:
-                        self.nodeList = self.tnxToListDict.get(val,[])
+                    # 2010/02/03: This code formerly did something
+                    # different when unit testing just to support a unit test.
+                    # Hahaha.  The unit test *caused* the bug!
+                    self.nodeList = self.tnxToListDict.get(val,[])
                     if trace and verbose: g.trace('tx',self.nodeList)
                     break
 
@@ -561,7 +568,7 @@ if sys.platform != 'cli':
         #@+node:ekr.20060919110638.17: node.__str__ & __repr__
         def __str__ (self):
 
-            return '<v: %s>' % self.headString
+            return '<v:%s %s %s>' % (id(self),self.headString,len(self.bodyString))
 
         __repr__ = __str__
         #@nonl
@@ -569,8 +576,8 @@ if sys.platform != 'cli':
         #@+node:ekr.20060919110638.18:node.dump
         def dump (self):
 
-            g.pr('\nnode: tnx: %s len(body): %d %s' % (
-                self.tnx,len(self.bodyString),self.headString))
+            g.pr('\nnode: %s tnx: %s len(body): %d %s' % (
+                id(self),self.tnx,len(self.bodyString),self.headString))
             g.pr('children:',g.listToString(self.children))
             g.pr('attrs:',list(self.attributes.values()))
         #@nonl
@@ -711,6 +718,7 @@ class baseFileCommands:
         try:
             # This encoding must match the encoding used in putLeoOutline.
             s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+            if trace: g.trace(s)
 
             # readSaxFile modifies the hidden root.
             v = self.readSaxFile(
@@ -2006,6 +2014,7 @@ class baseFileCommands:
         '''Return a string, *not unicode*, encoded with self.leo_file_encoding,
         suitable for pasting to the clipboard.'''
 
+        trace = False and not g.unitTesting
         self.outputFile = g.fileLikeObject()
         self.usingClipboard = True
 
@@ -2016,6 +2025,7 @@ class baseFileCommands:
         self.putPostlog()
 
         s = self.outputFile.getvalue()
+        if trace: g.trace(s)
         self.outputFile = None
         self.usingClipboard = False
         return s

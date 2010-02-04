@@ -24,7 +24,7 @@ unbound()
 - Refactoring: rope, etc.
 - Flexitble file format.
 #@nonl
-#@+node:ekr.20100126110826.6253:Before rc1 4 bugs
+#@+node:ekr.20100126110826.6253:Before rc1 2 bugs, 1 wish list
 expand-and-go-right.
 #@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
 @nocolor-node
@@ -41,218 +41,6 @@ text.
 EKR: The file-write logic should ignore with a warning @path directives in the root node.
 #@nonl
 #@-node:ekr.20081204091750.4:Fix inconsistency in how @path works
-#@+node:ekr.20100122130101.6172:Fix bug in c.pasteOutline when run from unit tests
-@nocolor-node
-
-I'm trying to write a simple test that I'm running by selecting it and
-then typing 'run-unit-tests-locally'.
-
-Here is the @test node body:
-
---- cut here ---
-root = p.copy()
-while p.hasChildren():
-   p.firstChild().doDelete(newNode = None)
-
-try:
-   p1 = p.insertAsLastChild()
-   body = 'foo'
-   p1.setBodyString(body)
-   c.selectPosition(p1)
-   c.copyOutline()
-   c.pasteOutline()
-finally:
-   c.redraw_now()
---- cut here ---
-
-My problem: the node that is being created by c.pasteOutline() has an
-empty body. If after running the test I type 'paste-node' in the
-minibuffer, a new node appears, it has 'foo' in the body.
-
-Searching for "copyOutline" and "pasteOutline" in leo's html docs
-doesn't provide any usage examples, so I'm stuck.
-#@nonl
-#@+node:ekr.20031218072017.1551:pasteOutline
-# To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
-
-def pasteOutline(self,event=None,reassignIndices=True):
-
-    '''Paste an outline into the present outline from the clipboard.
-    Nodes do *not* retain their original identify.'''
-
-    c = self ; u = c.undoer ; current = c.p
-    s = g.app.gui.getTextFromClipboard()
-    pasteAsClone = not reassignIndices
-    undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
-
-    c.endEditing()
-
-    if not s or not c.canPasteOutline(s):
-        return # This should never happen.
-
-    isLeo = g.match(s,0,g.app.prolog_prefix_string)
-    vnodeInfoDict = {}
-    if pasteAsClone:
-        << remember all data for undo/redo Paste As Clone >>
-    # create a *position* to be pasted.
-    if isLeo:
-        pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
-    else:
-        pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
-
-    if not pasted: return
-
-    copiedBunchList = []
-    if pasteAsClone:
-        << put only needed info in copiedBunchList >>
-    undoData = u.beforeInsertNode(current,
-        pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
-
-    c.validateOutline()
-    c.selectPosition(pasted)
-    pasted.setDirty()
-    c.setChanged(True)
-    # paste as first child if back is expanded.
-    back = pasted.back()
-    if back and back.isExpanded():
-        pasted.moveToNthChildOf(back,0)
-    c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
-
-    if pasteAsClone:
-        # Set dirty bits for ancestors of *all* pasted nodes.
-        # Note: the setDescendentsDirty flag does not do what we want.
-        for p in pasted.self_and_subtree():
-            p.setAllAncestorAtFileNodesDirty(
-                setDescendentsDirty=False)
-
-    u.afterInsertNode(pasted,undoType,undoData)
-    c.redraw(pasted)
-    c.recolor()
-#@+node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
-@
-
-We don't know yet which nodes will be affected by the paste, so we remember
-everything. This is expensive, but foolproof.
-
-The alternative is to try to remember the 'before' values of tnodes in the
-fileCommands read logic. Several experiments failed, and the code is very ugly.
-In short, it seems wise to do things the foolproof way.
-
-@c
-
-for v in c.all_unique_nodes():
-    if v not in vnodeInfoDict:
-        vnodeInfoDict[v] = g.Bunch(
-            v=v,head=v.headString(),body=v.b)
-#@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
-#@+node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
-# Create a dict containing only copied tnodes.
-copiedVnodeDict = {}
-for p in pasted.self_and_subtree():
-    if p.v not in copiedVnodeDict:
-        copiedVnodeDict[p.v] = p.v
-
-# g.trace(list(copiedVnodeDict.keys()))
-
-for v in vnodeInfoDict:
-    bunch = vnodeInfoDict.get(v)
-    if copiedVnodeDict.get(v):
-        copiedBunchList.append(bunch)
-
-# g.trace('copiedBunchList',copiedBunchList)
-#@-node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
-#@-node:ekr.20031218072017.1551:pasteOutline
-#@+node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
-def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
-
-    '''Read a Leo outline from string s in clipboard format.'''
-
-    trace = False and not g.unitTesting
-    verbose = False
-    c = self.c ; current = c.p ; check = not reassignIndices
-    checkAfterRead = False or c.config.getBool('check_outline_after_read')
-
-    # Save the hidden root's children.
-    children = c.hiddenRootNode.children
-
-    # Always recreate the gnxDict
-    self.gnxDict = {}
-    if not reassignIndices:
-        x = g.app.nodeIndices
-        for v in c.all_unique_nodes():
-            index = x.toString(v.fileIndex)
-            self.gnxDict[index] = v
-
-    self.usingClipboard = True
-    try:
-        # This encoding must match the encoding used in putLeoOutline.
-        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
-
-        # readSaxFile modifies the hidden root.
-        v = self.readSaxFile(
-            theFile=None, fileName='<clipboard>',
-            silent=True, # don't tell about stylesheet elements.
-            inClipboard=True,reassignIndices=reassignIndices,s=s)
-        if not v:
-            return g.es("the clipboard is not valid ",color="blue")
-    finally:
-        self.usingClipboard = False
-
-    # Restore the hidden root's children
-    c.hiddenRootNode.children = children
-
-    # Unlink v from the hidden root.
-    v.parents.remove(c.hiddenRootNode)
-
-    p = leoNodes.position(v)
-
-    # Important: we must not adjust links when linking v
-    # into the outline.  The read code has already done that.
-    if current.hasChildren() and current.isExpanded():
-        if check and not self.checkPaste(current,p):
-            return None
-        p._linkAsNthChild(current,0,adjust=False)
-    else:
-        if check and not self.checkPaste(current.parent(),p):
-            return None
-        p._linkAfter(current,adjust=False)
-
-    if reassignIndices:
-        for p2 in p.self_and_subtree():
-            p2.v.fileIndex = g.app.nodeIndices.getNewIndex()
-
-    if trace and verbose:
-        g.trace('**** dumping outline...')
-        c.dumpOutline()
-
-    if checkAfterRead:
-        g.trace('checking outline after paste',color='blue')
-        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
-
-    c.selectPosition(p)
-    return p
-
-getLeoOutline = getLeoOutlineFromClipboard # for compatibility
-#@+node:ekr.20080410115129.1:checkPaste
-def checkPaste (self,parent,p):
-
-    '''Return True if p may be pasted as a child of parent.'''
-
-    if not parent: return True
-
-    parents = [z.copy() for z in parent.self_and_parents()]
-
-    for p in p.self_and_subtree():
-        for z in parents:
-            # g.trace(p.h,id(p.v),id(z.v))
-            if p.v == z.v:
-                g.es('Invalid paste: nodes may not descend from themselves',color="blue")
-                return False
-
-    return True
-#@-node:ekr.20080410115129.1:checkPaste
-#@-node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
-#@-node:ekr.20100122130101.6172:Fix bug in c.pasteOutline when run from unit tests
 #@+node:ekr.20100111094359.6208:Fix goto-line bugs
 #@+node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 def goToLineNumber (self,n,p=None,scriptData=None):
@@ -670,7 +458,11 @@ def goto_showResults(self,found,p,n,n2,lines):
 #@-node:ekr.20080904071003.14:goto_showResults
 #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 #@-node:ekr.20100111094359.6208:Fix goto-line bugs
-#@+node:ekr.20100118143729.6256:Fix bug 508108: No methods sub-nodes in PHP class import
+#@+node:ekr.20100118143729.6256:Wish-list bug 508108: No methods sub-nodes in PHP class import
+@nocolor-node
+
+EKR: this is a wish-list item
+
 https://bugs.launchpad.net/leo-editor/+bug/508108
 
 When importing a PHP class file, I get two nodes: the first is just some Leo
@@ -679,8 +471,10 @@ expect Leo to create a node for each method in the class as it does for
 "classless" file of functions (not sure how it is done in other languages). This
 kind of change would also make @auto a lot more useful for PHP.
 #@nonl
-#@-node:ekr.20100118143729.6256:Fix bug 508108: No methods sub-nodes in PHP class import
+#@-node:ekr.20100118143729.6256:Wish-list bug 508108: No methods sub-nodes in PHP class import
 #@+node:ekr.20100203160817.5795:Testing
+#@+node:ekr.20100203125449.5791:Use 2to3 to check for 3x problems
+#@-node:ekr.20100203125449.5791:Use 2to3 to check for 3x problems
 #@+node:ekr.20100203160817.5793:Unit tests for all toggle commands
 #@-node:ekr.20100203160817.5793:Unit tests for all toggle commands
 #@+node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
@@ -694,7 +488,7 @@ kind of change would also make @auto a lot more useful for PHP.
 #@+node:ekr.20100129133806.6237:Remove cruft from test folder
 #@-node:ekr.20100129133806.6237:Remove cruft from test folder
 #@-node:ekr.20100202145902.8709:Distribution
-#@-node:ekr.20100126110826.6253:Before rc1 4 bugs
+#@-node:ekr.20100126110826.6253:Before rc1 2 bugs, 1 wish list
 #@-node:ekr.20071211093011:4.7 One-node world, Leo3K
 #@+node:ekr.20100109214940.6225:4.8 Autocompletion, vim
 #@+node:ekr.20100119145629.6104:First

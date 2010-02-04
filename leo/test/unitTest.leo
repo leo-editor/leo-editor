@@ -779,6 +779,7 @@
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
 <v t="ekr.20100127162342.5123"><vh>Import all plugins script</vh></v>
+<v t="ekr.20100203163606.5365"><vh>2to3 script</vh></v>
 <v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20090703080553.5000"><vh>@suite run all doctests</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
@@ -888,7 +889,7 @@
 <v t="ekr.20100131180007.5463"><vh>@test handleTnodeSaxAttributes</vh></v>
 <v t="ekr.20100131180007.5460"><vh>@test handleVnodeSaxAttributes</vh></v>
 <v t="ekr.20100131180007.5459"><vh>@test initAtAutoWrite</vh></v>
-<v t="ekr.20100131180007.5452"><vh>@test tnodeAttributes</vh></v>
+<v t="ekr.20100131180007.5452"><vh>@@test tnodeAttributes</vh></v>
 <v t="ekr.20100131180007.5462"><vh>@test verbatim sentinel</vh></v>
 </v>
 <v t="ekr.20050112095306.1"><vh>leoAtFile</vh>
@@ -2650,7 +2651,6 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20100203163606.5365"><vh>2to3 script</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -23345,29 +23345,38 @@ for attr,kind,expected,val in table:
 
 assert c.fileCommands.cleanSaxInputString(s) == 'test this'
 </t>
-<t tx="ekr.20100131180007.5452">import leo.core.leoFileCommands as leoFileCommands
+<t tx="ekr.20100131180007.5452">@
+OMG: the hack in tnodeAttributes to support this unit test was the cause of the
+weird bug that had Leo work differently in scripts than it did in unit tests!!
 
-class saxAttrsClass:
-    '''Simulating sax attributes'''
-    def __init__(self):
-        self.attrs = {
-            'tx':'ekr.123','testAttr':'abc',
-        }
-    def getNames(self):
-        return list(self.attrs.keys())
-    def getValue(self,key):
-        return self.attrs.get(key)
+Let us hope that this is the worst blunder that I shall ever make.
+@c
 
-handler = leoFileCommands.saxContentHandler(
-    c,fileName='&lt;test file&gt;',
-    silent=True,inClipboard=False)
-attributes = saxAttrsClass()
-handler.tnodeAttributes(attributes)
-aList = handler.nodeList
-assert len(aList) == 1,len(aList)
-b = aList[0]
-d = b.tnodeAttributes
-assert d.get('testAttr')=='abc',d.get('testAttr')</t>
+if 0: # Do **not** try to make this work: it isn't worth it.
+
+    import leo.core.leoFileCommands as leoFileCommands
+    
+    class saxAttrsClass:
+        '''Simulating sax attributes'''
+        def __init__(self):
+            self.attrs = {
+                'tx':'ekr.123','testAttr':'abc',
+            }
+        def getNames(self):
+            return list(self.attrs.keys())
+        def getValue(self,key):
+            return self.attrs.get(key)
+    
+    handler = leoFileCommands.saxContentHandler(
+        c,fileName='&lt;test file&gt;',
+        silent=True,inClipboard=False)
+    attributes = saxAttrsClass()
+    handler.tnodeAttributes(attributes)
+    aList = handler.nodeList
+    assert len(aList) == 1,len(aList)
+    b = aList[0]
+    d = b.tnodeAttributes
+    assert d.get('testAttr')=='abc',d.get('testAttr')</t>
 <t tx="ekr.20100131180007.5453"># A totally wimpy test.
 c.abbrevCommands.dynamicExpandHelper(prefix='',rlist=None,w=None)
 </t>

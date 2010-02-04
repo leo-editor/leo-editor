@@ -64,7 +64,7 @@ def isTestNode (p):
 #@+node:ekr.20051104075904.4:doTests...
 def doTests(c,all=None,p=None,verbosity=1):
 
-    trace = False
+    trace = False ; verbose = False
     if all:
         p = c.rootPosition()
     elif not p:
@@ -72,7 +72,7 @@ def doTests(c,all=None,p=None,verbosity=1):
     p1 = p.copy()
 
     try:
-        found = False ; verbose = True
+        found = False
         g.unitTesting = g.app.unitTesting = True
         g.app.unitTestDict["fail"] = False
         g.app.unitTestDict['c'] = c
@@ -86,19 +86,19 @@ def doTests(c,all=None,p=None,verbosity=1):
         # New in Leo 4.4.8: ignore everything in @ignore trees.
         if all: last = None
         else:   last = p.nodeAfterTree()
-        if trace: g.trace('all',all,'root',p.h)
+        if trace and verbose: g.trace('all',all,'root',p.h)
         while p and p != last:
             if g.match_word(p.h,0,'@ignore'):
-                if trace: g.trace('ignoring',p.h)
+                if trace and verbose: g.trace('ignoring',p.h)
                 p.moveToNodeAfterTree()
             elif isTestNode(p): # @test
-                if trace: g.trace('adding',p.h)
+                if trace and verbose: g.trace('adding',p.h)
                 test = makeTestCase(c,p)
                 if test:
                     suite.addTest(test) ; found = True
                 p.moveToThreadNext()
             elif isSuiteNode(p): # @suite
-                if trace: g.trace('adding',p.h)
+                if trace and verbose: g.trace('adding',p.h)
                 test = makeTestSuite(c,p)
                 if test:
                     suite.addTest(test) ; found = True
@@ -111,7 +111,7 @@ def doTests(c,all=None,p=None,verbosity=1):
         if found:
             res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
             # put info to db as well
-            if g.enableDB:
+            if False and g.enableDB:
                 key = 'unittest/cur/fail'
                 archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
                 c.db[key] = archive
@@ -161,29 +161,27 @@ class generalTestCase(unittest.TestCase):
 
         c = self.c ; p = self.p
 
-        c.selectPosition(p)
+        c.selectPosition(p.copy()) # 2010/02/03
     #@-node:ekr.20051104075904.8:setUp
     #@+node:ekr.20051104075904.10:runTest
     def runTest (self,define_g = True):
 
+        trace = False
         c = self.c ; p = self.p.copy()
         script = g.getScript(c,p).strip()
-        # print ('p',p,'len(script)',len(script))
         self.assert_(script)
         writeScriptFile = c.config.getBool('write_script_file')
-
-        # import leo.core.leoGlobals as g
 
         # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
         g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
 
         if define_g:
-            d = {'c':c,'g':g,'p':p,'self':self,}
+            d = {'c':c,'g':g,'p':p and p.copy(),'self':self,}
         else:
             d = {'self':self,}
 
         script = script + '\n'
-        # g.trace(type(script),script)
+        if trace: g.trace('p',p and p.h,'\n',script)
 
         # Execute the script. Let unit test handle any errors!
         if writeScriptFile:

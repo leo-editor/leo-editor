@@ -468,6 +468,7 @@
 <v t="ekr.20100122125233.2053"><vh>@test zcpspm</vh></v>
 </v>
 <v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
+<v t="ekr.20100203174233.2032"><vh>@test paste-script</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5248,5 +5249,21 @@ app.connect(b1, Qt.SIGNAL("clicked()"), do)
 app.connect(b2, Qt.SIGNAL("clicked()"), undo)
 app.exec_()
 </t>
+<t tx="ekr.20100203174233.2032"># My problem: the node that is being created by c.pasteOutline() has an
+# empty body. If after running the test I type 'paste-node' in the
+# minibuffer, a new node appears, it has 'foo' in the body.
+
+root = p.copy()
+while p.hasChildren():
+   p.firstChild().doDelete(newNode = None)
+try:
+   p1 = p.insertAsLastChild()
+   body = 'foo'
+   p1.setBodyString(body)
+   c.selectPosition(p1)
+   c.copyOutline()
+   c.pasteOutline()
+finally:
+   c.redraw_now()</t>
 </tnodes>
 </leo_file>

@@ -1839,7 +1839,8 @@ def trace (*args,**keys):
         f1 = sys._getframe(1) # The stack frame, one level up.
         code1 = f1.f_code # The code object
         name = code1.co_name # The code name
-    except Exception: name = ''
+    except Exception:
+        name = ''
     if name == "?":
         name = "<unknown>"
 
