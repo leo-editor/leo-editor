@@ -122,12 +122,18 @@ class PickleShareDB:
         elif protocol == 'picklez':
             if zlib:
                 def loadz(fileobj):
-                    val = pickle.loads(zlib.decompress(fileobj.read()))
-                    return val
+                    # 2010/02/04 EKR: guard against null fileobj.
+                    if fileobj:
+                        val = pickle.loads(zlib.decompress(fileobj.read()))
+                        return val
+                    else:
+                        return None
 
                 def dumpz(val, fileobj):
-                    compressed = zlib.compress(pickle.dumps(val, pickle.HIGHEST_PROTOCOL))
-                    fileobj.write(compressed)
+                    # 2010/02/04 EKR: guard against null fileobj.
+                    if fileobj:
+                        compressed = zlib.compress(pickle.dumps(val, pickle.HIGHEST_PROTOCOL))
+                        fileobj.write(compressed)
 
                 self.loader = loadz
                 self.dumper = dumpz

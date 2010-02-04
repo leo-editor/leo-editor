@@ -470,6 +470,7 @@
 </v>
 <v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
 <v t="ekr.20100203233053.2033"><vh>@thin at-path-in-body-test.py</vh></v>
+<v t="ekr.20100204062222.2035"><vh>@auto C:\leo.repo\trunk\leo\extensions\Pmw\Pmw_1_3\lib</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):

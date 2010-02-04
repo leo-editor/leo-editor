@@ -99,6 +99,8 @@ class path(_base):
         Join two path components, adding a separator character if
         needed.
         """
+        # 2010/02/04 EKR: fix for Python 3.x.
+        if rel is None: rel = ''
         return path(os.path.join(self, rel))
 
     # Make the / operator work even when true division is enabled.
@@ -477,7 +479,12 @@ class path(_base):
     #@+node:ekr.20091204132801.2721:open
     def open(self, mode='r'):
         """ Open this file.  Return a file object. """
-        return open(self, mode)
+        # 2010/02/04 EKR: catch exception so Leo doesn't crash on startup.
+        try:
+            return open(self, mode)
+        except Exception:
+            print('can not open',self)
+            return None
     #@-node:ekr.20091204132801.2721:open
     #@+node:ekr.20091204132801.2722:bytes
     def bytes(self):
