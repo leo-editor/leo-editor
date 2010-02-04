@@ -4706,6 +4706,17 @@ for line in lines[j+1:k+1]:
 #@-node:ekr.20041005105605.141:<< put all @last lines in root >>
 #@-node:ekr.20041005105605.137:<< write root's tree >>
 #@-node:ekr.20041005105605.136:norefWrite (deleted)
+#@+node:ekr.20080711063656.2:x.rename (not used)
+# def rename (self,src,dst,mode=None,silent=False):
+
+    # x = self ; c = x.c
+
+    # ok = g.utils_rename (c,src,dst,mode=mode,verbose=not silent)
+    # if not ok:
+        # x.error('can not rename %s to %s' % (src,dst),silent=silent)
+
+    # return ok
+#@-node:ekr.20080711063656.2:x.rename (not used)
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node

@@ -2734,7 +2734,14 @@ def update_file_if_changed(c,file_name,temp_name):
             ok = g.utils_rename(c,temp_name,file_name,mode)
     else:
         kind = 'creating'
-        ok = g.utils_rename(c,temp_name,file_name)
+        # 2010/02/04: g.utils_rename no longer calls
+        # makeAllNonExistentDirectories
+        head, tail = g.os_path_split(file_name)
+        ok = True
+        if head:
+            ok = g.makeAllNonExistentDirectories(head,c=c)
+        if ok:
+            ok = g.utils_rename(c,temp_name,file_name)
 
     if ok:
         g.es('','%12s: %s' % (kind,file_name))
@@ -2755,23 +2762,20 @@ def utils_remove (fileName,verbose=True):
         return False
 #@-node:ekr.20050104123726.3:g.utils_remove
 #@+node:ekr.20031218072017.1263:g.utils_rename
-def utils_rename (c,src,dst,mode=None,verbose=True):
+def utils_rename (c,src,dst,verbose=True): ###,mode=None):
 
     '''Platform independent rename.'''
 
-    head, tail = g.os_path_split(dst)
-    if head and len(head) > 0:
-        g.makeAllNonExistentDirectories(head,c=c)
+    ### 2010/02/04: Don't call g.makeAllNonExistentDirectories.
+    ### It's not right to do this here!!
 
-    ### How can this be correct ???
-    # if g.os_path_exists(dst):
-        # if not g.utils_remove(dst):
-            # return False
+    # head, tail = g.os_path_split(dst)
+    # if head: g.makeAllNonExistentDirectories(head,c=c)
 
     try:
         shutil.move(src,dst)
-        if mode:
-            g.utils_chmod(dst,mode,verbose)
+        ### if mode is not None:
+        ###    g.utils_chmod(dst,mode,verbose)
         return True
     except Exception:
         if verbose:

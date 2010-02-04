@@ -2181,17 +2181,20 @@ class baseFileCommands:
             # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
 
             fd,backupName = tempfile.mkstemp(text=False)
-            os.close(fd)
+            f = open(fileName,'rb') # rb is essetial.
+            s = f.read()
+            f.close()
 
-            ### This does a lot, probably too much for here.
-            ### ok = g.utils_rename(c,fileName,backupName)
             try:
+                try:
+                     os.write(fd,s)
+                finally:
+                     os.close(fd)
                 ok = True
-                shutil.move(fileName,backupName) 
             except Exception:
-                ok = False
-                g.es('exception creating backup file')
+                g.es('exception creating backup file',color='red')
                 g.es_exception()
+                ok,backupName = False,None
 
             if not ok and self.read_only:
                 g.es("read only",color="red")
@@ -2218,6 +2221,8 @@ class baseFileCommands:
         # Rename backupName to fileName.
         if backupName and g.os_path_exists(backupName):
             g.es("restoring",fileName,"from",backupName)
+
+            # No need to create directories when restoring.
             g.utils_rename(c,backupName,fileName)
         else:
             g.es_print('does not exist!',backupName)

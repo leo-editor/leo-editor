@@ -495,7 +495,7 @@
 <v t="ekr.20100204085631.2061"><vh>_selectUnpost</vh></v>
 </v>
 </v>
-<v t="ekr.20100204085410.2060" a="E"><vh>@auto test-blank-lines.py</vh></v>
+<v t="ekr.20100204085410.2060"><vh>@auto test-blank-lines.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):

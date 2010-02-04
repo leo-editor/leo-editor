@@ -1890,29 +1890,27 @@
 <v t="ekr.20070306091949"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20061001114637"><vh>leoFileCommands</vh>
-<v t="ekr.20071113145804.18"><vh>@test fc.deleteFileWithMessage</vh></v>
 <v t="ekr.20061001124008"><vh>@@test minimal test of putTnodeList</vh>
 <v t="ekr.20061001124008.1"><vh>child</vh>
 <v t="ekr.20061001124008.2"><vh>grandchild</vh></v>
 </v>
 </v>
-<v t="ekr.20080805104144.1"><vh>@test putDescendentVnodeUas</vh>
-<v t="ekr.20080805104144.2"><vh>child</vh>
-<v t="ekr.20080805104144.3"><vh>grandChild</vh></v>
+<v t="ekr.20100204153116.5369"><vh>@@test raw file copy</vh></v>
+<v t="ekr.20080806211453.5"><vh>@@test round-trip-uAs for @shadow</vh>
+<v t="ekr.20080806211453.1"><vh>@@shadow uA_test_shadow_file.py</vh>
+<v t="ekr.20080822160527.1"><vh>uA_test_shadow_file declarations</vh></v>
 </v>
 </v>
-<v t="ekr.20061001114236"><vh>@test putUa</vh></v>
-<v t="ekr.20051107115231.9"><vh>@test Select a node when file is first loaded</vh></v>
-<v t="ekr.20061008162912"><vh>@test write .leo file with @ignore node</vh>
-<v t="ekr.20061008162912.1"><vh>child</vh></v>
-</v>
-<v t="ekr.20080805105541.1"><vh>@test p.archivedPosition</vh>
-<v t="ekr.20080805122315.1"><vh>first child</vh></v>
-<v t="ekr.20080805122315.2"><vh>second child</vh>
-<v t="ekr.20080805122315.3"><vh>grandChild</vh></v>
-<v t="ekr.20080805122315.4"><vh>grandChild 2</vh></v>
+<v t="ekr.20080806095923.2"><vh>@@test round-trip-uAs for @thin</vh>
+<v t="ekr.20080806084924.2"><vh>@@thin uA_test_file.py</vh>
+<v t="ekr.20080806084924.3"><vh>child1</vh>
+<v t="ekr.20080806084924.4"><vh>grandChild1</vh>
+<v t="ekr.20080806084924.5"><vh>greatGrandChild1</vh></v>
 </v>
 </v>
+</v>
+</v>
+<v t="ekr.20071113145804.18"><vh>@test fc.deleteFileWithMessage</vh></v>
 <v t="ekr.20080806072412.1"><vh>@test fc.resolveArchivedPosition</vh>
 <v t="ekr.20080806072412.2"><vh>first child</vh></v>
 <v t="ekr.20080806072412.3"><vh>second child</vh>
@@ -1926,21 +1924,24 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080806095923.2"><vh>@@test round-trip-uAs for @thin</vh>
-<v t="ekr.20080806084924.2"><vh>@@thin uA_test_file.py</vh>
-<v t="ekr.20080806084924.3"><vh>child1</vh>
-<v t="ekr.20080806084924.4"><vh>grandChild1</vh>
-<v t="ekr.20080806084924.5"><vh>greatGrandChild1</vh></v>
+<v t="ekr.20080805105541.1"><vh>@test p.archivedPosition</vh>
+<v t="ekr.20080805122315.1"><vh>first child</vh></v>
+<v t="ekr.20080805122315.2"><vh>second child</vh>
+<v t="ekr.20080805122315.3"><vh>grandChild</vh></v>
+<v t="ekr.20080805122315.4"><vh>grandChild 2</vh></v>
 </v>
 </v>
+<v t="ekr.20080805104144.1"><vh>@test putDescendentVnodeUas</vh>
+<v t="ekr.20080805104144.2"><vh>child</vh>
+<v t="ekr.20080805104144.3"><vh>grandChild</vh></v>
 </v>
 </v>
-<v t="ekr.20080806211453.5"><vh>@@test round-trip-uAs for @shadow</vh>
-<v t="ekr.20080806211453.1"><vh>@@shadow uA_test_shadow_file.py</vh>
-<v t="ekr.20080822160527.1"><vh>uA_test_shadow_file declarations</vh></v>
-</v>
-</v>
+<v t="ekr.20061001114236"><vh>@test putUa</vh></v>
+<v t="ekr.20051107115231.9"><vh>@test Select a node when file is first loaded</vh></v>
 <v t="ekr.20090507084947.5152"><vh>@test t.fileIndex remains the same</vh></v>
+<v t="ekr.20061008162912"><vh>@test write .leo file with @ignore node</vh>
+<v t="ekr.20061008162912.1"><vh>child</vh></v>
+</v>
 <v t="ekr.20071113202045"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113193527"><vh>leoFind</vh>
@@ -2559,7 +2560,7 @@
 <v t="ekr.20100131180007.5365"><vh>@test x.markerFromFileLines</vh></v>
 <v t="ekr.20100131180007.5364"><vh>@test x.markerFromFileName</vh></v>
 <v t="ekr.20090529115704.4551"><vh>@test x.pathName</vh></v>
-<v t="ekr.20090529115704.4555"><vh>@test x.rename</vh></v>
+<v t="ekr.20090529115704.4555"><vh>@@test x.rename</vh></v>
 <v t="ekr.20090529115704.4559"><vh>@test x.replaceFileWithString</vh></v>
 <v t="ekr.20100131180007.5367"><vh>@test x.replaceFileWithString 2</vh></v>
 <v t="ekr.20090529115704.4554"><vh>@test x.shadowDirName</vh></v>
@@ -3558,7 +3559,7 @@ for p in (path,path2):
     f.close()
     assert exists(p)
 
-assert g.utils_rename(c,path,path2,verbose=True)
+assert g.utils_rename(c,path,path2) #,verbose=True)
 assert exists(path2)
 f = open(path2)
 s = f.read()
@@ -17881,15 +17882,16 @@ expected = g.os_path_abspath(
 # print(expected)
 
 assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
-<t tx="ekr.20090529115704.4555">x = c.shadowController
-
-filename = x.pathName('xyzzy')
-assert not g.os_path_exists(filename)
-n = x.errors
-x.rename('xyzzy','xyzzy2',silent=True)
-assert x.errors == n+1
-assert x.last_error.startswith('can not rename')
-# print(x.last_error)</t>
+<t tx="ekr.20090529115704.4555">if 0: # x.rename no longer exists
+    x = c.shadowController
+    
+    filename = x.pathName('xyzzy')
+    assert not g.os_path_exists(filename)
+    n = x.errors
+    x.rename('xyzzy','xyzzy2',silent=True)
+    assert x.errors == n+1
+    assert x.last_error.startswith('can not rename')
+    # print(x.last_error)</t>
 <t tx="ekr.20090529115704.4556">x = c.shadowController
 
 filename = x.pathName('xyzzy')
@@ -23687,6 +23689,20 @@ finally:
          while root.hasChildren():
               root.firstChild().doDelete(newNode = None)
     c.redraw_now(p)</t>
+<t tx="ekr.20100204153116.5369">import tempfile
+import os
+
+s = 'Select the following string: वादक. Typing and undo now work.'
+fd,fn = tempfile.mkstemp(text=False)
+s = g.toEncodedString(s)
+os.write(fd,s)
+os.close(fd)
+f = open(fn,'rb')
+s2 = f.read()
+f.close()
+assert s==s2
+os.remove(fn)
+print('deleted',fn)</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

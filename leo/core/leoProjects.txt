@@ -521,17 +521,20 @@ def createBackupFile (self,fileName):
         # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
 
         fd,backupName = tempfile.mkstemp(text=False)
-        os.close(fd)
+        f = open(fileName,'rb') # rb is essetial.
+        s = f.read()
+        f.close()
 
-        ### This does a lot, probably too much for here.
-        ### ok = g.utils_rename(c,fileName,backupName)
         try:
+            try:
+                 os.write(fd,s)
+            finally:
+                 os.close(fd)
             ok = True
-            shutil.move(fileName,backupName) 
         except Exception:
-            ok = False
-            g.es('exception creating backup file')
+            g.es('exception creating backup file',color='red')
             g.es_exception()
+            ok,backupName = False,None
 
         if not ok and self.read_only:
             g.es("read only",color="red")
@@ -558,6 +561,8 @@ def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
     # Rename backupName to fileName.
     if backupName and g.os_path_exists(backupName):
         g.es("restoring",fileName,"from",backupName)
+
+        # No need to create directories when restoring.
         g.utils_rename(c,backupName,fileName)
     else:
         g.es_print('does not exist!',backupName)
@@ -696,17 +701,20 @@ def createBackupFile (self,fileName):
         # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
 
         fd,backupName = tempfile.mkstemp(text=False)
-        os.close(fd)
+        f = open(fileName,'rb') # rb is essetial.
+        s = f.read()
+        f.close()
 
-        ### This does a lot, probably too much for here.
-        ### ok = g.utils_rename(c,fileName,backupName)
         try:
+            try:
+                 os.write(fd,s)
+            finally:
+                 os.close(fd)
             ok = True
-            shutil.move(fileName,backupName) 
         except Exception:
-            ok = False
-            g.es('exception creating backup file')
+            g.es('exception creating backup file',color='red')
             g.es_exception()
+            ok,backupName = False,None
 
         if not ok and self.read_only:
             g.es("read only",color="red")
@@ -733,6 +741,8 @@ def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
     # Rename backupName to fileName.
     if backupName and g.os_path_exists(backupName):
         g.es("restoring",fileName,"from",backupName)
+
+        # No need to create directories when restoring.
         g.utils_rename(c,backupName,fileName)
     else:
         g.es_print('does not exist!',backupName)
@@ -8974,6 +8984,51 @@ def compute_directives_re ():
 #@-node:ekr.20090214075058.10:compute_directives_re
 #@-node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
 #@-node:ekr.20081204091750.4:Fixed inconsistency in how @path works
+#@+node:ekr.20100204052559.5795:Fixed crasher in path.py
+@nocolor-node
+
+Traceback (most recent call last):
+  File "launchLeo.py", line 8, in <module>
+    leo.core.runLeo.run()
+  File "c:\leo.repo\trunk\leo\core\runLeo.py", line 95, in run
+    ok = doPostPluginsInit(args,fn,relFn,script,versionFlag)
+  File "c:\leo.repo\trunk\leo\core\runLeo.py", line 354, in doPostPluginsInit
+    c,frame = createFrame(fileName,relativeFileName,script)
+  File "c:\leo.repo\trunk\leo\core\runLeo.py", line 383, in createFrame
+    ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+  File "c:\leo.repo\trunk\leo\core\leoGlobals.py", line 2439, in openWithFileName
+    ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
+  File "c:\leo.repo\trunk\leo\core\leoGlobals.py", line 2502, in handleOpenHooks
+    readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 911, in open
+    silent=silent)
+  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 811, in getLeoFile
+    c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 659, in readAll
+    at.readOneAtAutoNode (fileName,p)
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 732, in readOneAtAutoNode
+    self.writeCachedTree(p, cachefile)
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 593, in writeCachedTree
+    elif cachefile in c.db:
+  File "c:\leo.repo\trunk\leo\external\pickleshare.py", line 138, in __contains__
+    return self.has_key(key)
+  File "c:\leo.repo\trunk\leo\external\pickleshare.py", line 234, in has_key
+    value = self[key]
+  File "c:\leo.repo\trunk\leo\external\pickleshare.py", line 160, in __getitem__
+    fil = self.root / key
+  File "c:\leo.repo\trunk\leo\external\path.py", line 102, in __div__
+    return path(os.path.join(self, rel))
+  File "c:\python31\lib\ntpath.py", line 111, in join
+    elif isabs(b):
+  File "c:\python31\lib\ntpath.py", line 92, in isabs
+    s = splitdrive(s)[1]
+  File "c:\python31\lib\ntpath.py", line 198, in splitdrive
+    if len(p) > 1:
+TypeError: object of type 'NoneType' has no len()
+
+c:\leo.repo\trunk>
+#@nonl
+#@-node:ekr.20100204052559.5795:Fixed crasher in path.py
 #@+node:ekr.20100204052559.5797:Fixed at-auto write bug
 @nocolor-node
 
@@ -9138,8 +9193,6 @@ What I did:
 - Removed an unwise call to g.utils_remove in g.utils_rename.
   This could cause havoc with the following call to
   shutils_move!!
-
-#@nonl
 #@+node:ekr.20100204104820.5833:The typical exception
 exception renaming
 c:\leo.repo\trunk\leo\test\unitTest.leo
@@ -9278,17 +9331,20 @@ def createBackupFile (self,fileName):
         # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
 
         fd,backupName = tempfile.mkstemp(text=False)
-        os.close(fd)
+        f = open(fileName,'rb') # rb is essetial.
+        s = f.read()
+        f.close()
 
-        ### This does a lot, probably too much for here.
-        ### ok = g.utils_rename(c,fileName,backupName)
         try:
+            try:
+                 os.write(fd,s)
+            finally:
+                 os.close(fd)
             ok = True
-            shutil.move(fileName,backupName) 
         except Exception:
-            ok = False
-            g.es('exception creating backup file')
+            g.es('exception creating backup file',color='red')
             g.es_exception()
+            ok,backupName = False,None
 
         if not ok and self.read_only:
             g.es("read only",color="red")
@@ -9298,23 +9354,20 @@ def createBackupFile (self,fileName):
     return ok,backupName
 #@-node:ekr.20031218072017.3047:createBackupFile (fileCommands)
 #@+node:ekr.20031218072017.1263:g.utils_rename
-def utils_rename (c,src,dst,mode=None,verbose=True):
+def utils_rename (c,src,dst,verbose=True): ###,mode=None):
 
     '''Platform independent rename.'''
 
-    head, tail = g.os_path_split(dst)
-    if head and len(head) > 0:
-        g.makeAllNonExistentDirectories(head,c=c)
+    ### 2010/02/04: Don't call g.makeAllNonExistentDirectories.
+    ### It's not right to do this here!!
 
-    ### How can this be correct ???
-    # if g.os_path_exists(dst):
-        # if not g.utils_remove(dst):
-            # return False
+    # head, tail = g.os_path_split(dst)
+    # if head: g.makeAllNonExistentDirectories(head,c=c)
 
     try:
         shutil.move(src,dst)
-        if mode:
-            g.utils_chmod(dst,mode,verbose)
+        ### if mode is not None:
+        ###    g.utils_chmod(dst,mode,verbose)
         return True
     except Exception:
         if verbose:
@@ -9354,6 +9407,8 @@ def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
     # Rename backupName to fileName.
     if backupName and g.os_path_exists(backupName):
         g.es("restoring",fileName,"from",backupName)
+
+        # No need to create directories when restoring.
         g.utils_rename(c,backupName,fileName)
     else:
         g.es_print('does not exist!',backupName)
@@ -9362,23 +9417,20 @@ def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
 #@-node:ekr.20100204052559.5804:Part 2: mkstemp & g.utils_rename
 #@+node:ekr.20100204052559.5805:Part 3: g.utils_rename
 #@+node:ekr.20031218072017.1263:g.utils_rename
-def utils_rename (c,src,dst,mode=None,verbose=True):
+def utils_rename (c,src,dst,verbose=True): ###,mode=None):
 
     '''Platform independent rename.'''
 
-    head, tail = g.os_path_split(dst)
-    if head and len(head) > 0:
-        g.makeAllNonExistentDirectories(head,c=c)
+    ### 2010/02/04: Don't call g.makeAllNonExistentDirectories.
+    ### It's not right to do this here!!
 
-    ### How can this be correct ???
-    # if g.os_path_exists(dst):
-        # if not g.utils_remove(dst):
-            # return False
+    # head, tail = g.os_path_split(dst)
+    # if head: g.makeAllNonExistentDirectories(head,c=c)
 
     try:
         shutil.move(src,dst)
-        if mode:
-            g.utils_chmod(dst,mode,verbose)
+        ### if mode is not None:
+        ###    g.utils_chmod(dst,mode,verbose)
         return True
     except Exception:
         if verbose:
@@ -9386,6 +9438,85 @@ def utils_rename (c,src,dst,mode=None,verbose=True):
             g.es_exception(full=False)
         return False
 #@-node:ekr.20031218072017.1263:g.utils_rename
+#@-node:ekr.20100204052559.5805:Part 3: g.utils_rename
+#@+node:ekr.20100204104820.5834:Part 4: g.units_remove
+#@+node:ekr.20050104123726.3:g.utils_remove
+def utils_remove (fileName,verbose=True):
+
+    try:
+        os.remove(fileName)
+        return True
+    except Exception:
+        if verbose:
+            g.es("exception removing:",fileName)
+            g.es_exception()
+        return False
+#@-node:ekr.20050104123726.3:g.utils_remove
+#@-node:ekr.20100204104820.5834:Part 4: g.units_remove
+#@-node:ekr.20100204052559.5800:Fixed the critical 'file used by another process' bug
+#@+node:ekr.20100204104820.5836:Big change: simplified g.utils_rename
+@nocolor-node
+
+Removed call to g.makeAllNonExistentDirectories in g.utils_rename.
+
+This has global effects. Happily, there were only three callers of g.utils_rename:
+
+- handleWriteLeoFileException: should *not* create directories.
+
+- x.rename: no longer used!
+
+- g.update_file_if_changed:
+    - called only from tangle.put_all_roots.
+    - I added call to g.makeAllNonExistentDirectories there.
+#@nonl
+#@+node:ekr.20100204104820.5837:Found: utils_rename
+#@+node:ekr.20031218072017.1263:g.utils_rename
+def utils_rename (c,src,dst,verbose=True): ###,mode=None):
+
+    '''Platform independent rename.'''
+
+    ### 2010/02/04: Don't call g.makeAllNonExistentDirectories.
+    ### It's not right to do this here!!
+
+    # head, tail = g.os_path_split(dst)
+    # if head: g.makeAllNonExistentDirectories(head,c=c)
+
+    try:
+        shutil.move(src,dst)
+        ### if mode is not None:
+        ###    g.utils_chmod(dst,mode,verbose)
+        return True
+    except Exception:
+        if verbose:
+            g.es('exception renaming',src,'to',dst,color='red')
+            g.es_exception(full=False)
+        return False
+#@-node:ekr.20031218072017.1263:g.utils_rename
+#@+node:ekr.20100119145629.6108:handleWriteLeoFileException
+def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
+
+    c = self.c
+
+    g.es("exception writing:",fileName)
+    g.es_exception(full=True)
+
+    if theActualFile:
+        theActualFile.close()
+
+    # Delete fileName.
+    if fileName and g.os_path_exists(fileName):
+        self.deleteFileWithMessage(fileName,'')
+
+    # Rename backupName to fileName.
+    if backupName and g.os_path_exists(backupName):
+        g.es("restoring",fileName,"from",backupName)
+
+        # No need to create directories when restoring.
+        g.utils_rename(c,backupName,fileName)
+    else:
+        g.es_print('does not exist!',backupName)
+
+#@-node:ekr.20100119145629.6108:handleWriteLeoFileException
 #@+node:ekr.20031218072017.1241:g.update_file_if_changed
 # This is part of the tangle code.
 
@@ -9406,7 +9537,14 @@ def update_file_if_changed(c,file_name,temp_name):
             ok = g.utils_rename(c,temp_name,file_name,mode)
     else:
         kind = 'creating'
-        ok = g.utils_rename(c,temp_name,file_name)
+        # 2010/02/04: g.utils_rename no longer calls
+        # makeAllNonExistentDirectories
+        head, tail = g.os_path_split(file_name)
+        ok = True
+        if head:
+            ok = g.makeAllNonExistentDirectories(head,c=c)
+        if ok:
+            ok = g.utils_rename(c,temp_name,file_name)
 
     if ok:
         g.es('','%12s: %s' % (kind,file_name))
@@ -9414,56 +9552,8 @@ def update_file_if_changed(c,file_name,temp_name):
         g.es("rename failed: no file created!",color="red")
         g.es('',file_name," may be read-only or in use")
 #@-node:ekr.20031218072017.1241:g.update_file_if_changed
-#@+node:ekr.20100119145629.6108:handleWriteLeoFileException
-def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
-
-    c = self.c
-
-    g.es("exception writing:",fileName)
-    g.es_exception(full=True)
-
-    if theActualFile:
-        theActualFile.close()
-
-    # Delete fileName.
-    if fileName and g.os_path_exists(fileName):
-        self.deleteFileWithMessage(fileName,'')
-
-    # Rename backupName to fileName.
-    if backupName and g.os_path_exists(backupName):
-        g.es("restoring",fileName,"from",backupName)
-        g.utils_rename(c,backupName,fileName)
-    else:
-        g.es_print('does not exist!',backupName)
-
-#@-node:ekr.20100119145629.6108:handleWriteLeoFileException
-#@+node:ekr.20080711063656.2:x.rename
-def rename (self,src,dst,mode=None,silent=False):
-
-    x = self ; c = x.c
-
-    ok = g.utils_rename (c,src,dst,mode=mode,verbose=not silent)
-    if not ok:
-        x.error('can not rename %s to %s' % (src,dst),silent=silent)
-
-    return ok
-#@-node:ekr.20080711063656.2:x.rename
-#@-node:ekr.20100204052559.5805:Part 3: g.utils_rename
-#@+node:ekr.20100204104820.5834:Part 4: g.units_remove
-#@+node:ekr.20050104123726.3:g.utils_remove
-def utils_remove (fileName,verbose=True):
-
-    try:
-        os.remove(fileName)
-        return True
-    except Exception:
-        if verbose:
-            g.es("exception removing:",fileName)
-            g.es_exception()
-        return False
-#@-node:ekr.20050104123726.3:g.utils_remove
-#@-node:ekr.20100204104820.5834:Part 4: g.units_remove
-#@-node:ekr.20100204052559.5800:Fixed the critical 'file used by another process' bug
+#@-node:ekr.20100204104820.5837:Found: utils_rename
+#@-node:ekr.20100204104820.5836:Big change: simplified g.utils_rename
 #@-node:ekr.20100203173153.5797:Bugs
 #@+node:ekr.20100203173153.5798:Cleanup
 #@+node:ekr.20100130042842.9009:Removed config.set

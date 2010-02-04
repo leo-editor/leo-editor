@@ -128,17 +128,6 @@ class shadowController:
 
         return g.os_path_exists(path) and g.os_path_isdir(path)
     #@-node:ekr.20080710082231.19:x.makeShadowDirectory
-    #@+node:ekr.20080711063656.2:x.rename
-    def rename (self,src,dst,mode=None,silent=False):
-
-        x = self ; c = x.c
-
-        ok = g.utils_rename (c,src,dst,mode=mode,verbose=not silent)
-        if not ok:
-            x.error('can not rename %s to %s' % (src,dst),silent=silent)
-
-        return ok
-    #@-node:ekr.20080711063656.2:x.rename
     #@+node:ekr.20080713091247.1:x.replaceFileWithString
     def replaceFileWithString (self,fn,s):
 
@@ -217,7 +206,7 @@ class shadowController:
 
         x = self
 
-        ok = g.utils_remove(filename, verbose=not silent)
+        ok = g.utils_remove(filename,verbose=not silent)
         if not ok:
             x.error('can not delete %s' % (filename),silent=silent)
 
