@@ -493,7 +493,7 @@ def get_directives_dict(p,root=None):
     directives_pat = re.compile(pat,re.MULTILINE)
 
     # The headline has higher precedence because it is more visible.
-    for kind,s in (('body',p.h),('head',p.b)):
+    for kind,s in (('head',p.h),('body',p.b)):
         anIter = directives_pat.finditer(s)
         for m in anIter:
             word = m.group(0)[1:] # Omit the @
@@ -508,7 +508,13 @@ def get_directives_dict(p,root=None):
                     pass # Not a valid directive: just ignore it.
                 else:
                     d[word.strip()] = val
-                    if trace: g.trace(word.strip(),repr(val))
+                    if trace: g.trace(word.strip(),kind,repr(val))
+                    # A special case for @path in the body text of @<file> nodes.
+                    # Don't give an actual warning: just set some flags.
+                    if kind == 'body' and word.strip() == 'path' and p.isAnyAtFileNode():
+                        g.app.atPathInBodyWarning = p.h
+                        d['@path_in_body'] = p.h
+                        if trace: g.trace('@path in body',p.h)
 
     if root:
         anIter = g_noweb_root.finditer(p.b)

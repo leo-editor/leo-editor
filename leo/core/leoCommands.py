@@ -475,7 +475,6 @@ class baseCommands (object):
         verbose = True
 
         c = self
-
         c.scanAtPathDirectivesCount += 1 # An important statistic.
         if trace and verbose: g.trace('**entry',g.callers(4))
 
@@ -501,13 +500,15 @@ class baseCommands (object):
         for d in aList:
             # Look for @path directives.
             path = d.get('path')
+            warning = d.get('@path_in_body')
             if trace and path:
                 g.trace('**** d',d)
                 g.trace('**** @path path',path)
             if path is not None: # retain empty paths for warnings.
                 # Convert "path" or <path> to path.
                 path = g.stripPathCruft(path)
-                if path and path not in paths: paths.append(path)
+                if path and path not in paths and not warning:
+                    paths.append(path)
                 # We will silently ignore empty @path directives.
 
         # Add absbase and reverse the list.

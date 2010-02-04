@@ -27,6 +27,8 @@ class LeoApp:
 
         # These ivars are the global vars of this program.
         self.afterHandler = None
+        self.atPathInBodyWarning = None # Set by get_directives_dict
+            # The headline of the @<file> node containing an @path directive in the body.
         self.batchMode = False # True: run in batch mode.
         self.commandName = None # The name of the command being executed.
         self.config = None # The leoConfig instance.

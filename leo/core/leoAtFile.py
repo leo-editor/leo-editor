@@ -344,7 +344,8 @@ class atFile:
         if root:
             self.scanAllDirectives(root,
                 scripting=scriptWrite,
-                forcePythonSentinels=forcePythonSentinels)
+                forcePythonSentinels=forcePythonSentinels,
+                issuePathWarning=True)
 
         # g.trace(forcePythonSentinels,self.startSentinelComment,self.endSentinelComment)
 
@@ -4633,6 +4634,7 @@ class atFile:
         scripting=False,importing=False,
         reading=False,forcePythonSentinels=False,
         createPath=True,
+        issuePathWarning=False,
     ):
 
         '''Scan p and p's ancestors looking for directives,
@@ -4640,6 +4642,7 @@ class atFile:
 
         trace = False and not g.unitTesting
         at = self ; c = self.c
+        g.app.atPathInBodyWarning = None
         #@    << set ivars >>
         #@+node:ekr.20080923070954.14:<< Set ivars >>
         self.page_width = self.c.page_width
@@ -4675,6 +4678,10 @@ class atFile:
         for key,default,func in table:
             val = func(aList)
             d[key] = g.choose(val is None,default,val)
+
+        if issuePathWarning and g.app.atPathInBodyWarning:
+            g.es('warning: ignoring @path directive in',
+                g.app.atPathInBodyWarning,color='red')
 
         # Post process.
         lang_dict       = d.get('lang-dict')

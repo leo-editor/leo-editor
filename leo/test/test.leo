@@ -466,9 +466,10 @@
 <v t="ekr.20100127111116.2059"><vh>wrapping</vh></v>
 <v t="ekr.20100130095415.2023"><vh>Simulate startup code for non-ascii directories</vh></v>
 <v t="ekr.20100122125233.2053"><vh>@test zcpspm</vh></v>
+<v t="ekr.20100203174233.2032"><vh>@@test paste-script</vh></v>
 </v>
 <v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
-<v t="ekr.20100203174233.2032"><vh>@test paste-script</vh></v>
+<v t="ekr.20100203233053.2033"><vh>@thin at-path-in-body-test.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
