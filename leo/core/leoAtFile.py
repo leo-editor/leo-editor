@@ -2650,7 +2650,9 @@ class atFile:
             else:
                 at.writeOpenFile(root,nosentinels=True,toString=toString)
             at.closeWriteFile() # Sets stringOutput if toString is True.
+            # g.trace('at.errors',at.errors)
             if at.errors == 0:
+                # g.trace('toString',toString,'force',force,'isAtAutoRst',isAtAutoRst)
                 at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAutoRst)
                     # Sets/clears dirty and orphan bits.
             else:
@@ -3093,6 +3095,7 @@ class atFile:
 
         """ Generate the body enclosed in sentinel lines."""
 
+        trace = False and not g.unitTesting
         at = self
 
         # New in 4.3 b2: get s from fromString if possible.
@@ -3141,7 +3144,7 @@ class atFile:
             kind = at.directiveKind4(s,i)
             #@        << handle line at s[i] >>
             #@+node:ekr.20041005105605.163:<< handle line at s[i]  >>
-            # g.trace(kind,repr(s[i:next_i]))
+            if trace: g.trace(kind,repr(s[i:next_i]))
 
             if kind == at.noDirective:
                 if not oneNodeOnly:
@@ -3202,7 +3205,6 @@ class atFile:
             elif at.atAuto and not at.atEdit:
                 # New in Leo 4.6 rc1: ensure all @auto nodes end in a newline!
                 at.onl()
-
     #@-node:ekr.20041005105605.161:putBody
     #@+node:ekr.20041005105605.164:writing code lines...
     #@+node:ekr.20041005105605.165:@all
@@ -4002,19 +4004,28 @@ class atFile:
 
         # We can't use 'U' mode because of encoding issues (Python 2.x only).
         s1,e = g.readFileIntoString(path1,mode='rb',raw=True)
-        if s1 is None: return False # Should never happen.
+        if s1 is None:
+            g.internalError('empty compare file: %s' % path1)
+            return False
         s2,e = g.readFileIntoString(path2,mode='rb',raw=True)
-        if s2 is None: return False # Should never happen.
+        if s2 is None:
+            g.internalError('empty compare file: %s' % path2)
+            return False
         equal = s1 == s2
+
         if ignoreBlankLines and not equal:
             s1 = g.removeBlankLines(s1)
             s2 = g.removeBlankLines(s2)
             equal = s1 == s2
+
         if ignoreLineEndings and not equal:
             s1 = g.toUnicode(s1,encoding=at.encoding)
             s2 = g.toUnicode(s2,encoding=at.encoding)
-            s1 = s1.replace('\n','').replace('\r','')
-            s2 = s2.replace('\n','').replace('\r','')
+            # Wrong: equivalent to ignoreBlankLines!
+                # s1 = s1.replace('\n','').replace('\r','')
+                # s2 = s2.replace('\n','').replace('\r','')
+            s1 = s1.replace('\r','')
+            s2 = s2.replace('\r','')
             equal = s1 == s2
         # g.trace('equal',equal,'ignoreLineEndings',ignoreLineEndings,'encoding',at.encoding)
         return equal
@@ -4107,6 +4118,7 @@ class atFile:
 
         '''Return True if p's tree has a significant amount of information.'''
 
+        trace = False and not g.unitTesting
         s = p.b
 
         # Remove all blank lines and all Leo directives.
@@ -4123,9 +4135,9 @@ class atFile:
                 lines.append(line)
 
         s2 = ''.join(lines)
-        # g.trace('s2',s2)
-
-        return p.hasChildren() or len(s2.strip()) >= 10
+        val = p.hasChildren() or len(s2.strip()) >= 10
+        if trace: g.trace(val,p.h)
+        return val
     #@-node:ekr.20070909103844:isSignificantTree
     #@+node:ekr.20080712150045.2:openStringFile
     def openStringFile (self,fn):
@@ -4172,17 +4184,17 @@ class atFile:
 
         All output produced by leoAtFile module goes here."""
 
-        trace = False
+        trace = False and not g.unitTesting
         at = self ; tag = self.underindentEscapeString
         f = at.outputFile
 
         if s and f:
             try:
-                if trace: g.trace(repr(s))
                 if s.startswith(tag):
                     junk,s = self.parseUnderindentTag(s)
                 # Bug fix: this must be done last.
                 s = g.toEncodedString(s,at.encoding,reportErrors=True)
+                if trace: g.trace(repr(s),g.callers(5))
                 f.write(s)
             except Exception:
                 at.exception("exception writing:" + s)
@@ -4498,7 +4510,10 @@ class atFile:
             root.clearOrphan()
             root.clearDirty()
 
-        if trace: g.trace(self.outputFileName,self.targetFileName)
+        if trace: g.trace(
+            'ignoreBlankLines',ignoreBlankLines,
+            'target exists',g.os_path_exists(self.targetFileName),
+            self.outputFileName,self.targetFileName)
 
         if g.os_path_exists(self.targetFileName):
             if self.compareFiles(
@@ -4508,13 +4523,17 @@ class atFile:
                 ignoreBlankLines=ignoreBlankLines):
                 # Files are identical.
                 ok = self.remove(self.outputFileName)
-                g.es('unchanged:',self.shortFileName)
-                if not ok:
-                    # self.remove gives the error.
+                if trace: g.trace('files are identical')
+                if ok:
+                    g.es('unchanged:',self.shortFileName)
+                else:
+                    g.es('error writing',self.shortFileName,color='red')
+                    g.es('unchanged:',self.shortFileName)
                     if root: root.setDirty() # New in 4.4.8.
                 self.fileChangedFlag = False
                 return False
             else:
+                # A mismatch.
                 self.checkPythonCode(root)
                 #@            << report if the files differ only in line endings >>
                 #@+node:ekr.20041019090322:<< report if the files differ only in line endings >>
@@ -4534,7 +4553,7 @@ class atFile:
                     c.setFileTimeStamp(self.targetFileName)
                     g.es('wrote:',self.shortFileName)
                 else:
-                    # self.rename gives the error.
+                    g.es('error writing',self.shortFileName,color='red')
                     g.es('unchanged:',self.shortFileName)
                     if root: root.setDirty() # New in 4.4.8.
 
@@ -4617,7 +4636,7 @@ class atFile:
     def error(self,*args):
 
         at = self
-        if args:
+        if True: # args:
             at.printError(*args)
         at.errors += 1
 

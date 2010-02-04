@@ -6337,19 +6337,28 @@ def compareFiles (self,path1,path2,ignoreLineEndings,ignoreBlankLines=False):
 
     # We can't use 'U' mode because of encoding issues (Python 2.x only).
     s1,e = g.readFileIntoString(path1,mode='rb',raw=True)
-    if s1 is None: return False # Should never happen.
+    if s1 is None:
+        g.internalError('empty compare file: %s' % path1)
+        return False
     s2,e = g.readFileIntoString(path2,mode='rb',raw=True)
-    if s2 is None: return False # Should never happen.
+    if s2 is None:
+        g.internalError('empty compare file: %s' % path2)
+        return False
     equal = s1 == s2
+
     if ignoreBlankLines and not equal:
         s1 = g.removeBlankLines(s1)
         s2 = g.removeBlankLines(s2)
         equal = s1 == s2
+
     if ignoreLineEndings and not equal:
         s1 = g.toUnicode(s1,encoding=at.encoding)
         s2 = g.toUnicode(s2,encoding=at.encoding)
-        s1 = s1.replace('\n','').replace('\r','')
-        s2 = s2.replace('\n','').replace('\r','')
+        # Wrong: equivalent to ignoreBlankLines!
+            # s1 = s1.replace('\n','').replace('\r','')
+            # s2 = s2.replace('\n','').replace('\r','')
+        s1 = s1.replace('\r','')
+        s2 = s2.replace('\r','')
         equal = s1 == s2
     # g.trace('equal',equal,'ignoreLineEndings',ignoreLineEndings,'encoding',at.encoding)
     return equal

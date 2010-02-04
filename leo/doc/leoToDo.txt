@@ -30,10 +30,16 @@ unbound()
 Before rc1:
 
 * All real bugs fixed.  Wishlist items do not count.
+* All files in leo/external folder pass 2to3 script.
 * All plugins in passList pass 2to3 script.
 * All plugins in passList pass pylint without serious errors.
+* One full day between "all" clear and release
 #@+node:ekr.20100204052559.5794:Annoying: down-arrow at end of selected text does not clear selection
 #@-node:ekr.20100204052559.5794:Annoying: down-arrow at end of selected text does not clear selection
+#@+node:ekr.20100204052559.5798:Remove self.trace code from sax-read code
+# It will slow down the code.
+#@nonl
+#@-node:ekr.20100204052559.5798:Remove self.trace code from sax-read code
 #@+node:ekr.20100118143729.6256:Wish-list bug 508108: No methods sub-nodes in PHP class import
 @nocolor-node
 
