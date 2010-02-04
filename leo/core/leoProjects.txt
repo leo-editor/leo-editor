@@ -8974,6 +8974,156 @@ def compute_directives_re ():
 #@-node:ekr.20090214075058.10:compute_directives_re
 #@-node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
 #@-node:ekr.20081204091750.4:Fixed inconsistency in how @path works
+#@+node:ekr.20100204052559.5797:Fixed at-auto write bug
+@nocolor-node
+
+Adding a blank line did not change the file!
+
+The culprit was the ignoreLineEndings logic in compareFiles.
+A new unit test is needed.
+#@+node:ekr.20100204052559.5799:Changed
+#@+node:ekr.20041005105605.220:atFile.error & printError
+def error(self,*args):
+
+    at = self
+    if True: # args:
+        at.printError(*args)
+    at.errors += 1
+
+def printError (self,*args):
+
+    '''Print an error message that may contain non-ascii characters.'''
+
+    at = self
+    keys = {'color': g.choose(at.errors,'blue','red')}
+    g.es_print_error(*args,**keys)
+#@-node:ekr.20041005105605.220:atFile.error & printError
+#@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent (atFile)
+def replaceTargetFileIfDifferent (self,root,ignoreBlankLines=False):
+
+    '''Create target file as follows:
+    1. If target file does not exist, rename output file to target file.
+    2. If target file is identical to output file, remove the output file.
+    3. If target file is different from output file,
+       remove target file, then rename output file to be target file.
+
+    Return True if the original file was changed.
+    '''
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    assert(self.outputFile is None)
+
+    if self.toString:
+        # Do *not* change the actual file or set any dirty flag.
+        self.fileChangedFlag = False
+        return False
+
+    if root:
+        # The default: may be changed later.
+        root.clearOrphan()
+        root.clearDirty()
+
+    if trace: g.trace(
+        'ignoreBlankLines',ignoreBlankLines,
+        'target exists',g.os_path_exists(self.targetFileName),
+        self.outputFileName,self.targetFileName)
+
+    if g.os_path_exists(self.targetFileName):
+        if self.compareFiles(
+            self.outputFileName,
+            self.targetFileName,
+            ignoreLineEndings=not self.explicitLineEnding,
+            ignoreBlankLines=ignoreBlankLines):
+            # Files are identical.
+            ok = self.remove(self.outputFileName)
+            if trace: g.trace('files are identical')
+            if ok:
+                g.es('unchanged:',self.shortFileName)
+            else:
+                g.es('error writing',self.shortFileName,color='red')
+                g.es('not written:',self.shortFileName)
+                if root: root.setDirty() # New in 4.4.8.
+            self.fileChangedFlag = False
+            return False
+        else:
+            # A mismatch.
+            self.checkPythonCode(root)
+            << report if the files differ only in line endings >>
+            mode = self.stat(self.targetFileName)
+            ok = self.rename(self.outputFileName,self.targetFileName,mode)
+            if ok:
+                c.setFileTimeStamp(self.targetFileName)
+                g.es('wrote:',self.shortFileName)
+            else:
+                g.es('error writing',self.shortFileName,color='red')
+                g.es('not written:',self.shortFileName)
+                if root: root.setDirty() # New in 4.4.8.
+
+            self.fileChangedFlag = ok
+            return ok
+    else:
+        # Rename the output file.
+        ok = self.rename(self.outputFileName,self.targetFileName)
+        if ok:
+            c.setFileTimeStamp(self.targetFileName)
+            g.es('created:',self.targetFileName)
+        else:
+            # self.rename gives the error.
+            if root: root.setDirty() # New in 4.4.8.
+
+        # No original file to change. Return value tested by a unit test.
+        self.fileChangedFlag = False 
+        return False
+#@+node:ekr.20041019090322:<< report if the files differ only in line endings >>
+if (
+    self.explicitLineEnding and
+    self.compareFiles(
+        self.outputFileName,
+        self.targetFileName,
+        ignoreLineEndings=True)):
+
+    g.es("correcting line endings in:",self.targetFileName,color="blue")
+#@-node:ekr.20041019090322:<< report if the files differ only in line endings >>
+#@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent (atFile)
+#@+node:ekr.20041005105605.197:compareFiles
+def compareFiles (self,path1,path2,ignoreLineEndings,ignoreBlankLines=False):
+
+    """Compare two text files."""
+    at = self
+
+    # We can't use 'U' mode because of encoding issues (Python 2.x only).
+    s1,e = g.readFileIntoString(path1,mode='rb',raw=True)
+    if s1 is None:
+        g.internalError('empty compare file: %s' % path1)
+        return False
+    s2,e = g.readFileIntoString(path2,mode='rb',raw=True)
+    if s2 is None:
+        g.internalError('empty compare file: %s' % path2)
+        return False
+    equal = s1 == s2
+
+    if ignoreBlankLines and not equal:
+        s1 = g.removeBlankLines(s1)
+        s2 = g.removeBlankLines(s2)
+        equal = s1 == s2
+
+    if ignoreLineEndings and not equal:
+        s1 = g.toUnicode(s1,encoding=at.encoding)
+        s2 = g.toUnicode(s2,encoding=at.encoding)
+        # Wrong: equivalent to ignoreBlankLines!
+            # s1 = s1.replace('\n','').replace('\r','')
+            # s2 = s2.replace('\n','').replace('\r','')
+        s1 = s1.replace('\r','')
+        s2 = s2.replace('\r','')
+        equal = s1 == s2
+    # g.trace('equal',equal,'ignoreLineEndings',ignoreLineEndings,'encoding',at.encoding)
+    return equal
+#@nonl
+#@-node:ekr.20041005105605.197:compareFiles
+#@-node:ekr.20100204052559.5799:Changed
+#@-node:ekr.20100204052559.5797:Fixed at-auto write bug
 #@+node:ekr.20100204052559.5800:Fixed the critical 'file used by another process' bug
 @nocolor-node
 
