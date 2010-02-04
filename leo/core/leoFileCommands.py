@@ -236,7 +236,7 @@ if sys.platform != 'cli':
 
             elementName = self.elementStack and self.elementStack[-1].lower() or '<no element name>'
 
-            if self.trace: g.trace(elementName,content.strip())
+            # if self.trace: g.trace(elementName,content.strip())
 
             if elementName in ('t','vh'):
                 # if elementName == 'vh': g.trace(elementName,repr(content))
@@ -265,14 +265,14 @@ if sys.platform != 'cli':
 
             name2 = self.elementStack.pop()
             assert name == name2
-            if self.trace: g.trace('** pop',name2)
+            # if self.trace: g.trace('** pop',name2)
         #@nonl
         #@+node:ekr.20060919110638.32:endTnode
         def endTnode (self):
 
             for sax_node in self.nodeList:
                 sax_node.bodyString = ''.join(self.content)
-                if self.trace: g.trace(repr(sax_node))
+                # if self.trace: g.trace(repr(sax_node))
 
             self.content = []
         #@nonl
@@ -282,7 +282,7 @@ if sys.platform != 'cli':
 
             self.level -= 1
             self.node = self.nodeStack.pop()
-            if self.trace: g.trace(repr(self.node))
+            # if self.trace: g.trace(repr(self.node))
         #@nonl
         #@-node:ekr.20060919110638.33:endVnode
         #@+node:ekr.20060919110638.34:endVH
@@ -290,7 +290,7 @@ if sys.platform != 'cli':
 
             if self.node:
                 self.node.headString = ''.join(self.content)
-                if self.trace: g.trace(repr(self.node))
+                # if self.trace: g.trace(repr(self.node))
 
             self.content = []
         #@nonl
@@ -325,7 +325,7 @@ if sys.platform != 'cli':
                 self.printStartElement(name,attrs)
 
             self.elementStack.append(name)
-            if self.trace: g.trace('**push',name)
+            # if self.trace: g.trace('**push',name)
 
             data = self.dispatchDict.get(name)
 
@@ -2181,7 +2181,7 @@ class baseFileCommands:
             # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
 
             fd,backupName = tempfile.mkstemp(text=False)
-            f = open(fileName,'rb') # rb is essetial.
+            f = open(fileName,'rb') # rb is essential.
             s = f.read()
             f.close()
 

@@ -40,10 +40,6 @@ Needed because of recent change to g.utils_rename.
 #@-node:ekr.20100204104820.5842:Test tangle.put_all_roots
 #@+node:ekr.20100204052559.5794:Annoying: down-arrow at end of selected text does not clear selection
 #@-node:ekr.20100204052559.5794:Annoying: down-arrow at end of selected text does not clear selection
-#@+node:ekr.20100204052559.5798:Remove self.trace code from sax-read code
-# It will slow down the code.
-#@nonl
-#@-node:ekr.20100204052559.5798:Remove self.trace code from sax-read code
 #@+node:ekr.20100204052559.5796:Urgent: run 2to3 on all external files
 #@-node:ekr.20100204052559.5796:Urgent: run 2to3 on all external files
 #@+node:ekr.20100204104820.5843:Before final

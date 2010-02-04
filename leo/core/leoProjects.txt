@@ -521,7 +521,7 @@ def createBackupFile (self,fileName):
         # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
 
         fd,backupName = tempfile.mkstemp(text=False)
-        f = open(fileName,'rb') # rb is essetial.
+        f = open(fileName,'rb') # rb is essential.
         s = f.read()
         f.close()
 
@@ -701,7 +701,7 @@ def createBackupFile (self,fileName):
         # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
 
         fd,backupName = tempfile.mkstemp(text=False)
-        f = open(fileName,'rb') # rb is essetial.
+        f = open(fileName,'rb') # rb is essential.
         s = f.read()
         f.close()
 
@@ -9331,7 +9331,7 @@ def createBackupFile (self,fileName):
         # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
 
         fd,backupName = tempfile.mkstemp(text=False)
-        f = open(fileName,'rb') # rb is essetial.
+        f = open(fileName,'rb') # rb is essential.
         s = f.read()
         f.close()
 
@@ -9554,6 +9554,81 @@ def update_file_if_changed(c,file_name,temp_name):
 #@-node:ekr.20031218072017.1241:g.update_file_if_changed
 #@-node:ekr.20100204104820.5837:Found: utils_rename
 #@-node:ekr.20100204104820.5836:Big change: simplified g.utils_rename
+#@+node:ekr.20100204104820.5844:Eliminated race condition in createBackupFile
+#@+node:ekr.20100204104820.5845:traceback
+# Happens when saving the file *quickly* after opening it.
+
+Traceback (most recent call last):
+
+  File "c:\python31\lib\shutil.py", line 270, in move
+    os.rename(src, real_dst)
+
+WindowsError: [Error 32] The process cannot access the file because it is being used by another process
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+
+  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 2188, in createBackupFile
+    shutil.move(fileName,backupName)
+
+  File "c:\python31\lib\shutil.py", line 279, in move
+    os.unlink(src)
+
+WindowsError: [Error 32] The process cannot access the file because it is being used by another process: 'c:\\leo.repo\\
+trunk\\leo\\test\\unitTest.leo'
+#@-node:ekr.20100204104820.5845:traceback
+#@+node:ekr.20031218072017.3047:createBackupFile (fileCommands)
+def createBackupFile (self,fileName):
+
+    '''
+        Create a closed backup file and copy the file to it,
+        but only if the original file exists.
+    '''
+
+    c = self.c
+
+    if g.os_path_exists(fileName):
+        # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
+
+        fd,backupName = tempfile.mkstemp(text=False)
+        f = open(fileName,'rb') # rb is essential.
+        s = f.read()
+        f.close()
+
+        try:
+            try:
+                 os.write(fd,s)
+            finally:
+                 os.close(fd)
+            ok = True
+        except Exception:
+            g.es('exception creating backup file',color='red')
+            g.es_exception()
+            ok,backupName = False,None
+
+        if not ok and self.read_only:
+            g.es("read only",color="red")
+    else:
+        ok,backupName = True,None
+
+    return ok,backupName
+#@-node:ekr.20031218072017.3047:createBackupFile (fileCommands)
+#@+node:ekr.20050404190914.2:deleteFileWithMessage (leoFileCommands)
+def deleteFileWithMessage(self,fileName,unused_kind):
+
+    try:
+        os.remove(fileName)
+
+    except Exception:
+        if self.read_only:
+            g.es("read only",color="red")
+        if not g.unitTesting:
+            g.es("exception deleting backup file:",fileName)
+            g.es_exception(full=False)
+        return False
+#@-node:ekr.20050404190914.2:deleteFileWithMessage (leoFileCommands)
+#@-node:ekr.20100204104820.5844:Eliminated race condition in createBackupFile
 #@-node:ekr.20100203173153.5797:Bugs
 #@+node:ekr.20100203173153.5798:Cleanup
 #@+node:ekr.20100130042842.9009:Removed config.set
