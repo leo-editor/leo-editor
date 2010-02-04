@@ -8974,6 +8974,346 @@ def compute_directives_re ():
 #@-node:ekr.20090214075058.10:compute_directives_re
 #@-node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
 #@-node:ekr.20081204091750.4:Fixed inconsistency in how @path works
+#@+node:ekr.20100204052559.5800:Fixed the critical 'file used by another process' bug
+@nocolor-node
+
+What I did:
+
+- fc.createBackupFile now calls shutils.move directly,
+  avoiding g.utils_rename which does way too much:
+  it calls g.makeAllNonExistentDirectories(!!)
+
+- Simplified g.utils_rename.  We can assuem shutils exists.
+
+- Removed an unwise call to g.utils_remove in g.utils_rename.
+  This could cause havoc with the following call to
+  shutils_move!!
+
+#@nonl
+#@+node:ekr.20100204104820.5833:The typical exception
+exception renaming
+c:\leo.repo\trunk\leo\test\unitTest.leo
+to\
+c:\users\edream~1\appdata\local\temp\tmppxbg_b
+WindowsError: [Error 32] The process cannot access the file because it is being used by another process:
+    'c:\\leo.repo\\trunk\\leo\\test\\unitTest.leo'
+#@nonl
+#@-node:ekr.20100204104820.5833:The typical exception
+#@+node:ekr.20100204052559.5802:Part 1: g.create_temp_file (used only by tangle)
+#@+node:ekr.20031218072017.3117:g.create_temp_file
+def create_temp_file (textMode=False):
+    '''Return a tuple (theFile,theFileName)
+
+    theFile: a file object open for writing.
+    theFileName: the name of the temporary file.'''
+
+    try:
+        # fd is an handle to an open file as would be returned by os.open()
+        fd,theFileName = tempfile.mkstemp(text=textMode)
+        mode = g.choose(textMode,'w','wb')
+        theFile = os.fdopen(fd,mode)
+    except Exception:
+        g.es('unexpected exception in g.create_temp_file',color='red')
+        g.es_exception()
+        theFile,theFileName = None,''
+
+    return theFile,theFileName
+#@-node:ekr.20031218072017.3117:g.create_temp_file
+#@+node:ekr.20031218072017.1151:tangle.put_all_roots
+@
+This is the top level method of the second pass. It creates a separate C file
+for each @root directive in the outline. The file is actually written only if
+the new version of the file is different from the old version,or if the file did
+not exist previously. If changed_only_flag FLAG is True only changed roots are
+actually written.
+@c
+
+def put_all_roots(self):
+
+    c = self.c ; outline_name = c.mFileName
+
+    for section in self.root_list:
+
+        # g.trace(section.name)
+        file_name = c.os_path_finalize_join(self.tangle_directory,section.name)
+        mode = c.config.output_newline
+        textMode = mode == 'platform'
+        if g.unitTesting:
+            self.output_file = g.fileLikeObject()
+            temp_name = 'temp-file'
+        else:
+            self.output_file,temp_name = g.create_temp_file(textMode=textMode)
+        if not temp_name:
+            g.es("can not create temp file")
+            break
+        <<Get root specific attributes>>
+        <<Put @first lines>>
+        if self.use_header_flag and self.print_mode == "verbose":
+            << Write a banner at the start of the output file >>
+        for part in section.parts:
+            if part.is_root:
+                self.tangle_indent = 0 # Initialize global.
+                self.put_part_node(part,False) # output first lws
+        self.onl() # Make sure the file ends with a cr/lf
+        if g.unitTesting:
+            self.tangle_output = self.output_file.get()
+        self.output_file.close()
+        self.output_file = None
+        if g.unitTesting:
+            assert self.errors == 0
+            g.app.unitTestDict ['tangle'] = True
+            g.app.unitTestDict ['tangle_directory'] = self.tangle_directory
+            g.app.unitTestDict ['tangle_output_fn'] = file_name
+        else:
+            if self.errors + g.app.scanErrors == 0:
+                g.update_file_if_changed(c,file_name,temp_name)
+            else:
+                g.es("unchanged:",file_name)
+                << Erase the temporary file >>
+#@nonl
+#@+node:ekr.20031218072017.1152:<<Get root specific attributes>>
+# Stephen Schaefer, 9/2/02
+# Retrieve the full complement of state for the root node
+self.language = section.root_attributes.language
+self.single_comment_string = section.root_attributes.single_comment_string
+self.start_comment_string = section.root_attributes.start_comment_string
+self.end_comment_string = section.root_attributes.end_comment_string
+self.use_header_flag = section.root_attributes.use_header_flag
+self.print_mode = section.root_attributes.print_mode
+self.path = section.root_attributes.path
+self.page_width = section.root_attributes.page_width
+self.tab_width = section.root_attributes.tab_width
+# Stephen P. Schaefer, 9/13/2002
+self.first_lines = section.root_attributes.first_lines
+
+# g.trace(self.single_comment_string)
+#@-node:ekr.20031218072017.1152:<<Get root specific attributes>>
+#@+node:ekr.20031218072017.1153:<<Put @first lines>>
+# Stephen P. Schaefer 9/13/2002
+if self.first_lines:
+    self.os(self.first_lines)
+#@-node:ekr.20031218072017.1153:<<Put @first lines>>
+#@+node:ekr.20031218072017.1154:<<Write a banner at the start of the output file>>
+if self.single_comment_string:
+    self.os(self.single_comment_string)
+    self.os(" Created by Leo from: ")
+    self.os(outline_name)
+    self.onl() ; self.onl()
+elif self.start_comment_string and self.end_comment_string:
+    self.os(self.start_comment_string)
+    self.os(" Created by Leo from: ")
+    self.os(outline_name)
+    self.oblank() ; self.os(self.end_comment_string)
+    self.onl() ; self.onl()
+#@-node:ekr.20031218072017.1154:<<Write a banner at the start of the output file>>
+#@+node:ekr.20031218072017.1155:<< Erase the temporary file >>
+try: # Just delete the temp file.
+    os.remove(temp_name)
+except: pass
+#@-node:ekr.20031218072017.1155:<< Erase the temporary file >>
+#@-node:ekr.20031218072017.1151:tangle.put_all_roots
+#@-node:ekr.20100204052559.5802:Part 1: g.create_temp_file (used only by tangle)
+#@+node:ekr.20100204052559.5804:Part 2: mkstemp & g.utils_rename
+#@+node:ekr.20031218072017.3047:createBackupFile (fileCommands)
+def createBackupFile (self,fileName):
+
+    '''
+        Create a closed backup file and copy the file to it,
+        but only if the original file exists.
+    '''
+
+    c = self.c
+
+    if g.os_path_exists(fileName):
+        # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
+
+        fd,backupName = tempfile.mkstemp(text=False)
+        os.close(fd)
+
+        ### This does a lot, probably too much for here.
+        ### ok = g.utils_rename(c,fileName,backupName)
+        try:
+            ok = True
+            shutil.move(fileName,backupName) 
+        except Exception:
+            ok = False
+            g.es('exception creating backup file')
+            g.es_exception()
+
+        if not ok and self.read_only:
+            g.es("read only",color="red")
+    else:
+        ok,backupName = True,None
+
+    return ok,backupName
+#@-node:ekr.20031218072017.3047:createBackupFile (fileCommands)
+#@+node:ekr.20031218072017.1263:g.utils_rename
+def utils_rename (c,src,dst,mode=None,verbose=True):
+
+    '''Platform independent rename.'''
+
+    head, tail = g.os_path_split(dst)
+    if head and len(head) > 0:
+        g.makeAllNonExistentDirectories(head,c=c)
+
+    ### How can this be correct ???
+    # if g.os_path_exists(dst):
+        # if not g.utils_remove(dst):
+            # return False
+
+    try:
+        shutil.move(src,dst)
+        if mode:
+            g.utils_chmod(dst,mode,verbose)
+        return True
+    except Exception:
+        if verbose:
+            g.es('exception renaming',src,'to',dst,color='red')
+            g.es_exception(full=False)
+        return False
+#@-node:ekr.20031218072017.1263:g.utils_rename
+#@+node:ekr.20050404190914.2:deleteFileWithMessage (leoFileCommands)
+def deleteFileWithMessage(self,fileName,unused_kind):
+
+    try:
+        os.remove(fileName)
+
+    except Exception:
+        if self.read_only:
+            g.es("read only",color="red")
+        if not g.unitTesting:
+            g.es("exception deleting backup file:",fileName)
+            g.es_exception(full=False)
+        return False
+#@-node:ekr.20050404190914.2:deleteFileWithMessage (leoFileCommands)
+#@+node:ekr.20100119145629.6108:handleWriteLeoFileException
+def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
+
+    c = self.c
+
+    g.es("exception writing:",fileName)
+    g.es_exception(full=True)
+
+    if theActualFile:
+        theActualFile.close()
+
+    # Delete fileName.
+    if fileName and g.os_path_exists(fileName):
+        self.deleteFileWithMessage(fileName,'')
+
+    # Rename backupName to fileName.
+    if backupName and g.os_path_exists(backupName):
+        g.es("restoring",fileName,"from",backupName)
+        g.utils_rename(c,backupName,fileName)
+    else:
+        g.es_print('does not exist!',backupName)
+
+#@-node:ekr.20100119145629.6108:handleWriteLeoFileException
+#@-node:ekr.20100204052559.5804:Part 2: mkstemp & g.utils_rename
+#@+node:ekr.20100204052559.5805:Part 3: g.utils_rename
+#@+node:ekr.20031218072017.1263:g.utils_rename
+def utils_rename (c,src,dst,mode=None,verbose=True):
+
+    '''Platform independent rename.'''
+
+    head, tail = g.os_path_split(dst)
+    if head and len(head) > 0:
+        g.makeAllNonExistentDirectories(head,c=c)
+
+    ### How can this be correct ???
+    # if g.os_path_exists(dst):
+        # if not g.utils_remove(dst):
+            # return False
+
+    try:
+        shutil.move(src,dst)
+        if mode:
+            g.utils_chmod(dst,mode,verbose)
+        return True
+    except Exception:
+        if verbose:
+            g.es('exception renaming',src,'to',dst,color='red')
+            g.es_exception(full=False)
+        return False
+#@-node:ekr.20031218072017.1263:g.utils_rename
+#@+node:ekr.20031218072017.1241:g.update_file_if_changed
+# This is part of the tangle code.
+
+def update_file_if_changed(c,file_name,temp_name):
+
+    """Compares two files.
+
+    If they are different, we replace file_name with temp_name.
+    Otherwise, we just delete temp_name. Both files should be closed."""
+
+    if g.os_path_exists(file_name):
+        if filecmp.cmp(temp_name, file_name):
+            kind = 'unchanged'
+            ok = g.utils_remove(temp_name)
+        else:
+            kind = '***updating'
+            mode = g.utils_stat(file_name)
+            ok = g.utils_rename(c,temp_name,file_name,mode)
+    else:
+        kind = 'creating'
+        ok = g.utils_rename(c,temp_name,file_name)
+
+    if ok:
+        g.es('','%12s: %s' % (kind,file_name))
+    else:
+        g.es("rename failed: no file created!",color="red")
+        g.es('',file_name," may be read-only or in use")
+#@-node:ekr.20031218072017.1241:g.update_file_if_changed
+#@+node:ekr.20100119145629.6108:handleWriteLeoFileException
+def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
+
+    c = self.c
+
+    g.es("exception writing:",fileName)
+    g.es_exception(full=True)
+
+    if theActualFile:
+        theActualFile.close()
+
+    # Delete fileName.
+    if fileName and g.os_path_exists(fileName):
+        self.deleteFileWithMessage(fileName,'')
+
+    # Rename backupName to fileName.
+    if backupName and g.os_path_exists(backupName):
+        g.es("restoring",fileName,"from",backupName)
+        g.utils_rename(c,backupName,fileName)
+    else:
+        g.es_print('does not exist!',backupName)
+
+#@-node:ekr.20100119145629.6108:handleWriteLeoFileException
+#@+node:ekr.20080711063656.2:x.rename
+def rename (self,src,dst,mode=None,silent=False):
+
+    x = self ; c = x.c
+
+    ok = g.utils_rename (c,src,dst,mode=mode,verbose=not silent)
+    if not ok:
+        x.error('can not rename %s to %s' % (src,dst),silent=silent)
+
+    return ok
+#@-node:ekr.20080711063656.2:x.rename
+#@-node:ekr.20100204052559.5805:Part 3: g.utils_rename
+#@+node:ekr.20100204104820.5834:Part 4: g.units_remove
+#@+node:ekr.20050104123726.3:g.utils_remove
+def utils_remove (fileName,verbose=True):
+
+    try:
+        os.remove(fileName)
+        return True
+    except Exception:
+        if verbose:
+            g.es("exception removing:",fileName)
+            g.es_exception()
+        return False
+#@-node:ekr.20050104123726.3:g.utils_remove
+#@-node:ekr.20100204104820.5834:Part 4: g.units_remove
+#@-node:ekr.20100204052559.5800:Fixed the critical 'file used by another process' bug
 #@-node:ekr.20100203173153.5797:Bugs
 #@+node:ekr.20100203173153.5798:Cleanup
 #@+node:ekr.20100130042842.9009:Removed config.set
