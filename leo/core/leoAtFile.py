@@ -4528,7 +4528,7 @@ class atFile:
                     g.es('unchanged:',self.shortFileName)
                 else:
                     g.es('error writing',self.shortFileName,color='red')
-                    g.es('unchanged:',self.shortFileName)
+                    g.es('not written:',self.shortFileName)
                     if root: root.setDirty() # New in 4.4.8.
                 self.fileChangedFlag = False
                 return False
@@ -4554,7 +4554,7 @@ class atFile:
                     g.es('wrote:',self.shortFileName)
                 else:
                     g.es('error writing',self.shortFileName,color='red')
-                    g.es('unchanged:',self.shortFileName)
+                    g.es('not written:',self.shortFileName)
                     if root: root.setDirty() # New in 4.4.8.
 
                 self.fileChangedFlag = ok
