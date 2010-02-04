@@ -2651,6 +2651,7 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20100204053330.5367"><vh>@test koi8-r encoding</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -23664,6 +23665,28 @@ for theDir,aList in table:
 
 run(files)
 </t>
+<t tx="ekr.20100204053330.5367">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode = None)
+try:
+    p1 = p.insertAsLastChild()
+    s = '\xd4\xc5\xd3\xd4' # the word 'test' in Russian, koi8-r
+    if g.isPython3:
+        assert g.isUnicode(s)
+    else:
+        s = unicode(s,'koi8-r')
+    p1.setBodyString(s)
+    c.selectPosition(p1)
+    c.copyOutline()
+    c.pasteOutline()
+    p2 = p1.next()
+    # self.assertEqual(p1.b, p2.b) # 'self' defined only when unit-testing.
+    assert p1.b == p2.b
+finally:
+    if 1:
+         while root.hasChildren():
+              root.firstChild().doDelete(newNode = None)
+    c.redraw_now(p)</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

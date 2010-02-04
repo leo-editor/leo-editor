@@ -25,7 +25,13 @@ unbound()
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20100126110826.6253:Before rc1 2 bugs, 1 wish list
-expand-and-go-right.
+@nocolor
+
+Before rc1:
+
+* All real bugs fixed.  Wishlist items do not count.
+* All plugins in passList pass 2to3 script.
+* All plugins in passList pass pylint without serious errors.
 #@+node:ekr.20100111094359.6208:Fix goto-line bugs
 #@+node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 def goToLineNumber (self,n,p=None,scriptData=None):
@@ -460,13 +466,13 @@ kind of change would also make @auto a lot more useful for PHP.
 #@+node:ekr.20100203160817.5795:Testing
 #@+node:ekr.20100203225523.5786:Fix syntax error in @shadow file in unitTest.leo
 #@-node:ekr.20100203225523.5786:Fix syntax error in @shadow file in unitTest.leo
-#@+node:ekr.20100203225523.5787:Remove ut.leo, etc.
-#@-node:ekr.20100203225523.5787:Remove ut.leo, etc.
 #@+node:ekr.20100203125449.5791:Use 2to3 to check for 3x problems
 #@-node:ekr.20100203125449.5791:Use 2to3 to check for 3x problems
 #@+node:ekr.20100203160817.5793:Unit tests for all toggle commands
 #@-node:ekr.20100203160817.5793:Unit tests for all toggle commands
 #@+node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
+Just make the test.  It doesn't have to pass.
+#@nonl
 #@-node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
 #@-node:ekr.20100203160817.5795:Testing
 #@+node:ekr.20100202145902.8709:Distribution
@@ -478,6 +484,8 @@ kind of change would also make @auto a lot more useful for PHP.
 #@-node:ekr.20100125190708.6258:Better screen shots
 #@+node:ekr.20100129133806.6237:Remove cruft from test folder
 #@-node:ekr.20100129133806.6237:Remove cruft from test folder
+#@+node:ekr.20100203225523.5787:Remove ut.leo, etc.
+#@-node:ekr.20100203225523.5787:Remove ut.leo, etc.
 #@-node:ekr.20100202145902.8709:Distribution
 #@-node:ekr.20100126110826.6253:Before rc1 2 bugs, 1 wish list
 #@-node:ekr.20071211093011:4.7 One-node world, Leo3K
