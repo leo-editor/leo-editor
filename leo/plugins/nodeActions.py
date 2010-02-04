@@ -40,9 +40,10 @@ import tempfile
 #@nl
 
 atFileTypes = [
-	"@file", "@thin", "@file-thin",   "@thinfile", "@asis",   "@file-asis",
-	"@silentfile", "@noref",  "@file-noref",  "@rawfile", "@nosent",
-	"@file-nosent", "@nosentinelsfile", "@shadow", "@edit",
+    "@file", "@thin", "@file-thin",   "@thinfile",
+    "@asis",   "@file-asis","@silentfile",
+    "@nosent","@file-nosent", "@nosentinelsfile",
+    "@shadow", "@edit",
 ]
 
 #@+others

@@ -92,7 +92,6 @@ file_directives = [
    "@file",
    "@thin",   "@file-thin",   "@thinfile",
    "@asis",   "@file-asis",   "@silentfile",
-   # "@noref",  "@file-noref",  "@rawfile",
    "@nosent", "@file-nosent", "@nosentinelsfile",
    "@file-ref", "@shadow",
 ]

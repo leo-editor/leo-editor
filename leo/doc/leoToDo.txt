@@ -473,6 +473,10 @@ kind of change would also make @auto a lot more useful for PHP.
 #@nonl
 #@-node:ekr.20100118143729.6256:Wish-list bug 508108: No methods sub-nodes in PHP class import
 #@+node:ekr.20100203160817.5795:Testing
+#@+node:ekr.20100203225523.5786:Fix syntax error in @shadow file in unitTest.leo
+#@-node:ekr.20100203225523.5786:Fix syntax error in @shadow file in unitTest.leo
+#@+node:ekr.20100203225523.5787:Remove ut.leo, etc.
+#@-node:ekr.20100203225523.5787:Remove ut.leo, etc.
 #@+node:ekr.20100203125449.5791:Use 2to3 to check for 3x problems
 #@-node:ekr.20100203125449.5791:Use 2to3 to check for 3x problems
 #@+node:ekr.20100203160817.5793:Unit tests for all toggle commands
@@ -481,6 +485,8 @@ kind of change would also make @auto a lot more useful for PHP.
 #@-node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
 #@-node:ekr.20100203160817.5795:Testing
 #@+node:ekr.20100202145902.8709:Distribution
+#@+node:ekr.20100203225523.5788:Make sure all enabled plugins work for Python 3k, etc.
+#@-node:ekr.20100203225523.5788:Make sure all enabled plugins work for Python 3k, etc.
 #@+node:ekr.20100129133806.6239:Remove icons?
 #@-node:ekr.20100129133806.6239:Remove icons?
 #@+node:ekr.20100125190708.6258:Better screen shots

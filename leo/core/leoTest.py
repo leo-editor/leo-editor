@@ -909,8 +909,8 @@ def runAtFileTest(c,p):
     # Compute the type from child1's headline.
     j = g.skip_c_id(h1,2)
     theType = h1[1:j]
-    assert theType in ("@auto","@edit","@file","@thin","@nosent",
-        # "@noref",
+    assert theType in (
+        "@auto","@edit","@file","@thin","@nosent",
         "@asis","@root",), "bad type: %s" % type
 
     thinFile = theType == "@thin"
@@ -926,8 +926,6 @@ def runAtFileTest(c,p):
         at.writeOneAtAutoNode(child1,toString=True,force=True)
     elif theType == "@edit":
         at.writeOneAtEditNode(child1,toString=True)
-    # elif theType == "@noref":
-        # at.norefWrite(child1,toString=True)
     else:
         at.write(child1,thinFile=thinFile,nosentinels=nosentinels,toString=True)
     try:

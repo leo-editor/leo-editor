@@ -459,7 +459,6 @@ class position (object):
 
     # New names, less confusing
     atNoSentFileNodeName  = atNoSentinelsFileNodeName
-    #atNorefFileNodeName   = atRawFileNodeName
     atAsisFileNodeName    = atSilentFileNodeName
 
     def isAnyAtFileNode         (self): return self.v.isAnyAtFileNode()
@@ -478,7 +477,6 @@ class position (object):
 
     # New names, less confusing:
     isAtNoSentFileNode = isAtNoSentinelsFileNode
-    # isAtNorefFileNode  = isAtRawFileNode
     isAtAsisFileNode   = isAtSilentFileNode
 
     # Utilities.
@@ -2030,7 +2028,6 @@ class vnode (baseVnode):
             "@file",
             "@thin",   "@file-thin",   "@thinfile",
             "@asis",   "@file-asis",   "@silentfile",
-            # "@noref",  "@file-noref",  "@rawfile",
             "@nosent", "@file-nosent", "@nosentinelsfile",
             "@shadow",)
 
@@ -2062,10 +2059,6 @@ class vnode (baseVnode):
         names = ("@nosent", "@file-nosent", "@nosentinelsfile")
         return self.findAtFileName(names)
 
-    # def atRawFileNodeName (self):
-        # names = ("@noref", "@file-noref", "@rawfile")
-        # return self.findAtFileName(names)
-
     def atShadowFileNodeName (self):
         names = ("@shadow",)
         return self.findAtFileName(names)
@@ -2080,7 +2073,6 @@ class vnode (baseVnode):
 
     # New names, less confusing
     atNoSentFileNodeName  = atNoSentinelsFileNodeName
-    # atNorefFileNodeName   = atRawFileNodeName
     atAsisFileNodeName    = atSilentFileNodeName
     #@-node:ekr.20031218072017.3348:at...FileNodeName
     #@+node:EKR.20040430152000:isAtAllNode
@@ -2118,9 +2110,6 @@ class vnode (baseVnode):
     def isAtNoSentinelsFileNode (self):
         return g.choose(self.atNoSentinelsFileNodeName(),True,False)
 
-    # def isAtRawFileNode (self): # @file-noref
-        # return g.choose(self.atRawFileNodeName(),True,False)
-
     def isAtSilentFileNode (self): # @file-asis
         return g.choose(self.atSilentFileNodeName(),True,False)
 
@@ -2132,7 +2121,6 @@ class vnode (baseVnode):
 
     # New names, less confusing:
     isAtNoSentFileNode = isAtNoSentinelsFileNode
-    # isAtNorefFileNode  = isAtRawFileNode
     isAtAsisFileNode   = isAtSilentFileNode
     #@-node:ekr.20040325073709:isAt...FileNode (vnode)
     #@+node:ekr.20031218072017.3351:isAtIgnoreNode

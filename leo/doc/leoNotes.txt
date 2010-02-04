@@ -4612,6 +4612,100 @@ def set (self,p,setting,val):
 
 setString = set
 #@-node:ekr.20041118195812.2:set & setString (c.configSettings)
+#@+node:ekr.20041005105605.136:norefWrite (deleted)
+def norefWrite(self,root,toString=False):
+
+    at = self ; c = at.c
+    c.endEditing() # Capture the current headline.
+
+    try:
+        targetFileName = root.atNorefFileNodeName()
+        at.initWriteIvars(root,targetFileName,nosentinels=False,toString=toString)
+        if at.errors: return
+        if not at.openFileForWriting(root,targetFileName,toString):
+            # openFileForWriting calls root.setDirty() if there are errors.
+            return
+        << write root's tree >>
+        at.closeWriteFile()
+        at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+    except Exception:
+        at.writeException(root) # Sets dirty and orphan bits.
+
+rawWrite = norefWrite
+#@+node:ekr.20041005105605.137:<< write root's tree >>
+<< put all @first lines in root >>
+at.putOpenLeoSentinel("@+leo-ver=4")
+<< put optional @comment sentinel lines >>
+
+for p in root.self_and_subtree():
+    << Write p's node >>
+
+at.putSentinel("@-leo")
+<< put all @last lines in root >>
+#@+node:ekr.20041005105605.138:<< put all @first lines in root >>
+# Write any @first lines.  These lines are also converted to @verbatim lines,
+# so the read logic simply ignores lines preceding the @+leo sentinel.
+
+s = root.v.b
+tag = "@first"
+i = 0
+while g.match(s,i,tag):
+    i += len(tag)
+    i = g.skip_ws(s,i)
+    j = i
+    i = g.skip_to_end_of_line(s,i)
+    # Write @first line, whether empty or not
+    line = s[j:i]
+    at.putBuffered(line) ; at.onl()
+    i = g.skip_nl(s,i)
+#@-node:ekr.20041005105605.138:<< put all @first lines in root >>
+#@+node:ekr.20041005105605.139:<< put optional @comment sentinel lines >>
+s2 = c.config.output_initial_comment
+if s2:
+    lines = s2.split("\\n")
+    for line in lines:
+        line = line.replace("@date",time.asctime())
+        if len(line)> 0:
+            at.putSentinel("@comment " + line)
+#@-node:ekr.20041005105605.139:<< put optional @comment sentinel lines >>
+#@+node:ekr.20041005105605.140:<< Write p's node >>
+at.putOpenNodeSentinel(p)
+
+s = p.b
+s = self.cleanLines(p,s)
+
+if s:
+    s = g.toEncodedString(s,at.encoding,reportErrors=True)
+    at.outputStringWithLineEndings(s)
+
+# Put an @nonl sentinel if s does not end in a newline.
+if s and s[-1] != '\n':
+    at.onl_sent() ; at.putSentinel("@nonl")
+
+at.putCloseNodeSentinel(p)
+#@-node:ekr.20041005105605.140:<< Write p's node >>
+#@+node:ekr.20041005105605.141:<< put all @last lines in root >>
+@ Write any @last lines.  These lines are also converted to @verbatim lines, so the read logic simply ignores lines following the @-leo sentinel.
+@c
+
+tag = "@last"
+lines = root.v.b.split('\n')
+n = len(lines) ; j = k = n - 1
+# Don't write an empty last line.
+if j >= 0 and len(lines[j])==0:
+    j = k = n - 2
+# Scan backwards for @last directives.
+while j >= 0:
+    line = lines[j]
+    if g.match(line,0,tag): j -= 1
+    else: break
+# Write the @last lines.
+for line in lines[j+1:k+1]:
+    i = len(tag) ; i = g.skip_ws(line,i)
+    at.putBuffered(line[i:]) ; at.onl()
+#@-node:ekr.20041005105605.141:<< put all @last lines in root >>
+#@-node:ekr.20041005105605.137:<< write root's tree >>
+#@-node:ekr.20041005105605.136:norefWrite (deleted)
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node

@@ -453,8 +453,6 @@ class atFile:
         return fn
     #@-node:ekr.20041005105605.19:openFileForReading (atFile) helper
     #@+node:ekr.20041005105605.21:read (atFile) & helpers
-    # This code no longer reads @noref trees.
-
     def read(self,root,importFileName=None,
         fromString=None,atShadow=False,force=False
     ):
@@ -667,7 +665,7 @@ class atFile:
                 fileName = p.atShadowFileNodeName()
                 at.readOneAtShadowNode (fileName,p)
                 p.moveToNodeAfterTree()
-            elif p.isAtFileNode(): ### or p.isAtNorefFileNode():
+            elif p.isAtFileNode():
                 anyRead = True
                 wasOrphan = p.isOrphan()
                 ok = at.read(p,force=force)
@@ -971,7 +969,7 @@ class atFile:
     def findChild4 (self,headline):
 
         """Return the next vnode in at.root.tnodeLisft.
-        This is called only for @file/@noref nodes"""
+        This is called only for @file nodes"""
 
         # Note: tnodeLists are used _only_ when reading @file (not @thin) nodes.
         # tnodeLists compensate (a hack) for not having gnx's in derived files! 
@@ -2955,8 +2953,6 @@ class atFile:
                             #@+node:ekr.20041005105605.152:<< write the @file node >> (writeMissing)
                             if p.isAtAsisFileNode():
                                 at.asisWrite(p)
-                            # elif p.isAtNorefFileNode():
-                                # at.norefWrite(p)
                             elif p.isAtNoSentFileNode():
                                 at.write(p,kind='@nosent',nosentinels=True)
                             elif p.isAtFileNode():

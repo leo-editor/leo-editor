@@ -7230,7 +7230,6 @@ class leoSwingTree (leoFrame.leoTree):
             if isAtFile and isAtRoot:
                 break
             if (v2.isAtFileNode() or
-                v2.isAtNorefFileNode() or
                 v2.isAtAsisFileNode() or
                 v2.isAtNoSentFileNode()
             ):

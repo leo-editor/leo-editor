@@ -7665,7 +7665,7 @@ class baseCommands (object):
 
         # New feature: search for first non-blank character after @x for common x.
         if ch != '@' and h.startswith('@'):
-            for s in ('button','command','file','thin','asis','nosent',): # 'noref'):
+            for s in ('button','command','file','thin','asis','nosent',):
                 prefix = '@'+s
                 if h.startswith('@'+s):
                     while 1:
