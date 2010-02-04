@@ -868,6 +868,7 @@
 <v t="ekr.20071113143844.6"><vh>@test failure with ascii encodings</vh></v>
 <v t="ekr.20100125145638.5119"><vh>@test g._contentHashFile</vh></v>
 <v t="ekr.20071113145804.23"><vh>@test g.reportBadChars</vh></v>
+<v t="ekr.20100204053330.5367"><vh>@test koi8-r encoding</vh></v>
 <v t="ekr.20050208104202"><vh>@test of round-tripping toUnicode &amp; toEncodedString</vh></v>
 <v t="ekr.20050206090416"><vh>@test open non-existent non-ascii directory</vh></v>
 <v t="ekr.20071113145804.24"><vh>@test round trip toUnicode toEncodedString</vh></v>
@@ -2651,7 +2652,6 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20100204053330.5367"><vh>@test koi8-r encoding</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
