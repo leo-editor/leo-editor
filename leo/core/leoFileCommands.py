@@ -27,6 +27,7 @@ else:
 
 import os
 import pickle
+import shutil
 import string
 import sys
 import tempfile
@@ -1565,7 +1566,7 @@ class baseFileCommands:
     #@nonl
     #@-node:ekr.20070413061552:putSavedMessage
     #@-node:ekr.20070413045221.2: Top-level  (leoFileCommands)
-    #@+node:ekr.20050404190914.2:deleteFileWithMessage
+    #@+node:ekr.20050404190914.2:deleteFileWithMessage (leoFileCommands)
     def deleteFileWithMessage(self,fileName,unused_kind):
 
         try:
@@ -1578,7 +1579,7 @@ class baseFileCommands:
                 g.es("exception deleting backup file:",fileName)
                 g.es_exception(full=False)
             return False
-    #@-node:ekr.20050404190914.2:deleteFileWithMessage
+    #@-node:ekr.20050404190914.2:deleteFileWithMessage (leoFileCommands)
     #@+node:ekr.20031218072017.1470:put
     def put (self,s):
 
@@ -2166,7 +2167,7 @@ class baseFileCommands:
 
         return fileName,theActualFile
     #@-node:ekr.20100119145629.6106:createActualFile
-    #@+node:ekr.20031218072017.3047:createBackupFile
+    #@+node:ekr.20031218072017.3047:createBackupFile (fileCommands)
     def createBackupFile (self,fileName):
 
         '''
@@ -2178,16 +2179,27 @@ class baseFileCommands:
 
         if g.os_path_exists(fileName):
             # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
+
             fd,backupName = tempfile.mkstemp(text=False)
             os.close(fd)
-            ok = g.utils_rename(c,fileName,backupName)
+
+            ### This does a lot, probably too much for here.
+            ### ok = g.utils_rename(c,fileName,backupName)
+            try:
+                ok = True
+                shutil.move(fileName,backupName) 
+            except Exception:
+                ok = False
+                g.es('exception creating backup file')
+                g.es_exception()
+
             if not ok and self.read_only:
                 g.es("read only",color="red")
         else:
             ok,backupName = True,None
 
         return ok,backupName
-    #@-node:ekr.20031218072017.3047:createBackupFile
+    #@-node:ekr.20031218072017.3047:createBackupFile (fileCommands)
     #@+node:ekr.20100119145629.6108:handleWriteLeoFileException
     def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
 

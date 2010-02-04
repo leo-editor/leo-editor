@@ -56,6 +56,7 @@ else:
 
 import operator
 import re
+import shutil
 import subprocess
 # import sys
 import time
@@ -2754,30 +2755,6 @@ def utils_remove (fileName,verbose=True):
         return False
 #@-node:ekr.20050104123726.3:g.utils_remove
 #@+node:ekr.20031218072017.1263:g.utils_rename
-#@<< about os.rename >>
-#@+node:ekr.20050104123726.1:<< about os.rename >>
-#@+at 
-#@nonl
-# Here is the Python 2.4 documentation for rename (same as Python 2.3)
-# 
-# Rename the file or directory src to dst.  If dst is a directory, OSError 
-# will be raised.
-# 
-# On Unix, if dst exists and is a file, it will be removed silently if the 
-# user
-# has permission. The operation may fail on some Unix flavors if src and dst 
-# are
-# on different filesystems. If successful, the renaming will be an atomic
-# operation (this is a POSIX requirement).
-# 
-# On Windows, if dst already exists, OSError will be raised even if it is a 
-# file;
-# there may be no way to implement an atomic rename when dst names an existing
-# file.
-#@-at
-#@-node:ekr.20050104123726.1:<< about os.rename >>
-#@nl
-
 def utils_rename (c,src,dst,mode=None,verbose=True):
 
     '''Platform independent rename.'''
@@ -2786,25 +2763,13 @@ def utils_rename (c,src,dst,mode=None,verbose=True):
     if head and len(head) > 0:
         g.makeAllNonExistentDirectories(head,c=c)
 
-    if g.os_path_exists(dst):
-        if not g.utils_remove(dst):
-            return False
+    ### How can this be correct ???
+    # if g.os_path_exists(dst):
+        # if not g.utils_remove(dst):
+            # return False
+
     try:
-        # New in Leo 4.4b1: try using shutil first.
-        try:
-            import shutil # shutil is new in Python 2.3
-            shutil.move(src,dst)
-        except ImportError:
-            if sys.platform == "win32":
-                os.rename(src,dst)
-            else:
-                try:
-                    # Alas, distutils.file_util may not exist.
-                    from distutils.file_util import move_file
-                    move_file(src,dst)
-                except ImportError:
-                    # Desperation: may give: 'Invalid cross-device link'
-                    os.rename(src,dst)
+        shutil.move(src,dst)
         if mode:
             g.utils_chmod(dst,mode,verbose)
         return True

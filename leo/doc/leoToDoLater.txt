@@ -1148,10 +1148,6 @@ Answer:
 My second thought is that this is too dangerous--shadow files might
 turn out to be useful emergency backups.  I would prefer to have Leo
 mess with the file system as little as possible.
-
-BTW, if you think file system changes are easy to do in Python, take a
-look at g.utils_rename. 
-#@nonl
 #@-node:ekr.20080815174457.5:Consider deleting private shadow files
 #@+node:ekr.20100121050224.6140:Delete resurrected nodes
 @nocolor-node
