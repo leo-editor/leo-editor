@@ -863,6 +863,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             cursor.setPosition(anchor,tc.KeepAnchor)
             w.setTextCursor(cursor)
         else:
+            if not extend:
+                # Fix an annoyance. Make sure to clear the selection.
+                cursor = w.textCursor()
+                cursor.clearSelection()
+                w.setTextCursor(cursor)
             w.moveCursor(op,mode)
     #@-node:ekr.20100109082023.3734:leoMoveCursorHelper (Qt)
     #@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)

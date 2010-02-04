@@ -9629,6 +9629,10 @@ def deleteFileWithMessage(self,fileName,unused_kind):
         return False
 #@-node:ekr.20050404190914.2:deleteFileWithMessage (leoFileCommands)
 #@-node:ekr.20100204104820.5844:Eliminated race condition in createBackupFile
+#@+node:ekr.20100204052559.5794:Fixed cursor hangnail
+Non-extending cursor moves now always clear the selection.
+#@nonl
+#@-node:ekr.20100204052559.5794:Fixed cursor hangnail
 #@-node:ekr.20100203173153.5797:Bugs
 #@+node:ekr.20100203173153.5798:Cleanup
 #@+node:ekr.20100130042842.9009:Removed config.set
