@@ -648,8 +648,10 @@ class LeoApp:
         if g.app.gui is None:
             # tkinter broken/doesn't exist. Print error
             print("Please enter LeoID (e.g. your username, 'johndoe'...)")
-            leoid = raw_input('LeoID: ')
-
+            if g.isPython3: # 2010/02/04.
+                leoid = input('LeoID: ')
+            else:
+                leoid = raw_input('LeoID: ')
         else:
             leoid = g.app.gui.runAskLeoIDDialog()
 

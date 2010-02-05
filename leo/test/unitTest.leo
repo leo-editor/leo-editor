@@ -23620,8 +23620,9 @@ for obj,val in table:
 
 def run(files):
     args = [r'python c:\python26\Tools\Scripts\2to3.py']
-    args.extend(files)
-    args.append('-xprint')
+    for z in files:
+        args.append(z)
+        args.append('-xprint')
     args.append('&gt;out2')
     args = ','.join(args)
     os.system(args)
@@ -23634,42 +23635,44 @@ plugins = (
 )
 core_files = (
     'leoApp.py',
-    # 'leoAtFile.py',
-    # 'leoChapters.py',
-    # 'leoCommands.py',
-    # 'leoEditCommands.py','W0511'),
-    # 'leoFileCommands.py',
-    # 'leoFind.py',
-    # 'leoFrame.py',
-    # 'leoGlobals.py',
-    # 'leoGui.py',
-    # 'leoImport.py',
-    # 'leoMenu.py',
-    # 'leoNodes.py',
-    # 'leoPlugins.py',
-    # 'leoShadow.py',
-    # 'leoTangle.py',
-    # 'leoUndo.py',
+    'leoAtFile.py',
+    'leoChapters.py',
+    'leoCommands.py',
+    'leoEditCommands.py',
+    'leoFileCommands.py',
+    'leoFind.py',
+    'leoFrame.py',
+    'leoGlobals.py',
+    'leoGui.py',
+    'leoImport.py',
+    'leoMenu.py',
+    'leoNodes.py',
+    'leoPlugins.py',
+    'leoShadow.py',
+    'leoTangle.py',
+    'leoUndo.py',
 )
 external_files = (
-    # 'ipy_leo.py',
-    # 'lproto.py',
-    # 'path.py',
-    # 'pickleshare.py',
+    'ipy_leo.py',
+    'lproto.py',
+    'path.py',
+    'pickleshare.py',
 )
 table = (
     ('plugins',plugins),
-    ('core',core_files),
-    ('external',external_files),
+    # These pass
+    # ('core',core_files),
+    # ('external',external_files),
 )
 files = []
 for theDir,aList in table:
     for z in aList:
         fn = os.path.abspath(os.path.join('leo',theDir,z))
         if os.path.exists(fn): files.append(fn)
-        else: print('file not found:',fn)
+        else: print('*** file not found:',fn)
 
 run(files)
+print('done: results are in out2')
 </t>
 <t tx="ekr.20100204053330.5367">root = p.copy()
 while p.hasChildren():

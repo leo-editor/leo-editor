@@ -25,7 +25,8 @@ unbound()
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20100126110826.6253:Before rc1
-@nocolor
+@nocolor-node
+
 
 Before rc1:
 
@@ -34,12 +35,17 @@ Before rc1:
 * All plugins in passList pass 2to3 script.
 * All plugins in passList pass pylint without serious errors.
 * One full day between "all" clear and release
-#@+node:ekr.20100204052559.5796:Urgent: run 2to3 on all external files
-#@-node:ekr.20100204052559.5796:Urgent: run 2to3 on all external files
+#@+node:ekr.20100203125449.5791:Use 2to3 to check for problem in plugins
+@nocolor-node
+
+Test all plugins in passList.
+#@-node:ekr.20100203125449.5791:Use 2to3 to check for problem in plugins
+#@+node:ekr.20100204184822.5814:Re-enable caching in run-unit-test code?
+#@-node:ekr.20100204184822.5814:Re-enable caching in run-unit-test code?
 #@+node:ekr.20100203225523.5786:Fix syntax error in @shadow file in unitTest.leo
 #@-node:ekr.20100203225523.5786:Fix syntax error in @shadow file in unitTest.leo
-#@+node:ekr.20100203125449.5791:Use 2to3 to check for 3x problems
-#@-node:ekr.20100203125449.5791:Use 2to3 to check for 3x problems
+#@+node:ekr.20100204165150.5960:(done) Disabled notepad in open-with menu
+#@-node:ekr.20100204165150.5960:(done) Disabled notepad in open-with menu
 #@+node:ekr.20100204165150.5817:Minor bugs
 #@+node:ekr.20100111094359.6208:Fix goto-line bugs
 #@+node:ekr.20100204052559.5792:Bug 363406: goto global line doesn't seem to be working in @auto files

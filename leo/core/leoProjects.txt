@@ -9273,6 +9273,7 @@ def put_all_roots(self):
             else:
                 g.es("unchanged:",file_name)
                 << Erase the temporary file >>
+#@nonl
 #@+node:ekr.20031218072017.1152:<<Get root specific attributes>>
 # Stephen Schaefer, 9/2/02
 # Retrieve the full complement of state for the root node
@@ -9639,6 +9640,68 @@ Testing is needed because of recent change to g.utils_rename.
 
 A trace in put_all_roots verifies that unit test already test this code.
 #@-node:ekr.20100204104820.5842:Tested tangle.put_all_roots
+#@+node:ekr.20100204165150.8578:Fixed 2to3 errors in ipy_leo
+# This is the only external file that 2to3 complains about.
+
+--- c:\leo.repo\trunk\leo\external\ipy_leo.py (original)
++++ c:\leo.repo\trunk\leo\external\ipy_leo.py (refactored)
+@@ -271,7 +271,7 @@
+#@verbatim
+     #@+node:ekr.20100120092047.6108:keys
+     def keys(self):
+         d = self.__children()
+-        return d.keys()
++        return list(d.keys())
+#@verbatim
+     #@-node:ekr.20100120092047.6108:keys
+#@verbatim
+     #@+node:ekr.20100120092047.6109:__getitem__
+     def __getitem__(self, key):
+@@ -460,7 +460,7 @@
+#@verbatim
+ #@+node:ekr.20100120092047.6126:workbook_complete
+ @IPython.generics.complete_object.when_type(LeoWorkbook)
+ def workbook_complete(obj, prev):
+-    return all_cells().keys() + [s for s in prev if not s.startswith('_')]
++    return list(all_cells().keys()) + [s for s in prev if not s.startswith('_')]
+#@verbatim
+ #@-node:ekr.20100120092047.6126:workbook_complete
+#@verbatim
+ #@+node:ekr.20100120092047.6127:add_var
+ def add_var(varname):
+@@ -545,7 +545,7 @@
+     script = node.script()
+     lines = script.count('\n')
+     try:
+-        exec script in ip.user_ns
++        exec(script, ip.user_ns)
+     except:
+         print " -- Exception in script:\n"+script + "\n --"
+         raise
+@@ -592,7 +592,7 @@
+ def push_position_from_leo(p):
+     try:
+         push_from_leo(LeoNode(p))
+-    except AttributeError,e:
++    except AttributeError as e:
+         if e.args == ("Commands instance has no attribute 'frame'",):
+             es("Error: ILeo not associated with .leo document")
+             es("Press alt+shift+I to fix!")
+@@ -719,7 +719,7 @@
+         cmd_param.append('')
+     if len(cmd_param) > 2:
+         return ip.IP.Completer.file_matches(event.symbol)
+-    cmds = c.commandsDict.keys()
++    cmds = list(c.commandsDict.keys())
+     cmds.sort()
+     return cmds
+
+#@-node:ekr.20100204165150.8578:Fixed 2to3 errors in ipy_leo
+#@+node:ekr.20100204184822.5813:Fixed 2to3 error in leoApp.py
+@nocolor-node
+
+Must use input instead of raw_input.
+#@-node:ekr.20100204184822.5813:Fixed 2to3 error in leoApp.py
 #@-node:ekr.20100203173153.5797:Bugs
 #@+node:ekr.20100203173153.5798:Cleanup & testing
 #@+node:ekr.20100130042842.9009:Removed config.set

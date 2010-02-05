@@ -71,7 +71,7 @@ def update_commander(new_leox):
 
     global c,g
     c,g = new_leox.c, new_leox.g
-    print "Set Leo Commander:",c.frame.getTitle()
+    print("Set Leo Commander:",c.frame.getTitle())
 
     # will probably be overwritten by user, but handy for experimentation early on
     ip.user_ns['c'] = c
@@ -271,7 +271,7 @@ class LeoNode(object, UserDict.DictMixin):
     #@+node:ekr.20100120092047.6108:keys
     def keys(self):
         d = self.__children()
-        return d.keys()
+        return list(d.keys()) # 2010/02/04: per 2to3
     #@-node:ekr.20100120092047.6108:keys
     #@+node:ekr.20100120092047.6109:__getitem__
     def __getitem__(self, key):
@@ -460,7 +460,8 @@ class PosList(list):
 #@+node:ekr.20100120092047.6126:workbook_complete
 @IPython.generics.complete_object.when_type(LeoWorkbook)
 def workbook_complete(obj, prev):
-    return all_cells().keys() + [s for s in prev if not s.startswith('_')]
+    # 2010/02/04: per 2to3
+    return list(all_cells().keys()) + [s for s in prev if not s.startswith('_')]
 #@-node:ekr.20100120092047.6126:workbook_complete
 #@+node:ekr.20100120092047.6127:add_var
 def add_var(varname):
@@ -545,9 +546,11 @@ def push_plain_python(node):
     script = node.script()
     lines = script.count('\n')
     try:
-        exec script in ip.user_ns
+        # exec script in ip.user_ns
+        # 2010/02/04: per 2to3
+        exec(script,ip.user_ns)
     except:
-        print " -- Exception in script:\n"+script + "\n --"
+        print(" -- Exception in script:\n"+script + "\n --")
         raise
     es('ipy plain: %s (%d LL)' % (node.h,lines))
 #@-node:ekr.20100120092047.6132:push_plain_python
@@ -579,6 +582,20 @@ def push_ev_node(node):
     node.v = res
 
 #@-node:ekr.20100120092047.6134:push_ev_node
+#@+node:ekr.20100120092047.6136:push_position_from_leo
+def push_position_from_leo(p):
+    try:
+        push_from_leo(LeoNode(p))
+
+    # 2010/02/04: per 2to3
+    except AttributeError as e:
+        if e.args == ("Commands instance has no attribute 'frame'",):
+            es("Error: ILeo not associated with .leo document")
+            es("Press alt+shift+I to fix!")
+        else:
+            raise
+
+#@-node:ekr.20100120092047.6136:push_position_from_leo
 #@+node:ekr.20100120092047.6135:push_mark_req
 def push_mark_req(node):
     """ This should be the first one that gets called.
@@ -588,18 +605,6 @@ def push_mark_req(node):
     _leo_push_history.add(node.h)
     raise TryNext
 #@-node:ekr.20100120092047.6135:push_mark_req
-#@+node:ekr.20100120092047.6136:push_position_from_leo
-def push_position_from_leo(p):
-    try:
-        push_from_leo(LeoNode(p))
-    except AttributeError,e:
-        if e.args == ("Commands instance has no attribute 'frame'",):
-            es("Error: ILeo not associated with .leo document")
-            es("Press alt+shift+I to fix!")
-        else:
-            raise
-
-#@-node:ekr.20100120092047.6136:push_position_from_leo
 #@+node:ekr.20100120092047.6137:edit_object_in_leo
 @generic
 def edit_object_in_leo(obj, varname):
@@ -680,7 +685,7 @@ def lee_f(self,s):
             if os.path.isfile(fname):
                 c.setBodyString(p,open(fname).read())
             c.selectPosition(p)
-        print "Editing file(s), press ctrl+shift+w in Leo to write @auto nodes"
+        print("Editing file(s), press ctrl+shift+w in Leo to write @auto nodes")
     finally:
         c.redraw()
 #@-node:ekr.20100120092047.6140:lee_f
@@ -688,7 +693,7 @@ def lee_f(self,s):
 def leoref_f(self,s):
     """ Quick reference for ILeo """
     import textwrap
-    print textwrap.dedent("""\
+    print(textwrap.dedent("""\
     %lee file/object - open file / object in leo
     %lleo Launch leo (use if you started ipython first!)
     wb.foo.v  - eval node foo (i.e. headstring is 'foo' or '@ipy foo')
@@ -700,7 +705,7 @@ def leoref_f(self,s):
       print el.v
 
     """
-    )
+    ))
 #@-node:ekr.20100120092047.6141:leoref_f
 #@+node:ekr.20100120092047.6142:mb_f
 def mb_f(self, arg):
@@ -719,7 +724,9 @@ def mb_completer(self,event):
         cmd_param.append('')
     if len(cmd_param) > 2:
         return ip.IP.Completer.file_matches(event.symbol)
-    cmds = c.commandsDict.keys()
+
+    # 2010/02/04: per 2to3
+    cmds = list(c.commandsDict.keys())
     cmds.sort()
     return cmds
 
@@ -736,9 +743,9 @@ def ileo_pre_prompt_hook(self):
 #@-node:ekr.20100120092047.6144:ileo_pre_prompt_hook
 #@+node:ekr.20100120092047.6145:show_welcome
 def show_welcome():
-    print "------------------"
-    print "Welcome to Leo-enabled IPython session!"
-    print "Try %leoref for quick reference."
+    print("------------------")
+    print("Welcome to Leo-enabled IPython session!")
+    print("Try %leoref for quick reference.")
     import IPython.platutils
     IPython.platutils.set_term_title('ILeo')
     IPython.platutils.freeze_term_title()
@@ -748,7 +755,7 @@ def show_welcome():
 def run_leo_startup_node():
     p = g.findNodeAnywhere(c,'@ipy-startup')
     if p:
-        print "Running @ipy-startup nodes"
+        print("Running @ipy-startup nodes")
         for n in LeoNode(p):
             push_from_leo(n)
 
@@ -796,7 +803,7 @@ def lno_f(self, arg):
     try:
         scr = wb.Scratch
     except AttributeError:
-        print "No leo yet, attempt launch of notebook..."
+        print("No leo yet, attempt launch of notebook...")
         lleo_f(self,'')
         scr = wb.Scratch
 
