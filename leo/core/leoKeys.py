@@ -22,19 +22,6 @@ import re
 import string
 import sys
 import types
-
-# The following imports _are_ used.
-
-if g.isPython3:
-    import py_compile as compiler
-else:
-    import compiler
-
-try:
-    # Does not exist in IronPython.
-    import parser
-except ImportError:
-    pass
 #@-node:ekr.20061031131434.1:<< imports >>
 #@nl
 #@<< about 'internal' bindings >>
@@ -1446,13 +1433,12 @@ class autoCompleterClass:
             s = g.getScript(c,root,useSelectedText=False)
             while s:
                 try:
-                    val = compiler.parse(s+'\n')
+                    compile(s+'\n','<string>','exec')
                     break
-                except (parser.ParserError,SyntaxError):
+                except SyntaxError:
                     fileName, n = g.getLastTracebackFileAndLineNumber()
                     p = self.computeErrorNode(c,root,n,lines=g.splitLines(s))
                     if not p or p == root:
-                        g.trace(g.callers(5))
                         g.es_print('syntax error in class node: can not continue')
                         s = None ; break
                     else:

@@ -19,7 +19,6 @@ tkPass = (
     'templates','textnode','tkGui','toolbar',
     'xcc_nodes',
 )
-
 passList = (
     '__init__','FileActions','UNL',
     'active_path','add_directives','attrib_edit',
@@ -54,55 +53,51 @@ core_files = (
 external_files = (
     'ipy_leo','lproto','path','pickleshare',
 )
-
 recent_core_table = (
-    ('leoAtFile.py',''),
-    ('leoCommands.py',''),
-    ('leoFileCommands.py',''),
+    ('leoAtFile',''),
+    ('leoCommands',''),
+    ('leoFileCommands',''),
 )
-
 core_table = (
-    ('leoGlobals.py',''),
-    ('leoApp.py',''),
-    ('leoAtFile.py',''),
-    ('leoChapters.py',''),
-    ('leoCommands.py',''),
-    ('leoEditCommands.py','W0511'),
-    ('leoFileCommands.py',''),
-    ('leoFind.py',''),
-    ('leoFrame.py',''),
-    ('leoGlobals.py',''), # E0602:4528:isBytes: Undefined variable 'bytes'
-    ('leoGui.py','W0511'), # W0511: to do
-    ('leoImport.py',''),
-    ('leoMenu.py',''),
-    ('leoNodes.py',''),
-    ('leoPlugins.py',''),
-    ('leoShadow.py',''),
-    ('leoTangle.py',''),
-    ('leoUndo.py',''),
+    ('leoGlobals',''),
+    ('leoApp',''),
+    ('leoAtFile',''),
+    ('leoChapters',''),
+    ('leoCommands',''),
+    ('leoEditCommands','W0511'),
+    ('leoFileCommands',''),
+    ('leoFind',''),
+    ('leoFrame',''),
+    ('leoGlobals',''), # E0602:4528:isBytes: Undefined variable 'bytes'
+    ('leoGui','W0511'), # W0511: to do
+    ('leoImport',''),
+    ('leoMenu',''),
+    ('leoNodes',''),
+    ('leoPlugins',''),
+    ('leoShadow',''),
+    ('leoTangle',''),
+    ('leoUndo',''),
 )
-
 external_table = (
-    ('ipy_leo.py',''),
-    ('lproto.py',''),
-    ('path.py',''),
-    ('pickleshare.py',''),
+    ('ipy_leo',''),
+    ('lproto',''),
+    ('path',''),
+    ('pickleshare',''),
 )
-
 plugins_table = (
-    ('qtGui.py','W0221'),
-    ('tkGui.py','W0221'),
-    ('mod_scripting.py','E0611'),
+    ('qtGui','W0221'),
+    ('tkGui','W0221'),
+    ('mod_scripting','E0611'),
         # Harmless: E0611:489:scriptingController.runDebugScriptCommand:
         # No name 'leoScriptModule' in module 'leo.core'
-    ('open_with.py',''),
-    ('toolbar.py','E1101,W0221,W0511'),
+    ('open_with',''),
+    ('toolbar','E1101,W0221,W0511'),
         # Dangerous: many erroneous E1101 errors
         # Harmless: W0221: Arguments number differs from overridden method
         # Harmless: W0511: Fixme and to-do.
-    ('UNL.py',''),
-    ('vim.py',''),
-    ('xemacs.py',''),
+    ('UNL',''),
+    ('vim',''),
+    ('xemacs',''),
 )
 
 def run(fn,suppress):
@@ -119,9 +114,9 @@ def run(fn,suppress):
 
 tables_table = (
     # (tkPass,'plugins'),
-    (passList,'plugins'),
+    # (passList,'plugins'),
     #(recent_core_table,'core'),
-    # (core_table,'core'),
+    (core_table,'core'),
     # (external_table,'external'),
     # (plugins_table,'plugins'),
 )

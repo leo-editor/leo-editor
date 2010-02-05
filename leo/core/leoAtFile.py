@@ -13,7 +13,6 @@
 #@<< imports >>
 #@+node:ekr.20041005105605.2:<< imports >>
 import leo.core.leoGlobals as g
-# import leo.core.leoTest as leoTest
 
 if g.app and g.app.use_psyco:
     # print("enabled psyco classes",__file__)
@@ -22,12 +21,6 @@ if g.app and g.app.use_psyco:
 
 import leo.core.leoNodes as leoNodes
 
-if g.isPython3:
-    # import py_compile as compiler
-    import code
-else:
-    import compiler
-import parser
 import os
 import sys
 import time
@@ -3884,11 +3877,9 @@ class atFile:
 
         try:
             ok = True
-            if g.isPython3:
-                code.compile_command(body + '\n')
-            else:
-                compiler.parse(body + '\n')
-        except (parser.ParserError,SyntaxError):
+            fn = '<node: %s>' % p.h
+            compile(body + '\n',fn,'exec')
+        except SyntaxError:
             g.es_exception()
             self.syntaxError(p,body)
             ok = False
@@ -3896,14 +3887,12 @@ class atFile:
             g.trace("unexpected exception")
             g.es_exception()
             ok = False
-
         return ok
     #@+node:ekr.20090514111518.5666:syntaxError (leoAtFile)
     def syntaxError(self,p,body):
 
         g.es_print("Syntax error in: %s" % (p.h),color="red")
-        g.trace(g.callers(5))
-        g.trace('(leoAtFile) node:',p and p.h,'body...\n',body)
+        # g.trace('(leoAtFile) node:',p and p.h,'body...\n',body)
 
         typ,val,tb = sys.exc_info()
         message = hasattr(val,'message') and val.message

@@ -46,21 +46,6 @@ try:
 except ImportError:
     tabnanny = None
 
-if g.isPython3:
-    import py_compile as compiler # compiler module does not exist
-else:
-    try:
-        # IronPython has troubles with these.
-        import compiler # for Check Python command
-    except Exception:
-        pass
-
-try:
-    # IronPython has troubles with this.
-    import parser # needed only for weird Python 2.2 parser errors.
-except Exception:
-    pass
-
 # The following import _is_ used.
 import token    # for Check Python command
 #@-node:ekr.20040712045933:<< imports  >> (leoCommands)
@@ -4143,7 +4128,6 @@ class baseCommands (object):
                         return "surprise" # abort
                     if unittest and result != "ok":
                         g.pr("Syntax error in %s" % p.cleanHeadString())
-                        g.trace(g.callers(5))
                         return result # End the unit test: it has failed.
 
         if not unittest:
@@ -4181,7 +4165,7 @@ class baseCommands (object):
                 if not ignoreAtIgnore or not g.scanForAtIgnore(c,p):
                     try:
                         c.checkPythonNode(p,unittest,suppressErrors)
-                    except (parser.ParserError,SyntaxError,tokenize.TokenError,tabnanny.NannyNag):
+                    except (SyntaxError,tokenize.TokenError,tabnanny.NannyNag):
                         result = "error" # Continue to check.
                     except:
                         g.es("surprise in checkPythonNode")
@@ -4197,20 +4181,18 @@ class baseCommands (object):
     #@+node:ekr.20040723094220.5:checkPythonNode
     def checkPythonNode (self,p,unittest=False,suppressErrors=False):
 
-        c = self
+        c = self ; h = p.h
 
-        h = p.h
-        # We must call getScript so that we can ignore directives and section references.
+        # Call getScript to ignore directives and section references.
         body = g.getScript(c,p.copy())
         if not body: return
 
         try:
-            import parser
-            compiler.parse(body + '\n')
-        except (parser.ParserError,SyntaxError):
+            fn = '<node: %s>' % p.h
+            compile(body+'\n',fn,'exec')
+        except SyntaxError:
             if not suppressErrors:
                 s = "Syntax error in: %s" % h
-                g.trace(g.callers(5))
                 g.es_print(s,color="blue")
             if unittest: raise
             else:
@@ -4237,11 +4219,11 @@ class baseCommands (object):
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
             return
 
-        except parser.ParserError:
-            junk, msg, junk = sys.exc_info()
-            if not suppressErrors:
-                g.es("ParserError in",headline,color="blue")
-                g.es('',str(msg))
+        # except parser.ParserError:
+            # junk, msg, junk = sys.exc_info()
+            # if not suppressErrors:
+                # g.es("ParserError in",headline,color="blue")
+                # g.es('',str(msg))
 
         except tokenize.TokenError:
             junk, msg, junk = sys.exc_info()

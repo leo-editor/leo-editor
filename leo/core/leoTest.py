@@ -28,11 +28,6 @@ import timeit
 import tokenize
 import unittest
 
-if g.isPython3:
-    import py_compile as compiler
-else:
-    import compiler
-
 try:
     import tabnanny # Does not exist in jython.
 except ImportError:
@@ -1314,9 +1309,12 @@ def oldTestPlugin (fileName,verbose=False):
 def checkFileSyntax (fileName,s):
 
     try:
-        compiler.parse(s + '\n')
+        compile(s+'\n',fileName,'exec')
     except SyntaxError:
-        g.trace(g.callers(5))
+        g.es("syntax error in:",fileName,color="blue")
+        g.es_exception(full=False,color="black")
+        raise
+    except Exception:
         g.es("syntax error in:",fileName,color="blue")
         g.es_exception(full=False,color="black")
         raise
