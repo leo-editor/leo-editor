@@ -1428,6 +1428,55 @@ def lengthHelper(self):
 #@-node:ekr.20081121105001.590:lengthHelper
 #@-node:ekr.20081121105001.589:setSelectionRangeHelper & helper
 #@-node:ekr.20100127124405.3701:The unicode bug
+#@+node:ekr.20100204164325.3687:Non-extending move should always clear selection
+#@+node:ekr.20100109082023.3734:leoMoveCursorHelper (Qt)
+def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
+
+    '''Move the cursor in a QTextEdit.'''
+
+    trace = False and not g.unitTesting
+    verbose = True
+    w = self.widget
+    if trace:
+        g.trace(kind,'extend',extend)
+        if verbose:
+            g.trace(len(w.toPlainText()))
+
+    tc = QtGui.QTextCursor
+    d = {
+        'exchange': True, # Dummy.
+        'down':tc.Down,'end':tc.End,'end-line':tc.EndOfLine,
+        'home':tc.Start,'left':tc.Left,'page-down':tc.Down,
+        'page-up':tc.Up,'right':tc.Right,'start-line':tc.StartOfLine,
+        'up':tc.Up,
+    }
+    kind = kind.lower()
+    op = d.get(kind)
+    mode = g.choose(extend,tc.KeepAnchor,tc.MoveAnchor)
+
+    if not op:
+        return g.trace('can not happen: bad kind: %s' % kind)
+
+    if kind in ('page-down','page-up'):
+        cursor = w.textCursor()
+        cursor.movePosition(op,mode,linesPerPage)
+        w.setTextCursor(cursor)
+    elif kind == 'exchange': # exchange-point-and-mark
+        cursor = w.textCursor()
+        anchor = cursor.anchor()
+        pos = cursor.position()
+        cursor.setPosition(pos,tc.MoveAnchor)
+        cursor.setPosition(anchor,tc.KeepAnchor)
+        w.setTextCursor(cursor)
+    else:
+        if not extend:
+            # Fix an annoyance. Make sure to clear the selection.
+            cursor = w.textCursor()
+            cursor.clearSelection()
+            w.setTextCursor(cursor)
+        w.moveCursor(op,mode)
+#@-node:ekr.20100109082023.3734:leoMoveCursorHelper (Qt)
+#@-node:ekr.20100204164325.3687:Non-extending move should always clear selection
 #@-node:ekr.20100202160247.3681:Leo 4.7 rc1 projects
 #@-all
 #@nonl

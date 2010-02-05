@@ -535,7 +535,12 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             # Important: do not set lockouts here.
             # Only methods that actually generate events should set lockouts.
             p.contract()
-            self.select(p) # Calls before/afterSelectHint.    
+            if p.isCloned():
+                self.select(p) # Calls before/afterSelectHint.
+                # 2010/02/04: Keep the expansion bits of all tree nodes in sync.
+                self.full_redraw(scroll=False)
+            else:
+                self.select(p) # Calls before/afterSelectHint.    
         else:
             self.error('no p')
 

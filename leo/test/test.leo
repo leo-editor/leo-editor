@@ -1517,7 +1517,7 @@ leoTest.doTests (c,all=False)</t>
 # rst3.py
 contextmenu.py
 plugins_menu.py
-open_with.py
+# open_with.py
 quicksearch.py
 # ipython.py
 scrolledmessage.py

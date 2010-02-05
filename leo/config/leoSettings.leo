@@ -429,12 +429,12 @@
 <v t="ville.20090701225947.3902"><vh>@shortcuts Default plugins</vh></v>
 </v>
 </v>
-<v t="ekr.20070925144552"><vh>Menus</vh>
+<v t="ekr.20070925144552" a="E"><vh>Menus</vh>
 <v t="ekr.20071010123015"><vh>@@menu 文件</vh>
 <v t="ekr.20071010123015.1"><vh>@item new</vh></v>
 <v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
 </v>
-<v t="ekr.20070925144534"><vh>@menus</vh>
+<v t="ekr.20070925144534" a="E"><vh>@menus</vh>
 <v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
@@ -920,7 +920,7 @@
 <v t="ekr.20070925144534.404"><vh>@item *open-compare-window</vh></v>
 <v t="ekr.20070925144534.405"><vh>@item *open-python-&amp;window</vh></v>
 </v>
-<v t="ekr.20070925144534.406"><vh>@menu &amp;Help</vh>
+<v t="ekr.20070925144534.406" a="E"><vh>@menu &amp;Help</vh>
 <v t="ekr.20070925144534.407"><vh>@item about-leo</vh></v>
 <v t="ekr.20070925144534.408"><vh>@item open-online-home</vh></v>
 <v t="ekr.20070925144534.409"><vh>@item *open-online-&amp;tutorial</vh></v>
@@ -1017,7 +1017,7 @@
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
+<v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1064,7 +1064,7 @@
 <v t="TL.20090225102340.34"><vh>@bool nodeActions_save_atFile_nodes = False</vh></v>
 <v t="TL.20090303191843.1"><vh>@int nodeActions_message_level = 1</vh></v>
 </v>
-<v t="ekr.20070411101857" a="E"><vh>Open With plugin</vh>
+<v t="ekr.20070411101857"><vh>Open With plugin</vh>
 <v t="ekr.20070411101857.1"><vh>@openwith Idle = Alt+Shift+Ctrl+I</vh></v>
 <v t="ekr.20070411101857.2"><vh>@openwith Word = Alt+Shift+Ctrl+W </vh></v>
 <v t="ekr.20070411101857.3"><vh>@@openwith Wordpad = Alt+Shift+Ctrl+T</vh></v>
@@ -6954,8 +6954,8 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.410"></t>
 <t tx="ekr.20070925144534.411"></t>
 <t tx="ekr.20070925144534.412">Open Leo&amp;Docs.leo</t>
-<t tx="ekr.20070925144534.413">Open Leo&amp;Plugins.leo</t>
-<t tx="ekr.20070925144534.414">Open Leo&amp;Settings.leo</t>
+<t tx="ekr.20070925144534.413">Open leo&amp;Plugins.leo</t>
+<t tx="ekr.20070925144534.414">Open leo&amp;Settings.leo</t>
 <t tx="ekr.20070925144534.415">Open &amp;myLeoSettings.leo</t>
 <t tx="ekr.20070925144534.416">Open scr&amp;ipts.leo</t>
 <t tx="ekr.20070925144534.417"></t>

@@ -4810,42 +4810,13 @@ class baseCommands (object):
 
         """Simulate the left Arrow Key in folder of Windows Explorer."""
 
-        trace = False and not g.unitTesting
         c = self ; p = c.p
-        redraw = True ; fullRedraw = False
-        if p.hasChildren() and p.isExpanded():
-            if trace: g.trace('contract',p.h)
-            p.contract()
-            redraw = True # New in one-node world.
-        elif p.hasParent() and p.parent().isVisible(c):
-            if 1: # Simpler code.  Probably best.
-                redraw = False
-                p.contract() # Make sure we know this node is contracted.
-                if trace: g.trace('goto parent',p.h)
-                c.goToParent()
-            else: # Contract any siblings if they exist.
-                contract = False
-                for child in p.parent().children():
-                    if child.hasChildren() and child.isExpanded():
-                        contract = True
-                        child.contract()
-                if contract:
-                    redraw = True
-                    fullRedraw = True # Contracting the siblings is enough.
-                else:
-                    redraw = False
-                    p.contract() # Make sure we know this node is contracted.
-                    if trace: g.trace('goto parent',p.h)
-                    c.goToParent()
-        else:
-            redraw = False
 
-        if redraw:
-            if fullRedraw or p.isCloned():
-                if trace: g.trace('full redraw',p.h)
-                c.redraw()
-            else:
-                c.redraw_after_contract(p=p,setFocus=True)
+        if p.hasChildren() and p.isExpanded():
+            c.contractNode()
+
+        elif p.hasParent() and p.parent().isVisible(c):
+            c.goToParent()
     #@-node:ekr.20040930064232:contractNodeOrGoToParent
     #@+node:ekr.20031218072017.2902:contractParent
     def contractParent (self,event=None):
@@ -4969,28 +4940,13 @@ class baseCommands (object):
 
         """If a node has children, expand it if needed and go to the first child."""
 
-        trace = False and not g.unitTesting
         c = self ; p = c.p
 
         if p.hasChildren():
             if p.isExpanded():
-                p.moveToFirstChild()
-                if trace: g.trace('select',p.h)
-                c.selectPosition(p)
+                c.selectPosition(p.firstChild())
             else:
-                if trace: g.trace('expand',p.h)
-                c.expandNode() # Calls redraw_after_expand.
-
-        # This is too confusing
-        # elif p.hasNext():
-            # c.goToNextSibling()
-        # else:
-            # while p.hasParent():
-                # p.moveToParent()
-                # if p.hasNext():
-                    # p.moveToNext()
-                    # break
-            # c.selectPosition(p)
+                c.expandNode()
 
         c.treeFocusHelper()
 

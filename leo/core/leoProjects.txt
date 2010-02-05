@@ -8203,111 +8203,6 @@ def toUnicodeFileEncoding(path):
 #@+node:ekr.20100203173153.5797:Bugs
 #@+node:ekr.20100202145902.6107:Fixed unicode bug in setSelectionRangeHelper
 #@-node:ekr.20100202145902.6107:Fixed unicode bug in setSelectionRangeHelper
-#@+node:ekr.20100202145902.5982:Alt-right should *not* go down
-#@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
-def expandNodeAndGoToFirstChild (self,event=None):
-
-    """If a node has children, expand it if needed and go to the first child."""
-
-    trace = False and not g.unitTesting
-    c = self ; p = c.p
-
-    if p.hasChildren():
-        if p.isExpanded():
-            p.moveToFirstChild()
-            if trace: g.trace('select',p.h)
-            c.selectPosition(p)
-        else:
-            if trace: g.trace('expand',p.h)
-            c.expandNode() # Calls redraw_after_expand.
-
-    # This is too confusing
-    # elif p.hasNext():
-        # c.goToNextSibling()
-    # else:
-        # while p.hasParent():
-            # p.moveToParent()
-            # if p.hasNext():
-                # p.moveToNext()
-                # break
-        # c.selectPosition(p)
-
-    c.treeFocusHelper()
-
-def expandNodeOrGoToFirstChild (self,event=None):
-
-    """Simulate the Right Arrow Key in folder of Windows Explorer."""
-
-    c = self ; p = c.p
-    if p.hasChildren():
-        if not p.isExpanded():
-            c.expandNode() # Calls redraw_after_expand.
-        else:
-            c.redraw_after_expand(p.firstChild(),setFocus=True)
-#@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
-#@-node:ekr.20100202145902.5982:Alt-right should *not* go down
-#@+node:ekr.20100202145902.6109:Experiments with Alt-left
-contract-or-go-left.
-
-No change was better than the present code.
-#@nonl
-#@+node:ekr.20031218072017.2901:contractNode
-def contractNode (self,event=None):
-
-    '''Contract the presently selected node.'''
-
-    c = self ; p = c.p
-
-    p.contract()
-
-    if p.isCloned():
-        c.redraw() # A full redraw is necessary to handle clones.
-    else:
-        c.redraw_after_contract(p=p,setFocus=True)
-#@-node:ekr.20031218072017.2901:contractNode
-#@+node:ekr.20040930064232:contractNodeOrGoToParent
-def contractNodeOrGoToParent (self,event=None):
-
-    """Simulate the left Arrow Key in folder of Windows Explorer."""
-
-    trace = False and not g.unitTesting
-    c = self ; p = c.p
-    redraw = True ; fullRedraw = False
-    if p.hasChildren() and p.isExpanded():
-        if trace: g.trace('contract',p.h)
-        p.contract()
-        redraw = True # New in one-node world.
-    elif p.hasParent() and p.parent().isVisible(c):
-        if 1: # Simpler code.  Probably best.
-            redraw = False
-            p.contract() # Make sure we know this node is contracted.
-            if trace: g.trace('goto parent',p.h)
-            c.goToParent()
-        else: # Contract any siblings if they exist.
-            contract = False
-            for child in p.parent().children():
-                if child.hasChildren() and child.isExpanded():
-                    contract = True
-                    child.contract()
-            if contract:
-                redraw = True
-                fullRedraw = True # Contracting the siblings is enough.
-            else:
-                redraw = False
-                p.contract() # Make sure we know this node is contracted.
-                if trace: g.trace('goto parent',p.h)
-                c.goToParent()
-    else:
-        redraw = False
-
-    if redraw:
-        if fullRedraw or p.isCloned():
-            if trace: g.trace('full redraw',p.h)
-            c.redraw()
-        else:
-            c.redraw_after_contract(p=p,setFocus=True)
-#@-node:ekr.20040930064232:contractNodeOrGoToParent
-#@-node:ekr.20100202145902.6109:Experiments with Alt-left
 #@+node:ekr.20100202145902.6110:Home key no longer clears the minibuffer
 @nocolor-node
 
@@ -9454,6 +9349,75 @@ def utils_remove (fileName,verbose=True):
 #@-node:ekr.20050104123726.3:g.utils_remove
 #@-node:ekr.20100204104820.5834:Part 4: g.units_remove
 #@-node:ekr.20100204052559.5800:Fixed the critical 'file used by another process' bug
+#@+node:ekr.20100202145902.5982:Alt-right should *not* go down
+#@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
+def expandNodeAndGoToFirstChild (self,event=None):
+
+    """If a node has children, expand it if needed and go to the first child."""
+
+    c = self ; p = c.p
+
+    if p.hasChildren():
+        if p.isExpanded():
+            c.selectPosition(p.firstChild())
+        else:
+            c.expandNode()
+
+    c.treeFocusHelper()
+
+def expandNodeOrGoToFirstChild (self,event=None):
+
+    """Simulate the Right Arrow Key in folder of Windows Explorer."""
+
+    c = self ; p = c.p
+    if p.hasChildren():
+        if not p.isExpanded():
+            c.expandNode() # Calls redraw_after_expand.
+        else:
+            c.redraw_after_expand(p.firstChild(),setFocus=True)
+#@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
+#@-node:ekr.20100202145902.5982:Alt-right should *not* go down
+#@+node:ekr.20100202145902.6109:Experiments with Alt-left
+contract-or-go-left.
+#@+node:ekr.20031218072017.2920:goToParent
+def goToParent (self,event=None):
+
+    '''Select the parent of the selected node.'''
+
+    c = self ; p = c.p
+
+    # g.trace(p.parent())
+
+    c.treeSelectHelper(p and p.parent())
+#@-node:ekr.20031218072017.2920:goToParent
+#@+node:ekr.20031218072017.2901:contractNode
+def contractNode (self,event=None):
+
+    '''Contract the presently selected node.'''
+
+    c = self ; p = c.p
+
+    p.contract()
+
+    if p.isCloned():
+        c.redraw() # A full redraw is necessary to handle clones.
+    else:
+        c.redraw_after_contract(p=p,setFocus=True)
+#@-node:ekr.20031218072017.2901:contractNode
+#@+node:ekr.20040930064232:contractNodeOrGoToParent
+def contractNodeOrGoToParent (self,event=None):
+
+    """Simulate the left Arrow Key in folder of Windows Explorer."""
+
+    c = self ; p = c.p
+
+    if p.hasChildren() and p.isExpanded():
+        c.contractNode()
+
+    elif p.hasParent() and p.parent().isVisible(c):
+        c.goToParent()
+#@-node:ekr.20040930064232:contractNodeOrGoToParent
+#@-node:ekr.20100202145902.6109:Experiments with Alt-left
 #@+node:ekr.20100204104820.5836:Big change: simplified g.utils_rename
 @nocolor-node
 
@@ -9702,6 +9666,8 @@ A trace in put_all_roots verifies that unit test already test this code.
 
 Must use input instead of raw_input.
 #@-node:ekr.20100204184822.5813:Fixed 2to3 error in leoApp.py
+#@+node:ekr.20100204223715.5822:Do a full redraw when contracting a cloned node
+#@-node:ekr.20100204223715.5822:Do a full redraw when contracting a cloned node
 #@-node:ekr.20100203173153.5797:Bugs
 #@+node:ekr.20100203173153.5798:Cleanup & testing
 #@+node:ekr.20100130042842.9009:Removed config.set

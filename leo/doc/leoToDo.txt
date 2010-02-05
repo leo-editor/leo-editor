@@ -35,193 +35,6 @@ Before rc1:
 * All plugins in passList pass 2to3 script.
 * All plugins in passList pass pylint without serious errors.
 * One full day between "all" clear and release
-#@+node:ekr.20100204184822.5814:Re-enable caching in run-unit-test code?
-# Ask Ville what this is all about.
-#@nonl
-#@+node:ekr.20051104075904.4:doTests...
-def doTests(c,all=None,p=None,verbosity=1):
-
-    trace = False ; verbose = False
-    if all:
-        p = c.rootPosition()
-    elif not p:
-        p = c.p
-    p1 = p.copy()
-
-    try:
-        found = False
-        g.unitTesting = g.app.unitTesting = True
-        g.app.unitTestDict["fail"] = False
-        g.app.unitTestDict['c'] = c
-        g.app.unitTestDict['g'] = g
-        g.app.unitTestDict['p'] = p and p.copy()
-
-        # c.undoer.clearUndoState() # New in 4.3.1.
-        changed = c.isChanged()
-        suite = unittest.makeSuite(unittest.TestCase)
-
-        # New in Leo 4.4.8: ignore everything in @ignore trees.
-        if all: last = None
-        else:   last = p.nodeAfterTree()
-        if trace and verbose: g.trace('all',all,'root',p.h)
-        while p and p != last:
-            if g.match_word(p.h,0,'@ignore'):
-                if trace and verbose: g.trace('ignoring',p.h)
-                p.moveToNodeAfterTree()
-            elif isTestNode(p): # @test
-                if trace and verbose: g.trace('adding',p.h)
-                test = makeTestCase(c,p)
-                if test:
-                    suite.addTest(test) ; found = True
-                p.moveToThreadNext()
-            elif isSuiteNode(p): # @suite
-                if trace and verbose: g.trace('adding',p.h)
-                test = makeTestSuite(c,p)
-                if test:
-                    suite.addTest(test) ; found = True
-                p.moveToThreadNext()
-            else:
-                if trace and verbose: g.trace('skipping',p.h)
-                p.moveToThreadNext()
-
-        # Verbosity: 1: print just dots.
-        if found:
-            res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
-            # put info to db as well
-            if False and g.enableDB:
-                key = 'unittest/cur/fail'
-                archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
-                c.db[key] = archive
-        else:
-            g.es_print('no @test or @suite nodes in %s outline' % (
-                g.choose(all,'entire','selected')),color='red')
-    finally:
-        c.setChanged(changed) # Restore changed state.
-        if g.app.unitTestDict.get('restoreSelectedNode',True):
-            c.redraw(p1)
-        g.unitTesting = g.app.unitTesting = False
-#@+node:ekr.20051104075904.5:class generalTestCase
-class generalTestCase(unittest.TestCase):
-
-    """Create a unit test from a snippet of code."""
-
-    @others
-#@+node:ekr.20051104075904.6:__init__
-def __init__ (self,c,p):
-
-     # Init the base class.
-    unittest.TestCase.__init__(self)
-
-    self.c = c
-    self.p = p.copy()
-#@-node:ekr.20051104075904.6:__init__
-#@+node:ekr.20051104075904.7: fail
-def fail (self,msg=None):
-
-    """Mark a unit test as having failed."""
-
-    import leo.core.leoGlobals as g
-
-    g.app.unitTestDict["fail"] = g.callers()
-#@-node:ekr.20051104075904.7: fail
-#@+node:ekr.20051104075904.9:tearDown
-def tearDown (self):
-
-    pass
-
-    # Restore the outline.
-    self.c.outerUpdate()
-#@nonl
-#@-node:ekr.20051104075904.9:tearDown
-#@+node:ekr.20051104075904.8:setUp
-def setUp (self):
-
-    c = self.c ; p = self.p
-
-    c.selectPosition(p.copy()) # 2010/02/03
-#@-node:ekr.20051104075904.8:setUp
-#@+node:ekr.20051104075904.10:runTest
-def runTest (self,define_g = True):
-
-    trace = False
-    c = self.c ; p = self.p.copy()
-    script = g.getScript(c,p).strip()
-    self.assert_(script)
-    writeScriptFile = c.config.getBool('write_script_file')
-
-    # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
-    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
-
-    if define_g:
-        d = {'c':c,'g':g,'p':p and p.copy(),'self':self,}
-    else:
-        d = {'self':self,}
-
-    script = script + '\n'
-    if trace: g.trace('p',p and p.h,'\n',script)
-
-    # Execute the script. Let unit test handle any errors!
-    if writeScriptFile:
-        scriptFile = c.writeScriptFile(script)
-
-    exec(script,d)
-#@-node:ekr.20051104075904.10:runTest
-#@+node:ekr.20051104075904.11:shortDescription
-def shortDescription (self):
-
-    s = self.p.h
-
-    # g.trace(s)
-
-    return s + '\n'
-#@-node:ekr.20051104075904.11:shortDescription
-#@-node:ekr.20051104075904.5:class generalTestCase
-#@+node:ekr.20051104075904.12:makeTestSuite
-@ This code executes the script in an @suite node.  This code assumes:
-- The script creates a one or more unit tests.
-- The script puts the result in g.app.scriptDict["suite"]
-@c
-
-def makeTestSuite (c,p):
-
-    """Create a suite of test cases by executing the script in an @suite node."""
-
-    p = p.copy()
-
-    script = g.getScript(c,p).strip()
-    if not script:
-        print("no script in %s" % h)
-        return None
-    try:
-        if 0: #debugging
-            n,lines = 0,g.splitLines(script)
-            for line in lines:
-                print(n,line)
-                n += 1
-        exec(script + '\n',{'c':c,'g':g,'p':p})
-        suite = g.app.scriptDict.get("suite")
-        if not suite:
-            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
-        return suite
-    except Exception:
-        print('makeTestSuite: exception creating test cases for %s' % p.h)
-        g.es_exception()
-        return None
-#@-node:ekr.20051104075904.12:makeTestSuite
-#@+node:ekr.20051104075904.13:makeTestCase
-def makeTestCase (c,p):
-
-    p = p.copy()
-
-    if p.b.strip():
-        return generalTestCase(c,p)
-    else:
-        return None
-#@-node:ekr.20051104075904.13:makeTestCase
-#@-node:ekr.20051104075904.4:doTests...
-#@-node:ekr.20100204184822.5814:Re-enable caching in run-unit-test code?
-#@+node:ekr.20100204165150.5960:(done) Disabled notepad in open-with menu
-#@-node:ekr.20100204165150.5960:(done) Disabled notepad in open-with menu
 #@+node:ekr.20100111094359.6208:Fix goto-line bugs
 #@+node:ekr.20100204052559.5792:Bug 363406: goto global line doesn't seem to be working in @auto files
 @nocolor-node
@@ -740,6 +553,301 @@ That is all that it takes to give us a collapsible TOC
 #@+node:ekr.20100203225523.5787:Remove ut.leo, etc.
 #@-node:ekr.20100203225523.5787:Remove ut.leo, etc.
 #@-node:ekr.20100202145902.8709:Distribution
+#@+node:ekr.20100204223715.5821:Setting @<file> nodes dirty
+#@+node:ekr.20040303163330:p.setDirty
+def setDirty (self,setDescendentsDirty=True):
+
+    '''Mark a node and all ancestor @file nodes dirty.'''
+
+    p = self ; dirtyVnodeList = []
+
+    # g.trace(p.h,g.callers(4))
+
+    if not p.v.isDirty():
+        p.v.setDirty()
+        dirtyVnodeList.append(p.v)
+
+    # Important: this must be called even if p.v is already dirty.
+    # Typing can change the @ignore state!
+    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty(setDescendentsDirty)
+    dirtyVnodeList.extend(dirtyVnodeList2)
+
+    return dirtyVnodeList
+#@-node:ekr.20040303163330:p.setDirty
+#@+node:ekr.20031218072017.1551:pasteOutline
+# To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
+
+def pasteOutline(self,event=None,reassignIndices=True):
+
+    '''Paste an outline into the present outline from the clipboard.
+    Nodes do *not* retain their original identify.'''
+
+    c = self ; u = c.undoer ; current = c.p
+    s = g.app.gui.getTextFromClipboard()
+    pasteAsClone = not reassignIndices
+    undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
+
+    c.endEditing()
+
+    if not s or not c.canPasteOutline(s):
+        return # This should never happen.
+
+    isLeo = g.match(s,0,g.app.prolog_prefix_string)
+    vnodeInfoDict = {}
+    if pasteAsClone:
+        << remember all data for undo/redo Paste As Clone >>
+    # create a *position* to be pasted.
+    if isLeo:
+        pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
+    else:
+        pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
+
+    if not pasted: return
+
+    copiedBunchList = []
+    if pasteAsClone:
+        << put only needed info in copiedBunchList >>
+    undoData = u.beforeInsertNode(current,
+        pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
+
+    c.validateOutline()
+    c.selectPosition(pasted)
+    pasted.setDirty()
+    c.setChanged(True)
+    # paste as first child if back is expanded.
+    back = pasted.back()
+    if back and back.isExpanded():
+        pasted.moveToNthChildOf(back,0)
+    c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
+
+    if pasteAsClone:
+        # Set dirty bits for ancestors of *all* pasted nodes.
+        # Note: the setDescendentsDirty flag does not do what we want.
+        for p in pasted.self_and_subtree():
+            p.setAllAncestorAtFileNodesDirty(
+                setDescendentsDirty=False)
+
+    u.afterInsertNode(pasted,undoType,undoData)
+    c.redraw(pasted)
+    c.recolor()
+#@+node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
+@
+
+We don't know yet which nodes will be affected by the paste, so we remember
+everything. This is expensive, but foolproof.
+
+The alternative is to try to remember the 'before' values of tnodes in the
+fileCommands read logic. Several experiments failed, and the code is very ugly.
+In short, it seems wise to do things the foolproof way.
+
+@c
+
+for v in c.all_unique_nodes():
+    if v not in vnodeInfoDict:
+        vnodeInfoDict[v] = g.Bunch(
+            v=v,head=v.headString(),body=v.b)
+#@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
+#@+node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
+# Create a dict containing only copied tnodes.
+copiedVnodeDict = {}
+for p in pasted.self_and_subtree():
+    if p.v not in copiedVnodeDict:
+        copiedVnodeDict[p.v] = p.v
+
+# g.trace(list(copiedVnodeDict.keys()))
+
+for v in vnodeInfoDict:
+    bunch = vnodeInfoDict.get(v)
+    if copiedVnodeDict.get(v):
+        copiedBunchList.append(bunch)
+
+# g.trace('copiedBunchList',copiedBunchList)
+#@-node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
+#@-node:ekr.20031218072017.1551:pasteOutline
+#@+node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
+def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    p = self
+    dirtyVnodeList = []
+
+    # Calculate all nodes that are joined to p or parents of such nodes.
+    nodes = p.findAllPotentiallyDirtyNodes()
+
+    if setDescendentsDirty:
+        # N.B. Only mark _direct_ descendents of nodes.
+        # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
+        for p2 in p.subtree():
+            # Only @thin nodes need to be marked.
+            if p2.v not in nodes and p2.isAtThinFileNode():
+                nodes.append(p2.v)
+
+    if trace and verbose:
+        for v in nodes:
+            print (v.isDirty(),v.isAnyAtFileNode(),v)
+
+    dirtyVnodeList = [v for v in nodes
+        if not v.isDirty() and v.isAnyAtFileNode()]
+    changed = len(dirtyVnodeList) > 0
+
+    for v in dirtyVnodeList:
+        v.setDirty()
+
+    if trace: g.trace("position",dirtyVnodeList,g.callers(5))
+
+    return dirtyVnodeList
+#@-node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
+#@+node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
+def findAllPotentiallyDirtyNodes(self):
+
+    trace = False and not g.unitTesting
+    v = self ; c = v.context
+
+    # Set the starting nodes.
+    nodes = []
+    newNodes = [v]
+
+    # Add nodes until no more are added.
+    while newNodes:
+        addedNodes = []
+        nodes.extend(newNodes)
+        for v in newNodes:
+            for v2 in v.parents:
+                if v2 not in nodes and v2 not in addedNodes:
+                    addedNodes.append(v2)
+        newNodes = addedNodes[:]
+
+    # Remove the hidden vnode.
+    if c.hiddenRootNode in nodes:
+        if trace: g.trace('removing hidden root',c.hiddenRootNode)
+        nodes.remove(c.hiddenRootNode)
+
+    if trace: g.trace(nodes)
+    return nodes
+#@nonl
+#@-node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
+#@+node:ekr.20070130115927.7:leoFrame.pasteText
+def pasteText (self,event=None,middleButton=False):
+
+    '''Paste the clipboard into a widget.
+    If middleButton is True, support x-windows middle-mouse-button easter-egg.'''
+
+    trace = False
+    f = self ; c = f.c ; w = event and event.widget
+    if trace: g.trace(w)
+    if not w or not g.app.gui.isTextWidget(w): return
+
+    wname = c.widget_name(w)
+    i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
+    oldText = w.getAllText()
+
+    if middleButton and c.k.previousSelection is not None:
+        start,end = c.k.previousSelection
+        s = w.getAllText()
+        s = s[start:end]
+        c.k.previousSelection = None
+    else:
+        s = s1 = g.app.gui.getTextFromClipboard()
+
+    s = g.toUnicode(s)
+
+    # g.trace('pasteText','wname',wname,'s',s,g.callers())
+
+    singleLine = wname.startswith('head') or wname.startswith('minibuffer')
+
+    if singleLine:
+        # Strip trailing newlines so the truncation doesn't cause confusion.
+        while s and s [ -1] in ('\n','\r'):
+            s = s [: -1]
+
+    try:
+        # Update the widget.
+        if i != j:
+            w.delete(i,j)
+        w.insert(i,s)
+
+        if wname.startswith('body'):
+            c.frame.body.forceFullRecolor()
+            c.frame.body.onBodyChanged('Paste',oldSel=oldSel,oldText=oldText)
+        elif singleLine:
+            s = w.getAllText()
+            while s and s [ -1] in ('\n','\r'):
+                s = s [: -1]
+            if wname.startswith('head'):
+                # The headline is not officially changed yet.
+                # p.initHeadString(s)
+                width = f.tree.headWidth(p=None,s=s)
+                w.setWidth(width)
+        else: pass
+    except Exception:
+        pass # Tk sometimes throws weird exceptions here.
+
+    return 'break' # Essential
+
+OnPasteFromMenu = pasteText
+#@-node:ekr.20070130115927.7:leoFrame.pasteText
+#@+node:ekr.20070130115927.7:leoFrame.pasteText
+def pasteText (self,event=None,middleButton=False):
+
+    '''Paste the clipboard into a widget.
+    If middleButton is True, support x-windows middle-mouse-button easter-egg.'''
+
+    trace = False
+    f = self ; c = f.c ; w = event and event.widget
+    if trace: g.trace(w)
+    if not w or not g.app.gui.isTextWidget(w): return
+
+    wname = c.widget_name(w)
+    i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
+    oldText = w.getAllText()
+
+    if middleButton and c.k.previousSelection is not None:
+        start,end = c.k.previousSelection
+        s = w.getAllText()
+        s = s[start:end]
+        c.k.previousSelection = None
+    else:
+        s = s1 = g.app.gui.getTextFromClipboard()
+
+    s = g.toUnicode(s)
+
+    # g.trace('pasteText','wname',wname,'s',s,g.callers())
+
+    singleLine = wname.startswith('head') or wname.startswith('minibuffer')
+
+    if singleLine:
+        # Strip trailing newlines so the truncation doesn't cause confusion.
+        while s and s [ -1] in ('\n','\r'):
+            s = s [: -1]
+
+    try:
+        # Update the widget.
+        if i != j:
+            w.delete(i,j)
+        w.insert(i,s)
+
+        if wname.startswith('body'):
+            c.frame.body.forceFullRecolor()
+            c.frame.body.onBodyChanged('Paste',oldSel=oldSel,oldText=oldText)
+        elif singleLine:
+            s = w.getAllText()
+            while s and s [ -1] in ('\n','\r'):
+                s = s [: -1]
+            if wname.startswith('head'):
+                # The headline is not officially changed yet.
+                # p.initHeadString(s)
+                width = f.tree.headWidth(p=None,s=s)
+                w.setWidth(width)
+        else: pass
+    except Exception:
+        pass # Tk sometimes throws weird exceptions here.
+
+    return 'break' # Essential
+
+OnPasteFromMenu = pasteText
+#@-node:ekr.20070130115927.7:leoFrame.pasteText
+#@-node:ekr.20100204223715.5821:Setting @<file> nodes dirty
 #@-node:ekr.20100126110826.6253:Before rc1
 #@-node:ekr.20071211093011:4.7 One-node world, Leo3K
 #@+node:ekr.20100109214940.6225:4.8 Autocompletion, vim
