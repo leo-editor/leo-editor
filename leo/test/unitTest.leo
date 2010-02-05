@@ -23622,51 +23622,74 @@ def run(files):
     args = [r'python c:\python26\Tools\Scripts\2to3.py']
     for z in files:
         args.append(z)
-        args.append('-xprint')
+        # args.append('-xprint')
     args.append('&gt;out2')
     args = ','.join(args)
     os.system(args)
 
-plugins = (
-    # 'qtGui.py','tkGui.py',
-    # 'mod_scripting.py',
-    # 'open_with.py','UNL.py',
-    # 'vim.py','xemacs.py',
+tkPass = (
+    'EditAttributes','Library',
+    'URLloader','UniversalScrolling','UASearch',
+    'autotrees','chapter_hoist','cleo','dump_globals',
+    'expfolder','geotag','graphed','groupOperations',
+    'hoist','import_cisco_config',
+    'keybindings','leoupdate',
+    'maximizeNewWindows', 'mnplugins','mod_labels',
+    'mod_read_dir_outline','mod_tempfname','multifile',
+    'newButtons','nodeActions','nodenavigator',
+    'open_with','pie_menus','pluginsTest',
+    'read_only_nodes','rClick',
+    'scheduler','searchbar','searchbox','shortcut_button',
+    'script_io_to_body','searchbox',
+    'templates','textnode','tkGui','toolbar',
+    'xcc_nodes',
+)
+
+passList = (
+    '__init__','FileActions','UNL',
+    'active_path','add_directives','attrib_edit',
+    'backlink','base64Packager','baseNativeTree','bibtex','bookmarks',
+    'codewisecompleter','colorize_headlines','contextmenu',
+    'ctagscompleter','cursesGui','datenodes','debugger_pudb',
+    'detect_urls','dtest','empty_leo_file','enable_gc','initinclass',
+    'leo_to_html','leo_interface','leo_pdf','leo_to_rtf',
+    'leoOPML','leoremote','lineNumbers',
+    'macros','mime','mod_autosave','mod_framesize','mod_leo2ascd',
+    'mod_scripting','mod_speedups','mod_timestamp',
+    'nav_buttons','nav_qt','niceNosent','nodeActions','nodebar',
+    'open_shell','outline_export','quit_leo',
+    'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
+    'qtGui','qt_main','qt_quicksearch','qtframecommands',
+    'quickMove',
+        # Warning: changed this line by guessing!
+        # func = types.MethodType(func, quickMove)
+    'quicksearch','redirect_to_log','rClickBasePluginClasses',
+    'run_nodes', # Changed thread.allocate_lock to threading.lock().acquire()
+    'rst3',
+    'scrolledmessage','setHomeDirectory','slideshow','spydershell','startfile',
+    'testRegisterCommand','todo','trace_gc_plugin','trace_keys','trace_tags',
+    'vim','xemacs',
 )
 core_files = (
-    'leoApp.py',
-    'leoAtFile.py',
-    'leoChapters.py',
-    'leoCommands.py',
-    'leoEditCommands.py',
-    'leoFileCommands.py',
-    'leoFind.py',
-    'leoFrame.py',
-    'leoGlobals.py',
-    'leoGui.py',
-    'leoImport.py',
-    'leoMenu.py',
-    'leoNodes.py',
-    'leoPlugins.py',
-    'leoShadow.py',
-    'leoTangle.py',
-    'leoUndo.py',
+    'leoApp','leoAtFile','leoChapters','leoCommands',
+    'leoEditCommands','leoFileCommands','leoFind','leoFrame',
+    'leoGlobals','leoGui','leoImport','leoMenu','leoNodes',
+    'leoPlugins','leoShadow','leoTangle','leoUndo',
 )
 external_files = (
-    'ipy_leo.py',
-    'lproto.py',
-    'path.py',
-    'pickleshare.py',
+    'ipy_leo','lproto','path','pickleshare',
 )
 table = (
-    ('plugins',plugins),
-    # These pass
-    # ('core',core_files),
-    # ('external',external_files),
+    ('plugins',passList),
+    ('plugins',tkPass),
+    ('core',core_files),
+    ('external',external_files),
 )
 files = []
 for theDir,aList in table:
     for z in aList:
+        if not z.endswith('.py'): z = z + '.py'
+        # print(z)
         fn = os.path.abspath(os.path.join('leo',theDir,z))
         if os.path.exists(fn): files.append(fn)
         else: print('*** file not found:',fn)
