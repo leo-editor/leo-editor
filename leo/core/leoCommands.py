@@ -5610,7 +5610,8 @@ class baseCommands (object):
 
         c.sparse_move = not c.sparse_move
 
-        g.es('parse-move: %s' % c.sparse_move,color='blue')
+        if not g.unitTesting:
+            g.es('sparse-move: %s' % c.sparse_move,color='blue')
     #@-node:ekr.20071213185710:c.toggleSparseMove
     #@-node:ekr.20031218072017.1766:Move... (Commands)
     #@+node:ekr.20031218072017.2913:Goto (Commands)

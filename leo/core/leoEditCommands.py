@@ -521,8 +521,9 @@ class abbrevCommandsClass (baseEditCommandsClass):
         w = self.editWidget(event)
         if not w: return
 
-        word = w.get('insert -1c wordstart','insert -1c wordend') ###
-        g.trace('ch',repr(ch),'word',repr(word))
+        ### word = w.get('insert -1c wordstart','insert -1c wordend') ###
+        word = ''
+        # g.trace('ch',repr(ch),'word',repr(word))
         if ch:
             # We must do this: expandAbbrev is called from Alt-x and Control-x,
             # we get two differnt types of data and w states.
@@ -3695,7 +3696,8 @@ class editCommandsClass (baseEditCommandsClass):
         if not w: return
 
         self.extendMode = val
-        g.es('extend mode',g.choose(val,'on','off'),color='red')
+        if not g.unitTesting:
+            g.es('extend mode',g.choose(val,'on','off'),color='red')
         c.widgetWantsFocusNow(w)
     #@-node:ekr.20051218174113:clear/set/ToggleExtendMode
     #@+node:ekr.20050920084036.136:exchangePointMark
@@ -4882,7 +4884,8 @@ class editCommandsClass (baseEditCommandsClass):
 
         s = w.getAllText()
 
-        txt = w.get('insert wordstart','insert wordend') ###
+        ### txt = w.get('insert wordstart','insert wordend') ###
+        txt = ''
         if not txt: return
 
         i = w.index('insert wordstart') ###
@@ -6300,7 +6303,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'toggle-active-pane':           f.toggleActivePane,
             'toggle-angle-brackets':        c.toggleAngleBrackets,
             'toggle-invisibles':            c.toggleShowInvisibles,
-            'toggle-sparce-move':           c.toggleSparseMove,
+            'toggle-sparse-move':           c.toggleSparseMove,
             'toggle-split-direction':       f.toggleSplitDirection,
             'undo':                         c.undoer.undo,
             'unindent-region':              c.dedentBody,
@@ -7895,7 +7898,8 @@ class searchCommandsClass (baseEditCommandsClass):
         # return self.toggleOption('collapse_nodes')
         c = self.c
         c.sparse_find = not c.sparse_find
-        g.es('sparse_find',c.sparce_find)
+        if not g.unitTesting:
+            g.es('sparse_find',c.sparse_find)
     def toggleIgnoreCaseOption     (self, event):
         '''Toggle the 'Ignore Case' checkbox in the Find tab.'''
         return self.toggleOption('ignore_case')

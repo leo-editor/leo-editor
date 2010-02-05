@@ -9273,7 +9273,6 @@ def put_all_roots(self):
             else:
                 g.es("unchanged:",file_name)
                 << Erase the temporary file >>
-#@nonl
 #@+node:ekr.20031218072017.1152:<<Get root specific attributes>>
 # Stephen Schaefer, 9/2/02
 # Retrieve the full complement of state for the root node
@@ -9633,8 +9632,15 @@ def deleteFileWithMessage(self,fileName,unused_kind):
 Non-extending cursor moves now always clear the selection.
 #@nonl
 #@-node:ekr.20100204052559.5794:Fixed cursor hangnail
+#@+node:ekr.20100204104820.5842:Tested tangle.put_all_roots
+@nocolor-node
+
+Testing is needed because of recent change to g.utils_rename.
+
+A trace in put_all_roots verifies that unit test already test this code.
+#@-node:ekr.20100204104820.5842:Tested tangle.put_all_roots
 #@-node:ekr.20100203173153.5797:Bugs
-#@+node:ekr.20100203173153.5798:Cleanup
+#@+node:ekr.20100203173153.5798:Cleanup & testing
 #@+node:ekr.20100130042842.9009:Removed config.set
 @nocolor-node
 
@@ -9756,7 +9762,8 @@ def toggleSparseMove (self,event=None):
 
     c.sparse_move = not c.sparse_move
 
-    g.es('parse-move: %s' % c.sparse_move,color='blue')
+    if not g.unitTesting:
+        g.es('sparse-move: %s' % c.sparse_move,color='blue')
 #@-node:ekr.20071213185710:c.toggleSparseMove
 #@+node:ekr.20031218072017.1768:moveOutlineDown
 @
@@ -9954,7 +9961,8 @@ def toggleFindCollapesNodes(self,event):
     # return self.toggleOption('collapse_nodes')
     c = self.c
     c.sparse_find = not c.sparse_find
-    g.es('sparse_find',c.sparce_find)
+    if not g.unitTesting:
+        g.es('sparse_find',c.sparse_find)
 def toggleIgnoreCaseOption     (self, event):
     '''Toggle the 'Ignore Case' checkbox in the Find tab.'''
     return self.toggleOption('ignore_case')
@@ -10531,7 +10539,9 @@ for obj,val in table:
 #@-node:ekr.20080509065556.2:Refactored open-with
 #@+node:ekr.20100203050306.5889:converted basestring to g.isString()
 #@-node:ekr.20100203050306.5889:converted basestring to g.isString()
-#@-node:ekr.20100203173153.5798:Cleanup
+#@+node:ekr.20100203160817.5793:Unit tests for all toggle commands
+#@-node:ekr.20100203160817.5793:Unit tests for all toggle commands
+#@-node:ekr.20100203173153.5798:Cleanup & testing
 #@-node:ekr.20100202050243.5740:Leo 4.7 rc1 projects
 #@+node:ekr.20100130042842.6404:Reading settings (do not delete)
 Here are the calls to g.app.getxxx

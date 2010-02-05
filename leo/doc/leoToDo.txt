@@ -34,13 +34,13 @@ Before rc1:
 * All plugins in passList pass 2to3 script.
 * All plugins in passList pass pylint without serious errors.
 * One full day between "all" clear and release
-#@+node:ekr.20100204104820.5842:Test tangle.put_all_roots
-Needed because of recent change to g.utils_rename.
-#@nonl
-#@-node:ekr.20100204104820.5842:Test tangle.put_all_roots
 #@+node:ekr.20100204052559.5796:Urgent: run 2to3 on all external files
 #@-node:ekr.20100204052559.5796:Urgent: run 2to3 on all external files
-#@+node:ekr.20100204104820.5843:Before final
+#@+node:ekr.20100203225523.5786:Fix syntax error in @shadow file in unitTest.leo
+#@-node:ekr.20100203225523.5786:Fix syntax error in @shadow file in unitTest.leo
+#@+node:ekr.20100203125449.5791:Use 2to3 to check for 3x problems
+#@-node:ekr.20100203125449.5791:Use 2to3 to check for 3x problems
+#@+node:ekr.20100204165150.5817:Minor bugs
 #@+node:ekr.20100111094359.6208:Fix goto-line bugs
 #@+node:ekr.20100204052559.5792:Bug 363406: goto global line doesn't seem to be working in @auto files
 @nocolor-node
@@ -512,19 +512,7 @@ expect Leo to create a node for each method in the class as it does for
 kind of change would also make @auto a lot more useful for PHP.
 #@nonl
 #@-node:ekr.20100118143729.6256:Wish-list bug 508108: No methods sub-nodes in PHP class import
-#@-node:ekr.20100204104820.5843:Before final
-#@+node:ekr.20100203160817.5795:Testing
-#@+node:ekr.20100203225523.5786:Fix syntax error in @shadow file in unitTest.leo
-#@-node:ekr.20100203225523.5786:Fix syntax error in @shadow file in unitTest.leo
-#@+node:ekr.20100203125449.5791:Use 2to3 to check for 3x problems
-#@-node:ekr.20100203125449.5791:Use 2to3 to check for 3x problems
-#@+node:ekr.20100203160817.5793:Unit tests for all toggle commands
-#@-node:ekr.20100203160817.5793:Unit tests for all toggle commands
-#@+node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
-Just make the test.  It doesn't have to pass.
-#@nonl
-#@-node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
-#@-node:ekr.20100203160817.5795:Testing
+#@-node:ekr.20100204165150.5817:Minor bugs
 #@+node:ekr.20100202145902.8709:Distribution
 #@+node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
 http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
@@ -2582,6 +2570,10 @@ could specify autocompleter conventions, say in an @autocompleter node in an
 #@+node:ekr.20090811141250.5955:Other features
 #@+node:ekr.20100131155919.6298:Add debugging rst-arg
 #@-node:ekr.20100131155919.6298:Add debugging rst-arg
+#@+node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
+Just make the test.  It doesn't have to pass.
+#@nonl
+#@-node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
 #@+node:ekr.20090724081340.5987:Improve recursive import script and @auto
 @nocolor-node
 

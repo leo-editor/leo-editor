@@ -1272,9 +1272,13 @@
 <v t="ekr.20100131171342.5593"><vh>@test ctors for all dialogs</vh></v>
 </v>
 <v t="ekr.20071113192611"><vh>leoEditCommands</vh>
+<v t="ekr.20100204165850.5371"><vh>Toggle commands</vh>
 <v t="ekr.20100119102849.5108"><vh>@test toggle-extend-mode</vh>
 <v t="ekr.20100119102849.5109"><vh>&lt;&lt; define table &gt;&gt;</vh></v>
 <v t="ekr.20100119102849.5110"><vh>work</vh></v>
+</v>
+<v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
+<v t="ekr.20100204173354.5375"><vh>@test toggle-find-x</vh></v>
 </v>
 <v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
 <v t="ekr.20080905125317.1"><vh>Unused</vh>
@@ -23703,6 +23707,66 @@ f.close()
 assert s==s2
 os.remove(fn)
 print('deleted',fn)</t>
+<t tx="ekr.20100204165850.5371"># These tests will be important when revising config code.</t>
+<t tx="ekr.20100204165850.5373">k = c.k
+colorizer = c.frame.body.getColorizer()
+ed = c.editCommands
+
+# These don't set ivars
+    # 'toggle-active-pane'),
+    # 'toggle-angle-brackets',
+    # 'toggle-input-state'),
+    # 'toggle-mini-buffer'),
+    # 'toggle-split-direction'),
+    
+table = (
+    (k,'abbrevOn','abbrev-mode'),
+    (k,'enable_autocompleter','toggle-autocompleter'),
+    (k,'enable_calltips','toggle-calltips'),
+    (ed,'extendMode','toggle-extend-mode'),
+    (c,'sparse_find','toggle-find-collapses_nodes'),
+    (colorizer,'showInvisibles','toggle-invisibles'),
+    (c,'sparse_move','toggle-sparse-move'),
+)
+
+for obj,ivar,command in table:
+    val1 = getattr(obj,ivar)
+    try:
+        k.simulateCommand(command)
+        val2 = getattr(obj,ivar)
+        assert val2 == (not val1),'failed 1 %s' % command
+        k.simulateCommand(command)
+        val3 = getattr(obj,ivar)
+        assert val3 == val1,'failed 2 %s' % command
+        # print('pass',command)
+    finally:
+        setattr(obj,ivar,val1)
+</t>
+<t tx="ekr.20100204173354.5375">table = (
+    ('ignore_case','toggle-find-ignore-case-option'),
+    ('search_body','toggle-find-in-body-option'),
+    ('search_headline','toggle-find-in-headline-option'),
+    ('mark_changes','toggle-find-mark-changes-option'),
+    ('mark_finds','toggle-find-mark-finds-option'),
+    ('pattern_match','toggle-find-regex-option'),
+    ('reverse','toggle-find-reverse-option'),
+    ('whole_word','toggle-find-word-option'),
+    ('wrap','toggle-find-wrap-around-option'),
+)
+
+finder = c.searchCommands.getHandler().finder
+for ivar,command in table:
+    val1 = finder.getOption(ivar)
+    try:
+        c.k.simulateCommand(command)
+        val2 = finder.getOption(ivar)
+        assert val2 == (not val1),'failed 1 %s' % command
+        c.k.simulateCommand(command)
+        val3 = finder.getOption(ivar)
+        assert val3 == val1,'failed 2 %s' % command
+    finally:
+        finder.setOption(ivar,val1)
+</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

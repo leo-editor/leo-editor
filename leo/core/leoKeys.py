@@ -439,14 +439,16 @@ class autoCompleterClass:
         '''Show the autocompleter status on the status line.'''
 
         k = self.k
-        s = 'autocompleter %s' % g.choose(k.enable_autocompleter,'On','Off')
-        g.es(s,color='red')
+        if not g.unitTesting:
+            s = 'autocompleter %s' % g.choose(k.enable_autocompleter,'On','Off')
+            g.es(s,color='red')
 
     def showCalltipsStatus (self):
         '''Show the autocompleter status on the status line.'''
         k = self.k
-        s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
-        g.es(s,color='red')
+        if not g.unitTesting:
+            s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
+            g.es(s,color='red')
     #@nonl
     #@-node:ekr.20061031131434.15:showAutocompleter/CalltipsStatus
     #@-node:ekr.20061031131434.8:Top level
