@@ -2599,7 +2599,7 @@ class vnode (baseVnode):
         v._addLink(n,parent_v)
     #@-node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
     #@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
-    def createOutlineFromCacheList(self,c,aList,top=True,atAll=None):
+    def createOutlineFromCacheList(self,c,aList,top=True,atAll=None,fileName=None):
         """ Create outline structure from recursive aList
         built by p.makeCacheList.
 
@@ -2619,6 +2619,7 @@ class vnode (baseVnode):
             v._bodyString = b
 
         if top:
+            c.cacheListFileName = fileName
             # Scan the body for @all directives.
             for line in g.splitLines(b):
                 if line.startswith('@all'):
@@ -2635,8 +2636,12 @@ class vnode (baseVnode):
                 if child_v.b != b:
                     # 2010/02/05: Remove special case for @all.
                     c.nodeConflictList.append(g.bunch(
-                        tag='cached atAll: %s' %(atAll),
-                        b1=b,h1=h,b2=child_v.b,h2=child_v.h))
+                        tag='(cached)',
+                        fileName=c.cacheListFileName,
+                        gnx=gnx,
+                        b1=child_v.b,h1=child_v.h, # The old data.
+                        b2=b,h2=h, # The new data.
+                    ))
 
                     # Always issue the warning.
                     g.es_print("cached read node changed:",

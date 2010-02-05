@@ -5715,6 +5715,6 @@ def _selectUnpost(self, event):
     self._unpostList()
 </t>
 <t tx="ekr.20100205074729.2085"></t>
-<t tx="ekr.20100205074729.2086">line 1: node a changed 4</t>
+<t tx="ekr.20100205074729.2086">line 1: node a changed 13</t>
 </tnodes>
 </leo_file>

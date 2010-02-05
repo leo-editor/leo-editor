@@ -560,7 +560,7 @@ class atFile:
                 root.firstChild().doDelete()
             # Recreate the file from the cache.
             aList = c.db[cachefile]
-            root.v.createOutlineFromCacheList(c,aList)
+            root.v.createOutlineFromCacheList(c,aList,fileName=fileName)
             at.inputFile.close()
             root.clearDirty()
 
@@ -1397,8 +1397,11 @@ class atFile:
                 else:
                     # 2010/02/05: removed special case for @all.
                     c.nodeConflictList.append(g.bunch(
-                        tag = 'uncached (readEndNode) atAll: %s' % (at.atAllFlag),
-                        b1=old,b2=s,h1=at.v._headString,h2=at.v._headString))
+                        tag = '(uncached)',
+                        fileName = at.root.h,
+                        b1=old,b2=s, # The old data
+                        h1=at.v._headString,h2=at.v._headString, # the new data.
+                    ))
 
                     g.es_print("uncached read node changed",at.v.h,color="red")
 
@@ -3883,6 +3886,7 @@ class atFile:
             else:
                 compiler.parse(body + '\n')
         except (parser.ParserError,SyntaxError):
+            g.es_exception()
             self.syntaxError(p,body)
             ok = False
         except Exception:
@@ -3896,7 +3900,7 @@ class atFile:
 
         g.es_print("Syntax error in: %s" % (p.h),color="red")
         g.trace(g.callers(5))
-        g.trace('(leoAtFile) node:',p and p.h,'body...\n',repr(body))
+        g.trace('(leoAtFile) node:',p and p.h,'body...\n',body)
 
         typ,val,tb = sys.exc_info()
         message = hasattr(val,'message') and val.message

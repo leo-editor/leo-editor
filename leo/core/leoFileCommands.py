@@ -798,6 +798,7 @@ class baseFileCommands:
         self.checking = False
         self.mFileName = c.mFileName
         self.initReadIvars()
+        recoveryNode = None # Position of recovery node, if present.
 
         try:
             c.loading = True # disable c.changed
@@ -812,7 +813,7 @@ class baseFileCommands:
                 c.redraw()
                 c.setFileTimeStamp(fileName)
                 c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
-                self.handleNodeConflicts()
+                recoveryNode = self.handleNodeConflicts()
 
             # Do this after reading derived files.
             if readAtFileNodesFlag:
@@ -820,7 +821,7 @@ class baseFileCommands:
                 self.restoreDescendentAttributes()
 
             self.setPositionsFromVnodes()
-            c.selectVnode(c.p) # load body pane
+            c.selectVnode(recoveryNode or c.p) # load body pane
             if c.config.getBool('check_outline_after_read'):
                 c.checkOutline(event=None,verbose=True,unittest=False,full=True)
         finally:
@@ -865,13 +866,37 @@ class baseFileCommands:
     def handleNodeConflicts (self):
 
         c = self.c
+        if not c.nodeConflictList: return
 
-        g.trace(len(c.nodeConflictList))
+        # Find the last top-level node.
+        sib = c.rootPosition()
+        while sib.hasNext():
+            sib.moveToNext()
 
+        # Create the 'Recovered Nodes' node.
+        root = sib.insertAfter()
+        root.setHeadString('Recovered Nodes')
+        root.expand()
+
+        # For each conflict, create one child and two grandchildren.
         for bunch in c.nodeConflictList:
-            g.trace(bunch)
+            tag = bunch.get('tag') or ''
+            gnx = bunch.get('gnx') or ''
+            fn = bunch.get('fileName') or ''
+            b1,b2 = bunch.get('b1'),bunch.get('b2')
+            h1,h2 = bunch.get('h1'),bunch.get('h2')
+            child = root.insertAsNthChild(0)
+            h = 'Recovered node "%s" %s from %s' % (h1,tag,g.shortFileName(fn))
+            child.setHeadString(h)
+            # child.setBodyString(tag)
+            n1 = child.insertAsNthChild(0)
+            n2 = child.insertAsNthChild(1)
+            n1.setHeadString('old:'+h1)
+            n1.setBodyString(b1)
+            n2.setHeadString('new:'+h2)
+            n2.setBodyString(b2)
 
-
+        return root
     #@-node:ekr.20100205060712.8314:handleNodeConflicts
     #@+node:ekr.20100124110832.6212:propegateDirtyNodes
     def propegateDirtyNodes (self):
@@ -1024,6 +1049,7 @@ class baseFileCommands:
         self.descendentMarksList = []
         self.gnxDict = {}
         self.c.nodeConflictList = [] # 2010/01/05
+        self.c.nodeConflictFileName = None # 2010/01/05
     #@nonl
     #@-node:ekr.20060919142200.1:initReadIvars
     #@+node:EKR.20040627120120:restoreDescendentAttributes

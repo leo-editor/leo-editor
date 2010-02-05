@@ -279,6 +279,7 @@ class baseCommands (object):
         self.ignoreChangedPaths = False # True: disable path changed message in at.WriteAllHelper.
         self.loading = False # True if we are loading a file: disables c.setChanged()
         self.nodeConflictList = [] # List of nodes with conflicting read-time data.
+        self.nodeConflictFileName = None # The fileName for c.nodeConflictList.
         self.openDirectory = None
         self.outlineToNowebDefaultFileName = "noweb.nw" # For Outline To Noweb dialog.
         self.promptingForClose = False # To lock out additional closing dialogs.
