@@ -30,11 +30,17 @@ unbound()
 
 Before rc1:
 
-* All real bugs fixed.  Wishlist items do not count.
-* All files in leo/external folder pass 2to3 script.
-* All plugins in passList pass 2to3 script.
+* (done) All real bugs fixed.  Wishlist items do not count.
+* (done) All files in leo/external folder pass 2to3 script.
+* (done) All plugins in passList pass 2to3 script.
 * All plugins in passList pass pylint without serious errors.
 * One full day between "all" clear and release
+#@+node:ekr.20100205060712.5834:check path.py
+#@-node:ekr.20100205060712.5834:check path.py
+#@+node:ekr.20100205060712.5837:@bool no-cache for unitTest.leo?
+Instead of the filename hack.
+#@nonl
+#@-node:ekr.20100205060712.5837:@bool no-cache for unitTest.leo?
 #@+node:ekr.20100111094359.6208:Fix goto-line bugs
 #@+node:ekr.20100204052559.5792:Bug 363406: goto global line doesn't seem to be working in @auto files
 @nocolor-node
@@ -557,8 +563,6 @@ That is all that it takes to give us a collapsible TOC
 @ This is weird. Python 3k is throwing a syntax error for very simple code.
 #@nonl
 #@+node:ekr.20100205060712.8319:dump
-@nocolor-node
-
 #@verbatim
  #@+leo-ver=4-thin
 #@verbatim
@@ -570,23 +574,42 @@ That is all that it takes to give us a collapsible TOC
 #@verbatim
 #@+others
 #@verbatim
-#@+node:ekr.20100205111332.5371:spam
+#@+node:ekr.20100205114759.5371:spam
 def spam():
     pass
 #@verbatim
-#@-node:ekr.20100205111332.5371:spam
+#@-node:ekr.20100205114759.5371:spam
 #@verbatim
-#@+node:ekr.20100205111332.5372:eggs
+#@+node:ekr.20100205114759.5372:eggs
 def eggs():
     pass
 #@verbatim
-#@-node:ekr.20100205111332.5372:eggs
+#@-node:ekr.20100205114759.5372:eggs
 #@verbatim
 #@-others
 #@verbatim
 #@-node:ekr.20090704085350.5014:@shadow ../test/unittest/at-shadow-test.py
 #@verbatim
 #@-leo
+
+Traceback (most recent call last):
+
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 3885, in checkPythonSyntax
+    code.compile_command(body + '\n')
+
+  File "c:\python31\lib\codeop.py", line 122, in compile_command
+    return _maybe_compile(_compile, source, filename, symbol)
+
+  File "c:\python31\lib\codeop.py", line 99, in _maybe_compile
+    raise SyntaxError(err1)
+
+  File "<string>", line None
+
+SyntaxError: invalid syntax (<input>, line 11)
+
+Syntax error in: @shadow ../test/unittest/at-shadow-test.py
+syntaxError readAll,readOneAtShadowNode,writeOneAtShadowNode,checkPythonCode,checkPythonSyntax
+syntaxError (leoAtFile) node: @shadow ../test/unittest/at-shadow-test.py body...
 #@-node:ekr.20100205060712.8319:dump
 #@+node:ekr.20040723094220.1:checkAllPythonCode
 def checkAllPythonCode(self,event=None,unittest=False,ignoreAtIgnore=True):

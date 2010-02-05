@@ -341,55 +341,8 @@
 </v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
-<v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions (do not deletes)</vh></v>
-<v t="ekr.20080930114036.1"><vh>Icon stuff</vh>
-<v t="ekr.20090701133940.1767"><vh>print icons</vh></v>
-<v t="ekr.20090701125834.1765"><vh>@@button insert-inst-icon</vh></v>
-<v t="ekr.20080930080501.1"><vh>Add icon row</vh></v>
-<v t="ekr.20080930083052.1"><vh>hide icon rows</vh></v>
-<v t="ekr.20080930083052.2"><vh>show icon rows</vh></v>
-<v t="ekr.20080930085514.1"><vh>clear icon bar</vh></v>
-</v>
-<v t="ekr.20090309064612.3"><vh>New features</vh>
-<v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
-<v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
-<v t="edward.20081221145716.1"><vh>decorator test 2</vh></v>
-</v>
-<v t="ekr.20090201162523.1"><vh>Macro test</vh>
-<v t="ekr.20090201192257.1"><vh>@@test macro ab</vh></v>
-</v>
-<v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
-<v t="ekr.20090128112453.1"><vh>Property tests</vh></v>
-<v t="ekr.20090507082111.1904"><vh>test creation of gnx's</vh></v>
-<v t="ekr.20090601093755.1802"><vh>Test of @g.command decorator</vh></v>
-<v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
-<v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
-<v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
-<v t="ekr.20080922164255.1"></v>
-<v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
-<v t="ekr.20080923073240.2"><vh>@path {{c.config.getString('test')}}</vh>
-<v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
-</v>
-</v>
-<v t="ekr.20080531080812.1"><vh>tracer tests</vh></v>
-</v>
-<v t="ekr.20081003094737.1"><vh>Unicode tests</vh>
-<v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
-<v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
-<v t="ekr.20090525090210.1940"><vh>Unicode characters: La Peña</vh></v>
-<v t="ekr.20090617083033.1814"><vh>Test of copy/paste of unicode</vh>
-<v t="ekr.20090617083033.1813"><vh>Unicode characters: La Peña תּ</vh></v>
-</v>
-<v t="ekr.20090618102458.1816"><vh>Converting QString to unicode</vh></v>
-<v t="ekr.20100127122240.2063"><vh>Terry's unicode problem</vh></v>
-<v t="ekr.20100202115249.2023"><vh>@@thin qttexttest.py</vh></v>
-</v>
-<v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
-<v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
-<v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
-<v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
-</v>
-<v t="ekr.20100103112623.1951"><vh>Insert form-feed</vh></v>
+<v t="ekr.20100203174233.2032"><vh>@@test paste-script</vh></v>
+<v t="ekr.20100122125233.2053"><vh>@test zcpspm</vh></v>
 <v t="ekr.20091230121016.1931"><vh>at-auto stuff</vh>
 <v t="ekr.20090706044257.1784"><vh>@@auto ../../install</vh></v>
 <v t="ekr.20091217210235.1866"><vh>@@auto-rst at-auto-rst-test.txt</vh>
@@ -462,17 +415,14 @@
 <v t="ekr.20100110172917.1961"><vh>section 1: Ę</vh></v>
 </v>
 </v>
-<v t="ekr.20100119095726.2043"><vh>rest colorizing</vh></v>
-<v t="ekr.20100127111116.2059"><vh>wrapping</vh></v>
-<v t="ekr.20100130095415.2023"><vh>Simulate startup code for non-ascii directories</vh></v>
-<v t="ekr.20100122125233.2053"><vh>@test zcpspm</vh></v>
-<v t="ekr.20100203174233.2032"><vh>@@test paste-script</vh></v>
 <v t="ekr.20100205074729.2085"><vh>Clone battle test</vh>
 <v t="ekr.20100205074729.2086"><vh>node a</vh></v>
+<v t="ekr.20100205074729.2087"><vh>@@thin clone-battle-test.txt</vh>
+<v t="ekr.20100205074729.2086"></v>
 </v>
 </v>
-<v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
-<v t="ekr.20100203233053.2033"><vh>@thin at-path-in-body-test.py</vh></v>
+<v t="ekr.20100205114630.2091"><vh>File tests</vh>
+<v t="ekr.20100203233053.2033"><vh>@@thin at-path-in-body-test.py</vh></v>
 <v t="ekr.20100204062222.2035"><vh>@@@auto C:\leo.repo\trunk\leo\extensions\Pmw\Pmw_1_3\lib</vh></v>
 <v t="ekr.20100204082851.2038"><vh>@@auto test-PmwComboBox.py</vh>
 <v t="ekr.20100204085631.2041"><vh>test-PmwComboBox declarations</vh></v>
@@ -498,9 +448,65 @@
 <v t="ekr.20100204085631.2061"><vh>_selectUnpost</vh></v>
 </v>
 </v>
-<v t="ekr.20100204085410.2060"><vh>@auto test-blank-lines.py</vh></v>
-<v t="ekr.20100205074729.2085"></v>
-<v t="ekr.20100205074729.2087"><vh>@thin clone-battle-test.txt</vh></v>
+<v t="ekr.20100204085410.2060"><vh>@@auto test-blank-lines.py</vh>
+<v t="ekr.20100205114630.2089"><vh>test-blank-lines declarations</vh></v>
+<v t="ekr.20100205114630.2090"><vh>class ComboBox</vh></v>
+</v>
+</v>
+<v t="ekr.20080930114036.1"><vh>Icon stuff</vh>
+<v t="ekr.20090701133940.1767"><vh>print icons</vh></v>
+<v t="ekr.20090701125834.1765"><vh>@@button insert-inst-icon</vh></v>
+<v t="ekr.20080930080501.1"><vh>Add icon row</vh></v>
+<v t="ekr.20080930083052.1"><vh>hide icon rows</vh></v>
+<v t="ekr.20080930083052.2"><vh>show icon rows</vh></v>
+<v t="ekr.20080930085514.1"><vh>clear icon bar</vh></v>
+</v>
+<v t="ekr.20100103112623.1951"><vh>Insert form-feed</vh></v>
+<v t="ekr.20090309064612.3"><vh>New features</vh>
+<v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
+<v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
+<v t="edward.20081221145716.1"><vh>decorator test 2</vh></v>
+</v>
+<v t="ekr.20090201162523.1"><vh>Macro test</vh>
+<v t="ekr.20090201192257.1"><vh>@@test macro ab</vh></v>
+</v>
+<v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
+<v t="ekr.20090128112453.1"><vh>Property tests</vh></v>
+<v t="ekr.20090507082111.1904"><vh>test creation of gnx's</vh></v>
+<v t="ekr.20090601093755.1802"><vh>Test of @g.command decorator</vh></v>
+<v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
+<v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
+<v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
+<v t="ekr.20080922164255.1"></v>
+<v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
+<v t="ekr.20080923073240.2"><vh>@path {{c.config.getString('test')}}</vh>
+<v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
+</v>
+</v>
+<v t="ekr.20080531080812.1"><vh>tracer tests</vh></v>
+</v>
+<v t="ekr.20100119095726.2043"><vh>rest colorizing</vh></v>
+<v t="ekr.20100130095415.2023"><vh>Simulate startup code for non-ascii directories</vh></v>
+<v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions (do not deletes)</vh></v>
+<v t="ekr.20081003094737.1"><vh>Unicode tests</vh>
+<v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
+<v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
+<v t="ekr.20090525090210.1940"><vh>Unicode characters: La Peña</vh></v>
+<v t="ekr.20090617083033.1814"><vh>Test of copy/paste of unicode</vh>
+<v t="ekr.20090617083033.1813"><vh>Unicode characters: La Peña תּ</vh></v>
+</v>
+<v t="ekr.20090618102458.1816"><vh>Converting QString to unicode</vh></v>
+<v t="ekr.20100127122240.2063"><vh>Terry's unicode problem</vh></v>
+<v t="ekr.20100202115249.2023"><vh>@@thin qttexttest.py</vh></v>
+</v>
+<v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
+<v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
+<v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
+<v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
+</v>
+<v t="ekr.20100127111116.2059"><vh>wrapping</vh></v>
+</v>
+<v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5297,8 +5303,19 @@ try:
    c.pasteOutline()
 finally:
    c.redraw_now()</t>
+<t tx="ekr.20100203233053.2033">@language python
+
+#@path aPathaab
+
+# This is a test2</t>
 <t tx="ekr.20100204062222.2035">This crashed Leo in path.py during startup</t>
 <t tx="ekr.20100204082851.2038">@language python
+@tabwidth -4
+@others
+Pmw.forwardmethods(ComboBox, Pmw.ScrolledListBox, '_list')
+Pmw.forwardmethods(ComboBox, Pmw.EntryField, '_entryfield')
+</t>
+<t tx="ekr.20100204085410.2060">@language python
 @tabwidth -4
 @others
 Pmw.forwardmethods(ComboBox, Pmw.ScrolledListBox, '_list')
@@ -5715,6 +5732,22 @@ def _selectUnpost(self, event):
     self._unpostList()
 </t>
 <t tx="ekr.20100205074729.2085"></t>
-<t tx="ekr.20100205074729.2086">line 1: node a changed 13</t>
+<t tx="ekr.20100205074729.2086">line 1: node a changed 14</t>
+<t tx="ekr.20100205074729.2087">@all</t>
+<t tx="ekr.20100205114630.2089"># This file illustrates some off-by-n problems in goto-global-line.
+
+# Actually, there may be a bigger problem with the @auto file write logic.
+# Adding /deleteing blank lines here doesn't change the file!!!
+
+
+# Based on iwidgets2.2.0/combobox.itk code.
+
+import os
+import string
+</t>
+<t tx="ekr.20100205114630.2090">class ComboBox(Pmw.MegaWidget):
+    pass
+</t>
+<t tx="ekr.20100205114630.2091"></t>
 </tnodes>
 </leo_file>

@@ -111,7 +111,7 @@ def doTests(c,all=None,p=None,verbosity=1):
         if found:
             res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
             # put info to db as well
-            if False and g.enableDB:
+            if g.enableDB:
                 key = 'unittest/cur/fail'
                 archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
                 c.db[key] = archive
