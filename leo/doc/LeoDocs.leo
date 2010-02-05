@@ -1002,7 +1002,7 @@
 <v t="ekr.20050901073048"><vh>@rst-no-head glossary</vh></v>
 </v>
 </v>
-<v t="ekr.20080301071818" a="E"><vh>Home page</vh>
+<v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
@@ -3203,9 +3203,6 @@
 <v t="ekr.20090909083000.6552"><vh>Added options to vim plugin</vh></v>
 <v t="ekr.20090909083000.6553"><vh>Leo no longer adds directories to sys.path</vh></v>
 </v>
-</v>
-</v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
 <v t="ekr.20100118181428.8813"><vh>4.7 beta 2</vh>
 <v t="ekr.20100118181428.7557"><vh>Bugs</vh>
 <v t="ekr.20100118181428.7559"><vh>Fixed calltips on leo3k</vh></v>
@@ -3433,6 +3430,12 @@
 <v t="ekr.20100201192329.7113"><vh>Fixed problem with colon following @path</vh></v>
 <v t="ekr.20100201192329.7116"><vh>Code cleanup</vh></v>
 </v>
+</v>
+</v>
+</v>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="ekr.20100205152016.14053" a="E"><vh>4.7 rc 1</vh>
+<v t="ekr.20100205152016.14054"><vh>Recovering from clone conflicts</vh></v>
 </v>
 </v>
 </v>
@@ -31619,12 +31622,12 @@ that's not really obvious. ESC should do it.
 <t tx="ekr.20100118181428.8523">https://bugs.launchpad.net/leo-editor/+bug/420988</t>
 <t tx="ekr.20100118181428.8524"></t>
 <t tx="ekr.20100118181428.8525"></t>
-<t tx="ekr.20100118181428.8813">Leo 4.7 beta 2                       January 29, 2009
+<t tx="ekr.20100118181428.8813">Leo 4.7 beta 1                January 28, 2009
 
-Leo 4.7 beta 2 is now available at:
+Leo 4.7 release beta 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
-Leo 4.7 beta 2 fixes all known serious bugs in Leo.
+Leo 4.7 beta 1 fixes all known serious bugs in Leo.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
@@ -31638,6 +31641,8 @@ The highlights of Leo 4.7:
 - Leo requires Python 2.6 or above.
 - Several important improvements in file handling.
     - Leo converts @file nodes to @thin nodes automatically.
+    - Leo creates a 'Recovered Nodes' node to hold data that
+      otherwise might be lost due to clone conflicts.
     - @auto-rst now works much more reliably reliably.
     - Leo no longer @noref trees.  Such trees are not
       reliable in cooperative environments.
@@ -33761,25 +33766,31 @@ What's New in Leo 4.7
 .. .. contents::</t>
 <t tx="ekr.20100129054823.11926">.. Links used in this document.
 </t>
-<t tx="ekr.20100129054823.11928">Leo now treats @file nodes just like it treats @thin nodes. This makes Leo much
-safer to use in cooperative environments that use source code control systems.
-As part of this change, Leo no longer supports @noref nodes.
+<t tx="ekr.20100129054823.11928">- Leo now treats @file nodes just like it treats @thin nodes. This makes Leo
+  much safer to use in cooperative environments that use source code control
+  systems. As part of this change, Leo no longer supports @noref nodes.
 
-@auto-rst now works much more reliably.
+- @auto-rst now works much more reliably.
 
-Clones in files containing the @all directive now have low priority. That is,
-they no longer override clones defined in .leo files or external files generated
-from trees that do not contain the @all directive.
+- Leo now has a simple, robust, and extremely useful scheme to recover from
+  clone conflicts, no matter how they may arise. This removes all the dread from
+  "node changed" messages. It is easy to see what the changes were, and it is
+  easy to choose what, if anything to do.
 
-Leo warns if two cloned @&lt;file&gt; nodes would write to different locations as the
-result of the cloned nodes being descendants of different @path nodes.
+  When a clone conflict occurs, you will see a red message in the log pane and a
+  "Recovered Nodes" node as the last top-level node. This node has one child per
+  red message. Each of these children contains two nodes: an "old" node and a
+  "new" node. Unless there are multiple conflicts for a single node, the "new"
+  node will have "won": every clone contains the new node's headline and body
+  text. All these nodes are plain nodes, *not* clones. It is up to you to change
+  the corresponding clone nodes if you choose to do so.
 
-Leo minimizes unnecessary changes to .leo files. Leo writes outline-size and
-orientation to the cache in your .leo directory. This eliminates unnecessary
-changes to .leo files.
+- Leo minimizes unnecessary changes to .leo files. Leo writes outline-size and
+  orientation to the cache in your .leo directory. This eliminates unnecessary
+  changes to .leo files.
 
-Leo now creates temporary files in the systems standard temporary directory.
-This prevents Leo from over-writing user-generated .bak files.
+- Leo now creates temporary files in the systems standard temporary directory.
+  This prevents Leo from over-writing user-generated .bak files.
 </t>
 <t tx="ekr.20100129054823.11931">- The --debug command-line option sets g.debug.
 
@@ -33870,6 +33881,62 @@ This simplifies the code in several ways. In particular, the 'mbcs' encoding is
 never used by default, and there is no g.app.defaultEncoding argument.
 
 The rst3 command now uses 'utf-8' for all encodings unless explicitly overridden.</t>
+<t tx="ekr.20100205152016.14053">Leo 4.7 rc 1                    February 7, 2009
+
+Leo 4.7 release candidate 1 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo 4.7 rc 1 fixes all known serious bugs in Leo.
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.7:
+--------------------------
+
+- Leo now uses the simplest possible internal data model.
+  This is the so-called "one-node" world.
+- Leo supports Python 3.x.
+- Leo requires Python 2.6 or above.
+- Several important improvements in file handling.
+    - Leo converts @file nodes to @thin nodes automatically.
+    - Leo creates a 'Recovered Nodes' node to hold data that
+      otherwise might be lost due to clone conflicts.
+    - @auto-rst now works much more reliably reliably.
+    - Leo no longer @noref trees.  Such trees are not
+      reliable in cooperative environments.
+- A new Windows installer.
+- Many other features, including new command line options and new plugins.
+- Dozens of bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20100205152016.14054">Leo now has a simple, robust, and extremely useful scheme to recover from clone
+battles, no matter how they may arise. This removes all the dread from "node
+changed" messages. It is easy to see what the changes were, and it is easy to
+choose what, if anything to do.
+
+It is easy to test the code to see how it works:
+
+1. Put a clone in an external file, and put another clone in Leo
+outside of any external file.
+
+2. Change the clone outside of Leo using an external editor.
+
+3. Reload Leo.
+
+When a clone conflict occurs, you will see a red message in the log pane and a
+"Recovered Nodes" node as the last top-level node. This node has one child per
+red message. Each of these children contains two nodes: an "old" node and a
+"new" node. Unless there are multiple conflicts for a single node, the "new"
+node will have "won": every clone contains the new node's headline and body
+text. All these nodes are plain nodes, *not* clones. It is up to you to change
+the corresponding clone nodes if you choose to do so.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?

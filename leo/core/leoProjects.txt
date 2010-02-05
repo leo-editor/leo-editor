@@ -1754,10 +1754,13 @@ if at.perfectImportRoot:
 else:
     # 2010/02/05: removed special case for @all.
     c.nodeConflictList.append(g.bunch(
-        tag = '(uncached)',
+        tag='(uncached)',
+        gnx=at.v.gnx,
         fileName = at.root.h,
-        b1=old,b2=s, # The old data
-        h1=at.v._headString,h2=at.v._headString, # the new data.
+        b_old=old,
+        b_new=s,
+        h_old=at.v._headString,
+        h_new=at.v._headString,
     ))
 
     g.es_print("uncached read node changed",at.v.h,color="red")
@@ -4288,10 +4291,13 @@ if at.perfectImportRoot:
 else:
     # 2010/02/05: removed special case for @all.
     c.nodeConflictList.append(g.bunch(
-        tag = '(uncached)',
+        tag='(uncached)',
+        gnx=at.v.gnx,
         fileName = at.root.h,
-        b1=old,b2=s, # The old data
-        h1=at.v._headString,h2=at.v._headString, # the new data.
+        b_old=old,
+        b_new=s,
+        h_old=at.v._headString,
+        h_new=at.v._headString,
     ))
 
     g.es_print("uncached read node changed",at.v.h,color="red")
@@ -4574,13 +4580,13 @@ def handleNodeConflicts (self):
     for bunch in c.nodeConflictList:
         tag = bunch.get('tag') or ''
         gnx = bunch.get('gnx') or ''
-        fn = bunch.get('fileName') or ''
-        b1,b2 = bunch.get('b1'),bunch.get('b2')
-        h1,h2 = bunch.get('h1'),bunch.get('h2')
+        fn  = bunch.get('fileName') or ''
+        b1,h1 = bunch.get('b_old'),bunch.get('h_old')
+        b2,h2 = bunch.get('b_new'),bunch.get('h_new')
         child = root.insertAsNthChild(0)
-        h = 'Recovered node "%s" %s from %s' % (h1,tag,g.shortFileName(fn))
+        h = 'Recovered node "%s from %s' % (h1,g.shortFileName(fn))
         child.setHeadString(h)
-        # child.setBodyString(tag)
+        child.setBodyString('%s %s' % (tag,gnx))
         n1 = child.insertAsNthChild(0)
         n2 = child.insertAsNthChild(1)
         n1.setHeadString('old:'+h1)
@@ -4656,8 +4662,10 @@ def createOutlineFromCacheList(self,c,aList,top=True,atAll=None,fileName=None):
                     tag='(cached)',
                     fileName=c.cacheListFileName,
                     gnx=gnx,
-                    b1=child_v.b,h1=child_v.h, # The old data.
-                    b2=b,h2=h, # The new data.
+                    b_old=child_v.b,
+                    h_old=child_v.h,
+                    b_new=b,
+                    h_new=h,
                 ))
 
                 # Always issue the warning.
@@ -11226,13 +11234,13 @@ def handleNodeConflicts (self):
     for bunch in c.nodeConflictList:
         tag = bunch.get('tag') or ''
         gnx = bunch.get('gnx') or ''
-        fn = bunch.get('fileName') or ''
-        b1,b2 = bunch.get('b1'),bunch.get('b2')
-        h1,h2 = bunch.get('h1'),bunch.get('h2')
+        fn  = bunch.get('fileName') or ''
+        b1,h1 = bunch.get('b_old'),bunch.get('h_old')
+        b2,h2 = bunch.get('b_new'),bunch.get('h_new')
         child = root.insertAsNthChild(0)
-        h = 'Recovered node "%s" %s from %s' % (h1,tag,g.shortFileName(fn))
+        h = 'Recovered node "%s from %s' % (h1,g.shortFileName(fn))
         child.setHeadString(h)
-        # child.setBodyString(tag)
+        child.setBodyString('%s %s' % (tag,gnx))
         n1 = child.insertAsNthChild(0)
         n2 = child.insertAsNthChild(1)
         n1.setHeadString('old:'+h1)
@@ -11496,10 +11504,13 @@ if at.perfectImportRoot:
 else:
     # 2010/02/05: removed special case for @all.
     c.nodeConflictList.append(g.bunch(
-        tag = '(uncached)',
+        tag='(uncached)',
+        gnx=at.v.gnx,
         fileName = at.root.h,
-        b1=old,b2=s, # The old data
-        h1=at.v._headString,h2=at.v._headString, # the new data.
+        b_old=old,
+        b_new=s,
+        h_old=at.v._headString,
+        h_new=at.v._headString,
     ))
 
     g.es_print("uncached read node changed",at.v.h,color="red")
@@ -11578,8 +11589,10 @@ def createOutlineFromCacheList(self,c,aList,top=True,atAll=None,fileName=None):
                     tag='(cached)',
                     fileName=c.cacheListFileName,
                     gnx=gnx,
-                    b1=child_v.b,h1=child_v.h, # The old data.
-                    b2=b,h2=h, # The new data.
+                    b_old=child_v.b,
+                    h_old=child_v.h,
+                    b_new=b,
+                    h_new=h,
                 ))
 
                 # Always issue the warning.
@@ -11652,13 +11665,13 @@ def handleNodeConflicts (self):
     for bunch in c.nodeConflictList:
         tag = bunch.get('tag') or ''
         gnx = bunch.get('gnx') or ''
-        fn = bunch.get('fileName') or ''
-        b1,b2 = bunch.get('b1'),bunch.get('b2')
-        h1,h2 = bunch.get('h1'),bunch.get('h2')
+        fn  = bunch.get('fileName') or ''
+        b1,h1 = bunch.get('b_old'),bunch.get('h_old')
+        b2,h2 = bunch.get('b_new'),bunch.get('h_new')
         child = root.insertAsNthChild(0)
-        h = 'Recovered node "%s" %s from %s' % (h1,tag,g.shortFileName(fn))
+        h = 'Recovered node "%s from %s' % (h1,g.shortFileName(fn))
         child.setHeadString(h)
-        # child.setBodyString(tag)
+        child.setBodyString('%s %s' % (tag,gnx))
         n1 = child.insertAsNthChild(0)
         n2 = child.insertAsNthChild(1)
         n1.setHeadString('old:'+h1)

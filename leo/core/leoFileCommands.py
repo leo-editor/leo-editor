@@ -882,13 +882,13 @@ class baseFileCommands:
         for bunch in c.nodeConflictList:
             tag = bunch.get('tag') or ''
             gnx = bunch.get('gnx') or ''
-            fn = bunch.get('fileName') or ''
-            b1,b2 = bunch.get('b1'),bunch.get('b2')
-            h1,h2 = bunch.get('h1'),bunch.get('h2')
+            fn  = bunch.get('fileName') or ''
+            b1,h1 = bunch.get('b_old'),bunch.get('h_old')
+            b2,h2 = bunch.get('b_new'),bunch.get('h_new')
             child = root.insertAsNthChild(0)
-            h = 'Recovered node "%s" %s from %s' % (h1,tag,g.shortFileName(fn))
+            h = 'Recovered node "%s from %s' % (h1,g.shortFileName(fn))
             child.setHeadString(h)
-            # child.setBodyString(tag)
+            child.setBodyString('%s %s' % (tag,gnx))
             n1 = child.insertAsNthChild(0)
             n2 = child.insertAsNthChild(1)
             n1.setHeadString('old:'+h1)

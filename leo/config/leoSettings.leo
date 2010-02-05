@@ -94,7 +94,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20090703122042.7463"><vh>@@button a-common-button</vh></v>
@@ -429,12 +429,12 @@
 <v t="ville.20090701225947.3902"><vh>@shortcuts Default plugins</vh></v>
 </v>
 </v>
-<v t="ekr.20070925144552" a="E"><vh>Menus</vh>
+<v t="ekr.20070925144552"><vh>Menus</vh>
 <v t="ekr.20071010123015"><vh>@@menu 文件</vh>
 <v t="ekr.20071010123015.1"><vh>@item new</vh></v>
 <v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
 </v>
-<v t="ekr.20070925144534" a="E"><vh>@menus</vh>
+<v t="ekr.20070925144534"><vh>@menus</vh>
 <v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
@@ -920,7 +920,7 @@
 <v t="ekr.20070925144534.404"><vh>@item *open-compare-window</vh></v>
 <v t="ekr.20070925144534.405"><vh>@item *open-python-&amp;window</vh></v>
 </v>
-<v t="ekr.20070925144534.406" a="E"><vh>@menu &amp;Help</vh>
+<v t="ekr.20070925144534.406"><vh>@menu &amp;Help</vh>
 <v t="ekr.20070925144534.407"><vh>@item about-leo</vh></v>
 <v t="ekr.20070925144534.408"><vh>@item open-online-home</vh></v>
 <v t="ekr.20070925144534.409"><vh>@item *open-online-&amp;tutorial</vh></v>

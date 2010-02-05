@@ -1397,10 +1397,13 @@ class atFile:
                 else:
                     # 2010/02/05: removed special case for @all.
                     c.nodeConflictList.append(g.bunch(
-                        tag = '(uncached)',
+                        tag='(uncached)',
+                        gnx=at.v.gnx,
                         fileName = at.root.h,
-                        b1=old,b2=s, # The old data
-                        h1=at.v._headString,h2=at.v._headString, # the new data.
+                        b_old=old,
+                        b_new=s,
+                        h_old=at.v._headString,
+                        h_new=at.v._headString,
                     ))
 
                     g.es_print("uncached read node changed",at.v.h,color="red")

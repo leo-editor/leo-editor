@@ -415,12 +415,6 @@
 <v t="ekr.20100110172917.1961"><vh>section 1: Ę</vh></v>
 </v>
 </v>
-<v t="ekr.20100205074729.2085"><vh>Clone battle test</vh>
-<v t="ekr.20100205074729.2086"><vh>node a</vh></v>
-<v t="ekr.20100205074729.2087"><vh>@@thin clone-battle-test.txt</vh>
-<v t="ekr.20100205074729.2086"></v>
-</v>
-</v>
 <v t="ekr.20100205114630.2091"><vh>File tests</vh>
 <v t="ekr.20100203233053.2033"><vh>@@thin at-path-in-body-test.py</vh></v>
 <v t="ekr.20100204062222.2035"><vh>@@@auto C:\leo.repo\trunk\leo\extensions\Pmw\Pmw_1_3\lib</vh></v>
@@ -507,6 +501,17 @@
 <v t="ekr.20100127111116.2059"><vh>wrapping</vh></v>
 </v>
 <v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
+<v t="ekr.20100205074729.2085"><vh>Clone battle test</vh>
+<v t="ekr.20100205074729.2086"><vh>node a</vh></v>
+<v t="ekr.20100205074729.2087"><vh>@thin clone-battle-test.txt</vh></v>
+</v>
+<v t="ekr.20100205074729.2086"></v>
+<v t="ekr.20100205161752.2095" a="E"><vh>Recovered Nodes</vh>
+<v t="ekr.20100205161752.2096"><vh>Recovered node "node a from clone-battle-test.txt</vh>
+<v t="ekr.20100205161752.2097"><vh>old:node a</vh></v>
+<v t="ekr.20100205161752.2098"><vh>new:node a</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5732,8 +5737,7 @@ def _selectUnpost(self, event):
     self._unpostList()
 </t>
 <t tx="ekr.20100205074729.2085"></t>
-<t tx="ekr.20100205074729.2086">line 1: node a changed 14</t>
-<t tx="ekr.20100205074729.2087">@all</t>
+<t tx="ekr.20100205074729.2086">line 1: node a changed 2</t>
 <t tx="ekr.20100205114630.2089"># This file illustrates some off-by-n problems in goto-global-line.
 
 # Actually, there may be a bigger problem with the @auto file write logic.
@@ -5749,5 +5753,9 @@ import string
     pass
 </t>
 <t tx="ekr.20100205114630.2091"></t>
+<t tx="ekr.20100205161752.2095"></t>
+<t tx="ekr.20100205161752.2096">(cached) ekr.20100205074729.2086</t>
+<t tx="ekr.20100205161752.2097">line 1: node a changed 1</t>
+<t tx="ekr.20100205161752.2098">line 1: node a changed 2</t>
 </tnodes>
 </leo_file>

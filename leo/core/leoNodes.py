@@ -2639,8 +2639,10 @@ class vnode (baseVnode):
                         tag='(cached)',
                         fileName=c.cacheListFileName,
                         gnx=gnx,
-                        b1=child_v.b,h1=child_v.h, # The old data.
-                        b2=b,h2=h, # The new data.
+                        b_old=child_v.b,
+                        h_old=child_v.h,
+                        b_new=b,
+                        h_new=h,
                     ))
 
                     # Always issue the warning.
