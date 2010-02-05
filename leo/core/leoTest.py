@@ -1310,16 +1310,17 @@ def oldTestPlugin (fileName,verbose=False):
 
         module.unitTest(verbose=verbose)
 #@-node:ekr.20051104075904.92:testPlugin (no longer used)
-#@+node:ekr.20051104075904.93:checkFileSyntax
+#@+node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
 def checkFileSyntax (fileName,s):
 
     try:
         compiler.parse(s + '\n')
     except SyntaxError:
+        g.trace(g.callers(5))
         g.es("syntax error in:",fileName,color="blue")
         g.es_exception(full=False,color="black")
         raise
-#@-node:ekr.20051104075904.93:checkFileSyntax
+#@-node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
 #@+node:ekr.20051104075904.94:checkFileTabs
 def checkFileTabs (fileName,s):
 

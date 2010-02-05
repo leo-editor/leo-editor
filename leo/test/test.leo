@@ -467,6 +467,9 @@
 <v t="ekr.20100130095415.2023"><vh>Simulate startup code for non-ascii directories</vh></v>
 <v t="ekr.20100122125233.2053"><vh>@test zcpspm</vh></v>
 <v t="ekr.20100203174233.2032"><vh>@@test paste-script</vh></v>
+<v t="ekr.20100205074729.2085"><vh>Clone battle test</vh>
+<v t="ekr.20100205074729.2086"><vh>node a</vh></v>
+</v>
 </v>
 <v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
 <v t="ekr.20100203233053.2033"><vh>@thin at-path-in-body-test.py</vh></v>
@@ -496,6 +499,8 @@
 </v>
 </v>
 <v t="ekr.20100204085410.2060"><vh>@auto test-blank-lines.py</vh></v>
+<v t="ekr.20100205074729.2085"></v>
+<v t="ekr.20100205074729.2087"><vh>@thin clone-battle-test.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5709,5 +5714,7 @@ self._drawArrow()
 def _selectUnpost(self, event):
     self._unpostList()
 </t>
+<t tx="ekr.20100205074729.2085"></t>
+<t tx="ekr.20100205074729.2086">line 1: node a changed 4</t>
 </tnodes>
 </leo_file>

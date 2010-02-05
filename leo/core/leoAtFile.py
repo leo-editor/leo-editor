@@ -1348,14 +1348,16 @@ class atFile:
         elif middle: 
             pass # Middle sentinels never alter text.
         else:
-            if hasattr(at.v,"tempBodyString") and s != at.v.tempBodyString:
+            if at.v == at.root.v:
+                old = None # Don't issue warnings for the root.
+            elif hasattr(at.v,"tempBodyString") and s != at.v.tempBodyString:
                 old = at.v.tempBodyString
             elif at.v.hasBody() and s != at.v.getBody():
                 old = at.v.getBody()
             else:
                 old = None
-            # 9/4/04: Suppress this warning for the root: @first complicates matters.
-            if old and at.v != at.root.v: # and not g.app.unitTesting
+
+            if old:
                 #@            << indicate that the node has been changed >>
                 #@+node:ekr.20041005105605.96:<< indicate that the node has been changed >>
                 if at.perfectImportRoot:
@@ -1389,34 +1391,27 @@ class atFile:
                     #@nl
                     at.v._bodyString = s # Allowed use of _bodyString.
                         # Just setting at.v.tempBodyString won't work here.
-                    at.v.setDirty() # Mark the node dirty.  Ancestors will be marked dirty later.
+                    at.v.setDirty()
+                        # Mark the node dirty. Ancestors will be marked dirty later.
                     at.c.setChanged(True)
                 else:
-                    # New in Leo 4.4.1 final.  This warning can be very confusing.
-                    # New in Leo 4.7 b2: We suppress warning for trees containing '@all'
-                    if at.atAllFlag: # Give the warning if we are not in an '@all' tree.
-                        pass
-                    # elif not at.updateWarningGiven:
-                    else:
-                        # at.updateWarningGiven = True
-                        # g.pr("***",at.v,at.root.v)
-                        g.es_print("uncached read node changed",at.v.h,color="red") # was at.root.h
-                    # Just set the dirty bit. Ancestors will be marked dirty later.
+                    # 2010/02/05: removed special case for @all.
+                    c.nodeConflictList.append(g.bunch(
+                        tag = 'uncached (readEndNode) atAll: %s' % (at.atAllFlag),
+                        b1=old,b2=s,h1=at.v._headString,h2=at.v._headString))
+
+                    g.es_print("uncached read node changed",at.v.h,color="red")
+
                     at.v.setDirty()
-                    # Important: the dirty bits won't stick unless we set c.changed here.
-                    # Do *not* call c.setChanged(True) here: that would be too slow.
+                        # Just set the dirty bit. Ancestors will be marked dirty later.
                     c.changed = True
-                #@nonl
+                        # Important: the dirty bits won't stick unless we set c.changed here.
+                        # Do *not* call c.setChanged(True) here: that would be too slow.
                 #@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
                 #@nl
-            if old and at.atAllFlag:
-                # Don't change.
-                if trace: g.trace('*** no update\nold: %s\nnew: %s' % (
-                    repr(old),repr(s)))
-            else:
-                if trace: g.trace('*** update\nold: %s\nnew: %s' % (
-                    repr(old),repr(s)))
-                at.v.tempBodyString = s
+
+            # 2010/02/05: *always* update the text.
+            at.v.tempBodyString = s
 
         # Indicate that the vnode has been set in the derived file.
         at.v.setVisited()
@@ -2082,10 +2077,6 @@ class atFile:
             except Exception: s = ""
             old_body = p.b
             if s != old_body:
-                if False and old_body: # For debugging.
-                    g.pr("\nchanged: " + p.h)
-                    g.pr("\nnew:",s)
-                    g.pr("\nold:",p.b)
                 if thinFile:
                     p.v.setBodyString(s)
                     if p.v.isDirty():
@@ -2093,14 +2084,14 @@ class atFile:
                 else:
                     c.setBodyString(p,s) # Sets c and p dirty.
 
-                if not thinFile or (thinFile and p.v.isDirty()):
+                if p.v.isDirty():
                     # New in Leo 4.3: support for mod_labels plugin:
                     try:
                         c.mod_label_controller.add_label(p,"before change:",old_body)
                     except Exception:
                         pass
-                    g.es("changed:",p.h,color="blue")
-                    # p.setMarked()
+                    # 2010/02/05: This warning is given elsewhere.
+                    # g.es("changed:",p.h,color="blue")
     #@-node:ekr.20050301105854:copyAllTempBodyStringsToTnodes
     #@+node:ekr.20041005105605.119:createImportedNode
     def createImportedNode (self,root,headline):
@@ -3900,10 +3891,13 @@ class atFile:
             ok = False
 
         return ok
-    #@+node:ekr.20090514111518.5666:syntaxError
+    #@+node:ekr.20090514111518.5666:syntaxError (leoAtFile)
     def syntaxError(self,p,body):
 
         g.es_print("Syntax error in: %s" % (p.h),color="red")
+        g.trace(g.callers(5))
+        g.trace('(leoAtFile) node:',p and p.h,'body...\n',repr(body))
+
         typ,val,tb = sys.exc_info()
         message = hasattr(val,'message') and val.message
         if message: g.es_print(message)
@@ -3919,7 +3913,7 @@ class atFile:
             if j == i:
                 g.es_print(' '*(7+val.offset)+'^')
     #@nonl
-    #@-node:ekr.20090514111518.5666:syntaxError
+    #@-node:ekr.20090514111518.5666:syntaxError (leoAtFile)
     #@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
     #@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
     def tabNannyNode (self,p,body):

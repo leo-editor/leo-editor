@@ -1452,6 +1452,7 @@ class autoCompleterClass:
                     fileName, n = g.getLastTracebackFileAndLineNumber()
                     p = self.computeErrorNode(c,root,n,lines=g.splitLines(s))
                     if not p or p == root:
+                        g.trace(g.callers(5))
                         g.es_print('syntax error in class node: can not continue')
                         s = None ; break
                     else:

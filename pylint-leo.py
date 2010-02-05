@@ -2,6 +2,12 @@ import os
 import sys
 from pylint import lint
 
+recent_core_table = (
+    ('leoAtFile.py',''),
+    ('leoCommands.py',''),
+    ('leoFileCommands.py',''),
+)
+
 core_table = (
     ('leoGlobals.py',''),
     ('leoApp.py',''),
@@ -58,9 +64,10 @@ def run(fn,suppress):
         print('file not found:',fn)
 
 tables_table = (
-    (core_table,'core'),
+    (recent_core_table,'core'),
+    # (core_table,'core'),
     # (external_table,'external'),
-    (plugins_table,'plugins'),
+    # (plugins_table,'plugins'),
 )
 
 for table,theDir in tables_table:

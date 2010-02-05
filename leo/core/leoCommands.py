@@ -270,19 +270,19 @@ class baseCommands (object):
         self.miniBufferWidget = None
 
         # per-document info...
+        self.changed = False # True if any data has been changed since the last save.
         self.disableCommandsMessage = ''
             # The presence of this message disables all commands.
-        self.hookFunction = None
-        self.openDirectory = None
-        self.timeStampDict = {} # New in Leo 4.6.
-
         self.expansionLevel = 0  # The expansion level of this outline.
         self.expansionNode = None # The last node we expanded or contracted.
-        self.changed = False # True if any data has been changed since the last save.
+        self.hookFunction = None
+        self.ignoreChangedPaths = False # True: disable path changed message in at.WriteAllHelper.
         self.loading = False # True if we are loading a file: disables c.setChanged()
+        self.nodeConflictList = [] # List of nodes with conflicting read-time data.
+        self.openDirectory = None
         self.outlineToNowebDefaultFileName = "noweb.nw" # For Outline To Noweb dialog.
         self.promptingForClose = False # To lock out additional closing dialogs.
-        self.ignoreChangedPaths = False # True: disable path changed message in at.WriteAllHelper.
+        self.timeStampDict = {} # New in Leo 4.6.
 
         # For tangle/untangle
         self.tangle_errors = 0
@@ -4142,6 +4142,7 @@ class baseCommands (object):
                         return "surprise" # abort
                     if unittest and result != "ok":
                         g.pr("Syntax error in %s" % p.cleanHeadString())
+                        g.trace(g.callers(5))
                         return result # End the unit test: it has failed.
 
         if not unittest:
@@ -4208,6 +4209,7 @@ class baseCommands (object):
         except (parser.ParserError,SyntaxError):
             if not suppressErrors:
                 s = "Syntax error in: %s" % h
+                g.trace(g.callers(5))
                 g.es_print(s,color="blue")
             if unittest: raise
             else:

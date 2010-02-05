@@ -27,7 +27,6 @@ else:
 
 import os
 import pickle
-import shutil
 import string
 import sys
 import tempfile
@@ -704,6 +703,8 @@ class baseFileCommands:
         c = self.c ; current = c.p ; check = not reassignIndices
         checkAfterRead = False or c.config.getBool('check_outline_after_read')
 
+        self.initReadIvars() # 2010/02/05
+
         # Save the hidden root's children.
         children = c.hiddenRootNode.children
 
@@ -763,6 +764,7 @@ class baseFileCommands:
             c.checkOutline(event=None,verbose=True,unittest=False,full=True)
 
         c.selectPosition(p)
+        self.initReadIvars() # 2010/02/05
         return p
 
     getLeoOutline = getLeoOutlineFromClipboard # for compatibility
@@ -810,6 +812,7 @@ class baseFileCommands:
                 c.redraw()
                 c.setFileTimeStamp(fileName)
                 c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+                self.handleNodeConflicts()
 
             # Do this after reading derived files.
             if readAtFileNodesFlag:
@@ -858,6 +861,18 @@ class baseFileCommands:
 
         return ok
     #@-node:ekr.20090526081836.5841:getLeoFileHelper
+    #@+node:ekr.20100205060712.8314:handleNodeConflicts
+    def handleNodeConflicts (self):
+
+        c = self.c
+
+        g.trace(len(c.nodeConflictList))
+
+        for bunch in c.nodeConflictList:
+            g.trace(bunch)
+
+
+    #@-node:ekr.20100205060712.8314:handleNodeConflicts
     #@+node:ekr.20100124110832.6212:propegateDirtyNodes
     def propegateDirtyNodes (self):
 
@@ -1008,6 +1023,7 @@ class baseFileCommands:
         self.descendentExpandedList = []
         self.descendentMarksList = []
         self.gnxDict = {}
+        self.c.nodeConflictList = [] # 2010/01/05
     #@nonl
     #@-node:ekr.20060919142200.1:initReadIvars
     #@+node:EKR.20040627120120:restoreDescendentAttributes
@@ -2187,9 +2203,9 @@ class baseFileCommands:
 
             try:
                 try:
-                     os.write(fd,s)
+                    os.write(fd,s)
                 finally:
-                     os.close(fd)
+                    os.close(fd)
                 ok = True
             except Exception:
                 g.es('exception creating backup file',color='red')

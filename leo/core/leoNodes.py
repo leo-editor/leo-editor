@@ -2632,22 +2632,20 @@ class vnode (baseVnode):
             h,b,gnx,grandChildren = z
             isClone,child_v = parent_v.fastAddLastChild(c,gnx)
             if isClone:
-                # The cached file can not have changed,
-                # otherwise the file would not be in the cache!?
-                if child_v.b != b: # or child_v.h
-                    if atAll: # Bug fix: the last seen clone rules.
-                        if trace: g.trace('***not changed\nold: %s\nnew: %s' % (
-                            child_v.b,b))
-                    else:
-                        g.es_print("cached read node changed:",child_v.h,color="red")
-                        # g.trace(g.callers(5))
-                        child_v.h = h
-                        child_v.b = b
-                        child_v.setDirty()
-                            # 2010/01/24: just mark chid_v dirty.
-                            # getLeoFile will call setAllAncestorAtFileNodesDirty.
-                        c.changed = True
-                            # Tell getLeoFile that it must scan for dirty nodes.
+                if child_v.b != b:
+                    # 2010/02/05: Remove special case for @all.
+                    c.nodeConflictList.append(g.bunch(
+                        tag='cached atAll: %s' %(atAll),
+                        b1=b,h1=h,b2=child_v.b,h2=child_v.h))
+
+                    # Always issue the warning.
+                    g.es_print("cached read node changed:",
+                        child_v.h,color="red")
+
+                    child_v.h,child_v.b = h,b
+                    child_v.setDirty()
+                    c.changed = True
+                        # Tells getLeoFile to propegate dirty nodes.
             else:
                 child_v.createOutlineFromCacheList(c,z,top=False,atAll=atAll)
     #@+node:ekr.20090829064400.6042:v.fastAddLastChild
