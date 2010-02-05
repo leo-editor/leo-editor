@@ -553,301 +553,185 @@ That is all that it takes to give us a collapsible TOC
 #@+node:ekr.20100203225523.5787:Remove ut.leo, etc.
 #@-node:ekr.20100203225523.5787:Remove ut.leo, etc.
 #@-node:ekr.20100202145902.8709:Distribution
-#@+node:ekr.20100204223715.5821:Setting @<file> nodes dirty
-#@+node:ekr.20040303163330:p.setDirty
-def setDirty (self,setDescendentsDirty=True):
-
-    '''Mark a node and all ancestor @file nodes dirty.'''
-
-    p = self ; dirtyVnodeList = []
-
-    # g.trace(p.h,g.callers(4))
-
-    if not p.v.isDirty():
-        p.v.setDirty()
-        dirtyVnodeList.append(p.v)
-
-    # Important: this must be called even if p.v is already dirty.
-    # Typing can change the @ignore state!
-    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty(setDescendentsDirty)
-    dirtyVnodeList.extend(dirtyVnodeList2)
-
-    return dirtyVnodeList
-#@-node:ekr.20040303163330:p.setDirty
-#@+node:ekr.20031218072017.1551:pasteOutline
-# To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
-
-def pasteOutline(self,event=None,reassignIndices=True):
-
-    '''Paste an outline into the present outline from the clipboard.
-    Nodes do *not* retain their original identify.'''
-
-    c = self ; u = c.undoer ; current = c.p
-    s = g.app.gui.getTextFromClipboard()
-    pasteAsClone = not reassignIndices
-    undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
-
-    c.endEditing()
-
-    if not s or not c.canPasteOutline(s):
-        return # This should never happen.
-
-    isLeo = g.match(s,0,g.app.prolog_prefix_string)
-    vnodeInfoDict = {}
-    if pasteAsClone:
-        << remember all data for undo/redo Paste As Clone >>
-    # create a *position* to be pasted.
-    if isLeo:
-        pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
-    else:
-        pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
-
-    if not pasted: return
-
-    copiedBunchList = []
-    if pasteAsClone:
-        << put only needed info in copiedBunchList >>
-    undoData = u.beforeInsertNode(current,
-        pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
-
-    c.validateOutline()
-    c.selectPosition(pasted)
-    pasted.setDirty()
-    c.setChanged(True)
-    # paste as first child if back is expanded.
-    back = pasted.back()
-    if back and back.isExpanded():
-        pasted.moveToNthChildOf(back,0)
-    c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
-
-    if pasteAsClone:
-        # Set dirty bits for ancestors of *all* pasted nodes.
-        # Note: the setDescendentsDirty flag does not do what we want.
-        for p in pasted.self_and_subtree():
-            p.setAllAncestorAtFileNodesDirty(
-                setDescendentsDirty=False)
-
-    u.afterInsertNode(pasted,undoType,undoData)
-    c.redraw(pasted)
-    c.recolor()
-#@+node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
-@
-
-We don't know yet which nodes will be affected by the paste, so we remember
-everything. This is expensive, but foolproof.
-
-The alternative is to try to remember the 'before' values of tnodes in the
-fileCommands read logic. Several experiments failed, and the code is very ugly.
-In short, it seems wise to do things the foolproof way.
-
-@c
-
-for v in c.all_unique_nodes():
-    if v not in vnodeInfoDict:
-        vnodeInfoDict[v] = g.Bunch(
-            v=v,head=v.headString(),body=v.b)
-#@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
-#@+node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
-# Create a dict containing only copied tnodes.
-copiedVnodeDict = {}
-for p in pasted.self_and_subtree():
-    if p.v not in copiedVnodeDict:
-        copiedVnodeDict[p.v] = p.v
-
-# g.trace(list(copiedVnodeDict.keys()))
-
-for v in vnodeInfoDict:
-    bunch = vnodeInfoDict.get(v)
-    if copiedVnodeDict.get(v):
-        copiedBunchList.append(bunch)
-
-# g.trace('copiedBunchList',copiedBunchList)
-#@-node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
-#@-node:ekr.20031218072017.1551:pasteOutline
-#@+node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
-def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
-
-    trace = False and not g.unitTesting
-    verbose = False
-    p = self
-    dirtyVnodeList = []
-
-    # Calculate all nodes that are joined to p or parents of such nodes.
-    nodes = p.findAllPotentiallyDirtyNodes()
-
-    if setDescendentsDirty:
-        # N.B. Only mark _direct_ descendents of nodes.
-        # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
-        for p2 in p.subtree():
-            # Only @thin nodes need to be marked.
-            if p2.v not in nodes and p2.isAtThinFileNode():
-                nodes.append(p2.v)
-
-    if trace and verbose:
-        for v in nodes:
-            print (v.isDirty(),v.isAnyAtFileNode(),v)
-
-    dirtyVnodeList = [v for v in nodes
-        if not v.isDirty() and v.isAnyAtFileNode()]
-    changed = len(dirtyVnodeList) > 0
-
-    for v in dirtyVnodeList:
-        v.setDirty()
-
-    if trace: g.trace("position",dirtyVnodeList,g.callers(5))
-
-    return dirtyVnodeList
-#@-node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
-#@+node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
-def findAllPotentiallyDirtyNodes(self):
-
-    trace = False and not g.unitTesting
-    v = self ; c = v.context
-
-    # Set the starting nodes.
-    nodes = []
-    newNodes = [v]
-
-    # Add nodes until no more are added.
-    while newNodes:
-        addedNodes = []
-        nodes.extend(newNodes)
-        for v in newNodes:
-            for v2 in v.parents:
-                if v2 not in nodes and v2 not in addedNodes:
-                    addedNodes.append(v2)
-        newNodes = addedNodes[:]
-
-    # Remove the hidden vnode.
-    if c.hiddenRootNode in nodes:
-        if trace: g.trace('removing hidden root',c.hiddenRootNode)
-        nodes.remove(c.hiddenRootNode)
-
-    if trace: g.trace(nodes)
-    return nodes
+#@+node:ekr.20100205060712.8315:Syntax error in unitTest.leo
+@ This is weird. Python 3k is throwing a syntax error for very simple code.
 #@nonl
-#@-node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
-#@+node:ekr.20070130115927.7:leoFrame.pasteText
-def pasteText (self,event=None,middleButton=False):
+#@+node:ekr.20100205060712.8319:dump
+@nocolor-node
 
-    '''Paste the clipboard into a widget.
-    If middleButton is True, support x-windows middle-mouse-button easter-egg.'''
+#@verbatim
+ #@+leo-ver=4-thin
+#@verbatim
+#@+node:ekr.20090704085350.5014:@shadow ../test/unittest/at-shadow-test.py
+#@verbatim
+#@@language python
+#@verbatim
+#@@tabwidth -4
+#@verbatim
+#@+others
+#@verbatim
+#@+node:ekr.20100205111332.5371:spam
+def spam():
+    pass
+#@verbatim
+#@-node:ekr.20100205111332.5371:spam
+#@verbatim
+#@+node:ekr.20100205111332.5372:eggs
+def eggs():
+    pass
+#@verbatim
+#@-node:ekr.20100205111332.5372:eggs
+#@verbatim
+#@-others
+#@verbatim
+#@-node:ekr.20090704085350.5014:@shadow ../test/unittest/at-shadow-test.py
+#@verbatim
+#@-leo
+#@-node:ekr.20100205060712.8319:dump
+#@+node:ekr.20040723094220.1:checkAllPythonCode
+def checkAllPythonCode(self,event=None,unittest=False,ignoreAtIgnore=True):
 
-    trace = False
-    f = self ; c = f.c ; w = event and event.widget
-    if trace: g.trace(w)
-    if not w or not g.app.gui.isTextWidget(w): return
+    '''Check all nodes in the selected tree for syntax and tab errors.'''
 
-    wname = c.widget_name(w)
-    i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
-    oldText = w.getAllText()
+    c = self ; count = 0 ; result = "ok"
 
-    if middleButton and c.k.previousSelection is not None:
-        start,end = c.k.previousSelection
-        s = w.getAllText()
-        s = s[start:end]
-        c.k.previousSelection = None
-    else:
-        s = s1 = g.app.gui.getTextFromClipboard()
+    for p in c.all_unique_positions():
+        count += 1
+        if not unittest:
+            << print dots >>
 
-    s = g.toUnicode(s)
+        if g.scanForAtLanguage(c,p) == "python":
+            if not g.scanForAtSettings(p) and (not ignoreAtIgnore or not g.scanForAtIgnore(c,p)):
+                try:
+                    c.checkPythonNode(p,unittest)
+                except (SyntaxError,tokenize.TokenError,tabnanny.NannyNag):
+                    result = "error" # Continue to check.
+                except:
+                    import traceback ; traceback.print_exc()
+                    return "surprise" # abort
+                if unittest and result != "ok":
+                    g.pr("Syntax error in %s" % p.cleanHeadString())
+                    g.trace(g.callers(5))
+                    return result # End the unit test: it has failed.
 
-    # g.trace('pasteText','wname',wname,'s',s,g.callers())
+    if not unittest:
+        g.es("check complete",color="blue")
 
-    singleLine = wname.startswith('head') or wname.startswith('minibuffer')
+    return result
+#@+node:ekr.20040723094220.2:<< print dots >>
+if count % 100 == 0:
+    g.es('','.',newline=False)
 
-    if singleLine:
-        # Strip trailing newlines so the truncation doesn't cause confusion.
-        while s and s [ -1] in ('\n','\r'):
-            s = s [: -1]
+if count % 2000 == 0:
+    g.enl()
+#@-node:ekr.20040723094220.2:<< print dots >>
+#@-node:ekr.20040723094220.1:checkAllPythonCode
+#@+node:ekr.20040723094220.5:checkPythonNode
+def checkPythonNode (self,p,unittest=False,suppressErrors=False):
 
-    try:
-        # Update the widget.
-        if i != j:
-            w.delete(i,j)
-        w.insert(i,s)
+    c = self
 
-        if wname.startswith('body'):
-            c.frame.body.forceFullRecolor()
-            c.frame.body.onBodyChanged('Paste',oldSel=oldSel,oldText=oldText)
-        elif singleLine:
-            s = w.getAllText()
-            while s and s [ -1] in ('\n','\r'):
-                s = s [: -1]
-            if wname.startswith('head'):
-                # The headline is not officially changed yet.
-                # p.initHeadString(s)
-                width = f.tree.headWidth(p=None,s=s)
-                w.setWidth(width)
-        else: pass
-    except Exception:
-        pass # Tk sometimes throws weird exceptions here.
-
-    return 'break' # Essential
-
-OnPasteFromMenu = pasteText
-#@-node:ekr.20070130115927.7:leoFrame.pasteText
-#@+node:ekr.20070130115927.7:leoFrame.pasteText
-def pasteText (self,event=None,middleButton=False):
-
-    '''Paste the clipboard into a widget.
-    If middleButton is True, support x-windows middle-mouse-button easter-egg.'''
-
-    trace = False
-    f = self ; c = f.c ; w = event and event.widget
-    if trace: g.trace(w)
-    if not w or not g.app.gui.isTextWidget(w): return
-
-    wname = c.widget_name(w)
-    i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
-    oldText = w.getAllText()
-
-    if middleButton and c.k.previousSelection is not None:
-        start,end = c.k.previousSelection
-        s = w.getAllText()
-        s = s[start:end]
-        c.k.previousSelection = None
-    else:
-        s = s1 = g.app.gui.getTextFromClipboard()
-
-    s = g.toUnicode(s)
-
-    # g.trace('pasteText','wname',wname,'s',s,g.callers())
-
-    singleLine = wname.startswith('head') or wname.startswith('minibuffer')
-
-    if singleLine:
-        # Strip trailing newlines so the truncation doesn't cause confusion.
-        while s and s [ -1] in ('\n','\r'):
-            s = s [: -1]
+    h = p.h
+    # We must call getScript so that we can ignore directives and section references.
+    body = g.getScript(c,p.copy())
+    if not body: return
 
     try:
-        # Update the widget.
-        if i != j:
-            w.delete(i,j)
-        w.insert(i,s)
-
-        if wname.startswith('body'):
-            c.frame.body.forceFullRecolor()
-            c.frame.body.onBodyChanged('Paste',oldSel=oldSel,oldText=oldText)
-        elif singleLine:
-            s = w.getAllText()
-            while s and s [ -1] in ('\n','\r'):
-                s = s [: -1]
-            if wname.startswith('head'):
-                # The headline is not officially changed yet.
-                # p.initHeadString(s)
-                width = f.tree.headWidth(p=None,s=s)
-                w.setWidth(width)
-        else: pass
+        import parser
+        compiler.parse(body + '\n')
+    except (parser.ParserError,SyntaxError):
+        if not suppressErrors:
+            s = "Syntax error in: %s" % h
+            g.trace(g.callers(5))
+            g.es_print(s,color="blue")
+        if unittest: raise
+        else:
+            g.es_exception(full=False,color="black")
+            c.setMarked(p)
     except Exception:
-        pass # Tk sometimes throws weird exceptions here.
+        g.es_print('unexpected exception')
+        g.es_exception()
 
-    return 'break' # Essential
+    c.tabNannyNode(p,h,body,unittest,suppressErrors)
+#@-node:ekr.20040723094220.5:checkPythonNode
+#@+node:ekr.20061031131434.63:forgivingParser
+def forgivingParser (self,p):
 
-OnPasteFromMenu = pasteText
-#@-node:ekr.20070130115927.7:leoFrame.pasteText
-#@-node:ekr.20100204223715.5821:Setting @<file> nodes dirty
+    c = self.c ; root = p.copy()
+    self.excludedTnodesList = []
+    s = g.getScript(c,root,useSelectedText=False)
+    while s:
+        try:
+            val = compiler.parse(s+'\n')
+            break
+        except (parser.ParserError,SyntaxError):
+            fileName, n = g.getLastTracebackFileAndLineNumber()
+            p = self.computeErrorNode(c,root,n,lines=g.splitLines(s))
+            if not p or p == root:
+                g.trace(g.callers(5))
+                g.es_print('syntax error in class node: can not continue')
+                s = None ; break
+            else:
+                # g.es_print('syntax error: deleting',p.h)
+                self.excludedTnodesList.append(p.v)
+                s = g.getScript(c,root,useSelectedText=False)
+    return s or ''
+#@-node:ekr.20061031131434.63:forgivingParser
+#@+node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
+def checkFileSyntax (fileName,s):
+
+    try:
+        compiler.parse(s + '\n')
+    except SyntaxError:
+        g.trace(g.callers(5))
+        g.es("syntax error in:",fileName,color="blue")
+        g.es_exception(full=False,color="black")
+        raise
+#@-node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
+#@+node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
+def checkPythonSyntax (self,p,body):
+
+    try:
+        ok = True
+        if g.isPython3:
+            code.compile_command(body + '\n')
+        else:
+            compiler.parse(body + '\n')
+    except (parser.ParserError,SyntaxError):
+        g.es_exception()
+        self.syntaxError(p,body)
+        ok = False
+    except Exception:
+        g.trace("unexpected exception")
+        g.es_exception()
+        ok = False
+
+    return ok
+#@+node:ekr.20090514111518.5666:syntaxError (leoAtFile)
+def syntaxError(self,p,body):
+
+    g.es_print("Syntax error in: %s" % (p.h),color="red")
+    g.trace(g.callers(5))
+    g.trace('(leoAtFile) node:',p and p.h,'body...\n',body)
+
+    typ,val,tb = sys.exc_info()
+    message = hasattr(val,'message') and val.message
+    if message: g.es_print(message)
+    lines = g.splitLines(body)
+    n = val.lineno
+    if n is None:
+        # for z in dir(val): print z,repr(getattr(val,z))
+        return
+    i = val.lineno-1
+    for j in range(max(0,i-3),min(i+3,len(lines)-1)):
+        g.es_print('%5s:%s %s' % (
+            j,g.choose(j==i,'*',' '),lines[j].rstrip()))
+        if j == i:
+            g.es_print(' '*(7+val.offset)+'^')
+#@nonl
+#@-node:ekr.20090514111518.5666:syntaxError (leoAtFile)
+#@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
+#@-node:ekr.20100205060712.8315:Syntax error in unitTest.leo
 #@-node:ekr.20100126110826.6253:Before rc1
 #@-node:ekr.20071211093011:4.7 One-node world, Leo3K
 #@+node:ekr.20100109214940.6225:4.8 Autocompletion, vim

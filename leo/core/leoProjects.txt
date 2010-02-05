@@ -9709,6 +9709,243 @@ Must use input instead of raw_input.
 #@-node:ekr.20100204184822.5813:Fixed 2to3 error in leoApp.py
 #@+node:ekr.20100204223715.5822:Do a full redraw when contracting a cloned node
 #@-node:ekr.20100204223715.5822:Do a full redraw when contracting a cloned node
+#@+node:ekr.20100204223715.5821:Setting @<file> nodes dirty
+# This isn't so worrysome now that we have a good recover scheme.
+#@nonl
+#@+node:ekr.20040303163330:p.setDirty
+def setDirty (self,setDescendentsDirty=True):
+
+    '''Mark a node and all ancestor @file nodes dirty.'''
+
+    p = self ; dirtyVnodeList = []
+
+    # g.trace(p.h,g.callers(4))
+
+    if not p.v.isDirty():
+        p.v.setDirty()
+        dirtyVnodeList.append(p.v)
+
+    # Important: this must be called even if p.v is already dirty.
+    # Typing can change the @ignore state!
+    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty(setDescendentsDirty)
+    dirtyVnodeList.extend(dirtyVnodeList2)
+
+    return dirtyVnodeList
+#@-node:ekr.20040303163330:p.setDirty
+#@+node:ekr.20031218072017.1551:pasteOutline
+# To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
+
+def pasteOutline(self,event=None,reassignIndices=True):
+
+    '''Paste an outline into the present outline from the clipboard.
+    Nodes do *not* retain their original identify.'''
+
+    c = self ; u = c.undoer ; current = c.p
+    s = g.app.gui.getTextFromClipboard()
+    pasteAsClone = not reassignIndices
+    undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
+
+    c.endEditing()
+
+    if not s or not c.canPasteOutline(s):
+        return # This should never happen.
+
+    isLeo = g.match(s,0,g.app.prolog_prefix_string)
+    vnodeInfoDict = {}
+    if pasteAsClone:
+        << remember all data for undo/redo Paste As Clone >>
+    # create a *position* to be pasted.
+    if isLeo:
+        pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
+    else:
+        pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
+
+    if not pasted: return
+
+    copiedBunchList = []
+    if pasteAsClone:
+        << put only needed info in copiedBunchList >>
+    undoData = u.beforeInsertNode(current,
+        pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
+
+    c.validateOutline()
+    c.selectPosition(pasted)
+    pasted.setDirty()
+    c.setChanged(True)
+    # paste as first child if back is expanded.
+    back = pasted.back()
+    if back and back.isExpanded():
+        pasted.moveToNthChildOf(back,0)
+    c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
+
+    if pasteAsClone:
+        # Set dirty bits for ancestors of *all* pasted nodes.
+        # Note: the setDescendentsDirty flag does not do what we want.
+        for p in pasted.self_and_subtree():
+            p.setAllAncestorAtFileNodesDirty(
+                setDescendentsDirty=False)
+
+    u.afterInsertNode(pasted,undoType,undoData)
+    c.redraw(pasted)
+    c.recolor()
+#@+node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
+@
+
+We don't know yet which nodes will be affected by the paste, so we remember
+everything. This is expensive, but foolproof.
+
+The alternative is to try to remember the 'before' values of tnodes in the
+fileCommands read logic. Several experiments failed, and the code is very ugly.
+In short, it seems wise to do things the foolproof way.
+
+@c
+
+for v in c.all_unique_nodes():
+    if v not in vnodeInfoDict:
+        vnodeInfoDict[v] = g.Bunch(
+            v=v,head=v.headString(),body=v.b)
+#@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
+#@+node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
+# Create a dict containing only copied tnodes.
+copiedVnodeDict = {}
+for p in pasted.self_and_subtree():
+    if p.v not in copiedVnodeDict:
+        copiedVnodeDict[p.v] = p.v
+
+# g.trace(list(copiedVnodeDict.keys()))
+
+for v in vnodeInfoDict:
+    bunch = vnodeInfoDict.get(v)
+    if copiedVnodeDict.get(v):
+        copiedBunchList.append(bunch)
+
+# g.trace('copiedBunchList',copiedBunchList)
+#@-node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
+#@-node:ekr.20031218072017.1551:pasteOutline
+#@+node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
+def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    p = self
+    dirtyVnodeList = []
+
+    # Calculate all nodes that are joined to p or parents of such nodes.
+    nodes = p.findAllPotentiallyDirtyNodes()
+
+    if setDescendentsDirty:
+        # N.B. Only mark _direct_ descendents of nodes.
+        # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
+        for p2 in p.subtree():
+            # Only @thin nodes need to be marked.
+            if p2.v not in nodes and p2.isAtThinFileNode():
+                nodes.append(p2.v)
+
+    if trace and verbose:
+        for v in nodes:
+            print (v.isDirty(),v.isAnyAtFileNode(),v)
+
+    dirtyVnodeList = [v for v in nodes
+        if not v.isDirty() and v.isAnyAtFileNode()]
+    changed = len(dirtyVnodeList) > 0
+
+    for v in dirtyVnodeList:
+        v.setDirty()
+
+    if trace: g.trace("position",dirtyVnodeList,g.callers(5))
+
+    return dirtyVnodeList
+#@-node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
+#@+node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
+def findAllPotentiallyDirtyNodes(self):
+
+    trace = False and not g.unitTesting
+    v = self ; c = v.context
+
+    # Set the starting nodes.
+    nodes = []
+    newNodes = [v]
+
+    # Add nodes until no more are added.
+    while newNodes:
+        addedNodes = []
+        nodes.extend(newNodes)
+        for v in newNodes:
+            for v2 in v.parents:
+                if v2 not in nodes and v2 not in addedNodes:
+                    addedNodes.append(v2)
+        newNodes = addedNodes[:]
+
+    # Remove the hidden vnode.
+    if c.hiddenRootNode in nodes:
+        if trace: g.trace('removing hidden root',c.hiddenRootNode)
+        nodes.remove(c.hiddenRootNode)
+
+    if trace: g.trace(nodes)
+    return nodes
+#@nonl
+#@-node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
+#@+node:ekr.20070130115927.7:leoFrame.pasteText
+def pasteText (self,event=None,middleButton=False):
+
+    '''Paste the clipboard into a widget.
+    If middleButton is True, support x-windows middle-mouse-button easter-egg.'''
+
+    trace = False
+    f = self ; c = f.c ; w = event and event.widget
+    if trace: g.trace(w)
+    if not w or not g.app.gui.isTextWidget(w): return
+
+    wname = c.widget_name(w)
+    i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
+    oldText = w.getAllText()
+
+    if middleButton and c.k.previousSelection is not None:
+        start,end = c.k.previousSelection
+        s = w.getAllText()
+        s = s[start:end]
+        c.k.previousSelection = None
+    else:
+        s = s1 = g.app.gui.getTextFromClipboard()
+
+    s = g.toUnicode(s)
+
+    # g.trace('pasteText','wname',wname,'s',s,g.callers())
+
+    singleLine = wname.startswith('head') or wname.startswith('minibuffer')
+
+    if singleLine:
+        # Strip trailing newlines so the truncation doesn't cause confusion.
+        while s and s [ -1] in ('\n','\r'):
+            s = s [: -1]
+
+    try:
+        # Update the widget.
+        if i != j:
+            w.delete(i,j)
+        w.insert(i,s)
+
+        if wname.startswith('body'):
+            c.frame.body.forceFullRecolor()
+            c.frame.body.onBodyChanged('Paste',oldSel=oldSel,oldText=oldText)
+        elif singleLine:
+            s = w.getAllText()
+            while s and s [ -1] in ('\n','\r'):
+                s = s [: -1]
+            if wname.startswith('head'):
+                # The headline is not officially changed yet.
+                # p.initHeadString(s)
+                width = f.tree.headWidth(p=None,s=s)
+                w.setWidth(width)
+        else: pass
+    except Exception:
+        pass # Tk sometimes throws weird exceptions here.
+
+    return 'break' # Essential
+
+OnPasteFromMenu = pasteText
+#@-node:ekr.20070130115927.7:leoFrame.pasteText
+#@-node:ekr.20100204223715.5821:Setting @<file> nodes dirty
 #@-node:ekr.20100203173153.5797:Bugs
 #@+node:ekr.20100203173153.5798:Cleanup & testing
 #@+node:ekr.20100130042842.9009:Removed config.set
@@ -10615,6 +10852,648 @@ for obj,val in table:
 #@+node:ekr.20100203125449.5791:All major core/plugins/external files pass 2to3
 #@-node:ekr.20100203125449.5791:All major core/plugins/external files pass 2to3
 #@-node:ekr.20100203173153.5798:Cleanup & testing
+#@+node:ekr.20100205060712.5836:Node recovery
+@nocolor-node
+
+To do:
+
+- Better info in c.nodeConflictList.
+    - Timestamp, file info.
+- Organize recovery nodes.
+#@+node:ekr.20100205060712.8318:Top-level fc code
+#@+node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
+def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
+
+    '''Read a Leo outline from string s in clipboard format.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; current = c.p ; check = not reassignIndices
+    checkAfterRead = False or c.config.getBool('check_outline_after_read')
+
+    self.initReadIvars() # 2010/02/05
+
+    # Save the hidden root's children.
+    children = c.hiddenRootNode.children
+
+    # Always recreate the gnxDict
+    self.gnxDict = {}
+    if not reassignIndices:
+        x = g.app.nodeIndices
+        for v in c.all_unique_nodes():
+            index = x.toString(v.fileIndex)
+            self.gnxDict[index] = v
+
+    self.usingClipboard = True
+    try:
+        # This encoding must match the encoding used in putLeoOutline.
+        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+        if trace: g.trace(s)
+
+        # readSaxFile modifies the hidden root.
+        v = self.readSaxFile(
+            theFile=None, fileName='<clipboard>',
+            silent=True, # don't tell about stylesheet elements.
+            inClipboard=True,reassignIndices=reassignIndices,s=s)
+        if not v:
+            return g.es("the clipboard is not valid ",color="blue")
+    finally:
+        self.usingClipboard = False
+
+    # Restore the hidden root's children
+    c.hiddenRootNode.children = children
+
+    # Unlink v from the hidden root.
+    v.parents.remove(c.hiddenRootNode)
+
+    p = leoNodes.position(v)
+
+    # Important: we must not adjust links when linking v
+    # into the outline.  The read code has already done that.
+    if current.hasChildren() and current.isExpanded():
+        if check and not self.checkPaste(current,p):
+            return None
+        p._linkAsNthChild(current,0,adjust=False)
+    else:
+        if check and not self.checkPaste(current.parent(),p):
+            return None
+        p._linkAfter(current,adjust=False)
+
+    if reassignIndices:
+        for p2 in p.self_and_subtree():
+            p2.v.fileIndex = g.app.nodeIndices.getNewIndex()
+
+    if trace and verbose:
+        g.trace('**** dumping outline...')
+        c.dumpOutline()
+
+    if checkAfterRead:
+        g.trace('checking outline after paste',color='blue')
+        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+
+    c.selectPosition(p)
+    self.initReadIvars() # 2010/02/05
+    return p
+
+getLeoOutline = getLeoOutlineFromClipboard # for compatibility
+#@+node:ekr.20080410115129.1:checkPaste
+def checkPaste (self,parent,p):
+
+    '''Return True if p may be pasted as a child of parent.'''
+
+    if not parent: return True
+
+    parents = [z.copy() for z in parent.self_and_parents()]
+
+    for p in p.self_and_subtree():
+        for z in parents:
+            # g.trace(p.h,id(p.v),id(z.v))
+            if p.v == z.v:
+                g.es('Invalid paste: nodes may not descend from themselves',color="blue")
+                return False
+
+    return True
+#@-node:ekr.20080410115129.1:checkPaste
+#@-node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
+#@+node:ekr.20031218072017.1553:fc.getLeoFile & helpers
+# The caller should follow this with a call to c.redraw().
+
+def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
+
+    c = self.c
+    c.setChanged(False) # May be set when reading @file nodes.
+    self.warnOnReadOnlyFiles(fileName)
+    self.checking = False
+    self.mFileName = c.mFileName
+    self.initReadIvars()
+    recoveryNode = None # Position of recovery node, if present.
+
+    try:
+        c.loading = True # disable c.changed
+        ok = self.getLeoFileHelper(theFile,fileName,silent)
+
+        # Do this before reading derived files.
+        self.resolveTnodeLists()
+
+        if ok and readAtFileNodesFlag:
+            # Redraw before reading the @file nodes so the screen isn't blank.
+            # This is important for big files like LeoPy.leo.
+            c.redraw()
+            c.setFileTimeStamp(fileName)
+            c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+            recoveryNode = self.handleNodeConflicts()
+
+        # Do this after reading derived files.
+        if readAtFileNodesFlag:
+            # The descendent nodes won't exist unless we have read the @thin nodes!
+            self.restoreDescendentAttributes()
+
+        self.setPositionsFromVnodes()
+        c.selectVnode(recoveryNode or c.p) # load body pane
+        if c.config.getBool('check_outline_after_read'):
+            c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+    finally:
+        c.loading = False # reenable c.changed
+
+    if c.changed:
+        self.propegateDirtyNodes()
+    c.setChanged(c.changed) # Refresh the changed marker.
+    self.initReadIvars()
+    return ok, c.frame.ratio
+#@+node:ekr.20090526081836.5841:getLeoFileHelper
+def getLeoFileHelper(self,theFile,fileName,silent):
+
+    '''Read the .leo file and create the outline.'''
+
+    c = self.c
+
+    try:
+        ok = True
+        v = self.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
+        if v: # v is None for minimal .leo files.
+            c.setRootVnode(v)
+            self.rootVnode = v
+        else:
+            v = leoNodes.vnode(context=c)
+            v.setHeadString('created root node')
+            p = leoNodes.position(v)
+            p._linkAsRoot(oldRoot=None)
+            self.rootVnode = v
+            c.setRootPosition(p)
+            c.changed = False
+    except BadLeoFile:
+        junk, message, junk = sys.exc_info()
+        if not silent:
+            g.es_exception()
+            g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
+        ok = False
+
+    return ok
+#@-node:ekr.20090526081836.5841:getLeoFileHelper
+#@+node:ekr.20100205060712.8314:handleNodeConflicts
+def handleNodeConflicts (self):
+
+    c = self.c
+    if not c.nodeConflictList: return
+
+    # Find the last top-level node.
+    sib = c.rootPosition()
+    while sib.hasNext():
+        sib.moveToNext()
+
+    # Create the 'Recovered Nodes' node.
+    root = sib.insertAfter()
+    root.setHeadString('Recovered Nodes')
+    root.expand()
+
+    # For each conflict, create one child and two grandchildren.
+    for bunch in c.nodeConflictList:
+        tag = bunch.get('tag') or ''
+        gnx = bunch.get('gnx') or ''
+        fn = bunch.get('fileName') or ''
+        b1,b2 = bunch.get('b1'),bunch.get('b2')
+        h1,h2 = bunch.get('h1'),bunch.get('h2')
+        child = root.insertAsNthChild(0)
+        h = 'Recovered node "%s" %s from %s' % (h1,tag,g.shortFileName(fn))
+        child.setHeadString(h)
+        # child.setBodyString(tag)
+        n1 = child.insertAsNthChild(0)
+        n2 = child.insertAsNthChild(1)
+        n1.setHeadString('old:'+h1)
+        n1.setBodyString(b1)
+        n2.setHeadString('new:'+h2)
+        n2.setBodyString(b2)
+
+    return root
+#@-node:ekr.20100205060712.8314:handleNodeConflicts
+#@+node:ekr.20100124110832.6212:propegateDirtyNodes
+def propegateDirtyNodes (self):
+
+    fc = self ; c = fc.c
+
+    aList = [z.copy() for z in c.all_positions() if z.isDirty()]
+    for p in aList:
+        p.setAllAncestorAtFileNodesDirty()
+#@-node:ekr.20100124110832.6212:propegateDirtyNodes
+#@+node:ekr.20031218072017.1554:warnOnReadOnlyFiles
+def warnOnReadOnlyFiles (self,fileName):
+
+    # os.access may not exist on all platforms.
+
+    try:
+        self.read_only = not os.access(fileName,os.W_OK)
+    except AttributeError:
+        self.read_only = False
+    except UnicodeError:
+        self.read_only = False
+
+    if self.read_only and not g.unitTesting:
+        g.es("read only:",fileName,color="red")
+#@-node:ekr.20031218072017.1554:warnOnReadOnlyFiles
+#@-node:ekr.20031218072017.1553:fc.getLeoFile & helpers
+#@-node:ekr.20100205060712.8318:Top-level fc code
+#@+node:ekr.20100205060712.8317:Creating the recovery data
+#@+node:ekr.20040731071037:c.initIvars
+def initIvars(self):
+
+    c = self
+    << initialize ivars >>
+
+    self.config = configSettings(c)
+    g.app.config.setIvarsFromSettings(c)
+#@+node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
+self._currentPosition = self.nullPosition()
+self._rootPosition    = self.nullPosition()
+self._topPosition     = self.nullPosition()
+
+# Delayed focus.
+self.doubleClickFlag = False
+self.hasFocusWidget = None
+self.requestedFocusWidget = None
+
+# Official ivars.
+self.gui = g.app.gui
+self.ipythonController = None # Set only by the ipython plugin.
+
+# Interlock to prevent setting c.changed when switching chapters.
+c.suppressHeadChanged = False
+
+# Interlocks to prevent premature closing of a window.
+self.inCommand = False
+self.requestCloseWindow = False
+
+# For emacs/vim key handling.
+self.commandsDict = None
+self.keyHandler = self.k = None
+self.miniBufferWidget = None
+
+# per-document info...
+self.changed = False # True if any data has been changed since the last save.
+self.disableCommandsMessage = ''
+    # The presence of this message disables all commands.
+self.expansionLevel = 0  # The expansion level of this outline.
+self.expansionNode = None # The last node we expanded or contracted.
+self.hookFunction = None
+self.ignoreChangedPaths = False # True: disable path changed message in at.WriteAllHelper.
+self.loading = False # True if we are loading a file: disables c.setChanged()
+self.nodeConflictList = [] # List of nodes with conflicting read-time data.
+self.nodeConflictFileName = None # The fileName for c.nodeConflictList.
+self.openDirectory = None
+self.outlineToNowebDefaultFileName = "noweb.nw" # For Outline To Noweb dialog.
+self.promptingForClose = False # To lock out additional closing dialogs.
+self.timeStampDict = {} # New in Leo 4.6.
+
+# For tangle/untangle
+self.tangle_errors = 0
+
+# Global options: set later in initConfigSettings
+self.fixed = False
+self.page_width = 132
+self.sparse_find = True # 2010/02/02: created ivar.
+self.sparse_move = True # 2010/02/02: created ivar.
+self.sparse_spell = True # 2010/02/02: created ivar.
+self.tab_width = -4
+self.tangle_batch_flag = False
+self.untangle_batch_flag = False
+
+# Default Tangle options
+self.use_header_flag = False
+self.output_doc_flag = False
+
+# Default Target Language
+self.target_language = "python" # Required if leoConfig.txt does not exist.
+
+# For hoist/dehoist commands.
+self.hoistStack = []
+    # Stack of nodes to be root of drawn tree.
+    # Affects drawing routines and find commands.
+self.recentFiles = [] # List of recent files
+
+# For outline navigation.
+self.navPrefix = g.u('') # Must always be a string.
+self.navTime = None
+
+pth, bname = os.path.split(self.mFileName)
+if pth and bname and g.enableDB:
+    fn = self.mFileName.lower()
+    fn = g.toEncodedString(fn) # Required for Python 3.x.
+    dbdirname = '%s/db/%s_%s' % (
+        g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
+    # Use compressed pickles (handy for @thin caches)
+    self.db = leo.external.pickleshare.PickleShareDB(dbdirname,protocol='picklez')
+else:
+    self.db = {}
+#@nonl
+#@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
+#@-node:ekr.20040731071037:c.initIvars
+#@+node:ekr.20060919142200.1:initReadIvars
+def initReadIvars (self):
+
+    self.descendentTnodeUaDictList = []
+    self.descendentVnodeUaDictList = []
+    self.descendentExpandedList = []
+    self.descendentMarksList = []
+    self.gnxDict = {}
+    self.c.nodeConflictList = [] # 2010/01/05
+    self.c.nodeConflictFileName = None # 2010/01/05
+#@nonl
+#@-node:ekr.20060919142200.1:initReadIvars
+#@+node:ekr.20041005105605.72:at.createThinChild4
+def createThinChild4 (self,gnxString,headline):
+
+    """Find or create a new *vnode* whose parent (also a vnode) is at.lastThinNode.
+    This is called only for @thin trees."""
+
+    trace = False and not g.unitTesting
+    verbose = False
+    at = self ; c = at.c ; indices = g.app.nodeIndices
+    last = at.lastThinNode
+    lastIndex = last.fileIndex
+    gnx = indices.scanGnx(gnxString,0)
+
+    if trace and verbose: g.trace("last %s, gnx %s %s" % (
+        last,gnxString,headline))
+
+    parent = at.lastThinNode # A vnode.
+    children = parent.children
+    for child in children:
+        if gnx == child.fileIndex:
+            break
+    else:
+        child = None
+
+    if at.cloneSibCount > 1:
+        n = at.cloneSibCount ; at.cloneSibCount = 0
+        if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
+        else: clonedSibs = 0
+        copies = n - clonedSibs
+        if trace: g.trace(copies,headline)
+    else:
+        if gnx == lastIndex:
+            last.setVisited() # Supress warning/deletion of unvisited nodes.
+            if trace:g.trace('found last',last)
+            return last
+        if child:
+            child.setVisited() # Supress warning/deletion of unvisited nodes.
+            if trace: g.trace('found child',child)
+            return child
+        copies = 1 # Create exactly one copy.
+
+    while copies > 0:
+        copies -= 1
+        # Create the vnode only if it does not already exist.
+        gnxDict = c.fileCommands.gnxDict
+        v = gnxDict.get(gnxString)
+        if v:
+            if gnx != v.fileIndex:
+                g.trace('can not happen: v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx))
+        else:
+            v = leoNodes.vnode(context=c)
+            v._headString = headline # Allowed use of v._headString.
+            v.fileIndex = gnx
+            gnxDict[gnxString] = v
+
+        child = v
+        child._linkAsNthChild(parent,parent.numberOfChildren())
+
+    if trace and verbose: g.trace('new node: %s' % child)
+    child.setVisited() # Supress warning/deletion of unvisited nodes.
+    return child
+#@-node:ekr.20041005105605.72:at.createThinChild4
+#@+node:ekr.20041005105605.95:at.readEndNode
+def readEndNode (self,unused_s,unused_i,middle=False):
+
+    """Handle end-of-node processing for @-others and @-ref sentinels."""
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c
+
+    # End raw mode.
+    at.raw = False
+
+    # Set the temporary body text.
+    s = ''.join(at.out)
+    s = g.toUnicode(s)
+
+    # g.trace(repr(s))
+
+    if at.importing:
+        at.v._bodyString = s # Allowed use of _bodyString.
+    elif middle: 
+        pass # Middle sentinels never alter text.
+    else:
+        if at.v == at.root.v:
+            old = None # Don't issue warnings for the root.
+        elif hasattr(at.v,"tempBodyString") and s != at.v.tempBodyString:
+            old = at.v.tempBodyString
+        elif at.v.hasBody() and s != at.v.getBody():
+            old = at.v.getBody()
+        else:
+            old = None
+
+        if old:
+            << indicate that the node has been changed >>
+
+        # 2010/02/05: *always* update the text.
+        at.v.tempBodyString = s
+
+    # Indicate that the vnode has been set in the derived file.
+    at.v.setVisited()
+    # g.trace('visit',at.v)
+
+    # End the previous node sentinel.
+    at.indent = at.indentStack.pop()
+    at.out = at.outStack.pop()
+    at.v = at.tStack.pop()
+    if at.thinFile and not at.importing:
+        at.lastThinNode = at.thinNodeStack.pop()
+
+    at.popSentinelStack(at.endNode)
+#@+node:ekr.20041005105605.96:<< indicate that the node has been changed >>
+if at.perfectImportRoot:
+    << bump at.correctedLines and tell about the correction >>
+    at.v._bodyString = s # Allowed use of _bodyString.
+        # Just setting at.v.tempBodyString won't work here.
+    at.v.setDirty()
+        # Mark the node dirty. Ancestors will be marked dirty later.
+    at.c.setChanged(True)
+else:
+    # 2010/02/05: removed special case for @all.
+    c.nodeConflictList.append(g.bunch(
+        tag = '(uncached)',
+        fileName = at.root.h,
+        b1=old,b2=s, # The old data
+        h1=at.v._headString,h2=at.v._headString, # the new data.
+    ))
+
+    g.es_print("uncached read node changed",at.v.h,color="red")
+
+    at.v.setDirty()
+        # Just set the dirty bit. Ancestors will be marked dirty later.
+    c.changed = True
+        # Important: the dirty bits won't stick unless we set c.changed here.
+        # Do *not* call c.setChanged(True) here: that would be too slow.
+#@+node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
+# Report the number of corrected nodes.
+at.correctedLines += 1
+
+found = False
+for p in at.perfectImportRoot.self_and_subtree():
+    if p.v == at.v:
+        found = True ; break
+
+if found:
+    if 0: # For debugging.
+        g.pr('\n','-' * 40)
+        g.pr("old",len(old))
+        for line in g.splitLines(old):
+            #line = line.replace(' ','< >').replace('\t','<TAB>')
+            g.pr(repr(str(line)))
+        g.pr('\n','-' * 40)
+        g.pr("new",len(s))
+        for line in g.splitLines(s):
+            #line = line.replace(' ','< >').replace('\t','<TAB>')
+            g.pr(repr(str(line)))
+        g.pr('\n','-' * 40)
+else:
+    # This should never happen.
+    g.es("correcting hidden node: v=",repr(at.v),color="red")
+#@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
+#@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
+#@-node:ekr.20041005105605.95:at.readEndNode
+#@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
+def createOutlineFromCacheList(self,c,aList,top=True,atAll=None,fileName=None):
+    """ Create outline structure from recursive aList
+    built by p.makeCacheList.
+
+    Clones will be automatically created by gnx,
+    but *not* for the top-level node.
+    """
+
+    trace = False and not g.unitTesting
+    parent_v = self
+
+    #import pprint ; pprint.pprint(tree)
+    parent_v = self
+    h,b,gnx,children = aList
+    if h is not None:
+        v = parent_v
+        v._headString = h    
+        v._bodyString = b
+
+    if top:
+        c.cacheListFileName = fileName
+        # Scan the body for @all directives.
+        for line in g.splitLines(b):
+            if line.startswith('@all'):
+                atAll = True ; break
+        else:
+            atAll = False
+    else:
+        assert atAll in (True,False,)
+
+    for z in children:
+        h,b,gnx,grandChildren = z
+        isClone,child_v = parent_v.fastAddLastChild(c,gnx)
+        if isClone:
+            if child_v.b != b:
+                # 2010/02/05: Remove special case for @all.
+                c.nodeConflictList.append(g.bunch(
+                    tag='(cached)',
+                    fileName=c.cacheListFileName,
+                    gnx=gnx,
+                    b1=child_v.b,h1=child_v.h, # The old data.
+                    b2=b,h2=h, # The new data.
+                ))
+
+                # Always issue the warning.
+                g.es_print("cached read node changed:",
+                    child_v.h,color="red")
+
+                child_v.h,child_v.b = h,b
+                child_v.setDirty()
+                c.changed = True
+                    # Tells getLeoFile to propegate dirty nodes.
+        else:
+            child_v.createOutlineFromCacheList(c,z,top=False,atAll=atAll)
+#@+node:ekr.20090829064400.6042:v.fastAddLastChild
+# Similar to createThinChild4
+def fastAddLastChild(self,c,gnxString):
+    '''Create new vnode as last child of the receiver.
+
+    If the gnx exists already, create a clone instead of new vnode.
+    '''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    parent_v = self
+    indices = g.app.nodeIndices
+    gnxDict = c.fileCommands.gnxDict
+
+    if gnxString is None: v = None
+    else:                 v = gnxDict.get(gnxString)
+    is_clone = v is not None
+
+    if trace: g.trace(
+        'clone','%-5s' % (is_clone),
+        'parent_v',parent_v,'gnx',gnxString,'v',repr(v))
+
+    if is_clone:
+        pass
+    else:
+        v = vnode(context=c)
+        if gnxString:
+            gnx = indices.scanGnx(gnxString,0)
+            v.fileIndex = gnx
+        gnxDict[gnxString] = v
+
+    child_v = v
+    child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
+    child_v.setVisited() # Supress warning/deletion of unvisited nodes.
+
+    return is_clone,child_v
+#@-node:ekr.20090829064400.6042:v.fastAddLastChild
+#@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
+#@-node:ekr.20100205060712.8317:Creating the recovery data
+#@+node:ekr.20100205060712.8316:Creating the recovery node
+#@+node:ekr.20100205060712.8314:handleNodeConflicts
+def handleNodeConflicts (self):
+
+    c = self.c
+    if not c.nodeConflictList: return
+
+    # Find the last top-level node.
+    sib = c.rootPosition()
+    while sib.hasNext():
+        sib.moveToNext()
+
+    # Create the 'Recovered Nodes' node.
+    root = sib.insertAfter()
+    root.setHeadString('Recovered Nodes')
+    root.expand()
+
+    # For each conflict, create one child and two grandchildren.
+    for bunch in c.nodeConflictList:
+        tag = bunch.get('tag') or ''
+        gnx = bunch.get('gnx') or ''
+        fn = bunch.get('fileName') or ''
+        b1,b2 = bunch.get('b1'),bunch.get('b2')
+        h1,h2 = bunch.get('h1'),bunch.get('h2')
+        child = root.insertAsNthChild(0)
+        h = 'Recovered node "%s" %s from %s' % (h1,tag,g.shortFileName(fn))
+        child.setHeadString(h)
+        # child.setBodyString(tag)
+        n1 = child.insertAsNthChild(0)
+        n2 = child.insertAsNthChild(1)
+        n1.setHeadString('old:'+h1)
+        n1.setBodyString(b1)
+        n2.setHeadString('new:'+h2)
+        n2.setBodyString(b2)
+
+    return root
+#@-node:ekr.20100205060712.8314:handleNodeConflicts
+#@-node:ekr.20100205060712.8316:Creating the recovery node
+#@-node:ekr.20100205060712.5836:Node recovery
 #@-node:ekr.20100202050243.5740:Leo 4.7 rc1 projects
 #@+node:ekr.20100130042842.6404:Reading settings (do not delete)
 Here are the calls to g.app.getxxx
