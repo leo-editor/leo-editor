@@ -2891,7 +2891,7 @@ class atFile:
     #@-node:ekr.20080819075811.13:adjustTargetLanguage
     #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
     #@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
-    #@+node:ekr.20050506084734:writeFromString
+    #@+node:ekr.20050506084734:writeFromString (atFile)
     # This is at.write specialized for scripting.
 
     def writeFromString(self,root,s,forcePythonSentinels=True,useSentinels=True):
@@ -2923,7 +2923,7 @@ class atFile:
             at.exception("exception preprocessing script")
 
         return at.stringOutput
-    #@-node:ekr.20050506084734:writeFromString
+    #@-node:ekr.20050506084734:writeFromString (atFile)
     #@+node:ekr.20041005105605.151:writeMissing
     def writeMissing(self,p,toString=False):
 

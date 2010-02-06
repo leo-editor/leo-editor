@@ -3641,7 +3641,7 @@ def shouldWriteAtNosentNode (self,p,exists):
         return False
 #@-node:ekr.20080620095343.1:shouldWriteAtNosentNode
 #@-node:ekr.20041005105605.144:write & helper (atFile)
-#@+node:ekr.20050506084734:writeFromString
+#@+node:ekr.20050506084734:writeFromString (atFile)
 # This is at.write specialized for scripting.
 
 def writeFromString(self,root,s,forcePythonSentinels=True,useSentinels=True):
@@ -3673,7 +3673,7 @@ def writeFromString(self,root,s,forcePythonSentinels=True,useSentinels=True):
         at.exception("exception preprocessing script")
 
     return at.stringOutput
-#@-node:ekr.20050506084734:writeFromString
+#@-node:ekr.20050506084734:writeFromString (atFile)
 #@+node:ekr.20041005105605.147:writeAll (atFile) & helper
 def writeAll(self,
     writeAtFileNodesFlag=False,
@@ -4597,7 +4597,7 @@ def handleNodeConflicts (self):
         fn  = bunch.get('fileName') or ''
         b1,h1 = bunch.get('b_old'),bunch.get('h_old')
         b2,h2 = bunch.get('b_new'),bunch.get('h_new')
-        child = root.insertAsNthChild(0)
+        child = root.insertAsLastChild()
         h = 'Recovered node "%s from %s' % (h1,g.shortFileName(fn))
         child.setHeadString(h)
         child.setBodyString('%s %s' % (tag,gnx))
@@ -5715,259 +5715,6 @@ def replaceFileWithString (self,fn,s):
 #@-node:ekr.20100125073206.8720:Changed...
 #@-node:ekr.20100125073206.8711:use g.readFileIntoString
 #@+node:ekr.20100125143136.6235:Fixed unicode failures without sys.setdefaultencoding('utf-8')
-#@+node:ekr.20031218072017.1498:Unicode utils...
-#@+node:ekr.20100125073206.8709:g.getPythonEncodingFromString
-def getPythonEncodingFromString(s):
-
-    '''Return the encoding given by Python's encoding line.
-    s is the entire file.
-    '''
-
-    encoding = None
-    tag,tag2 = '# -*- coding:','-*-'
-    n1,n2 = len(tag),len(tag2)
-
-    if s:
-        # For Python 3.x we must convert to unicode before calling startswith.
-        # The encoding doesn't matter: we only look at the first line, and if
-        # the first line is an encoding line, it will contain only ascii characters.
-        s = g.toUnicode(s,encoding='ascii',reportErrors=False)
-        lines = g.splitLines(s)
-        line1 = lines[0].strip()
-        if line1.startswith(tag) and line1.endswith(tag2):
-            e = line1[n1:-n2].strip()
-            if e and g.isValidEncoding(e):
-                encoding = e
-
-    return encoding
-#@-node:ekr.20100125073206.8709:g.getPythonEncodingFromString
-#@+node:ekr.20080816125725.2:g.isBytes, isCallable, isChar, isString & isUnicode
-# The syntax of these functions must be valid on Python2K and Python3K.
-
-def isBytes(s):
-    '''Return True if s is Python3k bytes type.'''
-    if g.isPython3:
-        # Generates a pylint warning, but that can't be helped.
-        return type(s) == type(bytes('a','utf-8'))
-    else:
-        return False
-
-def isCallable(obj):
-    if g.isPython3:
-        return hasattr(obj, '__call__')
-    else:
-        return callable(obj)
-
-def isChar(s):
-    '''Return True if s is a Python2K character type.'''
-    if g.isPython3:
-        return False
-    else:
-        return type(s) == types.StringType
-
-def isString(s):
-    '''Return True if s is any string, but not bytes.'''
-    if g.isPython3:
-        return type(s) == type('a')
-    else:
-        return type(s) in types.StringTypes
-
-def isUnicode(s):
-    '''Return True if s is a unicode string.'''
-    if g.isPython3:
-        return type(s) == type('a')
-    else:
-        return type(s) == types.UnicodeType
-#@-node:ekr.20080816125725.2:g.isBytes, isCallable, isChar, isString & isUnicode
-#@+node:ekr.20031218072017.1500:g.isValidEncoding
-def isValidEncoding (encoding):
-
-    if not encoding:
-        return False
-
-    if sys.platform == 'cli':
-        return True
-
-    import codecs
-
-    try:
-        codecs.lookup(encoding)
-        return True
-    except LookupError: # Windows.
-        return False
-    except AttributeError: # Linux.
-        return False
-#@nonl
-#@-node:ekr.20031218072017.1500:g.isValidEncoding
-#@+node:ekr.20061006152327:g.isWordChar & g.isWordChar1
-def isWordChar (ch):
-
-    '''Return True if ch should be considered a letter.'''
-
-    return ch and (ch.isalnum() or ch == '_')
-
-def isWordChar1 (ch):
-
-    return ch and (ch.isalpha() or ch == '_')
-#@nonl
-#@-node:ekr.20061006152327:g.isWordChar & g.isWordChar1
-#@+node:ekr.20031218072017.1501:g.reportBadChars
-def reportBadChars (s,encoding):
-
-    if g.isPython3:
-        errors = 0
-        if g.isUnicode(s):
-            for ch in s:
-                try: ch.encode(encoding,"strict")
-                except UnicodeEncodeError:
-                    errors += 1
-            if errors:
-                s2 = "%d errors converting %s to %s" % (
-                    errors, s.encode(encoding,'replace'),
-                    encoding.encode('ascii','replace'))
-                if not g.unitTesting:
-                    g.es(s2,color='red')
-        elif g.isChar(s):
-            for ch in s:
-                try: unicode(ch,encoding,"strict")
-                except Exception: errors += 1
-            if errors:
-                s2 = "%d errors converting %s (%s encoding) to unicode" % (
-                    errors, unicode(s,encoding,'replace'),
-                    encoding.encode('ascii','replace'))
-                if not g.unitTesting:
-                    g.es(s2,color='red')
-    else:
-        errors = 0
-        if g.isUnicode(s):
-            for ch in s:
-                try: ch.encode(encoding,"strict")
-                except UnicodeEncodeError:
-                    errors += 1
-            if errors:
-                s2 = "%d errors converting %s to %s" % (
-                    errors, s.encode(encoding,'replace'),
-                    encoding.encode('ascii','replace'))
-                if not g.unitTesting:
-                    g.es(s2,color='red')
-        elif g.isChar(s):
-            for ch in s:
-                try: unicode(ch,encoding,"strict")
-                except Exception: errors += 1
-            if errors:
-                s2 = "%d errors converting %s (%s encoding) to unicode" % (
-                    errors, unicode(s,encoding,'replace'),
-                    encoding.encode('ascii','replace'))
-                if not g.unitTesting:
-                    g.es(s2,color='red')
-#@-node:ekr.20031218072017.1501:g.reportBadChars
-#@+node:ekr.20050208093800:g.toEncodedString
-def toEncodedString (s,encoding='utf-8',reportErrors=False):
-
-    if encoding is None:
-        encoding = 'utf-8'
-
-    if g.isUnicode(s):
-        try:
-            s = s.encode(encoding,"strict")
-        except UnicodeError:
-            if reportErrors: g.reportBadChars(s,encoding)
-            s = s.encode(encoding,"replace")
-    return s
-#@-node:ekr.20050208093800:g.toEncodedString
-#@+node:ekr.20050208093800.1:g.toUnicode
-def toUnicode (s,encoding='utf-8',reportErrors=False):
-
-    # The encoding is usually 'utf-8'
-    # but is may be different while importing or reading files.
-    if encoding is None:
-        encoding = 'utf-8'
-
-    if isPython3:
-        f,mustConvert = str,g.isBytes
-    else:
-        f = unicode
-        def mustConvert (s):
-            return type(s) != types.UnicodeType
-
-    if not s:
-        s = g.u('')
-    elif mustConvert(s):
-        try:
-            s = f(s,encoding,'strict')
-        except (UnicodeError,Exception):
-            s = f(s,encoding,'replace')
-            if reportErrors: g.reportBadChars(s,encoding)
-    else:
-        pass
-
-    return s
-#@-node:ekr.20050208093800.1:g.toUnicode
-#@+node:ekr.20091206161352.6232:g.u & g.ue
-if isPython3: # g.not defined yet.
-    def u(s):
-        return s
-    def ue(s,encoding):
-        return str(s,encoding)
-else:
-    def u(s):
-        return unicode(s)
-    def ue(s,encoding):
-        return unicode(s,encoding)
-#@-node:ekr.20091206161352.6232:g.u & g.ue
-#@+node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
-def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
-
-    ok = True
-
-    if g.isUnicode(s):
-        try:
-            s = s.encode(encoding,"strict")
-        except Exception:
-            if reportErrors: g.reportBadChars(s,encoding)
-            s = s.encode(encoding,"replace")
-            ok = False
-    return s, ok
-#@-node:ekr.20080919065433.2:toEncodedStringWithErrorCode (for unit testing)
-#@+node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
-def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
-
-    ok = True
-    if g.isPython3: f = str
-    else: f = unicode
-    if s is None:
-        s = g.u('')
-    if not g.isUnicode(s):
-        try:
-            s = f(s,encoding,'strict')
-        except Exception:
-            if reportErrors:
-                g.reportBadChars(s,encoding)
-            s = f(s,encoding,'replace')
-            ok = False
-    return s,ok
-#@-node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
-#@-node:ekr.20031218072017.1498:Unicode utils...
-#@+node:ville.20090606150238.6351:_contentHashFile (atFile)
-def _contentHashFile(self,s,content):
-
-    '''Compute the hash of s (usually a headline) and content.
-    s may be unicode, content must be bytes (or plain string in Python 2.x'''
-
-    m = hashlib.md5()
-
-    if g.isUnicode(s):
-        s = g.toEncodedString(s)
-
-    if g.isUnicode(content):
-        g.internalError('content arg must be str/bytes')
-        content = g.toEncodedString(content)
-
-    m.update(s)
-    m.update(content)
-    return "fcache/" + m.hexdigest()
-
-#@-node:ville.20090606150238.6351:_contentHashFile (atFile)
 #@-node:ekr.20100125143136.6235:Fixed unicode failures without sys.setdefaultencoding('utf-8')
 #@+node:ekr.20100125190708.6259:Fixed Leo3k problem with g.getPythonEncodingFromString
 - g.getPythonEncodingFromString fails with Python 3.x on both Windows and ubuntu.
@@ -5999,35 +5746,6 @@ def getPythonEncodingFromString(s):
 #@-node:ekr.20100125073206.8709:g.getPythonEncodingFromString
 #@-node:ekr.20100125190708.6259:Fixed Leo3k problem with g.getPythonEncodingFromString
 #@+node:ekr.20100126062623.6237:Ensure the contents arg to _contentHashFile is bytes
-#@+node:ekr.20100126062623.6240:g.internalError
-def internalError (*args):
-
-    callers = g.callers(5).split(',')
-    caller = callers[-1]
-    g.es_print('Internal Leo error in',caller,color='red')
-    g.es_print(*args)
-    g.es_print('Called from',','.join(callers[:-1]))
-#@-node:ekr.20100126062623.6240:g.internalError
-#@+node:ville.20090606150238.6351:_contentHashFile (atFile)
-def _contentHashFile(self,s,content):
-
-    '''Compute the hash of s (usually a headline) and content.
-    s may be unicode, content must be bytes (or plain string in Python 2.x'''
-
-    m = hashlib.md5()
-
-    if g.isUnicode(s):
-        s = g.toEncodedString(s)
-
-    if g.isUnicode(content):
-        g.internalError('content arg must be str/bytes')
-        content = g.toEncodedString(content)
-
-    m.update(s)
-    m.update(content)
-    return "fcache/" + m.hexdigest()
-
-#@-node:ville.20090606150238.6351:_contentHashFile (atFile)
 #@-node:ekr.20100126062623.6237:Ensure the contents arg to _contentHashFile is bytes
 #@+node:ekr.20100126110826.6254:Removed unit test message
 Check your configuration of script_file_path.
@@ -9984,6 +9702,136 @@ def pasteText (self,event=None,middleButton=False):
 OnPasteFromMenu = pasteText
 #@-node:ekr.20070130115927.7:leoFrame.pasteText
 #@-node:ekr.20100204223715.5821:Setting @<file> nodes dirty
+#@+node:ekr.20100206142026.5837:Fixed unit test for leo_interface.py
+@nocolor-node
+
+The module imported correctly, but leoTest.checkFileSyntax was failing.
+
+It was a whitespace problem--the fix was stripping '\r' characters in checkFileSyntax.
+#@nonl
+#@+node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
+def checkFileSyntax (fileName,s,reraise=True,suppress=False):
+
+    '''Called by a unit test to check the syntax of a file.'''
+
+    try:
+        if not g.isPython3:
+            s = g.toEncodedString(s)
+        s = s.replace('\r','')
+        compile(s+'\n',fileName,'exec')
+        return True
+    except SyntaxError:
+        if not suppress:
+            g.es("syntax error in:",fileName,color="blue")
+            g.es_exception(full=True,color="black")
+        if reraise: raise
+        return False
+    except Exception:
+        if not suppress:
+            g.es("unexpected error in:",fileName,color="blue")
+            # g.es_exception(full=False,color="black")
+        if reraise: raise
+        return False
+#@-node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
+#@-node:ekr.20100206142026.5837:Fixed unit test for leo_interface.py
+#@+node:ekr.20100206142026.5918:Fixed g.getLastTracebackFileAndLineNubmer
+#@+node:ekr.20040731204831:getLastTracebackFileAndLineNumber
+def getLastTracebackFileAndLineNumber():
+
+    typ,val,tb = sys.exc_info()
+
+    if typ == SyntaxError:
+        # IndentationError is a subclass of SyntaxError.
+        # Much easier in Python 2.6 and 3.x.
+        return val.filename,val.lineno
+    else:
+        # Data is a list of tuples, one per stack entry.
+        # Tupls have the form (filename,lineNumber,functionName,text).
+        data = traceback.extract_tb(tb)
+        if data:
+            item = data[-1] # Get the item at the top of the stack.
+            filename,n,functionName,text = item
+            return filename,n
+        else:
+            # Should never happen.
+            return '<string>',0
+
+
+
+
+        # elif type ==IndentationError:
+            # # g.es_print('',repr(val))
+            # filename,lineno = val.filename,val.lineno
+            # # old code
+            # # msg,(filename, lineno, offset, line) = val
+            # return filename,lineno
+            # # except Exception:
+                # # g.es_exception()
+                # # g.trace("bad line number")
+                # # return None,0
+        # else:
+            # # The proper line number is the second element in the last tuple.
+            # data = traceback.extract_tb(tb)
+            # if data:
+                # # g.es_print('',repr(data))
+                # item = data[-1]
+                # filename = item[0]
+                # n = item[1]
+                # return filename,n
+            # else:
+                # return None,0
+
+
+    # else:
+
+        # if typ in (exceptions.SyntaxError,exceptions.IndentationError):
+            # # Syntax and indentation errors are a special case.
+            # # extract_tb does _not_ return the proper line number!
+            # # This code is similar to the code in format_exception_only(!!)
+            # try:
+                # # g.es_print('',repr(val))
+                # msg,(filename, lineno, offset, line) = val
+                # return filename,lineno
+            # except Exception:
+                # g.trace("bad line number")
+                # return None,0
+
+        # else:
+            # # The proper line number is the second element in the last tuple.
+            # data = traceback.extract_tb(tb)
+            # if data:
+                # # g.es_print('',repr(data))
+                # item = data[-1]
+                # filename = item[0]
+                # n = item[1]
+                # return filename,n
+            # else:
+                # return None,0
+#@-node:ekr.20040731204831:getLastTracebackFileAndLineNumber
+#@+node:ekr.20031218072017.3112:es_exception
+def es_exception (full=True,c=None,color="red"):
+
+    typ,val,tb = sys.exc_info()
+
+    # val is the second argument to the raise statement.
+
+    if full or g.app.debugSwitch > 0:
+        lines = traceback.format_exception(typ,val,tb)
+    else:
+        lines = traceback.format_exception_only(typ,val)
+
+    for line in lines:
+        g.es_error(line,color=color)
+
+    # if g.app.debugSwitch > 1:
+        # import pdb # Be careful: g.pdb may or may not have been defined.
+        # pdb.set_trace()
+
+    fileName,n = g.getLastTracebackFileAndLineNumber()
+
+    return fileName,n
+#@-node:ekr.20031218072017.3112:es_exception
+#@-node:ekr.20100206142026.5918:Fixed g.getLastTracebackFileAndLineNubmer
 #@-node:ekr.20100203173153.5797:Bugs
 #@+node:ekr.20100203173153.5798:Cleanup & testing
 #@+node:ekr.20100130042842.9009:Removed config.set
@@ -10796,92 +10644,6 @@ def openWithTempFilePath (self,p,ext):
     return path
 #@-node:ekr.20031218072017.2832:c.openWithTempFilePath (may be over-ridden)
 #@-node:ekr.20031218072017.2823:c.openWith and helpers
-#@+node:ekr.20100203050306.5800:unit tests for open-with
-#@+node:ekr.20100203050306.5954:@test open-with conflict dialog
-# A copy of the code from c.createOrRecreateTempFileAsNeeded.
-# Not a perfect test, but stil significant.
-
-assert c.conflict_message
-
-result = g.app.gui.runAskYesNoCancelDialog(c,
-    "Conflict!", c.conflict_message,
-    yesMessage = "Outline",
-    noMessage = "File",
-    defaultButton = "Cancel")
-
-assert result in (None,'cancel'),'fail 2: %s' % result
-#@nonl
-#@-node:ekr.20100203050306.5954:@test open-with conflict dialog
-#@+node:ekr.20100203050306.5949:@test c.openWithTempFilePath
-s = c.openWithTempFilePath(p,'.py')
-assert s.find('LeoTemp') > -1
-assert s.endswith('.py')
-#@nonl
-#@-node:ekr.20100203050306.5949:@test c.openWithTempFilePath
-#@+node:ekr.20100203050306.5939:@test c.getOpenWithExt
-@language python
-
-table = (
-    (None,'.py'),
-    ('','.py'),
-    ('txt','.txt'),
-    ('.txt','.txt'),
-)
-
-for ext,result in table:
-    result2 = c.getOpenWithExt(p,ext)
-    assert result==result2,'ext: %s, expected %s, got %s' % (
-        repr(ext),repr(result),repr(result2))
-#@-node:ekr.20100203050306.5939:@test c.getOpenWithExt
-#@+node:ekr.20100203050306.5801:@test c.openTempFileInExternalEditor
-arg = ''
-arg0 = 'one'
-fn = '<fn>'
-filename = '' # g.os.path.basename(arg)
-vtuple = [arg0,fn]
-
-table = (
-    ('os.system',       'os.system(%s)' % (arg+fn)),
-    ('os.startfile',    'os.startfile(%s)' % (arg+fn)),
-    ('exec',            'exec(%s)' % (arg+fn)),
-    ('os.spawnl',       'os.spawnl(%s,%s,%s)' % (arg,filename,fn)),
-    ('os.spawnv',       'os.spawnv(%s,%s)' % (arg0,vtuple)),
-    ('subprocess.Popen','subprocess.Popen(%s)' % vtuple),
-    ('huh?',            'bad command:'+'huh?'),
-)
-
-for openType,result in table:
-    if openType in ('os.spawnv','subprocess.Popen'):
-        arg2 = ['one']
-    else:
-        arg2 = None
-    result2 = c.openTempFileInExternalEditor(
-        arg2,fn,openType,testing=True)
-    assert result==result2,'expected %s, got %s' % (
-        repr(result),repr(result2))
-#@nonl
-#@-node:ekr.20100203050306.5801:@test c.openTempFileInExternalEditor
-#@+node:ekr.20100203050306.5890:@test g.isCallable
-def spam(): pass
-lam = lambda a: None
-class aCallable:
-    def __call__ (self):
-        pass
-c = aCallable()
-
-table = (
-    ('abc',False),
-    (spam,True),
-    (lam,True),
-    (c,True)
-)
-
-for obj,val in table:
-    val2 = g.isCallable(obj)
-    assert val == val2,'%s, expected %s, got %s' % (
-        repr(obj),val,val2)
-#@-node:ekr.20100203050306.5890:@test g.isCallable
-#@-node:ekr.20100203050306.5800:unit tests for open-with
 #@-node:ekr.20080509065556.2:Refactored open-with
 #@+node:ekr.20100203050306.5889:converted basestring to g.isString()
 #@-node:ekr.20100203050306.5889:converted basestring to g.isString()
@@ -11234,108 +10996,122 @@ def tabNannyNode (self,p,headline,body,unittest=False,suppressErrors=False):
 #@-node:ekr.20040723094220.6:c.tabNannyNode
 #@-node:ekr.20040723094220:Check Outline commands & allies
 #@+node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
-def checkFileSyntax (fileName,s,suppress=False):
+def checkFileSyntax (fileName,s,reraise=True,suppress=False):
 
     '''Called by a unit test to check the syntax of a file.'''
 
     try:
         if not g.isPython3:
             s = g.toEncodedString(s)
+        s = s.replace('\r','')
         compile(s+'\n',fileName,'exec')
+        return True
     except SyntaxError:
         if not suppress:
             g.es("syntax error in:",fileName,color="blue")
-            g.es_exception(full=False,color="black")
-        raise
+            g.es_exception(full=True,color="black")
+        if reraise: raise
+        return False
     except Exception:
         if not suppress:
             g.es("unexpected error in:",fileName,color="blue")
-            g.es_exception(full=False,color="black")
-        raise
+            # g.es_exception(full=False,color="black")
+        if reraise: raise
+        return False
 #@-node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
 #@+node:ekr.20040731204831:getLastTracebackFileAndLineNumber
 def getLastTracebackFileAndLineNumber():
 
     typ,val,tb = sys.exc_info()
 
-    if g.isPython3:
-        if typ in (SyntaxError,IndentationError):
-            # Syntax and indentation errors are a special case.
-            # extract_tb does _not_ return the proper line number!
-            # This code is similar to the code in format_exception_only(!!)
-            try:
-                # g.es_print('',repr(val))
-                msg,(filename, lineno, offset, line) = val
-                return filename,lineno
-            except Exception:
-                g.es_exception()
-                g.trace("bad line number")
-                return None,0
-
-        else:
-            # The proper line number is the second element in the last tuple.
-            data = traceback.extract_tb(tb)
-            if data:
-                # g.es_print('',repr(data))
-                item = data[-1]
-                filename = item[0]
-                n = item[1]
-                return filename,n
-            else:
-                return None,0
-
-
+    if typ == SyntaxError:
+        # IndentationError is a subclass of SyntaxError.
+        # Much easier in Python 2.6 and 3.x.
+        return val.filename,val.lineno
     else:
-
-        if typ in (exceptions.SyntaxError,exceptions.IndentationError):
-            # Syntax and indentation errors are a special case.
-            # extract_tb does _not_ return the proper line number!
-            # This code is similar to the code in format_exception_only(!!)
-            try:
-                # g.es_print('',repr(val))
-                msg,(filename, lineno, offset, line) = val
-                return filename,lineno
-            except Exception:
-                g.trace("bad line number")
-                return None,0
-
+        # Data is a list of tuples, one per stack entry.
+        # Tupls have the form (filename,lineNumber,functionName,text).
+        data = traceback.extract_tb(tb)
+        if data:
+            item = data[-1] # Get the item at the top of the stack.
+            filename,n,functionName,text = item
+            return filename,n
         else:
-            # The proper line number is the second element in the last tuple.
-            data = traceback.extract_tb(tb)
-            if data:
-                # g.es_print('',repr(data))
-                item = data[-1]
-                filename = item[0]
-                n = item[1]
-                return filename,n
-            else:
-                return None,0
+            # Should never happen.
+            return '<string>',0
+
+
+
+
+        # elif type ==IndentationError:
+            # # g.es_print('',repr(val))
+            # filename,lineno = val.filename,val.lineno
+            # # old code
+            # # msg,(filename, lineno, offset, line) = val
+            # return filename,lineno
+            # # except Exception:
+                # # g.es_exception()
+                # # g.trace("bad line number")
+                # # return None,0
+        # else:
+            # # The proper line number is the second element in the last tuple.
+            # data = traceback.extract_tb(tb)
+            # if data:
+                # # g.es_print('',repr(data))
+                # item = data[-1]
+                # filename = item[0]
+                # n = item[1]
+                # return filename,n
+            # else:
+                # return None,0
+
+
+    # else:
+
+        # if typ in (exceptions.SyntaxError,exceptions.IndentationError):
+            # # Syntax and indentation errors are a special case.
+            # # extract_tb does _not_ return the proper line number!
+            # # This code is similar to the code in format_exception_only(!!)
+            # try:
+                # # g.es_print('',repr(val))
+                # msg,(filename, lineno, offset, line) = val
+                # return filename,lineno
+            # except Exception:
+                # g.trace("bad line number")
+                # return None,0
+
+        # else:
+            # # The proper line number is the second element in the last tuple.
+            # data = traceback.extract_tb(tb)
+            # if data:
+                # # g.es_print('',repr(data))
+                # item = data[-1]
+                # filename = item[0]
+                # n = item[1]
+                # return filename,n
+            # else:
+                # return None,0
 #@-node:ekr.20040731204831:getLastTracebackFileAndLineNumber
 #@+node:ekr.20031218072017.3112:es_exception
 def es_exception (full=True,c=None,color="red"):
 
     typ,val,tb = sys.exc_info()
 
-    fileName,n = g.getLastTracebackFileAndLineNumber()
+    # val is the second argument to the raise statement.
 
     if full or g.app.debugSwitch > 0:
         lines = traceback.format_exception(typ,val,tb)
     else:
         lines = traceback.format_exception_only(typ,val)
-        if 0: # We might as well print the entire SyntaxError message.
-            lines = lines[-1:] # Usually only one line, but more for Syntax errors!
 
     for line in lines:
         g.es_error(line,color=color)
-        # if not g.stdErrIsRedirected() and not g.unitTesting:
-            # try:
-                # g.pr(line)
-            # except Exception:
-                # g.pr(g.toEncodedString(line,'ascii'))
 
-    if g.app.debugSwitch > 1:
-        import pdb # Be careful: g.pdb may or may not have been defined.
-        pdb.set_trace()
+    # if g.app.debugSwitch > 1:
+        # import pdb # Be careful: g.pdb may or may not have been defined.
+        # pdb.set_trace()
+
+    fileName,n = g.getLastTracebackFileAndLineNumber()
 
     return fileName,n
 #@-node:ekr.20031218072017.3112:es_exception
@@ -11368,24 +11144,28 @@ def checkPythonNode (self,p,unittest=False,suppressErrors=False):
 
 #@-node:ekr.20040723094220.5:c.checkPythonNode
 #@+node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
-def checkFileSyntax (fileName,s,suppress=False):
+def checkFileSyntax (fileName,s,reraise=True,suppress=False):
 
     '''Called by a unit test to check the syntax of a file.'''
 
     try:
         if not g.isPython3:
             s = g.toEncodedString(s)
+        s = s.replace('\r','')
         compile(s+'\n',fileName,'exec')
+        return True
     except SyntaxError:
         if not suppress:
             g.es("syntax error in:",fileName,color="blue")
-            g.es_exception(full=False,color="black")
-        raise
+            g.es_exception(full=True,color="black")
+        if reraise: raise
+        return False
     except Exception:
         if not suppress:
             g.es("unexpected error in:",fileName,color="blue")
-            g.es_exception(full=False,color="black")
-        raise
+            # g.es_exception(full=False,color="black")
+        if reraise: raise
+        return False
 #@-node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
 #@+node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
 def checkPythonSyntax (self,p,body,supress=False):
@@ -11457,6 +11237,8 @@ def forgivingParser (self,p,suppress=False):
 #@-node:ekr.20061031131434.63:forgivingParser (leoKeys)
 #@-node:ekr.20100206004019.5855:Convert argument to compile to encoded string
 #@-node:ekr.20100205060712.8315:Simplified & corrected syntax checking & error reporting
+#@+node:ekr.20100205180205.5847:Added unit test for clone-resolution code
+#@-node:ekr.20100205180205.5847:Added unit test for clone-resolution code
 #@-node:ekr.20100203173153.5798:Cleanup & testing
 #@+node:ekr.20100205060712.5836:Node recovery
 #@+node:ekr.20100205060712.8318:Top-level fc code
@@ -11652,7 +11434,7 @@ def handleNodeConflicts (self):
         fn  = bunch.get('fileName') or ''
         b1,h1 = bunch.get('b_old'),bunch.get('h_old')
         b2,h2 = bunch.get('b_new'),bunch.get('h_new')
-        child = root.insertAsNthChild(0)
+        child = root.insertAsLastChild()
         h = 'Recovered node "%s from %s' % (h1,g.shortFileName(fn))
         child.setHeadString(h)
         child.setBodyString('%s %s' % (tag,gnx))
@@ -11797,68 +11579,6 @@ def initReadIvars (self):
     self.c.nodeConflictFileName = None # 2010/01/05
 #@nonl
 #@-node:ekr.20060919142200.1:initReadIvars
-#@+node:ekr.20041005105605.72:at.createThinChild4
-def createThinChild4 (self,gnxString,headline):
-
-    """Find or create a new *vnode* whose parent (also a vnode) is at.lastThinNode.
-    This is called only for @thin trees."""
-
-    trace = False and not g.unitTesting
-    verbose = False
-    at = self ; c = at.c ; indices = g.app.nodeIndices
-    last = at.lastThinNode
-    lastIndex = last.fileIndex
-    gnx = indices.scanGnx(gnxString,0)
-
-    if trace and verbose: g.trace("last %s, gnx %s %s" % (
-        last,gnxString,headline))
-
-    parent = at.lastThinNode # A vnode.
-    children = parent.children
-    for child in children:
-        if gnx == child.fileIndex:
-            break
-    else:
-        child = None
-
-    if at.cloneSibCount > 1:
-        n = at.cloneSibCount ; at.cloneSibCount = 0
-        if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
-        else: clonedSibs = 0
-        copies = n - clonedSibs
-        if trace: g.trace(copies,headline)
-    else:
-        if gnx == lastIndex:
-            last.setVisited() # Supress warning/deletion of unvisited nodes.
-            if trace:g.trace('found last',last)
-            return last
-        if child:
-            child.setVisited() # Supress warning/deletion of unvisited nodes.
-            if trace: g.trace('found child',child)
-            return child
-        copies = 1 # Create exactly one copy.
-
-    while copies > 0:
-        copies -= 1
-        # Create the vnode only if it does not already exist.
-        gnxDict = c.fileCommands.gnxDict
-        v = gnxDict.get(gnxString)
-        if v:
-            if gnx != v.fileIndex:
-                g.trace('can not happen: v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx))
-        else:
-            v = leoNodes.vnode(context=c)
-            v._headString = headline # Allowed use of v._headString.
-            v.fileIndex = gnx
-            gnxDict[gnxString] = v
-
-        child = v
-        child._linkAsNthChild(parent,parent.numberOfChildren())
-
-    if trace and verbose: g.trace('new node: %s' % child)
-    child.setVisited() # Supress warning/deletion of unvisited nodes.
-    return child
-#@-node:ekr.20041005105605.72:at.createThinChild4
 #@+node:ekr.20041005105605.95:at.readEndNode
 def readEndNode (self,unused_s,unused_i,middle=False):
 
@@ -12083,7 +11803,7 @@ def handleNodeConflicts (self):
         fn  = bunch.get('fileName') or ''
         b1,h1 = bunch.get('b_old'),bunch.get('h_old')
         b2,h2 = bunch.get('b_new'),bunch.get('h_new')
-        child = root.insertAsNthChild(0)
+        child = root.insertAsLastChild()
         h = 'Recovered node "%s from %s' % (h1,g.shortFileName(fn))
         child.setHeadString(h)
         child.setBodyString('%s %s' % (tag,gnx))
@@ -12343,915 +12063,6 @@ def setIvarsFromSettings (self,c):
                     setattr(self,ivar,val)
 #@-node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
 #@-node:ekr.20100130042842.6404:Reading settings (do not delete)
-#@+node:ekr.20100129131524.6190:improve caching (do not delete)
-@nocolor-node
-
-- Cache expansion states.
-- Use common key for globals??
-#@nonl
-#@+node:ekr.20060919110638.14:parse_leo_file
-def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
-
-    c = self.c
-    try:
-        if g.isPython3:
-            if theFile:
-                # Use the open binary file, opened by g.openLeoOrZipFile.
-                s = theFile.read() # type(s) is bytes.
-                s = self.cleanSaxInputString(s)
-                theFile = BytesIO(s)
-            else:
-                s = str(s,encoding='utf-8')
-                s = self.cleanSaxInputString(s)
-                theFile = StringIO(s)
-        else:
-            if theFile: s = theFile.read()
-            s = self.cleanSaxInputString(s)
-            theFile = cStringIO.StringIO(s)
-        parser = xml.sax.make_parser()
-        parser.setFeature(xml.sax.handler.feature_external_ges,1)
-            # Include external general entities, esp. xml-stylesheet lines.
-        if 0: # Expat does not read external features.
-            parser.setFeature(xml.sax.handler.feature_external_pes,1)
-                # Include all external parameter entities
-                # Hopefully the parser can figure out the encoding from the <?xml> element.
-        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
-        parser.setContentHandler(handler)
-        parser.parse(theFile) # expat does not support parseString
-        # g.trace('parsing done')
-        sax_node = handler.getRootNode()
-    except xml.sax.SAXParseException:
-        g.es_print('error parsing',inputFileName,color='red')
-        g.es_exception()
-        sax_node = None
-    except Exception:
-        g.es_print('unexpected exception parsing',inputFileName,color='red')
-        g.es_exception()
-        sax_node = None
-
-    return sax_node
-#@-node:ekr.20060919110638.14:parse_leo_file
-#@+node:ekr.20100129133806.6242:Calls to _contentHashFile
-#@+node:ekr.20100129133806.6243:Reading
-#@+node:ekr.20100122130101.6176:at.readFromCache
-def readFromCache (self,fileName,force,root):
-
-    at = self ; c = at.c
-    s,e = g.readFileIntoString(fileName,raw=True)
-    if s is None: return False,None
-
-    cachefile = self._contentHashFile(root.h,s)
-
-    # 2010/01/22: uncache *any* file provided 'force' is False.
-    doCache = g.enableDB and not force
-    ok = doCache and cachefile in c.db
-    if ok:
-        # Delete the previous tree, regardless of the @<file> type.
-        while root.hasChildren():
-            root.firstChild().doDelete()
-        # Recreate the file from the cache.
-        aList = c.db[cachefile]
-        root.v.createOutlineFromCacheList(c,aList,fileName=fileName)
-        at.inputFile.close()
-        root.clearDirty()
-
-    return ok,cachefile
-#@-node:ekr.20100122130101.6176:at.readFromCache
-#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
-def readOneAtAutoNode (self,fileName,p):
-
-    at = self ; c = at.c ; ic = c.importCommands
-
-    oldChanged = c.isChanged()
-    at.scanDefaultDirectory(p,importing=True) # Set default_directory
-    fileName = c.os_path_finalize_join(at.default_directory,fileName)
-
-    # Delete all children.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-    s,e = g.readFileIntoString(fileName,raw=True)
-    if s is None:
-        cachefile = None
-    else:
-        cachefile = self._contentHashFile(p.h,s)
-
-    # Remember that we have read this file.
-    p.v.at_read = True # Create the attribute
-
-    # Disable caching for test.leo.
-    if c.shortFileName() != 'test.leo':
-        if cachefile is not None and cachefile in c.db:        
-            # g.es('uncache:',p.h)
-            aList = c.db[cachefile]
-            p.v.createOutlineFromCacheList(c,aList)
-            return
-
-    if not g.unitTesting:
-        g.es("reading:",p.h)
-
-    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
-
-    if ic.errors:
-        # Note: the file contains an @ignore,
-        # so no unintended write can happen.
-        g.es_print('errors inhibited read @auto',fileName,color='red')
-
-    if ic.errors or not g.os_path_exists(fileName):
-        p.clearDirty()
-        c.setChanged(oldChanged)
-    else:
-        self.writeCachedTree(p, cachefile)
-        g.doHook('after-auto', p = p)  # call after-auto callbacks
-#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
-#@+node:ekr.20060919110638.36:getPositionAttributes
-def getPositionAttributes (self,attrs):
-
-    trace = False and not g.unitTesting
-    c = self.c
-
-    if trace: g.trace(len(list(c.db.keys())),c.mFileName,self.fileName)
-
-    d = {}
-
-    if g.enableDB and c.db and c.mFileName:
-        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
-        globals_tag = g.toEncodedString(globals_tag,'ascii')
-        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
-        data = c.db.get('window_position_%s' % (key))
-        if data:
-            top,left,height,width = data
-            top,left,height,width = int(top),int(left),int(height),int(width)
-            d = {'top':top,'left':left,'height':height,'width':width}
-
-    if not d and c.fixed and c.fixedWindowPosition:
-        width,height,left,top = c.fixedWindowPosition
-        d = {'top':top,'left':left,'width':width,'height':height}
-
-    if not d:
-        for bunch in self.attrsToList(attrs):
-            name = bunch.name ; val = bunch.val
-            if name in ('top','left','width','height'):
-                try:
-                    d[name] = int(val)
-                except ValueError:
-                    d[name] = 100 # A reasonable default.
-            else:
-                g.trace(name,len(val))
-
-    # if trace: g.trace(d)
-    return d
-#@-node:ekr.20060919110638.36:getPositionAttributes
-#@+node:ekr.20060919110638.13:setPositionsFromVnodes & helper
-def setPositionsFromVnodes (self):
-
-    trace = False and not g.unitTesting
-    c = self.c ; p = c.rootPosition()
-    current,str_pos = None,None
-    use_db = g.enableDB and c.db and c.mFileName
-
-    if use_db:
-        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
-        globals_tag = g.toEncodedString(globals_tag,'ascii')
-        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
-        str_pos = c.db.get('current_position_%s' % key)
-        if trace: g.trace('from c.db',str_pos,key)
-
-    if not str_pos:
-        d = hasattr(p.v,'unknownAttributes') and p.v.unknownAttributes
-        if d: str_pos = d.get('str_leo_pos')
-        if trace: g.trace('from p.v.u',str_pos)
-
-    if str_pos:
-        current = self.archivedPositionToPosition(str_pos)
-
-    c.setCurrentPosition(current or c.rootPosition())
-#@+node:ekr.20061006104837.1:archivedPositionToPosition
-def archivedPositionToPosition (self,s):
-
-    c = self.c
-    aList = s.split(',')
-    try:
-        aList = [int(z) for z in aList]
-    except Exception:
-        # g.trace('oops: bad archived position. not an int:',aList,c)
-        aList = None
-    if not aList: return None
-    p = c.rootPosition() ; level = 0
-    while level < len(aList):
-        i = aList[level]
-        while i > 0:
-            if p.hasNext():
-                p.moveToNext()
-                i -= 1
-            else:
-                # g.trace('oops: bad archived position. no sibling:',aList,p.h,c)
-                return None
-        level += 1
-        if level < len(aList):
-            p.moveToFirstChild()
-            # g.trace('level',level,'index',aList[level],p.h)
-    return p
-#@nonl
-#@-node:ekr.20061006104837.1:archivedPositionToPosition
-#@-node:ekr.20060919110638.13:setPositionsFromVnodes & helper
-#@+node:ekr.20060919110638.37:startGlobals
-def startGlobals (self,attrs):
-
-    trace = False and not g.unitTesting
-    c = self.c
-
-    if self.inClipboard:
-        return
-
-    c.frame.ratio,c.frame.secondary_ratio = 0.5,0.5 # Set defaults.
-
-    if trace: g.trace(len(list(c.db.keys())),c.mFileName)
-
-    if g.enableDB and c.db and c.mFileName:
-        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
-        globals_tag = g.toEncodedString(globals_tag,'ascii')
-        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
-        c.frame.ratio = float(c.db.get(
-            'body_outline_ratio_%s' % (key),'0.5'))
-        c.frame.secondary_ratio = float(c.db.get(
-            'body_secondary_ratio_%s' % (key),'0.5'))
-        if trace: g.trace('key',key,
-            '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
-    else:
-        try:
-            for bunch in self.attrsToList(attrs):
-                name = bunch.name ; val = bunch.val
-                if name == 'body_outline_ratio':
-                    c.frame.ratio = float(val) # 2010/01/11
-                elif name == 'body_secondary_ratio':
-                    c.frame.secondary_ratio = float(val) # 2010/01/11
-            if trace: g.trace('** no c.db:','%1.2f %1.2f' % (
-                c.frame.ratio,c.frame.secondary_ratio))
-        except Exception:
-            pass
-#@-node:ekr.20060919110638.37:startGlobals
-#@-node:ekr.20100129133806.6243:Reading
-#@+node:ekr.20100129133806.6244:Writing
-#@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >> putVnode
-# These string catenations are benign because they rarely happen.
-attr = ""
-# New in Leo 4.5: support fixed .leo files.
-if not c.fixed:
-    if v.isExpanded() and v.hasChildren(): attr += "E"
-    if v.isMarked():   attr += "M"
-    if v.isOrphan():   attr += "O"
-    if attr:
-        attrs.append(' a="%s"' % attr)
-
-# Put the archived *current* position in the *root* positions <v> element.
-if p == self.rootPosition:
-    aList = [str(z) for z in self.currentPosition.archivedPosition()]
-    d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
-    str_pos = ','.join(aList)
-    # 2010/01/26: don't write the current position if we can cache it.
-    use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
-    if use_db:
-        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
-        globals_tag = g.toEncodedString(globals_tag,'ascii')
-        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
-        c.db['current_position_%s' % key] = str_pos
-        if d.get('str_leo_pos'): del d['str_leo_pos']
-        # g.trace('to c.db',str_pos,key)
-    elif c.fixed:
-        if d.get('str_leo_pos'): del d['str_leo_pos']
-    else:
-        d['str_leo_pos'] = str_pos
-    # g.trace(aList,d)
-    v.unknownAttributes = d
-elif hasattr(v,"unknownAttributes"):
-    d = v.unknownAttributes
-    if d and not c.fixed and d.get('str_leo_pos'):
-        # g.trace("clearing str_leo_pos",v)
-        del d['str_leo_pos']
-        v.unknownAttributes = d
-#@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >> putVnode
-#@+node:ekr.20031218072017.3037:putGlobals
-# Changed for Leo 4.0.
-
-def putGlobals (self):
-
-    trace = False and not g.unitTesting
-    c = self.c
-
-    use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
-
-    if use_db:
-        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
-        globals_tag = g.toEncodedString(globals_tag,'ascii')
-        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
-        if trace: g.trace(len(list(c.db.keys())),c.mFileName,key)
-        << put all data to c.db >>
-
-    # Always put positions, to trigger sax methods.
-    self.put("<globals")
-    << put the body/outline ratios >>
-    self.put(">") ; self.put_nl()
-    << put the position of this frame >>
-    << put the position of the log window >>
-    self.put("</globals>") ; self.put_nl()
-#@+node:ekr.20100112095623.6267:<< put all data to c.db >>
-c.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
-c.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
-
-if trace: g.trace('ratios: %1.2f %1.2f' % (
-    c.frame.ratio,c.frame.secondary_ratio))
-
-width,height,left,top = c.frame.get_window_info()
-
-c.db['window_position_%s' % key] = (
-    str(top),str(left),str(height),str(width))
-
-if trace: g.trace('top',top,'left',left,'height',height,'width',width)
-#@-node:ekr.20100112095623.6267:<< put all data to c.db >>
-#@+node:ekr.20031218072017.3038:<< put the body/outline ratios >>
-self.put(" body_outline_ratio=")
-self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
-    c.frame.ratio)))
-
-self.put(" body_secondary_ratio=")
-self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
-    c.frame.secondary_ratio)))
-
-if trace: g.trace('fixed or use_db',c.fixed or use_db,
-    '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
-#@-node:ekr.20031218072017.3038:<< put the body/outline ratios >>
-#@+node:ekr.20031218072017.3039:<< put the position of this frame >>
-# New in Leo 4.5: support fixed .leo files.
-
-if c.fixed or use_db:
-    width,height,left,top = 700,500,50,50
-        # Put fixed, immutable, reasonable defaults.
-        # Leo 4.5 and later will ignore these when reading.
-        # These should be reasonable defaults so that the
-        # file will be opened properly by older versions
-        # of Leo that do not support fixed .leo files.
-else:
-    width,height,left,top = c.frame.get_window_info()
-
-# g.trace(width,height,left,top)
-
-self.put_tab()
-self.put("<global_window_position")
-self.put(" top=") ; self.put_in_dquotes(str(top))
-self.put(" left=") ; self.put_in_dquotes(str(left))
-self.put(" height=") ; self.put_in_dquotes(str(height))
-self.put(" width=") ; self.put_in_dquotes(str(width))
-self.put("/>") ; self.put_nl()
-#@-node:ekr.20031218072017.3039:<< put the position of this frame >>
-#@+node:ekr.20031218072017.3040:<< put the position of the log window >>
-top = left = height = width = 0 # no longer used
-
-self.put_tab()
-self.put("<global_log_window_position")
-self.put(" top=") ; self.put_in_dquotes(str(top))
-self.put(" left=") ; self.put_in_dquotes(str(left))
-self.put(" height=") ; self.put_in_dquotes(str(height))
-self.put(" width=") ; self.put_in_dquotes(str(width))
-self.put("/>") ; self.put_nl()
-#@-node:ekr.20031218072017.3040:<< put the position of the log window >>
-#@-node:ekr.20031218072017.3037:putGlobals
-#@-node:ekr.20100129133806.6244:Writing
-#@-node:ekr.20100129133806.6242:Calls to _contentHashFile
-#@+node:ekr.20100129133806.6245:Found: c.db
-#@+node:ekr.20100122130101.6176:at.readFromCache
-def readFromCache (self,fileName,force,root):
-
-    at = self ; c = at.c
-    s,e = g.readFileIntoString(fileName,raw=True)
-    if s is None: return False,None
-
-    cachefile = self._contentHashFile(root.h,s)
-
-    # 2010/01/22: uncache *any* file provided 'force' is False.
-    doCache = g.enableDB and not force
-    ok = doCache and cachefile in c.db
-    if ok:
-        # Delete the previous tree, regardless of the @<file> type.
-        while root.hasChildren():
-            root.firstChild().doDelete()
-        # Recreate the file from the cache.
-        aList = c.db[cachefile]
-        root.v.createOutlineFromCacheList(c,aList,fileName=fileName)
-        at.inputFile.close()
-        root.clearDirty()
-
-    return ok,cachefile
-#@-node:ekr.20100122130101.6176:at.readFromCache
-#@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >> putVnode
-# These string catenations are benign because they rarely happen.
-attr = ""
-# New in Leo 4.5: support fixed .leo files.
-if not c.fixed:
-    if v.isExpanded() and v.hasChildren(): attr += "E"
-    if v.isMarked():   attr += "M"
-    if v.isOrphan():   attr += "O"
-    if attr:
-        attrs.append(' a="%s"' % attr)
-
-# Put the archived *current* position in the *root* positions <v> element.
-if p == self.rootPosition:
-    aList = [str(z) for z in self.currentPosition.archivedPosition()]
-    d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
-    str_pos = ','.join(aList)
-    # 2010/01/26: don't write the current position if we can cache it.
-    use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
-    if use_db:
-        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
-        globals_tag = g.toEncodedString(globals_tag,'ascii')
-        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
-        c.db['current_position_%s' % key] = str_pos
-        if d.get('str_leo_pos'): del d['str_leo_pos']
-        # g.trace('to c.db',str_pos,key)
-    elif c.fixed:
-        if d.get('str_leo_pos'): del d['str_leo_pos']
-    else:
-        d['str_leo_pos'] = str_pos
-    # g.trace(aList,d)
-    v.unknownAttributes = d
-elif hasattr(v,"unknownAttributes"):
-    d = v.unknownAttributes
-    if d and not c.fixed and d.get('str_leo_pos'):
-        # g.trace("clearing str_leo_pos",v)
-        del d['str_leo_pos']
-        v.unknownAttributes = d
-#@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >> putVnode
-#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
-def readOneAtAutoNode (self,fileName,p):
-
-    at = self ; c = at.c ; ic = c.importCommands
-
-    oldChanged = c.isChanged()
-    at.scanDefaultDirectory(p,importing=True) # Set default_directory
-    fileName = c.os_path_finalize_join(at.default_directory,fileName)
-
-    # Delete all children.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-    s,e = g.readFileIntoString(fileName,raw=True)
-    if s is None:
-        cachefile = None
-    else:
-        cachefile = self._contentHashFile(p.h,s)
-
-    # Remember that we have read this file.
-    p.v.at_read = True # Create the attribute
-
-    # Disable caching for test.leo.
-    if c.shortFileName() != 'test.leo':
-        if cachefile is not None and cachefile in c.db:        
-            # g.es('uncache:',p.h)
-            aList = c.db[cachefile]
-            p.v.createOutlineFromCacheList(c,aList)
-            return
-
-    if not g.unitTesting:
-        g.es("reading:",p.h)
-
-    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
-
-    if ic.errors:
-        # Note: the file contains an @ignore,
-        # so no unintended write can happen.
-        g.es_print('errors inhibited read @auto',fileName,color='red')
-
-    if ic.errors or not g.os_path_exists(fileName):
-        p.clearDirty()
-        c.setChanged(oldChanged)
-    else:
-        self.writeCachedTree(p, cachefile)
-        g.doHook('after-auto', p = p)  # call after-auto callbacks
-#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
-#@+node:ekr.20060919110638.13:setPositionsFromVnodes & helper
-def setPositionsFromVnodes (self):
-
-    trace = False and not g.unitTesting
-    c = self.c ; p = c.rootPosition()
-    current,str_pos = None,None
-    use_db = g.enableDB and c.db and c.mFileName
-
-    if use_db:
-        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
-        globals_tag = g.toEncodedString(globals_tag,'ascii')
-        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
-        str_pos = c.db.get('current_position_%s' % key)
-        if trace: g.trace('from c.db',str_pos,key)
-
-    if not str_pos:
-        d = hasattr(p.v,'unknownAttributes') and p.v.unknownAttributes
-        if d: str_pos = d.get('str_leo_pos')
-        if trace: g.trace('from p.v.u',str_pos)
-
-    if str_pos:
-        current = self.archivedPositionToPosition(str_pos)
-
-    c.setCurrentPosition(current or c.rootPosition())
-#@+node:ekr.20061006104837.1:archivedPositionToPosition
-def archivedPositionToPosition (self,s):
-
-    c = self.c
-    aList = s.split(',')
-    try:
-        aList = [int(z) for z in aList]
-    except Exception:
-        # g.trace('oops: bad archived position. not an int:',aList,c)
-        aList = None
-    if not aList: return None
-    p = c.rootPosition() ; level = 0
-    while level < len(aList):
-        i = aList[level]
-        while i > 0:
-            if p.hasNext():
-                p.moveToNext()
-                i -= 1
-            else:
-                # g.trace('oops: bad archived position. no sibling:',aList,p.h,c)
-                return None
-        level += 1
-        if level < len(aList):
-            p.moveToFirstChild()
-            # g.trace('level',level,'index',aList[level],p.h)
-    return p
-#@nonl
-#@-node:ekr.20061006104837.1:archivedPositionToPosition
-#@-node:ekr.20060919110638.13:setPositionsFromVnodes & helper
-#@+node:ekr.20031218072017.3037:putGlobals
-# Changed for Leo 4.0.
-
-def putGlobals (self):
-
-    trace = False and not g.unitTesting
-    c = self.c
-
-    use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
-
-    if use_db:
-        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
-        globals_tag = g.toEncodedString(globals_tag,'ascii')
-        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
-        if trace: g.trace(len(list(c.db.keys())),c.mFileName,key)
-        << put all data to c.db >>
-
-    # Always put positions, to trigger sax methods.
-    self.put("<globals")
-    << put the body/outline ratios >>
-    self.put(">") ; self.put_nl()
-    << put the position of this frame >>
-    << put the position of the log window >>
-    self.put("</globals>") ; self.put_nl()
-#@+node:ekr.20100112095623.6267:<< put all data to c.db >>
-c.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
-c.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
-
-if trace: g.trace('ratios: %1.2f %1.2f' % (
-    c.frame.ratio,c.frame.secondary_ratio))
-
-width,height,left,top = c.frame.get_window_info()
-
-c.db['window_position_%s' % key] = (
-    str(top),str(left),str(height),str(width))
-
-if trace: g.trace('top',top,'left',left,'height',height,'width',width)
-#@-node:ekr.20100112095623.6267:<< put all data to c.db >>
-#@+node:ekr.20031218072017.3038:<< put the body/outline ratios >>
-self.put(" body_outline_ratio=")
-self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
-    c.frame.ratio)))
-
-self.put(" body_secondary_ratio=")
-self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
-    c.frame.secondary_ratio)))
-
-if trace: g.trace('fixed or use_db',c.fixed or use_db,
-    '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
-#@-node:ekr.20031218072017.3038:<< put the body/outline ratios >>
-#@+node:ekr.20031218072017.3039:<< put the position of this frame >>
-# New in Leo 4.5: support fixed .leo files.
-
-if c.fixed or use_db:
-    width,height,left,top = 700,500,50,50
-        # Put fixed, immutable, reasonable defaults.
-        # Leo 4.5 and later will ignore these when reading.
-        # These should be reasonable defaults so that the
-        # file will be opened properly by older versions
-        # of Leo that do not support fixed .leo files.
-else:
-    width,height,left,top = c.frame.get_window_info()
-
-# g.trace(width,height,left,top)
-
-self.put_tab()
-self.put("<global_window_position")
-self.put(" top=") ; self.put_in_dquotes(str(top))
-self.put(" left=") ; self.put_in_dquotes(str(left))
-self.put(" height=") ; self.put_in_dquotes(str(height))
-self.put(" width=") ; self.put_in_dquotes(str(width))
-self.put("/>") ; self.put_nl()
-#@-node:ekr.20031218072017.3039:<< put the position of this frame >>
-#@+node:ekr.20031218072017.3040:<< put the position of the log window >>
-top = left = height = width = 0 # no longer used
-
-self.put_tab()
-self.put("<global_log_window_position")
-self.put(" top=") ; self.put_in_dquotes(str(top))
-self.put(" left=") ; self.put_in_dquotes(str(left))
-self.put(" height=") ; self.put_in_dquotes(str(height))
-self.put(" width=") ; self.put_in_dquotes(str(width))
-self.put("/>") ; self.put_nl()
-#@-node:ekr.20031218072017.3040:<< put the position of the log window >>
-#@-node:ekr.20031218072017.3037:putGlobals
-#@+node:ekr.20100112095623.6267:<< put all data to c.db >>
-c.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
-c.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
-
-if trace: g.trace('ratios: %1.2f %1.2f' % (
-    c.frame.ratio,c.frame.secondary_ratio))
-
-width,height,left,top = c.frame.get_window_info()
-
-c.db['window_position_%s' % key] = (
-    str(top),str(left),str(height),str(width))
-
-if trace: g.trace('top',top,'left',left,'height',height,'width',width)
-#@-node:ekr.20100112095623.6267:<< put all data to c.db >>
-#@+node:ekr.20051104075904.4:doTests...
-def doTests(c,all=None,p=None,verbosity=1):
-
-    trace = False ; verbose = False
-    if all:
-        p = c.rootPosition()
-    elif not p:
-        p = c.p
-    p1 = p.copy()
-
-    try:
-        found = False
-        g.unitTesting = g.app.unitTesting = True
-        g.app.unitTestDict["fail"] = False
-        g.app.unitTestDict['c'] = c
-        g.app.unitTestDict['g'] = g
-        g.app.unitTestDict['p'] = p and p.copy()
-
-        # c.undoer.clearUndoState() # New in 4.3.1.
-        changed = c.isChanged()
-        suite = unittest.makeSuite(unittest.TestCase)
-
-        # New in Leo 4.4.8: ignore everything in @ignore trees.
-        if all: last = None
-        else:   last = p.nodeAfterTree()
-        if trace and verbose: g.trace('all',all,'root',p.h)
-        while p and p != last:
-            if g.match_word(p.h,0,'@ignore'):
-                if trace and verbose: g.trace('ignoring',p.h)
-                p.moveToNodeAfterTree()
-            elif isTestNode(p): # @test
-                if trace and verbose: g.trace('adding',p.h)
-                test = makeTestCase(c,p)
-                if test:
-                    suite.addTest(test) ; found = True
-                p.moveToThreadNext()
-            elif isSuiteNode(p): # @suite
-                if trace and verbose: g.trace('adding',p.h)
-                test = makeTestSuite(c,p)
-                if test:
-                    suite.addTest(test) ; found = True
-                p.moveToThreadNext()
-            else:
-                if trace and verbose: g.trace('skipping',p.h)
-                p.moveToThreadNext()
-
-        # Verbosity: 1: print just dots.
-        if found:
-            res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
-            # put info to db as well
-            if g.enableDB:
-                key = 'unittest/cur/fail'
-                archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
-                c.db[key] = archive
-        else:
-            g.es_print('no @test or @suite nodes in %s outline' % (
-                g.choose(all,'entire','selected')),color='red')
-    finally:
-        c.setChanged(changed) # Restore changed state.
-        if g.app.unitTestDict.get('restoreSelectedNode',True):
-            c.redraw(p1)
-        g.unitTesting = g.app.unitTesting = False
-#@+node:ekr.20051104075904.5:class generalTestCase
-class generalTestCase(unittest.TestCase):
-
-    """Create a unit test from a snippet of code."""
-
-    @others
-#@+node:ekr.20051104075904.6:__init__
-def __init__ (self,c,p):
-
-     # Init the base class.
-    unittest.TestCase.__init__(self)
-
-    self.c = c
-    self.p = p.copy()
-#@-node:ekr.20051104075904.6:__init__
-#@+node:ekr.20051104075904.7: fail
-def fail (self,msg=None):
-
-    """Mark a unit test as having failed."""
-
-    import leo.core.leoGlobals as g
-
-    g.app.unitTestDict["fail"] = g.callers()
-#@-node:ekr.20051104075904.7: fail
-#@+node:ekr.20051104075904.9:tearDown
-def tearDown (self):
-
-    pass
-
-    # Restore the outline.
-    self.c.outerUpdate()
-#@nonl
-#@-node:ekr.20051104075904.9:tearDown
-#@+node:ekr.20051104075904.8:setUp
-def setUp (self):
-
-    c = self.c ; p = self.p
-
-    c.selectPosition(p.copy()) # 2010/02/03
-#@-node:ekr.20051104075904.8:setUp
-#@+node:ekr.20051104075904.10:runTest
-def runTest (self,define_g = True):
-
-    trace = False
-    c = self.c ; p = self.p.copy()
-    script = g.getScript(c,p).strip()
-    self.assert_(script)
-    writeScriptFile = c.config.getBool('write_script_file')
-
-    # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
-    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
-
-    if define_g:
-        d = {'c':c,'g':g,'p':p and p.copy(),'self':self,}
-    else:
-        d = {'self':self,}
-
-    script = script + '\n'
-    if trace: g.trace('p',p and p.h,'\n',script)
-
-    # Execute the script. Let unit test handle any errors!
-    if writeScriptFile:
-        scriptFile = c.writeScriptFile(script)
-
-    exec(script,d)
-#@-node:ekr.20051104075904.10:runTest
-#@+node:ekr.20051104075904.11:shortDescription
-def shortDescription (self):
-
-    s = self.p.h
-
-    # g.trace(s)
-
-    return s + '\n'
-#@-node:ekr.20051104075904.11:shortDescription
-#@-node:ekr.20051104075904.5:class generalTestCase
-#@+node:ekr.20051104075904.12:makeTestSuite
-@ This code executes the script in an @suite node.  This code assumes:
-- The script creates a one or more unit tests.
-- The script puts the result in g.app.scriptDict["suite"]
-@c
-
-def makeTestSuite (c,p):
-
-    """Create a suite of test cases by executing the script in an @suite node."""
-
-    p = p.copy()
-
-    script = g.getScript(c,p).strip()
-    if not script:
-        print("no script in %s" % h)
-        return None
-    try:
-        if 0: #debugging
-            n,lines = 0,g.splitLines(script)
-            for line in lines:
-                print(n,line)
-                n += 1
-        exec(script + '\n',{'c':c,'g':g,'p':p})
-        suite = g.app.scriptDict.get("suite")
-        if not suite:
-            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
-        return suite
-    except Exception:
-        print('makeTestSuite: exception creating test cases for %s' % p.h)
-        g.es_exception()
-        return None
-#@-node:ekr.20051104075904.12:makeTestSuite
-#@+node:ekr.20051104075904.13:makeTestCase
-def makeTestCase (c,p):
-
-    p = p.copy()
-
-    if p.b.strip():
-        return generalTestCase(c,p)
-    else:
-        return None
-#@-node:ekr.20051104075904.13:makeTestCase
-#@-node:ekr.20051104075904.4:doTests...
-#@+node:ekr.20060919110638.36:getPositionAttributes
-def getPositionAttributes (self,attrs):
-
-    trace = False and not g.unitTesting
-    c = self.c
-
-    if trace: g.trace(len(list(c.db.keys())),c.mFileName,self.fileName)
-
-    d = {}
-
-    if g.enableDB and c.db and c.mFileName:
-        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
-        globals_tag = g.toEncodedString(globals_tag,'ascii')
-        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
-        data = c.db.get('window_position_%s' % (key))
-        if data:
-            top,left,height,width = data
-            top,left,height,width = int(top),int(left),int(height),int(width)
-            d = {'top':top,'left':left,'height':height,'width':width}
-
-    if not d and c.fixed and c.fixedWindowPosition:
-        width,height,left,top = c.fixedWindowPosition
-        d = {'top':top,'left':left,'width':width,'height':height}
-
-    if not d:
-        for bunch in self.attrsToList(attrs):
-            name = bunch.name ; val = bunch.val
-            if name in ('top','left','width','height'):
-                try:
-                    d[name] = int(val)
-                except ValueError:
-                    d[name] = 100 # A reasonable default.
-            else:
-                g.trace(name,len(val))
-
-    # if trace: g.trace(d)
-    return d
-#@-node:ekr.20060919110638.36:getPositionAttributes
-#@+node:ekr.20060919110638.37:startGlobals
-def startGlobals (self,attrs):
-
-    trace = False and not g.unitTesting
-    c = self.c
-
-    if self.inClipboard:
-        return
-
-    c.frame.ratio,c.frame.secondary_ratio = 0.5,0.5 # Set defaults.
-
-    if trace: g.trace(len(list(c.db.keys())),c.mFileName)
-
-    if g.enableDB and c.db and c.mFileName:
-        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
-        globals_tag = g.toEncodedString(globals_tag,'ascii')
-        key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
-        c.frame.ratio = float(c.db.get(
-            'body_outline_ratio_%s' % (key),'0.5'))
-        c.frame.secondary_ratio = float(c.db.get(
-            'body_secondary_ratio_%s' % (key),'0.5'))
-        if trace: g.trace('key',key,
-            '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
-    else:
-        try:
-            for bunch in self.attrsToList(attrs):
-                name = bunch.name ; val = bunch.val
-                if name == 'body_outline_ratio':
-                    c.frame.ratio = float(val) # 2010/01/11
-                elif name == 'body_secondary_ratio':
-                    c.frame.secondary_ratio = float(val) # 2010/01/11
-            if trace: g.trace('** no c.db:','%1.2f %1.2f' % (
-                c.frame.ratio,c.frame.secondary_ratio))
-        except Exception:
-            pass
-#@-node:ekr.20060919110638.37:startGlobals
-#@+node:ville.20090606131405.6362:writeCachedTree (atFile)
-def writeCachedTree(self, p, cachefile):
-
-    trace = False and not g.unitTesting
-    c = self.c
-
-    if not g.enableDB or g.app.unitTesting:
-        if trace: g.trace('cache disabled')
-    elif cachefile in c.db:
-        if trace: g.trace('already cached')
-    else:
-        if trace: g.trace('caching ',p.h)
-        c.db[cachefile] = p.makeCacheList()
-#@nonl
-#@-node:ville.20090606131405.6362:writeCachedTree (atFile)
-#@-node:ekr.20100129133806.6245:Found: c.db
-#@-node:ekr.20100129131524.6190:improve caching (do not delete)
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt
 #@-leo

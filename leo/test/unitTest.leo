@@ -764,6 +764,8 @@
 <v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 <v t="ekr.20100125180231.5120"><vh>Print a unicode character</vh></v>
 <v t="ekr.20080503132221.1"><vh>Startup</vh></v>
+<v t="ekr.20100127162342.5123"><vh>Import all plugins script</vh></v>
+<v t="ekr.20100203163606.5365"><vh>2to3 script</vh></v>
 </v>
 <v t="ekr.20040712101754.2"><vh>Load tests for .leo files</vh>
 <v t="ekr.20040712101754.3"><vh>@test test.leo</vh></v>
@@ -776,8 +778,6 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20100127162342.5123"><vh>Import all plugins script</vh></v>
-<v t="ekr.20100203163606.5365"><vh>2to3 script</vh></v>
 <v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20090703080553.5000"><vh>@suite run all doctests</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
@@ -1899,6 +1899,7 @@
 <v t="ekr.20070306091949"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20061001114637"><vh>leoFileCommands</vh>
+<v t="ekr.20100206165505.5386"><vh>@@test fc.handleNodeConflicts</vh></v>
 <v t="ekr.20061001124008"><vh>@@test minimal test of putTnodeList</vh>
 <v t="ekr.20061001124008.1"><vh>child</vh>
 <v t="ekr.20061001124008.2"><vh>grandchild</vh></v>
@@ -23838,9 +23839,7 @@ passList = (
     'codewisecompleter','colorize_headlines','contextmenu',
     'ctagscompleter','cursesGui','datenodes','debugger_pudb',
     'detect_urls','dtest','empty_leo_file','enable_gc','initinclass',
-    'leo_to_html',
-    ###'leo_interface',###
-    'leo_pdf','leo_to_rtf',
+    'leo_to_html','leo_interface','leo_pdf','leo_to_rtf',
     'leoOPML','leoremote','lineNumbers',
     'macros','mime','mod_autosave','mod_framesize','mod_leo2ascd',
     'mod_scripting','mod_speedups','mod_timestamp',
@@ -23867,7 +23866,11 @@ core_files = (
 external_files = (
     'ipy_leo','lproto','path','pickleshare',
 )
+recent = (
+    #'leo_interface',
+)
 table = (
+    ('plugins',recent),
     ('plugins',passList),
     ('plugins',tkPass),
     ('core',core_files),
@@ -23881,25 +23884,22 @@ for theDir,aList in table:
         if os.path.exists(fn): files.append(fn)
         else: print('*** file not found:',fn)
 
-ok = True
+failed = []
 for z in files:
     fn = g.shortFileName(z)
     s,e = g.readFileIntoString(z)
-    try:
-        leoTest.checkFileSyntax(fn,s,suppress=True)
-    except SyntaxError:
-        g.es_exception()
-        print('***failed: %s' %fn)
-        raise
-        ok = False
-assert ok
-    </t>
+    if not leoTest.checkFileSyntax(fn,s,reraise=False,suppress=False):
+        failed.append(fn)
+
+assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
+
+</t>
 <t tx="ekr.20100206001203.5395">try:
     assert False
 except AssertionError:
     fn,n = g.getLastTracebackFileAndLineNumber()
-    assert fn == '&lt;string&gt;'
-    assert n == 4
+assert fn == '&lt;string&gt;',repr(fn)
+assert n == 4,repr(n)
 </t>
 <t tx="ekr.20100206002004.5397"># This is just a hand test.
 if not g.unitTesting:
@@ -23908,6 +23908,27 @@ if not g.unitTesting:
     except AssertionError:
         g.es_exception(full=True,c=None,color='red')
 </t>
+<t tx="ekr.20100206165505.5386"># More suitable as a hand test:
+# it makes no effort to delete the 'Recovered Nodes' node.
+
+c.nodeConflictList = []
+
+for i in range(2):
+    c.nodeConflictList.append(g.bunch(
+        tag='(uncached)',
+        gnx='gnx %s' % (i),
+        fileName ='filename %s' % (i),
+        b_old='old body %s' % (i),
+        b_new='new body %s' % (i),
+        h_old='head %s' % (i),
+        h_new='head %s' % (i),
+    ))
+
+c.fileCommands.handleNodeConflicts()
+
+c.nodeConflictList = []
+
+c.redraw()</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
