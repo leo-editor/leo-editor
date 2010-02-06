@@ -23839,7 +23839,7 @@ passList = (
     'ctagscompleter','cursesGui','datenodes','debugger_pudb',
     'detect_urls','dtest','empty_leo_file','enable_gc','initinclass',
     'leo_to_html',
-    ### 'leo_interface',###
+    ###'leo_interface',###
     'leo_pdf','leo_to_rtf',
     'leoOPML','leoremote','lineNumbers',
     'macros','mime','mod_autosave','mod_framesize','mod_leo2ascd',
@@ -23888,7 +23888,9 @@ for z in files:
     try:
         leoTest.checkFileSyntax(fn,s,suppress=True)
     except SyntaxError:
-        print('***failed',fn)
+        g.es_exception()
+        print('***failed: %s' %fn)
+        raise
         ok = False
 assert ok
     </t>

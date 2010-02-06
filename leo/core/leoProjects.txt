@@ -5581,6 +5581,8 @@ def checkPythonSyntax (self,p,body,supress=False):
 
     try:
         ok = True
+        if not g.isPython3:
+            body = g.toEncodedString(body)
         fn = '<node: %s>' % p.h
         compile(body + '\n',fn,'exec')
     except SyntaxError:
@@ -11170,6 +11172,8 @@ def checkPythonNode (self,p,unittest=False,suppressErrors=False):
 
     try:
         fn = '<node: %s>' % p.h
+        if not g.isPython3:
+            body = g.toEncodedString(body)
         compile(body+'\n',fn,'exec')
         c.tabNannyNode(p,h,body,unittest,suppressErrors)
     except SyntaxError:
@@ -11235,6 +11239,8 @@ def checkFileSyntax (fileName,s,suppress=False):
     '''Called by a unit test to check the syntax of a file.'''
 
     try:
+        if not g.isPython3:
+            s = g.toEncodedString(s)
         compile(s+'\n',fileName,'exec')
     except SyntaxError:
         if not suppress:

@@ -1433,6 +1433,8 @@ class autoCompleterClass:
             s = g.getScript(c,root,useSelectedText=False)
             while s:
                 try:
+                    if not g.isPython3:
+                        s = g.toEncodedString(s)
                     compile(s+'\n','<string>','exec')
                     break
                 except SyntaxError:

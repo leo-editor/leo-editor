@@ -4177,6 +4177,8 @@ class baseCommands (object):
 
         try:
             fn = '<node: %s>' % p.h
+            if not g.isPython3:
+                body = g.toEncodedString(body)
             compile(body+'\n',fn,'exec')
             c.tabNannyNode(p,h,body,unittest,suppressErrors)
         except SyntaxError:

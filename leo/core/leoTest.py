@@ -1311,6 +1311,8 @@ def checkFileSyntax (fileName,s,suppress=False):
     '''Called by a unit test to check the syntax of a file.'''
 
     try:
+        if not g.isPython3:
+            s = g.toEncodedString(s)
         compile(s+'\n',fileName,'exec')
     except SyntaxError:
         if not suppress:

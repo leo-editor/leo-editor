@@ -3877,6 +3877,8 @@ class atFile:
 
         try:
             ok = True
+            if not g.isPython3:
+                body = g.toEncodedString(body)
             fn = '<node: %s>' % p.h
             compile(body + '\n',fn,'exec')
         except SyntaxError:
