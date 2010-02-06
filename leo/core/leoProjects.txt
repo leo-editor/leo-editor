@@ -11339,6 +11339,123 @@ def es_exception (full=True,c=None,color="red"):
 
     return fileName,n
 #@-node:ekr.20031218072017.3112:es_exception
+#@+node:ekr.20100206004019.5855:Convert argument to compile to encoded string
+#@+node:ekr.20040723094220.5:c.checkPythonNode
+def checkPythonNode (self,p,unittest=False,suppressErrors=False):
+
+    c = self ; h = p.h
+
+    # Call getScript to ignore directives and section references.
+    body = g.getScript(c,p.copy())
+    if not body: return
+
+    try:
+        fn = '<node: %s>' % p.h
+        if not g.isPython3:
+            body = g.toEncodedString(body)
+        compile(body+'\n',fn,'exec')
+        c.tabNannyNode(p,h,body,unittest,suppressErrors)
+    except SyntaxError:
+        if not suppressErrors:
+            s = "Syntax error in: %s" % h
+            g.es_print(s,color="blue")
+            g.es_exception(full=False,color="black")
+        if unittest: raise
+    except Exception:
+        g.es_print('unexpected exception')
+        g.es_exception()
+        if unittest: raise
+
+#@-node:ekr.20040723094220.5:c.checkPythonNode
+#@+node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
+def checkFileSyntax (fileName,s,suppress=False):
+
+    '''Called by a unit test to check the syntax of a file.'''
+
+    try:
+        if not g.isPython3:
+            s = g.toEncodedString(s)
+        compile(s+'\n',fileName,'exec')
+    except SyntaxError:
+        if not suppress:
+            g.es("syntax error in:",fileName,color="blue")
+            g.es_exception(full=False,color="black")
+        raise
+    except Exception:
+        if not suppress:
+            g.es("unexpected error in:",fileName,color="blue")
+            g.es_exception(full=False,color="black")
+        raise
+#@-node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
+#@+node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
+def checkPythonSyntax (self,p,body,supress=False):
+
+    try:
+        ok = True
+        if not g.isPython3:
+            body = g.toEncodedString(body)
+        fn = '<node: %s>' % p.h
+        compile(body + '\n',fn,'exec')
+    except SyntaxError:
+        if not supress:
+            self.syntaxError(p,body)
+        ok = False
+    except Exception:
+        g.trace("unexpected exception")
+        g.es_exception()
+        ok = False
+    return ok
+#@+node:ekr.20090514111518.5666:syntaxError (leoAtFile)
+def syntaxError(self,p,body):
+
+    g.es_print("Syntax error in: %s" % (p.h),color="red")
+    typ,val,tb = sys.exc_info()
+    message = hasattr(val,'message') and val.message
+    if message: g.es_print(message)
+    if val is None: return
+    lines = g.splitLines(body)
+    n = val.lineno
+    offset = val.offset or 0
+    if n is None:return
+    i = val.lineno-1
+    for j in range(max(0,i-3),min(i+3,len(lines)-1)):
+        g.es_print('%5s:%s %s' % (
+            j,g.choose(j==i,'*',' '),lines[j].rstrip()))
+        if j == i:
+            g.es_print(' '*(7+offset)+'^')
+#@nonl
+#@-node:ekr.20090514111518.5666:syntaxError (leoAtFile)
+#@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
+#@+node:ekr.20061031131434.63:forgivingParser (leoKeys)
+def forgivingParser (self,p,suppress=False):
+
+    c = self.c ; root = p.copy()
+    self.excludedTnodesList = []
+    s = g.getScript(c,root,useSelectedText=False)
+    while s:
+        try:
+            if not g.isPython3:
+                s = g.toEncodedString(s)
+            compile(s+'\n','<string>','exec')
+            break
+        except SyntaxError:
+            fileName, n = g.getLastTracebackFileAndLineNumber()
+            p = self.computeErrorNode(c,root,n,lines=g.splitLines(s))
+            if not p or p == root:
+                if not suppress:
+                    g.es_print('syntax error in class node: can not continue')
+                s = None ; break
+            else:
+                # g.es_print('syntax error: deleting',p.h)
+                self.excludedTnodesList.append(p.v)
+                s = g.getScript(c,root,useSelectedText=False)
+        except Exception:
+            g.trace('unexpected exception')
+            g.es_exception()
+            break
+    return s or ''
+#@-node:ekr.20061031131434.63:forgivingParser (leoKeys)
+#@-node:ekr.20100206004019.5855:Convert argument to compile to encoded string
 #@-node:ekr.20100205060712.8315:Simplified & corrected syntax checking & error reporting
 #@-node:ekr.20100203173153.5798:Cleanup & testing
 #@+node:ekr.20100205060712.5836:Node recovery
