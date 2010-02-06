@@ -1306,24 +1306,28 @@ def oldTestPlugin (fileName,verbose=False):
         module.unitTest(verbose=verbose)
 #@-node:ekr.20051104075904.92:testPlugin (no longer used)
 #@+node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
-def checkFileSyntax (fileName,s,suppress=False):
+def checkFileSyntax (fileName,s,reraise=True,suppress=False):
 
     '''Called by a unit test to check the syntax of a file.'''
 
     try:
         if not g.isPython3:
             s = g.toEncodedString(s)
+        s = s.replace('\r','')
         compile(s+'\n',fileName,'exec')
+        return True
     except SyntaxError:
         if not suppress:
             g.es("syntax error in:",fileName,color="blue")
-            g.es_exception(full=False,color="black")
-        raise
+            g.es_exception(full=True,color="black")
+        if reraise: raise
+        return False
     except Exception:
         if not suppress:
             g.es("unexpected error in:",fileName,color="blue")
-            g.es_exception(full=False,color="black")
-        raise
+            # g.es_exception(full=False,color="black")
+        if reraise: raise
+        return False
 #@-node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
 #@+node:ekr.20051104075904.94:checkFileTabs
 def checkFileTabs (fileName,s):

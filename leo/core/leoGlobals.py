@@ -1245,26 +1245,21 @@ def es_exception (full=True,c=None,color="red"):
 
     typ,val,tb = sys.exc_info()
 
-    fileName,n = g.getLastTracebackFileAndLineNumber()
+    # val is the second argument to the raise statement.
 
     if full or g.app.debugSwitch > 0:
         lines = traceback.format_exception(typ,val,tb)
     else:
         lines = traceback.format_exception_only(typ,val)
-        if 0: # We might as well print the entire SyntaxError message.
-            lines = lines[-1:] # Usually only one line, but more for Syntax errors!
 
     for line in lines:
         g.es_error(line,color=color)
-        # if not g.stdErrIsRedirected() and not g.unitTesting:
-            # try:
-                # g.pr(line)
-            # except Exception:
-                # g.pr(g.toEncodedString(line,'ascii'))
 
-    if g.app.debugSwitch > 1:
-        import pdb # Be careful: g.pdb may or may not have been defined.
-        pdb.set_trace()
+    # if g.app.debugSwitch > 1:
+        # import pdb # Be careful: g.pdb may or may not have been defined.
+        # pdb.set_trace()
+
+    fileName,n = g.getLastTracebackFileAndLineNumber()
 
     return fileName,n
 #@-node:ekr.20031218072017.3112:es_exception
@@ -1281,58 +1276,73 @@ def getLastTracebackFileAndLineNumber():
 
     typ,val,tb = sys.exc_info()
 
-    if g.isPython3:
-        if typ in (SyntaxError,IndentationError):
-            # Syntax and indentation errors are a special case.
-            # extract_tb does _not_ return the proper line number!
-            # This code is similar to the code in format_exception_only(!!)
-            try:
-                # g.es_print('',repr(val))
-                msg,(filename, lineno, offset, line) = val
-                return filename,lineno
-            except Exception:
-                g.es_exception()
-                g.trace("bad line number")
-                return None,0
-
-        else:
-            # The proper line number is the second element in the last tuple.
-            data = traceback.extract_tb(tb)
-            if data:
-                # g.es_print('',repr(data))
-                item = data[-1]
-                filename = item[0]
-                n = item[1]
-                return filename,n
-            else:
-                return None,0
-
-
+    if typ == SyntaxError:
+        # IndentationError is a subclass of SyntaxError.
+        # Much easier in Python 2.6 and 3.x.
+        return val.filename,val.lineno
     else:
-
-        if typ in (exceptions.SyntaxError,exceptions.IndentationError):
-            # Syntax and indentation errors are a special case.
-            # extract_tb does _not_ return the proper line number!
-            # This code is similar to the code in format_exception_only(!!)
-            try:
-                # g.es_print('',repr(val))
-                msg,(filename, lineno, offset, line) = val
-                return filename,lineno
-            except Exception:
-                g.trace("bad line number")
-                return None,0
-
+        # Data is a list of tuples, one per stack entry.
+        # Tupls have the form (filename,lineNumber,functionName,text).
+        data = traceback.extract_tb(tb)
+        if data:
+            item = data[-1] # Get the item at the top of the stack.
+            filename,n,functionName,text = item
+            return filename,n
         else:
-            # The proper line number is the second element in the last tuple.
-            data = traceback.extract_tb(tb)
-            if data:
-                # g.es_print('',repr(data))
-                item = data[-1]
-                filename = item[0]
-                n = item[1]
-                return filename,n
-            else:
-                return None,0
+            # Should never happen.
+            return '<string>',0
+
+
+
+
+        # elif type ==IndentationError:
+            # # g.es_print('',repr(val))
+            # filename,lineno = val.filename,val.lineno
+            # # old code
+            # # msg,(filename, lineno, offset, line) = val
+            # return filename,lineno
+            # # except Exception:
+                # # g.es_exception()
+                # # g.trace("bad line number")
+                # # return None,0
+        # else:
+            # # The proper line number is the second element in the last tuple.
+            # data = traceback.extract_tb(tb)
+            # if data:
+                # # g.es_print('',repr(data))
+                # item = data[-1]
+                # filename = item[0]
+                # n = item[1]
+                # return filename,n
+            # else:
+                # return None,0
+
+
+    # else:
+
+        # if typ in (exceptions.SyntaxError,exceptions.IndentationError):
+            # # Syntax and indentation errors are a special case.
+            # # extract_tb does _not_ return the proper line number!
+            # # This code is similar to the code in format_exception_only(!!)
+            # try:
+                # # g.es_print('',repr(val))
+                # msg,(filename, lineno, offset, line) = val
+                # return filename,lineno
+            # except Exception:
+                # g.trace("bad line number")
+                # return None,0
+
+        # else:
+            # # The proper line number is the second element in the last tuple.
+            # data = traceback.extract_tb(tb)
+            # if data:
+                # # g.es_print('',repr(data))
+                # item = data[-1]
+                # filename = item[0]
+                # n = item[1]
+                # return filename,n
+            # else:
+                # return None,0
 #@-node:ekr.20040731204831:getLastTracebackFileAndLineNumber
 #@+node:ekr.20031218072017.3113:printBindings
 def print_bindings (name,window):
