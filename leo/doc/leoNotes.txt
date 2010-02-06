@@ -500,7 +500,18 @@ User interaction
 
 Emacs functions have the concept of user interaction for completing the specification of their arguments while being called. This happens only when a function is interactively called by the user, it does not happen when a function is programmatically called by another. As Python does not have a corresponding facility, a bit of trickery was needed to retrofit that facility on the Python side.
 
-After loading a Python module but prior to creating an Emacs view for this module, Pymacs decides whether loaded functions will be interactively callable from Emacs, or not. Whenever a function has an interaction attribute, this attribute holds the Emacs interaction specification for this function. The specification is either another Python function or a string. In the former case, that other function is called without arguments and should, maybe after having consulted the user, return a list of the actual arguments to be used for the original function. In the latter case, the specification string is used verbatim as the argument to the (interactive ...) function on the Emacs side. To get a short reminder about how this string is interpreted on the Emacs side, try C-h f interactive within Emacs. Here is an example where an empty string is used to specify that an interactive has no arguments :
+After loading a Python module but prior to creating an Emacs view for this
+module, Pymacs decides whether loaded functions will be interactively callable
+from Emacs, or not. Whenever a function has an interaction attribute, this
+attribute holds the Emacs interaction specification for this function. The
+specification is either another Python function or a string. In the former case,
+that other function is called without arguments and should, maybe after having
+consulted the user, return a list of the actual arguments to be used for the
+original function. In the latter case, the specification string is used verbatim
+as the argument to the (interactive ...) function on the Emacs side. To get a
+short reminder about how this string is interpreted on the Emacs side, try C-h f
+interactive within Emacs. Here is an example where an empty string is used to
+specify that an interactive has no arguments::
 
          from Pymacs import lisp
 
@@ -509,7 +520,14 @@ After loading a Python module but prior to creating an Emacs view for this modul
      	lisp.insert("Hello from Python!")
          hello_world.interaction = ''
 
-Versions of Python released before the integration of PEP 232 do not allow users to add attributes to functions, so there is a fallback mechanism. Let's presume that a given function does not have an interaction attribute as explained above. If the Python module contains an interactions global variable which is a dictionary, if that dictionary has an entry for the given function with a value other than None, that function is going to be interactive on the Emacs side. Here is how the preceeding example should be written for an older version of Python, or when portability is at premium :
+Versions of Python released before the integration of PEP 232 do not allow users
+to add attributes to functions, so there is a fallback mechanism. Let's presume
+that a given function does not have an interaction attribute as explained above.
+If the Python module contains an interactions global variable which is a
+dictionary, if that dictionary has an entry for the given function with a value
+other than None, that function is going to be interactive on the Emacs side.
+Here is how the preceeding example should be written for an older version of
+Python, or when portability is at premium::
 
          from Pymacs import lisp
          interactions = {}
@@ -519,7 +537,14 @@ Versions of Python released before the integration of PEP 232 do not allow users
      	lisp.insert("Hello from Python!")
          interactions[hello_world] = ''
 
-One might wonder why we do not merely use lisp.interactive(...) from within Python. There is some magic in the Emacs Lisp interpreter itself, looking for that call before the function is actually entered, this explains why (interactive ...) has to appear first in an Emacs Lisp defun. Pymacs could try to scan the already compiled form of the Python code, seeking for lisp.interactive, but as the evaluation of lisp.interactive arguments could get arbitrarily complex, it would a real challenge un-compiling that evaluation into Emacs Lisp.
+One might wonder why we do not merely use lisp.interactive(...) from within
+Python. There is some magic in the Emacs Lisp interpreter itself, looking for
+that call before the function is actually entered, this explains why
+(interactive ...) has to appear first in an Emacs Lisp defun. Pymacs could try
+to scan the already compiled form of the Python code, seeking for
+lisp.interactive, but as the evaluation of lisp.interactive arguments could get
+arbitrarily complex, it would a real challenge un-compiling that evaluation into
+Emacs Lisp.
 #@-node:ekr.20071103091052.6:User interaction
 #@+node:ekr.20071103091052.7:Key bindings
 Keybindings
@@ -601,13 +626,16 @@ Here is an example of automatic reloading on a per-directory basis. The code bel
 #@-node:ekr.20071103092153:Debugging
 #@+node:ekr.20071103092153.4:Example 1: defining an Emacs command in Python
 @nocolor
-Let's say I have a a module, call it manglers.py, containing this simple python function::
+Let's say I have a a module, call it manglers.py, containing this simple python
+function::
 
     def break_on_whitespace(some_string) :
          words = some_string.split()
          return '\n'.join(words)
 
-The goal is telling Emacs about this function so that I can call it on a region of text and replace the region with the result of the call. We shall also bind this function to the key [f7].
+The goal is telling Emacs about this function so that I can call it on a region
+of text and replace the region with the result of the call. We shall also bind
+this function to the key [f7].
 
 Here is the Python side::
 @color
@@ -649,19 +677,70 @@ surrounding boxed comment.
 #@+node:ekr.20071103094355:The python side
 Design notes for rebox.py:
 
-Pymacs specific features are used exclusively from within the pymacs_load_hook function and the Emacs_Rebox class. In batch mode, Pymacs is not even imported.
+Pymacs specific features are used exclusively from within the pymacs_load_hook
+function and the Emacs_Rebox class. In batch mode, Pymacs is not even imported.
 
-In batch mode, as well as with rebox-region, the text to handle is turned over to Python, and fully processed in Python, with practically no Pymacs interaction while the work gets done. On the other hand, rebox-comment is rather Pymacs intensive: the comment boundaries are chased right from the Emacs buffer, as directed by the function Emacs_Rebox.find_comment. Once the boundaries are found, the remainder of the work is essentially done on the Python side.
+In batch mode, as well as with rebox-region, the text to handle is turned over
+to Python, and fully processed in Python, with practically no Pymacs interaction
+while the work gets done. On the other hand, rebox-comment is rather Pymacs
+intensive: the comment boundaries are chased right from the Emacs buffer, as
+directed by the function Emacs_Rebox.find_comment. Once the boundaries are
+found, the remainder of the work is essentially done on the Python side.
 
-Once the boxed comment has been reformatted in Python, the old comment is removed in a single delete operation, the new comment is inserted in a second operation. This occurs in Emacs_Rebox.process_emacs_region. But by doing so, if point was within the boxed comment before the reformatting, its precise position is lost. To well preserve point, Python might have driven all reformatting details directly in the Emacs buffer. We really preferred doing it all on the Python side : as we gain legibility by expressing the algorithms in pure Python, the same Python code may be used in batch or interactively, and we avoid the slowdown that would result from heavy use of Emacs services.
+Once the boxed comment has been reformatted in Python, the old comment is
+removed in a single delete operation, the new comment is inserted in a second
+operation. This occurs in Emacs_Rebox.process_emacs_region. But by doing so, if
+point was within the boxed comment before the reformatting, its precise position
+is lost. To well preserve point, Python might have driven all reformatting
+details directly in the Emacs buffer. We really preferred doing it all on the
+Python side : as we gain legibility by expressing the algorithms in pure Python,
+the same Python code may be used in batch or interactively, and we avoid the
+slowdown that would result from heavy use of Emacs services.
 
-To avoid completely loosing point, I kludged a Marker class, which goal is to estimate the new value of point from the old. Reformatting may change the amount of white space, and either delete or insert an arbitrary number characters meant to draw the box. The idea is to initially count the number of characters between the beginning of the region and point, while ignoring any problematic character. Once the comment has been reboxed, point is advanced from the beginning of the region until we get the same count of characters, skipping all problematic characters. This Marker class works fully on the Python side, it does not involve Pymacs at all, but it does solve a problem that resulted from my choice of keeping the data on the Python side instead of handling it directly in the Emacs buffer.
+To avoid completely loosing point, I kludged a Marker class, which goal is to
+estimate the new value of point from the old. Reformatting may change the amount
+of white space, and either delete or insert an arbitrary number characters meant
+to draw the box. The idea is to initially count the number of characters between
+the beginning of the region and point, while ignoring any problematic character.
+Once the comment has been reboxed, point is advanced from the beginning of the
+region until we get the same count of characters, skipping all problematic
+characters. This Marker class works fully on the Python side, it does not
+involve Pymacs at all, but it does solve a problem that resulted from my choice
+of keeping the data on the Python side instead of handling it directly in the
+Emacs buffer.
 
-We want a comment reformatting to appear as a single operation, in the context of Emacs Undo. The method Emacs_Rebox.clean_undo_after handles the general case for this. Not that we do so much in practice : a reformatting implies one delete-region and one insert, and maybe some other little adjustements at Emacs_Rebox.find_comment time. Even if this method scans and mofifies an Emacs Lisp list directly in the Emacs memory, the code doing this stays neat and legible. However, I found out that the undo list may grow quickly when the Emacs buffer use markers, with the consequence of making this routine so Pymacs intensive that most of the CPU is spent there. I rewrote that routine in Emacs Lisp so it executes in a single Pymacs interaction.
+We want a comment reformatting to appear as a single operation, in the context
+of Emacs Undo. The method Emacs_Rebox.clean_undo_after handles the general case
+for this. Not that we do so much in practice : a reformatting implies one
+delete-region and one insert, and maybe some other little adjustements at
+Emacs_Rebox.find_comment time. Even if this method scans and mofifies an Emacs
+Lisp list directly in the Emacs memory, the code doing this stays neat and
+legible. However, I found out that the undo list may grow quickly when the Emacs
+buffer use markers, with the consequence of making this routine so Pymacs
+intensive that most of the CPU is spent there. I rewrote that routine in Emacs
+Lisp so it executes in a single Pymacs interaction.
 
-Function Emacs_Rebox.remainder_of_line could have been written in Python, but it was probably not worth going away from this one-liner in Emacs Lisp. Also, given this routine is often called by find_comment, a few Pymacs protocol interactions are spared this way. This function is useful when there is a need to apply a regexp already compiled on the Python side, it is probably better fetching the line from Emacs and do the pattern match on the Python side, than transmitting the source of the regexp to Emacs for it to compile and apply it.
+Function Emacs_Rebox.remainder_of_line could have been written in Python, but it
+was probably not worth going away from this one-liner in Emacs Lisp. Also, given
+this routine is often called by find_comment, a few Pymacs protocol interactions
+are spared this way. This function is useful when there is a need to apply a
+regexp already compiled on the Python side, it is probably better fetching the
+line from Emacs and do the pattern match on the Python side, than transmitting
+the source of the regexp to Emacs for it to compile and apply it.
 
-For refilling, I could have either used the refill algorithm built within in Emacs, programmed a new one in Python, or relied on Ross Paterson's fmt, distributed by GNU and available on most Linuxes. In fact, refill_lines prefers the latter. My own Emacs setup is such that the built-in refill algorithm is already overridden by GNU fmt, and it really does a much better job. Experience taught me that calling an external program is fast enough to be very bearable, even interactively. If Python called Emacs to do the refilling, Emacs would itself call GNU fmt in my case, I preferred that Python calls GNU fmt directly. I could have reprogrammed GNU fmt in Python. Despite interesting, this is an uneasy project : fmt implements the Knuth refilling algorithm, which depends on dynamic programming techniques; Ross did carefully fine tune them, and took care of many details. If GNU fmt fails, for not being available, say, refill_lines falls back on a dumb refilling algorithm, which is better than none.
+For refilling, I could have either used the refill algorithm built within in
+Emacs, programmed a new one in Python, or relied on Ross Paterson's fmt,
+distributed by GNU and available on most Linuxes. In fact, refill_lines prefers
+the latter. My own Emacs setup is such that the built-in refill algorithm is
+already overridden by GNU fmt, and it really does a much better job. Experience
+taught me that calling an external program is fast enough to be very bearable,
+even interactively. If Python called Emacs to do the refilling, Emacs would
+itself call GNU fmt in my case, I preferred that Python calls GNU fmt directly.
+I could have reprogrammed GNU fmt in Python. Despite interesting, this is an
+uneasy project : fmt implements the Knuth refilling algorithm, which depends on
+dynamic programming techniques; Ross did carefully fine tune them, and took care
+of many details. If GNU fmt fails, for not being available, say, refill_lines
+falls back on a dumb refilling algorithm, which is better than none.
 #@-node:ekr.20071103094355:The python side
 #@+node:ekr.20071103094355.1:The emacs side
 For most Emacs language editing modes, refilling does not make sense

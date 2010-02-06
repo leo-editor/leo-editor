@@ -11076,11 +11076,11 @@ def makeTestCase (c,p):
 @nocolor-node
 @
 
-The syntax errors given in unitTest were due to improper calls to parser.compile.
+Regex to find all calls to compile, but not re.compile::
 
-It's much easier to use the compile global function.
+(?<!re\.)compile[ ]*\(
 
-Pylint passes all of Leo's core files.
+Leo now uses compile global function, not parser functions.
 #@nonl
 #@+node:ekr.20040723094220:Check Outline commands & allies
 #@+node:ekr.20040723094220.1:c.checkAllPythonCode
