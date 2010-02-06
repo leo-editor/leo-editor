@@ -13,9 +13,9 @@
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20090620052003.8505"><vh>@button add-test @key=alt-9</vh></v>
 <v t="ekr.20090514093345.6054"><vh>Disabled buttons</vh>
-<v t="ekr.20071004062031"><vh>@@button print -----</vh></v>
-<v t="ekr.20071001054335"><vh>@@button split-defs</vh></v>
+<v t="ekr.20100205152016.14055"><vh>@@button find-node-by-gnx</vh></v>
 <v t="ekr.20080121091513"><vh>@@button parse2tree</vh></v>
+<v t="ekr.20071004062031"><vh>@@button print -----</vh></v>
 <v t="ekr.20080220082617"><vh>@@button print g.es stats</vh>
 <v t="ekr.20080220082617.1"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
 <v t="ekr.20080220082617.2"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
@@ -40,6 +40,8 @@
 <v t="ekr.20080220082617.10"><vh>setDecl</vh></v>
 <v t="ekr.20080221110301"><vh>setToBeTranslated</vh></v>
 </v>
+<v t="ekr.20100205162207.5844"><vh>@@button print gnx</vh></v>
+<v t="ekr.20071001054335"><vh>@@button split-defs</vh></v>
 <v t="ekr.20060910141935"><vh>ZODB plugin buttons</vh>
 <v t="ekr.20060910141935.1"><vh>@@button zodb-read</vh></v>
 <v t="ekr.20060910141935.2"><vh>@@button zodb-write</vh></v>
@@ -57,8 +59,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20071024180738"><vh>@@command ext-unit-test @key=Alt+6</vh></v>
 <v t="ekr.20071024171346"><vh>@@command unit-test @key=Alt+4</vh></v>
+<v t="ekr.20071024180738"><vh>@@command ext-unit-test @key=Alt+6</vh></v>
 </v>
 <v t="ekr.20070605104410"><vh>@chapters</vh></v>
 <v t="ekr.20080121092503"><vh>Scripts</vh>
@@ -74,12 +76,12 @@
 </v>
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
-<v t="ekr.20100120072650.6088"><vh>Projects</vh>
-<v t="ekr.20100120072650.6089" descendentVnodeUnknownAttributes="7d71005807000000302e302e392e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@thin leoProjects.txt</vh></v>
-</v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
+</v>
+<v t="ekr.20100120072650.6088"><vh>Projects</vh>
+<v t="ekr.20100120072650.6089" descendentVnodeUnknownAttributes="7d71005807000000302e302e392e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
@@ -233,12 +235,13 @@ c.cn.displayClones(c)
        all the parents of all the clones of the current node.  Selecting
        a displayed parent headline moves the current node to the
        corresponding clone in the outline.
-       
+
        The idea is to be able to quickly see the context of all the clones
        of the current node and to be able to easily navigate from one clone
        instance to the next.
     '''
-    @others</t>
+    @others
+</t>
 <t tx="ekr.20060531093331.2">def __init__ (self,c):
     self.c = c
     import Tkinter as Tk
@@ -250,12 +253,13 @@ c.cn.displayClones(c)
         f = log.tabFrame
         for w in f.winfo_children():
             w.destroy()
-    
+
     # Create and pack empty label and listbox
     self.title = Tk.Label(f)
     self.title.pack(anchor="nw")
     self.lb = Tk.Listbox(f)
-    self.lb.pack(expand=1,fill="both")</t>
+    self.lb.pack(expand=1,fill="both")
+</t>
 <t tx="ekr.20060531093331.3">def getAllClones(self,p):
     c = self.c
     def clonesOf(p,p1=p):
@@ -264,14 +268,14 @@ c.cn.displayClones(c)
 <t tx="ekr.20060531093331.4">def displayClones(self,c):
     '''Displays the parent headline for all the clones of the current position'''
     cp = c.p
-    
+
     # "Title" is the headline of the current node
     self.title.configure(text=cp.h)
-    
+
     # Initialize listbox and clone list
     clones = self.getAllClones(cp)
     self.lb.delete(0,self.lb.size()-1)
-    
+
     &lt;&lt;Fill listbox with clone parent headlines&gt;&gt;    
     &lt;&lt;Goto selected position when listbox selection changes&gt;&gt;
 </t>
@@ -282,10 +286,11 @@ for p in clones:
     else:
         text = "&lt;root&gt;"
     self.lb.insert(self.lb.size(),text)
-    
+
     # Initial listbox selection corresponds to current position
     if p.v == cp.v:
-        self.lb.selection_set(self.lb.size()-1)</t>
+        self.lb.selection_set(self.lb.size()-1)
+</t>
 <t tx="ekr.20060531093331.6"># Callback for when a listbox entry is selected            
 def gotoSelectedPosition(event,lb=self.lb,c=c,positions=clones):
     idx = int(lb.curselection()[0])
@@ -730,6 +735,10 @@ self.statements.append("g.es_print('','%s %s',color='red')" % ('-'*20,h))</t>
 <t tx="ekr.20080730161153.8"></t>
 <t tx="ekr.20090105132011.6">@nocolor-node
 
+# *** match pat2 if not preceded by pat1::
+
+(?&lt;!pat1)pat2
+
 .  any char
 ^  start line
 $  end of line
@@ -781,7 +790,13 @@ paste-after-lws:    ^([ \t]+)           --&gt;  \1x
     Matches if the current position in the string is preceded by a match for ...
     that ends at the current position. This is called a positive lookbehind assertion.
     The contained pattern must only match strings of some fixed length,
-    meaning that abc or a|b are allowed, but a* and a{3,4} are not.</t>
+    meaning that abc or a|b are allowed, but a* and a{3,4} are not.
+    
+(?&lt;!...) Matches if the current position in the string is not preceded by a
+    match for .... This is called a negative lookbehind assertion. Similar to
+    positive lookbehind assertions, the contained pattern must only match
+    strings of some fixed length. Patterns which start with negative lookbehind
+    assertions may match at the beginning of the string being searched.</t>
 <t tx="ekr.20090514093345.6054"></t>
 <t tx="ekr.20090620052003.8505">u = c.undoer
 w = c.frame.body.bodyCtrl
@@ -803,5 +818,13 @@ c.outerUpdate()
 <t tx="ekr.20090802181029.5988"></t>
 <t tx="ekr.20090802181029.5989"></t>
 <t tx="ekr.20100120072650.6088"></t>
+<t tx="ekr.20100205152016.14055">gnx = 'ekr.20100205162207.5844'
+for v in c.all_nodes():
+    if v.gnx == gnx:
+        print(v.h)</t>
+<t tx="ekr.20100205162207.5844">print(p.v.gnx)
+
+# ekr.20100205162207.5844
+</t>
 </tnodes>
 </leo_file>
