@@ -762,9 +762,7 @@
 <v t="ekr.20051104081502.108"></v>
 <v t="ekr.20051104081502.109"></v>
 <v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
-<v t="ekr.20040712101813"><vh>@@test checkAllPythonCode</vh></v>
 <v t="ekr.20100125180231.5120"><vh>Print a unicode character</vh></v>
-<v t="ekr.20100131180007.5357"><vh>syntaxErrorTest</vh></v>
 <v t="ekr.20080503132221.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.2"><vh>Load tests for .leo files</vh>
@@ -830,15 +828,7 @@
 <v t="ekr.20050218015346.19"><vh>findTestsInModule</vh>
 <v t="ekr.20050218015346.20"><vh>&lt;&lt; print classes, methods &amp; functions &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20050218015346.21"><vh>getAllPlugins</vh></v>
 <v t="ekr.20050218015346.22"><vh>removeLeadingWs</vh></v>
-</v>
-<v t="ekr.20100131171342.5490"><vh>@suite test syntax of all plugins</vh>
-<v t="ekr.20100131171342.5491"><vh>class parseFileTestCase</vh>
-<v t="ekr.20100131171342.5492"><vh>__init__</vh></v>
-<v t="ekr.20100131171342.5493"><vh>runTest</vh></v>
-<v t="ekr.20100131171342.5494"><vh>shortDescription</vh></v>
-</v>
 </v>
 <v t="ekr.20100131171342.5500"><vh>@test macros.parameterize</vh></v>
 <v t="ekr.20070301064408"><vh>@test print All plugins tests complete</vh></v>
@@ -859,6 +849,21 @@
 <v t="ekr.20080701183239.3"><vh>quickConvertPythonIndexToRowCol</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20100205223124.5377"><vh>Syntax checking</vh>
+<v t="ekr.20040712101813"><vh>@@test c.checkAllPythonCode</vh></v>
+<v t="ekr.20100205231441.5386"><vh>@test at.checkPythonSyntax</vh></v>
+<v t="ekr.20100205233116.5387"><vh>@test at.tabNannyNode</vh></v>
+<v t="ekr.20100205235740.5391"><vh>@test c.checkPythonCode</vh></v>
+<v t="ekr.20100205223124.5378"><vh>@test c.checkPythonNode</vh>
+<v t="ekr.20100205223124.5379"><vh>syntax-error</vh></v>
+</v>
+<v t="ekr.20100205234837.5390"><vh>@test c.tabNannyNode</vh></v>
+<v t="ekr.20100206002004.5397"><vh>@test g.es_exception</vh></v>
+<v t="ekr.20071113145804.20"><vh>@@test g.es_exception (heroic)</vh></v>
+<v t="ekr.20100206001203.5395"><vh>@test g.getLastTracebackFileAndLineNumber</vh></v>
+<v t="ekr.20100205230621.5383"><vh>@test leoTest.checkFileSyntax</vh></v>
+<v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 </v>
 <v t="ekr.20050208051418"><vh>Unicode tests</vh>
 <v t="ekr.20050206201145"><vh>@test % operator with unicode</vh></v>
@@ -1979,7 +1984,6 @@
 <v t="ekr.20071113145804.21"><vh>@test g.create_temp_file</vh></v>
 <v t="ekr.20100131180007.5403"><vh>@test g.ensureLeadingNewlines</vh></v>
 <v t="ekr.20100131180007.5404"><vh>@test g.ensureTrailingNewlines</vh></v>
-<v t="ekr.20071113145804.20"><vh>@test g.es_exception</vh></v>
 <v t="ekr.20071113145804.22"><vh>@test g.es_trace</vh></v>
 <v t="ekr.20100131180007.5422"><vh>@test g.findDefaultDirectory</vh></v>
 <v t="ekr.20071113090055.5"><vh>@test g.get_directives_dict</vh></v>
@@ -4402,20 +4406,6 @@ if functions:
     print('test functions in %s...\n%s' % (moduleName,toString(functions)))
 else:
     print('no test functions in %s' % (moduleName))</t>
-<t tx="ekr.20050218015346.21">def getAllPlugins ():
-
-    path = g.os_path_abspath(g.os_path_join(g.app.loadDir,"..","plugins"))
-    # g.trace(path)
-
-    files = glob.glob(g.os_path_join(path,"*.py"))
-    files = [g.os_path_abspath(f) for f in files]
-    files = [str(g.shortFileName(f)) for f in files]
-    files = [f for f in files if f.find('syntax_error_plugin') == -1]
-    files.sort()
-    plugins = [g.os_path_splitext(f)[0] for f in files]
-    
-    # g.trace(g.listToString(plugins))
-    return plugins</t>
 <t tx="ekr.20050218015346.22">def removeLeadingWs (code):
 
     if not code.strip():
@@ -22479,69 +22469,6 @@ assert ok</t>
                         print('missing "if g.unitTesting:" %s' % h)
                         ok = False
     return ok</t>
-<t tx="ekr.20100131171342.5490"># N.B.  We don't import the files: multiple imports might cause problems.
-import unittest
-import leo.core.leoTest as leoTest
-import sys
-
-@others
-
-if sys.platform.lower().startswith('win'):
-
-    print('@suite test syntax of all plugins')
-
-    suite = unittest.makeSuite(unittest.TestCase)
-
-    for path in leoTest.getAllPluginFilenames():
-
-        f = open(path)
-        assert f, "File not found: %s" % path
-        # Do not test the syntax_error_plugin.
-        if path.find('syntax_error_plugin') == -1:
-            s = f.read() ; f.close()
-            test = parseFileTestCase(c,path,checkCompile=True,checkTabs=True)
-            suite.addTest(test)
-
-    if suite:
-        g.app.scriptDict['suite'] = suite
-
-else:
-
-    pass # Only test these on Windows.</t>
-<t tx="ekr.20100131171342.5491">class parseFileTestCase (unittest.TestCase):
-
-    @others</t>
-<t tx="ekr.20100131171342.5492">def __init__ (self,c,path,checkCompile,checkTabs):
-
-    # Init the base class.
-    unittest.TestCase.__init__(self)
-
-    self.c = c
-    self.path = path
-    self.checkCompile = checkCompile
-    self.checkTabs = checkTabs
-    assert self.checkCompile or self.checkTabs, "not checking anything"</t>
-<t tx="ekr.20100131171342.5493">def runTest(self):
-
-    c = self.c ; path = self.path
-
-    s = open(path).read()
-
-    if self.checkCompile:
-        leoTest.checkFileSyntax(path,s)
-
-    if self.checkTabs:
-        leoTest.checkFileTabs(path,s)</t>
-<t tx="ekr.20100131171342.5494">def shortDescription (self):
-
-    fn = str(g.shortFileName(self.path))
-
-    if self.checkCompile and self.checkTabs:
-        return "Test syntax and tabbing of %s plugin" % fn
-    elif self.checkCompile:
-        return "Test syntax of %s plugin" % fn
-    else:
-        return "Test tabbing of %s plugin" % fn</t>
 <t tx="ekr.20100131171342.5495">if g.app.gui.guiName() == 'tkinter':
 
     import rClick
@@ -22888,11 +22815,6 @@ class test:
 X = test()
 sendEmail(X)
 </t>
-<t tx="ekr.20100131180007.5357">def syntaxErrorTest():
-
-    '''Used to test Leo's handling of the following syntax error'''
-
-    # xxx(c=None,'whatever')</t>
 <t tx="ekr.20100131180007.5359">c.frame.tree.OnIconDoubleClick(p)
 </t>
 <t tx="ekr.20100131180007.5361">x = c.shadowController
@@ -23792,6 +23714,197 @@ for ivar,command in table:
         assert val3 == val1,'failed 2 %s' % command
     finally:
         finder.setOption(ivar,val1)
+</t>
+<t tx="ekr.20100205223124.5377"></t>
+<t tx="ekr.20100205223124.5378">table = (
+    ('syntax-error','error'),
+)
+
+for h,expected in table:
+    p2 = g.findNodeInTree(c,p,h)
+    assert p2,'node not found: %s' % h
+    result = c.checkPythonCode(event=None,
+        unittest=True,ignoreAtIgnore=True,
+        suppressErrors=True,checkOnSave=False)
+    assert result==expected, 'expected %s got %s' % (
+        expected,result)</t>
+<t tx="ekr.20100205223124.5379">def abc
+    pass</t>
+<t tx="ekr.20100205230621.5383">import leo.core.leoTest as leoTest
+
+s = '''
+# syntax error
+def spam:
+    pass
+'''
+
+try:
+    leoTest.checkFileSyntax('&lt;fileName&gt;',s,suppress=True)
+    assert False
+except SyntaxError:
+    pass
+</t>
+<t tx="ekr.20100205231441.5386">at = c.atFileCommands
+
+s = '''
+# no error
+def spam():
+    pass
+'''
+
+assert at.checkPythonSyntax(p,s),'fail 1'
+
+s2 = '''
+# syntax error
+def spam:
+    pass
+'''
+
+assert not at.checkPythonSyntax(p,s2,supress=True),'fail2'
+
+if not g.unitTesting: # A hand test of at.syntaxError
+    at.checkPythonSyntax(p,s2)</t>
+<t tx="ekr.20100205233116.5387">@tabwidth -4
+
+at = c.atFileCommands
+
+s = '''
+# no error
+def spam():
+    pass
+'''
+
+at.tabNannyNode (p,body=s,suppress=True)
+
+s2 = '''
+# syntax error
+def spam:
+    pass
+  a = 2
+'''
+
+try:
+    at.tabNannyNode(p,body=s2,suppress=True)
+except IndentationError:
+    pass</t>
+<t tx="ekr.20100205234837.5390">@tabwidth -4
+
+s = '''
+# no error
+def spam():
+    pass
+'''
+
+c.tabNannyNode(p,headline=p.h,body=s,unittest=True,suppressErrors=True)
+
+s2 = '''
+# syntax error
+def spam:
+    pass
+  a = 2
+'''
+
+try:
+    c.tabNannyNode(p,headline=p.h,body=s2,unittest=True,suppressErrors=True)
+except IndentationError:
+    pass</t>
+<t tx="ekr.20100205235740.5391">c.checkPythonCode(event=None,
+    unittest=True,ignoreAtIgnore=False,
+    suppressErrors=True,checkOnSave=False)</t>
+<t tx="ekr.20100205235740.5392">import leo.core.leoTest as leoTest
+import os
+
+tkPass = (
+    'EditAttributes','Library',
+    'URLloader','UniversalScrolling','UASearch',
+    'autotrees','chapter_hoist','cleo','dump_globals',
+    'expfolder','geotag','graphed','groupOperations',
+    'hoist','import_cisco_config',
+    'keybindings','leoupdate',
+    'maximizeNewWindows', 'mnplugins','mod_labels',
+    'mod_read_dir_outline','mod_tempfname','multifile',
+    'newButtons','nodeActions','nodenavigator',
+    'open_with','pie_menus','pluginsTest',
+    'read_only_nodes','rClick',
+    'scheduler','searchbar','searchbox','shortcut_button',
+    'script_io_to_body','searchbox',
+    'templates','textnode','tkGui','toolbar',
+    'xcc_nodes',
+)
+passList = (
+    '__init__','FileActions','UNL',
+    'active_path','add_directives','attrib_edit',
+    'backlink','base64Packager','baseNativeTree','bibtex','bookmarks',
+    'codewisecompleter','colorize_headlines','contextmenu',
+    'ctagscompleter','cursesGui','datenodes','debugger_pudb',
+    'detect_urls','dtest','empty_leo_file','enable_gc','initinclass',
+    'leo_to_html',
+    ### 'leo_interface',###
+    'leo_pdf','leo_to_rtf',
+    'leoOPML','leoremote','lineNumbers',
+    'macros','mime','mod_autosave','mod_framesize','mod_leo2ascd',
+    'mod_scripting','mod_speedups','mod_timestamp',
+    'nav_buttons','nav_qt','niceNosent','nodeActions','nodebar',
+    'open_shell','outline_export','quit_leo',
+    'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
+    'qtGui','qt_main','qt_quicksearch','qtframecommands',
+    'quickMove',
+        # Warning: changed this line by guessing!
+        # func = types.MethodType(func, quickMove)
+    'quicksearch','redirect_to_log','rClickBasePluginClasses',
+    'run_nodes', # Changed thread.allocate_lock to threading.lock().acquire()
+    'rst3',
+    'scrolledmessage','setHomeDirectory','slideshow','spydershell','startfile',
+    'testRegisterCommand','todo','trace_gc_plugin','trace_keys','trace_tags',
+    'vim','xemacs',
+)
+core_files = (
+    'leoApp','leoAtFile','leoChapters','leoCommands',
+    'leoEditCommands','leoFileCommands','leoFind','leoFrame',
+    'leoGlobals','leoGui','leoImport','leoMenu','leoNodes',
+    'leoPlugins','leoShadow','leoTangle','leoUndo',
+)
+external_files = (
+    'ipy_leo','lproto','path','pickleshare',
+)
+table = (
+    ('plugins',passList),
+    ('plugins',tkPass),
+    ('core',core_files),
+    ('external',external_files),
+)
+files = []
+for theDir,aList in table:
+    for z in aList:
+        if not z.endswith('.py'): z = z + '.py'
+        fn = os.path.abspath(os.path.join('leo',theDir,z))
+        if os.path.exists(fn): files.append(fn)
+        else: print('*** file not found:',fn)
+
+ok = True
+for z in files:
+    fn = g.shortFileName(z)
+    s,e = g.readFileIntoString(z)
+    try:
+        leoTest.checkFileSyntax(fn,s,suppress=True)
+    except SyntaxError:
+        print('***failed',fn)
+        ok = False
+assert ok
+    </t>
+<t tx="ekr.20100206001203.5395">try:
+    assert False
+except AssertionError:
+    fn,n = g.getLastTracebackFileAndLineNumber()
+    assert fn == '&lt;string&gt;'
+    assert n == 4
+</t>
+<t tx="ekr.20100206002004.5397"># This is just a hand test.
+if not g.unitTesting:
+    try:
+        assert False
+    except AssertionError:
+        g.es_exception(full=True,c=None,color='red')
 </t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly

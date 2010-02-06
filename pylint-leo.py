@@ -54,9 +54,9 @@ external_files = (
     'ipy_leo','lproto','path','pickleshare',
 )
 recent_core_table = (
-    ('leoAtFile',''),
+    # ('leoAtFile',''),
     ('leoCommands',''),
-    ('leoFileCommands',''),
+    # ('leoFileCommands',''),
 )
 core_table = (
     ('leoGlobals',''),
@@ -115,8 +115,8 @@ def run(fn,suppress):
 tables_table = (
     # (tkPass,'plugins'),
     # (passList,'plugins'),
-    #(recent_core_table,'core'),
-    (core_table,'core'),
+    (recent_core_table,'core'),
+    # (core_table,'core'),
     # (external_table,'external'),
     # (plugins_table,'plugins'),
 )

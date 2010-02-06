@@ -2341,7 +2341,7 @@ def  copyAllTempBodyStringsToTnodes (self,root,thinFile):
                 # g.es("changed:",p.h,color="blue")
 #@-node:ekr.20050301105854:copyAllTempBodyStringsToTnodes
 #@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
-def tabNannyNode (self,p,body):
+def tabNannyNode (self,p,body,suppress=False):
 
     import parser,tabnanny,tokenize
 
@@ -2350,27 +2350,41 @@ def tabNannyNode (self,p,body):
         tabnanny.process_tokens(tokenize.generate_tokens(readline))
     except parser.ParserError:
         junk, msg, junk = sys.exc_info()
-        g.es("ParserError in",p.h,color="red")
-        g.es('',str(msg))
-        # p.setMarked()
+        if suppress:
+            raise
+        else:
+            g.es("ParserError in",p.h,color="red")
+            g.es('',str(msg))
+    except IndentationError:
+        junk, msg, junk = sys.exc_info()
+        if suppress:
+            raise
+        else:
+            g.es("IndentationError in",p.h,color="red")
+            g.es('',str(msg))
     except tokenize.TokenError:
         junk, msg, junk = sys.exc_info()
-        g.es("TokenError in",p.h,color="red")
-        g.es('',str(msg))
-        # p.setMarked()
+        if suppress:
+            raise
+        else:
+            g.es("TokenError in",p.h,color="red")
+            g.es('',str(msg))
     except tabnanny.NannyNag:
         junk, nag, junk = sys.exc_info()
-        badline = nag.get_lineno()
-        line    = nag.get_line()
-        message = nag.get_msg()
-        g.es("indentation error in",p.h,"line",badline,color="red")
-        g.es(message)
-        line2 = repr(str(line))[1:-1]
-        g.es("offending line:\n",line2)
-        # p.setMarked()
+        if suppress:
+            raise
+        else:
+            badline = nag.get_lineno()
+            line    = nag.get_line()
+            message = nag.get_msg()
+            g.es("indentation error in",p.h,"line",badline,color="red")
+            g.es(message)
+            line2 = repr(str(line))[1:-1]
+            g.es("offending line:\n",line2)
     except Exception:
         g.trace("unexpected exception")
         g.es_exception()
+        if suppress: raise
 #@nonl
 #@-node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
 #@-node:ekr.20100122073254.6162:Eliminated node-changed marks
@@ -5563,15 +5577,15 @@ def checkPythonCode (self,root,s=None,targetFn=None):
         # Syntax checking catches most indentation problems.
         if False and ok: self.tabNannyNode(root,s)
 #@+node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
-def checkPythonSyntax (self,p,body):
+def checkPythonSyntax (self,p,body,supress=False):
 
     try:
         ok = True
         fn = '<node: %s>' % p.h
         compile(body + '\n',fn,'exec')
     except SyntaxError:
-        g.es_exception()
-        self.syntaxError(p,body)
+        if not supress:
+            self.syntaxError(p,body)
         ok = False
     except Exception:
         g.trace("unexpected exception")
@@ -5582,27 +5596,25 @@ def checkPythonSyntax (self,p,body):
 def syntaxError(self,p,body):
 
     g.es_print("Syntax error in: %s" % (p.h),color="red")
-    # g.trace('(leoAtFile) node:',p and p.h,'body...\n',body)
-
     typ,val,tb = sys.exc_info()
     message = hasattr(val,'message') and val.message
     if message: g.es_print(message)
+    if val is None: return
     lines = g.splitLines(body)
     n = val.lineno
-    if n is None:
-        # for z in dir(val): print z,repr(getattr(val,z))
-        return
+    offset = val.offset or 0
+    if n is None:return
     i = val.lineno-1
     for j in range(max(0,i-3),min(i+3,len(lines)-1)):
         g.es_print('%5s:%s %s' % (
             j,g.choose(j==i,'*',' '),lines[j].rstrip()))
         if j == i:
-            g.es_print(' '*(7+val.offset)+'^')
+            g.es_print(' '*(7+offset)+'^')
 #@nonl
 #@-node:ekr.20090514111518.5666:syntaxError (leoAtFile)
 #@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
 #@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
-def tabNannyNode (self,p,body):
+def tabNannyNode (self,p,body,suppress=False):
 
     import parser,tabnanny,tokenize
 
@@ -5611,27 +5623,41 @@ def tabNannyNode (self,p,body):
         tabnanny.process_tokens(tokenize.generate_tokens(readline))
     except parser.ParserError:
         junk, msg, junk = sys.exc_info()
-        g.es("ParserError in",p.h,color="red")
-        g.es('',str(msg))
-        # p.setMarked()
+        if suppress:
+            raise
+        else:
+            g.es("ParserError in",p.h,color="red")
+            g.es('',str(msg))
+    except IndentationError:
+        junk, msg, junk = sys.exc_info()
+        if suppress:
+            raise
+        else:
+            g.es("IndentationError in",p.h,color="red")
+            g.es('',str(msg))
     except tokenize.TokenError:
         junk, msg, junk = sys.exc_info()
-        g.es("TokenError in",p.h,color="red")
-        g.es('',str(msg))
-        # p.setMarked()
+        if suppress:
+            raise
+        else:
+            g.es("TokenError in",p.h,color="red")
+            g.es('',str(msg))
     except tabnanny.NannyNag:
         junk, nag, junk = sys.exc_info()
-        badline = nag.get_lineno()
-        line    = nag.get_line()
-        message = nag.get_msg()
-        g.es("indentation error in",p.h,"line",badline,color="red")
-        g.es(message)
-        line2 = repr(str(line))[1:-1]
-        g.es("offending line:\n",line2)
-        # p.setMarked()
+        if suppress:
+            raise
+        else:
+            badline = nag.get_lineno()
+            line    = nag.get_line()
+            message = nag.get_msg()
+            g.es("indentation error in",p.h,"line",badline,color="red")
+            g.es(message)
+            line2 = repr(str(line))[1:-1]
+            g.es("offending line:\n",line2)
     except Exception:
         g.trace("unexpected exception")
         g.es_exception()
+        if suppress: raise
 #@nonl
 #@-node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
 #@-node:ekr.20090514111518.5661:checkPythonCode (leoAtFile) & helpers
@@ -9713,6 +9739,12 @@ Must use input instead of raw_input.
 #@-node:ekr.20100204184822.5813:Fixed 2to3 error in leoApp.py
 #@+node:ekr.20100204223715.5822:Do a full redraw when contracting a cloned node
 #@-node:ekr.20100204223715.5822:Do a full redraw when contracting a cloned node
+#@+node:ekr.20100204052559.5793:Bug 399720: (fixed) goto-global-line doesn't work with @edit nodes
+The title says it all.
+
+This was likely fixed at rev 2438 of the trunk, in early October, 2009.
+#@nonl
+#@-node:ekr.20100204052559.5793:Bug 399720: (fixed) goto-global-line doesn't work with @edit nodes
 #@+node:ekr.20100204223715.5821:Setting @<file> nodes dirty
 # This isn't so worrysome now that we have a good recover scheme.
 #@nonl
@@ -9950,138 +9982,6 @@ def pasteText (self,event=None,middleButton=False):
 OnPasteFromMenu = pasteText
 #@-node:ekr.20070130115927.7:leoFrame.pasteText
 #@-node:ekr.20100204223715.5821:Setting @<file> nodes dirty
-#@+node:ekr.20100205060712.8315:Simplified & corrected syntax checking
-@nocolor-node
-@
-
-The syntax errors given in unitTest were due to improper calls to parser.compile.
-
-It's much easier to use the compile global function.
-
-Pylint passes all of Leo's core files.
-#@nonl
-#@+node:ekr.20100205162207.5845:test
-s = '''
-def spam():
-    pass
-def eggs():
-    pass
-'''
-
-if 0: # Useful.
-    lines = g.splitlines(s)
-    n = 1
-    for z in lines:
-        print('%3s %s' % (n,repr(z)))
-        n += 1
-
-fn = '<node: %s>' % p.h
-compile(s,fn,'exec')
-print('done')
-#@nonl
-#@-node:ekr.20100205162207.5845:test
-#@+node:ekr.20040723094220.5:checkPythonNode
-def checkPythonNode (self,p,unittest=False,suppressErrors=False):
-
-    c = self ; h = p.h
-
-    # Call getScript to ignore directives and section references.
-    body = g.getScript(c,p.copy())
-    if not body: return
-
-    try:
-        fn = '<node: %s>' % p.h
-        compile(body+'\n',fn,'exec')
-    except SyntaxError:
-        if not suppressErrors:
-            s = "Syntax error in: %s" % h
-            g.es_print(s,color="blue")
-        if unittest: raise
-        else:
-            g.es_exception(full=False,color="black")
-            c.setMarked(p)
-    except Exception:
-        g.es_print('unexpected exception')
-        g.es_exception()
-
-    c.tabNannyNode(p,h,body,unittest,suppressErrors)
-#@-node:ekr.20040723094220.5:checkPythonNode
-#@+node:ekr.20061031131434.63:forgivingParser
-def forgivingParser (self,p):
-
-    c = self.c ; root = p.copy()
-    self.excludedTnodesList = []
-    s = g.getScript(c,root,useSelectedText=False)
-    while s:
-        try:
-            compile(s+'\n','<string>','exec')
-            break
-        except SyntaxError:
-            fileName, n = g.getLastTracebackFileAndLineNumber()
-            p = self.computeErrorNode(c,root,n,lines=g.splitLines(s))
-            if not p or p == root:
-                g.es_print('syntax error in class node: can not continue')
-                s = None ; break
-            else:
-                # g.es_print('syntax error: deleting',p.h)
-                self.excludedTnodesList.append(p.v)
-                s = g.getScript(c,root,useSelectedText=False)
-    return s or ''
-#@-node:ekr.20061031131434.63:forgivingParser
-#@+node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
-def checkFileSyntax (fileName,s):
-
-    try:
-        compile(s+'\n',fileName,'exec')
-    except SyntaxError:
-        g.es("syntax error in:",fileName,color="blue")
-        g.es_exception(full=False,color="black")
-        raise
-    except Exception:
-        g.es("syntax error in:",fileName,color="blue")
-        g.es_exception(full=False,color="black")
-        raise
-#@-node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
-#@+node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
-def checkPythonSyntax (self,p,body):
-
-    try:
-        ok = True
-        fn = '<node: %s>' % p.h
-        compile(body + '\n',fn,'exec')
-    except SyntaxError:
-        g.es_exception()
-        self.syntaxError(p,body)
-        ok = False
-    except Exception:
-        g.trace("unexpected exception")
-        g.es_exception()
-        ok = False
-    return ok
-#@+node:ekr.20090514111518.5666:syntaxError (leoAtFile)
-def syntaxError(self,p,body):
-
-    g.es_print("Syntax error in: %s" % (p.h),color="red")
-    # g.trace('(leoAtFile) node:',p and p.h,'body...\n',body)
-
-    typ,val,tb = sys.exc_info()
-    message = hasattr(val,'message') and val.message
-    if message: g.es_print(message)
-    lines = g.splitLines(body)
-    n = val.lineno
-    if n is None:
-        # for z in dir(val): print z,repr(getattr(val,z))
-        return
-    i = val.lineno-1
-    for j in range(max(0,i-3),min(i+3,len(lines)-1)):
-        g.es_print('%5s:%s %s' % (
-            j,g.choose(j==i,'*',' '),lines[j].rstrip()))
-        if j == i:
-            g.es_print(' '*(7+val.offset)+'^')
-#@nonl
-#@-node:ekr.20090514111518.5666:syntaxError (leoAtFile)
-#@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
-#@-node:ekr.20100205060712.8315:Simplified & corrected syntax checking
 #@-node:ekr.20100203173153.5797:Bugs
 #@+node:ekr.20100203173153.5798:Cleanup & testing
 #@+node:ekr.20100130042842.9009:Removed config.set
@@ -11170,6 +11070,270 @@ def makeTestCase (c,p):
 #@-node:ekr.20051104075904.13:makeTestCase
 #@-node:ekr.20051104075904.4:doTests...
 #@-node:ekr.20100204184822.5814:Re-enabled caching in run-unit-test code
+#@+node:ekr.20100205060712.8315:Simplified & corrected syntax checking & error reporting
+@nocolor-node
+@
+
+The syntax errors given in unitTest were due to improper calls to parser.compile.
+
+It's much easier to use the compile global function.
+
+Pylint passes all of Leo's core files.
+#@nonl
+#@+node:ekr.20040723094220:Check Outline commands & allies
+#@+node:ekr.20040723094220.1:c.checkAllPythonCode
+def checkAllPythonCode(self,event=None,unittest=False,ignoreAtIgnore=True):
+
+    '''Check all nodes in the selected tree for syntax and tab errors.'''
+
+    c = self ; count = 0 ; result = "ok"
+
+    for p in c.all_unique_positions():
+        count += 1
+        if not unittest:
+            << print dots >>
+
+        if g.scanForAtLanguage(c,p) == "python":
+            if not g.scanForAtSettings(p) and (
+                not ignoreAtIgnore or not g.scanForAtIgnore(c,p)
+            ):
+                try:
+                    c.checkPythonNode(p,unittest)
+                except (SyntaxError,tokenize.TokenError,tabnanny.NannyNag):
+                    result = "error" # Continue to check.
+                except Exception:
+                    return "surprise" # abort
+                if unittest and result != "ok":
+                    g.pr("Syntax error in %s" % p.cleanHeadString())
+                    return result # End the unit test: it has failed.
+
+    if not unittest:
+        g.es("check complete",color="blue")
+
+    return result
+#@+node:ekr.20040723094220.2:<< print dots >>
+if count % 100 == 0:
+    g.es('','.',newline=False)
+
+if count % 2000 == 0:
+    g.enl()
+#@-node:ekr.20040723094220.2:<< print dots >>
+#@-node:ekr.20040723094220.1:c.checkAllPythonCode
+#@+node:ekr.20040723094220.3:c.checkPythonCode
+def checkPythonCode (self,event=None,
+    unittest=False,ignoreAtIgnore=True,
+    suppressErrors=False,checkOnSave=False):
+
+    '''Check the selected tree for syntax and tab errors.'''
+
+    c = self ; count = 0 ; result = "ok"
+
+    if not unittest:
+        g.es("checking Python code   ")
+
+    for p in c.p.self_and_subtree():
+
+        count += 1
+        if not unittest and not checkOnSave:
+            << print dots >>
+
+        if g.scanForAtLanguage(c,p) == "python":
+            if not ignoreAtIgnore or not g.scanForAtIgnore(c,p):
+                try:
+                    c.checkPythonNode(p,unittest,suppressErrors)
+                except (SyntaxError,tokenize.TokenError,tabnanny.NannyNag):
+                    result = "error" # Continue to check.
+                except Exception:
+                    return "surprise" # abort
+
+    if not unittest:
+        g.es("check complete",color="blue")
+
+    # We _can_ return a result for unit tests because we aren't using doCommand.
+    return result
+#@+node:ekr.20040723094220.4:<< print dots >>
+if count % 100 == 0:
+    g.es('','.',newline=False)
+
+if count % 2000 == 0:
+    g.enl()
+#@-node:ekr.20040723094220.4:<< print dots >>
+#@-node:ekr.20040723094220.3:c.checkPythonCode
+#@+node:ekr.20040723094220.5:c.checkPythonNode
+def checkPythonNode (self,p,unittest=False,suppressErrors=False):
+
+    c = self ; h = p.h
+
+    # Call getScript to ignore directives and section references.
+    body = g.getScript(c,p.copy())
+    if not body: return
+
+    try:
+        fn = '<node: %s>' % p.h
+        compile(body+'\n',fn,'exec')
+        c.tabNannyNode(p,h,body,unittest,suppressErrors)
+    except SyntaxError:
+        if not suppressErrors:
+            s = "Syntax error in: %s" % h
+            g.es_print(s,color="blue")
+            g.es_exception(full=False,color="black")
+        if unittest: raise
+    except Exception:
+        g.es_print('unexpected exception')
+        g.es_exception()
+        if unittest: raise
+
+#@-node:ekr.20040723094220.5:c.checkPythonNode
+#@+node:ekr.20040723094220.6:c.tabNannyNode
+# This code is based on tabnanny.check.
+
+def tabNannyNode (self,p,headline,body,unittest=False,suppressErrors=False):
+
+    """Check indentation using tabnanny."""
+
+    c = self
+
+    try:
+        readline = g.readLinesClass(body).next
+        tabnanny.process_tokens(tokenize.generate_tokens(readline))
+
+    except IndentationError:
+        junk,msg,junk = sys.exc_info()
+        if not suppressErrors:
+            g.es("IndentationError in",headline,color="blue")
+            g.es('',msg)
+        if unittest: raise
+
+    except tokenize.TokenError:
+        junk, msg, junk = sys.exc_info()
+        if not suppressErrors:
+            g.es("TokenError in",headline,color="blue")
+            g.es('',msg)
+        if unittest: raise
+
+    except tabnanny.NannyNag:
+        junk, nag, junk = sys.exc_info()
+        if not suppressErrors:
+            badline = nag.get_lineno()
+            line    = nag.get_line()
+            message = nag.get_msg()
+            g.es("indentation error in",headline,"line",badline,color="blue")
+            g.es(message)
+            line2 = repr(str(line))[1:-1]
+            g.es("offending line:\n",line2)
+        if unittest: raise
+
+    except Exception:
+        g.trace("unexpected exception")
+        g.es_exception()
+        if unittest: raise
+#@-node:ekr.20040723094220.6:c.tabNannyNode
+#@-node:ekr.20040723094220:Check Outline commands & allies
+#@+node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
+def checkFileSyntax (fileName,s,suppress=False):
+
+    '''Called by a unit test to check the syntax of a file.'''
+
+    try:
+        compile(s+'\n',fileName,'exec')
+    except SyntaxError:
+        if not suppress:
+            g.es("syntax error in:",fileName,color="blue")
+            g.es_exception(full=False,color="black")
+        raise
+    except Exception:
+        if not suppress:
+            g.es("unexpected error in:",fileName,color="blue")
+            g.es_exception(full=False,color="black")
+        raise
+#@-node:ekr.20051104075904.93:checkFileSyntax (leoTest.py)
+#@+node:ekr.20040731204831:getLastTracebackFileAndLineNumber
+def getLastTracebackFileAndLineNumber():
+
+    typ,val,tb = sys.exc_info()
+
+    if g.isPython3:
+        if typ in (SyntaxError,IndentationError):
+            # Syntax and indentation errors are a special case.
+            # extract_tb does _not_ return the proper line number!
+            # This code is similar to the code in format_exception_only(!!)
+            try:
+                # g.es_print('',repr(val))
+                msg,(filename, lineno, offset, line) = val
+                return filename,lineno
+            except Exception:
+                g.es_exception()
+                g.trace("bad line number")
+                return None,0
+
+        else:
+            # The proper line number is the second element in the last tuple.
+            data = traceback.extract_tb(tb)
+            if data:
+                # g.es_print('',repr(data))
+                item = data[-1]
+                filename = item[0]
+                n = item[1]
+                return filename,n
+            else:
+                return None,0
+
+
+    else:
+
+        if typ in (exceptions.SyntaxError,exceptions.IndentationError):
+            # Syntax and indentation errors are a special case.
+            # extract_tb does _not_ return the proper line number!
+            # This code is similar to the code in format_exception_only(!!)
+            try:
+                # g.es_print('',repr(val))
+                msg,(filename, lineno, offset, line) = val
+                return filename,lineno
+            except Exception:
+                g.trace("bad line number")
+                return None,0
+
+        else:
+            # The proper line number is the second element in the last tuple.
+            data = traceback.extract_tb(tb)
+            if data:
+                # g.es_print('',repr(data))
+                item = data[-1]
+                filename = item[0]
+                n = item[1]
+                return filename,n
+            else:
+                return None,0
+#@-node:ekr.20040731204831:getLastTracebackFileAndLineNumber
+#@+node:ekr.20031218072017.3112:es_exception
+def es_exception (full=True,c=None,color="red"):
+
+    typ,val,tb = sys.exc_info()
+
+    fileName,n = g.getLastTracebackFileAndLineNumber()
+
+    if full or g.app.debugSwitch > 0:
+        lines = traceback.format_exception(typ,val,tb)
+    else:
+        lines = traceback.format_exception_only(typ,val)
+        if 0: # We might as well print the entire SyntaxError message.
+            lines = lines[-1:] # Usually only one line, but more for Syntax errors!
+
+    for line in lines:
+        g.es_error(line,color=color)
+        # if not g.stdErrIsRedirected() and not g.unitTesting:
+            # try:
+                # g.pr(line)
+            # except Exception:
+                # g.pr(g.toEncodedString(line,'ascii'))
+
+    if g.app.debugSwitch > 1:
+        import pdb # Be careful: g.pdb may or may not have been defined.
+        pdb.set_trace()
+
+    return fileName,n
+#@-node:ekr.20031218072017.3112:es_exception
+#@-node:ekr.20100205060712.8315:Simplified & corrected syntax checking & error reporting
 #@-node:ekr.20100203173153.5798:Cleanup & testing
 #@+node:ekr.20100205060712.5836:Node recovery
 #@+node:ekr.20100205060712.8318:Top-level fc code

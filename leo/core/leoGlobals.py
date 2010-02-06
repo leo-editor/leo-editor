@@ -1256,11 +1256,11 @@ def es_exception (full=True,c=None,color="red"):
 
     for line in lines:
         g.es_error(line,color=color)
-        if not g.stdErrIsRedirected():
-            try:
-                g.pr(line)
-            except Exception:
-                g.pr(g.toEncodedString(line,'ascii'))
+        # if not g.stdErrIsRedirected() and not g.unitTesting:
+            # try:
+                # g.pr(line)
+            # except Exception:
+                # g.pr(g.toEncodedString(line,'ascii'))
 
     if g.app.debugSwitch > 1:
         import pdb # Be careful: g.pdb may or may not have been defined.
@@ -1291,6 +1291,7 @@ def getLastTracebackFileAndLineNumber():
                 msg,(filename, lineno, offset, line) = val
                 return filename,lineno
             except Exception:
+                g.es_exception()
                 g.trace("bad line number")
                 return None,0
 

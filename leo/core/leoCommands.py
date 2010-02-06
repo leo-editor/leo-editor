@@ -2159,17 +2159,30 @@ class baseCommands (object):
         if n < 0: return
         if n == 0: n = 1
 
-        fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
+        if scriptData:
+            fileName,lines,p,root = c.goto_setup_script(scriptData)
+        else:
+            if not p: p = c.p
+            fileName,lines,n,root = c.goto_setup_file(n,p)
+
+        isRaw = not root or (
+            root.isAtEditNode() or root.isAtAsisFileNode() or
+            root.isAtAutoNode() or root.isAtNoSentFileNode())
+        ignoreSentinels = root and root.isAtNoSentFileNode()
+        if not root:
+            if scriptData:  root = p.copy()
+            else:           root = c.p
 
         if n==1 and not isRaw:
             p,n2,found = root,1,True
-        elif n > len(lines): # was >=
+        elif n > len(lines):
             p,n2,found = root,root.b.count('\n'),False
         elif isRaw:
             p,n2,found = c.goto_countLines(root,n)
         else:
             vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n,ignoreSentinels)
             p,found = c.goto_findGnx(delim,root,gnx,vnodeName)
+
         c.goto_showResults(found,p or root,n,n2,lines)
     #@+node:ekr.20080904071003.12:goto_countLines
     def goto_countLines (self,root,n):
@@ -2223,6 +2236,33 @@ class baseCommands (object):
         else:
             return root,False
     #@-node:ekr.20080904071003.18:goto_findGnx
+    #@+node:ekr.20080904071003.25:goto_findRoot
+    def goto_findRoot (self,p):
+
+        '''Find the closest ancestor @<file> node, except @all nodes.
+
+        return root, fileName.'''
+
+        c = self ; p1 = p.copy()
+
+        # First look for ancestor @file node.
+        for p in p.self_and_parents():
+            fileName = not p.isAtAllNode() and p.anyAtFileNodeName()
+            if fileName:
+                return p.copy(),fileName
+
+        # Search the entire tree for joined nodes.
+        # Bug fix: Leo 4.5.1: *must* search *all* positions.
+        for p in c.all_positions():
+            if p.v == p1.v and p != p1:
+                # Found a joined position.
+                for p2 in p.self_and_parents():
+                    fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
+                    if fileName:
+                        return p2.copy(),fileName
+
+        return None,None
+    #@-node:ekr.20080904071003.25:goto_findRoot
     #@+node:ekr.20031218072017.2877:goto_findVnode & helpers
     def goto_findVnode (self,root,lines,n,ignoreSentinels):
 
@@ -2257,7 +2297,7 @@ class baseCommands (object):
         else:
             g.es("bad @+node sentinel")
             return None,None,None,None
-    #@+node:ekr.20100124164700.12156:goto_findNodeSentinel
+    #@+node:ekr.20100124164700.12156:goto_findNodeSentinel & helper
     def goto_findNodeSentinel(self,delim,lines,n):
 
         '''
@@ -2272,45 +2312,53 @@ class baseCommands (object):
         offset = 0 # This is essentially the Tk line number.
         nodeSentinelLine = -1
         line = n - 1 # Start with the requested line.
-        while line >= 0:
+        while line >= 0 and nodeSentinelLine == -1:
             progress = line
             s = lines[line]
             i = g.skip_ws(s,0)
             if g.match(s,i,delim):
-                #@            << handle delim while scanning backward >>
-                #@+node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
-                if line == n:
-                    g.es("line",str(n),"is a sentinel line")
-                i += len(delim)
-
-                if g.match(s,i,"-node"):
-                    # The end of a nested section.
-                    old_line = line
-                    line = c.goto_skipToMatchingNodeSentinel(lines,line,delim)
-                    assert line < old_line
-                    # g.trace('found',repr(lines[line]))
-                    nodeSentinelLine = line
-                    offset = n-line
-                    break
-                elif g.match(s,i,"+node"):
-                    # g.trace('found',repr(lines[line]))
-                    nodeSentinelLine = line
-                    offset = n-line
-                    break
-                elif g.match(s,i,"<<") or g.match(s,i,"@first"):
-                    # if not ignoreSentinels:
-                        # offset += 1 # Count these as a "real" lines.
-                    line -= 1
-                else:
-                    line -= 1
-                #@-node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
-                #@nl
+                line,nodeSentinelLine,offset = c.goto_handleDelim(
+                    delim,s,i,line,lines,n,offset)
             else:
-                # offset += 1 # Assume the line is real.  A dubious assumption.
+                # offset += 1
+                    # Assume the line is real.
+                    # A dubious assumption.
                 line -= 1
-            assert line < progress
+            assert nodeSentinelLine > -1 or line < progress
         return nodeSentinelLine,offset
-    #@-node:ekr.20100124164700.12156:goto_findNodeSentinel
+    #@+node:ekr.20031218072017.2880:goto_handleDelim
+    def goto_handleDelim (self,delim,s,i,line,lines,n,offset):
+
+        '''Handle the delim while scanning backward.'''
+
+        c = self
+        if line == n:
+            g.es("line",str(n),"is a sentinel line")
+        i += len(delim)
+        nodeSentinelLine = -1
+
+        if g.match(s,i,"-node"):
+            # The end of a nested section.
+            old_line = line
+            line = c.goto_skipToMatchingNodeSentinel(lines,line,delim)
+            assert line < old_line
+            # g.trace('found',repr(lines[line]))
+            nodeSentinelLine = line
+            offset = n-line
+        elif g.match(s,i,"+node"):
+            # g.trace('found',repr(lines[line]))
+            nodeSentinelLine = line
+            offset = n-line
+        elif g.match(s,i,"<<") or g.match(s,i,"@first"):
+            # if not ignoreSentinels:
+                # offset += 1 # Count these as a "real" lines.
+            line -= 1
+        else:
+            line -= 1
+            nodeSentinelLine = -1
+        return line,nodeSentinelLine,offset
+    #@-node:ekr.20031218072017.2880:goto_handleDelim
+    #@-node:ekr.20100124164700.12156:goto_findNodeSentinel & helper
     #@+node:ekr.20031218072017.2881:goto_getNodeLineInfo
     def goto_getNodeLineInfo (self,s,thinFile):
 
@@ -2388,96 +2436,12 @@ class baseCommands (object):
         return n
     #@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
     #@-node:ekr.20031218072017.2877:goto_findVnode & helpers
-    #@+node:ekr.20080904071003.28:goto_setup & helpers
-    def goto_setup (self,n,p=None,scriptData=None):
-
-        '''Return (fileName,isRaw,lines,n,p,root) where:
-
-        fileName is the name of the nearest @<file> node, or None.
-        isRaw is True if there are no sentinels in the file.
-        lines are the lines to be scanned.
-        n is the effective line number (munged for @shadow nodes).
-        root is the nearest @file node, or c.currentPosition.'''
-
-        c = self
-
-        # First, find the root and lines.
-        if scriptData:
-            assert p is None
-            lines = scriptData.get('lines')
-            p = scriptData.get('p')
-            root,fileName = c.goto_findRoot(p)
-        else:
-            # p is for unit testing only!
-            if not p: p = c.p
-            root,fileName = c.goto_findRoot(p)
-            if root and fileName:
-                c.shadowController.line_mapping = [] # Set by goto_open.
-                lines = c.goto_getFileLines(root,fileName)
-                n = c.goto_applyLineNumberMapping(n)
-            else:
-                lines = c.goto_getScriptLines(p)
-
-        isRaw = not root or (
-            root.isAtEditNode() or
-            root.isAtAsisFileNode() or
-            root.isAtAutoNode() or
-            root.isAtNoSentFileNode())
-
-        ignoreSentinels = root and root.isAtNoSentFileNode()
-
-        if scriptData:
-            if not root: root = p.copy()
-        else:
-            if not root: root = c.p
-
-        # g.trace(isRaw,g.listToString(lines,sort=False))
-
-        return fileName,ignoreSentinels,isRaw,lines,n,root
-    #@+node:ekr.20080708094444.65:goto_applyLineNumberMapping
-    def goto_applyLineNumberMapping(self, n):
-
-        c = self ; x = c.shadowController
-
-        if len(x.line_mapping) > n:
-            return x.line_mapping[n]
-        else:
-            return n
-    #@-node:ekr.20080708094444.65:goto_applyLineNumberMapping
-    #@+node:ekr.20080904071003.25:goto_findRoot
-    def goto_findRoot (self,p):
-
-        '''Find the closest ancestor @<file> node, except @all nodes.
-
-        return root, fileName.'''
-
-        c = self ; p1 = p.copy()
-
-        # First look for ancestor @file node.
-        for p in p.self_and_parents():
-            fileName = not p.isAtAllNode() and p.anyAtFileNodeName()
-            if fileName:
-                return p.copy(),fileName
-
-        # Search the entire tree for joined nodes.
-        # Bug fix: Leo 4.5.1: *must* search *all* positions.
-        for p in c.all_positions():
-            if p.v == p1.v and p != p1:
-                # Found a joined position.
-                for p2 in p.self_and_parents():
-                    fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
-                    if fileName:
-                        return p2.copy(),fileName
-
-        return None,None
-    #@-node:ekr.20080904071003.25:goto_findRoot
     #@+node:ekr.20080904071003.26:goto_getFileLines
     def goto_getFileLines (self,root,fileName):
 
         '''Read the file into lines.'''
 
         c = self
-
         isAtEdit = root.isAtEditNode()
         isAtNoSent = root.isAtNoSentFileNode()
 
@@ -2497,19 +2461,6 @@ class baseCommands (object):
 
         return lines
     #@-node:ekr.20080904071003.26:goto_getFileLines
-    #@+node:ekr.20080904071003.27:goto_getScriptLines
-    def goto_getScriptLines (self,p):
-
-        c = self
-
-        if not g.unitTesting:
-            g.es("no ancestor @file node: using script line numbers", color="blue")
-
-        lines = g.getScript (c,p,useSelectedText=False)
-        lines = g.splitLines(lines)
-
-        return lines
-    #@-node:ekr.20080904071003.27:goto_getScriptLines
     #@+node:ekr.20080708094444.63:goto_open
     def goto_open (self,filename):
         """
@@ -2541,7 +2492,45 @@ class baseCommands (object):
 
         return lines
     #@-node:ekr.20080708094444.63:goto_open
-    #@-node:ekr.20080904071003.28:goto_setup & helpers
+    #@+node:ekr.20080904071003.28:goto_setup_file
+    def goto_setup_file (self,n,p):
+
+        '''Return (lines,n) where:
+
+        lines are the lines to be scanned.
+        n is the effective line number (munged for @shadow nodes).
+        '''
+
+        c = self ; x = c.shadowController
+
+        root,fileName = c.goto_findRoot(p)
+
+        if root and fileName:
+            c.shadowController.line_mapping = [] # Set by goto_open.
+            lines = c.goto_getFileLines(root,fileName)
+                # This will set x.line_mapping for @shadow files.
+            if len(x.line_mapping) > n:
+                n = x.line_mapping[n]
+        else:
+            if not g.unitTesting:
+                g.es("no ancestor @<file node>: using script line numbers",
+                    color="blue")
+            lines = g.getScript(c,p,useSelectedText=False)
+            lines = g.splitLines(lines)
+
+        return fileName,lines,n,root
+    #@-node:ekr.20080904071003.28:goto_setup_file
+    #@+node:ekr.20100205193439.5844:goto_setup_script
+    def goto_setup_script (self,scriptData):
+
+        c = self
+
+        p = scriptData.get('p')
+        root,fileName = c.goto_findRoot(p)
+        lines = scriptData.get('lines')
+
+        return fileName,lines,p,root
+    #@-node:ekr.20100205193439.5844:goto_setup_script
     #@+node:ekr.20080904071003.14:goto_showResults
     def goto_showResults(self,found,p,n,n2,lines):
 
@@ -4097,7 +4086,7 @@ class baseCommands (object):
         return errors
     #@-node:ekr.20031218072017.2072:c.checkOutline
     #@+node:ekr.20040723094220:Check Outline commands & allies
-    #@+node:ekr.20040723094220.1:checkAllPythonCode
+    #@+node:ekr.20040723094220.1:c.checkAllPythonCode
     def checkAllPythonCode(self,event=None,unittest=False,ignoreAtIgnore=True):
 
         '''Check all nodes in the selected tree for syntax and tab errors.'''
@@ -4118,13 +4107,14 @@ class baseCommands (object):
                 #@nl
 
             if g.scanForAtLanguage(c,p) == "python":
-                if not g.scanForAtSettings(p) and (not ignoreAtIgnore or not g.scanForAtIgnore(c,p)):
+                if not g.scanForAtSettings(p) and (
+                    not ignoreAtIgnore or not g.scanForAtIgnore(c,p)
+                ):
                     try:
                         c.checkPythonNode(p,unittest)
                     except (SyntaxError,tokenize.TokenError,tabnanny.NannyNag):
                         result = "error" # Continue to check.
-                    except:
-                        import traceback ; traceback.print_exc()
+                    except Exception:
                         return "surprise" # abort
                     if unittest and result != "ok":
                         g.pr("Syntax error in %s" % p.cleanHeadString())
@@ -4134,8 +4124,8 @@ class baseCommands (object):
             g.es("check complete",color="blue")
 
         return result
-    #@-node:ekr.20040723094220.1:checkAllPythonCode
-    #@+node:ekr.20040723094220.3:checkPythonCode
+    #@-node:ekr.20040723094220.1:c.checkAllPythonCode
+    #@+node:ekr.20040723094220.3:c.checkPythonCode
     def checkPythonCode (self,event=None,
         unittest=False,ignoreAtIgnore=True,
         suppressErrors=False,checkOnSave=False):
@@ -4167,9 +4157,7 @@ class baseCommands (object):
                         c.checkPythonNode(p,unittest,suppressErrors)
                     except (SyntaxError,tokenize.TokenError,tabnanny.NannyNag):
                         result = "error" # Continue to check.
-                    except:
-                        g.es("surprise in checkPythonNode")
-                        g.es_exception()
+                    except Exception:
                         return "surprise" # abort
 
         if not unittest:
@@ -4177,8 +4165,8 @@ class baseCommands (object):
 
         # We _can_ return a result for unit tests because we aren't using doCommand.
         return result
-    #@-node:ekr.20040723094220.3:checkPythonCode
-    #@+node:ekr.20040723094220.5:checkPythonNode
+    #@-node:ekr.20040723094220.3:c.checkPythonCode
+    #@+node:ekr.20040723094220.5:c.checkPythonNode
     def checkPythonNode (self,p,unittest=False,suppressErrors=False):
 
         c = self ; h = p.h
@@ -4190,21 +4178,20 @@ class baseCommands (object):
         try:
             fn = '<node: %s>' % p.h
             compile(body+'\n',fn,'exec')
+            c.tabNannyNode(p,h,body,unittest,suppressErrors)
         except SyntaxError:
             if not suppressErrors:
                 s = "Syntax error in: %s" % h
                 g.es_print(s,color="blue")
-            if unittest: raise
-            else:
                 g.es_exception(full=False,color="black")
-                c.setMarked(p)
+            if unittest: raise
         except Exception:
             g.es_print('unexpected exception')
             g.es_exception()
+            if unittest: raise
 
-        c.tabNannyNode(p,h,body,unittest,suppressErrors)
-    #@-node:ekr.20040723094220.5:checkPythonNode
-    #@+node:ekr.20040723094220.6:tabNannyNode
+    #@-node:ekr.20040723094220.5:c.checkPythonNode
+    #@+node:ekr.20040723094220.6:c.tabNannyNode
     # This code is based on tabnanny.check.
 
     def tabNannyNode (self,p,headline,body,unittest=False,suppressErrors=False):
@@ -4214,22 +4201,22 @@ class baseCommands (object):
         c = self
 
         try:
-            # readline = g.readLinesGenerator(body).next
             readline = g.readLinesClass(body).next
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
-            return
 
-        # except parser.ParserError:
-            # junk, msg, junk = sys.exc_info()
-            # if not suppressErrors:
-                # g.es("ParserError in",headline,color="blue")
-                # g.es('',str(msg))
+        except IndentationError:
+            junk,msg,junk = sys.exc_info()
+            if not suppressErrors:
+                g.es("IndentationError in",headline,color="blue")
+                g.es('',msg)
+            if unittest: raise
 
         except tokenize.TokenError:
             junk, msg, junk = sys.exc_info()
             if not suppressErrors:
                 g.es("TokenError in",headline,color="blue")
-                g.es('',str(msg))
+                g.es('',msg)
+            if unittest: raise
 
         except tabnanny.NannyNag:
             junk, nag, junk = sys.exc_info()
@@ -4241,14 +4228,13 @@ class baseCommands (object):
                 g.es(message)
                 line2 = repr(str(line))[1:-1]
                 g.es("offending line:\n",line2)
+            if unittest: raise
 
         except Exception:
             g.trace("unexpected exception")
             g.es_exception()
-
-        if unittest: raise
-        else: c.setMarked(p)
-    #@-node:ekr.20040723094220.6:tabNannyNode
+            if unittest: raise
+    #@-node:ekr.20040723094220.6:c.tabNannyNode
     #@-node:ekr.20040723094220:Check Outline commands & allies
     #@+node:ekr.20040412060927:c.dumpOutline
     def dumpOutline (self,event=None):

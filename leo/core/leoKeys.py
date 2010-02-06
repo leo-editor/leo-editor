@@ -1425,8 +1425,8 @@ class autoCompleterClass:
 
 
         #@-node:ekr.20061031131434.62:parse
-        #@+node:ekr.20061031131434.63:forgivingParser
-        def forgivingParser (self,p):
+        #@+node:ekr.20061031131434.63:forgivingParser (leoKeys)
+        def forgivingParser (self,p,suppress=False):
 
             c = self.c ; root = p.copy()
             self.excludedTnodesList = []
@@ -1439,14 +1439,19 @@ class autoCompleterClass:
                     fileName, n = g.getLastTracebackFileAndLineNumber()
                     p = self.computeErrorNode(c,root,n,lines=g.splitLines(s))
                     if not p or p == root:
-                        g.es_print('syntax error in class node: can not continue')
+                        if not suppress:
+                            g.es_print('syntax error in class node: can not continue')
                         s = None ; break
                     else:
                         # g.es_print('syntax error: deleting',p.h)
                         self.excludedTnodesList.append(p.v)
                         s = g.getScript(c,root,useSelectedText=False)
+                except Exception:
+                    g.trace('unexpected exception')
+                    g.es_exception()
+                    break
             return s or ''
-        #@-node:ekr.20061031131434.63:forgivingParser
+        #@-node:ekr.20061031131434.63:forgivingParser (leoKeys)
         #@+node:ekr.20061031131434.64:computeErrorNode
         def computeErrorNode (self,c,root,n,lines):
 

@@ -3873,15 +3873,15 @@ class atFile:
             # Syntax checking catches most indentation problems.
             if False and ok: self.tabNannyNode(root,s)
     #@+node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
-    def checkPythonSyntax (self,p,body):
+    def checkPythonSyntax (self,p,body,supress=False):
 
         try:
             ok = True
             fn = '<node: %s>' % p.h
             compile(body + '\n',fn,'exec')
         except SyntaxError:
-            g.es_exception()
-            self.syntaxError(p,body)
+            if not supress:
+                self.syntaxError(p,body)
             ok = False
         except Exception:
             g.trace("unexpected exception")
@@ -3892,27 +3892,25 @@ class atFile:
     def syntaxError(self,p,body):
 
         g.es_print("Syntax error in: %s" % (p.h),color="red")
-        # g.trace('(leoAtFile) node:',p and p.h,'body...\n',body)
-
         typ,val,tb = sys.exc_info()
         message = hasattr(val,'message') and val.message
         if message: g.es_print(message)
+        if val is None: return
         lines = g.splitLines(body)
         n = val.lineno
-        if n is None:
-            # for z in dir(val): print z,repr(getattr(val,z))
-            return
+        offset = val.offset or 0
+        if n is None:return
         i = val.lineno-1
         for j in range(max(0,i-3),min(i+3,len(lines)-1)):
             g.es_print('%5s:%s %s' % (
                 j,g.choose(j==i,'*',' '),lines[j].rstrip()))
             if j == i:
-                g.es_print(' '*(7+val.offset)+'^')
+                g.es_print(' '*(7+offset)+'^')
     #@nonl
     #@-node:ekr.20090514111518.5666:syntaxError (leoAtFile)
     #@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
     #@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
-    def tabNannyNode (self,p,body):
+    def tabNannyNode (self,p,body,suppress=False):
 
         import parser,tabnanny,tokenize
 
@@ -3921,27 +3919,41 @@ class atFile:
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
         except parser.ParserError:
             junk, msg, junk = sys.exc_info()
-            g.es("ParserError in",p.h,color="red")
-            g.es('',str(msg))
-            # p.setMarked()
+            if suppress:
+                raise
+            else:
+                g.es("ParserError in",p.h,color="red")
+                g.es('',str(msg))
+        except IndentationError:
+            junk, msg, junk = sys.exc_info()
+            if suppress:
+                raise
+            else:
+                g.es("IndentationError in",p.h,color="red")
+                g.es('',str(msg))
         except tokenize.TokenError:
             junk, msg, junk = sys.exc_info()
-            g.es("TokenError in",p.h,color="red")
-            g.es('',str(msg))
-            # p.setMarked()
+            if suppress:
+                raise
+            else:
+                g.es("TokenError in",p.h,color="red")
+                g.es('',str(msg))
         except tabnanny.NannyNag:
             junk, nag, junk = sys.exc_info()
-            badline = nag.get_lineno()
-            line    = nag.get_line()
-            message = nag.get_msg()
-            g.es("indentation error in",p.h,"line",badline,color="red")
-            g.es(message)
-            line2 = repr(str(line))[1:-1]
-            g.es("offending line:\n",line2)
-            # p.setMarked()
+            if suppress:
+                raise
+            else:
+                badline = nag.get_lineno()
+                line    = nag.get_line()
+                message = nag.get_msg()
+                g.es("indentation error in",p.h,"line",badline,color="red")
+                g.es(message)
+                line2 = repr(str(line))[1:-1]
+                g.es("offending line:\n",line2)
         except Exception:
             g.trace("unexpected exception")
             g.es_exception()
+            if suppress: raise
     #@nonl
     #@-node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
     #@-node:ekr.20090514111518.5661:checkPythonCode (leoAtFile) & helpers
