@@ -1500,7 +1500,7 @@ class leoMenu:
             g.es_exception()
             return None
     #@-node:ekr.20031218072017.3804:createNewMenu
-    #@+node:ekr.20031218072017.4116:createOpenWithMenuFromTable & helper
+    #@+node:ekr.20031218072017.4116:createOpenWithMenuFromTable & helper (leoMenu)
     def createOpenWithMenuFromTable (self,table):
 
         '''Entries in the table passed to createOpenWithMenuFromTable are
@@ -1596,7 +1596,7 @@ class leoMenu:
                 accelerator=accelerator or '',
                 command=callback,underline=underline)
     #@-node:ekr.20051022043608.1:createOpenWithMenuItemsFromTable
-    #@-node:ekr.20031218072017.4116:createOpenWithMenuFromTable & helper
+    #@-node:ekr.20031218072017.4116:createOpenWithMenuFromTable & helper (leoMenu)
     #@+node:ekr.20031218072017.2078:createRecentFilesMenuItems (leoMenu)
     def createRecentFilesMenuItems (self):
 

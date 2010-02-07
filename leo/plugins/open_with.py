@@ -60,7 +60,7 @@ __version__ = '1.13'
 def init():
 
     if not g.app.gui:
-        g.app.createDefaultGui(__file__)
+        g.app.createTkGui(__file__)
 
     # Only tkinter needs this plugin. Note that equivalent functionality comes
     # with contextmenu.py on qt ui. 

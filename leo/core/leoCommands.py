@@ -1143,7 +1143,7 @@ class baseCommands (object):
     #@+node:ekr.20100203050306.5937:c.createOpenWithTempFile
     def createOpenWithTempFile (self,p,ext):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self ; f = None
 
         # May be over-ridden by mod_tempfname plugin.
@@ -1210,7 +1210,8 @@ class baseCommands (object):
         fn = '%s_LeoTemp_%s%s' % (
             g.sanitize_filename(p.h),
             str(id(p.v)),ext)
-        # fn = g.toUnicode(fn)
+        if g.isPython3:
+            fn = g.toUnicode(fn)
         td = g.os_path_finalize(tempfile.gettempdir())
         path = g.os_path_join(td,fn)
 
