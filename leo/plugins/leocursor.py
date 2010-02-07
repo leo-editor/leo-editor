@@ -15,13 +15,20 @@ import re
 #@+node:tbrown.20100206093439.5452:class AttribManager
 class AttribManager(object):
 
+    """Class responsible for reading / writing attributes from
+    vnodes for LeoCursor"""
+
     class NotPresent(Exception):
         pass
 
-    def filterBody(self, s):
+    def filterBody(self, v):
+        """Return the body string without any parts used to store
+        attributes, if this flavor of attribute manager stores attributes
+        in the body.  If not, just return the whole body string."""
         raise NotImplemented
 
     def getAttrib(self, v, what):
+        """Get an attribute value from a vnode"""
         raise NotImplemented
 #@-node:tbrown.20100206093439.5452:class AttribManager
 #@+node:tbrown.20100206093439.5453:class AM_Colon
@@ -29,7 +36,7 @@ class AM_Colon(AttribManager):
 
     """Attributes are in the body text as::
 
-         start-of-line letter letters-and-numbers colon space(s) attribute-value
+         start-of-line letter letters-or-numbers colon space(s) attribute-value
 
     Both::
 
@@ -101,17 +108,35 @@ class LeoCursor(object):
         for i in self.__v.children:
             yield self.__at(i)
     #@-node:tbrown.20100205200824.9978:__iter__
-    #@+node:tbrown.20100206093439.5447:_C
-    def _C(self, path):
+    #@+node:tbrown.20100206093439.5447:__call__
+    def __call__(self, path):
 
-        ans = []
+        """'Group .*/June/Event .*' - all the events that descend from June
+        that dsecend from a Group"""
 
-        for i in self.__v.children:
-            if re.match(path, i.h):
-                ans.append(self.__at(i))
+        stems = [self]
+        steps = path.split('/')
 
-        return ans
-    #@-node:tbrown.20100206093439.5447:_C
+        while steps:
+
+            step = steps.pop(0)
+            #print 'S',step
+            if not step.strip():
+                continue
+
+            new_stems = []
+
+            for stem in stems:
+                for i in stem.__v.children or []:
+                    #print 'V', step, i.h
+                    if re.match(step, i.h):
+                        new_stems.append(self.__at(i))
+                        #print 'N',i.h
+
+            stems = new_stems
+
+        return stems
+    #@-node:tbrown.20100206093439.5447:__call__
     #@+node:tbrown.20100205200824.5425:__getattr__
     def __getattr__(self, what):
 
