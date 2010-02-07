@@ -2154,10 +2154,8 @@ class baseCommands (object):
         '''Place the cursor on the n'th line of a derived file or script.
         When present scriptData is a dict with 'root' and 'lines' keys.'''
 
-        trace = False and not g.unitTesting
         c = self
         if n < 0: return
-        if n == 0: n = 1
 
         if scriptData:
             fileName,lines,p,root = c.goto_setup_script(scriptData)
@@ -2175,11 +2173,13 @@ class baseCommands (object):
 
         if isRaw:
             p,n2,found = c.goto_countLines(root,n)
-        # elif n==1
+            n2 += 1
+        # elif n<=1
             # p,n2,found = root,1,True
         # elif n > len(lines):
             # p,n2,found = root,root.b.count('\n'),False
         else:
+            # if n == 0: n = 1
             vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n,ignoreSentinels)
             p,found = c.goto_findGnx(delim,root,gnx,vnodeName)
 
@@ -2188,65 +2188,75 @@ class baseCommands (object):
     def goto_countLines (self,root,n):
 
         '''Scan through root's outline, looking for line n.
-        Return (p,n2,found) where p is the found node,
-        n2 is the actural line found, and found is True if the line was found.'''
+        Return (p,i,found)
+        p is the found node.
+        i is the offset of the line within the node.
+        found is True if the line was found.'''
 
         trace = False and not g.unitTesting
         c = self
-        if trace: g.trace('=' * 10,root.h)
-        # Look in the root for @others, and ignore '@' lines
-        root_lines = g.splitLines(root.b)
-        i,at_others_i,n,found = c.goto_count_root_lines(root_lines,0,n,trace)
-        if found:
-            return root,i,True
-        elif at_others_i is None:
-            return root,i,False
-        prev = i
-        for p in root.subtree():
-            last_p = p.copy()
-            lines = g.splitLines(p.b)
-            if trace: g.trace('prev: %3s len(lines) %3s %s' % (
-                prev,len(lines),p.h))
-            if prev + len(lines) >= n:
-                if trace: g.trace('***found at offset: %s' %(n-prev))
-                i = max(0,n-prev)
-                return last_p,i,True
-            prev += len(lines)
-        # Not found: resume searching the root.
-        if at_others_i is None:
-            g.internalError('no @others line')
-        i,at_others_i,n,found = c.goto_count_root_lines(
-            root_lines,at_others_i+1,n,trace)
-        return root,i,found
-    #@+node:ekr.20100206173123.5802:goto_count_root_lines
-    def goto_count_root_lines (self,lines,i,n,trace):
 
-        at_others_i = None
+        if trace: g.trace('=' * 10,n,root.h)
+
+        # Start the recursion.
+        p,i,n,found = c.goto_countLinesHelper(root,n,trace)
+        return p,i,found
+    #@+node:ekr.20100206173123.5805:goto_countLinesHelper
+    def goto_countLinesHelper (self,p,n,trace):
+
+        '''Scan root's body text, looking for line n,
+        ao is the index of the line containing @others or None.
+
+        Return (p,i,n,found) where:
+        p is the found node if found, or the original p if not.
+        i is the offset of the line within the node.
+        found is True if the line was found.'''
+
+        verbose = True
+        if trace: g.trace('-' * 5,n,p.h)
+        c = self ; ao = None
+        lines = g.splitLines(p.b)
+        i = 0
         while i < len(lines):
             progress = i
             line = lines[i]
-            if line.startswith('@'):
+            if trace and verbose: g.trace('i %s n %s %s' % (i,n,line.rstrip()))
+            if line.strip().startswith('@'):
                 # Increase number of the line we are looking for.
+                n += 1
+                i += 1
                 if line.strip().startswith('@others'):
                     # Start looking in inner nodes.
-                    if trace: g.trace('Found @others in root at offset %s n %s' % (i,n))
-                    n += 1
-                    at_others_i = i
-                    return i,at_others_i,n,False
-                else:
-                    n += 1
-                    i += 1
-            elif i == n:
-                # Found the line.
-                if trace: g.trace('***found line %s in root at offset: %s' % (n,i))
+                    if trace: 
+                        g.trace('@others offset: %3s n: %3s %s' % (i,n,p.h))
+                    if ao is None:
+                        ao = i
+                        if p.hasChildren():
+                            n2 = n-i
+                            for child in p.children():
+                                # Recursively scan the children.
+                                p2,i2,n2,found = c.goto_countLinesHelper(
+                                    child,n2,trace)
+                                if found:
+                                    return p2,i2,n2,found
+                                else:
+                                    if trace: g.trace('return i2',i2,'n2',n2,'-->',n2-i2)
+                                    # Don't change i here!
+                                    n2 -= i2
+                            n = n2
+                            assert n > 0 # otherwise we would have suceeded.
+                        # else: silently ignore @others without children.
+                    # else: silently ignore duplicate @others.
+                # else: nothing more to do.
+            elif i == n: # Found the line.
+                if trace: g.trace('Found!  offset: %3s n: %3s %s' % (n,i,p.h))
                 return p,i,n,True
-            else:
-                n2 += 1
+            else: # A plain line.
                 i += 1
             assert i > progress
-
-        return i,at_others_i,n,False
-    #@-node:ekr.20100206173123.5802:goto_count_root_lines
+        assert i == len(lines)
+        return p,i-1,n,False
+    #@-node:ekr.20100206173123.5805:goto_countLinesHelper
     #@-node:ekr.20080904071003.12:goto_countLines & helper
     #@+node:ekr.20080904071003.18:goto_findGnx
     def goto_findGnx (self,delim,root,gnx,vnodeName):
