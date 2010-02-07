@@ -76,12 +76,12 @@
 </v>
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
+<v t="ekr.20100120072650.6088"><vh>Projects</vh>
+<v t="ekr.20100120072650.6089" descendentVnodeUnknownAttributes="7d71005807000000302e302e392e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@thin leoProjects.txt</vh></v>
+</v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
-</v>
-<v t="ekr.20100120072650.6088"><vh>Projects</vh>
-<v t="ekr.20100120072650.6089" descendentVnodeUnknownAttributes="7d71005807000000302e302e392e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
@@ -91,7 +91,7 @@
 <v t="ekr.20100120092047.6087"><vh>@thin ../external/ipy_leo.py</vh></v>
 <v t="ville.20091010232339.6117"><vh>@thin ../external/lproto.py</vh></v>
 <v t="ekr.20091204131831.6103"><vh>@thin ../external/path.py</vh></v>
-<v t="ekr.20090831103504.6069"><vh>@thin ../external/pickleshare.py</vh></v>
+<v t="ekr.20100207111939.5895"><vh>@thin ../external/pickleshare.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@thin runLeo.py </vh></v>
 </v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>

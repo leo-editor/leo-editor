@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #@+leo-ver=4-thin
-#@+node:ekr.20090831103504.6069:@thin ../external/pickleshare.py
+#@+node:ekr.20100207111939.5895:@thin ../external/pickleshare.py
 #@@first
 #@@language python
 #@@tabwidth -4
@@ -526,5 +526,5 @@ if __name__== "__main__":
     main()
 
 
-#@-node:ekr.20090831103504.6069:@thin ../external/pickleshare.py
+#@-node:ekr.20100207111939.5895:@thin ../external/pickleshare.py
 #@-leo

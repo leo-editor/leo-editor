@@ -11888,6 +11888,20 @@ def handleNodeConflicts (self):
 #@-node:ekr.20100205060712.8314:handleNodeConflicts
 #@-node:ekr.20100205060712.8316:Creating the recovery node
 #@-node:ekr.20100205060712.5836:Node recovery
+#@+node:ekr.20100207111939.5892:Created g.os_path_splitpath
+#@+node:ekr.20100207111939.5894:os_path_splitpath
+def os_path_splitpath(path):
+
+    path = g.toUnicodeFileEncoding(path)
+
+    head,tail = os.path.splitpath(path)
+
+    head = g.toUnicodeFileEncoding(head)
+    tail = g.toUnicodeFileEncoding(tail)
+
+    return head,tail
+#@-node:ekr.20100207111939.5894:os_path_splitpath
+#@-node:ekr.20100207111939.5892:Created g.os_path_splitpath
 #@-node:ekr.20100202050243.5740:Leo 4.7 rc1 projects
 #@+node:ekr.20100130042842.6404:Reading settings (do not delete)
 Here are the calls to g.app.getxxx
