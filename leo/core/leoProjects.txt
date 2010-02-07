@@ -7950,6 +7950,18 @@ def os_path_splitext(path):
 
     return head,tail
 #@-node:ekr.20031218072017.2159:os_path_splitext
+#@+node:ekr.20100207111939.5894:os_path_splitpath
+def os_path_splitpath(path):
+
+    path = g.toUnicodeFileEncoding(path)
+
+    head,tail = os.path.splitpath(path)
+
+    head = g.toUnicodeFileEncoding(head)
+    tail = g.toUnicodeFileEncoding(tail)
+
+    return head,tail
+#@-node:ekr.20100207111939.5894:os_path_splitpath
 #@+node:ekr.20090829140232.6036:os_startfile
 def os_startfile(fname):
     if sys.platform.startswith('win'):
@@ -9833,6 +9845,61 @@ def es_exception (full=True,c=None,color="red"):
     return fileName,n
 #@-node:ekr.20031218072017.3112:es_exception
 #@-node:ekr.20100206142026.5918:Fixed g.getLastTracebackFileAndLineNubmer
+#@+node:ekr.20100206173123.5807:Fixed open-with crash
+@nocolor-node
+
+There may have been a bug in the open_with plugin that allowed it to be active
+when it shouldn't have been.
+#@nonl
+#@+node:ekr.20100206173123.5808:Report
+@nocolor-node
+
+I am getting an exception when double-clicking to rename a node. The
+exception does not occur when I rename a new node immediately
+following creation while it is highlighted.
+
+#---#
+Leo Log Window
+Leo 4.7 beta 3, build 2835, February 2, 2010
+Python 3.1.1, qt version 4.6.1
+Windows 6, 1, 7600, 2,
+reading: C:\Users\skrivsm\Documents\toolbox\scratch\ruby_scratch.leo
+creating:   newHeadline_LeoTemp_63898064.py
+exception creating temp file
+Traceback (most recent call last):
+ File "C:\leo-editor\trunk\leo\core\leoCommands.py", line 1164, in
+createOpenWithTempFile
+   f.write(s)
+TypeError: must be str, not bytes
+recreating:   newHeadline_LeoTemp_63898064.py
+exception creating temp file
+Traceback (most recent call last):
+ File "C:\leo-editor\trunk\leo\core\leoCommands.py", line 1164, in
+createOpenWithTempFile
+   f.write(s)
+TypeError: must be str, not bytes
+#---#
+#@nonl
+#@-node:ekr.20100206173123.5808:Report
+#@+node:ekr.20031218072017.2832:c.openWithTempFilePath (may be over-ridden)
+def openWithTempFilePath (self,p,ext):
+
+    '''Return the path to the temp file corresponding to p and ext.
+
+     This is overridden in mod_tempfname plugin
+     '''
+
+    fn = '%s_LeoTemp_%s%s' % (
+        g.sanitize_filename(p.h),
+        str(id(p.v)),ext)
+    if g.isPython3: # 2010/02/07
+        fn = g.toUnicode(fn)
+    td = g.os_path_finalize(tempfile.gettempdir())
+    path = g.os_path_join(td,fn)
+
+    return path
+#@-node:ekr.20031218072017.2832:c.openWithTempFilePath (may be over-ridden)
+#@-node:ekr.20100206173123.5807:Fixed open-with crash
 #@-node:ekr.20100203173153.5797:Bugs
 #@+node:ekr.20100203173153.5798:Cleanup & testing
 #@+node:ekr.20100130042842.9009:Removed config.set
@@ -10638,7 +10705,7 @@ def openWithTempFilePath (self,p,ext):
     fn = '%s_LeoTemp_%s%s' % (
         g.sanitize_filename(p.h),
         str(id(p.v)),ext)
-    if g.isPython3:
+    if g.isPython3: # 2010/02/07
         fn = g.toUnicode(fn)
     td = g.os_path_finalize(tempfile.gettempdir())
     path = g.os_path_join(td,fn)

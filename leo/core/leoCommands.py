@@ -1210,7 +1210,7 @@ class baseCommands (object):
         fn = '%s_LeoTemp_%s%s' % (
             g.sanitize_filename(p.h),
             str(id(p.v)),ext)
-        if g.isPython3:
+        if g.isPython3: # 2010/02/07
             fn = g.toUnicode(fn)
         td = g.os_path_finalize(tempfile.gettempdir())
         path = g.os_path_join(td,fn)

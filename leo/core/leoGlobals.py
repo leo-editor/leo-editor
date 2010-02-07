@@ -3836,6 +3836,18 @@ def os_path_splitext(path):
 
     return head,tail
 #@-node:ekr.20031218072017.2159:os_path_splitext
+#@+node:ekr.20100207111939.5894:os_path_splitpath
+def os_path_splitpath(path):
+
+    path = g.toUnicodeFileEncoding(path)
+
+    head,tail = os.path.splitpath(path)
+
+    head = g.toUnicodeFileEncoding(head)
+    tail = g.toUnicodeFileEncoding(tail)
+
+    return head,tail
+#@-node:ekr.20100207111939.5894:os_path_splitpath
 #@+node:ekr.20090829140232.6036:os_startfile
 def os_startfile(fname):
     if sys.platform.startswith('win'):
