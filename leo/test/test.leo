@@ -507,6 +507,9 @@
 </v>
 </v>
 <v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
+<v t="ekr.20100206180840.2095" a="E"><vh>Pmw line number test</vh>
+<v t="ekr.20100206180840.2099" a="E"><vh>@auto test-PmwComboBox.py</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5749,5 +5752,9 @@ import string
     pass
 </t>
 <t tx="ekr.20100205114630.2091"></t>
+<t tx="ekr.20100206180840.2095">@nocolor-node
+
+It's easy to test the line numbers:
+just create a syntax error somewhere.</t>
 </tnodes>
 </leo_file>

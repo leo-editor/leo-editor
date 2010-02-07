@@ -1,11 +1,6 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20100119205347.6015:@thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20100128094926.6222: port pmw to py3k
-- Check web site first!
-- Create new branch for pmw work.
-#@nonl
-#@-node:ekr.20100128094926.6222: port pmw to py3k
 #@+node:ekr.20071211093011:4.7 One-node world, Leo3K
 @nocolor-node
 
@@ -26,11 +21,54 @@ Before rc1:
 * (done) All plugins in passList pass pylint without serious errors.
 
 * One full day between "all" clear and release
-#@+node:ekr.20100205222513.5841:Today
-#@+node:ekr.20100204052559.5792:Make goto-global-line work with @auto files
-# Fix bug 363406: goto global line doesn't seem to be working in @auto files
+#@+node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
+def checkPythonSyntax (self,p,body,supress=False):
 
-# Make unit tests.
+    try:
+        ok = True
+        if not g.isPython3:
+            body = g.toEncodedString(body)
+        body = body.replace('\r','')
+        fn = '<node: %s>' % p.h
+        compile(body + '\n',fn,'exec')
+    except SyntaxError:
+        if not supress:
+            self.syntaxError(p,body)
+        ok = False
+    except Exception:
+        g.trace("unexpected exception")
+        g.es_exception()
+        ok = False
+    return ok
+#@+node:ekr.20090514111518.5666:syntaxError (leoAtFile)
+def syntaxError(self,p,body):
+
+    g.es_print("Syntax error in: %s" % (p.h),color="red")
+    typ,val,tb = sys.exc_info()
+    message = hasattr(val,'message') and val.message
+    if message: g.es_print(message)
+    if val is None: return
+    lines = g.splitLines(body)
+    n = val.lineno
+    offset = val.offset or 0
+    if n is None:return
+    i = val.lineno-1
+    for j in range(max(0,i-3),min(i+3,len(lines)-1)):
+        g.es_print('%5s:%s %s' % (
+            j,g.choose(j==i,'*',' '),lines[j].rstrip()))
+        if j == i:
+            g.es_print(' '*(7+offset)+'^')
+#@nonl
+#@-node:ekr.20090514111518.5666:syntaxError (leoAtFile)
+#@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
+#@+node:ekr.20100129133806.6237:Remove cruft from test folder
+#@-node:ekr.20100129133806.6237:Remove cruft from test folder
+#@+node:ekr.20100204052559.5792:Make goto-global-line work with @auto files
+@nocolor-node
+
+Fix bug 363406: goto global line doesn't seem to be working in @auto files
+
+The relevant code is goto_countLines.
 #@nonl
 #@+node:ekr.20100205180205.5845:Report
 @nocolor-node
@@ -91,18 +129,18 @@ def goToLineNumber (self,n,p=None,scriptData=None):
         if scriptData:  root = p.copy()
         else:           root = c.p
 
-    if n==1 and not isRaw:
-        p,n2,found = root,1,True
-    elif n > len(lines):
-        p,n2,found = root,root.b.count('\n'),False
-    elif isRaw:
+    if isRaw:
         p,n2,found = c.goto_countLines(root,n)
+    # elif n==1
+        # p,n2,found = root,1,True
+    # elif n > len(lines):
+        # p,n2,found = root,root.b.count('\n'),False
     else:
         vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n,ignoreSentinels)
         p,found = c.goto_findGnx(delim,root,gnx,vnodeName)
 
     c.goto_showResults(found,p or root,n,n2,lines)
-#@+node:ekr.20080904071003.12:goto_countLines
+#@+node:ekr.20080904071003.12:goto_countLines & helper
 def goto_countLines (self,root,n):
 
     '''Scan through root's outline, looking for line n.
@@ -110,33 +148,62 @@ def goto_countLines (self,root,n):
     n2 is the actural line found, and found is True if the line was found.'''
 
     trace = False and not g.unitTesting
-    p = lastv = root
-    prev = 0 ; found = False
-    isNosent = root.isAtNoSentFileNode()
-    isAuto = root.isAtAutoNode()
+    c = self
+    if trace: g.trace('=' * 10,root.h)
+    # Look in the root for @others, and ignore '@' lines
+    root_lines = g.splitLines(root.b)
+    i,at_others_i,n,found = c.goto_count_root_lines(root_lines,0,n,trace)
+    if found:
+        return root,i,True
+    elif at_others_i is None:
+        return root,i,False
+    prev = i
+    for p in root.subtree():
+        last_p = p.copy()
+        lines = g.splitLines(p.b)
+        if trace: g.trace('prev: %3s len(lines) %3s %s' % (
+            prev,len(lines),p.h))
+        if prev + len(lines) >= n:
+            if trace: g.trace('***found at offset: %s' %(n-prev))
+            i = max(0,n-prev)
+            return last_p,i,True
+        prev += len(lines)
+    # Not found: resume searching the root.
+    if at_others_i is None:
+        g.internalError('no @others line')
+    i,at_others_i,n,found = c.goto_count_root_lines(
+        root_lines,at_others_i+1,n,trace)
+    return root,i,found
+#@+node:ekr.20100206173123.5802:goto_count_root_lines
+def goto_count_root_lines (self,lines,i,n,trace):
 
-    if trace: g.trace('=' * 10)
-    for p in p.self_and_subtree():
-        lastv = p.copy()
-        s = p.b
-        if isNosent or isAuto:
-            lines = [z for z in g.splitLines(s) if not z.startswith('@')]
-            s = ''.join(lines)
+    at_others_i = None
+    while i < len(lines):
+        progress = i
+        line = lines[i]
+        if line.startswith('@'):
+            # Increase number of the line we are looking for.
+            if line.strip().startswith('@others'):
+                # Start looking in inner nodes.
+                if trace: g.trace('Found @others in root at offset %s n %s' % (i,n))
+                n += 1
+                at_others_i = i
+                return i,at_others_i,n,False
+            else:
+                n += 1
+                i += 1
+        elif i == n:
+            # Found the line.
+            if trace: g.trace('***found line %s in root at offset: %s' % (n,i))
+            return p,i,n,True
         else:
-            lines = g.splitLines(s)
-        n_lines = len(lines)
-        if trace: g.trace('prev: %3s node: %s lines...\n%s' % (
-            prev,p.h,g.listToString(lines)))
-        if prev + n_lines >= n:
-            if trace: g.trace('***found',n-prev)
-            found = True ; break
-        prev += n_lines
+            n2 += 1
+            i += 1
+        assert i > progress
 
-    p = lastv
-    n2 = max(0,n-prev)
-
-    return p,n2,found
-#@-node:ekr.20080904071003.12:goto_countLines
+    return i,at_others_i,n,False
+#@-node:ekr.20100206173123.5802:goto_count_root_lines
+#@-node:ekr.20080904071003.12:goto_countLines & helper
 #@+node:ekr.20080904071003.18:goto_findGnx
 def goto_findGnx (self,delim,root,gnx,vnodeName):
 
@@ -471,10 +538,71 @@ def goto_showResults(self,found,p,n,n2,lines):
     w.seeInsertPoint()
 #@-node:ekr.20080904071003.14:goto_showResults
 #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
+#@+node:ekr.20080904071003.12:goto_countLines & helper
+def goto_countLines (self,root,n):
+
+    '''Scan through root's outline, looking for line n.
+    Return (p,n2,found) where p is the found node,
+    n2 is the actural line found, and found is True if the line was found.'''
+
+    trace = False and not g.unitTesting
+    c = self
+    if trace: g.trace('=' * 10,root.h)
+    # Look in the root for @others, and ignore '@' lines
+    root_lines = g.splitLines(root.b)
+    i,at_others_i,n,found = c.goto_count_root_lines(root_lines,0,n,trace)
+    if found:
+        return root,i,True
+    elif at_others_i is None:
+        return root,i,False
+    prev = i
+    for p in root.subtree():
+        last_p = p.copy()
+        lines = g.splitLines(p.b)
+        if trace: g.trace('prev: %3s len(lines) %3s %s' % (
+            prev,len(lines),p.h))
+        if prev + len(lines) >= n:
+            if trace: g.trace('***found at offset: %s' %(n-prev))
+            i = max(0,n-prev)
+            return last_p,i,True
+        prev += len(lines)
+    # Not found: resume searching the root.
+    if at_others_i is None:
+        g.internalError('no @others line')
+    i,at_others_i,n,found = c.goto_count_root_lines(
+        root_lines,at_others_i+1,n,trace)
+    return root,i,found
+#@+node:ekr.20100206173123.5802:goto_count_root_lines
+def goto_count_root_lines (self,lines,i,n,trace):
+
+    at_others_i = None
+    while i < len(lines):
+        progress = i
+        line = lines[i]
+        if line.startswith('@'):
+            # Increase number of the line we are looking for.
+            if line.strip().startswith('@others'):
+                # Start looking in inner nodes.
+                if trace: g.trace('Found @others in root at offset %s n %s' % (i,n))
+                n += 1
+                at_others_i = i
+                return i,at_others_i,n,False
+            else:
+                n += 1
+                i += 1
+        elif i == n:
+            # Found the line.
+            if trace: g.trace('***found line %s in root at offset: %s' % (n,i))
+            return p,i,n,True
+        else:
+            n2 += 1
+            i += 1
+        assert i > progress
+
+    return i,at_others_i,n,False
+#@-node:ekr.20100206173123.5802:goto_count_root_lines
+#@-node:ekr.20080904071003.12:goto_countLines & helper
 #@-node:ekr.20100204052559.5792:Make goto-global-line work with @auto files
-#@+node:ekr.20100129133806.6237:Remove cruft from test folder
-#@-node:ekr.20100129133806.6237:Remove cruft from test folder
-#@-node:ekr.20100205222513.5841:Today
 #@-node:ekr.20100126110826.6253:Before rc1
 #@+node:ekr.20100206074650.5841:While waiting for 4.7 final
 @nocolor-node
@@ -1232,6 +1360,170 @@ expect Leo to create a node for each method in the class as it does for
 kind of change would also make @auto a lot more useful for PHP.
 #@nonl
 #@-node:ekr.20100118143729.6256:Wish-list bug 508108: No methods sub-nodes in PHP class import
+#@+node:ekr.20100206173123.5801:Fix or eliminate check python syntax commands
+@nocolor-node
+
+Directives and section references are not the problem. Rather, the problems are
+thinks like 'return' in a node that doesn't look it is in a function.
+
+The solution would likely be to check the entire file at once in checkPython
+code. But this won't work for the check-all-python-code command.
+
+Do we really need these checks? I think not, because the automatic checks work
+so well.
+#@nonl
+#@+node:ekr.20040723094220:Check Outline commands & allies
+#@+node:ekr.20040723094220.1:c.checkAllPythonCode
+def checkAllPythonCode(self,event=None,unittest=False,ignoreAtIgnore=True):
+
+    '''Check all nodes in the selected tree for syntax and tab errors.'''
+
+    c = self ; count = 0 ; result = "ok"
+
+    for p in c.all_unique_positions():
+        count += 1
+        if not unittest:
+            << print dots >>
+
+        if g.scanForAtLanguage(c,p) == "python":
+            if not g.scanForAtSettings(p) and (
+                not ignoreAtIgnore or not g.scanForAtIgnore(c,p)
+            ):
+                try:
+                    c.checkPythonNode(p,unittest)
+                except (SyntaxError,tokenize.TokenError,tabnanny.NannyNag):
+                    result = "error" # Continue to check.
+                except Exception:
+                    return "surprise" # abort
+                if unittest and result != "ok":
+                    g.pr("Syntax error in %s" % p.cleanHeadString())
+                    return result # End the unit test: it has failed.
+
+    if not unittest:
+        g.es("check complete",color="blue")
+
+    return result
+#@+node:ekr.20040723094220.2:<< print dots >>
+if count % 100 == 0:
+    g.es('','.',newline=False)
+
+if count % 2000 == 0:
+    g.enl()
+#@-node:ekr.20040723094220.2:<< print dots >>
+#@-node:ekr.20040723094220.1:c.checkAllPythonCode
+#@+node:ekr.20040723094220.3:c.checkPythonCode
+def checkPythonCode (self,event=None,
+    unittest=False,ignoreAtIgnore=True,
+    suppressErrors=False,checkOnSave=False):
+
+    '''Check the selected tree for syntax and tab errors.'''
+
+    c = self ; count = 0 ; result = "ok"
+
+    if not unittest:
+        g.es("checking Python code   ")
+
+    for p in c.p.self_and_subtree():
+
+        count += 1
+        if not unittest and not checkOnSave:
+            << print dots >>
+
+        if g.scanForAtLanguage(c,p) == "python":
+            if not ignoreAtIgnore or not g.scanForAtIgnore(c,p):
+                try:
+                    c.checkPythonNode(p,unittest,suppressErrors)
+                except (SyntaxError,tokenize.TokenError,tabnanny.NannyNag):
+                    result = "error" # Continue to check.
+                except Exception:
+                    return "surprise" # abort
+
+    if not unittest:
+        g.es("check complete",color="blue")
+
+    # We _can_ return a result for unit tests because we aren't using doCommand.
+    return result
+#@+node:ekr.20040723094220.4:<< print dots >>
+if count % 100 == 0:
+    g.es('','.',newline=False)
+
+if count % 2000 == 0:
+    g.enl()
+#@-node:ekr.20040723094220.4:<< print dots >>
+#@-node:ekr.20040723094220.3:c.checkPythonCode
+#@+node:ekr.20040723094220.5:c.checkPythonNode
+def checkPythonNode (self,p,unittest=False,suppressErrors=False):
+
+    c = self ; h = p.h
+
+    # Call getScript to ignore directives and section references.
+    body = g.getScript(c,p.copy())
+    if not body: return
+
+    try:
+        fn = '<node: %s>' % p.h
+        if not g.isPython3:
+            body = g.toEncodedString(body)
+        compile(body+'\n',fn,'exec')
+        c.tabNannyNode(p,h,body,unittest,suppressErrors)
+    except SyntaxError:
+        if not suppressErrors:
+            s = "Syntax error in: %s" % h
+            g.es_print(s,color="blue")
+            g.es_exception(full=False,color="black")
+        if unittest: raise
+    except Exception:
+        g.es_print('unexpected exception')
+        g.es_exception()
+        if unittest: raise
+
+#@-node:ekr.20040723094220.5:c.checkPythonNode
+#@+node:ekr.20040723094220.6:c.tabNannyNode
+# This code is based on tabnanny.check.
+
+def tabNannyNode (self,p,headline,body,unittest=False,suppressErrors=False):
+
+    """Check indentation using tabnanny."""
+
+    c = self
+
+    try:
+        readline = g.readLinesClass(body).next
+        tabnanny.process_tokens(tokenize.generate_tokens(readline))
+
+    except IndentationError:
+        junk,msg,junk = sys.exc_info()
+        if not suppressErrors:
+            g.es("IndentationError in",headline,color="blue")
+            g.es('',msg)
+        if unittest: raise
+
+    except tokenize.TokenError:
+        junk, msg, junk = sys.exc_info()
+        if not suppressErrors:
+            g.es("TokenError in",headline,color="blue")
+            g.es('',msg)
+        if unittest: raise
+
+    except tabnanny.NannyNag:
+        junk, nag, junk = sys.exc_info()
+        if not suppressErrors:
+            badline = nag.get_lineno()
+            line    = nag.get_line()
+            message = nag.get_msg()
+            g.es("indentation error in",headline,"line",badline,color="blue")
+            g.es(message)
+            line2 = repr(str(line))[1:-1]
+            g.es("offending line:\n",line2)
+        if unittest: raise
+
+    except Exception:
+        g.trace("unexpected exception")
+        g.es_exception()
+        if unittest: raise
+#@-node:ekr.20040723094220.6:c.tabNannyNode
+#@-node:ekr.20040723094220:Check Outline commands & allies
+#@-node:ekr.20100206173123.5801:Fix or eliminate check python syntax commands
 #@+node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
 http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
 
@@ -4095,40 +4387,13 @@ followed by the delete-node command.
 #@+node:ekr.20090811141250.5955:Most important features
 @ Important: There is another features list for 4.9.
 #@nonl
-#@+node:ekr.20090907080624.6081:Spell checker should check headlines
-#@-node:ekr.20090907080624.6081:Spell checker should check headlines
-#@+node:ekr.20081208102356.1:Threading colorizer doesn't handle multiple body editors
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
-
-> Tk only colorizes one body editor, and if you delete that editor it
-> colorizes no editor.
-
-Thanks for this report.  This is a problem, never noticed until now,
-with the threading colorizer.  A workaround is to disable the
-threading colorizer plugin. 
+#@+node:ekr.20100128094926.6222: port pmw to py3k
+- Check web site first!
+- Create new branch for pmw work.
 #@nonl
-#@-node:ekr.20081208102356.1:Threading colorizer doesn't handle multiple body editors
+#@-node:ekr.20100128094926.6222: port pmw to py3k
 #@+node:ekr.20100131155919.6298:Add debugging rst-arg
 #@-node:ekr.20100131155919.6298:Add debugging rst-arg
-#@+node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
-Just make the test.  It doesn't have to pass.
-#@nonl
-#@-node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
-#@+node:ekr.20090724081340.5987:Improve recursive import script and @auto
-@nocolor-node
-
-Instead of adding an @ignore directive, it might be better
-to change @auto to @@auto.
-
-Should @auto be more lenient with C files?
-
-Improve the recursive import script.
-    - Minimize the path names
-    - Option to include/exclude the @auto itself
-
-#@-node:ekr.20090724081340.5987:Improve recursive import script and @auto
 #@+node:ekr.20090714085914.5991:Add drag and drop to qt gui
 #@-node:ekr.20090714085914.5991:Add drag and drop to qt gui
 #@+node:ekr.20090801103907.6018:Add entries to global dicts for more languages
@@ -4336,18 +4601,6 @@ zpt.py
 __init__.py
 #@-node:ekr.20090814190307.5983:print all modes/*.py files
 #@-node:ekr.20090801103907.6018:Add entries to global dicts for more languages
-#@+node:ekr.20071001052501:Versioning for nodes
-@nocolor
-
-One feature I have not seen in SCS system is something which might be called
-"history compression": I might be interested in having both version 5 and 6
-in my source tree, when the current version is 7, but I am not really interested
-in the 2000 steps which transformed 5 into 6 (just suggested this feature to
-the bazaar people). This happens actually quite often to me, since I use the
-SCS as a back-up system, saving many (uninteresting) intermediate steps while
-implementing a new feature.
-#@nonl
-#@-node:ekr.20071001052501:Versioning for nodes
 #@+node:ekr.20090601083544.6051:Add expand_noweb_references for rst3 plugin
 @nocolor-node
 
@@ -4441,6 +4694,50 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
 #@nonl
 #@-node:ekr.20080421140032.1:Fix multiple controllers problem in all plugins
 #@-node:ekr.20080730212711.7:Improve plugins handling
+#@+node:ekr.20090724081340.5987:Improve recursive import script and @auto
+@nocolor-node
+
+Instead of adding an @ignore directive, it might be better
+to change @auto to @@auto.
+
+Should @auto be more lenient with C files?
+
+Improve the recursive import script.
+    - Minimize the path names
+    - Option to include/exclude the @auto itself
+
+#@-node:ekr.20090724081340.5987:Improve recursive import script and @auto
+#@+node:ekr.20090907080624.6081:Spell checker should check headlines
+#@-node:ekr.20090907080624.6081:Spell checker should check headlines
+#@+node:ekr.20081208102356.1:Threading colorizer doesn't handle multiple body editors
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
+
+> Tk only colorizes one body editor, and if you delete that editor it
+> colorizes no editor.
+
+Thanks for this report.  This is a problem, never noticed until now,
+with the threading colorizer.  A workaround is to disable the
+threading colorizer plugin. 
+#@nonl
+#@-node:ekr.20081208102356.1:Threading colorizer doesn't handle multiple body editors
+#@+node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
+Just make the test.  It doesn't have to pass.
+#@nonl
+#@-node:ekr.20100131161507.6303:Unit tests that all commands have docstrings
+#@+node:ekr.20071001052501:Versioning for nodes
+@nocolor
+
+One feature I have not seen in SCS system is something which might be called
+"history compression": I might be interested in having both version 5 and 6
+in my source tree, when the current version is 7, but I am not really interested
+in the 2000 steps which transformed 5 into 6 (just suggested this feature to
+the bazaar people). This happens actually quite often to me, since I use the
+SCS as a back-up system, saving many (uninteresting) intermediate steps while
+implementing a new feature.
+#@nonl
+#@-node:ekr.20071001052501:Versioning for nodes
 #@-node:ekr.20090811141250.5955:Most important features
 #@-node:ekr.20100109214940.6225:4.8 vim, cleanups, your mission...
 #@+node:ekr.20100206074650.5843:4.9 Autocompletion
