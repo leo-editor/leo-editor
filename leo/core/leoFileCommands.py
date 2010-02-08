@@ -347,7 +347,7 @@ if sys.platform != 'cli':
 
             if g.enableDB and c.mFileName:
                 if g.use_cacher:
-                    d = c.cacher.getWindowCachedPositionDict(c.mFileName)
+                    d = c.cacher.getCachedWindowPositionDict(c.mFileName)
                 elif c.db:
                     globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
                     globals_tag = g.toEncodedString(globals_tag,'ascii')

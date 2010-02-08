@@ -1011,7 +1011,11 @@ def read(self,root,importFileName=None,
         loaded,fileKey = c.cacher.readFile(fileName,root)
     else:
         loaded,fileKey = self.readFromCache(fileName,root)
-    if loaded: return True
+    if loaded:
+        at.inputFile.close()
+        root.clearDirty()
+        return True
+
 
     if not g.unitTesting:
         g.es("reading:",root.h)
@@ -2616,7 +2620,11 @@ def read(self,root,importFileName=None,
         loaded,fileKey = c.cacher.readFile(fileName,root)
     else:
         loaded,fileKey = self.readFromCache(fileName,root)
-    if loaded: return True
+    if loaded:
+        at.inputFile.close()
+        root.clearDirty()
+        return True
+
 
     if not g.unitTesting:
         g.es("reading:",root.h)
@@ -5499,24 +5507,22 @@ def readOneAtAutoNode (self,fileName,p):
     # Remember that we have read this file.
     p.v.at_read = True # Create the attribute
 
-    # Disable caching for test.leo.
-    fileKey = None
-    if c.shortFileName() != 'test.leo':
-        if g.use_cacher:
-            ok,fileKey = c.cacher.readFile(fileName,p)
-            if ok: return
-        else:
-            # Delete all children.
-            while p.hasChildren():
-                p.firstChild().doDelete()
+    if g.use_cacher:
+        ok,fileKey = c.cacher.readFile(fileName,p)
+        if ok: return
+    else:
+        # Delete all children.
+        while p.hasChildren():
+            p.firstChild().doDelete()
 
-            s,e = g.readFileIntoString(fileName,raw=True)
-            if s:
-                fileKey = self._contentHashFile(p.h,s)
-                if fileKey is not None and fileKey in c.db:        
-                    aList = c.db[fileKey]
-                    p.v.createOutlineFromCacheList(c,aList)
-                    return
+        s,e = g.readFileIntoString(fileName,raw=True)
+        # Always compute the fileKey, even if we don't use it to read the cache.
+        fileKey = self._contentHashFile(p.h,s)
+        if c.shortFileName() != 'test.leo':
+            if fileKey and fileKey in c.db:        
+                aList = c.db[fileKey]
+                p.v.createOutlineFromCacheList(c,aList)
+                return
 
     if not g.unitTesting:
         g.es("reading:",p.h)
@@ -5532,7 +5538,10 @@ def readOneAtAutoNode (self,fileName,p):
         p.clearDirty()
         c.setChanged(oldChanged)
     else:
-        self.writeCachedTree(p, fileKey)
+        if g.use_cacher:
+            c.cacher.writeFile(p,fileKey)
+        else:
+            self.writeCachedTree(p,fileKey)
         g.doHook('after-auto', p = p)  # call after-auto callbacks
 #@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
 #@+node:ekr.20090225080846.3:readOneAtEditNode (atFile)
@@ -5977,6 +5986,7 @@ self.miniBufferWidget = None
 
 # per-document info...
 self.changed = False # True if any data has been changed since the last save.
+self.db = None # Set later.
 self.disableCommandsMessage = ''
     # The presence of this message disables all commands.
 self.expansionLevel = 0  # The expansion level of this outline.
@@ -6020,22 +6030,6 @@ self.recentFiles = [] # List of recent files
 # For outline navigation.
 self.navPrefix = g.u('') # Must always be a string.
 self.navTime = None
-
-if g.use_cacher:
-    c.cacher = leoCache.cacher(c)
-    c.cacher.initFileDB(self.mFileName)
-else:
-    pth, bname = os.path.split(self.mFileName)
-    if pth and bname and g.enableDB:
-        fn = self.mFileName.lower()
-        fn = g.toEncodedString(fn) # Required for Python 3.x.
-        dbdirname = '%s/db/%s_%s' % (
-            g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
-        # Use compressed pickles (handy for @thin caches)
-        self.db = pickleshare.PickleShareDB(dbdirname,protocol='picklez')
-    else:
-        self.db = {}
-#@nonl
 #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
 #@+node:ekr.20031218072017.3043:saveAs (leoFileCommands)
 def saveAs(self,fileName):
@@ -9982,6 +9976,7 @@ self.miniBufferWidget = None
 
 # per-document info...
 self.changed = False # True if any data has been changed since the last save.
+self.db = None # Set later.
 self.disableCommandsMessage = ''
     # The presence of this message disables all commands.
 self.expansionLevel = 0  # The expansion level of this outline.
@@ -10025,22 +10020,6 @@ self.recentFiles = [] # List of recent files
 # For outline navigation.
 self.navPrefix = g.u('') # Must always be a string.
 self.navTime = None
-
-if g.use_cacher:
-    c.cacher = leoCache.cacher(c)
-    c.cacher.initFileDB(self.mFileName)
-else:
-    pth, bname = os.path.split(self.mFileName)
-    if pth and bname and g.enableDB:
-        fn = self.mFileName.lower()
-        fn = g.toEncodedString(fn) # Required for Python 3.x.
-        dbdirname = '%s/db/%s_%s' % (
-            g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
-        # Use compressed pickles (handy for @thin caches)
-        self.db = pickleshare.PickleShareDB(dbdirname,protocol='picklez')
-    else:
-        self.db = {}
-#@nonl
 #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
 #@+node:ekr.20090213065933.6:c.initConfigSettings
 def initConfigSettings (self):
@@ -11632,6 +11611,7 @@ self.miniBufferWidget = None
 
 # per-document info...
 self.changed = False # True if any data has been changed since the last save.
+self.db = None # Set later.
 self.disableCommandsMessage = ''
     # The presence of this message disables all commands.
 self.expansionLevel = 0  # The expansion level of this outline.
@@ -11675,22 +11655,6 @@ self.recentFiles = [] # List of recent files
 # For outline navigation.
 self.navPrefix = g.u('') # Must always be a string.
 self.navTime = None
-
-if g.use_cacher:
-    c.cacher = leoCache.cacher(c)
-    c.cacher.initFileDB(self.mFileName)
-else:
-    pth, bname = os.path.split(self.mFileName)
-    if pth and bname and g.enableDB:
-        fn = self.mFileName.lower()
-        fn = g.toEncodedString(fn) # Required for Python 3.x.
-        dbdirname = '%s/db/%s_%s' % (
-            g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
-        # Use compressed pickles (handy for @thin caches)
-        self.db = pickleshare.PickleShareDB(dbdirname,protocol='picklez')
-    else:
-        self.db = {}
-#@nonl
 #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
 #@-node:ekr.20040731071037:c.initIvars
 #@+node:ekr.20060919142200.1:initReadIvars

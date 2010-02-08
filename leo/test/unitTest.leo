@@ -1244,7 +1244,6 @@
 </v>
 <v t="ekr.20090104053806.1"><vh>@@test c.checkFileTimeStamp &amp; c.setFileTimeStamp</vh></v>
 <v t="ekr.20071113145804.10"><vh>@test c.contractAllHeadlines</vh></v>
-<v t="ville.20090313183551.2"><vh>@test c.db</vh></v>
 <v t="ekr.20061106112522"><vh>@test c.insertBodyTime</vh></v>
 <v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
 <v t="ekr.20100131180007.5466"><vh>@test c.scanAtPathDirectives</vh>
@@ -1261,7 +1260,6 @@
 </v>
 <v t="ekr.20100131180007.5465"><vh>@test class StubConfig</vh></v>
 <v t="ekr.20070611105423.1"><vh>@test contract all</vh></v>
-<v t="ville.20090620134122.4937"><vh>@test g.app.db</vh></v>
 <v t="ville.20090602190735.4770"><vh>@test g.command decorator</vh></v>
 <v t="ekr.20071113105654.1"><vh>@test hoist with no children</vh></v>
 <v t="ekr.20070611105728"><vh>@test illegal clone demote</vh></v>
@@ -2662,6 +2660,13 @@
 </v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
+</v>
+<v t="ekr.20100208152426.5389"><vh>Caching-related tests</vh>
+<v t="ville.20090313183551.2"><vh>@test c.db</vh></v>
+<v t="ville.20090620134122.4937"><vh>@test g.app.db</vh></v>
+<v t="ekr.20050112095306.1"></v>
+<v t="ekr.20061001114637"></v>
+<v t="ekr.20100208095817.5387"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -23935,6 +23940,7 @@ c.redraw()</t>
 cacher = leoCache.cacher(c)
 
 assert cacher.test()</t>
+<t tx="ekr.20100208152426.5389"></t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
@@ -23988,7 +23994,7 @@ assert chi_b[0].h == chi_b[1].h == 'b'
 chi_e = chi.select_h('d').select_h('e')
 assert len(chi_e) == 1
 assert chi_e[0].h == 'e'</t>
-<t tx="ville.20090313183551.2">if g.enableDB:
+<t tx="ville.20090313183551.2">if False:
 
     # test the controller-specific pickleshare db
     v = [1212,121131313, { 'hello' : (121,'world')} ]
@@ -24037,18 +24043,20 @@ assert c in g.app.commanders()
 
 
 </t>
-<t tx="ville.20090620134122.4937"># test the controller-specific pickleshare db
-v = [1212,121131313, { 'hello' : (121,'world')} ]
-
-db = g.app.db
-
-db['leo_utest'] = v
-db['leo_utest2'] = 1
-db['leotest/foo'] = 2
-db['leotest/bar'] = 3
-db['leo_utest'] == v
-db['leo_utest2'] == 1
-db['leotest/foo'] == 2
-db['leotest/bar'] == 3</t>
+<t tx="ville.20090620134122.4937">if hasattr(g.app,'db'):
+    
+    # test the controller-specific pickleshare db
+    v = [1212,121131313, { 'hello' : (121,'world')} ]
+    
+    db = g.app.db
+    
+    db['leo_utest'] = v
+    db['leo_utest2'] = 1
+    db['leotest/foo'] = 2
+    db['leotest/bar'] = 3
+    db['leo_utest'] == v
+    db['leo_utest2'] == 1
+    db['leotest/foo'] == 2
+    db['leotest/bar'] == 3</t>
 </tnodes>
 </leo_file>

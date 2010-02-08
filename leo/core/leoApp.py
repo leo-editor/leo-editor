@@ -8,6 +8,7 @@
 #@@pagewidth 80
 
 import leo.core.leoGlobals as g
+import leo.core.leoCache as leoCache
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoVersion as leoVersion
 

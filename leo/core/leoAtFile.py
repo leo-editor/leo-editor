@@ -477,7 +477,11 @@ class atFile:
             loaded,fileKey = c.cacher.readFile(fileName,root)
         else:
             loaded,fileKey = self.readFromCache(fileName,root)
-        if loaded: return True
+        if loaded:
+            at.inputFile.close()
+            root.clearDirty()
+            return True
+
 
         if not g.unitTesting:
             g.es("reading:",root.h)
@@ -696,24 +700,22 @@ class atFile:
         # Remember that we have read this file.
         p.v.at_read = True # Create the attribute
 
-        # Disable caching for test.leo.
-        fileKey = None
-        if c.shortFileName() != 'test.leo':
-            if g.use_cacher:
-                ok,fileKey = c.cacher.readFile(fileName,p)
-                if ok: return
-            else:
-                # Delete all children.
-                while p.hasChildren():
-                    p.firstChild().doDelete()
+        if g.use_cacher:
+            ok,fileKey = c.cacher.readFile(fileName,p)
+            if ok: return
+        else:
+            # Delete all children.
+            while p.hasChildren():
+                p.firstChild().doDelete()
 
-                s,e = g.readFileIntoString(fileName,raw=True)
-                if s:
-                    fileKey = self._contentHashFile(p.h,s)
-                    if fileKey is not None and fileKey in c.db:        
-                        aList = c.db[fileKey]
-                        p.v.createOutlineFromCacheList(c,aList)
-                        return
+            s,e = g.readFileIntoString(fileName,raw=True)
+            # Always compute the fileKey, even if we don't use it to read the cache.
+            fileKey = self._contentHashFile(p.h,s)
+            if c.shortFileName() != 'test.leo':
+                if fileKey and fileKey in c.db:        
+                    aList = c.db[fileKey]
+                    p.v.createOutlineFromCacheList(c,aList)
+                    return
 
         if not g.unitTesting:
             g.es("reading:",p.h)
@@ -729,7 +731,10 @@ class atFile:
             p.clearDirty()
             c.setChanged(oldChanged)
         else:
-            self.writeCachedTree(p, fileKey)
+            if g.use_cacher:
+                c.cacher.writeFile(p,fileKey)
+            else:
+                self.writeCachedTree(p,fileKey)
             g.doHook('after-auto', p = p)  # call after-auto callbacks
     #@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
     #@+node:ekr.20090225080846.3:readOneAtEditNode (atFile)

@@ -478,12 +478,16 @@ class path(_base):
     #@+node:ekr.20091204132801.6176:Reading or writing and entire file
     #@+node:ekr.20091204132801.2721:open
     def open(self, mode='r'):
-        """ Open this file.  Return a file object. """
+        """ Open this file.  Return a file object.
+
+        Do not print an error message.
+        It is not an error for this to fail. 
+        """
         # 2010/02/04 EKR: catch exception so Leo doesn't crash on startup.
         try:
             return open(self, mode)
         except Exception:
-            print('can not open',self)
+            # print('path.py: open: can not open',self)
             return None
     #@-node:ekr.20091204132801.2721:open
     #@+node:ekr.20091204132801.2722:bytes

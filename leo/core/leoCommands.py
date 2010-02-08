@@ -19,6 +19,7 @@ if g.app and g.app.use_psyco:
 
 # These imports are now done in the ctor and c.finishCreate.
     # import leo.core.leoAtFile as leoAtFile
+    # import leo.core.leoCache as leoCashe
     # import leo.core.leoEditCommands as leoEditCommands
     # import leo.core.leoFileCommands as leoFileCommands
     # import leo.core.leoImport as leoImport
@@ -102,6 +103,7 @@ class baseCommands (object):
         # Break circular import dependencies by importing here.
         # These imports take almost 3/4 sec in the leoBridge.
         import leo.core.leoAtFile as leoAtFile
+        import leo.core.leoCache as leoCache
         import leo.core.leoEditCommands as leoEditCommands
         import leo.core.leoFileCommands as leoFileCommands
         import leo.core.leoImport as leoImport
@@ -120,6 +122,21 @@ class baseCommands (object):
         self.tangleCommands = leoTangle.tangleCommands(c)
         leoEditCommands.createEditCommanders(c)
         self.rstCommands = leoRst.rstCommands(c)
+
+        if g.use_cacher:
+            c.cacher = leoCache.cacher(c)
+            c.cacher.initFileDB(self.mFileName)
+        else:
+            pth, bname = os.path.split(self.mFileName)
+            if pth and bname and g.enableDB:
+                fn = self.mFileName.lower()
+                fn = g.toEncodedString(fn) # Required for Python 3.x.
+                dbdirname = '%s/db/%s_%s' % (
+                    g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
+                # Use compressed pickles (handy for @thin caches)
+                self.db = pickleshare.PickleShareDB(dbdirname,protocol='picklez')
+            else:
+                self.db = {}
 
         if trace: t3 = g.printDiffTime('%s: after controllers created' % (tag),t2)
 
@@ -256,6 +273,7 @@ class baseCommands (object):
 
         # per-document info...
         self.changed = False # True if any data has been changed since the last save.
+        self.db = None # Set later.
         self.disableCommandsMessage = ''
             # The presence of this message disables all commands.
         self.expansionLevel = 0  # The expansion level of this outline.
@@ -299,22 +317,6 @@ class baseCommands (object):
         # For outline navigation.
         self.navPrefix = g.u('') # Must always be a string.
         self.navTime = None
-
-        if g.use_cacher:
-            c.cacher = leoCache.cacher(c)
-            c.cacher.initFileDB(self.mFileName)
-        else:
-            pth, bname = os.path.split(self.mFileName)
-            if pth and bname and g.enableDB:
-                fn = self.mFileName.lower()
-                fn = g.toEncodedString(fn) # Required for Python 3.x.
-                dbdirname = '%s/db/%s_%s' % (
-                    g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
-                # Use compressed pickles (handy for @thin caches)
-                self.db = pickleshare.PickleShareDB(dbdirname,protocol='picklez')
-            else:
-                self.db = {}
-        #@nonl
         #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
         #@nl
 
