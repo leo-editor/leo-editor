@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #@+leo-ver=4-thin
-#@+node:ekr.20100207111939.5895:@thin ../external/pickleshare.py
+#@+node:ekr.20090831103504.6069:@thin ../external/pickleshare.py
 #@@first
 #@@language python
 #@@tabwidth -4
@@ -165,7 +165,7 @@ class PickleShareDB:
 
         return self.has_key(key)
     #@-node:ekr.20091216103214.6305:__contains__
-    #@+node:ekr.20091204132346.6088:__delitem__ 
+    #@+node:ekr.20091204132346.6088:__delitem__
     def __delitem__(self,key):
 
         """ del db["key"] """
@@ -184,8 +184,8 @@ class PickleShareDB:
             # notfound and permission denied are ok - we
             # lost, the other process wins the conflict
             pass
-    #@-node:ekr.20091204132346.6088:__delitem__ 
-    #@+node:ekr.20091204132346.6082:__getitem__ 
+    #@-node:ekr.20091204132346.6088:__delitem__
+    #@+node:ekr.20091204132346.6082:__getitem__
     def __getitem__(self,key):
 
         """ db['key'] reading """
@@ -213,7 +213,7 @@ class PickleShareDB:
         if trace: g.trace('(old PickleShareDB: set cache)',
             g.shortFileName(fil),obj)
         return obj
-    #@-node:ekr.20091204132346.6082:__getitem__ 
+    #@-node:ekr.20091204132346.6082:__getitem__
     #@+node:ekr.20091216103214.6303:__iter__
     def __iter__(self):
 
@@ -281,7 +281,7 @@ class PickleShareDB:
     #@+node:ekr.20091216103214.6304:has_key
     def has_key(self, key):
 
-        trace = g.unitTesting
+        trace = False and g.unitTesting
         if trace: g.trace('(old PickleShareDB)',key)
 
         try:
@@ -615,5 +615,5 @@ if __name__== "__main__":
     main()
 
 
-#@-node:ekr.20100207111939.5895:@thin ../external/pickleshare.py
+#@-node:ekr.20090831103504.6069:@thin ../external/pickleshare.py
 #@-leo

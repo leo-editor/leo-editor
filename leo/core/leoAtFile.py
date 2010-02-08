@@ -697,6 +697,7 @@ class atFile:
         p.v.at_read = True # Create the attribute
 
         # Disable caching for test.leo.
+        fileKey = None
         if c.shortFileName() != 'test.leo':
             if g.use_cacher:
                 ok,fileKey = c.cacher.readFile(fileName,p)
@@ -728,7 +729,7 @@ class atFile:
             p.clearDirty()
             c.setChanged(oldChanged)
         else:
-            self.writeCachedTree(p, cachefile)
+            self.writeCachedTree(p, fileKey)
             g.doHook('after-auto', p = p)  # call after-auto callbacks
     #@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
     #@+node:ekr.20090225080846.3:readOneAtEditNode (atFile)
