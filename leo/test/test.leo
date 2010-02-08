@@ -507,7 +507,7 @@
 </v>
 </v>
 <v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
-<v t="ekr.20100206180840.2095" a="E"><vh>Pmw line number test</vh>
+<v t="ekr.20100206180840.2095"><vh>Pmw line number test</vh>
 <v t="ekr.20100206234124.2120"><vh>DELETED</vh>
 <v t="ekr.20100206234124.2103"><vh>get</vh></v>
 <v t="ekr.20100206234124.2104"><vh>invoke</vh></v>
@@ -527,7 +527,7 @@
 <v t="ekr.20100206234124.2118"><vh>_unpostList</vh></v>
 <v t="ekr.20100206234124.2119"><vh>_selectUnpost</vh></v>
 </v>
-<v t="ekr.20100206180840.2099" a="E"><vh>@auto test-PmwComboBox.py</vh></v>
+<v t="ekr.20100206180840.2099"><vh>@auto test-PmwComboBox.py</vh></v>
 </v>
 </vnodes>
 <tnodes>

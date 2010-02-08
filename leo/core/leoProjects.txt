@@ -1003,10 +1003,16 @@ def read(self,root,importFileName=None,
     else:
         return False
     root.v.at_read = True # Remember that we have read this file.
+
     # Get the file from the cache if possible.
-    ok,cachefile = self.readFromCache(fileName,force,root)
-    if ok:
-        return True
+    if force or not g.enableDB:
+        loaded,fileKey = False,None
+    elif g.use_cacher:
+        loaded,fileKey = c.cacher.readFile(fileName,root)
+    else:
+        loaded,fileKey = self.readFromCache(fileName,root)
+    if loaded: return True
+
     if not g.unitTesting:
         g.es("reading:",root.h)
     root.clearVisitedInTree()
@@ -1022,7 +1028,10 @@ def read(self,root,importFileName=None,
         self.copyAllTempBodyStringsToTnodes(root,thinFile)
     at.deleteAllTempBodyStrings()
     if at.errors == 0:
-        self.writeCachedTree(root,cachefile)
+        if g.use_cacher:
+            c.cacher.writeFile(root,fileKey)
+        else:
+            self.writeCachedTree(root,fileKey)
 
     return at.errors == 0
 #@+node:ekr.20041005105605.25:deleteAllTempBodyStrings
@@ -1069,18 +1078,15 @@ def initFileName (self,fromString,importFileName,root):
         # not fromString and
         # root.h.startswith('@file'))
 #@-node:ekr.20041005105605.22:initFileName
-#@+node:ekr.20100122130101.6176:at.readFromCache
-def readFromCache (self,fileName,force,root):
+#@+node:ekr.20100122130101.6176:at.readFromCache (to be removed)
+def readFromCache (self,fileName,root):
 
     at = self ; c = at.c
     s,e = g.readFileIntoString(fileName,raw=True)
     if s is None: return False,None
 
     cachefile = self._contentHashFile(root.h,s)
-
-    # 2010/01/22: uncache *any* file provided 'force' is False.
-    doCache = g.enableDB and not force
-    ok = doCache and cachefile in c.db
+    ok = g.enableDB and cachefile in c.db
     if ok:
         # Delete the previous tree, regardless of the @<file> type.
         while root.hasChildren():
@@ -1092,7 +1098,7 @@ def readFromCache (self,fileName,force,root):
         root.clearDirty()
 
     return ok,cachefile
-#@-node:ekr.20100122130101.6176:at.readFromCache
+#@-node:ekr.20100122130101.6176:at.readFromCache (to be removed)
 #@+node:ekr.20071105164407:warnAboutUnvisitedNodes
 def warnAboutUnvisitedNodes (self,root):
 
@@ -2602,10 +2608,16 @@ def read(self,root,importFileName=None,
     else:
         return False
     root.v.at_read = True # Remember that we have read this file.
+
     # Get the file from the cache if possible.
-    ok,cachefile = self.readFromCache(fileName,force,root)
-    if ok:
-        return True
+    if force or not g.enableDB:
+        loaded,fileKey = False,None
+    elif g.use_cacher:
+        loaded,fileKey = c.cacher.readFile(fileName,root)
+    else:
+        loaded,fileKey = self.readFromCache(fileName,root)
+    if loaded: return True
+
     if not g.unitTesting:
         g.es("reading:",root.h)
     root.clearVisitedInTree()
@@ -2621,7 +2633,10 @@ def read(self,root,importFileName=None,
         self.copyAllTempBodyStringsToTnodes(root,thinFile)
     at.deleteAllTempBodyStrings()
     if at.errors == 0:
-        self.writeCachedTree(root,cachefile)
+        if g.use_cacher:
+            c.cacher.writeFile(root,fileKey)
+        else:
+            self.writeCachedTree(root,fileKey)
 
     return at.errors == 0
 #@+node:ekr.20041005105605.25:deleteAllTempBodyStrings
@@ -2668,18 +2683,15 @@ def initFileName (self,fromString,importFileName,root):
         # not fromString and
         # root.h.startswith('@file'))
 #@-node:ekr.20041005105605.22:initFileName
-#@+node:ekr.20100122130101.6176:at.readFromCache
-def readFromCache (self,fileName,force,root):
+#@+node:ekr.20100122130101.6176:at.readFromCache (to be removed)
+def readFromCache (self,fileName,root):
 
     at = self ; c = at.c
     s,e = g.readFileIntoString(fileName,raw=True)
     if s is None: return False,None
 
     cachefile = self._contentHashFile(root.h,s)
-
-    # 2010/01/22: uncache *any* file provided 'force' is False.
-    doCache = g.enableDB and not force
-    ok = doCache and cachefile in c.db
+    ok = g.enableDB and cachefile in c.db
     if ok:
         # Delete the previous tree, regardless of the @<file> type.
         while root.hasChildren():
@@ -2691,7 +2703,7 @@ def readFromCache (self,fileName,force,root):
         root.clearDirty()
 
     return ok,cachefile
-#@-node:ekr.20100122130101.6176:at.readFromCache
+#@-node:ekr.20100122130101.6176:at.readFromCache (to be removed)
 #@+node:ekr.20071105164407:warnAboutUnvisitedNodes
 def warnAboutUnvisitedNodes (self,root):
 
@@ -3962,18 +3974,15 @@ def createThinChild4 (self,gnxString,headline):
     child.setVisited() # Supress warning/deletion of unvisited nodes.
     return child
 #@-node:ekr.20041005105605.72:at.createThinChild4
-#@+node:ekr.20100122130101.6176:at.readFromCache
-def readFromCache (self,fileName,force,root):
+#@+node:ekr.20100122130101.6176:at.readFromCache (to be removed)
+def readFromCache (self,fileName,root):
 
     at = self ; c = at.c
     s,e = g.readFileIntoString(fileName,raw=True)
     if s is None: return False,None
 
     cachefile = self._contentHashFile(root.h,s)
-
-    # 2010/01/22: uncache *any* file provided 'force' is False.
-    doCache = g.enableDB and not force
-    ok = doCache and cachefile in c.db
+    ok = g.enableDB and cachefile in c.db
     if ok:
         # Delete the previous tree, regardless of the @<file> type.
         while root.hasChildren():
@@ -3985,7 +3994,7 @@ def readFromCache (self,fileName,force,root):
         root.clearDirty()
 
     return ok,cachefile
-#@-node:ekr.20100122130101.6176:at.readFromCache
+#@-node:ekr.20100122130101.6176:at.readFromCache (to be removed)
 #@+node:ekr.20041005105605.85:at.readStartNode
 def readStartNode (self,s,i,middle=False):
 
@@ -4635,7 +4644,7 @@ def warnOnReadOnlyFiles (self,fileName):
         g.es("read only:",fileName,color="red")
 #@-node:ekr.20031218072017.1554:warnOnReadOnlyFiles
 #@-node:ekr.20031218072017.1553:fc.getLeoFile & helpers
-#@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
+#@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers (to be removed)
 def createOutlineFromCacheList(self,c,aList,top=True,atAll=None,fileName=None):
     """ Create outline structure from recursive aList
     built by p.makeCacheList.
@@ -4729,7 +4738,7 @@ def fastAddLastChild(self,c,gnxString):
 
     return is_clone,child_v
 #@-node:ekr.20090829064400.6042:v.fastAddLastChild
-#@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
+#@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers (to be removed)
 #@-node:ekr.20100124110832.6213:changed...
 #@-node:ekr.20100122162421.6240:Clones in @all files now have low priority
 #@+node:ekr.20100125073206.8711:use g.readFileIntoString
@@ -5450,18 +5459,15 @@ def checkDerivedFile (self, event=None):
     if at.errors == 0:
         g.es_print('check-derived-file passed',color='blue')
 #@-node:ekr.20070919133659:checkDerivedFile (atFile)
-#@+node:ekr.20100122130101.6176:at.readFromCache
-def readFromCache (self,fileName,force,root):
+#@+node:ekr.20100122130101.6176:at.readFromCache (to be removed)
+def readFromCache (self,fileName,root):
 
     at = self ; c = at.c
     s,e = g.readFileIntoString(fileName,raw=True)
     if s is None: return False,None
 
     cachefile = self._contentHashFile(root.h,s)
-
-    # 2010/01/22: uncache *any* file provided 'force' is False.
-    doCache = g.enableDB and not force
-    ok = doCache and cachefile in c.db
+    ok = g.enableDB and cachefile in c.db
     if ok:
         # Delete the previous tree, regardless of the @<file> type.
         while root.hasChildren():
@@ -5473,7 +5479,7 @@ def readFromCache (self,fileName,force,root):
         root.clearDirty()
 
     return ok,cachefile
-#@-node:ekr.20100122130101.6176:at.readFromCache
+#@-node:ekr.20100122130101.6176:at.readFromCache (to be removed)
 #@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
 def readOneAtAutoNode (self,fileName,p):
 
@@ -5487,22 +5493,22 @@ def readOneAtAutoNode (self,fileName,p):
     while p.hasChildren():
         p.firstChild().doDelete()
 
-    s,e = g.readFileIntoString(fileName,raw=True)
-    if s is None:
-        cachefile = None
-    else:
-        cachefile = self._contentHashFile(p.h,s)
-
     # Remember that we have read this file.
     p.v.at_read = True # Create the attribute
 
-    # Disable caching for test.leo.
-    if c.shortFileName() != 'test.leo':
-        if cachefile is not None and cachefile in c.db:        
-            # g.es('uncache:',p.h)
-            aList = c.db[cachefile]
-            p.v.createOutlineFromCacheList(c,aList)
-            return
+    if g.use_cacher:
+        ok,fileKey = c.readFile(fileName,p,force=False)
+        if ok: return
+    else:
+        # Disable caching for test.leo.
+        if c.shortFileName() != 'test.leo':
+            s,e = g.readFileIntoString(fileName,raw=True)
+            if s:
+                fileKey = self._contentHashFile(p.h,s)
+                if fileKey is not None and fileKey in c.db:        
+                    aList = c.db[fileKey]
+                    p.v.createOutlineFromCacheList(c,aList)
+                    return
 
     if not g.unitTesting:
         g.es("reading:",p.h)
@@ -5993,16 +5999,19 @@ self.recentFiles = [] # List of recent files
 self.navPrefix = g.u('') # Must always be a string.
 self.navTime = None
 
-pth, bname = os.path.split(self.mFileName)
-if pth and bname and g.enableDB:
-    fn = self.mFileName.lower()
-    fn = g.toEncodedString(fn) # Required for Python 3.x.
-    dbdirname = '%s/db/%s_%s' % (
-        g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
-    # Use compressed pickles (handy for @thin caches)
-    self.db = leo.external.pickleshare.PickleShareDB(dbdirname,protocol='picklez')
+if g.use_cacher:
+    c.cacher = leoCache.cacher(c,self.mFileName)
 else:
-    self.db = {}
+    pth, bname = os.path.split(self.mFileName)
+    if pth and bname and g.enableDB:
+        fn = self.mFileName.lower()
+        fn = g.toEncodedString(fn) # Required for Python 3.x.
+        dbdirname = '%s/db/%s_%s' % (
+            g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
+        # Use compressed pickles (handy for @thin caches)
+        self.db = leo.external.pickleshare.PickleShareDB(dbdirname,protocol='picklez')
+    else:
+        self.db = {}
 #@nonl
 #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
 #@+node:ekr.20031218072017.3043:saveAs (leoFileCommands)
@@ -9981,16 +9990,19 @@ self.recentFiles = [] # List of recent files
 self.navPrefix = g.u('') # Must always be a string.
 self.navTime = None
 
-pth, bname = os.path.split(self.mFileName)
-if pth and bname and g.enableDB:
-    fn = self.mFileName.lower()
-    fn = g.toEncodedString(fn) # Required for Python 3.x.
-    dbdirname = '%s/db/%s_%s' % (
-        g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
-    # Use compressed pickles (handy for @thin caches)
-    self.db = leo.external.pickleshare.PickleShareDB(dbdirname,protocol='picklez')
+if g.use_cacher:
+    c.cacher = leoCache.cacher(c,self.mFileName)
 else:
-    self.db = {}
+    pth, bname = os.path.split(self.mFileName)
+    if pth and bname and g.enableDB:
+        fn = self.mFileName.lower()
+        fn = g.toEncodedString(fn) # Required for Python 3.x.
+        dbdirname = '%s/db/%s_%s' % (
+            g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
+        # Use compressed pickles (handy for @thin caches)
+        self.db = leo.external.pickleshare.PickleShareDB(dbdirname,protocol='picklez')
+    else:
+        self.db = {}
 #@nonl
 #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
 #@+node:ekr.20090213065933.6:c.initConfigSettings
@@ -11624,16 +11636,19 @@ self.recentFiles = [] # List of recent files
 self.navPrefix = g.u('') # Must always be a string.
 self.navTime = None
 
-pth, bname = os.path.split(self.mFileName)
-if pth and bname and g.enableDB:
-    fn = self.mFileName.lower()
-    fn = g.toEncodedString(fn) # Required for Python 3.x.
-    dbdirname = '%s/db/%s_%s' % (
-        g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
-    # Use compressed pickles (handy for @thin caches)
-    self.db = leo.external.pickleshare.PickleShareDB(dbdirname,protocol='picklez')
+if g.use_cacher:
+    c.cacher = leoCache.cacher(c,self.mFileName)
 else:
-    self.db = {}
+    pth, bname = os.path.split(self.mFileName)
+    if pth and bname and g.enableDB:
+        fn = self.mFileName.lower()
+        fn = g.toEncodedString(fn) # Required for Python 3.x.
+        dbdirname = '%s/db/%s_%s' % (
+            g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
+        # Use compressed pickles (handy for @thin caches)
+        self.db = leo.external.pickleshare.PickleShareDB(dbdirname,protocol='picklez')
+    else:
+        self.db = {}
 #@nonl
 #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
 #@-node:ekr.20040731071037:c.initIvars
@@ -11753,7 +11768,7 @@ else:
 #@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
 #@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
 #@-node:ekr.20041005105605.95:at.readEndNode
-#@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
+#@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers (to be removed)
 def createOutlineFromCacheList(self,c,aList,top=True,atAll=None,fileName=None):
     """ Create outline structure from recursive aList
     built by p.makeCacheList.
@@ -11847,7 +11862,7 @@ def fastAddLastChild(self,c,gnxString):
 
     return is_clone,child_v
 #@-node:ekr.20090829064400.6042:v.fastAddLastChild
-#@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
+#@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers (to be removed)
 #@-node:ekr.20100205060712.8317:Creating the recovery data
 #@+node:ekr.20100205060712.8316:Creating the recovery node
 #@+node:ekr.20100205060712.8314:handleNodeConflicts
