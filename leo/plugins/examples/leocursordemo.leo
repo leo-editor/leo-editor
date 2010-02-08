@@ -11,7 +11,7 @@
 <vnodes>
 <v t="tbrown.20100205200824.5417"><vh>@chapters</vh></v>
 <v t="tbrown.20100206093837.1344"><vh>What's this?</vh></v>
-<v t="tbrown.20100205200824.5416"><vh>Data</vh>
+<v t="tbrown.20100205200824.5416" a="E"><vh>Data</vh>
 <v t="tbrown.20100205200824.5418"><vh>Meta</vh></v>
 <v t="tbrown.20100205200824.5419" a="E"><vh>Events</vh>
 <v t="tbrown.20100205200824.5420"><vh>Event 1</vh></v>
@@ -24,7 +24,7 @@
 <v t="tbrown.20100205200824.5423"><vh>Simple Demo</vh></v>
 <v t="tbrown.20100206093837.1341"><vh>Genshi Demo</vh></v>
 <v t="tbrown.20100206093837.1342"><vh>Genshi template</vh></v>
-<v t="tbrown.20100206093837.1343"><vh>@edit leocursordemo.html</vh></v>
+<v t="tbrown.20100206093837.1343"><vh>leocursordemo.html</vh></v>
 </vnodes>
 <tnodes>
 <t tx="tbrown.20100205200824.5416"></t>
@@ -52,10 +52,20 @@ try:
     lc = leocursor.LeoCursor(g.findTopLevelNode(c, 'Data').v)
     lc._setAttribManagers([leocursor.AM_Colon()])
 
+    print("%d events with %d reviews" %
+      (len(lc("Events/Event.*")),len(lc("Events/Event.*/Rev.*"))))
+
+    print("%s to %s" %
+      (lc("Events/0")[0]._H,lc("Events/-1")[0]._H))
+    print("%s to %s" %
+      (lc("Events/.*")[0]._H,lc("Events/.*")[-1]._H))
+    print("%s to %s" %
+      (lc.Events[0]._H,lc.Events[-1]._H))
+
     for event in lc._R.Events:
         print("\n%s (%s)" % (event._H, event._date))
         print('"%s"' % event._B.strip())
-        for review in event._C('Review.*'):
+        for review in event('Review.*'):
             print('   Review: '+review._H+('*'*int(review._stars)))
 
 
@@ -78,7 +88,7 @@ lc._setAttribManagers([leocursor.AM_Colon()])
 
 tmpl = MarkupTemplate(g.findTopLevelNode(c, 'Genshi template').b)
 
-g.findTopLevelNode(c, '@edit leocursordemo.html').b = ('@language html\n'+
+g.findTopLevelNode(c, 'leocursordemo.html').b = ('@language html\n'+
     tmpl.generate(lc=lc).render('xhtml', doctype='html')
 )
 
@@ -87,15 +97,18 @@ g.findTopLevelNode(c, '@edit leocursordemo.html').b = ('@language html\n'+
   &lt;body&gt;
     &lt;h1&gt;Events&lt;/h1&gt;
 
+    &lt;div&gt;${len(lc("Events/Event.*"))} events,
+       ${len(lc("Events/Event.*/Rev.*"))} reviews&lt;/div&gt;
+       
     &lt;div py:for="event in lc._R.Events" class="event"&gt;
 
       &lt;h2&gt;${event._H} (${event._date})&lt;/h2&gt;
       &lt;p&gt;${event._B}&lt;/p&gt;
       
-      &lt;div py:if="event._C('Review.*')" class='reviews'&gt;
+      &lt;div py:if="event('Review.*')" class='reviews'&gt;
         &lt;h3&gt;Reviews&lt;/h3&gt;
         
-        &lt;div py:for="rev in event._C('Review.*')"&gt;
+        &lt;div py:for="rev in event('Review.*')"&gt;
           &lt;b&gt;${rev._H}:&lt;/b&gt;${'*' * int(rev._stars)}
         &lt;/div&gt;
       &lt;/div&gt;
@@ -103,6 +116,34 @@ g.findTopLevelNode(c, '@edit leocursordemo.html').b = ('@language html\n'+
   &lt;/body&gt;
 &lt;/html&gt;
 </t>
+<t tx="tbrown.20100206093837.1343">@language html
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Events&lt;/h1&gt;
+    &lt;div&gt;2 events,
+       2 reviews&lt;/div&gt;
+    &lt;div class="event"&gt;
+      &lt;h2&gt;Event 1 (2010/3/6)&lt;/h2&gt;
+      &lt;p&gt;Some rambling about the event
+date:2010-4-1 (no space, doesn't match)
+More rambling
+&lt;/p&gt;
+    &lt;/div&gt;&lt;div class="event"&gt;
+      &lt;h2&gt;Event 2 (2999/3/6)&lt;/h2&gt;
+      &lt;p&gt;Second one
+&lt;/p&gt;
+      &lt;div class="reviews"&gt;
+        &lt;h3&gt;Reviews&lt;/h3&gt;
+        &lt;div&gt;
+          &lt;b&gt;Review 1:&lt;/b&gt;***
+        &lt;/div&gt;&lt;div&gt;
+          &lt;b&gt;Review 2:&lt;/b&gt;************
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</t>
 <t tx="tbrown.20100206093837.1344">@nocolor
 
 Simple Demo and Genshi Demo are scripts you can run to demonstrate the
@@ -117,7 +158,7 @@ The Genshi Demo requires the genshi html templating language module,
 but it doesn't really do anything the Simple Demo doesn't, it's just
 there to test LeoCursor in an intended application (i.e. Genshi templates).
 
-The output from the Genshi Demo is placed in the "@edit leocursordemo.html"
+The output from the Genshi Demo is placed in the "leocursordemo.html"
 node, so you can view it there even if you don't have Genshi installed.
 </t>
 </tnodes>
