@@ -121,7 +121,7 @@ app = None # The singleton app object.
 debug = False # Set early in startup by the --debug command-line option.
 unitTesting = False # A synonym for app.unitTesting.
 
-use_cacher = False # True, use leoCacher.cacher class.
+use_cacher = True # True, use leoCacher.cacher class.
 enableDB = True
     # Don't even think about eliminating this constant:
     # it is needed for debugging.

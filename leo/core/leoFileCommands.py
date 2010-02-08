@@ -341,7 +341,7 @@ if sys.platform != 'cli':
             trace = False and not g.unitTesting
             c = self.c
 
-            if trace: g.trace(len(list(c.db.keys())),c.mFileName,self.fileName)
+            if trace: g.trace(c.mFileName)
 
             d = {}
 
@@ -353,6 +353,7 @@ if sys.platform != 'cli':
                     globals_tag = g.toEncodedString(globals_tag,'ascii')
                     key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
                     data = c.db.get('window_position_%s' % (key))
+                    if trace: g.trace(c.mFileName,key,data)
                     if data:
                         top,left,height,width = data
                         top,left,height,width = int(top),int(left),int(height),int(width)
@@ -1726,12 +1727,13 @@ class baseFileCommands:
 
         if use_db:
             if g.use_cacher:
-                c.cacher.setCachedGlobalsElement()
+                if trace: g.trace(c.mFileName,key)
+                c.cacher.setCachedGlobalsElement(c.mFileName)
             else:
                 globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
                 globals_tag = g.toEncodedString(globals_tag,'ascii')
                 key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
-                if trace: g.trace(len(list(c.db.keys())),c.mFileName,key)
+                if trace: g.trace(c.mFileName,key)
                 #@            << put all data to c.db >>
                 #@+node:ekr.20100112095623.6267:<< put all data to c.db >>
                 c.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)

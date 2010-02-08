@@ -1016,7 +1016,6 @@ def read(self,root,importFileName=None,
         root.clearDirty()
         return True
 
-
     if not g.unitTesting:
         g.es("reading:",root.h)
     root.clearVisitedInTree()
@@ -2624,7 +2623,6 @@ def read(self,root,importFileName=None,
         at.inputFile.close()
         root.clearDirty()
         return True
-
 
     if not g.unitTesting:
         g.es("reading:",root.h)
@@ -6976,12 +6974,13 @@ def putGlobals (self):
 
     if use_db:
         if g.use_cacher:
-            c.cacher.setCachedGlobalsElement()
+            if trace: g.trace(c.mFileName,key)
+            c.cacher.setCachedGlobalsElement(c.mFileName)
         else:
             globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
             globals_tag = g.toEncodedString(globals_tag,'ascii')
             key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
-            if trace: g.trace(len(list(c.db.keys())),c.mFileName,key)
+            if trace: g.trace(c.mFileName,key)
             << put all data to c.db >>
 
     # Always put positions, to trigger sax methods.

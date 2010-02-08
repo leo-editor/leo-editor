@@ -110,9 +110,6 @@ class cacher:
 
         m = hashlib.md5()
 
-        assert s is not None
-        assert content is not None
-
         if g.isUnicode(s):
             s = g.toEncodedString(s)
 
@@ -124,7 +121,6 @@ class cacher:
         m.update(s)
         m.update(content)
         return "fcache/" + m.hexdigest()
-
     #@-node:ekr.20100208071151.5907:fileKey
     #@+node:ekr.20100208082353.5925:Reading
     #@+node:ekr.20100208071151.5910:createOutlineFromCacheList & helpers
@@ -276,15 +272,11 @@ class cacher:
         trace = False and not g.unitTesting
         c = self.c
 
-        if trace: g.trace(fn)
-
         if not c:
             g.internalError('no commander')
             return {}
 
         globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
-        # globals_tag = g.toEncodedString(globals_tag,'ascii')
-
         key = self.fileKey(fn,globals_tag)
         data = self.db.get('window_position_%s' % (key))
 
@@ -295,6 +287,7 @@ class cacher:
         else:
             d = {}
 
+        if trace: g.trace(fn,key,data)
         return d
     #@-node:ekr.20100208082353.5922:getCachedWindowPositionDict
     #@+node:ekr.20100208071151.5905:readFile
@@ -312,13 +305,15 @@ class cacher:
             return False,None
 
         s,e = g.readFileIntoString(fileName,raw=True)
-        if s is None: return False,None
+        if s is None:
+            if trace: g.trace('empty file contents',fileName)
+            return False,None
         assert not g.isUnicode(s)
 
         # There will be a bug if s is not already an encoded string.
         key = self.fileKey(root.h,s,requireEncodedString=True)
         ok = key in self.db
-        # if trace: g.trace('key in db',ok)
+        if trace: g.trace('in cache',ok,fileName)
         if ok:
             # Delete the previous tree, regardless of the @<file> type.
             while root.hasChildren():
@@ -346,7 +341,7 @@ class cacher:
             [self.makeCacheList(p2) for p2 in p.children()]]
     #@-node:ekr.20100208071151.5901:makeCacheList
     #@+node:ekr.20100208082353.5929:setCachedGlobalsElement
-    def setCachedGlobalsElement(self):
+    def setCachedGlobalsElement(self,fn):
 
         trace = False and not g.unitTesting
         c = self.c
@@ -355,12 +350,9 @@ class cacher:
             return g.internalError('no commander')
 
         globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
-        # globals_tag = g.toEncodedString(globals_tag,'ascii')
+        key = self.fileKey(fn,globals_tag)
 
-        key = self.fileKey(c.mFileName,globals_tag)
-        key = g.toEncodedString(key,'ascii')
-
-        if trace: g.trace(len(list(self.db.keys())),c.mFileName,key)
+        if trace: g.trace(c.mFileName,key)
 
         self.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
         self.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
@@ -368,6 +360,7 @@ class cacher:
             c.frame.ratio,c.frame.secondary_ratio))
 
         width,height,left,top = c.frame.get_window_info()
+
         self.db['window_position_%s' % key] = (
             str(top),str(left),str(height),str(width))
         if trace:
@@ -405,7 +398,7 @@ class cacher:
         elif fileKey in self.db:
             if trace: g.trace('already cached',fileKey)
         else:
-            if trace: g.trace('caching ',p.h)
+            if trace: g.trace('caching ',p.h,fileKey)
             self.db[fileKey] = self.makeCacheList(p)
     #@-node:ekr.20100208071151.5903:writeFile
     #@-node:ekr.20100208082353.5927:Writing

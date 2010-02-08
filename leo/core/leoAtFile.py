@@ -482,7 +482,6 @@ class atFile:
             root.clearDirty()
             return True
 
-
         if not g.unitTesting:
             g.es("reading:",root.h)
         root.clearVisitedInTree()
@@ -618,7 +617,6 @@ class atFile:
         m.update(s)
         m.update(content)
         return "fcache/" + m.hexdigest()
-
     #@-node:ville.20090606150238.6351:at._contentHashFile (to be removed)
     #@+node:ekr.20041005105605.26:readAll (atFile)
     def readAll(self,root,partialFlag=False):
