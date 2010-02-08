@@ -581,7 +581,7 @@ class atFile:
             g.es('you may want to delete ressurected nodes')
     #@-node:ekr.20071105164407:warnAboutUnvisitedNodes
     #@-node:ekr.20041005105605.21:read (atFile) & helpers
-    #@+node:ville.20090606131405.6362:writeCachedTree (atFile) To be eliminated
+    #@+node:ville.20090606131405.6362:at.writeCachedTree (to be removed)
     def writeCachedTree(self, p, cachefile):
 
         trace = False and not g.unitTesting
@@ -595,8 +595,8 @@ class atFile:
             if trace: g.trace('caching ',p.h)
             c.db[cachefile] = p.makeCacheList()
     #@nonl
-    #@-node:ville.20090606131405.6362:writeCachedTree (atFile) To be eliminated
-    #@+node:ville.20090606150238.6351:_contentHashFile (atFile) (to be removed)
+    #@-node:ville.20090606131405.6362:at.writeCachedTree (to be removed)
+    #@+node:ville.20090606150238.6351:at._contentHashFile (to be removed)
     def _contentHashFile(self,s,content):
 
         '''Compute the hash of s (usually a headline) and content.
@@ -615,7 +615,7 @@ class atFile:
         m.update(content)
         return "fcache/" + m.hexdigest()
 
-    #@-node:ville.20090606150238.6351:_contentHashFile (atFile) (to be removed)
+    #@-node:ville.20090606150238.6351:at._contentHashFile (to be removed)
     #@+node:ekr.20041005105605.26:readAll (atFile)
     def readAll(self,root,partialFlag=False):
 
@@ -693,19 +693,19 @@ class atFile:
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
-        # Delete all children.
-        while p.hasChildren():
-            p.firstChild().doDelete()
-
         # Remember that we have read this file.
         p.v.at_read = True # Create the attribute
 
-        if g.use_cacher:
-            ok,fileKey = c.readFile(fileName,p,force=False)
-            if ok: return
-        else:
-            # Disable caching for test.leo.
-            if c.shortFileName() != 'test.leo':
+        # Disable caching for test.leo.
+        if c.shortFileName() != 'test.leo':
+            if g.use_cacher:
+                ok,fileKey = c.cacher.readFile(fileName,p)
+                if ok: return
+            else:
+                # Delete all children.
+                while p.hasChildren():
+                    p.firstChild().doDelete()
+
                 s,e = g.readFileIntoString(fileName,raw=True)
                 if s:
                     fileKey = self._contentHashFile(p.h,s)

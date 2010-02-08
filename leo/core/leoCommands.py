@@ -27,7 +27,7 @@ if g.app and g.app.use_psyco:
     # import leo.core.leoUndo as leoUndo
 
 import leo.core.leoNodes as leoNodes
-import leo.external.pickleshare
+import leo.external.pickleshare as pickleshare
 
 import hashlib
 import keyword
@@ -301,7 +301,8 @@ class baseCommands (object):
         self.navTime = None
 
         if g.use_cacher:
-            c.cacher = leoCache.cacher(c,self.mFileName)
+            c.cacher = leoCache.cacher(c)
+            c.cacher.initFileDB(self.mFileName)
         else:
             pth, bname = os.path.split(self.mFileName)
             if pth and bname and g.enableDB:
@@ -310,7 +311,7 @@ class baseCommands (object):
                 dbdirname = '%s/db/%s_%s' % (
                     g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
                 # Use compressed pickles (handy for @thin caches)
-                self.db = leo.external.pickleshare.PickleShareDB(dbdirname,protocol='picklez')
+                self.db = pickleshare.PickleShareDB(dbdirname,protocol='picklez')
             else:
                 self.db = {}
         #@nonl
