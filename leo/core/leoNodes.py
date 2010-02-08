@@ -1825,7 +1825,7 @@ class position (object):
     #@nonl
     #@-node:ekr.20090706171333.6226:p.badUnlink
     #@-node:ekr.20080416161551.217:p._unlink
-    #@+node:ekr.20090829064400.6044:p.makeCacheList
+    #@+node:ekr.20090829064400.6044:p.makeCacheList (to be removed)
     def makeCacheList(self):
 
         '''Create a recursive list describing a tree
@@ -1837,7 +1837,7 @@ class position (object):
         return [
             p.h,p.b,p.gnx,
             [p2.makeCacheList() for p2 in p.children()]]
-    #@-node:ekr.20090829064400.6044:p.makeCacheList
+    #@-node:ekr.20090829064400.6044:p.makeCacheList (to be removed)
     #@-node:ekr.20080423062035.1:p.Low level methods
     #@-others
 #@-node:ekr.20031218072017.889:class position
@@ -2598,7 +2598,7 @@ class vnode (baseVnode):
         v = self # The child node.
         v._addLink(n,parent_v)
     #@-node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
-    #@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
+    #@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers (to be removed)
     def createOutlineFromCacheList(self,c,aList,top=True,atAll=None,fileName=None):
         """ Create outline structure from recursive aList
         built by p.makeCacheList.
@@ -2692,7 +2692,7 @@ class vnode (baseVnode):
 
         return is_clone,child_v
     #@-node:ekr.20090829064400.6042:v.fastAddLastChild
-    #@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers
+    #@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers (to be removed)
     #@-node:ekr.20080427062528.9:v.Low level methods
     #@+node:ekr.20090130065000.1:v.Properties
     #@+node:ekr.20090130114732.5:v.b Property

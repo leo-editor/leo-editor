@@ -469,10 +469,16 @@ class atFile:
         else:
             return False
         root.v.at_read = True # Remember that we have read this file.
+
         # Get the file from the cache if possible.
-        ok,cachefile = self.readFromCache(fileName,force,root)
-        if ok:
-            return True
+        if force or not g.enableDB:
+            loaded,fileKey = False,None
+        elif g.use_cacher:
+            loaded,fileKey = c.cacher.readFile(fileName,root)
+        else:
+            loaded,fileKey = self.readFromCache(fileName,root)
+        if loaded: return True
+
         if not g.unitTesting:
             g.es("reading:",root.h)
         root.clearVisitedInTree()
@@ -488,7 +494,10 @@ class atFile:
             self.copyAllTempBodyStringsToTnodes(root,thinFile)
         at.deleteAllTempBodyStrings()
         if at.errors == 0:
-            self.writeCachedTree(root,cachefile)
+            if g.use_cacher:
+                c.cacher.writeFile(root,fileKey)
+            else:
+                self.writeCachedTree(root,fileKey)
 
         return at.errors == 0
     #@+node:ekr.20041005105605.25:deleteAllTempBodyStrings
@@ -535,18 +544,15 @@ class atFile:
             # not fromString and
             # root.h.startswith('@file'))
     #@-node:ekr.20041005105605.22:initFileName
-    #@+node:ekr.20100122130101.6176:at.readFromCache
-    def readFromCache (self,fileName,force,root):
+    #@+node:ekr.20100122130101.6176:at.readFromCache (to be removed)
+    def readFromCache (self,fileName,root):
 
         at = self ; c = at.c
         s,e = g.readFileIntoString(fileName,raw=True)
         if s is None: return False,None
 
         cachefile = self._contentHashFile(root.h,s)
-
-        # 2010/01/22: uncache *any* file provided 'force' is False.
-        doCache = g.enableDB and not force
-        ok = doCache and cachefile in c.db
+        ok = g.enableDB and cachefile in c.db
         if ok:
             # Delete the previous tree, regardless of the @<file> type.
             while root.hasChildren():
@@ -558,7 +564,7 @@ class atFile:
             root.clearDirty()
 
         return ok,cachefile
-    #@-node:ekr.20100122130101.6176:at.readFromCache
+    #@-node:ekr.20100122130101.6176:at.readFromCache (to be removed)
     #@+node:ekr.20071105164407:warnAboutUnvisitedNodes
     def warnAboutUnvisitedNodes (self,root):
 
@@ -575,7 +581,7 @@ class atFile:
             g.es('you may want to delete ressurected nodes')
     #@-node:ekr.20071105164407:warnAboutUnvisitedNodes
     #@-node:ekr.20041005105605.21:read (atFile) & helpers
-    #@+node:ville.20090606131405.6362:writeCachedTree (atFile)
+    #@+node:ville.20090606131405.6362:at.writeCachedTree (to be removed)
     def writeCachedTree(self, p, cachefile):
 
         trace = False and not g.unitTesting
@@ -584,13 +590,13 @@ class atFile:
         if not g.enableDB or g.app.unitTesting:
             if trace: g.trace('cache disabled')
         elif cachefile in c.db:
-            if trace: g.trace('already cached')
+            if trace: g.trace('already cached',cachefile)
         else:
             if trace: g.trace('caching ',p.h)
             c.db[cachefile] = p.makeCacheList()
     #@nonl
-    #@-node:ville.20090606131405.6362:writeCachedTree (atFile)
-    #@+node:ville.20090606150238.6351:_contentHashFile (atFile)
+    #@-node:ville.20090606131405.6362:at.writeCachedTree (to be removed)
+    #@+node:ville.20090606150238.6351:at._contentHashFile (to be removed)
     def _contentHashFile(self,s,content):
 
         '''Compute the hash of s (usually a headline) and content.
@@ -609,7 +615,7 @@ class atFile:
         m.update(content)
         return "fcache/" + m.hexdigest()
 
-    #@-node:ville.20090606150238.6351:_contentHashFile (atFile)
+    #@-node:ville.20090606150238.6351:at._contentHashFile (to be removed)
     #@+node:ekr.20041005105605.26:readAll (atFile)
     def readAll(self,root,partialFlag=False):
 
@@ -687,26 +693,26 @@ class atFile:
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
-        # Delete all children.
-        while p.hasChildren():
-            p.firstChild().doDelete()
-
-        s,e = g.readFileIntoString(fileName,raw=True)
-        if s is None:
-            cachefile = None
-        else:
-            cachefile = self._contentHashFile(p.h,s)
-
         # Remember that we have read this file.
         p.v.at_read = True # Create the attribute
 
         # Disable caching for test.leo.
         if c.shortFileName() != 'test.leo':
-            if cachefile is not None and cachefile in c.db:        
-                # g.es('uncache:',p.h)
-                aList = c.db[cachefile]
-                p.v.createOutlineFromCacheList(c,aList)
-                return
+            if g.use_cacher:
+                ok,fileKey = c.cacher.readFile(fileName,p)
+                if ok: return
+            else:
+                # Delete all children.
+                while p.hasChildren():
+                    p.firstChild().doDelete()
+
+                s,e = g.readFileIntoString(fileName,raw=True)
+                if s:
+                    fileKey = self._contentHashFile(p.h,s)
+                    if fileKey is not None and fileKey in c.db:        
+                        aList = c.db[fileKey]
+                        p.v.createOutlineFromCacheList(c,aList)
+                        return
 
         if not g.unitTesting:
             g.es("reading:",p.h)

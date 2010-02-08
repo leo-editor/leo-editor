@@ -782,6 +782,7 @@
 <v t="ekr.20090703080553.5000"><vh>@suite run all doctests</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20100208095817.5387"><vh>@test leoCache</vh></v>
 <v t="ekr.20100131171342.5471"><vh>General</vh>
 <v t="ekr.20100131171342.5472"><vh>Check base classes &amp; ivars</vh>
 <v t="ekr.20100131171342.5473"><vh>Tk gui tests</vh>
@@ -2662,6 +2663,7 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20100208095817.5387"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -23929,6 +23931,11 @@ c.fileCommands.handleNodeConflicts()
 c.nodeConflictList = []
 
 c.redraw()</t>
+<t tx="ekr.20100208095817.5387">import leo.core.leoCache as leoCache
+
+cacher = leoCache.cacher(c)
+
+assert cacher.test()</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

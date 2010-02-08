@@ -42,8 +42,16 @@ License: MIT open source license.
 #@nl
 #@<< imports >>
 #@+node:ekr.20091204132346.6078:<< imports >> (pickleshare.py)
-import leo.core.leoGlobals as g
-from leo.external.path import path as Path
+try:
+    import leo.core.leoGlobals as g
+except ImportError:
+    pass
+
+try:
+    from leo.external.path import path as Path
+except ImportError:
+    import path as Path
+
 import glob
 import os
 import stat
@@ -81,20 +89,23 @@ def gethashfile(key):
     return ("%02x" % abs(hash(key) % 256))[-2:]
 
 #@-node:ekr.20091204132346.6079:gethashfile
-#@+node:ekr.20091204132346.6080:class PickleShareDB
+#@+node:ekr.20091204132346.6080:class PickleShareDB (pickleshare.py)
 _sentinel = object()
 
 class PickleShareDB:
+
     """ The main 'connection' object for PickleShare database """
+
     #@    @+others
+    #@+node:ekr.20100208103105.6187: Birth & special methods
     #@+node:ekr.20091204132346.6081: __init__
-    def __init__(self,root, protocol = 'pickle'):
+    def __init__(self,root,protocol='pickle'):
+
         """ Initialize a PickleShare object that will manage the specied directory
 
         root: The directory that contains the data. Created if it doesn't exist.
 
-        protocol: one of 
-
+        protocol: one of:
             * 'pickle' (universal, default) 
             * 'picklez' (compressed pickle)         
             * 'marshal' (fast, limited type support)
@@ -102,11 +113,18 @@ class PickleShareDB:
 
         Protol 'json' requires installation of simplejson module
         """
+
+        trace = False and g.unitTesting
         self.root = Path(root).expanduser().abspath()
+        if trace: g.trace('PickleShareDB',self.root)
+
         if not self.root.isdir():
+            if trace: g.trace('makedirs',self.root)
             self.root.makedirs()
-        # cache has { 'key' : (obj, orig_mod_time) }
+
         self.cache = {}
+            # Keys are normalized file names.
+            # Values are tuples (obj, orig_mod_time)
 
         if protocol == 'pickle':
             self.loader = pickle.load
@@ -141,37 +159,50 @@ class PickleShareDB:
     #@+node:ekr.20091216103214.6305:__contains__
     def __contains__(self, key):
 
+        trace = False and g.unitTesting
+
+        if trace: g.trace('(old PickleShareDB)',key)
+
         return self.has_key(key)
     #@-node:ekr.20091216103214.6305:__contains__
-    #@+node:ekr.20091204132346.6088:__delitem__
+    #@+node:ekr.20091204132346.6088:__delitem__ 
     def __delitem__(self,key):
 
         """ del db["key"] """
 
+        trace = False and g.unitTesting
+
         fil = self.root / key
-        # g.trace('(PickleShareDB)',key) # ,g.shortFileName(fil))
+
+        if trace: g.trace('(old PickleShareDB)',key,g.shortFileName(fil))
+
         self.cache.pop(fil,None)
+
         try:
             fil.remove()
         except OSError:
             # notfound and permission denied are ok - we
             # lost, the other process wins the conflict
             pass
-    #@-node:ekr.20091204132346.6088:__delitem__
-    #@+node:ekr.20091204132346.6082:__getitem__
+    #@-node:ekr.20091204132346.6088:__delitem__ 
+    #@+node:ekr.20091204132346.6082:__getitem__ 
     def __getitem__(self,key):
 
         """ db['key'] reading """
 
+        trace = False and g.unitTesting
+
         fil = self.root / key
-        # g.trace('(PickleShareDB)',key) #,g.shortFileName(fil))
         try:
             mtime = (fil.stat()[stat.ST_MTIME])
         except OSError:
             raise KeyError(key)
 
         if fil in self.cache and mtime == self.cache[fil][1]:
-            return self.cache[fil][0]
+            obj = self.cache[fil][0]
+            if trace: g.trace('(old PickleShareDB: in cache)',
+                g.shortFileName(fil),obj)
+            return obj
         try:
             # The cached item has expired, need to read
             obj = self.loader(fil.open("rb"))
@@ -179,10 +210,16 @@ class PickleShareDB:
             raise KeyError(key)
 
         self.cache[fil] = (obj,mtime)
+        if trace: g.trace('(old PickleShareDB: set cache)',
+            g.shortFileName(fil),obj)
         return obj
-    #@-node:ekr.20091204132346.6082:__getitem__
+    #@-node:ekr.20091204132346.6082:__getitem__ 
     #@+node:ekr.20091216103214.6303:__iter__
     def __iter__(self):
+
+        trace = False and g.unitTesting
+
+        if trace: g.trace('(old PickleShareDB)',list(self.keys()))
 
         for k in list(self.keys()):
             yield k
@@ -195,46 +232,57 @@ class PickleShareDB:
 
 
     #@-node:ekr.20091204132346.6094:__repr__
-    #@+node:ekr.20091204132346.6083:__setitem__
+    #@+node:ekr.20091204132346.6083:__setitem
     def __setitem__(self,key,value):
 
         """ db['key'] = 5 """
 
+        trace = False and g.unitTesting
         fil = self.root / key
+        if trace: g.trace('(old PickleShareDB)',
+            key,g.shortFileName(fil),g.callers(2)) # value can be big
         parent = fil.parent
         if parent and not parent.isdir():
             parent.makedirs()
         pickled = self.dumper(value,fil.open('wb'))
-        # g.trace('(PickleShareDB)',key) # ,g.shortFileName(fil))
+
         try:
             self.cache[fil] = (value,fil.mtime)
         except OSError as e:
             if e.errno != 2:
                 raise
 
-    #@-node:ekr.20091204132346.6083:__setitem__
+    #@-node:ekr.20091204132346.6083:__setitem
     #@+node:ekr.20091204132346.6089:_normalized
     def _normalized(self, p):
         """ Make a key suitable for user's eyes """
-        return str(self.root.relpathto(p)).replace('\\','/')
 
+        return str(self.root.relpathto(p)).replace('\\','/')
     #@-node:ekr.20091204132346.6089:_normalized
+    #@-node:ekr.20100208103105.6187: Birth & special methods
+    #@+node:ekr.20100208103105.6189:Methods that call special methods
+    #@+node:ekr.20100208103105.5950:clear
+    def clear (self):
+
+        for z in self.keys():
+            self.__delitem__(z)
+    #@-node:ekr.20100208103105.5950:clear
     #@+node:ekr.20091224075120.6536:get
     def get(self, key, default=None):
+
+        trace = False and g.unitTesting
+        if trace: g.trace('(old PickleShareDB)')
+
         try:
             return self[key]
         except KeyError:
             return default
-    #@nonl
     #@-node:ekr.20091224075120.6536:get
-    #@+node:ekr.20091204132346.6093:getlink
-    def getlink(self,folder):
-        """ Get a convenient link for accessing items  """
-        return PickleShareLink(self, folder)
-
-    #@-node:ekr.20091204132346.6093:getlink
     #@+node:ekr.20091216103214.6304:has_key
     def has_key(self, key):
+
+        trace = g.unitTesting
+        if trace: g.trace('(old PickleShareDB)',key)
 
         try:
             value = self[key]
@@ -243,6 +291,48 @@ class PickleShareDB:
 
         return True
     #@-node:ekr.20091216103214.6304:has_key
+    #@+node:ekr.20091216103214.6306:items
+    # def iteritems(self):
+        # for k in self:
+            # yield (k, self[k])
+
+    def items(self):
+        return [z for z in self]
+    #@-node:ekr.20091216103214.6306:items
+    #@+node:ekr.20091204132346.6090:keys
+    # def iterkeys(self):
+        # return self.__iter__()
+
+    def keys(self, globpat = None):
+        """ All keys in DB, or all keys matching a glob"""
+
+        trace = False and g.unitTesting
+
+        if globpat is None:
+            files = self.root.walkfiles()
+        else:
+            files = [Path(p) for p in glob.glob(self.root/globpat)]
+
+        result = [self._normalized(p) for p in files if p.isfile()]
+
+        if trace: g.trace('(old PickleShareDB)',len(result))
+
+        return result
+
+    #@-node:ekr.20091204132346.6090:keys
+    #@-node:ekr.20100208103105.6189:Methods that call special methods
+    #@+node:ekr.20100208103105.6188:Other methods
+    #@+node:ekr.20091204132346.6093:getlink
+    def getlink(self,folder):
+        """ Get a convenient link for accessing items  """
+
+        trace = True and not g.unitTesting
+
+        if trace: g.trace(folder,g.callers(5))
+
+        return PickleShareLink(self, folder)
+
+    #@-node:ekr.20091204132346.6093:getlink
     #@+node:ekr.20091204132346.6087:hcompress
     def hcompress(self, hashroot):
         """ Compress category 'hashroot', so hset is fast again
@@ -251,6 +341,10 @@ class PickleShareDB:
         hset before hcompress).
 
         """
+
+        trace = True and not g.unitTesting
+        if trace: g.trace(g.callers(5))
+
         hfiles = self.keys(hashroot + "/*")
         all = {}
         for f in hfiles:
@@ -265,12 +359,14 @@ class PickleShareDB:
                 continue
             p.remove()
 
-
-
     #@-node:ekr.20091204132346.6087:hcompress
     #@+node:ekr.20091204132346.6086:hdict
     def hdict(self, hashroot):
         """ Get all data contained in hashed category 'hashroot' as dict """
+
+        trace = True and not g.unitTesting
+        if trace: g.trace(g.callers(5))
+
         hfiles = self.keys(hashroot + "/*")
         hfiles.sort()
         last = len(hfiles) and hfiles[-1] or ''
@@ -295,6 +391,10 @@ class PickleShareDB:
     #@+node:ekr.20091204132346.6085:hget
     def hget(self, hashroot, key, default = _sentinel, fast_only = True):
         """ hashed get """
+
+        trace = True and not g.unitTesting
+        if trace: g.trace(g.callers(5))
+
         hroot = self.root / hashroot
         hfile = hroot / gethashfile(key)
         d = self.get(hfile, _sentinel )
@@ -308,11 +408,14 @@ class PickleShareDB:
             d = self.hdict(hashroot)
 
         return d.get(key, default)
-    #@nonl
     #@-node:ekr.20091204132346.6085:hget
     #@+node:ekr.20091204132346.6084:hset
     def hset(self, hashroot, key, value):
         """ hashed set """
+
+        trace = True and not g.unitTesting
+        if trace: g.trace(g.callers(5))
+
         hroot = self.root / hashroot
         if not hroot.isdir():
             hroot.makedirs()
@@ -324,26 +427,6 @@ class PickleShareDB:
 
 
     #@-node:ekr.20091204132346.6084:hset
-    #@+node:ekr.20091216103214.6306:iteritems & iterkeys
-    def iteritems(self):
-        for k in self:
-            yield (k, self[k])
-
-    def iterkeys(self):
-        return self.__iter__()
-    #@-node:ekr.20091216103214.6306:iteritems & iterkeys
-    #@+node:ekr.20091204132346.6090:keys
-    def keys(self, globpat = None):
-        """ All keys in DB, or all keys matching a glob"""
-
-        if globpat is None:
-            files = self.root.walkfiles()
-        else:
-            files = [Path(p) for p in glob.glob(self.root/globpat)]
-
-        return [self._normalized(p) for p in files if p.isfile()]
-
-    #@-node:ekr.20091204132346.6090:keys
     #@+node:ekr.20091204132346.6091:uncache
     def uncache(self,*items):
         """ Removes all, or specified items from cache
@@ -353,6 +436,10 @@ class PickleShareDB:
         for a while.
 
         """
+
+        trace = True and not g.unitTesting
+        if trace: g.trace()
+
         if not items:
             self.cache = {}
         for it in items:
@@ -374,6 +461,8 @@ class PickleShareDB:
         logic. 
         """
 
+        trace = True
+        if trace: g.trace() # key, g.callers(5)
         wtimes = [0.2] * 3 + [0.5] * 2 + [1]
         tries = 0
         waited = 0
@@ -392,9 +481,10 @@ class PickleShareDB:
             if tries < len(wtimes) -1:
                 tries+=1
     #@-node:ekr.20091204132346.6092:waitget
+    #@-node:ekr.20100208103105.6188:Other methods
     #@-others
-#@-node:ekr.20091204132346.6080:class PickleShareDB
-#@+node:ekr.20091204132346.6095:class PickleShareLink
+#@-node:ekr.20091204132346.6080:class PickleShareDB (pickleshare.py)
+#@+node:ekr.20091204132346.6095:class PickleShareLink (not used)
 class PickleShareLink:
     """ A shortdand for accessing nested PickleShare data conveniently.
 
@@ -430,7 +520,7 @@ class PickleShareLink:
 
     #@-node:ekr.20091204132346.6099:__repr__
     #@-others
-#@-node:ekr.20091204132346.6095:class PickleShareLink
+#@-node:ekr.20091204132346.6095:class PickleShareLink (not used)
 #@+node:ekr.20091204132346.6100:test
 def test():
     db = PickleShareDB('~/testpickleshare')
@@ -519,7 +609,6 @@ def main():
     elif cmd == 'test':
         test()
         stress()
-
 #@-node:ekr.20091204132346.6102:main
 #@-others
 if __name__== "__main__":

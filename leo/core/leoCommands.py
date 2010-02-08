@@ -27,7 +27,7 @@ if g.app and g.app.use_psyco:
     # import leo.core.leoUndo as leoUndo
 
 import leo.core.leoNodes as leoNodes
-import leo.external.pickleshare
+import leo.external.pickleshare as pickleshare
 
 import hashlib
 import keyword
@@ -300,16 +300,20 @@ class baseCommands (object):
         self.navPrefix = g.u('') # Must always be a string.
         self.navTime = None
 
-        pth, bname = os.path.split(self.mFileName)
-        if pth and bname and g.enableDB:
-            fn = self.mFileName.lower()
-            fn = g.toEncodedString(fn) # Required for Python 3.x.
-            dbdirname = '%s/db/%s_%s' % (
-                g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
-            # Use compressed pickles (handy for @thin caches)
-            self.db = leo.external.pickleshare.PickleShareDB(dbdirname,protocol='picklez')
+        if g.use_cacher:
+            c.cacher = leoCache.cacher(c)
+            c.cacher.initFileDB(self.mFileName)
         else:
-            self.db = {}
+            pth, bname = os.path.split(self.mFileName)
+            if pth and bname and g.enableDB:
+                fn = self.mFileName.lower()
+                fn = g.toEncodedString(fn) # Required for Python 3.x.
+                dbdirname = '%s/db/%s_%s' % (
+                    g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
+                # Use compressed pickles (handy for @thin caches)
+                self.db = pickleshare.PickleShareDB(dbdirname,protocol='picklez')
+            else:
+                self.db = {}
         #@nonl
         #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
         #@nl

@@ -109,7 +109,10 @@ def doTests(c,all=None,p=None,verbosity=1):
             if g.enableDB:
                 key = 'unittest/cur/fail'
                 archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
-                c.db[key] = archive
+                if g.use_cacher:
+                    c.cacher.db[key] = archive
+                else:
+                    c.db[key] = archive
         else:
             g.es_print('no @test or @suite nodes in %s outline' % (
                 g.choose(all,'entire','selected')),color='red')

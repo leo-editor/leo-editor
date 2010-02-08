@@ -335,8 +335,8 @@ if sys.platform != 'cli':
                 if func:
                     func(attrs)
         #@nonl
-        #@+node:ekr.20060919110638.36:getPositionAttributes
-        def getPositionAttributes (self,attrs):
+        #@+node:ekr.20060919110638.36:getWindowPositionAttributes
+        def getWindowPositionAttributes (self,attrs):
 
             trace = False and not g.unitTesting
             c = self.c
@@ -345,15 +345,18 @@ if sys.platform != 'cli':
 
             d = {}
 
-            if g.enableDB and c.db and c.mFileName:
-                globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
-                globals_tag = g.toEncodedString(globals_tag,'ascii')
-                key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
-                data = c.db.get('window_position_%s' % (key))
-                if data:
-                    top,left,height,width = data
-                    top,left,height,width = int(top),int(left),int(height),int(width)
-                    d = {'top':top,'left':left,'height':height,'width':width}
+            if g.enableDB and c.mFileName:
+                if g.use_cacher:
+                    d = c.cacher.getWindowCachedPositionDict(c.mFileName)
+                elif c.db:
+                    globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+                    globals_tag = g.toEncodedString(globals_tag,'ascii')
+                    key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+                    data = c.db.get('window_position_%s' % (key))
+                    if data:
+                        top,left,height,width = data
+                        top,left,height,width = int(top),int(left),int(height),int(width)
+                        d = {'top':top,'left':left,'height':height,'width':width}
 
             if not d and c.fixed and c.fixedWindowPosition:
                 width,height,left,top = c.fixedWindowPosition
@@ -372,8 +375,8 @@ if sys.platform != 'cli':
 
             # if trace: g.trace(d)
             return d
-        #@-node:ekr.20060919110638.36:getPositionAttributes
-        #@+node:ekr.20060919110638.37:startGlobals
+        #@-node:ekr.20060919110638.36:getWindowPositionAttributes
+        #@+node:ekr.20060919110638.37:startGlobals (sax read)
         def startGlobals (self,attrs):
 
             trace = False and not g.unitTesting
@@ -386,16 +389,25 @@ if sys.platform != 'cli':
 
             if trace: g.trace(len(list(c.db.keys())),c.mFileName)
 
-            if g.enableDB and c.db and c.mFileName:
-                globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
-                globals_tag = g.toEncodedString(globals_tag,'ascii')
-                key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
-                c.frame.ratio = float(c.db.get(
-                    'body_outline_ratio_%s' % (key),'0.5'))
-                c.frame.secondary_ratio = float(c.db.get(
-                    'body_secondary_ratio_%s' % (key),'0.5'))
-                if trace: g.trace('key',key,
-                    '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
+            if g.use_cacher:
+                use_db = g.enableDB and c.mFileName
+            else:
+                use_db = c.db and g.enableDB and c.mFileName
+
+            if use_db:
+                if g.use_cacher:
+                    ratio,ratio2 = c.cacher.getCachedGlobalFileRatios()
+                    c.frame.ratio,c.frame.secondary_ratio = ratio,ratio2
+                else:
+                    globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+                    globals_tag = g.toEncodedString(globals_tag,'ascii')
+                    key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+                    c.frame.ratio = float(c.db.get(
+                        'body_outline_ratio_%s' % (key),'0.5'))
+                    c.frame.secondary_ratio = float(c.db.get(
+                        'body_secondary_ratio_%s' % (key),'0.5'))
+                    if trace: g.trace('key',key,
+                        '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))
             else:
                 try:
                     for bunch in self.attrsToList(attrs):
@@ -408,11 +420,11 @@ if sys.platform != 'cli':
                         c.frame.ratio,c.frame.secondary_ratio))
                 except Exception:
                     pass
-        #@-node:ekr.20060919110638.37:startGlobals
+        #@-node:ekr.20060919110638.37:startGlobals (sax read)
         #@+node:ekr.20060919110638.38:startWinPos
         def startWinPos (self,attrs):
 
-            self.global_window_position = self.getPositionAttributes(attrs)
+            self.global_window_position = self.getWindowPositionAttributes(attrs)
         #@-node:ekr.20060919110638.38:startWinPos
         #@+node:ekr.20060919110638.39:startLeoHeader
         def startLeoHeader (self,unused_attrs):
@@ -1473,20 +1485,27 @@ class baseFileCommands:
         return last_v
     #@nonl
     #@-node:ekr.20080805132422.3:resolveArchivedPosition  (New in Leo 4.5)
-    #@+node:ekr.20060919110638.13:setPositionsFromVnodes & helper
+    #@+node:ekr.20060919110638.13:setPositionsFromVnodes & helper (sax read)
     def setPositionsFromVnodes (self):
 
         trace = False and not g.unitTesting
         c = self.c ; p = c.rootPosition()
         current,str_pos = None,None
-        use_db = g.enableDB and c.db and c.mFileName
+
+        if g.use_cacher:
+            use_db = g.enableDB and c.mFileName
+        else:
+            use_db = c.db and g.enableDB and c.mFileName
 
         if use_db:
-            globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
-            globals_tag = g.toEncodedString(globals_tag,'ascii')
-            key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
-            str_pos = c.db.get('current_position_%s' % key)
-            if trace: g.trace('from c.db',str_pos,key)
+            if g.use_cacher:
+                str_pos = c.cacher.getCachedStringPosition()
+            else:
+                globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+                globals_tag = g.toEncodedString(globals_tag,'ascii')
+                key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+                str_pos = c.db.get('current_position_%s' % key)
+                if trace: g.trace('from c.db',str_pos,key)
 
         if not str_pos:
             d = hasattr(p.v,'unknownAttributes') and p.v.unknownAttributes
@@ -1525,7 +1544,7 @@ class baseFileCommands:
         return p
     #@nonl
     #@-node:ekr.20061006104837.1:archivedPositionToPosition
-    #@-node:ekr.20060919110638.13:setPositionsFromVnodes & helper
+    #@-node:ekr.20060919110638.13:setPositionsFromVnodes & helper (sax read)
     #@-node:ekr.20060919104530:Sax (reading)
     #@-node:ekr.20031218072017.3020:Reading
     #@+node:ekr.20031218072017.3032:Writing
@@ -1700,29 +1719,35 @@ class baseFileCommands:
         trace = False and not g.unitTesting
         c = self.c
 
-        use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
+        if g.use_cacher:
+            use_db = g.enableDB and not g.unitTesting and c.mFileName
+        else:
+            use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
 
         if use_db:
-            globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
-            globals_tag = g.toEncodedString(globals_tag,'ascii')
-            key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
-            if trace: g.trace(len(list(c.db.keys())),c.mFileName,key)
-            #@        << put all data to c.db >>
-            #@+node:ekr.20100112095623.6267:<< put all data to c.db >>
-            c.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
-            c.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
+            if g.use_cacher:
+                c.cacher.setCachedGlobalsElement()
+            else:
+                globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+                globals_tag = g.toEncodedString(globals_tag,'ascii')
+                key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+                if trace: g.trace(len(list(c.db.keys())),c.mFileName,key)
+                #@            << put all data to c.db >>
+                #@+node:ekr.20100112095623.6267:<< put all data to c.db >>
+                c.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
+                c.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
 
-            if trace: g.trace('ratios: %1.2f %1.2f' % (
-                c.frame.ratio,c.frame.secondary_ratio))
+                if trace: g.trace('ratios: %1.2f %1.2f' % (
+                    c.frame.ratio,c.frame.secondary_ratio))
 
-            width,height,left,top = c.frame.get_window_info()
+                width,height,left,top = c.frame.get_window_info()
 
-            c.db['window_position_%s' % key] = (
-                str(top),str(left),str(height),str(width))
+                c.db['window_position_%s' % key] = (
+                    str(top),str(left),str(height),str(width))
 
-            if trace: g.trace('top',top,'left',left,'height',height,'width',width)
-            #@-node:ekr.20100112095623.6267:<< put all data to c.db >>
-            #@nl
+                if trace: g.trace('top',top,'left',left,'height',height,'width',width)
+                #@-node:ekr.20100112095623.6267:<< put all data to c.db >>
+                #@nl
 
         # Always put positions, to trigger sax methods.
         self.put("<globals")
@@ -1947,17 +1972,24 @@ class baseFileCommands:
             aList = [str(z) for z in self.currentPosition.archivedPosition()]
             d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
             str_pos = ','.join(aList)
-            # 2010/01/26: don't write the current position if we can cache it.
-            use_db = g.enableDB and not g.unitTesting and c.db and c.mFileName
-            if use_db:
-                globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
-                globals_tag = g.toEncodedString(globals_tag,'ascii')
-                key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
-                c.db['current_position_%s' % key] = str_pos
-                if d.get('str_leo_pos'): del d['str_leo_pos']
-                # g.trace('to c.db',str_pos,key)
+            if d.get('str_leo_pos'):
+                del d['str_leo_pos']
+            # Don't write the current position if we can cache it.
+            if g.use_cacher:
+                use_db = g.enableDB
+            else:
+                use_db = g.enableDB and c.db
+
+            if use_db and c.mFileName and not g.unitTesting:
+                if g.use_cacher:
+                    c.cacher.setCachedStringPosition(str_pos)
+                else:
+                    globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+                    globals_tag = g.toEncodedString(globals_tag,'ascii')
+                    key = c.atFileCommands._contentHashFile(c.mFileName,globals_tag)
+                    c.db['current_position_%s' % key] = str_pos
             elif c.fixed:
-                if d.get('str_leo_pos'): del d['str_leo_pos']
+                pass
             else:
                 d['str_leo_pos'] = str_pos
             # g.trace(aList,d)
