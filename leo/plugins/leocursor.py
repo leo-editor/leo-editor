@@ -124,14 +124,27 @@ class LeoCursor(object):
             if not step.strip():
                 continue
 
+            try:
+                step_int = int(step)
+            except ValueError:
+                step_int = False
+
             new_stems = []
 
             for stem in stems:
-                for i in stem.__v.children or []:
-                    #print 'V', step, i.h
-                    if re.match(step, i.h):
-                        new_stems.append(self.__at(i))
-                        #print 'N',i.h
+
+                if step_int is not False:
+
+                    new_stems.append(self.__at(
+                        (stem.__v.children or [])[step_int]))
+
+                else:
+
+                    for i in stem.__v.children or []:
+                        #print 'V', step, i.h
+                        if re.match(step, i.h):
+                            new_stems.append(self.__at(i))
+                            #print 'N',i.h
 
             stems = new_stems
 
@@ -171,6 +184,15 @@ class LeoCursor(object):
                 pass
 
     #@-node:tbrown.20100205200824.5425:__getattr__
+    #@+node:tbrown.20100208110238.12228:__getitem__
+    def __getitem__(self, what):
+        """what can be a slice object, we let builtin list take care of it"""
+
+        if isinstance(what, int):
+            return self.__at(self.__v.children[what])
+        else:
+            return [self.__at(i) for i in self.__v.children[what]]
+    #@-node:tbrown.20100208110238.12228:__getitem__
     #@+node:tbrown.20100206093439.5449:__body
     def __body(self):
 

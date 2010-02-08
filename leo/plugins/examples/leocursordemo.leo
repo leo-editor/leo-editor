@@ -55,6 +55,13 @@ try:
     print("%d events with %d reviews" %
       (len(lc("Events/Event.*")),len(lc("Events/Event.*/Rev.*"))))
 
+    print("%s to %s" %
+      (lc("Events/0")[0]._H,lc("Events/-1")[0]._H))
+    print("%s to %s" %
+      (lc("Events/.*")[0]._H,lc("Events/.*")[-1]._H))
+    print("%s to %s" %
+      (lc.Events[0]._H,lc.Events[-1]._H))
+
     for event in lc._R.Events:
         print("\n%s (%s)" % (event._H, event._date))
         print('"%s"' % event._B.strip())
