@@ -697,8 +697,10 @@ class LeoApp:
 
         """
 
-        self.cacher = leoCache.cacher()
-        self.cacher.initGlobalDB()
+        g.app.db = leoCache.cacher()
+        g.app.db.initGlobalDB()
+        g.trace(g.app.db)
+
     #@-node:ville.20090620122043.6275:app.setGlobalDb
     #@+node:ekr.20031218072017.1847:app.setLog, lockLog, unlocklog
     def setLog (self,log):

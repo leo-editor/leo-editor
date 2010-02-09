@@ -782,7 +782,7 @@
 <v t="ekr.20090703080553.5000"><vh>@suite run all doctests</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20100208230953.5383" a="E"><vh>Cache tests</vh>
+<v t="ekr.20100208230953.5383"><vh>Cache tests</vh>
 <v t="ekr.20100208095817.5387"><vh>@test leoCache</vh></v>
 </v>
 <v t="ekr.20100131171342.5471"><vh>General</vh>
@@ -2662,6 +2662,7 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20100208095817.5387"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
