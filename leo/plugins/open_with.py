@@ -151,8 +151,9 @@ def on_idle (tag,keywords):
                     #@-node:EKR.20040517075715.6:<< update p's body text >>
                     #@nl
             except Exception:
-                g.es_exception()
-                pass
+                if 1:
+                    g.es_exception()
+
 #@-node:EKR.20040517075715.5:on_idle
 #@+node:EKR.20040517075715.8:create_open_with_menu & helpers
 #@+at 

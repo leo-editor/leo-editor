@@ -506,8 +506,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20100118190802.2000"><vh>@edit ../../pylint-leo.py</vh></v>
 <v t="ekr.20100206180840.2099"><vh>@auto test-PmwComboBox.py</vh></v>
+<v t="ekr.20100118190802.2000" a="E"><vh>@thin ../../pylint-leo.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):

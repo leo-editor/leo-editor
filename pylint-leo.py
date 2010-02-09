@@ -1,89 +1,83 @@
+#@+leo-ver=4-thin
+#@+node:ekr.20100118190802.2000:@thin ../../pylint-leo.py
+#@@language python
 import os
 import sys
 from pylint import lint
+#@+others
+#@+node:ekr.20100209115702.2101:getTkPass
+def getTkPass():
+    return (
+        'EditAttributes','Library',
+        'URLloader','UniversalScrolling','UASearch',
+        'autotrees','chapter_hoist','cleo','dump_globals',
+        'expfolder','geotag','graphed','groupOperations',
+        'hoist','import_cisco_config',
+        'keybindings','leoupdate',
+        'maximizeNewWindows', 'mnplugins','mod_labels',
+        'mod_read_dir_outline','mod_tempfname','multifile',
+        'newButtons','nodeActions','nodenavigator',
+        'open_with','pie_menus','pluginsTest',
+        'read_only_nodes','rClick',
+        'scheduler','searchbar','searchbox','shortcut_button',
+        'script_io_to_body','searchbox',
+        'templates','textnode','tkGui','toolbar',
+        'xcc_nodes',
+    )
+#@-node:ekr.20100209115702.2101:getTkPass
+#@+node:ekr.20100209115702.2102:getPassList
+def getPassList():
 
-tkPass = (
-    'EditAttributes','Library',
-    'URLloader','UniversalScrolling','UASearch',
-    'autotrees','chapter_hoist','cleo','dump_globals',
-    'expfolder','geotag','graphed','groupOperations',
-    'hoist','import_cisco_config',
-    'keybindings','leoupdate',
-    'maximizeNewWindows', 'mnplugins','mod_labels',
-    'mod_read_dir_outline','mod_tempfname','multifile',
-    'newButtons','nodeActions','nodenavigator',
-    'open_with','pie_menus','pluginsTest',
-    'read_only_nodes','rClick',
-    'scheduler','searchbar','searchbox','shortcut_button',
-    'script_io_to_body','searchbox',
-    'templates','textnode','tkGui','toolbar',
-    'xcc_nodes',
-)
-passList = (
-    '__init__','FileActions','UNL',
-    'active_path','add_directives','attrib_edit',
-    'backlink','base64Packager','baseNativeTree','bibtex','bookmarks',
-    'codewisecompleter','colorize_headlines','contextmenu',
-    'ctagscompleter','cursesGui','datenodes','debugger_pudb',
-    'detect_urls','dtest','empty_leo_file','enable_gc','initinclass',
-    'leo_to_html','leo_interface','leo_pdf','leo_to_rtf',
-    'leoOPML','leoremote','lineNumbers',
-    'macros','mime','mod_autosave','mod_framesize','mod_leo2ascd',
-    'mod_scripting','mod_speedups','mod_timestamp',
-    'nav_buttons','nav_qt','niceNosent','nodeActions','nodebar',
-    'open_shell','outline_export','quit_leo',
-    'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
-    'qtGui','qt_main','qt_quicksearch','qtframecommands',
-    'quickMove',
-        # Warning: changed this line by guessing!
-        # func = types.MethodType(func, quickMove)
-    'quicksearch','redirect_to_log','rClickBasePluginClasses',
-    'run_nodes', # Changed thread.allocate_lock to threading.lock().acquire()
-    'rst3',
-    'scrolledmessage','setHomeDirectory','slideshow','spydershell','startfile',
-    'testRegisterCommand','todo','trace_gc_plugin','trace_keys','trace_tags',
-    'vim','xemacs',
-)
-core_files = (
-    'leoApp','leoAtFile','leoChapters','leoCommands',
+    return (
+        '__init__','FileActions','UNL',
+        'active_path','add_directives','attrib_edit',
+        'backlink','base64Packager','baseNativeTree','bibtex','bookmarks',
+        'codewisecompleter','colorize_headlines','contextmenu',
+        'ctagscompleter','cursesGui','datenodes','debugger_pudb',
+        'detect_urls','dtest','empty_leo_file','enable_gc','initinclass',
+        'leo_to_html','leo_interface','leo_pdf','leo_to_rtf',
+        'leoOPML','leoremote','lineNumbers',
+        'macros','mime','mod_autosave','mod_framesize','mod_leo2ascd',
+        'mod_scripting','mod_speedups','mod_timestamp',
+        'nav_buttons','nav_qt','niceNosent','nodeActions','nodebar',
+        'open_shell','outline_export','quit_leo',
+        'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
+        'qtGui','qt_main','qt_quicksearch','qtframecommands',
+        'quickMove',
+            # Warning: changed this line by guessing!
+            # func = types.MethodType(func, quickMove)
+        'quicksearch','redirect_to_log','rClickBasePluginClasses',
+        'run_nodes', # Changed thread.allocate_lock to threading.lock().acquire()
+        'rst3',
+        'scrolledmessage','setHomeDirectory','slideshow','spydershell','startfile',
+        'testRegisterCommand','todo','trace_gc_plugin','trace_keys','trace_tags',
+        'vim','xemacs',
+    )
+#@-node:ekr.20100209115702.2102:getPassList
+#@+node:ekr.20100209115702.2103:run
+def run(fn,suppress):
+    args = ['--rcfile=leo/test/pylint-leo-rc.txt']
+    if suppress: args.append('--disable-msg=%s' % (suppress))
+    fn = os.path.abspath(fn)
+    if not fn.endswith('.py'): fn = fn+'.py'
+    args.append(fn)
+    if os.path.exists(fn):
+        print('*****',fn,suppress)
+        lint.Run(args)
+    else:
+        print('file not found:',fn)
+#@-node:ekr.20100209115702.2103:run
+#@-others
+tkPass = getTkPass()
+passList = getPassList()
+coreList = (
+    'leoApp','leoAtFile','leoCache','leoChapters','leoCommands',
     'leoEditCommands','leoFileCommands','leoFind','leoFrame',
     'leoGlobals','leoGui','leoImport','leoMenu','leoNodes',
     'leoPlugins','leoShadow','leoTangle','leoUndo',
 )
-external_files = (
-    'ipy_leo','lproto','path','pickleshare',
-)
-recent_core_table = (
-    # ('leoCache',''),
-    # ('leoApp',''),
-    # ('leoCommands',''),
-    # ('leoFileCommands',''),
-)
-core_table = (
-    ('leoApp',''),
-    ('leoAtFile',''),
-    ('leoChapters',''),
-    ('leoCommands',''),
-    ('leoEditCommands','W0511'),
-    ('leoFileCommands',''),
-    ('leoFind',''),
-    ('leoFrame',''),
-    ('leoGlobals',''), # E0602:4528:isBytes: Undefined variable 'bytes'
-    ('leoGui','W0511'), # W0511: to do
-    ('leoImport',''),
-    ('leoMenu',''),
-    ('leoNodes',''),
-    ('leoPlugins',''),
-    ('leoShadow',''),
-    ('leoTangle',''),
-    ('leoUndo',''),
-)
-external_table = (
-    ('ipy_leo',''),
-    ('lproto',''),
-    ('path',''),
-    ('pickleshare',''),
-)
+externalList = ('ipy_leo','lproto',)
+recentList = ()
 plugins_table = (
     ('qtGui','W0221'),
     ('tkGui','W0221'),
@@ -100,29 +94,20 @@ plugins_table = (
     ('xemacs',''),
 )
 
-def run(fn,suppress):
-    args = ['--rcfile=leo/test/pylint-leo-rc.txt']
-    if suppress: args.append('--disable-msg=%s' % (suppress))
-    fn = os.path.abspath(fn)
-    if not fn.endswith('.py'): fn = fn+'.py'
-    args.append(fn)
-    if os.path.exists(fn):
-        print('*****',fn,suppress)
-        lint.Run(args)
-    else:
-        print('file not found:',fn)
+
 
 tables_table = (
-    # (recent_core_table,'core'),
-    (core_table,'core'),
+    # (recentList,'core'),
+    (coreList,'core'),
     # (tkPass,'plugins'),
     # (passList,'plugins'),
-    # (external_table,'external'),
+    # (externalList,'external'),
     # (plugins_table,'plugins'),
 )
 
 for table,theDir in tables_table:
-    if table in (tkPass,passList):
+    # These lists have no suppressions.
+    if table in (tkPass,passList,coreList,externalList):
         for fn in table:
             fn = os.path.join('leo',theDir,fn)
             run(fn,suppress='')
@@ -130,3 +115,5 @@ for table,theDir in tables_table:
         for fn,suppress in table:
             fn = os.path.join('leo',theDir,fn)
             run(fn,suppress)
+#@-node:ekr.20100118190802.2000:@thin ../../pylint-leo.py
+#@-leo
