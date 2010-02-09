@@ -507,10 +507,17 @@ class cacher:
     #@+node:ekr.20100208065621.5890:test (cacher)
     def test(self):
 
+        if g.app.gui.guiName() == 'nullGui':
+            # Null gui's don't normally set the g.app.gui.db.
+            g.app.setGlobalDb() 
+
         assert g.app.db
             # a cacher instance.
         assert g.app.db.db is not None
             # a PickleShareDB instance.
+
+        # Make sure g.guessExternalEditor works.
+        junk = g.app.db.db.get("LEO_EDITOR")
 
         self.initFileDB('~/testpickleshare')
         db = self.db
