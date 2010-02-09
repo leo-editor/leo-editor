@@ -23586,7 +23586,7 @@ passList = (
     'vim','xemacs',
 )
 core_files = (
-    'leoApp','leoAtFile','leoChapters','leoCommands',
+    'leoApp','leoAtFile','leoCache','leoChapters','leoCommands',
     'leoEditCommands','leoFileCommands','leoFind','leoFrame',
     'leoGlobals','leoGui','leoImport','leoMenu','leoNodes',
     'leoPlugins','leoShadow','leoTangle','leoUndo',
@@ -23850,7 +23850,7 @@ passList = (
     'vim','xemacs',
 )
 core_files = (
-    'leoApp','leoAtFile','leoChapters','leoCommands',
+    'leoApp','leoAtFile','leoCache','leoChapters','leoCommands',
     'leoEditCommands','leoFileCommands','leoFind','leoFrame',
     'leoGlobals','leoGui','leoImport','leoMenu','leoNodes',
     'leoPlugins','leoShadow','leoTangle','leoUndo',
