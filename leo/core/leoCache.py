@@ -686,7 +686,7 @@ class PickleShareDB:
 
         return self.has_key(key)
     #@-node:ekr.20100208223942.5970:__contains__
-    #@+node:ekr.20100208223942.5971:__delitem__ 
+    #@+node:ekr.20100208223942.5971:__delitem__
     def __delitem__(self,key):
 
         """ del db["key"] """
@@ -707,8 +707,8 @@ class PickleShareDB:
             # notfound and permission denied are ok - we
             # lost, the other process wins the conflict
             pass
-    #@-node:ekr.20100208223942.5971:__delitem__ 
-    #@+node:ekr.20100208223942.5972:__getitem__ 
+    #@-node:ekr.20100208223942.5971:__delitem__
+    #@+node:ekr.20100208223942.5972:__getitem__
     def __getitem__(self,key):
 
         """ db['key'] reading """
@@ -739,7 +739,7 @@ class PickleShareDB:
         self.cache[fil] = (obj,mtime)
         if trace: g.trace('(PickleShareDB: set cache)',key)
         return obj
-    #@-node:ekr.20100208223942.5972:__getitem__ 
+    #@-node:ekr.20100208223942.5972:__getitem__
     #@+node:ekr.20100208223942.5973:__iter__
     def __iter__(self):
 
