@@ -1825,19 +1825,6 @@ class position (object):
     #@nonl
     #@-node:ekr.20090706171333.6226:p.badUnlink
     #@-node:ekr.20080416161551.217:p._unlink
-    #@+node:ekr.20090829064400.6044:p.makeCacheList (to be removed)
-    def makeCacheList(self):
-
-        '''Create a recursive list describing a tree
-        for use by v.createOutlineFromCacheList.
-        '''
-
-        p = self
-
-        return [
-            p.h,p.b,p.gnx,
-            [p2.makeCacheList() for p2 in p.children()]]
-    #@-node:ekr.20090829064400.6044:p.makeCacheList (to be removed)
     #@-node:ekr.20080423062035.1:p.Low level methods
     #@-others
 #@-node:ekr.20031218072017.889:class position
@@ -2598,101 +2585,6 @@ class vnode (baseVnode):
         v = self # The child node.
         v._addLink(n,parent_v)
     #@-node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
-    #@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers (to be removed)
-    def createOutlineFromCacheList(self,c,aList,top=True,atAll=None,fileName=None):
-        """ Create outline structure from recursive aList
-        built by p.makeCacheList.
-
-        Clones will be automatically created by gnx,
-        but *not* for the top-level node.
-        """
-
-        trace = False and not g.unitTesting
-        parent_v = self
-
-        #import pprint ; pprint.pprint(tree)
-        parent_v = self
-        h,b,gnx,children = aList
-        if h is not None:
-            v = parent_v
-            v._headString = h    
-            v._bodyString = b
-
-        if top:
-            c.cacheListFileName = fileName
-            # Scan the body for @all directives.
-            for line in g.splitLines(b):
-                if line.startswith('@all'):
-                    atAll = True ; break
-            else:
-                atAll = False
-        else:
-            assert atAll in (True,False,)
-
-        for z in children:
-            h,b,gnx,grandChildren = z
-            isClone,child_v = parent_v.fastAddLastChild(c,gnx)
-            if isClone:
-                if child_v.b != b:
-                    # 2010/02/05: Remove special case for @all.
-                    c.nodeConflictList.append(g.bunch(
-                        tag='(cached)',
-                        fileName=c.cacheListFileName,
-                        gnx=gnx,
-                        b_old=child_v.b,
-                        h_old=child_v.h,
-                        b_new=b,
-                        h_new=h,
-                    ))
-
-                    # Always issue the warning.
-                    g.es_print("cached read node changed:",
-                        child_v.h,color="red")
-
-                    child_v.h,child_v.b = h,b
-                    child_v.setDirty()
-                    c.changed = True
-                        # Tells getLeoFile to propegate dirty nodes.
-            else:
-                child_v.createOutlineFromCacheList(c,z,top=False,atAll=atAll)
-    #@+node:ekr.20090829064400.6042:v.fastAddLastChild
-    # Similar to createThinChild4
-    def fastAddLastChild(self,c,gnxString):
-        '''Create new vnode as last child of the receiver.
-
-        If the gnx exists already, create a clone instead of new vnode.
-        '''
-
-        trace = False and not g.unitTesting
-        verbose = False
-        parent_v = self
-        indices = g.app.nodeIndices
-        gnxDict = c.fileCommands.gnxDict
-
-        if gnxString is None: v = None
-        else:                 v = gnxDict.get(gnxString)
-        is_clone = v is not None
-
-        if trace: g.trace(
-            'clone','%-5s' % (is_clone),
-            'parent_v',parent_v,'gnx',gnxString,'v',repr(v))
-
-        if is_clone:
-            pass
-        else:
-            v = vnode(context=c)
-            if gnxString:
-                gnx = indices.scanGnx(gnxString,0)
-                v.fileIndex = gnx
-            gnxDict[gnxString] = v
-
-        child_v = v
-        child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
-        child_v.setVisited() # Supress warning/deletion of unvisited nodes.
-
-        return is_clone,child_v
-    #@-node:ekr.20090829064400.6042:v.fastAddLastChild
-    #@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers (to be removed)
     #@-node:ekr.20080427062528.9:v.Low level methods
     #@+node:ekr.20090130065000.1:v.Properties
     #@+node:ekr.20090130114732.5:v.b Property

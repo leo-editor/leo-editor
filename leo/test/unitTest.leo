@@ -872,7 +872,6 @@
 <v t="ekr.20050208051418.1"><vh>@test can't open message in g.openWithFileName</vh></v>
 <v t="ekr.20050208111037"><vh>@test failure to convert unicode characters to ascii</vh></v>
 <v t="ekr.20071113143844.6"><vh>@test failure with ascii encodings</vh></v>
-<v t="ekr.20100125145638.5119"><vh>@test g._contentHashFile</vh></v>
 <v t="ekr.20071113145804.23"><vh>@test g.reportBadChars</vh></v>
 <v t="ekr.20100204053330.5367"><vh>@test koi8-r encoding</vh></v>
 <v t="ekr.20050208104202"><vh>@test of round-tripping toUnicode &amp; toEncodedString</vh></v>
@@ -2660,13 +2659,6 @@
 </v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20100208152426.5389"><vh>Caching-related tests</vh>
-<v t="ville.20090313183551.2"><vh>@test c.db</vh></v>
-<v t="ville.20090620134122.4937"><vh>@test g.app.db</vh></v>
-<v t="ekr.20050112095306.1"></v>
-<v t="ekr.20061001114637"></v>
-<v t="ekr.20100208095817.5387"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -22021,15 +22013,6 @@ for p in c.all_unique_positions():
 
 s = "%d nodes" % count
 print s ; g.es(s)</t>
-<t tx="ekr.20100125145638.5119">@first # -*- coding: utf-8 -*-
-
-at = c.atFileCommands
-
-# The correct arguments to _contentHashFile are encoded strings.
-h = 'La Peña'
-content = g.toEncodedString('La Peña','utf-8')
-val = at._contentHashFile(h,content)
-</t>
 <t tx="ekr.20100125180231.5120">@first # -*- coding: utf-8 -*-
 
 s = g.ue('炰','utf-8')
@@ -23940,7 +23923,6 @@ c.redraw()</t>
 cacher = leoCache.cacher(c)
 
 assert cacher.test()</t>
-<t tx="ekr.20100208152426.5389"></t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
@@ -23994,38 +23976,6 @@ assert chi_b[0].h == chi_b[1].h == 'b'
 chi_e = chi.select_h('d').select_h('e')
 assert len(chi_e) == 1
 assert chi_e[0].h == 'e'</t>
-<t tx="ville.20090313183551.2">if False:
-
-    # test the controller-specific pickleshare db
-    v = [1212,121131313, { 'hello' : (121,'world')} ]
-    c.db['leo_utest'] = v
-    c.db['leo_utest2'] = 1
-    c.db['leotest/foo'] = 2
-    c.db['leotest/bar'] = 3
-    assert c.db['leo_utest'] == v
-    assert c.db['leo_utest2'] == 1
-    assert c.db['leotest/foo'] == 2
-    assert c.db['leotest/bar'] == 3
-    
-    assert len(c.db.keys()) &gt; 1
-    del c.db['leo_utest']
-    del c.db['leo_utest2']
-    
-    try:
-        c.db['leo_utest']
-        assert false
-    except KeyError:
-        pass
-    
-    ltest = c.db.keys('leotest/*')
-    assert len(ltest) &gt;= 2
-    
-    for k in ltest:
-        del c.db[k]
-    
-    ltest = c.db.keys('leotest/*')
-    assert len(ltest) == 0
-</t>
 <t tx="ville.20090602190735.4770">_foo = 0
 
 @g.command('my-test-command')
@@ -24043,20 +23993,5 @@ assert c in g.app.commanders()
 
 
 </t>
-<t tx="ville.20090620134122.4937">if hasattr(g.app,'db'):
-    
-    # test the controller-specific pickleshare db
-    v = [1212,121131313, { 'hello' : (121,'world')} ]
-    
-    db = g.app.db
-    
-    db['leo_utest'] = v
-    db['leo_utest2'] = 1
-    db['leotest/foo'] = 2
-    db['leotest/bar'] = 3
-    db['leo_utest'] == v
-    db['leo_utest2'] == 1
-    db['leotest/foo'] == 2
-    db['leotest/bar'] == 3</t>
 </tnodes>
 </leo_file>

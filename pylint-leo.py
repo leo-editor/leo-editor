@@ -55,11 +55,10 @@ external_files = (
 )
 recent_core_table = (
     # ('leoAtFile',''),
-    ('leoCommands',''),
+    # ('leoCommands',''),
     # ('leoFileCommands',''),
 )
 core_table = (
-    ('leoGlobals',''),
     ('leoApp',''),
     ('leoAtFile',''),
     ('leoChapters',''),
@@ -113,10 +112,10 @@ def run(fn,suppress):
         print('file not found:',fn)
 
 tables_table = (
+    # (recent_core_table,'core'),
+    (core_table,'core'),
     # (tkPass,'plugins'),
     # (passList,'plugins'),
-    (recent_core_table,'core'),
-    # (core_table,'core'),
     # (external_table,'external'),
     # (plugins_table,'plugins'),
 )

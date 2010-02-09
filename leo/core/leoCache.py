@@ -297,7 +297,7 @@ class cacher:
 
     def readFile (self,fileName,root):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
 
         if not g.enableDB:
@@ -320,10 +320,7 @@ class cacher:
                 root.firstChild().doDelete()
             # Recreate the file from the cache.
             aList = self.db[key]
-            ### root.v.createOutlineFromCacheList(c,aList,fileName=fileName)
             self.createOutlineFromCacheList(root.v,aList,fileName=fileName)
-            ### at.inputFile.close()
-            ### root.clearDirty()
 
         return ok,key
     #@-node:ekr.20100208071151.5905:readFile
@@ -388,7 +385,7 @@ class cacher:
 
     def writeFile(self,p,fileKey):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
 
         if not fileKey:

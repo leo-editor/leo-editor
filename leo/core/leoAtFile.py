@@ -21,10 +21,11 @@ if g.app and g.app.use_psyco:
 
 import leo.core.leoNodes as leoNodes
 
+# import hashlib
 import os
 import sys
 import time
-import hashlib
+
 #@-node:ekr.20041005105605.2:<< imports >>
 #@nl
 
@@ -541,27 +542,6 @@ class atFile:
             # not fromString and
             # root.h.startswith('@file'))
     #@-node:ekr.20041005105605.22:initFileName
-    #@+node:ekr.20100122130101.6176:at.readFromCache (to be removed)
-    def readFromCache (self,fileName,root):
-
-        at = self ; c = at.c
-        s,e = g.readFileIntoString(fileName,raw=True)
-        if s is None: return False,None
-
-        cachefile = self._contentHashFile(root.h,s)
-        ok = g.enableDB and cachefile in c.db
-        if ok:
-            # Delete the previous tree, regardless of the @<file> type.
-            while root.hasChildren():
-                root.firstChild().doDelete()
-            # Recreate the file from the cache.
-            aList = c.db[cachefile]
-            root.v.createOutlineFromCacheList(c,aList,fileName=fileName)
-            at.inputFile.close()
-            root.clearDirty()
-
-        return ok,cachefile
-    #@-node:ekr.20100122130101.6176:at.readFromCache (to be removed)
     #@+node:ekr.20071105164407:warnAboutUnvisitedNodes
     def warnAboutUnvisitedNodes (self,root):
 
@@ -578,40 +558,6 @@ class atFile:
             g.es('you may want to delete ressurected nodes')
     #@-node:ekr.20071105164407:warnAboutUnvisitedNodes
     #@-node:ekr.20041005105605.21:read (atFile) & helpers
-    #@+node:ville.20090606131405.6362:at.writeCachedTree (to be removed)
-    def writeCachedTree(self, p, cachefile):
-
-        trace = False and not g.unitTesting
-        c = self.c
-
-        if not g.enableDB or g.app.unitTesting:
-            if trace: g.trace('cache disabled')
-        elif cachefile in c.db:
-            if trace: g.trace('already cached',cachefile)
-        else:
-            if trace: g.trace('caching ',p.h)
-            c.db[cachefile] = p.makeCacheList()
-    #@nonl
-    #@-node:ville.20090606131405.6362:at.writeCachedTree (to be removed)
-    #@+node:ville.20090606150238.6351:at._contentHashFile (to be removed)
-    def _contentHashFile(self,s,content):
-
-        '''Compute the hash of s (usually a headline) and content.
-        s may be unicode, content must be bytes (or plain string in Python 2.x'''
-
-        m = hashlib.md5()
-
-        if g.isUnicode(s):
-            s = g.toEncodedString(s)
-
-        if g.isUnicode(content):
-            g.internalError('content arg must be str/bytes')
-            content = g.toEncodedString(content)
-
-        m.update(s)
-        m.update(content)
-        return "fcache/" + m.hexdigest()
-    #@-node:ville.20090606150238.6351:at._contentHashFile (to be removed)
     #@+node:ekr.20041005105605.26:readAll (atFile)
     def readAll(self,root,partialFlag=False):
 

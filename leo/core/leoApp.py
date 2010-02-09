@@ -14,7 +14,7 @@ import leo.core.leoVersion as leoVersion
 
 import os
 import sys
-import leo.external.pickleshare as pickleshare
+# import leo.external.pickleshare as pickleshare
 
 class LeoApp:
 
@@ -34,6 +34,7 @@ class LeoApp:
         self.commandName = None # The name of the command being executed.
         self.config = None # The leoConfig instance.
         self.count = 0 # General purpose debugging count.
+        self.db = None # Set to a leoCacher later.
         self.debug = False # True: enable extra debugging tests (not used at present).
             # WARNING: this could greatly slow things down.
         self.debugSwitch = 0
@@ -698,8 +699,6 @@ class LeoApp:
 
         self.cacher = leoCache.cacher()
         self.cacher.initGlobalDB()
-
-    #@nonl
     #@-node:ville.20090620122043.6275:app.setGlobalDb
     #@+node:ekr.20031218072017.1847:app.setLog, lockLog, unlocklog
     def setLog (self,log):

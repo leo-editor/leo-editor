@@ -28,9 +28,9 @@ if g.app and g.app.use_psyco:
     # import leo.core.leoUndo as leoUndo
 
 import leo.core.leoNodes as leoNodes
-import leo.external.pickleshare as pickleshare
+# import leo.external.pickleshare as pickleshare
 
-import hashlib
+# import hashlib
 import keyword
 import os
 import subprocess

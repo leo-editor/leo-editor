@@ -1685,7 +1685,7 @@ class baseFileCommands:
 
         use_db = g.enableDB and not g.unitTesting and c.mFileName
         if use_db:
-            if trace: g.trace(c.mFileName,key)
+            if trace: g.trace(c.mFileName)
             c.cacher.setCachedGlobalsElement(c.mFileName)
 
         # Always put positions, to trigger sax methods.

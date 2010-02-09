@@ -4462,6 +4462,187 @@ for line in lines[j+1:k+1]:
 
     # return ok
 #@-node:ekr.20080711063656.2:x.rename (not used)
+#@+node:ekr.20100208175503.5983:Old caching methods
+# Replaced by c.cacher methods.
+#@nonl
+#@+node:ekr.20100112095623.6267:<< put all data to c.db >>
+c.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
+c.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
+
+if trace: g.trace('ratios: %1.2f %1.2f' % (
+    c.frame.ratio,c.frame.secondary_ratio))
+
+width,height,left,top = c.frame.get_window_info()
+
+c.db['window_position_%s' % key] = (
+    str(top),str(left),str(height),str(width))
+
+if trace: g.trace('top',top,'left',left,'height',height,'width',width)
+#@-node:ekr.20100112095623.6267:<< put all data to c.db >>
+#@+node:ville.20090606150238.6351:at._contentHashFile (to be removed)
+def _contentHashFile(self,s,content):
+
+    '''Compute the hash of s (usually a headline) and content.
+    s may be unicode, content must be bytes (or plain string in Python 2.x'''
+
+    m = hashlib.md5()
+
+    if g.isUnicode(s):
+        s = g.toEncodedString(s)
+
+    if g.isUnicode(content):
+        g.internalError('content arg must be str/bytes')
+        content = g.toEncodedString(content)
+
+    m.update(s)
+    m.update(content)
+    return "fcache/" + m.hexdigest()
+#@-node:ville.20090606150238.6351:at._contentHashFile (to be removed)
+#@+node:ekr.20100122130101.6176:at.readFromCache (to be removed)
+def readFromCache (self,fileName,root):
+
+    at = self ; c = at.c
+    s,e = g.readFileIntoString(fileName,raw=True)
+    if s is None: return False,None
+
+    cachefile = self._contentHashFile(root.h,s)
+    ok = g.enableDB and cachefile in c.db
+    if ok:
+        # Delete the previous tree, regardless of the @<file> type.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+        # Recreate the file from the cache.
+        aList = c.db[cachefile]
+        root.v.createOutlineFromCacheList(c,aList,fileName=fileName)
+        at.inputFile.close()
+        root.clearDirty()
+
+    return ok,cachefile
+#@-node:ekr.20100122130101.6176:at.readFromCache (to be removed)
+#@+node:ville.20090606131405.6362:at.writeCachedTree (to be removed)
+def writeCachedTree(self, p, cachefile):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    if not g.enableDB or g.app.unitTesting:
+        if trace: g.trace('cache disabled')
+    elif cachefile in c.db:
+        if trace: g.trace('already cached',cachefile)
+    else:
+        if trace: g.trace('caching ',p.h)
+        c.db[cachefile] = p.makeCacheList()
+#@nonl
+#@-node:ville.20090606131405.6362:at.writeCachedTree (to be removed)
+#@+node:ekr.20090829064400.6044:p.makeCacheList (to be removed)
+def makeCacheList(self):
+
+    '''Create a recursive list describing a tree
+    for use by v.createOutlineFromCacheList.
+    '''
+
+    p = self
+
+    return [
+        p.h,p.b,p.gnx,
+        [p2.makeCacheList() for p2 in p.children()]]
+#@-node:ekr.20090829064400.6044:p.makeCacheList (to be removed)
+#@+node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers (to be removed)
+def createOutlineFromCacheList(self,c,aList,top=True,atAll=None,fileName=None):
+    """ Create outline structure from recursive aList
+    built by p.makeCacheList.
+
+    Clones will be automatically created by gnx,
+    but *not* for the top-level node.
+    """
+
+    trace = False and not g.unitTesting
+    parent_v = self
+
+    #import pprint ; pprint.pprint(tree)
+    parent_v = self
+    h,b,gnx,children = aList
+    if h is not None:
+        v = parent_v
+        v._headString = h    
+        v._bodyString = b
+
+    if top:
+        c.cacheListFileName = fileName
+        # Scan the body for @all directives.
+        for line in g.splitLines(b):
+            if line.startswith('@all'):
+                atAll = True ; break
+        else:
+            atAll = False
+    else:
+        assert atAll in (True,False,)
+
+    for z in children:
+        h,b,gnx,grandChildren = z
+        isClone,child_v = parent_v.fastAddLastChild(c,gnx)
+        if isClone:
+            if child_v.b != b:
+                # 2010/02/05: Remove special case for @all.
+                c.nodeConflictList.append(g.bunch(
+                    tag='(cached)',
+                    fileName=c.cacheListFileName,
+                    gnx=gnx,
+                    b_old=child_v.b,
+                    h_old=child_v.h,
+                    b_new=b,
+                    h_new=h,
+                ))
+
+                # Always issue the warning.
+                g.es_print("cached read node changed:",
+                    child_v.h,color="red")
+
+                child_v.h,child_v.b = h,b
+                child_v.setDirty()
+                c.changed = True
+                    # Tells getLeoFile to propegate dirty nodes.
+        else:
+            child_v.createOutlineFromCacheList(c,z,top=False,atAll=atAll)
+#@+node:ekr.20090829064400.6042:v.fastAddLastChild
+# Similar to createThinChild4
+def fastAddLastChild(self,c,gnxString):
+    '''Create new vnode as last child of the receiver.
+
+    If the gnx exists already, create a clone instead of new vnode.
+    '''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    parent_v = self
+    indices = g.app.nodeIndices
+    gnxDict = c.fileCommands.gnxDict
+
+    if gnxString is None: v = None
+    else:                 v = gnxDict.get(gnxString)
+    is_clone = v is not None
+
+    if trace: g.trace(
+        'clone','%-5s' % (is_clone),
+        'parent_v',parent_v,'gnx',gnxString,'v',repr(v))
+
+    if is_clone:
+        pass
+    else:
+        v = vnode(context=c)
+        if gnxString:
+            gnx = indices.scanGnx(gnxString,0)
+            v.fileIndex = gnx
+        gnxDict[gnxString] = v
+
+    child_v = v
+    child_v._linkAsNthChild(parent_v,parent_v.numberOfChildren())
+    child_v.setVisited() # Supress warning/deletion of unvisited nodes.
+
+    return is_clone,child_v
+#@-node:ekr.20090829064400.6042:v.fastAddLastChild
+#@-node:ekr.20090829064400.6040:v.createOutlineFromCacheList & helpers (to be removed)
+#@-node:ekr.20100208175503.5983:Old caching methods
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node

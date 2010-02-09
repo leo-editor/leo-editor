@@ -38,12 +38,6 @@ except ImportError: # does not exist in jython.
 # Do NOT import pdb here!  We shall define pdb as a _function_ below.
 # import pdb
 
-try:
-    # No such module in Python 3.x.
-    import exceptions
-except ImportError:
-    pass
-
 if isPython3:
     from functools import reduce
 
@@ -1292,58 +1286,6 @@ def getLastTracebackFileAndLineNumber():
         else:
             # Should never happen.
             return '<string>',0
-
-
-
-
-        # elif type ==IndentationError:
-            # # g.es_print('',repr(val))
-            # filename,lineno = val.filename,val.lineno
-            # # old code
-            # # msg,(filename, lineno, offset, line) = val
-            # return filename,lineno
-            # # except Exception:
-                # # g.es_exception()
-                # # g.trace("bad line number")
-                # # return None,0
-        # else:
-            # # The proper line number is the second element in the last tuple.
-            # data = traceback.extract_tb(tb)
-            # if data:
-                # # g.es_print('',repr(data))
-                # item = data[-1]
-                # filename = item[0]
-                # n = item[1]
-                # return filename,n
-            # else:
-                # return None,0
-
-
-    # else:
-
-        # if typ in (exceptions.SyntaxError,exceptions.IndentationError):
-            # # Syntax and indentation errors are a special case.
-            # # extract_tb does _not_ return the proper line number!
-            # # This code is similar to the code in format_exception_only(!!)
-            # try:
-                # # g.es_print('',repr(val))
-                # msg,(filename, lineno, offset, line) = val
-                # return filename,lineno
-            # except Exception:
-                # g.trace("bad line number")
-                # return None,0
-
-        # else:
-            # # The proper line number is the second element in the last tuple.
-            # data = traceback.extract_tb(tb)
-            # if data:
-                # # g.es_print('',repr(data))
-                # item = data[-1]
-                # filename = item[0]
-                # n = item[1]
-                # return filename,n
-            # else:
-                # return None,0
 #@-node:ekr.20040731204831:getLastTracebackFileAndLineNumber
 #@+node:ekr.20031218072017.3113:printBindings
 def print_bindings (name,window):
@@ -3837,18 +3779,6 @@ def os_path_splitext(path):
 
     return head,tail
 #@-node:ekr.20031218072017.2159:os_path_splitext
-#@+node:ekr.20100207111939.5894:os_path_splitpath
-def os_path_splitpath(path):
-
-    path = g.toUnicodeFileEncoding(path)
-
-    head,tail = os.path.splitpath(path)
-
-    head = g.toUnicodeFileEncoding(head)
-    tail = g.toUnicodeFileEncoding(tail)
-
-    return head,tail
-#@-node:ekr.20100207111939.5894:os_path_splitpath
 #@+node:ekr.20090829140232.6036:os_startfile
 def os_startfile(fname):
     if sys.platform.startswith('win'):
