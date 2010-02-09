@@ -508,8 +508,6 @@
 </v>
 <v t="ekr.20100206180840.2099"><vh>@auto test-PmwComboBox.py</vh></v>
 <v t="ekr.20100118190802.2000"><vh>@thin ../../pylint-leo.py</vh></v>
-<v t="ekr.20100209124109.2108"><vh>b</vh></v>
-<v t="ekr.20100209124109.2108"></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5752,6 +5750,5 @@ import string
     pass
 </t>
 <t tx="ekr.20100205114630.2091"></t>
-<t tx="ekr.20100209124109.2108"></t>
 </tnodes>
 </leo_file>
