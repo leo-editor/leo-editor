@@ -1477,6 +1477,260 @@ def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
         w.moveCursor(op,mode)
 #@-node:ekr.20100109082023.3734:leoMoveCursorHelper (Qt)
 #@-node:ekr.20100204164325.3687:Non-extending move should always clear selection
+#@+node:ekr.20100204225705.3690:Redraw the tree for cloned collapses
+#@+node:ekr.20090124174652.40:onItemCollapsed (nativeTree)
+def onItemCollapsed (self,item):
+
+    trace = False
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+    if trace: g.trace(self.traceItem(item))
+    p = self.item2position(item)
+
+    if p:
+        # Important: do not set lockouts here.
+        # Only methods that actually generate events should set lockouts.
+        p.contract()
+        if p.isCloned():
+            self.select(p) # Calls before/afterSelectHint.
+            # 2010/02/04: Keep the expansion bits of all tree nodes in sync.
+            self.full_redraw(scroll=False)
+        else:
+            self.select(p) # Calls before/afterSelectHint.    
+    else:
+        self.error('no p')
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.40:onItemCollapsed (nativeTree)
+#@+node:ekr.20090124174652.42:onItemExpanded (nativeTree)
+def onItemExpanded (self,item):
+
+    '''Handle and tree-expansion event.'''
+
+    trace = False
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+    if trace: g.trace(self.traceItem(item))
+    p = self.item2position(item)
+
+    if p:
+        # Important: do not set lockouts here.
+        # Only methods that actually generate events should set lockouts.
+        if not p.isExpanded():
+            p.expand()
+            self.select(p) # Calls before/afterSelectHint.
+            # Important: setting scroll=False here has no effect
+            # when a keystroke causes the expansion, but is a
+            # *big* improvement when clicking the outline.
+            self.full_redraw(scroll=False)
+        else:
+            self.select(p)
+    else:
+        self.error('no p')
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.42:onItemExpanded (nativeTree)
+#@+node:ekr.20090124174652.17:full_redraw & helpers
+# forceDraw not used. It is used in the Tk code.
+
+def full_redraw (self,p=None,scroll=True,forceDraw=False):
+
+    '''Redraw all visible nodes of the tree.
+
+    Preserve the vertical scrolling unless scroll is True.'''
+
+    trace = False and not g.app.unitTesting
+    verbose = False
+    c = self.c
+
+    if self.busy():
+        return g.trace('*** full_redraw: busy!',g.callers(5))
+
+    if p is None:   p = c.currentPosition()
+    else:           c.setCurrentPosition(p)
+
+    # if trace: g.trace(p.isExpanded(),p.h)
+
+    self.redrawCount += 1
+    if trace: t1 = g.getTime()
+    self.initData()
+    self.nodeDrawCount = 0
+    try:
+        self.redrawing = True
+        self.drawTopTree(p)
+    finally:
+        self.redrawing = False
+
+    self.setItemForCurrentPosition(scroll=scroll)
+    c.requestRedrawFlag= False
+
+    if trace:
+        theTime = g.timeSince(t1)
+        callers = g.choose(verbose,g.callers(5),'')
+        g.trace('*** %s: scroll %5s drew %3s nodes in %s' % (
+            self.redrawCount,scroll,self.nodeDrawCount,theTime),callers)
+
+# Compatibility
+redraw = full_redraw 
+redraw_now = full_redraw
+#@+node:ekr.20090124174652.19:drawChildren
+def drawChildren (self,p,parent_item):
+
+    trace = False and not g.unitTesting
+
+    if trace: g.trace('children? %5s expanded? %5s %s' % (
+        p.hasChildren(),p.isExpanded(),p.h))
+
+    if not p:
+        return g.trace('can not happen: no p')
+
+    if p.hasChildren():
+        if p.isExpanded():
+            self.expandItem(parent_item)
+            child = p.firstChild()
+            while child:
+                self.drawTree(child,parent_item)
+                child.moveToNext()
+        else:
+            # Draw the hidden children.
+            child = p.firstChild()
+            while child:
+                self.drawNode(child,parent_item)
+                child.moveToNext()
+            self.contractItem(parent_item)
+    else:
+        self.contractItem(parent_item)
+#@-node:ekr.20090124174652.19:drawChildren
+#@+node:ekr.20090124174652.20:drawNode
+def drawNode (self,p,parent_item):
+
+    trace = False
+    c = self.c 
+    self.nodeDrawCount += 1
+
+    # Allocate the item.
+    item = self.createTreeItem(p,parent_item) 
+
+    # Do this now, so self.isValidItem will be true in setItemIcon.
+    self.rememberItem(p,item)
+
+    # Set the headline and maybe the icon.
+    self.setItemText(item,p.h)
+    if p:
+        self.drawItemIcon(p,item)
+
+    if trace: g.trace(self.traceItem(item))
+
+    return item
+#@-node:ekr.20090124174652.20:drawNode
+#@+node:ekr.20090129062500.12:drawTopTree
+def drawTopTree (self,p):
+
+    c = self.c
+    hPos,vPos = self.getScroll()
+    self.clear()
+    # Draw all top-level nodes and their visible descendants.
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        p = bunch.p ; h = p.h
+        if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
+            p = p.firstChild()
+            while p:
+                self.drawTree(p)
+                p.moveToNext()
+        else:
+            self.drawTree(p)
+    else:
+        p = c.rootPosition()
+        while p:
+            self.drawTree(p)
+            p.moveToNext()
+
+    # This method always retains previous scroll position.
+    self.setHScroll(hPos)
+    self.setVScroll(vPos)
+
+    self.repaint()
+#@nonl
+#@-node:ekr.20090129062500.12:drawTopTree
+#@+node:ekr.20090124174652.21:drawTree
+def drawTree (self,p,parent_item=None):
+
+    # Draw the (visible) parent node.
+    item = self.drawNode(p,parent_item)
+
+    # Draw all the visible children.
+    self.drawChildren(p,parent_item=item)
+#@-node:ekr.20090124174652.21:drawTree
+#@+node:ekr.20090124174652.22:initData
+def initData (self):
+
+    # g.trace('*****')
+
+    self.item2positionDict = {}
+    self.item2vnodeDict = {}
+    self.position2itemDict = {}
+    self.vnode2itemsDict = {}
+    self.editWidgetsDict = {}
+#@-node:ekr.20090124174652.22:initData
+#@+node:ekr.20090124174652.23:rememberItem
+def rememberItem (self,p,item):
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(id(item),p.h)
+
+    v = p.v
+
+    # Update position dicts.
+    itemHash = self.itemHash(item)
+    self.position2itemDict[p.key()] = item
+    self.item2positionDict[itemHash] = p.copy() # was item
+
+    # Update item2vnodeDict.
+    self.item2vnodeDict[itemHash] = v # was item
+
+    # Update vnode2itemsDict.
+    d = self.vnode2itemsDict
+    aList = d.get(v,[])
+    if item in aList:
+        g.trace('*** ERROR *** item already in list: %s, %s' % (item,aList))
+    else:
+        aList.append(item)
+    d[v] = aList
+#@-node:ekr.20090124174652.23:rememberItem
+#@-node:ekr.20090124174652.17:full_redraw & helpers
+#@-node:ekr.20100204225705.3690:Redraw the tree for cloned collapses
+#@+node:ekr.20100209122624.3698:Fixed bug in redraw_after_head_changed
+#@+node:ekr.20090124174652.26:redraw_after_head_changed
+def redraw_after_head_changed (self):
+
+    trace = False and not g.unitTesting
+
+    if self.busy(): return
+
+    c = self.c ; p = c.currentPosition()
+    ew = self.edit_widget(p)
+
+    if trace: g.trace(p.h)
+
+    currentItem = self.getCurrentItem()
+
+    if p:
+        h = p.h # 2010/02/09: Fix bug 518823.
+        for item in self.vnode2items(p.v):
+            if self.isValidItem(item):
+                self.setItemText(item,h)
+
+    # Bug fix: 2009/10/06
+    self.redraw_after_icons_changed()
+#@-node:ekr.20090124174652.26:redraw_after_head_changed
+#@-node:ekr.20100209122624.3698:Fixed bug in redraw_after_head_changed
 #@-node:ekr.20100202160247.3681:Leo 4.7 rc1 projects
 #@-all
 #@nonl

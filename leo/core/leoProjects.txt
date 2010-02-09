@@ -9596,6 +9596,12 @@ def openWithTempFilePath (self,p,ext):
     return path
 #@-node:ekr.20031218072017.2832:c.openWithTempFilePath (may be over-ridden)
 #@-node:ekr.20100206173123.5807:Fixed open-with crash
+#@+node:ekr.20100209114432.5752:Fixed bug 518823: clone headline updates
+https://bugs.launchpad.net/leo-editor/+bug/518823
+
+Clone headline modification not propogated after edit
+#@nonl
+#@-node:ekr.20100209114432.5752:Fixed bug 518823: clone headline updates
 #@-node:ekr.20100203173153.5797:Bugs
 #@+node:ekr.20100203173153.5798:Cleanup & testing
 #@+node:ekr.20100130042842.9009:Removed config.set

@@ -6034,6 +6034,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w = self.treeWidget
 
         if e:
+            # g.trace(g.callers(5))
             w.closeEditor(e,QtGui.QAbstractItemDelegate.NoHint)
             w.setCurrentItem(item)
     #@-node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)

@@ -349,9 +349,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         currentItem = self.getCurrentItem()
 
         if p:
+            h = p.h # 2010/02/09: Fix bug 518823.
             for item in self.vnode2items(p.v):
                 if self.isValidItem(item):
-                    self.setItemText(item,p.h)
+                    self.setItemText(item,h)
 
         # Bug fix: 2009/10/06
         self.redraw_after_icons_changed()
@@ -1383,7 +1384,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             self.setItemIcon(item,icon)
     #@nonl
     #@-node:ekr.20090124174652.113:updateIcon (nativeTree)
-    #@+node:ekr.20090124174652.114:updateVisibleIcons
+    #@+node:ekr.20090124174652.114:updateVisibleIcons (nativeTree)
     def updateVisibleIcons (self,p):
 
         '''Update the icon for p and the icons
@@ -1394,7 +1395,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if p.hasChildren() and p.isExpanded():
             for child in p.children():
                 self.updateVisibleIcons(child)
-    #@-node:ekr.20090124174652.114:updateVisibleIcons
+    #@-node:ekr.20090124174652.114:updateVisibleIcons (nativeTree)
     #@-node:ekr.20090124174652.72:Icons (nativeTree)
     #@+node:ekr.20090124174652.77:oops
     def oops(self):
