@@ -1449,6 +1449,8 @@ class editCommandsClass (baseEditCommandsClass):
             'center-region':                        self.centerRegion,
             'clean-all-lines':                      self.cleanAllLines,
             'clean-lines':                          self.cleanLines,
+            'clear-all-caches':                     self.clearAllCaches,
+            'clear-cache':                          self.clearCache,
             'clear-extend-mode':                    self.clearExtendMode,
             'clear-selected-text':                  self.clearSelectedText,
             'click-click-box':                      self.clickClickBox,
@@ -1603,6 +1605,17 @@ class editCommandsClass (baseEditCommandsClass):
     #@nonl
     #@-node:ekr.20061012113455:doNothing
     #@-node:ekr.20050929155208: birth
+    #@+node:ekr.20100209160132.5763:cache (leoEditCommands)
+    def clearAllCaches (self,event=None):
+        c = self.c
+        if c.cacher:
+            c.cacher.clearAllCaches()
+
+    def clearCache (self,event=None):
+        c = self.c
+        if c.cacher:
+            c.cacher.clearCache()
+    #@-node:ekr.20100209160132.5763:cache (leoEditCommands)
     #@+node:ekr.20050920084036.57:capitalization & case
     #@+node:ekr.20051015114221:capitalizeWord & up/downCaseWord
     def capitalizeWord (self,event):

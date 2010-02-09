@@ -52,9 +52,10 @@ class cacher:
     def __init__ (self,c=None):
 
         self.c = c
-        self.db = {}
-            # set by initFileDB and initGlobalDB
 
+        # set by initFileDB and initGlobalDB...
+        self.db = None # will be a PickleShareDB instance.
+        self.dbdirname = None # A string.
 
 
     #@-node:ekr.20100208062523.5886: ctor (cacher)
@@ -67,7 +68,7 @@ class cacher:
             fn = fn.lower()
             fn = g.toEncodedString(fn) # Required for Python 3.x.
 
-            dbdirname = join(g.app.homeLeoDir,'db',
+            self.dbdirname = dbdirname = join(g.app.homeLeoDir,'db',
                 '%s_%s' % (bname,hashlib.md5(fn).hexdigest()))
 
             self.db = PickleShareDB(dbdirname)
@@ -83,9 +84,27 @@ class cacher:
             if trace: g.trace(db,dbdirname)
             return db
         else:
-            return {}
+            return None
     #@-node:ekr.20100208082353.5920:initGlobalDb
     #@-node:ekr.20100208082353.5919: Birth
+    #@+node:ekr.20100209160132.5759:clear/AllCache(s) (cacher)
+    def clearCache (self):
+        if self.db:
+            self.db.clear(verbose=True)
+
+    def clearAllCaches (self):
+
+        # Clear the global cacher.
+        if g.app.db:
+            g.app.db.clearCache()
+
+        # Clear the cachers *only* for all open windows.
+        # This is much safer than tryting to Kill all db's.
+        for frame in g.windows():
+            c = frame.c
+            if c.cacher:
+                c.cacher.clearCache()
+    #@-node:ekr.20100209160132.5759:clear/AllCache(s) (cacher)
     #@+node:ekr.20100208071151.5907:fileKey
     # was atFile._contentHashFile
 
@@ -234,9 +253,8 @@ class cacher:
     #@+node:ekr.20100208082353.5924:getCachedStringPosition
     def getCachedStringPosition(self):
 
-        c = self.c
-
         trace = False and not g.unitTesting
+        c = self.c
 
         if not c:
             return g.internalError('no commander')
@@ -473,16 +491,17 @@ class PickleShareDB:
 
         """ del db["key"] """
 
-        trace = False and g.unitTesting
+        trace = False and not g.unitTesting
 
-        fil = join(self.root,key)
+        fn = join(self.root,key)
 
-        if trace: g.trace('(PickleShareDB)',key,g.shortFileName(fil))
+        if trace: g.trace('(PickleShareDB)',
+            g.shortFileName(fn))
 
-        self.cache.pop(fil,None)
+        self.cache.pop(fn,None)
 
         try:
-            os.remove(fil)
+            os.remove(fn)
         except OSError:
             # notfound and permission denied are ok - we
             # lost, the other process wins the conflict
@@ -495,25 +514,25 @@ class PickleShareDB:
 
         trace = False and not g.unitTesting
 
-        fil = join(self.root,key)
+        fn = join(self.root,key)
         try:
-            mtime = (os.stat(fil)[stat.ST_MTIME])
+            mtime = (os.stat(fn)[stat.ST_MTIME])
         except OSError:
-            if trace: g.trace('***OSError',fil,key)
+            if trace: g.trace('***OSError',fn,key)
             raise KeyError(key)
 
-        if fil in self.cache and mtime == self.cache[fil][1]:
-            obj = self.cache[fil][0]
+        if fn in self.cache and mtime == self.cache[fn][1]:
+            obj = self.cache[fn][0]
             if trace: g.trace('(PickleShareDB: in cache)',key)
             return obj
         try:
             # The cached item has expired, need to read
-            obj = self.loader(self._openFile(fil,'rb'))
+            obj = self.loader(self._openFile(fn,'rb'))
         except Exception:
             if trace: g.trace('***Exception',key)
             raise KeyError(key)
 
-        self.cache[fil] = (obj,mtime)
+        self.cache[fn] = (obj,mtime)
         if trace: g.trace('(PickleShareDB: set cache)',key)
         return obj
     #@-node:ekr.20100208223942.5972:__getitem__
@@ -541,19 +560,19 @@ class PickleShareDB:
         """ db['key'] = 5 """
 
         trace = False and not g.unitTesting
-        fil = join(self.root,key)
+        fn = join(self.root,key)
 
         if trace: g.trace('(PickleShareDB)',key)
-        parent,junk = split(fil)
+        parent,junk = split(fn)
 
         if parent and not isdir(parent):
             self._makedirs(parent)
 
-        self.dumper(value,self._openFile(fil,'wb'))
+        self.dumper(value,self._openFile(fn,'wb'))
 
         try:
-            mtime = os.path.getmtime(fil)
-            self.cache[fil] = (value,mtime)
+            mtime = os.path.getmtime(fn)
+            self.cache[fn] = (value,mtime)
         except OSError as e:
             if trace: g.trace('***OSError')
             if e.errno != 2:
@@ -637,7 +656,16 @@ class PickleShareDB:
     #@-node:ekr.20100208223942.10464:_fn_match
     #@-node:ekr.20100208223942.10454:_walkfiles & helpers
     #@+node:ekr.20100208223942.5978:clear
-    def clear (self):
+    def clear (self,verbose=False):
+
+        # Deletes all files in the fcache subdirectory.
+        # It would be more thorough to delete everything
+        # below the root directory, but it's not necessary.
+
+        if verbose:
+            g.es_print('clearing cache at directory...\n',
+                color='red')
+            g.es_print(self.root)
 
         for z in self.keys():
             self.__delitem__(z)
@@ -671,13 +699,13 @@ class PickleShareDB:
         return [z for z in self]
     #@-node:ekr.20100208223942.5981:items
     #@+node:ekr.20100208223942.5982:keys & helpers
-    # Called during unit testing.
+    # Called by clear, and during unit testing.
 
     def keys(self, globpat = None):
 
         """Return all keys in DB, or all keys matching a glob"""
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
 
         if globpat is None:
             files = self._walkfiles(self.root)
@@ -693,7 +721,7 @@ class PickleShareDB:
     def _normalized(self, p):
         """ Make a key suitable for user's eyes """
 
-        # os.path.relpath doesn't seem to work.
+        # os.path.relpath doesn't work here.
 
         return self._relpathto(self.root,p).replace('\\','/')
 

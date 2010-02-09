@@ -508,6 +508,7 @@
 </v>
 <v t="ekr.20100206180840.2099"><vh>@auto test-PmwComboBox.py</vh></v>
 <v t="ekr.20100118190802.2000"><vh>@thin ../../pylint-leo.py</vh></v>
+<v t="ekr.20100209165720.2108"><vh>c.cacher.keys</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5750,5 +5751,12 @@ import string
     pass
 </t>
 <t tx="ekr.20100205114630.2091"></t>
+<t tx="ekr.20100209165720.2108">print('*' * 20)
+for z in c.cacher.db.keys():
+    print(z)
+c.cacher.clearCache()
+print('-' * 20)
+for z in c.cacher.db.keys():
+    print(z)</t>
 </tnodes>
 </leo_file>
