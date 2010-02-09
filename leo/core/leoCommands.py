@@ -123,20 +123,8 @@ class baseCommands (object):
         leoEditCommands.createEditCommanders(c)
         self.rstCommands = leoRst.rstCommands(c)
 
-        if g.use_cacher:
-            c.cacher = leoCache.cacher(c)
-            c.cacher.initFileDB(self.mFileName)
-        else:
-            pth, bname = os.path.split(self.mFileName)
-            if pth and bname and g.enableDB:
-                fn = self.mFileName.lower()
-                fn = g.toEncodedString(fn) # Required for Python 3.x.
-                dbdirname = '%s/db/%s_%s' % (
-                    g.app.homeLeoDir,bname,hashlib.md5(fn).hexdigest())
-                # Use compressed pickles (handy for @thin caches)
-                self.db = pickleshare.PickleShareDB(dbdirname,protocol='picklez')
-            else:
-                self.db = {}
+        c.cacher = leoCache.cacher(c)
+        c.cacher.initFileDB(self.mFileName)
 
         if trace: t3 = g.printDiffTime('%s: after controllers created' % (tag),t2)
 
@@ -273,7 +261,6 @@ class baseCommands (object):
 
         # per-document info...
         self.changed = False # True if any data has been changed since the last save.
-        self.db = None # Set later.
         self.disableCommandsMessage = ''
             # The presence of this message disables all commands.
         self.expansionLevel = 0  # The expansion level of this outline.

@@ -696,19 +696,10 @@ class LeoApp:
 
         """
 
-        if g.use_cacher:
-            self.cacher = leoCache.cacher()
-            self.cacher.initGlobalDB()
-        else:
-            trace = False
-            if trace: g.trace('g.enableDB',g.enableDB)
+        self.cacher = leoCache.cacher()
+        self.cacher.initGlobalDB()
 
-            if g.enableDB:
-                dbdirname = self.homeLeoDir + "/db/global"
-                self.db = pickleshare.PickleShareDB(dbdirname, protocol='picklez')
-                if trace: g.trace(self.db,dbdirname)
-            else:
-                self.db = {}
+    #@nonl
     #@-node:ville.20090620122043.6275:app.setGlobalDb
     #@+node:ekr.20031218072017.1847:app.setLog, lockLog, unlocklog
     def setLog (self,log):
