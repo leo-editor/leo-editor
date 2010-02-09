@@ -561,12 +561,12 @@ class PickleShareDB:
     #@-node:ekr.20100208223942.5975:__setitem__
     #@-node:ekr.20100208223942.5968: Birth & special methods
     #@+node:ekr.20100208223942.10452:_makedirs
-    def _makedirs(self, mode=0o777):
+    def _makedirs(self,fn,mode=0o777):
 
         trace = False and not g.unitTesting
         if trace: g.trace(self.root)
 
-        os.makedirs(self, mode)
+        os.makedirs(fn,mode)
 
     #@-node:ekr.20100208223942.10452:_makedirs
     #@+node:ekr.20100208223942.10458:_openFile

@@ -23591,7 +23591,7 @@ core_files = (
     'leoPlugins','leoShadow','leoTangle','leoUndo',
 )
 external_files = (
-    'ipy_leo','lproto','path','pickleshare',
+    'ipy_leo','lproto',
 )
 table = (
     ('plugins',passList),
@@ -23855,7 +23855,7 @@ core_files = (
     'leoPlugins','leoShadow','leoTangle','leoUndo',
 )
 external_files = (
-    'ipy_leo','lproto','path','pickleshare',
+    'ipy_leo','lproto',
 )
 recent = (
     #'leo_interface',
