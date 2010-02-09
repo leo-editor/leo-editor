@@ -79,6 +79,9 @@
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
 <v t="ekr.20100120072650.6089" descendentVnodeUnknownAttributes="7d71005807000000302e302e392e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@thin leoProjects.txt</vh></v>
 </v>
+<v t="ekr.20100209091422.5978"><vh>Tests</vh>
+<v t="ekr.20100208095423.5940"><vh>@test leoCache</vh></v>
+</v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
@@ -90,14 +93,13 @@
 <v t="ekr.20090802181029.5989"><vh>Startup &amp; external files</vh>
 <v t="ekr.20100120092047.6087"><vh>@thin ../external/ipy_leo.py</vh></v>
 <v t="ville.20091010232339.6117"><vh>@thin ../external/lproto.py</vh></v>
-<v t="ekr.20091204131831.6103"><vh>@thin ../external/path.py</vh></v>
-<v t="ekr.20100207111939.5895"><vh>@thin ../external/pickleshare.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@thin runLeo.py </vh></v>
 </v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@thin leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@thin leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
+<v t="ekr.20100208065621.5894"><vh>@thin leoCache.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@thin leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@thin leoColor.py</vh></v>
 <v t="ekr.20031218072017.2810"><vh>@thin leoCommands.py</vh></v>
@@ -826,5 +828,16 @@ for v in c.all_nodes():
 
 # ekr.20100205162207.5844
 </t>
+<t tx="ekr.20100208095423.5940">import leo.core.leoCache as leoCache
+
+cacher = leoCache.cacher(c)
+
+if 0:
+    import os
+    os.system('cls')
+
+assert cacher.test()</t>
+<t tx="ekr.20100209091422.5978"># These are intended to be temporary tests,
+# to be copied eventually to unitTest.leo</t>
 </tnodes>
 </leo_file>

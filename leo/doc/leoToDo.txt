@@ -583,81 +583,15 @@ def goto_countLinesHelper (self,p,n,trace):
 #@-node:ekr.20100206173123.5805:goto_countLinesHelper
 #@-node:ekr.20080904071003.12:goto_countLines & helper
 #@-node:ekr.20100204052559.5792:Make goto-global-line work with @auto files
-#@+node:ekr.20100208180949.5989:All pylint warnings
+#@+node:ekr.20100208180949.5989:Fix a few pylint warnings
 @killcolor
-
-Serious:
 
 ************* Module leo.plugins.UNL
 E0611: 94: No name 'parse' in module 'urllib'
-#@nonl
-#@+node:ekr.20100209091422.5981:minor core/gui plugins
-@killcolor
 
 ************* Module leo.plugins.open_with
 W0107:155:on_idle: Unnecessary pass statement
-
-************* Module leo.plugins.tkGui
-E0602:282:tkinterGui.runPropertiesDialog: Undefined variable 'TkPropertiesDialog'
-W0221:594:tkinterGui.getFullVersion: Arguments number differs from overridden method
-W0222:3400:leoTkinterBody.tag_add: Signature differs from overridden method
-W0221:5587:leoTkinterLog.createTab: Arguments number differs from overridden method
-W0221:6393:leoTkinterMenu.getMenuLabel: Arguments number differs from overridden method
-W0222:7341:leoTkinterTree.redraw_after_contract: Signature differs from overridden method
-W0221:7360:leoTkinterTree.redraw_after_select: Arguments number differs from overridden method
-W0221:7413:leoTkinterTree.drawIcon: Arguments number differs from overridden method
-W0221:8921:leoTkinterTree.setEditLabelState: Arguments number differs from overridden method
-W0221:9582:leoTkTextWidget.tag_add: Arguments number differs from overridden method
-
-************* Module leo.plugins.baseNativeTree
-W0221:360:baseNativeTreeWidget.redraw_after_icons_changed: Arguments number differs from overridden method
-E1121:661:baseNativeTreeWidget.onTreeSelect: Too many positional arguments for function call
-W0221:932:baseNativeTreeWidget.onHeadChanged: Arguments number differs from overridden method
-
-************* Module leo.plugins.qtGui
-W0221:203:leoQtBaseTextWidget.bind: Arguments number differs from overridden method
-W0221:368:leoQtBaseTextWidget.setSelectionRange: Arguments number differs from overridden method
-W0221:623:leoQtBaseTextWidget.setAllText: Arguments number differs from overridden method
-W0221:712:leoQLineEditWidget.setAllText: Arguments number differs from overridden method
-W0221:1622:leoQtHeadlineWidget.setAllText: Arguments number differs from overridden method
-W0221:2606:leoQtBody.getSelectionRange: Arguments number differs from overridden method
-W0221:2618:leoQtBody.setSelectionRange: Arguments number differs from overridden method
-W0221:4940:leoQtLog.createTab: Arguments number differs from overridden method
-W0221:5025:leoQtLog.selectTab: Arguments number differs from overridden method
-W0221:5358:leoQtMenu.add_command: Arguments number differs from overridden method
-W0221:5562:leoQtMenu.getMenuLabel: Arguments number differs from overridden method
-E0611:6771:leoQtGui.embed_ipython: No name 'ipapi' in module 'IPython'
-E1101:6780:leoQtGui.embed_ipython: Module 'IPython' has no 'ipapi' member
-W0221:7188:leoQtGui.getFullVersion: Arguments number differs from overridden method
-('EKR: exit status', 6)
-#@-node:ekr.20100209091422.5981:minor core/gui plugins
-#@+node:ekr.20100209091422.5982:External
-************* Module leo.external.ipy_leo
-E0611: 10: No name 'ipapi' in module 'IPython'
-E0611: 11: No name 'genutils' in module 'IPython'
-E0611: 12: No name 'generics' in module 'IPython'
-E0611: 13: No name 'hooks' in module 'IPython'
-E0611: 16: No name 'ipapi' in module 'IPython'
-E0611: 17: No name 'macro' in module 'IPython'
-W0601: 31:init_ipython: Global variable 'ip' undefined at the module level
-E1101: 33:init_ipython: Module 'IPython.Shell' has no 'hijack_tk' member
-W0107: 91:es: Unnecessary pass statement
-W0108:240:LeoNode.<lambda>: Lambda may not be necessary
-E1101:246:LeoNode.<lambda>: Module 'IPython' has no 'genutils' member
-W1001:418:LeoWorkbook: Use of "property" on an old style class
-E1101:461:workbook_complete: Module 'IPython' has no 'generics' member
-E1101:538:eval_body: Module 'IPython' has no 'genutils' member
-E1101:621:edit_macro: Function 'edit_object_in_leo' has no 'when_type' member
-E1101:621:edit_macro: Module 'IPython' has no 'macro' member
-E0611:749:show_welcome: No name 'platutils' in module 'IPython'
-E1101:750:show_welcome: Module 'IPython' has no 'platutils' member
-E1101:751:show_welcome: Module 'IPython' has no 'platutils' member
-W0601:788:lleo_f: Global variable '_request_immediate_connect' undefined at the module level
-
-************* Module leo.external.lproto
-E1101:146:LProtoClient.__init__: Module 'socket' has no 'AF_UNIX' member
-#@-node:ekr.20100209091422.5982:External
-#@-node:ekr.20100208180949.5989:All pylint warnings
+#@-node:ekr.20100208180949.5989:Fix a few pylint warnings
 #@-node:ekr.20100126110826.6253:Before rc1
 #@+node:ekr.20100206074650.5841:While waiting for 4.7 final
 @nocolor-node
