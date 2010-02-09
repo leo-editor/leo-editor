@@ -1,30 +1,27 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20100118190802.2000:@thin ../../pylint-leo.py
 #@@language python
+
+#@<< imports >>
+#@+node:ekr.20100209120215.2106:<< imports >>
 import os
 import sys
 from pylint import lint
+
+#@-node:ekr.20100209120215.2106:<< imports >>
+#@nl
 #@+others
-#@+node:ekr.20100209115702.2101:getTkPass
-def getTkPass():
+#@+node:ekr.20100209120215.2104:getCoreList
+def getCoreList():
+
     return (
-        'EditAttributes','Library',
-        'URLloader','UniversalScrolling','UASearch',
-        'autotrees','chapter_hoist','cleo','dump_globals',
-        'expfolder','geotag','graphed','groupOperations',
-        'hoist','import_cisco_config',
-        'keybindings','leoupdate',
-        'maximizeNewWindows', 'mnplugins','mod_labels',
-        'mod_read_dir_outline','mod_tempfname','multifile',
-        'newButtons','nodeActions','nodenavigator',
-        'open_with','pie_menus','pluginsTest',
-        'read_only_nodes','rClick',
-        'scheduler','searchbar','searchbox','shortcut_button',
-        'script_io_to_body','searchbox',
-        'templates','textnode','tkGui','toolbar',
-        'xcc_nodes',
+        'leoApp','leoAtFile','leoCache','leoChapters','leoCommands',
+        'leoEditCommands','leoFileCommands','leoFind','leoFrame',
+        'leoGlobals','leoGui','leoImport','leoMenu','leoNodes',
+        'leoPlugins','leoShadow','leoTangle','leoUndo',
     )
-#@-node:ekr.20100209115702.2101:getTkPass
+#@nonl
+#@-node:ekr.20100209120215.2104:getCoreList
 #@+node:ekr.20100209115702.2102:getPassList
 def getPassList():
 
@@ -54,8 +51,49 @@ def getPassList():
         'vim','xemacs',
     )
 #@-node:ekr.20100209115702.2102:getPassList
+#@+node:ekr.20100209120215.2105:getPluginsTable
+def getPluginsTable ():
+
+    return (
+        ('qtGui','W0221'),
+        ('tkGui','W0221'),
+        ('mod_scripting','E0611'),
+            # Harmless: E0611:489:scriptingController.runDebugScriptCommand:
+            # No name 'leoScriptModule' in module 'leo.core'
+        ('open_with',''),
+        ('toolbar','E1101,W0221,W0511'),
+            # Dangerous: many erroneous E1101 errors
+            # Harmless: W0221: Arguments number differs from overridden method
+            # Harmless: W0511: Fixme and to-do.
+        ('UNL',''),
+            # Dangerous: one E0611 error: 94: No name 'parse' in module 'urllib'
+        ('vim',''),
+        ('xemacs',''),
+    )
+#@-node:ekr.20100209120215.2105:getPluginsTable
+#@+node:ekr.20100209115702.2101:getTkPass
+def getTkPass():
+    return (
+        'EditAttributes','Library',
+        'URLloader','UniversalScrolling','UASearch',
+        'autotrees','chapter_hoist','cleo','dump_globals',
+        'expfolder','geotag','graphed','groupOperations',
+        'hoist','import_cisco_config',
+        'keybindings','leoupdate',
+        'maximizeNewWindows', 'mnplugins','mod_labels',
+        'mod_read_dir_outline','mod_tempfname','multifile',
+        'newButtons','nodeActions','nodenavigator',
+        'open_with','pie_menus','pluginsTest',
+        'read_only_nodes','rClick',
+        'scheduler','searchbar','searchbox','shortcut_button',
+        'script_io_to_body','searchbox',
+        'templates','textnode','tkGui','toolbar',
+        'xcc_nodes',
+    )
+#@-node:ekr.20100209115702.2101:getTkPass
 #@+node:ekr.20100209115702.2103:run
-def run(fn,suppress):
+def run(theDir,fn,suppress):
+    fn = os.path.join('leo',theDir,fn)
     args = ['--rcfile=leo/test/pylint-leo-rc.txt']
     if suppress: args.append('--disable-msg=%s' % (suppress))
     fn = os.path.abspath(fn)
@@ -68,33 +106,17 @@ def run(fn,suppress):
         print('file not found:',fn)
 #@-node:ekr.20100209115702.2103:run
 #@-others
+#@<< defines >>
+#@+node:ekr.20100209121055.2107:<< defines >>
+coreList = getCoreList()
+pluginsTable = getPluginsTable()
 tkPass = getTkPass()
 passList = getPassList()
-coreList = (
-    'leoApp','leoAtFile','leoCache','leoChapters','leoCommands',
-    'leoEditCommands','leoFileCommands','leoFind','leoFrame',
-    'leoGlobals','leoGui','leoImport','leoMenu','leoNodes',
-    'leoPlugins','leoShadow','leoTangle','leoUndo',
-)
 externalList = ('ipy_leo','lproto',)
+#@-node:ekr.20100209121055.2107:<< defines >>
+#@nl
+
 recentList = ()
-plugins_table = (
-    ('qtGui','W0221'),
-    ('tkGui','W0221'),
-    ('mod_scripting','E0611'),
-        # Harmless: E0611:489:scriptingController.runDebugScriptCommand:
-        # No name 'leoScriptModule' in module 'leo.core'
-    ('open_with',''),
-    ('toolbar','E1101,W0221,W0511'),
-        # Dangerous: many erroneous E1101 errors
-        # Harmless: W0221: Arguments number differs from overridden method
-        # Harmless: W0511: Fixme and to-do.
-    ('UNL',''),
-    ('vim',''),
-    ('xemacs',''),
-)
-
-
 
 tables_table = (
     # (recentList,'core'),
@@ -106,14 +128,11 @@ tables_table = (
 )
 
 for table,theDir in tables_table:
-    # These lists have no suppressions.
     if table in (tkPass,passList,coreList,externalList):
         for fn in table:
-            fn = os.path.join('leo',theDir,fn)
-            run(fn,suppress='')
+            run(theDir,fn,suppress='')
     else:
         for fn,suppress in table:
-            fn = os.path.join('leo',theDir,fn)
-            run(fn,suppress)
+            run(theDir,fn,suppress)
 #@-node:ekr.20100118190802.2000:@thin ../../pylint-leo.py
 #@-leo
