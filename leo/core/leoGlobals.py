@@ -2136,7 +2136,7 @@ def guessExternalEditor():
     editor = (
         os.environ.get("LEO_EDITOR") or
         os.environ.get("EDITOR") or
-        g.app.db.get("LEO_EDITOR"))
+        g.app.db.db.get("LEO_EDITOR"))
 
     if editor: return editor
 
@@ -2149,7 +2149,7 @@ def guessExternalEditor():
     else:
         g.es('''No editor set.
 Please set LEO_EDITOR or EDITOR environment variable,
-or do g.app.db['LEO_EDITOR'] = "gvim"''')
+or do g.app.db.db['LEO_EDITOR'] = "gvim"''')
         return None
 #@-node:ville.20090701144325.14942:g.guessExternalEditor
 #@+node:tbrown.20090219095555.61:g.handleUrlInUrlNode
