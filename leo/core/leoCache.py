@@ -20,7 +20,7 @@ import fnmatch
 import hashlib
 import os
 import stat
-import time
+# import time
 import zlib
 
 # try:
@@ -41,125 +41,6 @@ normcase    = g.os_path_normcase
 split       = g.os_path_split
 
 #@+others
-#@+node:ekr.20100209055056.5885:Top-level functions
-#@+node:ekr.20100208223942.10458:openFile
-def openFile(fn, mode='r'):
-
-    """ Open this file.  Return a file object.
-
-    Do not print an error message.
-    It is not an error for this to fail. 
-    """
-    # Catch exception so Leo doesn't crash on startup.
-    try:
-        return open(fn, mode)
-    except Exception:
-        return None
-#@-node:ekr.20100208223942.10458:openFile
-#@+node:ekr.20100208223942.10454:walkfiles & helpers
-def walkfiles(s, pattern=None):
-
-    """ D.walkfiles() -> iterator over files in D, recursively.
-
-    The optional argument, pattern, limits the results to files
-    with names that match the pattern.  For example,
-    mydir.walkfiles('*.tmp') yields only files with the .tmp
-    extension.
-    """
-
-    ### self -> s
-
-    ### for child in self.listdir():
-    for child in listdir(s):
-        ### if child.isfile():
-        if isfile(child):
-            ### if pattern is None or child.fnmatch(pattern):
-            if pattern is None or fn_match(child,pattern):
-                yield child
-        ### elif child.isdir():
-        elif isdir(child):
-            ### for f in child.walkfiles(pattern):
-            for f in walkfiles(child,pattern):
-                yield f
-
-#@+node:ekr.20100208223942.10456:listdir
-def listdir(s, pattern=None):
-
-    """ D.listdir() -> List of items in this directory.
-
-    Use D.files() or D.dirs() instead if you want a listing
-    of just files or just subdirectories.
-
-    The elements of the list are path objects.
-
-    With the optional 'pattern' argument, this only lists
-    items whose names match the given pattern.
-    """
-    # self -> self
-    names = os.listdir(s)
-    if pattern is not None:
-        names = fnmatch.filter(names, pattern)
-    ### return [self / child for child in names]
-    return [join(s,child) for child in names]
-
-#@-node:ekr.20100208223942.10456:listdir
-#@+node:ekr.20100208223942.10464:fn_match
-def fn_match(s, pattern):
-    """ Return True if self.name matches the given pattern.
-
-    pattern - A filename pattern with wildcards,
-        for example '*.py'.
-    """
-
-    # self -> s
-
-    ### return fnmatch.fnmatch(self.name, pattern)
-
-    return fnmatch.fnmatch(basename(s), pattern)
-
-#@-node:ekr.20100208223942.10464:fn_match
-#@-node:ekr.20100208223942.10454:walkfiles & helpers
-#@+node:ekr.20100208223942.6140:gethashfile
-def gethashfile(key):
-
-    return ("%02x" % abs(hash(key) % 256))[-2:]
-#@-node:ekr.20100208223942.6140:gethashfile
-#@-node:ekr.20100209055056.5885:Top-level functions
-#@+node:ekr.20100208223942.10450:Top-level functions (to be deleted)
-#@+node:ekr.20100208223942.10452:makedirs
-def makedirs(self, mode=0o777):
-
-    os.makedirs(self, mode)
-
-#@-node:ekr.20100208223942.10452:makedirs
-#@+node:ekr.20100208223942.10462:splitall
-# Used by relpathto.
-
-def splitall(s):
-    """ Return a list of the path components in this path.
-
-    The first item in the list will be a path.  Its value will be
-    either os.curdir, os.pardir, empty, or the root directory of
-    this path (for example, '/' or 'C:\\').  The other items in
-    the list will be strings.
-
-    path.path.joinpath(*result) will yield the original path.
-    """
-    parts = []
-    loc = s
-    while loc != os.curdir and loc != os.pardir:
-        prev = loc
-        ### loc, child = prev.splitpath()
-        loc,child = split(prev)
-        if loc == prev:
-            break
-        parts.append(child)
-    parts.append(loc)
-    parts.reverse()
-    return parts
-
-#@-node:ekr.20100208223942.10462:splitall
-#@-node:ekr.20100208223942.10450:Top-level functions (to be deleted)
 #@+node:ekr.20100208062523.5885:class cacher
 class cacher:
 
@@ -189,7 +70,7 @@ class cacher:
             dbdirname = join(g.app.homeLeoDir,'db',
                 '%s_%s' % (bname,hashlib.md5(fn).hexdigest()))
 
-            self.db = PickleShareDB(dbdirname) ###,protocol='picklez')
+            self.db = PickleShareDB(dbdirname)
     #@-node:ekr.20100208082353.5918:initFileDB
     #@+node:ekr.20100208082353.5920:initGlobalDb
     def initGlobalDB (self):
@@ -239,8 +120,6 @@ class cacher:
         """
 
         trace = False and not g.unitTesting
-        ### parent_v = self
-
         if trace: g.trace(parent_v,g.callers(5))
 
         c = self.c
@@ -527,12 +406,7 @@ class cacher:
         db['aku ankka'] = [1,2,313]
         db['paths/nest/ok/keyname'] = [1,(5,46)]
         db.uncache() # frees memory, causes re-reads later
-
-        if 0: # not used
-            # shorthand for accessing deeply nested files
-            lnk = db.getlink('myobjects/test')
-            lnk.test = 2
-            lnk.bar = test.foo + 5
+        if 0: print(db.keys())
         db.clear()
         return True
     #@-node:ekr.20100208065621.5890:test (cacher)
@@ -548,7 +422,7 @@ class PickleShareDB:
     #@    @+others
     #@+node:ekr.20100208223942.5968: Birth & special methods
     #@+node:ekr.20100208223942.5969: __init__
-    def __init__(self,root): ### ,protocol='pickle'):
+    def __init__(self,root):
 
         """
         Init the PickleShareDB class.
@@ -562,8 +436,7 @@ class PickleShareDB:
         if trace: g.trace('PickleShareDB',self.root)
 
         if not isdir(self.root):
-            if trace: g.trace('makedirs',self.root)
-            os.makedirs(self.root,mode=0o777)
+            self._makedirs(self.root)
 
         self.cache = {}
             # Keys are normalized file names.
@@ -635,7 +508,7 @@ class PickleShareDB:
             return obj
         try:
             # The cached item has expired, need to read
-            obj = self.loader(openFile(fil,'rb'))
+            obj = self.loader(self._openFile(fil,'rb'))
         except Exception:
             if trace: g.trace('***Exception',key)
             raise KeyError(key)
@@ -674,10 +547,9 @@ class PickleShareDB:
         parent,junk = split(fil)
 
         if parent and not isdir(parent):
-            makedirs(parent)
+            self._makedirs(parent)
 
-        f = openFile(fil,'wb')
-        pickled = self.dumper(value,f)
+        self.dumper(value,self._openFile(fil,'wb'))
 
         try:
             mtime = os.path.getmtime(fil)
@@ -688,6 +560,82 @@ class PickleShareDB:
                 raise
     #@-node:ekr.20100208223942.5975:__setitem__
     #@-node:ekr.20100208223942.5968: Birth & special methods
+    #@+node:ekr.20100208223942.10452:_makedirs
+    def _makedirs(self, mode=0o777):
+
+        trace = False and not g.unitTesting
+        if trace: g.trace(self.root)
+
+        os.makedirs(self, mode)
+
+    #@-node:ekr.20100208223942.10452:_makedirs
+    #@+node:ekr.20100208223942.10458:_openFile
+    def _openFile(self,fn, mode='r'):
+
+        """ Open this file.  Return a file object.
+
+        Do not print an error message.
+        It is not an error for this to fail. 
+        """
+
+        try:
+            return open(fn, mode)
+        except Exception:
+            return None
+    #@-node:ekr.20100208223942.10458:_openFile
+    #@+node:ekr.20100208223942.10454:_walkfiles & helpers
+    def _walkfiles(self,s, pattern=None):
+
+        """ D.walkfiles() -> iterator over files in D, recursively.
+
+        The optional argument, pattern, limits the results to files
+        with names that match the pattern.  For example,
+        mydir.walkfiles('*.tmp') yields only files with the .tmp
+        extension.
+        """
+
+        for child in self._listdir(s):
+            if isfile(child):
+                if pattern is None or self._fn_match(child,pattern):
+                    yield child
+            elif isdir(child):
+                for f in self._walkfiles(child,pattern):
+                    yield f
+
+    #@+node:ekr.20100208223942.10456:_listdir
+    def _listdir(self,s, pattern=None):
+
+        """ D.listdir() -> List of items in this directory.
+
+        Use D.files() or D.dirs() instead if you want a listing
+        of just files or just subdirectories.
+
+        The elements of the list are path objects.
+
+        With the optional 'pattern' argument, this only lists
+        items whose names match the given pattern.
+        """
+
+        names = os.listdir(s)
+
+        if pattern is not None:
+            names = fnmatch.filter(names, pattern)
+
+        return [join(s,child) for child in names]
+
+    #@-node:ekr.20100208223942.10456:_listdir
+    #@+node:ekr.20100208223942.10464:_fn_match
+    def _fn_match(self,s, pattern):
+        """ Return True if self.name matches the given pattern.
+
+        pattern - A filename pattern with wildcards,
+            for example '*.py'.
+        """
+
+        return fnmatch.fnmatch(basename(s), pattern)
+
+    #@-node:ekr.20100208223942.10464:_fn_match
+    #@-node:ekr.20100208223942.10454:_walkfiles & helpers
     #@+node:ekr.20100208223942.5978:clear
     def clear (self):
 
@@ -723,15 +671,16 @@ class PickleShareDB:
         return [z for z in self]
     #@-node:ekr.20100208223942.5981:items
     #@+node:ekr.20100208223942.5982:keys & helpers
-    # This could be eliminated, but it is useful to have.
+    # Called during unit testing.
 
     def keys(self, globpat = None):
-        """ All keys in DB, or all keys matching a glob"""
+
+        """Return all keys in DB, or all keys matching a glob"""
 
         trace = True and not g.unitTesting
 
         if globpat is None:
-            files = walkfiles(self.root)
+            files = self._walkfiles(self.root)
         else:
             files = [z for z in glob.glob(join(self.root,globpat))]
 
@@ -740,18 +689,20 @@ class PickleShareDB:
         if trace: g.trace('(PickleShareDB)',len(result),result)
 
         return result
-
     #@+node:ekr.20100208223942.5976:_normalized
     def _normalized(self, p):
         """ Make a key suitable for user's eyes """
 
-        # return str(self.root.relpathto(p)).replace('\\','/')
+        # os.path.relpath doesn't seem to work.
+
         return self._relpathto(self.root,p).replace('\\','/')
+
     #@-node:ekr.20100208223942.5976:_normalized
     #@+node:ekr.20100208223942.10460:_relpathto
     # Used only by _normalized.
 
     def _relpathto(self,src, dst):
+
         """ Return a relative path from self to dst.
 
         If there is no relative path from self to dst, for example if
@@ -759,16 +710,11 @@ class PickleShareDB:
         dst.abspath().
         """
 
-        # self --> src
-        ### origin = src.abspath()
         origin = abspath(src)
-        ### dst = path(dst).abspath()
         dst = abspath(dst)
-
-        ### orig_list = origin.normcase().splitall()
-        orig_list = splitall(normcase(origin))
+        orig_list = self._splitall(normcase(origin))
         # Don't normcase dst!  We want to preserve the case.
-        dest_list = splitall(dst) ### dst.splitall()
+        dest_list = self._splitall(dst)
 
         if orig_list[0] != normcase(dest_list[0]):
             # Can't get here from there.
@@ -789,14 +735,36 @@ class PickleShareDB:
         segments += dest_list[i:]
         if len(segments) == 0:
             # If they happen to be identical, use os.curdir.
-            ### return path(os.curdir)
             return os.curdir
         else:
-            ### return path(join(*segments))
             return join(*segments)
-
-
     #@-node:ekr.20100208223942.10460:_relpathto
+    #@+node:ekr.20100208223942.10462:_splitall
+    # Used by relpathto.
+
+    def _splitall(self,s):
+        """ Return a list of the path components in this path.
+
+        The first item in the list will be a path.  Its value will be
+        either os.curdir, os.pardir, empty, or the root directory of
+        this path (for example, '/' or 'C:\\').  The other items in
+        the list will be strings.
+
+        path.path.joinpath(*result) will yield the original path.
+        """
+        parts = []
+        loc = s
+        while loc != os.curdir and loc != os.pardir:
+            prev = loc
+            loc,child = split(prev)
+            if loc == prev:
+                break
+            parts.append(child)
+        parts.append(loc)
+        parts.reverse()
+        return parts
+
+    #@-node:ekr.20100208223942.10462:_splitall
     #@-node:ekr.20100208223942.5982:keys & helpers
     #@+node:ekr.20100208223942.5989:uncache
     def uncache(self,*items):
@@ -819,44 +787,6 @@ class PickleShareDB:
     #@-node:ekr.20100208223942.5989:uncache
     #@-others
 #@-node:ekr.20100208223942.5967:class PickleShareDB
-#@+node:ekr.20100208223942.5996:class PickleShareLink (to be deleted)
-if 0:
-
-    class PickleShareLink:
-        """ A shortdand for accessing nested PickleShare data conveniently.
-
-        Created through PickleShareDB.getlink(), example::
-
-            lnk = db.getlink('myobjects/test')
-            lnk.foo = 2
-            lnk.bar = lnk.foo + 5
-
-        """
-        #@        @+others
-        #@+node:ekr.20100208223942.5997:__init__
-        def __init__(self, db, keydir ):    
-            self.__dict__.update(locals())
-
-        #@-node:ekr.20100208223942.5997:__init__
-        #@+node:ekr.20100208223942.5998:__getattr__
-        def __getattr__(self,key):
-            return self.__dict__['db'][self.__dict__['keydir']+'/' + key]
-        #@-node:ekr.20100208223942.5998:__getattr__
-        #@+node:ekr.20100208223942.5999:__setattr__
-        def __setattr__(self,key,val):
-            self.db[self.keydir+'/' + key] = val
-        #@-node:ekr.20100208223942.5999:__setattr__
-        #@+node:ekr.20100208223942.6000:__repr__
-        def __repr__(self):
-            db = self.__dict__['db']
-            keys = db.keys( self.__dict__['keydir'] +"/*")
-            return "<PickleShareLink '%s': %s>" % (
-                self.__dict__['keydir'],
-                ### ";".join([Path(k).basename() for k in keys]))
-                 ";".join([g.os_path_basename(k) for k in keys]))
-        #@-node:ekr.20100208223942.6000:__repr__
-        #@-others
-#@-node:ekr.20100208223942.5996:class PickleShareLink (to be deleted)
 #@-others
 #@-node:ekr.20100208065621.5894:@thin leoCache.py
 #@-leo

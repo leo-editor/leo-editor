@@ -54,8 +54,8 @@ external_files = (
     'ipy_leo','lproto','path','pickleshare',
 )
 recent_core_table = (
-    ('leoCache',''),
-    # ('leoAtFile',''),
+    # ('leoCache',''),
+    # ('leoApp',''),
     # ('leoCommands',''),
     # ('leoFileCommands',''),
 )
@@ -113,8 +113,8 @@ def run(fn,suppress):
         print('file not found:',fn)
 
 tables_table = (
-    (recent_core_table,'core'),
-    # (core_table,'core'),
+    # (recent_core_table,'core'),
+    (core_table,'core'),
     # (tkPass,'plugins'),
     # (passList,'plugins'),
     # (external_table,'external'),
