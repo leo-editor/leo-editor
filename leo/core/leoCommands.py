@@ -1153,7 +1153,10 @@ class baseCommands (object):
             encoding = d.get('encoding',None)
             if encoding == None:
                 encoding = c.config.default_derived_file_encoding
-            s = g.toEncodedString(p.b,encoding,reportErrors=True) 
+            if g.isPython3: # 2010/02/09
+                s = p.b
+            else:
+                s = g.toEncodedString(p.b,encoding,reportErrors=True) 
             f.write(s)
             f.flush()
             f.close()

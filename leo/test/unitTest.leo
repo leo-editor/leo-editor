@@ -1245,6 +1245,7 @@
 </v>
 <v t="ekr.20090104053806.1"><vh>@@test c.checkFileTimeStamp &amp; c.setFileTimeStamp</vh></v>
 <v t="ekr.20071113145804.10"><vh>@test c.contractAllHeadlines</vh></v>
+<v t="ekr.20100209155559.5386"><vh>@test c.createOpenWithTempFile</vh></v>
 <v t="ekr.20061106112522"><vh>@test c.insertBodyTime</vh></v>
 <v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
 <v t="ekr.20100131180007.5466"><vh>@test c.scanAtPathDirectives</vh>
@@ -23926,6 +23927,7 @@ cacher = leoCache.cacher(c)
 
 assert cacher.test()</t>
 <t tx="ekr.20100208230953.5383"></t>
+<t tx="ekr.20100209155559.5386">c.createOpenWithTempFile(p,'.py')</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
