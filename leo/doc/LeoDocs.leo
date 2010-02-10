@@ -3434,8 +3434,30 @@
 </v>
 </v>
 <v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
-<v t="ekr.20100205152016.14053" a="E"><vh>4.7 rc 1</vh>
+<v t="ekr.20100205152016.14053"><vh>4.7 rc 1</vh>
 <v t="ekr.20100205152016.14054"><vh>Recovering from clone conflicts</vh></v>
+<v t="ekr.20100209160132.11690"><vh>Bugs fixed</vh>
+<v t="ekr.20100209160132.11691"><vh>Fixed unicode bug in setSelectionRangeHelper</vh></v>
+<v t="ekr.20100209160132.11692"><vh>Home key no longer clears the minibuffer</vh></v>
+<v t="ekr.20100209160132.11694"><vh>Fixed bug in c.pasteOutline when run from unit tests</vh></v>
+<v t="ekr.20100209160132.11700"><vh>Removed all references to isAtNorefFileNode</vh></v>
+<v t="ekr.20100209160132.11701"><vh>Fixed inconsistency in how @path works</vh></v>
+<v t="ekr.20100209160132.11711"><vh>Fixed crasher in path.py</vh></v>
+<v t="ekr.20100209160132.11712"><vh>Fixed at-auto write bug</vh></v>
+<v t="ekr.20100209160132.11718"><vh>Fixed the critical 'file used by another process' bug</vh></v>
+<v t="ekr.20100209160132.11736"><vh>Alt-right should *not* go down</vh></v>
+<v t="ekr.20100209160132.11742"><vh>Big change: simplified g.utils_rename</vh></v>
+<v t="ekr.20100209160132.11751"><vh>Fixed cursor hangnail</vh></v>
+<v t="ekr.20100209160132.11755"><vh>Do a full redraw when contracting a cloned node</vh></v>
+<v t="ekr.20100209160132.11756"><vh>Bug 399720: (fixed) goto-global-line doesn't work with @edit nodes</vh></v>
+<v t="ekr.20100209160132.11765"><vh>Fixed unit test for leo_interface.py</vh></v>
+<v t="ekr.20100209160132.11767"><vh>Fixed g.getLastTracebackFileAndLineNubmer</vh></v>
+<v t="ekr.20100209160132.11770"><vh>Fixed open-with crash</vh>
+<v t="ekr.20100209160132.11771"><vh>Report</vh></v>
+</v>
+<v t="ekr.20100209160132.11773"><vh>Fixed bug 518823: clone headline updates</vh></v>
+</v>
+<v t="ekr.20100209160132.11888"><vh>Created clear-cache and clear-all-caches commands</vh></v>
 </v>
 </v>
 </v>
@@ -33881,7 +33903,7 @@ This simplifies the code in several ways. In particular, the 'mbcs' encoding is
 never used by default, and there is no g.app.defaultEncoding argument.
 
 The rst3 command now uses 'utf-8' for all encodings unless explicitly overridden.</t>
-<t tx="ekr.20100205152016.14053">Leo 4.7 rc 1                    February 7, 2009
+<t tx="ekr.20100205152016.14053">Leo 4.7 rc 1                    February 12, 2009
 
 Leo 4.7 release candidate 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
@@ -33937,6 +33959,160 @@ red message. Each of these children contains two nodes: an "old" node and a
 node will have "won": every clone contains the new node's headline and body
 text. All these nodes are plain nodes, *not* clones. It is up to you to change
 the corresponding clone nodes if you choose to do so.</t>
+<t tx="ekr.20100209160132.11690"></t>
+<t tx="ekr.20100209160132.11691"></t>
+<t tx="ekr.20100209160132.11692">@nocolor-node
+
+The fix: back-to-home is now included in k.singleLineCommandList.</t>
+<t tx="ekr.20100209160132.11694">There was code in tnodeAttributes that did something brain-dead when unit
+testing, just to support a unit test!</t>
+<t tx="ekr.20100209160132.11700"></t>
+<t tx="ekr.20100209160132.11701">@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6d87d95ecbc3b986
+
+If a @path directive is within the body text of an @thin node then the
+file write uses the @path directive but the file read does not.  Since
+the file read cannot know of the @path directive until after it has
+read the file it has no choice but to not use it.  The @thin file
+write code should not use any @path declarations found in its body
+text.
+
+What I did:
+
+- Defined g.app.atPathInBodyWarning, set by g.get_directives_dict to p.h
+- g.get_directives_dict also sets d['@path_in_body'] = p.h
+- c.scanAtPathDirectives doesn't set the path if d['@path_in_body'] is true.
+- atFile.scanAllDirectives issues a warning if g.app.atPathInBodyWarning is true,
+  but only if the issuePathWarning keyword arg is true.</t>
+<t tx="ekr.20100209160132.11711">@nocolor-node
+
+Traceback (most recent call last):
+  File "launchLeo.py", line 8, in &lt;module&gt;
+    leo.core.runLeo.run()
+  File "c:\leo.repo\trunk\leo\core\runLeo.py", line 95, in run
+    ok = doPostPluginsInit(args,fn,relFn,script,versionFlag)
+  File "c:\leo.repo\trunk\leo\core\runLeo.py", line 354, in doPostPluginsInit
+    c,frame = createFrame(fileName,relativeFileName,script)
+  File "c:\leo.repo\trunk\leo\core\runLeo.py", line 383, in createFrame
+    ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+  File "c:\leo.repo\trunk\leo\core\leoGlobals.py", line 2439, in openWithFileName
+    ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
+  File "c:\leo.repo\trunk\leo\core\leoGlobals.py", line 2502, in handleOpenHooks
+    readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 911, in open
+    silent=silent)
+  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 811, in getLeoFile
+    c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 659, in readAll
+    at.readOneAtAutoNode (fileName,p)
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 732, in readOneAtAutoNode
+    self.writeCachedTree(p, cachefile)
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 593, in writeCachedTree
+    elif cachefile in c.db:
+  File "c:\leo.repo\trunk\leo\external\pickleshare.py", line 138, in __contains__
+    return self.has_key(key)
+  File "c:\leo.repo\trunk\leo\external\pickleshare.py", line 234, in has_key
+    value = self[key]
+  File "c:\leo.repo\trunk\leo\external\pickleshare.py", line 160, in __getitem__
+    fil = self.root / key
+  File "c:\leo.repo\trunk\leo\external\path.py", line 102, in __div__
+    return path(os.path.join(self, rel))
+  File "c:\python31\lib\ntpath.py", line 111, in join
+    elif isabs(b):
+  File "c:\python31\lib\ntpath.py", line 92, in isabs
+    s = splitdrive(s)[1]
+  File "c:\python31\lib\ntpath.py", line 198, in splitdrive
+    if len(p) &gt; 1:
+TypeError: object of type 'NoneType' has no len()
+
+c:\leo.repo\trunk&gt;</t>
+<t tx="ekr.20100209160132.11712">@nocolor-node
+
+Adding a blank line did not change the file!
+
+The culprit was the ignoreLineEndings logic in compareFiles.
+A new unit test is needed.
+</t>
+<t tx="ekr.20100209160132.11718">@nocolor-node
+
+What I did:
+
+- fc.createBackupFile now calls shutils.move directly,
+  avoiding g.utils_rename which does way too much:
+  it calls g.makeAllNonExistentDirectories(!!)
+
+- Simplified g.utils_rename.  We can assuem shutils exists.
+
+- Removed an unwise call to g.utils_remove in g.utils_rename.
+  This could cause havoc with the following call to
+  shutils_move!!
+</t>
+<t tx="ekr.20100209160132.11736"></t>
+<t tx="ekr.20100209160132.11742">@nocolor-node
+
+Removed call to g.makeAllNonExistentDirectories in g.utils_rename.
+
+This has global effects. Happily, there were only three callers of g.utils_rename:
+
+- handleWriteLeoFileException: should *not* create directories.
+
+- x.rename: no longer used!
+
+- g.update_file_if_changed:
+    - called only from tangle.put_all_roots.
+    - I added call to g.makeAllNonExistentDirectories there.</t>
+<t tx="ekr.20100209160132.11751">Non-extending cursor moves now always clear the selection.</t>
+<t tx="ekr.20100209160132.11755"></t>
+<t tx="ekr.20100209160132.11756">The title says it all.
+
+This was likely fixed at rev 2438 of the trunk, in early October, 2009.</t>
+<t tx="ekr.20100209160132.11765">@nocolor-node
+
+The module imported correctly, but leoTest.checkFileSyntax was failing.
+
+It was a whitespace problem--the fix was stripping '\r' characters in checkFileSyntax.</t>
+<t tx="ekr.20100209160132.11767"></t>
+<t tx="ekr.20100209160132.11770">@nocolor-node
+
+There may have been a bug in the open_with plugin that allowed it to be active
+when it shouldn't have been.</t>
+<t tx="ekr.20100209160132.11771">@nocolor-node
+
+I am getting an exception when double-clicking to rename a node. The
+exception does not occur when I rename a new node immediately
+following creation while it is highlighted.
+
+#---#
+Leo Log Window
+Leo 4.7 beta 3, build 2835, February 2, 2010
+Python 3.1.1, qt version 4.6.1
+Windows 6, 1, 7600, 2,
+reading: C:\Users\skrivsm\Documents\toolbox\scratch\ruby_scratch.leo
+creating:   newHeadline_LeoTemp_63898064.py
+exception creating temp file
+Traceback (most recent call last):
+ File "C:\leo-editor\trunk\leo\core\leoCommands.py", line 1164, in
+createOpenWithTempFile
+   f.write(s)
+TypeError: must be str, not bytes
+recreating:   newHeadline_LeoTemp_63898064.py
+exception creating temp file
+Traceback (most recent call last):
+ File "C:\leo-editor\trunk\leo\core\leoCommands.py", line 1164, in
+createOpenWithTempFile
+   f.write(s)
+TypeError: must be str, not bytes
+#---#</t>
+<t tx="ekr.20100209160132.11773">https://bugs.launchpad.net/leo-editor/+bug/518823
+
+Clone headline modification not propogated after edit</t>
+<t tx="ekr.20100209160132.11888">@nocolor-node
+
+Global entries are in g.app.leoHomeDir/db/global
+
+Per-leo-files entries are in g.app.homeLeoDir/db/&lt;filename&gt;_&lt;hash&gt;
+</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?

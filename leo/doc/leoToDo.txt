@@ -12,207 +12,596 @@
 #@nonl
 #@+node:ekr.20100126110826.6253:Before rc1
 @nocolor-node
-
-Before rc1:
-
-* (done) All real bugs fixed.  Wishlist items do not count.
-* (done) All files in leo/external folder pass 2to3 script.
-* (done) All plugins in passList pass 2to3 script.
-* (done) All plugins in passList pass pylint without serious errors.
-
-* One full day between "all" clear and release
-#@-node:ekr.20100126110826.6253:Before rc1
-#@+node:ekr.20100206074650.5841:While waiting for 4.7 final
+#@nonl
+#@+node:ekr.20100204052559.5792:Make goto-global-line work with @auto files
 @nocolor-node
 
-Create a 4-8 branch as needed.
+Fix bug 363406: goto global line doesn't seem to be working in @auto files
+#@+node:ekr.20100205180205.5845:Report
+@nocolor-node
 
-Simplify caching?
-    - The 'global' entry in .leo/db comes referes to g.app.db.
-#@+node:ekr.20100209114432.5750:Work on docs
-#@-node:ekr.20100209114432.5750:Work on docs
+363406: goto global line doesn't seem to be working in @auto files
+
+Still seeing this at revno 2254
+
+running my program in a shell I get:
+
+Traceback (most recent call last):
+  File "dualentry.py", line 228, in <module>
+    SQLComp()
+  File "dualentry.py", line 86, in __init__
+    self.runWith(state, chain, [])
+  File "dualentry.py", line 148, in runWith
+    othStates = self.lookFor(chain, state, otherChains, i)
+  File "dualentry.py", line 191, in lookFor
+    assert cur.rowcount in (0,1)
+AssertionError
+
+but when I use Alt-G goto global line 191 it takes me to the bottom of the toplevel @auto node:
+
+@language python
+@tabwidth -4
+@others
+SQLComp()
+
+|<-- cursor ends up here
+
+cat -n dualentry.py | grep 191 confirms that the assert is on line 191 of the file.
+tbnorth wrote on 2009-07-23: 	#3
+
+p.s. I just noticed leo's logging "only 15 lines" in blue, but this is a lie.
+#@-node:ekr.20100205180205.5845:Report
+#@+node:ekr.20080710082231.10:c.gotoLineNumber and helpers
+def goToLineNumber (self,n,p=None,scriptData=None):
+
+    '''Place the cursor on the n'th line of a derived file or script.
+    When present scriptData is a dict with 'root' and 'lines' keys.'''
+
+    c = self
+    if n < 0: return
+
+    if scriptData:
+        fileName,lines,p,root = c.goto_setup_script(scriptData)
+    else:
+        if not p: p = c.p
+        fileName,lines,n,root = c.goto_setup_file(n,p)
+
+    isRaw = not root or (
+        root.isAtEditNode() or root.isAtAsisFileNode() or
+        root.isAtAutoNode() or root.isAtNoSentFileNode())
+    ignoreSentinels = root and root.isAtNoSentFileNode()
+    if not root:
+        if scriptData:  root = p.copy()
+        else:           root = c.p
+
+    if isRaw:
+        p,n2,found = c.goto_countLines(root,n)
+        n2 += 1
+    # elif n<=1
+        # p,n2,found = root,1,True
+    # elif n > len(lines):
+        # p,n2,found = root,root.b.count('\n'),False
+    else:
+        # if n == 0: n = 1
+        vnodeName,gnx,n2,delim = c.goto_findVnode(root,lines,n,ignoreSentinels)
+        p,found = c.goto_findGnx(delim,root,gnx,vnodeName)
+
+    c.goto_showResults(found,p or root,n,n2,lines)
+#@+node:ekr.20080904071003.12:goto_countLines & helper
+def goto_countLines (self,root,n):
+
+    '''Scan through root's outline, looking for line n.
+    Return (p,i,found)
+    p is the found node.
+    i is the offset of the line within the node.
+    found is True if the line was found.'''
+
+    trace = False and not g.unitTesting
+    c = self
+
+    if trace: g.trace('=' * 10,n,root.h)
+
+    # Start the recursion.
+    p,i,n,found = c.goto_countLinesHelper(root,n,trace)
+    return p,i,found
+#@+node:ekr.20100206173123.5805:goto_countLinesHelper
+def goto_countLinesHelper (self,p,n,trace):
+
+    '''Scan root's body text, looking for line n,
+    ao is the index of the line containing @others or None.
+
+    Return (p,i,n,found) where:
+    p is the found node if found, or the original p if not.
+    i is the offset of the line within the node.
+    found is True if the line was found.'''
+
+    verbose = True
+    if trace: g.trace('-' * 5,n,p.h)
+    c = self ; ao = None
+    lines = g.splitLines(p.b)
+    i = 0
+    while i < len(lines):
+        progress = i
+        line = lines[i]
+        if trace and verbose: g.trace('i %s n %s %s' % (i,n,line.rstrip()))
+        if line.strip().startswith('@'):
+            # Increase number of the line we are looking for.
+            n += 1
+            i += 1
+            if line.strip().startswith('@others'):
+                # Start looking in inner nodes.
+                if trace: 
+                    g.trace('@others offset: %3s n: %3s %s' % (i,n,p.h))
+                if ao is None:
+                    ao = i
+                    if p.hasChildren():
+                        n2 = n-i
+                        for child in p.children():
+                            # Recursively scan the children.
+                            p2,i2,n2,found = c.goto_countLinesHelper(
+                                child,n2,trace)
+                            if found:
+                                return p2,i2,n2,found
+                            else:
+                                if trace: g.trace('return i2',i2,'n2',n2,'-->',n2-i2)
+                                # Don't change i here!
+                                n2 -= i2
+                        n = n2
+                        assert n > 0 # otherwise we would have suceeded.
+                    # else: silently ignore @others without children.
+                # else: silently ignore duplicate @others.
+            # else: nothing more to do.
+        elif i == n: # Found the line.
+            if trace: g.trace('Found!  offset: %3s n: %3s %s' % (n,i,p.h))
+            return p,i,n,True
+        else: # A plain line.
+            i += 1
+        assert i > progress
+    assert i == len(lines)
+    return p,i-1,n,False
+#@-node:ekr.20100206173123.5805:goto_countLinesHelper
+#@-node:ekr.20080904071003.12:goto_countLines & helper
+#@+node:ekr.20080904071003.18:goto_findGnx
+def goto_findGnx (self,delim,root,gnx,vnodeName):
+
+    '''Scan root's tree for a node with the given gnx and vnodeName.
+
+    return (p,found)'''
+
+    if delim and gnx:
+        gnx = g.app.nodeIndices.scanGnx(gnx,0)
+        for p in root.self_and_subtree():
+            if p.matchHeadline(vnodeName):
+                if p.v.fileIndex == gnx:
+                    return p.copy(),True
+        return None,False
+    else:
+        return root,False
+#@-node:ekr.20080904071003.18:goto_findGnx
+#@+node:ekr.20080904071003.25:goto_findRoot
+def goto_findRoot (self,p):
+
+    '''Find the closest ancestor @<file> node, except @all nodes.
+
+    return root, fileName.'''
+
+    c = self ; p1 = p.copy()
+
+    # First look for ancestor @file node.
+    for p in p.self_and_parents():
+        fileName = not p.isAtAllNode() and p.anyAtFileNodeName()
+        if fileName:
+            return p.copy(),fileName
+
+    # Search the entire tree for joined nodes.
+    # Bug fix: Leo 4.5.1: *must* search *all* positions.
+    for p in c.all_positions():
+        if p.v == p1.v and p != p1:
+            # Found a joined position.
+            for p2 in p.self_and_parents():
+                fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
+                if fileName:
+                    return p2.copy(),fileName
+
+    return None,None
+#@-node:ekr.20080904071003.25:goto_findRoot
+#@+node:ekr.20031218072017.2877:goto_findVnode & helpers
+def goto_findVnode (self,root,lines,n,ignoreSentinels):
+
+    '''Search the lines of a derived file containing sentinels for a vnode.
+    return (vnodeName,gnx,offset,delim):
+
+    vnodeName:  the name found in the previous @+body sentinel.
+    gnx:        the gnx of the found node.
+    offset:     the offset within the node of the desired line.
+    delim:      the comment delim from the @+leo sentinel.
+    '''
+
+    c = self
+    # g.trace('lines...\n',g.listToString(lines))
+    gnx = None
+    delim,thinFile = c.goto_setDelimFromLines(lines)
+    if not delim:
+        g.es('no sentinels in:',root.h)
+        return None,None,None,None
+
+    nodeLine,offset = c.goto_findNodeSentinel(delim,lines,n)
+    if nodeLine == -1:
+        # The line precedes the first @+node sentinel
+        g.trace('no @+node!!')
+        return root.h,gnx,1,delim
+
+    s = lines[nodeLine]
+    gnx,vnodeName = c.goto_getNodeLineInfo(s,thinFile)
+    if delim and vnodeName:
+        # g.trace('offset',offset)
+        return vnodeName,gnx,offset,delim
+    else:
+        g.es("bad @+node sentinel")
+        return None,None,None,None
+#@+node:ekr.20100124164700.12156:goto_findNodeSentinel & helper
+def goto_findNodeSentinel(self,delim,lines,n):
+
+    '''
+    Scan backwards from the line n, looking for an @-body line. When found,
+    get the vnode's name from that line and set p to the indicated vnode. This
+    will fail if vnode names have been changed, and that can't be helped.
+
+    We compute the offset of the requested line **within the found node**.
+    '''
+
+    c = self
+    offset = 0 # This is essentially the Tk line number.
+    nodeSentinelLine = -1
+    line = n - 1 # Start with the requested line.
+    while line >= 0 and nodeSentinelLine == -1:
+        progress = line
+        s = lines[line]
+        i = g.skip_ws(s,0)
+        if g.match(s,i,delim):
+            line,nodeSentinelLine,offset = c.goto_handleDelim(
+                delim,s,i,line,lines,n,offset)
+        else:
+            # offset += 1
+                # Assume the line is real.
+                # A dubious assumption.
+            line -= 1
+        assert nodeSentinelLine > -1 or line < progress
+    return nodeSentinelLine,offset
+#@+node:ekr.20031218072017.2880:goto_handleDelim
+def goto_handleDelim (self,delim,s,i,line,lines,n,offset):
+
+    '''Handle the delim while scanning backward.'''
+
+    c = self
+    if line == n:
+        g.es("line",str(n),"is a sentinel line")
+    i += len(delim)
+    nodeSentinelLine = -1
+
+    if g.match(s,i,"-node"):
+        # The end of a nested section.
+        old_line = line
+        line = c.goto_skipToMatchingNodeSentinel(lines,line,delim)
+        assert line < old_line
+        # g.trace('found',repr(lines[line]))
+        nodeSentinelLine = line
+        offset = n-line
+    elif g.match(s,i,"+node"):
+        # g.trace('found',repr(lines[line]))
+        nodeSentinelLine = line
+        offset = n-line
+    elif g.match(s,i,"<<") or g.match(s,i,"@first"):
+        # if not ignoreSentinels:
+            # offset += 1 # Count these as a "real" lines.
+        line -= 1
+    else:
+        line -= 1
+        nodeSentinelLine = -1
+    return line,nodeSentinelLine,offset
+#@-node:ekr.20031218072017.2880:goto_handleDelim
+#@-node:ekr.20100124164700.12156:goto_findNodeSentinel & helper
+#@+node:ekr.20031218072017.2881:goto_getNodeLineInfo
+def goto_getNodeLineInfo (self,s,thinFile):
+
+    i = 0 ; gnx = None ; vnodeName = None
+
+    if thinFile:
+        # gnx is lies between the first and second ':':
+        i = s.find(':',i)
+        if i > 0:
+            i += 1
+            j = s.find(':',i)
+            if j > 0:   gnx = s[i:j]
+            else:       i = len(s) # Force an error.
+        else:
+            i = len(s) # Force an error.
+
+    # vnode name is everything following the first or second':'
+    i = s.find(':',i)
+    if i > -1:
+        vnodeName = s[i+1:].strip()
+    else:
+        vnodeName = None
+        g.es_print("bad @+node sentinel",color='red')
+
+    return gnx,vnodeName
+#@-node:ekr.20031218072017.2881:goto_getNodeLineInfo
+#@+node:ekr.20031218072017.2878:goto_setDelimFromLines
+def goto_setDelimFromLines (self,lines):
+
+    # Find the @+leo line.
+    c = self ; at = c.atFileCommands
+    i = 0 
+    while i < len(lines) and lines[i].find("@+leo")==-1:
+        i += 1
+    leoLine = i # Index of the line containing the leo sentinel
+
+    # Set delim and thinFile from the @+leo line.
+    delim,thinFile = None,False
+
+    if leoLine < len(lines):
+        s = lines[leoLine]
+        valid,newDerivedFile,start,end,thinFile = at.parseLeoSentinel(s)
+        # New in Leo 4.5.1: only support 4.x files.
+        if valid and newDerivedFile:
+            delim = start + '@'
+
+    return delim,thinFile
+#@-node:ekr.20031218072017.2878:goto_setDelimFromLines
+#@+node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
+def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
+
+    s = lines[n]
+    i = g.skip_ws(s,0)
+    assert(g.match(s,i,delim))
+    i += len(delim)
+    if g.match(s,i,"+node"):
+        start="+node" ; end="-node" ; delta=1
+    else:
+        assert(g.match(s,i,"-node"))
+        start="-node" ; end="+node" ; delta=-1
+    # Scan to matching @+-node delim.
+    n += delta ; level = 0
+    while 0 <= n < len(lines):
+        s = lines[n] ; i = g.skip_ws(s,0)
+        if g.match(s,i,delim):
+            i += len(delim)
+            if g.match(s,i,start):
+                level += 1
+            elif g.match(s,i,end):
+                if level == 0: break
+                else: level -= 1
+        n += delta
+
+    # g.trace(n)
+    return n
+#@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
+#@-node:ekr.20031218072017.2877:goto_findVnode & helpers
+#@+node:ekr.20080904071003.26:goto_getFileLines
+def goto_getFileLines (self,root,fileName):
+
+    '''Read the file into lines.'''
+
+    c = self
+    isAtEdit = root.isAtEditNode()
+    isAtNoSent = root.isAtNoSentFileNode()
+
+    if isAtNoSent or isAtEdit:
+        # Write a virtual file containing sentinels.
+        at = c.atFileCommands
+        kind = g.choose(isAtNoSent,'@nosent','@edit')
+        at.write(root,kind=kind,nosentinels=False,toString=True)
+        lines = g.splitLines(at.stringOutput)
+    else:
+        # Calculate the full path.
+        d = g.scanDirectives(c,p=root)
+        path = d.get("path")
+        # g.trace('path',path,'fileName',fileName)
+        fileName = c.os_path_finalize_join(path,fileName)
+        lines    = c.goto_open(fileName)
+
+    return lines
+#@-node:ekr.20080904071003.26:goto_getFileLines
+#@+node:ekr.20080708094444.63:goto_open
+def goto_open (self,filename):
+    """
+    Open a file for "goto linenumber" command and check if a shadow file exists.
+    Construct a line mapping. This ivar is empty if no shadow file exists.
+    Otherwise it contains a mapping, shadow file number -> real file number.
+    """
+
+    c = self ; x = c.shadowController
+
+    try:
+        shadow_filename = x.shadowPathName(filename)
+        if os.path.exists(shadow_filename):
+            fn = shadow_filename
+            lines = open(shadow_filename).readlines()
+            x.line_mapping = x.push_filter_mapping(
+                lines,
+                x.markerFromFileLines(lines,shadow_filename))
+        else:
+            # Just open the original file.  This is not an error!
+            fn = filename
+            c.line_mapping = []
+            lines = open(filename).readlines()
+    except Exception:
+        # Make sure failures to open a file generate clear messages.
+        g.es_print('can not open',fn,color='blue')
+        # g.es_exception()
+        lines = []
+
+    return lines
+#@-node:ekr.20080708094444.63:goto_open
+#@+node:ekr.20080904071003.28:goto_setup_file
+def goto_setup_file (self,n,p):
+
+    '''Return (lines,n) where:
+
+    lines are the lines to be scanned.
+    n is the effective line number (munged for @shadow nodes).
+    '''
+
+    c = self ; x = c.shadowController
+
+    root,fileName = c.goto_findRoot(p)
+
+    if root and fileName:
+        c.shadowController.line_mapping = [] # Set by goto_open.
+        lines = c.goto_getFileLines(root,fileName)
+            # This will set x.line_mapping for @shadow files.
+        if len(x.line_mapping) > n:
+            n = x.line_mapping[n]
+    else:
+        if not g.unitTesting:
+            g.es("no ancestor @<file node>: using script line numbers",
+                color="blue")
+        lines = g.getScript(c,p,useSelectedText=False)
+        lines = g.splitLines(lines)
+
+    return fileName,lines,n,root
+#@-node:ekr.20080904071003.28:goto_setup_file
+#@+node:ekr.20100205193439.5844:goto_setup_script
+def goto_setup_script (self,scriptData):
+
+    c = self
+
+    p = scriptData.get('p')
+    root,fileName = c.goto_findRoot(p)
+    lines = scriptData.get('lines')
+
+    return fileName,lines,p,root
+#@-node:ekr.20100205193439.5844:goto_setup_script
+#@+node:ekr.20080904071003.14:goto_showResults
+def goto_showResults(self,found,p,n,n2,lines):
+
+    c = self ; w = c.frame.body.bodyCtrl
+
+    # Select p and make it visible.
+    c.redraw(p)
+
+    # Put the cursor on line n2 of the body text.
+    s = w.getAllText()
+    if found:
+        ins = g.convertRowColToPythonIndex(s,n2-1,0)    
+    else:
+        ins = len(s)
+        if len(lines) < n and not g.unitTesting:
+            g.es('only',len(lines),'lines',color="blue")
+
+    w.setInsertPoint(ins)
+    c.bodyWantsFocusNow()
+    w.seeInsertPoint()
+#@-node:ekr.20080904071003.14:goto_showResults
+#@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
+#@+node:ekr.20080904071003.12:goto_countLines & helper
+def goto_countLines (self,root,n):
+
+    '''Scan through root's outline, looking for line n.
+    Return (p,i,found)
+    p is the found node.
+    i is the offset of the line within the node.
+    found is True if the line was found.'''
+
+    trace = False and not g.unitTesting
+    c = self
+
+    if trace: g.trace('=' * 10,n,root.h)
+
+    # Start the recursion.
+    p,i,n,found = c.goto_countLinesHelper(root,n,trace)
+    return p,i,found
+#@+node:ekr.20100206173123.5805:goto_countLinesHelper
+def goto_countLinesHelper (self,p,n,trace):
+
+    '''Scan root's body text, looking for line n,
+    ao is the index of the line containing @others or None.
+
+    Return (p,i,n,found) where:
+    p is the found node if found, or the original p if not.
+    i is the offset of the line within the node.
+    found is True if the line was found.'''
+
+    verbose = True
+    if trace: g.trace('-' * 5,n,p.h)
+    c = self ; ao = None
+    lines = g.splitLines(p.b)
+    i = 0
+    while i < len(lines):
+        progress = i
+        line = lines[i]
+        if trace and verbose: g.trace('i %s n %s %s' % (i,n,line.rstrip()))
+        if line.strip().startswith('@'):
+            # Increase number of the line we are looking for.
+            n += 1
+            i += 1
+            if line.strip().startswith('@others'):
+                # Start looking in inner nodes.
+                if trace: 
+                    g.trace('@others offset: %3s n: %3s %s' % (i,n,p.h))
+                if ao is None:
+                    ao = i
+                    if p.hasChildren():
+                        n2 = n-i
+                        for child in p.children():
+                            # Recursively scan the children.
+                            p2,i2,n2,found = c.goto_countLinesHelper(
+                                child,n2,trace)
+                            if found:
+                                return p2,i2,n2,found
+                            else:
+                                if trace: g.trace('return i2',i2,'n2',n2,'-->',n2-i2)
+                                # Don't change i here!
+                                n2 -= i2
+                        n = n2
+                        assert n > 0 # otherwise we would have suceeded.
+                    # else: silently ignore @others without children.
+                # else: silently ignore duplicate @others.
+            # else: nothing more to do.
+        elif i == n: # Found the line.
+            if trace: g.trace('Found!  offset: %3s n: %3s %s' % (n,i,p.h))
+            return p,i,n,True
+        else: # A plain line.
+            i += 1
+        assert i > progress
+    assert i == len(lines)
+    return p,i-1,n,False
+#@-node:ekr.20100206173123.5805:goto_countLinesHelper
+#@-node:ekr.20080904071003.12:goto_countLines & helper
+#@-node:ekr.20100204052559.5792:Make goto-global-line work with @auto files
+#@-node:ekr.20100126110826.6253:Before rc1
+#@+node:ekr.20100209160132.5771:create until-4-7-final branch (do not delete)
+#@+node:ekr.20100209160132.5770:cache notes
+@nocolor-node
+
+Top-level folder are direct subfolders of .leo/db.
+Top-level folders represent file *locations* not file contents.
+Exception: the top-level "globals" folder represents minor data.
+
+Only two files are ever needed in a top-level folder:
+
+contents_<key>: the contents of the file.
+data_<key>: a dict representing the "minor data" of the file:
+    <globals> element stuff, expansion bits, etc.
+
+We write contents_<key> only once.
+By definition, its contents never changes, since the contents generates the key.
+We can write data_<key> as many times as we like.
+
+To do:
+- Simplify or even eliminate the path-manipulation code in PickleShareDB.
+- Use g.makeAllNonExistentDirectories to make top-level directories.
+- Clear cache should clear all top-level directories.
+#@nonl
 #@+node:ekr.20100209114432.5751:Cache expansion bits
 # Simplify the structure of the cache: put more into the "minor" files.
 #@nonl
 #@-node:ekr.20100209114432.5751:Cache expansion bits
-#@+node:ekr.20100118143729.6256:Wish-list bug 508108: No methods sub-nodes in PHP class import
-@nocolor-node
-
-EKR: this is a wish-list item
-
-https://bugs.launchpad.net/leo-editor/+bug/508108
-
-When importing a PHP class file, I get two nodes: the first is just some Leo
-definitions (@language, @tab, @others), while the second is the whole class. I
-expect Leo to create a node for each method in the class as it does for
-"classless" file of functions (not sure how it is done in other languages). This
-kind of change would also make @auto a lot more useful for PHP.
+#@-node:ekr.20100209160132.5770:cache notes
+#@+node:ekr.20100209114432.5750:Work on docs
+- Better scren shots.
 #@nonl
-#@-node:ekr.20100118143729.6256:Wish-list bug 508108: No methods sub-nodes in PHP class import
-#@+node:ekr.20100206173123.5801:Fix or eliminate check python syntax commands
-@nocolor-node
-
-Directives and section references are not the problem. Rather, the problems are
-thinks like 'return' in a node that doesn't look it is in a function.
-
-The solution would likely be to check the entire file at once in checkPython
-code. But this won't work for the check-all-python-code command.
-
-Do we really need these checks? I think not, because the automatic checks work
-so well.
-#@nonl
-#@+node:ekr.20040723094220:Check Outline commands & allies
-#@+node:ekr.20040723094220.1:c.checkAllPythonCode
-def checkAllPythonCode(self,event=None,unittest=False,ignoreAtIgnore=True):
-
-    '''Check all nodes in the selected tree for syntax and tab errors.'''
-
-    c = self ; count = 0 ; result = "ok"
-
-    for p in c.all_unique_positions():
-        count += 1
-        if not unittest:
-            << print dots >>
-
-        if g.scanForAtLanguage(c,p) == "python":
-            if not g.scanForAtSettings(p) and (
-                not ignoreAtIgnore or not g.scanForAtIgnore(c,p)
-            ):
-                try:
-                    c.checkPythonNode(p,unittest)
-                except (SyntaxError,tokenize.TokenError,tabnanny.NannyNag):
-                    result = "error" # Continue to check.
-                except Exception:
-                    return "surprise" # abort
-                if unittest and result != "ok":
-                    g.pr("Syntax error in %s" % p.cleanHeadString())
-                    return result # End the unit test: it has failed.
-
-    if not unittest:
-        g.es("check complete",color="blue")
-
-    return result
-#@+node:ekr.20040723094220.2:<< print dots >>
-if count % 100 == 0:
-    g.es('','.',newline=False)
-
-if count % 2000 == 0:
-    g.enl()
-#@-node:ekr.20040723094220.2:<< print dots >>
-#@-node:ekr.20040723094220.1:c.checkAllPythonCode
-#@+node:ekr.20040723094220.3:c.checkPythonCode
-def checkPythonCode (self,event=None,
-    unittest=False,ignoreAtIgnore=True,
-    suppressErrors=False,checkOnSave=False):
-
-    '''Check the selected tree for syntax and tab errors.'''
-
-    c = self ; count = 0 ; result = "ok"
-
-    if not unittest:
-        g.es("checking Python code   ")
-
-    for p in c.p.self_and_subtree():
-
-        count += 1
-        if not unittest and not checkOnSave:
-            << print dots >>
-
-        if g.scanForAtLanguage(c,p) == "python":
-            if not ignoreAtIgnore or not g.scanForAtIgnore(c,p):
-                try:
-                    c.checkPythonNode(p,unittest,suppressErrors)
-                except (SyntaxError,tokenize.TokenError,tabnanny.NannyNag):
-                    result = "error" # Continue to check.
-                except Exception:
-                    return "surprise" # abort
-
-    if not unittest:
-        g.es("check complete",color="blue")
-
-    # We _can_ return a result for unit tests because we aren't using doCommand.
-    return result
-#@+node:ekr.20040723094220.4:<< print dots >>
-if count % 100 == 0:
-    g.es('','.',newline=False)
-
-if count % 2000 == 0:
-    g.enl()
-#@-node:ekr.20040723094220.4:<< print dots >>
-#@-node:ekr.20040723094220.3:c.checkPythonCode
-#@+node:ekr.20040723094220.5:c.checkPythonNode
-def checkPythonNode (self,p,unittest=False,suppressErrors=False):
-
-    c = self ; h = p.h
-
-    # Call getScript to ignore directives and section references.
-    body = g.getScript(c,p.copy())
-    if not body: return
-
-    try:
-        fn = '<node: %s>' % p.h
-        if not g.isPython3:
-            body = g.toEncodedString(body)
-        compile(body+'\n',fn,'exec')
-        c.tabNannyNode(p,h,body,unittest,suppressErrors)
-    except SyntaxError:
-        if not suppressErrors:
-            s = "Syntax error in: %s" % h
-            g.es_print(s,color="blue")
-            g.es_exception(full=False,color="black")
-        if unittest: raise
-    except Exception:
-        g.es_print('unexpected exception')
-        g.es_exception()
-        if unittest: raise
-
-#@-node:ekr.20040723094220.5:c.checkPythonNode
-#@+node:ekr.20040723094220.6:c.tabNannyNode
-# This code is based on tabnanny.check.
-
-def tabNannyNode (self,p,headline,body,unittest=False,suppressErrors=False):
-
-    """Check indentation using tabnanny."""
-
-    c = self
-
-    try:
-        readline = g.readLinesClass(body).next
-        tabnanny.process_tokens(tokenize.generate_tokens(readline))
-
-    except IndentationError:
-        junk,msg,junk = sys.exc_info()
-        if not suppressErrors:
-            g.es("IndentationError in",headline,color="blue")
-            g.es('',msg)
-        if unittest: raise
-
-    except tokenize.TokenError:
-        junk, msg, junk = sys.exc_info()
-        if not suppressErrors:
-            g.es("TokenError in",headline,color="blue")
-            g.es('',msg)
-        if unittest: raise
-
-    except tabnanny.NannyNag:
-        junk, nag, junk = sys.exc_info()
-        if not suppressErrors:
-            badline = nag.get_lineno()
-            line    = nag.get_line()
-            message = nag.get_msg()
-            g.es("indentation error in",headline,"line",badline,color="blue")
-            g.es(message)
-            line2 = repr(str(line))[1:-1]
-            g.es("offending line:\n",line2)
-        if unittest: raise
-
-    except Exception:
-        g.trace("unexpected exception")
-        g.es_exception()
-        if unittest: raise
-#@-node:ekr.20040723094220.6:c.tabNannyNode
-#@-node:ekr.20040723094220:Check Outline commands & allies
-#@-node:ekr.20100206173123.5801:Fix or eliminate check python syntax commands
 #@+node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
 http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
 
@@ -248,880 +637,33 @@ this on my local, differently arranged, copy).
 That is all that it takes to give us a collapsible TOC
 #@nonl
 #@-node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
-#@+node:ekr.20100129133806.6239:Remove icons?
-#@-node:ekr.20100129133806.6239:Remove icons?
-#@+node:ekr.20100206164255.5893:Minor
-#@+node:ekr.20100205125457.5830:pylint check of all plugins in passList
-@killcolor
+#@-node:ekr.20100209114432.5750:Work on docs
+#@+node:ekr.20100118143729.6256:Wish-list bug 508108: No methods sub-nodes in PHP class import
+@nocolor-node
 
-************* Module leo.plugins.UNL
-E0611: 94: No name 'parse' in module 'urllib'
-('EKR: exit status', 2)
+EKR: this is a wish-list item
 
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\active_path.py', '')
-************* Module leo.plugins.active_path
-W0108:100:attachToCommander.<lambda>: Lambda may not be necessary
-E1101:349:openDir: Generator 'walk' has no 'next' member
-('EKR: exit status', 6)
+https://bugs.launchpad.net/leo-editor/+bug/508108
 
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\attrib_edit.py', '')
-************* Module leo.plugins.attrib_edit
-W0311:881: Bad indentation. Found 3 spaces, expected 4
-W0311:885: Bad indentation. Found 3 spaces, expected 4
-W0311:889: Bad indentation. Found 3 spaces, expected 4
-W0311:893: Bad indentation. Found 3 spaces, expected 4
-W0311:897: Bad indentation. Found 3 spaces, expected 4
-W0511:309: FIXME type_ = {True: '_view', False: '_edit'}[readonly]
-W0511:324: FIXME self.attrPaths.add(tuple(ns))
-E1101:720:attrib_edit_Controller.JUNKrecSearch: Instance of 'attrib_edit_Controller' has no 'recSearch' member
-E1101:724:attrib_edit_Controller.JUNKrecSearch: Instance of 'attrib_edit_Controller' has no 'typeMap' member
-E1101:726:attrib_edit_Controller.JUNKrecSearch: Instance of 'attrib_edit_Controller' has no 'typeMap' member
-W0611:120: Unused import os
-W0611:117: Unused import re
-('EKR: exit status', 6)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\backlink.py', '')
-************* Module leo.plugins.backlink
-W0511: 28: TODO
-E1101:151:backlinkTkUI.updateTkTab: Instance of 'backlinkTkUI' has no 'c' member
-E1101:156:backlinkTkUI.updateTkTabInt: Instance of 'backlinkTkUI' has no 'c' member
-E1123:167:backlinkTkUI.updateTkTabInt: Passing unexpected keyword argument 'optional' in function call
-E1101:175:backlinkTkUI.updateTkTabInt: Instance of 'backlinkTkUI' has no 'vnode' member
-E1101:176:backlinkTkUI.updateTkTabInt: Instance of 'backlinkTkUI' has no 'vnodePosition' member
-E1101:177:backlinkTkUI.updateTkTabInt: Instance of 'backlinkTkUI' has no 'c' member
-E1123:185:backlinkTkUI.updateTkTabInt: Passing unexpected keyword argument 'optional' in function call
-E1101:192:backlinkTkUI.updateTkTabInt.delLink: Instance of 'backlinkTkUI' has no 'deleteLink' member
-E1103:673:backlinkController.showMenu: Instance of 'unitTestGui' has no 'killPopupMenu' member (but some types could not be inferred)
-E1103:673:backlinkController.showMenu: Instance of 'nullGui' has no 'killPopupMenu' member (but some types could not be inferred)
-E1103:735:backlinkController.showMenu: Instance of 'unitTestGui' has no 'postPopupMenu' member (but some types could not be inferred)
-E1103:735:backlinkController.showMenu: Instance of 'nullGui' has no 'postPopupMenu' member (but some types could not be inferred)
-W0101:815:backlinkController.vnodePosition: Unreachable code
-E1101:818:backlinkController.vnodePosition: Instance of 'backlinkController' has no 'positions' member
-E1101:819:backlinkController.vnodePosition: Instance of 'backlinkController' has no 'positions' member
-E1101:833:backlinkController.vnodePosition: Instance of 'backlinkController' has no 'positions' member
-('EKR: exit status', 6)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\cursesGui.py', '')
-************* Module leo.plugins.cursesGui
-W0311: 97: Bad indentation. Found 2 spaces, expected 4
-W0311: 98: Bad indentation. Found 4 spaces, expected 8
-W0311:100: Bad indentation. Found 2 spaces, expected 4
-W0311:106: Bad indentation. Found 2 spaces, expected 4
-W0311:107: Bad indentation. Found 4 spaces, expected 8
-W0311:109: Bad indentation. Found 4 spaces, expected 8
-W0311:110: Bad indentation. Found 4 spaces, expected 8
-W0311:114: Bad indentation. Found 2 spaces, expected 4
-W0311:118: Bad indentation. Found 6 spaces, expected 8
-W0311:122: Bad indentation. Found 2 spaces, expected 4
-W0311:123: Bad indentation. Found 4 spaces, expected 8
-W0311:124: Bad indentation. Found 4 spaces, expected 8
-W0311:125: Bad indentation. Found 4 spaces, expected 8
-W0311:128: Bad indentation. Found 2 spaces, expected 4
-W0311:129: Bad indentation. Found 4 spaces, expected 8
-W0311:133: Bad indentation. Found 2 spaces, expected 4
-W0311:134: Bad indentation. Found 4 spaces, expected 8
-W0311:138: Bad indentation. Found 2 spaces, expected 4
-W0311:139: Bad indentation. Found 4 spaces, expected 8
-W0311:142: Bad indentation. Found 2 spaces, expected 4
-W0311:144: Bad indentation. Found 6 spaces, expected 8
-W0311:146: Bad indentation. Found 6 spaces, expected 8
-W0311:149: Bad indentation. Found 2 spaces, expected 4
-W0311:150: Bad indentation. Found 4 spaces, expected 8
-W0311:153: Bad indentation. Found 2 spaces, expected 4
-W0311:154: Bad indentation. Found 4 spaces, expected 8
-W0311:157: Bad indentation. Found 2 spaces, expected 4
-W0311:158: Bad indentation. Found 4 spaces, expected 8
-W0311:160: Bad indentation. Found 4 spaces, expected 8
-W0311:162: Bad indentation. Found 4 spaces, expected 8
-W0311:163: Bad indentation. Found 4 spaces, expected 8
-W0311:165: Bad indentation. Found 4 spaces, expected 8
-W0311:167: Bad indentation. Found 4 spaces, expected 8
-W0311:168: Bad indentation. Found 6 spaces, expected 12
-W0311:169: Bad indentation. Found 4 spaces, expected 8
-W0311:172: Bad indentation. Found 2 spaces, expected 4
-W0311:173: Bad indentation. Found 4 spaces, expected 8
-W0311:175: Bad indentation. Found 2 spaces, expected 4
-W0311:176: Bad indentation. Found 4 spaces, expected 8
-W0311:179: Bad indentation. Found 2 spaces, expected 4
-W0311:180: Bad indentation. Found 4 spaces, expected 8
-W0311:182: Bad indentation. Found 4 spaces, expected 8
-W0311:183: Bad indentation. Found 4 spaces, expected 8
-W0311:185: Bad indentation. Found 4 spaces, expected 8
-W0311:188: Bad indentation. Found 6 spaces, expected 12
-W0311:189: Bad indentation. Found 8 spaces, expected 16
-W0311:190: Bad indentation. Found 6 spaces, expected 12
-W0311:191: Bad indentation. Found 6 spaces, expected 12
-W0311:194: Bad indentation. Found 6 spaces, expected 12
-W0311:196: Bad indentation. Found 6 spaces, expected 12
-W0311:197: Bad indentation. Found 8 spaces, expected 16
-W0311:198: Bad indentation. Found 6 spaces, expected 12
-W0311:199: Bad indentation. Found 10 spaces, expected 16
-W0311:201: Bad indentation. Found 2 spaces, expected 4
-W0311:203: Bad indentation. Found 4 spaces, expected 8
-W0311:204: Bad indentation. Found 6 spaces, expected 12
-W0311:205: Bad indentation. Found 4 spaces, expected 8
-W0311:206: Bad indentation. Found 6 spaces, expected 12
-W0311:207: Bad indentation. Found 4 spaces, expected 8
-W0311:208: Bad indentation. Found 6 spaces, expected 12
-W0311:209: Bad indentation. Found 4 spaces, expected 8
-W0311:210: Bad indentation. Found 6 spaces, expected 12
-W0311:211: Bad indentation. Found 8 spaces, expected 16
-W0311:212: Bad indentation. Found 6 spaces, expected 12
-W0311:213: Bad indentation. Found 6 spaces, expected 12
-W0311:214: Bad indentation. Found 8 spaces, expected 16
-W0311:215: Bad indentation. Found 6 spaces, expected 12
-W0311:216: Bad indentation. Found 8 spaces, expected 16
-W0311:217: Bad indentation. Found 6 spaces, expected 12
-W0311:218: Bad indentation. Found 8 spaces, expected 16
-W0311:219: Bad indentation. Found 4 spaces, expected 8
-W0311:220: Bad indentation. Found 6 spaces, expected 12
-W0311:221: Bad indentation. Found 4 spaces, expected 8
-W0311:222: Bad indentation. Found 6 spaces, expected 12
-W0311:226: Bad indentation. Found 2 spaces, expected 4
-W0311:227: Bad indentation. Found 4 spaces, expected 8
-W0311:228: Bad indentation. Found 6 spaces, expected 12
-W0311:229: Bad indentation. Found 4 spaces, expected 8
-W0311:237: Bad indentation. Found 2 spaces, expected 4
-W0311:239: Bad indentation. Found 4 spaces, expected 8
-W0311:241: Bad indentation. Found 4 spaces, expected 8
-W0311:245: Bad indentation. Found 2 spaces, expected 4
-W0311:247: Bad indentation. Found 4 spaces, expected 8
-W0311:249: Bad indentation. Found 4 spaces, expected 8
-W0311:250: Bad indentation. Found 4 spaces, expected 8
-W0311:251: Bad indentation. Found 4 spaces, expected 8
-W0311:253: Bad indentation. Found 4 spaces, expected 8
-W0311:254: Bad indentation. Found 4 spaces, expected 8
-W0311:255: Bad indentation. Found 4 spaces, expected 8
-W0311:269: Bad indentation. Found 2 spaces, expected 4
-W0311:270: Bad indentation. Found 2 spaces, expected 4
-W0311:273: Bad indentation. Found 2 spaces, expected 4
-W0311:274: Bad indentation. Found 6 spaces, expected 8
-W0311:278: Bad indentation. Found 2 spaces, expected 4
-W0311:279: Bad indentation. Found 4 spaces, expected 8
-W0311:281: Bad indentation. Found 4 spaces, expected 8
-W0311:282: Bad indentation. Found 4 spaces, expected 8
-W0311:283: Bad indentation. Found 4 spaces, expected 8
-W0311:284: Bad indentation. Found 4 spaces, expected 8
-W0311:286: Bad indentation. Found 4 spaces, expected 8
-W0311:287: Bad indentation. Found 6 spaces, expected 12
-W0311:289: Bad indentation. Found 4 spaces, expected 8
-W0311:290: Bad indentation. Found 4 spaces, expected 8
-W0311:293: Bad indentation. Found 4 spaces, expected 8
-W0311:296: Bad indentation. Found 4 spaces, expected 8
-W0311:299: Bad indentation. Found 2 spaces, expected 4
-W0311:302: Bad indentation. Found 2 spaces, expected 4
-W0311:303: Bad indentation. Found 4 spaces, expected 8
-W0311:305: Bad indentation. Found 2 spaces, expected 4
-W0311:306: Bad indentation. Found 4 spaces, expected 8
-W0311:309: Bad indentation. Found 2 spaces, expected 4
-W0311:310: Bad indentation. Found 4 spaces, expected 8
-W0311:312: Bad indentation. Found 4 spaces, expected 8
-W0311:313: Bad indentation. Found 4 spaces, expected 8
-W0311:315: Bad indentation. Found 4 spaces, expected 8
-W0311:316: Bad indentation. Found 4 spaces, expected 8
-W0311:318: Bad indentation. Found 4 spaces, expected 8
-W0311:319: Bad indentation. Found 8 spaces, expected 12
-W0311:320: Bad indentation. Found 12 spaces, expected 16
-W0311:321: Bad indentation. Found 12 spaces, expected 16
-W0311:322: Bad indentation. Found 12 spaces, expected 16
-W0311:323: Bad indentation. Found 12 spaces, expected 16
-W0311:324: Bad indentation. Found 12 spaces, expected 16
-W0311:330: Bad indentation. Found 4 spaces, expected 8
-W0311:331: Bad indentation. Found 4 spaces, expected 8
-W0311:332: Bad indentation. Found 4 spaces, expected 8
-W0311:334: Bad indentation. Found 4 spaces, expected 8
-W0311:335: Bad indentation. Found 4 spaces, expected 8
-W0311:338: Bad indentation. Found 2 spaces, expected 4
-W0311:339: Bad indentation. Found 2 spaces, expected 4
-W0311:347: Bad indentation. Found 2 spaces, expected 4
-W0311:348: Bad indentation. Found 4 spaces, expected 8
-W0311:350: Bad indentation. Found 4 spaces, expected 8
-W0311:352: Bad indentation. Found 4 spaces, expected 8
-W0311:353: Bad indentation. Found 4 spaces, expected 8
-W0311:357: Bad indentation. Found 2 spaces, expected 4
-W0311:360: Bad indentation. Found 4 spaces, expected 8
-W0311:365: Bad indentation. Found 2 spaces, expected 4
-W0311:366: Bad indentation. Found 2 spaces, expected 4
-W0311:369: Bad indentation. Found 2 spaces, expected 4
-W0311:371: Bad indentation. Found 4 spaces, expected 8
-W0311:372: Bad indentation. Found 4 spaces, expected 8
-W0311:373: Bad indentation. Found 4 spaces, expected 8
-W0311:374: Bad indentation. Found 4 spaces, expected 8
-W0311:380: Bad indentation. Found 2 spaces, expected 4
-W0311:386: Bad indentation. Found 2 spaces, expected 4
-W0311:387: Bad indentation. Found 4 spaces, expected 8
-W0311:388: Bad indentation. Found 4 spaces, expected 8
-W0311:389: Bad indentation. Found 4 spaces, expected 8
-W0311:392: Bad indentation. Found 2 spaces, expected 4
-W0311:393: Bad indentation. Found 4 spaces, expected 8
-W0311:394: Bad indentation. Found 4 spaces, expected 8
-W0311:395: Bad indentation. Found 6 spaces, expected 12
-W0311:396: Bad indentation. Found 4 spaces, expected 8
-W0311:404: Bad indentation. Found 2 spaces, expected 4
-W0311:405: Bad indentation. Found 4 spaces, expected 8
-W0311:406: Bad indentation. Found 4 spaces, expected 8
-W0311:407: Bad indentation. Found 4 spaces, expected 8
-W0311:408: Bad indentation. Found 4 spaces, expected 8
-W0311:411: Bad indentation. Found 2 spaces, expected 4
-W0311:412: Bad indentation. Found 4 spaces, expected 8
-W0311:420: Bad indentation. Found 2 spaces, expected 4
-W0311:421: Bad indentation. Found 4 spaces, expected 8
-W0311:430: Bad indentation. Found 2 spaces, expected 4
-W0311:433: Bad indentation. Found 6 spaces, expected 8
-W0311:434: Bad indentation. Found 6 spaces, expected 8
-W0311:437: Bad indentation. Found 6 spaces, expected 8
-W0311:440: Bad indentation. Found 2 spaces, expected 4
-W0311:442: Bad indentation. Found 4 spaces, expected 8
-W0311:444: Bad indentation. Found 4 spaces, expected 8
-W0311:446: Bad indentation. Found 4 spaces, expected 8
-W0311:449: Bad indentation. Found 2 spaces, expected 4
-W0311:451: Bad indentation. Found 4 spaces, expected 8
-W0311:456: Bad indentation. Found 4 spaces, expected 8
-W0311:457: Bad indentation. Found 4 spaces, expected 8
-W0311:458: Bad indentation. Found 4 spaces, expected 8
-W0311:461: Bad indentation. Found 2 spaces, expected 4
-W0311:465: Bad indentation. Found 4 spaces, expected 8
-W0311:466: Bad indentation. Found 8 spaces, expected 12
-W0311:467: Bad indentation. Found 4 spaces, expected 8
-W0311:472: Bad indentation. Found 2 spaces, expected 4
-W0311:477: Bad indentation. Found 4 spaces, expected 8
-W0311:481: Bad indentation. Found 4 spaces, expected 8
-W0311:482: Bad indentation. Found 6 spaces, expected 12
-W0311:484: Bad indentation. Found 4 spaces, expected 8
-W0311:485: Bad indentation. Found 4 spaces, expected 8
-W0311:486: Bad indentation. Found 4 spaces, expected 8
-W0311:487: Bad indentation. Found 4 spaces, expected 8
-W0311:490: Bad indentation. Found 4 spaces, expected 8
-W0311:491: Bad indentation. Found 4 spaces, expected 8
-W0311:494: Bad indentation. Found 2 spaces, expected 4
-W0311:495: Bad indentation. Found 4 spaces, expected 8
-W0311:498: Bad indentation. Found 2 spaces, expected 4
-W0311:500: Bad indentation. Found 4 spaces, expected 8
-W0311:503: Bad indentation. Found 2 spaces, expected 4
-W0311:504: Bad indentation. Found 4 spaces, expected 8
-W0311:506: Bad indentation. Found 4 spaces, expected 8
-W0311:507: Bad indentation. Found 6 spaces, expected 12
-W0311:509: Bad indentation. Found 6 spaces, expected 12
-W0311:510: Bad indentation. Found 8 spaces, expected 16
-W0311:511: Bad indentation. Found 6 spaces, expected 12
-W0311:513: Bad indentation. Found 6 spaces, expected 12
-W0311:514: Bad indentation. Found 6 spaces, expected 12
-W0311:515: Bad indentation. Found 6 spaces, expected 12
-W0311:517: Bad indentation. Found 6 spaces, expected 12
-W0311:518: Bad indentation. Found 8 spaces, expected 16
-W0311:519: Bad indentation. Found 6 spaces, expected 12
-W0311:521: Bad indentation. Found 8 spaces, expected 16
-W0311:522: Bad indentation. Found 8 spaces, expected 16
-W0311:523: Bad indentation. Found 10 spaces, expected 20
-W0311:524: Bad indentation. Found 14 spaces, expected 24
-W0311:525: Bad indentation. Found 8 spaces, expected 16
-W0311:527: Bad indentation. Found 6 spaces, expected 12
-W0311:528: Bad indentation. Found 8 spaces, expected 16
-W0311:529: Bad indentation. Found 6 spaces, expected 12
-W0311:530: Bad indentation. Found 8 spaces, expected 16
-W0311:532: Bad indentation. Found 6 spaces, expected 12
-W0311:533: Bad indentation. Found 6 spaces, expected 12
-W0311:534: Bad indentation. Found 8 spaces, expected 16
-W0311:535: Bad indentation. Found 8 spaces, expected 16
-W0311:536: Bad indentation. Found 6 spaces, expected 12
-W0311:537: Bad indentation. Found 8 spaces, expected 16
-W0311:538: Bad indentation. Found 6 spaces, expected 12
-W0311:539: Bad indentation. Found 8 spaces, expected 16
-W0311:548: Bad indentation. Found 2 spaces, expected 4
-W0311:549: Bad indentation. Found 4 spaces, expected 8
-W0311:552: Bad indentation. Found 2 spaces, expected 4
-W0311:553: Bad indentation. Found 4 spaces, expected 8
-W0311:556: Bad indentation. Found 2 spaces, expected 4
-W0311:557: Bad indentation. Found 4 spaces, expected 8
-W0311:561: Bad indentation. Found 2 spaces, expected 4
-W0311:562: Bad indentation. Found 2 spaces, expected 4
-W0311:565: Bad indentation. Found 2 spaces, expected 4
-W0311:575: Bad indentation. Found 2 spaces, expected 4
-W0311:576: Bad indentation. Found 4 spaces, expected 8
-W0311:579: Bad indentation. Found 2 spaces, expected 4
-W0311:580: Bad indentation. Found 4 spaces, expected 8
-W0311:582: Bad indentation. Found 2 spaces, expected 4
-W0311:583: Bad indentation. Found 4 spaces, expected 8
-W0311:584: Bad indentation. Found 6 spaces, expected 12
-W0311:586: Bad indentation. Found 2 spaces, expected 4
-W0311:587: Bad indentation. Found 4 spaces, expected 8
-W0311:589: Bad indentation. Found 2 spaces, expected 4
-W0311:590: Bad indentation. Found 4 spaces, expected 8
-W0311:591: Bad indentation. Found 6 spaces, expected 12
-W0311:596: Bad indentation. Found 2 spaces, expected 4
-W0311:598: Bad indentation. Found 4 spaces, expected 8
-W0311:600: Bad indentation. Found 4 spaces, expected 8
-W0311:603: Bad indentation. Found 2 spaces, expected 4
-W0311:606: Bad indentation. Found 4 spaces, expected 8
-W0311:607: Bad indentation. Found 4 spaces, expected 8
-W0311:609: Bad indentation. Found 4 spaces, expected 8
-W0311:613: Bad indentation. Found 4 spaces, expected 8
-W0311:617: Bad indentation. Found 2 spaces, expected 4
-W0311:618: Bad indentation. Found 4 spaces, expected 8
-W0311:620: Bad indentation. Found 2 spaces, expected 4
-W0311:621: Bad indentation. Found 4 spaces, expected 8
-W0311:625: Bad indentation. Found 2 spaces, expected 4
-W0311:628: Bad indentation. Found 4 spaces, expected 8
-W0311:629: Bad indentation. Found 4 spaces, expected 8
-W0311:631: Bad indentation. Found 2 spaces, expected 4
-W0311:633: Bad indentation. Found 4 spaces, expected 8
-W0311:635: Bad indentation. Found 6 spaces, expected 12
-W0311:636: Bad indentation. Found 8 spaces, expected 16
-W0311:637: Bad indentation. Found 6 spaces, expected 12
-W0311:638: Bad indentation. Found 8 spaces, expected 16
-W0311:640: Bad indentation. Found 6 spaces, expected 12
-W0311:646: Bad indentation. Found 6 spaces, expected 12
-W0311:648: Bad indentation. Found 6 spaces, expected 12
-W0311:649: Bad indentation. Found 8 spaces, expected 16
-W0511: 25: TODO >>
-W0511: 26: TODO >>
-W0511: 50: TODO >>
-W0511:111: TODO leoTkinterFrame finishCreate g.app.windowList.append(f) - use that?
-W0511:363: TODO Tkinter onBodyChanged undo call and many others. =(
-W0511:604: TODO Much more here: there's four hooks and all sorts of other things called in the TK version. 
-W0221:305:textFrame.setTopGeometry: Arguments number differs from overridden method
-W0221:449:textLeoMenu.new_menu: Arguments number differs from overridden method
-W0221:472:textLeoMenu.add_command: Arguments number differs from overridden method
-W0221:498:textLeoMenu.delete_range: Arguments number differs from overridden method
-W0221:586:textTree.redraw: Arguments number differs from overridden method
-W0221:589:textTree.redraw_now: Arguments number differs from overridden method
-W0221:617:textTree.editLabel: Arguments number differs from overridden method
-('EKR: exit status', 4)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\leo_interface.py', '')
-************* Module leo.plugins.leo_interface
-W0311: 42: Bad indentation. Found 3 spaces, expected 4
-W0311: 43: Bad indentation. Found 6 spaces, expected 8
-W0311: 47: Bad indentation. Found 3 spaces, expected 4
-W0311: 48: Bad indentation. Found 6 spaces, expected 8
-W0311: 59: Bad indentation. Found 3 spaces, expected 4
-W0311: 66: Bad indentation. Found 3 spaces, expected 4
-W0311: 67: Bad indentation. Found 7 spaces, expected 8
-W0311: 70: Bad indentation. Found 3 spaces, expected 4
-W0311: 71: Bad indentation. Found 7 spaces, expected 8
-W0311: 72: Bad indentation. Found 7 spaces, expected 8
-W0311: 75: Bad indentation. Found 3 spaces, expected 4
-W0311: 76: Bad indentation. Found 7 spaces, expected 8
-W0311: 79: Bad indentation. Found 3 spaces, expected 4
-W0311: 80: Bad indentation. Found 7 spaces, expected 8
-W0311: 81: Bad indentation. Found 11 spaces, expected 12
-W0311: 84: Bad indentation. Found 3 spaces, expected 4
-W0311: 85: Bad indentation. Found 7 spaces, expected 8
-W0311: 86: Bad indentation. Found 7 spaces, expected 8
-W0311: 87: Bad indentation. Found 11 spaces, expected 12
-W0311: 88: Bad indentation. Found 7 spaces, expected 8
-W0311: 89: Bad indentation. Found 7 spaces, expected 8
-W0311: 92: Bad indentation. Found 3 spaces, expected 4
-W0311: 93: Bad indentation. Found 7 spaces, expected 8
-W0311: 94: Bad indentation. Found 7 spaces, expected 8
-W0311: 95: Bad indentation. Found 7 spaces, expected 8
-W0311: 96: Bad indentation. Found 7 spaces, expected 8
-W0311: 97: Bad indentation. Found 7 spaces, expected 8
-W0311: 98: Bad indentation. Found 11 spaces, expected 12
-W0311: 99: Bad indentation. Found 7 spaces, expected 8
-W0311:100: Bad indentation. Found 7 spaces, expected 8
-W0311:101: Bad indentation. Found 11 spaces, expected 12
-W0311:102: Bad indentation. Found 7 spaces, expected 8
-W0311:103: Bad indentation. Found 7 spaces, expected 8
-W0311:104: Bad indentation. Found 7 spaces, expected 8
-W0311:105: Bad indentation. Found 11 spaces, expected 12
-W0311:108: Bad indentation. Found 3 spaces, expected 4
-W0311:109: Bad indentation. Found 7 spaces, expected 8
-W0311:110: Bad indentation. Found 7 spaces, expected 8
-W0311:111: Bad indentation. Found 7 spaces, expected 8
-W0311:112: Bad indentation. Found 7 spaces, expected 8
-W0311:113: Bad indentation. Found 7 spaces, expected 8
-W0311:114: Bad indentation. Found 11 spaces, expected 12
-W0311:115: Bad indentation. Found 7 spaces, expected 8
-W0311:120: Bad indentation. Found 3 spaces, expected 4
-W0311:121: Bad indentation. Found 5 spaces, expected 8
-W0311:130: Bad indentation. Found 3 spaces, expected 4
-W0311:135: Bad indentation. Found 3 spaces, expected 4
-W0311:136: Bad indentation. Found 6 spaces, expected 8
-W0311:140: Bad indentation. Found 3 spaces, expected 4
-W0311:141: Bad indentation. Found 6 spaces, expected 8
-W0311:145: Bad indentation. Found 3 spaces, expected 4
-W0311:146: Bad indentation. Found 7 spaces, expected 8
-W0311:149: Bad indentation. Found 3 spaces, expected 4
-W0311:150: Bad indentation. Found 7 spaces, expected 8
-W0311:151: Bad indentation. Found 7 spaces, expected 8
-W0311:154: Bad indentation. Found 3 spaces, expected 4
-W0311:155: Bad indentation. Found 7 spaces, expected 8
-W0311:156: Bad indentation. Found 7 spaces, expected 8
-W0311:157: Bad indentation. Found 7 spaces, expected 8
-W0311:158: Bad indentation. Found 7 spaces, expected 8
-W0311:161: Bad indentation. Found 3 spaces, expected 4
-W0311:162: Bad indentation. Found 7 spaces, expected 8
-W0311:165: Bad indentation. Found 7 spaces, expected 8
-W0311:170: Bad indentation. Found 7 spaces, expected 8
-W0311:171: Bad indentation. Found 7 spaces, expected 8
-W0311:172: Bad indentation. Found 7 spaces, expected 8
-W0311:173: Bad indentation. Found 10 spaces, expected 12
-W0311:174: Bad indentation. Found 10 spaces, expected 12
-W0311:175: Bad indentation. Found 7 spaces, expected 8
-W0311:176: Bad indentation. Found 7 spaces, expected 8
-W0311:179: Bad indentation. Found 3 spaces, expected 4
-W0311:180: Bad indentation. Found 7 spaces, expected 8
-W0311:181: Bad indentation. Found 11 spaces, expected 12
-W0311:184: Bad indentation. Found 3 spaces, expected 4
-W0311:185: Bad indentation. Found 6 spaces, expected 8
-W0311:186: Bad indentation. Found 9 spaces, expected 12
-W0311:187: Bad indentation. Found 9 spaces, expected 12
-W0311:188: Bad indentation. Found 9 spaces, expected 12
-W0311:189: Bad indentation. Found 6 spaces, expected 8
-W0311:190: Bad indentation. Found 9 spaces, expected 12
-W0311:194: Bad indentation. Found 3 spaces, expected 4
-W0311:195: Bad indentation. Found 7 spaces, expected 8
-W0311:202: Bad indentation. Found 3 spaces, expected 4
-W0311:203: Bad indentation. Found 7 spaces, expected 8
-W0311:206: Bad indentation. Found 3 spaces, expected 4
-W0311:207: Bad indentation. Found 7 spaces, expected 8
-W0311:210: Bad indentation. Found 3 spaces, expected 4
-W0311:211: Bad indentation. Found 7 spaces, expected 8
-W0311:214: Bad indentation. Found 3 spaces, expected 4
-W0311:215: Bad indentation. Found 7 spaces, expected 8
-W0311:224: Bad indentation. Found 3 spaces, expected 4
-W0311:233: Bad indentation. Found 3 spaces, expected 4
-W0311:234: Bad indentation. Found 3 spaces, expected 4
-W0311:237: Bad indentation. Found 3 spaces, expected 4
-W0311:238: Bad indentation. Found 7 spaces, expected 8
-W0311:239: Bad indentation. Found 7 spaces, expected 8
-W0311:240: Bad indentation. Found 7 spaces, expected 8
-W0311:241: Bad indentation. Found 7 spaces, expected 8
-W0311:242: Bad indentation. Found 7 spaces, expected 8
-W0311:245: Bad indentation. Found 3 spaces, expected 4
-W0311:246: Bad indentation. Found 7 spaces, expected 8
-W0311:249: Bad indentation. Found 3 spaces, expected 4
-W0311:250: Bad indentation. Found 7 spaces, expected 8
-W0311:253: Bad indentation. Found 7 spaces, expected 8
-W0311:254: Bad indentation. Found 11 spaces, expected 12
-W0311:257: Bad indentation. Found 3 spaces, expected 4
-W0311:258: Bad indentation. Found 7 spaces, expected 8
-W0311:261: Bad indentation. Found 3 spaces, expected 4
-W0311:262: Bad indentation. Found 6 spaces, expected 8
-W0311:263: Bad indentation. Found 6 spaces, expected 8
-W0311:264: Bad indentation. Found 9 spaces, expected 12
-W0311:269: Bad indentation. Found 9 spaces, expected 12
-W0311:270: Bad indentation. Found 9 spaces, expected 12
-W0311:271: Bad indentation. Found 12 spaces, expected 16
-W0311:272: Bad indentation. Found 12 spaces, expected 16
-W0311:273: Bad indentation. Found 12 spaces, expected 16
-W0311:274: Bad indentation. Found 12 spaces, expected 16
-W0311:275: Bad indentation. Found 15 spaces, expected 20
-W0311:276: Bad indentation. Found 12 spaces, expected 16
-W0311:277: Bad indentation. Found 12 spaces, expected 16
-W0311:278: Bad indentation. Found 9 spaces, expected 12
-W0311:279: Bad indentation. Found 9 spaces, expected 12
-W0311:280: Bad indentation. Found 9 spaces, expected 12
-W0311:281: Bad indentation. Found 9 spaces, expected 12
-W0311:282: Bad indentation. Found 6 spaces, expected 8
-W0311:283: Bad indentation. Found 6 spaces, expected 8
-W0311:284: Bad indentation. Found 9 spaces, expected 12
-W0311:285: Bad indentation. Found 9 spaces, expected 12
-W0311:288: Bad indentation. Found 3 spaces, expected 4
-W0311:289: Bad indentation. Found 6 spaces, expected 8
-W0311:290: Bad indentation. Found 6 spaces, expected 8
-W0311:291: Bad indentation. Found 9 spaces, expected 12
-W0311:294: Bad indentation. Found 3 spaces, expected 4
-W0311:295: Bad indentation. Found 7 spaces, expected 8
-W0311:298: Bad indentation. Found 3 spaces, expected 4
-W0311:299: Bad indentation. Found 7 spaces, expected 8
-W0311:302: Bad indentation. Found 3 spaces, expected 4
-W0311:303: Bad indentation. Found 7 spaces, expected 8
-W0311:306: Bad indentation. Found 3 spaces, expected 4
-W0311:307: Bad indentation. Found 7 spaces, expected 8
-W0311:311: Bad indentation. Found 3 spaces, expected 4
-W0311:312: Bad indentation. Found 7 spaces, expected 8
-W0311:315: Bad indentation. Found 3 spaces, expected 4
-W0311:316: Bad indentation. Found 6 spaces, expected 8
-W0311:322: Bad indentation. Found 3 spaces, expected 4
-W0311:336: Bad indentation. Found 3 spaces, expected 4
-W0311:337: Bad indentation. Found 6 spaces, expected 8
-W0311:338: Bad indentation. Found 6 spaces, expected 8
-W0311:342: Bad indentation. Found 3 spaces, expected 4
-W0311:343: Bad indentation. Found 6 spaces, expected 8
-W0311:350: Bad indentation. Found 3 spaces, expected 4
-W0311:351: Bad indentation. Found 6 spaces, expected 8
-W0601:173:leo_file.gen1: Global variable 'vnode_count' undefined at the module level
-W0601:186:leo_file.gen_vnodes: Global variable 'allvnodes' undefined at the module level
-W0601:186:leo_file.gen_vnodes: Global variable 'vnode_stack' undefined at the module level
-W0105:268:leo_node.gen_vnodes: String statement has no effect
-W0601:278:leo_node.gen_vnodes: Global variable 'vnode_count' undefined at the module level
-('EKR: exit status', 4)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\leo_pdf.py', '')
-************* Module leo.plugins.leo_pdf
-E0602:395:Bunch.__setitem__: Undefined variable 'operator'
-E0602:399:Bunch.__getitem__: Undefined variable 'operator'
-W0105:419:Writer: String statement has no effect
-W0105:447:Writer: String statement has no effect
-('EKR: exit status', 6)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\leoOPML.py', '')
-************* Module leo.plugins.leoOPML
-E1101:241:opmlFileCommandsClass.putOPMLHeader: Instance of 'opmlFileCommandsClass' has no 'opml_write_leo_globals_attributes' member
-E1101:278:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'opml_write_leo_details' member
-E1101:294:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'opml_write_body_text' member
-E1101:295:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'opml_use_outline_elements' member
-E1101:373:opmlFileCommandsClass.uAAttributes: Instance of 'opmlFileCommandsClass' has no 'opml_write_ua_attributes' member
-E1101:375:opmlFileCommandsClass.uAAttributes: Instance of 'opmlFileCommandsClass' has no 'opml_expand_ua_dictionary' member
-E1101:377:opmlFileCommandsClass.uAAttributes: Instance of 'opmlFileCommandsClass' has no 'opml_skip_ua_dictionary_blanks' member
-E1101:485:opmlController.createVnode: Module 'leo.core.leoNodes' has no 'tnode' member
-E1101:489:opmlController.createVnode: Instance of 'vnode' has no 't' member
-W0221:887:contentHandler.ignorableWhitespace: Arguments number differs from overridden method
-('EKR: exit status', 6)
-
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\leoremote.py', '')
-************* Module leo.plugins.leoremote
-W0611: 49: Unused import sys
-W0611: 47: Unused import leoPlugins
-('EKR: exit status', 4)
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\lineNumbers.py', '')
-
-************* Module leo.plugins.lineNumbers
-E1121: 55:init.putLineNumberDirective: Too many positional arguments for function call
-('EKR: exit status', 2)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\macros.py', '')
-************* Module leo.plugins.macros
-E1103:141:paramClass.parameterize: Instance of 'unitTestGui' has no 'getInsertPoint' member (but some types could not be inferred)
-E1103:141:paramClass.parameterize: Instance of 'nullGui' has no 'getInsertPoint' member (but some types could not be inferred)
-('EKR: exit status', 2)
-
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\mod_autosave.py', '')
-************* Module leo.plugins.mod_autosave
-W0601: 54:init: Global variable 'LAST_AUTOSAVE' undefined at the module level
-W0601: 54:init: Global variable 'ACTIVE' undefined at the module level
-W0601: 54:init: Global variable 'AUTOSAVE_INTERVAL' undefined at the module level
-W0601: 78:applyConfiguration: Global variable 'LAST_AUTOSAVE' undefined at the module level
-W0601: 78:applyConfiguration: Global variable 'ACTIVE' undefined at the module level
-W0601: 78:applyConfiguration: Global variable 'AUTOSAVE_INTERVAL' undefined at the module level
-W0601: 94:autosave: Global variable 'LAST_AUTOSAVE' undefined at the module level
-('EKR: exit status', 4)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\mod_leo2ascd.py', '')
-************* Module leo.plugins.mod_leo2ascd
-E1120:133:GetAscFilename: No value passed for parameter 'vnode' in function call
-E1120:353:WriteTreeOfCurrentNode: No value passed for parameter 'vnode' in function call
-E1120:368:WriteAll: No value passed for parameter 'vnode' in function call
-E1120:427: No value passed for parameter 'c' in function call
-('EKR: exit status', 2)
-
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\mod_speedups.py', '')
-************* Module leo.plugins.mod_speedups
-W0611: 30: Unused import leoPlugins
-W0611: 52: Unused import leo
-('EKR: exit status', 4)
-
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\nav_buttons.py', '')
-************* Module leo.plugins.nav_buttons
-W0311:369: Bad indentation. Found 11 spaces, expected 12
-('EKR: exit status', 4)
-
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\nodebar.py', '')
-************* Module leo.plugins.nodebar
-W0601:204:initImages: Global variable 'clonePI' undefined at the module level
-W0601:205:initImages: Global variable 'copyPI' undefined at the module level
-W0601:206:initImages: Global variable 'cutPI' undefined at the module level
-W0601:207:initImages: Global variable 'dehoistPI' undefined at the module level
-W0601:208:initImages: Global variable 'deletePI' undefined at the module level
-W0601:209:initImages: Global variable 'demotePI' undefined at the module level
-W0601:210:initImages: Global variable 'hoistPI' undefined at the module level
-W0601:211:initImages: Global variable 'insertPI' undefined at the module level
-W0601:212:initImages: Global variable 'movedownPI' undefined at the module level
-W0601:213:initImages: Global variable 'moveleftPI' undefined at the module level
-W0601:214:initImages: Global variable 'moverightPI' undefined at the module level
-W0601:215:initImages: Global variable 'moveupPI' undefined at the module level
-W0601:216:initImages: Global variable 'nodedownPI' undefined at the module level
-W0601:217:initImages: Global variable 'nodeleftPI' undefined at the module level
-W0601:218:initImages: Global variable 'noderightPI' undefined at the module level
-W0601:219:initImages: Global variable 'nodeupPI' undefined at the module level
-W0601:220:initImages: Global variable 'pastePI' undefined at the module level
-W0601:221:initImages: Global variable 'pasteclonePI' undefined at the module level
-W0601:222:initImages: Global variable 'promotePI' undefined at the module level
-W0601:223:initImages: Global variable 'questionPI' undefined at the module level
-W0601:224:initImages: Global variable 'sortchildrenPI' undefined at the module level
-W0601:225:initImages: Global variable 'sortsiblingsPI' undefined at the module level
-W0611: 22: Unused import weakref
-('EKR: exit status', 4)
-
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\plugins_menu.py', '')
-************* Module leo.plugins.plugins_menu
-E1103:798:TkScrolledMessageDialog.__init__: Instance of 'stringTextWidget' has no 'configure' member (but some types could not be inferred)
-E1103:807:TkScrolledMessageDialog.__init__: Instance of 'stringTextWidget' has no 'pack' member (but some types could not be inferred)
-('EKR: exit status', 2)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\pretty_print.py', '')
-************* Module leo.plugins.pretty_print
-W0233: 59:myPrettyPrinter.__init__: __init__ method from a non direct base class 'myPrettyPrinter' is called
-E0602: 71:myPrettyPrinter.putNormalToken: Undefined variable 'token'
-E0602:211:myPrettyPrinter.doOp: Undefined variable 'keyword'
-E0602:246:myPrettyPrinter.doOp: Undefined variable 'string'
-E0602:246:myPrettyPrinter.doOp: Undefined variable 'string'
-W0611: 25: Unused import leoPlugins
-('EKR: exit status', 6)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\projectwizard.py', '')
-************* Module leo.plugins.projectwizard
-W0611: 28: Unused import leoPlugins
-('EKR: exit status', 4)
-
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\quickMove.py', '')
-************* Module leo.plugins.quickMove
-W0311:150: Bad indentation. Found 16 spaces, expected 12
-W0311:156: Bad indentation. Found 16 spaces, expected 12
-W0611: 51: Unused import types
-('EKR: exit status', 4)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\quicksearch.py', '')
-************* Module leo.plugins.quicksearch
-W0301:234: Unnecessary semicolon
-W0301:252: Unnecessary semicolon
-W0604: 83: Using the global statement at the module level
-W0611: 47: Unused import QListWidget
-('EKR: exit status', 4)
-
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\rClickBasePluginClasses.py', '')
-************* Module leo.plugins.rClickBasePluginClasses
-E1101:143:pluginCommandClass.preDoCommand: Instance of 'pluginCommandClass' has no 'doCommand' member
-E1101:285:basePluginController.getPublicCommands: Instance of 'basePluginController' has no 'commandList' member
-E1101:292:basePluginController.getPublicCommands: Instance of 'basePluginController' has no 'commandPrefix' member
-E1101:297:basePluginController.getPublicCommands: Instance of 'basePluginController' has no 'commandPrefix' member
-E1101:338:basePluginController.getCommandList: Instance of 'basePluginController' has no 'commandList' member
-E1101:347:basePluginController.setDefaultContextMenus: Instance of 'basePluginController' has no 'defaultContextMenus' member
-('EKR: exit status', 2)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\run_nodes.py', '')
-************* Module leo.plugins.run_nodes
-E1120:232:OnQuit: No value passed for parameter 'c' in function call
-('EKR: exit status', 2)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\rst3.py', '')
-************* Module leo.plugins.rst3
-E1120:284:runUnitTests: No value passed for parameter 'headline' in function call
-E1120:1110:rstClass.initOptionsFromSettings: No value passed for parameter 'tag' in function call
-('EKR: exit status', 2)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\scrolledmessage.py', '')
-************* Module leo.plugins.scrolledmessage
-W0311:441: Bad indentation. Found 12 spaces, expected 8
-W0311:442: Bad indentation. Found 12 spaces, expected 8
-W0311:444: Bad indentation. Found 12 spaces, expected 8
-W0311:445: Bad indentation. Found 12 spaces, expected 8
-E1101:307:ScrolledMessageDialog.doActionOutlineShow: Instance of 'ScrolledMessageDialog' has no 'name' member
-W0107:335:ScrolledMessageDialog.doActionAbout: Unnecessary pass statement
-E1101:575:ScrolledMessageDialog.updateDialog: Instance of 'ScrolledMessageDialog' has no 'label' member
-E1101:576:ScrolledMessageDialog.updateDialog: Instance of 'ScrolledMessageDialog' has no 'label' member
-E1101:582:ScrolledMessageDialog.updateDialog: Instance of 'ScrolledMessageDialog' has no 'title' member
-E0211:587:ScrolledMessageDialog.afterDrawHandler: Method has no argument
-E0602:666:ScrolledMessageController.afterRedrawHandler: Undefined variable 'dialogs'
-E1120:667:ScrolledMessageController.afterRedrawHandler: No value passed for parameter 'tag' in function call
-E1120:667:ScrolledMessageController.afterRedrawHandler: No value passed for parameter 'keywords' in function call
-W0611: 83: Unused import inspect
-('EKR: exit status', 6)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\spydershell.py', '')
-************* Module leo.plugins.spydershell
-W0611: 42: Unused import leoPlugins
-('EKR: exit status', 4)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\todo.py', '')
-************* Module leo.plugins.todo
-E0102:263:todoController.addPopupMenu.func: function already defined line 255
-E0213:311:todoController.redrawer: Method should have "self" as first argument
-E1102:316:todoController.redrawer.new: fn is not callable
-E0213:327:todoController.projectChanger: Method should have "self" as first argument
-E1102:330:todoController.projectChanger.new: fn is not callable
-('EKR: exit status', 2)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\trace_gc_plugin.py', '')
-************* Module leo.plugins.trace_gc_plugin
-E1123: 38:printIdleRefs: Passing unexpected keyword argument 'verbose' in function call
-E1123: 50:printIdleGC: Passing unexpected keyword argument 'onlyPrintChanges' in function call
-E1123: 52:printIdleGC: Passing unexpected keyword argument 'onlyPrintChanges' in function call
-('EKR: exit status', 2)
-#@+node:ekr.20100205172045.5848:Important
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\baseNativeTree.py', '')
-************* Module leo.plugins.baseNativeTree
-W0221:360:baseNativeTreeWidget.redraw_after_icons_changed: Arguments number differs from overridden method
-E1121:661:baseNativeTreeWidget.onTreeSelect: Too many positional arguments for function call
-W0221:932:baseNativeTreeWidget.onHeadChanged: Arguments number differs from overridden method
-('EKR: exit status', 6)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\codewisecompleter.py', '')
-************* Module leo.plugins.codewisecompleter
-E0602:294:codewise_suggest: Undefined variable 'txt'
-('EKR: exit status', 2)
-
-************* Module leo.plugins.lineNumbers
-E1121: 55:init.putLineNumberDirective: Too many positional arguments for function call
-('EKR: exit status', 2)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\mod_scripting.py', '')
-************* Module leo.plugins.mod_scripting
-E0611:483:scriptingController.runDebugScriptCommand: No name 'leoScriptModule' in module 'leo.core'
-('EKR: exit status', 2)
-
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\qtGui.py', '')
-************* Module leo.plugins.qtGui
-W0221:203:leoQtBaseTextWidget.bind: Arguments number differs from overridden method
-W0221:368:leoQtBaseTextWidget.setSelectionRange: Arguments number differs from overridden method
-W0221:623:leoQtBaseTextWidget.setAllText: Arguments number differs from overridden method
-W0221:712:leoQLineEditWidget.setAllText: Arguments number differs from overridden method
-W0221:1622:leoQtHeadlineWidget.setAllText: Arguments number differs from overridden method
-W0221:2606:leoQtBody.getSelectionRange: Arguments number differs from overridden method
-W0221:2618:leoQtBody.setSelectionRange: Arguments number differs from overridden method
-W0221:4940:leoQtLog.createTab: Arguments number differs from overridden method
-W0221:5025:leoQtLog.selectTab: Arguments number differs from overridden method
-W0221:5358:leoQtMenu.add_command: Arguments number differs from overridden method
-W0221:5562:leoQtMenu.getMenuLabel: Arguments number differs from overridden method
-E0611:6771:leoQtGui.embed_ipython: No name 'ipapi' in module 'IPython'
-E1101:6780:leoQtGui.embed_ipython: Module 'IPython' has no 'ipapi' member
-W0221:7188:leoQtGui.getFullVersion: Arguments number differs from overridden method
-('EKR: exit status', 6)
-
-#@-node:ekr.20100205172045.5848:Important
-#@+node:ekr.20100205172045.5850:indentation only
-#@+node:ekr.20100205172045.5851:nodeActions
-('*****', 'c:\\leo.repo\\trunk\\leo\\plugins\\nodeActions.py', '')
-************* Module leo.plugins.nodeActions
-W0312: 69: Found indentation with tabs instead of spaces
-W0312: 70: Found indentation with tabs instead of spaces
-W0312: 71: Found indentation with tabs instead of spaces
-W0312: 72: Found indentation with tabs instead of spaces
-W0312: 73: Found indentation with tabs instead of spaces
-W0312: 74: Found indentation with tabs instead of spaces
-W0311: 80: Bad indentation. Found 3 spaces, expected 4
-W0311: 82: Bad indentation. Found 3 spaces, expected 4
-W0311: 90: Bad indentation. Found 3 spaces, expected 4
-W0311: 91: Bad indentation. Found 6 spaces, expected 8
-W0311: 92: Bad indentation. Found 3 spaces, expected 4
-W0311: 93: Bad indentation. Found 6 spaces, expected 8
-W0311: 97: Bad indentation. Found 3 spaces, expected 4
-W0311: 98: Bad indentation. Found 3 spaces, expected 4
-W0311: 99: Bad indentation. Found 6 spaces, expected 8
-W0311:101: Bad indentation. Found 3 spaces, expected 4
-W0311:103: Bad indentation. Found 6 spaces, expected 8
-W0311:104: Bad indentation. Found 6 spaces, expected 8
-W0311:106: Bad indentation. Found 6 spaces, expected 8
-W0311:109: Bad indentation. Found 9 spaces, expected 12
-W0311:110: Bad indentation. Found 12 spaces, expected 16
-W0311:112: Bad indentation. Found 9 spaces, expected 12
-W0311:113: Bad indentation. Found 9 spaces, expected 12
-W0311:114: Bad indentation. Found 12 spaces, expected 16
-W0311:117: Bad indentation. Found 9 spaces, expected 12
-W0311:118: Bad indentation. Found 9 spaces, expected 12
-W0311:119: Bad indentation. Found 12 spaces, expected 16
-W0311:120: Bad indentation. Found 9 spaces, expected 12
-W0311:121: Bad indentation. Found 12 spaces, expected 16
-W0311:123: Bad indentation. Found 9 spaces, expected 12
-W0311:124: Bad indentation. Found 9 spaces, expected 12
-W0311:125: Bad indentation. Found 9 spaces, expected 12
-W0311:126: Bad indentation. Found 12 spaces, expected 16
-W0311:128: Bad indentation. Found 9 spaces, expected 12
-W0311:129: Bad indentation. Found 9 spaces, expected 12
-W0311:130: Bad indentation. Found 12 spaces, expected 16
-W0311:134: Bad indentation. Found 9 spaces, expected 12
-W0311:138: Bad indentation. Found 9 spaces, expected 12
-W0311:139: Bad indentation. Found 9 spaces, expected 12
-W0311:140: Bad indentation. Found 9 spaces, expected 12
-W0311:142: Bad indentation. Found 12 spaces, expected 16
-W0311:143: Bad indentation. Found 12 spaces, expected 16
-W0311:144: Bad indentation. Found 15 spaces, expected 20
-W0311:146: Bad indentation. Found 15 spaces, expected 20
-W0311:147: Bad indentation. Found 15 spaces, expected 20
-W0311:148: Bad indentation. Found 18 spaces, expected 24
-W0311:152: Bad indentation. Found 9 spaces, expected 12
-W0311:153: Bad indentation. Found 12 spaces, expected 16
-W0311:154: Bad indentation. Found 9 spaces, expected 12
-W0311:155: Bad indentation. Found 12 spaces, expected 16
-W0311:156: Bad indentation. Found 9 spaces, expected 12
-W0311:157: Bad indentation. Found 12 spaces, expected 16
-W0311:158: Bad indentation. Found 15 spaces, expected 20
-W0311:160: Bad indentation. Found 12 spaces, expected 16
-W0311:161: Bad indentation. Found 15 spaces, expected 20
-W0311:164: Bad indentation. Found 12 spaces, expected 16
-W0311:165: Bad indentation. Found 15 spaces, expected 20
-W0311:167: Bad indentation. Found 18 spaces, expected 24
-W0311:168: Bad indentation. Found 18 spaces, expected 24
-W0311:169: Bad indentation. Found 18 spaces, expected 24
-W0311:170: Bad indentation. Found 18 spaces, expected 24
-W0311:171: Bad indentation. Found 21 spaces, expected 28
-W0311:173: Bad indentation. Found 12 spaces, expected 16
-W0311:175: Bad indentation. Found 12 spaces, expected 16
-W0311:177: Bad indentation. Found 12 spaces, expected 16
-W0311:178: Bad indentation. Found 15 spaces, expected 20
-W0311:179: Bad indentation. Found 9 spaces, expected 12
-W0311:180: Bad indentation. Found 12 spaces, expected 16
-W0311:181: Bad indentation. Found 15 spaces, expected 20
-W0311:184: Bad indentation. Found 6 spaces, expected 8
-W0311:186: Bad indentation. Found 9 spaces, expected 12
-W0311:187: Bad indentation. Found 12 spaces, expected 16
-W0311:188: Bad indentation. Found 9 spaces, expected 12
-W0311:189: Bad indentation. Found 6 spaces, expected 8
-W0311:191: Bad indentation. Found 9 spaces, expected 12
-W0311:192: Bad indentation. Found 12 spaces, expected 16
-W0311:193: Bad indentation. Found 9 spaces, expected 12
-W0311:194: Bad indentation. Found 6 spaces, expected 8
-W0311:196: Bad indentation. Found 9 spaces, expected 12
-W0311:197: Bad indentation. Found 12 spaces, expected 16
-W0311:198: Bad indentation. Found 9 spaces, expected 12
-W0311:199: Bad indentation. Found 3 spaces, expected 4
-W0311:200: Bad indentation. Found 6 spaces, expected 8
-W0311:201: Bad indentation. Found 9 spaces, expected 12
-W0311:203: Bad indentation. Found 6 spaces, expected 8
-W0311:208: Bad indentation. Found 3 spaces, expected 4
-W0311:209: Bad indentation. Found 3 spaces, expected 4
-W0311:210: Bad indentation. Found 7 spaces, expected 8
-W0311:211: Bad indentation. Found 7 spaces, expected 8
-W0311:212: Bad indentation. Found 7 spaces, expected 8
-W0311:213: Bad indentation. Found 7 spaces, expected 8
-W0311:215: Bad indentation. Found 7 spaces, expected 8
-W0311:216: Bad indentation. Found 11 spaces, expected 12
-W0311:217: Bad indentation. Found 11 spaces, expected 12
-W0311:218: Bad indentation. Found 7 spaces, expected 8
-W0311:219: Bad indentation. Found 11 spaces, expected 12
-W0311:225: Bad indentation. Found 11 spaces, expected 12
-W0311:227: Bad indentation. Found 11 spaces, expected 12
-W0311:228: Bad indentation. Found 15 spaces, expected 16
-W0311:229: Bad indentation. Found 15 spaces, expected 16
-W0311:230: Bad indentation. Found 7 spaces, expected 8
-W0311:232: Bad indentation. Found 11 spaces, expected 12
-W0311:233: Bad indentation. Found 15 spaces, expected 16
-W0311:234: Bad indentation. Found 15 spaces, expected 16
-W0311:235: Bad indentation. Found 11 spaces, expected 12
-W0311:236: Bad indentation. Found 11 spaces, expected 12
-W0311:238: Bad indentation. Found 7 spaces, expected 8
-('EKR: exit status', 4)
+When importing a PHP class file, I get two nodes: the first is just some Leo
+definitions (@language, @tab, @others), while the second is the whole class. I
+expect Leo to create a node for each method in the class as it does for
+"classless" file of functions (not sure how it is done in other languages). This
+kind of change would also make @auto a lot more useful for PHP.
 #@nonl
-#@-node:ekr.20100205172045.5851:nodeActions
-#@-node:ekr.20100205172045.5850:indentation only
-#@-node:ekr.20100205125457.5830:pylint check of all plugins in passList
-#@+node:ekr.20100205060712.5837:@bool no-cache for unitTest.leo
-Instead of the filename hack.
-#@nonl
-#@-node:ekr.20100205060712.5837:@bool no-cache for unitTest.leo
-#@+node:ekr.20100125190708.6258:Better screen shots
-#@-node:ekr.20100125190708.6258:Better screen shots
-#@-node:ekr.20100206164255.5893:Minor
-#@+node:ekr.20100206164255.5892:Probably later
-#@+node:ekr.20100127064113.6206: fix pylint
-#  unbound recursion...
+#@-node:ekr.20100118143729.6256:Wish-list bug 508108: No methods sub-nodes in PHP class import
+#@+node:ekr.20100206173123.5801:Fix or eliminate check python syntax commands
+@nocolor-node
 
-def unbound():
-    unbound()
+Directives and section references are not the problem. Rather, the problems are
+thinks like 'return' in a node that doesn't look it is in a function.
 
-unbound()
+The solution would likely be to check the entire file at once in checkPython
+code. But this won't work for the check-all-python-code command.
+
+Do we really need these checks? I think not, because the automatic checks work
+so well.
 #@nonl
-#@-node:ekr.20100127064113.6206: fix pylint
 #@+node:ekr.20100206142026.5967:To do: use g.checkPythonNode as the base of all syntax checking
 #@+node:ekr.20040723094220.5:c.checkPythonNode
 def checkPythonNode (self,p,unittest=False,suppressErrors=False):
@@ -1319,8 +861,168 @@ while i < j:
 #@-node:EKR.20040612215018:<< dump the lines near the error >>
 #@-node:ekr.20060624085200:g.handleScriptException
 #@-node:ekr.20100206142026.5967:To do: use g.checkPythonNode as the base of all syntax checking
-#@-node:ekr.20100206164255.5892:Probably later
-#@-node:ekr.20100206074650.5841:While waiting for 4.7 final
+#@+node:ekr.20040723094220:Check Outline commands & allies
+#@+node:ekr.20040723094220.1:c.checkAllPythonCode
+def checkAllPythonCode(self,event=None,unittest=False,ignoreAtIgnore=True):
+
+    '''Check all nodes in the selected tree for syntax and tab errors.'''
+
+    c = self ; count = 0 ; result = "ok"
+
+    for p in c.all_unique_positions():
+        count += 1
+        if not unittest:
+            << print dots >>
+
+        if g.scanForAtLanguage(c,p) == "python":
+            if not g.scanForAtSettings(p) and (
+                not ignoreAtIgnore or not g.scanForAtIgnore(c,p)
+            ):
+                try:
+                    c.checkPythonNode(p,unittest)
+                except (SyntaxError,tokenize.TokenError,tabnanny.NannyNag):
+                    result = "error" # Continue to check.
+                except Exception:
+                    return "surprise" # abort
+                if unittest and result != "ok":
+                    g.pr("Syntax error in %s" % p.cleanHeadString())
+                    return result # End the unit test: it has failed.
+
+    if not unittest:
+        g.es("check complete",color="blue")
+
+    return result
+#@+node:ekr.20040723094220.2:<< print dots >>
+if count % 100 == 0:
+    g.es('','.',newline=False)
+
+if count % 2000 == 0:
+    g.enl()
+#@-node:ekr.20040723094220.2:<< print dots >>
+#@-node:ekr.20040723094220.1:c.checkAllPythonCode
+#@+node:ekr.20040723094220.3:c.checkPythonCode
+def checkPythonCode (self,event=None,
+    unittest=False,ignoreAtIgnore=True,
+    suppressErrors=False,checkOnSave=False):
+
+    '''Check the selected tree for syntax and tab errors.'''
+
+    c = self ; count = 0 ; result = "ok"
+
+    if not unittest:
+        g.es("checking Python code   ")
+
+    for p in c.p.self_and_subtree():
+
+        count += 1
+        if not unittest and not checkOnSave:
+            << print dots >>
+
+        if g.scanForAtLanguage(c,p) == "python":
+            if not ignoreAtIgnore or not g.scanForAtIgnore(c,p):
+                try:
+                    c.checkPythonNode(p,unittest,suppressErrors)
+                except (SyntaxError,tokenize.TokenError,tabnanny.NannyNag):
+                    result = "error" # Continue to check.
+                except Exception:
+                    return "surprise" # abort
+
+    if not unittest:
+        g.es("check complete",color="blue")
+
+    # We _can_ return a result for unit tests because we aren't using doCommand.
+    return result
+#@+node:ekr.20040723094220.4:<< print dots >>
+if count % 100 == 0:
+    g.es('','.',newline=False)
+
+if count % 2000 == 0:
+    g.enl()
+#@-node:ekr.20040723094220.4:<< print dots >>
+#@-node:ekr.20040723094220.3:c.checkPythonCode
+#@+node:ekr.20040723094220.5:c.checkPythonNode
+def checkPythonNode (self,p,unittest=False,suppressErrors=False):
+
+    c = self ; h = p.h
+
+    # Call getScript to ignore directives and section references.
+    body = g.getScript(c,p.copy())
+    if not body: return
+
+    try:
+        fn = '<node: %s>' % p.h
+        if not g.isPython3:
+            body = g.toEncodedString(body)
+        compile(body+'\n',fn,'exec')
+        c.tabNannyNode(p,h,body,unittest,suppressErrors)
+    except SyntaxError:
+        if not suppressErrors:
+            s = "Syntax error in: %s" % h
+            g.es_print(s,color="blue")
+            g.es_exception(full=False,color="black")
+        if unittest: raise
+    except Exception:
+        g.es_print('unexpected exception')
+        g.es_exception()
+        if unittest: raise
+
+#@-node:ekr.20040723094220.5:c.checkPythonNode
+#@+node:ekr.20040723094220.6:c.tabNannyNode
+# This code is based on tabnanny.check.
+
+def tabNannyNode (self,p,headline,body,unittest=False,suppressErrors=False):
+
+    """Check indentation using tabnanny."""
+
+    c = self
+
+    try:
+        readline = g.readLinesClass(body).next
+        tabnanny.process_tokens(tokenize.generate_tokens(readline))
+
+    except IndentationError:
+        junk,msg,junk = sys.exc_info()
+        if not suppressErrors:
+            g.es("IndentationError in",headline,color="blue")
+            g.es('',msg)
+        if unittest: raise
+
+    except tokenize.TokenError:
+        junk, msg, junk = sys.exc_info()
+        if not suppressErrors:
+            g.es("TokenError in",headline,color="blue")
+            g.es('',msg)
+        if unittest: raise
+
+    except tabnanny.NannyNag:
+        junk, nag, junk = sys.exc_info()
+        if not suppressErrors:
+            badline = nag.get_lineno()
+            line    = nag.get_line()
+            message = nag.get_msg()
+            g.es("indentation error in",headline,"line",badline,color="blue")
+            g.es(message)
+            line2 = repr(str(line))[1:-1]
+            g.es("offending line:\n",line2)
+        if unittest: raise
+
+    except Exception:
+        g.trace("unexpected exception")
+        g.es_exception()
+        if unittest: raise
+#@-node:ekr.20040723094220.6:c.tabNannyNode
+#@-node:ekr.20040723094220:Check Outline commands & allies
+#@-node:ekr.20100206173123.5801:Fix or eliminate check python syntax commands
+#@+node:ekr.20100127064113.6206:fix pylint
+#  unbound recursion...
+
+def unbound():
+    unbound()
+
+unbound()
+#@nonl
+#@-node:ekr.20100127064113.6206:fix pylint
+#@-node:ekr.20100209160132.5771:create until-4-7-final branch (do not delete)
 #@-node:ekr.20071211093011:4.7 One-node world, Leo3K
 #@+node:ekr.20100109214940.6225:4.8 vim, cleanups, your mission...
 #@+node:ekr.20100206074650.5852:Posting re "your mission, should you choose to accept it"
@@ -1545,6 +1247,250 @@ To do:
 - remove most of the logic in configSettings.__init__.
 - Move config ivars to the commander.
 #@nonl
+#@+node:ekr.20100130042842.6404:Reading settings (do not delete)
+Here are the calls to g.app.getxxx
+
+# runLeo.createFrame
+fileName = g.app.config.getString(c=None,setting='default_leo_file')
+
+# c.configSettings.initIvar
+# Why not init these settings by hand???
+val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
+
+# g.es and g.es_print
+keys['color'] = g.app.config.getColor(None,"log_error_color") or 'red'
+
+# leoPlugins.loadHandlers
+warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+s = g.app.config.getEnabledPlugins()
+
+# leoPlugins.loadOnePlugin
+verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
+warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+
+#@+node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
+def readSettingsFiles (self,fileName,verbose=True):
+
+    trace = False and not g.unitTesting
+    seen = []
+    self.write_recent_files_as_needed = False # Will be set later.
+    << define localDirectory, localConfigFile & myLocalConfigFile >>
+
+    if trace: g.trace(g.callers(5))
+    table = (
+        (self.globalConfigFile,False),
+        (self.homeFile,False),
+        (localConfigFile,False),
+        (self.myGlobalConfigFile,False),
+        (self.myHomeConfigFile,False),
+        (self.machineConfigFile,False),
+        (myLocalConfigFile,False),
+        # New in Leo 4.6: the -c file is in *addition* to other config files.
+        (g.app.oneConfigFilename,False),
+        (fileName,True),
+    )
+
+    # Init settings from leoSettings.leo and myLeoSettings.leo files.
+    for path,localFlag in table:
+        if path:
+            path = g.os_path_realpath(g.os_path_finalize(path))
+            # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
+        isZipped = path and zipfile.is_zipfile(path)
+        isLeo = isZipped or (path and path.endswith('.leo'))
+        if isLeo and path and path.lower() not in seen and g.os_path_exists(path):
+            seen.append(path.lower())
+            if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
+                s = 'reading settings in %s' % path
+                # This occurs early in startup, so use the following instead of g.es_print.
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
+                g.es_print(s,color='blue')
+            c = self.openSettingsFile(path)
+            if c:
+                self.updateSettings(c,localFlag)
+                g.app.destroyWindow(c.frame)
+                self.write_recent_files_as_needed = c.config.getBool(
+                    'write_recent_files_as_needed')
+                if 0:
+                    # This is useless. setIvarsFromSettings does nothing
+                    # until the self.inited flag is True.
+                    g.trace('?' * 20,c)
+                    self.setIvarsFromSettings(c)
+    self.readRecentFiles(localConfigFile)
+    # self.createMyLeoSettingsFile(myLocalConfigFile)
+    self.inited = True
+    self.setIvarsFromSettings(None)
+#@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+# This can't be done in initSettingsFiles because
+# the local directory does not yet exist.
+localDirectory = g.os_path_dirname(fileName)
+
+#  Set the local leoSettings.leo file.
+localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
+if not g.os_path_exists(localConfigFile):
+    localConfigFile = None
+
+# Set the local myLeoSetting.leo file.
+myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
+if not g.os_path_exists(myLocalConfigFile):
+    myLocalConfigFile = None
+#@nonl
+#@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+#@+node:ekr.20041117085625:openSettingsFile
+def openSettingsFile (self,path):
+
+    theFile,isZipped = g.openLeoOrZipFile(path)
+    if not theFile: return None
+
+    # Similar to g.openWithFileName except it uses a null gui.
+    # Changing g.app.gui here is a major hack.
+    oldGui = g.app.gui
+    g.app.gui = leoGui.nullGui("nullGui")
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=path,relativeFileName=None,
+        initEditCommanders=False,updateRecentFiles=False)
+    frame.log.enable(False)
+    c.setLog()
+    g.app.lockLog()
+    ok = frame.c.fileCommands.open(
+        theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
+    g.app.unlockLog()
+    c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
+    g.app.gui = oldGui
+    return ok and c
+#@-node:ekr.20041117085625:openSettingsFile
+#@+node:ekr.20051013161232:updateSettings
+def updateSettings (self,c,localFlag):
+
+    d = self.readSettings(c,localFlag)
+
+    if d:
+        d['_hash'] = theHash = c.hash()
+        if localFlag:
+            self.localOptionsDict[theHash] = d
+        else:
+            self.localOptionsList.insert(0,d)
+
+    if 0: # Good trace.
+        if localFlag:
+            g.trace(c.fileName())
+            g.trace(d and list(d.keys()))
+#@-node:ekr.20051013161232:updateSettings
+#@-node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
+#@+node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+def __init__ (self,c):
+
+    trace = False and not g.unitTesting
+    self.c = c
+
+    if trace: g.trace('+' * 20,'(c.configSettings)',
+        c and c.shortFileName(),g.callers(5))
+
+    # Init these here to keep pylint happy.
+    self.default_derived_file_encoding = None
+    self.new_leo_file_encoding = None
+    self.redirect_execute_script_output_to_log_pane = None
+
+    self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
+    self.defaultLogFontSize  = g.app.config.defaultLogFontSize
+    self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
+    self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
+
+    for key in g.app.config.encodingIvarsDict:
+        if key != '_hash':
+            self.initEncoding(key)
+
+    for key in g.app.config.ivarsDict:
+        if key != '_hash':
+            self.initIvar(key)
+#@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+#@+node:ekr.20041118084146.1:set (g.app.config) To be deleted??
+def set (self,c,setting,kind,val):
+
+    '''Set the setting.  Not called during initialization.'''
+
+    trace = False and not g.unitTesting
+    found = False ;  key = self.munge(setting)
+    if trace: g.trace(setting,kind,val)
+
+    if c:
+        d = self.localOptionsDict.get(c.hash())
+        if d: found = True
+
+    if not found:
+        theHash = c.hash()
+        for d in self.localOptionsList:
+            hash2 = d.get('_hash')
+            if theHash == hash2:
+                found = True ; break
+
+    if not found:
+        d = self.dictList [0]
+
+    d[key] = g.Bunch(setting=setting,kind=kind,val=val,tag='setting')
+
+    if 0:
+        dkind = d.get('_hash','<no hash: %s>' % c.hash())
+        g.trace(dkind,setting,kind,val)
+#@-node:ekr.20041118084146.1:set (g.app.config) To be deleted??
+#@+node:ekr.20041118104240:initIvar (c.configSettings)
+def initIvar(self,key):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    # N.B. The key is munged.
+    bunch = g.app.config.ivarsDict.get(key)
+    ivarName = bunch.ivar
+    val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
+
+    if val or not hasattr(self,ivarName):
+        if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
+        setattr(self,ivarName,val)
+#@-node:ekr.20041118104240:initIvar (c.configSettings)
+#@+node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
+def setIvarsFromSettings (self,c):
+
+    '''Init g.app.config ivars or c's ivars from settings.
+
+    - Called from readSettingsFiles with c = None to init g.app.config ivars.
+    - Called from c.__init__ to init corresponding commmander ivars.'''
+
+    trace = False and not g.unitTesting
+    verbose = True
+
+    # Ingore temporary commanders created by readSettingsFiles.
+    if self.inited:
+        if trace:
+            if c:
+                g.trace('=' * 10, 'inited',c.shortFileName(),g.callers(4))
+            else:
+                tag = '<no c: called at end of readSettingsFiles>'
+                g.trace('=' * 10, 'inited',tag,g.callers(1))
+    else:
+        if trace and verbose: g.trace('*' * 10,'not inited.  do nothing')
+        return
+
+    d = self.ivarsDict
+    keys = list(d.keys())
+    keys.sort()
+    for key in keys:
+        if key != '_hash':
+            bunch = d.get(key)
+            if bunch:
+                ivar = bunch.ivar # The actual name of the ivar.
+                kind = bunch.kind
+                val = self.get(c,key,kind) # Don't use bunch.val!
+                if c:
+                    if trace: g.trace("%20s %s = %s" % (
+                        g.shortFileName(c.mFileName),ivar,val))
+                    setattr(c,ivar,val)
+                else:
+                    if trace: g.trace("%20s %s = %s" % (
+                        'g.app.config',ivar,val))
+                    setattr(self,ivar,val)
+#@-node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
+#@-node:ekr.20100130042842.6404:Reading settings (do not delete)
 #@+node:ekr.20100130042842.9008: Notes
 @nocolor-node
 
@@ -2596,11 +2542,6 @@ insert-tab-or-indent-region, insert-hard-tab, insert-soft-tab.
 #@+node:ekr.20100122104234.6168:Keystroke for add-nocolor-node ?
 Generalize?
 #@nonl
-#@-node:ekr.20100122104234.6168:Keystroke for add-nocolor-node ?
-#@+node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
-# Or give a better message.
-#@nonl
-#@-node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
 #@+node:ekr.20070624135822:Templates for common code fragments
 @
 Use completion to show fragments.
@@ -2626,6 +2567,11 @@ Fragment 2:
 for p in c.all_positions():
     pass
 #@-node:ekr.20070624135822:Templates for common code fragments
+#@-node:ekr.20100122104234.6168:Keystroke for add-nocolor-node ?
+#@+node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
+# Or give a better message.
+#@nonl
+#@-node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
 #@+node:ekr.20090201122309.5:Improve macro commands: and really use them!
 @nocolor-node
 
@@ -2639,217 +2585,6 @@ for p in c.all_positions():
 #@+node:ekr.20100205152016.5837:do @view nodes
 #@-node:ekr.20100205152016.5837:do @view nodes
 #@-node:ekr.20100206074650.5844:Cleanups & features: first
-#@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
-@nocolor-node
-
-Here are the emacs features that I use very often that any editor would
-need to have in order for me to switch.  I've seen some editors with
-some of these, but none with all unless it is an emacs clone.  I'll
-leave out the obvious things like platform independence, good syntax
-highlighting, calltips or auto-completion.  Also, these features are
-just dealing with the code editor portion of the app, if it is more than
-that (like a full IDE) then some of these things may or may not apply to
-the non code editor parts:
-
-* (done) Python should be just one of the languages that this editor supports,
-not the primary target.  I spend as much time in C/C++ as I do Python,
-and my editor of choice needs to help me with C/C++ coding just as much
-as it does with Python.  So some sort of support for calltips and
-auto-completion would be marvelous, and also being able to act as a
-front-end for gdb since I currently use emacs for that most of the time.
-
-* (done) Absolutely every feature or action must be able to be done with just
-the keyboard.  Moving the hand back and forth to the mouse wastes time,
-breaks concentration and contributes to RSI.  Multi-key sequences are
-fine as long as they are grouped in a logical fashion.  For example in
-emacs all of the version control features are accessible via the
-Ctrl-x,v sequence plus one more letter.
-
-* (to be improved) Incremental search, both forward and reverse, and wrapping around
-after you've reached the end or the beginning of the document.  I like
-to have the same key to start the search and also do a search-next after
-you've typed all the characters you are searching for, and also to have
-backspace go back one search position and/or remove one character from
-the search text.
-
-* (done) Multiple top level windows, and able to show any buffer in any TLW,
-including those that are already displayed in another TLW.  Of course
-there should be key-bindings available for opening a new TLW, cycling
-forward and backward through the buffer list, and a way to select a
-buffer from a popup list of buffer/file names.
-
-* (to be improved) The Kill-Ring.  For those of you that have never used an emacs-like
-editor it works like this:  There is a collection of the N previous
-blocks of text that have been cut or copied (in emacs 'cut' == 'kill'
-more or less)  When I do a yank (paste) it uses the last thing put in
-the kill-ring.  If I then immediately use another key-binding then it
-replaces that pasted text with the next item in the kill ring, and so on
-until I eventually wrap around get back to the first one in the ring, or
-I do some other command or move the cursor somewhere else.
-
-* (done) Registers.  A text snippet can be copied into a register, which is
-like the kill ring except you refer to each one by name, where the names
-are 'a' through 'z'.  You can also append to a register that already has
-text in it, and you can paste the contents of a register into the
-document at the current cursor location.
-
-* (done) Able to have selections be either a stream of characters or a
-rectangle.  A stream selection is like what you have in all text
-editors, it starts from position a on line N and continues forward or
-back to position b on line M and includes all the characters in between.
-  A rectangle selection is all the characters between position a and b
-on lines N to M.  In other words, it has width and height and it might
-be something like positions 5 through 10 on lines 20 to 25.  Cutting or
-deleting a rectangle removes the text in the rectangle and shifts any
-text to the right of the rectangle over.  It does not remove any lines
-although they may end up being empty.  Pasting a rectangle inserts the
-new text with the upper-left of the rectangle at the current cursor
-position, shifts existing text to the right if needed, and fills with
-spaces on the left if a line affected by the paste is not long enough.
-New lines are not added unless the file needs to be extended to
-accommodate the rectangle paste.  Rectangles can also be put into registers.
-
-* (to be improved) Good keystroke macro recording and the ability to save and load
-keystroke macros, and the ability to assign a key-binding to a saved
-recorded macro. Any time I need to make the same edits to a bunch of
-lines or groups of lines I'll record doing it on the first one including
-the keystrokes needed to reposition for the next line, and then stop
-recording and then it's just one keystroke to replay the keystrokes for
-every other line that needs it done.  I record, use and throw away up to
-a dozen or so macros per day.
-
-* (done, and better than asserted) If you must have a toolbar make it optional
-and keep it simple. Toolbars require the mouse and the goal is to keep the hand
-off the mouse as much as possible.
-
-* (done) Similarly, avoid using popup dialogs whenever possible.  This includes
-things like the file dialog.  I don't mind seeing the file dialog if I
-select a menu item, because most likely my hand is already on the mouse,
-but the rest of the time I just want to hit a key, type a path name
-(with tab-completion to help find stuff, up/down keys to cycle through
-past selections) and press enter.  So I would prefer this editor to have
-something like emacs' minibuffer, or the QuickFind panel in Firefox.  In
-other words, when there is something you would normally use a dialog for
-just create a small panel that rolls up from the bottom of the frame,
-put the keyboard focus there, perhaps do stuff in the main buffer as
-they are typing if appropriate, and then when the user is done the panel
-rolls out of sight again and keyboard focus is restored to their active
-buffer.  This can be done for file open/saves, search & replace,
-specifying build or grep commands (see next item) choosing to execute
-some editor function by name that may not have some key-binding yet (see
-item after next) etc.
-
-* (done, with user @commands)
-Flexible build/grep commands.  Emacs handles both of these in almost
-the same way so I'll list them together here.  I hit a key and am
-presented with either the default, or the most recently used compile or
-grep command.  I can edit the command or use the up/down arrows to
-select previous commands that I've used.  I then hit enter and emacs
-runs the command putting the output in an editor buffer.  There is a key
-I can hit to kill the compile if needed.  It then parses the output and
-there is a key I can use to find the file listed in the compile or grep
-output, load it, and position the cursor on the reported line.  (This
-can even be done while the compile/grep is still running.)
-
-* (done) For access to editor commands/functionality that may not be bound to a
-keystroke it's real nice to have the ability to hit a key, type the
-command name, press enter and then it's done.  This can also allow for
-commands that might need to prompt for parameters, be interactive, etc.
-  All editor commands should be named and can be bound to keys by name
-or executed by name in this way.
-
-* (done) Regex search.  Emacs has support for regular expression search modes
-for all of the search types, incremental search, search/replace,
-although I don't use it that much.
-
-* (done, or not needed, depending on your point of view)
-Multi-file search and replace.  Be able to select files interactively,
-or by wildcard, or both.  Enter search string, or regex, and replace
-text.  The editor loads each file and does the search, allowing you to
-choose for each one whether to do the replacement, or replace all.
-
-* If it is a full IDE it would be nice to have a way to start just the
-code editor portion for quick edits.
-
-Things that would be nice to have, but that I could live without:
-(All of these things can be done easily with @command)
-
-* Interactive diffs, merges and applying of patches.
-
-* Able to be a front-end for gdb.
-
-* Able to be a front-end for CVS, SVN, etc.
-
-* Be able to run shell commands, or the shell itself in an editor buffer.
-
-* have a built-in psychotherapist or be able to play towers of hanoi.  ;-) 
-#@nonl
-#@+node:ekr.20100206074650.5848:Done
-* Python should be just one of the languages that this editor supports, not the
-primary target.
-
-* Absolutely every feature or action must be able to be done with just the
-keyboard.
-
-* Multiple top level windows, and able to show any buffer in any TLW, including
-those that are already displayed in another TLW.
-
-* Registers.
-
-* A rectangle selection and paste.
-
-* Regex search.
-
-* Good keystroke macro recording and the ability to save and load keystroke
-macros, and the ability to assign a key-binding to a saved recorded macro.
-
-* If you must have a toolbar make it optional and keep it simple.
-
-Aside: Leo shows that Robin's assertion that "Toolbars require the mouse" is
-incorrect.
-
-* Avoid using popup dialogs whenever possible.
-
-* So I would prefer this editor to have something like emacs' minibuffer.
-
-* For access to editor commands/functionality that may not be bound to a
-keystroke it's real nice to have the ability to hit a key, type the command
-name, press enter and then it's done. This can also allow for commands that
-might need to prompt for parameters, be interactive, etc. All editor commands
-should be named and can be bound to keys by name or executed by name in this
-way.
-
-* If it is a full IDE it would be nice to have a way to start just the code
-editor portion for quick edits.
-
-* Able to be a front-end for gdb. (With a Leo plugin)
-
-* Be able to run shell commands, or the shell itself in an editor buffer.
-
-* have a built-in psychotherapist or be able to play towers of hanoi. ;-)
-#@nonl
-#@-node:ekr.20100206074650.5848:Done
-#@+node:ekr.20100206074650.5851:Not needed
-Not done, but could be done in @command easily enough
-
-* Flexible build/grep commands.
-
-* Multi-file search and replace.
-
-* Interactive diffs, merges and applying of patches.
-
-* Able to be a front-end for CVS, SVN, etc.
-
-* Typing completion for file dialogs.
-#@nonl
-#@-node:ekr.20100206074650.5851:Not needed
-#@+node:ekr.20100206074650.5850:To be improved
-* The Kill-Ring.
-
-* Incremental search, both forward and reverse, and wrapping around after you've
-reached the end or the beginning of the document.
-#@-node:ekr.20100206074650.5850:To be improved
-#@-node:ekr.20090202064534.4:Your mission, should you choose to accept it
 #@+node:ekr.20080603052650.466:Fix vim problems
 @nocolor
 
