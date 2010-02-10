@@ -1524,6 +1524,7 @@ class baseFileCommands:
         if ok is None:
             c.endEditing() # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
+            c.cacher.save(fileName,changeName=True)
             ok = c.checkFileTimeStamp(fileName)
             if ok:
                 ok = self.write_Leo_file(fileName,False) # outlineOnlyFlag
@@ -1547,6 +1548,7 @@ class baseFileCommands:
         if not g.doHook("save1",c=c,p=v,v=v,fileName=fileName):
             c.endEditing() # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
+            c.cacher.save(fileName,changeName=True)
             # Disable path-changed messages in writeAllHelper.
             c.ignoreChangedPaths = True
             try:
@@ -1568,6 +1570,7 @@ class baseFileCommands:
         if not g.doHook("save1",c=c,p=v,v=v,fileName=fileName):
             c.endEditing()# Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
+            c.cacher.save(fileName,changeName=False)
             # Disable path-changed messages in writeAllHelper.
             c.ignoreChangedPaths = True
             try:
@@ -2227,7 +2230,8 @@ class baseFileCommands:
             # No need to create directories when restoring.
             g.utils_rename(c,backupName,fileName)
         else:
-            g.es_print('does not exist!',backupName)
+            g.trace('backup file does not exist!',
+                repr(backupName),color='red')
 
     #@-node:ekr.20100119145629.6108:handleWriteLeoFileException
     #@-node:ekr.20100119145629.6111:writeToFileHelper & helpers

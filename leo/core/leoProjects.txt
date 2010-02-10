@@ -565,7 +565,8 @@ def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
         # No need to create directories when restoring.
         g.utils_rename(c,backupName,fileName)
     else:
-        g.es_print('does not exist!',backupName)
+        g.trace('backup file does not exist!',
+            repr(backupName),color='red')
 
 #@-node:ekr.20100119145629.6108:handleWriteLeoFileException
 #@-node:ekr.20100119145629.6111:writeToFileHelper & helpers
@@ -745,7 +746,8 @@ def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
         # No need to create directories when restoring.
         g.utils_rename(c,backupName,fileName)
     else:
-        g.es_print('does not exist!',backupName)
+        g.trace('backup file does not exist!',
+            repr(backupName),color='red')
 
 #@-node:ekr.20100119145629.6108:handleWriteLeoFileException
 #@-node:ekr.20100119145629.6111:writeToFileHelper & helpers
@@ -5795,6 +5797,7 @@ def saveAs(self,fileName):
     if not g.doHook("save1",c=c,p=v,v=v,fileName=fileName):
         c.endEditing() # Set the current headline text.
         self.setDefaultDirectoryForNewFiles(fileName)
+        c.cacher.save(fileName,changeName=True)
         # Disable path-changed messages in writeAllHelper.
         c.ignoreChangedPaths = True
         try:
@@ -5816,6 +5819,7 @@ def saveTo (self,fileName):
     if not g.doHook("save1",c=c,p=v,v=v,fileName=fileName):
         c.endEditing()# Set the current headline text.
         self.setDefaultDirectoryForNewFiles(fileName)
+        c.cacher.save(fileName,changeName=False)
         # Disable path-changed messages in writeAllHelper.
         c.ignoreChangedPaths = True
         try:
@@ -8858,7 +8862,8 @@ def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
         # No need to create directories when restoring.
         g.utils_rename(c,backupName,fileName)
     else:
-        g.es_print('does not exist!',backupName)
+        g.trace('backup file does not exist!',
+            repr(backupName),color='red')
 
 #@-node:ekr.20100119145629.6108:handleWriteLeoFileException
 #@-node:ekr.20100204052559.5804:Part 2: mkstemp & g.utils_rename
@@ -9030,7 +9035,8 @@ def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
         # No need to create directories when restoring.
         g.utils_rename(c,backupName,fileName)
     else:
-        g.es_print('does not exist!',backupName)
+        g.trace('backup file does not exist!',
+            repr(backupName),color='red')
 
 #@-node:ekr.20100119145629.6108:handleWriteLeoFileException
 #@+node:ekr.20031218072017.1241:g.update_file_if_changed

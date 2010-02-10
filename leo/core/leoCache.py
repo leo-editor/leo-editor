@@ -56,11 +56,16 @@ class cacher:
         # set by initFileDB and initGlobalDB...
         self.db = None # will be a PickleShareDB instance.
         self.dbdirname = None # A string.
-
+        self.inited = False
 
     #@-node:ekr.20100208062523.5886: ctor (cacher)
     #@+node:ekr.20100208082353.5918:initFileDB
     def initFileDB (self,fn):
+
+        trace = False and not g.unitTesting
+        if trace: g.trace('inited',self.inited,repr(fn))
+
+        if not fn: return
 
         pth, bname = split(fn)
 
@@ -72,6 +77,7 @@ class cacher:
                 '%s_%s' % (bname,hashlib.md5(fn).hexdigest()))
 
             self.db = PickleShareDB(dbdirname)
+            self.inited = True
     #@-node:ekr.20100208082353.5918:initFileDB
     #@+node:ekr.20100208082353.5920:initGlobalDb
     def initGlobalDB (self):
@@ -82,10 +88,17 @@ class cacher:
             dbdirname = g.app.homeLeoDir + "/db/global"
             self.db = db = PickleShareDB(dbdirname)
             if trace: g.trace(db,dbdirname)
+            self.inited = True
             return db
         else:
             return None
     #@-node:ekr.20100208082353.5920:initGlobalDb
+    #@+node:ekr.20100210163813.5747:save (cacher)
+    def save (self,fn,changeName):
+
+        if changeName or not self.inited:
+            self.initFileDB(fn)
+    #@-node:ekr.20100210163813.5747:save (cacher)
     #@-node:ekr.20100208082353.5919: Birth
     #@+node:ekr.20100209160132.5759:clear/AllCache(s) (cacher)
     def clearCache (self):

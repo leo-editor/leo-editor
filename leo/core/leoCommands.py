@@ -1221,7 +1221,7 @@ class baseCommands (object):
 
         g.app.closeLeoWindow(self.frame)
     #@-node:ekr.20031218072017.2833:close
-    #@+node:ekr.20031218072017.2834:save (commands)
+    #@+node:ekr.20031218072017.2834:c.save
     def save (self,event=None):
 
         '''Save a Leo outline to a file.'''
@@ -1265,8 +1265,8 @@ class baseCommands (object):
         # Done in fileCommands.save.
         # c.redraw_after_icons_changed()
         c.widgetWantsFocusNow(w)
-    #@-node:ekr.20031218072017.2834:save (commands)
-    #@+node:ekr.20031218072017.2835:saveAs (commands)
+    #@-node:ekr.20031218072017.2834:c.save
+    #@+node:ekr.20031218072017.2835:c.saveAs
     def saveAs (self,event=None):
 
         '''Save a Leo outline to a file with a new filename.'''
@@ -1305,7 +1305,7 @@ class baseCommands (object):
         # Done in fileCommands.saveAs.
         # c.redraw_after_icons_changed()
         c.widgetWantsFocusNow(w)
-    #@-node:ekr.20031218072017.2835:saveAs (commands)
+    #@-node:ekr.20031218072017.2835:c.saveAs
     #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
     def saveAsUnzipped (self,event=None):
 
@@ -1329,7 +1329,7 @@ class baseCommands (object):
         finally:
             c.isZipped = oldZipped
     #@-node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
-    #@+node:ekr.20031218072017.2836:saveTo
+    #@+node:ekr.20031218072017.2836:c.saveTo
     def saveTo (self,event=None):
 
         '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
@@ -1361,7 +1361,7 @@ class baseCommands (object):
         # Does not change icons status.
         # c.redraw_after_icons_changed()
         c.widgetWantsFocusNow(w)
-    #@-node:ekr.20031218072017.2836:saveTo
+    #@-node:ekr.20031218072017.2836:c.saveTo
     #@+node:ekr.20031218072017.2837:revert
     def revert (self,event=None):
 
