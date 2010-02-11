@@ -782,6 +782,7 @@
 <v t="ekr.20090703080553.5000"><vh>@suite run all doctests</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20100210222021.5388"><vh>@test save new file</vh></v>
 <v t="ekr.20100208230953.5383"><vh>Cache tests</vh>
 <v t="ekr.20100208095817.5387"><vh>@test leoCache</vh></v>
 </v>
@@ -23928,6 +23929,22 @@ cacher = leoCache.cacher(c)
 assert cacher.test()</t>
 <t tx="ekr.20100208230953.5383"></t>
 <t tx="ekr.20100209155559.5386">c.createOpenWithTempFile(p,'.py')</t>
+<t tx="ekr.20100210222021.5388">import os
+c1 = c
+fn = g.os_path_join(g.app.loadDir,'..','test','save-new-test.py')
+if g.os_path_exists(fn):
+    os.remove(fn)
+assert not g.os_path_exists(fn)
+try:
+    c = c1.new()
+    # Not a perfect unit test, but it similar to c.save.
+    c.mFileName = fn
+    c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
+    c.fileCommands.save(c.mFileName)
+    c.close()
+    assert g.os_path_exists(fn)
+finally:
+    os.remove(fn)</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

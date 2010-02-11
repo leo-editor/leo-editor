@@ -595,7 +595,8 @@ bindHelper class?
 #@nonl
 #@-node:ekr.20100210102224.5744:Notes for key bindings
 #@-node:ekr.20100126110826.6253:Before rc1
-#@+node:ekr.20100209160132.5771:create until-4-7-final branch (do not delete)
+#@-node:ekr.20071211093011:4.7 One-node world, Leo3K
+#@+node:ekr.20100209160132.5771:until-4-7-final branch
 #@+node:ekr.20100209160132.5770:cache notes
 @nocolor-node
 
@@ -623,6 +624,24 @@ To do:
 #@nonl
 #@-node:ekr.20100209114432.5751:Cache expansion bits
 #@-node:ekr.20100209160132.5770:cache notes
+#@+node:ekr.20100210163813.5748:Caching buglets?
+@nocolor-node
+
+This is a recent bug, but imo it has uncovered some other caching buglets. These
+buglets are not big enough to delay Leo 4.7, but the new caching scheme would
+ensure they never bite.
+
+1. The code that computes what I have been calling the top-level directory is dubious::
+
+    dbdirname = join(g.app.homeLeoDir,'db',
+            '%s_%s' % (bname,hashlib.md5(fn).hexdigest()))
+
+The problem is that bname is only the base name of the cached file, not a name
+(or key) that depends on the full path. Thus, two copies of the same file in the
+same place will be cached in the same directory. Is this ominous?
+
+2. It's not clear what caching to do with the save-to command.
+#@-node:ekr.20100210163813.5748:Caching buglets?
 #@+node:ekr.20100209114432.5750:Work on docs
 - Better scren shots.
 #@nonl
@@ -1951,8 +1970,7 @@ def show (self,s):
         g.pr('')
 #@-node:ekr.20031218072017.3650:show
 #@-node:ekr.20100209224508.5744:Calls to .write
-#@-node:ekr.20100209160132.5771:create until-4-7-final branch (do not delete)
-#@-node:ekr.20071211093011:4.7 One-node world, Leo3K
+#@-node:ekr.20100209160132.5771:until-4-7-final branch
 #@+node:ekr.20100109214940.6225:4.8 vim, cleanups, your mission...
 #@+node:ekr.20100206074650.5852:Posting re "your mission, should you choose to accept it"
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
