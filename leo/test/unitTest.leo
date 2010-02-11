@@ -2296,7 +2296,7 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040802071519"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519" a="E"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20100131180007.5391"><vh>@test v.atAutoNodeName &amp; v.atAutoRstNodeName</vh></v>
@@ -2325,13 +2325,13 @@
 <v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5610"><vh>leoPlugins</vh>
+<v t="ekr.20100131171342.5610" a="E"><vh>leoPlugins</vh>
 <v t="ekr.20100131171342.5611"><vh>@test getHandlersForTag</vh></v>
 </v>
-<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
+<v t="ekr.20091219122958.5066" a="E"><vh>leoRst</vh>
 <v t="ekr.20091219121039.5065"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
 </v>
-<v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
+<v t="ekr.20090529115704.4396" a="E"><vh>leoShadow</vh>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 <v t="ekr.20090529115704.4569"><vh>@@test delete unittest shadow directory</vh></v>
 <v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
@@ -2578,7 +2578,7 @@
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="ekr.20071113200638.1"><vh>leoTangle</vh>
+<v t="ekr.20071113200638.1" a="E"><vh>leoTangle</vh>
 <v t="ekr.20090624125638.4963"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
 <v t="ekr.20071113090055.1"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
 <v t="ekr.20071127194743"><vh>@test @root</vh>
@@ -2590,7 +2590,7 @@
 <v t="ekr.20090624125638.4969"><vh>Output</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5612"><vh>leoTest</vh>
+<v t="ekr.20100131171342.5612" a="E"><vh>leoTest</vh>
 <v t="ekr.20100131171342.5613"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
