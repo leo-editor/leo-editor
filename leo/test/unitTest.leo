@@ -660,42 +660,6 @@
 <v t="ekr.20061014152506.2"><vh>@@test script buttons create commands</vh></v>
 </v>
 </v>
-<v t="ekr.20071113143523"><vh>Failed unit tests when running externally</vh>
-<v t="ekr.20071113143523.1"><vh>4 leoEditCommands tests fail when run externally</vh>
-<v t="ekr.20071113143523.2"><vh>capitalizeHelper &amp; test</vh>
-<v t="ekr.20071113143523.3"><vh>@test c.editCommands.capitalizeHelper</vh></v>
-</v>
-<v t="ekr.20071113143523.4"><vh>findWord &amp; test</vh>
-<v t="ekr.20071113143523.5"><vh>@test findWord</vh></v>
-</v>
-<v t="ekr.20071113143523.6"><vh>selfInsertCommand, helpers &amp; tests</vh>
-<v t="ekr.20071113143523.7"><vh>&lt;&lt; set local vars &gt;&gt;</vh></v>
-<v t="ekr.20071113143523.8"><vh>insertNewlineHelper</vh></v>
-<v t="ekr.20071113143523.9"><vh>initBracketMatcher</vh></v>
-<v t="ekr.20071113143523.10"><vh>flashMatchingBracketsHelper</vh></v>
-<v t="ekr.20071113143523.11"><vh>flashCharacter</vh></v>
-<v t="ekr.20071113143523.12"><vh>updateAutomatchBracket</vh></v>
-<v t="ekr.20071113143523.13"><vh>udpateAutoIndent</vh></v>
-<v t="ekr.20071113143523.14"><vh>updateTab</vh></v>
-<v t="ekr.20071113143523.15"><vh>@test selfInsertCommand-1</vh></v>
-<v t="ekr.20071113143523.16"><vh>@test selfInsertCommand-2 (replacing tabs)</vh></v>
-</v>
-<v t="ekr.20071113143523.17"><vh>setMoveCol &amp; test</vh>
-<v t="ekr.20071113143523.18"><vh>@test setMoveCol</vh></v>
-</v>
-</v>
-<v t="ekr.20071113143523.19"><vh>2 gui Base class tests fail when run externally</vh>
-<v t="ekr.20071113143523.20"><vh>getInsertLines &amp; test (changed)</vh>
-<v t="ekr.20071113143523.21"><vh>@test leoBody.getInsertLines</vh></v>
-</v>
-<v t="ekr.20071113143523.22"><vh>leoFrame.pasteText &amp; test</vh>
-<v t="ekr.20071113143523.23"><vh>@test pasteText</vh></v>
-</v>
-</v>
-<v t="ekr.20071113143523.24"><vh>27 unitTest.txt tests fail when run externally</vh></v>
-<v t="ekr.20071113143523.25"><vh>Posting: document unit test bug &amp; describe coming new scheme</vh></v>
-</v>
-<v t="ekr.20070524080435"><vh>@@test Run all @test nodes in leoPy.leo</vh></v>
 <v t="ekr.20060208195054"><vh>@@test k.inverseCommandsDict is inverse of c.commandsDict</vh>
 <v t="ekr.20070926095117"><vh>mungeKey</vh></v>
 </v>
@@ -881,7 +845,7 @@
 <v t="ekr.20050206090416"><vh>@test open non-existent non-ascii directory</vh></v>
 <v t="ekr.20071113145804.24"><vh>@test round trip toUnicode toEncodedString</vh></v>
 </v>
-<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
+<v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20100131171342.5506"><vh>leoApp</vh>
 <v t="ekr.20100131180007.5454"><vh>@test at.get/setPathUa</vh></v>
 <v t="ekr.20100131180007.5461"><vh>@test at.replaceFileWithString</vh></v>
@@ -1268,7 +1232,7 @@
 <v t="ekr.20070611105728"><vh>@test illegal clone demote</vh></v>
 <v t="ekr.20071113201833"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194216"><vh>leoConfig</vh>
+<v t="ekr.20071113194216" a="E"><vh>leoConfig</vh>
 <v t="ekr.20060325071703.2"><vh>@@test ifgui</vh></v>
 <v t="ekr.20100211110729.5389"><vh>@test g.app.config.writeRecentFilesFileHelper</vh></v>
 <v t="ekr.20050203084930.1"><vh>@test global settings</vh></v>
@@ -1289,10 +1253,6 @@
 <v t="ekr.20100204173354.5375"><vh>@test toggle-find-x</vh></v>
 </v>
 <v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
-<v t="ekr.20080905125317.1"><vh>Unused</vh>
-<v t="ekr.20080904120258.7"><vh>@@test goto_scanTnodeList</vh></v>
-<v t="ekr.20080904120258.5"><vh>@@test goto_scanForVnodeName</vh></v>
-</v>
 <v t="ekr.20080905112230.3"><vh>goto-line-number tests: original files</vh>
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
 <v t="ekr.20080904102243.2"><vh>@file unittest/at-file-line-number-test.py</vh>
@@ -2052,7 +2012,7 @@
 <v t="ekr.20100131171342.5602"><vh>@test leoTextWidget</vh></v>
 <v t="ekr.20100131171342.5603"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20090529141856.4682" a="E"><vh>leoImport</vh>
+<v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh> Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
 <v t="ekr.20090529141856.4686"><vh>exportTests</vh>
@@ -2180,7 +2140,7 @@
 <v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
 </v>
-<v t="ekr.20090529141856.4784" a="E"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20090529141856.4786"><vh>@test rST import test (no double-underlines)</vh></v>
 <v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
@@ -2199,7 +2159,7 @@
 <v t="ekr.20100131171342.5608"><vh>@test strokeFromSetting</vh></v>
 <v t="ekr.20100131171342.5609"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194424.1" a="E"><vh>leoNodes</vh>
+<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>Startup</vh></v>
@@ -2297,13 +2257,13 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040802071519" a="E"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20100131180007.5391"><vh>@test v.atAutoNodeName &amp; v.atAutoRstNodeName</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20071113202452"><vh>@test zz restore the screen</vh></v>
-<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
@@ -2318,7 +2278,7 @@
 <v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
 <v t="ekr.20080503082625.4"><vh>@test promote</vh></v>
 </v>
-<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -2326,13 +2286,13 @@
 <v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5610" a="E"><vh>leoPlugins</vh>
+<v t="ekr.20100131171342.5610"><vh>leoPlugins</vh>
 <v t="ekr.20100131171342.5611"><vh>@test getHandlersForTag</vh></v>
 </v>
-<v t="ekr.20091219122958.5066" a="E"><vh>leoRst</vh>
+<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
 <v t="ekr.20091219121039.5065"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
 </v>
-<v t="ekr.20090529115704.4396" a="E"><vh>leoShadow</vh>
+<v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 <v t="ekr.20090529115704.4569"><vh>@@test delete unittest shadow directory</vh></v>
 <v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
@@ -2579,7 +2539,7 @@
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="ekr.20071113200638.1" a="E"><vh>leoTangle</vh>
+<v t="ekr.20071113200638.1"><vh>leoTangle</vh>
 <v t="ekr.20090624125638.4963"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
 <v t="ekr.20071113090055.1"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
 <v t="ekr.20071127194743"><vh>@test @root</vh>
@@ -2591,12 +2551,12 @@
 <v t="ekr.20090624125638.4969"><vh>Output</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5612" a="E"><vh>leoTest</vh>
+<v t="ekr.20100131171342.5612"><vh>leoTest</vh>
 <v t="ekr.20100131171342.5613"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
-<v t="ekr.20040712101754.37" a="E"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38" a="E"><vh>editBodyTests</vh>
+<v t="ekr.20040712101754.37"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
 <v t="ekr.20050417202713"><vh>addComments</vh>
 <v t="ekr.20050417202713.1"><vh>before</vh></v>
@@ -2665,6 +2625,7 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20071113194216" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -14099,27 +14060,6 @@ b</t>
 <t tx="ekr.20070417092935.1"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070515150433"></t>
-<t tx="ekr.20070524080435"># These tests had better not refer to tests in unitTest.leo!
-
-# The real problem with this is that it takes too long to open leoPy.leo.
-
-import leoTest
-
-def runAtTestNodes(c,path):
-    try:
-        frame = None
-        ok, frame = g.openWithFileName(path,c,enableLog=False)
-        leoTest.doTests(frame.c,all=True,verbosity=1)
-        # leoTest.runTestsExternally (frame.c,all=True)
-    finally:
-        if frame and frame.c != c:
-            frame.c.setChanged(False)
-            g.app.closeLeoWindow(frame.c.frame)
-        c.frame.update()
-
-path = g.os_path_join(g.app.loadDir,"..","src","leoPy.leo")
-runAtTestNodes(c,path)
-</t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.</t>
 <t tx="ekr.20070611071101">p1 = p.copy()
 a = p.firstChild()
@@ -14596,1091 +14536,6 @@ g.pr('\n----- Only in leoPy.leo')
 for h in d2.keys():
     if not d1.get(h):
         g.pr(h)</t>
-<t tx="ekr.20071113143523"># These originally were run from leoPy.leo.</t>
-<t tx="ekr.20071113143523.1">creating: dynamicUnitTest.leo
-FF.F...F.........
-======================================================================
-FAIL: @test c.editCommands.capitalizeHelper
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 14, in &lt;module&gt;
-AssertionError: Expected Targetword, got: u''
-
-======================================================================
-FAIL: @test findWord
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 15, in &lt;module&gt;
-AssertionError: got:
-
-======================================================================
-FAIL: @test selfInsertCommand-2 (replacing tabs)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 13, in &lt;module&gt;
-AssertionError: last line:u'    '
-
-======================================================================
-FAIL: @test setMoveCol
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 12, in &lt;module&gt;
-AssertionError
-
-----------------------------------------------------------------------
-Ran 17 tests in 0.047s
-
-FAILED (failures=4)
-</t>
-<t tx="ekr.20071113143523.10">def flashMatchingBracketsHelper (self,w,i,ch):
-
-    d = {}
-    if ch in self.openBracketsList:
-        for z in xrange(len(self.openBracketsList)):
-            d [self.openBracketsList[z]] = self.closeBracketsList[z]
-        reverse = False # Search forward
-    else:
-        for z in xrange(len(self.openBracketsList)):
-            d [self.closeBracketsList[z]] = self.openBracketsList[z]
-        reverse = True # Search backward
-
-    delim2 = d.get(ch)
-
-    s = w.getAllText()
-    j = g.skip_matching_python_delims(s,i,ch,delim2,reverse=reverse)
-    if j != -1:
-        self.flashCharacter(w,j)
-</t>
-<t tx="ekr.20071113143523.11">def flashCharacter(self,w,i):
-
-    bg      = self.bracketsFlashBg or 'DodgerBlue1'
-    fg      = self.bracketsFlashFg or 'white'
-    flashes = self.bracketsFlashCount or 2
-    delay   = self.bracketsFlashDelay or 75
-
-    w.flashCharacter(i,bg,fg,flashes,delay)
-</t>
-<t tx="ekr.20071113143523.12">def updateAutomatchBracket (self,p,w,ch,oldSel):
-
-    # assert ch in ('(',')','[',']','{','}')
-
-    c = self.c ; d = c.scanAllDirectives(p)
-    i,j = oldSel
-    language = d.get('language')
-    s = w.getAllText()
-
-    if ch in ('(','[','{',):
-        automatch = language not in ('plain',)
-        if automatch:
-            ch = ch + {'(':')','[':']','{':'}'}.get(ch)
-        if i != j: w.delete(i,j)
-        w.insert(i,ch)
-        if automatch:
-            ins = w.getInsertPoint()
-            w.setInsertPoint(ins-1)
-    else:
-        ins = w.getInsertPoint()
-        ch2 = ins&lt;len(s) and s[ins] or ''
-        if ch2 in (')',']','}'):
-            ins = w.getInsertPoint()
-            w.setInsertPoint(ins+1)
-        else:
-            if i != j: w.delete(i,j)
-            w.insert(i,ch)
-            w.setInsertPoint(i+1)
-</t>
-<t tx="ekr.20071113143523.13">def updateAutoIndent (self,p,w):
-
-    c = self.c ; d = c.scanAllDirectives(p)
-    tab_width = d.get("tabwidth",c.tab_width)
-    # Get the previous line.
-    s = w.getAllText()
-    ins = w.getInsertPoint()
-    i = g.skip_to_start_of_line(s,ins)
-    i,j = g.getLine(s,i-1)
-    s = s[i:j-1]
-    # g.trace(i,j,repr(s))
-
-    # Add the leading whitespace to the present line.
-    junk, width = g.skip_leading_ws_with_indent(s,0,tab_width)
-    # g.trace('width',width,'tab_width',tab_width)
-
-    if s and s [-1] == ':':
-        # For Python: increase auto-indent after colons.
-        if g.scanColorDirectives(c,p) == 'python':
-            width += abs(tab_width)
-    if self.smartAutoIndent:
-        # Determine if prev line has unclosed parens/brackets/braces
-        bracketWidths = [width] ; tabex = 0
-        for i in range(0,len(s)):
-            if s [i] == '\t':
-                tabex += tab_width-1
-            if s [i] in '([{':
-                bracketWidths.append(i+tabex+1)
-            elif s [i] in '}])' and len(bracketWidths) &gt; 1:
-                bracketWidths.pop()
-        width = bracketWidths.pop()
-    ws = g.computeLeadingWhitespace(width,tab_width)
-    if ws:
-        i = w.getInsertPoint()
-        w.insert(i,ws)
-        w.setInsertPoint(i+len(ws))
-</t>
-<t tx="ekr.20071113143523.14">def updateTab (self,p,w):
-
-    c = self.c
-    d = c.scanAllDirectives(p)
-    tab_width = d.get("tabwidth",c.tab_width)
-    i,j = w.getSelectionRange()
-        # Returns insert point if no selection, with i &lt;= j.
-
-    if i != j:
-        w.delete(i,j)
-
-    if tab_width &gt; 0:
-        w.insert(i,'\t')
-        ins = i+1
-    else:
-        # Get the preceeding characters.
-        s = w.getAllText()
-        start = g.skip_to_start_of_line(s,i)
-        s2 = s[start:i]
-
-        # Compute n, the number of spaces to insert.
-        width = g.computeWidth(s2,tab_width)
-        n = abs(tab_width) - (width % abs(tab_width))
-        # g.trace('n',n)
-        w.insert(i,' ' * n)
-        ins = i+n
-
-    w.setSelectionRange(ins,ins,insert=ins)</t>
-<t tx="ekr.20071113143523.15">if g.unitTesting:
-
-    try:
-        ec = c.editCommands ; w = c.frame.body.bodyCtrl
-        s = w.getAllText()
-
-        # This strings tests unicode, paren matching, and auto-indentation.
-        u = u'(a\u00c9\u03a9B\u3045\u4e7cz):\n' # '(aÉΩBぅ乼cz):\n'
-        u = u'(pdq):\n'
-        w.setInsertPoint(len(s))
-        for char in u:
-            event = g.Bunch(widget=w,char=char,keysym=None)
-            ec.selfInsertCommand(event)
-        result = w.getAllText()
-        #g.trace('result',repr(result))
-        assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
-    finally:
-        w.setAllText(s)
-        p.setBodyString(s)
-        #### p.v.t.bodyString = s
-        # g.trace(repr(s))
-        c.recolor()
-
-# end:
-</t>
-<t tx="ekr.20071113143523.16">if g.unitTesting:
-
-    try:
-        ec = c.editCommands ; w = c.frame.body.bodyCtrl
-        s = w.getAllText()
-        w.setSelectionRange(len(s)-9,len(s)-6)
-        event = g.Bunch(widget=w,char='\t',keysym=None)
-        ec.selfInsertCommand(event)
-        result = w.getAllText()
-        # g.trace('result',repr(result))
-        assert result.endswith('\n    ###abcdef'),'last line:%s' % repr(result.split('\n')[-1])
-    finally:
-        w.setAllText(s)
-        p.setBodyString(s)
-        #### p.v.t.bodyString = s
-        # g.trace(repr(s))
-        c.recolor()
-
-###abcdef</t>
-<t tx="ekr.20071113143523.17">def setMoveCol (self,w,spot):
-
-    '''Set the column to which an up or down arrow will attempt to move.'''
-
-    c = self.c ; p = c.p
-    s = w.getAllText()
-    i = w.toPythonIndex(spot)
-    junk,col = g.convertPythonIndexToRowCol(s,i)
-    # g.trace('spot,i,col',spot,i,col)
-
-    self.moveSpot = i
-    self.moveCol = col
-    self.moveSpotNode = p.v.t</t>
-<t tx="ekr.20071113143523.18">if g.unitTesting:
-
-    w = c.frame.body.bodyCtrl
-    ec = c.editCommands
-
-    for spot,result in (('1.0',0),(5,5)):
-        ec.setMoveCol(w,spot)
-        assert ec.moveSpot == result
-        assert ec.moveCol == result
-</t>
-<t tx="ekr.20071113143523.19">creating: dynamicUnitTest.leo
-...F.F.........
-======================================================================
-FAIL: @test leoBody.getInsertLines
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 13, in &lt;module&gt;
-AssertionError: Got u''
-
-======================================================================
-FAIL: @test pasteText
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 14, in &lt;module&gt;
-AssertionError
-
-----------------------------------------------------------------------
-Ran 15 tests in 0.063s
-
-FAILED (failures=2)
-</t>
-<t tx="ekr.20071113143523.2">def capitalizeHelper (self,event,which,undoType):
-
-    w = self.editWidget(event)
-    if not w: return
-
-    s = w.getAllText()
-    ins = w.getInsertPoint()
-    i,j = g.getWord(s,ins)
-    word = s[i:j]
-    # g.trace('word',repr(word))
-    if not word.strip(): return
-
-    self.beginCommand(undoType=undoType)
-
-    if   which == 'cap':  word2 = word.capitalize()
-    elif which == 'low':  word2 = word.lower()
-    elif which == 'up':   word2 = word.upper()
-    else: g.trace('can not happen: which = %s' %s (which))
-
-    changed = word != word2
-    # g.trace('changed',changed,'word2',repr(word2))
-
-    if changed:
-        w.delete(i,j)
-        w.insert(i,word2)
-        w.setSelectionRange(ins,ins,insert=ins)
-
-    self.endCommand(changed=changed,setLabel=True)
-</t>
-<t tx="ekr.20071113143523.20">def getInsertLines (self):
-
-    """Return before,after where:
-
-    before is all the lines before the line containing the insert point.
-    sel is the line containing the insert point.
-    after is all the lines after the line containing the insert point.
-
-    All lines end in a newline, except possibly the last line."""
-
-    body = self ; w = body.bodyCtrl
-    s = w.getAllText()
-    insert = w.getInsertPoint()
-    i,j = g.getLine(s,insert)
-    before = s[0:i]
-    ins = s[i:j]
-    after = s[j:]
-
-    before = g.toUnicode(before,g.app.tkEncoding)
-    ins    = g.toUnicode(ins,   g.app.tkEncoding)
-    after  = g.toUnicode(after ,g.app.tkEncoding)
-
-    return before,ins,after
-</t>
-<t tx="ekr.20071113143523.21"># line 1
-# line 2
-# line 3
-if g.unitTesting:
-
-    w = c.frame.body.bodyCtrl
-    index = 11 # in the second line.
-    w.setInsertPoint(index)
-    before,ins,after = c.frame.body.getInsertLines()
-    assert before == '# line 1\n','Got %s' % repr(before)
-    assert ins    == '# line 2\n','Got %s' % repr(ins)
-    assert after.startswith('# line 3\n')
-    assert after.endswith('# end.')
-
-# end.</t>
-<t tx="ekr.20071113143523.22">def pasteText (self,event=None,middleButton=False):
-
-    '''Paste the clipboard into a widget.
-    If middleButton is True, support x-windows middle-mouse-button easter-egg.'''
-
-    f = self ; c = f.c ; w = event and event.widget
-    # g.trace('isText',g.app.gui.isTextWidget(w),w)
-    if not w or not g.app.gui.isTextWidget(w): return
-
-    wname = c.widget_name(w)
-    i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
-    oldText = w.getAllText()
-
-    # g.pr('pasteText',i,j,middleButton,wname,repr(c.k.previousSelection))
-
-    if middleButton and c.k.previousSelection is not None:
-        start,end = c.k.previousSelection
-        s = w.getAllText()
-        s = s[start:end]
-        c.k.previousSelection = None
-    else:
-        s = s1 = g.app.gui.getTextFromClipboard()
-
-    singleLine = wname.startswith('head') or wname.startswith('minibuffer')
-
-    if singleLine:
-        # Strip trailing newlines so the truncation doesn't cause confusion.
-        while s and s [ -1] in ('\n','\r'):
-            s = s [: -1]
-
-    try:
-        # Update the widget.
-        if i != j:
-            w.delete(i,j)
-        w.insert(i,s)
-
-        if wname.startswith('body'):
-            c.frame.body.forceFullRecolor()
-            c.frame.body.onBodyChanged('Paste',oldSel=oldSel,oldText=oldText)
-        elif singleLine:
-            s = w.getAllText()
-            while s and s [ -1] in ('\n','\r'):
-                s = s [: -1]
-            if wname.startswith('head'):
-                # The headline is not officially changed yet.
-                # p.initHeadString(s)
-                width = f.tree.headWidth(p=None,s=s)
-                w.setWidth(width)
-        else: pass
-    except Exception:
-        pass # Tk sometimes throws weird exceptions here.
-
-    return 'break' # Essential
-
-OnPasteFromMenu = pasteText
-</t>
-<t tx="ekr.20071113143523.23"># target
-if g.unitTesting:
-
-    try:
-        w = c.frame.body.bodyCtrl
-        # g.pr((w))
-        s2 = p.b
-        s = w.getAllText()
-        assert s == s2, 'w.getAllText() != p.b: len(w)=%d, len(p)=%d' % (len(s),len(s2))
-        w.setInsertPoint(len(s))
-        c.k.previousSelection = 2,8
-        event = g.Bunch(widget=w)
-        c.frame.pasteText(event=event,middleButton=True)
-        s2 = w.getAllText()
-        assert len(s2) == len(s) + len('target')
-    finally:
-        w.setAllText(s)
-        p.setBodyString(s2)
-        #### p.v.t.bodyString = s2
-        # g.trace(repr(s))
-        c.recolor()
-
-# end5targettargettargettargettargettargettargettarget</t>
-<t tx="ekr.20071113143523.24">creating: dynamicUnitTest.leo
-
-found  3 doctests for leoGlobals
-found  1 doctests for leoTest
-....FcompareOutlines failed
-p1 &lt;pos 24603600 lvl: 6 [0] tempNode&gt; &lt;vnode 23763024:'tempNode'&gt;
-p2 &lt;pos 24604304 lvl: 7 [0] after&gt; &lt;vnode 23763312:'after'&gt;
-p1.body
-u'# after'
-p2.body
-u'@language python\n\ndef addCommentTest():\n\n    # if 1:\n        # a = 2\n        # b = 3\n\n    pass'
-FcompareOutlines failed
-p1 &lt;pos 52311152 lvl: 6 [0] tempNode&gt; &lt;vnode 23763024:'tempNode'&gt;
-p2 &lt;pos 24604304 lvl: 7 [0] after&gt; &lt;vnode 23763696:'after'&gt;
-p1.body
-u'@tabwidth -4\n\nline 1\n    line 2\n      line 3\nline4'
-p2.body
-u'@tabwidth -4\n\nline 1\n\tline 2\n\t  line 3\nline4'
-FcompareOutlines failed
-p1 &lt;pos 52311312 lvl: 6 [0] tempNode&gt; &lt;vnode 23763024:'tempNode'&gt;
-p2 &lt;pos 24603600 lvl: 7 [0] after&gt; &lt;vnode 23764080:'after'&gt;
-p1.body
-u'@tabwidth -4\n\nline 1\n\tline 2\n\t  line 3\nline4'
-p2.body
-u'@tabwidth -4\n\nline 1\n    line 2\n      line 3\nline4'
-FcompareOutlines failed
-p1 &lt;pos 25266416 lvl: 6 [0] tempNode&gt; &lt;vnode 23763024:'tempNode'&gt;
-p2 &lt;pos 24604304 lvl: 7 [0] after&gt; &lt;vnode 23764464:'after'&gt;
-p1.body
-u'@tabwidth -4\n\nline 1\n    line 2\n      line 3\nline4'
-p2.body
-u'@tabwidth -4\n\nline 1\n\tline 2\n\t  line 3\nline4'
-FcompareOutlines failed
-p1 &lt;pos 24603600 lvl: 6 [0] tempNode&gt; &lt;vnode 23763024:'tempNode'&gt;
-p2 &lt;pos 24604304 lvl: 7 [0] after&gt; &lt;vnode 23764848:'after'&gt;
-p1.body
-u'@tabwidth -4\n\nline 1\n\tline 2\n\t  line 3\nline4'
-p2.body
-u'@tabwidth -4\n\nline 1\n    line 2\n      line 3\nline4'
-FcompareOutlines failed
-p1 &lt;pos 24604304 lvl: 6 [0] tempNode&gt; &lt;vnode 23763024:'tempNode'&gt;
-p2 &lt;pos 25266416 lvl: 7 [0] after&gt; &lt;vnode 23781648:'after'&gt;
-p1.body
-u'line 1\n    line 2\n    line 3\nline 4'
-p2.body
-u'line 1\nline 2\nline 3\nline 4'
-FcompareOutlines failed
-p1 &lt;pos 25266416 lvl: 6 [0] tempNode&gt; &lt;vnode 23763024:'tempNode'&gt;
-p2 &lt;pos 24603600 lvl: 7 [0] after&gt; &lt;vnode 23782032:'after'&gt;
-p1.body
-u'after'
-p2.body
-u'@language python\n\ndef deleteCommentTest():\n\n    if 1:\n        a = 2\n        b = 3\n\n    pass'
-FcompareOutlines failed
-p1 &lt;pos 52311344 lvl: 6 [0] tempNode&gt; &lt;vnode 23763024:'tempNode'&gt;
-p2 &lt;pos 25266416 lvl: 7 [0] after&gt; &lt;vnode 23782416:'after'&gt;
-p1.numberOfChildren()=0, p2.numberOfChildren()=1
-p1.body
-u'before\n    &lt;&lt; section &gt;&gt;\n    sec line 1\n        sec line 2 indented\nsec line 3\nafter'
-p2.body
-u'before\nafter'
-F.Selected text should start with a section name
-compareOutlines failed
-p1 &lt;pos 24603600 lvl: 6 [0] tempNode&gt; &lt;vnode 23763024:'tempNode'&gt;
-p2 &lt;pos 25266416 lvl: 7 [0] after&gt; &lt;vnode 23783280:'after'&gt;
-p1.numberOfChildren()=0, p2.numberOfChildren()=1
-p1.body
-u'before\n    &lt;&lt; section &gt;&gt;\n    sec line 1\n        sec line 2 indented\nsec line 3\nafter'
-p2.body
-u'before\n    &lt;&lt; section &gt;&gt;\nafter'
-FSelected text should start with a section name
-...............................................................................................................F..F.......
-End of unit tests for typing
-.FFFFFFFFFFFFFFcolorizer &lt;threading_colorizer.nullColorizer instance at 0x0168B0A8&gt;
-................................................................................................................................................................
-..........
-End of doctests
-...............F...
-End of other unit tests
-.............
-======================================================================
-FAIL: @test p.setBodyStringOrPane
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 15, in &lt;module&gt;
-AssertionError: c.setBodyString failed: u'', 'after'
-
-======================================================================
-FAIL: runTest (leoTest.editBodyTestCase)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1268, in runTest
-    self.editBody()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1257, in editBody
-    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
-AssertionError: addComments: before undo1
-
-======================================================================
-FAIL: runTest (leoTest.editBodyTestCase)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1268, in runTest
-    self.editBody()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1257, in editBody
-    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
-AssertionError: convertAllBlanks: before undo1
-
-======================================================================
-FAIL: runTest (leoTest.editBodyTestCase)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1268, in runTest
-    self.editBody()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1257, in editBody
-    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
-AssertionError: convertAllTabs: before undo1
-
-======================================================================
-FAIL: runTest (leoTest.editBodyTestCase)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1268, in runTest
-    self.editBody()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1257, in editBody
-    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
-AssertionError: convertBlanks: before undo1
-
-======================================================================
-FAIL: runTest (leoTest.editBodyTestCase)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1268, in runTest
-    self.editBody()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1257, in editBody
-    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
-AssertionError: convertTabs: before undo1
-
-======================================================================
-FAIL: runTest (leoTest.editBodyTestCase)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1268, in runTest
-    self.editBody()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1257, in editBody
-    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
-AssertionError: dedentBody: before undo1
-
-======================================================================
-FAIL: runTest (leoTest.editBodyTestCase)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1268, in runTest
-    self.editBody()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1257, in editBody
-    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
-AssertionError: deleteComments: before undo1
-
-======================================================================
-FAIL: runTest (leoTest.editBodyTestCase)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1268, in runTest
-    self.editBody()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1257, in editBody
-    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
-AssertionError: extract: before undo1
-
-======================================================================
-FAIL: runTest (leoTest.editBodyTestCase)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1268, in runTest
-    self.editBody()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1257, in editBody
-    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
-AssertionError: extractSection: before undo1
-
-======================================================================
-FAIL: @test paste from menu into headline sticks
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 24, in &lt;module&gt;
-AssertionError: oops1: expected: Test headline abcABC, got Test headline abc
-
-======================================================================
-FAIL: @test selecting new node retains paste in headline
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 21, in &lt;module&gt;
-AssertionError
-
-======================================================================
-FAIL: @test noTrailingNewline (pass)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 7, in &lt;module&gt;
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1058, in __init__
-    reformatParagraphTest.__init__(self,c,p)
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 915, in __init__
-    self.go()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 922, in go
-    self.runTest()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1067, in runTest
-    self.checkText()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 948, in checkText
-    + "\n  Actual text: " + `newLines[i]`
-AssertionError: Mismatch on line 0.
-Expected text: u'This line is over forty characters long,\n'
-  Actual text: u'This line is over forty characters long, at least it seems to be.'
-
-======================================================================
-FAIL: @test trailingNewline (pass)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 8, in &lt;module&gt;
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1058, in __init__
-    reformatParagraphTest.__init__(self,c,p)
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 915, in __init__
-    self.go()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 922, in go
-    self.runTest()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1067, in runTest
-    self.checkText()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 948, in checkText
-    + "\n  Actual text: " + `newLines[i]`
-AssertionError: Mismatch on line 0.
-Expected text: u'This line is over forty characters long,\n'
-  Actual text: u'This line is over forty characters long, at least it seems to be.\n'
-
-======================================================================
-FAIL: @test mixedLineLengths
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 7, in &lt;module&gt;
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1058, in __init__
-    reformatParagraphTest.__init__(self,c,p)
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 915, in __init__
-    self.go()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 922, in go
-    self.runTest()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1067, in runTest
-    self.checkText()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 948, in checkText
-    + "\n  Actual text: " + `newLines[i]`
-AssertionError: Mismatch on line 0.
-Expected text: u'This line is over forty characters long,\n'
-  Actual text: u'This line is over forty characters long, at least it seems to be.\n'
-
-======================================================================
-FAIL: @test mixedLinesWithLeadingWS
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 7, in &lt;module&gt;
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1058, in __init__
-    reformatParagraphTest.__init__(self,c,p)
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 915, in __init__
-    self.go()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 922, in go
-    self.runTest()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1067, in runTest
-    self.checkText()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 948, in checkText
-    + "\n  Actual text: " + `newLines[i]`
-AssertionError: Mismatch on line 0.
-Expected text: u'This line is over forty characters long,\n'
-  Actual text: u'This line is over forty characters long, at least it seems to be.\n'
-
-======================================================================
-FAIL: @test noChangeRequired
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 7, in &lt;module&gt;
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1058, in __init__
-    reformatParagraphTest.__init__(self,c,p)
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 915, in __init__
-    self.go()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 922, in go
-    self.runTest()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1068, in runTest
-    self.checkPosition(self.finalRow,self.finalCol)
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 931, in checkPosition
-    assert expCol == col, "Got column %d.  Expected %d" % (col,expCol)
-AssertionError: Got column 0.  Expected 28
-
-======================================================================
-FAIL: @test honorLeadingWS
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 7, in &lt;module&gt;
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1058, in __init__
-    reformatParagraphTest.__init__(self,c,p)
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 915, in __init__
-    self.go()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 922, in go
-    self.runTest()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1067, in runTest
-    self.checkText()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 948, in checkText
-    + "\n  Actual text: " + `newLines[i]`
-AssertionError: Mismatch on line 0.
-Expected text: u'   This line is over forty characters\n'
-  Actual text: u'   This line is over forty characters long, at least it seems to be.\n'
-
-======================================================================
-FAIL: @test honorLeadingWSVar1
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 7, in &lt;module&gt;
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1058, in __init__
-    reformatParagraphTest.__init__(self,c,p)
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 915, in __init__
-    self.go()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 922, in go
-    self.runTest()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1067, in runTest
-    self.checkText()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 948, in checkText
-    + "\n  Actual text: " + `newLines[i]`
-AssertionError: Mismatch on line 0.
-Expected text: u'   This line is over forty characters\n'
-  Actual text: u'   This line is over forty characters long, at least it seems to be.\n'
-
-======================================================================
-FAIL: @test simpleHangingIndent
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 7, in &lt;module&gt;
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1058, in __init__
-    reformatParagraphTest.__init__(self,c,p)
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 915, in __init__
-    self.go()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 922, in go
-    self.runTest()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1067, in runTest
-    self.checkText()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 948, in checkText
-    + "\n  Actual text: " + `newLines[i]`
-AssertionError: Mismatch on line 0.
-Expected text: u'Honor this line that has a hanging\n'
-  Actual text: u'Honor this line that has a hanging indentation, please.  Hanging\n'
-
-======================================================================
-FAIL: @test testSimpleHangingIndentVar1
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 7, in &lt;module&gt;
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1058, in __init__
-    reformatParagraphTest.__init__(self,c,p)
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 915, in __init__
-    self.go()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 922, in go
-    self.runTest()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1067, in runTest
-    self.checkText()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 948, in checkText
-    + "\n  Actual text: " + `newLines[i]`
-AssertionError: Mismatch on line 0.
-Expected text: u'Honor this line that has a hanging\n'
-  Actual text: u'Honor this line that has\n'
-
-======================================================================
-FAIL: @test simpleHangingIndentVar2
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 7, in &lt;module&gt;
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1058, in __init__
-    reformatParagraphTest.__init__(self,c,p)
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 915, in __init__
-    self.go()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 922, in go
-    self.runTest()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1067, in runTest
-    self.checkText()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 948, in checkText
-    + "\n  Actual text: " + `newLines[i]`
-AssertionError: Mismatch on line 0.
-Expected text: u'Honor this line that has a hanging\n'
-  Actual text: u'Honor this line that \n'
-
-======================================================================
-FAIL: @test multiParagraphTest
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 7, in &lt;module&gt;
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 915, in __init__
-    self.go()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 922, in go
-    self.runTest()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1080, in runTest
-    self.checkPosition(13,0)
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 933, in checkPosition
-    assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
-AssertionError: Got row 1.  Expected 13
-
-======================================================================
-FAIL: @test multiParagraphWithListTest
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 8, in &lt;module&gt;
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 915, in __init__
-    self.go()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 922, in go
-    self.runTest()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1102, in runTest
-    self.checkPosition(4,0)
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 933, in checkPosition
-    assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
-AssertionError: Got row 1.  Expected 4
-
-======================================================================
-FAIL: @test leadingWSOnEmptyLinesTest
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 18, in &lt;module&gt;
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 915, in __init__
-    self.go()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 922, in go
-    self.runTest()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1128, in runTest
-    self.checkPosition(4,0)
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 933, in checkPosition
-    assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
-AssertionError: Got row 1.  Expected 4
-
-======================================================================
-FAIL: @test directiveBreaksParagraphTest
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 5, in &lt;module&gt;
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 915, in __init__
-    self.go()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 922, in go
-    self.runTest()
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 1154, in runTest
-    self.checkPosition(13,0) # at next paragraph
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 933, in checkPosition
-    assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
-AssertionError: Got row 1.  Expected 13
-
-======================================================================
-FAIL: @test openURL
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\prog\tigris-cvs\leo\src\leoTest.py", line 162, in runTest
-    exec script + '\n' in d
-  File "&lt;string&gt;", line 9, in &lt;module&gt;
-AssertionError: Got:None
-
-----------------------------------------------------------------------
-Ran 354 tests in 33.531s
-
-FAILED (failures=27)
-</t>
-<t tx="ekr.20071113143523.25">@nocolor
-
-The new scheme:
-
-- Run tests externally from leoPy.leo to test recent changes.
-- Run tests locally from leoPy.leo for more 'accurate' tests.
-    - External tests use null gui.  This can distort the tests.
-    - Several tests fail because of problems in the nullGui (like select)
-
-- Put general unit tests in unitTest.leo.
-- Put most unit tests in leoPy.leo, near the code they test.
-- Run @test nodes in leoPy.leo **from unitTest.leo**.</t>
-<t tx="ekr.20071113143523.3"># TARGETWORD
-if g.unitTesting:
-
-    w = c.frame.body.bodyCtrl
-
-    for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWORD')):
-        w.setInsertPoint(5)
-        c.editCommands.capitalizeHelper(event=None,which=which,undoType=None)
-        s = w.getAllText()
-        word = s[2:12]
-        assert word == result, 'Expected %s, got: %s' % (result,repr(word))
-        i = w.getInsertPoint()
-        assert i == 5, 'Expected 5, got: %d' % i</t>
-<t tx="ekr.20071113143523.4">def findWord (self,event):
-
-    '''Put the cursor at the next word (on a line) that starts with a character.'''
-
-    k = self.k ; tag = 'find-word-on-line' ; state = k.getState(tag)
-
-    if state == 0:
-        w = self.editWidget(event) # Sets self.w
-        if not w: return
-        k.setLabelBlue('Find word: ')
-        k.getArg(event,tag,1,self.findWord)
-    else:        
-        word = k.arg ; w = self.w ; c = k.c
-        if word:
-            i = w.getInsertPoint()
-            s = w.getAllText()
-            j = s.find('\n',i) # Limit to this line.
-            if j &gt; -1: s = s[:j]
-            while i &lt; len(s):
-                if g.match_word(s,i,word) and (i == 0 or not g.isWordChar(s[i-1])):
-                    w.setSelectionRange(i,i+len(word))
-                    break
-                else:
-                    i += 1
-        k.resetLabel()
-        k.clearState()
-</t>
-<t tx="ekr.20071113143523.5"># targetWord
-if g.unitTesting:
-
-    k = c.k ; w = c.frame.body.bodyCtrl
-    w.setInsertPoint(0)
-    k.arg = 'targetWord'
-    k.setState('find-word-on-line',1)
-    f = c.editCommands.findWord(event=None)
-    i,j = w.getSelectionRange()
-    s = w.getAllText()
-    word = s[i:j]
-    assert word == 'targetWord', 'got: %s' % word
-</t>
-<t tx="ekr.20071113143523.6">def selfInsertCommand(self,event,action='insert'):
-
-    '''Insert a character in the body pane.
-    This is the default binding for all keys in the body pane.'''
-
-    w = self.editWidget(event)
-    if not w: return 'break'
-    &lt;&lt; set local vars &gt;&gt;
-    #g.trace('ch',repr(ch))
-    if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
-        return "break" # The hook claims to have handled the event.
-    if ch == '\t':
-        self.updateTab(p,w)
-    elif ch == '\b':
-        # This is correct: we only come here if there no bindngs for this key. 
-        self.backwardDeleteCharacter(event)
-    elif ch in ('\r','\n'):
-        ch = '\n'
-        self.insertNewlineHelper(w,oldSel,undoType)
-    elif inBrackets and self.autocompleteBrackets:
-        self.updateAutomatchBracket(p,w,ch,oldSel)
-    elif ch: # Null chars must not delete the selection.
-        i,j = oldSel
-        if i &gt; j: i,j = j,i
-        # Use raw insert/delete to retain the coloring.
-        if i != j:                  w.delete(i,j)
-        elif action == 'overwrite': w.delete(i)
-        w.insert(i,ch)
-        w.setInsertPoint(i+1)
-        if inBrackets and self.flashMatchingBrackets:
-
-            self.flashMatchingBracketsHelper(w,i,ch)               
-    else:
-        return 'break' # This method *always* returns 'break'
-
-    # Set the column for up and down keys.
-    spot = w.getInsertPoint()
-    c.editCommands.setMoveCol(w,spot)
-
-    # Update the text and handle undo.
-    newText = w.getAllText()
-    changed = newText != oldText
-    # g.trace('ch',repr(ch),'changed',changed,'newText',repr(newText[-10:]))
-    if changed:
-        # g.trace('ins',w.getInsertPoint())
-        c.frame.body.onBodyChanged(undoType=undoType,
-            oldSel=oldSel,oldText=oldText,oldYview=None)
-
-    g.doHook("bodykey2",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType)
-    return 'break'
-</t>
-<t tx="ekr.20071113143523.7">c = self.c
-p = c.p
-gui = g.app.gui
-ch = gui.eventChar(event)
-keysym = gui.eventKeysym(event)
-if keysym == 'Return':
-    ch = '\n' # This fixes the MacOS return bug.
-if keysym == 'Tab': # Support for wx_alt_gui plugin.
-    ch = '\t'
-name = c.widget_name(w)
-oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
-oldText = name.startswith('body') and p.b or ''
-undoType = 'Typing'
-trace = c.config.getBool('trace_masterCommand')
-brackets = self.openBracketsList + self.closeBracketsList
-inBrackets = ch and g.toUnicode(ch,g.app.tkEncoding) in brackets
-if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
-<t tx="ekr.20071113143523.8">def insertNewlineHelper (self,w,oldSel,undoType):
-
-    c = self.c ; p = c.p
-    i,j = oldSel ; ch = '\n'
-
-    if i != j:
-        # No auto-indent if there is selected text.
-        w.delete(i,j)
-        w.insert(i,ch)
-        w.setInsertPoint(i+1)
-    else:
-        w.insert(i,ch)
-        w.setInsertPoint(i+1)
-
-        allow_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
-        if (
-            (allow_in_nocolor or c.frame.body.colorizer.useSyntaxColoring(p)) and
-            undoType != "Change"
-        ):
-            # No auto-indent if in @nocolor mode or after a Change command.
-            self.updateAutoIndent(p,w)
-
-    w.seeInsertPoint()</t>
-<t tx="ekr.20071113143523.9">def initBracketMatcher (self,c):
-
-    self.openBracketsList  = c.config.getString('open_flash_brackets')  or '([{'
-    self.closeBracketsList = c.config.getString('close_flash_brackets') or ')]}'
-
-    if len(self.openBracketsList) != len(self.closeBracketsList):
-        g.es_print('bad open/close_flash_brackets setting: using defaults')
-        self.openBracketsList  = '([{'
-        self.closeBracketsList = ')]}'
-
-    # g.trace('self.openBrackets',openBrackets)
-    # g.trace('self.closeBrackets',closeBrackets)
-</t>
 <t tx="ekr.20071113143844.5">assert c.atFileCommands.isSignificantTree(p)
 
 </t>
@@ -16950,15 +15805,13 @@ if 0:
     print('root:%s, n:%s, len(lines): %s' % (
         root and root.h,n,len(lines)))</t>
 <t tx="ekr.20080904120258.2">c.goto_showResults(found=True,p=p,n=3,n2=3,lines=3)</t>
-<t tx="ekr.20080904120258.3">c.goto_showResults(found=False,p=p,n=3,n2=3,lines=['a','b'])
-</t>
-<t tx="ekr.20080904120258.5">root = p.parent().parent()
-h = '@file unittest/at-file-line-number-test.py'
-target = g.findNodeInTree(c,root,h)
+<t tx="ekr.20080904120258.3"># c.goto_showResults(found=False,p=p,n=3,n2=3,lines=['a','b'])
 
-p,found = c.goto_scanForVnodeName(root,h)
-assert found,found
-assert p == target,'\np:     %s\ntarget:%s' % (p,target)
+c.goToLineNumber(c).showResults(
+    found=False,p=p,n=3,n2=3,lines=['a','b'])
+
+
+
 </t>
 <t tx="ekr.20080904120258.6">root = p.parent().parent()
 h = '@file unittest/at-file-line-number-test.py'
@@ -16972,22 +15825,11 @@ p,found = c.goto_findGnx(root,gnx,h)
 assert found,found
 assert p == target,'\np:     %s\ntarget:%s' % (p,target)
 </t>
-<t tx="ekr.20080904120258.7">root = p.parent().parent()
-h = '@file unittest/at-file-line-number-test.py'
-target = g.findNodeInTree(c,root,h)
-assert target
-
-lines = ['a','b']
-p,found = c.goto_scanTnodeList (target,delim='#',lines=lines,n=3,vnodeName=h)
-assert found,found
-assert p == target,'\np:     %s\ntarget:%s' % (p,target)
-</t>
 <t tx="ekr.20080905112230.3"></t>
 <t tx="ekr.20080905112230.4"># Can not clone @auto children!</t>
 <t tx="ekr.20080905113550.2"></t>
 <t tx="ekr.20080905113550.3"></t>
 <t tx="ekr.20080905113550.4"></t>
-<t tx="ekr.20080905125317.1"></t>
 <t tx="ekr.20080905130723.1">root = p.parent().parent()
 h = '@file unittest/at-file-line-number-test.py'
 target = g.findNodeInTree(c,root,h)
@@ -23948,9 +22790,12 @@ c.fileCommands.save(c.mFileName)
 c.close()
 assert g.os_path_exists(fn)
 </t>
-<t tx="ekr.20100211110729.5389">
+<t tx="ekr.20100211110729.5389">import os
 fn = g.u('ффф.leo')
-g.app.config.writeRecentFilesFileHelper(fn)</t>
+g.app.config.writeRecentFilesFileHelper(fn)
+assert g.os_path_exists(fn)
+os.remove(fn)
+assert not g.os_path_exists(fn)</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

@@ -2306,6 +2306,7 @@ class editCommandsClass (baseEditCommandsClass):
         '''Put the cursor at the n'th line of a file or script.
         This is a minibuffer interface to Leo's legacy Go To Line number command.'''
 
+        c = self.c
         k = self.k ; tag = 'goto-global-line' ; state = k.getState(tag)
 
         if state == 0:
@@ -2318,7 +2319,7 @@ class editCommandsClass (baseEditCommandsClass):
             k.resetLabel()
             k.clearState()
             if n.isdigit():
-                self.c.goToLineNumber (n=int(n))
+                c.goToLineNumber(c).go(n=int(n))
     #@-node:ekr.20060417181052:gotoGlobalLine
     #@+node:ekr.20050929124234:gotoLine
     def gotoLine (self,event):
