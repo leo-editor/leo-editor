@@ -567,7 +567,6 @@ def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
     else:
         g.trace('backup file does not exist!',
             repr(backupName),color='red')
-
 #@-node:ekr.20100119145629.6108:handleWriteLeoFileException
 #@-node:ekr.20100119145629.6111:writeToFileHelper & helpers
 #@-node:ekr.20100121050224.6141:Fixed crash in writeToFileHelper
@@ -748,7 +747,6 @@ def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
     else:
         g.trace('backup file does not exist!',
             repr(backupName),color='red')
-
 #@-node:ekr.20100119145629.6108:handleWriteLeoFileException
 #@-node:ekr.20100119145629.6111:writeToFileHelper & helpers
 #@-node:ekr.20100120095741.6134:Fixed mkstemp bug
@@ -3318,7 +3316,7 @@ if p == self.rootPosition:
     if d.get('str_leo_pos'):
         del d['str_leo_pos']
     # Don't write the current position if we can cache it. 
-    if g.enableDB and c.mFileName and not g.unitTesting:
+    if g.enableDB and c.mFileName: # and not g.unitTesting:
         c.cacher.setCachedStringPosition(str_pos)
     elif c.fixed:
         pass
@@ -5651,7 +5649,7 @@ if p == self.rootPosition:
     if d.get('str_leo_pos'):
         del d['str_leo_pos']
     # Don't write the current position if we can cache it. 
-    if g.enableDB and c.mFileName and not g.unitTesting:
+    if g.enableDB and c.mFileName: # and not g.unitTesting:
         c.cacher.setCachedStringPosition(str_pos)
     elif c.fixed:
         pass
@@ -6729,7 +6727,7 @@ def putGlobals (self):
     trace = False and not g.unitTesting
     c = self.c
 
-    use_db = g.enableDB and not g.unitTesting and c.mFileName
+    use_db = g.enableDB and c.mFileName
     if use_db:
         if trace: g.trace(c.mFileName)
         c.cacher.setCachedGlobalsElement(c.mFileName)
@@ -6860,7 +6858,7 @@ if p == self.rootPosition:
     if d.get('str_leo_pos'):
         del d['str_leo_pos']
     # Don't write the current position if we can cache it. 
-    if g.enableDB and c.mFileName and not g.unitTesting:
+    if g.enableDB and c.mFileName: # and not g.unitTesting:
         c.cacher.setCachedStringPosition(str_pos)
     elif c.fixed:
         pass
@@ -8864,7 +8862,6 @@ def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
     else:
         g.trace('backup file does not exist!',
             repr(backupName),color='red')
-
 #@-node:ekr.20100119145629.6108:handleWriteLeoFileException
 #@-node:ekr.20100204052559.5804:Part 2: mkstemp & g.utils_rename
 #@+node:ekr.20100204052559.5805:Part 3: g.utils_rename
@@ -9037,7 +9034,6 @@ def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
     else:
         g.trace('backup file does not exist!',
             repr(backupName),color='red')
-
 #@-node:ekr.20100119145629.6108:handleWriteLeoFileException
 #@+node:ekr.20031218072017.1241:g.update_file_if_changed
 # This is part of the tangle code.
@@ -9608,374 +9604,6 @@ https://bugs.launchpad.net/leo-editor/+bug/518823
 Clone headline modification not propogated after edit
 #@nonl
 #@-node:ekr.20100209114432.5752:Fixed bug 518823: clone headline updates
-#@+node:ekr.20100210163813.5746:Fixed crasher saving new files
-#@+node:ekr.20031218072017.2812:c.__init__
-def __init__(self,frame,fileName,relativeFileName=None):
-
-    trace = False
-    c = self ; tag = 'Commands.__init__'
-
-    self.requestedFocusWidget = None
-    self.requestRedrawFlag = False
-    self.requestedIconify = '' # 'iconify','deiconify'
-    self.requestRecolorFlag = False
-
-    if trace:
-        print(tag)
-        import time ; t1 = time.clock()
-    self.exists = True # Indicate that this class exists and has not been destroyed.
-        # Do this early in the startup process so we can call hooks.
-
-    # Init ivars with self.x instead of c.x to keep pylint happy
-
-    # Debugging.
-    self.command_count = 0
-    self.scanAtPathDirectivesCount = 0
-    self.trace_focus_count = 0
-
-    # Data.
-    self.chapterController = None
-    self.frame = frame
-    self.hiddenRootNode = leoNodes.vnode(context=c)
-    self.hiddenRootNode.setHeadString('<hidden root vnode>')
-    self.isZipped = False # May be set to True by g.openWithFileName.
-    self.mFileName = fileName
-        # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
-    self.mRelativeFileName = relativeFileName
-
-    self.initIvars()
-    self.nodeHistory = nodeHistory(c)
-    self.initConfigSettings()
-    c.setWindowPosition() # Do this after initing settings.
-
-    # initialize the sub-commanders.
-    # c.finishCreate creates the sub-commanders for edit commands.
-
-    # Break circular import dependencies by importing here.
-    # These imports take almost 3/4 sec in the leoBridge.
-    import leo.core.leoAtFile as leoAtFile
-    import leo.core.leoCache as leoCache
-    import leo.core.leoEditCommands as leoEditCommands
-    import leo.core.leoFileCommands as leoFileCommands
-    import leo.core.leoImport as leoImport
-    import leo.core.leoRst as leoRst
-    import leo.core.leoShadow as leoShadow
-    import leo.core.leoTangle as leoTangle
-    import leo.core.leoUndo as leoUndo
-
-    if trace: t2 = g.printDiffTime('%s: after imports' % (tag),t1)
-
-    self.shadowController = leoShadow.shadowController(c)
-    self.fileCommands   = leoFileCommands.fileCommands(c)
-    self.atFileCommands = leoAtFile.atFile(c)
-    self.importCommands = leoImport.leoImportCommands(c)
-    self.rstCommands    = leoRst.rstCommands(c)
-    self.tangleCommands = leoTangle.tangleCommands(c)
-    leoEditCommands.createEditCommanders(c)
-    self.rstCommands = leoRst.rstCommands(c)
-
-    c.cacher = leoCache.cacher(c)
-    c.cacher.initFileDB(self.mFileName)
-
-    if trace: t3 = g.printDiffTime('%s: after controllers created' % (tag),t2)
-
-    if 0:
-        g.pr("\n*** using Null undoer ***\n")
-        self.undoer = leoUndo.nullUndoer(self)
-    else:
-        self.undoer = leoUndo.undoer(self)
-#@-node:ekr.20031218072017.2812:c.__init__
-#@+node:ekr.20031218072017.1623:c.new
-def new (self,event=None,gui=None):
-
-    '''Create a new Leo window.'''
-
-    c,frame = g.app.newLeoCommanderAndFrame(
-        fileName=None,relativeFileName=None,gui=gui)
-
-    g.doHook("new",old_c=self,c=c,new_c=c)
-    frame.setInitialWindowGeometry()
-    frame.deiconify()
-    frame.lift()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
-        # Resize the _new_ frame.
-    c.frame.createFirstTreeNode()
-    g.createMenu(c)
-    g.finishOpen(c)
-    g.app.writeWaitingLog(c,forceLog=True) # Force a new signon message.
-    c.redraw()
-    return c # For unit test.
-#@-node:ekr.20031218072017.1623:c.new
-#@+node:ekr.20031218072017.2834:c.save
-def save (self,event=None):
-
-    '''Save a Leo outline to a file.'''
-
-    c = self ; p = c.currentPosition()
-    w = g.app.gui.get_focus(c)
-
-    if g.app.disableSave:
-        g.es("save commands disabled",color="purple")
-        return
-
-    # Make sure we never pass None to the ctor.
-    if not c.mFileName:
-        c.frame.title = ""
-        c.mFileName = ""
-
-    if c.mFileName:
-        # Calls c.setChanged(False) if no error.
-        c.fileCommands.save(c.mFileName)
-    else:
-        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-            initialfile = c.mFileName,
-            title="Save",
-            filetypes=[("Leo files", "*.leo")],
-            defaultextension=".leo")
-        c.bringToFront()
-
-        if fileName:
-            # Don't change mFileName until the dialog has suceeded.
-            c.mFileName = g.ensure_extension(fileName, ".leo")
-            c.frame.title = c.mFileName
-            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-            c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
-                # Bug fix in 4.4b2.
-            if g.app.qt_use_tabs and hasattr(c.frame,'top'):
-                c.frame.top.master.setTabName(c,c.mFileName)
-            c.fileCommands.save(c.mFileName)
-            c.updateRecentFiles(c.mFileName)
-            g.chdir(c.mFileName)
-
-    # Done in fileCommands.save.
-    # c.redraw_after_icons_changed()
-    c.widgetWantsFocusNow(w)
-#@-node:ekr.20031218072017.2834:c.save
-#@+node:ekr.20031218072017.2835:c.saveAs
-def saveAs (self,event=None):
-
-    '''Save a Leo outline to a file with a new filename.'''
-
-    c = self ;  w = g.app.gui.get_focus(c)
-
-    if g.app.disableSave:
-        g.es("save commands disabled",color="purple")
-        return
-
-    # Make sure we never pass None to the ctor.
-    if not c.mFileName:
-        c.frame.title = ""
-
-    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-        initialfile = c.mFileName,
-        title="Save As",
-        filetypes=[("Leo files", "*.leo")],
-        defaultextension=".leo")
-    c.bringToFront()
-
-    if fileName:
-        # 7/2/02: don't change mFileName until the dialog has suceeded.
-        c.mFileName = g.ensure_extension(fileName, ".leo")
-        c.frame.title = c.mFileName
-        c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-        c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
-            # Bug fix in 4.4b2.
-        # Calls c.setChanged(False) if no error.
-        if g.app.qt_use_tabs and hasattr(c.frame,'top'):
-            c.frame.top.master.setTabName(c,c.mFileName)
-        c.fileCommands.saveAs(c.mFileName)
-        c.updateRecentFiles(c.mFileName)
-        g.chdir(c.mFileName)
-
-    # Done in fileCommands.saveAs.
-    # c.redraw_after_icons_changed()
-    c.widgetWantsFocusNow(w)
-#@-node:ekr.20031218072017.2835:c.saveAs
-#@+node:ekr.20031218072017.2836:c.saveTo
-def saveTo (self,event=None):
-
-    '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
-
-    c = self ; w = g.app.gui.get_focus(c)
-
-    if g.app.disableSave:
-        g.es("save commands disabled",color="purple")
-        return
-
-    # Make sure we never pass None to the ctor.
-    if not c.mFileName:
-        c.frame.title = ""
-
-    # set local fileName, _not_ c.mFileName
-    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-        initialfile = c.mFileName,
-        title="Save To",
-        filetypes=[("Leo files", "*.leo")],
-        defaultextension=".leo")
-    c.bringToFront()
-
-    if fileName:
-        fileName = g.ensure_extension(fileName, ".leo")
-        c.fileCommands.saveTo(fileName)
-        c.updateRecentFiles(fileName)
-        g.chdir(fileName)
-
-    # Does not change icons status.
-    # c.redraw_after_icons_changed()
-    c.widgetWantsFocusNow(w)
-#@-node:ekr.20031218072017.2836:c.saveTo
-#@+node:ekr.20090520055433.5952:g.finishOpen
-def finishOpen(c):
-
-    k = c.k
-    # New in Leo 4.6: provide an official way for very late initialization.
-    c.frame.tree.initAfterLoad()
-    c.initAfterLoad()
-    c.redraw()
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.chapterController:
-        c.chapterController.finishCreate()
-    if k:
-        k.setDefaultInputState()
-    if c.config.getBool('outline_pane_has_initial_focus'):
-        c.treeWantsFocusNow()
-    else:
-        c.bodyWantsFocusNow()
-    if k:
-        k.showStateAndMode()
-    c.frame.initCompleteHint()
-    return True
-#@-node:ekr.20090520055433.5952:g.finishOpen
-#@+node:ekr.20100119145629.6108:handleWriteLeoFileException
-def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
-
-    c = self.c
-
-    g.es("exception writing:",fileName)
-    g.es_exception(full=True)
-
-    if theActualFile:
-        theActualFile.close()
-
-    # Delete fileName.
-    if fileName and g.os_path_exists(fileName):
-        self.deleteFileWithMessage(fileName,'')
-
-    # Rename backupName to fileName.
-    if backupName and g.os_path_exists(backupName):
-        g.es("restoring",fileName,"from",backupName)
-
-        # No need to create directories when restoring.
-        g.utils_rename(c,backupName,fileName)
-    else:
-        g.trace('backup file does not exist!',
-            repr(backupName),color='red')
-
-#@-node:ekr.20100119145629.6108:handleWriteLeoFileException
-#@+node:ekr.20100208082353.5918:initFileDB
-def initFileDB (self,fn):
-
-    trace = False and not g.unitTesting
-    if trace: g.trace('inited',self.inited,repr(fn))
-
-    if not fn: return
-
-    pth, bname = split(fn)
-
-    if pth and bname and g.enableDB:
-        fn = fn.lower()
-        fn = g.toEncodedString(fn) # Required for Python 3.x.
-
-        self.dbdirname = dbdirname = join(g.app.homeLeoDir,'db',
-            '%s_%s' % (bname,hashlib.md5(fn).hexdigest()))
-
-        self.db = PickleShareDB(dbdirname)
-        self.inited = True
-#@-node:ekr.20100208082353.5918:initFileDB
-#@+node:ekr.20031218072017.1720:save (fileCommands)
-def save(self,fileName):
-
-    c = self.c ; v = c.currentVnode()
-
-    # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
-    ok = g.doHook("save1",c=c,p=v,v=v,fileName=fileName)
-
-    if ok is None:
-        c.endEditing() # Set the current headline text.
-        self.setDefaultDirectoryForNewFiles(fileName)
-        c.cacher.save(fileName,changeName=True)
-        ok = c.checkFileTimeStamp(fileName)
-        if ok:
-            ok = self.write_Leo_file(fileName,False) # outlineOnlyFlag
-        if ok:
-            self.putSavedMessage(fileName)
-            c.setChanged(False) # Clears all dirty bits.
-            if c.config.save_clears_undo_buffer:
-                g.es("clearing undo")
-                c.undoer.clearUndoState()
-
-        c.redraw_after_icons_changed()
-
-    g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
-    return ok
-#@-node:ekr.20031218072017.1720:save (fileCommands)
-#@+node:ekr.20031218072017.3043:saveAs (leoFileCommands)
-def saveAs(self,fileName):
-
-    c = self.c ; v = c.currentVnode()
-
-    if not g.doHook("save1",c=c,p=v,v=v,fileName=fileName):
-        c.endEditing() # Set the current headline text.
-        self.setDefaultDirectoryForNewFiles(fileName)
-        c.cacher.save(fileName,changeName=True)
-        # Disable path-changed messages in writeAllHelper.
-        c.ignoreChangedPaths = True
-        try:
-            if self.write_Leo_file(fileName,outlineOnlyFlag=False):
-                c.setChanged(False) # Clears all dirty bits.
-                self.putSavedMessage(fileName)
-        finally:
-            c.ignoreChangedPaths = True
-
-        c.redraw_after_icons_changed()
-
-    g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
-#@-node:ekr.20031218072017.3043:saveAs (leoFileCommands)
-#@+node:ekr.20031218072017.3044:saveTo (leoFileCommands)
-def saveTo (self,fileName):
-
-    c = self.c ; v = c.currentVnode()
-
-    if not g.doHook("save1",c=c,p=v,v=v,fileName=fileName):
-        c.endEditing()# Set the current headline text.
-        self.setDefaultDirectoryForNewFiles(fileName)
-        c.cacher.save(fileName,changeName=False)
-        # Disable path-changed messages in writeAllHelper.
-        c.ignoreChangedPaths = True
-        try:
-            self.write_Leo_file(fileName,outlineOnlyFlag=False)
-        finally:
-            c.ignoreChangedPaths = False
-        self.putSavedMessage(fileName)
-
-        c.redraw_after_icons_changed()
-
-    g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
-#@-node:ekr.20031218072017.3044:saveTo (leoFileCommands)
-#@+node:ekr.20031218072017.3045:setDefaultDirectoryForNewFiles
-def setDefaultDirectoryForNewFiles (self,fileName):
-
-    """Set c.openDirectory for new files for the benefit of leoAtFile.scanAllDirectives."""
-
-    c = self.c
-
-    if not c.openDirectory:
-        theDir = g.os_path_dirname(fileName)
-        if theDir and g.os_path_isabs(theDir) and g.os_path_exists(theDir):
-            c.openDirectory = c.frame.openDirectory = theDir
-#@-node:ekr.20031218072017.3045:setDefaultDirectoryForNewFiles
-#@-node:ekr.20100210163813.5746:Fixed crasher saving new files
 #@-node:ekr.20100203173153.5797:Bugs
 #@+node:ekr.20100203173153.5798:Cleanup & testing
 #@+node:ekr.20100130042842.9009:Removed config.set
@@ -11875,7 +11503,7 @@ def putGlobals (self):
     trace = False and not g.unitTesting
     c = self.c
 
-    use_db = g.enableDB and not g.unitTesting and c.mFileName
+    use_db = g.enableDB and c.mFileName
     if use_db:
         if trace: g.trace(c.mFileName)
         c.cacher.setCachedGlobalsElement(c.mFileName)
@@ -12006,7 +11634,7 @@ if p == self.rootPosition:
     if d.get('str_leo_pos'):
         del d['str_leo_pos']
     # Don't write the current position if we can cache it. 
-    if g.enableDB and c.mFileName and not g.unitTesting:
+    if g.enableDB and c.mFileName: # and not g.unitTesting:
         c.cacher.setCachedStringPosition(str_pos)
     elif c.fixed:
         pass

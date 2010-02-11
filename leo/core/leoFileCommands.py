@@ -1686,7 +1686,7 @@ class baseFileCommands:
         trace = False and not g.unitTesting
         c = self.c
 
-        use_db = g.enableDB and not g.unitTesting and c.mFileName
+        use_db = g.enableDB and c.mFileName
         if use_db:
             if trace: g.trace(c.mFileName)
             c.cacher.setCachedGlobalsElement(c.mFileName)
@@ -1917,7 +1917,7 @@ class baseFileCommands:
             if d.get('str_leo_pos'):
                 del d['str_leo_pos']
             # Don't write the current position if we can cache it. 
-            if g.enableDB and c.mFileName and not g.unitTesting:
+            if g.enableDB and c.mFileName: # and not g.unitTesting:
                 c.cacher.setCachedStringPosition(str_pos)
             elif c.fixed:
                 pass
@@ -2232,7 +2232,6 @@ class baseFileCommands:
         else:
             g.trace('backup file does not exist!',
                 repr(backupName),color='red')
-
     #@-node:ekr.20100119145629.6108:handleWriteLeoFileException
     #@-node:ekr.20100119145629.6111:writeToFileHelper & helpers
     #@+node:ekr.20100119145629.6110:writeToStringHelper

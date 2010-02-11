@@ -1224,7 +1224,6 @@ def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
     else:
         g.trace('backup file does not exist!',
             repr(backupName),color='red')
-
 #@-node:ekr.20100119145629.6108:handleWriteLeoFileException
 #@-node:ekr.20100119145629.6111:writeToFileHelper & helpers
 #@+node:ekr.20031218072017.1149:<< Write s into newFileName >>

@@ -23931,20 +23931,20 @@ assert cacher.test()</t>
 <t tx="ekr.20100209155559.5386">c.createOpenWithTempFile(p,'.py')</t>
 <t tx="ekr.20100210222021.5388">import os
 c1 = c
-fn = g.os_path_join(g.app.loadDir,'..','test','save-new-test.py')
+fn = g.os_path_finalize_join(g.app.loadDir,'..','test','save-new-test.py')
+print(fn)
 if g.os_path_exists(fn):
     os.remove(fn)
 assert not g.os_path_exists(fn)
-try:
-    c = c1.new()
-    # Not a perfect unit test, but it similar to c.save.
-    c.mFileName = fn
-    c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
-    c.fileCommands.save(c.mFileName)
-    c.close()
-    assert g.os_path_exists(fn)
-finally:
-    os.remove(fn)</t>
+c = c1.new()
+assert c.cacher.db is None
+# Not a perfect unit test, but it similar to c.save.
+c.mFileName = fn
+c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
+c.fileCommands.save(c.mFileName)
+c.close()
+assert g.os_path_exists(fn)
+</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

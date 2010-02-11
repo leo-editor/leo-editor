@@ -51,6 +51,8 @@ class cacher:
     #@+node:ekr.20100208062523.5886: ctor (cacher)
     def __init__ (self,c=None):
 
+        trace = False and not g.unitTesting
+        if trace: g.trace('cacher','c',c)
         self.c = c
 
         # set by initFileDB and initGlobalDB...
@@ -364,7 +366,7 @@ class cacher:
         globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
         key = self.fileKey(fn,globals_tag)
 
-        if trace: g.trace(c.mFileName,key)
+        if trace: g.trace(c.mFileName,key,g.callers(5))
 
         self.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
         self.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
