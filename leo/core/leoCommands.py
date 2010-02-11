@@ -2145,19 +2145,19 @@ class baseCommands (object):
     #@nonl
     #@-node:ekr.20070115135502:writeScriptFile
     #@-node:ekr.20031218072017.2140:c.executeScript & helpers
-    #@+node:ekr.20080710082231.10:gotoLineNumber and helpers
+    #@+node:ekr.20080710082231.10:c.gotoLineNumber and helpers
     class goToLineNumber:
 
         '''A class implementing goto-global-line.'''
 
         #@    @+others
-        #@+node:ekr.20100211140411.5772: __init__
+        #@+node:ekr.20100211140411.5772: __init__ (gotoLineNumber)
         def __init__ (self,c):
 
             # g.trace('(c.gotoLineNumber)')
             self.c = c
             self.p = c.p.copy()
-        #@-node:ekr.20100211140411.5772: __init__
+        #@-node:ekr.20100211140411.5772: __init__ (gotoLineNumber)
         #@+node:ekr.20100211140411.5771:go
         def go (self,n,p=None,scriptData=None):
 
@@ -2194,6 +2194,7 @@ class baseCommands (object):
                 p,found = self.findGnx(delim,root,gnx,vnodeName)
 
             self.showResults(found,p or root,n,n2,lines)
+            return found
         #@-node:ekr.20100211140411.5771:go
         #@+node:ekr.20080904071003.12:countLines & helper
         def countLines (self,root,n):
@@ -2255,7 +2256,9 @@ class baseCommands (object):
                                         # Don't change i here!
                                         n2 -= i2
                                 n = n2
-                                assert n > 0 # otherwise we would have suceeded.
+                                # assert n > 0 # otherwise we would have suceeded.
+                                if n <= 0:
+                                    return p,i-1,n,True
                             # else: silently ignore @others without children.
                         # else: silently ignore duplicate @others.
                     # else: nothing more to do.
@@ -2507,14 +2510,14 @@ class baseCommands (object):
                 path = d.get("path")
                 # g.trace('path',path,'fileName',fileName)
                 fileName = c.os_path_finalize_join(path,fileName)
-                lines    = self.open(fileName)
+                lines    = self.openFile(fileName)
 
             return lines
         #@-node:ekr.20080904071003.26:getFileLines
-        #@+node:ekr.20080708094444.63:open
-        def open (self,filename):
+        #@+node:ekr.20080708094444.63:openFile (gotoLineNumber)
+        def openFile (self,filename):
             """
-            Open a file for "goto linenumber" command and check if a shadow file exists.
+            Open a file and check if a shadow file exists.
             Construct a line mapping. This ivar is empty if no shadow file exists.
             Otherwise it contains a mapping, shadow file number -> real file number.
             """
@@ -2541,7 +2544,7 @@ class baseCommands (object):
                 lines = []
 
             return lines
-        #@-node:ekr.20080708094444.63:open
+        #@-node:ekr.20080708094444.63:openFile (gotoLineNumber)
         #@+node:ekr.20080904071003.28:setup_file
         def setup_file (self,n,p):
 
@@ -2598,12 +2601,16 @@ class baseCommands (object):
                 if len(lines) < n and not g.unitTesting:
                     g.es('only',len(lines),'lines',color="blue")
 
+            if g.unitTesting:
+                i,j = g.getLine(s,ins)
+                g.trace('%2s %2s %15s %s' % (n,n2,p.h,repr(s[i:j])))
+
             w.setInsertPoint(ins)
             c.bodyWantsFocusNow()
             w.seeInsertPoint()
         #@-node:ekr.20080904071003.14:showResults
         #@-others
-    #@-node:ekr.20080710082231.10:gotoLineNumber and helpers
+    #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
     #@+node:EKR.20040612232221:c.goToScriptLineNumber
     # Called from g.handleScriptException.
 
