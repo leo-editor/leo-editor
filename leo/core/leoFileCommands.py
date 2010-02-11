@@ -1917,7 +1917,7 @@ class baseFileCommands:
             if d.get('str_leo_pos'):
                 del d['str_leo_pos']
             # Don't write the current position if we can cache it. 
-            if g.enableDB and c.mFileName: # and not g.unitTesting:
+            if g.enableDB and c.mFileName:
                 c.cacher.setCachedStringPosition(str_pos)
             elif c.fixed:
                 pass
