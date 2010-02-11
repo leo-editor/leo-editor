@@ -645,7 +645,7 @@ same place will be cached in the same directory. Is this ominous?
 #@+node:ekr.20100209224508.5744:Calls to .write
 All these could be considered potential Python 3.x bugs.  Most are not.
 #@nonl
-#@+node:ekr.20031218072017.1470:put
+#@+node:ekr.20031218072017.1470:put (leoFileCommands)
 def put (self,s):
 
     '''Put string s to self.outputFile. All output eventually comes here.'''
@@ -686,7 +686,7 @@ def put_tabs (self,n):
         self.put("\t")
         n -= 1
 #@nonl
-#@-node:ekr.20031218072017.1470:put
+#@-node:ekr.20031218072017.1470:put (leoFileCommands)
 #@+node:ekr.20100119145629.6111:writeToFileHelper & helpers
 def writeToFileHelper (self,fileName,toOPML):
 
@@ -1203,34 +1203,41 @@ def writeRecentFilesFileHelper (self,fileName):
         lines = theFile.readlines()
         if lines and self.munge(lines[0])=='readonly':
             # g.trace('read-only: %s' %fileName)
-            return
+            return False
     except IOError:
         # The user may have erased a file.  Not an error.
         if theFile: theFile.close()
 
     theFile = None
     try:
-        theFile = open(fileName,'w')
+        if g.isPython3:
+            theFile = open(fileName,encoding='utf-8',mode='w')
+        else:
+            theFile = open(fileName)
         if self.recentFiles:
             s = '\n'.join(self.recentFiles)
         else:
             s = '\n'
-        if g.isPython3:
-            g.toUnicode(s,reportErrors=True)
-        else:
+        if not g.isPython3:
             s = g.toEncodedString(s,reportErrors=True)
         theFile.write(s)
 
     except IOError:
-        # The user may have erased a file.  Not an error.
-        pass
+        if 1: # The user may have erased a file.  Not an error.
+            g.es_print('error writing',fileName,color='red')
+            g.es_exception()
+            return False
 
     except Exception:
         g.es('unexpected exception writing',fileName,color='red')
         g.es_exception()
+        return False
 
     if theFile:
         theFile.close()
+        return True
+    else:
+        return False
 #@-node:ekr.20050424131051:writeRecentFilesFileHelper
 #@+node:ekr.20050920084036.24:writeAbbreviations
 def writeAbbreviations (self,event):

@@ -2016,9 +2016,17 @@ class configClass:
         fileName = g.os_path_join(path,'.leoRecentFiles.txt')
         ok = g.os_path_exists(fileName)
         if ok:
+            try:
+                if g.isPython3:
+                    f = open(fileName,encoding='utf-8',mode='r')
+                else:
+                    f = open(fileName,'r')
+            except IOError:
+                g.trace('can not open',fileName)
+                return False
             if not g.unitTesting and not self.silent:
                 g.pr(('reading %s' % fileName))
-            lines = open(fileName).readlines()
+            lines = f.readlines()
             if lines and self.munge(lines[0])=='readonly':
                 lines = lines[1:]
             if lines:
@@ -2052,10 +2060,13 @@ class configClass:
             if path:
                 fileName = g.os_path_join(path,tag)
                 if g.os_path_exists(fileName):
+                    ok = self.writeRecentFilesFileHelper(fileName)
                     if not self.recentFileMessageWritten:
-                        g.pr(('wrote recent file: %s' % fileName))
-                        written = True
-                    self.writeRecentFilesFileHelper(fileName)
+                        if ok:
+                            g.pr('wrote recent file: %s' % fileName)
+                            written = True
+                        else:
+                            g.pr('failed to recent file: %s' % (fileName),color='red')
                     # Bug fix: Leo 4.4.6: write *all* recent files.
 
         if written:
@@ -2074,34 +2085,41 @@ class configClass:
             lines = theFile.readlines()
             if lines and self.munge(lines[0])=='readonly':
                 # g.trace('read-only: %s' %fileName)
-                return
+                return False
         except IOError:
             # The user may have erased a file.  Not an error.
             if theFile: theFile.close()
 
         theFile = None
         try:
-            theFile = open(fileName,'w')
+            if g.isPython3:
+                theFile = open(fileName,encoding='utf-8',mode='w')
+            else:
+                theFile = open(fileName)
             if self.recentFiles:
                 s = '\n'.join(self.recentFiles)
             else:
                 s = '\n'
-            if g.isPython3:
-                g.toUnicode(s,reportErrors=True)
-            else:
+            if not g.isPython3:
                 s = g.toEncodedString(s,reportErrors=True)
             theFile.write(s)
 
         except IOError:
-            # The user may have erased a file.  Not an error.
-            pass
+            if 1: # The user may have erased a file.  Not an error.
+                g.es_print('error writing',fileName,color='red')
+                g.es_exception()
+                return False
 
         except Exception:
             g.es('unexpected exception writing',fileName,color='red')
             g.es_exception()
+            return False
 
         if theFile:
             theFile.close()
+            return True
+        else:
+            return False
     #@-node:ekr.20050424131051:writeRecentFilesFileHelper
     #@-node:ekr.20050424114937.2:writeRecentFilesFile & helper
     #@-node:ekr.20050424114937.1:Reading and writing .leoRecentFiles.txt (g.app.config)

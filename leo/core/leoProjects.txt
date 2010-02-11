@@ -411,7 +411,7 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
 #@-node:ekr.20060919110638.14:parse_leo_file
 #@-node:ekr.20100120073530.6083:Fixed unicode problems
 #@+node:ekr.20100121050224.6141:Fixed crash in writeToFileHelper
-#@+node:ekr.20031218072017.1470:put
+#@+node:ekr.20031218072017.1470:put (leoFileCommands)
 def put (self,s):
 
     '''Put string s to self.outputFile. All output eventually comes here.'''
@@ -452,7 +452,7 @@ def put_tabs (self,n):
         self.put("\t")
         n -= 1
 #@nonl
-#@-node:ekr.20031218072017.1470:put
+#@-node:ekr.20031218072017.1470:put (leoFileCommands)
 #@+node:ekr.20100119145629.6111:writeToFileHelper & helpers
 def writeToFileHelper (self,fileName,toOPML):
 

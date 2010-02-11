@@ -1608,7 +1608,7 @@ class baseFileCommands:
                 g.es_exception(full=False)
             return False
     #@-node:ekr.20050404190914.2:deleteFileWithMessage (leoFileCommands)
-    #@+node:ekr.20031218072017.1470:put
+    #@+node:ekr.20031218072017.1470:put (leoFileCommands)
     def put (self,s):
 
         '''Put string s to self.outputFile. All output eventually comes here.'''
@@ -1649,7 +1649,7 @@ class baseFileCommands:
             self.put("\t")
             n -= 1
     #@nonl
-    #@-node:ekr.20031218072017.1470:put
+    #@-node:ekr.20031218072017.1470:put (leoFileCommands)
     #@+node:ekr.20031218072017.1971:putClipboardHeader
     def putClipboardHeader (self):
 
