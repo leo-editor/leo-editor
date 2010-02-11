@@ -75,6 +75,10 @@ class cacher:
             fn = fn.lower()
             fn = g.toEncodedString(fn) # Required for Python 3.x.
 
+            # Important: this creates a top-level directory of the form x_y.
+            # x is a short file name, included for convenience.
+            # y is a key computed by the *full* path name fn.
+            # Thus, there will a separate top-level directory for every path.
             self.dbdirname = dbdirname = join(g.app.homeLeoDir,'db',
                 '%s_%s' % (bname,hashlib.md5(fn).hexdigest()))
 
