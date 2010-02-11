@@ -2095,7 +2095,7 @@ class configClass:
             if g.isPython3:
                 theFile = open(fileName,encoding='utf-8',mode='w')
             else:
-                theFile = open(fileName)
+                theFile = open(fileName,mode='w')
             if self.recentFiles:
                 s = '\n'.join(self.recentFiles)
             else:
@@ -2113,6 +2113,7 @@ class configClass:
         except Exception:
             g.es('unexpected exception writing',fileName,color='red')
             g.es_exception()
+            if g.unitTesting: raise
             return False
 
         if theFile:
