@@ -1397,7 +1397,7 @@ def setSelectionRangeHelper(self,i,j,insert):
         ins = self.toPythonIndex(insert)
         ins = max(0,min(ins,n))
 
-    if trace:g.trace('i',i,'j',j,'insert',insert)
+    if trace:g.trace('i',i,'j',j,'insert',insert,g.callers(5))
 
     # 2010/02/02: Use only tc.setPosition here.
     # Using tc.movePosition doesn't work.

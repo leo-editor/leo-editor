@@ -2718,7 +2718,7 @@ class leoTree:
                     self.endEditLabel() # sets editPosition = None
                     self.setUnselectedLabelState(old_p)
 
-                if old_p:
+                if old_p and old_p != p: # 2010/02/11: Don't change the *new* node's insert point!
                     old_p.v.scrollBarSpot = yview
                     old_p.v.insertSpot = insertSpot
                 #@-node:ekr.20040803072955.129:<< unselect the old node >>
@@ -2806,9 +2806,11 @@ class leoTree:
             spot = p.v.insertSpot
             w.setInsertPoint(spot)
             w.see(spot)
-            # g.trace(spot)
+            g.trace('insert point',spot,p.v,g.callers(5))
         else:
+            # p.v.insertSpot = 0 # 2010/02/11
             w.setInsertPoint(0)
+            # g.trace('insert point',0)
     #@-node:ekr.20090608081524.6109:setBodyTextAfterSelect
     #@-node:ekr.20040803072955.128:leoTree.select & helpers
     #@+node:ekr.20031218072017.3718:oops

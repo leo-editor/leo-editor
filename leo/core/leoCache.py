@@ -307,7 +307,7 @@ class cacher:
         if trace: g.trace(fn,key,data)
         return d
     #@-node:ekr.20100208082353.5922:getCachedWindowPositionDict
-    #@+node:ekr.20100208071151.5905:readFile
+    #@+node:ekr.20100208071151.5905:readFile (cacher)
     # was atFile.readFromCache
     # Same code as atFile.readFromCache
     # Same code as code in atFile.readOneAtAutoNode
@@ -321,7 +321,7 @@ class cacher:
             if trace: g.trace('g.enableDB is False')
             return False,None
 
-        s,e = g.readFileIntoString(fileName,raw=True)
+        s,e = g.readFileIntoString(fileName,raw=True,silent=True)
         if s is None:
             if trace: g.trace('empty file contents',fileName)
             return False,None
@@ -340,7 +340,7 @@ class cacher:
             self.createOutlineFromCacheList(root.v,aList,fileName=fileName)
 
         return ok,key
-    #@-node:ekr.20100208071151.5905:readFile
+    #@-node:ekr.20100208071151.5905:readFile (cacher)
     #@-node:ekr.20100208082353.5925:Reading
     #@+node:ekr.20100208082353.5927:Writing
     #@+node:ekr.20100208071151.5901:makeCacheList

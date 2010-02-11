@@ -2571,7 +2571,13 @@ def openWrapperLeoFile (old_c,fileName,gui):
 #@-node:ekr.20080921154026.1:g.openWrapperLeoFile
 #@-node:ekr.20090520055433.5945:g.openWithFileName & helpers
 #@+node:ekr.20100125073206.8710:g.readFileIntoString (Leo 4.7)
-def readFileIntoString (fn,encoding='utf-8',kind=None,mode='rb',raw=False):
+def readFileIntoString (fn,
+    encoding='utf-8',
+    kind=None,
+    mode='rb',
+    raw=False,
+    silent=False,
+):
 
     '''Return the contents of the file whose full path is fn.
 
@@ -2597,10 +2603,12 @@ def readFileIntoString (fn,encoding='utf-8',kind=None,mode='rb',raw=False):
             return s,e
     except IOError:
         # Translate 'can not open' and kind, but not fn.
-        if kind:
-            g.es('can not open','',kind,fn,color='red')
-        else:
-            g.es('can not open',fn,color='red')
+        # g.trace(g.callers(5))
+        if not silent:
+            if kind:
+                g.es('can not open','',kind,fn,color='red')
+            else:
+                g.es('can not open',fn,color='red')
     except Exception:
         g.trace('unexpected exception reading %s' % (fn),color='red')
         g.es_exception()
