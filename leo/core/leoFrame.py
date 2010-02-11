@@ -2806,7 +2806,7 @@ class leoTree:
             spot = p.v.insertSpot
             w.setInsertPoint(spot)
             w.see(spot)
-            g.trace('insert point',spot,p.v,g.callers(5))
+            # g.trace('insert point',spot,p.v,g.callers(5))
         else:
             # p.v.insertSpot = 0 # 2010/02/11
             w.setInsertPoint(0)
