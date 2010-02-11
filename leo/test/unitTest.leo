@@ -1270,6 +1270,7 @@
 </v>
 <v t="ekr.20071113194216"><vh>leoConfig</vh>
 <v t="ekr.20060325071703.2"><vh>@@test ifgui</vh></v>
+<v t="ekr.20100211110729.5389"><vh>@test g.app.config.writeRecentFilesFileHelper</vh></v>
 <v t="ekr.20050203084930.1"><vh>@test global settings</vh></v>
 <v t="ekr.20060325071703.1"><vh>@test ifplatform</vh></v>
 <v t="ekr.20050203001146"><vh>@test local settings (c.page_width)</vh></v>
@@ -2664,8 +2665,11 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20100211112542.5391"><vh>Unicode file names</vh>
 <v t="ekr.20050206090416"></v>
 <v t="ekr.20050208051418.1"></v>
+<v t="ekr.20100211110729.5389"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -23949,6 +23953,10 @@ c.fileCommands.save(c.mFileName)
 c.close()
 assert g.os_path_exists(fn)
 </t>
+<t tx="ekr.20100211110729.5389">
+fn = g.u('ффф.leo')
+g.app.config.writeRecentFilesFileHelper(fn)</t>
+<t tx="ekr.20100211112542.5391"></t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

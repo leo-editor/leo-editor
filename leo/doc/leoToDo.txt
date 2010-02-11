@@ -1193,7 +1193,8 @@ def writeFileFromNode (self,event=None):
 #@-node:ekr.20070915142635:writeFileFromNode
 #@+node:ekr.20050424131051:writeRecentFilesFileHelper
 def writeRecentFilesFileHelper (self,fileName):
-    # g.trace(fileName)
+
+    # g.trace(g.toUnicode(fileName))
 
     # Don't update the file if it begins with read-only.
     theFile = None
@@ -1212,9 +1213,13 @@ def writeRecentFilesFileHelper (self,fileName):
         theFile = open(fileName,'w')
         if self.recentFiles:
             s = '\n'.join(self.recentFiles)
-            theFile.write(s)
         else:
-            theFile.write(g.toEncodedString('\n'))
+            s = '\n'
+        if g.isPython3:
+            g.toUnicode(s,reportErrors=True)
+        else:
+            s = g.toEncodedString(s,reportErrors=True)
+        theFile.write(s)
 
     except IOError:
         # The user may have erased a file.  Not an error.
@@ -1927,21 +1932,6 @@ except:
     g.es_exception()
 #@-node:tbrown.20090219095555.63:<< pass the url to the web browser >>
 #@-node:tbrown.20090219095555.61:g.handleUrlInUrlNode
-#@+node:ekr.20040715155607:g.scanForAtIgnore
-def scanForAtIgnore(c,p):
-
-    """Scan position p and its ancestors looking for @ignore directives."""
-
-    if g.app.unitTesting:
-        return False # For unit tests.
-
-    for p in p.self_and_parents():
-        d = g.get_directives_dict(p)
-        if 'ignore' in d:
-            return True
-
-    return False
-#@-node:ekr.20040715155607:g.scanForAtIgnore
 #@+node:ekr.20050920084036.229:yankRectangle
 def yankRectangle (self,event,killRect=None):
 

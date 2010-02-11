@@ -2064,7 +2064,8 @@ class configClass:
             pass # g.trace('----- not found: %s' % g.os_path_join(localPath,tag))
     #@+node:ekr.20050424131051:writeRecentFilesFileHelper
     def writeRecentFilesFileHelper (self,fileName):
-        # g.trace(fileName)
+
+        # g.trace(g.toUnicode(fileName))
 
         # Don't update the file if it begins with read-only.
         theFile = None
@@ -2083,9 +2084,13 @@ class configClass:
             theFile = open(fileName,'w')
             if self.recentFiles:
                 s = '\n'.join(self.recentFiles)
-                theFile.write(s)
             else:
-                theFile.write(g.toEncodedString('\n'))
+                s = '\n'
+            if g.isPython3:
+                g.toUnicode(s,reportErrors=True)
+            else:
+                s = g.toEncodedString(s,reportErrors=True)
+            theFile.write(s)
 
         except IOError:
             # The user may have erased a file.  Not an error.
