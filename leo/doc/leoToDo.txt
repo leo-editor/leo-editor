@@ -642,429 +642,6 @@ same place will be cached in the same directory. Is this ominous?
 
 2. It's not clear what caching to do with the save-to command.
 #@-node:ekr.20100210163813.5748:Caching buglets?
-#@+node:ekr.20100209114432.5750:Work on docs
-- Better scren shots.
-#@nonl
-#@+node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
-http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
-
-Python uses Sphinx for its doc, they have a discussion about making
-the TOC on the left hand side collapsible/non-scrolling here:
-
-http://www.google.com/url?sa=t&source=web&ct=res&cd=4&ved=0CBYQFjAD&url=http%3A%2F%2Fbugs.python.org%2Fissue3143&ei=bW5oS-eQIJDalAfqlYyGCA&usg=AFQjCNGyhpE3wZ2jvfwA0dwjCfoAxleDRQ&sig2=2CRD7hNMmx1NzFHMyOq_cQ
-
-that includes code for the CSS stylesheet to do this.
-
-Although this does not appear in the python docs (yet), it might be
-valuable for Leo's Doc's
-
-
-
-I downloaded the example files from the above link, the collapsible
-sidebar works well with the python documentation.  As the Leo
-documentation is just a variant of python's, I downloaded a HTML
-chapter and the support files kept in .../static, then I placed the
-"sidebar.js" in with those files on my local copy.  To make the
-sidebar collapsing work, all I had to do was add it to the list of
-javascript files in the chapter .html file, i.e., I added the second
-line below
-
-    <script type="text/javascript" src="IPythonBridge_files/
-doctools.js"></script>
-    <script type="text/javascript" src="IPythonBridge_files/
-sidebar.js"></script>
-
-in the 'head' section, (the above takes into account that I was doing
-this on my local, differently arranged, copy).
-
-That is all that it takes to give us a collapsible TOC
-#@nonl
-#@-node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
-#@-node:ekr.20100209114432.5750:Work on docs
-#@+node:ekr.20100118143729.6256:Wish-list bug 508108: No methods sub-nodes in PHP class import
-@nocolor-node
-
-EKR: this is a wish-list item
-
-https://bugs.launchpad.net/leo-editor/+bug/508108
-
-When importing a PHP class file, I get two nodes: the first is just some Leo
-definitions (@language, @tab, @others), while the second is the whole class. I
-expect Leo to create a node for each method in the class as it does for
-"classless" file of functions (not sure how it is done in other languages). This
-kind of change would also make @auto a lot more useful for PHP.
-#@nonl
-#@-node:ekr.20100118143729.6256:Wish-list bug 508108: No methods sub-nodes in PHP class import
-#@+node:ekr.20100206173123.5801:Fix or eliminate check python syntax commands
-@nocolor-node
-
-Directives and section references are not the problem. Rather, the problems are
-thinks like 'return' in a node that doesn't look it is in a function.
-
-The solution would likely be to check the entire file at once in checkPython
-code. But this won't work for the check-all-python-code command.
-
-Do we really need these checks? I think not, because the automatic checks work
-so well.
-#@nonl
-#@+node:ekr.20100206142026.5967:To do: use g.checkPythonNode as the base of all syntax checking
-#@+node:ekr.20040723094220.5:c.checkPythonNode
-def checkPythonNode (self,p,unittest=False,suppressErrors=False):
-
-    c = self ; h = p.h
-
-    # Call getScript to ignore directives and section references.
-    body = g.getScript(c,p.copy())
-    if not body: return
-
-    try:
-        fn = '<node: %s>' % p.h
-        if not g.isPython3:
-            body = g.toEncodedString(body)
-        compile(body+'\n',fn,'exec')
-        c.tabNannyNode(p,h,body,unittest,suppressErrors)
-    except SyntaxError:
-        if not suppressErrors:
-            s = "Syntax error in: %s" % h
-            g.es_print(s,color="blue")
-            g.es_exception(full=False,color="black")
-        if unittest: raise
-    except Exception:
-        g.es_print('unexpected exception')
-        g.es_exception()
-        if unittest: raise
-
-#@-node:ekr.20040723094220.5:c.checkPythonNode
-#@+node:EKR.20040614071102.1:g.getScript
-def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=True):
-
-    '''Return the expansion of the selected text of node p.
-    Return the expansion of all of node p's body text if there
-    is p is not the current node or if there is no text selection.'''
-
-    # New in Leo 4.6 b2: use a pristine atFile handler
-    # so there can be no conflict with c.atFileCommands.
-    # at = c.atFileCommands
-    import leo.core.leoAtFile as leoAtFile
-    at = leoAtFile.atFile(c)
-
-    w = c.frame.body.bodyCtrl
-    p1 = p and p.copy()
-    if not p:
-        p = c.p
-    try:
-        if g.app.inBridge:
-            s = p.b
-        elif p1:
-            s = p.b # Bug fix: Leo 8.8.4.
-        elif p == c.p:
-            if useSelectedText and w.hasSelection():
-                s = w.getSelectedText()
-            else:
-                s = w.getAllText()
-        else:
-            s = p.b
-        # Remove extra leading whitespace so the user may execute indented code.
-        s = g.removeExtraLws(s,c.tab_width)
-        if s.strip():
-            g.app.scriptDict["script1"]=s
-            # Important: converts unicode to utf-8 encoded strings.
-            script = at.writeFromString(p.copy(),s,
-                forcePythonSentinels=forcePythonSentinels,
-                useSentinels=useSentinels)
-            script = script.replace("\r\n","\n") # Use brute force.
-            # Important, the script is an **encoded string**, not a unicode string.
-            g.app.scriptDict["script2"]=script
-        else: script = ''
-    except Exception:
-        g.es_print("unexpected exception in g.getScript")
-        g.es_exception()
-        script = ''
-
-    # g.trace(type(script),repr(script))
-    return script
-#@-node:EKR.20040614071102.1:g.getScript
-#@+node:ekr.20050506084734:writeFromString (atFile)
-# This is at.write specialized for scripting.
-
-def writeFromString(self,root,s,forcePythonSentinels=True,useSentinels=True):
-
-    """Write a 4.x derived file from a string.
-
-    This is used by the scripting logic."""
-
-    at = self ; c = at.c
-    c.endEditing() # Capture the current headline, but don't change the focus!
-
-    at.initWriteIvars(root,"<string-file>",
-        nosentinels=not useSentinels,thinFile=False,scriptWrite=True,toString=True,
-        forcePythonSentinels=forcePythonSentinels)
-
-    try:
-        ok = at.openFileForWriting(root,at.targetFileName,toString=True)
-        if g.app.unitTesting: assert ok # string writes never fail.
-        # Simulate writing the entire file so error recovery works.
-        at.writeOpenFile(root,nosentinels=not useSentinels,toString=True,fromString=s)
-        at.closeWriteFile()
-        # Major bug: failure to clear this wipes out headlines!
-        # Minor bug: sometimes this causes slight problems...
-        if root:
-            if hasattr(self.root.v,'tnodeList'):
-                delattr(self.root.v,'tnodeList')
-            root.v._p_changed = True
-    except Exception:
-        at.exception("exception preprocessing script")
-
-    return at.stringOutput
-#@-node:ekr.20050506084734:writeFromString (atFile)
-#@+node:ekr.20100206142026.5839:g.checkPythonNode & helper (NEW)
-def checkPythonNode (c,s,fn=None,p=None,
-    munge=False,suppressErrors=False,
-    tabNanny=False,unittest=False,
-    suppressErrors=False,
-):
-
-    '''The future base of all syntax checking'''
-
-    if not s.strip():
-        return
-    if munge:
-        at = c.atFileCommands
-        s = g.toUnicode(s)
-        at.writeFromString(p=None,s=s,
-            forcePythonSentinels=True,useSentinels=True)
-    if not s.strip():
-        return
-    if fn:
-        pass
-    elif p:
-        fn = '<node: %s>' % p.h
-    else:
-        fn = '<string'>
-    try:
-        if not g.isPython3:
-            s = g.toEncodedString(s)
-        s = s.replace('\r','')
-        compile(s+'\n',fn,'exec')
-        if tabNanny:
-            c.tabNannyNode(p,h,s,unittest,suppressErrors)
-    except SyntaxError:
-        if not suppressErrors:
-            s = "Syntax error in: %s" % h
-            g.es_print(s,color="blue")
-            g.es_exception(full=True,color="black")
-        if unittest: raise
-    except Exception:
-        g.es_print('unexpected exception')
-        g.es_exception()
-        if unittest: raise
-#@+node:ekr.20100206142026.5840:checkPythonNodeHelper
-def checkPythonNodeHelper (c,s):
-
-
-
-
-    return g.toUnicode(
-        .writeFromString(p = None,s=s,
-        forcePythonSentinels=True,useSentinels=True)
-#@-node:ekr.20100206142026.5840:checkPythonNodeHelper
-#@-node:ekr.20100206142026.5839:g.checkPythonNode & helper (NEW)
-#@+node:ekr.20060624085200:g.handleScriptException
-def handleScriptException (c,p,script,script1):
-
-    g.es("exception executing script",color='blue')
-
-    full = c.config.getBool('show_full_tracebacks_in_scripts')
-
-    fileName, n = g.es_exception(full=full)
-
-    if p and not script1 and fileName == "<string>":
-        c.goToScriptLineNumber(p,script,n)
-
-    << dump the lines near the error >>
-#@+node:EKR.20040612215018:<< dump the lines near the error >>
-if g.os_path_exists(fileName):
-    f = open(fileName)
-    lines = f.readlines()
-    f.close()
-else:
-    lines = g.splitLines(script)
-
-s = '-' * 20
-g.es_print('',s)
-
-# Print surrounding lines.
-i = max(0,n-2)
-j = min(n+2,len(lines))
-while i < j:
-    ch = g.choose(i==n-1,'*',' ')
-    s = "%s line %d: %s" % (ch,i+1,lines[i])
-    g.es('',s,newline=False)
-    i += 1
-#@-node:EKR.20040612215018:<< dump the lines near the error >>
-#@-node:ekr.20060624085200:g.handleScriptException
-#@-node:ekr.20100206142026.5967:To do: use g.checkPythonNode as the base of all syntax checking
-#@+node:ekr.20040723094220:Check Outline commands & allies
-#@+node:ekr.20040723094220.1:c.checkAllPythonCode
-def checkAllPythonCode(self,event=None,unittest=False,ignoreAtIgnore=True):
-
-    '''Check all nodes in the selected tree for syntax and tab errors.'''
-
-    c = self ; count = 0 ; result = "ok"
-
-    for p in c.all_unique_positions():
-        count += 1
-        if not unittest:
-            << print dots >>
-
-        if g.scanForAtLanguage(c,p) == "python":
-            if not g.scanForAtSettings(p) and (
-                not ignoreAtIgnore or not g.scanForAtIgnore(c,p)
-            ):
-                try:
-                    c.checkPythonNode(p,unittest)
-                except (SyntaxError,tokenize.TokenError,tabnanny.NannyNag):
-                    result = "error" # Continue to check.
-                except Exception:
-                    return "surprise" # abort
-                if unittest and result != "ok":
-                    g.pr("Syntax error in %s" % p.cleanHeadString())
-                    return result # End the unit test: it has failed.
-
-    if not unittest:
-        g.es("check complete",color="blue")
-
-    return result
-#@+node:ekr.20040723094220.2:<< print dots >>
-if count % 100 == 0:
-    g.es('','.',newline=False)
-
-if count % 2000 == 0:
-    g.enl()
-#@-node:ekr.20040723094220.2:<< print dots >>
-#@-node:ekr.20040723094220.1:c.checkAllPythonCode
-#@+node:ekr.20040723094220.3:c.checkPythonCode
-def checkPythonCode (self,event=None,
-    unittest=False,ignoreAtIgnore=True,
-    suppressErrors=False,checkOnSave=False):
-
-    '''Check the selected tree for syntax and tab errors.'''
-
-    c = self ; count = 0 ; result = "ok"
-
-    if not unittest:
-        g.es("checking Python code   ")
-
-    for p in c.p.self_and_subtree():
-
-        count += 1
-        if not unittest and not checkOnSave:
-            << print dots >>
-
-        if g.scanForAtLanguage(c,p) == "python":
-            if not ignoreAtIgnore or not g.scanForAtIgnore(c,p):
-                try:
-                    c.checkPythonNode(p,unittest,suppressErrors)
-                except (SyntaxError,tokenize.TokenError,tabnanny.NannyNag):
-                    result = "error" # Continue to check.
-                except Exception:
-                    return "surprise" # abort
-
-    if not unittest:
-        g.es("check complete",color="blue")
-
-    # We _can_ return a result for unit tests because we aren't using doCommand.
-    return result
-#@+node:ekr.20040723094220.4:<< print dots >>
-if count % 100 == 0:
-    g.es('','.',newline=False)
-
-if count % 2000 == 0:
-    g.enl()
-#@-node:ekr.20040723094220.4:<< print dots >>
-#@-node:ekr.20040723094220.3:c.checkPythonCode
-#@+node:ekr.20040723094220.5:c.checkPythonNode
-def checkPythonNode (self,p,unittest=False,suppressErrors=False):
-
-    c = self ; h = p.h
-
-    # Call getScript to ignore directives and section references.
-    body = g.getScript(c,p.copy())
-    if not body: return
-
-    try:
-        fn = '<node: %s>' % p.h
-        if not g.isPython3:
-            body = g.toEncodedString(body)
-        compile(body+'\n',fn,'exec')
-        c.tabNannyNode(p,h,body,unittest,suppressErrors)
-    except SyntaxError:
-        if not suppressErrors:
-            s = "Syntax error in: %s" % h
-            g.es_print(s,color="blue")
-            g.es_exception(full=False,color="black")
-        if unittest: raise
-    except Exception:
-        g.es_print('unexpected exception')
-        g.es_exception()
-        if unittest: raise
-
-#@-node:ekr.20040723094220.5:c.checkPythonNode
-#@+node:ekr.20040723094220.6:c.tabNannyNode
-# This code is based on tabnanny.check.
-
-def tabNannyNode (self,p,headline,body,unittest=False,suppressErrors=False):
-
-    """Check indentation using tabnanny."""
-
-    c = self
-
-    try:
-        readline = g.readLinesClass(body).next
-        tabnanny.process_tokens(tokenize.generate_tokens(readline))
-
-    except IndentationError:
-        junk,msg,junk = sys.exc_info()
-        if not suppressErrors:
-            g.es("IndentationError in",headline,color="blue")
-            g.es('',msg)
-        if unittest: raise
-
-    except tokenize.TokenError:
-        junk, msg, junk = sys.exc_info()
-        if not suppressErrors:
-            g.es("TokenError in",headline,color="blue")
-            g.es('',msg)
-        if unittest: raise
-
-    except tabnanny.NannyNag:
-        junk, nag, junk = sys.exc_info()
-        if not suppressErrors:
-            badline = nag.get_lineno()
-            line    = nag.get_line()
-            message = nag.get_msg()
-            g.es("indentation error in",headline,"line",badline,color="blue")
-            g.es(message)
-            line2 = repr(str(line))[1:-1]
-            g.es("offending line:\n",line2)
-        if unittest: raise
-
-    except Exception:
-        g.trace("unexpected exception")
-        g.es_exception()
-        if unittest: raise
-#@-node:ekr.20040723094220.6:c.tabNannyNode
-#@-node:ekr.20040723094220:Check Outline commands & allies
-#@-node:ekr.20100206173123.5801:Fix or eliminate check python syntax commands
-#@+node:ekr.20100127064113.6206:fix pylint
-#  unbound recursion...
-
-def unbound():
-    unbound()
-
-unbound()
-#@nonl
-#@-node:ekr.20100127064113.6206:fix pylint
 #@+node:ekr.20100209224508.5744:Calls to .write
 All these could be considered potential Python 3.x bugs.  Most are not.
 #@nonl
@@ -1969,6 +1546,1210 @@ def show (self,s):
         g.pr('')
 #@-node:ekr.20031218072017.3650:show
 #@-node:ekr.20100209224508.5744:Calls to .write
+#@+node:ekr.20100211072044.5754:Dubious usages of .unitTesting
+#@+node:ekr.20031218072017.1723:createMenuEntries
+def createMenuEntries (self,menu,table,dynamicMenu=False):
+
+    '''Create a menu entry from the table.
+    New in 4.4: this method shows the shortcut in the menu,
+    but this method **never** binds any shortcuts.'''
+
+    c = self.c ; f = c.frame ; k = c.k
+    if g.app.unitTesting: return
+
+    trace = False
+    for data in table:
+        << get label & command or continue >>
+        << compute commandName & accel from label & command >>
+        # Bug fix: 2009/09/30: use canonical stroke.
+        accelerator = k.shortcutFromSetting(accel,addKey=False) or ''
+        stroke = k.shortcutFromSetting(accel,addKey=True) or ''
+        if accelerator:
+            accelerator = g.stripBrackets(k.prettyPrintKey(accelerator))
+        if trace: # and commandName == 'add-comments':
+            g.trace(bunch.val,repr(stroke),repr(accelerator),commandName)
+        def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName,event=None):
+            # if trace: g.trace('stroke',stroke)
+            return k.masterMenuHandler(stroke,command,commandName)
+
+        realLabel = self.getRealMenuName(label)
+        amp_index = realLabel.find("&")
+        realLabel = realLabel.replace("&","")
+        if sys.platform == 'darwin':
+            << clear accelerator if it is a plain key >>
+
+        # c.add_command ensures that c.outerUpdate is called.
+        if menu:
+            c.add_command(menu,label=realLabel,
+                accelerator=accelerator,
+                command=masterMenuCallback,
+                underline=amp_index)
+#@+node:ekr.20051021091958:<< get label & command or continue >>
+if g.isString(data):
+    # New in Leo 4.4.2: Can use the same string for both the label and the command string.
+    ok = True
+    s = data
+    removeHyphens = s and s[0]=='*'
+    if removeHyphens: s = s[1:]
+    label = self.capitalizeMinibufferMenuName(s,removeHyphens)
+    command = s.replace('&','').lower()
+    if label == '-':
+        self.add_separator(menu)
+        continue # That's all.
+else:
+    ok = type(data) in (type(()), type([])) and len(data) in (2,3)
+    if ok:
+        if len(data) == 2:
+            # New in 4.4b2: command can be a minibuffer-command name (a string)
+            label,command = data
+        else:
+            # New in 4.4: we ignore shortcuts bound in menu tables.
+            label,junk,command = data
+
+        if label in (None,'-'):
+            self.add_separator(menu)
+            continue # That's all.
+    else:
+        g.trace('bad data in menu table: %s' % repr(data))
+        continue # Ignore bad data
+#@nonl
+#@-node:ekr.20051021091958:<< get label & command or continue >>
+#@+node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
+# New in 4.4b2: command can be a minibuffer-command name (a string)
+minibufferCommand = type(command) == type('')
+accel = None
+if minibufferCommand:
+    commandName = command 
+    command = c.commandsDict.get(commandName)
+    if command:
+        rawKey,bunchList = c.config.getShortcut(commandName)
+        # Pick the first entry that is not a mode.
+        for bunch in bunchList:
+            if not bunch.pane.endswith('-mode'):
+                accel = bunch and bunch.val
+                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+    else:
+        if not g.app.unitTesting and not dynamicMenu:
+            # Don't warn during unit testing.
+            # This may come from a plugin that normally isn't enabled.
+            if trace: g.trace('No inverse for %s' % commandName)
+        continue # There is no way to make this menu entry.
+else:
+    # First, get the old-style name.
+    commandName = self.computeOldStyleShortcutKey(label)
+    rawKey,bunchList = c.config.getShortcut(commandName)
+    for bunch in bunchList:
+        if not bunch.pane.endswith('-mode'):
+            if trace: g.trace('2','%20s' % (bunch.val),commandName)
+            accel = bunch and bunch.val ; break
+    # Second, get new-style name.
+    if not accel:
+        << compute emacs_name >>
+            # Contains the not-so-horrible kludge.
+        if emacs_name:
+            commandName = emacs_name
+            rawKey,bunchList = c.config.getShortcut(emacs_name)
+            # Pick the first entry that is not a mode.
+            for bunch in bunchList:
+                if not bunch.pane.endswith('-mode'):
+                    accel = bunch.val
+                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                    break
+        elif not dynamicMenu:
+            g.trace('No inverse for %s' % commandName)
+#@+node:ekr.20051021100806.1:<< compute emacs_name >>
+@ One not-so-horrible kludge remains.
+
+The cut/copy/paste commands in the menu tables are not the same as the methods
+actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+of extra translation to discover whether the user has overridden their
+bindings.
+@c
+
+if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+    emacs_name = '%s-text' % commandName
+else:
+    try: # User errors in the table can cause this.
+        emacs_name = k.inverseCommandsDict.get(command.__name__)
+    except Exception:
+        emacs_name = None
+#@-node:ekr.20051021100806.1:<< compute emacs_name >>
+#@-node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
+#@+node:ekr.20060216110502:<< clear accelerator if it is a plain key >>
+for z in ('Alt','Ctrl','Command'):
+    if accelerator.find(z) != -1:
+        break # Found.
+else:
+    accelerator = ''
+#@-node:ekr.20060216110502:<< clear accelerator if it is a plain key >>
+#@-node:ekr.20031218072017.1723:createMenuEntries
+#@+node:ekr.20051022043608.1:createOpenWithMenuItemsFromTable
+def createOpenWithMenuItemsFromTable (self,menu,table):
+
+    '''Create an entry in the Open with Menu from the table.
+
+    Each entry should be a sequence with 2 or 3 elements.'''
+
+    c = self.c ; k = c.k
+
+    if g.app.unitTesting: return
+
+    for data in table:
+        << get label, accelerator & command or continue >>
+        # g.trace(label,accelerator)
+        realLabel = self.getRealMenuName(label)
+        underline=realLabel.find("&")
+        realLabel = realLabel.replace("&","")
+        callback = self.defineOpenWithMenuCallback(openWithData)
+
+        c.add_command(menu,label=realLabel,
+            accelerator=accelerator or '',
+            command=callback,underline=underline)
+#@+node:ekr.20051022043713.1:<< get label, accelerator & command or continue >>
+ok = (
+    type(data) in (type(()), type([])) and
+    len(data) in (2,3)
+)
+
+if ok:
+    if len(data) == 2:
+        label,openWithData = data ; accelerator = None
+    else:
+        label,accelerator,openWithData = data
+        accelerator = k.shortcutFromSetting(accelerator)
+        accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
+else:
+    g.trace('bad data in Open With table: %s' % repr(data))
+    continue # Ignore bad data
+#@-node:ekr.20051022043713.1:<< get label, accelerator & command or continue >>
+#@-node:ekr.20051022043608.1:createOpenWithMenuItemsFromTable
+#@+node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
+# New in 4.4b2: command can be a minibuffer-command name (a string)
+minibufferCommand = type(command) == type('')
+accel = None
+if minibufferCommand:
+    commandName = command 
+    command = c.commandsDict.get(commandName)
+    if command:
+        rawKey,bunchList = c.config.getShortcut(commandName)
+        # Pick the first entry that is not a mode.
+        for bunch in bunchList:
+            if not bunch.pane.endswith('-mode'):
+                accel = bunch and bunch.val
+                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+    else:
+        if not g.app.unitTesting and not dynamicMenu:
+            # Don't warn during unit testing.
+            # This may come from a plugin that normally isn't enabled.
+            if trace: g.trace('No inverse for %s' % commandName)
+        continue # There is no way to make this menu entry.
+else:
+    # First, get the old-style name.
+    commandName = self.computeOldStyleShortcutKey(label)
+    rawKey,bunchList = c.config.getShortcut(commandName)
+    for bunch in bunchList:
+        if not bunch.pane.endswith('-mode'):
+            if trace: g.trace('2','%20s' % (bunch.val),commandName)
+            accel = bunch and bunch.val ; break
+    # Second, get new-style name.
+    if not accel:
+        << compute emacs_name >>
+            # Contains the not-so-horrible kludge.
+        if emacs_name:
+            commandName = emacs_name
+            rawKey,bunchList = c.config.getShortcut(emacs_name)
+            # Pick the first entry that is not a mode.
+            for bunch in bunchList:
+                if not bunch.pane.endswith('-mode'):
+                    accel = bunch.val
+                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                    break
+        elif not dynamicMenu:
+            g.trace('No inverse for %s' % commandName)
+#@+node:ekr.20051021100806.1:<< compute emacs_name >>
+@ One not-so-horrible kludge remains.
+
+The cut/copy/paste commands in the menu tables are not the same as the methods
+actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+of extra translation to discover whether the user has overridden their
+bindings.
+@c
+
+if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+    emacs_name = '%s-text' % commandName
+else:
+    try: # User errors in the table can cause this.
+        emacs_name = k.inverseCommandsDict.get(command.__name__)
+    except Exception:
+        emacs_name = None
+#@-node:ekr.20051021100806.1:<< compute emacs_name >>
+#@-node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
+#@+node:ekr.20061031131434.49:scan
+def scan (self,event=None,verbose=True,thread=True):
+
+    c = self.c
+    if not c or not c.exists or c.frame.isNullFrame: return
+    if g.app.unitTesting: return
+
+    # g.trace('autocompleter')
+
+    if 0: # thread:
+        # Use a thread to do the initial scan so as not to interfere with the user.            
+        def scan ():
+            #g.es("This is for testing if g.es blocks in a thread", color = 'pink' )
+            # During unit testing c gets destroyed before the scan finishes.
+            if not g.app.unitTesting:
+                self.scanOutline(verbose=True)
+
+        t = threading.Thread(target=scan)
+        t.setDaemon(True)
+        t.start()
+    else:
+        self.scanOutline(verbose=verbose)
+#@-node:ekr.20061031131434.49:scan
+#@+node:ekr.20060127052111.1:cutStack
+def cutStack (self):
+
+    u = self ; n = u.max_undo_stack_size
+
+    if n > 0 and u.bead >= n and not g.app.unitTesting:
+
+        # Do nothing if we are in the middle of creating a group.
+        i = len(u.beads)-1
+        while i >= 0:
+            bunch = u.beads[i]
+            if hasattr(bunch,'kind') and bunch.kind == 'beforeGroup':
+                return
+            i -= 1
+
+        # This work regardless of how many items appear after bead n.
+        # g.trace('Cutting undo stack to %d entries' % (n))
+        u.beads = u.beads[-n:]
+        u.bead = n-1
+        # g.trace('bead:',u.bead,'len(u.beads)',len(u.beads),g.callers())
+#@-node:ekr.20060127052111.1:cutStack
+#@+node:ekr.20061024075542.1:open
+def open (fileName=None):
+
+    global g
+
+    init()
+
+    if g.app.unitTesting:
+        return
+
+    if not fileName:
+        g.es_print('','leoPymacs.open:','no file name')
+        return None
+
+    # openWithFileName checks to see if the file is already open.
+    ok, frame = g.openWithFileName(
+        fileName,
+        old_c=None,
+        enableLog=False,
+        readAtFileNodesFlag=True)
+
+    c = ok and frame.c or None
+    if c:
+        g.es_print('','leoPymacs.open:',c)
+    else:
+        g.es_print('','leoPymacs.open:','can not open',fileName)
+
+    return c
+#@-node:ekr.20061024075542.1:open
+#@+node:ekr.20040715155607:g.scanForAtIgnore
+def scanForAtIgnore(c,p):
+
+    """Scan position p and its ancestors looking for @ignore directives."""
+
+    if g.app.unitTesting:
+        return False # For unit tests.
+
+    for p in p.self_and_parents():
+        d = g.get_directives_dict(p)
+        if 'ignore' in d:
+            return True
+
+    return False
+#@-node:ekr.20040715155607:g.scanForAtIgnore
+#@+node:tbrown.20090219095555.61:g.handleUrlInUrlNode
+def handleUrlInUrlNode(url):
+
+    # Note: the UNL plugin has its own notion of what a good url is.
+
+    if g.unitTesting: return
+    << check the url; return if bad >>
+    << pass the url to the web browser >>
+#@+node:tbrown.20090219095555.62:<< check the url; return if bad >>
+@ A valid url is (according to D.T.Hein):
+
+3 or more lowercase alphas, followed by,
+one ':', followed by,
+one or more of: (excludes !"#;<>[\]^`|)
+  $%&'()*+,-./0-9:=?@A-Z_a-z{}~
+followed by one of: (same as above, except no minus sign or comma).
+  $%&'()*+/0-9:=?@A-Z_a-z}~
+@c
+
+urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
+
+if not url or len(url) == 0:
+    g.es("no url following @url")
+    return
+
+# Add http:// if required.
+if not re.match('^([a-z]{3,}:)',url):
+    url = 'http://' + url
+if not re.match(urlPattern,url):
+    g.es("invalid url:",url)
+    return
+#@nonl
+#@-node:tbrown.20090219095555.62:<< check the url; return if bad >>
+#@+node:tbrown.20090219095555.63:<< pass the url to the web browser >>
+@ Most browsers should handle the following urls:
+  ftp://ftp.uu.net/public/whatever.
+  http://localhost/MySiteUnderDevelopment/index.html
+  file://home/me/todolist.html
+@c
+
+try:
+    import os
+    os.chdir(g.app.loadDir)
+    if g.match(url,0,"file:") and url[-4:]==".leo":
+        ok,frame = g.openWithFileName(url[5:],None)
+    else:
+        import webbrowser
+        # Mozilla throws a weird exception, then opens the file!
+        try: webbrowser.open(url)
+        except: pass
+except:
+    g.es("exception opening",url)
+    g.es_exception()
+#@-node:tbrown.20090219095555.63:<< pass the url to the web browser >>
+#@-node:tbrown.20090219095555.61:g.handleUrlInUrlNode
+#@+node:ekr.20040715155607:g.scanForAtIgnore
+def scanForAtIgnore(c,p):
+
+    """Scan position p and its ancestors looking for @ignore directives."""
+
+    if g.app.unitTesting:
+        return False # For unit tests.
+
+    for p in p.self_and_parents():
+        d = g.get_directives_dict(p)
+        if 'ignore' in d:
+            return True
+
+    return False
+#@-node:ekr.20040715155607:g.scanForAtIgnore
+#@+node:ekr.20050920084036.229:yankRectangle
+def yankRectangle (self,event,killRect=None):
+
+    '''Yank into the rectangle defined by the start and end of selected text.'''
+
+    c = self.c ; k = self.k
+    w = self.editWidget(event)
+    if not w: return
+
+    killRect = killRect or self.theKillRectangle
+    if g.app.unitTesting:
+        # This value is used by the unit test.
+        killRect = ['Y1Y','Y2Y','Y3Y','Y4Y']
+    elif not killRect:
+        k.setLabelGrey('No kill rect') ; return
+
+    w,r1,r2,r3,r4 = self.beginCommand('yank-rectangle')
+
+    n = 0
+    for r in range(r1,r3+1):
+        # g.trace(n,r,killRect[n])
+        if n >= len(killRect): break
+        w.delete('%s.%s' % (r,r2), '%s.%s' % (r,r4))
+        w.insert('%s.%s' % (r,r2), killRect[n])
+        n += 1
+
+    i = '%s.%s' % (r1,r2)
+    j = '%s.%s' % (r3,r2+len(killRect[n-1]))
+    w.setSelectionRange(i,j,insert=j)
+
+    self.endCommand()
+#@-node:ekr.20050920084036.229:yankRectangle
+#@+node:ekr.20050920084036.232:stringRectangle
+def stringRectangle (self,event):
+
+    '''Prompt for a string, then replace the contents of a rectangle
+    with a string on each line.'''
+
+    c = self.c ; k = self.k ; state = k.getState('string-rect')
+    if g.app.unitTesting:
+        state = 1 ; k.arg = 's...s' # This string is known to the unit test.
+        w = self.editWidget(event)
+        self.stringRect = self.getRectanglePoints(w)
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if not w or not self.check(event): return
+        self.stringRect = self.getRectanglePoints(w)
+        k.setLabelBlue('String rectangle: ',protect=True)
+        k.getArg(event,'string-rect',1,self.stringRectangle)
+    else:
+        k.clearState()
+        k.resetLabel()
+        c.bodyWantsFocus()
+        w = self.w
+        self.beginCommand('string-rectangle')
+        r1, r2, r3, r4 = self.stringRect
+        s = w.getAllText()
+        for r in range(r1,r3+1):
+            i = g.convertRowColToPythonIndex(s,r-1,r2)
+            j = g.convertRowColToPythonIndex(s,r-1,r4)
+            s = s[:i] + k.arg + s[j:]
+        w.setAllText(s)
+        i = g.convertRowColToPythonIndex(s,r1-1,r2)
+        j = g.convertRowColToPythonIndex(s,r3-1,r2+len(k.arg))
+        w.setSelectionRange(i,j)
+        self.endCommand()
+        # 2010/1/1: Fix bug 480422:
+        # string-rectangle kills syntax highlighting.
+        c.frame.body.recolor(c.p,incremental=False)
+
+#@-node:ekr.20050920084036.232:stringRectangle
+#@+node:ekr.20051218133207:backwardParagraphHelper
+def backwardParagraphHelper (self,event,extend):
+
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    i,j = w.getSelectionRange()
+    # A hack for wx gui: set the insertion point to the end of the selection range.
+    if g.app.unitTesting:
+        w.setInsertPoint(j)
+    i,j = g.getLine(s,j)
+    line = s[i:j]
+
+    if line.strip():
+        # Find the start of the present paragraph.
+        while i > 0:
+            i,j = g.getLine(s,i-1)
+            line = s[i:j]
+            if not line.strip(): break
+
+    # Find the end of the previous paragraph.
+    while i > 0:
+        i,j = g.getLine(s,i-1)
+        line = s[i:j]
+        if line.strip():
+            i = j-1 ; break
+
+    self.moveToHelper(event,i,extend)
+#@nonl
+#@-node:ekr.20051218133207:backwardParagraphHelper
+#@+node:ekr.20090103070824.11:c.checkFileTimeStamp
+def checkFileTimeStamp (self,fn):
+
+    '''
+    Return True if the file given by fn has not been changed
+    since Leo read it or if the user agrees to overwrite it.
+    '''
+
+    trace = False and not g.unitTesting
+    c = self
+
+    # Don't assume the file still exists.
+    if not g.os_path_exists(fn):
+        if trace: g.trace('file no longer exists',fn)
+        return True
+
+    timeStamp = c.timeStampDict.get(fn)
+    if not timeStamp:
+        if trace: g.trace('no time stamp',fn)
+        return True
+
+    timeStamp2 = os.path.getmtime(fn)
+    if timeStamp == timeStamp2:
+        if trace: g.trace('time stamps match',fn,timeStamp)
+        return True
+
+    if g.app.unitTesting:
+        return False
+
+    if trace:
+        g.trace('mismatch',timeStamp,timeStamp2)
+
+    message = '%s\n%s\n%s' % (
+        fn,
+        g.tr('has been modified outside of Leo.'),
+        g.tr('Overwrite this file?'))
+    ok = g.app.gui.runAskYesNoCancelDialog(c,
+        title = 'Overwrite modified file?',
+        message = message)
+
+    return ok == 'yes'
+#@-node:ekr.20090103070824.11:c.checkFileTimeStamp
+#@+node:ekr.20031218072017.2817: doCommand
+command_count = 0
+
+def doCommand (self,command,label,event=None):
+
+    """Execute the given command, invoking hooks and catching exceptions.
+
+    The code assumes that the "command1" hook has completely handled the command if
+    g.doHook("command1") returns False.
+    This provides a simple mechanism for overriding commands."""
+
+    c = self ; p = c.p
+    commandName = command and command.__name__
+    c.setLog()
+
+    self.command_count += 1
+    if not g.app.unitTesting and c.config.getBool('trace_doCommand'):
+        g.trace(commandName)
+
+    # The presence of this message disables all commands.
+    if c.disableCommandsMessage:
+        g.es(c.disableCommandsMessage,color='blue')
+        return 'break' # Inhibit all other handlers.
+
+    if c.exists and c.inCommand and not g.unitTesting:
+        # g.trace('inCommand',c)
+        g.es('ignoring command: already executing a command.',color='red')
+        return 'break'
+
+    if label and event is None: # Do this only for legacy commands.
+        if label == "cantredo": label = "redo"
+        if label == "cantundo": label = "undo"
+        g.app.commandName = label
+
+    if not g.doHook("command1",c=c,p=p,v=p,label=label):
+        try:
+            c.inCommand = True
+            val = command(event)
+            if c and c.exists: # Be careful: the command could destroy c.
+                c.inCommand = False
+                c.k.funcReturn = val
+            # else: g.pr('c no longer exists',c)
+        except Exception:
+            c.inCommand = False
+            if g.app.unitTesting:
+                raise
+            else:
+                g.es_print("exception executing command")
+                g.es_exception(c=c)
+
+        if c and c.exists:
+            if c.requestCloseWindow:
+                g.trace('Closing window after command')
+                c.requestCloseWindow = False
+                g.app.closeLeoWindow(c.frame)
+            else:
+                c.outerUpdate()
+
+    # Be careful: the command could destroy c.
+    if c and c.exists:
+        p = c.p
+        g.doHook("command2",c=c,p=p,v=p,label=label)
+
+    return "break" # Inhibit all other handlers.
+#@-node:ekr.20031218072017.2817: doCommand
+#@+node:ekr.20090712050729.6017:promptForDangerousWrite
+def promptForDangerousWrite (self,fileName,kind):
+
+    c = self.c
+
+    if g.app.unitTesting:
+        val = g.app.unitTestDict.get('promptForDangerousWrite')
+        return val in (None,True)
+
+    # g.trace(timeStamp, timeStamp2)
+    message = '%s %s\n%s\n%s' % (
+        kind, fileName,
+        g.tr('already exists.'),
+        g.tr('Overwrite this file?'))
+
+    ok = g.app.gui.runAskYesNoCancelDialog(c,
+        title = 'Overwrite existing file?',
+        message = message)
+
+    return ok == 'yes'
+#@-node:ekr.20090712050729.6017:promptForDangerousWrite
+#@+node:ekr.20070529083836:cleanLines
+def cleanLines (self,p,s):
+
+    '''Return a copy of s, with all trailing whitespace removed.
+    If a change was made, update p's body text and set c dirty.'''
+
+    c = self.c ; cleanLines = [] ; changed = False
+    lines = g.splitLines(s)
+    for line in lines:
+        if line.strip():
+            cleanLines.append(line)
+        elif line.endswith('\n'):
+            cleanLines.append('\n')
+            if line != '\n': changed = True
+        else:
+            cleanLines.append('')
+            if line != '': changed = True
+    s = g.joinLines(cleanLines)
+
+    if changed and not g.app.unitTesting:
+        p.setBodyString(s)
+        c.setChanged(True)
+
+    return s
+#@nonl
+#@-node:ekr.20070529083836:cleanLines
+#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+def writeOneAtShadowNode(self,p,toString,force):
+
+    '''Write p, an @shadow node.
+
+    File indices *must* have already been assigned.'''
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c ; root = p.copy() ; x = c.shadowController
+
+    fn = p.atShadowFileNodeName()
+    if trace: g.trace(p.h,fn)
+    if not fn:
+        g.es_print('can not happen: not an @shadow node',p.h,color='red')
+        return False
+
+    # A hack to support unknown extensions.
+    self.adjustTargetLanguage(fn) # May set c.target_language.
+
+    fn = at.fullPath(p)
+    at.default_directory = g.os_path_dirname(fn)
+    exists = g.os_path_exists(fn)
+    if trace: g.trace('exists %s fn %s' % (exists,fn))
+
+    # Bug fix 2010/01/18: Make sure we can compute the shadow directory.
+    private_fn = x.shadowPathName(fn)
+    if not private_fn:
+        return False
+
+    if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
+        if trace: g.trace('ignoring',fn)
+        return False
+
+    c.endEditing() # Capture the current headline.
+    at.initWriteIvars(root,targetFileName=None, # Not used.
+        atShadow=True,
+        nosentinels=None, # set below.  Affects only error messages (sometimes).
+        thinFile=True, # New in Leo 4.5 b2: private files are thin files.
+        scriptWrite=False,
+        toString=False, # True: create a fileLikeObject.  This is done below.
+        forcePythonSentinels=True) # A hack to suppress an error message.
+            # The actual sentinels will be set below.
+
+    # Bug fix: Leo 4.5.1: use x.markerFromFileName to force the delim to match
+    #                     what is used in x.propegate changes.
+    marker = x.markerFromFileName(fn)
+    at.startSentinelComment,at.endSentinelComment=marker.getDelims()
+
+    if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
+
+    # Write the public and private files to public_s and private_s strings.
+    data = []
+    for sentinels in (False,True):
+        theFile = at.openStringFile(fn)
+        at.sentinels = sentinels
+        at.writeOpenFile(root,
+            nosentinels=not sentinels,toString=False)
+            # nosentinels only affects error messages, and then only if atAuto is True.
+        s = at.closeStringFile(theFile)
+        data.append(s)
+
+    # Set these new ivars for unit tests.
+    at.public_s, at.private_s = data
+
+    if g.app.unitTesting:
+        exceptions = ('public_s','private_s','sentinels','stringOutput')
+        assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
+
+    if at.errors == 0 and not toString:
+        # Write the public and private files.
+        if trace: g.trace('writing',fn)
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        at.replaceFileWithString(private_fn,at.private_s)
+        at.replaceFileWithString(fn,at.public_s)
+
+    self.checkPythonCode(root,s=at.private_s,targetFn=fn)
+
+    if at.errors == 0:
+        root.clearOrphan()
+        root.clearDirty()
+    else:
+        g.es("not written:",at.outputFileName,color='red')
+        root.setDirty() # New in Leo 4.4.8.
+
+    return at.errors == 0
+#@+node:ekr.20080711093251.6:shouldWriteAtShadowNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.  That's too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @shadow x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @shadow node which will be populated the next time the .leo file is opened.
+- We don't want minor import imperfections to be written to the @shadow file.
+- The explicit commands that read and write @shadow trees must always be honored.
+@c
+
+def shouldWriteAtShadowNode (self,p,exists,force,fn):
+
+    '''Return True if we should write the @shadow node at p.'''
+
+    at = self ; x = at.c.shadowController
+
+    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+        return True
+    elif not exists: # We can write a non-existent file without danger.
+        return True
+    elif not p.isDirty(): # There is nothing new to write.
+        return False
+    elif not self.isSignificantTree(p): # There is noting of value to write.
+        g.es_print(p.h,'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+        return False
+    else: # The @shadow tree is dirty and contains significant info.
+        return True
+#@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
+#@+node:ekr.20080819075811.13:adjustTargetLanguage
+def adjustTargetLanguage (self,fn):
+
+    """Use the language implied by fn's extension if
+    there is a conflict between it and c.target_language."""
+
+    at = self ; c = at.c
+
+    if c.target_language:
+        junk,target_ext = g.os_path_splitext(fn)  
+    else:
+        target_ext = ''
+
+    junk,ext = g.os_path_splitext(fn)
+
+    if ext:
+        if ext.startswith('.'): ext = ext[1:]
+
+        language = g.app.extension_dict.get(ext)
+        if language:
+            c.target_language = language
+        else:
+            # An unknown language.
+            pass # Use the default language, **not** 'unknown_language'
+#@-node:ekr.20080819075811.13:adjustTargetLanguage
+#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+#@+node:bwmulder.20050101094804:openForWrite (atFile)
+def openForWrite (self, filename, wb='wb'):
+
+    '''Open a file for writes, handling shadow files.'''
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c ; x = c.shadowController
+
+    try:
+        shadow_filename = x.shadowPathName(filename)
+        self.writing_to_shadow_directory = os.path.exists(shadow_filename)
+        open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
+        self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
+
+        if self.writing_to_shadow_directory:
+            if trace: g.trace(filename,shadow_filename)
+            x.message('writing %s' % shadow_filename)
+            return 'shadow',open(open_file_name,wb)
+        else:
+            ok = c.checkFileTimeStamp(at.targetFileName)
+            return 'check',ok and open(open_file_name,wb)
+
+    except IOError:
+        if not g.app.unitTesting:
+            g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
+            g.es_exception()
+        return 'error',None
+#@-node:bwmulder.20050101094804:openForWrite (atFile)
+#@+node:ekr.20031218072017.2609:app.closeLeoWindow
+def closeLeoWindow (self,frame):
+
+    """Attempt to close a Leo window.
+
+    Return False if the user veto's the close."""
+
+    c = frame.c
+
+    # g.trace('frame',frame,g.callers(4))
+
+    c.endEditing() # Commit any open edits.
+
+    if c.promptingForClose:
+        # There is already a dialog open asking what to do.
+        return False
+
+    g.app.config.writeRecentFilesFile(c) # Make sure .leoRecentFiles.txt is written.
+
+    if c.changed:
+        c.promptingForClose = True
+        veto = frame.promptForSave()
+        c.promptingForClose = False
+        if veto: return False
+
+    g.app.setLog(None) # no log until we reactive a window.
+
+    g.doHook("close-frame",c=c) # This may remove frame from the window list.
+
+    if frame in g.app.windowList:
+        g.app.destroyWindow(frame)
+
+    if g.app.windowList:
+        # Pick a window to activate so we can set the log.
+        frame = g.app.windowList[0]
+        frame.deiconify()
+        frame.lift()
+        frame.c.setLog()
+        frame.c.bodyWantsFocus()
+        frame.c.outerUpdate()
+    elif not g.app.unitTesting:
+        g.app.finishQuit()
+
+    return True # The window has been closed.
+#@-node:ekr.20031218072017.2609:app.closeLeoWindow
+#@+node:ekr.20041113113140:loadOnePlugin
+def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
+
+    trace = False # and not g.unitTesting
+
+    global loadedModules,loadingModuleNameStack
+
+    # Prevent Leo from crashing if .leoID.txt does not exist.
+    if g.app.config is None:
+        print ('No g.app.config, making stub...')
+        class StubConfig(g.nullObject):
+            pass
+        g.app.config = StubConfig()
+
+    # Fixed reversion: do this after possibly creating stub config class.
+    verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
+    warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+
+    if moduleOrFileName.endswith('.py'):
+        moduleName = moduleOrFileName [:-3]
+    else:
+        moduleName = moduleOrFileName
+    moduleName = g.shortFileName(moduleName)
+
+    if isLoaded(moduleName):
+        module = loadedModules.get(moduleName)
+        if trace or verbose:
+            g.trace('plugin',moduleName,'already loaded',color="blue")
+        return module
+
+    assert g.app.loadDir
+
+    plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
+    moduleName = g.toUnicode(moduleName)
+
+    # This import will typically result in calls to registerHandler.
+    # if the plugin does _not_ use the init top-level function.
+    loadingModuleNameStack.append(moduleName)
+    result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
+    loadingModuleNameStack.pop()
+
+    if result:
+        loadingModuleNameStack.append(moduleName)
+
+        if tag == 'unit-test-load':
+            pass # Keep the result, but do no more.
+        elif hasattr(result,'init'):
+            try:
+                # Indicate success only if init_result is True.
+                init_result = result.init()
+                # g.trace('result',result,'init_result',init_result)
+                if init_result:
+                    loadedModules[moduleName] = result
+                    loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
+                else:
+                    if verbose and not g.app.initing:
+                        g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")
+                    result = None
+            except Exception:
+                g.es_print('exception loading plugin',color='red')
+                g.es_exception()
+                result = None
+        else:
+            # No top-level init function.
+            # Guess that the module was loaded correctly,
+            # but do *not* load the plugin if we are unit testing.
+
+            if g.app.unitTesting:
+                result = None
+                loadedModules[moduleName] = None
+            else:
+                g.trace('no init()',moduleName)
+                loadedModules[moduleName] = result
+        loadingModuleNameStack.pop()
+
+    if g.app.batchMode or g.app.inBridge: # or g.unitTesting
+        pass
+    elif result:
+        if trace or verbose:
+            g.trace('loaded plugin:',moduleName,color="blue")
+    else:
+        if trace or warn_on_failure or (verbose and not g.app.initing):
+            if trace or tag == 'open0':
+                g.trace('can not load enabled plugin:',moduleName,color="red")
+
+    return result
+#@-node:ekr.20041113113140:loadOnePlugin
+#@+node:ekr.20031218072017.2829:c.openTempFileInExternalEditor
+def openTempFileInExternalEditor(self,arg,fn,openType,testing=False):
+
+    '''Open the closed mkstemp file fn in an external editor.
+    The arg and openType args come from the data arg to c.openWith.
+    '''
+
+    trace = False and not g.unitTesting
+    testing = testing or g.unitTesting
+    if arg is None: arg = ''
+
+    try:
+        if trace: g.trace(repr(openType),repr(arg),repr(fn))
+        command = '<no command>'
+        if openType == 'os.system':
+            if 1:
+                # This works, *provided* that arg does not contain blanks.  Sheesh.
+                command = 'os.system(%s)' % (arg+fn)
+                if trace: g.trace(command)
+                if not testing: os.system(arg+fn)
+            else:
+                # XP does not like this format!
+                command = 'os.system("%s %s")' % (arg,fn)
+                if not testing: os.system('"%s" "%s"' % (arg,fn))
+        elif openType == 'os.startfile':
+            command = 'os.startfile(%s)' % (arg+fn)
+            if trace: g.trace(command)
+            if not testing: os.startfile(arg+fn)
+        elif openType == 'exec':
+            command = 'exec(%s)' % (arg+fn)
+            if trace: g.trace(command)
+            if not testing: exec(arg+fn,{},{})
+        elif openType == 'os.spawnl':
+            filename = g.os_path_basename(arg)
+            command = 'os.spawnl(%s,%s,%s)' % (arg,filename,fn)
+            if trace: g.trace(command)
+            if not testing: os.spawnl(os.P_NOWAIT,arg,filename,fn)
+        elif openType == 'os.spawnv':
+            filename = os.path.basename(arg[0]) 
+            vtuple = arg[1:]
+            vtuple.insert(0, filename)
+                # add the name of the program as the first argument.
+                # Change suggested by Jim Sizelove.
+            vtuple.append(fn)
+            command = 'os.spawnv(%s,%s)' % (arg[0],repr(vtuple))
+            if trace: g.trace(command)
+            if not testing: os.spawnv(os.P_NOWAIT,arg[0],vtuple)
+        elif openType == 'subprocess.Popen':
+            use_shell = True
+            if g.isString(arg):
+                if arg:
+                    vtuple = arg + ' ' + fn
+                else:
+                    vtuple = fn
+            elif isinstance(arg,(list, tuple)):
+                vtuple = arg[:]
+                vtuple.append(fn)
+                use_shell = False
+            command = 'subprocess.Popen(%s)' % repr(vtuple)
+            if trace: g.trace(command)
+            if not testing:
+                try:
+                    subprocess.Popen(vtuple,shell=use_shell)
+                except OSError:
+                    g.es_print('vtuple',repr(vtuple))
+                    g.es_exception()
+        elif g.isCallable(openType):
+            # Invoke openWith like this:
+            # c.openWith(data=[f,None,None])
+            # f will be called with one arg, the filename
+            if trace: g.trace('%s(%s)' % (openType,fn))
+            command = '%s(%s)' % (openType,fn)
+            if not testing: openType(fn)
+        else:
+            command='bad command:'+str(openType)
+            if not testing: g.trace(command)
+        return command # for unit testing.
+    except Exception:
+        g.es('exception executing open-with command:',command)
+        g.es_exception()
+        return 'oops: %s' % command
+#@-node:ekr.20031218072017.2829:c.openTempFileInExternalEditor
+#@+node:ekr.20031218072017.1151:tangle.put_all_roots
+@
+This is the top level method of the second pass. It creates a separate C file
+for each @root directive in the outline. The file is actually written only if
+the new version of the file is different from the old version,or if the file did
+not exist previously. If changed_only_flag FLAG is True only changed roots are
+actually written.
+@c
+
+def put_all_roots(self):
+
+    c = self.c ; outline_name = c.mFileName
+
+    for section in self.root_list:
+
+        # g.trace(section.name)
+        file_name = c.os_path_finalize_join(self.tangle_directory,section.name)
+        mode = c.config.output_newline
+        textMode = mode == 'platform'
+        if g.unitTesting:
+            self.output_file = g.fileLikeObject()
+            temp_name = 'temp-file'
+        else:
+            self.output_file,temp_name = g.create_temp_file(textMode=textMode)
+        if not temp_name:
+            g.es("can not create temp file")
+            break
+        <<Get root specific attributes>>
+        <<Put @first lines>>
+        if self.use_header_flag and self.print_mode == "verbose":
+            << Write a banner at the start of the output file >>
+        for part in section.parts:
+            if part.is_root:
+                self.tangle_indent = 0 # Initialize global.
+                self.put_part_node(part,False) # output first lws
+        self.onl() # Make sure the file ends with a cr/lf
+        if g.unitTesting:
+            self.tangle_output = self.output_file.get()
+        self.output_file.close()
+        self.output_file = None
+        if g.unitTesting:
+            assert self.errors == 0
+            g.app.unitTestDict ['tangle'] = True
+            g.app.unitTestDict ['tangle_directory'] = self.tangle_directory
+            g.app.unitTestDict ['tangle_output_fn'] = file_name
+        else:
+            if self.errors + g.app.scanErrors == 0:
+                g.update_file_if_changed(c,file_name,temp_name)
+            else:
+                g.es("unchanged:",file_name)
+                << Erase the temporary file >>
+#@nonl
+#@+node:ekr.20031218072017.1152:<<Get root specific attributes>>
+# Stephen Schaefer, 9/2/02
+# Retrieve the full complement of state for the root node
+self.language = section.root_attributes.language
+self.single_comment_string = section.root_attributes.single_comment_string
+self.start_comment_string = section.root_attributes.start_comment_string
+self.end_comment_string = section.root_attributes.end_comment_string
+self.use_header_flag = section.root_attributes.use_header_flag
+self.print_mode = section.root_attributes.print_mode
+self.path = section.root_attributes.path
+self.page_width = section.root_attributes.page_width
+self.tab_width = section.root_attributes.tab_width
+# Stephen P. Schaefer, 9/13/2002
+self.first_lines = section.root_attributes.first_lines
+
+# g.trace(self.single_comment_string)
+#@-node:ekr.20031218072017.1152:<<Get root specific attributes>>
+#@+node:ekr.20031218072017.1153:<<Put @first lines>>
+# Stephen P. Schaefer 9/13/2002
+if self.first_lines:
+    self.os(self.first_lines)
+#@-node:ekr.20031218072017.1153:<<Put @first lines>>
+#@+node:ekr.20031218072017.1154:<<Write a banner at the start of the output file>>
+if self.single_comment_string:
+    self.os(self.single_comment_string)
+    self.os(" Created by Leo from: ")
+    self.os(outline_name)
+    self.onl() ; self.onl()
+elif self.start_comment_string and self.end_comment_string:
+    self.os(self.start_comment_string)
+    self.os(" Created by Leo from: ")
+    self.os(outline_name)
+    self.oblank() ; self.os(self.end_comment_string)
+    self.onl() ; self.onl()
+#@-node:ekr.20031218072017.1154:<<Write a banner at the start of the output file>>
+#@+node:ekr.20031218072017.1155:<< Erase the temporary file >>
+try: # Just delete the temp file.
+    os.remove(temp_name)
+except: pass
+#@-node:ekr.20031218072017.1155:<< Erase the temporary file >>
+#@-node:ekr.20031218072017.1151:tangle.put_all_roots
+#@+node:ekr.20041005105605.15:initWriteIvars
+def initWriteIvars(self,root,targetFileName,
+    atAuto=False,
+    atEdit=False,
+    atShadow=False,
+    nosentinels=False,
+    thinFile=False,
+    scriptWrite=False,
+    toString=False,
+    forcePythonSentinels=None,
+):
+
+    self.initCommonIvars()
+    << init ivars for writing >>
+
+    if forcePythonSentinels is None:
+        forcePythonSentinels = scriptWrite
+
+    if root:
+        self.scanAllDirectives(root,
+            scripting=scriptWrite,
+            forcePythonSentinels=forcePythonSentinels,
+            issuePathWarning=True)
+
+    # g.trace(forcePythonSentinels,self.startSentinelComment,self.endSentinelComment)
+
+    if forcePythonSentinels:
+        # Force Python comment delims for g.getScript.
+        self.startSentinelComment = "#"
+        self.endSentinelComment = None
+
+    # Init state from arguments.
+    self.targetFileName = targetFileName
+    self.sentinels = not nosentinels
+    self.thinFile = thinFile
+    self.toString = toString
+    self.root = root
+
+    # Ignore config settings for unit testing.
+    if toString and g.app.unitTesting: self.output_newline = '\n'
+
+    # Init all other ivars even if there is an error.
+    if not self.errors and self.root:
+        if hasattr(self.root.v,'tnodeList'):
+            delattr(self.root.v,'tnodeList')
+        self.root.v._p_changed = True
+#@+node:ekr.20041005105605.16:<< init ivars for writing >>>
+@
+When tangling, we first write to a temporary output file. After tangling is
+temporary file. Otherwise we delete the old target file and rename the temporary
+file to be the target file.
+@c
+
+self.docKind = None
+self.explicitLineEnding = False # True: an @lineending directive specifies the ending.
+self.fileChangedFlag = False # True: the file has actually been updated.
+self.atAuto = atAuto
+self.atEdit = atEdit
+self.atShadow = atShadow
+self.shortFileName = "" # short version of file name used for messages.
+self.thinFile = False
+self.force_newlines_in_at_nosent_bodies = self.c.config.getBool(
+    'force_newlines_in_at_nosent_bodies')
+
+if toString:
+    self.outputFile = g.fileLikeObject()
+    self.stringOutput = ""
+    self.targetFileName = self.outputFileName = "<string-file>"
+else:
+    self.outputFile = None # The temporary output file.
+    self.stringOutput = None
+    self.targetFileName = self.outputFileName = g.u('')
+#@-node:ekr.20041005105605.16:<< init ivars for writing >>>
+#@-node:ekr.20041005105605.15:initWriteIvars
+#@-node:ekr.20100211072044.5754:Dubious usages of .unitTesting
 #@+node:ekr.20100211072044.5751:Failing unit test with koi8-r
 #@+node:ekr.20090520055433.5954:g.mungeFileName
 def mungeFileName(fileName):
@@ -2220,6 +3001,453 @@ def openLeoOrZipFile (fileName):
 #@nonl
 #@-node:ekr.20070412082527:g.openLeoOrZipFile
 #@-node:ekr.20100211072044.5751:Failing unit test with koi8-r
+#@+node:ekr.20100206173123.5801:Fix or eliminate check python syntax commands
+@nocolor-node
+
+Directives and section references are not the problem. Rather, the problems are
+thinks like 'return' in a node that doesn't look it is in a function.
+
+The solution would likely be to check the entire file at once in checkPython
+code. But this won't work for the check-all-python-code command.
+
+Do we really need these checks? I think not, because the automatic checks work
+so well.
+#@nonl
+#@+node:ekr.20100206142026.5967:To do: use g.checkPythonNode as the base of all syntax checking
+#@+node:ekr.20040723094220.5:c.checkPythonNode
+def checkPythonNode (self,p,unittest=False,suppressErrors=False):
+
+    c = self ; h = p.h
+
+    # Call getScript to ignore directives and section references.
+    body = g.getScript(c,p.copy())
+    if not body: return
+
+    try:
+        fn = '<node: %s>' % p.h
+        if not g.isPython3:
+            body = g.toEncodedString(body)
+        compile(body+'\n',fn,'exec')
+        c.tabNannyNode(p,h,body,unittest,suppressErrors)
+    except SyntaxError:
+        if not suppressErrors:
+            s = "Syntax error in: %s" % h
+            g.es_print(s,color="blue")
+            g.es_exception(full=False,color="black")
+        if unittest: raise
+    except Exception:
+        g.es_print('unexpected exception')
+        g.es_exception()
+        if unittest: raise
+
+#@-node:ekr.20040723094220.5:c.checkPythonNode
+#@+node:EKR.20040614071102.1:g.getScript
+def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=True):
+
+    '''Return the expansion of the selected text of node p.
+    Return the expansion of all of node p's body text if there
+    is p is not the current node or if there is no text selection.'''
+
+    # New in Leo 4.6 b2: use a pristine atFile handler
+    # so there can be no conflict with c.atFileCommands.
+    # at = c.atFileCommands
+    import leo.core.leoAtFile as leoAtFile
+    at = leoAtFile.atFile(c)
+
+    w = c.frame.body.bodyCtrl
+    p1 = p and p.copy()
+    if not p:
+        p = c.p
+    try:
+        if g.app.inBridge:
+            s = p.b
+        elif p1:
+            s = p.b # Bug fix: Leo 8.8.4.
+        elif p == c.p:
+            if useSelectedText and w.hasSelection():
+                s = w.getSelectedText()
+            else:
+                s = w.getAllText()
+        else:
+            s = p.b
+        # Remove extra leading whitespace so the user may execute indented code.
+        s = g.removeExtraLws(s,c.tab_width)
+        if s.strip():
+            g.app.scriptDict["script1"]=s
+            # Important: converts unicode to utf-8 encoded strings.
+            script = at.writeFromString(p.copy(),s,
+                forcePythonSentinels=forcePythonSentinels,
+                useSentinels=useSentinels)
+            script = script.replace("\r\n","\n") # Use brute force.
+            # Important, the script is an **encoded string**, not a unicode string.
+            g.app.scriptDict["script2"]=script
+        else: script = ''
+    except Exception:
+        g.es_print("unexpected exception in g.getScript")
+        g.es_exception()
+        script = ''
+
+    # g.trace(type(script),repr(script))
+    return script
+#@-node:EKR.20040614071102.1:g.getScript
+#@+node:ekr.20050506084734:writeFromString (atFile)
+# This is at.write specialized for scripting.
+
+def writeFromString(self,root,s,forcePythonSentinels=True,useSentinels=True):
+
+    """Write a 4.x derived file from a string.
+
+    This is used by the scripting logic."""
+
+    at = self ; c = at.c
+    c.endEditing() # Capture the current headline, but don't change the focus!
+
+    at.initWriteIvars(root,"<string-file>",
+        nosentinels=not useSentinels,thinFile=False,scriptWrite=True,toString=True,
+        forcePythonSentinels=forcePythonSentinels)
+
+    try:
+        ok = at.openFileForWriting(root,at.targetFileName,toString=True)
+        if g.app.unitTesting: assert ok # string writes never fail.
+        # Simulate writing the entire file so error recovery works.
+        at.writeOpenFile(root,nosentinels=not useSentinels,toString=True,fromString=s)
+        at.closeWriteFile()
+        # Major bug: failure to clear this wipes out headlines!
+        # Minor bug: sometimes this causes slight problems...
+        if root:
+            if hasattr(self.root.v,'tnodeList'):
+                delattr(self.root.v,'tnodeList')
+            root.v._p_changed = True
+    except Exception:
+        at.exception("exception preprocessing script")
+
+    return at.stringOutput
+#@-node:ekr.20050506084734:writeFromString (atFile)
+#@+node:ekr.20100206142026.5839:g.checkPythonNode & helper (NEW)
+def checkPythonNode (c,s,fn=None,p=None,
+    munge=False,suppressErrors=False,
+    tabNanny=False,unittest=False,
+    suppressErrors=False,
+):
+
+    '''The future base of all syntax checking'''
+
+    if not s.strip():
+        return
+    if munge:
+        at = c.atFileCommands
+        s = g.toUnicode(s)
+        at.writeFromString(p=None,s=s,
+            forcePythonSentinels=True,useSentinels=True)
+    if not s.strip():
+        return
+    if fn:
+        pass
+    elif p:
+        fn = '<node: %s>' % p.h
+    else:
+        fn = '<string'>
+    try:
+        if not g.isPython3:
+            s = g.toEncodedString(s)
+        s = s.replace('\r','')
+        compile(s+'\n',fn,'exec')
+        if tabNanny:
+            c.tabNannyNode(p,h,s,unittest,suppressErrors)
+    except SyntaxError:
+        if not suppressErrors:
+            s = "Syntax error in: %s" % h
+            g.es_print(s,color="blue")
+            g.es_exception(full=True,color="black")
+        if unittest: raise
+    except Exception:
+        g.es_print('unexpected exception')
+        g.es_exception()
+        if unittest: raise
+#@+node:ekr.20100206142026.5840:checkPythonNodeHelper
+def checkPythonNodeHelper (c,s):
+
+
+
+
+    return g.toUnicode(
+        .writeFromString(p = None,s=s,
+        forcePythonSentinels=True,useSentinels=True)
+#@-node:ekr.20100206142026.5840:checkPythonNodeHelper
+#@-node:ekr.20100206142026.5839:g.checkPythonNode & helper (NEW)
+#@+node:ekr.20060624085200:g.handleScriptException
+def handleScriptException (c,p,script,script1):
+
+    g.es("exception executing script",color='blue')
+
+    full = c.config.getBool('show_full_tracebacks_in_scripts')
+
+    fileName, n = g.es_exception(full=full)
+
+    if p and not script1 and fileName == "<string>":
+        c.goToScriptLineNumber(p,script,n)
+
+    << dump the lines near the error >>
+#@+node:EKR.20040612215018:<< dump the lines near the error >>
+if g.os_path_exists(fileName):
+    f = open(fileName)
+    lines = f.readlines()
+    f.close()
+else:
+    lines = g.splitLines(script)
+
+s = '-' * 20
+g.es_print('',s)
+
+# Print surrounding lines.
+i = max(0,n-2)
+j = min(n+2,len(lines))
+while i < j:
+    ch = g.choose(i==n-1,'*',' ')
+    s = "%s line %d: %s" % (ch,i+1,lines[i])
+    g.es('',s,newline=False)
+    i += 1
+#@-node:EKR.20040612215018:<< dump the lines near the error >>
+#@-node:ekr.20060624085200:g.handleScriptException
+#@-node:ekr.20100206142026.5967:To do: use g.checkPythonNode as the base of all syntax checking
+#@+node:ekr.20040723094220:Check Outline commands & allies
+#@+node:ekr.20040723094220.1:c.checkAllPythonCode
+def checkAllPythonCode(self,event=None,unittest=False,ignoreAtIgnore=True):
+
+    '''Check all nodes in the selected tree for syntax and tab errors.'''
+
+    c = self ; count = 0 ; result = "ok"
+
+    for p in c.all_unique_positions():
+        count += 1
+        if not unittest:
+            << print dots >>
+
+        if g.scanForAtLanguage(c,p) == "python":
+            if not g.scanForAtSettings(p) and (
+                not ignoreAtIgnore or not g.scanForAtIgnore(c,p)
+            ):
+                try:
+                    c.checkPythonNode(p,unittest)
+                except (SyntaxError,tokenize.TokenError,tabnanny.NannyNag):
+                    result = "error" # Continue to check.
+                except Exception:
+                    return "surprise" # abort
+                if unittest and result != "ok":
+                    g.pr("Syntax error in %s" % p.cleanHeadString())
+                    return result # End the unit test: it has failed.
+
+    if not unittest:
+        g.es("check complete",color="blue")
+
+    return result
+#@+node:ekr.20040723094220.2:<< print dots >>
+if count % 100 == 0:
+    g.es('','.',newline=False)
+
+if count % 2000 == 0:
+    g.enl()
+#@-node:ekr.20040723094220.2:<< print dots >>
+#@-node:ekr.20040723094220.1:c.checkAllPythonCode
+#@+node:ekr.20040723094220.3:c.checkPythonCode
+def checkPythonCode (self,event=None,
+    unittest=False,ignoreAtIgnore=True,
+    suppressErrors=False,checkOnSave=False):
+
+    '''Check the selected tree for syntax and tab errors.'''
+
+    c = self ; count = 0 ; result = "ok"
+
+    if not unittest:
+        g.es("checking Python code   ")
+
+    for p in c.p.self_and_subtree():
+
+        count += 1
+        if not unittest and not checkOnSave:
+            << print dots >>
+
+        if g.scanForAtLanguage(c,p) == "python":
+            if not ignoreAtIgnore or not g.scanForAtIgnore(c,p):
+                try:
+                    c.checkPythonNode(p,unittest,suppressErrors)
+                except (SyntaxError,tokenize.TokenError,tabnanny.NannyNag):
+                    result = "error" # Continue to check.
+                except Exception:
+                    return "surprise" # abort
+
+    if not unittest:
+        g.es("check complete",color="blue")
+
+    # We _can_ return a result for unit tests because we aren't using doCommand.
+    return result
+#@+node:ekr.20040723094220.4:<< print dots >>
+if count % 100 == 0:
+    g.es('','.',newline=False)
+
+if count % 2000 == 0:
+    g.enl()
+#@-node:ekr.20040723094220.4:<< print dots >>
+#@-node:ekr.20040723094220.3:c.checkPythonCode
+#@+node:ekr.20040723094220.5:c.checkPythonNode
+def checkPythonNode (self,p,unittest=False,suppressErrors=False):
+
+    c = self ; h = p.h
+
+    # Call getScript to ignore directives and section references.
+    body = g.getScript(c,p.copy())
+    if not body: return
+
+    try:
+        fn = '<node: %s>' % p.h
+        if not g.isPython3:
+            body = g.toEncodedString(body)
+        compile(body+'\n',fn,'exec')
+        c.tabNannyNode(p,h,body,unittest,suppressErrors)
+    except SyntaxError:
+        if not suppressErrors:
+            s = "Syntax error in: %s" % h
+            g.es_print(s,color="blue")
+            g.es_exception(full=False,color="black")
+        if unittest: raise
+    except Exception:
+        g.es_print('unexpected exception')
+        g.es_exception()
+        if unittest: raise
+
+#@-node:ekr.20040723094220.5:c.checkPythonNode
+#@+node:ekr.20040723094220.6:c.tabNannyNode
+# This code is based on tabnanny.check.
+
+def tabNannyNode (self,p,headline,body,unittest=False,suppressErrors=False):
+
+    """Check indentation using tabnanny."""
+
+    c = self
+
+    try:
+        readline = g.readLinesClass(body).next
+        tabnanny.process_tokens(tokenize.generate_tokens(readline))
+
+    except IndentationError:
+        junk,msg,junk = sys.exc_info()
+        if not suppressErrors:
+            g.es("IndentationError in",headline,color="blue")
+            g.es('',msg)
+        if unittest: raise
+
+    except tokenize.TokenError:
+        junk, msg, junk = sys.exc_info()
+        if not suppressErrors:
+            g.es("TokenError in",headline,color="blue")
+            g.es('',msg)
+        if unittest: raise
+
+    except tabnanny.NannyNag:
+        junk, nag, junk = sys.exc_info()
+        if not suppressErrors:
+            badline = nag.get_lineno()
+            line    = nag.get_line()
+            message = nag.get_msg()
+            g.es("indentation error in",headline,"line",badline,color="blue")
+            g.es(message)
+            line2 = repr(str(line))[1:-1]
+            g.es("offending line:\n",line2)
+        if unittest: raise
+
+    except Exception:
+        g.trace("unexpected exception")
+        g.es_exception()
+        if unittest: raise
+#@-node:ekr.20040723094220.6:c.tabNannyNode
+#@-node:ekr.20040723094220:Check Outline commands & allies
+#@-node:ekr.20100206173123.5801:Fix or eliminate check python syntax commands
+#@+node:ekr.20100127064113.6206:fix pylint
+#  unbound recursion...
+
+def unbound():
+    unbound()
+
+unbound()
+#@nonl
+#@-node:ekr.20100127064113.6206:fix pylint
+#@+node:ekr.20100210102224.5744:Notes for key bindings
+@nocolor-node
+
+Requirements:
+    - Existing bindings must still be valid.
+    - But @mode does not have to remain.
+
+Think data:
+    - Drive binding by tables.
+    *** Design these tables first.
+    - Table design should be flixible.
+      It can change without affecting user.
+
+keySequence class?
+    - Represents a sequence of keystrokes.
+
+bufferMode class?
+    - Might encapsulate directives, etc.
+
+bindHelper class?
+    - Would mediate various aspects of binding.
+    - c.bindHelper or k.bindHelper?
+#@nonl
+#@-node:ekr.20100210102224.5744:Notes for key bindings
+#@+node:ekr.20100118143729.6256:Wish-list bug 508108: No methods sub-nodes in PHP class import
+@nocolor-node
+
+EKR: this is a wish-list item
+
+https://bugs.launchpad.net/leo-editor/+bug/508108
+
+When importing a PHP class file, I get two nodes: the first is just some Leo
+definitions (@language, @tab, @others), while the second is the whole class. I
+expect Leo to create a node for each method in the class as it does for
+"classless" file of functions (not sure how it is done in other languages). This
+kind of change would also make @auto a lot more useful for PHP.
+#@nonl
+#@-node:ekr.20100118143729.6256:Wish-list bug 508108: No methods sub-nodes in PHP class import
+#@+node:ekr.20100209114432.5750:Work on docs
+- Better scren shots.
+#@nonl
+#@+node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
+http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
+
+Python uses Sphinx for its doc, they have a discussion about making
+the TOC on the left hand side collapsible/non-scrolling here:
+
+http://www.google.com/url?sa=t&source=web&ct=res&cd=4&ved=0CBYQFjAD&url=http%3A%2F%2Fbugs.python.org%2Fissue3143&ei=bW5oS-eQIJDalAfqlYyGCA&usg=AFQjCNGyhpE3wZ2jvfwA0dwjCfoAxleDRQ&sig2=2CRD7hNMmx1NzFHMyOq_cQ
+
+that includes code for the CSS stylesheet to do this.
+
+Although this does not appear in the python docs (yet), it might be
+valuable for Leo's Doc's
+
+
+
+I downloaded the example files from the above link, the collapsible
+sidebar works well with the python documentation.  As the Leo
+documentation is just a variant of python's, I downloaded a HTML
+chapter and the support files kept in .../static, then I placed the
+"sidebar.js" in with those files on my local copy.  To make the
+sidebar collapsing work, all I had to do was add it to the list of
+javascript files in the chapter .html file, i.e., I added the second
+line below
+
+    <script type="text/javascript" src="IPythonBridge_files/
+doctools.js"></script>
+    <script type="text/javascript" src="IPythonBridge_files/
+sidebar.js"></script>
+
+in the 'head' section, (the above takes into account that I was doing
+this on my local, differently arranged, copy).
+
+That is all that it takes to give us a collapsible TOC
+#@nonl
+#@-node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
+#@-node:ekr.20100209114432.5750:Work on docs
 #@-node:ekr.20100209160132.5771:until-4-7-final branch
 #@+node:ekr.20100109214940.6225:4.8 vim, cleanups, your mission...
 #@+node:ekr.20100206074650.5852:Posting re "your mission, should you choose to accept it"
