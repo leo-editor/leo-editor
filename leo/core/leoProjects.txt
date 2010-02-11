@@ -10160,6 +10160,229 @@ def setBodyTextAfterSelect (self,p,old_p):
         # g.trace('insert point',0)
 #@-node:ekr.20090608081524.6109:setBodyTextAfterSelect
 #@-node:ekr.20100211072044.5757:Fixed minor bug involving insertion point
+#@+node:ekr.20100211110404.5763:Fixed unicode crasher in write-recent-files logic
+#@+node:ekr.20100125073206.8710:g.readFileIntoString (Leo 4.7)
+def readFileIntoString (fn,
+    encoding='utf-8',
+    kind=None,
+    mode='rb',
+    raw=False,
+    silent=False,
+):
+
+    '''Return the contents of the file whose full path is fn.
+
+    Return (s,e)
+    s is the string, converted to unicode, or None if there was an error.
+    e the encoding line for Python files: it is usually None.
+    '''
+
+    try:
+        e = None
+        f = open(fn,mode)
+        s = f.read()
+        f.close()
+        if raw:
+            return s,None
+        else:
+            # Python's encoding comments override everything else.
+            if s:
+                junk,ext = g.os_path_splitext(fn)
+                if ext == '.py':
+                    e = g.getPythonEncodingFromString(s)
+            s = g.toUnicode(s,encoding=e or encoding)
+            return s,e
+    except IOError:
+        # Translate 'can not open' and kind, but not fn.
+        # g.trace(g.callers(5))
+        if not silent:
+            if kind:
+                g.es('can not open','',kind,fn,color='red')
+            else:
+                g.es('can not open',fn,color='red')
+    except Exception:
+        g.trace('unexpected exception reading %s' % (fn),color='red')
+        g.es_exception()
+
+    import leo.core.leoTest as leoTest
+    leoTest.fail()
+    return None,None
+#@-node:ekr.20100125073206.8710:g.readFileIntoString (Leo 4.7)
+#@+node:ekr.20031218072017.1470:put (leoFileCommands)
+def put (self,s):
+
+    '''Put string s to self.outputFile. All output eventually comes here.'''
+
+    # Improved code: self.outputFile (a cStringIO object) always exists.
+    # g.trace(g.callers(1),repr(s))
+    if s:
+        self.putCount += 1
+        if not g.isPython3:
+            s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+        self.outputFile.write(s)
+
+def put_dquote (self):
+    self.put('"')
+
+def put_dquoted_bool (self,b):
+    if b: self.put('"1"')
+    else: self.put('"0"')
+
+def put_flag (self,a,b):
+    if a:
+        self.put(" ") ; self.put(b) ; self.put('="1"')
+
+def put_in_dquotes (self,a):
+    self.put('"')
+    if a: self.put(a) # will always be True if we use backquotes.
+    else: self.put('0')
+    self.put('"')
+
+def put_nl (self):
+    self.put("\n")
+
+def put_tab (self):
+    self.put("\t")
+
+def put_tabs (self,n):
+    while n > 0:
+        self.put("\t")
+        n -= 1
+#@nonl
+#@-node:ekr.20031218072017.1470:put (leoFileCommands)
+#@+node:ekr.20100119145629.6106:createActualFile
+def createActualFile (self,fileName,toOPML,toZip):
+
+    c = self.c
+
+    if toOPML and not self.mFileName.endswith('opml'):
+        fileName = self.mFileName + '.opml'
+
+    if toZip:
+        self.toString = True
+        theActualFile = None
+    else:
+        try:
+            # 2010/01/21: always write in binary mode.
+            theActualFile = open(fileName,'wb')
+        except IOError:
+            theActualFile = None
+
+    return fileName,theActualFile
+#@-node:ekr.20100119145629.6106:createActualFile
+#@+node:ekr.20050424115658:readRecentFilesFile
+def readRecentFilesFile (self,path):
+
+    fileName = g.os_path_join(path,'.leoRecentFiles.txt')
+    ok = g.os_path_exists(fileName)
+    if ok:
+        try:
+            if g.isPython3:
+                f = open(fileName,encoding='utf-8',mode='r')
+            else:
+                f = open(fileName,'r')
+        except IOError:
+            g.trace('can not open',fileName)
+            return False
+        if not g.unitTesting and not self.silent:
+            g.pr(('reading %s' % fileName))
+        lines = f.readlines()
+        if lines and self.munge(lines[0])=='readonly':
+            lines = lines[1:]
+        if lines:
+            lines = [g.toUnicode(g.os_path_normpath(line)) for line in lines]
+            self.appendToRecentFiles(lines)
+
+    return ok
+#@nonl
+#@-node:ekr.20050424115658:readRecentFilesFile
+#@+node:ekr.20050424114937.2:writeRecentFilesFile & helper
+recentFileMessageWritten = False
+
+def writeRecentFilesFile (self,c):
+
+    '''Write the appropriate .leoRecentFiles.txt file.'''
+
+    tag = '.leoRecentFiles.txt'
+
+    if g.app.unitTesting:
+        return
+
+    localFileName = c.fileName()
+    if localFileName:
+        localPath,junk = g.os_path_split(localFileName)
+    else:
+        localPath = None
+
+    written = False
+    for path in (localPath,g.app.globalConfigDir,g.app.homeLeoDir): # homeLeoDir was homeDir.
+        if path:
+            fileName = g.os_path_join(path,tag)
+            if g.os_path_exists(fileName):
+                ok = self.writeRecentFilesFileHelper(fileName)
+                if not self.recentFileMessageWritten:
+                    if ok:
+                        g.pr('wrote recent file: %s' % fileName)
+                        written = True
+                    else:
+                        g.pr('failed to recent file: %s' % (fileName),color='red')
+                # Bug fix: Leo 4.4.6: write *all* recent files.
+
+    if written:
+        self.recentFileMessageWritten = True
+    else:
+        pass # g.trace('----- not found: %s' % g.os_path_join(localPath,tag))
+#@+node:ekr.20050424131051:writeRecentFilesFileHelper
+def writeRecentFilesFileHelper (self,fileName):
+
+    # g.trace(g.toUnicode(fileName))
+
+    # Don't update the file if it begins with read-only.
+    theFile = None
+    try:
+        theFile = open(fileName)
+        lines = theFile.readlines()
+        if lines and self.munge(lines[0])=='readonly':
+            # g.trace('read-only: %s' %fileName)
+            return False
+    except IOError:
+        # The user may have erased a file.  Not an error.
+        if theFile: theFile.close()
+
+    theFile = None
+    try:
+        if g.isPython3:
+            theFile = open(fileName,encoding='utf-8',mode='w')
+        else:
+            theFile = open(fileName,mode='w')
+        if self.recentFiles:
+            s = '\n'.join(self.recentFiles)
+        else:
+            s = '\n'
+        if not g.isPython3:
+            s = g.toEncodedString(s,reportErrors=True)
+        theFile.write(s)
+
+    except IOError:
+        if 1: # The user may have erased a file.  Not an error.
+            g.es_print('error writing',fileName,color='red')
+            g.es_exception()
+            return False
+
+    except Exception:
+        g.es('unexpected exception writing',fileName,color='red')
+        g.es_exception()
+        if g.unitTesting: raise
+        return False
+
+    if theFile:
+        theFile.close()
+        return True
+    else:
+        return False
+#@-node:ekr.20050424131051:writeRecentFilesFileHelper
+#@-node:ekr.20050424114937.2:writeRecentFilesFile & helper
+#@-node:ekr.20100211110404.5763:Fixed unicode crasher in write-recent-files logic
 #@-node:ekr.20100203173153.5797:Bugs
 #@+node:ekr.20100203173153.5798:Cleanup & testing
 #@+node:ekr.20100130042842.9009:Removed config.set

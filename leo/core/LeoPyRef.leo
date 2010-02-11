@@ -12,6 +12,7 @@
 <v t="ekr.20051031040240"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20090620052003.8505"><vh>@button add-test @key=alt-9</vh></v>
+<v t="ekr.20100210214809.5767"><vh>@button compare old/new</vh></v>
 <v t="ekr.20090514093345.6054"><vh>Disabled buttons</vh>
 <v t="ekr.20100205152016.14055"><vh>@@button find-node-by-gnx</vh></v>
 <v t="ekr.20080121091513"><vh>@@button parse2tree</vh></v>
@@ -839,5 +840,28 @@ if 0:
 assert cacher.test()</t>
 <t tx="ekr.20100209091422.5978"># These are intended to be temporary tests,
 # to be copied eventually to unitTest.leo</t>
+<t tx="ekr.20100210214809.5767">old,new = None,None
+for child in p.children():
+    if child.h.startswith('old'):
+        old = child.copy()
+    if child.h.startswith('new'):
+        new = child.copy()
+if old and new:
+    print(old.b == new.b)
+if old.b != new.b:
+    print('*' * 20)
+    print(len(old.b),len(new.b))
+    old_lines = g.splitLines(old.b)
+    new_lines = g.splitLines(new.b)
+    for i in range(max(len(old_lines),len(new_lines))):
+        if (i &lt; len(old_lines) and i &lt; len(new_lines) and
+            old_lines[i] == new_lines[i]
+        ):
+            pass
+        else:
+            if i &lt; len(old_lines):
+                print('old %2d %s' % (i,repr(old_lines[i])))
+            if i &lt; len(new_lines):
+                print('new %2d %s' % (i,repr(new_lines[i])))</t>
 </tnodes>
 </leo_file>

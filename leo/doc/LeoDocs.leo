@@ -3456,8 +3456,13 @@
 <v t="ekr.20100209160132.11771"><vh>Report</vh></v>
 </v>
 <v t="ekr.20100209160132.11773"><vh>Fixed bug 518823: clone headline updates</vh></v>
+<v t="ekr.20100211125418.11596"><vh>Removed duplicate can not open message for @auto file</vh></v>
+<v t="ekr.20100211125418.11599"><vh>Fixed minor bug involving insertion point</vh></v>
+<v t="ekr.20100211125418.11602"><vh>Fixed unicode crasher in write-recent-files logic</vh></v>
 </v>
+<v t="ekr.20100211125418.11611" a="E"><vh>New commands</vh>
 <v t="ekr.20100209160132.11888"><vh>Created clear-cache and clear-all-caches commands</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -33908,7 +33913,7 @@ The rst3 command now uses 'utf-8' for all encodings unless explicitly overridden
 Leo 4.7 release candidate 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
-Leo 4.7 rc 1 fixes all known serious bugs in Leo.
+Leo 4.7 rc 1 fixes all known bugs in Leo, serious or minor.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
@@ -34113,6 +34118,13 @@ Global entries are in g.app.leoHomeDir/db/global
 
 Per-leo-files entries are in g.app.homeLeoDir/db/&lt;filename&gt;_&lt;hash&gt;
 </t>
+<t tx="ekr.20100211125418.11596"></t>
+<t tx="ekr.20100211125418.11599">This bug was highly annoying: it caused the newly-selected node to have the
+insert point of a just-deleted node. This bug made it difficult, for example, to
+delete nodes while examining the nodes created by clone-find-all.
+</t>
+<t tx="ekr.20100211125418.11602"></t>
+<t tx="ekr.20100211125418.11611"></t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?
