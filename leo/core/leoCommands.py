@@ -3969,7 +3969,10 @@ class baseCommands (object):
         return p
     #@-node:ekr.20080503055349.1:c.setPositionAfterSort
     #@+node:ekr.20050415134809:c.sortChildren
-    def sortChildren (self,event=None,cmp=None,key=None):
+    # New in Leo 4.7 final: this method no longer supports
+    # the 'cmp' keyword arg.
+
+    def sortChildren (self,event=None,key=None):
 
         '''Sort the children of a node.'''
 
