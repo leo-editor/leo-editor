@@ -2861,8 +2861,9 @@ def printGcAll (tag=''):
 
     tag = tag or g._callerName(n=2)
     d = {} ; objects = gc.get_objects()
-    g.pr('-' * 30)
-    g.pr('%s: %d objects' % (tag,len(objects)))
+    if not g.unitTesting:
+        g.pr('-' * 30)
+        g.pr('%s: %d objects' % (tag,len(objects)))
 
     for obj in objects:
         t = type(obj)
@@ -2875,13 +2876,11 @@ def printGcAll (tag=''):
 
     if 1: # Sort by n
         items = list(d.items())
-        try:
-            # Support for keword args to sort function exists in Python 2.4.
-            # Support for None as an alternative to omitting cmp exists in Python 2.3.
-            items.sort(key=lambda x: x[1],reverse=True)
-        except Exception: pass
-        for z in items:
-            g.pr('%40s %7d' % (z[0],z[1]))
+        items.sort(key=lambda x: x[1])
+            # key is a function that extracts args.
+        if not g.unitTesting:
+            for z in items:
+                g.pr('%40s %7d' % (z[0],z[1]))
     else: # Sort by type
         for t in sorted(d):
             g.pr('%40s %7d' % (t,d.get(t)))

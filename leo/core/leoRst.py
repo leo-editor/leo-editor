@@ -324,7 +324,6 @@ class rstCommands:
     def dumpSettings (self):
 
         d = self.optionsDict
-        # keys = list(d.keys()) ; keys.sort()
         keys = sorted(d)
 
         g.pr('present settings...')
@@ -596,7 +595,6 @@ class rstCommands:
     def initOptionsFromSettings (self):
 
         c = self.c ; d = self.defaultOptionsDict
-        # keys = list(d.keys()) ; keys.sort()
         keys = sorted(d)
 
         for key in keys:

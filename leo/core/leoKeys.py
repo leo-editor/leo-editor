@@ -2930,9 +2930,11 @@ class keyHandlerClass:
         # Print all plain bindings.
         result.append('%s %s\n' % (sep, 'Plain Keys'))
         self.printBindingsHelper(result,data,n1,n2,prefix=None)
-        g.es('',''.join(result),tabName=tabName)
+        if not g.unitTesting:
+            g.es('',''.join(result),tabName=tabName)
         state = k.unboundKeyAction 
         k.showStateAndMode()
+        return result # for unit test.
     #@+node:ekr.20061031131434.120:printBindingsHelper
     def printBindingsHelper (self,result,data,n1,n2,prefix):
 
@@ -2945,10 +2947,8 @@ class keyHandlerClass:
 
         # This isn't perfect in variable-width fonts.
         for data in (data1,data2):
-            if g.isPython3:
-                data.sort(key=lambda x: x[1]) # key is a function used to extract args.
-            else:
-                data.sort(lambda x,y: cmp(x[1],y[1])) # the function is a comparison.
+            data.sort(key=lambda x: x[1])
+                # key is a function that extracts args.
             for s1,s2,s3 in data:
                 # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
                 result.append('%*s %*s %s\n' % (-n1,s1,-(min(12,n2)),s2,s3))

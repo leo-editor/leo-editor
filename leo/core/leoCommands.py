@@ -1530,9 +1530,11 @@ class baseCommands (object):
 
         orig = c.recentFiles[:]
         c.clearRecentFiles()
-        import os
-        orig.sort(cmp=lambda a,b:cmp(os.path.basename(b).lower(),     
-            os.path.basename(a).lower()))
+
+        def key(s):
+            return g.os_path_basename(s).lower()
+        orig.sort(key=key) # 2010/01/12
+        orig.reverse() # 2010/01/12
         for i in orig:
             c.updateRecentFiles(i)
 
@@ -3977,7 +3979,10 @@ class baseCommands (object):
             c.sortSiblings(p=p.firstChild(),sortChildren=True,key=key)
     #@-node:ekr.20050415134809:c.sortChildren
     #@+node:ekr.20050415134809.1:c.sortSiblings
-    def sortSiblings (self,event=None,cmp=None,key=None,p=None,sortChildren=False):
+    # New in Leo 4.7 final: this method no longer supports
+    # the 'cmp' keyword arg.
+
+    def sortSiblings (self,event=None,key=None,p=None,sortChildren=False):
 
         '''Sort the siblings of a node.'''
 
@@ -3998,8 +4003,7 @@ class baseCommands (object):
                 return (self.h.lower())
             key = lowerKey
 
-        if cmp: newChildren.sort(cmp,key=key)
-        else:   newChildren.sort(key=key)
+        newChildren.sort(key=key)
 
         if oldChildren == newChildren:
             return

@@ -4748,11 +4748,11 @@ class editCommandsClass (baseEditCommandsClass):
             s2 = s[i:j]
             if not s2.endswith('\n'): s2 = s2+'\n'
             aList = g.splitLines(s2)
-            if ignoreCase:
-                def lower(s): return s.lower()
-                aList.sort(key=lower)
-            else:
-                aList.sort()
+            def lower(s):
+                if ignoreCase: return s.lower()
+                else: return s
+            aList.sort(key=lower)
+                # key is a function that extracts args.
             if reverse:
                 aList.reverse()
             s = g.joinLines(aList)
@@ -5408,7 +5408,8 @@ class helpCommandsClass (baseEditCommandsClass):
                     n2 = max(n2,len(s2))
                     data.append((s1,s2,s3),)
 
-        data.sort(lambda x,y: cmp(x[1],y[1]))
+        data.sort(key=lambda x: x[1])
+            # key is a function that extracts args.
 
         return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data])
     #@nonl

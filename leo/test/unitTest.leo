@@ -1617,6 +1617,7 @@
 <v t="ekr.20061101121602.265"><vh>after sel=1.395,3.0</vh></v>
 </v>
 <v t="ekr.20070305095401"><vh>@test goNext/PrevVisitedNode</vh></v>
+<v t="ekr.20100212104817.5351"><vh>@test help-for-command</vh></v>
 <v t="ekr.20061101121602.266"><vh>@test indent-relative</vh>
 <v t="ekr.20061101121602.267"><vh>work</vh></v>
 <v t="ekr.20061101121602.268"><vh>before sel=5.0,5.0</vh></v>
@@ -1775,6 +1776,12 @@
 <v t="ekr.20071113081247.9"><vh>work</vh></v>
 <v t="ekr.20071113081247.10"><vh>before sel=1.0,5.1</vh></v>
 <v t="ekr.20071113081247.11"><vh>after sel=1.0,5.1</vh></v>
+</v>
+<v t="ekr.20100212104817.5346"><vh>@test sort-recent-files (new)</vh></v>
+<v t="ekr.20100212104817.5347"><vh>@test sort-siblings (new)</vh>
+<v t="ekr.20100212104817.5348"><vh>b</vh></v>
+<v t="ekr.20100212104817.5349"><vh>a</vh></v>
+<v t="ekr.20100212104817.5350"><vh>c</vh></v>
 </v>
 <v t="ekr.20061101121602.330"><vh>@test split-line</vh>
 <v t="ekr.20061101121602.331"><vh>work</vh></v>
@@ -1963,6 +1970,7 @@
 <v t="ekr.20061104172236.11"><vh>@test g.getWord</vh></v>
 <v t="ekr.20100131180007.5417"><vh>@test g.openLeoOrZipFile</vh></v>
 <v t="ekr.20071113145804.19"><vh>@test g.pdb</vh></v>
+<v t="ekr.20100212112056.5361"><vh>@test g.printGcAll</vh></v>
 <v t="ekr.20100131180007.5396"><vh>@test g.removeBlankLines</vh></v>
 <v t="ekr.20071113145804.29"><vh>@test g.removeExtraLws</vh></v>
 <v t="ekr.20100131180007.5395"><vh>@test g.removeLeadingBlankLines</vh></v>
@@ -2160,6 +2168,7 @@
 <v t="ekr.20100131171342.5605"><vh>@test isPlainKey</vh></v>
 <v t="ekr.20100131171342.5606"><vh>@test k.autoCompleterClass.calltip</vh></v>
 <v t="ekr.20100131171342.5607"><vh>@test k.registerCommand</vh></v>
+<v t="ekr.20100212110954.5359"><vh>@test print-bindings</vh></v>
 <v t="ekr.20100131171342.5608"><vh>@test strokeFromSetting</vh></v>
 <v t="ekr.20100131171342.5609"><vh>@test zz restore the screen</vh></v>
 </v>
@@ -2630,6 +2639,16 @@
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20100211154538.5338"><vh>@auto ../test/goto-line-number-test.py</vh></v>
+<v t="ekr.20100212104817.5352"><vh>Related to sort</vh>
+<v t="ekr.20061101121602.322"></v>
+<v t="ekr.20061101121602.326"></v>
+<v t="ekr.20071113081247.8"></v>
+<v t="ekr.20100212104817.5346"></v>
+<v t="ekr.20100212104817.5347"></v>
+<v t="ekr.20100212104817.5351"></v>
+<v t="ekr.20100212110954.5359"></v>
+<v t="ekr.20100212112056.5361"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -22826,6 +22845,33 @@ finally:
 <t tx="ekr.20100212072149.5342">@language python
 def spam:
     pass</t>
+<t tx="ekr.20100212104817.5346">c.sortRecentFiles()</t>
+<t tx="ekr.20100212104817.5347">child = p.firstChild()
+assert child.h == 'b','fail 1'
+try:
+    c.selectPosition(child)
+    c.sortSiblings()
+    c.redraw_now()
+    child = p.firstChild()
+    assert child.h == 'a'
+    child = child.next()
+    assert child.h == 'b'
+    child = child.next()
+    assert child.h == 'c'
+    assert not child.next()
+finally:
+    c.undoer.undo()
+    p.contract()
+    c.redraw(p)</t>
+<t tx="ekr.20100212104817.5348"></t>
+<t tx="ekr.20100212104817.5349"></t>
+<t tx="ekr.20100212104817.5350"></t>
+<t tx="ekr.20100212104817.5351">result = c.helpCommands.getBindingsForCommand('help-for-command')
+assert result.strip().lower()=='f1'</t>
+<t tx="ekr.20100212104817.5352"></t>
+<t tx="ekr.20100212110954.5359">lines = c.k.printBindings()
+assert lines[0].strip().endswith('Alt+Ctrl+Shift')</t>
+<t tx="ekr.20100212112056.5361">g.printGcAll()</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

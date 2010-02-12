@@ -507,7 +507,7 @@
 </v>
 </v>
 <v t="ekr.20100206180840.2099"><vh>@auto test-PmwComboBox.py</vh></v>
-<v t="ekr.20100118190802.2000" a="E"><vh>@thin ../../pylint-leo.py</vh></v>
+<v t="ekr.20100118190802.2000"><vh>@thin ../../pylint-leo.py</vh></v>
 <v t="ekr.20100209165720.2108"><vh>c.cacher.keys</vh></v>
 </vnodes>
 <tnodes>
