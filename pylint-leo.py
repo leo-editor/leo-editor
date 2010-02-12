@@ -20,7 +20,6 @@ def getCoreList():
         'leoGlobals','leoGui','leoImport','leoMenu','leoNodes',
         'leoPlugins','leoShadow','leoTangle','leoUndo',
     )
-#@nonl
 #@-node:ekr.20100209120215.2104:getCoreList
 #@+node:ekr.20100209115702.2102:getPassList
 def getPassList():
@@ -39,11 +38,8 @@ def getPassList():
         'nav_buttons','nav_qt','niceNosent','nodeActions','nodebar',
         'open_shell','outline_export','quit_leo',
         'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
-        'qtGui','qt_main','qt_quicksearch','qtframecommands',
-        'quickMove',
-            # Warning: changed this line by guessing!
-            # func = types.MethodType(func, quickMove)
-        'quicksearch','redirect_to_log','rClickBasePluginClasses',
+        'qt_main','qt_quicksearch','qtframecommands',
+        'quickMove','quicksearch','redirect_to_log','rClickBasePluginClasses',
         'run_nodes', # Changed thread.allocate_lock to threading.lock().acquire()
         'rst3',
         'scrolledmessage','setHomeDirectory','slideshow','spydershell','startfile',
@@ -55,8 +51,6 @@ def getPassList():
 def getPluginsTable ():
 
     return (
-        ('qtGui','W0221'),
-        ('tkGui','W0221'),
         ('mod_scripting','E0611'),
             # Harmless: E0611:489:scriptingController.runDebugScriptCommand:
             # No name 'leoScriptModule' in module 'leo.core'
@@ -73,6 +67,7 @@ def getPluginsTable ():
 #@-node:ekr.20100209120215.2105:getPluginsTable
 #@+node:ekr.20100209115702.2101:getTkPass
 def getTkPass():
+
     return (
         'EditAttributes','Library',
         'URLloader','UniversalScrolling','UASearch',
@@ -109,10 +104,14 @@ def run(theDir,fn,suppress):
 #@<< defines >>
 #@+node:ekr.20100209121055.2107:<< defines >>
 coreList = getCoreList()
+externalList = ('ipy_leo','lproto',)
+guiPluginsTable = (
+    ('qtGui','W0221'),
+    ('tkGui','W0221'),
+)
+passList = getPassList()
 pluginsTable = getPluginsTable()
 tkPass = getTkPass()
-passList = getPassList()
-externalList = ('ipy_leo','lproto',)
 #@-node:ekr.20100209121055.2107:<< defines >>
 #@nl
 
@@ -120,7 +119,8 @@ recentList = ()
 
 tables_table = (
     # (recentList,'core'),
-    (coreList,'core'),
+    # (coreList,'core'),
+    (guiPluginsTable,'plugins'),
     # (tkPass,'plugins'),
     # (passList,'plugins'),
     # (externalList,'external'),

@@ -38,6 +38,7 @@
 <v t="ekr.20090909091918.1463"><vh>ANN: Leo 4.7 b1</vh></v>
 <v t="ekr.20100129074111.1488"><vh>ANN: Leo 4.7 b2</vh></v>
 <v t="ekr.20100201193541.1491"><vh>ANN: Leo 4.7 b3</vh></v>
+<v t="ekr.20100211222859.1503"><vh>ANN: Leo 4.7 rc1</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
 <v t="ekr.20090718093249.5928"><vh>4.6</vh>
 <v t="ekr.20090709085944.1401"><vh>ANN: Leo 4.6 rc1</vh></v>
@@ -212,7 +213,7 @@ rm -f  $LEO_RUN_SCRIPT_OUTPUT
 
 Do a search and replace on this suffix.
 
-Latest suffix:  -beta-3</t>
+Latest suffix:  -release-candidate-1</t>
 <t tx="EKR.20040519090846.1">Leo is Open Software and is distributed under the terms of the Python License.
 The gist of the license is that Leo is absolutely free, even for commercial use
 (including resale). There is no GNU-like "copyleft" restriction. The Open Source
@@ -359,7 +360,7 @@ Thanks to Randall Voth for these instructions.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.7-beta-3
+Version: 4.7-release-candidate-1
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -373,12 +374,12 @@ Description:
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.7 beta 3                       February 2, 2009
+<t tx="EKR.20040519090846.9">Leo 4.7 rc 1                    February 12, 2009
 
-Leo 4.7 beta 3 is now available at:
+Leo 4.7 release candidate 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
-Leo 4.7 beta 3 fixes all known serious bugs in Leo.
+Leo 4.7 rc 1 fixes all known bugs in Leo, serious or minor.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
@@ -392,6 +393,8 @@ The highlights of Leo 4.7:
 - Leo requires Python 2.6 or above.
 - Several important improvements in file handling.
     - Leo converts @file nodes to @thin nodes automatically.
+    - Leo creates a 'Recovered Nodes' node to hold data that
+      otherwise might be lost due to clone conflicts.
     - @auto-rst now works much more reliably reliably.
     - Leo no longer @noref trees.  Such trees are not
       reliable in cooperative environments.
@@ -1668,7 +1671,7 @@ FunctionEnd
     @others
 </t>
 <t tx="ekr.20090902092112.1481"># Used by both @button make leo.nsi and @button make leo.zip.
-app_version = version = '4.7-beta-3'</t>
+app_version = version = '4.7-release-candidate-1'</t>
 <t tx="ekr.20090902092112.1482">try:
     inLeo = g is not None
 except AttributeError:
@@ -1891,9 +1894,9 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
     - Run all unit tests.
     - Run pylint-leo.bat.
 LeoDocs.leo:
-    ** Update version on home page.
-    - (done) Remove top-level clones.
-    - (done) Select the readme node.
+    **Update version on home page.
+    - Remove top-level clones.
+    - Select the readme node.
 LeoPlugins.leo:
     - Remove top-level clones.
 LeoPy.leo:
@@ -1902,15 +1905,17 @@ LeoDist.leo:
     - Update version numbers.
     - Update announcement.
     - Update readme.txt
-Create distribution files using to @button make scripts in leoDist.leo
+Create the manifest:
     - Delete old distribution (.exe,.zip) files.
+    - Create the manifest: bzr ls -R &gt;bzr-manifest.txt
     - review bzr-manifest file: remove .~?~ files.
-    - Make leo.nsi first.
-    - Make leo.
 Create a bzr tag:
     - bzr tag leo-x-y
     - bzr commit --unchanged -m "added tag"
     - bzr push
+Create distribution files using to @button make scripts in leoDist.leo
+    - 1: Make leo.nsi
+    - 2: Make leo.zip
 Test files
 	- test the files created in c:\Python\Lib\site-packages\leo-x-y folder
     ** Open unitTest.leo: does it open without errors?
@@ -1931,5 +1936,40 @@ Announcements
 - Announce to leo-editor.
 - Announce to comp.lang.python
 - Register Leo at http://www.python.org/pypi?:action=submit_form</t>
+<t tx="ekr.20100211222859.1503">Leo 4.7 rc 1                    February 12, 2009
+
+Leo 4.7 release candidate 1 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo 4.7 rc 1 fixes all known bugs in Leo, serious or minor.
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.7:
+--------------------------
+
+- Leo now uses the simplest possible internal data model.
+  This is the so-called "one-node" world.
+- Leo supports Python 3.x.
+- Leo requires Python 2.6 or above.
+- Several important improvements in file handling.
+    - Leo converts @file nodes to @thin nodes automatically.
+    - Leo creates a 'Recovered Nodes' node to hold data that
+      otherwise might be lost due to clone conflicts.
+    - @auto-rst now works much more reliably reliably.
+    - Leo no longer @noref trees.  Such trees are not
+      reliable in cooperative environments.
+- A new Windows installer.
+- Many other features, including new command line options and new plugins.
+- Dozens of bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 </tnodes>
 </leo_file>

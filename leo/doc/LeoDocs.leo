@@ -874,6 +874,7 @@
 <v t="ekr.20100129054823.17680"><vh>Leo supports Python 3.x</vh></v>
 <v t="ekr.20100129054823.11928"><vh>Improved file handling</vh></v>
 <v t="ekr.20100129054823.11931"><vh>New command-line options</vh></v>
+<v t="ekr.20100211221936.7098"><vh>New commands</vh></v>
 <v t="ekr.20100129054823.11934"><vh>New settings</vh></v>
 <v t="ekr.20100129054823.11935"><vh>Improved plugins</vh></v>
 </v>
@@ -3434,7 +3435,7 @@
 </v>
 </v>
 <v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
-<v t="ekr.20100205152016.14053"><vh>4.7 rc 1</vh>
+<v t="ekr.20100205152016.14053" a="E"><vh>4.7 rc 1</vh>
 <v t="ekr.20100205152016.14054"><vh>Recovering from clone conflicts</vh></v>
 <v t="ekr.20100209160132.11690"><vh>Bugs fixed</vh>
 <v t="ekr.20100209160132.11691"><vh>Fixed unicode bug in setSelectionRangeHelper</vh></v>
@@ -3460,7 +3461,7 @@
 <v t="ekr.20100211125418.11599"><vh>Fixed minor bug involving insertion point</vh></v>
 <v t="ekr.20100211125418.11602"><vh>Fixed unicode crasher in write-recent-files logic</vh></v>
 </v>
-<v t="ekr.20100211125418.11611" a="E"><vh>New commands</vh>
+<v t="ekr.20100211125418.11611"><vh>New commands</vh>
 <v t="ekr.20100209160132.11888"><vh>Created clear-cache and clear-all-caches commands</vh></v>
 </v>
 </v>
@@ -26207,7 +26208,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.7 beta 3]&lt;/a&gt;</t>
+    Download Leo[4.7 rc1]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
@@ -34125,6 +34126,7 @@ delete nodes while examining the nodes created by clone-find-all.
 </t>
 <t tx="ekr.20100211125418.11602"></t>
 <t tx="ekr.20100211125418.11611"></t>
+<t tx="ekr.20100211221936.7098">- The clear-cache and clear-all-caches commands.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?
