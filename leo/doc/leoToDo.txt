@@ -3401,6 +3401,7 @@ def setup_script (self,scriptData):
 #@+node:ekr.20080904071003.14:showResults
 def showResults(self,found,p,n,n2,lines):
 
+    trace = False
     c = self.c ; w = c.frame.body.bodyCtrl
 
     # Select p and make it visible.
@@ -3415,7 +3416,7 @@ def showResults(self,found,p,n,n2,lines):
         if len(lines) < n and not g.unitTesting:
             g.es('only',len(lines),'lines',color="blue")
 
-    if g.unitTesting:
+    if trace and g.unitTesting:
         i,j = g.getLine(s,ins)
         g.trace('%2s %2s %15s %s' % (n,n2,p.h,repr(s[i:j])))
 

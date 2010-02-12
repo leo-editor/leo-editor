@@ -1211,6 +1211,10 @@
 <v t="ekr.20090104053806.1"><vh>@@test c.checkFileTimeStamp &amp; c.setFileTimeStamp</vh></v>
 <v t="ekr.20071113145804.10"><vh>@test c.contractAllHeadlines</vh></v>
 <v t="ekr.20100209155559.5386"><vh>@test c.createOpenWithTempFile</vh></v>
+<v t="ekr.20100211154538.5346"><vh>@test c.gotoLineNumber</vh></v>
+<v t="ekr.20100212072149.5341"><vh>@test c.goToScriptLineNumber</vh>
+<v t="ekr.20100212072149.5342"><vh>syntax-error</vh></v>
+</v>
 <v t="ekr.20061106112522"><vh>@test c.insertBodyTime</vh></v>
 <v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
 <v t="ekr.20100131180007.5466"><vh>@test c.scanAtPathDirectives</vh>
@@ -2626,7 +2630,6 @@
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20100211154538.5338"><vh>@auto ../test/goto-line-number-test.py</vh></v>
-<v t="ekr.20100211154538.5346"><vh>@test c.gotoLineNumber</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -22811,6 +22814,18 @@ finally:
     c.redraw()
 
 </t>
+<t tx="ekr.20100212072149.5341">child = g.findNodeInChildren(c,p,'syntax-error')
+assert child,'no child'
+script = child.b
+try:
+    c.goToScriptLineNumber(child,script,1)
+finally:
+    p.contract()
+    c.selectPosition(p)
+    c.redraw()</t>
+<t tx="ekr.20100212072149.5342">@language python
+def spam:
+    pass</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

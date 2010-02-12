@@ -2587,6 +2587,7 @@ class baseCommands (object):
         #@+node:ekr.20080904071003.14:showResults
         def showResults(self,found,p,n,n2,lines):
 
+            trace = False
             c = self.c ; w = c.frame.body.bodyCtrl
 
             # Select p and make it visible.
@@ -2601,7 +2602,7 @@ class baseCommands (object):
                 if len(lines) < n and not g.unitTesting:
                     g.es('only',len(lines),'lines',color="blue")
 
-            if g.unitTesting:
+            if trace and g.unitTesting:
                 i,j = g.getLine(s,ins)
                 g.trace('%2s %2s %15s %s' % (n,n2,p.h,repr(s[i:j])))
 
@@ -2621,7 +2622,7 @@ class baseCommands (object):
         c = self
 
         scriptData = {'p':p.copy(),'lines':g.splitLines(script)}
-        c.goToLineNumber(n=n,scriptData=scriptData)
+        c.goToLineNumber(c).go(n=n,scriptData=scriptData)
     #@-node:EKR.20040612232221:c.goToScriptLineNumber
     #@+node:ekr.20031218072017.2088:fontPanel
     def fontPanel (self,event=None):

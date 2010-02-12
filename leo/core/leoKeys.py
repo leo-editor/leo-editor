@@ -1454,7 +1454,7 @@ class autoCompleterClass:
                     break
             return s or ''
         #@-node:ekr.20061031131434.63:forgivingParser (leoKeys)
-        #@+node:ekr.20061031131434.64:computeErrorNode
+        #@+node:ekr.20061031131434.64:computeErrorNode (leoKeys)
         def computeErrorNode (self,c,root,n,lines):
 
             '''The from c.goToLineNumber that applies to scripts.
@@ -1463,8 +1463,12 @@ class autoCompleterClass:
             if n == 1 or n >= len(lines):
                 return root
 
-            vnodeName, junk, junk, junk, junk = c.convertLineToVnodeNameIndexLine(
-                lines, n, root, scriptFind = True)
+            # vnodeName, junk, junk, junk, junk = c.convertLineToVnodeNameIndexLine(
+                # lines, n, root, scriptFind = True)
+
+            goto = goToLineNumber(c)
+            vnodeName,junk,junk,junk = goto.findVnode(
+                root,lines,n,ignoreSentinels)
 
             if vnodeName:
                 for p in root.self_and_subtree():
@@ -1472,7 +1476,7 @@ class autoCompleterClass:
                         return p
 
             return None
-        #@-node:ekr.20061031131434.64:computeErrorNode
+        #@-node:ekr.20061031131434.64:computeErrorNode (leoKeys)
         #@+node:ekr.20061031131434.65:newPutBody
         def newPutBody (self,p,oneNodeOnly=False,fromString=''):
 
