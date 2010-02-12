@@ -20,7 +20,7 @@
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="EKR.20040519091259"><vh>Annoucements</vh>
+<v t="EKR.20040519091259" a="E"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
@@ -396,7 +396,7 @@ The highlights of Leo 4.7:
     - Leo creates a 'Recovered Nodes' node to hold data that
       otherwise might be lost due to clone conflicts.
     - @auto-rst now works much more reliably reliably.
-    - Leo no longer @noref trees.  Such trees are not
+    - Leo no longer supports @noref trees.  Such trees are not
       reliable in cooperative environments.
 - A new Windows installer.
 - Many other features, including new command line options and new plugins.
@@ -1929,19 +1929,20 @@ Create Release on SourceForge:
     https://sourceforge.net/project/admin/explorer.php?group_id=3458
 
 Announcements
-- Update version number on Leo's wikipedia site: http://en.wikipedia.org/wiki/Leo_(editor)
+- Update version number on Leo's wikipedia site:
+    http://en.wikipedia.org/wiki/Leo_(editor)
     - Edit with the 'Edit this page' *tab* (not a link)
 - Update version number on web site.
 - Announce to SourceForge itself.
 - Announce to leo-editor.
-- Announce to comp.lang.python
+- Announce to comp.lang.python (use Forte Agent)
 - Register Leo at http://www.python.org/pypi?:action=submit_form</t>
 <t tx="ekr.20100211222859.1503">Leo 4.7 rc 1                    February 12, 2009
 
 Leo 4.7 release candidate 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
-Leo 4.7 rc 1 fixes all known bugs in Leo, serious or minor.
+Leo 4.7 rc 1 fixes all known serious bugs in Leo; minor nits remain.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
@@ -1958,7 +1959,7 @@ The highlights of Leo 4.7:
     - Leo creates a 'Recovered Nodes' node to hold data that
       otherwise might be lost due to clone conflicts.
     - @auto-rst now works much more reliably reliably.
-    - Leo no longer @noref trees.  Such trees are not
+    - Leo no longer supports @noref trees.  Such trees are not
       reliable in cooperative environments.
 - A new Windows installer.
 - Many other features, including new command line options and new plugins.
