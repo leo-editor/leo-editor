@@ -7345,7 +7345,10 @@ class leoTkinterTree (leoFrame.leoTree):
     #@+node:ekr.20090110073024.11:redraw_after_head_changed
     def redraw_after_head_changed (self):
 
-        pass
+        p = self.c.p
+
+        if p.isCloned():
+            self.redraw_now(p)
     #@-node:ekr.20090110073024.11:redraw_after_head_changed
     #@+node:ekr.20090110073024.13:redraw_after_icons_changed
     def redraw_after_icons_changed (self,all=False):
