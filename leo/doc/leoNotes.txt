@@ -13,16 +13,7 @@ How to create launchpad key pairs:
 
 http://help.launchpad.net/YourAccount/CreatingAnSSHKeyPair
 
-How to create/use private branches
-
-===== Do this first: creates a branch directly, **without** having to use launchpad.
-
-b push lp:leo-editor/whatever (private)
-b push lp:~leo-editor-team/leo-editor/whatever (public)
-
-bzr push bzr+ssh://edreamleo@bazaar.launchpad.net/leo-editor-team/leo-editor/whatever  (private)
-bzr push bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor-team/leo-editor/whatever  (public)
-
+How to create/use branches
 
 ===== pushes a branch after it has been created on launchpad
 
@@ -39,7 +30,6 @@ bzr push --remember bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-edit
 bzr branch lp:leo-editor new-branch-name 
 
 bzr branch bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/whatever new-branch-name
-
 
 ====== To resolve conflicts
 
