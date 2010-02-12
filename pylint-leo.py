@@ -119,7 +119,7 @@ recentList = ()
 
 tables_table = (
     # (recentList,'core'),
-    # (coreList,'core'),
+    (coreList,'core'),
     (guiPluginsTable,'plugins'),
     # (tkPass,'plugins'),
     # (passList,'plugins'),

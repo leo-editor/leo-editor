@@ -2220,6 +2220,7 @@ leo/test/test.leo
 leo/test/testzip.zip
 leo/test/unitTest.leo
 leo/test/unittest/
+leo/test/unittest/.leo_shadow/
 leo/test/unittest/at-asis-test.py
 leo/test/unittest/at-auto-line-number-test.py
 leo/test/unittest/at-auto-test.py
@@ -2268,6 +2269,7 @@ leo/www/default.css
 leo/www/index.html
 leo/www/leo_rst.css
 leo/www/silver_city.css
+leo.nsi
 leo_to_html.xsl
 out
 profileLeo.py

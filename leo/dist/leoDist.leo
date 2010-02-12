@@ -1891,20 +1891,20 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20100202061222.1494">Testing:
-    - Run all unit tests.
-    - Run pylint-leo.bat.
+    - (done) Run all unit tests.
+    - (done) Run pylint-leo.bat.
 LeoDocs.leo:
-    **Update version on home page.
-    - Remove top-level clones.
-    - Select the readme node.
+    **(done) Update version on home page.
+    - (done) Remove top-level clones.
+    - (done) Select the readme node.
 LeoPlugins.leo:
-    - Remove top-level clones.
+    - (done) Remove top-level clones.
 LeoPy.leo:
-    - Update version numbers.
+    - (done) Update version numbers.
 LeoDist.leo:
-    - Update version numbers.
-    - Update announcement.
-    - Update readme.txt
+    - (done) Update version numbers.
+    - (done) Update announcement.
+    - (done) Update readme.txt
 Create the manifest:
     - Delete old distribution (.exe,.zip) files.
     - Create the manifest: bzr ls -R &gt;bzr-manifest.txt
