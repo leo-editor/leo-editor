@@ -33931,7 +33931,7 @@ The highlights of Leo 4.7:
     - Leo creates a 'Recovered Nodes' node to hold data that
       otherwise might be lost due to clone conflicts.
     - @auto-rst now works much more reliably reliably.
-    - Leo no longer @noref trees.  Such trees are not
+    - Leo no longer supports @noref trees.  Such trees are not
       reliable in cooperative environments.
 - A new Windows installer.
 - Many other features, including new command line options and new plugins.
