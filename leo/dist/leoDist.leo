@@ -1898,13 +1898,13 @@ LeoDocs.leo:
     - (done) Remove top-level clones.
     - (done) Select the readme node.
 LeoPlugins.leo:
-    - (done) Remove top-level clones.
+    - Remove top-level clones.
 LeoPy.leo:
-    - (done) Update version numbers.
+    - Update version numbers.
 LeoDist.leo:
-    - (done) Update version numbers.
-    - (done) Update announcement.
-    - (done) Update readme.txt
+    - Update version numbers.
+    - Update announcement.
+    - Update readme.txt
 Create the manifest:
     - Delete old distribution (.exe,.zip) files.
     - Create the manifest: bzr ls -R &gt;bzr-manifest.txt
