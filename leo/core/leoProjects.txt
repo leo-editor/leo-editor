@@ -115,49 +115,6 @@ def getBindingsForCommand(self,commandName):
     return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data])
 #@nonl
 #@-node:ekr.20060417203717:helpForCommand
-#@+node:ekr.20060417203717:helpForCommand
-def helpForCommand (self,event):
-
-    '''Prompts for a command name and prints the help message for that command.'''
-
-    k = self.k
-    k.fullCommand(event,help=True,helpHandler=self.helpForCommandFinisher)
-
-def helpForCommandFinisher (self,commandName):
-
-    c = self.c
-    bindings = self.getBindingsForCommand(commandName)
-    func = c.commandsDict.get(commandName)
-    if func and func.__doc__:
-        s = ''.join([
-            g.choose(line.strip(),line.lstrip(),'\n')
-                for line in g.splitLines(func.__doc__)])
-    else:
-        s = 'no docstring'
-    g.es('','%s:%s\n%s\n' % (commandName,bindings,s),color='blue')
-
-def getBindingsForCommand(self,commandName):
-
-    c = self.c ; k = c.k ; d = k.bindingsDict
-    data = [] ; n1 = 4 ; n2 = 20
-    for key in sorted(d):
-        bunchList = d.get(key,[])
-        for b in bunchList:
-            if b.commandName == commandName:
-                pane = g.choose(b.pane=='all','',' %s:' % (b.pane))
-                s1 = pane
-                s2 = k.prettyPrintKey(key,brief=True)
-                s3 = b.commandName
-                n1 = max(n1,len(s1))
-                n2 = max(n2,len(s2))
-                data.append((s1,s2,s3),)
-
-    data.sort(key=lambda x: x[1])
-        # key is a function that extracts args.
-
-    return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data])
-#@nonl
-#@-node:ekr.20060417203717:helpForCommand
 #@+node:ekr.20061031131434.119:printBindings & helper
 def printBindings (self,event=None):
 
@@ -323,6 +280,13 @@ def sortRecentFiles(self,event=None):
 #@-node:tbrown.20080509212202.8:sortRecentFiles
 #@-node:ekr.20100212095952.5729:changed...
 #@-node:ekr.20100212095952.5726:Fixed calls to sort in 6 places
+#@+node:ekr.20100215121737.5600:Fixed possible segfault in c.save/As/To
+@nocolor-node
+
+The segfault happens on Linux at the (now removed) call
+to c.widgetWantsFocusNow(w) at the end of c.save, c.saveAs and c.saveTo
+when w no longer exists in the tree.
+#@-node:ekr.20100215121737.5600:Fixed possible segfault in c.save/As/To
 #@-node:ekr.20100212095952.5727:4.7 final projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt
