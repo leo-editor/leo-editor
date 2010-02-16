@@ -1732,6 +1732,17 @@ def redraw_after_head_changed (self):
 #@-node:ekr.20090124174652.26:redraw_after_head_changed
 #@-node:ekr.20100209122624.3698:Fixed bug in redraw_after_head_changed
 #@-node:ekr.20100202160247.3681:Leo 4.7 rc1 projects
+#@+node:ekr.20100216023902.3690:Leo 4.7 final projects
+#@+node:ekr.20100216023902.3691:Fixed headline-update bug for tk
+#@+node:ekr.20090110073024.11:redraw_after_head_changed (tkTree)
+def redraw_after_head_changed (self):
+
+    # Fix bug 518823: 2010/02/16. Redraw the entire tree.
+    # The changed node may be a non-cloned descendant of a cloned node.
+    self.redraw_now()
+#@-node:ekr.20090110073024.11:redraw_after_head_changed (tkTree)
+#@-node:ekr.20100216023902.3691:Fixed headline-update bug for tk
+#@-node:ekr.20100216023902.3690:Leo 4.7 final projects
 #@-all
 #@nonl
 #@-node:ekr.20081121105001.147:@thin qtNotes.txt

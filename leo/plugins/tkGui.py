@@ -7342,14 +7342,13 @@ class leoTkinterTree (leoFrame.leoTree):
 
         self.redraw_now()
     #@-node:ekr.20090110134111.11:redraw_after_contract
-    #@+node:ekr.20090110073024.11:redraw_after_head_changed
+    #@+node:ekr.20090110073024.11:redraw_after_head_changed (tkTree)
     def redraw_after_head_changed (self):
 
-        p = self.c.p
-
-        if p.isCloned():
-            self.redraw_now(p)
-    #@-node:ekr.20090110073024.11:redraw_after_head_changed
+        # Fix bug 518823: 2010/02/16. Redraw the entire tree.
+        # The changed node may be a non-cloned descendant of a cloned node.
+        self.redraw_now()
+    #@-node:ekr.20090110073024.11:redraw_after_head_changed (tkTree)
     #@+node:ekr.20090110073024.13:redraw_after_icons_changed
     def redraw_after_icons_changed (self,all=False):
 
