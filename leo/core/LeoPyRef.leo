@@ -78,10 +78,13 @@
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
-<v t="ekr.20100120072650.6089" descendentVnodeUnknownAttributes="7d71005807000000302e302e392e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@thin leoProjects.txt</vh></v>
+<v t="ekr.20100120072650.6089"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="ekr.20100209091422.5978"><vh>Tests</vh>
-<v t="ekr.20100208095423.5940"><vh>@test leoCache</vh></v>
+<v t="ekr.20100208095423.5940"><vh>@@test leoCache</vh></v>
+<v t="ekr.20100216141722.5647"><vh>@test goto-global-line with @auto</vh>
+<v t="ekr.20100216141722.5648"><vh>@auto ../test/at-auto-unit-test.py</vh></v>
+</v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@thin ../doc/leoToDo.txt</vh></v>
@@ -863,5 +866,74 @@ if old.b != new.b:
                 print('old %2d %s' % (i,repr(old_lines[i])))
             if i &lt; len(new_lines):
                 print('new %2d %s' % (i,repr(new_lines[i])))</t>
+<t tx="ekr.20100216141722.5647"># The @auto node must be a child of this node
+# for findNodeAnywhere to succeed with Alt-6.
+fn = '../test/at-auto-unit-test.py'
+root = g.findNodeAnywhere(c,'@auto %s' % (fn))
+assert root,'no root'
+
+child1 = root.firstChild()
+assert child1,'no child1'
+grand11 = child1.firstChild()
+assert grand11,'no grand11'
+grand12 = grand11.next()
+assert grand12,'no grand12'
+
+child2 = child1.next()
+assert child2,'no child2'
+grand21 = child2.firstChild()
+assert grand21,'no grand21'
+grand22 = grand21.next()
+assert grand22,'no grand22'
+
+def oops(found,p2,node,n,n2):
+    result = [' ']
+    result.append('goto-global-line test failed at line %s' % (n))
+    if not found:
+        result.append('line %s not found',n)
+    else:
+        result.append('got node "%s", expected "%s"' % (p2.h,node.h))
+        result.append('got offset %s, expected %s' % (n2,n))
+    return '\n'.join(result)
+
+table = (
+    # Use 1-based numbers externally.
+    # countLines converts to zero-based numbers.
+    (1, child1,  0),
+    (2, grand11, 0),
+    (3, grand11, 1),
+    (4, grand12, 0),
+    (5, grand12, 1),
+    (6, child2,  0),
+    (7, grand21, 0),
+    (8, grand21, 1),
+    (9, grand22, 0),
+    (10,grand22, 1),
+    (11,root,    3),
+)
+
+# Test against actual lines of the file.
+path = g.os_path_finalize_join(g.app.loadDir,'..','test',fn)
+f = open(path,'r') ; s = f.read() ; f.close()
+lines = g.splitLines(s) # The lines from the file.
+verbose = False
+for n,node,index in table:
+    goto = c.goToLineNumber(c)
+    p2,n2,found = goto.countLines(root,n)
+        # n, the argument to countLines, is 1-based
+        # n2, the returned index into p2.b, is zero-based
+    n -= 1
+        # Convert n to zero-based for the comparisons below.
+    lines2 = g.splitLines(p2.b)
+    ok = lines2[n2].lstrip() == lines[n].lstrip() 
+    if verbose or not ok:
+        i = 0
+        for z in lines:
+            print('%2d %s' % (i,repr(z)))
+            i += 1
+    if verbose or not ok:
+        print('at line %s, index %s, node %s\ngot line %s\nexpected %s' % (
+            n,n2,p2.h,repr(lines2[n2].lstrip()),repr(lines[n].lstrip())))
+    assert ok</t>
 </tnodes>
 </leo_file>
