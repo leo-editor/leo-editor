@@ -1211,7 +1211,6 @@
 <v t="ekr.20090104053806.1"><vh>@@test c.checkFileTimeStamp &amp; c.setFileTimeStamp</vh></v>
 <v t="ekr.20071113145804.10"><vh>@test c.contractAllHeadlines</vh></v>
 <v t="ekr.20100209155559.5386"><vh>@test c.createOpenWithTempFile</vh></v>
-<v t="ekr.20100211154538.5346"><vh>@test c.gotoLineNumber</vh></v>
 <v t="ekr.20100212072149.5341"><vh>@test c.goToScriptLineNumber</vh>
 <v t="ekr.20100212072149.5342"><vh>syntax-error</vh></v>
 </v>
@@ -1617,6 +1616,9 @@
 <v t="ekr.20061101121602.265"><vh>after sel=1.395,3.0</vh></v>
 </v>
 <v t="ekr.20070305095401"><vh>@test goNext/PrevVisitedNode</vh></v>
+<v t="ekr.20100216142240.5371"><vh>@test goto-global-line with @auto</vh>
+<v t="ekr.20100216142240.5372"><vh>@auto ../test/at-auto-unit-test.py</vh></v>
+</v>
 <v t="ekr.20100212104817.5351"><vh>@test help-for-command</vh></v>
 <v t="ekr.20061101121602.266"><vh>@test indent-relative</vh>
 <v t="ekr.20061101121602.267"><vh>work</vh></v>
@@ -2270,7 +2272,7 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040802071519"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519" a="E"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20100131180007.5391"><vh>@test v.atAutoNodeName &amp; v.atAutoRstNodeName</vh></v>
@@ -2299,13 +2301,13 @@
 <v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5610"><vh>leoPlugins</vh>
+<v t="ekr.20100131171342.5610" a="E"><vh>leoPlugins</vh>
 <v t="ekr.20100131171342.5611"><vh>@test getHandlersForTag</vh></v>
 </v>
-<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
+<v t="ekr.20091219122958.5066" a="E"><vh>leoRst</vh>
 <v t="ekr.20091219121039.5065"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
 </v>
-<v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
+<v t="ekr.20090529115704.4396" a="E"><vh>leoShadow</vh>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 <v t="ekr.20090529115704.4569"><vh>@@test delete unittest shadow directory</vh></v>
 <v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
@@ -2552,7 +2554,7 @@
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="ekr.20071113200638.1"><vh>leoTangle</vh>
+<v t="ekr.20071113200638.1" a="E"><vh>leoTangle</vh>
 <v t="ekr.20090624125638.4963"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
 <v t="ekr.20071113090055.1"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
 <v t="ekr.20071127194743"><vh>@test @root</vh>
@@ -2564,7 +2566,7 @@
 <v t="ekr.20090624125638.4969"><vh>Output</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5612"><vh>leoTest</vh>
+<v t="ekr.20100131171342.5612" a="E"><vh>leoTest</vh>
 <v t="ekr.20100131171342.5613"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
@@ -2637,17 +2639,6 @@
 </v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20100211154538.5338"><vh>@auto ../test/goto-line-number-test.py</vh></v>
-<v t="ekr.20100212104817.5352"><vh>Related to sort</vh>
-<v t="ekr.20061101121602.322"></v>
-<v t="ekr.20061101121602.326"></v>
-<v t="ekr.20071113081247.8"></v>
-<v t="ekr.20100212104817.5346"></v>
-<v t="ekr.20100212104817.5347"></v>
-<v t="ekr.20100212104817.5351"></v>
-<v t="ekr.20100212110954.5359"></v>
-<v t="ekr.20100212112056.5361"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -22819,20 +22810,6 @@ g.app.config.writeRecentFilesFileHelper(fn)
 assert g.os_path_exists(fn)
 os.remove(fn)
 assert not g.os_path_exists(fn)</t>
-<t tx="ekr.20100211154538.5346">fn = '@auto ../test/goto-line-number-test.py'
-p = g.findNodeAnywhere(c,fn)
-assert p,'no node'
-goto = c.goToLineNumber(c)
-try:
-    for i in range(100):
-        found = goto.go(i,p)
-        if not found: break
-finally:
-    p.contract()
-    c.selectPosition(p)
-    c.redraw()
-
-</t>
 <t tx="ekr.20100212072149.5341">child = g.findNodeInChildren(c,p,'syntax-error')
 assert child,'no child'
 script = child.b
@@ -22868,10 +22845,77 @@ finally:
 <t tx="ekr.20100212104817.5350"></t>
 <t tx="ekr.20100212104817.5351">result = c.helpCommands.getBindingsForCommand('help-for-command')
 assert result.strip().lower()=='f1'</t>
-<t tx="ekr.20100212104817.5352"></t>
 <t tx="ekr.20100212110954.5359">lines = c.k.printBindings()
 assert lines[0].strip().endswith('Alt+Ctrl+Shift')</t>
 <t tx="ekr.20100212112056.5361">g.printGcAll()</t>
+<t tx="ekr.20100216142240.5371"># The @auto node must be a child of this node
+# for findNodeAnywhere to succeed with Alt-6.
+fn = '../test/at-auto-unit-test.py'
+root = g.findNodeAnywhere(c,'@auto %s' % (fn))
+assert root,'no root'
+
+child1 = root.firstChild()
+assert child1,'no child1'
+grand11 = child1.firstChild()
+assert grand11,'no grand11'
+grand12 = grand11.next()
+assert grand12,'no grand12'
+
+child2 = child1.next()
+assert child2,'no child2'
+grand21 = child2.firstChild()
+assert grand21,'no grand21'
+grand22 = grand21.next()
+assert grand22,'no grand22'
+
+def oops(found,p2,node,n,n2):
+    result = [' ']
+    result.append('goto-global-line test failed at line %s' % (n))
+    if not found:
+        result.append('line %s not found',n)
+    else:
+        result.append('got node "%s", expected "%s"' % (p2.h,node.h))
+        result.append('got offset %s, expected %s' % (n2,n))
+    return '\n'.join(result)
+
+table = (
+    # Use 1-based numbers externally.
+    # countLines converts to zero-based numbers.
+    (1, child1,  0),
+    (2, grand11, 0),
+    (3, grand11, 1),
+    (4, grand12, 0),
+    (5, grand12, 1),
+    (6, child2,  0),
+    (7, grand21, 0),
+    (8, grand21, 1),
+    (9, grand22, 0),
+    (10,grand22, 1),
+    (11,root,    3),
+)
+
+# Test against actual lines of the file.
+path = g.os_path_finalize_join(g.app.loadDir,'..','test',fn)
+f = open(path,'r') ; s = f.read() ; f.close()
+lines = g.splitLines(s) # The lines from the file.
+for n,node,index in table:
+    goto = c.goToLineNumber(c)
+    p2,n2,found = goto.countLines(root,n)
+        # n, the argument to countLines, is 1-based
+        # n2, the returned index into p2.b, is zero-based
+    n -= 1
+        # Convert n to zero-based for the comparisons below.
+    lines2 = g.splitLines(p2.b)
+    ok = lines2[n2].lstrip() == lines[n].lstrip() 
+    if not ok:
+        i = 0
+        for z in lines:
+            print('%2d %s' % (i,repr(z)))
+            i += 1
+    if not ok:
+        print('at line %s, index %s, node %s\ngot line %s\nexpected %s' % (
+            n,n2,p2.h,repr(lines2[n2].lstrip()),repr(lines[n].lstrip())))
+    assert ok</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

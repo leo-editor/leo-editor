@@ -2146,20 +2146,20 @@ class baseCommands (object):
     #@nonl
     #@-node:ekr.20070115135502:writeScriptFile
     #@-node:ekr.20031218072017.2140:c.executeScript & helpers
-    #@+node:ekr.20080710082231.10:c.gotoLineNumber and helpers
+    #@+node:ekr.20100216141722.5620:class gotoLineNumber and helpers (commands)
     class goToLineNumber:
 
         '''A class implementing goto-global-line.'''
 
         #@    @+others
-        #@+node:ekr.20100211140411.5772: __init__ (gotoLineNumber)
+        #@+node:ekr.20100216141722.5621: __init__ (gotoLineNumber)
         def __init__ (self,c):
 
             # g.trace('(c.gotoLineNumber)')
             self.c = c
             self.p = c.p.copy()
-        #@-node:ekr.20100211140411.5772: __init__ (gotoLineNumber)
-        #@+node:ekr.20100211140411.5771:go
+        #@-node:ekr.20100216141722.5621: __init__ (gotoLineNumber)
+        #@+node:ekr.20100216141722.5622:go
         def go (self,n,p=None,scriptData=None):
 
             '''Place the cursor on the n'th line of a derived file or script.
@@ -2184,7 +2184,7 @@ class baseCommands (object):
 
             if isRaw:
                 p,n2,found = self.countLines(root,n)
-                n2 += 1
+                n2 += 1 # Convert to one-based.
             # elif n<=1
                 # p,n2,found = root,1,True
             # elif n > len(lines):
@@ -2196,8 +2196,8 @@ class baseCommands (object):
 
             self.showResults(found,p or root,n,n2,lines)
             return found
-        #@-node:ekr.20100211140411.5771:go
-        #@+node:ekr.20080904071003.12:countLines & helper
+        #@-node:ekr.20100216141722.5622:go
+        #@+node:ekr.20100216141722.5623:countLines & helpers
         def countLines (self,root,n):
 
             '''Scan through root's outline, looking for line n.
@@ -2206,74 +2206,108 @@ class baseCommands (object):
             i is the offset of the line within the node.
             found is True if the line was found.'''
 
-            trace = False and not g.unitTesting
+            trace = False # and not g.unitTesting
             c = self.c
 
-            if trace: g.trace('=' * 10,n,root.h)
-
             # Start the recursion.
-            p,i,n,found = self.countLinesHelper(root,n,trace)
-            return p,i,found
-        #@+node:ekr.20100206173123.5805:countLinesHelper
+            n = max(0,n-1)# Convert to zero based internally.
+            if trace: g.trace('%s %s (zero-based) %s' % ('*' * 20,n,root.h))
+            p,i,junk,found = self.countLinesHelper(root,n,trace)
+            return p,i,found # The index is zero-based.
+        #@+node:ekr.20100216141722.5624:countLinesHelper
         def countLinesHelper (self,p,n,trace):
 
-            '''Scan root's body text, looking for line n,
+            '''Scan p's body text, looking for line n,
             ao is the index of the line containing @others or None.
 
-            Return (p,i,n,found) where:
-            p is the found node if found, or the original p if not.
-            i is the offset of the line within the node.
-            found is True if the line was found.'''
-
-            verbose = True
-            if trace: g.trace('-' * 5,n,p.h)
+            Return (p,i,n,effective_lines,found)
+            found: True if the line was found.
+            if found:
+                p:              The found node.
+                i:              The offset of the line within the node.
+                effective_lines:-1 (not used)
+            if not found:
+                p:              The original node.
+                i:              -1 (not used)
+                effective_lines:The number of lines in this node and
+                                all descendant nodes.
+            '''
+            if trace: g.trace('='*10,n,p.h)
             c = self.c ; ao = None
             lines = g.splitLines(p.b)
-            i = 0
+            i = 0 ; n1 = n
+            effective_lines = 0 ; skipped_lines = 0
+            # Invariant 1: n never changes in this method(!)
+            # Invariant 2: n + skipped_lines is the target line number.
             while i < len(lines):
                 progress = i
                 line = lines[i]
-                if trace and verbose: g.trace('i %s n %s %s' % (i,n,line.rstrip()))
+                if trace: g.trace('i %s effective %s skipped %s %s' % (
+                    i,effective_lines,skipped_lines,line.rstrip()))
                 if line.strip().startswith('@'):
-                    # Increase number of the line we are looking for.
-                    n += 1
-                    i += 1
+                    skipped_lines += 1
                     if line.strip().startswith('@others'):
-                        # Start looking in inner nodes.
-                        if trace: 
-                            g.trace('@others offset: %3s n: %3s %s' % (i,n,p.h))
-                        if ao is None:
+                        if ao is None and p.hasChildren():
                             ao = i
-                            if p.hasChildren():
-                                n2 = n-i
-                                for child in p.children():
-                                    # Recursively scan the children.
-                                    p2,i2,n2,found = self.countLinesHelper(
-                                        child,n2,trace)
-                                    if found:
-                                        return p2,i2,n2,found
-                                    else:
-                                        if trace: g.trace('return i2',i2,'n2',n2,'-->',n2-i2)
-                                        # Don't change i here!
-                                        n2 -= i2
-                                n = n2
-                                # assert n > 0 # otherwise we would have suceeded.
-                                if n <= 0:
-                                    return p,i-1,n,True
-                            # else: silently ignore @others without children.
-                        # else: silently ignore duplicate @others.
-                    # else: nothing more to do.
-                elif i == n: # Found the line.
-                    if trace: g.trace('Found!  offset: %3s n: %3s %s' % (n,i,p.h))
-                    return p,i,n,True
-                else: # A plain line.
-                    i += 1
+                            # Count lines in inner nodes.
+                            # Pass n-effective_lines as the targe line number.
+                            new_n = n-effective_lines
+                            p2,i2,effective_lines2,found = \
+                                self.countLinesInChildren(new_n,p,trace)
+                            if found:
+                                return p2,i2,-1,True # effective_lines doesn't matter.
+                            else:
+                                # Assert that the line has not been found.
+                                assert effective_lines2 <= new_n
+                                effective_lines += effective_lines2
+                                # Do *not* change i: it will be bumped below.
+                                # Invariant: n never changes!
+                        else:
+                            pass # silently ignore erroneous @others.
+                    else:
+                        pass # A regular directive: don't change n or i here.
+                elif i == n + skipped_lines: # Found the line.
+                    if trace:
+                        g.trace('Found! n: %s i: %s %s' % (n,i,lines[i]))
+                    return p,i,-1,True # effective_lines doesn't matter.
+                else:
+                    effective_lines += 1
+                # This is the one and only place we update i in this loop.
+                i += 1
                 assert i > progress
-            assert i == len(lines)
-            return p,i-1,n,False
-        #@-node:ekr.20100206173123.5805:countLinesHelper
-        #@-node:ekr.20080904071003.12:countLines & helper
-        #@+node:ekr.20080904071003.18:findGnx
+
+            if trace:
+                g.trace('Not found. n: %s effective_lines: %s %s' % (
+                    n,effective_lines,p.h))
+            return p,-1,effective_lines,False # i doesn't matter.
+        #@-node:ekr.20100216141722.5624:countLinesHelper
+        #@+node:ekr.20100216141722.5625:countLinesInChildren
+        def countLinesInChildren(self,n,p,trace):
+
+            if trace: g.trace('-'*5,n,p.h)
+            effective_lines = 0
+            for child in p.children():
+                if trace:g.trace('child %s' % child.h)
+                # Recursively scan the children.
+                # Pass n-effective_lines as the targe line number for each child.
+                new_n = n-effective_lines
+                p2,i2,effective_lines2,found = \
+                    self.countLinesHelper(child,new_n,trace)
+                if found:
+                    return p2,i2,-1,True # effective_lines doesn't matter.
+                else:
+                    # Assert that the line has not been found.
+                    assert effective_lines2 <= new_n
+                    # i2 is not used
+                    effective_lines += effective_lines2
+                    if trace:
+                        g.trace('Not found. effective_lines2: %s %s' % (
+                            effective_lines2,child.h))
+            else:
+                return p,-1,effective_lines,False # i does not matter.
+        #@-node:ekr.20100216141722.5625:countLinesInChildren
+        #@-node:ekr.20100216141722.5623:countLines & helpers
+        #@+node:ekr.20100216141722.5626:findGnx
         def findGnx (self,delim,root,gnx,vnodeName):
 
             '''Scan root's tree for a node with the given gnx and vnodeName.
@@ -2289,8 +2323,8 @@ class baseCommands (object):
                 return None,False
             else:
                 return root,False
-        #@-node:ekr.20080904071003.18:findGnx
-        #@+node:ekr.20080904071003.25:findRoot
+        #@-node:ekr.20100216141722.5626:findGnx
+        #@+node:ekr.20100216141722.5627:findRoot
         def findRoot (self,p):
 
             '''Find the closest ancestor @<file> node, except @all nodes.
@@ -2316,8 +2350,8 @@ class baseCommands (object):
                             return p2.copy(),fileName
 
             return None,None
-        #@-node:ekr.20080904071003.25:findRoot
-        #@+node:ekr.20031218072017.2877:findVnode & helpers
+        #@-node:ekr.20100216141722.5627:findRoot
+        #@+node:ekr.20100216141722.5628:findVnode & helpers
         def findVnode (self,root,lines,n,ignoreSentinels):
 
             '''Search the lines of a derived file containing sentinels for a vnode.
@@ -2351,7 +2385,7 @@ class baseCommands (object):
             else:
                 g.es("bad @+node sentinel")
                 return None,None,None,None
-        #@+node:ekr.20100124164700.12156:findNodeSentinel & helper
+        #@+node:ekr.20100216141722.5629:findNodeSentinel & helper
         def findNodeSentinel(self,delim,lines,n):
 
             '''
@@ -2380,7 +2414,7 @@ class baseCommands (object):
                     line -= 1
                 assert nodeSentinelLine > -1 or line < progress
             return nodeSentinelLine,offset
-        #@+node:ekr.20031218072017.2880:handleDelim
+        #@+node:ekr.20100216141722.5630:handleDelim
         def handleDelim (self,delim,s,i,line,lines,n,offset):
 
             '''Handle the delim while scanning backward.'''
@@ -2411,9 +2445,9 @@ class baseCommands (object):
                 line -= 1
                 nodeSentinelLine = -1
             return line,nodeSentinelLine,offset
-        #@-node:ekr.20031218072017.2880:handleDelim
-        #@-node:ekr.20100124164700.12156:findNodeSentinel & helper
-        #@+node:ekr.20031218072017.2881:getNodeLineInfo
+        #@-node:ekr.20100216141722.5630:handleDelim
+        #@-node:ekr.20100216141722.5629:findNodeSentinel & helper
+        #@+node:ekr.20100216141722.5631:getNodeLineInfo
         def getNodeLineInfo (self,s,thinFile):
 
             i = 0 ; gnx = None ; vnodeName = None
@@ -2438,8 +2472,8 @@ class baseCommands (object):
                 g.es_print("bad @+node sentinel",color='red')
 
             return gnx,vnodeName
-        #@-node:ekr.20031218072017.2881:getNodeLineInfo
-        #@+node:ekr.20031218072017.2878:setDelimFromLines
+        #@-node:ekr.20100216141722.5631:getNodeLineInfo
+        #@+node:ekr.20100216141722.5632:setDelimFromLines
         def setDelimFromLines (self,lines):
 
             # Find the @+leo line.
@@ -2460,8 +2494,8 @@ class baseCommands (object):
                     delim = start + '@'
 
             return delim,thinFile
-        #@-node:ekr.20031218072017.2878:setDelimFromLines
-        #@+node:ekr.20031218072017.2882:skipToMatchingNodeSentinel
+        #@-node:ekr.20100216141722.5632:setDelimFromLines
+        #@+node:ekr.20100216141722.5633:skipToMatchingNodeSentinel
         def skipToMatchingNodeSentinel (self,lines,n,delim):
 
             s = lines[n]
@@ -2488,9 +2522,9 @@ class baseCommands (object):
 
             # g.trace(n)
             return n
-        #@-node:ekr.20031218072017.2882:skipToMatchingNodeSentinel
-        #@-node:ekr.20031218072017.2877:findVnode & helpers
-        #@+node:ekr.20080904071003.26:getFileLines
+        #@-node:ekr.20100216141722.5633:skipToMatchingNodeSentinel
+        #@-node:ekr.20100216141722.5628:findVnode & helpers
+        #@+node:ekr.20100216141722.5634:getFileLines
         def getFileLines (self,root,fileName):
 
             '''Read the file into lines.'''
@@ -2514,8 +2548,8 @@ class baseCommands (object):
                 lines    = self.openFile(fileName)
 
             return lines
-        #@-node:ekr.20080904071003.26:getFileLines
-        #@+node:ekr.20080708094444.63:openFile (gotoLineNumber)
+        #@-node:ekr.20100216141722.5634:getFileLines
+        #@+node:ekr.20100216141722.5635:openFile (gotoLineNumber)
         def openFile (self,filename):
             """
             Open a file and check if a shadow file exists.
@@ -2545,8 +2579,8 @@ class baseCommands (object):
                 lines = []
 
             return lines
-        #@-node:ekr.20080708094444.63:openFile (gotoLineNumber)
-        #@+node:ekr.20080904071003.28:setup_file
+        #@-node:ekr.20100216141722.5635:openFile (gotoLineNumber)
+        #@+node:ekr.20100216141722.5636:setup_file
         def setup_file (self,n,p):
 
             '''Return (lines,n) where:
@@ -2573,8 +2607,8 @@ class baseCommands (object):
                 lines = g.splitLines(lines)
 
             return fileName,lines,n,root
-        #@-node:ekr.20080904071003.28:setup_file
-        #@+node:ekr.20100205193439.5844:setup_script
+        #@-node:ekr.20100216141722.5636:setup_file
+        #@+node:ekr.20100216141722.5637:setup_script
         def setup_script (self,scriptData):
 
             c = self.c
@@ -2584,8 +2618,8 @@ class baseCommands (object):
             lines = scriptData.get('lines')
 
             return fileName,lines,p,root
-        #@-node:ekr.20100205193439.5844:setup_script
-        #@+node:ekr.20080904071003.14:showResults
+        #@-node:ekr.20100216141722.5637:setup_script
+        #@+node:ekr.20100216141722.5638:showResults
         def showResults(self,found,p,n,n2,lines):
 
             trace = False
@@ -2610,9 +2644,9 @@ class baseCommands (object):
             w.setInsertPoint(ins)
             c.bodyWantsFocusNow()
             w.seeInsertPoint()
-        #@-node:ekr.20080904071003.14:showResults
+        #@-node:ekr.20100216141722.5638:showResults
         #@-others
-    #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
+    #@-node:ekr.20100216141722.5620:class gotoLineNumber and helpers (commands)
     #@+node:EKR.20040612232221:c.goToScriptLineNumber
     # Called from g.handleScriptException.
 
