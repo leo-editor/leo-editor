@@ -1685,7 +1685,7 @@ class leoSwingFrame (leoFrame.leoFrame):
 
             if not command:
                 def command():
-                    print "command for widget %s" % (n)
+                    print("command for widget %s" % (n))
 
             if imagefile or image:
                 #@        << create a picture >>
@@ -2385,12 +2385,12 @@ class leoSwingFrame (leoFrame.leoFrame):
         '''Toggle the split direction in the present Leo window.'''
 
         # Switch directions.
-        c = self.c
-        self.splitVerticalFlag = not self.splitVerticalFlag
-        orientation = g.choose(self.splitVerticalFlag,"vertical","horizontal")
-        c.config.set("initial_splitter_orientation","string",orientation)
+        f = self
 
-        self.toggleTkSplitDirection(self.splitVerticalFlag)
+        # The key invariant: self.splitVerticalFlag
+        # tells the alignment of the main splitter.
+        f.splitVerticalFlag = not f.splitVerticalFlag
+        f.toggleTkSplitDirection(f.splitVerticalFlag)
     #@+node:ekr.20081121105001.738:toggleTkSplitDirection
     def toggleTkSplitDirection (self,verticalFlag):
 

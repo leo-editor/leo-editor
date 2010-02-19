@@ -539,6 +539,7 @@ class PlugIn:
 
         for section in data.keys():
             for option in data[section].keys():
+                # This is configParser.set, not g.app.config.set, so it is ok.
                 self.config.set(section, option, data[section][option])
     #@-node:bob.20071209102050:updateConfiguration
     #@+node:bob.20071208033759:writeConfiguration

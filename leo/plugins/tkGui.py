@@ -5020,12 +5020,12 @@ class leoTkinterFrame (leoFrame.leoFrame):
         '''Toggle the split direction in the present Leo window.'''
 
         # Switch directions.
-        c = self.c
-        self.splitVerticalFlag = not self.splitVerticalFlag
-        orientation = g.choose(self.splitVerticalFlag,"vertical","horizontal")
-        c.config.set("initial_splitter_orientation","string",orientation)
+        f = self
 
-        self.toggleTkSplitDirection(self.splitVerticalFlag)
+        # The key invariant: self.splitVerticalFlag
+        # tells the alignment of the main splitter.
+        f.splitVerticalFlag = not f.splitVerticalFlag
+        f.toggleTkSplitDirection(f.splitVerticalFlag)
     #@+node:ekr.20081121110412.237:toggleTkSplitDirection
     def toggleTkSplitDirection (self,verticalFlag):
 
