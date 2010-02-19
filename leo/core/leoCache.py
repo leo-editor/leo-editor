@@ -401,7 +401,7 @@ class cacher:
 
         if trace: g.trace(str_pos,key)
     #@-node:ekr.20100208082353.5928:setCachedStringPosition
-    #@+node:ekr.20100208071151.5903:writeFile
+    #@+node:ekr.20100208071151.5903:writeFile (cacher)
     # Was atFile.writeCachedTree
 
     def writeFile(self,p,fileKey):
@@ -418,7 +418,7 @@ class cacher:
         else:
             if trace: g.trace('caching ',p.h,fileKey)
             self.db[fileKey] = self.makeCacheList(p)
-    #@-node:ekr.20100208071151.5903:writeFile
+    #@-node:ekr.20100208071151.5903:writeFile (cacher)
     #@-node:ekr.20100208082353.5927:Writing
     #@+node:ekr.20100208065621.5890:test (cacher)
     def test(self):

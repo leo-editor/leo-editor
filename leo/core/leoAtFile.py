@@ -472,11 +472,8 @@ class atFile:
         root.v.at_read = True # Remember that we have read this file.
 
         # Get the file from the cache if possible.
-        if force or not g.enableDB:
-            loaded,fileKey = False,None
-        else:
-            loaded,fileKey = c.cacher.readFile(fileName,root)
-        if loaded:
+        loaded,fileKey = c.cacher.readFile(fileName,root)
+        if loaded and not force:
             at.inputFile.close()
             root.clearDirty()
             return True
