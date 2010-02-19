@@ -1742,6 +1742,45 @@ def redraw_after_head_changed (self):
     self.redraw_now()
 #@-node:ekr.20090110073024.11:redraw_after_head_changed (tkTree)
 #@-node:ekr.20100216023902.3691:Fixed headline-update bug for tk
+#@+node:ekr.20100219082023.3695:Fixed toggle-split-direction bug for tk
+#@+node:ekr.20081121110412.236:toggleSplitDirection (tkFrame)
+# The key invariant: self.splitVerticalFlag tells the alignment of the main splitter.
+
+def toggleSplitDirection (self,event=None):
+
+    '''Toggle the split direction in the present Leo window.'''
+
+    # Switch directions.
+    f = self
+
+    # The key invariant: self.splitVerticalFlag
+    # tells the alignment of the main splitter.
+    f.splitVerticalFlag = not f.splitVerticalFlag
+    f.toggleTkSplitDirection(f.splitVerticalFlag)
+#@+node:ekr.20081121110412.237:toggleTkSplitDirection
+def toggleTkSplitDirection (self,verticalFlag):
+
+    # Abbreviations.
+    frame = self
+    bar1 = self.bar1 ; bar2 = self.bar2
+    split1Pane1,split1Pane2 = self.split1Pane1,self.split1Pane2
+    split2Pane1,split2Pane2 = self.split2Pane1,self.split2Pane2
+    # Reconfigure the bars.
+    bar1.place_forget()
+    bar2.place_forget()
+    self.configureBar(bar1,verticalFlag)
+    self.configureBar(bar2,not verticalFlag)
+    # Make the initial placements again.
+    self.placeSplitter(bar1,split1Pane1,split1Pane2,verticalFlag)
+    self.placeSplitter(bar2,split2Pane1,split2Pane2,not verticalFlag)
+    # Adjust the log and body panes to give more room around the bars.
+    self.reconfigurePanes()
+    # Redraw with an appropriate ratio.
+    vflag,ratio,secondary_ratio = frame.initialRatios()
+    self.resizePanesToRatio(ratio,secondary_ratio)
+#@-node:ekr.20081121110412.237:toggleTkSplitDirection
+#@-node:ekr.20081121110412.236:toggleSplitDirection (tkFrame)
+#@-node:ekr.20100219082023.3695:Fixed toggle-split-direction bug for tk
 #@-node:ekr.20100216023902.3690:Leo 4.7 final projects
 #@-all
 #@nonl
