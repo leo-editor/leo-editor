@@ -2,6 +2,46 @@
 #@+node:ekr.20100119205347.6015:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20100209160132.5771:until-4-7-final branch
+#@+node:ekr.20100209114432.5750:Work on docs
+- Better scren shots.
+#@nonl
+#@+node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
+http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
+
+Python uses Sphinx for its doc, they have a discussion about making
+the TOC on the left hand side collapsible/non-scrolling here:
+
+http://www.google.com/url?sa=t&source=web&ct=res&cd=4&ved=0CBYQFjAD&url=http%3A%2F%2Fbugs.python.org%2Fissue3143&ei=bW5oS-eQIJDalAfqlYyGCA&usg=AFQjCNGyhpE3wZ2jvfwA0dwjCfoAxleDRQ&sig2=2CRD7hNMmx1NzFHMyOq_cQ
+
+that includes code for the CSS stylesheet to do this.
+
+Although this does not appear in the python docs (yet), it might be
+valuable for Leo's Doc's
+
+
+
+I downloaded the example files from the above link, the collapsible
+sidebar works well with the python documentation.  As the Leo
+documentation is just a variant of python's, I downloaded a HTML
+chapter and the support files kept in .../static, then I placed the
+"sidebar.js" in with those files on my local copy.  To make the
+sidebar collapsing work, all I had to do was add it to the list of
+javascript files in the chapter .html file, i.e., I added the second
+line below
+
+    <script type="text/javascript" src="IPythonBridge_files/
+doctools.js"></script>
+    <script type="text/javascript" src="IPythonBridge_files/
+sidebar.js"></script>
+
+in the 'head' section, (the above takes into account that I was doing
+this on my local, differently arranged, copy).
+
+That is all that it takes to give us a collapsible TOC
+#@nonl
+#@-node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
+#@-node:ekr.20100209114432.5750:Work on docs
+#@+node:ekr.20100219083854.5616:Simplify i/o
 #@+node:ekr.20100211125418.11612:Revise g.readFileIntoString
 @nocolor-node
 
@@ -16,73 +56,6 @@ We also need the following functions:
 - g.openFileForWriting.
 #@nonl
 #@-node:ekr.20100211125418.11612:Revise g.readFileIntoString
-#@+node:ekr.20100209160132.5770:cache notes
-@nocolor-node
-
-Top-level folder are direct subfolders of .leo/db.
-Top-level folders represent file *locations* not file contents.
-Exception: the top-level "globals" folder represents minor data.
-
-Only two files are ever needed in a top-level folder:
-
-contents_<key>: the contents of the file.
-data_<key>: a dict representing the "minor data" of the file:
-    <globals> element stuff, expansion bits, etc.
-
-We write contents_<key> only once.
-By definition, its contents never changes, since the contents generates the key.
-We can write data_<key> as many times as we like.
-
-To do:
-- Simplify or even eliminate the path-manipulation code in PickleShareDB.
-- Use g.makeAllNonExistentDirectories to make top-level directories.
-- Clear cache should clear all top-level directories.
-#@nonl
-#@+node:ekr.20100209114432.5751:Cache expansion bits
-# Simplify the structure of the cache: put more into the "minor" files.
-#@nonl
-#@-node:ekr.20100209114432.5751:Cache expansion bits
-#@-node:ekr.20100209160132.5770:cache notes
-#@+node:ekr.20100211095442.6201:cache notes 2
-@nocolor-node
-
-1. Memory does leak, and that's not ok with me.  And I want just two
-files per top-level directory.
-
-2. Strange things can happen with caching, as just happened to me when
-I restored qtui_generate.py mistakenly deleted from leo/test.  There
-is an @auto node for this file in qtGui.py, and I got improper 'can
-not open' messages for this file.
-
-3. It is troubling that the present caching scheme does not use the
-full path to a file, only the basename.  This means that two identical
-files in two different places will use the same cache entries.  I've
-been wondering for the last several days about whether this could
-cause problems.  I don't know for sure, but I am uncomfortable.
-
-4. I want the clear-cache and clear-all-caches commands to do what
-they say: get rid of everything.  Among other things, this is good for
-debugging and recovering from cache problems.
-
-#@-node:ekr.20100211095442.6201:cache notes 2
-#@+node:ekr.20100210163813.5748:Caching buglets?
-@nocolor-node
-
-This is a recent bug, but imo it has uncovered some other caching buglets. These
-buglets are not big enough to delay Leo 4.7, but the new caching scheme would
-ensure they never bite.
-
-1. The code that computes what I have been calling the top-level directory is dubious::
-
-    dbdirname = join(g.app.homeLeoDir,'db',
-            '%s_%s' % (bname,hashlib.md5(fn).hexdigest()))
-
-The problem is that bname is only the base name of the cached file, not a name
-(or key) that depends on the full path. Thus, two copies of the same file in the
-same place will be cached in the same directory. Is this ominous?
-
-2. It's not clear what caching to do with the save-to command.
-#@-node:ekr.20100210163813.5748:Caching buglets?
 #@+node:ekr.20100209224508.5744:Calls to .write
 All these could be considered potential Python 3.x bugs.  Most are not.
 #@nonl
@@ -1000,6 +973,76 @@ def show (self,s):
         g.pr('')
 #@-node:ekr.20031218072017.3650:show
 #@-node:ekr.20100209224508.5744:Calls to .write
+#@-node:ekr.20100219083854.5616:Simplify i/o
+#@+node:ekr.20100219083854.5615:Improve caching
+#@+node:ekr.20100209160132.5770:cache notes
+@nocolor-node
+
+Top-level folder are direct subfolders of .leo/db.
+Top-level folders represent file *locations* not file contents.
+Exception: the top-level "globals" folder represents minor data.
+
+Only two files are ever needed in a top-level folder:
+
+contents_<key>: the contents of the file.
+data_<key>: a dict representing the "minor data" of the file:
+    <globals> element stuff, expansion bits, etc.
+
+We write contents_<key> only once.
+By definition, its contents never changes, since the contents generates the key.
+We can write data_<key> as many times as we like.
+
+To do:
+- Simplify or even eliminate the path-manipulation code in PickleShareDB.
+- Use g.makeAllNonExistentDirectories to make top-level directories.
+- Clear cache should clear all top-level directories.
+#@nonl
+#@+node:ekr.20100209114432.5751:Cache expansion bits
+# Simplify the structure of the cache: put more into the "minor" files.
+#@nonl
+#@-node:ekr.20100209114432.5751:Cache expansion bits
+#@-node:ekr.20100209160132.5770:cache notes
+#@+node:ekr.20100211095442.6201:cache notes 2
+@nocolor-node
+
+1. Memory does leak, and that's not ok with me.  And I want just two
+files per top-level directory.
+
+2. Strange things can happen with caching, as just happened to me when
+I restored qtui_generate.py mistakenly deleted from leo/test.  There
+is an @auto node for this file in qtGui.py, and I got improper 'can
+not open' messages for this file.
+
+3. It is troubling that the present caching scheme does not use the
+full path to a file, only the basename.  This means that two identical
+files in two different places will use the same cache entries.  I've
+been wondering for the last several days about whether this could
+cause problems.  I don't know for sure, but I am uncomfortable.
+
+4. I want the clear-cache and clear-all-caches commands to do what
+they say: get rid of everything.  Among other things, this is good for
+debugging and recovering from cache problems.
+
+#@-node:ekr.20100211095442.6201:cache notes 2
+#@+node:ekr.20100210163813.5748:Caching buglets?
+@nocolor-node
+
+This is a recent bug, but imo it has uncovered some other caching buglets. These
+buglets are not big enough to delay Leo 4.7, but the new caching scheme would
+ensure they never bite.
+
+1. The code that computes what I have been calling the top-level directory is dubious::
+
+    dbdirname = join(g.app.homeLeoDir,'db',
+            '%s_%s' % (bname,hashlib.md5(fn).hexdigest()))
+
+The problem is that bname is only the base name of the cached file, not a name
+(or key) that depends on the full path. Thus, two copies of the same file in the
+same place will be cached in the same directory. Is this ominous?
+
+2. It's not clear what caching to do with the save-to command.
+#@-node:ekr.20100210163813.5748:Caching buglets?
+#@-node:ekr.20100219083854.5615:Improve caching
 #@+node:ekr.20100211072044.5754:Dubious usages of .unitTesting
 #@+node:ekr.20031218072017.1723:createMenuEntries
 def createMenuEntries (self,menu,table,dynamicMenu=False):
@@ -2801,15 +2844,6 @@ def tabNannyNode (self,p,headline,body,unittest=False,suppressErrors=False):
 #@-node:ekr.20040723094220.6:c.tabNannyNode
 #@-node:ekr.20040723094220:Check Outline commands & allies
 #@-node:ekr.20100206173123.5801:Fix or eliminate check python syntax commands
-#@+node:ekr.20100127064113.6206:fix pylint
-#  unbound recursion...
-
-def unbound():
-    unbound()
-
-unbound()
-#@nonl
-#@-node:ekr.20100127064113.6206:fix pylint
 #@+node:ekr.20100210102224.5744:Notes for key bindings
 @nocolor-node
 
@@ -2834,59 +2868,6 @@ bindHelper class?
     - c.bindHelper or k.bindHelper?
 #@nonl
 #@-node:ekr.20100210102224.5744:Notes for key bindings
-#@+node:ekr.20100118143729.6256:Wish-list bug 508108: No methods sub-nodes in PHP class import
-@nocolor-node
-
-EKR: this is a wish-list item
-
-https://bugs.launchpad.net/leo-editor/+bug/508108
-
-When importing a PHP class file, I get two nodes: the first is just some Leo
-definitions (@language, @tab, @others), while the second is the whole class. I
-expect Leo to create a node for each method in the class as it does for
-"classless" file of functions (not sure how it is done in other languages). This
-kind of change would also make @auto a lot more useful for PHP.
-#@nonl
-#@-node:ekr.20100118143729.6256:Wish-list bug 508108: No methods sub-nodes in PHP class import
-#@+node:ekr.20100209114432.5750:Work on docs
-- Better scren shots.
-#@nonl
-#@+node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
-http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
-
-Python uses Sphinx for its doc, they have a discussion about making
-the TOC on the left hand side collapsible/non-scrolling here:
-
-http://www.google.com/url?sa=t&source=web&ct=res&cd=4&ved=0CBYQFjAD&url=http%3A%2F%2Fbugs.python.org%2Fissue3143&ei=bW5oS-eQIJDalAfqlYyGCA&usg=AFQjCNGyhpE3wZ2jvfwA0dwjCfoAxleDRQ&sig2=2CRD7hNMmx1NzFHMyOq_cQ
-
-that includes code for the CSS stylesheet to do this.
-
-Although this does not appear in the python docs (yet), it might be
-valuable for Leo's Doc's
-
-
-
-I downloaded the example files from the above link, the collapsible
-sidebar works well with the python documentation.  As the Leo
-documentation is just a variant of python's, I downloaded a HTML
-chapter and the support files kept in .../static, then I placed the
-"sidebar.js" in with those files on my local copy.  To make the
-sidebar collapsing work, all I had to do was add it to the list of
-javascript files in the chapter .html file, i.e., I added the second
-line below
-
-    <script type="text/javascript" src="IPythonBridge_files/
-doctools.js"></script>
-    <script type="text/javascript" src="IPythonBridge_files/
-sidebar.js"></script>
-
-in the 'head' section, (the above takes into account that I was doing
-this on my local, differently arranged, copy).
-
-That is all that it takes to give us a collapsible TOC
-#@nonl
-#@-node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
-#@-node:ekr.20100209114432.5750:Work on docs
 #@-node:ekr.20100209160132.5771:until-4-7-final branch
 #@+node:ekr.20071211093011:4.7 One-node world, Leo3K
 @nocolor-node

@@ -498,7 +498,7 @@ def configure_tags (self):
     traceFonts = True
     c = self.c ; w = self.w
 
-    if trace: g.trace(self.colorizer.language)
+    if trace: g.trace(self.colorizer.language,g.callers(5))
 
     # The stated default is 40, but apparently it must be set explicitly.
     tabWidth = c.config.getInt('qt-tab-width') or 40
@@ -545,9 +545,12 @@ def configure_tags (self):
                         g.trace('**found',key,name,family,size,slant,weight,id(font))
                     w.tag_config(key,font=font)
                     break
+
         else: # Neither the general setting nor the language-specific setting exists.
             if list(self.fonts.keys()): # Restore the default font.
-                if trace and verbose and traceFonts: g.trace('default',key)
+                if trace and traceFonts:
+                    g.trace('default',key,)
+                self.fonts[key] = font # 2010/02/19: Essential
                 w.tag_config(key,font=defaultBodyfont)
             else:
                 if trace and traceFonts:
@@ -1781,6 +1784,130 @@ def toggleTkSplitDirection (self,verticalFlag):
 #@-node:ekr.20081121110412.237:toggleTkSplitDirection
 #@-node:ekr.20081121110412.236:toggleSplitDirection (tkFrame)
 #@-node:ekr.20100219082023.3695:Fixed toggle-split-direction bug for tk
+#@+node:ekr.20100219082023.3696:Fixed bug in Qt colorizer
+#@+node:ekr.20090614134853.3703:configure_tags
+def configure_tags (self):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    traceColor = False
+    traceFonts = True
+    c = self.c ; w = self.w
+
+    if trace: g.trace(self.colorizer.language,g.callers(5))
+
+    # The stated default is 40, but apparently it must be set explicitly.
+    tabWidth = c.config.getInt('qt-tab-width') or 40
+    w.widget.setTabStopWidth(tabWidth)
+
+    if w and hasattr(w,'start_tag_configure'):
+        w.start_tag_configure()
+
+    # Get the default body font.
+    defaultBodyfont = self.fonts.get('default_body_font')
+    if not defaultBodyfont:
+        defaultBodyfont = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant",  "body_text_font_weight",
+            c.config.defaultBodyFontSize)
+        self.fonts['default_body_font'] = defaultBodyfont
+
+    # Configure fonts.
+    keys = list(self.default_font_dict.keys()) ; keys.sort()
+    for key in keys:
+        option_name = self.default_font_dict[key]
+        # First, look for the language-specific setting, then the general setting.
+        for name in ('%s_%s' % (self.colorizer.language,option_name),(option_name)):
+            font = self.fonts.get(name)
+            if font:
+                if trace and traceFonts:
+                    g.trace('**found',name,id(font))
+                w.tag_config(key,font=font)
+                break
+            else:
+                family = c.config.get(name + '_family','family')
+                size   = c.config.get(name + '_size',  'size')   
+                slant  = c.config.get(name + '_slant', 'slant')
+                weight = c.config.get(name + '_weight','weight')
+                if family or slant or weight or size:
+                    family = family or g.app.config.defaultFontFamily
+                    size   = size or c.config.defaultBodyFontSize
+                    slant  = slant or 'roman'
+                    weight = weight or 'normal'
+                    font = g.app.gui.getFontFromParams(family,size,slant,weight)
+                    # Save a reference to the font so it 'sticks'.
+                    self.fonts[key] = font
+                    if trace and traceFonts:
+                        g.trace('**found',key,name,family,size,slant,weight,id(font))
+                    w.tag_config(key,font=font)
+                    break
+
+        else: # Neither the general setting nor the language-specific setting exists.
+            if list(self.fonts.keys()): # Restore the default font.
+                if trace and traceFonts:
+                    g.trace('default',key,)
+                self.fonts[key] = font # 2010/02/19: Essential
+                w.tag_config(key,font=defaultBodyfont)
+            else:
+                if trace and traceFonts:
+                    g.trace('no fonts')
+
+    keys = list(self.default_colors_dict.keys()) ; keys.sort()
+    for name in keys:
+        option_name,default_color = self.default_colors_dict[name]
+        color = (
+            c.config.getColor('%s_%s' % (self.colorizer.language,option_name)) or
+            c.config.getColor(option_name) or
+            default_color
+        )
+        if trace and traceColor: g.trace(option_name,color)
+
+        # Must use foreground, not fg.
+        try:
+            w.tag_configure(name, foreground=color)
+        except: # Recover after a user error.
+            g.es_exception()
+            w.tag_configure(name, foreground=default_color)
+
+    # underline=var doesn't seem to work.
+    if 0: # self.use_hyperlinks: # Use the same coloring, even when hyperlinks are in effect.
+        w.tag_configure("link",underline=1) # defined
+        w.tag_configure("name",underline=0) # undefined
+    else:
+        w.tag_configure("link",underline=0)
+        if self.underline_undefined:
+            w.tag_configure("name",underline=1)
+        else:
+            w.tag_configure("name",underline=0)
+
+    self.configure_variable_tags()
+
+    # Colors for latex characters.  Should be user options...
+
+    if 1: # Alas, the selection doesn't show if a background color is specified.
+        w.tag_configure("latexModeBackground",foreground="black")
+        w.tag_configure("latexModeKeyword",foreground="blue")
+        w.tag_configure("latexBackground",foreground="black")
+        w.tag_configure("latexKeyword",foreground="blue")
+    else: # Looks cool, and good for debugging.
+        w.tag_configure("latexModeBackground",foreground="black",background="seashell1")
+        w.tag_configure("latexModeKeyword",foreground="blue",background="seashell1")
+        w.tag_configure("latexBackground",foreground="black",background="white")
+        w.tag_configure("latexKeyword",foreground="blue",background="white")
+
+    # Tags for wiki coloring.
+    w.tag_configure("bold",font=self.bold_font)
+    w.tag_configure("italic",font=self.italic_font)
+    w.tag_configure("bolditalic",font=self.bolditalic_font)
+    for name in self.color_tags_list:
+        w.tag_configure(name,foreground=name)
+
+    try:
+        w.end_tag_configure()
+    except AttributeError:
+        pass
+#@-node:ekr.20090614134853.3703:configure_tags
+#@-node:ekr.20100219082023.3696:Fixed bug in Qt colorizer
 #@-node:ekr.20100216023902.3690:Leo 4.7 final projects
 #@-all
 #@nonl

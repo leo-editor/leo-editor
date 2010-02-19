@@ -1616,6 +1616,14 @@ def getSigId (self,ids):
 #@-node:ekr.20100219075946.5745:Overrides
 #@-node:ekr.20100219075946.5742:class phpScanner
 #@-node:ekr.20100219075946.5680:Fixed wish-list bug 508108: No methods sub-nodes in PHP class import
+#@+node:ekr.20100219083711.5614:Fixed qt colorizer bug
+@nocolor-node
+
+Default fonts were not being properly restored after being overridden in another language.
+
+For example, after colorizing php, python keywords looked like php keywords.
+#@nonl
+#@-node:ekr.20100219083711.5614:Fixed qt colorizer bug
 #@-node:ekr.20100212095952.5727:4.7 final projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt

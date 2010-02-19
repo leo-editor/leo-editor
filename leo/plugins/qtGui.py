@@ -8620,7 +8620,7 @@ class jEditColorizer:
         traceFonts = True
         c = self.c ; w = self.w
 
-        if trace: g.trace(self.colorizer.language)
+        if trace: g.trace(self.colorizer.language,g.callers(5))
 
         # The stated default is 40, but apparently it must be set explicitly.
         tabWidth = c.config.getInt('qt-tab-width') or 40
@@ -8667,9 +8667,12 @@ class jEditColorizer:
                             g.trace('**found',key,name,family,size,slant,weight,id(font))
                         w.tag_config(key,font=font)
                         break
+
             else: # Neither the general setting nor the language-specific setting exists.
                 if list(self.fonts.keys()): # Restore the default font.
-                    if trace and verbose and traceFonts: g.trace('default',key)
+                    if trace and traceFonts:
+                        g.trace('default',key,)
+                    self.fonts[key] = font # 2010/02/19: Essential
                     w.tag_config(key,font=defaultBodyfont)
                 else:
                     if trace and traceFonts:
