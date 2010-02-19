@@ -2076,8 +2076,10 @@
 </v>
 </v>
 <v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
-<v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
-<v t="ekr.20090529141856.4717"><vh>C tests</vh>
+<v t="ekr.20090529141856.4716" a="E"><vh> Tests of @auto</vh>
+<v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
+<v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
+<v t="ekr.20090529141856.4717" a="E"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
 <v t="ekr.20090529141856.4720"><vh>@test defaultImporter</vh></v>
@@ -2088,19 +2090,41 @@
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4727" a="E"><vh>c# tests</vh>
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4731" a="E"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
 <v t="ekr.20090529141856.4733"><vh>@test elisp 2</vh></v>
 </v>
-<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4766" a="E"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
+<v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
+<v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
+<v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh></v>
+<v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
+<v t="ekr.20090529141856.4772" a="E"><vh>Test BundleException.java</vh>
+<v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
+</v>
+</v>
+<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
+<v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
+<v t="ekr.20090529141856.4777"><vh>@test Javascript-2</vh></v>
+<v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
+<v t="ekr.20090529141856.4779"><vh>@@test javascript-test-js</vh></v>
+</v>
+<v t="ekr.20090529141856.4734" a="E"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+<v t="ekr.20100219080213.5365" a="E"><vh>PHP tests</vh>
+<v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
+<v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
+<v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
+</v>
+<v t="ekr.20090529141856.4736" a="E"><vh>Python tests</vh>
 <v t="ekr.20090529141856.4737"><vh>@@test nested class</vh></v>
 <v t="ekr.20090529141856.4738"><vh>@test comment after dict assign</vh></v>
 <v t="ekr.20090529141856.4739"><vh>@test decorator test</vh></v>
@@ -2131,28 +2155,9 @@
 <v t="ekr.20090529141856.4764"><vh>@test two functions (for comparison with unindent does not end function)</vh></v>
 <v t="ekr.20090529141856.4765"><vh>@test unindent in triple string does not end function</vh></v>
 </v>
-<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
-<v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
-<v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
-<v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
-<v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh></v>
-<v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
-<v t="ekr.20090529141856.4772"><vh>Test BundleException.java</vh>
-<v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
-</v>
-</v>
-<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
-<v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
-<v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
-<v t="ekr.20090529141856.4777"><vh>@test Javascript-2</vh></v>
-<v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
-<v t="ekr.20090529141856.4779"><vh>@@test javascript-test-js</vh></v>
-</v>
-<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4780" a="E"><vh>xml tests</vh>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 </v>
-<v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
-<v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
 </v>
 <v t="ekr.20090529141856.4784" a="E"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
@@ -2272,7 +2277,7 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040802071519"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519" a="E"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20100131180007.5391"><vh>@test v.atAutoNodeName &amp; v.atAutoRstNodeName</vh></v>
@@ -2301,13 +2306,13 @@
 <v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5610"><vh>leoPlugins</vh>
+<v t="ekr.20100131171342.5610" a="E"><vh>leoPlugins</vh>
 <v t="ekr.20100131171342.5611"><vh>@test getHandlersForTag</vh></v>
 </v>
-<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
+<v t="ekr.20091219122958.5066" a="E"><vh>leoRst</vh>
 <v t="ekr.20091219121039.5065"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
 </v>
-<v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
+<v t="ekr.20090529115704.4396" a="E"><vh>leoShadow</vh>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 <v t="ekr.20090529115704.4569"><vh>@@test delete unittest shadow directory</vh></v>
 <v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
@@ -2554,7 +2559,7 @@
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="ekr.20071113200638.1"><vh>leoTangle</vh>
+<v t="ekr.20071113200638.1" a="E"><vh>leoTangle</vh>
 <v t="ekr.20090624125638.4963"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
 <v t="ekr.20071113090055.1"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
 <v t="ekr.20071127194743"><vh>@test @root</vh>
@@ -2566,7 +2571,7 @@
 <v t="ekr.20090624125638.4969"><vh>Output</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5612"><vh>leoTest</vh>
+<v t="ekr.20100131171342.5612" a="E"><vh>leoTest</vh>
 <v t="ekr.20100131171342.5613"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
@@ -22916,6 +22921,88 @@ for n,node,index in table:
         print('at line %s, index %s, node %s\ngot line %s\nexpected %s' % (
             n,n2,p2.h,repr(lines2[n2].lstrip()),repr(lines[n].lstrip())))
     assert ok</t>
+<t tx="ekr.20100219080213.5365"></t>
+<t tx="ekr.20100219080213.5366">s = '''\
+&lt;?php
+
+$type = 'cc';
+$obj = new $type; // outputs "hi!"
+
+class cc {
+    function __construct() {
+        echo 'hi!';
+    }
+}
+
+?&gt;
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.phpUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20100219080213.5367">s = '''\
+&lt;?php
+
+if (expr) {
+    class cc {
+        // version 1
+    }
+} else {
+    class cc {
+        // version 2
+    }
+}
+
+?&gt;
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.phpUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20100219080213.5368">s = '''\
+&lt;?php
+class Enum {
+    protected $self = array();
+    public function __construct( /*...*/ ) {
+        $args = func_get_args();
+        for( $i=0, $n=count($args); $i&lt;$n; $i++ )
+            $this-&gt;add($args[$i]);
+    }
+   
+    public function __get( /*string*/ $name = null ) {
+        return $this-&gt;self[$name];
+    }
+   
+    public function add( /*string*/ $name = null, /*int*/ $enum = null ) {
+        if( isset($enum) )
+            $this-&gt;self[$name] = $enum;
+        else
+            $this-&gt;self[$name] = end($this-&gt;self) + 1;
+    }
+}
+
+class DefinedEnum extends Enum {
+    public function __construct( /*array*/ $itms ) {
+        foreach( $itms as $name =&gt; $enum )
+            $this-&gt;add($name, $enum);
+    }
+}
+
+class FlagsEnum extends Enum {
+    public function __construct( /*...*/ ) {
+        $args = func_get_args();
+        for( $i=0, $n=count($args), $f=0x1; $i&lt;$n; $i++, $f *= 0x2 )
+            $this-&gt;add($args[$i], $f);
+    }
+}
+?&gt;
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.phpUnitTest(p,s=s,showTree=False)</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

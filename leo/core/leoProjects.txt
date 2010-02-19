@@ -1536,6 +1536,86 @@ def warnAboutUnvisitedNodes (self,root):
 #@-node:ekr.20071105164407:warnAboutUnvisitedNodes
 #@-node:ekr.20041005105605.21:read (atFile) & helpers
 #@-node:ekr.20100219050413.8107:Fixed internal Leo error
+#@+node:ekr.20100219075946.5680:Fixed wish-list bug 508108: No methods sub-nodes in PHP class import
+@nocolor-node
+
+EKR: this is a wish-list item
+
+https://bugs.launchpad.net/leo-editor/+bug/508108
+
+When importing a PHP class file, I get two nodes: the first is just some Leo
+definitions (@language, @tab, @others), while the second is the whole class. I
+expect Leo to create a node for each method in the class as it does for
+"classless" file of functions (not sure how it is done in other languages). This
+kind of change would also make @auto a lot more useful for PHP.
+#@nonl
+#@+node:ekr.20100219075946.5742:class phpScanner
+class phpScanner (baseScannerClass):
+
+    @others
+#@+node:ekr.20100219075946.5743: __init__
+def __init__ (self,importCommands,atAuto):
+
+    # Init the base class.
+    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='php')
+
+    # Set the parser delims.
+    self.blockCommentDelim1 = '/*'
+    self.blockCommentDelim2 = '*/'
+    self.lineCommentDelim = '//'
+    self.lineCommentDelim2 = '#'
+    self.blockDelim1 = '{'
+    self.blockDelim2 = '}'
+
+    self.hasClasses = True # 2010/02/19
+    self.hasFunctions = True
+
+    self.functionTags = ['function']
+
+    # The valid characters in an id
+    self.chars = list(string.ascii_letters + string.digits)
+    extra = [chr(z) for z in range(127,256)]
+    self.chars.extend(extra)
+#@-node:ekr.20100219075946.5743: __init__
+#@+node:ekr.20100219075946.5744:isPurePHP
+def isPurePHP (self,s):
+
+    '''Return True if the file begins with <?php and ends with ?>'''
+
+    s = s.strip()
+
+    return (
+        s.startswith('<?') and
+        s[2:3] in ('P','p','=','\n','\r',' ','\t') and
+        s.endswith('?>'))
+
+#@-node:ekr.20100219075946.5744:isPurePHP
+#@+node:ekr.20100219075946.5745:Overrides
+# Does not create @first/@last nodes
+#@+node:ekr.20100219075946.5746:startsString skipString
+def startsString(self,s,i):
+    return g.match(s,i,'"') or g.match(s,i,"'") or g.match(s,i,'<<<')
+
+def skipString (self,s,i):
+    if g.match(s,i,'"') or g.match(s,i,"'"):
+        return g.skip_string(s,i)
+    else:
+        return g.skip_heredoc_string(s,i)
+#@-node:ekr.20100219075946.5746:startsString skipString
+#@+node:ekr.20100219075946.5747:getSigId
+def getSigId (self,ids):
+
+    '''Return the signature's id.
+
+    By default, this is the last id in the ids list.
+
+    For Php, the first id is better.'''
+
+    return ids and ids[1]
+#@-node:ekr.20100219075946.5747:getSigId
+#@-node:ekr.20100219075946.5745:Overrides
+#@-node:ekr.20100219075946.5742:class phpScanner
+#@-node:ekr.20100219075946.5680:Fixed wish-list bug 508108: No methods sub-nodes in PHP class import
 #@-node:ekr.20100212095952.5727:4.7 final projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt

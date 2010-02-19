@@ -3498,11 +3498,11 @@ class pascalScanner (baseScannerClass):
     #@-others
 #@nonl
 #@-node:ekr.20070711104241.3:class pascalScanner
-#@+node:ekr.20070711090052.1:class phpScanner
+#@+node:ekr.20100219075946.5742:class phpScanner
 class phpScanner (baseScannerClass):
 
     #@    @+others
-    #@+node:ekr.20070711090052.2: __init__
+    #@+node:ekr.20100219075946.5743: __init__
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -3516,7 +3516,7 @@ class phpScanner (baseScannerClass):
         self.blockDelim1 = '{'
         self.blockDelim2 = '}'
 
-        self.hasClasses = False
+        self.hasClasses = True # 2010/02/19
         self.hasFunctions = True
 
         self.functionTags = ['function']
@@ -3525,8 +3525,8 @@ class phpScanner (baseScannerClass):
         self.chars = list(string.ascii_letters + string.digits)
         extra = [chr(z) for z in range(127,256)]
         self.chars.extend(extra)
-    #@-node:ekr.20070711090052.2: __init__
-    #@+node:ekr.20070711094850:isPurePHP
+    #@-node:ekr.20100219075946.5743: __init__
+    #@+node:ekr.20100219075946.5744:isPurePHP
     def isPurePHP (self,s):
 
         '''Return True if the file begins with <?php and ends with ?>'''
@@ -3538,10 +3538,10 @@ class phpScanner (baseScannerClass):
             s[2:3] in ('P','p','=','\n','\r',' ','\t') and
             s.endswith('?>'))
 
-    #@-node:ekr.20070711094850:isPurePHP
-    #@+node:ekr.20070711090052.3:Overrides
+    #@-node:ekr.20100219075946.5744:isPurePHP
+    #@+node:ekr.20100219075946.5745:Overrides
     # Does not create @first/@last nodes
-    #@+node:ekr.20070711090807:startsString skipString
+    #@+node:ekr.20100219075946.5746:startsString skipString
     def startsString(self,s,i):
         return g.match(s,i,'"') or g.match(s,i,"'") or g.match(s,i,'<<<')
 
@@ -3550,10 +3550,21 @@ class phpScanner (baseScannerClass):
             return g.skip_string(s,i)
         else:
             return g.skip_heredoc_string(s,i)
-    #@-node:ekr.20070711090807:startsString skipString
-    #@-node:ekr.20070711090052.3:Overrides
+    #@-node:ekr.20100219075946.5746:startsString skipString
+    #@+node:ekr.20100219075946.5747:getSigId
+    def getSigId (self,ids):
+
+        '''Return the signature's id.
+
+        By default, this is the last id in the ids list.
+
+        For Php, the first id is better.'''
+
+        return ids and ids[1]
+    #@-node:ekr.20100219075946.5747:getSigId
+    #@-node:ekr.20100219075946.5745:Overrides
     #@-others
-#@-node:ekr.20070711090052.1:class phpScanner
+#@-node:ekr.20100219075946.5742:class phpScanner
 #@+node:ekr.20070703122141.100:class pythonScanner
 class pythonScanner (baseScannerClass):
 
