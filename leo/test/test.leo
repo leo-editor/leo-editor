@@ -507,6 +507,14 @@
 </v>
 </v>
 <v t="ekr.20100118190802.2000"><vh>@thin ../../pylint-leo.py</vh></v>
+<v t="ekr.20100220190409.2103" a="E"><vh>@@shadow clone-bug-test.py@</vh>
+<v t="ekr.20100220190409.2104"><vh>&lt;&lt; a &gt;&gt;</vh>
+<v t="ekr.20100220190409.2105"><vh>clone</vh></v>
+</v>
+<v t="ekr.20100220190409.2106"><vh>&lt;&lt; b &gt;&gt;</vh>
+<v t="ekr.20100220190409.2105"></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5749,5 +5757,19 @@ import string
     pass
 </t>
 <t tx="ekr.20100205114630.2091"></t>
+<t tx="ekr.20100220190409.2103"># This buglet has been around for a long long time.
+# It's not clear what Leo can do to fix it.
+# In the meantime, don't put clones under two different
+# @others directives :-)
+
+&lt;&lt; A &gt;&gt;
+&lt;&lt; B &gt;&gt;
+@others
+# end</t>
+<t tx="ekr.20100220190409.2104"># Node a
+@others</t>
+<t tx="ekr.20100220190409.2105"># Content (clone)</t>
+<t tx="ekr.20100220190409.2106"># Node b
+@others</t>
 </tnodes>
 </leo_file>
