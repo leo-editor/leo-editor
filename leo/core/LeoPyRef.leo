@@ -87,7 +87,8 @@
 </v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
-<v t="ekr.20100119205347.6015"><vh>@thin ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20100119205347.6015"
+expanded="ekr.20100209160132.5771,ekr.20100221142603.5625,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
@@ -129,7 +130,8 @@
 <v t="ekr.20061031131434"><vh>@thin leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@thin leoMenu.py</vh></v>
 </v>
-<v t="ekr.20080730161153.8"><vh>Test classes</vh>
+<v t="ekr.20080730161153.8"><vh>Testing</vh>
+<v t="ekr.20100221142603.5638"><vh>@thin ../../pylint-leo.py</vh></v>
 <v t="ekr.20080730161153.2"><vh>@thin leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@thin leoDynamicTest.py</vh></v>
 <v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710058010000003071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@thin leoTest.py</vh></v>
@@ -851,21 +853,21 @@ for child in p.children():
         new = child.copy()
 if old and new:
     print(old.b == new.b)
-if old.b != new.b:
-    print('*' * 20)
-    print(len(old.b),len(new.b))
-    old_lines = g.splitLines(old.b)
-    new_lines = g.splitLines(new.b)
-    for i in range(max(len(old_lines),len(new_lines))):
-        if (i &lt; len(old_lines) and i &lt; len(new_lines) and
-            old_lines[i] == new_lines[i]
-        ):
-            pass
-        else:
-            if i &lt; len(old_lines):
-                print('old %2d %s' % (i,repr(old_lines[i])))
-            if i &lt; len(new_lines):
-                print('new %2d %s' % (i,repr(new_lines[i])))</t>
+    if old.b != new.b:
+        print('*' * 20)
+        print(len(old.b),len(new.b))
+        old_lines = g.splitLines(old.b)
+        new_lines = g.splitLines(new.b)
+        for i in range(max(len(old_lines),len(new_lines))):
+            if (i &lt; len(old_lines) and i &lt; len(new_lines) and
+                old_lines[i] == new_lines[i]
+            ):
+                pass
+            else:
+                if i &lt; len(old_lines):
+                    print('old %2d %s' % (i,repr(old_lines[i])))
+                if i &lt; len(new_lines):
+                    print('new %2d %s' % (i,repr(new_lines[i])))</t>
 <t tx="ekr.20100216141722.5647"># The @auto node must be a child of this node
 # for findNodeAnywhere to succeed with Alt-6.
 fn = '../test/at-auto-unit-test.py'
