@@ -1908,6 +1908,40 @@ def configure_tags (self):
         pass
 #@-node:ekr.20090614134853.3703:configure_tags
 #@-node:ekr.20100219082023.3696:Fixed bug in Qt colorizer
+#@+node:ekr.20100220194313.3694:Fixed bug: status line now updated for additional editors
+#@+node:ekr.20081121105001.265:update
+def update (self):
+    if g.app.killed: return
+
+    c = self.c ; body = c.frame.body
+
+    # te is a QTextEdit.
+    # 2010/02/19: Fix bug 525090
+    # An added editor window doesn't display line/col
+    if not hasattr(body.bodyCtrl,'widget'): return
+    te = body.bodyCtrl.widget # was body.widget.widget
+    cr = te.textCursor()
+    bl = cr.block()
+
+    col = cr.columnNumber()
+    row = bl.blockNumber() + 1
+    line = bl.text()
+
+    if col > 0:
+        s2 = line[0:col]        
+        col = g.computeWidth (s2,c.tab_width)
+    fcol = col + c.currentPosition().textOffset()
+
+    # g.trace('fcol',fcol,'te',id(te),g.callers(2))
+    # g.trace('c.frame.body.bodyCtrl',body.bodyCtrl)
+
+    self.put1(
+        "line: %d, col: %d, fcol: %d" % (row,col,fcol))
+    self.lastRow = row
+    self.lastCol = col
+    self.lastFcol = fcol
+#@-node:ekr.20081121105001.265:update
+#@-node:ekr.20100220194313.3694:Fixed bug: status line now updated for additional editors
 #@-node:ekr.20100216023902.3690:Leo 4.7 final projects
 #@-all
 #@nonl
