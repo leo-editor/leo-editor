@@ -7795,7 +7795,7 @@ class searchCommandsClass (baseEditCommandsClass):
 
             'show-find-options':                    self.showFindOptions,
 
-            'toggle-find-collapses_nodes':          self.toggleFindCollapesNodes,
+            'toggle-find-collapses-nodes':          self.toggleFindCollapesNodes,
 
             'toggle-find-ignore-case-option':       self.toggleIgnoreCaseOption,
             'toggle-find-in-body-option':           self.toggleSearchBodyOption,
@@ -7910,7 +7910,6 @@ class searchCommandsClass (baseEditCommandsClass):
         self.getHandler().showFindOptions()
     def toggleFindCollapesNodes(self,event):
         '''Toggle the 'Collapse Nodes' checkbox in the find tab.'''
-        # return self.toggleOption('collapse_nodes')
         c = self.c
         c.sparse_find = not c.sparse_find
         if not g.unitTesting:
