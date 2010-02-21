@@ -3873,8 +3873,11 @@ class leoQtFrame (leoFrame.leoFrame):
 
             c = self.c ; body = c.frame.body
 
-            # QTextEdit
-            te = body.widget.widget
+            # te is a QTextEdit.
+            # 2010/02/19: Fix bug 525090
+            # An added editor window doesn't display line/col
+            if not hasattr(body.bodyCtrl,'widget'): return
+            te = body.bodyCtrl.widget # was body.widget.widget
             cr = te.textCursor()
             bl = cr.block()
 
@@ -3886,6 +3889,10 @@ class leoQtFrame (leoFrame.leoFrame):
                 s2 = line[0:col]        
                 col = g.computeWidth (s2,c.tab_width)
             fcol = col + c.currentPosition().textOffset()
+
+            # g.trace('fcol',fcol,'te',id(te),g.callers(2))
+            # g.trace('c.frame.body.bodyCtrl',body.bodyCtrl)
+
             self.put1(
                 "line: %d, col: %d, fcol: %d" % (row,col,fcol))
             self.lastRow = row

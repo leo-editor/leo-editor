@@ -22530,7 +22530,7 @@ table = (
     (k,'enable_autocompleter','toggle-autocompleter'),
     (k,'enable_calltips','toggle-calltips'),
     (ed,'extendMode','toggle-extend-mode'),
-    (c,'sparse_find','toggle-find-collapses_nodes'),
+    (c,'sparse_find','toggle-find-collapses-nodes'),
     (colorizer,'showInvisibles','toggle-invisibles'),
     (c,'sparse_move','toggle-sparse-move'),
 )
