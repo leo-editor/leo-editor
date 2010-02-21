@@ -678,7 +678,8 @@ class autoCompleterClass:
         '''Cut back to previous prefix.'''
 
         trace = False and not g.unitTesting
-        if trace: g.trace('(autocompleter)',self.prefix,self.theObject,self.prevObjects)
+        if trace: g.trace('(autocompleter)',
+            self.prefix,self.theObject,self.prevObjects)
 
         c = self.c
         if self.prefix:
@@ -3133,8 +3134,9 @@ class keyHandlerClass:
         state = k.getState('getArg')
         keysym = gui.eventKeysym(event)
         if trace: g.trace(
-            'state',state,'keysym',keysym,'stroke',stroke,'escapes',k.getArgEscapes,
-            'completion', state==0 and completion or state!=0 and k.arg_completion)
+            'state',state,'keysym',repr(keysym),'stroke',repr(stroke),
+            'escapes',k.getArgEscapes,
+            'completion',state==0 and completion or state!=0 and k.arg_completion)
         if state == 0:
             k.arg = ''
             #@        << init altX vars >>
@@ -3174,7 +3176,7 @@ class keyHandlerClass:
             if handler: handler(event)
         elif keysym in('Tab','\t'):
             k.doTabCompletion(k.argTabList,k.arg_completion)
-        elif keysym == 'BackSpace':
+        elif keysym in('BackSpace','\b'): # 2010/02/20: Test for \b also.
             k.doBackSpace(k.argTabList,k.arg_completion)
             c.minibufferWantsFocus()
         else:
@@ -4361,25 +4363,23 @@ class keyHandlerClass:
                          return k.tkbindingFromStroke(key)
         return ''
     #@-node:ekr.20061031131434.179:getShortcutForCommand/Name (should return lists)
-    #@+node:ekr.20061031131434.177:k.doBackSpace
+    #@+node:ekr.20061031131434.177:k.doBackSpace (minibuffer)
     # Used by getArg and fullCommand.
 
     def doBackSpace (self,defaultCompletionList,completion=True):
 
         '''Cut back to previous prefix and update prefix.'''
 
+        trace = False and not g.unitTesting
         k = self ; c = k.c ; w = self.widget
-
-        if 0:
-            g.trace('(keyHandler)',g.callers(4))
-            g.trace('completion',completion,
-                len(k.mb_tabListPrefix) > len(k.mb_prefix),
-                repr(k.mb_tabListPrefix),repr(k.mb_prefix))
 
         # Step 1: actually delete the character.
         ins = w.getInsertPoint()
         s = w.getAllText()
-        # g.trace('ins',ins,'prefix',k.mb_prefix)
+
+        if trace: g.trace('ins',ins,'k.mb_prefix',repr(k.mb_prefix),
+            'w',w)
+
         if ins <= len(k.mb_prefix):
             # g.trace('at start')
             return
@@ -4397,7 +4397,7 @@ class keyHandlerClass:
         if not completion: return
         k.mb_tabListPrefix = w.getAllText()
         k.computeCompletionList(defaultCompletionList,backspace=True)
-    #@-node:ekr.20061031131434.177:k.doBackSpace
+    #@-node:ekr.20061031131434.177:k.doBackSpace (minibuffer)
     #@+node:ekr.20061031131434.178:k.doTabCompletion
     # Used by getArg and fullCommand.
 
