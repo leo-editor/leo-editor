@@ -139,6 +139,29 @@ def finishCodePart (self,result,code):
 #@nonl
 #@-node:ekr.20090502071837.75:finishCodePart
 #@-node:ekr.20090502071837.72:handleCodeMode & helper
+#@+node:ekr.20100220204150.5627:@@rst hello.html
+@ @rst-options
+verbose=True
+code_mode=True
+show_doc_parts_as_paragraphs=True
+number_code_lines=True
+write_intermediate_file=True
+@c
+
+#@+node:ekr.20100220204150.5628:Greet the world
+@
+Greet the world, politely
+@c
+
+g.es ("Hello, world")
+
+@
+    Was that polite enough?
+    Indentation.
+@c
+#@nonl
+#@-node:ekr.20100220204150.5628:Greet the world
+#@-node:ekr.20100220204150.5627:@@rst hello.html
 #@-node:ekr.20100220190251.5616:Fix rst bug?
 #@+node:ekr.20100219083854.5616:Simplify i/o
 #@+node:ekr.20100211125418.11612:Revise g.readFileIntoString
