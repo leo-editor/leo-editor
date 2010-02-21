@@ -41,6 +41,105 @@ That is all that it takes to give us a collapsible TOC
 #@nonl
 #@-node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
 #@-node:ekr.20100209114432.5750:Work on docs
+#@+node:ekr.20100220190251.5616:Fix rst bug?
+#@+node:ekr.20100220190251.5617:report
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
+
+The indentation of the second @doc causes the doc part to look like
+a continuation of the code:: directive.
+
+It's not clear whether this bug is worth fixing, and it's not clear whether
+there would be side effects of any potential fix.
+
+The simplest fix appears to be in handleCodeMode.
+#@nonl
+#@-node:ekr.20100220190251.5617:report
+#@+node:ekr.20090502071837.72:handleCodeMode & helper
+def handleCodeMode (self,lines):
+
+    '''Handle the preprocessed body text in code mode as follows:
+
+    - Blank lines are copied after being cleaned.
+    - @ @rst-markup lines get copied as is.
+    - Everything else gets put into a code-block directive.'''
+
+    result = [] ; n = 0 ; code = []
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if (
+            self.isSpecialDocPart(s,'@rst-markup') or (
+                self.getOption('show_doc_parts_as_paragraphs') and
+                self.isSpecialDocPart(s,None)
+            )
+        ):
+            if code:
+                self.finishCodePart(result,code)
+                code = []
+            result.append('')
+            n, lines2 = self.getDocPart(lines,n)
+            # A fix, perhaps dubious, to a bug discussed at
+            # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
+            # lines2 = [z.lstrip() for z in lines2]
+            # g.trace('lines2',lines2)
+            result.extend(lines2)
+        elif not s.strip() and not code:
+            pass # Ignore blank lines before the first code block.
+        elif not code: # Start the code block.
+            result.append('')
+            result.append(self.code_block_string)
+            code.append(s)
+        else: # Continue the code block.
+            code.append(s)
+
+    if code:
+        self.finishCodePart(result,code)
+        code = []
+
+    # Munge the result so as to keep docutils happy.
+    # Don't use self.rstripList: it's not the same.
+    # g.trace(result)
+    result2 = []
+    for z in result:
+        if z == '': result2.append('\n\n')
+        elif not z.rstrip(): pass
+        elif z.endswith('\n\n'): result2.append(z) # Leave alone.
+        else: result2.append('%s\n' % z.rstrip())
+
+    return result2
+#@+node:ekr.20090502071837.73:formatCodeModeLine
+def formatCodeModeLine (self,s,n,numberOption):
+
+    if not s.strip(): s = ''
+
+    if numberOption:
+        return '\t%d: %s' % (n,s)
+    else:
+        return '\t%s' % s
+#@nonl
+#@-node:ekr.20090502071837.73:formatCodeModeLine
+#@+node:ekr.20090502071837.74:rstripList
+def rstripList (self,theList):
+
+    '''Removed trailing blank lines from theList.'''
+
+    s = '\n'.join(theList).rstrip()
+    return s.split('\n')
+#@-node:ekr.20090502071837.74:rstripList
+#@+node:ekr.20090502071837.75:finishCodePart
+def finishCodePart (self,result,code):
+
+    numberOption = self.getOption('number_code_lines')
+    code = self.rstripList(code)
+    i = 0
+    for line in code:
+        i += 1
+        result.append(self.formatCodeModeLine(line,i,numberOption))
+#@nonl
+#@-node:ekr.20090502071837.75:finishCodePart
+#@-node:ekr.20090502071837.72:handleCodeMode & helper
+#@-node:ekr.20100220190251.5616:Fix rst bug?
 #@+node:ekr.20100219083854.5616:Simplify i/o
 #@+node:ekr.20100211125418.11612:Revise g.readFileIntoString
 @nocolor-node

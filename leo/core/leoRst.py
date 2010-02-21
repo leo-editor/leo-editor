@@ -1098,14 +1098,20 @@ class rstCommands:
         while n < len(lines):
             s = lines [n] ; n += 1
             if (
-                self.isSpecialDocPart(s,'@rst-markup') or
-                (self.getOption('show_doc_parts_as_paragraphs') and self.isSpecialDocPart(s,None))
+                self.isSpecialDocPart(s,'@rst-markup') or (
+                    self.getOption('show_doc_parts_as_paragraphs') and
+                    self.isSpecialDocPart(s,None)
+                )
             ):
                 if code:
                     self.finishCodePart(result,code)
                     code = []
                 result.append('')
                 n, lines2 = self.getDocPart(lines,n)
+                # A fix, perhaps dubious, to a bug discussed at
+                # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
+                # lines2 = [z.lstrip() for z in lines2]
+                # g.trace('lines2',lines2)
                 result.extend(lines2)
             elif not s.strip() and not code:
                 pass # Ignore blank lines before the first code block.
@@ -1263,6 +1269,9 @@ class rstCommands:
             result = g.match_word(s,0,'@doc') or g.match_word(s,0,'@')
         else:
             result = False
+
+        # g.trace('kind %s, result %s, s %s' % (
+            # repr(kind),result,repr(s)))
 
         return result
     #@nonl
