@@ -1,17 +1,17 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20100118190802.2000:@thin ../../pylint-leo.py
+#@+node:ekr.20100221142603.5638:@thin ../../pylint-leo.py
 #@@language python
 
 #@<< imports >>
-#@+node:ekr.20100209120215.2106:<< imports >>
+#@+node:ekr.20100221142603.5639:<< imports >>
 import os
 import sys
 from pylint import lint
 
-#@-node:ekr.20100209120215.2106:<< imports >>
+#@-node:ekr.20100221142603.5639:<< imports >>
 #@nl
 #@+others
-#@+node:ekr.20100209120215.2104:getCoreList
+#@+node:ekr.20100221142603.5640:getCoreList
 def getCoreList():
 
     return (
@@ -20,8 +20,8 @@ def getCoreList():
         'leoGlobals','leoGui','leoImport','leoMenu','leoNodes',
         'leoPlugins','leoShadow','leoTangle','leoUndo',
     )
-#@-node:ekr.20100209120215.2104:getCoreList
-#@+node:ekr.20100209115702.2102:getPassList
+#@-node:ekr.20100221142603.5640:getCoreList
+#@+node:ekr.20100221142603.5641:getPassList
 def getPassList():
 
     return (
@@ -46,8 +46,8 @@ def getPassList():
         'testRegisterCommand','todo','trace_gc_plugin','trace_keys','trace_tags',
         'vim','xemacs',
     )
-#@-node:ekr.20100209115702.2102:getPassList
-#@+node:ekr.20100209120215.2105:getPluginsTable
+#@-node:ekr.20100221142603.5641:getPassList
+#@+node:ekr.20100221142603.5642:getPluginsTable
 def getPluginsTable ():
 
     return (
@@ -64,8 +64,8 @@ def getPluginsTable ():
         ('vim',''),
         ('xemacs',''),
     )
-#@-node:ekr.20100209120215.2105:getPluginsTable
-#@+node:ekr.20100209115702.2101:getTkPass
+#@-node:ekr.20100221142603.5642:getPluginsTable
+#@+node:ekr.20100221142603.5643:getTkPass
 def getTkPass():
 
     return (
@@ -85,8 +85,8 @@ def getTkPass():
         'templates','textnode','tkGui','toolbar',
         'xcc_nodes',
     )
-#@-node:ekr.20100209115702.2101:getTkPass
-#@+node:ekr.20100209115702.2103:run
+#@-node:ekr.20100221142603.5643:getTkPass
+#@+node:ekr.20100221142603.5644:run
 def run(theDir,fn,suppress):
     fn = os.path.join('leo',theDir,fn)
     args = ['--rcfile=leo/test/pylint-leo-rc.txt']
@@ -99,10 +99,10 @@ def run(theDir,fn,suppress):
         lint.Run(args)
     else:
         print('file not found:',fn)
-#@-node:ekr.20100209115702.2103:run
+#@-node:ekr.20100221142603.5644:run
 #@-others
 #@<< defines >>
-#@+node:ekr.20100209121055.2107:<< defines >>
+#@+node:ekr.20100221142603.5645:<< defines >>
 coreList = getCoreList()
 externalList = ('ipy_leo','lproto',)
 guiPluginsTable = (
@@ -112,7 +112,7 @@ guiPluginsTable = (
 passList = getPassList()
 pluginsTable = getPluginsTable()
 tkPass = getTkPass()
-#@-node:ekr.20100209121055.2107:<< defines >>
+#@-node:ekr.20100221142603.5645:<< defines >>
 #@nl
 
 recentList = ()
@@ -134,5 +134,5 @@ for table,theDir in tables_table:
     else:
         for fn,suppress in table:
             run(theDir,fn,suppress)
-#@-node:ekr.20100118190802.2000:@thin ../../pylint-leo.py
+#@-node:ekr.20100221142603.5638:@thin ../../pylint-leo.py
 #@-leo
