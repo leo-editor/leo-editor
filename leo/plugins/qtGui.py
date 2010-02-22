@@ -4739,7 +4739,7 @@ class leoQtLog (leoFrame.leoLog):
 
         self.tabWidget = tw = c.frame.top.ui.tabWidget
             # The Qt.TabWidget that holds all the tabs.
-        self.wrap = g.choose(c.config.getBool('log_pane_wraps'),"word","none")
+        self.wrap = g.choose(c.config.getBool('log_pane_wraps'),True,False)
 
         # g.trace('qtLog.__init__',self.tabWidget)
 
@@ -4774,6 +4774,11 @@ class leoQtLog (leoFrame.leoLog):
         # log.selectTab('Log')
         log.createTab('Log')
         logWidget = self.contentsDict.get('Log')
+        logWidget.setWordWrapMode(
+            g.choose(self.wrap,
+                QtGui.QTextOption.WordWrap,
+                QtGui.QTextOption.NoWrap))
+
         for i in range(w.count()):
             if w.tabText(i) == 'Log':
                 w.removeTab(i)
@@ -4892,15 +4897,14 @@ class leoQtLog (leoFrame.leoLog):
 
         # g.trace(repr(color),w)
         if w:
-            if s.endswith('\n'): s = s[:-1]
-            s=s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-            s = s.replace(' ','&nbsp;')
-            if color:
-                s = '<font color="%s">%s</font>' % (color, s)
-            s = s.replace('\n','<br>')
             sb = w.horizontalScrollBar()
             pos = sb.sliderPosition()
-            # g.trace(s)
+            s=s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+            if not self.wrap: # 2010/02/21: Use &nbsp; only when not wrapping!
+                s = s.replace(' ','&nbsp;')
+            s = s.rstrip().replace('\n','<br>')
+            if color:
+                s = '<font color="%s">%s</font>' % (color,s)
             w.append(s)
             w.moveCursor(QtGui.QTextCursor.End)
             sb.setSliderPosition(pos)
@@ -4964,7 +4968,12 @@ class leoQtLog (leoFrame.leoLog):
             contents = leoQTextEditWidget(widget=widget,name='log',c=c)
             widget.leo_log_wrapper = contents # Inject an ivar.
             if trace: g.trace('** creating',tabName,contents,widget,'\n',g.callers(9))
-            widget.setWordWrapMode(QtGui.QTextOption.NoWrap)
+            # widget.setWordWrapMode(QtGui.QTextOption.NoWrap)
+            widget.setWordWrapMode(
+                g.choose(self.wrap,
+                    QtGui.QTextOption.WordWrap,
+                    QtGui.QTextOption.NoWrap))
+
             widget.setReadOnly(False) # Allow edits.
             self.logDict[tabName] = widget
             if tabName == 'Log':

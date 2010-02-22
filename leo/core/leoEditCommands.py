@@ -5415,79 +5415,125 @@ class helpCommandsClass (baseEditCommandsClass):
     #@nonl
     #@-node:ekr.20060417203717:helpForCommand
     #@+node:ekr.20060226131603.1:aproposAutocompletion
+    # @pagewidth 40
+
     def aproposAutocompletion (self,event=None):
 
         '''Prints a discussion of autocompletion.'''
 
         c = self.c ; s = '''
-    This documentation describes both autocompletion and calltips.
 
-    Typing a period when @language python is in effect starts autocompletion. Typing
-    '(' during autocompletion shows the calltip. Typing Return or Control-g
-    (keyboard-quit) exits autocompletion or calltips.
+    This documentation describes both
+    autocompletion and calltips.
 
-    Autocompletion
+    Typing a period when @language python is
+    in effect starts autocompletion. Typing
+    '(' during autocompletion shows the
+    calltip. Typing Return or Control-g
+    (keyboard-quit) exits autocompletion or
+    calltips.
 
-    Autocompletion shows what may follow a period in code. For example, after typing
-    g. Leo will show a list of all the global functions in leoGlobals.py.
-    Autocompletion works much like tab completion in the minibuffer. Unlike the
-    minibuffer, the presently selected completion appears directly in the body
+    === Autocompletion
+
+    Autocompletion shows what may follow a
+    period in code. For example, after
+    typing g. Leo will show a list of all
+    the global functions in leoGlobals.py.
+    Autocompletion works much like tab
+    completion in the minibuffer. Unlike the
+    minibuffer, the presently selected
+    completion appears directly in the body
     pane.
 
-    A leading period brings up 'Autocomplete Modules'. (The period goes away.) You
-    can also get any module by typing its name. If more than 25 items would appear
-    in the Autocompleter tab, Leo shows only the valid starting characters. At this
-    point, typing an exclamation mark shows the complete list. Thereafter, typing
-    further exclamation marks toggles between full and abbreviated modes.
+    A leading period brings up 'Autocomplete
+    Modules'. (The period goes away.) You
+    can also get any module by typing its
+    name. If more than 25 items would appear
+    in the Autocompleter tab, Leo shows only
+    the valid starting characters. At this
+    point, typing an exclamation mark shows
+    the complete list. Thereafter, typing
+    further exclamation marks toggles
+    between full and abbreviated modes.
 
-    If x is a list 'x.!' shows all its elements, and if x is a Python dictionary,
-    'x.!' shows list(x.keys()). For example, 'sys.modules.!' Again, further exclamation
-    marks toggles between full and abbreviated modes.
+    If x is a list 'x.!' shows all its
+    elements, and if x is a Python
+    dictionary, 'x.!' shows list(x.keys()).
+    For example, 'sys.modules.!' Again,
+    further exclamation marks toggles
+    between full and abbreviated modes.
 
-    During autocompletion, typing a question mark shows the docstring for the
-    object. For example: 'g.app?' shows the docstring for g.app. This doesn't work
-    (yet) directly for Python globals, but '__builtin__.f?' does. Example:
-    '__builtin__.pow?' shows the docstring for pow.
+    During autocompletion, typing a question
+    mark shows the docstring for the object.
+    For example: 'g.app?' shows the
+    docstring for g.app. This doesn't work
+    (yet) directly for Python globals, but
+    '__builtin__.f?' does. Example:
+    '__builtin__.pow?' shows the docstring
+    for pow.
 
-    Autocompletion works in the Find tab; you can use <Tab> to cycle through the
-    choices. The 'Completion' tab appears while you are doing this; the Find tab
-    reappears once the completion is finished.
+    Autocompletion works in the Find tab;
+    you can use <Tab> to cycle through the
+    choices. The 'Completion' tab appears
+    while you are doing this; the Find tab
+    reappears once the completion is
+    finished.
 
-    Calltips
+    === Calltips
 
-    Calltips appear after you type an open parenthesis in code. Calltips shows the
-    expected arguments to a function or method. Calltips work for any Python
-    function or method, including Python's global function. Examples:
+    Calltips appear after you type an open
+    parenthesis in code. Calltips shows the
+    expected arguments to a function or
+    method. Calltips work for any Python
+    function or method, including Python's
+    global function. Examples:
 
-    a)  'g.toUnicode('  gives 'g.toUnicode(s, encoding, reportErrors=False'
-    b) 'c.widgetWantsFocusNow' gives 'c.widgetWantsFocusNow(w'
-    c) 'reduce(' gives 'reduce(function, sequence[, initial]) -> value'
+    a) g.toUnicode(
+       gives:
+       g.toUnicode(s,encoding, reportErrors=False
 
-    The calltips appear directly in the text and the argument list is highlighted so
-    you can just type to replace it. The calltips appear also in the status line for
-    reference after you have started to replace the args.
+    b) c.widgetWantsFocusNow
+       gives:
+       c.widgetWantsFocusNow(w
+
+    c) reduce(
+       gives:
+       reduce(function, sequence[,initial]) -> value
+
+    The calltips appear directly in the text
+    and the argument list is highlighted so
+    you can just type to replace it. The
+    calltips appear also in the status line
+    for reference after you have started to
+    replace the args.
 
     Options
 
-    Both autocompletion and calltips are initially enabled or disabled by the
-    enable_autocompleter_initially and enable_calltips_initially settings in
-    leoSettings.leo. You may enable or disable these features at any time with these
-    commands: enable-autocompleter, enable-calltips, disable-autocompleter and
-    disable-calltips.
-    '''
+    Both autocompletion and calltips are
+    initially enabled or disabled by the
+    enable_autocompleter_initially and
+    enable_calltips_initially settings in
+    leoSettings.leo. You may enable or
+    disable these features at any time with
+    these commands: enable-autocompleter,
+    enable-calltips, disable-autocompleter
+    and disable-calltips. '''
 
         if not g.app.unitTesting:
             # Remove indentation from indentation of this function.
             s = g.adjustTripleString(s,c.tab_width)
-            g.es_print('',s)
+            g.es('',s)
     #@-node:ekr.20060226131603.1:aproposAutocompletion
     #@+node:ekr.20060205170335:aproposBindings
+    # @pagewidth 40
+
     def aproposBindings (self,event=None):
 
         '''Prints a discussion of keyboard bindings.'''
 
         c = self.c
         s = '''
+
     A shortcut specification has the form:
 
     command-name = shortcutSpecifier
@@ -5496,8 +5542,10 @@ class helpCommandsClass (baseEditCommandsClass):
 
     command-name ! pane = shortcutSpecifier
 
-    The first form creates a binding for all panes except the minibuffer. The second
-    form creates a binding for one or more panes. The possible values for 'pane'
+    The first form creates a binding for all
+    panes except the minibuffer. The second
+    form creates a binding for one or more
+    panes. The possible values for 'pane'
     are:
 
     pane    bound panes
@@ -5509,9 +5557,12 @@ class helpCommandsClass (baseEditCommandsClass):
     text    body,log
     tree    tree
 
-    You may use None as the specifier. Otherwise, a shortcut specifier consists of a
-    head followed by a tail. The head may be empty, or may be a concatenation of the
-    following: (All entries in each row are equivalent).
+    You may use None as the specifier.
+    Otherwise, a shortcut specifier consists
+    of a head followed by a tail. The head
+    may be empty, or may be a concatenation
+    of the following: (All entries in each
+    row are equivalent).
 
     Shift+ Shift-
     Alt+ or Alt-
@@ -5519,16 +5570,25 @@ class helpCommandsClass (baseEditCommandsClass):
 
     Notes:
 
-    1. The case of plain letters is significant:  a is not A.
+    1. The case of plain letters is significant:
+       a is not A.
 
-    2. The Shift- (or Shift+) prefix can be applied *only* to letters or
-    multi-letter tails. Leo will ignore (with a warning) the shift prefix applied to
-    other single letters, e.g., Ctrl-Shift-(
+    2. The Shift- (or Shift+) prefix can be
+       applied *only* to letters or
+       multi-letter tails. Leo will ignore
+       (with a warning) the shift prefix
+       applied to other single letters,
+       e.g., Ctrl-Shift-(
 
-    3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
-    significant.
+    3. The case of letters prefixed by
+       Ctrl-, Alt-, Key- or Shift- is *not*
+       significant.
 
-    The following table illustrates these rules.  In each row, the first entry is the key (for k.bindingsDict) and the other entries are equivalents that the user may specify in leoSettings.leo:
+    The following table illustrates these
+    rules. In each row, the first entry is
+    the key (for k.bindingsDict) and the
+    other entries are equivalents that the
+    user may specify in leoSettings.leo:
 
     a, Key-a, Key-A
     A, Shift-A
@@ -5543,7 +5603,7 @@ class helpCommandsClass (baseEditCommandsClass):
             # Remove indentation from indentation of this function.
 
         if not g.app.unitTesting:
-            g.es_print('',s)
+            g.es('',s)
     #@-node:ekr.20060205170335:aproposBindings
     #@+node:ekr.20070501092655:aproposDebuggingCommands
     def aproposDebuggingCommands (self,event=None):
@@ -5554,6 +5614,8 @@ class helpCommandsClass (baseEditCommandsClass):
 
         #@    << define s >>
         #@+node:ekr.20070501092655.1:<< define s >>
+        # @pagewidth 40
+
         s = '''
         The following commands are useful for debugging:
 
@@ -5580,7 +5642,7 @@ class helpCommandsClass (baseEditCommandsClass):
         s = g.adjustTripleString(s,c.tab_width)
 
         if not g.app.unitTesting:
-            g.es_print('',s)
+            g.es('',s)
     #@-node:ekr.20070501092655:aproposDebuggingCommands
     #@+node:ekr.20060205170335.1:aproposFindCommands
     def aproposFindCommands (self, event=None):
@@ -5591,93 +5653,214 @@ class helpCommandsClass (baseEditCommandsClass):
 
         #@    << define s >>
         #@+node:ekr.20060209082023.1:<< define s >>
+        #@@pagewidth 40
+
         s = '''
-        Note: all bindings shown are the default bindings for these commands.  You may change any of these bindings using @shortcuts nodes in leoSettings.leo.
+        Note: all bindings shown are the default
+        bindings for these commands. You may
+        change any of these bindings using
+        @shortcuts nodes in leoSettings.leo.
 
-        Settings
+        === Settings
 
-        leoSettings.leo now contains several settings related to the Find tab:
+        leoSettings.leo now contains several
+        settings related to the Find tab:
 
-        - @bool show_only_find_tab_options = True
+        @bool show_only_find_tab_options = True
 
-        When True (recommended), the Find tab does not show the 'Find', 'Change', 'Change, Then Find', 'Find All' and 'Change All' buttons.
+          When True (recommended), the Find tab
+          does not show the 'Find', 'Change',
+          'Change, Then Find', 'Find All' and
+          'Change All' buttons.
 
-        - @bool minibufferSearchesShowFindTab = True
+        @bool minibufferSearchesShowFindTab = True
 
-        When True, Leo shows the Find tab when executing most of the commands discussed below.
+          When True, Leo shows the Find tab when
+          executing most of the commands
+          discussed below.
 
-        Basic find commands
+        === Basic find commands
 
-        - open-find-tab makes the Find tab visible.  The Find tab does **not** need to be visible to execute any search command discussed below.
+        open-find-tab
 
-        - hide-find-tab hides the Find tab, but retains all the present settings.
+          Makes the Find tab visible. The Find
+          tab does **not** need to be visible to
+          execute any search command discussed
+          below.
 
-        - search-with-present-options (Control-F) prompts for a search string.  Typing the <Return> key puts the search string in the Find tab and executes a search based on all the settings in the Find tab. This is a recommended default search command.
+        hide-find-tab
 
-        - show-search-options shows the present search options in the status line.  This command also makes the Find tab visible.
+          Hides the Find tab, but retains all
+          the present settings.
 
-        - find-next (F3) is the same as search-with-present-options, except that it uses the search string in the find-tab.  Recommended as the default 'search again' command.
+        search-with-present-options (Ctrl-F)
 
-        - Similarly, find-previous (F2) repeats the command specified by the Find tab, but in reverse.
+          Prompts for a search string. Typing
+          the <Return> key puts the search
+          string in the Find tab and executes a
+          search based on all the settings in
+          the Find tab. This is a recommended
+          default search command.
 
-        - find-again is the same as find-next if a search pattern is not '<find pattern here>'.
-          Otherwise, find-again is the same as search-with-present-options.
+        show-search-options
 
-        Setting find options
+          Shows the present search options in
+          the status line. This command also
+          makes the Find tab visible.
 
-        - Several minibuffer commands toggle the checkboxes and radio buttons in the Find tab, and thus affect the operation of the search-with-present-options command. Some may want to bind these commands to keys. Others, will prefer to toggle options in a mode.
+        find-next (F3)
 
-        Here are the commands that toggle checkboxes: toggle-find-ignore-case-option, toggle-find-in-body-option, toggle-find-in-headline-option, toggle-find-mark-changes-option, toggle-find-mark-finds-option, toggle-find-regex-option, toggle-find-reverse-option, toggle-find-word-option, and toggle-find-wrap-around-option.
+          Like search-with-present-options,
+          except that it uses the search string
+          in the find-tab. Recommended as the
+          default 'search again' command.
 
-        Here are the commands that set radio buttons: set-find-everywhere, set-find-node-only, and set-find-suboutline-only.
+        find-previous (F2)
 
-        - enter-find-options-mode (Ctrl-Shift-F) enters a mode in which you may change all checkboxes and radio buttons in the Find tab with plain keys.  As always, you can use the mode-help (Tab) command to see a list of key bindings in effect for the mode.
+          Repeats the command specified by the
+          Find tab, but in reverse.
 
-        Search commands that set options as a side effect
+        find-again
 
-        The following commands set an option in the Find tab, then work exactly like the search-with-present-options command.
+          Like find-next if a search pattern is
+          not '<find pattern here>'. Otherwise,
+          like search-with-present-options.
 
-        - search-backward and search-forward set the 'Whole Word' checkbox to False.
+        === Setting find options
 
-        - word-search-backward and word-search-forward set the 'Whole Word' checkbox to True.
+        Several minibuffer commands toggle the
+        checkboxes and radio buttons in the Find
+        tab, and thus affect the operation of
+        the search-with-present-options command.
+        You may bind these commands to keys or
+        toggle these options in a mode.
 
-        - re-search-forward and re-search-backward set the 'Regexp' checkbox to True.
+        These commands toggle checkboxes:
 
-        Find all commands
+        toggle-find-ignore-case-option
+        toggle-find-in-body-option
+        toggle-find-in-headline-option
+        toggle-find-mark-changes-option
+        toggle-find-mark-finds-option
+        toggle-find-regex-option
+        toggle-find-reverse-option
+        toggle-find-word-option
+        toggle-find-wrap-around-option
 
-        - find-all prints all matches in the log pane.
+        These commands set radio buttons:
 
-        - clone-find-all replaces the previous 'Clone Find' checkbox.  It prints all matches in the log pane, and creates a node at the beginning of the outline containing clones of all nodes containing the 'find' string.  Only one clone is made of each node, regardless of how many clones the node has, or of how many matches are found in each node.
+        set-find-everywhere,
+        set-find-node-only, and
+        set-find-suboutline-only.
 
-        Note: the radio buttons in the Find tab (Entire Outline, Suboutline Only and Node only) control how much of the outline is affected by the find-all and clone-find-all commands.
+        enter-find-options-mode (Ctrl-Shift-F)
 
-        Search and replace commands
+        enters a mode in which you may change
+        all checkboxes and radio buttons in the
+        Find tab with plain keys. As always, you
+        can use the mode-help (Tab) command to
+        see a list of key bindings in effect for
+        the mode.
 
-        - replace-string prompts for a search string.  Type <Return> to end the search string.  The command will then prompt for the replacement string.  Typing a second <Return> key will place both strings in the Find tab and executes a **find** command, that is, search-with-present-options.
+        === Search commands with side effects
 
-        So the only difference between replace-string and search-with-present-options is that replace-string has the side effect of setting 'change' string in the Find tab.  However, this is an extremely useful side effect, because of the following commands...
+        The following commands set an option in
+        the Find tab, then work exactly like the
+        search-with-present-options command.
 
-        - change (Ctrl-=) replaces the selected text with the 'change' text in the Find tab.
+        - search-backward and search-forward set
+          the 'Whole Word' checkbox to False.
 
-        - change-then-find (Ctrl--) replaces the selected text with the 'change' text in the Find tab, then executes the find command again.
+        - word-search-backward and
+          word-search-forward set the 'Whole
+          Word' checkbox to True.
 
-        find-next, change and change-then-find can simulate any kind of query-replace command.  **Important**: Leo presently has separate query-replace and query-replace-regex commands, but they are buggy and 'under-powered'.  Fixing these commands has low priority.
+        - re-search-forward and re-search-backward
+          set the 'Regexp' checkbox to True.
 
-        - change-all changes all occurrences of the 'find' text with the 'change' text.  Important: the radio buttons in the Find tab (Entire Outline, Suboutline Only and Node only) control how much of the outline is affected by this command.
+        === Find all commands
 
-        Incremental search commands
+        find-all
 
-        Leo's incremental search commands are completely separate from Leo's legacy search commands.  At present, incremental search commands do not cross node boundaries: they work only in the body text of single node.
+          Prints all matches in the log pane.
 
-        Eventually, the incremental commands will maintain a list of previous matches.  This allows for
+        clone-find-all
 
-        a) support for backspace and
-        b) an incremental-search-again command.
+          Replaces the previous 'Clone Find'
+          checkbox. It prints all matches in the
+          log pane, and creates a node at the
+          beginning of the outline containing
+          clones of all nodes containing the
+          'find' string. Only one clone is made
+          of each node, regardless of how many
+          clones the node has, or of how many
+          matches are found in each node.
 
-        Furthermore, this list makes it easy to detect the end of a wrapped incremental search.
+        Note: the radio buttons in the Find tab
+        (Entire Outline, Suboutline Only and
+        Node only) control how much of the
+        outline is affected by the find-all and
+        clone-find-all commands.
 
-        Here is the list of incremental find commands: isearch-backward, isearch-backward-regexp, isearch-forward and
-        isearch-forward-regexp.'''
+        === Search and replace commands
+
+        replace-string
+
+          Prompts for a search string. Type
+          <Return> to end the search string. The
+          command will then prompt for the
+          replacement string. Typing a second
+          <Return> key will place both strings
+          in the Find tab and executes a
+          **find** command, that is,
+          search-with-present-options.
+
+        So the only difference between
+        replace-string and
+        search-with-present-options is that
+        replace-string has the side effect of
+        setting 'change' string in the Find tab.
+        However, this is an extremely useful
+        side effect, because of the following
+        commands...
+
+        change (Ctrl-=)
+
+          Replaces the selected text with the
+          'change' text in the Find tab.
+
+        change-then-find (Ctrl--)
+
+          Replaces the selected text with the
+          'change' text in the Find tab, then
+          executes the find command again.
+
+        find-next, change and change-then-find
+        can simulate any kind of query-replace
+        command.
+
+        change-all
+
+          Changes all occurrences of the 'find'
+          text with the 'change' text.
+          Important: the radio buttons in the
+          Find tab (Entire Outline, Suboutline
+          Only and Node only) control how much
+          of the outline is affected by this
+          command.
+
+        === Incremental search commands
+
+        Here are Leo's incremental find commands:
+
+        isearch-backward (Alt-R)
+        isearch-backward-regexp
+        isearch-forward (Alt-S)
+        isearch-forward-regexp
+
+        You may use backspace to backtrack. To
+        repeat an incremental search, type the
+        shortcut for that command again.'''
         #@-node:ekr.20060209082023.1:<< define s >>
         #@nl
 
@@ -5685,7 +5868,7 @@ class helpCommandsClass (baseEditCommandsClass):
         s = g.adjustTripleString(s,c.tab_width)
 
         if not g.app.unitTesting:
-            g.es_print('',s)
+            g.es('',s)
     #@-node:ekr.20060205170335.1:aproposFindCommands
     #@+node:ekr.20060602154458:pythonHelp
     def pythonHelp (self,event=None):
