@@ -2778,7 +2778,7 @@ class leoQtBody (leoFrame.leoBody):
 
         c = self.c ; d = self.editorWidgets
         w = c.frame.body.bodyCtrl
-        values = d.values()
+        values = list(d.values())
         if len(values) > 1:
             i = values.index(w) + 1
             if i == len(values): i = 0
@@ -2838,7 +2838,7 @@ class leoQtBody (leoFrame.leoBody):
 
         trace = False and not g.unitTesting
         c = self.c ; d = self.editorWidgets
-        values = d.values()
+        values = list(d.values())
 
         # First, try to match both the chapter and position.
         if p:
