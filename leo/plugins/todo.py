@@ -122,7 +122,16 @@ if g.app.gui.guiName() == "qt":
                 "butPri3"]:
 
                 w = getattr(u, but)
-                pri, ok = w.property('priority').toInt()
+
+                # w.property() seems to give QVariant in python 2.x and int in 3.x!?
+                try:
+                    pri = int(w.property('priority'))
+                except (TypeError, ValueError):
+                    try:
+                        pri, ok = w.property('priority').toInt()
+                    except (TypeError, ValueError):
+                        pri = -1
+
                 def setter(pri=pri): o.setPri(pri)
                 self.connect(w, QtCore.SIGNAL("clicked()"), setter)
 
@@ -417,7 +426,7 @@ class todoController:
         ''' Remove our dict from the node'''
 
         if (hasattr(node,"unknownAttributes" )
-            and node.unknownAttributes.has_key(udict)):
+            and udict in node.unknownAttributes):
 
             del node.unknownAttributes[udict]
     #@-node:tbrown.20090119215428.20:delUD
@@ -428,7 +437,7 @@ class todoController:
 
         return (
             hasattr(node,"unknownAttributes") and
-            node.unknownAttributes.has_key(udict) and
+            udict in node.unknownAttributes and
             type(node.unknownAttributes.get(udict)) == type({}) # EKR
         )
     #@nonl
@@ -438,9 +447,9 @@ class todoController:
         "new attrbiute getter"
 
         if (not hasattr(node,'unknownAttributes') or
-            not node.unknownAttributes.has_key("annotate") or
+            "annotate" not in node.unknownAttributes or
             not type(node.unknownAttributes["annotate"]) == type({}) or
-            not node.unknownAttributes["annotate"].has_key(attrib)):
+            attrib not in node.unknownAttributes["annotate"]):
 
             if attrib == "priority":
                 return 9999
@@ -465,7 +474,7 @@ class todoController:
         isDefault = self.testDefault(attrib, val)
 
         if (not hasattr(node,'unknownAttributes') or
-            not node.unknownAttributes.has_key("annotate") or
+            "annotate" not in node.unknownAttributes or
             type(node.unknownAttributes["annotate"]) != type({})):
             # dictionary doesn't exist
 
@@ -476,7 +485,7 @@ class todoController:
                 node.unknownAttributes = {}
                 node.unknownAttributes["annotate"] = {}
             else:  # our private dictionary isn't present
-                if (not node.unknownAttributes.has_key("annotate") or
+                if ("annotate" not in node.unknownAttributes or
                     type(node.unknownAttributes["annotate"]) != type({})):
                     node.unknownAttributes["annotate"] = {}
 
@@ -496,11 +505,11 @@ class todoController:
 
         if (dictOk or
             hasattr(node,'unknownAttributes') and
-            node.unknownAttributes.has_key("annotate") and
+            "annotate" in node.unknownAttributes and
             type(node.unknownAttributes["annotate"]) == type({})):
 
             isDefault = True
-            for ky, vl in node.unknownAttributes["annotate"].iteritems():
+            for ky, vl in node.unknownAttributes["annotate"].items():
 
                 if not self.testDefault(ky, vl):
                     isDefault = False
@@ -516,7 +525,7 @@ class todoController:
     #@+node:tbrown.20090119215428.26:safe_del
     def safe_del(self, d, k):
         "delete a key from a dict. if present"
-        if d.has_key(k): del d[k]
+        if k in d: del d[k]
     #@nonl
     #@-node:tbrown.20090119215428.26:safe_del
     #@-node:tbrown.20090119215428.19:attributes...
@@ -754,24 +763,20 @@ class todoController:
 
         return False
     #@-node:tbrown.20090119215428.42:find_todo
-    #@+node:tbrown.20090119215428.43:pricmp
-    def pricmp(self, a, b):
-        """cmp function for sorting by priority, a and b are (headstring,v)"""
+    #@+node:tbrown.20090119215428.43:prikey
+    def prikey(self, v):
+        """key function for sorting by priority"""
         # getat returns 9999 for nodes without priority, so you'll only get -1
         # if a[1] is not a node.  Or even an object.
 
         try:
-            pa = int(self.getat(a[1], 'priority'))
-        except:
+            pa = int(self.getat(v, 'priority'))
+        except ValueError:
             pa = -1
-        try:
-            pb = int(self.getat(b[1], 'priority'))
-        except:
-            pb = -1
 
-        return cmp(pa,pb)
+        return pa
     #@nonl
-    #@-node:tbrown.20090119215428.43:pricmp
+    #@-node:tbrown.20090119215428.43:prikey
     #@+node:tbrown.20090119215428.44:priority_clear
     @redrawer
     def priority_clear(self,v=None):
@@ -787,7 +792,7 @@ class todoController:
         if p is None:
             p = self.c.currentPosition()
         self.c.selectPosition(p)
-        self.c.sortSiblings(cmp=self.pricmp)
+        self.c.sortSiblings(key=self.prikey)
     #@nonl
     #@-node:tbrown.20090119215428.45:priSort
     #@+node:tbrown.20090119215428.46:reclassify
@@ -872,7 +877,7 @@ class todoController:
                 pris[pri] = 1
             else:
                 pris[pri] += 1
-        pris = sorted([(k,v) for k,v in pris.iteritems()]) 
+        pris = sorted([(k,v) for k,v in pris.items()]) 
         for pri in pris:
             if pri[0] in self.priorities:
                 g.es('%s\t%d\t%s' % (self.priorities[pri[0]]['short'], pri[1],
