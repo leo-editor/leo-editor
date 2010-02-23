@@ -9,11 +9,11 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20100223062617.5373"><vh>@chapters</vh></v>
-<v t="ekr.20100223062617.5372"><vh>NewHeadline</vh></v>
+<v t="ekr.20100223072438.5373"><vh>@chapters</vh></v>
+<v t="ekr.20100223072438.5372"><vh>NewHeadline</vh></v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20100223062617.5372"></t>
-<t tx="ekr.20100223062617.5373"></t>
+<t tx="ekr.20100223072438.5372"></t>
+<t tx="ekr.20100223072438.5373"></t>
 </tnodes>
 </leo_file>

@@ -742,7 +742,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20090703080553.5000"><vh>@suite run all doctests</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
@@ -833,7 +833,7 @@
 <v t="ekr.20100205230621.5383"><vh>@test leoTest.checkFileSyntax</vh></v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 </v>
-<v t="ekr.20050208051418"><vh>Unicode tests</vh>
+<v t="ekr.20050208051418" a="E"><vh>Unicode tests</vh>
 <v t="ekr.20050206201145"><vh>@test % operator with unicode</vh></v>
 <v t="ekr.20050208051854"><vh>@test atFile.printError</vh></v>
 <v t="ekr.20050208051418.1"><vh>@test can't open message in g.openWithFileName</vh></v>
@@ -1235,7 +1235,7 @@
 <v t="ekr.20070611105728"><vh>@test illegal clone demote</vh></v>
 <v t="ekr.20071113201833"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194216"><vh>leoConfig</vh>
+<v t="ekr.20071113194216" a="E"><vh>leoConfig</vh>
 <v t="ekr.20060325071703.2"><vh>@@test ifgui</vh></v>
 <v t="ekr.20100211110729.5389"><vh>@test g.app.config.writeRecentFilesFileHelper</vh></v>
 <v t="ekr.20050203084930.1"><vh>@test global settings</vh></v>
@@ -22810,6 +22810,7 @@ c.close()
 assert g.os_path_exists(fn)
 </t>
 <t tx="ekr.20100211110729.5389">import os
+#fn = g.u('ффф.leo')
 fn = g.u('ффф.leo')
 g.app.config.writeRecentFilesFileHelper(fn)
 assert g.os_path_exists(fn)
