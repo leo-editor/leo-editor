@@ -509,8 +509,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         c = self.c
         if not p: p = c.p
 
-        ### g.doHook("icondclick1",c=c,p=p,v=p,event=event)
-
         if not g.doHook("icondclick1",c=c,p=p,v=p,event=event):
             self.endEditLabel()
             self.OnIconDoubleClick(p) # Call the method in the base class.
@@ -712,106 +710,22 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.47:createPopupMenu
     def createPopupMenu (self,event):
 
-        c = self.c ; frame = c.frame
+        '''This might be a placeholder for plugins.  Or not :-)'''
 
-        # self.popupMenu = menu = Qt.Menu(g.app.root, tearoff=0)
-
-        # # Add the Open With entries if they exist.
-        # if g.app.openWithTable:
-            # frame.menu.createOpenWithMenuItemsFromTable(menu,g.app.openWithTable)
-            # table = (("-",None,None),)
-            # frame.menu.createMenuEntries(menu,table)
-
-        #@    << Create the menu table >>
-        #@+node:ekr.20090124174652.48:<< Create the menu table >>
-        # table = (
-            # ("&Read @file Nodes",c.readAtFileNodes),
-            # ("&Write @file Nodes",c.fileCommands.writeAtFileNodes),
-            # ("-",None),
-            # ("&Tangle",c.tangle),
-            # ("&Untangle",c.untangle),
-            # ("-",None),
-            # ("Toggle Angle &Brackets",c.toggleAngleBrackets),
-            # ("-",None),
-            # ("Cut Node",c.cutOutline),
-            # ("Copy Node",c.copyOutline),
-            # ("&Paste Node",c.pasteOutline),
-            # ("&Delete Node",c.deleteOutline),
-            # ("-",None),
-            # ("&Insert Node",c.insertHeadline),
-            # ("&Clone Node",c.clone),
-            # ("Sort C&hildren",c.sortChildren),
-            # ("&Sort Siblings",c.sortSiblings),
-            # ("-",None),
-            # ("Contract Parent",c.contractParent),
-        # )
-        #@-node:ekr.20090124174652.48:<< Create the menu table >>
-        #@nl
-
-        # # New in 4.4.  There is no need for a dontBind argument because
-        # # Bindings from tables are ignored.
-        # frame.menu.createMenuEntries(menu,table)
+    #@nonl
     #@-node:ekr.20090124174652.47:createPopupMenu
     #@+node:ekr.20090124174652.49:enablePopupMenuItems
     def enablePopupMenuItems (self,v,event):
 
         """Enable and disable items in the popup menu."""
 
-        c = self.c 
 
-        # menu = self.popupMenu
-
-        #@    << set isAtRoot and isAtFile if v's tree contains @root or @file nodes >>
-        #@+node:ekr.20090124174652.50:<< set isAtRoot and isAtFile if v's tree contains @root or @file nodes >>
-        # isAtFile = False
-        # isAtRoot = False
-
-        # for v2 in v.self_and_subtree():
-            # if isAtFile and isAtRoot:
-                # break
-            # if (v2.isAtFileNode() or
-                # v2.isAtAsisFileNode() or
-                # v2.isAtNoSentFileNode()
-            # ):
-                # isAtFile = True
-
-            # isRoot,junk = g.is_special(v2.bodyString(),0,"@root")
-            # if isRoot:
-                # isAtRoot = True
-        #@-node:ekr.20090124174652.50:<< set isAtRoot and isAtFile if v's tree contains @root or @file nodes >>
-        #@nl
-        # isAtFile = g.choose(isAtFile,1,0)
-        # isAtRoot = g.choose(isAtRoot,1,0)
-        # canContract = v.parent() != None
-        # canContract = g.choose(canContract,1,0)
-
-        # enable = self.frame.menu.enableMenu
-
-        # for name in ("Read @file Nodes", "Write @file Nodes"):
-            # enable(menu,name,isAtFile)
-        # for name in ("Tangle", "Untangle"):
-            # enable(menu,name,isAtRoot)
-
-        # enable(menu,"Cut Node",c.canCutOutline())
-        # enable(menu,"Delete Node",c.canDeleteHeadline())
-        # enable(menu,"Paste Node",c.canPasteOutline())
-        # enable(menu,"Sort Children",c.canSortChildren())
-        # enable(menu,"Sort Siblings",c.canSortSiblings())
-        # enable(menu,"Contract Parent",c.canContractParent())
+    #@nonl
     #@-node:ekr.20090124174652.49:enablePopupMenuItems
     #@+node:ekr.20090124174652.51:showPopupMenu
     def showPopupMenu (self,event):
 
         """Show a popup menu."""
-
-        # c = self.c ; menu = self.popupMenu
-
-        # g.app.gui.postPopupMenu(c, menu, event.x_root, event.y_root)
-
-        # self.popupMenu = None
-
-        # # Set the focus immediately so we know when we lose it.
-        # #c.widgetWantsFocus(menu)
     #@-node:ekr.20090124174652.51:showPopupMenu
     #@-node:ekr.20090124174652.45:tree.OnPopup & allies (nativeTree)
     #@-node:ekr.20090124174652.29:Event handlers... (nativeTree)
@@ -1249,24 +1163,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@-node:ekr.20090124174652.78:Widget-dependent helpers
     #@+node:ekr.20090124174652.62:Widget-independent helpers
     #@+node:ekr.20090124174652.63:Associating items and positions
-    #@@nocolor-node
-    #@+at
-    # 
-    # The old versions of item2position and position2item fail spectacularly
-    # in the presence of hoists.  In theory, it would be possible to fix them,
-    # bug the code would be complex.  So now we just remember positions.
-    # 
-    # Old notes::
-    # 
-    # item2position and position2item allow the drawing code to avoid storing 
-    # any
-    # positions, a crucial simplification.
-    # 
-    # Without the burden of keeping position up-to-date, or worse, 
-    # recalculating them
-    # all whenever the outline changes, the tree code becomes straightforward.
-    #@-at
-    #@nonl
     #@+node:ekr.20090124174652.64:item dict getters
     def itemHash(self,item):
         return '%s at %s' % (repr(item),str(id(item)))

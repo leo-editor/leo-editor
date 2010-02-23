@@ -38,7 +38,6 @@ import os
 import re # For colorizer
 import string
 import sys
-# import types
 
 try:
     # import PyQt4.Qt as Qt # Loads all modules of Qt.
@@ -139,7 +138,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         self.widget = widget
         self.c = c or self.widget.leo_c
 
-        # g.trace('leoQtBaseTextWidget',name) # widget,g.callers(5))
+        # g.trace('leoQtBaseTextWidget',name)
 
         # Init the base class.
         leoFrame.baseTextWidget.__init__(
@@ -611,10 +610,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@+node:ekr.20081121105001.543: Must be overridden in subclasses
     # These methods avoid calls to setAllText.
 
-    # Allow the base-class method for headlines.
-    # def delete(self,i,j=None):              self.oops()
-    # def insert(self,i,s):                   self.oops()
-
     def getAllText(self):                   self.oops()
     def getInsertPoint(self):               self.oops()
     def getSelectionRange(self,sort=True):  self.oops()
@@ -688,7 +683,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         if w.hasSelectedText():
             i = w.selectionStart()
             s = w.selectedText()
-            s = g.u(s) ### (s)
+            s = g.u(s)
             j = i + len(s)
         else:
             i = j = w.cursorPosition()
@@ -902,7 +897,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             if i == old_i and j == old_j:
                 # Work around an apparent bug in cursor.movePosition.
                 cursor.removeSelectedText()
-                # w.setTextCursor(cursor) # Has no effect.
             elif i == j:
                 pass
             else:
@@ -1127,7 +1121,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         try:
             self.changingText = True # Disable onTextChanged
             colorizer.changingText = True
-            # g.trace(c.p.h,new_p and new_p.h) #g.callers(4))
             if w.htmlFlag and new_p and new_p.h.startswith('@html '):
                 w.setReadOnly(False)
                 w.setHtml(s)
@@ -2620,13 +2613,11 @@ class leoQtBody (leoFrame.leoBody):
     def setYScrollPosition (self,i):    return self.widget.setYScrollPosition(i)
 
     # Part 2: corresponding to mustBeDefinedInBaseClass.
-    # All three new: 2009/7/8
     def clipboard_append(self,s):   return self.widget.clipboard_append(s)
     def clipboard_clear(self):      return self.widget.clipboard_append()
     def onChar (self, event):       return self.widget.onChar(event)
 
     # Part 3: do-nothings in mayBeDefinedInSubclasses.
-
     def bind (self,kind,*args,**keys):          return self.widget.bind(kind,*args,**keys)
     def event_generate(self,stroke):            pass
     def getWidth (self):                        return 0
@@ -2694,15 +2685,6 @@ class leoQtBody (leoFrame.leoBody):
     def packEditorLabelWidget (self,w):
 
         '''Create a qt label widget.'''
-
-        pass # Not needed.
-
-        # if not hasattr(w,'leo_label') or not w.leo_label:
-            # # g.trace('w.leo_frame',id(w.leo_frame))
-            # w.pack_forget()
-            # w.leo_label = Tk.Label(w.leo_frame)
-            # w.leo_label.pack(side='top')
-            # w.pack(expand=1,fill='both')
     #@-node:ekr.20081121105001.214:packEditorLabelWidget
     #@+node:ekr.20081121105001.215:entries
     #@+node:ekr.20081121105001.216:addEditor & helper (qtBody)
@@ -2748,7 +2730,6 @@ class leoQtBody (leoFrame.leoBody):
 
         # Switch editors.
         c.frame.body.bodyCtrl = wrapper
-        ##### self.updateInjectedIvars(w,p)
         self.selectLabel(wrapper)
         self.selectEditor(wrapper)
         self.updateEditors()
@@ -3859,13 +3840,7 @@ class leoQtFrame (leoFrame.leoFrame):
             self.put_helper(s,self.textWidget1)
 
         def put_helper(self,s,w):
-            # w.setEnabled(True)
-            if 0: ### no longer needed???
-                if sys.platform.startswith('linux'):
-                    # Work around an apparent Qt bug.
-                    s = g.toEncodedString(s,'ascii',reportErrors=False)
             w.setText(s)
-            # w.setEnabled(False)
         #@-node:ekr.20081121105001.264:clear, get & put/1
         #@+node:ekr.20081121105001.265:update
         def update (self):
@@ -4173,19 +4148,8 @@ class leoQtFrame (leoFrame.leoFrame):
     #@+node:ekr.20081121105001.284:setTabWidth (qtFrame)
     def setTabWidth (self, w):
 
-        return
+        pass
 
-        # try: # This can fail when called from scripts
-            # # Use the present font for computations.
-            # font = self.body.bodyCtrl.cget("font") # 2007/10/27
-            # root = g.app.root # 4/3/03: must specify root so idle window will work properly.
-            # font = tkFont.Font(root=root,font=font)
-            # tabw = font.measure(" " * abs(w)) # 7/2/02
-            # self.body.bodyCtrl.configure(tabs=tabw)
-            # self.tab_width = w
-            # # g.trace(w,tabw)
-        # except:
-            # g.es_exception()
     #@-node:ekr.20081121105001.284:setTabWidth (qtFrame)
     #@+node:ekr.20081121105001.285:setWrap (qtFrame)
     def setWrap (self,p):
@@ -4372,82 +4336,104 @@ class leoQtFrame (leoFrame.leoFrame):
 
         '''Contract the selected pane.'''
 
-        # f = self ; c = f.c
-        # w = c.get_requested_focus()
-        # wname = c.widget_name(w)
+        f = self ; c = f.c
 
-        # # g.trace(wname)
-        # if not w: return
+        w = c.get_requested_focus() or g.app.gui.get_focus(c)
+        wname = c.widget_name(w)
 
-        # if wname.startswith('body'):
-            # f.contractBodyPane()
-        # elif wname.startswith('log'):
-            # f.contractLogPane()
-        # elif wname.startswith('head') or wname.startswith('canvas'):
-            # f.contractOutlinePane()
+        # g.trace(wname)
+        if not w: return
+
+        if wname.startswith('body'):
+            f.contractBodyPane()
+            c.bodyWantsFocusNow()
+        elif wname.startswith('log'):
+            f.contractLogPane()
+            c.logWantsFocusNow()
+        else:
+            for z in ('head','canvas','tree'):
+                if wname.startswith(z):
+                    f.contractOutlinePane()
+                    c.treeWantsFocusNow()
+                    break
     #@-node:ekr.20081121105001.298:contractPane
     #@+node:ekr.20081121105001.299:expandPane
     def expandPane (self,event=None):
 
         '''Expand the selected pane.'''
 
-        # f = self ; c = f.c
+        f = self ; c = f.c
 
-        # w = c.get_requested_focus()
-        # wname = c.widget_name(w)
+        w = c.get_requested_focus() or g.app.gui.get_focus(c)
+        wname = c.widget_name(w)
 
-        # # g.trace(wname)
-        # if not w: return
+        # g.trace(wname)
+        if not w: return
 
-        # if wname.startswith('body'):
-            # f.expandBodyPane()
-        # elif wname.startswith('log'):
-            # f.expandLogPane()
-        # elif wname.startswith('head') or wname.startswith('canvas'):
-            # f.expandOutlinePane()
+        if wname.startswith('body'):
+            f.expandBodyPane()
+            c.bodyWantsFocusNow()
+        elif wname.startswith('log'):
+            f.expandLogPane()
+            c.logWantsFocusNow()
+        else:
+            for z in ('head','canvas','tree'):
+                if wname.startswith(z):
+                    f.expandOutlinePane()
+                    c.treeWantsFocusNow()
+                    break
     #@-node:ekr.20081121105001.299:expandPane
     #@+node:ekr.20081121105001.300:fullyExpandPane
     def fullyExpandPane (self,event=None):
 
         '''Fully expand the selected pane.'''
 
-        # f = self ; c = f.c
+        f = self ; c = f.c
 
-        # w = c.get_requested_focus()
-        # wname = c.widget_name(w)
+        w = c.get_requested_focus() or g.app.gui.get_focus(c)
+        wname = c.widget_name(w)
 
-        # # g.trace(wname)
-        # if not w: return
+        # g.trace(wname)
+        if not w: return
 
-        # if wname.startswith('body'):
-            # f.fullyExpandBodyPane()
-        # elif wname.startswith('log'):
-            # f.fullyExpandLogPane()
-        # elif wname.startswith('head') or wname.startswith('canvas'):
-            # f.fullyExpandOutlinePane()
+        if wname.startswith('body'):
+            f.fullyExpandBodyPane()
+            c.treeWantsFocusNow()
+        elif wname.startswith('log'):
+            f.fullyExpandLogPane()
+            c.bodyWantsFocusNow()
+        else:
+            for z in ('head','canvas','tree'):
+                if wname.startswith(z):
+                    f.fullyExpandOutlinePane()
+                    c.bodyWantsFocusNow()
+                    break
     #@-node:ekr.20081121105001.300:fullyExpandPane
     #@+node:ekr.20081121105001.301:hidePane
     def hidePane (self,event=None):
 
         '''Completely contract the selected pane.'''
 
-        # f = self ; c = f.c
+        f = self ; c = f.c
 
-        # w = c.get_requested_focus()
-        # wname = c.widget_name(w)
+        w = c.get_requested_focus() or g.app.gui.get_focus(c)
+        wname = c.widget_name(w)
 
         # g.trace(wname)
-        # if not w: return
+        if not w: return
 
-        # if wname.startswith('body'):
-            # f.hideBodyPane()
-            # c.treeWantsFocusNow()
-        # elif wname.startswith('log'):
-            # f.hideLogPane()
-            # c.bodyWantsFocusNow()
-        # elif wname.startswith('head') or wname.startswith('canvas'):
-            # f.hideOutlinePane()
-            # c.bodyWantsFocusNow()
+        if wname.startswith('body'):
+            f.hideBodyPane()
+            c.treeWantsFocusNow()
+        elif wname.startswith('log'):
+            f.hideLogPane()
+            c.bodyWantsFocusNow()
+        else:
+            for z in ('head','canvas','tree'):
+                if wname.startswith(z):
+                    f.hideOutlinePane()
+                    c.bodyWantsFocusNow()
+                    break
     #@-node:ekr.20081121105001.301:hidePane
     #@+node:ekr.20081121105001.302:expand/contract/hide...Pane
     #@+at 
@@ -4466,7 +4452,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
     def contractLogPane (self,event=None):
         '''Contract the log pane.'''
-        f = self ; r = min(1.0,f.ratio+0.1)
+        f = self ; r = min(1.0,f.secondary_ratio+0.1) # 2010/02/23: was f.ratio
         f.divideLeoSplitter(not f.splitVerticalFlag,r)
 
     def contractOutlinePane (self,event=None):
@@ -4480,7 +4466,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
     def expandLogPane(self,event=None):
         '''Expand the log pane.'''
-        f = self ; r = max(0.0,f.ratio-0.1)
+        f = self ; r = max(0.0,f.secondary_ratio-0.1) # 2010/02/23: was f.ratio
         f.divideLeoSplitter(not f.splitVerticalFlag,r)
 
     def expandOutlinePane (self,event=None):
@@ -4639,40 +4625,14 @@ class leoQtFrame (leoFrame.leoFrame):
 
             if answer == "yes":
                 try:
-                    if 0: # Download directly.  (showProgressBar needs a lot of work)
-                        url = "http://umn.dl.sourceforge.net/sourceforge/leo/sbooks.chm"
-                        import urllib
-                        self.scale = None
-                        urllib.urlretrieve(url,theFile,self.showProgressBar)
-                        if self.scale:
-                            self.scale.destroy()
-                            self.scale = None
-                    else:
-                        url = "http://prdownloads.sourceforge.net/leo/sbooks.chm?download"
-                        import webbrowser
-                        os.chdir(g.app.loadDir)
-                        webbrowser.open_new(url)
+                    url = "http://prdownloads.sourceforge.net/leo/sbooks.chm?download"
+                    import webbrowser
+                    os.chdir(g.app.loadDir)
+                    webbrowser.open_new(url)
                 except:
-                    g.es("exception downloading","sbooks.chm")
-                    g.es_exception()
-    #@+node:ekr.20081121105001.315:showProgressBar
-    def showProgressBar (self,count,size,total):
-
-        # g.trace("count,size,total:",count,size,total)
-        if self.scale == None:
-            pass
-            #@        << create the scale widget >>
-            #@+node:ekr.20081121105001.316:<< create the scale widget >>
-            # top = qt.Toplevel()
-            # top.title("Download progress")
-            # self.scale = scale = qt.Scale(top,state="normal",orient="horizontal",from_=0,to=total)
-            # scale.pack()
-            # top.lift()
-            #@-node:ekr.20081121105001.316:<< create the scale widget >>
-            #@nl
-        # self.scale.set(count*size)
-        # self.scale.update_idletasks()
-    #@-node:ekr.20081121105001.315:showProgressBar
+                    if 0:
+                        g.es("exception downloading","sbooks.chm")
+                        g.es_exception()
     #@-node:ekr.20081121105001.314:leoHelp
     #@-node:ekr.20081121105001.313:Help Menu...
     #@-node:ekr.20081121105001.296:Gui-dependent commands
@@ -4867,8 +4827,6 @@ class leoQtLog (leoFrame.leoLog):
     # Part 4: corresponding to mayBeDefinedInSubclasses.
     def deleteTextSelection (self):         self.logCtrl.deleteTextSelection ()
     def event_generate(self,stroke):        pass
-    # def getName()
-    # def GetName()
     def replace (self,i,j,s):               self.logCtrl.replace (i,j,s)
     def rowColToGuiIndex (self,s,row,col):  return self.logCtrl.rowColToGuiIndex(s,row,col)
     def selectAllText (self,insert=None):   self.logCtrl.selectAllText(insert)
@@ -5074,132 +5032,7 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081121105001.337:qtLog color tab stuff
     def createColorPicker (self,tabName):
 
-        return
-
-        # log = self
-
-        #@    << define colors >>
-        #@+node:ekr.20081121105001.338:<< define colors >>
-        # colors = (
-            # "gray60", "gray70", "gray80", "gray85", "gray90", "gray95",
-            # "snow1", "snow2", "snow3", "snow4", "seashell1", "seashell2",
-            # "seashell3", "seashell4", "AntiqueWhite1", "AntiqueWhite2", "AntiqueWhite3",
-            # "AntiqueWhite4", "bisque1", "bisque2", "bisque3", "bisque4", "PeachPuff1",
-            # "PeachPuff2", "PeachPuff3", "PeachPuff4", "NavajoWhite1", "NavajoWhite2",
-            # "NavajoWhite3", "NavajoWhite4", "LemonChiffon1", "LemonChiffon2",
-            # "LemonChiffon3", "LemonChiffon4", "cornsilk1", "cornsilk2", "cornsilk3",
-            # "cornsilk4", "ivory1", "ivory2", "ivory3", "ivory4", "honeydew1", "honeydew2",
-            # "honeydew3", "honeydew4", "LavenderBlush1", "LavenderBlush2",
-            # "LavenderBlush3", "LavenderBlush4", "MistyRose1", "MistyRose2",
-            # "MistyRose3", "MistyRose4", "azure1", "azure2", "azure3", "azure4",
-            # "SlateBlue1", "SlateBlue2", "SlateBlue3", "SlateBlue4", "RoyalBlue1",
-            # "RoyalBlue2", "RoyalBlue3", "RoyalBlue4", "blue1", "blue2", "blue3", "blue4",
-            # "DodgerBlue1", "DodgerBlue2", "DodgerBlue3", "DodgerBlue4", "SteelBlue1",
-            # "SteelBlue2", "SteelBlue3", "SteelBlue4", "DeepSkyBlue1", "DeepSkyBlue2",
-            # "DeepSkyBlue3", "DeepSkyBlue4", "SkyBlue1", "SkyBlue2", "SkyBlue3",
-            # "SkyBlue4", "LightSkyBlue1", "LightSkyBlue2", "LightSkyBlue3",
-            # "LightSkyBlue4", "SlateGray1", "SlateGray2", "SlateGray3", "SlateGray4",
-            # "LightSteelBlue1", "LightSteelBlue2", "LightSteelBlue3",
-            # "LightSteelBlue4", "LightBlue1", "LightBlue2", "LightBlue3",
-            # "LightBlue4", "LightCyan1", "LightCyan2", "LightCyan3", "LightCyan4",
-            # "PaleTurquoise1", "PaleTurquoise2", "PaleTurquoise3", "PaleTurquoise4",
-            # "CadetBlue1", "CadetBlue2", "CadetBlue3", "CadetBlue4", "turquoise1",
-            # "turquoise2", "turquoise3", "turquoise4", "cyan1", "cyan2", "cyan3", "cyan4",
-            # "DarkSlateGray1", "DarkSlateGray2", "DarkSlateGray3",
-            # "DarkSlateGray4", "aquamarine1", "aquamarine2", "aquamarine3",
-            # "aquamarine4", "DarkSeaGreen1", "DarkSeaGreen2", "DarkSeaGreen3",
-            # "DarkSeaGreen4", "SeaGreen1", "SeaGreen2", "SeaGreen3", "SeaGreen4",
-            # "PaleGreen1", "PaleGreen2", "PaleGreen3", "PaleGreen4", "SpringGreen1",
-            # "SpringGreen2", "SpringGreen3", "SpringGreen4", "green1", "green2",
-            # "green3", "green4", "chartreuse1", "chartreuse2", "chartreuse3",
-            # "chartreuse4", "OliveDrab1", "OliveDrab2", "OliveDrab3", "OliveDrab4",
-            # "DarkOliveGreen1", "DarkOliveGreen2", "DarkOliveGreen3",
-            # "DarkOliveGreen4", "khaki1", "khaki2", "khaki3", "khaki4",
-            # "LightGoldenrod1", "LightGoldenrod2", "LightGoldenrod3",
-            # "LightGoldenrod4", "LightYellow1", "LightYellow2", "LightYellow3",
-            # "LightYellow4", "yellow1", "yellow2", "yellow3", "yellow4", "gold1", "gold2",
-            # "gold3", "gold4", "goldenrod1", "goldenrod2", "goldenrod3", "goldenrod4",
-            # "DarkGoldenrod1", "DarkGoldenrod2", "DarkGoldenrod3", "DarkGoldenrod4",
-            # "RosyBrown1", "RosyBrown2", "RosyBrown3", "RosyBrown4", "IndianRed1",
-            # "IndianRed2", "IndianRed3", "IndianRed4", "sienna1", "sienna2", "sienna3",
-            # "sienna4", "burlywood1", "burlywood2", "burlywood3", "burlywood4", "wheat1",
-            # "wheat2", "wheat3", "wheat4", "tan1", "tan2", "tan3", "tan4", "chocolate1",
-            # "chocolate2", "chocolate3", "chocolate4", "firebrick1", "firebrick2",
-            # "firebrick3", "firebrick4", "brown1", "brown2", "brown3", "brown4", "salmon1",
-            # "salmon2", "salmon3", "salmon4", "LightSalmon1", "LightSalmon2",
-            # "LightSalmon3", "LightSalmon4", "orange1", "orange2", "orange3", "orange4",
-            # "DarkOrange1", "DarkOrange2", "DarkOrange3", "DarkOrange4", "coral1",
-            # "coral2", "coral3", "coral4", "tomato1", "tomato2", "tomato3", "tomato4",
-            # "OrangeRed1", "OrangeRed2", "OrangeRed3", "OrangeRed4", "red1", "red2", "red3",
-            # "red4", "DeepPink1", "DeepPink2", "DeepPink3", "DeepPink4", "HotPink1",
-            # "HotPink2", "HotPink3", "HotPink4", "pink1", "pink2", "pink3", "pink4",
-            # "LightPink1", "LightPink2", "LightPink3", "LightPink4", "PaleVioletRed1",
-            # "PaleVioletRed2", "PaleVioletRed3", "PaleVioletRed4", "maroon1",
-            # "maroon2", "maroon3", "maroon4", "VioletRed1", "VioletRed2", "VioletRed3",
-            # "VioletRed4", "magenta1", "magenta2", "magenta3", "magenta4", "orchid1",
-            # "orchid2", "orchid3", "orchid4", "plum1", "plum2", "plum3", "plum4",
-            # "MediumOrchid1", "MediumOrchid2", "MediumOrchid3", "MediumOrchid4",
-            # "DarkOrchid1", "DarkOrchid2", "DarkOrchid3", "DarkOrchid4", "purple1",
-            # "purple2", "purple3", "purple4", "MediumPurple1", "MediumPurple2",
-            # "MediumPurple3", "MediumPurple4", "thistle1", "thistle2", "thistle3",
-            # "thistle4" )
-        #@-node:ekr.20081121105001.338:<< define colors >>
-        #@nl
-
-        # parent = log.frameDict.get(tabName)
-        # w = log.textDict.get(tabName)
-        # w.pack_forget()
-
-        # colors = list(colors)
-        # bg = parent.cget('background')
-
-        # outer = qt.Frame(parent,background=bg)
-        # outer.pack(side='top',fill='both',expand=1,pady=10)
-
-        # f = qt.Frame(outer)
-        # f.pack(side='top',expand=0,fill='x')
-        # f1 = qt.Frame(f) ; f1.pack(side='top',expand=0,fill='x')
-        # f2 = qt.Frame(f) ; f2.pack(side='top',expand=1,fill='x')
-        # f3 = qt.Frame(f) ; f3.pack(side='top',expand=1,fill='x')
-
-        # label = g.app.gui.plainTextWidget(f1,height=1,width=20)
-        # label.insert('1.0','Color name or value...')
-        # label.pack(side='left',pady=6)
-
-        #@    << create optionMenu and callback >>
-        #@+node:ekr.20081121105001.339:<< create optionMenu and callback >>
-        # colorBox = Pmw.ComboBox(f2,scrolledlist_items=colors)
-        # colorBox.pack(side='left',pady=4)
-
-        # def colorCallback (newName): 
-            # label.delete('1.0','end')
-            # label.insert('1.0',newName)
-            # try:
-                # for theFrame in (parent,outer,f,f1,f2,f3):
-                    # theFrame.configure(background=newName)
-            # except: pass # Ignore invalid names.
-
-        # colorBox.configure(selectioncommand=colorCallback)
-        #@-node:ekr.20081121105001.339:<< create optionMenu and callback >>
-        #@nl
-        #@    << create picker button and callback >>
-        #@+node:ekr.20081121105001.340:<< create picker button and callback >>
-        # def pickerCallback ():
-            # return
-
-            # rgb,val = tkColorChooser.askcolor(parent=parent,initialcolor=f.cget('background'))
-            # if rgb or val:
-                # # label.configure(text=val)
-                # label.delete('1.0','end')
-                # label.insert('1.0',val)
-                # for theFrame in (parent,outer,f,f1,f2,f3):
-                    # theFrame.configure(background=val)
-
-        # b = qt.Button(f3,text="Color Picker...",
-            # command=pickerCallback,background=bg)
-        # b.pack(side='left',pady=4)
-        #@-node:ekr.20081121105001.340:<< create picker button and callback >>
-        #@nl
+        pass
     #@-node:ekr.20081121105001.337:qtLog color tab stuff
     #@+node:ekr.20081121105001.341:qtLog font tab stuff
     #@+node:ekr.20081121105001.342:createFontPicker
@@ -5267,14 +5100,6 @@ class leoQtLog (leoFrame.leoLog):
     def getFont(self,family=None,size=12,slant='roman',weight='normal'):
 
         return g.app.config.defaultFont
-
-        # try:
-            # return tkFont.Font(family=family,size=size,slant=slant,weight=weight)
-        # except Exception:
-            # g.es("exception setting font")
-            # g.es('','family,size,slant,weight:','',family,'',size,'',slant,'',weight)
-            # # g.es_exception() # This just confuses people.
-            # return g.app.config.defaultFont
     #@-node:ekr.20081121105001.351:getFont
     #@+node:ekr.20081121105001.352:setFont
     def setFont(self,familyBox,sizeEntry,slantBox,weightBox,label):
@@ -5444,7 +5269,7 @@ class leoQtMenu (leoMenu.leoMenu):
         '''Return the index of the menu with the given label.'''
         # g.trace(label)
 
-        return 0 ###
+        return 0
     #@-node:ekr.20090603123442.3785:index (leoQtMenu)
     #@+node:ekr.20081121105001.367:insert
     def insert (self,menuName,position,label,command,underline=None):
@@ -5628,44 +5453,6 @@ class leoQtMenu (leoMenu.leoMenu):
     def getMacHelpMenu (self,table):
 
         return None
-
-        # defaultTable = [
-                # # &: a,b,c,d,e,f,h,l,m,n,o,p,r,s,t,u
-                # ('&About Leo...',           'about-leo'),
-                # ('Online &Home Page',       'open-online-home'),
-                # '*open-online-&tutorial',
-                # '*open-&users-guide',
-                # '-',
-                # ('Open Leo&Docs.leo',       'open-leoDocs-leo'),
-                # ('Open Leo&Plugins.leo',    'open-leoPlugins-leo'),
-                # ('Open Leo&Settings.leo',   'open-leoSettings-leo'),
-                # ('Open &myLeoSettings.leo', 'open-myLeoSettings-leo'),
-                # ('Open scr&ipts.leo',       'open-scripts-leo'),
-                # '-',
-                # '*he&lp-for-minibuffer',
-                # '*help-for-&command',
-                # '-',
-                # '*&apropos-autocompletion',
-                # '*apropos-&bindings',
-                # '*apropos-&debugging-commands',
-                # '*apropos-&find-commands',
-                # '-',
-                # '*pri&nt-bindings',
-                # '*print-c&ommands',
-            # ]
-
-        # try:
-            # topMenu = self.getMenu('top')
-            # # Use the name argument to create the special Macintosh Help menu.
-            # helpMenu = Tk.Menu(topMenu,name='help',tearoff=0)
-            # self.add_cascade(topMenu,label='Help',menu=helpMenu,underline=0)
-            # self.createMenuEntries(helpMenu,table or defaultTable)
-            # return helpMenu
-
-        # except Exception:
-            # g.trace('Can not get MacOS Help menu')
-            # g.es_exception()
-            # return None
     #@-node:ekr.20081121105001.378:getMacHelpMenu
     #@-others
 #@-node:ekr.20081121105001.354:class leoQtMenu (leoMenu)
@@ -5837,14 +5624,6 @@ class leoQtSpellTab:
 
         ui.leo_spell_btn_Change.setDisabled(not state)
         ui.leo_spell_btn_FindChange.setDisabled(not state)
-
-        # # state = g.choose(self.c.undoer.canRedo(),"normal","disabled")
-        # # self.redoButton.configure(state=state)
-        # # state = g.choose(self.c.undoer.canUndo(),"normal","disabled")
-        # # self.undoButton.configure(state=state)
-
-        # self.addButton.configure(state='normal')
-        # self.ignoreButton.configure(state='normal')
 
         return state
     #@nonl
@@ -7732,7 +7511,7 @@ class leoQtEventFilter(QtCore.QObject):
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
             if ignore:
                 override = False
-            #### This is extremely bad.  At present, it is needed to handle tab properly.
+            ### This is extremely bad.  At present, it is needed to handle tab properly.
             elif self.isSpecialOverride(tkKey,ch):
                 override = True
             elif k.inState():
@@ -8290,7 +8069,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
             else:
                 s = unicode(s)
             self.colorer.recolor(s)
-            ### self.colorer.recolor(g.u(s))
+
     #@-node:ekr.20081205131308.11:highlightBlock
     #@+node:ekr.20081206062411.15:rehighlight
     def rehighlight (self,p):
@@ -9375,11 +9154,11 @@ class jEditColorizer:
             self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
             self.prev = (i,j,kind)
             self.trace_match(kind,s,i,j)
-            return j ### (was j-1) With a delegate, this could clear state.
+            return j # (was j-1) With a delegate, this could clear state.
         else:
             return 0
     #@-node:ekr.20090614134853.3728:match_eol_span
-    #@+node:ekr.20090614134853.3729:match_eol_span_regexp (no change)
+    #@+node:ekr.20090614134853.3729:match_eol_span_regexp
     def match_eol_span_regexp (self,s,i,
         kind='',regexp='',
         at_line_start=False,at_whitespace_end=False,at_word_start=False,
@@ -9403,8 +9182,8 @@ class jEditColorizer:
         else:
             return 0
     #@nonl
-    #@-node:ekr.20090614134853.3729:match_eol_span_regexp (no change)
-    #@+node:ekr.20090614134853.3730:match_keywords (no change)
+    #@-node:ekr.20090614134853.3729:match_eol_span_regexp
+    #@+node:ekr.20090614134853.3730:match_keywords
     # This is a time-critical method.
     def match_keywords (self,s,i):
 
@@ -9439,7 +9218,7 @@ class jEditColorizer:
         else:
             # if trace: g.trace('fail',word,kind)
             return -len(word) # An important new optimization.
-    #@-node:ekr.20090614134853.3730:match_keywords (no change)
+    #@-node:ekr.20090614134853.3730:match_keywords
     #@+node:ekr.20090614134853.3731:match_mark_following & getNextToken
     def match_mark_following (self,s,i,
         kind='',pattern='',
@@ -9485,7 +9264,7 @@ class jEditColorizer:
     #@nonl
     #@-node:ekr.20090614134853.3732:getNextToken
     #@-node:ekr.20090614134853.3731:match_mark_following & getNextToken
-    #@+node:ekr.20090614134853.3733:match_mark_previous (Revise?  Eliminate?)
+    #@+node:ekr.20090614134853.3733:match_mark_previous
     def match_mark_previous (self,s,i,
         kind='',pattern='',
         at_line_start=False,at_whitespace_end=False,at_word_start=False,
@@ -9499,33 +9278,8 @@ class jEditColorizer:
 
         # This match was causing most of the syntax-color problems.
         return 0 # 2009/6/23
-
-        # if not self.allow_mark_prev: return 0
-
-        # if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]))
-
-        # if at_line_start and i != 0 and s[i-1] != '\n': return 0
-        # if at_whitespace_end and i != g.skip_ws(s,0): return 0
-        # if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0
-        # if at_word_start and i + len(pattern) + 1 < len(s) and s[i+len(pattern)] in self.word_chars:
-            # return 0
-
-        # if g.match(s,i,pattern):
-            # j = i + len(pattern)
-            # # Color the previous token.
-            # if self.prev:
-                # i2,j2,kind2 = self.prev
-                # # g.trace(i2,j2,kind2)
-                # self.colorRangeWithTag(s,i2,j2,kind2,exclude_match=False)
-            # if not exclude_match:
-                # self.colorRangeWithTag(s,i,j,kind)
-            # self.prev = (i,j,kind)
-            # self.trace_match(kind,s,i,j)
-            # return j - i
-        # else:
-            # return 0
-    #@-node:ekr.20090614134853.3733:match_mark_previous (Revise?  Eliminate?)
-    #@+node:ekr.20090614134853.3734:match_regexp_helper (Revise??)
+    #@-node:ekr.20090614134853.3733:match_mark_previous
+    #@+node:ekr.20090614134853.3734:match_regexp_helper
     def match_regexp_helper (self,s,i,pattern):
 
         '''Return the length of the matching text if seq (a regular expression) matches the present position.'''
@@ -9535,7 +9289,7 @@ class jEditColorizer:
             self.colorizer.language,pattern,s)) # g.callers(1)
 
         try:
-            flags = re.MULTILINE ### this will always fail.
+            flags = re.MULTILINE
             if self.ignore_case: flags|= re.IGNORECASE
             re_obj = re.compile(pattern,flags)
         except Exception:
@@ -9557,8 +9311,8 @@ class jEditColorizer:
                 g.trace('match: %d, %d, %s' % (start,end,repr(s[start: end])))
                 g.trace('groups',mo.groups())
             return end - start
-    #@-node:ekr.20090614134853.3734:match_regexp_helper (Revise??)
-    #@+node:ekr.20090614134853.3735:match_seq (no change)
+    #@-node:ekr.20090614134853.3734:match_regexp_helper
+    #@+node:ekr.20090614134853.3735:match_seq
     def match_seq (self,s,i,
         kind='',seq='',
         at_line_start=False,at_whitespace_end=False,at_word_start=False,
@@ -9583,8 +9337,8 @@ class jEditColorizer:
             j = i
         return j - i
     #@nonl
-    #@-node:ekr.20090614134853.3735:match_seq (no change)
-    #@+node:ekr.20090614134853.3736:match_seq_regexp (no change)
+    #@-node:ekr.20090614134853.3735:match_seq
+    #@+node:ekr.20090614134853.3736:match_seq_regexp
     def match_seq_regexp (self,s,i,
         kind='',regexp='',
         at_line_start=False,at_whitespace_end=False,at_word_start=False,
@@ -9606,8 +9360,8 @@ class jEditColorizer:
         self.trace_match(kind,s,i,j)
         return j - i
     #@nonl
-    #@-node:ekr.20090614134853.3736:match_seq_regexp (no change)
-    #@+node:ekr.20090614134853.3737:match_span & helper & restarter (revised)
+    #@-node:ekr.20090614134853.3736:match_seq_regexp
+    #@+node:ekr.20090614134853.3737:match_span & helper & restarter
     def match_span (self,s,i,
         kind='',begin='',end='',
         at_line_start=False,at_whitespace_end=False,at_word_start=False,
@@ -9758,8 +9512,8 @@ class jEditColorizer:
 
         return j # Return the new i, *not* the length of the match.
     #@-node:ekr.20090614134853.3821:restart_match_span
-    #@-node:ekr.20090614134853.3737:match_span & helper & restarter (revised)
-    #@+node:ekr.20090614134853.3739:match_span_regexp (to do)
+    #@-node:ekr.20090614134853.3737:match_span & helper & restarter
+    #@+node:ekr.20090614134853.3739:match_span_regexp
     def match_span_regexp (self,s,i,
         kind='',begin='',end='',
         at_line_start=False,at_whitespace_end=False,at_word_start=False,
@@ -9803,8 +9557,8 @@ class jEditColorizer:
             self.trace_match(kind,s,i,j2)
             return j2 - i
         else: return 0
-    #@-node:ekr.20090614134853.3739:match_span_regexp (to do)
-    #@+node:ekr.20090614134853.3740:match_word_and_regexp (no change)
+    #@-node:ekr.20090614134853.3739:match_span_regexp
+    #@+node:ekr.20090614134853.3740:match_word_and_regexp
     def match_word_and_regexp (self,s,i,
         kind1='',word='',
         kind2='',pattern='',
@@ -9837,7 +9591,7 @@ class jEditColorizer:
         self.trace_match(kind1,s,i,j)
         self.trace_match(kind2,s,j,k)
         return k - i
-    #@-node:ekr.20090614134853.3740:match_word_and_regexp (no change)
+    #@-node:ekr.20090614134853.3740:match_word_and_regexp
     #@+node:ekr.20090614134853.3741:skip_line
     def skip_line (self,s,i):
 
