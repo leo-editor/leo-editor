@@ -85,7 +85,7 @@
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
+<v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
 <v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
 <v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
@@ -124,7 +124,7 @@
 <v t="ekr.20090901082242.1563"><vh>makeDicts</vh></v>
 <v t="ekr.20090901082242.1564"><vh>printMissing</vh></v>
 </v>
-<v t="ekr.20090902092112.1445" a="E"><vh>whitespace</vh>
+<v t="ekr.20090902092112.1445"><vh>whitespace</vh>
 <v t="ekr.20090902092112.1463"><vh>adjustTripleString</vh></v>
 <v t="ekr.20090902092112.1467"><vh>get_leading_ws</vh></v>
 <v t="ekr.20090902092112.1466"><vh>computeWidth</vh></v>
@@ -1767,7 +1767,7 @@ import time</t>
         r'cd %s' % (top),
         r'bzr status',
         # This commit ensures the proper files are included in the distribution.
-        r'bzr commit -m "commit doc files during make"',
+        # r'bzr commit -m "commit doc files during make"',
         r'bzr status',
         r'bzr export "%s"' % (zipFile),
         r'bzr export --root="%s" "%s"' % (root,zipFile2),
@@ -1919,6 +1919,7 @@ Create a bzr tag:
     - bzr push
 Create distribution files using to @button make scripts in leoDist.leo
     - 1: Make leo.nsi
+    - 2: Choose leo.nsi in Windows Explorer and select "Compile NSI Script"
     - 2: Commit if necessary.
     - 3: Make leo.zip
 Test files
