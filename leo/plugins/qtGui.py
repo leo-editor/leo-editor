@@ -2681,11 +2681,6 @@ class leoQtBody (leoFrame.leoBody):
 
     #@-node:vivainio.20091223153142.4072:Completer (qtBody)
     #@+node:ekr.20081121105001.212:Editors (qtBody)
-    #@+node:ekr.20081121105001.214:packEditorLabelWidget
-    def packEditorLabelWidget (self,w):
-
-        '''Create a qt label widget.'''
-    #@-node:ekr.20081121105001.214:packEditorLabelWidget
     #@+node:ekr.20081121105001.215:entries
     #@+node:ekr.20081121105001.216:addEditor & helper (qtBody)
     # An override of leoFrame.addEditor.
@@ -2827,7 +2822,7 @@ class leoQtBody (leoFrame.leoBody):
             self.unpackWidget(layout,z)
 
         # Select another editor.
-        new_wrapper = d.values()[0]
+        new_wrapper = list(d.values())[0]
         if trace: g.trace(wrapper,new_wrapper)
         self.numberOfEditors -= 1
         if self.numberOfEditors == 1:
@@ -4148,6 +4143,7 @@ class leoQtFrame (leoFrame.leoFrame):
     #@+node:ekr.20081121105001.284:setTabWidth (qtFrame)
     def setTabWidth (self, w):
 
+        # A do-nothing because tab width is set automatically.
         pass
 
     #@-node:ekr.20081121105001.284:setTabWidth (qtFrame)
