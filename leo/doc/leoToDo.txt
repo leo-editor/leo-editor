@@ -5,43 +5,6 @@
 4.8 vim, cleanups, your mission...
 #@nonl
 #@+node:ekr.20100223123910.5836:Immediately
-#@+node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
-
-Python uses Sphinx for its doc, they have a discussion about making
-the TOC on the left hand side collapsible/non-scrolling here:
-
-http://www.google.com/url?sa=t&source=web&ct=res&cd=4&ved=0CBYQFjAD&url=http%3A%2F%2Fbugs.python.org%2Fissue3143&ei=bW5oS-eQIJDalAfqlYyGCA&usg=AFQjCNGyhpE3wZ2jvfwA0dwjCfoAxleDRQ&sig2=2CRD7hNMmx1NzFHMyOq_cQ
-
-that includes code for the CSS stylesheet to do this.
-
-Although this does not appear in the python docs (yet), it might be
-valuable for Leo's Doc's
-
-
-
-I downloaded the example files from the above link, the collapsible
-sidebar works well with the python documentation.  As the Leo
-documentation is just a variant of python's, I downloaded a HTML
-chapter and the support files kept in .../static, then I placed the
-"sidebar.js" in with those files on my local copy.  To make the
-sidebar collapsing work, all I had to do was add it to the list of
-javascript files in the chapter .html file, i.e., I added the second
-line below
-
-    <script type="text/javascript" src="IPythonBridge_files/
-doctools.js"></script>
-    <script type="text/javascript" src="IPythonBridge_files/
-sidebar.js"></script>
-
-in the 'head' section, (the above takes into account that I was doing
-this on my local, differently arranged, copy).
-
-That is all that it takes to give us a collapsible TOC
-#@nonl
-#@-node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
 #@+node:ekr.20100223123910.5930:recentFilesController
 @
 The present operation of recent files is surprising.
@@ -5201,12 +5164,45 @@ same place will be cached in the same directory. Is this ominous?
 2. It's not clear what caching to do with the save-to command.
 #@-node:ekr.20100210163813.5748:Caching buglets?
 #@-node:ekr.20100219083854.5615:Improve caching
-#@+node:ekr.20100223123910.5928:clean nodes & limit line length
-- Limit lines to 80.
-#@nonl
-#@-node:ekr.20100223123910.5928:clean nodes & limit line length
 #@-node:ekr.20100223123910.5836:Immediately
 #@+node:ekr.20100206074650.5844:Cleanups & features: first
+#@+node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
+
+Python uses Sphinx for its doc, they have a discussion about making
+the TOC on the left hand side collapsible/non-scrolling here:
+
+http://www.google.com/url?sa=t&source=web&ct=res&cd=4&ved=0CBYQFjAD&url=http%3A%2F%2Fbugs.python.org%2Fissue3143&ei=bW5oS-eQIJDalAfqlYyGCA&usg=AFQjCNGyhpE3wZ2jvfwA0dwjCfoAxleDRQ&sig2=2CRD7hNMmx1NzFHMyOq_cQ
+
+that includes code for the CSS stylesheet to do this.
+
+Although this does not appear in the python docs (yet), it might be
+valuable for Leo's Doc's
+
+
+
+I downloaded the example files from the above link, the collapsible
+sidebar works well with the python documentation.  As the Leo
+documentation is just a variant of python's, I downloaded a HTML
+chapter and the support files kept in .../static, then I placed the
+"sidebar.js" in with those files on my local copy.  To make the
+sidebar collapsing work, all I had to do was add it to the list of
+javascript files in the chapter .html file, i.e., I added the second
+line below
+
+    <script type="text/javascript" src="IPythonBridge_files/
+doctools.js"></script>
+    <script type="text/javascript" src="IPythonBridge_files/
+sidebar.js"></script>
+
+in the 'head' section, (the above takes into account that I was doing
+this on my local, differently arranged, copy).
+
+That is all that it takes to give us a collapsible TOC
+#@nonl
+#@-node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
 #@+node:ekr.20100223115556.5833:To do: suppress @nonl sentinel
 #@-node:ekr.20100223115556.5833:To do: suppress @nonl sentinel
 #@+node:ekr.20090131200406.11:Remove remaining tk-isms from Leo's core
@@ -6090,7 +6086,8 @@ def closeLeoWindow (self,frame):
         # There is already a dialog open asking what to do.
         return False
 
-    g.app.config.writeRecentFilesFile(c) # Make sure .leoRecentFiles.txt is written.
+    g.app.config.writeRecentFilesFile(c)
+        # Make sure .leoRecentFiles.txt is written.
 
     if c.changed:
         c.promptingForClose = True
@@ -6100,7 +6097,8 @@ def closeLeoWindow (self,frame):
 
     g.app.setLog(None) # no log until we reactive a window.
 
-    g.doHook("close-frame",c=c) # This may remove frame from the window list.
+    g.doHook("close-frame",c=c)
+        # This may remove frame from the window list.
 
     if frame in g.app.windowList:
         g.app.destroyWindow(frame)
@@ -6404,7 +6402,8 @@ def initWriteIvars(self,root,targetFileName,
             forcePythonSentinels=forcePythonSentinels,
             issuePathWarning=True)
 
-    # g.trace(forcePythonSentinels,self.startSentinelComment,self.endSentinelComment)
+    # g.trace(forcePythonSentinels,
+    #    self.startSentinelComment,self.endSentinelComment)
 
     if forcePythonSentinels:
         # Force Python comment delims for g.getScript.
@@ -6429,12 +6428,13 @@ def initWriteIvars(self,root,targetFileName,
 #@+node:ekr.20041005105605.16:<< init ivars for writing >>>
 @
 When tangling, we first write to a temporary output file. After tangling is
-temporary file. Otherwise we delete the old target file and rename the temporary
-file to be the target file.
+temporary file. Otherwise we delete the old target file and rename the
+temporary file to be the target file.
 @c
 
 self.docKind = None
-self.explicitLineEnding = False # True: an @lineending directive specifies the ending.
+self.explicitLineEnding = False
+    # True: an @lineending directive specifies the ending.
 self.fileChangedFlag = False # True: the file has actually been updated.
 self.atAuto = atAuto
 self.atEdit = atEdit
@@ -6987,6 +6987,8 @@ Content (clone)
 #@-node:ekr.20100221142603.5628:<< b >>
 #@-node:ekr.20100221142603.5625:@@shadow clone-bug-test.py@
 #@-node:ekr.20100221142603.5620:Fix bug 524890: Incomplete derived file
+#@+node:ekr.20100223133351.5998:show-invisibles doesn't work for blank lines
+#@-node:ekr.20100223133351.5998:show-invisibles doesn't work for blank lines
 #@-node:ekr.20100223085201.5637:Bugs
 #@+node:ekr.20080603052650.466:Fix vim problems
 @nocolor

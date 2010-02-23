@@ -2,7 +2,7 @@
 #@+node:ekr.20031218072017.3630:@thin leoCompare.py
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 70
 
 """Leo's base compare class."""
 
@@ -432,10 +432,10 @@ class baseLeoCompare:
     #@+node:ekr.20031218072017.3649:isLeoHeader & isSentinel
     #@+at 
     #@nonl
-    # These methods are based on atFile.scanHeader().  They are simpler 
-    # because we only care about the starting sentinel comment: any line 
-    # starting with the starting sentinel comment is presumed to be a sentinel 
-    # line.
+    # These methods are based on atFile.scanHeader().  They are 
+    # simpler because we only care about the starting sentinel 
+    # comment: any line starting with the starting sentinel comment 
+    # is presumed to be a sentinel line.
     #@-at
     #@@c
 

@@ -4,7 +4,7 @@
 
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 70
 
 #@<< imports >>
 #@+node:ekr.20061031131434.1:<< imports >>
@@ -29,23 +29,26 @@ import types
 #@@nocolor
 #@+at
 # 
-# Here are the rules for translating key bindings (in leoSettings.leo) into 
-# keys for k.bindingsDict:
+# Here are the rules for translating key bindings (in 
+# leoSettings.leo) into keys for k.bindingsDict:
 # 
 # 1.  The case of plain letters is significant:  a is not A.
 # 
-# 2. The Shift- prefix can be applied *only* to letters. Leo will ignore (with 
-# a
-# warning) the shift prefix applied to any other binding, e.g., Ctrl-Shift-(
+# 2. The Shift- prefix can be applied *only* to letters. Leo will 
+# ignore (with a
+# warning) the shift prefix applied to any other binding, e.g., 
+# Ctrl-Shift-(
 # 
-# 3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
-# significant. Thus, the Shift- prefix is required if you want an upper-case
+# 3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is 
+# *not*
+# significant. Thus, the Shift- prefix is required if you want an 
+# upper-case
 # letter (with the exception of 'bare' uppercase letters.)
 # 
-# The following table illustrates these rules. In each row, the first entry is 
-# the
-# key (for k.bindingsDict) and the other entries are equivalents that the user 
-# may
+# The following table illustrates these rules. In each row, the 
+# first entry is the
+# key (for k.bindingsDict) and the other entries are equivalents 
+# that the user may
 # specify in leoSettings.leo:
 # 
 # a, Key-a, Key-A
@@ -58,8 +61,8 @@ import types
 # 
 # This table is consistent with how Leo already works (because it is 
 # consistent
-# with Tk's key-event specifiers). It is also, I think, the least confusing 
-# set of
+# with Tk's key-event specifiers). It is also, I think, the least 
+# confusing set of
 # rules.
 #@-at
 #@nonl
@@ -88,10 +91,12 @@ import types
 # g.Bunch(commandName,func,pane,stroke)
 # 
 # k.masterGuiBindingsDict:
-#     Keys are strokes; value is a list of widgets for which stroke is bound.
+#     Keys are strokes; value is a list of widgets for which stroke 
+# is bound.
 # 
 # k.settingsNameDict:
-#     Keys are lowercase settings; values are 'real' Tk key specifiers.
+#     Keys are lowercase settings; values are 'real' Tk key 
+# specifiers.
 #     Important: this table has no inverse.
 # 
 # not an ivar (computed by k.computeInverseBindingDict):
@@ -1864,10 +1869,10 @@ class keyHandlerClass:
 
     #@+at  
     #@nonl
-    # The following are not translated, so what appears in the menu is the 
-    # same as what is passed to Tk.  Case is significant.
-    # Note: the Tk documentation states that not all of these may be available 
-    # on all platforms.
+    # The following are not translated, so what appears in the menu 
+    # is the same as what is passed to Tk.  Case is significant.
+    # Note: the Tk documentation states that not all of these may be 
+    # available on all platforms.
     # 
     # Num_Lock, Pause, Scroll_Lock, Sys_Req,
     # KP_Add, KP_Decimal, KP_Divide, KP_Enter, KP_Equal,
@@ -4790,90 +4795,91 @@ class keyHandlerClass:
 
         #@+at  
         #@nonl
-        # Any Emacs command can be given a numeric argument. Some commands 
-        # interpret the
-        # argument as a repetition count. For example, giving an argument of 
-        # ten to the
-        # key C-f (the command forward-char, move forward one character) moves 
-        # forward ten
-        # characters. With these commands, no argument is equivalent to an 
-        # argument of
-        # one. Negative arguments are allowed. Often they tell a command to 
-        # move or act
+        # Any Emacs command can be given a numeric argument. Some 
+        # commands interpret the
+        # argument as a repetition count. For example, giving an 
+        # argument of ten to the
+        # key C-f (the command forward-char, move forward one 
+        # character) moves forward ten
+        # characters. With these commands, no argument is equivalent 
+        # to an argument of
+        # one. Negative arguments are allowed. Often they tell a 
+        # command to move or act
         # backwards.
         # 
-        # If your keyboard has a META key, the easiest way to specify a 
-        # numeric argument
-        # is to type digits and/or a minus sign while holding down the the 
-        # META key. For
+        # If your keyboard has a META key, the easiest way to 
+        # specify a numeric argument
+        # is to type digits and/or a minus sign while holding down 
+        # the the META key. For
         # example,
         # 
         # M-5 C-n
         # 
-        # moves down five lines. The characters Meta-1, Meta-2, and so on, as 
-        # well as
+        # moves down five lines. The characters Meta-1, Meta-2, and 
+        # so on, as well as
         # Meta--, do this because they are keys bound to commands 
         # (digit-argument and
-        # negative-argument) that are defined to contribute to an argument for 
-        # the next
+        # negative-argument) that are defined to contribute to an 
+        # argument for the next
         # command.
         # 
         # Another way of specifying an argument is to use the C-u 
         # (universal-argument)
-        # command followed by the digits of the argument. With C-u, you can 
-        # type the
-        # argument digits without holding down shift keys. To type a negative 
-        # argument,
-        # start with a minus sign. Just a minus sign normally means -1. C-u 
-        # works on all
+        # command followed by the digits of the argument. With C-u, 
+        # you can type the
+        # argument digits without holding down shift keys. To type a 
+        # negative argument,
+        # start with a minus sign. Just a minus sign normally means 
+        # -1. C-u works on all
         # terminals.
         # 
-        # C-u followed by a character which is neither a digit nor a minus 
-        # sign has the
-        # special meaning of "multiply by four". It multiplies the argument 
-        # for the next
-        # command by four. C-u twice multiplies it by sixteen. Thus, C-u C-u 
-        # C-f moves
-        # forward sixteen characters. This is a good way to move forward 
-        # "fast", since it
-        # moves about 1/5 of a line in the usual size screen. Other useful 
-        # combinations
-        # are C-u C-n, C-u C-u C-n (move down a good fraction of a screen), 
-        # C-u C-u C-o
-        # (make "a lot" of blank lines), and C-u C-k (kill four lines).
+        # C-u followed by a character which is neither a digit nor a 
+        # minus sign has the
+        # special meaning of "multiply by four". It multiplies the 
+        # argument for the next
+        # command by four. C-u twice multiplies it by sixteen. Thus, 
+        # C-u C-u C-f moves
+        # forward sixteen characters. This is a good way to move 
+        # forward "fast", since it
+        # moves about 1/5 of a line in the usual size screen. Other 
+        # useful combinations
+        # are C-u C-n, C-u C-u C-n (move down a good fraction of a 
+        # screen), C-u C-u C-o
+        # (make "a lot" of blank lines), and C-u C-k (kill four 
+        # lines).
         # 
-        # Some commands care only about whether there is an argument and not 
-        # about its
-        # value. For example, the command M-q (fill-paragraph) with no 
-        # argument fills
-        # text; with an argument, it justifies the text as well. (See section 
-        # Filling
-        # Text, for more information on M-q.) Just C-u is a handy way of 
-        # providing an
+        # Some commands care only about whether there is an argument 
+        # and not about its
+        # value. For example, the command M-q (fill-paragraph) with 
+        # no argument fills
+        # text; with an argument, it justifies the text as well. 
+        # (See section Filling
+        # Text, for more information on M-q.) Just C-u is a handy 
+        # way of providing an
         # argument for such commands.
         # 
-        # Some commands use the value of the argument as a repeat count, but 
-        # do something
-        # peculiar when there is no argument. For example, the command C-k 
-        # (kill-line)
-        # with argument n kills n lines, including their terminating newlines. 
-        # But C-k
-        # with no argument is special: it kills the text up to the next 
-        # newline, or, if
-        # point is right at the end of the line, it kills the newline itself. 
-        # Thus, two
-        # C-k commands with no arguments can kill a non-blank line, just like 
-        # C-k with an
-        # argument of one. (See section Deletion and Killing, for more 
-        # information on
+        # Some commands use the value of the argument as a repeat 
+        # count, but do something
+        # peculiar when there is no argument. For example, the 
+        # command C-k (kill-line)
+        # with argument n kills n lines, including their terminating 
+        # newlines. But C-k
+        # with no argument is special: it kills the text up to the 
+        # next newline, or, if
+        # point is right at the end of the line, it kills the 
+        # newline itself. Thus, two
+        # C-k commands with no arguments can kill a non-blank line, 
+        # just like C-k with an
+        # argument of one. (See section Deletion and Killing, for 
+        # more information on
         # C-k.)
         # 
-        # A few commands treat a plain C-u differently from an ordinary 
-        # argument. A few
-        # others may treat an argument of just a minus sign differently from 
-        # an argument
-        # of -1. These unusual cases will be described when they come up; they 
-        # are always
+        # A few commands treat a plain C-u differently from an 
+        # ordinary argument. A few
+        # others may treat an argument of just a minus sign 
+        # differently from an argument
+        # of -1. These unusual cases will be described when they 
+        # come up; they are always
         # to make the individual command more convenient to use.
         #@-at
         #@-node:ekr.20061031131434.201:<< about repeat counts >>

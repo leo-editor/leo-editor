@@ -2,7 +2,7 @@
 #@+node:ekr.20031218072017.3320:@thin leoNodes.py
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 70
 
 use_zodb = False
 
@@ -166,20 +166,21 @@ class nodeIndices (object):
 #@@killcolor
 #@+at
 # 
-# A position marks the spot in a tree traversal. A position p consists of a 
-# vnode
-# p.v, a child index p._childIndex, and a stack of tuples (v,childIndex), one 
-# for
-# each ancestor **at the spot in tree traversal. Positions p has a unique set 
-# of
+# A position marks the spot in a tree traversal. A position p 
+# consists of a vnode
+# p.v, a child index p._childIndex, and a stack of tuples 
+# (v,childIndex), one for
+# each ancestor **at the spot in tree traversal. Positions p has a 
+# unique set of
 # parents.
 # 
-# The p.moveToX methods may return a null (invalid) position p with p.v = 
-# None.
+# The p.moveToX methods may return a null (invalid) position p with 
+# p.v = None.
 # 
-# The tests "if p" or "if not p" are the _only_ correct way to test whether a
-# position p is valid. In particular, tests like "if p is None" or "if p is 
-# not
+# The tests "if p" or "if not p" are the _only_ correct way to test 
+# whether a
+# position p is valid. In particular, tests like "if p is None" or 
+# "if p is not
 # None" will not work properly.
 #@-at
 #@-node:ekr.20031218072017.890:<< about the position class >>
@@ -292,10 +293,10 @@ class position (object):
     #@-node:ekr.20040117170612:p.__getattr__ (no longer used)
     #@+node:ekr.20040117173448:p.__nonzero__ & __bool__
     #@+at
-    # Tests such as 'if p' or 'if not p' are the _only_ correct ways to test 
-    # whether a position p is valid.
-    # In particular, tests like 'if p is None' or 'if p is not None' will not 
-    # work properly.
+    # Tests such as 'if p' or 'if not p' are the _only_ correct ways 
+    # to test whether a position p is valid.
+    # In particular, tests like 'if p is None' or 'if p is not None' 
+    # will not work properly.
     #@-at
     #@@c
 
@@ -908,9 +909,10 @@ class position (object):
     #@-node:ekr.20040305222924:p.Setters
     #@+node:ekr.20040315023430:p.File Conversion
     #@+at
-    # - convertTreeToString and moreHead can't be vnode methods because they 
-    # uses level().
-    # - moreBody could be anywhere: it may as well be a postion method.
+    # - convertTreeToString and moreHead can't be vnode methods 
+    # because they uses level().
+    # - moreBody could be anywhere: it may as well be a postion 
+    # method.
     #@-at
     #@+node:ekr.20040315023430.1:p.convertTreeToString
     def convertTreeToString (self):
@@ -1173,7 +1175,8 @@ class position (object):
     #@nonl
     # This is the main delete routine.
     # It deletes the receiver's entire tree from the screen.
-    # Because of the undo command we never actually delete vnodes or tnodes.
+    # Because of the undo command we never actually delete vnodes or 
+    # tnodes.
     #@-at
     #@@c
 
@@ -1365,14 +1368,15 @@ class position (object):
     # These routines change self to a new position "in place".
     # That is, these methods must _never_ call p.copy().
     # 
-    # When moving to a nonexistent position, these routines simply set p.v = 
-    # None,
-    # leaving the p.stack unchanged. This allows the caller to "undo" the 
-    # effect of
-    # the invalid move by simply restoring the previous value of p.v.
+    # When moving to a nonexistent position, these routines simply 
+    # set p.v = None,
+    # leaving the p.stack unchanged. This allows the caller to 
+    # "undo" the effect of
+    # the invalid move by simply restoring the previous value of 
+    # p.v.
     # 
-    # These routines all return self on exit so the following kind of code 
-    # will work:
+    # These routines all return self on exit so the following kind 
+    # of code will work:
     #     after = p.copy().moveToNodeAfterTree()
     #@-at
     #@+node:ekr.20080416161551.200:p.moveToBack

@@ -2,7 +2,7 @@
 #@+node:ekr.20041117062700:@thin leoConfig.py
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 70
 
 #@<< imports >>
 #@+node:ekr.20041227063801:<< imports >>
@@ -282,9 +282,10 @@ class parserBaseClass:
     #@+node:ekr.20041121125416:doIfGui (can never work)
     #@+at 
     #@nonl
-    # Alas, @if-gui can't be made to work. The problem is that plugins can set
-    # g.app.gui, but plugins need settings so the leoSettings.leo files must 
-    # be parsed
+    # Alas, @if-gui can't be made to work. The problem is that 
+    # plugins can set
+    # g.app.gui, but plugins need settings so the leoSettings.leo 
+    # files must be parsed
     # before g.app.gui.guiName() is known.
     #@-at
     #@@c

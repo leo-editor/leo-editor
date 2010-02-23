@@ -44,7 +44,7 @@ import unittest
 
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 70
 
 #@+others
 #@+node:ekr.20080708094444.80:class shadowController
@@ -362,37 +362,39 @@ class shadowController:
             #@+node:ekr.20080708192807.2:<< about this loop >>
             #@+at
             # 
-            # This loop writes all output lines using a single writer: 
-            # new_private_lines_wtr.
+            # This loop writes all output lines using a single 
+            # writer: new_private_lines_wtr.
             # 
-            # The output lines come from two, and *only* two readers:
+            # The output lines come from two, and *only* two 
+            # readers:
             # 
-            # 1. old_private_lines_rdr delivers the complete original sources. 
-            # All
-            #    sentinels and unchanged regular lines come from this reader.
+            # 1. old_private_lines_rdr delivers the complete 
+            # original sources. All
+            #    sentinels and unchanged regular lines come from 
+            # this reader.
             # 
-            # 2. new_public_lines_rdr delivers the new, changed sources. All 
-            # inserted or
+            # 2. new_public_lines_rdr delivers the new, changed 
+            # sources. All inserted or
             #    replacement text comes from this reader.
             # 
             # Each time through the loop, the following are true:
             # 
-            # - old_i is the index into old_public_lines of the start of the 
-            # present SequenceMatcher opcode.
+            # - old_i is the index into old_public_lines of the 
+            # start of the present SequenceMatcher opcode.
             # 
-            # - mapping[old_i] is the index into old_private_lines of the 
-            # start of the same opcode.
+            # - mapping[old_i] is the index into old_private_lines 
+            # of the start of the same opcode.
             # 
-            # At the start of the loop, the call to copy_sentinels effectively 
-            # skips (deletes)
+            # At the start of the loop, the call to copy_sentinels 
+            # effectively skips (deletes)
             # all previously unwritten non-sentinel lines in 
             # old_private_lines_rdr whose index
             # is less than mapping[old_i].
             # 
-            # As a result, the opcode handlers do not need to delete elements 
-            # from the
-            # old_private_lines_rdr explicitly. This explains why opcode 
-            # handlers for the
+            # As a result, the opcode handlers do not need to delete 
+            # elements from the
+            # old_private_lines_rdr explicitly. This explains why 
+            # opcode handlers for the
             # 'insert' and 'delete' opcodes are identical.
             #@-at
             #@-node:ekr.20080708192807.2:<< about this loop >>

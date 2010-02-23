@@ -7,7 +7,7 @@
 
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 70
 
 import sys
 isPython3 = sys.version_info >= (3,0,0)
@@ -1023,11 +1023,13 @@ def findDefaultDirectory(c):
 #@+node:ekr.20031218072017.3100:wrap_lines
 #@+at 
 #@nonl
-# Important note: this routine need not deal with leading whitespace.  
-# Instead, the caller should simply reduce pageWidth by the width of leading 
-# whitespace wanted, then add that whitespace to the lines returned here.
+# Important note: this routine need not deal with leading 
+# whitespace.  Instead, the caller should simply reduce pageWidth by 
+# the width of leading whitespace wanted, then add that whitespace 
+# to the lines returned here.
 # 
-# The key to this code is the invarient that line never ends in whitespace.
+# The key to this code is the invarient that line never ends in 
+# whitespace.
 #@-at
 #@@c
 
@@ -1677,33 +1679,35 @@ printStack = print_stack
 #@-node:ekr.20041122153823:print_stack (printStack)
 #@+node:ekr.20031218072017.3129:Sherlock... (trace)
 #@+at
-# Starting with this release, you will see trace statements throughout the 
-# code.
-# The trace function is defined in leoGlobals.py; trace implements much of the
-# functionality of my Sherlock tracing package. Traces are more convenient 
-# than
-# print statements for two reasons: 1) you don't need explicit trace names and 
-# 2)
+# Starting with this release, you will see trace statements 
+# throughout the code.
+# The trace function is defined in leoGlobals.py; trace implements 
+# much of the
+# functionality of my Sherlock tracing package. Traces are more 
+# convenient than
+# print statements for two reasons: 1) you don't need explicit trace 
+# names and 2)
 # you can disable them without recompiling.
 # 
-# In the following examples, suppose that the call to trace appears in 
-# function f.
+# In the following examples, suppose that the call to trace appears 
+# in function f.
 # 
-# g.trace(string) prints string if tracing for f has been enabled. For 
-# example,
-# the following statment prints from s[i] to the end of the line if tracing 
-# for f
+# g.trace(string) prints string if tracing for f has been enabled. 
+# For example,
+# the following statment prints from s[i] to the end of the line if 
+# tracing for f
 # has been enabled.
 # 
 #   j = g.skip_line(s,i) ; g.trace(s[i:j])
 # 
-# g.trace(function) exectutes the function if tracing for f has been enabled. 
-# For
+# g.trace(function) exectutes the function if tracing for f has been 
+# enabled. For
 # example,
 # 
 #   g.trace(self.f2)
 # 
-# You enable and disable tracing by calling g.init_trace(args). Examples:
+# You enable and disable tracing by calling g.init_trace(args). 
+# Examples:
 # 
 #   g.init_trace("+*")         # enable all traces
 #   g.init_trace("+a","+b")    # enable traces for a and b
@@ -1713,14 +1717,15 @@ printStack = print_stack
 # 
 # If two arguments are supplied to trace, the first argument is the 
 # "tracepoint
-# name" and the second argument is the "tracepoint action" as shown in the
+# name" and the second argument is the "tracepoint action" as shown 
+# in the
 # examples above. If tracing for the tracepoint name is enabled, the 
 # tracepoint
-# action is printed (if it is a string) or exectuted (if it is a function 
-# name).
+# action is printed (if it is a string) or exectuted (if it is a 
+# function name).
 # 
-# "*" will not match an explicit tracepoint name that starts with a minus 
-# sign.
+# "*" will not match an explicit tracepoint name that starts with a 
+# minus sign.
 # For example,
 # 
 #   g.trace_tag("-nocolor", self.disable_color)
@@ -1737,9 +1742,10 @@ def init_sherlock (args):
 #@+node:ekr.20031218072017.3131:get_Sherlock_args
 #@+at 
 #@nonl
-# It no args are given we attempt to get them from the "SherlockArgs" file.  
-# If there are still no arguments we trace everything.  This default makes 
-# tracing much more useful in Python.
+# It no args are given we attempt to get them from the 
+# "SherlockArgs" file.  If there are still no arguments we trace 
+# everything.  This default makes tracing much more useful in 
+# Python.
 #@-at
 #@@c
 
@@ -2168,7 +2174,8 @@ def handleUrlInUrlNode(url):
     # one ':', followed by,
     # one or more of: (excludes !"#;<>[\]^`|)
     #   $%&'()*+,-./0-9:=?@A-Z_a-z{}~
-    # followed by one of: (same as above, except no minus sign or comma).
+    # followed by one of: (same as above, except no minus sign or 
+    # comma).
     #   $%&'()*+/0-9:=?@A-Z_a-z}~
     #@-at
     #@@c
@@ -2622,9 +2629,10 @@ def readFileIntoString (fn,
 #@nonl
 # Stephen P. Schaefer 9/7/2002
 # 
-# The Unix readline() routine delivers "\r\n" line end strings verbatim, while 
-# the windows versions force the string to use the Unix convention of using 
-# only "\n".  This routine causes the Unix readline to do the same.
+# The Unix readline() routine delivers "\r\n" line end strings 
+# verbatim, while the windows versions force the string to use the 
+# Unix convention of using only "\n".  This routine causes the Unix 
+# readline to do the same.
 #@-at
 #@@c
 
@@ -3105,17 +3113,17 @@ def idleTimeHookHandler(*args,**keys):
 #@+node:ekr.20031218072017.1596:g.doHook
 #@+at 
 #@nonl
-# This global function calls a hook routine.  Hooks are identified by the tag 
-# param.
-# Returns the value returned by the hook routine, or None if the there is an 
-# exception.
+# This global function calls a hook routine.  Hooks are identified 
+# by the tag param.
+# Returns the value returned by the hook routine, or None if the 
+# there is an exception.
 # 
 # We look for a hook routine in three places:
 # 1. c.hookFunction
 # 2. app.hookFunction
 # 3. leoPlugins.doPlugins()
-# We set app.hookError on all exceptions.  Scripts may reset app.hookError to 
-# try again.
+# We set app.hookError on all exceptions.  Scripts may reset 
+# app.hookError to try again.
 #@-at
 #@@c
 
@@ -3529,7 +3537,8 @@ def windows():
 #@+node:ekr.20031218072017.2145:os.path wrappers (leoGlobals.py)
 #@+at 
 #@nonl
-# Note: all these methods return Unicode strings. It is up to the user to
+# Note: all these methods return Unicode strings. It is up to the 
+# user to
 # convert to an encoded string as needed, say when opening a file.
 #@-at
 #@+node:ekr.20031218072017.2146:os_path_abspath
@@ -3844,12 +3853,13 @@ if 0: # testing
 #@+node:ekr.20031218072017.3158:Scanners: calling scanError
 #@+at 
 #@nonl
-# These scanners all call g.scanError() directly or indirectly, so they will 
-# call g.es if they find an error.  g.scanError() also bumps 
-# c.tangleCommands.errors, which is harmless if we aren't tangling, and useful 
-# if we are.
+# These scanners all call g.scanError() directly or indirectly, so 
+# they will call g.es if they find an error.  g.scanError() also 
+# bumps c.tangleCommands.errors, which is harmless if we aren't 
+# tangling, and useful if we are.
 # 
-# These routines are called by the Import routines and the Tangle routines.
+# These routines are called by the Import routines and the Tangle 
+# routines.
 #@-at
 #@+node:ekr.20031218072017.3159:skip_block_comment
 # Scans past a block comment (an old_style C comment).
@@ -3868,8 +3878,9 @@ def skip_block_comment (s,i):
 #@+node:ekr.20031218072017.3160:skip_braces
 #@+at 
 #@nonl
-# This code is called only from the import logic, so we are allowed to try 
-# some tricks.  In particular, we assume all braces are matched in #if blocks.
+# This code is called only from the import logic, so we are allowed 
+# to try some tricks.  In particular, we assume all braces are 
+# matched in #if blocks.
 #@-at
 #@@c
 
@@ -3904,10 +3915,11 @@ def skip_braces(s,i):
 #@+at 
 #@nonl
 # 08-SEP-2002 DTHEIN: Added for PHP import support
-# Skips from the opening to the matching . If no matching is found i is set to 
-# len(s).
+# Skips from the opening to the matching . If no matching is found i 
+# is set to len(s).
 # 
-# This code is called only from the import logic, and only for PHP imports.
+# This code is called only from the import logic, and only for PHP 
+# imports.
 #@-at
 #@@c
 
@@ -4021,8 +4033,10 @@ def skip_pascal_string(s,i):
 #   No one else has it.
 #   EOS
 # 
-# It begins with <<< plus a token (naming same as PHP variable names).
-# It ends with the token on a line by itself (must start in first position.
+# It begins with <<< plus a token (naming same as PHP variable 
+# names).
+# It ends with the token on a line by itself (must start in first 
+# position.
 # 
 #@-at
 #@@c
@@ -4328,9 +4342,10 @@ def skip_id(s,i,chars=None):
 #@+node:ekr.20031218072017.3187:skip_line, skip_to_start/end_of_line
 #@+at 
 #@nonl
-# These methods skip to the next newline, regardless of whether the newline 
-# may be preceeded by a backslash. Consequently, they should be used only when 
-# we know that we are not in a preprocessor directive or string.
+# These methods skip to the next newline, regardless of whether the 
+# newline may be preceeded by a backslash. Consequently, they should 
+# be used only when we know that we are not in a preprocessor 
+# directive or string.
 #@-at
 #@@c
 
@@ -5190,16 +5205,17 @@ def oldCheckVersion( version, againstVersion, condition=">=", stringCompare="0.0
 #@+node:ekr.20031218072017.3098:class Bunch (object)
 #@+at 
 #@nonl
-# From The Python Cookbook:  Often we want to just collect a bunch of stuff 
-# together, naming each item of the bunch; a dictionary's OK for that, but a 
-# small do-nothing class is even handier, and prettier to use.
+# From The Python Cookbook:  Often we want to just collect a bunch 
+# of stuff together, naming each item of the bunch; a dictionary's 
+# OK for that, but a small do-nothing class is even handier, and 
+# prettier to use.
 # 
 # Create a Bunch whenever you want to group a few variables:
 # 
 #     point = Bunch(datum=y, squared=y*y, coord=x)
 # 
-# You can read/write the named attributes you just created, add others, del 
-# some of them, etc:
+# You can read/write the named attributes you just created, add 
+# others, del some of them, etc:
 #     if point.squared > threshold:
 #         point.isok = True
 #@-at
@@ -5380,20 +5396,20 @@ class fileLikeObject:
 #@nonl
 # The following is taken from page 188 of the Python Cookbook.
 # 
-# The following method allows you to add a function as a method of any class. 
-# That
-# is, it converts the function to a method of the class. The method just added 
-# is
-# available instantly to all existing instances of the class, and to all 
-# instances
+# The following method allows you to add a function as a method of 
+# any class. That
+# is, it converts the function to a method of the class. The method 
+# just added is
+# available instantly to all existing instances of the class, and to 
+# all instances
 # created in the future.
 # 
 # The function's first argument should be self.
 # 
-# The newly created method has the same name as the function unless the 
-# optional
-# name argument is supplied, in which case that name is used as the method 
-# name.
+# The newly created method has the same name as the function unless 
+# the optional
+# name argument is supplied, in which case that name is used as the 
+# method name.
 #@-at
 #@@c
 
@@ -5553,11 +5569,11 @@ def getLine (s,i):
 #@+node:ekr.20041219095213:import wrappers
 #@+at 
 #@nonl
-# 1/6/05: The problem with Tkinter is that imp.load_module is equivalent to 
-# reload.
+# 1/6/05: The problem with Tkinter is that imp.load_module is 
+# equivalent to reload.
 # 
-# The solutions is easy: simply return sys.modules.get(moduleName) if 
-# moduleName is in sys.modules!
+# The solutions is easy: simply return sys.modules.get(moduleName) 
+# if moduleName is in sys.modules!
 #@-at
 #@+node:ekr.20040917061619:g.cantImport
 def cantImport (moduleName,pluginName=None,verbose=True):
@@ -5952,12 +5968,12 @@ def optimizeLeadingWhitespace (line,tab_width):
 #@+node:ekr.20040723093558:regularizeTrailingNewlines
 #@+at
 # 
-# The caller should call g.stripBlankLines before calling this routine if 
-# desired.
+# The caller should call g.stripBlankLines before calling this 
+# routine if desired.
 # 
-# This routine does _not_ simply call rstrip(): that would delete all trailing 
-# whitespace-only lines, and in some cases that would change the meaning of 
-# program or data.
+# This routine does _not_ simply call rstrip(): that would delete 
+# all trailing whitespace-only lines, and in some cases that would 
+# change the meaning of program or data.
 # 
 #@-at
 #@@c

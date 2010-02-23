@@ -63,8 +63,9 @@ import leo.core.leoConfig as leoConfig
 # There is a circular dependency between leoCommands and leoEditCommands.
 import leo.core.leoCommands as leoCommands
 
-# New in Leo 4.5 b3: make sure we call the new leoPlugins.init top-level function.
-# This prevents a crash when run is called repeatedly from IPython's lleo extension.
+# Make sure we call the new leoPlugins.init top-level function.
+# This prevents a crash when run is called repeatedly from
+# IPython's lleo extension.
 import leo.core.leoPlugins as leoPlugins
 leoPlugins.init()
 
@@ -246,8 +247,10 @@ def scanOptions():
     parser.add_option('-c', '--config', dest="one_config_path")
     parser.add_option('--debug',        action="store_true",dest="debug")
     parser.add_option('-f', '--file',   dest="fileName")
-    parser.add_option('--gui',          dest="gui",help = 'gui to use (qt/tk/qttabs)')
-    #parser.add_option('--help',         action="store_true",dest="help_option")
+    parser.add_option('--gui',
+        dest="gui",help = 'gui to use (qt/tk/qttabs)')
+    #parser.add_option('--help',
+        # action="store_true",dest="help_option")
     parser.add_option('--ipython',      action="store_true",dest="use_ipython")
     parser.add_option('--no-cache',     action="store_true",dest='no_cache')
     parser.add_option('--silent',       action="store_true",dest="silent")
@@ -399,7 +402,8 @@ def createFrame (fileName,relativeFileName,script):
     frame.startupWindow = True
     if c.chapterController:
         c.chapterController.finishCreate()
-        c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+        c.setChanged(False)
+            # Clear the changed flag set when creating the @chapters node.
     # Call the 'new' hook for compatibility with plugins.
     g.doHook("new",old_c=None,c=c,new_c=c)
 
@@ -500,13 +504,16 @@ http://python.org/download/
                         self.message=message
 
                         self.buttonsFrame = None # Frame to hold typical dialog buttons.
-                        self.defaultButtonCommand = None  # Command to call when user closes the window by clicking the close box.
+                        self.defaultButtonCommand = None
+                            # Command to call when user closes the window
+                            # by clicking the close box.
                         self.frame = None # The outermost frame.
                         self.root = None # Created in createTopFrame.
                         self.top = None # The toplevel Tk widget.
 
                         self.createTopFrame()
-                        buttons = {"text":"OK","command":self.okButton,"default":True}, # Singleton tuple.
+                        buttons = {"text":"OK","command":self.okButton,"default":True},
+                            # Singleton tuple.
                         self.createButtons(buttons)
                         self.top.bind("<Key>", self.onKey)
                     #@-node:ekr.20080822065427.9:__init__ (emergencyDialog)
@@ -515,13 +522,15 @@ http://python.org/download/
 
                         """Create a row of buttons.
 
-                        buttons is a list of dictionaries containing the properties of each button."""
+                        buttons is a list of dictionaries containing
+                        the properties of each button."""
 
                         assert(self.frame)
                         self.buttonsFrame = f = Tk.Frame(self.top)
                         f.pack(side="top",padx=30)
 
-                        # Buttons is a list of dictionaries, with an empty dictionary at the end if there is only one entry.
+                        # Buttons is a list of dictionaries, with an empty dictionary
+                        # at the end if there is only one entry.
                         buttonList = []
                         for d in buttons:
                             text = d.get("text","<missing button name>")
@@ -530,7 +539,8 @@ http://python.org/download/
                             command = d.get("command",None)
                             bd = g.choose(isDefault,4,2)
 
-                            b = Tk.Button(f,width=6,text=text,bd=bd,underline=underline,command=command)
+                            b = Tk.Button(f,width=6,text=text,bd=bd,
+                                underline=underline,command=command)
                             b.pack(side="left",padx=5,pady=10)
                             buttonList.append(b)
 
@@ -587,7 +597,9 @@ http://python.org/download/
                     #@-others
                 #@-node:ekr.20080822065427.8:<< define emergency dialog class >>
                 #@nl
-                d = emergencyDialog(title='Python Version Error',message=message)
+                d = emergencyDialog(
+                    title='Python Version Error',
+                    message=message)
                 d.run()
             except Exception:
                 pass
@@ -601,7 +613,8 @@ http://python.org/download/
 #@+node:ekr.20031218072017.2607:profile_leo
 #@+at 
 #@nonl
-# To gather statistics, do the following in a Python window, not idle:
+# To gather statistics, do the following in a Python window, not 
+# idle:
 # 
 #     import leo
 #     import leo.core.runLeo as runLeo
@@ -620,8 +633,6 @@ def profile_leo ():
     import leo.core.leoGlobals as g
     import os
 
-    # name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
-    # name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
     theDir = os.getcwd()
 
     # On Windows, name must be a plain string. An apparent cProfile bug.

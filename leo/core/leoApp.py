@@ -5,7 +5,7 @@
 
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 60
 
 import leo.core.leoGlobals as g
 import leo.core.leoCache as leoCache
@@ -29,13 +29,15 @@ class LeoApp:
         # These ivars are the global vars of this program.
         self.afterHandler = None
         self.atPathInBodyWarning = None # Set by get_directives_dict
-            # The headline of the @<file> node containing an @path directive in the body.
+            # The headline of the @<file> node containing
+            # an @path directive in the body.
         self.batchMode = False # True: run in batch mode.
         self.commandName = None # The name of the command being executed.
         self.config = None # The leoConfig instance.
         self.count = 0 # General purpose debugging count.
         self.db = None # Set to a leoCacher later.
-        self.debug = False # True: enable extra debugging tests (not used at present).
+        self.debug = False
+            # True: enable extra debugging tests (not used at present).
             # WARNING: this could greatly slow things down.
         self.debugSwitch = 0
             # 0: default behavior
@@ -44,18 +46,23 @@ class LeoApp:
         self.disableSave = False
         self.enableUnitTest = True
         self.extensionsDir = None
-        self.globalConfigDir = None # The directory that is assumed to contain the global configuration files.
+        self.globalConfigDir = None
+            # The directory assumed to contain the global configuration files.
         self.globalOpenDir = None # The directory last used to open a file.
         self.gui = None # The gui class.
         self.hasOpenWithMenu = False # True: open with plugin has been loaded.
         self.hookError = False # True: suppress further calls to hooks.
         self.hookFunction = None # Application wide hook function.
         self.homeDir = None # The user's home directory.
-        self.homeLeoDir = None # The '.leo' subdirectory of the user's home directory. New in Leo 4.5b4.
-        self.homeSettingsPrefix = '.' # prepend to "myLeoSettings.leo" and <machineName>LeoSettings.leo
+        self.homeLeoDir = None
+            # The '.leo' subdirectory of the user's home directory.
+        self.homeSettingsPrefix = '.'
+            # prepend to "myLeoSettings.leo" and <machineName>LeoSettings.leo
         self.idle_imported = False # True: we have done an import idle
-        self.idleTimeDelay = 100 # Delay in msec between calls to "idle time" hook.
-        self.idleTimeHook = False # True: the global idleTimeHookHandler will reshedule itself.
+        self.idleTimeDelay = 100
+            # Delay in msec between calls to "idle time" hook.
+        self.idleTimeHook = False
+            # True: the global idleTimeHookHandler will reshedule itself.
         self.inBridge = False # True: running from leoBridge module.
         self.initing = True # True: we are initiing the app.
         self.killed = False # True: we are about to destroy the root window.
@@ -69,21 +76,27 @@ class LeoApp:
         self.menuWarningsGiven = False # True: supress warnings in menu code.
         self.nodeIndices = None # Singleton node indices instance.
         self.numberOfWindows = 0 # Number of opened windows.
-        self.oneConfigFilename = '' # If non-empty, the name of a single configuration file.
+        self.oneConfigFilename = ''
+            # If non-empty, the name of a single configuration file.
         self.openWithFiles = [] # List of data used by Open With command.
-        self.openWithFileNum = 0 # Used to generate temp file names for Open With command.
-        self.openWithTable = None # The table passed to createOpenWithMenuFromTable.
+        self.openWithFileNum = 0
+            # Used to generate temp file names for Open With command.
+        self.openWithTable = None
+            # The table passed to createOpenWithMenuFromTable.
         self.positions = 0 # Count of the number of positions generated.
         self.printWaiting = [] # Queue of messages to be sent to the printer.
         self.qt_use_tabs = False # True: allow tabbed main window.
         self.quitting = False # True if quitting.  Locks out some events.
-        self.realMenuNameDict = {} # Contains translations of menu names and menu item names.
+        self.realMenuNameDict = {}
+            # Contains translations of menu names and menu item names.
         self.root = None # The hidden main window. Set later.
         self.searchDict = {} # For communication between find/change scripts.
         self.scanErrors = 0 # The number of errors seen by g.scanError.
-        self.scriptDict = {} # For communication between Execute Script command and scripts.
+        self.scriptDict = {}
+            # For communication between Execute Script command and scripts.
         self.silentMode = False # True if signon is more silent.
-        self.statsDict = {} # Statistics dict used by g.stat, g.clear_stats, g.print_stats.
+        self.statsDict = {}
+            # Statistics dict used by g.stat, g.clear_stats, g.print_stats.
         self.trace = False # True: enable debugging traces.
         self.trace_gc = False # defined in run()
         self.trace_gc_calls = False # defined in run()
@@ -96,9 +109,12 @@ class LeoApp:
         self.unitTestDict = {} # For communication between unit tests and code.
         self.unitTesting = False # True if unit testing.
         self.useIpython = False
-        self.use_psyco = False # Can't be a config param because it is used before config module can be inited.
+        self.use_psyco = False
+            # Can't be a config param because it is used
+            # before config module can be inited.
         self.user_xresources_path = None # Resource file for Tk/tcl.
-        self.windowList = [] # Global list of all frames.  Does not include hidden root window.
+        self.windowList = []
+            # Global list of all frames.  Does not include hidden root window.
 
         # Global panels.  Destroyed when Leo ends.
         self.pythonFrame = None
@@ -109,7 +125,8 @@ class LeoApp:
 
         self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
         self.prolog_postfix_string = "?>"
-        self.prolog_namespace_string = 'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
+        self.prolog_namespace_string = \
+            'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
         #@nonl
         #@-node:ekr.20031218072017.1417:<< define global constants >>
         #@nl
@@ -157,7 +174,8 @@ class LeoApp:
             "tcltk"         : "#",
             "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
             "unknown"       : "#", # Set when @comment is seen.
-            "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+            "unknown_language" : '#--unknown-language--',
+                # For unknown extensions in @shadow files.
             "vim"           : "\"",
             "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
             "xml"           : "<!-- -->",
@@ -302,7 +320,8 @@ class LeoApp:
             # There is already a dialog open asking what to do.
             return False
 
-        g.app.config.writeRecentFilesFile(c) # Make sure .leoRecentFiles.txt is written.
+        g.app.config.writeRecentFilesFile(c)
+            # Make sure .leoRecentFiles.txt is written.
 
         if c.changed:
             c.promptingForClose = True
@@ -312,7 +331,8 @@ class LeoApp:
 
         g.app.setLog(None) # no log until we reactive a window.
 
-        g.doHook("close-frame",c=c) # This may remove frame from the window list.
+        g.doHook("close-frame",c=c)
+            # This may remove frame from the window list.
 
         if frame in g.app.windowList:
             g.app.destroyWindow(frame)
@@ -374,7 +394,8 @@ class LeoApp:
     #@+node:ekr.20031218072017.2610:app.createTkGui
     def createTkGui (self,fileName='',verbose=False):
 
-        """A convenience routines for plugins to create the default Tk gui class."""
+        """A convenience routines for plugins to 
+        create the default Tk gui class."""
 
         leoPlugins.loadOnePlugin ('tkGui',verbose=verbose)
 
@@ -474,7 +495,8 @@ class LeoApp:
 
         g.app.killed = True
             # Disable all further hooks and events.
-            # Alas, "idle" events can still be called even after the following code.
+            # Alas, "idle" events can still be called
+            # even after the following code.
 
         if g.app.afterHandler:
             # TK bug: This appears to have no effect, at least on Windows.
@@ -538,10 +560,12 @@ class LeoApp:
 
         # Create the commander and its subcommanders.
         # This takes about 3/4 sec when called by the leoBridge module.
-        c = leoCommands.Commands(frame,fileName,relativeFileName=relativeFileName)
+        c = leoCommands.Commands(frame,fileName,
+            relativeFileName=relativeFileName)
 
         if not app.initing:
-            g.doHook("before-create-leo-frame",c=c) # Was 'onCreate': too confusing.
+            g.doHook("before-create-leo-frame",c=c)
+                # Was 'onCreate': too confusing.
 
         frame.finishCreate(c)
         c.finishCreate(initEditCommanders)
@@ -581,7 +605,7 @@ class LeoApp:
         # This would be set by in Python's sitecustomize.py file.
 
         # Use hasattr & getattr to suppress pylint warning.
-        # We also have to use a "non-constant" attribute to suppress another warning!
+        # Use a "non-constant" attribute to suppress another warning!
 
         nonConstantAttr = "leoID"
 
@@ -589,7 +613,7 @@ class LeoApp:
             g.app.leoID = getattr(sys,nonConstantAttr)
             if verbose and not g.app.silentMode and not g.app.unitTesting:
                 g.es_print("leoID=",g.app.leoID,spaces=False,color='red')
-            # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+            # Careful: periods in the id field of a gnx will corrupt the .leo file!
             g.app.leoID = g.app.leoID.replace('.','-')
             return
         else:
@@ -608,14 +632,16 @@ class LeoApp:
                     f.close()
                     if s and len(s) > 0:
                         g.app.leoID = s.strip()
-                        # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+                        # Careful: periods in the id field of a gnx
+                        # will corrupt the .leo file!
                         g.app.leoID = g.app.leoID.replace('.','-')
                         if verbose and not g.app.silentMode and not g.app.unitTesting:
                             g.es('leoID=',g.app.leoID,' (in ',theDir,')',
                                 spaces=False,color="red")
                         return
                     elif verbose and not g.app.unitTesting:
-                        g.es('empty ',tag,' (in ',theDir,')',spaces=False,color = "red")
+                        g.es('empty ',tag,' (in ',theDir,')',spaces=False,
+                            color = "red")
                 except IOError:
                     g.app.leoID = None
                 except Exception:
@@ -630,9 +656,11 @@ class LeoApp:
             theId = os.getenv('USER')
             if theId:
                 if verbose and not g.app.unitTesting:
-                    g.es("setting leoID from os.getenv('USER'):",repr(theId),color='blue')
+                    g.es("setting leoID from os.getenv('USER'):",
+                        repr(theId),color='blue')
                 g.app.leoID = theId
-                # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+                # Careful: periods in the id field of a gnx
+                # will corrupt the .leo file!
                 g.app.leoID = g.app.leoID.replace('.','-')
                 return
 
@@ -660,7 +688,7 @@ class LeoApp:
         # Bug fix: 2/6/05: put result in g.app.leoID.
         g.app.leoID = leoid
 
-        # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+        # Careful: periods in the id field of a gnx will corrupt the .leo file!
         g.app.leoID = g.app.leoID.replace('.','-')
 
         # g.trace(g.app.leoID)

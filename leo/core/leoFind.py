@@ -4,7 +4,7 @@
 
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 70
 
 import leo.core.leoGlobals as g
 import re
@@ -13,64 +13,78 @@ import re
 #@+node:ekr.20031218072017.2414:<< Theory of operation of find/change >>
 #@@nocolor-node
 #@+at
-# The find and change commands are tricky; there are many details that must be
-# handled properly. This documentation describes the leo.py code. Previous
-# versions of Leo used an inferior scheme. The following principles govern the
+# The find and change commands are tricky; there are many details 
+# that must be
+# handled properly. This documentation describes the leo.py code. 
+# Previous
+# versions of Leo used an inferior scheme. The following principles 
+# govern the
 # leoFind class:
 # 
-# 1. Find and Change commands initialize themselves using only the state of 
-# the
-#    present Leo window. In particular, the Find class must not save internal
-#    state information from one invocation to the next. This means that when 
-# the
-#    user changes the nodes, or selects new text in headline or body text, 
-# those
-#    changes will affect the next invocation of any Find or Change command.
-#    Failure to follow this principle caused all kinds of problems in the 
-# Borland
-#    and Macintosh codes. There is one exception to this rule: we must 
-# remember
-#    where interactive wrapped searches start. This principle simplifies the 
-# code
-#    because most ivars do not persist. However, each command must ensure that 
-# the
-#    Leo window is left in a state suitable for restarting the incremental
-#    (interactive) Find and Change commands. Details of initialization are
+# 1. Find and Change commands initialize themselves using only the 
+# state of the
+#    present Leo window. In particular, the Find class must not save 
+# internal
+#    state information from one invocation to the next. This means 
+# that when the
+#    user changes the nodes, or selects new text in headline or body 
+# text, those
+#    changes will affect the next invocation of any Find or Change 
+# command.
+#    Failure to follow this principle caused all kinds of problems 
+# in the Borland
+#    and Macintosh codes. There is one exception to this rule: we 
+# must remember
+#    where interactive wrapped searches start. This principle 
+# simplifies the code
+#    because most ivars do not persist. However, each command must 
+# ensure that the
+#    Leo window is left in a state suitable for restarting the 
+# incremental
+#    (interactive) Find and Change commands. Details of 
+# initialization are
 #    discussed below.
 # 
-# 2. The Find and Change commands must not change the state of the outline or 
-# body
-#    pane during execution. That would cause severe flashing and slow down the
-#    commands a great deal. In particular, c.selectVnode and c.editPosition
+# 2. The Find and Change commands must not change the state of the 
+# outline or body
+#    pane during execution. That would cause severe flashing and 
+# slow down the
+#    commands a great deal. In particular, c.selectVnode and 
+# c.editPosition
 #    methods must not be called while looking for matches.
 # 
-# 3. When incremental Find or Change commands succeed they must leave the Leo
-#    window in the proper state to execute another incremental command. We 
-# restore
-#    the Leo window as it was on entry whenever an incremental search fails 
-# and
+# 3. When incremental Find or Change commands succeed they must 
+# leave the Leo
+#    window in the proper state to execute another incremental 
+# command. We restore
+#    the Leo window as it was on entry whenever an incremental 
+# search fails and
 #    after any Find All and Change All command.
 # 
-# Initialization involves setting the c, p, in_headline, wrapping and s_ctrl
-# ivars. Setting in_headline is tricky; we must be sure to retain the state of 
-# the
-# outline pane until initialization is complete. Initializing the Find All and
-# Change All commands is much easier because such initialization does not 
-# depend
+# Initialization involves setting the c, p, in_headline, wrapping 
+# and s_ctrl
+# ivars. Setting in_headline is tricky; we must be sure to retain 
+# the state of the
+# outline pane until initialization is complete. Initializing the 
+# Find All and
+# Change All commands is much easier because such initialization 
+# does not depend
 # on the state of the Leo window.
 # 
-# Using Tk.Text widgets for both headlines and body text results in a huge
-# simplification of the code. Indeed, the searching code does not know whether 
-# it
-# is searching headline or body text. The search code knows only that s_ctrl 
-# is a
-# Tk.Text widget that contains the text to be searched or changed and the 
-# insert
-# and sel Tk attributes of self.search_text indicate the range of text to be
-# searched. Searching headline and body text simultaneously is complicated. 
-# The
-# selectNextPosition() method handles the many details involved by setting 
-# s_ctrl
+# Using Tk.Text widgets for both headlines and body text results in 
+# a huge
+# simplification of the code. Indeed, the searching code does not 
+# know whether it
+# is searching headline or body text. The search code knows only 
+# that s_ctrl is a
+# Tk.Text widget that contains the text to be searched or changed 
+# and the insert
+# and sel Tk attributes of self.search_text indicate the range of 
+# text to be
+# searched. Searching headline and body text simultaneously is 
+# complicated. The
+# selectNextPosition() method handles the many details involved by 
+# setting s_ctrl
 # and its insert and sel attributes.
 #@-at
 #@nonl
@@ -194,13 +208,14 @@ class leoFind:
 
         #@+at
         # New in 4.3:
-        # - These are the names of leoFind ivars. (no more _flag hack).
-        # - There are no corresponding commander ivars to keep in synch 
-        # (hurray!)
-        # - These ivars are inited (in the subclass by init) when this class 
-        # is created.
-        # - These ivars are updated by update_ivars just before doing any 
-        # find.
+        # - These are the names of leoFind ivars. (no more _flag 
+        # hack).
+        # - There are no corresponding commander ivars to keep in 
+        # synch (hurray!)
+        # - These ivars are inited (in the subclass by init) when 
+        # this class is created.
+        # - These ivars are updated by update_ivars just before 
+        # doing any find.
         #@-at
         #@@c
 
@@ -252,11 +267,12 @@ class leoFind:
 
         #@+at 
         #@nonl
-        # Initializing a wrapped search is tricky.  The search() method will 
-        # fail if p==wrapPosition and pos >= wrapPos.  selectNextPosition() 
-        # will fail if p == wrapPosition.  We set wrapPos on entry, before the 
-        # first search.  We set wrapPosition in selectNextPosition after the 
-        # first search fails.  We also set wrapPosition on exit if the first 
+        # Initializing a wrapped search is tricky.  The search() 
+        # method will fail if p==wrapPosition and pos >= wrapPos.  
+        # selectNextPosition() will fail if p == wrapPosition.  We 
+        # set wrapPos on entry, before the first search.  We set 
+        # wrapPosition in selectNextPosition after the first search 
+        # fails.  We also set wrapPosition on exit if the first 
         # search suceeds.
         #@-at
         #@@c
@@ -445,13 +461,15 @@ class leoFind:
     #@+node:ekr.20031218072017.2293:batchChange (sets start of change-all group)
     #@+at 
     #@nonl
-    # This routine performs a single batch change operation, updating the head 
-    # or body string of p and leaving the result in s_ctrl.  We update the 
-    # body if we are changing the body text of c.currentVnode().
+    # This routine performs a single batch change operation, 
+    # updating the head or body string of p and leaving the result 
+    # in s_ctrl.  We update the body if we are changing the body 
+    # text of c.currentVnode().
     # 
-    # s_ctrl contains the found text on entry and contains the changed text on 
-    # exit.  pos and pos2 indicate the selection.  The selection will never be 
-    # empty. NB: we can not assume that self.p is visible.
+    # s_ctrl contains the found text on entry and contains the 
+    # changed text on exit.  pos and pos2 indicate the selection.  
+    # The selection will never be empty. NB: we can not assume that 
+    # self.p is visible.
     #@-at
     #@@c
 
@@ -950,10 +968,10 @@ class leoFind:
     #@+at
     # rfind(sub [,start [,end]])
     # 
-    # Return the highest index in the string where substring sub is found, 
-    # such that
-    # sub is contained within s[start,end]. Optional arguments start and end 
-    # are
+    # Return the highest index in the string where substring sub is 
+    # found, such that
+    # sub is contained within s[start,end]. Optional arguments start 
+    # and end are
     # interpreted as in slice notation. Return -1 on failure.
     #@-at
     #@@c

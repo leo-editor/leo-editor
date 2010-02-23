@@ -6,7 +6,7 @@
 
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 70
 
 #@<< imports >>
 #@+node:ekr.20040712045933:<< imports  >> (leoCommands)
@@ -839,10 +839,10 @@ class baseCommands (object):
         #@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
         #@+at 
         #@nonl
-        # If this is the only open window was opened when the app started, and 
-        # the window has never been written to or saved, then we will 
-        # automatically close that window if this open command completes 
-        # successfully.
+        # If this is the only open window was opened when the app 
+        # started, and the window has never been written to or 
+        # saved, then we will automatically close that window if 
+        # this open command completes successfully.
         #@-at
         #@@c
 
@@ -1454,10 +1454,10 @@ class baseCommands (object):
         #@    << Set closeFlag if the only open window is empty >>
         #@+node:ekr.20031218072017.2082:<< Set closeFlag if the only open window is empty >>
         #@+at
-        # If this is the only open window was opened when the app started, and 
-        # the window
-        # has never been written to or saved, then we will automatically close 
-        # that window
+        # If this is the only open window was opened when the app 
+        # started, and the window
+        # has never been written to or saved, then we will 
+        # automatically close that window
         # if this open command completes successfully.
         #@-at
         #@@c
@@ -3714,15 +3714,16 @@ class baseCommands (object):
             #@+node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
             #@+at
             # 
-            # We don't know yet which nodes will be affected by the paste, so 
-            # we remember
+            # We don't know yet which nodes will be affected by the 
+            # paste, so we remember
             # everything. This is expensive, but foolproof.
             # 
-            # The alternative is to try to remember the 'before' values of 
-            # tnodes in the
-            # fileCommands read logic. Several experiments failed, and the 
-            # code is very ugly.
-            # In short, it seems wise to do things the foolproof way.
+            # The alternative is to try to remember the 'before' 
+            # values of tnodes in the
+            # fileCommands read logic. Several experiments failed, 
+            # and the code is very ugly.
+            # In short, it seems wise to do things the foolproof 
+            # way.
             # 
             #@-at
             #@@c
@@ -4170,9 +4171,10 @@ class baseCommands (object):
                     #@-node:ekr.20040314035615.2:assert consistency of parent and child links
                     #@+node:ekr.20080426051658.1:assert consistency of parent and children arrays
                     #@+at
-                    # Every nodes gets visited, so we only check consistency
-                    # between p and its parent, not between p and its 
-                    # children.
+                    # Every nodes gets visited, so we only check 
+                    # consistency
+                    # between p and its parent, not between p and 
+                    # its children.
                     # 
                     # In other words, this is a strong test.
                     #@-at
@@ -5400,11 +5402,11 @@ class baseCommands (object):
     #@-node:ekr.20031218072017.1767:demote
     #@+node:ekr.20031218072017.1768:moveOutlineDown
     #@+at
-    # Moving down is more tricky than moving up; we can't move p to be a child 
-    # of
+    # Moving down is more tricky than moving up; we can't move p to 
+    # be a child of
     # itself. An important optimization: we don't have to call
-    # checkMoveWithParentWithWarning() if the parent of the moved node remains 
-    # the
+    # checkMoveWithParentWithWarning() if the parent of the moved 
+    # node remains the
     # same.
     #@-at
     #@@c
@@ -7075,14 +7077,17 @@ class baseCommands (object):
     #@+node:ekr.20060906134053:c.findRootPosition New in 4.4.2
     #@+at 
     #@nonl
-    # Aha! The Commands class can easily recompute the root position::
+    # Aha! The Commands class can easily recompute the root 
+    # position::
     # 
     #     c.setRootPosition(c.findRootPosition(p))
     # 
     # Any command that changes the outline should call this code.
     # 
-    # As a result, the fundamental p and v methods that alter trees need never
-    # convern themselves about reporting the changed root.  A big improvement.
+    # As a result, the fundamental p and v methods that alter trees 
+    # need never
+    # convern themselves about reporting the changed root.  A big 
+    # improvement.
     #@-at
     #@@c
 
@@ -7750,7 +7755,8 @@ class baseCommands (object):
     #@+node:ekr.20031218072017.2999:Syntax coloring interface
     #@+at 
     #@nonl
-    # These routines provide a convenient interface to the syntax colorer.
+    # These routines provide a convenient interface to the syntax 
+    # colorer.
     #@-at
     #@+node:ekr.20031218072017.3000:updateSyntaxColorer
     def updateSyntaxColorer(self,v):

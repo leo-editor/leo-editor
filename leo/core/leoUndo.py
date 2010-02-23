@@ -4,66 +4,79 @@
 
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 70
 
 #@<< How Leo implements unlimited undo >>
 #@+node:ekr.20031218072017.2413:<< How Leo implements unlimited undo >>
 #@+at
 # 
-# Think of the actions that may be Undone or Redone as a string of beads
-# (g.Bunches) containing all information needed to undo _and_ redo an 
-# operation.
+# Think of the actions that may be Undone or Redone as a string of 
+# beads
+# (g.Bunches) containing all information needed to undo _and_ redo 
+# an operation.
 # 
-# A bead pointer points to the present bead. Undoing an operation moves the 
-# bead
-# pointer backwards; redoing an operation moves the bead pointer forwards. The
-# bead pointer points in front of the first bead when Undo is disabled. The 
-# bead
+# A bead pointer points to the present bead. Undoing an operation 
+# moves the bead
+# pointer backwards; redoing an operation moves the bead pointer 
+# forwards. The
+# bead pointer points in front of the first bead when Undo is 
+# disabled. The bead
 # pointer points at the last bead when Redo is disabled.
 # 
-# The Undo command uses the present bead to undo the action, then moves the 
-# bead
-# pointer backwards. The Redo command uses the bead after the present bead to 
-# redo
-# the action, then moves the bead pointer forwards. The list of beads does not
+# The Undo command uses the present bead to undo the action, then 
+# moves the bead
+# pointer backwards. The Redo command uses the bead after the 
+# present bead to redo
+# the action, then moves the bead pointer forwards. The list of 
+# beads does not
 # branch; all undoable operations (except the Undo and Redo commands 
 # themselves)
 # delete any beads following the newly created bead.
 # 
-# New in Leo 4.3: User (client) code should call u.beforeX and u.afterX 
-# methods to
-# create a bead describing the operation that is being performed. (By 
-# convention,
-# the code sets u = c.undoer for undoable operations.) Most u.beforeX methods
-# return 'undoData' that the client code merely passes to the corresponding
-# u.afterX method. This data contains the 'before' snapshot. The u.afterX 
-# methods
-# then create a bead containing both the 'before' and 'after' snapshots.
+# New in Leo 4.3: User (client) code should call u.beforeX and 
+# u.afterX methods to
+# create a bead describing the operation that is being performed. 
+# (By convention,
+# the code sets u = c.undoer for undoable operations.) Most 
+# u.beforeX methods
+# return 'undoData' that the client code merely passes to the 
+# corresponding
+# u.afterX method. This data contains the 'before' snapshot. The 
+# u.afterX methods
+# then create a bead containing both the 'before' and 'after' 
+# snapshots.
 # 
-# New in Leo 4.3: u.beforeChangeGroup and u.afterChangeGroup allow multiple 
-# calls
-# to u.beforeX and u.afterX methods to be treated as a single undoable entry. 
-# See
-# the code for the Change All, Sort, Promote and Demote commands for examples.
-# u.before/afterChangeGroup substantially reduce the number of u.before/afterX
+# New in Leo 4.3: u.beforeChangeGroup and u.afterChangeGroup allow 
+# multiple calls
+# to u.beforeX and u.afterX methods to be treated as a single 
+# undoable entry. See
+# the code for the Change All, Sort, Promote and Demote commands for 
+# examples.
+# u.before/afterChangeGroup substantially reduce the number of 
+# u.before/afterX
 # methods needed.
 # 
-# New in Leo 4.3: It would be possible for plugins or other code to define 
-# their
-# own u.before/afterX methods. Indeed, u.afterX merely needs to set the
-# bunch.undoHelper and bunch.redoHelper ivars to the methods used to undo and 
-# redo
-# the operation. See the code for the various u.before/afterX methods for
+# New in Leo 4.3: It would be possible for plugins or other code to 
+# define their
+# own u.before/afterX methods. Indeed, u.afterX merely needs to set 
+# the
+# bunch.undoHelper and bunch.redoHelper ivars to the methods used to 
+# undo and redo
+# the operation. See the code for the various u.before/afterX 
+# methods for
 # guidance.
 # 
-# New in Leo 4.3: p.setDirty and p.setAllAncestorAtFileNodesDirty now return a
-# 'dirtyVnodeList' that all vnodes that became dirty as the result of an
-# operation. More than one list may be generated: client code is responsible 
-# for
-# merging lists using the pattern dirtyVnodeList.extend(dirtyVnodeList2)
+# New in Leo 4.3: p.setDirty and p.setAllAncestorAtFileNodesDirty 
+# now return a
+# 'dirtyVnodeList' that all vnodes that became dirty as the result 
+# of an
+# operation. More than one list may be generated: client code is 
+# responsible for
+# merging lists using the pattern 
+# dirtyVnodeList.extend(dirtyVnodeList2)
 # 
-# I first saw this model of unlimited undo in the documentation for Apple's 
-# Yellow Box classes.
+# I first saw this model of unlimited undo in the documentation for 
+# Apple's Yellow Box classes.
 #@-at
 #@-node:ekr.20031218072017.2413:<< How Leo implements unlimited undo >>
 #@nl
@@ -433,29 +446,30 @@ class undoer:
         #@    << about u.saveTree >>
         #@+node:EKR.20040530114124:<< about u.saveTree >>
         #@+at 
-        # The old code made a free-standing copy of the tree using v.copy and 
-        # t.copy. This
-        # looks "elegant" and is WRONG. The problem is that it can not handle 
-        # clones
-        # properly, especially when some clones were in the "undo" tree and 
-        # some were not.
+        # The old code made a free-standing copy of the tree using 
+        # v.copy and t.copy. This
+        # looks "elegant" and is WRONG. The problem is that it can 
+        # not handle clones
+        # properly, especially when some clones were in the "undo" 
+        # tree and some were not.
         # Moreover, it required complex adjustments to t.vnodeLists.
         # 
-        # Instead of creating new nodes, the new code creates all information 
-        # needed to
-        # properly restore the vnodes and tnodes. It creates a list of tuples, 
-        # on tuple
+        # Instead of creating new nodes, the new code creates all 
+        # information needed to
+        # properly restore the vnodes and tnodes. It creates a list 
+        # of tuples, on tuple
         # for each vnode in the tree. Each tuple has the form,
         # 
         # (vnodeInfo, tnodeInfo)
         # 
-        # where vnodeInfo and tnodeInfo are dicts contain all info needed to 
-        # recreate the
-        # nodes. The v.createUndoInfoDict and t.createUndoInfoDict methods 
-        # correspond to
+        # where vnodeInfo and tnodeInfo are dicts contain all info 
+        # needed to recreate the
+        # nodes. The v.createUndoInfoDict and t.createUndoInfoDict 
+        # methods correspond to
         # the old v.copy and t.copy methods.
         # 
-        # Aside: Prior to 4.2 Leo used a scheme that was equivalent to the
+        # Aside: Prior to 4.2 Leo used a scheme that was equivalent 
+        # to the
         # createUndoInfoDict info, but quite a bit uglier.
         #@-at
         #@nonl
@@ -1127,12 +1141,12 @@ class undoer:
         #@    << compute leading, middle & trailing  lines >>
         #@+node:ekr.20031218072017.1491:<< compute leading, middle & trailing  lines >>
         #@+at
-        # Incremental undo typing is similar to incremental syntax coloring. 
-        # We compute
-        # the number of leading and trailing lines that match, and save both 
-        # the old and
-        # new middle lines. NB: the number of old and new middle lines may be 
-        # different.
+        # Incremental undo typing is similar to incremental syntax 
+        # coloring. We compute
+        # the number of leading and trailing lines that match, and 
+        # save both the old and
+        # new middle lines. NB: the number of old and new middle 
+        # lines may be different.
         #@-at
         #@@c
 
@@ -1201,7 +1215,8 @@ class undoer:
         # Undo: Given newText, recreate oldText.
         # Redo: Given oldText, recreate oldText.
         # 
-        # The "given" texts for the undo and redo routines are simply p.b.
+        # The "given" texts for the undo and redo routines are 
+        # simply p.b.
         #@-at
         #@@c
 
@@ -1244,15 +1259,15 @@ class undoer:
         #@+node:ekr.20040324061854.3:<< adjust the undo stack, clearing all forward entries >>
         #@+at 
         #@nonl
-        # New in Leo 4.3. Instead of creating a new bead on every character, 
-        # we may adjust the top bead:
+        # New in Leo 4.3. Instead of creating a new bead on every 
+        # character, we may adjust the top bead:
         # 
-        # word granularity: adjust the top bead if the typing would continue 
-        # the word.
-        # line granularity: adjust the top bead if the typing is on the same 
-        # line.
-        # node granularity: adjust the top bead if the typing is anywhere on 
-        # the same node.
+        # word granularity: adjust the top bead if the typing would 
+        # continue the word.
+        # line granularity: adjust the top bead if the typing is on 
+        # the same line.
+        # node granularity: adjust the top bead if the typing is 
+        # anywhere on the same node.
         #@-at
         #@@c
 
@@ -1265,10 +1280,10 @@ class undoer:
         #@+node:ekr.20050125220613:<< set newBead if we can't share the previous bead >>
         #@+at 
         #@nonl
-        # We must set newBead to True if undo_type is not 'Typing' so that 
-        # commands that
-        # get treated like typing (by updateBodyPane and onBodyChanged) don't 
-        # get lumped
+        # We must set newBead to True if undo_type is not 'Typing' 
+        # so that commands that
+        # get treated like typing (by updateBodyPane and 
+        # onBodyChanged) don't get lumped
         # with 'real' typing.
         #@-at
         #@@c

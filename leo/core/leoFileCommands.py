@@ -2,7 +2,7 @@
 #@+node:ekr.20031218072017.3018:@thin leoFileCommands.py
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 70
 
 #@<< imports >>
 #@+node:ekr.20050405141130:<< imports >> (leoFileCommands)
@@ -951,10 +951,10 @@ class baseFileCommands:
         #@    << Set the default directory >>
         #@+node:ekr.20071211134300:<< Set the default directory >>
         #@+at
-        # The most natural default directory is the directory containing the 
-        # .leo file
-        # that we are about to open. If the user has specified the "Default 
-        # Directory"
+        # The most natural default directory is the directory 
+        # containing the .leo file
+        # that we are about to open. If the user has specified the 
+        # "Default Directory"
         # preference that will over-ride what we are about to set.
         #@-at
         #@@c

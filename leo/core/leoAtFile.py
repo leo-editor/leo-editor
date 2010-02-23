@@ -8,7 +8,7 @@
 
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 60
 
 #@<< imports >>
 #@+node:ekr.20041005105605.2:<< imports >>
@@ -35,7 +35,8 @@ class atFile:
 
     #@    << define class constants >>
     #@+node:ekr.20041005105605.5:<< define class constants >>
-    # These constants must be global to this module because they are shared by several classes.
+    # These constants must be global to this module
+    # because they are shared by several classes.
 
     # The kind of at_directives.
     noDirective     =  1 # not an at-directive.
@@ -250,7 +251,8 @@ class atFile:
         #@    << init ivars for reading >>
         #@+node:ekr.20041005105605.14:<< init ivars for reading >>
         self.atAllFlag = False # True if @all seen.
-        self.cloneSibCount = 0 # n > 1: Make sure n cloned sibs exists at next @+node sentinel
+        self.cloneSibCount = 0
+            # n > 1: Make sure n cloned sibs exists at next @+node sentinel
         self.correctedLines = 0
         self.docOut = [] # The doc part being accumulated.
         self.done = False # True when @-leo seen.
@@ -266,7 +268,8 @@ class atFile:
         self.out = None
         self.outStack = []
         self.rootSeen = False
-        self.tnodeList = [] # Needed until old-style @file nodes are no longer supported.
+        self.tnodeList = []
+            # Needed until old-style @file nodes are no longer supported.
         self.tnodeListIndex = 0
         self.v = None
         self.tStack = []
@@ -302,16 +305,17 @@ class atFile:
         #@    << init ivars for writing >>
         #@+node:ekr.20041005105605.16:<< init ivars for writing >>>
         #@+at
-        # When tangling, we first write to a temporary output file. After 
-        # tangling is
-        # temporary file. Otherwise we delete the old target file and rename 
-        # the temporary
-        # file to be the target file.
+        # When tangling, we first write to a temporary 
+        # output file. After tangling is
+        # temporary file. Otherwise we delete the old 
+        # target file and rename the
+        # temporary file to be the target file.
         #@-at
         #@@c
 
         self.docKind = None
-        self.explicitLineEnding = False # True: an @lineending directive specifies the ending.
+        self.explicitLineEnding = False
+            # True: an @lineending directive specifies the ending.
         self.fileChangedFlag = False # True: the file has actually been updated.
         self.atAuto = atAuto
         self.atEdit = atEdit
@@ -341,7 +345,8 @@ class atFile:
                 forcePythonSentinels=forcePythonSentinels,
                 issuePathWarning=True)
 
-        # g.trace(forcePythonSentinels,self.startSentinelComment,self.endSentinelComment)
+        # g.trace(forcePythonSentinels,
+        #    self.startSentinelComment,self.endSentinelComment)
 
         if forcePythonSentinels:
             # Force Python comment delims for g.getScript.
@@ -369,7 +374,8 @@ class atFile:
     #@+node:ekr.20041005105605.18:Reading (top level)
     #@+at
     # 
-    # All reading happens in the readOpenFile logic, so plugins should need to
+    # All reading happens in the readOpenFile logic, so 
+    # plugins should need to
     # override only this method.
     #@-at
     #@+node:ekr.20070919133659:checkDerivedFile (atFile)
@@ -415,10 +421,12 @@ class atFile:
 
         if fromString:
             if at.atShadow:
-                return at.error('can not call at.read from string for @shadow files')
+                return at.error(
+                    'can not call at.read from string for @shadow files')
             at.inputFile = g.fileLikeObject(fromString=fromString)
         else:
-            fn = at.fullPath(self.root) # Returns full path, including file name.
+            fn = at.fullPath(self.root)
+                # Returns full path, including file name.
             at.setPathUa(self.root,fn) # Remember the full path to this node.
             if trace: g.trace(fn)
 
@@ -426,18 +434,23 @@ class atFile:
                 x = at.c.shadowController
                 # readOneAtShadowNode should already have checked these.
                 shadow_fn     = x.shadowPathName(fn)
-                shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+                shadow_exists = g.os_path_exists(shadow_fn) and \
+                    g.os_path_isfile(shadow_fn)
                 if not shadow_exists:
-                    g.trace('can not happen: no private file',shadow_fn,g.callers())
-                    return at.error('can not happen: private file does not exist: %s' % (shadow_fn))
-                # This method is the gateway to the essence of the shadow algorithm.
+                    g.trace('can not happen: no private file',
+                        shadow_fn,g.callers())
+                    return at.error(
+                        'can not happen: private file does not exist: %s' % (
+                            shadow_fn))
+                # This method is the gateway to the shadow algorithm.
                 x.updatePublicAndPrivateFiles(fn,shadow_fn)
                 fn = shadow_fn
 
             try:
                 # Open the file in binary mode to allow 0x1a in bodies & headlines.
-                if trace and verbose and at.atShadow: g.trace('opening %s file: %s' % (
-                    g.choose(at.atShadow,'private','public'),fn))
+                if trace and verbose and at.atShadow:
+                    g.trace('opening %s file: %s' % (
+                        g.choose(at.atShadow,'private','public'),fn))
                 at.inputFile = open(fn,'rb')
                 at.warnOnReadOnlyFile(fn)
             except IOError:
@@ -566,7 +579,8 @@ class atFile:
         at = self ; c = at.c
         force = partialFlag
         if partialFlag:
-            # Capture the current headline only if we aren't doing the initial read.
+            # Capture the current headline only if
+            # we aren't doing the initial read.
             c.endEditing() 
         anyRead = False
         p = root.copy()
@@ -830,8 +844,8 @@ class atFile:
     #@+node:ekr.20041005105605.72:at.createThinChild4
     def createThinChild4 (self,gnxString,headline):
 
-        """Find or create a new *vnode* whose parent (also a vnode) is at.lastThinNode.
-        This is called only for @thin trees."""
+        """Find or create a new *vnode* whose parent (also a vnode)
+        is at.lastThinNode. This is called only for @thin trees."""
 
         trace = False and not g.unitTesting
         verbose = False
@@ -859,11 +873,13 @@ class atFile:
             if trace: g.trace(copies,headline)
         else:
             if gnx == lastIndex:
-                last.setVisited() # Supress warning/deletion of unvisited nodes.
+                last.setVisited()
+                    # Supress warning/deletion of unvisited nodes.
                 if trace:g.trace('found last',last)
                 return last
             if child:
-                child.setVisited() # Supress warning/deletion of unvisited nodes.
+                child.setVisited()
+                    # Supress warning/deletion of unvisited nodes.
                 if trace: g.trace('found child',child)
                 return child
             copies = 1 # Create exactly one copy.
@@ -875,7 +891,8 @@ class atFile:
             v = gnxDict.get(gnxString)
             if v:
                 if gnx != v.fileIndex:
-                    g.trace('can not happen: v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx))
+                    g.trace('can not happen: v.fileIndex: %s gnx: %s' % (
+                        v.fileIndex,gnx))
             else:
                 v = leoNodes.vnode(context=c)
                 v._headString = headline # Allowed use of v._headString.
@@ -895,8 +912,8 @@ class atFile:
         """Return the next vnode in at.root.tnodeLisft.
         This is called only for @file nodes"""
 
-        # Note: tnodeLists are used _only_ when reading @file (not @thin) nodes.
-        # tnodeLists compensate (a hack) for not having gnx's in derived files! 
+        # tnodeLists are used *only* when reading @file (not @thin) nodes.
+        # tnodeLists compensate for not having gnx's in derived files! 
 
         trace = False and not g.unitTesting
         at = self ; v = at.root.v
@@ -916,8 +933,10 @@ class atFile:
             return None
 
         if at.tnodeListIndex >= len(v.tnodeList):
-            at.readError("bad tnodeList index: %d, %s" % (at.tnodeListIndex,repr(v)))
-            g.trace("bad tnodeList index",at.tnodeListIndex,len(v.tnodeList),v)
+            at.readError("bad tnodeList index: %d, %s" % (
+                at.tnodeListIndex,repr(v)))
+            g.trace("bad tnodeList index",
+                at.tnodeListIndex,len(v.tnodeList),v)
             return None
 
         v = v.tnodeList[at.tnodeListIndex]
@@ -1057,7 +1076,8 @@ class atFile:
             at.out.append('@' + follow) ; at.docOut = []
         else:
             i += 3 ; j = g.skip_ws(s,i) ; ws = s[i:j]
-            at.docOut = ['@' + ws + '\n'] # This newline may be removed by a following @nonl
+            at.docOut = ['@' + ws + '\n']
+                # This newline may be removed by a following @nonl
         at.inCode = False
         at.endSentinelStack.append(at.endAt)
 
@@ -1069,7 +1089,8 @@ class atFile:
             at.out.append('@' + follow) ; at.docOut = []
         else:
             i += 4 ; j = g.skip_ws(s,i) ; ws = s[i:j]
-            at.docOut = ["@doc" + ws + '\n'] # This newline may be removed by a following @nonl
+            at.docOut = ["@doc" + ws + '\n']
+                # This newline may be removed by a following @nonl
         at.inCode = False
         at.endSentinelStack.append(at.endDoc)
 
@@ -1142,7 +1163,8 @@ class atFile:
             k = s.rfind(at.endSentinelComment,i)
             headline = s[i:k].rstrip() # works if k == -1
 
-        # Undo the CWEB hack: undouble @ signs if the opening comment delim ends in '@'.
+        # Undo the CWEB hack: undouble @ signs if\
+        # the opening comment delim ends in '@'.
         if at.startSentinelComment[-1:] == '@':
             headline = headline.replace('@@','@')
         #@-node:ekr.20041005105605.87:<< Set headline, undoing the CWEB hack >>
@@ -1510,7 +1532,8 @@ class atFile:
 
         trace = False and not g.unitTesting
         at = self
-        assert g.match(s,i,"@"),'missing @@ sentinel' # The first '@' has already been eaten.
+        assert g.match(s,i,"@"),'missing @@ sentinel'
+            # The first '@' has already been eaten.
 
         if trace: g.trace(repr(s[i:]))
             # g.trace(g.get_line(s,i))
@@ -1631,11 +1654,13 @@ class atFile:
                     at.readError("unexpected @nonl directive in doc part")
     #@-node:ekr.20041005105605.110:readNonl
     #@+node:ekr.20041005105605.111:readRef
-    #@+at 
-    #@nonl
-    # The sentinel contains an @ followed by a section name in angle 
-    # brackets.  This code is different from the code for the @@ sentinel: the 
-    # expansion of the reference does not include a trailing newline.
+    #@+at
+    # The sentinel contains an @ followed by a section 
+    # name in angle brackets.
+    # This code is different from the code for the @@ 
+    # sentinel: the expansion
+    # of the reference does not include a trailing 
+    # newline.
     #@-at
     #@@c
 
@@ -1792,13 +1817,17 @@ class atFile:
         #@nl
         #@    << make sure we have @+leo >>
         #@+node:ekr.20041005105605.122:<< make sure we have @+leo >>
-        #@+at 
-        #@nonl
-        # REM hack: leading whitespace is significant before the @+leo.  We do 
-        # this so that sentinelKind need not skip whitespace following 
-        # self.startSentinelComment.  This is correct: we want to be as 
-        # restrictive as possible about what is recognized as a sentinel.  
-        # This minimizes false matches.
+        #@+at
+        # REM hack: leading whitespace is significant 
+        # before the
+        # @+leo. We do this so that sentinelKind need not 
+        # skip
+        # whitespace following self.startSentinelComment. 
+        # This is
+        # correct: we want to be as restrictive as 
+        # possible about what
+        # is recognized as a sentinel. This minimizes 
+        # false matches.
         #@-at
         #@@c
 
@@ -1816,7 +1845,8 @@ class atFile:
 
         if new_df:
             # Pre Leo 4.4.1: Skip to the next minus sign or end-of-line.
-            # Leo 4.4.1 +:   Skip to next minus sign, end-of-line, or non numeric character.
+            # Leo 4.4.1 +:   Skip to next minus sign, end-of-line,
+            #                or non numeric character.
             # This is required to handle trailing comment delims properly.
             i += len(version_tag)
             j = i
@@ -1904,17 +1934,19 @@ class atFile:
         #@nonl
         # Queue up the lines before the @+leo.
         # 
-        # These will be used to add as parameters to the @first directives, if 
-        # any.
-        # Empty lines are ignored (because empty @first directives are 
-        # ignored).
-        # NOTE: the function now returns a list of the lines before @+leo.
+        # These will be used to add as parameters to the 
+        # @first directives, if any.
+        # Empty lines are ignored (because empty @first 
+        # directives are ignored).
+        # NOTE: the function now returns a list of the 
+        # lines before @+leo.
         # 
-        # We can not call sentinelKind here because that depends on
+        # We can not call sentinelKind here because that 
+        # depends on
         # the comment delimiters we set here.
         # 
-        # at-first lines are written "verbatim", so nothing more needs to be 
-        # done!
+        # at-first lines are written "verbatim", so 
+        # nothing more needs to be done!
         #@-at
         #@@c
 
@@ -2340,19 +2372,21 @@ class atFile:
     #@nonl
     # Much thought went into this decision tree:
     # 
-    # - We do not want decisions to depend on past history.That ' s too 
-    # confusing.
-    # - We must ensure that the file will be written if the user does 
-    # significant work.
-    # - We must ensure that the user can create an @auto x node at any time
-    #   without risk of of replacing x with empty or insignificant 
-    # information.
-    # - We want the user to be able to create an @auto node which will be 
-    # populated the next time the.leo file is opened.
-    # - We don't want minor import imperfections to be written to the @auto 
-    # file.
-    # - The explicit commands that read and write @auto trees must always be 
-    # honored.
+    # - We do not want decisions to depend on past 
+    # history.That ' s too confusing.
+    # - We must ensure that the file will be written if 
+    # the user does significant work.
+    # - We must ensure that the user can create an @auto x 
+    # node at any time
+    #   without risk of of replacing x with empty or 
+    # insignificant information.
+    # - We want the user to be able to create an @auto 
+    # node which will be populated the next time the.leo 
+    # file is opened.
+    # - We don't want minor import imperfections to be 
+    # written to the @auto file.
+    # - The explicit commands that read and write @auto 
+    # trees must always be honored.
     #@-at
     #@@c
 
@@ -2399,10 +2433,12 @@ class atFile:
         #@+node:ekr.20041005105605.148:<< Clear all orphan bits >>
         #@+at 
         #@nonl
-        # We must clear these bits because they may have been set on a 
-        # previous write.
-        # Calls to atFile::write may set the orphan bits in @file nodes.
-        # If so, write_Leo_file will write the entire @file tree.
+        # We must clear these bits because they may have 
+        # been set on a previous write.
+        # Calls to atFile::write may set the orphan bits 
+        # in @file nodes.
+        # If so, write_Leo_file will write the entire 
+        # @file tree.
         #@-at
         #@@c
 
@@ -2589,19 +2625,21 @@ class atFile:
     #@nonl
     # Much thought went into this decision tree:
     # 
-    # - We do not want decisions to depend on past history.  That's too 
-    # confusing.
-    # - We must ensure that the file will be written if the user does 
-    # significant work.
-    # - We must ensure that the user can create an @auto x node at any time
-    #   without risk of of replacing x with empty or insignificant 
-    # information.
-    # - We want the user to be able to create an @auto node which will be 
-    # populated the next time the .leo file is opened.
-    # - We don't want minor import imperfections to be written to the @auto 
-    # file.
-    # - The explicit commands that read and write @auto trees must always be 
-    # honored.
+    # - We do not want decisions to depend on past 
+    # history.  That's too confusing.
+    # - We must ensure that the file will be written if 
+    # the user does significant work.
+    # - We must ensure that the user can create an @auto x 
+    # node at any time
+    #   without risk of of replacing x with empty or 
+    # insignificant information.
+    # - We want the user to be able to create an @auto 
+    # node which will be populated the next time the .leo 
+    # file is opened.
+    # - We don't want minor import imperfections to be 
+    # written to the @auto file.
+    # - The explicit commands that read and write @auto 
+    # trees must always be honored.
     #@-at
     #@@c
 
@@ -2759,19 +2797,21 @@ class atFile:
     #@nonl
     # Much thought went into this decision tree:
     # 
-    # - We do not want decisions to depend on past history.  That's too 
-    # confusing.
-    # - We must ensure that the file will be written if the user does 
-    # significant work.
-    # - We must ensure that the user can create an @shadow x node at any time
-    #   without risk of of replacing x with empty or insignificant 
-    # information.
-    # - We want the user to be able to create an @shadow node which will be 
-    # populated the next time the .leo file is opened.
-    # - We don't want minor import imperfections to be written to the @shadow 
-    # file.
-    # - The explicit commands that read and write @shadow trees must always be 
-    # honored.
+    # - We do not want decisions to depend on past 
+    # history.  That's too confusing.
+    # - We must ensure that the file will be written if 
+    # the user does significant work.
+    # - We must ensure that the user can create an @shadow 
+    # x node at any time
+    #   without risk of of replacing x with empty or 
+    # insignificant information.
+    # - We want the user to be able to create an @shadow 
+    # node which will be populated the next time the .leo 
+    # file is opened.
+    # - We don't want minor import imperfections to be 
+    # written to the @shadow file.
+    # - The explicit commands that read and write @shadow 
+    # trees must always be honored.
     #@-at
     #@@c
 
@@ -2948,19 +2988,21 @@ class atFile:
     #@nonl
     # Much thought went into this decision tree:
     # 
-    # - We do not want decisions to depend on past history.  That's too 
-    # confusing.
-    # - We must ensure that the file will be written if the user does 
-    # significant work.
-    # - We must ensure that the user can create an @edit x node at any time
-    #   without risk of of replacing x with empty or insignificant 
-    # information.
-    # - We want the user to be able to create an @edit node which will be read
+    # - We do not want decisions to depend on past 
+    # history.  That's too confusing.
+    # - We must ensure that the file will be written if 
+    # the user does significant work.
+    # - We must ensure that the user can create an @edit x 
+    # node at any time
+    #   without risk of of replacing x with empty or 
+    # insignificant information.
+    # - We want the user to be able to create an @edit 
+    # node which will be read
     #   the next time the .leo file is opened.
-    # - We don't want minor import imperfections to be written to the @edit 
-    # file.
-    # - The explicit commands that read and write @edit trees must always be 
-    # honored.
+    # - We don't want minor import imperfections to be 
+    # written to the @edit file.
+    # - The explicit commands that read and write @edit 
+    # trees must always be honored.
     #@-at
     #@@c
 
@@ -3034,13 +3076,16 @@ class atFile:
         #@+node:ekr.20041005105605.162:<< Make sure all lines end in a newline >>
         #@+at
         # 
-        # If we add a trailing newline, we'll generate an @nonl sentinel 
-        # below.
+        # If we add a trailing newline, we'll generate an 
+        # @nonl sentinel below.
         # 
-        # - We always ensure a newline in @file and @thin trees.
+        # - We always ensure a newline in @file and @thin 
+        # trees.
         # - This code is not used used in @asis trees.
-        # - New in Leo 4.4.3 b1: We add a newline in @nosent trees unless
-        #   @bool force_newlines_in_at_nosent_bodies = False
+        # - New in Leo 4.4.3 b1: We add a newline in 
+        # @nosent trees unless
+        #   @bool force_newlines_in_at_nosent_bodies = 
+        # False
         #@-at
         #@@c
 
@@ -3195,16 +3240,16 @@ class atFile:
     #@-node:ekr.20041005105605.167:putatAllBody
     #@+node:ekr.20041005105605.169:putAtAllChild
     #@+at
-    # This code puts only the first of two or more cloned siblings, preceding 
-    # the
+    # This code puts only the first of two or more cloned 
+    # siblings, preceding the
     # clone with an @clone n sentinel.
     # 
-    # This is a debatable choice: the cloned tree appears only once in the 
-    # external
-    # file. This should be benign; the text created by @all is likely to be 
-    # used only
-    # for recreating the outline in Leo. The representation in the derived 
-    # file
+    # This is a debatable choice: the cloned tree appears 
+    # only once in the external
+    # file. This should be benign; the text created by 
+    # @all is likely to be used only
+    # for recreating the outline in Leo. The 
+    # representation in the derived file
     # doesn't matter much.
     #@-at
     #@@c
@@ -3542,9 +3587,10 @@ class atFile:
             #@+node:ekr.20041005105605.184:<< append words to pending line, splitting the line if needed >>
             #@+at 
             #@nonl
-            # All inserted newlines are preceeded by whitespace:
-            # we remove trailing whitespace from lines that have not been 
-            # split.
+            # All inserted newlines are preceeded by 
+            # whitespace:
+            # we remove trailing whitespace from lines 
+            # that have not been split.
             #@-at
             #@@c
 
@@ -3640,10 +3686,11 @@ class atFile:
         #@nonl
         # Bug fix 1/24/03:
         # 
-        # If the present @language/@comment settings do not specify a 
-        # single-line comment we remove all block comment delims from h.  This 
-        # prevents headline text from interfering with the parsing of node 
-        # sentinels.
+        # If the present @language/@comment settings do 
+        # not specify a single-line comment we remove all 
+        # block comment delims from h.  This prevents 
+        # headline text from interfering with the parsing 
+        # of node sentinels.
         #@-at
         #@@c
 
@@ -3765,9 +3812,10 @@ class atFile:
         #@nonl
         # The cweb hack:
         # 
-        # If the opening comment delim ends in '@', double all '@' signs 
-        # except the first, which is "doubled" by the trailing '@' in the 
-        # opening comment delimiter.
+        # If the opening comment delim ends in '@', double 
+        # all '@' signs except the first, which is 
+        # "doubled" by the trailing '@' in the opening 
+        # comment delimiter.
         #@-at
         #@@c
 
@@ -4225,9 +4273,10 @@ class atFile:
     #@+node:ekr.20041005105605.206:putDirective  (handles @delims,@comment,@language) 4.x
     #@+at 
     #@nonl
-    # It is important for PHP and other situations that @first and @last 
-    # directives get translated to verbatim lines that do _not_ include what 
-    # follows the @first & @last directives.
+    # It is important for PHP and other situations that 
+    # @first and @last directives get translated to 
+    # verbatim lines that do _not_ include what follows 
+    # the @first & @last directives.
     #@-at
     #@@c
 
@@ -4733,8 +4782,8 @@ class atFile:
     #@+node:ekr.20050104131929:file operations...
     #@+at 
     #@nonl
-    # The difference, if any, between these methods and the corresponding 
-    # g.utils_x
+    # The difference, if any, between these methods and 
+    # the corresponding g.utils_x
     # functions is that these methods may call self.error.
     #@-at
     #@+node:ekr.20050104131820:chmod
@@ -4748,22 +4797,24 @@ class atFile:
     #@+node:ekr.20050104131929.2:<< about os.rename >>
     #@+at 
     #@nonl
-    # Here is the Python 2.4 documentation for rename (same as Python 2.3)
+    # Here is the Python 2.4 documentation for rename 
+    # (same as Python 2.3)
     # 
-    # Rename the file or directory src to dst.  If dst is a directory, OSError 
-    # will be raised.
+    # Rename the file or directory src to dst.  If dst is 
+    # a directory, OSError will be raised.
     # 
-    # On Unix, if dst exists and is a file, it will be removed silently if the 
-    # user
-    # has permission. The operation may fail on some Unix flavors if src and 
-    # dst are
-    # on different filesystems. If successful, the renaming will be an atomic
+    # On Unix, if dst exists and is a file, it will be 
+    # removed silently if the user
+    # has permission. The operation may fail on some Unix 
+    # flavors if src and dst are
+    # on different filesystems. If successful, the 
+    # renaming will be an atomic
     # operation (this is a POSIX requirement).
     # 
-    # On Windows, if dst already exists, OSError will be raised even if it is 
-    # a file;
-    # there may be no way to implement an atomic rename when dst names an 
-    # existing
+    # On Windows, if dst already exists, OSError will be 
+    # raised even if it is a file;
+    # there may be no way to implement an atomic rename 
+    # when dst names an existing
     # file.
     #@-at
     #@-node:ekr.20050104131929.2:<< about os.rename >>

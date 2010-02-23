@@ -4,7 +4,7 @@
 
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 70
 
 import leo.core.leoGlobals as g
 import string
@@ -1391,12 +1391,12 @@ class leoMenu:
                     #@nonl
                     # One not-so-horrible kludge remains.
                     # 
-                    # The cut/copy/paste commands in the menu tables are not 
-                    # the same as the methods
-                    # actually bound to cut/copy/paste-text minibuffer 
-                    # commands, so we must do a bit
-                    # of extra translation to discover whether the user has 
-                    # overridden their
+                    # The cut/copy/paste commands in the menu tables 
+                    # are not the same as the methods
+                    # actually bound to cut/copy/paste-text 
+                    # minibuffer commands, so we must do a bit
+                    # of extra translation to discover whether the 
+                    # user has overridden their
                     # bindings.
                     #@-at
                     #@@c

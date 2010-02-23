@@ -198,7 +198,8 @@ class generalTestCase(unittest.TestCase):
 #@+node:ekr.20051104075904.12:makeTestSuite
 #@+at 
 #@nonl
-# This code executes the script in an @suite node.  This code assumes:
+# This code executes the script in an @suite node.  This code 
+# assumes:
 # - The script creates a one or more unit tests.
 # - The script puts the result in g.app.scriptDict["suite"]
 #@-at
@@ -1801,7 +1802,8 @@ def importAllModulesInPath (path,exclude=[]):
 #@nonl
 # Warning: do NOT use g.importFromPath here!
 # 
-# g.importFromPath uses imp.load_module, and that is equivalent to reload!
+# g.importFromPath uses imp.load_module, and that is equivalent to 
+# reload!
 # reloading Leo files while running will crash Leo.
 #@-at
 #@@c

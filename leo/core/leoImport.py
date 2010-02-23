@@ -6,7 +6,7 @@
 
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 70
 #@@encoding utf-8
 
 #@<< imports >>
@@ -115,8 +115,8 @@ class leoImportCommands (scanUtility):
         #@+node:ekr.20031218072017.3291:<< put v's headline ref in head_ref>>
         #@+at 
         #@nonl
-        # We look for either noweb or cweb brackets. head_ref does not include 
-        # these brackets.
+        # We look for either noweb or cweb brackets. head_ref does 
+        # not include these brackets.
         #@-at
         #@@c
 
@@ -272,8 +272,8 @@ class leoImportCommands (scanUtility):
     # This code converts a vnode to noweb text as follows:
     # 
     # Convert @doc to @
-    # Convert @root or @code to < < name > >=, assuming the headline contains 
-    # < < name > >
+    # Convert @root or @code to < < name > >=, assuming the headline 
+    # contains < < name > >
     # Ignore other directives
     # Format doc parts so they fit in pagewidth columns.
     # Output code parts as is.
@@ -951,8 +951,9 @@ class leoImportCommands (scanUtility):
             #@+node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
             #@+at 
             #@nonl
-            # The two filenames have a common prefix everything before the 
-            # last period is the same.  For example, x.h and x.cpp.
+            # The two filenames have a common prefix everything 
+            # before the last period is the same.  For example, x.h 
+            # and x.cpp.
             #@-at
             #@@c
 
@@ -1213,8 +1214,8 @@ class leoImportCommands (scanUtility):
     # This method returns the proper headline text.
     # 
     # 1. If s contains a section def, return the section ref.
-    # 2. cweb only: if s contains @c, return the function name following the 
-    # @c.
+    # 2. cweb only: if s contains @c, return the function name 
+    # following the @c.
     # 3. cweb only: if s contains @d name, returns @d name.
     # 4. Otherwise, returns "@"
     #@-at
@@ -1986,7 +1987,8 @@ class baseScannerClass (scanUtility):
     #@+node:ekr.20070706084535:Code generation
     #@+at 
     #@nonl
-    # None of these methods should ever need to be overridden in subclasses.
+    # None of these methods should ever need to be overridden in 
+    # subclasses.
     # 
     #@-at
     #@+node:ekr.20090512080015.5800:adjustParent

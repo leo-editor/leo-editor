@@ -42,7 +42,7 @@ will return None.
 #@nl
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 70
 
 import leo.core.leoGlobals as g
 import re
@@ -2208,20 +2208,22 @@ class colorizer:
                 #@+node:ekr.20031218072017.1882:<< incrementally color the text >>
                 #@+at  
                 #@nonl
-                # Each line has a starting state.  The starting state for the 
-                # first line is always "normal".
+                # Each line has a starting state.  The starting 
+                # state for the first line is always "normal".
                 # 
-                # We need remember only self.lines and self.states between 
-                # colorizing.  It is not necessary to know where the text 
-                # comes from, only what the previous text was!  We must always 
-                # colorize everything when changing nodes, even if all lines 
-                # match, because the context may be different.
+                # We need remember only self.lines and self.states 
+                # between colorizing.  It is not necessary to know 
+                # where the text comes from, only what the previous 
+                # text was!  We must always colorize everything when 
+                # changing nodes, even if all lines match, because 
+                # the context may be different.
                 # 
-                # We compute the range of lines to be recolored by comparing 
-                # leading lines and trailing lines of old and new text.  All 
-                # other lines (the middle lines) must be colorized, as well as 
-                # any trailing lines whose states may have changed as the 
-                # result of changes to the middle lines.
+                # We compute the range of lines to be recolored by 
+                # comparing leading lines and trailing lines of old 
+                # and new text.  All other lines (the middle lines) 
+                # must be colorized, as well as any trailing lines 
+                # whose states may have changed as the result of 
+                # changes to the middle lines.
                 #@-at
                 #@@c
 
@@ -2251,10 +2253,11 @@ class colorizer:
                     #@+node:ekr.20031218072017.1883:<< compute leading, middle & trailing  lines >>
                     #@+at 
                     #@nonl
-                    # The leading lines are the leading matching lines.  The 
-                    # trailing lines are the trailing matching lines.  The 
-                    # middle lines are all other new lines.  We will color at 
-                    # least all the middle lines.  There may be no middle 
+                    # The leading lines are the leading matching 
+                    # lines.  The trailing lines are the trailing 
+                    # matching lines.  The middle lines are all 
+                    # other new lines.  We will color at least all 
+                    # the middle lines.  There may be no middle 
                     # lines if we delete lines.
                     #@-at
                     #@@c
@@ -2291,8 +2294,8 @@ class colorizer:
                 #@+node:ekr.20031218072017.1884:<< clear leading_lines if middle lines involve @color or @recolor  >>
                 #@+at 
                 #@nonl
-                # 11/19/02: Changing @color or @nocolor directives requires we 
-                # recolor all leading states as well.
+                # 11/19/02: Changing @color or @nocolor directives 
+                # requires we recolor all leading states as well.
                 #@-at
                 #@@c
 
@@ -3191,8 +3194,8 @@ class colorizer:
     #@+node:ekr.20031218072017.2806:Utils
     #@+at 
     #@nonl
-    # These methods are like the corresponding functions in leoGlobals.py 
-    # except they issue no error messages.
+    # These methods are like the corresponding functions in 
+    # leoGlobals.py except they issue no error messages.
     #@-at
     #@+node:ekr.20031218072017.1609:index & tag (leoColor)
     def index (self,i):

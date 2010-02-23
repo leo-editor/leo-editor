@@ -12,7 +12,7 @@ Plugins may define their own gui classes by setting g.app.gui."""
 
 #@@language python
 #@@tabwidth -4
-#@@pagewidth 80
+#@@pagewidth 70
 
 import leo.core.leoGlobals as g
 import leo.core.leoFind as leoFind # for nullFindTab.
@@ -300,14 +300,15 @@ class leoGui:
     #@+node:ekr.20031218072017.3733:app.gui utils
     #@+at 
     #@nonl
-    # Subclasses are expected to subclass all of the following methods.
+    # Subclasses are expected to subclass all of the following 
+    # methods.
     # 
-    # These are all do-nothing methods: callers are expected to check for None 
-    # returns.
+    # These are all do-nothing methods: callers are expected to 
+    # check for None returns.
     # 
-    # The type of commander passed to methods depends on the type of frame or 
-    # dialog being created.  The commander may be a Commands instance or one 
-    # of its subcommanders.
+    # The type of commander passed to methods depends on the type of 
+    # frame or dialog being created.  The commander may be a 
+    # Commands instance or one of its subcommanders.
     #@-at
     #@+node:ekr.20031218072017.3734:Clipboard (leoGui)
     def replaceClipboardWith (self,s):

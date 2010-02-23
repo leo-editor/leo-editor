@@ -41,7 +41,8 @@ def init_ipython(ipy):
     # Note that no other push command should EVER have lower than 0
     expose_ileo_push(push_mark_req, -1)
     expose_ileo_push(push_cl_node,100)
-    # this should be the LAST one that will be executed, and it will never raise TryNext
+    # this should be the LAST one that will be executed,
+    # and it will never raise TryNext.
     expose_ileo_push(push_ipython_script, 1000)
     expose_ileo_push(push_plain_python, 100)
     expose_ileo_push(push_ev_node, 100)
@@ -73,7 +74,8 @@ def update_commander(new_leox):
     c,g = new_leox.c, new_leox.g
     print("Set Leo Commander:",c.frame.getTitle())
 
-    # will probably be overwritten by user, but handy for experimentation early on
+    # will probably be overwritten by user,
+    # but handy for experimentation early on.
     ip.user_ns['c'] = c
     ip.user_ns['g'] = g
     ip.user_ns['_leo'] = new_leox
@@ -157,7 +159,9 @@ def eval_node(n):
     if not body.startswith('@cl'):
         # plain python repr node, just eval it
         return ip.ev(n.b)
-    # @cl nodes deserve special treatment - first eval the first line (minus cl), then use it to call the rest of body
+    # @cl nodes deserve special treatment:
+    # first eval the first line (minus cl),
+    # then use it to call the rest of body.
     first, rest = body.split('\n',1)
     tup = first.split(None, 1)
     # @cl alone SPECIAL USE-> dump var to user_ns
@@ -237,7 +241,8 @@ class LeoNode(object, UserDict.DictMixin):
     def __set_val(self, val):        
         self.b = format_for_leo(val)
 
-    v = property(lambda self: eval_node(self), __set_val, doc = "Node evaluated value")
+    v = property(lambda self: eval_node(self), __set_val,
+        doc = "Node evaluated value")
     #@-node:ekr.20100120092047.6104:__set_val
     #@+node:ekr.20100120092047.6105:__set_l
     def __set_l(self,val):
@@ -275,9 +280,11 @@ class LeoNode(object, UserDict.DictMixin):
     #@-node:ekr.20100120092047.6108:keys
     #@+node:ekr.20100120092047.6109:__getitem__
     def __getitem__(self, key):
-        """ wb.foo['Some stuff'] Return a child node with headline 'Some stuff'
+        """ wb.foo['Some stuff']
+        Return a child node with headline 'Some stuff'
 
-        If key is a valid python name (e.g. 'foo'), look for headline '@k foo' as well
+        If key is a valid python name (e.g. 'foo'),
+        look for headline '@k foo' as well
         """  
         key = str(key)
         d = self.__children()
@@ -287,15 +294,16 @@ class LeoNode(object, UserDict.DictMixin):
     def __setitem__(self, key, val):
         """ You can do wb.foo['My Stuff'] = 12 to create children 
 
-        This will create 'My Stuff' as a child of foo (if it does not exist), and 
+        Create 'My Stuff' as a child of foo (if it does not exist), and 
         do .v = 12 assignment.
 
         Exception:
 
         wb.foo['bar'] = 12
 
-        will create a child with headline '@k bar', because bar is a valid python name
-        and we don't want to crowd the WorkBook namespace with (possibly numerous) entries
+        will create a child with headline '@k bar',
+        because bar is a valid python name and we don't want to crowd
+        the WorkBook namespace with (possibly numerous) entries.
         """
         key = str(key)
         d = self.__children()
@@ -369,17 +377,19 @@ class LeoNode(object, UserDict.DictMixin):
 
     #@-node:ekr.20100120092047.6116:__get_uA
     #@-others
-    uA = property(__get_uA, doc = "Access persistent unknownAttributes of node")
+    uA = property(__get_uA,
+        doc = "Access persistent unknownAttributes of node")
 #@-node:ekr.20100120092047.6097:class LeoNode
 #@+node:ekr.20100120092047.6117:class LeoWorkbook
 class LeoWorkbook:
     """ class for 'advanced' node access 
 
-    Has attributes for all "discoverable" nodes. Node is discoverable if it 
-    either
+    Has attributes for all "discoverable" nodes.
+    Node is discoverable if it either
 
     - has a valid python name (Foo, bar_12)
-    - is a parent of an anchor node (if it has a child '@a foo', it is visible as foo)
+    - is a parent of an anchor node.
+    If it has a child '@a foo', it is visible as foo.
 
     """
     #@    @+others
@@ -404,7 +414,9 @@ class LeoWorkbook:
     #@-node:ekr.20100120092047.6119:__str__
     #@+node:ekr.20100120092047.6120:__setattr__
     def __setattr__(self,key, val):
-        raise AttributeError("Direct assignment to workbook denied, try wb.%s.v = %s" % (key,val))
+        raise AttributeError(
+            "Direct assignment to workbook denied, try wb.%s.v = %s" % (
+                key,val))
 
     #@-node:ekr.20100120092047.6120:__setattr__
     #@+node:ekr.20100120092047.6121:__iter__
@@ -433,9 +445,11 @@ class LeoWorkbook:
     def require(self, req):
         """ Used to control node push dependencies 
 
-        Call this as first statement in nodes. If node has not been pushed, it will be pushed before proceeding
+        Call this as first statement in nodes.
+        If node has not been pushed, it will be pushed before proceeding
 
-        E.g. wb.require('foo') will do wb.foo.ipush() if it hasn't been done already
+        E.g. wb.require('foo') will do wb.foo.ipush()
+        if it hasn't been done already.
         """
 
         if req not in _leo_push_history:
@@ -461,7 +475,8 @@ class PosList(list):
 @IPython.generics.complete_object.when_type(LeoWorkbook)
 def workbook_complete(obj, prev):
     # 2010/02/04: per 2to3
-    return list(all_cells().keys()) + [s for s in prev if not s.startswith('_')]
+    return list(all_cells().keys()) + [
+        s for s in prev if not s.startswith('_')]
 #@-node:ekr.20100120092047.6126:workbook_complete
 #@+node:ekr.20100120092047.6127:add_var
 def add_var(varname):
@@ -498,13 +513,15 @@ def expose_ileo_push(f, prio = 0):
 #@-node:ekr.20100120092047.6129:expose_ileo_push
 #@+node:ekr.20100120092047.6130:push_ipython_script
 def push_ipython_script(node):
-    """ Execute the node body in IPython, as if it was entered in interactive prompt """
+    """ Execute the node body in IPython,
+    as if it was entered in interactive prompt """
     try:
         ohist = ip.IP.output_hist 
         hstart = len(ip.IP.input_hist)
         script = node.script()
 
-        # The current node _p needs to handle wb.require() and recursive ipushes
+        # The current node _p needs to handle
+        # wb.require() and recursive ipushes.
         old_p = ip.user_ns.get('_p',None)
         ip.user_ns['_p'] = node
         ip.runlines(script)
@@ -647,7 +664,8 @@ def lee_f(self,s):
     """ Open file(s)/objects in Leo
 
     - %lee hist -> open full session history in leo
-    - Takes an object. l = [1,2,"hello"]; %lee l. Alt+I in leo pushes the object back
+    - Takes an object. l = [1,2,"hello"]; %lee l.
+      Alt+I in leo pushes the object back
     - Takes an mglob pattern, e.g. '%lee *.cpp' or %lee 'rec:*.cpp'
     - Takes input history indices:  %lee 4 6-8 10 12-47
     """
@@ -685,7 +703,8 @@ def lee_f(self,s):
             if os.path.isfile(fname):
                 c.setBodyString(p,open(fname).read())
             c.selectPosition(p)
-        print("Editing file(s), press ctrl+shift+w in Leo to write @auto nodes")
+        print("Editing file(s), \
+            press ctrl+shift+w in Leo to write @auto nodes")
     finally:
         c.redraw()
 #@-node:ekr.20100120092047.6140:lee_f
@@ -841,7 +860,8 @@ def shadow_walk(directory, parent=None, isroot=True):
 
     RELATIVE_PATHS = False
 
-    patterns_to_ignore = ['*.pyc', '*.leo', '*.gif', '*.png', '*.jpg', '*.json']
+    patterns_to_ignore = [
+        '*.pyc', '*.leo', '*.gif', '*.png', '*.jpg', '*.json']
 
     match = lambda s: any(fnmatch(s, p) for p in patterns_to_ignore)
 
@@ -878,7 +898,6 @@ def shadow_walk(directory, parent=None, isroot=True):
             child.initHeadString(headline)
             child.initBodyString(body)
             shadow_walk(path, parent=child, isroot=False)
-
 #@-node:ekr.20100120092047.6150:shadow_walk
 #@+node:ekr.20100120092047.6151:mkbutton
 def mkbutton(text, node_to_push):
