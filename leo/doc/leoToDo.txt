@@ -4,7 +4,8 @@
 #@+node:ekr.20100109214940.6225:4.8 to do
 4.8 vim, cleanups, your mission...
 #@nonl
-#@+node:ekr.20100204052559.5791:** Mac TOC sidebar collapsible
+#@+node:ekr.20100223123910.5836:Immediately
+#@+node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
@@ -40,79 +41,3811 @@ this on my local, differently arranged, copy).
 
 That is all that it takes to give us a collapsible TOC
 #@nonl
-#@-node:ekr.20100204052559.5791:** Mac TOC sidebar collapsible
-#@+node:ekr.20100206074650.5844:Cleanups & features: first
-#@+node:ekr.20100219083854.5615:Improve caching
-#@+node:ekr.20100209160132.5770:cache notes
-@nocolor-node
+#@-node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
+#@+node:ekr.20100223123910.5930:recentFilesController
+@
+The present operation of recent files is surprising.
 
-Top-level folder are direct subfolders of .leo/db.
-Top-level folders represent file *locations* not file contents.
-Exception: the top-level "globals" folder represents minor data.
-
-Only two files are ever needed in a top-level folder:
-
-contents_<key>: the contents of the file.
-data_<key>: a dict representing the "minor data" of the file:
-    <globals> element stuff, expansion bits, etc.
-
-We write contents_<key> only once.
-By definition, its contents never changes, since the contents generates the key.
-We can write data_<key> as many times as we like.
-
-To do:
-- Simplify or even eliminate the path-manipulation code in PickleShareDB.
-- Use g.makeAllNonExistentDirectories to make top-level directories.
-- Clear cache should clear all top-level directories.
+Recent files should be a global list, managed by a single controller.
 #@nonl
-#@+node:ekr.20100209114432.5751:Cache expansion bits
-# Simplify the structure of the cache: put more into the "minor" files.
+#@-node:ekr.20100223123910.5930:recentFilesController
+#@+node:ekr.20100223123910.5929:eliminate leo profix from core modules
+#@-node:ekr.20100223123910.5929:eliminate leo profix from core modules
+#@+node:ekr.20100223123910.5931:Clean up file open/read/write code
+#@+node:ekr.20100223123910.5932:Revise g.readFileIntoString
+@nocolor-node
+
+- Create g.readFileWithUnknownEncodingIntoString.
+    - Only this function should return ok,e.
+
+- g.readFileIntoString should assume utf-8, and support explicit encodings.
+
+We also need the following functions:
+
+- g.openFileForReading.
+- g.openFileForWriting.
 #@nonl
-#@-node:ekr.20100209114432.5751:Cache expansion bits
-#@-node:ekr.20100209160132.5770:cache notes
-#@+node:ekr.20100211095442.6201:cache notes 2
+#@-node:ekr.20100223123910.5932:Revise g.readFileIntoString
+#@+node:ekr.20100223123910.5933:Calls to .write
+All these could be considered potential Python 3.x bugs.  Most are not.
+#@nonl
+#@+node:ekr.20100223123910.5934:put (leoFileCommands)
+def put (self,s):
+
+    '''Put string s to self.outputFile. All output eventually comes here.'''
+
+    # Improved code: self.outputFile (a cStringIO object) always exists.
+    # g.trace(g.callers(1),repr(s))
+    if s:
+        self.putCount += 1
+        if not g.isPython3:
+            s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+        self.outputFile.write(s)
+
+def put_dquote (self):
+    self.put('"')
+
+def put_dquoted_bool (self,b):
+    if b: self.put('"1"')
+    else: self.put('"0"')
+
+def put_flag (self,a,b):
+    if a:
+        self.put(" ") ; self.put(b) ; self.put('="1"')
+
+def put_in_dquotes (self,a):
+    self.put('"')
+    if a: self.put(a) # will always be True if we use backquotes.
+    else: self.put('0')
+    self.put('"')
+
+def put_nl (self):
+    self.put("\n")
+
+def put_tab (self):
+    self.put("\t")
+
+def put_tabs (self,n):
+    while n > 0:
+        self.put("\t")
+        n -= 1
+#@nonl
+#@-node:ekr.20100223123910.5934:put (leoFileCommands)
+#@+node:ekr.20100223123910.5935:writeToFileHelper & helpers
+def writeToFileHelper (self,fileName,toOPML):
+
+    c = self.c ; toZip = c.isZipped
+    ok,backupName = self.createBackupFile(fileName)
+    if not ok: return False
+    fileName,theActualFile = self.createActualFile(fileName,toOPML,toZip)
+    self.mFileName = fileName
+    self.outputFile = StringIO() # Always write to a string.
+
+    try:
+        if toOPML:
+            self.putToOPML()
+        else:
+            self.putLeoFile()
+        s = self.outputFile.getvalue()
+        g.app.write_Leo_file_string = s # 2010/01/19: always set this.
+        if toZip:
+            self.writeZipFile(s)
+        else:
+            if g.isPython3:
+                s = bytes(s,self.leo_file_encoding,'replace')
+            theActualFile.write(s)
+            theActualFile.close()
+            c.setFileTimeStamp(fileName)
+            # raise AttributeError # To test handleWriteLeoFileException.
+            # Delete backup file.
+            if backupName and g.os_path_exists(backupName):
+                self.deleteFileWithMessage(backupName,'backup')
+        return True
+    except Exception:
+        self.handleWriteLeoFileException(
+            fileName,backupName,theActualFile)
+        return False
+#@+node:ekr.20100223123910.5936:createActualFile
+def createActualFile (self,fileName,toOPML,toZip):
+
+    c = self.c
+
+    if toOPML and not self.mFileName.endswith('opml'):
+        fileName = self.mFileName + '.opml'
+
+    if toZip:
+        self.toString = True
+        theActualFile = None
+    else:
+        try:
+            # 2010/01/21: always write in binary mode.
+            theActualFile = open(fileName,'wb')
+        except IOError:
+            theActualFile = None
+
+    return fileName,theActualFile
+#@-node:ekr.20100223123910.5936:createActualFile
+#@+node:ekr.20100223123910.5937:createBackupFile (fileCommands)
+def createBackupFile (self,fileName):
+
+    '''
+        Create a closed backup file and copy the file to it,
+        but only if the original file exists.
+    '''
+
+    c = self.c
+
+    if g.os_path_exists(fileName):
+        # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
+
+        fd,backupName = tempfile.mkstemp(text=False)
+        f = open(fileName,'rb') # rb is essential.
+        s = f.read()
+        f.close()
+
+        try:
+            try:
+                os.write(fd,s)
+            finally:
+                os.close(fd)
+            ok = True
+        except Exception:
+            g.es('exception creating backup file',color='red')
+            g.es_exception()
+            ok,backupName = False,None
+
+        if not ok and self.read_only:
+            g.es("read only",color="red")
+    else:
+        ok,backupName = True,None
+
+    return ok,backupName
+#@-node:ekr.20100223123910.5937:createBackupFile (fileCommands)
+#@+node:ekr.20100223123910.5938:handleWriteLeoFileException
+def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
+
+    c = self.c
+
+    g.es("exception writing:",fileName)
+    g.es_exception(full=True)
+
+    if theActualFile:
+        theActualFile.close()
+
+    # Delete fileName.
+    if fileName and g.os_path_exists(fileName):
+        self.deleteFileWithMessage(fileName,'')
+
+    # Rename backupName to fileName.
+    if backupName and g.os_path_exists(backupName):
+        g.es("restoring",fileName,"from",backupName)
+
+        # No need to create directories when restoring.
+        g.utils_rename(c,backupName,fileName)
+    else:
+        g.trace('backup file does not exist!',
+            repr(backupName),color='red')
+#@-node:ekr.20100223123910.5938:handleWriteLeoFileException
+#@-node:ekr.20100223123910.5935:writeToFileHelper & helpers
+#@+node:ekr.20100223123910.5939:<< Write s into newFileName >>
+try:
+    mode = c.config.output_newline
+    mode = g.choose(mode=="platform",'w','wb')
+    theFile = open(newFileName,mode)
+    s = g.toEncodedString(s,self.encoding,reportErrors=True)
+    theFile.write(s)
+    theFile.close()
+    if not g.unitTesting:
+        g.es("created:",newFileName)
+except Exception:
+    g.es("exception creating:",newFileName)
+    g.es_exception()
+#@-node:ekr.20100223123910.5939:<< Write s into newFileName >>
+#@+node:ekr.20100223123910.5940:x.replaceFileWithString
+def replaceFileWithString (self,fn,s):
+
+    '''Replace the file with s if s is different from theFile's contents.
+
+    Return True if theFile was changed.
+    '''
+
+    trace = False and not g.unitTesting
+    x = self
+    exists = g.os_path_exists(fn)
+
+    if exists:
+        # Read the file.  Return if it is the same.
+        s2,e = g.readFileIntoString(fn)
+        if s2 is None:
+            return False
+        if s == s2:
+            if not g.unitTesting: g.es('unchanged:',fn)
+            return False
+
+    # Issue warning if directory does not exist.
+    theDir = g.os_path_dirname(fn)
+    if theDir and not g.os_path_exists(theDir):
+        if not g.unitTesting:
+            x.error('not written: %s directory not found' % fn)
+        return False
+
+    # Replace the file.
+    try:
+        f = open(fn,'wb')
+        f.write(g.toEncodedString(s))
+        if trace: g.trace('fn',fn,
+            '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
+            '\ncallers',g.callers(4))
+        f.close()
+        if not g.unitTesting:
+            # g.trace('created:',fn,g.callers())
+            if exists:  g.es('wrote:',fn)
+            else:       g.es('created:',fn)
+        return True
+    except IOError:
+        x.error('unexpected exception writing file: %s' % (fn))
+        g.es_exception()
+        return False
+#@-node:ekr.20100223123910.5940:x.replaceFileWithString
+#@+node:ekr.20100223123910.5941:replaceFileWithString (atFile)
+def replaceFileWithString (self,fn,s):
+
+    '''Replace the file with s if s is different from theFile's contents.
+
+    Return True if theFile was changed.
+    '''
+
+    at = self ; testing = g.app.unitTesting
+
+    # g.trace('fn',fn,'s','\n',s)
+    # g.trace(g.callers())
+
+    exists = g.os_path_exists(fn)
+
+    if exists: # Read the file.  Return if it is the same.
+        s2,e = g.readFileIntoString(fn)
+        if s is None:
+            return False
+        if s == s2:
+            if not testing: g.es('unchanged:',fn)
+            return False
+
+    # Issue warning if directory does not exist.
+    theDir = g.os_path_dirname(fn)
+    if theDir and not g.os_path_exists(theDir):
+        if not g.unitTesting:
+            g.es('not written: %s directory not found' % fn,color='red')
+        return False
+
+    # Replace
+    try:
+        f = open(fn,'wb')
+        if g.isPython3:
+            s = g.toEncodedString(s,encoding=self.encoding)
+        f.write(s)
+        f.close()
+        if not testing:
+            if exists:
+                g.es('wrote:    ',fn)
+            else:
+                # g.trace('created:',fn,g.callers())
+                g.es('created:',fn)
+        return True
+    except IOError:
+        at.error('unexpected exception writing file: %s' % (fn))
+        g.es_exception()
+        return False
+#@-node:ekr.20100223123910.5941:replaceFileWithString (atFile)
+#@+node:ekr.20100223123910.5942:writeScriptFile
+def writeScriptFile (self,script):
+
+    # Get the path to the file.
+    c = self
+    path = c.config.getString('script_file_path')
+    if path:
+        isAbsPath = os.path.isabs(path)
+        driveSpec, path = os.path.splitdrive(path)
+        parts = path.split('/')
+        # xxx bad idea, loadDir is often read only!
+        path = g.app.loadDir
+        if isAbsPath:
+            # make the first element absolute
+            parts[0] = driveSpec + os.sep + parts[0]
+        allParts = [path] + parts
+        path = c.os_path_finalize_join(*allParts)
+    else:
+        path = c.os_path_finalize_join(
+            g.app.homeLeoDir,'scriptFile.py')                    
+
+    # Write the file.
+    try:
+        if g.isPython3:
+            # Use the default encoding.
+            f = open(path,encoding='utf-8',mode='w')
+        else:
+            f = open(path,'w')
+        f.write(script)
+        f.close()
+    except Exception:
+        g.es_exception()
+        g.es("Failed to write script to %s" % path)
+        # g.es("Check your configuration of script_file_path, currently %s" %
+            # c.config.getString('script_file_path'))
+        path = None
+
+    return path
+#@nonl
+#@-node:ekr.20100223123910.5942:writeScriptFile
+#@+node:ekr.20100223123910.5943:write (leoRst)
+def write (self,s):
+
+    if self.trialWrite:
+        pass
+    elif g.isPython3:
+        pass
+    else:
+        s = self.encode(s)
+
+    # g.trace(repr(s),g.callers(2))
+
+    self.outputFile.write(s)
+#@-node:ekr.20100223123910.5943:write (leoRst)
+#@+node:ekr.20100223123910.5944:writeSpecialTree
+def writeSpecialTree (self,p,toString,justOneFile):
+
+    c = self.c
+    isHtml = self.ext in ('.html','.htm')
+    if isHtml and not SilverCity:
+        if not self.silverCityWarningGiven:
+            self.silverCityWarningGiven = True
+            g.es('SilverCity not present so no syntax highlighting')
+
+    self.initWrite(p)
+        # was encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
+    self.outputFile = StringIO()
+    self.writeTree(p)
+    self.source = self.outputFile.getvalue()
+    self.outputFile = None
+
+    if not toString:
+        # Compute this here for use by intermediate file.
+        self.outputFileName = self.computeOutputFileName(self.outputFileName)
+
+        # Create the directory if it doesn't exist.
+        theDir, junk = g.os_path_split(self.outputFileName)
+        theDir = c.os_path_finalize(theDir)
+        if not g.os_path_exists(theDir):
+            ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
+            if not ok:
+                g.es_print('did not create:',theDir,color='red')
+                return False
+
+        # if not os.access(theDir,os.F_OK):
+            # os.mkdir(theDir)
+
+        if self.getOption('write_intermediate_file'):
+            name = self.outputFileName + '.txt'
+            f = open(name,'w')
+            f.write(self.source)
+            f.close()
+            self.report(name)
+
+    try:
+        output = self.writeToDocutils(self.source)
+        ok = output is not None
+    except Exception:
+        g.pr('Exception in docutils')
+        g.es_exception()
+        ok = False
+
+    if ok:
+        if isHtml:
+            import re
+            idxTitle = output.find('<title></title>')
+            if idxTitle > -1:
+                m = re.search('<h1>([^<]*)</h1>', output)
+                if not m:
+                    m = re.search('<h1><[^>]+>([^<]*)</a></h1>', output)
+                if m:
+                    output = output.replace(
+                        '<title></title>',
+                        '<title>%s</title>' % m.group(1)
+                    )
+
+
+        if toString:
+            self.stringOutput = output
+        else:
+            # Write the file to the directory containing the .leo file.
+            f = open(self.outputFileName,'w')
+            f.write(output)
+            f.close()
+            self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
+
+    return ok
+#@-node:ekr.20100223123910.5944:writeSpecialTree
+#@+node:ekr.20100223123910.5945:c.createOpenWithTempFile
+def createOpenWithTempFile (self,p,ext):
+
+    trace = False and not g.unitTesting
+    c = self ; f = None
+
+    # May be over-ridden by mod_tempfname plugin.
+    fn = c.openWithTempFilePath(p,ext)
+
+    try:
+        if g.os_path_exists(fn):
+            g.es('recreating:  ',g.shortFileName(fn),color='red')
+        else:
+            g.es('creating:  ',g.shortFileName(fn),color='blue')
+        f = open(fn,'w')
+        # Convert s to whatever encoding is in effect.
+        d = c.scanAllDirectives(p)
+        encoding = d.get('encoding',None)
+        if encoding == None:
+            encoding = c.config.default_derived_file_encoding
+        if g.isPython3: # 2010/02/09
+            s = p.b
+        else:
+            s = g.toEncodedString(p.b,encoding,reportErrors=True) 
+        f.write(s)
+        f.flush()
+        f.close()
+        try:
+            time = g.os_path_getmtime(fn)
+            if time: g.es('time: ',time)
+        except:
+            time = None
+
+        # Remove previous entry from app.openWithFiles if it exists.
+        for d in g.app.openWithFiles[:]:
+            if p.v == d.get('v'):
+                if trace: g.trace('removing',d.get('path'))
+                g.app.openWithFiles.remove(d)
+
+        d = {
+            # Used by app.destroyOpenWithFilesForFrame.
+            'c':c,
+            # Used here and by app.destroyOpenWithFileWithDict.
+            'path':fn,
+            # Used by c.testForConflicts.
+            'body':s,
+            'encoding':encoding,
+            'time':time,
+            # Used by the open_with plugin.
+            'p':p.copy(),
+            # Used by c.openWithHelper, and below.
+            'v':p.v,
+        }
+        g.app.openWithFiles.append(d)
+        return fn
+    except:
+        if f: f.close()
+        g.es('exception creating temp file',color='red')
+        g.es_exception()
+        return None
+#@-node:ekr.20100223123910.5945:c.createOpenWithTempFile
+#@+node:ekr.20100223123910.5946:<< attempt to create leoID.txt >>
+for theDir in (homeLeoDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'w')
+            f.write(g.app.leoID)
+            f.close()
+            if g.os_path_exists(fn):
+                g.es_print('',tag,'created in',theDir,color='red')
+                return
+        except IOError:
+            pass
+
+        g.es('can not create',tag,'in',theDir,color='red')
+#@-node:ekr.20100223123910.5946:<< attempt to create leoID.txt >>
+#@+node:ekr.20100223123910.5947:<< Write p's headline if it starts with @@ >>
+s = p.h
+
+if g.match(s,0,"@@"):
+    s = s[2:]
+    if s and len(s) > 0:
+        s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
+        at.outputFile.write(s)
+#@-node:ekr.20100223123910.5947:<< Write p's headline if it starts with @@ >>
+#@+node:ekr.20100223123910.5948:os
+def os (self,s):
+
+    """Write a string to the output stream.
+
+    All output produced by leoAtFile module goes here."""
+
+    trace = False and not g.unitTesting
+    at = self ; tag = self.underindentEscapeString
+    f = at.outputFile
+
+    if s and f:
+        try:
+            if s.startswith(tag):
+                junk,s = self.parseUnderindentTag(s)
+            # Bug fix: this must be done last.
+            s = g.toEncodedString(s,at.encoding,reportErrors=True)
+            if trace: g.trace(repr(s),g.callers(5))
+            f.write(s)
+        except Exception:
+            at.exception("exception writing:" + s)
+#@-node:ekr.20100223123910.5948:os
+#@+node:ekr.20100223123910.5949:writeFileFromNode
+def writeFileFromNode (self,event=None):
+
+    # If node starts with @read-file-into-node, use the full path name in the headline.
+    # Otherwise, prompt for a file name.
+
+    c = self ; p = c.p
+    c.endEditing()
+
+    h = p.h.rstrip()
+    s = p.b
+    tag = '@read-file-into-node'
+
+    if h.startswith(tag):
+        fileName = h[len(tag):].strip()
+    else:
+        fileName = None
+
+    if not fileName:
+        filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
+        fileName = g.app.gui.runSaveFileDialog(
+            initialfile=None,
+            title='Write File From Node',
+            filetypes=filetypes,
+            defaultextension=None)
+    if fileName:
+        try:
+            theFile = open(fileName,'w')
+            g.chdir(fileName)
+        except IOError:
+            theFile = None
+        if theFile:
+            if s.startswith('@nocolor\n'):
+                s = s[len('@nocolor\n'):]
+            theFile.write(s)
+            theFile.flush()
+            g.es_print('wrote:',fileName,color='blue')
+            theFile.close()
+        else:
+            g.es('can not write %s',fileName,color='red')
+#@nonl
+#@-node:ekr.20100223123910.5949:writeFileFromNode
+#@+node:ekr.20100223123910.5950:writeRecentFilesFileHelper
+def writeRecentFilesFileHelper (self,fileName):
+
+    # g.trace(g.toUnicode(fileName))
+
+    # Don't update the file if it begins with read-only.
+    theFile = None
+    try:
+        theFile = open(fileName)
+        lines = theFile.readlines()
+        if lines and self.munge(lines[0])=='readonly':
+            # g.trace('read-only: %s' %fileName)
+            return False
+    except IOError:
+        # The user may have erased a file.  Not an error.
+        if theFile: theFile.close()
+
+    theFile = None
+    try:
+        if g.isPython3:
+            theFile = open(fileName,encoding='utf-8',mode='w')
+        else:
+            theFile = open(fileName,mode='w')
+        if self.recentFiles:
+            s = '\n'.join(self.recentFiles)
+        else:
+            s = '\n'
+        if not g.isPython3:
+            s = g.toEncodedString(s,reportErrors=True)
+        theFile.write(s)
+
+    except IOError:
+        if 1: # The user may have erased a file.  Not an error.
+            g.es_print('error writing',fileName,color='red')
+            g.es_exception()
+            return False
+
+    except Exception:
+        g.es('unexpected exception writing',fileName,color='red')
+        g.es_exception()
+        if g.unitTesting: raise
+        return False
+
+    if theFile:
+        theFile.close()
+        return True
+    else:
+        return False
+#@-node:ekr.20100223123910.5950:writeRecentFilesFileHelper
+#@+node:ekr.20100223123910.5951:writeAbbreviations
+def writeAbbreviations (self,event):
+
+    '''Write abbreviations to a file.'''
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile = None,
+        title='Write Abbreviations',
+        filetypes = [("Text","*.txt"), ("All files","*")],
+        defaultextension = ".txt")
+
+    if not fileName: return
+
+    try:
+        f = open(fileName,'w')
+        for x in self.abbrevs:
+            f.write('%s=%s\n' % (x,self.abbrevs[x]))
+        f.close()
+    except IOError:
+        g.es('can not create',fileName)
+#@-node:ekr.20100223123910.5951:writeAbbreviations
+#@+node:ekr.20100223123910.5952:saveFile
+def saveFile (self,event):
+
+    '''Prompt for the name of a file and put the body text of the selected node into it..'''
+
+    w = self.editWidget(event)
+    if not w: return
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile = None,
+        title='save-file',
+        filetypes = [("Text","*.txt"), ("All files","*")],
+        defaultextension = ".txt")
+
+    if not fileName: return
+
+    try:
+        s = w.getAllText()
+        f = open(fileName,'w')
+        f.write(s)
+        f.close()
+    except IOError:
+        g.es('can not create',fileName)
+#@-node:ekr.20100223123910.5952:saveFile
+#@+node:ekr.20100223123910.5953:add (spellTab)
+def add(self,event=None):
+    """Add the selected suggestion to the dictionary."""
+
+    if not self.currentWord: return
+
+    # g.trace(self.currentWord)
+
+    try:
+        f = None
+        try:
+            # Rewrite the dictionary in alphabetical order.
+            f = open(self.dictionaryFileName, "r")
+            words = f.readlines()
+            f.close()
+            words = [word.strip() for word in words]
+            words.append(self.currentWord)
+            words.sort()
+            f = open(self.dictionaryFileName, "w")
+            for word in words:
+                f.write("%s\n" % g.toEncodedString(word,reportErrors=True))
+            f.flush()
+            f.close()
+            if 1:
+                s = 'Spell: added %s' % self.currentWord
+                self.messages.append(s)
+            else: # Too distracting.
+                g.es("adding ", color= "blue", newline= False) 
+                g.es('','%s' % self.currentWord)
+        except IOError:
+            g.es("can not add",self.currentWord,"to dictionary",color="red")
+    finally:
+        if f: f.close()
+
+    self.dictionary[self.currentWord.lower()] = 0
+    self.tab.onFindButton()
+#@-node:ekr.20100223123910.5953:add (spellTab)
+#@+node:ekr.20100223123910.5954:rawPrint
+def rawPrint (self,s):
+
+    if self.old:
+        self.old.write(s+'\n')
+    else:
+        g.pr(s)
+#@-node:ekr.20100223123910.5954:rawPrint
+#@+node:ekr.20100223123910.5955:exportHeadlines
+def exportHeadlines (self,fileName):
+
+    c = self.c ; nl = g.u(self.output_newline)
+    p = c.p
+    if not p: return
+    self.setEncoding()
+    firstLevel = p.level()
+    mode = c.config.output_newline
+    mode = g.choose(mode=="platform",'w','wb')
+    try:
+        theFile = open(fileName,mode)
+    except IOError:
+        g.es("can not open",fileName,color="blue")
+        leoTest.fail()
+        return
+    for p in p.self_and_subtree():
+        head = p.moreHead(firstLevel,useVerticalBar=True)
+        s = g.toEncodedString(head + nl,self.encoding,reportErrors=True)
+        theFile.write(s)
+    theFile.close()
+#@-node:ekr.20100223123910.5955:exportHeadlines
+#@+node:ekr.20100223123910.5956:flattenOutline
+def flattenOutline (self,fileName):
+
+    c = self.c ; nl = g.u(self.output_newline)
+    p = c.currentVnode()
+    if not p: return
+    self.setEncoding()
+    firstLevel = p.level()
+
+    # 10/14/02: support for output_newline setting.
+    mode = c.config.output_newline
+    mode = g.choose(mode=="platform",'w','wb')
+    try:
+        theFile = open(fileName,mode)
+    except IOError:
+        g.es("can not open",fileName,color="blue")
+        leoTest.fail()
+        return
+
+    for p in p.self_and_subtree():
+        head = p.moreHead(firstLevel)
+        s = g.toEncodedString(head + nl,encoding=self.encoding,reportErrors=True)
+        theFile.write(s)
+        body = p.moreBody() # Inserts escapes.
+        if len(body) > 0:
+            s = g.toEncodedString(body + nl,self.encoding,reportErrors=True)
+            theFile.write(s)
+    theFile.close()
+#@-node:ekr.20100223123910.5956:flattenOutline
+#@+node:ekr.20100223123910.5957:outlineToWeb
+def outlineToWeb (self,fileName,webType):
+
+    c = self.c ; nl = self.output_newline
+    current = c.p
+    if not current: return
+    self.setEncoding()
+    self.webType = webType
+    # 10/14/02: support for output_newline setting.
+    mode = c.config.output_newline
+    mode = g.choose(mode=="platform",'w','wb')
+    try:
+        theFile = open(fileName,mode)
+    except IOError:
+        g.es("can not open",fileName,color="blue")
+        leoTest.fail()
+        return
+
+    self.treeType = "@file"
+    # Set self.treeType to @root if p or an ancestor is an @root node.
+    for p in current.parents():
+        flag,junk = g.is_special(p.b,0,"@root")
+        if flag:
+            self.treeType = "@root"
+            break
+    for p in current.self_and_subtree():
+        s = self.convertVnodeToWeb(p)
+        if len(s) > 0:
+            s = g.toEncodedString(s,self.encoding,reportErrors=True)
+            theFile.write(s)
+            if s[-1] != '\n': theFile.write(nl)
+    theFile.close()
+#@-node:ekr.20100223123910.5957:outlineToWeb
+#@+node:ekr.20100223123910.5958:weave
+def weave (self,filename):
+
+    c = self.c ; nl = self.output_newline
+    p = c.p
+    if not p: return
+    self.setEncoding()
+    << open filename to f, or return >>
+    for p in p.self_and_subtree():
+        s = p.b
+        s2 = s.strip()
+        if s2 and len(s2) > 0:
+            f.write("-" * 60) ; f.write(nl)
+            << write the context of p to f >>
+            f.write("-" * 60) ; f.write(nl)
+            s = g.toEncodedString(s,self.encoding,reportErrors=True)
+            f.write(s.rstrip() + nl)
+    f.flush()
+    f.close()
+#@+node:ekr.20100223123910.5959:<< open filename to f, or return >>
+try:
+    # 10/14/02: support for output_newline setting.
+    mode = c.config.output_newline
+    mode = g.choose(mode=="platform",'w','wb')
+    f = open(filename,mode)
+    if not f: return
+except Exception:
+    g.es("exception opening:",filename)
+    g.es_exception()
+    return
+#@-node:ekr.20100223123910.5959:<< open filename to f, or return >>
+#@+node:ekr.20100223123910.5961:<< write the context of p to f >>
+# write the headlines of p, p's parent and p's grandparent.
+context = [] ; p2 = p.copy() ; i = 0
+while i < 3:
+    i += 1
+    if not p2: break
+    context.append(p2.h)
+    p2.moveToParent()
+
+context.reverse()
+indent = ""
+for line in context:
+    f.write(indent)
+    indent += '\t'
+    line = g.toEncodedString(line,self.encoding,reportErrors=True)
+    f.write(line)
+    f.write(nl)
+#@-node:ekr.20100223123910.5961:<< write the context of p to f >>
+#@-node:ekr.20100223123910.5958:weave
+#@+node:ekr.20100223123910.5961:<< write the context of p to f >>
+# write the headlines of p, p's parent and p's grandparent.
+context = [] ; p2 = p.copy() ; i = 0
+while i < 3:
+    i += 1
+    if not p2: break
+    context.append(p2.h)
+    p2.moveToParent()
+
+context.reverse()
+indent = ""
+for line in context:
+    f.write(indent)
+    indent += '\t'
+    line = g.toEncodedString(line,self.encoding,reportErrors=True)
+    f.write(line)
+    f.write(nl)
+#@-node:ekr.20100223123910.5961:<< write the context of p to f >>
+#@+node:ekr.20100223123910.5962:writeNormalTree
+def writeNormalTree (self,p,toString=False):
+
+    self.initWrite(p)
+
+    # Always write to a string first.
+    self.outputFile = StringIO()
+    self.writeTree(p)
+    self.source = self.stringOutput = self.outputFile.getvalue()
+
+    # Copy to a file if requested.
+    if not toString:
+        # Comput the output file name *after* calling writeTree.
+        self.outputFileName = self.computeOutputFileName(self.outputFileName)
+        self.outputFile = open(self.outputFileName,'w')
+        self.outputFile.write(self.stringOutput)
+        self.outputFile.close()
+
+    return True
+#@-node:ekr.20100223123910.5962:writeNormalTree
+#@+node:ekr.20100223123910.5963:show_error_lines
+def show_error_lines (self,lines,fileName):
+
+    for line in lines:
+        g.es_print(line)
+
+    if False: # Only for major debugging.
+        try:
+            f1 = open(fileName, "w")
+            for line in lines:
+                f1.write(g.toEncodedString(line))
+            f1.close()
+        except IOError:
+            g.es_exception()
+            g.es_print('can not open',fileName)
+#@-node:ekr.20100223123910.5963:show_error_lines
+#@+node:ekr.20100223123910.5964:oblank, oblanks, os, otab, otabs (Tangle)
+def oblank (self):
+    self.oblanks(1)
+
+def oblanks (self,n):
+    if abs(n) > 0:
+        s = g.toEncodedString(' ' * abs(n),encoding=self.encoding)
+        self.output_file.write(s)
+
+def onl(self):
+    s = self.output_newline
+    s = g.toEncodedString(s,self.encoding,reportErrors=True)
+    self.output_file.write(s)
+
+def os (self,s):
+    s = s.replace('\r','\n')
+    s = g.toEncodedString(s,self.encoding,reportErrors=True)
+    self.output_file.write(s)
+
+def otab (self):
+    self.otabs(1)
+
+def otabs (self,n):
+    if abs(n) > 0:
+        s = g.toEncodedString('\t' * abs(n),self.encoding,reportErrors=True)
+        self.output_file.write(s)
+#@-node:ekr.20100223123910.5964:oblank, oblanks, os, otab, otabs (Tangle)
+#@+node:ekr.20100223123910.5965:show
+def show (self,s):
+
+    # g.pr(s)
+    if self.outputFile:
+        s = g.toEncodedString(s + '\n')
+        self.outputFile.write(s)
+    elif self.c:
+        g.es(s)
+    else:
+        g.pr(s)
+        g.pr('')
+#@-node:ekr.20100223123910.5965:show
+#@-node:ekr.20100223123910.5933:Calls to .write
+#@+node:ekr.20100223123910.5966:Failing unit test with koi8-r
+#@+node:ekr.20100223123910.5973:g.mungeFileName
+def mungeFileName(fileName):
+
+    '''Create a full, normalized, Unicode path name, preserving case.'''
+
+    relFn = g.os_path_normpath(fileName)
+    fn = g.os_path_finalize(fileName)
+
+    isZipped = fn and zipfile.is_zipfile(fn)
+    isLeo = isZipped or fn.endswith('.leo')
+
+    return isLeo,fn,relFn
+#@-node:ekr.20100223123910.5973:g.mungeFileName
+#@+node:ekr.20100223123910.5968:g.openWithFileName & helpers
+def openWithFileName(fileName,old_c,
+    enableLog=True,gui=None,readAtFileNodesFlag=True):
+
+    """Create a Leo Frame for the indicated fileName if the file exists."""
+
+    trace = False and not g.unitTesting
+
+    if not fileName: return False, None
+    isLeo,fn,relFn = g.mungeFileName(fileName)
+
+    # Return if the file is already open.
+    c = g.findOpenFile(fn)
+    if c: return True,c.frame
+
+    # Open the file.
+    if isLeo:
+        c,f = g.openWithFileNameHelper(old_c,gui,fn,relFn)
+    else:
+        c,f = g.openWrapperLeoFile(old_c,fn,gui),None
+    if not c: return False,None
+
+    # Init the open file.
+    assert c.frame and c.frame.c == c
+    c.frame.log.enable(enableLog)
+    g.app.writeWaitingLog(c,forceLog=not g.app.initing)
+    ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
+    if not ok: return False,None
+    g.createMenu(c,fn)
+    g.finishOpen(c)
+    return True,c.frame
+#@+node:ekr.20100223123910.5969:g.createMenu
+def createMenu(c,fileName=None):
+
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+
+    if not g.doHook("menu1",c=c,p=c.p,v=c.p):
+        c.frame.menu.createMenuBar(c.frame)
+        c.updateRecentFiles(fileName)
+        g.doHook("menu2",c=c,p=c.p,v=c.p)
+        g.doHook("after-create-leo-frame",c=c)
+#@-node:ekr.20100223123910.5969:g.createMenu
+#@+node:ekr.20100223123910.5970:g.findOpenFile
+def findOpenFile(fileName):
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    for frame in g.app.windowList:
+        c = frame.c
+        if munge(fileName) == munge(c.mFileName):
+            frame.bringToFront()
+            c.setLog()
+            c.outerUpdate()
+            return c
+    return None
+#@-node:ekr.20100223123910.5970:g.findOpenFile
+#@+node:ekr.20100223123910.5971:g.finishOpen
+def finishOpen(c):
+
+    k = c.k
+    # New in Leo 4.6: provide an official way for very late initialization.
+    c.frame.tree.initAfterLoad()
+    c.initAfterLoad()
+    c.redraw()
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.chapterController:
+        c.chapterController.finishCreate()
+    if k:
+        k.setDefaultInputState()
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    if k:
+        k.showStateAndMode()
+    c.frame.initCompleteHint()
+    return True
+#@-node:ekr.20100223123910.5971:g.finishOpen
+#@+node:ekr.20100223123910.5972:g.handleOpenHooks
+def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
+
+    if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+        c.setLog()
+        if theFile:
+            app.lockLog()
+            ok = c.fileCommands.open(
+                theFile,fileName,
+                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+            app.unlockLog()
+            if not ok:
+                g.app.closeLeoWindow(c.frame)
+                return False
+            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+                # The recent files list has been updated by c.updateRecentFiles.
+                z.c.config.setRecentFiles(g.app.config.recentFiles)
+
+    # Bug fix in 4.4.
+    if not c.openDirectory:
+        c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
+    g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+    return True
+#@nonl
+#@-node:ekr.20100223123910.5972:g.handleOpenHooks
+#@+node:ekr.20100223123910.5973:g.mungeFileName
+def mungeFileName(fileName):
+
+    '''Create a full, normalized, Unicode path name, preserving case.'''
+
+    relFn = g.os_path_normpath(fileName)
+    fn = g.os_path_finalize(fileName)
+
+    isZipped = fn and zipfile.is_zipfile(fn)
+    isLeo = isZipped or fn.endswith('.leo')
+
+    return isLeo,fn,relFn
+#@-node:ekr.20100223123910.5973:g.mungeFileName
+#@+node:ekr.20100223123910.5974:g.openWithFileNameHelper
+def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
+
+    if old_c: g.preRead(fileName)
+    g.doHook('open0')
+
+    # Open the file in binary mode to allow 0x1a in bodies & headlines.
+    theFile,isZipped = g.openLeoOrZipFile(fileName)
+    if not theFile:
+        return None,None
+
+    # This call will take 3/4 sec. to open a file from the leoBridge.
+    # This is due to imports in c.__init__
+    c,frame = app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        gui=gui)
+
+    c.isZipped = isZipped
+    return c,theFile
+#@+node:ekr.20100223123910.5975:preRead
+def preRead(fileName):
+
+    '''Read the file for the first time,
+    setting the setting for a later call to finishCreate.
+    '''
+
+    c = g.app.config.openSettingsFile(fileName)
+    if c:
+        g.app.config.updateSettings(c,localFlag=True)
+#@-node:ekr.20100223123910.5975:preRead
+#@-node:ekr.20100223123910.5974:g.openWithFileNameHelper
+#@+node:ekr.20100223123910.5976:g.openWrapperLeoFile
+def openWrapperLeoFile (old_c,fileName,gui):
+
+    '''Open a wrapper .leo file for the given file,
+    and import the file into .leo file.'''
+
+    # This code is similar to c.new, but different enough to be separate.
+    if not g.os_path_exists(fileName):
+        if not g.unitTesting:
+            g.es_print("can not open:",fileName,color="blue")
+        return None
+
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    if 0: # This causes duplicate common buttons.
+        g.doHook("new",old_c=old_c,c=c,new_c=c)
+
+    # Use the config params to set the size and location of the window.
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+
+    if True: # Just read the file into the node.
+        fileName = g.os_path_finalize(fileName)
+        s,e = g.readFileIntoString(fileName)
+        if s is None: return None
+        p = c.rootPosition()
+        if p:
+            p.setHeadString('@edit %s' % fileName)
+            p.setBodyString(s)
+            c.selectPosition(p)
+    else:  # Import the file into the new outline.
+        junk,ext = g.os_path_splitext(fileName)
+        p = c.p
+        p = c.importCommands.createOutline(fileName,parent=p,atAuto=False,ext=ext)
+        c.setCurrentPosition(p)
+        c.moveOutlineLeft()
+        p = c.p
+        c.setCurrentPosition(p.back())
+        c.deleteOutline(op_name=None)
+        p = c.p
+        p.expand()
+
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
+
+    frame.c.setChanged(True) # Mark the outline dirty.
+    return c
+#@-node:ekr.20100223123910.5976:g.openWrapperLeoFile
+#@-node:ekr.20100223123910.5968:g.openWithFileName & helpers
+#@+node:ekr.20100223123910.5977:g.openLeoOrZipFile
+# This is used in several places besides g.openWithFileName.
+
+def openLeoOrZipFile (fileName):
+
+    try:
+        isZipped = zipfile.is_zipfile(fileName)
+        if isZipped:
+            theFile = zipfile.ZipFile(fileName,'r')
+            if not theFile: return None,False
+            # Read the file into an StringIO file.
+            aList = theFile.namelist()
+            name = aList and len(aList) == 1 and aList[0]
+            if not name: return None,False
+            s = theFile.read(name)
+            if g.isPython3:
+                theStringFile = StringIO(g.ue(s,'utf-8'))
+            else:
+                theStringFile =  StringIO(s)
+            return theStringFile,True
+        else:
+            mode = 'rb'
+            theFile = open(fileName,mode)
+        return theFile,isZipped
+    except IOError:
+        # Do not use string + here: it will fail for non-ascii strings!
+        if not g.unitTesting:
+            g.es_print("can not open:",fileName,color="blue")
+        return None,False
+#@nonl
+#@-node:ekr.20100223123910.5977:g.openLeoOrZipFile
+#@-node:ekr.20100223123910.5966:Failing unit test with koi8-r
+#@-node:ekr.20100223123910.5931:Clean up file open/read/write code
+#@+node:ekr.20100219083854.5616:Simplify i/o
+#@+node:ekr.20100211125418.11612:Revise g.readFileIntoString
 @nocolor-node
 
-1. Memory does leak, and that's not ok with me.  And I want just two
-files per top-level directory.
+- Create g.readFileWithUnknownEncodingIntoString.
+    - Only this function should return ok,e.
 
-2. Strange things can happen with caching, as just happened to me when
-I restored qtui_generate.py mistakenly deleted from leo/test.  There
-is an @auto node for this file in qtGui.py, and I got improper 'can
-not open' messages for this file.
+- g.readFileIntoString should assume utf-8, and support explicit encodings.
 
-3. It is troubling that the present caching scheme does not use the
-full path to a file, only the basename.  This means that two identical
-files in two different places will use the same cache entries.  I've
-been wondering for the last several days about whether this could
-cause problems.  I don't know for sure, but I am uncomfortable.
+We also need the following functions:
 
-4. I want the clear-cache and clear-all-caches commands to do what
-they say: get rid of everything.  Among other things, this is good for
-debugging and recovering from cache problems.
+- g.openFileForReading.
+- g.openFileForWriting.
+#@nonl
+#@-node:ekr.20100211125418.11612:Revise g.readFileIntoString
+#@+node:ekr.20100209224508.5744:Calls to .write
+All these could be considered potential Python 3.x bugs.  Most are not.
+#@nonl
+#@+node:ekr.20031218072017.1470:put (leoFileCommands)
+def put (self,s):
 
-#@-node:ekr.20100211095442.6201:cache notes 2
-#@+node:ekr.20100223075705.5635:Don't write expansion bits
-#@-node:ekr.20100223075705.5635:Don't write expansion bits
-#@+node:ekr.20100210163813.5748:Caching buglets?
-@nocolor-node
+    '''Put string s to self.outputFile. All output eventually comes here.'''
 
-This is a recent bug, but imo it has uncovered some other caching buglets. These
-buglets are not big enough to delay Leo 4.7, but the new caching scheme would
-ensure they never bite.
+    # Improved code: self.outputFile (a cStringIO object) always exists.
+    # g.trace(g.callers(1),repr(s))
+    if s:
+        self.putCount += 1
+        if not g.isPython3:
+            s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+        self.outputFile.write(s)
 
-1. The code that computes what I have been calling the top-level directory is dubious::
+def put_dquote (self):
+    self.put('"')
 
-    dbdirname = join(g.app.homeLeoDir,'db',
-            '%s_%s' % (bname,hashlib.md5(fn).hexdigest()))
+def put_dquoted_bool (self,b):
+    if b: self.put('"1"')
+    else: self.put('"0"')
 
-The problem is that bname is only the base name of the cached file, not a name
-(or key) that depends on the full path. Thus, two copies of the same file in the
-same place will be cached in the same directory. Is this ominous?
+def put_flag (self,a,b):
+    if a:
+        self.put(" ") ; self.put(b) ; self.put('="1"')
 
-2. It's not clear what caching to do with the save-to command.
-#@-node:ekr.20100210163813.5748:Caching buglets?
-#@-node:ekr.20100219083854.5615:Improve caching
+def put_in_dquotes (self,a):
+    self.put('"')
+    if a: self.put(a) # will always be True if we use backquotes.
+    else: self.put('0')
+    self.put('"')
+
+def put_nl (self):
+    self.put("\n")
+
+def put_tab (self):
+    self.put("\t")
+
+def put_tabs (self,n):
+    while n > 0:
+        self.put("\t")
+        n -= 1
+#@nonl
+#@-node:ekr.20031218072017.1470:put (leoFileCommands)
+#@+node:ekr.20100119145629.6111:writeToFileHelper & helpers
+def writeToFileHelper (self,fileName,toOPML):
+
+    c = self.c ; toZip = c.isZipped
+    ok,backupName = self.createBackupFile(fileName)
+    if not ok: return False
+    fileName,theActualFile = self.createActualFile(fileName,toOPML,toZip)
+    self.mFileName = fileName
+    self.outputFile = StringIO() # Always write to a string.
+
+    try:
+        if toOPML:
+            self.putToOPML()
+        else:
+            self.putLeoFile()
+        s = self.outputFile.getvalue()
+        g.app.write_Leo_file_string = s # 2010/01/19: always set this.
+        if toZip:
+            self.writeZipFile(s)
+        else:
+            if g.isPython3:
+                s = bytes(s,self.leo_file_encoding,'replace')
+            theActualFile.write(s)
+            theActualFile.close()
+            c.setFileTimeStamp(fileName)
+            # raise AttributeError # To test handleWriteLeoFileException.
+            # Delete backup file.
+            if backupName and g.os_path_exists(backupName):
+                self.deleteFileWithMessage(backupName,'backup')
+        return True
+    except Exception:
+        self.handleWriteLeoFileException(
+            fileName,backupName,theActualFile)
+        return False
+#@+node:ekr.20100119145629.6106:createActualFile
+def createActualFile (self,fileName,toOPML,toZip):
+
+    c = self.c
+
+    if toOPML and not self.mFileName.endswith('opml'):
+        fileName = self.mFileName + '.opml'
+
+    if toZip:
+        self.toString = True
+        theActualFile = None
+    else:
+        try:
+            # 2010/01/21: always write in binary mode.
+            theActualFile = open(fileName,'wb')
+        except IOError:
+            theActualFile = None
+
+    return fileName,theActualFile
+#@-node:ekr.20100119145629.6106:createActualFile
+#@+node:ekr.20031218072017.3047:createBackupFile (fileCommands)
+def createBackupFile (self,fileName):
+
+    '''
+        Create a closed backup file and copy the file to it,
+        but only if the original file exists.
+    '''
+
+    c = self.c
+
+    if g.os_path_exists(fileName):
+        # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
+
+        fd,backupName = tempfile.mkstemp(text=False)
+        f = open(fileName,'rb') # rb is essential.
+        s = f.read()
+        f.close()
+
+        try:
+            try:
+                os.write(fd,s)
+            finally:
+                os.close(fd)
+            ok = True
+        except Exception:
+            g.es('exception creating backup file',color='red')
+            g.es_exception()
+            ok,backupName = False,None
+
+        if not ok and self.read_only:
+            g.es("read only",color="red")
+    else:
+        ok,backupName = True,None
+
+    return ok,backupName
+#@-node:ekr.20031218072017.3047:createBackupFile (fileCommands)
+#@+node:ekr.20100119145629.6108:handleWriteLeoFileException
+def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
+
+    c = self.c
+
+    g.es("exception writing:",fileName)
+    g.es_exception(full=True)
+
+    if theActualFile:
+        theActualFile.close()
+
+    # Delete fileName.
+    if fileName and g.os_path_exists(fileName):
+        self.deleteFileWithMessage(fileName,'')
+
+    # Rename backupName to fileName.
+    if backupName and g.os_path_exists(backupName):
+        g.es("restoring",fileName,"from",backupName)
+
+        # No need to create directories when restoring.
+        g.utils_rename(c,backupName,fileName)
+    else:
+        g.trace('backup file does not exist!',
+            repr(backupName),color='red')
+#@-node:ekr.20100119145629.6108:handleWriteLeoFileException
+#@-node:ekr.20100119145629.6111:writeToFileHelper & helpers
+#@+node:ekr.20031218072017.1149:<< Write s into newFileName >>
+try:
+    mode = c.config.output_newline
+    mode = g.choose(mode=="platform",'w','wb')
+    theFile = open(newFileName,mode)
+    s = g.toEncodedString(s,self.encoding,reportErrors=True)
+    theFile.write(s)
+    theFile.close()
+    if not g.unitTesting:
+        g.es("created:",newFileName)
+except Exception:
+    g.es("exception creating:",newFileName)
+    g.es_exception()
+#@-node:ekr.20031218072017.1149:<< Write s into newFileName >>
+#@+node:ekr.20080713091247.1:x.replaceFileWithString
+def replaceFileWithString (self,fn,s):
+
+    '''Replace the file with s if s is different from theFile's contents.
+
+    Return True if theFile was changed.
+    '''
+
+    trace = False and not g.unitTesting
+    x = self
+    exists = g.os_path_exists(fn)
+
+    if exists:
+        # Read the file.  Return if it is the same.
+        s2,e = g.readFileIntoString(fn)
+        if s2 is None:
+            return False
+        if s == s2:
+            if not g.unitTesting: g.es('unchanged:',fn)
+            return False
+
+    # Issue warning if directory does not exist.
+    theDir = g.os_path_dirname(fn)
+    if theDir and not g.os_path_exists(theDir):
+        if not g.unitTesting:
+            x.error('not written: %s directory not found' % fn)
+        return False
+
+    # Replace the file.
+    try:
+        f = open(fn,'wb')
+        f.write(g.toEncodedString(s))
+        if trace: g.trace('fn',fn,
+            '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
+            '\ncallers',g.callers(4))
+        f.close()
+        if not g.unitTesting:
+            # g.trace('created:',fn,g.callers())
+            if exists:  g.es('wrote:',fn)
+            else:       g.es('created:',fn)
+        return True
+    except IOError:
+        x.error('unexpected exception writing file: %s' % (fn))
+        g.es_exception()
+        return False
+#@-node:ekr.20080713091247.1:x.replaceFileWithString
+#@+node:ekr.20080712150045.1:replaceFileWithString (atFile)
+def replaceFileWithString (self,fn,s):
+
+    '''Replace the file with s if s is different from theFile's contents.
+
+    Return True if theFile was changed.
+    '''
+
+    at = self ; testing = g.app.unitTesting
+
+    # g.trace('fn',fn,'s','\n',s)
+    # g.trace(g.callers())
+
+    exists = g.os_path_exists(fn)
+
+    if exists: # Read the file.  Return if it is the same.
+        s2,e = g.readFileIntoString(fn)
+        if s is None:
+            return False
+        if s == s2:
+            if not testing: g.es('unchanged:',fn)
+            return False
+
+    # Issue warning if directory does not exist.
+    theDir = g.os_path_dirname(fn)
+    if theDir and not g.os_path_exists(theDir):
+        if not g.unitTesting:
+            g.es('not written: %s directory not found' % fn,color='red')
+        return False
+
+    # Replace
+    try:
+        f = open(fn,'wb')
+        if g.isPython3:
+            s = g.toEncodedString(s,encoding=self.encoding)
+        f.write(s)
+        f.close()
+        if not testing:
+            if exists:
+                g.es('wrote:    ',fn)
+            else:
+                # g.trace('created:',fn,g.callers())
+                g.es('created:',fn)
+        return True
+    except IOError:
+        at.error('unexpected exception writing file: %s' % (fn))
+        g.es_exception()
+        return False
+#@-node:ekr.20080712150045.1:replaceFileWithString (atFile)
+#@+node:ekr.20070115135502:writeScriptFile
+def writeScriptFile (self,script):
+
+    # Get the path to the file.
+    c = self
+    path = c.config.getString('script_file_path')
+    if path:
+        isAbsPath = os.path.isabs(path)
+        driveSpec, path = os.path.splitdrive(path)
+        parts = path.split('/')
+        # xxx bad idea, loadDir is often read only!
+        path = g.app.loadDir
+        if isAbsPath:
+            # make the first element absolute
+            parts[0] = driveSpec + os.sep + parts[0]
+        allParts = [path] + parts
+        path = c.os_path_finalize_join(*allParts)
+    else:
+        path = c.os_path_finalize_join(
+            g.app.homeLeoDir,'scriptFile.py')                    
+
+    # Write the file.
+    try:
+        if g.isPython3:
+            # Use the default encoding.
+            f = open(path,encoding='utf-8',mode='w')
+        else:
+            f = open(path,'w')
+        f.write(script)
+        f.close()
+    except Exception:
+        g.es_exception()
+        g.es("Failed to write script to %s" % path)
+        # g.es("Check your configuration of script_file_path, currently %s" %
+            # c.config.getString('script_file_path'))
+        path = None
+
+    return path
+#@nonl
+#@-node:ekr.20070115135502:writeScriptFile
+#@+node:ekr.20090502071837.94:write (leoRst)
+def write (self,s):
+
+    if self.trialWrite:
+        pass
+    elif g.isPython3:
+        pass
+    else:
+        s = self.encode(s)
+
+    # g.trace(repr(s),g.callers(2))
+
+    self.outputFile.write(s)
+#@-node:ekr.20090502071837.94:write (leoRst)
+#@+node:ekr.20090502071837.64:writeSpecialTree
+def writeSpecialTree (self,p,toString,justOneFile):
+
+    c = self.c
+    isHtml = self.ext in ('.html','.htm')
+    if isHtml and not SilverCity:
+        if not self.silverCityWarningGiven:
+            self.silverCityWarningGiven = True
+            g.es('SilverCity not present so no syntax highlighting')
+
+    self.initWrite(p)
+        # was encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
+    self.outputFile = StringIO()
+    self.writeTree(p)
+    self.source = self.outputFile.getvalue()
+    self.outputFile = None
+
+    if not toString:
+        # Compute this here for use by intermediate file.
+        self.outputFileName = self.computeOutputFileName(self.outputFileName)
+
+        # Create the directory if it doesn't exist.
+        theDir, junk = g.os_path_split(self.outputFileName)
+        theDir = c.os_path_finalize(theDir)
+        if not g.os_path_exists(theDir):
+            ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
+            if not ok:
+                g.es_print('did not create:',theDir,color='red')
+                return False
+
+        # if not os.access(theDir,os.F_OK):
+            # os.mkdir(theDir)
+
+        if self.getOption('write_intermediate_file'):
+            name = self.outputFileName + '.txt'
+            f = open(name,'w')
+            f.write(self.source)
+            f.close()
+            self.report(name)
+
+    try:
+        output = self.writeToDocutils(self.source)
+        ok = output is not None
+    except Exception:
+        g.pr('Exception in docutils')
+        g.es_exception()
+        ok = False
+
+    if ok:
+        if isHtml:
+            import re
+            idxTitle = output.find('<title></title>')
+            if idxTitle > -1:
+                m = re.search('<h1>([^<]*)</h1>', output)
+                if not m:
+                    m = re.search('<h1><[^>]+>([^<]*)</a></h1>', output)
+                if m:
+                    output = output.replace(
+                        '<title></title>',
+                        '<title>%s</title>' % m.group(1)
+                    )
+
+
+        if toString:
+            self.stringOutput = output
+        else:
+            # Write the file to the directory containing the .leo file.
+            f = open(self.outputFileName,'w')
+            f.write(output)
+            f.close()
+            self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
+
+    return ok
+#@-node:ekr.20090502071837.64:writeSpecialTree
+#@+node:ekr.20100203050306.5937:c.createOpenWithTempFile
+def createOpenWithTempFile (self,p,ext):
+
+    trace = False and not g.unitTesting
+    c = self ; f = None
+
+    # May be over-ridden by mod_tempfname plugin.
+    fn = c.openWithTempFilePath(p,ext)
+
+    try:
+        if g.os_path_exists(fn):
+            g.es('recreating:  ',g.shortFileName(fn),color='red')
+        else:
+            g.es('creating:  ',g.shortFileName(fn),color='blue')
+        f = open(fn,'w')
+        # Convert s to whatever encoding is in effect.
+        d = c.scanAllDirectives(p)
+        encoding = d.get('encoding',None)
+        if encoding == None:
+            encoding = c.config.default_derived_file_encoding
+        if g.isPython3: # 2010/02/09
+            s = p.b
+        else:
+            s = g.toEncodedString(p.b,encoding,reportErrors=True) 
+        f.write(s)
+        f.flush()
+        f.close()
+        try:
+            time = g.os_path_getmtime(fn)
+            if time: g.es('time: ',time)
+        except:
+            time = None
+
+        # Remove previous entry from app.openWithFiles if it exists.
+        for d in g.app.openWithFiles[:]:
+            if p.v == d.get('v'):
+                if trace: g.trace('removing',d.get('path'))
+                g.app.openWithFiles.remove(d)
+
+        d = {
+            # Used by app.destroyOpenWithFilesForFrame.
+            'c':c,
+            # Used here and by app.destroyOpenWithFileWithDict.
+            'path':fn,
+            # Used by c.testForConflicts.
+            'body':s,
+            'encoding':encoding,
+            'time':time,
+            # Used by the open_with plugin.
+            'p':p.copy(),
+            # Used by c.openWithHelper, and below.
+            'v':p.v,
+        }
+        g.app.openWithFiles.append(d)
+        return fn
+    except:
+        if f: f.close()
+        g.es('exception creating temp file',color='red')
+        g.es_exception()
+        return None
+#@-node:ekr.20100203050306.5937:c.createOpenWithTempFile
+#@+node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
+for theDir in (homeLeoDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'w')
+            f.write(g.app.leoID)
+            f.close()
+            if g.os_path_exists(fn):
+                g.es_print('',tag,'created in',theDir,color='red')
+                return
+        except IOError:
+            pass
+
+        g.es('can not create',tag,'in',theDir,color='red')
+#@-node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
+#@+node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
+s = p.h
+
+if g.match(s,0,"@@"):
+    s = s[2:]
+    if s and len(s) > 0:
+        s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
+        at.outputFile.write(s)
+#@-node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
+#@+node:ekr.20041005105605.204:os
+def os (self,s):
+
+    """Write a string to the output stream.
+
+    All output produced by leoAtFile module goes here."""
+
+    trace = False and not g.unitTesting
+    at = self ; tag = self.underindentEscapeString
+    f = at.outputFile
+
+    if s and f:
+        try:
+            if s.startswith(tag):
+                junk,s = self.parseUnderindentTag(s)
+            # Bug fix: this must be done last.
+            s = g.toEncodedString(s,at.encoding,reportErrors=True)
+            if trace: g.trace(repr(s),g.callers(5))
+            f.write(s)
+        except Exception:
+            at.exception("exception writing:" + s)
+#@-node:ekr.20041005105605.204:os
+#@+node:ekr.20070915142635:writeFileFromNode
+def writeFileFromNode (self,event=None):
+
+    # If node starts with @read-file-into-node, use the full path name in the headline.
+    # Otherwise, prompt for a file name.
+
+    c = self ; p = c.p
+    c.endEditing()
+
+    h = p.h.rstrip()
+    s = p.b
+    tag = '@read-file-into-node'
+
+    if h.startswith(tag):
+        fileName = h[len(tag):].strip()
+    else:
+        fileName = None
+
+    if not fileName:
+        filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
+        fileName = g.app.gui.runSaveFileDialog(
+            initialfile=None,
+            title='Write File From Node',
+            filetypes=filetypes,
+            defaultextension=None)
+    if fileName:
+        try:
+            theFile = open(fileName,'w')
+            g.chdir(fileName)
+        except IOError:
+            theFile = None
+        if theFile:
+            if s.startswith('@nocolor\n'):
+                s = s[len('@nocolor\n'):]
+            theFile.write(s)
+            theFile.flush()
+            g.es_print('wrote:',fileName,color='blue')
+            theFile.close()
+        else:
+            g.es('can not write %s',fileName,color='red')
+#@nonl
+#@-node:ekr.20070915142635:writeFileFromNode
+#@+node:ekr.20050424131051:writeRecentFilesFileHelper
+def writeRecentFilesFileHelper (self,fileName):
+
+    # g.trace(g.toUnicode(fileName))
+
+    # Don't update the file if it begins with read-only.
+    theFile = None
+    try:
+        theFile = open(fileName)
+        lines = theFile.readlines()
+        if lines and self.munge(lines[0])=='readonly':
+            # g.trace('read-only: %s' %fileName)
+            return False
+    except IOError:
+        # The user may have erased a file.  Not an error.
+        if theFile: theFile.close()
+
+    theFile = None
+    try:
+        if g.isPython3:
+            theFile = open(fileName,encoding='utf-8',mode='w')
+        else:
+            theFile = open(fileName,mode='w')
+        if self.recentFiles:
+            s = '\n'.join(self.recentFiles)
+        else:
+            s = '\n'
+        if not g.isPython3:
+            s = g.toEncodedString(s,reportErrors=True)
+        theFile.write(s)
+
+    except IOError:
+        if 1: # The user may have erased a file.  Not an error.
+            g.es_print('error writing',fileName,color='red')
+            g.es_exception()
+            return False
+
+    except Exception:
+        g.es('unexpected exception writing',fileName,color='red')
+        g.es_exception()
+        if g.unitTesting: raise
+        return False
+
+    if theFile:
+        theFile.close()
+        return True
+    else:
+        return False
+#@-node:ekr.20050424131051:writeRecentFilesFileHelper
+#@+node:ekr.20050920084036.24:writeAbbreviations
+def writeAbbreviations (self,event):
+
+    '''Write abbreviations to a file.'''
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile = None,
+        title='Write Abbreviations',
+        filetypes = [("Text","*.txt"), ("All files","*")],
+        defaultextension = ".txt")
+
+    if not fileName: return
+
+    try:
+        f = open(fileName,'w')
+        for x in self.abbrevs:
+            f.write('%s=%s\n' % (x,self.abbrevs[x]))
+        f.close()
+    except IOError:
+        g.es('can not create',fileName)
+#@-node:ekr.20050920084036.24:writeAbbreviations
+#@+node:ekr.20050920084036.170:saveFile
+def saveFile (self,event):
+
+    '''Prompt for the name of a file and put the body text of the selected node into it..'''
+
+    w = self.editWidget(event)
+    if not w: return
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile = None,
+        title='save-file',
+        filetypes = [("Text","*.txt"), ("All files","*")],
+        defaultextension = ".txt")
+
+    if not fileName: return
+
+    try:
+        s = w.getAllText()
+        f = open(fileName,'w')
+        f.write(s)
+        f.close()
+    except IOError:
+        g.es('can not create',fileName)
+#@-node:ekr.20050920084036.170:saveFile
+#@+node:ekr.20051025071455.37:add (spellTab)
+def add(self,event=None):
+    """Add the selected suggestion to the dictionary."""
+
+    if not self.currentWord: return
+
+    # g.trace(self.currentWord)
+
+    try:
+        f = None
+        try:
+            # Rewrite the dictionary in alphabetical order.
+            f = open(self.dictionaryFileName, "r")
+            words = f.readlines()
+            f.close()
+            words = [word.strip() for word in words]
+            words.append(self.currentWord)
+            words.sort()
+            f = open(self.dictionaryFileName, "w")
+            for word in words:
+                f.write("%s\n" % g.toEncodedString(word,reportErrors=True))
+            f.flush()
+            f.close()
+            if 1:
+                s = 'Spell: added %s' % self.currentWord
+                self.messages.append(s)
+            else: # Too distracting.
+                g.es("adding ", color= "blue", newline= False) 
+                g.es('','%s' % self.currentWord)
+        except IOError:
+            g.es("can not add",self.currentWord,"to dictionary",color="red")
+    finally:
+        if f: f.close()
+
+    self.dictionary[self.currentWord.lower()] = 0
+    self.tab.onFindButton()
+#@-node:ekr.20051025071455.37:add (spellTab)
+#@+node:ekr.20041012091252:rawPrint
+def rawPrint (self,s):
+
+    if self.old:
+        self.old.write(s+'\n')
+    else:
+        g.pr(s)
+#@-node:ekr.20041012091252:rawPrint
+#@+node:ekr.20031218072017.1462:exportHeadlines
+def exportHeadlines (self,fileName):
+
+    c = self.c ; nl = g.u(self.output_newline)
+    p = c.p
+    if not p: return
+    self.setEncoding()
+    firstLevel = p.level()
+    mode = c.config.output_newline
+    mode = g.choose(mode=="platform",'w','wb')
+    try:
+        theFile = open(fileName,mode)
+    except IOError:
+        g.es("can not open",fileName,color="blue")
+        leoTest.fail()
+        return
+    for p in p.self_and_subtree():
+        head = p.moreHead(firstLevel,useVerticalBar=True)
+        s = g.toEncodedString(head + nl,self.encoding,reportErrors=True)
+        theFile.write(s)
+    theFile.close()
+#@-node:ekr.20031218072017.1462:exportHeadlines
+#@+node:ekr.20031218072017.1147:flattenOutline
+def flattenOutline (self,fileName):
+
+    c = self.c ; nl = g.u(self.output_newline)
+    p = c.currentVnode()
+    if not p: return
+    self.setEncoding()
+    firstLevel = p.level()
+
+    # 10/14/02: support for output_newline setting.
+    mode = c.config.output_newline
+    mode = g.choose(mode=="platform",'w','wb')
+    try:
+        theFile = open(fileName,mode)
+    except IOError:
+        g.es("can not open",fileName,color="blue")
+        leoTest.fail()
+        return
+
+    for p in p.self_and_subtree():
+        head = p.moreHead(firstLevel)
+        s = g.toEncodedString(head + nl,encoding=self.encoding,reportErrors=True)
+        theFile.write(s)
+        body = p.moreBody() # Inserts escapes.
+        if len(body) > 0:
+            s = g.toEncodedString(body + nl,self.encoding,reportErrors=True)
+            theFile.write(s)
+    theFile.close()
+#@-node:ekr.20031218072017.1147:flattenOutline
+#@+node:ekr.20031218072017.1148:outlineToWeb
+def outlineToWeb (self,fileName,webType):
+
+    c = self.c ; nl = self.output_newline
+    current = c.p
+    if not current: return
+    self.setEncoding()
+    self.webType = webType
+    # 10/14/02: support for output_newline setting.
+    mode = c.config.output_newline
+    mode = g.choose(mode=="platform",'w','wb')
+    try:
+        theFile = open(fileName,mode)
+    except IOError:
+        g.es("can not open",fileName,color="blue")
+        leoTest.fail()
+        return
+
+    self.treeType = "@file"
+    # Set self.treeType to @root if p or an ancestor is an @root node.
+    for p in current.parents():
+        flag,junk = g.is_special(p.b,0,"@root")
+        if flag:
+            self.treeType = "@root"
+            break
+    for p in current.self_and_subtree():
+        s = self.convertVnodeToWeb(p)
+        if len(s) > 0:
+            s = g.toEncodedString(s,self.encoding,reportErrors=True)
+            theFile.write(s)
+            if s[-1] != '\n': theFile.write(nl)
+    theFile.close()
+#@-node:ekr.20031218072017.1148:outlineToWeb
+#@+node:ekr.20031218072017.1464:weave
+def weave (self,filename):
+
+    c = self.c ; nl = self.output_newline
+    p = c.p
+    if not p: return
+    self.setEncoding()
+    << open filename to f, or return >>
+    for p in p.self_and_subtree():
+        s = p.b
+        s2 = s.strip()
+        if s2 and len(s2) > 0:
+            f.write("-" * 60) ; f.write(nl)
+            << write the context of p to f >>
+            f.write("-" * 60) ; f.write(nl)
+            s = g.toEncodedString(s,self.encoding,reportErrors=True)
+            f.write(s.rstrip() + nl)
+    f.flush()
+    f.close()
+#@+node:ekr.20031218072017.1150:<< open filename to f, or return >>
+try:
+    # 10/14/02: support for output_newline setting.
+    mode = c.config.output_newline
+    mode = g.choose(mode=="platform",'w','wb')
+    f = open(filename,mode)
+    if not f: return
+except Exception:
+    g.es("exception opening:",filename)
+    g.es_exception()
+    return
+#@-node:ekr.20031218072017.1150:<< open filename to f, or return >>
+#@+node:ekr.20031218072017.1465:<< write the context of p to f >>
+# write the headlines of p, p's parent and p's grandparent.
+context = [] ; p2 = p.copy() ; i = 0
+while i < 3:
+    i += 1
+    if not p2: break
+    context.append(p2.h)
+    p2.moveToParent()
+
+context.reverse()
+indent = ""
+for line in context:
+    f.write(indent)
+    indent += '\t'
+    line = g.toEncodedString(line,self.encoding,reportErrors=True)
+    f.write(line)
+    f.write(nl)
+#@-node:ekr.20031218072017.1465:<< write the context of p to f >>
+#@-node:ekr.20031218072017.1464:weave
+#@+node:ekr.20031218072017.1465:<< write the context of p to f >>
+# write the headlines of p, p's parent and p's grandparent.
+context = [] ; p2 = p.copy() ; i = 0
+while i < 3:
+    i += 1
+    if not p2: break
+    context.append(p2.h)
+    p2.moveToParent()
+
+context.reverse()
+indent = ""
+for line in context:
+    f.write(indent)
+    indent += '\t'
+    line = g.toEncodedString(line,self.encoding,reportErrors=True)
+    f.write(line)
+    f.write(nl)
+#@-node:ekr.20031218072017.1465:<< write the context of p to f >>
+#@+node:ekr.20090502071837.61:writeNormalTree
+def writeNormalTree (self,p,toString=False):
+
+    self.initWrite(p)
+
+    # Always write to a string first.
+    self.outputFile = StringIO()
+    self.writeTree(p)
+    self.source = self.stringOutput = self.outputFile.getvalue()
+
+    # Copy to a file if requested.
+    if not toString:
+        # Comput the output file name *after* calling writeTree.
+        self.outputFileName = self.computeOutputFileName(self.outputFileName)
+        self.outputFile = open(self.outputFileName,'w')
+        self.outputFile.write(self.stringOutput)
+        self.outputFile.close()
+
+    return True
+#@-node:ekr.20090502071837.61:writeNormalTree
+#@+node:ekr.20080822065427.4:show_error_lines
+def show_error_lines (self,lines,fileName):
+
+    for line in lines:
+        g.es_print(line)
+
+    if False: # Only for major debugging.
+        try:
+            f1 = open(fileName, "w")
+            for line in lines:
+                f1.write(g.toEncodedString(line))
+            f1.close()
+        except IOError:
+            g.es_exception()
+            g.es_print('can not open',fileName)
+#@-node:ekr.20080822065427.4:show_error_lines
+#@+node:ekr.20031218072017.1488:oblank, oblanks, os, otab, otabs (Tangle)
+def oblank (self):
+    self.oblanks(1)
+
+def oblanks (self,n):
+    if abs(n) > 0:
+        s = g.toEncodedString(' ' * abs(n),encoding=self.encoding)
+        self.output_file.write(s)
+
+def onl(self):
+    s = self.output_newline
+    s = g.toEncodedString(s,self.encoding,reportErrors=True)
+    self.output_file.write(s)
+
+def os (self,s):
+    s = s.replace('\r','\n')
+    s = g.toEncodedString(s,self.encoding,reportErrors=True)
+    self.output_file.write(s)
+
+def otab (self):
+    self.otabs(1)
+
+def otabs (self,n):
+    if abs(n) > 0:
+        s = g.toEncodedString('\t' * abs(n),self.encoding,reportErrors=True)
+        self.output_file.write(s)
+#@-node:ekr.20031218072017.1488:oblank, oblanks, os, otab, otabs (Tangle)
+#@+node:ekr.20031218072017.3650:show
+def show (self,s):
+
+    # g.pr(s)
+    if self.outputFile:
+        s = g.toEncodedString(s + '\n')
+        self.outputFile.write(s)
+    elif self.c:
+        g.es(s)
+    else:
+        g.pr(s)
+        g.pr('')
+#@-node:ekr.20031218072017.3650:show
+#@-node:ekr.20100209224508.5744:Calls to .write
+#@-node:ekr.20100219083854.5616:Simplify i/o
+#@+node:ekr.20100223123910.5835:Improve python imports
+#@+node:ekr.20070703122141.65:<< class baseScannerClass >>
+class baseScannerClass (scanUtility):
+
+    '''The base class for all import scanner classes.
+    This class contains common utility methods.'''
+
+    @others
+#@+node:ekr.20070703122141.66:baseScannerClass.__init__
+def __init__ (self,importCommands,atAuto,language):
+
+    ic = importCommands
+
+    self.atAuto = atAuto
+    self.c = c = ic.c
+
+    self.atAutoWarnsAboutLeadingWhitespace = c.config.getBool('at_auto_warns_about_leading_whitespace')
+    self.classId = None # The identifier containing the class tag: 'class', 'interface', 'namespace', etc.
+    self.codeEnd = None
+        # The character after the last character of the class, method or function.
+        # An error will be given if this is not a newline.
+    self.encoding = ic.encoding
+    self.errors = 0
+    ic.errors = 0
+    self.errorLines = []
+    self.escapeSectionRefs = True
+    self.extraIdChars = ''
+    self.fileName = ic.fileName # The original filename.
+    self.fileType = ic.fileType # The extension,  '.py', '.c', etc.
+    self.file_s = '' # The complete text to be parsed.
+    self.fullChecks = c.config.getBool('full_import_checks')
+    self.functionSpelling = 'function' # for error message.
+    self.importCommands = ic
+    self.indentRefFlag = None # None, True or False.
+    self.isRst = False
+    self.language = language
+    self.lastParent = None # The last generated parent node (used only by rstScanner).
+    self.methodName = ic.methodName # x, as in < < x methods > > =
+    self.methodsSeen = False
+    self.mismatchWarningGiven = False
+    self.output_newline = ic.output_newline # = c.config.getBool('output_newline')
+    self.output_indent = 0 # The minimum indentation presently in effect.
+    self.root = None # The top-level node of the generated tree.
+    self.rootLine = ic.rootLine # '' or @root + self.fileName
+    self.sigEnd = None # The index of the end of the signature.
+    self.sigId = None # The identifier contained in the signature, i.e., the function or method name.
+    self.sigStart = None
+        # The start of the line containing the signature.
+        # An error will be given if something other than whitespace precedes the signature.
+    self.startSigIndent = None
+    self.tab_width = None # Set in run: the tab width in effect in the c.currentPosition.
+    self.tab_ws = '' # Set in run: the whitespace equivalent to one tab.
+    self.trace = False or ic.trace # = c.config.getBool('trace_import')
+    self.treeType = ic.treeType # '@root' or '@file'
+    self.webType = ic.webType # 'cweb' or 'noweb'
+
+    # Compute language ivars.
+    delim1,junk,junk = g.set_delims_from_language(language)
+    self.comment_delim = delim1
+
+    # May be overridden in subclasses.
+    self.anonymousClasses = [] # For Delphi Pascal interfaces.
+    self.blockCommentDelim1 = None
+    self.blockCommentDelim2 = None
+    self.blockCommentDelim1_2 = None
+    self.blockCommentDelim2_2 = None
+    self.blockDelim1 = '{'
+    self.blockDelim2 = '}'
+    self.blockDelim2Cruft = [] # Stuff that can follow .blockDelim2.
+    self.classTags = ['class',] # tags that start a tag.
+    self.functionTags = []
+    self.hasClasses = True
+    self.hasFunctions = True
+    self.lineCommentDelim = None
+    self.lineCommentDelim2 = None
+    self.outerBlockDelim1 = None
+    self.outerBlockDelim2 = None
+    self.outerBlockEndsDecls = True
+    self.sigHeadExtraTokens = [] # Extra tokens valid in head of signature.
+    self.sigFailTokens = []
+        # A list of strings that abort a signature when seen in a tail.
+        # For example, ';' and '=' in C.
+
+    self.strict = False # True if leading whitespace is very significant.
+#@-node:ekr.20070703122141.66:baseScannerClass.__init__
+#@+node:ekr.20070808115837:Checking
+#@+node:ekr.20070703122141.102:check
+def check (self,unused_s,unused_parent):
+
+    '''Make sure the generated nodes are equivalent to the original file.
+
+    1. Regularize and check leading whitespace.
+    2. Check that a trial write produces the original file.
+
+    Return True if the nodes are equivalent to the original file.
+    '''
+
+    if self.fullChecks and self.treeType == '@file':
+        return self.checkTrialWrite()
+    else:
+        return True
+#@-node:ekr.20070703122141.102:check
+#@+node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
+def checkTrialWrite (self,s1=None,s2=None):
+
+    '''Return True if a trial write produces the original file.'''
+
+    # s1 and s2 are for unit testing.
+    c = self.c ; at = c.atFileCommands
+    if s1 is None and s2 is None:
+        if self.isRst:
+            outputFile = StringIO()
+            c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile,trialWrite=True)
+            s1,s2 = self.file_s,outputFile.getvalue()
+        else:
+            at.write(self.root,
+                nosentinels=True,thinFile=False,
+                scriptWrite=False,toString=True)
+            s1,s2 = self.file_s, at.stringOutput
+
+    s1 = g.toUnicode(s1,self.encoding)
+    s2 = g.toUnicode(s2,self.encoding)
+
+    # Make sure we have a trailing newline in both strings.
+    s1 = s1.replace('\r','')
+    s2 = s2.replace('\r','')
+    if not s1.endswith('\n'): s1 = s1 + '\n'
+    if not s2.endswith('\n'): s2 = s2 + '\n'
+
+    if s1 == s2: return True
+
+    lines1 = g.splitLines(s1)
+    lines2 = g.splitLines(s2)
+
+    if self.isRst:
+        lines1 = self.adjustRstLines(lines1)
+        lines2 = self.adjustRstLines(lines2)
+
+    n1,n2 = len(lines1), len(lines2)
+    ok = True ; bad_i = 0
+    for i in range(max(n1,n2)):
+        ok = self.compareHelper(lines1,lines2,i,self.strict)
+        if not ok:
+            bad_i = i
+            break
+
+    if g.app.unitTesting:
+        d = g.app.unitTestDict
+        # g.trace('expected',d.get('expectedMismatchLine'),'actual',d.get('actualMismatchLine'))
+        ok = d.get('expectedMismatchLine') == d.get('actualMismatchLine')
+        # Unit tests do not generate errors unless the mismatch line does not match.
+        if not ok: d['fail'] = g.callers() # 2008/10/3
+
+    if not ok:
+        self.reportMismatch(lines1,lines2,bad_i)
+
+    return ok
+#@-node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
+#@+node:ekr.20070730093735:compareHelper & helpers
+def compareHelper (self,lines1,lines2,i,strict):
+
+    '''Compare lines1[i] and lines2[i].
+    strict is True if leading whitespace is very significant.'''
+
+    trace = False and not g.unitTesting
+
+    def pr(*args,**keys): #compareHelper
+        g.es_print(color='blue',*args,**keys)
+
+    def pr_mismatch(i,line1,line2):
+        g.es_print('first mismatched line at line',str(i+1))
+        g.es_print('original line: ',line1)
+        g.es_print('generated line:',line2)
+
+    d = g.app.unitTestDict
+    expectedMismatch = g.app.unitTesting and d.get('expectedMismatchLine')
+    enableWarning = not self.mismatchWarningGiven and self.atAutoWarnsAboutLeadingWhitespace
+    messageKind = None
+
+    if i >= len(lines1):
+        if i != expectedMismatch or not g.unitTesting:
+            pr('extra lines')
+            for line in lines2[i:]:
+                pr(repr(line))
+        d ['actualMismatchLine'] = i
+        return False
+
+    if i >= len(lines2):
+        if i != expectedMismatch or not g.unitTesting:
+            g.es_print('missing lines')
+            for line in lines2[i:]:
+                g.es_print('',repr(line))
+        d ['actualMismatchLine'] = i
+        return False
+
+    line1,line2 = lines1[i],lines2[i]
+
+    if line1 == line2:
+        return True # An exact match.
+    elif not line1.strip() and not line2.strip():
+        return True # Blank lines compare equal.
+    elif self.isRst and self.compareRstUnderlines(line1,line2):
+        return True
+    elif strict:
+        s1,s2 = line1.lstrip(),line2.lstrip()
+        messageKind = g.choose(
+            s1 == s2 and self.startsComment(s1,0) and self.startsComment(s2,0),
+            'comment','error')
+    else:
+        s1,s2 = line1.lstrip(),line2.lstrip()
+        messageKind = g.choose(s1==s2,'warning','error')
+
+    # if trace:
+        # g.es_print('original line: ',line1)
+        # g.es_print('generated line:',line2)
+        # return True # continue checking.
+
+    if g.unitTesting:
+        d ['actualMismatchLine'] = i+1
+        ok = i+1 == expectedMismatch
+        if not ok:  pr_mismatch(i,line1,line2)
+        return ok
+    elif strict:
+        if enableWarning:
+            self.mismatchWarningGiven = True
+            if messageKind == 'comment':
+                self.warning('mismatch in leading whitespace before comment')
+            else:
+                self.error('mismatch in leading whitespace')
+            pr_mismatch(i,line1,line2)
+        return messageKind == 'comment' # Only mismatched comment lines are valid.
+    else:
+        if enableWarning:
+            self.mismatchWarningGiven = True
+            self.checkLeadingWhitespace(line1)
+            self.warning('mismatch in leading whitespace')
+            pr_mismatch(i,line1,line2)
+        return messageKind in ('comment','warning') # Only errors are invalid.
+#@+node:ekr.20091227115606.6468:adjustRstLines
+def adjustRstLines(self,lines):
+
+    '''Ignore newlines.
+
+    This fudge allows the rst code generators to insert needed newlines freely.'''
+
+    return [z for z in lines if z.strip() != '']
+#@-node:ekr.20091227115606.6468:adjustRstLines
+#@+node:ekr.20090513073632.5735:compareRstUnderlines
+def compareRstUnderlines(self,s1,s2):
+
+    s1,s2 = s1.rstrip(),s2.rstrip()
+    if s1 == s2:
+        return True # Don't worry about trailing whitespace.
+
+    n1, n2 = len(s1),len(s2)
+    ch1 = n1 and s1[0] or ''
+    ch2 = n2 and s2[0] or ''
+
+    val = (
+        n1 >= 2 and n2 >= 2 and # Underlinings must be at least 2 long.
+        ch1 == ch2 and # The underlining characters must match.
+        s1 == ch1 * n1 and # The line must consist only of underlining characters.
+        s2 == ch2 * n2)
+
+    return val
+#@-node:ekr.20090513073632.5735:compareRstUnderlines
+#@-node:ekr.20070730093735:compareHelper & helpers
+#@+node:ekr.20071110144948:checkLeadingWhitespace
+def checkLeadingWhitespace (self,line):
+
+    tab_width = self.tab_width
+    lws = line[0:g.skip_ws(line,0)]
+    w = g.computeWidth(lws,tab_width)
+    ok = (w % abs(tab_width)) == 0
+
+    if not ok:
+        self.report('leading whitespace not consistent with @tabwidth %d' % tab_width)
+        g.es_print('line:',repr(line),color='red')
+
+    return ok
+#@-node:ekr.20071110144948:checkLeadingWhitespace
+#@+node:ekr.20070911110507:reportMismatch
+def reportMismatch (self,lines1,lines2,bad_i):
+
+    kind = g.choose(self.atAuto,'@auto','import command')
+    n1,n2 = len(lines1),len(lines2)
+    self.error(
+        '%s did not import %s perfectly\nfirst mismatched line: %d' % (
+            kind,self.root.h,bad_i))
+
+    aList = []
+    for i in range(max(0,bad_i-2),min(bad_i+3,max(n1,n2))):
+        for lines,n in ((lines1,n1),(lines2,n2)):
+            if i < n: line = repr(lines[i])
+            else: line = '<eof>'
+            aList.append('%4d %s' % (i,line))
+
+    if not g.unitTesting:
+        g.es_print('\n'.join(aList),color='blue')
+
+    return False
+#@-node:ekr.20070911110507:reportMismatch
+#@-node:ekr.20070808115837:Checking
+#@+node:ekr.20070706084535:Code generation
+@ None of these methods should ever need to be overridden in subclasses.
+
+#@+node:ekr.20090512080015.5800:adjustParent
+def adjustParent (self,parent,headline):
+
+    '''Return the effective parent.
+
+    This is overridden by the rstScanner class.'''
+
+    return parent
+#@-node:ekr.20090512080015.5800:adjustParent
+#@+node:ekr.20070707073044.1:addRef
+def addRef (self,parent):
+
+    '''Create an unindented @others or section reference in the parent node.'''
+
+    c = self.c
+
+    if self.isRst and not self.atAuto:
+        return
+
+    if self.treeType == '@file':
+        self.appendStringToBody(parent,'@others\n')
+
+    if self.treeType == '@root' and self.methodsSeen:
+        self.appendStringToBody(parent,
+            g.angleBrackets(' ' + self.methodName + ' methods ') + '\n\n')
+#@-node:ekr.20070707073044.1:addRef
+#@+node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
+def appendStringToBody (self,p,s):
+
+    '''Similar to c.appendStringToBody,
+    but does not recolor the text or redraw the screen.'''
+
+    return self.importCommands.appendStringToBody(p,s)
+
+def setBodyString (self,p,s):
+
+    '''Similar to c.setBodyString,
+    but does not recolor the text or redraw the screen.'''
+
+    return self.importCommands.setBodyString(p,s)
+#@-node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
+#@+node:ekr.20090512153903.5806:computeBody (baseScannerClass)
+def computeBody (self,s,start,sigStart,codeEnd):
+
+    trace = False and not g.unitTesting
+
+    body1 = s[start:sigStart]
+    # Adjust start backwards to get a better undent.
+    if body1.strip():
+        while start > 0 and s[start-1] in (' ','\t'):
+            start -= 1
+
+    body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
+    body2 = self.undentBody(s[sigStart:codeEnd])
+    body = body1 + body2
+
+    if trace: g.trace('body: %s' % repr(body))
+
+    tail = body[len(body.rstrip()):]
+    if not '\n' in tail:
+        self.warning(
+            '%s %s does not end with a newline; one will be added\n%s' % (
+            self.functionSpelling,self.sigId,g.get_line(s,codeEnd)))
+
+    return body
+#@-node:ekr.20090512153903.5806:computeBody (baseScannerClass)
+#@+node:ekr.20090513073632.5737:createDeclsNode
+def createDeclsNode (self,parent,s):
+
+    '''Create a child node of parent containing s.'''
+
+    # Create the node for the decls.
+    headline = '%s declarations' % self.methodName
+    body = self.undentBody(s)
+    self.createHeadline(parent,body,headline)
+#@-node:ekr.20090513073632.5737:createDeclsNode
+#@+node:ekr.20070707085612:createFunctionNode
+def createFunctionNode (self,headline,body,parent):
+
+    # Create the prefix line for @root trees.
+    if self.treeType == '@file':
+        prefix = ''
+    else:
+        prefix = g.angleBrackets(' ' + headline + ' methods ') + '=\n\n'
+        self.methodsSeen = True
+
+    # Create the node.
+    return self.createHeadline(parent,prefix + body,headline)
+
+#@-node:ekr.20070707085612:createFunctionNode
+#@+node:ekr.20070703122141.77:createHeadline (baseScannerClass)
+def createHeadline (self,parent,body,headline):
+
+    return self.importCommands.createHeadline(parent,body,headline)
+#@-node:ekr.20070703122141.77:createHeadline (baseScannerClass)
+#@+node:ekr.20090502071837.1:endGen
+def endGen (self,s):
+
+    '''Do any language-specific post-processing.'''
+    pass
+#@-node:ekr.20090502071837.1:endGen
+#@+node:ekr.20070703122141.79:getLeadingIndent
+def getLeadingIndent (self,s,i,ignoreComments=True):
+
+    '''Return the leading whitespace of a line.
+    Ignore blank and comment lines if ignoreComments is True'''
+
+    width = 0
+    i = g.find_line_start(s,i)
+    if ignoreComments:
+        while i < len(s):
+            # g.trace(g.get_line(s,i))
+            j = g.skip_ws(s,i)
+            if g.is_nl(s,j) or g.match(s,j,self.comment_delim):
+                i = g.skip_line(s,i) # ignore blank lines and comment lines.
+            else:
+                i, width = g.skip_leading_ws_with_indent(s,i,self.tab_width)
+                break      
+    else:
+        i, width = g.skip_leading_ws_with_indent(s,i,self.tab_width)
+
+    # g.trace('returns:',width)
+    return width
+#@-node:ekr.20070703122141.79:getLeadingIndent
+#@+node:ekr.20070709094002:indentBody
+def indentBody (self,s,lws=None):
+
+    '''Add whitespace equivalent to one tab for all non-blank lines of s.'''
+
+    result = []
+    if not lws: lws = self.tab_ws
+
+    for line in g.splitLines(s):
+        if line.strip():
+            result.append(lws + line)
+        elif line.endswith('\n'):
+            result.append('\n')
+
+    result = ''.join(result)
+    return result
+#@-node:ekr.20070709094002:indentBody
+#@+node:ekr.20070705085335:insertIgnoreDirective
+def insertIgnoreDirective (self,parent):
+
+    self.appendStringToBody(parent,'@ignore')
+
+    if not g.unitTesting:
+        g.es_print('inserting @ignore',color='blue')
+#@-node:ekr.20070705085335:insertIgnoreDirective
+#@+node:ekr.20070707113832.1:putClass & helpers
+def putClass (self,s,i,sigEnd,codeEnd,start,parent):
+
+    '''Creates a child node c of parent for the class,
+    and a child of c for each def in the class.'''
+
+    trace = False and not g.unitTesting
+    if trace:
+        # g.trace('tab_width',self.tab_width)
+        g.trace('sig',s[i:sigEnd])
+
+    # Enter a new class 1: save the old class info.
+    oldMethodName = self.methodName
+    oldStartSigIndent = self.startSigIndent
+
+    # Enter a new class 2: init the new class info.
+    self.indentRefFlag = None
+
+    class_kind = self.classId
+    class_name = self.sigId
+    headline = '%s %s' % (class_kind,class_name)
+    headline = headline.strip()
+    self.methodName = headline
+
+    # Compute the starting lines of the class.
+    prefix = self.createClassNodePrefix()
+    if not self.sigId:
+        g.trace('Can not happen: no sigId')
+        self.sigId = 'Unknown class name'
+    classHead = s[start:sigEnd]
+    i = self.extendSignature(s,sigEnd)
+    extend = s[sigEnd:i]
+    if extend:
+        classHead = classHead + extend
+
+    # Create the class node.
+    class_node = self.createHeadline(parent,'',headline)
+
+    # Remember the indentation of the class line.
+    undentVal = self.getLeadingIndent(classHead,0)
+
+    # Call the helper to parse the inner part of the class.
+    putRef,bodyIndent,classDelim,decls,trailing = self.putClassHelper(
+        s,i,codeEnd,class_node)
+    # g.trace('bodyIndent',bodyIndent,'undentVal',undentVal)
+
+    # Set the body of the class node.
+    ref = putRef and self.getClassNodeRef(class_name) or ''
+
+    if trace: g.trace('undentVal',undentVal,'bodyIndent',bodyIndent)
+
+    # Give ref the same indentation as the body of the class.
+    if ref:
+        bodyWs = g.computeLeadingWhitespace (bodyIndent,self.tab_width)
+        ref = '%s%s' % (bodyWs,ref)
+
+    # Remove the leading whitespace.
+    result = (
+        prefix +
+        self.undentBy(classHead,undentVal) +
+        self.undentBy(classDelim,undentVal) +
+        self.undentBy(decls,undentVal) +
+        self.undentBy(ref,undentVal) +
+        self.undentBy(trailing,undentVal))
+
+    # Append the result to the class node.
+    self.appendTextToClassNode(class_node,result)
+
+    # Exit the new class: restore the previous class info.
+    self.methodName = oldMethodName
+    self.startSigIndent = oldStartSigIndent
+#@+node:ekr.20070707190351:appendTextToClassNode
+def appendTextToClassNode (self,class_node,s):
+
+    c = self.c
+
+    self.appendStringToBody(class_node,s) 
+#@-node:ekr.20070707190351:appendTextToClassNode
+#@+node:ekr.20070703122141.105:createClassNodePrefix
+def createClassNodePrefix (self):
+
+    '''Create the class node prefix.'''
+
+    if  self.treeType == '@file':
+        prefix = ''
+    else:
+        prefix = g.angleBrackets(' ' + self.methodName + ' methods ') + '=\n\n'
+        self.methodsSeen = True
+
+    return prefix
+#@-node:ekr.20070703122141.105:createClassNodePrefix
+#@+node:ekr.20070703122141.106:getClassNodeRef
+def getClassNodeRef (self,class_name):
+
+    '''Insert the proper body text in the class_vnode.'''
+
+    if self.treeType == '@file':
+        s = '@others'
+    else:
+        s = g.angleBrackets(' class %s methods ' % (class_name))
+
+    return '%s\n' % (s)
+#@-node:ekr.20070703122141.106:getClassNodeRef
+#@+node:ekr.20070707171329:putClassHelper
+def putClassHelper(self,s,i,end,class_node):
+
+    '''s contains the body of a class, not including the signature.
+
+    Parse s for inner methods and classes, and create nodes.'''
+
+    trace = False and not g.unitTesting
+
+    # Increase the output indentation (used only in startsHelper).
+    # This allows us to detect over-indented classes and functions.
+    old_output_indent = self.output_indent
+    self.output_indent += abs(self.tab_width)
+
+    # Parse the decls.
+    j = i ; i = self.skipDecls(s,i,end,inClass=True)
+    decls = s[j:i]
+
+    # Set the body indent if there are real decls.
+    bodyIndent = decls.strip() and self.getIndent(s,i) or None
+    if trace: g.trace('bodyIndent',bodyIndent)
+
+    # Parse the rest of the class.
+    delim1, delim2 = self.outerBlockDelim1, self.outerBlockDelim2
+    if g.match(s,i,delim1):
+        # Do *not* use g.skip_ws_and_nl here!
+        j = g.skip_ws(s,i + len(delim1))
+        if g.is_nl(s,j): j = g.skip_nl(s,j)
+        classDelim = s[i:j]
+        end2 = self.skipBlock(s,i,delim1=delim1,delim2=delim2)
+        start,putRef,bodyIndent2 = self.scanHelper(s,j,end=end2,parent=class_node,kind='class')
+    else:
+        classDelim = ''
+        start,putRef,bodyIndent2 = self.scanHelper(s,i,end=end,parent=class_node,kind='class')
+
+    if bodyIndent is None: bodyIndent = bodyIndent2
+
+    # Restore the output indentation.
+    self.output_indent = old_output_indent
+
+    # Return the results.
+    trailing = s[start:end]
+    return putRef,bodyIndent,classDelim,decls,trailing
+#@-node:ekr.20070707171329:putClassHelper
+#@-node:ekr.20070707113832.1:putClass & helpers
+#@+node:ekr.20070707082432:putFunction (baseScannerClass)
+def putFunction (self,s,sigStart,codeEnd,start,parent):
+
+    '''Create a node of parent for a function defintion.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    # if trace: g.trace(start,sigStart,self.sigEnd,codeEnd)
+
+    # Enter a new function: save the old function info.
+    oldStartSigIndent = self.startSigIndent
+
+    if self.sigId:
+        headline = self.sigId
+    else:
+        g.trace('Can not happen: no sigId')
+        headline = 'unknown function'
+
+    body = self.computeBody(s,start,sigStart,codeEnd)
+
+    if trace:
+        g.trace('parent',parent.h)
+        if verbose: g.trace('**body...\n',body)
+
+    parent = self.adjustParent(parent,headline)
+    self.lastParent = self.createFunctionNode(headline,body,parent)
+
+    # Exit the function: restore the function info.
+    self.startSigIndent = oldStartSigIndent
+#@-node:ekr.20070707082432:putFunction (baseScannerClass)
+#@+node:ekr.20070705094630:putRootText
+def putRootText (self,p):
+
+    c = self.c
+
+    self.appendStringToBody(p,'%s@language %s\n@tabwidth %d\n' % (
+        self.rootLine,self.language,self.tab_width))
+#@-node:ekr.20070705094630:putRootText
+#@+node:ekr.20090122201952.5:setBodyString
+#@-node:ekr.20090122201952.5:setBodyString
+#@+node:ekr.20070703122141.88:undentBody
+def undentBody (self,s,ignoreComments=True):
+
+    '''Remove the first line's leading indentation from all lines of s.'''
+
+    trace = False
+    if trace: g.trace('before...\n',g.listToString(g.splitLines(s)))
+
+    if self.isRst:
+        return s # Never unindent rst code.
+
+    # Calculate the amount to be removed from each line.
+    undentVal = self.getLeadingIndent(s,0,ignoreComments=ignoreComments)
+    if undentVal == 0:
+        return s
+    else:
+        result = self.undentBy(s,undentVal)
+        if trace: g.trace('after...\n',g.listToString(g.splitLines(result)))
+        return result
+#@-node:ekr.20070703122141.88:undentBody
+#@+node:ekr.20081216090156.1:undentBy
+def undentBy (self,s,undentVal):
+
+    '''Remove leading whitespace equivalent to undentVal from each line.
+    add an underindentEscapeString for underindented line.'''
+
+    trace = False and not g.app.unitTesting
+
+    if self.isRst:
+        return s # Never unindent rst code.
+
+    tag = self.c.atFileCommands.underindentEscapeString
+    result = [] ; tab_width = self.tab_width
+    for line in g.splitlines(s):
+        lws_s = g.get_leading_ws(line)
+        lws = g.computeWidth(lws_s,tab_width)
+        s = g.removeLeadingWhitespace(line,undentVal,tab_width)
+        n = lws - undentVal
+        if s.strip() and lws < undentVal:
+            if trace: g.trace('undentVal: %s, lws: %s, %s' % (
+                undentVal,lws,repr(line)))
+            result.append("%s%s%s" % (tag,undentVal-lws,s.lstrip()))
+        else:
+            result.append(s)
+
+    return ''.join(result)
+
+#@-node:ekr.20081216090156.1:undentBy
+#@+node:ekr.20070801074524:underindentedComment & underindentedLine
+def underindentedComment (self,line):
+
+    if self.atAutoWarnsAboutLeadingWhitespace:
+        self.warning(
+            'underindented python comments.\nExtra leading whitespace will be added\n' + line)
+
+def underindentedLine (self,line):
+
+    self.error(
+        'underindented line.\nExtra leading whitespace will be added\n' + line)
+#@-node:ekr.20070801074524:underindentedComment & underindentedLine
+#@-node:ekr.20070706084535:Code generation
+#@+node:ekr.20070703122141.78:error, oops, report and warning
+def error (self,s):
+    self.errors += 1
+    self.importCommands.errors += 1
+    if g.unitTesting:
+        if self.errors == 1:
+            g.app.unitTestDict ['actualErrorMessage'] = s
+        g.app.unitTestDict ['actualErrors'] = self.errors
+        if 0: # For debugging unit tests.
+            g.trace(g.callers())
+            g.es_print('',s,color='red')
+    else:
+        g.es_print('error:',s,color='red')
+
+def oops (self):
+    g.pr('baseScannerClass oops: %s must be overridden in subclass' % g.callers())
+
+def report (self,message):
+    if self.strict: self.error(message)
+    else:           self.warning(message)
+
+def warning (self,s):
+    if not g.unitTesting:
+        g.es_print('warning:',s,color='red')
+#@-node:ekr.20070703122141.78:error, oops, report and warning
+#@+node:ekr.20070706084535.1:Parsing
+@ Scan and skipDecls would typically not be overridden.
+#@+node:ekr.20071201072917:adjustDefStart
+def adjustDefStart (self,unused_s,i):
+
+    '''A hook to allow the Python importer to adjust the 
+    start of a class or function to include decorators.'''
+
+    return i
+#@-node:ekr.20071201072917:adjustDefStart
+#@+node:ekr.20070707150022:extendSignature
+def extendSignature(self,unused_s,i):
+
+    '''Extend the signature line if appropriate.
+    The text *must* end with a newline.
+
+    For example, the Python scanner appends docstrings if they exist.'''
+
+    return i
+#@-node:ekr.20070707150022:extendSignature
+#@+node:ekr.20071017132056:getIndent
+def getIndent (self,s,i):
+
+    j,junk = g.getLine(s,i)
+    junk,indent = g.skip_leading_ws_with_indent(s,j,self.tab_width)
+    return indent
+#@nonl
+#@-node:ekr.20071017132056:getIndent
+#@+node:ekr.20070706101600:scan & scanHelper
+def scan (self,s,parent):
+
+    '''A language independent scanner: it uses language-specific helpers.
+
+    Create a child of self.root for:
+    - Leading outer-level declarations.
+    - Outer-level classes.
+    - Outer-level functions.
+    '''
+
+    # Init the parser status ivars.
+    self.methodsSeen = False
+
+    # Create the initial body text in the root.
+    self.putRootText(parent)
+
+    # Parse the decls.
+    i = self.skipDecls(s,0,len(s),inClass=False)
+    decls = s[:i]
+
+    # Create the decls node.
+    if decls: self.createDeclsNode(parent,decls)
+
+    # Scan the rest of the file.
+    start,junk,junk = self.scanHelper(s,i,end=len(s),parent=parent,kind='outer')
+
+    # Finish adding to the parent's body text.
+    self.addRef(parent)
+    if start < len(s):
+        self.appendStringToBody(parent,s[start:])
+
+    # Do any language-specific post-processing.
+    self.endGen(s)
+#@+node:ekr.20071018084830:scanHelper
+def scanHelper(self,s,i,end,parent,kind):
+
+    '''Common scanning code used by both scan and putClassHelper.'''
+
+    # g.trace(g.callers())
+    # g.trace('i',i,g.get_line(s,i))
+    assert kind in ('class','outer')
+    start = i ; putRef = False ; bodyIndent = None
+    while i < end:
+        progress = i
+        if s[i] in (' ','\t','\n'):
+            i += 1 # Prevent lookahead below, and speed up the scan.
+        elif self.startsComment(s,i):
+            i = self.skipComment(s,i)
+        elif self.startsString(s,i):
+            i = self.skipString(s,i)
+        elif self.startsClass(s,i):  # Sets sigStart,sigEnd & codeEnd ivars.
+            putRef = True
+            if bodyIndent is None: bodyIndent = self.getIndent(s,i)
+            end2 = self.codeEnd # putClass may change codeEnd ivar.
+            self.putClass(s,i,self.sigEnd,self.codeEnd,start,parent)
+            i = start = end2
+        elif self.startsFunction(s,i): # Sets sigStart,sigEnd & codeEnd ivars.
+            putRef = True
+            if bodyIndent is None: bodyIndent = self.getIndent(s,i)
+            self.putFunction(s,self.sigStart,self.codeEnd,start,parent)
+            i = start = self.codeEnd
+        elif self.startsId(s,i):
+            i = self.skipId(s,i)
+        elif kind == 'outer' and g.match(s,i,self.outerBlockDelim1): # Do this after testing for classes.
+            i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
+            # Bug fix: 2007/11/8: do *not* set start: we are just skipping the block.
+        else: i += 1
+        assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+
+    return start,putRef,bodyIndent
+#@-node:ekr.20071018084830:scanHelper
+#@-node:ekr.20070706101600:scan & scanHelper
+#@+node:ekr.20070712075148:skipArgs
+def skipArgs (self,s,i,kind):
+
+    '''Skip the argument or class list.  Return i, ok
+
+    kind is in ('class','function')'''
+
+    start = i
+    i = g.skip_ws_and_nl(s,i)
+    if not g.match(s,i,'('):
+        return start,kind == 'class'
+
+    i = self.skipParens(s,i)
+    # skipParens skips the ')'
+    if i >= len(s):
+        return start,False
+    else:
+        return i,True 
+#@-node:ekr.20070712075148:skipArgs
+#@+node:ekr.20070707073859:skipBlock
+def skipBlock(self,s,i,delim1=None,delim2=None):
+
+    '''Skip from the opening delim to *past* the matching closing delim.
+
+    If no matching is found i is set to len(s)'''
+
+    trace = False and not g.unitTesting
+    start = i
+    if delim1 is None: delim1 = self.blockDelim1
+    if delim2 is None: delim2 = self.blockDelim2
+    match1 = g.choose(len(delim1)==1,g.match,g.match_word)
+    match2 = g.choose(len(delim2)==1,g.match,g.match_word)
+    assert match1(s,i,delim1)
+    level = 0 ; start = i
+    startIndent = self.startSigIndent
+    if trace: g.trace('***','startIndent',startIndent,g.callers())
+    while i < len(s):
+        progress = i
+        if g.is_nl(s,i):
+            backslashNewline = i > 0 and g.match(s,i-1,'\\\n')
+            i = g.skip_nl(s,i)
+            if not backslashNewline and not g.is_nl(s,i):
+                j, indent = g.skip_leading_ws_with_indent(s,i,self.tab_width)
+                line = g.get_line(s,j)
+                if trace: g.trace('indent',indent,line)
+                if indent < startIndent and line.strip():
+                    # An non-empty underindented line.
+                    # Issue an error unless it contains just the closing bracket.
+                    if level == 1 and match2(s,j,delim2):
+                        pass
+                    else:
+                        if j not in self.errorLines: # No error yet given.
+                            self.errorLines.append(j)
+                            self.underindentedLine(line)
+        elif s[i] in (' ','\t',):
+            i += 1 # speed up the scan.
+        elif self.startsComment(s,i):
+            i = self.skipComment(s,i)
+        elif self.startsString(s,i):
+            i = self.skipString(s,i)
+        elif match1(s,i,delim1):
+            level += 1 ; i += len(delim1)
+        elif match2(s,i,delim2):
+            level -= 1 ; i += len(delim2)
+            # Skip junk following Pascal 'end'
+            for z in self.blockDelim2Cruft:
+                i2 = g.skip_ws(s,i)
+                if g.match(s,i2,z):
+                    i = i2 + len(z)
+                    break
+            if level <= 0:
+                if trace: g.trace('returns:',repr(s[start:i]))
+                return i
+
+        else: i += 1
+        assert progress < i
+
+    self.error('no block')
+    if 1:
+        g.pr('** no block **')
+        i,j = g.getLine(s,start)
+        g.trace(i,s[i:j])
+    else:
+        if trace: g.trace('** no block')
+    return start
+#@-node:ekr.20070707073859:skipBlock
+#@+node:ekr.20070712091019:skipCodeBlock
+def skipCodeBlock (self,s,i,kind):
+
+    '''Skip the code block in a function or class definition.'''
+
+    trace = False
+    start = i
+    i = self.skipBlock(s,i,delim1=None,delim2=None)
+
+    if self.sigFailTokens:
+        i = g.skip_ws(s,i)
+        for z in self.sigFailTokens:
+            if g.match(s,i,z):
+                if trace: g.trace('failtoken',z)
+                return start,False
+
+    if i > start:
+        i = self.skipNewline(s,i,kind)
+
+    if trace:
+        g.trace(g.callers())
+        g.trace('returns...\n',g.listToString(g.splitLines(s[start:i])))
+
+    return i,True
+#@-node:ekr.20070712091019:skipCodeBlock
+#@+node:ekr.20070711104014:skipComment & helper
+def skipComment (self,s,i):
+
+    '''Skip a comment and return the index of the following character.'''
+
+    if g.match(s,i,self.lineCommentDelim) or g.match(s,i,self.lineCommentDelim2):
+        return g.skip_to_end_of_line(s,i)
+    else:
+        return self.skipBlockComment(s,i)
+#@+node:ekr.20070707074541:skipBlockComment
+def skipBlockComment (self,s,i):
+
+    '''Skip past a block comment.'''
+
+    start = i
+
+    # Skip the opening delim.
+    if g.match(s,i,self.blockCommentDelim1):
+        delim2 = self.blockCommentDelim2
+        i += len(self.blockCommentDelim1)
+    elif g.match(s,i,self.blockCommentDelim1_2):
+        i += len(self.blockCommentDelim1_2)
+        delim2 = self.blockCommentDelim2_2
+    else:
+        assert False
+
+    # Find the closing delim.
+    k = s.find(delim2,i)
+    if k == -1:
+        self.error('Run on block comment: ' + s[start:i])
+        return len(s)
+    else:
+        return k + len(delim2)
+#@-node:ekr.20070707074541:skipBlockComment
+#@-node:ekr.20070711104014:skipComment & helper
+#@+node:ekr.20070707080042:skipDecls
+def skipDecls (self,s,i,end,inClass):
+
+    '''Skip everything until the start of the next class or function.
+
+    The decls *must* end in a newline.'''
+
+    trace = False or self.trace
+    start = i ; prefix = None
+    classOrFunc = False
+    if trace: g.trace(g.callers())
+    while i < end:
+        progress = i
+        if s[i] in (' ','\t','\n'):
+            i += 1 # Prevent lookahead below, and speed up the scan.
+        elif self.startsComment(s,i):
+            # Add the comment to the decl if it *doesn't* start the line.
+            i2,junk = g.getLine(s,i)
+            i2 = g.skip_ws(s,i2)
+            if i2 == i and prefix is None:
+                prefix = i2 # Bug fix: must include leading whitespace in the comment.
+            i = self.skipComment(s,i)
+        elif self.startsString(s,i):
+            i = self.skipString(s,i)
+            prefix = None
+        elif self.startsClass(s,i):
+            # Important: do not include leading ws in the decls.
+            classOrFunc = True
+            i = g.find_line_start(s,i)
+            i = self.adjustDefStart(s,i)
+            break
+        elif self.startsFunction(s,i):
+            # Important: do not include leading ws in the decls.
+            classOrFunc = True
+            i = g.find_line_start(s,i)
+            i = self.adjustDefStart(s,i)
+            break
+        elif self.startsId(s,i):
+            i = self.skipId(s,i)
+            prefix = None
+        # Don't skip outer blocks: they may contain classes.
+        elif g.match(s,i,self.outerBlockDelim1):
+            if self.outerBlockEndsDecls:
+                break
+            else:
+                i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
+        else:
+            i += 1 ;  prefix = None
+        assert(progress < i)
+
+    if prefix is not None:
+        i = g.find_line_start(s,prefix) # i = prefix
+    decls = s[start:i]
+    if inClass and not classOrFunc:
+        # Don't return decls if a class contains nothing but decls.
+        if trace and decls.strip(): g.trace('**class is all decls...\n',decls)
+        return start
+    elif decls.strip(): 
+        if trace or self.trace: g.trace('\n'+decls)
+        return i
+    else: # Ignore empty decls.
+        return start
+#@-node:ekr.20070707080042:skipDecls
+#@+node:ekr.20070707094858.1:skipId
+def skipId (self,s,i):
+
+    return g.skip_id(s,i,chars=self.extraIdChars)
+#@nonl
+#@-node:ekr.20070707094858.1:skipId
+#@+node:ekr.20070730134936:skipNewline
+def skipNewline(self,s,i,kind):
+
+    '''Skip whitespace and comments up to a newline, then skip the newline.
+    Issue an error if no newline is found.'''
+
+    while i < len(s):
+        i = g.skip_ws(s,i)
+        if self.startsComment(s,i):
+            i = self.skipComment(s,i)
+        else: break
+
+    if i >= len(s):
+        return len(s)
+
+    if g.match(s,i,'\n'):
+        i += 1
+    else:
+        self.error(
+            '%s %s does not end in a newline; one will be added\n%s' % (
+                kind,self.sigId,g.get_line(s,i)))
+        # g.trace(g.callers())
+
+    return i
+#@-node:ekr.20070730134936:skipNewline
+#@+node:ekr.20070712081451:skipParens
+def skipParens (self,s,i):
+
+    '''Skip a parenthisized list, that might contain strings or comments.'''
+
+    return self.skipBlock(s,i,delim1='(',delim2=')')
+#@-node:ekr.20070712081451:skipParens
+#@+node:ekr.20070707073627.2:skipString
+def skipString (self,s,i):
+
+    # Returns len(s) on unterminated string.
+    return g.skip_string(s,i,verbose=False)
+#@-node:ekr.20070707073627.2:skipString
+#@+node:ekr.20070711132314:startsClass/Function (baseClass) & helpers
+# We don't expect to override this code, but subclasses may override the helpers.
+
+def startsClass (self,s,i):
+    '''Return True if s[i:] starts a class definition.
+    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
+    val = self.hasClasses and self.startsHelper(s,i,kind='class',tags=self.classTags)
+    return val
+
+def startsFunction (self,s,i):
+    '''Return True if s[i:] starts a function.
+    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
+    val = self.hasFunctions and self.startsHelper(s,i,kind='function',tags=self.functionTags)
+    return val
+#@+node:ekr.20070711134534:getSigId
+def getSigId (self,ids):
+
+    '''Return the signature's id.
+
+    By default, this is the last id in the ids list.'''
+
+    return ids and ids[-1]
+#@-node:ekr.20070711134534:getSigId
+#@+node:ekr.20070711140703:skipSigStart
+def skipSigStart (self,s,i,kind,tags):
+
+    '''Skip over the start of a function/class signature.
+
+    tags is in (self.classTags,self.functionTags).
+
+    Return (i,ids) where ids is list of all ids found, in order.'''
+
+    trace = False and self.trace # or kind =='function'
+    ids = [] ; classId = None
+    if trace: g.trace('*entry',kind,i,s[i:i+20])
+    start = i
+    while i < len(s):
+        j = g.skip_ws_and_nl(s,i)
+        for z in self.sigFailTokens:
+            if g.match(s,j,z):
+                if trace: g.trace('failtoken',z,'ids',ids)
+                return start, [], None
+        for z in self.sigHeadExtraTokens:
+            if g.match(s,j,z):
+                i += len(z) ; break
+        else:
+            i = self.skipId(s,j)
+            theId = s[j:i]
+            if theId and theId in tags: classId = theId
+            if theId: ids.append(theId)
+            else: break
+
+    if trace: g.trace('*exit ',kind,i,i < len(s) and s[i],ids,classId)
+    return i, ids, classId
+#@-node:ekr.20070711140703:skipSigStart
+#@+node:ekr.20070712082913:skipSigTail
+def skipSigTail(self,s,i,kind):
+
+    '''Skip from the end of the arg list to the start of the block.'''
+
+    trace = False and self.trace
+    start = i
+    i = g.skip_ws(s,i)
+    for z in self.sigFailTokens:
+        if g.match(s,i,z):
+            if trace: g.trace('failToken',z,'line',g.skip_line(s,i))
+            return i,False
+    while i < len(s):
+        if self.startsComment(s,i):
+            i = self.skipComment(s,i)
+        elif g.match(s,i,self.blockDelim1):
+            if trace: g.trace(repr(s[start:i]))
+            return i,True
+        else:
+            i += 1
+    if trace: g.trace('no block delim')
+    return i,False
+#@-node:ekr.20070712082913:skipSigTail
+#@+node:ekr.20070712112008:startsHelper
+def startsHelper(self,s,i,kind,tags):
+    '''return True if s[i:] starts a class or function.
+    Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
+
+    # if not tags: return False
+
+    trace = False or self.trace
+    verbose = False # kind=='function'
+    self.codeEnd = self.sigEnd = self.sigId = None
+    self.sigStart = i
+
+    # Underindented lines can happen in any language, not just Python.
+    # The skipBlock method of the base class checks for such lines.
+    self.startSigIndent = self.getLeadingIndent(s,i)
+
+    # Get the tag that starts the class or function.
+    j = g.skip_ws_and_nl(s,i)
+    i = self.skipId(s,j)
+    self.sigId = theId = s[j:i] # Set sigId ivar 'early' for error messages.
+    if not theId: return False
+
+    if tags:
+        if theId not in tags:
+            if trace and verbose: g.trace('**** %s theId: %s not in tags: %s' % (kind,theId,tags))
+            return False
+
+    if trace and verbose: g.trace('kind',kind,'id',theId)
+
+    # Get the class/function id.
+    if kind == 'class' and self.sigId in self.anonymousClasses:
+        # A hack for Delphi Pascal: interfaces have no id's.
+        # g.trace('anonymous',self.sigId)
+        classId = theId
+        sigId = ''
+    else:
+        i, ids, classId = self.skipSigStart(s,j,kind,tags) # Rescan the first id.
+        sigId = self.getSigId(ids)
+        if not sigId:
+            if trace and verbose: g.trace('**no sigId',g.get_line(s,i))
+            return False
+
+    if self.output_indent < self.startSigIndent:
+        if trace: g.trace('**over-indent',sigId)
+            #,'output_indent',self.output_indent,'startSigIndent',self.startSigIndent)
+        return False
+
+    # Skip the argument list.
+    i, ok = self.skipArgs(s,i,kind)
+    if not ok:
+        if trace and verbose: g.trace('no args',g.get_line(s,i))
+        return False
+    i = g.skip_ws_and_nl(s,i)
+
+    # Skip the tail of the signature
+    i, ok = self.skipSigTail(s,i,kind)
+    if not ok:
+        if trace and verbose: g.trace('no tail',g.get_line(s,i))
+        return False
+    sigEnd = i
+
+    # A trick: make sure the signature ends in a newline,
+    # even if it overlaps the start of the block.
+    if not g.match(s,sigEnd,'\n') and not g.match(s,sigEnd-1,'\n'):
+        if trace and verbose: g.trace('extending sigEnd')
+        sigEnd = g.skip_line(s,sigEnd)
+
+    if self.blockDelim1:
+        i = g.skip_ws_and_nl(s,i)
+        if kind == 'class' and self.sigId in self.anonymousClasses:
+            pass # Allow weird Pascal unit's.
+        elif not g.match(s,i,self.blockDelim1):
+            if trace and verbose: g.trace('no block',g.get_line(s,i))
+            return False
+
+    i,ok = self.skipCodeBlock(s,i,kind)
+    if not ok: return False
+        # skipCodeBlock skips the trailing delim.
+
+    # Success: set the ivars.
+    self.sigStart = self.adjustDefStart(s,self.sigStart)
+    self.codeEnd = i
+    self.sigEnd = sigEnd
+    self.sigId = sigId
+    self.classId = classId
+
+    # Note: backing up here is safe because
+    # we won't back up past scan's 'start' point.
+    # Thus, characters will never be output twice.
+    k = self.sigStart
+    if not g.match(s,k,'\n'):
+        self.sigStart = g.find_line_start(s,k)
+
+    # Issue this warning only if we have a real class or function.
+    if 0: # wrong.
+        if s[self.sigStart:k].strip():
+            self.error('%s definition does not start a line\n%s' % (
+                kind,g.get_line(s,k)))
+
+    if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
+    return True
+#@-node:ekr.20070712112008:startsHelper
+#@-node:ekr.20070711132314:startsClass/Function (baseClass) & helpers
+#@+node:ekr.20070711104014.1:startsComment
+def startsComment (self,s,i):
+
+    return (
+        g.match(s,i,self.lineCommentDelim) or
+        g.match(s,i,self.lineCommentDelim2) or
+        g.match(s,i,self.blockCommentDelim1) or
+        g.match(s,i,self.blockCommentDelim1_2)
+    )
+#@-node:ekr.20070711104014.1:startsComment
+#@+node:ekr.20070707094858.2:startsId
+def startsId(self,s,i):
+
+    return g.is_c_id(s[i:i+1])
+#@-node:ekr.20070707094858.2:startsId
+#@+node:ekr.20070707172732.1:startsString
+def startsString(self,s,i):
+
+    return g.match(s,i,'"') or g.match(s,i,"'")
+#@-node:ekr.20070707172732.1:startsString
+#@-node:ekr.20070706084535.1:Parsing
+#@+node:ekr.20070707072749:run (baseScannerClass)
+def run (self,s,parent):
+
+    c = self.c
+    self.root = root = parent.copy()
+    self.file_s = s
+    self.tab_width = self.importCommands.getTabWidth(p=root)
+    # g.trace('tab_width',self.tab_width)
+    # Create the ws equivalent to one tab.
+    if self.tab_width < 0:
+        self.tab_ws = ' '*abs(self.tab_width)
+    else:
+        self.tab_ws = '\t'
+
+    # Init the error/status info.
+    self.errors = 0
+    self.errorLines = []
+    self.mismatchWarningGiven = False
+    changed = c.isChanged()
+
+    # Use @verbatim to escape section references
+    if self.escapeSectionRefs: # 2009/12/27
+        s = self.escapeFalseSectionReferences(s)
+
+    # Check for intermixed blanks and tabs.
+    if self.strict or self.atAutoWarnsAboutLeadingWhitespace:
+        if not self.isRst:
+            self.checkBlanksAndTabs(s)
+
+    # Regularize leading whitespace for strict languages only.
+    if self.strict: s = self.regularizeWhitespace(s) 
+
+    # Generate the nodes, including directive and section references.
+    self.scan(s,parent)
+
+    # Check the generated nodes.
+    # Return True if the result is equivalent to the original file.
+    ok = self.errors == 0 and self.check(s,parent)
+    g.app.unitTestDict ['result'] = ok
+
+    # Insert an @ignore directive if there were any serious problems.
+    if not ok: self.insertIgnoreDirective(parent)
+
+    if self.atAuto and ok:
+        for p in root.self_and_subtree():
+            p.clearDirty()
+        c.setChanged(changed)
+    else:
+        root.setDirty(setDescendentsDirty=False)
+        c.setChanged(True)
+#@+node:ekr.20071110105107:checkBlanksAndTabs
+def checkBlanksAndTabs(self,s):
+
+    '''Check for intermixed blank & tabs.'''
+
+    # Do a quick check for mixed leading tabs/blanks.
+    blanks = tabs = 0
+
+    for line in g.splitLines(s):
+        lws = line[0:g.skip_ws(line,0)]
+        blanks += lws.count(' ')
+        tabs += lws.count('\t')
+
+    ok = blanks == 0 or tabs == 0
+
+    if not ok:
+        self.report('intermixed blanks and tabs')
+
+    return ok
+#@-node:ekr.20071110105107:checkBlanksAndTabs
+#@+node:ekr.20070808115837.1:regularizeWhitespace
+def regularizeWhitespace (self,s):
+
+    '''Regularize leading whitespace in s:
+    Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
+    This is only called for strict languages.'''
+
+    changed = False ; lines = g.splitLines(s) ; result = [] ; tab_width = self.tab_width
+
+    if tab_width < 0: # Convert tabs to blanks.
+        for line in lines:
+            i, w = g.skip_leading_ws_with_indent(line,0,tab_width)
+            s = g.computeLeadingWhitespace(w,-abs(tab_width)) + line [i:] # Use negative width.
+            if s != line: changed = True
+            result.append(s)
+    elif tab_width > 0: # Convert blanks to tabs.
+        for line in lines:
+            s = g.optimizeLeadingWhitespace(line,abs(tab_width)) # Use positive width.
+            if s != line: changed = True
+            result.append(s)
+
+    if changed:
+        action = g.choose(self.tab_width < 0,'tabs converted to blanks','blanks converted to tabs')
+        message = 'inconsistent leading whitespace. %s' % action
+        self.report(message)
+
+    return ''.join(result)
+#@-node:ekr.20070808115837.1:regularizeWhitespace
+#@-node:ekr.20070707072749:run (baseScannerClass)
+#@-node:ekr.20070703122141.65:<< class baseScannerClass >>
+#@+node:ekr.20070703122141.100:class pythonScanner
+class pythonScanner (baseScannerClass):
+
+    @others
+#@+node:ekr.20070703122141.101: __init__
+def __init__ (self,importCommands,atAuto):
+
+    # Init the base class.
+    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='python')
+
+    # Set the parser delims.
+    self.lineCommentDelim = '#'
+    self.classTags = ['class',]
+    self.functionTags = ['def',]
+    self.blockDelim1 = self.blockDelim2 = None
+        # Suppress the check for the block delim.
+        # The check is done in skipSigTail.
+    self.strict = True
+
+#@-node:ekr.20070703122141.101: __init__
+#@+node:ekr.20071201073102.1:adjustDefStart (python)
+def adjustDefStart (self,s,i):
+
+    '''A hook to allow the Python importer to adjust the 
+    start of a class or function to include decorators.'''
+
+    if i == 0 or s[i-1] != '\n':
+        return i
+
+    while i > 0:
+        progress = i
+
+        start = j = g.find_line_start(s,i-2)
+        j = g.skip_ws(s,j)
+        if not g.match(s,j,'@'):
+            return i
+
+        j += 1
+        k = g.skip_id(s,j)
+        word = s[j:k]
+
+        if word and word not in g.globalDirectiveList:
+            # g.trace(repr(word),repr(s[start:i]))
+            i = start
+            assert i < progress
+        else:
+            return i
+#@-node:ekr.20071201073102.1:adjustDefStart (python)
+#@+node:ekr.20070707113839:extendSignature
+def extendSignature(self,s,i):
+
+    '''Extend the text to be added to the class node following the signature.
+
+    The text *must* end with a newline.'''
+
+    # Add a docstring to the class node,
+    # And everything on the line following it
+    j = g.skip_ws_and_nl(s,i)
+    if g.match(s,j,'"""') or g.match(s,j,"'''"):
+        j = g.skip_python_string(s,j)
+        if j < len(s): # No scanning error.
+            # Return the docstring only if nothing but whitespace follows.
+            j = g.skip_ws(s,j)
+            if g.is_nl(s,j):
+                return j + 1
+
+    return i
+#@-node:ekr.20070707113839:extendSignature
+#@+node:ekr.20070707073627.4:skipString
+def skipString (self,s,i):
+
+    # Returns len(s) on unterminated string.
+    return g.skip_python_string(s,i,verbose=False)
+#@-node:ekr.20070707073627.4:skipString
+#@+node:ekr.20070712090019.1:skipCodeBlock (python) & helpers
+def skipCodeBlock (self,s,i,kind):
+
+    trace = False ; verbose = True
+    # if trace: g.trace('***',g.callers())
+    startIndent = self.startSigIndent
+    if trace: g.trace('startIndent',startIndent)
+    assert startIndent is not None
+    i = start = g.skip_ws_and_nl(s,i)
+    parenCount = 0
+    underIndentedStart = None # The start of trailing underindented blank or comment lines.
+    while i < len(s):
+        progress = i
+        ch = s[i]
+        if g.is_nl(s,i):
+            i = g.skip_nl(s,i)
+            j = g.skip_ws(s,i)
+            if g.is_nl(s,j):
+                pass # We have already made progress.
+            else:
+                if trace and verbose: g.trace(g.get_line(s,i))
+                backslashNewline = (i > 0 and g.match(s,i-1,'\\\n'))
+                if not backslashNewline:
+                    i,underIndentedStart,breakFlag = self.pythonNewlineHelper(
+                        s,i,parenCount,startIndent,underIndentedStart)
+                    if breakFlag: break
+        elif ch == '#':
+            i = g.skip_to_end_of_line(s,i)
+        elif ch == '"' or ch == '\'':
+            i = g.skip_python_string(s,i)
+        elif ch in '[{(':
+            i += 1 ; parenCount += 1
+            # g.trace('ch',ch,parenCount)
+        elif ch in ']})':
+            i += 1 ; parenCount -= 1
+            # g.trace('ch',ch,parenCount)
+        else: i += 1
+        assert(progress < i)
+
+    # The actual end of the block.
+    if underIndentedStart is not None:
+        i = underIndentedStart
+        if trace: g.trace('***backtracking to underindent range')
+        if trace: g.trace(g.get_line(s,i))
+
+    if 0 < i < len(s) and not g.match(s,i-1,'\n'):
+        g.trace('Can not happen: Python block does not end in a newline.')
+        g.trace(g.get_line(s,i))
+        return i,False
+
+    # 2010/02/19: Include all following material
+    # until the next 'def' or 'class'
+    i = self.skipToTheNextClassOrFunction(s,i,startIndent)
+
+    if (trace or self.trace) and s[start:i].strip():
+        g.trace('%s returns\n' % (kind) + s[start:i])
+    return i,True
+#@+node:ekr.20070801080447:pythonNewlineHelper
+def pythonNewlineHelper (self,s,i,parenCount,startIndent,underIndentedStart):
+
+    trace = False
+    breakFlag = False
+    j, indent = g.skip_leading_ws_with_indent(s,i,self.tab_width)
+    if trace: g.trace(
+        'startIndent',startIndent,'indent',indent,'parenCount',parenCount,
+        'line',repr(g.get_line(s,j)))
+    if indent <= startIndent and parenCount == 0:
+        # An underindented line: it ends the block *unless*
+        # it is a blank or comment line or (2008/9/1) the end of a triple-quoted string.
+        if g.match(s,j,'#'):
+            if trace: g.trace('underindent: comment')
+            if underIndentedStart is None: underIndentedStart = i
+            i = j
+        elif g.match(s,j,'\n'):
+            if trace: g.trace('underindent: blank line')
+            # Blank lines never start the range of underindented lines.
+            i = j
+        else:
+            if trace: g.trace('underindent: end of block')
+            breakFlag = True # The actual end of the block.
+    else:
+        if underIndentedStart and g.match(s,j,'\n'):
+            # Add the blank line to the underindented range.
+            if trace: g.trace('properly indented blank line extends underindent range')
+        elif underIndentedStart and g.match(s,j,'#'):
+            # Add the (properly indented!) comment line to the underindented range.
+            if trace: g.trace('properly indented comment line extends underindent range')
+        elif underIndentedStart is None:
+            pass
+        else:
+            # A properly indented non-comment line.
+            # Give a message for all underindented comments in underindented range.
+            if trace: g.trace('properly indented line generates underindent errors')
+            s2 = s[underIndentedStart:i]
+            lines = g.splitlines(s2)
+            for line in lines:
+                if line.strip():
+                    junk, indent = g.skip_leading_ws_with_indent(line,0,self.tab_width)
+                    if indent <= startIndent:
+                        if j not in self.errorLines: # No error yet given.
+                            self.errorLines.append(j)
+                            self.underindentedComment(line)
+            underIndentedStart = None
+    if trace: g.trace('breakFlag',breakFlag,'returns',i,'underIndentedStart',underIndentedStart)
+    return i,underIndentedStart,breakFlag
+#@-node:ekr.20070801080447:pythonNewlineHelper
+#@+node:ekr.20100223094350.5834:skipToTheNextClassOrFunction (New in 4.8)
+def skipToTheNextClassOrFunction(self,s,i,lastIndent):
+
+    '''Skip to the next python def or class.
+    Return the original i if nothing more is found.
+    This allows the "if __name__ == '__main__' hack
+    to appear at the top level.'''
+
+    return i ### A rewrite may be needed.
+
+    trace = False # and not g.unitTesting
+    c,found,i1 = self.c,False,i
+    at_line_start,last_comment,last_nl = True,None,-1
+    while i < len(s):
+        progress = i
+        if self.startsComment(s,i):
+            # Break at underindented comments.
+            if at_line_start:
+                if i == last_nl:
+                    n = 0
+                else:
+                    ws = s[last_nl+1:i]
+                    n = g.computeWidth (ws,c.tab_width)
+                if n < lastIndent:
+                    if trace: g.trace('underindented comment',
+                        'ws',repr(ws),'n',n,'lastIndent',lastIndent)
+                    found = True ; break
+                else:
+                    # Remember the start of a range of comments and whitespace.
+                    if last_comment is None:
+                        last_comment = i
+                    last_nl = i = self.skipComment(s,i)
+                    at_line_start = True
+            else:
+                # An interior comment.
+                assert last_comment is None
+                last_nl = i = self.skipComment(s,i)
+                at_line_start = True
+        elif self.startsString(s,i):
+            at_line_start = False
+            last_comment = None
+            i = self.skipString(s,i)
+        elif at_line_start and (
+            g.match_word(s,i,'def') or
+            g.match_word(s,i,'class')
+        ):
+            # Do not break for over-indent matches.
+            # This allows something reasonable to happen for::
+            # if 0:
+            #     def spam():
+            #         pass
+            ws = s[last_nl+1:i]
+            # g.trace('ws',repr(ws))
+            n = g.computeWidth (ws,c.tab_width)
+            if (not ws or ws.isspace()) and n <= lastIndent:
+                found = True ; break
+            else: # Ignore the over-indented def.
+                if trace: g.trace('overindented','ws',repr(ws),
+                    'n',n,'lastIndent',lastIndent)
+                last_comment = None
+                last_nl = i = g.skip_to_end_of_line(s,i)
+                at_line_start = True
+        elif s[i] == '@':
+            # Leo directives will look like comments,
+            # so we can safely assume we have a decorator
+            if at_line_start and last_comment is None:
+                last_comment = i
+            last_nl = i = g.skip_to_end_of_line(s,i)
+            at_line_start = True
+        elif s[i] ==  '\n':
+            at_line_start = True
+            last_nl = i
+            i += 1
+        elif s[i].isspace():
+            i += 1
+        else:
+            at_line_start = False
+            last_comment = None
+            i += 1
+        assert progress < i
+
+    if found:
+        if last_comment is None:
+            return i
+        else:
+            return last_comment
+    else:
+        return i1
+#@-node:ekr.20100223094350.5834:skipToTheNextClassOrFunction (New in 4.8)
+#@-node:ekr.20070712090019.1:skipCodeBlock (python) & helpers
+#@+node:ekr.20070803101619:skipSigTail
+# This must be overridden in order to handle newlines properly.
+
+def skipSigTail(self,s,i,kind):
+
+    '''Skip from the end of the arg list to the start of the block.'''
+
+    while i < len(s):
+        ch = s[i]
+        if ch == '\n':
+            break
+        elif ch in (' ','\t',):
+            i += 1
+        elif self.startsComment(s,i):
+            i = self.skipComment(s,i)
+        else:
+            break
+
+    return i,g.match(s,i,':')
+#@-node:ekr.20070803101619:skipSigTail
+#@-node:ekr.20070703122141.100:class pythonScanner
+#@-node:ekr.20100223123910.5835:Improve python imports
 #@+node:ekr.20100202145902.6106:Init all settings in c.initConfigSettings
 @nocolor-node
 
@@ -1397,6 +5130,85 @@ def setRecentFiles (self,files):
 #@-node:ekr.20041118195812:Setters... (c.configSettings)
 #@-node:ekr.20041118104831.1:class configSettings (leoCommands)
 #@-node:ekr.20100202145902.6106:Init all settings in c.initConfigSettings
+#@+node:ekr.20100219083854.5615:Improve caching
+#@+node:ekr.20100209160132.5770:cache notes
+@nocolor-node
+
+Top-level folder are direct subfolders of .leo/db.
+Top-level folders represent file *locations* not file contents.
+Exception: the top-level "globals" folder represents minor data.
+
+Only two files are ever needed in a top-level folder:
+
+contents_<key>: the contents of the file.
+data_<key>: a dict representing the "minor data" of the file:
+    <globals> element stuff, expansion bits, etc.
+
+We write contents_<key> only once.
+By definition, its contents never changes, since the contents generates the key.
+We can write data_<key> as many times as we like.
+
+To do:
+- Simplify or even eliminate the path-manipulation code in PickleShareDB.
+- Use g.makeAllNonExistentDirectories to make top-level directories.
+- Clear cache should clear all top-level directories.
+#@nonl
+#@+node:ekr.20100209114432.5751:Cache expansion bits
+# Simplify the structure of the cache: put more into the "minor" files.
+#@nonl
+#@-node:ekr.20100209114432.5751:Cache expansion bits
+#@-node:ekr.20100209160132.5770:cache notes
+#@+node:ekr.20100211095442.6201:cache notes 2
+@nocolor-node
+
+1. Memory does leak, and that's not ok with me.  And I want just two
+files per top-level directory.
+
+2. Strange things can happen with caching, as just happened to me when
+I restored qtui_generate.py mistakenly deleted from leo/test.  There
+is an @auto node for this file in qtGui.py, and I got improper 'can
+not open' messages for this file.
+
+3. It is troubling that the present caching scheme does not use the
+full path to a file, only the basename.  This means that two identical
+files in two different places will use the same cache entries.  I've
+been wondering for the last several days about whether this could
+cause problems.  I don't know for sure, but I am uncomfortable.
+
+4. I want the clear-cache and clear-all-caches commands to do what
+they say: get rid of everything.  Among other things, this is good for
+debugging and recovering from cache problems.
+
+#@-node:ekr.20100211095442.6201:cache notes 2
+#@+node:ekr.20100223075705.5635:Don't write expansion bits
+#@-node:ekr.20100223075705.5635:Don't write expansion bits
+#@+node:ekr.20100210163813.5748:Caching buglets?
+@nocolor-node
+
+This is a recent bug, but imo it has uncovered some other caching buglets. These
+buglets are not big enough to delay Leo 4.7, but the new caching scheme would
+ensure they never bite.
+
+1. The code that computes what I have been calling the top-level directory is dubious::
+
+    dbdirname = join(g.app.homeLeoDir,'db',
+            '%s_%s' % (bname,hashlib.md5(fn).hexdigest()))
+
+The problem is that bname is only the base name of the cached file, not a name
+(or key) that depends on the full path. Thus, two copies of the same file in the
+same place will be cached in the same directory. Is this ominous?
+
+2. It's not clear what caching to do with the save-to command.
+#@-node:ekr.20100210163813.5748:Caching buglets?
+#@-node:ekr.20100219083854.5615:Improve caching
+#@+node:ekr.20100223123910.5928:clean nodes & limit line length
+- Limit lines to 80.
+#@nonl
+#@-node:ekr.20100223123910.5928:clean nodes & limit line length
+#@-node:ekr.20100223123910.5836:Immediately
+#@+node:ekr.20100206074650.5844:Cleanups & features: first
+#@+node:ekr.20100223115556.5833:To do: suppress @nonl sentinel
+#@-node:ekr.20100223115556.5833:To do: suppress @nonl sentinel
 #@+node:ekr.20090131200406.11:Remove remaining tk-isms from Leo's core
 @nocolor-node
 
@@ -1454,939 +5266,6 @@ for p in c.all_positions():
 #@-node:ekr.20090201122309.5:Improve macro commands: and really use them!
 #@+node:ekr.20100205152016.5837:do @view nodes
 #@-node:ekr.20100205152016.5837:do @view nodes
-#@+node:ekr.20100219083854.5616:Simplify i/o
-#@+node:ekr.20100211125418.11612:Revise g.readFileIntoString
-@nocolor-node
-
-- Create g.readFileWithUnknownEncodingIntoString.
-    - Only this function should return ok,e.
-
-- g.readFileIntoString should assume utf-8, and support explicit encodings.
-
-We also need the following functions:
-
-- g.openFileForReading.
-- g.openFileForWriting.
-#@nonl
-#@-node:ekr.20100211125418.11612:Revise g.readFileIntoString
-#@+node:ekr.20100209224508.5744:Calls to .write
-All these could be considered potential Python 3.x bugs.  Most are not.
-#@nonl
-#@+node:ekr.20031218072017.1470:put (leoFileCommands)
-def put (self,s):
-
-    '''Put string s to self.outputFile. All output eventually comes here.'''
-
-    # Improved code: self.outputFile (a cStringIO object) always exists.
-    # g.trace(g.callers(1),repr(s))
-    if s:
-        self.putCount += 1
-        if not g.isPython3:
-            s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
-        self.outputFile.write(s)
-
-def put_dquote (self):
-    self.put('"')
-
-def put_dquoted_bool (self,b):
-    if b: self.put('"1"')
-    else: self.put('"0"')
-
-def put_flag (self,a,b):
-    if a:
-        self.put(" ") ; self.put(b) ; self.put('="1"')
-
-def put_in_dquotes (self,a):
-    self.put('"')
-    if a: self.put(a) # will always be True if we use backquotes.
-    else: self.put('0')
-    self.put('"')
-
-def put_nl (self):
-    self.put("\n")
-
-def put_tab (self):
-    self.put("\t")
-
-def put_tabs (self,n):
-    while n > 0:
-        self.put("\t")
-        n -= 1
-#@nonl
-#@-node:ekr.20031218072017.1470:put (leoFileCommands)
-#@+node:ekr.20100119145629.6111:writeToFileHelper & helpers
-def writeToFileHelper (self,fileName,toOPML):
-
-    c = self.c ; toZip = c.isZipped
-    ok,backupName = self.createBackupFile(fileName)
-    if not ok: return False
-    fileName,theActualFile = self.createActualFile(fileName,toOPML,toZip)
-    self.mFileName = fileName
-    self.outputFile = StringIO() # Always write to a string.
-
-    try:
-        if toOPML:
-            self.putToOPML()
-        else:
-            self.putLeoFile()
-        s = self.outputFile.getvalue()
-        g.app.write_Leo_file_string = s # 2010/01/19: always set this.
-        if toZip:
-            self.writeZipFile(s)
-        else:
-            if g.isPython3:
-                s = bytes(s,self.leo_file_encoding,'replace')
-            theActualFile.write(s)
-            theActualFile.close()
-            c.setFileTimeStamp(fileName)
-            # raise AttributeError # To test handleWriteLeoFileException.
-            # Delete backup file.
-            if backupName and g.os_path_exists(backupName):
-                self.deleteFileWithMessage(backupName,'backup')
-        return True
-    except Exception:
-        self.handleWriteLeoFileException(
-            fileName,backupName,theActualFile)
-        return False
-#@+node:ekr.20100119145629.6106:createActualFile
-def createActualFile (self,fileName,toOPML,toZip):
-
-    c = self.c
-
-    if toOPML and not self.mFileName.endswith('opml'):
-        fileName = self.mFileName + '.opml'
-
-    if toZip:
-        self.toString = True
-        theActualFile = None
-    else:
-        try:
-            # 2010/01/21: always write in binary mode.
-            theActualFile = open(fileName,'wb')
-        except IOError:
-            theActualFile = None
-
-    return fileName,theActualFile
-#@-node:ekr.20100119145629.6106:createActualFile
-#@+node:ekr.20031218072017.3047:createBackupFile (fileCommands)
-def createBackupFile (self,fileName):
-
-    '''
-        Create a closed backup file and copy the file to it,
-        but only if the original file exists.
-    '''
-
-    c = self.c
-
-    if g.os_path_exists(fileName):
-        # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
-
-        fd,backupName = tempfile.mkstemp(text=False)
-        f = open(fileName,'rb') # rb is essential.
-        s = f.read()
-        f.close()
-
-        try:
-            try:
-                os.write(fd,s)
-            finally:
-                os.close(fd)
-            ok = True
-        except Exception:
-            g.es('exception creating backup file',color='red')
-            g.es_exception()
-            ok,backupName = False,None
-
-        if not ok and self.read_only:
-            g.es("read only",color="red")
-    else:
-        ok,backupName = True,None
-
-    return ok,backupName
-#@-node:ekr.20031218072017.3047:createBackupFile (fileCommands)
-#@+node:ekr.20100119145629.6108:handleWriteLeoFileException
-def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
-
-    c = self.c
-
-    g.es("exception writing:",fileName)
-    g.es_exception(full=True)
-
-    if theActualFile:
-        theActualFile.close()
-
-    # Delete fileName.
-    if fileName and g.os_path_exists(fileName):
-        self.deleteFileWithMessage(fileName,'')
-
-    # Rename backupName to fileName.
-    if backupName and g.os_path_exists(backupName):
-        g.es("restoring",fileName,"from",backupName)
-
-        # No need to create directories when restoring.
-        g.utils_rename(c,backupName,fileName)
-    else:
-        g.trace('backup file does not exist!',
-            repr(backupName),color='red')
-#@-node:ekr.20100119145629.6108:handleWriteLeoFileException
-#@-node:ekr.20100119145629.6111:writeToFileHelper & helpers
-#@+node:ekr.20031218072017.1149:<< Write s into newFileName >>
-try:
-    mode = c.config.output_newline
-    mode = g.choose(mode=="platform",'w','wb')
-    theFile = open(newFileName,mode)
-    s = g.toEncodedString(s,self.encoding,reportErrors=True)
-    theFile.write(s)
-    theFile.close()
-    if not g.unitTesting:
-        g.es("created:",newFileName)
-except Exception:
-    g.es("exception creating:",newFileName)
-    g.es_exception()
-#@-node:ekr.20031218072017.1149:<< Write s into newFileName >>
-#@+node:ekr.20080713091247.1:x.replaceFileWithString
-def replaceFileWithString (self,fn,s):
-
-    '''Replace the file with s if s is different from theFile's contents.
-
-    Return True if theFile was changed.
-    '''
-
-    trace = False and not g.unitTesting
-    x = self
-    exists = g.os_path_exists(fn)
-
-    if exists:
-        # Read the file.  Return if it is the same.
-        s2,e = g.readFileIntoString(fn)
-        if s2 is None:
-            return False
-        if s == s2:
-            if not g.unitTesting: g.es('unchanged:',fn)
-            return False
-
-    # Issue warning if directory does not exist.
-    theDir = g.os_path_dirname(fn)
-    if theDir and not g.os_path_exists(theDir):
-        if not g.unitTesting:
-            x.error('not written: %s directory not found' % fn)
-        return False
-
-    # Replace the file.
-    try:
-        f = open(fn,'wb')
-        f.write(g.toEncodedString(s))
-        if trace: g.trace('fn',fn,
-            '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
-            '\ncallers',g.callers(4))
-        f.close()
-        if not g.unitTesting:
-            # g.trace('created:',fn,g.callers())
-            if exists:  g.es('wrote:',fn)
-            else:       g.es('created:',fn)
-        return True
-    except IOError:
-        x.error('unexpected exception writing file: %s' % (fn))
-        g.es_exception()
-        return False
-#@-node:ekr.20080713091247.1:x.replaceFileWithString
-#@+node:ekr.20080712150045.1:replaceFileWithString (atFile)
-def replaceFileWithString (self,fn,s):
-
-    '''Replace the file with s if s is different from theFile's contents.
-
-    Return True if theFile was changed.
-    '''
-
-    at = self ; testing = g.app.unitTesting
-
-    # g.trace('fn',fn,'s','\n',s)
-    # g.trace(g.callers())
-
-    exists = g.os_path_exists(fn)
-
-    if exists: # Read the file.  Return if it is the same.
-        s2,e = g.readFileIntoString(fn)
-        if s is None:
-            return False
-        if s == s2:
-            if not testing: g.es('unchanged:',fn)
-            return False
-
-    # Issue warning if directory does not exist.
-    theDir = g.os_path_dirname(fn)
-    if theDir and not g.os_path_exists(theDir):
-        if not g.unitTesting:
-            g.es('not written: %s directory not found' % fn,color='red')
-        return False
-
-    # Replace
-    try:
-        f = open(fn,'wb')
-        if g.isPython3:
-            s = g.toEncodedString(s,encoding=self.encoding)
-        f.write(s)
-        f.close()
-        if not testing:
-            if exists:
-                g.es('wrote:    ',fn)
-            else:
-                # g.trace('created:',fn,g.callers())
-                g.es('created:',fn)
-        return True
-    except IOError:
-        at.error('unexpected exception writing file: %s' % (fn))
-        g.es_exception()
-        return False
-#@-node:ekr.20080712150045.1:replaceFileWithString (atFile)
-#@+node:ekr.20070115135502:writeScriptFile
-def writeScriptFile (self,script):
-
-    # Get the path to the file.
-    c = self
-    path = c.config.getString('script_file_path')
-    if path:
-        isAbsPath = os.path.isabs(path)
-        driveSpec, path = os.path.splitdrive(path)
-        parts = path.split('/')
-        # xxx bad idea, loadDir is often read only!
-        path = g.app.loadDir
-        if isAbsPath:
-            # make the first element absolute
-            parts[0] = driveSpec + os.sep + parts[0]
-        allParts = [path] + parts
-        path = c.os_path_finalize_join(*allParts)
-    else:
-        path = c.os_path_finalize_join(
-            g.app.homeLeoDir,'scriptFile.py')                    
-
-    # Write the file.
-    try:
-        if g.isPython3:
-            # Use the default encoding.
-            f = open(path,encoding='utf-8',mode='w')
-        else:
-            f = open(path,'w')
-        f.write(script)
-        f.close()
-    except Exception:
-        g.es_exception()
-        g.es("Failed to write script to %s" % path)
-        # g.es("Check your configuration of script_file_path, currently %s" %
-            # c.config.getString('script_file_path'))
-        path = None
-
-    return path
-#@nonl
-#@-node:ekr.20070115135502:writeScriptFile
-#@+node:ekr.20090502071837.94:write (leoRst)
-def write (self,s):
-
-    if self.trialWrite:
-        pass
-    elif g.isPython3:
-        pass
-    else:
-        s = self.encode(s)
-
-    # g.trace(repr(s),g.callers(2))
-
-    self.outputFile.write(s)
-#@-node:ekr.20090502071837.94:write (leoRst)
-#@+node:ekr.20090502071837.64:writeSpecialTree
-def writeSpecialTree (self,p,toString,justOneFile):
-
-    c = self.c
-    isHtml = self.ext in ('.html','.htm')
-    if isHtml and not SilverCity:
-        if not self.silverCityWarningGiven:
-            self.silverCityWarningGiven = True
-            g.es('SilverCity not present so no syntax highlighting')
-
-    self.initWrite(p)
-        # was encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
-    self.outputFile = StringIO()
-    self.writeTree(p)
-    self.source = self.outputFile.getvalue()
-    self.outputFile = None
-
-    if not toString:
-        # Compute this here for use by intermediate file.
-        self.outputFileName = self.computeOutputFileName(self.outputFileName)
-
-        # Create the directory if it doesn't exist.
-        theDir, junk = g.os_path_split(self.outputFileName)
-        theDir = c.os_path_finalize(theDir)
-        if not g.os_path_exists(theDir):
-            ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
-            if not ok:
-                g.es_print('did not create:',theDir,color='red')
-                return False
-
-        # if not os.access(theDir,os.F_OK):
-            # os.mkdir(theDir)
-
-        if self.getOption('write_intermediate_file'):
-            name = self.outputFileName + '.txt'
-            f = open(name,'w')
-            f.write(self.source)
-            f.close()
-            self.report(name)
-
-    try:
-        output = self.writeToDocutils(self.source)
-        ok = output is not None
-    except Exception:
-        g.pr('Exception in docutils')
-        g.es_exception()
-        ok = False
-
-    if ok:
-        if isHtml:
-            import re
-            idxTitle = output.find('<title></title>')
-            if idxTitle > -1:
-                m = re.search('<h1>([^<]*)</h1>', output)
-                if not m:
-                    m = re.search('<h1><[^>]+>([^<]*)</a></h1>', output)
-                if m:
-                    output = output.replace(
-                        '<title></title>',
-                        '<title>%s</title>' % m.group(1)
-                    )
-
-
-        if toString:
-            self.stringOutput = output
-        else:
-            # Write the file to the directory containing the .leo file.
-            f = open(self.outputFileName,'w')
-            f.write(output)
-            f.close()
-            self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
-
-    return ok
-#@-node:ekr.20090502071837.64:writeSpecialTree
-#@+node:ekr.20100203050306.5937:c.createOpenWithTempFile
-def createOpenWithTempFile (self,p,ext):
-
-    trace = False and not g.unitTesting
-    c = self ; f = None
-
-    # May be over-ridden by mod_tempfname plugin.
-    fn = c.openWithTempFilePath(p,ext)
-
-    try:
-        if g.os_path_exists(fn):
-            g.es('recreating:  ',g.shortFileName(fn),color='red')
-        else:
-            g.es('creating:  ',g.shortFileName(fn),color='blue')
-        f = open(fn,'w')
-        # Convert s to whatever encoding is in effect.
-        d = c.scanAllDirectives(p)
-        encoding = d.get('encoding',None)
-        if encoding == None:
-            encoding = c.config.default_derived_file_encoding
-        if g.isPython3: # 2010/02/09
-            s = p.b
-        else:
-            s = g.toEncodedString(p.b,encoding,reportErrors=True) 
-        f.write(s)
-        f.flush()
-        f.close()
-        try:
-            time = g.os_path_getmtime(fn)
-            if time: g.es('time: ',time)
-        except:
-            time = None
-
-        # Remove previous entry from app.openWithFiles if it exists.
-        for d in g.app.openWithFiles[:]:
-            if p.v == d.get('v'):
-                if trace: g.trace('removing',d.get('path'))
-                g.app.openWithFiles.remove(d)
-
-        d = {
-            # Used by app.destroyOpenWithFilesForFrame.
-            'c':c,
-            # Used here and by app.destroyOpenWithFileWithDict.
-            'path':fn,
-            # Used by c.testForConflicts.
-            'body':s,
-            'encoding':encoding,
-            'time':time,
-            # Used by the open_with plugin.
-            'p':p.copy(),
-            # Used by c.openWithHelper, and below.
-            'v':p.v,
-        }
-        g.app.openWithFiles.append(d)
-        return fn
-    except:
-        if f: f.close()
-        g.es('exception creating temp file',color='red')
-        g.es_exception()
-        return None
-#@-node:ekr.20100203050306.5937:c.createOpenWithTempFile
-#@+node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
-for theDir in (homeLeoDir,globalConfigDir,loadDir):
-    # N.B. We would use the _working_ directory if theDir is None!
-    if theDir:
-        try:
-            fn = g.os_path_join(theDir,tag)
-            f = open(fn,'w')
-            f.write(g.app.leoID)
-            f.close()
-            if g.os_path_exists(fn):
-                g.es_print('',tag,'created in',theDir,color='red')
-                return
-        except IOError:
-            pass
-
-        g.es('can not create',tag,'in',theDir,color='red')
-#@-node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
-#@+node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
-s = p.h
-
-if g.match(s,0,"@@"):
-    s = s[2:]
-    if s and len(s) > 0:
-        s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
-        at.outputFile.write(s)
-#@-node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
-#@+node:ekr.20041005105605.204:os
-def os (self,s):
-
-    """Write a string to the output stream.
-
-    All output produced by leoAtFile module goes here."""
-
-    trace = False and not g.unitTesting
-    at = self ; tag = self.underindentEscapeString
-    f = at.outputFile
-
-    if s and f:
-        try:
-            if s.startswith(tag):
-                junk,s = self.parseUnderindentTag(s)
-            # Bug fix: this must be done last.
-            s = g.toEncodedString(s,at.encoding,reportErrors=True)
-            if trace: g.trace(repr(s),g.callers(5))
-            f.write(s)
-        except Exception:
-            at.exception("exception writing:" + s)
-#@-node:ekr.20041005105605.204:os
-#@+node:ekr.20070915142635:writeFileFromNode
-def writeFileFromNode (self,event=None):
-
-    # If node starts with @read-file-into-node, use the full path name in the headline.
-    # Otherwise, prompt for a file name.
-
-    c = self ; p = c.p
-    c.endEditing()
-
-    h = p.h.rstrip()
-    s = p.b
-    tag = '@read-file-into-node'
-
-    if h.startswith(tag):
-        fileName = h[len(tag):].strip()
-    else:
-        fileName = None
-
-    if not fileName:
-        filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
-        fileName = g.app.gui.runSaveFileDialog(
-            initialfile=None,
-            title='Write File From Node',
-            filetypes=filetypes,
-            defaultextension=None)
-    if fileName:
-        try:
-            theFile = open(fileName,'w')
-            g.chdir(fileName)
-        except IOError:
-            theFile = None
-        if theFile:
-            if s.startswith('@nocolor\n'):
-                s = s[len('@nocolor\n'):]
-            theFile.write(s)
-            theFile.flush()
-            g.es_print('wrote:',fileName,color='blue')
-            theFile.close()
-        else:
-            g.es('can not write %s',fileName,color='red')
-#@nonl
-#@-node:ekr.20070915142635:writeFileFromNode
-#@+node:ekr.20050424131051:writeRecentFilesFileHelper
-def writeRecentFilesFileHelper (self,fileName):
-
-    # g.trace(g.toUnicode(fileName))
-
-    # Don't update the file if it begins with read-only.
-    theFile = None
-    try:
-        theFile = open(fileName)
-        lines = theFile.readlines()
-        if lines and self.munge(lines[0])=='readonly':
-            # g.trace('read-only: %s' %fileName)
-            return False
-    except IOError:
-        # The user may have erased a file.  Not an error.
-        if theFile: theFile.close()
-
-    theFile = None
-    try:
-        if g.isPython3:
-            theFile = open(fileName,encoding='utf-8',mode='w')
-        else:
-            theFile = open(fileName,mode='w')
-        if self.recentFiles:
-            s = '\n'.join(self.recentFiles)
-        else:
-            s = '\n'
-        if not g.isPython3:
-            s = g.toEncodedString(s,reportErrors=True)
-        theFile.write(s)
-
-    except IOError:
-        if 1: # The user may have erased a file.  Not an error.
-            g.es_print('error writing',fileName,color='red')
-            g.es_exception()
-            return False
-
-    except Exception:
-        g.es('unexpected exception writing',fileName,color='red')
-        g.es_exception()
-        if g.unitTesting: raise
-        return False
-
-    if theFile:
-        theFile.close()
-        return True
-    else:
-        return False
-#@-node:ekr.20050424131051:writeRecentFilesFileHelper
-#@+node:ekr.20050920084036.24:writeAbbreviations
-def writeAbbreviations (self,event):
-
-    '''Write abbreviations to a file.'''
-
-    fileName = g.app.gui.runSaveFileDialog(
-        initialfile = None,
-        title='Write Abbreviations',
-        filetypes = [("Text","*.txt"), ("All files","*")],
-        defaultextension = ".txt")
-
-    if not fileName: return
-
-    try:
-        f = open(fileName,'w')
-        for x in self.abbrevs:
-            f.write('%s=%s\n' % (x,self.abbrevs[x]))
-        f.close()
-    except IOError:
-        g.es('can not create',fileName)
-#@-node:ekr.20050920084036.24:writeAbbreviations
-#@+node:ekr.20050920084036.170:saveFile
-def saveFile (self,event):
-
-    '''Prompt for the name of a file and put the body text of the selected node into it..'''
-
-    w = self.editWidget(event)
-    if not w: return
-
-    fileName = g.app.gui.runSaveFileDialog(
-        initialfile = None,
-        title='save-file',
-        filetypes = [("Text","*.txt"), ("All files","*")],
-        defaultextension = ".txt")
-
-    if not fileName: return
-
-    try:
-        s = w.getAllText()
-        f = open(fileName,'w')
-        f.write(s)
-        f.close()
-    except IOError:
-        g.es('can not create',fileName)
-#@-node:ekr.20050920084036.170:saveFile
-#@+node:ekr.20051025071455.37:add (spellTab)
-def add(self,event=None):
-    """Add the selected suggestion to the dictionary."""
-
-    if not self.currentWord: return
-
-    # g.trace(self.currentWord)
-
-    try:
-        f = None
-        try:
-            # Rewrite the dictionary in alphabetical order.
-            f = open(self.dictionaryFileName, "r")
-            words = f.readlines()
-            f.close()
-            words = [word.strip() for word in words]
-            words.append(self.currentWord)
-            words.sort()
-            f = open(self.dictionaryFileName, "w")
-            for word in words:
-                f.write("%s\n" % g.toEncodedString(word,reportErrors=True))
-            f.flush()
-            f.close()
-            if 1:
-                s = 'Spell: added %s' % self.currentWord
-                self.messages.append(s)
-            else: # Too distracting.
-                g.es("adding ", color= "blue", newline= False) 
-                g.es('','%s' % self.currentWord)
-        except IOError:
-            g.es("can not add",self.currentWord,"to dictionary",color="red")
-    finally:
-        if f: f.close()
-
-    self.dictionary[self.currentWord.lower()] = 0
-    self.tab.onFindButton()
-#@-node:ekr.20051025071455.37:add (spellTab)
-#@+node:ekr.20041012091252:rawPrint
-def rawPrint (self,s):
-
-    if self.old:
-        self.old.write(s+'\n')
-    else:
-        g.pr(s)
-#@-node:ekr.20041012091252:rawPrint
-#@+node:ekr.20031218072017.1462:exportHeadlines
-def exportHeadlines (self,fileName):
-
-    c = self.c ; nl = g.u(self.output_newline)
-    p = c.p
-    if not p: return
-    self.setEncoding()
-    firstLevel = p.level()
-    mode = c.config.output_newline
-    mode = g.choose(mode=="platform",'w','wb')
-    try:
-        theFile = open(fileName,mode)
-    except IOError:
-        g.es("can not open",fileName,color="blue")
-        leoTest.fail()
-        return
-    for p in p.self_and_subtree():
-        head = p.moreHead(firstLevel,useVerticalBar=True)
-        s = g.toEncodedString(head + nl,self.encoding,reportErrors=True)
-        theFile.write(s)
-    theFile.close()
-#@-node:ekr.20031218072017.1462:exportHeadlines
-#@+node:ekr.20031218072017.1147:flattenOutline
-def flattenOutline (self,fileName):
-
-    c = self.c ; nl = g.u(self.output_newline)
-    p = c.currentVnode()
-    if not p: return
-    self.setEncoding()
-    firstLevel = p.level()
-
-    # 10/14/02: support for output_newline setting.
-    mode = c.config.output_newline
-    mode = g.choose(mode=="platform",'w','wb')
-    try:
-        theFile = open(fileName,mode)
-    except IOError:
-        g.es("can not open",fileName,color="blue")
-        leoTest.fail()
-        return
-
-    for p in p.self_and_subtree():
-        head = p.moreHead(firstLevel)
-        s = g.toEncodedString(head + nl,encoding=self.encoding,reportErrors=True)
-        theFile.write(s)
-        body = p.moreBody() # Inserts escapes.
-        if len(body) > 0:
-            s = g.toEncodedString(body + nl,self.encoding,reportErrors=True)
-            theFile.write(s)
-    theFile.close()
-#@-node:ekr.20031218072017.1147:flattenOutline
-#@+node:ekr.20031218072017.1148:outlineToWeb
-def outlineToWeb (self,fileName,webType):
-
-    c = self.c ; nl = self.output_newline
-    current = c.p
-    if not current: return
-    self.setEncoding()
-    self.webType = webType
-    # 10/14/02: support for output_newline setting.
-    mode = c.config.output_newline
-    mode = g.choose(mode=="platform",'w','wb')
-    try:
-        theFile = open(fileName,mode)
-    except IOError:
-        g.es("can not open",fileName,color="blue")
-        leoTest.fail()
-        return
-
-    self.treeType = "@file"
-    # Set self.treeType to @root if p or an ancestor is an @root node.
-    for p in current.parents():
-        flag,junk = g.is_special(p.b,0,"@root")
-        if flag:
-            self.treeType = "@root"
-            break
-    for p in current.self_and_subtree():
-        s = self.convertVnodeToWeb(p)
-        if len(s) > 0:
-            s = g.toEncodedString(s,self.encoding,reportErrors=True)
-            theFile.write(s)
-            if s[-1] != '\n': theFile.write(nl)
-    theFile.close()
-#@-node:ekr.20031218072017.1148:outlineToWeb
-#@+node:ekr.20031218072017.1464:weave
-def weave (self,filename):
-
-    c = self.c ; nl = self.output_newline
-    p = c.p
-    if not p: return
-    self.setEncoding()
-    << open filename to f, or return >>
-    for p in p.self_and_subtree():
-        s = p.b
-        s2 = s.strip()
-        if s2 and len(s2) > 0:
-            f.write("-" * 60) ; f.write(nl)
-            << write the context of p to f >>
-            f.write("-" * 60) ; f.write(nl)
-            s = g.toEncodedString(s,self.encoding,reportErrors=True)
-            f.write(s.rstrip() + nl)
-    f.flush()
-    f.close()
-#@+node:ekr.20031218072017.1150:<< open filename to f, or return >>
-try:
-    # 10/14/02: support for output_newline setting.
-    mode = c.config.output_newline
-    mode = g.choose(mode=="platform",'w','wb')
-    f = open(filename,mode)
-    if not f: return
-except Exception:
-    g.es("exception opening:",filename)
-    g.es_exception()
-    return
-#@-node:ekr.20031218072017.1150:<< open filename to f, or return >>
-#@+node:ekr.20031218072017.1465:<< write the context of p to f >>
-# write the headlines of p, p's parent and p's grandparent.
-context = [] ; p2 = p.copy() ; i = 0
-while i < 3:
-    i += 1
-    if not p2: break
-    context.append(p2.h)
-    p2.moveToParent()
-
-context.reverse()
-indent = ""
-for line in context:
-    f.write(indent)
-    indent += '\t'
-    line = g.toEncodedString(line,self.encoding,reportErrors=True)
-    f.write(line)
-    f.write(nl)
-#@-node:ekr.20031218072017.1465:<< write the context of p to f >>
-#@-node:ekr.20031218072017.1464:weave
-#@+node:ekr.20031218072017.1465:<< write the context of p to f >>
-# write the headlines of p, p's parent and p's grandparent.
-context = [] ; p2 = p.copy() ; i = 0
-while i < 3:
-    i += 1
-    if not p2: break
-    context.append(p2.h)
-    p2.moveToParent()
-
-context.reverse()
-indent = ""
-for line in context:
-    f.write(indent)
-    indent += '\t'
-    line = g.toEncodedString(line,self.encoding,reportErrors=True)
-    f.write(line)
-    f.write(nl)
-#@-node:ekr.20031218072017.1465:<< write the context of p to f >>
-#@+node:ekr.20090502071837.61:writeNormalTree
-def writeNormalTree (self,p,toString=False):
-
-    self.initWrite(p)
-
-    # Always write to a string first.
-    self.outputFile = StringIO()
-    self.writeTree(p)
-    self.source = self.stringOutput = self.outputFile.getvalue()
-
-    # Copy to a file if requested.
-    if not toString:
-        # Comput the output file name *after* calling writeTree.
-        self.outputFileName = self.computeOutputFileName(self.outputFileName)
-        self.outputFile = open(self.outputFileName,'w')
-        self.outputFile.write(self.stringOutput)
-        self.outputFile.close()
-
-    return True
-#@-node:ekr.20090502071837.61:writeNormalTree
-#@+node:ekr.20080822065427.4:show_error_lines
-def show_error_lines (self,lines,fileName):
-
-    for line in lines:
-        g.es_print(line)
-
-    if False: # Only for major debugging.
-        try:
-            f1 = open(fileName, "w")
-            for line in lines:
-                f1.write(g.toEncodedString(line))
-            f1.close()
-        except IOError:
-            g.es_exception()
-            g.es_print('can not open',fileName)
-#@-node:ekr.20080822065427.4:show_error_lines
-#@+node:ekr.20031218072017.1488:oblank, oblanks, os, otab, otabs (Tangle)
-def oblank (self):
-    self.oblanks(1)
-
-def oblanks (self,n):
-    if abs(n) > 0:
-        s = g.toEncodedString(' ' * abs(n),encoding=self.encoding)
-        self.output_file.write(s)
-
-def onl(self):
-    s = self.output_newline
-    s = g.toEncodedString(s,self.encoding,reportErrors=True)
-    self.output_file.write(s)
-
-def os (self,s):
-    s = s.replace('\r','\n')
-    s = g.toEncodedString(s,self.encoding,reportErrors=True)
-    self.output_file.write(s)
-
-def otab (self):
-    self.otabs(1)
-
-def otabs (self,n):
-    if abs(n) > 0:
-        s = g.toEncodedString('\t' * abs(n),self.encoding,reportErrors=True)
-        self.output_file.write(s)
-#@-node:ekr.20031218072017.1488:oblank, oblanks, os, otab, otabs (Tangle)
-#@+node:ekr.20031218072017.3650:show
-def show (self,s):
-
-    # g.pr(s)
-    if self.outputFile:
-        s = g.toEncodedString(s + '\n')
-        self.outputFile.write(s)
-    elif self.c:
-        g.es(s)
-    else:
-        g.pr(s)
-        g.pr('')
-#@-node:ekr.20031218072017.3650:show
-#@-node:ekr.20100209224508.5744:Calls to .write
-#@-node:ekr.20100219083854.5616:Simplify i/o
 #@+node:ekr.20100211072044.5754:Dubious usages of .unitTesting
 #@+node:ekr.20031218072017.1723:createMenuEntries
 def createMenuEntries (self,menu,table,dynamicMenu=False):
