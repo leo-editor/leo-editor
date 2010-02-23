@@ -377,7 +377,7 @@ Description:
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.7 final                    February 23, 2009
+<t tx="EKR.20040519090846.9">Leo 4.7 final                    February 23, 2010
 
 Leo 4.7 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
@@ -1897,6 +1897,8 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20100202061222.1494">Testing:
     - Run all unit tests.
     - Run pylint-leo.bat.
+trunk/license.txt **and** leo/doc/license.txt.
+    - Make sure copyright dates are correct.
 LeoDocs.leo:
     **Update version on home page.
     - Remove top-level clones.

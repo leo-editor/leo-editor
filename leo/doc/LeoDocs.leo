@@ -61,9 +61,9 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
-<v t="ekr.20050831184021.3"><vh>Front matter</vh>
-<v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20050831184021.3" a="E"><vh>Front matter</vh>
+<v t="ekr.20040414172212" a="E"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20040414172218.4"><vh>Acknowledgements</vh>
 <v t="ekr.20040416080538"><vh>@rst-no-head special mentions</vh></v>
@@ -869,7 +869,7 @@
 </v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20100129054823.11924"><vh>What's New in Leo 4.7</vh>
-<v t="ekr.20100129054823.11925" a="E"><vh>@rst html\new-4-7.html</vh>
+<v t="ekr.20100129054823.11925"><vh>@rst html\new-4-7.html</vh>
 <v t="ekr.20100129054823.11926"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20100129054823.17680"><vh>Leo supports Python 3.x</vh></v>
 <v t="ekr.20100129054823.11928"><vh>Improved file handling</vh></v>
@@ -1053,7 +1053,7 @@
 </v>
 </v>
 <v t="ekr.20100129054823.11924"></v>
-<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
+<v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -3464,7 +3464,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20100223063657.7262"><vh>4.7 final</vh>
 <v t="ekr.20100223063657.7264"><vh>Bug fixed</vh>
 <v t="ekr.20100223063657.7182"><vh>Fixed calls to sort in 6 places</vh>
@@ -28381,7 +28381,7 @@ to be the same as the MIT license, namely that Leo is absolutely free, even for
 commercial use, including resale. There is no GNU-like "copyleft" restriction.
 This license is compatible with the GPL.
 
-**Copyright 1997-2009 by Edward K. Ream. All Rights Reserved.**
+**Copyright 1997-2010 by Edward K. Ream. All Rights Reserved.**
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -34408,7 +34408,7 @@ def getBindingsForCommand(self,commandName):
         # key is a function that extracts args.
 
     return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data])</t>
-<t tx="ekr.20100223063657.7262">Leo 4.7 final                    February 23, 2009
+<t tx="ekr.20100223063657.7262">Leo 4.7 final                    February 23, 2010
 
 Leo 4.7 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106

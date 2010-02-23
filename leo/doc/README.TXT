@@ -1,4 +1,4 @@
-Leo 4.7 final                    February 23, 2009
+Leo 4.7 final                    February 23, 2010
 
 Leo 4.7 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
