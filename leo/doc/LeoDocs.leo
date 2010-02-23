@@ -869,7 +869,7 @@
 </v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20100129054823.11924"><vh>What's New in Leo 4.7</vh>
-<v t="ekr.20100129054823.11925"><vh>@rst html\new-4-7.html</vh>
+<v t="ekr.20100129054823.11925" a="E"><vh>@rst html\new-4-7.html</vh>
 <v t="ekr.20100129054823.11926"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20100129054823.17680"><vh>Leo supports Python 3.x</vh></v>
 <v t="ekr.20100129054823.11928"><vh>Improved file handling</vh></v>
@@ -3432,10 +3432,7 @@
 <v t="ekr.20100201192329.7116"><vh>Code cleanup</vh></v>
 </v>
 </v>
-</v>
-</v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
-<v t="ekr.20100205152016.14053" a="E"><vh>4.7 rc 1</vh>
+<v t="ekr.20100205152016.14053"><vh>4.7 rc 1</vh>
 <v t="ekr.20100205152016.14054"><vh>Recovering from clone conflicts</vh></v>
 <v t="ekr.20100209160132.11690"><vh>Bugs fixed</vh>
 <v t="ekr.20100209160132.11691"><vh>Fixed unicode bug in setSelectionRangeHelper</vh></v>
@@ -3463,6 +3460,33 @@
 </v>
 <v t="ekr.20100211125418.11611"><vh>New commands</vh>
 <v t="ekr.20100209160132.11888"><vh>Created clear-cache and clear-all-caches commands</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="ekr.20100223063657.7262"><vh>4.7 final</vh>
+<v t="ekr.20100223063657.7264"><vh>Bug fixed</vh>
+<v t="ekr.20100223063657.7182"><vh>Fixed calls to sort in 6 places</vh>
+<v t="ekr.20100223063657.7183"><vh>changed...</vh>
+<v t="ekr.20100223063657.7184"><vh>c.sortSiblings</vh></v>
+<v t="ekr.20100223063657.7253"><vh>helpForCommand</vh></v>
+<v t="ekr.20100223063657.7186"><vh>printBindings &amp; helper</vh>
+<v t="ekr.20100223063657.7187"><vh>printBindingsHelper</vh></v>
+</v>
+<v t="ekr.20100223063657.7188"><vh>printGcAll</vh></v>
+<v t="ekr.20100223063657.7189"><vh>sortLines commands</vh></v>
+<v t="ekr.20100223063657.7190"><vh>sortRecentFiles</vh></v>
+</v>
+</v>
+<v t="ekr.20100223063657.7192"><vh>Fix bug 363406: goto-global-line works with @auto files</vh></v>
+<v t="ekr.20100223063657.7212"><vh>Put focus in a standard place after save commands</vh></v>
+<v t="ekr.20100223063657.7232"><vh>Fixed internal Leo error in atFile.read method</vh></v>
+<v t="ekr.20100223063657.7238"><vh>Fixed wish-list bug 508108: No methods sub-nodes in PHP class import</vh></v>
+<v t="ekr.20100223063657.7245"><vh>Fixed qt colorizer bug</vh></v>
+<v t="ekr.20100223063657.7246"><vh>Fixed ancient minibuffer bug</vh></v>
+<v t="ekr.20100223063657.7249"><vh>Improved support for wrapping in the log pane</vh></v>
+<v t="ekr.20100223063657.7263"><vh>Reformatted the output of the apropos commands</vh></v>
 </v>
 </v>
 </v>
@@ -26208,7 +26232,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.7 rc1]&lt;/a&gt;</t>
+    Download Leo[4.7 final]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
@@ -34127,6 +34151,300 @@ delete nodes while examining the nodes created by clone-find-all.
 <t tx="ekr.20100211125418.11602"></t>
 <t tx="ekr.20100211125418.11611"></t>
 <t tx="ekr.20100211221936.7098">- The clear-cache and clear-all-caches commands.</t>
+<t tx="ekr.20100223063657.7182"># This fixed a Python 3.x compatibility problem.</t>
+<t tx="ekr.20100223063657.7183"></t>
+<t tx="ekr.20100223063657.7184"># New in Leo 4.7 final: this method no longer supports
+# the 'cmp' keyword arg.
+
+def sortSiblings (self,event=None,key=None,p=None,sortChildren=False):
+
+    '''Sort the siblings of a node.'''
+
+    c = self ; u = c.undoer
+    if p is None: p = c.p
+    if not p: return
+
+    c.endEditing()
+
+    undoType = g.choose(sortChildren,'Sort Children','Sort Siblings')
+    parent_v = p._parentVnode()
+    parent = p.parent()
+    oldChildren = parent_v.children[:]
+    newChildren = parent_v.children[:]
+
+    if key == None:
+        def lowerKey (self):
+            return (self.h.lower())
+        key = lowerKey
+
+    newChildren.sort(key=key)
+
+    if oldChildren == newChildren:
+        return
+
+    # 2010/01/20. Fix bug 510148.
+    c.setChanged(True)
+
+    # g.trace(g.listToString(newChildren))
+
+    bunch = u.beforeSort(p,undoType,oldChildren,newChildren,sortChildren)
+    parent_v.children = newChildren
+    if parent:
+        dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
+    else:
+        dirtyVnodeList = []
+    u.afterSort(p,bunch,dirtyVnodeList)
+
+    # Sorting destroys position p, and possibly the root position.
+    p = c.setPositionAfterSort(sortChildren)
+    c.redraw(p)
+</t>
+<t tx="ekr.20100223063657.7186">def printBindings (self,event=None):
+
+    '''Print all the bindings presently in effect.'''
+
+    k = self ; c = k.c
+    d = k.bindingsDict ; tabName = 'Bindings'
+    c.frame.log.clearTab(tabName)
+    data = [] ; n1 = 4 ; n2 = 20
+    if not d: return g.es('no bindings')
+    for key in sorted(d):
+        bunchList = d.get(key,[])
+        for b in bunchList:
+            pane = g.choose(b.pane=='all','',' %s:' % (b.pane))
+            s1 = pane
+            s2 = k.prettyPrintKey(key,brief=True)
+            s3 = b.commandName
+            n1 = max(n1,len(s1))
+            n2 = max(n2,len(s2))
+            data.append((s1,s2,s3),)
+
+    # Print keys by type:
+    result = []
+    sep = '-' * n1
+    for prefix in (
+        'Alt+Ctrl+Shift', 'Alt+Shift', 'Alt+Ctrl', 'Alt+Key','Alt',
+        'Ctrl+Shift', 'Ctrl', 'Shift',
+        'Meta+Ctrl+Shift', 'Meta+Shift', 'Meta+Ctrl', 'Meta+Key','Meta',
+        # Meta support
+    ):
+        data2 = []
+        for item in data:
+            s1,s2,s3 = item
+            if s2.startswith(prefix):
+                data2.append(item)
+        # g.es('','%s %s' % (sep, prefix),tabName=tabName)
+        result.append('%s %s\n' % (sep, prefix))
+        self.printBindingsHelper(result,data2,n1,n2,prefix=prefix)
+        # Remove all the items in data2 from data.
+        # This must be done outside the iterator on data.
+        for item in data2:
+            data.remove(item)
+    # Print all plain bindings.
+    result.append('%s %s\n' % (sep, 'Plain Keys'))
+    self.printBindingsHelper(result,data,n1,n2,prefix=None)
+    if not g.unitTesting:
+        g.es('',''.join(result),tabName=tabName)
+    state = k.unboundKeyAction 
+    k.showStateAndMode()
+    return result # for unit test.
+</t>
+<t tx="ekr.20100223063657.7187">def printBindingsHelper (self,result,data,n1,n2,prefix):
+
+    n = prefix and len(prefix)+1 or 0 # Add 1 for the '+' after the prefix.
+
+    data1 = [z for z in data if z and z[1] and len(z[1][n:]) == 1]
+        # The list of all items with only one character following the prefix.
+    data2 = [z for z in data if z and z[1] and len(z[1][n:]) &gt;  1]
+        # The list of all other items.
+
+    # This isn't perfect in variable-width fonts.
+    for data in (data1,data2):
+        data.sort(key=lambda x: x[1])
+            # key is a function that extracts args.
+        for s1,s2,s3 in data:
+            # g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
+            result.append('%*s %*s %s\n' % (-n1,s1,-(min(12,n2)),s2,s3))
+</t>
+<t tx="ekr.20100223063657.7188">def printGcAll (tag=''):
+
+    # Suppress warning about keywords arg not supported in sort.
+
+    tag = tag or g._callerName(n=2)
+    d = {} ; objects = gc.get_objects()
+    if not g.unitTesting:
+        g.pr('-' * 30)
+        g.pr('%s: %d objects' % (tag,len(objects)))
+
+    for obj in objects:
+        t = type(obj)
+        if t == 'instance':
+            try: t = obj.__class__
+            except Exception: pass
+        # if type(obj) == type(()):
+            # g.pr(id(obj),repr(obj))
+        d[t] = d.get(t,0) + 1
+
+    if 1: # Sort by n
+        items = list(d.items())
+        items.sort(key=lambda x: x[1])
+            # key is a function that extracts args.
+        if not g.unitTesting:
+            for z in items:
+                g.pr('%40s %7d' % (z[0],z[1]))
+    else: # Sort by type
+        for t in sorted(d):
+            g.pr('%40s %7d' % (t,d.get(t)))
+</t>
+<t tx="ekr.20100223063657.7189">def reverseSortLinesIgnoringCase(self,event):
+    return self.sortLines(event,ignoreCase=True,reverse=True)
+
+def reverseSortLines(self,event):
+    return self.sortLines(event,reverse=True)
+
+def sortLinesIgnoringCase(self,event):
+    return self.sortLines(event,ignoreCase=True)
+
+def sortLines (self,event,ignoreCase=False,reverse=False):
+
+    '''Sort lines of the selected text by comparing the entire text of a line.'''
+
+    c = self.c ; k = c.k ; w = self.editWidget(event)
+    if not self._chckSel(event): return
+
+    undoType = g.choose(reverse,'reverse-sort-lines','sort-lines')
+    self.beginCommand(undoType=undoType)
+    try:
+        s = w.getAllText()
+        sel_1,sel_2 = w.getSelectionRange()
+        ins = w.getInsertPoint()
+        i,junk = g.getLine(s,sel_1)
+        junk,j = g.getLine(s,sel_2)
+        s2 = s[i:j]
+        if not s2.endswith('\n'): s2 = s2+'\n'
+        aList = g.splitLines(s2)
+        def lower(s):
+            if ignoreCase: return s.lower()
+            else: return s
+        aList.sort(key=lower)
+            # key is a function that extracts args.
+        if reverse:
+            aList.reverse()
+        s = g.joinLines(aList)
+        w.delete(i,j)
+        w.insert(i,s)
+        w.setSelectionRange(sel_1,sel_2,insert=ins)
+    finally:
+        self.endCommand(changed=True,setLabel=True)
+</t>
+<t tx="ekr.20100223063657.7190">def sortRecentFiles(self,event=None):
+
+    c = self
+
+    orig = c.recentFiles[:]
+    c.clearRecentFiles()
+
+    def key(s):
+        return g.os_path_basename(s).lower()
+    orig.sort(key=key) # 2010/01/12
+    orig.reverse() # 2010/01/12
+    for i in orig:
+        c.updateRecentFiles(i)
+
+    # code below copied from clearRecentFiles
+    g.app.config.recentFiles = [] # New in Leo 4.3.
+    g.app.config.appendToRecentFiles(c.recentFiles)
+    g.app.config.recentFileMessageWritten = False # Force the write message.
+    g.app.config.writeRecentFilesFile(c)
+</t>
+<t tx="ekr.20100223063657.7192"></t>
+<t tx="ekr.20100223063657.7212">The edit pane lost focus after save commands.</t>
+<t tx="ekr.20100223063657.7232">fileKey is needed even if force is True.</t>
+<t tx="ekr.20100223063657.7238">https://bugs.launchpad.net/leo-editor/+bug/508108
+</t>
+<t tx="ekr.20100223063657.7245">Default fonts were not being properly restored after being overridden in another language.
+
+For example, after colorizing php, python keywords looked like php keywords.</t>
+<t tx="ekr.20100223063657.7246">The bug: Find/change prompts were not fully protected after the user hit the
+&lt;home&gt; key.</t>
+<t tx="ekr.20100223063657.7249"></t>
+<t tx="ekr.20100223063657.7253">def helpForCommand (self,event):
+
+    '''Prompts for a command name and prints the help message for that command.'''
+
+    k = self.k
+    k.fullCommand(event,help=True,helpHandler=self.helpForCommandFinisher)
+
+def helpForCommandFinisher (self,commandName):
+
+    c = self.c
+    bindings = self.getBindingsForCommand(commandName)
+    func = c.commandsDict.get(commandName)
+    if func and func.__doc__:
+        s = ''.join([
+            g.choose(line.strip(),line.lstrip(),'\n')
+                for line in g.splitLines(func.__doc__)])
+    else:
+        s = 'no docstring'
+    g.es('','%s:%s\n%s\n' % (commandName,bindings,s),color='blue')
+
+def getBindingsForCommand(self,commandName):
+
+    c = self.c ; k = c.k ; d = k.bindingsDict
+    data = [] ; n1 = 4 ; n2 = 20
+    for key in sorted(d):
+        bunchList = d.get(key,[])
+        for b in bunchList:
+            if b.commandName == commandName:
+                pane = g.choose(b.pane=='all','',' %s:' % (b.pane))
+                s1 = pane
+                s2 = k.prettyPrintKey(key,brief=True)
+                s3 = b.commandName
+                n1 = max(n1,len(s1))
+                n2 = max(n2,len(s2))
+                data.append((s1,s2,s3),)
+
+    data.sort(key=lambda x: x[1])
+        # key is a function that extracts args.
+
+    return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data])</t>
+<t tx="ekr.20100223063657.7262">Leo 4.7 final                    February 23, 2009
+
+Leo 4.7 final is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo 4.7 final fixes all known bugs in Leo.
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.7:
+--------------------------
+
+- Leo now uses the simplest possible internal data model.
+  This is the so-called "one-node" world.
+- Leo supports Python 3.x.
+- Leo requires Python 2.6 or above.
+- Several important improvements in file handling.
+    - Leo converts @file nodes to @thin nodes automatically.
+    - Leo creates a 'Recovered Nodes' node to hold data that
+      otherwise might be lost due to clone conflicts.
+    - @auto-rst now works much more reliably reliably.
+    - Leo no longer supports @noref trees.  Such trees are not
+      reliable in cooperative environments.
+- A new Windows installer.
+- Many other features, including new command line options and new plugins.
+- Dozens of bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20100223063657.7263"></t>
+<t tx="ekr.20100223063657.7264"></t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?

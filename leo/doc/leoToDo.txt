@@ -3,7 +3,7 @@
 #@+all
 #@+node:ekr.20100209160132.5771:until-4-7-final branch
 #@+node:ekr.20100209114432.5750:Work on docs
-- Better scren shots.
+- Better screen shots.
 #@nonl
 #@+node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
 http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
@@ -2787,16 +2787,6 @@ bindHelper class?
 #@nonl
 #@-node:ekr.20100210102224.5744:Notes for key bindings
 #@-node:ekr.20100209160132.5771:until-4-7-final branch
-#@+node:ekr.20071211093011:4.7 One-node world, Leo3K
-@nocolor-node
-
-- Support for Python 3.x.
-- autocompleter
-- Code completion.
-- Refactoring: rope, etc.
-- Flexitble file format.
-#@nonl
-#@-node:ekr.20071211093011:4.7 One-node world, Leo3K
 #@+node:ekr.20100109214940.6225:4.8 vim, cleanups, your mission...
 #@+node:ekr.20100206074650.5852:Posting re "your mission, should you choose to accept it"
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it

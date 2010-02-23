@@ -20,7 +20,7 @@
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="EKR.20040519091259" a="E"><vh>Annoucements</vh>
+<v t="EKR.20040519091259"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
@@ -33,14 +33,17 @@
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
-<v t="ekr.20090718093249.5927"><vh>ANN: Leo 4.6.1 final</vh></v>
-<v t="ekr.20090803090630.1408"><vh>ANN: Leo 4.6.2 final</vh></v>
+<v t="ekr.20100223062731.1506"><vh>ANN: Leo 4.7 final</vh></v>
+<v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
+<v t="ekr.20100223062731.1507"><vh>4.7</vh>
 <v t="ekr.20090909091918.1463"><vh>ANN: Leo 4.7 b1</vh></v>
 <v t="ekr.20100129074111.1488"><vh>ANN: Leo 4.7 b2</vh></v>
 <v t="ekr.20100201193541.1491"><vh>ANN: Leo 4.7 b3</vh></v>
 <v t="ekr.20100211222859.1503"><vh>ANN: Leo 4.7 rc1</vh></v>
-<v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
+</v>
 <v t="ekr.20090718093249.5928"><vh>4.6</vh>
+<v t="ekr.20090803090630.1408"><vh>ANN: Leo 4.6.2 final</vh></v>
+<v t="ekr.20090718093249.5927"><vh>ANN: Leo 4.6.1 final</vh></v>
 <v t="ekr.20090709085944.1401"><vh>ANN: Leo 4.6 rc1</vh></v>
 <v t="ekr.20090620122333.1392"><vh>ANN: Leo 4.6 b2</vh></v>
 <v t="ekr.20090325065530.1"><vh>ANN: Leo 4.6 b1</vh></v>
@@ -82,7 +85,7 @@
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
-<v t="ekr.20090902092112.1480"><vh>class nsiWriter</vh>
+<v t="ekr.20090902092112.1480" a="E"><vh>class nsiWriter</vh>
 <v t="ekr.20090901092556.1608"><vh>Boilerplate</vh>
 <v t="ekr.20090901092556.1609"><vh>head boilerplate</vh>
 <v t="ekr.20090901092556.1588"><vh>putSettings</vh></v>
@@ -121,7 +124,7 @@
 <v t="ekr.20090901082242.1563"><vh>makeDicts</vh></v>
 <v t="ekr.20090901082242.1564"><vh>printMissing</vh></v>
 </v>
-<v t="ekr.20090902092112.1445"><vh>whitespace</vh>
+<v t="ekr.20090902092112.1445" a="E"><vh>whitespace</vh>
 <v t="ekr.20090902092112.1463"><vh>adjustTripleString</vh></v>
 <v t="ekr.20090902092112.1467"><vh>get_leading_ws</vh></v>
 <v t="ekr.20090902092112.1466"><vh>computeWidth</vh></v>
@@ -213,7 +216,7 @@ rm -f  $LEO_RUN_SCRIPT_OUTPUT
 
 Do a search and replace on this suffix.
 
-Latest suffix:  -release-candidate-1</t>
+Latest suffix:  -final</t>
 <t tx="EKR.20040519090846.1">Leo is Open Software and is distributed under the terms of the Python License.
 The gist of the license is that Leo is absolutely free, even for commercial use
 (including resale). There is no GNU-like "copyleft" restriction. The Open Source
@@ -360,7 +363,7 @@ Thanks to Randall Voth for these instructions.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.7-release-candidate-1
+Version: 4.7-final
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -374,12 +377,12 @@ Description:
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.7 rc 1                    February 12, 2009
+<t tx="EKR.20040519090846.9">Leo 4.7 final                    February 23, 2009
 
-Leo 4.7 release candidate 1 is now available at:
+Leo 4.7 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
-Leo 4.7 rc 1 fixes all known bugs in Leo, serious or minor.
+Leo 4.7 final fixes all known bugs in Leo.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
@@ -408,7 +411,8 @@ Leo:      http://webpages.charter.net/edreamleo/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
+</t>
 <t tx="EKR.20040519091259">@pagewidth 70
 @killcolor</t>
 <t tx="EKR.20040519091259.1">4.4.5       setup: 547  zip: 379  2007-12-11
@@ -1671,7 +1675,7 @@ FunctionEnd
     @others
 </t>
 <t tx="ekr.20090902092112.1481"># Used by both @button make leo.nsi and @button make leo.zip.
-app_version = version = '4.7-release-candidate-1'</t>
+app_version = version = '4.7-final'</t>
 <t tx="ekr.20090902092112.1482">try:
     inLeo = g is not None
 except AttributeError:
@@ -1891,12 +1895,12 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20100202061222.1494">Testing:
-    - (done) Run all unit tests.
-    - (done) Run pylint-leo.bat.
+    - Run all unit tests.
+    - Run pylint-leo.bat.
 LeoDocs.leo:
-    **(done) Update version on home page.
-    - (done) Remove top-level clones.
-    - (done) Select the readme node.
+    **Update version on home page.
+    - Remove top-level clones.
+    - Select the readme node.
 LeoPlugins.leo:
     - Remove top-level clones.
 LeoPy.leo:
@@ -1915,7 +1919,8 @@ Create a bzr tag:
     - bzr push
 Create distribution files using to @button make scripts in leoDist.leo
     - 1: Make leo.nsi
-    - 2: Make leo.zip
+    - 2: Commit if necessary.
+    - 3: Make leo.zip
 Test files
 	- test the files created in c:\Python\Lib\site-packages\leo-x-y folder
     ** Open unitTest.leo: does it open without errors?
@@ -1972,5 +1977,41 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20100223062731.1506">Leo 4.7 final                    February 23, 2009
+
+Leo 4.7 final is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo 4.7 final fixes all known bugs in Leo.
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.7:
+--------------------------
+
+- Leo now uses the simplest possible internal data model.
+  This is the so-called "one-node" world.
+- Leo supports Python 3.x.
+- Leo requires Python 2.6 or above.
+- Several important improvements in file handling.
+    - Leo converts @file nodes to @thin nodes automatically.
+    - Leo creates a 'Recovered Nodes' node to hold data that
+      otherwise might be lost due to clone conflicts.
+    - @auto-rst now works much more reliably reliably.
+    - Leo no longer supports @noref trees.  Such trees are not
+      reliable in cooperative environments.
+- A new Windows installer.
+- Many other features, including new command line options and new plugins.
+- Dozens of bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20100223062731.1507"></t>
 </tnodes>
 </leo_file>

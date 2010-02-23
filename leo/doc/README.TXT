@@ -1,9 +1,9 @@
-Leo 4.7 rc 1                    February 12, 2009
+Leo 4.7 final                    February 23, 2009
 
-Leo 4.7 release candidate 1 is now available at:
+Leo 4.7 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
-Leo 4.7 rc 1 fixes all known bugs in Leo, serious or minor.
+Leo 4.7 final fixes all known bugs in Leo.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html

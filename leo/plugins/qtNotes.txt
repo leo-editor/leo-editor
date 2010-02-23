@@ -1942,6 +1942,153 @@ def update (self):
     self.lastFcol = fcol
 #@-node:ekr.20081121105001.265:update
 #@-node:ekr.20100220194313.3694:Fixed bug: status line now updated for additional editors
+#@+node:ekr.20100221144630.3696:Wrapping the log
+#@+node:ekr.20081121105001.321:qtLog.finishCreate
+def finishCreate (self):
+
+    c = self.c ; log = self ; w = self.tabWidget
+
+    # Remove unneeded tabs.
+    for name in ('Tab 1','Page'):
+        for i in range(w.count()):
+            if name == w.tabText(i):
+                w.removeTab(i)
+                break
+
+    # Rename the 'Tab 2' tab to 'Find'.
+    for i in range(w.count()):
+        if w.tabText(i) in ('Find','Tab 2'):
+            w.setTabText(i,'Find')
+            self.contentsDict['Find'] = w.currentWidget()
+            break
+
+    # Create the log tab as the leftmost tab.
+    # log.selectTab('Log')
+    log.createTab('Log')
+    logWidget = self.contentsDict.get('Log')
+    logWidget.setWordWrapMode(
+        g.choose(self.wrap,
+            QtGui.QTextOption.WordWrap,
+            QtGui.QTextOption.NoWrap))
+
+    for i in range(w.count()):
+        if w.tabText(i) == 'Log':
+            w.removeTab(i)
+    w.insertTab(0,logWidget,'Log')
+
+    c.searchCommands.openFindTab(show=False)
+    c.spellCommands.openSpellTab()
+#@-node:ekr.20081121105001.321:qtLog.finishCreate
+#@+node:ekr.20081121105001.330:createTab
+def createTab (self,tabName,widget=None,wrap='none'):
+    """ Create a new tab in tab widget
+
+    if widget is None, Create a QTextBrowser,
+    suitable for log functionality.
+    """
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(tabName,g.callers(4))
+
+    c = self.c ; w = self.tabWidget
+
+    # Important. Not called during startup.
+
+    if widget is None:
+        # widget = QtGui.QTextBrowser()
+        widget = QTextBrowserSubclass(parent=None,c=c,wrapper=self)
+        contents = leoQTextEditWidget(widget=widget,name='log',c=c)
+        widget.leo_log_wrapper = contents # Inject an ivar.
+        if trace: g.trace('** creating',tabName,contents,widget,'\n',g.callers(9))
+        # widget.setWordWrapMode(QtGui.QTextOption.NoWrap)
+        widget.setWordWrapMode(
+            g.choose(self.wrap,
+                QtGui.QTextOption.WordWrap,
+                QtGui.QTextOption.NoWrap))
+
+        widget.setReadOnly(False) # Allow edits.
+        self.logDict[tabName] = widget
+        if tabName == 'Log':
+            self.logCtrl = contents
+            widget.setObjectName('log-widget')
+            theFilter = leoQtEventFilter(c,w=self,tag='log')
+            self.eventFilters.append(theFilter) # Needed!
+            widget.installEventFilter(theFilter)
+        self.contentsDict[tabName] = widget
+        w.addTab(widget,tabName)
+    else:
+        contents = widget
+        # Bug fix: 2009/10/06
+        widget.leo_log_wrapper = contents # Inject an ivar.
+        # if trace: g.trace('** using',tabName,contents)
+        self.contentsDict[tabName] = contents
+        w.addTab(contents,tabName)
+
+    return contents
+#@-node:ekr.20081121105001.330:createTab
+#@+node:ekr.20081121105001.325:put & putnl (qtLog)
+#@+node:ekr.20081121105001.326:put
+# All output to the log stream eventually comes here.
+def put (self,s,color=None,tabName='Log'):
+
+    c = self.c
+    if g.app.quitting or not c or not c.exists:
+        return
+
+    if color:
+        color = leoColor.getColor(color,'black')
+
+    self.selectTab(tabName or 'Log')
+    # print('qtLog.put',tabName,'%3s' % (len(s)),self.logCtrl)
+
+    # Note: this must be done after the call to selectTab.
+    w = self.logCtrl.widget # w is a QTextBrowser
+
+    # g.trace(repr(color),w)
+    if w:
+        sb = w.horizontalScrollBar()
+        pos = sb.sliderPosition()
+        s=s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        if not self.wrap: # 2010/02/21: Use &nbsp; only when not wrapping!
+            s = s.replace(' ','&nbsp;')
+        s = s.rstrip().replace('\n','<br>')
+        if color:
+            s = '<font color="%s">%s</font>' % (color,s)
+        w.append(s)
+        w.moveCursor(QtGui.QTextCursor.End)
+        sb.setSliderPosition(pos)
+    else:
+        # put s to logWaiting and print s
+        g.app.logWaiting.append((s,color),)
+        if g.isUnicode(s):
+            s = g.toEncodedString(s,"ascii")
+        print(s)
+#@-node:ekr.20081121105001.326:put
+#@+node:ekr.20081121105001.327:putnl
+def putnl (self,tabName='Log'):
+
+    if g.app.quitting:
+        return
+
+    if tabName:
+        self.selectTab(tabName)
+
+    w = self.logCtrl.widget
+    if w:
+        sb = w.horizontalScrollBar()
+        pos = sb.sliderPosition()
+        # Not needed!
+            # contents = w.toHtml()
+            # w.setHtml(contents + '\n')
+        w.moveCursor(QtGui.QTextCursor.End)
+        sb.setSliderPosition(pos)
+        w.repaint() # Slow, but essential.
+    else:
+        # put s to logWaiting and print  a newline
+        g.app.logWaiting.append(('\n','black'),)
+#@-node:ekr.20081121105001.327:putnl
+#@-node:ekr.20081121105001.325:put & putnl (qtLog)
+#@-node:ekr.20100221144630.3696:Wrapping the log
 #@-node:ekr.20100216023902.3690:Leo 4.7 final projects
 #@-all
 #@nonl
