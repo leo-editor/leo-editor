@@ -258,6 +258,155 @@ def hideOutlinePane (self,event=None):
     f.divideLeoSplitter(f.splitVerticalFlag,0.0)
 #@-node:ekr.20081121105001.303:fullyExpand/hide...Pane
 #@-node:ekr.20081121105001.297:Minibuffer commands... (qtFrame)
+#@+node:ekr.20081121110412.223:Minibuffer commands... (tkFrame)
+
+#@+node:ekr.20081121110412.224:contractPane
+def contractPane (self,event=None):
+
+    '''Contract the selected pane.'''
+
+    f = self ; c = f.c
+    w = c.get_requested_focus() or g.app.gui.get_focus(c)
+    wname = c.widget_name(w)
+
+    # g.trace(wname)
+    if not w: return
+
+    if wname.startswith('body'):
+        f.contractBodyPane()
+    elif wname.startswith('log'):
+        f.contractLogPane()
+    elif wname.startswith('head') or wname.startswith('canvas'):
+        f.contractOutlinePane()
+#@-node:ekr.20081121110412.224:contractPane
+#@+node:ekr.20081121110412.225:expandPane
+def expandPane (self,event=None):
+
+    '''Expand the selected pane.'''
+
+    f = self ; c = f.c
+
+    w = c.get_requested_focus() or g.app.gui.get_focus(c)
+    wname = c.widget_name(w)
+
+    # g.trace(wname)
+    if not w: return
+
+    if wname.startswith('body'):
+        f.expandBodyPane()
+    elif wname.startswith('log'):
+        f.expandLogPane()
+    elif wname.startswith('head') or wname.startswith('canvas'):
+        f.expandOutlinePane()
+#@-node:ekr.20081121110412.225:expandPane
+#@+node:ekr.20081121110412.226:fullyExpandPane
+def fullyExpandPane (self,event=None):
+
+    '''Fully expand the selected pane.'''
+
+    f = self ; c = f.c
+
+    w = c.get_requested_focus() or g.app.gui.get_focus(c)
+    wname = c.widget_name(w)
+
+    # g.trace(wname)
+    if not w: return
+
+    if wname.startswith('body'):
+        f.fullyExpandBodyPane()
+    elif wname.startswith('log'):
+        f.fullyExpandLogPane()
+    else:
+        for z in ('head','canvas','tree'):
+            f.fullyExpandOutlinePane()
+            break
+#@-node:ekr.20081121110412.226:fullyExpandPane
+#@+node:ekr.20081121110412.227:hidePane
+def hidePane (self,event=None):
+
+    '''Completely contract the selected pane.'''
+
+    f = self ; c = f.c
+
+    w = c.get_requested_focus() or g.app.gui.get_focus(c)
+    wname = c.widget_name(w)
+
+    g.trace(wname)
+    if not w: return
+
+    if wname.startswith('body'):
+        f.hideBodyPane()
+        c.treeWantsFocusNow()
+    elif wname.startswith('log'):
+        f.hideLogPane()
+        c.bodyWantsFocusNow()
+    else:
+        for z in ('head','canvas','tree'):
+            f.hideOutlinePane()
+            c.bodyWantsFocusNow()
+            break
+#@-node:ekr.20081121110412.227:hidePane
+#@+node:ekr.20081121110412.228:expand/contract/hide...Pane
+@ The first arg to divideLeoSplitter means the following:
+
+    f.splitVerticalFlag: use the primary   (tree/body) ratio.
+not f.splitVerticalFlag: use the secondary (tree/log) ratio.
+@c
+
+def contractBodyPane (self,event=None):
+    '''Contract the body pane.'''
+    f = self ; r = min(1.0,f.ratio+0.1)
+    f.divideLeoSplitter(f.splitVerticalFlag,r)
+
+def contractLogPane (self,event=None):
+    '''Contract the log pane.'''
+    f = self ; r = min(1.0,f.secondary_ratio+0.1) # 2010/02/23: was f.ratio
+    f.divideLeoSplitter(not f.splitVerticalFlag,r)
+
+def contractOutlinePane (self,event=None):
+    '''Contract the outline pane.'''
+    f = self ; r = max(0.0,f.ratio-0.1)
+    f.divideLeoSplitter(f.splitVerticalFlag,r)
+
+def expandBodyPane (self,event=None):
+    '''Expand the body pane.'''
+    self.contractOutlinePane()
+
+def expandLogPane(self,event=None):
+    '''Expand the log pane.'''
+    f = self ; r = max(0.0,f.secondary_ratio-0.1) # 2010/02/23: was f.ratio
+    f.divideLeoSplitter(not f.splitVerticalFlag,r)
+
+def expandOutlinePane (self,event=None):
+    '''Expand the outline pane.'''
+    self.contractBodyPane()
+#@-node:ekr.20081121110412.228:expand/contract/hide...Pane
+#@+node:ekr.20081121110412.229:fullyExpand/hide...Pane
+def fullyExpandBodyPane (self,event=None):
+    '''Fully expand the body pane.'''
+    f = self ; f.divideLeoSplitter(f.splitVerticalFlag,0.0)
+
+def fullyExpandLogPane (self,event=None):
+    '''Fully expand the log pane.'''
+    f = self ; f.divideLeoSplitter(not f.splitVerticalFlag,0.0)
+
+def fullyExpandOutlinePane (self,event=None):
+    '''Fully expand the outline pane.'''
+    f = self ; f.divideLeoSplitter(f.splitVerticalFlag,1.0)
+
+def hideBodyPane (self,event=None):
+    '''Completely contract the body pane.'''
+    f = self ; f.divideLeoSplitter(f.splitVerticalFlag,1.0)
+
+def hideLogPane (self,event=None):
+    '''Completely contract the log pane.'''
+    f = self ; f.divideLeoSplitter(not f.splitVerticalFlag,1.0)
+
+def hideOutlinePane (self,event=None):
+    '''Completely contract the outline pane.'''
+    f = self ; f.divideLeoSplitter(f.splitVerticalFlag,0.0)
+#@-node:ekr.20081121110412.229:fullyExpand/hide...Pane
+#@-node:ekr.20081121110412.223:Minibuffer commands... (tkFrame)
 #@-node:ekr.20100223114506.3700:Fixed expand/contract-pane commands
 #@-node:ekr.20100223114506.3701:Leo 4.8 devel projects
 #@-all

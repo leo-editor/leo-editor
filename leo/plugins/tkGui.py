@@ -4804,7 +4804,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
         '''Contract the selected pane.'''
 
         f = self ; c = f.c
-        w = c.get_requested_focus()
+        w = c.get_requested_focus() or g.app.gui.get_focus(c)
         wname = c.widget_name(w)
 
         # g.trace(wname)
@@ -4824,7 +4824,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
 
         f = self ; c = f.c
 
-        w = c.get_requested_focus()
+        w = c.get_requested_focus() or g.app.gui.get_focus(c)
         wname = c.widget_name(w)
 
         # g.trace(wname)
@@ -4844,7 +4844,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
 
         f = self ; c = f.c
 
-        w = c.get_requested_focus()
+        w = c.get_requested_focus() or g.app.gui.get_focus(c)
         wname = c.widget_name(w)
 
         # g.trace(wname)
@@ -4854,8 +4854,10 @@ class leoTkinterFrame (leoFrame.leoFrame):
             f.fullyExpandBodyPane()
         elif wname.startswith('log'):
             f.fullyExpandLogPane()
-        elif wname.startswith('head') or wname.startswith('canvas'):
-            f.fullyExpandOutlinePane()
+        else:
+            for z in ('head','canvas','tree'):
+                f.fullyExpandOutlinePane()
+                break
     #@-node:ekr.20081121110412.226:fullyExpandPane
     #@+node:ekr.20081121110412.227:hidePane
     def hidePane (self,event=None):
@@ -4864,7 +4866,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
 
         f = self ; c = f.c
 
-        w = c.get_requested_focus()
+        w = c.get_requested_focus() or g.app.gui.get_focus(c)
         wname = c.widget_name(w)
 
         g.trace(wname)
@@ -4876,9 +4878,11 @@ class leoTkinterFrame (leoFrame.leoFrame):
         elif wname.startswith('log'):
             f.hideLogPane()
             c.bodyWantsFocusNow()
-        elif wname.startswith('head') or wname.startswith('canvas'):
-            f.hideOutlinePane()
-            c.bodyWantsFocusNow()
+        else:
+            for z in ('head','canvas','tree'):
+                f.hideOutlinePane()
+                c.bodyWantsFocusNow()
+                break
     #@-node:ekr.20081121110412.227:hidePane
     #@+node:ekr.20081121110412.228:expand/contract/hide...Pane
     #@+at 
@@ -4897,7 +4901,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
 
     def contractLogPane (self,event=None):
         '''Contract the log pane.'''
-        f = self ; r = min(1.0,f.ratio+0.1)
+        f = self ; r = min(1.0,f.secondary_ratio+0.1) # 2010/02/23: was f.ratio
         f.divideLeoSplitter(not f.splitVerticalFlag,r)
 
     def contractOutlinePane (self,event=None):
@@ -4911,7 +4915,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
 
     def expandLogPane(self,event=None):
         '''Expand the log pane.'''
-        f = self ; r = max(0.0,f.ratio-0.1)
+        f = self ; r = max(0.0,f.secondary_ratio-0.1) # 2010/02/23: was f.ratio
         f.divideLeoSplitter(not f.splitVerticalFlag,r)
 
     def expandOutlinePane (self,event=None):
