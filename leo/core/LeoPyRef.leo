@@ -65,6 +65,8 @@
 </v>
 <v t="ekr.20070605104410"><vh>@chapters</vh></v>
 <v t="ekr.20080121092503"><vh>Scripts</vh>
+<v t="ekr.20100223133351.5999"><vh>@@button find long line</vh></v>
+<v t="ekr.20100223133351.5996"><vh>@@button clean all blank lines</vh></v>
 <v t="ekr.20080121090750"><vh>create-at-auto-nodes</vh></v>
 </v>
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
@@ -87,8 +89,7 @@
 </v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
-<v t="ekr.20100119205347.6015"
-expanded="ekr.20100209160132.5771,ekr.20100221142603.5625,"><vh>@thin ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20100119205347.6015"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
@@ -142,7 +143,7 @@ expanded="ekr.20100209160132.5771,ekr.20100221142603.5625,"><vh>@thin ../doc/leo
 <t tx="EKR.20040430162943"></t>
 <t tx="EKR.20040519090151.2"></t>
 <t tx="ekr.20031218072017.2406">@tabwidth -4
-@pagewidth 80
+@pagewidth 70
 
 @ 
 This section contains all the source code of leo.py.
@@ -937,5 +938,44 @@ for n,node,index in table:
         print('at line %s, index %s, node %s\ngot line %s\nexpected %s' % (
             n,n2,p2.h,repr(lines2[n2].lstrip()),repr(lines[n].lstrip())))
     assert ok</t>
+<t tx="ekr.20100223133351.5996"># for v in c.all_unique_nodes():
+n = 0
+g.es('cleaning',c.p.h)
+for p in c.p.self_and_subtree():
+    print(p.h)
+    lines = []
+    for s in g.splitLines(p.b):
+        if s.strip():
+            lines.append(s)
+        else:
+            # Ensures a trailing newline.
+            lines.append('\n')
+    s2 = ''.join(lines)
+    if s2 != p.b:
+        p.b = s2
+        p.v.setDirty()
+        n += 1
+
+c.redraw()
+g.es('cleaned %s nodes' % n)
+</t>
+<t tx="ekr.20100223133351.5999"># This works, but splitting long lines by hand
+# is the very essence of stupidity.
+
+# Don't use this script!
+# Use a *reliable* pep8 tool instead.
+
+g.es('finding long lines in',p.h)
+found = False
+while p and not found:
+    for line in g.splitLines(p.b):
+        if len(line) &gt; 80:
+            found = True
+            g.es('long line in',p.h)
+            c.selectPosition(p)
+            break
+    else:
+        p.moveToThreadNext()
+g.es('done')</t>
 </tnodes>
 </leo_file>

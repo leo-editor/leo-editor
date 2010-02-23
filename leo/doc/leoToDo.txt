@@ -12,8 +12,8 @@ The present operation of recent files is surprising.
 Recent files should be a global list, managed by a single controller.
 #@nonl
 #@-node:ekr.20100223123910.5930:recentFilesController
-#@+node:ekr.20100223123910.5929:eliminate leo profix from core modules
-#@-node:ekr.20100223123910.5929:eliminate leo profix from core modules
+#@+node:ekr.20100223123910.5929:eliminate leo profix from core modules?
+#@-node:ekr.20100223123910.5929:eliminate leo profix from core modules?
 #@+node:ekr.20100223123910.5931:Clean up file open/read/write code
 #@+node:ekr.20100223123910.5932:Revise g.readFileIntoString
 @nocolor-node
