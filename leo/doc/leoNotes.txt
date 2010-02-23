@@ -4342,6 +4342,7 @@ def stateHandler (self,event):
 #@-node:ekr.20050920084036.207:queryReplaceCommandsClass (limited to single node)
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
+#@+node:ekr.20100223100750.5843:Original post by Robin Dunn
 @nocolor-node
 
 Here are the emacs features that I use very often that any editor would
@@ -4367,7 +4368,7 @@ fine as long as they are grouped in a logical fashion.  For example in
 emacs all of the version control features are accessible via the
 Ctrl-x,v sequence plus one more letter.
 
-* (to be improved) Incremental search, both forward and reverse, and wrapping around
+* (done) Incremental search, both forward and reverse, and wrapping around
 after you've reached the end or the beginning of the document.  I like
 to have the same key to start the search and also do a search-next after
 you've typed all the characters you are searching for, and also to have
@@ -4399,6 +4400,7 @@ document at the current cursor location.
 rectangle.  A stream selection is like what you have in all text
 editors, it starts from position a on line N and continues forward or
 back to position b on line M and includes all the characters in between.
+
   A rectangle selection is all the characters between position a and b
 on lines N to M.  In other words, it has width and height and it might
 be something like positions 5 through 10 on lines 20 to 25.  Cutting or
@@ -4442,6 +4444,7 @@ some editor function by name that may not have some key-binding yet (see
 item after next) etc.
 
 * (done, with user @commands)
+
 Flexible build/grep commands.  Emacs handles both of these in almost
 the same way so I'll list them together here.  I hit a key and am
 presented with either the default, or the most recently used compile or
@@ -4474,6 +4477,7 @@ choose for each one whether to do the replacement, or replace all.
 code editor portion for quick edits.
 
 Things that would be nice to have, but that I could live without:
+
 (All of these things can be done easily with @command)
 
 * Interactive diffs, merges and applying of patches.
@@ -4482,75 +4486,58 @@ Things that would be nice to have, but that I could live without:
 
 * Able to be a front-end for CVS, SVN, etc.
 
-* Be able to run shell commands, or the shell itself in an editor buffer.
+* (done) Be able to run shell commands, or the shell itself in an editor buffer.
 
-* have a built-in psychotherapist or be able to play towers of hanoi.  ;-) 
+* (easy) have a built-in psychotherapist or be able to play towers of hanoi.  ;-) 
 #@nonl
-#@+node:ekr.20100206074650.5848:Done
-* Python should be just one of the languages that this editor supports, not the
-primary target.
+#@-node:ekr.20100223100750.5843:Original post by Robin Dunn
+#@+node:ekr.20100223100750.5842:Post to pyxides, 2010/02/23
+http://groups.google.com/group/pyxides
 
-* Absolutely every feature or action must be able to be done with just the
-keyboard.
+Robin Dunn's post, reproduced at:
+http://groups.google.com/group/leo-editor/browse_thread/thread/4f76a0f57759aba
+continues to be one of the benchmarks for Leo.
 
-* Multiple top level windows, and able to show any buffer in any TLW, including
-those that are already displayed in another TLW.
+Leo 4.7 went out the door today.  It contains many important
+improvements, but few directly related to Robin's important post.
+That doesn't mean Robin's post is irrelevant, but it does mean that
+other considerations were more relevant :-)  In particular, Leo passes
+all unit tests with Python 2.6 and Python 3.1.
 
-* Registers.
+Leo 4.8 will concentrate on better support for vim-like bindings.  As
+a happy side effect, this will make Leo compliant with almost all
+unfinished aspects of Robin's mission.
 
-* A rectangle selection and paste.
+There are two major items from Robin's list that are incomplete in
+Leo:
 
-* Regex search.
+* The Kill-Ring.  Leo does have a kill ring.  The vim work will fix
+discrepancies between how Leo, emacs and vim handle the kill ring.
 
-* Good keystroke macro recording and the ability to save and load keystroke
-macros, and the ability to assign a key-binding to a saved recorded macro.
+* Good keystroke macro recording and the ability to save and load
+keystroke macros.  This happen as part of support for vim's "dot"
+command.  To some extent, Leo's execute-script command compensates for
+wimpy macro support, but I'd like to do better.
 
-* If you must have a toolbar make it optional and keep it simple.
+The following could be done easily using Leo's @command or @button
+features.  There doesn't seem to be much demand for them in Leo, but
+I'll list them here for completeness.
 
-Aside: Leo shows that Robin's assertion that "Toolbars require the mouse" is
-incorrect.
+- Flexible build/grep commands.
+- Interactive diffs, merges and applying of patches.
+- Able to be a front-end for gdb. (Leo has a plugin to do this).
+- Able to be a front-end for CVS, SVN, etc.
+- Have a built-in psychotherapist or be able to play towers of
+hanoi.  ;-)
 
-* Avoid using popup dialogs whenever possible.
+As always, I invite you all to try Leo, and to ask for features that
+would be important to you.
 
-* So I would prefer this editor to have something like emacs' minibuffer.
+======
 
-* For access to editor commands/functionality that may not be bound to a
-keystroke it's real nice to have the ability to hit a key, type the command
-name, press enter and then it's done. This can also allow for commands that
-might need to prompt for parameters, be interactive, etc. All editor commands
-should be named and can be bound to keys by name or executed by name in this
-way.
+P.S. Leo does have auto-completion.  It will be improved in Leo 4.9.
 
-* If it is a full IDE it would be nice to have a way to start just the code
-editor portion for quick edits.
-
-* Able to be a front-end for gdb. (With a Leo plugin)
-
-* Be able to run shell commands, or the shell itself in an editor buffer.
-
-* have a built-in psychotherapist or be able to play towers of hanoi. ;-)
-#@nonl
-#@-node:ekr.20100206074650.5848:Done
-#@+node:ekr.20100206074650.5851:Not needed
-Not done, but could be done in @command easily enough
-
-* Flexible build/grep commands.
-
-* Multi-file search and replace.
-
-* Interactive diffs, merges and applying of patches.
-
-* Able to be a front-end for CVS, SVN, etc.
-
-* Typing completion for file dialogs.
-#@nonl
-#@-node:ekr.20100206074650.5851:Not needed
-#@+node:ekr.20100206074650.5850:To be improved
-* The Kill-Ring.
-
-* Incremental search, both forward and reverse, and wrapping around after you've
-reached the end or the beginning of the document.
-#@-node:ekr.20100206074650.5850:To be improved
+#@-node:ekr.20100223100750.5842:Post to pyxides, 2010/02/23
 #@-node:ekr.20090202064534.4:Your mission, should you choose to accept it
 #@-all
 #@nonl
