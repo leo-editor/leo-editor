@@ -5028,7 +5028,7 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20081121105001.337:qtLog color tab stuff
     def createColorPicker (self,tabName):
 
-        pass
+        g.es('color picker not ready for qt',color='blue')
     #@-node:ekr.20081121105001.337:qtLog color tab stuff
     #@+node:ekr.20081121105001.341:qtLog font tab stuff
     #@+node:ekr.20081121105001.342:createFontPicker

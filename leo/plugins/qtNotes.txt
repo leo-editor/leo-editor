@@ -2,6 +2,10 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
+#@+node:ekr.20100223133144.3680:Create color picker
+createColorPicker
+#@nonl
+#@-node:ekr.20100223133144.3680:Create color picker
 #@+node:ekr.20100223114506.3699:Support cascade menu
 leoQtFrame.cascade.
 #@nonl
