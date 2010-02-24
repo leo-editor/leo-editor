@@ -823,7 +823,7 @@ class PickleShareDB:
 
         """
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace: g.trace()
 
         if not items:

@@ -519,7 +519,7 @@ class atFile:
             # 2010/02/24: Make the root @file node dirty so it will
             # be written automatically when saving the file.
             root.setDirty()
-            c.setChanged(True)
+            c.setChanged(True) # Essential, to keep dirty bit set.
         if at.errors == 0 and not isFileLike:
             c.cacher.writeFile(root,fileKey)
 
@@ -562,13 +562,6 @@ class atFile:
             fileName = None
 
         return fileName
-
-        # isAtFile = (
-            # not thinFile and
-            # not importFileName and
-            # not atShadow and
-            # not fromString and
-            # root.h.startswith('@file'))
     #@-node:ekr.20041005105605.22:initFileName
     #@+node:ekr.20100224050618.11547:at.isThinFile
     def isFileLike (self,s):
@@ -583,7 +576,7 @@ class atFile:
             i = line.find(tag)
             if i != -1:
                 valid,new_df,start,end,isThinDerivedFile = \
-                    at.parseLeoSentinel(s)
+                    at.parseLeoSentinel(line)
                 # g.trace('found',repr(line))
                 return not isThinDerivedFile
 
@@ -1832,6 +1825,7 @@ class atFile:
     #@+node:ekr.20041005105605.120:at.parseLeoSentinel
     def parseLeoSentinel (self,s):
 
+        trace = False and not g.unitTesting
         at = self ; c = at.c
         new_df = False ; valid = True ; n = len(s)
         start = '' ; end = '' ; isThinDerivedFile = False
@@ -1947,7 +1941,7 @@ class atFile:
         end = s[j:i]
         #@-node:ekr.20041005105605.126:<< set the closing comment delim >>
         #@nl
-        if not new_df and not g.unitTesting:
+        if trace and not new_df:
             g.trace('not new_df(!)',repr(s))
         return valid,new_df,start,end,isThinDerivedFile
     #@-node:ekr.20041005105605.120:at.parseLeoSentinel
