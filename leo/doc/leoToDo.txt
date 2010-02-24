@@ -12,1190 +12,6 @@ The present operation of recent files is surprising.
 Recent files should be a global list, managed by a single controller.
 #@nonl
 #@-node:ekr.20100223123910.5930:recentFilesController
-#@+node:ekr.20100223123910.5931:Clean up file open/read/write code
-#@+node:ekr.20100223123910.5932:Revise g.readFileIntoString
-@nocolor-node
-
-- Create g.readFileWithUnknownEncodingIntoString.
-    - Only this function should return ok,e.
-
-- g.readFileIntoString should assume utf-8, and support explicit encodings.
-
-We also need the following functions:
-
-- g.openFileForReading.
-- g.openFileForWriting.
-#@nonl
-#@-node:ekr.20100223123910.5932:Revise g.readFileIntoString
-#@+node:ekr.20100223123910.5933:Calls to .write
-All these could be considered potential Python 3.x bugs.  Most are not.
-#@nonl
-#@+node:ekr.20100223123910.5934:put (leoFileCommands)
-def put (self,s):
-
-    '''Put string s to self.outputFile. All output eventually comes here.'''
-
-    # Improved code: self.outputFile (a cStringIO object) always exists.
-    # g.trace(g.callers(1),repr(s))
-    if s:
-        self.putCount += 1
-        if not g.isPython3:
-            s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
-        self.outputFile.write(s)
-
-def put_dquote (self):
-    self.put('"')
-
-def put_dquoted_bool (self,b):
-    if b: self.put('"1"')
-    else: self.put('"0"')
-
-def put_flag (self,a,b):
-    if a:
-        self.put(" ") ; self.put(b) ; self.put('="1"')
-
-def put_in_dquotes (self,a):
-    self.put('"')
-    if a: self.put(a) # will always be True if we use backquotes.
-    else: self.put('0')
-    self.put('"')
-
-def put_nl (self):
-    self.put("\n")
-
-def put_tab (self):
-    self.put("\t")
-
-def put_tabs (self,n):
-    while n > 0:
-        self.put("\t")
-        n -= 1
-#@nonl
-#@-node:ekr.20100223123910.5934:put (leoFileCommands)
-#@+node:ekr.20100223123910.5935:writeToFileHelper & helpers
-def writeToFileHelper (self,fileName,toOPML):
-
-    c = self.c ; toZip = c.isZipped
-    ok,backupName = self.createBackupFile(fileName)
-    if not ok: return False
-    fileName,theActualFile = self.createActualFile(fileName,toOPML,toZip)
-    self.mFileName = fileName
-    self.outputFile = StringIO() # Always write to a string.
-
-    try:
-        if toOPML:
-            self.putToOPML()
-        else:
-            self.putLeoFile()
-        s = self.outputFile.getvalue()
-        g.app.write_Leo_file_string = s # 2010/01/19: always set this.
-        if toZip:
-            self.writeZipFile(s)
-        else:
-            if g.isPython3:
-                s = bytes(s,self.leo_file_encoding,'replace')
-            theActualFile.write(s)
-            theActualFile.close()
-            c.setFileTimeStamp(fileName)
-            # raise AttributeError # To test handleWriteLeoFileException.
-            # Delete backup file.
-            if backupName and g.os_path_exists(backupName):
-                self.deleteFileWithMessage(backupName,'backup')
-        return True
-    except Exception:
-        self.handleWriteLeoFileException(
-            fileName,backupName,theActualFile)
-        return False
-#@+node:ekr.20100223123910.5936:createActualFile
-def createActualFile (self,fileName,toOPML,toZip):
-
-    c = self.c
-
-    if toOPML and not self.mFileName.endswith('opml'):
-        fileName = self.mFileName + '.opml'
-
-    if toZip:
-        self.toString = True
-        theActualFile = None
-    else:
-        try:
-            # 2010/01/21: always write in binary mode.
-            theActualFile = open(fileName,'wb')
-        except IOError:
-            theActualFile = None
-
-    return fileName,theActualFile
-#@-node:ekr.20100223123910.5936:createActualFile
-#@+node:ekr.20100223123910.5937:createBackupFile (fileCommands)
-def createBackupFile (self,fileName):
-
-    '''
-        Create a closed backup file and copy the file to it,
-        but only if the original file exists.
-    '''
-
-    c = self.c
-
-    if g.os_path_exists(fileName):
-        # backupName = g.os_path_join(g.app.loadDir,fileName+'.bak')
-
-        fd,backupName = tempfile.mkstemp(text=False)
-        f = open(fileName,'rb') # rb is essential.
-        s = f.read()
-        f.close()
-
-        try:
-            try:
-                os.write(fd,s)
-            finally:
-                os.close(fd)
-            ok = True
-        except Exception:
-            g.es('exception creating backup file',color='red')
-            g.es_exception()
-            ok,backupName = False,None
-
-        if not ok and self.read_only:
-            g.es("read only",color="red")
-    else:
-        ok,backupName = True,None
-
-    return ok,backupName
-#@-node:ekr.20100223123910.5937:createBackupFile (fileCommands)
-#@+node:ekr.20100223123910.5938:handleWriteLeoFileException
-def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
-
-    c = self.c
-
-    g.es("exception writing:",fileName)
-    g.es_exception(full=True)
-
-    if theActualFile:
-        theActualFile.close()
-
-    # Delete fileName.
-    if fileName and g.os_path_exists(fileName):
-        self.deleteFileWithMessage(fileName,'')
-
-    # Rename backupName to fileName.
-    if backupName and g.os_path_exists(backupName):
-        g.es("restoring",fileName,"from",backupName)
-
-        # No need to create directories when restoring.
-        g.utils_rename(c,backupName,fileName)
-    else:
-        g.trace('backup file does not exist!',
-            repr(backupName),color='red')
-#@-node:ekr.20100223123910.5938:handleWriteLeoFileException
-#@-node:ekr.20100223123910.5935:writeToFileHelper & helpers
-#@+node:ekr.20100223123910.5939:<< Write s into newFileName >>
-try:
-    mode = c.config.output_newline
-    mode = g.choose(mode=="platform",'w','wb')
-    theFile = open(newFileName,mode)
-    s = g.toEncodedString(s,self.encoding,reportErrors=True)
-    theFile.write(s)
-    theFile.close()
-    if not g.unitTesting:
-        g.es("created:",newFileName)
-except Exception:
-    g.es("exception creating:",newFileName)
-    g.es_exception()
-#@-node:ekr.20100223123910.5939:<< Write s into newFileName >>
-#@+node:ekr.20100223123910.5940:x.replaceFileWithString
-def replaceFileWithString (self,fn,s):
-
-    '''Replace the file with s if s is different from theFile's contents.
-
-    Return True if theFile was changed.
-    '''
-
-    trace = False and not g.unitTesting
-    x = self
-    exists = g.os_path_exists(fn)
-
-    if exists:
-        # Read the file.  Return if it is the same.
-        s2,e = g.readFileIntoString(fn)
-        if s2 is None:
-            return False
-        if s == s2:
-            if not g.unitTesting: g.es('unchanged:',fn)
-            return False
-
-    # Issue warning if directory does not exist.
-    theDir = g.os_path_dirname(fn)
-    if theDir and not g.os_path_exists(theDir):
-        if not g.unitTesting:
-            x.error('not written: %s directory not found' % fn)
-        return False
-
-    # Replace the file.
-    try:
-        f = open(fn,'wb')
-        f.write(g.toEncodedString(s))
-        if trace: g.trace('fn',fn,
-            '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
-            '\ncallers',g.callers(4))
-        f.close()
-        if not g.unitTesting:
-            # g.trace('created:',fn,g.callers())
-            if exists:  g.es('wrote:',fn)
-            else:       g.es('created:',fn)
-        return True
-    except IOError:
-        x.error('unexpected exception writing file: %s' % (fn))
-        g.es_exception()
-        return False
-#@-node:ekr.20100223123910.5940:x.replaceFileWithString
-#@+node:ekr.20100223123910.5941:replaceFileWithString (atFile)
-def replaceFileWithString (self,fn,s):
-
-    '''Replace the file with s if s is different from theFile's contents.
-
-    Return True if theFile was changed.
-    '''
-
-    at = self ; testing = g.app.unitTesting
-
-    # g.trace('fn',fn,'s','\n',s)
-    # g.trace(g.callers())
-
-    exists = g.os_path_exists(fn)
-
-    if exists: # Read the file.  Return if it is the same.
-        s2,e = g.readFileIntoString(fn)
-        if s is None:
-            return False
-        if s == s2:
-            if not testing: g.es('unchanged:',fn)
-            return False
-
-    # Issue warning if directory does not exist.
-    theDir = g.os_path_dirname(fn)
-    if theDir and not g.os_path_exists(theDir):
-        if not g.unitTesting:
-            g.es('not written: %s directory not found' % fn,color='red')
-        return False
-
-    # Replace
-    try:
-        f = open(fn,'wb')
-        if g.isPython3:
-            s = g.toEncodedString(s,encoding=self.encoding)
-        f.write(s)
-        f.close()
-        if not testing:
-            if exists:
-                g.es('wrote:    ',fn)
-            else:
-                # g.trace('created:',fn,g.callers())
-                g.es('created:',fn)
-        return True
-    except IOError:
-        at.error('unexpected exception writing file: %s' % (fn))
-        g.es_exception()
-        return False
-#@-node:ekr.20100223123910.5941:replaceFileWithString (atFile)
-#@+node:ekr.20100223123910.5942:writeScriptFile
-def writeScriptFile (self,script):
-
-    # Get the path to the file.
-    c = self
-    path = c.config.getString('script_file_path')
-    if path:
-        isAbsPath = os.path.isabs(path)
-        driveSpec, path = os.path.splitdrive(path)
-        parts = path.split('/')
-        # xxx bad idea, loadDir is often read only!
-        path = g.app.loadDir
-        if isAbsPath:
-            # make the first element absolute
-            parts[0] = driveSpec + os.sep + parts[0]
-        allParts = [path] + parts
-        path = c.os_path_finalize_join(*allParts)
-    else:
-        path = c.os_path_finalize_join(
-            g.app.homeLeoDir,'scriptFile.py')                    
-
-    # Write the file.
-    try:
-        if g.isPython3:
-            # Use the default encoding.
-            f = open(path,encoding='utf-8',mode='w')
-        else:
-            f = open(path,'w')
-        f.write(script)
-        f.close()
-    except Exception:
-        g.es_exception()
-        g.es("Failed to write script to %s" % path)
-        # g.es("Check your configuration of script_file_path, currently %s" %
-            # c.config.getString('script_file_path'))
-        path = None
-
-    return path
-#@nonl
-#@-node:ekr.20100223123910.5942:writeScriptFile
-#@+node:ekr.20100223123910.5943:write (leoRst)
-def write (self,s):
-
-    if self.trialWrite:
-        pass
-    elif g.isPython3:
-        pass
-    else:
-        s = self.encode(s)
-
-    # g.trace(repr(s),g.callers(2))
-
-    self.outputFile.write(s)
-#@-node:ekr.20100223123910.5943:write (leoRst)
-#@+node:ekr.20100223123910.5944:writeSpecialTree
-def writeSpecialTree (self,p,toString,justOneFile):
-
-    c = self.c
-    isHtml = self.ext in ('.html','.htm')
-    if isHtml and not SilverCity:
-        if not self.silverCityWarningGiven:
-            self.silverCityWarningGiven = True
-            g.es('SilverCity not present so no syntax highlighting')
-
-    self.initWrite(p)
-        # was encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
-    self.outputFile = StringIO()
-    self.writeTree(p)
-    self.source = self.outputFile.getvalue()
-    self.outputFile = None
-
-    if not toString:
-        # Compute this here for use by intermediate file.
-        self.outputFileName = self.computeOutputFileName(self.outputFileName)
-
-        # Create the directory if it doesn't exist.
-        theDir, junk = g.os_path_split(self.outputFileName)
-        theDir = c.os_path_finalize(theDir)
-        if not g.os_path_exists(theDir):
-            ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
-            if not ok:
-                g.es_print('did not create:',theDir,color='red')
-                return False
-
-        # if not os.access(theDir,os.F_OK):
-            # os.mkdir(theDir)
-
-        if self.getOption('write_intermediate_file'):
-            name = self.outputFileName + '.txt'
-            f = open(name,'w')
-            f.write(self.source)
-            f.close()
-            self.report(name)
-
-    try:
-        output = self.writeToDocutils(self.source)
-        ok = output is not None
-    except Exception:
-        g.pr('Exception in docutils')
-        g.es_exception()
-        ok = False
-
-    if ok:
-        if isHtml:
-            import re
-            idxTitle = output.find('<title></title>')
-            if idxTitle > -1:
-                m = re.search('<h1>([^<]*)</h1>', output)
-                if not m:
-                    m = re.search('<h1><[^>]+>([^<]*)</a></h1>', output)
-                if m:
-                    output = output.replace(
-                        '<title></title>',
-                        '<title>%s</title>' % m.group(1)
-                    )
-
-
-        if toString:
-            self.stringOutput = output
-        else:
-            # Write the file to the directory containing the .leo file.
-            f = open(self.outputFileName,'w')
-            f.write(output)
-            f.close()
-            self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
-
-    return ok
-#@-node:ekr.20100223123910.5944:writeSpecialTree
-#@+node:ekr.20100223123910.5945:c.createOpenWithTempFile
-def createOpenWithTempFile (self,p,ext):
-
-    trace = False and not g.unitTesting
-    c = self ; f = None
-
-    # May be over-ridden by mod_tempfname plugin.
-    fn = c.openWithTempFilePath(p,ext)
-
-    try:
-        if g.os_path_exists(fn):
-            g.es('recreating:  ',g.shortFileName(fn),color='red')
-        else:
-            g.es('creating:  ',g.shortFileName(fn),color='blue')
-        f = open(fn,'w')
-        # Convert s to whatever encoding is in effect.
-        d = c.scanAllDirectives(p)
-        encoding = d.get('encoding',None)
-        if encoding == None:
-            encoding = c.config.default_derived_file_encoding
-        if g.isPython3: # 2010/02/09
-            s = p.b
-        else:
-            s = g.toEncodedString(p.b,encoding,reportErrors=True) 
-        f.write(s)
-        f.flush()
-        f.close()
-        try:
-            time = g.os_path_getmtime(fn)
-            if time: g.es('time: ',time)
-        except:
-            time = None
-
-        # Remove previous entry from app.openWithFiles if it exists.
-        for d in g.app.openWithFiles[:]:
-            if p.v == d.get('v'):
-                if trace: g.trace('removing',d.get('path'))
-                g.app.openWithFiles.remove(d)
-
-        d = {
-            # Used by app.destroyOpenWithFilesForFrame.
-            'c':c,
-            # Used here and by app.destroyOpenWithFileWithDict.
-            'path':fn,
-            # Used by c.testForConflicts.
-            'body':s,
-            'encoding':encoding,
-            'time':time,
-            # Used by the open_with plugin.
-            'p':p.copy(),
-            # Used by c.openWithHelper, and below.
-            'v':p.v,
-        }
-        g.app.openWithFiles.append(d)
-        return fn
-    except:
-        if f: f.close()
-        g.es('exception creating temp file',color='red')
-        g.es_exception()
-        return None
-#@-node:ekr.20100223123910.5945:c.createOpenWithTempFile
-#@+node:ekr.20100223123910.5946:<< attempt to create leoID.txt >>
-for theDir in (homeLeoDir,globalConfigDir,loadDir):
-    # N.B. We would use the _working_ directory if theDir is None!
-    if theDir:
-        try:
-            fn = g.os_path_join(theDir,tag)
-            f = open(fn,'w')
-            f.write(g.app.leoID)
-            f.close()
-            if g.os_path_exists(fn):
-                g.es_print('',tag,'created in',theDir,color='red')
-                return
-        except IOError:
-            pass
-
-        g.es('can not create',tag,'in',theDir,color='red')
-#@-node:ekr.20100223123910.5946:<< attempt to create leoID.txt >>
-#@+node:ekr.20100223123910.5947:<< Write p's headline if it starts with @@ >>
-s = p.h
-
-if g.match(s,0,"@@"):
-    s = s[2:]
-    if s and len(s) > 0:
-        s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
-        at.outputFile.write(s)
-#@-node:ekr.20100223123910.5947:<< Write p's headline if it starts with @@ >>
-#@+node:ekr.20100223123910.5948:os
-def os (self,s):
-
-    """Write a string to the output stream.
-
-    All output produced by leoAtFile module goes here."""
-
-    trace = False and not g.unitTesting
-    at = self ; tag = self.underindentEscapeString
-    f = at.outputFile
-
-    if s and f:
-        try:
-            if s.startswith(tag):
-                junk,s = self.parseUnderindentTag(s)
-            # Bug fix: this must be done last.
-            s = g.toEncodedString(s,at.encoding,reportErrors=True)
-            if trace: g.trace(repr(s),g.callers(5))
-            f.write(s)
-        except Exception:
-            at.exception("exception writing:" + s)
-#@-node:ekr.20100223123910.5948:os
-#@+node:ekr.20100223123910.5949:writeFileFromNode
-def writeFileFromNode (self,event=None):
-
-    # If node starts with @read-file-into-node, use the full path name in the headline.
-    # Otherwise, prompt for a file name.
-
-    c = self ; p = c.p
-    c.endEditing()
-
-    h = p.h.rstrip()
-    s = p.b
-    tag = '@read-file-into-node'
-
-    if h.startswith(tag):
-        fileName = h[len(tag):].strip()
-    else:
-        fileName = None
-
-    if not fileName:
-        filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
-        fileName = g.app.gui.runSaveFileDialog(
-            initialfile=None,
-            title='Write File From Node',
-            filetypes=filetypes,
-            defaultextension=None)
-    if fileName:
-        try:
-            theFile = open(fileName,'w')
-            g.chdir(fileName)
-        except IOError:
-            theFile = None
-        if theFile:
-            if s.startswith('@nocolor\n'):
-                s = s[len('@nocolor\n'):]
-            theFile.write(s)
-            theFile.flush()
-            g.es_print('wrote:',fileName,color='blue')
-            theFile.close()
-        else:
-            g.es('can not write %s',fileName,color='red')
-#@nonl
-#@-node:ekr.20100223123910.5949:writeFileFromNode
-#@+node:ekr.20100223123910.5950:writeRecentFilesFileHelper
-def writeRecentFilesFileHelper (self,fileName):
-
-    # g.trace(g.toUnicode(fileName))
-
-    # Don't update the file if it begins with read-only.
-    theFile = None
-    try:
-        theFile = open(fileName)
-        lines = theFile.readlines()
-        if lines and self.munge(lines[0])=='readonly':
-            # g.trace('read-only: %s' %fileName)
-            return False
-    except IOError:
-        # The user may have erased a file.  Not an error.
-        if theFile: theFile.close()
-
-    theFile = None
-    try:
-        if g.isPython3:
-            theFile = open(fileName,encoding='utf-8',mode='w')
-        else:
-            theFile = open(fileName,mode='w')
-        if self.recentFiles:
-            s = '\n'.join(self.recentFiles)
-        else:
-            s = '\n'
-        if not g.isPython3:
-            s = g.toEncodedString(s,reportErrors=True)
-        theFile.write(s)
-
-    except IOError:
-        if 1: # The user may have erased a file.  Not an error.
-            g.es_print('error writing',fileName,color='red')
-            g.es_exception()
-            return False
-
-    except Exception:
-        g.es('unexpected exception writing',fileName,color='red')
-        g.es_exception()
-        if g.unitTesting: raise
-        return False
-
-    if theFile:
-        theFile.close()
-        return True
-    else:
-        return False
-#@-node:ekr.20100223123910.5950:writeRecentFilesFileHelper
-#@+node:ekr.20100223123910.5951:writeAbbreviations
-def writeAbbreviations (self,event):
-
-    '''Write abbreviations to a file.'''
-
-    fileName = g.app.gui.runSaveFileDialog(
-        initialfile = None,
-        title='Write Abbreviations',
-        filetypes = [("Text","*.txt"), ("All files","*")],
-        defaultextension = ".txt")
-
-    if not fileName: return
-
-    try:
-        f = open(fileName,'w')
-        for x in self.abbrevs:
-            f.write('%s=%s\n' % (x,self.abbrevs[x]))
-        f.close()
-    except IOError:
-        g.es('can not create',fileName)
-#@-node:ekr.20100223123910.5951:writeAbbreviations
-#@+node:ekr.20100223123910.5952:saveFile
-def saveFile (self,event):
-
-    '''Prompt for the name of a file and put the body text of the selected node into it..'''
-
-    w = self.editWidget(event)
-    if not w: return
-
-    fileName = g.app.gui.runSaveFileDialog(
-        initialfile = None,
-        title='save-file',
-        filetypes = [("Text","*.txt"), ("All files","*")],
-        defaultextension = ".txt")
-
-    if not fileName: return
-
-    try:
-        s = w.getAllText()
-        f = open(fileName,'w')
-        f.write(s)
-        f.close()
-    except IOError:
-        g.es('can not create',fileName)
-#@-node:ekr.20100223123910.5952:saveFile
-#@+node:ekr.20100223123910.5953:add (spellTab)
-def add(self,event=None):
-    """Add the selected suggestion to the dictionary."""
-
-    if not self.currentWord: return
-
-    # g.trace(self.currentWord)
-
-    try:
-        f = None
-        try:
-            # Rewrite the dictionary in alphabetical order.
-            f = open(self.dictionaryFileName, "r")
-            words = f.readlines()
-            f.close()
-            words = [word.strip() for word in words]
-            words.append(self.currentWord)
-            words.sort()
-            f = open(self.dictionaryFileName, "w")
-            for word in words:
-                f.write("%s\n" % g.toEncodedString(word,reportErrors=True))
-            f.flush()
-            f.close()
-            if 1:
-                s = 'Spell: added %s' % self.currentWord
-                self.messages.append(s)
-            else: # Too distracting.
-                g.es("adding ", color= "blue", newline= False) 
-                g.es('','%s' % self.currentWord)
-        except IOError:
-            g.es("can not add",self.currentWord,"to dictionary",color="red")
-    finally:
-        if f: f.close()
-
-    self.dictionary[self.currentWord.lower()] = 0
-    self.tab.onFindButton()
-#@-node:ekr.20100223123910.5953:add (spellTab)
-#@+node:ekr.20100223123910.5954:rawPrint
-def rawPrint (self,s):
-
-    if self.old:
-        self.old.write(s+'\n')
-    else:
-        g.pr(s)
-#@-node:ekr.20100223123910.5954:rawPrint
-#@+node:ekr.20100223123910.5955:exportHeadlines
-def exportHeadlines (self,fileName):
-
-    c = self.c ; nl = g.u(self.output_newline)
-    p = c.p
-    if not p: return
-    self.setEncoding()
-    firstLevel = p.level()
-    mode = c.config.output_newline
-    mode = g.choose(mode=="platform",'w','wb')
-    try:
-        theFile = open(fileName,mode)
-    except IOError:
-        g.es("can not open",fileName,color="blue")
-        leoTest.fail()
-        return
-    for p in p.self_and_subtree():
-        head = p.moreHead(firstLevel,useVerticalBar=True)
-        s = g.toEncodedString(head + nl,self.encoding,reportErrors=True)
-        theFile.write(s)
-    theFile.close()
-#@-node:ekr.20100223123910.5955:exportHeadlines
-#@+node:ekr.20100223123910.5956:flattenOutline
-def flattenOutline (self,fileName):
-
-    c = self.c ; nl = g.u(self.output_newline)
-    p = c.currentVnode()
-    if not p: return
-    self.setEncoding()
-    firstLevel = p.level()
-
-    # 10/14/02: support for output_newline setting.
-    mode = c.config.output_newline
-    mode = g.choose(mode=="platform",'w','wb')
-    try:
-        theFile = open(fileName,mode)
-    except IOError:
-        g.es("can not open",fileName,color="blue")
-        leoTest.fail()
-        return
-
-    for p in p.self_and_subtree():
-        head = p.moreHead(firstLevel)
-        s = g.toEncodedString(head + nl,encoding=self.encoding,reportErrors=True)
-        theFile.write(s)
-        body = p.moreBody() # Inserts escapes.
-        if len(body) > 0:
-            s = g.toEncodedString(body + nl,self.encoding,reportErrors=True)
-            theFile.write(s)
-    theFile.close()
-#@-node:ekr.20100223123910.5956:flattenOutline
-#@+node:ekr.20100223123910.5957:outlineToWeb
-def outlineToWeb (self,fileName,webType):
-
-    c = self.c ; nl = self.output_newline
-    current = c.p
-    if not current: return
-    self.setEncoding()
-    self.webType = webType
-    # 10/14/02: support for output_newline setting.
-    mode = c.config.output_newline
-    mode = g.choose(mode=="platform",'w','wb')
-    try:
-        theFile = open(fileName,mode)
-    except IOError:
-        g.es("can not open",fileName,color="blue")
-        leoTest.fail()
-        return
-
-    self.treeType = "@file"
-    # Set self.treeType to @root if p or an ancestor is an @root node.
-    for p in current.parents():
-        flag,junk = g.is_special(p.b,0,"@root")
-        if flag:
-            self.treeType = "@root"
-            break
-    for p in current.self_and_subtree():
-        s = self.convertVnodeToWeb(p)
-        if len(s) > 0:
-            s = g.toEncodedString(s,self.encoding,reportErrors=True)
-            theFile.write(s)
-            if s[-1] != '\n': theFile.write(nl)
-    theFile.close()
-#@-node:ekr.20100223123910.5957:outlineToWeb
-#@+node:ekr.20100223123910.5958:weave
-def weave (self,filename):
-
-    c = self.c ; nl = self.output_newline
-    p = c.p
-    if not p: return
-    self.setEncoding()
-    << open filename to f, or return >>
-    for p in p.self_and_subtree():
-        s = p.b
-        s2 = s.strip()
-        if s2 and len(s2) > 0:
-            f.write("-" * 60) ; f.write(nl)
-            << write the context of p to f >>
-            f.write("-" * 60) ; f.write(nl)
-            s = g.toEncodedString(s,self.encoding,reportErrors=True)
-            f.write(s.rstrip() + nl)
-    f.flush()
-    f.close()
-#@+node:ekr.20100223123910.5959:<< open filename to f, or return >>
-try:
-    # 10/14/02: support for output_newline setting.
-    mode = c.config.output_newline
-    mode = g.choose(mode=="platform",'w','wb')
-    f = open(filename,mode)
-    if not f: return
-except Exception:
-    g.es("exception opening:",filename)
-    g.es_exception()
-    return
-#@-node:ekr.20100223123910.5959:<< open filename to f, or return >>
-#@+node:ekr.20100223123910.5961:<< write the context of p to f >>
-# write the headlines of p, p's parent and p's grandparent.
-context = [] ; p2 = p.copy() ; i = 0
-while i < 3:
-    i += 1
-    if not p2: break
-    context.append(p2.h)
-    p2.moveToParent()
-
-context.reverse()
-indent = ""
-for line in context:
-    f.write(indent)
-    indent += '\t'
-    line = g.toEncodedString(line,self.encoding,reportErrors=True)
-    f.write(line)
-    f.write(nl)
-#@-node:ekr.20100223123910.5961:<< write the context of p to f >>
-#@-node:ekr.20100223123910.5958:weave
-#@+node:ekr.20100223123910.5961:<< write the context of p to f >>
-# write the headlines of p, p's parent and p's grandparent.
-context = [] ; p2 = p.copy() ; i = 0
-while i < 3:
-    i += 1
-    if not p2: break
-    context.append(p2.h)
-    p2.moveToParent()
-
-context.reverse()
-indent = ""
-for line in context:
-    f.write(indent)
-    indent += '\t'
-    line = g.toEncodedString(line,self.encoding,reportErrors=True)
-    f.write(line)
-    f.write(nl)
-#@-node:ekr.20100223123910.5961:<< write the context of p to f >>
-#@+node:ekr.20100223123910.5962:writeNormalTree
-def writeNormalTree (self,p,toString=False):
-
-    self.initWrite(p)
-
-    # Always write to a string first.
-    self.outputFile = StringIO()
-    self.writeTree(p)
-    self.source = self.stringOutput = self.outputFile.getvalue()
-
-    # Copy to a file if requested.
-    if not toString:
-        # Comput the output file name *after* calling writeTree.
-        self.outputFileName = self.computeOutputFileName(self.outputFileName)
-        self.outputFile = open(self.outputFileName,'w')
-        self.outputFile.write(self.stringOutput)
-        self.outputFile.close()
-
-    return True
-#@-node:ekr.20100223123910.5962:writeNormalTree
-#@+node:ekr.20100223123910.5963:show_error_lines
-def show_error_lines (self,lines,fileName):
-
-    for line in lines:
-        g.es_print(line)
-
-    if False: # Only for major debugging.
-        try:
-            f1 = open(fileName, "w")
-            for line in lines:
-                f1.write(g.toEncodedString(line))
-            f1.close()
-        except IOError:
-            g.es_exception()
-            g.es_print('can not open',fileName)
-#@-node:ekr.20100223123910.5963:show_error_lines
-#@+node:ekr.20100223123910.5964:oblank, oblanks, os, otab, otabs (Tangle)
-def oblank (self):
-    self.oblanks(1)
-
-def oblanks (self,n):
-    if abs(n) > 0:
-        s = g.toEncodedString(' ' * abs(n),encoding=self.encoding)
-        self.output_file.write(s)
-
-def onl(self):
-    s = self.output_newline
-    s = g.toEncodedString(s,self.encoding,reportErrors=True)
-    self.output_file.write(s)
-
-def os (self,s):
-    s = s.replace('\r','\n')
-    s = g.toEncodedString(s,self.encoding,reportErrors=True)
-    self.output_file.write(s)
-
-def otab (self):
-    self.otabs(1)
-
-def otabs (self,n):
-    if abs(n) > 0:
-        s = g.toEncodedString('\t' * abs(n),self.encoding,reportErrors=True)
-        self.output_file.write(s)
-#@-node:ekr.20100223123910.5964:oblank, oblanks, os, otab, otabs (Tangle)
-#@+node:ekr.20100223123910.5965:show
-def show (self,s):
-
-    # g.pr(s)
-    if self.outputFile:
-        s = g.toEncodedString(s + '\n')
-        self.outputFile.write(s)
-    elif self.c:
-        g.es(s)
-    else:
-        g.pr(s)
-        g.pr('')
-#@-node:ekr.20100223123910.5965:show
-#@-node:ekr.20100223123910.5933:Calls to .write
-#@+node:ekr.20100223123910.5966:Failing unit test with koi8-r
-#@+node:ekr.20100223123910.5973:g.mungeFileName
-def mungeFileName(fileName):
-
-    '''Create a full, normalized, Unicode path name, preserving case.'''
-
-    relFn = g.os_path_normpath(fileName)
-    fn = g.os_path_finalize(fileName)
-
-    isZipped = fn and zipfile.is_zipfile(fn)
-    isLeo = isZipped or fn.endswith('.leo')
-
-    return isLeo,fn,relFn
-#@-node:ekr.20100223123910.5973:g.mungeFileName
-#@+node:ekr.20100223123910.5968:g.openWithFileName & helpers
-def openWithFileName(fileName,old_c,
-    enableLog=True,gui=None,readAtFileNodesFlag=True):
-
-    """Create a Leo Frame for the indicated fileName if the file exists."""
-
-    trace = False and not g.unitTesting
-
-    if not fileName: return False, None
-    isLeo,fn,relFn = g.mungeFileName(fileName)
-
-    # Return if the file is already open.
-    c = g.findOpenFile(fn)
-    if c: return True,c.frame
-
-    # Open the file.
-    if isLeo:
-        c,f = g.openWithFileNameHelper(old_c,gui,fn,relFn)
-    else:
-        c,f = g.openWrapperLeoFile(old_c,fn,gui),None
-    if not c: return False,None
-
-    # Init the open file.
-    assert c.frame and c.frame.c == c
-    c.frame.log.enable(enableLog)
-    g.app.writeWaitingLog(c,forceLog=not g.app.initing)
-    ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
-    if not ok: return False,None
-    g.createMenu(c,fn)
-    g.finishOpen(c)
-    return True,c.frame
-#@+node:ekr.20100223123910.5969:g.createMenu
-def createMenu(c,fileName=None):
-
-    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-
-    if not g.doHook("menu1",c=c,p=c.p,v=c.p):
-        c.frame.menu.createMenuBar(c.frame)
-        c.updateRecentFiles(fileName)
-        g.doHook("menu2",c=c,p=c.p,v=c.p)
-        g.doHook("after-create-leo-frame",c=c)
-#@-node:ekr.20100223123910.5969:g.createMenu
-#@+node:ekr.20100223123910.5970:g.findOpenFile
-def findOpenFile(fileName):
-
-    def munge(name):
-        return g.os_path_normpath(name or '').lower()
-
-    for frame in g.app.windowList:
-        c = frame.c
-        if munge(fileName) == munge(c.mFileName):
-            frame.bringToFront()
-            c.setLog()
-            c.outerUpdate()
-            return c
-    return None
-#@-node:ekr.20100223123910.5970:g.findOpenFile
-#@+node:ekr.20100223123910.5971:g.finishOpen
-def finishOpen(c):
-
-    k = c.k
-    # New in Leo 4.6: provide an official way for very late initialization.
-    c.frame.tree.initAfterLoad()
-    c.initAfterLoad()
-    c.redraw()
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.chapterController:
-        c.chapterController.finishCreate()
-    if k:
-        k.setDefaultInputState()
-    if c.config.getBool('outline_pane_has_initial_focus'):
-        c.treeWantsFocusNow()
-    else:
-        c.bodyWantsFocusNow()
-    if k:
-        k.showStateAndMode()
-    c.frame.initCompleteHint()
-    return True
-#@-node:ekr.20100223123910.5971:g.finishOpen
-#@+node:ekr.20100223123910.5972:g.handleOpenHooks
-def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
-
-    if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
-        c.setLog()
-        if theFile:
-            app.lockLog()
-            ok = c.fileCommands.open(
-                theFile,fileName,
-                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-            app.unlockLog()
-            if not ok:
-                g.app.closeLeoWindow(c.frame)
-                return False
-            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
-                # The recent files list has been updated by c.updateRecentFiles.
-                z.c.config.setRecentFiles(g.app.config.recentFiles)
-
-    # Bug fix in 4.4.
-    if not c.openDirectory:
-        c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
-    g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
-    return True
-#@nonl
-#@-node:ekr.20100223123910.5972:g.handleOpenHooks
-#@+node:ekr.20100223123910.5973:g.mungeFileName
-def mungeFileName(fileName):
-
-    '''Create a full, normalized, Unicode path name, preserving case.'''
-
-    relFn = g.os_path_normpath(fileName)
-    fn = g.os_path_finalize(fileName)
-
-    isZipped = fn and zipfile.is_zipfile(fn)
-    isLeo = isZipped or fn.endswith('.leo')
-
-    return isLeo,fn,relFn
-#@-node:ekr.20100223123910.5973:g.mungeFileName
-#@+node:ekr.20100223123910.5974:g.openWithFileNameHelper
-def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
-
-    if old_c: g.preRead(fileName)
-    g.doHook('open0')
-
-    # Open the file in binary mode to allow 0x1a in bodies & headlines.
-    theFile,isZipped = g.openLeoOrZipFile(fileName)
-    if not theFile:
-        return None,None
-
-    # This call will take 3/4 sec. to open a file from the leoBridge.
-    # This is due to imports in c.__init__
-    c,frame = app.newLeoCommanderAndFrame(
-        fileName=fileName,
-        relativeFileName=relativeFileName,
-        gui=gui)
-
-    c.isZipped = isZipped
-    return c,theFile
-#@+node:ekr.20100223123910.5975:preRead
-def preRead(fileName):
-
-    '''Read the file for the first time,
-    setting the setting for a later call to finishCreate.
-    '''
-
-    c = g.app.config.openSettingsFile(fileName)
-    if c:
-        g.app.config.updateSettings(c,localFlag=True)
-#@-node:ekr.20100223123910.5975:preRead
-#@-node:ekr.20100223123910.5974:g.openWithFileNameHelper
-#@+node:ekr.20100223123910.5976:g.openWrapperLeoFile
-def openWrapperLeoFile (old_c,fileName,gui):
-
-    '''Open a wrapper .leo file for the given file,
-    and import the file into .leo file.'''
-
-    # This code is similar to c.new, but different enough to be separate.
-    if not g.os_path_exists(fileName):
-        if not g.unitTesting:
-            g.es_print("can not open:",fileName,color="blue")
-        return None
-
-    c,frame = g.app.newLeoCommanderAndFrame(
-        fileName=None,relativeFileName=None,gui=gui)
-
-    # Needed for plugins.
-    if 0: # This causes duplicate common buttons.
-        g.doHook("new",old_c=old_c,c=c,new_c=c)
-
-    # Use the config params to set the size and location of the window.
-    frame.setInitialWindowGeometry()
-    frame.deiconify()
-    frame.lift()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-
-    if True: # Just read the file into the node.
-        fileName = g.os_path_finalize(fileName)
-        s,e = g.readFileIntoString(fileName)
-        if s is None: return None
-        p = c.rootPosition()
-        if p:
-            p.setHeadString('@edit %s' % fileName)
-            p.setBodyString(s)
-            c.selectPosition(p)
-    else:  # Import the file into the new outline.
-        junk,ext = g.os_path_splitext(fileName)
-        p = c.p
-        p = c.importCommands.createOutline(fileName,parent=p,atAuto=False,ext=ext)
-        c.setCurrentPosition(p)
-        c.moveOutlineLeft()
-        p = c.p
-        c.setCurrentPosition(p.back())
-        c.deleteOutline(op_name=None)
-        p = c.p
-        p.expand()
-
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.config.getBool('use_chapters') and c.chapterController:
-        c.chapterController.finishCreate()
-
-    frame.c.setChanged(True) # Mark the outline dirty.
-    return c
-#@-node:ekr.20100223123910.5976:g.openWrapperLeoFile
-#@-node:ekr.20100223123910.5968:g.openWithFileName & helpers
-#@+node:ekr.20100223123910.5977:g.openLeoOrZipFile
-# This is used in several places besides g.openWithFileName.
-
-def openLeoOrZipFile (fileName):
-
-    try:
-        isZipped = zipfile.is_zipfile(fileName)
-        if isZipped:
-            theFile = zipfile.ZipFile(fileName,'r')
-            if not theFile: return None,False
-            # Read the file into an StringIO file.
-            aList = theFile.namelist()
-            name = aList and len(aList) == 1 and aList[0]
-            if not name: return None,False
-            s = theFile.read(name)
-            if g.isPython3:
-                theStringFile = StringIO(g.ue(s,'utf-8'))
-            else:
-                theStringFile =  StringIO(s)
-            return theStringFile,True
-        else:
-            mode = 'rb'
-            theFile = open(fileName,mode)
-        return theFile,isZipped
-    except IOError:
-        # Do not use string + here: it will fail for non-ascii strings!
-        if not g.unitTesting:
-            g.es_print("can not open:",fileName,color="blue")
-        return None,False
-#@nonl
-#@-node:ekr.20100223123910.5977:g.openLeoOrZipFile
-#@-node:ekr.20100223123910.5966:Failing unit test with koi8-r
-#@-node:ekr.20100223123910.5931:Clean up file open/read/write code
 #@+node:ekr.20100219083854.5616:Simplify i/o
 #@+node:ekr.20100211125418.11612:Revise g.readFileIntoString
 @nocolor-node
@@ -2129,7 +945,1401 @@ def show (self,s):
 #@-node:ekr.20031218072017.3650:show
 #@-node:ekr.20100209224508.5744:Calls to .write
 #@-node:ekr.20100219083854.5616:Simplify i/o
-#@+node:ekr.20100223123910.5835:Improve python imports
+#@+node:ekr.20100202145902.6106:Init all settings in c.initConfigSettings
+@nocolor-node
+
+To do:
+
+- remove most of the logic in configSettings.__init__.
+- Move config ivars to the commander.
+#@nonl
+#@+node:ekr.20100130042842.6404:Reading settings (do not delete)
+Here are the calls to g.app.getxxx
+
+# runLeo.createFrame
+fileName = g.app.config.getString(c=None,setting='default_leo_file')
+
+# c.configSettings.initIvar
+# Why not init these settings by hand???
+val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
+
+# g.es and g.es_print
+keys['color'] = g.app.config.getColor(None,"log_error_color") or 'red'
+
+# leoPlugins.loadHandlers
+warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+s = g.app.config.getEnabledPlugins()
+
+# leoPlugins.loadOnePlugin
+verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
+warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+
+#@+node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
+def readSettingsFiles (self,fileName,verbose=True):
+
+    trace = False and not g.unitTesting
+    seen = []
+    self.write_recent_files_as_needed = False # Will be set later.
+    << define localDirectory, localConfigFile & myLocalConfigFile >>
+
+    if trace: g.trace(g.callers(5))
+    table = (
+        (self.globalConfigFile,False),
+        (self.homeFile,False),
+        (localConfigFile,False),
+        (self.myGlobalConfigFile,False),
+        (self.myHomeConfigFile,False),
+        (self.machineConfigFile,False),
+        (myLocalConfigFile,False),
+        # New in Leo 4.6: the -c file is in *addition* to other config files.
+        (g.app.oneConfigFilename,False),
+        (fileName,True),
+    )
+
+    # Init settings from leoSettings.leo and myLeoSettings.leo files.
+    for path,localFlag in table:
+        if path:
+            path = g.os_path_realpath(g.os_path_finalize(path))
+            # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
+        isZipped = path and zipfile.is_zipfile(path)
+        isLeo = isZipped or (path and path.endswith('.leo'))
+        if isLeo and path and path.lower() not in seen and g.os_path_exists(path):
+            seen.append(path.lower())
+            if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
+                s = 'reading settings in %s' % path
+                # This occurs early in startup, so use the following instead of g.es_print.
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
+                g.es_print(s,color='blue')
+            c = self.openSettingsFile(path)
+            if c:
+                self.updateSettings(c,localFlag)
+                g.app.destroyWindow(c.frame)
+                self.write_recent_files_as_needed = c.config.getBool(
+                    'write_recent_files_as_needed')
+                if 0:
+                    # This is useless. setIvarsFromSettings does nothing
+                    # until the self.inited flag is True.
+                    g.trace('?' * 20,c)
+                    self.setIvarsFromSettings(c)
+    self.readRecentFiles(localConfigFile)
+    # self.createMyLeoSettingsFile(myLocalConfigFile)
+    self.inited = True
+    self.setIvarsFromSettings(None)
+#@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+# This can't be done in initSettingsFiles because
+# the local directory does not yet exist.
+localDirectory = g.os_path_dirname(fileName)
+
+#  Set the local leoSettings.leo file.
+localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
+if not g.os_path_exists(localConfigFile):
+    localConfigFile = None
+
+# Set the local myLeoSetting.leo file.
+myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
+if not g.os_path_exists(myLocalConfigFile):
+    myLocalConfigFile = None
+#@nonl
+#@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+#@+node:ekr.20041117085625:openSettingsFile
+def openSettingsFile (self,path):
+
+    theFile,isZipped = g.openLeoOrZipFile(path)
+    if not theFile: return None
+
+    # Similar to g.openWithFileName except it uses a null gui.
+    # Changing g.app.gui here is a major hack.
+    oldGui = g.app.gui
+    g.app.gui = leoGui.nullGui("nullGui")
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=path,relativeFileName=None,
+        initEditCommanders=False,updateRecentFiles=False)
+    frame.log.enable(False)
+    c.setLog()
+    g.app.lockLog()
+    ok = frame.c.fileCommands.open(
+        theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
+    g.app.unlockLog()
+    c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
+    g.app.gui = oldGui
+    return ok and c
+#@-node:ekr.20041117085625:openSettingsFile
+#@+node:ekr.20051013161232:updateSettings
+def updateSettings (self,c,localFlag):
+
+    d = self.readSettings(c,localFlag)
+
+    if d:
+        d['_hash'] = theHash = c.hash()
+        if localFlag:
+            self.localOptionsDict[theHash] = d
+        else:
+            self.localOptionsList.insert(0,d)
+
+    if 0: # Good trace.
+        if localFlag:
+            g.trace(c.fileName())
+            g.trace(d and list(d.keys()))
+#@-node:ekr.20051013161232:updateSettings
+#@-node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
+#@+node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+def __init__ (self,c):
+
+    trace = False and not g.unitTesting
+    self.c = c
+
+    if trace: g.trace('+' * 20,'(c.configSettings)',
+        c and c.shortFileName(),g.callers(5))
+
+    # Init these here to keep pylint happy.
+    self.default_derived_file_encoding = None
+    self.new_leo_file_encoding = None
+    self.redirect_execute_script_output_to_log_pane = None
+
+    self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
+    self.defaultLogFontSize  = g.app.config.defaultLogFontSize
+    self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
+    self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
+
+    for key in g.app.config.encodingIvarsDict:
+        if key != '_hash':
+            self.initEncoding(key)
+
+    for key in g.app.config.ivarsDict:
+        if key != '_hash':
+            self.initIvar(key)
+#@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+#@+node:ekr.20041118084146.1:set (g.app.config) To be deleted??
+def set (self,c,setting,kind,val):
+
+    '''Set the setting.  Not called during initialization.'''
+
+    trace = False and not g.unitTesting
+    found = False ;  key = self.munge(setting)
+    if trace: g.trace(setting,kind,val)
+
+    if c:
+        d = self.localOptionsDict.get(c.hash())
+        if d: found = True
+
+    if not found:
+        theHash = c.hash()
+        for d in self.localOptionsList:
+            hash2 = d.get('_hash')
+            if theHash == hash2:
+                found = True ; break
+
+    if not found:
+        d = self.dictList [0]
+
+    d[key] = g.Bunch(setting=setting,kind=kind,val=val,tag='setting')
+
+    if 0:
+        dkind = d.get('_hash','<no hash: %s>' % c.hash())
+        g.trace(dkind,setting,kind,val)
+#@-node:ekr.20041118084146.1:set (g.app.config) To be deleted??
+#@+node:ekr.20041118104240:initIvar (c.configSettings)
+def initIvar(self,key):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    # N.B. The key is munged.
+    bunch = g.app.config.ivarsDict.get(key)
+    ivarName = bunch.ivar
+    val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
+
+    if val or not hasattr(self,ivarName):
+        if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
+        setattr(self,ivarName,val)
+#@-node:ekr.20041118104240:initIvar (c.configSettings)
+#@+node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
+def setIvarsFromSettings (self,c):
+
+    '''Init g.app.config ivars or c's ivars from settings.
+
+    - Called from readSettingsFiles with c = None to init g.app.config ivars.
+    - Called from c.__init__ to init corresponding commmander ivars.'''
+
+    trace = False and not g.unitTesting
+    verbose = True
+
+    # Ingore temporary commanders created by readSettingsFiles.
+    if self.inited:
+        if trace:
+            if c:
+                g.trace('=' * 10, 'inited',c.shortFileName(),g.callers(4))
+            else:
+                tag = '<no c: called at end of readSettingsFiles>'
+                g.trace('=' * 10, 'inited',tag,g.callers(1))
+    else:
+        if trace and verbose: g.trace('*' * 10,'not inited.  do nothing')
+        return
+
+    d = self.ivarsDict
+    keys = list(d.keys())
+    keys.sort()
+    for key in keys:
+        if key != '_hash':
+            bunch = d.get(key)
+            if bunch:
+                ivar = bunch.ivar # The actual name of the ivar.
+                kind = bunch.kind
+                val = self.get(c,key,kind) # Don't use bunch.val!
+                if c:
+                    if trace: g.trace("%20s %s = %s" % (
+                        g.shortFileName(c.mFileName),ivar,val))
+                    setattr(c,ivar,val)
+                else:
+                    if trace: g.trace("%20s %s = %s" % (
+                        'g.app.config',ivar,val))
+                    setattr(self,ivar,val)
+#@-node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
+#@-node:ekr.20100130042842.6404:Reading settings (do not delete)
+#@+node:ekr.20100130042842.9008: Notes
+@nocolor-node
+
+colorizeAnyLanguage.
+    g.app.config.defaultFontFamily
+
+c.scanAtPathDirectives:
+    relative_path_base_directory:
+
+** Methods that write recent files:
+    recentFileMessageWritten (Probabaly ok)
+
+c.configSettings.__init__:
+
+** copies these ivars by hand.
+    self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
+    self.defaultLogFontSize  = g.app.config.defaultLogFontSize
+    self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
+    self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
+** calls initIvar and initEncoding to copy other ivars.
+
+g.makeAllNonExistentDirectories:
+    # Uses one or the other, depending on the c arg.
+    c.create_nonexistent_directories
+    g.app.config.create_nonexistent_directories
+
+g.getOutputNewline:
+    # Uses one or the other, depending on the c arg.
+    c.config.output_newline
+    g.app.config.output_newline
+
+g.doHook:
+    g.app.config.use_plugins
+
+loadOnePlugin:
+    g.app.config.enabledPluginsFileName
+
+leoGui.getFontFromParams:
+    g.app.config.defaultFont
+
+k.addModeCommands and several other methods use:
+    g.app.config.modeCommandsDict
+#@nonl
+#@+node:ekr.20100130042842.9010:at_root_bodies_start_in_doc_mode
+@nocolor-node
+
+at_root_bodies_start_in_doc_mode
+
+c.scanAtRootDirectives
+    should use c.config.getBool instead of the weird code.
+
+g.scanAtRootOptions
+    Why doesn't this use c.config ivars??
+    Actually, this should be tangle.scanAtRootOptions.  We know c!
+
+leoImport.convertVnodeToWeb:
+    Uses c.config.at_root_bodies_start_in_doc_mode
+#@nonl
+#@+node:ekr.20080828103146.12:c.scanAtRootDirectives
+# Called only by scanColorDirectives.
+
+def scanAtRootDirectives(self,aList):
+
+    '''Scan aList for @root-code and @root-doc directives.'''
+
+    c = self
+
+    # To keep pylint happy.
+    tag = 'at_root_bodies_start_in_doc_mode'
+    start_in_doc = hasattr(c.config,tag) and getattr(c.config,tag)
+
+    # New in Leo 4.6: dashes are valid in directive names.
+    for d in aList:
+        if 'root-code' in d:
+            return 'code'
+        elif 'root-doc' in d:
+            return 'doc'
+        elif 'root' in d:
+            return g.choose(start_in_doc,'doc','code')
+
+    return None
+#@-node:ekr.20080828103146.12:c.scanAtRootDirectives
+#@+node:ekr.20031218072017.3154:g.scanAtRootOptions
+def scanAtRootOptions (s,i,err_flag=False):
+
+    # The @root has been eaten when called from tangle.scanAllDirectives.
+    if g.match(s,i,"@root"):
+        i += len("@root")
+        i = g.skip_ws(s,i)
+
+    mode = None 
+    while g.match(s,i,'-'):
+        << scan another @root option >>
+
+    if mode == None:
+        doc = app.config.at_root_bodies_start_in_doc_mode
+        mode = g.choose(doc,"doc","code")
+
+    return i,mode
+#@+node:ekr.20031218072017.3155:<< scan another @root option >>
+i += 1 ; err = -1
+
+if g.match_word(s,i,"code"): # Just match the prefix.
+    if not mode: mode = "code"
+    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
+elif g.match(s,i,"doc"): # Just match the prefix.
+    if not mode: mode = "doc"
+    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
+else:
+    err = i-1
+
+# Scan to the next minus sign.
+while i < len(s) and s[i] not in (' ','\t','-'):
+    i += 1
+
+if err > -1 and err_flag:
+    z_opt = s[err:i]
+    z_line = g.get_line(s,i)
+    g.es("unknown option:",z_opt,"in",z_line)
+#@-node:ekr.20031218072017.3155:<< scan another @root option >>
+#@-node:ekr.20031218072017.3154:g.scanAtRootOptions
+#@-node:ekr.20100130042842.9010:at_root_bodies_start_in_doc_mode
+#@+node:ekr.20100131161507.6302:Replace all of these by config.get methods
+c.config.default_at_auto_file_encoding
+c.config.default_derived_file_encoding
+#@nonl
+#@-node:ekr.20100131161507.6302:Replace all of these by config.get methods
+#@+node:ekr.20100202145902.6108:code
+#@+node:ekr.20031218072017.1880:colorizeAnyLanguage & allies
+def colorizeAnyLanguage (self,p,leading=None,trailing=None):
+
+    """Color the body pane either incrementally or non-incrementally"""
+
+    c = self.c ; w = c.frame.body.bodyCtrl
+
+    if not c.config.getBool('use_syntax_coloring'):
+        # There have been reports of this trace causing crashes.
+        # Certainly it is not necessary.
+        # g.trace('no coloring')
+        return
+
+    if self.killFlag:
+        self.removeAllTags()
+        return
+    try:
+        # g.trace('incremental',self.incremental)
+        << initialize ivars & tags >>
+        g.doHook("init-color-markup",colorer=self,p=self.p,v=self.p)
+        if self.incremental and (
+            << all state ivars match >> ):
+            << incrementally color the text >>
+        else:
+            << non-incrementally color the text >>
+        << update state ivars >>
+        return "ok" # for testing.
+    except:
+        << set state ivars to "unknown" >>
+        if self.c:
+            g.es_exception()
+        else:
+            import traceback ; traceback.print_exc()
+        return "error" # for unit testing.
+#@+node:ekr.20031218072017.1602:<< initialize ivars & tags >> colorizeAnyLanguage
+# Copy the arguments.
+self.p = p
+
+# Get the body text, converted to unicode.
+self.allBodyText = w.getAllText()
+sel = w.getInsertPoint()
+start,end = g.convertPythonIndexToRowCol(self.allBodyText,sel)
+start += 1 # Simulate the old 1-based Tk scheme.  self.index undoes this hack.
+# g.trace('new',start,end)
+
+if self.language: self.language = self.language.lower()
+# g.trace(self.count,self.p)
+# g.trace(body.tag_names())
+
+if not self.incremental:
+    self.removeAllTags()
+    # self.removeAllImages()
+
+<< configure fonts >>
+<< configure tags >>
+<< configure language-specific settings >>
+
+self.hyperCount = 0 # Number of hypertext tags
+self.count += 1
+lines = self.allBodyText.split('\n')
+#@nonl
+#@+node:ekr.20060829084924:<< configure fonts >> (revise,maybe)
+# Get the default body font.
+defaultBodyfont = self.fonts.get('default_body_font')
+if not defaultBodyfont:
+    defaultBodyfont = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant",  "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    self.fonts['default_body_font'] = defaultBodyfont
+
+# Configure fonts.
+w = c.frame.body.bodyCtrl
+keys = sorted(default_font_dict)
+for key in keys:
+    option_name = default_font_dict[key]
+    # First, look for the language-specific setting, then the general setting.
+    for name in ('%s_%s' % (self.language,option_name),(option_name)):
+        font = self.fonts.get(name)
+        if font:
+            # g.trace('found',name,id(font))
+            w.tag_config(key,font=font)
+            break
+        else:
+            family = c.config.get(name + '_family','family')
+            size   = c.config.get(name + '_size',  'size')   
+            slant  = c.config.get(name + '_slant', 'slant')
+            weight = c.config.get(name + '_weight','weight')
+            if family or slant or weight or size:
+                family = family or g.app.config.defaultFontFamily
+                size   = size or str(c.config.defaultBodyFontSize)
+                slant  = slant or 'roman'
+                weight = weight or 'normal'
+                font = c.config.getFontFromParams(family,size,slant,weight)
+                # Save a reference to the font so it 'sticks'.
+                self.fonts[name] = font 
+                # g.trace(key,name,family,size,slant,weight,id(font))
+                w.tag_config(key,font=font)
+                break
+    else: # Neither the general setting nor the language-specific setting exists.
+        if len(list(self.fonts.keys())) > 1: # Restore the default font.
+            # g.trace('default',key)
+            w.tag_config(key,font=defaultBodyfont)
+#@nonl
+#@-node:ekr.20060829084924:<< configure fonts >> (revise,maybe)
+#@+node:ekr.20031218072017.1603:<< configure tags >>
+# g.trace('configure tags',self.c.frame.body.bodyCtrl)
+
+for name in default_colors_dict:
+    option_name,default_color = default_colors_dict[name]
+    option_color = c.config.getColor(option_name)
+    color = g.choose(option_color,option_color,default_color)
+    # g.trace(name,color)
+    # Must use foreground, not fg.
+    try:
+        c.frame.body.tag_configure(name, foreground=color)
+    except: # Recover after a user error.
+        c.frame.body.tag_configure(name, foreground=default_color)
+
+underline_undefined = c.config.getBool("underline_undefined_section_names")
+use_hyperlinks      = c.config.getBool("use_hyperlinks")
+self.use_hyperlinks = use_hyperlinks
+
+# underline=var doesn't seem to work.
+if 0: # use_hyperlinks: # Use the same coloring, even when hyperlinks are in effect.
+    c.frame.body.tag_configure("link",underline=1) # defined
+    c.frame.body.tag_configure("name",underline=0) # undefined
+else:
+    c.frame.body.tag_configure("link",underline=0)
+    if underline_undefined:
+        c.frame.body.tag_configure("name",underline=1)
+    else:
+        c.frame.body.tag_configure("name",underline=0)
+
+# 8/4/02: we only create tags for whitespace when showing invisibles.
+if self.showInvisibles:
+    for name,option_name,default_color in (
+        ("blank","show_invisibles_space_background_color","Gray90"),
+        ("tab",  "show_invisibles_tab_background_color",  "Gray80")):
+        option_color = c.config.getColor(option_name)
+        color = g.choose(option_color,option_color,default_color)
+        try:
+            c.frame.body.tag_configure(name,background=color)
+        except: # Recover after a user error.
+            c.frame.body.tag_configure(name,background=default_color)
+
+# 11/15/02: Colors for latex characters.  Should be user options...
+
+if 1: # Alas, the selection doesn't show if a background color is specified.
+    c.frame.body.tag_configure("latexModeBackground",foreground="black")
+    c.frame.body.tag_configure("latexModeKeyword",foreground="blue")
+    c.frame.body.tag_configure("latexBackground",foreground="black")
+    c.frame.body.tag_configure("latexKeyword",foreground="blue")
+else: # Looks cool, and good for debugging.
+    c.frame.body.tag_configure("latexModeBackground",foreground="black",background="seashell1")
+    c.frame.body.tag_configure("latexModeKeyword",foreground="blue",background="seashell1")
+    c.frame.body.tag_configure("latexBackground",foreground="black",background="white")
+    c.frame.body.tag_configure("latexKeyword",foreground="blue",background="white")
+
+# Tags for wiki coloring.
+if self.showInvisibles:
+    c.frame.body.tag_configure("elide",background="yellow")
+else:
+    c.frame.body.tag_configure("elide",elide="1")
+c.frame.body.tag_configure("bold",font=self.bold_font)
+c.frame.body.tag_configure("italic",font=self.italic_font)
+c.frame.body.tag_configure("bolditalic",font=self.bolditalic_font)
+for name in self.color_tags_list:
+    c.frame.body.tag_configure(name,foreground=name)
+#@-node:ekr.20031218072017.1603:<< configure tags >>
+#@+node:ekr.20031218072017.370:<< configure language-specific settings >> colorizer
+# Define has_string, keywords, single_comment_start, block_comment_start, block_comment_end.
+
+if self.language == "cweb": # Use C comments, not cweb sentinel comments.
+    delim1,delim2,delim3 = g.set_delims_from_language("c")
+elif self.comment_string:
+    delim1,delim2,delim3 = g.set_delims_from_string(self.comment_string)
+elif self.language == "plain": # 1/30/03
+    delim1,delim2,delim3 = None,None,None
+else:
+    delim1,delim2,delim3 = g.set_delims_from_language(self.language)
+
+self.single_comment_start = delim1
+self.block_comment_start = delim2
+self.block_comment_end = delim3
+
+# A strong case can be made for making this code as fast as possible.
+# Whether this is compatible with general language descriptions remains to be seen.
+self.case_sensitiveLanguage = self.language not in case_insensitiveLanguages
+self.has_string = self.language != "plain"
+if self.language == "plain":
+    self.string_delims = ()
+elif self.language in ("elisp","html"):
+    self.string_delims = ('"')
+else:
+    self.string_delims = ("'",'"')
+self.has_pp_directives = self.language in ("c","csharp","cweb","latex")
+
+# The list of languages for which keywords exist.
+# Eventually we might just use language_delims_dict.keys()
+languages = [
+    "actionscript","ada","c","csharp","css","cweb","elisp","html","java","latex","lua",
+    "pascal","perl","perlpod","php","plsql","python","rapidq","rebol","ruby","shell","tcltk"]
+
+self.keywords = []
+if self.language == "cweb":
+    for i in self.c_keywords:
+        self.keywords.append(i)
+    for i in self.cweb_keywords:
+        self.keywords.append(i)
+else:
+    for name in languages:
+        if self.language==name: 
+            # g.trace("setting keywords for",name)
+            self.keywords = getattr(self, name + "_keywords")
+
+# Color plain text unless we are under the control of @nocolor.
+# state = g.choose(self.flag,"normal","nocolor")
+state = self.setFirstLineState()
+
+if 1: # 10/25/02: we color both kinds of references in cweb mode.
+    self.lb = "<<"
+    self.rb = ">>"
+else:
+    self.lb = g.choose(self.language == "cweb","@<","<<")
+    self.rb = g.choose(self.language == "cweb","@>",">>")
+#@-node:ekr.20031218072017.370:<< configure language-specific settings >> colorizer
+#@-node:ekr.20031218072017.1602:<< initialize ivars & tags >> colorizeAnyLanguage
+#@+node:ekr.20031218072017.1881:<< all state ivars match >>
+self.flag == self.last_flag and
+self.last_language == self.language
+#@-node:ekr.20031218072017.1881:<< all state ivars match >>
+#@+node:ekr.20031218072017.1882:<< incrementally color the text >>
+@  Each line has a starting state.  The starting state for the first line is always "normal".
+
+We need remember only self.lines and self.states between colorizing.  It is not necessary to know where the text comes from, only what the previous text was!  We must always colorize everything when changing nodes, even if all lines match, because the context may be different.
+
+We compute the range of lines to be recolored by comparing leading lines and trailing lines of old and new text.  All other lines (the middle lines) must be colorized, as well as any trailing lines whose states may have changed as the result of changes to the middle lines.
+@c
+
+if self.trace: g.trace("incremental",self.language)
+
+# 6/30/03: make a copies of everything
+old_lines = self.lines[:]
+old_states = self.states[:]
+new_lines = lines[:]
+new_states = []
+
+new_len = len(new_lines)
+old_len = len(old_lines)
+
+if new_len == 0:
+    self.states = []
+    self.lines = []
+    return
+
+# Bug fix: 11/21/02: must test against None.
+if leading != None and trailing != None:
+    # g.pr("leading,trailing:",leading,trailing)
+    leading_lines = leading
+    trailing_lines = trailing
+else:
+    << compute leading, middle & trailing lines >>
+
+middle_lines = new_len - leading_lines - trailing_lines
+# g.pr("middle lines", middle_lines)
+
+<< clear leading_lines if middle lines involve @color or @recolor  >>
+<< initialize new states >>
+<< colorize until the states match >>
+#@+node:ekr.20031218072017.1883:<< compute leading, middle & trailing  lines >>
+@ The leading lines are the leading matching lines.  The trailing lines are the trailing matching lines.  The middle lines are all other new lines.  We will color at least all the middle lines.  There may be no middle lines if we delete lines.
+@c
+
+min_len = min(old_len,new_len)
+
+i = 0
+while i < min_len:
+    if old_lines[i] != new_lines[i]:
+        break
+    i += 1
+leading_lines = i
+
+if leading_lines == new_len:
+    # All lines match, and we must color _everything_.
+    # (several routine delete, then insert the text again,
+    # deleting all tags in the process).
+    # g.pr("recolor all")
+    leading_lines = trailing_lines = 0
+else:
+    i = 0
+    while i < min_len - leading_lines:
+        if old_lines[old_len-i-1] != new_lines[new_len-i-1]:
+            break
+        i += 1
+    trailing_lines = i
+#@-node:ekr.20031218072017.1883:<< compute leading, middle & trailing  lines >>
+#@+node:ekr.20031218072017.1884:<< clear leading_lines if middle lines involve @color or @recolor  >>
+@ 11/19/02: Changing @color or @nocolor directives requires we recolor all leading states as well.
+@c
+
+if trailing_lines == 0:
+    m1 = new_lines[leading_lines:]
+    m2 = old_lines[leading_lines:]
+else:
+    m1 = new_lines[leading_lines:-trailing_lines]
+    m2 = old_lines[leading_lines:-trailing_lines]
+m1.extend(m2) # m1 now contains all old and new middle lines.
+if m1:
+    for s in m1:
+        ### s = g.toUnicode(s)
+        i = g.skip_ws(s,0)
+        if g.match_word(s,i,"@color") or g.match_word(s,i,"@nocolor"):
+            leading_lines = 0
+            break
+#@-node:ekr.20031218072017.1884:<< clear leading_lines if middle lines involve @color or @recolor  >>
+#@+node:ekr.20031218072017.1885:<< initialize new states >>
+# Copy the leading states from the old to the new lines.
+i = 0
+while i < leading_lines and i < old_len: # 12/8/02
+    new_states.append(old_states[i])
+    i += 1
+
+# We know the starting state of the first middle line!
+if middle_lines > 0 and i < old_len:
+    new_states.append(old_states[i])
+    i += 1
+
+# Set the state of all other middle lines to "unknown".
+first_trailing_line = max(0,new_len - trailing_lines)
+while i < first_trailing_line:
+    new_states.append("unknown")
+    i += 1
+
+# Copy the trailing states from the old to the new lines.
+i = max(0,old_len - trailing_lines)
+while i < old_len and i < len(old_states):
+    new_states.append(old_states[i])
+    i += 1
+
+# 1/8/03: complete new_states by brute force.
+while len(new_states) < new_len:
+    new_states.append("unknown")
+#@-node:ekr.20031218072017.1885:<< initialize new states >>
+#@+node:ekr.20031218072017.1886:<< colorize until the states match >>
+# Colorize until the states match.
+# All middle lines have "unknown" state, so they will all be colored.
+
+# Start in the state _after_ the last leading line, which may be unknown.
+i = leading_lines
+while i > 0:
+    if i < old_len and i < new_len:
+        state = new_states[i]
+        # assert(state!="unknown") # This can fail.
+        break
+    else:
+        i -= 1
+
+if i == 0:
+    # Color plain text unless we are under the control of @nocolor.
+    # state = g.choose(self.flag,"normal","nocolor")
+    state = self.setFirstLineState()
+    new_states[0] = state
+
+# The new_states[] will be "unknown" unless the lines match,
+# so we do not need to compare lines here.
+while i < new_len:
+    self.line_index = i + 1
+    state = self.colorizeLine(new_lines[i],state)
+    i += 1
+    # Set the state of the _next_ line.
+    if i < new_len and state != new_states[i]:
+        new_states[i] = state
+    else: break
+
+# Update the ivars
+self.states = new_states
+self.lines = new_lines
+#@-node:ekr.20031218072017.1886:<< colorize until the states match >>
+#@-node:ekr.20031218072017.1882:<< incrementally color the text >>
+#@+node:ekr.20031218072017.1887:<< non-incrementally color the text >>
+if self.trace: g.trace("non-incremental",self.language)
+
+self.line_index = 1 # The Tk line number for indices, as in n.i
+for s in lines:
+    state = self.colorizeLine(s,state)
+    self.line_index += 1
+#@-node:ekr.20031218072017.1887:<< non-incrementally color the text >>
+#@+node:ekr.20031218072017.1888:<< update state ivars >>
+self.last_flag = self.flag
+self.last_language = self.language
+#@nonl
+#@-node:ekr.20031218072017.1888:<< update state ivars >>
+#@+node:ekr.20031218072017.1889:<< set state ivars to "unknown" >>
+self.last_flag = "unknown"
+self.last_language = "unknown"
+#@-node:ekr.20031218072017.1889:<< set state ivars to "unknown" >>
+#@-node:ekr.20031218072017.1880:colorizeAnyLanguage & allies
+#@+node:ekr.20080828103146.15:c.scanAtPathDirectives
+def scanAtPathDirectives(self,aList,force=False,createPath=True):
+
+    '''Scan aList for @path directives.
+    Return a reasonable default if no @path directive is found.'''
+
+    trace = False and not g.unitTesting
+    verbose = True
+
+    c = self
+    c.scanAtPathDirectivesCount += 1 # An important statistic.
+    if trace and verbose: g.trace('**entry',g.callers(4))
+
+    # Step 1: Compute the starting path.
+    # The correct fallback directory is the absolute path to the base.
+    if c.openDirectory:  # Bug fix: 2008/9/18
+        base = c.openDirectory
+    else:
+        base = g.app.config.relative_path_base_directory
+        if base and base == "!":    base = g.app.loadDir
+        elif base and base == ".":  base = c.openDirectory
+
+    if trace and verbose:
+        g.trace('base   ',base)
+        g.trace('loadDir',g.app.loadDir)
+
+    absbase = c.os_path_finalize_join(g.app.loadDir,base)
+
+    if trace and verbose: g.trace('absbase',absbase)
+
+    # Step 2: look for @path directives.
+    paths = [] ; fileName = None
+    for d in aList:
+        # Look for @path directives.
+        path = d.get('path')
+        warning = d.get('@path_in_body')
+        if trace and path:
+            g.trace('**** d',d)
+            g.trace('**** @path path',path)
+        if path is not None: # retain empty paths for warnings.
+            # Convert "path" or <path> to path.
+            path = g.stripPathCruft(path)
+            if path and path not in paths and not warning:
+                paths.append(path)
+            # We will silently ignore empty @path directives.
+
+    # Add absbase and reverse the list.
+    paths.append(absbase)
+    paths.reverse()
+
+    # Step 3: Compute the full, effective, absolute path.
+    if trace and verbose:
+        g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+    path = c.os_path_finalize_join(*paths)
+    if trace and verbose: g.trace('joined path:',path)
+
+    # Step 4: Make the path if necessary.
+    if path and createPath and not g.os_path_exists(path):
+        ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
+        if not ok:
+            if force:
+                g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+            path = absbase # Bug fix: 2008/9/18
+
+    if trace: g.trace('returns',path)
+
+    return path
+#@-node:ekr.20080828103146.15:c.scanAtPathDirectives
+#@+node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+def __init__ (self,c):
+
+    trace = False and not g.unitTesting
+    self.c = c
+
+    if trace: g.trace('+' * 20,'(c.configSettings)',
+        c and c.shortFileName(),g.callers(5))
+
+    # Init these here to keep pylint happy.
+    self.default_derived_file_encoding = None
+    self.new_leo_file_encoding = None
+    self.redirect_execute_script_output_to_log_pane = None
+
+    self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
+    self.defaultLogFontSize  = g.app.config.defaultLogFontSize
+    self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
+    self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
+
+    for key in g.app.config.encodingIvarsDict:
+        if key != '_hash':
+            self.initEncoding(key)
+
+    for key in g.app.config.ivarsDict:
+        if key != '_hash':
+            self.initIvar(key)
+#@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+# This is a generalization of os.makedir.
+
+def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
+
+    """Attempt to make all non-existent directories"""
+
+    trace = False and not g.unitTesting
+    testing = False # True: don't actually make the directories.
+
+    if force:
+        create = True # Bug fix: g.app.config will not exist during startup.
+    elif c:
+        create = c.config and c.config.create_nonexistent_directories
+    else:
+        create = (g.app and g.app.config and
+            g.app.config.create_nonexistent_directories)
+
+    if not force and not create:
+        if trace: g.trace('did not create: force and create are both false')
+        return None
+
+    if trace:
+        g.trace('\n',theDir,'\n',g.callers(4))
+        # g.trace('c exists: %s force: %s create: %s dir: %s' % (
+            # c is not None,force,create,theDir))
+
+    if c: theDir = g.os_path_expandExpression(theDir,c=c)
+
+    dir1 = theDir = g.os_path_normpath(theDir)
+
+    # Split theDir into all its component parts.
+    paths = []
+    while len(theDir) > 0:
+        head,tail=g.os_path_split(theDir)
+        if len(tail) == 0:
+            paths.append(head)
+            break
+        else:
+            paths.append(tail)
+            theDir = head
+    path = ""
+    paths.reverse()
+    if trace: g.trace('paths:',paths)
+    for s in paths:
+        path = g.os_path_join(path,s)
+        if not g.os_path_exists(path):
+            try:
+                if testing:
+                    g.trace('***making',path)
+                else:
+                    os.mkdir(path)
+                if verbose and not testing and not g.app.unitTesting:
+                    # g.trace('***callers***',g.callers(5))
+                    g.es_print("created directory:",path,color='red')
+            except Exception:
+                # g.trace(g.callers())
+                if verbose: g.es_print("exception creating directory:",path,color='red')
+                g.es_exception()
+                return None
+    return dir1 # All have been created.
+#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+#@+node:ekr.20031218072017.1386:g.getOutputNewline
+def getOutputNewline (c=None,name=None):
+
+    '''Convert the name of a line ending to the line ending itself.
+
+    Priority:
+    - Use name if name given
+    - Use c.config.output_newline if c given,
+    - Otherwise use g.app.config.output_newline.'''
+
+    if name: s = name
+    elif c:  s = c.config.output_newline
+    else:    s = app.config.output_newline
+
+    if not s: s = ''
+    s = s.lower()
+    if s in ( "nl","lf"): s = '\n'
+    elif s == "cr": s = '\r'
+    elif s == "platform": s = os.linesep  # 12/2/03: emakital
+    elif s == "crlf": s = "\r\n"
+    else: s = '\n' # Default for erroneous values.
+    # g.trace(c,name,c.config.output_newline,'returns',repr(s))
+
+    if g.isPython3:
+        s = str(s)
+    return s
+#@-node:ekr.20031218072017.1386:g.getOutputNewline
+#@+node:ekr.20031218072017.1596:g.doHook
+@ This global function calls a hook routine.  Hooks are identified by the tag param.
+Returns the value returned by the hook routine, or None if the there is an exception.
+
+We look for a hook routine in three places:
+1. c.hookFunction
+2. app.hookFunction
+3. leoPlugins.doPlugins()
+We set app.hookError on all exceptions.  Scripts may reset app.hookError to try again.
+@c
+
+def doHook(tag,*args,**keywords):
+
+    trace = False ; verbose = False
+
+    if g.app.killed or g.app.hookError: # or (g.app.gui and g.app.gui.isNullGui):
+        return None
+
+    if args:
+        # A minor error in Leo's core.
+        g.pr("***ignoring args param.  tag = %s" % tag)
+
+    if not g.app.config.use_plugins:
+        if tag in ('open0','start1'):
+            s = "Plugins disabled: use_plugins is 0 in a leoSettings.leo file."
+            g.es_print(s,color="blue")
+        return None
+
+    # Get the hook handler function.  Usually this is doPlugins.
+    c = keywords.get("c")
+    f = (c and c.hookFunction) or g.app.hookFunction
+
+    if trace and (verbose or tag != 'idle'):
+        g.trace('tag',tag,'f',f and f.__name__)
+
+    if not f:
+        import leo.core.leoPlugins as leoPlugins
+        g.app.hookFunction = f = leoPlugins.doPlugins
+
+    try:
+        # Pass the hook to the hook handler.
+        # g.pr('doHook',f.__name__,keywords.get('c'))
+        return f(tag,keywords)
+    except Exception:
+        g.es_exception()
+        g.app.hookError = True # Supress this function.
+        g.app.idleTimeHook = False # Supress idle-time hook
+        return None # No return value
+#@-node:ekr.20031218072017.1596:g.doHook
+#@+node:ekr.20041113113140:loadOnePlugin
+def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
+
+    trace = False # and not g.unitTesting
+
+    global loadedModules,loadingModuleNameStack
+
+    # Prevent Leo from crashing if .leoID.txt does not exist.
+    if g.app.config is None:
+        print ('No g.app.config, making stub...')
+        class StubConfig(g.nullObject):
+            pass
+        g.app.config = StubConfig()
+
+    # Fixed reversion: do this after possibly creating stub config class.
+    verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
+    warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+
+    if moduleOrFileName.endswith('.py'):
+        moduleName = moduleOrFileName [:-3]
+    else:
+        moduleName = moduleOrFileName
+    moduleName = g.shortFileName(moduleName)
+
+    if isLoaded(moduleName):
+        module = loadedModules.get(moduleName)
+        if trace or verbose:
+            g.trace('plugin',moduleName,'already loaded',color="blue")
+        return module
+
+    assert g.app.loadDir
+
+    plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
+    moduleName = g.toUnicode(moduleName)
+
+    # This import will typically result in calls to registerHandler.
+    # if the plugin does _not_ use the init top-level function.
+    loadingModuleNameStack.append(moduleName)
+    result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
+    loadingModuleNameStack.pop()
+
+    if result:
+        loadingModuleNameStack.append(moduleName)
+
+        if tag == 'unit-test-load':
+            pass # Keep the result, but do no more.
+        elif hasattr(result,'init'):
+            try:
+                # Indicate success only if init_result is True.
+                init_result = result.init()
+                # g.trace('result',result,'init_result',init_result)
+                if init_result:
+                    loadedModules[moduleName] = result
+                    loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
+                else:
+                    if verbose and not g.app.initing:
+                        g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")
+                    result = None
+            except Exception:
+                g.es_print('exception loading plugin',color='red')
+                g.es_exception()
+                result = None
+        else:
+            # No top-level init function.
+            # Guess that the module was loaded correctly,
+            # but do *not* load the plugin if we are unit testing.
+
+            if g.app.unitTesting:
+                result = None
+                loadedModules[moduleName] = None
+            else:
+                g.trace('no init()',moduleName)
+                loadedModules[moduleName] = result
+        loadingModuleNameStack.pop()
+
+    if g.app.batchMode or g.app.inBridge: # or g.unitTesting
+        pass
+    elif result:
+        if trace or verbose:
+            g.trace('loaded plugin:',moduleName,color="blue")
+    else:
+        if trace or warn_on_failure or (verbose and not g.app.initing):
+            if trace or tag == 'open0':
+                g.trace('can not load enabled plugin:',moduleName,color="red")
+
+    return result
+#@-node:ekr.20041113113140:loadOnePlugin
+#@+node:ekr.20061031131434.100:addModeCommands (enterModeCallback)
+def addModeCommands (self):
+
+    '''Add commands created by @mode settings to c.commandsDict and k.inverseCommandsDict.'''
+
+    k = self ; c = k.c
+    d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
+
+    # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
+    for key in d:
+
+        def enterModeCallback (event=None,name=key):
+            k.enterNamedMode(event,name)
+
+        c.commandsDict[key] = f = enterModeCallback
+        k.inverseCommandsDict [f.__name__] = key
+        # g.trace('leoCommands %24s = %s' % (f.__name__,key))
+#@-node:ekr.20061031131434.100:addModeCommands (enterModeCallback)
+#@-node:ekr.20100202145902.6108:code
+#@-node:ekr.20100130042842.9008: Notes
+#@+node:ekr.20041118104831.1:class configSettings (leoCommands)
+class configSettings:
+
+    """A class to hold config settings for commanders."""
+
+    @others
+#@+node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+def __init__ (self,c):
+
+    trace = False and not g.unitTesting
+    self.c = c
+
+    if trace: g.trace('+' * 20,'(c.configSettings)',
+        c and c.shortFileName(),g.callers(5))
+
+    # Init these here to keep pylint happy.
+    self.default_derived_file_encoding = None
+    self.new_leo_file_encoding = None
+    self.redirect_execute_script_output_to_log_pane = None
+
+    self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
+    self.defaultLogFontSize  = g.app.config.defaultLogFontSize
+    self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
+    self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
+
+    for key in g.app.config.encodingIvarsDict:
+        if key != '_hash':
+            self.initEncoding(key)
+
+    for key in g.app.config.ivarsDict:
+        if key != '_hash':
+            self.initIvar(key)
+#@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+#@+node:ekr.20041118104240:initIvar (c.configSettings)
+def initIvar(self,key):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    # N.B. The key is munged.
+    bunch = g.app.config.ivarsDict.get(key)
+    ivarName = bunch.ivar
+    val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
+
+    if val or not hasattr(self,ivarName):
+        if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
+        setattr(self,ivarName,val)
+#@-node:ekr.20041118104240:initIvar (c.configSettings)
+#@+node:ekr.20041118104414:initEncoding
+def initEncoding (self,key):
+
+    c = self.c
+
+    # N.B. The key is munged.
+    bunch = g.app.config.encodingIvarsDict.get(key)
+    encodingName = bunch.ivar
+    encoding = g.app.config.get(c,encodingName,kind='string')
+
+    # New in 4.4b3: use the global setting as a last resort.
+    if encoding:
+        # g.trace('c.configSettings',c.shortFileName(),encodingName,encoding)
+        setattr(self,encodingName,encoding)
+    else:
+        encoding = getattr(g.app.config,encodingName)
+        # g.trace('g.app.config',c.shortFileName(),encodingName,encoding)
+        setattr(self,encodingName,encoding)
+
+    if encoding and not g.isValidEncoding(encoding):
+        g.es("bad", "%s: %s" % (encodingName,encoding))
+#@-node:ekr.20041118104414:initEncoding
+#@+node:ekr.20041118053731:Getters (c.configSettings)
+def get (self,setting,theType):
+    '''A helper function: return the commander's setting, checking the type.'''
+    return g.app.config.get(self.c,setting,theType)
+
+def getAbbrevDict (self):
+    '''return the commander's abbreviation dictionary.'''
+    return g.app.config.getAbbrevDict(self.c)
+
+def getBool (self,setting,default=None):
+    '''Return the value of @bool setting, or the default if the setting is not found.'''
+    return g.app.config.getBool(self.c,setting,default=default)
+
+def getButtons (self):
+    '''Return a list of tuples (x,y) for common @button nodes.'''
+    return g.app.config.atCommonButtonsList # unusual.
+
+def getColor (self,setting):
+    '''Return the value of @color setting.'''
+    return g.app.config.getColor(self.c,setting)
+
+def getCommands (self):
+    '''Return the list of tuples (headline,script) for common @command nodes.'''
+    return g.app.config.atCommonCommandsList # unusual.
+
+def getData (self,setting):
+    '''Return a list of non-comment strings in the body text of @data setting.'''
+    return g.app.config.getData(self.c,setting)
+
+def getDirectory (self,setting):
+    '''Return the value of @directory setting, or None if the directory does not exist.'''
+    return g.app.config.getDirectory(self.c,setting)
+
+def getFloat (self,setting):
+    '''Return the value of @float setting.'''
+    return g.app.config.getFloat(self.c,setting)
+
+def getFontFromParams (self,family,size,slant,weight,defaultSize=12):
+
+    '''Compute a font from font parameters.
+
+    Arguments are the names of settings to be use.
+    Default to size=12, slant="roman", weight="normal".
+
+    Return None if there is no family setting so we can use system default fonts.'''
+
+    return g.app.config.getFontFromParams(self.c,
+        family, size, slant, weight, defaultSize = defaultSize)
+
+def getInt (self,setting):
+    '''Return the value of @int setting.'''
+    return g.app.config.getInt(self.c,setting)
+
+def getLanguage (self,setting):
+    '''Return the value of @string setting.
+
+    The value of this setting should be a language known to Leo.'''
+    return g.app.config.getLanguage(self.c,setting)
+
+def getMenusList (self):
+    '''Return the list of entries for the @menus tree.'''
+    return g.app.config.getMenusList(self.c) # Changed in Leo 4.5.
+
+def getOpenWith (self):
+    '''Return a list of dictionaries corresponding to @openwith nodes.'''
+    return g.app.config.getOpenWith(self.c)
+
+def getRatio (self,setting):
+    '''Return the value of @float setting.
+    Warn if the value is less than 0.0 or greater than 1.0.'''
+    return g.app.config.getRatio(self.c,setting)
+
+def getRecentFiles (self):
+    '''Return the list of recently opened files.'''
+    return g.app.config.getRecentFiles()
+
+def getShortcut (self,shortcutName):
+    '''Return the tuple (rawKey,accel) for shortcutName in @shortcuts tree.'''
+    return g.app.config.getShortcut(self.c,shortcutName)
+
+def getSettingSource(self,setting):
+    '''return the name of the file responsible for setting.'''
+    return g.app.config.getSettingSource(self.c,setting)
+
+def getString (self,setting):
+    '''Return the value of @string setting.'''
+    return g.app.config.getString(self.c,setting)
+#@-node:ekr.20041118053731:Getters (c.configSettings)
+#@+node:ekr.20041118195812:Setters... (c.configSettings)
+def setRecentFiles (self,files):
+    '''Update the recent files list.'''
+    # Append the files to the global list.
+    g.app.config.appendToRecentFiles(files)
+#@-node:ekr.20041118195812:Setters... (c.configSettings)
+#@-node:ekr.20041118104831.1:class configSettings (leoCommands)
+#@-node:ekr.20100202145902.6106:Init all settings in c.initConfigSettings
+#@+node:ekr.20100219083854.5615:Improve caching
+#@+node:ekr.20100209160132.5770:cache notes
+@nocolor-node
+
+Top-level folder are direct subfolders of .leo/db.
+Top-level folders represent file *locations* not file contents.
+Exception: the top-level "globals" folder represents minor data.
+
+Only two files are ever needed in a top-level folder:
+
+contents_<key>: the contents of the file.
+data_<key>: a dict representing the "minor data" of the file:
+    <globals> element stuff, expansion bits, etc.
+
+We write contents_<key> only once.
+By definition, its contents never changes, since the contents generates the key.
+We can write data_<key> as many times as we like.
+
+To do:
+- Simplify or even eliminate the path-manipulation code in PickleShareDB.
+- Use g.makeAllNonExistentDirectories to make top-level directories.
+- Clear cache should clear all top-level directories.
+#@nonl
+#@+node:ekr.20100209114432.5751:Cache expansion bits
+# Simplify the structure of the cache: put more into the "minor" files.
+#@nonl
+#@-node:ekr.20100209114432.5751:Cache expansion bits
+#@-node:ekr.20100209160132.5770:cache notes
+#@+node:ekr.20100211095442.6201:cache notes 2
+@nocolor-node
+
+1. Memory does leak, and that's not ok with me.  And I want just two
+files per top-level directory.
+
+2. Strange things can happen with caching, as just happened to me when
+I restored qtui_generate.py mistakenly deleted from leo/test.  There
+is an @auto node for this file in qtGui.py, and I got improper 'can
+not open' messages for this file.
+
+3. It is troubling that the present caching scheme does not use the
+full path to a file, only the basename.  This means that two identical
+files in two different places will use the same cache entries.  I've
+been wondering for the last several days about whether this could
+cause problems.  I don't know for sure, but I am uncomfortable.
+
+4. I want the clear-cache and clear-all-caches commands to do what
+they say: get rid of everything.  Among other things, this is good for
+debugging and recovering from cache problems.
+
+#@-node:ekr.20100211095442.6201:cache notes 2
+#@+node:ekr.20100223075705.5635:Don't write expansion bits
+#@-node:ekr.20100223075705.5635:Don't write expansion bits
+#@+node:ekr.20100210163813.5748:Caching buglets?
+@nocolor-node
+
+This is a recent bug, but imo it has uncovered some other caching buglets. These
+buglets are not big enough to delay Leo 4.7, but the new caching scheme would
+ensure they never bite.
+
+1. The code that computes what I have been calling the top-level directory is dubious::
+
+    dbdirname = join(g.app.homeLeoDir,'db',
+            '%s_%s' % (bname,hashlib.md5(fn).hexdigest()))
+
+The problem is that bname is only the base name of the cached file, not a name
+(or key) that depends on the full path. Thus, two copies of the same file in the
+same place will be cached in the same directory. Is this ominous?
+
+2. It's not clear what caching to do with the save-to command.
+#@-node:ekr.20100210163813.5748:Caching buglets?
+#@-node:ekr.20100219083854.5615:Improve caching
+#@+node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
+
+Python uses Sphinx for its doc, they have a discussion about making
+the TOC on the left hand side collapsible/non-scrolling here:
+
+http://www.google.com/url?sa=t&source=web&ct=res&cd=4&ved=0CBYQFjAD&url=http%3A%2F%2Fbugs.python.org%2Fissue3143&ei=bW5oS-eQIJDalAfqlYyGCA&usg=AFQjCNGyhpE3wZ2jvfwA0dwjCfoAxleDRQ&sig2=2CRD7hNMmx1NzFHMyOq_cQ
+
+that includes code for the CSS stylesheet to do this.
+
+Although this does not appear in the python docs (yet), it might be
+valuable for Leo's Doc's
+
+
+
+I downloaded the example files from the above link, the collapsible
+sidebar works well with the python documentation.  As the Leo
+documentation is just a variant of python's, I downloaded a HTML
+chapter and the support files kept in .../static, then I placed the
+"sidebar.js" in with those files on my local copy.  To make the
+sidebar collapsing work, all I had to do was add it to the list of
+javascript files in the chapter .html file, i.e., I added the second
+line below
+
+    <script type="text/javascript" src="IPythonBridge_files/
+doctools.js"></script>
+    <script type="text/javascript" src="IPythonBridge_files/
+sidebar.js"></script>
+
+in the 'head' section, (the above takes into account that I was doing
+this on my local, differently arranged, copy).
+
+That is all that it takes to give us a collapsible TOC
+#@nonl
+#@-node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
+#@-node:ekr.20100223123910.5836:Immediately
+#@+node:ekr.20100206074650.5844:Cleanups & features: first
+#@+node:ekr.20100223123910.5835:Improve python importer
 #@+node:ekr.20070703122141.65:<< class baseScannerClass >>
 class baseScannerClass (scanUtility):
 
@@ -3806,1401 +4016,7 @@ def skipSigTail(self,s,i,kind):
     return i,g.match(s,i,':')
 #@-node:ekr.20070803101619:skipSigTail
 #@-node:ekr.20070703122141.100:class pythonScanner
-#@-node:ekr.20100223123910.5835:Improve python imports
-#@+node:ekr.20100202145902.6106:Init all settings in c.initConfigSettings
-@nocolor-node
-
-To do:
-
-- remove most of the logic in configSettings.__init__.
-- Move config ivars to the commander.
-#@nonl
-#@+node:ekr.20100130042842.6404:Reading settings (do not delete)
-Here are the calls to g.app.getxxx
-
-# runLeo.createFrame
-fileName = g.app.config.getString(c=None,setting='default_leo_file')
-
-# c.configSettings.initIvar
-# Why not init these settings by hand???
-val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
-
-# g.es and g.es_print
-keys['color'] = g.app.config.getColor(None,"log_error_color") or 'red'
-
-# leoPlugins.loadHandlers
-warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
-s = g.app.config.getEnabledPlugins()
-
-# leoPlugins.loadOnePlugin
-verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
-warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
-
-#@+node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
-def readSettingsFiles (self,fileName,verbose=True):
-
-    trace = False and not g.unitTesting
-    seen = []
-    self.write_recent_files_as_needed = False # Will be set later.
-    << define localDirectory, localConfigFile & myLocalConfigFile >>
-
-    if trace: g.trace(g.callers(5))
-    table = (
-        (self.globalConfigFile,False),
-        (self.homeFile,False),
-        (localConfigFile,False),
-        (self.myGlobalConfigFile,False),
-        (self.myHomeConfigFile,False),
-        (self.machineConfigFile,False),
-        (myLocalConfigFile,False),
-        # New in Leo 4.6: the -c file is in *addition* to other config files.
-        (g.app.oneConfigFilename,False),
-        (fileName,True),
-    )
-
-    # Init settings from leoSettings.leo and myLeoSettings.leo files.
-    for path,localFlag in table:
-        if path:
-            path = g.os_path_realpath(g.os_path_finalize(path))
-            # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
-        isZipped = path and zipfile.is_zipfile(path)
-        isLeo = isZipped or (path and path.endswith('.leo'))
-        if isLeo and path and path.lower() not in seen and g.os_path_exists(path):
-            seen.append(path.lower())
-            if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
-                s = 'reading settings in %s' % path
-                # This occurs early in startup, so use the following instead of g.es_print.
-                if not g.isPython3:
-                    s = g.toEncodedString(s,'ascii')
-                g.es_print(s,color='blue')
-            c = self.openSettingsFile(path)
-            if c:
-                self.updateSettings(c,localFlag)
-                g.app.destroyWindow(c.frame)
-                self.write_recent_files_as_needed = c.config.getBool(
-                    'write_recent_files_as_needed')
-                if 0:
-                    # This is useless. setIvarsFromSettings does nothing
-                    # until the self.inited flag is True.
-                    g.trace('?' * 20,c)
-                    self.setIvarsFromSettings(c)
-    self.readRecentFiles(localConfigFile)
-    # self.createMyLeoSettingsFile(myLocalConfigFile)
-    self.inited = True
-    self.setIvarsFromSettings(None)
-#@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
-# This can't be done in initSettingsFiles because
-# the local directory does not yet exist.
-localDirectory = g.os_path_dirname(fileName)
-
-#  Set the local leoSettings.leo file.
-localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
-if not g.os_path_exists(localConfigFile):
-    localConfigFile = None
-
-# Set the local myLeoSetting.leo file.
-myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
-if not g.os_path_exists(myLocalConfigFile):
-    myLocalConfigFile = None
-#@nonl
-#@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
-#@+node:ekr.20041117085625:openSettingsFile
-def openSettingsFile (self,path):
-
-    theFile,isZipped = g.openLeoOrZipFile(path)
-    if not theFile: return None
-
-    # Similar to g.openWithFileName except it uses a null gui.
-    # Changing g.app.gui here is a major hack.
-    oldGui = g.app.gui
-    g.app.gui = leoGui.nullGui("nullGui")
-    c,frame = g.app.newLeoCommanderAndFrame(
-        fileName=path,relativeFileName=None,
-        initEditCommanders=False,updateRecentFiles=False)
-    frame.log.enable(False)
-    c.setLog()
-    g.app.lockLog()
-    ok = frame.c.fileCommands.open(
-        theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
-    g.app.unlockLog()
-    c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
-    g.app.gui = oldGui
-    return ok and c
-#@-node:ekr.20041117085625:openSettingsFile
-#@+node:ekr.20051013161232:updateSettings
-def updateSettings (self,c,localFlag):
-
-    d = self.readSettings(c,localFlag)
-
-    if d:
-        d['_hash'] = theHash = c.hash()
-        if localFlag:
-            self.localOptionsDict[theHash] = d
-        else:
-            self.localOptionsList.insert(0,d)
-
-    if 0: # Good trace.
-        if localFlag:
-            g.trace(c.fileName())
-            g.trace(d and list(d.keys()))
-#@-node:ekr.20051013161232:updateSettings
-#@-node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
-#@+node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
-def __init__ (self,c):
-
-    trace = False and not g.unitTesting
-    self.c = c
-
-    if trace: g.trace('+' * 20,'(c.configSettings)',
-        c and c.shortFileName(),g.callers(5))
-
-    # Init these here to keep pylint happy.
-    self.default_derived_file_encoding = None
-    self.new_leo_file_encoding = None
-    self.redirect_execute_script_output_to_log_pane = None
-
-    self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
-    self.defaultLogFontSize  = g.app.config.defaultLogFontSize
-    self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
-    self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
-
-    for key in g.app.config.encodingIvarsDict:
-        if key != '_hash':
-            self.initEncoding(key)
-
-    for key in g.app.config.ivarsDict:
-        if key != '_hash':
-            self.initIvar(key)
-#@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
-#@+node:ekr.20041118084146.1:set (g.app.config) To be deleted??
-def set (self,c,setting,kind,val):
-
-    '''Set the setting.  Not called during initialization.'''
-
-    trace = False and not g.unitTesting
-    found = False ;  key = self.munge(setting)
-    if trace: g.trace(setting,kind,val)
-
-    if c:
-        d = self.localOptionsDict.get(c.hash())
-        if d: found = True
-
-    if not found:
-        theHash = c.hash()
-        for d in self.localOptionsList:
-            hash2 = d.get('_hash')
-            if theHash == hash2:
-                found = True ; break
-
-    if not found:
-        d = self.dictList [0]
-
-    d[key] = g.Bunch(setting=setting,kind=kind,val=val,tag='setting')
-
-    if 0:
-        dkind = d.get('_hash','<no hash: %s>' % c.hash())
-        g.trace(dkind,setting,kind,val)
-#@-node:ekr.20041118084146.1:set (g.app.config) To be deleted??
-#@+node:ekr.20041118104240:initIvar (c.configSettings)
-def initIvar(self,key):
-
-    trace = False and not g.unitTesting
-    c = self.c
-
-    # N.B. The key is munged.
-    bunch = g.app.config.ivarsDict.get(key)
-    ivarName = bunch.ivar
-    val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
-
-    if val or not hasattr(self,ivarName):
-        if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
-        setattr(self,ivarName,val)
-#@-node:ekr.20041118104240:initIvar (c.configSettings)
-#@+node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
-def setIvarsFromSettings (self,c):
-
-    '''Init g.app.config ivars or c's ivars from settings.
-
-    - Called from readSettingsFiles with c = None to init g.app.config ivars.
-    - Called from c.__init__ to init corresponding commmander ivars.'''
-
-    trace = False and not g.unitTesting
-    verbose = True
-
-    # Ingore temporary commanders created by readSettingsFiles.
-    if self.inited:
-        if trace:
-            if c:
-                g.trace('=' * 10, 'inited',c.shortFileName(),g.callers(4))
-            else:
-                tag = '<no c: called at end of readSettingsFiles>'
-                g.trace('=' * 10, 'inited',tag,g.callers(1))
-    else:
-        if trace and verbose: g.trace('*' * 10,'not inited.  do nothing')
-        return
-
-    d = self.ivarsDict
-    keys = list(d.keys())
-    keys.sort()
-    for key in keys:
-        if key != '_hash':
-            bunch = d.get(key)
-            if bunch:
-                ivar = bunch.ivar # The actual name of the ivar.
-                kind = bunch.kind
-                val = self.get(c,key,kind) # Don't use bunch.val!
-                if c:
-                    if trace: g.trace("%20s %s = %s" % (
-                        g.shortFileName(c.mFileName),ivar,val))
-                    setattr(c,ivar,val)
-                else:
-                    if trace: g.trace("%20s %s = %s" % (
-                        'g.app.config',ivar,val))
-                    setattr(self,ivar,val)
-#@-node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
-#@-node:ekr.20100130042842.6404:Reading settings (do not delete)
-#@+node:ekr.20100130042842.9008: Notes
-@nocolor-node
-
-colorizeAnyLanguage.
-    g.app.config.defaultFontFamily
-
-c.scanAtPathDirectives:
-    relative_path_base_directory:
-
-** Methods that write recent files:
-    recentFileMessageWritten (Probabaly ok)
-
-c.configSettings.__init__:
-
-** copies these ivars by hand.
-    self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
-    self.defaultLogFontSize  = g.app.config.defaultLogFontSize
-    self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
-    self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
-** calls initIvar and initEncoding to copy other ivars.
-
-g.makeAllNonExistentDirectories:
-    # Uses one or the other, depending on the c arg.
-    c.create_nonexistent_directories
-    g.app.config.create_nonexistent_directories
-
-g.getOutputNewline:
-    # Uses one or the other, depending on the c arg.
-    c.config.output_newline
-    g.app.config.output_newline
-
-g.doHook:
-    g.app.config.use_plugins
-
-loadOnePlugin:
-    g.app.config.enabledPluginsFileName
-
-leoGui.getFontFromParams:
-    g.app.config.defaultFont
-
-k.addModeCommands and several other methods use:
-    g.app.config.modeCommandsDict
-#@nonl
-#@+node:ekr.20100130042842.9010:at_root_bodies_start_in_doc_mode
-@nocolor-node
-
-at_root_bodies_start_in_doc_mode
-
-c.scanAtRootDirectives
-    should use c.config.getBool instead of the weird code.
-
-g.scanAtRootOptions
-    Why doesn't this use c.config ivars??
-    Actually, this should be tangle.scanAtRootOptions.  We know c!
-
-leoImport.convertVnodeToWeb:
-    Uses c.config.at_root_bodies_start_in_doc_mode
-#@nonl
-#@+node:ekr.20080828103146.12:c.scanAtRootDirectives
-# Called only by scanColorDirectives.
-
-def scanAtRootDirectives(self,aList):
-
-    '''Scan aList for @root-code and @root-doc directives.'''
-
-    c = self
-
-    # To keep pylint happy.
-    tag = 'at_root_bodies_start_in_doc_mode'
-    start_in_doc = hasattr(c.config,tag) and getattr(c.config,tag)
-
-    # New in Leo 4.6: dashes are valid in directive names.
-    for d in aList:
-        if 'root-code' in d:
-            return 'code'
-        elif 'root-doc' in d:
-            return 'doc'
-        elif 'root' in d:
-            return g.choose(start_in_doc,'doc','code')
-
-    return None
-#@-node:ekr.20080828103146.12:c.scanAtRootDirectives
-#@+node:ekr.20031218072017.3154:g.scanAtRootOptions
-def scanAtRootOptions (s,i,err_flag=False):
-
-    # The @root has been eaten when called from tangle.scanAllDirectives.
-    if g.match(s,i,"@root"):
-        i += len("@root")
-        i = g.skip_ws(s,i)
-
-    mode = None 
-    while g.match(s,i,'-'):
-        << scan another @root option >>
-
-    if mode == None:
-        doc = app.config.at_root_bodies_start_in_doc_mode
-        mode = g.choose(doc,"doc","code")
-
-    return i,mode
-#@+node:ekr.20031218072017.3155:<< scan another @root option >>
-i += 1 ; err = -1
-
-if g.match_word(s,i,"code"): # Just match the prefix.
-    if not mode: mode = "code"
-    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
-elif g.match(s,i,"doc"): # Just match the prefix.
-    if not mode: mode = "doc"
-    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
-else:
-    err = i-1
-
-# Scan to the next minus sign.
-while i < len(s) and s[i] not in (' ','\t','-'):
-    i += 1
-
-if err > -1 and err_flag:
-    z_opt = s[err:i]
-    z_line = g.get_line(s,i)
-    g.es("unknown option:",z_opt,"in",z_line)
-#@-node:ekr.20031218072017.3155:<< scan another @root option >>
-#@-node:ekr.20031218072017.3154:g.scanAtRootOptions
-#@-node:ekr.20100130042842.9010:at_root_bodies_start_in_doc_mode
-#@+node:ekr.20100131161507.6302:Replace all of these by config.get methods
-c.config.default_at_auto_file_encoding
-c.config.default_derived_file_encoding
-#@nonl
-#@-node:ekr.20100131161507.6302:Replace all of these by config.get methods
-#@+node:ekr.20100202145902.6108:code
-#@+node:ekr.20031218072017.1880:colorizeAnyLanguage & allies
-def colorizeAnyLanguage (self,p,leading=None,trailing=None):
-
-    """Color the body pane either incrementally or non-incrementally"""
-
-    c = self.c ; w = c.frame.body.bodyCtrl
-
-    if not c.config.getBool('use_syntax_coloring'):
-        # There have been reports of this trace causing crashes.
-        # Certainly it is not necessary.
-        # g.trace('no coloring')
-        return
-
-    if self.killFlag:
-        self.removeAllTags()
-        return
-    try:
-        # g.trace('incremental',self.incremental)
-        << initialize ivars & tags >>
-        g.doHook("init-color-markup",colorer=self,p=self.p,v=self.p)
-        if self.incremental and (
-            << all state ivars match >> ):
-            << incrementally color the text >>
-        else:
-            << non-incrementally color the text >>
-        << update state ivars >>
-        return "ok" # for testing.
-    except:
-        << set state ivars to "unknown" >>
-        if self.c:
-            g.es_exception()
-        else:
-            import traceback ; traceback.print_exc()
-        return "error" # for unit testing.
-#@+node:ekr.20031218072017.1602:<< initialize ivars & tags >> colorizeAnyLanguage
-# Copy the arguments.
-self.p = p
-
-# Get the body text, converted to unicode.
-self.allBodyText = w.getAllText()
-sel = w.getInsertPoint()
-start,end = g.convertPythonIndexToRowCol(self.allBodyText,sel)
-start += 1 # Simulate the old 1-based Tk scheme.  self.index undoes this hack.
-# g.trace('new',start,end)
-
-if self.language: self.language = self.language.lower()
-# g.trace(self.count,self.p)
-# g.trace(body.tag_names())
-
-if not self.incremental:
-    self.removeAllTags()
-    # self.removeAllImages()
-
-<< configure fonts >>
-<< configure tags >>
-<< configure language-specific settings >>
-
-self.hyperCount = 0 # Number of hypertext tags
-self.count += 1
-lines = self.allBodyText.split('\n')
-#@nonl
-#@+node:ekr.20060829084924:<< configure fonts >> (revise,maybe)
-# Get the default body font.
-defaultBodyfont = self.fonts.get('default_body_font')
-if not defaultBodyfont:
-    defaultBodyfont = c.config.getFontFromParams(
-        "body_text_font_family", "body_text_font_size",
-        "body_text_font_slant",  "body_text_font_weight",
-        c.config.defaultBodyFontSize)
-    self.fonts['default_body_font'] = defaultBodyfont
-
-# Configure fonts.
-w = c.frame.body.bodyCtrl
-keys = sorted(default_font_dict)
-for key in keys:
-    option_name = default_font_dict[key]
-    # First, look for the language-specific setting, then the general setting.
-    for name in ('%s_%s' % (self.language,option_name),(option_name)):
-        font = self.fonts.get(name)
-        if font:
-            # g.trace('found',name,id(font))
-            w.tag_config(key,font=font)
-            break
-        else:
-            family = c.config.get(name + '_family','family')
-            size   = c.config.get(name + '_size',  'size')   
-            slant  = c.config.get(name + '_slant', 'slant')
-            weight = c.config.get(name + '_weight','weight')
-            if family or slant or weight or size:
-                family = family or g.app.config.defaultFontFamily
-                size   = size or str(c.config.defaultBodyFontSize)
-                slant  = slant or 'roman'
-                weight = weight or 'normal'
-                font = c.config.getFontFromParams(family,size,slant,weight)
-                # Save a reference to the font so it 'sticks'.
-                self.fonts[name] = font 
-                # g.trace(key,name,family,size,slant,weight,id(font))
-                w.tag_config(key,font=font)
-                break
-    else: # Neither the general setting nor the language-specific setting exists.
-        if len(list(self.fonts.keys())) > 1: # Restore the default font.
-            # g.trace('default',key)
-            w.tag_config(key,font=defaultBodyfont)
-#@nonl
-#@-node:ekr.20060829084924:<< configure fonts >> (revise,maybe)
-#@+node:ekr.20031218072017.1603:<< configure tags >>
-# g.trace('configure tags',self.c.frame.body.bodyCtrl)
-
-for name in default_colors_dict:
-    option_name,default_color = default_colors_dict[name]
-    option_color = c.config.getColor(option_name)
-    color = g.choose(option_color,option_color,default_color)
-    # g.trace(name,color)
-    # Must use foreground, not fg.
-    try:
-        c.frame.body.tag_configure(name, foreground=color)
-    except: # Recover after a user error.
-        c.frame.body.tag_configure(name, foreground=default_color)
-
-underline_undefined = c.config.getBool("underline_undefined_section_names")
-use_hyperlinks      = c.config.getBool("use_hyperlinks")
-self.use_hyperlinks = use_hyperlinks
-
-# underline=var doesn't seem to work.
-if 0: # use_hyperlinks: # Use the same coloring, even when hyperlinks are in effect.
-    c.frame.body.tag_configure("link",underline=1) # defined
-    c.frame.body.tag_configure("name",underline=0) # undefined
-else:
-    c.frame.body.tag_configure("link",underline=0)
-    if underline_undefined:
-        c.frame.body.tag_configure("name",underline=1)
-    else:
-        c.frame.body.tag_configure("name",underline=0)
-
-# 8/4/02: we only create tags for whitespace when showing invisibles.
-if self.showInvisibles:
-    for name,option_name,default_color in (
-        ("blank","show_invisibles_space_background_color","Gray90"),
-        ("tab",  "show_invisibles_tab_background_color",  "Gray80")):
-        option_color = c.config.getColor(option_name)
-        color = g.choose(option_color,option_color,default_color)
-        try:
-            c.frame.body.tag_configure(name,background=color)
-        except: # Recover after a user error.
-            c.frame.body.tag_configure(name,background=default_color)
-
-# 11/15/02: Colors for latex characters.  Should be user options...
-
-if 1: # Alas, the selection doesn't show if a background color is specified.
-    c.frame.body.tag_configure("latexModeBackground",foreground="black")
-    c.frame.body.tag_configure("latexModeKeyword",foreground="blue")
-    c.frame.body.tag_configure("latexBackground",foreground="black")
-    c.frame.body.tag_configure("latexKeyword",foreground="blue")
-else: # Looks cool, and good for debugging.
-    c.frame.body.tag_configure("latexModeBackground",foreground="black",background="seashell1")
-    c.frame.body.tag_configure("latexModeKeyword",foreground="blue",background="seashell1")
-    c.frame.body.tag_configure("latexBackground",foreground="black",background="white")
-    c.frame.body.tag_configure("latexKeyword",foreground="blue",background="white")
-
-# Tags for wiki coloring.
-if self.showInvisibles:
-    c.frame.body.tag_configure("elide",background="yellow")
-else:
-    c.frame.body.tag_configure("elide",elide="1")
-c.frame.body.tag_configure("bold",font=self.bold_font)
-c.frame.body.tag_configure("italic",font=self.italic_font)
-c.frame.body.tag_configure("bolditalic",font=self.bolditalic_font)
-for name in self.color_tags_list:
-    c.frame.body.tag_configure(name,foreground=name)
-#@-node:ekr.20031218072017.1603:<< configure tags >>
-#@+node:ekr.20031218072017.370:<< configure language-specific settings >> colorizer
-# Define has_string, keywords, single_comment_start, block_comment_start, block_comment_end.
-
-if self.language == "cweb": # Use C comments, not cweb sentinel comments.
-    delim1,delim2,delim3 = g.set_delims_from_language("c")
-elif self.comment_string:
-    delim1,delim2,delim3 = g.set_delims_from_string(self.comment_string)
-elif self.language == "plain": # 1/30/03
-    delim1,delim2,delim3 = None,None,None
-else:
-    delim1,delim2,delim3 = g.set_delims_from_language(self.language)
-
-self.single_comment_start = delim1
-self.block_comment_start = delim2
-self.block_comment_end = delim3
-
-# A strong case can be made for making this code as fast as possible.
-# Whether this is compatible with general language descriptions remains to be seen.
-self.case_sensitiveLanguage = self.language not in case_insensitiveLanguages
-self.has_string = self.language != "plain"
-if self.language == "plain":
-    self.string_delims = ()
-elif self.language in ("elisp","html"):
-    self.string_delims = ('"')
-else:
-    self.string_delims = ("'",'"')
-self.has_pp_directives = self.language in ("c","csharp","cweb","latex")
-
-# The list of languages for which keywords exist.
-# Eventually we might just use language_delims_dict.keys()
-languages = [
-    "actionscript","ada","c","csharp","css","cweb","elisp","html","java","latex","lua",
-    "pascal","perl","perlpod","php","plsql","python","rapidq","rebol","ruby","shell","tcltk"]
-
-self.keywords = []
-if self.language == "cweb":
-    for i in self.c_keywords:
-        self.keywords.append(i)
-    for i in self.cweb_keywords:
-        self.keywords.append(i)
-else:
-    for name in languages:
-        if self.language==name: 
-            # g.trace("setting keywords for",name)
-            self.keywords = getattr(self, name + "_keywords")
-
-# Color plain text unless we are under the control of @nocolor.
-# state = g.choose(self.flag,"normal","nocolor")
-state = self.setFirstLineState()
-
-if 1: # 10/25/02: we color both kinds of references in cweb mode.
-    self.lb = "<<"
-    self.rb = ">>"
-else:
-    self.lb = g.choose(self.language == "cweb","@<","<<")
-    self.rb = g.choose(self.language == "cweb","@>",">>")
-#@-node:ekr.20031218072017.370:<< configure language-specific settings >> colorizer
-#@-node:ekr.20031218072017.1602:<< initialize ivars & tags >> colorizeAnyLanguage
-#@+node:ekr.20031218072017.1881:<< all state ivars match >>
-self.flag == self.last_flag and
-self.last_language == self.language
-#@-node:ekr.20031218072017.1881:<< all state ivars match >>
-#@+node:ekr.20031218072017.1882:<< incrementally color the text >>
-@  Each line has a starting state.  The starting state for the first line is always "normal".
-
-We need remember only self.lines and self.states between colorizing.  It is not necessary to know where the text comes from, only what the previous text was!  We must always colorize everything when changing nodes, even if all lines match, because the context may be different.
-
-We compute the range of lines to be recolored by comparing leading lines and trailing lines of old and new text.  All other lines (the middle lines) must be colorized, as well as any trailing lines whose states may have changed as the result of changes to the middle lines.
-@c
-
-if self.trace: g.trace("incremental",self.language)
-
-# 6/30/03: make a copies of everything
-old_lines = self.lines[:]
-old_states = self.states[:]
-new_lines = lines[:]
-new_states = []
-
-new_len = len(new_lines)
-old_len = len(old_lines)
-
-if new_len == 0:
-    self.states = []
-    self.lines = []
-    return
-
-# Bug fix: 11/21/02: must test against None.
-if leading != None and trailing != None:
-    # g.pr("leading,trailing:",leading,trailing)
-    leading_lines = leading
-    trailing_lines = trailing
-else:
-    << compute leading, middle & trailing lines >>
-
-middle_lines = new_len - leading_lines - trailing_lines
-# g.pr("middle lines", middle_lines)
-
-<< clear leading_lines if middle lines involve @color or @recolor  >>
-<< initialize new states >>
-<< colorize until the states match >>
-#@+node:ekr.20031218072017.1883:<< compute leading, middle & trailing  lines >>
-@ The leading lines are the leading matching lines.  The trailing lines are the trailing matching lines.  The middle lines are all other new lines.  We will color at least all the middle lines.  There may be no middle lines if we delete lines.
-@c
-
-min_len = min(old_len,new_len)
-
-i = 0
-while i < min_len:
-    if old_lines[i] != new_lines[i]:
-        break
-    i += 1
-leading_lines = i
-
-if leading_lines == new_len:
-    # All lines match, and we must color _everything_.
-    # (several routine delete, then insert the text again,
-    # deleting all tags in the process).
-    # g.pr("recolor all")
-    leading_lines = trailing_lines = 0
-else:
-    i = 0
-    while i < min_len - leading_lines:
-        if old_lines[old_len-i-1] != new_lines[new_len-i-1]:
-            break
-        i += 1
-    trailing_lines = i
-#@-node:ekr.20031218072017.1883:<< compute leading, middle & trailing  lines >>
-#@+node:ekr.20031218072017.1884:<< clear leading_lines if middle lines involve @color or @recolor  >>
-@ 11/19/02: Changing @color or @nocolor directives requires we recolor all leading states as well.
-@c
-
-if trailing_lines == 0:
-    m1 = new_lines[leading_lines:]
-    m2 = old_lines[leading_lines:]
-else:
-    m1 = new_lines[leading_lines:-trailing_lines]
-    m2 = old_lines[leading_lines:-trailing_lines]
-m1.extend(m2) # m1 now contains all old and new middle lines.
-if m1:
-    for s in m1:
-        ### s = g.toUnicode(s)
-        i = g.skip_ws(s,0)
-        if g.match_word(s,i,"@color") or g.match_word(s,i,"@nocolor"):
-            leading_lines = 0
-            break
-#@-node:ekr.20031218072017.1884:<< clear leading_lines if middle lines involve @color or @recolor  >>
-#@+node:ekr.20031218072017.1885:<< initialize new states >>
-# Copy the leading states from the old to the new lines.
-i = 0
-while i < leading_lines and i < old_len: # 12/8/02
-    new_states.append(old_states[i])
-    i += 1
-
-# We know the starting state of the first middle line!
-if middle_lines > 0 and i < old_len:
-    new_states.append(old_states[i])
-    i += 1
-
-# Set the state of all other middle lines to "unknown".
-first_trailing_line = max(0,new_len - trailing_lines)
-while i < first_trailing_line:
-    new_states.append("unknown")
-    i += 1
-
-# Copy the trailing states from the old to the new lines.
-i = max(0,old_len - trailing_lines)
-while i < old_len and i < len(old_states):
-    new_states.append(old_states[i])
-    i += 1
-
-# 1/8/03: complete new_states by brute force.
-while len(new_states) < new_len:
-    new_states.append("unknown")
-#@-node:ekr.20031218072017.1885:<< initialize new states >>
-#@+node:ekr.20031218072017.1886:<< colorize until the states match >>
-# Colorize until the states match.
-# All middle lines have "unknown" state, so they will all be colored.
-
-# Start in the state _after_ the last leading line, which may be unknown.
-i = leading_lines
-while i > 0:
-    if i < old_len and i < new_len:
-        state = new_states[i]
-        # assert(state!="unknown") # This can fail.
-        break
-    else:
-        i -= 1
-
-if i == 0:
-    # Color plain text unless we are under the control of @nocolor.
-    # state = g.choose(self.flag,"normal","nocolor")
-    state = self.setFirstLineState()
-    new_states[0] = state
-
-# The new_states[] will be "unknown" unless the lines match,
-# so we do not need to compare lines here.
-while i < new_len:
-    self.line_index = i + 1
-    state = self.colorizeLine(new_lines[i],state)
-    i += 1
-    # Set the state of the _next_ line.
-    if i < new_len and state != new_states[i]:
-        new_states[i] = state
-    else: break
-
-# Update the ivars
-self.states = new_states
-self.lines = new_lines
-#@-node:ekr.20031218072017.1886:<< colorize until the states match >>
-#@-node:ekr.20031218072017.1882:<< incrementally color the text >>
-#@+node:ekr.20031218072017.1887:<< non-incrementally color the text >>
-if self.trace: g.trace("non-incremental",self.language)
-
-self.line_index = 1 # The Tk line number for indices, as in n.i
-for s in lines:
-    state = self.colorizeLine(s,state)
-    self.line_index += 1
-#@-node:ekr.20031218072017.1887:<< non-incrementally color the text >>
-#@+node:ekr.20031218072017.1888:<< update state ivars >>
-self.last_flag = self.flag
-self.last_language = self.language
-#@nonl
-#@-node:ekr.20031218072017.1888:<< update state ivars >>
-#@+node:ekr.20031218072017.1889:<< set state ivars to "unknown" >>
-self.last_flag = "unknown"
-self.last_language = "unknown"
-#@-node:ekr.20031218072017.1889:<< set state ivars to "unknown" >>
-#@-node:ekr.20031218072017.1880:colorizeAnyLanguage & allies
-#@+node:ekr.20080828103146.15:c.scanAtPathDirectives
-def scanAtPathDirectives(self,aList,force=False,createPath=True):
-
-    '''Scan aList for @path directives.
-    Return a reasonable default if no @path directive is found.'''
-
-    trace = False and not g.unitTesting
-    verbose = True
-
-    c = self
-    c.scanAtPathDirectivesCount += 1 # An important statistic.
-    if trace and verbose: g.trace('**entry',g.callers(4))
-
-    # Step 1: Compute the starting path.
-    # The correct fallback directory is the absolute path to the base.
-    if c.openDirectory:  # Bug fix: 2008/9/18
-        base = c.openDirectory
-    else:
-        base = g.app.config.relative_path_base_directory
-        if base and base == "!":    base = g.app.loadDir
-        elif base and base == ".":  base = c.openDirectory
-
-    if trace and verbose:
-        g.trace('base   ',base)
-        g.trace('loadDir',g.app.loadDir)
-
-    absbase = c.os_path_finalize_join(g.app.loadDir,base)
-
-    if trace and verbose: g.trace('absbase',absbase)
-
-    # Step 2: look for @path directives.
-    paths = [] ; fileName = None
-    for d in aList:
-        # Look for @path directives.
-        path = d.get('path')
-        warning = d.get('@path_in_body')
-        if trace and path:
-            g.trace('**** d',d)
-            g.trace('**** @path path',path)
-        if path is not None: # retain empty paths for warnings.
-            # Convert "path" or <path> to path.
-            path = g.stripPathCruft(path)
-            if path and path not in paths and not warning:
-                paths.append(path)
-            # We will silently ignore empty @path directives.
-
-    # Add absbase and reverse the list.
-    paths.append(absbase)
-    paths.reverse()
-
-    # Step 3: Compute the full, effective, absolute path.
-    if trace and verbose:
-        g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
-    path = c.os_path_finalize_join(*paths)
-    if trace and verbose: g.trace('joined path:',path)
-
-    # Step 4: Make the path if necessary.
-    if path and createPath and not g.os_path_exists(path):
-        ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
-        if not ok:
-            if force:
-                g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
-            path = absbase # Bug fix: 2008/9/18
-
-    if trace: g.trace('returns',path)
-
-    return path
-#@-node:ekr.20080828103146.15:c.scanAtPathDirectives
-#@+node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
-def __init__ (self,c):
-
-    trace = False and not g.unitTesting
-    self.c = c
-
-    if trace: g.trace('+' * 20,'(c.configSettings)',
-        c and c.shortFileName(),g.callers(5))
-
-    # Init these here to keep pylint happy.
-    self.default_derived_file_encoding = None
-    self.new_leo_file_encoding = None
-    self.redirect_execute_script_output_to_log_pane = None
-
-    self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
-    self.defaultLogFontSize  = g.app.config.defaultLogFontSize
-    self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
-    self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
-
-    for key in g.app.config.encodingIvarsDict:
-        if key != '_hash':
-            self.initEncoding(key)
-
-    for key in g.app.config.ivarsDict:
-        if key != '_hash':
-            self.initIvar(key)
-#@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
-#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
-# This is a generalization of os.makedir.
-
-def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
-
-    """Attempt to make all non-existent directories"""
-
-    trace = False and not g.unitTesting
-    testing = False # True: don't actually make the directories.
-
-    if force:
-        create = True # Bug fix: g.app.config will not exist during startup.
-    elif c:
-        create = c.config and c.config.create_nonexistent_directories
-    else:
-        create = (g.app and g.app.config and
-            g.app.config.create_nonexistent_directories)
-
-    if not force and not create:
-        if trace: g.trace('did not create: force and create are both false')
-        return None
-
-    if trace:
-        g.trace('\n',theDir,'\n',g.callers(4))
-        # g.trace('c exists: %s force: %s create: %s dir: %s' % (
-            # c is not None,force,create,theDir))
-
-    if c: theDir = g.os_path_expandExpression(theDir,c=c)
-
-    dir1 = theDir = g.os_path_normpath(theDir)
-
-    # Split theDir into all its component parts.
-    paths = []
-    while len(theDir) > 0:
-        head,tail=g.os_path_split(theDir)
-        if len(tail) == 0:
-            paths.append(head)
-            break
-        else:
-            paths.append(tail)
-            theDir = head
-    path = ""
-    paths.reverse()
-    if trace: g.trace('paths:',paths)
-    for s in paths:
-        path = g.os_path_join(path,s)
-        if not g.os_path_exists(path):
-            try:
-                if testing:
-                    g.trace('***making',path)
-                else:
-                    os.mkdir(path)
-                if verbose and not testing and not g.app.unitTesting:
-                    # g.trace('***callers***',g.callers(5))
-                    g.es_print("created directory:",path,color='red')
-            except Exception:
-                # g.trace(g.callers())
-                if verbose: g.es_print("exception creating directory:",path,color='red')
-                g.es_exception()
-                return None
-    return dir1 # All have been created.
-#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
-#@+node:ekr.20031218072017.1386:g.getOutputNewline
-def getOutputNewline (c=None,name=None):
-
-    '''Convert the name of a line ending to the line ending itself.
-
-    Priority:
-    - Use name if name given
-    - Use c.config.output_newline if c given,
-    - Otherwise use g.app.config.output_newline.'''
-
-    if name: s = name
-    elif c:  s = c.config.output_newline
-    else:    s = app.config.output_newline
-
-    if not s: s = ''
-    s = s.lower()
-    if s in ( "nl","lf"): s = '\n'
-    elif s == "cr": s = '\r'
-    elif s == "platform": s = os.linesep  # 12/2/03: emakital
-    elif s == "crlf": s = "\r\n"
-    else: s = '\n' # Default for erroneous values.
-    # g.trace(c,name,c.config.output_newline,'returns',repr(s))
-
-    if g.isPython3:
-        s = str(s)
-    return s
-#@-node:ekr.20031218072017.1386:g.getOutputNewline
-#@+node:ekr.20031218072017.1596:g.doHook
-@ This global function calls a hook routine.  Hooks are identified by the tag param.
-Returns the value returned by the hook routine, or None if the there is an exception.
-
-We look for a hook routine in three places:
-1. c.hookFunction
-2. app.hookFunction
-3. leoPlugins.doPlugins()
-We set app.hookError on all exceptions.  Scripts may reset app.hookError to try again.
-@c
-
-def doHook(tag,*args,**keywords):
-
-    trace = False ; verbose = False
-
-    if g.app.killed or g.app.hookError: # or (g.app.gui and g.app.gui.isNullGui):
-        return None
-
-    if args:
-        # A minor error in Leo's core.
-        g.pr("***ignoring args param.  tag = %s" % tag)
-
-    if not g.app.config.use_plugins:
-        if tag in ('open0','start1'):
-            s = "Plugins disabled: use_plugins is 0 in a leoSettings.leo file."
-            g.es_print(s,color="blue")
-        return None
-
-    # Get the hook handler function.  Usually this is doPlugins.
-    c = keywords.get("c")
-    f = (c and c.hookFunction) or g.app.hookFunction
-
-    if trace and (verbose or tag != 'idle'):
-        g.trace('tag',tag,'f',f and f.__name__)
-
-    if not f:
-        import leo.core.leoPlugins as leoPlugins
-        g.app.hookFunction = f = leoPlugins.doPlugins
-
-    try:
-        # Pass the hook to the hook handler.
-        # g.pr('doHook',f.__name__,keywords.get('c'))
-        return f(tag,keywords)
-    except Exception:
-        g.es_exception()
-        g.app.hookError = True # Supress this function.
-        g.app.idleTimeHook = False # Supress idle-time hook
-        return None # No return value
-#@-node:ekr.20031218072017.1596:g.doHook
-#@+node:ekr.20041113113140:loadOnePlugin
-def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
-
-    trace = False # and not g.unitTesting
-
-    global loadedModules,loadingModuleNameStack
-
-    # Prevent Leo from crashing if .leoID.txt does not exist.
-    if g.app.config is None:
-        print ('No g.app.config, making stub...')
-        class StubConfig(g.nullObject):
-            pass
-        g.app.config = StubConfig()
-
-    # Fixed reversion: do this after possibly creating stub config class.
-    verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
-    warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
-
-    if moduleOrFileName.endswith('.py'):
-        moduleName = moduleOrFileName [:-3]
-    else:
-        moduleName = moduleOrFileName
-    moduleName = g.shortFileName(moduleName)
-
-    if isLoaded(moduleName):
-        module = loadedModules.get(moduleName)
-        if trace or verbose:
-            g.trace('plugin',moduleName,'already loaded',color="blue")
-        return module
-
-    assert g.app.loadDir
-
-    plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
-    moduleName = g.toUnicode(moduleName)
-
-    # This import will typically result in calls to registerHandler.
-    # if the plugin does _not_ use the init top-level function.
-    loadingModuleNameStack.append(moduleName)
-    result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
-    loadingModuleNameStack.pop()
-
-    if result:
-        loadingModuleNameStack.append(moduleName)
-
-        if tag == 'unit-test-load':
-            pass # Keep the result, but do no more.
-        elif hasattr(result,'init'):
-            try:
-                # Indicate success only if init_result is True.
-                init_result = result.init()
-                # g.trace('result',result,'init_result',init_result)
-                if init_result:
-                    loadedModules[moduleName] = result
-                    loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
-                else:
-                    if verbose and not g.app.initing:
-                        g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")
-                    result = None
-            except Exception:
-                g.es_print('exception loading plugin',color='red')
-                g.es_exception()
-                result = None
-        else:
-            # No top-level init function.
-            # Guess that the module was loaded correctly,
-            # but do *not* load the plugin if we are unit testing.
-
-            if g.app.unitTesting:
-                result = None
-                loadedModules[moduleName] = None
-            else:
-                g.trace('no init()',moduleName)
-                loadedModules[moduleName] = result
-        loadingModuleNameStack.pop()
-
-    if g.app.batchMode or g.app.inBridge: # or g.unitTesting
-        pass
-    elif result:
-        if trace or verbose:
-            g.trace('loaded plugin:',moduleName,color="blue")
-    else:
-        if trace or warn_on_failure or (verbose and not g.app.initing):
-            if trace or tag == 'open0':
-                g.trace('can not load enabled plugin:',moduleName,color="red")
-
-    return result
-#@-node:ekr.20041113113140:loadOnePlugin
-#@+node:ekr.20061031131434.100:addModeCommands (enterModeCallback)
-def addModeCommands (self):
-
-    '''Add commands created by @mode settings to c.commandsDict and k.inverseCommandsDict.'''
-
-    k = self ; c = k.c
-    d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
-
-    # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
-    for key in d:
-
-        def enterModeCallback (event=None,name=key):
-            k.enterNamedMode(event,name)
-
-        c.commandsDict[key] = f = enterModeCallback
-        k.inverseCommandsDict [f.__name__] = key
-        # g.trace('leoCommands %24s = %s' % (f.__name__,key))
-#@-node:ekr.20061031131434.100:addModeCommands (enterModeCallback)
-#@-node:ekr.20100202145902.6108:code
-#@-node:ekr.20100130042842.9008: Notes
-#@+node:ekr.20041118104831.1:class configSettings (leoCommands)
-class configSettings:
-
-    """A class to hold config settings for commanders."""
-
-    @others
-#@+node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
-def __init__ (self,c):
-
-    trace = False and not g.unitTesting
-    self.c = c
-
-    if trace: g.trace('+' * 20,'(c.configSettings)',
-        c and c.shortFileName(),g.callers(5))
-
-    # Init these here to keep pylint happy.
-    self.default_derived_file_encoding = None
-    self.new_leo_file_encoding = None
-    self.redirect_execute_script_output_to_log_pane = None
-
-    self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
-    self.defaultLogFontSize  = g.app.config.defaultLogFontSize
-    self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
-    self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
-
-    for key in g.app.config.encodingIvarsDict:
-        if key != '_hash':
-            self.initEncoding(key)
-
-    for key in g.app.config.ivarsDict:
-        if key != '_hash':
-            self.initIvar(key)
-#@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
-#@+node:ekr.20041118104240:initIvar (c.configSettings)
-def initIvar(self,key):
-
-    trace = False and not g.unitTesting
-    c = self.c
-
-    # N.B. The key is munged.
-    bunch = g.app.config.ivarsDict.get(key)
-    ivarName = bunch.ivar
-    val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
-
-    if val or not hasattr(self,ivarName):
-        if trace: g.trace('c.configSettings',c.shortFileName(),ivarName,val)
-        setattr(self,ivarName,val)
-#@-node:ekr.20041118104240:initIvar (c.configSettings)
-#@+node:ekr.20041118104414:initEncoding
-def initEncoding (self,key):
-
-    c = self.c
-
-    # N.B. The key is munged.
-    bunch = g.app.config.encodingIvarsDict.get(key)
-    encodingName = bunch.ivar
-    encoding = g.app.config.get(c,encodingName,kind='string')
-
-    # New in 4.4b3: use the global setting as a last resort.
-    if encoding:
-        # g.trace('c.configSettings',c.shortFileName(),encodingName,encoding)
-        setattr(self,encodingName,encoding)
-    else:
-        encoding = getattr(g.app.config,encodingName)
-        # g.trace('g.app.config',c.shortFileName(),encodingName,encoding)
-        setattr(self,encodingName,encoding)
-
-    if encoding and not g.isValidEncoding(encoding):
-        g.es("bad", "%s: %s" % (encodingName,encoding))
-#@-node:ekr.20041118104414:initEncoding
-#@+node:ekr.20041118053731:Getters (c.configSettings)
-def get (self,setting,theType):
-    '''A helper function: return the commander's setting, checking the type.'''
-    return g.app.config.get(self.c,setting,theType)
-
-def getAbbrevDict (self):
-    '''return the commander's abbreviation dictionary.'''
-    return g.app.config.getAbbrevDict(self.c)
-
-def getBool (self,setting,default=None):
-    '''Return the value of @bool setting, or the default if the setting is not found.'''
-    return g.app.config.getBool(self.c,setting,default=default)
-
-def getButtons (self):
-    '''Return a list of tuples (x,y) for common @button nodes.'''
-    return g.app.config.atCommonButtonsList # unusual.
-
-def getColor (self,setting):
-    '''Return the value of @color setting.'''
-    return g.app.config.getColor(self.c,setting)
-
-def getCommands (self):
-    '''Return the list of tuples (headline,script) for common @command nodes.'''
-    return g.app.config.atCommonCommandsList # unusual.
-
-def getData (self,setting):
-    '''Return a list of non-comment strings in the body text of @data setting.'''
-    return g.app.config.getData(self.c,setting)
-
-def getDirectory (self,setting):
-    '''Return the value of @directory setting, or None if the directory does not exist.'''
-    return g.app.config.getDirectory(self.c,setting)
-
-def getFloat (self,setting):
-    '''Return the value of @float setting.'''
-    return g.app.config.getFloat(self.c,setting)
-
-def getFontFromParams (self,family,size,slant,weight,defaultSize=12):
-
-    '''Compute a font from font parameters.
-
-    Arguments are the names of settings to be use.
-    Default to size=12, slant="roman", weight="normal".
-
-    Return None if there is no family setting so we can use system default fonts.'''
-
-    return g.app.config.getFontFromParams(self.c,
-        family, size, slant, weight, defaultSize = defaultSize)
-
-def getInt (self,setting):
-    '''Return the value of @int setting.'''
-    return g.app.config.getInt(self.c,setting)
-
-def getLanguage (self,setting):
-    '''Return the value of @string setting.
-
-    The value of this setting should be a language known to Leo.'''
-    return g.app.config.getLanguage(self.c,setting)
-
-def getMenusList (self):
-    '''Return the list of entries for the @menus tree.'''
-    return g.app.config.getMenusList(self.c) # Changed in Leo 4.5.
-
-def getOpenWith (self):
-    '''Return a list of dictionaries corresponding to @openwith nodes.'''
-    return g.app.config.getOpenWith(self.c)
-
-def getRatio (self,setting):
-    '''Return the value of @float setting.
-    Warn if the value is less than 0.0 or greater than 1.0.'''
-    return g.app.config.getRatio(self.c,setting)
-
-def getRecentFiles (self):
-    '''Return the list of recently opened files.'''
-    return g.app.config.getRecentFiles()
-
-def getShortcut (self,shortcutName):
-    '''Return the tuple (rawKey,accel) for shortcutName in @shortcuts tree.'''
-    return g.app.config.getShortcut(self.c,shortcutName)
-
-def getSettingSource(self,setting):
-    '''return the name of the file responsible for setting.'''
-    return g.app.config.getSettingSource(self.c,setting)
-
-def getString (self,setting):
-    '''Return the value of @string setting.'''
-    return g.app.config.getString(self.c,setting)
-#@-node:ekr.20041118053731:Getters (c.configSettings)
-#@+node:ekr.20041118195812:Setters... (c.configSettings)
-def setRecentFiles (self,files):
-    '''Update the recent files list.'''
-    # Append the files to the global list.
-    g.app.config.appendToRecentFiles(files)
-#@-node:ekr.20041118195812:Setters... (c.configSettings)
-#@-node:ekr.20041118104831.1:class configSettings (leoCommands)
-#@-node:ekr.20100202145902.6106:Init all settings in c.initConfigSettings
-#@+node:ekr.20100219083854.5615:Improve caching
-#@+node:ekr.20100209160132.5770:cache notes
-@nocolor-node
-
-Top-level folder are direct subfolders of .leo/db.
-Top-level folders represent file *locations* not file contents.
-Exception: the top-level "globals" folder represents minor data.
-
-Only two files are ever needed in a top-level folder:
-
-contents_<key>: the contents of the file.
-data_<key>: a dict representing the "minor data" of the file:
-    <globals> element stuff, expansion bits, etc.
-
-We write contents_<key> only once.
-By definition, its contents never changes, since the contents generates the key.
-We can write data_<key> as many times as we like.
-
-To do:
-- Simplify or even eliminate the path-manipulation code in PickleShareDB.
-- Use g.makeAllNonExistentDirectories to make top-level directories.
-- Clear cache should clear all top-level directories.
-#@nonl
-#@+node:ekr.20100209114432.5751:Cache expansion bits
-# Simplify the structure of the cache: put more into the "minor" files.
-#@nonl
-#@-node:ekr.20100209114432.5751:Cache expansion bits
-#@-node:ekr.20100209160132.5770:cache notes
-#@+node:ekr.20100211095442.6201:cache notes 2
-@nocolor-node
-
-1. Memory does leak, and that's not ok with me.  And I want just two
-files per top-level directory.
-
-2. Strange things can happen with caching, as just happened to me when
-I restored qtui_generate.py mistakenly deleted from leo/test.  There
-is an @auto node for this file in qtGui.py, and I got improper 'can
-not open' messages for this file.
-
-3. It is troubling that the present caching scheme does not use the
-full path to a file, only the basename.  This means that two identical
-files in two different places will use the same cache entries.  I've
-been wondering for the last several days about whether this could
-cause problems.  I don't know for sure, but I am uncomfortable.
-
-4. I want the clear-cache and clear-all-caches commands to do what
-they say: get rid of everything.  Among other things, this is good for
-debugging and recovering from cache problems.
-
-#@-node:ekr.20100211095442.6201:cache notes 2
-#@+node:ekr.20100223075705.5635:Don't write expansion bits
-#@-node:ekr.20100223075705.5635:Don't write expansion bits
-#@+node:ekr.20100210163813.5748:Caching buglets?
-@nocolor-node
-
-This is a recent bug, but imo it has uncovered some other caching buglets. These
-buglets are not big enough to delay Leo 4.7, but the new caching scheme would
-ensure they never bite.
-
-1. The code that computes what I have been calling the top-level directory is dubious::
-
-    dbdirname = join(g.app.homeLeoDir,'db',
-            '%s_%s' % (bname,hashlib.md5(fn).hexdigest()))
-
-The problem is that bname is only the base name of the cached file, not a name
-(or key) that depends on the full path. Thus, two copies of the same file in the
-same place will be cached in the same directory. Is this ominous?
-
-2. It's not clear what caching to do with the save-to command.
-#@-node:ekr.20100210163813.5748:Caching buglets?
-#@-node:ekr.20100219083854.5615:Improve caching
-#@-node:ekr.20100223123910.5836:Immediately
-#@+node:ekr.20100206074650.5844:Cleanups & features: first
-#@+node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
-
-Python uses Sphinx for its doc, they have a discussion about making
-the TOC on the left hand side collapsible/non-scrolling here:
-
-http://www.google.com/url?sa=t&source=web&ct=res&cd=4&ved=0CBYQFjAD&url=http%3A%2F%2Fbugs.python.org%2Fissue3143&ei=bW5oS-eQIJDalAfqlYyGCA&usg=AFQjCNGyhpE3wZ2jvfwA0dwjCfoAxleDRQ&sig2=2CRD7hNMmx1NzFHMyOq_cQ
-
-that includes code for the CSS stylesheet to do this.
-
-Although this does not appear in the python docs (yet), it might be
-valuable for Leo's Doc's
-
-
-
-I downloaded the example files from the above link, the collapsible
-sidebar works well with the python documentation.  As the Leo
-documentation is just a variant of python's, I downloaded a HTML
-chapter and the support files kept in .../static, then I placed the
-"sidebar.js" in with those files on my local copy.  To make the
-sidebar collapsing work, all I had to do was add it to the list of
-javascript files in the chapter .html file, i.e., I added the second
-line below
-
-    <script type="text/javascript" src="IPythonBridge_files/
-doctools.js"></script>
-    <script type="text/javascript" src="IPythonBridge_files/
-sidebar.js"></script>
-
-in the 'head' section, (the above takes into account that I was doing
-this on my local, differently arranged, copy).
-
-That is all that it takes to give us a collapsible TOC
-#@nonl
-#@-node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
+#@-node:ekr.20100223123910.5835:Improve python importer
 #@+node:ekr.20100223115556.5833:To do: suppress @nonl sentinel
 #@-node:ekr.20100223115556.5833:To do: suppress @nonl sentinel
 #@+node:ekr.20090131200406.11:Remove remaining tk-isms from Leo's core

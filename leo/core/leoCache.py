@@ -328,7 +328,7 @@ class cacher:
         s,e = g.readFileIntoString(fileName,raw=True,silent=True)
         if s is None:
             if trace: g.trace('empty file contents',fileName)
-            return False,None
+            return s,False,None
         assert not g.isUnicode(s)
 
         # There will be a bug if s is not already an encoded string.
@@ -343,7 +343,7 @@ class cacher:
             aList = self.db[key]
             self.createOutlineFromCacheList(root.v,aList,fileName=fileName)
 
-        return ok,key
+        return s,ok,key
     #@-node:ekr.20100208071151.5905:readFile (cacher)
     #@-node:ekr.20100208082353.5925:Reading
     #@+node:ekr.20100208082353.5927:Writing

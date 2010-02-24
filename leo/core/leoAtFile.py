@@ -467,7 +467,9 @@ class atFile:
 
         """Read an @thin or @file tree."""
 
-        # g.trace(root.h,len(root.b))
+
+        trace = False and not g.unitTesting
+        if trace: g.trace(root.h,len(root.b))
         at = self ; c = at.c
         fileName = at.initFileName(fromString,importFileName,root)
         if not fileName:
@@ -485,13 +487,22 @@ class atFile:
         root.v.at_read = True # Remember that we have read this file.
 
         # Get the file from the cache if possible.
-        loaded,fileKey = c.cacher.readFile(fileName,root)
+        s,loaded,fileKey = c.cacher.readFile(fileName,root)
+        # 2010/02/24: Never read an external file
+        # with file-like sentinels from the cache.
+        isFileLike = at.isFileLike(s)
+        if isFileLike:
+            # if trace: g.trace('file-like file',fileName)
+            force = True # Disable caching.
         if loaded and not force:
+            if trace: g.trace('in cache',fileName)
             at.inputFile.close()
             root.clearDirty()
             return True
         if not g.unitTesting:
             g.es("reading:",root.h)
+            if isFileLike:
+                g.es("converting @file format in",root.h,color='red')
         root.clearVisitedInTree()
         d = at.scanAllDirectives(root,importing=at.importing,reading=True)
         thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
@@ -504,8 +515,15 @@ class atFile:
             # Used by mod_labels plugin.
             self.copyAllTempBodyStringsToTnodes(root,thinFile)
         at.deleteAllTempBodyStrings()
-        if at.errors == 0:
+        if isFileLike:
+            # 2010/02/24: Make the root @file node dirty so it will
+            # be written automatically when saving the file.
+            root.setDirty()
+            c.setChanged(True)
+        if at.errors == 0 and not isFileLike:
             c.cacher.writeFile(root,fileKey)
+
+        if trace: g.trace('root.isDirty',root.isDirty())
 
         return at.errors == 0
     #@+node:ekr.20041005105605.25:deleteAllTempBodyStrings
@@ -552,6 +570,26 @@ class atFile:
             # not fromString and
             # root.h.startswith('@file'))
     #@-node:ekr.20041005105605.22:initFileName
+    #@+node:ekr.20100224050618.11547:at.isThinFile
+    def isFileLike (self,s):
+
+        '''Return True if s is the contents of an
+        external file with file-like sentinels.'''
+
+        at = self ; tag = "@+leo"
+        s = g.toUnicode(s)
+        for line in g.splitLines(s):
+            # g.trace(repr(line))
+            i = line.find(tag)
+            if i != -1:
+                valid,new_df,start,end,isThinDerivedFile = \
+                    at.parseLeoSentinel(s)
+                # g.trace('found',repr(line))
+                return not isThinDerivedFile
+
+        # g.trace('not found')
+        return True # Error: don't use the cache.
+    #@-node:ekr.20100224050618.11547:at.isThinFile
     #@+node:ekr.20071105164407:warnAboutUnvisitedNodes
     def warnAboutUnvisitedNodes (self,root):
 
@@ -649,7 +687,7 @@ class atFile:
         # Remember that we have read this file.
         p.v.at_read = True # Create the attribute
 
-        ok,fileKey = c.cacher.readFile(fileName,p)
+        s,ok,fileKey = c.cacher.readFile(fileName,p)
         if ok: return
 
         if not g.unitTesting:
@@ -918,9 +956,9 @@ class atFile:
         trace = False and not g.unitTesting
         at = self ; v = at.root.v
 
-        if not g.unitTesting:
-            if v.isAtFileNode():
-                g.es_print('Warning: @file logic',v.h)
+        # if not g.unitTesting:
+            # if headline.startswith('@file'):
+                # g.es_print('Warning: @file logic',headline)
 
         if trace: g.trace('%s %s %s' % (
             at.tnodeListIndex,
@@ -953,6 +991,7 @@ class atFile:
         """Scan a 4.x derived file non-recursively."""
 
         trace = False and not g.unitTesting
+        verbose = True
         at = self
         #@    << init ivars for scanText4 >>
         #@+node:ekr.20041005105605.75:<< init ivars for scanText4 >>
@@ -983,6 +1022,7 @@ class atFile:
         try:
             while at.errors == 0 and not at.done:
                 s = at.readLine(theFile)
+                if trace and verbose: g.trace(repr(s))
                 self.lineNumber += 1
                 if len(s) == 0: break
                 kind = at.sentinelKind4(s)
