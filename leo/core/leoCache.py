@@ -312,10 +312,6 @@ class cacher:
         return d
     #@-node:ekr.20100208082353.5922:getCachedWindowPositionDict
     #@+node:ekr.20100208071151.5905:readFile (cacher)
-    # was atFile.readFromCache
-    # Same code as atFile.readFromCache
-    # Same code as code in atFile.readOneAtAutoNode
-
     def readFile (self,fileName,root):
 
         trace = False and not g.unitTesting

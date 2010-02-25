@@ -563,26 +563,27 @@ class atFile:
 
         return fileName
     #@-node:ekr.20041005105605.22:initFileName
-    #@+node:ekr.20100224050618.11547:at.isThinFile
+    #@+node:ekr.20100224050618.11547:at.isFileLike
     def isFileLike (self,s):
 
-        '''Return True if s is the contents of an
-        external file with file-like sentinels.'''
+        '''Return True if s has file-like sentinels.'''
 
+        trace = False and not g.unitTesting
         at = self ; tag = "@+leo"
         s = g.toUnicode(s)
-        for line in g.splitLines(s):
-            # g.trace(repr(line))
-            i = line.find(tag)
-            if i != -1:
-                valid,new_df,start,end,isThinDerivedFile = \
-                    at.parseLeoSentinel(line)
-                # g.trace('found',repr(line))
-                return not isThinDerivedFile
-
-        # g.trace('not found')
-        return True # Error: don't use the cache.
-    #@-node:ekr.20100224050618.11547:at.isThinFile
+        i = s.find(tag)
+        if i == -1:
+            if trace: g.trace('found: False')
+            return True # Don't use the cashe.
+        else:
+            j,k = g.getLine(s,i)
+            line = s[j:k]
+            valid,new_df,start,end,isThin = \
+                at.parseLeoSentinel(line)
+            if trace: g.trace('found: True isThin:',
+                isThin,repr(line))
+            return not isThin
+    #@-node:ekr.20100224050618.11547:at.isFileLike
     #@+node:ekr.20071105164407:warnAboutUnvisitedNodes
     def warnAboutUnvisitedNodes (self,root):
 
@@ -1943,6 +1944,7 @@ class atFile:
         #@nl
         if trace and not new_df:
             g.trace('not new_df(!)',repr(s))
+        if trace: g.trace('valid',valid,'isThin',isThinDerivedFile)
         return valid,new_df,start,end,isThinDerivedFile
     #@-node:ekr.20041005105605.120:at.parseLeoSentinel
     #@+node:ekr.20041005105605.129:at.scanHeader
