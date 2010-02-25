@@ -36,7 +36,7 @@ Installing Leo on Windows
 There are now two ways to install Leo on Windows:
     
 1. Use the single-click executable installer, named something like
-   LeoSetup-4.7-beta-1.exe
+   LeoSetup-4.7.1-final.exe
 
 2. Leo is distributed as a .zip file.
    To install Leo from the .zip file:

@@ -88,7 +88,7 @@ keyboard I get:
 present in the qt plugin (both with and without scintilla)
 #@-node:ekr.20081124094918.1:Fix problems with scim
 #@-node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20100223114506.3701:Leo 4.8 devel projects
+#@+node:ekr.20100223114506.3701:Leo 4.7.1
 #@+node:ekr.20100223114506.3700:Fixed expand/contract-pane commands
 #@+node:ekr.20081121105001.297:Minibuffer commands... (qtFrame)
 #@+node:ekr.20081121105001.298:contractPane
@@ -412,7 +412,7 @@ def hideOutlinePane (self,event=None):
 #@-node:ekr.20081121110412.229:fullyExpand/hide...Pane
 #@-node:ekr.20081121110412.223:Minibuffer commands... (tkFrame)
 #@-node:ekr.20100223114506.3700:Fixed expand/contract-pane commands
-#@-node:ekr.20100223114506.3701:Leo 4.8 devel projects
+#@-node:ekr.20100223114506.3701:Leo 4.7.1
 #@+node:ekr.20100223131426.3679:Unused code
 #@+node:ekr.20081121105001.214:packEditorLabelWidget (qtBody)
 def packEditorLabelWidget (self,w):

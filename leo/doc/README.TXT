@@ -1,9 +1,12 @@
-Leo 4.7 final                    February 23, 2010
+Leo 4.7.1 final                    February 26, 2010
 
-Leo 4.7 final is now available at:
+Leo 4.7.1 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
-Leo 4.7 final fixes all known bugs in Leo.
+Leo 4.7.1 fixes a dangerous bug in Leo 4.7. When converting file-like sentinels
+to thin-like sentinels, Leo now warns that it is converting the file and sets
+the @file node dirty. This ensures that Leo will write the converted external
+file whenever Leo writes the .leo file, making it impossible to lose data.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html

@@ -2339,6 +2339,10 @@ That is all that it takes to give us a collapsible TOC
 #@-node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
 #@-node:ekr.20100223123910.5836:Immediately
 #@+node:ekr.20100206074650.5844:Cleanups & features: first
+#@+node:ekr.20100225102636.5627:Use the string returned by cacher
+# It should be possible to avoid duplicate reads.
+#@nonl
+#@-node:ekr.20100225102636.5627:Use the string returned by cacher
 #@+node:ekr.20100223123910.5835:Improve python importer
 #@+node:ekr.20070703122141.65:<< class baseScannerClass >>
 class baseScannerClass (scanUtility):

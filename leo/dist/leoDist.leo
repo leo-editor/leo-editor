@@ -60,7 +60,8 @@
 </v>
 </v>
 </v>
-<v t="EKR.20040519090846"><vh>Distribution files</vh>
+<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
+<v t="ekr.20100225104302.1510"><vh>@asis ../../LICENSE.txt</vh></v>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="ekr.20080825083632.262"><vh>Leo's HOME directory</vh></v>
@@ -216,7 +217,12 @@ rm -f  $LEO_RUN_SCRIPT_OUTPUT
 
 Do a search and replace on this suffix.
 
-Latest suffix:  -final</t>
+Latest suffix:  -final
+
+Latest copyright date: 2010.
+
+Note: The top-level install.txt file creates the copyright message in the nsi
+installer.</t>
 <t tx="EKR.20040519090846.1">Leo is Open Software and is distributed under the terms of the Python License.
 The gist of the license is that Leo is absolutely free, even for commercial use
 (including resale). There is no GNU-like "copyleft" restriction. The Open Source
@@ -276,7 +282,7 @@ Installing Leo on Windows
 There are now two ways to install Leo on Windows:
     
 1. Use the single-click executable installer, named something like
-   LeoSetup-4.7-beta-1.exe
+   LeoSetup-4.7.1-final.exe
 
 2. Leo is distributed as a .zip file.
    To install Leo from the .zip file:
@@ -363,7 +369,7 @@ Thanks to Randall Voth for these instructions.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.7-final
+Version: 4.7.1-final
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -377,12 +383,15 @@ Description:
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.7 final                    February 23, 2010
+<t tx="EKR.20040519090846.9">Leo 4.7.1 final                    February 26, 2010
 
-Leo 4.7 final is now available at:
+Leo 4.7.1 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
-Leo 4.7 final fixes all known bugs in Leo.
+Leo 4.7.1 fixes a dangerous bug in Leo 4.7. When converting file-like sentinels
+to thin-like sentinels, Leo now warns that it is converting the file and sets
+the @file node dirty. This ensures that Leo will write the converted external
+file whenever Leo writes the .leo file, making it impossible to lose data.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
@@ -411,8 +420,7 @@ Leo:      http://webpages.charter.net/edreamleo/front.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
-</t>
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="EKR.20040519091259">@pagewidth 70
 @killcolor</t>
 <t tx="EKR.20040519091259.1">4.4.5       setup: 547  zip: 379  2007-12-11
@@ -2016,5 +2024,24 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20100223062731.1507"></t>
+<t tx="ekr.20100225104302.1510">Copyright 1997-2010 by Edward K. Ream. All Rights Reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</t>
 </tnodes>
 </leo_file>

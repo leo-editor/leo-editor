@@ -61,9 +61,9 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
-<v t="ekr.20050831184021.3" a="E"><vh>Front matter</vh>
-<v t="ekr.20040414172212" a="E"><vh>@rst html\frontMatter.html</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20050831184021.3"><vh>Front matter</vh>
+<v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20040414172218.4"><vh>Acknowledgements</vh>
 <v t="ekr.20040416080538"><vh>@rst-no-head special mentions</vh></v>
@@ -1053,7 +1053,7 @@
 </v>
 </v>
 <v t="ekr.20100129054823.11924"></v>
-<v t="edream.110203163054.46"><vh>Release Notes</vh>
+<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -3197,7 +3197,7 @@
 <v t="ekr.20091006093902.6560"><vh>New features</vh></v>
 </v>
 </v>
-<v t="ekr.20100118181428.8827"><vh>4.7 One-node world, Leo-3k, @auto-rst</vh>
+<v t="ekr.20100118181428.8827"><vh>4.7 One-node world, Leo-3k, @auto-rst, convert @file</vh>
 <v t="ekr.20090909083000.6547"><vh>4.7 beta 1</vh>
 <v t="ekr.20090909083000.6556"><vh>Added new Windows installer</vh></v>
 <v t="ekr.20090909083000.6555"><vh>Added new plugins</vh></v>
@@ -3462,9 +3462,6 @@
 <v t="ekr.20100209160132.11888"><vh>Created clear-cache and clear-all-caches commands</vh></v>
 </v>
 </v>
-</v>
-</v>
-<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20100223063657.7262"><vh>4.7 final</vh>
 <v t="ekr.20100223063657.7264"><vh>Bug fixed</vh>
 <v t="ekr.20100223063657.7182"><vh>Fixed calls to sort in 6 places</vh>
@@ -3488,6 +3485,12 @@
 <v t="ekr.20100223063657.7249"><vh>Improved support for wrapping in the log pane</vh></v>
 <v t="ekr.20100223063657.7263"><vh>Reformatted the output of the apropos commands</vh></v>
 </v>
+</v>
+</v>
+</v>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="ekr.20100225102026.7139" a="E"><vh>4.7.1 final</vh>
+<v t="ekr.20100225102026.7140"><vh>Changes made to Leo 4.7.1</vh></v>
 </v>
 </v>
 </v>
@@ -34445,6 +34448,65 @@ Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20100223063657.7263"></t>
 <t tx="ekr.20100223063657.7264"></t>
+<t tx="ekr.20100225102026.7139">Leo 4.7.1 final                    February 26, 2010
+
+Leo 4.7.1 final is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo 4.7.1 fixes a dangerous bug in Leo 4.7. When converting file-like sentinels
+to thin-like sentinels, Leo now warns that it is converting the file and sets
+the @file node dirty. This ensures that Leo will write the converted external
+file whenever Leo writes the .leo file, making it impossible to lose data.
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.7:
+--------------------------
+
+- Leo now uses the simplest possible internal data model.
+  This is the so-called "one-node" world.
+- Leo supports Python 3.x.
+- Leo requires Python 2.6 or above.
+- Several important improvements in file handling.
+    - Leo converts @file nodes to @thin nodes automatically.
+    - Leo creates a 'Recovered Nodes' node to hold data that
+      otherwise might be lost due to clone conflicts.
+    - @auto-rst now works much more reliably reliably.
+    - Leo no longer supports @noref trees.  Such trees are not
+      reliable in cooperative environments.
+- A new Windows installer.
+- Many other features, including new command line options and new plugins.
+- Dozens of bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20100225102026.7140">- Fixed a dangerous bug that could cause data loss when converting @file nodes
+  from file-like to thin-like sentinels. The problem arose because it was too
+  easy to save the .leo file (thus deleting the tnodeList) without forcing the
+  converted external files to be saved. The next time Leo attempted to read the
+  external files, the tnodeList would be missing and data would be lost.
+  
+  Leo's read logic now determines whether the file has file-like sentinels by
+  reading the *uncached* contents of the file. When converting file-like
+  sentinels to thin-like sentinels, Leo warns that it is converting the file and
+  sets the @file node dirty. This ensures that Leo will write the converted
+  external file whenever Leo writes the .leo file. This will make it impossible
+  for a naive user to lose data. A sophisticated user might cause problems by
+  using the write-outline-only command...
+
+- Fixed expand/contract-pane commands.
+
+- Fixed Python 3.x problems in delete-editor and cycle-editor-focus.
+
+- Added a log message for show-colors saying the color picker does not exist for qt.
+
+- Corrected date in trunk/license.txt.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?
