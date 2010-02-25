@@ -329,7 +329,7 @@ class cacher:
 
         # There will be a bug if s is not already an encoded string.
         key = self.fileKey(root.h,s,requireEncodedString=True)
-        ok = key in self.db
+        ok = self.db and key in self.db
         if trace: g.trace('in cache',ok,fileName,key)
         if ok:
             # Delete the previous tree, regardless of the @<file> type.

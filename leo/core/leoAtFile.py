@@ -501,7 +501,11 @@ class atFile:
             return True
         if not g.unitTesting:
             g.es("reading:",root.h)
-            if isFileLike:
+        if isFileLike:
+            if g.unitTesting:
+                if 0: print("converting @file format in",root.h)
+                g.app.unitTestDict['read-convert']=True
+            else:
                 g.es("converting @file format in",root.h,color='red')
         root.clearVisitedInTree()
         d = at.scanAllDirectives(root,importing=at.importing,reading=True)

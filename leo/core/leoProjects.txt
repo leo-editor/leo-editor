@@ -108,27 +108,7 @@ def new (self,event=None,gui=None):
     return c # For unit test.
 #@-node:ekr.20031218072017.1623:c.new
 #@-node:ekr.20100225102636.5626:Testing
-#@+node:ekr.20100224050618.11547:at.isFileLike
-def isFileLike (self,s):
-
-    '''Return True if s has file-like sentinels.'''
-
-    trace = False and not g.unitTesting
-    at = self ; tag = "@+leo"
-    s = g.toUnicode(s)
-    i = s.find(tag)
-    if i == -1:
-        if trace: g.trace('found: False')
-        return True # Don't use the cashe.
-    else:
-        j,k = g.getLine(s,i)
-        line = s[j:k]
-        valid,new_df,start,end,isThin = \
-            at.parseLeoSentinel(line)
-        if trace: g.trace('found: True isThin:',
-            isThin,repr(line))
-        return not isThin
-#@-node:ekr.20100224050618.11547:at.isFileLike
+#@+node:ekr.20100225120559.5631:Reference
 #@+node:ekr.20031218072017.1553:fc.getLeoFile & helpers
 # The caller should follow this with a call to c.redraw().
 
@@ -306,176 +286,6 @@ def findChild4 (self,headline):
     v.setVisited() # Supress warning/deletion of unvisited nodes.
     return v
 #@-node:ekr.20041005105605.73:findChild4
-#@+node:ekr.20041005105605.21:read (atFile) & helpers
-def read(self,root,importFileName=None,
-    fromString=None,atShadow=False,force=False
-):
-
-    """Read an @thin or @file tree."""
-
-
-    trace = False and not g.unitTesting
-    if trace: g.trace(root.h,len(root.b))
-    at = self ; c = at.c
-    fileName = at.initFileName(fromString,importFileName,root)
-    if not fileName:
-        at.error("Missing file name.  Restoring @file tree from .leo file.")
-        return False
-    at.initReadIvars(root,fileName,
-        importFileName=importFileName,atShadow=atShadow)
-    if at.errors:
-        return False
-    fileName = at.openFileForReading(fromString=fromString)
-    if at.inputFile:
-        c.setFileTimeStamp(fileName)
-    else:
-        return False
-    root.v.at_read = True # Remember that we have read this file.
-
-    # Get the file from the cache if possible.
-    s,loaded,fileKey = c.cacher.readFile(fileName,root)
-    # 2010/02/24: Never read an external file
-    # with file-like sentinels from the cache.
-    isFileLike = at.isFileLike(s)
-    if isFileLike:
-        # if trace: g.trace('file-like file',fileName)
-        force = True # Disable caching.
-    if loaded and not force:
-        if trace: g.trace('in cache',fileName)
-        at.inputFile.close()
-        root.clearDirty()
-        return True
-    if not g.unitTesting:
-        g.es("reading:",root.h)
-        if isFileLike:
-            g.es("converting @file format in",root.h,color='red')
-    root.clearVisitedInTree()
-    d = at.scanAllDirectives(root,importing=at.importing,reading=True)
-    thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
-    at.inputFile.close()
-    root.clearDirty() # May be set dirty below.
-    if at.errors == 0:
-        at.warnAboutUnvisitedNodes(root)
-        at.deleteTnodeList(root)
-    if at.errors == 0 and not at.importing:
-        # Used by mod_labels plugin.
-        self.copyAllTempBodyStringsToTnodes(root,thinFile)
-    at.deleteAllTempBodyStrings()
-    if isFileLike:
-        # 2010/02/24: Make the root @file node dirty so it will
-        # be written automatically when saving the file.
-        root.setDirty()
-        c.setChanged(True) # Essential, to keep dirty bit set.
-    if at.errors == 0 and not isFileLike:
-        c.cacher.writeFile(root,fileKey)
-
-    if trace: g.trace('root.isDirty',root.isDirty())
-
-    return at.errors == 0
-#@+node:ekr.20041005105605.25:deleteAllTempBodyStrings
-def deleteAllTempBodyStrings(self):
-
-    for v in self.c.all_unique_nodes():
-        if hasattr(v,"tempBodyString"):
-            delattr(v,"tempBodyString")
-#@-node:ekr.20041005105605.25:deleteAllTempBodyStrings
-#@+node:ekr.20100122130101.6174:deleteTnodeList
-def deleteTnodeList (self,p): # atFile method.
-
-    '''Remove p's tnodeList.'''
-
-    v = p.v
-
-    if hasattr(v,"tnodeList"):
-
-        if False: # Not an error, but a useful trace.
-            s = "deleting tnodeList for " + repr(v)
-            g.es_print(s,color="blue")
-
-        delattr(v,"tnodeList")
-        v._p_changed = True
-#@-node:ekr.20100122130101.6174:deleteTnodeList
-#@+node:ekr.20041005105605.22:initFileName
-def initFileName (self,fromString,importFileName,root):
-
-    if fromString:
-        fileName = "<string-file>"
-    elif importFileName:
-        fileName = importFileName
-    elif root.isAnyAtFileNode():
-        fileName = root.anyAtFileNodeName()
-    else:
-        fileName = None
-
-    return fileName
-#@-node:ekr.20041005105605.22:initFileName
-#@+node:ekr.20100224050618.11547:at.isFileLike
-def isFileLike (self,s):
-
-    '''Return True if s has file-like sentinels.'''
-
-    trace = False and not g.unitTesting
-    at = self ; tag = "@+leo"
-    s = g.toUnicode(s)
-    i = s.find(tag)
-    if i == -1:
-        if trace: g.trace('found: False')
-        return True # Don't use the cashe.
-    else:
-        j,k = g.getLine(s,i)
-        line = s[j:k]
-        valid,new_df,start,end,isThin = \
-            at.parseLeoSentinel(line)
-        if trace: g.trace('found: True isThin:',
-            isThin,repr(line))
-        return not isThin
-#@-node:ekr.20100224050618.11547:at.isFileLike
-#@+node:ekr.20071105164407:warnAboutUnvisitedNodes
-def warnAboutUnvisitedNodes (self,root):
-
-    resurrected = 0
-
-    for p in root.self_and_subtree():
-        if not p.v.isVisited():
-            g.trace('**** not visited',p.v,p.h)
-            g.es('resurrected node:',p.h,color='blue')
-            g.es('in file:',root.h,color='blue')
-            resurrected += 1
-
-    if resurrected:
-        g.es('you may want to delete ressurected nodes')
-#@-node:ekr.20071105164407:warnAboutUnvisitedNodes
-#@-node:ekr.20041005105605.21:read (atFile) & helpers
-#@+node:ekr.20100208071151.5905:readFile (cacher)
-def readFile (self,fileName,root):
-
-    trace = False and not g.unitTesting
-    c = self.c
-
-    if not g.enableDB:
-        if trace: g.trace('g.enableDB is False')
-        return False,None
-
-    s,e = g.readFileIntoString(fileName,raw=True,silent=True)
-    if s is None:
-        if trace: g.trace('empty file contents',fileName)
-        return s,False,None
-    assert not g.isUnicode(s)
-
-    # There will be a bug if s is not already an encoded string.
-    key = self.fileKey(root.h,s,requireEncodedString=True)
-    ok = key in self.db
-    if trace: g.trace('in cache',ok,fileName,key)
-    if ok:
-        # Delete the previous tree, regardless of the @<file> type.
-        while root.hasChildren():
-            root.firstChild().doDelete()
-        # Recreate the file from the cache.
-        aList = self.db[key]
-        self.createOutlineFromCacheList(root.v,aList,fileName=fileName)
-
-    return s,ok,key
-#@-node:ekr.20100208071151.5905:readFile (cacher)
 #@+node:ekr.20041005105605.144:write & helper (atFile)
 def write (self,root,
     kind = '@unknown', # Should not happen.
@@ -699,6 +509,280 @@ def writeAllHelper (self,p,
             writtenFiles.append(p.v)
 #@-node:ekr.20041005105605.149:writeAllHelper (atFile)
 #@-node:ekr.20041005105605.147:writeAll (atFile) & helper
+#@-node:ekr.20100225120559.5631:Reference
+#@+node:ekr.20100225120559.5630:Changed
+#@+node:ekr.20031218072017.2833:c.close
+def close (self,event=None):
+
+    '''Close the Leo window, prompting to save it if it has been changed.'''
+
+    g.app.closeLeoWindow(self.frame)
+#@-node:ekr.20031218072017.2833:c.close
+#@+node:ekr.20031218072017.2821:c.open & helper
+def open (self,event=None):
+
+    '''Open a Leo window containing the contents of a .leo file.'''
+
+    c = self
+    << Set closeFlag if the only open window is empty >>
+    table = [("All files","*"),("Leo files","*.leo"),
+        ("Python files","*.py"),]
+
+    if not fileName:
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
+            title = "Open",filetypes = table,defaultextension = ".leo")
+    c.bringToFront()
+
+    ok = False
+    if fileName:
+        if fileName.endswith('.leo'):
+            ok, frame = g.openWithFileName(fileName,c)
+            if ok:
+                g.chdir(fileName)
+                g.setGlobalOpenDir(fileName)
+            if ok and closeFlag:
+                g.app.destroyWindow(c.frame)
+        else:
+            ok = c.createNodeFromExternalFile(fileName)
+
+    # openWithFileName sets focus if ok.
+    if not ok:
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+#@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+#@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+#@+node:ekr.20090212054250.9:c.createNodeFromExternalFile
+def createNodeFromExternalFile(self,fn):
+
+    '''Read the file into a node.
+    Return None, indicating that c.open should set focus.'''
+
+    c = self
+
+    s,e = g.readFileIntoString(fn)
+    if s is None: return
+    head,ext = g.os_path_splitext(fn)
+    if ext.startswith('.'): ext = ext[1:]
+    language = g.app.extension_dict.get(ext)
+    if language:
+        prefix = '@color\n@language %s\n\n' % language
+    else:
+        prefix = '@killcolor\n\n'
+    p2 = c.insertHeadline(op_name='Open File', as_child=False)
+    p2.h = '@edit %s' % fn # g.shortFileName(fn)
+    p2.b = prefix + s
+    w = c.frame.body.bodyCtrl
+    if w: w.setInsertPoint(0)
+    c.redraw()
+    c.recolor()
+#@nonl
+#@-node:ekr.20090212054250.9:c.createNodeFromExternalFile
+#@-node:ekr.20031218072017.2821:c.open & helper
+#@+node:ekr.20100208071151.5905:readFile (cacher)
+def readFile (self,fileName,root):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    if not g.enableDB:
+        if trace: g.trace('g.enableDB is False')
+        return False,None
+
+    s,e = g.readFileIntoString(fileName,raw=True,silent=True)
+    if s is None:
+        if trace: g.trace('empty file contents',fileName)
+        return s,False,None
+    assert not g.isUnicode(s)
+
+    # There will be a bug if s is not already an encoded string.
+    key = self.fileKey(root.h,s,requireEncodedString=True)
+    ok = self.db and key in self.db
+    if trace: g.trace('in cache',ok,fileName,key)
+    if ok:
+        # Delete the previous tree, regardless of the @<file> type.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+        # Recreate the file from the cache.
+        aList = self.db[key]
+        self.createOutlineFromCacheList(root.v,aList,fileName=fileName)
+
+    return s,ok,key
+#@-node:ekr.20100208071151.5905:readFile (cacher)
+#@+node:ekr.20100224050618.11547:at.isFileLike
+def isFileLike (self,s):
+
+    '''Return True if s has file-like sentinels.'''
+
+    trace = False and not g.unitTesting
+    at = self ; tag = "@+leo"
+    s = g.toUnicode(s)
+    i = s.find(tag)
+    if i == -1:
+        if trace: g.trace('found: False')
+        return True # Don't use the cashe.
+    else:
+        j,k = g.getLine(s,i)
+        line = s[j:k]
+        valid,new_df,start,end,isThin = \
+            at.parseLeoSentinel(line)
+        if trace: g.trace('found: True isThin:',
+            isThin,repr(line))
+        return not isThin
+#@-node:ekr.20100224050618.11547:at.isFileLike
+#@+node:ekr.20041005105605.21:read (atFile) & helpers
+def read(self,root,importFileName=None,
+    fromString=None,atShadow=False,force=False
+):
+
+    """Read an @thin or @file tree."""
+
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(root.h,len(root.b))
+    at = self ; c = at.c
+    fileName = at.initFileName(fromString,importFileName,root)
+    if not fileName:
+        at.error("Missing file name.  Restoring @file tree from .leo file.")
+        return False
+    at.initReadIvars(root,fileName,
+        importFileName=importFileName,atShadow=atShadow)
+    if at.errors:
+        return False
+    fileName = at.openFileForReading(fromString=fromString)
+    if at.inputFile:
+        c.setFileTimeStamp(fileName)
+    else:
+        return False
+    root.v.at_read = True # Remember that we have read this file.
+
+    # Get the file from the cache if possible.
+    s,loaded,fileKey = c.cacher.readFile(fileName,root)
+    # 2010/02/24: Never read an external file
+    # with file-like sentinels from the cache.
+    isFileLike = at.isFileLike(s)
+    if isFileLike:
+        # if trace: g.trace('file-like file',fileName)
+        force = True # Disable caching.
+    if loaded and not force:
+        if trace: g.trace('in cache',fileName)
+        at.inputFile.close()
+        root.clearDirty()
+        return True
+    if not g.unitTesting:
+        g.es("reading:",root.h)
+    if isFileLike:
+        if g.unitTesting:
+            if 0: print("converting @file format in",root.h)
+            g.app.unitTestDict['read-convert']=True
+        else:
+            g.es("converting @file format in",root.h,color='red')
+    root.clearVisitedInTree()
+    d = at.scanAllDirectives(root,importing=at.importing,reading=True)
+    thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        at.warnAboutUnvisitedNodes(root)
+        at.deleteTnodeList(root)
+    if at.errors == 0 and not at.importing:
+        # Used by mod_labels plugin.
+        self.copyAllTempBodyStringsToTnodes(root,thinFile)
+    at.deleteAllTempBodyStrings()
+    if isFileLike:
+        # 2010/02/24: Make the root @file node dirty so it will
+        # be written automatically when saving the file.
+        root.setDirty()
+        c.setChanged(True) # Essential, to keep dirty bit set.
+    if at.errors == 0 and not isFileLike:
+        c.cacher.writeFile(root,fileKey)
+
+    if trace: g.trace('root.isDirty',root.isDirty())
+
+    return at.errors == 0
+#@+node:ekr.20041005105605.25:deleteAllTempBodyStrings
+def deleteAllTempBodyStrings(self):
+
+    for v in self.c.all_unique_nodes():
+        if hasattr(v,"tempBodyString"):
+            delattr(v,"tempBodyString")
+#@-node:ekr.20041005105605.25:deleteAllTempBodyStrings
+#@+node:ekr.20100122130101.6174:deleteTnodeList
+def deleteTnodeList (self,p): # atFile method.
+
+    '''Remove p's tnodeList.'''
+
+    v = p.v
+
+    if hasattr(v,"tnodeList"):
+
+        if False: # Not an error, but a useful trace.
+            s = "deleting tnodeList for " + repr(v)
+            g.es_print(s,color="blue")
+
+        delattr(v,"tnodeList")
+        v._p_changed = True
+#@-node:ekr.20100122130101.6174:deleteTnodeList
+#@+node:ekr.20041005105605.22:initFileName
+def initFileName (self,fromString,importFileName,root):
+
+    if fromString:
+        fileName = "<string-file>"
+    elif importFileName:
+        fileName = importFileName
+    elif root.isAnyAtFileNode():
+        fileName = root.anyAtFileNodeName()
+    else:
+        fileName = None
+
+    return fileName
+#@-node:ekr.20041005105605.22:initFileName
+#@+node:ekr.20100224050618.11547:at.isFileLike
+def isFileLike (self,s):
+
+    '''Return True if s has file-like sentinels.'''
+
+    trace = False and not g.unitTesting
+    at = self ; tag = "@+leo"
+    s = g.toUnicode(s)
+    i = s.find(tag)
+    if i == -1:
+        if trace: g.trace('found: False')
+        return True # Don't use the cashe.
+    else:
+        j,k = g.getLine(s,i)
+        line = s[j:k]
+        valid,new_df,start,end,isThin = \
+            at.parseLeoSentinel(line)
+        if trace: g.trace('found: True isThin:',
+            isThin,repr(line))
+        return not isThin
+#@-node:ekr.20100224050618.11547:at.isFileLike
+#@+node:ekr.20071105164407:warnAboutUnvisitedNodes
+def warnAboutUnvisitedNodes (self,root):
+
+    resurrected = 0
+
+    for p in root.self_and_subtree():
+        if not p.v.isVisited():
+            g.trace('**** not visited',p.v,p.h)
+            g.es('resurrected node:',p.h,color='blue')
+            g.es('in file:',root.h,color='blue')
+            resurrected += 1
+
+    if resurrected:
+        g.es('you may want to delete ressurected nodes')
+#@-node:ekr.20071105164407:warnAboutUnvisitedNodes
+#@-node:ekr.20041005105605.21:read (atFile) & helpers
+#@-node:ekr.20100225120559.5630:Changed
 #@-node:ekr.20100224050618.11546:Auto-convert thin-like external files
 #@-node:ekr.20100223085638.5635:Leo 4.7.1 projects
 #@-all
