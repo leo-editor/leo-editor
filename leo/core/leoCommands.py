@@ -1214,13 +1214,13 @@ class baseCommands (object):
         return path
     #@-node:ekr.20031218072017.2832:c.openWithTempFilePath (may be over-ridden)
     #@-node:ekr.20031218072017.2823:c.openWith and helpers
-    #@+node:ekr.20031218072017.2833:close
+    #@+node:ekr.20031218072017.2833:c.close
     def close (self,event=None):
 
         '''Close the Leo window, prompting to save it if it has been changed.'''
 
         g.app.closeLeoWindow(self.frame)
-    #@-node:ekr.20031218072017.2833:close
+    #@-node:ekr.20031218072017.2833:c.close
     #@+node:ekr.20031218072017.2834:c.save
     def save (self,event=None):
 

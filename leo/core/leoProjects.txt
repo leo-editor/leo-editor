@@ -528,9 +528,8 @@ def open (self,event=None):
     table = [("All files","*"),("Leo files","*.leo"),
         ("Python files","*.py"),]
 
-    if not fileName:
-        fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
-            title = "Open",filetypes = table,defaultextension = ".leo")
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
+        title = "Open",filetypes = table,defaultextension = ".leo")
     c.bringToFront()
 
     ok = False
