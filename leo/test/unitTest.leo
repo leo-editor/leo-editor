@@ -867,14 +867,6 @@
 <v t="ekr.20100131180007.5462"><vh>@test verbatim sentinel</vh></v>
 </v>
 <v t="ekr.20050112095306.1"><vh>leoAtFile</vh>
-<v t="ekr.20041020100733"><vh>@@test @nosent</vh>
-<v t="ekr.20041020100733.1"><vh>#@nosent</vh>
-<v t="ekr.20041020100918"><vh>&lt;&lt; section &gt;&gt;</vh></v>
-<v t="ekr.20041020100918.1"><vh>unnamed node</vh></v>
-</v>
-<v t="ekr.20041020100733.2"><vh>Output</vh></v>
-</v>
-<v t="ekr.20090704085350.5050"><vh>@@test @nosent: shape of tree</vh></v>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
 <v t="ekr.20041021065903"><vh>#@asis</vh>
@@ -924,6 +916,7 @@
 <v t="ekr.20040707141957.14"><vh>Output</vh></v>
 </v>
 <v t="ekr.20090704085350.5046"><vh>@test @thin: shape of tree</vh></v>
+<v t="ekr.20100225094004.5385"><vh>@test at.isFileLike</vh></v>
 <v t="ekr.20090529115704.4562"><vh>@test at.open/closeStringFile</vh></v>
 <v t="ekr.20090529115704.4563"><vh>@test at.openForWrite: not a shadow file</vh></v>
 <v t="ekr.20090529115704.4564"><vh>@test at.readOneAtShadowNode</vh>
@@ -1877,6 +1870,10 @@
 </v>
 <v t="ekr.20061001114637"><vh>leoFileCommands</vh>
 <v t="ekr.20100206165505.5386"><vh>@@test fc.handleNodeConflicts</vh></v>
+<v t="ekr.20100225094004.5405"><vh>@@test loading .leo file with @file nodes</vh>
+<v t="ekr.20100225094004.5406"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20100225094004.5407"><vh>&lt;&lt; define s, the contents of at-file-test.leo &gt;&gt;</vh></v>
+</v>
 <v t="ekr.20061001124008"><vh>@@test minimal test of putTnodeList</vh>
 <v t="ekr.20061001124008.1"><vh>child</vh>
 <v t="ekr.20061001124008.2"><vh>grandchild</vh></v>
@@ -2278,7 +2275,7 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040802071519" a="E"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20100131180007.5391"><vh>@test v.atAutoNodeName &amp; v.atAutoRstNodeName</vh></v>
@@ -2307,13 +2304,13 @@
 <v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5610" a="E"><vh>leoPlugins</vh>
+<v t="ekr.20100131171342.5610"><vh>leoPlugins</vh>
 <v t="ekr.20100131171342.5611"><vh>@test getHandlersForTag</vh></v>
 </v>
-<v t="ekr.20091219122958.5066" a="E"><vh>leoRst</vh>
+<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
 <v t="ekr.20091219121039.5065"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
 </v>
-<v t="ekr.20090529115704.4396" a="E"><vh>leoShadow</vh>
+<v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 <v t="ekr.20090529115704.4569"><vh>@@test delete unittest shadow directory</vh></v>
 <v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
@@ -2560,7 +2557,7 @@
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="ekr.20071113200638.1" a="E"><vh>leoTangle</vh>
+<v t="ekr.20071113200638.1"><vh>leoTangle</vh>
 <v t="ekr.20090624125638.4963"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
 <v t="ekr.20071113090055.1"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
 <v t="ekr.20071127194743"><vh>@test @root</vh>
@@ -2572,7 +2569,7 @@
 <v t="ekr.20090624125638.4969"><vh>Output</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5612" a="E"><vh>leoTest</vh>
+<v t="ekr.20100131171342.5612"><vh>leoTest</vh>
 <v t="ekr.20100131171342.5613"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
@@ -3487,20 +3484,6 @@ line 1
 line 2
 line 3
 """</t>
-<t tx="ekr.20041020100733">import leo.core.leoTest as leoTest
-
-leoTest.runAtFileTest(c,p)</t>
-<t tx="ekr.20041020100733.1"># Test that @nosent generates no sentinels
-&lt;&lt; section &gt;&gt;
-@others
-last line</t>
-<t tx="ekr.20041020100733.2"># Test that @nosent generates no sentinels
-section line 1
-unnamed node line 1
-last line
-</t>
-<t tx="ekr.20041020100918">section line 1</t>
-<t tx="ekr.20041020100918.1">unnamed node line 1</t>
 <t tx="ekr.20041021065844">import leo.core.leoTest as leoTest
 
 leoTest.runAtFileTest(c,p)</t>
@@ -20682,21 +20665,6 @@ assert not p.isDirty(),p.h # Do not ignore this failure!
 for p2,h2 in table:
     assert p2.h == h2
     assert len(p2.b) &gt; 10</t>
-<t tx="ekr.20090704085350.5050"># No longer used: Leo no longer supports @nosent
-h = '@nosent ../test/unittest/at-nosent-test.py'
-p = g.findNodeAnywhere(c,h)
-assert p
-
-table = (
-    (p.firstChild(),'spam'),
-    (p.firstChild().next(),'eggs')
-)
-
-assert not p.isDirty(),p.h # Do not ignore this failure!
-
-for p2,h2 in table:
-    assert p2.h == h2
-    assert len(p2.b) &gt; 10</t>
 <t tx="ekr.20090704085350.5052">h = '@auto ../test/unittest/at-auto-test.py'
 p = g.findNodeAnywhere(c,h)
 assert p
@@ -23176,6 +23144,79 @@ for func in table:
     assert ratio2 == f.secondary_ratio
 
 </t>
+<t tx="ekr.20100225094004.5385">s1 = '''
+#@+leo-ver=4
+#@+node:#@file
+Line 1
+#@-node:#@file
+#@-leo
+'''
+
+s2 = '''
+#@+leo-ver=4-thin
+#@+node:ekr.20040707141957.13:#@thin
+#@-node:ekr.20040707141957.13:#@thin
+#@-leo
+'''
+
+at = c.atFileCommands
+assert at.isFileLike(s1),'fail1'
+assert not at.isFileLike(s2),'fail2'
+</t>
+<t tx="ekr.20100225094004.5405"># This ran properly, but never really helped.
+# The @file nodes in c2 were not marked dirty.
+
+&lt;&lt; imports &gt;&gt;
+
+&lt;&lt; define s, the contents of at-file-test.leo &gt;&gt;
+
+fn = 'at-file-test.leo'
+
+if 1: # Use the actual file
+    path = g.os_path_finalize_join(g.app.loadDir,'..','test',fn)
+    theFile = open(path,'rb')
+else:
+    path = fn
+    theFile = StringIO(s)
+    
+# Apparently c.new doesn't init the read logic.
+# It usually doesn't have to do that, but here it's inconvenient,
+c = c.new()
+ok,ratio = c.fileCommands.getLeoFile (theFile,path,
+    readAtFileNodesFlag=True,silent=False)
+    
+assert ok,'not ok'</t>
+<t tx="ekr.20100225094004.5406">if g.isPython3:
+    import io
+    StringIO = io.StringIO
+else:
+    import StringIO
+    StringIO = StringIO.StringIO</t>
+<t tx="ekr.20100225094004.5407">s = '''
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;?xml-stylesheet ekr_test?&gt;
+&lt;leo_file&gt;
+&lt;leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/&gt;
+&lt;globals body_outline_ratio="0.5"&gt;
+	&lt;global_window_position top="215" left="332" height="600" width="800"/&gt;
+	&lt;global_log_window_position top="0" left="0" height="0" width="0"/&gt;
+&lt;/globals&gt;
+&lt;preferences/&gt;
+&lt;find_panel_settings/&gt;
+&lt;vnodes&gt;
+&lt;v t="ekr.20100224071313.1852" str_leo_pos="1,0"&gt;&lt;vh&gt;@chapters&lt;/vh&gt;&lt;/v&gt;
+&lt;v t="ekr.20100224071313.1851" a="E" tnodeList="ekr.20100224071313.1851,ekr.20100224071313.1853"&gt;&lt;vh&gt;@file at-file-test.py&lt;/vh&gt;
+&lt;v t="ekr.20100224071313.1853"&gt;&lt;vh&gt;spam&lt;/vh&gt;&lt;/v&gt;
+&lt;/v&gt;
+&lt;/vnodes&gt;
+&lt;tnodes&gt;
+&lt;t tx="ekr.20100224071313.1851"&gt;@others&lt;/t&gt;
+&lt;t tx="ekr.20100224071313.1852"&gt;&lt;/t&gt;
+&lt;t tx="ekr.20100224071313.1853"&gt;def spam():
+    pass&lt;/t&gt;
+&lt;/tnodes&gt;
+&lt;/leo_file&gt;
+'''</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
