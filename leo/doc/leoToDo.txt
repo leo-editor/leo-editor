@@ -28,7 +28,13 @@ We also need the following functions:
 #@nonl
 #@-node:ekr.20100211125418.11612:Revise g.readFileIntoString
 #@+node:ekr.20100209224508.5744:Calls to .write
+@nocolor
+
 All these could be considered potential Python 3.x bugs.  Most are not.
+
+It is likely invalid to create an input or output stream which could be either binary or not.
+
+For example, we probably can not choose between "w" and "wb" (or "r" and "rb" at runtime.)
 #@nonl
 #@+node:ekr.20031218072017.1470:put (leoFileCommands)
 def put (self,s):
