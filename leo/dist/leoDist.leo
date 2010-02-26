@@ -76,7 +76,7 @@
 <v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
 </v>
 </v>
-<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
 <v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
@@ -1394,7 +1394,6 @@ Create a bzr tag:
 Create distribution files using to @button make scripts in leoDist.leo
     - 1: Make leo.nsi
     - 2: Choose leo.nsi in Windows Explorer and select "Compile NSI Script"
-    - 2: Commit if necessary.
     - 3: Make leo.zip
 Test files
 	- test the files created in c:\Python\Lib\site-packages\leo-x-y folder
