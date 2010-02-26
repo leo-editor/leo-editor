@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:tbrown.20081223111325.3:@thin backlink.py
+#@+node:tbrown.20100225092634.1407:@thin backlink.py
 #@@language python
 #@@tabwidth -4
 #@+others
@@ -9,14 +9,7 @@
 
 # Notes
 # 
-# gnxs won't work, because they belong to tnodes, not vnodes
-# 
 # Backlink will store all its stuff in v.unknownAttributes['_bklnk']
-# 
-# The vnode's id will be v.unknownAttributes['_bklnk']['id']
-# 
-# Unless Edward decides otherwise, backlink will use 
-# leo.core.leoNodes.nodeIndices.getNewIndex() to make these ids
 # 
 # When nodes are copied and pasted unknownAttributes are duplicated.
 # during load, backlink will create a dict. of vnode ids.  Duplicates
@@ -68,7 +61,8 @@ Qt = None
 #     - linkClicked(n) (zero based)
 
 if g.app.gui.guiName() == "tkinter":
-    Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True)
+    Tk  = g.importExtension('Tkinter', pluginName=__name__,
+        verbose=True,required=True)
     class backlinkTkUI(object):
         def __init__(self, owner):
 
@@ -79,7 +73,8 @@ if g.app.gui.guiName() == "tkinter":
 
             f = Tk.Frame(w)
             scrollbar = Tk.Scrollbar(f, orient=Tk.VERTICAL)
-            self.listbox = Tk.Listbox(f, height=4, yscrollcommand=scrollbar.set)
+            self.listbox = Tk.Listbox(f, height=4,
+                yscrollcommand=scrollbar.set)
 
             scrollbar.config(command=self.listbox.yview)
             scrollbar.pack(side=Tk.RIGHT, fill=Tk.Y)
@@ -104,7 +99,8 @@ if g.app.gui.guiName() == "tkinter":
                 f = Tk.Frame(w)
                 for j in range(2):
                     txt, com = comms.next()
-                    b = Tk.Button(f, text=txt, width=10, height=1, command=com)
+                    b = Tk.Button(f, text=txt, width=10,
+                        height=1, command=com)
                     b.pack(side=Tk.LEFT, fill=Tk.BOTH)
                 f.pack(side=Tk.TOP, fill=Tk.BOTH)
 
@@ -112,7 +108,8 @@ if g.app.gui.guiName() == "tkinter":
             self.message = Tk.Label(f, text='no msg.')
             self.message.pack(side=Tk.LEFT)
             self.delete = Tk.IntVar()
-            self.deleteButton = Tk.Checkbutton(f, text='Delete link', variable=self.delete,
+            self.deleteButton = Tk.Checkbutton(f,
+                text='Delete link', variable=self.delete,
                 command=self.tkDeleteClicked)
             self.deleteButton.pack(side=Tk.RIGHT)
             f.pack(side=Tk.TOP, fill=Tk.BOTH)
@@ -329,10 +326,13 @@ class backlinkController(object):
                     del v.u['_bklnk']['id']
 
                 if 'links' in v.u['_bklnk']:
-
                     v.u['_bklnk']['links'] = [
+                        i for i in v.u['_bklnk']['links']
+                        if i[1] not in update
+                    ]
+                    v.u['_bklnk']['links'].extend([
                         (i[0], update[i[1]]) for i in v.u['_bklnk']['links']
-                        if i[1] in update ] 
+                        if i[1] in update])
     #@-node:tbrown.20091005145931.5227:fixIDs
     #@+node:ekr.20090616105756.3944:deleteLink
     def deleteLink(self, on, to, type_):
@@ -360,9 +360,11 @@ class backlinkController(object):
         else:
             self.showMessage("Error: no such link")
 
+        self.updateTabInt()
         gcc = getattr(self.c, 'graphcanvasController')
         if gcc:
             gcc.update()
+
     #@-node:ekr.20090616105756.3944:deleteLink
     #@+node:ekr.20090616105756.3945:deleteSet
     def deleteSet(self, enabled):
@@ -444,9 +446,11 @@ class backlinkController(object):
 
         v1.u['_bklnk']['links'].append( (linkType, v0.gnx) )
 
+        self.updateTabInt()
         gcc = getattr(self.c, 'graphcanvasController')
         if gcc:
             gcc.update()
+
     #@-node:ekr.20090616105756.3950:vlink
     #@+node:ekr.20090616105756.3951:linkClicked
     def linkClicked(self, selected):
@@ -802,6 +806,7 @@ class backlinkController(object):
                     def goThere(where = i[1]): c.selectPosition(where)
                     txt = {'S':'->','D':'<-','U':'--'}[i[0]] + ' ' + i[1].h
                     texts.append(txt)
+
         self.ui.loadList(texts) 
     #@-node:ekr.20090616105756.3968:updateTabInt
     #@+node:ekr.20090616105756.3969:vnodePosition
@@ -839,5 +844,5 @@ class backlinkController(object):
     #@-others
 #@-node:ekr.20090616105756.3942:class backlinkController
 #@-others
-#@-node:tbrown.20081223111325.3:@thin backlink.py
+#@-node:tbrown.20100225092634.1407:@thin backlink.py
 #@-leo
