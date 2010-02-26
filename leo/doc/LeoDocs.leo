@@ -3489,7 +3489,7 @@
 </v>
 </v>
 <v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
-<v t="ekr.20100225102026.7139" a="E"><vh>4.7.1 final</vh>
+<v t="ekr.20100225102026.7139"><vh>4.7.1 final</vh>
 <v t="ekr.20100225102026.7140"><vh>Changes made to Leo 4.7.1</vh></v>
 </v>
 </v>
@@ -26235,7 +26235,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.7 final]&lt;/a&gt;</t>
+    Download Leo[4.7.1 final]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in

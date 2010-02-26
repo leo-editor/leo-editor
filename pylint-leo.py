@@ -121,10 +121,10 @@ tables_table = (
     # (recentList,'core'),
     (coreList,'core'),
     (guiPluginsTable,'plugins'),
-    # (tkPass,'plugins'),
-    # (passList,'plugins'),
-    # (externalList,'external'),
-    # (plugins_table,'plugins'),
+    (tkPass,'plugins'),
+    (passList,'plugins'),
+    (externalList,'external'),
+    (pluginsTable,'plugins'),
 )
 
 for table,theDir in tables_table:

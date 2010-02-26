@@ -33,34 +33,9 @@
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
-<v t="ekr.20100223062731.1506"><vh>ANN: Leo 4.7 final</vh></v>
-<v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
-<v t="ekr.20100223062731.1507"><vh>4.7</vh>
-<v t="ekr.20090909091918.1463"><vh>ANN: Leo 4.7 b1</vh></v>
-<v t="ekr.20100129074111.1488"><vh>ANN: Leo 4.7 b2</vh></v>
-<v t="ekr.20100201193541.1491"><vh>ANN: Leo 4.7 b3</vh></v>
-<v t="ekr.20100211222859.1503"><vh>ANN: Leo 4.7 rc1</vh></v>
 </v>
-<v t="ekr.20090718093249.5928"><vh>4.6</vh>
-<v t="ekr.20090803090630.1408"><vh>ANN: Leo 4.6.2 final</vh></v>
-<v t="ekr.20090718093249.5927"><vh>ANN: Leo 4.6.1 final</vh></v>
-<v t="ekr.20090709085944.1401"><vh>ANN: Leo 4.6 rc1</vh></v>
-<v t="ekr.20090620122333.1392"><vh>ANN: Leo 4.6 b2</vh></v>
-<v t="ekr.20090325065530.1"><vh>ANN: Leo 4.6 b1</vh></v>
-</v>
-<v t="ekr.20080807093308.2"><vh>4.5</vh>
-<v t="ekr.20080628062747.73"><vh>ANN: Leo 4.5 b1</vh></v>
-<v t="ekr.20080807093308.1"><vh>ANN: Leo 4.5 b2</vh></v>
-<v t="ekr.20080815093141.108"><vh>ANN: Leo 4.5 b3</vh></v>
-<v t="ekr.20080825085446.1"><vh>ANN: Leo 4.5 b4</vh></v>
-<v t="ekr.20080828073358.1"><vh>ANN: Leo 4.5 rc1</vh></v>
-<v t="ekr.20080830082008.6"><vh>ANN: Leo 4.5 rc2</vh></v>
-<v t="ekr.20080902080927.1"><vh>ANN: Leo 4.5 final</vh></v>
-<v t="ekr.20080912152259.1"><vh>ANN: Leo 4.5.1 final</vh></v>
-</v>
-</v>
-</v>
-<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
+<v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
+<v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="ekr.20100225104302.1510"><vh>@asis ../../LICENSE.txt</vh></v>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
@@ -74,7 +49,6 @@
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
 </v>
-<v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
 <v t="ekr.20090902092112.1481"><vh>&lt;&lt; define version &gt;&gt;</vh></v>
 <v t="ekr.20090905082405.1486"><vh>@button make leo.zip</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
@@ -82,7 +56,7 @@
 <v t="ekr.20090905082405.1489"><vh>make</vh></v>
 <v t="ekr.20090905082405.1490"><vh>unlink</vh></v>
 </v>
-<v t="ekr.20090826220933.1565"><vh>@button make leo.nsi</vh>
+<v t="ekr.20090826220933.1565" a="E"><vh>@button make leo.nsi</vh>
 <v t="ekr.20090902092112.1481"></v>
 <v t="ekr.20090902092112.1482"><vh>&lt;&lt; define inLeo &gt;&gt;</vh></v>
 <v t="ekr.20090902092112.1483"><vh>&lt;&lt; define application constants &gt;&gt;</vh></v>
@@ -102,7 +76,7 @@
 <v t="ekr.20090901092556.1612"><vh>genMiddleFunctions</vh></v>
 </v>
 </v>
-<v t="ekr.20090901082242.1565"><vh>genScript &amp; helpers</vh>
+<v t="ekr.20090901082242.1565" a="E"><vh>genScript &amp; helpers</vh>
 <v t="ekr.20090901092556.1573"><vh>genHead</vh></v>
 <v t="ekr.20090901092556.1574"><vh>genInstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1570"><vh>getInstallVariableData</vh></v>
@@ -251,7 +225,7 @@ DAMAGES.</t>
 <t tx="EKR.20040519090846.3">System requirements
 -------------------
 
-Leo requires Python 2.6 or above and tcl/tk 8.4 or above.
+Leo requires Python 2.6 or above (including Python 3.x) and tcl/tk 8.4 or above.
 Leo will also work with PyQt instead of tcl/tk.
 
 	Download Python from http://python.org/ 
@@ -376,10 +350,10 @@ Author: Edward K. Ream
 Author-email: edreamleo@charter.net
 License: Python
 Description:
-    Leo is an outline-oriented editor written in 100% pure Python.
+    Leo is an outline-oriented IDE written in 100% pure Python.
 	Leo features a multi-window outlining editor, Python colorizing,
 	powerful outline commands and many other things, including 
-	Unlimited Undo/Redo and an integrated Python shell(IDLE) window.
+	unlimited Undo/Redo and an integrated Python shell(IDLE) window.
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux, Macintosh
 </t>
@@ -423,7 +397,10 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="EKR.20040519091259">@pagewidth 70
-@killcolor</t>
+@killcolor
+
+We no longer use a separate announcement.
+Just use the readme.</t>
 <t tx="EKR.20040519091259.1">4.4.5       setup: 547  zip: 379  2007-12-11
 4.4.4       setup: 856  zip: 539  2007-11-02
 4.4.3.1     setup: 1092 zip: 743  2007-7-03
@@ -457,7 +434,6 @@ have not yet tried Leo, you are wrong...I rate Leo as a "must have"
 for Python programmers. The code makes for a good read.
 -- John Tobler  http://weblogs.asp.net/Jtobler/
 </t>
-<t tx="EKR.20040519091259.30"></t>
 <t tx="EKR.20040519091259.4">I've written documentation in WordPerfert, Ventura, Word, PageMaker, and
 FrameMaker and even though they create wonderfully looking and useful
 documents, they've never been able to do what I've been looking for. HTML,
@@ -522,93 +498,6 @@ on my overall programming quality of life than anything else out there
 in the software world (apart maybe from the Python language itself,
 and those who contribute Python modules to the world). -- David McNab
 </t>
-<t tx="ekr.20080628062747.73">Leo 4.5 beta 1                      June 28, 2008
-
-Leo 4.5 beta 1 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-The highlights of Leo 4.5:
---------------------------
-- A major revision of Leo's node structures, compatible with so-called unified nodes.
-- A major revision of Leo's key-handling code.  Most per-pane key bindings have been eliminated.
-- A major revision of Leo's outline drawing and focus handling code.
-  Calls to c.beginUpdate and c.endUpdate simply request later redrawing in c.outerUpdate.
-- The beginning of usable vim-like bindings.  More support is coming.
-- Many small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20080807093308.1">Leo 4.5 beta 2                      August 7, 2008
-
-Leo 4.5 beta 2 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.5 contains many important new features.  See below for details.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-The highlights of Leo 4.5:
---------------------------
-
-- Full support for @shadow files in Leo's core.
-- Major improvements to Leo's key binding code.
-- The beginning of usable vim-like bindings.
-- uA's may now be associated with vnodes in @thin and @shadow files.
-- Several major reorganizations of Leo's code:
-  including sax-based parsing, support for the Graph world (unified nodes),
-  simplified drawing code.
-- Leo is now an installable package.
-- Prepared code to be ready for Python 3.0.
-- Many small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20080807093308.2"></t>
-<t tx="ekr.20080815093141.108">Leo 4.5 beta 3                      August 15, 2008
-
-Leo 4.5 beta 3 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.5 contains many important new features.  See below for details.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-The highlights of Leo 4.5:
---------------------------
-
-- Full support for @shadow files in Leo's core.
-- Major improvements to Leo's key binding code.
-- The beginning of usable vim-like bindings.
-- uA's may now be associated with vnodes in @thin and @shadow files.
-- Several major reorganizations of Leo's code:
-  including sax-based parsing, support for the Graph world (unified nodes),
-  simplified drawing code.
-- Leo is now an installable package.
-- Prepared code to be ready for Python 3.0.
-- Many small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080825083632.262">Python's HOME environment variable specifies Leo's HOME directory.
 See http://docs.python.org/lib/os-procinfo.html for details.
 
@@ -659,203 +548,8 @@ stores this identifier in the file ``.leoID.txt``. Leo attempts to create
 ``leoID.txt`` in the .leo sub-directory of your home directory, then in Leo's config directory, and
 finally in Leo's core directory. You can change this identifier at any time by
 editing ``.leoID.txt``.</t>
-<t tx="ekr.20080825085446.1">Leo 4.5 beta 4                      August 25, 2008
-
-Leo 4.5 beta 4 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-This beta 4 release will likely be the last release before Leo 4.5 final.
-
-Leo 4.5 contains many important new features.  See below for details.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-The highlights of Leo 4.5:
---------------------------
-
-- Full support for @shadow files in Leo's core.
-- Major improvements to Leo's key binding code.
-- The beginning of usable vim-like bindings.
-- uA's may now be associated with vnodes in @thin and @shadow files.
-- Several major reorganizations of Leo's code:
-  including sax-based parsing, support for the Graph world (unified nodes),
-  simplified drawing code.
-- Leo is now an installable package.
-- Prepared code to be ready for Python 3.0.
-- Many small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20080828073358.1">Leo 4.5 release candidate 1                      August 28, 2008
-
-Leo 4.5 rc1 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.5 contains many important new features.  See below for details.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-The highlights of Leo 4.5:
---------------------------
-
-- Full support for @shadow files in Leo's core.
-- Major improvements to Leo's key binding code.
-- The beginning of usable vim-like bindings.
-- uA's may now be associated with vnodes in @thin and @shadow files.
-- Several major reorganizations of Leo's code:
-  including sax-based parsing, support for the Graph world (unified nodes),
-  and simplified drawing code.
-- Leo is now an installable package.
-- Prepared code to be ready for Python 3.0.
-- Many small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20080830082008.6">Leo 4.5 release candidate 2                     August 30, 2008
-
-Leo 4.5 rc2 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.5 contains many important new features.  See below for details.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-The highlights of Leo 4.5:
---------------------------
-
-- Full support for @shadow files in Leo's core.
-- Major improvements to Leo's key binding code.
-- The beginning of usable vim-like bindings.
-- uA's may now be associated with vnodes in @thin and @shadow files.
-- Several major reorganizations of Leo's code:
-  including sax-based parsing, support for the Graph world (unified nodes),
-  and simplified drawing code.
-- Leo is now an installable package.
-- Prepared code to be ready for Python 3.0.
-- Many small improvements and bug fixes.
-
-Quote of the month:
--------------------
-For me Squeak and Leo have been two of the most significant technologies to
-redefine my personal computer experience and the ideas behind computing.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080901114425.2">For me Squeak and Leo have been two of the most significant technologies to
 redefine my personal computer experience and the ideas behind computing.</t>
-<t tx="ekr.20080902080927.1">Leo 4.5 release final                     September 2, 2008
-
-Leo 4.5 final is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-The highlights of Leo 4.5:
---------------------------
-
-- Full support for @shadow files in Leo's core.
-- Major improvements to Leo's key binding code.
-- The beginning of usable vim-like bindings.
-- uA's may now be associated with vnodes in @thin and @shadow files.
-- Several major reorganizations of Leo's code:
-  including sax-based parsing, support for the Graph world (unified nodes),
-  and simplified drawing code.
-- Leo is now an installable package.
-- Prepared code to be ready for Python 3.0.
-- Many small improvements and bug fixes.
-
-Quote of the month:
--------------------
-Squeak and Leo have been two of the most significant technologies to
-redefine my personal computer experience and the ideas behind computing.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20080912152259.1">Leo 4.5.1 final                                  September 14, 2008
-
-Leo 4.5.1 final is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.5.1 final fixes several important bugs in Leo 4.5 final:
-
-- Eliminated spurious error messages in the goto-global-line command.
-- @shadow files with unknown file extensions now work properly.
-- Leo's installer now properly finds Python's install directory.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-The highlights of Leo 4.5:
---------------------------
-
-- Full support for @shadow files in Leo's core.
-- Major improvements to Leo's key binding code.
-- The beginning of usable vim-like bindings.
-- uA's may now be associated with vnodes in @thin and @shadow files.
-- Several Major reorganizations of Leo's code:
-  including sax-based parsing, support for the Graph world (unified nodes),
-  and simplified drawing code.
-- Leo is now an installable package.
-- Prepared code to be ready for Python 3.0.
-- Many small improvements and bug fixes.
-
-Quote of the month:
--------------------
-Squeak and Leo have been two of the most significant technologies to
-redefine my personal computer experience and the ideas behind computing.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20090325065530.1">Leo 4.6 b1 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-The highlights of Leo 4.6:
---------------------------
-
-- Leo now requires Python 2.4 or later.
-- A new qt gui plugin, supporting Qt's look and feel.
-- New --config --file and --gui command-line options.
-- Dozens of small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20090620084709.1387"></t>
 <t tx="ekr.20090620084709.1389">
 Installing the leo.py on Windows
@@ -888,132 +582,6 @@ One way to do this is adding something like the following to python/Lib/sitecust
 
 Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.
 </t>
-<t tx="ekr.20090620122333.1392">Leo 4.6 beta 2                                  June 22, 2009
-
-Leo 4.6 b2 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-The highlights of Leo 4.6:
---------------------------
-
-- Cached external files *greatly* reduces the time to load .leo files.
-- Leo now features a modern Qt interface by default.
-  Leo's legacy Tk interface can also be used.
-- New --config, --file and --gui command-line options.
-- Leo tests syntax of .py files when saving them.
-- Leo can now open any kind of file into @edit nodes.
-- @auto-rst nodes support "round-tripping" of reStructuredText files.
-- Properties of commanders, positions and nodes simplify programming.
-- Improved Leo's unit testing framework.
-- Leo now requires Python 2.4 or later.
-- Dozens of small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20090709085944.1401">Leo 4.6 release candidate 1                             July 9, 2009
-
-Leo 4.6 rc1 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-The highlights of Leo 4.6:
---------------------------
-
-- Cached external files *greatly* reduces the time to load .leo files.
-- Leo now features a modern Qt interface by default.
-  Leo's legacy Tk interface can also be used.
-- New --config, --file and --gui command-line options.
-- Leo tests syntax of .py files when saving them.
-- Leo can now open any kind of file into @edit nodes.
-- @auto-rst nodes allow easy editing of reStructuredText files.
-- Properties of commanders, positions and nodes simplify programming.
-- Improved Leo's unit testing framework.
-- Leo now requires Python 2.5 or later.
-- Dozens of small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
-</t>
-<t tx="ekr.20090718093249.5927">Leo 4.6.1 final                             July 30, 2009
-
-Leo 4.6.1 final is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-Leo 4.6.1 fixes several minor bugs in Leo 4.6.
-
-The highlights of Leo 4.6
---------------------------
-
-- Cached external files *greatly* reduces the time to load .leo files.
-- Leo now features a modern Qt interface by default.
-  Leo's legacy Tk interface can also be used.
-- New --config, --file and --gui command-line options.
-- Leo tests syntax of .py files when saving them.
-- Leo can now open any kind of file into @edit nodes.
-- @auto-rst nodes allow easy editing of reStructuredText files.
-- Properties of commanders, positions and nodes simplify programming.
-- Improved Leo's unit testing framework.
-- Leo now requires Python 2.5 or later.
-- Dozens of small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20090718093249.5928"></t>
-<t tx="ekr.20090803090630.1408">Leo 4.6.2 final                             August 3, 2009
-
-Leo 4.6.2 final is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-Leo 4.6.2 fixes several bugs reported since Leo 4.6 was released.
-
-The highlights of Leo 4.6
---------------------------
-?
-- Cached external files *greatly* reduces the time to load .leo files.
-- Leo now features a modern Qt interface by default.
-  Leo's legacy Tk interface can also be used.
-- New --config, --file and --gui command-line options.
-- Leo tests syntax of .py files when saving them.
-- Leo can now open any kind of file into @edit nodes.
-- @auto-rst nodes allow easy editing of reStructuredText files.
-- Properties of commanders, positions and nodes simplify programming.
-- Improved Leo's unit testing framework.
-- Leo now requires Python 2.5 or later.
-- Dozens of small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20090826220933.1565"># **Important**
 #   Before running this script you must create bzr-manifest as follows::
 #       bzr ls -R &gt;bzr-manifest.txt
@@ -1684,7 +1252,7 @@ FunctionEnd
     @others
 </t>
 <t tx="ekr.20090902092112.1481"># Used by both @button make leo.nsi and @button make leo.zip.
-app_version = version = '4.7-final'</t>
+app_version = version = '4.7.1-final'</t>
 <t tx="ekr.20090902092112.1482">try:
     inLeo = g is not None
 except AttributeError:
@@ -1799,115 +1367,9 @@ import time</t>
     print ('removing: %s' % fileName)
     os.remove(fileName)
 </t>
-<t tx="ekr.20090909091918.1463">Leo 4.7 beta 1                          September 9, 2009
-
-Leo 4.7 beta 1 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-This version of Leo is labeled a beta version because it contains some new,
-relatively untested plugins.  However, Leo's core should be quite reliable.
-
-In particular, Leo 4.7 beta 1 fixes a bug that caused Leo 4.6 releases to crash
-if .leoID.txt did not exist. Usually this file does exist, but Leo will prompt
-for the contents of this file (a user id) the very first time somebody uses Leo.
-Alas, an unfortunate reversion of code caused Leo to crash. Not exactly the best
-introduction to Leo!
-
-The highlights of Leo 4.7:
---------------------------
-
-- A major simplification of internal data model: the so-called
-  one-node world. Note: this is **disabled** in the beta 1 release.
-- A new executable Windows installer, whose manifest is created from
-  the files that bzr actively manages.
-- Leo no longer adds directories to sys.path on startup.
-- New plugins.
-- The usual assortment of bug fixes.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
-
-</t>
-<t tx="ekr.20100129074111.1488">Leo 4.7 beta 2                       January 29, 2009
-
-Leo 4.7 beta 2 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.7 beta 2 fixes all known serious bugs in Leo.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-The highlights of Leo 4.7:
---------------------------
-
-- Leo now uses the simplest possible internal data model.
-  This is the so-called "one-node" world.
-- Leo supports Python 3.x.
-- Leo requires Python 2.6 or above.
-- Several important improvements in file handling.
-    - Leo converts @file nodes to @thin nodes automatically.
-    - @auto-rst now works much more reliably reliably.
-    - Leo no longer @noref trees.  Such trees are not
-      reliable in cooperative environments.
-- A new Windows installer.
-- Many other features, including new command line options and new plugins.
-- Dozens of bug fixes.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html
-</t>
-<t tx="ekr.20100201193541.1491">Leo 4.7 beta 3                       February 2, 2009
-
-Leo 4.7 beta 3 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.7 beta 3 fixes all known serious bugs in Leo.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-The highlights of Leo 4.7:
---------------------------
-
-- Leo now uses the simplest possible internal data model.
-  This is the so-called "one-node" world.
-- Leo supports Python 3.x.
-- Leo requires Python 2.6 or above.
-- Several important improvements in file handling.
-    - Leo converts @file nodes to @thin nodes automatically.
-    - @auto-rst now works much more reliably reliably.
-    - Leo no longer @noref trees.  Such trees are not
-      reliable in cooperative environments.
-- A new Windows installer.
-- Many other features, including new command line options and new plugins.
-- Dozens of bug fixes.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20100202061222.1494">Testing:
     - Run all unit tests.
     - Run pylint-leo.bat.
-trunk/license.txt **and** leo/doc/license.txt.
-    - Make sure copyright dates are correct.
 LeoDocs.leo:
     **Update version on home page.
     - Remove top-level clones.
@@ -1917,8 +1379,9 @@ LeoPlugins.leo:
 LeoPy.leo:
     - Update version numbers.
 LeoDist.leo:
+    - Make sure copyright dates are correct.
+        (trunk/license.txt **and** leo/doc/license.txt.)
     - Update version numbers.
-    - Update announcement.
     - Update readme.txt
 Create the manifest:
     - Delete old distribution (.exe,.zip) files.
@@ -1954,77 +1417,6 @@ Announcements
 - Announce to leo-editor.
 - Announce to comp.lang.python (use Forte Agent)
 - Register Leo at http://www.python.org/pypi?:action=submit_form</t>
-<t tx="ekr.20100211222859.1503">Leo 4.7 rc 1                    February 12, 2009
-
-Leo 4.7 release candidate 1 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.7 rc 1 fixes all known serious bugs in Leo; minor nits remain.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-The highlights of Leo 4.7:
---------------------------
-
-- Leo now uses the simplest possible internal data model.
-  This is the so-called "one-node" world.
-- Leo supports Python 3.x.
-- Leo requires Python 2.6 or above.
-- Several important improvements in file handling.
-    - Leo converts @file nodes to @thin nodes automatically.
-    - Leo creates a 'Recovered Nodes' node to hold data that
-      otherwise might be lost due to clone conflicts.
-    - @auto-rst now works much more reliably reliably.
-    - Leo no longer supports @noref trees.  Such trees are not
-      reliable in cooperative environments.
-- A new Windows installer.
-- Many other features, including new command line options and new plugins.
-- Dozens of bug fixes.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20100223062731.1506">Leo 4.7 final                    February 23, 2009
-
-Leo 4.7 final is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.7 final fixes all known bugs in Leo.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-The highlights of Leo 4.7:
---------------------------
-
-- Leo now uses the simplest possible internal data model.
-  This is the so-called "one-node" world.
-- Leo supports Python 3.x.
-- Leo requires Python 2.6 or above.
-- Several important improvements in file handling.
-    - Leo converts @file nodes to @thin nodes automatically.
-    - Leo creates a 'Recovered Nodes' node to hold data that
-      otherwise might be lost due to clone conflicts.
-    - @auto-rst now works much more reliably reliably.
-    - Leo no longer supports @noref trees.  Such trees are not
-      reliable in cooperative environments.
-- A new Windows installer.
-- Many other features, including new command line options and new plugins.
-- Dozens of bug fixes.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20100223062731.1507"></t>
 <t tx="ekr.20100225104302.1510">Copyright 1997-2010 by Edward K. Ream. All Rights Reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
