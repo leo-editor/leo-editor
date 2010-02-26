@@ -6,6 +6,8 @@
 #@+node:tbrown.20090603104805.4937:interact declarations
 """Add buttons so leo can interact with command line environments.
 
+:20100226: see also leoscreen.py for a simpler approach.
+
 Currently implements `bash` shell and `psql` (postresql SQL db shell).
 
 Single-line commands can be entered in the headline with a blank body,
