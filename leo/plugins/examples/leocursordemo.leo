@@ -55,6 +55,8 @@ try:
     print("%d events with %d reviews" %
       (len(lc("Events/Event.*")),len(lc("Events/Event.*/Rev.*"))))
 
+    print "Event dates:", lc("Events/Event.*/@date")
+
     print("%s to %s" %
       (lc("Events/0")[0]._H,lc("Events/-1")[0]._H))
     print("%s to %s" %
@@ -66,7 +68,7 @@ try:
         print("\n%s (%s)" % (event._H, event._date))
         print('"%s"' % event._B.strip())
         for review in event('Review.*'):
-            print('   Review: '+review._H+('*'*int(review._stars)))
+            print('   Review: '+review._H+('*'*int(review('@stars')[0])))
 
 
 except:

@@ -32,7 +32,7 @@
 <v t="ekr.20090430075506.4"><vh>Notes &amp; to-do</vh>
 <v t="ekr.20090430075506.3"><vh>@thin leoPluginNotes.txt</vh></v>
 </v>
-<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
+<v t="edream.110203113231.618"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
 <v t="ekr.20041114102139"><vh>Notes</vh>
@@ -371,6 +371,7 @@
 <v t="ajones.20070122153625"><vh>@thin expfolder.py</vh></v>
 <v t="mork.20041018091414.1"><vh>@thin fastGotoNode.py</vh></v>
 <v t="tbrown.20091214233510.5347"><vh>@thin geotag.py</vh></v>
+<v t="tbrown.20100228141752.5691"><vh>@thin leocursor.py</vh></v>
 <v t="dan.20090217132953.1"><vh>@thin mime.py</vh></v>
 <v t="ekr.20050301095332"><vh>@thin mod_labels.py</vh></v>
 <v t="edream.110203113231.876"><vh>@thin read_only_nodes.py</vh></v>
@@ -711,10 +712,10 @@
 </v>
 <v t="pap.20050605183206"><vh>@thin leoupdate.py</vh></v>
 </v>
-<v t="ekr.20041001210557" a="E"><vh>Scripting</vh>
+<v t="ekr.20041001210557"><vh>Scripting</vh>
 <v t="ekr.20060328125248"><vh>@thin mod_scripting.py</vh></v>
 <v t="tbrown.20090513125417.5244"><vh>@thin interact.py</vh></v>
-<v t="tbrown.20100226095909.12777" a="E"><vh>@thin leoscreen.py</vh></v>
+<v t="tbrown.20100226095909.12777"><vh>@thin leoscreen.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@thin spydershell.py</vh></v>
 </v>
 <v t="ekr.20050111122605"><vh>Servers</vh>
