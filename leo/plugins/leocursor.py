@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:tbrown.20100205200824.5413:@thin leocursor.py
+#@+node:tbrown.20100228141752.5691:@thin leocursor.py
 """A LeoCursor object can walk around on a Leo outline and decode
 attributes from nodes.  Node names can be used through . (dot) notation
 so ``cursor.Data.Name._B`` for example returns the body text of the
@@ -21,7 +21,7 @@ class AttribManager(object):
     class NotPresent(Exception):
         pass
 
-    def filterBody(self, v):
+    def filterBody(self, b):
         """Return the body string without any parts used to store
         attributes, if this flavor of attribute manager stores attributes
         in the body.  If not, just return the whole body string."""
@@ -54,11 +54,11 @@ class AM_Colon(AttribManager):
 
     """
 
-    pattern = re.compile(r"^([A-Za-z][A-Za-z0-9_]*:)(\s+(\S.*))*$")
+    pattern = re.compile(r"^([A-Za-z][A-Za-z0-9_]*)(:)(\s+(\S.*))*$")
 
-    def filterBody(self, v):
+    def filterBody(self, b):
         return '\n'.join(
-           [i for i in v.b.split('\n')
+           [i for i in b.split('\n')
             if not self.pattern.match(i)])
 
     def getAttrib(self, v, what):
@@ -67,8 +67,8 @@ class AM_Colon(AttribManager):
 
             m = self.pattern.match(i)
 
-            if m and '_'+m.group(1) == what+':':
-                m = m.group(2)
+            if m and m.group(1) == what:
+                m = m.group(3)
                 if m:
                     m = m.strip()
                 else:
@@ -120,7 +120,7 @@ class LeoCursor(object):
         while steps:
 
             step = steps.pop(0)
-            #print 'S',step
+            # print 'S',step
             if not step.strip():
                 continue
 
@@ -137,6 +137,14 @@ class LeoCursor(object):
 
                     new_stems.append(self.__at(
                         (stem.__v.children or [])[step_int]))
+
+                elif step.startswith('@'):
+
+                    for i in self.__attribManagers:
+                        try:
+                            new_stems.append(i.getAttrib(stem.__v, step[1:]))
+                        except AttribManager.NotPresent:
+                            pass
 
                 else:
 
@@ -155,7 +163,7 @@ class LeoCursor(object):
 
         if what == '_H':
 
-            return self.__v.h
+            return str(self.__v.h)
 
         elif what == '_B':
 
@@ -178,15 +186,16 @@ class LeoCursor(object):
                 return self.__at(child)
 
         for i in self.__attribManagers:
+            t = what[1:] if what.startswith('_') else what
             try:
-                return i.getAttrib(self.__v, what)
+                return i.getAttrib(self.__v, t)
             except AttribManager.NotPresent:
                 pass
 
     #@-node:tbrown.20100205200824.5425:__getattr__
     #@+node:tbrown.20100208110238.12228:__getitem__
     def __getitem__(self, what):
-        """what can be a slice object, we let builtin list take care of it"""
+        """which can be a slice object, we let builtin list take care of it"""
 
         if isinstance(what, int):
             return self.__at(self.__v.children[what])
@@ -196,10 +205,11 @@ class LeoCursor(object):
     #@+node:tbrown.20100206093439.5449:__body
     def __body(self):
 
-        b = self.__v.b
+        b = str(self.__v.b)
 
+        # filter out all attribs
         for i in self.__attribManagers:
-            b = i.filterBody(self.__v)
+            b = i.filterBody(b)
 
         return b
     #@-node:tbrown.20100206093439.5449:__body
@@ -217,5 +227,5 @@ class LeoCursor(object):
 #@nonl
 #@-node:tbrown.20100206093439.5451:class LeoCursor
 #@-others
-#@-node:tbrown.20100205200824.5413:@thin leocursor.py
+#@-node:tbrown.20100228141752.5691:@thin leocursor.py
 #@-leo
