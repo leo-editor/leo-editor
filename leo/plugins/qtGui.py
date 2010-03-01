@@ -1228,7 +1228,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20081121105001.591:setYScrollPosition
     def setYScrollPosition(self,pos):
 
-        # g.trace('pos',pos)
+        # g.trace(pos,g.callers(3))
 
         w = self.widget
         sb = w.verticalScrollBar()
