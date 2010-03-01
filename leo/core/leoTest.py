@@ -81,19 +81,19 @@ def doTests(c,all=None,p=None,verbosity=1):
         # New in Leo 4.4.8: ignore everything in @ignore trees.
         if all: last = None
         else:   last = p.nodeAfterTree()
-        if trace and verbose: g.trace('all',all,'root',p.h)
+        if trace: g.trace('all',all,'root',p.h)
         while p and p != last:
             if g.match_word(p.h,0,'@ignore'):
-                if trace and verbose: g.trace('ignoring',p.h)
+                if trace: g.trace('ignoring tree',p.h)
                 p.moveToNodeAfterTree()
             elif isTestNode(p): # @test
-                if trace and verbose: g.trace('adding',p.h)
+                if trace: g.trace('adding',p.h)
                 test = makeTestCase(c,p)
                 if test:
                     suite.addTest(test) ; found = True
                 p.moveToThreadNext()
             elif isSuiteNode(p): # @suite
-                if trace and verbose: g.trace('adding',p.h)
+                if trace: g.trace('adding',p.h)
                 test = makeTestSuite(c,p)
                 if test:
                     suite.addTest(test) ; found = True
@@ -198,8 +198,7 @@ class generalTestCase(unittest.TestCase):
 #@+node:ekr.20051104075904.12:makeTestSuite
 #@+at 
 #@nonl
-# This code executes the script in an @suite node.  This code 
-# assumes:
+# This code executes the script in an @suite node.  This code assumes:
 # - The script creates a one or more unit tests.
 # - The script puts the result in g.app.scriptDict["suite"]
 #@-at
@@ -771,12 +770,16 @@ def runTestsExternally (c,all):
                 (2,p2,limit2,lookForMark2,lookForNodes2),
             ):
                 if n == 2 and self.all: return
-                if trace: g.trace('===== pass %s: look for: mark %s nodes %s root %s limit %s' % (
-                    n,lookForMark,lookForNodes,
-                    p and p.h or '<none>',
-                    limit and limit.h or '<none>'))
+                if trace and verbose: g.trace(
+                    'pass %s: mark %s nodes %s root %s limit %s' % (
+                        n,lookForMark,lookForNodes,
+                        p and p.h or '<none>',
+                        limit and limit.h or '<none>'))
                 while p and p != limit:
-                    if p.v in self.seen:
+                    if g.match_word(p.h,0,'@ignore'):
+                        if trace: g.trace('ignoring tree',p.h)
+                        p.moveToNodeAfterTree()
+                    elif p.v in self.seen:
                         if trace: g.trace('seen',p.h)
                         p.moveToNodeAfterTree()
                     elif lookForMark and p.h.startswith(markTag):
@@ -1802,8 +1805,7 @@ def importAllModulesInPath (path,exclude=[]):
 #@nonl
 # Warning: do NOT use g.importFromPath here!
 # 
-# g.importFromPath uses imp.load_module, and that is equivalent to 
-# reload!
+# g.importFromPath uses imp.load_module, and that is equivalent to reload!
 # reloading Leo files while running will crash Leo.
 #@-at
 #@@c
