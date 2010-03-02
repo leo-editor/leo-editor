@@ -6885,7 +6885,7 @@ class leoQtGui(leoGui.leoGui):
             sm = leoPlugins.getPluginModule('scrolledmessage')
 
             if not sm:
-                sm = leoPlugins.loadOnePlugin('scrolledmessage',verbose=True)
+                sm = leoPlugins.loadOnePlugin('leo.plugins.scrolledmessage',verbose=True)
                 if sm:
                     g.es('scrolledmessage plugin loaded.', color='blue')
                     sm.onCreate('tag',{'c':c})

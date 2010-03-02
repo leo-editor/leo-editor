@@ -437,7 +437,7 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
     # if the plugin does _not_ use the init top-level function.
     loadingModuleNameStack.append(moduleName)
     #result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
-    print "imp", moduleName
+    #print "imp", moduleName
     try:
         toplevel = __import__(moduleName)
         # need to look up through sys.modules, __import__ returns toplevel package
@@ -446,7 +446,6 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
     except Exception as e:
         g.es_print('exception importing plugin ' + moduleName,color='red')
         g.es_exception()
-        print e
         result = None
 
     loadingModuleNameStack.pop()

@@ -212,11 +212,14 @@ def createPluginsMenu (tag,keywords):
         # Create a list of all active plugins.
         files = glob.glob(os.path.join(path,"*.py"))
         files.sort()
-        plugins = [PlugIn(file, c) for file in files]
-        PluginDatabase.storeAllPlugins(files)
+        modules = ['leo.plugins.' + os.path.basename(f[:-3]) for f in files]
+        plugins = [PlugIn(m, c) for m in modules]
+        PluginDatabase.storeAllPlugins(modules)
         loaded = [z.lower() for z in g.app.loadedPlugins]
+        #print "loaded",loaded
         # items = [(p.name,p) for p in plugins if p.version]
         items = [(p.name,p) for p in plugins if p.moduleName and p.moduleName.lower() in loaded]
+        #print "items", items
         # g.trace('loaded',g.app.loadedPlugins)
         # g.trace('realnames',[p.realname for p in plugins if p.realname])
         # g.trace('names',[p.name for p in plugins if p.name])
@@ -247,7 +250,6 @@ def createPluginsMenu (tag,keywords):
 #@-node:EKR.20040517080555.23:createPluginsMenu
 #@+node:ekr.20070302175530:init
 def init ():
-
     if g.app.unitTesting: return None
 
     if not g.app.gui:
@@ -333,15 +335,18 @@ class PlugIn:
 
         """Initialize the plug-in"""
 
+        # 'filename' is now actually the fully qualified plugin name
         self.c = c
 
+        #print "Plugin",filename
         # Import the file to find out some interesting stuff
         # Do not use the imp module: we only want to import these files once!
         self.name = self.realname = self.moduleName = None
         self.mod = self.doc = self.version = None
         self.filename = g.os_path_abspath(filename)
         try:
-            self.mod = __import__(g.os_path_splitext(g.os_path_basename(filename))[0])
+            #self.mod = __import__(g.os_path_splitext(g.os_path_basename(filename))[0])
+            self.mod = sys.modules.get(filename)
             if not self.mod: return
 
             try:
@@ -367,11 +372,12 @@ class PlugIn:
             # s = 'Can not import %s in plugins_menu plugin' % g.shortFileName(filename)
             # g.es_print(s,color='blue')
             return
+        """        
         except Exception:
             s = 'Unexpected exception in plugins_menu plugin importing %s' % filename
             g.es_print(s,color='red')
             return
-
+        """
         #@    << Check if this can be configured >>
         #@+node:EKR.20040517080555.5:<< Check if this can be configured >>
         # Look for a configuration file
