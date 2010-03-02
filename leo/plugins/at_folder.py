@@ -68,7 +68,7 @@ def onSelect (tag,keywords):
     if g.match_word(h,0,"@folder"):
         sync_node_to_folder(c,v,h[8:])
 
-if 1: # Ok for unit testing.
+def init():
     leoPlugins.registerHandler("select1", onSelect)
     g.plugin_signon(__name__)
 #@nonl
