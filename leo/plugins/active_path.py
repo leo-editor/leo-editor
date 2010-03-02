@@ -44,6 +44,14 @@ There are commands on the Plugins active_path submenu:
 If you want to use an input other than double clicking a node's status-iconbox
 set active_path_event to a value like 'iconrclick1' or 'iconclick1'.
 
+There are @settings for ignoring directory entries and automatically loading files.  ``re.search`` is used, rather than ``re.match``, so patterns need only match part of the filename, not the whole filename.
+
+The body of the @setting ``@data active_path_ignore`` is a list of regex
+patterns, one per line.  Directory entries matching any pattern in the list will be ignored.  The names of directories used for matching will have forward slashes around them ('/dirname/'), so patterns can use this to distinguish between directories and files.
+
+The body of the @setting ``@data active_path_autoload`` is a list of regex
+patterns, one per line.  File entries matching any pattern in the list will be loaded automatically.  This works only with files, not directories (but you can load directories recursively anyway).
+
 active_path is a rewrite of the at_directory plugin to use @path directives (which influence
 @auto and other @file type directives), and to handle sub-folders more automatically.
 '''
