@@ -251,7 +251,12 @@ def callTagHandler (bunch,tag,keywords):
     # Calls to registerHandler from inside the handler belong to moduleName.
     global loadingModuleNameStack
     loadingModuleNameStack.append(moduleName)
-    result = handler(tag,keywords)
+    try:
+        result = handler(tag,keywords)
+    except:
+        g.es("hook failed: %s, %s, %s" % (tag, handler, moduleName))
+        g.es_exception()
+        result = None
     loadingModuleNameStack.pop()
     return result
 #@-node:ekr.20050102094729:callTagHandler
