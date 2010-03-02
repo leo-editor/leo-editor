@@ -136,7 +136,7 @@ def createSpecialGui(gui,pymacs,script,windowFlag):
 
     if False and g.isPython3:
         # Create the curses gui.
-        leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
+        leoPlugins.loadOnePlugin ('leo.plugins.cursesGui',verbose=True)
     elif pymacs:
         createNullGuiWithScript(None)
     # elif jyLeo:

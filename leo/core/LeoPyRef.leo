@@ -86,34 +86,41 @@
 <v t="ekr.20100209091422.5978"><vh>Tests</vh>
 <v t="ekr.20100208095423.5940"><vh>@@test leoCache</vh></v>
 </v>
-<v t="EKR.20040519090151.2"><vh>To do</vh>
-<v t="ekr.20100119205347.6015"><vh>@thin ../doc/leoToDo.txt</vh></v>
+<v t="EKR.20040519090151.2" a="E"><vh>To do</vh>
+<v t="ekr.20100119205347.6015" a="E"
+marks="ekr.20041113113140,"
+expanded="ekr.20100109214940.6225,ekr.20100223123910.5836,ekr.20100202145902.6106,ekr.20100130042842.9008,ekr.20100202145902.6108,ekr.20100206074650.5844,ekr.20100211072044.5754,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
-<v t="ekr.20031218072017.2406"><vh>Code</vh>
+<v t="ekr.20031218072017.2406" a="E"><vh>Code</vh>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
 <v t="ekr.20090717092906.12765"><vh>@thin leoVersion.py</vh></v>
 </v>
-<v t="ekr.20090802181029.5989"><vh>Startup &amp; external files</vh>
+<v t="ekr.20090802181029.5989" a="E"><vh>Startup &amp; external files</vh>
 <v t="ekr.20100120092047.6087"><vh>@thin ../external/ipy_leo.py</vh></v>
 <v t="ville.20091010232339.6117"><vh>@thin ../external/lproto.py</vh></v>
-<v t="ekr.20031218072017.2605"><vh>@thin runLeo.py </vh></v>
+<v t="ekr.20031218072017.2605" a="E"
+expanded="ekr.20031218072017.1934,ekr.20090519143741.5915,"><vh>@thin runLeo.py </vh></v>
 </v>
-<v t="ekr.20031218072017.2604"><vh>Core classes</vh>
-<v t="ekr.20031218072017.2608"><vh>@thin leoApp.py</vh></v>
+<v t="ekr.20031218072017.2604" a="E"><vh>Core classes</vh>
+<v t="ekr.20031218072017.2608" a="E"><vh>@thin leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@thin leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
 <v t="ekr.20100208065621.5894"><vh>@thin leoCache.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@thin leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@thin leoColor.py</vh></v>
 <v t="ekr.20031218072017.2810"><vh>@thin leoCommands.py</vh></v>
-<v t="ekr.20041117062700"><vh>@thin leoConfig.py</vh></v>
+<v t="ekr.20041117062700" a="E"
+expanded="ekr.20041119203941,ekr.20041117081009,"><vh>@thin leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@thin leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31342e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@thin leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" a="E" descendentVnodeUnknownAttributes="7d71005506302e31342e3071017d71025808000000616e6e6f7461746571037d710473732e"
+expanded="EKR.20040612114220,ekr.20041219095213,"><vh>@thin leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@thin leoImport.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@thin leoNodes.py</vh></v>
-<v t="ekr.20031218072017.3439"><vh>@thin leoPlugins.py</vh></v>
+<v t="ekr.20031218072017.3439" a="E"
+marks="ekr.20041113113140,"
+expanded="ekr.20031218072017.3440,"><vh>@thin leoPlugins.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@thin leoPymacs.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@thin leoRst.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@thin leoShadow.py</vh></v>
@@ -129,11 +136,11 @@
 <v t="ekr.20061031131434"><vh>@thin leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@thin leoMenu.py</vh></v>
 </v>
-<v t="ekr.20080730161153.8"><vh>Testing</vh>
-<v t="ekr.20100221142603.5638"><vh>@thin ../../pylint-leo.py</vh></v>
+<v t="ekr.20080730161153.8" a="E"><vh>Testing</vh>
+<v t="ekr.20100221142603.5638" a="E"><vh>@thin ../../pylint-leo.py</vh></v>
 <v t="ekr.20080730161153.2"><vh>@thin leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@thin leoDynamicTest.py</vh></v>
-<v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710058010000003071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@thin leoTest.py</vh></v>
+<v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@thin leoTest.py</vh></v>
 </v>
 </v>
 </vnodes>

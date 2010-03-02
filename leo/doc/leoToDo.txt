@@ -1981,10 +1981,10 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
     warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
 
     if moduleOrFileName.endswith('.py'):
-        moduleName = moduleOrFileName [:-3]
+        moduleName = 'leo.plugins.' + moduleOrFileName [:-3]
     else:
         moduleName = moduleOrFileName
-    moduleName = g.shortFileName(moduleName)
+    #moduleName = g.shortFileName(moduleName)
 
     if isLoaded(moduleName):
         module = loadedModules.get(moduleName)
@@ -1994,13 +1994,25 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
 
     assert g.app.loadDir
 
-    plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
+    #plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
     moduleName = g.toUnicode(moduleName)
 
     # This import will typically result in calls to registerHandler.
     # if the plugin does _not_ use the init top-level function.
     loadingModuleNameStack.append(moduleName)
-    result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
+    #result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
+    print "imp", moduleName
+    try:
+        toplevel = __import__(moduleName)
+        # need to look up through sys.modules, __import__ returns toplevel package
+        result = sys.modules[moduleName]
+
+    except Exception as e:
+        g.es_print('exception importing plugin ' + moduleName,color='red')
+        g.es_exception()
+        print e
+        result = None
+
     loadingModuleNameStack.pop()
 
     if result:
@@ -4959,10 +4971,10 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
     warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
 
     if moduleOrFileName.endswith('.py'):
-        moduleName = moduleOrFileName [:-3]
+        moduleName = 'leo.plugins.' + moduleOrFileName [:-3]
     else:
         moduleName = moduleOrFileName
-    moduleName = g.shortFileName(moduleName)
+    #moduleName = g.shortFileName(moduleName)
 
     if isLoaded(moduleName):
         module = loadedModules.get(moduleName)
@@ -4972,13 +4984,25 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
 
     assert g.app.loadDir
 
-    plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
+    #plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
     moduleName = g.toUnicode(moduleName)
 
     # This import will typically result in calls to registerHandler.
     # if the plugin does _not_ use the init top-level function.
     loadingModuleNameStack.append(moduleName)
-    result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
+    #result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
+    print "imp", moduleName
+    try:
+        toplevel = __import__(moduleName)
+        # need to look up through sys.modules, __import__ returns toplevel package
+        result = sys.modules[moduleName]
+
+    except Exception as e:
+        g.es_print('exception importing plugin ' + moduleName,color='red')
+        g.es_exception()
+        print e
+        result = None
+
     loadingModuleNameStack.pop()
 
     if result:

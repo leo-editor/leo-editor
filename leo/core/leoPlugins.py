@@ -21,6 +21,7 @@ After startup:
 import leo.core.leoGlobals as g
 import glob
 import bisect
+import sys
 
 handlers = {}
 loadedModulesFilesDict = {}
@@ -344,9 +345,9 @@ def loadHandlers(tag):
         if not g.app.unitTesting:
             g.es_print(*args,**keys)
 
-    plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
-    files = glob.glob(g.os_path_join(plugins_path,"*.py"))
-    files = [g.os_path_finalize(theFile) for theFile in files]
+    #plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
+    #files = glob.glob(g.os_path_join(plugins_path,"*.py"))
+    #files = [g.os_path_finalize(theFile) for theFile in files]
 
     s = g.app.config.getEnabledPlugins()
     if not s: return
@@ -356,27 +357,32 @@ def loadHandlers(tag):
             g.app.config.enabledPluginsFileName)
         g.es_print(s2,color='blue')
 
-    enabled_files = getEnabledFiles(s,plugins_path)
+    #enabled_files = getEnabledFiles(s)
 
+    for plugin in s.splitlines():
+        if plugin.strip() and not plugin.startswith('#'):
+            loadOnePlugin(plugin.strip(), tag = tag)
     # Load plugins in the order they appear in the enabled_files list.
+    """
     if files and enabled_files:
         for theFile in enabled_files:
             if theFile in files:
                 loadOnePlugin(theFile,tag=tag)
-
+    """
     # Warn about any non-existent enabled file.
+    """
     if warn_on_failure and tag == 'open0':
         for z in enabled_files:
             if z not in files:
                 g.es_print('plugin does not exist:',
                     g.shortFileName(z),color="red")
-
+    """
     # Note: g.plugin_signon adds module names to g.app.loadedPlugins
     if 0:
         if g.app.loadedPlugins:
             pr("%d plugins loaded" % (len(g.app.loadedPlugins)), color="blue")
 #@+node:ekr.20070224082131:getEnabledFiles
-def getEnabledFiles (s,plugins_path):
+def getEnabledFiles (s,plugins_path = None):
 
     '''Return a list of plugins mentioned in non-comment lines of s.'''
 
@@ -384,8 +390,10 @@ def getEnabledFiles (s,plugins_path):
     for s in g.splitLines(s):
         s = s.strip()
         if s and not s.startswith('#'):
-            path = g.os_path_finalize_join(plugins_path,s)
-            enabled_files.append(path)
+            enabled_files.append(s)
+            #path = g.os_path_finalize_join(plugins_path,s)
+
+            #enabled_files.append(path)
 
     return enabled_files
 #@-node:ekr.20070224082131:getEnabledFiles
@@ -409,10 +417,10 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
     warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
 
     if moduleOrFileName.endswith('.py'):
-        moduleName = moduleOrFileName [:-3]
+        moduleName = 'leo.plugins.' + moduleOrFileName [:-3]
     else:
         moduleName = moduleOrFileName
-    moduleName = g.shortFileName(moduleName)
+    #moduleName = g.shortFileName(moduleName)
 
     if isLoaded(moduleName):
         module = loadedModules.get(moduleName)
@@ -422,13 +430,25 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
 
     assert g.app.loadDir
 
-    plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
+    #plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
     moduleName = g.toUnicode(moduleName)
 
     # This import will typically result in calls to registerHandler.
     # if the plugin does _not_ use the init top-level function.
     loadingModuleNameStack.append(moduleName)
-    result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
+    #result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
+    print "imp", moduleName
+    try:
+        toplevel = __import__(moduleName)
+        # need to look up through sys.modules, __import__ returns toplevel package
+        result = sys.modules[moduleName]
+
+    except Exception as e:
+        g.es_print('exception importing plugin ' + moduleName,color='red')
+        g.es_exception()
+        print e
+        result = None
+
     loadingModuleNameStack.pop()
 
     if result:

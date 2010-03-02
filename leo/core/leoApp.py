@@ -397,7 +397,7 @@ class LeoApp:
         """A convenience routines for plugins to 
         create the default Tk gui class."""
 
-        leoPlugins.loadOnePlugin ('tkGui',verbose=verbose)
+        leoPlugins.loadOnePlugin ('leo.plugins.tkGui',verbose=verbose)
 
         if fileName and verbose: print('tkGui created in %s' % fileName)
     #@-node:ekr.20031218072017.2610:app.createTkGui
@@ -408,7 +408,7 @@ class LeoApp:
 
         """A convenience routines for plugins to create the wx gui class."""
 
-        leoPlugins.loadOnePlugin ('wxGui',verbose=verbose)
+        leoPlugins.loadOnePlugin ('leo.plugins.wxGui',verbose=verbose)
 
         if fileName and verbose: print('wxGui created in %s' % fileName)
     #@-node:ekr.20090126063121.3:app.createWxGui
