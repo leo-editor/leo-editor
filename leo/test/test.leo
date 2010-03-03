@@ -1525,11 +1525,12 @@ leoTest.doTests (c,all=False)</t>
 # ctagscompleter.py
 # codewisecompleter.py
 # rst3.py
-contextmenu.py
+# contextmenu.py
 plugins_menu.py
 # open_with.py
 quicksearch.py
 # ipython.py
+# templates.py
 scrolledmessage.py
 UNL.py
 mod_scripting.py
