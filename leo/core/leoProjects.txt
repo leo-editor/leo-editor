@@ -784,6 +784,807 @@ def warnAboutUnvisitedNodes (self,root):
 #@-node:ekr.20100225120559.5630:Changed
 #@-node:ekr.20100224050618.11546:Auto-convert thin-like external files
 #@-node:ekr.20100223085638.5635:Leo 4.7.1 projects
+#@+node:ekr.20100303074003.5639:Leo 4.8 devel projects
+#@+node:ekr.20100303074003.5635:Fix save scrolling bug
+@nocolor-node
+
+- Open a node with long (multipage) body text
+- Move cursor towards the end of the node
+- Save (ctrl+s)
+- Observe how window is scrolled, cursor is moved
+#@nonl
+#@+node:ekr.20100303074003.5637:p.restore/saveCursorAndScroll
+def restoreCursorAndScroll (self,w):
+
+    self.v.restoreCursorAndScroll(w)
+
+def saveCursorAndScroll (self,w):
+
+    self.v.saveCursorAndScroll(w)
+#@-node:ekr.20100303074003.5637:p.restore/saveCursorAndScroll
+#@+node:ekr.20100303074003.5636:v.restoreCursorAndScroll
+def restoreCursorAndScroll (self,w):
+
+    v = self
+
+    if v and v.insertSpot != None:
+        spot = v.insertSpot
+        w.setInsertPoint(spot)
+        w.see(spot)
+    else:
+        w.setInsertPoint(0)
+
+    # Restore the scroll spot after the call to w.see.
+    if v and v.scrollBarSpot != None:
+        first,last = v.scrollBarSpot
+        w.setYScrollPosition(first)
+#@-node:ekr.20100303074003.5636:v.restoreCursorAndScroll
+#@+node:ekr.20100303074003.5638:v.saveCursorAndScroll(w)
+def saveCursorAndScroll(self,w):
+
+    v = self
+    if not w: return
+
+    v.scrollBarSpot = w.getYScrollPosition()
+    v.insertSpot = w.getInsertPoint()
+#@-node:ekr.20100303074003.5638:v.saveCursorAndScroll(w)
+#@+node:ekr.20031218072017.2820:top level (file menu)
+#@+node:ekr.20031218072017.1623:c.new
+def new (self,event=None,gui=None):
+
+    '''Create a new Leo window.'''
+
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=None,relativeFileName=None,gui=gui)
+
+    g.doHook("new",old_c=self,c=c,new_c=c)
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+        # Resize the _new_ frame.
+    c.frame.createFirstTreeNode()
+    g.createMenu(c)
+    g.finishOpen(c)
+    g.app.writeWaitingLog(c,forceLog=True) # Force a new signon message.
+    c.redraw()
+    return c # For unit test.
+#@-node:ekr.20031218072017.1623:c.new
+#@+node:ekr.20031218072017.2821:c.open & helper
+def open (self,event=None):
+
+    '''Open a Leo window containing the contents of a .leo file.'''
+
+    c = self
+    << Set closeFlag if the only open window is empty >>
+    table = [("All files","*"),("Leo files","*.leo"),
+        ("Python files","*.py"),]
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
+        title = "Open",filetypes = table,defaultextension = ".leo")
+    c.bringToFront()
+
+    ok = False
+    if fileName:
+        if fileName.endswith('.leo'):
+            ok, frame = g.openWithFileName(fileName,c)
+            if ok:
+                g.chdir(fileName)
+                g.setGlobalOpenDir(fileName)
+            if ok and closeFlag:
+                g.app.destroyWindow(c.frame)
+        else:
+            ok = c.createNodeFromExternalFile(fileName)
+
+    # openWithFileName sets focus if ok.
+    if not ok:
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+#@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+#@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+#@+node:ekr.20090212054250.9:c.createNodeFromExternalFile
+def createNodeFromExternalFile(self,fn):
+
+    '''Read the file into a node.
+    Return None, indicating that c.open should set focus.'''
+
+    c = self
+
+    s,e = g.readFileIntoString(fn)
+    if s is None: return
+    head,ext = g.os_path_splitext(fn)
+    if ext.startswith('.'): ext = ext[1:]
+    language = g.app.extension_dict.get(ext)
+    if language:
+        prefix = '@color\n@language %s\n\n' % language
+    else:
+        prefix = '@killcolor\n\n'
+    p2 = c.insertHeadline(op_name='Open File', as_child=False)
+    p2.h = '@edit %s' % fn # g.shortFileName(fn)
+    p2.b = prefix + s
+    w = c.frame.body.bodyCtrl
+    if w: w.setInsertPoint(0)
+    c.redraw()
+    c.recolor()
+#@nonl
+#@-node:ekr.20090212054250.9:c.createNodeFromExternalFile
+#@-node:ekr.20031218072017.2821:c.open & helper
+#@+node:ekr.20031218072017.2823:c.openWith and helpers
+def openWith(self,event=None,data=None):
+
+    '''This routine handles the items in the Open With... menu.
+
+    These items can only be created by createOpenWithMenuFromTable().
+    Typically this would be done from the "open2" hook.
+
+    New in 4.3: The "os.spawnv" now works. You may specify arguments to spawnv
+    using a list, e.g.:
+
+    openWith("os.spawnv", ["c:/prog.exe","--parm1","frog","--switch2"], None)
+    '''
+
+    c = self ; p = c.p
+    n = data and len(data) or 0
+    if n != 3:
+        g.trace('bad data, length must be 3, got %d' % n)
+        return
+    try:
+        openType,arg,ext=data
+        if not g.doHook('openwith1',c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext):
+            ext = c.getOpenWithExt(p,ext)
+            fn = c.openWithHelper(p,ext)
+            if fn:
+                g.enableIdleTimeHook(idleTimeDelay=500)
+                c.openTempFileInExternalEditor(arg,fn,openType)
+        g.doHook('openwith2',c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext)
+    except Exception:
+        g.es('unexpected exception in c.openWith')
+        g.es_exception()
+
+    return 'break'
+#@+node:ekr.20031218072017.2824:c.getOpenWithExt
+def getOpenWithExt (self,p,ext):
+
+    trace = False and not g.app.unitTesting
+    c = self
+
+    if not ext:
+        # if node is part of @<file> tree, get ext from file name
+        for p2 in p.self_and_parents():
+            if p2.isAnyAtFileNode():
+                fn = p2.h.split(None,1)[1]
+                ext = g.os_path_splitext(fn)[1]
+                if trace: g.trace('found node:',ext,p2.h)
+                break
+
+    if not ext:
+        theDict = c.scanAllDirectives()
+        language = theDict.get('language')
+        ext = g.app.language_extension_dict.get(language)
+        if trace: g.trace('found directive',language,ext)
+
+    if not ext:
+        ext = '.txt'
+        if trace: g.trace('use default (.txt)')
+
+    if ext[0] != '.':
+        ext = '.'+ext
+
+    return ext
+#@-node:ekr.20031218072017.2824:c.getOpenWithExt
+#@+node:ekr.20031218072017.2829:c.openTempFileInExternalEditor
+def openTempFileInExternalEditor(self,arg,fn,openType,testing=False):
+
+    '''Open the closed mkstemp file fn in an external editor.
+    The arg and openType args come from the data arg to c.openWith.
+    '''
+
+    trace = False and not g.unitTesting
+    testing = testing or g.unitTesting
+    if arg is None: arg = ''
+
+    try:
+        if trace: g.trace(repr(openType),repr(arg),repr(fn))
+        command = '<no command>'
+        if openType == 'os.system':
+            if 1:
+                # This works, *provided* that arg does not contain blanks.  Sheesh.
+                command = 'os.system(%s)' % (arg+fn)
+                if trace: g.trace(command)
+                if not testing: os.system(arg+fn)
+            else:
+                # XP does not like this format!
+                command = 'os.system("%s %s")' % (arg,fn)
+                if not testing: os.system('"%s" "%s"' % (arg,fn))
+        elif openType == 'os.startfile':
+            command = 'os.startfile(%s)' % (arg+fn)
+            if trace: g.trace(command)
+            if not testing: os.startfile(arg+fn)
+        elif openType == 'exec':
+            command = 'exec(%s)' % (arg+fn)
+            if trace: g.trace(command)
+            if not testing: exec(arg+fn,{},{})
+        elif openType == 'os.spawnl':
+            filename = g.os_path_basename(arg)
+            command = 'os.spawnl(%s,%s,%s)' % (arg,filename,fn)
+            if trace: g.trace(command)
+            if not testing: os.spawnl(os.P_NOWAIT,arg,filename,fn)
+        elif openType == 'os.spawnv':
+            filename = os.path.basename(arg[0]) 
+            vtuple = arg[1:]
+            vtuple.insert(0, filename)
+                # add the name of the program as the first argument.
+                # Change suggested by Jim Sizelove.
+            vtuple.append(fn)
+            command = 'os.spawnv(%s,%s)' % (arg[0],repr(vtuple))
+            if trace: g.trace(command)
+            if not testing: os.spawnv(os.P_NOWAIT,arg[0],vtuple)
+        elif openType == 'subprocess.Popen':
+            use_shell = True
+            if g.isString(arg):
+                if arg:
+                    vtuple = arg + ' ' + fn
+                else:
+                    vtuple = fn
+            elif isinstance(arg,(list, tuple)):
+                vtuple = arg[:]
+                vtuple.append(fn)
+                use_shell = False
+            command = 'subprocess.Popen(%s)' % repr(vtuple)
+            if trace: g.trace(command)
+            if not testing:
+                try:
+                    subprocess.Popen(vtuple,shell=use_shell)
+                except OSError:
+                    g.es_print('vtuple',repr(vtuple))
+                    g.es_exception()
+        elif g.isCallable(openType):
+            # Invoke openWith like this:
+            # c.openWith(data=[f,None,None])
+            # f will be called with one arg, the filename
+            if trace: g.trace('%s(%s)' % (openType,fn))
+            command = '%s(%s)' % (openType,fn)
+            if not testing: openType(fn)
+        else:
+            command='bad command:'+str(openType)
+            if not testing: g.trace(command)
+        return command # for unit testing.
+    except Exception:
+        g.es('exception executing open-with command:',command)
+        g.es_exception()
+        return 'oops: %s' % command
+#@-node:ekr.20031218072017.2829:c.openTempFileInExternalEditor
+#@+node:ekr.20100203050306.5797:c.openWithHelper
+def openWithHelper (self,p,ext):
+
+    '''create or reopen a temp file for p,
+    testing for conflicting changes.
+    '''
+
+    c = self
+
+    # May be over-ridden by mod_tempfname plugin.
+    searchPath = c.openWithTempFilePath(p,ext)
+    if not searchPath:
+        # Check the mod_tempfname plugin.
+        return g.trace('c.openWithTempFilePath failed',color='red')
+
+    # Set d and path if a temp file already refers to p.v
+    path = None
+    if g.os_path_exists(searchPath):
+        for d in g.app.openWithFiles:
+            if p.v == d.get('v') and searchPath == d.get('path'):
+                path = searchPath ; break
+
+    if path:
+        assert d.get('path') == searchPath
+        fn = c.createOrRecreateTempFileAsNeeded(p,d,ext)
+    else:
+        fn = c.createOpenWithTempFile(p,ext)
+
+    return fn # fn may be None.
+#@+node:ekr.20031218072017.2827:c.createOrRecreateTempFileAsNeeded
+conflict_message = '''
+Conflicting changes in outline and temp file.
+Do you want to use the data in the outline?
+Yes: use the data in the outline.
+No: use the data in the temp file.
+Cancel or Escape or Return: do nothing.
+'''
+
+def createOrRecreateTempFileAsNeeded (self,p,d,ext):
+
+    '''test for changes in both p and the temp file:
+
+    - If only p's body text has changed, we recreate the temp file.
+    - If only the temp file has changed, do nothing here.
+    - If both have changed we must prompt the user to see which code to use.
+
+    Return the file name.
+    '''
+    c = self
+
+    fn = d.get('path')
+    # Get the old & new body text and modification times.
+    encoding = d.get('encoding')
+    old_body = d.get('body')
+    new_body = g.toEncodedString(p.b,encoding,reportErrors=True)
+    old_time = d.get('time')
+    try:
+        new_time = g.os_path_getmtime(fn)
+    except Exception:
+        new_time = None
+    body_changed = old_body != new_body
+    time_changed = old_time != new_time
+
+    if body_changed and time_changed:
+        g.es_print('Conflict in temp file for',p.h,color='red')
+        result = g.app.gui.runAskYesNoCancelDialog(c,
+            'Conflict!', c.conflict_message,
+            yesMessage = 'Outline',
+            noMessage = 'File',
+            defaultButton = 'Cancel')
+        if result is None or result.lower() == 'cancel':
+            return False
+        rewrite = result.lower() == 'yes'
+    else:
+        rewrite = body_changed
+
+    if rewrite:
+        # May be overridden by the mod_tempfname plugin.
+        fn = c.createOpenWithTempFile(p,ext)
+    else:
+        g.es('reopening:',g.shortFileName(fn),color='blue')
+
+    return fn
+#@-node:ekr.20031218072017.2827:c.createOrRecreateTempFileAsNeeded
+#@+node:ekr.20100203050306.5937:c.createOpenWithTempFile
+def createOpenWithTempFile (self,p,ext):
+
+    trace = False and not g.unitTesting
+    c = self ; f = None
+
+    # May be over-ridden by mod_tempfname plugin.
+    fn = c.openWithTempFilePath(p,ext)
+
+    try:
+        if g.os_path_exists(fn):
+            g.es('recreating:  ',g.shortFileName(fn),color='red')
+        else:
+            g.es('creating:  ',g.shortFileName(fn),color='blue')
+        f = open(fn,'w')
+        # Convert s to whatever encoding is in effect.
+        d = c.scanAllDirectives(p)
+        encoding = d.get('encoding',None)
+        if encoding == None:
+            encoding = c.config.default_derived_file_encoding
+        if g.isPython3: # 2010/02/09
+            s = p.b
+        else:
+            s = g.toEncodedString(p.b,encoding,reportErrors=True) 
+        f.write(s)
+        f.flush()
+        f.close()
+        try:
+            time = g.os_path_getmtime(fn)
+            if time: g.es('time: ',time)
+        except:
+            time = None
+
+        # Remove previous entry from app.openWithFiles if it exists.
+        for d in g.app.openWithFiles[:]:
+            if p.v == d.get('v'):
+                if trace: g.trace('removing',d.get('path'))
+                g.app.openWithFiles.remove(d)
+
+        d = {
+            # Used by app.destroyOpenWithFilesForFrame.
+            'c':c,
+            # Used here and by app.destroyOpenWithFileWithDict.
+            'path':fn,
+            # Used by c.testForConflicts.
+            'body':s,
+            'encoding':encoding,
+            'time':time,
+            # Used by the open_with plugin.
+            'p':p.copy(),
+            # Used by c.openWithHelper, and below.
+            'v':p.v,
+        }
+        g.app.openWithFiles.append(d)
+        return fn
+    except:
+        if f: f.close()
+        g.es('exception creating temp file',color='red')
+        g.es_exception()
+        return None
+#@-node:ekr.20100203050306.5937:c.createOpenWithTempFile
+#@-node:ekr.20100203050306.5797:c.openWithHelper
+#@+node:ekr.20031218072017.2832:c.openWithTempFilePath (may be over-ridden)
+def openWithTempFilePath (self,p,ext):
+
+    '''Return the path to the temp file corresponding to p and ext.
+
+     This is overridden in mod_tempfname plugin
+     '''
+
+    fn = '%s_LeoTemp_%s%s' % (
+        g.sanitize_filename(p.h),
+        str(id(p.v)),ext)
+    if g.isPython3: # 2010/02/07
+        fn = g.toUnicode(fn)
+    td = g.os_path_finalize(tempfile.gettempdir())
+    path = g.os_path_join(td,fn)
+
+    return path
+#@-node:ekr.20031218072017.2832:c.openWithTempFilePath (may be over-ridden)
+#@-node:ekr.20031218072017.2823:c.openWith and helpers
+#@+node:ekr.20031218072017.2833:c.close
+def close (self,event=None):
+
+    '''Close the Leo window, prompting to save it if it has been changed.'''
+
+    g.app.closeLeoWindow(self.frame)
+#@-node:ekr.20031218072017.2833:c.close
+#@+node:ekr.20031218072017.2834:c.save
+def save (self,event=None):
+
+    '''Save a Leo outline to a file.'''
+
+    c = self ; p = c.currentPosition()
+    # Do this now: w may go away.
+    w = g.app.gui.get_focus(c)
+    inBody = g.app.gui.widget_name(w).startswith('body')
+    if inBody: p.saveCursorAndScroll(w)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+        c.mFileName = ""
+
+    if c.mFileName:
+        # Calls c.setChanged(False) if no error.
+        c.fileCommands.save(c.mFileName)
+    else:
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            # Don't change mFileName until the dialog has suceeded.
+            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.frame.title = c.mFileName
+            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
+                # Bug fix in 4.4b2.
+            if g.app.qt_use_tabs and hasattr(c.frame,'top'):
+                c.frame.top.master.setTabName(c,c.mFileName)
+            c.fileCommands.save(c.mFileName)
+            c.updateRecentFiles(c.mFileName)
+            g.chdir(c.mFileName)
+
+    # Done in fileCommands.save.
+    # c.redraw_after_icons_changed()
+
+    # *Safely* restore focus, without using the old w directly.
+    if inBody:
+        c.bodyWantsFocusNow()
+        p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
+    else:
+        c.treeWantsFocusNow()
+#@nonl
+#@-node:ekr.20031218072017.2834:c.save
+#@+node:ekr.20031218072017.2835:c.saveAs
+def saveAs (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename.'''
+
+    c = self
+    # Do this now: w may go away.
+    w = g.app.gui.get_focus(c)
+    inBody = g.app.gui.widget_name(w).startswith('body')
+    if inBody: p.saveCursorAndScroll(w)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+        initialfile = c.mFileName,
+        title="Save As",
+        filetypes=[("Leo files", "*.leo")],
+        defaultextension=".leo")
+    c.bringToFront()
+
+    if fileName:
+        # 7/2/02: don't change mFileName until the dialog has suceeded.
+        c.mFileName = g.ensure_extension(fileName, ".leo")
+        c.frame.title = c.mFileName
+        c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+        c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
+            # Bug fix in 4.4b2.
+        # Calls c.setChanged(False) if no error.
+        if g.app.qt_use_tabs and hasattr(c.frame,'top'):
+            c.frame.top.master.setTabName(c,c.mFileName)
+        c.fileCommands.saveAs(c.mFileName)
+        c.updateRecentFiles(c.mFileName)
+        g.chdir(c.mFileName)
+
+    # Done in fileCommands.saveAs.
+    # c.redraw_after_icons_changed()
+
+    # *Safely* restore focus, without using the old w directly.
+    if inBody:
+        c.bodyWantsFocusNow()
+        p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
+    else:
+        c.treeWantsFocusNow()
+#@-node:ekr.20031218072017.2835:c.saveAs
+#@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
+def saveAsUnzipped (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename,
+    ensuring that the file is not compressed.'''
+    self.saveAsZippedHelper(False)
+
+def saveAsZipped (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename,
+    ensuring that the file is compressed.'''
+    self.saveAsZippedHelper(True)
+
+def saveAsZippedHelper (self,isZipped):
+
+    c = self
+    oldZipped = c.isZipped
+    c.isZipped = isZipped
+    try:
+        c.saveAs()
+    finally:
+        c.isZipped = oldZipped
+#@-node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
+#@+node:ekr.20031218072017.2836:c.saveTo
+def saveTo (self,event=None):
+
+    '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
+
+    c = self
+    # Do this now: w may go away.
+    w = g.app.gui.get_focus(c)
+    inBody = g.app.gui.widget_name(w).startswith('body')
+    if inBody: p.saveCursorAndScroll(w)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+
+    # set local fileName, _not_ c.mFileName
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+        initialfile = c.mFileName,
+        title="Save To",
+        filetypes=[("Leo files", "*.leo")],
+        defaultextension=".leo")
+    c.bringToFront()
+
+    if fileName:
+        fileName = g.ensure_extension(fileName, ".leo")
+        c.fileCommands.saveTo(fileName)
+        c.updateRecentFiles(fileName)
+        g.chdir(fileName)
+
+    # Does not change icons status.
+    # c.redraw_after_icons_changed()
+
+    # *Safely* restore focus, without using the old w directly.
+    if inBody:
+        c.bodyWantsFocusNow()
+        p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
+    else:
+        c.treeWantsFocusNow()
+#@nonl
+#@-node:ekr.20031218072017.2836:c.saveTo
+#@+node:ekr.20031218072017.2837:revert
+def revert (self,event=None):
+
+    '''Revert the contents of a Leo outline to last saved contents.'''
+
+    c = self
+
+    # Make sure the user wants to Revert.
+    if not c.mFileName:
+        return
+
+    reply = g.app.gui.runAskYesNoDialog(c,"Revert",
+        "Revert to previous version of " + c.mFileName + "?")
+    c.bringToFront()
+
+    if reply=="no":
+        return
+
+    # Kludge: rename this frame so openWithFileName won't think it is open.
+    fileName = c.mFileName ; c.mFileName = ""
+
+    # Create a new frame before deleting this frame.
+    ok, frame = g.openWithFileName(fileName,c)
+    if ok:
+        frame.deiconify()
+        g.app.destroyWindow(c.frame)
+    else:
+        c.mFileName = fileName
+#@-node:ekr.20031218072017.2837:revert
+#@-node:ekr.20031218072017.2820:top level (file menu)
+#@+node:ekr.20040803072955.128:leoTree.select & helpers
+tree_select_lockout = False
+
+def select (self,p,scroll=True):
+
+    '''Select a node.
+    Never redraws outline, but may change coloring of individual headlines.
+    The scroll argument is used by tk to suppress scrolling while dragging.'''
+
+    if g.app.killed or self.tree_select_lockout: return None
+
+    try:
+        c = self.c ; old_p = c.p
+        val = 'break'
+        self.tree_select_lockout = True
+        c.frame.tree.beforeSelectHint(p,old_p)
+        val = self.selectHelper(p,scroll=scroll)
+    finally:
+        self.tree_select_lockout = False
+        c.frame.tree.afterSelectHint(p,old_p)
+
+    return val  # Don't put a return in a finally clause.
+#@+node:ekr.20070423101911:selectHelper
+#  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
+
+def selectHelper (self,p,scroll):
+
+    trace = False and not g.unitTesting
+    verbose = True
+    c = self.c ; frame = c.frame
+    body = w = frame.body.bodyCtrl
+    if not w: return # Defensive.
+
+    old_p = c.p
+
+    if p:
+        # 2009/10/10: selecting a foreign position
+        # will not be pretty.
+        assert p.v.context == c
+    else:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    if trace:
+        if old_p:
+            g.trace('old: %s %s new: %s %s' % (
+                len(old_p.b),old_p.h,len(p.b),p.h))
+        else:
+            g.trace('old: <none> new: %s %s' % (len(p.b),p.h))
+
+    if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        if old_p:
+            << unselect the old node >>
+
+    g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        << select the new node >>
+        if p and p != old_p: # Suppress duplicate call.
+            try: # may fail during initialization.
+                # p is NOT c.p here!
+                if 0: # Interferes with new colorizer.
+                    self.canvas.update_idletasks()
+                    self.scrollTo(p)
+                if scroll and g.app.gui.guiName() == 'tkinter':
+                    def scrollCallback(self=self,p=p):
+                        self.scrollTo(p)
+                    self.canvas.after(100,scrollCallback)
+            except Exception: pass
+        c.nodeHistory.update(p) # Remember this position.
+    c.setCurrentPosition(p)
+    << set the current node >>
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    if trace: g.trace('**** after old: %s new %s' % (
+        old_p and len(old_p.b),len(p.b)))
+
+    g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    return 'break' # Supresses unwanted selection.
+#@+node:ekr.20040803072955.129:<< unselect the old node >>
+# Remember the position of the scrollbar before making any changes.
+if body:
+    yview = body.getYScrollPosition()
+    insertSpot = c.frame.body.getInsertPoint()
+else:
+    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+    yview,insertSpot = None,0
+
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p)
+
+if old_p and old_p != p: # 2010/02/11: Don't change the *new* node's insert point!
+    old_p.v.scrollBarSpot = yview
+    old_p.v.insertSpot = insertSpot
+#@-node:ekr.20040803072955.129:<< unselect the old node >>
+#@+node:ekr.20040803072955.130:<< select the new node >>
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.h
+frame.setWrap(p)
+self.setBodyTextAfterSelect(p,old_p)
+#@-node:ekr.20040803072955.130:<< select the new node >>
+#@+node:ekr.20040803072955.133:<< set the current node >>
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+if self.use_chapters:
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
+
+if self.stayInTree:
+    c.treeWantsFocus()
+else:
+    c.bodyWantsFocus()
+#@nonl
+#@-node:ekr.20040803072955.133:<< set the current node >>
+#@-node:ekr.20070423101911:selectHelper
+#@+node:ekr.20090608081524.6109:setBodyTextAfterSelect
+def setBodyTextAfterSelect (self,p,old_p):
+
+    # Always do this.  Otherwise there can be problems with trailing newlines.
+    c = self.c ; w = c.frame.body.bodyCtrl
+    s = p.v.b # Guaranteed to be unicode.
+    old_s = w.getAllText()
+
+    if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+        pass
+    else:
+        # w.setAllText destroys all color tags, so do a full recolor.
+        w.setAllText(s,new_p=p)
+        colorizer = c.frame.body.colorizer
+        if hasattr(colorizer,'setHighlighter'):
+            colorizer.setHighlighter(p)
+        self.frame.body.recolor(p)
+
+    p.restoreCursorAndScroll(w)
+#@-node:ekr.20090608081524.6109:setBodyTextAfterSelect
+#@-node:ekr.20040803072955.128:leoTree.select & helpers
+#@-node:ekr.20100303074003.5635:Fix save scrolling bug
+#@-node:ekr.20100303074003.5639:Leo 4.8 devel projects
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt
 #@-leo

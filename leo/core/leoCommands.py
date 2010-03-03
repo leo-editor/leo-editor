@@ -1230,6 +1230,7 @@ class baseCommands (object):
         # Do this now: w may go away.
         w = g.app.gui.get_focus(c)
         inBody = g.app.gui.widget_name(w).startswith('body')
+        if inBody: p.saveCursorAndScroll(w)
 
         if g.app.disableSave:
             g.es("save commands disabled",color="purple")
@@ -1267,9 +1268,10 @@ class baseCommands (object):
         # Done in fileCommands.save.
         # c.redraw_after_icons_changed()
 
-        # *Safely* restore focus, without using w directly.
+        # *Safely* restore focus, without using the old w directly.
         if inBody:
             c.bodyWantsFocusNow()
+            p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
         else:
             c.treeWantsFocusNow()
     #@nonl
@@ -1283,6 +1285,7 @@ class baseCommands (object):
         # Do this now: w may go away.
         w = g.app.gui.get_focus(c)
         inBody = g.app.gui.widget_name(w).startswith('body')
+        if inBody: p.saveCursorAndScroll(w)
 
         if g.app.disableSave:
             g.es("save commands disabled",color="purple")
@@ -1316,9 +1319,10 @@ class baseCommands (object):
         # Done in fileCommands.saveAs.
         # c.redraw_after_icons_changed()
 
-        # *Safely* restore focus, without using w directly.
+        # *Safely* restore focus, without using the old w directly.
         if inBody:
             c.bodyWantsFocusNow()
+            p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
         else:
             c.treeWantsFocusNow()
     #@-node:ekr.20031218072017.2835:c.saveAs
@@ -1354,6 +1358,7 @@ class baseCommands (object):
         # Do this now: w may go away.
         w = g.app.gui.get_focus(c)
         inBody = g.app.gui.widget_name(w).startswith('body')
+        if inBody: p.saveCursorAndScroll(w)
 
         if g.app.disableSave:
             g.es("save commands disabled",color="purple")
@@ -1380,9 +1385,10 @@ class baseCommands (object):
         # Does not change icons status.
         # c.redraw_after_icons_changed()
 
-        # *Safely* restore focus, without using w directly.
+        # *Safely* restore focus, without using the old w directly.
         if inBody:
             c.bodyWantsFocusNow()
+            p.restoreCursorAndScroll(c.frame.body.bodyCtrl)
         else:
             c.treeWantsFocusNow()
     #@nonl

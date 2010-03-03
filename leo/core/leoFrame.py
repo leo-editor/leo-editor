@@ -2805,21 +2805,7 @@ class leoTree:
                 colorizer.setHighlighter(p)
             self.frame.body.recolor(p)
 
-        # if p.v and p.v.scrollBarSpot != None:
-            # first,last = p.v.scrollBarSpot
-            # w.setYScrollPosition(first)
-
-        if p.v and p.v.insertSpot != None:
-            spot = p.v.insertSpot
-            w.setInsertPoint(spot)
-            w.see(spot)
-        else:
-            w.setInsertPoint(0)
-
-        # 2010/03/01: restore the scroll spot after the call to w.see.
-        if p.v and p.v.scrollBarSpot != None:
-            first,last = p.v.scrollBarSpot
-            w.setYScrollPosition(first)
+        p.restoreCursorAndScroll(w)
     #@-node:ekr.20090608081524.6109:setBodyTextAfterSelect
     #@-node:ekr.20040803072955.128:leoTree.select & helpers
     #@+node:ekr.20031218072017.3718:oops

@@ -782,6 +782,15 @@ class position (object):
 
         return self.v.setSelection(start,length)
     #@-node:ekr.20040306220634.29:p.setSelection
+    #@+node:ekr.20100303074003.5637:p.restore/saveCursorAndScroll
+    def restoreCursorAndScroll (self,w):
+
+        self.v.restoreCursorAndScroll(w)
+
+    def saveCursorAndScroll (self,w):
+
+        self.v.saveCursorAndScroll(w)
+    #@-node:ekr.20100303074003.5637:p.restore/saveCursorAndScroll
     #@-node:ekr.20040306220634:p.Vnode proxies
     #@+node:ekr.20040315034158:p.setBodyString & setHeadString
     def setBodyString (self,s):
@@ -2461,7 +2470,47 @@ class vnode (baseVnode):
         self.statusBits |= self.writeBit
     #@-node:ekr.20080429053831.9:v.setWriteBit
     #@-node:ekr.20031218072017.3386: v.Status bits
-    #@+node:ekr.20040315032144:v .setBodyString & v.setHeadString
+    #@+node:ekr.20031218072017.3385:v.computeIcon & setIcon
+    def computeIcon (self):
+
+        val = 0 ; v = self
+        if v.hasBody(): val += 1
+        if v.isMarked(): val += 2
+        if v.isCloned(): val += 4
+        if v.isDirty(): val += 8
+        return val
+
+    def setIcon (self):
+
+        pass # Compatibility routine for old scripts
+    #@-node:ekr.20031218072017.3385:v.computeIcon & setIcon
+    #@+node:ekr.20100303074003.5636:v.restoreCursorAndScroll
+    def restoreCursorAndScroll (self,w):
+
+        v = self
+
+        if v and v.insertSpot != None:
+            spot = v.insertSpot
+            w.setInsertPoint(spot)
+            w.see(spot)
+        else:
+            w.setInsertPoint(0)
+
+        # Restore the scroll spot after the call to w.see.
+        if v and v.scrollBarSpot != None:
+            first,last = v.scrollBarSpot
+            w.setYScrollPosition(first)
+    #@-node:ekr.20100303074003.5636:v.restoreCursorAndScroll
+    #@+node:ekr.20100303074003.5638:v.saveCursorAndScroll(w)
+    def saveCursorAndScroll(self,w):
+
+        v = self
+        if not w: return
+
+        v.scrollBarSpot = w.getYScrollPosition()
+        v.insertSpot = w.getInsertPoint()
+    #@-node:ekr.20100303074003.5638:v.saveCursorAndScroll(w)
+    #@+node:ekr.20040315032144:v.setBodyString & v.setHeadString
     def setBodyString (self,s):
 
         # trace = False and not g.unitTesting
@@ -2480,26 +2529,12 @@ class vnode (baseVnode):
     initHeadString = setHeadString
     setHeadText = setHeadString
     setTnodeText = setBodyString
-    #@-node:ekr.20040315032144:v .setBodyString & v.setHeadString
+    #@-node:ekr.20040315032144:v.setBodyString & v.setHeadString
     #@+node:ekr.20080429053831.13:v.setFileIndex
     def setFileIndex (self, index):
 
         self.fileIndex = index
     #@-node:ekr.20080429053831.13:v.setFileIndex
-    #@+node:ekr.20031218072017.3385:v.computeIcon & setIcon
-    def computeIcon (self):
-
-        val = 0 ; v = self
-        if v.hasBody(): val += 1
-        if v.isMarked(): val += 2
-        if v.isCloned(): val += 4
-        if v.isDirty(): val += 8
-        return val
-
-    def setIcon (self):
-
-        pass # Compatibility routine for old scripts
-    #@-node:ekr.20031218072017.3385:v.computeIcon & setIcon
     #@+node:ekr.20031218072017.3402:v.setSelection
     def setSelection (self, start, length):
 
