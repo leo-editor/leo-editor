@@ -1017,7 +1017,7 @@
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
-<v t="ekr.20051123100536"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1176,11 +1176,12 @@
 <v t="ekr.20060904211808"><vh>zodb plugin</vh>
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
-<v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
+<v t="tbrown.20091129085043.11789" a="E"><vh>active_path plugin</vh>
 <v t="tbrown.20091129085043.11790"><vh>@string active_path_attype = auto</vh></v>
 <v t="tbrown.20091129085043.11792"><vh>@string active_path_event = icondclick1</vh></v>
 <v t="tbrown.20091129085043.11793"><vh>@data active_path_ignore</vh></v>
 <v t="tbrown.20091129085043.11795"><vh>@data active_path_autoload</vh></v>
+<v t="tbrown.20100304170159.5189"><vh>@bool active_path_load_docstring = False</vh></v>
 </v>
 </v>
 <v t="ekr.20041119034357.28"><vh>Preferences panel</vh>
@@ -7997,6 +7998,7 @@ loading files</t>
 #
 #   ^readme    - load any file starting with 'readme'
 </t>
+<t tx="tbrown.20100304170159.5189">Should active_path load docstrings for python files?</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,

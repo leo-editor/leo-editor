@@ -52,6 +52,14 @@ patterns, one per line.  Directory entries matching any pattern in the list will
 The body of the @setting ``@data active_path_autoload`` is a list of regex
 patterns, one per line.  File entries matching any pattern in the list will be loaded automatically.  This works only with files, not directories (but you can load directories recursively anyway).
 
+Set ``@bool active_path_load_docstring = True`` to have active_path load the docstring
+of .py files automatically.  These nodes start with the special string::
+
+    @language rest # AUTOLOADED DOCSTRING
+
+which must be left intact if you want active path to be able to double-click load
+the file later.
+
 active_path is a rewrite of the at_directory plugin to use @path directives (which influence
 @auto and other @file type directives), and to handle sub-folders more automatically.
 '''
@@ -66,6 +74,7 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import os
 import re
+import ast # for docstring loading
 
 from leo.plugins.plugins_menu import PlugIn
 
@@ -116,6 +125,11 @@ def attachToCommander(t,k):
     if c.config.getData('active_path_autoload'):
         c.__active_path['autoload'] = [re.compile(i, re.IGNORECASE)
             for i in c.config.getData('active_path_autoload')]
+    if c.config.getBool('active_path_load_docstring'):
+        c.__active_path['load_docstring'] = True
+    else:
+        c.__active_path['load_docstring'] = False
+    c.__active_path['DS_SENTINEL'] = "@language rest # AUTOLOADED DOCSTRING"
 #@-node:tbrown.20091128094521.15047:attachToCommander
 #@+node:tbrown.20091128094521.15042:popup_entry
 def mkCmd(cmd, c):
@@ -151,7 +165,9 @@ def isFileNode(p):
     """really isEligibleToBecomeAFileNode"""
     return (not p.h.strip().startswith('@') and not p.hasChildren() and
       not isDirNode(p) and isDirNode(p.parent())
-      and not p.b.strip())
+      and (not p.b.strip() or # p.b.startswith(c.__active_path['DS_SENTINEL']
+      p.b.startswith("@language rest # AUTOLOADED DOCSTRING")  # no c!
+      ))
 #@-node:tbrown.20091128094521.15039:isFileNode
 #@+node:tbrown.20091129085043.9329:inReList
 def inReList(txt, lst):
@@ -403,6 +419,9 @@ def openDir(c,parent,d):
             c.setBodyString(p, '@path '+name.strip('/'))
         elif inReList(name, c.__active_path['autoload']):
             openFile(c, p, os.path.join(d, p.h))
+        elif (c.__active_path['load_docstring'] and
+            name.lower().endswith(".py")):
+            p.b = c.__active_path['DS_SENTINEL']+"\n\n"+loadDocstring(os.path.join(d, p.h))
         p.setMarked()
 
     if ignored:
@@ -422,6 +441,26 @@ def openDir(c,parent,d):
         if p.h != nh:  # don't dirty node unless we must
             c.setHeadString(p,nh)
 #@-node:tbrown.20080613095157.10:openDir
+#@+node:tbrown.20100304090709.31081:loadDocstring
+def loadDocstring(file_path):
+    try:
+        src = open(file_path).read()
+        src = src.replace('\r\n', '\n').replace('\r','\n')+'\n'
+    except IOError:
+        doc_string = "**COULD NOT OPEN / READ FILE**"
+        return doc_string
+
+    try:
+        ast_info = ast.parse(src)
+        doc_string = ast.get_docstring(ast_info)
+    except SyntaxError:
+        doc_string = "**SYNTAX ERROR IN MODULE SOURCE**"
+
+    if not doc_string:
+        doc_string = "**NO DOCSTRING**"
+
+    return doc_string
+#@-node:tbrown.20100304090709.31081:loadDocstring
 #@+node:ville.20090223183051.1:act on node
 def cmd_ActOnNode(c, p=None, event=None):
     """ act_on_node handler for active_path.py
