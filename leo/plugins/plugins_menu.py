@@ -155,6 +155,8 @@ def addPluginMenuItem (p,c):
 
     # g.trace(p.name,g.callers())
 
+    plugin_name = p.name.split('.')[-1]  # TNB 20100304 strip module path
+
     if p.hastoplevel:
         # Check at runtime to see if the plugin has actually been loaded.
         # This prevents us from calling hasTopLevel() on unloaded plugins.
@@ -166,7 +168,7 @@ def addPluginMenuItem (p,c):
                 p.hastoplevel(c)
             else:
                 p.about()
-        table = ((p.name,None,callback),)
+        table = ((plugin_name,None,callback),)
         c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p),table,dynamicMenu=True)
     elif p.hasconfig or p.othercmds:
         #@        << Get menu location >>
@@ -177,7 +179,7 @@ def addPluginMenuItem (p,c):
             menu_location = "&Plugins"
         #@-node:pap.20050305153147:<< Get menu location >>
         #@nl
-        m = c.frame.menu.createNewMenu(p.name,menu_location)
+        m = c.frame.menu.createNewMenu(plugin_name,menu_location)
         table = [("About...",None,p.about)]
         if p.hasconfig:
             table.append(("Properties...",None,p.properties))
@@ -193,7 +195,7 @@ def addPluginMenuItem (p,c):
             table.extend(items)
         c.frame.menu.createMenuEntries(m,table,dynamicMenu=True)
     else:
-        table = ((p.name,None,p.about),)
+        table = ((plugin_name,None,p.about),)
         c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p),table,dynamicMenu=True)
 #@nonl
 #@-node:EKR.20040517080555.24:addPluginMenuItem
@@ -422,6 +424,9 @@ class PlugIn:
                         base.append('-')
                     base.append(l)
                 base = ''.join(base).lower().replace('.py','').replace('_','-')
+
+                base = base.split('.')[-1]  # TNB 20100304 strip module path
+
                 # rest of name from item
                 ltrs = []
                 for l in item[4:]:
