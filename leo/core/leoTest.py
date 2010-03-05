@@ -695,6 +695,10 @@ def runUnitTestLeoFile (gui='qt',path='unitTest.leo',silent=True):
     if silent: args.append('--silent')
     if trace: g.trace(args)
 
+    # 2010/03/05: set the current directory so that importing leo.core.whatever works.
+    leoDir = g.os_path_finalize_join(g.app.loadDir,'..','..')
+    os.chdir(leoDir)
+
     os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
 #@-node:ekr.20090514072254.5746:runUnitTestLeoFile
 #@+node:ekr.20070627135407:runTestsExternally & helper class

@@ -11,6 +11,9 @@ cwd = os.getcwd()
 if cwd not in sys.path:
     sys.path.append(cwd)
 
+if 1:
+    print('leoDynamicTest:curdir',cwd)
+
 import time
 import leo.core.leoBridge as leoBridge
 import leo.core.leoPlugins as leoPlugins # leoPlugins.init must be called.
