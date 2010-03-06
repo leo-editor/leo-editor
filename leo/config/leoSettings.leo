@@ -94,7 +94,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20090703122042.7463"><vh>@@button a-common-button</vh></v>
@@ -1176,12 +1176,16 @@
 <v t="ekr.20060904211808"><vh>zodb plugin</vh>
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
-<v t="tbrown.20091129085043.11789" a="E"><vh>active_path plugin</vh>
+<v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
 <v t="tbrown.20091129085043.11790"><vh>@string active_path_attype = auto</vh></v>
 <v t="tbrown.20091129085043.11792"><vh>@string active_path_event = icondclick1</vh></v>
 <v t="tbrown.20091129085043.11793"><vh>@data active_path_ignore</vh></v>
 <v t="tbrown.20091129085043.11795"><vh>@data active_path_autoload</vh></v>
 <v t="tbrown.20100304170159.5189"><vh>@bool active_path_load_docstring = False</vh></v>
+</v>
+<v t="vitalije.20100306144625.8944" a="E"><vh>autosave plugin</vh>
+<v t="vitalije.20100306144625.8945"><vh>@bool mod_autosave_active = True</vh></v>
+<v t="vitalije.20100306144625.8946"><vh>@int mod_autosave_interval = 20</vh></v>
 </v>
 </v>
 <v t="ekr.20041119034357.28"><vh>Preferences panel</vh>
@@ -8012,6 +8016,9 @@ a single @data contextmenu_commands node. </t>
 # stickynote Create a sticky note
 # read-at-file-nodes Read in file nodes
 </t>
+<t tx="vitalije.20100306144625.8944"></t>
+<t tx="vitalije.20100306144625.8945"></t>
+<t tx="vitalije.20100306144625.8946"></t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>
