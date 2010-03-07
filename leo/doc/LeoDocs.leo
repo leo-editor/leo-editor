@@ -61,7 +61,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -826,10 +826,10 @@
 </v>
 </v>
 </v>
-<v t="TL.20080804095315.1"><vh>Chapter 22: Using Vim with Leo</vh>
-<v t="TL.20080804095315.2"><vh>@rst html\vimBindings.html</vh>
+<v t="TL.20080804095315.1" a="E"><vh>Chapter 22: Using Vim with Leo</vh>
+<v t="TL.20080804095315.2" a="E"><vh>@rst html\vimBindings.html</vh>
 <v t="TL.20080804095315.3"><vh>@rst-no-head links</vh></v>
-<v t="TL.20080804095315.11"><vh>Vim bindings</vh>
+<v t="TL.20080804095315.11" a="E"><vh>Vim bindings</vh>
 <v t="TL.20080804095315.4"><vh>Installing vim bindings</vh></v>
 <v t="TL.20080804095315.5"><vh>General commands</vh></v>
 <v t="TL.20080804095315.6"><vh>Body pane commands</vh></v>
@@ -6081,6 +6081,15 @@ Indent/Unindent line commands::
     &lt;g          Unindent to the start of buffer
     &lt;G          Unindent to the end of buffer
 
+Format commands::
+
+    gqap        Split long line into separate lines
+    gwap        Split long line into separate lines
+    gqq         Split long line into separate lines
+    gww         Split long line into separate lines
+    
+    Note: 'gwap' and 'gww' should not move cursor but do.
+
 Scroll commands::
 
     Ctrl-b      Scroll text up by pane's height
@@ -6127,6 +6136,9 @@ Cursor movement commands::
        LtArrow  Mapped to 'h' for convenience
     l           Go to next character
        RtArrow  Mapped to "l" for convenience
+
+    Note: 'j' and 'k' will scroll the buffer contents up and down;
+          leaving the focus in the outline pane.
 
     w           Go to beginning of next word
        W        Mapped to "w" until "stop after blank characters" supported
@@ -6207,9 +6219,7 @@ Node goto commands::
     Ctrl-h      Hide sub-nodes or, if hidden, go up 1 level
     Ctrl-l      Display sub-nodes or, if displayed, go down 1 level
 
-       j        Mapped to "Ctrl-j" for convenience
        DnArrow  Mapped to "Ctrl-j" for convenience
-       k        Mapped to "Ctrl-k" for convenience
        UpArrow  Mapped to "Ctrl-k" for convenience
 
        Ctrl-DnArrow Mapped to "Ctrl-j" for convenience
@@ -6219,15 +6229,15 @@ Node goto commands::
 
 Node move commands::
 
-    Shift-Ctrl-k    Move node down
-    Shift-Ctrl-h    Move node left
-    Shift-Ctrl-l    Move node right
-    Shift-Ctrl-j    Move node up
+    Ctrl-Shift-k    Move node down
+    Ctrl-Shift-h    Move node left
+    Ctrl-Shift-l    Move node right
+    Ctrl-Shift-j    Move node up
 
-       Shift-Ctrl-DnArrow    Mapped to "Shift-Ctrl-k" for convenience
-       Shift-Ctrl-LtArrow    Mapped to "Shift-Ctrl-h" for convenience
-       Shift-Ctrl-RtArrow    Mapped to "Shift-Ctrl-l" for convenience
-       Shift-Ctrl-UpArrow    Mapped to "Shift-Ctrl-j" for convenience
+       Ctrl-Shift-DnArrow    Mapped to "Ctrl-Shift-k" for convenience
+       Ctrl-Shift-LtArrow    Mapped to "Ctrl-Shift-h" for convenience
+       Ctrl-Shift-RtArrow    Mapped to "Ctrl-Shift-l" for convenience
+       Ctrl-Shift-UpArrow    Mapped to "Ctrl-Shift-j" for convenience
 
 Node mark commands::
 
@@ -6244,10 +6254,11 @@ Outline scroll commands::
 
    Ctrl-y       Scroll outline up one line
    Ctrl-e       scroll outline down one line
-       Ctrl-u    Mapped to Ctrl-y until scroll up by half a pane supported
-       Ctrl-d    Mapped to Ctrl-e until scroll down by half a pane supported
-       Ctrl-b    Mapped to Ctrl-y until scroll up by pane's height supported
-       Ctrl-f    Mapped to Ctrl-e until scroll down by pane's height supported
+   Ctrl-u       Scroll outline up one half page
+   Ctrl-d       scroll outline down one half page
+   Ctrl-b       Scroll outline up one page
+   Ctrl-f       scroll outline down one page
+
 </t>
 <t tx="TL.20080804095315.8">Notable missing editing commands::
 
