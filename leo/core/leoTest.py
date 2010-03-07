@@ -198,8 +198,7 @@ class generalTestCase(unittest.TestCase):
 #@+node:ekr.20051104075904.12:makeTestSuite
 #@+at 
 #@nonl
-# This code executes the script in an @suite node.  This code 
-# assumes:
+# This code executes the script in an @suite node.  This code assumes:
 # - The script creates a one or more unit tests.
 # - The script puts the result in g.app.scriptDict["suite"]
 #@-at
@@ -697,9 +696,11 @@ def runUnitTestLeoFile (gui='qt',path='unitTest.leo',silent=True):
 
     # 2010/03/05: set the current directory so that importing leo.core.whatever works.
     leoDir = g.os_path_finalize_join(g.app.loadDir,'..','..')
-    os.chdir(leoDir)
-
-    os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
+    # os.chdir(leoDir)
+    # os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
+    env = dict(os.environ)
+    env['PYTHONPATH'] = env.get('PYTHONPATH', '') + ';' + leoDir
+    os.spawnve(os.P_NOWAIT,sys.executable,args,env)
 #@-node:ekr.20090514072254.5746:runUnitTestLeoFile
 #@+node:ekr.20070627135407:runTestsExternally & helper class
 def runTestsExternally (c,all):
@@ -1810,8 +1811,7 @@ def importAllModulesInPath (path,exclude=[]):
 #@nonl
 # Warning: do NOT use g.importFromPath here!
 # 
-# g.importFromPath uses imp.load_module, and that is equivalent to 
-# reload!
+# g.importFromPath uses imp.load_module, and that is equivalent to reload!
 # reloading Leo files while running will crash Leo.
 #@-at
 #@@c
