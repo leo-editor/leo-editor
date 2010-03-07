@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20051104075904:@thin leoTest.py
+#@+node:vitalije.20100306191616.6140:@thin F:\razniprogrami\Leo\trunk2\leo\core\leoTest.py
 '''Classes for Leo's unit testing. 
 
 Run the unit tests in test.leo using the Execute Script command.'''
@@ -696,6 +696,7 @@ def runUnitTestLeoFile (gui='qt',path='unitTest.leo',silent=True):
 
     # 2010/03/05: set the current directory so that importing leo.core.whatever works.
     leoDir = g.os_path_finalize_join(g.app.loadDir,'..','..')
+
     # os.chdir(leoDir)
     # os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
     env = dict(os.environ)
@@ -1850,5 +1851,5 @@ def safeImportModule (fileName):
 #@-node:ekr.20051104075904.103:safeImportModule
 #@-node:ekr.20051104075904.98:Utils
 #@-others
-#@-node:ekr.20051104075904:@thin leoTest.py
+#@-node:vitalije.20100306191616.6140:@thin F:\razniprogrami\Leo\trunk2\leo\core\leoTest.py
 #@-leo

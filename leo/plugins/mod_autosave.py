@@ -97,7 +97,9 @@ def autosave(tag, keywords):
 
     if g.app.killed or not c or not c.exists: return
 
-    if ACTIVE == "Yes":
+    ACTIVE = c.config.getBool('mod_autosave_active')
+    AUTOSAVE_INTERVAL = c.config.getInt('mod_autosave_interval')
+    if ACTIVE:
         if time.time() - LAST_AUTOSAVE > AUTOSAVE_INTERVAL:
             if c.mFileName and c.changed:
                 g.es("Autosave: %s" % time.ctime(),color="orange")
