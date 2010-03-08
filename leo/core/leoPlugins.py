@@ -365,7 +365,7 @@ def loadHandlers(tag):
     #enabled_files = getEnabledFiles(s)
 
     for plugin in s.splitlines():
-        if plugin.strip() and not plugin.startswith('#'):
+        if plugin.strip() and not plugin.lstrip().startswith('#'):
             loadOnePlugin(plugin.strip(), tag = tag)
     # Load plugins in the order they appear in the enabled_files list.
     """
@@ -394,7 +394,7 @@ def getEnabledFiles (s,plugins_path = None):
     enabled_files = []
     for s in g.splitLines(s):
         s = s.strip()
-        if s and not s.startswith('#'):
+        if s and not s.lstrip().startswith('#'):
             enabled_files.append(s)
             #path = g.os_path_finalize_join(plugins_path,s)
 
