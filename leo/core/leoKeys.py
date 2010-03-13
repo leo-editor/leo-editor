@@ -1644,19 +1644,24 @@ class keyHandlerClass:
         self.altX_prompt = 'full-command: '
 
         # These must be defined here to avoid memory leaks.
-        self.enable_autocompleter           = c.config.getBool('enable_autocompleter_initially')
-        self.enable_calltips                = c.config.getBool('enable_calltips_initially')
-        self.ignore_caps_lock               = c.config.getBool('ignore_caps_lock')
-        self.ignore_unbound_non_ascii_keys  = c.config.getBool('ignore_unbound_non_ascii_keys')
-        self.swap_mac_keys                  = c.config.getBool('swap_mac_keys')
-        self.trace_bind_key_exceptions      = c.config.getBool('trace_bind_key_exceptions')
-        self.trace_masterClickHandler       = c.config.getBool('trace_masterClickHandler')
-        self.traceMasterCommand             = c.config.getBool('trace_masterCommand')
-        self.trace_masterKeyHandler         = c.config.getBool('trace_masterKeyHandler')
-        self.trace_masterKeyHandlerGC       = c.config.getBool('trace_masterKeyHandlerGC')
-        self.trace_key_event                = c.config.getBool('trace_key_event')
-        self.trace_minibuffer               = c.config.getBool('trace_minibuffer')
-        self.warn_about_redefined_shortcuts = c.config.getBool('warn_about_redefined_shortcuts')
+        getBool = c.config.getBool
+        getColor = c.config.getColor
+        self.enable_autocompleter           = getBool('enable_autocompleter_initially')
+        self.enable_calltips                = getBool('enable_calltips_initially')
+        self.ignore_caps_lock               = getBool('ignore_caps_lock')
+        self.ignore_unbound_non_ascii_keys  = getBool('ignore_unbound_non_ascii_keys')
+        self.minibuffer_background_color    = getColor('minibuffer_background_color') or 'lightblue'
+        self.minibuffer_warning_color       = getColor('minibuffer_warning_color') or 'lightgrey'
+        self.minibuffer_error_color         = getColor('minibuffer_error_color') or 'red'
+        self.swap_mac_keys                  = getBool('swap_mac_keys')
+        self.trace_bind_key_exceptions      = getBool('trace_bind_key_exceptions')
+        self.trace_masterClickHandler       = getBool('trace_masterClickHandler')
+        self.traceMasterCommand             = getBool('trace_masterCommand')
+        self.trace_masterKeyHandler         = getBool('trace_masterKeyHandler')
+        self.trace_masterKeyHandlerGC       = getBool('trace_masterKeyHandlerGC')
+        self.trace_key_event                = getBool('trace_key_event')
+        self.trace_minibuffer               = getBool('trace_minibuffer')
+        self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
         # Has to be disabled (default) for AltGr support on Windows
         self.enable_alt_ctrl_bindings       = c.config.getBool('enable_alt_ctrl_bindings')
         #@    << define externally visible ivars >>
@@ -3829,7 +3834,7 @@ class keyHandlerClass:
         k = self ; w = k.widget
         if not w: return
 
-        w.setBackgroundColor('lightblue')
+        w.setBackgroundColor(self.minibuffer_background_color) # 'lightblue')
 
         if label is not None:
             k.setLabel(label,protect)
@@ -3840,7 +3845,7 @@ class keyHandlerClass:
         k = self ; w = self.widget
         if not w: return
 
-        w.setBackgroundColor('lightgrey')
+        w.setBackgroundColor(self.minibuffer_warning_color) # 'lightgrey')
 
         if label is not None:
             k.setLabel(label)
@@ -3853,7 +3858,7 @@ class keyHandlerClass:
         k = self ; w = self.widget
         if not w: return
 
-        w.setForegroundColor('red')
+        w.setForegroundColor(self.minibuffer_error_color) # 'red')
 
         if label is not None:
             k.setLabel(label,protect)
