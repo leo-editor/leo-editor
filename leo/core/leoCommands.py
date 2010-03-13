@@ -1418,6 +1418,7 @@ class baseCommands (object):
         ok, frame = g.openWithFileName(fileName,c)
         if ok:
             frame.deiconify()
+            g.doHook("close-frame",c=c)
             g.app.destroyWindow(c.frame)
         else:
             c.mFileName = fileName
