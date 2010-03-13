@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:vitalije.20100306191616.6140:@thin F:\razniprogrami\Leo\trunk2\leo\core\leoTest.py
+#@+node:ekr.20051104075904:@thin leoTest.py
 '''Classes for Leo's unit testing. 
 
 Run the unit tests in test.leo using the Execute Script command.'''
@@ -1851,5 +1851,5 @@ def safeImportModule (fileName):
 #@-node:ekr.20051104075904.103:safeImportModule
 #@-node:ekr.20051104075904.98:Utils
 #@-others
-#@-node:vitalije.20100306191616.6140:@thin F:\razniprogrami\Leo\trunk2\leo\core\leoTest.py
+#@-node:ekr.20051104075904:@thin leoTest.py
 #@-leo

@@ -94,7 +94,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20090703122042.7463"><vh>@@button a-common-button</vh></v>
@@ -106,7 +106,7 @@
 <v t="ekr.20080312075451.1"><vh>Common @command nodes</vh>
 <v t="ekr.20080312075451.2"><vh>@commands</vh></v>
 </v>
-<v t="ekr.20041213105007.1"><vh>Colors</vh>
+<v t="ekr.20041213105007.1" a="E"><vh>Colors</vh>
 <v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
 <v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
 <v t="ekr.20041119052015.2"><vh>@color log_text_foreground_color = None</vh></v>
@@ -142,6 +142,11 @@
 <v t="ekr.20041119050749.9"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
 <v t="ekr.20041119051901.1"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
 <v t="ekr.20041119050749.12"><vh>@color outline_pane_background_color = #ffffec</vh></v>
+</v>
+<v t="ekr.20100313080341.8368" a="E"><vh>Minibuffer background colors</vh>
+<v t="ekr.20100313080341.8369"><vh>@color minibuffer-background-color = lightblue</vh></v>
+<v t="ekr.20100313080341.8370"><vh>@color minibuffer-error-color = red</vh></v>
+<v t="ekr.20100313080341.8371"><vh>@color minibuffer-warning-color = lightgrey</vh></v>
 </v>
 <v t="ekr.20041119034357.70"><vh>Syntax colors &amp; options</vh>
 <v t="ekr.20060201111002"></v>
@@ -1017,7 +1022,7 @@
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
+<v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1183,7 +1188,7 @@
 <v t="tbrown.20091129085043.11795"><vh>@data active_path_autoload</vh></v>
 <v t="tbrown.20100304170159.5189"><vh>@bool active_path_load_docstring = False</vh></v>
 </v>
-<v t="vitalije.20100306144625.8944" a="E"><vh>autosave plugin</vh>
+<v t="vitalije.20100306144625.8944"><vh>autosave plugin</vh>
 <v t="vitalije.20100306144625.8945"><vh>@bool mod_autosave_active = True</vh></v>
 <v t="vitalije.20100306144625.8946"><vh>@int mod_autosave_interval = 20</vh></v>
 </v>
@@ -1290,8 +1295,8 @@
 <v t="TL.20100307105950.3150"><vh>@mode focus-to-body</vh></v>
 <v t="TL.20100307105950.3151"><vh>@mode body-command-line</vh>
 <v t="TL.20100307105950.3152"><vh>@mode body-command-revert</vh></v>
-<v t="TL.20100307105950.3153" a="E"><vh>@mode body-command-save</vh>
-<v t="TL.20100307105950.3154" a="E"><vh>@mode body-command-save-quit</vh>
+<v t="TL.20100307105950.3153"><vh>@mode body-command-save</vh>
+<v t="TL.20100307105950.3154"><vh>@mode body-command-save-quit</vh>
 <v t="TL.20100307105950.3155"><vh>@mode body-command-save-quit-return</vh></v>
 </v>
 </v>
@@ -1311,7 +1316,7 @@
 <v t="TL.20100307105950.3165"><vh>@mode body-shift-z-save-quit</vh></v>
 </v>
 </v>
-<v t="TL.20100307105950.3166" a="E"><vh>@shortcuts - vi in Outline pane</vh>
+<v t="TL.20100307105950.3166"><vh>@shortcuts - vi in Outline pane</vh>
 <v t="TL.20100307105950.3167"><vh>@mode tree-yank-object</vh></v>
 <v t="TL.20100307105950.3168"><vh>@mode tree-change-object</vh></v>
 <v t="TL.20100307105950.3169"><vh>@mode tree-delete-text-object</vh></v>
@@ -1338,12 +1343,12 @@
 <v t="TL.20100307105950.3189"><vh>@mode tree-mark-node</vh></v>
 <v t="TL.20100307105950.3190"><vh>@mode tree-goto-next-marked-node</vh></v>
 <v t="TL.20100307105950.3191"><vh>@mode tree-unmark-all-nodes</vh></v>
-<v t="TL.20100307105950.3192" a="E"><vh>Body actions from Tree pane</vh>
+<v t="TL.20100307105950.3192"><vh>Body actions from Tree pane</vh>
 <v t="TL.20100307105950.3193"><vh>@mode tree-goto-next-line</vh></v>
 <v t="TL.20100307105950.3194"><vh>@mode tree-goto-prev-line</vh></v>
 </v>
 </v>
-<v t="TL.20100307105950.3195" a="E"><vh>@shortcuts - vi in Body pane</vh>
+<v t="TL.20100307105950.3195"><vh>@shortcuts - vi in Body pane</vh>
 <v t="TL.20100307105950.3196"><vh>@mode body-search-forward</vh></v>
 <v t="TL.20100307105950.3197"><vh>@mode body-search-backward</vh></v>
 <v t="TL.20100307105950.3198"><vh>@mode body-search-everywhere</vh></v>
@@ -1351,7 +1356,7 @@
 <v t="TL.20100307105950.3200"><vh>@mode body-search-all-nodes</vh></v>
 <v t="TL.20100307105950.3201"><vh>@mode body-search-toggle-headline</vh></v>
 <v t="TL.20100307105950.3202"><vh>@mode body-search-toggle-body</vh></v>
-<v t="TL.20100307105950.3203" a="E"><vh>@mode body-search-toggle-mark</vh>
+<v t="TL.20100307105950.3203"><vh>@mode body-search-toggle-mark</vh>
 <v t="TL.20100307105950.3204"><vh>@mode body-search-toggle-mark-finds</vh></v>
 <v t="TL.20100307105950.3205"><vh>@mode body-search-toggle-mark-changes</vh></v>
 </v>
@@ -1361,9 +1366,9 @@
 <v t="TL.20100307105950.3208"><vh>@mode body-paste-then-find</vh></v>
 <v t="TL.20100307105950.3209"><vh>@mode body-goto-end-of-buffer</vh></v>
 <v t="TL.20100307105950.3210"><vh>@mode body-g</vh>
-<v t="TL.20100307105950.3211" a="E"><vh>@mode body-g-beginning-of-buffer</vh>
+<v t="TL.20100307105950.3211"><vh>@mode body-g-beginning-of-buffer</vh>
 <v t="TL.20100307105950.3212"><vh>@mode body-g-q</vh></v>
-<v t="TL.20100307105950.3213" a="E"><vh>@mode body-g-w</vh>
+<v t="TL.20100307105950.3213"><vh>@mode body-g-w</vh>
 <v t="TL.20100307105950.3214"><vh>@mode body-g-wq-a</vh></v>
 </v>
 </v>
@@ -1446,7 +1451,7 @@
 <v t="TL.20100307105950.3282"><vh>@mode body-goto-before-paragraph</vh></v>
 <v t="TL.20100307105950.3283"><vh>@mode body-join</vh></v>
 <v t="TL.20100307105950.3284"><vh>@mode body-match</vh></v>
-<v t="TL.20100307105950.3285" a="E"><vh>Tree actions from Body pane</vh>
+<v t="TL.20100307105950.3285"><vh>Tree actions from Body pane</vh>
 <v t="TL.20100307105950.3286"><vh>@mode body-goto-next-visible</vh></v>
 <v t="TL.20100307105950.3287"><vh>@mode body-goto-prev-visible</vh></v>
 <v t="TL.20100307105950.3288"><vh>@mode body-expand-and-go-right</vh></v>
@@ -8013,6 +8018,10 @@ If &gt; 0, only nodes whose body text are smaller than this limit are colorized.
 <t tx="ekr.20100102121150.6344">
 </t>
 <t tx="ekr.20100107060708.6390"></t>
+<t tx="ekr.20100313080341.8368"></t>
+<t tx="ekr.20100313080341.8369"></t>
+<t tx="ekr.20100313080341.8370"></t>
+<t tx="ekr.20100313080341.8371"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
