@@ -213,6 +213,16 @@ def cmd_run_text(c):
     """pass selected text to shell app. via screen"""
     txt = c.frame.body.getSelectedText()
 
+    # select next line ready for next select/send cycle
+    b = c.frame.body.getAllText()
+    i = c.frame.body.getInsertPoint()
+    try:
+        j = b[i:].index('\n')+i+1
+        c.frame.body.setSelectionRange(i,j)
+    except ValueError:  # no more \n in text
+        c.frame.body.setSelectionRange(i,i)
+        pass
+
     c.leo_screen.run_text(txt,c)
 #@-node:tbrown.20100226095909.12790:cmd_run_text
 #@+node:tbrown.20100226095909.12791:cmd_next,prev,other
