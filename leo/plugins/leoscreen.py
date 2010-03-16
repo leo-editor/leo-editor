@@ -151,6 +151,10 @@ class leoscreen_Controller:
         if not c:
             c = self.c
 
+        if not txt:
+            return  
+            # otherwise there's an annoying delay for "Slurped zero chars" msg.
+
         self.output = []  # forget previous output
 
         open(self.tmpfile,'w').write(txt)
