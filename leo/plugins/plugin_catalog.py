@@ -1,6 +1,5 @@
 """
-plugin_catalog.py - extract plugin status and docs. from docstring
-==================================================================
+Extract plugin status and docs. from docstrings
 
 last_update: 20100301
 plugin_status: inital development
@@ -24,8 +23,15 @@ import os
 import ast
 from docutils.core import publish_doctree, publish_from_doctree
 from docutils import nodes
-from xml.etree import ElementTree
+from docutils.transforms.parts import Contents
+import time
 from copy import deepcopy
+
+opt = type('o', (), {})
+opt.include_contents = False
+
+#from xml.etree import ElementTree
+#from copy import deepcopy
 
 class PluginCatalog(object):
     """see module docs."""
@@ -38,13 +44,15 @@ class PluginCatalog(object):
         for path, dirs, files in os.walk("plugins"):
 
             cnt = 0
-            for file_name in sorted(files):
+            for file_name in sorted(files, key=lambda x:x.lower()):
                 if not file_name.lower().endswith('.py'):
                     continue
 
                 file_path = os.path.join(path, file_name)
 
                 print file_path
+
+                doc_string = None
 
                 src = open(file_path).read()
                 src = src.replace('\r\n', '\n').replace('\r','\n')+'\n'
@@ -54,10 +62,13 @@ class PluginCatalog(object):
                 except SyntaxError:
                     doc_string = "**SYNTAX ERROR IN MODULE SOURCE**"
 
-                if not doc_string:
+                if not doc_string and file_name != '__init__.py':
                     doc_string = "**NO DOCSTRING**"
 
                 print doc_string
+
+                if not doc_string:
+                    continue
 
                 #X xml_string = publish_string(doc_string,
                 #X     writer_name = 'xml',
@@ -86,10 +97,39 @@ class PluginCatalog(object):
 
         # big_doc = nodes.document(None, None)
         big_doc = publish_doctree("")
+        self.document = big_doc
+        big_doc += nodes.title(text="Plugins listing generated %s" %
+            time.asctime())
+
+        contents = nodes.container()
+        if opt.include_contents:
+            big_doc += nodes.topic('',nodes.title(text='Contents'), contents)
+
+        def_list = nodes.definition_list()
+        big_doc += nodes.section('', nodes.title(text="Plugins summary"),
+            def_list)
+
+        self.id_num = 0
+
         for doc in doc_strings:
             section = nodes.section()
             big_doc += section
-            section += nodes.title(text=doc[0])
+            title = nodes.title(text=doc[0])
+            section += title
+
+            # self.add_ids(doc[2])
+            self.add_ids(section)
+
+            firstpara = (self.first_text(doc[2]) or
+                nodes.paragraph(text='No summary found'))
+            refid=section['ids'][0]
+            print refid,doc[0]
+            reference=nodes.reference('', refid=refid, name=doc[0], anonymous=1)
+            reference += nodes.Text(doc[0])
+            def_list += nodes.definition_list_item('',
+                nodes.term('', '', reference),
+                nodes.definition('', firstpara)
+            )
 
             for element in doc[2]:
                 if element.tagname == 'title':
@@ -101,12 +141,44 @@ class PluginCatalog(object):
             for element in doc[2]:
                 section += element.deepcopy()
 
+        if opt.include_contents:
+            contents.details = {'text': 'Contents here'}
+
+            self.add_ids(big_doc)
+            transform = Contents(big_doc, contents)
+            transform.apply()
+
         open('d.html', 'w').write(
-          publish_from_doctree(big_doc, writer_name='html')
+          publish_from_doctree(big_doc, writer_name='html',
+              settings_overrides = {'stylesheet_path': "/home/tbrown/Desktop/Package/Sphinx-0.6.5/sphinx/themes/sphinxdoc/static/sphinxdoc.css"})
         )
         open('pcat.xml', 'w').write(
           publish_from_doctree(big_doc, writer_name='xml',
               settings_overrides = {'indents': True})
         )
+
+        print len(def_list)
+
+    def add_ids(self, node):
+        if hasattr(node, 'tagname'):
+            if node.tagname in ('document', 'section', 'topic'):
+                if True or not node['ids']:
+                    self.id_num += 1
+                    node['ids'].append('lid'+str(self.id_num))
+            for child in node:
+                self.add_ids(child)
+    def first_text(self, node):
+
+        if node.tagname == 'paragraph':
+            return deepcopy(node)
+        else:
+            for child in node:
+                if hasattr(child, 'tagname'):
+                    ans = self.first_text(child)
+                    if ans:
+                        return ans
+
+        return None
+
 
 PluginCatalog()
