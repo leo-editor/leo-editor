@@ -495,6 +495,10 @@ class todoController:
 
         # dictionary exists
 
+
+        if node.unknownAttributes["annotate"][attrib] != val:
+            self.c.setChanged(True)
+
         node.unknownAttributes["annotate"][attrib] = val
 
         if isDefault:  # check if all default, if so drop dict.
