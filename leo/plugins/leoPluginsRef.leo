@@ -74,7 +74,7 @@
 <v t="bobjack.20080619110105.2"><vh>@thin rClickBasePluginClasses.py</vh></v>
 </v>
 </v>
-<v t="edream.110203113231.667" a="E"><vh>Commands &amp; directives</vh>
+<v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
 <v t="edream.110203113231.668"><vh> Importing Cisco configuration files</vh>
 <v t="edream.110203113231.669"><vh>@thin import_cisco_config.py</vh></v>
 </v>
@@ -95,9 +95,9 @@
 <v t="ekr.20040331153923"><vh>@thin scheduler.py</vh></v>
 <v t="mork.20041022090036.1"><vh>@thin templates.py</vh></v>
 <v t="danr7.20061010105952.1"><vh>@thin word_count.py</vh></v>
-<v t="edream.110203113231.722" a="E"><vh>mod_autosave</vh>
+<v t="edream.110203113231.722"><vh>mod_autosave</vh>
 <v t="edream.110203113231.723"><vh>@file-nosent mod_autosave.ini</vh></v>
-<v t="edream.110203113231.724" a="E"><vh>@thin mod_autosave.py</vh></v>
+<v t="edream.110203113231.724"><vh>@thin mod_autosave.py</vh></v>
 </v>
 <v t="ekr.20041110104350"><vh>table plugin: requires tktable</vh>
 <v t="ekr.20041017035937"><vh>@thin table.py</vh></v>
@@ -801,6 +801,8 @@
 <v t="ekr.20090704103932.5160"><vh>@thin leo_pdf.py</vh></v>
 <v t="ekr.20050805162550"><vh>@thin rst3.py</vh></v>
 </v>
+<v t="tbrown.20100318101414.5990" a="E"
+marks="tbrown.20100318101414.5993,tbrown.20100318101414.5994,tbrown.20100318101414.5998,"><vh>@thin viewrendered.py</vh></v>
 <v t="ekr.20100103093121.5329"
 marks="vivainio2.20091008133028.5823,vivainio2.20091008140054.14555,ville.20091008210853.7616,ville.20091023181249.5264,vivainio2.20091008133028.5825,ville.20091023181249.5266,"><vh>@thin stickynotes.py</vh></v>
 <v t="ekr.20100103093121.5339"><vh>@thin stickynotes_plus.py</vh></v>
