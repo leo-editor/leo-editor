@@ -274,7 +274,7 @@ def stickynoter_f(event):
             c.selectPosition(c.p)
 
 
-    nf = LessSimpleRichText(focusin, focusout)
+    nf = SimpleRichText(focusin, focusout)  # not LessSimpleRichText
     nf.dirty = False
     decorate_window(nf)
     nf.setWindowTitle(p.h)
