@@ -2129,13 +2129,24 @@ class configClass:
     def printSettings (self,c):
 
         '''Prints the value of every setting, except key bindings and commands and open-with tables.
-        The following letters indicate where the active setting came from:
+        The following indicate where the active setting came from:
 
-        - D indicates default settings.
-        - F indicates the file being loaded,
-        - L indicates leoSettings.leo,
-        - M indicates myLeoSettings.leo,
+        -     leoSettings.leo,
+        - [D] default settings.
+        - [F] indicates the file being loaded,
+        - [M] myLeoSettings.leo,
+
+
         '''
+
+        legend = '''\
+        legend:
+        leoSettings.leo
+    [D] default settings
+    [F] loaded .leo File
+    [M] myLeoSettings.leo
+    '''
+        legend = g.adjustTripleString(legend,c.tab_width)
 
         settings = {} # Keys are setting names, values are (letter,val)
 
@@ -2150,11 +2161,13 @@ class configClass:
             self.printSettingsHelper(settings,d)
 
         result = []
+        result.append(legend+'\n')
         for key in sorted(settings):
             data = settings.get(key)
             letter,val = data
             # g.pr('%45s = %s %s' % (key,letter,val))
             result.append('%s %s = %s\n' % (letter,key,val))
+        result.append('\n'+legend)
 
         # Use a single g.es statement.
         g.es('',''.join(result),tabName='Settings')

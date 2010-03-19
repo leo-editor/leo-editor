@@ -1585,7 +1585,389 @@ def setBodyTextAfterSelect (self,p,old_p):
 #@-node:ekr.20090608081524.6109:setBodyTextAfterSelect
 #@-node:ekr.20040803072955.128:leoTree.select & helpers
 #@-node:ekr.20100303074003.5635:Fix save scrolling bug
+#@+node:ekr.20100307070200.5720:Fixed the @test logic
+#@+node:ekr.20090514072254.5746:runUnitTestLeoFile
+def runUnitTestLeoFile (gui='qt',path='unitTest.leo',silent=True):
+
+    '''Run all unit tests in path (a .leo file) in a pristine environment.'''
+
+    # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
+    trace = False
+    path = g.os_path_finalize_join(g.app.loadDir,'..','test',path)
+    leo  = g.os_path_finalize_join(g.app.loadDir,'..','core','leoDynamicTest.py')
+
+    if sys.platform.startswith('win'): 
+        if ' ' in leo: leo = '"' + leo + '"'
+        if ' ' in path: path = '"' + path + '"'
+
+    guiArg = '--gui=%s' % gui
+    pathArg = '--path=%s' % path
+    args = [sys.executable,leo,path,guiArg,pathArg]
+    if silent: args.append('--silent')
+    if trace: g.trace(args)
+
+    # 2010/03/05: set the current directory so that importing leo.core.whatever works.
+    leoDir = g.os_path_finalize_join(g.app.loadDir,'..','..')
+
+    # os.chdir(leoDir)
+    # os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
+    env = dict(os.environ)
+    env['PYTHONPATH'] = env.get('PYTHONPATH', '') + ';' + leoDir
+    os.spawnve(os.P_NOWAIT,sys.executable,args,env)
+#@-node:ekr.20090514072254.5746:runUnitTestLeoFile
+#@+node:ekr.20100307070200.5721:patch
+# Begin patch
+
+=== modified file 'leo/core/leoTest.py'
+@@ -697,9 +696,10 @@
+
+     # 2010/03/05: set the current directory so that importing leo.core.whatever works.
+     leoDir = g.os_path_finalize_join(g.app.loadDir,'..','..')
+-    os.chdir(leoDir)
+-
+-    os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
+
++    #os.chdir(leoDir)
++    env = dict(os.environ)
++    env['PYTHONPATH'] = env.get('PYTHONPATH', '')+';'+leoDir
++    os.spawnve(os.P_NOWAIT,sys.executable,args,env)
+#@-node:ekr.20100307070200.5721:patch
+#@-node:ekr.20100307070200.5720:Fixed the @test logic
+#@+node:ekr.20100319090849.5758:Fixed recent save-to bug
+#@-node:ekr.20100319090849.5758:Fixed recent save-to bug
 #@-node:ekr.20100303074003.5639:Leo 4.8 devel projects
+#@+node:ekr.20100313080341.5732:Allow changing minibuffer colors
+@nocolor-node
+
+Added the following options with the indicated defaults.
+
+\@color minibuffer_background_color = lightblue
+\@color minibuffer_warning_color = lightgrey
+#@+node:ekr.20061031131434.76: ctor (keyHandler)
+def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
+
+    '''Create a key handler for c.
+    c.frame.miniBufferWidget is a Tk.Label.
+
+    useGlobalRegisters and useGlobalKillbuffer indicate whether to use
+    global (class vars) or per-instance (ivars) for kill buffers and registers.'''
+
+    # g.trace('base keyHandler',g.callers())
+
+    self.c = c
+    self.dispatchEvent = None
+    self.inited = False # Set at end of finishCreate.
+    self.widget = c.frame.miniBufferWidget
+    self.useGlobalKillbuffer = useGlobalKillbuffer
+    self.useGlobalRegisters = useGlobalRegisters
+
+    # Generalize...
+    self.x_hasNumeric = ['sort-lines','sort-fields']
+
+    self.altX_prompt = 'full-command: '
+
+    # These must be defined here to avoid memory leaks.
+    getBool = c.config.getBool
+    getColor = c.config.getColor
+    self.enable_autocompleter           = getBool('enable_autocompleter_initially')
+    self.enable_calltips                = getBool('enable_calltips_initially')
+    self.ignore_caps_lock               = getBool('ignore_caps_lock')
+    self.ignore_unbound_non_ascii_keys  = getBool('ignore_unbound_non_ascii_keys')
+    self.minibuffer_background_color    = getColor('minibuffer_background_color') or 'lightblue'
+    self.minibuffer_warning_color       = getColor('minibuffer_warning_color') or 'lightgrey'
+    self.minibuffer_error_color         = getColor('minibuffer_error_color') or 'red'
+    self.swap_mac_keys                  = getBool('swap_mac_keys')
+    self.trace_bind_key_exceptions      = getBool('trace_bind_key_exceptions')
+    self.trace_masterClickHandler       = getBool('trace_masterClickHandler')
+    self.traceMasterCommand             = getBool('trace_masterCommand')
+    self.trace_masterKeyHandler         = getBool('trace_masterKeyHandler')
+    self.trace_masterKeyHandlerGC       = getBool('trace_masterKeyHandlerGC')
+    self.trace_key_event                = getBool('trace_key_event')
+    self.trace_minibuffer               = getBool('trace_minibuffer')
+    self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
+    # Has to be disabled (default) for AltGr support on Windows
+    self.enable_alt_ctrl_bindings       = c.config.getBool('enable_alt_ctrl_bindings')
+    << define externally visible ivars >>
+    << define internal ivars >>
+
+    self.defineTkNames()
+    self.defineSpecialKeys()
+    self.defineSingleLineCommands()
+    self.defineMultiLineCommands()
+    self.autoCompleter = autoCompleterClass(self)
+    self.setDefaultUnboundKeyAction()
+#@+node:ekr.20061031131434.78:<< define externally visible ivars >>
+self.abbrevOn = False # True: abbreviations are on.
+self.arg = '' # The value returned by k.getArg.
+self.commandName = None # The name of the command being executed.
+self.funcReturn = None # For k.simulateCommand
+self.getArgEscape = None # A signal that the user escaped getArg in an unusual way.
+self.givenArgs = [] # New in Leo 4.4.8: arguments specified after the command name in k.simulateCommand.
+self.inputModeBindings = {}
+self.inputModeName = '' # The name of the input mode, or None.
+self.inverseCommandsDict = {}
+    # Completed in k.finishCreate, but leoCommands.getPublicCommands adds entries first.
+self.modePrompt = '' # The mode promopt.
+self.negativeArg = False
+self.newMinibufferWidget = None # Usually the minibuffer restores focus.  This overrides this default.
+self.regx = g.bunch(iter=None,key=None)
+self.repeatCount = None
+self.previousSelection = None # A hack for middle-button paste: set by masterClickHandler, used by pasteText.
+self.state = g.bunch(kind=None,n=None,handler=None)
+#@-node:ekr.20061031131434.78:<< define externally visible ivars >>
+#@+node:ekr.20061031131434.79:<< define internal ivars >>
+self.abbreviationsDict = {} # Abbreviations created by @alias nodes.
+
+# Previously defined bindings.
+self.bindingsDict = {}
+    # Keys are Tk key names, values are lists of g.bunch(pane,func,commandName)
+# Previously defined binding tags.
+self.bindtagsDict = {}
+    # Keys are strings (the tag), values are 'True'
+self.masterBindingsDict = {}
+    # Keys are scope names: 'all','text',etc. or mode names.
+    # Values are dicts: keys are strokes, values are g.bunch(commandName,func,pane,stroke)
+self.masterGuiBindingsDict = {}
+    # Keys are strokes; value is True;
+
+# Special bindings for k.fullCommand.
+self.mb_copyKey = None
+self.mb_pasteKey = None
+self.mb_cutKey = None
+self.mb_help = False
+
+self.abortAllModesKey = None
+self.fullCommandKey = None
+self.universalArgKey = None
+
+# Keepting track of the characters in the mini-buffer.
+self.arg_completion = True
+self.mb_event = None
+self.mb_history = []
+self.mb_prefix = ''
+self.mb_tabListPrefix = ''
+self.mb_tabList = []
+self.mb_tabListIndex = -1
+self.mb_prompt = ''
+
+self.func = None
+self.previous = []
+self.stroke = None
+
+# For onIdleTime
+self.idleCount = 0
+
+# For modes
+self.afterGetArgState = None
+self.argTabList = []
+self.getArgEscapes = []
+self.modeBindingsDict = {}
+self.modeWidget = None
+self.silentMode = False
+
+# The actual values are set later in k.finishCreate.
+self.command_mode_bg_color = 'white'
+self.command_mode_fg_color = 'black'
+self.insert_mode_bg_color = 'white'
+self.insert_mode_fg_color = 'black'
+self.overwrite_mode_bg_color = 'white'
+self.overwrite_mode_fg_color = 'black'
+#@-node:ekr.20061031131434.79:<< define internal ivars >>
+#@-node:ekr.20061031131434.76: ctor (keyHandler)
+#@+node:ekr.20061031170011.3:Minibuffer (keyHandler)
+# These may be overridden, but this code is now gui-independent.
+#@nonl
+#@+node:ekr.20061031131434.135:k.minibufferWantsFocus/Now
+def minibufferWantsFocus(self):
+
+    c = self.c
+    c.widgetWantsFocus(c.miniBufferWidget)
+
+
+def minibufferWantsFocusNow(self):
+
+    c = self.c
+    c.widgetWantsFocusNow(c.miniBufferWidget)
+#@-node:ekr.20061031131434.135:k.minibufferWantsFocus/Now
+#@+node:ekr.20061031170011.5:getLabel
+def getLabel (self,ignorePrompt=False):
+
+    k = self ; w = self.widget
+    if not w: return ''
+
+    s = w.getAllText()
+
+    if ignorePrompt:
+        return s[len(k.mb_prefix):]
+    else:
+        return s or ''
+#@-node:ekr.20061031170011.5:getLabel
+#@+node:ekr.20080408060320.791:k.killLine
+def killLine (self,protect=True):
+
+    k = self ; c = self.c
+    w = self.widget
+    s = w.getAllText()
+    s = s[:len(k.mb_prefix)]
+
+    w.setAllText(s)
+    n = len(s)
+    w.setSelectionRange(n,n,insert=n)
+
+    if protect:
+        k.mb_prefix = s
+#@-node:ekr.20080408060320.791:k.killLine
+#@+node:ekr.20061031170011.6:protectLabel
+def protectLabel (self):
+
+    k = self ; w = self.widget
+    if not w: return
+
+    k.mb_prefix = w.getAllText()
+
+#@-node:ekr.20061031170011.6:protectLabel
+#@+node:ekr.20061031170011.7:resetLabel
+def resetLabel (self):
+
+    k = self ; w = self.widget
+    k.setLabelGrey('')
+    k.mb_prefix = ''
+
+    if w:    
+        w.setSelectionRange(0,0,insert=0)
+        state = k.unboundKeyAction
+        k.setLabelBlue(label='%s State' % (state.capitalize()),protect=True)
+#@-node:ekr.20061031170011.7:resetLabel
+#@+node:ekr.20061031170011.8:setLabel
+def setLabel (self,s,protect=False):
+
+    trace = (False or self.trace_minibuffer) and not g.app.unitTesting
+    k = self ; c = k.c ; w = self.widget
+    if not w: return
+
+    if trace: g.trace(repr(s),g.callers(4))
+
+    w.setAllText(s)
+    n = len(s)
+    w.setSelectionRange(n,n,insert=n)
+
+    if protect:
+        k.mb_prefix = s
+#@-node:ekr.20061031170011.8:setLabel
+#@+node:ekr.20061031170011.9:extendLabel
+def extendLabel(self,s,select=False,protect=False):
+
+    k = self ; c = k.c ; w = self.widget
+    if not w: return
+    trace = self.trace_minibuffer and not g.app.unitTesting
+
+    trace and g.trace('len(s)',len(s))
+    if not s: return
+
+    c.widgetWantsFocusNow(w)
+    w.insert('end',s)
+
+    if select:
+        i,j = k.getEditableTextRange()
+        w.setSelectionRange(i,j,insert=j)
+
+    if protect:
+        k.protectLabel()
+#@-node:ekr.20061031170011.9:extendLabel
+#@+node:ekr.20080408060320.790:selectAll
+def selectAll (self):
+
+    '''Select all the user-editable text of the minibuffer.'''
+
+    w = self.widget
+    i,j = self.getEditableTextRange()
+    w.setSelectionRange(i,j,insert=j)
+
+
+#@-node:ekr.20080408060320.790:selectAll
+#@+node:ekr.20061031170011.10:setLabelBlue
+def setLabelBlue (self,label=None,protect=False):
+
+    k = self ; w = k.widget
+    if not w: return
+
+    w.setBackgroundColor(self.minibuffer_background_color) # 'lightblue')
+
+    if label is not None:
+        k.setLabel(label,protect)
+#@-node:ekr.20061031170011.10:setLabelBlue
+#@+node:ekr.20061031170011.11:setLabelGrey
+def setLabelGrey (self,label=None):
+
+    k = self ; w = self.widget
+    if not w: return
+
+    w.setBackgroundColor(self.minibuffer_warning_color) # 'lightgrey')
+
+    if label is not None:
+        k.setLabel(label)
+
+setLabelGray = setLabelGrey
+#@-node:ekr.20061031170011.11:setLabelGrey
+#@+node:ekr.20080510153327.2:setLabelRed
+def setLabelRed (self,label=None,protect=False):
+
+    k = self ; w = self.widget
+    if not w: return
+
+    w.setForegroundColor(self.minibuffer_error_color) # 'red')
+
+    if label is not None:
+        k.setLabel(label,protect)
+#@-node:ekr.20080510153327.2:setLabelRed
+#@+node:ekr.20061031170011.12:updateLabel
+def updateLabel (self,event):
+
+    '''Mimic what would happen with the keyboard and a Text editor
+    instead of plain accumalation.'''
+
+    trace = False or self.trace_minibuffer and not g.app.unitTesting
+    k = self ; c = k.c ; w = self.widget
+    ch = (event and event.char) or ''
+    keysym = (event and event.keysym) or ''
+
+    trace and g.trace('ch',ch,'keysym',keysym,'k.stroke',k.stroke)
+    # g.trace(g.callers())
+
+    if ch and ch not in ('\n','\r'):
+        c.widgetWantsFocusNow(w)
+        i,j = w.getSelectionRange()
+        ins = w.getInsertPoint()
+        # g.trace(i,j,ins)
+        if i != j:
+            w.delete(i,j)
+        if ch == '\b':
+            s = w.getAllText()
+            if len(s) > len(k.mb_prefix):
+                w.delete(i-1)
+                i-=1
+        else:
+            w.insert(ins,ch)
+            i = ins+1
+#@nonl
+#@-node:ekr.20061031170011.12:updateLabel
+#@+node:ekr.20061031170011.13:getEditableTextRange
+def getEditableTextRange (self):
+
+    k = self ; w = self.widget
+    trace = self.trace_minibuffer and not g.app.unitTesting
+
+    s = w.getAllText()
+    # g.trace(len(s),repr(s))
+
+    i = len(k.mb_prefix)
+    j = len(s)
+
+    trace and g.trace(i,j)
+    return i,j
+#@-node:ekr.20061031170011.13:getEditableTextRange
+#@-node:ekr.20061031170011.3:Minibuffer (keyHandler)
+#@-node:ekr.20100313080341.5732:Allow changing minibuffer colors
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt
 #@-leo
