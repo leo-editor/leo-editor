@@ -1519,8 +1519,6 @@ leoTest.doTests (c,all=False)</t>
 # qtGui.py
 # tkGui.py
 
-# stickynotes.py
-# stickynotes_plus.py
 # attrib_edit.py
 # ctagscompleter.py
 # codewisecompleter.py
@@ -1534,6 +1532,8 @@ quicksearch.py
 scrolledmessage.py
 UNL.py
 mod_scripting.py
+# stickynotes.py # requires Python 3.0
+# stickynotes_plus.py
 # pydeeshell.py
 # nodenavigator.py
 # vim.py
