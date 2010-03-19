@@ -1240,7 +1240,7 @@ def save (self,event=None):
 
     '''Save a Leo outline to a file.'''
 
-    c = self ; p = c.currentPosition()
+    c = self ; p = c.p
     # Do this now: w may go away.
     w = g.app.gui.get_focus(c)
     inBody = g.app.gui.widget_name(w).startswith('body')
@@ -1295,7 +1295,7 @@ def saveAs (self,event=None):
 
     '''Save a Leo outline to a file with a new filename.'''
 
-    c = self ; p = c.currentPosition()
+    c = self ; p = c.p
     # Do this now: w may go away.
     w = g.app.gui.get_focus(c)
     inBody = g.app.gui.widget_name(w).startswith('body')
@@ -1368,7 +1368,7 @@ def saveTo (self,event=None):
 
     '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
 
-    c = self
+    c = self ; p = c.p
     # Do this now: w may go away.
     w = g.app.gui.get_focus(c)
     inBody = g.app.gui.widget_name(w).startswith('body')
@@ -1432,6 +1432,7 @@ def revert (self,event=None):
     ok, frame = g.openWithFileName(fileName,c)
     if ok:
         frame.deiconify()
+        g.doHook("close-frame",c=c)
         g.app.destroyWindow(c.frame)
     else:
         c.mFileName = fileName

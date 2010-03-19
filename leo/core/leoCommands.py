@@ -1226,7 +1226,7 @@ class baseCommands (object):
 
         '''Save a Leo outline to a file.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         # Do this now: w may go away.
         w = g.app.gui.get_focus(c)
         inBody = g.app.gui.widget_name(w).startswith('body')
@@ -1281,7 +1281,7 @@ class baseCommands (object):
 
         '''Save a Leo outline to a file with a new filename.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         # Do this now: w may go away.
         w = g.app.gui.get_focus(c)
         inBody = g.app.gui.widget_name(w).startswith('body')
@@ -1354,7 +1354,7 @@ class baseCommands (object):
 
         '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
 
-        c = self
+        c = self ; p = c.p
         # Do this now: w may go away.
         w = g.app.gui.get_focus(c)
         inBody = g.app.gui.widget_name(w).startswith('body')
