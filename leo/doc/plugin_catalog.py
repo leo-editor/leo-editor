@@ -1,3 +1,4 @@
+
 """
 Extract plugin status and docs. from docstrings
 
@@ -26,31 +27,55 @@ from docutils import nodes
 from docutils.transforms.parts import Contents
 import time
 from copy import deepcopy
-
-opt = type('o', (), {})
-opt.include_contents = False
-
-#from xml.etree import ElementTree
-#from copy import deepcopy
+import optparse
+import sys
 
 class PluginCatalog(object):
-    """see module docs."""
+    """see module docs. and make_parser()"""
 
-    def __init__(self, locations=[]):
-        """locations - places to search for leo modules"""
+    @staticmethod
+    def make_parser():
+        """Return an optparse.OptionParser"""
+
+        parser = optparse.OptionParser()
+
+        parser.add_option("--location", action="append", type="string",
+            help="REQUIRED, add a location to the list to search")
+        parser.add_option("--css-file", type="string",
+            help="Use this CSS file in the HTML output")
+        parser.add_option("--max-files", type="int",
+            help="Stope after this many files, mainly for testing")
+        parser.add_option("--include-contents", action="store_true", default=False,
+            help="Include table of contents (the summary is more useful)")
+        parser.add_option("--no-summary", action="store_true", default=False,
+            help="Don't generate the summary")
+        parser.add_option("--output", type="string",
+            help="REQUIRED, filename for the html output")
+        parser.add_option("--xml-output", type="string", default=None,
+            help="Filename for optional xml output, mainly for testing")
+
+        return parser
+
+    def __init__(self, opt):
+        """opt - see make_parser()"""
+
+        self.id_num = 0  # for generating ids for the doctree
+
+    def run(self):
+        """run with the supplied options"""
 
         doc_strings = []
+        cnt = 0
 
-        for path, dirs, files in os.walk("plugins"):
+        for loc in opt.location:
 
-            cnt = 0
+            path, dirs, files = os.walk(loc).next()
+
             for file_name in sorted(files, key=lambda x:x.lower()):
                 if not file_name.lower().endswith('.py'):
                     continue
 
                 file_path = os.path.join(path, file_name)
-
-                print file_path
 
                 doc_string = None
 
@@ -65,37 +90,18 @@ class PluginCatalog(object):
                 if not doc_string and file_name != '__init__.py':
                     doc_string = "**NO DOCSTRING**"
 
-                print doc_string
-
                 if not doc_string:
-                    continue
+                    continue  # don't whine about __init__.py
 
-                #X xml_string = publish_string(doc_string,
-                #X     writer_name = 'xml',
-                #X     # settings_overrides = {'indents': True},
-                #X )
-
-                #X    doc = ElementTree.fromstring(xml_string)
-
+                # sys.stderr.write('%s\n' % file_path)
                 doc_tree = publish_doctree(doc_string)
 
                 doc_strings.append( (file_name, file_path, doc_tree) )
 
                 cnt += 1
-                # if cnt == 10: break
+                if opt.max_files and cnt == opt.max_files:
+                    break
 
-            break
-
-        #X big_doc = ElementTree.fromstring("<document/>")
-        #X for doc in doc_strings:
-        #X     element = ElementTree.SubElement(big_doc,'section')
-        #X     ElementTree.SubElement(element, 'title').text = doc[1]
-        #X     for child in doc[2].getchildren():
-        #X         element.append(deepcopy(child))
-
-        #X    ElementTree.ElementTree(big_doc).write(open('pcat.xml', 'w'))
-
-        # big_doc = nodes.document(None, None)
         big_doc = publish_doctree("")
         self.document = big_doc
         big_doc += nodes.title(text="Plugins listing generated %s" %
@@ -105,11 +111,10 @@ class PluginCatalog(object):
         if opt.include_contents:
             big_doc += nodes.topic('',nodes.title(text='Contents'), contents)
 
-        def_list = nodes.definition_list()
-        big_doc += nodes.section('', nodes.title(text="Plugins summary"),
-            def_list)
-
-        self.id_num = 0
+        if not opt.no_summary:
+            def_list = nodes.definition_list()
+            big_doc += nodes.section('', nodes.title(text="Plugins summary"),
+                def_list)
 
         for doc in doc_strings:
             section = nodes.section()
@@ -117,21 +122,21 @@ class PluginCatalog(object):
             title = nodes.title(text=doc[0])
             section += title
 
-            # self.add_ids(doc[2])
             self.add_ids(section)
 
-            firstpara = (self.first_text(doc[2]) or
-                nodes.paragraph(text='No summary found'))
-            refid=section['ids'][0]
-            print refid,doc[0]
-            reference=nodes.reference('', refid=refid, name=doc[0], anonymous=1)
-            reference += nodes.Text(doc[0])
-            def_list += nodes.definition_list_item('',
-                nodes.term('', '', reference),
-                nodes.definition('', firstpara)
-            )
+            if not opt.no_summary:
+                firstpara = (self.first_text(doc[2]) or
+                    nodes.paragraph(text='No summary found'))
+                refid=section['ids'][0]
+                reference=nodes.reference('', refid=refid, name=doc[0], anonymous=1)
+                reference += nodes.Text(doc[0])
+                def_list += nodes.definition_list_item('',
+                    nodes.term('', '', reference),
+                    nodes.definition('', firstpara)
+                )
 
             for element in doc[2]:
+                # if the docstring has titles, we need another level
                 if element.tagname == 'title':
                     subsection = nodes.section() 
                     section += subsection
@@ -148,18 +153,22 @@ class PluginCatalog(object):
             transform = Contents(big_doc, contents)
             transform.apply()
 
-        open('d.html', 'w').write(
+        settings_overrides = {}
+        if opt.css_file:
+            settings_overrides['stylesheet_path'] = opt.css_file
+        open(opt.output, 'w').write(
           publish_from_doctree(big_doc, writer_name='html',
-              settings_overrides = {'stylesheet_path': "/home/tbrown/Desktop/Package/Sphinx-0.6.5/sphinx/themes/sphinxdoc/static/sphinxdoc.css"})
-        )
-        open('pcat.xml', 'w').write(
-          publish_from_doctree(big_doc, writer_name='xml',
-              settings_overrides = {'indents': True})
+              settings_overrides = settings_overrides)
         )
 
-        print len(def_list)
+        if opt.xml_output:
+            open(opt.xml_output, 'w').write(
+              publish_from_doctree(big_doc, writer_name='xml',
+                  settings_overrides = {'indents': True})
+            )
 
     def add_ids(self, node):
+        """recursively add ids starting with 'lid' to doctree node"""
         if hasattr(node, 'tagname'):
             if node.tagname in ('document', 'section', 'topic'):
                 if True or not node['ids']:
@@ -167,7 +176,9 @@ class PluginCatalog(object):
                     node['ids'].append('lid'+str(self.id_num))
             for child in node:
                 self.add_ids(child)
+
     def first_text(self, node):
+        """find first paragraph to use as a summary"""
 
         if node.tagname == 'paragraph':
             return deepcopy(node)
@@ -181,4 +192,11 @@ class PluginCatalog(object):
         return None
 
 
-PluginCatalog()
+
+if __name__ == "__main__":
+
+    opt, arg = PluginCatalog.make_parser().parse_args()
+
+    pc = PluginCatalog(opt)
+    pc.run()
+
