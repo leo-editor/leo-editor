@@ -2,22 +2,27 @@
 """
 Extract plugin status and docs. from docstrings
 
-last_update: 20100301
-plugin_status: inital development
-gui: qt and tk
-maintainer: terry_n_brown@yahoo.com
+:last_update: 20100301
+:plugin_status: inital development
+:gui: qt and tk
+:maintainer: terry_n_brown@yahoo.com
 
 plugin_catalog.py searches for module docstrings like this one in the .py files
 in .../leo/plugins/ or another location.
 
 .. leo_plugin_auto_doc
-"""
 
-"""
 TODO
 
-- List of provided commands (or command pattern, e.g active-path-*)
-- Introduced semantic tags (@bookmark...)
+ - Design encoding of plugin status in rst docstring
+
+   - interface (qt/tk/both)
+   - maintained / working / old / broken
+   - maintainer
+
+ - List of commands provided by plugin (or command pattern, e.g active-path-\*)
+ - List of semantic tags provided by plugin (@bookmark...)
+
 """
 
 import os
@@ -28,7 +33,6 @@ from docutils.transforms.parts import Contents
 import time
 from copy import deepcopy
 import optparse
-import sys
 
 class PluginCatalog(object):
     """see module docs. and make_parser()"""
@@ -45,7 +49,8 @@ class PluginCatalog(object):
             help="Use this CSS file in the HTML output")
         parser.add_option("--max-files", type="int",
             help="Stope after this many files, mainly for testing")
-        parser.add_option("--include-contents", action="store_true", default=False,
+        parser.add_option("--include-contents", action="store_true", 
+            default=False,
             help="Include table of contents (the summary is more useful)")
         parser.add_option("--no-summary", action="store_true", default=False,
             help="Don't generate the summary")
@@ -57,19 +62,22 @@ class PluginCatalog(object):
         return parser
 
     def __init__(self, opt):
-        """opt - see make_parser()"""
+        """opt - see make_parser() or --help"""
 
+        self.opt = opt
         self.id_num = 0  # for generating ids for the doctree
+        self.document = None
 
-    def run(self):
-        """run with the supplied options"""
+    def get_doc_strings(self):
+        """collect docstrings in .py files in specified locations"""
 
         doc_strings = []
         cnt = 0
+        opt = self.opt  
 
         for loc in opt.location:
 
-            path, dirs, files = os.walk(loc).next()
+            path, dummy, files = os.walk(loc).next()
 
             for file_name in sorted(files, key=lambda x:x.lower()):
                 if not file_name.lower().endswith('.py'):
@@ -102,6 +110,12 @@ class PluginCatalog(object):
                 if opt.max_files and cnt == opt.max_files:
                     break
 
+        return doc_strings
+    def make_document(self, doc_strings):
+        """make doctree represeneation of collected fragments"""
+
+        opt = self.opt  
+
         big_doc = publish_doctree("")
         self.document = big_doc
         big_doc += nodes.title(text="Plugins listing generated %s" %
@@ -109,7 +123,7 @@ class PluginCatalog(object):
 
         contents = nodes.container()
         if opt.include_contents:
-            big_doc += nodes.topic('',nodes.title(text='Contents'), contents)
+            big_doc += nodes.topic('', nodes.title(text='Contents'), contents)
 
         if not opt.no_summary:
             def_list = nodes.definition_list()
@@ -127,8 +141,9 @@ class PluginCatalog(object):
             if not opt.no_summary:
                 firstpara = (self.first_text(doc[2]) or
                     nodes.paragraph(text='No summary found'))
-                refid=section['ids'][0]
-                reference=nodes.reference('', refid=refid, name=doc[0], anonymous=1)
+                refid = section['ids'][0]
+                reference = nodes.reference('', refid=refid,
+                    name = doc[0], anonymous=1)
                 reference += nodes.Text(doc[0])
                 def_list += nodes.definition_list_item('',
                     nodes.term('', '', reference),
@@ -152,6 +167,16 @@ class PluginCatalog(object):
             self.add_ids(big_doc)
             transform = Contents(big_doc, contents)
             transform.apply()
+
+        return big_doc
+    def run(self):
+        """run with the supplied options, see make_parser()"""
+
+        opt = self.opt  
+
+        doc_strings = self.get_doc_strings()
+
+        big_doc = self.make_document(doc_strings)
 
         settings_overrides = {}
         if opt.css_file:
@@ -193,10 +218,13 @@ class PluginCatalog(object):
 
 
 
+def main():
+    """create and run a PluginCatalog"""
+    opts, dummy = PluginCatalog.make_parser().parse_args()
+
+    plugin_catalog = PluginCatalog(opts)
+    plugin_catalog.run()
+
 if __name__ == "__main__":
-
-    opt, arg = PluginCatalog.make_parser().parse_args()
-
-    pc = PluginCatalog(opt)
-    pc.run()
+    main()
 
