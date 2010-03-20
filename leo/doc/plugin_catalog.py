@@ -127,28 +127,36 @@ class PluginCatalog(object):
 
         if not opt.no_summary:
             def_list = nodes.definition_list()
+            alpha_list = nodes.paragraph()
             big_doc += nodes.section('', nodes.title(text="Plugins summary"),
-                def_list)
+                alpha_list, def_list)
+
+        last_alpha = ''
 
         for doc in doc_strings:
-            section = nodes.section()
+            section = nodes.section(nodes.title(text=doc[0]))
             big_doc += section
-            title = nodes.title(text=doc[0])
-            section += title
 
             self.add_ids(section)
 
             if not opt.no_summary:
                 firstpara = (self.first_text(doc[2]) or
                     nodes.paragraph(text='No summary found'))
-                refid = section['ids'][0]
-                reference = nodes.reference('', refid=refid,
+                reference = nodes.reference('', refid=section['ids'][0],
                     name = doc[0], anonymous=1)
                 reference += nodes.Text(doc[0])
                 def_list += nodes.definition_list_item('',
                     nodes.term('', '', reference),
                     nodes.definition('', firstpara)
                 )
+
+                # add letter quick index entry if needed
+                if doc[0][0].upper() != last_alpha:
+                    last_alpha = doc[0][0].upper()
+                    self.add_ids(reference)
+                    alpha_list += nodes.reference('',
+                        nodes.Text(last_alpha+' '),
+                        refid=reference['ids'][0], name = doc[0], anonymous=1)
 
             for element in doc[2]:
                 # if the docstring has titles, we need another level
@@ -192,15 +200,18 @@ class PluginCatalog(object):
                   settings_overrides = {'indents': True})
             )
 
-    def add_ids(self, node):
-        """recursively add ids starting with 'lid' to doctree node"""
+    def add_ids(self, node, depth=0):
+        """recursively add ids starting with 'lid' to doctree node
+
+        Always id the top level node, and also document, section, and topic
+        nodes below it."""
         if hasattr(node, 'tagname'):
-            if node.tagname in ('document', 'section', 'topic'):
+            if depth == 0 or node.tagname in ('document', 'section', 'topic'):
                 if True or not node['ids']:
                     self.id_num += 1
                     node['ids'].append('lid'+str(self.id_num))
             for child in node:
-                self.add_ids(child)
+                self.add_ids(child, depth+1)
 
     def first_text(self, node):
         """find first paragraph to use as a summary"""
