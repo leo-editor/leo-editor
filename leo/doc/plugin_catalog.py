@@ -26,14 +26,16 @@ TODO
 """
 
 import os
+import sys
 import ast
-from docutils.core import publish_doctree, publish_from_doctree
-from docutils import nodes
-from docutils.transforms.parts import Contents
 import time
 from copy import deepcopy
 import optparse
 
+from docutils.core import publish_doctree, publish_from_doctree
+from docutils import nodes
+from docutils.transforms.parts import Contents
+from docutils.utils import SystemMessage
 class PluginCatalog(object):
     """see module docs. and make_parser()"""
 
@@ -54,6 +56,8 @@ class PluginCatalog(object):
             help="Include table of contents (the summary is more useful)")
         parser.add_option("--no-summary", action="store_true", default=False,
             help="Don't generate the summary")
+        parser.add_option("--show-paths", action="store_true", default=False,
+            help="Show paths to .py files, useful for resolving RST errors")
         parser.add_option("--output", type="string",
             help="REQUIRED, filename for the html output")
         parser.add_option("--xml-output", type="string", default=None,
@@ -101,8 +105,16 @@ class PluginCatalog(object):
                 if not doc_string:
                     continue  # don't whine about __init__.py
 
-                # sys.stderr.write('%s\n' % file_path)
-                doc_tree = publish_doctree(doc_string)
+                if opt.show_paths:
+                    sys.stderr.write("Processing: '%s'\n" % file_path)
+                try:
+                    doc_tree = publish_doctree(doc_string)
+                except SystemMessage:
+                    doc_tree = publish_doctree("""
+                    Docutils could not parse docstring
+
+                    RST error level SEVERE/4 or higher in '%s'""" %
+                        file_path)
 
                 doc_strings.append( (file_name, file_path, doc_tree) )
 
@@ -134,8 +146,9 @@ class PluginCatalog(object):
         last_alpha = ''
 
         for doc in doc_strings:
-            section = nodes.section(nodes.title(text=doc[0]))
+            section = nodes.section()
             big_doc += section
+            section += nodes.title(text=doc[0])
 
             self.add_ids(section)
 
@@ -189,16 +202,19 @@ class PluginCatalog(object):
         settings_overrides = {}
         if opt.css_file:
             settings_overrides['stylesheet_path'] = opt.css_file
+
         open(opt.output, 'w').write(
           publish_from_doctree(big_doc, writer_name='html',
               settings_overrides = settings_overrides)
         )
+        sys.stderr.write("Wrote '%s'\n" % opt.output)
 
         if opt.xml_output:
             open(opt.xml_output, 'w').write(
               publish_from_doctree(big_doc, writer_name='xml',
                   settings_overrides = {'indents': True})
             )
+            sys.stderr.write("Wrote '%s'\n" % opt.xml_output)
 
     def add_ids(self, node, depth=0):
         """recursively add ids starting with 'lid' to doctree node
