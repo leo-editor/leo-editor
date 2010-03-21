@@ -43,10 +43,10 @@ class PluginCatalog(object):
     def make_parser():
         """Return an optparse.OptionParser"""
 
-        parser = optparse.OptionParser()
+        parser = optparse.OptionParser("Usage: plug_catalog.py [options] dir1 [dir2 ...] output.html")
 
         parser.add_option("--location", action="append", type="string",
-            help="REQUIRED, add a location to the list to search")
+            help="Add a location to the list to search", default=[])
         parser.add_option("--css-file", type="string",
             help="Use this CSS file in the HTML output")
         parser.add_option("--max-files", type="int",
@@ -58,8 +58,8 @@ class PluginCatalog(object):
             help="Don't generate the summary")
         parser.add_option("--show-paths", action="store_true", default=False,
             help="Show paths to .py files, useful for resolving RST errors")
-        parser.add_option("--output", type="string",
-            help="REQUIRED, filename for the html output")
+        parser.add_option("--output", type="string", default=None,
+            help="Filename for the html output")
         parser.add_option("--xml-output", type="string", default=None,
             help="Filename for optional xml output, mainly for testing")
 
@@ -247,11 +247,16 @@ class PluginCatalog(object):
 
 def main():
     """create and run a PluginCatalog"""
-    opts, dummy = PluginCatalog.make_parser().parse_args()
+    opts, args = PluginCatalog.make_parser().parse_args()
+
+    if args and not opts.output:
+        opts.output = args[-1]
+        del args[-1]
+
+    opts.location.extend(args)
 
     plugin_catalog = PluginCatalog(opts)
     plugin_catalog.run()
-
 if __name__ == "__main__":
     main()
 
