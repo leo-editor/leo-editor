@@ -1618,6 +1618,14 @@ def runUnitTestLeoFile (gui='qt',path='unitTest.leo',silent=True):
     # os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
     env = dict(os.environ)
     env['PYTHONPATH'] = env.get('PYTHONPATH', '') + ';' + leoDir
+
+    if False:
+        keys = list(os.environ.keys())
+        keys.sort()
+        for z in keys:
+            print(z,os.environ.get(z))
+
+    if trace: g.trace('*** spawning test process',path)
     os.spawnve(os.P_NOWAIT,sys.executable,args,env)
 #@-node:ekr.20090514072254.5746:runUnitTestLeoFile
 #@+node:ekr.20100307070200.5721:patch

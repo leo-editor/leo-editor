@@ -28,7 +28,7 @@ We also need the following functions:
 #@nonl
 #@-node:ekr.20100211125418.11612:Revise g.readFileIntoString
 #@+node:ekr.20100209224508.5744:Calls to .write
-@nocolor
+@nocolor-node
 
 All these could be considered potential Python 3.x bugs.  Most are not.
 

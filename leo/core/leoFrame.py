@@ -3199,6 +3199,7 @@ class nullLog (leoLog):
     #@-node:ekr.20041012083237.2:oops
     #@+node:ekr.20041012083237.3:put and putnl (nullLog)
     def put (self,s,color=None,tabName='Log'):
+        # print('(nullGui) print',s)
         if self.enabled:
             # g.rawPrint(s)
             try:
