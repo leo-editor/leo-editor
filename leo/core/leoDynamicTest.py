@@ -30,6 +30,7 @@ def main ():
 
     # Setting verbose=True prints messages that would be sent to the log pane.
     path,gui,silent = scanOptions()
+    # print('(leoDynamicTest.py:main)','silent',silent)
 
     # Not loading plugins and not reading settings speeds things up considerably.
     bridge = leoBridge.controller(gui=gui,
