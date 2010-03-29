@@ -4036,14 +4036,17 @@ class atFile:
             return False
         equal = s1 == s2
 
+        # 2010/03/29: Make sure both strings are unicode.
+        # This is requred to handle binary files in Python 3.x.
+        s1 = g.toUnicode(s1,encoding=at.encoding)
+        s2 = g.toUnicode(s2,encoding=at.encoding)
+
         if ignoreBlankLines and not equal:
             s1 = g.removeBlankLines(s1)
             s2 = g.removeBlankLines(s2)
             equal = s1 == s2
 
         if ignoreLineEndings and not equal:
-            s1 = g.toUnicode(s1,encoding=at.encoding)
-            s2 = g.toUnicode(s2,encoding=at.encoding)
             # Wrong: equivalent to ignoreBlankLines!
                 # s1 = s1.replace('\n','').replace('\r','')
                 # s2 = s2.replace('\n','').replace('\r','')

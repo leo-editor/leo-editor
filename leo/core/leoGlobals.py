@@ -2222,6 +2222,14 @@ def handleUrlInUrlNode(url):
     #@-node:tbrown.20090219095555.63:<< pass the url to the web browser >>
     #@nl
 #@-node:tbrown.20090219095555.61:g.handleUrlInUrlNode
+#@+node:ekr.20100329071036.5744:g.is_binary_file
+def is_binary_file (f):
+
+    if g.isPython3:
+        return f and isinstance(f,io.BufferedIOBase)
+    else:
+        g.internalError('g.is_binary_file called from Python 2.x code')
+#@-node:ekr.20100329071036.5744:g.is_binary_file
 #@+node:EKR.20040504154039:g.is_sentinel
 def is_sentinel (line,delims):
 

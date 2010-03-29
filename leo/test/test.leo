@@ -506,6 +506,12 @@
 </v>
 </v>
 </v>
+<v t="ekr.20100329100226.2108"><vh>@@auto-rst at-auto-test.txt</vh>
+<v t="ekr.20100329100841.2109"><vh>Level 1</vh>
+<v t="ekr.20100329100841.2110"><vh>Level 2</vh></v>
+</v>
+</v>
+<v t="ekr.20100329103002.2118"><vh>@auto-rst at-auto-test.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5749,5 +5755,14 @@ import string
     pass
 </t>
 <t tx="ekr.20100205114630.2091"></t>
+<t tx="ekr.20100329100226.2108">@language rest
+@tabwidth -4
+@others
+
+.. Warning: this node is ignored when writing this file.
+.. However, @ @rst-options are recognized in this node.
+</t>
+<t tx="ekr.20100329100841.2109">Level 1</t>
+<t tx="ekr.20100329100841.2110">Level 2</t>
 </tnodes>
 </leo_file>

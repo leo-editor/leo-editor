@@ -347,13 +347,13 @@ def writeScriptFile (self,script):
 def write (self,s):
 
     if self.trialWrite:
-        pass
+        return
+
     elif g.isPython3:
-        pass
+        if g.is_binary_file:
+            s = self.encode(s)
     else:
         s = self.encode(s)
-
-    # g.trace(repr(s),g.callers(2))
 
     self.outputFile.write(s)
 #@-node:ekr.20090502071837.94:write (leoRst)

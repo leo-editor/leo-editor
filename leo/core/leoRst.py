@@ -107,15 +107,13 @@ else:
 #@-node:ekr.20090502071837.12:code_block
 #@+node:ekr.20090502071837.33:class rstCommands
 #@+at
-# This plugin optionally stores information for the http plugin. 
-# Each node can
-# have one additional attribute, with the name 
-# rst_http_attributename, which is a
-# list. The first three elements are stack of tags, the rest is html 
-# code::
+# This plugin optionally stores information for the http plugin. Each node can
+# have one additional attribute, with the name rst_http_attributename, which 
+# is a
+# list. The first three elements are stack of tags, the rest is html code::
 # 
-#     [<tag n start>, <tag n end>, <other stack elements>, <html 
-# line 1>, <html line 2>, ...]
+#     [<tag n start>, <tag n end>, <other stack elements>, <html line 1>, 
+# <html line 2>, ...]
 # 
 # <other stack elements has the same structure::
 # 
@@ -684,7 +682,6 @@ class rstCommands:
         finally:
             self.atAutoWrite = False
         return ok
-    #@nonl
     #@+node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
     def initAtAutoWrite(self,p,fileName,outputFile):
 
@@ -1353,13 +1350,13 @@ class rstCommands:
     def write (self,s):
 
         if self.trialWrite:
-            pass
+            return
+
         elif g.isPython3:
-            pass
+            if g.is_binary_file:
+                s = self.encode(s)
         else:
             s = self.encode(s)
-
-        # g.trace(repr(s),g.callers(2))
 
         self.outputFile.write(s)
     #@-node:ekr.20090502071837.94:write (leoRst)
@@ -1703,8 +1700,8 @@ class rstCommands:
     #@nonl
     # Relocate references here if we are only running for one file.
     # 
-    # Otherwise we must postpone the relocation until we have 
-    # processed all files.
+    # Otherwise we must postpone the relocation until we have processed all 
+    # files.
     #@-at
     #@@c
 
