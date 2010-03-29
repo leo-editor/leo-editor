@@ -511,7 +511,7 @@
 <v t="ekr.20100329100841.2110"><vh>Level 2</vh></v>
 </v>
 </v>
-<v t="ekr.20100329103002.2118"><vh>@auto-rst at-auto-test.txt</vh></v>
+<v t="ekr.20100329103002.2118" a="E"><vh>@auto-rst at-auto-test.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):

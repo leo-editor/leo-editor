@@ -667,7 +667,7 @@ class rstCommands:
         '''Write an @auto tree containing imported rST code.
         The caller will close the output file.'''
 
-        g.trace('trial',trialWrite,fileName,outputFile)
+        # g.trace('trial',trialWrite,fileName,outputFile)
 
         try:
             self.trialWrite = trialWrite
@@ -1350,9 +1350,6 @@ class rstCommands:
     #@-node:ekr.20090502071837.70:skip_literal_block
     #@+node:ekr.20090502071837.94:write (leoRst)
     def write (self,s):
-
-        # if self.trialWrite:
-            # return
 
         if g.isPython3:
             if g.is_binary_file(self.outputFile):

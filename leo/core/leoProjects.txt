@@ -1847,9 +1847,6 @@ def encode (self,s):
 #@+node:ekr.20090502071837.94:write (leoRst)
 def write (self,s):
 
-    # if self.trialWrite:
-        # return
-
     if g.isPython3:
         if g.is_binary_file(self.outputFile):
             s = self.encode(s)
