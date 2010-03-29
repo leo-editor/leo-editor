@@ -30,7 +30,6 @@ echo runLeo.py (suppress W0611)
 rem Harmless: W0611 (import pychecker)
 call pylint.bat "--disable-msg=W0611 --rcfile=leo\test\pylint-leo-rc.txt leo\core\runLeo.py"
 
-
 goto done
 
 :all

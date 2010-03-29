@@ -4832,7 +4832,7 @@ class leoQtLog (leoFrame.leoLog):
     #@nonl
     #@-node:ekr.20090627090950.3717:High-level interface (qtLog)
     #@+node:ekr.20081121105001.325:put & putnl (qtLog)
-    #@+node:ekr.20081121105001.326:put
+    #@+node:ekr.20081121105001.326:put (qtLog)
     # All output to the log stream eventually comes here.
     def put (self,s,color=None,tabName='Log'):
 
@@ -4842,6 +4842,8 @@ class leoQtLog (leoFrame.leoLog):
 
         if color:
             color = leoColor.getColor(color,'black')
+        else:
+            color = leoColor.getColor('black')
 
         self.selectTab(tabName or 'Log')
         # print('qtLog.put',tabName,'%3s' % (len(s)),self.logCtrl)
@@ -4849,7 +4851,6 @@ class leoQtLog (leoFrame.leoLog):
         # Note: this must be done after the call to selectTab.
         w = self.logCtrl.widget # w is a QTextBrowser
 
-        # g.trace(repr(color),w)
         if w:
             sb = w.horizontalScrollBar()
             pos = sb.sliderPosition()
@@ -4857,8 +4858,7 @@ class leoQtLog (leoFrame.leoLog):
             if not self.wrap: # 2010/02/21: Use &nbsp; only when not wrapping!
                 s = s.replace(' ','&nbsp;')
             s = s.rstrip().replace('\n','<br>')
-            if color:
-                s = '<font color="%s">%s</font>' % (color,s)
+            s = '<font color="%s">%s</font>' % (color,s)
             w.append(s)
             w.moveCursor(QtGui.QTextCursor.End)
             sb.setSliderPosition(pos)
@@ -4868,7 +4868,7 @@ class leoQtLog (leoFrame.leoLog):
             if g.isUnicode(s):
                 s = g.toEncodedString(s,"ascii")
             print(s)
-    #@-node:ekr.20081121105001.326:put
+    #@-node:ekr.20081121105001.326:put (qtLog)
     #@+node:ekr.20081121105001.327:putnl
     def putnl (self,tabName='Log'):
 

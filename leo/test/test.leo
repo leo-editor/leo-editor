@@ -511,7 +511,8 @@
 <v t="ekr.20100329100841.2110"><vh>Level 2</vh></v>
 </v>
 </v>
-<v t="ekr.20100329103002.2118" a="E"><vh>@auto-rst at-auto-test.txt</vh></v>
+<v t="ekr.20100329103002.2118"><vh>@auto-rst at-auto-test.txt</vh></v>
+<v t="ekr.20100329115258.2118"><vh>Test log</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5764,5 +5765,9 @@ import string
 </t>
 <t tx="ekr.20100329100841.2109">Level 1</t>
 <t tx="ekr.20100329100841.2110">Level 2</t>
+<t tx="ekr.20100329115258.2118">g.redirectStdout()
+print("Hello World &lt;a&gt;")
+g.restoreStdout()
+print("after")</t>
 </tnodes>
 </leo_file>

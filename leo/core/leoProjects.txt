@@ -1891,8 +1891,189 @@ def compareFiles (self,path1,path2,ignoreLineEndings,ignoreBlankLines=False):
         equal = s1 == s2
     # g.trace('equal',equal,'ignoreLineEndings',ignoreLineEndings,'encoding',at.encoding)
     return equal
+#@nonl
 #@-node:ekr.20041005105605.197:compareFiles
 #@-node:ekr.20100329071036.5741:Fixed at-auto-rst crash
+#@+node:ekr.20100329071036.5739:Investigated at-auto-rst bug
+@nocolor-node
+https://bugs.launchpad.net/leo-editor/+bug/532085
+
+auto-rst isn't switching to a new title underline char. going from level 2 to 3
+in the outline.
+
+Changing to regular @rst and using the rst3 command to export works.
+
+Tree:
+
+Foo
+    Bar
+        This
+        That
+    Etc
+
+Output:
+
+Foo
+===
+
+Bar
++++
+
+This
+++++ <- still using '+' one level down
+
+--------------------------------------------------
+
+
+Another test and this seems as bad or worse,
+
+A-+
+    |
+   C-+
+       |
+      D
+
+is using '=' to underline all three levels.
+#@+node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
+def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
+
+    '''Write an @auto tree containing imported rST code.
+    The caller will close the output file.'''
+
+    # g.trace('trial',trialWrite,fileName,outputFile)
+
+    try:
+        self.trialWrite = trialWrite
+        self.atAutoWrite = True
+        self.initAtAutoWrite(p,fileName,outputFile)
+        self.topNode = p.copy() # Indicate the top of this tree.
+        self.topLevel = p.level()
+        after = p.nodeAfterTree()
+        ok = self.isSafeWrite(p)
+        if ok:
+            p = p.firstChild() # A hack: ignore the root node.
+            while p and p != after:
+                self.writeNode(p) # side effect: advances p
+    finally:
+        self.atAutoWrite = False
+    return ok
+#@+node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
+def initAtAutoWrite(self,p,fileName,outputFile):
+
+    # Set up for a standard write.
+    self.createDefaultOptionsDict()
+    self.tnodeOptionDict = {}
+    self.scanAllOptions(p)
+    self.initWrite(p)
+    self.preprocessTree(p) # Allow @ @rst-options, for example.
+    # Do the overrides.
+    self.outputFile = outputFile
+    self.outputFileName = fileName
+    # Set underlining characters.
+    # It makes no sense to use user-defined
+    # underlining characters in @auto-rst.
+    d = p.v.u.get('rst-import',{})
+    underlines2 = d.get('underlines2','')
+        # Do *not* set a default for overlining characters.
+    if len(underlines2) > 1:
+        underlines2 = underlines2[0]
+        g.trace('too many top-level underlines, using %s' % (
+            underlines2),color='blue')
+    underlines1 = d.get('underlines1','')
+    if not underlines1: underlines1 = '=+*^~"\'`-:><_'
+        # The standard defaults.
+    self.atAutoWriteUnderlines = underlines2 + underlines1
+    self.underlines1 = underlines1
+    self.underlines2 = underlines2
+#@-node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
+#@+node:ekr.20091228080620.6499:isSafeWrite
+def isSafeWrite (self,p):
+
+    '''Return True if node p contributes nothing but
+    rst-options to the write.'''
+
+    if self.trialWrite or not p.isAtAutoRstNode():
+        return True # Trial writes are always safe.
+
+    lines = g.splitLines(p.b)
+    for z in lines:
+        if z.strip() and not z.startswith('@') and not z.startswith('.. '):
+            # A real line that will not be written.
+            g.es('unsafe @auto-rst',color='red')
+            g.es('body text will be ignored in\n',p.h)
+            return False
+    else:
+        return True
+#@-node:ekr.20091228080620.6499:isSafeWrite
+#@-node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
+#@+node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
+def checkTrialWrite (self,s1=None,s2=None):
+
+    '''Return True if a trial write produces the original file.'''
+
+    # s1 and s2 are for unit testing.
+    c = self.c ; at = c.atFileCommands
+    if s1 is None and s2 is None:
+        if self.isRst:
+            outputFile = StringIO()
+            c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile,trialWrite=True)
+            s1,s2 = self.file_s,outputFile.getvalue()
+        else:
+            at.write(self.root,
+                nosentinels=True,thinFile=False,
+                scriptWrite=False,toString=True)
+            s1,s2 = self.file_s, at.stringOutput
+
+    s1 = g.toUnicode(s1,self.encoding)
+    s2 = g.toUnicode(s2,self.encoding)
+
+    # Make sure we have a trailing newline in both strings.
+    s1 = s1.replace('\r','')
+    s2 = s2.replace('\r','')
+    if not s1.endswith('\n'): s1 = s1 + '\n'
+    if not s2.endswith('\n'): s2 = s2 + '\n'
+
+    if s1 == s2: return True
+
+    lines1 = g.splitLines(s1)
+    lines2 = g.splitLines(s2)
+
+    if self.isRst:
+        lines1 = self.adjustRstLines(lines1)
+        lines2 = self.adjustRstLines(lines2)
+
+    n1,n2 = len(lines1), len(lines2)
+    ok = True ; bad_i = 0
+    for i in range(max(n1,n2)):
+        ok = self.compareHelper(lines1,lines2,i,self.strict)
+        if not ok:
+            bad_i = i
+            break
+
+    if g.app.unitTesting:
+        d = g.app.unitTestDict
+        # g.trace('expected',d.get('expectedMismatchLine'),'actual',d.get('actualMismatchLine'))
+        ok = d.get('expectedMismatchLine') == d.get('actualMismatchLine')
+        # Unit tests do not generate errors unless the mismatch line does not match.
+        if not ok: d['fail'] = g.callers() # 2008/10/3
+
+    if not ok:
+        self.reportMismatch(lines1,lines2,bad_i)
+
+    return ok
+#@-node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
+#@+node:ekr.20090502071837.94:write (leoRst)
+def write (self,s):
+
+    if g.isPython3:
+        if g.is_binary_file(self.outputFile):
+            s = self.encode(s)
+    else:
+        s = self.encode(s)
+
+    self.outputFile.write(s)
+#@-node:ekr.20090502071837.94:write (leoRst)
+#@-node:ekr.20100329071036.5739:Investigated at-auto-rst bug
 #@-node:ekr.20100319090849.5760:Bugs
 #@+node:ekr.20100319090849.5759:Features
 #@+node:ekr.20100307070200.5720:Fixed the @test logic

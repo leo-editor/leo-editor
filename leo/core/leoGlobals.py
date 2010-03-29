@@ -1374,6 +1374,8 @@ class redirectClass:
     def __init__ (self):
 
         self.old = None
+        self.encoding = 'utf-8' # 2019/03/29 For pdb.
+    #@nonl
     #@-node:ekr.20041012082437:redirectClass.__init__
     #@+node:ekr.20041012082437.1:isRedirected
     def isRedirected (self):
@@ -1419,11 +1421,15 @@ class redirectClass:
     #@+node:ekr.20041012082437.5:write
     def write(self,s):
 
+        trace = False
+
         if self.old:
             if app.log:
+                if trace: self.old.write(
+                    'redirectClass: to log: %s\n' % repr(s))
                 app.log.put(s)
             else:
-                self.old.write(s+'\n')
+                self.old.write(s +'\n')
         else:
             # Can happen when g.batchMode is True.
             g.pr(s)
