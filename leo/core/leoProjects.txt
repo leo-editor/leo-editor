@@ -1588,6 +1588,314 @@ def setBodyTextAfterSelect (self,p,old_p):
 #@-node:ekr.20100303074003.5635:Fix save scrolling bug
 #@+node:ekr.20100319090849.5758:Fixed recent save-to bug
 #@-node:ekr.20100319090849.5758:Fixed recent save-to bug
+#@+node:ekr.20100329071036.5741:Fixed at-auto-rst crash
+#@+node:ekr.20100329071036.5745: Tracebacks
+#@+node:ekr.20100329071036.5742:Original traceback
+@nocolor-node
+
+exception writing external files
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 2114, in writeAllAtFileNodesHelper
+    c.atFileCommands.writeAll()
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 2491, in writeAll
+    self.writeAllHelper(p,force,toString,writeAtFileNodesFlag,writtenFiles)
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 2540, in writeAllHelper
+    at.writeOneAtAutoNode(p,toString=toString,force=force)
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 2644, in writeOneAtAutoNode
+    ok2 = c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
+  File "c:\leo.repo\trunk\leo\core\leoRst.py", line 683, in writeAtAutoFile
+    self.writeNode(p) # side effect: advances p
+  File "c:\leo.repo\trunk\leo\core\leoRst.py", line 1509, in writeNode
+    self.writeHeadline(p)
+  File "c:\leo.repo\trunk\leo\core\leoRst.py", line 1438, in writeHeadline
+    self.writeHeadlineHelper(p)
+  File "c:\leo.repo\trunk\leo\core\leoRst.py", line 1477, in writeHeadlineHelper
+    self.write(self.underline(h,p)) # Used by @auto-rst.
+  File "c:\leo.repo\trunk\leo\core\leoRst.py", line 1364, in write
+    self.outputFile.write(s)
+TypeError: must be bytes or buffer, not str
+#@nonl
+#@-node:ekr.20100329071036.5742:Original traceback
+#@+node:ekr.20100329071036.5743:Second traceback
+@nocolor-node
+
+exception writing external files
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoFileCommands.py", line 2114, in writeAllAtFileNodesHelper
+    c.atFileCommands.writeAll()
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 2491, in writeAll
+    self.writeAllHelper(p,force,toString,writeAtFileNodesFlag,writtenFiles)
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 2540, in writeAllHelper
+    at.writeOneAtAutoNode(p,toString=toString,force=force)
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 2652, in writeOneAtAutoNode
+    at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAutoRst)
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 4547, in replaceTargetFileIfDifferent
+    ignoreBlankLines=ignoreBlankLines):
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 4040, in compareFiles
+    s1 = g.removeBlankLines(s1)
+  File "c:\leo.repo\trunk\leo\core\leoGlobals.py", line 5992, in removeBlankLines
+    return ''.join(lines)
+TypeError: sequence item 0: expected str instance, bytes found
+saved: test.leo
+#@nonl
+#@-node:ekr.20100329071036.5743:Second traceback
+#@-node:ekr.20100329071036.5745: Tracebacks
+#@+node:ekr.20100329071036.5744:g.is_binary_file
+def is_binary_file (f):
+
+    if g.isPython3:
+        return f and isinstance(f,io.BufferedIOBase)
+    else:
+        g.internalError('g.is_binary_file called from Python 2.x code')
+#@-node:ekr.20100329071036.5744:g.is_binary_file
+#@+node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
+def writeOneAtAutoNode(self,p,toString,force):
+
+    '''Write p, an @auto node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy()
+
+    fileName = p.atAutoNodeName()
+    if not fileName and not toString: return False
+
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+    exists = g.os_path_exists(fileName)
+
+    if not toString and not self.shouldWriteAtAutoNode(p,exists,force):
+        return False
+
+    # Prompt if writing a new @auto node would overwrite an existing file.
+    if (not toString and not hasattr(p.v,'at_read') and
+        g.os_path_exists(fileName)
+    ):
+        ok = self.promptForDangerousWrite(fileName,kind='@auto')
+        if ok:
+            p.v.at_read = True # Create the attribute
+        else:
+            g.es("not written:",fileName)
+            return False
+
+    # This code is similar to code in at.write.
+    c.endEditing() # Capture the current headline.
+    at.targetFileName = g.choose(toString,"<string-file>",fileName)
+    at.initWriteIvars(root,at.targetFileName,
+        atAuto=True,
+        nosentinels=True,thinFile=False,scriptWrite=False,
+        toString=toString)
+
+    ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
+    isAtAutoRst = root.isAtAutoRstNode()
+    if ok:
+        if isAtAutoRst:
+            ok2 = c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
+            if not ok2: at.errors += 1
+        else:
+            at.writeOpenFile(root,nosentinels=True,toString=toString)
+        at.closeWriteFile() # Sets stringOutput if toString is True.
+        # g.trace('at.errors',at.errors)
+        if at.errors == 0:
+            # g.trace('toString',toString,'force',force,'isAtAutoRst',isAtAutoRst)
+            at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAutoRst)
+                # Sets/clears dirty and orphan bits.
+        else:
+            g.es("not written:",at.outputFileName)
+            root.setDirty() # New in Leo 4.4.8.
+
+    elif not toString:
+        root.setDirty() # Make _sure_ we try to rewrite this file.
+        g.es("not written:",at.outputFileName)
+
+    return ok
+#@+node:ekr.20071019141745:shouldWriteAtAutoNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.  That's too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @auto x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @auto node which will be populated the next time the .leo file is opened.
+- We don't want minor import imperfections to be written to the @auto file.
+- The explicit commands that read and write @auto trees must always be honored.
+@c
+
+def shouldWriteAtAutoNode (self,p,exists,force):
+
+    '''Return True if we should write the @auto node at p.'''
+
+    if force: # We are executing write-at-auto-node or write-dirty-at-auto-nodes.
+        return True
+    elif not exists: # We can write a non-existent file without danger.
+        return True
+    elif not p.isDirty(): # There is nothing new to write.
+        return False
+    elif not self.isSignificantTree(p): # There is noting of value to write.
+        g.es_print(p.h,'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+        return False
+    else: # The @auto tree is dirty and contains significant info.
+        return True
+#@-node:ekr.20071019141745:shouldWriteAtAutoNode
+#@-node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
+#@+node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
+def openFileForWriting (self,root,fileName,toString):
+
+    at = self
+    at.outputFile = None
+
+    if toString:
+        at.shortFileName = g.shortFileName(fileName)
+        at.outputFileName = "<string: %s>" % at.shortFileName
+        at.outputFile = g.fileLikeObject()
+    else:
+        ok = at.openFileForWritingHelper(fileName)
+
+        # New in Leo 4.4.8: set dirty bit if there are errors.
+        if not ok: at.outputFile = None
+
+    # New in 4.3 b2: root may be none when writing from a string.
+    if root:
+        if at.outputFile:
+            root.clearOrphan()
+        else:
+            root.setOrphan()
+            root.setDirty()
+
+    return at.outputFile is not None
+#@+node:ekr.20041005105605.143:openFileForWritingHelper & helper
+def openFileForWritingHelper (self,fileName):
+
+    '''Open the file and return True if all went well.'''
+
+    at = self ; c = at.c
+
+    try:
+        at.shortFileName = g.shortFileName(fileName)
+        at.targetFileName = c.os_path_finalize_join(at.default_directory,fileName)
+        path = g.os_path_dirname(at.targetFileName)
+        if not path or not g.os_path_exists(path):
+            if path:
+                path = g.makeAllNonExistentDirectories(path,c=c)
+            if not path or not g.os_path_exists(path):
+                path = g.os_path_dirname(at.targetFileName)
+                at.writeError("path does not exist: " + path)
+                return False
+    except Exception:
+        at.exception("exception creating path: %s" % repr(path))
+        g.es_exception()
+        return False
+
+    if g.os_path_exists(at.targetFileName):
+        try:
+            if not os.access(at.targetFileName,os.W_OK):
+                at.writeError("can not open: read only: " + at.targetFileName)
+                return False
+        except AttributeError:
+            pass # os.access() may not exist on all platforms.
+
+    try:
+        at.outputFileName = at.targetFileName + ".tmp"
+        kind,at.outputFile = self.openForWrite(at.outputFileName,'wb')
+        if not at.outputFile:
+            kind = g.choose(kind=='check',
+                'did not overwrite','can not create')
+            at.writeError("%s %s" % (kind,at.outputFileName))
+            return False
+    except Exception:
+        at.exception("exception creating:" + at.outputFileName)
+        return False
+
+    return True
+#@+node:bwmulder.20050101094804:openForWrite (atFile)
+def openForWrite (self, filename, wb='wb'):
+
+    '''Open a file for writes, handling shadow files.'''
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c ; x = c.shadowController
+
+    try:
+        shadow_filename = x.shadowPathName(filename)
+        self.writing_to_shadow_directory = os.path.exists(shadow_filename)
+        open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
+        self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
+
+        if self.writing_to_shadow_directory:
+            if trace: g.trace(filename,shadow_filename)
+            x.message('writing %s' % shadow_filename)
+            return 'shadow',open(open_file_name,wb)
+        else:
+            ok = c.checkFileTimeStamp(at.targetFileName)
+            return 'check',ok and open(open_file_name,wb)
+
+    except IOError:
+        if not g.app.unitTesting:
+            g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
+            g.es_exception()
+        return 'error',None
+#@-node:bwmulder.20050101094804:openForWrite (atFile)
+#@-node:ekr.20041005105605.143:openFileForWritingHelper & helper
+#@-node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
+#@+node:ekr.20090502071837.90:encode
+def encode (self,s):
+
+    return g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
+#@nonl
+#@-node:ekr.20090502071837.90:encode
+#@+node:ekr.20090502071837.94:write (leoRst)
+def write (self,s):
+
+    # if self.trialWrite:
+        # return
+
+    if g.isPython3:
+        if g.is_binary_file(self.outputFile):
+            s = self.encode(s)
+    else:
+        s = self.encode(s)
+
+    self.outputFile.write(s)
+#@-node:ekr.20090502071837.94:write (leoRst)
+#@+node:ekr.20041005105605.197:compareFiles
+def compareFiles (self,path1,path2,ignoreLineEndings,ignoreBlankLines=False):
+
+    """Compare two text files."""
+    at = self
+
+    # We can't use 'U' mode because of encoding issues (Python 2.x only).
+    s1,e = g.readFileIntoString(path1,mode='rb',raw=True)
+    if s1 is None:
+        g.internalError('empty compare file: %s' % path1)
+        return False
+    s2,e = g.readFileIntoString(path2,mode='rb',raw=True)
+    if s2 is None:
+        g.internalError('empty compare file: %s' % path2)
+        return False
+    equal = s1 == s2
+
+    # 2010/03/29: Make sure both strings are unicode.
+    # This is requred to handle binary files in Python 3.x.
+    s1 = g.toUnicode(s1,encoding=at.encoding)
+    s2 = g.toUnicode(s2,encoding=at.encoding)
+
+    if ignoreBlankLines and not equal:
+        s1 = g.removeBlankLines(s1)
+        s2 = g.removeBlankLines(s2)
+        equal = s1 == s2
+
+    if ignoreLineEndings and not equal:
+        # Wrong: equivalent to ignoreBlankLines!
+            # s1 = s1.replace('\n','').replace('\r','')
+            # s2 = s2.replace('\n','').replace('\r','')
+        s1 = s1.replace('\r','')
+        s2 = s2.replace('\r','')
+        equal = s1 == s2
+    # g.trace('equal',equal,'ignoreLineEndings',ignoreLineEndings,'encoding',at.encoding)
+    return equal
+#@-node:ekr.20041005105605.197:compareFiles
+#@-node:ekr.20100329071036.5741:Fixed at-auto-rst crash
 #@-node:ekr.20100319090849.5760:Bugs
 #@+node:ekr.20100319090849.5759:Features
 #@+node:ekr.20100307070200.5720:Fixed the @test logic

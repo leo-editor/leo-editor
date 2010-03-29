@@ -1845,7 +1845,7 @@ class baseScannerClass (scanUtility):
         '''Compare lines1[i] and lines2[i].
         strict is True if leading whitespace is very significant.'''
 
-        trace = False and not g.unitTesting
+
 
         def pr(*args,**keys): #compareHelper
             g.es_print(color='blue',*args,**keys)
@@ -1892,11 +1892,6 @@ class baseScannerClass (scanUtility):
         else:
             s1,s2 = line1.lstrip(),line2.lstrip()
             messageKind = g.choose(s1==s2,'warning','error')
-
-        # if trace:
-            # g.es_print('original line: ',line1)
-            # g.es_print('generated line:',line2)
-            # return True # continue checking.
 
         if g.unitTesting:
             d ['actualMismatchLine'] = i+1

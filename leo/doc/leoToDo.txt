@@ -346,11 +346,11 @@ def writeScriptFile (self,script):
 #@+node:ekr.20090502071837.94:write (leoRst)
 def write (self,s):
 
-    if self.trialWrite:
-        return
+    # if self.trialWrite:
+        # return
 
-    elif g.isPython3:
-        if g.is_binary_file:
+    if g.isPython3:
+        if g.is_binary_file(self.outputFile):
             s = self.encode(s)
     else:
         s = self.encode(s)
@@ -2524,7 +2524,7 @@ def compareHelper (self,lines1,lines2,i,strict):
     '''Compare lines1[i] and lines2[i].
     strict is True if leading whitespace is very significant.'''
 
-    trace = False and not g.unitTesting
+
 
     def pr(*args,**keys): #compareHelper
         g.es_print(color='blue',*args,**keys)
@@ -2571,11 +2571,6 @@ def compareHelper (self,lines1,lines2,i,strict):
     else:
         s1,s2 = line1.lstrip(),line2.lstrip()
         messageKind = g.choose(s1==s2,'warning','error')
-
-    # if trace:
-        # g.es_print('original line: ',line1)
-        # g.es_print('generated line:',line2)
-        # return True # continue checking.
 
     if g.unitTesting:
         d ['actualMismatchLine'] = i+1
