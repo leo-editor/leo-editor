@@ -513,6 +513,8 @@
 </v>
 <v t="ekr.20100329103002.2118"><vh>@auto-rst at-auto-test.txt</vh></v>
 <v t="ekr.20100329115258.2118"><vh>Test log</vh></v>
+<v t="ekr.20100330082345.2120"><vh>pseudoplain</vh></v>
+<v t="ekr.20100330082441.2122"><vh>newHeadline</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5769,5 +5771,10 @@ import string
 print("Hello World &lt;a&gt;")
 g.restoreStdout()
 print("after")</t>
+<t tx="ekr.20100330082345.2120">@language pseudoplain
+
+This is a [[test]] of something.</t>
+<t tx="ekr.20100330082441.2122">import leo.modes.pseudoplain as pp
+print(pp)</t>
 </tnodes>
 </leo_file>

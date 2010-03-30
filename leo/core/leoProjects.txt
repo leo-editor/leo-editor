@@ -2074,6 +2074,175 @@ def write (self,s):
     self.outputFile.write(s)
 #@-node:ekr.20090502071837.94:write (leoRst)
 #@-node:ekr.20100329071036.5739:Investigated at-auto-rst bug
+#@+node:ekr.20100329071036.5746:Don't put &nbsp; in redirected log
+@nocolor-node
+@
+
+https://bugs.launchpad.net/leo-editor/+bug/549319
+
+Leo 4.7.1 final, build 3005, February 26, 2010
+Python 2.6.2, qt version 4.5.2
+Windows 5, 1, 2600, 2, Service Pack 3
+
+When redirecting the output to the Log pane using g.redirectStderr() and
+g.redirectStdout(), the output displays non-breaking space characters (&nbsp;)
+everywhere there is supposed to be a space.
+
+For example, if I run print 'Hello World' I get Hello&nbsp;World in the Log
+pane. This is really hard to read when you have 50 or 100 lines of numbers from
+the output of a program.
+#@+node:ekr.20031218072017.3121:redirecting stderr and stdout to Leo's log pane
+class redirectClass:
+
+    """A class to redirect stdout and stderr to Leo's log pane."""
+
+    << redirectClass methods >>
+
+# Create two redirection objects, one for each stream.
+redirectStdErrObj = redirectClass()
+redirectStdOutObj = redirectClass()
+
+<< define convenience methods for redirecting streams >>
+
+if 0: # Test code: may be executed in the child node.
+    << test code >>
+#@+node:ekr.20031218072017.1656:<< redirectClass methods >>
+@others
+#@+node:ekr.20041012082437:redirectClass.__init__
+def __init__ (self):
+
+    self.old = None
+    self.encoding = 'utf-8' # 2019/03/29 For pdb.
+#@nonl
+#@-node:ekr.20041012082437:redirectClass.__init__
+#@+node:ekr.20041012082437.1:isRedirected
+def isRedirected (self):
+
+    return self.old != None
+#@-node:ekr.20041012082437.1:isRedirected
+#@+node:ekr.20041012082437.2:flush
+# For LeoN: just for compatibility.
+
+def flush(self, *args):
+    return
+#@-node:ekr.20041012082437.2:flush
+#@+node:ekr.20041012091252:rawPrint
+def rawPrint (self,s):
+
+    if self.old:
+        self.old.write(s+'\n')
+    else:
+        g.pr(s)
+#@-node:ekr.20041012091252:rawPrint
+#@+node:ekr.20041012082437.3:redirect
+def redirect (self,stdout=1):
+
+    if g.app.batchMode:
+        # Redirection is futile in batch mode.
+        return
+
+    if not self.old:
+        if stdout:
+            self.old,sys.stdout = sys.stdout,self
+        else:
+            self.old,sys.stderr = sys.stderr,self
+#@-node:ekr.20041012082437.3:redirect
+#@+node:ekr.20041012082437.4:undirect
+def undirect (self,stdout=1):
+
+    if self.old:
+        if stdout:
+            sys.stdout,self.old = self.old,None
+        else:
+            sys.stderr,self.old = self.old,None
+#@-node:ekr.20041012082437.4:undirect
+#@+node:ekr.20041012082437.5:write
+def write(self,s):
+
+    trace = False
+
+    if self.old:
+        if app.log:
+            if trace: self.old.write(
+                'redirectClass: to log: %s\n' % repr(s))
+            app.log.put(s)
+        else:
+            self.old.write(s +'\n')
+    else:
+        # Can happen when g.batchMode is True.
+        g.pr(s)
+#@-node:ekr.20041012082437.5:write
+#@-node:ekr.20031218072017.1656:<< redirectClass methods >>
+#@+node:ekr.20031218072017.3122:<< define convenience methods for redirecting streams >>
+@others
+#@+node:ekr.20041012090942:redirectStderr & redirectStdout
+# Redirect streams to the current log window.
+def redirectStderr():
+    global redirectStdErrObj
+    redirectStdErrObj.redirect(stdout=False)
+
+def redirectStdout():
+    global redirectStdOutObj
+    redirectStdOutObj.redirect()
+#@-node:ekr.20041012090942:redirectStderr & redirectStdout
+#@+node:ekr.20041012090942.1:restoreStderr & restoreStdout
+# Restore standard streams.
+def restoreStderr():
+    global redirectStdErrObj
+    redirectStdErrObj.undirect(stdout=False)
+
+def restoreStdout():
+    global redirectStdOutObj
+    redirectStdOutObj.undirect()
+#@-node:ekr.20041012090942.1:restoreStderr & restoreStdout
+#@+node:ekr.20041012090942.2:stdErrIsRedirected & stdOutIsRedirected
+def stdErrIsRedirected():
+    global redirectStdErrObj
+    return redirectStdErrObj.isRedirected()
+
+def stdOutIsRedirected():
+    global redirectStdOutObj
+    return redirectStdOutObj.isRedirected()
+#@-node:ekr.20041012090942.2:stdErrIsRedirected & stdOutIsRedirected
+#@+node:ekr.20041012090942.3:rawPrint
+# Send output to original stdout.
+
+def rawPrint(s):
+
+    global redirectStdOutObj
+
+    redirectStdOutObj.rawPrint(s)
+#@-node:ekr.20041012090942.3:rawPrint
+#@-node:ekr.20031218072017.3122:<< define convenience methods for redirecting streams >>
+#@+node:ekr.20031218072017.3123:<< test code >>
+import leo.core.leoGlobals as g ; import sys
+print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
+print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
+
+# stderr
+import leo.core.leoGlobals as g ; import sys
+g.redirectStderr()
+print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
+print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
+
+import leo.core.leoGlobals as g ; import sys
+g.restoreStderr()
+print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
+print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
+
+# stdout
+import leo.core.leoGlobals as g ; import sys
+g.restoreStdout()
+print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
+print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
+
+import leo.core.leoGlobals as g ; import sys
+g.redirectStdout()
+print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
+print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
+#@-node:ekr.20031218072017.3123:<< test code >>
+#@-node:ekr.20031218072017.3121:redirecting stderr and stdout to Leo's log pane
+#@-node:ekr.20100329071036.5746:Don't put &nbsp; in redirected log
 #@-node:ekr.20100319090849.5760:Bugs
 #@+node:ekr.20100319090849.5759:Features
 #@+node:ekr.20100307070200.5720:Fixed the @test logic
