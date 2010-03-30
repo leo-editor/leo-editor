@@ -62,6 +62,7 @@
 <v t="ekr.20100118133026.2008"><vh>@@font python keyword3 fonts</vh></v>
 <v t="ekr.20100119095312.2041"><vh>@font rest keyword2 fonts</vh></v>
 <v t="ekr.20100119100926.2046"><vh>@font rest keyword4 fonts</vh></v>
+<v t="ekr.20100330084954.2125"><vh>@color pseudoplain_operator_color = blue</vh></v>
 </v>
 <v t="ekr.20100118190256.2016"><vh> Vim</vh>
 <v t="ekr.20090815161520.1815"><vh>@string vim_trigger_event = select2</vh></v>
@@ -514,7 +515,7 @@
 <v t="ekr.20100329103002.2118"><vh>@auto-rst at-auto-test.txt</vh></v>
 <v t="ekr.20100329115258.2118"><vh>Test log</vh></v>
 <v t="ekr.20100330082345.2120"><vh>pseudoplain</vh></v>
-<v t="ekr.20100330082441.2122"><vh>newHeadline</vh></v>
+<v t="ekr.20100330084954.2125"></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5774,7 +5775,6 @@ print("after")</t>
 <t tx="ekr.20100330082345.2120">@language pseudoplain
 
 This is a [[test]] of something.</t>
-<t tx="ekr.20100330082441.2122">import leo.modes.pseudoplain as pp
-print(pp)</t>
+<t tx="ekr.20100330084954.2125"></t>
 </tnodes>
 </leo_file>

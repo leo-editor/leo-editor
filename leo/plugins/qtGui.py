@@ -8592,13 +8592,14 @@ class jEditColorizer:
         if not name: return False
         h = self.highlighter
         language,rulesetName = self.nameToRulesetName(name)
+        # if trace: g.trace(name,list(self.modes.keys()))
         bunch = self.modes.get(rulesetName)
         if bunch:
             if trace: g.trace('found',language,rulesetName,g.callers(2))
             self.initModeFromBunch(bunch)
             return True
         else:
-            if trace: g.trace('****',language,rulesetName)
+            if trace: g.trace(language,rulesetName)
             path = g.os_path_join(g.app.loadDir,'..','modes')
             # Bug fix: 2008/2/10: Don't try to import a non-existent language.
             fileName = g.os_path_join(path,'%s.py' % (language))
@@ -8622,7 +8623,7 @@ class jEditColorizer:
                     rulesDict       = {},
                     rulesetName     = rulesetName,
                 )
-                # g.trace('No colorizer file: %s.py' % language)
+                if trace: g.trace('***** No colorizer file: %s.py' % language)
                 self.rulesetName = rulesetName
                 return False
             self.colorizer.language = language
@@ -8631,6 +8632,7 @@ class jEditColorizer:
             self.keywordsDict = hasattr(mode,'keywordsDictDict') and mode.keywordsDictDict.get(rulesetName,{}) or {}
             self.setKeywords()
             self.attributesDict = hasattr(mode,'attributesDictDict') and mode.attributesDictDict.get(rulesetName) or {}
+            # g.trace('*******',rulesetName,self.attributesDict)
             self.setModeAttributes()
             self.rulesDict = hasattr(mode,'rulesDictDict') and mode.rulesDictDict.get(rulesetName) or {}
             self.addLeoRules(self.rulesDict)
@@ -8652,7 +8654,7 @@ class jEditColorizer:
             self.updateDelimsTables()
             initialDelegate = self.properties.get('initialModeDelegate')
             if initialDelegate:
-                # g.trace('initialDelegate',initialDelegate)
+                if trace: g.trace('initialDelegate',initialDelegate)
                 # Replace the original mode by the delegate mode.
                 self.init_mode(initialDelegate)
                 language2,rulesetName2 = self.nameToRulesetName(initialDelegate)
@@ -8733,13 +8735,14 @@ class jEditColorizer:
     	    ('no_word_sep',     ''),
         )
 
+        # g.trace(d)
+
         for key, default in aList:
             val = d.get(key,default)
             if val in ('true','True'): val = True
             if val in ('false','False'): val = False
             setattr(self,key,val)
             # g.trace(key,val)
-    #@nonl
     #@-node:ekr.20090614134853.3709:setModeAttributes
     #@+node:ekr.20090614134853.3710:initModeFromBunch
     def initModeFromBunch (self,bunch):
@@ -9179,6 +9182,16 @@ class jEditColorizer:
             return 0
     #@nonl
     #@-node:ekr.20090614134853.3729:match_eol_span_regexp
+    #@+node:ekr.20100330091222.3702:match_everything
+    # def match_everything (self,s,i,kind=None,delegate='',exclude_match=False):
+
+        # '''Match the entire rest of the string.'''
+
+        # j = len(s)
+        # self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
+
+        # return j
+    #@-node:ekr.20100330091222.3702:match_everything
     #@+node:ekr.20090614134853.3730:match_keywords
     # This is a time-critical method.
     def match_keywords (self,s,i):
@@ -9389,7 +9402,7 @@ class jEditColorizer:
             if j == -1:
                 j = i # A real failure.
             else:
-                # No match, but can continue.
+                # A match
                 i2 = i + len(begin) ; j2 = j + len(end)
                 if delegate:
                     self.colorRangeWithTag(s,i,i2,kind,delegate=None,    exclude_match=exclude_match)
@@ -9422,7 +9435,7 @@ class jEditColorizer:
 
             if trace: g.trace('***Continuing',kind,i,j,len(s))
         elif j != i:
-            if trace: g.trace('***Ending',kind,i,j,len(s),s)
+            if trace: g.trace('***Ending',kind,i,j,s[i:j])
             self.clearState()
 
         return j - i # Correct, whatever j is.
@@ -9467,7 +9480,7 @@ class jEditColorizer:
 
         '''Remain in this state until 'end' is seen.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
 
         i = 0
         j = self.match_span_helper(s,i,end,no_escape,no_line_break,no_word_break)
@@ -9741,8 +9754,8 @@ class jEditColorizer:
             return
 
         if delegate:
-            if trace: g.trace('delegate %-12s %3s %3s %10s' % (
-                delegate,i,j,tag),g.callers(2))
+            if trace: g.trace('delegate %-12s %3s %3s %10s %s' % (
+                delegate,i,j,tag,s[i:j])) # ,g.callers(2))
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
             # Color everything now, using the same indices as the caller.
@@ -9758,7 +9771,10 @@ class jEditColorizer:
                         i += n ; break
                 else:
                     # New in Leo 4.6: Use the default chars for everything else.
-                    self.setTag(tag,s,i,i+1)
+                    # New in Leo 4.8 devel: use the *delegate's* default characters if possible.
+                    default_tag = self.attributesDict.get('default')
+                    # g.trace(default_tag)
+                    self.setTag(default_tag or tag,s,i,i+1)
                     i += 1
                 assert i > progress
             bunch = self.modeStack.pop()
@@ -9905,7 +9921,7 @@ class jEditColorizer:
             self.tagCount += 1
             g.trace(
                 '%3s %3s %3s %9s %7s' % (i,j,len(s),font and id(font) or '<no font>',colorName),
-                '%-10s %-25s' % (tag,s[i:j])) # ,g.callers(4))
+                '%-10s %-25s' % (tag,s[i:j]),g.callers(2))
 
         if tag in ('blank','tab'):
             if tag == 'tab' or colorName == 'black':
