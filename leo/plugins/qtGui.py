@@ -9480,7 +9480,7 @@ class jEditColorizer:
 
         '''Remain in this state until 'end' is seen.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
 
         i = 0
         j = self.match_span_helper(s,i,end,no_escape,no_line_break,no_word_break)

@@ -11,10 +11,10 @@
 <vnodes>
 <v t="ekr.20070622214401"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
-<v t="ekr.20060112110750"><vh>Buttons</vh>
+<v t="ekr.20060112110750" a="E"><vh>Buttons</vh>
 <v t="ekr.20051010093913"><vh>@@button Save</vh></v>
 <v t="ekr.20051011123608"><vh>@@button align to col</vh></v>
-<v t="ekr.20060112103537.17"><vh>@button Check bindings</vh>
+<v t="ekr.20060112103537.17" a="E"><vh>@button Check bindings</vh>
 <v t="ekr.20060112104119"><vh>defineSetNames</vh></v>
 <v t="ekr.20060112104333"><vh>doSet</vh></v>
 <v t="ekr.20060112105523"><vh>doShortcuts</vh></v>
@@ -106,7 +106,7 @@
 <v t="ekr.20080312075451.1"><vh>Common @command nodes</vh>
 <v t="ekr.20080312075451.2"><vh>@commands</vh></v>
 </v>
-<v t="ekr.20041213105007.1" a="E"><vh>Colors</vh>
+<v t="ekr.20041213105007.1"><vh>Colors</vh>
 <v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
 <v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
 <v t="ekr.20041119052015.2"><vh>@color log_text_foreground_color = None</vh></v>
@@ -143,7 +143,7 @@
 <v t="ekr.20041119051901.1"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
 <v t="ekr.20041119050749.12"><vh>@color outline_pane_background_color = #ffffec</vh></v>
 </v>
-<v t="ekr.20100313080341.8368" a="E"><vh>Minibuffer background colors</vh>
+<v t="ekr.20100313080341.8368"><vh>Minibuffer background colors</vh>
 <v t="ekr.20100313080341.8369"><vh>@color minibuffer-background-color = lightblue</vh></v>
 <v t="ekr.20100313080341.8370"><vh>@color minibuffer-error-color = red</vh></v>
 <v t="ekr.20100313080341.8371"><vh>@color minibuffer-warning-color = lightgrey</vh></v>
@@ -394,14 +394,14 @@
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20051007200824"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051007200824" a="E"><vh>Keyboard shortcuts</vh>
 <v t="ekr.20051101160257"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1"><vh>About shortcut specifiers</vh></v>
 <v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
 </v>
 <v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060104093101" a="E"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 <v t="ekr.20060110141538"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
@@ -409,7 +409,7 @@
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20060110141538.1"><vh>@keys No bindings</vh>
+<v t="ekr.20060110141538.1" a="E"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206"><vh>@shortcuts No bindings: A-E</vh></v>
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
@@ -694,12 +694,12 @@
 <v t="ekr.20070925144534.215"><vh>@item &amp;switch-to-buffer</vh></v>
 </v>
 <v t="ekr.20070925144534.216"><vh>@menu &amp;Chapters...</vh>
-<v t="ekr.20070925144534.217"><vh>@item &amp;clone-node-to-chapter</vh></v>
-<v t="ekr.20070925144534.218"><vh>@item c&amp;opy-node-to-chapter</vh></v>
-<v t="ekr.20070925144534.219"><vh>@item c&amp;reate-chapter</vh></v>
-<v t="ekr.20070925144534.220"><vh>@item &amp;move-node-to-chapter</vh></v>
-<v t="ekr.20070925144534.221"><vh>@item &amp;remove-chapter</vh></v>
-<v t="ekr.20070925144534.222"><vh>@item &amp;select-chapter</vh></v>
+<v t="ekr.20070925144534.217"><vh>@item chapter-&amp;clone-node-to</vh></v>
+<v t="ekr.20070925144534.218"><vh>@item chapter-c&amp;opy-node-to</vh></v>
+<v t="ekr.20070925144534.219"><vh>@item chapter-c&amp;reate</vh></v>
+<v t="ekr.20070925144534.220"><vh>@item chapter-&amp;move-node-to</vh></v>
+<v t="ekr.20070925144534.221"><vh>@item chapter-&amp;remove</vh></v>
+<v t="ekr.20070925144534.222"><vh>@item chapter-&amp;select</vh></v>
 </v>
 <v t="ekr.20070925144534.223"><vh>@menu Cursor/Selection...</vh>
 <v t="ekr.20070925144534.224"><vh>@menu Cursor &amp;Back...</vh>
@@ -989,7 +989,7 @@
 <v t="ekr.20080515053412.31"><vh>@popup iconbox</vh></v>
 <v t="ekr.20080515053412.32"><vh>@popup plusbox</vh></v>
 </v>
-<v t="ekr.20080515053412.33"><vh>Fragments</vh>
+<v t="ekr.20080515053412.33" a="E"><vh>Fragments</vh>
 <v t="ekr.20080515053412.34"><vh>@popup edit-menu</vh>
 <v t="ekr.20080515053412.35"><vh>@item rclick-cut-text</vh></v>
 <v t="ekr.20080515053412.36"><vh>@item rclick-copy-text</vh></v>
@@ -1003,16 +1003,16 @@
 </v>
 </v>
 <v t="ekr.20080515053412.43"><vh>@popup to-chapter-fragment</vh>
-<v t="ekr.20080515053412.44"><vh>@menu Clone to Chapter</vh>
+<v t="ekr.20080515053412.44" a="E"><vh>@menu Clone to Chapter</vh>
 <v t="ekr.20080515053412.45"><vh>@item *</vh></v>
 </v>
-<v t="ekr.20080515053412.46"><vh>@menu Copy to Chapter</vh>
+<v t="ekr.20080515053412.46" a="E"><vh>@menu Copy to Chapter</vh>
 <v t="ekr.20080515053412.47"><vh>@item *</vh></v>
 </v>
-<v t="ekr.20080515053412.48"><vh>@menu Move to Chapter</vh>
+<v t="ekr.20080515053412.48" a="E"><vh>@menu Move to Chapter</vh>
 <v t="ekr.20080515053412.49"><vh>@item *</vh></v>
 </v>
-<v t="ekr.20080515053412.50"><vh>@menu Goto to Chapter</vh>
+<v t="ekr.20080515053412.50" a="E"><vh>@menu Select Chapter</vh>
 <v t="ekr.20080515053412.51"><vh>@item *</vh></v>
 </v>
 </v>
@@ -4678,6 +4678,12 @@ capitalize-word                     = None
 cascade-windows                     = None
 center-line                         = None
 center-region                       = None
+chapter-clone-node-to               = None
+chapter-copy-node-to                = None
+chapter-create                      = None
+chapter-move-node-to                = None
+chapter-remove                      = None
+chapter-select                      = None
 check-all-python-code               = None
 check-outline                       = None
 check-python-code                   = None
@@ -4695,7 +4701,6 @@ click-headline                      = None
 click-icon-box                      = None
 clone-find-all                      = None
 clone-node                          = None
-clone-node-to-chapter               = None
 close-rectangle                     = None
 close-window                        = None
 cm-external-editor                  = None
@@ -4713,13 +4718,11 @@ convert-all-tabs                    = None
 convert-blanks                      = None
 convert-tabs                        = None
 copy-node                           = None
-copy-node-to-chapter                = None
 copy-rectangle-to-register          = None
 copy-text                           = None
 # copy-to-buffer                      = None
 copy-to-register                    = None
 count-region                        = None
-create-chapter                      = None
 cut-node                            = None
 cut-text                            = None
 cycle-all-focus                     = None
@@ -5245,7 +5248,6 @@ minimize-all                        = None
 mode-help                           = None
 move-lines-down                     = None
 move-lines-up                       = None
-move-node-to-chapter                = None
 move-outline-down                   = None
 move-outline-left                   = None
 move-outline-right                  = None
@@ -5316,7 +5318,6 @@ read-outline-only                   = None
 redo                                = None
 reformat-paragraph                  = None
 remove-blank-lines                  = None
-remove-chapter                      = None
 remove-directory                    = None
 remove-sentinels                    = None
 remove-space-from-lines             = None
@@ -5353,7 +5354,6 @@ search-backward                     = None
 search-forward                      = None
 search-with-present-options         = None
 select-all                          = None
-select-chapter                      = None
 set-colors                          = None
 set-comment-column                  = None
 set-extend-mode                     = None
@@ -5418,7 +5418,7 @@ toggle-mini-buffer                  = None
     # It **is** possible to use &lt;alt-x&gt;toggle-mini-buffer&lt;return&gt; even if the mini-buffer isn't visible!
     # This had better be defined if you intend ever to hide the minibuffer.
     # To avoid confusion, it should be something unlikely to be typed by accident.
-toggle-sparce-move                  = None
+# toggle-sparce-move                = None
 toggle-split-direction              = None
 transpose-chars                     = None
 transpose-lines                     = None
@@ -5452,8 +5452,8 @@ zap-to-character                    = None</t>
 <t tx="ekr.20060112103537.17">'''This script reports commands that exist in some but not all key- binding
 sets. setNames is a list of the roots of all such sets.'''
 
-import leoConfig
-import leoTest
+import leo.core.leoConfig as leoConfig
+import leo.core.leoTest as leoTest
 
 u = leoTest.testUtils(c)
 parser = leoConfig.settingsTreeParser(c)
@@ -5529,7 +5529,7 @@ main()
             g.es_print('No setsDict for %s' % (repr(setName)),color='red')
 
     k = c.keyHandler
-    keys = allNames.keys()
+    keys = list(allNames.keys())
     keys.sort()
 
     # Warn about missing names.
@@ -6247,11 +6247,14 @@ keyboard-quit       = Ctrl-g
 # keyboard-quit     = Escape # Hard to type, interferes with dismissing dialogs.
 # focus-to-tree     = Ctrl-T</t>
 <t tx="ekr.20060925060533.3">clone-node                  = Ctrl-`
-clone-node-to-chapter       = None
+chapter-clone-node-to       = None
+chapter-copy-node-to        = None
+chapter-create              = None
+chapter-move-node-to        = None
+chapter-remove              = None
+chapter-select              = None
 contract-node               = None
 copy-node                   = Shift-Ctrl-c
-copy-node-to-chapter        = None
-create-chapter              = None
 cut-node                    = Shift-Ctrl-x
 contract-all                = Alt--
 edit-headline               = Ctrl-h
@@ -6267,16 +6270,13 @@ goto-next-clone             = Alt-N
 insert-node                 = Ctrl-I
 insert-node                 = Insert
 mark                        = Ctrl-M
-move-node-to-chapter        = None
 move-outline-down           = Ctrl-D
 move-outline-left           = Ctrl-L
 move-outline-right          = Ctrl-R
 move-outline-up             = Ctrl-U
 paste-node                  = Shift-Ctrl-V
 promote                     = Ctrl-{
-promote                     = Ctrl-[
-remove-chapter              = None
-select-chapter              = None</t>
+promote                     = Ctrl-[</t>
 <t tx="ekr.20060925060533.4">add-comments                        = Ctrl-parenleft
 backward-delete-char                = BackSpace
 backward-kill-word                  = Alt-Delete
@@ -7637,7 +7637,7 @@ recent files. </t>
 <t tx="ekr.20080515053412.5">@popup body is the default menu for
 right clicks in the body pane.
 </t>
-<t tx="ekr.20080515053412.50"></t>
+<t tx="ekr.20080515053412.50">chapter-select</t>
 <t tx="ekr.20080515053412.51">select-chapter-menu</t>
 <t tx="ekr.20080515053412.6">edit-menu
 
