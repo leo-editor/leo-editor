@@ -75,6 +75,7 @@ import leo.core.leoPlugins as leoPlugins
 import os
 import re
 import ast # for docstring loading
+import time # for recursion bailout
 
 from leo.plugins.plugins_menu import PlugIn
 
@@ -490,44 +491,47 @@ def cmd_ShowCurrentPath(c):
     """Just show the path to the current file/directory node in the log pane."""
     g.es(getPath(c, c.p))
 #@-node:tbrown.20080616153649.2:cmd_ShowCurrentPath
+#@+node:tbrown.20090225191501.1:run_recursive
+def run_recursive(c):
+    """Recursive descent."""
+    p = c.p
+
+    c.__active_path['start_time'] = time.time()
+
+    for s in p.self_and_subtree():
+
+        if time.time() - c.__active_path['start_time'] >= 10:
+            g.es('Recursive processing aborts after 10 seconds')
+            break
+
+        yield s
+
+    c.redraw(p)
+#@-node:tbrown.20090225191501.1:run_recursive
+#@+node:tbrown.20100401100336.13608:cmd_LoadRecursive
+def cmd_LoadRecursive(c):
+    """Recursive update, with expansions."""
+
+    for s in run_recursive(c):
+        path = getPath(c, s)
+        if path:
+            sync_node_to_folder(c,s,path,updateOnly=True,recurse=True)
+#@-node:tbrown.20100401100336.13608:cmd_LoadRecursive
 #@+node:tbrown.20080619080950.16:cmd_UpdateRecursive
 def cmd_UpdateRecursive(c):
     """Recursive update, no new expansions."""
-    p = c.p
 
-    for s in p.self_and_subtree():
+    for s in run_recursive(c):
         path = getPath(c, s)
-
         if path:
             sync_node_to_folder(c,s,path,updateOnly=True)
-
-    c.redraw(p)
-
 #@-node:tbrown.20080619080950.16:cmd_UpdateRecursive
-#@+node:tbrown.20090225191501.1:cmd_LoadRecursive
-def cmd_LoadRecursive(c):
-    """Recursive update, with expansions."""
-    p = c.p
-
-    for s in p.self_and_subtree():
-        path = getPath(c, s)
-
-        if path:
-            sync_node_to_folder(c,s,path,updateOnly=True,recurse=True)
-
-    c.redraw(p)
-#@-node:tbrown.20090225191501.1:cmd_LoadRecursive
 #@+node:tbrown.20091214212801.13475:cmd_SetNodeToAbsolutePathRecursive
 def cmd_SetNodeToAbsolutePathRecursive(c):
     """Change "/dirname/" to "@path /absolute/path/to/dirname", recursively"""
 
-    p = c.p
-
-    for s in p.self_and_subtree():
-
+    for s in run_recursive(c):
         cmd_SetNodeToAbsolutePath(c, p=s)
-
-    c.redraw(p)
 #@-node:tbrown.20091214212801.13475:cmd_SetNodeToAbsolutePathRecursive
 #@+node:tbrown.20080616153649.5:cmd_SetNodeToAbsolutePath
 def cmd_SetNodeToAbsolutePath(c, p=None):
