@@ -24,9 +24,9 @@
 <v t="ekr.20090203131919.1"><vh>@button Check menu commands</vh></v>
 </v>
 </v>
-<v t="ekr.20041119035137" a="E"><vh>About this file</vh>
+<v t="ekr.20041119035137"><vh>About this file</vh>
 <v t="ekr.20041122163623"><vh>Note about canonicalized names</vh></v>
-<v t="ekr.20041119035704" a="E"><vh> Basic setting nodes: @type-name setting-name = value</vh>
+<v t="ekr.20041119035704"><vh> Basic setting nodes: @type-name setting-name = value</vh>
 <v t="ekr.20041119042929"><vh>@bool</vh></v>
 <v t="ekr.20041119042929.1"><vh>@color</vh></v>
 <v t="ekr.20041119044139"><vh>@directory</vh></v>
@@ -94,7 +94,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20090703122042.7463"><vh>@@button a-common-button</vh></v>
@@ -1022,7 +1022,7 @@
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
+<v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1181,13 +1181,14 @@
 <v t="ekr.20060904211808"><vh>zodb plugin</vh>
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
-<v t="tbrown.20091129085043.11789" a="E"><vh>active_path plugin</vh>
+<v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
 <v t="tbrown.20091129085043.11790"><vh>@string active_path_attype = auto</vh></v>
 <v t="tbrown.20091129085043.11792"><vh>@string active_path_event = icondclick1</vh></v>
 <v t="tbrown.20091129085043.11793"><vh>@data active_path_ignore</vh></v>
 <v t="tbrown.20091129085043.11795"><vh>@data active_path_autoload</vh></v>
 <v t="tbrown.20100304170159.5189"><vh>@bool active_path_load_docstring = False</vh></v>
-<v t="tbrown.20100401100336.16108"><vh>@float actinve_path_timeout_seconds = 10.</vh></v>
+<v t="tbrown.20100401100336.16108"><vh>@float active_path_timeout_seconds = 10.</vh></v>
+<v t="tbrown.20100401100336.31583"><vh>@int active_path_max_size = 1000000</vh></v>
 </v>
 <v t="vitalije.20100306144625.8944"><vh>autosave plugin</vh>
 <v t="vitalije.20100306144625.8945"><vh>@bool mod_autosave_active = True</vh></v>
@@ -8061,6 +8062,7 @@ loading files</t>
 </t>
 <t tx="tbrown.20100304170159.5189">Should active_path load docstrings for python files?</t>
 <t tx="tbrown.20100401100336.16108">controls the maximum time active_path will spend on a recursive operation.</t>
+<t tx="tbrown.20100401100336.31583">controls the maximum size file active_path will open without query.</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,

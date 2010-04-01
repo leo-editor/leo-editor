@@ -63,6 +63,9 @@ the file later.
 @float active_path_timeout_seconds (default 10.) controls the maximum
 time active_path will spend on a recursive operation.
 
+@int active_path_max_size (default 1000000) controls the maximum
+size file active_path will open without query.
+
 active_path is a rewrite of the at_directory plugin to use @path directives (which influence
 @auto and other @file type directives), and to handle sub-folders more automatically.
 '''
@@ -141,6 +144,11 @@ def attachToCommander(t,k):
     else:
         c.__active_path['timeout'] = 10.
 
+    if c.config.getInt('active_path_max_size'):
+        c.__active_path['max_size'] = c.config.getInt('active_path_max_size')
+    else:
+        c.__active_path['max_size'] = 1000000
+
     c.__active_path['DS_SENTINEL'] = "@language rest # AUTOLOADED DOCSTRING"
 #@-node:tbrown.20091128094521.15047:attachToCommander
 #@+node:tbrown.20091128094521.15042:popup_entry
@@ -216,6 +224,9 @@ def onSelect (tag,keywords):
     c = keywords.get('c') or keywords.get('new_c')
     if not c: return
     p = keywords.get("p")
+
+    p.expand()
+
     pos = p.copy()
 
     path = getPath(c, p)
@@ -365,11 +376,30 @@ def createFile(c,parent,d):
 #@nonl
 #@-node:tbrown.20080613095157.8:createFile
 #@+node:tbrown.20080613095157.9:openFile
-def openFile(c,parent,d):
+def openFile(c,parent,d, autoload=False):
     """Open an existing file"""
     # hdr = os.path.basename(d)
     # parent.h = '@auto '+hdr
     # parent.b = file(d).read()
+
+    path = getPath(c, parent)
+
+    if not os.path.isfile(path):
+        return
+
+    if not autoload:
+        if os.stat(path).st_size > c.__active_path['max_size']:
+            if not query(c, "File size greater than %d bytes, continue?" %
+              c.__active_path['max_size']):
+                return
+
+        start = open(path).read(100)
+        for i in start:
+            if ord(i) == 0:
+                if not query(c, "File may be binary, continue?"):
+                    return
+                break
+
     c.importCommands.createOutline(d,parent=parent,atAuto=True)
     atType = c.config.getString('active_path_attype') or 'auto'
     parent.h = '@' + atType + ' ' + parent.h
@@ -430,7 +460,7 @@ def openDir(c,parent,d):
             # sufficient test of dirness as we created newlist
             c.setBodyString(p, '@path '+name.strip('/'))
         elif inReList(name, c.__active_path['autoload']):
-            openFile(c, p, os.path.join(d, p.h))
+            openFile(c, p, os.path.join(d, p.h), autoload=True)
         elif (c.__active_path['load_docstring'] and
             name.lower().endswith(".py")):
             p.b = c.__active_path['DS_SENTINEL']+"\n\n"+loadDocstring(os.path.join(d, p.h))
@@ -474,6 +504,35 @@ def loadDocstring(file_path):
 
     return doc_string
 #@-node:tbrown.20100304090709.31081:loadDocstring
+#@+node:tbrown.20100401100336.24943:query
+def query(c, s):
+    """Return yes/no answer from user for question s"""
+
+    ok = g.app.gui.runAskYesNoCancelDialog(c,
+        title = 'Really?',
+        message = s)
+
+    return ok == 'yes'
+#@nonl
+#@-node:tbrown.20100401100336.24943:query
+#@+node:tbrown.20090225191501.1:run_recursive
+def run_recursive(c):
+    """Recursive descent."""
+    p = c.p
+
+    c.__active_path['start_time'] = time.time()
+
+    for s in p.self_and_subtree():
+
+        if time.time() - c.__active_path['start_time'] >= c.__active_path['timeout']:
+            g.es('Recursive processing aborts after %f seconds' %
+                c.__active_path['timeout'])
+            break
+
+        yield s
+
+    c.redraw(p)
+#@-node:tbrown.20090225191501.1:run_recursive
 #@+node:ville.20090223183051.1:act on node
 def cmd_ActOnNode(c, p=None, event=None):
     """ act_on_node handler for active_path.py
@@ -503,24 +562,6 @@ def cmd_ShowCurrentPath(c):
     """Just show the path to the current file/directory node in the log pane."""
     g.es(getPath(c, c.p))
 #@-node:tbrown.20080616153649.2:cmd_ShowCurrentPath
-#@+node:tbrown.20090225191501.1:run_recursive
-def run_recursive(c):
-    """Recursive descent."""
-    p = c.p
-
-    c.__active_path['start_time'] = time.time()
-
-    for s in p.self_and_subtree():
-
-        if time.time() - c.__active_path['start_time'] >= c.__active_path['timeout']:
-            g.es('Recursive processing aborts after %f seconds' %
-                c.__active_path['timeout'])
-            break
-
-        yield s
-
-    c.redraw(p)
-#@-node:tbrown.20090225191501.1:run_recursive
 #@+node:tbrown.20100401100336.13608:cmd_LoadRecursive
 def cmd_LoadRecursive(c):
     """Recursive update, with expansions."""
