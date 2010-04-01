@@ -364,7 +364,7 @@ expanded="ekr.20050805162550.8,ekr.20050809074827,ekr.20050809082854,"><vh>@thin
 <v t="tbrown.20080613095157.2" a="E"><vh>@thin active_path.py</vh></v>
 <v t="edream.110203113231.873"><vh>@thin at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@thin at_produce.py</vh></v>
-<v t="ktenney.20041211072654.1"><vh>@thin at_view.py</vh></v>
+<v t="ktenney.20041211072654.1" a="E"><vh>@thin at_view.py</vh></v>
 <v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@thin attrib_edit.py</vh></v>
 <v t="mork.20041020082242.1"><vh>@thin base64Packager.py</vh></v>
 <v t="tbrown.20070322113635"><vh>@thin bookmarks.py</vh></v>

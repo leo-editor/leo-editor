@@ -60,6 +60,9 @@ of .py files automatically.  These nodes start with the special string::
 which must be left intact if you want active path to be able to double-click load
 the file later.
 
+@float active_path_timeout_seconds (default 10.) controls the maximum
+time active_path will spend on a recursive operation.
+
 active_path is a rewrite of the at_directory plugin to use @path directives (which influence
 @auto and other @file type directives), and to handle sub-folders more automatically.
 '''
@@ -123,13 +126,21 @@ def attachToCommander(t,k):
     if c.config.getData('active_path_ignore'):
         c.__active_path['ignore'] = [re.compile(i, re.IGNORECASE)
             for i in c.config.getData('active_path_ignore')]
+
     if c.config.getData('active_path_autoload'):
         c.__active_path['autoload'] = [re.compile(i, re.IGNORECASE)
             for i in c.config.getData('active_path_autoload')]
+
     if c.config.getBool('active_path_load_docstring'):
         c.__active_path['load_docstring'] = True
     else:
         c.__active_path['load_docstring'] = False
+
+    if c.config.getFloat('active_path_timeout_seconds'):
+        c.__active_path['timeout'] = c.config.getFloat('active_path_timeout_seconds')
+    else:
+        c.__active_path['timeout'] = 10.
+
     c.__active_path['DS_SENTINEL'] = "@language rest # AUTOLOADED DOCSTRING"
 #@-node:tbrown.20091128094521.15047:attachToCommander
 #@+node:tbrown.20091128094521.15042:popup_entry
@@ -377,7 +388,7 @@ def openDir(c,parent,d):
         c.setHeadString(parent,'*'+parent.h.strip('*')+'*')
         return
 
-    parent.expand()
+    # parent.expand()  # why?
 
     oldlist = set()
     newlist = []
@@ -424,6 +435,7 @@ def openDir(c,parent,d):
             name.lower().endswith(".py")):
             p.b = c.__active_path['DS_SENTINEL']+"\n\n"+loadDocstring(os.path.join(d, p.h))
         p.setMarked()
+        p.contract()
 
     if ignored:
         g.es('Ignored %d files in directory' % ignored)
@@ -500,8 +512,9 @@ def run_recursive(c):
 
     for s in p.self_and_subtree():
 
-        if time.time() - c.__active_path['start_time'] >= 10:
-            g.es('Recursive processing aborts after 10 seconds')
+        if time.time() - c.__active_path['start_time'] >= c.__active_path['timeout']:
+            g.es('Recursive processing aborts after %f seconds' %
+                c.__active_path['timeout'])
             break
 
         yield s

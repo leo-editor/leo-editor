@@ -11,10 +11,10 @@
 <vnodes>
 <v t="ekr.20070622214401"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
-<v t="ekr.20060112110750" a="E"><vh>Buttons</vh>
+<v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913"><vh>@@button Save</vh></v>
 <v t="ekr.20051011123608"><vh>@@button align to col</vh></v>
-<v t="ekr.20060112103537.17" a="E"><vh>@button Check bindings</vh>
+<v t="ekr.20060112103537.17"><vh>@button Check bindings</vh>
 <v t="ekr.20060112104119"><vh>defineSetNames</vh></v>
 <v t="ekr.20060112104333"><vh>doSet</vh></v>
 <v t="ekr.20060112105523"><vh>doShortcuts</vh></v>
@@ -24,9 +24,9 @@
 <v t="ekr.20090203131919.1"><vh>@button Check menu commands</vh></v>
 </v>
 </v>
-<v t="ekr.20041119035137"><vh>About this file</vh>
+<v t="ekr.20041119035137" a="E"><vh>About this file</vh>
 <v t="ekr.20041122163623"><vh>Note about canonicalized names</vh></v>
-<v t="ekr.20041119035704"><vh> Basic setting nodes: @type-name setting-name = value</vh>
+<v t="ekr.20041119035704" a="E"><vh> Basic setting nodes: @type-name setting-name = value</vh>
 <v t="ekr.20041119042929"><vh>@bool</vh></v>
 <v t="ekr.20041119042929.1"><vh>@color</vh></v>
 <v t="ekr.20041119044139"><vh>@directory</vh></v>
@@ -394,14 +394,14 @@
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20051007200824" a="E"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051007200824"><vh>Keyboard shortcuts</vh>
 <v t="ekr.20051101160257"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1"><vh>About shortcut specifiers</vh></v>
 <v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
 </v>
 <v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101" a="E"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060104093101"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 <v t="ekr.20060110141538"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
@@ -409,7 +409,7 @@
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20060110141538.1" a="E"><vh>@keys No bindings</vh>
+<v t="ekr.20060110141538.1"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206"><vh>@shortcuts No bindings: A-E</vh></v>
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
@@ -989,7 +989,7 @@
 <v t="ekr.20080515053412.31"><vh>@popup iconbox</vh></v>
 <v t="ekr.20080515053412.32"><vh>@popup plusbox</vh></v>
 </v>
-<v t="ekr.20080515053412.33" a="E"><vh>Fragments</vh>
+<v t="ekr.20080515053412.33"><vh>Fragments</vh>
 <v t="ekr.20080515053412.34"><vh>@popup edit-menu</vh>
 <v t="ekr.20080515053412.35"><vh>@item rclick-cut-text</vh></v>
 <v t="ekr.20080515053412.36"><vh>@item rclick-copy-text</vh></v>
@@ -1003,16 +1003,16 @@
 </v>
 </v>
 <v t="ekr.20080515053412.43"><vh>@popup to-chapter-fragment</vh>
-<v t="ekr.20080515053412.44" a="E"><vh>@menu Clone to Chapter</vh>
+<v t="ekr.20080515053412.44"><vh>@menu Clone to Chapter</vh>
 <v t="ekr.20080515053412.45"><vh>@item *</vh></v>
 </v>
-<v t="ekr.20080515053412.46" a="E"><vh>@menu Copy to Chapter</vh>
+<v t="ekr.20080515053412.46"><vh>@menu Copy to Chapter</vh>
 <v t="ekr.20080515053412.47"><vh>@item *</vh></v>
 </v>
-<v t="ekr.20080515053412.48" a="E"><vh>@menu Move to Chapter</vh>
+<v t="ekr.20080515053412.48"><vh>@menu Move to Chapter</vh>
 <v t="ekr.20080515053412.49"><vh>@item *</vh></v>
 </v>
-<v t="ekr.20080515053412.50" a="E"><vh>@menu Select Chapter</vh>
+<v t="ekr.20080515053412.50"><vh>@menu Select Chapter</vh>
 <v t="ekr.20080515053412.51"><vh>@item *</vh></v>
 </v>
 </v>
@@ -1022,7 +1022,7 @@
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
-<v t="ekr.20051123100536"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1181,12 +1181,13 @@
 <v t="ekr.20060904211808"><vh>zodb plugin</vh>
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
-<v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
+<v t="tbrown.20091129085043.11789" a="E"><vh>active_path plugin</vh>
 <v t="tbrown.20091129085043.11790"><vh>@string active_path_attype = auto</vh></v>
 <v t="tbrown.20091129085043.11792"><vh>@string active_path_event = icondclick1</vh></v>
 <v t="tbrown.20091129085043.11793"><vh>@data active_path_ignore</vh></v>
 <v t="tbrown.20091129085043.11795"><vh>@data active_path_autoload</vh></v>
 <v t="tbrown.20100304170159.5189"><vh>@bool active_path_load_docstring = False</vh></v>
+<v t="tbrown.20100401100336.16108"><vh>@float actinve_path_timeout_seconds = 10.</vh></v>
 </v>
 <v t="vitalije.20100306144625.8944"><vh>autosave plugin</vh>
 <v t="vitalije.20100306144625.8945"><vh>@bool mod_autosave_active = True</vh></v>
@@ -8059,6 +8060,7 @@ loading files</t>
 #   ^readme    - load any file starting with 'readme'
 </t>
 <t tx="tbrown.20100304170159.5189">Should active_path load docstrings for python files?</t>
+<t tx="tbrown.20100401100336.16108">controls the maximum time active_path will spend on a recursive operation.</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
