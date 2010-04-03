@@ -20,6 +20,7 @@ __version__ = "0.4"
 #@+node:TL.20080507213950.4:<< version history >>
 #@@nocolor
 #@+at
+# 0.3 : 02-Apr-10 : TL : Support search all sub-nodes for pattern match
 # 0.2 : 02-Mar-09 : TL : Support for 'X', 'V', and  '>' directives added
 # 0.1 : 27-Feb-09 : TL : Initial code (modified from FileActions plugin)
 #@-at
@@ -79,20 +80,23 @@ def doNodeAction(pClicked, c):
 
    hClicked = pClicked.h.strip()
 
+   #Display messages based on 'messageLevel'.  Valid values:
+   #   0 = log no messages
+   #   1 = log that the plugin was triggered and each matched patterns
+   #   2 = log 1 & 'event passed'
+   #   3 = log 1,2 & 'no match to pattern'
+   #   4 = log 1,2,3, & any code debugging messages,
+   #           matched pattern's 'directives', and '@file saved' settings
    messageLevel = c.config.getInt('nodeActions_message_level')
-   #0 = log no messages
-   #1 = log 'triggered', 'matched patterns', 'no match'
-   #2 = log 1 & 'event passed'
-   #3 = log 1,2 & 'no match to pattern'
-   #4 = log 1,2,3, & any code debugging messages
-   #         matched pattern's 'directives' and '@file saved' settings
 
    if messageLevel >= 1:
       g.es( "nodeActions: triggered" )
-   if messageLevel >= 4:
-      g.es( "nA: Global nodeActions_save_atFile_nodes=", \
-                c.config.getBool('nodeActions_save_atFile_nodes'), color='blue')
 
+   #Save @file type nodes before running script if enabled
+   saveAtFile = c.config.getBool('nodeActions_save_atFile_nodes')
+   if messageLevel >= 4:
+      g.es( "nA: Global nodeActions_save_atFile_nodes=", saveAtFile, \
+                                                         color='blue')
    #Find the "nodeActions" node
    pNA = g.findNodeAnywhere(c,"nodeActions")
    if not pNA:
@@ -102,8 +106,12 @@ def doNodeAction(pClicked, c):
       #Found "nodeActions" node
       foundPattern = False
       passEventExternal = False  #No pass to next plugin after pattern matched
-      #Check all children pattern nodes under the "nodeActions" node
-      for pScript in pNA.children():
+      #Check entire subtree under the "nodeActions" node for pattern
+      for pScript in pNA.subtree():
+
+         #Nodes with subnodes are not tested for a match
+         if pScript.hasChildren():
+            continue
 
          #Don't trigger on double click of a nodeActions' pattern node
          if pClicked == pScript:
@@ -128,13 +136,13 @@ def doNodeAction(pClicked, c):
          pattern = re.sub( " \[.*]$", "", pattern, 1)
          if messageLevel >= 4:
             g.es( "nA:   Pattern='" + pattern + "' " \
-                                  + "(after directives removed)", color='blue' )
+                                 + "(after directives removed)", color='blue' )
 
-			#Keep copy of pattern without directives for message log
+         #Keep copy of pattern without directives for message log
          patternOriginal = pattern
 
-         #if pattern begins with "@files" and clicked node is an @file type node
-         #   then replace "@files" in pattern with clicked node's @file type
+         #if pattern begins with "@files" and clicked node is an @file type
+         #node then replace "@files" in pattern with clicked node's @file type
          patternBeginsWithAtFiles = re.search( "^@files ", pattern )
          clickedAtFileTypeNode = False #assume @file type node not clicked
          if patternBeginsWithAtFiles:
@@ -146,7 +154,7 @@ def doNodeAction(pClicked, c):
                pattern = re.sub( "^@files", firstWordInClickedHeader, pattern)
                if messageLevel >= 4:
                   g.es( "nA:   Pattern='" + pattern + "' " \
-                                 + "(after @files substitution)", color='blue' )
+                               + "(after @files substitution)", color='blue' )
 
          #Check for pattern match to clicked node's header
          if useRegEx:
@@ -155,14 +163,13 @@ def doNodeAction(pClicked, c):
             match = fnmatch.fnmatchcase(hClicked, pattern)
          if match:
             if messageLevel >= 1:
-               g.es( "nA: Matched pattern '" + patternOriginal + "'"
-																					, color='blue' )
+               g.es( "nA: Matched pattern '" + patternOriginal + "'"																					, color='blue' )
             if messageLevel >= 4:
                g.es( "nA:   Directives: X=",useRegEx, "V=",passEventInternal, \
-                                           ">=",passEventExternal, color='blue')
+                                        ">=",passEventExternal, color='blue')
             #if @file type node, save node to disk (if configured)
             if clickedAtFileTypeNode:
-               if c.config.getBool('nodeActions_save_atFile_nodes'):
+               if saveAtFile:
                   #Problem - No way found to just save clicked node, saving all
                   c.fileCommands.writeAtFileNodes()
                   c.requestRedrawFlag = True
@@ -178,7 +185,7 @@ def doNodeAction(pClicked, c):
                break
          else:
             if messageLevel >= 3:
-               g.es("nA: Did not match `" + patternOriginal + "'", color='blue')
+               g.es("nA: Did not match '" + patternOriginal + "'", color='blue')
 
       #Finished checking headline against patterns
       if not foundPattern:
@@ -197,9 +204,9 @@ def doNodeAction(pClicked, c):
             g.es("nA: Event not passed to next plugin", color='blue')
          return True #TL - Inform onIconDoubleClick to not pass double-click
    else:
-      if messageLevel >= 1:
-         g.es("nA: The ""nodeActions"" node does not exist", \
-                                                                   color='blue')
+      #nodeActions plugin enabled without a 'nodeActions' node
+      if messageLevel >= 4:
+         g.es("nA: The ""nodeActions"" node does not exist", color='blue')
       return False #TL - Inform onIconDoubleClick that no action was taken
 #@-node:TL.20080507213950.9:doNodeAction
 #@+node:TL.20080507213950.10:applyNodeAction

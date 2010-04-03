@@ -548,8 +548,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050912125144"><vh>Chapter 12: Plugins</vh>
-<v t="ekr.20050912125144.1"><vh>@rst html\plugins.html</vh>
+<v t="ekr.20050912125144" a="E"><vh>Chapter 12: Plugins</vh>
+<v t="ekr.20050912125144.1" a="E"><vh>@rst html\plugins.html</vh>
 <v t="ekr.20050912125735"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070814104719"><vh>Enabling plugins</vh></v>
 <v t="ekr.20050912125735.868"><vh>Body pane</vh>
@@ -560,7 +560,7 @@
 <v t="ekr.20050912125735.942"><vh>color_markup.py</vh></v>
 <v t="ekr.20050912125735.974"><vh>script_io_to_body.py</vh></v>
 </v>
-<v t="ekr.20050912125735.26"><vh>Commands &amp; directives</vh>
+<v t="ekr.20050912125735.26" a="E"><vh>Commands &amp; directives</vh>
 <v t="ekr.20050912125735.82"><vh>add_directives.py</vh></v>
 <v t="ekr.20050912125735.85"><vh>bibtex.py</vh></v>
 <v t="ekr.20050912125735.98"><vh>ConceptualSort.py</vh></v>
@@ -826,7 +826,7 @@
 </v>
 </v>
 </v>
-<v t="TL.20080804095315.1" a="E"><vh>Chapter 22: Using Vim with Leo</vh>
+<v t="TL.20080804095315.1"><vh>Chapter 22: Using Vim with Leo</vh>
 <v t="TL.20080804095315.2" a="E"><vh>@rst html\vimBindings.html</vh>
 <v t="TL.20080804095315.3"><vh>@rst-no-head links</vh></v>
 <v t="TL.20080804095315.11" a="E"><vh>Vim bindings</vh>
@@ -6318,32 +6318,58 @@ When a node is double-clicked, the nodeActions plugin checks for a match of the
 double-clicked node's headline text with a list of patterns and, if a match
 occurs, the script associated with the pattern is executed.
 
-The nodeActions plugin will only pass the double-click event to other plugins
-if no pattern match occurred unless overridden by the "&gt;" `pattern directive`__.
+Each pattern and their associated script is defined within a 'pattern'
+sub-node under a single "nodeActions" node.  The "nodeActions" node can
+be located anywhere within the Leo file.
+The headline of each patteren sub-node contains the pattern to be matched.
+The body of the sub-node contains the script to be executed if the pattern
+matches the double-clicked node.
 
-__ nA_Directives_
+For example, the "nodeActions" node containing a "launch URL" pattern node
+and a "pre-process python code" node could be placed under an "@settings"
+node::
+
+   @settings
+   |
+   +- nodeActions
+      |
+      +- http:\\*
+      |
+      +- @thin *.py
+
+Configuration:
+   The nodeActions plugin supports the following global configurations using
+   Leo's support for setting global variables within an @settings node's
+   sub-nodes in the leoSettings.leo, myLeoSettings.leo, and the project Leo
+   file:
+
+   @bool nodeActions_save_atFile_nodes = False
+
+      :True:
+         Double-click on an @file type node will save the file to disk
+         before executing the script.
+
+      :False:
+         Double-click on an @file type node will **not** save the file to disk
+         before executing the script. (default)
+
+   @int nodeActions_message_level = 1
+
+      Specifies the type of messages to be sent to the log pane.  Specifying a
+      higher message level will display that level and all lower levels.
+      The following integer values are supported:
+
+      :0: no messages
+      :1: Plugin triggered and the patterns that were matched (default)
+      :2: Double-click event passed or not to next plugin
+      :3: Patterns that did not match
+      :4: Code debugging messages
 
 .. _nA_Patterns:
 
+__ nA_Directives_
+
 Patterns:
-   The patterns are defined in the headlines of sub-nodes of a single
-   "nodeActions" node.
-
-   The "nodeActions" node can be located anywhere within the same Leo file as
-   the node that will be double-clicked.  For example, a pattern that matches a
-   URL and a pattern that matches any python files stored as an @thin derived
-   file could be stored under an @settings node as follows::
-
-      @settings
-      |
-      +- nodeActions
-         |
-         +- http:\\*
-         |
-         +- @thin *.py
-
-   __ nA_Directives_
-
    Pattern matching is performed using python's support for Unix
    shell-style patterns unless overwritten by the "X" `pattern directive`__.
    The following pattern elements are supported::
@@ -6367,21 +6393,23 @@ Patterns:
          ======= =========== ==============
 
    To enable a script to run on any type of @file node (@thin, @shadow, ...),
-   the pattern can use "@files" at the beginning of the pattern to match on any
+   the pattern can start with "@files" to match on any
    external file type.  For example, the pattern "@files \*.py" will
-   match a node with the headline "@thin Abcd.py".
+   match a node with the headline "@thin abcd.py".
 
    The headline of the double-clicked node is matched against the patterns
    starting from the first sub-node under the "nodeActions" node to the last
-   sub-node.  Only the script associated with the first matching pattern is
+   sub-node.
+   
+   Only the script associated with the first matching pattern is
    invoked unless overwritten by the "V" `pattern directive`__.
 
    __ nA_Directives_
 
-   This can be used to define a broad pattern such
-   as "@files \*.py", and then, by placing a more restrictive pattern above it,
-   such as "@files \*_test.py", a different script can be executed for those
-   special cases::
+   Using the "V" pattern directive allows a broad pattern such
+   as "@files \*.py" to be invoked, and then, by placing a more restrictive
+   pattern above it, such as "@files \*_test.py", a different script can be
+   executed for those files requiring pre-processing::
 
       +- nodeActions
          |
@@ -6394,18 +6422,24 @@ Patterns:
       file directive (@thin, @auto, ...) to disk, such as "@thin \*.py",
       place the "@ignore" directive in the body of the "nodeActions" node.
 
-Scripts:
-   The script for a pattern is located in the body of the pattern's node.
-   The following global variables are available to the script::
+   Pattern nodes can be placed at any level under the "nodeActions" node.
+   Only nodes with no child nodes are considered pattern nodes.
+   This allows patterns that are to be used in multiple Leo files to be read
+   from a file.  For example, the following structure reads the pattern
+   definition from the "C:\\Leo\\nodeActions_Patterns.txt" file::
 
-      c
-      g
-      pClicked - node position of the double-clicked node
-      pScript - node position of the invoked script
+      +- nodeActions
+         |
+         +- @files C:\Leo\nodeActions_Patterns.txt
+            |
+            +- http:\\*
+            |
+            +- @thin *.py
+
 
 .. _nA_Directives:
 
-Directives:
+Pattern directives:
    The following pattern specific directives can be appended to the end of a
    pattern (do not include the ':'):
 
@@ -6455,34 +6489,14 @@ Directives:
 
       ^@files .*\.py$ [X,V&gt;]
 
-Configurations:
-   The nodeActions plugin supports the following global configurations using
-   Leo's support for setting global variables within an @settings node's
-   sub-nodes in the leoSettings.leo, myLeoSettings.leo, and the project Leo
-   file:
+Scripts:
+   The script for a pattern is located in the body of the pattern's node.
+   The following global variables are available to the script::
 
-   @bool nodeActions_save_atFile_nodes = False
-
-      :True:
-         The nodeActions plugin will save a double-clicked external file node
-         to disk, if a pattern match occurred, before executing its script.  
-
-      :False:
-         A pattern match to a double-clicked external file node will **not**
-         cause the external file to be saved to disk.
-         (default)
-
-   @int nodeActions_message_level = 1
-
-      Specifies the type of messages to be sent to the log pane.  Specifying a
-      higher message level will display that level and all lower levels.
-      The following integer values are supported:
-
-      :0: no messages
-      :1: Plugin triggered and the patterns that were matched (default)
-      :2: Double-click event passed or not to next plugin
-      :3: Patterns that did not match
-      :4: Code debugging messages
+      c
+      g
+      pClicked - node position of the double-clicked node
+      pScript - node position of the invoked script
 
 Script examples:
    Displaying URLs (tested with WinXP):
