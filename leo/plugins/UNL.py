@@ -174,6 +174,7 @@ def onUrl1 (tag,keywords):
     Spaces are now allowed in URLs."""
     trace = True and not g.unitTesting
     c = keywords.get("c")
+    p = keywords.get("p")
     v = keywords.get("v")
     # The url key is new in 4.3 beta 2.
     # The url ends with the first blank, unless either single or double quotes are used.
@@ -218,10 +219,10 @@ def onUrl1 (tag,keywords):
                 if hasattr(c.frame.top, 'update_idletasks'):
                     # this is Tk only - TNB
                     c.frame.top.update_idletasks() # Clear remaining events, so they don't interfere.
-                if os.path.isabs(urlTuple[2]):
-                    filename = urlTuple[2]
-                else:
-                    filename = os.path.join(os.path.dirname(c.mFileName),urlTuple[2])
+                filename = os.path.expanduser(urlTuple[2])
+                if not os.path.isabs(filename):
+                    filename = os.path.normpath(os.path.join(c.getNodePath(p),filename))
+
                 ok,frame = g.openWithFileName(filename, c)
                 if ok:
                     #@                    << go to the node>>
