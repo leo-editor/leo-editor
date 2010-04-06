@@ -114,6 +114,7 @@ g = nullObject() # Set early in startup logic to this module.
 app = None # The singleton app object.
 debug = False # Set early in startup by the --debug command-line option.
 unitTesting = False # A synonym for app.unitTesting.
+unified_nodes = True # For compatibility with old scripts.
 
 enableDB = True
     # Don't even think about eliminating this constant:
@@ -3608,6 +3609,8 @@ def os_path_expandExpression (s,**keys):
 
     '''Expand {{anExpression}} in c's context.'''
 
+    trace = False
+    s1 = s
     c = keys.get('c')
     if not c:
         g.trace('can not happen: no c',g.callers())
@@ -3631,6 +3634,7 @@ def os_path_expandExpression (s,**keys):
                 g.trace(g.callers())
                 g.es_exception(full=True, c=c, color='red')
 
+        if trace: g.trace(s1,s)
     return s
 #@-node:ekr.20080922124033.6:os_path_expandExpression
 #@+node:ekr.20080921060401.13:os_path_expanduser

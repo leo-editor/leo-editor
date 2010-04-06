@@ -11,6 +11,6 @@
 
 build = 3005
 date = "February 26, 2010"
-version = "4.7.1 final"
+version = "4.8 devel"
 #@-node:ekr.20090717092906.12765:@thin leoVersion.py
 #@-leo
