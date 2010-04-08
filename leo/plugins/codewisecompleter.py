@@ -166,7 +166,6 @@ def onCreate (tag, keys):
     if not c: return
 
     install_codewise_completer(c)
-
 #@+node:ville.20091204224145.5362:install_codewise_completer
 def install_codewise_completer(c):
 
@@ -179,8 +178,6 @@ def install_codewise_completer(c):
 #@-node:ville.20091204224145.5362:install_codewise_completer
 #@-node:ville.20091204224145.5361:onCreate & helper
 #@+node:ville.20091204224145.5363:codewise_complete & helpers (for Qt)
-
-
 def codewise_complete(event):
 
     c = event.get('c')
@@ -191,20 +188,22 @@ def codewise_complete(event):
 
     head, tail = get_current_line(w)
     m = get_attr_target_python(head)
-    obj = m.group(1)
-    prefix = m.group(3)
-    #g.pdb()
-    klasses = guess_class(c,p, obj)
+    if m:
+        obj = m.group(1)
+        prefix = m.group(3)
+        klasses = guess_class(c,p, obj)
+    else:
+        klasses = []
 
     body = c.frame.top.ui.richTextEdit    
     tc = body.textCursor()
     tc.select(QtGui.QTextCursor.WordUnderCursor)
     txt = tc.selectedText()
 
-    if not klasses:
-        hits = codewise_lookup(txt)
-    else:
+    if klasses:
         hits = codewise_lookup_methods(klasses, prefix)
+    else:
+        hits = codewise_lookup(txt)
 
     cpl = c.frame.top.completer = QCompleter(hits)
     cpl.setWidget(body)
@@ -231,13 +230,19 @@ def mkins(completer, body):
 #@+node:ville.20091205173337.10140:codewise_lookup_methods
 def codewise_lookup_methods(klasses, prefix):
 
-    #g.pdb()
-    trace = False ; verbose = False
-    hits = (z.split(None,1) for z in os.popen('codewise m %s' % klasses[0]) if z.strip())
+
+    trace = False
+    if trace: g.trace(prefix)
+    # hits = (z.split(None,1) for z in os.popen('codewise m %s' % klasses[0]) if z.strip())
+
+    import codewise
+    aList = codewise.cmd_members([klasses[0]])
+    g.trace(aList)
+
+    hits = (z.split(None,1) for z in aList if z.strip())
 
     desc = []
     for h in hits:
-
         s = h[0]
 
         #ctags patterns need radical cleanup
@@ -250,13 +255,17 @@ def codewise_lookup_methods(klasses, prefix):
     aList = list(set(desc))
     aList.sort()
     return aList
-
 #@-node:ville.20091205173337.10140:codewise_lookup_methods
 #@+node:ville.20091204224145.5364:codewise_lookup
 def codewise_lookup(prefix):
 
-    trace = False ; verbose = False
-    hits = (z.split(None,1) for z in os.popen('codewise f %s' % prefix) if z.strip())
+    trace = True
+    # hits = (z.split(None,1) for z in os.popen('codewise f %s' % prefix) if z.strip())
+
+    import codewise
+    aList = codewise.cmd_functions([prefix])
+    if trace: g.trace(prefix,aList)
+    hits = (z.split(None,1) for z in aList if z.strip())
 
     desc = []
     for h in hits:
@@ -267,7 +276,6 @@ def codewise_lookup(prefix):
     aList = list(set(desc))
     aList.sort()
     return aList
-
 #@-node:ville.20091204224145.5364:codewise_lookup
 #@+node:vivainio.20091217144258.5737:codewise_suggest
 def codewise_suggest(event):
@@ -280,27 +288,27 @@ def codewise_suggest(event):
 
     head, tail = get_current_line(w)
     m = get_attr_target_python(head)
-    obj = m.group(1)
-    prefix = m.group(3)
-    #g.pdb()
-    klasses = guess_class(c,p, obj)
+    if m:
+        obj = m.group(1)
+        prefix = m.group(3)
+        klasses = guess_class(c,p, obj)
+    else:
+        klasses = []
 
     #body = c.frame.top.ui.richTextEdit    
     #tc = body.textCursor()
     #tc.select(QtGui.QTextCursor.WordUnderCursor)
     #txt = tc.selectedText()
 
-    if not klasses:
-        hits = codewise_lookup(txt)
-    else:
+    if klasses:
         hits = codewise_lookup_methods(klasses, prefix)
-
+    else:
+        hits = codewise_lookup(txt)
 
     realhits = (h for h in hits if h.startswith(prefix))
     g.es("  Completions:")
     for h in realhits:
         g.es(h)
-
 
     #cpl = c.frame.top.completer = QCompleter(hits)
     #cpl.setWidget(body)

@@ -447,6 +447,11 @@
 <v t="ekr.20100205114630.2089"><vh>test-blank-lines declarations</vh></v>
 <v t="ekr.20100205114630.2090"><vh>class ComboBox</vh></v>
 </v>
+<v t="ekr.20100329100226.2108"><vh>@@auto-rst at-auto-test.txt</vh>
+<v t="ekr.20100329100841.2109"><vh>Level 1</vh>
+<v t="ekr.20100329100841.2110"><vh>Level 2</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20080930114036.1"><vh>Icon stuff</vh>
 <v t="ekr.20090701133940.1767"><vh>print icons</vh></v>
@@ -506,16 +511,9 @@
 <v t="ekr.20100205074729.2086"></v>
 </v>
 </v>
-</v>
-<v t="ekr.20100329100226.2108"><vh>@@auto-rst at-auto-test.txt</vh>
-<v t="ekr.20100329100841.2109"><vh>Level 1</vh>
-<v t="ekr.20100329100841.2110"><vh>Level 2</vh></v>
-</v>
-</v>
-<v t="ekr.20100329103002.2118"><vh>@auto-rst at-auto-test.txt</vh></v>
-<v t="ekr.20100329115258.2118"><vh>Test log</vh></v>
 <v t="ekr.20100330082345.2120"><vh>pseudoplain</vh></v>
-<v t="ekr.20100330084954.2125"></v>
+</v>
+<v t="ekr.20100407073801.2126"><vh>autocompleter tests</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1531,7 +1529,7 @@ leoTest.doTests (c,all=False)</t>
 
 # attrib_edit.py
 # ctagscompleter.py
-# codewisecompleter.py
+codewisecompleter.py
 # rst3.py
 # contextmenu.py
 plugins_menu.py
@@ -5768,13 +5766,14 @@ import string
 </t>
 <t tx="ekr.20100329100841.2109">Level 1</t>
 <t tx="ekr.20100329100841.2110">Level 2</t>
-<t tx="ekr.20100329115258.2118">g.redirectStdout()
-print("Hello World &lt;a&gt;")
-g.restoreStdout()
-print("after")</t>
 <t tx="ekr.20100330082345.2120">@language pseudoplain
 
 This is a [[test]] of something.</t>
 <t tx="ekr.20100330084954.2125"></t>
+<t tx="ekr.20100407073801.2126">class Foo:
+    
+    pass
+    
+es_pr</t>
 </tnodes>
 </leo_file>

@@ -155,19 +155,35 @@ class autoCompleterClass:
     #@+node:ekr.20061031131434.6:defineClassesDict
     def defineClassesDict (self):
 
+        trace = False ; verbose = True
+
         self.allClassesDict = {}
 
         # gc may not exist.
-        try: import gc
-        except ImportError: return
+        try:
+            import gc
+            # if trace: g.trace(gc)
+        except ImportError:
+            if trace: g.trace('no gc')
+            return
 
         if g.isPython3:
+            count = 0
             for z in gc.get_objects():
                 try:
                     name = z.__class__.__name__
+                    if not self.allClassesDict.get(name):
+                        self.allClassesDict [name] = z
+                        count += 1
                 except ReferenceError:
                     pass
-                self.allClassesDict [name] = z
+            if trace:
+                g.trace('%s keys in allClassesDict' % (count))
+                if verbose:
+                    keys = list(self.allClassesDict.keys())
+                    keys.sort()
+                    for z in keys:
+                        print(z)
         else:
             for z in gc.get_objects():
                 t = type(z)
@@ -192,9 +208,11 @@ class autoCompleterClass:
     #@+node:ekr.20061031131434.7:defineObjectDict
     def defineObjectDict (self,table=None):
 
+        trace = False
+
         c = self.c ; k = c.k ; p = c.p
 
-        # g.trace(g.callers(4))
+        if trace: g.trace(g.callers(4))
 
         if table is None: table = [
             # Python globals...
@@ -248,6 +266,7 @@ class autoCompleterClass:
                 else:
                     obj = module
             for z in idList:
+                if trace: g.trace(z,obj)
                 if obj:
                     self.objectDict[z]=obj
     #@-node:ekr.20061031131434.7:defineObjectDict
@@ -1023,8 +1042,10 @@ class autoCompleterClass:
             self.membersList = []
             self.theObject = None
     #@-node:ekr.20061031131434.42:getObjectFromAttribute
-    #@+node:ekr.20061031131434.43:completeSelf
+    #@+node:ekr.20061031131434.43:completeSelf (not used yet)
     def completeSelf (self):
+
+        g.trace(g.callers(4))
 
         # This scan will be fast if an instant object already exists.
         className,obj,p,s = self.classScanner.scan()
@@ -1055,7 +1076,7 @@ class autoCompleterClass:
             self.theObject = None
             self.clear()
             self.membersList = []
-    #@-node:ekr.20061031131434.43:completeSelf
+    #@-node:ekr.20061031131434.43:completeSelf (not used yet)
     #@+node:ekr.20061031131434.44:completeFromObject
     def completeFromObject (self,obj):
 
