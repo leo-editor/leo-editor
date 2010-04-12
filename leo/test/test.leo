@@ -514,6 +514,7 @@
 <v t="ekr.20100330082345.2120"><vh>pseudoplain</vh></v>
 </v>
 <v t="ekr.20100407073801.2126"><vh>autocompleter tests</vh></v>
+<v t="ekr.20100412060224.2121"><vh>root</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5775,5 +5776,6 @@ This is a [[test]] of something.</t>
     pass
     
 es_pr</t>
+<t tx="ekr.20100412060224.2121">@root test.txt</t>
 </tnodes>
 </leo_file>

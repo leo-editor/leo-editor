@@ -2290,7 +2290,7 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
 
     """Attempt to make all non-existent directories"""
 
-    trace = False and not g.unitTesting
+    trace = True and not g.unitTesting
     testing = False # True: don't actually make the directories.
 
     if force:
@@ -2301,18 +2301,22 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
         create = (g.app and g.app.config and
             g.app.config.create_nonexistent_directories)
 
-    if not force and not create:
-        if trace: g.trace('did not create: force and create are both false')
-        return None
+    if c: theDir = g.os_path_expandExpression(theDir,c=c)
+
+    dir1 = theDir = g.os_path_normpath(theDir)
+
+    ok = g.os_path_isdir(dir1) and g.os_path_exists(dir1)
+    if ok:
+        return ok
+    elif not force and not create:
+        if trace:
+            g.trace('did not create: force and create are both false')
+        return ok
 
     if trace:
         g.trace('\n',theDir,'\n',g.callers(4))
         # g.trace('c exists: %s force: %s create: %s dir: %s' % (
             # c is not None,force,create,theDir))
-
-    if c: theDir = g.os_path_expandExpression(theDir,c=c)
-
-    dir1 = theDir = g.os_path_normpath(theDir)
 
     # Split theDir into all its component parts.
     paths = []
