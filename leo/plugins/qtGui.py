@@ -6678,23 +6678,34 @@ class leoQtGui(leoGui.leoGui):
 
         return ';;'.join(filters)
     #@-node:ekr.20081121105001.480:makeFilter
-    #@+node:ekr.20081121105001.481:not used
-    def runAskOkCancelNumberDialog(self,c,title,message):
-
-        """Create and run askOkCancelNumber dialog ."""
-
-        if g.unitTesting: return None
-        g.trace('not ready yet')
-
+    #@+node:tbrown.20100421115534.17325:runAskOkCancelStringDialog
     def runAskOkCancelStringDialog(self,c,title,message):
 
         """Create and run askOkCancelString dialog ."""
 
         if g.unitTesting: return None
-        g.trace('not ready yet')
 
+        txt,ok = QtGui.QInputDialog.getText(None, title, message)
+        if not ok:
+            return None
 
-    #@-node:ekr.20081121105001.481:not used
+        return txt
+    #@nonl
+    #@-node:tbrown.20100421115534.17325:runAskOkCancelStringDialog
+    #@+node:tbrown.20100421115534.17324:runAskOkCancelNumberDialog
+    def runAskOkCancelNumberDialog(self,c,title,message):
+
+        """Create and run askOkCancelNumber dialog ."""
+
+        if g.unitTesting: return None
+
+        n,ok = QtGui.QInputDialog.getDouble(None, title, message)
+        if not ok:
+            return None
+
+        return n
+    #@nonl
+    #@-node:tbrown.20100421115534.17324:runAskOkCancelNumberDialog
     #@+node:ekr.20081121105001.482:qtGui panels
     def createComparePanel(self,c):
 
