@@ -30,11 +30,35 @@ leoscreen-prev
   Switch screen session to preceeding window.
 leoscreen-other
   Switch screen session to last window displayed.
+leoscreen-get-prefix
+  Interactively get prefix for inserting text into body (#, --, //, etc/)
+  Can also set via ``c.leo_screen.get_line_prefix = '#'``
 
 **IMPORTANT IMPLEMENTATION NOTE**: screen behave's differently
 if screen -X is executed with the same stdout as the target
 screen, vs. a different stdout.  Although stdout is ignored,
 Popen() needs to ensure it's not just inherited.
+
+Example SQL setup
+-----------------
+
+In a Leo file full of interactive SQL analysis, I have::
+
+    @button rollback
+        import time
+        c.leo_screen.run_text('ROLLBACK;  -- %s\n' % time.asctime())
+    @button commit
+        import time
+        cmd = 'COMMIT;  -- %s' % time.asctime()
+        c.leo_screen.run_text(cmd)
+        c.leo_screen.insert_line(cmd)
+    @script set logging prefix
+        c.leo_screen.get_text_prefix = '-- '
+
+which creates a button to rollback messed up queries, another to commit
+(requiring additional action to supply the newline as a safeguard) and
+sets the prefix to "-- " for text pulled back from the SQL session into
+Leo.
 
 '''
 #@-node:tbrown.20100226095909.12778:<< docstring >>
@@ -113,6 +137,10 @@ class leoscreen_Controller:
         # file name for hardcopy and paste commands
         fd, self.tmpfile = tempfile.mkstemp()
         os.close(fd)
+
+        # line prefix for pasting results into leo (#, --, //, C, etc.)
+        self.get_line_prefix = ''
+    #@nonl
     #@-node:tbrown.20100226095909.12784:__init__
     #@+node:tbrown.20100226095909.12785:__del__
     def __del__(self):
@@ -164,6 +192,21 @@ class leoscreen_Controller:
             'paste .',
         ])
     #@-node:tbrown.20100226095909.12787:run_text
+    #@+node:tbrown.20100421115534.21602:insert_line
+    def insert_line(self, line, c=None):
+        """insert a line of text into the current body"""
+
+        if not c:
+            c = self.c
+
+        editor = c.frame.body
+
+        insert_point = editor.getInsertPoint()
+        editor.insert(insert_point, self.get_line_prefix+line+'\n')
+        editor.setInsertPoint(insert_point)
+        c.setChanged(True)
+    #@nonl
+    #@-node:tbrown.20100421115534.21602:insert_line
     #@+node:tbrown.20100226095909.12788:get_line
     def get_line(self, c=None):
         """Get the next line of output from the last command"""
@@ -173,8 +216,6 @@ class leoscreen_Controller:
 
         if not c:
             c = self.c
-
-        editor = c.frame.body
 
         if not self.output:
 
@@ -200,11 +241,18 @@ class leoscreen_Controller:
 
         self.next_unread_line -= 1
 
-        insert_point = editor.getInsertPoint()
-        editor.insert(insert_point, line+'\n')
-        editor.setInsertPoint(insert_point)
-        c.setChanged(True)
+        self.insert_line(line, )
     #@-node:tbrown.20100226095909.12788:get_line
+    #@+node:tbrown.20100421115534.14949:get_prefix
+    def get_prefix(self):
+        """get the prefix for insertions from get_line"""
+
+        x = g.app.gui.runAskOkCancelStringDialog(
+            self.c,'Prefix for text loading' ,'Prefix for text loading')
+
+        if x is not None:
+            self.get_line_prefix = x
+    #@-node:tbrown.20100421115534.14949:get_prefix
     #@-others
 #@-node:tbrown.20100226095909.12783:class leoscreen_Controller
 #@+node:tbrown.20100226095909.12789:cmd_get_line
@@ -242,6 +290,11 @@ def cmd_other(c):
     """execute screen command other"""
     c.leo_screen.screen_cmd(['other'])
 #@-node:tbrown.20100226095909.12791:cmd_next,prev,other
+#@+node:tbrown.20100421115534.14948:cmd_get_prefix
+def cmd_get_prefix(c):
+    """call get_prefix"""
+    c.leo_screen.get_prefix()
+#@-node:tbrown.20100421115534.14948:cmd_get_prefix
 #@-others
 #@nonl
 #@-node:tbrown.20100226095909.12777:@thin leoscreen.py
