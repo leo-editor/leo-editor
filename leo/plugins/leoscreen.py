@@ -34,16 +34,20 @@ leoscreen-get-prefix
   Interactively get prefix for inserting text into body (#, --, //, etc/)
   Can also set via ``c.leo_screen.get_line_prefix = '#'``
 
-**IMPORTANT IMPLEMENTATION NOTE**: screen behave's differently
-if screen -X is executed with the same stdout as the target
-screen, vs. a different stdout.  Although stdout is ignored,
-Popen() needs to ensure it's not just inherited.
+@settings
+---------
+
+``leoscreen_prefix`` - prepended to output pulled in to Leo.  The
+substring SPACE in this setting will be replaced with a space character,
+to allow for trailing spaces.
 
 Example SQL setup
 -----------------
 
 In a Leo file full of interactive SQL analysis, I have::
 
+    @settings
+        @string leoscreen_prefix = --SPACE
     @button rollback
         import time
         c.leo_screen.run_text('ROLLBACK;  -- %s\n' % time.asctime())
@@ -52,14 +56,18 @@ In a Leo file full of interactive SQL analysis, I have::
         cmd = 'COMMIT;  -- %s' % time.asctime()
         c.leo_screen.run_text(cmd)
         c.leo_screen.insert_line(cmd)
-    @script set logging prefix
-        c.leo_screen.get_text_prefix = '-- '
 
 which creates a button to rollback messed up queries, another to commit
 (requiring additional action to supply the newline as a safeguard) and
 sets the prefix to "-- " for text pulled back from the SQL session into
 Leo.
 
+.. note::
+
+    **IMPORTANT IMPLEMENTATION NOTE**: screen behave's differently
+    if screen -X is executed with the same stdout as the target
+    screen, vs. a different stdout.  Although stdout is ignored,
+    Popen() needs to ensure it's not just inherited.
 '''
 #@-node:tbrown.20100226095909.12778:<< docstring >>
 #@nl
@@ -139,8 +147,11 @@ class leoscreen_Controller:
         os.close(fd)
 
         # line prefix for pasting results into leo (#, --, //, C, etc.)
-        self.get_line_prefix = ''
-    #@nonl
+        x = self.c.config.getString('leoscreen_prefix')
+        if x:
+            self.get_line_prefix = x.replace('SPACE', ' ')
+        else:
+            self.get_line_prefix = ''
     #@-node:tbrown.20100226095909.12784:__init__
     #@+node:tbrown.20100226095909.12785:__del__
     def __del__(self):
