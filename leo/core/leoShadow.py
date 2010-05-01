@@ -1018,8 +1018,11 @@ class shadowController:
 
             trace = False and not g.unitTesting
 
-            result = self.lines[self.i]
-            self.i+=1
+            if self.i < len(self.lines):
+                result = self.lines[self.i]
+                self.i+=1
+            else:
+                result = ''
 
             if trace: g.trace(repr(result))
             return result 

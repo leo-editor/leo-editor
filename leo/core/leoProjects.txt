@@ -1841,19 +1841,23 @@ def openForWrite (self, filename, wb='wb'):
 #@+node:ekr.20090502071837.90:encode
 def encode (self,s):
 
+    # g.trace(self.encoding)
+
     return g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
-#@nonl
 #@-node:ekr.20090502071837.90:encode
 #@+node:ekr.20090502071837.94:write (leoRst)
-def write (self,s):
+def write (self,s,theFile=None):
+
+    if theFile is None:
+        theFile = self.outputFile
 
     if g.isPython3:
-        if g.is_binary_file(self.outputFile):
+        if g.is_binary_file(theFile):
             s = self.encode(s)
     else:
         s = self.encode(s)
 
-    self.outputFile.write(s)
+    theFile.write(s)
 #@-node:ekr.20090502071837.94:write (leoRst)
 #@+node:ekr.20041005105605.197:compareFiles
 def compareFiles (self,path1,path2,ignoreLineEndings,ignoreBlankLines=False):
@@ -2063,15 +2067,18 @@ def checkTrialWrite (self,s1=None,s2=None):
     return ok
 #@-node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
 #@+node:ekr.20090502071837.94:write (leoRst)
-def write (self,s):
+def write (self,s,theFile=None):
+
+    if theFile is None:
+        theFile = self.outputFile
 
     if g.isPython3:
-        if g.is_binary_file(self.outputFile):
+        if g.is_binary_file(theFile):
             s = self.encode(s)
     else:
         s = self.encode(s)
 
-    self.outputFile.write(s)
+    theFile.write(s)
 #@-node:ekr.20090502071837.94:write (leoRst)
 #@-node:ekr.20100329071036.5739:Investigated at-auto-rst bug
 #@+node:ekr.20100329071036.5746:Don't put &nbsp; in redirected log
@@ -2243,6 +2250,109 @@ print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
 #@-node:ekr.20031218072017.3123:<< test code >>
 #@-node:ekr.20031218072017.3121:redirecting stderr and stdout to Leo's log pane
 #@-node:ekr.20100329071036.5746:Don't put &nbsp; in redirected log
+#@+node:ekr.20100412060436.5821:Fixed tangle bug
+#@+node:ekr.20031218072017.1241:g.update_file_if_changed
+# This is part of the tangle code.
+
+def update_file_if_changed(c,file_name,temp_name):
+
+    """Compares two files.
+
+    If they are different, we replace file_name with temp_name.
+    Otherwise, we just delete temp_name. Both files should be closed."""
+
+    if g.os_path_exists(file_name):
+        if filecmp.cmp(temp_name, file_name):
+            kind = 'unchanged'
+            ok = g.utils_remove(temp_name)
+        else:
+            kind = '***updating'
+            mode = g.utils_stat(file_name)
+            ok = g.utils_rename(c,temp_name,file_name,mode)
+    else:
+        kind = 'creating'
+        # 2010/02/04: g.utils_rename no longer calls
+        # makeAllNonExistentDirectories
+        head, tail = g.os_path_split(file_name)
+        ok = True
+        if head:
+            ok = g.makeAllNonExistentDirectories(head,c=c)
+        if ok:
+            ok = g.utils_rename(c,temp_name,file_name)
+
+    if ok:
+        g.es('','%12s: %s' % (kind,file_name))
+    else:
+        g.es("rename failed: no file created!",color="red")
+        g.es('',file_name," may be read-only or in use")
+#@-node:ekr.20031218072017.1241:g.update_file_if_changed
+#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+# This is a generalization of os.makedir.
+
+def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
+
+    """Attempt to make all non-existent directories"""
+
+    trace = True and not g.unitTesting
+    testing = False # True: don't actually make the directories.
+
+    if force:
+        create = True # Bug fix: g.app.config will not exist during startup.
+    elif c:
+        create = c.config and c.config.create_nonexistent_directories
+    else:
+        create = (g.app and g.app.config and
+            g.app.config.create_nonexistent_directories)
+
+    if c: theDir = g.os_path_expandExpression(theDir,c=c)
+
+    dir1 = theDir = g.os_path_normpath(theDir)
+
+    ok = g.os_path_isdir(dir1) and g.os_path_exists(dir1)
+    if ok:
+        return ok
+    elif not force and not create:
+        if trace:
+            g.trace('did not create: force and create are both false')
+        return ok
+
+    if trace:
+        g.trace('\n',theDir,'\n',g.callers(4))
+        # g.trace('c exists: %s force: %s create: %s dir: %s' % (
+            # c is not None,force,create,theDir))
+
+    # Split theDir into all its component parts.
+    paths = []
+    while len(theDir) > 0:
+        head,tail=g.os_path_split(theDir)
+        if len(tail) == 0:
+            paths.append(head)
+            break
+        else:
+            paths.append(tail)
+            theDir = head
+    path = ""
+    paths.reverse()
+    if trace: g.trace('paths:',paths)
+    for s in paths:
+        path = g.os_path_join(path,s)
+        if not g.os_path_exists(path):
+            try:
+                if testing:
+                    g.trace('***making',path)
+                else:
+                    os.mkdir(path)
+                if verbose and not testing and not g.app.unitTesting:
+                    # g.trace('***callers***',g.callers(5))
+                    g.es_print("created directory:",path,color='red')
+            except Exception:
+                # g.trace(g.callers())
+                if verbose: g.es_print("exception creating directory:",path,color='red')
+                g.es_exception()
+                return None
+    return dir1 # All have been created.
+#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+#@-node:ekr.20100412060436.5821:Fixed tangle bug
 #@-node:ekr.20100319090849.5760:Bugs
 #@+node:ekr.20100319090849.5759:Features
 #@+node:ekr.20100307070200.5720:Fixed the @test logic

@@ -344,15 +344,18 @@ def writeScriptFile (self,script):
 #@nonl
 #@-node:ekr.20070115135502:writeScriptFile
 #@+node:ekr.20090502071837.94:write (leoRst)
-def write (self,s):
+def write (self,s,theFile=None):
+
+    if theFile is None:
+        theFile = self.outputFile
 
     if g.isPython3:
-        if g.is_binary_file(self.outputFile):
+        if g.is_binary_file(theFile):
             s = self.encode(s)
     else:
         s = self.encode(s)
 
-    self.outputFile.write(s)
+    theFile.write(s)
 #@-node:ekr.20090502071837.94:write (leoRst)
 #@+node:ekr.20090502071837.64:writeSpecialTree
 def writeSpecialTree (self,p,toString,justOneFile):
@@ -384,12 +387,12 @@ def writeSpecialTree (self,p,toString,justOneFile):
                 g.es_print('did not create:',theDir,color='red')
                 return False
 
-        # if not os.access(theDir,os.F_OK):
-            # os.mkdir(theDir)
-
         if self.getOption('write_intermediate_file'):
             name = self.outputFileName + '.txt'
-            f = open(name,'w')
+            if g.isPython3: # 2010/04/21
+                f = open(name,'w',encoding=self.encoding)
+            else:
+                f = open(name,'w')
             f.write(self.source)
             f.close()
             self.report(name)
