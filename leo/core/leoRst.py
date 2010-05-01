@@ -107,15 +107,13 @@ else:
 #@-node:ekr.20090502071837.12:code_block
 #@+node:ekr.20090502071837.33:class rstCommands
 #@+at
-# This plugin optionally stores information for the http plugin. 
-# Each node can
-# have one additional attribute, with the name 
-# rst_http_attributename, which is a
-# list. The first three elements are stack of tags, the rest is html 
-# code::
+# This plugin optionally stores information for the http plugin. Each node can
+# have one additional attribute, with the name rst_http_attributename, which 
+# is a
+# list. The first three elements are stack of tags, the rest is html code::
 # 
-#     [<tag n start>, <tag n end>, <other stack elements>, <html 
-# line 1>, <html line 2>, ...]
+#     [<tag n start>, <tag n end>, <other stack elements>, <html line 1>, 
+# <html line 2>, ...]
 # 
 # <other stack elements has the same structure::
 # 
@@ -843,12 +841,12 @@ class rstCommands:
                     g.es_print('did not create:',theDir,color='red')
                     return False
 
-            # if not os.access(theDir,os.F_OK):
-                # os.mkdir(theDir)
-
             if self.getOption('write_intermediate_file'):
                 name = self.outputFileName + '.txt'
-                f = open(name,'w')
+                if g.isPython3: # 2010/04/21
+                    f = open(name,'w',encoding=self.encoding)
+                else:
+                    f = open(name,'w')
                 f.write(self.source)
                 f.close()
                 self.report(name)
@@ -1351,15 +1349,18 @@ class rstCommands:
     #@nonl
     #@-node:ekr.20090502071837.70:skip_literal_block
     #@+node:ekr.20090502071837.94:write (leoRst)
-    def write (self,s):
+    def write (self,s,theFile=None):
+
+        if theFile is None:
+            theFile = self.outputFile
 
         if g.isPython3:
-            if g.is_binary_file(self.outputFile):
+            if g.is_binary_file(theFile):
                 s = self.encode(s)
         else:
             s = self.encode(s)
 
-        self.outputFile.write(s)
+        theFile.write(s)
     #@-node:ekr.20090502071837.94:write (leoRst)
     #@+node:ekr.20090502071837.71:writeBody
     def writeBody (self,p):
@@ -1576,8 +1577,9 @@ class rstCommands:
     #@+node:ekr.20090502071837.90:encode
     def encode (self,s):
 
+        # g.trace(self.encoding)
+
         return g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
-    #@nonl
     #@-node:ekr.20090502071837.90:encode
     #@+node:ekr.20090502071837.91:report
     def report (self,name):
@@ -1701,8 +1703,8 @@ class rstCommands:
     #@nonl
     # Relocate references here if we are only running for one file.
     # 
-    # Otherwise we must postpone the relocation until we have 
-    # processed all files.
+    # Otherwise we must postpone the relocation until we have processed all 
+    # files.
     #@-at
     #@@c
 

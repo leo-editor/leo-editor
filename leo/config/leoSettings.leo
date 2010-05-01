@@ -367,7 +367,7 @@
 <v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
 <v t="ekr.20041119050105.16"><vh>@bool suboutline_only = False</vh></v>
 </v>
-<v t="ekr.20041213105007"><vh>Fonts</vh>
+<v t="ekr.20041213105007" a="E"><vh>Fonts</vh>
 <v t="ekr.20041119034357.45"><vh>@font body text font</vh></v>
 <v t="ekr.20070919125633"><vh>@font button font</vh></v>
 <v t="ekr.20041213105508"><vh>@font log font</vh></v>
@@ -1022,7 +1022,7 @@
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
-<v t="ekr.20051123100536"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1089,7 +1089,7 @@
 <v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
-<v t="ekr.20081018053140.11"><vh>qtGui plugin</vh>
+<v t="ekr.20081018053140.11" a="E"><vh>qtGui plugin</vh>
 <v t="ekr.20100107060708.6390"><vh>@bool qt-tree-multiple-selection = True</vh></v>
 <v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 200000</vh></v>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
@@ -1205,7 +1205,7 @@
 <v t="ekr.20041119034357.35"><vh>@bool run_tangle_done.py = False</vh></v>
 <v t="ekr.20041119034357.36"><vh>@bool run_untangle_done.py = False</vh></v>
 </v>
-<v t="ekr.20051025084017" a="E"><vh>Spell tab</vh>
+<v t="ekr.20051025084017"><vh>Spell tab</vh>
 <v t="ekr.20071025161551"><vh>@bool diagnose-aspell-installation = True</vh></v>
 <v t="ekr.20051025084017.1"><vh>@string aspell_local_language_code = en</vh></v>
 <v t="ekr.20051025084017.2"><vh>@string aspell_local_dictionary = None</vh></v>
@@ -1279,7 +1279,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20081018053140.11"></v>
+<v t="ekr.20081018053140.11" a="E"></v>
 <v t="TL.20100307105950.3137"><vh>@keys Vim bindings</vh>
 <v t="TL.20100307105950.3138"><vh>Vim User Documentation</vh></v>
 <v t="TL.20100307105950.3139"><vh>Vim History</vh></v>
@@ -4241,6 +4241,10 @@ Autments the settings parser and the dialog creator with scripts.</t>
 Therefore, @if-platform and @ifPlatformare equivalent to @ifplatform.</t>
 <t tx="ekr.20041213105007">@nocolor
 @
+
+**Important** The following settings apply only to the Tk gui.
+
+For the Qt gui the settings are in the node @data qt-gui-plugin-style-sheet.
 
 Valid values:
 
