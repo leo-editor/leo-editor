@@ -1,4 +1,3 @@
-
 """
 Extract plugin status and docs. from docstrings
 
@@ -7,10 +6,27 @@ Extract plugin status and docs. from docstrings
 :gui: qt and tk
 :maintainer: terry_n_brown@yahoo.com
 
-plugin_catalog.py searches for module docstrings like this one in the .py files
-in .../leo/plugins/ or another location.
+Generate merged documentation from plugins (or any .py files).
 
-.. leo_plugin_auto_doc
+E.g.::
+
+    python doc/plugin_catalog.py \
+      --css-file=.../Sphinx-0.6.5/sphinx/themes/sphinxdoc/static/sphinxdoc.css \
+      plugins/ doc/plugin_docs.html
+
+Options:
+  -h, --help            show this help message and exit
+  --location=LOCATION   Add a location to the list to search
+  --css-file=CSS_FILE   Use this CSS file in the HTML output
+  --max-files=MAX_FILES
+                        Stop after this many files, mainly for testing
+  --include-contents    Include table of contents (the summary is more useful)
+  --no-summary          Don't generate the summary
+  --show-paths          Show paths to .py files, useful for resolving RST
+                        errors
+  --output=OUTPUT       Filename for the html output
+  --xml-output=XML_OUTPUT
+                        Filename for optional xml output, mainly for testing
 
 TODO
 
