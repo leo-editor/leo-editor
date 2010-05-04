@@ -2050,8 +2050,9 @@ class undoer:
         w.setAllText(result)
         sel = g.choose(tag=='undo',u.oldSel,u.newSel)
         if trace: g.trace(sel)
-        i,j = sel
-        w.setSelectionRange(i,j,insert=j)
+        if sel:
+            i,j = sel
+            w.setSelectionRange(i,j,insert=j)
         c.frame.body.recolor(p,incremental=False)
         w.seeInsertPoint() # 2009/12/21
     #@-node:ekr.20031218072017.1493:undoRedoText
