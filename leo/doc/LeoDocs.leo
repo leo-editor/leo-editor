@@ -61,7 +61,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -223,7 +223,7 @@
 <v t="ekr.20091130111843.6810"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20091130111843.6814"><vh>Leo's main window</vh></v>
 <v t="ekr.20091130111843.6816"><vh>Outline commands</vh></v>
-<v t="ekr.20091130111843.6846"><vh>External files and @file nodes</vh></v>
+<v t="ekr.20091130111843.6846"><vh>External files and @thin nodes</vh></v>
 <v t="ekr.20091201091455.6809"><vh>Creating external files from outlines</vh>
 <v t="ekr.20091201091455.6813"><vh>Section references</vh></v>
 <v t="ekr.20091201091455.6814"><vh>The @others directive</vh></v>
@@ -434,8 +434,8 @@
 <v t="ville.20090603183524.5672"><vh>Creating Leo commands with the @g.command decorator</vh></v>
 </v>
 </v>
-<v t="EKR.20040524104904.211" a="E"><vh>Chapter 8: Customizing Leo</vh>
-<v t="ekr.20050901101608.4" a="E"><vh>@rst html\customizing.html</vh>
+<v t="EKR.20040524104904.211"><vh>Chapter 8: Customizing Leo</vh>
+<v t="ekr.20050901101608.4"><vh>@rst html\customizing.html</vh>
 <v t="ekr.20050901102055"><vh>@rst-no-head links</vh></v>
 <v t="EKR.20040524104904.140"><vh>Specifying settings</vh>
 <v t="ekr.20090116130002.1"><vh>Configuration directories</vh></v>
@@ -549,8 +549,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050912125144" a="E"><vh>Chapter 12: Plugins</vh>
-<v t="ekr.20050912125144.1" a="E"><vh>@rst html\plugins.html</vh>
+<v t="ekr.20050912125144"><vh>Chapter 12: Plugins</vh>
+<v t="ekr.20050912125144.1"><vh>@rst html\plugins.html</vh>
 <v t="ekr.20050912125735"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070814104719"><vh>Enabling plugins</vh></v>
 <v t="ekr.20050912125735.868"><vh>Body pane</vh>
@@ -28848,7 +28848,7 @@ Test
 
 This is a test.</t>
 <t tx="ekr.20090401113141.4">This is section 1</t>
-<t tx="ekr.20090428101858.1">1. doc\html\conf.py contains settins,
+<t tx="ekr.20090428101858.1">1. doc\html\conf.py contains settings,
 including the name of the master toctree document, leo_toc.html.txt.
 
 2. leo_toc.html.txt contains a list of all file to be included.
@@ -28856,7 +28856,7 @@ including the name of the master toctree document, leo_toc.html.txt.
 3. To create one or more docs:
 
     - From this file, run rst3 on desired tree.
-    - cd leo\docs\html
+    - cd leo\doc\html
     - make html
 
 4. To create pdf (probably easiest on Linux, with necessary latex packages installed):
