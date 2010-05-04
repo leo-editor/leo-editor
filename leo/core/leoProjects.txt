@@ -2353,6 +2353,90 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
     return dir1 # All have been created.
 #@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
 #@-node:ekr.20100412060436.5821:Fixed tangle bug
+#@+node:ekr.20100504092040.18289:Fixed crash in log pane
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 366, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 284, in autoComplete
+    k.masterCommand(event,func=None,stroke=None,commandName=None)
+  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 2606, in masterCommand
+    val = k.handleDefaultChar(event,stroke)
+  File "c:\leo.repo\trunk\leo\core\leoKeys.py", line 2664, in handleDefaultChar
+    if stroke.lower() == 'return': stroke = '\n'
+AttributeError: 'NoneType' object has no attribute 'lower'
+#@nonl
+#@+node:ekr.20061031131434.9:autoComplete
+def autoComplete (self,event=None,force=False):
+
+    '''An event handler called from k.masterKeyHanderlerHelper.'''
+
+    c = self.c ; k = self.k ; gui = g.app.gui
+    w = gui.eventWidget(event) or c.get_focus()
+
+    # First, handle the invocation character as usual.
+    k.masterCommand(event,func=None,stroke=None,commandName=None)
+
+    # Allow autocompletion only in the body pane.
+    if not c.widget_name(w).lower().startswith('body'):
+        return 'break'
+
+    self.language = g.scanForAtLanguage(c,c.p)
+    if w and self.language == 'python' and (k.enable_autocompleter or force):
+        self.start(event=event,w=w)
+
+    return 'break'
+#@-node:ekr.20061031131434.9:autoComplete
+#@+node:ekr.20061031131434.110:k.handleDefaultChar
+def handleDefaultChar(self,event,stroke):
+    k = self ; c = k.c
+    w = event and event.widget
+    name = c.widget_name(w)
+    trace = False and not g.unitTesting
+
+    if trace: g.trace('widget_name',name,'stroke',stroke)
+
+    if (stroke and
+        not stroke.startswith('Alt+Ctrl') and
+        not self.enable_alt_ctrl_bindings and
+        (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
+    ):
+        if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
+        return 'break'
+
+    if name.startswith('body'):
+        action = k.unboundKeyAction
+        if action in ('insert','overwrite'):
+            c.editCommands.selfInsertCommand(event,action=action)
+        else: # Ignore the key
+            if trace: g.trace('ignoring',stroke)
+        return 'break'
+    elif name.startswith('head'):
+        c.frame.tree.onHeadlineKey(event)
+        return 'break'
+    elif name.startswith('canvas'):
+        if not stroke: # Not exactly right, but it seems to be good enough.
+            c.onCanvasKey(event) # New in Leo 4.4.2
+        return 'break'
+    elif name.startswith('log'):
+        if g.app.gui.guiName() == 'tkinter':
+            return None
+        else:
+            i = w.logCtrl.getInsertPoint()
+            if not stroke:
+                stroke = event.stroke # 2010/05/04.
+            if stroke.lower() == 'return': stroke = '\n'
+            elif stroke.lower() == 'tab': stroke = '\t'
+            elif stroke.lower() == 'backspace': stroke = '\b'
+            elif stroke.lower() == 'period': stroke = '.'
+            w.logCtrl.insert(i,stroke)
+
+            return None
+    else:
+        # Let the widget handle the event.
+        # ch = event and event.char ; g.trace('to tk:',name,repr(stroke))
+        return None
+#@-node:ekr.20061031131434.110:k.handleDefaultChar
+#@-node:ekr.20100504092040.18289:Fixed crash in log pane
 #@-node:ekr.20100319090849.5760:Bugs
 #@+node:ekr.20100319090849.5759:Features
 #@+node:ekr.20100307070200.5720:Fixed the @test logic
