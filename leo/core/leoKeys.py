@@ -283,11 +283,13 @@ class autoCompleterClass:
         # First, handle the invocation character as usual.
         k.masterCommand(event,func=None,stroke=None,commandName=None)
 
-        # Don't allow autocompletion in headlines.
-        if not c.widget_name(w).startswith('head'):
-            self.language = g.scanForAtLanguage(c,c.p)
-            if w and self.language == 'python' and (k.enable_autocompleter or force):
-                self.start(event=event,w=w)
+        # Allow autocompletion only in the body pane.
+        if not c.widget_name(w).lower().startswith('body'):
+            return 'break'
+
+        self.language = g.scanForAtLanguage(c,c.p)
+        if w and self.language == 'python' and (k.enable_autocompleter or force):
+            self.start(event=event,w=w)
 
         return 'break'
     #@-node:ekr.20061031131434.9:autoComplete
@@ -2634,9 +2636,10 @@ class keyHandlerClass:
 
         if trace: g.trace('widget_name',name,'stroke',stroke)
 
-        if stroke and not (stroke.startswith('Alt+Ctrl') and \
-            not self.enable_alt_ctrl_bindings) and \
-            (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1
+        if (stroke and
+            not stroke.startswith('Alt+Ctrl') and
+            not self.enable_alt_ctrl_bindings and
+            (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
         ):
             if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
             return 'break'
@@ -2659,18 +2662,20 @@ class keyHandlerClass:
             if g.app.gui.guiName() == 'tkinter':
                 return None
             else:
-                if trace: g.trace(w)
                 i = w.logCtrl.getInsertPoint()
+                if not stroke:
+                    stroke = event.stroke # 2010/05/04.
                 if stroke.lower() == 'return': stroke = '\n'
                 elif stroke.lower() == 'tab': stroke = '\t'
                 elif stroke.lower() == 'backspace': stroke = '\b'
+                elif stroke.lower() == 'period': stroke = '.'
                 w.logCtrl.insert(i,stroke)
+
                 return None
         else:
             # Let the widget handle the event.
             # ch = event and event.char ; g.trace('to tk:',name,repr(stroke))
             return None
-    #@nonl
     #@-node:ekr.20061031131434.110:k.handleDefaultChar
     #@-node:ekr.20061031131434.105:masterCommand & helpers
     #@+node:ekr.20061031131434.111:fullCommand (alt-x) & helper
