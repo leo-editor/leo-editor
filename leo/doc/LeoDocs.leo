@@ -241,7 +241,6 @@
 <v t="EKR.20040524104904.26"><vh>Chapter 3: Using Outlines</vh>
 <v t="ekr.20050901101608"><vh>@rst html\outlines.html</vh>
 <v t="ekr.20050901101608.1"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20060227102028.111"><vh>Autocompletion and calltips</vh></v>
 <v t="EKR.20040524104904.27"><vh>Cloning nodes</vh></v>
 <v t="EKR.20040524104904.36"><vh>Creating and destroying nodes</vh></v>
 <v t="ekr.20060920145745"><vh>Creating and destroying multiple body editors</vh></v>
@@ -317,9 +316,11 @@
 <v t="ekr.20050828061501.43"><vh>CWEB mode</vh></v>
 </v>
 </v>
-<v t="EKR.20040524104904.99"><vh>Chapter 5: Using Leo's Commands</vh>
-<v t="ekr.20050901101608.2"><vh>@rst html\commands.html</vh>
+<v t="EKR.20040524104904.99" a="E"><vh>Chapter 5: Using Leo's Commands</vh>
+<v t="ekr.20050901101608.2" a="E"><vh>@rst html\commands.html</vh>
 <v t="ekr.20050901101852"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20060227102028.111"><vh>Autocompletion</vh></v>
+<v t="ekr.20100504092040.17423"><vh>Calltips</vh></v>
 <v t="ekr.20060420094611"><vh>The minibuffer</vh>
 <v t="ekr.20060613062025.6"><vh>Basic editing commands</vh></v>
 <v t="ekr.20060613062025.1"><vh>Debugging commands</vh></v>
@@ -548,8 +549,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050912125144" a="E"><vh>Chapter 12: Plugins</vh>
-<v t="ekr.20050912125144.1" a="E"><vh>@rst html\plugins.html</vh>
+<v t="ekr.20050912125144"><vh>Chapter 12: Plugins</vh>
+<v t="ekr.20050912125144.1"><vh>@rst html\plugins.html</vh>
 <v t="ekr.20050912125735"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070814104719"><vh>Enabling plugins</vh></v>
 <v t="ekr.20050912125735.868"><vh>Body pane</vh>
@@ -560,7 +561,7 @@
 <v t="ekr.20050912125735.942"><vh>color_markup.py</vh></v>
 <v t="ekr.20050912125735.974"><vh>script_io_to_body.py</vh></v>
 </v>
-<v t="ekr.20050912125735.26" a="E"><vh>Commands &amp; directives</vh>
+<v t="ekr.20050912125735.26"><vh>Commands &amp; directives</vh>
 <v t="ekr.20050912125735.82"><vh>add_directives.py</vh></v>
 <v t="ekr.20050912125735.85"><vh>bibtex.py</vh></v>
 <v t="ekr.20050912125735.98"><vh>ConceptualSort.py</vh></v>
@@ -827,9 +828,9 @@
 </v>
 </v>
 <v t="TL.20080804095315.1"><vh>Chapter 22: Using Vim with Leo</vh>
-<v t="TL.20080804095315.2" a="E"><vh>@rst html\vimBindings.html</vh>
+<v t="TL.20080804095315.2"><vh>@rst html\vimBindings.html</vh>
 <v t="TL.20080804095315.3"><vh>@rst-no-head links</vh></v>
-<v t="TL.20080804095315.11" a="E"><vh>Vim bindings</vh>
+<v t="TL.20080804095315.11"><vh>Vim bindings</vh>
 <v t="TL.20080804095315.4"><vh>Installing vim bindings</vh></v>
 <v t="TL.20080804095315.5"><vh>General commands</vh></v>
 <v t="TL.20080804095315.6"><vh>Body pane commands</vh></v>
@@ -1053,7 +1054,7 @@
 </v>
 </v>
 <v t="ekr.20100129054823.11924"></v>
-<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
+<v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -1916,7 +1917,6 @@
 <v t="ekr.20060227102028.17"><vh>Removed horrible g.app.dialogs hack</vh></v>
 <v t="ekr.20060227102028.18"><vh>Fix crasher in plugin</vh></v>
 </v>
-<v t="ekr.20060227102028.111"></v>
 </v>
 <v t="ekr.20060328171518"><vh>4.4 b3</vh>
 <v t="ekr.20060328171518.1"><vh>New features</vh>
@@ -3488,7 +3488,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20100225102026.7139"><vh>4.7.1 final</vh>
 <v t="ekr.20100225102026.7140"><vh>Changes made to Leo 4.7.1</vh></v>
 </v>
@@ -17540,10 +17540,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://sourceforge.net/cvs/?group_id=3458
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20060227102028.111">Typing a period when @language python is in effect starts autocompletion. Typing
-'(' during autocompletion shows the calltip. Typing Return or Control-g
-(keyboard-quit) exits autocompletion or calltips.
-
-Autocompletion
+Return or Control-g (keyboard-quit) exits autocompletion.
 
 Autocompletion shows what may follow a period in code. (Actually you can specify
 any character using the auto-complete shortcut setting.) For example, after
@@ -17570,28 +17567,7 @@ object. For example: 'g.app?' shows the docstring for g.app. This doesn't work
 Autocompletion works in the Find tab; you can use &lt;Tab&gt; to cycle through the
 choices. The 'Completion' tab appears while you are doing this; the Find tab
 reappears once the completion is finished.
-
-Calltips
-
-Calltips appear after you type an open parenthesis in code. Calltips shows the
-expected arguments to a function or method. Calltips work for any Python
-function or method, including Python's global function. Examples:
-
-a)  'g.toUnicode('  gives 'g.toUnicode(s, encoding, reportErrors=False'
-b) 'c.widgetWantsFocusNow' gives 'c.widgetWantsFocusNow(w'
-c) 'reduce(' gives 'reduce(function, sequence[, initial]) -&gt; value'
-
-The calltips appear directly in the text and the argument list is highlighted so
-you can just type to replace it. The calltips appear also in the status line for
-reference after you have started to replace the args.
-
-Options
-
-Both autocompletion and calltips are initially enabled or disabled by the
-enable_autocompleter and enable_calltips settings in leoSettings.leo. You may
-enable or disable these features at any time with these commands:
-enable-auto-completer-command, enable-calltips-command,
-disable-auto-completer-command and disable-calltips-command.</t>
+</t>
 <t tx="ekr.20060227102028.14">@nocolor
 
 http://sourceforge.net/forum/message.php?msg_id=3586962
@@ -34533,6 +34509,28 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 - Added a log message for show-colors saying the color picker does not exist for qt.
 
 - Corrected date in trunk/license.txt.</t>
+<t tx="ekr.20100504092040.17423">Calltips appear after you type an open parenthesis in code. Calltips shows the
+expected arguments to a function or method. Calltips work for any Python
+function or method, including Python's global functions. Typing Return or
+Control-g (keyboard-quit) exits calltips.
+
+Examples:
+
+a)  'g.toUnicode('  gives 'g.toUnicode(s, encoding, reportErrors=False'
+b) 'c.widgetWantsFocusNow' gives 'c.widgetWantsFocusNow(w'
+c) 'reduce(' gives 'reduce(function, sequence[, initial]) -&gt; value'
+
+The calltips appear directly in the text and the argument list is highlighted so
+you can just type to replace it. The calltips appear also in the status line for
+reference after you have started to replace the args.
+
+Options
+
+Both autocompletion and calltips are initially enabled or disabled by the
+enable_autocompleter and enable_calltips settings in leoSettings.leo. You may
+enable or disable these features at any time with these commands:
+enable-auto-completer-command, enable-calltips-command,
+disable-auto-completer-command and disable-calltips-command.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?
