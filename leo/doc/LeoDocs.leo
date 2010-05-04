@@ -61,7 +61,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -316,8 +316,8 @@
 <v t="ekr.20050828061501.43"><vh>CWEB mode</vh></v>
 </v>
 </v>
-<v t="EKR.20040524104904.99" a="E"><vh>Chapter 5: Using Leo's Commands</vh>
-<v t="ekr.20050901101608.2" a="E"><vh>@rst html\commands.html</vh>
+<v t="EKR.20040524104904.99"><vh>Chapter 5: Using Leo's Commands</vh>
+<v t="ekr.20050901101608.2"><vh>@rst html\commands.html</vh>
 <v t="ekr.20050901101852"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20060227102028.111"><vh>Autocompletion</vh></v>
 <v t="ekr.20100504092040.17423"><vh>Calltips</vh></v>
@@ -11136,8 +11136,8 @@ directives.
 These @root options override the at_root_bodies_start_in_doc_mode setting. This
 setting affects only @root trees without options. Such "plain" @root trees are
 now deprecated, which only means that it is better style to use either the
-@root-code or @root-doc directive. The reason is simple: the meaning of plain
-@root trees will depend on the at_root_bodies_start_in_doc_mode setting. It's
+\@root-code or @root-doc directive. The reason is simple: the meaning of plain
+\@root trees will depend on the at_root_bodies_start_in_doc_mode setting. It's
 better to be explicit. By default, at_root_bodies_start_in_doc_mode = 1 for
 compatibility for old @root trees. I actually don't think this option is good
 for much; I created it before I created @root-doc and @root-code settings, and I
@@ -11162,20 +11162,24 @@ for LaTeX. In addition, cweb colors C // and /*..*/ comments using LaTeX
 coloring by default. You may change these defaults using the
 color_cweb_doc_parts_with_latex and color_cweb_comments_with_latex settings.
 </t>
-<t tx="ekr.20050828061501.45">This section discusses all aspects of @root trees. You should carefully consider
-whether the extra flexibility afforded by @root trees is worth the extra bother.
-Indeed, @file trees are much easier to use than @root trees:
+<t tx="ekr.20050828061501.45">This section discusses all aspects of @root trees.
+\@root directives must appear in body text, not headlines.
+
+You should carefully consider whether the extra flexibility afforded by @root
+trees is worth the extra bother. Indeed, @file trees are much easier to use than
+\@root trees:
 
 - @file and @thin trees use less markup than @root trees.
   In particular, the @others directive is valid only within @file and @thin trees.
 
-- You must explicitly tangle and untangle @root trees using the Tangle and Untangle commands.
+- You must explicitly tangle and untangle @root trees using the Tangle and
+  Untangle commands.
 
 However, @root trees are more flexible than @file and @thin trees:
 
-- Sections may be defined anywhere within @root trees.
-  Moreover, the @unit directive expands the scope of section definitions in @root trees
-  so that a section may be referenced in several @root trees.
+- Sections may be defined anywhere within @root trees. Moreover, the @unit
+  directive expands the scope of section definitions in @root trees so that a
+  section may be referenced in several @root trees.
 
 - The meaning of section definitions in @root trees are independent of their position within the tree.
 </t>
@@ -11523,7 +11527,7 @@ Here are all the ways of creating external files:
 
 \@root
   This directive is the most flexible, and the most difficult to use.
-  **Note**: @root is a true directive: you put @root in body text.
+  **Note**: @root is a true directive: you must put @root in body text.
   Historically, this was the first directive that created external files.
   It comes closest in spirit to traditional literate programming tools.
   However, it is seldom necessary to suffer the drawbacks of using @root.
@@ -11682,6 +11686,7 @@ Negative values cause Leo to convert tabs to blanks.</t>
 - **\@root**, **\@root-code** and **\@root-code**
   Start an @root tree.
   The last two forms set the starting mode for body text.
+  These directives must appear in body text.
 
 - **\@shadow**
   Creates two external files, a **public** file without sentinels,
@@ -27395,7 +27400,8 @@ determines the language using the file's extension.  Notes:
 - Use the @data import_xml_tags setting in leoSettings.leo to specify the xml
   tags that create outline nodes. By default, the **organizer tags** are html,
   body, head, and div.</t>
-<t tx="ekr.20080730212711.51">The @root directive creates external files that are more flexible than @file, @thin, @shadow, etc.
+<t tx="ekr.20080730212711.51">The @root directive creates external files that are more flexible than @file,
+@thin, @shadow, etc.  The @root directive must appear in body text, not the headline.
 
 - Sections may be defined anywhere within @root trees.
   Moreover, the @unit directive expands the scope of section definitions in @root trees
