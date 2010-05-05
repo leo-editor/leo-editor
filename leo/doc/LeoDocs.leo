@@ -1054,7 +1054,7 @@
 </v>
 </v>
 <v t="ekr.20100129054823.11924"></v>
-<v t="edream.110203163054.46"><vh>Release Notes</vh>
+<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -3488,7 +3488,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63"><vh>Latest version</vh>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
 <v t="ekr.20100225102026.7139"><vh>4.7.1 final</vh>
 <v t="ekr.20100225102026.7140"><vh>Changes made to Leo 4.7.1</vh></v>
 </v>
@@ -12257,7 +12257,7 @@ If you are on Windows 98/2000/XP then the procedure is as follows...
 1. Start Leo
 2. Click New
 3. Click Save as...
-4. Save the file as "c:\windows\shellnew\leofile.leo" (or c:\winnt for 2000/XP)
+4. Save the file as "c:\\windows\\shellnew\\leofile.leo" (or c:\\winnt for 2000/XP)
 5. Open regedit "start...run...regedit"
 6. Open HKEY_CLASSES_ROOT and find the ".leo" extension type
 7. Go New ... Key from the context menu 
@@ -12388,8 +12388,8 @@ independent of where the block of three cells exists on the sheet.</t>
 <t tx="ekr.20050830115714.117">Python's decorator_ syntax is ill-conceived.
 This syntax file hack works well enough anyway to work with Leo '@' markup::
 
-    syn region leoComment start="^@\s*" end="^@c\s*$"
-    syn match   pythonDecorator	"@\S\S+" display nextgroup=pythonFunction skipwhite</t>
+    syn region leoComment start="^@\\s*" end="^@c\\s*$"
+    syn match   pythonDecorator	"@\\S\\S+" display nextgroup=pythonFunction skipwhite</t>
 <t tx="ekr.20050830115714.118"></t>
 <t tx="ekr.20050830115714.119">By Rich Ries.
 I often rework C code that's already been "Leo-ized"--the first pass was quick
@@ -13746,7 +13746,7 @@ Here are some tips that may make running Leo easier:
     Put the following .bat file in c:\\Windows::
 
         cd &lt;path-to-leo&gt;
-        c:\python25\python &lt;path-to-leo&gt;launchLeo.py %1
+        c:\\Python26\\python &lt;path-to-leo&gt;launchLeo.py %1
 
     where &lt;path-to-leo&gt; is the path to the directory *containing* the leo directory.
 
@@ -20741,8 +20741,8 @@ which is certainly *not* what the script writer intended!
 Rather than defining strings using actual characters, Instead, one should use
 the equivalent escape sequences. For example::
 
-    u = u'a-\u0233-\u8ce2-z'
-    u = 'a-\u0233-\u8ce2-z'
+    u = u'a-\\u0233-\\u8ce2-z'
+    u = 'a-\\u0233-\\u8ce2-z'
 </t>
 <t tx="ekr.20060920054924">.. _OPML:                   http://en.wikipedia.org/wiki/OPML
 .. _`OPML 2.0 standard`:    http://www.opml.org
@@ -22290,7 +22290,7 @@ Here are step-by step instructions:
 
 3. Start winpdb explicitly by executing something like the following in a console::
 
-    python /python25/Scripts/_winpdb.py -t
+    python /Python26/Scripts/_winpdb.py -t
 
    The -t option tells winpdb that no encoding of password is necessary.
    The password is specified in the call to rpdb2.start_embedded_debugger in your script.
@@ -23341,27 +23341,27 @@ Using g.getTestVars eliminates pychecker warnings about undefined c and p variab
 
 3. Install Leo.  Get Leo's .zip file from http://sourceforge.net/projects/leo/
    You can unpack the .zip file anywhere, including Python's *site-packages* folder,
-   for example, C:\Python25\Lib\site-packages
+   for example, C:\\Python26\\Lib\\site-packages
 
 4. [optional] Generate/update a junction link from unpacked
-   leo folder to ...\site-packages\leo
+   leo folder to ...\\site-packages\\leo
 
-      cd C:\Python25\Lib\site-packages\
+      cd C:\\Python26\\Lib\\site-packages\\
       junction leo leo-4-6-2-final
 
 5. Create windows shortcut (edit paths as necessary):
 
-      Target   =  C:\Python25\pythonw.exe "C:\Python25\Lib\site-packages\leo\launchLeo.py"
-      Start in =  D:\code
+      Target   =  C:\\Python26\\pythonw.exe "C:\\Python26\\Lib\\site-packages\\leo\\launchLeo.py"
+      Start in =  D:\\code
 
 6. Associate .leo filetype batch file:
 
-      ftype LeoFile=C:\Python25\pythonw.exe "C:\Python25\Lib\site-packages\leo\launchLeo.py" "%1"
+      ftype LeoFile=C:\\Python26\\pythonw.exe "C:\\Python26\\Lib\\site-packages\\leo\\launchLeo.py" "%1"
       assoc .leo=LeoFile
 
 7. [optional] Put this leo.bat in %PATH%:
 
-      @C:\Python25\python.exe -i "C:\Python25\Lib\site-packages\leo\launchLeo.py" %*
+      @C:\\Python26\\python.exe -i "C:\\Python26\\Lib\\site-packages\\leo\\launchLeo.py" %*
 
 
 For more information see::
@@ -23735,7 +23735,7 @@ and Edit Headline commands. Those commands require interaction with the user.
 For example, the following batch script reads a Leo file and prints all the
 headlines in that file::
 
-    path = r"&lt;path-to-folder-containing-the-leo-folder&gt;\leo\test\test.leo"
+    path = r"&lt;path-to-folder-containing-the-leo-folder&gt;\\leo\\test\\test.leo"
 
     g.app.log.disable() # disable reading messages while opening the file
     flag,newFrame = g.openWithFileName(path,None)
@@ -24401,7 +24401,7 @@ g.app etc, and so do not work if they rely on dynamic values in g.etc.
 
 &gt; Why can't you simply add leo/core to sys.path in sitecustomize.py?  
 
-Putting leo\core on the python path as you suggest would put forty python modules
+Putting leo/core on the python path as you suggest would put forty python modules
 in the global module namespace for all python programs when I want just one.
 Also, I have a safe working copy of leo and a cvs/testing version. I would wish
 to test any programs against the testing version while using the working
@@ -25038,7 +25038,7 @@ For example, the following Leo script shows various ways of printing La Peña pr
         'La Peña',
         unicode('La Peña','utf-8'),
         u'La Peña',
-        u'La Pe\xf1a',
+        u'La Pe\\xf1a',
     )
 
     for s in table:
@@ -28379,7 +28379,7 @@ To run Leo with Qt look and feel, use the --gui=qt option::
 
 To load Leo's source, load leoPyRef.leo::
 
-    python launchLeo.py --gui=qt leo\core\leoPyRef.leo</t>
+    python launchLeo.py --gui=qt leo\\core\\leoPyRef.leo</t>
 <t tx="ekr.20090212054250.5"></t>
 <t tx="ekr.20090212054250.6">You can get the latest official releases of Leo at
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
