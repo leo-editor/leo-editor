@@ -61,7 +61,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -377,8 +377,8 @@
 <v t="EKR.20040524104904.181"><vh>How Leo Changes the Notion of Literate Programming</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.4"><vh>Chapter 7: Scripting Leo with Python</vh>
-<v t="ekr.20040403171740"><vh>@rst html\scripting.html</vh>
+<v t="ekr.20050831195331.4" a="E"><vh>Chapter 7: Scripting Leo with Python</vh>
+<v t="ekr.20040403171740" a="E"><vh>@rst html\scripting.html</vh>
 <v t="ekr.20091104200540.6566"><vh>@rst-ignore</vh>
 <v t="ekr.20091107181442.26607"><vh>old, too complicated intro</vh></v>
 <v t="ekr.20091104200540.6567"><vh>details for later</vh></v>
@@ -432,10 +432,11 @@
 <v t="ekr.20040403173920.24"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20080922124033.1"><vh>Getting interactive input from scripts</vh></v>
 <v t="ville.20090603183524.5672"><vh>Creating Leo commands with the @g.command decorator</vh></v>
+<v t="ekr.20100506062734.11593"><vh>Modifying plugins with @script scripts</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.211"><vh>Chapter 8: Customizing Leo</vh>
-<v t="ekr.20050901101608.4"><vh>@rst html\customizing.html</vh>
+<v t="ekr.20050901101608.4" a="E"><vh>@rst html\customizing.html</vh>
 <v t="ekr.20050901102055"><vh>@rst-no-head links</vh></v>
 <v t="EKR.20040524104904.140"><vh>Specifying settings</vh>
 <v t="ekr.20090116130002.1"><vh>Configuration directories</vh></v>
@@ -14258,43 +14259,33 @@ saving a file. I simply put Save in a node's headline and c.save() in
 the body text. I hit the Script Button button and I get a new button called
 Save that will save the outline when I press it.
 
-Here's a more interesting example. The following script searches the present node
-and its ancestors looking for an @rst node. When such a node is found the
-script calls the `rst3 plugin`_ to format it. I don't have to select the actual
-@rst node; I can select any of its children::
+Here's a more interesting example. The following script searches the present
+node and its ancestors looking for an @rst node. When such a node is found the
+script uses Leo's core c.rstCommands.processTree method to format it. I don't have
+to select the actual \@rst node; I can select any of its children::
 
-    import leo.core.leoPlugins as leoPlugins
-    rst3 = leoPlugins.getPluginModule('rst3')
-    if rst3: # already loaded.
-        controller = rst3.controllers.get(c)
-        if controller:
-            for p in p.self_and_parents():
-                if p.h.startswith('@rst '):
-                    controller.processTree(p)
-                    break
-    else: # Just load the plugin.
-        rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
-        if rst3:
-            g.es('rst3 loaded')
-            rst3.onCreate('tag',{'c':c})
-        else:
-            # Ask to be removed.
-            g.app.scriptDict['removeMe'] = True
+    for p in p.self_and_parents():
+        if p.h.startswith('@rst '):
+            c.rstCommands.processTree(p)
+            break
 
 **Notes**:
 
--   The scripting plugin pre-defines the c, g and p symbols
-    just as the Execute Script command does.
+- The scripting plugin pre-defines the c, g and p symbols just as the Execute
+  Script command does.
 
--   By default a script button executes the **present** body text of the node that original created the script button.
-    This is very handy: you can modify a script button's script at any time without having to recreate the script button.
+- By default a script button executes the **present** body text of the node that
+  original created the script button. This is very handy: you can modify a
+  script button's script at any time without having to recreate the script
+  button.
 
--   You can delete any script button by right-clicking on it.
+- You can delete any script button by right-clicking on it.
 
--   On startup, the scripting plugin scans the entire .leo file and creates a script button
-    for every node whose headline starts with @button scriptName.
-    **Warning**: this is indeed a security risk of the kind discussed later.
-    This feature can be disabled by setting atButtonNodes = True at the start of mod_scripting.py.</t>
+- On startup, the scripting plugin scans the entire .leo file and creates a
+  script button for every node whose headline starts with @button scriptName.
+  **Warning**: this is indeed a security risk of the kind discussed later. This
+  feature can be disabled by setting atButtonNodes = True at the start of
+  mod_scripting.py.</t>
 <t tx="ekr.20050906090012">Leo (and other programs) often send more detailed error messages to stderr,
 the output stream that goes to the console window. In Linux and MacOS
 environments, python programs normally execute with the console window visible.
@@ -34541,6 +34532,37 @@ enable_autocompleter and enable_calltips settings in leoSettings.leo. You may
 enable or disable these features at any time with these commands:
 enable-auto-completer-command, enable-calltips-command,
 disable-auto-completer-command and disable-calltips-command.</t>
+<t tx="ekr.20100506062734.11593">The mod_scripting plugin runs @scripts before plugin initiation is complete.
+Thus, such scripts can not directly modify plugins. Instead, a script can create
+an event handler for the after-create-leo-frame that will modify the plugin.
+
+For example, the following modifies the cleo.py plugin after Leo has completed loading it::
+
+    def prikey(self, v):
+        try:
+            pa = int(self.getat(v, 'priority'))
+        except ValueError:
+            pa = -1
+        
+        if pa == 24:
+            pa = -1
+        if pa == 10:
+            pa = -2
+        
+        return pa
+    
+    import types
+    from leo.core import leoPlugins
+    
+    def on_create(tag, keywords):
+        c.cleo.prikey = types.MethodType(prikey, c.cleo, c.cleo.__class__)
+
+    leoPlugins.registerHandler("after-create-leo-frame",on_create)
+
+Attempting to modify c.cleo.prikey immediately in the @script gives an
+AttributeError as c has no .cleo when the @script is executed. Deferring it by
+using registerHandler() avoids the problem.
+</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the external file?

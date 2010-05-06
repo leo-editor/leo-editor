@@ -6446,6 +6446,42 @@ implementing a new feature.
 #@-node:ekr.20100109214940.6225:4.8 to do
 #@+node:ekr.20100206074650.5843:4.9 Autocompletion
 #@+node:ekr.20090131200406.14:autocompletion
+#@+node:ekr.20100506062734.5756:Ville post re autocompleter
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ee84e52fba476950
+
+> Some of the UI's I've worked with involved going into a state where
+> you picked from a numbered, or lettered list of possibilities
+> generated based on the currently typed "trigger".  e.g. and expansion
+> of trigger "ct" puts a ine like the following in, say, the status
+> line:
+
+Note that all design work is unnecessary - this is basically a simple
+matter of bugfixing.
+
+qtGui has this method:
+
+http://pastebin.com/GmhZJqDd
+
+Once you can call
+
+w.showCompleter(['hello', 'helloworld'], mycallback )
+
+and select the correct alternative naturally with keyboard (now you
+need mouse), almost all of the work is done.
+
+The rest can be provided by codewisecompleter, or any other kind of
+completer we may wish to add (e.g. hippie-expand, abbrev expand...).
+
+All discussion regarding the ui design only helps to sidetrack us from
+getting a completer that behaves the way completers are "supposed to
+behave" on 2010, i.e. the way provided by QCompleter.
+
+-- 
+Ville M. Vainio 
+#@nonl
+#@-node:ekr.20100506062734.5756:Ville post re autocompleter
 #@+node:ekr.20081005065934.12:Links from Ville re Scintilla
 @nocolor-node
 
