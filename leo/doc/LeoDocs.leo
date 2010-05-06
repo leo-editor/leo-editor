@@ -1054,7 +1054,7 @@
 </v>
 </v>
 <v t="ekr.20100129054823.11924"></v>
-<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
+<v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -3488,7 +3488,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20100225102026.7139"><vh>4.7.1 final</vh>
 <v t="ekr.20100225102026.7140"><vh>Changes made to Leo 4.7.1</vh></v>
 </v>
@@ -23344,9 +23344,9 @@ Using g.getTestVars eliminates pychecker warnings about undefined c and p variab
    for example, C:\\Python26\\Lib\\site-packages
 
 4. [optional] Generate/update a junction link from unpacked
-   leo folder to ...\\site-packages\\leo
+   leo folder to ...\\site-packages\\leo::
 
-      cd C:\\Python26\\Lib\\site-packages\\
+      cd C:\Python26\Lib\site-packages\
       junction leo leo-4-6-2-final
 
 5. Create windows shortcut (edit paths as necessary):
