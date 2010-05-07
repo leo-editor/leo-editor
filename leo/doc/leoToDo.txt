@@ -1301,6 +1301,8 @@ def scanAtRootOptions (s,i,err_flag=False):
         doc = app.config.at_root_bodies_start_in_doc_mode
         mode = g.choose(doc,"doc","code")
 
+    # g.trace(mode,g.callers(3))
+
     return i,mode
 #@+node:ekr.20031218072017.3155:<< scan another @root option >>
 i += 1 ; err = -1

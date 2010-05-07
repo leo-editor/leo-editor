@@ -23,7 +23,7 @@
 <v t="ekr.20071206070207"></v>
 </v>
 </v>
-<v t="ekr.20070224123943"><vh>@settings</vh>
+<v t="ekr.20070224123943" a="E"><vh>@settings</vh>
 <v t="ekr.20100118190256.2014"><vh> Chapters</vh>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
@@ -68,7 +68,8 @@
 <v t="ekr.20090815161520.1815"><vh>@string vim_trigger_event = select2</vh></v>
 <v t="ekr.20080604104453.5"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20100118190256.2013"><vh> Windows</vh>
+<v t="ekr.20100118190256.2013" a="E"><vh> Windows</vh>
+<v t="ekr.20100507151756.2123"><vh>@string qt-toolbar-location=left</vh></v>
 <v t="ekr.20090629105832.1790"><vh>@@bool big_outline_pane = True</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 </v>
@@ -191,7 +192,7 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
-<v t="ekr.20070224123943"></v>
+<v t="ekr.20070224123943" a="E"></v>
 <v t="ekr.20071025193940"></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
@@ -512,6 +513,9 @@
 </v>
 </v>
 <v t="ekr.20100330082345.2120"><vh>pseudoplain</vh></v>
+</v>
+<v t="ekr.20100507094542.2119"><vh>@root-code at-root-code-test.py</vh>
+<v t="ekr.20100507094542.2120"><vh>spam</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -5769,5 +5773,12 @@ import string
 
 This is a [[test]] of something.</t>
 <t tx="ekr.20100330084954.2125"></t>
+<t tx="ekr.20100507094542.2119">@root-code at-root-code-test.py
+
+@others
+</t>
+<t tx="ekr.20100507094542.2120">def spam():
+    pass</t>
+<t tx="ekr.20100507151756.2123"></t>
 </tnodes>
 </leo_file>
