@@ -367,7 +367,7 @@
 <v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
 <v t="ekr.20041119050105.16"><vh>@bool suboutline_only = False</vh></v>
 </v>
-<v t="ekr.20041213105007" a="E"><vh>Fonts</vh>
+<v t="ekr.20041213105007"><vh>Fonts</vh>
 <v t="ekr.20041119034357.45"><vh>@font body text font</vh></v>
 <v t="ekr.20070919125633"><vh>@font button font</vh></v>
 <v t="ekr.20041213105508"><vh>@font log font</vh></v>
@@ -1022,7 +1022,7 @@
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
+<v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1089,7 +1089,7 @@
 <v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
-<v t="ekr.20081018053140.11" a="E"><vh>qtGui plugin</vh>
+<v t="ekr.20081018053140.11"><vh>qtGui plugin</vh>
 <v t="ekr.20100107060708.6390"><vh>@bool qt-tree-multiple-selection = True</vh></v>
 <v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 200000</vh></v>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
@@ -1221,7 +1221,8 @@
 <v t="ekr.20050203090810"><vh>Unit test</vh>
 <v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
 </v>
-<v t="ekr.20041213105954"><vh>Window</vh>
+<v t="ekr.20041213105954" a="E"><vh>Window</vh>
+<v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
 <v t="edward.20081129091117.12"></v>
 <v t="ekr.20041119034357.38"><vh>Body pane options</vh>
 <v t="ekr.20061010111324"><vh>@bool select_all_text_when_editing_headlines = False</vh></v>
@@ -1279,7 +1280,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20081018053140.11" a="E"></v>
+<v t="ekr.20081018053140.11"></v>
 <v t="TL.20100307105950.3137"><vh>@keys Vim bindings</vh>
 <v t="TL.20100307105950.3138"><vh>Vim User Documentation</vh></v>
 <v t="TL.20100307105950.3139"><vh>Vim History</vh></v>
@@ -8028,6 +8029,7 @@ If &gt; 0, only nodes whose body text are smaller than this limit are colorized.
 <t tx="ekr.20100313080341.8369"></t>
 <t tx="ekr.20100313080341.8370"></t>
 <t tx="ekr.20100313080341.8371"></t>
+<t tx="ekr.20100507153425.8304">Valid values are top,bottom,left,right</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

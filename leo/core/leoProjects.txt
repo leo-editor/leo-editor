@@ -2907,6 +2907,10 @@ else:
 #@-node:ekr.20070418075804:printSettingsHelper
 #@-node:ekr.20070418073400:g.app.config.printSettings & helper
 #@-node:ekr.20100313150347.8255:Added legend for print-settings command
+#@+node:ekr.20100507153425.5799:Added support for @string qt-toolbar-location
+Valid values are top,bottom,left,right
+#@nonl
+#@-node:ekr.20100507153425.5799:Added support for @string qt-toolbar-location
 #@-node:ekr.20100319090849.5759:Features
 #@-node:ekr.20100303074003.5639:Leo 4.8 devel projects
 #@-all

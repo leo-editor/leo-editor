@@ -69,7 +69,7 @@
 <v t="ekr.20080604104453.5"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
 <v t="ekr.20100118190256.2013" a="E"><vh> Windows</vh>
-<v t="ekr.20100507151756.2123"><vh>@string qt-toolbar-location=left</vh></v>
+<v t="ekr.20100507151756.2123"><vh>@string qt-toolbar-location=top</vh></v>
 <v t="ekr.20090629105832.1790"><vh>@@bool big_outline_pane = True</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 </v>
