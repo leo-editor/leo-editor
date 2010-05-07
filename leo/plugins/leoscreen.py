@@ -18,21 +18,59 @@ the shell multiplexer
 Commands created
 ----------------
 
+Execution command
++++++++++++++++++
+
 leoscreen-run-text
   Send the text selected in Leo's body text to the shell app.
+  Selects the next line for your convenience.
+
+Retrieval commands
+++++++++++++++++++
+
+These commands get output from the shell app. and put it somewhere.
+
 leoscreen-get-line
   Insert a line of the last result from the shell into Leo's body text
   at the current insert point.  Lines are pulled one at a time starting
-  from the end of the output.
+  from the end of the output.  Can be used repeatedly to get the
+  output you want into Leo.
+leoscreen-get-all
+  Insert all of the last result from the shell into Leo's body text
+  at the current insert point.
+leoscreen-get-note
+  Insert all of the last result from the shell into a new child node of
+  the current node.
+leoscreen-show-all
+  **Show** the output from the last result from the shell in a temporary
+  read only window.  The output **is not stored**.
+leoscreen-show-note
+  Insert all of the last result from the shell into a new child node of
+  the current node and display that node a a stickynote (requires stickynote
+  plugin).
+
+Shell screen commands
++++++++++++++++++++++  
+
 leoscreen-next
   Switch screen session to next window.
 leoscreen-prev
   Switch screen session to preceeding window.
 leoscreen-other
   Switch screen session to last window displayed.
+
+Parameter commands
+++++++++++++++++++
+
 leoscreen-get-prefix
   Interactively get prefix for inserting text into body (#, --, //, etc/)
   Can also set via ``c.leo_screen.get_line_prefix = '#'``
+leoscreen-more-prompt
+  Skip one less line at the end of output when fetching output into Leo.
+  Adjusts lines skipped to avoid pulling in the applications prompt line.
+leoscreen-less-prompt
+  Skip one more line at the end of output when fetching output into Leo
+  Adjusts lines skipped to avoid pulling in the applications prompt line.
 
 @settings
 ---------
@@ -40,6 +78,16 @@ leoscreen-get-prefix
 ``leoscreen_prefix`` - prepended to output pulled in to Leo.  The
 substring SPACE in this setting will be replaced with a space character,
 to allow for trailing spaces.
+
+``leoscreen_time_fmt`` - time.strftime format for note type output headings
+
+Methods
+-------
+
+leoscreen creates a instance at c.leo_screen which has some methods which might be
+useful in ``@button`` and other Leo contexts.
+
+LIST HERE
 
 Example SQL setup
 -----------------
@@ -82,7 +130,14 @@ import leo.core.leoPlugins as leoPlugins
 
 import subprocess
 import os
+import time
 import tempfile
+import difflib
+
+try:
+    import stickynotes
+except ImportError:
+    stickynotes = None
 #@nonl
 #@-node:tbrown.20100226095909.12779:<< imports >>
 #@nl
@@ -141,6 +196,7 @@ class leoscreen_Controller:
 
         # output from last command
         self.output = []
+        self.old_output = []
 
         # file name for hardcopy and paste commands
         fd, self.tmpfile = tempfile.mkstemp()
@@ -152,6 +208,12 @@ class leoscreen_Controller:
             self.get_line_prefix = x.replace('SPACE', ' ')
         else:
             self.get_line_prefix = ''
+
+        self.time_fmt = self.c.config.getString('leoscreen_time_fmt') or '%Y-%m-%d %H:%M:%S' 
+
+        self.get_line()  # prime output diffing system
+
+        self.popups = []  # store references to popup windows
     #@-node:tbrown.20100226095909.12784:__init__
     #@+node:tbrown.20100226095909.12785:__del__
     def __del__(self):
@@ -194,7 +256,9 @@ class leoscreen_Controller:
             return  
             # otherwise there's an annoying delay for "Slurped zero chars" msg.
 
-        self.output = []  # forget previous output
+        if self.output:
+            self.old_output = self.output
+        self.output = []  # forget previous output (mostly)
 
         open(self.tmpfile,'w').write(txt)
 
@@ -252,8 +316,81 @@ class leoscreen_Controller:
 
         self.next_unread_line -= 1
 
-        self.insert_line(line, )
+        return line
     #@-node:tbrown.20100226095909.12788:get_line
+    #@+node:tbrown.20100422203442.5579:get_all
+    def get_all(self, c=None):
+        """Get all output from the last command"""
+
+        if c and c != self.c:
+            return
+
+        if not c:
+            c = self.c
+
+        self.output = None  # trick get_line into getting output
+        self.get_line()     # updates self.output, ignore returned line
+
+        sm = difflib.SequenceMatcher(None, self.old_output, self.output)
+        x = sm.find_longest_match(0, len(self.old_output)-1, 0, len(self.output)-1)
+        # print x, len(self.old_output), len(self.output)
+
+        ans = self.output[:]
+        del ans[x.b:x.b+x.size]
+
+        return '\n'.join(ans[:self.first_line])
+
+    #@-node:tbrown.20100422203442.5579:get_all
+    #@+node:tbrown.20100502155649.5599:get_note
+    def get_note(self, c=None):
+        """Get all output from the last command"""
+
+        if c and c != self.c:
+            return
+
+        if not c:
+            c = self.c
+
+        dat = self.get_all(c)
+
+        p = c.currentPosition()
+        n = p.insertAsLastChild()
+        n.h = time.strftime(self.time_fmt)
+        n.b = dat
+        c.setChanged(True)
+        c.selectPosition(n)
+        c.redraw()
+    #@-node:tbrown.20100502155649.5599:get_note
+    #@+node:tbrown.20100424115939.5735:show
+    def show(self, what, title=None):
+
+        try:
+            from PyQt4.QtGui import QTextEdit, QTextCursor
+        except ImportError:
+            g.es("Need Qt for show command")
+            return
+
+        if not title:
+            title = what.split('\n', 1)[0].strip()
+
+        te = QTextEdit()
+        te.setReadOnly(True)
+        te.setHtml("<pre>%s</pre>" % what)
+        te.setLineWrapMode(QTextEdit.NoWrap)
+        te.resize(800, 600)
+        te.setWindowTitle(title)
+        te.moveCursor(QTextCursor.End)
+        te.show()
+        self.popups.append(te)
+    #@-node:tbrown.20100424115939.5735:show
+    #@+node:tbrown.20100502155649.5605:show_note
+    def show_note(self):
+        if stickynotes:
+            stickynotes.stickynote_f({'c':self.c})
+        else:
+            g.es('stickynotes not available')
+
+    #@-node:tbrown.20100502155649.5605:show_note
     #@+node:tbrown.20100421115534.14949:get_prefix
     def get_prefix(self):
         """get the prefix for insertions from get_line"""
@@ -269,8 +406,32 @@ class leoscreen_Controller:
 #@+node:tbrown.20100226095909.12789:cmd_get_line
 def cmd_get_line(c):
     """get next line of results"""
-    c.leo_screen.get_line(c)
+    line = c.leo_screen.get_line(c)
+    c.leo_screen.insert_line(line)
 #@-node:tbrown.20100226095909.12789:cmd_get_line
+#@+node:tbrown.20100423084809.19285:cmd_get_all
+def cmd_get_all(c):
+    """get all of results"""
+    line = c.leo_screen.get_all(c)
+    c.leo_screen.insert_line(line)
+#@-node:tbrown.20100423084809.19285:cmd_get_all
+#@+node:tbrown.20100502155649.5597:cmd_get_note
+def cmd_get_note(c):
+    """get all of results"""
+    c.leo_screen.get_note()
+#@-node:tbrown.20100502155649.5597:cmd_get_note
+#@+node:tbrown.20100502155649.5603:cmd_show_note
+def cmd_show_note(c):
+    """get all of results"""
+    c.leo_screen.get_note()
+    c.leo_screen.show_note()
+#@-node:tbrown.20100502155649.5603:cmd_show_note
+#@+node:tbrown.20100502155649.5595:cmd_show_all
+def cmd_show_all(c):
+    """get all of results"""
+    line = c.leo_screen.get_all(c)
+    c.leo_screen.show(line)
+#@-node:tbrown.20100502155649.5595:cmd_show_all
 #@+node:tbrown.20100226095909.12790:cmd_run_text
 def cmd_run_text(c):
     """pass selected text to shell app. via screen"""
@@ -306,6 +467,15 @@ def cmd_get_prefix(c):
     """call get_prefix"""
     c.leo_screen.get_prefix()
 #@-node:tbrown.20100421115534.14948:cmd_get_prefix
+#@+node:tbrown.20100424115939.5581:cmd_more/less prompt
+def cmd_more_prompt(c):
+    """call get_prefix"""
+    c.leo_screen.first_line += 1
+
+def cmd_less_prompt(c):
+    """call get_prefix"""
+    c.leo_screen.first_line -= 1
+#@-node:tbrown.20100424115939.5581:cmd_more/less prompt
 #@-others
 #@nonl
 #@-node:tbrown.20100226095909.12777:@thin leoscreen.py
