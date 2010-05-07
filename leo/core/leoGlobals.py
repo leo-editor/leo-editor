@@ -686,6 +686,20 @@ def scanAtPagewidthDirectives(aList,issue_error_flag=False):
 
     return None
 #@-node:ekr.20080827175609.34:g.scanAtPagewidthDirectives
+#@+node:ekr.20100507084415.5760:g.scanAtRootDirectives
+def scanAtRootDirectives(aList):
+
+    '''Scan aList for @root directives.'''
+
+    for d in aList:
+        s = d.get('root')
+        if s is not None:
+            i, mode = g.scanAtRootOptions(s,0)
+            g.trace(mode)
+            return mode
+
+    return None
+#@-node:ekr.20100507084415.5760:g.scanAtRootDirectives
 #@+node:ekr.20031218072017.3154:g.scanAtRootOptions
 def scanAtRootOptions (s,i,err_flag=False):
 
@@ -723,6 +737,8 @@ def scanAtRootOptions (s,i,err_flag=False):
     if mode == None:
         doc = app.config.at_root_bodies_start_in_doc_mode
         mode = g.choose(doc,"doc","code")
+
+    # g.trace(mode,g.callers(3))
 
     return i,mode
 #@-node:ekr.20031218072017.3154:g.scanAtRootOptions

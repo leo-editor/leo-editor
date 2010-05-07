@@ -1782,7 +1782,22 @@ class DynamicWindow(QtGui.QMainWindow):
         else:
             self.createMainWindow()
 
+
         self.iconBar = self.addToolBar("IconBar")
+
+        # Set orientation if requested.
+        d = {
+            'bottom':QtCore.Qt.BottomToolBarArea,
+            'left':QtCore.Qt.LeftToolBarArea,
+            'right':QtCore.Qt.RightToolBarArea,
+            'top':QtCore.Qt.TopToolBarArea,
+        }
+        where = c.config.getString('qt-toolbar-location')
+        if where:
+            where = d.get(where)
+            if where: self.addToolBar(where,self.iconBar)
+        #self.addToolBar(QtCore.Qt.LeftToolBarArea,self.iconBar)
+        # self.iconBar.setAllowedAreas(QtCore.Qt.LeftToolBarArea)
         self.menubar = self.menuBar()
         self.statusBar = QtGui.QStatusBar()
         self.setStatusBar(self.statusBar)
