@@ -1796,8 +1796,6 @@ class DynamicWindow(QtGui.QMainWindow):
         if where:
             where = d.get(where)
             if where: self.addToolBar(where,self.iconBar)
-        #self.addToolBar(QtCore.Qt.LeftToolBarArea,self.iconBar)
-        # self.iconBar.setAllowedAreas(QtCore.Qt.LeftToolBarArea)
         self.menubar = self.menuBar()
         self.statusBar = QtGui.QStatusBar()
         self.setStatusBar(self.statusBar)
