@@ -1221,7 +1221,7 @@
 <v t="ekr.20050203090810"><vh>Unit test</vh>
 <v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
 </v>
-<v t="ekr.20041213105954" a="E"><vh>Window</vh>
+<v t="ekr.20041213105954"><vh>Window</vh>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
 <v t="edward.20081129091117.12"></v>
 <v t="ekr.20041119034357.38"><vh>Body pane options</vh>
@@ -8054,11 +8054,15 @@ e.g. cleo or cleo/small</t>
 loading files</t>
 <t tx="tbrown.20091129085043.11792">event hook used by active_path, icondclick1 is probably best</t>
 <t tx="tbrown.20091129085043.11793"># regular expressions (case insensitive) for files/directories
-# active_path won't list, one per line
+# active_path won't list, one per line.
+#
+# NOTE: directory names are always wrapped in '/', so write a
+# pattern to target '/.svn/' (e.g. "^/\.bzr/$"), not '.svn'.
+#
 # e.g.
 #
-#   ^\.bzr$    - ignore files and directories called '.bzr'
-#   \.pyc$     -ignore files and directories ending in '.pyc'
+#   ^/\.bzr/$    - ignore directories called '.bzr'
+#   \.pyc$     -ignore files ending in '.pyc'
 </t>
 <t tx="tbrown.20091129085043.11795"># regular expressions (case insensitive) for files/directories
 # active_path loads automatically
