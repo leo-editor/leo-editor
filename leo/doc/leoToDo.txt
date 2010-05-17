@@ -5,6 +5,1106 @@
 4.8 vim, cleanups, your mission...
 #@nonl
 #@+node:ekr.20100223123910.5836:Immediately
+#@+node:ekr.20100421104119.5753:Fix @shadow IndexError crash
+#@-node:ekr.20100421104119.5753:Fix @shadow IndexError crash
+#@+node:ekr.20100421101608.5824:Fix rst unicode bug
+#@+node:ekr.20090502071837.64:writeSpecialTree
+def writeSpecialTree (self,p,toString,justOneFile):
+
+    c = self.c
+    isHtml = self.ext in ('.html','.htm')
+    if isHtml and not SilverCity:
+        if not self.silverCityWarningGiven:
+            self.silverCityWarningGiven = True
+            g.es('SilverCity not present so no syntax highlighting')
+
+    self.initWrite(p)
+        # was encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
+    self.outputFile = StringIO()
+    self.writeTree(p)
+    self.source = self.outputFile.getvalue()
+    self.outputFile = None
+
+    if not toString:
+        # Compute this here for use by intermediate file.
+        self.outputFileName = self.computeOutputFileName(self.outputFileName)
+
+        # Create the directory if it doesn't exist.
+        theDir, junk = g.os_path_split(self.outputFileName)
+        theDir = c.os_path_finalize(theDir)
+        if not g.os_path_exists(theDir):
+            ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
+            if not ok:
+                g.es_print('did not create:',theDir,color='red')
+                return False
+
+        if self.getOption('write_intermediate_file'):
+            name = self.outputFileName + '.txt'
+            if g.isPython3: # 2010/04/21
+                f = open(name,'w',encoding=self.encoding)
+            else:
+                f = open(name,'w')
+            f.write(self.source)
+            f.close()
+            self.report(name)
+
+    try:
+        output = self.writeToDocutils(self.source)
+        ok = output is not None
+    except Exception:
+        g.pr('Exception in docutils')
+        g.es_exception()
+        ok = False
+
+    if ok:
+        if isHtml:
+            import re
+            idxTitle = output.find('<title></title>')
+            if idxTitle > -1:
+                m = re.search('<h1>([^<]*)</h1>', output)
+                if not m:
+                    m = re.search('<h1><[^>]+>([^<]*)</a></h1>', output)
+                if m:
+                    output = output.replace(
+                        '<title></title>',
+                        '<title>%s</title>' % m.group(1)
+                    )
+
+
+        if toString:
+            self.stringOutput = output
+        else:
+            # Write the file to the directory containing the .leo file.
+            f = open(self.outputFileName,'w')
+            f.write(output)
+            f.close()
+            self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
+
+    return ok
+#@-node:ekr.20090502071837.64:writeSpecialTree
+#@+node:ekr.20090502071837.94:write (leoRst)
+def write (self,s,theFile=None):
+
+    if theFile is None:
+        theFile = self.outputFile
+
+    if g.isPython3:
+        if g.is_binary_file(theFile):
+            s = self.encode(s)
+    else:
+        s = self.encode(s)
+
+    theFile.write(s)
+#@-node:ekr.20090502071837.94:write (leoRst)
+#@-node:ekr.20100421101608.5824:Fix rst unicode bug
+#@+node:ekr.20100507084415.5757:Fix @root-code/doc bug
+#@+node:ekr.20031218072017.1380:g.Directive utils...
+# New in Leo 4.6:
+# g.findAtTabWidthDirectives, g.findLanguageDirectives and
+# g.get_directives_dict use re module for faster searching.
+#@nonl
+#@+node:EKR.20040504150046.4:g.comment_delims_from_extension
+def comment_delims_from_extension(filename):
+
+    """
+    Return the comment delims corresponding to the filename's extension.
+
+    >>> import leo.core.leoGlobals as g
+    >>> g.comment_delims_from_extension(".py")
+    ('#', '', '')
+
+    >>> g.comment_delims_from_extension(".c")
+    ('//', '/*', '*/')
+
+    >>> g.comment_delims_from_extension(".html")
+    ('', '<!--', '-->')
+
+    """
+
+    if filename.startswith('.'):
+        # Python 2.6 changes how splitext works.
+        root,ext = None,filename
+    else:
+        root, ext = os.path.splitext(filename)
+    if ext == '.tmp':
+        root, ext = os.path.splitext(root)
+
+    language = g.app.extension_dict.get(ext[1:])
+    if ext:
+        return g.set_delims_from_language(language)
+    else:
+        g.trace("unknown extension: %s, filename: %s, root: %s" % (
+            repr(ext),repr(filename),repr(root)))
+        return '','',''
+#@-node:EKR.20040504150046.4:g.comment_delims_from_extension
+#@+node:ekr.20071109165315:g.stripPathCruft
+def stripPathCruft (path):
+
+    '''Strip cruft from a path name.'''
+
+    if not path:
+        return path # Retain empty paths for warnings.
+
+    if len(path) > 2 and (
+        (path[0]=='<' and path[-1] == '>') or
+        (path[0]=='"' and path[-1] == '"') or
+        (path[0]=="'" and path[-1] == "'")
+    ):
+        path = path[1:-1].strip()
+
+    # We want a *relative* path, not an absolute path.
+    return path
+#@-node:ekr.20071109165315:g.stripPathCruft
+#@+node:ekr.20090214075058.8:g.findAtTabWidthDirectives (must be fast)
+g_tabwidth_pat = re.compile(r'(^@tabwidth)',re.MULTILINE)
+
+def findTabWidthDirectives(c,p):
+
+    '''Return the language in effect at position p.'''
+
+    if c is None:
+        return # c may be None for testing.
+
+    w = None
+    # 2009/10/02: no need for copy arg to iter
+    for p in p.self_and_parents():
+        if w: break
+        for s in p.h,p.b:
+            if w: break
+            anIter = g_tabwidth_pat.finditer(s)
+            for m in anIter:
+                word = m.group(0)
+                i = m.start(0)
+                j = g.skip_ws(s,i + len(word))
+                junk,w = g.skip_long(s,j)
+                if w == 0: w = None
+    return w
+#@-node:ekr.20090214075058.8:g.findAtTabWidthDirectives (must be fast)
+#@+node:ekr.20090214075058.6:g.findLanguageDirectives (must be fast)
+g_language_pat = re.compile(r'(^@language)',re.MULTILINE)
+
+def findLanguageDirectives(c,p):
+
+    '''Return the language in effect at position p.'''
+
+    trace = False and not g.unitTesting
+
+    if c is None:
+        return # c may be None for testing. 
+    if c.target_language:
+        language = c.target_language.lower()
+    else:
+        language = 'python'
+    found = False
+    # 2009/10/02: no need for copy arg to iter.
+    for p in p.self_and_parents():
+        if found: break
+        for s in p.h,p.b:
+            if found: break
+            anIter = g_language_pat.finditer(s)
+            for m in anIter:
+                word = m.group(0)
+                i = m.start(0)
+                j = i + len(word)
+                k = g.skip_line(s,j)
+                language = s[j:k].strip()
+                found = True
+
+    if trace: g.trace(language)
+    return language
+#@-node:ekr.20090214075058.6:g.findLanguageDirectives (must be fast)
+#@+node:ekr.20031218072017.1385:g.findReference
+# Called from the syntax coloring method that colorizes section references.
+
+def findReference(c,name,root):
+
+    '''Find the section definition for name.
+
+    If a search of the descendants fails,
+    and an ancestor is an @root node,
+    search all the descendants of the @root node.
+    '''
+
+    for p in root.subtree():
+        assert(p!=root)
+        if p.matchHeadline(name) and not p.isAtIgnoreNode():
+            return p
+
+    # New in Leo 4.7: expand the search for @root trees.
+    for p in root.self_and_parents():
+        d = g.get_directives_dict(p)
+        if 'root' in d:
+            for p2 in p.subtree():
+                if p2.matchHeadline(name) and not p2.isAtIgnoreNode():
+                    return p2
+
+    # g.trace("not found:",name,root)
+    return c.nullPosition()
+#@-node:ekr.20031218072017.1385:g.findReference
+#@+node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
+# The caller passes [root_node] or None as the second arg.
+# This allows us to distinguish between None and [None].
+
+g_noweb_root = re.compile('<'+'<'+'*'+'>'+'>'+'=',re.MULTILINE)
+
+def get_directives_dict(p,root=None):
+
+    """Scan p for @directives found in globalDirectiveList.
+
+    Returns a dict containing pointers to the start of each directive"""
+
+    trace = False and not g.unitTesting
+    verbose = False
+    if trace: g.trace('*'*20,p.h)
+
+    if root: root_node = root[0]
+    d = {}
+
+    # Do this every time so plugins can add directives.
+    pat = g.compute_directives_re()
+    directives_pat = re.compile(pat,re.MULTILINE)
+
+    # The headline has higher precedence because it is more visible.
+    for kind,s in (('head',p.h),('body',p.b)):
+        anIter = directives_pat.finditer(s)
+        for m in anIter:
+            word = m.group(0)[1:] # Omit the @
+            i = m.start(0)
+            if word.strip() not in d:
+                j = i + 1 + len(word)
+                k = g.skip_line(s,j)
+                val = s[j:k].strip()
+                if j < len(s) and s[j] not in (' ','\t','\n'):
+                    # g.es_print('invalid character after directive',s[max(0,i-1):k-1],color='red')
+                    # if trace:g.trace(word,repr(val),s[i:i+20])
+                    pass # Not a valid directive: just ignore it.
+                else:
+                    d[word.strip()] = val
+                    if trace: g.trace(word.strip(),kind,repr(val))
+                    # A special case for @path in the body text of @<file> nodes.
+                    # Don't give an actual warning: just set some flags.
+                    if kind == 'body' and word.strip() == 'path' and p.isAnyAtFileNode():
+                        g.app.atPathInBodyWarning = p.h
+                        d['@path_in_body'] = p.h
+                        if trace: g.trace('@path in body',p.h)
+
+    if root:
+        anIter = g_noweb_root.finditer(p.b)
+        for m in anIter:
+            if root_node:
+                d["root"]=0 # value not immportant
+            else:
+                g.es('%s= requires @root in the headline' % (
+                    g.angleBrackets('*')))
+            break
+
+    if trace and verbose: g.trace('%4d' % (len(p.h) + len(p.b)),g.callers(5))
+    return d
+#@+node:ekr.20090214075058.10:compute_directives_re
+def compute_directives_re ():
+
+    '''Return an re pattern which will match all Leo directives.'''
+
+    global globalDirectiveList
+
+    aList = ['^@%s' % z for z in globalDirectiveList
+                if z != 'others']
+
+    if 0: # 2010/02/01
+        # The code never this, and this regex is broken
+        # because it can confuse g.get_directives_dict.
+        # @others can have leading whitespace.
+        aList.append(r'^\s@others\s')
+
+    return '|'.join(aList)
+#@-node:ekr.20090214075058.10:compute_directives_re
+#@-node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
+#@+node:ekr.20080827175609.1:g.get_directives_dict_list (must be fast)
+def get_directives_dict_list(p1):
+
+    """Scans p and all its ancestors for directives.
+
+    Returns a list of dicts containing pointers to
+    the start of each directive"""
+
+    trace = False and not g.unitTesting
+
+    if trace: time1 = g.getTime()
+
+    result = []
+
+    if p1:
+        p1 = p1.copy()
+        for p in p1.self_and_parents():
+            if p.hasParent(): root = None
+            else:             root = [p.copy()]
+            result.append(g.get_directives_dict(p,root=root))
+
+        if trace:
+            n = len(p1.h) + len(p1.b)
+            g.trace('%4d %s' % (n,g.timeSince(time1)))
+
+    return result
+#@-node:ekr.20080827175609.1:g.get_directives_dict_list (must be fast)
+#@+node:ekr.20031218072017.1386:g.getOutputNewline
+def getOutputNewline (c=None,name=None):
+
+    '''Convert the name of a line ending to the line ending itself.
+
+    Priority:
+    - Use name if name given
+    - Use c.config.output_newline if c given,
+    - Otherwise use g.app.config.output_newline.'''
+
+    if name: s = name
+    elif c:  s = c.config.output_newline
+    else:    s = app.config.output_newline
+
+    if not s: s = ''
+    s = s.lower()
+    if s in ( "nl","lf"): s = '\n'
+    elif s == "cr": s = '\r'
+    elif s == "platform": s = os.linesep  # 12/2/03: emakital
+    elif s == "crlf": s = "\r\n"
+    else: s = '\n' # Default for erroneous values.
+    # g.trace(c,name,c.config.output_newline,'returns',repr(s))
+
+    if g.isPython3:
+        s = str(s)
+    return s
+#@-node:ekr.20031218072017.1386:g.getOutputNewline
+#@+node:ekr.20080827175609.52:g.scanAtCommentAndLanguageDirectives
+def scanAtCommentAndAtLanguageDirectives(aList):
+
+    '''Scan aList for @comment and @language directives.
+
+    @comment should follow @language if both appear in the same node.'''
+
+    lang = None
+
+    for d in aList:
+
+        comment = d.get('comment')
+        language = d.get('language')
+
+        # Important: assume @comment follows @language.
+        if language:
+            # if g.unitTesting: g.trace('language',language)
+            lang,delim1,delim2,delim3 = g.set_language(language,0)
+
+        if comment:
+            # if g.unitTesting: g.trace('comment',comment)
+            delim1,delim2,delim3 = g.set_delims_from_string(comment)
+
+        if comment or language:
+            delims = delim1,delim2,delim3
+            return {'language':lang,'comment':comment,'delims':delims}
+
+    return None
+#@-node:ekr.20080827175609.52:g.scanAtCommentAndLanguageDirectives
+#@+node:ekr.20080827175609.32:g.scanAtEncodingDirectives
+def scanAtEncodingDirectives(aList):
+
+    '''Scan aList for @encoding directives.'''
+
+    for d in aList:
+        encoding = d.get('encoding')
+        if encoding and g.isValidEncoding(encoding):
+            # g.trace(encoding)
+            return encoding
+        elif encoding and not g.app.unitTesting:
+            g.es("invalid @encoding:",encoding,color="red")
+
+    return None
+#@-node:ekr.20080827175609.32:g.scanAtEncodingDirectives
+#@+node:ekr.20080827175609.53:g.scanAtHeaderDirectives
+def scanAtHeaderDirectives(aList):
+
+    '''scan aList for @header and @noheader directives.'''
+
+    for d in aList:
+        if d.get('header') and d.get('noheader'):
+            g.es_print("conflicting @header and @noheader directives",color='red')
+#@nonl
+#@-node:ekr.20080827175609.53:g.scanAtHeaderDirectives
+#@+node:ekr.20080827175609.33:g.scanAtLineendingDirectives
+def scanAtLineendingDirectives(aList):
+
+    '''Scan aList for @lineending directives.'''
+
+    for d in aList:
+
+        e = d.get('lineending')
+        if e in ("cr","crlf","lf","nl","platform"):
+            lineending = g.getOutputNewline(name=e)
+            return lineending
+        # else:
+            # g.es("invalid @lineending directive:",e,color="red")
+
+    return None
+#@-node:ekr.20080827175609.33:g.scanAtLineendingDirectives
+#@+node:ekr.20080827175609.34:g.scanAtPagewidthDirectives
+def scanAtPagewidthDirectives(aList,issue_error_flag=False):
+
+    '''Scan aList for @pagewidth directives.'''
+
+    for d in aList:
+        s = d.get('pagewidth')
+        if s is not None:
+            i, val = g.skip_long(s,0)
+            if val != None and val > 0:
+                # g.trace(val)
+                return val
+            else:
+                if issue_error_flag and not g.app.unitTesting:
+                    g.es("ignoring @pagewidth",s,color="red")
+
+    return None
+#@-node:ekr.20080827175609.34:g.scanAtPagewidthDirectives
+#@+node:ekr.20100507084415.5760:g.scanAtRootDirectives
+def scanAtRootDirectives(aList):
+
+    '''Scan aList for @root directives.'''
+
+    for d in aList:
+        s = d.get('root')
+        if s is not None:
+            i, mode = g.scanAtRootOptions(s,0)
+            g.trace(mode)
+            return mode
+
+    return None
+#@-node:ekr.20100507084415.5760:g.scanAtRootDirectives
+#@+node:ekr.20031218072017.3154:g.scanAtRootOptions
+def scanAtRootOptions (s,i,err_flag=False):
+
+    # The @root has been eaten when called from tangle.scanAllDirectives.
+    if g.match(s,i,"@root"):
+        i += len("@root")
+        i = g.skip_ws(s,i)
+
+    mode = None 
+    while g.match(s,i,'-'):
+        << scan another @root option >>
+
+    if mode == None:
+        doc = app.config.at_root_bodies_start_in_doc_mode
+        mode = g.choose(doc,"doc","code")
+
+    # g.trace(mode,g.callers(3))
+
+    return i,mode
+#@+node:ekr.20031218072017.3155:<< scan another @root option >>
+i += 1 ; err = -1
+
+if g.match_word(s,i,"code"): # Just match the prefix.
+    if not mode: mode = "code"
+    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
+elif g.match(s,i,"doc"): # Just match the prefix.
+    if not mode: mode = "doc"
+    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
+else:
+    err = i-1
+
+# Scan to the next minus sign.
+while i < len(s) and s[i] not in (' ','\t','-'):
+    i += 1
+
+if err > -1 and err_flag:
+    z_opt = s[err:i]
+    z_line = g.get_line(s,i)
+    g.es("unknown option:",z_opt,"in",z_line)
+#@-node:ekr.20031218072017.3155:<< scan another @root option >>
+#@-node:ekr.20031218072017.3154:g.scanAtRootOptions
+#@+node:ekr.20080827175609.37:g.scanAtTabwidthDirectives & scanAllTabWidthDirectives
+def scanAtTabwidthDirectives(aList,issue_error_flag=False):
+
+    '''Scan aList for @tabwidth directives.'''
+
+    for d in aList:
+        s = d.get('tabwidth')
+        if s is not None:
+            junk,val = g.skip_long(s,0)
+            if val not in (None,0):
+                return val
+            else:
+                if issue_error_flag and not g.app.unitTesting:
+                    g.es("ignoring @tabwidth",s,color="red")
+    return None
+
+def scanAllAtTabWidthDirectives(c,p):
+
+    '''Scan p and all ancestors looking for @tabwidth directives.'''
+
+    if c and p:
+        aList = g.get_directives_dict_list(p)
+        val = g.scanAtTabwidthDirectives(aList)
+        ret = g.choose(val is None,c.tab_width,val)
+    else:
+        ret = None
+    # g.trace(ret,p and p.h,ret)
+    return ret
+#@-node:ekr.20080827175609.37:g.scanAtTabwidthDirectives & scanAllTabWidthDirectives
+#@+node:ekr.20080831084419.4:g.scanAtWrapDirectives & scanAllAtWrapDirectives
+def scanAtWrapDirectives(aList,issue_error_flag=False):
+
+    '''Scan aList for @wrap and @nowrap directives.'''
+
+    for d in aList:
+        if d.get('wrap') is not None:
+            return True
+        elif d.get('nowrap') is not None:
+            return False
+
+    return None
+
+def scanAllAtWrapDirectives(c,p):
+
+    '''Scan p and all ancestors looking for @wrap/@nowrap directives.'''
+
+    if c and p:
+        default = c and c.config.getBool("body_pane_wraps")
+        aList = g.get_directives_dict_list(p)
+
+        val = g.scanAtWrapDirectives(aList)
+        ret = g.choose(val is None,default,val)
+    else:
+        ret = None
+    # g.trace(ret,p.h)
+    return ret
+#@-node:ekr.20080831084419.4:g.scanAtWrapDirectives & scanAllAtWrapDirectives
+#@+node:ekr.20080901195858.4:g.scanDirectives  (for compatibility only)
+def scanDirectives(c,p=None):
+
+    return c.scanAllDirectives(p)
+#@nonl
+#@-node:ekr.20080901195858.4:g.scanDirectives  (for compatibility only)
+#@+node:ekr.20040715155607:g.scanForAtIgnore
+def scanForAtIgnore(c,p):
+
+    """Scan position p and its ancestors looking for @ignore directives."""
+
+    if g.app.unitTesting:
+        return False # For unit tests.
+
+    for p in p.self_and_parents():
+        d = g.get_directives_dict(p)
+        if 'ignore' in d:
+            return True
+
+    return False
+#@-node:ekr.20040715155607:g.scanForAtIgnore
+#@+node:ekr.20040712084911.1:g.scanForAtLanguage
+def scanForAtLanguage(c,p):
+
+    """Scan position p and p's ancestors looking only for @language and @ignore directives.
+
+    Returns the language found, or c.target_language."""
+
+    # Unlike the code in x.scanAllDirectives, this code ignores @comment directives.
+
+    if c and p:
+        for p in p.self_and_parents():
+            d = g.get_directives_dict(p)
+            if 'language' in d:
+                z = d["language"]
+                language,delim1,delim2,delim3 = g.set_language(z,0)
+                return language
+
+    return c.target_language
+#@-node:ekr.20040712084911.1:g.scanForAtLanguage
+#@+node:ekr.20041123094807:g.scanForAtSettings
+def scanForAtSettings(p):
+
+    """Scan position p and its ancestors looking for @settings nodes."""
+
+    for p in p.self_and_parents():
+        h = p.h
+        h = g.app.config.canonicalizeSettingName(h)
+        if h.startswith("@settings"):
+            return True
+
+    return False
+#@-node:ekr.20041123094807:g.scanForAtSettings
+#@+node:ekr.20031218072017.1382:g.set_delims_from_language
+# Returns a tuple (single,start,end) of comment delims
+
+def set_delims_from_language(language):
+
+    trace = False and not g.unitTesting
+
+    val = g.app.language_delims_dict.get(language)
+    # if language.startswith('huh'): g.pdb()
+
+    if val:
+        delim1,delim2,delim3 = g.set_delims_from_string(val)
+        if trace: g.trace(repr(language),
+            repr(delim1),repr(delim2),repr(delim3),g.callers(5))
+        if delim2 and not delim3:
+            return '',delim1,delim2
+        else: # 0,1 or 3 params.
+            return delim1,delim2,delim3
+    else:
+        return '','','' # Indicate that no change should be made
+#@-node:ekr.20031218072017.1382:g.set_delims_from_language
+#@+node:ekr.20031218072017.1383:g.set_delims_from_string
+def set_delims_from_string(s):
+
+    """Returns (delim1, delim2, delim2), the delims following the @comment directive.
+
+    This code can be called from @language logic, in which case s can point at @comment"""
+
+    # Skip an optional @comment
+    tag = "@comment"
+    i = 0
+    if g.match_word(s,i,tag):
+        i += len(tag)
+
+    count = 0 ; delims = ['','','']
+    while count < 3 and i < len(s):
+        i = j = g.skip_ws(s,i)
+        while i < len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
+            i += 1
+        if j == i: break
+        delims[count] = s[j:i] or ''
+        count += 1
+
+    # 'rr 09/25/02
+    if count == 2: # delims[0] is always the single-line delim.
+        delims[2] = delims[1]
+        delims[1] = delims[0]
+        delims[0] = ''
+
+    # 7/8/02: The "REM hack": replace underscores by blanks.
+    # 9/25/02: The "perlpod hack": replace double underscores by newlines.
+    for i in range(0,3):
+        if delims[i]:
+            delims[i] = delims[i].replace("__",'\n').replace('_',' ')
+
+    return delims[0], delims[1], delims[2]
+#@-node:ekr.20031218072017.1383:g.set_delims_from_string
+#@+node:ekr.20031218072017.1384:g.set_language
+def set_language(s,i,issue_errors_flag=False):
+
+    """Scan the @language directive that appears at s[i:].
+
+    The @language may have been stripped away.
+
+    Returns (language, delim1, delim2, delim3)
+    """
+
+    tag = "@language"
+    # g.trace(g.get_line(s,i))
+    assert(i != None)
+    # assert(g.match_word(s,i,tag))
+    if g.match_word(s,i,tag):
+        i += len(tag)
+    # Get the argument.
+    i = g.skip_ws(s, i)
+    j = i ; i = g.skip_c_id(s,i)
+    # Allow tcl/tk.
+    arg = s[j:i].lower()
+    if app.language_delims_dict.get(arg):
+        language = arg
+        delim1, delim2, delim3 = g.set_delims_from_language(language)
+        return language, delim1, delim2, delim3
+
+    if issue_errors_flag:
+        g.es("ignoring:",g.get_line(s,i))
+
+    return None, None, None, None,
+#@-node:ekr.20031218072017.1384:g.set_language
+#@+node:ekr.20081001062423.9:g.setDefaultDirectory & helpers
+# This is a refactoring, used by leoImport.scanDefaultDirectory and
+# atFile.scanDefaultDirectory
+
+def setDefaultDirectory(c,p,importing=False):
+
+    ''' Compute a default directory by scanning @path directives.
+    Return (default_dir,error_message).'''
+
+    if not p: return '',''
+    default_dir,error = g.getAbsPathFromNode(c,p),''
+
+    if not default_dir:
+        default_dir,error = g.getPathFromDirectives(c,p)
+
+    if c and c.frame and not default_dir and not error:
+        default_dir = g.findDefaultDirectory(c)
+
+    if not default_dir and not importing and not error:
+        # This should never happen: c.openDirectory should be a good last resort.
+        error = "No absolute directory specified anywhere."
+
+    return default_dir, error
+#@+node:ekr.20081001062423.10:g.getAbsPathFromNode
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+def getAbsPathFromNode(c,p,name=''): # Name is for unit testing.
+
+    default_dir = ''
+    if p:
+        name = p.anyAtFileNodeName()
+
+    if name:
+        theDir = g.os_path_dirname(name)
+        if theDir and g.os_path_isabs(theDir):
+            if g.os_path_exists(theDir):
+                default_dir = theDir
+            else:
+                default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
+
+    return default_dir
+#@nonl
+#@-node:ekr.20081001062423.10:g.getAbsPathFromNode
+#@+node:ekr.20081001062423.11:g.getPathFromDirectives
+def getPathFromDirectives(c,p):
+
+    '''Scan for @path directives.'''
+
+    trace = False and not g.unitTesting
+    default_dir = '' ; error = ''
+    if not p: return default_dir,error
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    if path:
+        base = g.getBaseDirectory(c) # returns "" on error.
+        path = c.os_path_finalize_join(base,path)
+        if g.os_path_exists(path):
+            default_dir = path
+        else:
+            default_dir = g.makeAllNonExistentDirectories(path,c=c)
+            if not default_dir:
+                error = "invalid @path: %s" % path
+
+    return default_dir,error
+#@-node:ekr.20081001062423.11:g.getPathFromDirectives
+#@+node:ekr.20081001062423.12:g.findDefaultDirectory (major change)
+# This code is executed if no valid absolute path was specified in
+# the @file node or in an @path directive.
+
+def findDefaultDirectory(c):
+
+    '''Attempt to find a suitable default directory.'''
+
+    default_dir = ''
+
+    # Check that c.openDirectory and c.frame.openDirectory are in synch.
+    if c.openDirectory != c.frame.openDirectory:
+        g.trace('***can not happen: c.openDirectory != c.frame.openDirectory')
+        g.trace('c.openDirectory',c.openDirectory)
+        g.trace('c.frame.openDirectory',c.frame.openDirectory)
+
+    if not g.os_path_isabs(c.openDirectory):
+        g.trace('*** can not happen: relative c.openDirectory',c.openDirectory)
+
+    for theDir in (c.openDirectory,g.getBaseDirectory(c)):
+        if theDir and g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+            if g.os_path_exists(theDir):
+                default_dir = theDir
+            else:
+                default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
+            if default_dir: break
+
+    return default_dir
+#@-node:ekr.20081001062423.12:g.findDefaultDirectory (major change)
+#@-node:ekr.20081001062423.9:g.setDefaultDirectory & helpers
+#@-node:ekr.20031218072017.1380:g.Directive utils...
+#@+node:ekr.20100507084415.5758:Report
+@nocolor-node
+
+Whereas the @root directive in a body works (for some value of works; I'm still
+clarifying for myself - it doesn't work the way Leo of October 2002 did),
+@root-doc and @root-code always elicit a message:
+
+----- The outline contains no roots
+looking for a parent to tangle...
+tangle complete
+ CancelOk
+#@-node:ekr.20100507084415.5758:Report
+#@+node:ekr.20080923124254.16:tangle.scanAllDirectives
+def scanAllDirectives(self,p):
+
+    """Scan vnode p and p's ancestors looking for directives,
+    setting corresponding tangle ivars and globals.
+    """
+
+    c = self.c
+    self.init_directive_ivars()
+    if p:
+        s = p.b
+        << Collect @first attributes >>
+
+    # delims = (self.single_comment_string,self.start_comment_string,self.end_comment_string)
+    lang_dict = {'language':self.language,'delims':None,} # Delims not used
+
+    table = (
+        ('encoding',    self.encoding,  g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives), 
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    # Post process.
+    lang_dict       = d.get('lang-dict')
+    lineending      = d.get('lineending')
+    if lineending:
+        self.output_newline = lineending
+    self.encoding             = d.get('encoding')
+    self.language             = lang_dict.get('language')
+    self.page_width           = d.get('pagewidth')
+    self.tangle_directory     = d.get('path')
+    self.tab_width            = d.get('tabwidth')
+
+    # Handle the print-mode directives.
+    self.print_mode = None
+    for d in aList:
+        for key in ('verbose','terse','quiet','silent'):
+            if d.get(key) is not None:
+                self.print_mode = key ; break
+        if self.print_mode: break
+    if not self.print_mode: self.print_mode = 'verbose'
+
+    # 2010/01/27: bug fix: make sure to set the ivars.
+    delim1,delim2,delim3 = g.set_delims_from_language(self.language)
+    self.single_comment_string = delim1
+    self.start_comment_string = delim2
+    self.end_comment_string = delim3
+
+    # g.trace(self.tangle_directory)
+
+    # For unit testing.
+    return {
+        "encoding"  : self.encoding,
+        "language"  : self.language,
+        "lineending": self.output_newline,
+        "pagewidth" : self.page_width,
+        "path"      : self.tangle_directory,
+        "tabwidth"  : self.tab_width,
+    }
+#@+node:ekr.20080923124254.17:<< Collect @first attributes >>
+@ Stephen P. Schaefer 9/13/2002: Add support for @first.
+Unlike other root attributes, does *NOT* inherit from parent nodes.
+@c
+tag = "@first"
+sizeString = len(s) # DTHEIN 13-OCT-2002: use to detect end-of-string
+i = 0
+while 1:
+    # DTHEIN 13-OCT-2002: directives must start at beginning of a line
+    if not g.match_word(s,i,tag):
+        i = g.skip_line(s,i)
+    else:
+        i = i + len(tag)
+        j = i = g.skip_ws(s,i)
+        i = g.skip_to_end_of_line(s,i)
+        if i>j:
+            self.first_lines += s[j:i] + '\n'
+        i = g.skip_nl(s,i)
+    if i >= sizeString:  # DTHEIN 13-OCT-2002: get out when end of string reached
+        break
+#@-node:ekr.20080923124254.17:<< Collect @first attributes >>
+#@-node:ekr.20080923124254.16:tangle.scanAllDirectives
+#@+node:ekr.20031218072017.3475:tanglePass1
+# Traverses the tree whose root is given, handling each headline and associated body text.
+
+def tanglePass1(self,p):
+
+    """The main routine of tangle pass 1"""
+
+    p = p.copy()
+    next = p.nodeAfterTree()
+    while p and p != next:
+        self.p = p
+        self.setRootFromHeadline(p)
+        theDict = g.get_directives_dict(p,[self.head_root])
+        is_ignore = 'ignore' in theDict
+        if is_ignore:
+            p.moveToNodeAfterTree()
+            continue
+        # This must be called after root_name has been set.
+        if self.tangling:
+            self.scanAllDirectives(p) # calls init_directive_ivars.
+        # Scan the headline and body text.
+        self.skip_headline(p)
+        self.skip_body(p)
+        p.moveToThreadNext()
+        if self.errors + g.app.scanErrors >= max_errors:
+            self.warning("----- Halting Tangle: too many errors")
+            break
+
+    if self.tangling:
+        self.st_check()
+        # g.trace(self.st_dump(verbose_flag=True))
+#@-node:ekr.20031218072017.3475:tanglePass1
+#@+node:ekr.20031218072017.3594:setRootFromHeadline
+def setRootFromHeadline (self,p):
+
+    s = p.h
+
+    if s[0:5] == "@root":
+        i,self.start_mode = g.scanAtRootOptions(s,0)
+        i = g.skip_ws(s,i)
+
+        if i < len(s): # Non-empty file name.
+            # self.root_name must be set later by token_type().
+            self.root = s[i:]
+#@-node:ekr.20031218072017.3594:setRootFromHeadline
+#@+node:ekr.20031218072017.1259:setRootFromText
+@ This code skips the file name used in @root directives.
+
+File names may be enclosed in < and > characters, or in double quotes.  If a file name is not enclosed be these delimiters it continues until the next newline.
+@c
+def setRootFromText(self,s,report_errors=True):
+
+    # g.trace(s)
+    self.root_name = None
+    i,self.start_mode = g.scanAtRootOptions(s,0)
+    i = g.skip_ws(s,i)
+
+    if i >= len(s): return i
+    # Allow <> or "" as delimiters, or a bare file name.
+    if s[i] == '"':
+        i += 1 ; delim = '"'
+    elif s[i] == '<':
+        i += 1 ; delim = '>'
+    else: delim = '\n'
+
+    root1 = i # The name does not include the delimiter.
+    while i < len(s) and s[i] != delim and not g.is_nl(s,i):
+        i += 1
+    root2 = i
+
+    if delim != '\n' and not g.match(s,i,delim):
+        if report_errors:
+            g.scanError("bad filename in @root " + s[:i])
+    else:
+        self.root_name = s[root1:root2].strip()
+    return i
+#@-node:ekr.20031218072017.1259:setRootFromText
+#@+node:ekr.20031218072017.3154:g.scanAtRootOptions
+def scanAtRootOptions (s,i,err_flag=False):
+
+    # The @root has been eaten when called from tangle.scanAllDirectives.
+    if g.match(s,i,"@root"):
+        i += len("@root")
+        i = g.skip_ws(s,i)
+
+    mode = None 
+    while g.match(s,i,'-'):
+        << scan another @root option >>
+
+    if mode == None:
+        doc = app.config.at_root_bodies_start_in_doc_mode
+        mode = g.choose(doc,"doc","code")
+
+    # g.trace(mode,g.callers(3))
+
+    return i,mode
+#@+node:ekr.20031218072017.3155:<< scan another @root option >>
+i += 1 ; err = -1
+
+if g.match_word(s,i,"code"): # Just match the prefix.
+    if not mode: mode = "code"
+    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
+elif g.match(s,i,"doc"): # Just match the prefix.
+    if not mode: mode = "doc"
+    elif err_flag: g.es("modes conflict in:",g.get_line(s,i))
+else:
+    err = i-1
+
+# Scan to the next minus sign.
+while i < len(s) and s[i] not in (' ','\t','-'):
+    i += 1
+
+if err > -1 and err_flag:
+    z_opt = s[err:i]
+    z_line = g.get_line(s,i)
+    g.es("unknown option:",z_opt,"in",z_line)
+#@-node:ekr.20031218072017.3155:<< scan another @root option >>
+#@-node:ekr.20031218072017.3154:g.scanAtRootOptions
+#@+node:ekr.20031218072017.3599:token_type
+def token_type(self,s,i,report_errors=True):
+
+    """This method returns a code indicating the apparent kind of token at the position i.
+
+    The caller must determine whether section definiton tokens are valid.
+
+    returns (kind, end) and sets global root_name using setRootFromText()."""
+
+    kind = plain_line ; end = -1
+    if self.use_noweb_flag:
+        << set token_type in noweb mode >>
+    else:
+        << set token_type for CWEB mode >>
+    if kind == at_other :
+        << set kind for directive >>
+    # g.trace(kind,g.get_line(s,i))
+    return kind, end
+#@+node:ekr.20031218072017.3600:<< set token_type in noweb mode >>
+if g.match(s,i,"<<"):
+    i, kind, end = self.skip_section_name(s,i)
+    if kind == bad_section_name:
+        kind = plain_line # not an error.
+    elif kind == at_root:
+        if self.head_root:
+            self.setRootFromText(self.head_root,report_errors)
+        else:
+            kind = bad_section_name # The warning has been given.
+elif g.match(s,i,"@ ") or g.match(s,i,"@\t") or g.match(s,i,"@\n"):
+    # 10/30/02: Only @doc starts a noweb doc part in raw cweb mode.
+    kind = g.choose(self.raw_cweb_flag,plain_line,at_doc)
+elif g.match(s,i,"@@"): kind = at_at
+elif i < len(s) and s[i] == '@': kind = at_other
+else: kind = plain_line
+#@-node:ekr.20031218072017.3600:<< set token_type in noweb mode >>
+#@+node:ekr.20031218072017.3601:<< set token_type for CWEB mode >>
+i = g.skip_ws(s,i)
+if g.match(s,i,"@*") or g.match(s,i,"@ "): kind = at_doc
+elif g.match(s,i,"@<"): i, kind, end = self.skip_section_name(s,i)
+elif g.match(s,i,"@@"): kind = at_at
+elif g.match_word(s,i,"@c") or g.match_word(s,i,"@p"): kind = at_code
+elif i < len(s) and s[i] == '@':
+    if   i + 1 >= len(s): kind = at_doc
+    elif i + 1 < len(s) and s[i+1] not in string.ascii_letters:
+        kind = at_web
+    else: kind = at_other # Set kind later
+else: kind = plain_line
+#@-node:ekr.20031218072017.3601:<< set token_type for CWEB mode >>
+#@+node:ekr.20031218072017.3602:<< set kind for directive >>
+# This code will return at_other for any directive other than those listed.
+
+if g.match_word(s,i,"@c"):
+    # 10/30/02: Only @code starts a code section in raw cweb mode.
+    kind = g.choose(self.raw_cweb_flag,plain_line,at_code)
+else:
+    for name, theType in [
+        ("@chapter", at_chapter),
+        ("@code", at_code),
+        ("@doc", at_doc),
+        ("@root", at_root),
+        ("@section", at_section) ]:
+        if g.match_word(s,i,name):
+            kind = theType ; break
+
+if self.raw_cweb_flag and kind == at_other:
+    # 10/30/02: Everything else is plain text in raw cweb mode.
+    kind = plain_line
+
+if kind == at_root:
+    i = self.setRootFromText(s[i:],report_errors)
+#@-node:ekr.20031218072017.3602:<< set kind for directive >>
+#@-node:ekr.20031218072017.3599:token_type
+#@-node:ekr.20100507084415.5757:Fix @root-code/doc bug
 #@+node:ekr.20100223123910.5930:recentFilesController
 @
 The present operation of recent files is surprising.

@@ -1374,6 +1374,7 @@ execFile
 executeScript
 expCol
 expRow
+expanduser
 exportHeadlines
 exportTests
 expr_names
@@ -1576,7 +1577,9 @@ getcwd
 getenv
 getmtime
 getoutput
+getpass
 gettext
+getuser
 gif
 givenArgs
 globalData
@@ -1622,6 +1625,7 @@ has_key
 hasattr
 hash2
 hash_char
+hashlib
 hasn
 hda2
 hdb1
@@ -1710,6 +1714,7 @@ ignore``'d
 igrep
 ihooks
 imag
+imaplib
 importCommands
 importDict
 importExport
@@ -2813,6 +2818,7 @@ settings_
 setup_button
 setup_command
 sflogo
+sha1
 shadow_prefix
 shadow_subdir
 sharedNodes

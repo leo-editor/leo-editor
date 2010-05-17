@@ -279,23 +279,21 @@ def initAllEditCommanders (c):
 #@+node:ekr.20050920084036.13:abbrevCommandsClass (test)
 #@+at
 # 
-# type some text, set its abbreviation with Control-x a i g, type 
-# the text for abbreviation expansion
-# type Control-x a e ( or Alt-x expand-abbrev ) to expand 
-# abbreviation
+# type some text, set its abbreviation with Control-x a i g, type the text for 
+# abbreviation expansion
+# type Control-x a e ( or Alt-x expand-abbrev ) to expand abbreviation
 # type Alt-x abbrev-on to turn on automatic abbreviation expansion
 # Alt-x abbrev-on to turn it off
 # 
 # an example:
 # type:
 # frogs
-# after typing 's' type Control-x a i g.  This will turn the 
-# miniBuffer blue, type in your definition. For example: turtles.
+# after typing 's' type Control-x a i g.  This will turn the miniBuffer blue, 
+# type in your definition. For example: turtles.
 # 
 # Now in the buffer type:
 # frogs
-# after typing 's' type Control-x a e.  This will turn the 'frogs' 
-# into:
+# after typing 's' type Control-x a e.  This will turn the 'frogs' into:
 # turtles
 #@-at
 #@@c
@@ -620,11 +618,11 @@ class abbrevCommandsClass (baseEditCommandsClass):
 #@+node:ekr.20050920084036.31:bufferCommandsClass
 #@+at 
 #@nonl
-# An Emacs instance does not have knowledge of what is considered a 
-# buffer in the environment.
+# An Emacs instance does not have knowledge of what is considered a buffer in 
+# the environment.
 # 
-# The call to setBufferInteractionMethods calls the buffer 
-# configuration methods.
+# The call to setBufferInteractionMethods calls the buffer configuration 
+# methods.
 #@-at
 #@@c
 
@@ -2055,8 +2053,8 @@ class editCommandsClass (baseEditCommandsClass):
     #@-node:ekr.20050920084036.65:evalExpression
     #@+node:ekr.20050920084036.66:fill column and centering
     #@+at
-    # These methods are currently just used in tandem to center the 
-    # line or region within the fill column.
+    # These methods are currently just used in tandem to center the line or 
+    # region within the fill column.
     # for example, dependent upon the fill column, this text:
     # 
     # cats
@@ -4622,161 +4620,103 @@ class editCommandsClass (baseEditCommandsClass):
     #@@nocolor
     #@@color
     #@+at
-    # XEmacs provides several commands for sorting text in a 
-    # buffer.  All
-    # operate on the contents of the region (the text between point 
-    # and the
-    # mark).  They divide the text of the region into many "sort 
-    # records",
-    # identify a "sort key" for each record, and then reorder the 
-    # records
-    # using the order determined by the sort keys.  The records are 
-    # ordered so
-    # that their keys are in alphabetical order, or, for numerical 
-    # sorting, in
-    # numerical order.  In alphabetical sorting, all upper-case 
-    # letters `A'
-    # through `Z' come before lower-case `a', in accordance with the 
-    # ASCII
+    # XEmacs provides several commands for sorting text in a buffer.  All
+    # operate on the contents of the region (the text between point and the
+    # mark).  They divide the text of the region into many "sort records",
+    # identify a "sort key" for each record, and then reorder the records
+    # using the order determined by the sort keys.  The records are ordered so
+    # that their keys are in alphabetical order, or, for numerical sorting, in
+    # numerical order.  In alphabetical sorting, all upper-case letters `A'
+    # through `Z' come before lower-case `a', in accordance with the ASCII
     # character sequence.
     # 
-    #    The sort commands differ in how they divide the text into 
-    # sort
-    # records and in which part of each record they use as the sort 
-    # key.
-    # Most of the commands make each line a separate sort record, 
-    # but some
-    # commands use paragraphs or pages as sort records.  Most of the 
-    # sort
-    # commands use each entire sort record as its own sort key, but 
-    # some use
+    #    The sort commands differ in how they divide the text into sort
+    # records and in which part of each record they use as the sort key.
+    # Most of the commands make each line a separate sort record, but some
+    # commands use paragraphs or pages as sort records.  Most of the sort
+    # commands use each entire sort record as its own sort key, but some use
     # only a portion of the record as the sort key.
     # 
     # `M-x sort-lines'
-    #      Divide the region into lines and sort by comparing the 
-    # entire text
-    #      of a line.  A prefix argument means sort in descending 
-    # order.
+    #      Divide the region into lines and sort by comparing the entire text
+    #      of a line.  A prefix argument means sort in descending order.
     # 
     # `M-x sort-paragraphs'
-    #      Divide the region into paragraphs and sort by comparing 
-    # the entire
-    #      text of a paragraph (except for leading blank lines).  A 
-    # prefix
+    #      Divide the region into paragraphs and sort by comparing the entire
+    #      text of a paragraph (except for leading blank lines).  A prefix
     #      argument means sort in descending order.
     # 
     # `M-x sort-pages'
-    #      Divide the region into pages and sort by comparing the 
-    # entire text
-    #      of a page (except for leading blank lines).  A prefix 
-    # argument
+    #      Divide the region into pages and sort by comparing the entire text
+    #      of a page (except for leading blank lines).  A prefix argument
     #      means sort in descending order.
     # 
     # `M-x sort-fields'
-    #      Divide the region into lines and sort by comparing the 
-    # contents of
-    #      one field in each line.  Fields are defined as separated 
-    # by
-    #      whitespace, so the first run of consecutive 
-    # non-whitespace
-    #      characters in a line constitutes field 1, the second such 
-    # run
+    #      Divide the region into lines and sort by comparing the contents of
+    #      one field in each line.  Fields are defined as separated by
+    #      whitespace, so the first run of consecutive non-whitespace
+    #      characters in a line constitutes field 1, the second such run
     #      constitutes field 2, etc.
     # 
-    #      You specify which field to sort by with a numeric 
-    # argument: 1 to
-    #      sort by field 1, etc.  A negative argument means sort in 
-    # descending
-    #      order.  Thus, minus 2 means sort by field 2 in 
-    # reverse-alphabetical
+    #      You specify which field to sort by with a numeric argument: 1 to
+    #      sort by field 1, etc.  A negative argument means sort in descending
+    #      order.  Thus, minus 2 means sort by field 2 in reverse-alphabetical
     #      order.
     # 
     # `M-x sort-numeric-fields'
-    #      Like `M-x sort-fields', except the specified field is 
-    # converted to
-    #      a number for each line and the numbers are compared.  
-    # `10' comes
-    #      before `2' when considered as text, but after it when 
-    # considered
+    #      Like `M-x sort-fields', except the specified field is converted to
+    #      a number for each line and the numbers are compared.  `10' comes
+    #      before `2' when considered as text, but after it when considered
     #      as a number.
     # 
     # `M-x sort-columns'
-    #      Like `M-x sort-fields', except that the text within each 
-    # line used
-    #      for comparison comes from a fixed range of columns.  An 
-    # explanation
+    #      Like `M-x sort-fields', except that the text within each line used
+    #      for comparison comes from a fixed range of columns.  An explanation
     #      is given below.
     # 
     #    For example, if the buffer contains:
     # 
-    #      On systems where clash detection (locking of files being 
-    # edited) is
-    #      implemented, XEmacs also checks the first time you modify 
-    # a buffer
-    #      whether the file has changed on disk since it was last 
-    # visited or
-    #      saved.  If it has, you are asked to confirm that you want 
-    # to change
+    #      On systems where clash detection (locking of files being edited) is
+    #      implemented, XEmacs also checks the first time you modify a buffer
+    #      whether the file has changed on disk since it was last visited or
+    #      saved.  If it has, you are asked to confirm that you want to change
     #      the buffer.
     # 
-    # then if you apply `M-x sort-lines' to the entire buffer you 
-    # get:
+    # then if you apply `M-x sort-lines' to the entire buffer you get:
     # 
-    #      On systems where clash detection (locking of files being 
-    # edited) is
-    #      implemented, XEmacs also checks the first time you modify 
-    # a buffer
-    #      saved.  If it has, you are asked to confirm that you want 
-    # to change
+    #      On systems where clash detection (locking of files being edited) is
+    #      implemented, XEmacs also checks the first time you modify a buffer
+    #      saved.  If it has, you are asked to confirm that you want to change
     #      the buffer.
-    #      whether the file has changed on disk since it was last 
-    # visited or
+    #      whether the file has changed on disk since it was last visited or
     # 
-    # where the upper case `O' comes before all lower case letters.  
-    # If you
+    # where the upper case `O' comes before all lower case letters.  If you
     # apply instead `C-u 2 M-x sort-fields' you get:
     # 
-    #      saved.  If it has, you are asked to confirm that you want 
-    # to change
-    #      implemented, XEmacs also checks the first time you modify 
-    # a buffer
+    #      saved.  If it has, you are asked to confirm that you want to change
+    #      implemented, XEmacs also checks the first time you modify a buffer
     #      the buffer.
-    #      On systems where clash detection (locking of files being 
-    # edited) is
-    #      whether the file has changed on disk since it was last 
-    # visited or
+    #      On systems where clash detection (locking of files being edited) is
+    #      whether the file has changed on disk since it was last visited or
     # 
-    # where the sort keys were `If', `XEmacs', `buffer', `systems', 
-    # and `the'.
+    # where the sort keys were `If', `XEmacs', `buffer', `systems', and `the'.
     # 
-    #    `M-x sort-columns' requires more explanation.  You specify 
-    # the
-    # columns by putting point at one of the columns and the mark at 
-    # the other
-    # column.  Because this means you cannot put point or the mark 
-    # at the
-    # beginning of the first line to sort, this command uses an 
-    # unusual
-    # definition of `region': all of the line point is in is 
-    # considered part
+    #    `M-x sort-columns' requires more explanation.  You specify the
+    # columns by putting point at one of the columns and the mark at the other
+    # column.  Because this means you cannot put point or the mark at the
+    # beginning of the first line to sort, this command uses an unusual
+    # definition of `region': all of the line point is in is considered part
     # of the region, and so is all of the line the mark is in.
     # 
-    #    For example, to sort a table by information found in 
-    # columns 10 to
-    # 15, you could put the mark on column 10 in the first line of 
-    # the table,
-    # and point on column 15 in the last line of the table, and then 
-    # use this
-    # command.  Or you could put the mark on column 15 in the first 
-    # line and
+    #    For example, to sort a table by information found in columns 10 to
+    # 15, you could put the mark on column 10 in the first line of the table,
+    # and point on column 15 in the last line of the table, and then use this
+    # command.  Or you could put the mark on column 15 in the first line and
     # point on column 10 in the last line.
     # 
-    #    This can be thought of as sorting the rectangle specified 
-    # by point
-    # and the mark, except that the text on each line to the left or 
-    # right of
-    # the rectangle moves along with the text inside the rectangle.  
-    # *Note
+    #    This can be thought of as sorting the rectangle specified by point
+    # and the mark, except that the text on each line to the left or right of
+    # the rectangle moves along with the text inside the rectangle.  *Note
     # Rectangles::.
     # 
     #@-at
@@ -7392,8 +7332,7 @@ class registerCommandsClass (baseEditCommandsClass):
     # C-u number C-x r n reg
     #     Store number into register reg (number-to-register).
     # C-u number C-x r + reg
-    #     Increment the number in register reg by number 
-    # (increment-register).
+    #     Increment the number in register reg by number (increment-register).
     # C-x r g reg
     #     Insert the number from register reg into the buffer.
     #@-at
@@ -8810,15 +8749,13 @@ class spellTabHandler (leoFind.leoFind):
                 #@+node:ekr.20051025071455.46:<< Skip word if ignored or in local dictionary >>
                 #@+at 
                 #@nonl
-                # We don't bother to call apell if the word is in 
-                # our dictionary. The dictionary contains both 
-                # locally 'allowed' words and 'ignored' words. We 
-                # put the test before aspell rather than after 
-                # aspell because the cost of checking aspell is 
-                # higher than the cost of checking our local 
-                # dictionary. For small local dictionaries this is 
-                # probably not True and this code could easily be 
-                # located after the aspell call
+                # We don't bother to call apell if the word is in our 
+                # dictionary. The dictionary contains both locally 'allowed' 
+                # words and 'ignored' words. We put the test before aspell 
+                # rather than after aspell because the cost of checking aspell 
+                # is higher than the cost of checking our local dictionary. 
+                # For small local dictionaries this is probably not True and 
+                # this code could easily be located after the aspell call
                 #@-at
                 #@@c
 
@@ -8977,6 +8914,7 @@ class AspellClass:
 
         try:
             c_int, c_char_p = ctypes.c_int, ctypes.c_char_p
+            c_void_p, c_uint = ctypes.c_void_p, ctypes.c_uint # 2010/05/11
 
             if sys.platform.startswith('win'):
                 path = g.os_path_join(self.aspell_bin_dir, "aspell-15.dll")
@@ -8996,20 +8934,38 @@ class AspellClass:
             #@+node:ekr.20061018111933:<< define and configure aspell entry points >>
             # new_aspell_config
             new_aspell_config = aspell.new_aspell_config 
-            new_aspell_config.restype = c_int
+            new_aspell_config.restype = c_void_p # 2010/05/11 was c_int
 
             # aspell_config_replace
             aspell_config_replace = aspell.aspell_config_replace 
-            aspell_config_replace.argtypes = [c_int, c_char_p, c_char_p] 
+            aspell_config_replace.argtypes = [c_void_p, c_char_p, c_char_p]
+                # 2010/05/11: was [c_int, c_char_p, c_char_p]
 
             # aspell_config_retrieve
             aspell_config_retrieve = aspell.aspell_config_retrieve 
             aspell_config_retrieve.restype = c_char_p  
-            aspell_config_retrieve.argtypes = [c_int, c_char_p] 
+            aspell_config_retrieve.argtypes = [c_void_p, c_char_p]
+                # 2010/05/11: was [c_int, c_char_p]
 
             # aspell_error_message
             aspell_error_message = aspell.aspell_error_message 
-            aspell_error_message.restype = c_char_p  
+            aspell_error_message.restype = c_char_p
+            aspell_error_message.argtypes = [c_void_p] # 2010/05/11: was [c_int]
+
+            # new_aspell_speller
+            new_aspell_speller = aspell.new_aspell_speller
+            new_aspell_speller.argtypes = [c_void_p]
+            new_aspell_speller.restype = c_void_p
+
+            # aspell_error_number
+            aspell_error_number = aspell.aspell_error_number
+            aspell_error_number.argtypes = [c_void_p]
+            aspell_error_number.restype = c_uint
+
+            # to_aspell_speller
+            to_aspell_speller = aspell.to_aspell_speller
+            to_aspell_speller.argtypes = [c_void_p]
+            to_aspell_speller.restype = c_void_p
 
             sc = new_aspell_config()
             if 0:
@@ -9022,30 +8978,33 @@ class AspellClass:
 
             possible_err = aspell.new_aspell_speller(sc)
             aspell.delete_aspell_config(c_int(sc))
+            possible_err = new_aspell_speller(sc) # 2010/05/11
+            aspell.delete_aspell_config(c_void_p(sc)) # 2010/05/11
 
             # Rudimentary error checking, needs more.  
-            if aspell.aspell_error_number(possible_err) != 0:
+            if aspell_error_number(possible_err) != 0: # 2010/05/11
                 self.report(aspell_error_message(possible_err))
                 spell_checker = None
             else: 
-                spell_checker = aspell.to_aspell_speller(possible_err)
+                spell_checker = to_aspell_speller(possible_err) # 2010/05/11
 
             if not spell_checker:
                 raise Exception('aspell checker not enabled')
 
             word_list_size = aspell.aspell_word_list_size
-            word_list_size.restype = c_int
-            word_list_size.argtypes = [c_int,]
+            word_list_size.restype = c_uint # 2010/05/11: was c_int
+            word_list_size.argtypes = [c_void_p,] # 2010/05/11: was [c_int,]
 
             # word_list_elements
             word_list_elements = aspell.aspell_word_list_elements
-            word_list_elements.restype = c_int
-            word_list_elements.argtypes = [c_int,]
+            word_list_elements.restype = c_void_p # 2010/05/11: was c_int
+            word_list_elements.argtypes = [c_void_p,] # 2010/05/11: was [c_int,]
+
 
             # string_enumeration_next
             string_enumeration_next = aspell.aspell_string_enumeration_next
             string_enumeration_next.restype = c_char_p
-            string_enumeration_next.argtypes = [c_int,]
+            string_enumeration_next.argtypes = [c_void_p,] # 2010/05/11: was [c_int,]
 
             # check
             check = aspell.aspell_speller_check
@@ -9054,9 +9013,9 @@ class AspellClass:
 
             # suggest
             suggest = aspell.aspell_speller_suggest
-            suggest.restype = c_int 
-            suggest.argtypes = [c_int, c_char_p, c_int]
-            #@nonl
+            suggest.restype = c_void_p # 2010/05/11: was c_int
+            suggest.argtypes = [c_void_p, c_char_p, c_int]
+                # 2010/05/11: was [c_int, c_char_p, c_int]
             #@-node:ekr.20061018111933:<< define and configure aspell entry points >>
             #@nl
         except Exception:
