@@ -33,7 +33,7 @@ import leo.core.leoGlobals as g
 g.assertUi('qt')
 
 import leo.core.leoPlugins as leoPlugins
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
 # Whatever other imports your plugins uses.
 #@nonl
@@ -82,8 +82,10 @@ class pluginController:
         if not ib_w: return # EKR: can be None when unit testing.
         icon_l = ib_w.style().standardIcon(QtGui.QStyle.SP_ArrowLeft)
         icon_r = ib_w.style().standardIcon(QtGui.QStyle.SP_ArrowRight)
-        act_l = QtGui.QAction(icon_l, 'prev', ib_w, triggered=self.clickPrev)   
-        act_r = QtGui.QAction(icon_r, 'next', ib_w, triggered=self.clickNext)           
+        act_l = QtGui.QAction(icon_l, 'prev', ib_w)
+        act_r = QtGui.QAction(icon_r, 'next', ib_w)
+        act_l.connect(act_l, QtCore.SIGNAL("triggered()"), self.clickPrev)
+        act_r.connect(act_r, QtCore.SIGNAL("triggered()"), self.clickNext)
         self.c.frame.iconBar.add(qaction = act_l, command = self.clickPrev)
         self.c.frame.iconBar.add(qaction = act_r, command = self.clickNext)
     #@-node:ville.20090518182905.5427:makeButtons
