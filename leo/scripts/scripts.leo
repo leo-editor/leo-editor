@@ -31,9 +31,9 @@
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
 </v>
 </v>
-<v t="ekr.20061008055616" a="E"><vh>Scripts</vh>
-<v t="ekr.20051110111150" a="E"
-expanded="ekr.20051104082151,"><vh>@thin leoScripts.txt</vh></v>
+<v t="ekr.20061008055616"><vh>Scripts</vh>
+<v t="ekr.20051110111150"
+expanded="ekr.20051110105027.69,"><vh>@thin leoScripts.txt</vh></v>
 </v>
 <v t="edward.20081226095234.1"><vh>@button lispCall @key=alt+6</vh>
 <v t="edward.20081226095234.2"><vh>ctor</vh></v>
@@ -851,7 +851,7 @@ g.es('%s nodes checked' % count)</t>
 </t>
 <t tx="ekr.20061008055616"></t>
 <t tx="ekr.20070427110751"></t>
-<t tx="ekr.20070615131954" str_leo_pos="1,0,7,0"></t>
+<t tx="ekr.20070615131954"></t>
 <t tx="ville.20090508224531.9799">""" Dump nodes to ~/.leo/dump git repository.
 
 Before using this, you need to:

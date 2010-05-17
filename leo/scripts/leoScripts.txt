@@ -3649,13 +3649,17 @@ Removes trailing whitespace from all lines.
 #@+node:ekr.20051110105027.36:<< theory of operation >>
 @ Strategy and Performance
 
-c2py is straightforward.  The speed of c2py is unimportant.  We don't care about the memory used because we translate only small pieces of text at a time.
+c2py is straightforward. The speed of c2py is unimportant. We don't care about
+the memory used because we translate only small pieces of text at a time.
 
-We can do body[i:j] = x, regardless of len(x).  We can also do del body[i:j] to delete characters.
+We can do body[i:j] = x, regardless of len(x). We can also do del body[i:j] to
+delete characters.
 
-We scan repeatedly through the text.  Using many passes greatly simplifies the code and does not slow down c2py significantly.
+We scan repeatedly through the text. Using many passes greatly simplifies the
+code and does not slow down c2py significantly.
 
-No scans are done within strings or comments.  The idiom to handle such scans is the following:
+No scans are done within strings or comments. The idiom to handle such scans is
+the following:
 
 def someScan(body):
     i = 0
