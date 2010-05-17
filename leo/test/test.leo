@@ -517,8 +517,17 @@
 <v t="ekr.20100507094542.2119"><vh>@root-code at-root-code-test.py</vh>
 <v t="ekr.20100507094542.2120"><vh>spam</vh></v>
 </v>
-<v t="ekr.20100515061539.2126"><vh>@thin sentinels_test.py</vh></v>
 <v t="ekr.20100516140428.2135"><vh>sha1 hashes</vh></v>
+<v t="ekr.20100517131545.2141"><vh>@@thin sentinels_test.py</vh>
+<v t="ekr.20100517131545.2142"><vh>&lt;&lt; a &gt;&gt;</vh>
+<v t="ekr.20100517131545.2143"><vh>a-1</vh></v>
+<v t="ekr.20100517131545.2144"><vh>a-2</vh></v>
+</v>
+<v t="ekr.20100517131545.2145"><vh>1-1</vh>
+<v t="ekr.20100517131545.2146"><vh>2-1</vh></v>
+</v>
+</v>
+<v t="ekr.20100517153129.2151"><vh>@thin sentinels_test.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5794,5 +5803,14 @@ key = m.digest()
 key = base64.urlsafe_b64encode(str(key))
 print(key)
 </t>
+<t tx="ekr.20100517131545.2141">@ This is a doc part
+@c
+&lt;&lt; a &gt;&gt;
+@others</t>
+<t tx="ekr.20100517131545.2142">@others</t>
+<t tx="ekr.20100517131545.2143">a-1</t>
+<t tx="ekr.20100517131545.2144">a-2</t>
+<t tx="ekr.20100517131545.2145">1-1</t>
+<t tx="ekr.20100517131545.2146">2-1</t>
 </tnodes>
 </leo_file>

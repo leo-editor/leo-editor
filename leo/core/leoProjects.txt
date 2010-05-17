@@ -2437,6 +2437,251 @@ def handleDefaultChar(self,event,stroke):
         return None
 #@-node:ekr.20061031131434.110:k.handleDefaultChar
 #@-node:ekr.20100504092040.18289:Fixed crash in log pane
+#@+node:ekr.20100517094256.5803:Patch for 64-bit aspell
+#@+node:ekr.20100517094256.5804:The patch
+@nocolor-node
+
+Good day!
+I recently updated my aspell library, and leo started to crash. This is due to using c_int instead of c_void_p in ctypes, with 64-bit pointers. Patch below.
+
+Cheers,
+Marc-Antoine
+
+=== modified file 'leo/core/leoEditCommands.py'
+--- leo/core/leoEditCommands.py 2010-02-23 20:35:31 +0000
++++ leo/core/leoEditCommands.py 2010-04-05 15:38:47 +0000
+@@ -8976,7 +8976,7 @@
+    def getAspellWithCtypes (self):
+
+        try:
+-            c_int, c_char_p = ctypes.c_int, ctypes.c_char_p
++            c_void_p, c_char_p, c_int, c_uint = ctypes.c_void_p, ctypes.c_char_p, ctypes.c_int, ctypes.c_uint
+
+            if sys.platform.startswith('win'):
+                path = g.os_path_join(self.aspell_bin_dir, "aspell-15.dll")
+@@ -8996,20 +8996,36 @@
+#@verbatim
+            #@+node:ekr.20061018111933:<< define and configure aspell entry points >>
+            # new_aspell_config
+            new_aspell_config = aspell.new_aspell_config
+-            new_aspell_config.restype = c_int
++            new_aspell_config.restype = c_void_p
+
+            # aspell_config_replace
+            aspell_config_replace = aspell.aspell_config_replace
+-            aspell_config_replace.argtypes = [c_int, c_char_p, c_char_p]
++            aspell_config_replace.argtypes = [c_void_p, c_char_p, c_char_p]
+
+            # aspell_config_retrieve
+            aspell_config_retrieve = aspell.aspell_config_retrieve
+            aspell_config_retrieve.restype = c_char_p
+-            aspell_config_retrieve.argtypes = [c_int, c_char_p]
++            aspell_config_retrieve.argtypes = [c_void_p, c_char_p]
+
+            # aspell_error_message
+            aspell_error_message = aspell.aspell_error_message
++            aspell_error_message.argtypes = [c_void_p]
+            aspell_error_message.restype = c_char_p
++
++            # new_aspell_speller
++            new_aspell_speller = aspell.new_aspell_speller
++            new_aspell_speller.argtypes = [c_void_p]
++            new_aspell_speller.restype = c_void_p
++
++            # aspell_error_number
++            aspell_error_number = aspell.aspell_error_number
++            aspell_error_number.argtypes = [c_void_p]
++            aspell_error_number.restype = c_uint
++
++            # to_aspell_speller
++            to_aspell_speller = aspell.to_aspell_speller
++            to_aspell_speller.argtypes = [c_void_p]
++            to_aspell_speller.restype = c_void_p
+
+            sc = new_aspell_config()
+            if 0:
+@@ -9020,42 +9036,42 @@
+                g.pr(aspell_config_replace(sc, "lang",self.local_language_code))
+                g.pr(aspell_config_retrieve(sc, "lang"))
+
+-            possible_err = aspell.new_aspell_speller(sc)
+-            aspell.delete_aspell_config(c_int(sc))
++            possible_err = new_aspell_speller(sc)
++            aspell.delete_aspell_config(c_void_p(sc))
+
+            # Rudimentary error checking, needs more.
+-            if aspell.aspell_error_number(possible_err) != 0:
++            if aspell_error_number(possible_err) != 0:
+                self.report(aspell_error_message(possible_err))
+                spell_checker = None
+            else:
+-                spell_checker = aspell.to_aspell_speller(possible_err)
++                spell_checker = to_aspell_speller(possible_err)
+
+            if not spell_checker:
+                raise Exception('aspell checker not enabled')
+
+            word_list_size = aspell.aspell_word_list_size
+-            word_list_size.restype = c_int
+-            word_list_size.argtypes = [c_int,]
++            word_list_size.restype = c_uint
++            word_list_size.argtypes = [c_void_p,]
+
+            # word_list_elements
+            word_list_elements = aspell.aspell_word_list_elements
+-            word_list_elements.restype = c_int
+-            word_list_elements.argtypes = [c_int,]
++            word_list_elements.restype = c_void_p
++            word_list_elements.argtypes = [c_void_p,]
+
+            # string_enumeration_next
+            string_enumeration_next = aspell.aspell_string_enumeration_next
+            string_enumeration_next.restype = c_char_p
+-            string_enumeration_next.argtypes = [c_int,]
++            string_enumeration_next.argtypes = [c_void_p,]
+
+            # check
+            check = aspell.aspell_speller_check
+            check.restype = c_int
+-            check.argtypes = [c_int, c_char_p, c_int]
++            check.argtypes = [c_void_p, c_char_p, c_void_p]
+
+            # suggest
+            suggest = aspell.aspell_speller_suggest
+-            suggest.restype = c_int
+-            suggest.argtypes = [c_int, c_char_p, c_int]
++            suggest.restype = c_void_p
++            suggest.argtypes = [c_void_p, c_char_p, c_int]
+#@verbatim
+            #@nonl
+#@verbatim
+            #@-node:ekr.20061018111933:<< define and configure aspell entry points >>
+#@verbatim
+            #@nl
+#@-node:ekr.20100517094256.5804:The patch
+#@+node:ekr.20061018111331:getAspellWithCtypes
+def getAspellWithCtypes (self):
+
+    try:
+        c_int, c_char_p = ctypes.c_int, ctypes.c_char_p
+        c_void_p, c_uint = ctypes.c_void_p, ctypes.c_uint # 2010/05/11
+
+        if sys.platform.startswith('win'):
+            path = g.os_path_join(self.aspell_bin_dir, "aspell-15.dll")
+            self.aspell = aspell = ctypes.CDLL(path)
+        else:
+            path = 'aspell'
+            libname = ctypes.util.find_library(path)
+            assert(libname)
+            self.aspell = aspell = ctypes.CDLL(libname)
+    except Exception:
+        self.report('Can not load %s' % (path))
+        self.aspell = self.check = self.sc = None
+        return
+
+    try:
+        << define and configure aspell entry points >>
+    except Exception:
+        self.report('aspell checker not enabled')
+        self.aspell = self.check = self.sc = None
+        return
+
+    # Remember these functions (bound methods).
+    # No other ctypes data is known outside this method.
+    self.check = check
+    self.spell_checker = spell_checker
+    self.string_enumeration_next = string_enumeration_next
+    self.suggest = suggest
+    self.word_list_elements = word_list_elements
+    self.word_list_size = word_list_size
+#@+node:ekr.20061018111933:<< define and configure aspell entry points >>
+# new_aspell_config
+new_aspell_config = aspell.new_aspell_config 
+new_aspell_config.restype = c_void_p # 2010/05/11 was c_int
+
+# aspell_config_replace
+aspell_config_replace = aspell.aspell_config_replace 
+aspell_config_replace.argtypes = [c_void_p, c_char_p, c_char_p]
+    # 2010/05/11: was [c_int, c_char_p, c_char_p]
+
+# aspell_config_retrieve
+aspell_config_retrieve = aspell.aspell_config_retrieve 
+aspell_config_retrieve.restype = c_char_p  
+aspell_config_retrieve.argtypes = [c_void_p, c_char_p]
+    # 2010/05/11: was [c_int, c_char_p]
+
+# aspell_error_message
+aspell_error_message = aspell.aspell_error_message 
+aspell_error_message.restype = c_char_p
+aspell_error_message.argtypes = [c_void_p] # 2010/05/11: was [c_int]
+
+# new_aspell_speller
+new_aspell_speller = aspell.new_aspell_speller
+new_aspell_speller.argtypes = [c_void_p]
+new_aspell_speller.restype = c_void_p
+
+# aspell_error_number
+aspell_error_number = aspell.aspell_error_number
+aspell_error_number.argtypes = [c_void_p]
+aspell_error_number.restype = c_uint
+
+# to_aspell_speller
+to_aspell_speller = aspell.to_aspell_speller
+to_aspell_speller.argtypes = [c_void_p]
+to_aspell_speller.restype = c_void_p
+
+sc = new_aspell_config()
+if 0:
+    g.pr(sc )
+    g.pr(aspell_config_replace(sc, "prefix", self.aspell_dir)) #1/0
+    g.pr('prefix', self.aspell_dir, repr(aspell_config_retrieve(sc, "prefix")))
+    g.pr(aspell_config_retrieve(sc, "lang"))
+    g.pr(aspell_config_replace(sc, "lang",self.local_language_code))
+    g.pr(aspell_config_retrieve(sc, "lang"))
+
+possible_err = aspell.new_aspell_speller(sc)
+aspell.delete_aspell_config(c_int(sc))
+possible_err = new_aspell_speller(sc) # 2010/05/11
+aspell.delete_aspell_config(c_void_p(sc)) # 2010/05/11
+
+# Rudimentary error checking, needs more.  
+if aspell_error_number(possible_err) != 0: # 2010/05/11
+    self.report(aspell_error_message(possible_err))
+    spell_checker = None
+else: 
+    spell_checker = to_aspell_speller(possible_err) # 2010/05/11
+
+if not spell_checker:
+    raise Exception('aspell checker not enabled')
+
+word_list_size = aspell.aspell_word_list_size
+word_list_size.restype = c_uint # 2010/05/11: was c_int
+word_list_size.argtypes = [c_void_p,] # 2010/05/11: was [c_int,]
+
+# word_list_elements
+word_list_elements = aspell.aspell_word_list_elements
+word_list_elements.restype = c_void_p # 2010/05/11: was c_int
+word_list_elements.argtypes = [c_void_p,] # 2010/05/11: was [c_int,]
+
+
+# string_enumeration_next
+string_enumeration_next = aspell.aspell_string_enumeration_next
+string_enumeration_next.restype = c_char_p
+string_enumeration_next.argtypes = [c_void_p,] # 2010/05/11: was [c_int,]
+
+# check
+check = aspell.aspell_speller_check
+check.restype = c_int 
+check.argtypes = [c_int, c_char_p, c_int]
+
+# suggest
+suggest = aspell.aspell_speller_suggest
+suggest.restype = c_void_p # 2010/05/11: was c_int
+suggest.argtypes = [c_void_p, c_char_p, c_int]
+    # 2010/05/11: was [c_int, c_char_p, c_int]
+#@-node:ekr.20061018111933:<< define and configure aspell entry points >>
+#@-node:ekr.20061018111331:getAspellWithCtypes
+#@-node:ekr.20100517094256.5803:Patch for 64-bit aspell
 #@-node:ekr.20100319090849.5760:Bugs
 #@+node:ekr.20100319090849.5759:Features
 #@+node:ekr.20100307070200.5720:Fixed the @test logic
