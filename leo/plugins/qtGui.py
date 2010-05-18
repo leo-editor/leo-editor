@@ -4030,6 +4030,16 @@ class leoQtFrame (leoFrame.leoFrame):
                 # button is a leoIconBarButton.
                 QtCore.QObject.connect(button.button,
                     QtCore.SIGNAL("clicked()"),command)
+
+                # 20100518 - TNB command is instance of callable class with
+                #   a c and p attribute, so we can add a context menu item...
+                def goto_command(command = command):
+                    command.c.selectPosition(command.p)
+                    command.c.redraw()
+                b = button.button
+                b.goto_script = rb = QtGui.QAction('Goto Script' ,b)
+                b.addAction(rb)
+                rb.connect(rb, QtCore.SIGNAL("triggered()"), goto_command)
         #@-node:ekr.20081121105001.274:setCommandForButton
         #@-others
     #@-node:ekr.20081121105001.266:class qtIconBarClass
