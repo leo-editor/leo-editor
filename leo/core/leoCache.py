@@ -319,7 +319,7 @@ class cacher:
 
         if not g.enableDB:
             if trace: g.trace('g.enableDB is False')
-            return False,None
+            return '',False,None
 
         s,e = g.readFileIntoString(fileName,raw=True,silent=True)
         if s is None:

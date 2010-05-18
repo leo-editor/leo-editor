@@ -594,7 +594,7 @@ def readFile (self,fileName,root):
 
     if not g.enableDB:
         if trace: g.trace('g.enableDB is False')
-        return False,None
+        return '',False,None
 
     s,e = g.readFileIntoString(fileName,raw=True,silent=True)
     if s is None:
@@ -2293,7 +2293,7 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
 
     """Attempt to make all non-existent directories"""
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     testing = False # True: don't actually make the directories.
 
     if force:
