@@ -2933,7 +2933,7 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
 
     """Attempt to make all non-existent directories"""
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     testing = False # True: don't actually make the directories.
 
     if force:
