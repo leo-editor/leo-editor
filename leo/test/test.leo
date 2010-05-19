@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="80" left="657" height="852" width="866"/>
+	<global_window_position top="80" left="657" height="852" width="1073"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -518,16 +518,18 @@
 <v t="ekr.20100507094542.2120"><vh>spam</vh></v>
 </v>
 <v t="ekr.20100516140428.2135"><vh>sha1 hashes</vh></v>
-<v t="ekr.20100517131545.2141"><vh>@@thin sentinels_test.py</vh>
-<v t="ekr.20100517131545.2142"><vh>&lt;&lt; a &gt;&gt;</vh>
-<v t="ekr.20100517131545.2143"><vh>a-1</vh></v>
-<v t="ekr.20100517131545.2144"><vh>a-2</vh></v>
+<v t="ekr.20100519083913.2157" a="E"><vh>@@thin sentinels_test.py</vh>
+<v t="node:ekr.20100519083913.2158"><vh>&lt;&lt; a &gt;&gt;</vh>
+<v t="ekr.20100519083913.2159"><vh>a-1</vh></v>
+<v t="ekr.20100519083913.2160"><vh>a-2</vh></v>
 </v>
-<v t="ekr.20100517131545.2145"><vh>1-1</vh>
-<v t="ekr.20100517131545.2146"><vh>2-1</vh></v>
+<v t="ekr.20100519083913.2161"><vh>1-1</vh>
+<v t="ekr.20100519083913.2162"><vh>2-1</vh></v>
+<v t="ekr.20100519083913.2163"><vh>2-2</vh></v>
 </v>
+<v t="ekr.20100519083913.2164"><vh>1-2</vh></v>
 </v>
-<v t="ekr.20100518084308.2158"><vh>@thin sentinels_test.py</vh></v>
+<v t="ekr.20100519090233.2157" a="E"><vh>@thin sentinels_test.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -948,7 +950,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8"></t>
+<t tx="ekr.20070416075121" str_leo_pos="7,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5803,14 +5805,25 @@ key = m.digest()
 key = base64.urlsafe_b64encode(str(key))
 print(key)
 </t>
-<t tx="ekr.20100517131545.2141">@ This is a doc part
+<t tx="ekr.20100519083913.2157">@ This is a doc part
 @c
 &lt;&lt; a &gt;&gt;
-@others</t>
-<t tx="ekr.20100517131545.2142">@others</t>
-<t tx="ekr.20100517131545.2143">a-1</t>
-<t tx="ekr.20100517131545.2144">a-2</t>
-<t tx="ekr.20100517131545.2145">1-1</t>
-<t tx="ekr.20100517131545.2146">2-1</t>
+@others
+</t>
+<t tx="ekr.20100519083913.2159">a-1
+</t>
+<t tx="ekr.20100519083913.2160">a-2
+</t>
+<t tx="ekr.20100519083913.2161">1-1
+</t>
+<t tx="ekr.20100519083913.2162">2-1
+</t>
+<t tx="ekr.20100519083913.2163">2-2
+</t>
+<t tx="ekr.20100519083913.2164">1-2
+</t>
+<t tx="node:ekr.20100519083913.2158">@others
+
+# a after</t>
 </tnodes>
 </leo_file>
