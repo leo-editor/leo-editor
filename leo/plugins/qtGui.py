@@ -4037,9 +4037,37 @@ class leoQtFrame (leoFrame.leoFrame):
                     command.c.selectPosition(command.p)
                     command.c.redraw()
                 b = button.button
-                b.goto_script = rb = QtGui.QAction('Goto Script' ,b)
-                b.addAction(rb)
-                rb.connect(rb, QtCore.SIGNAL("triggered()"), goto_command)
+                b.goto_script = gts = QtGui.QAction('Goto Script', b)
+                b.addAction(gts)
+                gts.connect(gts, QtCore.SIGNAL("triggered()"), goto_command)
+
+                # 20100519 - TNB also, scan @button's following sibs and childs
+                #   for @rclick nodes
+                rclicks = []
+                if '@others' not in command.p.b:
+                    rclicks.extend([i.copy() for i in command.p.children()
+                      if i.h.startswith('@rclick ')])
+                for i in command.p.following_siblings():
+                    if i.h.startswith('@rclick '):
+                        rclicks.append(i.copy())
+                    else:
+                        break
+
+                for rclick in rclicks:
+
+                    def cb(event=None, ctrl=command.controller, p=rclick, 
+                           c=command.c, b=command.b, t=rclick.h[8:]):
+                        ctrl.executeScriptFromButton(p,b,t)
+                        if c.exists:
+                            c.outerUpdate()
+
+                    rc = QtGui.QAction(rclick.h[8:], b)
+                    rc.connect(rc, QtCore.SIGNAL("triggered()"), cb)
+                    b.insertAction(b.actions()[-2], rc)  # insert rc before Remove Button
+
+                    # k.registerCommand(buttonText.lower(),
+                    #   shortcut=shortcut,func=atButtonCallback,
+                    #   pane='button',verbose=verbose)
         #@-node:ekr.20081121105001.274:setCommandForButton
         #@-others
     #@-node:ekr.20081121105001.266:class qtIconBarClass
