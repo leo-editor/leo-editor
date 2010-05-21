@@ -34,7 +34,7 @@
 <v t="ville.20090705225609.5736"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
 <v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20091006063434.13802"><vh>@button rst3</vh></v>
+<v t="ekr.20091006063434.13802"><vh>@@button rst3</vh></v>
 <v t="ville.20090520232034.6345"><vh>@button rst-preview</vh></v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
@@ -61,7 +61,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -377,8 +377,8 @@
 <v t="EKR.20040524104904.181"><vh>How Leo Changes the Notion of Literate Programming</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.4" a="E"><vh>Chapter 7: Scripting Leo with Python</vh>
-<v t="ekr.20040403171740" a="E"><vh>@rst html\scripting.html</vh>
+<v t="ekr.20050831195331.4"><vh>Chapter 7: Scripting Leo with Python</vh>
+<v t="ekr.20040403171740"><vh>@rst html\scripting.html</vh>
 <v t="ekr.20091104200540.6566"><vh>@rst-ignore</vh>
 <v t="ekr.20091107181442.26607"><vh>old, too complicated intro</vh></v>
 <v t="ekr.20091104200540.6567"><vh>details for later</vh></v>
@@ -436,7 +436,7 @@
 </v>
 </v>
 <v t="EKR.20040524104904.211"><vh>Chapter 8: Customizing Leo</vh>
-<v t="ekr.20050901101608.4" a="E"><vh>@rst html\customizing.html</vh>
+<v t="ekr.20050901101608.4"><vh>@rst html\customizing.html</vh>
 <v t="ekr.20050901102055"><vh>@rst-no-head links</vh></v>
 <v t="EKR.20040524104904.140"><vh>Specifying settings</vh>
 <v t="ekr.20090116130002.1"><vh>Configuration directories</vh></v>

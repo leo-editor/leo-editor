@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="80" left="657" height="852" width="1073"/>
+	<global_window_position top="115" left="726" height="852" width="1073"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -195,6 +195,16 @@
 <v t="ekr.20070224123943"></v>
 <v t="ekr.20071025193940"></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
+<v t="ekr.20100108090658.1958"><vh>generate key events</vh>
+<v t="ekr.20100108090658.1959"><vh>Reference</vh></v>
+<v t="ekr.20100108111728.2077"><vh>Binding dicts</vh></v>
+<v t="ekr.20100108102030.1962"><vh>&lt;&lt; imports&gt;&gt;</vh></v>
+<v t="ekr.20100108102030.1963"><vh>&lt;&lt; constants &gt;&gt;</vh></v>
+<v t="ekr.20100108111728.2076"><vh>adjustBindings</vh></v>
+<v t="ekr.20100108102217.1966"><vh>overrideCommand</vh></v>
+<v t="ekr.20100108102217.1967"><vh>setKeyAndMods</vh></v>
+<v t="ekr.20100108102217.1968"><vh>testKeys</vh></v>
+</v>
 <v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
 <v t="ekr.20080531131542.1"><vh>mxTextTools proto</vh>
 <v t="ekr.20080531141227.1"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
@@ -293,6 +303,13 @@
 </v>
 <v t="ekr.20091010091628.1837"><vh>find pat a</vh></v>
 </v>
+<v t="ekr.20100109084336.1996"><vh>Prototypes of gui-dependent cursor move helpers</vh>
+<v t="ekr.20100109081612.1984"><vh>@@button up</vh></v>
+<v t="ekr.20100109081746.1990"><vh>@@button up-extend</vh></v>
+<v t="ekr.20100109081746.1993"><vh>@@button up-page-extend</vh></v>
+<v t="ekr.20100109081746.1988"><vh>@@button down</vh></v>
+<v t="ekr.20100109081746.1992"><vh>@@button down-extend</vh></v>
+</v>
 <v t="ekr.20090728090618.2837"><vh>pydiction-1.0</vh>
 <v t="ekr.20090728090618.2846"><vh>pydiction.vim</vh></v>
 <v t="ekr.20090728090618.2847"><vh>README.txt</vh></v>
@@ -323,24 +340,8 @@
 <v t="ekr.20070528111805"><vh>FrontWindowCapture.pyw</vh></v>
 <v t="ekr.20070609085533"><vh>@@url c:\prog\wink\ChangeViewMenu.htm</vh></v>
 </v>
+<v t="ekr.20100516140428.2135"><vh>sha1 hashes</vh></v>
 <v t="ekr.20091230081322.1919"><vh>unicode categories</vh></v>
-<v t="ekr.20100109084336.1996"><vh>Prototypes of gui-dependent cursor move helpers</vh>
-<v t="ekr.20100109081612.1984"><vh>@@button up</vh></v>
-<v t="ekr.20100109081746.1990"><vh>@@button up-extend</vh></v>
-<v t="ekr.20100109081746.1993"><vh>@@button up-page-extend</vh></v>
-<v t="ekr.20100109081746.1988"><vh>@@button down</vh></v>
-<v t="ekr.20100109081746.1992"><vh>@@button down-extend</vh></v>
-</v>
-<v t="ekr.20100108090658.1958"><vh>generate key events</vh>
-<v t="ekr.20100108090658.1959"><vh>Reference</vh></v>
-<v t="ekr.20100108111728.2077"><vh>Binding dicts</vh></v>
-<v t="ekr.20100108102030.1962"><vh>&lt;&lt; imports&gt;&gt;</vh></v>
-<v t="ekr.20100108102030.1963"><vh>&lt;&lt; constants &gt;&gt;</vh></v>
-<v t="ekr.20100108111728.2076"><vh>adjustBindings</vh></v>
-<v t="ekr.20100108102217.1966"><vh>overrideCommand</vh></v>
-<v t="ekr.20100108102217.1967"><vh>setKeyAndMods</vh></v>
-<v t="ekr.20100108102217.1968"><vh>testKeys</vh></v>
-</v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20100203174233.2032"><vh>@@test paste-script</vh></v>
@@ -517,8 +518,7 @@
 <v t="ekr.20100507094542.2119"><vh>@root-code at-root-code-test.py</vh>
 <v t="ekr.20100507094542.2120"><vh>spam</vh></v>
 </v>
-<v t="ekr.20100516140428.2135"><vh>sha1 hashes</vh></v>
-<v t="ekr.20100519083913.2157" a="E"><vh>@@thin sentinels_test.py</vh>
+<v t="ekr.20100519083913.2157"><vh>@@thin sentinels_test.py</vh>
 <v t="node:ekr.20100519083913.2158"><vh>&lt;&lt; a &gt;&gt;</vh>
 <v t="ekr.20100519083913.2159"><vh>a-1</vh></v>
 <v t="ekr.20100519083913.2160"><vh>a-2</vh></v>
@@ -529,7 +529,8 @@
 </v>
 <v t="ekr.20100519083913.2164"><vh>1-2</vh></v>
 </v>
-<v t="ekr.20100519090233.2157" a="E"><vh>@thin sentinels_test.py</vh></v>
+<v t="ekr.20100520125300.2146"><vh>@button moved-script-button-test</vh></v>
+<v t="ekr.20100521093208.2146"><vh>Add button</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -950,7 +951,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="7,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5822,6 +5823,9 @@ print(key)
 </t>
 <t tx="ekr.20100519083913.2164">1-2
 </t>
+<t tx="ekr.20100520125300.2146">@others</t>
+<t tx="ekr.20100521093208.2146">iconBar = c.frame.iconBar
+iconBar.add(text='Hello')</t>
 <t tx="node:ekr.20100519083913.2158">@others
 
 # a after</t>

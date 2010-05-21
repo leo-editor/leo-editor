@@ -8643,7 +8643,7 @@ class spellTabHandler (leoFind.leoFind):
 
         '''Init aspell and related ivars.  Return True if all went well.'''
 
-        self.local_language_code = c.config.getString('spell_local_language_code') or 'en'
+        self.local_language_code = c.config.getString('aspell_local_language_code') or 'en'
 
         self.dictionaryFileName = dictionaryFileName = (
             c.config.getString('spell_local_dictionary') or
