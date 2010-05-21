@@ -5,6 +5,9 @@
 4.8 vim, cleanups, your mission...
 #@nonl
 #@+node:ekr.20100223123910.5836:Immediately
+#@+node:ekr.20100521090440.5891:Urgent new features 4
+#@+node:ekr.20100520070413.5878:Drag and drop for qt gui
+#@-node:ekr.20100520070413.5878:Drag and drop for qt gui
 #@+node:ekr.20100520070413.5879:Don't create @chapter node for new file
 @nocolor-node
 
@@ -13,8 +16,43 @@ be created when the first chapter is created.
 
 Ditto for the chapter selector toolbar button.
 #@-node:ekr.20100520070413.5879:Don't create @chapter node for new file
-#@+node:ekr.20100520070413.5878:Drag and drop for qt gui
-#@-node:ekr.20100520070413.5878:Drag and drop for qt gui
+#@+node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
+
+Python uses Sphinx for its doc, they have a discussion about making
+the TOC on the left hand side collapsible/non-scrolling here:
+
+http://www.google.com/url?sa=t&source=web&ct=res&cd=4&ved=0CBYQFjAD&url=http%3A%2F%2Fbugs.python.org%2Fissue3143&ei=bW5oS-eQIJDalAfqlYyGCA&usg=AFQjCNGyhpE3wZ2jvfwA0dwjCfoAxleDRQ&sig2=2CRD7hNMmx1NzFHMyOq_cQ
+
+that includes code for the CSS stylesheet to do this.
+
+Although this does not appear in the python docs (yet), it might be
+valuable for Leo's Doc's
+
+
+
+I downloaded the example files from the above link, the collapsible
+sidebar works well with the python documentation.  As the Leo
+documentation is just a variant of python's, I downloaded a HTML
+chapter and the support files kept in .../static, then I placed the
+"sidebar.js" in with those files on my local copy.  To make the
+sidebar collapsing work, all I had to do was add it to the list of
+javascript files in the chapter .html file, i.e., I added the second
+line below
+
+    <script type="text/javascript" src="IPythonBridge_files/
+doctools.js"></script>
+    <script type="text/javascript" src="IPythonBridge_files/
+sidebar.js"></script>
+
+in the 'head' section, (the above takes into account that I was doing
+this on my local, differently arranged, copy).
+
+That is all that it takes to give us a collapsible TOC
+#@nonl
+#@-node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
 #@+node:ekr.20100517130356.5809:New sentinels
 # Make sure that @shadow always write version-4 (old-style) sentinels.
 #@nonl
@@ -1738,98 +1776,9 @@ def readRef (self,s,i):
 #@-node:ekr.20041005105605.111:readRef
 #@-node:ekr.20100519091824.5874:Changed...
 #@-node:ekr.20100517130356.5809:New sentinels
-#@+node:ekr.20100421104119.5753:Fix @shadow IndexError crash
-#@-node:ekr.20100421104119.5753:Fix @shadow IndexError crash
-#@+node:ekr.20100421101608.5824:Fix rst unicode bug
-#@+node:ekr.20090502071837.64:writeSpecialTree
-def writeSpecialTree (self,p,toString,justOneFile):
-
-    c = self.c
-    isHtml = self.ext in ('.html','.htm')
-    if isHtml and not SilverCity:
-        if not self.silverCityWarningGiven:
-            self.silverCityWarningGiven = True
-            g.es('SilverCity not present so no syntax highlighting')
-
-    self.initWrite(p)
-        # was encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
-    self.outputFile = StringIO()
-    self.writeTree(p)
-    self.source = self.outputFile.getvalue()
-    self.outputFile = None
-
-    if not toString:
-        # Compute this here for use by intermediate file.
-        self.outputFileName = self.computeOutputFileName(self.outputFileName)
-
-        # Create the directory if it doesn't exist.
-        theDir, junk = g.os_path_split(self.outputFileName)
-        theDir = c.os_path_finalize(theDir)
-        if not g.os_path_exists(theDir):
-            ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
-            if not ok:
-                g.es_print('did not create:',theDir,color='red')
-                return False
-
-        if self.getOption('write_intermediate_file'):
-            name = self.outputFileName + '.txt'
-            if g.isPython3: # 2010/04/21
-                f = open(name,'w',encoding=self.encoding)
-            else:
-                f = open(name,'w')
-            f.write(self.source)
-            f.close()
-            self.report(name)
-
-    try:
-        output = self.writeToDocutils(self.source)
-        ok = output is not None
-    except Exception:
-        g.pr('Exception in docutils')
-        g.es_exception()
-        ok = False
-
-    if ok:
-        if isHtml:
-            import re
-            idxTitle = output.find('<title></title>')
-            if idxTitle > -1:
-                m = re.search('<h1>([^<]*)</h1>', output)
-                if not m:
-                    m = re.search('<h1><[^>]+>([^<]*)</a></h1>', output)
-                if m:
-                    output = output.replace(
-                        '<title></title>',
-                        '<title>%s</title>' % m.group(1)
-                    )
-
-
-        if toString:
-            self.stringOutput = output
-        else:
-            # Write the file to the directory containing the .leo file.
-            f = open(self.outputFileName,'w')
-            f.write(output)
-            f.close()
-            self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
-
-    return ok
-#@-node:ekr.20090502071837.64:writeSpecialTree
-#@+node:ekr.20090502071837.94:write (leoRst)
-def write (self,s,theFile=None):
-
-    if theFile is None:
-        theFile = self.outputFile
-
-    if g.isPython3:
-        if g.is_binary_file(theFile):
-            s = self.encode(s)
-    else:
-        s = self.encode(s)
-
-    theFile.write(s)
-#@-node:ekr.20090502071837.94:write (leoRst)
-#@-node:ekr.20100421101608.5824:Fix rst unicode bug
+#@-node:ekr.20100521090440.5891:Urgent new features 4
+#@+node:ekr.20100521090440.5892:Bugs 4+
+#@+node:ekr.20100521090440.5888:Fix tangle/untangle problems
 #@+node:ekr.20100507084415.5757:Fix @root-code/doc bug
 #@+node:ekr.20031218072017.1380:g.Directive utils...
 # New in Leo 4.6:
@@ -2838,6 +2787,334 @@ if kind == at_root:
 #@-node:ekr.20031218072017.3602:<< set kind for directive >>
 #@-node:ekr.20031218072017.3599:token_type
 #@-node:ekr.20100507084415.5757:Fix @root-code/doc bug
+#@+node:ekr.20100521090440.5889:Fix untangle problem with @unit
+#@-node:ekr.20100521090440.5889:Fix untangle problem with @unit
+#@-node:ekr.20100521090440.5888:Fix tangle/untangle problems
+#@+node:ekr.20100521090440.5885:Fix mac unicode crasher
+#@+node:ekr.20100521090440.5886:Report
+@nocolor-node
+
+I put the following in qtGui.py after
+
+# Last minute-munges to keysym.
+
+    if sys.platform.startswith('darwin'):
+        darwinmap = {
+            'Alt-Key-5': '[',
+            'Alt-Key-6': ']',
+            'Alt-Key-7': '|',
+            'Alt-slash': '\\',
+            'Alt-Key-8': '{',
+            'Alt-Key-9': '}',
+            'Alt-e': '€',
+            'Alt-l': '@',
+        }
+        if tkKey in darwinmap:
+            tkKey = stroke = darwinmap[tkKey]
+
+It works quite reasonabe. Sometimes (not really well reproducable)
+following message appears:
+
+/Users/tst/Leo-4.7-final/leo/core/leoKeys.py:3363: UnicodeWarning:
+Unicode equal comparison failed to convert both arguments to Unicode -
+interpreting them as being unequal
+  if k.abortAllModesKey and stroke == k.abortAllModesKey:
+/Users/scalet/Leo-4.7-final/leo/core/leoKeys.py:2521: UnicodeWarning:
+Unicode equal comparison failed to convert both arguments to Unicode -
+interpreting them as being unequal
+  if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-
+g'
+
+nonetheless the special characters were inserted as expected.
+
+I think all this is quite a hack, but ... thanks for the hack, most
+important for me it's working for now. 
+#@nonl
+#@-node:ekr.20100521090440.5886:Report
+#@+node:ekr.20061031131434.105:masterCommand & helpers
+def masterCommand (self,event,func,stroke,commandName=None):
+
+    '''This is the central dispatching method.
+    All commands and keystrokes pass through here.'''
+
+    k = self ; c = k.c ; gui = g.app.gui
+    trace = (False or k.traceMasterCommand) and not g.unitTesting
+    verbose = False
+    traceGC = False
+    if traceGC: g.printNewObjects('masterCom 1')
+
+    c.setLog()
+    c.startRedrawCount = c.frame.tree.redrawCount
+    k.stroke = stroke # Set this global for general use.
+    keysym = gui.eventKeysym(event)
+    ch = gui.eventChar(event)
+    w = gui.eventWidget(event)
+    state = event and hasattr(event,'state') and event.state or 0
+    k.func = func
+    k.funcReturn = None # For unit testing.
+    commandName = commandName or func and func.__name__ or '<no function>'
+    << define specialKeysyms >>
+    special = keysym in specialKeysyms
+    interesting = func is not None
+    inserted = not special
+
+    if trace: #  and interesting:
+        g.trace(
+            'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),'keysym:',repr(keysym),
+            'w:',w and c.widget_name(w),'func:',func and func.__name__
+        )
+
+    if inserted:
+        # g.trace(stroke,keysym)
+        << add character to history >>
+
+    # We *must not* interfere with the global state in the macro class.
+    if c.macroCommands.recordingMacro:
+        c.macroCommands.startKbdMacro(event)
+        return 'break'
+
+    # g.trace(stroke,k.abortAllModesKey)
+
+    if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
+        k.keyboardQuit(event)
+        k.endCommand(event,commandName)
+        return 'break'
+
+    if special: # Don't pass these on.
+        return 'break' 
+
+    if 0: # *** This is now handled by k.masterKeyHandler.
+        if k.inState():
+            val = k.callStateFunction(event) # Calls end-command.
+            if val != 'do-func': return 'break'
+            g.trace('Executing key outside of mode')
+
+    if k.regx.iter:
+        try:
+            k.regXKey = keysym
+            k.regx.iter.next() # EKR: next() may throw StopIteration.
+        except StopIteration:
+            pass
+        return 'break'
+
+    if k.abbrevOn:
+        expanded = c.abbrevCommands.expandAbbrev(event)
+        if expanded: return 'break'
+
+    if func: # Func is an argument.
+        if commandName == 'propagate-key-event':
+            # Do *nothing* with the event.
+            return k.propagateKeyEvent(event)
+        elif commandName.startswith('specialCallback'):
+            # The callback function will call c.doCommand
+            if trace: g.trace('calling specialCallback for',commandName)
+            # if commandName != 'repeat-complex-command': # 2010/01/11
+                # k.mb_history.insert(0,commandName)
+            val = func(event)
+            # k.simulateCommand uses k.funcReturn.
+            k.funcReturn = k.funcReturn or val # For unit tests.
+        else:
+            # Call c.doCommand directly
+            if trace: g.trace('calling command directly',commandName)
+            # if commandName != 'repeat-complex-command': # 2010/01/11
+                # k.mb_history.insert(0,commandName)
+            # if commandName == 'select-all': g.pdb()
+            c.doCommand(func,commandName,event=event)
+        if c.exists:
+            k.endCommand(event,commandName)
+            c.frame.updateStatusLine()
+        if traceGC: g.printNewObjects('masterCom 2')
+        return 'break'
+    elif k.inState():
+        return 'break' #Ignore unbound keys in a state.
+    else:
+        if traceGC: g.printNewObjects('masterCom 3')
+        val = k.handleDefaultChar(event,stroke)
+        if c.exists:
+            c.frame.updateStatusLine()
+        if traceGC: g.printNewObjects('masterCom 4')
+        return val
+#@nonl
+#@+node:ekr.20061031131434.106:<< define specialKeysyms >>
+specialKeysyms = (
+    'Alt_L','Alt_R',
+    'Meta_L','Meta_R', # Meta support.
+    'Caps_Lock','Control_L','Control_R',
+    'Num_Lock',
+    'Shift_L','Shift_R',
+)
+#@nonl
+#@-node:ekr.20061031131434.106:<< define specialKeysyms >>
+#@+node:ekr.20061031131434.107:<< add character to history >>
+if stroke or len(ch) > 0:
+    if len(keyHandlerClass.lossage) > 99:
+        keyHandlerClass.lossage.pop()
+
+    # This looks like a memory leak, but isn't.
+    keyHandlerClass.lossage.insert(0,(ch,stroke),)
+#@-node:ekr.20061031131434.107:<< add character to history >>
+#@+node:ekr.20061031131434.109:callKeystrokeFunction (not used)
+def callKeystrokeFunction (self,event):
+
+    '''Handle a quick keystroke function.
+    Return the function or None.'''
+
+    k = self
+    numberOfArgs, func = k.keystrokeFunctionDict [k.stroke]
+
+    if func:
+        func(event)
+        commandName = k.inverseCommandsDict.get(func) # Get the emacs command name.
+        k.endCommand(event,commandName)
+
+    return func
+#@-node:ekr.20061031131434.109:callKeystrokeFunction (not used)
+#@+node:ekr.20061031131434.110:k.handleDefaultChar
+def handleDefaultChar(self,event,stroke):
+    k = self ; c = k.c
+    w = event and event.widget
+    name = c.widget_name(w)
+    trace = False and not g.unitTesting
+
+    if trace: g.trace('widget_name',name,'stroke',stroke)
+
+    if (stroke and
+        not stroke.startswith('Alt+Ctrl') and
+        not self.enable_alt_ctrl_bindings and
+        (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
+    ):
+        if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
+        return 'break'
+
+    if name.startswith('body'):
+        action = k.unboundKeyAction
+        if action in ('insert','overwrite'):
+            c.editCommands.selfInsertCommand(event,action=action)
+        else: # Ignore the key
+            if trace: g.trace('ignoring',stroke)
+        return 'break'
+    elif name.startswith('head'):
+        c.frame.tree.onHeadlineKey(event)
+        return 'break'
+    elif name.startswith('canvas'):
+        if not stroke: # Not exactly right, but it seems to be good enough.
+            c.onCanvasKey(event) # New in Leo 4.4.2
+        return 'break'
+    elif name.startswith('log'):
+        if g.app.gui.guiName() == 'tkinter':
+            return None
+        else:
+            i = w.logCtrl.getInsertPoint()
+            if not stroke:
+                stroke = event.stroke # 2010/05/04.
+            if stroke.lower() == 'return': stroke = '\n'
+            elif stroke.lower() == 'tab': stroke = '\t'
+            elif stroke.lower() == 'backspace': stroke = '\b'
+            elif stroke.lower() == 'period': stroke = '.'
+            w.logCtrl.insert(i,stroke)
+
+            return None
+    else:
+        # Let the widget handle the event.
+        # ch = event and event.char ; g.trace('to tk:',name,repr(stroke))
+        return None
+#@-node:ekr.20061031131434.110:k.handleDefaultChar
+#@-node:ekr.20061031131434.105:masterCommand & helpers
+#@-node:ekr.20100521090440.5885:Fix mac unicode crasher
+#@+node:ekr.20100421104119.5753:Fix @shadow IndexError crash
+#@-node:ekr.20100421104119.5753:Fix @shadow IndexError crash
+#@+node:ekr.20100421101608.5824:Fix rst unicode bug
+#@+node:ekr.20090502071837.64:writeSpecialTree
+def writeSpecialTree (self,p,toString,justOneFile):
+
+    c = self.c
+    isHtml = self.ext in ('.html','.htm')
+    if isHtml and not SilverCity:
+        if not self.silverCityWarningGiven:
+            self.silverCityWarningGiven = True
+            g.es('SilverCity not present so no syntax highlighting')
+
+    self.initWrite(p)
+        # was encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
+    self.outputFile = StringIO()
+    self.writeTree(p)
+    self.source = self.outputFile.getvalue()
+    self.outputFile = None
+
+    if not toString:
+        # Compute this here for use by intermediate file.
+        self.outputFileName = self.computeOutputFileName(self.outputFileName)
+
+        # Create the directory if it doesn't exist.
+        theDir, junk = g.os_path_split(self.outputFileName)
+        theDir = c.os_path_finalize(theDir)
+        if not g.os_path_exists(theDir):
+            ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
+            if not ok:
+                g.es_print('did not create:',theDir,color='red')
+                return False
+
+        if self.getOption('write_intermediate_file'):
+            name = self.outputFileName + '.txt'
+            if g.isPython3: # 2010/04/21
+                f = open(name,'w',encoding=self.encoding)
+            else:
+                f = open(name,'w')
+            f.write(self.source)
+            f.close()
+            self.report(name)
+
+    try:
+        output = self.writeToDocutils(self.source)
+        ok = output is not None
+    except Exception:
+        g.pr('Exception in docutils')
+        g.es_exception()
+        ok = False
+
+    if ok:
+        if isHtml:
+            import re
+            idxTitle = output.find('<title></title>')
+            if idxTitle > -1:
+                m = re.search('<h1>([^<]*)</h1>', output)
+                if not m:
+                    m = re.search('<h1><[^>]+>([^<]*)</a></h1>', output)
+                if m:
+                    output = output.replace(
+                        '<title></title>',
+                        '<title>%s</title>' % m.group(1)
+                    )
+
+
+        if toString:
+            self.stringOutput = output
+        else:
+            # Write the file to the directory containing the .leo file.
+            f = open(self.outputFileName,'w')
+            f.write(output)
+            f.close()
+            self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
+
+    return ok
+#@-node:ekr.20090502071837.64:writeSpecialTree
+#@+node:ekr.20090502071837.94:write (leoRst)
+def write (self,s,theFile=None):
+
+    if theFile is None:
+        theFile = self.outputFile
+
+    if g.isPython3:
+        if g.is_binary_file(theFile):
+            s = self.encode(s)
+    else:
+        s = self.encode(s)
+
+    theFile.write(s)
+#@-node:ekr.20090502071837.94:write (leoRst)
+#@-node:ekr.20100421101608.5824:Fix rst unicode bug
+#@-node:ekr.20100521090440.5892:Bugs 4+
+#@+node:ekr.20100521090440.5890:Cleanup 4
 #@+node:ekr.20100223123910.5930:recentFilesController
 @
 The present operation of recent files is surprising.
@@ -5156,43 +5433,7 @@ same place will be cached in the same directory. Is this ominous?
 2. It's not clear what caching to do with the save-to command.
 #@-node:ekr.20100210163813.5748:Caching buglets?
 #@-node:ekr.20100219083854.5615:Improve caching
-#@+node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/abe236a45b0511c7
-
-Python uses Sphinx for its doc, they have a discussion about making
-the TOC on the left hand side collapsible/non-scrolling here:
-
-http://www.google.com/url?sa=t&source=web&ct=res&cd=4&ved=0CBYQFjAD&url=http%3A%2F%2Fbugs.python.org%2Fissue3143&ei=bW5oS-eQIJDalAfqlYyGCA&usg=AFQjCNGyhpE3wZ2jvfwA0dwjCfoAxleDRQ&sig2=2CRD7hNMmx1NzFHMyOq_cQ
-
-that includes code for the CSS stylesheet to do this.
-
-Although this does not appear in the python docs (yet), it might be
-valuable for Leo's Doc's
-
-
-
-I downloaded the example files from the above link, the collapsible
-sidebar works well with the python documentation.  As the Leo
-documentation is just a variant of python's, I downloaded a HTML
-chapter and the support files kept in .../static, then I placed the
-"sidebar.js" in with those files on my local copy.  To make the
-sidebar collapsing work, all I had to do was add it to the list of
-javascript files in the chapter .html file, i.e., I added the second
-line below
-
-    <script type="text/javascript" src="IPythonBridge_files/
-doctools.js"></script>
-    <script type="text/javascript" src="IPythonBridge_files/
-sidebar.js"></script>
-
-in the 'head' section, (the above takes into account that I was doing
-this on my local, differently arranged, copy).
-
-That is all that it takes to give us a collapsible TOC
-#@nonl
-#@-node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
+#@-node:ekr.20100521090440.5890:Cleanup 4
 #@-node:ekr.20100223123910.5836:Immediately
 #@+node:ekr.20100206074650.5844:Cleanups & features: first
 #@+node:ekr.20100225102636.5627:Use the string returned by cacher
@@ -8679,6 +8920,65 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
 
 Vim mode users: your top 3 complaints, please
 #@nonl
+#@+node:ekr.20100521090440.5887:Generalize minibuffer code
+Just playing with part of a template system, the (partial) mock up for
+"range()" is:
+
+def tabStopNaming (event=None):
+
+  stateName = 'naming'
+  k = c.k
+  state = k.getState(stateName)
+
+  help = ('start-value -- optional, -> fill-in or tab eliminate.  ',
+           'end-value -- required, -> fill-in.  ',
+           'step -- optional, ->fill-in or tab to eliminate.  ')
+  tabStop = ('start-value', 'end-value', 'step')
+
+  if state == 0:
+      k.setLabelBlue(help[0],protect=True)
+      k.getArg(event,stateName,1,tabStopNaming)
+      # g.es('does this ever executed?') # yes, imediately!
+  else:
+      k.clearState()
+      g.es_print('%s : %s' % (tabStop[0], k.arg))
+      k.setLabelBlue('')
+
+tabStopNaming()
+
+=====================================================
+This is hardwired for the first parameter.  Things I need to expand
+this:
+
+1. put in a variable that cycles through the tabStops
+
+2. In this mock up, you are entering the parameters in the minibuffer,
+a more advanced version would collect each keypress and put it in the
+body at the current tabStop, a tab would finalize the entry and
+advance to the next stop, no text other than the 'help', ends up in
+the minibuffer.
+
+Sinc I'm only modifying existing code without real understanding of
+what Leo is doing, andy guidance would be appreciated.
+
+Tom
+
+=======================
+
+Thanks for this work.  You obviously understand the present code well
+enough to play with it.
+
+Generalizing the minibuffer code would be a good thing to do.  I
+suppose we could define some kind of language that would create, or
+rather simulate, hand-written code.  In a sense, @mode nodes are
+intended to do this also.
+
+As I look at leoKeys.py again I'll keep this example in the back of my
+mind as something that it would be good to support more easily.
+
+Edward
+#@nonl
+#@-node:ekr.20100521090440.5887:Generalize minibuffer code
 #@+node:ekr.20100210102224.5744:Notes for key bindings
 @nocolor-node
 
