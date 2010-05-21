@@ -1949,38 +1949,28 @@ def createAtButtonHelper (self,p,h,statusLine,shortcut,bg='LightSteelBlue1',verb
     b = self.createIconButton(text=h,command=None,shortcut=None,statusLine=statusLine,bg=bg)
     if not b: return None
 
-    if 0: # EKR: reverting to old code doesn't work: it calls the wrapped function!
+    # Now that b is defined we can define the callback.
+    # Yes, executeScriptFromButton *does* use b (to delete b if requested by the script).
+    # 20100518 - TNB replace callback function with callable class instance
+    #   so qt gui can add 'Goto Script' command to context menu for button
+    class atButtonCallback(object):
+        def __init__(self,controller,p,b,c,buttonText):
+            self.controller = controller
+            self.p = p
+            self.b = b
+            self.c = c
+            self.buttonText = buttonText
 
-        def atButtonCallback (
-            event=None,self=self,p=p.copy(),b=b,c=c,
-            buttonText=buttonText,controller=None
-        ):
-            self.executeScriptFromButton (p,b,buttonText)
-            if c.exists: c.outerUpdate()
-
-    else:
-        # Now that b is defined we can define the callback.
-        # Yes, executeScriptFromButton *does* use b (to delete b if requested by the script).
-        # 20100518 - TNB replace callback function with callable class instance
-        #   so qt gui can add 'Goto Script' command to context menu for button
-        class atButtonCallback(object):
-            def __init__(self,controller,p=p,b=b,c=c,buttonText=buttonText):
-                self.controller = controller
-                self.p = p
-                self.b = b
-                self.c = c
-                self.buttonText = buttonText
-
-            def __call__(self, event=None):
-                self.controller.executeScriptFromButton(self.p,self.b,self.buttonText)
-                if self.c.exists: self.c.outerUpdate()
+        def __call__(self, event=None):
+            self.controller.executeScriptFromButton(self.p,self.b,self.buttonText)
+            if self.c.exists: self.c.outerUpdate()
 
     cb = atButtonCallback(controller=self,p=p.copy(),b=b,c=c,buttonText=buttonText)
     self.iconBar.setCommandForButton(b,cb)
 
     # At last we can define the command and use the shortcut.
     k.registerCommand(buttonText.lower(),
-        shortcut=shortcut,func=atButtonCallback,
+        shortcut=shortcut,func=cb,
         pane='button',verbose=verbose)
 
     return b
