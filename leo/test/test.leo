@@ -342,6 +342,7 @@
 </v>
 <v t="ekr.20100516140428.2135"><vh>sha1 hashes</vh></v>
 <v t="ekr.20091230081322.1919"><vh>unicode categories</vh></v>
+<v t="ekr.20100521101729.2148"><vh>proto of template</vh></v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20100203174233.2032"><vh>@@test paste-script</vh></v>
@@ -530,7 +531,7 @@
 <v t="ekr.20100519083913.2164"><vh>1-2</vh></v>
 </v>
 <v t="ekr.20100520125300.2146"><vh>@button moved-script-button-test</vh></v>
-<v t="ekr.20100521093208.2146"><vh>Add button</vh></v>
+<v t="ekr.20100521121737.2148"><vh>newHeadline</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -5824,8 +5825,34 @@ print(key)
 <t tx="ekr.20100519083913.2164">1-2
 </t>
 <t tx="ekr.20100520125300.2146">@others</t>
-<t tx="ekr.20100521093208.2146">iconBar = c.frame.iconBar
-iconBar.add(text='Hello')</t>
+<t tx="ekr.20100521101729.2148"># Just playing with part of a template system, the (partial) mock up for "range()" is:
+
+def tabStopNaming (event=None):
+
+  stateName = 'naming'
+  k = c.k
+  state = k.getState(stateName)
+
+  help = ('start-value -- optional, -&gt; fill-in or tab eliminate.  ',
+           'end-value -- required, -&gt; fill-in.  ',
+           'step -- optional, -&gt;fill-in or tab to eliminate.  ')
+  tabStop = ('start-value', 'end-value', 'step')
+
+  if state == 0:
+      k.setLabelBlue(help[0],protect=True)
+      k.getArg(event,stateName,1,tabStopNaming)
+      # g.es('does this ever executed?') # yes, imediately!
+  else:
+      k.clearState()
+      g.es_print('%s : %s' % (tabStop[0], k.arg))
+      k.setLabelBlue('')
+
+tabStopNaming()</t>
+<t tx="ekr.20100521121737.2148">from leo.core import leoBridge
+bridge = leoBridge.controller(
+    gui='nullGui',verbose=False,
+    loadPlugins=False,readSettings=False)
+print(bridge)</t>
 <t tx="node:ekr.20100519083913.2158">@others
 
 # a after</t>
