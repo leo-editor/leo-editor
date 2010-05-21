@@ -1951,15 +1951,26 @@ def createAtButtonHelper (self,p,h,statusLine,shortcut,bg='LightSteelBlue1',verb
 
     # Now that b is defined we can define the callback.
     # Yes, executeScriptFromButton *does* use b (to delete b if requested by the script).
-    def atButtonCallback (event=None,self=self,p=p.copy(),b=b,c=c,buttonText=buttonText):
-        self.executeScriptFromButton (p,b,buttonText)
-        if c.exists: c.outerUpdate()
+    # 20100518 - TNB replace callback function with callable class instance
+    #   so qt gui can add 'Goto Script' command to context menu for button
+    class atButtonCallback(object):
+        def __init__(self,controller,p,b,c,buttonText):
+            self.controller = controller
+            self.p = p
+            self.b = b
+            self.c = c
+            self.buttonText = buttonText
 
-    self.iconBar.setCommandForButton(b,atButtonCallback)
+        def __call__(self, event=None):
+            self.controller.executeScriptFromButton(self.p,self.b,self.buttonText)
+            if self.c.exists: self.c.outerUpdate()
+
+    cb = atButtonCallback(controller=self,p=p.copy(),b=b,c=c,buttonText=buttonText)
+    self.iconBar.setCommandForButton(b,cb)
 
     # At last we can define the command and use the shortcut.
     k.registerCommand(buttonText.lower(),
-        shortcut=shortcut,func=atButtonCallback,
+        shortcut=shortcut,func=cb,
         pane='button',verbose=verbose)
 
     return b

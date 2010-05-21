@@ -693,7 +693,7 @@ class scriptingController:
 
         # At last we can define the command and use the shortcut.
         k.registerCommand(buttonText.lower(),
-            shortcut=shortcut,func=atButtonCallback,
+            shortcut=shortcut,func=cb,
             pane='button',verbose=verbose)
 
         return b
