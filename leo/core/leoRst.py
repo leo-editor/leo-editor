@@ -107,15 +107,13 @@ else:
 #@-node:ekr.20090502071837.12:code_block
 #@+node:ekr.20090502071837.33:class rstCommands
 #@+at
-# This plugin optionally stores information for the http plugin. 
-# Each node can
-# have one additional attribute, with the name 
-# rst_http_attributename, which is a
-# list. The first three elements are stack of tags, the rest is html 
-# code::
+# This plugin optionally stores information for the http plugin. Each node can
+# have one additional attribute, with the name rst_http_attributename, which 
+# is a
+# list. The first three elements are stack of tags, the rest is html code::
 # 
-#     [<tag n start>, <tag n end>, <other stack elements>, <html 
-# line 1>, <html line 2>, ...]
+#     [<tag n start>, <tag n end>, <other stack elements>, <html line 1>, 
+# <html line 2>, ...]
 # 
 # <other stack elements has the same structure::
 # 
@@ -1705,8 +1703,8 @@ class rstCommands:
     #@nonl
     # Relocate references here if we are only running for one file.
     # 
-    # Otherwise we must postpone the relocation until we have 
-    # processed all files.
+    # Otherwise we must postpone the relocation until we have processed all 
+    # files.
     #@-at
     #@@c
 
