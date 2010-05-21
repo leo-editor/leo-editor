@@ -92,11 +92,6 @@ class atFile:
 
     # New in 4.8.
     startNodeNew   = 84 # @!
-    # endAllNew      = 85 # @}:@all
-    # endOthersNew   = 86 # @}:@others
-    # startAllNew    = 87 # @{:@all
-    # startOthersNew = 88 # @{:@others
-
     #@-node:ekr.20041005105605.5:<< define class constants >>
     #@nl
     #@    << define sentinelDict >>
@@ -1273,13 +1268,14 @@ class atFile:
                     assert level>0
                     oldLevel = len(at.thinNodeStack)
                     newLevel = max(0,level)
-                    if newLevel < oldLevel:
+                    if trace: g.trace('******',
+                        [at.sentinelName(z) for z in at.endSentinelStack])
+
+                    if newLevel <= oldLevel:
+                        # Pretend we have seen -node sentinels.
+                        for z in range(oldLevel - newLevel):
+                            at.readEndNode('',0)
                         at.lastThinNode = at.thinNodeStack[newLevel-1]
-                        ended = at.thinNodeStack[newLevel:]
-                        at.thinNodeStack = at.thinNodeStack[:newLevel+1]
-                        for z in ended:
-                            g.trace('******** end',z)
-                        ### at.do_end_nodes(n=oldLevel-newLevel)
                     else:
                         at.lastThinNode = at.thinNodeStack[-1]
                 else:
@@ -1302,29 +1298,6 @@ class atFile:
             at.v = at.findChild4(headline)
 
         at.endSentinelStack.append(at.endNode)
-    #@+node:ekr.20100518100915.5900:do_end_nodes
-    def do_end_nodes (self,n):
-
-        '''Remove n node sentinels from the sentinel stack,
-        and possibly sentinels for @others ranges.'''
-
-        trace = True and not g.unitTesting
-        at = self
-        s,i = '',0 # dummy params for calls to at.readEndX below
-        assert n > 0
-        if trace: g.trace('***** n: %s' % n)
-        while at.endSentinelStack and n > 0:
-            top  = at.endSentinelStack[-1]
-            if trace: g.trace(at.sentinelName(top))
-            if top == at.endNode:
-                at.readEndNode(s,i) # Pops the stack
-                n -= 1
-            # elif top == at.endOthers:
-                # at.readEndOthers(s,i) # Pops the stack
-            else:
-                g.trace('unexpected top: %s' % at.sentinelName(top))
-                break
-    #@-node:ekr.20100518100915.5900:do_end_nodes
     #@-node:ekr.20041005105605.85:at.readStartNode
     #@+node:ekr.20041005105605.89:readStartOthers
     def readStartOthers (self,s,i):
@@ -1537,13 +1510,7 @@ class atFile:
         at.out = at.outStack.pop()
         at.v = at.tStack.pop()
         if at.thinFile and not at.importing:
-            if newNode:
-                if at.thinNodeStack:
-                    at.thinNodeStack.pop() # Don't set at.lastThinNode here.
-                else:
-                    g.trace('**** thinNodeStack underflow')
-            else:
-                at.lastThinNode = at.thinNodeStack.pop()
+            at.lastThinNode = at.thinNodeStack.pop()
 
         at.popSentinelStack(at.endNode)
     #@-node:ekr.20041005105605.95:readEndNode
@@ -1581,8 +1548,6 @@ class atFile:
             elif top == at.endOthers:
                 at.popSentinelStack(at.endOthers)
                 break
-            # elif top == at.startLeo:
-                # break
             else:
                 g.trace('unexpected top: %s' % at.sentinelName(top))
                 break
@@ -1961,33 +1926,6 @@ class atFile:
         start = at.startSentinelComment
         if start and len(start) > 0 and start[-1] == '@':
             s = s[:i] + s[i:].replace('@@','@')
-
-        # 4.0: Look ahead for @[ws]@others and @[ws]<<
-        # if new_read:
-            # if g.match(s,i,"@!"):
-                # return at.startNodeNew
-            # elif g.match(s,i,"@+:"):
-                # return at.startNodeRange
-            # elif g.match(s,i,"@-:"):
-                # return at.endNodeRange
-            # elif g.match(s,i,"@{:"):
-                # j = g.skip_ws(s,i+3)
-                # if j > i+1:
-                    # if g.match(s,j,"@others"):
-                        # return at.startOthersNew
-                    # elif g.match(s,j,"<<"):
-                        # return at.startRef
-                    # else:
-                        # # No other sentinels allow whitespace following the '@'
-                        # return at.noSentinel
-            # elif g.match(s,i,"@}:"):
-                # j = g.skip_ws(s,i+3)
-                # if j > i+1:
-                    # if g.match(s,j,"@others"):
-                        # return at.endOthersNew
-                    # else:
-                        # # No other sentinels allow whitespace following the '@'
-                        # return at.noSentinel
 
         if g.match(s,i,"@"):
             if new_read and g.match(s,i,"@!"):
@@ -4317,18 +4255,6 @@ class atFile:
         n = len(s)
 
         if trace and s.startswith('@'): g.trace(s.rstrip())
-
-        # if new_read:
-            # if g.match(s,i,'@!'):
-                # return at.startNodeDirective
-            # elif g.match(s,i,'@+:'):
-                # return at.startNodeRangeDirective
-            # elif g.match(s,i,'@-:'):
-                # return at.endNodeRangeDirective
-            # elif g.match(s,i,'@{:'):
-                # j = g.skip_ws(s,i)
-                # if g.match_word(s,j,"@others"):
-                    # return at.othersDirective
 
         if i >= n or s[i] != '@':
             j = g.skip_ws(s,i)
