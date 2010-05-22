@@ -531,7 +531,8 @@
 <v t="ekr.20100519083913.2164"><vh>1-2</vh></v>
 </v>
 <v t="ekr.20100520125300.2146"><vh>@button moved-script-button-test</vh></v>
-<v t="ekr.20100521121737.2148"><vh>newHeadline</vh></v>
+<v t="ekr.20100521121737.2148"><vh>start leo bridge</vh></v>
+<v t="ekr.20100521123308.2150"><vh>Run system code</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -952,7 +953,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8"></t>
+<t tx="ekr.20070416075121" str_leo_pos="9"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5853,6 +5854,10 @@ bridge = leoBridge.controller(
     gui='nullGui',verbose=False,
     loadPlugins=False,readSettings=False)
 print(bridge)</t>
+<t tx="ekr.20100521123308.2150">import os
+os.system('cd c:\\')
+os.system('dir')
+</t>
 <t tx="node:ekr.20100519083913.2158">@others
 
 # a after</t>

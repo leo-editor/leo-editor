@@ -5,6 +5,8 @@
 4.8 vim, cleanups, your mission...
 #@nonl
 #@+node:ekr.20100223123910.5836:Immediately
+#@+node:ekr.20100522090453.5911:Post mortem of new lint
+#@-node:ekr.20100522090453.5911:Post mortem of new lint
 #@+node:ekr.20100521090440.5891:Urgent new features 4
 #@+node:ekr.20100520070413.5878:Drag and drop for qt gui
 #@-node:ekr.20100520070413.5878:Drag and drop for qt gui
@@ -1779,6 +1781,46 @@ def readRef (self,s,i):
 #@-node:ekr.20100521090440.5891:Urgent new features 4
 #@+node:ekr.20100521090440.5892:Bugs 4+
 #@+node:ekr.20100521090440.5888:Fix tangle/untangle problems
+#@+node:ekr.20100521130114.5903:Allow @root only in headlines
+@nocolor-node
+
+I just finished reviewing Chapter 5, and some of its text, if not
+downright wrong, is at best confusing, because it was written assuming
+use of @root, and then perhaps modified to be less wrong - sometimes.
+Before I launch on a significant rewrite, I'd like to know the plans
+and timeframe for the revision to @root behavior.
+
+Is it a matter only of @root becoming valid only in headers and not in
+the body?  E.g., are there any changes to body section definitions,
+e.g.,
+
++ headline
+@c
+commentary
+@
+<<section extension>>=
+   more lines
+   added to section extension
+
+?  I.e., what's the full spec for the new behavior?
+
+What's more likely to happen first:
+
+(a) I rewrite the chapter to assume @file behavior (approx. two
+weeks).
+(b) Edward renews interest in changing @root (? days) and fixes it (2
+days?)
+(c) I get a spec for the new behavior of @root (? days) and attempt to
+implement it myself (20 days?) then rewrite chapter 5 (one week; less
+to change because I can leave in @root).
+
+Reasons you'll have to wait longer for me than you might otherwise
+expect: 1. Edward is more familiar with the code. 2 I've got
+concurrent projects. 3. My strongest languages are perl, /bin/sh, C
+and only then {python,ruby,lisp,objective-C,C++,erlang,...} 4.
+Edward's probably smarter than I am ;-)
+
+#@-node:ekr.20100521130114.5903:Allow @root only in headlines
 #@+node:ekr.20100507084415.5757:Fix @root-code/doc bug
 #@+node:ekr.20031218072017.1380:g.Directive utils...
 # New in Leo 4.6:
@@ -2788,6 +2830,50 @@ if kind == at_root:
 #@-node:ekr.20031218072017.3599:token_type
 #@-node:ekr.20100507084415.5757:Fix @root-code/doc bug
 #@+node:ekr.20100521090440.5889:Fix untangle problem with @unit
+@nocolor-node
+
+Thanks for quick answer! But I have still some questions.
+
+
+2010/3/11 Edward K. Ream <edreamleo@gmail.com>
+
+    [...]Something like this:
+
+    @unit
+       @root x.h
+           << functions defined in x.c >>
+
+       @root x.c
+            << functions defined in x.c >> +=
+                void f1(void);
+
+            void f1 (void) { << the actual code }
+
+
+There are no delimiters (section definitions) between the lines above?
+
+
+    So after tangling x.h will contain:
+       void f1(void);
+       void f2(void);
+
+
+Tangling seems to be ok. But there are Big problems with untangling.
+Without @unit only the first @root is untangled.
+But now, with @unit, I got an error:
+'''
+
+untangling...
+
+----- The outline contains no roots
+
+untangle complete
+
+'''
+
+
+I hope it's only a bug, not the feature :)
+#@nonl
 #@-node:ekr.20100521090440.5889:Fix untangle problem with @unit
 #@-node:ekr.20100521090440.5888:Fix tangle/untangle problems
 #@+node:ekr.20100521090440.5885:Fix mac unicode crasher
@@ -3113,6 +3199,14 @@ def write (self,s,theFile=None):
     theFile.write(s)
 #@-node:ekr.20090502071837.94:write (leoRst)
 #@-node:ekr.20100421101608.5824:Fix rst unicode bug
+#@+node:ekr.20100521130114.5904:Plugins documentation thread
+@nocolor-node
+
+We want better docs, automatically, and a way to update @enabled-plugins.
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b409aac6ca8cd33b
+#@nonl
+#@-node:ekr.20100521130114.5904:Plugins documentation thread
 #@-node:ekr.20100521090440.5892:Bugs 4+
 #@+node:ekr.20100521090440.5890:Cleanup 4
 #@+node:ekr.20100223123910.5930:recentFilesController
