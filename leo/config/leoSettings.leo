@@ -1022,7 +1022,7 @@
 <v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
 </v>
 </v>
-<v t="ekr.20051123100536"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1030,6 +1030,7 @@
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"></v>
+<v t="tbrown.20100524101550.4704"><vh>@string mod_scripting_subtext =</vh></v>
 <v t="ekr.20080328105334.1"><vh>cleo</vh>
 <v t="ekr.20080602174756.1"><vh>@bool cleo_color_ignore = True</vh></v>
 <v t="ekr.20080328105334.2"><vh>@color cleo_color_prog_green =</vh></v>
@@ -8073,6 +8074,10 @@ loading files</t>
 <t tx="tbrown.20100304170159.5189">Should active_path load docstrings for python files?</t>
 <t tx="tbrown.20100401100336.16108">controls the maximum time active_path will spend on a recursive operation.</t>
 <t tx="tbrown.20100401100336.31583">controls the maximum size file active_path will open without query.</t>
+<t tx="tbrown.20100524101550.4704">text appended to @button headlines which have submenu items *in addition* to the standard Goto Script and Remove Button items.  Additional submenu items are added by @rclick nodes directly following the @button, and, if the @button has no '@others', as children of the @button.
+
+Unicode chars like ▾ and … can be used here.
+</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,

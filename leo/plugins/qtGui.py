@@ -4053,6 +4053,9 @@ class leoQtFrame (leoFrame.leoFrame):
                     else:
                         break
 
+                if rclicks:
+                    b.setText(unicode(b.text())+(command.c.config.getString('mod_scripting_subtext') or ''))
+
                 for rclick in rclicks:
 
                     def cb(event=None, ctrl=command.controller, p=rclick, 
