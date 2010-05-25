@@ -104,7 +104,7 @@ datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '*.leo', '.
 
 setup(
     name = 'leo-editor',
-    version = "4.6",
+    version = "4.7.1",
     author = "Edward K. Ream",
     author_email = 'edreamleo@gmail.com',
     url = 'http://webpages.charter.net/edreamleo/front.html',
