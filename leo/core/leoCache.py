@@ -405,10 +405,12 @@ class cacher:
         trace = False and not g.unitTesting
         c = self.c
 
-        if not fileKey:
-            g.internalError('empty fileKey')
-        elif not g.enableDB:
+        # Bug fix: 2010/05/26: check g.enableDB before giving internal error.
+        if not g.enableDB:
             if trace: g.trace('cache disabled')
+        elif not fileKey:
+            g.trace(g.callers(5))
+            g.internalError('empty fileKey')
         elif fileKey in self.db:
             if trace: g.trace('already cached',fileKey)
         else:
