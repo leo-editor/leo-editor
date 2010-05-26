@@ -533,7 +533,29 @@
 <v t="ekr.20100520125300.2146"><vh>@button moved-script-button-test</vh></v>
 <v t="ekr.20100521121737.2148"><vh>start leo bridge</vh></v>
 <v t="ekr.20100521123308.2150"><vh>Run system code</vh></v>
-<v t="ekr.20100522091157.2152" a="O"><vh>@thin test_verbatim_sentinel.py</vh></v>
+<v t="ekr.20100522091157.2152"><vh>@@thin test_verbatim_sentinel.py</vh></v>
+<v t="ekr.20100526075442.2155"><vh>@@auto-rst c:\prog\graphs.rst</vh>
+<v t="ekr.20100526092131.2157"><vh>DOT</vh>
+<v t="ekr.20100526092131.2158"><vh>Examples from User guide</vh></v>
+<v t="ekr.20100526092131.2159"><vh>Small graph</vh></v>
+<v t="ekr.20100526092131.2160"><vh>Fancy graph</vh></v>
+<v t="ekr.20100526092131.2161"><vh>Graph with polygonal shapes</vh></v>
+<v t="ekr.20100526092131.2162"><vh>Records with nested fields</vh></v>
+<v t="ekr.20100526092131.2163"><vh>HTML-like labels</vh></v>
+<v t="ekr.20100526092131.2164"><vh>Graph with constrained ranks</vh></v>
+</v>
+<v t="ekr.20100526092131.2165"><vh>Server status</vh>
+<v t="ekr.20100526092131.2166"><vh>dhcpd.conf</vh></v>
+</v>
+<v t="ekr.20100526092131.2167"><vh>networkx</vh>
+<v t="ekr.20100526092131.2168"><vh>Tutorial</vh></v>
+<v t="ekr.20100526092131.2169"><vh>Examples</vh>
+<v t="ekr.20100526092131.2170"><vh>File hierarchy to graph</vh></v>
+</v>
+</v>
+<v t="ekr.20100526092131.2171"><vh>pygraphviz</vh></v>
+<v t="ekr.20100526092131.2172"><vh>Diagraming apt components</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -954,7 +976,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="10"></t>
+<t tx="ekr.20070416075121" str_leo_pos="11"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5864,6 +5886,524 @@ os.system('dir')
 &lt;&lt; ref &gt;&gt;
 
 # end</t>
+<t tx="ekr.20100526075442.2155" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e657331710355033d2b2a7104752e">@language rest
+@tabwidth -4
+@others
+
+.. Warning: this node is ignored when writing this file.
+.. However, @ @rst-options are recognized in this node.
+</t>
+<t tx="ekr.20100526092131.2157"></t>
+<t tx="ekr.20100526092131.2158"></t>
+<t tx="ekr.20100526092131.2159">::
+
+  digraph G {
+      main -&gt; parse -&gt; execute;
+      main -&gt; init;
+      main -&gt; cleanup;
+      execute -&gt; make_string;
+      execute -&gt; printf
+      init -&gt; make_string;
+      main -&gt; printf;
+      execute -&gt; compare;
+      }
+
+
+.. graphviz::
+
+  digraph G {
+      main -&gt; parse -&gt; execute;
+      main -&gt; init;
+      main -&gt; cleanup;
+      execute -&gt; make_string;
+      execute -&gt; printf
+      init -&gt; make_string;
+      main -&gt; printf;
+      execute -&gt; compare;
+      }
+
+</t>
+<t tx="ekr.20100526092131.2160">::
+
+    digraph G {
+        size ="4,4";
+        main [shape=box];    /* this is a comment */
+        main -&gt; parse [weight=8];
+        parse -&gt; execute;
+        main -&gt; init [style=dotted];
+        main -&gt; cleanup;
+        execute -&gt; { make_string; printf}
+        init -&gt; make_string;
+        edge [color=red];    // so is this
+        main -&gt; printf [style=bold,label="100 times"];
+        make_string [label="make a\nstring"];
+        node [shape=box,style=filled,color=".7 .3 1.0"];
+        execute -&gt; compare;
+    }
+
+.. graphviz::
+
+    digraph G {
+        size ="4,4";
+        main [shape=box];    /* this is a comment */
+        main -&gt; parse [weight=8];
+        parse -&gt; execute;
+        main -&gt; init [style=dotted];
+        main -&gt; cleanup;
+        execute -&gt; { make_string; printf}
+        init -&gt; make_string;
+        edge [color=red];    // so is this
+        main -&gt; printf [style=bold,label="100 times"];
+        make_string [label="make a\nstring"];
+        node [shape=box,style=filled,color=".7 .3 1.0"];
+        execute -&gt; compare;
+    }
+
+</t>
+<t tx="ekr.20100526092131.2161">::
+
+    digraph G {
+        a -&gt; b -&gt; c;
+        b -&gt; d;
+        a [shape=polygon,sides=5,peripheries=3,color=lightblue,style=filled];
+        c [shape=polygon,sides=4,skew=.4,label="hello world"]
+        d [shape=invtriangle];
+        e [shape=polygon,sides=4,distortion=.7];
+    }
+    
+.. graphviz::
+
+    digraph G {
+        a -&gt; b -&gt; c;
+        b -&gt; d;
+        a [shape=polygon,sides=5,peripheries=3,color=lightblue,style=filled];
+        c [shape=polygon,sides=4,skew=.4,label="hello world"]
+        d [shape=invtriangle];
+        e [shape=polygon,sides=4,distortion=.7];
+    }
+
+</t>
+<t tx="ekr.20100526092131.2162">::
+
+    digraph structs {
+    node [shape=record];
+        struct1 [shape=record,label="&lt;f0&gt; left|&lt;f1&gt; mid\ dle|&lt;f2&gt; right"];
+        struct2 [shape=record,label="&lt;f0&gt; one|&lt;f1&gt; two"];
+        struct3 [shape=record,label="hello\nworld |{ b |{c|&lt;here&gt; d|e}| f}| g | h"];
+        struct1 -&gt; struct2;
+        struct1 -&gt; struct3;
+    }
+
+.. graphviz::
+
+    digraph structs {
+    node [shape=record];
+        struct1 [shape=record,label="&lt;f0&gt; left|&lt;f1&gt; mid\ dle|&lt;f2&gt; right"];
+        struct2 [shape=record,label="&lt;f0&gt; one|&lt;f1&gt; two"];
+        struct3 [shape=record,label="hello\nworld |{ b |{c|&lt;here&gt; d|e}| f}| g | h"];
+        struct1 -&gt; struct2;
+        struct1 -&gt; struct3;
+    }
+
+</t>
+<t tx="ekr.20100526092131.2163">::
+
+    digraph html {
+        abc [shape=none, margin=0, label=&lt;
+    &lt;TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4"&gt;
+      &lt;TR&gt;&lt;TD ROWSPAN="3"&gt;&lt;FONT COLOR="red"&gt;hello&lt;/FONT&gt;&lt;BR/&gt;world&lt;/TD&gt;
+          &lt;TD COLSPAN="3"&gt;b&lt;/TD&gt;
+          &lt;TD ROWSPAN="3" BGCOLOR="lightgrey"&gt;g&lt;/TD&gt;
+          &lt;TD ROWSPAN="3"&gt;h&lt;/TD&gt;
+      &lt;/TR&gt;
+      &lt;TR&gt;&lt;TD&gt;c&lt;/TD&gt;
+          &lt;TD PORT="here"&gt;d&lt;/TD&gt;
+          &lt;TD&gt;e&lt;/TD&gt;
+      &lt;/TR&gt;
+      &lt;TR&gt;&lt;TD COLSPAN="3"&gt;f&lt;/TD&gt;
+      &lt;/TR&gt;
+    &lt;/TABLE&gt;&gt;];
+    }
+
+.. graphviz::
+
+    digraph html {
+        abc [shape=none, margin=0, label=&lt;
+    &lt;TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4"&gt;
+      &lt;TR&gt;&lt;TD ROWSPAN="3"&gt;&lt;FONT COLOR="red"&gt;hello&lt;/FONT&gt;&lt;BR/&gt;world&lt;/TD&gt;
+          &lt;TD COLSPAN="3"&gt;b&lt;/TD&gt;
+          &lt;TD ROWSPAN="3" BGCOLOR="lightgrey"&gt;g&lt;/TD&gt;
+          &lt;TD ROWSPAN="3"&gt;h&lt;/TD&gt;
+      &lt;/TR&gt;
+      &lt;TR&gt;&lt;TD&gt;c&lt;/TD&gt;
+          &lt;TD PORT="here"&gt;d&lt;/TD&gt;
+          &lt;TD&gt;e&lt;/TD&gt;
+      &lt;/TR&gt;
+      &lt;TR&gt;&lt;TD COLSPAN="3"&gt;f&lt;/TD&gt;
+      &lt;/TR&gt;
+    &lt;/TABLE&gt;&gt;];
+    }
+
+</t>
+<t tx="ekr.20100526092131.2164">::
+
+    digraph asde91 {
+        ranksep=.75; size = "7.5,7.5";
+        {
+            node [shape=plaintext, fontsize=16];
+            /* the time-line graph */
+            past -&gt; 1978 -&gt; 1980 -&gt; 1982 -&gt; 1983 -&gt; 1985 -&gt; 1986 -&gt;
+                     1987 -&gt; 1988 -&gt; 1989 -&gt; 1990 -&gt; "future";
+            /* ancestor programs */
+            "Bourne sh"; "make"; "SCCS"; "yacc"; "cron"; "Reiser cpp";
+            "Cshell"; "emacs"; "build"; "vi"; "&lt;curses&gt;"; "RCS"; "C*";
+        }
+        { rank = same;
+            "Software IS"; "Configuration Mgt"; "Architecture &amp; Libraries";
+            "Process";
+        };
+        node [shape=box];
+        { rank = same; "past"; "SCCS"; "make"; "Bourne sh"; "yacc"; "cron"; }
+        { rank = same; 1978; "Reiser cpp"; "Cshell"; }
+        { rank = same; 1980; "build"; "emacs"; "vi"; }
+        { rank = same; 1982; "RCS"; "&lt;curses&gt;"; "IMX"; "SYNED"; }
+        { rank = same; 1983; "ksh"; "IFS"; "TTU"; }
+        { rank = same; 1985; "nmake"; "Peggy"; }
+        { rank = same; 1986; "C*"; "ncpp"; "ksh-i"; "&lt;curses-i&gt;"; "PG2"; }
+        { rank = same; 1987; "Ansi cpp"; "nmake 2.0"; "3D File System"; "fdelta";
+            "DAG"; "CSAS";}
+        { rank = same; 1988; "CIA"; "SBCS"; "ksh-88"; "PEGASUS/PML"; "PAX";
+            "backtalk"; }
+        { rank = same; 1989; "CIA++"; "APP"; "SHIP"; "DataShare"; "ryacc";
+            "Mosaic"; }
+        { rank = same; 1990; "libft"; "CoShell"; "DIA"; "IFS-i"; "kyacc"; "sfio";
+            "yeast"; "ML-X"; "DOT"; }
+        { rank = same; "future"; "Adv. Software Technology"; }
+        "PEGASUS/PML" -&gt; "ML-X";
+        "SCCS" -&gt; "nmake";
+        "SCCS" -&gt; "3D File System";
+        "SCCS" -&gt; "RCS";
+        "make" -&gt; "nmake";
+        "make" -&gt; "build";
+        .
+        .
+        .
+    }
+
+.. graphviz::
+
+    digraph asde91 {
+        ranksep=.75; size = "7.5,7.5";
+        {
+            node [shape=plaintext, fontsize=16];
+            /* the time-line graph */
+            past -&gt; 1978 -&gt; 1980 -&gt; 1982 -&gt; 1983 -&gt; 1985 -&gt; 1986 -&gt;
+                     1987 -&gt; 1988 -&gt; 1989 -&gt; 1990 -&gt; "future";
+            /* ancestor programs */
+            "Bourne sh"; "make"; "SCCS"; "yacc"; "cron"; "Reiser cpp";
+            "Cshell"; "emacs"; "build"; "vi"; "&lt;curses&gt;"; "RCS"; "C*";
+        }
+        { rank = same;
+            "Software IS"; "Configuration Mgt"; "Architecture &amp; Libraries";
+            "Process";
+        };
+        node [shape=box];
+        { rank = same; "past"; "SCCS"; "make"; "Bourne sh"; "yacc"; "cron"; }
+        { rank = same; 1978; "Reiser cpp"; "Cshell"; }
+        { rank = same; 1980; "build"; "emacs"; "vi"; }
+        { rank = same; 1982; "RCS"; "&lt;curses&gt;"; "IMX"; "SYNED"; }
+        { rank = same; 1983; "ksh"; "IFS"; "TTU"; }
+        { rank = same; 1985; "nmake"; "Peggy"; }
+        { rank = same; 1986; "C*"; "ncpp"; "ksh-i"; "&lt;curses-i&gt;"; "PG2"; }
+        { rank = same; 1987; "Ansi cpp"; "nmake 2.0"; "3D File System"; "fdelta";
+            "DAG"; "CSAS";}
+        { rank = same; 1988; "CIA"; "SBCS"; "ksh-88"; "PEGASUS/PML"; "PAX";
+            "backtalk"; }
+        { rank = same; 1989; "CIA++"; "APP"; "SHIP"; "DataShare"; "ryacc";
+            "Mosaic"; }
+        { rank = same; 1990; "libft"; "CoShell"; "DIA"; "IFS-i"; "kyacc"; "sfio";
+            "yeast"; "ML-X"; "DOT"; }
+        { rank = same; "future"; "Adv. Software Technology"; }
+        "PEGASUS/PML" -&gt; "ML-X";
+        "SCCS" -&gt; "nmake";
+        "SCCS" -&gt; "3D File System";
+        "SCCS" -&gt; "RCS";
+        "make" -&gt; "nmake";
+        "make" -&gt; "build";
+    }
+
+</t>
+<t tx="ekr.20100526092131.2165">Machine
+ 
+ - physical
+ - virtual
+ 
+  - id
+  
+   - mac
+   - ip
+   - description
+   - name
+     - hostname
+     - netbios
+     - fqname
+     
+   - storage
+   - ram
+     
+App
+
+Input, Output
+
+ - keyboard
+ - mouse
+ - file
+ 
+   - config
+   - log
+   - data
+   
+ - stream
+
+</t>
+<t tx="ekr.20100526092131.2166">/etc/dhcp3/dhcpd.conf::
+
+	option ntp-servers 192.168.0.12;
+	option root-path "";
+	option routers 192.168.0.12;
+	option broadcast-address 192.168.0.255;
+	option domain-name-servers 192.168.0.253, 192.168.0.12;
+	use-host-decl-names on;
+	default-lease-time 86400;
+	max-lease-time 86400;
+	#stop
+
+
+	# Courthouse
+	subnet 192.168.0.0 netmask 255.255.255.0 {
+		range dynamic-bootp 192.168.0.151 192.168.0.225;
+		}
+	# Kent's W2k workstation
+	host itstation2 {
+		hardware ethernet 00:16:E6:9C:24:DF;
+		fixed-address 192.168.0.32;
+		}
+	# Office workstation
+	host itstation3 {
+		hardware ethernet 00:24:1d:d1:4d:4b;
+		fixed-address 192.168.0.33;
+		}
+	# lappy wireless
+	host lappy-wireless {
+		hardware ethernet 00:12:F0:E9:55:84;
+		fixed-address 192.168.0.35;
+		}
+	# Plotter/Scanner storage
+	host hpdjcc {
+		hardware ethernet 00:d0:c9:98:92:2a;
+		fixed-address 192.168.0.90;
+		}
+	# DNR License machine in Clerks office
+	host DNRLICENSES {
+		hardware ethernet 00:03:2d:0d:57:e2;
+		fixed-address 192.168.0.40;
+		}
+	# Peg Kurilla laptop
+	host COUNTYADMIN {
+		hardware ethernet 00:19:7d:c9:25:d2;
+		fixed-address 192.168.0.50;
+		}
+	# Netgear WG511v2 PCMCIA card (UWEX)
+	host uwextwin98 {
+		hardware ethernet 00:1b:2f:28:f0:91;
+		fixed-address 192.168.0.51;
+		}
+	# GIS-MAIN Gis workstation
+	host GIS-MAIN {
+		hardware ethernet 00:0a:a6:8d:4f:2f;
+		fixed-address 192.168.0.36;
+		}
+	# Mable in ROD
+	host DEEDS-MABLE {
+		hardware ethernet 00:18:f3:50:5c:e2;
+		fixed-address 192.168.0.55;
+		}
+	# Kathie in Deeds
+	host AUDITMACHINE {
+		hardware ethernet 00:0c:6e:f5:7f:95;
+		fixed-address 192.168.0.56;
+		}
+	# Karen in Deeds
+	host KM-SCANNER {
+		hardware ethernet 00:11:09:b4:fb:5d;
+		fixed-address 192.168.0.57;
+		}
+	# Counter in Deeds
+	host DEEDS-COUNTER {
+		hardware ethernet 00:01:03:c4:d8:96;
+		fixed-address 192.168.0.58;
+		}
+
+	# Lappy wired
+	host lappy {
+		hardware ethernet 00:0a:e4:37:00:80;
+		fixed-address 192.168.0.34;
+		}
+	# laserfiche host
+	host laserfiche {
+		hardware ethernet 00:26:18:fb:98:8e;
+		fixed-address 192.168.0.10;
+		}
+	# laserfiche VM
+	host laserfichexp {
+		hardware ethernet 08:00:27:d3:74:a7;
+		fixed-address 192.168.0.11;
+		}
+	# Tape drive host in Child Support
+	host csa-tape01 {
+		hardware ethernet 00:40:63:d7:ae:e6;
+		fixed-address 192.168.0.17;
+		}
+	# Child Support MX680 Canon all in one
+	host CSA-MX680 {
+		hardware ethernet 00:1e:8f:9c:1e:d8;
+		fixed-address 192.168.0.30;
+		}
+	# Darlene in Child Support
+	host CSA-70 {
+		hardware ethernet 90:e6:ba:88:2f:ca;
+		fixed-address 192.168.0.70;
+		}
+	# Jenny in Child Support
+	host CSA-71 {
+		hardware ethernet e0:cb:4e:32:09:2d;
+		fixed-address 192.168.0.71;
+		}
+	# Bev's desktop workstation (in Lenovo case)
+	host CSA-72 {
+		hardware ethernet e0:cb:4e:24:33:1d;
+		fixed-address 192.168.0.72;
+		}
+	# Patty in Treasurers
+	host TREAS-85 {
+		hardware ethernet 00:50:fc:cf:08:91;
+		fixed-address 192.168.0.85;
+		}
+	# Tracey's computer
+	host TREAS-86 {
+		hardware ethernet 00:40:63:d8:9d:ce;
+		fixed-address 192.168.0.86;
+		}
+	# Jeff Beirl's computer
+	host ADMIN-91 {
+		hardware ethernet 00:17:31:88:55:a1;
+		fixed-address 192.168.0.91;
+		}
+	# Peg Kurilla's laptop
+	host ADMIN-93 {
+		hardware ethernet 00:19:7d:c9:25:d2;
+		fixed-address 192.168.0.93;
+		}
+	# Treasurer counter machine
+	host TREAS-87 {
+		hardware ethernet 00:40:f4:4e:9c:b7;
+		fixed-address 192.168.0.87;
+		}
+	# Sid in CSA
+	host CSA-75 {
+		hardware ethernet 00:26:55:43:9f:b9;
+		fixed-address 192.168.0.76;
+		}
+	# Larry Hildebrandt
+	host ZONE-100 {
+		hardware ethernet 00:24:21:f0:f1:4b;
+		fixed-address 192.168.0.100;
+		}
+	# Patience in CSA
+	host CSA-73 {
+		hardware ethernet 90:e6:ba:3a:47:56;
+		fixed-address 192.168.0.73;
+		}
+	# Griff
+	host CSA-77 {
+		hardware ethernet 00:23:5a:d4:e5:2d;
+		fixed-address 192.168.0.77;
+		}
+	# Traci in CSA
+	host CSA-74 {
+		hardware ethernet 18:a9:05:16:a6:4b;
+		fixed-address 192.168.0.74;
+		}
+	# Joan in CSA
+	host CSA-75 {
+		hardware ethernet 18:a9:05:1f:98:df;
+		fixed-address 192.168.0.75;
+		}
+
+</t>
+<t tx="ekr.20100526092131.2167">&gt;&gt;&gt; import networkx as nx
+
+&gt;&gt;&gt; G=nx.Graph()
+&gt;&gt;&gt; G.add_node("spam")
+&gt;&gt;&gt; G.add_edge(1,2)
+&gt;&gt;&gt; print G.nodes()
+[1, 2, 'spam']
+&gt;&gt;&gt; print G.edges()
+[(1, 2)]
+
+</t>
+<t tx="ekr.20100526092131.2168">.. include:: /home/ktenney/work/fetched/networkx/doc/source/tutorial/tutorial.rst
+
+</t>
+<t tx="ekr.20100526092131.2169"></t>
+<t tx="ekr.20100526092131.2170">.. code-block:: python
+
+ import networkx
+ import pygraphviz
+ import os
+ G = networkx.Graph()
+ 
+ contents = os.listdir('/tmp')
+ 
+ 
+ G.add_nodes_from(contents)
+ networkx.write_dot(G, '/tmp/networkx')
+ 
+.. graphviz::
+ 
+   digraph  {
+	"pulse-LNhuxKcTtQ7o";
+	"manuel-testrunner.py";
+	"orbit-root";
+	".ICE-unix";
+	".esd-1000";
+	".X0-lock";
+	"keyring-IaomNN";
+	"virtual-ktenney.OPfhI7";
+	"orbit-ktenney";
+	"ssh-AHVfka1250";
+	"server-B20D7FC79C7F597315E3E501AEF10E0D866E8E92.xkm";
+	"serverauth.XfwQdCpMON";
+	".X11-unix";
+	"tracker-ktenney";
+	networkx;
+	".exchange-ktenney";
+	"Miro_Download_Daemon_1000.txt";
+	"manuel-testfile.py";
+      }
+
+</t>
+<t tx="ekr.20100526092131.2171"># differences between pygraphviz and networkx
+# http://networkx.lanl.gov/pygraphviz/reference/api_notes.html
+&gt;&gt;&gt; import pygraphviz
+&gt;&gt;&gt; pygraphviz
+
+</t>
+<t tx="ekr.20100526092131.2172">.. code-block:: python
+
+    import networkx
+
+</t>
 <t tx="node:ekr.20100519083913.2158">@others
 
 # a after</t>

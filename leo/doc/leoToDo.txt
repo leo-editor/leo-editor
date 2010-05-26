@@ -1779,7 +1779,7 @@ def readRef (self,s,i):
 #@-node:ekr.20100519091824.5874:Changed...
 #@-node:ekr.20100517130356.5809:New sentinels
 #@-node:ekr.20100521090440.5891:Urgent new features 4
-#@+node:ekr.20100521090440.5892:Bugs 4+
+#@+node:ekr.20100521090440.5892:Bugs 5+
 #@+node:ekr.20100521090440.5888:Fix tangle/untangle problems
 #@+node:ekr.20100521130114.5903:Allow @root only in headlines
 @nocolor-node
@@ -3207,7 +3207,36 @@ We want better docs, automatically, and a way to update @enabled-plugins.
 http://groups.google.com/group/leo-editor/browse_thread/thread/b409aac6ca8cd33b
 #@nonl
 #@-node:ekr.20100521130114.5904:Plugins documentation thread
-#@-node:ekr.20100521090440.5892:Bugs 4+
+#@+node:ekr.20100522090453.5912:Fix bugs with @verbatim, @raw and @end_raw
+@nocolor-node
+
+> In the @file family of derived files (@thin, @nosent, etc.)  (i.e.,
+> not @root), you can prevent any interpretation of the immediately
+> following line with the "@verbatim" directive
+
+This is not true, although it might appear to be true.
+
+There is an @verbatim *sentinel*, but no @verbatim *directive*.
+
+For example, I have just verified that the following does not work:
+
+@verbatim
+<< undefined ref >>
+
+@raw and @end_raw do work as described.
+
+There appear to be several bugs in this area:
+
+1. Leo probably should warn that @verbatim does not exist as a
+directive, although technically Leo is supposed to write anything that
+looks like a sentinel but isn't "verbatim".
+
+2. Leo does appear to read @raw and @end_raw properly in @thin files,
+but Leo improperly issues the (red) log message,
+converting @file format in @thin test_verbatim_sentinel.py
+#@nonl
+#@-node:ekr.20100522090453.5912:Fix bugs with @verbatim, @raw and @end_raw
+#@-node:ekr.20100521090440.5892:Bugs 5+
 #@+node:ekr.20100521090440.5890:Cleanup 4
 #@+node:ekr.20100223123910.5930:recentFilesController
 @

@@ -1984,9 +1984,15 @@ def initAtAutoWrite(self,p,fileName,outputFile):
         g.trace('too many top-level underlines, using %s' % (
             underlines2),color='blue')
     underlines1 = d.get('underlines1','')
-    if not underlines1: underlines1 = '=+*^~"\'`-:><_'
-        # The standard defaults.
-    self.atAutoWriteUnderlines = underlines2 + underlines1
+    # Bug fix:  2010/05/26: pad underlines with default characters.
+    default_underlines = '=+*^~"\'`-:><_'
+    if underlines1:
+        for ch in default_underlines[1:]:
+            if ch not in underlines1:
+                underlines1 = underlines1 + ch
+    else:
+        underlines1 = default_underlines
+    self.atAutoWriteUnderlines   = underlines2 + underlines1
     self.underlines1 = underlines1
     self.underlines2 = underlines2
 #@-node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
@@ -2682,6 +2688,245 @@ suggest.argtypes = [c_void_p, c_char_p, c_int]
 #@-node:ekr.20061018111933:<< define and configure aspell entry points >>
 #@-node:ekr.20061018111331:getAspellWithCtypes
 #@-node:ekr.20100517094256.5803:Patch for 64-bit aspell
+#@+node:ekr.20100526084301.5912:Fixed at-auto-rst bug
+#@+node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
+def initAtAutoWrite(self,p,fileName,outputFile):
+
+    # Set up for a standard write.
+    self.createDefaultOptionsDict()
+    self.tnodeOptionDict = {}
+    self.scanAllOptions(p)
+    self.initWrite(p)
+    self.preprocessTree(p) # Allow @ @rst-options, for example.
+    # Do the overrides.
+    self.outputFile = outputFile
+    self.outputFileName = fileName
+    # Set underlining characters.
+    # It makes no sense to use user-defined
+    # underlining characters in @auto-rst.
+    d = p.v.u.get('rst-import',{})
+    underlines2 = d.get('underlines2','')
+        # Do *not* set a default for overlining characters.
+    if len(underlines2) > 1:
+        underlines2 = underlines2[0]
+        g.trace('too many top-level underlines, using %s' % (
+            underlines2),color='blue')
+    underlines1 = d.get('underlines1','')
+    # Bug fix:  2010/05/26: pad underlines with default characters.
+    default_underlines = '=+*^~"\'`-:><_'
+    if underlines1:
+        for ch in default_underlines[1:]:
+            if ch not in underlines1:
+                underlines1 = underlines1 + ch
+    else:
+        underlines1 = default_underlines
+    self.atAutoWriteUnderlines   = underlines2 + underlines1
+    self.underlines1 = underlines1
+    self.underlines2 = underlines2
+#@-node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
+#@+node:ekr.20090502071837.93:underline (leoRst)
+def underline (self,s,p):
+
+    '''Return the underlining string to be used at the given level for string s.
+    This includes the headline, and possibly a leading overlining line.
+    '''
+
+    trace = False and not g.unitTesting
+
+    if self.atAutoWrite:
+        # We *might* generate overlines for top-level sections.
+        u = self.atAutoWriteUnderlines
+        level = p.level()-self.topLevel
+
+        if trace: g.trace('level: %s under2: %s under1: %s %s' % (
+            level,repr(self.underlines2),repr(self.underlines1),p.h))
+
+        # This is tricky. The index n depends on several factors.
+        if self.underlines2:
+            level -= 1 # There *is* a double-underlined section.
+            n = level
+        else:
+            n = level-1
+
+        if 0 <= n < len(u):
+            ch = u[n]
+        elif u:
+            ch = u[-1]
+        else:
+            g.trace('can not happen: no u')
+            ch = '#'
+
+        # 2010/01/10: write longer underlines for non-ascii characters.
+        n = max(4,len(g.toEncodedString(s,encoding=self.encoding,reportErrors=False)))
+        if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
+        if level == 0 and self.underlines2:
+            return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
+        else:
+            return '%s\n%s\n\n' % (p.h,ch*n)
+    else:
+        # The user is responsible for top-level overlining.
+        u = self.getOption('underline_characters') #  '''#=+*^~"'`-:><_'''
+        level = max(0,p.level()-self.topLevel)
+        level = min(level+1,len(u)-1) # Reserve the first character for explicit titles.
+        ch = u [level]
+        if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
+        n = max(4,len(g.toEncodedString(s,encoding=self.encoding,reportErrors=False)))
+        return '%s\n%s\n\n' % (p.h.strip(),ch*n)
+#@-node:ekr.20090502071837.93:underline (leoRst)
+#@-node:ekr.20100526084301.5912:Fixed at-auto-rst bug
+#@+node:ekr.20100526084301.5913:Fixed erroneous error message in at-auto-rst read logic
+#@+node:ekr.20041005105605.26:readAll (atFile)
+def readAll(self,root,partialFlag=False):
+
+    """Scan vnodes, looking for @<file> nodes to read."""
+
+    use_tracer = False
+    if use_tracer: tt = g.startTracer()
+
+    at = self ; c = at.c
+    force = partialFlag
+    if partialFlag:
+        # Capture the current headline only if
+        # we aren't doing the initial read.
+        c.endEditing() 
+    anyRead = False
+    p = root.copy()
+
+    scanned_tnodes = set()
+
+    if partialFlag: after = p.nodeAfterTree()    
+    else: after = c.nullPosition()
+
+    while p and p != after:
+        gnx = p.gnx
+        #skip clones
+        if gnx in scanned_tnodes:
+            p.moveToNodeAfterTree()
+            continue
+        scanned_tnodes.add(gnx)
+
+        if not p.h.startswith('@'):
+            p.moveToThreadNext()
+        elif p.isAtIgnoreNode():
+            p.moveToNodeAfterTree()
+        elif p.isAtThinFileNode():
+            anyRead = True
+            at.read(p,force=force)
+            p.moveToNodeAfterTree()
+        elif p.isAtAutoNode():
+            fileName = p.atAutoNodeName()
+            at.readOneAtAutoNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtEditNode():
+            fileName = p.atEditNodeName()
+            at.readOneAtEditNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtShadowFileNode():
+            fileName = p.atShadowFileNodeName()
+            at.readOneAtShadowNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtFileNode():
+            anyRead = True
+            wasOrphan = p.isOrphan()
+            ok = at.read(p,force=force)
+            if wasOrphan and not partialFlag and not ok:
+                # Remind the user to fix the problem.
+                p.setDirty() # Expensive, but it can't be helped.
+                c.setChanged(True)
+            p.moveToNodeAfterTree()
+        else: p.moveToThreadNext()
+    # Clear all orphan bits.
+    for v in c.all_unique_nodes():
+        v.clearOrphan()
+
+    if partialFlag and not anyRead:
+        g.es("no @<file> nodes in the selected tree")
+
+    if use_tracer: tt.stop()
+#@-node:ekr.20041005105605.26:readAll (atFile)
+#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+
+    # Remember that we have read this file.
+    p.v.at_read = True # Create the attribute
+
+    s,ok,fileKey = c.cacher.readFile(fileName,p)
+    if ok: return
+
+    if not g.unitTesting:
+        g.es("reading:",p.h)
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        # Note: the file contains an @ignore,
+        # so no unintended write can happen.
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        p.clearDirty()
+        c.setChanged(oldChanged)
+    else:
+        c.cacher.writeFile(p,fileKey)
+        g.doHook('after-auto', p = p)  # call after-auto callbacks
+#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+#@+node:ekr.20100208071151.5905:readFile (cacher)
+def readFile (self,fileName,root):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    if not g.enableDB:
+        if trace: g.trace('g.enableDB is False')
+        return '',False,None
+
+    s,e = g.readFileIntoString(fileName,raw=True,silent=True)
+    if s is None:
+        if trace: g.trace('empty file contents',fileName)
+        return s,False,None
+    assert not g.isUnicode(s)
+
+    # There will be a bug if s is not already an encoded string.
+    key = self.fileKey(root.h,s,requireEncodedString=True)
+    ok = self.db and key in self.db
+    if trace: g.trace('in cache',ok,fileName,key)
+    if ok:
+        # Delete the previous tree, regardless of the @<file> type.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+        # Recreate the file from the cache.
+        aList = self.db[key]
+        self.createOutlineFromCacheList(root.v,aList,fileName=fileName)
+
+    return s,ok,key
+#@-node:ekr.20100208071151.5905:readFile (cacher)
+#@+node:ekr.20100208071151.5903:writeFile (cacher)
+# Was atFile.writeCachedTree
+
+def writeFile(self,p,fileKey):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    # Bug fix: 2010/05/26: check g.enableDB before giving internal error.
+    if not g.enableDB:
+        if trace: g.trace('cache disabled')
+    elif not fileKey:
+        g.trace(g.callers(5))
+        g.internalError('empty fileKey')
+    elif fileKey in self.db:
+        if trace: g.trace('already cached',fileKey)
+    else:
+        if trace: g.trace('caching ',p.h,fileKey)
+        self.db[fileKey] = self.makeCacheList(p)
+#@-node:ekr.20100208071151.5903:writeFile (cacher)
+#@-node:ekr.20100526084301.5913:Fixed erroneous error message in at-auto-rst read logic
 #@-node:ekr.20100319090849.5760:Bugs
 #@+node:ekr.20100319090849.5759:Features
 #@+node:ekr.20100307070200.5720:Fixed the @test logic
