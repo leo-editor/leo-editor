@@ -533,6 +533,7 @@
 <v t="ekr.20100520125300.2146"><vh>@button moved-script-button-test</vh></v>
 <v t="ekr.20100521121737.2148"><vh>start leo bridge</vh></v>
 <v t="ekr.20100521123308.2150"><vh>Run system code</vh></v>
+<v t="ekr.20100522091157.2152" a="O"><vh>@thin test_verbatim_sentinel.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -953,7 +954,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="9"></t>
+<t tx="ekr.20070416075121" str_leo_pos="10"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5858,6 +5859,11 @@ print(bridge)</t>
 os.system('cd c:\\')
 os.system('dir')
 </t>
+<t tx="ekr.20100522091157.2152"># A test
+
+&lt;&lt; ref &gt;&gt;
+
+# end</t>
 <t tx="node:ekr.20100519083913.2158">@others
 
 # a after</t>
