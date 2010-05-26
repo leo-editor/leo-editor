@@ -709,9 +709,15 @@ class rstCommands:
             g.trace('too many top-level underlines, using %s' % (
                 underlines2),color='blue')
         underlines1 = d.get('underlines1','')
-        if not underlines1: underlines1 = '=+*^~"\'`-:><_'
-            # The standard defaults.
-        self.atAutoWriteUnderlines = underlines2 + underlines1
+        # Bug fix:  2010/05/26: pad underlines with default characters.
+        default_underlines = '=+*^~"\'`-:><_'
+        if underlines1:
+            for ch in default_underlines[1:]:
+                if ch not in underlines1:
+                    underlines1 = underlines1 + ch
+        else:
+            underlines1 = default_underlines
+        self.atAutoWriteUnderlines   = underlines2 + underlines1
         self.underlines1 = underlines1
         self.underlines2 = underlines2
     #@-node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
@@ -1608,12 +1614,13 @@ class rstCommands:
 
         trace = False and not g.unitTesting
 
-        if trace: g.trace(self.atAutoWrite,repr(self.underlines2),p.h)
-
         if self.atAutoWrite:
             # We *might* generate overlines for top-level sections.
             u = self.atAutoWriteUnderlines
             level = p.level()-self.topLevel
+
+            if trace: g.trace('level: %s under2: %s under1: %s %s' % (
+                level,repr(self.underlines2),repr(self.underlines1),p.h))
 
             # This is tricky. The index n depends on several factors.
             if self.underlines2:
@@ -1621,7 +1628,9 @@ class rstCommands:
                 n = level
             else:
                 n = level-1
-            if 0 <= n < len(u): ch = u[n]
+
+            if 0 <= n < len(u):
+                ch = u[n]
             elif u:
                 ch = u[-1]
             else:
@@ -1629,9 +1638,7 @@ class rstCommands:
                 ch = '#'
 
             # 2010/01/10: write longer underlines for non-ascii characters.
-            # n = max(4,len(s))
             n = max(4,len(g.toEncodedString(s,encoding=self.encoding,reportErrors=False)))
-                ### Was encoding = 'utf-8'
             if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
             if level == 0 and self.underlines2:
                 return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
@@ -1644,10 +1651,7 @@ class rstCommands:
             level = min(level+1,len(u)-1) # Reserve the first character for explicit titles.
             ch = u [level]
             if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
-            # 2010/01/10: write longer underlines for non-ascii characters.
-            # n = max(4,len(s))
             n = max(4,len(g.toEncodedString(s,encoding=self.encoding,reportErrors=False)))
-                ### Was encoding = 'utf-8'
             return '%s\n%s\n\n' % (p.h.strip(),ch*n)
     #@-node:ekr.20090502071837.93:underline (leoRst)
     #@-node:ekr.20090502071837.88:Utils
