@@ -211,7 +211,7 @@ class leoscreen_Controller:
 
         self.time_fmt = self.c.config.getString('leoscreen_time_fmt') or '%Y-%m-%d %H:%M:%S' 
 
-        self.get_line()  # prime output diffing system
+        self._get_output()  # prime output diffing system
 
         self.popups = []  # store references to popup windows
     #@-node:tbrown.20100226095909.12784:__init__
@@ -282,6 +282,24 @@ class leoscreen_Controller:
         c.setChanged(True)
     #@nonl
     #@-node:tbrown.20100421115534.21602:insert_line
+    #@+node:tbrown.20100528205637.5725:_get_output
+    def _get_output(self):
+        """grab some output"""
+        self.screen_cmd(['hardcopy -h "%s"'%self.tmpfile])
+
+        # seems new output file isn't visible to the process
+        # without this call
+        cmd = ['ls', self.tmpfile]
+        proc = subprocess.Popen(cmd,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc.communicate()
+
+        f = open(self.tmpfile)
+
+        self.output = f.read().strip().split('\n')
+        self.next_unread_line = self.first_line
+    #@nonl
+    #@-node:tbrown.20100528205637.5725:_get_output
     #@+node:tbrown.20100226095909.12788:get_line
     def get_line(self, c=None):
         """Get the next line of output from the last command"""
@@ -293,20 +311,7 @@ class leoscreen_Controller:
             c = self.c
 
         if not self.output:
-
-            self.screen_cmd(['hardcopy -h "%s"'%self.tmpfile])
-
-            # seems new output file isn't visible to the process
-            # without this call
-            cmd = ['ls', self.tmpfile]
-            proc = subprocess.Popen(cmd,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            proc.communicate()
-
-            f = open(self.tmpfile)
-
-            self.output = f.read().strip().split('\n')
-            self.next_unread_line = self.first_line
+            self._get_output()
 
         if not self.output:
             g.es('No output retreived')
