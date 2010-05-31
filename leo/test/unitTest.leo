@@ -740,7 +740,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20090703080553.5000"><vh>@suite run all doctests</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
@@ -2026,7 +2026,7 @@
 <v t="ekr.20100131171342.5602"><vh>@test leoTextWidget</vh></v>
 <v t="ekr.20100131171342.5603"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20090529141856.4682" a="E"><vh>leoImport</vh>
+<v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh> Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
 <v t="ekr.20090529141856.4686"><vh>exportTests</vh>
@@ -2076,10 +2076,10 @@
 </v>
 </v>
 <v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
-<v t="ekr.20090529141856.4716" a="E"><vh> Tests of @auto</vh>
+<v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
 <v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
-<v t="ekr.20090529141856.4717" a="E"><vh>C tests</vh>
+<v t="ekr.20090529141856.4717"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
 <v t="ekr.20090529141856.4720"><vh>@test defaultImporter</vh></v>
@@ -2090,41 +2090,41 @@
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20090529141856.4727" a="E"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20090529141856.4731" a="E"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
 <v t="ekr.20090529141856.4733"><vh>@test elisp 2</vh></v>
 </v>
-<v t="ekr.20090529141856.4766" a="E"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 <v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
 <v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
-<v t="ekr.20090529141856.4772" a="E"><vh>Test BundleException.java</vh>
+<v t="ekr.20090529141856.4772"><vh>Test BundleException.java</vh>
 <v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
 </v>
 </v>
-<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@test Javascript-2</vh></v>
 <v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
 <v t="ekr.20090529141856.4779"><vh>@@test javascript-test-js</vh></v>
 </v>
-<v t="ekr.20090529141856.4734" a="E"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20100219080213.5365" a="E"><vh>PHP tests</vh>
+<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
 <v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
 </v>
-<v t="ekr.20090529141856.4736" a="E"><vh>Python tests</vh>
+<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
 <v t="ekr.20090529141856.4737"><vh>@@test nested class</vh></v>
 <v t="ekr.20090529141856.4738"><vh>@test comment after dict assign</vh></v>
 <v t="ekr.20090529141856.4739"><vh>@test decorator test</vh></v>
@@ -2155,11 +2155,11 @@
 <v t="ekr.20090529141856.4764"><vh>@test two functions (for comparison with unindent does not end function)</vh></v>
 <v t="ekr.20090529141856.4765"><vh>@test unindent in triple string does not end function</vh></v>
 </v>
-<v t="ekr.20090529141856.4780" a="E"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 </v>
 </v>
-<v t="ekr.20090529141856.4784" a="E"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20090529141856.4786"><vh>@test rST import test (no double-underlines)</vh></v>
 <v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
@@ -2179,7 +2179,7 @@
 <v t="ekr.20100131171342.5608"><vh>@test strokeFromSetting</vh></v>
 <v t="ekr.20100131171342.5609"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194424.1" a="E"><vh>leoNodes</vh>
+<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>Startup</vh></v>
@@ -2277,13 +2277,13 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040802071519" a="E"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20100131180007.5391"><vh>@test v.atAutoNodeName &amp; v.atAutoRstNodeName</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20071113202452"><vh>@test zz restore the screen</vh></v>
-<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
@@ -2298,7 +2298,7 @@
 <v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
 <v t="ekr.20080503082625.4"><vh>@test promote</vh></v>
 </v>
-<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -2306,13 +2306,13 @@
 <v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5610" a="E"><vh>leoPlugins</vh>
+<v t="ekr.20100131171342.5610"><vh>leoPlugins</vh>
 <v t="ekr.20100131171342.5611"><vh>@test getHandlersForTag</vh></v>
 </v>
-<v t="ekr.20091219122958.5066" a="E"><vh>leoRst</vh>
+<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
 <v t="ekr.20091219121039.5065"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
 </v>
-<v t="ekr.20090529115704.4396" a="E"><vh>leoShadow</vh>
+<v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 <v t="ekr.20090529115704.4569"><vh>@@test delete unittest shadow directory</vh></v>
 <v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
@@ -2562,21 +2562,60 @@
 <v t="ekr.20071113200638.1" a="E"><vh>leoTangle</vh>
 <v t="ekr.20090624125638.4963"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
 <v t="ekr.20071113090055.1"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
+<v t="sps.20100531151404.9757" a="E"><vh>with sentinels</vh>
 <v t="ekr.20071127194743"><vh>@test @root</vh>
 <v t="ekr.20071127194743.1"><vh>#@root</vh></v>
 <v t="ekr.20071127194743.2"><vh>Output</vh></v>
 </v>
+<v t="sps.20100531151404.21540"><vh>@test @root-doc</vh>
+<v t="sps.20100531151404.21541"><vh>#@root</vh></v>
+<v t="sps.20100531151404.21542"><vh>Output</vh></v>
+</v>
+<v t="sps.20100531151404.27385"><vh>@test @root-code</vh>
+<v t="sps.20100531151404.27386"><vh>#@root</vh></v>
+<v t="sps.20100531151404.27387"><vh>Output</vh></v>
+</v>
+<v t="sps.20100531132336.19970"><vh>@test @root with @language c</vh>
+<v t="sps.20100531132336.19971"><vh>#@root</vh></v>
+<v t="sps.20100531132336.19972"><vh>Output</vh></v>
+</v>
+<v t="sps.20100531151404.9762"><vh>@test @root with @comment #</vh>
+<v t="sps.20100531151404.9763"><vh>#@root</vh></v>
+<v t="sps.20100531151404.9764"><vh>Output</vh></v>
+</v>
+<v t="sps.20100531151404.9773"><vh>@test @root with @comment /* */</vh>
+<v t="sps.20100531151404.9774"><vh>#@root</vh></v>
+<v t="sps.20100531151404.9775"><vh>Output</vh></v>
+</v>
+<v t="sps.20100531151404.15622"><vh>@test @root with @comment // /* */</vh>
+<v t="sps.20100531151404.15623"><vh>#@root</vh></v>
+<v t="sps.20100531151404.15624"><vh>Output</vh></v>
+</v>
+<v t="sps.20100531151404.21473"><vh>@test @root in parent node</vh>
+<v t="sps.20100531151404.21476"><vh>root</vh>
+<v t="sps.20100531151404.21474"><vh>#@root</vh></v>
+<v t="sps.20100531151404.21475"><vh>Output</vh></v>
+</v>
+</v>
+<v t="sps.20100531151404.21483"><vh>@test multiple @root directives</vh>
+<v t="sps.20100531151404.21484"><vh>#@root</vh></v>
+<v t="sps.20100531151404.21485"><vh>Output root-test-one</vh></v>
+<v t="sps.20100531151404.21486"><vh>Output root-test-two</vh></v>
+</v>
+</v>
+<v t="sps.20100531151404.9758"><vh>without sentinels</vh>
 <v t="ekr.20090624125638.4967"><vh>@test @root with @silent</vh>
 <v t="ekr.20090624125638.4968"><vh>#@root</vh></v>
 <v t="ekr.20090624125638.4969"><vh>Output</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5612" a="E"><vh>leoTest</vh>
+</v>
+<v t="ekr.20100131171342.5612"><vh>leoTest</vh>
 <v t="ekr.20100131171342.5613"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
-<v t="ekr.20040712101754.37" a="E"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38" a="E"><vh>editBodyTests</vh>
+<v t="ekr.20040712101754.37"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
 <v t="ekr.20050417202713"><vh>addComments</vh>
 <v t="ekr.20050417202713.1"><vh>before</vh></v>
@@ -23211,6 +23250,148 @@ assert path and path.endswith(endpath),'expected ending %s got %s' % (
 <t tx="sps.20100531034136.20111"></t>
 <t tx="sps.20100531034136.20112"></t>
 <t tx="sps.20100531034136.20113"></t>
+<t tx="sps.20100531132336.19970">import leo.core.leoTest as leoTest
+
+leoTest.runAtFileTest(c,p)</t>
+<t tx="sps.20100531132336.19971">@language c
+@root 'root-test'
+
+// A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100531132336.19972">// A simple test of @root.
+
+// &lt;&lt; secref &gt;&gt;
+abc
+// -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100531151404.15622">import leo.core.leoTest as leoTest
+
+leoTest.runAtFileTest(c,p)</t>
+<t tx="sps.20100531151404.15623">@comment // /* */
+@root 'root-test'
+
+/* A simple test of @root. */
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100531151404.15624">/* A simple test of @root. */
+
+/* &lt;&lt; secref &gt;&gt; */
+abc
+/* -- end -- &lt;&lt; secref &gt;&gt; */
+</t>
+<t tx="sps.20100531151404.21473">import leo.core.leoTest as leoTest
+
+leoTest.runAtFileTest(c,p.firstChild())</t>
+<t tx="sps.20100531151404.21474">&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100531151404.21475"># A simple test of @root.
+
+# &lt;&lt; secref &gt;&gt;
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100531151404.21476">@root 'root-test'
+
+# A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+</t>
+<t tx="sps.20100531151404.21483"></t>
+<t tx="sps.20100531151404.21484"># multiple @root directives
+@root 'root-test-one'
+# content of root-test-one
+&lt;&lt; secref &gt;&gt;
+
+@root 'root-test-two'
+# content of root-test-two
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+content common to both root files
+</t>
+<t tx="sps.20100531151404.21485"></t>
+<t tx="sps.20100531151404.21486"></t>
+<t tx="sps.20100531151404.21540">import leo.core.leoTest as leoTest
+
+leoTest.runAtFileTest(c,p)</t>
+<t tx="sps.20100531151404.21541">@root-doc 'root-test'
+
+# A simple test of @root-doc.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100531151404.21542"># A simple test of @root-doc.
+
+# &lt;&lt; secref &gt;&gt;
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100531151404.27385">import leo.core.leoTest as leoTest
+
+leoTest.runAtFileTest(c,p)</t>
+<t tx="sps.20100531151404.27386">@root-code 'root-test'
+A comment to ignore
+@c
+# A simple test of @root-doc.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100531151404.27387"># A simple test of @root-doc.
+
+# &lt;&lt; secref &gt;&gt;
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100531151404.9757"></t>
+<t tx="sps.20100531151404.9758"></t>
+<t tx="sps.20100531151404.9762">import leo.core.leoTest as leoTest
+
+leoTest.runAtFileTest(c,p)</t>
+<t tx="sps.20100531151404.9763">@comment #
+@root 'root-test'
+
+# A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100531151404.9764"># A simple test of @root.
+
+# &lt;&lt; secref &gt;&gt;
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100531151404.9773">import leo.core.leoTest as leoTest
+
+leoTest.runAtFileTest(c,p)</t>
+<t tx="sps.20100531151404.9774">@comment /* */
+@root 'root-test'
+
+/* A simple test of @root. */
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100531151404.9775">/* A simple test of @root. */
+
+/* &lt;&lt; secref &gt;&gt; */
+abc
+/* -- end -- &lt;&lt; secref &gt;&gt; */
+</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
