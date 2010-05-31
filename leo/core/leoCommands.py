@@ -486,7 +486,7 @@ class baseCommands (object):
             if path is not None: # retain empty paths for warnings.
                 # Convert "path" or <path> to path.
                 path = g.stripPathCruft(path)
-                if path and path not in paths and not warning:
+                if path and not warning:
                     paths.append(path)
                 # We will silently ignore empty @path directives.
 

@@ -89,7 +89,7 @@
 <v t="EKR.20040519090151.2" a="E"><vh>To do</vh>
 <v t="ekr.20100119205347.6015" a="E"
 marks="ekr.20041113113140,"
-expanded="ekr.20100109214940.6225,ekr.20100223123910.5836,ekr.20100202145902.6106,ekr.20100130042842.9008,ekr.20100202145902.6108,ekr.20100206074650.5844,ekr.20100211072044.5754,"><vh>@thin ../doc/leoToDo.txt</vh></v>
+expanded="ekr.20100109214940.6225,ekr.20100223123910.5836,ekr.20031218072017.1380,ekr.20090214075058.9,ekr.20100202145902.6106,ekr.20100130042842.9008,ekr.20100202145902.6108,ekr.20100206074650.5844,ekr.20100211072044.5754,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406" a="E"><vh>Code</vh>
@@ -104,18 +104,20 @@ expanded="ekr.20031218072017.1934,ekr.20090519143741.5915,"><vh>@thin runLeo.py 
 </v>
 <v t="ekr.20031218072017.2604" a="E"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608" a="E"><vh>@thin leoApp.py</vh></v>
-<v t="ekr.20041005105605.1"><vh>@thin leoAtFile.py</vh></v>
+<v t="ekr.20041005105605.1" a="E"
+expanded="ekr.20041005105605.132,ekr.20041005105605.133,ekr.20041005105605.154,ekr.20041005105605.219,ekr.20080923070954.4,"><vh>@thin leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
 <v t="ekr.20100208065621.5894"><vh>@thin leoCache.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@thin leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@thin leoColor.py</vh></v>
-<v t="ekr.20031218072017.2810"><vh>@thin leoCommands.py</vh></v>
+<v t="ekr.20031218072017.2810" a="E"
+expanded="ekr.20041118104831,ekr.20080901124540.1,"><vh>@thin leoCommands.py</vh></v>
 <v t="ekr.20041117062700" a="E"
 expanded="ekr.20041119203941,ekr.20041117081009,"><vh>@thin leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@thin leoFileCommands.py</vh></v>
 <v t="ekr.20031218072017.3093" a="E" descendentVnodeUnknownAttributes="7d71005506302e31342e3071017d71025808000000616e6e6f7461746571037d710473732e"
-expanded="EKR.20040612114220,ekr.20041219095213,"><vh>@thin leoGlobals.py</vh></v>
+expanded="ekr.20031218072017.3099,ekr.20031218072017.1380,ekr.20090214075058.9,EKR.20040612114220,ekr.20041219095213,"><vh>@thin leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@thin leoImport.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@thin leoNodes.py</vh></v>
 <v t="ekr.20031218072017.3439" a="E"

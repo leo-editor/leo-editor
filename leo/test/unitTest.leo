@@ -1215,6 +1215,13 @@
 </v>
 </v>
 </v>
+<v t="sps.20100531034136.20110"><vh>@test c.scanAtPathDirectives same name subdirs</vh>
+<v t="sps.20100531034136.20111"><vh>@path again</vh>
+<v t="sps.20100531034136.20112"><vh>@path again</vh>
+<v t="sps.20100531034136.20113"><vh>xyz</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20080917151620.10"><vh>@test c.scanAtRootDirectives root-code</vh></v>
 <v t="ekr.20080917151620.11"><vh>@test c.scanAtRootDirectives root-doc</vh></v>
 <v t="ekr.20040802065214"><vh>@test changing headline marks descendent @thin nodes dirty</vh>
@@ -23192,6 +23199,18 @@ f.close()
 assert g.os_path_exists(name)
 </t>
 <t tx="ekr.20100507152400.5388"></t>
+<t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
+
+aList = g.get_directives_dict_list(p2)
+path = c.scanAtPathDirectives(aList,createPath=False)
+# print (path,p2.h)
+endpath = g.os_path_normpath('again/again')
+assert path and path.endswith(endpath),'expected ending %s got %s' % (
+    endpath,path)
+</t>
+<t tx="sps.20100531034136.20111"></t>
+<t tx="sps.20100531034136.20112"></t>
+<t tx="sps.20100531034136.20113"></t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 
