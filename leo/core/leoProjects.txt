@@ -51,16 +51,12 @@ def runAtFileTest(c,p):
     theType = h1[1:j]
     assert theType in (
         "@auto","@edit","@file","@thin","@nosent",
-        "@asis","@root",), "bad type: %s" % type
+        "@asis",), "bad type: %s" % type
 
     thinFile = theType == "@thin"
     nosentinels = theType in ("@asis","edit","@nosent")
 
-    if theType == "@root":
-        c.tangleCommands.tangle_output = ''
-        c.tangleCommands.tangle(event=None,p=child1)
-        at.stringOutput = c.tangleCommands.tangle_output
-    elif theType == "@asis":
+    if theType == "@asis":
         at.asisWrite(child1,toString=True)
     elif theType == "@auto":
         at.writeOneAtAutoNode(child1,toString=True,force=True)

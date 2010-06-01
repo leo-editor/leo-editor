@@ -926,16 +926,12 @@ def runAtFileTest(c,p):
     theType = h1[1:j]
     assert theType in (
         "@auto","@edit","@file","@thin","@nosent",
-        "@asis","@root",), "bad type: %s" % type
+        "@asis",), "bad type: %s" % type
 
     thinFile = theType == "@thin"
     nosentinels = theType in ("@asis","edit","@nosent")
 
-    if theType == "@root":
-        c.tangleCommands.tangle_output = ''
-        c.tangleCommands.tangle(event=None,p=child1)
-        at.stringOutput = c.tangleCommands.tangle_output
-    elif theType == "@asis":
+    if theType == "@asis":
         at.asisWrite(child1,toString=True)
     elif theType == "@auto":
         at.writeOneAtAutoNode(child1,toString=True,force=True)
@@ -962,6 +958,66 @@ def runAtFileTest(c,p):
         #@nl
         raise
 #@-node:ekr.20051104075904.44:at-File test code (leoTest.py)
+#@+node:sps.20100531175334.10307:root-File test code (leoTest.py)
+def runRootFileTest(c,p):
+
+    """Code for testing output of @root.  The first child is the top node of the
+    outline to be processed; the remaining siblings have headlines corresponding to
+    the file names that should be generated, with the bodies containing the intended
+    contents of the corresponding file."""
+
+    at = c.atFileCommands
+    next = p.nodeAfterTree()
+    rootTestP = p.firstChild()
+    resultNodeP = rootTestP.next()
+    expected={}
+    while resultNodeP and resultNodeP != next:
+        expected[resultNodeP.h]=resultNodeP.b
+        resultNodeP.moveToNext()
+
+    c.tangleCommands.tangle_output = {}
+    c.tangleCommands.tangle(event=None,p=rootTestP)
+
+    try:
+        expectList = sorted(expected)
+        resultList = sorted(c.tangleCommands.tangle_output)
+        assert(expectList == resultList)
+    except AssertionError:
+        #@        << dump result file names and expected >>
+        #@+node:sps.20100531175334.10309:<< dump result file names and expected >>
+        print('\n','-' * 20)
+        print "expected files:"
+        for n in expectList:
+            print "[%s]" % n, n.__class__
+        print('-' * 20)
+        print "result files:"
+        for n in resultList:
+            print "[%s]" % n, n.__class__
+        print('-' * 20)
+        #@-node:sps.20100531175334.10309:<< dump result file names and expected >>
+        #@nl
+        raise
+
+    try:
+        for t in expectList:
+            result = g.toUnicode(c.tangleCommands.tangle_output[t])
+            assert(expected[t] == result)
+    except AssertionError:
+        #@        << dump result and expected >>
+        #@+node:sps.20100531175334.10308:<< dump result and expected >>
+        print('\n','-' * 20)
+        print("result for %s..." % t)
+        for line in g.splitLines(result):
+            print("%3d" % len(line),repr(line))
+        print('-' * 20)
+        print("expected for %s..." % t)
+        for line in g.splitLines(expected[t]):
+            print("%3d" % len(line),repr(line))
+        print('-' * 20)
+        #@-node:sps.20100531175334.10308:<< dump result and expected >>
+        #@nl
+        raise
+#@-node:sps.20100531175334.10307:root-File test code (leoTest.py)
 #@+node:ekr.20051104075904.99:createUnitTestsFromDoctests
 def createUnitTestsFromDoctests (modules,verbose=True):
 

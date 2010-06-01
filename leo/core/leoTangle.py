@@ -372,7 +372,7 @@ class baseTangleCommands:
         self.p = None # position being processed.
         self.output_file = None # The file descriptor of the output file.
         self.start_mode = "doc" # "code" or "doc".  Use "doc" for compatibility.
-        self.tangle_output = '' # For unit testing.
+        self.tangle_output = {} # For unit testing.
 
         #@+at 
         #@nonl
@@ -1433,7 +1433,8 @@ class baseTangleCommands:
                     self.put_part_node(part,False) # output first lws
             self.onl() # Make sure the file ends with a cr/lf
             if g.unitTesting:
-                self.tangle_output = self.output_file.get()
+                # not robust in the presence of @path directives
+                self.tangle_output[section.name] = self.output_file.get()
             self.output_file.close()
             self.output_file = None
             if g.unitTesting:

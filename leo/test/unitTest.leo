@@ -2565,42 +2565,42 @@
 <v t="sps.20100531151404.9757" a="E"><vh>with sentinels</vh>
 <v t="ekr.20071127194743"><vh>@test @root</vh>
 <v t="ekr.20071127194743.1"><vh>#@root</vh></v>
-<v t="ekr.20071127194743.2"><vh>Output</vh></v>
+<v t="ekr.20071127194743.2"><vh>'root-test'</vh></v>
 </v>
 <v t="sps.20100531151404.21540"><vh>@test @root-doc</vh>
 <v t="sps.20100531151404.21541"><vh>#@root</vh></v>
-<v t="sps.20100531151404.21542"><vh>Output</vh></v>
+<v t="sps.20100531151404.21542"><vh>'root-test'</vh></v>
 </v>
 <v t="sps.20100531151404.27385"><vh>@test @root-code</vh>
 <v t="sps.20100531151404.27386"><vh>#@root</vh></v>
-<v t="sps.20100531151404.27387"><vh>Output</vh></v>
+<v t="sps.20100531151404.27387"><vh>'root-test'</vh></v>
 </v>
 <v t="sps.20100531132336.19970"><vh>@test @root with @language c</vh>
 <v t="sps.20100531132336.19971"><vh>#@root</vh></v>
-<v t="sps.20100531132336.19972"><vh>Output</vh></v>
+<v t="sps.20100531132336.19972"><vh>'root-test'</vh></v>
 </v>
 <v t="sps.20100531151404.9762"><vh>@test @root with @comment #</vh>
 <v t="sps.20100531151404.9763"><vh>#@root</vh></v>
-<v t="sps.20100531151404.9764"><vh>Output</vh></v>
+<v t="sps.20100531151404.9764"><vh>'root-test'</vh></v>
 </v>
 <v t="sps.20100531151404.9773"><vh>@test @root with @comment /* */</vh>
 <v t="sps.20100531151404.9774"><vh>#@root</vh></v>
-<v t="sps.20100531151404.9775"><vh>Output</vh></v>
+<v t="sps.20100531151404.9775"><vh>'root-test'</vh></v>
 </v>
 <v t="sps.20100531151404.15622"><vh>@test @root with @comment // /* */</vh>
 <v t="sps.20100531151404.15623"><vh>#@root</vh></v>
-<v t="sps.20100531151404.15624"><vh>Output</vh></v>
+<v t="sps.20100531151404.15624"><vh>'root-test'</vh></v>
 </v>
 <v t="sps.20100531151404.21473"><vh>@test @root in parent node</vh>
 <v t="sps.20100531151404.21476"><vh>root</vh>
 <v t="sps.20100531151404.21474"><vh>#@root</vh></v>
-<v t="sps.20100531151404.21475"><vh>Output</vh></v>
+<v t="sps.20100531151404.21475"><vh>'root-test'</vh></v>
 </v>
 </v>
 <v t="sps.20100531151404.21483"><vh>@test multiple @root directives</vh>
 <v t="sps.20100531151404.21484"><vh>#@root</vh></v>
-<v t="sps.20100531151404.21485"><vh>Output root-test-one</vh></v>
-<v t="sps.20100531151404.21486"><vh>Output root-test-two</vh></v>
+<v t="sps.20100531151404.21485"><vh>'root-test-one'</vh></v>
+<v t="sps.20100531151404.21486"><vh>'root-test-two'</vh></v>
 </v>
 </v>
 <v t="sps.20100531151404.9758"><vh>without sentinels</vh>
@@ -15018,7 +15018,7 @@ print('\nEnd of leoUndo tests.')</t>
 <t tx="ekr.20071113203234"></t>
 <t tx="ekr.20071127194743">import leo.core.leoTest as leoTest
 
-leoTest.runAtFileTest(c,p)</t>
+leoTest.runRootFileTest(c,p)</t>
 <t tx="ekr.20071127194743.1">@root 'root-test'
 
 # A simple test of @root.
@@ -23304,7 +23304,10 @@ abc
 &lt;&lt; secref &gt;&gt;
 
 </t>
-<t tx="sps.20100531151404.21483"></t>
+<t tx="sps.20100531151404.21483">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTest(c,p)
+</t>
 <t tx="sps.20100531151404.21484"># multiple @root directives
 @root 'root-test-one'
 # content of root-test-one
@@ -23317,11 +23320,19 @@ abc
 &lt;&lt; secref &gt;&gt;=
 content common to both root files
 </t>
-<t tx="sps.20100531151404.21485"></t>
-<t tx="sps.20100531151404.21486"></t>
+<t tx="sps.20100531151404.21485"># content of root-test-one
+# &lt;&lt; secref &gt;&gt;
+content common to both root files
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100531151404.21486"># content of root-test-two
+# &lt;&lt; secref &gt;&gt;
+content common to both root files
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
 <t tx="sps.20100531151404.21540">import leo.core.leoTest as leoTest
 
-leoTest.runAtFileTest(c,p)</t>
+leoTest.runRootFileTest(c,p)</t>
 <t tx="sps.20100531151404.21541">@root-doc 'root-test'
 
 # A simple test of @root-doc.
