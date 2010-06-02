@@ -295,11 +295,11 @@ class root_attributes:
                 ", single_comment_string: " + tangle_state.single_comment_string +
                 ", start_comment_string: " + tangle_state.start_comment_string +
                 ", end_comment_string: " + tangle_state.end_comment_string +
-                ", use_header_flag: " + tangle_state.use_header_flag +
+                ", use_header_flag: " + repr(tangle_state.use_header_flag) +
                 ", print_mode: " + tangle_state.print_mode +
-                ", path: " + g.choose(tangle_state.path, tangle_state.path, "") +
-                ", page_width: " + tangle_state.page_width +
-                ", tab_width: " + tangle_state.tab_width +
+                ", path: " + repr(tangle_state.path) +
+                ", page_width: " + repr(tangle_state.page_width) +
+                ", tab_width: " + repr(tangle_state.tab_width) +
                 # Stephen P. Schaefer 9/13/2002
                 ", first_lines: " + tangle_state.first_lines)
             #@-node:ekr.20031218072017.3463:<< trace the state >>
@@ -329,11 +329,11 @@ class root_attributes:
             ", single_comment_string: " + self.single_comment_string +
             ", start_comment_string: " + self.start_comment_string +
             ", end_comment_string: " + self.end_comment_string +
-            ", use_header_flag: " + self.use_header_flag +
+            ", use_header_flag: " + repr(self.use_header_flag) +
             ", print_mode: " + self.print_mode +
             ", path: " + self.path +
-            ", page_width: " + self.page_width +
-            ", tab_width: " + self.tab_width +
+            ", page_width: " + repr(self.page_width) +
+            ", tab_width: " + repr(self.tab_width) +
             # Stephen P. Schaefer 9/13/2002
             ", first_lines: " + self.first_lines)
     #@-node:ekr.20031218072017.3464:root_attributes.__repr__
@@ -3520,7 +3520,11 @@ class baseTangleCommands:
         if not self.print_mode: self.print_mode = 'verbose'
 
         # 2010/01/27: bug fix: make sure to set the ivars.
-        delim1,delim2,delim3 = g.set_delims_from_language(self.language)
+        # 2010/06/02: allow @comment (which sets delims) in absence of @language
+        if self.language:
+            delim1,delim2,delim3 = g.set_delims_from_language(self.language)
+        if lang_dict and lang_dict.get('delims'):
+            delim1,delim2,delim3 = lang_dict.get('delims')
         self.single_comment_string = delim1
         self.start_comment_string = delim2
         self.end_comment_string = delim3

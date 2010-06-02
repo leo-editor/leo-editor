@@ -504,7 +504,10 @@ def get_directives_dict(p,root=None):
                     # if trace:g.trace(word,repr(val),s[i:i+20])
                     pass # Not a valid directive: just ignore it.
                 else:
-                    d[word.strip()] = val
+                    directive_word = word.strip()
+                    if directive_word in ('root-doc', 'root-code'):
+                        directive_word = 'root'
+                    d[directive_word] = val
                     if trace: g.trace(word.strip(),kind,repr(val))
                     # A special case for @path in the body text of @<file> nodes.
                     # Don't give an actual warning: just set some flags.

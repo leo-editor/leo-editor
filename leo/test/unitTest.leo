@@ -2563,21 +2563,34 @@
 <v t="ekr.20090624125638.4963"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
 <v t="ekr.20071113090055.1"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
 <v t="sps.20100531151404.9757" a="E"><vh>with sentinels</vh>
+<v t="sps.20100601184403.5442"><vh>working</vh>
 <v t="ekr.20071127194743"><vh>@test @root</vh>
 <v t="ekr.20071127194743.1"><vh>#@root</vh></v>
 <v t="ekr.20071127194743.2"><vh>'root-test'</vh></v>
 </v>
+<v t="sps.20100531132336.19970"><vh>@test @root with @language c</vh>
+<v t="sps.20100531132336.19971"><vh>#@root</vh></v>
+<v t="sps.20100531132336.19972"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100531151404.21473"><vh>@test @root in parent node</vh>
+<v t="sps.20100531151404.21476"><vh>root</vh>
+<v t="sps.20100531151404.21474"><vh>#@root</vh></v>
+<v t="sps.20100531151404.21475"><vh>'root-test'</vh></v>
+</v>
+</v>
+<v t="sps.20100531151404.21483"><vh>@test multiple @root directives</vh>
+<v t="sps.20100531151404.21484"><vh>#@root</vh></v>
+<v t="sps.20100531151404.21485"><vh>'root-test-one'</vh></v>
+<v t="sps.20100531151404.21486"><vh>'root-test-two'</vh></v>
+</v>
+<v t="sps.20100601210726.15736"><vh>NOTE:</vh></v>
 <v t="sps.20100531151404.21540"><vh>@test @root-doc</vh>
 <v t="sps.20100531151404.21541"><vh>#@root</vh></v>
 <v t="sps.20100531151404.21542"><vh>'root-test'</vh></v>
 </v>
-<v t="sps.20100531151404.27385"><vh>@test @root-code</vh>
+<v t="sps.20100531151404.27385"><vh>@test @root-code with subnodes</vh>
 <v t="sps.20100531151404.27386"><vh>#@root</vh></v>
 <v t="sps.20100531151404.27387"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100531132336.19970"><vh>@test @root with @language c</vh>
-<v t="sps.20100531132336.19971"><vh>#@root</vh></v>
-<v t="sps.20100531132336.19972"><vh>'root-test'</vh></v>
 </v>
 <v t="sps.20100531151404.9762"><vh>@test @root with @comment #</vh>
 <v t="sps.20100531151404.9763"><vh>#@root</vh></v>
@@ -2591,16 +2604,31 @@
 <v t="sps.20100531151404.15623"><vh>#@root</vh></v>
 <v t="sps.20100531151404.15624"><vh>'root-test'</vh></v>
 </v>
-<v t="sps.20100531151404.21473"><vh>@test @root in parent node</vh>
-<v t="sps.20100531151404.21476"><vh>root</vh>
-<v t="sps.20100531151404.21474"><vh>#@root</vh></v>
-<v t="sps.20100531151404.21475"><vh>'root-test'</vh></v>
+<v t="sps.20100602033555.5420"><vh>@test @root with @language c</vh>
+<v t="sps.20100602033555.5421"><vh>#@root</vh></v>
+<v t="sps.20100602033555.5422"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100602033555.5426"><vh>@test @root with @language html</vh>
+<v t="sps.20100602033555.5427"><vh>#@root</vh></v>
+<v t="sps.20100602033555.5428"><vh>'root-test'</vh></v>
 </v>
 </v>
-<v t="sps.20100531151404.21483"><vh>@test multiple @root directives</vh>
-<v t="sps.20100531151404.21484"><vh>#@root</vh></v>
-<v t="sps.20100531151404.21485"><vh>'root-test-one'</vh></v>
-<v t="sps.20100531151404.21486"><vh>'root-test-two'</vh></v>
+<v t="sps.20100601184403.5443" a="E"><vh>failing</vh>
+<v t="sps.20100602033555.5432"><vh>@test @root with @language html and @comment  //</vh>
+<v t="sps.20100602033555.5433"><vh>#@root</vh>
+<v t="sps.20100602033555.5435"><vh>&lt;&lt; javascript section &gt;&gt;</vh></v>
+</v>
+<v t="sps.20100602033555.5434"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100602033555.5436"><vh>NOTE: Multiple parts not allowed for &lt;&lt; secref &gt;&gt;</vh></v>
+<v t="sps.20100601210726.21583"><vh>@test @root-doc with subnodes</vh>
+<v t="sps.20100601210726.21584"><vh>#@root</vh>
+<v t="sps.20100601210726.21586"><vh>secref &gt;&gt;= definition</vh></v>
+<v t="sps.20100601210726.21588"><vh>&lt;&lt; secref &gt;&gt;</vh></v>
+</v>
+<v t="sps.20100601210726.21585"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100531151404.27385"></v>
 </v>
 </v>
 <v t="sps.20100531151404.9758"><vh>without sentinels</vh>
@@ -23252,7 +23280,7 @@ assert path and path.endswith(endpath),'expected ending %s got %s' % (
 <t tx="sps.20100531034136.20113"></t>
 <t tx="sps.20100531132336.19970">import leo.core.leoTest as leoTest
 
-leoTest.runAtFileTest(c,p)</t>
+leoTest.runRootFileTest(c,p)</t>
 <t tx="sps.20100531132336.19971">@language c
 @root 'root-test'
 
@@ -23270,7 +23298,7 @@ abc
 </t>
 <t tx="sps.20100531151404.15622">import leo.core.leoTest as leoTest
 
-leoTest.runAtFileTest(c,p)</t>
+leoTest.runRootFileTest(c,p)</t>
 <t tx="sps.20100531151404.15623">@comment // /* */
 @root 'root-test'
 
@@ -23282,13 +23310,13 @@ leoTest.runAtFileTest(c,p)</t>
 abc</t>
 <t tx="sps.20100531151404.15624">/* A simple test of @root. */
 
-/* &lt;&lt; secref &gt;&gt; */
+// &lt;&lt; secref &gt;&gt;
 abc
-/* -- end -- &lt;&lt; secref &gt;&gt; */
+// -- end -- &lt;&lt; secref &gt;&gt;
 </t>
 <t tx="sps.20100531151404.21473">import leo.core.leoTest as leoTest
 
-leoTest.runAtFileTest(c,p.firstChild())</t>
+leoTest.runRootFileTest(c,p.firstChild())</t>
 <t tx="sps.20100531151404.21474">&lt;&lt; secref &gt;&gt;=
 abc</t>
 <t tx="sps.20100531151404.21475"># A simple test of @root.
@@ -23333,7 +23361,9 @@ content common to both root files
 <t tx="sps.20100531151404.21540">import leo.core.leoTest as leoTest
 
 leoTest.runRootFileTest(c,p)</t>
-<t tx="sps.20100531151404.21541">@root-doc 'root-test'
+<t tx="sps.20100531151404.21541">A comment to ignore
+
+@root-doc 'root-test'
 
 # A simple test of @root-doc.
 
@@ -23349,17 +23379,18 @@ abc
 </t>
 <t tx="sps.20100531151404.27385">import leo.core.leoTest as leoTest
 
-leoTest.runAtFileTest(c,p)</t>
-<t tx="sps.20100531151404.27386">@root-code 'root-test'
-A comment to ignore
-@c
-# A simple test of @root-doc.
+leoTest.runRootFileTest(c,p)</t>
+<t tx="sps.20100531151404.27386">A comment to ignore
+
+@root-code 'root-test'
+
+# A simple test of @root-code.
 
 &lt;&lt; secref &gt;&gt;
 
 &lt;&lt; secref &gt;&gt;=
 abc</t>
-<t tx="sps.20100531151404.27387"># A simple test of @root-doc.
+<t tx="sps.20100531151404.27387"># A simple test of @root-code.
 
 # &lt;&lt; secref &gt;&gt;
 abc
@@ -23369,7 +23400,7 @@ abc
 <t tx="sps.20100531151404.9758"></t>
 <t tx="sps.20100531151404.9762">import leo.core.leoTest as leoTest
 
-leoTest.runAtFileTest(c,p)</t>
+leoTest.runRootFileTest(c,p)</t>
 <t tx="sps.20100531151404.9763">@comment #
 @root 'root-test'
 
@@ -23387,7 +23418,7 @@ abc
 </t>
 <t tx="sps.20100531151404.9773">import leo.core.leoTest as leoTest
 
-leoTest.runAtFileTest(c,p)</t>
+leoTest.runRootFileTest(c,p)</t>
 <t tx="sps.20100531151404.9774">@comment /* */
 @root 'root-test'
 
@@ -23402,6 +23433,148 @@ abc</t>
 /* &lt;&lt; secref &gt;&gt; */
 abc
 /* -- end -- &lt;&lt; secref &gt;&gt; */
+</t>
+<t tx="sps.20100601184403.5442"></t>
+<t tx="sps.20100601184403.5443"></t>
+<t tx="sps.20100601210726.15736">@
+Without a setting of at_root_bodies_start_in_doc_mode, tangled nodes begin
+in code mode.  It is only in subnodes of root-doc that the nodes begin in
+doc-mode.
+</t>
+<t tx="sps.20100601210726.21583">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTest(c,p)</t>
+<t tx="sps.20100601210726.21584">A comment to ignore
+
+@root-doc 'root-test'
+
+# A simple test of @root-doc.
+&lt;&lt; secref &gt;&gt;
+@
+ignored documentation
+</t>
+<t tx="sps.20100601210726.21585"># A simple test of @root-doc.
+
+# &lt;&lt; secref &gt;&gt;
+abc
+def
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100601210726.21586">
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100601210726.21588">ignored comment
+@c
+xyz
+
+</t>
+<t tx="sps.20100602033555.5420">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTest(c,p)</t>
+<t tx="sps.20100602033555.5421">@language c
+@root 'root-test'
+
+// A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100602033555.5422">// A simple test of @root.
+
+// &lt;&lt; secref &gt;&gt;
+abc
+// -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100602033555.5426">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTest(c,p)</t>
+<t tx="sps.20100602033555.5427">@language html
+@root 'root-test'
+
+&lt;!-- A simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100602033555.5428">&lt;!-- A simple test of @root. --&gt;
+
+&lt;!-- &lt;&lt; secref &gt;&gt; --&gt;
+abc
+&lt;!-- -- end -- &lt;&lt; secref &gt;&gt; --&gt;
+</t>
+<t tx="sps.20100602033555.5432">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTest(c,p)</t>
+<t tx="sps.20100602033555.5433">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc
+
+&lt;script type="text/javascript"&gt;
+@comment //
+&lt;&lt; javascript section &gt;&gt;
+&lt;/script&gt;
+@comment &lt;!-- --&gt;
+</t>
+<t tx="sps.20100602033555.5434">&lt;!-- A less simple test of @root. --&gt;
+
+&lt;!-- &lt;&lt; secref &gt;&gt; --&gt;
+abc
+
+&lt;script type="text/javascript"&gt;
+// @comment //
+// &lt;&lt; javascript section &gt;&gt;
+var i;
+// -- end -- &lt;&lt; javascript section &gt;&gt;
+&lt;/script&gt;
+&lt;!-- -- end -- &lt;&lt; secref &gt;&gt; --&gt;
+</t>
+<t tx="sps.20100602033555.5435">var i;
+</t>
+<t tx="sps.20100602033555.5436">@
+Huh?
+
+There's a fair amount of logic in the @root tangle code to allow or disallow multiple parts to a section definition.  It makes sense that when encountering a section reference (i.e., a point at which a section is to be interpolated) that you shouldn't at that point be in the midst of defining the contents of that section, lest interpolation of the section include itself ad infinitum.  If that's the point, the error message could be much clearer.  But I don't believe that's what's happening.  My test @root node which is failing with this error is supplied at the end of this message; could I get help understanding why it is supposed to be invalid?  Thanks,
+
+    - Stephen
+
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;?xml-stylesheet ekr_test?&gt;
+&lt;leo_file&gt;
+&lt;leo_header file_format="2"/&gt;
+&lt;vnodes&gt;
+&lt;v t="sps.20100602001344.9941" a="E"&gt;&lt;vh&gt;#@root&lt;/vh&gt;
+&lt;v t="sps.20100602001344.9942"&gt;&lt;vh&gt;secref &amp;gt;&amp;gt;= definition&lt;/vh&gt;&lt;/v&gt;
+&lt;v t="sps.20100602001344.9943"&gt;&lt;vh&gt;&amp;lt;&amp;lt; secref &amp;gt;&amp;gt;&lt;/vh&gt;&lt;/v&gt;
+&lt;/v&gt;
+&lt;/vnodes&gt;
+&lt;tnodes&gt;
+&lt;t tx="sps.20100602001344.9941"&gt;A comment to ignore
+
+@root-code 'root-test'
+
+# A simple test of @root-code.
+&amp;lt;&amp;lt; secref &amp;gt;&amp;gt;
+@
+ignored documentation
+&lt;/t&gt;
+&lt;t tx="sps.20100602001344.9942"&gt;
+&amp;lt;&amp;lt; secref &amp;gt;&amp;gt;=
+abc&lt;/t&gt;
+&lt;t tx="sps.20100602001344.9943"&gt;ignored comment
+@c
+xyz
+
+&lt;/t&gt;
+&lt;/tnodes&gt;
+&lt;/leo_file&gt;
 </t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly

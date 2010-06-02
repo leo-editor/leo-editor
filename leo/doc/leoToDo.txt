@@ -2003,7 +2003,10 @@ def get_directives_dict(p,root=None):
                     # if trace:g.trace(word,repr(val),s[i:i+20])
                     pass # Not a valid directive: just ignore it.
                 else:
-                    d[word.strip()] = val
+                    directive_word = word.strip()
+                    if directive_word in ('root-doc', 'root-code'):
+                        directive_word = 'root'
+                    d[directive_word] = val
                     if trace: g.trace(word.strip(),kind,repr(val))
                     # A special case for @path in the body text of @<file> nodes.
                     # Don't give an actual warning: just set some flags.
@@ -2600,7 +2603,11 @@ def scanAllDirectives(self,p):
     if not self.print_mode: self.print_mode = 'verbose'
 
     # 2010/01/27: bug fix: make sure to set the ivars.
-    delim1,delim2,delim3 = g.set_delims_from_language(self.language)
+    # 2010/06/02: allow @comment (which sets delims) in absence of @language
+    if self.language:
+        delim1,delim2,delim3 = g.set_delims_from_language(self.language)
+    if lang_dict and lang_dict.get('delims'):
+        delim1,delim2,delim3 = lang_dict.get('delims')
     self.single_comment_string = delim1
     self.start_comment_string = delim2
     self.end_comment_string = delim3
