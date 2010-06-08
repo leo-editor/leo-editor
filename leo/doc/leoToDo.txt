@@ -8373,8 +8373,13 @@ def put_all_roots(self):
                 self.put_part_node(part,False) # output first lws
         self.onl() # Make sure the file ends with a cr/lf
         if g.unitTesting:
-            # not robust in the presence of @path directives
-            self.tangle_output[section.name] = self.output_file.get()
+            common_prefix = file_name.find(c.openDirectory)
+            if (common_prefix == 0):
+                relative_path = file_name[len(c.openDirectory):]
+                # don't confuse /home/sps and /home/sschaefer as having common prefixes
+                if (relative_path[:len(os.sep)] == os.sep):
+                     file_name = relative_path[len(os.sep):]
+            self.tangle_output[file_name] = self.output_file.get()
         self.output_file.close()
         self.output_file = None
         if g.unitTesting:

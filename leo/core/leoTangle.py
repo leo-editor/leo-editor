@@ -735,9 +735,11 @@ class baseTangleCommands:
         return any_root_flag
     #@-node:ekr.20031218072017.3477:tangleTree (calls cleanup)
     #@+node:ekr.20031218072017.3478:untangle
-    def untangle(self,event=None):
+    def untangle(self,event=None,p=None):
 
-        c = self.c ; p = c.p
+        c = self.c
+        if p == None:
+            p = c.p
         self.initUntangleCommand()
 
         self.untangleTree(p,report_errors=True)
@@ -1433,8 +1435,13 @@ class baseTangleCommands:
                     self.put_part_node(part,False) # output first lws
             self.onl() # Make sure the file ends with a cr/lf
             if g.unitTesting:
-                # not robust in the presence of @path directives
-                self.tangle_output[section.name] = self.output_file.get()
+                common_prefix = file_name.find(c.openDirectory)
+                if (common_prefix == 0):
+                    relative_path = file_name[len(c.openDirectory):]
+                    # don't confuse /home/sps and /home/sschaefer as having common prefixes
+                    if (relative_path[:len(os.sep)] == os.sep):
+                         file_name = relative_path[len(os.sep):]
+                self.tangle_output[file_name] = self.output_file.get()
             self.output_file.close()
             self.output_file = None
             if g.unitTesting:

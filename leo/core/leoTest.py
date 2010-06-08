@@ -968,15 +968,17 @@ def runRootFileTest(c,p):
 
     at = c.atFileCommands
     next = p.nodeAfterTree()
-    rootTestP = p.firstChild()
-    resultNodeP = rootTestP.next()
+    rootTestBeforeP = p.firstChild()
+    rootTestAfterP = rootTestBeforeP.copyTreeAfter()
+    resultNodeP = rootTestAfterP.copy()
+    resultNodeP.moveToNext()
     expected={}
     while resultNodeP and resultNodeP != next:
         expected[resultNodeP.h]=resultNodeP.b
         resultNodeP.moveToNext()
 
     c.tangleCommands.tangle_output = {}
-    c.tangleCommands.tangle(event=None,p=rootTestP)
+    c.tangleCommands.tangle(event=None,p=rootTestAfterP)
 
     try:
         expectList = sorted(expected)
@@ -1016,7 +1018,14 @@ def runRootFileTest(c,p):
         print('-' * 20)
         #@-node:sps.20100531175334.10308:<< dump result and expected >>
         #@nl
-        raise
+
+    try:
+        t = testUtils(c)
+        c.tangleCommands.untangle(event=None, p=rootTestAfterP)
+        assert(t.compareOutlines(rootTestBeforeP, rootTestAfterP))
+        # report produced by compareOutlines() if appropriate
+    finally:
+        rootTestAfterP.doDelete()
 #@-node:sps.20100531175334.10307:root-File test code (leoTest.py)
 #@+node:ekr.20051104075904.99:createUnitTestsFromDoctests
 def createUnitTestsFromDoctests (modules,verbose=True):

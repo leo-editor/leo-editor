@@ -2563,7 +2563,7 @@
 <v t="ekr.20090624125638.4963"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
 <v t="ekr.20071113090055.1"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
 <v t="sps.20100531151404.9757" a="E"><vh>with sentinels</vh>
-<v t="sps.20100601184403.5442"><vh>working</vh>
+<v t="sps.20100601184403.5442" a="E"><vh>working</vh>
 <v t="ekr.20071127194743"><vh>@test @root</vh>
 <v t="ekr.20071127194743.1"><vh>#@root</vh></v>
 <v t="ekr.20071127194743.2"><vh>'root-test'</vh></v>
@@ -2589,7 +2589,9 @@
 <v t="sps.20100531151404.21542"><vh>'root-test'</vh></v>
 </v>
 <v t="sps.20100531151404.27385"><vh>@test @root-code with subnodes</vh>
-<v t="sps.20100531151404.27386"><vh>#@root</vh></v>
+<v t="sps.20100531151404.27386"><vh>#@root</vh>
+<v t="sps.20100607221800.5464"><vh>further definition</vh></v>
+</v>
 <v t="sps.20100531151404.27387"><vh>'root-test'</vh></v>
 </v>
 <v t="sps.20100531151404.9762"><vh>@test @root with @comment #</vh>
@@ -2612,8 +2614,22 @@
 <v t="sps.20100602033555.5427"><vh>#@root</vh></v>
 <v t="sps.20100602033555.5428"><vh>'root-test'</vh></v>
 </v>
+<v t="sps.20100607223520.5465"><vh>@test @root with @path directive (relative) in parent node</vh>
+<v t="sps.20100607223520.5466"><vh>root</vh>
+<v t="sps.20100607223520.5467"><vh>#@root</vh></v>
+<v t="sps.20100607223520.5468"><vh>foo/'root-test'</vh></v>
 </v>
-<v t="sps.20100601184403.5443" a="E"><vh>failing</vh>
+</v>
+<v t="sps.20100607223520.5472"><vh>@test @root with @path directive, relative</vh>
+<v t="sps.20100607223520.5473"><vh>#@root</vh></v>
+<v t="sps.20100607223520.5474"><vh>foo/'root-test'</vh></v>
+</v>
+<v t="sps.20100607223520.5478"><vh>@test @root with @path directive, absolute</vh>
+<v t="sps.20100607223520.5479"><vh>#@root</vh></v>
+<v t="sps.20100607223520.5480"><vh>/tmp/'root-test'</vh></v>
+</v>
+</v>
+<v t="sps.20100601184403.5443"><vh>failing</vh>
 <v t="sps.20100602033555.5432"><vh>@test @root with @language html and @comment  //</vh>
 <v t="sps.20100602033555.5433"><vh>#@root</vh>
 <v t="sps.20100602033555.5435"><vh>&lt;&lt; javascript section &gt;&gt;</vh></v>
@@ -23392,8 +23408,10 @@ leoTest.runRootFileTest(c,p)</t>
 abc</t>
 <t tx="sps.20100531151404.27387"># A simple test of @root-code.
 
-# &lt;&lt; secref &gt;&gt;
+# &lt;&lt; secref &gt;&gt; (1 of 2)
 abc
+# &lt;&lt; secref &gt;&gt; (2 of 2)
+xyz
 # -- end -- &lt;&lt; secref &gt;&gt;
 </t>
 <t tx="sps.20100531151404.9757"></t>
@@ -23575,6 +23593,65 @@ xyz
 &lt;/t&gt;
 &lt;/tnodes&gt;
 &lt;/leo_file&gt;
+</t>
+<t tx="sps.20100607221800.5464">&lt;&lt; secref &gt;&gt;=
+xyz
+</t>
+<t tx="sps.20100607223520.5465"># directory foo must exist, or scanAtPathDirectives ignores it.
+import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTest(c,p.firstChild())</t>
+<t tx="sps.20100607223520.5466">@path foo</t>
+<t tx="sps.20100607223520.5467">@root 'root-test'
+
+# A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100607223520.5468"># A simple test of @root.
+
+# &lt;&lt; secref &gt;&gt;
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100607223520.5472"># directory foo must exist or scanAtPathDirectives will ignore it
+import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTest(c,p)</t>
+<t tx="sps.20100607223520.5473">@path foo
+@root 'root-test'
+
+# A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100607223520.5474"># A simple test of @root.
+
+# &lt;&lt; secref &gt;&gt;
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100607223520.5478">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTest(c,p)</t>
+<t tx="sps.20100607223520.5479">@path /tmp
+@root 'root-test'
+
+# A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100607223520.5480"># A simple test of @root.
+
+# &lt;&lt; secref &gt;&gt;
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
 </t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
