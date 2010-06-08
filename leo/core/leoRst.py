@@ -288,6 +288,7 @@ class rstCommands:
             'rst3_underline_characters': '''#=+*^~"'`-:><_''',
             'rst3_verbose':True,
             'rst3_write_intermediate_file': False, # Used only if generate_rst is True.
+            'rst3_write_intermediate_extension': 'txt',
             # Mode options...
             'rst3_code_mode': False, # True: generate rst markup from @code and @doc parts.
             'rst3_doc_only_mode': False, # True: generate only from @doc parts.
@@ -850,7 +851,8 @@ class rstCommands:
                     return False
 
             if self.getOption('write_intermediate_file'):
-                name = self.outputFileName + '.txt'
+                ext = self.getOption('write_intermediate_extension')
+                name = self.outputFileName.rsplit('.',1)[0] + ext 
                 if g.isPython3: # 2010/04/21
                     f = open(name,'w',encoding=self.encoding)
                 else:

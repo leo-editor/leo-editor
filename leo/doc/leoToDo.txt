@@ -3148,7 +3148,8 @@ def writeSpecialTree (self,p,toString,justOneFile):
                 return False
 
         if self.getOption('write_intermediate_file'):
-            name = self.outputFileName + '.txt'
+            ext = self.getOption('write_intermediate_extension')
+            name = self.outputFileName.rsplit('.',1)[0] + ext 
             if g.isPython3: # 2010/04/21
                 f = open(name,'w',encoding=self.encoding)
             else:
@@ -3628,7 +3629,8 @@ def writeSpecialTree (self,p,toString,justOneFile):
                 return False
 
         if self.getOption('write_intermediate_file'):
-            name = self.outputFileName + '.txt'
+            ext = self.getOption('write_intermediate_extension')
+            name = self.outputFileName.rsplit('.',1)[0] + ext 
             if g.isPython3: # 2010/04/21
                 f = open(name,'w',encoding=self.encoding)
             else:
