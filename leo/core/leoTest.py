@@ -1018,6 +1018,7 @@ def runRootFileTest(c,p):
         print('-' * 20)
         #@-node:sps.20100531175334.10308:<< dump result and expected >>
         #@nl
+        raise
 
     try:
         t = testUtils(c)

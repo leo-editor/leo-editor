@@ -506,7 +506,7 @@ def get_directives_dict(p,root=None):
                 else:
                     directive_word = word.strip()
                     if directive_word in ('root-doc', 'root-code'):
-                        directive_word = 'root'
+                        d['root'] = val # in addition to optioned version
                     d[directive_word] = val
                     if trace: g.trace(word.strip(),kind,repr(val))
                     # A special case for @path in the body text of @<file> nodes.

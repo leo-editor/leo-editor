@@ -1435,13 +1435,16 @@ class baseTangleCommands:
                     self.put_part_node(part,False) # output first lws
             self.onl() # Make sure the file ends with a cr/lf
             if g.unitTesting:
+                # complications to handle testing of multiple @root directives together with
+                # @path directives
+                file_name_path = file_name
                 common_prefix = file_name.find(c.openDirectory)
                 if (common_prefix == 0):
                     relative_path = file_name[len(c.openDirectory):]
                     # don't confuse /home/sps and /home/sschaefer as having common prefixes
                     if (relative_path[:len(os.sep)] == os.sep):
-                         file_name = relative_path[len(os.sep):]
-                self.tangle_output[file_name] = self.output_file.get()
+                         file_name_path = relative_path[len(os.sep):]
+                self.tangle_output[file_name_path] = self.output_file.get()
             self.output_file.close()
             self.output_file = None
             if g.unitTesting:
