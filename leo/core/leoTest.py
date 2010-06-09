@@ -971,11 +971,10 @@ def runRootFileTest(c,p):
     rootTestBeforeP = p.firstChild()
     rootTestAfterP = rootTestBeforeP.copyTreeAfter()
     resultNodeP = rootTestAfterP.copy()
-    resultNodeP.moveToNext()
     expected={}
-    while resultNodeP and resultNodeP != next:
-        expected[resultNodeP.h]=resultNodeP.b
+    while resultNodeP.hasNext():
         resultNodeP.moveToNext()
+        expected[resultNodeP.h]=resultNodeP.b
 
     c.tangleCommands.tangle_output = {}
     c.tangleCommands.tangle(event=None,p=rootTestAfterP)
@@ -998,6 +997,7 @@ def runRootFileTest(c,p):
         print('-' * 20)
         #@-node:sps.20100531175334.10309:<< dump result file names and expected >>
         #@nl
+        rootTestAfterP.doDelete()
         raise
 
     try:
@@ -1018,6 +1018,7 @@ def runRootFileTest(c,p):
         print('-' * 20)
         #@-node:sps.20100531175334.10308:<< dump result and expected >>
         #@nl
+        rootTestAfterP.doDelete()
         raise
 
     try:

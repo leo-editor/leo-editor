@@ -742,6 +742,16 @@ class baseTangleCommands:
             p = c.p
         self.initUntangleCommand()
 
+        #@    << read fake files for unit testing >>
+        #@+node:sps.20100608083657.20940:<< read fake files for unit testing >>
+        if g.unitTesting:
+            p2 = p.copy()
+            while (p2.hasNext()):
+                p2.moveToNext()
+                self.tangle_output[p2.h] = p2.b
+        #@-node:sps.20100608083657.20940:<< read fake files for unit testing >>
+        #@nl
+
         self.untangleTree(p,report_errors=True)
         if not g.unitTesting:
             g.es("untangle complete")
@@ -846,7 +856,24 @@ class baseTangleCommands:
         #@-node:ekr.20031218072017.3482:<< return if @silent or unknown language >>
         #@nl
         path = c.os_path_finalize_join(self.tangle_directory,path)
-        file_buf,e = g.readFileIntoString(path)
+        if g.unitTesting:
+            #@        << fake the file access >>
+            #@+node:sps.20100608083657.20939:<< fake the file access >>
+            # complications to handle testing of multiple @root directives together with
+            # @path directives
+            file_name_path = c.os_path_finalize_join(self.tangle_directory,path)
+            if (file_name_path.find(c.openDirectory) == 0):
+                relative_path = file_name_path[len(c.openDirectory):]
+                # don't confuse /u and /usr as having common prefixes
+                if (relative_path[:len(os.sep)] == os.sep):
+                    file_name_path = relative_path[len(os.sep):]
+            # find the node with the right title, and load self.tangle_output and file_buf
+
+            file_buf = self.tangle_output.get(file_name_path)
+            #@-node:sps.20100608083657.20939:<< fake the file access >>
+            #@nl
+        else:
+            file_buf,e = g.readFileIntoString(path)
         if file_buf is None:
             self.cleanup()
             return
@@ -1434,36 +1461,44 @@ class baseTangleCommands:
                     self.tangle_indent = 0 # Initialize global.
                     self.put_part_node(part,False) # output first lws
             self.onl() # Make sure the file ends with a cr/lf
+            #@        << unit testing fake files>>
+            #@+node:sps.20100608083657.20937:<< unit testing fake files>>
             if g.unitTesting:
                 # complications to handle testing of multiple @root directives together with
                 # @path directives
                 file_name_path = file_name
-                common_prefix = file_name.find(c.openDirectory)
-                if (common_prefix == 0):
-                    relative_path = file_name[len(c.openDirectory):]
-                    # don't confuse /home/sps and /home/sschaefer as having common prefixes
+                if (file_name_path.find(c.openDirectory) == 0):
+                    relative_path = file_name_path[len(c.openDirectory):]
+                    # don't confuse /u and /usr as having common prefixes
                     if (relative_path[:len(os.sep)] == os.sep):
                          file_name_path = relative_path[len(os.sep):]
                 self.tangle_output[file_name_path] = self.output_file.get()
+            #@nonl
+            #@-node:sps.20100608083657.20937:<< unit testing fake files>>
+            #@nl
             self.output_file.close()
             self.output_file = None
+            #@        << unit testing set result and return >>
+            #@+node:sps.20100608083657.20938:<< unit testing set result and return >>
             if g.unitTesting:
                 assert self.errors == 0
                 g.app.unitTestDict ['tangle'] = True
                 g.app.unitTestDict ['tangle_directory'] = self.tangle_directory
                 g.app.unitTestDict ['tangle_output_fn'] = file_name
+                return
+            #@-node:sps.20100608083657.20938:<< unit testing set result and return >>
+            #@nl
+            if self.errors + g.app.scanErrors == 0:
+                g.update_file_if_changed(c,file_name,temp_name)
             else:
-                if self.errors + g.app.scanErrors == 0:
-                    g.update_file_if_changed(c,file_name,temp_name)
-                else:
-                    g.es("unchanged:",file_name)
-                    #@                << Erase the temporary file >>
-                    #@+node:ekr.20031218072017.1155:<< Erase the temporary file >>
-                    try: # Just delete the temp file.
-                        os.remove(temp_name)
-                    except: pass
-                    #@-node:ekr.20031218072017.1155:<< Erase the temporary file >>
-                    #@nl
+                g.es("unchanged:",file_name)
+                #@            << Erase the temporary file >>
+                #@+node:ekr.20031218072017.1155:<< Erase the temporary file >>
+                try: # Just delete the temp file.
+                    os.remove(temp_name)
+                except: pass
+                #@-node:ekr.20031218072017.1155:<< Erase the temporary file >>
+                #@nl
     #@nonl
     #@-node:ekr.20031218072017.1151:tangle.put_all_roots
     #@+node:ekr.20031218072017.3506:put_code
@@ -2722,6 +2757,12 @@ class baseTangleCommands:
             self.string1 = self.string2 = None # This is debatable.
         if self.language == "html":
             self.string1 = '"' ; self.string2 = None # 12/3/03
+
+        if 0:
+            g.trace("string1,string2,line_comment:",
+                repr(self.string1),
+                repr(self.string2),
+                repr(self.line_comment))
         #@-node:ekr.20031218072017.2368:<< set the private global matching vars >>
         #@nl
         line_indent = 0  # The indentation to use if we see a section reference.
@@ -3287,6 +3328,9 @@ class baseTangleCommands:
             if i < len(s): # Non-empty file name.
                 # self.root_name must be set later by token_type().
                 self.root = s[i:]
+                # implement headline @root (but create unit tests first):
+                # arguments: name, is_code, is_doc
+                # st_enter_root_name(self.root, False, False)
     #@-node:ekr.20031218072017.3594:setRootFromHeadline
     #@+node:ekr.20031218072017.1259:setRootFromText
     #@+at 
