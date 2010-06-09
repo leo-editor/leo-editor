@@ -42,7 +42,6 @@ filename string as its only argument and set as open_func.
 #@@language python
 #@@tabwidth -4
 
-__name__ = 'mime'
 __version__ = '0.2'
 
 #@<< version history >>
@@ -54,6 +53,9 @@ __version__ = '0.2'
 # 0.1 - Initial plugin
 # 0.2 - DJW:  -changed open file architecture
 #             -added support for win32 platform
+# 0.3 - DJW:  -remove explicit "__name__" assignment
+#             -quiet signon
+#             -rearrange sections for easier reading
 #@-at
 #@-node:dan.20090203174248.28:<< version history >>
 #@nl
@@ -71,19 +73,17 @@ import sys
 #@-node:dan.20090203174248.29:<< imports >>
 #@nl
 
-#@<< guess file association handler >>
-#@+node:dan.20090203174248.35:<< guess file association handler >>
-#@+at 
-#@nonl
-# Search for the best method of opening files.  If running a desktop manager,
-# do the action corresponding to a double-click in the file manager.
-# 
-# Helper functions return a function f(fpath) which takes the full file path,
-# launches the viewer and returns immediately.
-#@-at
-#@@c
-
 #@+others
+#@+node:dan.20090210183435.1:exec_full_cmd
+def exec_full_cmd(cmd):
+    '''Accept a command string including filename and return a function
+    which executes the command.'''
+
+    def f(fpath):
+        return subprocess.Popen(cmd, shell=True)
+
+    return f
+#@-node:dan.20090210183435.1:exec_full_cmd
 #@+node:dan.20090210180636.27:exec_string_cmd
 def exec_string_cmd(cmd):
     '''Accept a command string and return a function which opens executes the command,
@@ -98,52 +98,13 @@ def exec_string_cmd(cmd):
 
     return f
 #@-node:dan.20090210180636.27:exec_string_cmd
-#@+node:dan.20090210183435.1:exec_full_cmd
-def exec_full_cmd(cmd):
-    '''Accept a command string including filename and return a function
-    which executes the command.'''
-
-    def f(fpath):
-        return subprocess.Popen(cmd, shell=True)
-
-    return f
-#@-node:dan.20090210183435.1:exec_full_cmd
-#@-others
-
-# open_func is called with the full file path
-open_func = None
-
-# no initial system string command
-_mime_open_cmd = ''
-
-# default methods of opening files
-if sys.platform == 'linux2':
-    #detect KDE or Gnome to use their file associations
-    if os.environ.get('KDE_FULL_SESSION'):
-        #_mime_open_cmd = 'kfmclient exec'
-        open_func = exec_string_cmd('kfmclient exec')
-
-    elif os.environ.get('GNOME_DESKTOP_SESSION_ID'):
-        _mime_open_cmd = 'gnome-open'
-
-    else:
-        pass
-
-elif sys.platform == 'win32':
-    #use this directly as 1-arg fn, default action is 'open'
-    open_func = os.startfile
-
-#@-node:dan.20090203174248.35:<< guess file association handler >>
-#@nl
-
-#@+others
 #@+node:dan.20090203174248.30:init
 def init ():
 
     ok = not g.app.unitTesting
 
     if ok:
-        print('mime.py enabled')
+        #print('mime.py enabled')
 
         # Open on double click
         leoPlugins.registerHandler('icondclick1', open_mimetype)
@@ -190,7 +151,7 @@ def open_mimetype(tag, keywords, val=None):
                 mime_cmd += ' %s'
             open_func = exec_string_cmd(mime_cmd)
 
-        #no special handler function specified,
+        #no special handler function specified (unknown platform),
         #try mailcap/mimetype entries explicitly
         if open_func is None:
             (ftype, encoding) = mimetypes.guess_type(fname)
@@ -225,5 +186,44 @@ def open_mimetype(tag, keywords, val=None):
 
 #@-node:dan.20090203174248.31:open_mimetype
 #@-others
+
+#@<< guess file association handler >>
+#@+node:dan.20090203174248.35:<< guess file association handler >>
+#@+at 
+#@nonl
+# Search for the best method of opening files.  If running a desktop manager,
+# do the action corresponding to a double-click in the file manager.
+# 
+# Helper functions return a function f(fpath) which takes the full file path,
+# launches the viewer and returns immediately.
+#@-at
+#@@c
+
+
+# open_func is called with the full file path
+open_func = None
+
+# no initial system string command
+_mime_open_cmd = ''
+
+# default methods of opening files
+if sys.platform == 'linux2':
+    #detect KDE or Gnome to use their file associations
+    if os.environ.get('KDE_FULL_SESSION'):
+        #_mime_open_cmd = 'kfmclient exec'
+        open_func = exec_string_cmd('kfmclient exec')
+
+    elif os.environ.get('GNOME_DESKTOP_SESSION_ID'):
+        _mime_open_cmd = 'gnome-open'
+
+    else:
+        pass
+
+elif sys.platform == 'win32':
+    #use this directly as 1-arg fn, default action is 'open'
+    open_func = os.startfile
+
+#@-node:dan.20090203174248.35:<< guess file association handler >>
+#@nl
 #@-node:dan.20090217132953.1:@thin mime.py
 #@-leo
