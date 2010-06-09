@@ -727,7 +727,7 @@ def scanAtRootOptions (s,i,err_flag=False):
             err = i-1
 
         # Scan to the next minus sign.
-        while i < len(s) and s[i] not in (' ','\t','-'):
+        while i < len(s) and s[i] not in (' ','\t','\n','-'):
             i += 1
 
         if err > -1 and err_flag:
