@@ -3664,7 +3664,7 @@ class baseTangleCommands:
                 kind = plain_line
 
             if kind == at_root:
-                i = self.setRootFromText(s[i:],report_errors)
+                end = self.setRootFromText(s[i:],report_errors)
             #@-node:ekr.20031218072017.3602:<< set kind for directive >>
             #@nl
         # g.trace(kind,g.get_line(s,i))

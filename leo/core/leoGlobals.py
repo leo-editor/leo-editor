@@ -4349,6 +4349,9 @@ def match_word(s,i,pattern):
     return not g.isWordChar(ch)
 #@-node:ekr.20031218072017.3184:match_word
 #@+node:ekr.20031218072017.3185:skip_blank_lines
+# This routine differs from skip_ws_and_nl in that
+# it does not advance over whitespace at the start
+# of a non-empty or non-nl terminated line
 def skip_blank_lines(s,i):
 
     while i < len(s):

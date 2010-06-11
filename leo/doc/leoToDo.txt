@@ -2835,7 +2835,7 @@ if self.raw_cweb_flag and kind == at_other:
     kind = plain_line
 
 if kind == at_root:
-    i = self.setRootFromText(s[i:],report_errors)
+    end = self.setRootFromText(s[i:],report_errors)
 #@-node:ekr.20031218072017.3602:<< set kind for directive >>
 #@-node:ekr.20031218072017.3599:token_type
 #@-node:ekr.20100507084415.5757:Fix @root-code/doc bug
