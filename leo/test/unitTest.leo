@@ -1950,7 +1950,7 @@
 <v t="ekr.20061104172236.23"><vh>@test tkBody.onClick</vh></v>
 <v t="ekr.20071113202153.1"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194033.3" a="E"><vh>leoGlobals</vh>
+<v t="ekr.20071113194033.3"><vh>leoGlobals</vh>
 <v t="ekr.20100131180007.5398"><vh>@test g.adjustTripleString</vh></v>
 <v t="ekr.20040917062206"><vh>@test g.cantImport returns None</vh></v>
 <v t="ekr.20060921115303"><vh>@test g.checkVersion</vh></v>
@@ -2022,7 +2022,7 @@
 <v t="ekr.20100131180007.5426"><vh>@test g.set_delims_from_language</vh></v>
 <v t="ekr.20100131180007.5425"><vh>@test g.set_delims_from_string</vh></v>
 <v t="ekr.20100131180007.5421"><vh>@test g.setDefaultDirectory</vh></v>
-<v t="sps.20100609234650.16094"><vh>@test skip_blank_lines</vh></v>
+<v t="sps.20100609234650.16094"><vh>@test g.skip_blank_lines</vh></v>
 <v t="ekr.20061104172236.15"><vh>@test g.skip_line</vh></v>
 <v t="ekr.20061104172236.16"><vh>@test g.skip_to_end_of_line</vh></v>
 <v t="ekr.20061104172236.17"><vh>@test g.skip_to_start_of_line</vh></v>
@@ -2572,26 +2572,22 @@
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="ekr.20071113200638.1"><vh>leoTangle</vh>
+<v t="ekr.20071113200638.1" a="E"><vh>leoTangle</vh>
 <v t="ekr.20090624125638.4963"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
 <v t="ekr.20071113090055.1"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
-<v t="sps.20100609153802.16075"><vh>top level</vh>
-<v t="sps.20100531151404.9757"><vh>with sentinels</vh>
-<v t="sps.20100609111310.5536"><vh>now working</vh>
+<v t="sps.20100609234650.39252"><vh>@test c.tangleCommands.scanAllDirectives 3</vh>
+<v t="sps.20100609234650.39251"><vh>#@root</vh></v>
+</v>
+<v t="sps.20100609153802.16075" a="E"><vh>top level</vh>
+<v t="sps.20100531151404.9757" a="E"><vh>with sentinels</vh>
+<v t="sps.20100609111310.5536" a="E"><vh>now working</vh>
 <v t="sps.20100531132336.19970"><vh>@test @root with @language c</vh>
 <v t="sps.20100531132336.19971"><vh>#@root</vh></v>
 <v t="sps.20100531132336.19972"><vh>'root-test'</vh></v>
 </v>
-</v>
-<v t="sps.20100601184403.5442"><vh>was working</vh>
 <v t="ekr.20071127194743"><vh>@test @root</vh>
 <v t="ekr.20071127194743.1"><vh>#@root</vh></v>
 <v t="ekr.20071127194743.2"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100531151404.21483"><vh>@test multiple @root directives</vh>
-<v t="sps.20100608173214.6384"><vh>#@root</vh></v>
-<v t="sps.20100531151404.21485"><vh>'root-test-one'</vh></v>
-<v t="sps.20100531151404.21486"><vh>'root-test-two'</vh></v>
 </v>
 <v t="sps.20100601210726.15736"><vh>NOTE:</vh></v>
 <v t="sps.20100531151404.21540"><vh>@test @root-doc</vh>
@@ -2635,7 +2631,12 @@
 <v t="sps.20100607223520.5480"><vh>/tmp/'root-test'</vh></v>
 </v>
 </v>
-<v t="sps.20100601184403.5443"><vh>failing</vh>
+<v t="sps.20100601184403.5443" a="E"><vh>failing</vh>
+<v t="sps.20100612133937.5517"><vh>@test multiple @root directives</vh>
+<v t="sps.20100612133937.5518"><vh>#@root</vh></v>
+<v t="sps.20100612133937.5519"><vh>'root-test-one'</vh></v>
+<v t="sps.20100612133937.5520"><vh>'root-test-two'</vh></v>
+</v>
 <v t="sps.20100602033555.5432"><vh>@test @root with @language html and @comment  //</vh>
 <v t="sps.20100602033555.5433"><vh>#@root</vh>
 <v t="sps.20100602033555.5435"><vh>&lt;&lt; javascript section &gt;&gt;</vh></v>
@@ -2643,28 +2644,27 @@
 <v t="sps.20100602033555.5434"><vh>'root-test'</vh></v>
 </v>
 <v t="sps.20100602033555.5436"><vh>NOTE: Multiple parts not allowed for &lt;&lt; secref &gt;&gt;</vh></v>
-<v t="sps.20100601210726.21583"><vh>@test @root-doc with subnodes</vh>
-<v t="sps.20100601210726.21584"><vh>#@root</vh>
+<v t="sps.20100601210726.21583" a="E"><vh>@test @root-doc with subnodes</vh>
+<v t="sps.20100601210726.21584" a="E"><vh>#@root</vh>
 <v t="sps.20100601210726.21586"><vh>secref &gt;&gt;= definition</vh></v>
 <v t="sps.20100601210726.21588"><vh>&lt;&lt; secref &gt;&gt;</vh></v>
 </v>
 <v t="sps.20100601210726.21585"><vh>'root-test'</vh></v>
 </v>
-<v t="sps.20100531151404.27385"></v>
 </v>
 </v>
-<v t="sps.20100531151404.9758"><vh>without sentinels</vh>
+<v t="sps.20100531151404.9758" a="E"><vh>without sentinels</vh>
 <v t="ekr.20090624125638.4967"><vh>@test @root with @silent</vh>
 <v t="ekr.20090624125638.4968"><vh>#@root</vh></v>
-<v t="ekr.20090624125638.4969"><vh>Output</vh></v>
+<v t="ekr.20090624125638.4969"><vh>'root-test'</vh></v>
 </v>
 </v>
 </v>
-<v t="sps.20100609153802.16076"><vh>support routines</vh>
-<v t="sps.20100609153802.16077"><vh>token_type</vh>
+<v t="sps.20100609153802.16076" a="E"><vh>support routines</vh>
+<v t="sps.20100609153802.16077" a="E"><vh>token_type</vh>
 <v t="sps.20100609153802.16078"><vh>@test token_type</vh></v>
 </v>
-<v t="sps.20100609153802.16079"><vh>setRootFromText</vh>
+<v t="sps.20100609153802.16079" a="E"><vh>setRootFromText</vh>
 <v t="sps.20100609153802.16080"><vh>@test setRootFromText</vh></v>
 </v>
 </v>
@@ -20552,7 +20552,7 @@ for kind,expected in table:
 </t>
 <t tx="ekr.20090624125638.4967">import leo.core.leoTest as leoTest
 
-leoTest.runAtRootTest(c,p)</t>
+leoTest.runRootFileTest(c,p)</t>
 <t tx="ekr.20090624125638.4968">@silent
 @root 'root-test'
 
@@ -23345,20 +23345,6 @@ abc</t>
 abc
 // -- end -- &lt;&lt; secref &gt;&gt;
 </t>
-<t tx="sps.20100531151404.21483">import leo.core.leoTest as leoTest
-
-leoTest.runRootFileTest(c,p)
-</t>
-<t tx="sps.20100531151404.21485"># content of root-test-one
-# &lt;&lt; secref &gt;&gt;
-content common to both root files
-# -- end -- &lt;&lt; secref &gt;&gt;
-</t>
-<t tx="sps.20100531151404.21486"># content of root-test-two
-# &lt;&lt; secref &gt;&gt;
-content common to both root files
-# -- end -- &lt;&lt; secref &gt;&gt;
-</t>
 <t tx="sps.20100531151404.21540">import leo.core.leoTest as leoTest
 
 leoTest.runRootFileTest(c,p)</t>
@@ -23437,10 +23423,9 @@ abc</t>
 abc
 /* -- end -- &lt;&lt; secref &gt;&gt; */
 </t>
-<t tx="sps.20100601184403.5442"></t>
 <t tx="sps.20100601184403.5443"></t>
 <t tx="sps.20100601210726.15736">@
-Without a setting of at_root_bodies_start_in_doc_mode, tangled nodes begin
+Without a setting of @bool at_root_bodies_start_in_doc_mode, tangled nodes begin
 in code mode.  It is only in subnodes of root-doc that the nodes begin in
 doc-mode.
 </t>
@@ -23620,18 +23605,6 @@ abc</t>
 abc
 # -- end -- &lt;&lt; secref &gt;&gt;
 </t>
-<t tx="sps.20100608173214.6384"># multiple @root directives
-@root 'root-test-one'
-# content of root-test-one
-&lt;&lt; secref &gt;&gt;
-
-@root 'root-test-two'
-# content of root-test-two
-&lt;&lt; secref &gt;&gt;
-
-&lt;&lt; secref &gt;&gt;=
-content common to both root files
-</t>
 <t tx="sps.20100609111310.5536"></t>
 <t tx="sps.20100609153802.16075"></t>
 <t tx="sps.20100609153802.16076"></t>
@@ -23706,6 +23679,67 @@ end = g.skip_blank_lines("\n\na\n",0)
 assert end == 2, "expected 2, got %d" % end
 end = g.skip_blank_lines("\n\n a\n",0)
 assert end == 2, "expected 2, got %d" % end
+</t>
+<t tx="sps.20100609234650.39251">@root 'root-test'
+
+# A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100609234650.39252">d = c.tangleCommands.scanAllDirectives(p.firstChild())
+assert d.get('encoding') == 'utf-8','fail encoding'
+assert d.get('language') == 'python','fail language'
+assert d.get('pagewidth') == 80,'fail pagewidth'
+
+path1 = d.get('path').lower()
+path2 = g.os_path_finalize_join(g.app.loadDir,'..','test').lower()
+assert path1==path2,'fail path: expected %s, got %s' % (path1,path2)
+
+assert d.get('tabwidth') == -4,'fail tabwidth'
+assert c.tangleCommands.print_mode=='verbose','fail print_mode: %s' % (c.tangleCommands.print_mode)
+assert d.get('lang-dict') == None, "lang-dict set to %s" % repr(d.get('lang-dict'))
+assert d.get('lineending') == '\n', "lineending not \\n, instead %s" % repr(d.get(lineending))
+assert c.tangleCommands.tangle_directory == d.get('path')
+assert c.tangleCommands.output_doc_flag == None
+assert c.tangleCommands.tangle_batch_flag == None
+assert c.tangleCommands.untangle_batch_flag == None
+assert c.tangleCommands.use_header_flag == None
+assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
+assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
+assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
+assert c.tangleCommands.use_cweb_flag == False, "use_cweb_flag expected False, is %s" % repr(c.tangleCommands.use_cweb_flag)
+assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+assert c.tangleCommands.use_noweb_flag == True, "use_noweb_flag expected True, is %s" % repr(c.tangleCommands.use_noweb_flag)
+assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)</t>
+<t tx="sps.20100612133937.5517">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTest(c,p)
+</t>
+<t tx="sps.20100612133937.5518"># multiple @root directives
+@root 'root-test-one'
+# content of root-test-one
+&lt;&lt; secref &gt;&gt;
+
+@root 'root-test-two'
+# content of root-test-two
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+content common to both root files
+</t>
+<t tx="sps.20100612133937.5519"># content of root-test-one
+# &lt;&lt; secref &gt;&gt;
+content common to both root files
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100612133937.5520"># content of root-test-two
+# &lt;&lt; secref &gt;&gt;
+content common to both root files
+# -- end -- &lt;&lt; secref &gt;&gt;
 </t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly

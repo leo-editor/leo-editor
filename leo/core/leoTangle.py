@@ -584,6 +584,7 @@ class baseTangleCommands:
         if not self.tangleTree(p,report_errors=True):
             g.es("looking for a parent to tangle...")
             while p:
+                assert(self.head_root == None)
                 d = g.get_directives_dict(p,[self.head_root])
                 if 'root' in d:
                     g.es("tangling parent")
@@ -659,6 +660,7 @@ class baseTangleCommands:
         while p and p != next:
             self.p = p
             self.setRootFromHeadline(p)
+            assert(self.head_root == None)
             theDict = g.get_directives_dict(p,[self.head_root])
             is_ignore = 'ignore' in theDict
             if is_ignore:
@@ -712,6 +714,7 @@ class baseTangleCommands:
 
         while p and p != next:
             self.setRootFromHeadline(p)
+            assert(self.head_root == None)
             theDict = g.get_directives_dict(p,[self.head_root])
             is_ignore = 'ignore' in theDict
             is_root = 'root' in theDict
@@ -924,6 +927,7 @@ class baseTangleCommands:
 
         while p and p != afterEntireTree and self.errors + g.app.scanErrors == 0:
             self.setRootFromHeadline(p)
+            assert(self.head_root == None)
             theDict = g.get_directives_dict(p,[self.head_root])
             ignore = 'ignore' in theDict
             root = 'root' in theDict
@@ -937,6 +941,7 @@ class baseTangleCommands:
                 p.moveToThreadNext()
                 while p and p != afterUnit and self.errors + g.app.scanErrors== 0:
                     self.setRootFromHeadline(p)
+                    assert(self.head_root == None)
                     theDict = g.get_directives_dict(p,[self.head_root])
                     root = 'root' in theDict
                     if root:
@@ -2983,33 +2988,37 @@ class baseTangleCommands:
         #@    << Remove leading blank lines and comments from ucode >>
         #@+node:ekr.20031218072017.3574:<< Remove leading blank lines and comments from ucode >>
         #@+at
-        # We assume that any leading comments came from an @doc 
-        # part. This isn't always
-        # valid and this code will eliminate such leading comments. 
-        # This is a defect in
-        # Untangle; it can hardly be avoided.
+        # We formerly assumed that any leading comments came from an 
+        # @doc part.
+        # That became invalid when we stopped emitting doc parts 
+        # into the derived file.
+        # Leading comments are now treated as "code"
         #@-at
         #@@c
 
         i = g.skip_blank_lines(ucode,0)
-        j = g.skip_ws(ucode,i)
+        #j = g.skip_ws(ucode,i)
         # g.trace("comment,end,single:",self.comment,self.comment_end,self.line_comment)
 
-        if self.comment and self.comment_end:
-            if ucode and g.match(ucode,j,self.comment):
-                # Skip to the end of the block comment.
-                i = j + len(self.comment)
-                i = ucode.find(self.comment_end,i)
-                if i == -1: ucode = None # An unreported problem in the user code.
-                else:
-                    i += len(self.comment_end)
-                    i = g.skip_blank_lines(ucode,i)
-        elif self.line_comment:
-            while ucode and g.match(ucode,j,self.line_comment):
-                i = g.skip_line(ucode,i)
-                i = g.skip_blank_lines(ucode,i)
-                j = g.skip_ws(ucode,i)
-        # Only the value of ucode matters here.
+        #@+at
+        # if self.comment and self.comment_end:
+        #     if ucode and g.match(ucode,j,self.comment):
+        #         # Skip to the end of the block comment.
+        #         i = j + len(self.comment)
+        #         i = ucode.find(self.comment_end,i)
+        #         if i == -1: ucode = None # An unreported problem 
+        # in the user code.
+        #         else:
+        #             i += len(self.comment_end)
+        #             i = g.skip_blank_lines(ucode,i)
+        # elif self.line_comment:
+        #     while ucode and g.match(ucode,j,self.line_comment):
+        #         i = g.skip_line(ucode,i)
+        #         i = g.skip_blank_lines(ucode,i)
+        #         j = g.skip_ws(ucode,i)
+        # # Only the value of ucode matters here.
+        #@-at
+        #@@c
         if ucode: ucode = ucode[i:]
         #@-node:ekr.20031218072017.3574:<< Remove leading blank lines and comments from ucode >>
         #@nl
@@ -3613,6 +3622,7 @@ class baseTangleCommands:
                 if kind == bad_section_name:
                     kind = plain_line # not an error.
                 elif kind == at_root:
+                    assert(self.head_root == None)
                     if self.head_root:
                         self.setRootFromText(self.head_root,report_errors)
                     else:

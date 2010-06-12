@@ -1022,10 +1022,11 @@ def runRootFileTest(c,p):
         raise
 
     try:
-        t = testUtils(c)
-        c.tangleCommands.untangle(event=None, p=rootTestAfterP)
-        assert(t.compareOutlines(rootTestBeforeP, rootTestAfterP))
-        # report produced by compareOutlines() if appropriate
+        if not (c.tangleCommands.print_mode in ("quiet","silent")):
+            t = testUtils(c)
+            c.tangleCommands.untangle(event=None, p=rootTestAfterP)
+            assert(t.compareOutlines(rootTestBeforeP, rootTestAfterP))
+            # report produced by compareOutlines() if appropriate
     finally:
         rootTestAfterP.doDelete()
 #@-node:sps.20100531175334.10307:root-File test code (leoTest.py)

@@ -2657,6 +2657,7 @@ def tanglePass1(self,p):
     while p and p != next:
         self.p = p
         self.setRootFromHeadline(p)
+        assert(self.head_root == None)
         theDict = g.get_directives_dict(p,[self.head_root])
         is_ignore = 'ignore' in theDict
         if is_ignore:
@@ -2790,6 +2791,7 @@ if g.match(s,i,"<<"):
     if kind == bad_section_name:
         kind = plain_line # not an error.
     elif kind == at_root:
+        assert(self.head_root == None)
         if self.head_root:
             self.setRootFromText(self.head_root,report_errors)
         else:
