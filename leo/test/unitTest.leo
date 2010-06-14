@@ -2600,6 +2600,12 @@
 </v>
 <v t="sps.20100531151404.27387"><vh>'root-test'</vh></v>
 </v>
+<v t="sps.20100613140923.5498"><vh>@test @root-doc with subnodes</vh>
+<v t="sps.20100613140923.5499"><vh>#@root</vh>
+<v t="sps.20100613140923.5500"><vh>further definition</vh></v>
+</v>
+<v t="sps.20100613140923.5501"><vh>'root-test'</vh></v>
+</v>
 <v t="sps.20100531151404.9762"><vh>@test @root with @comment #</vh>
 <v t="sps.20100531151404.9763"><vh>#@root</vh></v>
 <v t="sps.20100531151404.9764"><vh>'root-test'</vh></v>
@@ -23379,10 +23385,12 @@ leoTest.runRootFileTest(c,p)</t>
 abc</t>
 <t tx="sps.20100531151404.27387"># A simple test of @root-code.
 
-# &lt;&lt; secref &gt;&gt; (1 of 2)
+# &lt;&lt; secref &gt;&gt; (1 of 3)
 abc
-# &lt;&lt; secref &gt;&gt; (2 of 2)
+# &lt;&lt; secref &gt;&gt; (2 of 3)
 xyz
+# &lt;&lt; secref &gt;&gt; (3 of 3)
+uvw
 # -- end -- &lt;&lt; secref &gt;&gt;
 </t>
 <t tx="sps.20100531151404.9757"></t>
@@ -23425,9 +23433,9 @@ abc
 </t>
 <t tx="sps.20100601184403.5443"></t>
 <t tx="sps.20100601210726.15736">@
-Without a setting of @bool at_root_bodies_start_in_doc_mode, tangled nodes begin
-in code mode.  It is only in subnodes of root-doc that the nodes begin in
-doc-mode.
+Without a setting of @bool at_root_bodies_start_in_doc_mode = False, tangled
+nodes begin in doc mode.  It is only in subnodes of root-code that the nodes
+begin in code-mode.
 </t>
 <t tx="sps.20100601210726.21583">import leo.core.leoTest as leoTest
 
@@ -23548,6 +23556,11 @@ xyz
 </t>
 <t tx="sps.20100607221800.5464">&lt;&lt; secref &gt;&gt;=
 xyz
+@
+A comment section
+
+&lt;&lt; secref &gt;&gt;=
+uvw
 </t>
 <t tx="sps.20100607223520.5465"># directory foo must exist, or scanAtPathDirectives ignores it.
 import leo.core.leoTest as leoTest
@@ -23739,6 +23752,30 @@ content common to both root files
 <t tx="sps.20100612133937.5520"># content of root-test-two
 # &lt;&lt; secref &gt;&gt;
 content common to both root files
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100613140923.5498">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTest(c,p)</t>
+<t tx="sps.20100613140923.5499">A comment to ignore
+
+@root-doc 'root-test'
+
+# A simple test of @root-code.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100613140923.5500">&lt;&lt; secref &gt;&gt;=
+xyz
+</t>
+<t tx="sps.20100613140923.5501"># A simple test of @root-code.
+
+# &lt;&lt; secref &gt;&gt; (1 of 2)
+abc
+# &lt;&lt; secref &gt;&gt; (2 of 2)
+xyz
 # -- end -- &lt;&lt; secref &gt;&gt;
 </t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
