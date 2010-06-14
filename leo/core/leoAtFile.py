@@ -443,6 +443,7 @@ class atFile:
                 return at.error(
                     'can not call at.read from string for @shadow files')
             at.inputFile = g.fileLikeObject(fromString=fromString)
+            fn = None
         else:
             fn = at.fullPath(self.root)
                 # Returns full path, including file name.
@@ -499,7 +500,7 @@ class atFile:
         if at.errors:
             return False
         fileName = at.openFileForReading(fromString=fromString)
-        if at.inputFile:
+        if fileName and at.inputFile:
             c.setFileTimeStamp(fileName)
         else:
             return False
