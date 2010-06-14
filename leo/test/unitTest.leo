@@ -844,7 +844,7 @@
 <v t="ekr.20071113145804.24"><vh>@test round trip toUnicode toEncodedString</vh></v>
 <v t="ekr.20100421102506.6282"><vh>@test rst.write with unicode character</vh></v>
 </v>
-<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
+<v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20100223123103.5382"><vh>@test expand/contract-pane</vh></v>
 <v t="ekr.20100131171342.5506"><vh>leoApp</vh>
 <v t="ekr.20100131180007.5454"><vh>@test at.get/setPathUa</vh></v>
@@ -2039,7 +2039,7 @@
 <v t="ekr.20100131171342.5602"><vh>@test leoTextWidget</vh></v>
 <v t="ekr.20100131171342.5603"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20090529141856.4682" a="E"><vh>leoImport</vh>
+<v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh> Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
 <v t="ekr.20090529141856.4686"><vh>exportTests</vh>
@@ -2089,10 +2089,10 @@
 </v>
 </v>
 <v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
-<v t="ekr.20090529141856.4716" a="E"><vh> Tests of @auto</vh>
+<v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
 <v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
-<v t="ekr.20090529141856.4717" a="E"><vh>C tests</vh>
+<v t="ekr.20090529141856.4717"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
 <v t="ekr.20090529141856.4720"><vh>@test defaultImporter</vh></v>
@@ -2103,41 +2103,41 @@
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20090529141856.4727" a="E"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20090529141856.4731" a="E"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
 <v t="ekr.20090529141856.4733"><vh>@test elisp 2</vh></v>
 </v>
-<v t="ekr.20090529141856.4766" a="E"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 <v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
 <v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
-<v t="ekr.20090529141856.4772" a="E"><vh>Test BundleException.java</vh>
+<v t="ekr.20090529141856.4772"><vh>Test BundleException.java</vh>
 <v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
 </v>
 </v>
-<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@test Javascript-2</vh></v>
 <v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
 <v t="ekr.20090529141856.4779"><vh>@@test javascript-test-js</vh></v>
 </v>
-<v t="ekr.20090529141856.4734" a="E"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20100219080213.5365" a="E"><vh>PHP tests</vh>
+<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
 <v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
 </v>
-<v t="ekr.20090529141856.4736" a="E"><vh>Python tests</vh>
+<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
 <v t="ekr.20090529141856.4737"><vh>@@test nested class</vh></v>
 <v t="ekr.20090529141856.4738"><vh>@test comment after dict assign</vh></v>
 <v t="ekr.20090529141856.4739"><vh>@test decorator test</vh></v>
@@ -2168,11 +2168,11 @@
 <v t="ekr.20090529141856.4764"><vh>@test two functions (for comparison with unindent does not end function)</vh></v>
 <v t="ekr.20090529141856.4765"><vh>@test unindent in triple string does not end function</vh></v>
 </v>
-<v t="ekr.20090529141856.4780" a="E"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 </v>
 </v>
-<v t="ekr.20090529141856.4784" a="E"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20090529141856.4786"><vh>@test rST import test (no double-underlines)</vh></v>
 <v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
@@ -2192,7 +2192,7 @@
 <v t="ekr.20100131171342.5608"><vh>@test strokeFromSetting</vh></v>
 <v t="ekr.20100131171342.5609"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194424.1" a="E"><vh>leoNodes</vh>
+<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>Startup</vh></v>
@@ -2290,13 +2290,13 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040802071519" a="E"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20100131180007.5391"><vh>@test v.atAutoNodeName &amp; v.atAutoRstNodeName</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20071113202452"><vh>@test zz restore the screen</vh></v>
-<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
@@ -2311,7 +2311,7 @@
 <v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
 <v t="ekr.20080503082625.4"><vh>@test promote</vh></v>
 </v>
-<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -2319,13 +2319,13 @@
 <v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5610" a="E"><vh>leoPlugins</vh>
+<v t="ekr.20100131171342.5610"><vh>leoPlugins</vh>
 <v t="ekr.20100131171342.5611"><vh>@test getHandlersForTag</vh></v>
 </v>
-<v t="ekr.20091219122958.5066" a="E"><vh>leoRst</vh>
+<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
 <v t="ekr.20091219121039.5065"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
 </v>
-<v t="ekr.20090529115704.4396" a="E"><vh>leoShadow</vh>
+<v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 <v t="ekr.20090529115704.4569"><vh>@@test delete unittest shadow directory</vh></v>
 <v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
@@ -2572,15 +2572,18 @@
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="ekr.20071113200638.1" a="E"><vh>leoTangle</vh>
+<v t="ekr.20071113200638.1"><vh>leoTangle</vh>
 <v t="ekr.20090624125638.4963"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
 <v t="ekr.20071113090055.1"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
 <v t="sps.20100609234650.39252"><vh>@test c.tangleCommands.scanAllDirectives 3</vh>
 <v t="sps.20100609234650.39251"><vh>#@root</vh></v>
 </v>
-<v t="sps.20100609153802.16075" a="E"><vh>top level</vh>
-<v t="sps.20100531151404.9757" a="E"><vh>with sentinels</vh>
-<v t="sps.20100609111310.5536" a="E"><vh>now working</vh>
+<v t="sps.20100614134444.5497"><vh>@test c.tangleCommands.scanAllDirectives 3</vh>
+<v t="sps.20100614134444.5498"><vh>#@root</vh></v>
+</v>
+<v t="sps.20100609153802.16075"><vh>top level</vh>
+<v t="sps.20100531151404.9757"><vh>with sentinels</vh>
+<v t="sps.20100609111310.5536"><vh>now working</vh>
 <v t="sps.20100531132336.19970"><vh>@test @root with @language c</vh>
 <v t="sps.20100531132336.19971"><vh>#@root</vh></v>
 <v t="sps.20100531132336.19972"><vh>'root-test'</vh></v>
@@ -2636,13 +2639,13 @@
 <v t="sps.20100607223520.5479"><vh>#@root</vh></v>
 <v t="sps.20100607223520.5480"><vh>/tmp/'root-test'</vh></v>
 </v>
-</v>
-<v t="sps.20100601184403.5443" a="E"><vh>failing</vh>
 <v t="sps.20100612133937.5517"><vh>@test multiple @root directives</vh>
 <v t="sps.20100612133937.5518"><vh>#@root</vh></v>
 <v t="sps.20100612133937.5519"><vh>'root-test-one'</vh></v>
 <v t="sps.20100612133937.5520"><vh>'root-test-two'</vh></v>
 </v>
+</v>
+<v t="sps.20100601184403.5443"><vh>failing</vh>
 <v t="sps.20100602033555.5432"><vh>@test @root with @language html and @comment  //</vh>
 <v t="sps.20100602033555.5433"><vh>#@root</vh>
 <v t="sps.20100602033555.5435"><vh>&lt;&lt; javascript section &gt;&gt;</vh></v>
@@ -2659,28 +2662,66 @@
 </v>
 </v>
 </v>
-<v t="sps.20100531151404.9758" a="E"><vh>without sentinels</vh>
+<v t="sps.20100531151404.9758"><vh>without sentinels</vh>
 <v t="ekr.20090624125638.4967"><vh>@test @root with @silent</vh>
 <v t="ekr.20090624125638.4968"><vh>#@root</vh></v>
 <v t="ekr.20090624125638.4969"><vh>'root-test'</vh></v>
 </v>
 </v>
 </v>
-<v t="sps.20100609153802.16076" a="E"><vh>support routines</vh>
-<v t="sps.20100609153802.16077" a="E"><vh>token_type</vh>
+<v t="sps.20100609153802.16076"><vh>support routines</vh>
+<v t="sps.20100609153802.16077"><vh>token_type</vh>
 <v t="sps.20100609153802.16078"><vh>@test token_type</vh></v>
 </v>
-<v t="sps.20100609153802.16079" a="E"><vh>setRootFromText</vh>
+<v t="sps.20100609153802.16079"><vh>setRootFromText</vh>
 <v t="sps.20100609153802.16080"><vh>@test setRootFromText</vh></v>
 </v>
+<v t="sps.20100614142106.5499"><vh>st_enter</vh>
+<v t="sps.20100614142106.5500"><vh>@test st_enter</vh></v>
+</v>
+<v t="sps.20100614142106.5503"><vh>st_enter_root_name</vh>
+<v t="sps.20100614142106.5504"><vh>@test st_enter_root_name</vh></v>
+</v>
+<v t="sps.20100614142106.5507"><vh>skip_body</vh>
+<v t="sps.20100614142106.5508"><vh>@test skip_body</vh>
+<v t="sps.20100614142106.5509"><vh>#@root</vh></v>
+</v>
+<v t="sps.20100614142106.5512"><vh>@test skip_body, multiple root</vh>
+<v t="sps.20100614142106.5513"><vh>#@root</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5612" a="E"><vh>leoTest</vh>
+<v t="sps.20100614142106.5520"><vh>tanglePass1</vh>
+<v t="sps.20100614142106.5521"><vh>@test tanglePass1</vh>
+<v t="sps.20100614142106.5522"><vh>#@root</vh></v>
+</v>
+<v t="sps.20100614142106.5523"><vh>@test tanglePass1, multiple root</vh>
+<v t="sps.20100614142106.5524"><vh>#@root</vh></v>
+</v>
+</v>
+<v t="sps.20100614142106.5530"><vh>tanglePass2</vh>
+<v t="sps.20100614142106.5531"><vh>@test tanglePass2</vh>
+<v t="sps.20100614142106.5532"><vh>#@root</vh></v>
+</v>
+<v t="sps.20100614142106.5533"><vh>@test tanglePass2, multiple root</vh>
+<v t="sps.20100614142106.5534"><vh>#@root</vh></v>
+</v>
+</v>
+<v t="sps.20100614142106.5540"><vh>put_all_roots</vh>
+<v t="sps.20100614142106.5541"><vh>@test put_all_roots</vh>
+<v t="sps.20100614142106.5542"><vh>#@root</vh></v>
+</v>
+<v t="sps.20100614142106.5543"><vh>@test put_all_roots, multiple root</vh>
+<v t="sps.20100614142106.5544"><vh>#@root</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20100131171342.5612"><vh>leoTest</vh>
 <v t="ekr.20100131171342.5613"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
-<v t="ekr.20040712101754.37" a="E"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38" a="E"><vh>editBodyTests</vh>
+<v t="ekr.20040712101754.37"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
 <v t="ekr.20050417202713"><vh>addComments</vh>
 <v t="ekr.20050417202713.1"><vh>before</vh></v>
@@ -23631,7 +23672,6 @@ kind, end = c.tangleCommands.token_type("@root 'root-test'\n\n# A simple test of
 assert kind == 8, 'expected kind == 8, got %s' % repr(kind)
 assert end == 17, 'expected end == 22, got %s' % repr(end)
 assert c.tangleCommands.root_name=="'root-test'","expected c.tangleCommands.root_name == 'root-test', got %s" % repr(c.tangleCommands.root_name)
-
 </t>
 <t tx="sps.20100609153802.16079"></t>
 <t tx="sps.20100609153802.16080">c.tangleCommands.init_directive_ivars()
@@ -23702,32 +23742,57 @@ assert end == 2, "expected 2, got %d" % end
 &lt;&lt; secref &gt;&gt;=
 abc</t>
 <t tx="sps.20100609234650.39252">d = c.tangleCommands.scanAllDirectives(p.firstChild())
+# d['encoding']
 assert d.get('encoding') == 'utf-8','fail encoding'
+# d['lang-dict']
+assert d.get('lang-dict') == None, "lang-dict set to %s" % repr(d.get('lang-dict'))
+# d['language']
 assert d.get('language') == 'python','fail language'
+# d['lineending']
+assert d.get('lineending') == '\n', "lineending not \\n, instead %s" % repr(d.get(lineending))
+# d['pagewidth']
 assert d.get('pagewidth') == 80,'fail pagewidth'
-
+# d['path']
 path1 = d.get('path').lower()
 path2 = g.os_path_finalize_join(g.app.loadDir,'..','test').lower()
 assert path1==path2,'fail path: expected %s, got %s' % (path1,path2)
-
+# d['tabwidth']
 assert d.get('tabwidth') == -4,'fail tabwidth'
-assert c.tangleCommands.print_mode=='verbose','fail print_mode: %s' % (c.tangleCommands.print_mode)
-assert d.get('lang-dict') == None, "lang-dict set to %s" % repr(d.get('lang-dict'))
-assert d.get('lineending') == '\n', "lineending not \\n, instead %s" % repr(d.get(lineending))
-assert c.tangleCommands.tangle_directory == d.get('path')
-assert c.tangleCommands.output_doc_flag == None
-assert c.tangleCommands.tangle_batch_flag == None
-assert c.tangleCommands.untangle_batch_flag == None
-assert c.tangleCommands.use_header_flag == None
+
+# remainder: attributes of c.tangleCommands
+# comment string related
+#     single_comment_string
 assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
+#     start_comment_string
 assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
+#     end_comment_string
 assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
-assert c.tangleCommands.use_cweb_flag == False, "use_cweb_flag expected False, is %s" % repr(c.tangleCommands.use_cweb_flag)
+
+# cweb related
+#     raw_cweb_flag
 assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
-assert c.tangleCommands.use_noweb_flag == True, "use_noweb_flag expected True, is %s" % repr(c.tangleCommands.use_noweb_flag)
+#     use_cweb_flag
+assert c.tangleCommands.use_cweb_flag == False, "use_cweb_flag expected False, is %s" % repr(c.tangleCommands.use_cweb_flag)
+
+# language
 assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+# output_doc_flag
+assert c.tangleCommands.output_doc_flag == None
+# print_mode
 assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
-assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)</t>
+# tab_width
+assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+# tangle_batch_flag
+assert c.tangleCommands.tangle_batch_flag == None
+# tangle_directory
+assert c.tangleCommands.tangle_directory == d.get('path')
+# untangle_batch_flag
+assert c.tangleCommands.untangle_batch_flag == None
+# use_header_flag
+assert c.tangleCommands.use_header_flag == None
+# use_noweb_flag
+assert c.tangleCommands.use_noweb_flag == True, "use_noweb_flag expected True, is %s" % repr(c.tangleCommands.use_noweb_flag)
+</t>
 <t tx="sps.20100612133937.5517">import leo.core.leoTest as leoTest
 
 leoTest.runRootFileTest(c,p)
@@ -23777,6 +23842,600 @@ abc
 # &lt;&lt; secref &gt;&gt; (2 of 2)
 xyz
 # -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100614134444.5497">d = c.tangleCommands.scanAllDirectives(p.firstChild())
+# d['encoding']
+assert d.get('encoding') == 'utf-8','fail encoding'
+# d['lang-dict']
+assert d.get('lang-dict') == None, "lang-dict set to %s" % repr(d.get('lang-dict'))
+# d['language']
+assert d.get('language') == 'python','fail language'
+# d['lineending']
+assert d.get('lineending') == '\n', "lineending not \\n, instead %s" % repr(d.get(lineending))
+# d['pagewidth']
+assert d.get('pagewidth') == 80,'fail pagewidth'
+# d['path']
+path1 = d.get('path').lower()
+path2 = g.os_path_finalize_join(g.app.loadDir,'..','test').lower()
+assert path1==path2,'fail path: expected %s, got %s' % (path1,path2)
+# d['tabwidth']
+assert d.get('tabwidth') == -4,'fail tabwidth'
+
+# remainder: attributes of c.tangleCommands
+# comment string related
+#     single_comment_string
+assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
+#     start_comment_string
+assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
+#     end_comment_string
+assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
+
+# cweb related
+#     raw_cweb_flag
+assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+#     use_cweb_flag
+assert c.tangleCommands.use_cweb_flag == False, "use_cweb_flag expected False, is %s" % repr(c.tangleCommands.use_cweb_flag)
+
+# language
+assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+# output_doc_flag
+assert c.tangleCommands.output_doc_flag == None
+# print_mode
+assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+# root_list
+assert c.tangleCommands.root_list == [], "expected root_list as [], is %s " % repr(c.tangleCommands.root_list)
+# tab_width
+assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+# tangle_batch_flag
+assert c.tangleCommands.tangle_batch_flag == None
+# tangle_directory
+assert c.tangleCommands.tangle_directory == d.get('path')
+# untangle_batch_flag
+assert c.tangleCommands.untangle_batch_flag == None
+# use_header_flag
+assert c.tangleCommands.use_header_flag == None
+# use_noweb_flag
+assert c.tangleCommands.use_noweb_flag == True, "use_noweb_flag expected True, is %s" % repr(c.tangleCommands.use_noweb_flag)
+</t>
+<t tx="sps.20100614134444.5498">@root 'root-test1'
+
+# A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc
+
+@root 'root-test2'
+
+&lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100614142106.5499"></t>
+<t tx="sps.20100614142106.5500">c.tangleCommands.init_ivars()
+c.tangleCommands.init_directive_ivars()
+c.tangleCommands.st_enter("'root-test'",False,False,True,is_root_flag=True)
+# remainder: attributes of c.tangleCommands
+# comment string related
+#     single_comment_string
+assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
+#     start_comment_string
+assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
+#     end_comment_string
+assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
+
+# cweb related
+#     raw_cweb_flag
+assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+#     use_cweb_flag
+assert c.tangleCommands.use_cweb_flag == False, "use_cweb_flag expected False, is %s" % repr(c.tangleCommands.use_cweb_flag)
+
+# language
+assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+# output_doc_flag
+assert c.tangleCommands.output_doc_flag == None
+# print_mode
+assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+# tab_width
+assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+# tangle_batch_flag
+assert c.tangleCommands.tangle_batch_flag == None
+# untangle_batch_flag
+assert c.tangleCommands.untangle_batch_flag == None
+# use_header_flag
+assert c.tangleCommands.use_header_flag == None
+# use_noweb_flag
+assert c.tangleCommands.use_noweb_flag == True, "use_noweb_flag expected True, is %s" % repr(c.tangleCommands.use_noweb_flag)
+
+import leo.core.leoTangle
+# root_list
+assert len(c.tangleCommands.root_list) == 1, "expected root_list to have length 1, is %d" % len(c.tangleCommands.root_list)
+assert c.tangleCommands.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0]))
+
+</t>
+<t tx="sps.20100614142106.5503"></t>
+<t tx="sps.20100614142106.5504">c.tangleCommands.init_ivars()
+c.tangleCommands.init_directive_ivars()
+c.tangleCommands.st_enter_root_name("'root-test'",False,False)
+# remainder: attributes of c.tangleCommands
+# comment string related
+#     single_comment_string
+assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
+#     start_comment_string
+assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
+#     end_comment_string
+assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
+
+# cweb related
+#     raw_cweb_flag
+assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+#     use_cweb_flag
+assert c.tangleCommands.use_cweb_flag == False, "use_cweb_flag expected False, is %s" % repr(c.tangleCommands.use_cweb_flag)
+
+# language
+assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+# output_doc_flag
+assert c.tangleCommands.output_doc_flag == None
+# print_mode
+assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+# tab_width
+assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+# tangle_batch_flag
+assert c.tangleCommands.tangle_batch_flag == None
+# untangle_batch_flag
+assert c.tangleCommands.untangle_batch_flag == None
+# use_header_flag
+assert c.tangleCommands.use_header_flag == None
+# use_noweb_flag
+assert c.tangleCommands.use_noweb_flag == True, "use_noweb_flag expected True, is %s" % repr(c.tangleCommands.use_noweb_flag)
+
+import leo.core.leoTangle
+# root_list
+assert len(c.tangleCommands.root_list) == 1, "expected root_list to have length 1, is %d" % len(c.tangleCommands.root_list)
+assert c.tangleCommands.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0]))
+
+</t>
+<t tx="sps.20100614142106.5507"></t>
+<t tx="sps.20100614142106.5508">c.tangleCommands.init_ivars()
+c.tangleCommands.init_directive_ivars()
+c.tangleCommands.skip_body(p.firstChild())
+# remainder: attributes of c.tangleCommands
+# comment string related
+#     single_comment_string
+assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
+#     start_comment_string
+assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
+#     end_comment_string
+assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
+
+# cweb related
+#     raw_cweb_flag
+assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+#     use_cweb_flag
+assert c.tangleCommands.use_cweb_flag == False, "use_cweb_flag expected False, is %s" % repr(c.tangleCommands.use_cweb_flag)
+
+# language
+assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+# output_doc_flag
+assert c.tangleCommands.output_doc_flag == None
+# print_mode
+assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+# tab_width
+assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+# tangle_batch_flag
+assert c.tangleCommands.tangle_batch_flag == None
+# untangle_batch_flag
+assert c.tangleCommands.untangle_batch_flag == None
+# use_header_flag
+assert c.tangleCommands.use_header_flag == None
+# use_noweb_flag
+assert c.tangleCommands.use_noweb_flag == True, "use_noweb_flag expected True, is %s" % repr(c.tangleCommands.use_noweb_flag)
+
+import leo.core.leoTangle
+# root_list
+assert len(c.tangleCommands.root_list) == 1, "expected root_list to have length 1, is %d" % len(c.tangleCommands.root_list)
+assert c.tangleCommands.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0]))
+assert c.tangleCommands.root_list[0].is_root
+assert c.tangleCommands.root_list[0].name == "'root-test'", "expected root_list[0].name to be 'root-test', is %s" % c.tangleCommands.root_list[0].name
+assert c.tangleCommands.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0].parts[0]))
+</t>
+<t tx="sps.20100614142106.5509">@root 'root-test'
+
+# A trivial test of @root.
+</t>
+<t tx="sps.20100614142106.5512">c.tangleCommands.init_ivars()
+c.tangleCommands.init_directive_ivars()
+c.tangleCommands.skip_body(p.firstChild())
+# remainder: attributes of c.tangleCommands
+# comment string related
+#     single_comment_string
+assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
+#     start_comment_string
+assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
+#     end_comment_string
+assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
+
+# cweb related
+#     raw_cweb_flag
+assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+#     use_cweb_flag
+assert c.tangleCommands.use_cweb_flag == False, "use_cweb_flag expected False, is %s" % repr(c.tangleCommands.use_cweb_flag)
+
+# language
+assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+# output_doc_flag
+assert c.tangleCommands.output_doc_flag == None
+# print_mode
+assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+# tab_width
+assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+# tangle_batch_flag
+assert c.tangleCommands.tangle_batch_flag == None
+# untangle_batch_flag
+assert c.tangleCommands.untangle_batch_flag == None
+# use_header_flag
+assert c.tangleCommands.use_header_flag == None
+# use_noweb_flag
+assert c.tangleCommands.use_noweb_flag == True, "use_noweb_flag expected True, is %s" % repr(c.tangleCommands.use_noweb_flag)
+
+import leo.core.leoTangle
+# root_list
+assert len(c.tangleCommands.root_list) == 2, "expected root_list to have length 2, is %d" % len(c.tangleCommands.root_list)
+# first @root
+assert c.tangleCommands.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0]))
+assert c.tangleCommands.root_list[0].is_root
+assert c.tangleCommands.root_list[0].name == "'root-test-one'", "expected root_list[0].name to be 'root-test-one', is %s" % c.tangleCommands.root_list[0].name
+assert c.tangleCommands.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0].parts[0]))
+# second @root
+assert c.tangleCommands.root_list[1] &lt; leo.core.leoTangle.tst_node, "expected root_list[1] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[1]))
+assert c.tangleCommands.root_list[1].is_root
+assert c.tangleCommands.root_list[1].name == "'root-test-two'", "expected root_list[0].name to be 'root-test-two', is %s" % c.tangleCommands.root_list[1].name
+assert c.tangleCommands.root_list[1].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[1].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[1].parts[0]))
+</t>
+<t tx="sps.20100614142106.5513">@root 'root-test-one'
+
+# test of @root first.
+
+@root 'root-test-two'
+
+# test o @root second
+</t>
+<t tx="sps.20100614142106.5520"></t>
+<t tx="sps.20100614142106.5521">c.tangleCommands.init_ivars()
+c.tangleCommands.init_directive_ivars()
+c.tangleCommands.tanglePass1(p.firstChild())
+# remainder: attributes of c.tangleCommands
+# comment string related
+#     single_comment_string
+assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
+#     start_comment_string
+assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
+#     end_comment_string
+assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
+
+# cweb related
+#     raw_cweb_flag
+assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+#     use_cweb_flag
+assert c.tangleCommands.use_cweb_flag == False, "use_cweb_flag expected False, is %s" % repr(c.tangleCommands.use_cweb_flag)
+
+# language
+assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+# output_doc_flag
+assert c.tangleCommands.output_doc_flag == None
+# print_mode
+assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+# tab_width
+assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+# tangle_batch_flag
+assert c.tangleCommands.tangle_batch_flag == None
+# untangle_batch_flag
+assert c.tangleCommands.untangle_batch_flag == None
+# use_header_flag
+assert c.tangleCommands.use_header_flag == None
+# use_noweb_flag
+assert c.tangleCommands.use_noweb_flag == True, "use_noweb_flag expected True, is %s" % repr(c.tangleCommands.use_noweb_flag)
+
+import leo.core.leoTangle
+# root_list
+assert len(c.tangleCommands.root_list) == 1, "expected root_list to have length 1, is %d" % len(c.tangleCommands.root_list)
+assert c.tangleCommands.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0]))
+assert c.tangleCommands.root_list[0].is_root
+assert c.tangleCommands.root_list[0].name == "'root-test'", "expected root_list[0].name to be 'root-test', is %s" % c.tangleCommands.root_list[0].name
+assert c.tangleCommands.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0].parts[0]))
+</t>
+<t tx="sps.20100614142106.5522">@root 'root-test'
+
+# A trivial test of @root.
+</t>
+<t tx="sps.20100614142106.5523">c.tangleCommands.init_ivars()
+c.tangleCommands.init_directive_ivars()
+c.tangleCommands.tanglePass1(p.firstChild())
+# remainder: attributes of c.tangleCommands
+# comment string related
+#     single_comment_string
+assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
+#     start_comment_string
+assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
+#     end_comment_string
+assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
+
+# cweb related
+#     raw_cweb_flag
+assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+#     use_cweb_flag
+assert c.tangleCommands.use_cweb_flag == False, "use_cweb_flag expected False, is %s" % repr(c.tangleCommands.use_cweb_flag)
+
+# language
+assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+# output_doc_flag
+assert c.tangleCommands.output_doc_flag == None
+# print_mode
+assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+# tab_width
+assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+# tangle_batch_flag
+assert c.tangleCommands.tangle_batch_flag == None
+# untangle_batch_flag
+assert c.tangleCommands.untangle_batch_flag == None
+# use_header_flag
+assert c.tangleCommands.use_header_flag == None
+# use_noweb_flag
+assert c.tangleCommands.use_noweb_flag == True, "use_noweb_flag expected True, is %s" % repr(c.tangleCommands.use_noweb_flag)
+
+import leo.core.leoTangle
+# root_list
+assert len(c.tangleCommands.root_list) == 2, "expected root_list to have length 2, is %d" % len(c.tangleCommands.root_list)
+# first @root
+assert c.tangleCommands.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0]))
+assert c.tangleCommands.root_list[0].is_root
+assert c.tangleCommands.root_list[0].name == "'root-test-one'", "expected root_list[0].name to be 'root-test-one', is %s" % c.tangleCommands.root_list[0].name
+assert c.tangleCommands.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0].parts[0]))
+# second @root
+assert c.tangleCommands.root_list[1] &lt; leo.core.leoTangle.tst_node, "expected root_list[1] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[1]))
+assert c.tangleCommands.root_list[1].is_root
+assert c.tangleCommands.root_list[1].name == "'root-test-two'", "expected root_list[0].name to be 'root-test-two', is %s" % c.tangleCommands.root_list[1].name
+assert c.tangleCommands.root_list[1].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[1].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[1].parts[0]))
+</t>
+<t tx="sps.20100614142106.5524">@root 'root-test-one'
+
+# test of @root first.
+
+@root 'root-test-two'
+
+# test o @root second
+</t>
+<t tx="sps.20100614142106.5530"></t>
+<t tx="sps.20100614142106.5531">c.tangleCommands.init_ivars()
+c.tangleCommands.init_directive_ivars()
+c.tangleCommands.tanglePass1(p.firstChild())
+assert c.tangleCommands.root_list
+c.tangleCommands.tangling = True
+g.unitTesting = True
+c.tangleCommands.tanglePass2()
+# remainder: attributes of c.tangleCommands
+# comment string related
+#     single_comment_string
+assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
+#     start_comment_string
+assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
+#     end_comment_string
+assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
+
+# cweb related
+#     raw_cweb_flag
+assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+#     use_cweb_flag
+assert c.tangleCommands.use_cweb_flag == False, "use_cweb_flag expected False, is %s" % repr(c.tangleCommands.use_cweb_flag)
+
+# language
+assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+# output_doc_flag
+assert c.tangleCommands.output_doc_flag == None
+# print_mode
+assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+# tab_width
+assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+# tangle_batch_flag
+assert c.tangleCommands.tangle_batch_flag == None
+# untangle_batch_flag
+assert c.tangleCommands.untangle_batch_flag == None
+# use_header_flag
+assert c.tangleCommands.use_header_flag == None
+# use_noweb_flag
+assert c.tangleCommands.use_noweb_flag == True, "use_noweb_flag expected True, is %s" % repr(c.tangleCommands.use_noweb_flag)
+
+import leo.core.leoTangle
+# root_list
+assert len(c.tangleCommands.root_list) == 1, "expected root_list to have length 1, is %d" % len(c.tangleCommands.root_list)
+assert c.tangleCommands.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0]))
+assert c.tangleCommands.root_list[0].is_root
+assert c.tangleCommands.root_list[0].name == "'root-test'", "expected root_list[0].name to be 'root-test', is %s" % c.tangleCommands.root_list[0].name
+assert c.tangleCommands.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0].parts[0]))
+assert sorted(c.tangleCommands.tangle_output) == ["'root-test'"], "expected one output file ["'root-test'"], got %s" % repr(c.tangleCommands.tangle_output)
+</t>
+<t tx="sps.20100614142106.5532">@root 'root-test'
+
+# A trivial test of @root.
+</t>
+<t tx="sps.20100614142106.5533">c.tangleCommands.init_ivars()
+c.tangleCommands.init_directive_ivars()
+c.tangleCommands.tanglePass1(p.firstChild())
+assert c.tangleCommands.root_list
+c.tangleCommands.tanglePass2()
+# remainder: attributes of c.tangleCommands
+# comment string related
+#     single_comment_string
+assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
+#     start_comment_string
+assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
+#     end_comment_string
+assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
+
+# cweb related
+#     raw_cweb_flag
+assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+#     use_cweb_flag
+assert c.tangleCommands.use_cweb_flag == False, "use_cweb_flag expected False, is %s" % repr(c.tangleCommands.use_cweb_flag)
+
+# language
+assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+# output_doc_flag
+assert c.tangleCommands.output_doc_flag == None
+# print_mode
+assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+# tab_width
+assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+# tangle_batch_flag
+assert c.tangleCommands.tangle_batch_flag == None
+# untangle_batch_flag
+assert c.tangleCommands.untangle_batch_flag == None
+# use_header_flag
+assert c.tangleCommands.use_header_flag == None
+# use_noweb_flag
+assert c.tangleCommands.use_noweb_flag == True, "use_noweb_flag expected True, is %s" % repr(c.tangleCommands.use_noweb_flag)
+
+import leo.core.leoTangle
+# root_list
+assert len(c.tangleCommands.root_list) == 2, "expected root_list to have length 2, is %d" % len(c.tangleCommands.root_list)
+# first @root
+assert c.tangleCommands.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0]))
+assert c.tangleCommands.root_list[0].is_root
+assert c.tangleCommands.root_list[0].name == "'root-test-one'", "expected root_list[0].name to be 'root-test-one', is %s" % c.tangleCommands.root_list[0].name
+assert c.tangleCommands.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0].parts[0]))
+# second @root
+assert c.tangleCommands.root_list[1] &lt; leo.core.leoTangle.tst_node, "expected root_list[1] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[1]))
+assert c.tangleCommands.root_list[1].is_root
+assert c.tangleCommands.root_list[1].name == "'root-test-two'", "expected root_list[0].name to be 'root-test-two', is %s" % c.tangleCommands.root_list[1].name
+assert c.tangleCommands.root_list[1].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[1].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[1].parts[0]))
+# tanglePass2 conversion to file
+assert sorted(c.tangleCommands.tangle_output) == ["'root-test-one'", "'root-test-two'"], "expected two output files ["'root-test-one'", "'root-test-two'"], got %s" % repr(c.tangleCommands.tangle_output)
+</t>
+<t tx="sps.20100614142106.5534">@root 'root-test-one'
+
+# test of @root first.
+
+@root 'root-test-two'
+
+# test o @root second
+</t>
+<t tx="sps.20100614142106.5540"></t>
+<t tx="sps.20100614142106.5541">c.tangleCommands.init_ivars()
+c.tangleCommands.init_directive_ivars()
+c.tangleCommands.tanglePass1(p.firstChild())
+assert c.tangleCommands.root_list
+assert g.app.scanErrors == 0
+c.tangleCommands.tangling = True
+c.tangleCommands.p = None
+g.unitTesting = True
+c.tangleCommands.put_all_roots()
+# remainder: attributes of c.tangleCommands
+# comment string related
+#     single_comment_string
+assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
+#     start_comment_string
+assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
+#     end_comment_string
+assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
+
+# cweb related
+#     raw_cweb_flag
+assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+#     use_cweb_flag
+assert c.tangleCommands.use_cweb_flag == False, "use_cweb_flag expected False, is %s" % repr(c.tangleCommands.use_cweb_flag)
+
+# language
+assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+# output_doc_flag
+assert c.tangleCommands.output_doc_flag == None
+# print_mode
+assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+# tab_width
+assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+# tangle_batch_flag
+assert c.tangleCommands.tangle_batch_flag == None
+# untangle_batch_flag
+assert c.tangleCommands.untangle_batch_flag == None
+# use_header_flag
+assert c.tangleCommands.use_header_flag == None
+# use_noweb_flag
+assert c.tangleCommands.use_noweb_flag == True, "use_noweb_flag expected True, is %s" % repr(c.tangleCommands.use_noweb_flag)
+
+import leo.core.leoTangle
+# root_list
+assert len(c.tangleCommands.root_list) == 1, "expected root_list to have length 1, is %d" % len(c.tangleCommands.root_list)
+assert c.tangleCommands.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0]))
+assert c.tangleCommands.root_list[0].is_root
+assert c.tangleCommands.root_list[0].name == "'root-test'", "expected root_list[0].name to be 'root-test', is %s" % c.tangleCommands.root_list[0].name
+assert c.tangleCommands.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0].parts[0]))
+assert sorted(c.tangleCommands.tangle_output) == ["'root-test'"], "expected one output file ["'root-test'"], got %s" % repr(c.tangleCommands.tangle_output)
+</t>
+<t tx="sps.20100614142106.5542">@root 'root-test'
+
+# A trivial test of @root.
+</t>
+<t tx="sps.20100614142106.5543">c.tangleCommands.init_ivars()
+c.tangleCommands.init_directive_ivars()
+c.tangleCommands.tanglePass1(p.firstChild())
+assert c.tangleCommands.root_list
+c.tangleCommands.tangling = True
+c.tangleCommands.p = None
+g.unitTesting = True
+c.tangleCommands.put_all_roots()
+# remainder: attributes of c.tangleCommands
+# comment string related
+#     single_comment_string
+assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
+#     start_comment_string
+assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
+#     end_comment_string
+assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
+
+# cweb related
+#     raw_cweb_flag
+assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+#     use_cweb_flag
+assert c.tangleCommands.use_cweb_flag == False, "use_cweb_flag expected False, is %s" % repr(c.tangleCommands.use_cweb_flag)
+
+# language
+assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+# output_doc_flag
+assert c.tangleCommands.output_doc_flag == None
+# print_mode
+assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+# tab_width
+assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+# tangle_batch_flag
+assert c.tangleCommands.tangle_batch_flag == None
+# untangle_batch_flag
+assert c.tangleCommands.untangle_batch_flag == None
+# use_header_flag
+assert c.tangleCommands.use_header_flag == None
+# use_noweb_flag
+assert c.tangleCommands.use_noweb_flag == True, "use_noweb_flag expected True, is %s" % repr(c.tangleCommands.use_noweb_flag)
+
+import leo.core.leoTangle
+# root_list
+assert len(c.tangleCommands.root_list) == 2, "expected root_list to have length 2, is %d" % len(c.tangleCommands.root_list)
+# first @root
+assert c.tangleCommands.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0]))
+assert c.tangleCommands.root_list[0].is_root
+assert c.tangleCommands.root_list[0].name == "'root-test-one'", "expected root_list[0].name to be 'root-test-one', is %s" % c.tangleCommands.root_list[0].name
+assert c.tangleCommands.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0].parts[0]))
+# second @root
+assert c.tangleCommands.root_list[1] &lt; leo.core.leoTangle.tst_node, "expected root_list[1] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[1]))
+assert c.tangleCommands.root_list[1].is_root
+assert c.tangleCommands.root_list[1].name == "'root-test-two'", "expected root_list[0].name to be 'root-test-two', is %s" % c.tangleCommands.root_list[1].name
+assert c.tangleCommands.root_list[1].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[1].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[1].parts[0]))
+# tanglePass2 conversion to file
+assert sorted(c.tangleCommands.tangle_output) == ["'root-test-one'", "'root-test-two'"], "expected two output files ["'root-test-one'", "'root-test-two'"], got %s" % repr(c.tangleCommands.tangle_output)
+</t>
+<t tx="sps.20100614142106.5544">@root 'root-test-one'
+
+# test of @root first.
+
+@root 'root-test-two'
+
+# test o @root second
 </t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly

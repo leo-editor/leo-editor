@@ -1489,8 +1489,11 @@ class baseTangleCommands:
                 assert self.errors == 0
                 g.app.unitTestDict ['tangle'] = True
                 g.app.unitTestDict ['tangle_directory'] = self.tangle_directory
-                g.app.unitTestDict ['tangle_output_fn'] = file_name
-                return
+                if g.app.unitTestDict.get('tangle_output_fn'):
+                    g.app.unitTestDict['tangle_output_fn'] += "\n" + file_name
+                else:
+                    g.app.unitTestDict ['tangle_output_fn'] = file_name
+                continue
             #@-node:sps.20100608083657.20938:<< unit testing set result and return >>
             #@nl
             if self.errors + g.app.scanErrors == 0:
