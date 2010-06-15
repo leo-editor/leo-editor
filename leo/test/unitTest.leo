@@ -740,7 +740,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20090703080553.5000"><vh>@suite run all doctests</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
@@ -844,7 +844,7 @@
 <v t="ekr.20071113145804.24"><vh>@test round trip toUnicode toEncodedString</vh></v>
 <v t="ekr.20100421102506.6282"><vh>@test rst.write with unicode character</vh></v>
 </v>
-<v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
 <v t="ekr.20100223123103.5382"><vh>@test expand/contract-pane</vh></v>
 <v t="ekr.20100131171342.5506"><vh>leoApp</vh>
 <v t="ekr.20100131180007.5454"><vh>@test at.get/setPathUa</vh></v>
@@ -2572,7 +2572,7 @@
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="ekr.20071113200638.1"><vh>leoTangle</vh>
+<v t="ekr.20071113200638.1" a="E"><vh>leoTangle</vh>
 <v t="ekr.20090624125638.4963"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
 <v t="ekr.20071113090055.1"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
 <v t="sps.20100609234650.39252"><vh>@test c.tangleCommands.scanAllDirectives 3</vh>
@@ -2581,8 +2581,8 @@
 <v t="sps.20100614134444.5497"><vh>@test c.tangleCommands.scanAllDirectives 3</vh>
 <v t="sps.20100614134444.5498"><vh>#@root</vh></v>
 </v>
-<v t="sps.20100609153802.16075"><vh>top level</vh>
-<v t="sps.20100531151404.9757"><vh>with sentinels</vh>
+<v t="sps.20100609153802.16075" a="E"><vh>top level</vh>
+<v t="sps.20100531151404.9757" a="E"><vh>with sentinels</vh>
 <v t="sps.20100609111310.5536"><vh>now working</vh>
 <v t="sps.20100531132336.19970"><vh>@test @root with @language c</vh>
 <v t="sps.20100531132336.19971"><vh>#@root</vh></v>
@@ -2645,20 +2645,41 @@
 <v t="sps.20100612133937.5520"><vh>'root-test-two'</vh></v>
 </v>
 </v>
-<v t="sps.20100601184403.5443"><vh>failing</vh>
+<v t="sps.20100601184403.5443" a="E"><vh>failing</vh>
 <v t="sps.20100602033555.5432"><vh>@test @root with @language html and @comment  //</vh>
 <v t="sps.20100602033555.5433"><vh>#@root</vh>
 <v t="sps.20100602033555.5435"><vh>&lt;&lt; javascript section &gt;&gt;</vh></v>
 </v>
 <v t="sps.20100602033555.5434"><vh>'root-test'</vh></v>
 </v>
-<v t="sps.20100602033555.5436"><vh>NOTE: Multiple parts not allowed for &lt;&lt; secref &gt;&gt;</vh></v>
-<v t="sps.20100601210726.21583"><vh>@test @root-doc with subnodes</vh>
-<v t="sps.20100601210726.21584"><vh>#@root</vh>
-<v t="sps.20100601210726.21586"><vh>secref &gt;&gt;= definition</vh></v>
-<v t="sps.20100601210726.21588"><vh>&lt;&lt; secref &gt;&gt;</vh></v>
+<v t="sps.20100602033555.5436" a="E"><vh>NOTE: Multiple parts not allowed for &lt;&lt; secref &gt;&gt;</vh>
+<v t="sps.20100601210726.21583"><vh>@test @root-doc with subnodes - headline &lt;&lt; secref &gt;&gt; first</vh>
+<v t="sps.20100601210726.21584" a="E"><vh>#@root</vh>
+<v t="sps.20100601210726.21588"><vh>&lt;&lt; secref &gt;&gt; this works</vh></v>
+<v t="sps.20100601210726.21586"><vh>secref &gt;&gt;= definition - this works</vh></v>
 </v>
 <v t="sps.20100601210726.21585"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100614233514.5586"><vh>@test @root-doc with subnodes - headline &lt;&lt; secref &gt;&gt; first</vh>
+<v t="sps.20100614233514.5587"><vh>#@root</vh>
+<v t="sps.20100614233514.5588"><vh>&lt;&lt; secref &gt;&gt; this works</vh></v>
+</v>
+<v t="sps.20100614233514.5590"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100614233514.5554"><vh>@test @root-doc with subnodes - body &lt;&lt; secref &gt;&gt;= first</vh>
+<v t="sps.20100614233514.5555"><vh>#@root</vh>
+<v t="sps.20100614233514.5557"><vh>secref &gt;&gt;= definition - this works</vh></v>
+<v t="sps.20100614233514.5556"><vh>&lt;&lt; secref &gt;&gt; this fails</vh></v>
+</v>
+<v t="sps.20100614233514.5558"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100614233514.5564"><vh>@test @root-doc with subnodes - two headline &lt;&lt; secref &gt;&gt;s</vh>
+<v t="sps.20100614233514.5565"><vh>#@root</vh>
+<v t="sps.20100614233514.5566"><vh>&lt;&lt; secref &gt;&gt; part 1</vh></v>
+<v t="sps.20100614233514.5567"><vh>&lt;&lt; secref &gt;&gt; part 2</vh></v>
+</v>
+<v t="sps.20100614233514.5568"><vh>'root-test'</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -23491,10 +23512,10 @@ leoTest.runRootFileTest(c,p)</t>
 ignored documentation
 </t>
 <t tx="sps.20100601210726.21585"># A simple test of @root-doc.
-
-# &lt;&lt; secref &gt;&gt;
+# &lt;&lt; secref &gt;&gt; (1 of 2)
+xyz
+# &lt;&lt; secref &gt;&gt; (2 of 2)
 abc
-def
 # -- end -- &lt;&lt; secref &gt;&gt;
 </t>
 <t tx="sps.20100601210726.21586">
@@ -23558,42 +23579,58 @@ var i;
 <t tx="sps.20100602033555.5435">var i;
 </t>
 <t tx="sps.20100602033555.5436">@
-Huh?
+Some of these unit tests provoke "Multiple parts not allowed":
 
-There's a fair amount of logic in the @root tangle code to allow or disallow multiple parts to a section definition.  It makes sense that when encountering a section reference (i.e., a point at which a section is to be interpolated) that you shouldn't at that point be in the midst of defining the contents of that section, lest interpolation of the section include itself ad infinitum.  If that's the point, the error message could be much clearer.  But I don't believe that's what's happening.  My test @root node which is failing with this error is supplied at the end of this message; could I get help understanding why it is supposed to be invalid?  Thanks,
+Having contemplated the code carefully, I now think I can summarize in English what is happening, speculate about what was supposed to happen, and propose what, to me, is a less surprising behavior.
 
-    - Stephen
+What the code does:
+-------------------
 
-&lt;?xml version="1.0" encoding="utf-8"?&gt;
-&lt;?xml-stylesheet ekr_test?&gt;
-&lt;leo_file&gt;
-&lt;leo_header file_format="2"/&gt;
-&lt;vnodes&gt;
-&lt;v t="sps.20100602001344.9941" a="E"&gt;&lt;vh&gt;#@root&lt;/vh&gt;
-&lt;v t="sps.20100602001344.9942"&gt;&lt;vh&gt;secref &amp;gt;&amp;gt;= definition&lt;/vh&gt;&lt;/v&gt;
-&lt;v t="sps.20100602001344.9943"&gt;&lt;vh&gt;&amp;lt;&amp;lt; secref &amp;gt;&amp;gt;&lt;/vh&gt;&lt;/v&gt;
-&lt;/v&gt;
-&lt;/vnodes&gt;
-&lt;tnodes&gt;
-&lt;t tx="sps.20100602001344.9941"&gt;A comment to ignore
+If a headline contains &lt;&lt; section foo &gt;&gt;
+    any code part in this node body must be the first
+        encountered code part for &lt;&lt; section foo &gt;&gt;
+    multiple @c parts and &lt;&lt; section foo &gt;&gt;= parts
+        may occur in the same node body
+    in subsequently encountered node bodies,
+        &lt;&lt; section foo &gt;&gt;= parts may extend the definition
+        of section foo
+    the "first encountered code part" rule means no two nodes
+        may both have headline &lt;&lt; section foo &gt;&gt;
 
-@root-code 'root-test'
+If a headline does not contain &lt;&lt; section foo &gt;&gt;
+    the node body may contain &lt;&lt; section foo &gt;&gt;= to add code
+    parts to section foo
 
-# A simple test of @root-code.
-&amp;lt;&amp;lt; secref &amp;gt;&amp;gt;
-@
-ignored documentation
-&lt;/t&gt;
-&lt;t tx="sps.20100602001344.9942"&gt;
-&amp;lt;&amp;lt; secref &amp;gt;&amp;gt;=
-abc&lt;/t&gt;
-&lt;t tx="sps.20100602001344.9943"&gt;ignored comment
-@c
-xyz
+In any node, &lt;&lt; section foo &gt;&gt;= may add code parts for
+    section foo, regardless of how the first part of
+    section foo was defined. 
 
-&lt;/t&gt;
-&lt;/tnodes&gt;
-&lt;/leo_file&gt;
+What I believe the code intended:
+---------------------------------
+
+The body of a section using a headline &lt;&lt; section foo &gt;&gt; be the one
+and only place that code parts for the definition of section foo,
+and that one and only one of the "&lt;&lt; section foo &gt;&gt; headline + @c body"
+or "&lt;&lt; section foo &gt;&gt;= body" mechanisms be used to define sections.
+
+The behavior I would find less surprising:
+------------------------------------------
+
+&lt;&lt; section foo &gt;&gt; headline + @c body add parts to the definition
+of section foo in the same way that body &lt;&lt; section foo &gt;&gt;= adds
+to the body of section foo.
+
+=======================
+Am I missing something?
+
+I've got unit tests that seem to confirm my interpretation of the
+present code's behavior.  Is there historical justification in CWEB
+or noweb for the current behavior?  For what I am guessing is the
+intended behavior?  Is there an argument that the current behavior
+or what I speculate is the intended behavior is somehow more elegant
+or flexible?  What downside would there be to changing the code to
+behave in the manner I find "less surprising"?
+
 </t>
 <t tx="sps.20100607221800.5464">&lt;&lt; secref &gt;&gt;=
 xyz
@@ -24436,6 +24473,88 @@ assert sorted(c.tangleCommands.tangle_output) == ["'root-test-one'", "'root-test
 @root 'root-test-two'
 
 # test o @root second
+</t>
+<t tx="sps.20100614233514.5554">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTest(c,p)</t>
+<t tx="sps.20100614233514.5555">A comment to ignore
+
+@root-doc 'root-test'
+
+# A simple test of @root-doc.
+&lt;&lt; secref &gt;&gt;
+@
+ignored documentation
+</t>
+<t tx="sps.20100614233514.5556">ignored comment
+@c
+xyz
+
+</t>
+<t tx="sps.20100614233514.5557">
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100614233514.5558"># A simple test of @root-doc.
+# &lt;&lt; secref &gt;&gt; (1 of 2)
+xyz
+# &lt;&lt; secref &gt;&gt; (2 of 2)
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100614233514.5564">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTest(c,p)</t>
+<t tx="sps.20100614233514.5565">A comment to ignore
+
+@root-doc 'root-test'
+
+# A simple test of @root-doc.
+&lt;&lt; secref &gt;&gt;
+@
+ignored documentation
+</t>
+<t tx="sps.20100614233514.5566">ignored comment part 1
+@c
+abc
+</t>
+<t tx="sps.20100614233514.5567">ignored comment part 2
+@c
+xyz
+
+</t>
+<t tx="sps.20100614233514.5568"># A simple test of @root-doc.
+# &lt;&lt; secref &gt;&gt; (1 of 2)
+xyz
+# &lt;&lt; secref &gt;&gt; (2 of 2)
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100614233514.5586">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTest(c,p)</t>
+<t tx="sps.20100614233514.5587">A comment to ignore
+
+@root-doc 'root-test'
+
+# A simple test of @root-doc.
+&lt;&lt; secref &gt;&gt;
+@
+ignored documentation
+</t>
+<t tx="sps.20100614233514.5588">ignored comment
+@c
+xyz
+@
+second ignored comment
+&lt;&lt; secref &gt;&gt;=
+abc
+</t>
+<t tx="sps.20100614233514.5590"># A simple test of @root-doc.
+# &lt;&lt; secref &gt;&gt; (1 of 2)
+xyz
+# &lt;&lt; secref &gt;&gt; (2 of 2)
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
 </t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
