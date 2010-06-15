@@ -1023,7 +1023,7 @@ class baseTangleCommands:
         elif kind == section_ref:
             # Enter the reference.
             ref = s[i:end]
-            self.st_enter_section_name(ref,None,None,allow_multiple_parts=False)
+            self.st_enter_section_name(ref,None,None)
         # DTHEIN 13-OCT-2002: @first directives are OK in code sections
         elif (kind == at_other) and g.match_word(s,j,"@first"):
             pass
@@ -1062,7 +1062,7 @@ class baseTangleCommands:
                 if self.header_name:
                     # Tangle code.
                     part = self.st_enter_section_name(
-                        self.header_name,code,doc,allow_multiple_parts=code_seen)
+                        self.header_name,code,doc)
                     # Untangle code.
                     if not self.tangling: 
                         head = s[:j] ; tail = s[i:]
@@ -1088,7 +1088,7 @@ class baseTangleCommands:
 
                 if self.header_name:
                     # Tangle code.
-                    part = self.st_enter_section_name(self.header_name,code,doc,allow_multiple_parts=code_seen)
+                    part = self.st_enter_section_name(self.header_name,code,doc)
                     # Untangle code.
                     if not self.tangling: 
                         # Untangle no longer updates doc parts.
@@ -1120,7 +1120,7 @@ class baseTangleCommands:
                 # Tangle code: enter the section name even if the code part is empty.
                 j = g.skip_blank_lines(s,i)
                 i, code = self.skip_code(s,j)
-                part = self.st_enter_section_name(section_name,code,doc,allow_multiple_parts=(kind==section_def))
+                part = self.st_enter_section_name(section_name,code,doc)
 
                 if not self.tangling: # Untangle code.
                     head = s[:j] ; tail = s[i:]
@@ -1143,7 +1143,7 @@ class baseTangleCommands:
                     # Tangle code.
                     j = g.skip_blank_lines(s,i)
                     i, code = self.skip_code(s,j)
-                    part = self.st_enter_section_name(self.header_name,code,doc,allow_multiple_parts=code_seen)
+                    part = self.st_enter_section_name(self.header_name,code,doc)
                     # Untangle code.
                     if not self.tangling: 
                         head = s[:j] ; tail = s[i:]
@@ -1268,7 +1268,7 @@ class baseTangleCommands:
                         assert(kind == section_ref)
                         # Enter the reference into the symbol table.
                         name = s[i:end]
-                        self.st_enter_section_name(name,None,None,allow_multiple_parts=False)
+                        self.st_enter_section_name(name,None,None)
                         i = end
                     #@-node:ekr.20031218072017.3500:<< handle possible noweb section reference >>
                     #@nl
@@ -1294,7 +1294,7 @@ class baseTangleCommands:
                         assert(kind == section_ref)
                         # Enter the reference into the symbol table.
                         name = s[i:j]
-                        self.st_enter_section_name(name,None,None,allow_multiple_parts=False)
+                        self.st_enter_section_name(name,None,None)
                         i = j
                     #@-node:ekr.20031218072017.3502:<< handle CWEB control code >>
                     #@nl
@@ -2074,8 +2074,7 @@ class baseTangleCommands:
         return s
     #@-node:ekr.20031218072017.3531:st_dump_node
     #@+node:ekr.20031218072017.3532:st_enter
-    def st_enter(self,name,code,doc,allow_multiple_parts,is_root_flag=False):
-        # The allow_multiple_parts flag is used only if this is a code part.
+    def st_enter(self,name,code,doc,is_root_flag=False):
 
         """Enters names and their associated code and doc parts into the given symbol table."""
 
@@ -2093,11 +2092,6 @@ class baseTangleCommands:
             #@        << check for duplicate code definitions >>
             #@+node:ekr.20031218072017.3533:<<check for duplicate code definitions >>
             for part in section.parts:
-
-                if part.code and not allow_multiple_parts:
-                    # Give the message only for non-empty parts.
-                    self.error("Multiple parts not allowed for " + name)
-                    return 0 # part number
 
                 if self.tangling and code and code == part.code:
                     s = g.angleBrackets(section.name)
@@ -2130,16 +2124,16 @@ class baseTangleCommands:
 
         # assert(code)
         if name: # User errors can result in an empty @root name.
-            self.st_enter(name,code,doc,allow_multiple_parts=False,is_root_flag=True)
+            self.st_enter(name,code,doc,is_root_flag=True)
     #@-node:ekr.20031218072017.3535:st_enter_root_name
     #@+node:ekr.20031218072017.3536:st_enter_section_name
-    def st_enter_section_name(self,name,code,doc,allow_multiple_parts):
+    def st_enter_section_name(self,name,code,doc):
 
         """Enters a section name into the given symbol table.
 
         The code and doc pointers are None for references."""
 
-        return self.st_enter(name,code,doc,allow_multiple_parts)
+        return self.st_enter(name,code,doc)
     #@-node:ekr.20031218072017.3536:st_enter_section_name
     #@+node:ekr.20031218072017.3537:st_lookup
     def st_lookup(self,name,is_root_flag=False):
