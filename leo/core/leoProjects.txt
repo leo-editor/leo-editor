@@ -2923,6 +2923,204 @@ def writeFile(self,p,fileKey):
         self.db[fileKey] = self.makeCacheList(p)
 #@-node:ekr.20100208071151.5903:writeFile (cacher)
 #@-node:ekr.20100526084301.5913:Fixed erroneous error message in at-auto-rst read logic
+#@+node:ekr.20100614101034.5921:Fixed crasher in openFileForReading
+#@+node:ekr.20041005105605.21:read (atFile) & helpers
+def read(self,root,importFileName=None,
+    fromString=None,atShadow=False,force=False
+):
+
+    """Read an @thin or @file tree."""
+
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(root.h,len(root.b))
+    at = self ; c = at.c
+    fileName = at.initFileName(fromString,importFileName,root)
+    if not fileName:
+        at.error("Missing file name.  Restoring @file tree from .leo file.")
+        return False
+    at.initReadIvars(root,fileName,
+        importFileName=importFileName,atShadow=atShadow)
+    if at.errors:
+        return False
+    fileName = at.openFileForReading(fromString=fromString)
+    if fileName and at.inputFile:
+        c.setFileTimeStamp(fileName)
+    else:
+        return False
+    root.v.at_read = True # Remember that we have read this file.
+
+    # Get the file from the cache if possible.
+    s,loaded,fileKey = c.cacher.readFile(fileName,root)
+    # 2010/02/24: Never read an external file
+    # with file-like sentinels from the cache.
+    isFileLike = at.isFileLike(s)
+    if isFileLike:
+        # if trace: g.trace('file-like file',fileName)
+        force = True # Disable caching.
+    if loaded and not force:
+        if trace: g.trace('in cache',fileName)
+        at.inputFile.close()
+        root.clearDirty()
+        return True
+    if not g.unitTesting:
+        g.es("reading:",root.h)
+    if isFileLike:
+        if g.unitTesting:
+            if 0: print("converting @file format in",root.h)
+            g.app.unitTestDict['read-convert']=True
+        else:
+            g.es("converting @file format in",root.h,color='red')
+    root.clearVisitedInTree()
+    d = at.scanAllDirectives(root,importing=at.importing,reading=True)
+    thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        at.warnAboutUnvisitedNodes(root)
+        at.deleteTnodeList(root)
+    if at.errors == 0 and not at.importing:
+        # Used by mod_labels plugin.
+        self.copyAllTempBodyStringsToTnodes(root,thinFile)
+    at.deleteAllTempBodyStrings()
+    if isFileLike:
+        # 2010/02/24: Make the root @file node dirty so it will
+        # be written automatically when saving the file.
+        root.setDirty()
+        c.setChanged(True) # Essential, to keep dirty bit set.
+    if at.errors == 0 and not isFileLike:
+        c.cacher.writeFile(root,fileKey)
+
+    if trace: g.trace('root.isDirty',root.isDirty())
+
+    return at.errors == 0
+#@+node:ekr.20041005105605.25:deleteAllTempBodyStrings
+def deleteAllTempBodyStrings(self):
+
+    for v in self.c.all_unique_nodes():
+        if hasattr(v,"tempBodyString"):
+            delattr(v,"tempBodyString")
+#@-node:ekr.20041005105605.25:deleteAllTempBodyStrings
+#@+node:ekr.20100122130101.6174:deleteTnodeList
+def deleteTnodeList (self,p): # atFile method.
+
+    '''Remove p's tnodeList.'''
+
+    v = p.v
+
+    if hasattr(v,"tnodeList"):
+
+        if False: # Not an error, but a useful trace.
+            s = "deleting tnodeList for " + repr(v)
+            g.es_print(s,color="blue")
+
+        delattr(v,"tnodeList")
+        v._p_changed = True
+#@-node:ekr.20100122130101.6174:deleteTnodeList
+#@+node:ekr.20041005105605.22:initFileName
+def initFileName (self,fromString,importFileName,root):
+
+    if fromString:
+        fileName = "<string-file>"
+    elif importFileName:
+        fileName = importFileName
+    elif root.isAnyAtFileNode():
+        fileName = root.anyAtFileNodeName()
+    else:
+        fileName = None
+
+    return fileName
+#@-node:ekr.20041005105605.22:initFileName
+#@+node:ekr.20100224050618.11547:at.isFileLike
+def isFileLike (self,s):
+
+    '''Return True if s has file-like sentinels.'''
+
+    trace = False and not g.unitTesting
+    at = self ; tag = "@+leo"
+    s = g.toUnicode(s)
+    i = s.find(tag)
+    if i == -1:
+        if trace: g.trace('found: False')
+        return True # Don't use the cashe.
+    else:
+        j,k = g.getLine(s,i)
+        line = s[j:k]
+        valid,new_df,start,end,isThin = \
+            at.parseLeoSentinel(line)
+        if trace: g.trace('found: True isThin:',
+            isThin,repr(line))
+        return not isThin
+#@-node:ekr.20100224050618.11547:at.isFileLike
+#@+node:ekr.20071105164407:warnAboutUnvisitedNodes
+def warnAboutUnvisitedNodes (self,root):
+
+    resurrected = 0
+
+    for p in root.self_and_subtree():
+        if not p.v.isVisited():
+            g.trace('**** not visited',p.v,p.h)
+            g.es('resurrected node:',p.h,color='blue')
+            g.es('in file:',root.h,color='blue')
+            resurrected += 1
+
+    if resurrected:
+        g.es('you may want to delete ressurected nodes')
+#@-node:ekr.20071105164407:warnAboutUnvisitedNodes
+#@-node:ekr.20041005105605.21:read (atFile) & helpers
+#@+node:ekr.20041005105605.19:openFileForReading (atFile) helper
+def openFileForReading(self,fromString=False):
+
+    '''Open the file given by at.root.
+    This will be the private file for @shadow nodes.'''
+
+    trace = False and not g.app.unitTesting
+    verbose = False
+    at = self ; c = at.c
+
+    if fromString:
+        if at.atShadow:
+            return at.error(
+                'can not call at.read from string for @shadow files')
+        at.inputFile = g.fileLikeObject(fromString=fromString)
+        fn = None
+    else:
+        fn = at.fullPath(self.root)
+            # Returns full path, including file name.
+        at.setPathUa(self.root,fn) # Remember the full path to this node.
+        if trace: g.trace(fn)
+
+        if at.atShadow:
+            x = at.c.shadowController
+            # readOneAtShadowNode should already have checked these.
+            shadow_fn     = x.shadowPathName(fn)
+            shadow_exists = g.os_path_exists(shadow_fn) and \
+                g.os_path_isfile(shadow_fn)
+            if not shadow_exists:
+                g.trace('can not happen: no private file',
+                    shadow_fn,g.callers())
+                return at.error(
+                    'can not happen: private file does not exist: %s' % (
+                        shadow_fn))
+            # This method is the gateway to the shadow algorithm.
+            x.updatePublicAndPrivateFiles(fn,shadow_fn)
+            fn = shadow_fn
+
+        try:
+            # Open the file in binary mode to allow 0x1a in bodies & headlines.
+            if trace and verbose and at.atShadow:
+                g.trace('opening %s file: %s' % (
+                    g.choose(at.atShadow,'private','public'),fn))
+            at.inputFile = open(fn,'rb')
+            at.warnOnReadOnlyFile(fn)
+        except IOError:
+            at.error("can not open: '@file %s'" % (fn))
+            at.inputFile = None
+            fn = None
+
+    return fn
+#@-node:ekr.20041005105605.19:openFileForReading (atFile) helper
+#@-node:ekr.20100614101034.5921:Fixed crasher in openFileForReading
 #@-node:ekr.20100319090849.5760:Bugs
 #@+node:ekr.20100319090849.5759:Features
 #@+node:ekr.20100307070200.5720:Fixed the @test logic

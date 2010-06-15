@@ -6591,10 +6591,13 @@ class leoQtGui(leoGui.leoGui):
         # This is called several times for each window activation.
         # We only need to set the focus once.
 
+        trace = True and not g.unitTesting
+
         if c.exists and tag == 'body':
-            # g.trace(tag)
+            if trace: g.trace(tag,c)
             c.bodyWantsFocusNow()
             c.outerUpdate() # Required because this is an event handler.
+            g.doHook('activate',c=c,p=c.p,v=c.p,event=event)
     #@-node:ekr.20090123150451.11:onActivateEvent (qtGui)
     #@+node:ekr.20090320101733.16:onDeactiveEvent (qtGui)
     def onDeactivateEvent (self,event,c,obj,tag):
@@ -6602,14 +6605,15 @@ class leoQtGui(leoGui.leoGui):
         '''Put the focus in the body pane when the Leo window is
         activated, say as the result of an Alt-tab or click.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
 
         # This is called several times for each window activation.
         # Save the headline only once.
 
         if c.exists and tag.startswith('tree'):
-            if trace: g.trace(tag,c.p)
+            if trace: g.trace(tag,c)
             c.endEditing()
+            g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
     #@nonl
     #@-node:ekr.20090320101733.16:onDeactiveEvent (qtGui)
     #@+node:ville.20090314101331.2:IPython embedding & mainloop
