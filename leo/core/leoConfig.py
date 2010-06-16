@@ -1744,7 +1744,7 @@ class configClass:
     def config_iter(self,c):
 
         '''Letters:
-        L leoSettings.leo
+          leoSettings.leo
         D default settings
         F loaded .leo File
         M myLeoSettings.leo
@@ -1784,7 +1784,7 @@ class configClass:
         if theHash.endswith('myleosettings.leo'):
             letter = 'M'
         elif theHash.endswith('leosettings.leo'):
-            letter = 'L'
+            letter = ' '
         else:
             letter = 'D' # Default setting.
 
@@ -2183,17 +2183,16 @@ class configClass:
     #@-node:ekr.20050424131051:writeRecentFilesFileHelper
     #@-node:ekr.20050424114937.2:writeRecentFilesFile & helper
     #@-node:ekr.20050424114937.1:Reading and writing .leoRecentFiles.txt (g.app.config)
-    #@+node:ekr.20070418073400:g.app.config.printSettings & helper
+    #@+node:ekr.20070418073400:g.app.config.printSettings
     def printSettings (self,c):
 
         '''Prints the value of every setting, except key bindings and commands and open-with tables.
-        The following indicate where the active setting came from:
+        The following shows where the active setting came from:
 
         -     leoSettings.leo,
         - [D] default settings.
         - [F] indicates the file being loaded,
         - [M] myLeoSettings.leo,
-
 
         '''
 
@@ -2205,63 +2204,15 @@ class configClass:
     [M] myLeoSettings.leo
     '''
         legend = g.adjustTripleString(legend,c.tab_width)
-
-        settings = {} # Keys are setting names, values are (letter,val)
-
-        if c:
-            d = self.localOptionsDict.get(c.hash())
-            self.printSettingsHelper(settings,d,letter='[F]')
-
-        for d in self.localOptionsList:
-            self.printSettingsHelper(settings,d)
-
-        for d in self.dictList:
-            self.printSettingsHelper(settings,d)
-
         result = []
-        result.append(legend+'\n')
-        for key in sorted(settings):
-            data = settings.get(key)
-            letter,val = data
-            # g.pr('%45s = %s %s' % (key,letter,val))
-            result.append('%s %s = %s\n' % (letter,key,val))
-        result.append('\n'+legend)
+        for name,val,c,letter in self.config_iter(c):
+            kind = g.choose(letter==' ','   ','[%s]' % (letter))
+            result.append('%s %s = %s\n' % (kind,name,val))
 
         # Use a single g.es statement.
+        result.append('\n'+legend)
         g.es('',''.join(result),tabName='Settings')
-
-    #@+node:ekr.20070418075804:printSettingsHelper
-    def printSettingsHelper(self,settings,d,letter=None):
-
-        suppressKind = ('shortcut','shortcuts','openwithtable')
-        suppressKeys = (None,'_hash','shortcut')
-
-        if d:
-            #@        << set letter >>
-            #@+node:ekr.20070418084502:<< set letter >>
-            theHash = d.get('_hash').lower()
-
-            if letter:
-                pass
-            elif theHash.endswith('myleosettings.leo'):
-                letter = '[M]'
-            elif theHash.endswith('leosettings.leo'):
-                letter = ' ' * 3
-            else:
-                letter = '[D]'
-
-            # g.trace(letter,theHash)
-            #@nonl
-            #@-node:ekr.20070418084502:<< set letter >>
-            #@nl
-            for key in d:
-                if key not in suppressKeys and key not in settings:
-                    bunch = d.get(key)
-                    if bunch.kind not in suppressKind:
-                        settings[key] = (letter,bunch.val)
-    #@nonl
-    #@-node:ekr.20070418075804:printSettingsHelper
-    #@-node:ekr.20070418073400:g.app.config.printSettings & helper
+    #@-node:ekr.20070418073400:g.app.config.printSettings
     #@-others
 #@-node:ekr.20041119203941:class configClass
 #@+node:ekr.20041119203941.3:class settingsTreeParser (parserBaseClass)
