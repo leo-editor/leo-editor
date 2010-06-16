@@ -1740,6 +1740,64 @@ class configClass:
             return c.nullPosition()
     #@-node:ekr.20041120074536:settingsRoot
     #@-node:ekr.20041117081009:Getters... (g.app.config)
+    #@+node:ekr.20100616083554.5922:Iterators... (g.app.config)
+    def config_iter(self,c):
+
+        '''Letters:
+        L leoSettings.leo
+        D default settings
+        F loaded .leo File
+        M myLeoSettings.leo
+        '''
+
+        names = [] # Already-handled settings names.
+        result = []
+
+        if c:
+            d = self.localOptionsDict.get(c.hash())
+            for name,val,letter in self.config_iter_helper(d,names):
+                result.append((name,val,c,'F'),)
+
+        for d in self.localOptionsList:
+            for name,val,letter in self.config_iter_helper(d,names):
+                result.append((name,val,None,letter),)
+
+        for d in self.dictList:
+            for name,val,letter in self.config_iter_helper(d,names):
+                result.append((name,val,None,letter),)
+
+        result.sort()
+        for z in result:
+            yield z
+
+        raise StopIteration
+    #@+node:ekr.20100616083554.5923:config_iter_helper
+    def config_iter_helper (self,d,names):
+
+        if not d: return []
+
+        result = []
+        suppressKind = ('shortcut','shortcuts','openwithtable')
+        suppressKeys = (None,'_hash','shortcut')
+        theHash = d.get('_hash').lower()
+
+        if theHash.endswith('myleosettings.leo'):
+            letter = 'M'
+        elif theHash.endswith('leosettings.leo'):
+            letter = 'L'
+        else:
+            letter = 'D' # Default setting.
+
+        for key in d:
+            if key not in suppressKeys and key not in names:
+                bunch = d.get(key)
+                if bunch and bunch.kind not in suppressKind:
+                    names.append(key)
+                    result.append((key,bunch.val,letter),)
+
+        return result
+    #@-node:ekr.20100616083554.5923:config_iter_helper
+    #@-node:ekr.20100616083554.5922:Iterators... (g.app.config)
     #@+node:ekr.20041118084146:Setters (g.app.config)
     #@+node:ekr.20041118084146.1:set (g.app.config) To be deleted??
     def set (self,c,setting,kind,val):

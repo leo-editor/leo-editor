@@ -557,6 +557,7 @@
 <v t="ekr.20100526092131.2172"><vh>Diagraming apt components</vh></v>
 </v>
 <v t="ekr.20100615095815.2189"><vh>activate/deactivate events</vh></v>
+<v t="ekr.20100616085524.2191"><vh>config iter</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -977,7 +978,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="12"></t>
+<t tx="ekr.20070416075121" str_leo_pos="13"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -6419,6 +6420,8 @@ leoPlugins.registerHandler("deactivate", on_deactivate)
 leoPlugins.registerHandler("activate", on_activate)
 
 print('window events activated')</t>
+<t tx="ekr.20100616085524.2191">for name,val,c,letter in g.app.config.config_iter(c):
+    print('%45s %s %s' % (name,letter,val))</t>
 <t tx="node:ekr.20100519083913.2158">@others
 
 # a after</t>
