@@ -177,6 +177,18 @@ class quickMove(object):
             bg = "LightBlue"
         )
 
+        if g.app.gui.guiName() == "qt":
+            from PyQt4 import QtGui, QtCore
+            def cb(event=None, c=c, v=v):
+                p = c.vnode2position(v)
+                c.selectPosition(p)
+                c.redraw()
+
+            but = b.button
+            rc = QtGui.QAction('Goto target', but)
+            rc.connect(rc, QtCore.SIGNAL("triggered()"), cb)
+            but.insertAction(but.actions()[-1], rc)  # insert rc before Remove Button
+
         self.buttons.append((mb,b))
     #@-node:ekr.20070117113133.2:addButton
     #@+node:tbrown.20091217114654.5372:permanentButton
@@ -269,6 +281,7 @@ class quickMoveButton:
                 p.moveToFirstChildOf(p2)
             else:
                 p.moveToLastChildOf(p2)
+
         elif self.type_ == 'bkmk':
             unl = self.computeUNL(p)  # before tree changes
             if self.first:
@@ -307,6 +320,7 @@ class quickMoveButton:
             c.selectPosition(nxt)
         c.undoer.afterMoveNode(p,'Quick Move', bunch)
         c.setChanged(True)
+
         c.redraw()
     #@-node:ekr.20070117121326.1:moveCurrentNodeToTarget
     #@+node:ekr.20070123061606:checkMove
