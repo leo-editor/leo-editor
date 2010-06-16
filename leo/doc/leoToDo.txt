@@ -2794,7 +2794,8 @@ if g.match(s,i,"<<"):
         else:
             kind = bad_section_name # The warning has been given.
 elif g.match(s,i,"@ ") or g.match(s,i,"@\t") or g.match(s,i,"@\n"):
-    kind = at_doc
+    # 10/30/02: Only @doc starts a noweb doc part in raw cweb mode.
+    kind = g.choose(self.raw_cweb_flag,plain_line,at_doc)
 elif g.match(s,i,"@@"): kind = at_at
 elif i < len(s) and s[i] == '@': kind = at_other
 else: kind = plain_line
@@ -2802,17 +2803,20 @@ else: kind = plain_line
 #@+node:ekr.20031218072017.3602:<< set kind for directive >>
 # This code will return at_other for any directive other than those listed.
 
-for name, theType in [
-    ("@chapter", at_chapter),
-    ("@code", at_code),
-    ("@c", at_code),
-    ("@doc", at_doc),
-    ("@root", at_root),
-    ("@section", at_section) ]:
-    if g.match_word(s,i,name):
-        kind = theType ; break
+if g.match_word(s,i,"@c"):
+    # 10/30/02: Only @code starts a code section in raw cweb mode.
+    kind = g.choose(self.raw_cweb_flag,plain_line,at_code)
+else:
+    for name, theType in [
+        ("@chapter", at_chapter),
+        ("@code", at_code),
+        ("@doc", at_doc),
+        ("@root", at_root),
+        ("@section", at_section) ]:
+        if g.match_word(s,i,name):
+            kind = theType ; break
 
-if kind == at_other:
+if self.raw_cweb_flag and kind == at_other:
     # 10/30/02: Everything else is plain text in raw cweb mode.
     kind = plain_line
 
