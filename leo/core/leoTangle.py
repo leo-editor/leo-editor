@@ -485,14 +485,7 @@ class baseTangleCommands:
 
         # Abbreviations for self.language.
         # Warning: these must also be initialized in tangle.scanAllDirectives.
-        if 1: # 10/30/02: Don't change the code, just ignore @language cweb.
-            self.use_cweb_flag = False
-            self.raw_cweb_flag = self.language == "cweb" # A new ivar.
-        else:
-            self.use_cweb_flag = self.language == "cweb"
-            self.raw_cweb_flag = False # was never used before.
-
-        self.use_noweb_flag = not self.use_cweb_flag
+        self.raw_cweb_flag = (self.language == "cweb") # A new ivar.
 
         # Set only from directives.
         self.print_mode = "verbose"
@@ -1034,8 +1027,7 @@ class baseTangleCommands:
             if 0: # 12/03/02: no longer needed
                 self.error("directive not valid here: " + s[j:i])
         elif kind == bad_section_name:
-            if self.use_cweb_flag:
-                i = g.skip_to_end_of_line(s,i)
+            pass
         elif kind == at_web or kind == at_at:
             i += 2 # Skip a CWEB control code.
         else: assert(False)
@@ -1131,10 +1123,7 @@ class baseTangleCommands:
                 #@-node:ekr.20031218072017.3495:<< Scan and define a section definition >>
                 #@nl
             elif kind == at_code:
-                if self.use_cweb_flag:
-                    i += 2 # Skip the at-c or at-p
-                else:
-                    i = g.skip_line(s,i)
+                i = g.skip_line(s,i)
                 #@            << Scan and define an @code defininition >>
                 #@+node:ekr.20031218072017.3496:<< Scan and define an @code defininition >>
                 # All @c or @code directives denote < < headline_name > > =
@@ -1183,10 +1172,7 @@ class baseTangleCommands:
                 #@-node:ekr.20031218072017.3497:<< Scan and define a root section >>
                 #@nl
             elif kind == at_doc:
-                if self.use_cweb_flag:
-                    i += 2 # Skip the at-space
-                else:
-                    i = g.skip_line(s,i)
+                i = g.skip_line(s,i)
                 i, doc = self.skip_doc(s,i)
             elif kind == at_chapter or kind == at_section:
                 i = g.skip_line(s,i)
@@ -1233,74 +1219,46 @@ class baseTangleCommands:
         code1 = i
         nl_i = i # For error messages
         done = False # True when end of code part seen.
-        if self.use_noweb_flag:
-            #@        << skip a noweb code section >>
-            #@+node:ekr.20031218072017.3499:<< skip a noweb code section >>
-            #@+at 
-            #@nonl
-            # This code handles the following escape conventions: 
-            # double at-sign at the start of a line and at-<< and 
-            # at.>.
-            #@-at
-            #@@c
+        #@    << skip a noweb code section >>
+        #@+node:ekr.20031218072017.3499:<< skip a noweb code section >>
+        #@+at 
+        #@nonl
+        # This code handles the following escape conventions: double 
+        # at-sign at the start of a line and at-<< and at.>.
+        #@-at
+        #@@c
 
-            i, done = self.handle_newline(s,i)
-            while not done and i < len(s):
-                ch = s[i]
-                if g.is_nl(s,i):
-                    nl_i = i = g.skip_nl(s,i)
-                    i, done = self.handle_newline(s,i)
-                elif ch == '@' and (g.match(s,i+1,"<<") or # must be on different lines
-                    g.match(s,i+1,">>")):
-                    i += 3 # skip the noweb escape sequence.
-                elif ch == '<':
-                    #@        << handle possible noweb section reference >>
-                    #@+node:ekr.20031218072017.3500:<< handle possible noweb section reference >>
-                    j, kind, end = self.is_section_name(s,i)
-                    if kind == section_def:
-                        k = g.skip_to_end_of_line(s,i)
-                        # We are in the middle of a line.
-                        i += 1
-                        self.error("chunk definition not valid here\n" + s[nl_i:k])
-                    elif kind == bad_section_name:
-                        i += 1 # This is not an error.  Just skip the '<'.
-                    else:
-                        assert(kind == section_ref)
-                        # Enter the reference into the symbol table.
-                        name = s[i:end]
-                        self.st_enter_section_name(name,None,None)
-                        i = end
-                    #@-node:ekr.20031218072017.3500:<< handle possible noweb section reference >>
-                    #@nl
-                else: i += 1
-            #@-node:ekr.20031218072017.3499:<< skip a noweb code section >>
-            #@nl
-        else:
-            #@        << skip a CWEB code section >>
-            #@+node:ekr.20031218072017.3501:<< skip a CWEB code section >>
-            # This code is simple because CWEB control codes are valid anywhere.
-
-            while not done and i < len(s):
-                if s[i] == '@':
-                    #@        << handle CWEB control code >>
-                    #@+node:ekr.20031218072017.3502:<< handle CWEB control code >>
-                    j, kind, end = self.is_section_name(s,i)
-
-                    if kind == section_def:
-                        done = True
-                    elif kind == bad_section_name:
-                        i += 2 # Any other control code.
-                    else:
-                        assert(kind == section_ref)
-                        # Enter the reference into the symbol table.
-                        name = s[i:j]
-                        self.st_enter_section_name(name,None,None)
-                        i = j
-                    #@-node:ekr.20031218072017.3502:<< handle CWEB control code >>
-                    #@nl
-                else: i += 1
-            #@-node:ekr.20031218072017.3501:<< skip a CWEB code section >>
-            #@nl
+        i, done = self.handle_newline(s,i)
+        while not done and i < len(s):
+            ch = s[i]
+            if g.is_nl(s,i):
+                nl_i = i = g.skip_nl(s,i)
+                i, done = self.handle_newline(s,i)
+            elif ch == '@' and (g.match(s,i+1,"<<") or # must be on different lines
+                g.match(s,i+1,">>")):
+                i += 3 # skip the noweb escape sequence.
+            elif ch == '<':
+                #@        << handle possible noweb section reference >>
+                #@+node:ekr.20031218072017.3500:<< handle possible noweb section reference >>
+                j, kind, end = self.is_section_name(s,i)
+                if kind == section_def:
+                    k = g.skip_to_end_of_line(s,i)
+                    # We are in the middle of a line.
+                    i += 1
+                    self.error("chunk definition not valid here\n" + s[nl_i:k])
+                elif kind == bad_section_name:
+                    i += 1 # This is not an error.  Just skip the '<'.
+                else:
+                    assert(kind == section_ref)
+                    # Enter the reference into the symbol table.
+                    name = s[i:end]
+                    self.st_enter_section_name(name,None,None)
+                    i = end
+                #@-node:ekr.20031218072017.3500:<< handle possible noweb section reference >>
+                #@nl
+            else: i += 1
+        #@-node:ekr.20031218072017.3499:<< skip a noweb code section >>
+        #@nl
         code = s[code1:i]
         # g.trace("returns:",code)
         return i,code
@@ -1535,8 +1493,7 @@ class baseTangleCommands:
         while i < len(s):
             progress = i
             ch = s[i]
-            if (g.match(s,i,"<<") and self.use_noweb_flag or
-                g.match(s,i,"@<") and self.use_cweb_flag):
+            if g.match(s,i,"<<"):
                 #@            << put possible section reference >>
                 #@+node:ekr.20031218072017.3507:<<put possible section reference >>
                 j, kind, name_end = self.is_section_name(s,i)
@@ -1557,50 +1514,31 @@ class baseTangleCommands:
                 #@-node:ekr.20031218072017.3507:<<put possible section reference >>
                 #@nl
             elif ch == '@': # We are in the middle of a line.
-                if self.use_cweb_flag:
-                    #@                << handle 2-character CWEB control codes >>
-                    #@+node:ekr.20031218072017.3508:<< handle 2-character CWEB control codes >>
-                    if g.match(s,i,"@@"):
-                        # Handle double @ sign.
-                        self.os('@') ; i += 2
-                    else:
-                        i += 1 # skip the @.
-                        if i+1 >= len(s) or g.is_ws_or_nl(s,i):
-                            # A control code: at-backslash is not a valid CWEB control code.
-                            # We are in CWEB mode, so we can output C block comments.
-                            self.os("/*@" + s[i] + "*/") ; i += 1
-                        else:
-                            self.os("@") # The at sign is not part of a control code.
-                    #@-node:ekr.20031218072017.3508:<< handle 2-character CWEB control codes >>
-                    #@nl
-                else:
-                    #@                << handle noweb @ < < convention >>
-                    #@+node:ekr.20031218072017.3509:<< handle noweb @ < < convention >>
-                    #@+at 
-                    #@nonl
-                    # The user must ensure that neither @ < < nor @ 
-                    # > > occurs in comments or strings. However, it 
-                    # is valid for @ < < or @ > > to appear in the 
-                    # doc chunk or in a single-line comment.
-                    #@-at
-                    #@@c
+                #@            << handle noweb @ < < convention >>
+                #@+node:ekr.20031218072017.3509:<< handle noweb @ < < convention >>
+                #@+at 
+                #@nonl
+                # The user must ensure that neither @ < < nor @ > > 
+                # occurs in comments or strings. However, it is 
+                # valid for @ < < or @ > > to appear in the doc 
+                # chunk or in a single-line comment.
+                #@-at
+                #@@c
 
-                    if g.match(s,i,"@<<"):
-                        self.os("/*@*/<<") ; i += 3
+                if g.match(s,i,"@<<"):
+                    self.os("/*@*/<<") ; i += 3
 
-                    elif g.match(s,i,"@>>"):
-                        self.os("/*@*/>>") ; i += 3
+                elif g.match(s,i,"@>>"):
+                    self.os("/*@*/>>") ; i += 3
 
-                    else: self.os("@") ; i += 1
-                    #@-node:ekr.20031218072017.3509:<< handle noweb @ < < convention >>
-                    #@nl
+                else: self.os("@") ; i += 1
+                #@-node:ekr.20031218072017.3509:<< handle noweb @ < < convention >>
+                #@nl
             elif ch == '\r':
                 i += 1
             elif ch == '\n':
                 i += 1 ; self.onl()
                 i = self.put_newline(s,i,False) # Put full lws
-                if self.use_cweb_flag and g.match(s,i,"@@"):
-                    self.os('@') ; i += 2
             else: self.os(s[i]) ; i += 1
             assert(progress < i)
     #@-node:ekr.20031218072017.3506:put_code
@@ -1779,8 +1717,7 @@ class baseTangleCommands:
         elif kind == at_web or kind == at_at:
             i += 2 # Allow the line to be scanned.
         elif kind == at_doc or kind == at_code:
-            if self.use_cweb_flag:
-                i += 2
+            pass
         else:
             # These should have set limit in pass 1.
             assert(kind != section_def and kind != at_chapter and kind != at_section)
@@ -1845,9 +1782,7 @@ class baseTangleCommands:
 
         # Increase the indentation if the section reference does not immediately follow
         # the leading white space.  4/3/01: Make no adjustment in @silent mode.
-        if (j < len(s) and self.print_mode != "silent" and
-                ((self.use_noweb_flag and s[j] != '<') or
-                (self.use_cweb_flag and s[j] != '@'))):
+        if (j < len(s) and self.print_mode != "silent" and s[j] != '<'):
             self.tangle_indent += abs(self.tab_width)
         #@-node:ekr.20031218072017.3520:<< Calculate the new value of tangle_indent >>
         #@nl
@@ -2033,9 +1968,9 @@ class baseTangleCommands:
         for name in sorted(self.tst):
             section = self.tst[name]
             if not section.referenced:
-                lp = g.choose(self.use_noweb_flag,"<< ","@< ")
-                rp = g.choose(self.use_noweb_flag," >>"," @>")
-                g.es('',' ' * 4,'warning:',lp,'',section.name,'',rp,'has been defined but not used.')
+                lp = "<< "
+                rp = " >>"
+                g.es('',' ' * 4,'warning:',lp,section.name,rp,'has been defined but not used.')
     #@-node:ekr.20031218072017.3529:st_check
     #@+node:ekr.20031218072017.3530:st_dump
     # Dumps the given symbol table in a readable format.
@@ -2244,8 +2179,8 @@ class baseTangleCommands:
             for part in section.parts.values():
                 assert(part.of == section.of)
                 if not part.update_flag:
-                    lp = g.choose(self.use_noweb_flag,"<< ","@< ")
-                    rp = g.choose(self.use_noweb_flag," >>"," @>")
+                    lp = "<< "
+                    rp = " >>"
                     g.es("warning:",'%s%s%s' % (lp,part.name,rp),"is not in the outline")
                     break # One warning per section is enough.
     #@-node:ekr.20031218072017.3543:ust_warn_about_orphans
@@ -2266,7 +2201,6 @@ class baseTangleCommands:
         tot_len = 0
         if self.comment: tot_len += len(self.comment)
         if self.comment_end: tot_len += len(self.comment_end)
-        CWEB_flag = (self.language == "c" and not self.use_noweb_flag)
 
         p1, p2 = 0, 0
         while p1 < len(s1) and p2 < len(s2):
@@ -2282,12 +2216,6 @@ class baseTangleCommands:
                 # 
                 # In noweb mode we allow / * @ * /  (without the 
                 # spaces)to be equal to @.
-                # In CWEB mode we allow / * @ ? * / (without the 
-                # spaces)to be equal to @?.
-                # at-backslash is not a valid CWEB control code, so 
-                # we don't have to equate
-                # / * @ \\ * / with at-backslash.
-                # 
                 # We must be careful not to run afoul of this very 
                 # convention here!
                 #@-at
@@ -2298,20 +2226,10 @@ class baseTangleCommands:
                         p1 += 1
                         p2 += tot_len + 1
                         continue
-                    elif (CWEB_flag and s1[p1] == '@' and p1 + 1 < len(s1) and
-                        g.match(s2,p2,self.comment + '@' + s1[p1+1])):
-                        p1 += 2
-                        p2 += tot_len + 2
-                        continue
                 elif p2 < len(s2) and s2[p2] == '@':
                     if g.match(s1,p1,self.comment + '@' + self.comment_end):
                         p2 += 1
                         p1 += tot_len + 1
-                        continue
-                    elif (CWEB_flag and s1[p1] == '@' and p1 + 1 < len(s1) and
-                        g.match(s1,p1,self.comment + '@' + s2[p2+1])):
-                        p2 += 2
-                        p1 += tot_len + 2
                         continue
                 #@-node:ekr.20031218072017.3546:<< Check both parts for @ comment conventions >>
                 #@nl
@@ -2403,8 +2321,6 @@ class baseTangleCommands:
         tot_len = 0
         if self.comment: tot_len += len(self.comment)
         if self.comment_end: tot_len += len(self.comment_end)
-
-        CWEB_flag = (self.language == "c" and not self.use_noweb_flag)
         #@-node:ekr.20031218072017.3549:<< Define forgiving_compare vars >>
         #@nl
         p1 = g.skip_ws_and_nl(s1,0) 
@@ -2422,12 +2338,6 @@ class baseTangleCommands:
                 # 
                 # In noweb mode we allow / * @ * /  (without the 
                 # spaces)to be equal to @.
-                # In CWEB mode we allow / * @ ? * / (without the 
-                # spaces)to be equal to @?.
-                # at-backslash is not a valid CWEB control code, so 
-                # we don't have to equate
-                # / * @ \\ * / with at-backslash.
-                # 
                 # We must be careful not to run afoul of this very 
                 # convention here!
                 #@-at
@@ -2438,20 +2348,10 @@ class baseTangleCommands:
                         p1 += 1
                         p2 += tot_len + 1
                         continue
-                    elif (CWEB_flag and s1[p1] == '@' and p1 + 1 < len(s1) and
-                        g.match(s2,p2,self.comment + '@' + s1[p1+1])):
-                        p1 += 2
-                        p2 += tot_len + 2
-                        continue
                 elif p2 < len(s2) and s2[p2] == '@':
                     if g.match(s1,p1,self.comment + '@' + self.comment_end):
                         p2 += 1
                         p1 += tot_len + 1
-                        continue
-                    elif (CWEB_flag and s1[p1] == '@' and p1 + 1 < len(s1) and
-                        g.match(s1,p1,self.comment + '@' + s2[p2+1])):
-                        p2 += 2
-                        p1 += tot_len + 2
                         continue
                 #@-node:ekr.20031218072017.3546:<< Check both parts for @ comment conventions >>
                 #@nl
@@ -2566,8 +2466,7 @@ class baseTangleCommands:
             elif ch1 == '<' or ch1 == '@':
                 #@            << Compare possible section references >>
                 #@+node:ekr.20031218072017.3558:<< Compare possible section references >>
-                if s1[p1] == '@' and CWEB_flag:  start_ref = "@<"
-                elif s1[p1] == '<' and not CWEB_flag:  start_ref = "<<"
+                if s1[p1] == '<':  start_ref = "<<"
                 else: start_ref = None
 
                 # Tangling may insert newlines.
@@ -3070,7 +2969,7 @@ class baseTangleCommands:
         # g.trace(g.get_line(s1,0),':',g.get_line(s2,0))
         if g.match(s1,0,"<<") or g.match(s1,0,"@<"):
             # Use a forgiving compare of the two section names.
-            delim = g.choose(self.use_cweb_flag,"@>",">>")
+            delim = ">>"
             i1 = i2 = 0
             while i1 < len(s1) and i2 < len(s2):
                 ch1 = s1[i1] ; ch2 = s2[i2]
@@ -3134,11 +3033,8 @@ class baseTangleCommands:
 
         kind = bad_section_name ; end = -1
 
-        if self.use_cweb_flag :
-            if g.match(s,i,"@<"):
-                i, kind, end = self.skip_cweb_section_name(s,i)
-        elif g.match(s,i,"<<"):
-            i, kind, end = self.skip_noweb_section_name(s,i)
+        if g.match(s,i,"<<"):
+            i, kind, end = self.skip_section_name(s,i)
 
         # g.trace(kind,g.get_line(s,end))
         return i, kind, end
@@ -3231,8 +3127,7 @@ class baseTangleCommands:
         #@+node:ekr.20031218072017.3588:<< Make sure we have a section reference >>
         i = g.skip_ws(s,i)
 
-        if (self.use_noweb_flag and g.match(s,i,"<<") or
-            self.use_cweb_flag  and g.match(s,i,"@<") ):
+        if g.match(s,i,"<<"):
 
             j = i ; i, kind, end = self.skip_section_name(s,i)
             if kind != section_ref:
@@ -3375,52 +3270,7 @@ class baseTangleCommands:
             self.root_name = s[root1:root2].strip()
         return i
     #@-node:ekr.20031218072017.1259:setRootFromText
-    #@+node:ekr.20031218072017.3595:skip_CWEB_section_name
-    #@+at 
-    #@nonl
-    # This function skips past a section name that starts with @< 
-    # and ends with @>. This code also skips any = following the 
-    # section name.
-    # 
-    # Returns (i, kind, end), where kind is:
-    # 
-    #     bad_section_name:  @ < with no matching @ >
-    #     section_ref: @ < name @ >
-    #     section_def: @ < name @ > =
-    # 
-    # Unlike noweb, bad section names generate errors.
-    #@-at
-    #@@c
-
-    def skip_cweb_section_name(self,s,i):
-
-        j = i # Used for error message.
-        kind = bad_section_name ; end = -1
-        runon = False ; empty_name = True
-        assert(s[i:i+2]=="@<")
-        i += 2
-        while i < len(s):
-            if g.match(s,i,"@>="):
-                i += 3 ; end = i-1 ; kind = section_def ; break
-            elif g.match(s,i,"@>"):
-                i += 2 ; end = i ; kind = section_ref ; break
-            elif g.match(s,i,"@<"):
-                runon = True ; break
-            elif g.match(s,i,"@@"): i += 2
-            elif g.is_ws_or_nl(s,i): i += 1
-            else:
-                i += 1 ; empty_name = False
-
-        if empty_name:
-            g.scanError("empty CWEB section name: " + s[j:i])
-            return i, bad_section_name, -1
-        elif i >= len(s) or runon:
-            g.scanError("Run on CWEB section name: " + s[j:i])
-            return i, bad_section_name, -1
-        else:
-            return i, kind, end
-    #@-node:ekr.20031218072017.3595:skip_CWEB_section_name
-    #@+node:ekr.20031218072017.3596:skip_noweb_section_name
+    #@+node:ekr.20031218072017.3596:skip_section_name
     #@+at 
     #@nonl
     # This function skips past a section name that starts with < < 
@@ -3440,7 +3290,7 @@ class baseTangleCommands:
     #         at_root:     < < * > > =
     #@-at
     #@@c
-    def skip_noweb_section_name(self,s,i):
+    def skip_section_name(self,s,i):
 
         assert(g.match(s,i,"<<"))
         i += 2
@@ -3468,17 +3318,7 @@ class baseTangleCommands:
         if kind == bad_section_name:
             i = j
         return i, kind, end
-    #@-node:ekr.20031218072017.3596:skip_noweb_section_name
-    #@+node:ekr.20031218072017.3597:skip_section_name
-    # Returns a tuple (i, kind, end)
-
-    def skip_section_name(self,s,i):
-
-        if self.use_noweb_flag:
-            return self.skip_noweb_section_name(s,i)
-        else:
-            return self.skip_cweb_section_name(s,i)
-    #@-node:ekr.20031218072017.3597:skip_section_name
+    #@-node:ekr.20031218072017.3596:skip_section_name
     #@+node:ekr.20031218072017.3598:standardize_name
     def standardize_name (self,name):
 
@@ -3611,62 +3451,41 @@ class baseTangleCommands:
         returns (kind, end) and sets global root_name using setRootFromText()."""
 
         kind = plain_line ; end = -1
-        if self.use_noweb_flag:
-            #@        << set token_type in noweb mode >>
-            #@+node:ekr.20031218072017.3600:<< set token_type in noweb mode >>
-            if g.match(s,i,"<<"):
-                i, kind, end = self.skip_section_name(s,i)
-                if kind == bad_section_name:
-                    kind = plain_line # not an error.
-                elif kind == at_root:
-                    assert(self.head_root == None)
-                    if self.head_root:
-                        self.setRootFromText(self.head_root,report_errors)
-                    else:
-                        kind = bad_section_name # The warning has been given.
-            elif g.match(s,i,"@ ") or g.match(s,i,"@\t") or g.match(s,i,"@\n"):
-                # 10/30/02: Only @doc starts a noweb doc part in raw cweb mode.
-                kind = g.choose(self.raw_cweb_flag,plain_line,at_doc)
-            elif g.match(s,i,"@@"): kind = at_at
-            elif i < len(s) and s[i] == '@': kind = at_other
-            else: kind = plain_line
-            #@-node:ekr.20031218072017.3600:<< set token_type in noweb mode >>
-            #@nl
-        else:
-            #@        << set token_type for CWEB mode >>
-            #@+node:ekr.20031218072017.3601:<< set token_type for CWEB mode >>
-            i = g.skip_ws(s,i)
-            if g.match(s,i,"@*") or g.match(s,i,"@ "): kind = at_doc
-            elif g.match(s,i,"@<"): i, kind, end = self.skip_section_name(s,i)
-            elif g.match(s,i,"@@"): kind = at_at
-            elif g.match_word(s,i,"@c") or g.match_word(s,i,"@p"): kind = at_code
-            elif i < len(s) and s[i] == '@':
-                if   i + 1 >= len(s): kind = at_doc
-                elif i + 1 < len(s) and s[i+1] not in string.ascii_letters:
-                    kind = at_web
-                else: kind = at_other # Set kind later
-            else: kind = plain_line
-            #@-node:ekr.20031218072017.3601:<< set token_type for CWEB mode >>
-            #@nl
+        #@    << set token_type in noweb mode >>
+        #@+node:ekr.20031218072017.3600:<< set token_type in noweb mode >>
+        if g.match(s,i,"<<"):
+            i, kind, end = self.skip_section_name(s,i)
+            if kind == bad_section_name:
+                kind = plain_line # not an error.
+            elif kind == at_root:
+                assert(self.head_root == None)
+                if self.head_root:
+                    self.setRootFromText(self.head_root,report_errors)
+                else:
+                    kind = bad_section_name # The warning has been given.
+        elif g.match(s,i,"@ ") or g.match(s,i,"@\t") or g.match(s,i,"@\n"):
+            kind = at_doc
+        elif g.match(s,i,"@@"): kind = at_at
+        elif i < len(s) and s[i] == '@': kind = at_other
+        else: kind = plain_line
+        #@-node:ekr.20031218072017.3600:<< set token_type in noweb mode >>
+        #@nl
         if kind == at_other :
             #@        << set kind for directive >>
             #@+node:ekr.20031218072017.3602:<< set kind for directive >>
             # This code will return at_other for any directive other than those listed.
 
-            if g.match_word(s,i,"@c"):
-                # 10/30/02: Only @code starts a code section in raw cweb mode.
-                kind = g.choose(self.raw_cweb_flag,plain_line,at_code)
-            else:
-                for name, theType in [
-                    ("@chapter", at_chapter),
-                    ("@code", at_code),
-                    ("@doc", at_doc),
-                    ("@root", at_root),
-                    ("@section", at_section) ]:
-                    if g.match_word(s,i,name):
-                        kind = theType ; break
+            for name, theType in [
+                ("@chapter", at_chapter),
+                ("@code", at_code),
+                ("@c", at_code),
+                ("@doc", at_doc),
+                ("@root", at_root),
+                ("@section", at_section) ]:
+                if g.match_word(s,i,name):
+                    kind = theType ; break
 
-            if self.raw_cweb_flag and kind == at_other:
+            if kind == at_other:
                 # 10/30/02: Everything else is plain text in raw cweb mode.
                 kind = plain_line
 
