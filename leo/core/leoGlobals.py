@@ -476,7 +476,8 @@ def get_directives_dict(p,root=None):
 
     """Scan p for @directives found in globalDirectiveList.
 
-    Returns a dict containing pointers to the start of each directive"""
+    Returns a dict containing the stripped remainder of the line
+    following the first occurrence of each recognized directive"""
 
     trace = False and not g.unitTesting
     verbose = False
@@ -522,7 +523,7 @@ def get_directives_dict(p,root=None):
             if root_node:
                 d["root"]=0 # value not immportant
             else:
-                g.es('%s= requires @root in the headline' % (
+                g.es('%s= may only occur in a topmost node (i.e., without a parent)' % (
                     g.angleBrackets('*')))
             break
 

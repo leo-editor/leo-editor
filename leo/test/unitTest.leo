@@ -2630,8 +2630,9 @@
 </v>
 </v>
 <v t="sps.20100609153802.16075" a="E"><vh>top level</vh>
-<v t="sps.20100531151404.9757" a="E"><vh>with sentinels</vh>
-<v t="sps.20100609111310.5536" a="E"><vh>now working</vh>
+<v t="sps.20100618084840.5607"><vh>tangle</vh>
+<v t="sps.20100531151404.9757"><vh>with sentinels</vh>
+<v t="sps.20100609111310.5536"><vh>now working</vh>
 <v t="sps.20100531132336.19970"><vh>@test @root with @language c</vh>
 <v t="sps.20100531132336.19971"><vh>#@root</vh></v>
 <v t="sps.20100531132336.19972"><vh>'root-test'</vh></v>
@@ -2713,7 +2714,7 @@
 <v t="sps.20100612133937.5519"><vh>'root-test-one'</vh></v>
 <v t="sps.20100612133937.5520"><vh>'root-test-two'</vh></v>
 </v>
-<v t="sps.20100602033555.5436" a="E"><vh>NOTE: Multiple parts (and nodes) ARE allowed for &lt;&lt; secref &gt;&gt;</vh>
+<v t="sps.20100602033555.5436"><vh>NOTE: Multiple parts (and nodes) ARE allowed for &lt;&lt; secref &gt;&gt;</vh>
 <v t="sps.20100601210726.21583"><vh>@test @root-doc with subnodes - headline &lt;&lt; secref &gt;&gt; first</vh>
 <v t="sps.20100601210726.21584"><vh>#@root</vh>
 <v t="sps.20100601210726.21588"><vh>&lt;&lt; secref &gt;&gt; this works</vh></v>
@@ -2756,6 +2757,14 @@
 <v t="ekr.20090624125638.4967"><vh>@test @root with @silent</vh>
 <v t="ekr.20090624125638.4968"><vh>#@root</vh></v>
 <v t="ekr.20090624125638.4969"><vh>'root-test'</vh></v>
+</v>
+</v>
+</v>
+<v t="sps.20100618084840.5608" a="E"><vh>untangle</vh>
+<v t="sps.20100618084840.5613" a="E"><vh>@test simplest untangle</vh>
+<v t="sps.20100618084840.5614"><vh>#@root</vh></v>
+<v t="sps.20100618084840.5617"><vh>#@root</vh></v>
+<v t="sps.20100618105958.5622"><vh>foo</vh></v>
 </v>
 </v>
 </v>
@@ -2843,6 +2852,7 @@
 <v t="ekr.20100223094723.5380"><vh>Failing tests</vh>
 <v t="ekr.20090529141856.4753"></v>
 <v t="ekr.20090529141856.4758"></v>
+<v t="sps.20100602033555.5432"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -15169,7 +15179,7 @@ print('\nEnd of leoUndo tests.')</t>
 <t tx="ekr.20071113203234"></t>
 <t tx="ekr.20071127194743">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="ekr.20071127194743.1">@root 'root-test'
 
 # A simple test of @root.
@@ -20645,7 +20655,7 @@ for kind,expected in table:
 </t>
 <t tx="ekr.20090624125638.4967">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="ekr.20090624125638.4968">@silent
 @root 'root-test'
 
@@ -23404,7 +23414,7 @@ assert path and path.endswith(endpath),'expected ending %s got %s' % (
 <t tx="sps.20100531034136.20113"></t>
 <t tx="sps.20100531132336.19970">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100531132336.19971">@language c
 @root 'root-test'
 
@@ -23422,7 +23432,7 @@ abc
 </t>
 <t tx="sps.20100531151404.15622">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100531151404.15623">@comment // /* */
 @root 'root-test'
 
@@ -23440,7 +23450,7 @@ abc
 </t>
 <t tx="sps.20100531151404.21540">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100531151404.21541">A comment to ignore
 
 @root-doc 'root-test'
@@ -23459,7 +23469,7 @@ abc
 </t>
 <t tx="sps.20100531151404.27385">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100531151404.27386">A comment to ignore
 
 @root-code 'root-test'
@@ -23484,7 +23494,7 @@ uvw
 <t tx="sps.20100531151404.9758"></t>
 <t tx="sps.20100531151404.9762">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100531151404.9763">@comment #
 @root 'root-test'
 
@@ -23502,7 +23512,7 @@ abc
 </t>
 <t tx="sps.20100531151404.9773">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100531151404.9774">@comment /* */
 @root 'root-test'
 
@@ -23526,7 +23536,7 @@ begin in code-mode.
 </t>
 <t tx="sps.20100601210726.21583">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100601210726.21584">A comment to ignore
 
 @root-doc 'root-test'
@@ -23553,7 +23563,7 @@ xyz
 </t>
 <t tx="sps.20100602033555.5426">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100602033555.5427">@language html
 @root 'root-test'
 
@@ -23571,7 +23581,7 @@ abc
 </t>
 <t tx="sps.20100602033555.5432">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100602033555.5433">@language html
 @root 'root-test'
 
@@ -23618,7 +23628,7 @@ uvw
 <t tx="sps.20100607223520.5465"># directory foo must exist, or scanAtPathDirectives ignores it.
 import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p.firstChild())</t>
+leoTest.runRootFileTangleTest(c,p.firstChild())</t>
 <t tx="sps.20100607223520.5466">@path foo</t>
 <t tx="sps.20100607223520.5467">@root 'root-test'
 
@@ -23637,7 +23647,7 @@ abc
 <t tx="sps.20100607223520.5472"># directory foo must exist or scanAtPathDirectives will ignore it
 import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100607223520.5473">@path foo
 @root 'root-test'
 
@@ -23655,7 +23665,7 @@ abc
 </t>
 <t tx="sps.20100607223520.5478">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100607223520.5479">@path /tmp
 @root 'root-test'
 
@@ -23804,7 +23814,7 @@ assert c.tangleCommands.use_header_flag == None
 </t>
 <t tx="sps.20100612133937.5517">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)
+leoTest.runRootFileTangleTest(c,p)
 </t>
 <t tx="sps.20100612133937.5518"># multiple @root directives
 @root 'root-test-one'
@@ -23830,7 +23840,7 @@ content common to both root files
 </t>
 <t tx="sps.20100613140923.5498">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100613140923.5499">A comment to ignore
 
 @root-doc 'root-test'
@@ -24405,7 +24415,7 @@ assert sorted(c.tangleCommands.tangle_output) == ["'root-test-one'", "'root-test
 </t>
 <t tx="sps.20100614233514.5554">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100614233514.5555">A comment to ignore
 
 @root-doc 'root-test'
@@ -24432,7 +24442,7 @@ xyz
 </t>
 <t tx="sps.20100614233514.5564">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100614233514.5565">A comment to ignore
 
 @root-doc 'root-test'
@@ -24460,7 +24470,7 @@ xyz
 </t>
 <t tx="sps.20100614233514.5586">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100614233514.5587">A comment to ignore
 
 @root-doc 'root-test'
@@ -24488,7 +24498,7 @@ abc
 <t tx="sps.20100615182644.8464"></t>
 <t tx="sps.20100616112524.20888">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100616112524.20889">@root 'root-test'
 
 # A less simple test of @root.
@@ -24516,7 +24526,7 @@ leoTest.runRootFileTest(c,p)</t>
 </t>
 <t tx="sps.20100616173108.5598">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100616173108.5599">@root-doc 'root-test'
 
 # A less simple test of @root-doc.
@@ -24544,7 +24554,7 @@ leoTest.runRootFileTest(c,p)</t>
 </t>
 <t tx="sps.20100616173108.5611">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTest(c,p)</t>
+leoTest.runRootFileTangleTest(c,p)</t>
 <t tx="sps.20100616173108.5612">@root-code 'root-test'
 
 # A less simple test of @root-code.
@@ -24569,6 +24579,23 @@ leoTest.runRootFileTest(c,p)</t>
     Contents of secref two.
     # -- end -- &lt;&lt; secref two &gt;&gt;
 # -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100618084840.5607"></t>
+<t tx="sps.20100618084840.5608"></t>
+<t tx="sps.20100618084840.5613">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileUntangleTest(c,p)</t>
+<t tx="sps.20100618084840.5614">@root foo
+
+# A trivial test of @root.
+</t>
+<t tx="sps.20100618084840.5617">@root foo
+
+# A trivial test of @root.
+# A line added
+</t>
+<t tx="sps.20100618105958.5622"># A trivial test of @root.
+# A line added
 </t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
