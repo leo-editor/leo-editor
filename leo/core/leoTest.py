@@ -958,8 +958,8 @@ def runAtFileTest(c,p):
         #@nl
         raise
 #@-node:ekr.20051104075904.44:at-File test code (leoTest.py)
-#@+node:sps.20100531175334.10307:root-File test code (leoTest.py)
-def runRootFileTest(c,p):
+#@+node:sps.20100531175334.10307:root-File tangle test code (leoTest.py)
+def runRootFileTangleTest(c,p):
 
     """Code for testing output of @root.  The first child is the top node of the
     outline to be processed; the remaining siblings have headlines corresponding to
@@ -1024,12 +1024,70 @@ def runRootFileTest(c,p):
     try:
         if not (c.tangleCommands.print_mode in ("quiet","silent")):
             t = testUtils(c)
+            # untangle relies on c.tangleCommands.tangle_output filled by the above
             c.tangleCommands.untangle(event=None, p=rootTestAfterP)
             assert(t.compareOutlines(rootTestBeforeP, rootTestAfterP))
             # report produced by compareOutlines() if appropriate
     finally:
         rootTestAfterP.doDelete()
-#@-node:sps.20100531175334.10307:root-File test code (leoTest.py)
+#@-node:sps.20100531175334.10307:root-File tangle test code (leoTest.py)
+#@+node:sps.20100618004337.16260:root-File untangle test code (leoTest.py)
+def runRootFileUntangleTest(c,p):
+
+    """Code for testing untangle into @root.  The first child is the top node of the
+    outline to be processed; it gets copied to a sibling that gets modified by the
+    untangle.  The (pre-first child copy) second child represents the resulting tree
+    which should result from the untangle.  The remaining siblings have headlines
+    corresponding to the file names that should be untangled, with the bodies
+    containing the intended contents of the corresponding file.  As a final check, the
+    result of the untangle gets tangled, and the result gets compared to the (pseudo)
+    files."""
+
+    at = c.atFileCommands
+    next = p.nodeAfterTree()
+    rootTestBeforeP = p.firstChild()
+    # rootTestBeforeP -> before tree
+    # after tree
+    # unit test "files"
+    rootResultP = rootTestBeforeP.copy()
+    rootResultP.moveToNext()
+    # rootTestBeforeP -> before tree
+    # rootReultP -> after tree
+    # unit test "files"
+    rootTestToChangeP = rootResultP.insertAfter()
+    # rootTestBeforeP -> before tree
+    # rootResultP -> after tree
+    # rootTestToChangeP -> empty node
+    # unit test "files"
+    rootResultP.copyTreeFromSelfTo(rootTestToChangeP)
+    rootResultP.moveToNext()
+    # rootTestBeforeP -> before tree
+    # rootResultP -> after tree
+    # rootTestToChangeP -> copy of before tree
+    # unit test "files"
+    untangleInputP = rootTestToChangeP.copy()
+    inputSet={}
+
+    while untangleInputP.hasNext():
+        untangleInputP.moveToNext()
+        inputSet[untangleInputP.h]=untangleInputP.b
+#        g.es("test file name: %s\n test file contents: %s" % (untangleInputP.h,untangleInputP.b))
+
+    c.tangleCommands.untangle(event=None,p=rootTestToChangeP)
+
+    try:
+        t = testUtils(c)
+        assert t.compareOutlines(rootTestToChangeP, rootResultP), "Expected outline not created"
+        c.tangleCommands.tangle(event=None,p=rootTestToChangeP)
+        inputSetList = sorted(inputSet)
+        resultList = sorted(c.tangleCommands.tangle_output)
+        assert inputSetList == resultList, "Expected tangled file list %s, got %s" % (repr(resultList),repr(inputSetList))
+        for t in inputSet:
+            result = g.toUnicode(c.tangleCommands.tangle_output[t])
+            assert inputSet[t] == result, "Expected %s with content %s, got %s" % (t,inputSet[t],result)
+    finally:
+        rootTestToChangeP.doDelete()
+#@-node:sps.20100618004337.16260:root-File untangle test code (leoTest.py)
 #@+node:ekr.20051104075904.99:createUnitTestsFromDoctests
 def createUnitTestsFromDoctests (modules,verbose=True):
 

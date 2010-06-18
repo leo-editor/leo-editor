@@ -737,17 +737,16 @@ class baseTangleCommands:
         if p == None:
             p = c.p
         self.initUntangleCommand()
-
+        # must be done at this point, since initUntangleCommand blows away tangle_output
         #@    << read fake files for unit testing >>
-        #@+node:sps.20100608083657.20940:<< read fake files for unit testing >>
+        #@+node:sps.20100618004337.16262:<< read fake files for unit testing >>
         if g.unitTesting:
             p2 = p.copy()
             while (p2.hasNext()):
                 p2.moveToNext()
                 self.tangle_output[p2.h] = p2.b
-        #@-node:sps.20100608083657.20940:<< read fake files for unit testing >>
+        #@-node:sps.20100618004337.16262:<< read fake files for unit testing >>
         #@nl
-
         self.untangleTree(p,report_errors=True)
         if not g.unitTesting:
             g.es("untangle complete")
@@ -863,8 +862,8 @@ class baseTangleCommands:
                 # don't confuse /u and /usr as having common prefixes
                 if (relative_path[:len(os.sep)] == os.sep):
                     file_name_path = relative_path[len(os.sep):]
-            # find the node with the right title, and load self.tangle_output and file_buf
 
+            # find the node with the right title, and load self.tangle_output and file_buf
             file_buf = self.tangle_output.get(file_name_path)
             #@-node:sps.20100608083657.20939:<< fake the file access >>
             #@nl
