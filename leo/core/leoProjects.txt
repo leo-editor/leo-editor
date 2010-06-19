@@ -3639,6 +3639,228 @@ def printSettings (self,c):
     g.es('',''.join(result),tabName='Settings')
 #@-node:ekr.20070418073400:g.app.config.printSettings
 #@-node:ekr.20100616160343.5929:Added g.app.config.config_iter
+#@+node:ekr.20100520070413.5879:Don't create @chapter node for new file
+@nocolor-node
+
+I think @chapters node shouldn't be in a new leo file, but it should
+be created when the first chapter is created.
+
+Ditto for the chapter selector toolbar button.
+#@+node:ekr.20031218072017.1623:c.new
+def new (self,event=None,gui=None):
+
+    '''Create a new Leo window.'''
+
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=None,relativeFileName=None,gui=gui)
+
+    g.doHook("new",old_c=self,c=c,new_c=c)
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+        # Resize the _new_ frame.
+    c.frame.createFirstTreeNode()
+    g.createMenu(c)
+    g.finishOpen(c)
+    g.app.writeWaitingLog(c,forceLog=True) # Force a new signon message.
+    c.redraw()
+    return c # For unit test.
+#@-node:ekr.20031218072017.1623:c.new
+#@+node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
+def newLeoCommanderAndFrame(self,
+    fileName=None,
+    relativeFileName=None,
+    gui=None,initEditCommanders=True,updateRecentFiles=True):
+
+    """Create a commander and its view frame for the Leo main window."""
+
+    app = self
+
+    import leo.core.leoCommands as leoCommands
+
+    if not fileName: fileName = ''
+    if not relativeFileName: relativeFileName = ''
+    if not gui: gui = g.app.gui
+    << compute the window title >>
+
+    # g.trace(fileName,relativeFileName)
+
+    # Create an unfinished frame to pass to the commanders.
+    frame = gui.createLeoFrame(title)
+
+    # Create the commander and its subcommanders.
+    # This takes about 3/4 sec when called by the leoBridge module.
+    c = leoCommands.Commands(frame,fileName,
+        relativeFileName=relativeFileName)
+
+    if not app.initing:
+        g.doHook("before-create-leo-frame",c=c)
+            # Was 'onCreate': too confusing.
+
+    frame.finishCreate(c)
+    c.finishCreate(initEditCommanders)
+
+    # Finish initing the subcommanders.
+    c.undoer.clearUndoState() # Menus must exist at this point.
+
+    return c,frame
+#@+node:ekr.20031218072017.2189:<< compute the window title >>
+# Set the window title and fileName
+if fileName:
+    title = g.computeWindowTitle(fileName)
+else:
+    s = "untitled"
+    n = g.app.numberOfWindows
+    if n > 0:
+        s += str(n)
+    title = g.computeWindowTitle(s)
+    g.app.numberOfWindows = n+1
+#@-node:ekr.20031218072017.2189:<< compute the window title >>
+#@-node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
+#@+node:ekr.20050920093543:c.finishCreate & helper
+def finishCreate (self,initEditCommanders=True):  # New in 4.4.
+
+    '''Finish creating the commander after frame.finishCreate.
+
+    Important: this is the last step in the startup process.'''
+
+    c = self ; p = c.p
+    c.miniBufferWidget = c.frame.miniBufferWidget
+    # print('Commands.finishCreate',c.fileName())
+
+    # Create a keyHandler even if there is no miniBuffer.
+    c.keyHandler = c.k = k = g.app.gui.createKeyHandlerClass(c,
+        useGlobalKillbuffer=True,
+        useGlobalRegisters=True)
+
+    if initEditCommanders:
+        # A 'real' .leo file.
+        import leo.core.leoEditCommands as leoEditCommands
+        c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
+        self.rstCommands.finishCreate()
+
+        # copy global commands to this controller    
+
+        for name,f in g.app.global_commands_dict.items():
+            k.registerCommand(name,shortcut = None, func = f, pane='all',verbose=False)        
+
+        k.finishCreate()
+    else:
+        # A leoSettings.leo file.
+        c.commandsDict = {}
+
+    c.frame.log.finishCreate()
+    c.bodyWantsFocusNow()
+#@+node:ekr.20051007143620:printCommandsDict
+def printCommandsDict (self):
+
+    c = self
+
+    print('Commands...')
+    for key in sorted(c.commandsDict):
+        command = c.commandsDict.get(key)
+        print('%30s = %s' % (
+            key,g.choose(command,command.__name__,'<None>')))
+    print('')
+#@-node:ekr.20051007143620:printCommandsDict
+#@-node:ekr.20050920093543:c.finishCreate & helper
+#@+node:ekr.20090520055433.5952:g.finishOpen
+def finishOpen(c):
+
+    k = c.k
+    # New in Leo 4.6: provide an official way for very late initialization.
+    c.frame.tree.initAfterLoad()
+    c.initAfterLoad()
+    c.redraw()
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.chapterController:
+        c.chapterController.finishCreate()
+    if k:
+        k.setDefaultInputState()
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    if k:
+        k.showStateAndMode()
+    c.frame.initCompleteHint()
+    return True
+#@-node:ekr.20090520055433.5952:g.finishOpen
+#@+node:ekr.20100618065127.5924:Changed
+#@+node:ekr.20070325104904:cc.finishCreate
+def finishCreate (self):
+
+    '''Find or make the @chapters and @chapter trash nodes.'''
+
+    # This must be called late in the init process:
+    # at present, called by g.openWithFileName and c.new.
+
+    # g.trace('(chapterController)',g.callers(4))
+
+    cc = self ; c = cc.c
+
+    # Create the @chapters node if needed, and set cc.chaptersNode.
+    if 0: # Now done in cc.createChapterNode.
+        if not cc.chaptersNode and not cc.findChaptersNode():
+            cc.createChaptersNode()
+
+    if cc.findChaptersNode():
+        if hasattr(c.frame.iconBar,'createChaptersIcon'):
+            c.frame.iconBar.createChaptersIcon()
+
+    # Create the main chapter
+    cc.chaptersDict['main'] = chapter(c=c,chapterController=cc,name='main',root=c.rootPosition())
+
+    tag = '@chapter'
+    for p in c.all_unique_positions():
+        h = p.h
+        if h.startswith(tag) and not h.startswith('@chapters'):
+            tabName = h[len(tag):].strip()
+            if tabName and tabName not in ('main',):
+                if cc.chaptersDict.get(tabName):
+                    self.error('duplicate chapter name: %s' % tabName)
+                else:
+                    cc.chaptersDict[tabName] = chapter(c=c,chapterController=cc,name=tabName,root=p)
+
+    # Always select the main chapter.
+    # It can be alarming to open a small chapter in a large .leo file.
+    cc.selectChapterByName('main')
+#@-node:ekr.20070325104904:cc.finishCreate
+#@+node:ekr.20070325063303.2:cc.createChapterNode
+def createChapterNode (self,chapterName,p=None):
+
+    '''Create an @chapter node for the named chapter.
+    Use p for the first child, or create a first child if p is None.'''
+
+    cc = self ; c = cc.c
+    current = c.p or c.rootPosition()
+
+    # 2010/06/17: Create an @chapters node if necessary.
+    # This is no longer done automatically when creating a new window.
+    if not cc.chaptersNode and not cc.findChaptersNode():
+        cc.createChaptersNode()
+        if hasattr(c.frame.iconBar,'createChaptersIcon'):
+            c.frame.iconBar.createChaptersIcon()
+
+    # Create the node with a postion method
+    # so we don't involve the undo logic.
+    root = current.insertAsLastChild()
+    root.initHeadString('@chapter ' + chapterName)
+    root.moveToFirstChildOf(cc.chaptersNode)
+    if p:
+        # Clone p and move it to the first child of the root.
+        clone = p.clone()
+        clone.moveToFirstChildOf(root)
+    else:
+        cc.createChild(root,'%s node 1' % chapterName)
+    c.setChanged(True)
+
+    return root
+#@-node:ekr.20070325063303.2:cc.createChapterNode
+#@-node:ekr.20100618065127.5924:Changed
+#@-node:ekr.20100520070413.5879:Don't create @chapter node for new file
 #@-node:ekr.20100319090849.5759:Features
 #@-node:ekr.20100303074003.5639:Leo 4.8 devel projects
 #@-all

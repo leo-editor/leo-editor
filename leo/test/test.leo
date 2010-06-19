@@ -10,19 +10,6 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070416075121"><vh>Startup</vh>
-<v t="ekr.20070529172620"><vh>@chapters</vh>
-<v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
-<v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
-</v>
-<v t="ekr.20070529173219"><vh>@chapter abc</vh>
-<v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
-<v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
-</v>
-<v t="ekr.20070603190944"><vh>@chapter xyz</vh>
-<v t="ekr.20070603190944.1"><vh>xyz node 1</vh></v>
-<v t="ekr.20071206070207"></v>
-</v>
-</v>
 <v t="ekr.20070224123943"><vh>@settings</vh>
 <v t="ekr.20100118190256.2014"><vh> Chapters</vh>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
@@ -978,7 +965,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="13"></t>
+<t tx="ekr.20070416075121" str_leo_pos="0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -1172,9 +1159,6 @@ if __name__ == '__main__':
     gvim,
     and Python itself.
 """</t>
-<t tx="ekr.20070529172620"></t>
-<t tx="ekr.20070529173219"></t>
-<t tx="ekr.20070529173219.1"></t>
 <t tx="ekr.20070530072113">c.chapterController.hideChapters()</t>
 <t tx="ekr.20070530072113.1">c.chapterController.showChapters()</t>
 <t tx="ekr.20070531102813"></t>
@@ -1188,8 +1172,6 @@ cc.selectChapterByName('main')</t>
 cc.createChapterByName('xyz')</t>
 <t tx="ekr.20070603190713.1">cc = c.chapterController
 cc.selectChapterByName('xyz')</t>
-<t tx="ekr.20070603190944"></t>
-<t tx="ekr.20070603190944.1"></t>
 <t tx="ekr.20070604095313"></t>
 <t tx="ekr.20070604100125"></t>
 <t tx="ekr.20070609085533"></t>
@@ -1656,7 +1638,6 @@ for theDir in dirs:
         if reallyCreate:
             child = p.insertAsLastChild()
             child.initHeadString(h)</t>
-<t tx="ekr.20071206070207"></t>
 <t tx="ekr.20080105115712"># This hangs Leo while pylint is running.
 import pylint.lint as lint
 import sys
@@ -2716,8 +2697,6 @@ def bookmark(event):
     p = c.currentPosition()
     bookmarks.append(p.gnx)
     g.es('bookmarked') </t>
-<t tx="ekr.20090605083941.1804"></t>
-<t tx="ekr.20090605083941.1805"></t>
 <t tx="ekr.20090617083033.1813">La Peña תּ
 </t>
 <t tx="ekr.20090617083033.1814"></t>
