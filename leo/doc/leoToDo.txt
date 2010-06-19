@@ -5,19 +5,7 @@
 4.8 vim, cleanups, your mission...
 #@nonl
 #@+node:ekr.20100223123910.5836:Immediately
-#@+node:ekr.20100522090453.5911:Post mortem of new lint
-#@-node:ekr.20100522090453.5911:Post mortem of new lint
-#@+node:ekr.20100521090440.5891:Urgent new features 4
-#@+node:ekr.20100520070413.5878:Drag and drop for qt gui
-#@-node:ekr.20100520070413.5878:Drag and drop for qt gui
-#@+node:ekr.20100520070413.5879:Don't create @chapter node for new file
-@nocolor-node
-
-I think @chapters node shouldn't be in a new leo file, but it should
-be created when the first chapter is created.
-
-Ditto for the chapter selector toolbar button.
-#@-node:ekr.20100520070413.5879:Don't create @chapter node for new file
+#@+node:ekr.20100521090440.5891:Urgent new features 3
 #@+node:ekr.20100204052559.5791:Mac TOC sidebar collapsible
 @nocolor-node
 
@@ -1778,7 +1766,9 @@ def readRef (self,s,i):
 #@-node:ekr.20041005105605.111:readRef
 #@-node:ekr.20100519091824.5874:Changed...
 #@-node:ekr.20100517130356.5809:New sentinels
-#@-node:ekr.20100521090440.5891:Urgent new features 4
+#@+node:ekr.20100520070413.5878:Drag and drop for qt gui
+#@-node:ekr.20100520070413.5878:Drag and drop for qt gui
+#@-node:ekr.20100521090440.5891:Urgent new features 3
 #@+node:ekr.20100521090440.5892:Bugs 5+
 #@+node:ekr.20100521090440.5888:Fix tangle/untangle problems
 #@+node:ekr.20100521130114.5903:Allow @root only in headlines

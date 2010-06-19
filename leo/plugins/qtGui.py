@@ -3682,7 +3682,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         f = self ; f.c = c
 
-        # g.trace('***qtFrame')
+        # g.trace('(qtFrame)')
 
         # self.bigTree         = c.config.getBool('big_outline_pane')
         self.trace_status_line = c.config.getBool('trace_status_line')
@@ -3698,8 +3698,11 @@ class leoQtFrame (leoFrame.leoFrame):
 
         f.createIconBar() # A base class method.
         f.createSplitterComponents()
-        if f.use_chapters and f.use_chapter_tabs:
-            c.chapterController.tt = leoQtTreeTab(c,f.iconBar)
+        cc = c.chapterController
+        # g.trace(cc,cc.findChaptersNode())
+        if 0: # 2010/06/17: Now done in cc.createChaptersNode.
+            if f.use_chapters and f.use_chapter_tabs: # and cc and cc.findChaptersNode():
+                cc.tt = leoQtTreeTab(c,f.iconBar)
         f.createStatusLine() # A base class method.
         f.createFirstTreeNode() # Call the base-class method.
         f.menu = leoQtMenu(f)
@@ -3893,6 +3896,8 @@ class leoQtFrame (leoFrame.leoFrame):
         #@+node:ekr.20081121105001.267: ctor
         def __init__ (self,c,parentFrame):
 
+            # g.trace('(qtIconBarClass)')
+
             self.c = c
             self.chapterController = None
             self.parentFrame = parentFrame
@@ -3904,6 +3909,7 @@ class leoQtFrame (leoFrame.leoFrame):
             self.buttonColor = c.config.getString('qt-button-color')
 
             # g.app.iconWidgetCount = 0
+        #@nonl
         #@-node:ekr.20081121105001.267: ctor
         #@+node:ekr.20081121105001.268: do-nothings
         def addRow(self,height=None):   pass
@@ -4012,6 +4018,18 @@ class leoQtFrame (leoFrame.leoFrame):
 
             g.app.iconWidgetCount = 0
         #@-node:ekr.20081121105001.272:clear
+        #@+node:ekr.20100618162506.3716:createChaptersIcon
+        def createChaptersIcon(self):
+
+            # g.trace('(qtIconBarClass)')
+
+            c = self.c
+            cc = c.chapterController
+            f = c.frame
+
+            if f.use_chapters and f.use_chapter_tabs: # and cc and cc.findChaptersNode():
+                cc.tt = leoQtTreeTab(c,f.iconBar)
+        #@-node:ekr.20100618162506.3716:createChaptersIcon
         #@+node:ekr.20081121105001.273:deleteButton
         def deleteButton (self,w):
             """ w is button """
@@ -5700,6 +5718,23 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         self.headlineWrapper = leoQtHeadlineWidget # This is a class.
         self.treeWidget = w = frame.top.ui.treeWidget # An internal ivar.
 
+        # g.trace('leoQtTree',w)
+
+        if 0: # Drag and drop
+            w.setDragEnabled(True)
+            w.viewport().setAcceptDrops(True)
+            w.showDropIndicator = True
+            w.setAcceptDrops(True)
+            w.setDragDropMode(w.InternalMove)
+
+            if 1: # Does not work
+                def dropMimeData(self,data,action,row,col,parent):
+                    g.trace()
+                # w.dropMimeData = dropMimeData
+
+                def mimeData(self,indexes):
+                   g.trace()
+
         # Early inits...
         try: w.headerItem().setHidden(True)
         except Exception: pass
@@ -6163,6 +6198,7 @@ class leoQtTreeTab:
     #@+node:ekr.20100111202913.3767: ctor (leoTreeTab)
     def __init__ (self,c,iconBar):
 
+        # g.trace('(leoTreeTab)',g.callers(4))
 
         self.c = c
         self.cc = c.chapterController

@@ -43,11 +43,18 @@ class chapterController:
         # This must be called late in the init process:
         # at present, called by g.openWithFileName and c.new.
 
+        # g.trace('(chapterController)',g.callers(4))
+
         cc = self ; c = cc.c
 
         # Create the @chapters node if needed, and set cc.chaptersNode.
-        if not cc.chaptersNode and not cc.findChaptersNode():
-            cc.createChaptersNode()
+        if 0: # Now done in cc.createChapterNode.
+            if not cc.chaptersNode and not cc.findChaptersNode():
+                cc.createChaptersNode()
+
+        if cc.findChaptersNode():
+            if hasattr(c.frame.iconBar,'createChaptersIcon'):
+                c.frame.iconBar.createChaptersIcon()
 
         # Create the main chapter
         cc.chaptersDict['main'] = chapter(c=c,chapterController=cc,name='main',root=c.rootPosition())
@@ -509,6 +516,13 @@ class chapterController:
 
         cc = self ; c = cc.c
         current = c.p or c.rootPosition()
+
+        # 2010/06/17: Create an @chapters node if necessary.
+        # This is no longer done automatically when creating a new window.
+        if not cc.chaptersNode and not cc.findChaptersNode():
+            cc.createChaptersNode()
+            if hasattr(c.frame.iconBar,'createChaptersIcon'):
+                c.frame.iconBar.createChaptersIcon()
 
         # Create the node with a postion method
         # so we don't involve the undo logic.
