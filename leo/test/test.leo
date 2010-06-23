@@ -506,17 +506,6 @@
 <v t="ekr.20100507094542.2119"><vh>@root-code at-root-code-test.py</vh>
 <v t="ekr.20100507094542.2120"><vh>spam</vh></v>
 </v>
-<v t="ekr.20100519083913.2157"><vh>@@thin sentinels_test.py</vh>
-<v t="node:ekr.20100519083913.2158"><vh>&lt;&lt; a &gt;&gt;</vh>
-<v t="ekr.20100519083913.2159"><vh>a-1</vh></v>
-<v t="ekr.20100519083913.2160"><vh>a-2</vh></v>
-</v>
-<v t="ekr.20100519083913.2161"><vh>1-1</vh>
-<v t="ekr.20100519083913.2162"><vh>2-1</vh></v>
-<v t="ekr.20100519083913.2163"><vh>2-2</vh></v>
-</v>
-<v t="ekr.20100519083913.2164"><vh>1-2</vh></v>
-</v>
 <v t="ekr.20100520125300.2146"><vh>@button moved-script-button-test</vh></v>
 <v t="ekr.20100521121737.2148"><vh>start leo bridge</vh></v>
 <v t="ekr.20100521123308.2150"><vh>Run system code</vh></v>
@@ -545,6 +534,18 @@
 </v>
 <v t="ekr.20100615095815.2189"><vh>activate/deactivate events</vh></v>
 <v t="ekr.20100616085524.2191"><vh>config iter</vh></v>
+<v t="ekr.20100519083913.2157"><vh>@@thin sentinels_test.py</vh>
+<v t="node:ekr.20100519083913.2158"><vh>&lt;&lt; a &gt;&gt;</vh>
+<v t="ekr.20100519083913.2159"><vh>a-1</vh></v>
+<v t="ekr.20100519083913.2160"><vh>a-2</vh></v>
+</v>
+<v t="ekr.20100519083913.2161"><vh>1-1</vh>
+<v t="ekr.20100519083913.2162"><vh>2-1</vh></v>
+<v t="ekr.20100519083913.2163"><vh>2-2</vh></v>
+</v>
+<v t="ekr.20100519083913.2164"><vh>1-2</vh></v>
+</v>
+<v t="ekr.20100623173235.2187"><vh>@thin sentinels_test.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -965,7 +966,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="14"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5812,10 +5813,15 @@ key = m.digest()
 key = base64.urlsafe_b64encode(str(key))
 print(key)
 </t>
-<t tx="ekr.20100519083913.2157">@ This is a doc part
+<t tx="ekr.20100519083913.2157">@ This is a doc part.
+Line 2.
 @c
-&lt;&lt; a &gt;&gt;
-@others
+if 1:
+    &lt;&lt; a &gt;&gt;
+# after ref
+if 0:
+    @others
+# after others.
 </t>
 <t tx="ekr.20100519083913.2159">a-1
 </t>
@@ -6401,8 +6407,8 @@ leoPlugins.registerHandler("activate", on_activate)
 print('window events activated')</t>
 <t tx="ekr.20100616085524.2191">for name,val,c,letter in g.app.config.config_iter(c):
     print('%45s %s %s' % (name,letter,val))</t>
-<t tx="node:ekr.20100519083913.2158">@others
-
+<t tx="node:ekr.20100519083913.2158"># a before
+@others
 # a after</t>
 </tnodes>
 </leo_file>
