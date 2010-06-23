@@ -261,6 +261,7 @@ class todoController:
         for m,i in iconlist:
             icon = self.menuicon(i)
             a = m.addAction(icon, self.priorities[i]["long"])
+            a.setIconVisibleInMenu(True)
             def func(pri=i):
                 self.setPri(pri)
             a.connect(a, QtCore.SIGNAL("triggered()"), func)
@@ -269,6 +270,7 @@ class todoController:
         for i in range(11):
             icon = self.menuicon(10*i, progress=True)
             a = submenu.addAction(icon, "%d%%" % (i*10))
+            a.setIconVisibleInMenu(True)
             def func(prog=i):
                 self.set_progress(val=10*prog)
             a.connect(a, QtCore.SIGNAL("triggered()"), func)
@@ -276,6 +278,7 @@ class todoController:
         prog = self.getat(p.v, 'progress')
         if isinstance(prog,int):
             a = taskmenu.addAction("(%d%% complete)"%prog)
+            a.setIconVisibleInMenu(True)
             a.enabled = False
 
         time_ = self.getat(p.v, 'time_req')
