@@ -545,7 +545,6 @@
 </v>
 <v t="ekr.20100519083913.2164"><vh>1-2</vh></v>
 </v>
-<v t="ekr.20100623173235.2187"><vh>@thin sentinels_test.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -966,7 +965,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="14"></t>
+<t tx="ekr.20070416075121" str_leo_pos="13"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui

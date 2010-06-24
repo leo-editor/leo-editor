@@ -3556,7 +3556,11 @@ class atFile:
             if at.inAtOthers(child):
                 at.putAtOthersChild(child)
 
-        at.putSentinel("@-others")
+        if new_write:
+            # This is a more consistent convention.
+            at.putSentinel("@" + lws + "@-others")
+        else:
+            at.putSentinel("@-others")
         at.indent -= delta
     #@-node:ekr.20041005105605.173:putAtOthersLine
     #@-node:ekr.20041005105605.170:@others
@@ -3648,7 +3652,10 @@ class atFile:
         at.indent += delta
 
         lws = at.leadingWs or ''
-        at.putSentinel("@+" + lws + name)
+        if new_write:
+            at.putSentinel("@+" + lws + name)
+        else:
+            at.putSentinel("@" + lws + name)
 
         ### if new_write:
             ### # This sentinel is required to handle the lws properly.
@@ -3933,15 +3940,18 @@ class atFile:
         #@-node:ekr.20041005105605.189:<< remove comment delims from h if necessary >>
         #@nl
 
-        if new_write:
-            level = 1 + p.level() - self.root.level()
-            stars = '*' * level
+        if at.thinFile:
             gnx = g.app.nodeIndices.toString(p.v.fileIndex)
-            pad = max(1,100-len(stars)-len(h)) * ' '
-            return '%s %s%s::%s' % (stars,h,pad,gnx)
-        elif at.thinFile:
-            gnx = g.app.nodeIndices.toString(p.v.fileIndex)
-            return "%s:%s" % (gnx,h)
+            if new_write:
+                level = 1 + p.level() - self.root.level()
+                stars = '*' * level
+                if 1: # Put the gnx in the traditional place.
+                    return "%s: %s %s" % (gnx,stars,h)
+                else: # Hide the gnx to the right.
+                    pad = max(1,100-len(stars)-len(h)) * ' '
+                    return '%s %s%s::%s' % (stars,h,pad,gnx)
+            else:
+                return "%s:%s" % (gnx,h)
         else:
             return h
     #@-node:ekr.20041005105605.188:nodeSentinelText 4.x
@@ -5041,6 +5051,8 @@ class atFile:
         return g.utils_chmod(fileName,mode)
     #@-node:ekr.20050104131820:chmod
     #@+node:ekr.20050104131929.1:atFile.rename
+    #@+
+    #@nonl
     #@<< about os.rename >>
     #@+node:ekr.20050104131929.2:<< about os.rename >>
     #@+at 
@@ -5067,6 +5079,7 @@ class atFile:
     #@-at
     #@-node:ekr.20050104131929.2:<< about os.rename >>
     #@nl
+
 
     def rename (self,src,dst,mode=None,verbose=True):
 
