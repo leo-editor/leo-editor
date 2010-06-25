@@ -708,6 +708,8 @@ def deleteAllTempBodyStrings(self):
     for v in self.c.all_unique_nodes():
         if hasattr(v,"tempBodyString"):
             delattr(v,"tempBodyString")
+        if hasattr(v,"tempBodyList"):
+            delattr(v,"tempBodyList")
 #@-node:ekr.20041005105605.25:deleteAllTempBodyStrings
 #@+node:ekr.20100122130101.6174:deleteTnodeList
 def deleteTnodeList (self,p): # atFile method.
@@ -2998,6 +3000,8 @@ def deleteAllTempBodyStrings(self):
     for v in self.c.all_unique_nodes():
         if hasattr(v,"tempBodyString"):
             delattr(v,"tempBodyString")
+        if hasattr(v,"tempBodyList"):
+            delattr(v,"tempBodyList")
 #@-node:ekr.20041005105605.25:deleteAllTempBodyStrings
 #@+node:ekr.20100122130101.6174:deleteTnodeList
 def deleteTnodeList (self,p): # atFile method.
