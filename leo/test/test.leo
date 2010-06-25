@@ -6411,8 +6411,11 @@ print('window events activated')</t>
 child = c.insertChild()
 assert child
 child.h = '@thin sentinels_test.py'
+c.redraw()
 c.atFileCommands.read(child,force=True)
-child.doDelete(newNode=p)
+if 0:
+    child.doDelete(newNode=p)
+c.redraw()
 
 </t>
 <t tx="node:ekr.20100519083913.2158"># a before

@@ -4585,6 +4585,74 @@ def needClosingSentinel(self,p):
         if -1 < i < j: return True
     return False
 #@-node:ekr.20100518100915.5901:needClosingSentinel (not used)
+#@+node:ekr.20100624082003.5943:Unused from readNormalLine
+# Now in appendToDocPart
+#@+node:ekr.20041005105605.78:<< Skip the leading stuff >>
+if len(at.endSentinelComment) == 0:
+    # Skip the single comment delim and a blank.
+    i = g.skip_ws(s,0)
+    if g.match(s,i,at.startSentinelComment):
+        i += len(at.startSentinelComment)
+        if g.match(s,i," "): i += 1
+else:
+    i = at.skipIndent(s,0,at.indent)
+#@-node:ekr.20041005105605.78:<< Skip the leading stuff >>
+#@+node:ekr.20041005105605.79:<< Append s to docOut >>
+line = s[i:-1] # remove newline for rstrip.
+
+if line == line.rstrip():
+    # no trailing whitespace: the newline is real.
+    at.docOut.append(line + '\n')
+else:
+    # trailing whitespace: the newline is fake.
+    at.docOut.append(line)
+#@-node:ekr.20041005105605.79:<< Append s to docOut >>
+#@-node:ekr.20100624082003.5943:Unused from readNormalLine
+#@+node:ekr.20100625085138.5954:Not used from readStartNode
+#@+node:ekr.20041005105605.86:<< set gnx and bump i >>
+j = s.find(':',i)
+if j == -1:
+    g.trace("no closing colon",g.get_line(s,i))
+    at.readError("Expecting gnx in @+node sentinel")
+    return
+
+gnx = s[i:j]
+
+if newNode:
+    if not g.match(s,j,': '):
+        at.readError('Expecting space after gnx')
+        return
+    i = j + 2
+    level = 0
+    while i < len(s) and s[i] == '*':
+        i += 1
+        level += 1
+    if level == 0:
+        at.readError('No level stars')
+        return
+    if not g.match(s,i,' '):
+        at.readError('No space after level stars')
+        return
+    i += 1
+else:
+    i = j + 1 # Skip the i
+#@-node:ekr.20041005105605.86:<< set gnx and bump i >>
+#@+node:ekr.20041005105605.87:<< Set headline, undoing the CWEB hack >>
+# Set headline to the rest of the line.
+# Don't strip leading whitespace."
+
+if len(at.endSentinelComment) == 0:
+    headline = s[i:-1].rstrip()
+else:
+    k = s.rfind(at.endSentinelComment,i)
+    headline = s[i:k].rstrip() # works if k == -1
+
+# Undo the CWEB hack: undouble @ signs if\
+# the opening comment delim ends in '@'.
+if at.startSentinelComment[-1:] == '@':
+    headline = headline.replace('@@','@')
+#@-node:ekr.20041005105605.87:<< Set headline, undoing the CWEB hack >>
+#@-node:ekr.20100625085138.5954:Not used from readStartNode
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl
