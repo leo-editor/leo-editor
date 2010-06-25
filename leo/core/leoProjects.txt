@@ -622,7 +622,7 @@ def isFileLike (self,s):
     s = g.toUnicode(s)
     i = s.find(tag)
     if i == -1:
-        if trace: g.trace('found: False')
+        if trace: g.trace('found: False',repr(s))
         return True # Don't use the cashe.
     else:
         j,k = g.getLine(s,i)
@@ -639,7 +639,6 @@ def read(self,root,importFileName=None,
 ):
 
     """Read an @thin or @file tree."""
-
 
     trace = False and not g.unitTesting
     if trace: g.trace(root.h,len(root.b))
@@ -663,8 +662,8 @@ def read(self,root,importFileName=None,
     s,loaded,fileKey = c.cacher.readFile(fileName,root)
     # 2010/02/24: Never read an external file
     # with file-like sentinels from the cache.
-    isFileLike = at.isFileLike(s)
-    if isFileLike:
+    isFileLike = loaded and at.isFileLike(s)
+    if not loaded or isFileLike:
         # if trace: g.trace('file-like file',fileName)
         force = True # Disable caching.
     if loaded and not force:
@@ -750,7 +749,7 @@ def isFileLike (self,s):
     s = g.toUnicode(s)
     i = s.find(tag)
     if i == -1:
-        if trace: g.trace('found: False')
+        if trace: g.trace('found: False',repr(s))
         return True # Don't use the cashe.
     else:
         j,k = g.getLine(s,i)
@@ -2931,7 +2930,6 @@ def read(self,root,importFileName=None,
 
     """Read an @thin or @file tree."""
 
-
     trace = False and not g.unitTesting
     if trace: g.trace(root.h,len(root.b))
     at = self ; c = at.c
@@ -2954,8 +2952,8 @@ def read(self,root,importFileName=None,
     s,loaded,fileKey = c.cacher.readFile(fileName,root)
     # 2010/02/24: Never read an external file
     # with file-like sentinels from the cache.
-    isFileLike = at.isFileLike(s)
-    if isFileLike:
+    isFileLike = loaded and at.isFileLike(s)
+    if not loaded or isFileLike:
         # if trace: g.trace('file-like file',fileName)
         force = True # Disable caching.
     if loaded and not force:
@@ -3041,7 +3039,7 @@ def isFileLike (self,s):
     s = g.toUnicode(s)
     i = s.find(tag)
     if i == -1:
-        if trace: g.trace('found: False')
+        if trace: g.trace('found: False',repr(s))
         return True # Don't use the cashe.
     else:
         j,k = g.getLine(s,i)

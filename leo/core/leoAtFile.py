@@ -10,9 +10,9 @@
 #@@tabwidth -4
 #@@pagewidth 60
 
-new_read = True # Should always be True.
+new_read = False
     # Marks code that reads simplified sentinels.
-    # This will go away: Leo will always read simplified sentinels.
+    # Eventually, Leo will always read simplified sentinels.
 new_write = False
     # Enable writing simplified sentinels.
 
@@ -499,7 +499,6 @@ class atFile:
 
         """Read an @thin or @file tree."""
 
-
         trace = False and not g.unitTesting
         if trace: g.trace(root.h,len(root.b))
         at = self ; c = at.c
@@ -522,8 +521,8 @@ class atFile:
         s,loaded,fileKey = c.cacher.readFile(fileName,root)
         # 2010/02/24: Never read an external file
         # with file-like sentinels from the cache.
-        isFileLike = at.isFileLike(s)
-        if isFileLike:
+        isFileLike = loaded and at.isFileLike(s)
+        if not loaded or isFileLike:
             # if trace: g.trace('file-like file',fileName)
             force = True # Disable caching.
         if loaded and not force:
@@ -609,7 +608,7 @@ class atFile:
         s = g.toUnicode(s)
         i = s.find(tag)
         if i == -1:
-            if trace: g.trace('found: False')
+            if trace: g.trace('found: False',repr(s))
             return True # Don't use the cashe.
         else:
             j,k = g.getLine(s,i)
@@ -1071,6 +1070,8 @@ class atFile:
         except AssertionError:
             junk, message, junk = sys.exc_info()
             at.error('unexpected assertion failure in',fileName,'\n',message)
+            if g.unitTesting:
+                raise
 
         if at.errors == 0 and not at.done:
             #@        << report unexpected end of text >>
