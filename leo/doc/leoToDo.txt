@@ -876,10 +876,7 @@ def scanAllDirectives(self,p):
         delim1,delim2,delim3 = g.set_delims_from_language(self.language)
     if lang_dict and lang_dict.get('delims'):
         delim1,delim2,delim3 = lang_dict.get('delims')
-    self.single_comment_string = delim1
-    self.start_comment_string = delim2
-    self.end_comment_string = delim3
-
+    self.init_delims=(delim1,delim2,delim3)
     # g.trace(self.tangle_directory)
 
     # For unit testing.
@@ -1042,7 +1039,8 @@ def token_type(self,s,i,report_errors=True):
 
     The caller must determine whether section definiton tokens are valid.
 
-    returns (kind, end) and sets global root_name using setRootFromText()."""
+    returns (kind, end) and sets global root_name using setRootFromText().
+    end is only valid for kind in (section_ref, section_def, at_root)."""
 
     kind = plain_line ; end = -1
     << set token_type in noweb mode >>
@@ -2408,7 +2406,7 @@ def show_error_lines (self,lines,fileName):
             g.es_exception()
             g.es_print('can not open',fileName)
 #@-node:ekr.20080822065427.4:show_error_lines
-#@+node:ekr.20031218072017.1488:oblank, oblanks, os, otab, otabs (Tangle)
+#@+node:ekr.20031218072017.1488:oblank, oblanks, onl, os, otab, otabs (Tangle)
 def oblank (self):
     self.oblanks(1)
 
@@ -2434,7 +2432,7 @@ def otabs (self,n):
     if abs(n) > 0:
         s = g.toEncodedString('\t' * abs(n),self.encoding,reportErrors=True)
         self.output_file.write(s)
-#@-node:ekr.20031218072017.1488:oblank, oblanks, os, otab, otabs (Tangle)
+#@-node:ekr.20031218072017.1488:oblank, oblanks, onl, os, otab, otabs (Tangle)
 #@+node:ekr.20031218072017.3650:show
 def show (self,s):
 
@@ -6597,7 +6595,7 @@ def openTempFileInExternalEditor(self,arg,fn,openType,testing=False):
 #@-node:ekr.20031218072017.2829:c.openTempFileInExternalEditor
 #@+node:ekr.20031218072017.1151:tangle.put_all_roots
 @
-This is the top level method of the second pass. It creates a separate C file
+This is the top level method of the second pass. It creates a separate derived file
 for each @root directive in the outline. The file is actually written only if
 the new version of the file is different from the old version,or if the file did
 not exist previously. If changed_only_flag FLAG is True only changed roots are
@@ -6634,7 +6632,7 @@ def put_all_roots(self):
         << unit testing fake files>>
         self.output_file.close()
         self.output_file = None
-        << unit testing set result and return >>
+        << unit testing set result and continue >>
         if self.errors + g.app.scanErrors == 0:
             g.update_file_if_changed(c,file_name,temp_name)
         else:
@@ -6645,9 +6643,6 @@ def put_all_roots(self):
 # Stephen Schaefer, 9/2/02
 # Retrieve the full complement of state for the root node
 self.language = section.root_attributes.language
-self.single_comment_string = section.root_attributes.single_comment_string
-self.start_comment_string = section.root_attributes.start_comment_string
-self.end_comment_string = section.root_attributes.end_comment_string
 self.use_header_flag = section.root_attributes.use_header_flag
 self.print_mode = section.root_attributes.print_mode
 self.path = section.root_attributes.path
@@ -6655,8 +6650,6 @@ self.page_width = section.root_attributes.page_width
 self.tab_width = section.root_attributes.tab_width
 # Stephen P. Schaefer, 9/13/2002
 self.first_lines = section.root_attributes.first_lines
-
-# g.trace(self.single_comment_string)
 #@-node:ekr.20031218072017.1152:<<Get root specific attributes>>
 #@+node:ekr.20031218072017.1153:<<Put @first lines>>
 # Stephen P. Schaefer 9/13/2002
@@ -6664,16 +6657,19 @@ if self.first_lines:
     self.os(self.first_lines)
 #@-node:ekr.20031218072017.1153:<<Put @first lines>>
 #@+node:ekr.20031218072017.1154:<<Write a banner at the start of the output file>>
-if self.single_comment_string:
-    self.os(self.single_comment_string)
+# a root section must have at least one part
+assert len(section.parts)>0
+delims=section.parts[0].delims
+if delims[0]:
+    self.os(delims[0])
     self.os(" Created by Leo from: ")
     self.os(outline_name)
     self.onl() ; self.onl()
-elif self.start_comment_string and self.end_comment_string:
-    self.os(self.start_comment_string)
+elif delims[1] and delims[2]:
+    self.os(delims[1])
     self.os(" Created by Leo from: ")
     self.os(outline_name)
-    self.oblank() ; self.os(self.end_comment_string)
+    self.oblank() ; self.os(delims[2])
     self.onl() ; self.onl()
 #@-node:ekr.20031218072017.1154:<<Write a banner at the start of the output file>>
 #@+node:ekr.20031218072017.1155:<< Erase the temporary file >>
@@ -6694,7 +6690,7 @@ if g.unitTesting:
     self.tangle_output[file_name_path] = self.output_file.get()
 #@nonl
 #@-node:sps.20100608083657.20937:<< unit testing fake files>>
-#@+node:sps.20100608083657.20938:<< unit testing set result and return >>
+#@+node:sps.20100608083657.20938:<< unit testing set result and continue >>
 if g.unitTesting:
     assert self.errors == 0
     g.app.unitTestDict ['tangle'] = True
@@ -6704,7 +6700,7 @@ if g.unitTesting:
     else:
         g.app.unitTestDict ['tangle_output_fn'] = file_name
     continue
-#@-node:sps.20100608083657.20938:<< unit testing set result and return >>
+#@-node:sps.20100608083657.20938:<< unit testing set result and continue >>
 #@-node:ekr.20031218072017.1151:tangle.put_all_roots
 #@+node:ekr.20041005105605.15:initWriteIvars
 def initWriteIvars(self,root,targetFileName,
