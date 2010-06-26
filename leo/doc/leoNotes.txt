@@ -4653,6 +4653,29 @@ if at.startSentinelComment[-1:] == '@':
     headline = headline.replace('@@','@')
 #@-node:ekr.20041005105605.87:<< Set headline, undoing the CWEB hack >>
 #@-node:ekr.20100625085138.5954:Not used from readStartNode
+#@+node:ekr.20100518100915.5900:do_end_nodes
+def do_end_nodes (self,n):
+
+    '''Remove n node sentinels from the sentinel stack,
+    and possibly sentinels for @others ranges.'''
+
+    trace = True and not g.unitTesting
+    at = self
+    s,i = '',0 # dummy params for calls to at.readEndX below
+    assert n > 0
+    if trace: g.trace('***** n: %s' % n)
+    while at.endSentinelStack and n > 0:
+        top  = at.endSentinelStack[-1]
+        if trace: g.trace(at.sentinelName(top))
+        if top == at.endNode:
+            at.readEndNode(s,i) # Pops the stack
+            n -= 1
+        # elif top == at.endOthers:
+            # at.readEndOthers(s,i) # Pops the stack
+        else:
+            g.trace('unexpected top: %s' % at.sentinelName(top))
+            break
+#@-node:ekr.20100518100915.5900:do_end_nodes
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

@@ -633,7 +633,7 @@ def isFileLike (self,s):
             isThin,repr(line))
         return not isThin
 #@-node:ekr.20100224050618.11547:at.isFileLike
-#@+node:ekr.20041005105605.21:read (atFile) & helpers
+#@+node:ekr.20041005105605.21:at.read & helpers
 def read(self,root,importFileName=None,
     fromString=None,atShadow=False,force=False
 ):
@@ -777,7 +777,7 @@ def warnAboutUnvisitedNodes (self,root):
     if resurrected:
         g.es('you may want to delete ressurected nodes')
 #@-node:ekr.20071105164407:warnAboutUnvisitedNodes
-#@-node:ekr.20041005105605.21:read (atFile) & helpers
+#@-node:ekr.20041005105605.21:at.read & helpers
 #@-node:ekr.20100225120559.5630:Changed
 #@-node:ekr.20100224050618.11546:Auto-convert thin-like external files
 #@-node:ekr.20100223085638.5635:Leo 4.7.1 projects
@@ -2925,7 +2925,7 @@ def writeFile(self,p,fileKey):
 #@-node:ekr.20100208071151.5903:writeFile (cacher)
 #@-node:ekr.20100526084301.5913:Fixed erroneous error message in at-auto-rst read logic
 #@+node:ekr.20100614101034.5921:Fixed crasher in openFileForReading
-#@+node:ekr.20041005105605.21:read (atFile) & helpers
+#@+node:ekr.20041005105605.21:at.read & helpers
 def read(self,root,importFileName=None,
     fromString=None,atShadow=False,force=False
 ):
@@ -3069,7 +3069,7 @@ def warnAboutUnvisitedNodes (self,root):
     if resurrected:
         g.es('you may want to delete ressurected nodes')
 #@-node:ekr.20071105164407:warnAboutUnvisitedNodes
-#@-node:ekr.20041005105605.21:read (atFile) & helpers
+#@-node:ekr.20041005105605.21:at.read & helpers
 #@+node:ekr.20041005105605.19:openFileForReading (atFile) helper
 def openFileForReading(self,fromString=False):
 

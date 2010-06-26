@@ -10,7 +10,7 @@
 #@@tabwidth -4
 #@@pagewidth 60
 
-new_read = False
+new_read = True
     # Marks code that reads simplified sentinels.
     # Eventually, Leo will always read simplified sentinels.
 new_write = False
@@ -269,33 +269,30 @@ class atFile:
         self.docOut = [] # The doc part being accumulated.
         self.done = False # True when @-leo seen.
         self.endSentinelStack = []
-        self.endSentinelNodeStack = [] # Not used in the old scheme.
-            # In the simplified sentinel scheme, these two stacks
-            # have the same size. In effect, they form a single stack.
-            # The old scheme creates entries for +node sentinels.
-            # The new scheme does not.
+            # Contains entries for +node sentinels only when not readVersion5
+        self.endSentinelNodeStack = []
+            # Used only when readVersion5.
         self.importing = False
         self.importRootSeen = False
         self.indentStack = []
         self.inputFile = None
         self.lastLines = [] # The lines after @-leo
-        self.lastThinNode = None # Used by createThinChild4.
+        self.lastThinNode = None
+            # The last thin node at this level.
+            # Used by createThinChild4.
         self.leadingWs = ""
         self.lineNumber = 0 # New in Leo 4.4.8.
         self.out = None
         self.outStack = []
         self.readVersion = '' # New in Leo 4.8: "4" or "5" for new-style thin files.
+        self.readVersion5 = False # synonym for new_read and at.readVersion >= '5'
         self.rootSeen = False
         self.tnodeList = []
             # Needed until old-style @file nodes are no longer supported.
         self.tnodeListIndex = 0
         self.v = None
-        self.tStack = []
-        self.thinNodeStack = []
-            # Used by createThinChild4.
-            # Entries are vnodes.
-            # This stack and the indentStack always have the same number of entries.
-            # In effect, they form a single stack.
+        self.vStack = [] # Stack of at.v values.
+        self.thinNodeStack = [] # Entries are vnodes.
         self.updateWarningGiven = False
         #@-node:ekr.20041005105605.14:<< init ivars for reading >>
         #@nl
@@ -483,7 +480,7 @@ class atFile:
 
         return fn
     #@-node:ekr.20041005105605.19:openFileForReading (atFile) helper
-    #@+node:ekr.20041005105605.21:read (atFile) & helpers
+    #@+node:ekr.20041005105605.21:at.read & helpers
     def read(self,root,importFileName=None,
         fromString=None,atShadow=False,force=False
     ):
@@ -627,7 +624,7 @@ class atFile:
         if resurrected:
             g.es('you may want to delete ressurected nodes')
     #@-node:ekr.20071105164407:warnAboutUnvisitedNodes
-    #@-node:ekr.20041005105605.21:read (atFile) & helpers
+    #@-node:ekr.20041005105605.21:at.read & helpers
     #@+node:ekr.20041005105605.26:readAll (atFile)
     def readAll(self,root,partialFlag=False):
 
@@ -1014,7 +1011,7 @@ class atFile:
 
         trace = False and not g.unitTesting
         verbose = False
-        at = self ; newNode = new_read and at.readVersion == '5'
+        at = self
         #@    << init ivars for scanText4 >>
         #@+node:ekr.20041005105605.75:<< init ivars for scanText4 >>
         # Unstacked ivars...
@@ -1034,7 +1031,7 @@ class atFile:
         at.endSentinelNodeStack = [None]
         at.out = [] ; at.outStack = []
         at.v = p.v
-        at.tStack = []
+        at.vStack = []
         # New code: always identify root @thin node with self.root:
         at.lastThinNode = None
         at.thinNodeStack = []
@@ -1048,8 +1045,8 @@ class atFile:
                 if trace and verbose: g.trace(repr(s))
                 at.lineNumber += 1
                 if len(s) == 0:
-                    if newNode:
-                        at.do_eof()
+                    if at.readVersion5:
+                        at.popSentinelStack(at.endLeo)
                         at.done = True
                     break
                 kind = at.sentinelKind4(s)
@@ -1087,7 +1084,6 @@ class atFile:
         if at.inCode:
             if not at.raw:
                 s = g.removeLeadingWhitespace(s,at.indent,at.tab_width)
-            ### at.out.append(s)
             at.appendToOut(s)
         else:
             at.appendToDocPart(s)
@@ -1138,48 +1134,27 @@ class atFile:
         at.atAllFlag = True
 
         # Make sure that the generated at-all is properly indented.
-
-        ### at.out.append(leadingWs + "@all\n")
         at.appendToOut(leadingWs + "@all\n")
-
         at.endSentinelStack.append(at.endAll)
-        at.endSentinelNodeStack.append(at.v)
+        if at.readVersion5:
+            at.endSentinelNodeStack.append(at.v)
     #@-node:ekr.20041005105605.81:at.readStartAll
     #@+node:ekr.20041005105605.85:at.readStartNode & helpers
     def readStartNode (self,s,i,middle=False):
 
         """Read an @+node or @+middle sentinel."""
 
-        trace = True and not g.unitTesting
-        at = self ; newNode = new_read and at.readVersion == '5'
-        #@    << check the sentinel and bump i>>
-        #@+node:ekr.20100625085138.5956:<< check the sentinel and bump i>>
-        if newNode:
-            assert g.match(s,i,"+node"),'bad start node sentinel'
-            i += 1
-        elif middle:
-            assert g.match(s,i,"+middle:"),'missing +middle'
-            i += 8
-        else:
-            assert g.match(s,i,"+node:"),'missing +node'
-            i += 6
-        #@nonl
-        #@-node:ekr.20100625085138.5956:<< check the sentinel and bump i>>
-        #@nl
-        # Get the gnx and the headline.
-        if at.thinFile:
-            gnx,i,level,ok = at.parseThinNodeSentinel(s,i)
-            if not ok: return
-        headline = at.getNodeHeadline(s,i)
-        if not at.root_seen:
-            at.root_seen = True
+        at = self
+        gnx,headline,i,level,ok = at.parseNodeSentinel(s,i,middle)
+        if not ok: return
+        at.root_seen = True
 
         i,newIndent = g.skip_leading_ws_with_indent(s,0,at.tab_width)
         at.indentStack.append(at.indent) ; at.indent = newIndent
 
         at.outStack.append(at.out)
         at.out = []
-        at.tStack.append(at.v)
+        at.vStack.append(at.v)
 
         if at.importing:
             p = at.createImportedNode(at.root,headline)
@@ -1189,36 +1164,34 @@ class atFile:
         else:
             at.v = at.findChild4(headline)
 
-        if not newNode:
+        if not at.readVersion5:
             at.endSentinelStack.append(at.endNode)
     #@+node:ekr.20100625085138.5957:createNewThinNode & closePreviousNode
     def createNewThinNode (self,gnx,headline,level):
 
         trace = False and not g.unitTesting
-        at = self ; newNode = new_read and at.readVersion == '5'
+        at = self
 
         if at.thinNodeStack:
-            if newNode:
+            if at.readVersion5:
                 oldLevel = len(at.thinNodeStack)
                 newLevel = level - 1
                 assert newLevel >= 0
                 at.closePreviousNode(oldLevel,newLevel)
-            else:
-                at.thinNodeStack.append(at.lastThinNode)
-
-            v = at.createThinChild4(gnx,headline)
-
-            if newNode:
+                v = at.createThinChild4(gnx,headline)
                 at.thinNodeStack.append(v)
                 if trace: g.trace(
                     '** oldLvl: %s, newLvl: %s, v: %s, last: %s, stack: \n%s\n' % (
                     oldLevel,newLevel,v.h,at.lastThinNode.h,
                     [z.h for z in at.thinNodeStack]))
+            else:
+                at.thinNodeStack.append(at.lastThinNode)
+                v = at.createThinChild4(gnx,headline)
         else:
             v = at.root.v
             at.thinNodeStack.append(v)
-        at.lastThinNode = v
 
+        at.lastThinNode = v
         return v
     #@+node:ekr.20100624082003.5944:closePreviousNode
     def closePreviousNode (self,oldLevel,newLevel):
@@ -1233,11 +1206,34 @@ class atFile:
             # Pretend we have seen -node sentinels.
             for z in range(oldLevel - newLevel):
                 at.readEndNode('',0)
+
             at.lastThinNode = at.thinNodeStack[newLevel-1]
         else:
             at.lastThinNode = at.thinNodeStack[-1]
     #@-node:ekr.20100624082003.5944:closePreviousNode
     #@-node:ekr.20100625085138.5957:createNewThinNode & closePreviousNode
+    #@+node:ekr.20100625184546.5979:parseNodeSentinel & helpers
+    def parseNodeSentinel (self,s,i,middle):
+
+        at = self
+
+        if at.readVersion5:
+            assert g.match(s,i,"+node"),'bad start node sentinel'
+            i += 1
+        elif middle:
+            assert g.match(s,i,"+middle:"),'missing +middle'
+            i += 8
+        else:
+            assert g.match(s,i,"+node:"),'missing +node'
+            i += 6
+
+        # Get the gnx and the headline.
+        if at.thinFile:
+            gnx,i,level,ok = at.parseThinNodeSentinel(s,i)
+            if not ok: None,None,None,False
+
+        headline = at.getNodeHeadline(s,i)
+        return gnx,headline,i,level,True
     #@+node:ekr.20100625085138.5955:getNodeHeadline
     def getNodeHeadline (self,s,i):
 
@@ -1247,53 +1243,53 @@ class atFile:
         at = self
 
         if len(at.endSentinelComment) == 0:
-            headline = s[i:-1].rstrip()
+            h = s[i:-1].rstrip()
         else:
             k = s.rfind(at.endSentinelComment,i)
-            headline = s[i:k].rstrip() # works if k == -1
+            h = s[i:k].rstrip() # works if k == -1
 
         # Undo the CWEB hack: undouble @ signs if\
         # the opening comment delim ends in '@'.
         if at.startSentinelComment[-1:] == '@':
-            headline = headline.replace('@@','@')
+            h = h.replace('@@','@')
 
-        return headline
+        return h
     #@-node:ekr.20100625085138.5955:getNodeHeadline
     #@+node:ekr.20100625085138.5953:parseThinNodeSentinel
     def parseThinNodeSentinel (self,s,i):
 
-        at = self ; newNode = new_read and at.readVersion == '5'
+        at = self
+
+        def oops(s):
+            at.readError(s)
+            return None,None,None,False
 
         j = s.find(':',i)
         if j == -1:
-            g.trace("no closing colon",g.get_line(s,i))
-            at.readError("Expecting gnx in @+node sentinel")
-            return None,None,None,False
+            return oops('Expecting gnx in @+node sentinel')
+        else:
+            gnx = s[i:j]
 
-        gnx = s[i:j]
-
-        if newNode:
+        if at.readVersion5:
             if not g.match(s,j,': '):
-                at.readError('Expecting space after gnx')
-                return None,None,None,False
+                return oops('Expecting space after gnx')
             i = j + 2
             level = 0
             while i < len(s) and s[i] == '*':
                 i += 1
                 level += 1
             if level == 0:
-                at.readError('No level stars')
-                return None,None,None,False
+                return oops('No level stars')
             if not g.match(s,i,' '):
-                at.readError('No space after level stars')
-                return None,None,None,False
+                return oops('No space after level stars')
             i += 1
-        else:
-            i = j + 1 # Skip the i
+        else: # not readVersion5.
+            i = j + 1 # Skip the gnx.
             level = 0
 
         return gnx,i,level,True
     #@-node:ekr.20100625085138.5953:parseThinNodeSentinel
+    #@-node:ekr.20100625184546.5979:parseNodeSentinel & helpers
     #@-node:ekr.20041005105605.85:at.readStartNode & helpers
     #@+node:ekr.20041005105605.111:readRef (paired using new sentinels)
     #@+at
@@ -1310,9 +1306,9 @@ class atFile:
 
         """Handle an @<< sentinel."""
 
-        at = self ; newNode = new_read and at.readVersion == '5'
+        at = self
 
-        if newNode:
+        if at.readVersion5:
             assert g.match(s,i,"+")
             i += 1 # Skip the new plus sign.
         j = g.skip_ws(s,i)
@@ -1333,10 +1329,8 @@ class atFile:
         if start and len(start) > 0 and start[-1] == '@':
             line = line.replace('@@','@')
 
-        ### at.out.append(line)
         at.appendToOut(line)
-
-        if newNode:
+        if at.readVersion5:
             at.endSentinelStack.append(at.endRef)
             at.endSentinelNodeStack.append(at.v)
     #@-node:ekr.20041005105605.111:readRef (paired using new sentinels)
@@ -1346,16 +1340,14 @@ class atFile:
 
         """Read an @+at sentinel."""
 
-        at = self ; newNode = new_read and at.readVersion == '5'
-
+        at = self
         assert g.match(s,i,"+at"),'missing +at'
         i += 3
 
-        if newNode: # Append whatever follows the sentinel.
+        if at.readVersion5: # Append whatever follows the sentinel.
             j = at.skipToEndSentinel(s,i)
             follow = s[i:j]
-            ### at.out.append('@' + follow)
-            at.appendToOut('@' + follow)
+            at.appendToOut('@' + follow + '\n')
             at.docOut = []
             at.inCode = False
         else:
@@ -1371,16 +1363,14 @@ class atFile:
 
         """Read an @+doc sentinel."""
 
-        at = self ; newNode = new_read and at.readVersion == '5'
-
+        at = self
         assert g.match(s,i,"+doc"),'missing +doc'
         i += 4
 
-        if newNode: # Append whatever follows the sentinel.
+        if at.readVersion5: # Append whatever follows the sentinel.
             j = at.skipToEndSentinel(s,i)
-            follow = s[i:j]
-            ### at.out.append('@' + follow)
-            at.appendToOut('@' + follow)
+            follow = s[i:j]+'\n'
+            at.appendToOut('@' + follow + '\n')
             at.docOut = []
             at.inCode = False
         else:
@@ -1388,7 +1378,6 @@ class atFile:
             ws = s[i:j]
             at.docOut = ["@doc" + ws + '\n']
                 # This newline may be removed by a following @nonl
-
             at.inCode = False
             at.endSentinelStack.append(at.endDoc)
     #@-node:ekr.20100624082003.5939:readStartDoc
@@ -1444,35 +1433,13 @@ class atFile:
             assert g.match(s,j,"+others"),'missing +others'
 
         # Make sure that the generated at-others is properly indented.
-        ### at.out.append(leadingWs + "@others\n")
         at.appendToOut(leadingWs + "@others\n")
-
         at.endSentinelStack.append(at.endOthers)
-        at.endSentinelNodeStack.append(at.v)
+        if at.readVersion5:
+            at.endSentinelNodeStack.append(at.v)
     #@-node:ekr.20041005105605.89:readStartOthers
     #@-node:ekr.20041005105605.80:start sentinels
     #@+node:ekr.20041005105605.90:end sentinels
-    #@+node:ekr.20100517130356.5810:do_eof
-    def do_eof(self):
-
-        trace = True and not g.unitTesting
-        at = self
-
-        # Make sure we there is an -leo sentinel.
-        at.popSentinelStack(at.endLeo)
-
-        # while at.endSentinelStack:
-            # n = len(at.endSentinelStack)
-            # top  = at.endSentinelStack and at.endSentinelStack[-1]
-            # if trace: g.trace(at.sentinelName(top))
-            # if top == at.endLeo:
-                # at.readEndLeo(s='',i=0)
-                # at.popSentinelStack(at.endLeo)
-                # break 
-            # else:
-                # g.trace('unexpected top: %s' % at.sentinelName(top))
-                # break
-    #@-node:ekr.20100517130356.5810:do_eof
     #@+node:ekr.20041005105605.91:readEndAll
     def readEndAll (self,unused_s,unused_i):
 
@@ -1528,20 +1495,25 @@ class atFile:
     #@+node:ekr.20041005105605.95:at.readEndNode
     def readEndNode (self,unused_s,unused_i,middle=False):
 
-        """Handle end-of-node processing for @-others and @-ref sentinels."""
+        """Handle @-node sentinels."""
 
         trace = False and not g.unitTesting
         at = self ; c = at.c
-        newNode = new_read and at.readVersion == '5'
 
         # End raw mode.
         at.raw = False
 
         # Set the temporary body text.
-        s = ''.join(at.out)
-        s = g.toUnicode(s)
+        if at.readVersion5:
+            if hasattr(at.v,'tempBodyList'):
+                s = ''.join(at.v.tempBodyList)
+            else:
+                s = ''
+        else:
+            s = ''.join(at.out)
 
-        # g.trace(repr(s))
+        s = g.toUnicode(s)
+        # g.trace('%20s %s' % (at.v.h,repr(s)))
 
         if at.importing:
             at.v._bodyString = s # Allowed use of _bodyString.
@@ -1616,21 +1588,25 @@ class atFile:
                 #@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
                 #@nl
 
-            # 2010/02/05: *always* update the text.
-            at.v.tempBodyString = s
+            # *Always* update the text.
+            if at.readVersion5:
+                if trace and hasattr(at.v,"tempBodyString") and at.v.tempBodyString:
+                    g.trace('*** can not happen: tempBodyString',at.v.h,repr(s))
+            else:
+                at.v.tempBodyString = s
 
         # Indicate that the vnode has been set in the derived file.
         at.v.setVisited()
-        # g.trace('visit',at.v)
 
         # End the previous node sentinel.
         at.indent = at.indentStack.pop()
         at.out = at.outStack.pop()
-        at.v = at.tStack.pop()
+        at.v = at.vStack.pop()
+
         if at.thinFile and not at.importing:
             at.lastThinNode = at.thinNodeStack.pop()
 
-        if not newNode:
+        if not at.readVersion5:
             at.popSentinelStack(at.endNode)
     #@-node:ekr.20041005105605.95:at.readEndNode
     #@+node:ekr.20041005105605.98:readEndOthers
@@ -1638,25 +1614,24 @@ class atFile:
 
         """Read an @-others sentinel."""
 
-        at = self ; newNode = new_read and at.readVersion == '5'
+        at = self
 
         at.popSentinelStack(at.endOthers)
 
-        if newNode:
+        if at.readVersion5:
             at.v = at.endSentinelNodeStack.pop()
-            # g.trace(at.v.h)
-    #@nonl
     #@-node:ekr.20041005105605.98:readEndOthers
     #@+node:ekr.20100625140824.5968:readEndRef
     def readEndRef (self,unused_s,unused_i):
 
-        at = self ; newNode = new_read and at.readVersion == '5'
+        """Read an @-<< sentinel."""
+
+        at = self
 
         at.popSentinelStack(at.endRef)
 
-        if newNode:
+        if at.readVersion5:
             at.v = at.endSentinelNodeStack.pop()
-            # g.trace(at.v.h)
     #@-node:ekr.20100625140824.5968:readEndRef
     #@+node:ekr.20041005105605.99:readLastDocLine
     def readLastDocLine (self,tag):
@@ -1702,7 +1677,6 @@ class atFile:
                 g.trace(start)
                 return
 
-        ### at.out.append(tag + s)
         at.appendToOut(tag + s)
         at.docOut = []
     #@-node:ekr.20041005105605.99:readLastDocLine
@@ -1727,7 +1701,6 @@ class atFile:
 
         # Append the next line to the text.
         s = at.readLine(at.inputFile)
-        ### at.out.append(s)
         at.appendToOut(s)
     #@-node:ekr.20041005105605.102:readAfterRef
     #@+node:ekr.20041005105605.103:readClone
@@ -1776,7 +1749,6 @@ class atFile:
 
         if j < i:
             at.startSentinelComment = s[j:i]
-            # g.pr("delim1:", at.startSentinelComment)
 
             # Get the optional second delim.
             j = i = g.skip_ws(s,i)
@@ -1788,19 +1760,14 @@ class atFile:
                 at.endSentinelComment = "" # Not really two params.
                 line = s[i0:j]
                 line = line.rstrip()
-                ### at.out.append(line+'\n')
                 at.appendToOut(line+'\n')
             else:
                 at.endSentinelComment = end
-                # g.pr("delim2:",end)
                 line = s[i0:i]
                 line = line.rstrip()
-                ### at.out.append(line+'\n')
                 at.appendToOut(line+'\n')
         else:
             at.readError("Bad @delims")
-            # Append the bad @delims line to the body text.
-            # at.out.append("@delims")
             at.appendToOut("@delims")
     #@-node:ekr.20041005105605.105:readDelims
     #@+node:ekr.20041005105605.106:readDirective (@@)
@@ -1809,7 +1776,7 @@ class atFile:
         """Read an @@sentinel."""
 
         trace = False and not g.unitTesting
-        at = self ; newNode = new_read and at.readVersion == '5'
+        at = self
         assert g.match(s,i,"@"),'missing @@ sentinel'
             # The first '@' has already been eaten.
 
@@ -1884,12 +1851,11 @@ class atFile:
                 #@nl
 
         # An @c ends the doc part when using new sentinels.
-        if newNode and s2 in ('@c','@c\n'):
+        if at.readVersion5 and s2 in ('@c','@c\n'):
             if at.docOut:
                 at.appendToOut(''.join(at.docOut))
             at.inCode = True # End the doc part.
 
-        ### at.out.append(s2)
         at.appendToOut(s2)
     #@-node:ekr.20041005105605.106:readDirective (@@)
     #@+node:ekr.20041005105605.109:readNl
@@ -1901,7 +1867,6 @@ class atFile:
         assert g.match(s,i,"nl"),'missing nl sentinel'
 
         if at.inCode:
-            ### at.out.append('\n')
             at.appendToOut('\n')
         else:
             at.docOut.append('\n')
@@ -1952,7 +1917,6 @@ class atFile:
         i = at.skipIndent(s,0,at.indent)
         # Do **not** insert the verbatim line itself!
             # at.out.append("@verbatim\n")
-        ### at.out.append(s[i:])
         at.appendToOut(s[i:])
     #@-node:ekr.20041005105605.112:readVerbatim
     #@-node:ekr.20041005105605.100:Unpaired sentinels
@@ -2082,12 +2046,13 @@ class atFile:
     #@+node:ekr.20100625092449.5963:at.appendToOut
     def appendToOut (self,s):
 
-        '''Append s to at.out.'''
+        '''Append s to at.out (old sentinels) or
+           at.v.tempBodyList (new sentinels).'''
 
-        at = self ; newNode = new_read and at.readVersion == '5'
-        trace = False and newNode  and not g.unitTesting
+        trace = False and not g.unitTesting
+        at = self
 
-        if newNode:
+        if at.readVersion5:
             if not at.v: at.v = at.root.v
             if hasattr(at.v,"tempBodyList"):
                 at.v.tempBodyList.append(s)
@@ -2096,7 +2061,10 @@ class atFile:
         else:
             at.out.append(s)
 
-        if trace: g.trace('code: %5s' % (at.inCode),at.v.h,repr(s))
+        if trace:
+            g.trace('%4s %25s %s' % (
+                g.choose(at.inCode,'code','doc'),at.v.h,repr(s)))
+            # g.trace(g.listToString(at.out))
     #@-node:ekr.20100625092449.5963:at.appendToOut
     #@+node:ekr.20041005105605.120:at.parseLeoSentinel
     def parseLeoSentinel (self,s):
@@ -2163,6 +2131,7 @@ class atFile:
             while i < len(s) and (s[i] == '.' or s[i].isdigit()):
                 i += 1
             at.readVersion = s[j:i] # 2010/05/18.
+            at.readVersion5 = new_read and at.readVersion >= '5'
 
             if j < i:
                 pass
@@ -3662,7 +3631,7 @@ class atFile:
 
         lws = at.leadingWs or ''
 
-        if at.leadingWs:
+        if lws:
             # Note: there are *two* at signs here.
             at.putSentinel("@" + lws + "@+others")
         else:
@@ -3672,7 +3641,7 @@ class atFile:
             if at.inAtOthers(child):
                 at.putAtOthersChild(child)
 
-        if new_write:
+        if new_write and lws:
             # This is a more consistent convention.
             at.putSentinel("@" + lws + "@-others")
         else:
@@ -3772,16 +3741,6 @@ class atFile:
             at.putSentinel("@+" + lws + name)
         else:
             at.putSentinel("@" + lws + name)
-
-        ### if new_write:
-            ### # This sentinel is required to handle the lws properly.
-            # at.putSentinel("@+" + lws + name)
-        ### else:
-            ### at.putSentinel("@" + lws + name)
-        ### elif at.leadingWs:
-            ### at.putSentinel("@" + at.leadingWs + name)
-        ### else:
-            ### at.putSentinel("@" + name)
 
         if inBetween:
             # Bug fix: reverse the +middle sentinels, not the -middle sentinels.

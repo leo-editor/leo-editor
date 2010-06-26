@@ -5813,7 +5813,8 @@ key = m.digest()
 key = base64.urlsafe_b64encode(str(key))
 print(key)
 </t>
-<t tx="ekr.20100519083913.2157">@ This is a doc part.
+<t tx="ekr.20100519083913.2157">@first # first line
+@ This is a doc part.
 Line 2.
 @c
 if 1:
