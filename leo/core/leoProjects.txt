@@ -3865,6 +3865,4063 @@ def createChapterNode (self,chapterName,p=None):
 #@-node:ekr.20100520070413.5879:Don't create @chapter node for new file
 #@-node:ekr.20100319090849.5759:Features
 #@-node:ekr.20100303074003.5639:Leo 4.8 devel projects
+#@+node:ekr.20100517130356.5809:New sentinels
+#@+node:ekr.20100624082003.5936:  To do
+@nocolor-node
+
+** Make sure that @shadow always write version-4 (old-style) sentinels.
+#@-node:ekr.20100624082003.5936:  To do
+#@+node:ekr.20100625184546.5977: Searches
+#@+node:ekr.20100625092449.5962:Found: at.docOut
+# The docOut exists so that the doc part can be munged.
+#@nonl
+#@+node:ekr.20041005105605.79:<< Append s to docOut >>
+line = s[i:-1] # remove newline for rstrip.
+
+if line == line.rstrip():
+    # no trailing whitespace: the newline is real.
+    at.docOut.append(line + '\n')
+else:
+    # trailing whitespace: the newline is fake.
+    at.docOut.append(line)
+#@-node:ekr.20041005105605.79:<< Append s to docOut >>
+#@+node:ekr.20100624082003.5942:appendToDocPart
+def appendToDocPart (self,s):
+
+    trace = False and not g.unitTesting
+    at = self
+
+    # Skip the leading stuff
+    if len(at.endSentinelComment) == 0:
+        # Skip the single comment delim and a blank.
+        i = g.skip_ws(s,0)
+        if g.match(s,i,at.startSentinelComment):
+            i += len(at.startSentinelComment)
+            if g.match(s,i," "): i += 1
+    else:
+        i = at.skipIndent(s,0,at.indent)
+
+    # Append s to docOut.
+    line = s[i:-1] # remove newline for rstrip.
+
+    if line == line.rstrip():
+        # no trailing whitespace: the newline is real.
+        at.docOut.append(line + '\n')
+    else:
+        # trailing whitespace: the newline is fake.
+        at.docOut.append(line)
+
+    if trace: g.trace(repr(line))
+#@-node:ekr.20100624082003.5942:appendToDocPart
+#@+node:ekr.20100624082003.5938:readStartAt
+def readStartAt (self,s,i):
+
+    """Read an @+at sentinel."""
+
+    at = self
+    assert g.match(s,i,"+at"),'missing +at'
+    i += 3
+
+    if at.readVersion5: # Append whatever follows the sentinel.
+        j = at.skipToEndSentinel(s,i)
+        follow = s[i:j]
+        at.appendToOut('@' + follow + '\n')
+        at.docOut = []
+        at.inCode = False
+    else:
+        j = g.skip_ws(s,i)
+        ws = s[i:j]
+        at.docOut = ['@' + ws + '\n']
+            # This newline may be removed by a following @nonl
+        at.inCode = False
+        at.endSentinelStack.append(at.endAt)
+#@-node:ekr.20100624082003.5938:readStartAt
+#@+node:ekr.20100624082003.5939:readStartDoc
+def readStartDoc (self,s,i):
+
+    """Read an @+doc sentinel."""
+
+    at = self
+    assert g.match(s,i,"+doc"),'missing +doc'
+    i += 4
+
+    if at.readVersion5: # Append whatever follows the sentinel.
+        j = at.skipToEndSentinel(s,i)
+        follow = s[i:j]+'\n'
+        at.appendToOut('@' + follow + '\n')
+        at.docOut = []
+        at.inCode = False
+    else:
+        j = g.skip_ws(s,i)
+        ws = s[i:j]
+        at.docOut = ["@doc" + ws + '\n']
+            # This newline may be removed by a following @nonl
+        at.inCode = False
+        at.endSentinelStack.append(at.endDoc)
+#@-node:ekr.20100624082003.5939:readStartDoc
+#@+node:ekr.20041005105605.99:readLastDocLine
+def readLastDocLine (self,tag):
+
+    """Read the @c line that terminates the doc part.
+    tag is @doc or @."""
+
+    at = self
+    end = at.endSentinelComment
+    start = at.startSentinelComment
+    s = ''.join(at.docOut)
+
+    # Remove the @doc or @space.  We'll add it back at the end.
+    if g.match(s,0,tag):
+        s = s[len(tag):]
+    else:
+        at.readError("Missing start of doc part")
+        return
+
+    # Bug fix: Append any whitespace following the tag to tag.
+    while s and s[0] in (' ','\t'):
+        tag = tag + s[0] ; s = s[1:]
+
+    if end:
+        # Remove leading newline.
+        if s[0] == '\n': s = s[1:]
+        # Remove opening block delim.
+        if g.match(s,0,start):
+            s = s[len(start):]
+        else:
+            at.readError("Missing open block comment")
+            g.trace('tag',repr(tag),'start',repr(start),'s',repr(s))
+            return
+        # Remove trailing newline.
+        if s[-1] == '\n': s = s[:-1]
+        # Remove closing block delim.
+        if s[-len(end):] == end:
+            s = s[:-len(end)]
+        else:
+            at.readError("Missing close block comment")
+            g.trace(s)
+            g.trace(end)
+            g.trace(start)
+            return
+
+    at.appendToOut(tag + s)
+    at.docOut = []
+#@-node:ekr.20041005105605.99:readLastDocLine
+#@+node:ekr.20041005105605.109:readNl
+def readNl (self,s,i):
+
+    """Handle an @nonl sentinel."""
+
+    at = self
+    assert g.match(s,i,"nl"),'missing nl sentinel'
+
+    if at.inCode:
+        at.appendToOut('\n')
+    else:
+        at.docOut.append('\n')
+#@-node:ekr.20041005105605.109:readNl
+#@+node:ekr.20041005105605.110:readNonl
+def readNonl (self,s,i):
+
+    """Handle an @nonl sentinel."""
+
+    at = self
+    assert g.match(s,i,"nonl"),'missing nonl sentinel'
+
+    if at.inCode:
+        s = ''.join(at.out)
+        # 2010/01/07: protect against a mostly-harmless read error.
+        if s:
+            if s[-1] == '\n':
+                at.out = [s[:-1]] # Do not use at.appendToOut here!
+            else:
+                g.trace("out:",s)
+                at.readError("unexpected @nonl directive in code part")
+    else:
+        s = ''.join(at.pending)
+        if s:
+            if s[-1] == '\n':
+                at.pending = [s[:-1]]
+            else:
+                g.trace("docOut:",s)
+                at.readError("unexpected @nonl directive in pending doc part")
+        else:
+            s = ''.join(at.docOut)
+            if s and s[-1] == '\n':
+                at.docOut = [s[:-1]]
+            else:
+                g.trace("docOut:",s)
+                at.readError("unexpected @nonl directive in doc part")
+#@-node:ekr.20041005105605.110:readNonl
+#@-node:ekr.20100625092449.5962:Found: at.docOut
+#@+node:ekr.20100625140824.5967:Found: endSentinelStack
+#@+node:ekr.20041005105605.14:<< init ivars for reading >>
+self.atAllFlag = False # True if @all seen.
+self.cloneSibCount = 0
+    # n > 1: Make sure n cloned sibs exists at next @+node sentinel
+self.correctedLines = 0
+self.docOut = [] # The doc part being accumulated.
+self.done = False # True when @-leo seen.
+self.endSentinelStack = []
+    # Contains entries for +node sentinels only when not readVersion5
+self.endSentinelNodeStack = []
+    # Used only when readVersion5.
+self.importing = False
+self.importRootSeen = False
+self.indentStack = []
+self.inputFile = None
+self.lastLines = [] # The lines after @-leo
+self.lastThinNode = None
+    # The last thin node at this level.
+    # Used by createThinChild4.
+self.leadingWs = ""
+self.lineNumber = 0 # New in Leo 4.4.8.
+self.out = None
+self.outStack = []
+self.readVersion = '' # New in Leo 4.8: "4" or "5" for new-style thin files.
+self.readVersion5 = False # synonym for new_read and at.readVersion >= '5'
+self.rootSeen = False
+self.tnodeList = []
+    # Needed until old-style @file nodes are no longer supported.
+self.tnodeListIndex = 0
+self.v = None
+self.vStack = [] # Stack of at.v values.
+self.thinNodeStack = [] # Entries are vnodes.
+self.updateWarningGiven = False
+#@-node:ekr.20041005105605.14:<< init ivars for reading >>
+#@+node:ekr.20041005105605.75:<< init ivars for scanText4 >>
+# Unstacked ivars...
+at.cloneSibCount = 0
+at.done = False
+at.inCode = True
+at.indent = 0 # Changed only for sentinels.
+at.lastLines = [] # The lines after @-leo
+at.leadingWs = ""
+at.lineNumber = 0
+at.root = p.copy() # Bug fix: 12/10/05
+at.rootSeen = False
+at.updateWarningGiven = False
+
+# Stacked ivars...
+at.endSentinelStack = [at.endLeo] # We have already handled the @+leo sentinel.
+at.endSentinelNodeStack = [None]
+at.out = [] ; at.outStack = []
+at.v = p.v
+at.vStack = []
+# New code: always identify root @thin node with self.root:
+at.lastThinNode = None
+at.thinNodeStack = []
+#@nonl
+#@-node:ekr.20041005105605.75:<< init ivars for scanText4 >>
+#@+node:ekr.20041005105605.76:<< report unexpected end of text >>
+assert at.endSentinelStack,'empty sentinel stack'
+
+at.readError(
+    "Unexpected end of file. Expecting %s sentinel" %
+    at.sentinelName(at.endSentinelStack[-1]))
+#@-node:ekr.20041005105605.76:<< report unexpected end of text >>
+#@+node:ekr.20041005105605.81:at.readStartAll
+def readStartAll (self,s,i):
+
+    """Read an @+all sentinel."""
+
+    at = self
+    j = g.skip_ws(s,i)
+    leadingWs = s[i:j]
+    if leadingWs:
+        assert g.match(s,j,"@+all"),'missing @+all'
+    else:
+        assert g.match(s,j,"+all"),'missing +all'
+
+    # g.trace('root_seen',at.root_seen,at.root.h,repr(s))
+    at.atAllFlag = True
+
+    # Make sure that the generated at-all is properly indented.
+    at.appendToOut(leadingWs + "@all\n")
+    at.endSentinelStack.append(at.endAll)
+    if at.readVersion5:
+        at.endSentinelNodeStack.append(at.v)
+#@-node:ekr.20041005105605.81:at.readStartAll
+#@+node:ekr.20041005105605.85:at.readStartNode & helpers
+def readStartNode (self,s,i,middle=False):
+
+    """Read an @+node or @+middle sentinel."""
+
+    at = self
+    gnx,headline,i,level,ok = at.parseNodeSentinel(s,i,middle)
+    if not ok: return
+    at.root_seen = True
+
+    i,newIndent = g.skip_leading_ws_with_indent(s,0,at.tab_width)
+    at.indentStack.append(at.indent) ; at.indent = newIndent
+
+    at.outStack.append(at.out)
+    at.out = []
+    at.vStack.append(at.v)
+
+    if at.importing:
+        p = at.createImportedNode(at.root,headline)
+        at.v = p.v
+    elif at.thinFile:
+        at.v = at.createNewThinNode(gnx,headline,level)
+    else:
+        at.v = at.findChild4(headline)
+
+    if not at.readVersion5:
+        at.endSentinelStack.append(at.endNode)
+#@+node:ekr.20100625085138.5957:createNewThinNode & closePreviousNode
+def createNewThinNode (self,gnx,headline,level):
+
+    trace = False and not g.unitTesting
+    at = self
+
+    if at.thinNodeStack:
+        if at.readVersion5:
+            oldLevel = len(at.thinNodeStack)
+            newLevel = level - 1
+            assert newLevel >= 0
+            at.closePreviousNode(oldLevel,newLevel)
+            v = at.createThinChild4(gnx,headline)
+            at.thinNodeStack.append(v)
+            if trace: g.trace(
+                '** oldLvl: %s, newLvl: %s, v: %s, last: %s, stack: \n%s\n' % (
+                oldLevel,newLevel,v.h,at.lastThinNode.h,
+                [z.h for z in at.thinNodeStack]))
+        else:
+            at.thinNodeStack.append(at.lastThinNode)
+            v = at.createThinChild4(gnx,headline)
+    else:
+        v = at.root.v
+        at.thinNodeStack.append(v)
+
+    at.lastThinNode = v
+    return v
+#@+node:ekr.20100624082003.5944:closePreviousNode
+def closePreviousNode (self,oldLevel,newLevel):
+
+    trace = False and not g.unitTesting
+    at = self
+
+    if trace: g.trace('******',
+        [at.sentinelName(z) for z in at.endSentinelStack])
+
+    if newLevel <= oldLevel:
+        # Pretend we have seen -node sentinels.
+        for z in range(oldLevel - newLevel):
+            at.readEndNode('',0)
+
+        at.lastThinNode = at.thinNodeStack[newLevel-1]
+    else:
+        at.lastThinNode = at.thinNodeStack[-1]
+#@-node:ekr.20100624082003.5944:closePreviousNode
+#@-node:ekr.20100625085138.5957:createNewThinNode & closePreviousNode
+#@+node:ekr.20100625184546.5979:parseNodeSentinel & helpers
+def parseNodeSentinel (self,s,i,middle):
+
+    at = self
+
+    if at.readVersion5:
+        assert g.match(s,i,"+node"),'bad start node sentinel'
+        i += 1
+    elif middle:
+        assert g.match(s,i,"+middle:"),'missing +middle'
+        i += 8
+    else:
+        assert g.match(s,i,"+node:"),'missing +node'
+        i += 6
+
+    # Get the gnx and the headline.
+    if at.thinFile:
+        gnx,i,level,ok = at.parseThinNodeSentinel(s,i)
+        if not ok: None,None,None,False
+
+    headline = at.getNodeHeadline(s,i)
+    return gnx,headline,i,level,True
+#@+node:ekr.20100625085138.5955:getNodeHeadline
+def getNodeHeadline (self,s,i):
+
+    '''Set headline to the rest of the line.
+    Don't strip leading whitespace.'''
+
+    at = self
+
+    if len(at.endSentinelComment) == 0:
+        h = s[i:-1].rstrip()
+    else:
+        k = s.rfind(at.endSentinelComment,i)
+        h = s[i:k].rstrip() # works if k == -1
+
+    # Undo the CWEB hack: undouble @ signs if\
+    # the opening comment delim ends in '@'.
+    if at.startSentinelComment[-1:] == '@':
+        h = h.replace('@@','@')
+
+    return h
+#@-node:ekr.20100625085138.5955:getNodeHeadline
+#@+node:ekr.20100625085138.5953:parseThinNodeSentinel
+def parseThinNodeSentinel (self,s,i):
+
+    at = self
+
+    def oops(s):
+        at.readError(s)
+        return None,None,None,False
+
+    j = s.find(':',i)
+    if j == -1:
+        return oops('Expecting gnx in @+node sentinel')
+    else:
+        gnx = s[i:j]
+
+    if at.readVersion5:
+        if not g.match(s,j,': '):
+            return oops('Expecting space after gnx')
+        i = j + 2
+        level = 0
+        while i < len(s) and s[i] == '*':
+            i += 1
+            level += 1
+        if level == 0:
+            return oops('No level stars')
+        if not g.match(s,i,' '):
+            return oops('No space after level stars')
+        i += 1
+    else: # not readVersion5.
+        i = j + 1 # Skip the gnx.
+        level = 0
+
+    return gnx,i,level,True
+#@-node:ekr.20100625085138.5953:parseThinNodeSentinel
+#@-node:ekr.20100625184546.5979:parseNodeSentinel & helpers
+#@-node:ekr.20041005105605.85:at.readStartNode & helpers
+#@+node:ekr.20041005105605.113:badEndSentinel, popSentinelStack
+def badEndSentinel (self,expectedKind):
+
+    """Handle a mismatched ending sentinel."""
+
+    at = self
+    assert at.endSentinelStack,'empty sentinel stack'
+    s = "(badEndSentinel) Ignoring %s sentinel.  Expecting %s" % (
+        at.sentinelName(at.endSentinelStack[-1]),
+        at.sentinelName(expectedKind))
+    at.readError(s)
+
+def popSentinelStack (self,expectedKind):
+
+    """Pop an entry from endSentinelStack and check it."""
+
+    at = self
+    if at.endSentinelStack and at.endSentinelStack[-1] == expectedKind:
+        at.endSentinelStack.pop()
+    else:
+        if 1: g.trace('%s\n%s' % (
+            [at.sentinelName(z) for z in at.endSentinelStack],
+            g.callers(4)))
+        at.badEndSentinel(expectedKind)
+#@-node:ekr.20041005105605.113:badEndSentinel, popSentinelStack
+#@+node:ekr.20100624082003.5944:closePreviousNode
+def closePreviousNode (self,oldLevel,newLevel):
+
+    trace = False and not g.unitTesting
+    at = self
+
+    if trace: g.trace('******',
+        [at.sentinelName(z) for z in at.endSentinelStack])
+
+    if newLevel <= oldLevel:
+        # Pretend we have seen -node sentinels.
+        for z in range(oldLevel - newLevel):
+            at.readEndNode('',0)
+
+        at.lastThinNode = at.thinNodeStack[newLevel-1]
+    else:
+        at.lastThinNode = at.thinNodeStack[-1]
+#@-node:ekr.20100624082003.5944:closePreviousNode
+#@+node:ekr.20041005105605.98:readEndOthers
+def readEndOthers (self,unused_s,unused_i):
+
+    """Read an @-others sentinel."""
+
+    at = self
+
+    at.popSentinelStack(at.endOthers)
+
+    if at.readVersion5:
+        at.v = at.endSentinelNodeStack.pop()
+#@-node:ekr.20041005105605.98:readEndOthers
+#@+node:ekr.20100624082003.5938:readStartAt
+def readStartAt (self,s,i):
+
+    """Read an @+at sentinel."""
+
+    at = self
+    assert g.match(s,i,"+at"),'missing +at'
+    i += 3
+
+    if at.readVersion5: # Append whatever follows the sentinel.
+        j = at.skipToEndSentinel(s,i)
+        follow = s[i:j]
+        at.appendToOut('@' + follow + '\n')
+        at.docOut = []
+        at.inCode = False
+    else:
+        j = g.skip_ws(s,i)
+        ws = s[i:j]
+        at.docOut = ['@' + ws + '\n']
+            # This newline may be removed by a following @nonl
+        at.inCode = False
+        at.endSentinelStack.append(at.endAt)
+#@-node:ekr.20100624082003.5938:readStartAt
+#@+node:ekr.20100624082003.5939:readStartDoc
+def readStartDoc (self,s,i):
+
+    """Read an @+doc sentinel."""
+
+    at = self
+    assert g.match(s,i,"+doc"),'missing +doc'
+    i += 4
+
+    if at.readVersion5: # Append whatever follows the sentinel.
+        j = at.skipToEndSentinel(s,i)
+        follow = s[i:j]+'\n'
+        at.appendToOut('@' + follow + '\n')
+        at.docOut = []
+        at.inCode = False
+    else:
+        j = g.skip_ws(s,i)
+        ws = s[i:j]
+        at.docOut = ["@doc" + ws + '\n']
+            # This newline may be removed by a following @nonl
+        at.inCode = False
+        at.endSentinelStack.append(at.endDoc)
+#@-node:ekr.20100624082003.5939:readStartDoc
+#@+node:ekr.20041005105605.89:readStartOthers
+def readStartOthers (self,s,i):
+
+    """Read an @+others sentinel."""
+
+    at = self
+
+    j = g.skip_ws(s,i)
+    leadingWs = s[i:j]
+
+    if leadingWs:
+        assert g.match(s,j,"@+others"),'missing @+others'
+    else:
+        assert g.match(s,j,"+others"),'missing +others'
+
+    # Make sure that the generated at-others is properly indented.
+    at.appendToOut(leadingWs + "@others\n")
+    at.endSentinelStack.append(at.endOthers)
+    if at.readVersion5:
+        at.endSentinelNodeStack.append(at.v)
+#@-node:ekr.20041005105605.89:readStartOthers
+#@+node:ekr.20041005105605.114:sentinelKind4 & helper (read logic)
+def sentinelKind4(self,s):
+
+    """Return the kind of sentinel at s."""
+
+    trace = False and not g.unitTesting
+    at = self
+
+    val = at.sentinelKind4_helper(s)
+
+    if trace: g.trace('%-20s %s' % (
+        at.sentinelName(val),s.rstrip()))
+
+    return val
+#@+node:ekr.20100518083515.5896:sentinelKind4_helper
+def sentinelKind4_helper(self,s):
+
+    at = self
+    i = g.skip_ws(s,0)
+    if g.match(s,i,at.startSentinelComment): 
+        i += len(at.startSentinelComment)
+    else:
+        return at.noSentinel
+
+    # Locally undo cweb hack here
+    start = at.startSentinelComment
+    if start and len(start) > 0 and start[-1] == '@':
+        s = s[:i] + s[i:].replace('@@','@')
+
+    # New sentinels.
+    if g.match(s,i,"@+"):
+        if g.match(s,i+2,"others"):
+            return at.startOthers
+        elif g.match(s,i+2,"<<"):
+            return at.startRef
+        else:
+            j = g.skip_ws(s,i+2)
+            if g.match(s,j,"<<"):
+                return at.startRef
+    elif g.match(s,i,"@-"):
+        if g.match(s,i+2,"others"):
+            return at.endOthers
+        elif g.match(s,i+2,"<<"):
+            return at.endRef
+        else:
+            j = g.skip_ws(s,i+2)
+            if g.match(s,j,"<<"):
+                return at.endRef
+    # Old sentinels.
+    elif g.match(s,i,"@"):
+        j = g.skip_ws(s,i+1)
+        if j > i+1:
+            if g.match(s,j,"@+others"):
+                return at.startOthers
+            elif g.match(s,j,"@-others"):
+                return at.endOthers
+            elif g.match(s,j,"<<"):
+                return at.startRef
+            else:
+                # No other sentinels allow whitespace following the '@'
+                return at.noSentinel
+
+    # Do not skip whitespace here!
+    if g.match(s,i,"@<<"): return at.startRef
+    if g.match(s,i,"@@"):   return at.startDirective
+    if not g.match(s,i,'@'): return at.noSentinel
+    j = i # start of lookup
+    i += 1 # skip the at sign.
+    if g.match(s,i,'+') or g.match(s,i,'-'):
+        i += 1
+    i = g.skip_c_id(s,i)
+    key = s[j:i]
+    if len(key) > 0 and key in at.sentinelDict:
+        return at.sentinelDict[key]
+    else:
+        return at.noSentinel
+#@-node:ekr.20100518083515.5896:sentinelKind4_helper
+#@-node:ekr.20041005105605.114:sentinelKind4 & helper (read logic)
+#@+node:ekr.20041005105605.115:skipSentinelStart4
+def skipSentinelStart4(self,s,i):
+
+    """Skip the start of a sentinel."""
+
+    start = self.startSentinelComment
+    assert(start and len(start)>0)
+
+    i = g.skip_ws(s,i)
+    assert(g.match(s,i,start))
+    i += len(start)
+
+    # 7/8/02: Support for REM hack
+    i = g.skip_ws(s,i)
+    assert(i < len(s) and s[i] == '@')
+    return i + 1
+#@-node:ekr.20041005105605.115:skipSentinelStart4
+#@+node:ekr.20041005105605.111:readRef (paired using new sentinels)
+@
+The sentinel contains an @ followed by a section name in angle brackets.
+This code is different from the code for the @@ sentinel: the expansion
+of the reference does not include a trailing newline.
+@c
+
+def readRef (self,s,i):
+
+    """Handle an @<< sentinel."""
+
+    at = self
+
+    if at.readVersion5:
+        assert g.match(s,i,"+")
+        i += 1 # Skip the new plus sign.
+    j = g.skip_ws(s,i)
+    assert g.match(s,j,"<<"),'missing @<< sentinel'
+
+    if len(at.endSentinelComment) == 0:
+        line = s[i:-1] # No trailing newline
+    else:
+        k = s.find(at.endSentinelComment,i)
+        line = s[i:k] # No trailing newline, whatever k is.
+
+    if new_read and at.readVersion == '5':
+        # Put the newline back: there is no longer an @nl sentinel.
+        line = line + '\n'
+
+    # Undo the cweb hack.
+    start = at.startSentinelComment
+    if start and len(start) > 0 and start[-1] == '@':
+        line = line.replace('@@','@')
+
+    at.appendToOut(line)
+    if at.readVersion5:
+        at.endSentinelStack.append(at.endRef)
+        at.endSentinelNodeStack.append(at.v)
+#@-node:ekr.20041005105605.111:readRef (paired using new sentinels)
+#@-node:ekr.20100625140824.5967:Found: endSentinelStack
+#@+node:ekr.20100625161750.5972:Found: tempBodyString
+#@+node:ekr.20041005105605.21:at.read & helpers
+def read(self,root,importFileName=None,
+    fromString=None,atShadow=False,force=False
+):
+
+    """Read an @thin or @file tree."""
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(root.h,len(root.b))
+    at = self ; c = at.c
+    fileName = at.initFileName(fromString,importFileName,root)
+    if not fileName:
+        at.error("Missing file name.  Restoring @file tree from .leo file.")
+        return False
+    at.initReadIvars(root,fileName,
+        importFileName=importFileName,atShadow=atShadow)
+    if at.errors:
+        return False
+    fileName = at.openFileForReading(fromString=fromString)
+    if fileName and at.inputFile:
+        c.setFileTimeStamp(fileName)
+    else:
+        return False
+    root.v.at_read = True # Remember that we have read this file.
+
+    # Get the file from the cache if possible.
+    s,loaded,fileKey = c.cacher.readFile(fileName,root)
+    # 2010/02/24: Never read an external file
+    # with file-like sentinels from the cache.
+    isFileLike = loaded and at.isFileLike(s)
+    if not loaded or isFileLike:
+        # if trace: g.trace('file-like file',fileName)
+        force = True # Disable caching.
+    if loaded and not force:
+        if trace: g.trace('in cache',fileName)
+        at.inputFile.close()
+        root.clearDirty()
+        return True
+    if not g.unitTesting:
+        g.es("reading:",root.h)
+    if isFileLike:
+        if g.unitTesting:
+            if 0: print("converting @file format in",root.h)
+            g.app.unitTestDict['read-convert']=True
+        else:
+            g.es("converting @file format in",root.h,color='red')
+    root.clearVisitedInTree()
+    d = at.scanAllDirectives(root,importing=at.importing,reading=True)
+    thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        at.warnAboutUnvisitedNodes(root)
+        at.deleteTnodeList(root)
+    if at.errors == 0 and not at.importing:
+        # Used by mod_labels plugin.
+        self.copyAllTempBodyStringsToTnodes(root,thinFile)
+    at.deleteAllTempBodyStrings()
+    if isFileLike:
+        # 2010/02/24: Make the root @file node dirty so it will
+        # be written automatically when saving the file.
+        root.setDirty()
+        c.setChanged(True) # Essential, to keep dirty bit set.
+    if at.errors == 0 and not isFileLike:
+        c.cacher.writeFile(root,fileKey)
+
+    if trace: g.trace('root.isDirty',root.isDirty())
+
+    return at.errors == 0
+#@+node:ekr.20041005105605.25:deleteAllTempBodyStrings
+def deleteAllTempBodyStrings(self):
+
+    for v in self.c.all_unique_nodes():
+        if hasattr(v,"tempBodyString"):
+            delattr(v,"tempBodyString")
+        if hasattr(v,"tempBodyList"):
+            delattr(v,"tempBodyList")
+#@-node:ekr.20041005105605.25:deleteAllTempBodyStrings
+#@+node:ekr.20100122130101.6174:deleteTnodeList
+def deleteTnodeList (self,p): # atFile method.
+
+    '''Remove p's tnodeList.'''
+
+    v = p.v
+
+    if hasattr(v,"tnodeList"):
+
+        if False: # Not an error, but a useful trace.
+            s = "deleting tnodeList for " + repr(v)
+            g.es_print(s,color="blue")
+
+        delattr(v,"tnodeList")
+        v._p_changed = True
+#@-node:ekr.20100122130101.6174:deleteTnodeList
+#@+node:ekr.20041005105605.22:initFileName
+def initFileName (self,fromString,importFileName,root):
+
+    if fromString:
+        fileName = "<string-file>"
+    elif importFileName:
+        fileName = importFileName
+    elif root.isAnyAtFileNode():
+        fileName = root.anyAtFileNodeName()
+    else:
+        fileName = None
+
+    return fileName
+#@-node:ekr.20041005105605.22:initFileName
+#@+node:ekr.20100224050618.11547:at.isFileLike
+def isFileLike (self,s):
+
+    '''Return True if s has file-like sentinels.'''
+
+    trace = False and not g.unitTesting
+    at = self ; tag = "@+leo"
+    s = g.toUnicode(s)
+    i = s.find(tag)
+    if i == -1:
+        if trace: g.trace('found: False',repr(s))
+        return True # Don't use the cashe.
+    else:
+        j,k = g.getLine(s,i)
+        line = s[j:k]
+        valid,new_df,start,end,isThin = \
+            at.parseLeoSentinel(line)
+        if trace: g.trace('found: True isThin:',
+            isThin,repr(line))
+        return not isThin
+#@-node:ekr.20100224050618.11547:at.isFileLike
+#@+node:ekr.20071105164407:warnAboutUnvisitedNodes
+def warnAboutUnvisitedNodes (self,root):
+
+    resurrected = 0
+
+    for p in root.self_and_subtree():
+        if not p.v.isVisited():
+            g.trace('**** not visited',p.v,p.h)
+            g.es('resurrected node:',p.h,color='blue')
+            g.es('in file:',root.h,color='blue')
+            resurrected += 1
+
+    if resurrected:
+        g.es('you may want to delete ressurected nodes')
+#@-node:ekr.20071105164407:warnAboutUnvisitedNodes
+#@-node:ekr.20041005105605.21:at.read & helpers
+#@+node:ekr.20041005105605.25:deleteAllTempBodyStrings
+def deleteAllTempBodyStrings(self):
+
+    for v in self.c.all_unique_nodes():
+        if hasattr(v,"tempBodyString"):
+            delattr(v,"tempBodyString")
+        if hasattr(v,"tempBodyList"):
+            delattr(v,"tempBodyList")
+#@-node:ekr.20041005105605.25:deleteAllTempBodyStrings
+#@+node:ekr.20041005105605.28:<< handle first and last lines >>
+try:
+    body = root.v.tempBodyString
+except Exception:
+    body = ""
+
+lines = body.split('\n')
+at.completeFirstDirectives(lines,firstLines)
+at.completeLastDirectives(lines,lastLines)
+s = '\n'.join(lines).replace('\r', '')
+root.v.tempBodyString = s
+#@-node:ekr.20041005105605.28:<< handle first and last lines >>
+#@+node:ekr.20041005105605.95:at.readEndNode
+def readEndNode (self,unused_s,unused_i,middle=False):
+
+    """Handle @-node sentinels."""
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c
+
+    # End raw mode.
+    at.raw = False
+
+    # Set the temporary body text.
+    if at.readVersion5:
+        if hasattr(at.v,'tempBodyList'):
+            s = ''.join(at.v.tempBodyList)
+        else:
+            s = ''
+    else:
+        s = ''.join(at.out)
+
+    s = g.toUnicode(s)
+    # g.trace('%20s %s' % (at.v.h,repr(s)))
+
+    if at.importing:
+        at.v._bodyString = s # Allowed use of _bodyString.
+    elif middle: 
+        pass # Middle sentinels never alter text.
+    else:
+        if at.v == at.root.v:
+            old = None # Don't issue warnings for the root.
+        elif hasattr(at.v,"tempBodyString") and s != at.v.tempBodyString:
+            old = at.v.tempBodyString
+        elif at.v.hasBody() and s != at.v.getBody():
+            old = at.v.getBody()
+        else:
+            old = None
+
+        if old:
+            << indicate that the node has been changed >>
+
+        # *Always* update the text.
+        if at.readVersion5:
+            if trace and hasattr(at.v,"tempBodyString") and at.v.tempBodyString:
+                g.trace('*** can not happen: tempBodyString',at.v.h,repr(s))
+        else:
+            at.v.tempBodyString = s
+
+    # Indicate that the vnode has been set in the derived file.
+    at.v.setVisited()
+
+    # End the previous node sentinel.
+    at.indent = at.indentStack.pop()
+    at.out = at.outStack.pop()
+    at.v = at.vStack.pop()
+
+    if at.thinFile and not at.importing:
+        at.lastThinNode = at.thinNodeStack.pop()
+
+    if not at.readVersion5:
+        at.popSentinelStack(at.endNode)
+#@+node:ekr.20041005105605.96:<< indicate that the node has been changed >>
+if at.perfectImportRoot:
+    << bump at.correctedLines and tell about the correction >>
+    at.v._bodyString = s # Allowed use of _bodyString.
+        # Just setting at.v.tempBodyString won't work here.
+    at.v.setDirty()
+        # Mark the node dirty. Ancestors will be marked dirty later.
+    at.c.setChanged(True)
+else:
+    # 2010/02/05: removed special case for @all.
+    c.nodeConflictList.append(g.bunch(
+        tag='(uncached)',
+        gnx=at.v.gnx,
+        fileName = at.root.h,
+        b_old=old,
+        b_new=s,
+        h_old=at.v._headString,
+        h_new=at.v._headString,
+    ))
+
+    g.es_print("uncached read node changed",at.v.h,color="red")
+
+    at.v.setDirty()
+        # Just set the dirty bit. Ancestors will be marked dirty later.
+    c.changed = True
+        # Important: the dirty bits won't stick unless we set c.changed here.
+        # Do *not* call c.setChanged(True) here: that would be too slow.
+#@+node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
+# Report the number of corrected nodes.
+at.correctedLines += 1
+
+found = False
+for p in at.perfectImportRoot.self_and_subtree():
+    if p.v == at.v:
+        found = True ; break
+
+if found:
+    if 0: # For debugging.
+        g.pr('\n','-' * 40)
+        g.pr("old",len(old))
+        for line in g.splitLines(old):
+            #line = line.replace(' ','< >').replace('\t','<TAB>')
+            g.pr(repr(str(line)))
+        g.pr('\n','-' * 40)
+        g.pr("new",len(s))
+        for line in g.splitLines(s):
+            #line = line.replace(' ','< >').replace('\t','<TAB>')
+            g.pr(repr(str(line)))
+        g.pr('\n','-' * 40)
+else:
+    # This should never happen.
+    g.es("correcting hidden node: v=",repr(at.v),color="red")
+#@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
+#@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
+#@-node:ekr.20041005105605.95:at.readEndNode
+#@+node:ekr.20041005105605.96:<< indicate that the node has been changed >>
+if at.perfectImportRoot:
+    << bump at.correctedLines and tell about the correction >>
+    at.v._bodyString = s # Allowed use of _bodyString.
+        # Just setting at.v.tempBodyString won't work here.
+    at.v.setDirty()
+        # Mark the node dirty. Ancestors will be marked dirty later.
+    at.c.setChanged(True)
+else:
+    # 2010/02/05: removed special case for @all.
+    c.nodeConflictList.append(g.bunch(
+        tag='(uncached)',
+        gnx=at.v.gnx,
+        fileName = at.root.h,
+        b_old=old,
+        b_new=s,
+        h_old=at.v._headString,
+        h_new=at.v._headString,
+    ))
+
+    g.es_print("uncached read node changed",at.v.h,color="red")
+
+    at.v.setDirty()
+        # Just set the dirty bit. Ancestors will be marked dirty later.
+    c.changed = True
+        # Important: the dirty bits won't stick unless we set c.changed here.
+        # Do *not* call c.setChanged(True) here: that would be too slow.
+#@+node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
+# Report the number of corrected nodes.
+at.correctedLines += 1
+
+found = False
+for p in at.perfectImportRoot.self_and_subtree():
+    if p.v == at.v:
+        found = True ; break
+
+if found:
+    if 0: # For debugging.
+        g.pr('\n','-' * 40)
+        g.pr("old",len(old))
+        for line in g.splitLines(old):
+            #line = line.replace(' ','< >').replace('\t','<TAB>')
+            g.pr(repr(str(line)))
+        g.pr('\n','-' * 40)
+        g.pr("new",len(s))
+        for line in g.splitLines(s):
+            #line = line.replace(' ','< >').replace('\t','<TAB>')
+            g.pr(repr(str(line)))
+        g.pr('\n','-' * 40)
+else:
+    # This should never happen.
+    g.es("correcting hidden node: v=",repr(at.v),color="red")
+#@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
+#@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
+#@+node:ekr.20050301105854:copyAllTempBodyStringsToTnodes
+def  copyAllTempBodyStringsToTnodes (self,root,thinFile):
+
+    c = self.c
+    for p in root.self_and_subtree():
+        if hasattr(p.v,'tempBodyString'):
+            s = p.v.tempBodyString
+        else:
+            s = ''
+        if hasattr(p.v,'tempBodyList'):
+            s = s + ''.join(p.v.tempBodyList)
+        # try: s = p.v.tempBodyString
+        # except Exception: s = ""
+        old_body = p.b
+        if s != old_body:
+            if thinFile:
+                p.v.setBodyString(s)
+                if p.v.isDirty():
+                    p.setAllAncestorAtFileNodesDirty()
+            else:
+                c.setBodyString(p,s) # Sets c and p dirty.
+
+            if p.v.isDirty():
+                # New in Leo 4.3: support for mod_labels plugin:
+                try:
+                    c.mod_label_controller.add_label(p,"before change:",old_body)
+                except Exception:
+                    pass
+                # 2010/02/05: This warning is given elsewhere.
+                # g.es("changed:",p.h,color="blue")
+#@-node:ekr.20050301105854:copyAllTempBodyStringsToTnodes
+#@-node:ekr.20100625161750.5972:Found: tempBodyString
+#@+node:ekr.20100625184546.5976:Found: thinNodeStack
+#@+node:ekr.20100625085138.5957:createNewThinNode & closePreviousNode
+def createNewThinNode (self,gnx,headline,level):
+
+    trace = False and not g.unitTesting
+    at = self
+
+    if at.thinNodeStack:
+        if at.readVersion5:
+            oldLevel = len(at.thinNodeStack)
+            newLevel = level - 1
+            assert newLevel >= 0
+            at.closePreviousNode(oldLevel,newLevel)
+            v = at.createThinChild4(gnx,headline)
+            at.thinNodeStack.append(v)
+            if trace: g.trace(
+                '** oldLvl: %s, newLvl: %s, v: %s, last: %s, stack: \n%s\n' % (
+                oldLevel,newLevel,v.h,at.lastThinNode.h,
+                [z.h for z in at.thinNodeStack]))
+        else:
+            at.thinNodeStack.append(at.lastThinNode)
+            v = at.createThinChild4(gnx,headline)
+    else:
+        v = at.root.v
+        at.thinNodeStack.append(v)
+
+    at.lastThinNode = v
+    return v
+#@+node:ekr.20100624082003.5944:closePreviousNode
+def closePreviousNode (self,oldLevel,newLevel):
+
+    trace = False and not g.unitTesting
+    at = self
+
+    if trace: g.trace('******',
+        [at.sentinelName(z) for z in at.endSentinelStack])
+
+    if newLevel <= oldLevel:
+        # Pretend we have seen -node sentinels.
+        for z in range(oldLevel - newLevel):
+            at.readEndNode('',0)
+
+        at.lastThinNode = at.thinNodeStack[newLevel-1]
+    else:
+        at.lastThinNode = at.thinNodeStack[-1]
+#@-node:ekr.20100624082003.5944:closePreviousNode
+#@-node:ekr.20100625085138.5957:createNewThinNode & closePreviousNode
+#@+node:ekr.20041005105605.95:at.readEndNode
+def readEndNode (self,unused_s,unused_i,middle=False):
+
+    """Handle @-node sentinels."""
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c
+
+    # End raw mode.
+    at.raw = False
+
+    # Set the temporary body text.
+    if at.readVersion5:
+        if hasattr(at.v,'tempBodyList'):
+            s = ''.join(at.v.tempBodyList)
+        else:
+            s = ''
+    else:
+        s = ''.join(at.out)
+
+    s = g.toUnicode(s)
+    # g.trace('%20s %s' % (at.v.h,repr(s)))
+
+    if at.importing:
+        at.v._bodyString = s # Allowed use of _bodyString.
+    elif middle: 
+        pass # Middle sentinels never alter text.
+    else:
+        if at.v == at.root.v:
+            old = None # Don't issue warnings for the root.
+        elif hasattr(at.v,"tempBodyString") and s != at.v.tempBodyString:
+            old = at.v.tempBodyString
+        elif at.v.hasBody() and s != at.v.getBody():
+            old = at.v.getBody()
+        else:
+            old = None
+
+        if old:
+            << indicate that the node has been changed >>
+
+        # *Always* update the text.
+        if at.readVersion5:
+            if trace and hasattr(at.v,"tempBodyString") and at.v.tempBodyString:
+                g.trace('*** can not happen: tempBodyString',at.v.h,repr(s))
+        else:
+            at.v.tempBodyString = s
+
+    # Indicate that the vnode has been set in the derived file.
+    at.v.setVisited()
+
+    # End the previous node sentinel.
+    at.indent = at.indentStack.pop()
+    at.out = at.outStack.pop()
+    at.v = at.vStack.pop()
+
+    if at.thinFile and not at.importing:
+        at.lastThinNode = at.thinNodeStack.pop()
+
+    if not at.readVersion5:
+        at.popSentinelStack(at.endNode)
+#@+node:ekr.20041005105605.96:<< indicate that the node has been changed >>
+if at.perfectImportRoot:
+    << bump at.correctedLines and tell about the correction >>
+    at.v._bodyString = s # Allowed use of _bodyString.
+        # Just setting at.v.tempBodyString won't work here.
+    at.v.setDirty()
+        # Mark the node dirty. Ancestors will be marked dirty later.
+    at.c.setChanged(True)
+else:
+    # 2010/02/05: removed special case for @all.
+    c.nodeConflictList.append(g.bunch(
+        tag='(uncached)',
+        gnx=at.v.gnx,
+        fileName = at.root.h,
+        b_old=old,
+        b_new=s,
+        h_old=at.v._headString,
+        h_new=at.v._headString,
+    ))
+
+    g.es_print("uncached read node changed",at.v.h,color="red")
+
+    at.v.setDirty()
+        # Just set the dirty bit. Ancestors will be marked dirty later.
+    c.changed = True
+        # Important: the dirty bits won't stick unless we set c.changed here.
+        # Do *not* call c.setChanged(True) here: that would be too slow.
+#@+node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
+# Report the number of corrected nodes.
+at.correctedLines += 1
+
+found = False
+for p in at.perfectImportRoot.self_and_subtree():
+    if p.v == at.v:
+        found = True ; break
+
+if found:
+    if 0: # For debugging.
+        g.pr('\n','-' * 40)
+        g.pr("old",len(old))
+        for line in g.splitLines(old):
+            #line = line.replace(' ','< >').replace('\t','<TAB>')
+            g.pr(repr(str(line)))
+        g.pr('\n','-' * 40)
+        g.pr("new",len(s))
+        for line in g.splitLines(s):
+            #line = line.replace(' ','< >').replace('\t','<TAB>')
+            g.pr(repr(str(line)))
+        g.pr('\n','-' * 40)
+else:
+    # This should never happen.
+    g.es("correcting hidden node: v=",repr(at.v),color="red")
+#@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
+#@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
+#@-node:ekr.20041005105605.95:at.readEndNode
+#@+node:ekr.20100619222623.5918:How to read new sentinels
+http://groups.google.com/group/leo-editor/browse_thread/thread/3c3d52f652386d25
+
+How to read new sentinels
+
+The old scheme uses three stacks:
+
+- The **node stack**, at.thinNodeStack, contains the vnode being read at every
+nesting level.
+
+- The **indent stack**, at.indentStack, contains the leading whitespace (in
+  units of blanks) to be removed from all body lines at a particular level. This
+  is *not* the same as the outline level of the node! In particular, it does not
+  depend on level stars.
+
+- The **sentinel stack**, at.endSentinelStack, contains an entry for every pair
+  of sentinels. For example, when Leo appends an -others item to this stack when
+  it reads a +others sentinel.  The old scheme appends -node entries when it reads
+  a +node sentinel: the new scheme probably won't.
+
+- The **sentinel-level stack**, at.sentinelLevelStack. Only the new scheme uses
+  this stack. This stack contains the outline level in effect when the opening
+  sentinel is seen. When the closing sentinel is seen we cut back the node and
+  indent stacks to that level.
+
+In general, +node sentinels push, pop and change entries on the node and indent
+stacks, while paired sentinels push and pop entries on the sentinel and
+sentinel-level stacks. The node and indent stacks always have the same number of
+entries, as do the sentinel and sentinel-level stacks (in the new scheme). Thus
+we could speak of the **node/indent** stack, containing entries (v,indent), and
+the **sentinel/level** stack, containing entries (kind,n).
+
+In more details, we handle sentinels as follows:
+
+Case 1. -others and -<<
+
+This terminates the previous node, if it hasn't already been terminated.
+
+- Pop the sentinel/level stack into kind,n.
+- Check that kind is +others or +<<.
+- Cut back the node/indent stack to level n. The top of the stack is (v,indent).
+  The present node becomes v, and indent becomes the present indentation level.
+
+Case 2. +node.
+
+This terminates the previous node, if it hasn't already been terminated.
+
+Unlike in the old scheme, outline level is indicated by the **level stars** in
+the +node sentinel. Let N be the indentation of the new +node, and M be the
+previous indentation. In a well-formed file N <= M+1.
+
+Case 2a: N == M + 1.  Create a new node as the first child of the previous current node.
+
+Case 2b: N == M.  Create a new node as the next sibling of the previous current node.
+
+Case 3c: N < M. Cut back the node/indent stack to level N. In a well-formed thin file,
+cutting back the stack can not terminate any section reference or @others range. Check this
+by ensuring that N is not less than the indent item for all entries in the sentinel/level stack.
+#@-node:ekr.20100619222623.5918:How to read new sentinels
+#@-node:ekr.20100625184546.5976:Found: thinNodeStack
+#@-node:ekr.20100625184546.5977: Searches
+#@+node:ekr.20041005105605.7:at.Birth & init
+#@+node:ekr.20041005105605.8:atFile.__init__
+def __init__(self,c):
+
+    # **Warning**: all these ivars must **also** be inited in initCommonIvars.
+    self.c = c
+    self.debug = False
+    self.fileCommands = c.fileCommands
+    self.testing = False # True: enable additional checks.
+    self.errors = 0 # Make sure at.error() works even when not inited.
+
+    # User options.
+    self.checkPythonCodeOnWrite = c.config.getBool(
+        'check-python-code-on-write',default=True)
+    self.underindentEscapeString = c.config.getString(
+        'underindent-escape-string') or '\\-'
+
+    << define the dispatch dictionary used by scanText4 >>
+#@+node:ekr.20041005105605.9:<< define the dispatch dictionary used by scanText4 >>
+self.dispatch_dict = {
+    # Plain line.
+    self.noSentinel: self.readNormalLine,
+    # Starting sentinels...
+    self.startAll:    self.readStartAll,
+    self.startAt:     self.readStartAt,
+    self.startDoc:    self.readStartDoc,
+    self.startLeo:    self.readStartLeo,
+    self.startMiddle: self.readStartMiddle,
+    self.startNode:   self.readStartNode,
+    self.startOthers: self.readStartOthers,
+    # Ending sentinels...
+    self.endAll:    self.readEndAll,
+    self.endAt:     self.readEndAt,
+    self.endDoc:    self.readEndDoc,
+    self.endLeo:    self.readEndLeo,
+    self.endMiddle: self.readEndMiddle,
+    self.endNode:   self.readEndNode,
+    self.endOthers: self.readEndOthers,
+    # Non-paired sentinels.
+    self.startAfterRef:  self.readAfterRef,
+    self.startClone:     self.readClone,
+    self.startComment:   self.readComment,
+    self.startDelims:    self.readDelims,
+    self.startDirective: self.readDirective,
+    self.startNl:        self.readNl,
+    self.startNonl:      self.readNonl,
+    self.startRef:       self.readRef,
+    self.startVerbatim:  self.readVerbatim,
+    # Ignored 3.x sentinels
+    self.endBody:               self.ignoreOldSentinel,
+    self.startBody:             self.ignoreOldSentinel,
+    self.startVerbatimAfterRef: self.ignoreOldSentinel,
+    # New 4.8 sentinels
+    self.endRef: self.readEndRef,
+}
+#@-node:ekr.20041005105605.9:<< define the dispatch dictionary used by scanText4 >>
+#@-node:ekr.20041005105605.8:atFile.__init__
+#@+node:ekr.20041005105605.10:initCommonIvars
+def initCommonIvars (self):
+
+    """Init ivars common to both reading and writing.
+
+    The defaults set here may be changed later."""
+
+    c = self.c
+
+    if self.testing:
+        # Save "permanent" ivars
+        fileCommands = self.fileCommands
+        dispatch_dict = self.dispatch_dict
+        # Clear all ivars.
+        g.clearAllIvars(self)
+        # Restore permanent ivars
+        self.testing = True
+        self.c = c
+        self.fileCommands = fileCommands
+        self.dispatch_dict = dispatch_dict
+
+    << set defaults for arguments and options >>
+    << init common ivars >>
+#@+node:ekr.20041005105605.11:<< set defaults for arguments and options >>
+# These may be changed in initReadIvars or initWriteIvars.
+
+# Support of output_newline option.
+self.output_newline = g.getOutputNewline(c=c)
+
+# Set by scanHeader when reading and scanAllDirectives when writing.
+self.at_auto_encoding = c.config.default_at_auto_file_encoding
+self.encoding = c.config.default_derived_file_encoding
+self.endSentinelComment = ""
+self.startSentinelComment = ""
+
+# Set by scanAllDirectives when writing.
+self.default_directory = None
+self.page_width = None
+self.tab_width  = None
+self.startSentinelComment = ""
+self.endSentinelComment = ""
+self.language = None
+#@-node:ekr.20041005105605.11:<< set defaults for arguments and options >>
+#@+node:ekr.20041005105605.12:<< init common ivars >>
+# These may be set by initReadIvars or initWriteIvars.
+
+self.errors = 0
+self.inCode = True
+self.indent = 0  # The unit of indentation is spaces, not tabs.
+self.pending = []
+self.raw = False # True: in @raw mode
+self.root = None # The root (a position) of tree being read or written.
+self.root_seen = False # True: root vnode has been handled in this file.
+self.toString = False # True: sring-oriented read or write.
+self.writing_to_shadow_directory = False
+#@nonl
+#@-node:ekr.20041005105605.12:<< init common ivars >>
+#@-node:ekr.20041005105605.10:initCommonIvars
+#@+node:ekr.20041005105605.13:initReadIvars
+def initReadIvars(self,root,fileName,
+    importFileName=None,
+    perfectImportRoot=None,
+    atShadow=False,
+):
+
+    importing = importFileName is not None
+
+    self.initCommonIvars()
+
+    << init ivars for reading >>
+
+    self.scanDefaultDirectory(root,importing=importing)
+    if self.errors: return
+
+    # Init state from arguments.
+    self.perfectImportRoot = perfectImportRoot
+    self.importing = importing
+    self.root = root
+    self.targetFileName = fileName
+    self.thinFile = False # 2010/01/22: was thinFile
+    self.atShadow = atShadow
+#@+node:ekr.20041005105605.14:<< init ivars for reading >>
+self.atAllFlag = False # True if @all seen.
+self.cloneSibCount = 0
+    # n > 1: Make sure n cloned sibs exists at next @+node sentinel
+self.correctedLines = 0
+self.docOut = [] # The doc part being accumulated.
+self.done = False # True when @-leo seen.
+self.endSentinelStack = []
+    # Contains entries for +node sentinels only when not readVersion5
+self.endSentinelNodeStack = []
+    # Used only when readVersion5.
+self.importing = False
+self.importRootSeen = False
+self.indentStack = []
+self.inputFile = None
+self.lastLines = [] # The lines after @-leo
+self.lastThinNode = None
+    # The last thin node at this level.
+    # Used by createThinChild4.
+self.leadingWs = ""
+self.lineNumber = 0 # New in Leo 4.4.8.
+self.out = None
+self.outStack = []
+self.readVersion = '' # New in Leo 4.8: "4" or "5" for new-style thin files.
+self.readVersion5 = False # synonym for new_read and at.readVersion >= '5'
+self.rootSeen = False
+self.tnodeList = []
+    # Needed until old-style @file nodes are no longer supported.
+self.tnodeListIndex = 0
+self.v = None
+self.vStack = [] # Stack of at.v values.
+self.thinNodeStack = [] # Entries are vnodes.
+self.updateWarningGiven = False
+#@-node:ekr.20041005105605.14:<< init ivars for reading >>
+#@-node:ekr.20041005105605.13:initReadIvars
+#@+node:ekr.20041005105605.15:initWriteIvars
+def initWriteIvars(self,root,targetFileName,
+    atAuto=False,
+    atEdit=False,
+    atShadow=False,
+    nosentinels=False,
+    thinFile=False,
+    scriptWrite=False,
+    toString=False,
+    forcePythonSentinels=None,
+):
+
+    self.initCommonIvars()
+    << init ivars for writing >>
+
+    if forcePythonSentinels is None:
+        forcePythonSentinels = scriptWrite
+
+    if root:
+        self.scanAllDirectives(root,
+            scripting=scriptWrite,
+            forcePythonSentinels=forcePythonSentinels,
+            issuePathWarning=True)
+
+    # g.trace(forcePythonSentinels,
+    #    self.startSentinelComment,self.endSentinelComment)
+
+    if forcePythonSentinels:
+        # Force Python comment delims for g.getScript.
+        self.startSentinelComment = "#"
+        self.endSentinelComment = None
+
+    # Init state from arguments.
+    self.targetFileName = targetFileName
+    self.sentinels = not nosentinels
+    self.thinFile = thinFile
+    self.toString = toString
+    self.root = root
+
+    # Ignore config settings for unit testing.
+    if toString and g.app.unitTesting: self.output_newline = '\n'
+
+    # Init all other ivars even if there is an error.
+    if not self.errors and self.root:
+        if hasattr(self.root.v,'tnodeList'):
+            delattr(self.root.v,'tnodeList')
+        self.root.v._p_changed = True
+#@+node:ekr.20041005105605.16:<< init ivars for writing >>>
+@
+When tangling, we first write to a temporary output file. After tangling is
+temporary file. Otherwise we delete the old target file and rename the
+temporary file to be the target file.
+@c
+
+self.docKind = None
+self.explicitLineEnding = False
+    # True: an @lineending directive specifies the ending.
+self.fileChangedFlag = False # True: the file has actually been updated.
+self.atAuto = atAuto
+self.atEdit = atEdit
+self.atShadow = atShadow
+self.shortFileName = "" # short version of file name used for messages.
+self.thinFile = False
+self.force_newlines_in_at_nosent_bodies = self.c.config.getBool(
+    'force_newlines_in_at_nosent_bodies')
+
+if toString:
+    self.outputFile = g.fileLikeObject()
+    self.stringOutput = ""
+    self.targetFileName = self.outputFileName = "<string-file>"
+else:
+    self.outputFile = None # The temporary output file.
+    self.stringOutput = None
+    self.targetFileName = self.outputFileName = g.u('')
+#@-node:ekr.20041005105605.16:<< init ivars for writing >>>
+#@-node:ekr.20041005105605.15:initWriteIvars
+#@-node:ekr.20041005105605.7:at.Birth & init
+#@+node:ekr.20100619222623.5917:Notes
+@nocolor
+
+#@+node:ekr.20100619222623.5918:How to read new sentinels
+http://groups.google.com/group/leo-editor/browse_thread/thread/3c3d52f652386d25
+
+How to read new sentinels
+
+The old scheme uses three stacks:
+
+- The **node stack**, at.thinNodeStack, contains the vnode being read at every
+nesting level.
+
+- The **indent stack**, at.indentStack, contains the leading whitespace (in
+  units of blanks) to be removed from all body lines at a particular level. This
+  is *not* the same as the outline level of the node! In particular, it does not
+  depend on level stars.
+
+- The **sentinel stack**, at.endSentinelStack, contains an entry for every pair
+  of sentinels. For example, when Leo appends an -others item to this stack when
+  it reads a +others sentinel.  The old scheme appends -node entries when it reads
+  a +node sentinel: the new scheme probably won't.
+
+- The **sentinel-level stack**, at.sentinelLevelStack. Only the new scheme uses
+  this stack. This stack contains the outline level in effect when the opening
+  sentinel is seen. When the closing sentinel is seen we cut back the node and
+  indent stacks to that level.
+
+In general, +node sentinels push, pop and change entries on the node and indent
+stacks, while paired sentinels push and pop entries on the sentinel and
+sentinel-level stacks. The node and indent stacks always have the same number of
+entries, as do the sentinel and sentinel-level stacks (in the new scheme). Thus
+we could speak of the **node/indent** stack, containing entries (v,indent), and
+the **sentinel/level** stack, containing entries (kind,n).
+
+In more details, we handle sentinels as follows:
+
+Case 1. -others and -<<
+
+This terminates the previous node, if it hasn't already been terminated.
+
+- Pop the sentinel/level stack into kind,n.
+- Check that kind is +others or +<<.
+- Cut back the node/indent stack to level n. The top of the stack is (v,indent).
+  The present node becomes v, and indent becomes the present indentation level.
+
+Case 2. +node.
+
+This terminates the previous node, if it hasn't already been terminated.
+
+Unlike in the old scheme, outline level is indicated by the **level stars** in
+the +node sentinel. Let N be the indentation of the new +node, and M be the
+previous indentation. In a well-formed file N <= M+1.
+
+Case 2a: N == M + 1.  Create a new node as the first child of the previous current node.
+
+Case 2b: N == M.  Create a new node as the next sibling of the previous current node.
+
+Case 3c: N < M. Cut back the node/indent stack to level N. In a well-formed thin file,
+cutting back the stack can not terminate any section reference or @others range. Check this
+by ensuring that N is not less than the indent item for all entries in the sentinel/level stack.
+#@-node:ekr.20100619222623.5918:How to read new sentinels
+#@+node:ekr.20100619222623.5920:Example
+#@verbatim
+#@+leo-ver=5-thin
+#@verbatim
+#@leo-data <list of gnx's>
+#@verbatim
+#@node 1 * @thin sentinels_test.py
+#@verbatim
+#@@
+# This is a doc part.
+#@verbatim
+#@c
+
+#@verbatim
+#@+<< a >>
+#@verbatim
+#@node 2 ** << a >>
+a
+#@verbatim
+#@-<< a >>
+
+#@verbatim
+#@+others
+#@verbatim
+#@node 3 *** a-1
+a-1
+#@verbatim
+#@node 4 *** a-2
+a-2
+#@verbatim
+#@-others
+
+b
+
+#@verbatim
+#@+others
+#@verbatim
+#@node 5 ** 1-1
+1-1
+#@verbatim
+#@node 6 *** 2-1
+2-1
+#@verbatim
+#@node 7 **** 3-1
+3-1
+#@verbatim
+#@node 8 ** 1-2
+1-2
+#@verbatim
+#@-others
+#@nonl
+#@-node:ekr.20100619222623.5920:Example
+#@-node:ekr.20100619222623.5917:Notes
+#@+node:ekr.20100518100915.5898:Utils
+#@+node:ekr.20041005105605.5:<< define class constants >>
+# These constants must be global to this module
+# because they are shared by several classes.
+
+# The kind of at_directives.
+noDirective     =  1 # not an at-directive.
+allDirective    =  2 # at-all (4.2)
+docDirective    =  3 # @doc.
+atDirective     =  4 # @<space> or @<newline>
+codeDirective   =  5 # @code
+cDirective      =  6 # @c<space> or @c<newline>
+othersDirective =  7 # at-others
+miscDirective   =  8 # All other directives
+rawDirective    =  9 # @raw
+endRawDirective = 10 # @end_raw
+
+# The kind of sentinel line.
+noSentinel   = 20 # Not a sentinel
+endAt        = 21 # @-at
+endBody      = 22 # @-body
+# not used   = 23
+endDoc       = 24 # @-doc
+endLeo       = 25 # @-leo
+endNode      = 26 # @-node
+endOthers    = 27 # @-others
+
+# not used     = 40
+startAt        = 41 # @+at
+startBody      = 42 # @+body
+startDoc       = 43 # @+doc
+startLeo       = 44 # @+leo
+startNode      = 45 # @+node
+startOthers    = 46 # @+others
+
+startComment   = 60 # @comment
+startDelims    = 61 # @delims
+startDirective = 62 # @@
+startRef       = 63 # @< < ... > >
+startVerbatim  = 64 # @verbatim
+startVerbatimAfterRef = 65 # @verbatimAfterRef (3.0 only)
+
+# New in 4.x. Paired
+endAll         = 70 # at-all (4.2)
+endMiddle      = 71 # at-middle (4.2)
+startAll       = 72 # at+all (4.2)
+startMiddle    = 73 # at+middle (4.2)
+
+# New in 4.x.  Unpaired.
+startAfterRef  = 80 # @afterref (4.0)
+startClone     = 81 # @clone (4.2)
+startNl        = 82 # @nl (4.0)
+startNonl      = 83 # @nonl (4.0)
+
+# New in 4.8.
+endRef         = 84 # @-<<
+#@-node:ekr.20041005105605.5:<< define class constants >>
+#@+node:ekr.20041005105605.198:directiveKind4 (write logic)
+def directiveKind4(self,s,i):
+
+    """Return the kind of at-directive or noDirective."""
+
+    trace = False and not g.unitTesting
+    at = self
+    n = len(s)
+
+    if trace and s.startswith('@'): g.trace(s.rstrip())
+
+    if i >= n or s[i] != '@':
+        j = g.skip_ws(s,i)
+        if g.match_word(s,j,"@others"):
+            return at.othersDirective
+        elif g.match_word(s,j,"@all"):
+            return at.allDirective
+        else:
+            return at.noDirective
+
+    table = (
+        ("@all",at.allDirective),
+        ("@c",at.cDirective),
+        ("@code",at.codeDirective),
+        ("@doc",at.docDirective),
+        ("@end_raw",at.endRawDirective),
+        ("@others",at.othersDirective),
+        ("@raw",at.rawDirective),
+        ("@verbatim",at.startVerbatim))
+
+    # Rewritten 6/8/2005.
+    if i+1 >= n or s[i+1] in (' ','\t','\n'):
+        # Bare '@' not recognized in cweb mode.
+        return g.choose(at.language=="cweb",at.noDirective,at.atDirective)
+    if not s[i+1].isalpha():
+        return at.noDirective # Bug fix: do NOT return miscDirective here!
+    if at.language=="cweb" and g.match_word(s,i,'@c'):
+        return at.noDirective
+
+    for name,directive in table:
+        if g.match_word(s,i,name):
+            return directive
+
+    # New in Leo 4.4.3: add support for add_directives plugin.
+    for name in g.globalDirectiveList:
+        if g.match_word(s,i+1,name):
+            return at.miscDirective
+
+    return at.noDirective
+#@-node:ekr.20041005105605.198:directiveKind4 (write logic)
+#@+node:ekr.20041005105605.243:sentinelName
+# Returns the name of the sentinel for warnings.
+
+def sentinelName(self, kind):
+
+    at = self
+
+    sentinelNameDict = {
+        at.endAll:        "@-all", # 4.x
+        at.endAt:         "@-at",
+        at.endBody:       "@-body", # 3.x only.
+        at.endDoc:        "@-doc",
+        at.endLeo:        "@-leo",
+        at.endMiddle:     "@-middle", # 4.x
+        at.endNode:       "@-node",
+        at.endOthers:     "@-others",
+        at.endRef:        "@-<<", # 4.8
+        at.noSentinel:    "<no sentinel>",
+        at.startAt:       "@+at",
+        at.startBody:     "@+body",
+        at.startDoc:      "@+doc",
+        at.startLeo:      "@+leo",
+        at.startNode:     "@+node",
+        at.startOthers:   "@+others",
+        at.startAll:      "@+all",    
+        at.startMiddle:   "@+middle", 
+        at.startAfterRef: "@afterref", # 4.x
+        at.startComment:  "@comment",
+        at.startDelims:   "@delims",
+        at.startDirective:"@@",
+        at.startNl:       "@nl",   # 4.x
+        at.startNonl:     "@nonl", # 4.x
+        at.startClone:    "@clone", # 4.2
+        at.startRef:      "@<<",
+        at.startVerbatim: "@verbatim",
+        at.startVerbatimAfterRef: "@verbatimAfterRef", # 3.x only.
+    } 
+
+    return sentinelNameDict.get(kind,"<unknown sentinel: %s>" % kind)
+#@-node:ekr.20041005105605.243:sentinelName
+#@+node:ekr.20041005105605.114:sentinelKind4 & helper (read logic)
+def sentinelKind4(self,s):
+
+    """Return the kind of sentinel at s."""
+
+    trace = False and not g.unitTesting
+    at = self
+
+    val = at.sentinelKind4_helper(s)
+
+    if trace: g.trace('%-20s %s' % (
+        at.sentinelName(val),s.rstrip()))
+
+    return val
+#@+node:ekr.20100518083515.5896:sentinelKind4_helper
+def sentinelKind4_helper(self,s):
+
+    at = self
+    i = g.skip_ws(s,0)
+    if g.match(s,i,at.startSentinelComment): 
+        i += len(at.startSentinelComment)
+    else:
+        return at.noSentinel
+
+    # Locally undo cweb hack here
+    start = at.startSentinelComment
+    if start and len(start) > 0 and start[-1] == '@':
+        s = s[:i] + s[i:].replace('@@','@')
+
+    # New sentinels.
+    if g.match(s,i,"@+"):
+        if g.match(s,i+2,"others"):
+            return at.startOthers
+        elif g.match(s,i+2,"<<"):
+            return at.startRef
+        else:
+            j = g.skip_ws(s,i+2)
+            if g.match(s,j,"<<"):
+                return at.startRef
+    elif g.match(s,i,"@-"):
+        if g.match(s,i+2,"others"):
+            return at.endOthers
+        elif g.match(s,i+2,"<<"):
+            return at.endRef
+        else:
+            j = g.skip_ws(s,i+2)
+            if g.match(s,j,"<<"):
+                return at.endRef
+    # Old sentinels.
+    elif g.match(s,i,"@"):
+        j = g.skip_ws(s,i+1)
+        if j > i+1:
+            if g.match(s,j,"@+others"):
+                return at.startOthers
+            elif g.match(s,j,"@-others"):
+                return at.endOthers
+            elif g.match(s,j,"<<"):
+                return at.startRef
+            else:
+                # No other sentinels allow whitespace following the '@'
+                return at.noSentinel
+
+    # Do not skip whitespace here!
+    if g.match(s,i,"@<<"): return at.startRef
+    if g.match(s,i,"@@"):   return at.startDirective
+    if not g.match(s,i,'@'): return at.noSentinel
+    j = i # start of lookup
+    i += 1 # skip the at sign.
+    if g.match(s,i,'+') or g.match(s,i,'-'):
+        i += 1
+    i = g.skip_c_id(s,i)
+    key = s[j:i]
+    if len(key) > 0 and key in at.sentinelDict:
+        return at.sentinelDict[key]
+    else:
+        return at.noSentinel
+#@-node:ekr.20100518083515.5896:sentinelKind4_helper
+#@-node:ekr.20041005105605.114:sentinelKind4 & helper (read logic)
+#@+node:ekr.20041005105605.120:at.parseLeoSentinel
+def parseLeoSentinel (self,s):
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c
+    new_df = False ; valid = True ; n = len(s)
+    start = '' ; end = '' ; isThinDerivedFile = False
+    encoding_tag = "-encoding="
+    version_tag = "-ver="
+    tag = "@+leo"
+    thin_tag = "-thin"
+    << set the opening comment delim >>
+    << make sure we have @+leo >>
+    << read optional version param >>
+    << read optional thin param >>
+    << read optional encoding param >>
+    << set the closing comment delim >>
+    if trace and not new_df:
+        g.trace('not new_df(!)',repr(s))
+    if trace: g.trace('valid',valid,'isThin',isThinDerivedFile)
+    return valid,new_df,start,end,isThinDerivedFile
+#@+node:ekr.20041005105605.121:<< set the opening comment delim >>
+# s contains the tag
+i = j = g.skip_ws(s,0)
+
+# The opening comment delim is the initial non-tag
+while i < n and not g.match(s,i,tag) and not g.is_nl(s,i):
+    i += 1
+
+if j < i:
+    start = s[j:i]
+else:
+    valid = False
+
+#@-node:ekr.20041005105605.121:<< set the opening comment delim >>
+#@+node:ekr.20041005105605.122:<< make sure we have @+leo >>
+@
+REM hack: leading whitespace is significant before the
+@+leo. We do this so that sentinelKind need not skip
+whitespace following self.startSentinelComment. This is
+correct: we want to be as restrictive as possible about what
+is recognized as a sentinel. This minimizes false matches.
+@c
+
+if 0: # Make leading whitespace significant.
+    i = g.skip_ws(s,i)
+
+if g.match(s,i,tag):
+    i += len(tag)
+else: valid = False
+#@-node:ekr.20041005105605.122:<< make sure we have @+leo >>
+#@+node:ekr.20041005105605.123:<< read optional version param >>
+new_df = g.match(s,i,version_tag)
+
+if new_df:
+    # Pre Leo 4.4.1: Skip to the next minus sign or end-of-line.
+    # Leo 4.4.1 +:   Skip to next minus sign, end-of-line,
+    #                or non numeric character.
+    # This is required to handle trailing comment delims properly.
+    i += len(version_tag)
+    j = i
+    while i < len(s) and (s[i] == '.' or s[i].isdigit()):
+        i += 1
+    at.readVersion = s[j:i] # 2010/05/18.
+    at.readVersion5 = new_read and at.readVersion >= '5'
+
+    if j < i:
+        pass
+    else:
+        valid = False
+#@-node:ekr.20041005105605.123:<< read optional version param >>
+#@+node:ekr.20041005105605.124:<< read optional thin param >>
+if g.match(s,i,thin_tag):
+    i += len(tag)
+    isThinDerivedFile = True
+#@-node:ekr.20041005105605.124:<< read optional thin param >>
+#@+node:ekr.20041005105605.125:<< read optional encoding param >>
+# Set the default encoding
+at.encoding = c.config.default_derived_file_encoding
+
+if g.match(s,i,encoding_tag):
+    # Read optional encoding param, e.g., -encoding=utf-8,
+    i += len(encoding_tag)
+    # Skip to the next end of the field.
+    j = s.find(",.",i)
+    if j > -1:
+        # The encoding field was written by 4.2 or after:
+        encoding = s[i:j]
+        i = j + 2 # 6/8/04, 1/11/05 (was i = j + 1)
+    else:
+        # The encoding field was written before 4.2.
+        j = s.find('.',i)
+        if j > -1:
+            encoding = s[i:j]
+            i = j + 1 # 6/8/04
+        else:
+            encoding = None
+    # g.trace("encoding:",encoding)
+    if encoding:
+        if g.isValidEncoding(encoding):
+            at.encoding = encoding
+        else:
+            g.es_print("bad encoding in derived file:",encoding)
+    else:
+        valid = False
+#@-node:ekr.20041005105605.125:<< read optional encoding param >>
+#@+node:ekr.20041005105605.126:<< set the closing comment delim >>
+# The closing comment delim is the trailing non-whitespace.
+i = j = g.skip_ws(s,i)
+while i < n and not g.is_ws(s[i]) and not g.is_nl(s,i):
+    i += 1
+end = s[j:i]
+#@-node:ekr.20041005105605.126:<< set the closing comment delim >>
+#@-node:ekr.20041005105605.120:at.parseLeoSentinel
+#@+node:ekr.20041005105605.72:at.createThinChild4
+def createThinChild4 (self,gnxString,headline):
+
+    """Find or create a new *vnode* whose parent (also a vnode)
+    is at.lastThinNode. This is called only for @thin trees."""
+
+    trace = False and not g.unitTesting
+    verbose = False
+    at = self ; c = at.c ; indices = g.app.nodeIndices
+    last = at.lastThinNode
+    lastIndex = last.fileIndex
+    gnx = indices.scanGnx(gnxString,0)
+
+    if trace and verbose: g.trace("last %s, gnx %s %s" % (
+        last,gnxString,headline))
+
+    parent = at.lastThinNode # A vnode.
+    children = parent.children
+    for child in children:
+        if gnx == child.fileIndex:
+            break
+    else:
+        child = None
+
+    if at.cloneSibCount > 1:
+        n = at.cloneSibCount ; at.cloneSibCount = 0
+        if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
+        else: clonedSibs = 0
+        copies = n - clonedSibs
+        if trace: g.trace(copies,headline)
+    else:
+        if gnx == lastIndex:
+            last.setVisited()
+                # Supress warning/deletion of unvisited nodes.
+            if trace:g.trace('found last',last)
+            return last
+        if child:
+            child.setVisited()
+                # Supress warning/deletion of unvisited nodes.
+            if trace: g.trace('found child',child)
+            return child
+        copies = 1 # Create exactly one copy.
+
+    while copies > 0:
+        copies -= 1
+        # Create the vnode only if it does not already exist.
+        gnxDict = c.fileCommands.gnxDict
+        v = gnxDict.get(gnxString)
+        if v:
+            if gnx != v.fileIndex:
+                g.trace('can not happen: v.fileIndex: %s gnx: %s' % (
+                    v.fileIndex,gnx))
+        else:
+            v = leoNodes.vnode(context=c)
+            v._headString = headline # Allowed use of v._headString.
+            v.fileIndex = gnx
+            gnxDict[gnxString] = v
+
+        child = v
+        child._linkAsNthChild(parent,parent.numberOfChildren())
+
+    if trace: g.trace('new node: %s' % child)
+    child.setVisited() # Supress warning/deletion of unvisited nodes.
+    return child
+#@-node:ekr.20041005105605.72:at.createThinChild4
+#@+node:ekr.20100619120205.5915:int/base62
+import string
+digits62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+if 0: # a check.
+    digits62a = []
+    for z in string.digits: digits62a.append(z)
+    for z in string.letters: digits62a.append(z)
+    digits62a = ''.join(digits62a)
+    assert digits62 == digits62a
+assert len(digits62) == 62
+
+def intToBase62 (i):
+    if i == 0: return '0'
+    result = []
+    while i > 0:
+        i,r = divmod(i,62)
+        result.append(digits62[r])
+    result.reverse()
+    return ''.join(result)
+
+def base62ToInt(s):
+    if s == '0': return 0
+    result = 0
+    for ch in s:
+        result = 62 * result + (digits62.find(ch)) # A dict would be faster.
+    return result
+
+for i in range(5000):
+    s = intToBase62(i)
+    # print('%s = %s' % (i,s))
+    n = base62ToInt(s)
+    assert n == i,'s: %s n: %s, i: %s' % (s,n,i)
+if 1:
+    for i in (0,1,9,99,999,9999,99999,999999,61,62,62**2-1,62**2,62**3-1,62**3):
+        print('%10s = %s' % (i,intToBase62(i)))
+print('done',62**2,62**3)
+#@nonl
+#@-node:ekr.20100619120205.5915:int/base62
+#@-node:ekr.20100518100915.5898:Utils
+#@+node:ekr.20100518100915.5902:Writing
+#@+node:ekr.20041005105605.188:nodeSentinelText 4.x
+def nodeSentinelText(self,p):
+
+    """Return the text of a @+node or @-node sentinel for p."""
+
+    at = self ; h = p.h
+    << remove comment delims from h if necessary >>
+
+    if at.thinFile:
+        gnx = g.app.nodeIndices.toString(p.v.fileIndex)
+        if new_write:
+            level = 1 + p.level() - self.root.level()
+            stars = '*' * level
+            if 1: # Put the gnx in the traditional place.
+                return "%s: %s %s" % (gnx,stars,h)
+            else: # Hide the gnx to the right.
+                pad = max(1,100-len(stars)-len(h)) * ' '
+                return '%s %s%s::%s' % (stars,h,pad,gnx)
+        else:
+            return "%s:%s" % (gnx,h)
+    else:
+        return h
+#@+node:ekr.20041005105605.189:<< remove comment delims from h if necessary >>
+@ Bug fix 1/24/03:
+
+If the present @language/@comment settings do not specify a single-line comment we remove all block comment delims from h.  This prevents headline text from interfering with the parsing of node sentinels.
+@c
+
+start = at.startSentinelComment
+end = at.endSentinelComment
+
+if end and len(end) > 0:
+    h = h.replace(start,"")
+    h = h.replace(end,"")
+#@-node:ekr.20041005105605.189:<< remove comment delims from h if necessary >>
+#@-node:ekr.20041005105605.188:nodeSentinelText 4.x
+#@+node:ekr.20041005105605.167:putatAllBody
+def putAtAllBody(self,p):
+
+    """ Generate the body enclosed in sentinel lines."""
+
+    at = self ; s = p.b
+
+    p.v.setVisited()
+    # g.trace('visit',p.h)
+        # Make sure v is never expanded again.
+        # Suppress orphans check.
+
+    if not at.thinFile and not s: return
+    inCode = True
+    << Make sure all lines end in a newline >>
+    i = 0
+    while i < len(s):
+        next_i = g.skip_line(s,i)
+        assert(next_i > i)
+        if inCode:
+            # Use verbatim sentinels to write all directives.
+            at.putCodeLine(s,i)
+        else:
+            at.putDocLine(s,i)
+        i = next_i
+
+    if not inCode:
+        at.putEndDocLine()
+    if at.sentinels and not trailingNewlineFlag and not new_write:
+        at.putSentinel("@nonl")
+#@+node:ekr.20041005105605.168:<< Make sure all lines end in a newline >>
+# 11/20/03: except in nosentinel mode.
+# 1/30/04: and especially in scripting mode.
+# If we add a trailing newline, we'll generate an @nonl sentinel below.
+
+if s:
+    trailingNewlineFlag = s and s[-1] == '\n'
+    if at.sentinels and not trailingNewlineFlag:
+        s = s + '\n'
+else:
+    trailingNewlineFlag = True # don't need to generate an @nonl
+#@-node:ekr.20041005105605.168:<< Make sure all lines end in a newline >>
+#@-node:ekr.20041005105605.167:putatAllBody
+#@+node:ekr.20041005105605.173:putAtOthersLine
+def putAtOthersLine (self,s,i,p):
+
+    """Put the expansion of @others."""
+
+    at = self
+    j,delta = g.skip_leading_ws_with_indent(s,i,at.tab_width)
+    at.putLeadInSentinel(s,i,j,delta)
+
+    at.indent += delta
+
+    lws = at.leadingWs or ''
+
+    if lws:
+        # Note: there are *two* at signs here.
+        at.putSentinel("@" + lws + "@+others")
+    else:
+        at.putSentinel("@+others")
+
+    for child in p.children():
+        if at.inAtOthers(child):
+            at.putAtOthersChild(child)
+
+    if new_write and lws:
+        # This is a more consistent convention.
+        at.putSentinel("@" + lws + "@-others")
+    else:
+        at.putSentinel("@-others")
+    at.indent -= delta
+#@-node:ekr.20041005105605.173:putAtOthersLine
+#@+node:ekr.20041005105605.191:putCloseNodeSentinel 4.x
+def putCloseNodeSentinel(self,p,middle=False):
+
+    at = self
+
+    if new_write:
+        return
+
+    s = self.nodeSentinelText(p)
+
+    if middle:
+        at.putSentinel("@-middle:" + s)
+    else:
+        at.putSentinel("@-node:" + s)
+#@-node:ekr.20041005105605.191:putCloseNodeSentinel 4.x
+#@+node:ekr.20041005105605.193:putOpenNodeSentinel
+def putOpenNodeSentinel(self,p,inAtAll=False,middle=False):
+
+    """Write @+node sentinel for p."""
+
+    at = self
+
+    if not inAtAll and p.isAtFileNode() and p != at.root:
+        at.writeError("@file not valid in: " + p.h)
+        return
+
+    # g.trace(at.thinFile,p)
+
+    s = at.nodeSentinelText(p)
+
+    if new_write:
+        at.putSentinel('@+node %s' % s)
+    elif middle:
+        at.putSentinel("@+middle:" + s)
+    else:
+        at.putSentinel("@+node:" + s)
+
+    # Leo 4.7 b2: we never write tnodeLists.
+#@-node:ekr.20041005105605.193:putOpenNodeSentinel
+#@+node:ekr.20041005105605.177:putRefAt
+def putRefAt (self,s,i,n1,n2,p,delta):
+
+    """Put a reference at s[n1:n2+2] from p."""
+
+    at = self ; c = at.c ; name = s[n1:n2+2]
+
+    ref = g.findReference(c,name,p)
+    if not ref:
+        if not g.unitTesting:
+            at.writeError(
+                "undefined section: %s\n\treferenced from: %s" %
+                    ( name,p.h))
+        return None
+
+    # Expand the ref.
+    if not delta:
+        junk,delta = g.skip_leading_ws_with_indent(s,i,at.tab_width)
+
+    at.putLeadInSentinel(s,i,n1,delta)
+
+    inBetween = []
+    if at.thinFile: # @+-middle used only in thin files.
+        parent = ref.parent()
+        while parent != p:
+            inBetween.append(parent)
+            parent = parent.parent()
+
+    at.indent += delta
+
+    lws = at.leadingWs or ''
+    if new_write:
+        at.putSentinel("@+" + lws + name)
+    else:
+        at.putSentinel("@" + lws + name)
+
+    if inBetween:
+        # Bug fix: reverse the +middle sentinels, not the -middle sentinels.
+        inBetween.reverse()
+        for p2 in inBetween:
+            at.putOpenNodeSentinel(p2,middle=True)
+
+    at.putOpenNodeSentinel(ref)
+    at.putBody(ref)
+    at.putCloseNodeSentinel(ref)
+
+    if inBetween:
+        inBetween.reverse()
+        for p2 in inBetween:
+            at.putCloseNodeSentinel(p2,middle=True)
+
+    if new_write:
+        at.putSentinel("@-" + lws + name)
+
+    at.indent -= delta
+
+    return delta
+#@-node:ekr.20041005105605.177:putRefAt
+#@-node:ekr.20100518100915.5902:Writing
+#@+node:ekr.20100519091824.5874:Reading
+#@+node:ekr.20100625184546.5978:Ref
+#@+node:ekr.20041005105605.21:at.read & helpers
+def read(self,root,importFileName=None,
+    fromString=None,atShadow=False,force=False
+):
+
+    """Read an @thin or @file tree."""
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(root.h,len(root.b))
+    at = self ; c = at.c
+    fileName = at.initFileName(fromString,importFileName,root)
+    if not fileName:
+        at.error("Missing file name.  Restoring @file tree from .leo file.")
+        return False
+    at.initReadIvars(root,fileName,
+        importFileName=importFileName,atShadow=atShadow)
+    if at.errors:
+        return False
+    fileName = at.openFileForReading(fromString=fromString)
+    if fileName and at.inputFile:
+        c.setFileTimeStamp(fileName)
+    else:
+        return False
+    root.v.at_read = True # Remember that we have read this file.
+
+    # Get the file from the cache if possible.
+    s,loaded,fileKey = c.cacher.readFile(fileName,root)
+    # 2010/02/24: Never read an external file
+    # with file-like sentinels from the cache.
+    isFileLike = loaded and at.isFileLike(s)
+    if not loaded or isFileLike:
+        # if trace: g.trace('file-like file',fileName)
+        force = True # Disable caching.
+    if loaded and not force:
+        if trace: g.trace('in cache',fileName)
+        at.inputFile.close()
+        root.clearDirty()
+        return True
+    if not g.unitTesting:
+        g.es("reading:",root.h)
+    if isFileLike:
+        if g.unitTesting:
+            if 0: print("converting @file format in",root.h)
+            g.app.unitTestDict['read-convert']=True
+        else:
+            g.es("converting @file format in",root.h,color='red')
+    root.clearVisitedInTree()
+    d = at.scanAllDirectives(root,importing=at.importing,reading=True)
+    thinFile = at.readOpenFile(root,at.inputFile,fileName,deleteNodes=True)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        at.warnAboutUnvisitedNodes(root)
+        at.deleteTnodeList(root)
+    if at.errors == 0 and not at.importing:
+        # Used by mod_labels plugin.
+        self.copyAllTempBodyStringsToTnodes(root,thinFile)
+    at.deleteAllTempBodyStrings()
+    if isFileLike:
+        # 2010/02/24: Make the root @file node dirty so it will
+        # be written automatically when saving the file.
+        root.setDirty()
+        c.setChanged(True) # Essential, to keep dirty bit set.
+    if at.errors == 0 and not isFileLike:
+        c.cacher.writeFile(root,fileKey)
+
+    if trace: g.trace('root.isDirty',root.isDirty())
+
+    return at.errors == 0
+#@+node:ekr.20041005105605.25:deleteAllTempBodyStrings
+def deleteAllTempBodyStrings(self):
+
+    for v in self.c.all_unique_nodes():
+        if hasattr(v,"tempBodyString"):
+            delattr(v,"tempBodyString")
+        if hasattr(v,"tempBodyList"):
+            delattr(v,"tempBodyList")
+#@-node:ekr.20041005105605.25:deleteAllTempBodyStrings
+#@+node:ekr.20100122130101.6174:deleteTnodeList
+def deleteTnodeList (self,p): # atFile method.
+
+    '''Remove p's tnodeList.'''
+
+    v = p.v
+
+    if hasattr(v,"tnodeList"):
+
+        if False: # Not an error, but a useful trace.
+            s = "deleting tnodeList for " + repr(v)
+            g.es_print(s,color="blue")
+
+        delattr(v,"tnodeList")
+        v._p_changed = True
+#@-node:ekr.20100122130101.6174:deleteTnodeList
+#@+node:ekr.20041005105605.22:initFileName
+def initFileName (self,fromString,importFileName,root):
+
+    if fromString:
+        fileName = "<string-file>"
+    elif importFileName:
+        fileName = importFileName
+    elif root.isAnyAtFileNode():
+        fileName = root.anyAtFileNodeName()
+    else:
+        fileName = None
+
+    return fileName
+#@-node:ekr.20041005105605.22:initFileName
+#@+node:ekr.20100224050618.11547:at.isFileLike
+def isFileLike (self,s):
+
+    '''Return True if s has file-like sentinels.'''
+
+    trace = False and not g.unitTesting
+    at = self ; tag = "@+leo"
+    s = g.toUnicode(s)
+    i = s.find(tag)
+    if i == -1:
+        if trace: g.trace('found: False',repr(s))
+        return True # Don't use the cashe.
+    else:
+        j,k = g.getLine(s,i)
+        line = s[j:k]
+        valid,new_df,start,end,isThin = \
+            at.parseLeoSentinel(line)
+        if trace: g.trace('found: True isThin:',
+            isThin,repr(line))
+        return not isThin
+#@-node:ekr.20100224050618.11547:at.isFileLike
+#@+node:ekr.20071105164407:warnAboutUnvisitedNodes
+def warnAboutUnvisitedNodes (self,root):
+
+    resurrected = 0
+
+    for p in root.self_and_subtree():
+        if not p.v.isVisited():
+            g.trace('**** not visited',p.v,p.h)
+            g.es('resurrected node:',p.h,color='blue')
+            g.es('in file:',root.h,color='blue')
+            resurrected += 1
+
+    if resurrected:
+        g.es('you may want to delete ressurected nodes')
+#@-node:ekr.20071105164407:warnAboutUnvisitedNodes
+#@-node:ekr.20041005105605.21:at.read & helpers
+#@+node:ekr.20041005105605.106:readDirective (@@)
+def readDirective (self,s,i):
+
+    """Read an @@sentinel."""
+
+    trace = False and not g.unitTesting
+    at = self
+    assert g.match(s,i,"@"),'missing @@ sentinel'
+        # The first '@' has already been eaten.
+
+    if trace: g.trace(repr(s[i:]))
+        # g.trace(g.get_line(s,i))
+
+    if g.match_word(s,i,"@raw"):
+        at.raw = True
+    elif g.match_word(s,i,"@end_raw"):
+        at.raw = False
+
+    e = at.endSentinelComment
+    s2 = s[i:]
+    if len(e) > 0:
+        k = s.rfind(e,i)
+        if k != -1:
+            s2 = s[i:k] + '\n'
+
+    start = at.startSentinelComment
+    if start and len(start) > 0 and start[-1] == '@':
+        s2 = s2.replace('@@','@')
+
+    if 0: # New in 4.2.1: never change comment delims here...
+        if g.match_word(s,i,"@language"):
+            << handle @language >>
+        elif g.match_word(s,i,"@comment"):
+            << handle @comment >>
+
+    # An @c ends the doc part when using new sentinels.
+    if at.readVersion5 and s2 in ('@c','@c\n'):
+        if at.docOut:
+            at.appendToOut(''.join(at.docOut))
+        at.inCode = True # End the doc part.
+
+    at.appendToOut(s2)
+#@+node:ekr.20041005105605.107:<< handle @language >>
+# Skip the keyword and whitespace.
+i += len("@language")
+i = g.skip_ws(s,i)
+j = g.skip_c_id(s,i)
+language = s[i:j]
+
+delim1,delim2,delim3 = g.set_delims_from_language(language)
+
+if trace:
+    g.trace(g.get_line(s,i))
+    g.trace(delim1,delim2,delim3)
+
+# Returns a tuple (single,start,end) of comment delims
+if delim1:
+    at.startSentinelComment = delim1
+    at.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    at.startSentinelComment = delim2
+    at.endSentinelComment = delim3
+else:
+    line = g.get_line(s,i)
+    g.es("ignoring bad @language sentinel:",line,color="red")
+#@-node:ekr.20041005105605.107:<< handle @language >>
+#@+node:ekr.20041005105605.108:<< handle @comment >>
+j = g.skip_line(s,i)
+line = s[i:j]
+delim1,delim2,delim3 = g.set_delims_from_string(line)
+
+#g.trace(g.get_line(s,i))
+#g.trace(delim1,delim2,delim3)
+
+# Returns a tuple (single,start,end) of comment delims
+if delim1:
+    self.startSentinelComment = delim1
+    self.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    self.startSentinelComment = delim2
+    self.endSentinelComment = delim3
+else:
+    line = g.get_line(s,i)
+    g.es("ignoring bad @comment sentinel:",line,color="red")
+#@-node:ekr.20041005105605.108:<< handle @comment >>
+#@-node:ekr.20041005105605.106:readDirective (@@)
+#@+node:ekr.20041005105605.92:readEndAt & readEndDoc
+def readEndAt (self,unused_s,unused_i):
+
+    """Read an @-at sentinel."""
+
+    at = self
+    at.readLastDocLine("@")
+    at.popSentinelStack(at.endAt)
+    at.inCode = True
+
+def readEndDoc (self,unused_s,unused_i):
+
+    """Read an @-doc sentinel."""
+
+    at = self
+    at.readLastDocLine("@doc")
+    at.popSentinelStack(at.endDoc)
+    at.inCode = True
+#@-node:ekr.20041005105605.92:readEndAt & readEndDoc
+#@+node:ekr.20041005105605.98:readEndOthers
+def readEndOthers (self,unused_s,unused_i):
+
+    """Read an @-others sentinel."""
+
+    at = self
+
+    at.popSentinelStack(at.endOthers)
+
+    if at.readVersion5:
+        at.v = at.endSentinelNodeStack.pop()
+#@-node:ekr.20041005105605.98:readEndOthers
+#@+node:ekr.20100625140824.5968:readEndRef
+def readEndRef (self,unused_s,unused_i):
+
+    """Read an @-<< sentinel."""
+
+    at = self
+
+    at.popSentinelStack(at.endRef)
+
+    if at.readVersion5:
+        at.v = at.endSentinelNodeStack.pop()
+#@-node:ekr.20100625140824.5968:readEndRef
+#@+node:ekr.20041005105605.99:readLastDocLine
+def readLastDocLine (self,tag):
+
+    """Read the @c line that terminates the doc part.
+    tag is @doc or @."""
+
+    at = self
+    end = at.endSentinelComment
+    start = at.startSentinelComment
+    s = ''.join(at.docOut)
+
+    # Remove the @doc or @space.  We'll add it back at the end.
+    if g.match(s,0,tag):
+        s = s[len(tag):]
+    else:
+        at.readError("Missing start of doc part")
+        return
+
+    # Bug fix: Append any whitespace following the tag to tag.
+    while s and s[0] in (' ','\t'):
+        tag = tag + s[0] ; s = s[1:]
+
+    if end:
+        # Remove leading newline.
+        if s[0] == '\n': s = s[1:]
+        # Remove opening block delim.
+        if g.match(s,0,start):
+            s = s[len(start):]
+        else:
+            at.readError("Missing open block comment")
+            g.trace('tag',repr(tag),'start',repr(start),'s',repr(s))
+            return
+        # Remove trailing newline.
+        if s[-1] == '\n': s = s[:-1]
+        # Remove closing block delim.
+        if s[-len(end):] == end:
+            s = s[:-len(end)]
+        else:
+            at.readError("Missing close block comment")
+            g.trace(s)
+            g.trace(end)
+            g.trace(start)
+            return
+
+    at.appendToOut(tag + s)
+    at.docOut = []
+#@-node:ekr.20041005105605.99:readLastDocLine
+#@+node:ekr.20041005105605.77:readNormalLine & appendToDocPart
+def readNormalLine (self,s,i): # i not used.
+
+    at = self
+
+    if at.inCode:
+        if not at.raw:
+            s = g.removeLeadingWhitespace(s,at.indent,at.tab_width)
+        at.appendToOut(s)
+    else:
+        at.appendToDocPart(s)
+#@+node:ekr.20100624082003.5942:appendToDocPart
+def appendToDocPart (self,s):
+
+    trace = False and not g.unitTesting
+    at = self
+
+    # Skip the leading stuff
+    if len(at.endSentinelComment) == 0:
+        # Skip the single comment delim and a blank.
+        i = g.skip_ws(s,0)
+        if g.match(s,i,at.startSentinelComment):
+            i += len(at.startSentinelComment)
+            if g.match(s,i," "): i += 1
+    else:
+        i = at.skipIndent(s,0,at.indent)
+
+    # Append s to docOut.
+    line = s[i:-1] # remove newline for rstrip.
+
+    if line == line.rstrip():
+        # no trailing whitespace: the newline is real.
+        at.docOut.append(line + '\n')
+    else:
+        # trailing whitespace: the newline is fake.
+        at.docOut.append(line)
+
+    if trace: g.trace(repr(line))
+#@-node:ekr.20100624082003.5942:appendToDocPart
+#@-node:ekr.20041005105605.77:readNormalLine & appendToDocPart
+#@+node:ekr.20041005105605.111:readRef (paired using new sentinels)
+@
+The sentinel contains an @ followed by a section name in angle brackets.
+This code is different from the code for the @@ sentinel: the expansion
+of the reference does not include a trailing newline.
+@c
+
+def readRef (self,s,i):
+
+    """Handle an @<< sentinel."""
+
+    at = self
+
+    if at.readVersion5:
+        assert g.match(s,i,"+")
+        i += 1 # Skip the new plus sign.
+    j = g.skip_ws(s,i)
+    assert g.match(s,j,"<<"),'missing @<< sentinel'
+
+    if len(at.endSentinelComment) == 0:
+        line = s[i:-1] # No trailing newline
+    else:
+        k = s.find(at.endSentinelComment,i)
+        line = s[i:k] # No trailing newline, whatever k is.
+
+    if new_read and at.readVersion == '5':
+        # Put the newline back: there is no longer an @nl sentinel.
+        line = line + '\n'
+
+    # Undo the cweb hack.
+    start = at.startSentinelComment
+    if start and len(start) > 0 and start[-1] == '@':
+        line = line.replace('@@','@')
+
+    at.appendToOut(line)
+    if at.readVersion5:
+        at.endSentinelStack.append(at.endRef)
+        at.endSentinelNodeStack.append(at.v)
+#@-node:ekr.20041005105605.111:readRef (paired using new sentinels)
+#@+node:ekr.20041005105605.82:readStartAt/Doc & helper
+#@+node:ekr.20100624082003.5938:readStartAt
+def readStartAt (self,s,i):
+
+    """Read an @+at sentinel."""
+
+    at = self
+    assert g.match(s,i,"+at"),'missing +at'
+    i += 3
+
+    if at.readVersion5: # Append whatever follows the sentinel.
+        j = at.skipToEndSentinel(s,i)
+        follow = s[i:j]
+        at.appendToOut('@' + follow + '\n')
+        at.docOut = []
+        at.inCode = False
+    else:
+        j = g.skip_ws(s,i)
+        ws = s[i:j]
+        at.docOut = ['@' + ws + '\n']
+            # This newline may be removed by a following @nonl
+        at.inCode = False
+        at.endSentinelStack.append(at.endAt)
+#@-node:ekr.20100624082003.5938:readStartAt
+#@+node:ekr.20100624082003.5939:readStartDoc
+def readStartDoc (self,s,i):
+
+    """Read an @+doc sentinel."""
+
+    at = self
+    assert g.match(s,i,"+doc"),'missing +doc'
+    i += 4
+
+    if at.readVersion5: # Append whatever follows the sentinel.
+        j = at.skipToEndSentinel(s,i)
+        follow = s[i:j]+'\n'
+        at.appendToOut('@' + follow + '\n')
+        at.docOut = []
+        at.inCode = False
+    else:
+        j = g.skip_ws(s,i)
+        ws = s[i:j]
+        at.docOut = ["@doc" + ws + '\n']
+            # This newline may be removed by a following @nonl
+        at.inCode = False
+        at.endSentinelStack.append(at.endDoc)
+#@-node:ekr.20100624082003.5939:readStartDoc
+#@+node:ekr.20100624082003.5940:skipToEndSentinel
+def skipToEndSentinel(self,s,i):
+
+    '''Skip to the end of the sentinel line.'''
+
+    at = self
+    end = at.endSentinelComment
+
+    if end:
+        j = s.find(end,i)
+        if j == -1:
+            return g.skip_to_end_of_line(s,i)
+        else:
+            return j
+    else:
+        return g.skip_to_end_of_line(s,i)
+#@-node:ekr.20100624082003.5940:skipToEndSentinel
+#@-node:ekr.20041005105605.82:readStartAt/Doc & helper
+#@+node:ekr.20041005105605.89:readStartOthers
+def readStartOthers (self,s,i):
+
+    """Read an @+others sentinel."""
+
+    at = self
+
+    j = g.skip_ws(s,i)
+    leadingWs = s[i:j]
+
+    if leadingWs:
+        assert g.match(s,j,"@+others"),'missing @+others'
+    else:
+        assert g.match(s,j,"+others"),'missing +others'
+
+    # Make sure that the generated at-others is properly indented.
+    at.appendToOut(leadingWs + "@others\n")
+    at.endSentinelStack.append(at.endOthers)
+    if at.readVersion5:
+        at.endSentinelNodeStack.append(at.v)
+#@-node:ekr.20041005105605.89:readStartOthers
+#@+node:ekr.20041005105605.74:scanText4 & allies
+def scanText4 (self,theFile,fileName,p,verbose=False):
+
+    """Scan a 4.x derived file non-recursively."""
+
+    trace = False and not g.unitTesting
+    verbose = False
+    at = self
+    << init ivars for scanText4 >>
+    if trace: g.trace('filename:',fileName)
+    try:
+        while at.errors == 0 and not at.done:
+            s = at.readLine(theFile)
+            if trace and verbose: g.trace(repr(s))
+            at.lineNumber += 1
+            if len(s) == 0:
+                if at.readVersion5:
+                    at.popSentinelStack(at.endLeo)
+                    at.done = True
+                break
+            kind = at.sentinelKind4(s)
+            if kind == at.noSentinel:
+                i = 0
+            else:
+                i = at.skipSentinelStart4(s,0)
+            func = at.dispatch_dict[kind]
+            if trace: g.trace('%15s %16s %s' % (
+                at.sentinelName(kind),func.__name__,repr(s)))
+            func(s,i)
+    except AssertionError:
+        junk, message, junk = sys.exc_info()
+        at.error('unexpected assertion failure in',fileName,'\n',message)
+        if g.unitTesting:
+            raise
+
+    if at.errors == 0 and not at.done:
+        << report unexpected end of text >>
+
+    return at.lastLines
+#@+node:ekr.20041005105605.75:<< init ivars for scanText4 >>
+# Unstacked ivars...
+at.cloneSibCount = 0
+at.done = False
+at.inCode = True
+at.indent = 0 # Changed only for sentinels.
+at.lastLines = [] # The lines after @-leo
+at.leadingWs = ""
+at.lineNumber = 0
+at.root = p.copy() # Bug fix: 12/10/05
+at.rootSeen = False
+at.updateWarningGiven = False
+
+# Stacked ivars...
+at.endSentinelStack = [at.endLeo] # We have already handled the @+leo sentinel.
+at.endSentinelNodeStack = [None]
+at.out = [] ; at.outStack = []
+at.v = p.v
+at.vStack = []
+# New code: always identify root @thin node with self.root:
+at.lastThinNode = None
+at.thinNodeStack = []
+#@nonl
+#@-node:ekr.20041005105605.75:<< init ivars for scanText4 >>
+#@+node:ekr.20041005105605.76:<< report unexpected end of text >>
+assert at.endSentinelStack,'empty sentinel stack'
+
+at.readError(
+    "Unexpected end of file. Expecting %s sentinel" %
+    at.sentinelName(at.endSentinelStack[-1]))
+#@-node:ekr.20041005105605.76:<< report unexpected end of text >>
+#@+node:ekr.20041005105605.77:readNormalLine & appendToDocPart
+def readNormalLine (self,s,i): # i not used.
+
+    at = self
+
+    if at.inCode:
+        if not at.raw:
+            s = g.removeLeadingWhitespace(s,at.indent,at.tab_width)
+        at.appendToOut(s)
+    else:
+        at.appendToDocPart(s)
+#@+node:ekr.20100624082003.5942:appendToDocPart
+def appendToDocPart (self,s):
+
+    trace = False and not g.unitTesting
+    at = self
+
+    # Skip the leading stuff
+    if len(at.endSentinelComment) == 0:
+        # Skip the single comment delim and a blank.
+        i = g.skip_ws(s,0)
+        if g.match(s,i,at.startSentinelComment):
+            i += len(at.startSentinelComment)
+            if g.match(s,i," "): i += 1
+    else:
+        i = at.skipIndent(s,0,at.indent)
+
+    # Append s to docOut.
+    line = s[i:-1] # remove newline for rstrip.
+
+    if line == line.rstrip():
+        # no trailing whitespace: the newline is real.
+        at.docOut.append(line + '\n')
+    else:
+        # trailing whitespace: the newline is fake.
+        at.docOut.append(line)
+
+    if trace: g.trace(repr(line))
+#@-node:ekr.20100624082003.5942:appendToDocPart
+#@-node:ekr.20041005105605.77:readNormalLine & appendToDocPart
+#@+node:ekr.20041005105605.80:start sentinels
+#@+node:ekr.20041005105605.81:at.readStartAll
+def readStartAll (self,s,i):
+
+    """Read an @+all sentinel."""
+
+    at = self
+    j = g.skip_ws(s,i)
+    leadingWs = s[i:j]
+    if leadingWs:
+        assert g.match(s,j,"@+all"),'missing @+all'
+    else:
+        assert g.match(s,j,"+all"),'missing +all'
+
+    # g.trace('root_seen',at.root_seen,at.root.h,repr(s))
+    at.atAllFlag = True
+
+    # Make sure that the generated at-all is properly indented.
+    at.appendToOut(leadingWs + "@all\n")
+    at.endSentinelStack.append(at.endAll)
+    if at.readVersion5:
+        at.endSentinelNodeStack.append(at.v)
+#@-node:ekr.20041005105605.81:at.readStartAll
+#@+node:ekr.20041005105605.85:at.readStartNode & helpers
+def readStartNode (self,s,i,middle=False):
+
+    """Read an @+node or @+middle sentinel."""
+
+    at = self
+    gnx,headline,i,level,ok = at.parseNodeSentinel(s,i,middle)
+    if not ok: return
+    at.root_seen = True
+
+    i,newIndent = g.skip_leading_ws_with_indent(s,0,at.tab_width)
+    at.indentStack.append(at.indent) ; at.indent = newIndent
+
+    at.outStack.append(at.out)
+    at.out = []
+    at.vStack.append(at.v)
+
+    if at.importing:
+        p = at.createImportedNode(at.root,headline)
+        at.v = p.v
+    elif at.thinFile:
+        at.v = at.createNewThinNode(gnx,headline,level)
+    else:
+        at.v = at.findChild4(headline)
+
+    if not at.readVersion5:
+        at.endSentinelStack.append(at.endNode)
+#@+node:ekr.20100625085138.5957:createNewThinNode & closePreviousNode
+def createNewThinNode (self,gnx,headline,level):
+
+    trace = False and not g.unitTesting
+    at = self
+
+    if at.thinNodeStack:
+        if at.readVersion5:
+            oldLevel = len(at.thinNodeStack)
+            newLevel = level - 1
+            assert newLevel >= 0
+            at.closePreviousNode(oldLevel,newLevel)
+            v = at.createThinChild4(gnx,headline)
+            at.thinNodeStack.append(v)
+            if trace: g.trace(
+                '** oldLvl: %s, newLvl: %s, v: %s, last: %s, stack: \n%s\n' % (
+                oldLevel,newLevel,v.h,at.lastThinNode.h,
+                [z.h for z in at.thinNodeStack]))
+        else:
+            at.thinNodeStack.append(at.lastThinNode)
+            v = at.createThinChild4(gnx,headline)
+    else:
+        v = at.root.v
+        at.thinNodeStack.append(v)
+
+    at.lastThinNode = v
+    return v
+#@+node:ekr.20100624082003.5944:closePreviousNode
+def closePreviousNode (self,oldLevel,newLevel):
+
+    trace = False and not g.unitTesting
+    at = self
+
+    if trace: g.trace('******',
+        [at.sentinelName(z) for z in at.endSentinelStack])
+
+    if newLevel <= oldLevel:
+        # Pretend we have seen -node sentinels.
+        for z in range(oldLevel - newLevel):
+            at.readEndNode('',0)
+
+        at.lastThinNode = at.thinNodeStack[newLevel-1]
+    else:
+        at.lastThinNode = at.thinNodeStack[-1]
+#@-node:ekr.20100624082003.5944:closePreviousNode
+#@-node:ekr.20100625085138.5957:createNewThinNode & closePreviousNode
+#@+node:ekr.20100625184546.5979:parseNodeSentinel & helpers
+def parseNodeSentinel (self,s,i,middle):
+
+    at = self
+
+    if at.readVersion5:
+        assert g.match(s,i,"+node"),'bad start node sentinel'
+        i += 1
+    elif middle:
+        assert g.match(s,i,"+middle:"),'missing +middle'
+        i += 8
+    else:
+        assert g.match(s,i,"+node:"),'missing +node'
+        i += 6
+
+    # Get the gnx and the headline.
+    if at.thinFile:
+        gnx,i,level,ok = at.parseThinNodeSentinel(s,i)
+        if not ok: None,None,None,False
+
+    headline = at.getNodeHeadline(s,i)
+    return gnx,headline,i,level,True
+#@+node:ekr.20100625085138.5955:getNodeHeadline
+def getNodeHeadline (self,s,i):
+
+    '''Set headline to the rest of the line.
+    Don't strip leading whitespace.'''
+
+    at = self
+
+    if len(at.endSentinelComment) == 0:
+        h = s[i:-1].rstrip()
+    else:
+        k = s.rfind(at.endSentinelComment,i)
+        h = s[i:k].rstrip() # works if k == -1
+
+    # Undo the CWEB hack: undouble @ signs if\
+    # the opening comment delim ends in '@'.
+    if at.startSentinelComment[-1:] == '@':
+        h = h.replace('@@','@')
+
+    return h
+#@-node:ekr.20100625085138.5955:getNodeHeadline
+#@+node:ekr.20100625085138.5953:parseThinNodeSentinel
+def parseThinNodeSentinel (self,s,i):
+
+    at = self
+
+    def oops(s):
+        at.readError(s)
+        return None,None,None,False
+
+    j = s.find(':',i)
+    if j == -1:
+        return oops('Expecting gnx in @+node sentinel')
+    else:
+        gnx = s[i:j]
+
+    if at.readVersion5:
+        if not g.match(s,j,': '):
+            return oops('Expecting space after gnx')
+        i = j + 2
+        level = 0
+        while i < len(s) and s[i] == '*':
+            i += 1
+            level += 1
+        if level == 0:
+            return oops('No level stars')
+        if not g.match(s,i,' '):
+            return oops('No space after level stars')
+        i += 1
+    else: # not readVersion5.
+        i = j + 1 # Skip the gnx.
+        level = 0
+
+    return gnx,i,level,True
+#@-node:ekr.20100625085138.5953:parseThinNodeSentinel
+#@-node:ekr.20100625184546.5979:parseNodeSentinel & helpers
+#@-node:ekr.20041005105605.85:at.readStartNode & helpers
+#@+node:ekr.20041005105605.111:readRef (paired using new sentinels)
+@
+The sentinel contains an @ followed by a section name in angle brackets.
+This code is different from the code for the @@ sentinel: the expansion
+of the reference does not include a trailing newline.
+@c
+
+def readRef (self,s,i):
+
+    """Handle an @<< sentinel."""
+
+    at = self
+
+    if at.readVersion5:
+        assert g.match(s,i,"+")
+        i += 1 # Skip the new plus sign.
+    j = g.skip_ws(s,i)
+    assert g.match(s,j,"<<"),'missing @<< sentinel'
+
+    if len(at.endSentinelComment) == 0:
+        line = s[i:-1] # No trailing newline
+    else:
+        k = s.find(at.endSentinelComment,i)
+        line = s[i:k] # No trailing newline, whatever k is.
+
+    if new_read and at.readVersion == '5':
+        # Put the newline back: there is no longer an @nl sentinel.
+        line = line + '\n'
+
+    # Undo the cweb hack.
+    start = at.startSentinelComment
+    if start and len(start) > 0 and start[-1] == '@':
+        line = line.replace('@@','@')
+
+    at.appendToOut(line)
+    if at.readVersion5:
+        at.endSentinelStack.append(at.endRef)
+        at.endSentinelNodeStack.append(at.v)
+#@-node:ekr.20041005105605.111:readRef (paired using new sentinels)
+#@+node:ekr.20041005105605.82:readStartAt/Doc & helper
+#@+node:ekr.20100624082003.5938:readStartAt
+def readStartAt (self,s,i):
+
+    """Read an @+at sentinel."""
+
+    at = self
+    assert g.match(s,i,"+at"),'missing +at'
+    i += 3
+
+    if at.readVersion5: # Append whatever follows the sentinel.
+        j = at.skipToEndSentinel(s,i)
+        follow = s[i:j]
+        at.appendToOut('@' + follow + '\n')
+        at.docOut = []
+        at.inCode = False
+    else:
+        j = g.skip_ws(s,i)
+        ws = s[i:j]
+        at.docOut = ['@' + ws + '\n']
+            # This newline may be removed by a following @nonl
+        at.inCode = False
+        at.endSentinelStack.append(at.endAt)
+#@-node:ekr.20100624082003.5938:readStartAt
+#@+node:ekr.20100624082003.5939:readStartDoc
+def readStartDoc (self,s,i):
+
+    """Read an @+doc sentinel."""
+
+    at = self
+    assert g.match(s,i,"+doc"),'missing +doc'
+    i += 4
+
+    if at.readVersion5: # Append whatever follows the sentinel.
+        j = at.skipToEndSentinel(s,i)
+        follow = s[i:j]+'\n'
+        at.appendToOut('@' + follow + '\n')
+        at.docOut = []
+        at.inCode = False
+    else:
+        j = g.skip_ws(s,i)
+        ws = s[i:j]
+        at.docOut = ["@doc" + ws + '\n']
+            # This newline may be removed by a following @nonl
+        at.inCode = False
+        at.endSentinelStack.append(at.endDoc)
+#@-node:ekr.20100624082003.5939:readStartDoc
+#@+node:ekr.20100624082003.5940:skipToEndSentinel
+def skipToEndSentinel(self,s,i):
+
+    '''Skip to the end of the sentinel line.'''
+
+    at = self
+    end = at.endSentinelComment
+
+    if end:
+        j = s.find(end,i)
+        if j == -1:
+            return g.skip_to_end_of_line(s,i)
+        else:
+            return j
+    else:
+        return g.skip_to_end_of_line(s,i)
+#@-node:ekr.20100624082003.5940:skipToEndSentinel
+#@-node:ekr.20041005105605.82:readStartAt/Doc & helper
+#@+node:ekr.20041005105605.83:readStartLeo
+def readStartLeo (self,s,i):
+
+    """Read an unexpected @+leo sentinel."""
+
+    at = self
+    assert g.match(s,i,"+leo"),'missing +leo sentinel'
+    at.readError("Ignoring unexpected @+leo sentinel")
+#@-node:ekr.20041005105605.83:readStartLeo
+#@+node:ekr.20041005105605.84:readStartMiddle
+def readStartMiddle (self,s,i):
+
+    """Read an @+middle sentinel."""
+
+    at = self
+
+    at.readStartNode(s,i,middle=True)
+#@-node:ekr.20041005105605.84:readStartMiddle
+#@+node:ekr.20041005105605.89:readStartOthers
+def readStartOthers (self,s,i):
+
+    """Read an @+others sentinel."""
+
+    at = self
+
+    j = g.skip_ws(s,i)
+    leadingWs = s[i:j]
+
+    if leadingWs:
+        assert g.match(s,j,"@+others"),'missing @+others'
+    else:
+        assert g.match(s,j,"+others"),'missing +others'
+
+    # Make sure that the generated at-others is properly indented.
+    at.appendToOut(leadingWs + "@others\n")
+    at.endSentinelStack.append(at.endOthers)
+    if at.readVersion5:
+        at.endSentinelNodeStack.append(at.v)
+#@-node:ekr.20041005105605.89:readStartOthers
+#@-node:ekr.20041005105605.80:start sentinels
+#@+node:ekr.20041005105605.90:end sentinels
+#@+node:ekr.20041005105605.91:readEndAll
+def readEndAll (self,unused_s,unused_i):
+
+    """Read an @-all sentinel."""
+
+    at = self
+    at.popSentinelStack(at.endAll)
+#@-node:ekr.20041005105605.91:readEndAll
+#@+node:ekr.20041005105605.92:readEndAt & readEndDoc
+def readEndAt (self,unused_s,unused_i):
+
+    """Read an @-at sentinel."""
+
+    at = self
+    at.readLastDocLine("@")
+    at.popSentinelStack(at.endAt)
+    at.inCode = True
+
+def readEndDoc (self,unused_s,unused_i):
+
+    """Read an @-doc sentinel."""
+
+    at = self
+    at.readLastDocLine("@doc")
+    at.popSentinelStack(at.endDoc)
+    at.inCode = True
+#@-node:ekr.20041005105605.92:readEndAt & readEndDoc
+#@+node:ekr.20041005105605.93:readEndLeo
+def readEndLeo (self,unused_s,unused_i):
+
+    """Read an @-leo sentinel."""
+
+    at = self
+
+    # Ignore everything after @-leo.
+    # Such lines were presumably written by @last.
+    while 1:
+        s = at.readLine(at.inputFile)
+        if len(s) == 0: break
+        at.lastLines.append(s) # Capture all trailing lines, even if empty.
+
+    at.done = True
+#@-node:ekr.20041005105605.93:readEndLeo
+#@+node:ekr.20041005105605.94:readEndMiddle
+def readEndMiddle (self,s,i):
+
+    """Read an @-middle sentinel."""
+
+    at = self
+
+    at.readEndNode(s,i,middle=True)
+#@-node:ekr.20041005105605.94:readEndMiddle
+#@+node:ekr.20041005105605.95:at.readEndNode
+def readEndNode (self,unused_s,unused_i,middle=False):
+
+    """Handle @-node sentinels."""
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c
+
+    # End raw mode.
+    at.raw = False
+
+    # Set the temporary body text.
+    if at.readVersion5:
+        if hasattr(at.v,'tempBodyList'):
+            s = ''.join(at.v.tempBodyList)
+        else:
+            s = ''
+    else:
+        s = ''.join(at.out)
+
+    s = g.toUnicode(s)
+    # g.trace('%20s %s' % (at.v.h,repr(s)))
+
+    if at.importing:
+        at.v._bodyString = s # Allowed use of _bodyString.
+    elif middle: 
+        pass # Middle sentinels never alter text.
+    else:
+        if at.v == at.root.v:
+            old = None # Don't issue warnings for the root.
+        elif hasattr(at.v,"tempBodyString") and s != at.v.tempBodyString:
+            old = at.v.tempBodyString
+        elif at.v.hasBody() and s != at.v.getBody():
+            old = at.v.getBody()
+        else:
+            old = None
+
+        if old:
+            << indicate that the node has been changed >>
+
+        # *Always* update the text.
+        if at.readVersion5:
+            if trace and hasattr(at.v,"tempBodyString") and at.v.tempBodyString:
+                g.trace('*** can not happen: tempBodyString',at.v.h,repr(s))
+        else:
+            at.v.tempBodyString = s
+
+    # Indicate that the vnode has been set in the derived file.
+    at.v.setVisited()
+
+    # End the previous node sentinel.
+    at.indent = at.indentStack.pop()
+    at.out = at.outStack.pop()
+    at.v = at.vStack.pop()
+
+    if at.thinFile and not at.importing:
+        at.lastThinNode = at.thinNodeStack.pop()
+
+    if not at.readVersion5:
+        at.popSentinelStack(at.endNode)
+#@+node:ekr.20041005105605.96:<< indicate that the node has been changed >>
+if at.perfectImportRoot:
+    << bump at.correctedLines and tell about the correction >>
+    at.v._bodyString = s # Allowed use of _bodyString.
+        # Just setting at.v.tempBodyString won't work here.
+    at.v.setDirty()
+        # Mark the node dirty. Ancestors will be marked dirty later.
+    at.c.setChanged(True)
+else:
+    # 2010/02/05: removed special case for @all.
+    c.nodeConflictList.append(g.bunch(
+        tag='(uncached)',
+        gnx=at.v.gnx,
+        fileName = at.root.h,
+        b_old=old,
+        b_new=s,
+        h_old=at.v._headString,
+        h_new=at.v._headString,
+    ))
+
+    g.es_print("uncached read node changed",at.v.h,color="red")
+
+    at.v.setDirty()
+        # Just set the dirty bit. Ancestors will be marked dirty later.
+    c.changed = True
+        # Important: the dirty bits won't stick unless we set c.changed here.
+        # Do *not* call c.setChanged(True) here: that would be too slow.
+#@+node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
+# Report the number of corrected nodes.
+at.correctedLines += 1
+
+found = False
+for p in at.perfectImportRoot.self_and_subtree():
+    if p.v == at.v:
+        found = True ; break
+
+if found:
+    if 0: # For debugging.
+        g.pr('\n','-' * 40)
+        g.pr("old",len(old))
+        for line in g.splitLines(old):
+            #line = line.replace(' ','< >').replace('\t','<TAB>')
+            g.pr(repr(str(line)))
+        g.pr('\n','-' * 40)
+        g.pr("new",len(s))
+        for line in g.splitLines(s):
+            #line = line.replace(' ','< >').replace('\t','<TAB>')
+            g.pr(repr(str(line)))
+        g.pr('\n','-' * 40)
+else:
+    # This should never happen.
+    g.es("correcting hidden node: v=",repr(at.v),color="red")
+#@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
+#@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
+#@-node:ekr.20041005105605.95:at.readEndNode
+#@+node:ekr.20041005105605.98:readEndOthers
+def readEndOthers (self,unused_s,unused_i):
+
+    """Read an @-others sentinel."""
+
+    at = self
+
+    at.popSentinelStack(at.endOthers)
+
+    if at.readVersion5:
+        at.v = at.endSentinelNodeStack.pop()
+#@-node:ekr.20041005105605.98:readEndOthers
+#@+node:ekr.20100625140824.5968:readEndRef
+def readEndRef (self,unused_s,unused_i):
+
+    """Read an @-<< sentinel."""
+
+    at = self
+
+    at.popSentinelStack(at.endRef)
+
+    if at.readVersion5:
+        at.v = at.endSentinelNodeStack.pop()
+#@-node:ekr.20100625140824.5968:readEndRef
+#@+node:ekr.20041005105605.99:readLastDocLine
+def readLastDocLine (self,tag):
+
+    """Read the @c line that terminates the doc part.
+    tag is @doc or @."""
+
+    at = self
+    end = at.endSentinelComment
+    start = at.startSentinelComment
+    s = ''.join(at.docOut)
+
+    # Remove the @doc or @space.  We'll add it back at the end.
+    if g.match(s,0,tag):
+        s = s[len(tag):]
+    else:
+        at.readError("Missing start of doc part")
+        return
+
+    # Bug fix: Append any whitespace following the tag to tag.
+    while s and s[0] in (' ','\t'):
+        tag = tag + s[0] ; s = s[1:]
+
+    if end:
+        # Remove leading newline.
+        if s[0] == '\n': s = s[1:]
+        # Remove opening block delim.
+        if g.match(s,0,start):
+            s = s[len(start):]
+        else:
+            at.readError("Missing open block comment")
+            g.trace('tag',repr(tag),'start',repr(start),'s',repr(s))
+            return
+        # Remove trailing newline.
+        if s[-1] == '\n': s = s[:-1]
+        # Remove closing block delim.
+        if s[-len(end):] == end:
+            s = s[:-len(end)]
+        else:
+            at.readError("Missing close block comment")
+            g.trace(s)
+            g.trace(end)
+            g.trace(start)
+            return
+
+    at.appendToOut(tag + s)
+    at.docOut = []
+#@-node:ekr.20041005105605.99:readLastDocLine
+#@-node:ekr.20041005105605.90:end sentinels
+#@+node:ekr.20041005105605.100:Unpaired sentinels
+# Ooops: shadow files are cleared if there is a read error!!
+#@nonl
+#@+node:ekr.20041005105605.101:ignoreOldSentinel
+def  ignoreOldSentinel (self,s,unused_i):
+
+    """Ignore an 3.x sentinel."""
+
+    g.es("ignoring 3.x sentinel:",s.strip(),color="blue")
+#@-node:ekr.20041005105605.101:ignoreOldSentinel
+#@+node:ekr.20041005105605.102:readAfterRef
+def  readAfterRef (self,s,i):
+
+    """Read an @afterref sentinel."""
+
+    at = self
+    assert g.match(s,i,"afterref"),'missing afterref'
+
+    # Append the next line to the text.
+    s = at.readLine(at.inputFile)
+    at.appendToOut(s)
+#@-node:ekr.20041005105605.102:readAfterRef
+#@+node:ekr.20041005105605.103:readClone
+def readClone (self,s,i):
+
+    at = self ; tag = "clone"
+
+    assert g.match(s,i,tag),'missing clone sentinel'
+
+    # Skip the tag and whitespace.
+    i = g.skip_ws(s,i+len(tag))
+
+    # Get the clone count.
+    junk,val = g.skip_long(s,i)
+
+    if val == None:
+        at.readError("Invalid count in @clone sentinel")
+    else:
+        at.cloneSibCount = val
+#@-node:ekr.20041005105605.103:readClone
+#@+node:ekr.20041005105605.104:readComment
+def readComment (self,s,i):
+
+    """Read an @comment sentinel."""
+
+    assert g.match(s,i,"comment"),'missing comment sentinel'
+
+    # Just ignore the comment line!
+#@-node:ekr.20041005105605.104:readComment
+#@+node:ekr.20041005105605.105:readDelims
+def readDelims (self,s,i):
+
+    """Read an @delims sentinel."""
+
+    at = self
+    assert g.match(s,i-1,"@delims"),'missing @delims'
+
+    # Skip the keyword and whitespace.
+    i0 = i-1
+    i = g.skip_ws(s,i-1+7)
+
+    # Get the first delim.
+    j = i
+    while i < len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
+        i += 1
+
+    if j < i:
+        at.startSentinelComment = s[j:i]
+
+        # Get the optional second delim.
+        j = i = g.skip_ws(s,i)
+        while i < len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
+            i += 1
+        end = g.choose(j<i,s[j:i],"")
+        i2 = g.skip_ws(s,i)
+        if end == at.endSentinelComment and (i2 >= len(s) or g.is_nl(s,i2)):
+            at.endSentinelComment = "" # Not really two params.
+            line = s[i0:j]
+            line = line.rstrip()
+            at.appendToOut(line+'\n')
+        else:
+            at.endSentinelComment = end
+            line = s[i0:i]
+            line = line.rstrip()
+            at.appendToOut(line+'\n')
+    else:
+        at.readError("Bad @delims")
+        at.appendToOut("@delims")
+#@-node:ekr.20041005105605.105:readDelims
+#@+node:ekr.20041005105605.106:readDirective (@@)
+def readDirective (self,s,i):
+
+    """Read an @@sentinel."""
+
+    trace = False and not g.unitTesting
+    at = self
+    assert g.match(s,i,"@"),'missing @@ sentinel'
+        # The first '@' has already been eaten.
+
+    if trace: g.trace(repr(s[i:]))
+        # g.trace(g.get_line(s,i))
+
+    if g.match_word(s,i,"@raw"):
+        at.raw = True
+    elif g.match_word(s,i,"@end_raw"):
+        at.raw = False
+
+    e = at.endSentinelComment
+    s2 = s[i:]
+    if len(e) > 0:
+        k = s.rfind(e,i)
+        if k != -1:
+            s2 = s[i:k] + '\n'
+
+    start = at.startSentinelComment
+    if start and len(start) > 0 and start[-1] == '@':
+        s2 = s2.replace('@@','@')
+
+    if 0: # New in 4.2.1: never change comment delims here...
+        if g.match_word(s,i,"@language"):
+            << handle @language >>
+        elif g.match_word(s,i,"@comment"):
+            << handle @comment >>
+
+    # An @c ends the doc part when using new sentinels.
+    if at.readVersion5 and s2 in ('@c','@c\n'):
+        if at.docOut:
+            at.appendToOut(''.join(at.docOut))
+        at.inCode = True # End the doc part.
+
+    at.appendToOut(s2)
+#@+node:ekr.20041005105605.107:<< handle @language >>
+# Skip the keyword and whitespace.
+i += len("@language")
+i = g.skip_ws(s,i)
+j = g.skip_c_id(s,i)
+language = s[i:j]
+
+delim1,delim2,delim3 = g.set_delims_from_language(language)
+
+if trace:
+    g.trace(g.get_line(s,i))
+    g.trace(delim1,delim2,delim3)
+
+# Returns a tuple (single,start,end) of comment delims
+if delim1:
+    at.startSentinelComment = delim1
+    at.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    at.startSentinelComment = delim2
+    at.endSentinelComment = delim3
+else:
+    line = g.get_line(s,i)
+    g.es("ignoring bad @language sentinel:",line,color="red")
+#@-node:ekr.20041005105605.107:<< handle @language >>
+#@+node:ekr.20041005105605.108:<< handle @comment >>
+j = g.skip_line(s,i)
+line = s[i:j]
+delim1,delim2,delim3 = g.set_delims_from_string(line)
+
+#g.trace(g.get_line(s,i))
+#g.trace(delim1,delim2,delim3)
+
+# Returns a tuple (single,start,end) of comment delims
+if delim1:
+    self.startSentinelComment = delim1
+    self.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    self.startSentinelComment = delim2
+    self.endSentinelComment = delim3
+else:
+    line = g.get_line(s,i)
+    g.es("ignoring bad @comment sentinel:",line,color="red")
+#@-node:ekr.20041005105605.108:<< handle @comment >>
+#@-node:ekr.20041005105605.106:readDirective (@@)
+#@+node:ekr.20041005105605.109:readNl
+def readNl (self,s,i):
+
+    """Handle an @nonl sentinel."""
+
+    at = self
+    assert g.match(s,i,"nl"),'missing nl sentinel'
+
+    if at.inCode:
+        at.appendToOut('\n')
+    else:
+        at.docOut.append('\n')
+#@-node:ekr.20041005105605.109:readNl
+#@+node:ekr.20041005105605.110:readNonl
+def readNonl (self,s,i):
+
+    """Handle an @nonl sentinel."""
+
+    at = self
+    assert g.match(s,i,"nonl"),'missing nonl sentinel'
+
+    if at.inCode:
+        s = ''.join(at.out)
+        # 2010/01/07: protect against a mostly-harmless read error.
+        if s:
+            if s[-1] == '\n':
+                at.out = [s[:-1]] # Do not use at.appendToOut here!
+            else:
+                g.trace("out:",s)
+                at.readError("unexpected @nonl directive in code part")
+    else:
+        s = ''.join(at.pending)
+        if s:
+            if s[-1] == '\n':
+                at.pending = [s[:-1]]
+            else:
+                g.trace("docOut:",s)
+                at.readError("unexpected @nonl directive in pending doc part")
+        else:
+            s = ''.join(at.docOut)
+            if s and s[-1] == '\n':
+                at.docOut = [s[:-1]]
+            else:
+                g.trace("docOut:",s)
+                at.readError("unexpected @nonl directive in doc part")
+#@-node:ekr.20041005105605.110:readNonl
+#@+node:ekr.20041005105605.112:readVerbatim
+def readVerbatim (self,s,i):
+
+    """Read an @verbatim sentinel."""
+
+    at = self
+    assert g.match(s,i,"verbatim"),'missing verbatim sentinel'
+
+    # Append the next line to the text.
+    s = at.readLine(at.inputFile) 
+    i = at.skipIndent(s,0,at.indent)
+    # Do **not** insert the verbatim line itself!
+        # at.out.append("@verbatim\n")
+    at.appendToOut(s[i:])
+#@-node:ekr.20041005105605.112:readVerbatim
+#@-node:ekr.20041005105605.100:Unpaired sentinels
+#@+node:ekr.20041005105605.113:badEndSentinel, popSentinelStack
+def badEndSentinel (self,expectedKind):
+
+    """Handle a mismatched ending sentinel."""
+
+    at = self
+    assert at.endSentinelStack,'empty sentinel stack'
+    s = "(badEndSentinel) Ignoring %s sentinel.  Expecting %s" % (
+        at.sentinelName(at.endSentinelStack[-1]),
+        at.sentinelName(expectedKind))
+    at.readError(s)
+
+def popSentinelStack (self,expectedKind):
+
+    """Pop an entry from endSentinelStack and check it."""
+
+    at = self
+    if at.endSentinelStack and at.endSentinelStack[-1] == expectedKind:
+        at.endSentinelStack.pop()
+    else:
+        if 1: g.trace('%s\n%s' % (
+            [at.sentinelName(z) for z in at.endSentinelStack],
+            g.callers(4)))
+        at.badEndSentinel(expectedKind)
+#@-node:ekr.20041005105605.113:badEndSentinel, popSentinelStack
+#@-node:ekr.20041005105605.74:scanText4 & allies
+#@-node:ekr.20100625184546.5978:Ref
+#@+node:ekr.20041005105605.14:<< init ivars for reading >>
+self.atAllFlag = False # True if @all seen.
+self.cloneSibCount = 0
+    # n > 1: Make sure n cloned sibs exists at next @+node sentinel
+self.correctedLines = 0
+self.docOut = [] # The doc part being accumulated.
+self.done = False # True when @-leo seen.
+self.endSentinelStack = []
+    # Contains entries for +node sentinels only when not readVersion5
+self.endSentinelNodeStack = []
+    # Used only when readVersion5.
+self.importing = False
+self.importRootSeen = False
+self.indentStack = []
+self.inputFile = None
+self.lastLines = [] # The lines after @-leo
+self.lastThinNode = None
+    # The last thin node at this level.
+    # Used by createThinChild4.
+self.leadingWs = ""
+self.lineNumber = 0 # New in Leo 4.4.8.
+self.out = None
+self.outStack = []
+self.readVersion = '' # New in Leo 4.8: "4" or "5" for new-style thin files.
+self.readVersion5 = False # synonym for new_read and at.readVersion >= '5'
+self.rootSeen = False
+self.tnodeList = []
+    # Needed until old-style @file nodes are no longer supported.
+self.tnodeListIndex = 0
+self.v = None
+self.vStack = [] # Stack of at.v values.
+self.thinNodeStack = [] # Entries are vnodes.
+self.updateWarningGiven = False
+#@-node:ekr.20041005105605.14:<< init ivars for reading >>
+#@+node:ekr.20100625092449.5963:at.appendToOut
+def appendToOut (self,s):
+
+    '''Append s to at.out (old sentinels) or
+       at.v.tempBodyList (new sentinels).'''
+
+    trace = False and not g.unitTesting
+    at = self
+
+    if at.readVersion5:
+        if not at.v: at.v = at.root.v
+        if hasattr(at.v,"tempBodyList"):
+            at.v.tempBodyList.append(s)
+        else:
+            at.v.tempBodyList = [s]
+    else:
+        at.out.append(s)
+
+    if trace:
+        g.trace('%4s %25s %s' % (
+            g.choose(at.inCode,'code','doc'),at.v.h,repr(s)))
+        # g.trace(g.listToString(at.out))
+#@-node:ekr.20100625092449.5963:at.appendToOut
+#@+node:ekr.20041005105605.85:at.readStartNode & helpers
+def readStartNode (self,s,i,middle=False):
+
+    """Read an @+node or @+middle sentinel."""
+
+    at = self
+    gnx,headline,i,level,ok = at.parseNodeSentinel(s,i,middle)
+    if not ok: return
+    at.root_seen = True
+
+    i,newIndent = g.skip_leading_ws_with_indent(s,0,at.tab_width)
+    at.indentStack.append(at.indent) ; at.indent = newIndent
+
+    at.outStack.append(at.out)
+    at.out = []
+    at.vStack.append(at.v)
+
+    if at.importing:
+        p = at.createImportedNode(at.root,headline)
+        at.v = p.v
+    elif at.thinFile:
+        at.v = at.createNewThinNode(gnx,headline,level)
+    else:
+        at.v = at.findChild4(headline)
+
+    if not at.readVersion5:
+        at.endSentinelStack.append(at.endNode)
+#@+node:ekr.20100625085138.5957:createNewThinNode & closePreviousNode
+def createNewThinNode (self,gnx,headline,level):
+
+    trace = False and not g.unitTesting
+    at = self
+
+    if at.thinNodeStack:
+        if at.readVersion5:
+            oldLevel = len(at.thinNodeStack)
+            newLevel = level - 1
+            assert newLevel >= 0
+            at.closePreviousNode(oldLevel,newLevel)
+            v = at.createThinChild4(gnx,headline)
+            at.thinNodeStack.append(v)
+            if trace: g.trace(
+                '** oldLvl: %s, newLvl: %s, v: %s, last: %s, stack: \n%s\n' % (
+                oldLevel,newLevel,v.h,at.lastThinNode.h,
+                [z.h for z in at.thinNodeStack]))
+        else:
+            at.thinNodeStack.append(at.lastThinNode)
+            v = at.createThinChild4(gnx,headline)
+    else:
+        v = at.root.v
+        at.thinNodeStack.append(v)
+
+    at.lastThinNode = v
+    return v
+#@+node:ekr.20100624082003.5944:closePreviousNode
+def closePreviousNode (self,oldLevel,newLevel):
+
+    trace = False and not g.unitTesting
+    at = self
+
+    if trace: g.trace('******',
+        [at.sentinelName(z) for z in at.endSentinelStack])
+
+    if newLevel <= oldLevel:
+        # Pretend we have seen -node sentinels.
+        for z in range(oldLevel - newLevel):
+            at.readEndNode('',0)
+
+        at.lastThinNode = at.thinNodeStack[newLevel-1]
+    else:
+        at.lastThinNode = at.thinNodeStack[-1]
+#@-node:ekr.20100624082003.5944:closePreviousNode
+#@-node:ekr.20100625085138.5957:createNewThinNode & closePreviousNode
+#@+node:ekr.20100625184546.5979:parseNodeSentinel & helpers
+def parseNodeSentinel (self,s,i,middle):
+
+    at = self
+
+    if at.readVersion5:
+        assert g.match(s,i,"+node"),'bad start node sentinel'
+        i += 1
+    elif middle:
+        assert g.match(s,i,"+middle:"),'missing +middle'
+        i += 8
+    else:
+        assert g.match(s,i,"+node:"),'missing +node'
+        i += 6
+
+    # Get the gnx and the headline.
+    if at.thinFile:
+        gnx,i,level,ok = at.parseThinNodeSentinel(s,i)
+        if not ok: None,None,None,False
+
+    headline = at.getNodeHeadline(s,i)
+    return gnx,headline,i,level,True
+#@+node:ekr.20100625085138.5955:getNodeHeadline
+def getNodeHeadline (self,s,i):
+
+    '''Set headline to the rest of the line.
+    Don't strip leading whitespace.'''
+
+    at = self
+
+    if len(at.endSentinelComment) == 0:
+        h = s[i:-1].rstrip()
+    else:
+        k = s.rfind(at.endSentinelComment,i)
+        h = s[i:k].rstrip() # works if k == -1
+
+    # Undo the CWEB hack: undouble @ signs if\
+    # the opening comment delim ends in '@'.
+    if at.startSentinelComment[-1:] == '@':
+        h = h.replace('@@','@')
+
+    return h
+#@-node:ekr.20100625085138.5955:getNodeHeadline
+#@+node:ekr.20100625085138.5953:parseThinNodeSentinel
+def parseThinNodeSentinel (self,s,i):
+
+    at = self
+
+    def oops(s):
+        at.readError(s)
+        return None,None,None,False
+
+    j = s.find(':',i)
+    if j == -1:
+        return oops('Expecting gnx in @+node sentinel')
+    else:
+        gnx = s[i:j]
+
+    if at.readVersion5:
+        if not g.match(s,j,': '):
+            return oops('Expecting space after gnx')
+        i = j + 2
+        level = 0
+        while i < len(s) and s[i] == '*':
+            i += 1
+            level += 1
+        if level == 0:
+            return oops('No level stars')
+        if not g.match(s,i,' '):
+            return oops('No space after level stars')
+        i += 1
+    else: # not readVersion5.
+        i = j + 1 # Skip the gnx.
+        level = 0
+
+    return gnx,i,level,True
+#@-node:ekr.20100625085138.5953:parseThinNodeSentinel
+#@-node:ekr.20100625184546.5979:parseNodeSentinel & helpers
+#@-node:ekr.20041005105605.85:at.readStartNode & helpers
+#@+node:ekr.20100624082003.5944:closePreviousNode
+def closePreviousNode (self,oldLevel,newLevel):
+
+    trace = False and not g.unitTesting
+    at = self
+
+    if trace: g.trace('******',
+        [at.sentinelName(z) for z in at.endSentinelStack])
+
+    if newLevel <= oldLevel:
+        # Pretend we have seen -node sentinels.
+        for z in range(oldLevel - newLevel):
+            at.readEndNode('',0)
+
+        at.lastThinNode = at.thinNodeStack[newLevel-1]
+    else:
+        at.lastThinNode = at.thinNodeStack[-1]
+#@-node:ekr.20100624082003.5944:closePreviousNode
+#@+node:ekr.20041005105605.95:at.readEndNode
+def readEndNode (self,unused_s,unused_i,middle=False):
+
+    """Handle @-node sentinels."""
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c
+
+    # End raw mode.
+    at.raw = False
+
+    # Set the temporary body text.
+    if at.readVersion5:
+        if hasattr(at.v,'tempBodyList'):
+            s = ''.join(at.v.tempBodyList)
+        else:
+            s = ''
+    else:
+        s = ''.join(at.out)
+
+    s = g.toUnicode(s)
+    # g.trace('%20s %s' % (at.v.h,repr(s)))
+
+    if at.importing:
+        at.v._bodyString = s # Allowed use of _bodyString.
+    elif middle: 
+        pass # Middle sentinels never alter text.
+    else:
+        if at.v == at.root.v:
+            old = None # Don't issue warnings for the root.
+        elif hasattr(at.v,"tempBodyString") and s != at.v.tempBodyString:
+            old = at.v.tempBodyString
+        elif at.v.hasBody() and s != at.v.getBody():
+            old = at.v.getBody()
+        else:
+            old = None
+
+        if old:
+            << indicate that the node has been changed >>
+
+        # *Always* update the text.
+        if at.readVersion5:
+            if trace and hasattr(at.v,"tempBodyString") and at.v.tempBodyString:
+                g.trace('*** can not happen: tempBodyString',at.v.h,repr(s))
+        else:
+            at.v.tempBodyString = s
+
+    # Indicate that the vnode has been set in the derived file.
+    at.v.setVisited()
+
+    # End the previous node sentinel.
+    at.indent = at.indentStack.pop()
+    at.out = at.outStack.pop()
+    at.v = at.vStack.pop()
+
+    if at.thinFile and not at.importing:
+        at.lastThinNode = at.thinNodeStack.pop()
+
+    if not at.readVersion5:
+        at.popSentinelStack(at.endNode)
+#@+node:ekr.20041005105605.96:<< indicate that the node has been changed >>
+if at.perfectImportRoot:
+    << bump at.correctedLines and tell about the correction >>
+    at.v._bodyString = s # Allowed use of _bodyString.
+        # Just setting at.v.tempBodyString won't work here.
+    at.v.setDirty()
+        # Mark the node dirty. Ancestors will be marked dirty later.
+    at.c.setChanged(True)
+else:
+    # 2010/02/05: removed special case for @all.
+    c.nodeConflictList.append(g.bunch(
+        tag='(uncached)',
+        gnx=at.v.gnx,
+        fileName = at.root.h,
+        b_old=old,
+        b_new=s,
+        h_old=at.v._headString,
+        h_new=at.v._headString,
+    ))
+
+    g.es_print("uncached read node changed",at.v.h,color="red")
+
+    at.v.setDirty()
+        # Just set the dirty bit. Ancestors will be marked dirty later.
+    c.changed = True
+        # Important: the dirty bits won't stick unless we set c.changed here.
+        # Do *not* call c.setChanged(True) here: that would be too slow.
+#@+node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
+# Report the number of corrected nodes.
+at.correctedLines += 1
+
+found = False
+for p in at.perfectImportRoot.self_and_subtree():
+    if p.v == at.v:
+        found = True ; break
+
+if found:
+    if 0: # For debugging.
+        g.pr('\n','-' * 40)
+        g.pr("old",len(old))
+        for line in g.splitLines(old):
+            #line = line.replace(' ','< >').replace('\t','<TAB>')
+            g.pr(repr(str(line)))
+        g.pr('\n','-' * 40)
+        g.pr("new",len(s))
+        for line in g.splitLines(s):
+            #line = line.replace(' ','< >').replace('\t','<TAB>')
+            g.pr(repr(str(line)))
+        g.pr('\n','-' * 40)
+else:
+    # This should never happen.
+    g.es("correcting hidden node: v=",repr(at.v),color="red")
+#@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
+#@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
+#@-node:ekr.20041005105605.95:at.readEndNode
+#@-node:ekr.20100519091824.5874:Reading
+#@-node:ekr.20100517130356.5809:New sentinels
 #@-all
 #@-node:ekr.20100120072650.6089:@thin leoProjects.txt
 #@-leo
