@@ -799,16 +799,27 @@ class atFile:
 
         #@    << handle first and last lines >>
         #@+node:ekr.20041005105605.28:<< handle first and last lines >>
-        try:
-            body = root.v.tempBodyString
-        except Exception:
-            body = ""
+        # try:
+            # body = root.v.tempBodyString
+        # except Exception:
+            # body = ""
+
+        if at.readVersion5:
+            body = hasattr(at.v,'tempBodyList') and ''.join(at.v.tempBodyList) or ''
+        else:
+            body = hasattr(at.v,'tempBodyString') and at.v.tempBodyString or ''
 
         lines = body.split('\n')
+
         at.completeFirstDirectives(lines,firstLines)
         at.completeLastDirectives(lines,lastLines)
+
         s = '\n'.join(lines).replace('\r', '')
-        root.v.tempBodyString = s
+
+        if at.readVersion5:
+            root.v.tempBodyList = g.splitLines(s)
+        else:
+            root.v.tempBodyString = s
         #@-node:ekr.20041005105605.28:<< handle first and last lines >>
         #@nl
 
@@ -1205,6 +1216,8 @@ class atFile:
         if newLevel <= oldLevel:
             # Pretend we have seen -node sentinels.
             for z in range(oldLevel - newLevel):
+            # while oldLevel >= newLevel:
+                oldLevel -= 1
                 at.readEndNode('',0)
 
             at.lastThinNode = at.thinNodeStack[newLevel-1]
@@ -1320,7 +1333,7 @@ class atFile:
             k = s.find(at.endSentinelComment,i)
             line = s[i:k] # No trailing newline, whatever k is.
 
-        if new_read and at.readVersion == '5':
+        if at.readVersion5:
             # Put the newline back: there is no longer an @nl sentinel.
             line = line + '\n'
 
@@ -1503,17 +1516,19 @@ class atFile:
         # End raw mode.
         at.raw = False
 
+        tempString = hasattr(at.v,'tempBodyString') and at.v.tempBodyString or ''
+        tempList =   hasattr(at.v,'tempBodyList')   and ''.join(at.v.tempBodyList) or ''
+
         # Set the temporary body text.
         if at.readVersion5:
-            if hasattr(at.v,'tempBodyList'):
-                s = ''.join(at.v.tempBodyList)
-            else:
-                s = ''
+            assert not tempString,repr(tempString)
+            s = tempList
         else:
             s = ''.join(at.out)
 
         s = g.toUnicode(s)
         # g.trace('%20s %s' % (at.v.h,repr(s)))
+        if trace: g.trace(at.v.h)
 
         if at.importing:
             at.v._bodyString = s # Allowed use of _bodyString.
@@ -1588,11 +1603,10 @@ class atFile:
                 #@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
                 #@nl
 
-            # *Always* update the text.
             if at.readVersion5:
-                if trace and hasattr(at.v,"tempBodyString") and at.v.tempBodyString:
-                    g.trace('*** can not happen: tempBodyString',at.v.h,repr(s))
+                pass # Nothing needs to be done.
             else:
+                # *Always* update the text.
                 at.v.tempBodyString = s
 
         # Indicate that the vnode has been set in the derived file.
