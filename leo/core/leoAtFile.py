@@ -868,7 +868,7 @@ class atFile:
             root.v.setVisited() # Disable warning about set nodes.
 
         #@    << handle first and last lines >>
-        #@+node:ekr.20041005105605.28:<< handle first and last lines >>
+        #@+node:ekr.20041005105605.28:<< handle first and last lines >> (at.readOpenFile)
         # try:
             # body = root.v.tempBodyString
         # except Exception:
@@ -890,7 +890,7 @@ class atFile:
             root.v.tempBodyList = g.splitLines(s)
         else:
             root.v.tempBodyString = s
-        #@-node:ekr.20041005105605.28:<< handle first and last lines >>
+        #@-node:ekr.20041005105605.28:<< handle first and last lines >> (at.readOpenFile)
         #@nl
 
         return thinFile
