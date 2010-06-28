@@ -15,6 +15,8 @@ new_read = True
     # Eventually, Leo will always read simplified sentinels.
 new_write = False
     # Enable writing simplified sentinels.
+unified = False
+    # True: use the same data structures for the old and new code.
 
 #@<< imports >>
 #@+node:ekr.20041005105605.2:<< imports >>
@@ -397,7 +399,7 @@ class atFile:
     # plugins should need to
     # override only this method.
     #@-at
-    #@+node:ekr.20070919133659:checkDerivedFile (atFile)
+    #@+node:ekr.20070919133659:at.checkDerivedFile
     def checkDerivedFile (self, event=None):
 
         at = self ; c = at.c ; p = c.p
@@ -427,8 +429,8 @@ class atFile:
         at.inputFile.close()
         if at.errors == 0:
             g.es_print('check-derived-file passed',color='blue')
-    #@-node:ekr.20070919133659:checkDerivedFile (atFile)
-    #@+node:ekr.20041005105605.19:openFileForReading (atFile) helper
+    #@-node:ekr.20070919133659:at.checkDerivedFile
+    #@+node:ekr.20041005105605.19:at.openFileForReading
     def openFileForReading(self,fromString=False):
 
         '''Open the file given by at.root.
@@ -479,7 +481,7 @@ class atFile:
                 fn = None
 
         return fn
-    #@-node:ekr.20041005105605.19:openFileForReading (atFile) helper
+    #@-node:ekr.20041005105605.19:at.openFileForReading
     #@+node:ekr.20041005105605.21:at.read & helpers
     def read(self,root,importFileName=None,
         fromString=None,atShadow=False,force=False
@@ -536,7 +538,7 @@ class atFile:
             at.deleteTnodeList(root)
         if at.errors == 0 and not at.importing:
             # Used by mod_labels plugin.
-            self.copyAllTempBodyStringsToTnodes(root,thinFile)
+            self.copyAllTempBodyStringsToVnodes(root,thinFile)
         at.deleteAllTempBodyStrings()
         if isFileLike:
             # 2010/02/24: Make the root @file node dirty so it will
@@ -549,7 +551,7 @@ class atFile:
         if trace: g.trace('root.isDirty',root.isDirty())
 
         return at.errors == 0
-    #@+node:ekr.20041005105605.25:deleteAllTempBodyStrings
+    #@+node:ekr.20041005105605.25:at.deleteAllTempBodyStrings
     def deleteAllTempBodyStrings(self):
 
         for v in self.c.all_unique_nodes():
@@ -557,8 +559,8 @@ class atFile:
                 delattr(v,"tempBodyString")
             if hasattr(v,"tempBodyList"):
                 delattr(v,"tempBodyList")
-    #@-node:ekr.20041005105605.25:deleteAllTempBodyStrings
-    #@+node:ekr.20100122130101.6174:deleteTnodeList
+    #@-node:ekr.20041005105605.25:at.deleteAllTempBodyStrings
+    #@+node:ekr.20100122130101.6174:at.deleteTnodeList
     def deleteTnodeList (self,p): # atFile method.
 
         '''Remove p's tnodeList.'''
@@ -573,8 +575,8 @@ class atFile:
 
             delattr(v,"tnodeList")
             v._p_changed = True
-    #@-node:ekr.20100122130101.6174:deleteTnodeList
-    #@+node:ekr.20041005105605.22:initFileName
+    #@-node:ekr.20100122130101.6174:at.deleteTnodeList
+    #@+node:ekr.20041005105605.22:at.initFileName
     def initFileName (self,fromString,importFileName,root):
 
         if fromString:
@@ -587,7 +589,7 @@ class atFile:
             fileName = None
 
         return fileName
-    #@-node:ekr.20041005105605.22:initFileName
+    #@-node:ekr.20041005105605.22:at.initFileName
     #@+node:ekr.20100224050618.11547:at.isFileLike
     def isFileLike (self,s):
 
@@ -609,7 +611,7 @@ class atFile:
                 isThin,repr(line))
             return not isThin
     #@-node:ekr.20100224050618.11547:at.isFileLike
-    #@+node:ekr.20071105164407:warnAboutUnvisitedNodes
+    #@+node:ekr.20071105164407:at.warnAboutUnvisitedNodes
     def warnAboutUnvisitedNodes (self,root):
 
         resurrected = 0
@@ -623,9 +625,9 @@ class atFile:
 
         if resurrected:
             g.es('you may want to delete ressurected nodes')
-    #@-node:ekr.20071105164407:warnAboutUnvisitedNodes
+    #@-node:ekr.20071105164407:at.warnAboutUnvisitedNodes
     #@-node:ekr.20041005105605.21:at.read & helpers
-    #@+node:ekr.20041005105605.26:readAll (atFile)
+    #@+node:ekr.20041005105605.26:at.readAll
     def readAll(self,root,partialFlag=False):
 
         """Scan vnodes, looking for @<file> nodes to read."""
@@ -693,8 +695,24 @@ class atFile:
             g.es("no @<file> nodes in the selected tree")
 
         if use_tracer: tt.stop()
-    #@-node:ekr.20041005105605.26:readAll (atFile)
-    #@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+    #@-node:ekr.20041005105605.26:at.readAll
+    #@+node:ekr.20080801071227.7:at.readAtShadowNodes
+    def readAtShadowNodes (self,p):
+
+        '''Read all @shadow nodes in the p's tree.'''
+
+        at = self ; after = p.nodeAfterTree()
+        p = p.copy() # Don't change p in the caller.
+
+        while p and p != after: # Don't use iterator.
+            if p.isAtShadowFileNode():
+                fileName = p.atShadowFileNodeName()
+                at.readOneAtShadowNode (fileName,p)
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+    #@-node:ekr.20080801071227.7:at.readAtShadowNodes
+    #@+node:ekr.20070909100252:at.readOneAtAutoNode
     def readOneAtAutoNode (self,fileName,p):
 
         at = self ; c = at.c ; ic = c.importCommands
@@ -725,8 +743,8 @@ class atFile:
         else:
             c.cacher.writeFile(p,fileKey)
             g.doHook('after-auto', p = p)  # call after-auto callbacks
-    #@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
-    #@+node:ekr.20090225080846.3:readOneAtEditNode (atFile)
+    #@-node:ekr.20070909100252:at.readOneAtAutoNode
+    #@+node:ekr.20090225080846.3:at.readOneAtEditNode
     def readOneAtEditNode (self,fn,p):
 
         at = self ; c = at.c ; ic = c.importCommands
@@ -762,8 +780,60 @@ class atFile:
 
         if not changed: c.setChanged(False)
         g.doHook('after-edit',p=p)
-    #@-node:ekr.20090225080846.3:readOneAtEditNode (atFile)
-    #@+node:ekr.20041005105605.27:readOpenFile
+    #@-node:ekr.20090225080846.3:at.readOneAtEditNode
+    #@+node:ekr.20080711093251.7:at.readOneAtShadowNode & helper
+    def readOneAtShadowNode (self,fn,p):
+
+        at = self ; c = at.c ; x = c.shadowController
+
+        if not fn == p.atShadowFileNodeName():
+            return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
+                fn, p.atShadowFileNodeName()))
+
+        at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
+
+        fn = c.os_path_finalize_join(at.default_directory,fn)
+        shadow_fn     = x.shadowPathName(fn)
+        shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+
+        # Delete all children.
+        while p.hasChildren():
+            p.firstChild().doDelete()
+
+        if shadow_exists:
+            at.read(p,atShadow=True)
+        else:
+            if not g.unitTesting: g.es("reading:",p.h)
+            ok = at.importAtShadowNode(fn,p)
+            if ok:
+                # Create the private file automatically.
+                at.writeOneAtShadowNode(p,toString=False,force=True)
+    #@+node:ekr.20080712080505.1:at.importAtShadowNode
+    def importAtShadowNode (self,fn,p):
+
+        at = self ; c = at.c  ; ic = c.importCommands
+        oldChanged = c.isChanged()
+
+        # Delete all the child nodes.
+        while p.hasChildren():
+            p.firstChild().doDelete()
+
+        # Import the outline, exactly as @auto does.
+        ic.createOutline(fn,parent=p.copy(),atAuto=True,atShadow=True)
+
+        if ic.errors:
+            g.es_print('errors inhibited read @shadow',fn,color='red')
+
+        if ic.errors or not g.os_path_exists(fn):
+            p.clearDirty()
+            c.setChanged(oldChanged)
+
+        # else: g.doHook('after-shadow', p = p)
+
+        return ic.errors == 0
+    #@-node:ekr.20080712080505.1:at.importAtShadowNode
+    #@-node:ekr.20080711093251.7:at.readOneAtShadowNode & helper
+    #@+node:ekr.20041005105605.27:at.readOpenFile & helpers
     def readOpenFile(self,root,theFile,fileName,deleteNodes=False):
 
         '''Read an open derived file.
@@ -824,7 +894,7 @@ class atFile:
         #@nl
 
         return thinFile
-    #@+node:ekr.20100122130101.6175:shouldDeleteChildren
+    #@+node:ekr.20100122130101.6175:at.shouldDeleteChildren
     def shouldDeleteChildren (self,root,thinFile):
 
         '''Return True if we should delete all children before a read.'''
@@ -837,76 +907,64 @@ class atFile:
             return False
         else:
             return True
-    #@-node:ekr.20100122130101.6175:shouldDeleteChildren
-    #@-node:ekr.20041005105605.27:readOpenFile
-    #@+node:ekr.20080801071227.7:readAtShadowNodes (atFile)
-    def readAtShadowNodes (self,p):
+    #@-node:ekr.20100122130101.6175:at.shouldDeleteChildren
+    #@+node:ekr.20041005105605.117:at.completeFirstDirective
+    # 14-SEP-2002 DTHEIN: added for use by atFile.read()
 
-        '''Read all @shadow nodes in the p's tree.'''
+    # this function scans the lines in the list 'out' for @first directives
+    # and appends the corresponding line from 'firstLines' to each @first 
+    # directive found.  NOTE: the @first directives must be the very first
+    # lines in 'out'.
+    def completeFirstDirectives(self,out,firstLines):
 
-        at = self ; after = p.nodeAfterTree()
-        p = p.copy() # Don't change p in the caller.
+        tag = "@first"
+        foundAtFirstYet = 0
+        outRange = range(len(out))
+        j = 0
+        for k in outRange:
+            # skip leading whitespace lines
+            if (not foundAtFirstYet) and (len(out[k].strip()) == 0): continue
+            # quit if something other than @first directive
+            i = 0
+            if not g.match(out[k],i,tag): break
+            foundAtFirstYet = 1
+            # quit if no leading lines to apply
+            if j >= len(firstLines): break
+            # make the new @first directive
+            #18-SEP-2002 DTHEIN: remove trailing newlines because they are inserted later
+            # 21-SEP-2002 DTHEIN: no trailing whitespace on empty @first directive
+            leadingLine = " " + firstLines[j]
+            out[k] = tag + leadingLine.rstrip() ; j += 1
+    #@-node:ekr.20041005105605.117:at.completeFirstDirective
+    #@+node:ekr.20041005105605.118:at.completeLastDirectives
+    # 14-SEP-2002 DTHEIN: added for use by atFile.read()
 
-        while p and p != after: # Don't use iterator.
-            if p.isAtShadowFileNode():
-                fileName = p.atShadowFileNodeName()
-                at.readOneAtShadowNode (fileName,p)
-                p.moveToNodeAfterTree()
-            else:
-                p.moveToThreadNext()
-    #@-node:ekr.20080801071227.7:readAtShadowNodes (atFile)
-    #@+node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
-    def readOneAtShadowNode (self,fn,p):
+    # this function scans the lines in the list 'out' for @last directives
+    # and appends the corresponding line from 'lastLines' to each @last 
+    # directive found.  NOTE: the @last directives must be the very last
+    # lines in 'out'.
+    def completeLastDirectives(self,out,lastLines):
 
-        at = self ; c = at.c ; x = c.shadowController
-
-        if not fn == p.atShadowFileNodeName():
-            return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
-                fn, p.atShadowFileNodeName()))
-
-        at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
-
-        fn = c.os_path_finalize_join(at.default_directory,fn)
-        shadow_fn     = x.shadowPathName(fn)
-        shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
-
-        # Delete all children.
-        while p.hasChildren():
-            p.firstChild().doDelete()
-
-        if shadow_exists:
-            at.read(p,atShadow=True)
-        else:
-            if not g.unitTesting: g.es("reading:",p.h)
-            ok = at.importAtShadowNode(fn,p)
-            if ok:
-                # Create the private file automatically.
-                at.writeOneAtShadowNode(p,toString=False,force=True)
-    #@+node:ekr.20080712080505.1:importAtShadowNode
-    def importAtShadowNode (self,fn,p):
-
-        at = self ; c = at.c  ; ic = c.importCommands
-        oldChanged = c.isChanged()
-
-        # Delete all the child nodes.
-        while p.hasChildren():
-            p.firstChild().doDelete()
-
-        # Import the outline, exactly as @auto does.
-        ic.createOutline(fn,parent=p.copy(),atAuto=True,atShadow=True)
-
-        if ic.errors:
-            g.es_print('errors inhibited read @shadow',fn,color='red')
-
-        if ic.errors or not g.os_path_exists(fn):
-            p.clearDirty()
-            c.setChanged(oldChanged)
-
-        # else: g.doHook('after-shadow', p = p)
-
-        return ic.errors == 0
-    #@-node:ekr.20080712080505.1:importAtShadowNode
-    #@-node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
+        tag = "@last"
+        foundAtLastYet = 0
+        outRange = range(-1,-len(out),-1)
+        j = -1
+        for k in outRange:
+            # skip trailing whitespace lines
+            if (not foundAtLastYet) and (len(out[k].strip()) == 0): continue
+            # quit if something other than @last directive
+            i = 0
+            if not g.match(out[k],i,tag): break
+            foundAtLastYet = 1
+            # quit if no trailing lines to apply
+            if j < -len(lastLines): break
+            # make the new @last directive
+            #18-SEP-2002 DTHEIN: remove trailing newlines because they are inserted later
+            # 21-SEP-2002 DTHEIN: no trailing whitespace on empty @last directive
+            trailingLine = " " + lastLines[j]
+            out[k] = tag + trailingLine.rstrip() ; j -= 1
+    #@-node:ekr.20041005105605.118:at.completeLastDirectives
+    #@-node:ekr.20041005105605.27:at.readOpenFile & helpers
     #@-node:ekr.20041005105605.18:Reading (top level)
     #@+node:ekr.20041005105605.71:Reading (4.x)
     #@+node:ekr.20041005105605.72:at.createThinChild4
@@ -1160,12 +1218,18 @@ class atFile:
         if not ok: return
         at.root_seen = True
 
-        i,newIndent = g.skip_leading_ws_with_indent(s,0,at.tab_width)
-        at.indentStack.append(at.indent) ; at.indent = newIndent
+        # Switch context.
+        if at.readVersion5:
+            at.terminateNode()
 
-        at.outStack.append(at.out)
-        at.out = []
+        if not unified:
+            at.outStack.append(at.out)
+            at.out = []
+
         at.vStack.append(at.v)
+
+        at.indentStack.append(at.indent)
+        i,at.indent = g.skip_leading_ws_with_indent(s,0,at.tab_width)
 
         if at.importing:
             p = at.createImportedNode(at.root,headline)
@@ -1244,6 +1308,8 @@ class atFile:
         if at.thinFile:
             gnx,i,level,ok = at.parseThinNodeSentinel(s,i)
             if not ok: None,None,None,False
+        else:
+            gnx,level = None,None
 
         headline = at.getNodeHeadline(s,i)
         return gnx,headline,i,level,True
@@ -1510,111 +1576,19 @@ class atFile:
 
         """Handle @-node sentinels."""
 
-        trace = False and not g.unitTesting
         at = self ; c = at.c
 
-        # End raw mode.
         at.raw = False
-
-        tempString = hasattr(at.v,'tempBodyString') and at.v.tempBodyString or ''
-        tempList =   hasattr(at.v,'tempBodyList')   and ''.join(at.v.tempBodyList) or ''
-
-        # Set the temporary body text.
-        if at.readVersion5:
-            assert not tempString,repr(tempString)
-            s = tempList
-        else:
-            s = ''.join(at.out)
-
-        s = g.toUnicode(s)
-        # g.trace('%20s %s' % (at.v.h,repr(s)))
-        if trace: g.trace(at.v.h)
-
-        if at.importing:
-            at.v._bodyString = s # Allowed use of _bodyString.
-        elif middle: 
-            pass # Middle sentinels never alter text.
-        else:
-            if at.v == at.root.v:
-                old = None # Don't issue warnings for the root.
-            elif hasattr(at.v,"tempBodyString") and s != at.v.tempBodyString:
-                old = at.v.tempBodyString
-            elif at.v.hasBody() and s != at.v.getBody():
-                old = at.v.getBody()
-            else:
-                old = None
-
-            if old:
-                #@            << indicate that the node has been changed >>
-                #@+node:ekr.20041005105605.96:<< indicate that the node has been changed >>
-                if at.perfectImportRoot:
-                    #@    << bump at.correctedLines and tell about the correction >>
-                    #@+node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
-                    # Report the number of corrected nodes.
-                    at.correctedLines += 1
-
-                    found = False
-                    for p in at.perfectImportRoot.self_and_subtree():
-                        if p.v == at.v:
-                            found = True ; break
-
-                    if found:
-                        if 0: # For debugging.
-                            g.pr('\n','-' * 40)
-                            g.pr("old",len(old))
-                            for line in g.splitLines(old):
-                                #line = line.replace(' ','< >').replace('\t','<TAB>')
-                                g.pr(repr(str(line)))
-                            g.pr('\n','-' * 40)
-                            g.pr("new",len(s))
-                            for line in g.splitLines(s):
-                                #line = line.replace(' ','< >').replace('\t','<TAB>')
-                                g.pr(repr(str(line)))
-                            g.pr('\n','-' * 40)
-                    else:
-                        # This should never happen.
-                        g.es("correcting hidden node: v=",repr(at.v),color="red")
-                    #@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
-                    #@nl
-                    at.v._bodyString = s # Allowed use of _bodyString.
-                        # Just setting at.v.tempBodyString won't work here.
-                    at.v.setDirty()
-                        # Mark the node dirty. Ancestors will be marked dirty later.
-                    at.c.setChanged(True)
-                else:
-                    # 2010/02/05: removed special case for @all.
-                    c.nodeConflictList.append(g.bunch(
-                        tag='(uncached)',
-                        gnx=at.v.gnx,
-                        fileName = at.root.h,
-                        b_old=old,
-                        b_new=s,
-                        h_old=at.v._headString,
-                        h_new=at.v._headString,
-                    ))
-
-                    g.es_print("uncached read node changed",at.v.h,color="red")
-
-                    at.v.setDirty()
-                        # Just set the dirty bit. Ancestors will be marked dirty later.
-                    c.changed = True
-                        # Important: the dirty bits won't stick unless we set c.changed here.
-                        # Do *not* call c.setChanged(True) here: that would be too slow.
-                #@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
-                #@nl
-
-            if at.readVersion5:
-                pass # Nothing needs to be done.
-            else:
-                # *Always* update the text.
-                at.v.tempBodyString = s
-
-        # Indicate that the vnode has been set in the derived file.
+            # End raw mode.
+        at.terminateNode(middle)
+            # Set the body text and warn about changed text.
         at.v.setVisited()
+            # Indicate that the vnode has been set in the derived file.
 
         # End the previous node sentinel.
         at.indent = at.indentStack.pop()
-        at.out = at.outStack.pop()
+        if not unified:
+            at.out = at.outStack.pop()
         at.v = at.vStack.pop()
 
         if at.thinFile and not at.importing:
@@ -2057,6 +2031,110 @@ class atFile:
     #@-node:ekr.20041005105605.115:skipSentinelStart4
     #@-node:ekr.20041005105605.71:Reading (4.x)
     #@+node:ekr.20041005105605.116:Reading utils...
+    #@+node:ekr.20100628072537.5814:at.terminateNode & helpers
+    def terminateNode (self,middle=False):
+
+        '''Set the body text of at.v, and issue warning if it has changed.'''
+
+        trace = True and not g.unitTesting
+        at = self
+
+        tempString = hasattr(at.v,'tempBodyString') and at.v.tempBodyString or ''
+        tempList =   hasattr(at.v,'tempBodyList')   and ''.join(at.v.tempBodyList) or ''
+
+        # Set the temporary body text.
+        if at.readVersion5:
+            assert not tempString,repr(tempString)
+            s = tempList
+        else:
+            s = ''.join(at.out)
+
+        s = g.toUnicode(s)
+        # g.trace('%20s %s' % (at.v.h,repr(s)))
+        # if trace: g.trace(at.v.h)
+
+        if at.importing:
+            at.v._bodyString = s # Allowed use of _bodyString.
+        elif middle: 
+            pass # Middle sentinels never alter text.
+        else:
+            if at.v == at.root.v:
+                old = None # Don't issue warnings for the root.
+            elif hasattr(at.v,"tempBodyString") and s != at.v.tempBodyString:
+                old = at.v.tempBodyString
+            elif at.v.hasBody() and s != at.v.getBody():
+                old = at.v.getBody()
+            else:
+                old = None
+
+            if old:
+                at.indicateNodeChanged(old,s)
+
+            if at.readVersion5:
+                pass # Nothing needs to be done.
+            else:
+                # *Always* update the text.
+                at.v.tempBodyString = s
+    #@+node:ekr.20100628124907.5816:at.indicateNodeChanged
+    def indicateNodeChanged (self,old,s):
+
+        at = self ; c = at.c
+
+        if at.perfectImportRoot:
+            at.correctedLines += 1
+            at.reportCorrection(old,s)
+            at.v._bodyString = s # Allowed use of _bodyString.
+                # Just setting at.v.tempBodyString won't work here.
+            at.v.setDirty()
+                # Mark the node dirty. Ancestors will be marked dirty later.
+            c.setChanged(True)
+        else:
+            # 2010/02/05: removed special case for @all.
+            c.nodeConflictList.append(g.bunch(
+                tag='(uncached)',
+                gnx=at.v.gnx,
+                fileName = at.root.h,
+                b_old=old,
+                b_new=s,
+                h_old=at.v._headString,
+                h_new=at.v._headString,
+            ))
+
+            g.es_print("uncached read node changed",at.v.h,color="red")
+
+            at.v.setDirty()
+                # Just set the dirty bit. Ancestors will be marked dirty later.
+            c.changed = True
+                # Important: the dirty bits won't stick unless we set c.changed here.
+                # Do *not* call c.setChanged(True) here: that would be too slow.
+    #@-node:ekr.20100628124907.5816:at.indicateNodeChanged
+    #@+node:ekr.20100628124907.5818:at.reportCorrection
+    def reportCorrection (self,old,s):
+
+        at = self
+        found = False
+        for p in at.perfectImportRoot.self_and_subtree():
+            if p.v == at.v:
+                found = True ; break
+
+        if found:
+            if 0: # For debugging.
+                g.pr('\n','-' * 40)
+                g.pr("old",len(old))
+                for line in g.splitLines(old):
+                    #line = line.replace(' ','< >').replace('\t','<TAB>')
+                    g.pr(repr(str(line)))
+                g.pr('\n','-' * 40)
+                g.pr("new",len(s))
+                for line in g.splitLines(s):
+                    #line = line.replace(' ','< >').replace('\t','<TAB>')
+                    g.pr(repr(str(line)))
+                g.pr('\n','-' * 40)
+        else:
+            # This should never happen.
+            g.es("correcting hidden node: v=",repr(at.v),color="red")
+    #@-node:ekr.20100628124907.5818:at.reportCorrection
+    #@-node:ekr.20100628072537.5814:at.terminateNode & helpers
     #@+node:ekr.20100625092449.5963:at.appendToOut
     def appendToOut (self,s):
 
@@ -2066,7 +2144,7 @@ class atFile:
         trace = False and not g.unitTesting
         at = self
 
-        if at.readVersion5:
+        if unified or at.readVersion5:
             if not at.v: at.v = at.root.v
             if hasattr(at.v,"tempBodyList"):
                 at.v.tempBodyList.append(s)
@@ -2268,64 +2346,8 @@ class atFile:
         # g.trace("start,end",repr(at.startSentinelComment),repr(at.endSentinelComment))
         return firstLines,new_df,isThinDerivedFile
     #@-node:ekr.20041005105605.129:at.scanHeader
-    #@+node:ekr.20041005105605.117:completeFirstDirectives
-    # 14-SEP-2002 DTHEIN: added for use by atFile.read()
-
-    # this function scans the lines in the list 'out' for @first directives
-    # and appends the corresponding line from 'firstLines' to each @first 
-    # directive found.  NOTE: the @first directives must be the very first
-    # lines in 'out'.
-    def completeFirstDirectives(self,out,firstLines):
-
-        tag = "@first"
-        foundAtFirstYet = 0
-        outRange = range(len(out))
-        j = 0
-        for k in outRange:
-            # skip leading whitespace lines
-            if (not foundAtFirstYet) and (len(out[k].strip()) == 0): continue
-            # quit if something other than @first directive
-            i = 0
-            if not g.match(out[k],i,tag): break
-            foundAtFirstYet = 1
-            # quit if no leading lines to apply
-            if j >= len(firstLines): break
-            # make the new @first directive
-            #18-SEP-2002 DTHEIN: remove trailing newlines because they are inserted later
-            # 21-SEP-2002 DTHEIN: no trailing whitespace on empty @first directive
-            leadingLine = " " + firstLines[j]
-            out[k] = tag + leadingLine.rstrip() ; j += 1
-    #@-node:ekr.20041005105605.117:completeFirstDirectives
-    #@+node:ekr.20041005105605.118:completeLastDirectives
-    # 14-SEP-2002 DTHEIN: added for use by atFile.read()
-
-    # this function scans the lines in the list 'out' for @last directives
-    # and appends the corresponding line from 'lastLines' to each @last 
-    # directive found.  NOTE: the @last directives must be the very last
-    # lines in 'out'.
-    def completeLastDirectives(self,out,lastLines):
-
-        tag = "@last"
-        foundAtLastYet = 0
-        outRange = range(-1,-len(out),-1)
-        j = -1
-        for k in outRange:
-            # skip trailing whitespace lines
-            if (not foundAtLastYet) and (len(out[k].strip()) == 0): continue
-            # quit if something other than @last directive
-            i = 0
-            if not g.match(out[k],i,tag): break
-            foundAtLastYet = 1
-            # quit if no trailing lines to apply
-            if j < -len(lastLines): break
-            # make the new @last directive
-            #18-SEP-2002 DTHEIN: remove trailing newlines because they are inserted later
-            # 21-SEP-2002 DTHEIN: no trailing whitespace on empty @last directive
-            trailingLine = " " + lastLines[j]
-            out[k] = tag + trailingLine.rstrip() ; j -= 1
-    #@-node:ekr.20041005105605.118:completeLastDirectives
-    #@+node:ekr.20050301105854:copyAllTempBodyStringsToTnodes
-    def  copyAllTempBodyStringsToTnodes (self,root,thinFile):
+    #@+node:ekr.20050301105854:at.copyAllTempBodyStringsToVnodes
+    def  copyAllTempBodyStringsToVnodes (self,root,thinFile):
 
         c = self.c
         for p in root.self_and_subtree():
@@ -2354,8 +2376,8 @@ class atFile:
                         pass
                     # 2010/02/05: This warning is given elsewhere.
                     # g.es("changed:",p.h,color="blue")
-    #@-node:ekr.20050301105854:copyAllTempBodyStringsToTnodes
-    #@+node:ekr.20041005105605.119:createImportedNode
+    #@-node:ekr.20050301105854:at.copyAllTempBodyStringsToVnodes
+    #@+node:ekr.20041005105605.119:at.createImportedNode
     def createImportedNode (self,root,headline):
 
         at = self
@@ -2370,8 +2392,8 @@ class atFile:
 
         p.v.setVisited() # Suppress warning about unvisited node.
         return p
-    #@-node:ekr.20041005105605.119:createImportedNode
-    #@+node:ekr.20041005105605.127:readError
+    #@-node:ekr.20041005105605.119:at.createImportedNode
+    #@+node:ekr.20041005105605.127:at.readError
     def readError(self,message):
 
         # This is useful now that we don't print the actual messages.
@@ -2386,8 +2408,8 @@ class atFile:
         self.root.v.children = []
         self.root.setOrphan()
         self.root.setDirty()
-    #@-node:ekr.20041005105605.127:readError
-    #@+node:ekr.20041005105605.128:readLine
+    #@-node:ekr.20041005105605.127:at.readError
+    #@+node:ekr.20041005105605.128:at.readLine
     def readLine (self,theFile):
 
         """Reads one line from file using the present encoding"""
@@ -2396,8 +2418,8 @@ class atFile:
         # g.trace(repr(s),g.callers(4))
         u = g.toUnicode(s,self.encoding)
         return u
-    #@-node:ekr.20041005105605.128:readLine
-    #@+node:ekr.20050103163224:scanHeaderForThin (used by import code)
+    #@-node:ekr.20041005105605.128:at.readLine
+    #@+node:ekr.20050103163224:at.scanHeaderForThin (used by import code)
     # Note: Import code uses this.
 
     def scanHeaderForThin (self,theFile,fileName):
@@ -2414,8 +2436,8 @@ class atFile:
         junk,junk,isThin = at.scanHeader(theFile,fileName)
 
         return isThin
-    #@-node:ekr.20050103163224:scanHeaderForThin (used by import code)
-    #@+node:ekr.20041005105605.131:skipIndent
+    #@-node:ekr.20050103163224:at.scanHeaderForThin (used by import code)
+    #@+node:ekr.20041005105605.131:at.skipIndent
     # Skip past whitespace equivalent to width spaces.
 
     def skipIndent(self,s,i,width):
@@ -2427,7 +2449,7 @@ class atFile:
             else: break
             i += 1
         return i
-    #@-node:ekr.20041005105605.131:skipIndent
+    #@-node:ekr.20041005105605.131:at.skipIndent
     #@-node:ekr.20041005105605.116:Reading utils...
     #@-node:ekr.20041005105605.17:at.Reading
     #@+node:ekr.20041005105605.132:at.Writing

@@ -4676,6 +4676,60 @@ def do_end_nodes (self,n):
             g.trace('unexpected top: %s' % at.sentinelName(top))
             break
 #@-node:ekr.20100518100915.5900:do_end_nodes
+#@+node:ekr.20041005105605.96:<< indicate that the node has been changed >>
+if at.perfectImportRoot:
+    << bump at.correctedLines and tell about the correction >>
+    at.v._bodyString = s # Allowed use of _bodyString.
+        # Just setting at.v.tempBodyString won't work here.
+    at.v.setDirty()
+        # Mark the node dirty. Ancestors will be marked dirty later.
+    at.c.setChanged(True)
+else:
+    # 2010/02/05: removed special case for @all.
+    c.nodeConflictList.append(g.bunch(
+        tag='(uncached)',
+        gnx=at.v.gnx,
+        fileName = at.root.h,
+        b_old=old,
+        b_new=s,
+        h_old=at.v._headString,
+        h_new=at.v._headString,
+    ))
+
+    g.es_print("uncached read node changed",at.v.h,color="red")
+
+    at.v.setDirty()
+        # Just set the dirty bit. Ancestors will be marked dirty later.
+    c.changed = True
+        # Important: the dirty bits won't stick unless we set c.changed here.
+        # Do *not* call c.setChanged(True) here: that would be too slow.
+#@+node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
+# Report the number of corrected nodes.
+at.correctedLines += 1
+
+found = False
+for p in at.perfectImportRoot.self_and_subtree():
+    if p.v == at.v:
+        found = True ; break
+
+if found:
+    if 0: # For debugging.
+        g.pr('\n','-' * 40)
+        g.pr("old",len(old))
+        for line in g.splitLines(old):
+            #line = line.replace(' ','< >').replace('\t','<TAB>')
+            g.pr(repr(str(line)))
+        g.pr('\n','-' * 40)
+        g.pr("new",len(s))
+        for line in g.splitLines(s):
+            #line = line.replace(' ','< >').replace('\t','<TAB>')
+            g.pr(repr(str(line)))
+        g.pr('\n','-' * 40)
+else:
+    # This should never happen.
+    g.es("correcting hidden node: v=",repr(at.v),color="red")
+#@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
+#@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl
