@@ -831,12 +831,8 @@ def scanAllDirectives(self,p):
         s = p.b
         << Collect @first attributes >>
 
-    # delims = (self.single_comment_string,self.start_comment_string,self.end_comment_string)
-    lang_dict = {'language':self.language,'delims':None,} # Delims not used
-
     table = (
         ('encoding',    self.encoding,  g.scanAtEncodingDirectives),
-        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
         ('lineending',  None,           g.scanAtLineendingDirectives),
         ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
         ('path',        None,           c.scanAtPathDirectives), 
@@ -850,13 +846,16 @@ def scanAllDirectives(self,p):
         val = func(aList)
         d[key] = g.choose(val is None,default,val)
 
+    lang_dict = {'language':None,'delims':None}
+    self.parent_language_comment_settings(p,lang_dict)
+
     # Post process.
-    lang_dict       = d.get('lang-dict')
     lineending      = d.get('lineending')
     if lineending:
         self.output_newline = lineending
     self.encoding             = d.get('encoding')
     self.language             = lang_dict.get('language')
+    self.init_delims          = lang_dict.get('delims')
     self.page_width           = d.get('pagewidth')
     self.tangle_directory     = d.get('path')
     self.tab_width            = d.get('tabwidth')
@@ -870,13 +869,6 @@ def scanAllDirectives(self,p):
         if self.print_mode: break
     if not self.print_mode: self.print_mode = 'verbose'
 
-    # 2010/01/27: bug fix: make sure to set the ivars.
-    # 2010/06/02: allow @comment (which sets delims) in absence of @language
-    if self.language:
-        delim1,delim2,delim3 = g.set_delims_from_language(self.language)
-    if lang_dict and lang_dict.get('delims'):
-        delim1,delim2,delim3 = lang_dict.get('delims')
-    self.init_delims=(delim1,delim2,delim3)
     # g.trace(self.tangle_directory)
 
     # For unit testing.
@@ -910,39 +902,33 @@ while 1:
         break
 #@-node:ekr.20080923124254.17:<< Collect @first attributes >>
 #@-node:ekr.20080923124254.16:tangle.scanAllDirectives
-#@+node:ekr.20031218072017.3475:tanglePass1
+#@+node:sps.20100618004337.20865:tanglePass1
 # Traverses the tree whose root is given, handling each headline and associated body text.
 
-def tanglePass1(self,p):
+def tanglePass1(self,p_in,delims):
 
     """The main routine of tangle pass 1"""
 
-    p = p.copy()
-    next = p.nodeAfterTree()
-    while p and p != next:
-        self.p = p
-        self.setRootFromHeadline(p)
-        assert(self.head_root == None)
-        theDict = g.get_directives_dict(p,[self.head_root])
-        is_ignore = 'ignore' in theDict
-        if is_ignore:
-            p.moveToNodeAfterTree()
-            continue
-        # This must be called after root_name has been set.
-        if self.tangling:
-            self.scanAllDirectives(p) # calls init_directive_ivars.
-        # Scan the headline and body text.
-        self.skip_headline(p)
-        self.skip_body(p)
-        p.moveToThreadNext()
-        if self.errors + g.app.scanErrors >= max_errors:
-            self.warning("----- Halting Tangle: too many errors")
-            break
-
-    if self.tangling:
-        self.st_check()
-        # g.trace(self.st_dump(verbose_flag=True))
-#@-node:ekr.20031218072017.3475:tanglePass1
+    p = self.p = p_in.copy() # self.p used by update_def in untangle
+#    g.trace(p)
+    self.setRootFromHeadline(p)
+    theDict = g.get_directives_dict(p,[self.head_root])
+    if ('ignore' in theDict):
+        return
+    self.scanAllDirectives(p) # calls init_directive_ivars.
+    # Scan the headline and body text.
+    # @language and @comment are not recognized in headlines
+    self.skip_headline(p)
+    delims = self.skip_body(p, delims)
+    if self.errors + g.app.scanErrors >= max_errors:
+        self.warning("----- Halting Tangle: too many errors")
+    elif p.hasChildren():
+        p.moveToFirstChild()
+        self.tanglePass1(p,delims)
+        while p.hasNext() and (self.errors + g.app.scanErrors < max_errors):
+            p.moveToNext()
+            self.tanglePass1(p,delims)
+#@-node:sps.20100618004337.20865:tanglePass1
 #@+node:ekr.20031218072017.3594:setRootFromHeadline
 def setRootFromHeadline (self,p):
 

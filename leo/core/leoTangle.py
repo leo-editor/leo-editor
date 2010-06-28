@@ -501,6 +501,13 @@ class baseTangleCommands:
         # Default tangle language
         if c.target_language: c.target_language = c.target_language.lower()
         self.language = c.target_language
+        if 0: # debug
+          import sys
+          g.es("tangleCommands.languague: %s at header %s"%(self.language,repr(self.p)))
+          f = sys._getframe(1)
+          g.es("caller: "+f.f_code.co_name)
+          f = sys._getframe(2)
+          g.es("caller's caller: "+f.f_code.co_name)
 
         # Abbreviations for self.language.
         # Warning: these must also be initialized in tangle.scanAllDirectives.
@@ -509,9 +516,8 @@ class baseTangleCommands:
         # Set only from directives.
         self.print_mode = "verbose"
 
-        # Stephen P. Schaefer 9/13/2002
-        # support @first directive
         self.first_lines = ""
+
         self.encoding = c.config.default_derived_file_encoding # 2/21/03
         self.output_newline = g.getOutputNewline(c=c) # 4/24/03: initialize from config settings.
         #@-node:ekr.20031218072017.1359:<< init directive ivars >> (tangle)
@@ -667,14 +673,13 @@ class baseTangleCommands:
 
         """The main routine of tangle pass 1"""
 
-        p = self.p = p_in.copy()
+        p = self.p = p_in.copy() # self.p used by update_def in untangle
+    #    g.trace(p)
         self.setRootFromHeadline(p)
         theDict = g.get_directives_dict(p,[self.head_root])
         if ('ignore' in theDict):
             return
-        if self.tangling:
-            # optimize using a stack?
-            self.scanAllDirectives(p) # calls init_directive_ivars.
+        self.scanAllDirectives(p) # calls init_directive_ivars.
         # Scan the headline and body text.
         # @language and @comment are not recognized in headlines
         self.skip_headline(p)
@@ -721,6 +726,7 @@ class baseTangleCommands:
         self.tangling = True
 
         while p and p != next:
+    #        g.trace(p)
             self.setRootFromHeadline(p)
             assert(self.head_root == None)
             theDict = g.get_directives_dict(p,[self.head_root])
@@ -989,6 +995,7 @@ class baseTangleCommands:
                         #@nl
                         # g.trace("end:",end)
                         self.scanAllDirectives(p)
+                        self.tanglePass1(p,self.init_delims)
                         self.untangleRoot(p,unitNode,afterUnit)
                         p = end.copy()
                     else: p.moveToThreadNext()
@@ -1053,7 +1060,7 @@ class baseTangleCommands:
         elif kind == at_other:
             k = g.skip_to_end_of_line(s,i)
             if g.match_word(s,j,"@language"):
-                lang,d1,d2,d3 = g.set_language(s,i)
+                lang,d1,d2,d3 = g.set_language(s,j)
                 delims = (d1,d2,d3)
             elif g.match_word(s,j,"@comment"):
                 delims = g.set_delims_from_string(s[j:k])
@@ -1155,6 +1162,7 @@ class baseTangleCommands:
                 # Tangle code: enter the section name even if the code part is empty.
                 j = g.skip_blank_lines(s,i)
                 i, code, new_delims, reflist = self.skip_code(s,j,delims)
+                # g.trace('=======\n%s======' % code)
                 part = self.st_enter_section_name(section_name,code,doc,delims,new_delims)
                 delims = new_delims
 
@@ -2090,6 +2098,13 @@ class baseTangleCommands:
     def st_enter(self,name,code,doc,delims_begin,delims_end,is_root_flag=False):
 
         """Enters names and their associated code and doc parts into the given symbol table."""
+        if 0: # debug
+            import sys
+            g.trace("name: %s ======code\n%s======doc\n%s" % (name, code, doc))
+            f = sys._getframe(1)
+            g.trace("caller: "+f.f_code.co_name)
+            f = sys._getframe(2)
+            g.trace("caller's caller: "+f.f_code.co_name)
 
         section = self.st_lookup(name,is_root_flag)
         assert(section)
@@ -2746,7 +2761,9 @@ class baseTangleCommands:
         # The top level of the stack represents the root.
         self.push_new_def_node(self.root_name,indent,1,1,True)
         while i < len(s):
-            # g.trace("i=%d %s" % (i, self.ust_dump()))
+            if 0:
+                eol = g.skip_to_end_of_line(s,i)
+                g.trace("i: %s sentinel: %s" % (s[i:eol], self.sentinel))        
             ch = s[i]
             if ch == '\r':
                 i += 1 # ignore
@@ -2781,6 +2798,9 @@ class baseTangleCommands:
                 # g.trace("handle sentinel line: "+g.get_line(s,i))
                 result,junk,kind,name,part,of,end,nl_flag = self.is_sentinel_line_with_data(s,i)
                 assert(result)
+                # g.trace("kind %s name %s" % (repr(kind),repr(name)))
+                # g.trace(repr(self.def_stack))
+                # g.trace(repr(self.refpart_stack_dump()))
                 #@<< terminate the previous part of this section if it exists >>
                 #@+node:ekr.20031218072017.3567:<< terminate the previous part of this section if it exists >>
                 #@+at 
@@ -2805,7 +2825,7 @@ class baseTangleCommands:
                             elif not found:
                                 self.ust_enter(name,dn.part,dn.of,dn.code,dn.nl_flag,False) # not root
                     elif kind == end_sentinel_line:
-                        self.error("Missing sentinel line for: " + name)
+                        self.error("Missing sentinel line for %s found end %s instead" % (name,dn.name))
                 #@-node:ekr.20031218072017.3567:<< terminate the previous part of this section if it exists >>
                 #@nl
 
@@ -2845,6 +2865,9 @@ class baseTangleCommands:
                     if len(self.def_stack) > 0:
                         indent = self.def_stack[-1].indent
                     self.select_next_sentinel(part_start_flag=False)
+
+                # g.trace(repr(self.def_stack))
+                # g.trace(repr(self.refpart_stack_dump()))
                 #@-node:ekr.20031218072017.3566:<< handle a sentinel line >>
                 #@nl
             elif g.match(s,i,self.line_comment) or g.match(s,i,self.verbatim):
@@ -2861,12 +2884,33 @@ class baseTangleCommands:
                 # g.trace("copy a multiline comment:"+g.get_line(s,i))
                 assert(self.comment_end)
 
-                # Scan for the ending delimiter.
-                j = i ; i += len(self.comment)
-                while i < len(s) and not g.match(s,i,self.comment_end):
-                    i += 1
-                if g.match(s,i,self.comment_end):
-                    i += len(self.comment_end)
+                j = i
+                i += len(self.comment)
+                if self.sentinel == self.comment:
+                    # g.trace("sentinel == comment: "+self.sentinel)
+                    # Scan for the ending delimiter.
+                    while i < len(s) and not g.match(s,i,self.comment_end):
+                        i += 1
+                    if g.match(s,i,self.comment_end):
+                        i += len(self.comment_end)
+                    self.copy(s[j:i])
+                else:
+                    # g.trace("sentinel != comment: <%s> <%s>" % (self.sentinel, self.comment))
+                    # Copy line by line, looking for a sentinel within the
+                    # comment
+                    while i < len(s):
+                        if g.match(s,i,self.comment_end):
+                            i += len(self.comment_end)
+                            break
+                        elif g.is_nl(s,i):
+                            k = g.skip_nl(s,i)
+                            k = g.skip_ws(s,k)
+                            if g.is_sentinel_line(s,k):
+                                break
+                            else:
+                                i = g.choose(k+1 <= len(s), k+1, len(s))
+                        else:
+                            i += 1
                 self.copy(s[j:i])
                 #@-node:sps.20100622084732.12308:<< copy a multi-line comment >>
                 #@nl
@@ -2961,7 +3005,6 @@ class baseTangleCommands:
             if part_start_flag:
                 part = self.refpart_stack.pop()
                 assert part.__class__ == part_node, "expected type part_node, got %s" % repr(part.__class__)
-                delims = part.delims
                 reflist = part.reflist()
                 #@            << push each part for each reference expected >>
                 #@+node:sps.20100623125751.16368:<< push each part for each reference expected >>
@@ -2983,7 +3026,13 @@ class baseTangleCommands:
             else:
                 s = self.refpart_stack.pop()
                 assert s.__class__ == tst_node
-                delims = s.delims
+
+            if len(self.refpart_stack)>0:
+                delims = self.refpart_stack[-1].delims
+            else:
+                section = self.st_lookup(self.root_name)
+                delims = section.delims
+
 
         if delims[0]:
             self.line_comment = delims[0]
@@ -2993,9 +3042,14 @@ class baseTangleCommands:
             self.line_comment = None
             self.sentinel = delims[1]
             self.sentinel_end = delims[2]
+        # g.trace("looking for %s with sentinel start %s" % (repr(self.refpart_stack[-1]),self.sentinel))
 
-        self.comment = delims[1]
-        self.comment_end = delims[2]
+        # don't change multiline comment until after a comment convention transition is finished
+        if len(self.refpart_stack)<2 or (
+            self.refpart_stack[-2].delims[1] == self.refpart_stack[-1].delims[1] and
+            self.refpart_stack[-2].delims[1] == self.refpart_stack[-1].delims[2]):
+                self.comment = delims[1]
+                self.comment_end = delims[2]
         # g.trace(self.refpart_stack_dump())
 
         self.tst = restore_tst
@@ -3085,7 +3139,7 @@ class baseTangleCommands:
         if code and self.forgiving_compare(name,part,code,ucode):
             return false_ret # Not an error.
         # Update the body.
-        if not unitTesting:
+        if not g.unitTesting:
             g.es("***Updating:",p.h)
         i = g.skip_blank_lines(ucode,0)
         ucode = ucode[i:]
@@ -3127,9 +3181,9 @@ class baseTangleCommands:
         s = "top of stack:"
         for i in range(-1,-(len(self.refpart_stack)+1),-1):
             if self.refpart_stack[i].__class__ == part_node:
-                s += "\nnode: " + self.refpart_stack[i].name
+                s += "\nnode: " + self.refpart_stack[i].name + " delims: " + repr(self.refpart_stack[i].delims)
             elif self.refpart_stack[i].__class__ == tst_node:
-                s += "\nsection: " + self.refpart_stack[i].name
+                s += "\nsection: " + self.refpart_stack[i].name + " delims: " + repr(self.refpart_stack[i].delims)
             else:
                 s += "\nINVALID ENTRY of type " + repr(self.refpart_stack[i].__class__)
         s += "\nbottom of stack.\n"
@@ -3367,6 +3421,44 @@ class baseTangleCommands:
         kind = g.choose(end_flag,end_sentinel_line,start_sentinel_line)
         return True,i,kind,name,part,of,end,nl_flag
     #@-node:ekr.20031218072017.3584:is_sentinel_line & is_sentinel_line_with_data
+    #@+node:sps.20100625103124.16437:parent_language_comment_settings
+    # side effect: sets the values within lang_dict
+    # *might* lower case c.target_language
+    def parent_language_comment_settings(self,p,lang_dict):
+        import re
+        c = self.c
+        if p.hasParent():
+            p1 = p.parent()
+            if not lang_dict['delims']:
+                for s in (p1.b, p1.h):
+                    m = re.search(r'(^|.*\n)(@(comment|language)[ \t][^\n]*)',s,re.DOTALL)
+                    if m:
+                        if m.group(3) == "language":
+                            lang, d1, d2, d3 = g.set_language(m.group(2),0)
+                            lang_dict['language'] = lang
+                            lang_dict['delims'] = (d1, d2, d3)
+                        else:
+                            lang_dict['delims'] = g.set_delims_from_string(m.group(2))
+                        break
+            if lang_dict['delims'] and not lang_dict['language']:
+                for s in (p1.b, p1.h):
+                    m = re.search(r'(^|.*\n)(@language[ \t][^\n]*)',s,re.DOTALL)
+                    if m:
+                        g.trace('found @language: '+m.group(2))
+                        lang, d1, d2, d3 = g.set_language(m.group(2),0)
+                        lang_dict['language'] = lang
+                        break
+            if not lang_dict['language']:
+                self.parent_language_comment_settings(p1,lang_dict)
+        else:
+            if not lang_dict['language']:
+                if c.target_language:
+                    c.target_language = c.target_language.lower()
+                    lang, d1, d2, d3 = g.set_language(c.target_language,0)
+                    lang_dict['language'] = lang
+                    if not lang_dict['delims']:
+                        lang_dict['delims'] = (d1, d2, d3)
+    #@-node:sps.20100625103124.16437:parent_language_comment_settings
     #@+node:ekr.20031218072017.3592:push_new_def_node
     # This function pushes a new def_node on the top of the section stack.
 
@@ -3556,12 +3648,8 @@ class baseTangleCommands:
             #@-node:ekr.20080923124254.17:<< Collect @first attributes >>
             #@nl
 
-        # delims = (self.single_comment_string,self.start_comment_string,self.end_comment_string)
-        lang_dict = {'language':self.language,'delims':None,} # Delims not used
-
         table = (
             ('encoding',    self.encoding,  g.scanAtEncodingDirectives),
-            ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
             ('lineending',  None,           g.scanAtLineendingDirectives),
             ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
             ('path',        None,           c.scanAtPathDirectives), 
@@ -3575,13 +3663,16 @@ class baseTangleCommands:
             val = func(aList)
             d[key] = g.choose(val is None,default,val)
 
+        lang_dict = {'language':None,'delims':None}
+        self.parent_language_comment_settings(p,lang_dict)
+
         # Post process.
-        lang_dict       = d.get('lang-dict')
         lineending      = d.get('lineending')
         if lineending:
             self.output_newline = lineending
         self.encoding             = d.get('encoding')
         self.language             = lang_dict.get('language')
+        self.init_delims          = lang_dict.get('delims')
         self.page_width           = d.get('pagewidth')
         self.tangle_directory     = d.get('path')
         self.tab_width            = d.get('tabwidth')
@@ -3595,13 +3686,6 @@ class baseTangleCommands:
             if self.print_mode: break
         if not self.print_mode: self.print_mode = 'verbose'
 
-        # 2010/01/27: bug fix: make sure to set the ivars.
-        # 2010/06/02: allow @comment (which sets delims) in absence of @language
-        if self.language:
-            delim1,delim2,delim3 = g.set_delims_from_language(self.language)
-        if lang_dict and lang_dict.get('delims'):
-            delim1,delim2,delim3 = lang_dict.get('delims')
-        self.init_delims=(delim1,delim2,delim3)
         # g.trace(self.tangle_directory)
 
         # For unit testing.

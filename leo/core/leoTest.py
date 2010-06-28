@@ -966,8 +966,6 @@ def runRootFileTangleTest(c,p):
     the file names that should be generated, with the bodies containing the intended
     contents of the corresponding file."""
 
-    at = c.atFileCommands
-    next = p.nodeAfterTree()
     rootTestBeforeP = p.firstChild()
     rootTestAfterP = rootTestBeforeP.copyTreeAfter()
     resultNodeP = rootTestAfterP.copy()
