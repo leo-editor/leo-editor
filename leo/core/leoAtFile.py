@@ -1217,10 +1217,15 @@ class atFile:
 
         # Switch context.
         if at.readVersion5:
+            # Terminate the *previous* doc part if it exists.
+            if at.docOut: at.appendToOut(''.join(at.docOut))
+            # Terminate the body text.
             at.terminateNode()
 
+        at.inCode = True
         at.outStack.append(at.out)
         at.out = []
+        at.docOut = []
 
         at.vStack.append(at.v)
 
@@ -1616,11 +1621,14 @@ class atFile:
         if at.readVersion5:
             at.v = at.endSentinelNodeStack.pop()
     #@-node:ekr.20100625140824.5968:readEndRef
-    #@+node:ekr.20041005105605.99:readLastDocLine
+    #@+node:ekr.20041005105605.99:readLastDocLine (old sentinels only)
     def readLastDocLine (self,tag):
 
         """Read the @c line that terminates the doc part.
-        tag is @doc or @."""
+        tag is @doc or @.
+
+        Not used when reading new sentinels.
+        """
 
         at = self
         end = at.endSentinelComment
@@ -1662,7 +1670,7 @@ class atFile:
 
         at.appendToOut(tag + s)
         at.docOut = []
-    #@-node:ekr.20041005105605.99:readLastDocLine
+    #@-node:ekr.20041005105605.99:readLastDocLine (old sentinels only)
     #@-node:ekr.20041005105605.90:end sentinels
     #@+node:ekr.20041005105605.100:Unpaired sentinels
     # Ooops: shadow files are cleared if there is a read error!!
@@ -1837,6 +1845,7 @@ class atFile:
         if at.readVersion5 and s2 in ('@c','@c\n'):
             if at.docOut:
                 at.appendToOut(''.join(at.docOut))
+                at.docOut = []
             at.inCode = True # End the doc part.
 
         at.appendToOut(s2)
@@ -2088,7 +2097,8 @@ class atFile:
                 h_new=v._headString,
             ))
 
-            g.es_print("uncached read node changed",v.h,color="red")
+            if not g.unitTesting:
+                g.es_print("uncached read node changed",v.h,color="red")
 
             v.setDirty()
                 # Just set the dirty bit. Ancestors will be marked dirty later.

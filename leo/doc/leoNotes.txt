@@ -4597,7 +4597,7 @@ if len(at.endSentinelComment) == 0:
 else:
     i = at.skipIndent(s,0,at.indent)
 #@-node:ekr.20041005105605.78:<< Skip the leading stuff >>
-#@+node:ekr.20041005105605.79:<< Append s to docOut >>
+#@+node:ekr.20041005105605.79:<< Append s to docOut >> (unused)
 line = s[i:-1] # remove newline for rstrip.
 
 if line == line.rstrip():
@@ -4606,7 +4606,7 @@ if line == line.rstrip():
 else:
     # trailing whitespace: the newline is fake.
     at.docOut.append(line)
-#@-node:ekr.20041005105605.79:<< Append s to docOut >>
+#@-node:ekr.20041005105605.79:<< Append s to docOut >> (unused)
 #@-node:ekr.20100624082003.5943:Unused from readNormalLine
 #@+node:ekr.20100625085138.5954:Not used from readStartNode
 #@+node:ekr.20041005105605.86:<< set gnx and bump i >>
