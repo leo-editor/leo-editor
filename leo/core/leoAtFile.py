@@ -1581,6 +1581,10 @@ class atFile:
 
         at.raw = False
             # End raw mode.
+
+        if at.readVersion5:
+            # Terminate the *previous* doc part if it exists.
+            if at.docOut: at.appendToOut(''.join(at.docOut))
         at.terminateNode(middle)
             # Set the body text and warn about changed text.
         at.v.setVisited()
@@ -1589,6 +1593,7 @@ class atFile:
         # End the previous node sentinel.
         at.indent = at.indentStack.pop()
         at.out = at.outStack.pop()
+        at.docOut = []
         at.v = at.vStack.pop()
 
         if at.thinFile and not at.importing:
