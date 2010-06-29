@@ -867,15 +867,15 @@ class atFile:
 
         #@    << handle first and last lines >>
         #@+node:ekr.20041005105605.28:<< handle first and last lines >> (at.readOpenFile)
-        # try:
-            # body = root.v.tempBodyString
-        # except Exception:
-            # body = ""
+        tempString = hasattr(at.v,'tempBodyString') and at.v.tempBodyString or ''
+        tempList = hasattr(at.v,'tempBodyList') and ''.join(at.v.tempBodyList) or ''
 
         if at.readVersion5:
-            body = hasattr(at.v,'tempBodyList') and ''.join(at.v.tempBodyList) or ''
+            # at.terminateNode() may not have been called for at.v,
+            # Use tempList if it exists, or tempString otherwise.
+            body = tempList or tempString or ''
         else:
-            body = hasattr(at.v,'tempBodyString') and at.v.tempBodyString or ''
+            body = tempString
 
         lines = body.split('\n')
 
@@ -884,10 +884,8 @@ class atFile:
 
         s = '\n'.join(lines).replace('\r', '')
 
-        if at.readVersion5:
-            root.v.tempBodyList = g.splitLines(s)
-        else:
-            root.v.tempBodyString = s
+        # *Always* put the temp body text into at.v.tempBodyString.
+        root.v.tempBodyString = s
         #@-node:ekr.20041005105605.28:<< handle first and last lines >> (at.readOpenFile)
         #@nl
 
@@ -2032,7 +2030,6 @@ class atFile:
 
         '''Set the body text of at.v, and issue warning if it has changed.'''
 
-        trace = True and not g.unitTesting
         at = self
 
         # Get the temp attributes.
@@ -2058,7 +2055,7 @@ class atFile:
             # *Always* put the new text into tempBodyString.
             at.v.tempBodyString = new
 
-        # *Always delete tempBodyList.
+        # *Always delete tempBodyList.  Do not leave this lying around!
         if hasattr(at.v,'tempBodyList'): delattr(at.v,'tempBodyList')
     #@+node:ekr.20100628124907.5816:at.indicateNodeChanged
     def indicateNodeChanged (self,old,new):
@@ -2334,16 +2331,17 @@ class atFile:
     #@+node:ekr.20050301105854:at.copyAllTempBodyStringsToVnodes
     def  copyAllTempBodyStringsToVnodes (self,root,thinFile):
 
-        c = self.c
+        trace = True and not g.unitTesting
+        at = self ; c = at.c
         for p in root.self_and_subtree():
-            if hasattr(p.v,'tempBodyString'):
-                s = p.v.tempBodyString
-            else:
-                s = ''
-            if hasattr(p.v,'tempBodyList'):
-                s = s + ''.join(p.v.tempBodyList)
-            # try: s = p.v.tempBodyString
-            # except Exception: s = ""
+            # Important: we test only whether the attribute exists, not its value.
+            hasList = hasattr(p.v,'tempBodyList')
+            hasString = hasattr(p.v,'tempBodyString')
+            # at.terminateNode may not have been called for p.v,
+            # so we prefer p.v.tempBodyList if it exists.
+            if hasList: s = ''.join(p.v.tempBodyList)
+            elif hasString: s = p.v.tempBodyString
+            else: s = ''
             old_body = p.b
             if s != old_body:
                 if thinFile:
