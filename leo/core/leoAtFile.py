@@ -873,7 +873,8 @@ class atFile:
         if at.readVersion5:
             # at.terminateNode() may not have been called for at.v,
             # Use tempList if it exists, or tempString otherwise.
-            body = tempList or tempString or ''
+            if   hasattr(at.v,'tempBodyList'): body = tempList
+            else: body = tempString
         else:
             body = tempString
 
@@ -2334,13 +2335,10 @@ class atFile:
         trace = True and not g.unitTesting
         at = self ; c = at.c
         for p in root.self_and_subtree():
-            # Important: we test only whether the attribute exists, not its value.
-            hasList = hasattr(p.v,'tempBodyList')
-            hasString = hasattr(p.v,'tempBodyString')
             # at.terminateNode may not have been called for p.v,
             # so we prefer p.v.tempBodyList if it exists.
-            if hasList: s = ''.join(p.v.tempBodyList)
-            elif hasString: s = p.v.tempBodyString
+            if   hasattr(p.v,'tempBodyList'): s = ''.join(p.v.tempBodyList)
+            elif hasattr(p.v,'tempBodyString'): s = p.v.tempBodyString
             else: s = ''
             old_body = p.b
             if s != old_body:
