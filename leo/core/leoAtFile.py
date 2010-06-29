@@ -2035,51 +2035,40 @@ class atFile:
         trace = True and not g.unitTesting
         at = self
 
+        # Get the temp attributes.
         tempString = hasattr(at.v,'tempBodyString') and at.v.tempBodyString or ''
-        tempList =   hasattr(at.v,'tempBodyList')   and ''.join(at.v.tempBodyList) or ''
+        tempList = hasattr(at.v,'tempBodyList') and ''.join(at.v.tempBodyList) or ''
 
-        # Set the temporary body text.
-        if at.readVersion5:
-            assert not tempString,repr(tempString)
-            s = tempList
-        else:
-            s = ''.join(at.out)
-
-        s = g.toUnicode(s)
-        # g.trace('%20s %s' % (at.v.h,repr(s)))
-        # if trace: g.trace(at.v.h)
+        # Compute the new text.
+        new = g.choose(at.readVersion5,tempList,''.join(at.out))
+        new = g.toUnicode(new)
 
         if at.importing:
-            at.v._bodyString = s # Allowed use of _bodyString.
+            at.v._bodyString = new # Allowed use of _bodyString.
         elif middle: 
             pass # Middle sentinels never alter text.
         else:
-            if at.v == at.root.v:
-                old = None # Don't issue warnings for the root.
-            elif hasattr(at.v,"tempBodyString") and s != at.v.tempBodyString:
-                old = at.v.tempBodyString
-            elif at.v.hasBody() and s != at.v.getBody():
-                old = at.v.getBody()
-            else:
-                old = None
+            # The old temp text is *always* in tempBodyString.
+            old = tempString or at.v.getBody()
 
-            if old:
-                at.indicateNodeChanged(old,s)
+            # Warn if the body text has changed, except for the root node.
+            if old and new != old and at.v != at.root.v:
+                at.indicateNodeChanged(old,new)
 
-            if at.readVersion5:
-                pass # Nothing needs to be done.
-            else:
-                # *Always* update the text.
-                at.v.tempBodyString = s
+            # *Always* put the new text into tempBodyString.
+            at.v.tempBodyString = new
+
+        # *Always delete tempBodyList.
+        if hasattr(at.v,'tempBodyList'): delattr(at.v,'tempBodyList')
     #@+node:ekr.20100628124907.5816:at.indicateNodeChanged
-    def indicateNodeChanged (self,old,s):
+    def indicateNodeChanged (self,old,new):
 
         at = self ; c = at.c
 
         if at.perfectImportRoot:
             at.correctedLines += 1
-            at.reportCorrection(old,s)
-            at.v._bodyString = s # Allowed use of _bodyString.
+            at.reportCorrection(old,new)
+            at.v._bodyString = new # Allowed use of _bodyString.
                 # Just setting at.v.tempBodyString won't work here.
             at.v.setDirty()
                 # Mark the node dirty. Ancestors will be marked dirty later.
@@ -2091,7 +2080,7 @@ class atFile:
                 gnx=at.v.gnx,
                 fileName = at.root.h,
                 b_old=old,
-                b_new=s,
+                b_new=new,
                 h_old=at.v._headString,
                 h_new=at.v._headString,
             ))
@@ -2105,7 +2094,7 @@ class atFile:
                 # Do *not* call c.setChanged(True) here: that would be too slow.
     #@-node:ekr.20100628124907.5816:at.indicateNodeChanged
     #@+node:ekr.20100628124907.5818:at.reportCorrection
-    def reportCorrection (self,old,s):
+    def reportCorrection (self,old,new):
 
         at = self
         found = False
@@ -2121,8 +2110,8 @@ class atFile:
                     #line = line.replace(' ','< >').replace('\t','<TAB>')
                     g.pr(repr(str(line)))
                 g.pr('\n','-' * 40)
-                g.pr("new",len(s))
-                for line in g.splitLines(s):
+                g.pr("new",len(new))
+                for line in g.splitLines(new):
                     #line = line.replace(' ','< >').replace('\t','<TAB>')
                     g.pr(repr(str(line)))
                 g.pr('\n','-' * 40)
