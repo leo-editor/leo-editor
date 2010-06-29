@@ -1070,7 +1070,7 @@ class atFile:
         v.setVisited() # Supress warning/deletion of unvisited nodes.
         return v
     #@-node:ekr.20041005105605.73:findChild4
-    #@+node:ekr.20041005105605.74:scanText4 & allies
+    #@+node:ekr.20041005105605.74:at.scanText4 & allies
     def scanText4 (self,theFile,fileName,p,verbose=False):
 
         """Scan a 4.x derived file non-recursively."""
@@ -1942,7 +1942,7 @@ class atFile:
                 g.callers(4)))
             at.badEndSentinel(expectedKind)
     #@-node:ekr.20041005105605.113:badEndSentinel, popSentinelStack
-    #@-node:ekr.20041005105605.74:scanText4 & allies
+    #@-node:ekr.20041005105605.74:at.scanText4 & allies
     #@+node:ekr.20041005105605.114:sentinelKind4 & helper (read logic)
     def sentinelKind4(self,s):
 
@@ -3379,7 +3379,7 @@ class atFile:
     #@-node:ekr.20041005105605.157:writeOpenFile
     #@-node:ekr.20041005105605.133:Writing (top level)
     #@+node:ekr.20041005105605.160:Writing 4.x
-    #@+node:ekr.20041005105605.161:putBody
+    #@+node:ekr.20041005105605.161:at.putBody
     # oneNodeOnly is no longer used, but it might be used in the future?
 
     def putBody(self,p,oneNodeOnly=False,fromString=''):
@@ -3451,10 +3451,13 @@ class atFile:
                     else:
                         at.putDocLine(s,i)
             elif kind in (at.docDirective,at.atDirective):
-                assert(not at.pending)
-                if not inCode: # Bug fix 12/31/04: handle adjacent doc parts.
-                    at.putEndDocLine() 
-                at.putStartDocLine(s,i,kind)
+                if 1:
+                    next_i = at.putDocPart(s,i,kind,next_i)
+                else:
+                    assert(not at.pending)
+                    if not inCode: # Handle adjacent doc parts.
+                        at.putEndDocLine() 
+                    at.putStartDocLine(s,i,kind)
                 inCode = False
             elif kind in (at.cDirective,at.codeDirective):
                 # Only @c and @code end a doc part.
@@ -3501,7 +3504,7 @@ class atFile:
             elif at.atAuto and not at.atEdit:
                 # New in Leo 4.6 rc1: ensure all @auto nodes end in a newline!
                 at.onl()
-    #@-node:ekr.20041005105605.161:putBody
+    #@-node:ekr.20041005105605.161:at.putBody
     #@+node:ekr.20041005105605.164:writing code lines...
     #@+node:ekr.20041005105605.165:@all
     #@+node:ekr.20041005105605.166:putAtAllLine
@@ -3852,6 +3855,33 @@ class atFile:
     #@-node:ekr.20041005105605.175:putRefLine & allies
     #@-node:ekr.20041005105605.164:writing code lines...
     #@+node:ekr.20041005105605.180:writing doc lines...
+    #@+node:ekr.20100629132026.5815:New
+    #@+node:ekr.20100629132026.5814:putDocPart
+    def putDocPart (self,s,i,docKind,next_i):
+
+        trace = True and not g.unitTesting
+        at = self
+
+        at.putStartDocLine(s,i,docKind)
+        i = next_i
+
+        while i < len(s):
+            next_i = g.skip_line(s,i)
+            assert(next_i > i)
+            kind = at.directiveKind4(s,i)
+            # Only @c and @code end the doc part.
+            if kind in (at.cDirective,at.codeDirective):
+                at.putEndDocLine() 
+                at.putDirective(s,i)
+                i = next_i
+                break
+            else:
+                at.putDocLine(s,i)
+                i = next_i
+        return i
+    #@-node:ekr.20100629132026.5814:putDocPart
+    #@-node:ekr.20100629132026.5815:New
+    #@+node:ekr.20100629132026.5816:Old
     #@+node:ekr.20041005105605.181:putBlankDocLine
     def putBlankDocLine (self):
 
@@ -3931,6 +3961,13 @@ class atFile:
         if not s or s[0] == '\n':
             # A blank line.
             at.putBlankDocLine()
+        elif new_write:
+            # Don't wrap the line: use what we are given.
+            at.putIndent(at.indent)
+            # Put the opening comment delim if there are no block comments.
+            if not at.endSentinelComment:
+                at.os(at.startSentinelComment) ; at.oblank()
+            at.os(s) ; at.onl()
         else:
             #@        << append words to pending line, splitting the line if needed >>
             #@+node:ekr.20041005105605.184:<< append words to pending line, splitting the line if needed >>
@@ -4023,6 +4060,7 @@ class atFile:
 
         at.os(s) ; at.onl()
     #@-node:ekr.20041005105605.186:putPending
+    #@-node:ekr.20100629132026.5816:Old
     #@-node:ekr.20041005105605.180:writing doc lines...
     #@-node:ekr.20041005105605.160:Writing 4.x
     #@+node:ekr.20041005105605.187:Writing 4,x sentinels...
