@@ -15,8 +15,6 @@ new_read = True
     # Eventually, Leo will always read simplified sentinels.
 new_write = False
     # Enable writing simplified sentinels.
-unified = False
-    # True: use the same data structures for the old and new code.
 
 #@<< imports >>
 #@+node:ekr.20041005105605.2:<< imports >>
@@ -1222,9 +1220,8 @@ class atFile:
         if at.readVersion5:
             at.terminateNode()
 
-        if not unified:
-            at.outStack.append(at.out)
-            at.out = []
+        at.outStack.append(at.out)
+        at.out = []
 
         at.vStack.append(at.v)
 
@@ -1587,8 +1584,7 @@ class atFile:
 
         # End the previous node sentinel.
         at.indent = at.indentStack.pop()
-        if not unified:
-            at.out = at.outStack.pop()
+        at.out = at.outStack.pop()
         at.v = at.vStack.pop()
 
         if at.thinFile and not at.importing:
@@ -2144,7 +2140,7 @@ class atFile:
         trace = False and not g.unitTesting
         at = self
 
-        if unified or at.readVersion5:
+        if at.readVersion5:
             if not at.v: at.v = at.root.v
             if hasattr(at.v,"tempBodyList"):
                 at.v.tempBodyList.append(s)
