@@ -1428,7 +1428,9 @@ class atFile:
             line = line.replace('@@','@')
 
         at.appendToOut(line)
+
         if at.readVersion5:
+            # g.trace(at.indent,repr(line))
             at.endSentinelIndentStack.append(at.indent)
             at.endSentinelStack.append(at.endRef)
             at.endSentinelNodeStack.append(at.v)
@@ -1638,6 +1640,7 @@ class atFile:
             if at.docOut:
                 at.appendToOut(''.join(at.docOut))
                 at.docOut = []
+                at.inCode = True
 
             at.v = at.endSentinelNodeStack.pop()
             at.indent = at.endSentinelIndentStack.pop()
@@ -1656,9 +1659,15 @@ class atFile:
             if at.docOut:
                 at.appendToOut(''.join(at.docOut))
                 at.docOut = []
+                at.inCode = True
 
             at.v = at.endSentinelNodeStack.pop()
             at.indent = at.endSentinelIndentStack.pop()
+
+            # The -<< sentinel terminates the preceding node.
+            oldLevel = len(at.thinNodeStack)
+            newLevel = oldLevel-1
+            at.changeLevel(oldLevel,newLevel)
     #@-node:ekr.20100625140824.5968:at.readEndRef
     #@+node:ekr.20041005105605.99:at.readLastDocLine (old sentinels only)
     def readLastDocLine (self,tag):
@@ -5223,32 +5232,32 @@ class atFile:
         return g.utils_chmod(fileName,mode)
     #@-node:ekr.20050104131820:chmod
     #@+node:ekr.20050104131929.1:atFile.rename
-     #@ << about os.rename >>
-     #@+node:ekr.20050104131929.2:<< about os.rename >>
-     #@+at 
-     #@nonl
-     # Here is the Python 2.4 documentation for rename 
-     # (same as Python 2.3)
-     # 
-     # Rename the file or directory src to dst.  If dst is 
-     # a directory, OSError will be raised.
-     # 
-     # On Unix, if dst exists and is a file, it will be 
-     # removed silently if the user
-     # has permission. The operation may fail on some Unix 
-     # flavors if src and dst are
-     # on different filesystems. If successful, the 
-     # renaming will be an atomic
-     # operation (this is a POSIX requirement).
-     # 
-     # On Windows, if dst already exists, OSError will be 
-     # raised even if it is a file;
-     # there may be no way to implement an atomic rename 
-     # when dst names an existing
-     # file.
-     #@-at
-     #@-node:ekr.20050104131929.2:<< about os.rename >>
-     #@nl
+    #@<< about os.rename >>
+    #@+node:ekr.20050104131929.2:<< about os.rename >>
+    #@+at 
+    #@nonl
+    # Here is the Python 2.4 documentation for rename 
+    # (same as Python 2.3)
+    # 
+    # Rename the file or directory src to dst.  If dst is 
+    # a directory, OSError will be raised.
+    # 
+    # On Unix, if dst exists and is a file, it will be 
+    # removed silently if the user
+    # has permission. The operation may fail on some Unix 
+    # flavors if src and dst are
+    # on different filesystems. If successful, the 
+    # renaming will be an atomic
+    # operation (this is a POSIX requirement).
+    # 
+    # On Windows, if dst already exists, OSError will be 
+    # raised even if it is a file;
+    # there may be no way to implement an atomic rename 
+    # when dst names an existing
+    # file.
+    #@-at
+    #@-node:ekr.20050104131929.2:<< about os.rename >>
+    #@nl
 
     def rename (self,src,dst,mode=None,verbose=True):
 
