@@ -1106,14 +1106,12 @@ class atFile:
         #@nl
         if trace: g.trace('filename:',fileName)
         try:
-            while at.errors == 0:
+            while at.errors == 0 and not at.done:
                 s = at.readLine(theFile)
                 if trace and verbose: g.trace(repr(s))
                 at.lineNumber += 1
                 if len(s) == 0:
-                    if at.readVersion5:
-                        at.popSentinelStack(at.endLeo)
-                        at.done = True
+                    # An error.  We expect readEndLeo to set at.done.
                     break
                 kind = at.sentinelKind4(s)
                 if kind == at.noSentinel:
@@ -3375,8 +3373,8 @@ class atFile:
         at.putOpenNodeSentinel(root)
         at.putBody(root,fromString=fromString)
         at.putCloseNodeSentinel(root)
-        if not new_write:
-            at.putSentinel("@-leo")
+        # The -leo sentinel is required to handle @last.
+        at.putSentinel("@-leo")
         root.setVisited()
         at.putAtLastLines(s)
         if not toString:
