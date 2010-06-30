@@ -3885,6 +3885,19 @@ class atFile:
         if not s or s[0] == '\n':
             # A blank line.
             at.putBlankDocLine()
+        elif new_write:
+            #@        << write the line as is >>
+            #@+node:ekr.20100629190353.5831:<< write the line as is >>
+            at.putIndent(at.indent)
+
+            if not at.endSentinelComment:
+                at.os(at.startSentinelComment) ; at.oblank()
+
+            at.os(s)
+            if not s.endswith('\n'): at.onl()
+            #@nonl
+            #@-node:ekr.20100629190353.5831:<< write the line as is >>
+            #@nl
         else:
             #@        << append words to pending line, splitting the line if needed >>
             #@+node:ekr.20041005105605.184:<< append words to pending line, splitting the line if needed >>
