@@ -2052,7 +2052,7 @@ class atFile:
         '''Set the body text of at.v, and issue warning if it has changed.'''
 
         at = self
-        trace = True and at.readVersion5 and not g.unitTesting
+        trace = False and at.readVersion5 and not g.unitTesting
         postPass = v is not None
             # A little kludge: v is given only when this is called
             # from copyAllTempBodyStringsToVnodes.
@@ -2161,7 +2161,7 @@ class atFile:
            at.v.tempBodyList (new sentinels).'''
 
         at = self
-        trace = True and at.readVersion5 and not g.unitTesting
+        trace = False and at.readVersion5 and not g.unitTesting
 
         if at.readVersion5:
             if not at.v: at.v = at.root.v
@@ -2368,7 +2368,7 @@ class atFile:
     #@+node:ekr.20050301105854:at.copyAllTempBodyStringsToVnodes
     def  copyAllTempBodyStringsToVnodes (self,root,thinFile):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         at = self ; c = at.c
         for p in root.self_and_subtree():
             # Call at.terminateNode if v.tempBodyList exists.
