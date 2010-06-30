@@ -740,7 +740,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
+<v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20090703080553.5000"><vh>@suite run all doctests</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
@@ -844,7 +844,7 @@
 <v t="ekr.20071113145804.24"><vh>@test round trip toUnicode toEncodedString</vh></v>
 <v t="ekr.20100421102506.6282"><vh>@test rst.write with unicode character</vh></v>
 </v>
-<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
+<v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20100223123103.5382"><vh>@test expand/contract-pane</vh></v>
 <v t="ekr.20100131171342.5506"><vh>leoApp</vh>
 <v t="ekr.20100131180007.5454"><vh>@test at.get/setPathUa</vh></v>
@@ -2572,7 +2572,7 @@
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="sps.20100624231018.20956" a="E"><vh>leoTangle</vh>
+<v t="sps.20100624231018.20956"><vh>leoTangle</vh>
 <v t="sps.20100624231018.20957"><vh>support routines</vh>
 <v t="sps.20100624231018.20968"><vh>@test setRootFromText</vh></v>
 <v t="sps.20100625103510.5658"><vh>@test skip_section_name</vh></v>
@@ -2622,7 +2622,6 @@
 </v>
 </v>
 <v t="sps.20100624231018.20978"><vh>tanglePass1</vh>
-<v t="sps.20100625103510.5795"><vh>t</vh></v>
 <v t="sps.20100624231018.20979"><vh>@test tanglePass1</vh>
 <v t="sps.20100624231018.20980"><vh>#@root</vh></v>
 </v>
@@ -2647,9 +2646,9 @@
 </v>
 </v>
 </v>
-<v t="sps.20100624231018.20993" a="E"><vh>top level</vh>
-<v t="sps.20100624231018.20994" a="E"><vh>tangle</vh>
-<v t="sps.20100624231018.20995" a="E"><vh>with sentinels</vh>
+<v t="sps.20100624231018.20993"><vh>top level</vh>
+<v t="sps.20100624231018.20994"><vh>tangle</vh>
+<v t="sps.20100624231018.20995"><vh>with sentinels</vh>
 <v t="sps.20100624231018.20996"><vh>now working</vh>
 <v t="sps.20100624231018.20997"><vh>@test @root with @language c</vh>
 <v t="sps.20100624231018.20998"><vh>#@root</vh></v>
@@ -2658,6 +2657,10 @@
 <v t="sps.20100624231018.21000"><vh>@test @root</vh>
 <v t="sps.20100624231018.21001"><vh>#@root</vh></v>
 <v t="sps.20100624231018.21002"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100629094515.16515"><vh>@test @root - trivial</vh>
+<v t="sps.20100629094515.16516"><vh>#@root</vh></v>
+<v t="sps.20100629094515.16517"><vh>'root-test'</vh></v>
 </v>
 <v t="sps.20100624231018.21003"><vh>NOTE:</vh></v>
 <v t="sps.20100624231018.21004"><vh>@test @root-doc</vh>
@@ -2739,7 +2742,11 @@
 <v t="sps.20100624231018.21059"><vh>'root-test-one'</vh></v>
 <v t="sps.20100624231018.21060"><vh>'root-test-two'</vh></v>
 </v>
-<v t="sps.20100624231018.21061" a="E"><vh>NOTE: Multiple parts (and nodes) ARE allowed for &lt;&lt; secref &gt;&gt;</vh>
+<v t="sps.20100624231018.21086"><vh>@test @root with @language html and @comment  //</vh>
+<v t="sps.20100624231018.21087"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21089"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21061"><vh>NOTE: Multiple parts (and nodes) ARE allowed for &lt;&lt; secref &gt;&gt;</vh>
 <v t="sps.20100624231018.21062"><vh>@test @root-doc with subnodes - headline &lt;&lt; secref &gt;&gt; first</vh>
 <v t="sps.20100624231018.21063"><vh>#@root</vh>
 <v t="sps.20100624231018.21064"><vh>&lt;&lt; secref &gt;&gt; this works</vh></v>
@@ -2770,15 +2777,9 @@
 </v>
 </v>
 <v t="sps.20100624231018.21081"><vh>false success</vh>
-<v t="sps.20100624231018.21082"><vh>@test @root with @language html and @comment</vh>
+<v t="sps.20100624231018.21082"><vh>@@test @root with @language html and @comment</vh>
 <v t="sps.20100624231018.21083"><vh>#@root</vh></v>
 <v t="sps.20100624231018.21084"><vh>'root-test'</vh></v>
-</v>
-</v>
-<v t="sps.20100624231018.21085" a="E"><vh>failing</vh>
-<v t="sps.20100624231018.21086" a="E"><vh>@test @root with @language html and @comment  //</vh>
-<v t="sps.20100624231018.21087"><vh>#@root</vh></v>
-<v t="sps.20100624231018.21089"><vh>'root-test'</vh></v>
 </v>
 </v>
 <v t="sps.20100624231018.21090"><vh>supposed to fail</vh>
@@ -2802,6 +2803,21 @@
 <v t="sps.20100624231018.21101"><vh>#@root</vh></v>
 <v t="sps.20100624231018.21102"><vh>#@root</vh></v>
 <v t="sps.20100624231018.21103"><vh>foo</vh></v>
+</v>
+<v t="sps.20100629164540.5728"><vh>@test @root with @language html and @comment  //; 1</vh>
+<v t="sps.20100629164540.5729"><vh>#@root</vh></v>
+<v t="sps.20100629164540.5733"><vh>#@root</vh></v>
+<v t="sps.20100629164540.5730"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100629184507.5695"><vh>@test @root with @language html and @comment  //; 2</vh>
+<v t="sps.20100629184507.5696"><vh>#@root</vh></v>
+<v t="sps.20100629184507.5697"><vh>#@root</vh></v>
+<v t="sps.20100629184507.5698"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100629215924.5705"><vh>@test @root with @language html and @comment  //; 3</vh>
+<v t="sps.20100629215924.5706"><vh>#@root</vh></v>
+<v t="sps.20100629215924.5707"><vh>#@root</vh></v>
+<v t="sps.20100629215924.5708"><vh>'root-test'</vh></v>
 </v>
 </v>
 </v>
@@ -2896,6 +2912,7 @@
 <v t="sps.20100602033555.5434"><vh>'root-test'</vh></v>
 </v>
 </v>
+<v t="sps.20100630015219.5774"><vh>t</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -23816,74 +23833,77 @@ assert g.app.scanErrors == 2, "expected g.app.scanError == 2, got %s" % repr(g.a
 g.app.scanErrors = 0
 
 </t>
-<t tx="sps.20100624231018.20970">c.tangleCommands.init_ivars()
-c.tangleCommands.init_directive_ivars()
-delims = new_delims = c.tangleCommands.init_delims
-c.tangleCommands.tangling = True
-c.tangleCommands.st_enter("'root-test'",False,False,delims,new_delims,is_root_flag=True)
-# remainder: attributes of c.tangleCommands
+<t tx="sps.20100624231018.20970">t=c.tangleCommands
+t.init_ivars()
+t.init_directive_ivars()
+lang_dict = {'language':None,'delims':None}
+t.parent_language_comment_settings(p,lang_dict)
+t.language             = lang_dict.get('language')
+t.init_delims          = lang_dict.get('delims')
+
+delims = new_delims = t.init_delims
+t.tangling = True
+t.st_enter("'root-test'",False,False,delims,new_delims,is_root_flag=True)
+# remainder: attributes of t
 # cweb related
 #     raw_cweb_flag
-assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+assert t.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(t.raw_cweb_flag)
 
 # language
-assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+assert t.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
 # output_doc_flag
-assert c.tangleCommands.output_doc_flag == None
+assert t.output_doc_flag == None
 # print_mode
-assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+assert t.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(t.print_mode)
 # tab_width
-assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+assert t.tab_width == -4, "expected tab_width -4, is %s " % repr(t.tab_width)
 # tangle_batch_flag
-assert c.tangleCommands.tangle_batch_flag == None
+assert t.tangle_batch_flag == None
 # untangle_batch_flag
-assert c.tangleCommands.untangle_batch_flag == None
+assert t.untangle_batch_flag == None
 # use_header_flag
-assert c.tangleCommands.use_header_flag == None
+assert t.use_header_flag == None
 
 import leo.core.leoTangle
 # root_list
-assert len(c.tangleCommands.root_list) == 1, "expected root_list to have length 1, is %d" % len(c.tangleCommands.root_list)
-assert c.tangleCommands.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0]))
+assert len(t.root_list) == 1, "expected root_list to have length 1, is %d" % len(t.root_list)
+assert t.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(t.root_list[0]))
 
 </t>
-<t tx="sps.20100624231018.20972">c.tangleCommands.init_ivars()
-c.tangleCommands.init_directive_ivars()
-delims = new_delims = c.tangleCommands.init_delims
-c.tangleCommands.tangling = True
-c.tangleCommands.st_enter_root_name("'root-test'",False,False,delims,new_delims)
-# remainder: attributes of c.tangleCommands
-# comment string related
-#     single_comment_string
-#assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
-#     start_comment_string
-#assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
-#     end_comment_string
-#assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
-
+<t tx="sps.20100624231018.20972">t=c.tangleCommands
+t.init_ivars()
+t.init_directive_ivars()
+lang_dict = {'language':None,'delims':None}
+t.parent_language_comment_settings(p,lang_dict)
+t.language             = lang_dict.get('language')
+t.init_delims          = lang_dict.get('delims')
+delims = new_delims = t.init_delims
+t.tangling = True
+t.st_enter_root_name("'root-test'",False,False,delims,new_delims)
+# remainder: attributes of t
 # cweb related
 #     raw_cweb_flag
-assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+assert t.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(t.raw_cweb_flag)
 
 # language
-assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+assert t.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
 # output_doc_flag
-assert c.tangleCommands.output_doc_flag == None
+assert t.output_doc_flag == None
 # print_mode
-assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+assert t.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(t.print_mode)
 # tab_width
-assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+assert t.tab_width == -4, "expected tab_width -4, is %s " % repr(t.tab_width)
 # tangle_batch_flag
-assert c.tangleCommands.tangle_batch_flag == None
+assert t.tangle_batch_flag == None
 # untangle_batch_flag
-assert c.tangleCommands.untangle_batch_flag == None
+assert t.untangle_batch_flag == None
 # use_header_flag
-assert c.tangleCommands.use_header_flag == None
+assert t.use_header_flag == None
 
 import leo.core.leoTangle
 # root_list
-assert len(c.tangleCommands.root_list) == 1, "expected root_list to have length 1, is %d" % len(c.tangleCommands.root_list)
-assert c.tangleCommands.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0]))
+assert len(t.root_list) == 1, "expected root_list to have length 1, is %d" % len(t.root_list)
+assert t.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(t.root_list[0]))
 
 </t>
 <t tx="sps.20100624231018.20973"></t>
@@ -24844,12 +24864,6 @@ var s = "string";
 This is a second piece of html text.
 &lt;!-- -- end -- &lt;&lt;Second text section&gt;&gt; --&gt;
 </t>
-<t tx="sps.20100624231018.21085">@
-For reasons undiscovered for now, the javascript section
-is having a second section applied to it consisting only
-of a newline, and there is a newline missing from the end
-of the secref section.
-</t>
 <t tx="sps.20100624231018.21086"># The javascript section is not correctly getting the
 # @comment directive applied to its trailing sentinel
 
@@ -24886,7 +24900,6 @@ abc
 &lt;script type="text/javascript"&gt;&lt;!--
 // &lt;&lt; javascript section &gt;&gt;
 var foo = 1;
-// @comment &lt;!-- --&gt;
 --&gt;&lt;/script&gt;
 &lt;!-- -- end -- &lt;&lt; javascript section &gt;&gt; --&gt;
 &lt;!-- -- end -- &lt;&lt; secref &gt;&gt; --&gt;
@@ -25183,9 +25196,6 @@ var foo = 1;
 @comment &lt;!-- --&gt;
 --&gt;&lt;/script&gt;
 </t>
-<t tx="sps.20100625103510.5795">g.es(g.skip_line("@language html\nfoo",0))
-g.es(g.skip_to_end_of_line("@language html\nfoo",0))
-</t>
 <t tx="sps.20100627223129.5655"></t>
 <t tx="sps.20100627223129.5656">t=c.tangleCommands
 t.language="python"
@@ -25424,6 +25434,223 @@ var foo = 1;
 --&gt;&lt;/script&gt;
 </t>
 <t tx="sps.20100628022850.5679"></t>
+<t tx="sps.20100629094515.16515">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100629094515.16516">@root 'root-test'
+
+# A trivial test of @root.
+@nocolor
+abc</t>
+<t tx="sps.20100629094515.16517"># A trivial test of @root.
+@nocolor
+abc
+</t>
+<t tx="sps.20100629164540.5728"># Untangle adds a line immediately *after* a section reference
+
+import leo.core.leoTest as leoTest
+
+leoTest.runRootFileUntangleTest(c,p)</t>
+<t tx="sps.20100629164540.5729">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+@
+secref governed by @lang html
+&lt;&lt; secref &gt;&gt;=
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+&lt;&lt; javascript section &gt;&gt;
+@
+End the secref definition before starting the
+javascript section with the new comment convention
+@comment //
+&lt;&lt; javascript section &gt;&gt;=
+var foo = 1;
+@comment &lt;!-- --&gt;
+--&gt;&lt;/script&gt;</t>
+<t tx="sps.20100629164540.5730">&lt;!-- A less simple test of @root. --&gt;
+
+&lt;!-- &lt;&lt; secref &gt;&gt; --&gt;
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+// &lt;&lt; javascript section &gt;&gt;
+var foo = 1;
+--&gt;&lt;/script&gt;
+&lt;!-- -- end -- &lt;&lt; javascript section &gt;&gt; --&gt;
+add a line to secref
+&lt;!-- -- end -- &lt;&lt; secref &gt;&gt; --&gt;
+</t>
+<t tx="sps.20100629164540.5733">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+@
+secref governed by @lang html
+&lt;&lt; secref &gt;&gt;=
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+&lt;&lt; javascript section &gt;&gt;
+add a line to secref
+@
+End the secref definition before starting the
+javascript section with the new comment convention
+@comment //
+&lt;&lt; javascript section &gt;&gt;=
+var foo = 1;
+@comment &lt;!-- --&gt;
+--&gt;&lt;/script&gt;</t>
+<t tx="sps.20100629184507.5695"># Untangle adds a line immediately *before* a section reference
+
+import leo.core.leoTest as leoTest
+
+leoTest.runRootFileUntangleTest(c,p)</t>
+<t tx="sps.20100629184507.5696">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+@
+secref governed by @lang html
+&lt;&lt; secref &gt;&gt;=
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+&lt;&lt; javascript section &gt;&gt;
+@
+End the secref definition before starting the
+javascript section with the new comment convention
+@comment //
+&lt;&lt; javascript section &gt;&gt;=
+var foo = 1;
+@comment &lt;!-- --&gt;
+--&gt;&lt;/script&gt;</t>
+<t tx="sps.20100629184507.5697">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+@
+secref governed by @lang html
+&lt;&lt; secref &gt;&gt;=
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+add a line to secref
+&lt;&lt; javascript section &gt;&gt;
+@
+End the secref definition before starting the
+javascript section with the new comment convention
+@comment //
+&lt;&lt; javascript section &gt;&gt;=
+var foo = 1;
+@comment &lt;!-- --&gt;
+--&gt;&lt;/script&gt;</t>
+<t tx="sps.20100629184507.5698">&lt;!-- A less simple test of @root. --&gt;
+
+&lt;!-- &lt;&lt; secref &gt;&gt; --&gt;
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+add a line to secref
+// &lt;&lt; javascript section &gt;&gt;
+var foo = 1;
+--&gt;&lt;/script&gt;
+&lt;!-- -- end -- &lt;&lt; javascript section &gt;&gt; --&gt;
+&lt;!-- -- end -- &lt;&lt; secref &gt;&gt; --&gt;
+</t>
+<t tx="sps.20100629215924.5705"># Untangle adds lines in seven different places
+
+import leo.core.leoTest as leoTest
+
+leoTest.runRootFileUntangleTest(c,p)</t>
+<t tx="sps.20100629215924.5706">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+@
+secref governed by @lang html
+&lt;&lt; secref &gt;&gt;=
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+&lt;&lt; javascript section &gt;&gt;
+@
+End the secref definition before starting the
+javascript section with the new comment convention
+@comment //
+&lt;&lt; javascript section &gt;&gt;=
+var foo = 1;
+--&gt;&lt;/script&gt;
+@comment &lt;!-- --&gt;
+</t>
+<t tx="sps.20100629215924.5707">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+1 Add a line to the root node before the secref
+&lt;&lt; secref &gt;&gt;
+7 Add a line after secref at the end of the root node
+
+@
+secref governed by @lang html
+&lt;&lt; secref &gt;&gt;=
+2 Add a line at the beginning of secref
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+3 Add a line to secref right before javascript section 
+&lt;&lt; javascript section &gt;&gt;
+6 Add a line after the javascript section and at the end of the secref section
+@
+End the secref definition before starting the
+javascript section with the new comment convention
+@comment //
+&lt;&lt; javascript section &gt;&gt;=
+4 Add a line to the beginning of the javascript section
+var foo = 1;
+--&gt;&lt;/script&gt;
+5 Add a line to the end of the javascript section
+@comment &lt;!-- --&gt;
+</t>
+<t tx="sps.20100629215924.5708">&lt;!-- A less simple test of @root. --&gt;
+1 Add a line to the root node before the secref
+&lt;!-- &lt;&lt; secref &gt;&gt; --&gt;
+2 Add a line at the beginning of secref
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+3 Add a line to secref right before javascript section 
+// &lt;&lt; javascript section &gt;&gt;
+4 Add a line to the beginning of the javascript section
+var foo = 1;
+--&gt;&lt;/script&gt;
+5 Add a line to the end of the javascript section
+
+&lt;!-- -- end -- &lt;&lt; javascript section &gt;&gt; --&gt;
+6 Add a line after the javascript section and at the end of the secref section
+&lt;!-- -- end -- &lt;&lt; secref &gt;&gt; --&gt;
+7 Add a line after secref at the end of the root node
+</t>
+<t tx="sps.20100630015219.5774">s="one\ntwo\nthree"
+g.es(s[g.skip_line(s,0):])
+</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
 

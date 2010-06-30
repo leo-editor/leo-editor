@@ -961,7 +961,7 @@ def runAtFileTest(c,p):
 #@+node:sps.20100531175334.10307:root-File tangle test code (leoTest.py)
 def runRootFileTangleTest(c,p):
 
-    """Code for testing output of @root.  The first child is the top node of the
+    """Code for testing tangle of @root.  The first child is the top node of the
     outline to be processed; the remaining siblings have headlines corresponding to
     the file names that should be generated, with the bodies containing the intended
     contents of the corresponding file."""
@@ -1041,35 +1041,51 @@ def runRootFileUntangleTest(c,p):
     result of the untangle gets tangled, and the result gets compared to the (pseudo)
     files."""
 
-    at = c.atFileCommands
-    next = p.nodeAfterTree()
+    trace_test = 0
     rootTestBeforeP = p.firstChild()
     # rootTestBeforeP -> before tree
     # after tree
     # unit test "files"
+    if trace_test:
+        g.es("rootTestBeforeP: "+rootTestBeforeP.h+"\n")
+
     rootResultP = rootTestBeforeP.copy()
     rootResultP.moveToNext()
     # rootTestBeforeP -> before tree
     # rootReultP -> after tree
     # unit test "files"
+    if trace_test:
+        g.es("rootTestBeforeP: "+rootTestBeforeP.h)
+        g.es("rootResultP: "+rootResultP.h+"\n")
+
     rootTestToChangeP = rootResultP.insertAfter()
     # rootTestBeforeP -> before tree
     # rootResultP -> after tree
     # rootTestToChangeP -> empty node
     # unit test "files"
-    rootResultP.copyTreeFromSelfTo(rootTestToChangeP)
-    rootResultP.moveToNext()
+    if trace_test:
+        g.es("rootTestBeforeP: "+rootTestBeforeP.h)
+        g.es("rootResultP: "+rootResultP.h)
+        g.es("rootTestToChangeP: "+rootTestToChangeP.h+"\n")
+
+    rootTestBeforeP.copyTreeFromSelfTo(rootTestToChangeP)
     # rootTestBeforeP -> before tree
     # rootResultP -> after tree
     # rootTestToChangeP -> copy of before tree
     # unit test "files"
+    if trace_test:
+        g.es("rootTestBeforeP: "+rootTestBeforeP.h)
+        g.es("rootResultP: "+rootResultP.h)
+        g.es("rootTestToChangeP: "+rootTestToChangeP.h+"\n")
+
     untangleInputP = rootTestToChangeP.copy()
     inputSet={}
 
     while untangleInputP.hasNext():
         untangleInputP.moveToNext()
         inputSet[untangleInputP.h]=untangleInputP.b
-#        g.es("test file name: %s\n test file contents: %s" % (untangleInputP.h,untangleInputP.b))
+        if trace_test:
+            g.es("test file name: %s\ntest file contents: %s" % (untangleInputP.h,untangleInputP.b))
 
     c.tangleCommands.untangle(event=None,p=rootTestToChangeP)
 

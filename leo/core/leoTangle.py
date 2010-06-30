@@ -380,6 +380,22 @@ class root_attributes:
 class baseTangleCommands:
     """The base class for Leo's tangle and untangle commands."""
     #@    @+others
+    #@+node:sps.20100629094515.20943:class RegexpForLanguageOrComment
+    class RegexpForLanguageOrComment:
+        import re
+        regex = re.compile(r'''
+            ^(
+                (?P<language>
+                    @language\s[^\n]*
+                ) |
+                (?P<comment>
+                    @comment\s[^\n]*
+                ) |
+                (
+                    [^\n]*\n
+                )
+            )*''', re.VERBOSE)
+    #@-node:sps.20100629094515.20943:class RegexpForLanguageOrComment
     #@+node:ekr.20031218072017.3466:tangle.__init__
     def __init__ (self,c):
 
@@ -1629,20 +1645,11 @@ class baseTangleCommands:
                 i += 1
             elif ch == '\n':
                 i += 1 ; self.onl()
-                #@            << put possible @comment or @language >>
-                #@+node:sps.20100624113712.16401:<< put possible @comment or @language >>
-                if g.match(s,i,"@comment") or g.match(s,i,"@language"):
-                    j = g.skip_to_end_of_line(s,i)
-                    # g.trace("doc: <%s>" % s[i:j])
-                    if delims[0]:
-                        self.os("%s %s" % (delims[0], s[i:j]))
-                        self.onl()
-                    elif delims[1] and delims[2]:
-                        self.os("%s %s %s" % (delims[1], s[i:j], delims[2]))
-                        self.onl()
-                    # must have an existing comment convention to change comment convention
+                #@            << elide @comment or @language >>
+                #@+node:sps.20100624113712.16401:<< elide @comment or @language >>
+                while g.match_word(s,i,"@comment") or g.match_word(s,i,"@language"):
                     i = g.skip_line(s,i)
-                #@-node:sps.20100624113712.16401:<< put possible @comment or @language >>
+                #@-node:sps.20100624113712.16401:<< elide @comment or @language >>
                 #@nl
                 i = self.put_newline(s,i,False) # Put full lws
             else: self.os(s[i]) ; i += 1
@@ -2391,7 +2398,9 @@ class baseTangleCommands:
     # This is the "forgiving compare" function.  It compares two 
     # texts and returns True if they are identical except for 
     # comments or non-critical whitespace.  Whitespace inside 
-    # strings or preprocessor directives must match exactly.
+    # strings or preprocessor directives must match exactly.  
+    # @language and @comment in the outline version are ignored.
+    # s1 is the outline version, s2 is the external file version.
     #@-at
     #@@c
 
@@ -2553,7 +2562,7 @@ class baseTangleCommands:
                     #@nl
                 #@-node:ekr.20031218072017.3552:<< Compare possible preprocessor directives >>
                 #@nl
-            elif ch1 == '<' or ch1 == '@':
+            elif ch1 == '<':
                 # NB: support for derived noweb or CWEB file
                 #@            << Compare possible section references >>
                 #@+node:ekr.20031218072017.3558:<< Compare possible section references >>
@@ -2579,6 +2588,23 @@ class baseTangleCommands:
                     if not result:
                         self.mismatch("Mismatch at '@' or '<'")
                 #@-node:ekr.20031218072017.3558:<< Compare possible section references >>
+                #@nl
+            elif ch1 == '@':
+                #@            << Skip @language or @comment in outline >>
+                #@+node:sps.20100629094515.16518:<< Skip @language or @comment in outline >>
+                if g.match_word(s1,p1+1,"language") or g.match_word(s1,p1+1,"comment"):
+                    p1 = g.skip_line(s1,p1+7)
+                else:
+                    #@    << Compare single characters >>
+                    #@+node:ekr.20031218072017.3553:<< Compare single characters >>
+                    assert(p1 < len(s1) and p2 < len(s2))
+                    result = s1[p1] == s2[p2]
+                    p1 += 1 ; p2 += 1
+                    if not result: self.mismatch("Mismatched single characters")
+                    #@-node:ekr.20031218072017.3553:<< Compare single characters >>
+                    #@nl
+
+                #@-node:sps.20100629094515.16518:<< Skip @language or @comment in outline >>
                 #@nl
             else:
                 #@            << Compare comments or single characters >>
@@ -3080,7 +3106,7 @@ class baseTangleCommands:
 
     def update_def (self,name,part_number,head,code,tail,is_root_flag=False): # Doc parts are never updated!
 
-        # g.trace(name,part_number,code)
+        # g.trace(name,part_number,"===head===\n%s\n===code===\n%s\n===tail===\n%s\n==="%(head,code,tail))
         p = self.p ; body = p.b
         if not head: head = ""
         if not tail: tail = ""
@@ -3141,13 +3167,39 @@ class baseTangleCommands:
         # Update the body.
         if not g.unitTesting:
             g.es("***Updating:",p.h)
-        i = g.skip_blank_lines(ucode,0)
-        ucode = ucode[i:]
-        ucode = ucode.rstrip()
-        # Add the trailing whitespace of code to ucode.
+        ucode = ucode.strip()
+        #@    << Add the trailing whitespace of code to ucode. >>
+        #@+node:sps.20100629094515.20939:<< Add the trailing whitespace of code to ucode. >>
         code2 = code.rstrip()
         trail_ws = code[len(code2):]
         ucode = ucode + trail_ws
+        #@nonl
+        #@-node:sps.20100629094515.20939:<< Add the trailing whitespace of code to ucode. >>
+        #@nl
+        #@    << Move any @language or @comment from code to ucode >>
+        #@+node:sps.20100629094515.20940:<< Move any @language or @comment from code to ucode >>
+        # split the code into lines, collecting the @language and @comment lines specially
+        # if @language or @comment are present, they get added at the end
+        if code[-1] == '\n':
+            leading_newline = ''
+            trailing_newline = '\n'
+        else:
+            leading_newline = '\n'
+            trailing_newline = ''
+        m = self.RegexpForLanguageOrComment.regex.match(code)
+        # g.trace(repr(m.groupdict()))
+        if m.group('language'):
+            ucode = ucode + leading_newline
+            if m.group('comment') and (m.start('language') < m.start('comment')):
+                ucode = ucode + m.group('language') + "\n" + m.group('comment')
+            else:
+                ucode = ucode + m.group('language')
+            ucode = ucode + trailing_newline
+        else:
+            if m.group('comment'):
+                ucode = ucode + leading_newline + m.group('comment') + trailing_newline
+        #@-node:sps.20100629094515.20940:<< Move any @language or @comment from code to ucode >>
+        #@nl
         body = head + ucode + tail
         self.update_current_vnode(body)
         # g.trace("\nhead:",head,"\nucode:"ucode,"\ntail:",tail)
@@ -3429,24 +3481,23 @@ class baseTangleCommands:
         c = self.c
         if p.hasParent():
             p1 = p.parent()
-            if not lang_dict['delims']:
-                for s in (p1.b, p1.h):
-                    m = re.search(r'(^|.*\n)(@(comment|language)[ \t][^\n]*)',s,re.DOTALL)
-                    if m:
-                        if m.group(3) == "language":
-                            lang, d1, d2, d3 = g.set_language(m.group(2),0)
-                            lang_dict['language'] = lang
-                            lang_dict['delims'] = (d1, d2, d3)
-                        else:
-                            lang_dict['delims'] = g.set_delims_from_string(m.group(2))
-                        break
-            if lang_dict['delims'] and not lang_dict['language']:
-                for s in (p1.b, p1.h):
-                    m = re.search(r'(^|.*\n)(@language[ \t][^\n]*)',s,re.DOTALL)
-                    if m:
-                        g.trace('found @language: '+m.group(2))
-                        lang, d1, d2, d3 = g.set_language(m.group(2),0)
+            for s in (p1.b, p1.h):
+                m = self.RegexpForLanguageOrComment.regex.match(s)
+                if not lang_dict['delims']:
+                    if m.group('language'):
+                        lang, d1, d2, d3 = g.set_language(m.group('language'),0)
                         lang_dict['language'] = lang
+                        lang_dict['delims'] = (d1, d2, d3)
+                        if m.group('comment') and (m.start('comment')>m.start('language')):
+                            lang_dict['delims'] = g.set_delims_from_string(m.group('comment'))
+                        break
+                    if m.group('comment'):
+                        lang_dict['delims'] = g.set_delims_from_string(m.group('comment'))
+                elif not lang_dict['language']:
+                    # delims are already set, only set language
+                    if m.group('language'):
+                        lang, d1, d2, d3 = g.set_language(m.group('language'))
+                        lang.dict['language'] = lang
                         break
             if not lang_dict['language']:
                 self.parent_language_comment_settings(p1,lang_dict)
