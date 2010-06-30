@@ -844,7 +844,7 @@
 <v t="ekr.20071113145804.24"><vh>@test round trip toUnicode toEncodedString</vh></v>
 <v t="ekr.20100421102506.6282"><vh>@test rst.write with unicode character</vh></v>
 </v>
-<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
+<v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20100223123103.5382"><vh>@test expand/contract-pane</vh></v>
 <v t="ekr.20100131171342.5506"><vh>leoApp</vh>
 <v t="ekr.20100131180007.5454"><vh>@test at.get/setPathUa</vh></v>
@@ -2039,7 +2039,7 @@
 <v t="ekr.20100131171342.5602"><vh>@test leoTextWidget</vh></v>
 <v t="ekr.20100131171342.5603"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20090529141856.4682" a="E"><vh>leoImport</vh>
+<v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh> Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
 <v t="ekr.20090529141856.4686"><vh>exportTests</vh>
@@ -2089,10 +2089,10 @@
 </v>
 </v>
 <v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
-<v t="ekr.20090529141856.4716" a="E"><vh> Tests of @auto</vh>
+<v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
 <v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
-<v t="ekr.20090529141856.4717" a="E"><vh>C tests</vh>
+<v t="ekr.20090529141856.4717"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
 <v t="ekr.20090529141856.4720"><vh>@test defaultImporter</vh></v>
@@ -2103,41 +2103,41 @@
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20090529141856.4727" a="E"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20090529141856.4731" a="E"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
 <v t="ekr.20090529141856.4733"><vh>@test elisp 2</vh></v>
 </v>
-<v t="ekr.20090529141856.4766" a="E"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 <v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
 <v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
-<v t="ekr.20090529141856.4772" a="E"><vh>Test BundleException.java</vh>
+<v t="ekr.20090529141856.4772"><vh>Test BundleException.java</vh>
 <v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
 </v>
 </v>
-<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@test Javascript-2</vh></v>
 <v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
 <v t="ekr.20090529141856.4779"><vh>@@test javascript-test-js</vh></v>
 </v>
-<v t="ekr.20090529141856.4734" a="E"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20100219080213.5365" a="E"><vh>PHP tests</vh>
+<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
 <v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
 </v>
-<v t="ekr.20090529141856.4736" a="E"><vh>Python tests</vh>
+<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
 <v t="ekr.20090529141856.4737"><vh>@@test nested class</vh></v>
 <v t="ekr.20090529141856.4738"><vh>@test comment after dict assign</vh></v>
 <v t="ekr.20090529141856.4739"><vh>@test decorator test</vh></v>
@@ -2168,11 +2168,11 @@
 <v t="ekr.20090529141856.4764"><vh>@test two functions (for comparison with unindent does not end function)</vh></v>
 <v t="ekr.20090529141856.4765"><vh>@test unindent in triple string does not end function</vh></v>
 </v>
-<v t="ekr.20090529141856.4780" a="E"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 </v>
 </v>
-<v t="ekr.20090529141856.4784" a="E"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20090529141856.4786"><vh>@test rST import test (no double-underlines)</vh></v>
 <v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
@@ -2192,7 +2192,7 @@
 <v t="ekr.20100131171342.5608"><vh>@test strokeFromSetting</vh></v>
 <v t="ekr.20100131171342.5609"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194424.1" a="E"><vh>leoNodes</vh>
+<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>Startup</vh></v>
@@ -2290,13 +2290,13 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040802071519" a="E"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20100131180007.5391"><vh>@test v.atAutoNodeName &amp; v.atAutoRstNodeName</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20071113202452"><vh>@test zz restore the screen</vh></v>
-<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
@@ -2311,7 +2311,7 @@
 <v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
 <v t="ekr.20080503082625.4"><vh>@test promote</vh></v>
 </v>
-<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -2319,13 +2319,13 @@
 <v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5610" a="E"><vh>leoPlugins</vh>
+<v t="ekr.20100131171342.5610"><vh>leoPlugins</vh>
 <v t="ekr.20100131171342.5611"><vh>@test getHandlersForTag</vh></v>
 </v>
-<v t="ekr.20091219122958.5066" a="E"><vh>leoRst</vh>
+<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
 <v t="ekr.20091219121039.5065"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
 </v>
-<v t="ekr.20090529115704.4396" a="E"><vh>leoShadow</vh>
+<v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 <v t="ekr.20090529115704.4569"><vh>@@test delete unittest shadow directory</vh></v>
 <v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
@@ -2572,209 +2572,262 @@
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="ekr.20071113200638.1" a="E"><vh>leoTangle</vh>
-<v t="sps.20100609153802.16076" a="E"><vh>support routines</vh>
-<v t="sps.20100615182644.8464" a="E"><vh>scanAllDirectives</vh>
-<v t="ekr.20090624125638.4963"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
-<v t="ekr.20071113090055.1"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
-<v t="sps.20100609234650.39252"><vh>@test c.tangleCommands.scanAllDirectives 3</vh>
-<v t="sps.20100609234650.39251"><vh>#@root</vh></v>
+<v t="sps.20100624231018.20956"><vh>leoTangle</vh>
+<v t="sps.20100624231018.20957"><vh>support routines</vh>
+<v t="sps.20100624231018.20968"><vh>@test setRootFromText</vh></v>
+<v t="sps.20100625103510.5658"><vh>@test skip_section_name</vh></v>
+<v t="sps.20100624231018.20970"><vh>@test st_enter</vh></v>
+<v t="sps.20100624231018.20972"><vh>@test st_enter_root_name</vh></v>
+<v t="sps.20100624231018.20966"><vh>@test token_type</vh></v>
+<v t="sps.20100627223129.5655"><vh>parent_language_comment_settings</vh>
+<v t="sps.20100627223129.5656"><vh>@test plcs 1</vh>
+<v t="sps.20100627223129.5657"><vh>c1</vh></v>
 </v>
-<v t="sps.20100614134444.5497"><vh>@test c.tangleCommands.scanAllDirectives 4</vh>
-<v t="sps.20100614134444.5498"><vh>#@root</vh></v>
+<v t="sps.20100627223129.5660"><vh>@test plcs 2</vh>
+<v t="sps.20100627223129.5661"><vh>c1</vh></v>
 </v>
+<v t="sps.20100627225153.5667"><vh>@test plcs 3</vh>
+<v t="sps.20100627225153.5668"><vh>c1</vh></v>
 </v>
-<v t="sps.20100609153802.16077" a="E"><vh>token_type</vh>
-<v t="sps.20100609153802.16078"><vh>@test token_type</vh></v>
-</v>
-<v t="sps.20100609153802.16079" a="E"><vh>setRootFromText</vh>
-<v t="sps.20100609153802.16080"><vh>@test setRootFromText</vh></v>
-</v>
-<v t="sps.20100614142106.5499" a="E"><vh>st_enter</vh>
-<v t="sps.20100614142106.5500"><vh>@test st_enter</vh></v>
-</v>
-<v t="sps.20100614142106.5503" a="E"><vh>st_enter_root_name</vh>
-<v t="sps.20100614142106.5504"><vh>@test st_enter_root_name</vh></v>
-</v>
-<v t="sps.20100614142106.5507" a="E"><vh>skip_body</vh>
-<v t="sps.20100614142106.5508"><vh>@test skip_body</vh>
-<v t="sps.20100614142106.5509"><vh>#@root</vh></v>
-</v>
-<v t="sps.20100614142106.5512"><vh>@test skip_body, multiple root</vh>
-<v t="sps.20100614142106.5513"><vh>#@root</vh></v>
-</v>
-</v>
-<v t="sps.20100614142106.5520" a="E"><vh>tanglePass1</vh>
-<v t="sps.20100614142106.5521"><vh>@test tanglePass1</vh>
-<v t="sps.20100614142106.5522"><vh>#@root</vh></v>
-</v>
-<v t="sps.20100614142106.5523"><vh>@test tanglePass1, multiple root</vh>
-<v t="sps.20100614142106.5524"><vh>#@root</vh></v>
-</v>
-</v>
-<v t="sps.20100614142106.5530" a="E"><vh>tanglePass2</vh>
-<v t="sps.20100614142106.5531"><vh>@test tanglePass2</vh>
-<v t="sps.20100614142106.5532"><vh>#@root</vh></v>
-</v>
-<v t="sps.20100614142106.5533"><vh>@test tanglePass2, multiple root</vh>
-<v t="sps.20100614142106.5534"><vh>#@root</vh></v>
-</v>
-</v>
-<v t="sps.20100614142106.5540" a="E"><vh>put_all_roots</vh>
-<v t="sps.20100614142106.5541"><vh>@test put_all_roots</vh>
-<v t="sps.20100614142106.5542"><vh>#@root</vh></v>
-</v>
-<v t="sps.20100614142106.5543"><vh>@test put_all_roots, multiple root</vh>
-<v t="sps.20100614142106.5544"><vh>#@root</vh></v>
+<v t="sps.20100627232933.5673"><vh>@test plcs 4</vh>
+<v t="sps.20100627232933.5677"><vh>'root-test'</vh>
+<v t="sps.20100627232933.5674"><vh>c1</vh></v>
 </v>
 </v>
 </v>
-<v t="sps.20100609153802.16075" a="E"><vh>top level</vh>
-<v t="sps.20100618084840.5607" a="E"><vh>tangle</vh>
-<v t="sps.20100531151404.9757" a="E"><vh>with sentinels</vh>
-<v t="sps.20100609111310.5536" a="E"><vh>now working</vh>
-<v t="sps.20100531132336.19970"><vh>@test @root with @language c</vh>
-<v t="sps.20100531132336.19971"><vh>#@root</vh></v>
-<v t="sps.20100531132336.19972"><vh>'root-test'</vh></v>
+<v t="sps.20100624231018.20988"><vh>put_all_roots</vh>
+<v t="sps.20100624231018.20989"><vh>@test put_all_roots</vh>
+<v t="sps.20100624231018.20990"><vh>#@root</vh></v>
 </v>
-<v t="ekr.20071127194743"><vh>@test @root</vh>
-<v t="ekr.20071127194743.1"><vh>#@root</vh></v>
-<v t="ekr.20071127194743.2"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100601210726.15736"><vh>NOTE:</vh></v>
-<v t="sps.20100531151404.21540"><vh>@test @root-doc</vh>
-<v t="sps.20100531151404.21541"><vh>#@root</vh></v>
-<v t="sps.20100531151404.21542"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100613140923.5498"><vh>@test @root-doc with subnodes</vh>
-<v t="sps.20100613140923.5499"><vh>#@root</vh>
-<v t="sps.20100613140923.5500"><vh>further definition</vh></v>
-</v>
-<v t="sps.20100613140923.5501"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100531151404.27385"><vh>@test @root-code with subnodes</vh>
-<v t="sps.20100531151404.27386"><vh>#@root</vh>
-<v t="sps.20100607221800.5464"><vh>further definition</vh></v>
-</v>
-<v t="sps.20100531151404.27387"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100616112524.20888"><vh>@test @root with multiple sections</vh>
-<v t="sps.20100616112524.20889"><vh>#@root</vh>
-<v t="sps.20100616112524.20891"><vh>&lt;&lt; secref one &gt;&gt;</vh></v>
-<v t="sps.20100616112524.20893"><vh>&lt;&lt; secref two &gt;&gt;</vh></v>
-</v>
-<v t="sps.20100616112524.20890"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100616173108.5598"><vh>@test @root-doc with multiple sections</vh>
-<v t="sps.20100616173108.5599"><vh>#@root</vh>
-<v t="sps.20100616173108.5600"><vh>&lt;&lt; secref one &gt;&gt;</vh></v>
-<v t="sps.20100616173108.5601"><vh>&lt;&lt; secref two &gt;&gt;</vh></v>
-</v>
-<v t="sps.20100616173108.5602"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100616173108.5611"><vh>@test @root-code with multiple sections</vh>
-<v t="sps.20100616173108.5612"><vh>#@root</vh>
-<v t="sps.20100616173108.5613"><vh>&lt;&lt; secref one &gt;&gt;</vh></v>
-<v t="sps.20100616173108.5614"><vh>&lt;&lt; secref two &gt;&gt;</vh></v>
-</v>
-<v t="sps.20100616173108.5615"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100531151404.9762"><vh>@test @root with @comment #</vh>
-<v t="sps.20100531151404.9763"><vh>#@root</vh></v>
-<v t="sps.20100531151404.9764"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100531151404.9773"><vh>@test @root with @comment /* */</vh>
-<v t="sps.20100531151404.9774"><vh>#@root</vh></v>
-<v t="sps.20100531151404.9775"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100531151404.15622"><vh>@test @root with @comment // /* */</vh>
-<v t="sps.20100531151404.15623"><vh>#@root</vh></v>
-<v t="sps.20100531151404.15624"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100602033555.5426"><vh>@test @root with @language html</vh>
-<v t="sps.20100602033555.5427"><vh>#@root</vh></v>
-<v t="sps.20100602033555.5428"><vh>'root-test'</vh></v>
-</v>
-<v t="sps.20100607223520.5465"><vh>@test @root with @path directive (relative) in parent node</vh>
-<v t="sps.20100607223520.5466"><vh>root</vh>
-<v t="sps.20100607223520.5467"><vh>#@root</vh></v>
-<v t="sps.20100607223520.5468"><vh>foo/'root-test'</vh></v>
+<v t="sps.20100624231018.20991"><vh>@test put_all_roots, multiple root</vh>
+<v t="sps.20100624231018.20992"><vh>#@root</vh></v>
 </v>
 </v>
-<v t="sps.20100607223520.5472"><vh>@test @root with @path directive, relative</vh>
-<v t="sps.20100607223520.5473"><vh>#@root</vh></v>
-<v t="sps.20100607223520.5474"><vh>foo/'root-test'</vh></v>
+<v t="sps.20100624231018.20958"><vh>scanAllDirectives</vh>
+<v t="sps.20100624231018.20959"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
+<v t="sps.20100624231018.20960"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
+<v t="sps.20100624231018.20961"><vh>@test c.tangleCommands.scanAllDirectives 3</vh>
+<v t="sps.20100624231018.20962"><vh>#@root</vh></v>
 </v>
-<v t="sps.20100607223520.5478"><vh>@test @root with @path directive, absolute</vh>
-<v t="sps.20100607223520.5479"><vh>#@root</vh></v>
-<v t="sps.20100607223520.5480"><vh>/tmp/'root-test'</vh></v>
+<v t="sps.20100624231018.20963"><vh>@test c.tangleCommands.scanAllDirectives 4</vh>
+<v t="sps.20100624231018.20964"><vh>#@root</vh></v>
 </v>
-<v t="sps.20100612133937.5517"><vh>@test multiple @root directives</vh>
-<v t="sps.20100612133937.5518"><vh>#@root</vh></v>
-<v t="sps.20100612133937.5519"><vh>'root-test-one'</vh></v>
-<v t="sps.20100612133937.5520"><vh>'root-test-two'</vh></v>
 </v>
-<v t="sps.20100602033555.5436" a="E"><vh>NOTE: Multiple parts (and nodes) ARE allowed for &lt;&lt; secref &gt;&gt;</vh>
-<v t="sps.20100601210726.21583"><vh>@test @root-doc with subnodes - headline &lt;&lt; secref &gt;&gt; first</vh>
-<v t="sps.20100601210726.21584"><vh>#@root</vh>
-<v t="sps.20100601210726.21588"><vh>&lt;&lt; secref &gt;&gt; this works</vh></v>
-<v t="sps.20100601210726.21586"><vh>secref &gt;&gt;= definition - this works</vh></v>
+<v t="sps.20100624231018.20973"><vh>skip_body</vh>
+<v t="sps.20100624231018.20974"><vh>@test skip_body</vh>
+<v t="sps.20100624231018.20975"><vh>#@root</vh></v>
 </v>
-<v t="sps.20100601210726.21585"><vh>'root-test'</vh></v>
+<v t="sps.20100624231018.20976"><vh>@test skip_body, multiple root</vh>
+<v t="sps.20100624231018.20977"><vh>#@root</vh></v>
 </v>
-<v t="sps.20100614233514.5586"><vh>@test @root-doc with subnodes - headline &lt;&lt; secref &gt;&gt; first</vh>
-<v t="sps.20100614233514.5587"><vh>#@root</vh>
-<v t="sps.20100614233514.5588"><vh>&lt;&lt; secref &gt;&gt; this works</vh></v>
 </v>
-<v t="sps.20100614233514.5590"><vh>'root-test'</vh></v>
+<v t="sps.20100624231018.20978"><vh>tanglePass1</vh>
+<v t="sps.20100624231018.20979"><vh>@test tanglePass1</vh>
+<v t="sps.20100624231018.20980"><vh>#@root</vh></v>
 </v>
-<v t="sps.20100614233514.5554"><vh>@test @root-doc with subnodes - body &lt;&lt; secref &gt;&gt;= first</vh>
-<v t="sps.20100614233514.5555"><vh>#@root</vh>
-<v t="sps.20100614233514.5557"><vh>secref &gt;&gt;= definition - this works</vh></v>
-<v t="sps.20100614233514.5556"><vh>&lt;&lt; secref &gt;&gt; this fails</vh></v>
+<v t="sps.20100624231018.20981"><vh>@test tanglePass1, multiple root</vh>
+<v t="sps.20100624231018.20982"><vh>#@root</vh></v>
 </v>
-<v t="sps.20100614233514.5558"><vh>'root-test'</vh></v>
+<v t="sps.20100625103510.5793"><vh>@test tanglePass1, less simple</vh>
+<v t="sps.20100625103510.5794"><vh>'root-test'</vh></v>
 </v>
-<v t="sps.20100614233514.5564"><vh>@test @root-doc with subnodes - two headline &lt;&lt; secref &gt;&gt;s</vh>
-<v t="sps.20100614233514.5565"><vh>#@root</vh>
-<v t="sps.20100614233514.5566"><vh>&lt;&lt; secref &gt;&gt; part 1</vh></v>
-<v t="sps.20100614233514.5567"><vh>&lt;&lt; secref &gt;&gt; part 2</vh></v>
-</v>
-<v t="sps.20100614233514.5568"><vh>'root-test'</vh></v>
+<v t="sps.20100628022850.5677"><vh>@test tanglePass1, less simple 2</vh>
+<v t="sps.20100628022850.5679"><vh>@language html</vh>
+<v t="sps.20100628022850.5678"><vh>'root-test'</vh></v>
 </v>
 </v>
 </v>
-<v t="sps.20100601184403.5443" a="E"><vh>failing</vh>
-<v t="sps.20100602033555.5432"><vh>@test @root with @language html and @comment  //</vh>
-<v t="sps.20100602033555.5433"><vh>#@root</vh>
-<v t="sps.20100602033555.5435"><vh>&lt;&lt; javascript section &gt;&gt;</vh></v>
+<v t="sps.20100624231018.20983"><vh>tanglePass2</vh>
+<v t="sps.20100624231018.20984"><vh>@test tanglePass2</vh>
+<v t="sps.20100624231018.20985"><vh>#@root</vh></v>
 </v>
-<v t="sps.20100602033555.5434"><vh>'root-test'</vh></v>
-</v>
-</v>
-</v>
-<v t="sps.20100531151404.9758" a="E"><vh>without sentinels</vh>
-<v t="ekr.20090624125638.4967"><vh>@test @root with @silent</vh>
-<v t="ekr.20090624125638.4968"><vh>#@root</vh></v>
-<v t="ekr.20090624125638.4969"><vh>'root-test'</vh></v>
+<v t="sps.20100624231018.20986"><vh>@test tanglePass2, multiple root</vh>
+<v t="sps.20100624231018.20987"><vh>#@root</vh></v>
 </v>
 </v>
 </v>
-<v t="sps.20100618084840.5608" a="E"><vh>untangle</vh>
-<v t="sps.20100618084840.5613"><vh>@test simplest untangle</vh>
-<v t="sps.20100618084840.5614"><vh>#@root</vh></v>
-<v t="sps.20100618084840.5617"><vh>#@root</vh></v>
-<v t="sps.20100618105958.5622"><vh>foo</vh></v>
+<v t="sps.20100624231018.20993"><vh>top level</vh>
+<v t="sps.20100624231018.20994"><vh>tangle</vh>
+<v t="sps.20100624231018.20995"><vh>with sentinels</vh>
+<v t="sps.20100624231018.20996"><vh>now working</vh>
+<v t="sps.20100624231018.20997"><vh>@test @root with @language c</vh>
+<v t="sps.20100624231018.20998"><vh>#@root</vh></v>
+<v t="sps.20100624231018.20999"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21000"><vh>@test @root</vh>
+<v t="sps.20100624231018.21001"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21002"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100629094515.16515"><vh>@test @root - trivial</vh>
+<v t="sps.20100629094515.16516"><vh>#@root</vh></v>
+<v t="sps.20100629094515.16517"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21003"><vh>NOTE:</vh></v>
+<v t="sps.20100624231018.21004"><vh>@test @root-doc</vh>
+<v t="sps.20100624231018.21005"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21006"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21007"><vh>@test @root-doc with subnodes</vh>
+<v t="sps.20100624231018.21008"><vh>#@root</vh>
+<v t="sps.20100624231018.21009"><vh>further definition</vh></v>
+</v>
+<v t="sps.20100624231018.21010"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21011"><vh>@test @root-code with subnodes</vh>
+<v t="sps.20100624231018.21012"><vh>#@root</vh>
+<v t="sps.20100624231018.21013"><vh>further definition</vh></v>
+</v>
+<v t="sps.20100624231018.21014"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21015"><vh>@test @root with multiple sections</vh>
+<v t="sps.20100624231018.21016"><vh>#@root</vh>
+<v t="sps.20100624231018.21017"><vh>&lt;&lt; secref one &gt;&gt;</vh></v>
+<v t="sps.20100624231018.21018"><vh>&lt;&lt; secref two &gt;&gt;</vh></v>
+</v>
+<v t="sps.20100624231018.21019"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21020"><vh>@test @root with filled multiple sections</vh>
+<v t="sps.20100624231018.21021"><vh>#@root</vh>
+<v t="sps.20100624231018.21022"><vh>&lt;&lt; secref one &gt;&gt;</vh></v>
+<v t="sps.20100624231018.21023"><vh>&lt;&lt; secref two &gt;&gt;</vh></v>
+</v>
+<v t="sps.20100624231018.21024"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21025"><vh>@test @root-doc with multiple sections</vh>
+<v t="sps.20100624231018.21026"><vh>#@root</vh>
+<v t="sps.20100624231018.21027"><vh>&lt;&lt; secref one &gt;&gt;</vh></v>
+<v t="sps.20100624231018.21028"><vh>&lt;&lt; secref two &gt;&gt;</vh></v>
+</v>
+<v t="sps.20100624231018.21029"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21030"><vh>@test @root-code with multiple sections</vh>
+<v t="sps.20100624231018.21031"><vh>#@root</vh>
+<v t="sps.20100624231018.21032"><vh>&lt;&lt; secref one &gt;&gt;</vh></v>
+<v t="sps.20100624231018.21033"><vh>&lt;&lt; secref two &gt;&gt;</vh></v>
+</v>
+<v t="sps.20100624231018.21034"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21035"><vh>@test @root with @comment #</vh>
+<v t="sps.20100624231018.21036"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21037"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21038"><vh>@test @root with @comment /* */</vh>
+<v t="sps.20100624231018.21039"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21040"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21041"><vh>@test @root with @comment // /* */</vh>
+<v t="sps.20100624231018.21042"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21043"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21044"><vh>@test @root with @language html</vh>
+<v t="sps.20100624231018.21045"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21046"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21047"><vh>@test @root with @path directive (relative) in parent node</vh>
+<v t="sps.20100624231018.21048"><vh>root</vh>
+<v t="sps.20100624231018.21049"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21050"><vh>foo/'root-test'</vh></v>
+</v>
+</v>
+<v t="sps.20100624231018.21051"><vh>@test @root with @path directive, relative</vh>
+<v t="sps.20100624231018.21052"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21053"><vh>foo/'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21054"><vh>@test @root with @path directive, absolute</vh>
+<v t="sps.20100624231018.21055"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21056"><vh>/tmp/'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21057"><vh>@test multiple @root directives</vh>
+<v t="sps.20100624231018.21058"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21059"><vh>'root-test-one'</vh></v>
+<v t="sps.20100624231018.21060"><vh>'root-test-two'</vh></v>
+</v>
+<v t="sps.20100624231018.21086"><vh>@test @root with @language html and @comment  //</vh>
+<v t="sps.20100624231018.21087"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21089"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21061"><vh>NOTE: Multiple parts (and nodes) ARE allowed for &lt;&lt; secref &gt;&gt;</vh>
+<v t="sps.20100624231018.21062"><vh>@test @root-doc with subnodes - headline &lt;&lt; secref &gt;&gt; first</vh>
+<v t="sps.20100624231018.21063"><vh>#@root</vh>
+<v t="sps.20100624231018.21064"><vh>&lt;&lt; secref &gt;&gt; this works</vh></v>
+<v t="sps.20100624231018.21065"><vh>secref &gt;&gt;= definition - this works</vh></v>
+</v>
+<v t="sps.20100624231018.21066"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21067"><vh>@test @root-doc with subnodes - headline &lt;&lt; secref &gt;&gt; first</vh>
+<v t="sps.20100624231018.21068"><vh>#@root</vh>
+<v t="sps.20100624231018.21069"><vh>&lt;&lt; secref &gt;&gt; this works</vh></v>
+</v>
+<v t="sps.20100624231018.21070"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21071"><vh>@test @root-doc with subnodes - body &lt;&lt; secref &gt;&gt;= first</vh>
+<v t="sps.20100624231018.21072"><vh>#@root</vh>
+<v t="sps.20100624231018.21073"><vh>secref &gt;&gt;= definition - this works</vh></v>
+<v t="sps.20100624231018.21074"><vh>&lt;&lt; secref &gt;&gt; this fails</vh></v>
+</v>
+<v t="sps.20100624231018.21075"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100624231018.21076"><vh>@test @root-doc with subnodes - two headline &lt;&lt; secref &gt;&gt;s</vh>
+<v t="sps.20100624231018.21077"><vh>#@root</vh>
+<v t="sps.20100624231018.21078"><vh>&lt;&lt; secref &gt;&gt; part 1</vh></v>
+<v t="sps.20100624231018.21079"><vh>&lt;&lt; secref &gt;&gt; part 2</vh></v>
+</v>
+<v t="sps.20100624231018.21080"><vh>'root-test'</vh></v>
+</v>
+</v>
+</v>
+<v t="sps.20100624231018.21081"><vh>false success</vh>
+<v t="sps.20100624231018.21082"><vh>@@test @root with @language html and @comment</vh>
+<v t="sps.20100624231018.21083"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21084"><vh>'root-test'</vh></v>
+</v>
+</v>
+<v t="sps.20100624231018.21090"><vh>supposed to fail</vh>
+<v t="sps.20100624231018.21091"><vh>@@test @root with @language html and @comment  //</vh>
+<v t="sps.20100624231018.21092"><vh>#@root</vh>
+<v t="sps.20100624231018.21093"><vh>&lt;&lt; javascript section &gt;&gt;</vh></v>
+</v>
+<v t="sps.20100624231018.21094"><vh>'root-test'</vh></v>
+</v>
+</v>
+</v>
+<v t="sps.20100624231018.21095"><vh>without sentinels</vh>
+<v t="sps.20100624231018.21096"><vh>@test @root with @silent</vh>
+<v t="sps.20100624231018.21097"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21098"><vh>'root-test'</vh></v>
+</v>
+</v>
+</v>
+<v t="sps.20100624231018.21099"><vh>untangle</vh>
+<v t="sps.20100624231018.21100"><vh>@test simplest untangle</vh>
+<v t="sps.20100624231018.21101"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21102"><vh>#@root</vh></v>
+<v t="sps.20100624231018.21103"><vh>foo</vh></v>
+</v>
+<v t="sps.20100629164540.5728"><vh>@test @root with @language html and @comment  //; 1</vh>
+<v t="sps.20100629164540.5729"><vh>#@root</vh></v>
+<v t="sps.20100629164540.5733"><vh>#@root</vh></v>
+<v t="sps.20100629164540.5730"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100629184507.5695"><vh>@test @root with @language html and @comment  //; 2</vh>
+<v t="sps.20100629184507.5696"><vh>#@root</vh></v>
+<v t="sps.20100629184507.5697"><vh>#@root</vh></v>
+<v t="sps.20100629184507.5698"><vh>'root-test'</vh></v>
+</v>
+<v t="sps.20100629215924.5705"><vh>@test @root with @language html and @comment  //; 3</vh>
+<v t="sps.20100629215924.5706"><vh>#@root</vh></v>
+<v t="sps.20100629215924.5707"><vh>#@root</vh></v>
+<v t="sps.20100629215924.5708"><vh>'root-test'</vh></v>
 </v>
 </v>
 </v>
 </v>
-<v t="ekr.20100131171342.5612" a="E"><vh>leoTest</vh>
+<v t="ekr.20100131171342.5612"><vh>leoTest</vh>
 <v t="ekr.20100131171342.5613"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
-<v t="ekr.20040712101754.37" a="E"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38" a="E"><vh>editBodyTests</vh>
+<v t="ekr.20040712101754.37"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
 <v t="ekr.20050417202713"><vh>addComments</vh>
 <v t="ekr.20050417202713.1"><vh>before</vh></v>
@@ -2852,8 +2905,14 @@
 <v t="ekr.20100223094723.5380"><vh>Failing tests</vh>
 <v t="ekr.20090529141856.4753"></v>
 <v t="ekr.20090529141856.4758"></v>
-<v t="sps.20100602033555.5432"></v>
+<v t="sps.20100602033555.5432"><vh>@test @root with @language html and @comment  //</vh>
+<v t="sps.20100602033555.5433"><vh>#@root</vh>
+<v t="sps.20100602033555.5435"><vh>&lt;&lt; javascript section &gt;&gt;</vh></v>
 </v>
+<v t="sps.20100602033555.5434"><vh>'root-test'</vh></v>
+</v>
+</v>
+<v t="sps.20100630015219.5774"><vh>t</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -14660,25 +14719,6 @@ c
 b
 A
 </t>
-<t tx="ekr.20071113090055.1"># This will work regardless of where this method is.
-@language python
-@tabwidth -4
-@silent
-
-c.tangleCommands.init_ivars()
-d = c.tangleCommands.scanAllDirectives(p)
-
-assert d.get('encoding') == 'utf-8','fail encoding'
-assert d.get('language') == 'python','fail language'
-assert d.get('pagewidth') == 80,'fail pagewidth'
-path1 = d.get('path').lower()
-path2 = g.os_path_finalize_join(g.app.loadDir,'..','test').lower()
-assert path1==path2,'fail path: expected %s, got %s' % (path1,path2)
-assert d.get('tabwidth') == -4,'fail tabwidth'
-
-assert c.tangleCommands.print_mode=='silent','fail print_mode: %s' % (
-    c.tangleCommands.print_mode)
-</t>
 <t tx="ekr.20071113090055.4"># This will work regardless of where this method is.
 @language python
 @tabwidth -4
@@ -15112,7 +15152,6 @@ This eliminates references to nodes that no longer exist in the present outline.
 <t tx="ekr.20071113194424"># 3 failures with Alt-5</t>
 <t tx="ekr.20071113194424.1"># 4 failures with Alt-5</t>
 <t tx="ekr.20071113194858"># All the following files have problems when run with Alt-5.</t>
-<t tx="ekr.20071113200638.1"># 2 failures with Alt-5</t>
 <t tx="ekr.20071113201736"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -15177,23 +15216,6 @@ g.app.unitTestDict['restoreSelectedNode']=False
     
 print('\nEnd of leoUndo tests.')</t>
 <t tx="ekr.20071113203234"></t>
-<t tx="ekr.20071127194743">import leo.core.leoTest as leoTest
-
-leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="ekr.20071127194743.1">@root 'root-test'
-
-# A simple test of @root.
-
-&lt;&lt; secref &gt;&gt;
-
-&lt;&lt; secref &gt;&gt;=
-abc</t>
-<t tx="ekr.20071127194743.2"># A simple test of @root.
-
-# &lt;&lt; secref &gt;&gt;
-abc
-# -- end -- &lt;&lt; secref &gt;&gt;
-</t>
 <t tx="ekr.20080309193654.1"></t>
 <t tx="ekr.20080310073711.1">gnx = g.app.nodeIndices.toString(None)
 assert(gnx not in (None,'None'))
@@ -20623,54 +20645,6 @@ The length of this node should remain constant.
 @c
 
 assert len(p.b) == 199,len(p.b)</t>
-<t tx="ekr.20090624125638.4963">@language python
-@comment a b c
-    # @comment must follow @language
-@tabwidth -4
-@pagewidth 72
-@encoding utf-8
-@lineending crlf
-@silent
-
-c.tangleCommands.init_ivars()
-d = c.tangleCommands.scanAllDirectives(p)
-
-# print(g.dictToString(d))
-
-assert c.tangleCommands.print_mode=='silent',c.tangleCommands.print_mode
-
-table = (
-    # ('delims', ('a','b','c'),),
-    ('encoding','utf-8'),
-    ('language','python'),
-    ('lineending','\r\n'),
-    ('pagewidth',72),
-    ('tabwidth',-4),
-)
-
-for kind,expected in table:
-    got = d.get(kind)
-    assert got == expected, 'kind: %s, expected %s, got %s' % (
-        kind,repr(expected),repr(got))
-</t>
-<t tx="ekr.20090624125638.4967">import leo.core.leoTest as leoTest
-
-leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="ekr.20090624125638.4968">@silent
-@root 'root-test'
-
-# A simple test of @root.
-
-&lt;&lt; secref &gt;&gt;
-
-&lt;&lt; secref &gt;&gt;=
-abc</t>
-<t tx="ekr.20090624125638.4969"># A simple test of @root.
-
-abc
-
-
-</t>
 <t tx="ekr.20090627070131.4971">import leo.core.leoTest as leoTest
 
 leoTest.runAtFileTest(c,p)</t>
@@ -23412,173 +23386,6 @@ assert path and path.endswith(endpath),'expected ending %s got %s' % (
 <t tx="sps.20100531034136.20111"></t>
 <t tx="sps.20100531034136.20112"></t>
 <t tx="sps.20100531034136.20113"></t>
-<t tx="sps.20100531132336.19970">import leo.core.leoTest as leoTest
-
-leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100531132336.19971">@language c
-@root 'root-test'
-
-// A simple test of @root.
-
-&lt;&lt; secref &gt;&gt;
-
-&lt;&lt; secref &gt;&gt;=
-abc</t>
-<t tx="sps.20100531132336.19972">// A simple test of @root.
-
-// &lt;&lt; secref &gt;&gt;
-abc
-// -- end -- &lt;&lt; secref &gt;&gt;
-</t>
-<t tx="sps.20100531151404.15622">import leo.core.leoTest as leoTest
-
-leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100531151404.15623">@comment // /* */
-@root 'root-test'
-
-/* A simple test of @root. */
-
-&lt;&lt; secref &gt;&gt;
-
-&lt;&lt; secref &gt;&gt;=
-abc</t>
-<t tx="sps.20100531151404.15624">/* A simple test of @root. */
-
-// &lt;&lt; secref &gt;&gt;
-abc
-// -- end -- &lt;&lt; secref &gt;&gt;
-</t>
-<t tx="sps.20100531151404.21540">import leo.core.leoTest as leoTest
-
-leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100531151404.21541">A comment to ignore
-
-@root-doc 'root-test'
-
-# A simple test of @root-doc.
-
-&lt;&lt; secref &gt;&gt;
-
-&lt;&lt; secref &gt;&gt;=
-abc</t>
-<t tx="sps.20100531151404.21542"># A simple test of @root-doc.
-
-# &lt;&lt; secref &gt;&gt;
-abc
-# -- end -- &lt;&lt; secref &gt;&gt;
-</t>
-<t tx="sps.20100531151404.27385">import leo.core.leoTest as leoTest
-
-leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100531151404.27386">A comment to ignore
-
-@root-code 'root-test'
-
-# A simple test of @root-code.
-
-&lt;&lt; secref &gt;&gt;
-
-&lt;&lt; secref &gt;&gt;=
-abc</t>
-<t tx="sps.20100531151404.27387"># A simple test of @root-code.
-
-# &lt;&lt; secref &gt;&gt; (1 of 3)
-abc
-# &lt;&lt; secref &gt;&gt; (2 of 3)
-xyz
-# &lt;&lt; secref &gt;&gt; (3 of 3)
-uvw
-# -- end -- &lt;&lt; secref &gt;&gt;
-</t>
-<t tx="sps.20100531151404.9757"></t>
-<t tx="sps.20100531151404.9758"></t>
-<t tx="sps.20100531151404.9762">import leo.core.leoTest as leoTest
-
-leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100531151404.9763">@comment #
-@root 'root-test'
-
-# A simple test of @root.
-
-&lt;&lt; secref &gt;&gt;
-
-&lt;&lt; secref &gt;&gt;=
-abc</t>
-<t tx="sps.20100531151404.9764"># A simple test of @root.
-
-# &lt;&lt; secref &gt;&gt;
-abc
-# -- end -- &lt;&lt; secref &gt;&gt;
-</t>
-<t tx="sps.20100531151404.9773">import leo.core.leoTest as leoTest
-
-leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100531151404.9774">@comment /* */
-@root 'root-test'
-
-/* A simple test of @root. */
-
-&lt;&lt; secref &gt;&gt;
-
-&lt;&lt; secref &gt;&gt;=
-abc</t>
-<t tx="sps.20100531151404.9775">/* A simple test of @root. */
-
-/* &lt;&lt; secref &gt;&gt; */
-abc
-/* -- end -- &lt;&lt; secref &gt;&gt; */
-</t>
-<t tx="sps.20100601184403.5443"></t>
-<t tx="sps.20100601210726.15736">@
-Without a setting of @bool at_root_bodies_start_in_doc_mode = False, tangled
-nodes begin in doc mode.  It is only in subnodes of root-code that the nodes
-begin in code-mode.
-</t>
-<t tx="sps.20100601210726.21583">import leo.core.leoTest as leoTest
-
-leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100601210726.21584">A comment to ignore
-
-@root-doc 'root-test'
-
-# A simple test of @root-doc.
-&lt;&lt; secref &gt;&gt;
-@
-ignored documentation
-</t>
-<t tx="sps.20100601210726.21585"># A simple test of @root-doc.
-# &lt;&lt; secref &gt;&gt; (1 of 2)
-xyz
-# &lt;&lt; secref &gt;&gt; (2 of 2)
-abc
-# -- end -- &lt;&lt; secref &gt;&gt;
-</t>
-<t tx="sps.20100601210726.21586">
-&lt;&lt; secref &gt;&gt;=
-abc</t>
-<t tx="sps.20100601210726.21588">ignored comment
-@c
-xyz
-
-</t>
-<t tx="sps.20100602033555.5426">import leo.core.leoTest as leoTest
-
-leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100602033555.5427">@language html
-@root 'root-test'
-
-&lt;!-- A simple test of @root. --&gt;
-
-&lt;&lt; secref &gt;&gt;
-
-&lt;&lt; secref &gt;&gt;=
-abc</t>
-<t tx="sps.20100602033555.5428">&lt;!-- A simple test of @root. --&gt;
-
-&lt;!-- &lt;&lt; secref &gt;&gt; --&gt;
-abc
-&lt;!-- -- end -- &lt;&lt; secref &gt;&gt; --&gt;
-</t>
 <t tx="sps.20100602033555.5432">import leo.core.leoTest as leoTest
 
 leoTest.runRootFileTangleTest(c,p)</t>
@@ -23612,94 +23419,6 @@ var i;
 &lt;!-- -- end -- &lt;&lt; secref &gt;&gt; --&gt;
 </t>
 <t tx="sps.20100602033555.5435">var i;
-</t>
-<t tx="sps.20100602033555.5436">@
-This code formerly generated the error "Multiple parts are not allowed for &lt;&lt; secref &gt;&gt;".
-That restriction has been removed.
-</t>
-<t tx="sps.20100607221800.5464">&lt;&lt; secref &gt;&gt;=
-xyz
-@
-A comment section
-
-&lt;&lt; secref &gt;&gt;=
-uvw
-</t>
-<t tx="sps.20100607223520.5465"># directory foo must exist, or scanAtPathDirectives ignores it.
-import leo.core.leoTest as leoTest
-
-leoTest.runRootFileTangleTest(c,p.firstChild())</t>
-<t tx="sps.20100607223520.5466">@path foo</t>
-<t tx="sps.20100607223520.5467">@root 'root-test'
-
-# A simple test of @root.
-
-&lt;&lt; secref &gt;&gt;
-
-&lt;&lt; secref &gt;&gt;=
-abc</t>
-<t tx="sps.20100607223520.5468"># A simple test of @root.
-
-# &lt;&lt; secref &gt;&gt;
-abc
-# -- end -- &lt;&lt; secref &gt;&gt;
-</t>
-<t tx="sps.20100607223520.5472"># directory foo must exist or scanAtPathDirectives will ignore it
-import leo.core.leoTest as leoTest
-
-leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100607223520.5473">@path foo
-@root 'root-test'
-
-# A simple test of @root.
-
-&lt;&lt; secref &gt;&gt;
-
-&lt;&lt; secref &gt;&gt;=
-abc</t>
-<t tx="sps.20100607223520.5474"># A simple test of @root.
-
-# &lt;&lt; secref &gt;&gt;
-abc
-# -- end -- &lt;&lt; secref &gt;&gt;
-</t>
-<t tx="sps.20100607223520.5478">import leo.core.leoTest as leoTest
-
-leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100607223520.5479">@path /tmp
-@root 'root-test'
-
-# A simple test of @root.
-
-&lt;&lt; secref &gt;&gt;
-
-&lt;&lt; secref &gt;&gt;=
-abc</t>
-<t tx="sps.20100607223520.5480"># A simple test of @root.
-
-# &lt;&lt; secref &gt;&gt;
-abc
-# -- end -- &lt;&lt; secref &gt;&gt;
-</t>
-<t tx="sps.20100609111310.5536"></t>
-<t tx="sps.20100609153802.16075"></t>
-<t tx="sps.20100609153802.16076"></t>
-<t tx="sps.20100609153802.16077"></t>
-<t tx="sps.20100609153802.16078">c.tangleCommands.init_directive_ivars()
-kind, end = c.tangleCommands.token_type("",0)
-assert(kind == 1)
-assert(end == -1)
-
-kind, end = c.tangleCommands.token_type("@root 'root-test'\n\n# A simple test of at root",0)
-assert kind == 8, 'expected kind == 8, got %s' % repr(kind)
-assert end == 17, 'expected end == 22, got %s' % repr(end)
-assert c.tangleCommands.root_name=="'root-test'","expected c.tangleCommands.root_name == 'root-test', got %s" % repr(c.tangleCommands.root_name)
-</t>
-<t tx="sps.20100609153802.16079"></t>
-<t tx="sps.20100609153802.16080">c.tangleCommands.init_directive_ivars()
-end = c.tangleCommands.setRootFromText("@root 'root-test'\n\n# A simple test of at root\n",True)
-assert(end == 17)
-assert(c.tangleCommands.root_name == "'root-test'")
 </t>
 <t tx="sps.20100609154419.5450">i,mode = g.scanAtRootOptions("@root foo",0,err_flag=True)
 assert(i == 6)
@@ -23755,7 +23474,135 @@ assert end == 2, "expected 2, got %d" % end
 end = g.skip_blank_lines("\n\n a\n",0)
 assert end == 2, "expected 2, got %d" % end
 </t>
-<t tx="sps.20100609234650.39251">@root 'root-test'
+<t tx="sps.20100624231018.20956"># 2 failures with Alt-4</t>
+<t tx="sps.20100624231018.20957"></t>
+<t tx="sps.20100624231018.20958">@
+scanAllDirectives formerly set tangleCommands instance variables
+
+single_comment_string
+start_comment_string
+end_comment_string
+
+which acted as state for the entire tangleCommands operation.  To support multiple languages within a node (or even a tree) these variables are now treated more dynamically.
+</t>
+<t tx="sps.20100624231018.20959">@language python
+@comment a b c
+    # @comment must follow @language
+@tabwidth -4
+@pagewidth 72
+@encoding utf-8
+@lineending crlf
+@silent
+
+c.tangleCommands.init_ivars()
+d = c.tangleCommands.scanAllDirectives(p)
+
+# print(g.dictToString(d))
+
+assert c.tangleCommands.print_mode=='silent',c.tangleCommands.print_mode
+
+table = (
+    # ('delims', ('a','b','c'),),
+    ('encoding','utf-8'),
+    ('language','python'),
+    ('lineending','\r\n'),
+    ('pagewidth',72),
+    ('tabwidth',-4),
+)
+
+for kind,expected in table:
+    got = d.get(kind)
+    assert got == expected, 'kind: %s, expected %s, got %s' % (
+        kind,repr(expected),repr(got))
+</t>
+<t tx="sps.20100624231018.20960"># This will work regardless of where this method is.
+@language python
+@tabwidth -4
+@silent
+
+c.tangleCommands.init_ivars()
+d = c.tangleCommands.scanAllDirectives(p)
+
+assert d.get('encoding') == 'utf-8','fail encoding'
+assert d.get('language') == 'python','fail language'
+assert d.get('pagewidth') == 80,'fail pagewidth'
+path1 = d.get('path').lower()
+path2 = g.os_path_finalize_join(g.app.loadDir,'..','test').lower()
+assert path1==path2,'fail path: expected %s, got %s' % (path1,path2)
+assert d.get('tabwidth') == -4,'fail tabwidth'
+
+assert c.tangleCommands.print_mode=='silent','fail print_mode: %s' % (
+    c.tangleCommands.print_mode)
+</t>
+<t tx="sps.20100624231018.20961">c.tangleCommands.init_ivars()
+d = c.tangleCommands.scanAllDirectives(p.firstChild())
+# d['encoding']
+assert d.get('encoding') == 'utf-8','fail encoding'
+# d['lang-dict']
+assert d.get('lang-dict') == None, "lang-dict set to %s" % repr(d.get('lang-dict'))
+# d['language']
+assert d.get('language') == 'python','fail language'
+# d['lineending']
+assert d.get('lineending') == '\n', "lineending not \\n, instead %s" % repr(d.get(lineending))
+# d['pagewidth']
+assert d.get('pagewidth') == 80,'fail pagewidth'
+# d['path']
+path1 = d.get('path').lower()
+path2 = g.os_path_finalize_join(g.app.loadDir,'..','test').lower()
+assert path1==path2,'fail path: expected %s, got %s' % (path1,path2)
+# d['tabwidth']
+assert d.get('tabwidth') == -4,'fail tabwidth'
+
+# From init_directive_ivars
+# Global options
+# page_width
+assert c.tangleCommands.page_width == 80, "expected page_width 80, is %s " % repr(c.tangleCommands.page_width)
+# tab_width
+assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+self.tab_width = c.tab_width
+
+# New in Leo 4.5: get these from settings.
+# output_doc_flag
+assert c.tangleCommands.output_doc_flag == None
+# tangle_batch_flag
+assert c.tangleCommands.tangle_batch_flag == None
+# untangle_batch_flag
+assert c.tangleCommands.untangle_batch_flag == None
+# use_header_flag
+assert c.tangleCommands.use_header_flag == None
+
+
+# Default tangle options.
+# tangle_directory
+assert c.tangleCommands.tangle_directory == d.get('path')
+
+# Default tangle language
+# c.target_language
+assert c.target_language == "python", "expected c.target_language python, is " + repr(c.target_language)
+# language
+assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+
+# Abbreviations for self.language.
+#     raw_cweb_flag
+assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+
+# Set only from directives.
+# print_mode
+assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+
+# support @first directive
+# first_lines
+assert c.tangleCommands.first_lines == ""
+
+# encoding
+assert c.tangleCommands.encoding == 'utf-8'
+
+# output_newline
+assert c.tangleCommands.output_newline == '\n'
+
+
+</t>
+<t tx="sps.20100624231018.20962">@root 'root-test'
 
 # A simple test of @root.
 
@@ -23763,7 +23610,7 @@ assert end == 2, "expected 2, got %d" % end
 
 &lt;&lt; secref &gt;&gt;=
 abc</t>
-<t tx="sps.20100609234650.39252">c.tangleCommands.init_ivars()
+<t tx="sps.20100624231018.20963">c.tangleCommands.init_ivars()
 d = c.tangleCommands.scanAllDirectives(p.firstChild())
 # d['encoding']
 assert d.get('encoding') == 'utf-8','fail encoding'
@@ -23782,138 +23629,56 @@ assert path1==path2,'fail path: expected %s, got %s' % (path1,path2)
 # d['tabwidth']
 assert d.get('tabwidth') == -4,'fail tabwidth'
 
-# remainder: attributes of c.tangleCommands
-# comment string related
-#     single_comment_string
-assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
-#     start_comment_string
-assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
-#     end_comment_string
-assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
-
-# cweb related
-#     raw_cweb_flag
-assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
-
-# language
-assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
-# output_doc_flag
-assert c.tangleCommands.output_doc_flag == None
-# print_mode
-assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+# From init_directive_ivars
+# Global options
+# page_width
+assert c.tangleCommands.page_width == 80, "expected page_width 80, is %s " % repr(c.tangleCommands.page_width)
 # tab_width
 assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+self.tab_width = c.tab_width
+
+# New in Leo 4.5: get these from settings.
+# output_doc_flag
+assert c.tangleCommands.output_doc_flag == None
 # tangle_batch_flag
 assert c.tangleCommands.tangle_batch_flag == None
-# tangle_directory
-assert c.tangleCommands.tangle_directory == d.get('path')
 # untangle_batch_flag
 assert c.tangleCommands.untangle_batch_flag == None
 # use_header_flag
 assert c.tangleCommands.use_header_flag == None
-</t>
-<t tx="sps.20100612133937.5517">import leo.core.leoTest as leoTest
 
-leoTest.runRootFileTangleTest(c,p)
-</t>
-<t tx="sps.20100612133937.5518"># multiple @root directives
-@root 'root-test-one'
-# content of root-test-one
-&lt;&lt; secref &gt;&gt;
 
-@root 'root-test-two'
-# content of root-test-two
-&lt;&lt; secref &gt;&gt;
+# Default tangle options.
+# tangle_directory
+assert c.tangleCommands.tangle_directory == d.get('path')
 
-&lt;&lt; secref &gt;&gt;=
-content common to both root files
-</t>
-<t tx="sps.20100612133937.5519"># content of root-test-one
-# &lt;&lt; secref &gt;&gt;
-content common to both root files
-# -- end -- &lt;&lt; secref &gt;&gt;
-</t>
-<t tx="sps.20100612133937.5520"># content of root-test-two
-# &lt;&lt; secref &gt;&gt;
-content common to both root files
-# -- end -- &lt;&lt; secref &gt;&gt;
-</t>
-<t tx="sps.20100613140923.5498">import leo.core.leoTest as leoTest
+# Default tangle language
+# c.target_language
+assert c.target_language == "python", "expected c.target_language python, is " + repr(c.target_language)
+# language
+assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
 
-leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100613140923.5499">A comment to ignore
-
-@root-doc 'root-test'
-
-# A simple test of @root-code.
-
-&lt;&lt; secref &gt;&gt;
-
-&lt;&lt; secref &gt;&gt;=
-abc</t>
-<t tx="sps.20100613140923.5500">&lt;&lt; secref &gt;&gt;=
-xyz
-</t>
-<t tx="sps.20100613140923.5501"># A simple test of @root-code.
-
-# &lt;&lt; secref &gt;&gt; (1 of 2)
-abc
-# &lt;&lt; secref &gt;&gt; (2 of 2)
-xyz
-# -- end -- &lt;&lt; secref &gt;&gt;
-</t>
-<t tx="sps.20100614134444.5497">c.tangleCommands.init_ivars()
-d = c.tangleCommands.scanAllDirectives(p.firstChild())
-# d['encoding']
-assert d.get('encoding') == 'utf-8','fail encoding'
-# d['lang-dict']
-assert d.get('lang-dict') == None, "lang-dict set to %s" % repr(d.get('lang-dict'))
-# d['language']
-assert d.get('language') == 'python','fail language'
-# d['lineending']
-assert d.get('lineending') == '\n', "lineending not \\n, instead %s" % repr(d.get(lineending))
-# d['pagewidth']
-assert d.get('pagewidth') == 80,'fail pagewidth'
-# d['path']
-path1 = d.get('path').lower()
-path2 = g.os_path_finalize_join(g.app.loadDir,'..','test').lower()
-assert path1==path2,'fail path: expected %s, got %s' % (path1,path2)
-# d['tabwidth']
-assert d.get('tabwidth') == -4,'fail tabwidth'
-
-# remainder: attributes of c.tangleCommands
-# comment string related
-#     single_comment_string
-assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
-#     start_comment_string
-assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
-#     end_comment_string
-assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
-
-# cweb related
+# Abbreviations for self.language.
 #     raw_cweb_flag
 assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
 
-# language
-assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
-# output_doc_flag
-assert c.tangleCommands.output_doc_flag == None
+# Set only from directives.
 # print_mode
 assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
-# root_list
-assert len(c.tangleCommands.root_list) == 0, "expected root_list to have length 0, is %d" % len(c.tangleCommands.root_list)
-# tab_width
-assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
-# tangle_batch_flag
-assert c.tangleCommands.tangle_batch_flag == None
-# tangle_directory
-assert c.tangleCommands.tangle_directory == d.get('path')
-# untangle_batch_flag
-assert c.tangleCommands.untangle_batch_flag == None
-# use_header_flag
-assert c.tangleCommands.use_header_flag == None
+
+# support @first directive
+# first_lines
+assert c.tangleCommands.first_lines == ""
+
+# encoding
+assert c.tangleCommands.encoding == 'utf-8'
+
+# output_newline
+assert c.tangleCommands.output_newline == '\n'
+
+
 </t>
-<t tx="sps.20100614134444.5498">@root 'root-test1'
+<t tx="sps.20100624231018.20964">@root 'root-test1'
 
 # A simple test of @root.
 
@@ -23926,95 +23691,228 @@ abc
 
 &lt;&lt; secref &gt;&gt;
 </t>
-<t tx="sps.20100614142106.5499"></t>
-<t tx="sps.20100614142106.5500">c.tangleCommands.init_ivars()
-c.tangleCommands.init_directive_ivars()
-c.tangleCommands.st_enter("'root-test'",False,False,is_root_flag=True)
-# remainder: attributes of c.tangleCommands
-# comment string related
-#     single_comment_string
-assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
-#     start_comment_string
-assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
-#     end_comment_string
-assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
+<t tx="sps.20100624231018.20966">t = c.tangleCommands
+t.init_directive_ivars()
+kind, end = t.token_type("",0)
+assert(kind == 1)
+assert(end == -1)
 
+kind, end = t.token_type("@root 'root-test'\n\n# A simple test of at root",0)
+assert kind == 8, 'expected kind == 8, got %s' % repr(kind)
+assert end == 17, 'expected end == 17, got %s' % repr(end)
+assert t.root_name=="'root-test'","expected c.tangleCommands.root_name == 'root-test', got %s" % repr(t.root_name)
+
+
+kind, end = t.token_type("@ignore\n@this\n@nonsense\n@root 'root-test'\n\n# A simple test of at root",24)
+assert kind == 8, 'expected kind == 8, got %s' % repr(kind)
+assert end == 17, 'expected end == 17, got %s' % repr(end)
+assert t.root_name=="'root-test'","expected c.tangleCommands.root_name == 'root-test', got %s" % repr(t.root_name)
+
+kind, end = t.token_type("foo bar\n",0)
+assert kind == 1, 'expected kind == 1, got %s' % repr(kind)
+assert end == -1, 'expected end == -1, got %s' % repr(end)
+
+kind, end = t.token_type("@@ foo bar\n",0)
+assert kind == 2, 'expected kind == 2, got %s' % repr(kind)
+assert end == -1, 'expected end == -1, got %s' % repr(end)
+
+kind, end = t.token_type("@chapter foo bar\n",0)
+assert kind == 3, 'expected kind == 3, got %s' % repr(kind)
+assert end == -1, 'expected end == -1, got %s' % repr(end)
+
+kind, end = t.token_type("@c foo bar",0)
+assert kind == 5, 'expected kind == 5, got %s' % repr(kind)
+assert end == -1, 'expected end == -1, got %s' % repr(end)
+
+kind, end = t.token_type("@code foo bar",0)
+assert kind == 5, 'expected kind == 5, got %s' % repr(kind)
+assert end == -1, 'expected end == -1, got %s' % repr(end)
+
+assert not t.raw_cweb_flag, "raw_cweb_flag should default false, is %s" % repr(t.raw_cweb_flag)
+kind, end = t.token_type("@ foo bar",0)
+assert kind == 6, 'expected kind == 6, got %s' % repr(kind)
+assert end == -1, 'expected end == -1, got %s' % repr(end)
+kind, end = t.token_type("@doc foo bar",0)
+assert kind == 6, 'expected kind == 6, got %s' % repr(kind)
+assert end == -1, 'expected end == -1, got %s' % repr(end)
+
+t.raw_cweb_flag = True
+kind, end = t.token_type("@ foo bar",0)
+assert kind == 1, 'expected kind == 6, got %s' % repr(kind)
+assert end == -1, 'expected end == -1, got %s' % repr(end)
+kind, end = t.token_type("@doc foo bar",0)
+assert kind == 6, 'expected kind == 6, got %s' % repr(kind)
+assert end == -1, 'expected end == -1, got %s' % repr(end)
+t.raw_cweb_flag = False
+
+# @space is a discontinued directive
+kind, end = t.token_type("@space foo bar",0)
+assert kind == 7, 'expected kind == 7, got %s' % repr(kind)
+assert end == -1, 'expected end == -1, got %s' % repr(end)
+
+# @language falls into the "other" grabbag
+kind, end = t.token_type("@language foo bar",0)
+assert kind == 7, 'expected kind == 7, got %s' % repr(kind)
+assert end == -1, 'expected end == -1, got %s' % repr(end)
+
+# note that spaces get included in file names, but not newlines
+kind, end = t.token_type("@root foo bar",0)
+assert kind == 8, 'expected kind == 7, got %s' % repr(kind)
+assert end == 13, 'expected end == 13, got %s' % repr(end)
+kind, end = t.token_type("@root foo bar\nbut not this\n",0)
+assert kind == 8, 'expected kind == 7, got %s' % repr(kind)
+assert end == 13, 'expected end == 13, got %s' % repr(end)
+
+kind, end = t.token_type("@section foo bar\nbut not this\n",0)
+assert kind == 9, 'expected kind == 7, got %s' % repr(kind)
+assert end == -1, 'expected end == -1, got %s' % repr(end)
+
+# (most) CWEB control codes are no longer recognized
+# those still special:
+#   @@ - literal @
+#   @  - (@ followed by space) start doc mode
+#   @c - start code mode
+for s in "*dfsp&lt;(h^.:t=q!'&amp;l,/|#+;[]xyzi":
+    kind, end = t.token_type("@%s foo" % s,0)
+    assert kind == 7, 'for @%s expected kind == 7, got %s' % (s, repr(kind))
+    assert end == -1, 'expected end == -1, got %s' % repr(end)
+
+# token_type also calls skip_section_name
+close_sect = "&gt;&gt;"
+# section_ref
+kind, end = t.token_type("&lt;&lt; section ref "+close_sect+"\nblah",0)
+assert kind == 13, 'expected kind == 13, got %s' % repr(kind)
+assert end == 17, 'expected end == 17, got %s' % repr(end)
+
+# section_def
+kind, end = t.token_type("&lt;&lt; section ref "+close_sect+"= blah",0)
+assert kind == 14, 'expected kind == 12, got %s' % repr(kind)
+assert end == 17, 'expected end == 17, got %s' % repr(end)
+
+# would be at_root, but fails due to lack of @root headline support,
+# so instead is bad_section_ref (i.e., don't interpret angle brackets
+kind, end = t.token_type("&lt;&lt; * "+close_sect+"= blah",0)
+assert kind == 12, 'expected kind == 12, got %s' % repr(kind)
+assert end == 7, 'expected end == 7, got %s' % repr(end)
+@
+# The other token types which need to be tested are
+at_web     = 11 # any CWEB control code, except at_at.
+
+# Returned by self.skip_section_name() and allies and used by token_type.
+bad_section_name = 12  # &lt; &lt; with no matching &gt; &gt;
+section_ref  = 13  # &lt; &lt; name &gt; &gt;
+section_def  = 14  # &lt; &lt; name &gt; &gt; =</t>
+<t tx="sps.20100624231018.20968">g.app.scanErrors = 0
+t = c.tangleCommands
+t.init_directive_ivars()
+end = t.setRootFromText("@root 'root-test'\n\n# A simple test of at root\n",True)
+assert end == 17, "expected end == 17, got %s" % repr(end)
+assert t.root_name == "'root-test'", "expected root_name == 'root-test', got %s" % repr(t.root_name)
+assert g.app.scanErrors == 0, "expected g.app.scanError == 0, got %s" % repr(g.app.scanErrors)
+
+end = t.setRootFromText("@root 'root-test'",True)
+assert end == 17, "expected end == 17, got %s" % repr(end)
+assert t.root_name == "'root-test'", "expected root_name == 'root-test', got %s" % repr(t.root_name)
+assert g.app.scanErrors == 0, "expected g.app.scanError == 0, got %s" % repr(g.app.scanErrors)
+
+end = t.setRootFromText("@root &lt; root-test &gt;",True)
+assert end == 18, "expected end == 17, got %s" % repr(end)
+assert t.root_name == "root-test", "expected root_name == 'root-test', got %s" % repr(t.root_name)
+assert g.app.scanErrors == 0, "expected g.app.scanError == 0, got %s" % repr(g.app.scanErrors)
+
+end = t.setRootFromText("@root &lt; root-test ",True)
+assert end == 18, "expected end == 17, got %s" % repr(end)
+assert t.root_name == None, "expected root_name == None, got %s" % repr(t.root_name)
+assert g.app.scanErrors == 1, "expected g.app.scanError == 1, got %s" % repr(g.app.scanErrors)
+
+end = t.setRootFromText("@root &lt; root-test \nfoo",True)
+assert end == 18, "expected end == 17, got %s" % repr(end)
+assert t.root_name == None, "expected root_name == None, got %s" % repr(t.root_name)
+assert g.app.scanErrors == 2, "expected g.app.scanError == 2, got %s" % repr(g.app.scanErrors)
+
+g.app.scanErrors = 0
+
+</t>
+<t tx="sps.20100624231018.20970">t=c.tangleCommands
+t.init_ivars()
+t.init_directive_ivars()
+lang_dict = {'language':None,'delims':None}
+t.parent_language_comment_settings(p,lang_dict)
+t.language             = lang_dict.get('language')
+t.init_delims          = lang_dict.get('delims')
+
+delims = new_delims = t.init_delims
+t.tangling = True
+t.st_enter("'root-test'",False,False,delims,new_delims,is_root_flag=True)
+# remainder: attributes of t
 # cweb related
 #     raw_cweb_flag
-assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+assert t.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(t.raw_cweb_flag)
 
 # language
-assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+assert t.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
 # output_doc_flag
-assert c.tangleCommands.output_doc_flag == None
+assert t.output_doc_flag == None
 # print_mode
-assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+assert t.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(t.print_mode)
 # tab_width
-assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+assert t.tab_width == -4, "expected tab_width -4, is %s " % repr(t.tab_width)
 # tangle_batch_flag
-assert c.tangleCommands.tangle_batch_flag == None
+assert t.tangle_batch_flag == None
 # untangle_batch_flag
-assert c.tangleCommands.untangle_batch_flag == None
+assert t.untangle_batch_flag == None
 # use_header_flag
-assert c.tangleCommands.use_header_flag == None
+assert t.use_header_flag == None
 
 import leo.core.leoTangle
 # root_list
-assert len(c.tangleCommands.root_list) == 1, "expected root_list to have length 1, is %d" % len(c.tangleCommands.root_list)
-assert c.tangleCommands.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0]))
+assert len(t.root_list) == 1, "expected root_list to have length 1, is %d" % len(t.root_list)
+assert t.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(t.root_list[0]))
 
 </t>
-<t tx="sps.20100614142106.5503"></t>
-<t tx="sps.20100614142106.5504">c.tangleCommands.init_ivars()
-c.tangleCommands.init_directive_ivars()
-c.tangleCommands.st_enter_root_name("'root-test'",False,False)
-# remainder: attributes of c.tangleCommands
-# comment string related
-#     single_comment_string
-assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
-#     start_comment_string
-assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
-#     end_comment_string
-assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
-
+<t tx="sps.20100624231018.20972">t=c.tangleCommands
+t.init_ivars()
+t.init_directive_ivars()
+lang_dict = {'language':None,'delims':None}
+t.parent_language_comment_settings(p,lang_dict)
+t.language             = lang_dict.get('language')
+t.init_delims          = lang_dict.get('delims')
+delims = new_delims = t.init_delims
+t.tangling = True
+t.st_enter_root_name("'root-test'",False,False,delims,new_delims)
+# remainder: attributes of t
 # cweb related
 #     raw_cweb_flag
-assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+assert t.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(t.raw_cweb_flag)
 
 # language
-assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+assert t.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
 # output_doc_flag
-assert c.tangleCommands.output_doc_flag == None
+assert t.output_doc_flag == None
 # print_mode
-assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+assert t.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(t.print_mode)
 # tab_width
-assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+assert t.tab_width == -4, "expected tab_width -4, is %s " % repr(t.tab_width)
 # tangle_batch_flag
-assert c.tangleCommands.tangle_batch_flag == None
+assert t.tangle_batch_flag == None
 # untangle_batch_flag
-assert c.tangleCommands.untangle_batch_flag == None
+assert t.untangle_batch_flag == None
 # use_header_flag
-assert c.tangleCommands.use_header_flag == None
+assert t.use_header_flag == None
 
 import leo.core.leoTangle
 # root_list
-assert len(c.tangleCommands.root_list) == 1, "expected root_list to have length 1, is %d" % len(c.tangleCommands.root_list)
-assert c.tangleCommands.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0]))
+assert len(t.root_list) == 1, "expected root_list to have length 1, is %d" % len(t.root_list)
+assert t.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(t.root_list[0]))
 
 </t>
-<t tx="sps.20100614142106.5507"></t>
-<t tx="sps.20100614142106.5508">c.tangleCommands.init_ivars()
+<t tx="sps.20100624231018.20973"></t>
+<t tx="sps.20100624231018.20974">c.tangleCommands.init_ivars()
 c.tangleCommands.init_directive_ivars()
-c.tangleCommands.skip_body(p.firstChild())
+delims = c.tangleCommands.init_delims
+c.tangleCommands.tangling = True
+new_delims = c.tangleCommands.skip_body(p.firstChild(),delims)
 # remainder: attributes of c.tangleCommands
-# comment string related
-#     single_comment_string
-assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
-#     start_comment_string
-assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
-#     end_comment_string
-assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
-
 # cweb related
 #     raw_cweb_flag
 assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
@@ -24042,22 +23940,16 @@ assert c.tangleCommands.root_list[0].is_root
 assert c.tangleCommands.root_list[0].name == "'root-test'", "expected root_list[0].name to be 'root-test', is %s" % c.tangleCommands.root_list[0].name
 assert c.tangleCommands.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0].parts[0]))
 </t>
-<t tx="sps.20100614142106.5509">@root 'root-test'
+<t tx="sps.20100624231018.20975">@root 'root-test'
 
 # A trivial test of @root.
 </t>
-<t tx="sps.20100614142106.5512">c.tangleCommands.init_ivars()
+<t tx="sps.20100624231018.20976">c.tangleCommands.init_ivars()
 c.tangleCommands.init_directive_ivars()
-c.tangleCommands.skip_body(p.firstChild())
+delims = c.tangleCommands.init_delims
+c.tangleCommands.tangling = True
+new_delims = c.tangleCommands.skip_body(p.firstChild(),delims)
 # remainder: attributes of c.tangleCommands
-# comment string related
-#     single_comment_string
-assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
-#     start_comment_string
-assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
-#     end_comment_string
-assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
-
 # cweb related
 #     raw_cweb_flag
 assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
@@ -24091,7 +23983,7 @@ assert c.tangleCommands.root_list[1].is_root
 assert c.tangleCommands.root_list[1].name == "'root-test-two'", "expected root_list[0].name to be 'root-test-two', is %s" % c.tangleCommands.root_list[1].name
 assert c.tangleCommands.root_list[1].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[1].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[1].parts[0]))
 </t>
-<t tx="sps.20100614142106.5513">@root 'root-test-one'
+<t tx="sps.20100624231018.20977">@root 'root-test-one'
 
 # test of @root first.
 
@@ -24099,96 +23991,134 @@ assert c.tangleCommands.root_list[1].parts[0] &lt; leo.core.leoTangle.part_node,
 
 # test o @root second
 </t>
-<t tx="sps.20100614142106.5520"></t>
-<t tx="sps.20100614142106.5521">c.tangleCommands.init_ivars()
-c.tangleCommands.init_directive_ivars()
-c.tangleCommands.tanglePass1(p.firstChild())
-# remainder: attributes of c.tangleCommands
-# comment string related
-#     single_comment_string
-assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
-#     start_comment_string
-assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
-#     end_comment_string
-assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
+<t tx="sps.20100624231018.20978"></t>
+<t tx="sps.20100624231018.20979">t = c.tangleCommands
+t.p = p.firstChild()
+t.init_ivars()
+t.scanAllDirectives(p)
+delims = t.init_delims
+assert delims == ("#", '', ''), "expected delims == ('#','','') got %s" % repr(delims)
+t.tangling = True
+t.tanglePass1(p.firstChild(),delims)
 
+result = t.st_dump()
+# avoid spurious interpolation
+close_sect = "&gt;&gt;"
+expect = """
+dump of symbol table...
+
+section: 'root-test', referenced:True, is root:True
+----- parts of &lt;&lt;'root-test'""" + close_sect + """
+----- Part 1
+doc:  [u'']
+code: [u'# A trivial test of @root.']
+delims: &lt;#&gt;&lt;&gt;&lt;&gt;
+----- end of partList
+
+section delims: ('#', '', '')
+"""
+assert result[0:240] == expect[0:240]
+
+# remainder: attributes of t
 # cweb related
 #     raw_cweb_flag
-assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+assert t.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(t.raw_cweb_flag)
 
 # language
-assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+assert t.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
 # output_doc_flag
-assert c.tangleCommands.output_doc_flag == None
+assert t.output_doc_flag == None
 # print_mode
-assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+assert t.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(t.print_mode)
 # tab_width
-assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+assert t.tab_width == -4, "expected tab_width -4, is %s " % repr(t.tab_width)
 # tangle_batch_flag
-assert c.tangleCommands.tangle_batch_flag == None
+assert t.tangle_batch_flag == None
 # untangle_batch_flag
-assert c.tangleCommands.untangle_batch_flag == None
+assert t.untangle_batch_flag == None
 # use_header_flag
-assert c.tangleCommands.use_header_flag == None
+assert t.use_header_flag == None
 
 import leo.core.leoTangle
 # root_list
-assert len(c.tangleCommands.root_list) == 1, "expected root_list to have length 1, is %d" % len(c.tangleCommands.root_list)
-assert c.tangleCommands.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0]))
-assert c.tangleCommands.root_list[0].is_root
-assert c.tangleCommands.root_list[0].name == "'root-test'", "expected root_list[0].name to be 'root-test', is %s" % c.tangleCommands.root_list[0].name
-assert c.tangleCommands.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0].parts[0]))
+assert len(t.root_list) == 1, "expected root_list to have length 1, is %d" % len(t.root_list)
+assert t.root_list[0].__class__ == leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(t.root_list[0]))
+assert t.root_list[0].is_root
+assert t.root_list[0].name == "'root-test'", "expected root_list[0].name to be 'root-test', is %s" % t.root_list[0].name
+assert t.root_list[0].parts[0].__class__ == leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(t.root_list[0].parts[0]))
 </t>
-<t tx="sps.20100614142106.5522">@root 'root-test'
+<t tx="sps.20100624231018.20980">@root 'root-test'
 
 # A trivial test of @root.
 </t>
-<t tx="sps.20100614142106.5523">c.tangleCommands.init_ivars()
-c.tangleCommands.init_directive_ivars()
-c.tangleCommands.tanglePass1(p.firstChild())
-# remainder: attributes of c.tangleCommands
-# comment string related
-#     single_comment_string
-assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
-#     start_comment_string
-assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
-#     end_comment_string
-assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
+<t tx="sps.20100624231018.20981">t = c.tangleCommands
+t.init_ivars()
+t.init_directive_ivars()
+delims = t.init_delims
+t.tangling = True
+t.tanglePass1(p.firstChild(),delims)
 
+result = t.st_dump()
+# avoid spurious interpolation
+close_sect = "&gt;&gt;"
+expect = """
+dump of symbol table...
+
+section: 'root-test-one', referenced:True, is root:True
+----- parts of &lt;&lt;'root-test-one'"""+close_sect+"""
+----- Part 1
+doc:  [u'']
+code: [u'# test of @root first.']
+delims: &lt;#&gt;&lt;&gt;&lt;&gt;
+----- end of partList
+
+section delims: ('#', '', '')
+section: 'root-test-two', referenced:True, is root:True
+----- parts of &lt;&lt;'root-test-two'"""+close_sect+"""
+----- Part 1
+doc:  ['']
+code: [u'# test o @root second']
+delims: &lt;#&gt;&lt;&gt;&lt;&gt;
+----- end of partList
+
+section delims: ('#', '', '')"""
+assert result == expect
+
+# remainder: attributes of t
 # cweb related
 #     raw_cweb_flag
-assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
+assert t.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(t.raw_cweb_flag)
 
 # language
-assert c.tangleCommands.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
+assert t.language == "python", "expected language python, is %s" % repr(c.tanglCommands.language)
 # output_doc_flag
-assert c.tangleCommands.output_doc_flag == None
+assert t.output_doc_flag == None
 # print_mode
-assert c.tangleCommands.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(c.tangleCommands.print_mode)
+assert t.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(t.print_mode)
 # tab_width
-assert c.tangleCommands.tab_width == -4, "expected tab_width -4, is %s " % repr(c.tangleCommands.tab_width)
+assert t.tab_width == -4, "expected tab_width -4, is %s " % repr(t.tab_width)
 # tangle_batch_flag
-assert c.tangleCommands.tangle_batch_flag == None
+assert t.tangle_batch_flag == None
 # untangle_batch_flag
-assert c.tangleCommands.untangle_batch_flag == None
+assert t.untangle_batch_flag == None
 # use_header_flag
-assert c.tangleCommands.use_header_flag == None
+assert t.use_header_flag == None
 
 import leo.core.leoTangle
 # root_list
-assert len(c.tangleCommands.root_list) == 2, "expected root_list to have length 2, is %d" % len(c.tangleCommands.root_list)
+assert len(t.root_list) == 2, "expected root_list to have length 2, is %d" % len(t.root_list)
 # first @root
-assert c.tangleCommands.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0]))
-assert c.tangleCommands.root_list[0].is_root
-assert c.tangleCommands.root_list[0].name == "'root-test-one'", "expected root_list[0].name to be 'root-test-one', is %s" % c.tangleCommands.root_list[0].name
-assert c.tangleCommands.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0].parts[0]))
+assert t.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(t.root_list[0]))
+assert t.root_list[0].is_root
+assert t.root_list[0].name == "'root-test-one'", "expected root_list[0].name to be 'root-test-one', is %s" % t.root_list[0].name
+assert t.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(t.root_list[0].parts[0]))
 # second @root
-assert c.tangleCommands.root_list[1] &lt; leo.core.leoTangle.tst_node, "expected root_list[1] to be instance of tst_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[1]))
-assert c.tangleCommands.root_list[1].is_root
-assert c.tangleCommands.root_list[1].name == "'root-test-two'", "expected root_list[0].name to be 'root-test-two', is %s" % c.tangleCommands.root_list[1].name
-assert c.tangleCommands.root_list[1].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[1].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[1].parts[0]))
+assert t.root_list[1] &lt; leo.core.leoTangle.tst_node, "expected root_list[1] to be instance of tst_node, dir() is %s " % repr(dir(t.root_list[1]))
+assert t.root_list[1].is_root
+assert t.root_list[1].name == "'root-test-two'", "expected root_list[0].name to be 'root-test-two', is %s" % t.root_list[1].name
+assert t.root_list[1].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[1].parts[0] to be instance of part_node, dir() is %s " % repr(dir(t.root_list[1].parts[0]))
 </t>
-<t tx="sps.20100614142106.5524">@root 'root-test-one'
+<t tx="sps.20100624231018.20982">@root 'root-test-one'
 
 # test of @root first.
 
@@ -24196,23 +24126,17 @@ assert c.tangleCommands.root_list[1].parts[0] &lt; leo.core.leoTangle.part_node,
 
 # test o @root second
 </t>
-<t tx="sps.20100614142106.5530"></t>
-<t tx="sps.20100614142106.5531">c.tangleCommands.init_ivars()
+<t tx="sps.20100624231018.20983"></t>
+<t tx="sps.20100624231018.20984">c.tangleCommands.init_ivars()
 c.tangleCommands.init_directive_ivars()
-c.tangleCommands.tanglePass1(p.firstChild())
+delims = c.tangleCommands.init_delims
+c.tangleCommands.tangling = True
+new_delims = c.tangleCommands.tanglePass1(p.firstChild(),delims)
 assert c.tangleCommands.root_list
 c.tangleCommands.tangling = True
 g.unitTesting = True
 c.tangleCommands.tanglePass2()
 # remainder: attributes of c.tangleCommands
-# comment string related
-#     single_comment_string
-assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
-#     start_comment_string
-assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
-#     end_comment_string
-assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
-
 # cweb related
 #     raw_cweb_flag
 assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
@@ -24241,24 +24165,18 @@ assert c.tangleCommands.root_list[0].name == "'root-test'", "expected root_list[
 assert c.tangleCommands.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0].parts[0]))
 assert sorted(c.tangleCommands.tangle_output) == ["'root-test'"], "expected one output file ["'root-test'"], got %s" % repr(c.tangleCommands.tangle_output)
 </t>
-<t tx="sps.20100614142106.5532">@root 'root-test'
+<t tx="sps.20100624231018.20985">@root 'root-test'
 
 # A trivial test of @root.
 </t>
-<t tx="sps.20100614142106.5533">c.tangleCommands.init_ivars()
+<t tx="sps.20100624231018.20986">c.tangleCommands.init_ivars()
 c.tangleCommands.init_directive_ivars()
-c.tangleCommands.tanglePass1(p.firstChild())
+delims = c.tangleCommands.init_delims
+c.tangleCommands.tangling = True
+new_delims = c.tangleCommands.tanglePass1(p.firstChild(),delims)
 assert c.tangleCommands.root_list
 c.tangleCommands.tanglePass2()
 # remainder: attributes of c.tangleCommands
-# comment string related
-#     single_comment_string
-assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
-#     start_comment_string
-assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
-#     end_comment_string
-assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
-
 # cweb related
 #     raw_cweb_flag
 assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
@@ -24294,7 +24212,7 @@ assert c.tangleCommands.root_list[1].parts[0] &lt; leo.core.leoTangle.part_node,
 # tanglePass2 conversion to file
 assert sorted(c.tangleCommands.tangle_output) == ["'root-test-one'", "'root-test-two'"], "expected two output files ["'root-test-one'", "'root-test-two'"], got %s" % repr(c.tangleCommands.tangle_output)
 </t>
-<t tx="sps.20100614142106.5534">@root 'root-test-one'
+<t tx="sps.20100624231018.20987">@root 'root-test-one'
 
 # test of @root first.
 
@@ -24302,10 +24220,12 @@ assert sorted(c.tangleCommands.tangle_output) == ["'root-test-one'", "'root-test
 
 # test o @root second
 </t>
-<t tx="sps.20100614142106.5540"></t>
-<t tx="sps.20100614142106.5541">c.tangleCommands.init_ivars()
+<t tx="sps.20100624231018.20988"></t>
+<t tx="sps.20100624231018.20989">c.tangleCommands.init_ivars()
 c.tangleCommands.init_directive_ivars()
-c.tangleCommands.tanglePass1(p.firstChild())
+delims = c.tangleCommands.init_delims
+c.tangleCommands.tangling = True
+new_delims = c.tangleCommands.tanglePass1(p.firstChild(),delims)
 assert c.tangleCommands.root_list
 assert g.app.scanErrors == 0
 c.tangleCommands.tangling = True
@@ -24313,14 +24233,6 @@ c.tangleCommands.p = None
 g.unitTesting = True
 c.tangleCommands.put_all_roots()
 # remainder: attributes of c.tangleCommands
-# comment string related
-#     single_comment_string
-assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
-#     start_comment_string
-assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
-#     end_comment_string
-assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
-
 # cweb related
 #     raw_cweb_flag
 assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
@@ -24349,27 +24261,21 @@ assert c.tangleCommands.root_list[0].name == "'root-test'", "expected root_list[
 assert c.tangleCommands.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(c.tangleCommands.root_list[0].parts[0]))
 assert sorted(c.tangleCommands.tangle_output) == ["'root-test'"], "expected one output file ["'root-test'"], got %s" % repr(c.tangleCommands.tangle_output)
 </t>
-<t tx="sps.20100614142106.5542">@root 'root-test'
+<t tx="sps.20100624231018.20990">@root 'root-test'
 
 # A trivial test of @root.
 </t>
-<t tx="sps.20100614142106.5543">c.tangleCommands.init_ivars()
+<t tx="sps.20100624231018.20991">c.tangleCommands.init_ivars()
 c.tangleCommands.init_directive_ivars()
-c.tangleCommands.tanglePass1(p.firstChild())
+delims = c.tangleCommands.init_delims
+c.tangleCommands.tangling = True
+new_delims = c.tangleCommands.tanglePass1(p.firstChild(),delims)
 assert c.tangleCommands.root_list
 c.tangleCommands.tangling = True
 c.tangleCommands.p = None
 g.unitTesting = True
 c.tangleCommands.put_all_roots()
 # remainder: attributes of c.tangleCommands
-# comment string related
-#     single_comment_string
-assert c.tangleCommands.single_comment_string == '#', "single_comment_string not #, is &lt;%s&gt;" % c.tangleCommands.single_comment_string
-#     start_comment_string
-assert c.tangleCommands.start_comment_string == '', "start_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.start_comment_string
-#     end_comment_string
-assert c.tangleCommands.end_comment_string == '', "end_comment_string not None, is &lt;%s&gt;" % c.tangleCommands.end_comment_string
-
 # cweb related
 #     raw_cweb_flag
 assert c.tangleCommands.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(c.tangleCommands.raw_cweb_flag)
@@ -24405,7 +24311,7 @@ assert c.tangleCommands.root_list[1].parts[0] &lt; leo.core.leoTangle.part_node,
 # tanglePass2 conversion to file
 assert sorted(c.tangleCommands.tangle_output) == ["'root-test-one'", "'root-test-two'"], "expected two output files ["'root-test-one'", "'root-test-two'"], got %s" % repr(c.tangleCommands.tangle_output)
 </t>
-<t tx="sps.20100614142106.5544">@root 'root-test-one'
+<t tx="sps.20100624231018.20992">@root 'root-test-one'
 
 # test of @root first.
 
@@ -24413,93 +24319,128 @@ assert sorted(c.tangleCommands.tangle_output) == ["'root-test-one'", "'root-test
 
 # test o @root second
 </t>
-<t tx="sps.20100614233514.5554">import leo.core.leoTest as leoTest
+<t tx="sps.20100624231018.20993"></t>
+<t tx="sps.20100624231018.20994"></t>
+<t tx="sps.20100624231018.20995"></t>
+<t tx="sps.20100624231018.20996"></t>
+<t tx="sps.20100624231018.20997">import leo.core.leoTest as leoTest
 
 leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100614233514.5555">A comment to ignore
+<t tx="sps.20100624231018.20998">@language c
+@root 'root-test'
 
-@root-doc 'root-test'
+// A simple test of @root.
 
-# A simple test of @root-doc.
 &lt;&lt; secref &gt;&gt;
-@
-ignored documentation
-</t>
-<t tx="sps.20100614233514.5556">ignored comment
-@c
-xyz
 
-</t>
-<t tx="sps.20100614233514.5557">
 &lt;&lt; secref &gt;&gt;=
 abc</t>
-<t tx="sps.20100614233514.5558"># A simple test of @root-doc.
-# &lt;&lt; secref &gt;&gt; (1 of 2)
+<t tx="sps.20100624231018.20999">// A simple test of @root.
+
+// &lt;&lt; secref &gt;&gt;
 abc
-# &lt;&lt; secref &gt;&gt; (2 of 2)
-xyz
-# -- end -- &lt;&lt; secref &gt;&gt;
+// -- end -- &lt;&lt; secref &gt;&gt;
 </t>
-<t tx="sps.20100614233514.5564">import leo.core.leoTest as leoTest
+<t tx="sps.20100624231018.21000">import leo.core.leoTest as leoTest
 
 leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100614233514.5565">A comment to ignore
+<t tx="sps.20100624231018.21001">@root 'root-test'
 
-@root-doc 'root-test'
+# A simple test of @root.
 
-# A simple test of @root-doc.
 &lt;&lt; secref &gt;&gt;
-@
-ignored documentation
-</t>
-<t tx="sps.20100614233514.5566">ignored comment part 1
-@c
-abc
-</t>
-<t tx="sps.20100614233514.5567">ignored comment part 2
-@c
-xyz
 
-</t>
-<t tx="sps.20100614233514.5568"># A simple test of @root-doc.
-# &lt;&lt; secref &gt;&gt; (1 of 2)
-abc
-# &lt;&lt; secref &gt;&gt; (2 of 2)
-xyz
-# -- end -- &lt;&lt; secref &gt;&gt;
-</t>
-<t tx="sps.20100614233514.5586">import leo.core.leoTest as leoTest
-
-leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100614233514.5587">A comment to ignore
-
-@root-doc 'root-test'
-
-# A simple test of @root-doc.
-&lt;&lt; secref &gt;&gt;
-@
-ignored documentation
-</t>
-<t tx="sps.20100614233514.5588">ignored comment
-@c
-xyz
-@
-second ignored comment
 &lt;&lt; secref &gt;&gt;=
-abc
-</t>
-<t tx="sps.20100614233514.5590"># A simple test of @root-doc.
-# &lt;&lt; secref &gt;&gt; (1 of 2)
-xyz
-# &lt;&lt; secref &gt;&gt; (2 of 2)
+abc</t>
+<t tx="sps.20100624231018.21002"># A simple test of @root.
+
+# &lt;&lt; secref &gt;&gt;
 abc
 # -- end -- &lt;&lt; secref &gt;&gt;
 </t>
-<t tx="sps.20100615182644.8464"></t>
-<t tx="sps.20100616112524.20888">import leo.core.leoTest as leoTest
+<t tx="sps.20100624231018.21003">@
+Without a setting of @bool at_root_bodies_start_in_doc_mode = False, tangled
+nodes begin in doc mode.  It is only in subnodes of root-code that the nodes
+begin in code-mode.
+</t>
+<t tx="sps.20100624231018.21004">import leo.core.leoTest as leoTest
 
 leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100616112524.20889">@root 'root-test'
+<t tx="sps.20100624231018.21005">A comment to ignore
+
+@root-doc 'root-test'
+
+# A simple test of @root-doc.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100624231018.21006"># A simple test of @root-doc.
+
+# &lt;&lt; secref &gt;&gt;
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100624231018.21007">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100624231018.21008">A comment to ignore
+
+@root-doc 'root-test'
+
+# A simple test of @root-code.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100624231018.21009">&lt;&lt; secref &gt;&gt;=
+xyz
+</t>
+<t tx="sps.20100624231018.21010"># A simple test of @root-code.
+
+# &lt;&lt; secref &gt;&gt; (1 of 2)
+abc
+# &lt;&lt; secref &gt;&gt; (2 of 2)
+xyz
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100624231018.21011">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100624231018.21012">A comment to ignore
+
+@root-code 'root-test'
+
+# A simple test of @root-code.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100624231018.21013">&lt;&lt; secref &gt;&gt;=
+xyz
+@
+A comment section
+
+&lt;&lt; secref &gt;&gt;=
+uvw
+</t>
+<t tx="sps.20100624231018.21014"># A simple test of @root-code.
+
+# &lt;&lt; secref &gt;&gt; (1 of 3)
+abc
+# &lt;&lt; secref &gt;&gt; (2 of 3)
+xyz
+# &lt;&lt; secref &gt;&gt; (3 of 3)
+uvw
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100624231018.21015">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100624231018.21016">@root 'root-test'
 
 # A less simple test of @root.
 
@@ -24509,25 +24450,61 @@ leoTest.runRootFileTangleTest(c,p)</t>
     &lt;&lt; secref one &gt;&gt;
     &lt;&lt; secref two &gt;&gt;
 </t>
-<t tx="sps.20100616112524.20890"># A less simple test of @root.
+<t tx="sps.20100624231018.21017">Contents of secref one.
+@c
+plus some code
+</t>
+<t tx="sps.20100624231018.21018">Contents of secref two.
+@c
+and some more code
+</t>
+<t tx="sps.20100624231018.21019"># A less simple test of @root.
 
 # &lt;&lt; secref &gt;&gt;
     # &lt;&lt; secref one &gt;&gt;
-
+    plus some code
     # -- end -- &lt;&lt; secref one &gt;&gt;
     # &lt;&lt; secref two &gt;&gt;
-
+    and some more code
     # -- end -- &lt;&lt; secref two &gt;&gt;
 # -- end -- &lt;&lt; secref &gt;&gt;
 </t>
-<t tx="sps.20100616112524.20891">Contents of secref one.
-</t>
-<t tx="sps.20100616112524.20893">Contents of secref two.
-</t>
-<t tx="sps.20100616173108.5598">import leo.core.leoTest as leoTest
+<t tx="sps.20100624231018.21020">import leo.core.leoTest as leoTest
 
 leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100616173108.5599">@root-doc 'root-test'
+<t tx="sps.20100624231018.21021">@root 'root-test'
+
+# A less simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+    &lt;&lt; secref one &gt;&gt;
+    &lt;&lt; secref two &gt;&gt;
+</t>
+<t tx="sps.20100624231018.21022">Contents of secref one.
+@c
+plus some code
+</t>
+<t tx="sps.20100624231018.21023">Contents of secref two.
+@c
+and some more code
+</t>
+<t tx="sps.20100624231018.21024"># A less simple test of @root.
+
+# &lt;&lt; secref &gt;&gt;
+    # &lt;&lt; secref one &gt;&gt;
+    plus some code
+    # -- end -- &lt;&lt; secref one &gt;&gt;
+    # &lt;&lt; secref two &gt;&gt;
+    and some more code
+    # -- end -- &lt;&lt; secref two &gt;&gt;
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100624231018.21025">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100624231018.21026">@root-doc 'root-test'
 
 # A less simple test of @root-doc.
 
@@ -24537,11 +24514,11 @@ leoTest.runRootFileTangleTest(c,p)</t>
     &lt;&lt; secref one &gt;&gt;
     &lt;&lt; secref two &gt;&gt;
 </t>
-<t tx="sps.20100616173108.5600">Contents of secref one.
+<t tx="sps.20100624231018.21027">Contents of secref one.
 </t>
-<t tx="sps.20100616173108.5601">Contents of secref two.
+<t tx="sps.20100624231018.21028">Contents of secref two.
 </t>
-<t tx="sps.20100616173108.5602"># A less simple test of @root-doc.
+<t tx="sps.20100624231018.21029"># A less simple test of @root-doc.
 
 # &lt;&lt; secref &gt;&gt;
     # &lt;&lt; secref one &gt;&gt;
@@ -24552,10 +24529,10 @@ leoTest.runRootFileTangleTest(c,p)</t>
     # -- end -- &lt;&lt; secref two &gt;&gt;
 # -- end -- &lt;&lt; secref &gt;&gt;
 </t>
-<t tx="sps.20100616173108.5611">import leo.core.leoTest as leoTest
+<t tx="sps.20100624231018.21030">import leo.core.leoTest as leoTest
 
 leoTest.runRootFileTangleTest(c,p)</t>
-<t tx="sps.20100616173108.5612">@root-code 'root-test'
+<t tx="sps.20100624231018.21031">@root-code 'root-test'
 
 # A less simple test of @root-code.
 
@@ -24565,11 +24542,11 @@ leoTest.runRootFileTangleTest(c,p)</t>
     &lt;&lt; secref one &gt;&gt;
     &lt;&lt; secref two &gt;&gt;
 </t>
-<t tx="sps.20100616173108.5613">Contents of secref one.
+<t tx="sps.20100624231018.21032">Contents of secref one.
 </t>
-<t tx="sps.20100616173108.5614">Contents of secref two.
+<t tx="sps.20100624231018.21033">Contents of secref two.
 </t>
-<t tx="sps.20100616173108.5615"># A less simple test of @root-code.
+<t tx="sps.20100624231018.21034"># A less simple test of @root-code.
 
 # &lt;&lt; secref &gt;&gt;
     # &lt;&lt; secref one &gt;&gt;
@@ -24580,22 +24557,1099 @@ leoTest.runRootFileTangleTest(c,p)</t>
     # -- end -- &lt;&lt; secref two &gt;&gt;
 # -- end -- &lt;&lt; secref &gt;&gt;
 </t>
-<t tx="sps.20100618084840.5607"></t>
-<t tx="sps.20100618084840.5608"></t>
-<t tx="sps.20100618084840.5613">import leo.core.leoTest as leoTest
+<t tx="sps.20100624231018.21035">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100624231018.21036">@comment #
+@root 'root-test'
+
+# A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100624231018.21037"># A simple test of @root.
+
+# &lt;&lt; secref &gt;&gt;
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100624231018.21038">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100624231018.21039">@comment /* */
+@root 'root-test'
+
+/* A simple test of @root. */
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100624231018.21040">/* A simple test of @root. */
+
+/* &lt;&lt; secref &gt;&gt; */
+abc
+/* -- end -- &lt;&lt; secref &gt;&gt; */
+</t>
+<t tx="sps.20100624231018.21041">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100624231018.21042">@comment // /* */
+@root 'root-test'
+
+/* A simple test of @root. */
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100624231018.21043">/* A simple test of @root. */
+
+// &lt;&lt; secref &gt;&gt;
+abc
+// -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100624231018.21044">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100624231018.21045">@language html
+@root 'root-test'
+
+&lt;!-- A simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100624231018.21046">&lt;!-- A simple test of @root. --&gt;
+
+&lt;!-- &lt;&lt; secref &gt;&gt; --&gt;
+abc
+&lt;!-- -- end -- &lt;&lt; secref &gt;&gt; --&gt;
+</t>
+<t tx="sps.20100624231018.21047"># directory foo must exist, or scanAtPathDirectives ignores it.
+import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p.firstChild())</t>
+<t tx="sps.20100624231018.21048">@path foo</t>
+<t tx="sps.20100624231018.21049">@root 'root-test'
+
+# A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100624231018.21050"># A simple test of @root.
+
+# &lt;&lt; secref &gt;&gt;
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100624231018.21051"># directory foo must exist or scanAtPathDirectives will ignore it
+import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100624231018.21052">@path foo
+@root 'root-test'
+
+# A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100624231018.21053"># A simple test of @root.
+
+# &lt;&lt; secref &gt;&gt;
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100624231018.21054">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100624231018.21055">@path /tmp
+@root 'root-test'
+
+# A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100624231018.21056"># A simple test of @root.
+
+# &lt;&lt; secref &gt;&gt;
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100624231018.21057">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)
+</t>
+<t tx="sps.20100624231018.21058"># multiple @root directives
+@root 'root-test-one'
+# content of root-test-one
+&lt;&lt; secref &gt;&gt;
+
+@root 'root-test-two'
+# content of root-test-two
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+content common to both root files
+</t>
+<t tx="sps.20100624231018.21059"># content of root-test-one
+# &lt;&lt; secref &gt;&gt;
+content common to both root files
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100624231018.21060"># content of root-test-two
+# &lt;&lt; secref &gt;&gt;
+content common to both root files
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100624231018.21061">@
+This code formerly generated the error "Multiple parts are not allowed for &lt;&lt; secref &gt;&gt;".
+That restriction has been removed.
+</t>
+<t tx="sps.20100624231018.21062">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100624231018.21063">A comment to ignore
+
+@root-doc 'root-test'
+
+# A simple test of @root-doc.
+&lt;&lt; secref &gt;&gt;
+@
+ignored documentation
+</t>
+<t tx="sps.20100624231018.21064">ignored comment
+@c
+xyz
+
+</t>
+<t tx="sps.20100624231018.21065">
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100624231018.21066"># A simple test of @root-doc.
+# &lt;&lt; secref &gt;&gt; (1 of 2)
+xyz
+# &lt;&lt; secref &gt;&gt; (2 of 2)
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100624231018.21067">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100624231018.21068">A comment to ignore
+
+@root-doc 'root-test'
+
+# A simple test of @root-doc.
+&lt;&lt; secref &gt;&gt;
+@
+ignored documentation
+</t>
+<t tx="sps.20100624231018.21069">ignored comment
+@c
+xyz
+@
+second ignored comment
+&lt;&lt; secref &gt;&gt;=
+abc
+</t>
+<t tx="sps.20100624231018.21070"># A simple test of @root-doc.
+# &lt;&lt; secref &gt;&gt; (1 of 2)
+xyz
+# &lt;&lt; secref &gt;&gt; (2 of 2)
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100624231018.21071">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100624231018.21072">A comment to ignore
+
+@root-doc 'root-test'
+
+# A simple test of @root-doc.
+&lt;&lt; secref &gt;&gt;
+@
+ignored documentation
+</t>
+<t tx="sps.20100624231018.21073">
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100624231018.21074">ignored comment
+@c
+xyz
+
+</t>
+<t tx="sps.20100624231018.21075"># A simple test of @root-doc.
+# &lt;&lt; secref &gt;&gt; (1 of 2)
+abc
+# &lt;&lt; secref &gt;&gt; (2 of 2)
+xyz
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100624231018.21076">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100624231018.21077">A comment to ignore
+
+@root-doc 'root-test'
+
+# A simple test of @root-doc.
+&lt;&lt; secref &gt;&gt;
+@
+ignored documentation
+</t>
+<t tx="sps.20100624231018.21078">ignored comment part 1
+@c
+abc
+</t>
+<t tx="sps.20100624231018.21079">ignored comment part 2
+@c
+xyz
+
+</t>
+<t tx="sps.20100624231018.21080"># A simple test of @root-doc.
+# &lt;&lt; secref &gt;&gt; (1 of 2)
+abc
+# &lt;&lt; secref &gt;&gt; (2 of 2)
+xyz
+# -- end -- &lt;&lt; secref &gt;&gt;
+</t>
+<t tx="sps.20100624231018.21081">@
+The tangle code is OK, but the untangle code is failing
+undetected.
+</t>
+<t tx="sps.20100624231018.21082">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)
+</t>
+<t tx="sps.20100624231018.21083">@language html
+@root 'root-test'
+&lt;&lt;Text section&gt;&gt;
+&lt;&lt;Javascript section&gt;&gt;
+&lt;&lt;Second text section&gt;&gt;
+
+&lt;&lt;Text section&gt;&gt;=
+Hi.  This is html text.
+@comment //
+&lt;script language="javascript"&gt;&lt;!--
+
+&lt;&lt;Javascript section&gt;&gt;=
+var s = "string";
+@comment &lt;!-- --&gt;
+--&gt;&lt;/script&gt;
+
+&lt;&lt;Second text section&gt;&gt;=
+This is a second piece of html text. </t>
+<t tx="sps.20100624231018.21084">&lt;!-- &lt;&lt;Text section&gt;&gt; --&gt;
+Hi.  This is html text.
+&lt;!-- @comment // --&gt;
+&lt;script language="javascript"&gt;&lt;!--
+// -- end -- &lt;&lt;Text section&gt;&gt;
+// &lt;&lt;Javascript section&gt;&gt;
+var s = "string";
+// @comment &lt;!-- --&gt;
+--&gt;&lt;/script&gt;
+&lt;!-- -- end -- &lt;&lt;Javascript section&gt;&gt; --&gt;
+&lt;!-- &lt;&lt;Second text section&gt;&gt; --&gt;
+This is a second piece of html text.
+&lt;!-- -- end -- &lt;&lt;Second text section&gt;&gt; --&gt;
+</t>
+<t tx="sps.20100624231018.21086"># The javascript section is not correctly getting the
+# @comment directive applied to its trailing sentinel
+
+import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100624231018.21087">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+@
+secref governed by @lang html
+&lt;&lt; secref &gt;&gt;=
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+&lt;&lt; javascript section &gt;&gt;
+@
+End the secref definition before starting the
+javascript section with the new comment convention
+@comment //
+&lt;&lt; javascript section &gt;&gt;=
+var foo = 1;
+@comment &lt;!-- --&gt;
+--&gt;&lt;/script&gt;</t>
+<t tx="sps.20100624231018.21089">&lt;!-- A less simple test of @root. --&gt;
+
+&lt;!-- &lt;&lt; secref &gt;&gt; --&gt;
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+// &lt;&lt; javascript section &gt;&gt;
+var foo = 1;
+--&gt;&lt;/script&gt;
+&lt;!-- -- end -- &lt;&lt; javascript section &gt;&gt; --&gt;
+&lt;!-- -- end -- &lt;&lt; secref &gt;&gt; --&gt;
+</t>
+<t tx="sps.20100624231018.21090"></t>
+<t tx="sps.20100624231018.21091"># This is an unimplemented alternative design
+# The question is whether (a) a section's delimiters are
+# determined by what they were when it was defined or
+# (b) whether they are determined by the context in which
+# they are interpolated.  I've implemented (a)
+
+import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100624231018.21092">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc
+
+&lt;script type="text/javascript"&gt;
+@comment //
+&lt;&lt; javascript section &gt;&gt;
+&lt;/script&gt;
+@comment &lt;!-- --&gt;
+
+&lt;&lt; javascript section &gt;&gt;=
+var foo = 1;
+</t>
+<t tx="sps.20100624231018.21093">var i;
+</t>
+<t tx="sps.20100624231018.21094">&lt;!-- A less simple test of @root. --&gt;
+
+&lt;!-- &lt;&lt; secref &gt;&gt; --&gt;
+abc
+
+&lt;script type="text/javascript"&gt;
+// @comment //
+// &lt;&lt; javascript section &gt;&gt;
+var i;
+// -- end -- &lt;&lt; javascript section &gt;&gt;
+&lt;/script&gt;
+&lt;!-- -- end -- &lt;&lt; secref &gt;&gt; --&gt;
+</t>
+<t tx="sps.20100624231018.21095"></t>
+<t tx="sps.20100624231018.21096">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100624231018.21097">@silent
+@root 'root-test'
+
+# A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="sps.20100624231018.21098"># A simple test of @root.
+
+abc
+
+
+</t>
+<t tx="sps.20100624231018.21099"></t>
+<t tx="sps.20100624231018.21100">import leo.core.leoTest as leoTest
 
 leoTest.runRootFileUntangleTest(c,p)</t>
-<t tx="sps.20100618084840.5614">@root foo
+<t tx="sps.20100624231018.21101">@root foo
 
 # A trivial test of @root.
 </t>
-<t tx="sps.20100618084840.5617">@root foo
+<t tx="sps.20100624231018.21102">@root foo
 
 # A trivial test of @root.
 # A line added
 </t>
-<t tx="sps.20100618105958.5622"># A trivial test of @root.
+<t tx="sps.20100624231018.21103"># A trivial test of @root.
 # A line added
+</t>
+<t tx="sps.20100625103510.5658">t = c.tangleCommands
+t.init_directive_ivars()
+
+# input to t.skip_section_name must begin with &lt;&lt;
+try:
+    i, kind, end = t.skip_section_name("foo",0)
+except AssertionError:
+    pass
+
+# bad section name
+i, kind, end = t.skip_section_name("&lt;&lt; foo",0)
+assert i == 2, "expected i == 0, got %s" % repr(i)
+assert kind == 12, "expected kind == 12, got %s" % repr(kind)
+assert end == -1, "expected end == -1, got %s" % repr(end)
+
+close_sect = "&gt;&gt;" # avoid section reference in this code
+i, kind, end = t.skip_section_name("&lt;&lt; foo "+close_sect,0)
+assert i == 9, "expected i == 9, got %s" % repr(i)
+assert end == 9, "expected end == 9, got %s" % repr(end)
+assert kind == 13, "expected kind == 13, got %s" % repr(kind)
+
+i, kind, end = t.skip_section_name("&lt;&lt; foo "+close_sect+" bar",0)
+assert i == 9, "expected i == 9, got %s" % repr(i)
+assert end == 9, "expected end == 9, got %s" % repr(end)
+assert kind == 13, "expected kind == 13, got %s" % repr(kind)
+
+i, kind, end = t.skip_section_name("&lt;&lt; foo "+close_sect+"= bar",0)
+assert i == 10, "expected i == 10, got %s" % repr(i)
+assert end == 9, "expected end == 9, got %s" % repr(end)
+assert kind == 14, "expected kind == 14, got %s" % repr(kind)
+
+# noweb style root ref.  requires implementation of @root in headline
+i, kind, end = t.skip_section_name("&lt;&lt; * "+close_sect+"= bar",0)
+assert i == 8, "expected i == 8, got %s" % repr(i)
+assert end == 7, "expected end == 7, got %s" % repr(end)
+assert kind == 8, "expected kind == 8, got %s" % repr(kind)
+</t>
+<t tx="sps.20100625103510.5793"># For tangling
+t = c.tangleCommands
+t.init_ivars()
+t.scanAllDirectives(p.firstChild())
+delims = t.init_delims
+t.tangling = True
+t.tanglePass1(p.firstChild(),delims)
+
+result = t.st_dump()
+# avoid spurious interpolation
+close_sect = "&gt;&gt;"
+expect = """
+dump of symbol table...
+
+section: 'root-test', referenced:True, is root:True
+----- parts of &lt;&lt;'root-test'"""+close_sect+"""
+----- Part 1
+doc:  [u'@language html']
+code: [u'&lt;!-- A less simple test of @root. --&gt;\\n\\n&lt;&lt; secref """+close_sect+"""']
+delims: &lt;&gt;&lt;&lt;!--&gt;&lt;--"""+close_sect+"""
+----- end of partList
+
+section delims: ('', '&lt;!--', '--&gt;')
+section: javascript section, referenced:True, is root:False
+----- parts of &lt;&lt;javascript section"""+close_sect+"""
+----- Part 1
+doc:  ['']
+code: [u'var foo = 1;\\n@comment &lt;!-- --&gt;\\n--&gt;&lt;/script&gt;']
+delims: &lt;//&gt;&lt;&gt;&lt;&gt;
+----- end of partList
+
+section delims: ('', u'&lt;!--', u'--&gt;')
+section: secref, referenced:True, is root:False
+----- parts of &lt;&lt;secref"""+close_sect+"""
+----- Part 1
+doc:  [u'secref governed by @lang html']
+code: [u'abc\\n\\n@comment //\\n&lt;script type="text/javascript"&gt;&lt;!--\\n&lt;&lt; javascript section """+close_sect+"""']
+delims: &lt;&gt;&lt;&lt;!--&gt;&lt;--"""+close_sect+"""
+----- end of partList
+
+section delims: (u'//', '', '')"""
+
+assert result == expect
+
+# remainder: attributes of t
+# cweb related
+#     raw_cweb_flag
+assert t.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(t.raw_cweb_flag)
+
+# language
+assert t.language == "python", "expected language python, is %s" % repr(t.language)
+# output_doc_flag
+assert t.output_doc_flag == None
+# print_mode
+assert t.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(t.print_mode)
+# tab_width
+assert t.tab_width == -4, "expected tab_width -4, is %s " % repr(t.tab_width)
+# tangle_batch_flag
+assert t.tangle_batch_flag == None
+# untangle_batch_flag
+assert t.untangle_batch_flag == None
+# use_header_flag
+assert t.use_header_flag == None
+
+import leo.core.leoTangle
+# root_list
+assert len(t.root_list) == 1, "expected root_list to have length 1, is %d" % len(t.root_list)
+# first @root
+assert t.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(t.root_list[0]))
+assert t.root_list[0].is_root
+assert t.root_list[0].name == "'root-test'", "expected root_list[0].name to be 'root-test', is %s" % t.root_list[0].name
+assert t.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(t.root_list[0].parts[0]))
+
+# Untangle, stage1
+t.init_ivars()
+t.scanAllDirectives(p)
+delims = t.init_delims
+t.tangling = False
+t.untangle_stage1 = True
+
+t.tanglePass1(p.firstChild(),delims)
+
+result = t.st_dump()
+# avoid spurious interpolation
+close_sect = "&gt;&gt;"
+expect = """
+dump of symbol table...
+
+section: 'root-test', referenced:True, is root:True
+----- parts of &lt;&lt;'root-test'"""+close_sect+"""
+----- Part 1
+doc:  [u'@language html']
+code: [u'&lt;!-- A less simple test of @root. --&gt;\\n\\n&lt;&lt; secref """+close_sect+"""']
+delims: &lt;&gt;&lt;&lt;!--&gt;&lt;--"""+close_sect+"""
+    ref: [u'secref']
+----- end of partList
+
+section delims: ('', '&lt;!--', '--&gt;')
+section: javascript section, referenced:True, is root:False
+----- parts of &lt;&lt;javascript section"""+close_sect+"""
+----- Part 1
+doc:  ['']
+code: [u'var foo = 1;\\n@comment &lt;!-- --&gt;\\n--&gt;&lt;/script&gt;']
+delims: &lt;//&gt;&lt;&gt;&lt;&gt;
+----- end of partList
+
+section delims: ('', u'&lt;!--', u'--&gt;')
+section: secref, referenced:True, is root:False
+----- parts of &lt;&lt;secref"""+close_sect+"""
+----- Part 1
+doc:  [u'secref governed by @lang html']
+code: [u'abc\\n\\n@comment //\\n&lt;script type="text/javascript"&gt;&lt;!--\\n&lt;&lt; javascript section """+close_sect+"""']
+delims: &lt;&gt;&lt;&lt;!--&gt;&lt;--"""+close_sect+"""
+    ref: [u'javascript section']
+----- end of partList
+
+section delims: (u'//', '', '')"""
+
+assert result == expect, """symbol table was supposed to be
+===========================================================
+%s
+===========================================================
+but was the following instead:
+===========================================================
+%s
+===========================================================""" % (expect,result)
+
+# remainder: attributes of t
+# cweb related
+#     raw_cweb_flag
+assert t.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(t.raw_cweb_flag)
+# language
+assert t.language == "python", "expected language python, is %s" % repr(t.language)
+# output_doc_flag
+assert t.output_doc_flag == None
+# print_mode
+assert t.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(t.print_mode)
+# tab_width
+assert t.tab_width == -4, "expected tab_width -4, is %s " % repr(t.tab_width)
+# tangle_batch_flag
+assert t.tangle_batch_flag == None
+# untangle_batch_flag
+assert t.untangle_batch_flag == None
+# use_header_flag
+assert t.use_header_flag == None
+
+import leo.core.leoTangle
+# root_list
+assert len(t.root_list) == 1, "expected root_list to have length 1, is %d" % len(t.root_list)
+# first @root
+assert t.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(t.root_list[0]))
+assert t.root_list[0].is_root
+assert t.root_list[0].name == "'root-test'", "expected root_list[0].name to be 'root-test', is %s" % t.root_list[0].name
+assert t.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(t.root_list[0].parts[0]))
+</t>
+<t tx="sps.20100625103510.5794">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+@
+secref governed by @lang html
+&lt;&lt; secref &gt;&gt;=
+abc
+
+@comment //
+&lt;script type="text/javascript"&gt;&lt;!--
+&lt;&lt; javascript section &gt;&gt;
+
+&lt;&lt; javascript section &gt;&gt;=
+var foo = 1;
+@comment &lt;!-- --&gt;
+--&gt;&lt;/script&gt;
+</t>
+<t tx="sps.20100627223129.5655"></t>
+<t tx="sps.20100627223129.5656">t=c.tangleCommands
+t.language="python"
+t.init_delims=("#","","")
+@language html
+lang_dict={'language':None, 'delims':None}
+t.parent_language_comment_settings(p.firstChild(),lang_dict)
+assert lang_dict['language'] == "html" and lang_dict['delims'] == ("","&lt;!--","--&gt;"), r'expected language html, delims "","&lt;!--","--&gt;", got '+repr(lang_dict)
+</t>
+<t tx="sps.20100627223129.5657"></t>
+<t tx="sps.20100627223129.5660">t=c.tangleCommands
+t.language="python"
+t.init_delims=("#","","")
+@language html
+lang_dict={'language':None, 'delims':None}
+t.parent_language_comment_settings(p.firstChild(),lang_dict)
+assert lang_dict['language'] == "html" and lang_dict['delims'] == ("//","",""), r'expected language html, delims "//","","", got '+repr(lang_dict)
+@comment //
+</t>
+<t tx="sps.20100627223129.5661"></t>
+<t tx="sps.20100627225153.5667">t=c.tangleCommands
+t.language="python"
+t.init_delims=("#","","")
+@language html
+lang_dict={'language':None, 'delims':None}
+t.parent_language_comment_settings(p.firstChild(),lang_dict)
+assert lang_dict['language'] == "python" and lang_dict['delims'] == ("#","",""), r'expected language html, delims "//","","", got '+repr(lang_dict)
+@comment //
+
+@language python
+</t>
+<t tx="sps.20100627225153.5668"></t>
+<t tx="sps.20100627232933.5673">t=c.tangleCommands
+t.language="python"
+t.init_delims=("#","","")
+lang_dict={'language':None, 'delims':None}
+t.parent_language_comment_settings(p.firstChild().firstChild(),lang_dict)
+assert lang_dict['language'] == "html" and lang_dict['delims'] == ("","&lt;!--","--&gt;"), r'expected language html, delims "","&lt;!--","--&gt;", got '+repr(lang_dict)
+</t>
+<t tx="sps.20100627232933.5674"></t>
+<t tx="sps.20100627232933.5677">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+@
+secref governed by @lang html
+&lt;&lt; secref &gt;&gt;=
+abc
+
+@comment //
+&lt;script type="text/javascript"&gt;&lt;!--
+&lt;&lt; javascript section &gt;&gt;
+
+&lt;&lt; javascript section &gt;&gt;=
+var foo = 1;
+@comment &lt;!-- --&gt;
+--&gt;&lt;/script&gt;
+</t>
+<t tx="sps.20100628022850.5677"># For tangling
+t = c.tangleCommands
+t.init_ivars()
+t.scanAllDirectives(p.firstChild().firstChild())
+delims = t.init_delims
+t.tangling = True
+t.tanglePass1(p.firstChild().firstChild(),delims)
+
+result = t.st_dump()
+# avoid spurious interpolation
+close_sect = "&gt;&gt;"
+expect = """
+dump of symbol table...
+
+section: 'root-test', referenced:True, is root:True
+----- parts of &lt;&lt;'root-test'"""+close_sect+"""
+----- Part 1
+doc:  [u'@language html']
+code: [u'&lt;!-- A less simple test of @root. --&gt;\\n\\n&lt;&lt; secref """+close_sect+"""']
+delims: &lt;&gt;&lt;&lt;!--&gt;&lt;--"""+close_sect+"""
+----- end of partList
+
+section delims: ('', '&lt;!--', '--&gt;')
+section: javascript section, referenced:True, is root:False
+----- parts of &lt;&lt;javascript section"""+close_sect+"""
+----- Part 1
+doc:  ['']
+code: [u'var foo = 1;\\n@comment &lt;!-- --&gt;\\n--&gt;&lt;/script&gt;']
+delims: &lt;//&gt;&lt;&gt;&lt;&gt;
+----- end of partList
+
+section delims: ('', u'&lt;!--', u'--&gt;')
+section: secref, referenced:True, is root:False
+----- parts of &lt;&lt;secref"""+close_sect+"""
+----- Part 1
+doc:  [u'secref governed by @lang html']
+code: [u'abc\\n\\n@comment //\\n&lt;script type="text/javascript"&gt;&lt;!--\\n&lt;&lt; javascript section """+close_sect+"""']
+delims: &lt;&gt;&lt;&lt;!--&gt;&lt;--"""+close_sect+"""
+----- end of partList
+
+section delims: (u'//', '', '')"""
+
+assert result == expect
+
+# remainder: attributes of t
+# cweb related
+#     raw_cweb_flag
+assert t.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(t.raw_cweb_flag)
+
+# language
+assert t.language == "html", "expected language html, is %s" % repr(t.language)
+# output_doc_flag
+assert t.output_doc_flag == None
+# print_mode
+assert t.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(t.print_mode)
+# tab_width
+assert t.tab_width == -4, "expected tab_width -4, is %s " % repr(t.tab_width)
+# tangle_batch_flag
+assert t.tangle_batch_flag == None
+# untangle_batch_flag
+assert t.untangle_batch_flag == None
+# use_header_flag
+assert t.use_header_flag == None
+
+import leo.core.leoTangle
+# root_list
+assert len(t.root_list) == 1, "expected root_list to have length 1, is %d" % len(t.root_list)
+# first @root
+assert t.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(t.root_list[0]))
+assert t.root_list[0].is_root
+assert t.root_list[0].name == "'root-test'", "expected root_list[0].name to be 'root-test', is %s" % t.root_list[0].name
+assert t.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(t.root_list[0].parts[0]))
+
+# Untangle, stage1
+t.init_ivars()
+t.scanAllDirectives(p)
+delims = t.init_delims
+t.tangling = False
+t.untangle_stage1 = True
+
+t.tanglePass1(p.firstChild(),delims)
+
+result = t.st_dump()
+# avoid spurious interpolation
+close_sect = "&gt;&gt;"
+expect = """
+dump of symbol table...
+
+section: 'root-test', referenced:True, is root:True
+----- parts of &lt;&lt;'root-test'"""+close_sect+"""
+----- Part 1
+doc:  [u'@language html']
+code: [u'&lt;!-- A less simple test of @root. --&gt;\\n\\n&lt;&lt; secref """+close_sect+"""']
+delims: &lt;&gt;&lt;&lt;!--&gt;&lt;--"""+close_sect+"""
+    ref: [u'secref']
+----- end of partList
+
+section delims: ('', '&lt;!--', '--&gt;')
+section: javascript section, referenced:True, is root:False
+----- parts of &lt;&lt;javascript section"""+close_sect+"""
+----- Part 1
+doc:  ['']
+code: [u'var foo = 1;\\n@comment &lt;!-- --&gt;\\n--&gt;&lt;/script&gt;']
+delims: &lt;//&gt;&lt;&gt;&lt;&gt;
+----- end of partList
+
+section delims: ('', u'&lt;!--', u'--&gt;')
+section: secref, referenced:True, is root:False
+----- parts of &lt;&lt;secref"""+close_sect+"""
+----- Part 1
+doc:  [u'secref governed by @lang html']
+code: [u'abc\\n\\n@comment //\\n&lt;script type="text/javascript"&gt;&lt;!--\\n&lt;&lt; javascript section """+close_sect+"""']
+delims: &lt;&gt;&lt;&lt;!--&gt;&lt;--"""+close_sect+"""
+    ref: [u'javascript section']
+----- end of partList
+
+section delims: (u'//', '', '')"""
+
+assert result == expect, """symbol table was supposed to be
+===========================================================
+%s
+===========================================================
+but was the following instead:
+===========================================================
+%s
+===========================================================""" % (expect,result)
+
+# remainder: attributes of t
+# cweb related
+#     raw_cweb_flag
+assert t.raw_cweb_flag == False, "raw_cweb_flag expected False, is %s" % repr(t.raw_cweb_flag)
+# language
+assert t.language == "html", "expected language html, is %s" % repr(t.language)
+# output_doc_flag
+assert t.output_doc_flag == None
+# print_mode
+assert t.print_mode == "verbose", "expected print_mode verbose, is %s " % repr(t.print_mode)
+# tab_width
+assert t.tab_width == -4, "expected tab_width -4, is %s " % repr(t.tab_width)
+# tangle_batch_flag
+assert t.tangle_batch_flag == None
+# untangle_batch_flag
+assert t.untangle_batch_flag == None
+# use_header_flag
+assert t.use_header_flag == None
+
+import leo.core.leoTangle
+# root_list
+assert len(t.root_list) == 1, "expected root_list to have length 1, is %d" % len(t.root_list)
+# first @root
+assert t.root_list[0] &lt; leo.core.leoTangle.tst_node, "expected root_list[0] to be instance of tst_node, dir() is %s " % repr(dir(t.root_list[0]))
+assert t.root_list[0].is_root
+assert t.root_list[0].name == "'root-test'", "expected root_list[0].name to be 'root-test', is %s" % t.root_list[0].name
+assert t.root_list[0].parts[0] &lt; leo.core.leoTangle.part_node, "expected root_list[0].parts[0] to be instance of part_node, dir() is %s " % repr(dir(t.root_list[0].parts[0]))
+</t>
+<t tx="sps.20100628022850.5678">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+@
+secref governed by @lang html
+&lt;&lt; secref &gt;&gt;=
+abc
+
+@comment //
+&lt;script type="text/javascript"&gt;&lt;!--
+&lt;&lt; javascript section &gt;&gt;
+
+&lt;&lt; javascript section &gt;&gt;=
+var foo = 1;
+@comment &lt;!-- --&gt;
+--&gt;&lt;/script&gt;
+</t>
+<t tx="sps.20100628022850.5679"></t>
+<t tx="sps.20100629094515.16515">import leo.core.leoTest as leoTest
+
+leoTest.runRootFileTangleTest(c,p)</t>
+<t tx="sps.20100629094515.16516">@root 'root-test'
+
+# A trivial test of @root.
+@nocolor
+abc</t>
+<t tx="sps.20100629094515.16517"># A trivial test of @root.
+@nocolor
+abc
+</t>
+<t tx="sps.20100629164540.5728"># Untangle adds a line immediately *after* a section reference
+
+import leo.core.leoTest as leoTest
+
+leoTest.runRootFileUntangleTest(c,p)</t>
+<t tx="sps.20100629164540.5729">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+@
+secref governed by @lang html
+&lt;&lt; secref &gt;&gt;=
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+&lt;&lt; javascript section &gt;&gt;
+@
+End the secref definition before starting the
+javascript section with the new comment convention
+@comment //
+&lt;&lt; javascript section &gt;&gt;=
+var foo = 1;
+@comment &lt;!-- --&gt;
+--&gt;&lt;/script&gt;</t>
+<t tx="sps.20100629164540.5730">&lt;!-- A less simple test of @root. --&gt;
+
+&lt;!-- &lt;&lt; secref &gt;&gt; --&gt;
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+// &lt;&lt; javascript section &gt;&gt;
+var foo = 1;
+--&gt;&lt;/script&gt;
+&lt;!-- -- end -- &lt;&lt; javascript section &gt;&gt; --&gt;
+add a line to secref
+&lt;!-- -- end -- &lt;&lt; secref &gt;&gt; --&gt;
+</t>
+<t tx="sps.20100629164540.5733">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+@
+secref governed by @lang html
+&lt;&lt; secref &gt;&gt;=
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+&lt;&lt; javascript section &gt;&gt;
+add a line to secref
+@
+End the secref definition before starting the
+javascript section with the new comment convention
+@comment //
+&lt;&lt; javascript section &gt;&gt;=
+var foo = 1;
+@comment &lt;!-- --&gt;
+--&gt;&lt;/script&gt;</t>
+<t tx="sps.20100629184507.5695"># Untangle adds a line immediately *before* a section reference
+
+import leo.core.leoTest as leoTest
+
+leoTest.runRootFileUntangleTest(c,p)</t>
+<t tx="sps.20100629184507.5696">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+@
+secref governed by @lang html
+&lt;&lt; secref &gt;&gt;=
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+&lt;&lt; javascript section &gt;&gt;
+@
+End the secref definition before starting the
+javascript section with the new comment convention
+@comment //
+&lt;&lt; javascript section &gt;&gt;=
+var foo = 1;
+@comment &lt;!-- --&gt;
+--&gt;&lt;/script&gt;</t>
+<t tx="sps.20100629184507.5697">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+@
+secref governed by @lang html
+&lt;&lt; secref &gt;&gt;=
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+add a line to secref
+&lt;&lt; javascript section &gt;&gt;
+@
+End the secref definition before starting the
+javascript section with the new comment convention
+@comment //
+&lt;&lt; javascript section &gt;&gt;=
+var foo = 1;
+@comment &lt;!-- --&gt;
+--&gt;&lt;/script&gt;</t>
+<t tx="sps.20100629184507.5698">&lt;!-- A less simple test of @root. --&gt;
+
+&lt;!-- &lt;&lt; secref &gt;&gt; --&gt;
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+add a line to secref
+// &lt;&lt; javascript section &gt;&gt;
+var foo = 1;
+--&gt;&lt;/script&gt;
+&lt;!-- -- end -- &lt;&lt; javascript section &gt;&gt; --&gt;
+&lt;!-- -- end -- &lt;&lt; secref &gt;&gt; --&gt;
+</t>
+<t tx="sps.20100629215924.5705"># Untangle adds lines in seven different places
+
+import leo.core.leoTest as leoTest
+
+leoTest.runRootFileUntangleTest(c,p)</t>
+<t tx="sps.20100629215924.5706">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+
+&lt;&lt; secref &gt;&gt;
+
+@
+secref governed by @lang html
+&lt;&lt; secref &gt;&gt;=
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+&lt;&lt; javascript section &gt;&gt;
+@
+End the secref definition before starting the
+javascript section with the new comment convention
+@comment //
+&lt;&lt; javascript section &gt;&gt;=
+var foo = 1;
+--&gt;&lt;/script&gt;
+@comment &lt;!-- --&gt;
+</t>
+<t tx="sps.20100629215924.5707">@language html
+@root 'root-test'
+
+&lt;!-- A less simple test of @root. --&gt;
+1 Add a line to the root node before the secref
+&lt;&lt; secref &gt;&gt;
+7 Add a line after secref at the end of the root node
+
+@
+secref governed by @lang html
+&lt;&lt; secref &gt;&gt;=
+2 Add a line at the beginning of secref
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+3 Add a line to secref right before javascript section 
+&lt;&lt; javascript section &gt;&gt;
+6 Add a line after the javascript section and at the end of the secref section
+@
+End the secref definition before starting the
+javascript section with the new comment convention
+@comment //
+&lt;&lt; javascript section &gt;&gt;=
+4 Add a line to the beginning of the javascript section
+var foo = 1;
+--&gt;&lt;/script&gt;
+5 Add a line to the end of the javascript section
+@comment &lt;!-- --&gt;
+</t>
+<t tx="sps.20100629215924.5708">&lt;!-- A less simple test of @root. --&gt;
+1 Add a line to the root node before the secref
+&lt;!-- &lt;&lt; secref &gt;&gt; --&gt;
+2 Add a line at the beginning of secref
+abc
+
+&lt;script type="text/javascript"&gt;&lt;!--
+3 Add a line to secref right before javascript section 
+// &lt;&lt; javascript section &gt;&gt;
+4 Add a line to the beginning of the javascript section
+var foo = 1;
+--&gt;&lt;/script&gt;
+5 Add a line to the end of the javascript section
+
+&lt;!-- -- end -- &lt;&lt; javascript section &gt;&gt; --&gt;
+6 Add a line after the javascript section and at the end of the secref section
+&lt;!-- -- end -- &lt;&lt; secref &gt;&gt; --&gt;
+7 Add a line after secref at the end of the root node
+</t>
+<t tx="sps.20100630015219.5774">s="one\ntwo\nthree"
+g.es(s[g.skip_line(s,0):])
 </t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
 # adjust accordingly
