@@ -10,7 +10,7 @@
 #@@tabwidth -4
 #@@pagewidth 60
 
-new_read = True
+new_read = False
     # Marks code that reads simplified sentinels.
     # Eventually, Leo will always read simplified sentinels.
 new_write = False
@@ -1106,7 +1106,7 @@ class atFile:
         #@nl
         if trace: g.trace('filename:',fileName)
         try:
-            while at.errors == 0 and not at.done:
+            while at.errors == 0:
                 s = at.readLine(theFile)
                 if trace and verbose: g.trace(repr(s))
                 at.lineNumber += 1
@@ -1143,7 +1143,7 @@ class atFile:
 
         return at.lastLines
     #@+node:ekr.20041005105605.77:readNormalLine & appendToDocPart
-    def readNormalLine (self,s,i): # i not used.
+    def readNormalLine (self,s,i=0): # i not used.
 
         at = self
 
@@ -1156,7 +1156,7 @@ class atFile:
     #@+node:ekr.20100624082003.5942:appendToDocPart
     def appendToDocPart (self,s):
 
-        trace = False and not g.unitTesting
+        trace = True and new_read and not g.unitTesting
         at = self
 
         # Skip the leading stuff
@@ -1169,15 +1169,20 @@ class atFile:
         else:
             i = at.skipIndent(s,0,at.indent)
 
-        # Append s to docOut.
-        line = s[i:-1] # remove newline for rstrip.
-
-        if line == line.rstrip():
-            # no trailing whitespace: the newline is real.
-            at.docOut.append(line + '\n')
-        else:
-            # trailing whitespace: the newline is fake.
+        if new_read:
+            # Append the line to docOut.
+            line = s[i:]
             at.docOut.append(line)
+        else:
+            # Append line to docOut, possibly stripping the newline.
+            line = s[i:-1] # remove newline for rstrip.
+
+            if line == line.rstrip():
+                # no trailing whitespace: the newline is real.
+                at.docOut.append(line + '\n')
+            else:
+                # trailing whitespace: the newline is fake.
+                at.docOut.append(line)
 
         if trace: g.trace(repr(line))
     #@-node:ekr.20100624082003.5942:appendToDocPart
@@ -1414,7 +1419,7 @@ class atFile:
             at.endSentinelStack.append(at.endRef)
             at.endSentinelNodeStack.append(at.v)
     #@-node:ekr.20041005105605.111:readRef (paired using new sentinels)
-    #@+node:ekr.20041005105605.82:readStartAt/Doc & helper
+    #@+node:ekr.20041005105605.82:readStartAt/Doc & helpers
     #@+node:ekr.20100624082003.5938:readStartAt
     def readStartAt (self,s,i):
 
@@ -1478,7 +1483,7 @@ class atFile:
         else:
             return g.skip_to_end_of_line(s,i)
     #@-node:ekr.20100624082003.5940:skipToEndSentinel
-    #@-node:ekr.20041005105605.82:readStartAt/Doc & helper
+    #@-node:ekr.20041005105605.82:readStartAt/Doc & helpers
     #@+node:ekr.20041005105605.83:readStartLeo
     def readStartLeo (self,s,i):
 
@@ -3437,7 +3442,7 @@ class atFile:
             assert(next_i > i)
             kind = at.directiveKind4(s,i)
             #@        << handle line at s[i] >>
-            #@+node:ekr.20041005105605.163:<< handle line at s[i]  >>
+            #@+node:ekr.20041005105605.163:<< handle line at s[i] >> (putBody)
             if trace: g.trace(kind,repr(s[i:next_i]))
 
             if kind == at.noDirective:
@@ -3488,7 +3493,7 @@ class atFile:
                 at.putDirective(s,i)
             else:
                 assert(0) # Unknown directive.
-            #@-node:ekr.20041005105605.163:<< handle line at s[i]  >>
+            #@-node:ekr.20041005105605.163:<< handle line at s[i] >> (putBody)
             #@nl
             i = next_i
         if not inCode:
@@ -3942,8 +3947,6 @@ class atFile:
             #@-node:ekr.20041005105605.184:<< append words to pending line, splitting the line if needed >>
             #@nl
     #@-node:ekr.20041005105605.183:putDocLine
-    #@+node:ekr.20100629132026.5814:putDocPart (new)
-    #@-node:ekr.20100629132026.5814:putDocPart (new)
     #@+node:ekr.20041005105605.185:putEndDocLine
     def putEndDocLine (self):
 
@@ -3965,7 +3968,7 @@ class atFile:
             sentinel = g.choose(at.docKind == at.docDirective,"@-doc","@-at")
             at.putSentinel(sentinel)
     #@-node:ekr.20041005105605.185:putEndDocLine
-    #@+node:ekr.20041005105605.186:putPending
+    #@+node:ekr.20041005105605.186:putPending (old only)
     def putPending (self,split):
 
         """Write the pending part of a doc part.
@@ -3991,7 +3994,7 @@ class atFile:
             at.os(at.startSentinelComment) ; at.oblank()
 
         at.os(s) ; at.onl()
-    #@-node:ekr.20041005105605.186:putPending
+    #@-node:ekr.20041005105605.186:putPending (old only)
     #@+node:ekr.20041005105605.182:putStartDocLine
     def putStartDocLine (self,s,i,kind):
 

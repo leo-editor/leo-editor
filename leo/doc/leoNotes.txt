@@ -4730,6 +4730,54 @@ else:
     g.es("correcting hidden node: v=",repr(at.v),color="red")
 #@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
 #@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
+#@+node:ekr.20100630062622.5831:readDocPart (not used)
+# It's too difficult to communicate with scanText4.
+def readDocPart (self):
+
+    at = self
+
+    while True:
+        s = at.readLine(theFile)
+        if trace and verbose: g.trace(repr(s))
+        at.lineNumber += 1
+        if len(s) == 0:
+            at.done = True
+            break
+        kind = at.sentinelKind4(s)
+        if kind ==at.cDirective:
+            at.readLastDocLine("@")
+            break
+        elif kind == at.codeDirective:
+            at.readLastDocLine("@doc")
+            break
+        else:
+            at.readNormalLine(s)
+#@-node:ekr.20100630062622.5831:readDocPart (not used)
+#@+node:ekr.20100629190135.5829:putDocPart (new)
+def putDocPart (self,s,i,docKind,next_i):
+
+    trace = True and not g.unitTesting
+    at = self
+
+    at.putStartDocLine(s,i,docKind)
+    i = next_i
+
+    while i < len(s):
+        next_i = g.skip_line(s,i)
+        assert(next_i > i)
+        kind = at.directiveKind4(s,i)
+        # Only @c and @code end the doc part.
+        if kind in (at.cDirective,at.codeDirective):
+            at.putEndDocLine() 
+            at.putDirective(s,i)
+            i = next_i
+            break
+        else:
+            at.putDocLine(s,i)
+            i = next_i
+    return i
+#@nonl
+#@-node:ekr.20100629190135.5829:putDocPart (new)
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl
