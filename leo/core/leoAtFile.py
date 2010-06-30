@@ -15,6 +15,7 @@ new_read = True
     # Setting this to False will not help.
 new_write = False
     # Enable writing simplified sentinels.
+if new_write: print('\n\n========= leoAtFile.py: new_write enabled. ===========\n\n')
 
 #@<< imports >>
 #@+node:ekr.20041005105605.2:<< imports >>
@@ -973,14 +974,13 @@ class atFile:
         trace = False and not g.unitTesting
         verbose = False
         at = self ; c = at.c ; indices = g.app.nodeIndices
-        last = at.lastThinNode
+        parent = last = at.lastThinNode # A vnode.
         lastIndex = last.fileIndex
         gnx = indices.scanGnx(gnxString,0)
 
         if trace and verbose: g.trace("last %s, gnx %s %s" % (
             last,gnxString,headline))
 
-        parent = at.lastThinNode # A vnode.
         children = parent.children
         for child in children:
             if gnx == child.fileIndex:
@@ -1225,9 +1225,13 @@ class atFile:
             # at. copyAllTempBodyStringsToVnodes calls at.terminateNode
             # for all vnodes. Do **not** call at.terminateNode here!
             # This would be wrong if we are in the range of @+others or @+<<.
+
         at.inCode = True
-        at.outStack.append(at.out)
-        at.out = []
+        at.raw = False # End raw mode.
+
+        if not at.readVersion5:
+            at.outStack.append(at.out)
+            at.out = []
         at.docOut = []
 
         at.vStack.append(at.v)
@@ -1243,26 +1247,52 @@ class atFile:
         else:
             at.v = at.findChild4(headline)
 
+        at.v.setVisited()
+            # Indicate that the vnode has been set in the external file.
+
         if not at.readVersion5:
             at.endSentinelStack.append(at.endNode)
-    #@+node:ekr.20100625085138.5957:createNewThinNode & closePreviousNode
+    #@+node:ekr.20100630144047.5783:at.changeLevel
+    def changeLevel (self,oldLevel,newLevel):
+
+        '''Update data structures when changing node level.'''
+
+        at = self ; c = at.c
+
+        # Crucial: we must be using new-style sentinels.
+        assert at.readVersion5
+        assert at.thinFile and not at.importing
+
+        if newLevel > oldLevel:
+            assert newLevel == oldLevel + 1
+        else:
+            while oldLevel > newLevel:
+                oldLevel -= 1
+                at.indentStack.pop()
+                at.thinNodeStack.pop()
+                at.vStack.pop()
+            assert oldLevel == newLevel
+            assert len(at.thinNodeStack) == newLevel
+
+        # The last node is the node at the top of the stack.
+        at.lastThinNode = at.thinNodeStack[-1]
+    #@nonl
+    #@-node:ekr.20100630144047.5783:at.changeLevel
+    #@+node:ekr.20100625085138.5957:at.createNewThinNode
     def createNewThinNode (self,gnx,headline,level):
 
-        trace = False and not g.unitTesting
         at = self
+        trace = True and at.readVersion5 and not g.unitTesting
 
         if at.thinNodeStack:
             if at.readVersion5:
                 oldLevel = len(at.thinNodeStack)
                 newLevel = level - 1
                 assert newLevel >= 0
-                at.closePreviousNode(oldLevel,newLevel)
+                if trace: g.trace('old',oldLevel,'new',newLevel,headline)
+                at.changeLevel(oldLevel,newLevel)
                 v = at.createThinChild4(gnx,headline)
                 at.thinNodeStack.append(v)
-                if trace: g.trace(
-                    '** oldLvl: %s, newLvl: %s, v: %s, last: %s, stack: \n%s\n' % (
-                    oldLevel,newLevel,v.h,at.lastThinNode.h,
-                    [z.h for z in at.thinNodeStack]))
             else:
                 at.thinNodeStack.append(at.lastThinNode)
                 v = at.createThinChild4(gnx,headline)
@@ -1272,26 +1302,7 @@ class atFile:
 
         at.lastThinNode = v
         return v
-    #@+node:ekr.20100624082003.5944:at.closePreviousNode
-    def closePreviousNode (self,oldLevel,newLevel):
-
-        trace = False and not g.unitTesting
-        at = self
-
-        if trace: g.trace('******',
-            [at.sentinelName(z) for z in at.endSentinelStack])
-
-        if newLevel <= oldLevel:
-            # Pretend we have seen -node sentinels.
-            for z in range(oldLevel - newLevel):
-                oldLevel -= 1
-                at.readEndNode('',0)
-
-            at.lastThinNode = at.thinNodeStack[newLevel-1]
-        else:
-            at.lastThinNode = at.thinNodeStack[-1]
-    #@-node:ekr.20100624082003.5944:at.closePreviousNode
-    #@-node:ekr.20100625085138.5957:createNewThinNode & closePreviousNode
+    #@-node:ekr.20100625085138.5957:at.createNewThinNode
     #@+node:ekr.20100625184546.5979:at.parseNodeSentinel & helpers
     def parseNodeSentinel (self,s,i,middle):
 
@@ -1575,26 +1586,21 @@ class atFile:
 
         at.readEndNode(s,i,middle=True)
     #@-node:ekr.20041005105605.94:at.readEndMiddle
-    #@+node:ekr.20041005105605.95:at.readEndNode (calls at.terminateNode)
+    #@+node:ekr.20041005105605.95:at.readEndNode
     def readEndNode (self,unused_s,unused_i,middle=False):
 
         """Handle @-node sentinels."""
 
         at = self ; c = at.c
 
-        at.raw = False
-            # End raw mode.
+        assert not at.readVersion5
+            # Must not be called for new sentinels.
 
-        if at.readVersion5:
-            # Terminate the *previous* doc part if it exists.
-            if at.docOut: at.appendToOut(''.join(at.docOut))
+        at.raw = False # End raw mode.
 
-        if not at.readVersion5:
-            at.terminateNode(middle)
-                # Set the body text and warn about changed text.
-                # This must not be called when handling new sentinels!
-        at.v.setVisited()
-            # Indicate that the vnode has been set in the derived file.
+        at.terminateNode(middle)
+            # Set the body text and warn about changed text.
+            # This must not be called when handling new sentinels!
 
         # End the previous node sentinel.
         at.indent = at.indentStack.pop()
@@ -1605,9 +1611,8 @@ class atFile:
         if at.thinFile and not at.importing:
             at.lastThinNode = at.thinNodeStack.pop()
 
-        if not at.readVersion5:
-            at.popSentinelStack(at.endNode)
-    #@-node:ekr.20041005105605.95:at.readEndNode (calls at.terminateNode)
+        at.popSentinelStack(at.endNode)
+    #@-node:ekr.20041005105605.95:at.readEndNode
     #@+node:ekr.20041005105605.98:at.readEndOthers
     def readEndOthers (self,unused_s,unused_i):
 

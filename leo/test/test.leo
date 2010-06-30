@@ -535,6 +535,7 @@
 <v t="ekr.20100615095815.2189"><vh>activate/deactivate events</vh></v>
 <v t="ekr.20100616085524.2191"><vh>config iter</vh></v>
 <v t="ekr.20100519083913.2157"><vh>@@thin sentinels_test.py</vh>
+<v t="ekr.20100630124326.2188"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="node:ekr.20100519083913.2158"><vh>&lt;&lt; a &gt;&gt;</vh>
 <v t="ekr.20100519083913.2159"><vh>a-1</vh></v>
 <v t="ekr.20100519083913.2160"><vh>a-2</vh></v>
@@ -545,7 +546,7 @@
 </v>
 <v t="ekr.20100519083913.2164"><vh>1-2</vh></v>
 </v>
-<v t="ekr.20100630102711.2196"><vh>@thin sentinels_test.py</vh></v>
+<v t="ekr.20100630124508.2190"><vh>@thin sentinels_test.py</vh></v>
 <v t="ekr.20100625072850.2179"><vh>@test new sentinels</vh></v>
 </vnodes>
 <tnodes>
@@ -967,7 +968,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="14"></t>
+<t tx="ekr.20070416075121" str_leo_pos="15"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5818,6 +5819,7 @@ print(key)
 @ This is a doc part.
 Line 2.
 @c
+&lt;&lt; imports &gt;&gt;
 if 1:
     &lt;&lt; a &gt;&gt;
 # after ref
@@ -6420,6 +6422,7 @@ if 0:
 c.redraw()
 
 </t>
+<t tx="ekr.20100630124326.2188">import sys</t>
 <t tx="node:ekr.20100519083913.2158"># a before
 @others
 # a after</t>

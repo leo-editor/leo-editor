@@ -4778,6 +4778,24 @@ def putDocPart (self,s,i,docKind,next_i):
     return i
 #@nonl
 #@-node:ekr.20100629190135.5829:putDocPart (new)
+#@+node:ekr.20100624082003.5944:at.closePreviousNode (not used)
+def closePreviousNode (self,oldLevel,newLevel):
+
+    trace = False and not g.unitTesting
+    at = self
+
+    # if trace: g.trace([at.sentinelName(z) for z in at.endSentinelStack])
+
+    if newLevel <= oldLevel:
+        # Pretend we have seen -node sentinels.
+        for z in range(oldLevel - newLevel):
+            oldLevel -= 1
+            at.readEndNode('',0)
+
+        at.lastThinNode = at.thinNodeStack[newLevel-1]
+    else:
+        at.lastThinNode = at.thinNodeStack[-1]
+#@-node:ekr.20100624082003.5944:at.closePreviousNode (not used)
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl
