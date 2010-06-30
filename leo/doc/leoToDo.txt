@@ -6198,7 +6198,7 @@ def cleanLines (self,p,s):
     return s
 #@nonl
 #@-node:ekr.20070529083836:cleanLines
-#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+#@+node:ekr.20080711093251.5:at.writeOneAtShadowNode & helpers
 def writeOneAtShadowNode(self,p,toString,force):
 
     '''Write p, an @shadow node.
@@ -6339,8 +6339,8 @@ def adjustTargetLanguage (self,fn):
             # An unknown language.
             pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
-#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
-#@+node:bwmulder.20050101094804:openForWrite (atFile)
+#@-node:ekr.20080711093251.5:at.writeOneAtShadowNode & helpers
+#@+node:bwmulder.20050101094804:at.openForWrite
 def openForWrite (self, filename, wb='wb'):
 
     '''Open a file for writes, handling shadow files.'''
@@ -6367,7 +6367,7 @@ def openForWrite (self, filename, wb='wb'):
             g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
             g.es_exception()
         return 'error',None
-#@-node:bwmulder.20050101094804:openForWrite (atFile)
+#@-node:bwmulder.20050101094804:at.openForWrite
 #@+node:ekr.20031218072017.2609:app.closeLeoWindow
 def closeLeoWindow (self,frame):
 
@@ -6872,7 +6872,7 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
     # g.trace(type(script),repr(script))
     return script
 #@-node:EKR.20040614071102.1:g.getScript
-#@+node:ekr.20050506084734:writeFromString (atFile)
+#@+node:ekr.20050506084734:at.writeFromString
 # This is at.write specialized for scripting.
 
 def writeFromString(self,root,s,forcePythonSentinels=True,useSentinels=True):
@@ -6904,7 +6904,7 @@ def writeFromString(self,root,s,forcePythonSentinels=True,useSentinels=True):
         at.exception("exception preprocessing script")
 
     return at.stringOutput
-#@-node:ekr.20050506084734:writeFromString (atFile)
+#@-node:ekr.20050506084734:at.writeFromString
 #@+node:ekr.20100206142026.5839:g.checkPythonNode & helper (NEW)
 def checkPythonNode (c,s,fn=None,p=None,
     munge=False,suppressErrors=False,

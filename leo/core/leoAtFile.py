@@ -1029,7 +1029,7 @@ class atFile:
         child.setVisited() # Supress warning/deletion of unvisited nodes.
         return child
     #@-node:ekr.20041005105605.72:at.createThinChild4
-    #@+node:ekr.20041005105605.73:findChild4
+    #@+node:ekr.20041005105605.73:at.findChild4
     def findChild4 (self,headline):
 
         """Return the next vnode in at.root.tnodeLisft.
@@ -1069,15 +1069,15 @@ class atFile:
         # Don't check the headline.  It simply causes problems.
         v.setVisited() # Supress warning/deletion of unvisited nodes.
         return v
-    #@-node:ekr.20041005105605.73:findChild4
+    #@-node:ekr.20041005105605.73:at.findChild4
     #@+node:ekr.20041005105605.74:at.scanText4 & allies
     def scanText4 (self,theFile,fileName,p,verbose=False):
 
         """Scan a 4.x derived file non-recursively."""
 
-        trace = False and not g.unitTesting
-        verbose = False
         at = self
+        trace = True and at.readVersion5 and not g.unitTesting
+        verbose = False
         #@    << init ivars for scanText4 >>
         #@+node:ekr.20041005105605.75:<< init ivars for scanText4 >>
         # Unstacked ivars...
@@ -1154,8 +1154,8 @@ class atFile:
     #@+node:ekr.20100624082003.5942:appendToDocPart
     def appendToDocPart (self,s):
 
-        trace = True and new_read and not g.unitTesting
         at = self
+        trace = True and at.readVersion5 and not g.unitTesting
 
         # Skip the leading stuff
         if len(at.endSentinelComment) == 0:
@@ -1167,7 +1167,7 @@ class atFile:
         else:
             i = at.skipIndent(s,0,at.indent)
 
-        if new_read:
+        if at.readVersion5:
             # Append the line to docOut.
             line = s[i:]
             at.docOut.append(line)
@@ -1272,7 +1272,7 @@ class atFile:
 
         at.lastThinNode = v
         return v
-    #@+node:ekr.20100624082003.5944:closePreviousNode
+    #@+node:ekr.20100624082003.5944:at.closePreviousNode
     def closePreviousNode (self,oldLevel,newLevel):
 
         trace = False and not g.unitTesting
@@ -1291,7 +1291,7 @@ class atFile:
             at.lastThinNode = at.thinNodeStack[newLevel-1]
         else:
             at.lastThinNode = at.thinNodeStack[-1]
-    #@-node:ekr.20100624082003.5944:closePreviousNode
+    #@-node:ekr.20100624082003.5944:at.closePreviousNode
     #@-node:ekr.20100625085138.5957:createNewThinNode & closePreviousNode
     #@+node:ekr.20100625184546.5979:parseNodeSentinel & helpers
     def parseNodeSentinel (self,s,i,middle):
@@ -1946,7 +1946,7 @@ class atFile:
             at.badEndSentinel(expectedKind)
     #@-node:ekr.20041005105605.113:badEndSentinel, popSentinelStack
     #@-node:ekr.20041005105605.74:at.scanText4 & allies
-    #@+node:ekr.20041005105605.114:sentinelKind4 & helper (read logic)
+    #@+node:ekr.20041005105605.114:at.sentinelKind4 & helper (read logic)
     def sentinelKind4(self,s):
 
         """Return the kind of sentinel at s."""
@@ -2023,8 +2023,8 @@ class atFile:
         else:
             return at.noSentinel
     #@-node:ekr.20100518083515.5896:sentinelKind4_helper
-    #@-node:ekr.20041005105605.114:sentinelKind4 & helper (read logic)
-    #@+node:ekr.20041005105605.115:skipSentinelStart4
+    #@-node:ekr.20041005105605.114:at.sentinelKind4 & helper (read logic)
+    #@+node:ekr.20041005105605.115:at.skipSentinelStart4
     def skipSentinelStart4(self,s,i):
 
         """Skip the start of a sentinel."""
@@ -2040,7 +2040,7 @@ class atFile:
         i = g.skip_ws(s,i)
         assert(i < len(s) and s[i] == '@')
         return i + 1
-    #@-node:ekr.20041005105605.115:skipSentinelStart4
+    #@-node:ekr.20041005105605.115:at.skipSentinelStart4
     #@-node:ekr.20041005105605.71:Reading (4.x)
     #@+node:ekr.20041005105605.116:Reading utils...
     #@+node:ekr.20100628072537.5814:at.terminateNode & helpers
@@ -2049,7 +2049,7 @@ class atFile:
         '''Set the body text of at.v, and issue warning if it has changed.'''
 
         at = self
-
+        trace = True and at.readVersion5 and not g.unitTesting
         postPass = v is not None
             # A little kludge: v is given only when this is called
             # from copyAllTempBodyStringsToVnodes.
@@ -2062,6 +2062,7 @@ class atFile:
         # Compute the new text.
         new = g.choose(at.readVersion5,tempList,''.join(at.out))
         new = g.toUnicode(new)
+        if trace: g.trace('%25s %s' % (v.h,repr(new)))
 
         if at.importing:
             v._bodyString = new # Allowed use of _bodyString.
@@ -2461,7 +2462,7 @@ class atFile:
     #@-node:ekr.20041005105605.17:at.Reading
     #@+node:ekr.20041005105605.132:at.Writing
     #@+node:ekr.20041005105605.133:Writing (top level)
-    #@+node:ekr.20041005105605.154:asisWrite
+    #@+node:ekr.20041005105605.154:at.asisWrite
     def asisWrite(self,root,toString=False):
 
         at = self ; c = at.c
@@ -2503,8 +2504,8 @@ class atFile:
             at.writeException(root) # Sets dirty and orphan bits.
 
     silentWrite = asisWrite # Compatibility with old scripts.
-    #@-node:ekr.20041005105605.154:asisWrite
-    #@+node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
+    #@-node:ekr.20041005105605.154:at.asisWrite
+    #@+node:ekr.20041005105605.142:at.openFileForWriting & helper
     def openFileForWriting (self,root,fileName,toString):
 
         at = self
@@ -2529,7 +2530,7 @@ class atFile:
                 root.setDirty()
 
         return at.outputFile is not None
-    #@+node:ekr.20041005105605.143:openFileForWritingHelper & helper
+    #@+node:ekr.20041005105605.143:at.openFileForWritingHelper & helper
     def openFileForWritingHelper (self,fileName):
 
         '''Open the file and return True if all went well.'''
@@ -2573,7 +2574,7 @@ class atFile:
             return False
 
         return True
-    #@+node:bwmulder.20050101094804:openForWrite (atFile)
+    #@+node:bwmulder.20050101094804:at.openForWrite
     def openForWrite (self, filename, wb='wb'):
 
         '''Open a file for writes, handling shadow files.'''
@@ -2600,10 +2601,10 @@ class atFile:
                 g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
                 g.es_exception()
             return 'error',None
-    #@-node:bwmulder.20050101094804:openForWrite (atFile)
-    #@-node:ekr.20041005105605.143:openFileForWritingHelper & helper
-    #@-node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
-    #@+node:ekr.20041005105605.144:write & helper (atFile)
+    #@-node:bwmulder.20050101094804:at.openForWrite
+    #@-node:ekr.20041005105605.143:at.openFileForWritingHelper & helper
+    #@-node:ekr.20041005105605.142:at.openFileForWriting & helper
+    #@+node:ekr.20041005105605.144:at.write & helper
     def write (self,root,
         kind = '@unknown', # Should not happen.
         nosentinels = False,
@@ -2697,7 +2698,7 @@ class atFile:
                 root.v._p_changed = True
             else:
                 at.writeException() # Sets dirty and orphan bits.
-    #@+node:ekr.20080620095343.1:shouldWriteAtNosentNode
+    #@+node:ekr.20080620095343.1:at.shouldWriteAtNosentNode
     #@+at 
     #@nonl
     # Much thought went into this decision tree:
@@ -2732,9 +2733,9 @@ class atFile:
             g.es_print(p.h,'not written:',color='red')
             g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
             return False
-    #@-node:ekr.20080620095343.1:shouldWriteAtNosentNode
-    #@-node:ekr.20041005105605.144:write & helper (atFile)
-    #@+node:ekr.20041005105605.147:writeAll (atFile) & helper
+    #@-node:ekr.20080620095343.1:at.shouldWriteAtNosentNode
+    #@-node:ekr.20041005105605.144:at.write & helper
+    #@+node:ekr.20041005105605.147:at.writeAll & helper
     def writeAll(self,
         writeAtFileNodesFlag=False,
         writeDirtyAtFileNodesFlag=False,
@@ -2797,7 +2798,7 @@ class atFile:
         if trace: g.trace('%s calls to c.scanAtPathDirectives()' % (
             c.scanAtPathDirectivesCount-scanAtPathDirectivesCount))
 
-    #@+node:ekr.20041005105605.149:writeAllHelper (atFile)
+    #@+node:ekr.20041005105605.149:at.writeAllHelper
     def writeAllHelper (self,p,
         force,toString,writeAtFileNodesFlag,writtenFiles
     ):
@@ -2845,9 +2846,9 @@ class atFile:
                 # Write old @file nodes using @thin format.
                 at.write(p,kind='@file',thinFile=True,toString=toString)
                 writtenFiles.append(p.v)
-    #@-node:ekr.20041005105605.149:writeAllHelper (atFile)
-    #@-node:ekr.20041005105605.147:writeAll (atFile) & helper
-    #@+node:ekr.20070806105859:writeAtAutoNodes & writeDirtyAtAutoNodes (atFile) & helpers
+    #@-node:ekr.20041005105605.149:at.writeAllHelper
+    #@-node:ekr.20041005105605.147:at.writeAll & helper
+    #@+node:ekr.20070806105859:at.writeAtAutoNodes & writeDirtyAtAutoNodes & helpers
     def writeAtAutoNodes (self,event=None):
 
         '''Write all @auto nodes in the selected outline.'''
@@ -2862,7 +2863,7 @@ class atFile:
         at = self
         at.writeAtAutoNodesHelper(writeDirtyOnly=True)
     #@nonl
-    #@+node:ekr.20070806140208:writeAtAutoNodesHelper
+    #@+node:ekr.20070806140208:at.writeAtAutoNodesHelper
     def writeAtAutoNodesHelper(self,toString=False,writeDirtyOnly=True):
 
         """Write @auto nodes in the selected outline"""
@@ -2888,8 +2889,8 @@ class atFile:
             g.es("no dirty @auto nodes in the selected tree")
         else:
             g.es("no @auto nodes in the selected tree")
-    #@-node:ekr.20070806140208:writeAtAutoNodesHelper
-    #@+node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
+    #@-node:ekr.20070806140208:at.writeAtAutoNodesHelper
+    #@+node:ekr.20070806141607:at.writeOneAtAutoNode & helpers
     def writeOneAtAutoNode(self,p,toString,force):
 
         '''Write p, an @auto node.
@@ -2950,7 +2951,7 @@ class atFile:
             g.es("not written:",at.outputFileName)
 
         return ok
-    #@+node:ekr.20071019141745:shouldWriteAtAutoNode
+    #@+node:ekr.20071019141745:at.shouldWriteAtAutoNode
     #@+at 
     #@nonl
     # Much thought went into this decision tree:
@@ -2989,10 +2990,10 @@ class atFile:
             return False
         else: # The @auto tree is dirty and contains significant info.
             return True
-    #@-node:ekr.20071019141745:shouldWriteAtAutoNode
-    #@-node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
-    #@-node:ekr.20070806105859:writeAtAutoNodes & writeDirtyAtAutoNodes (atFile) & helpers
-    #@+node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+    #@-node:ekr.20071019141745:at.shouldWriteAtAutoNode
+    #@-node:ekr.20070806141607:at.writeOneAtAutoNode & helpers
+    #@-node:ekr.20070806105859:at.writeAtAutoNodes & writeDirtyAtAutoNodes & helpers
+    #@+node:ekr.20080711093251.3:at.writeAtShadowdNodes & writeDirtyAtShadowNodes & helpers
     def writeAtShadowNodes (self,event=None):
 
         '''Write all @shadow nodes in the selected outline.'''
@@ -3007,7 +3008,7 @@ class atFile:
         at = self
         return at.writeAtShadowNodesHelper(writeDirtyOnly=True)
     #@nonl
-    #@+node:ekr.20080711093251.4:writeAtShadowNodesHelper
+    #@+node:ekr.20080711093251.4:at.writeAtShadowNodesHelper
     def writeAtShadowNodesHelper(self,toString=False,writeDirtyOnly=True):
 
         """Write @shadow nodes in the selected outline"""
@@ -3036,8 +3037,8 @@ class atFile:
             g.es("no @shadow nodes in the selected tree")
 
         return found
-    #@-node:ekr.20080711093251.4:writeAtShadowNodesHelper
-    #@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+    #@-node:ekr.20080711093251.4:at.writeAtShadowNodesHelper
+    #@+node:ekr.20080711093251.5:at.writeOneAtShadowNode & helpers
     def writeOneAtShadowNode(self,p,toString,force):
 
         '''Write p, an @shadow node.
@@ -3189,9 +3190,9 @@ class atFile:
                 # An unknown language.
                 pass # Use the default language, **not** 'unknown_language'
     #@-node:ekr.20080819075811.13:adjustTargetLanguage
-    #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
-    #@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
-    #@+node:ekr.20050506084734:writeFromString (atFile)
+    #@-node:ekr.20080711093251.5:at.writeOneAtShadowNode & helpers
+    #@-node:ekr.20080711093251.3:at.writeAtShadowdNodes & writeDirtyAtShadowNodes & helpers
+    #@+node:ekr.20050506084734:at.writeFromString
     # This is at.write specialized for scripting.
 
     def writeFromString(self,root,s,forcePythonSentinels=True,useSentinels=True):
@@ -3223,8 +3224,8 @@ class atFile:
             at.exception("exception preprocessing script")
 
         return at.stringOutput
-    #@-node:ekr.20050506084734:writeFromString (atFile)
-    #@+node:ekr.20041005105605.151:writeMissing
+    #@-node:ekr.20050506084734:at.writeFromString
+    #@+node:ekr.20041005105605.151:at.writeMissing
     def writeMissing(self,p,toString=False):
 
         at = self ; c = at.c
@@ -3266,8 +3267,8 @@ class atFile:
             g.es("finished")
         else:
             g.es("no @file node in the selected tree")
-    #@-node:ekr.20041005105605.151:writeMissing
-    #@+node:ekr.20090225080846.5:writeOneAtEditNode
+    #@-node:ekr.20041005105605.151:at.writeMissing
+    #@+node:ekr.20090225080846.5:at.writeOneAtEditNode
     # Similar to writeOneAtAutoNode.
 
     def writeOneAtEditNode(self,p,toString,force=False):
@@ -3313,7 +3314,7 @@ class atFile:
             g.es("not written:",at.outputFileName)
 
         return ok
-    #@+node:ekr.20090225080846.6:shouldWriteAtEditNode
+    #@+node:ekr.20090225080846.6:at.shouldWriteAtEditNode
     #@+at 
     #@nonl
     # Much thought went into this decision tree:
@@ -3352,9 +3353,9 @@ class atFile:
             return False
         else: # The @auto tree is dirty and contains significant info.
             return True
-    #@-node:ekr.20090225080846.6:shouldWriteAtEditNode
-    #@-node:ekr.20090225080846.5:writeOneAtEditNode
-    #@+node:ekr.20041005105605.157:writeOpenFile
+    #@-node:ekr.20090225080846.6:at.shouldWriteAtEditNode
+    #@-node:ekr.20090225080846.5:at.writeOneAtEditNode
+    #@+node:ekr.20041005105605.157:at.writeOpenFile
     # New in 4.3: must be inited before calling this method.
     # New in 4.3 b2: support for writing from a string.
 
@@ -3379,7 +3380,7 @@ class atFile:
         at.putAtLastLines(s)
         if not toString:
             at.warnAboutOrphandAndIgnoredNodes()
-    #@-node:ekr.20041005105605.157:writeOpenFile
+    #@-node:ekr.20041005105605.157:at.writeOpenFile
     #@-node:ekr.20041005105605.133:Writing (top level)
     #@+node:ekr.20041005105605.160:Writing 4.x
     #@+node:ekr.20041005105605.161:at.putBody

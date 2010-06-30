@@ -545,6 +545,7 @@
 </v>
 <v t="ekr.20100519083913.2164"><vh>1-2</vh></v>
 </v>
+<v t="ekr.20100630090723.2195"><vh>@thin sentinels_test.py</vh></v>
 <v t="ekr.20100625072850.2179"><vh>@test new sentinels</vh></v>
 </vnodes>
 <tnodes>
@@ -5874,7 +5875,7 @@ os.system('dir')
 &lt;&lt; ref &gt;&gt;
 
 # end</t>
-<t tx="ekr.20100526075442.2155" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e657331710355033d2b2a7104752e">@language rest
+<t tx="ekr.20100526075442.2155" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e657331710358030000003d2b2a7104752e">@language rest
 @tabwidth -4
 @others
 
