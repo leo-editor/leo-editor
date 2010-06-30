@@ -10,9 +10,9 @@
 #@@tabwidth -4
 #@@pagewidth 60
 
-new_read = False
-    # Marks code that reads simplified sentinels.
-    # Eventually, Leo will always read simplified sentinels.
+new_read = True
+    # Should always be true.
+    # Setting this to False will not help.
 new_write = False
     # Enable writing simplified sentinels.
 
@@ -1076,7 +1076,7 @@ class atFile:
         """Scan a 4.x derived file non-recursively."""
 
         at = self
-        trace = True and at.readVersion5 and not g.unitTesting
+        trace = False and at.readVersion5 and not g.unitTesting
         verbose = False
         #@    << init ivars for scanText4 >>
         #@+node:ekr.20041005105605.75:<< init ivars for scanText4 >>
@@ -1140,7 +1140,7 @@ class atFile:
             #@nl
 
         return at.lastLines
-    #@+node:ekr.20041005105605.77:readNormalLine & appendToDocPart
+    #@+node:ekr.20041005105605.77:at.readNormalLine & appendToDocPart
     def readNormalLine (self,s,i=0): # i not used.
 
         at = self
@@ -1151,11 +1151,11 @@ class atFile:
             at.appendToOut(s)
         else:
             at.appendToDocPart(s)
-    #@+node:ekr.20100624082003.5942:appendToDocPart
+    #@+node:ekr.20100624082003.5942:at.appendToDocPart
     def appendToDocPart (self,s):
 
         at = self
-        trace = True and at.readVersion5 and not g.unitTesting
+        trace = False and at.readVersion5 and not g.unitTesting
 
         # Skip the leading stuff
         if len(at.endSentinelComment) == 0:
@@ -1183,8 +1183,8 @@ class atFile:
                 at.docOut.append(line)
 
         if trace: g.trace(repr(line))
-    #@-node:ekr.20100624082003.5942:appendToDocPart
-    #@-node:ekr.20041005105605.77:readNormalLine & appendToDocPart
+    #@-node:ekr.20100624082003.5942:at.appendToDocPart
+    #@-node:ekr.20041005105605.77:at.readNormalLine & appendToDocPart
     #@+node:ekr.20041005105605.80:start sentinels
     #@+node:ekr.20041005105605.81:at.readStartAll
     def readStartAll (self,s,i):
@@ -1222,9 +1222,9 @@ class atFile:
         if at.readVersion5:
             # Terminate the *previous* doc part if it exists.
             if at.docOut: at.appendToOut(''.join(at.docOut))
-            # Terminate the body text.
-            at.terminateNode()
-
+            # at. copyAllTempBodyStringsToVnodes calls at.terminateNode
+            # for all vnodes. Do **not** call at.terminateNode here!
+            # This would be wrong if we are in the range of @+others or @+<<.
         at.inCode = True
         at.outStack.append(at.out)
         at.out = []
@@ -1293,7 +1293,7 @@ class atFile:
             at.lastThinNode = at.thinNodeStack[-1]
     #@-node:ekr.20100624082003.5944:at.closePreviousNode
     #@-node:ekr.20100625085138.5957:createNewThinNode & closePreviousNode
-    #@+node:ekr.20100625184546.5979:parseNodeSentinel & helpers
+    #@+node:ekr.20100625184546.5979:at.parseNodeSentinel & helpers
     def parseNodeSentinel (self,s,i,middle):
 
         at = self
@@ -1305,7 +1305,8 @@ class atFile:
             assert g.match(s,i,"+middle:"),'missing +middle'
             i += 8
         else:
-            assert g.match(s,i,"+node:"),'missing +node'
+            # if not g.match(s,i,'+node:'): g.trace(repr(s[i:i+40]),g.callers(5))
+            assert g.match(s,i,"+node:"),'missing +node:'
             i += 6
 
         # Get the gnx and the headline.
@@ -1317,7 +1318,7 @@ class atFile:
 
         headline = at.getNodeHeadline(s,i)
         return gnx,headline,i,level,True
-    #@+node:ekr.20100625085138.5955:getNodeHeadline
+    #@+node:ekr.20100625085138.5955:at.getNodeHeadline
     def getNodeHeadline (self,s,i):
 
         '''Set headline to the rest of the line.
@@ -1337,8 +1338,8 @@ class atFile:
             h = h.replace('@@','@')
 
         return h
-    #@-node:ekr.20100625085138.5955:getNodeHeadline
-    #@+node:ekr.20100625085138.5953:parseThinNodeSentinel
+    #@-node:ekr.20100625085138.5955:at.getNodeHeadline
+    #@+node:ekr.20100625085138.5953:at.parseThinNodeSentinel
     def parseThinNodeSentinel (self,s,i):
 
         at = self
@@ -1371,10 +1372,10 @@ class atFile:
             level = 0
 
         return gnx,i,level,True
-    #@-node:ekr.20100625085138.5953:parseThinNodeSentinel
-    #@-node:ekr.20100625184546.5979:parseNodeSentinel & helpers
+    #@-node:ekr.20100625085138.5953:at.parseThinNodeSentinel
+    #@-node:ekr.20100625184546.5979:at.parseNodeSentinel & helpers
     #@-node:ekr.20041005105605.85:at.readStartNode & helpers
-    #@+node:ekr.20041005105605.111:readRef (paired using new sentinels)
+    #@+node:ekr.20041005105605.111:at.readRef (paired using new sentinels)
     #@+at
     # The sentinel contains an @ followed by a section 
     # name in angle brackets.
@@ -1416,8 +1417,8 @@ class atFile:
         if at.readVersion5:
             at.endSentinelStack.append(at.endRef)
             at.endSentinelNodeStack.append(at.v)
-    #@-node:ekr.20041005105605.111:readRef (paired using new sentinels)
-    #@+node:ekr.20041005105605.82:readStartAt/Doc & helpers
+    #@-node:ekr.20041005105605.111:at.readRef (paired using new sentinels)
+    #@+node:ekr.20041005105605.82:at.readStartAt/Doc & helpers
     #@+node:ekr.20100624082003.5938:readStartAt
     def readStartAt (self,s,i):
 
@@ -1481,8 +1482,8 @@ class atFile:
         else:
             return g.skip_to_end_of_line(s,i)
     #@-node:ekr.20100624082003.5940:skipToEndSentinel
-    #@-node:ekr.20041005105605.82:readStartAt/Doc & helpers
-    #@+node:ekr.20041005105605.83:readStartLeo
+    #@-node:ekr.20041005105605.82:at.readStartAt/Doc & helpers
+    #@+node:ekr.20041005105605.83:at.readStartLeo
     def readStartLeo (self,s,i):
 
         """Read an unexpected @+leo sentinel."""
@@ -1490,8 +1491,8 @@ class atFile:
         at = self
         assert g.match(s,i,"+leo"),'missing +leo sentinel'
         at.readError("Ignoring unexpected @+leo sentinel")
-    #@-node:ekr.20041005105605.83:readStartLeo
-    #@+node:ekr.20041005105605.84:readStartMiddle
+    #@-node:ekr.20041005105605.83:at.readStartLeo
+    #@+node:ekr.20041005105605.84:at.readStartMiddle
     def readStartMiddle (self,s,i):
 
         """Read an @+middle sentinel."""
@@ -1499,8 +1500,8 @@ class atFile:
         at = self
 
         at.readStartNode(s,i,middle=True)
-    #@-node:ekr.20041005105605.84:readStartMiddle
-    #@+node:ekr.20041005105605.89:readStartOthers
+    #@-node:ekr.20041005105605.84:at.readStartMiddle
+    #@+node:ekr.20041005105605.89:at.readStartOthers
     def readStartOthers (self,s,i):
 
         """Read an @+others sentinel."""
@@ -1520,18 +1521,18 @@ class atFile:
         at.endSentinelStack.append(at.endOthers)
         if at.readVersion5:
             at.endSentinelNodeStack.append(at.v)
-    #@-node:ekr.20041005105605.89:readStartOthers
+    #@-node:ekr.20041005105605.89:at.readStartOthers
     #@-node:ekr.20041005105605.80:start sentinels
     #@+node:ekr.20041005105605.90:end sentinels
-    #@+node:ekr.20041005105605.91:readEndAll
+    #@+node:ekr.20041005105605.91:at.readEndAll
     def readEndAll (self,unused_s,unused_i):
 
         """Read an @-all sentinel."""
 
         at = self
         at.popSentinelStack(at.endAll)
-    #@-node:ekr.20041005105605.91:readEndAll
-    #@+node:ekr.20041005105605.92:readEndAt & readEndDoc
+    #@-node:ekr.20041005105605.91:at.readEndAll
+    #@+node:ekr.20041005105605.92:at.readEndAt & readEndDoc
     def readEndAt (self,unused_s,unused_i):
 
         """Read an @-at sentinel."""
@@ -1549,8 +1550,8 @@ class atFile:
         at.readLastDocLine("@doc")
         at.popSentinelStack(at.endDoc)
         at.inCode = True
-    #@-node:ekr.20041005105605.92:readEndAt & readEndDoc
-    #@+node:ekr.20041005105605.93:readEndLeo
+    #@-node:ekr.20041005105605.92:at.readEndAt & readEndDoc
+    #@+node:ekr.20041005105605.93:at.readEndLeo
     def readEndLeo (self,unused_s,unused_i):
 
         """Read an @-leo sentinel."""
@@ -1565,8 +1566,8 @@ class atFile:
             at.lastLines.append(s) # Capture all trailing lines, even if empty.
 
         at.done = True
-    #@-node:ekr.20041005105605.93:readEndLeo
-    #@+node:ekr.20041005105605.94:readEndMiddle
+    #@-node:ekr.20041005105605.93:at.readEndLeo
+    #@+node:ekr.20041005105605.94:at.readEndMiddle
     def readEndMiddle (self,s,i):
 
         """Read an @-middle sentinel."""
@@ -1574,7 +1575,7 @@ class atFile:
         at = self
 
         at.readEndNode(s,i,middle=True)
-    #@-node:ekr.20041005105605.94:readEndMiddle
+    #@-node:ekr.20041005105605.94:at.readEndMiddle
     #@+node:ekr.20041005105605.95:at.readEndNode
     def readEndNode (self,unused_s,unused_i,middle=False):
 
@@ -1605,7 +1606,7 @@ class atFile:
         if not at.readVersion5:
             at.popSentinelStack(at.endNode)
     #@-node:ekr.20041005105605.95:at.readEndNode
-    #@+node:ekr.20041005105605.98:readEndOthers
+    #@+node:ekr.20041005105605.98:at.readEndOthers
     def readEndOthers (self,unused_s,unused_i):
 
         """Read an @-others sentinel."""
@@ -1616,8 +1617,8 @@ class atFile:
 
         if at.readVersion5:
             at.v = at.endSentinelNodeStack.pop()
-    #@-node:ekr.20041005105605.98:readEndOthers
-    #@+node:ekr.20100625140824.5968:readEndRef
+    #@-node:ekr.20041005105605.98:at.readEndOthers
+    #@+node:ekr.20100625140824.5968:at.readEndRef
     def readEndRef (self,unused_s,unused_i):
 
         """Read an @-<< sentinel."""
@@ -1628,8 +1629,8 @@ class atFile:
 
         if at.readVersion5:
             at.v = at.endSentinelNodeStack.pop()
-    #@-node:ekr.20100625140824.5968:readEndRef
-    #@+node:ekr.20041005105605.99:readLastDocLine (old sentinels only)
+    #@-node:ekr.20100625140824.5968:at.readEndRef
+    #@+node:ekr.20041005105605.99:at.readLastDocLine (old sentinels only)
     def readLastDocLine (self,tag):
 
         """Read the @c line that terminates the doc part.
@@ -1678,19 +1679,19 @@ class atFile:
 
         at.appendToOut(tag + s)
         at.docOut = []
-    #@-node:ekr.20041005105605.99:readLastDocLine (old sentinels only)
+    #@-node:ekr.20041005105605.99:at.readLastDocLine (old sentinels only)
     #@-node:ekr.20041005105605.90:end sentinels
     #@+node:ekr.20041005105605.100:Unpaired sentinels
     # Ooops: shadow files are cleared if there is a read error!!
     #@nonl
-    #@+node:ekr.20041005105605.101:ignoreOldSentinel
+    #@+node:ekr.20041005105605.101:at.ignoreOldSentinel
     def  ignoreOldSentinel (self,s,unused_i):
 
         """Ignore an 3.x sentinel."""
 
         g.es("ignoring 3.x sentinel:",s.strip(),color="blue")
-    #@-node:ekr.20041005105605.101:ignoreOldSentinel
-    #@+node:ekr.20041005105605.102:readAfterRef
+    #@-node:ekr.20041005105605.101:at.ignoreOldSentinel
+    #@+node:ekr.20041005105605.102:at.readAfterRef
     def  readAfterRef (self,s,i):
 
         """Read an @afterref sentinel."""
@@ -1701,8 +1702,8 @@ class atFile:
         # Append the next line to the text.
         s = at.readLine(at.inputFile)
         at.appendToOut(s)
-    #@-node:ekr.20041005105605.102:readAfterRef
-    #@+node:ekr.20041005105605.103:readClone
+    #@-node:ekr.20041005105605.102:at.readAfterRef
+    #@+node:ekr.20041005105605.103:at.readClone
     def readClone (self,s,i):
 
         at = self ; tag = "clone"
@@ -1719,8 +1720,8 @@ class atFile:
             at.readError("Invalid count in @clone sentinel")
         else:
             at.cloneSibCount = val
-    #@-node:ekr.20041005105605.103:readClone
-    #@+node:ekr.20041005105605.104:readComment
+    #@-node:ekr.20041005105605.103:at.readClone
+    #@+node:ekr.20041005105605.104:at.readComment
     def readComment (self,s,i):
 
         """Read an @comment sentinel."""
@@ -1728,8 +1729,8 @@ class atFile:
         assert g.match(s,i,"comment"),'missing comment sentinel'
 
         # Just ignore the comment line!
-    #@-node:ekr.20041005105605.104:readComment
-    #@+node:ekr.20041005105605.105:readDelims
+    #@-node:ekr.20041005105605.104:at.readComment
+    #@+node:ekr.20041005105605.105:at.readDelims
     def readDelims (self,s,i):
 
         """Read an @delims sentinel."""
@@ -1768,8 +1769,8 @@ class atFile:
         else:
             at.readError("Bad @delims")
             at.appendToOut("@delims")
-    #@-node:ekr.20041005105605.105:readDelims
-    #@+node:ekr.20041005105605.106:readDirective (@@)
+    #@-node:ekr.20041005105605.105:at.readDelims
+    #@+node:ekr.20041005105605.106:at.readDirective (@@)
     def readDirective (self,s,i):
 
         """Read an @@sentinel."""
@@ -1857,8 +1858,8 @@ class atFile:
             at.inCode = True # End the doc part.
 
         at.appendToOut(s2)
-    #@-node:ekr.20041005105605.106:readDirective (@@)
-    #@+node:ekr.20041005105605.109:readNl
+    #@-node:ekr.20041005105605.106:at.readDirective (@@)
+    #@+node:ekr.20041005105605.109:at.readNl
     def readNl (self,s,i):
 
         """Handle an @nonl sentinel."""
@@ -1870,8 +1871,8 @@ class atFile:
             at.appendToOut('\n')
         else:
             at.docOut.append('\n')
-    #@-node:ekr.20041005105605.109:readNl
-    #@+node:ekr.20041005105605.110:readNonl
+    #@-node:ekr.20041005105605.109:at.readNl
+    #@+node:ekr.20041005105605.110:at.readNonl
     def readNonl (self,s,i):
 
         """Handle an @nonl sentinel."""
@@ -1903,8 +1904,8 @@ class atFile:
                 else:
                     g.trace("docOut:",s)
                     at.readError("unexpected @nonl directive in doc part")
-    #@-node:ekr.20041005105605.110:readNonl
-    #@+node:ekr.20041005105605.112:readVerbatim
+    #@-node:ekr.20041005105605.110:at.readNonl
+    #@+node:ekr.20041005105605.112:at.readVerbatim
     def readVerbatim (self,s,i):
 
         """Read an @verbatim sentinel."""
@@ -1916,11 +1917,11 @@ class atFile:
         s = at.readLine(at.inputFile) 
         i = at.skipIndent(s,0,at.indent)
         # Do **not** insert the verbatim line itself!
-            # at.out.append("@verbatim\n")
+            # at.appendToOut("@verbatim\n")
         at.appendToOut(s[i:])
-    #@-node:ekr.20041005105605.112:readVerbatim
+    #@-node:ekr.20041005105605.112:at.readVerbatim
     #@-node:ekr.20041005105605.100:Unpaired sentinels
-    #@+node:ekr.20041005105605.113:badEndSentinel, popSentinelStack
+    #@+node:ekr.20041005105605.113:at.badEndSentinel, popSentinelStack
     def badEndSentinel (self,expectedKind):
 
         """Handle a mismatched ending sentinel."""
@@ -1944,7 +1945,7 @@ class atFile:
                 [at.sentinelName(z) for z in at.endSentinelStack],
                 g.callers(4)))
             at.badEndSentinel(expectedKind)
-    #@-node:ekr.20041005105605.113:badEndSentinel, popSentinelStack
+    #@-node:ekr.20041005105605.113:at.badEndSentinel, popSentinelStack
     #@-node:ekr.20041005105605.74:at.scanText4 & allies
     #@+node:ekr.20041005105605.114:at.sentinelKind4 & helper (read logic)
     def sentinelKind4(self,s):
@@ -2049,15 +2050,21 @@ class atFile:
         '''Set the body text of at.v, and issue warning if it has changed.'''
 
         at = self
-        trace = True and at.readVersion5 and not g.unitTesting
+        trace = False and at.readVersion5 and not g.unitTesting
         postPass = v is not None
             # A little kludge: v is given only when this is called
             # from copyAllTempBodyStringsToVnodes.
         if not v: v = at.v
 
         # Get the temp attributes.
-        tempString = hasattr(v,'tempBodyString') and v.tempBodyString or ''
-        tempList = hasattr(v,'tempBodyList') and ''.join(v.tempBodyList) or ''
+        hasString  = hasattr(v,'tempBodyString')
+        hasList    = hasattr(v,'tempBodyList')
+        tempString = hasString and v.tempBodyString or ''
+        tempList   = hasList and ''.join(v.tempBodyList) or ''
+
+        # Do nothing if there is no tempList with new sentinels.
+        if at.readVersion5 and not hasList:
+            return
 
         # Compute the new text.
         new = g.choose(at.readVersion5,tempList,''.join(at.out))
