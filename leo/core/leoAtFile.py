@@ -1284,7 +1284,6 @@ class atFile:
         if newLevel <= oldLevel:
             # Pretend we have seen -node sentinels.
             for z in range(oldLevel - newLevel):
-            # while oldLevel >= newLevel:
                 oldLevel -= 1
                 at.readEndNode('',0)
 
@@ -1576,7 +1575,7 @@ class atFile:
 
         at.readEndNode(s,i,middle=True)
     #@-node:ekr.20041005105605.94:at.readEndMiddle
-    #@+node:ekr.20041005105605.95:at.readEndNode
+    #@+node:ekr.20041005105605.95:at.readEndNode (calls at.terminateNode)
     def readEndNode (self,unused_s,unused_i,middle=False):
 
         """Handle @-node sentinels."""
@@ -1589,8 +1588,11 @@ class atFile:
         if at.readVersion5:
             # Terminate the *previous* doc part if it exists.
             if at.docOut: at.appendToOut(''.join(at.docOut))
-        at.terminateNode(middle)
-            # Set the body text and warn about changed text.
+
+        if not at.readVersion5:
+            at.terminateNode(middle)
+                # Set the body text and warn about changed text.
+                # This must not be called when handling new sentinels!
         at.v.setVisited()
             # Indicate that the vnode has been set in the derived file.
 
@@ -1605,7 +1607,7 @@ class atFile:
 
         if not at.readVersion5:
             at.popSentinelStack(at.endNode)
-    #@-node:ekr.20041005105605.95:at.readEndNode
+    #@-node:ekr.20041005105605.95:at.readEndNode (calls at.terminateNode)
     #@+node:ekr.20041005105605.98:at.readEndOthers
     def readEndOthers (self,unused_s,unused_i):
 
@@ -2050,11 +2052,16 @@ class atFile:
         '''Set the body text of at.v, and issue warning if it has changed.'''
 
         at = self
-        trace = False and at.readVersion5 and not g.unitTesting
+        trace = True and at.readVersion5 and not g.unitTesting
         postPass = v is not None
             # A little kludge: v is given only when this is called
             # from copyAllTempBodyStringsToVnodes.
         if not v: v = at.v
+
+        if at.readVersion5:
+            # A vital assertion.
+            # We must not terminate a node before the post pass.
+            assert postPass
 
         # Get the temp attributes.
         hasString  = hasattr(v,'tempBodyString')
@@ -2062,14 +2069,12 @@ class atFile:
         tempString = hasString and v.tempBodyString or ''
         tempList   = hasList and ''.join(v.tempBodyList) or ''
 
-        # Do nothing if there is no tempList with new sentinels.
-        if at.readVersion5 and not hasList:
-            return
-
         # Compute the new text.
         new = g.choose(at.readVersion5,tempList,''.join(at.out))
         new = g.toUnicode(new)
-        if trace: g.trace('%25s %s' % (v.h,repr(new)))
+        if trace:
+            # g.trace('%28s %s' % (v.h,g.callers(5)))
+            g.trace('%28s %s' % (v.h,repr(new)))
 
         if at.importing:
             v._bodyString = new # Allowed use of _bodyString.
@@ -2155,8 +2160,8 @@ class atFile:
         '''Append s to at.out (old sentinels) or
            at.v.tempBodyList (new sentinels).'''
 
-        trace = False and not g.unitTesting
         at = self
+        trace = True and at.readVersion5 and not g.unitTesting
 
         if at.readVersion5:
             if not at.v: at.v = at.root.v
