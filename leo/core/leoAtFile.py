@@ -10,12 +10,13 @@
 #@@tabwidth -4
 #@@pagewidth 60
 
-new_read = True
-    # Should always be true.
-    # Setting this to False will not help.
+new_read = True # Should always be true.
+    # Setting this to False will not help!
 new_write = False
     # Enable writing simplified sentinels.
-if new_write: print('\n\n========= leoAtFile.py: new_write enabled. ===========\n\n')
+if new_write:
+    fill = '=' * 10
+    print('\n\n%sleoAtFile.py: new_write enabled.%s\n\n' % (fill,fill))
 
 #@<< imports >>
 #@+node:ekr.20041005105605.2:<< imports >>
@@ -269,6 +270,8 @@ class atFile:
         self.correctedLines = 0
         self.docOut = [] # The doc part being accumulated.
         self.done = False # True when @-leo seen.
+        self.endSentinelIndentStack = []
+            # Restored indentation for @-others and @-<< sentinels.
         self.endSentinelStack = []
             # Contains entries for +node sentinels only when not readVersion5
         self.endSentinelNodeStack = []
@@ -1221,18 +1224,19 @@ class atFile:
         # Switch context.
         if at.readVersion5:
             # Terminate the *previous* doc part if it exists.
-            if at.docOut: at.appendToOut(''.join(at.docOut))
+            if at.docOut:
+                at.appendToOut(''.join(at.docOut))
+                at.docOut = []
             # at. copyAllTempBodyStringsToVnodes calls at.terminateNode
             # for all vnodes. Do **not** call at.terminateNode here!
             # This would be wrong if we are in the range of @+others or @+<<.
+        else:
+            assert not at.docOut # Cleared by @-node sentinel.
+            at.outStack.append(at.out)
+            at.out = []
 
         at.inCode = True
         at.raw = False # End raw mode.
-
-        if not at.readVersion5:
-            at.outStack.append(at.out)
-            at.out = []
-        at.docOut = []
 
         at.vStack.append(at.v)
 
@@ -1282,7 +1286,7 @@ class atFile:
     def createNewThinNode (self,gnx,headline,level):
 
         at = self
-        trace = True and at.readVersion5 and not g.unitTesting
+        trace = False and at.readVersion5 and not g.unitTesting
 
         if at.thinNodeStack:
             if at.readVersion5:
@@ -1425,8 +1429,11 @@ class atFile:
 
         at.appendToOut(line)
         if at.readVersion5:
+            at.endSentinelIndentStack.append(at.indent)
             at.endSentinelStack.append(at.endRef)
             at.endSentinelNodeStack.append(at.v)
+        else:
+            pass # There is no paired @-ref sentinel.
     #@-node:ekr.20041005105605.111:at.readRef (paired using new sentinels)
     #@+node:ekr.20041005105605.82:at.readStartAt/Doc & helpers
     #@+node:ekr.20100624082003.5938:readStartAt
@@ -1528,9 +1535,13 @@ class atFile:
 
         # Make sure that the generated at-others is properly indented.
         at.appendToOut(leadingWs + "@others\n")
-        at.endSentinelStack.append(at.endOthers)
+
         if at.readVersion5:
+            at.endSentinelIndentStack.append(at.indent)
+            at.endSentinelStack.append(at.endOthers)
             at.endSentinelNodeStack.append(at.v)
+        else:
+            at.endSentinelStack.append(at.endOthers)
     #@-node:ekr.20041005105605.89:at.readStartOthers
     #@-node:ekr.20041005105605.80:start sentinels
     #@+node:ekr.20041005105605.90:end sentinels
@@ -1623,7 +1634,13 @@ class atFile:
         at.popSentinelStack(at.endOthers)
 
         if at.readVersion5:
+            # Terminate the *previous* doc part if it exists.
+            if at.docOut:
+                at.appendToOut(''.join(at.docOut))
+                at.docOut = []
+
             at.v = at.endSentinelNodeStack.pop()
+            at.indent = at.endSentinelIndentStack.pop()
     #@-node:ekr.20041005105605.98:at.readEndOthers
     #@+node:ekr.20100625140824.5968:at.readEndRef
     def readEndRef (self,unused_s,unused_i):
@@ -1635,7 +1652,13 @@ class atFile:
         at.popSentinelStack(at.endRef)
 
         if at.readVersion5:
+            # Terminate the *previous* doc part if it exists.
+            if at.docOut:
+                at.appendToOut(''.join(at.docOut))
+                at.docOut = []
+
             at.v = at.endSentinelNodeStack.pop()
+            at.indent = at.endSentinelIndentStack.pop()
     #@-node:ekr.20100625140824.5968:at.readEndRef
     #@+node:ekr.20041005105605.99:at.readLastDocLine (old sentinels only)
     def readLastDocLine (self,tag):
@@ -5200,35 +5223,32 @@ class atFile:
         return g.utils_chmod(fileName,mode)
     #@-node:ekr.20050104131820:chmod
     #@+node:ekr.20050104131929.1:atFile.rename
-    #@+
-    #@nonl
-    #@<< about os.rename >>
-    #@+node:ekr.20050104131929.2:<< about os.rename >>
-    #@+at 
-    #@nonl
-    # Here is the Python 2.4 documentation for rename 
-    # (same as Python 2.3)
-    # 
-    # Rename the file or directory src to dst.  If dst is 
-    # a directory, OSError will be raised.
-    # 
-    # On Unix, if dst exists and is a file, it will be 
-    # removed silently if the user
-    # has permission. The operation may fail on some Unix 
-    # flavors if src and dst are
-    # on different filesystems. If successful, the 
-    # renaming will be an atomic
-    # operation (this is a POSIX requirement).
-    # 
-    # On Windows, if dst already exists, OSError will be 
-    # raised even if it is a file;
-    # there may be no way to implement an atomic rename 
-    # when dst names an existing
-    # file.
-    #@-at
-    #@-node:ekr.20050104131929.2:<< about os.rename >>
-    #@nl
-
+     #@ << about os.rename >>
+     #@+node:ekr.20050104131929.2:<< about os.rename >>
+     #@+at 
+     #@nonl
+     # Here is the Python 2.4 documentation for rename 
+     # (same as Python 2.3)
+     # 
+     # Rename the file or directory src to dst.  If dst is 
+     # a directory, OSError will be raised.
+     # 
+     # On Unix, if dst exists and is a file, it will be 
+     # removed silently if the user
+     # has permission. The operation may fail on some Unix 
+     # flavors if src and dst are
+     # on different filesystems. If successful, the 
+     # renaming will be an atomic
+     # operation (this is a POSIX requirement).
+     # 
+     # On Windows, if dst already exists, OSError will be 
+     # raised even if it is a file;
+     # there may be no way to implement an atomic rename 
+     # when dst names an existing
+     # file.
+     #@-at
+     #@-node:ekr.20050104131929.2:<< about os.rename >>
+     #@nl
 
     def rename (self,src,dst,mode=None,verbose=True):
 
