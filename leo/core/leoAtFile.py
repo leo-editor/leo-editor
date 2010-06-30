@@ -3451,13 +3451,10 @@ class atFile:
                     else:
                         at.putDocLine(s,i)
             elif kind in (at.docDirective,at.atDirective):
-                if 1:
-                    next_i = at.putDocPart(s,i,kind,next_i)
-                else:
-                    assert(not at.pending)
-                    if not inCode: # Handle adjacent doc parts.
-                        at.putEndDocLine() 
-                    at.putStartDocLine(s,i,kind)
+                assert(not at.pending)
+                if not inCode: # Bug fix 12/31/04: handle adjacent doc parts.
+                    at.putEndDocLine() 
+                at.putStartDocLine(s,i,kind)
                 inCode = False
             elif kind in (at.cDirective,at.codeDirective):
                 # Only @c and @code end a doc part.
@@ -3855,33 +3852,6 @@ class atFile:
     #@-node:ekr.20041005105605.175:putRefLine & allies
     #@-node:ekr.20041005105605.164:writing code lines...
     #@+node:ekr.20041005105605.180:writing doc lines...
-    #@+node:ekr.20100629132026.5815:New
-    #@+node:ekr.20100629132026.5814:putDocPart
-    def putDocPart (self,s,i,docKind,next_i):
-
-        trace = True and not g.unitTesting
-        at = self
-
-        at.putStartDocLine(s,i,docKind)
-        i = next_i
-
-        while i < len(s):
-            next_i = g.skip_line(s,i)
-            assert(next_i > i)
-            kind = at.directiveKind4(s,i)
-            # Only @c and @code end the doc part.
-            if kind in (at.cDirective,at.codeDirective):
-                at.putEndDocLine() 
-                at.putDirective(s,i)
-                i = next_i
-                break
-            else:
-                at.putDocLine(s,i)
-                i = next_i
-        return i
-    #@-node:ekr.20100629132026.5814:putDocPart
-    #@-node:ekr.20100629132026.5815:New
-    #@+node:ekr.20100629132026.5816:Old
     #@+node:ekr.20041005105605.181:putBlankDocLine
     def putBlankDocLine (self):
 
@@ -3895,52 +3865,6 @@ class atFile:
 
         at.onl()
     #@-node:ekr.20041005105605.181:putBlankDocLine
-    #@+node:ekr.20041005105605.182:putStartDocLine
-    def putStartDocLine (self,s,i,kind):
-
-        """Write the start of a doc part."""
-
-        at = self ; at.docKind = kind
-
-        sentinel = g.choose(kind == at.docDirective,"@+doc","@+at")
-        directive = g.choose(kind == at.docDirective,"@doc","@")
-
-        if new_write: # Put whatever follows the directive in the sentinel
-            # Skip past the directive.
-            i += len(directive)
-            j = g.skip_to_end_of_line(s,i)
-            follow = s[i:j]
-
-            # Put the opening @+doc or @-doc sentinel, including whatever follows the directive.
-            at.putSentinel(sentinel + follow)
-
-            # Put the opening comment if we are using block comments.
-            if at.endSentinelComment:
-                at.putIndent(at.indent)
-                at.os(at.startSentinelComment) ; at.onl()
-        else: # old code.
-            # Skip past the directive.
-            i += len(directive)
-
-            # Get the trailing whitespace.
-            j = g.skip_ws(s,i)
-            ws = s[i:j]
-
-            # Put the opening @+doc or @-doc sentinel, including trailing whitespace.
-            at.putSentinel(sentinel + ws)
-
-            # Put the opening comment.
-            if at.endSentinelComment:
-                at.putIndent(at.indent)
-                at.os(at.startSentinelComment) ; at.onl()
-
-            # Put an @nonl sentinel if there is significant text following @doc or @.
-            if not g.is_nl(s,j):
-                # Doesn't work if we are using block comments.
-                if not new_write:
-                    at.putSentinel("@nonl")
-                at.putDocLine(s,j)
-    #@-node:ekr.20041005105605.182:putStartDocLine
     #@+node:ekr.20041005105605.183:putDocLine
     def putDocLine (self,s,i):
 
@@ -3961,13 +3885,6 @@ class atFile:
         if not s or s[0] == '\n':
             # A blank line.
             at.putBlankDocLine()
-        elif new_write:
-            # Don't wrap the line: use what we are given.
-            at.putIndent(at.indent)
-            # Put the opening comment delim if there are no block comments.
-            if not at.endSentinelComment:
-                at.os(at.startSentinelComment) ; at.oblank()
-            at.os(s) ; at.onl()
         else:
             #@        << append words to pending line, splitting the line if needed >>
             #@+node:ekr.20041005105605.184:<< append words to pending line, splitting the line if needed >>
@@ -4012,6 +3929,8 @@ class atFile:
             #@-node:ekr.20041005105605.184:<< append words to pending line, splitting the line if needed >>
             #@nl
     #@-node:ekr.20041005105605.183:putDocLine
+    #@+node:ekr.20100629132026.5814:putDocPart (new)
+    #@-node:ekr.20100629132026.5814:putDocPart (new)
     #@+node:ekr.20041005105605.185:putEndDocLine
     def putEndDocLine (self):
 
@@ -4060,7 +3979,52 @@ class atFile:
 
         at.os(s) ; at.onl()
     #@-node:ekr.20041005105605.186:putPending
-    #@-node:ekr.20100629132026.5816:Old
+    #@+node:ekr.20041005105605.182:putStartDocLine
+    def putStartDocLine (self,s,i,kind):
+
+        """Write the start of a doc part."""
+
+        at = self ; at.docKind = kind
+
+        sentinel = g.choose(kind == at.docDirective,"@+doc","@+at")
+        directive = g.choose(kind == at.docDirective,"@doc","@")
+
+        if new_write: # Put whatever follows the directive in the sentinel
+            # Skip past the directive.
+            i += len(directive)
+            j = g.skip_to_end_of_line(s,i)
+            follow = s[i:j]
+
+            # Put the opening @+doc or @-doc sentinel, including whatever follows the directive.
+            at.putSentinel(sentinel + follow)
+
+            # Put the opening comment if we are using block comments.
+            if at.endSentinelComment:
+                at.putIndent(at.indent)
+                at.os(at.startSentinelComment) ; at.onl()
+        else: # old code.
+            # Skip past the directive.
+            i += len(directive)
+
+            # Get the trailing whitespace.
+            j = g.skip_ws(s,i)
+            ws = s[i:j]
+
+            # Put the opening @+doc or @-doc sentinel, including trailing whitespace.
+            at.putSentinel(sentinel + ws)
+
+            # Put the opening comment.
+            if at.endSentinelComment:
+                at.putIndent(at.indent)
+                at.os(at.startSentinelComment) ; at.onl()
+
+            # Put an @nonl sentinel if there is significant text following @doc or @.
+            if not g.is_nl(s,j):
+                # Doesn't work if we are using block comments.
+                if not new_write:
+                    at.putSentinel("@nonl")
+                at.putDocLine(s,j)
+    #@-node:ekr.20041005105605.182:putStartDocLine
     #@-node:ekr.20041005105605.180:writing doc lines...
     #@-node:ekr.20041005105605.160:Writing 4.x
     #@+node:ekr.20041005105605.187:Writing 4,x sentinels...
