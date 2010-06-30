@@ -1427,7 +1427,7 @@ class baseTangleCommands:
     #@-node:ekr.20031218072017.3504:skip_headline
     #@-node:ekr.20031218072017.3489:Pass 1
     #@+node:ekr.20031218072017.3505:Pass 2
-    #@+node:ekr.20031218072017.1488:oblank, oblanks, onl, os, otab, otabs (Tangle)
+    #@+node:ekr.20031218072017.1488:oblank, oblanks, os, otab, otabs (Tangle)
     def oblank (self):
         self.oblanks(1)
 
@@ -1453,7 +1453,7 @@ class baseTangleCommands:
         if abs(n) > 0:
             s = g.toEncodedString('\t' * abs(n),self.encoding,reportErrors=True)
             self.output_file.write(s)
-    #@-node:ekr.20031218072017.1488:oblank, oblanks, onl, os, otab, otabs (Tangle)
+    #@-node:ekr.20031218072017.1488:oblank, oblanks, os, otab, otabs (Tangle)
     #@+node:ekr.20031218072017.1151:tangle.put_all_roots
     #@+at
     # This is the top level method of the second pass. It creates a 

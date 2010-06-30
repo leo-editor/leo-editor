@@ -985,13 +985,13 @@ def runRootFileTangleTest(c,p):
         #@        << dump result file names and expected >>
         #@+node:sps.20100531175334.10309:<< dump result file names and expected >>
         print('\n','-' * 20)
-        print "expected files:"
+        print("expected files:")
         for n in expectList:
-            print "[%s]" % n, n.__class__
+            print("[%s]" % n, n.__class__)
         print('-' * 20)
-        print "result files:"
+        print("result files:")
         for n in resultList:
-            print "[%s]" % n, n.__class__
+            print("[%s]" % n, n.__class__)
         print('-' * 20)
         #@-node:sps.20100531175334.10309:<< dump result file names and expected >>
         #@nl

@@ -902,33 +902,8 @@ while 1:
         break
 #@-node:ekr.20080923124254.17:<< Collect @first attributes >>
 #@-node:ekr.20080923124254.16:tangle.scanAllDirectives
-#@+node:sps.20100618004337.20865:tanglePass1
-# Traverses the tree whose root is given, handling each headline and associated body text.
-
-def tanglePass1(self,p_in,delims):
-
-    """The main routine of tangle pass 1"""
-
-    p = self.p = p_in.copy() # self.p used by update_def in untangle
-#    g.trace(p)
-    self.setRootFromHeadline(p)
-    theDict = g.get_directives_dict(p,[self.head_root])
-    if ('ignore' in theDict):
-        return
-    self.scanAllDirectives(p) # calls init_directive_ivars.
-    # Scan the headline and body text.
-    # @language and @comment are not recognized in headlines
-    self.skip_headline(p)
-    delims = self.skip_body(p, delims)
-    if self.errors + g.app.scanErrors >= max_errors:
-        self.warning("----- Halting Tangle: too many errors")
-    elif p.hasChildren():
-        p.moveToFirstChild()
-        self.tanglePass1(p,delims)
-        while p.hasNext() and (self.errors + g.app.scanErrors < max_errors):
-            p.moveToNext()
-            self.tanglePass1(p,delims)
-#@-node:sps.20100618004337.20865:tanglePass1
+#@+node:ekr.20031218072017.3475:tanglePass1
+#@-node:ekr.20031218072017.3475:tanglePass1
 #@+node:ekr.20031218072017.3594:setRootFromHeadline
 def setRootFromHeadline (self,p):
 
@@ -1076,6 +1051,33 @@ if kind == at_root:
     end = self.setRootFromText(s[i:],report_errors)
 #@-node:ekr.20031218072017.3602:<< set kind for directive >>
 #@-node:ekr.20031218072017.3599:token_type
+#@+node:sps.20100618004337.20865:tanglePass1
+# Traverses the tree whose root is given, handling each headline and associated body text.
+
+def tanglePass1(self,p_in,delims):
+
+    """The main routine of tangle pass 1"""
+
+    p = self.p = p_in.copy() # self.p used by update_def in untangle
+#    g.trace(p)
+    self.setRootFromHeadline(p)
+    theDict = g.get_directives_dict(p,[self.head_root])
+    if ('ignore' in theDict):
+        return
+    self.scanAllDirectives(p) # calls init_directive_ivars.
+    # Scan the headline and body text.
+    # @language and @comment are not recognized in headlines
+    self.skip_headline(p)
+    delims = self.skip_body(p, delims)
+    if self.errors + g.app.scanErrors >= max_errors:
+        self.warning("----- Halting Tangle: too many errors")
+    elif p.hasChildren():
+        p.moveToFirstChild()
+        self.tanglePass1(p,delims)
+        while p.hasNext() and (self.errors + g.app.scanErrors < max_errors):
+            p.moveToNext()
+            self.tanglePass1(p,delims)
+#@-node:sps.20100618004337.20865:tanglePass1
 #@-node:ekr.20100507084415.5757:Fix @root-code/doc bug
 #@+node:ekr.20100521090440.5889:Fix untangle problem with @unit
 @nocolor-node
@@ -2392,7 +2394,7 @@ def show_error_lines (self,lines,fileName):
             g.es_exception()
             g.es_print('can not open',fileName)
 #@-node:ekr.20080822065427.4:show_error_lines
-#@+node:ekr.20031218072017.1488:oblank, oblanks, onl, os, otab, otabs (Tangle)
+#@+node:ekr.20031218072017.1488:oblank, oblanks, os, otab, otabs (Tangle)
 def oblank (self):
     self.oblanks(1)
 
@@ -2418,7 +2420,7 @@ def otabs (self,n):
     if abs(n) > 0:
         s = g.toEncodedString('\t' * abs(n),self.encoding,reportErrors=True)
         self.output_file.write(s)
-#@-node:ekr.20031218072017.1488:oblank, oblanks, onl, os, otab, otabs (Tangle)
+#@-node:ekr.20031218072017.1488:oblank, oblanks, os, otab, otabs (Tangle)
 #@+node:ekr.20031218072017.3650:show
 def show (self,s):
 

@@ -1231,6 +1231,8 @@ class atFile:
         if at.thinFile:
             gnx,i,level,ok = at.parseThinNodeSentinel(s,i)
             if not ok: None,None,None,False
+        else:
+            gnx,level = None,None
 
         headline = at.getNodeHeadline(s,i)
         return gnx,headline,i,level,True
