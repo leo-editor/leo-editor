@@ -147,7 +147,7 @@ class cacher:
         return "fcache/" + m.hexdigest()
     #@-node:ekr.20100208071151.5907:fileKey
     #@+node:ekr.20100208082353.5925:Reading
-    #@+node:ekr.20100208071151.5910:createOutlineFromCacheList & helpers
+    #@+node:ekr.20100208071151.5910:cacher.createOutlineFromCacheList & helpers
     def createOutlineFromCacheList(self,parent_v,aList,top=True,atAll=None,fileName=None):
 
         """ Create outline structure from recursive aList
@@ -187,6 +187,9 @@ class cacher:
             isClone,child_v = self.fastAddLastChild(parent_v,gnx)
             if isClone:
                 if child_v.b != b:
+                    old,new = child_v.b,b
+                    if new.endswith('\n') and old == new[:-1]: continue
+                    if old.endswith('\n') and new == old[:-1]: continue
                     # 2010/02/05: Remove special case for @all.
                     c.nodeConflictList.append(g.bunch(
                         tag='(cached)',
@@ -246,7 +249,7 @@ class cacher:
 
         return is_clone,child_v
     #@-node:ekr.20100208071151.5911:fastAddLastChild
-    #@-node:ekr.20100208071151.5910:createOutlineFromCacheList & helpers
+    #@-node:ekr.20100208071151.5910:cacher.createOutlineFromCacheList & helpers
     #@+node:ekr.20100208082353.5923:getCachedGlobalFileRatios
     def getCachedGlobalFileRatios (self):
 

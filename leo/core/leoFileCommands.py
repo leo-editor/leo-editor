@@ -16,6 +16,7 @@ if g.app and g.app.use_psyco:
 import leo.core.leoNodes as leoNodes
 
 import binascii
+import difflib
 
 if g.isPython3:
     import io # Python 3.x
@@ -819,7 +820,7 @@ class baseFileCommands:
         c.setChanged(c.changed) # Refresh the changed marker.
         self.initReadIvars()
         return ok, c.frame.ratio
-    #@+node:ekr.20090526081836.5841:getLeoFileHelper
+    #@+node:ekr.20090526081836.5841:fc.getLeoFileHelper
     def getLeoFileHelper(self,theFile,fileName,silent):
 
         '''Read the .leo file and create the outline.'''
@@ -848,8 +849,8 @@ class baseFileCommands:
             ok = False
 
         return ok
-    #@-node:ekr.20090526081836.5841:getLeoFileHelper
-    #@+node:ekr.20100205060712.8314:handleNodeConflicts
+    #@-node:ekr.20090526081836.5841:fc.getLeoFileHelper
+    #@+node:ekr.20100205060712.8314:fc.handleNodeConflicts & helper
     def handleNodeConflicts (self):
 
         c = self.c
@@ -875,7 +876,16 @@ class baseFileCommands:
             child = root.insertAsLastChild()
             h = 'Recovered node "%s from %s' % (h1,g.shortFileName(fn))
             child.setHeadString(h)
-            child.setBodyString('%s %s' % (tag,gnx))
+            # child.setBodyString('%s %s' % (tag,gnx))
+            line1 = '%s %s\nDiff...\n' % (tag,gnx)
+            d = difflib.Differ().compare(g.splitLines(b2),g.splitLines(b1))
+            # d = difflib.unified_diff(g.splitLines(b2),g.splitLines(b1))
+            diffLines = [z for z in d]
+            lines = [line1]
+            lines.extend(diffLines)
+            # There is less need to show trailing newlines because
+            # we don't report changes involving only trailing newlines.
+            child.setBodyString(''.join(lines)) # .replace('\n','\\n\n'))
             n1 = child.insertAsNthChild(0)
             n2 = child.insertAsNthChild(1)
             n1.setHeadString('old:'+h1)
@@ -884,8 +894,16 @@ class baseFileCommands:
             n2.setBodyString(b2)
 
         return root
-    #@-node:ekr.20100205060712.8314:handleNodeConflicts
-    #@+node:ekr.20100124110832.6212:propegateDirtyNodes
+    #@+node:ekr.20100701112151.5959:getDiff
+    def getDiff (self,s1,s2):
+
+        lines1 = g.splitLines(s1)
+        lines2 = g.splitLines(s2)
+        diffLines = difflib.Differ.compare(lines1,lines2)
+        return diffLines
+    #@-node:ekr.20100701112151.5959:getDiff
+    #@-node:ekr.20100205060712.8314:fc.handleNodeConflicts & helper
+    #@+node:ekr.20100124110832.6212:fc.propegateDirtyNodes
     def propegateDirtyNodes (self):
 
         fc = self ; c = fc.c
@@ -893,8 +911,8 @@ class baseFileCommands:
         aList = [z.copy() for z in c.all_positions() if z.isDirty()]
         for p in aList:
             p.setAllAncestorAtFileNodesDirty()
-    #@-node:ekr.20100124110832.6212:propegateDirtyNodes
-    #@+node:ekr.20031218072017.1554:warnOnReadOnlyFiles
+    #@-node:ekr.20100124110832.6212:fc.propegateDirtyNodes
+    #@+node:ekr.20031218072017.1554:fc.warnOnReadOnlyFiles
     def warnOnReadOnlyFiles (self,fileName):
 
         # os.access may not exist on all platforms.
@@ -908,7 +926,7 @@ class baseFileCommands:
 
         if self.read_only and not g.unitTesting:
             g.es("read only:",fileName,color="red")
-    #@-node:ekr.20031218072017.1554:warnOnReadOnlyFiles
+    #@-node:ekr.20031218072017.1554:fc.warnOnReadOnlyFiles
     #@-node:ekr.20031218072017.1553:fc.getLeoFile & helpers
     #@+node:ekr.20031218072017.3029:readAtFileNodes (fileCommands)
     def readAtFileNodes (self):

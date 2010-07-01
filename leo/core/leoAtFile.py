@@ -12,7 +12,7 @@
 
 new_read = True # Should always be true.
     # Setting this to False will not help!
-new_write = True
+new_write = False
     # Enable writing simplified sentinels.
 
 #@<< imports >>
@@ -1761,12 +1761,11 @@ class atFile:
         g.trace('hasList',hasList,'hasString',hasString,'v',v and v.h)
 
         if at.readVersion5:
-            pass
-            # if hasattr(at.v,'tempBodyList') and at.v.tempBodyList:
-                # s2 = at.v.tempBodyList[-1]
-                # if s2.endswith('\n'):
-                    # at.v.tempBodList[-1] = s2[:-1]
-                # g.trace(repr(s2))
+            if hasList and at.v.tempBodyList:
+                s2 = at.v.tempBodyList[-1]
+                if s2.endswith('\n'):
+                    at.v.tempBodyList[-1] = s2[:-1]
+                g.trace(repr(s2))
 
         at.appendToOut(s)
     #@-node:ekr.20041005105605.102:at.readAfterRef
@@ -2174,7 +2173,12 @@ class atFile:
                 # Mark the node dirty. Ancestors will be marked dirty later.
             c.setChanged(True)
         else:
-            # 2010/02/05: removed special case for @all.
+            # Do nothing if only trailing whitespace is involved.
+            if new.endswith('\n') and old == new[:-1]: return
+            if old.endswith('\n') and new == old[:-1]: return
+            # if old == new.rstrip(): return
+            # if new == old.rstrip(): return
+
             c.nodeConflictList.append(g.bunch(
                 tag='(uncached)',
                 gnx=v.gnx,
