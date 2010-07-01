@@ -877,8 +877,11 @@ class atFile:
         if at.readVersion5:
             # at.terminateNode() may not have been called for at.v,
             # Use tempList if it exists, or tempString otherwise.
-            if hasattr(at.v,'tempBodyList'): body = tempList
-            else: body = tempString
+            if hasattr(at.v,'tempBodyList'):
+                body = tempList
+                delattr(at.v,'tempBodyList') # So the change below "takes".
+            else:
+                body = tempString
         else:
             body = tempString
 
@@ -891,6 +894,7 @@ class atFile:
 
         # *Always* put the temp body text into at.v.tempBodyString.
         root.v.tempBodyString = s
+
         #@-node:ekr.20041005105605.28:<< handle first and last lines >> (at.readOpenFile)
         #@nl
 
@@ -2406,6 +2410,7 @@ class atFile:
         else:
             at.error("No @+leo sentinel in: %s" % fileName)
         # g.trace("start,end",repr(at.startSentinelComment),repr(at.endSentinelComment))
+        g.trace(fileName,firstLines)
         return firstLines,new_df,isThinDerivedFile
     #@-node:ekr.20041005105605.129:at.scanHeader
     #@+node:ekr.20050301105854:at.copyAllTempBodyStringsToVnodes
