@@ -1304,6 +1304,20 @@ class atFile:
                 at.changeLevel(oldLevel,newLevel)
                 v = at.createThinChild4(gnx,headline)
                 at.thinNodeStack.append(v)
+                # Terminate a previous clone if it exists.
+                if hasattr(v,'tempBodyList'):
+                    g.trace('** terminating cloned text',v.h)
+                    # The old temp text is *always* in tempBodyString.
+                    new = ''.join(v.tempBodyList)
+                    old = tempString or v.getBody()
+                    # Warn if the body text has changed, except for the root node.
+                    if old and new != old and v != at.root.v:
+                        postPass = False
+                        at.indicateNodeChanged(old,new,postPass,v)
+                    # *Always* put the new text into tempBodyString.
+                    v.tempBodyString = new
+                    # *Always delete tempBodyList.  Do not leave this lying around!
+                    delattr(v,'tempBodyList')
             else:
                 at.thinNodeStack.append(at.lastThinNode)
                 v = at.createThinChild4(gnx,headline)
@@ -1758,7 +1772,7 @@ class atFile:
         v = at.lastRefNode
         hasList = hasattr(v,'tempBodyList')
         hasString = hasattr(v,'tempBodyString')
-        g.trace('hasList',hasList,'hasString',hasString,'v',v and v.h)
+        # g.trace('hasList',hasList,'hasString',hasString,'v',v and v.h)
 
         if at.readVersion5:
             if hasList and at.v.tempBodyList:
