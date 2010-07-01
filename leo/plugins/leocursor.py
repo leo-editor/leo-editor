@@ -25,11 +25,15 @@ class AttribManager(object):
         """Return the body string without any parts used to store
         attributes, if this flavor of attribute manager stores attributes
         in the body.  If not, just return the whole body string."""
-        raise NotImplemented
+        raise NotImplemented()
 
     def getAttrib(self, v, what):
         """Get an attribute value from a vnode"""
-        raise NotImplemented
+        raise NotImplemented()
+
+    def keys(self, v):
+        """Get list of attribute keys from a vnode"""
+        raise NotImplemented()
 #@-node:tbrown.20100206093439.5452:class AttribManager
 #@+node:tbrown.20100206093439.5453:class AM_Colon
 class AM_Colon(AttribManager):
@@ -75,7 +79,22 @@ class AM_Colon(AttribManager):
                     m = ''  # don't return None
                 return m
 
-        raise self.NotPresent
+        raise self.NotPresent()
+
+    def keys(self, v):
+        ans = []
+        for i in v.b.split('\n'):
+            m = self.pattern.match(i)
+            if m:
+                ans.append(m.group(1))
+        return ans
+
+    def has_key(self, v, what):  # no access to this from LeoCursor...
+        for i in v.b.split('\n'):
+            m = self.pattern.match(i)
+            if m and m.group(1) == what:
+                return True
+        return False
 #@-node:tbrown.20100206093439.5453:class AM_Colon
 #@+node:tbrown.20100206093439.5455:class AM_CapColon
 class AM_CapColon(AM_Colon):
@@ -89,18 +108,23 @@ class LeoCursor(object):
 
     """See module docs."""
 
+    class NotPresent(Exception):
+        pass
+
     #@    @+others
     #@+node:tbrown.20100205200824.5424:__init__
     def __init__(self, v, other=None):
 
+        self.__v = v
+
         if other:
             self.__root = other.__root
+            self.__parents = other.__parents + [other]
             self.__attribManagers = list(other.__attribManagers)
         else:
             self.__root = v
             self.__attribManagers = []
-
-        self.__v = v
+            self.__parents = []
     #@-node:tbrown.20100205200824.5424:__init__
     #@+node:tbrown.20100205200824.9978:__iter__
     def __iter__(self):
@@ -173,6 +197,10 @@ class LeoCursor(object):
 
             return self.__v.u
 
+        elif what == '_P':
+
+            return self.__parents
+
         elif what == '_GNX':  # or _G?
 
             return self.__v.gnx
@@ -180,6 +208,11 @@ class LeoCursor(object):
         elif what == '_R':
             return self.__at(self.__root)
 
+        elif what == '_K':
+            ans = []
+            for i in self.__attribManagers:
+                ans.extend(i.keys(self.__v))
+            return ans
 
         for child in self.__v.children:
             if child.h == what:
@@ -192,6 +225,7 @@ class LeoCursor(object):
             except AttribManager.NotPresent:
                 pass
 
+        raise LeoCursor.NotPresent()
     #@-node:tbrown.20100205200824.5425:__getattr__
     #@+node:tbrown.20100208110238.12228:__getitem__
     def __getitem__(self, what):
