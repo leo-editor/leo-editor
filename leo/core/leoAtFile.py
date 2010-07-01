@@ -1314,7 +1314,7 @@ class atFile:
 
         if at.readVersion5:
             assert g.match(s,i,"+node"),'bad start node sentinel'
-            i += 1
+            i += 5
         elif middle:
             assert g.match(s,i,"+middle:"),'missing +middle'
             i += 8
@@ -1644,6 +1644,11 @@ class atFile:
 
             at.v = at.endSentinelNodeStack.pop()
             at.indent = at.endSentinelIndentStack.pop()
+
+            # The -others sentinel terminates the preceding node.
+            oldLevel = len(at.thinNodeStack)
+            newLevel = oldLevel-1
+            at.changeLevel(oldLevel,newLevel)
     #@-node:ekr.20041005105605.98:at.readEndOthers
     #@+node:ekr.20100625140824.5968:at.readEndRef
     def readEndRef (self,unused_s,unused_i):
