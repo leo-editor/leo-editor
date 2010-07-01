@@ -16,7 +16,8 @@ new_write = False
     # Enable writing simplified sentinels.
 if new_write:
     fill = '=' * 10
-    print('\n\n%sleoAtFile.py: new_write enabled.%s\n\n' % (fill,fill))
+    g.es_print('\n\n%sleoAtFile.py: new_write enabled.%s\n\n' % (
+        fill,fill),color='red')
 
 #@<< imports >>
 #@+node:ekr.20041005105605.2:<< imports >>
