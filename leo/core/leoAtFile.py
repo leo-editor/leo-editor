@@ -12,12 +12,8 @@
 
 new_read = True # Should always be true.
     # Setting this to False will not help!
-new_write = False
+new_write = True
     # Enable writing simplified sentinels.
-if new_write:
-    fill = '=' * 10
-    g.es_print('\n\n%sleoAtFile.py: new_write enabled.%s\n\n' % (
-        fill,fill),color='red')
 
 #@<< imports >>
 #@+node:ekr.20041005105605.2:<< imports >>
@@ -37,6 +33,11 @@ import time
 
 #@-node:ekr.20041005105605.2:<< imports >>
 #@nl
+
+if new_write:
+    fill = '=' * 10
+    g.es_print('\n\n%sleoAtFile.py: new_write enabled.%s\n\n' % (
+        fill,fill),color='red')
 
 class atFile:
 
@@ -1754,11 +1755,13 @@ class atFile:
         # Append the next line to the text.
         s = at.readLine(at.inputFile)
 
+        v = at.lastRefNode
+        hasList = hasattr(v,'tempBodyList')
+        hasString = hasattr(v,'tempBodyString')
+        g.trace('hasList',hasList,'hasString',hasString,'v',v and v.h)
+
         if at.readVersion5:
-            v = at.lastRefNode
-            hasList = hasattr(v,'tempBodyList')
-            hasString = hasattr(v,'tempBodyString')
-            g.trace('hasList',hasList,'hasString',hasString,v.h)
+            pass
             # if hasattr(at.v,'tempBodyList') and at.v.tempBodyList:
                 # s2 = at.v.tempBodyList[-1]
                 # if s2.endswith('\n'):
