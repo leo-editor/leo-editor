@@ -904,6 +904,43 @@ class todoController:
     #@-node:tbrown.20090119215428.49:updateUI
     #@-others
 #@-node:tbrown.20090119215428.9:class todoController
+#@+node:tbrown.20100701093750.13800:command inc/dec priority
+@g.command('todo-dec-pri')
+def todo_dec_pri(event, direction=1):
+
+    c = event['c']
+    p = c.p
+    pri = int(c.cleo.getat(p.v, 'priority'))
+
+    print p.h, pri
+
+    if pri not in c.cleo.priorities:
+        return
+
+    ordered = sorted(c.cleo.priorities.keys())
+    pri = ordered[(ordered.index(pri) + direction) % len(ordered)]
+
+    print pri
+
+    if pri not in c.cleo.priorities:
+        # priorities are 1-24 and 100
+        if pri < 90:
+            pri = 1
+        else:
+            pri = 100
+
+    pri = c.cleo.setPri(pri)
+    print p.h, pri
+
+    c.redraw()
+
+    # c.executeMinibufferCommand("todo-inc-pri")
+
+@g.command('todo-inc-pri')
+def todo_inc_pri(event):
+    todo_dec_pri(event, direction=-1)
+#@nonl
+#@-node:tbrown.20100701093750.13800:command inc/dec priority
 #@-others
 #@nonl
 #@-node:tbrown.20090119215428.2:@thin todo.py
