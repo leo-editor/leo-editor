@@ -281,6 +281,7 @@ class atFile:
         self.indentStack = []
         self.inputFile = None
         self.lastLines = [] # The lines after @-leo
+        self.lastRefNode = None # The previous reference node, for at.readAfterRef.
         self.lastThinNode = None
             # The last thin node at this level.
             # Used by createThinChild4.
@@ -1675,6 +1676,7 @@ class atFile:
             at.indent = at.endSentinelIndentStack.pop()
 
             # The -<< sentinel terminates the preceding node.
+            at.lastRefNode = at.v # A kludge for at.readAfterRef
             oldLevel = len(at.thinNodeStack)
             newLevel = oldLevel-1
             at.changeLevel(oldLevel,newLevel)
@@ -1750,6 +1752,18 @@ class atFile:
 
         # Append the next line to the text.
         s = at.readLine(at.inputFile)
+
+        if at.readVersion5:
+            v = at.lastRefNode
+            hasList = hasattr(v,'tempBodyList')
+            hasString = hasattr(v,'tempBodyString')
+            g.trace('hasList',hasList,'hasString',hasString,v.h)
+            # if hasattr(at.v,'tempBodyList') and at.v.tempBodyList:
+                # s2 = at.v.tempBodyList[-1]
+                # if s2.endswith('\n'):
+                    # at.v.tempBodList[-1] = s2[:-1]
+                # g.trace(repr(s2))
+
         at.appendToOut(s)
     #@-node:ekr.20041005105605.102:at.readAfterRef
     #@+node:ekr.20041005105605.103:at.readClone
@@ -2006,8 +2020,10 @@ class atFile:
 
         val = at.sentinelKind4_helper(s)
 
-        if trace: g.trace('%-20s %s' % (
-            at.sentinelName(val),s.rstrip()))
+        # if trace and (verbose or val != at.noSentinel):
+        if val == at.startAfterRef:
+            g.trace('%-20s %s' % (
+                at.sentinelName(val),s.rstrip()))
 
         return val
     #@+node:ekr.20100518083515.5896:sentinelKind4_helper
@@ -2362,7 +2378,7 @@ class atFile:
         new_df            is True if we are reading a new-format derived file.
         isThinDerivedFile is True if the file is an @thin file."""
 
-        trace = False
+        trace = False and not g.unitTesting
         at = self
         firstLines = [] # The lines before @+leo.
         tag = "@+leo"
@@ -3897,7 +3913,7 @@ class atFile:
                     at.putSentinel("@nl")
                 at.indent -= delta
     #@-node:ekr.20041005105605.178:putAfterLastRef
-    #@+node:ekr.20041005105605.179:putAfterMiddleef
+    #@+node:ekr.20041005105605.179:putAfterMiddleRef
     def putAfterMiddleRef (self,s,start,end,delta):
 
         """Handle whatever follows a ref that is not the last ref of a line."""
@@ -3912,7 +3928,7 @@ class atFile:
             if not new_write:
                 at.putSentinel("@nonl")
             at.indent -= delta
-    #@-node:ekr.20041005105605.179:putAfterMiddleef
+    #@-node:ekr.20041005105605.179:putAfterMiddleRef
     #@-node:ekr.20041005105605.175:putRefLine & allies
     #@-node:ekr.20041005105605.164:writing code lines...
     #@+node:ekr.20041005105605.180:writing doc lines...
