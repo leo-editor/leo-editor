@@ -1313,8 +1313,8 @@ class atFile:
         at = self
 
         if at.readVersion5:
-            assert g.match(s,i,"+node"),'bad start node sentinel'
-            i += 5
+            assert g.match(s,i,"+node "),'bad start node sentinel'
+            i += 6 # Eating the space is essential.
         elif middle:
             assert g.match(s,i,"+middle:"),'missing +middle'
             i += 8
@@ -1327,6 +1327,7 @@ class atFile:
         if at.thinFile:
             gnx,i,level,ok = at.parseThinNodeSentinel(s,i)
             if not ok: None,None,None,False
+            # g.trace(repr(gnx))
         else:
             gnx,level = None,None
 
