@@ -2426,7 +2426,7 @@ class atFile:
         else:
             at.error("No @+leo sentinel in: %s" % fileName)
         # g.trace("start,end",repr(at.startSentinelComment),repr(at.endSentinelComment))
-        g.trace(fileName,firstLines)
+        # g.trace(fileName,firstLines)
         return firstLines,new_df,isThinDerivedFile
     #@-node:ekr.20041005105605.129:at.scanHeader
     #@+node:ekr.20050301105854:at.copyAllTempBodyStringsToVnodes
