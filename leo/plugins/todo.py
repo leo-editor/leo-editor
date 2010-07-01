@@ -912,25 +912,13 @@ def todo_dec_pri(event, direction=1):
     p = c.p
     pri = int(c.cleo.getat(p.v, 'priority'))
 
-    print p.h, pri
-
     if pri not in c.cleo.priorities:
-        return
-
-    ordered = sorted(c.cleo.priorities.keys())
-    pri = ordered[(ordered.index(pri) + direction) % len(ordered)]
-
-    print pri
-
-    if pri not in c.cleo.priorities:
-        # priorities are 1-24 and 100
-        if pri < 90:
-            pri = 1
-        else:
-            pri = 100
+        pri = 1
+    else:
+        ordered = sorted(c.cleo.priorities.keys())
+        pri = ordered[(ordered.index(pri) + direction) % len(ordered)]
 
     pri = c.cleo.setPri(pri)
-    print p.h, pri
 
     c.redraw()
 
