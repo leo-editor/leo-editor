@@ -1673,11 +1673,11 @@ class atFile:
                 at.docOut = []
                 at.inCode = True
 
+            at.lastRefNode = at.v # A kludge for at.readAfterRef
             at.v = at.endSentinelNodeStack.pop()
             at.indent = at.endSentinelIndentStack.pop()
 
             # The -<< sentinel terminates the preceding node.
-            at.lastRefNode = at.v # A kludge for at.readAfterRef
             oldLevel = len(at.thinNodeStack)
             newLevel = oldLevel-1
             at.changeLevel(oldLevel,newLevel)
