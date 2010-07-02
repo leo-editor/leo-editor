@@ -1435,7 +1435,6 @@ class baseTangleCommands:
                     if (relative_path[:len(os.sep)] == os.sep):
                          file_name_path = relative_path[len(os.sep):]
                 self.tangle_output[file_name_path] = self.output_file.get()
-            #@nonl
             #@-node:sps.20100608083657.20937:<< unit testing fake files>>
             #@nl
             self.output_file.close()
@@ -1464,7 +1463,6 @@ class baseTangleCommands:
                 except: pass
                 #@-node:ekr.20031218072017.1155:<< Erase the temporary file >>
                 #@nl
-    #@nonl
     #@-node:ekr.20031218072017.1151:tangle.put_all_roots
     #@+node:ekr.20031218072017.3506:put_code
     #@+at 

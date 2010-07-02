@@ -1917,7 +1917,6 @@ class configClass:
         myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
         if not g.os_path_exists(myLocalConfigFile):
             myLocalConfigFile = None
-        #@nonl
         #@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
         #@nl
 

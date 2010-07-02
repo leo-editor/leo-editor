@@ -1737,7 +1737,6 @@ class baseCommands (object):
                 theFile.close()
             else:
                 g.es('can not write %s',fileName,color='red')
-    #@nonl
     #@-node:ekr.20070915142635:writeFileFromNode
     #@-node:ekr.20031218072017.2838:Read/Write submenu
     #@+node:ekr.20031218072017.2841:Tangle submenu
@@ -2176,7 +2175,6 @@ class baseCommands (object):
             path = None
 
         return path
-    #@nonl
     #@-node:ekr.20070115135502:writeScriptFile
     #@-node:ekr.20031218072017.2140:c.executeScript & helpers
     #@+node:ekr.20100216141722.5620:class gotoLineNumber and helpers (commands)

@@ -327,7 +327,6 @@ def computeMachineName():
 # New in Leo 4.6:
 # g.findAtTabWidthDirectives, g.findLanguageDirectives and
 # g.get_directives_dict use re module for faster searching.
-#@nonl
 #@+node:EKR.20040504150046.4:g.comment_delims_from_extension
 def comment_delims_from_extension(filename):
 
@@ -654,7 +653,6 @@ def scanAtHeaderDirectives(aList):
     for d in aList:
         if d.get('header') and d.get('noheader'):
             g.es_print("conflicting @header and @noheader directives",color='red')
-#@nonl
 #@-node:ekr.20080827175609.53:g.scanAtHeaderDirectives
 #@+node:ekr.20080827175609.33:g.scanAtLineendingDirectives
 def scanAtLineendingDirectives(aList):
@@ -807,7 +805,6 @@ def scanAllAtWrapDirectives(c,p):
 def scanDirectives(c,p=None):
 
     return c.scanAllDirectives(p)
-#@nonl
 #@-node:ekr.20080901195858.4:g.scanDirectives  (for compatibility only)
 #@+node:ekr.20040715155607:g.scanForAtIgnore
 def scanForAtIgnore(c,p):
@@ -986,7 +983,6 @@ def getAbsPathFromNode(c,p,name=''): # Name is for unit testing.
                 default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
 
     return default_dir
-#@nonl
 #@-node:ekr.20081001062423.10:g.getAbsPathFromNode
 #@+node:ekr.20081001062423.11:g.getPathFromDirectives
 def getPathFromDirectives(c,p):
@@ -2219,7 +2215,6 @@ def handleUrlInUrlNode(url):
     if not re.match(urlPattern,url):
         g.es("invalid url:",url)
         return
-    #@nonl
     #@-node:tbrown.20090219095555.62:<< check the url; return if bad >>
     #@nl
     #@    << pass the url to the web browser >>

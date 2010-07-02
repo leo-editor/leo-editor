@@ -1157,7 +1157,6 @@ class rstCommands:
             return '\t%d: %s' % (n,s)
         else:
             return '\t%s' % s
-    #@nonl
     #@-node:ekr.20090502071837.73:formatCodeModeLine
     #@+node:ekr.20090502071837.74:rstripList
     def rstripList (self,theList):
@@ -1176,7 +1175,6 @@ class rstCommands:
         for line in code:
             i += 1
             result.append(self.formatCodeModeLine(line,i,numberOption))
-    #@nonl
     #@-node:ekr.20090502071837.75:finishCodePart
     #@-node:ekr.20090502071837.72:handleCodeMode & helper
     #@+node:ekr.20090502071837.76:handleDocOnlyMode

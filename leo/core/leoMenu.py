@@ -1351,7 +1351,6 @@ class leoMenu:
                 else:
                     g.trace('bad data in menu table: %s' % repr(data))
                     continue # Ignore bad data
-            #@nonl
             #@-node:ekr.20051021091958:<< get label & command or continue >>
             #@nl
             #@        << compute commandName & accel from label & command >>

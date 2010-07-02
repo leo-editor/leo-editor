@@ -3971,7 +3971,6 @@ class editCommandsClass (baseEditCommandsClass):
                 i = j-1 ; break
 
         self.moveToHelper(event,i,extend)
-    #@nonl
     #@-node:ekr.20051218133207:backwardParagraphHelper
     #@+node:ekr.20051218133207.1:forwardParagraphHelper
     def forwardParagraphHelper (self,event,extend):

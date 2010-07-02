@@ -2439,7 +2439,6 @@ class baseScannerClass (scanUtility):
         j,junk = g.getLine(s,i)
         junk,indent = g.skip_leading_ws_with_indent(s,j,self.tab_width)
         return indent
-    #@nonl
     #@-node:ekr.20071017132056:getIndent
     #@+node:ekr.20070706101600:scan & scanHelper
     def scan (self,s,parent):
@@ -2727,7 +2726,6 @@ class baseScannerClass (scanUtility):
     def skipId (self,s,i):
 
         return g.skip_id(s,i,chars=self.extraIdChars)
-    #@nonl
     #@-node:ekr.20070707094858.1:skipId
     #@+node:ekr.20070730134936:skipNewline
     def skipNewline(self,s,i,kind):

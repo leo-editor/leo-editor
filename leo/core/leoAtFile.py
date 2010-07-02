@@ -5271,7 +5271,6 @@ class atFile:
             c.setChanged(True)
 
         return s
-    #@nonl
     #@-node:ekr.20070529083836:cleanLines
     #@+node:ekr.20041005105605.221:exception
     def exception (self,message):

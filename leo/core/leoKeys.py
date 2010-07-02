@@ -2518,7 +2518,6 @@ class keyHandlerClass:
             'Num_Lock',
             'Shift_L','Shift_R',
         )
-        #@nonl
         #@-node:ekr.20061031131434.106:<< define specialKeysyms >>
         #@nl
         special = keysym in specialKeysyms
@@ -2610,7 +2609,6 @@ class keyHandlerClass:
                 c.frame.updateStatusLine()
             if traceGC: g.printNewObjects('masterCom 4')
             return val
-    #@nonl
     #@+node:ekr.20061031131434.109:callKeystrokeFunction (not used)
     def callKeystrokeFunction (self,event):
 

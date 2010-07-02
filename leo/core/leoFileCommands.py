@@ -1666,7 +1666,6 @@ class baseFileCommands:
         while n > 0:
             self.put("\t")
             n -= 1
-    #@nonl
     #@-node:ekr.20031218072017.1470:put (leoFileCommands)
     #@+node:ekr.20031218072017.1971:putClipboardHeader
     def putClipboardHeader (self):
