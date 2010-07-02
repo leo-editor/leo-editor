@@ -1234,9 +1234,8 @@ class atFile:
             if at.docOut:
                 at.appendToOut(''.join(at.docOut))
                 at.docOut = []
-            # at. copyAllTempBodyStringsToVnodes calls at.terminateNode
-            # for all vnodes. Do **not** call at.terminateNode here!
-            # This would be wrong if we are in the range of @+others or @+<<.
+            # Do **not** call at.terminateNode here! This would be
+            # wrong if we are in the range of @+others or @+<<.
         else:
             assert not at.docOut # Cleared by @-node sentinel.
             at.outStack.append(at.out)
@@ -1305,19 +1304,7 @@ class atFile:
                 v = at.createThinChild4(gnx,headline)
                 at.thinNodeStack.append(v)
                 # Terminate a previous clone if it exists.
-                if hasattr(v,'tempBodyList'):
-                    g.trace('** terminating cloned text',v.h)
-                    # The old temp text is *always* in tempBodyString.
-                    new = ''.join(v.tempBodyList)
-                    old = tempString or v.getBody()
-                    # Warn if the body text has changed, except for the root node.
-                    if old and new != old and v != at.root.v:
-                        postPass = False
-                        at.indicateNodeChanged(old,new,postPass,v)
-                    # *Always* put the new text into tempBodyString.
-                    v.tempBodyString = new
-                    # *Always delete tempBodyList.  Do not leave this lying around!
-                    delattr(v,'tempBodyList')
+                at.terminateBody(v,postPass=False)
             else:
                 at.thinNodeStack.append(at.lastThinNode)
                 v = at.createThinChild4(gnx,headline)
@@ -2037,8 +2024,7 @@ class atFile:
 
         val = at.sentinelKind4_helper(s)
 
-        # if trace and (verbose or val != at.noSentinel):
-        if val == at.startAfterRef:
+        if trace and (verbose or val != at.noSentinel):
             g.trace('%-20s %s' % (
                 at.sentinelName(val),s.rstrip()))
 
@@ -2126,119 +2112,6 @@ class atFile:
     #@-node:ekr.20041005105605.115:at.skipSentinelStart4
     #@-node:ekr.20041005105605.71:Reading (4.x)
     #@+node:ekr.20041005105605.116:Reading utils...
-    #@+node:ekr.20100628072537.5814:at.terminateNode & helpers
-    def terminateNode (self,middle=False,v=None):
-
-        '''Set the body text of at.v, and issue warning if it has changed.'''
-
-        at = self
-        trace = False and at.readVersion5 and not g.unitTesting
-        postPass = v is not None
-            # A little kludge: v is given only when this is called
-            # from copyAllTempBodyStringsToVnodes.
-        if not v: v = at.v
-
-        if at.readVersion5:
-            # A vital assertion.
-            # We must not terminate a node before the post pass.
-            assert postPass
-
-        # Get the temp attributes.
-        hasString  = hasattr(v,'tempBodyString')
-        hasList    = hasattr(v,'tempBodyList')
-        tempString = hasString and v.tempBodyString or ''
-        tempList   = hasList and ''.join(v.tempBodyList) or ''
-
-        # Compute the new text.
-        new = g.choose(at.readVersion5,tempList,''.join(at.out))
-        new = g.toUnicode(new)
-        if trace:
-            # g.trace('%28s %s' % (v.h,g.callers(5)))
-            g.trace('%28s %s' % (v.h,repr(new)))
-
-        if at.importing:
-            v._bodyString = new # Allowed use of _bodyString.
-        elif middle: 
-            pass # Middle sentinels never alter text.
-        else:
-            # The old temp text is *always* in tempBodyString.
-            old = tempString or v.getBody()
-
-            # Warn if the body text has changed, except for the root node.
-            if old and new != old and v != at.root.v:
-                at.indicateNodeChanged(old,new,postPass,v)
-
-            # *Always* put the new text into tempBodyString.
-            v.tempBodyString = new
-
-        # *Always delete tempBodyList.  Do not leave this lying around!
-        if hasattr(v,'tempBodyList'): delattr(v,'tempBodyList')
-    #@+node:ekr.20100628124907.5816:at.indicateNodeChanged
-    def indicateNodeChanged (self,old,new,postPass,v):
-
-        at = self ; c = at.c
-
-        if at.perfectImportRoot and not postPass:
-            at.correctedLines += 1
-            at.reportCorrection(old,new,v)
-            v._bodyString = new # Allowed use of _bodyString.
-                # Just setting v.tempBodyString won't work here.
-            v.setDirty()
-                # Mark the node dirty. Ancestors will be marked dirty later.
-            c.setChanged(True)
-        else:
-            # Do nothing if only trailing whitespace is involved.
-            if new.endswith('\n') and old == new[:-1]: return
-            if old.endswith('\n') and new == old[:-1]: return
-            # if old == new.rstrip(): return
-            # if new == old.rstrip(): return
-
-            c.nodeConflictList.append(g.bunch(
-                tag='(uncached)',
-                gnx=v.gnx,
-                fileName = at.root.h,
-                b_old=old,
-                b_new=new,
-                h_old=v._headString,
-                h_new=v._headString,
-            ))
-
-            if not g.unitTesting:
-                g.es_print("uncached read node changed",v.h,color="red")
-
-            v.setDirty()
-                # Just set the dirty bit. Ancestors will be marked dirty later.
-            c.changed = True
-                # Important: the dirty bits won't stick unless we set c.changed here.
-                # Do *not* call c.setChanged(True) here: that would be too slow.
-    #@-node:ekr.20100628124907.5816:at.indicateNodeChanged
-    #@+node:ekr.20100628124907.5818:at.reportCorrection
-    def reportCorrection (self,old,new,v):
-
-        at = self
-        found = False
-        for p in at.perfectImportRoot.self_and_subtree():
-            if p.v == v:
-                found = True ; break
-
-        if found:
-            if 0: # For debugging.
-                g.pr('\n','-' * 40)
-                g.pr("old",len(old))
-                for line in g.splitLines(old):
-                    #line = line.replace(' ','< >').replace('\t','<TAB>')
-                    g.pr(repr(str(line)))
-                g.pr('\n','-' * 40)
-                g.pr("new",len(new))
-                for line in g.splitLines(new):
-                    #line = line.replace(' ','< >').replace('\t','<TAB>')
-                    g.pr(repr(str(line)))
-                g.pr('\n','-' * 40)
-        else:
-            # This should never happen.
-            g.es("correcting hidden node: v=",repr(v),color="red")
-    #@-node:ekr.20100628124907.5818:at.reportCorrection
-    #@-node:ekr.20100628072537.5814:at.terminateNode & helpers
     #@+node:ekr.20100625092449.5963:at.appendToOut
     def appendToOut (self,s):
 
@@ -2262,6 +2135,54 @@ class atFile:
                 g.choose(at.inCode,'code','doc'),at.v.h,repr(s)))
             # g.trace(g.listToString(at.out))
     #@-node:ekr.20100625092449.5963:at.appendToOut
+    #@+node:ekr.20050301105854:at.copyAllTempBodyStringsToVnodes
+    def  copyAllTempBodyStringsToVnodes (self,root,thinFile):
+
+        trace = False and not g.unitTesting
+        at = self ; c = at.c
+        for p in root.self_and_subtree():
+            # Call at.terminateNode if v.tempBodyList exists.
+            if hasattr(p.v,'tempBodyList'):
+                at.terminateNode(v=p.v)
+                    # Sets v.tempBodyString and clears v.tempBodyList.
+            assert not hasattr(p.v,'tempBodyList')
+            if hasattr(p.v,'tempBodyString'):
+                s = p.v.tempBodyString
+            else: s = ''
+            old_body = p.b
+            if s != old_body:
+                if thinFile:
+                    p.v.setBodyString(s)
+                    if p.v.isDirty():
+                        p.setAllAncestorAtFileNodesDirty()
+                else:
+                    c.setBodyString(p,s) # Sets c and p dirty.
+
+                if p.v.isDirty():
+                    # New in Leo 4.3: support for mod_labels plugin:
+                    try:
+                        c.mod_label_controller.add_label(p,"before change:",old_body)
+                    except Exception:
+                        pass
+                    # 2010/02/05: This warning is given elsewhere.
+                    # g.es("changed:",p.h,color="blue")
+    #@-node:ekr.20050301105854:at.copyAllTempBodyStringsToVnodes
+    #@+node:ekr.20041005105605.119:at.createImportedNode
+    def createImportedNode (self,root,headline):
+
+        at = self
+
+        if at.importRootSeen:
+            p = root.insertAsLastChild()
+            p.initHeadString(headline)
+        else:
+            # Put the text into the already-existing root node.
+            p = root
+            at.importRootSeen = True
+
+        p.v.setVisited() # Suppress warning about unvisited node.
+        return p
+    #@-node:ekr.20041005105605.119:at.createImportedNode
     #@+node:ekr.20041005105605.120:at.parseLeoSentinel
     def parseLeoSentinel (self,s):
 
@@ -2388,6 +2309,32 @@ class atFile:
         if trace: g.trace('valid',valid,'isThin',isThinDerivedFile)
         return valid,new_df,start,end,isThinDerivedFile
     #@-node:ekr.20041005105605.120:at.parseLeoSentinel
+    #@+node:ekr.20041005105605.127:at.readError
+    def readError(self,message):
+
+        # This is useful now that we don't print the actual messages.
+        if self.errors == 0:
+            self.printError("----- read error. line: %s, file: %s" % (
+                self.lineNumber,self.targetFileName,))
+
+        # g.trace(self.root,g.callers())
+        self.error(message)
+
+        # Delete all of root's tree.
+        self.root.v.children = []
+        self.root.setOrphan()
+        self.root.setDirty()
+    #@-node:ekr.20041005105605.127:at.readError
+    #@+node:ekr.20041005105605.128:at.readLine
+    def readLine (self,theFile):
+
+        """Reads one line from file using the present encoding"""
+
+        s = g.readlineForceUnixNewline(theFile) # calls theFile.readline
+        # g.trace(repr(s),g.callers(4))
+        u = g.toUnicode(s,self.encoding)
+        return u
+    #@-node:ekr.20041005105605.128:at.readLine
     #@+node:ekr.20041005105605.129:at.scanHeader
     def scanHeader(self,theFile,fileName):
 
@@ -2451,80 +2398,6 @@ class atFile:
         # g.trace(fileName,firstLines)
         return firstLines,new_df,isThinDerivedFile
     #@-node:ekr.20041005105605.129:at.scanHeader
-    #@+node:ekr.20050301105854:at.copyAllTempBodyStringsToVnodes
-    def  copyAllTempBodyStringsToVnodes (self,root,thinFile):
-
-        trace = False and not g.unitTesting
-        at = self ; c = at.c
-        for p in root.self_and_subtree():
-            # Call at.terminateNode if v.tempBodyList exists.
-            if hasattr(p.v,'tempBodyList'):
-                at.terminateNode(v=p.v)
-                    # Sets v.tempBodyString and clears v.tempBodyList.
-            assert not hasattr(p.v,'tempBodyList')
-            if hasattr(p.v,'tempBodyString'):
-                s = p.v.tempBodyString
-            else: s = ''
-            old_body = p.b
-            if s != old_body:
-                if thinFile:
-                    p.v.setBodyString(s)
-                    if p.v.isDirty():
-                        p.setAllAncestorAtFileNodesDirty()
-                else:
-                    c.setBodyString(p,s) # Sets c and p dirty.
-
-                if p.v.isDirty():
-                    # New in Leo 4.3: support for mod_labels plugin:
-                    try:
-                        c.mod_label_controller.add_label(p,"before change:",old_body)
-                    except Exception:
-                        pass
-                    # 2010/02/05: This warning is given elsewhere.
-                    # g.es("changed:",p.h,color="blue")
-    #@-node:ekr.20050301105854:at.copyAllTempBodyStringsToVnodes
-    #@+node:ekr.20041005105605.119:at.createImportedNode
-    def createImportedNode (self,root,headline):
-
-        at = self
-
-        if at.importRootSeen:
-            p = root.insertAsLastChild()
-            p.initHeadString(headline)
-        else:
-            # Put the text into the already-existing root node.
-            p = root
-            at.importRootSeen = True
-
-        p.v.setVisited() # Suppress warning about unvisited node.
-        return p
-    #@-node:ekr.20041005105605.119:at.createImportedNode
-    #@+node:ekr.20041005105605.127:at.readError
-    def readError(self,message):
-
-        # This is useful now that we don't print the actual messages.
-        if self.errors == 0:
-            self.printError("----- read error. line: %s, file: %s" % (
-                self.lineNumber,self.targetFileName,))
-
-        # g.trace(self.root,g.callers())
-        self.error(message)
-
-        # Delete all of root's tree.
-        self.root.v.children = []
-        self.root.setOrphan()
-        self.root.setDirty()
-    #@-node:ekr.20041005105605.127:at.readError
-    #@+node:ekr.20041005105605.128:at.readLine
-    def readLine (self,theFile):
-
-        """Reads one line from file using the present encoding"""
-
-        s = g.readlineForceUnixNewline(theFile) # calls theFile.readline
-        # g.trace(repr(s),g.callers(4))
-        u = g.toUnicode(s,self.encoding)
-        return u
-    #@-node:ekr.20041005105605.128:at.readLine
     #@+node:ekr.20050103163224:at.scanHeaderForThin (used by import code)
     # Note: Import code uses this.
 
@@ -2556,6 +2429,145 @@ class atFile:
             i += 1
         return i
     #@-node:ekr.20041005105605.131:at.skipIndent
+    #@+node:ekr.20100702062857.5824:at.terminateBody
+    def terminateBody (self,v,postPass=False):
+
+        '''Terminate the scanning of body text for node v.'''
+
+        at = self
+
+        hasString  = hasattr(v,'tempBodyString')
+        hasList    = hasattr(v,'tempBodyList')
+        tempString = hasString and v.tempBodyString or ''
+        tempList   = hasList and ''.join(v.tempBodyList) or ''
+
+        # The old temp text is *always* in tempBodyString.
+        new = g.choose(at.readVersion5,tempList,''.join(at.out))
+        new = g.toUnicode(new)
+        old = tempString or v.getBody()
+
+        # Warn if the body text has changed.
+        # Don't warn about the root node.
+        if v != at.root.v and old != new:
+            if postPass:
+                warn = old # The previous text must exist.
+            else:
+                warn = old and new # Both must exit.
+            if warn:
+                at.indicateNodeChanged(old,new,postPass,v)
+
+        # *Always* put the new text into tempBodyString.
+        v.tempBodyString = new
+
+        # *Always delete tempBodyList.  Do not leave this lying around!
+        if hasList: delattr(v,'tempBodyList')
+    #@-node:ekr.20100702062857.5824:at.terminateBody
+    #@+node:ekr.20100628072537.5814:at.terminateNode & helpers
+    def terminateNode (self,middle=False,v=None):
+
+        '''Set the body text of at.v, and issue warning if it has changed.'''
+
+        at = self
+        trace = False and at.readVersion5 and not g.unitTesting
+        postPass = v is not None
+            # A little kludge: v is given only when this is called
+            # from copyAllTempBodyStringsToVnodes.
+        if not v: v = at.v
+
+        if at.readVersion5:
+            # A vital assertion.
+            # We must not terminate a node before the post pass.
+            assert postPass
+
+        # Get the temp attributes.
+        hasString  = hasattr(v,'tempBodyString')
+        hasList    = hasattr(v,'tempBodyList')
+        tempString = hasString and v.tempBodyString or ''
+        tempList   = hasList and ''.join(v.tempBodyList) or ''
+
+        # Compute the new text.
+        new = g.choose(at.readVersion5,tempList,''.join(at.out))
+        new = g.toUnicode(new)
+        if trace:
+            # g.trace('%28s %s' % (v.h,g.callers(5)))
+            g.trace('%28s %s' % (v.h,repr(new)))
+
+        if at.importing:
+            v._bodyString = new # Allowed use of _bodyString.
+        elif middle: 
+            pass # Middle sentinels never alter text.
+        else:
+            at.terminateBody(v,postPass)
+
+        # *Always delete tempBodyList.  Do not leave this lying around!
+        if hasattr(v,'tempBodyList'): delattr(v,'tempBodyList')
+    #@+node:ekr.20100628124907.5816:at.indicateNodeChanged
+    def indicateNodeChanged (self,old,new,postPass,v):
+
+        at = self ; c = at.c
+
+        if at.perfectImportRoot:
+            if not postPass:
+                at.correctedLines += 1
+                at.reportCorrection(old,new,v)
+                v._bodyString = new # Allowed use of _bodyString.
+                    # Just setting v.tempBodyString won't work here.
+                v.setDirty()
+                    # Mark the node dirty. Ancestors will be marked dirty later.
+                c.setChanged(True)
+        else:
+            # Do nothing if only trailing whitespace is involved.
+            if new.endswith('\n') and old == new[:-1]: return
+            if old.endswith('\n') and new == old[:-1]: return
+            # if old == new.rstrip(): return
+            # if new == old.rstrip(): return
+
+            c.nodeConflictList.append(g.bunch(
+                tag='(uncached)',
+                gnx=v.gnx,
+                fileName = at.root.h,
+                b_old=old,
+                b_new=new,
+                h_old=v._headString,
+                h_new=v._headString,
+            ))
+
+            if not g.unitTesting:
+                g.es_print("uncached read node changed",v.h,color="red")
+
+            v.setDirty()
+                # Just set the dirty bit. Ancestors will be marked dirty later.
+            c.changed = True
+                # Important: the dirty bits won't stick unless we set c.changed here.
+                # Do *not* call c.setChanged(True) here: that would be too slow.
+    #@-node:ekr.20100628124907.5816:at.indicateNodeChanged
+    #@+node:ekr.20100628124907.5818:at.reportCorrection
+    def reportCorrection (self,old,new,v):
+
+        at = self
+        found = False
+        for p in at.perfectImportRoot.self_and_subtree():
+            if p.v == v:
+                found = True ; break
+
+        if found:
+            if 0: # For debugging.
+                g.pr('\n','-' * 40)
+                g.pr("old",len(old))
+                for line in g.splitLines(old):
+                    #line = line.replace(' ','< >').replace('\t','<TAB>')
+                    g.pr(repr(str(line)))
+                g.pr('\n','-' * 40)
+                g.pr("new",len(new))
+                for line in g.splitLines(new):
+                    #line = line.replace(' ','< >').replace('\t','<TAB>')
+                    g.pr(repr(str(line)))
+                g.pr('\n','-' * 40)
+        else:
+            # This should never happen.
+            g.es("correcting hidden node: v=",repr(v),color="red")
+    #@-node:ekr.20100628124907.5818:at.reportCorrection
+    #@-node:ekr.20100628072537.5814:at.terminateNode & helpers
     #@-node:ekr.20041005105605.116:Reading utils...
     #@-node:ekr.20041005105605.17:at.Reading
     #@+node:ekr.20041005105605.132:at.Writing
