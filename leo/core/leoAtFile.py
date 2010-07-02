@@ -1323,14 +1323,11 @@ class atFile:
 
         at = self
 
-        if at.readVersion5:
-            assert g.match(s,i,"+node "),'bad start node sentinel'
-            i += 6 # Eating the space is essential.
-        elif middle:
+        if middle:
             assert g.match(s,i,"+middle:"),'missing +middle'
             i += 8
         else:
-            # if not g.match(s,i,'+node:'): g.trace(repr(s[i:i+40]),g.callers(5))
+            if not g.match(s,i,'+node:'): g.trace(repr(s[i:i+40]),g.callers(5))
             assert g.match(s,i,"+node:"),'missing +node:'
             i += 6
 
@@ -1384,15 +1381,26 @@ class atFile:
             if not g.match(s,j,': '):
                 return oops('Expecting space after gnx')
             i = j + 2
-            level = 0
-            while i < len(s) and s[i] == '*':
-                i += 1
-                level += 1
-            if level == 0:
+            if not g.match(s,i,'*'):
                 return oops('No level stars')
-            if not g.match(s,i,' '):
-                return oops('No space after level stars')
             i += 1
+            if g.match(s,i,' '):
+                level = 1 ; i += 1
+            elif g.match(s,i,'* '):
+                level = 2 ; i += 2
+            else:
+                # The level stars have the form *N*.
+                level = 0  ; j = i
+                while i < len(s) and s[i].isdigit():
+                    i += 1
+                if i > j:
+                    level = int(s[j:i])
+                else:
+                    return oops('No level number')
+                if g.match(s,i,'* '):
+                    i += 2
+                else:
+                    return oops('No space after level stars')
         else: # not readVersion5.
             i = j + 1 # Skip the gnx.
             level = 0
@@ -4193,7 +4201,10 @@ class atFile:
                 level = 1 + p.level() - self.root.level()
                 stars = '*' * level
                 if 1: # Put the gnx in the traditional place.
-                    return "%s: %s %s" % (gnx,stars,h)
+                    if level > 2:
+                        return "%s: *%s* %s" % (gnx,level,h)
+                    else:
+                        return "%s: %s %s" % (gnx,stars,h)
                 else: # Hide the gnx to the right.
                     pad = max(1,100-len(stars)-len(h)) * ' '
                     return '%s %s%s::%s' % (stars,h,pad,gnx)
@@ -4281,9 +4292,7 @@ class atFile:
 
         s = at.nodeSentinelText(p)
 
-        if new_write:
-            at.putSentinel('@+node %s' % s)
-        elif middle:
+        if middle:
             at.putSentinel("@+middle:" + s)
         else:
             at.putSentinel("@+node:" + s)
