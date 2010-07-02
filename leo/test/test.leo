@@ -545,8 +545,11 @@
 <v t="ekr.20100519083913.2163"><vh>2-2</vh></v>
 </v>
 <v t="ekr.20100519083913.2164"><vh>1-2</vh></v>
+<v t="ekr.20100702113214.2191"><vh>&lt;&lt; nested sentinels test &gt;&gt;</vh>
+<v t="ekr.20100702113214.2192"><vh>&lt;&lt; inner nested sentinels test &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20100630124508.2190"><vh>@thin sentinels_test.py</vh></v>
+</v>
+<v t="ekr.20100702113422.2196"><vh>@thin sentinels_test.py</vh></v>
 <v t="ekr.20100625072850.2179"><vh>@test new sentinels</vh></v>
 </vnodes>
 <tnodes>
@@ -968,7 +971,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="15"></t>
+<t tx="ekr.20070416075121" str_leo_pos="14"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5826,6 +5829,8 @@ if 1:
 if 0:
     @others
 # after others.
+
+&lt;&lt; nested sentinels test &gt;&gt; # after nested sentinels test
 </t>
 <t tx="ekr.20100519083913.2159">a-1
 </t>
@@ -6423,6 +6428,8 @@ c.redraw()
 
 </t>
 <t tx="ekr.20100630124326.2188">import sys</t>
+<t tx="ekr.20100702113214.2191">&lt;&lt; inner nested sentinels test &gt;&gt; # after inner nested sentinels.</t>
+<t tx="ekr.20100702113214.2192"># in inner nested sentinels test.</t>
 <t tx="node:ekr.20100519083913.2158"># a before
 @others
 # a after</t>

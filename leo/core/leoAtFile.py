@@ -283,7 +283,10 @@ class atFile:
         self.indentStack = []
         self.inputFile = None
         self.lastLines = [] # The lines after @-leo
-        self.lastRefNode = None # The previous reference node, for at.readAfterRef.
+        self.lastRefNode = None
+            # The previous reference node, for at.readAfterRef.
+            # No stack is needed because -<< sentinels restore at.v
+            # to the node needed by at.readAfterRef.
         self.lastThinNode = None
             # The last thin node at this level.
             # Used by createThinChild4.
@@ -1751,6 +1754,7 @@ class atFile:
         """Read an @afterref sentinel."""
 
         at = self
+        trace = False and not g.unitTesting
         assert g.match(s,i,"afterref"),'missing afterref'
 
         # Append the next line to the text.
@@ -1763,10 +1767,11 @@ class atFile:
 
         if at.readVersion5:
             if hasList and at.v.tempBodyList:
+                # Remove the trailing newline.
                 s2 = at.v.tempBodyList[-1]
-                if s2.endswith('\n'):
-                    at.v.tempBodyList[-1] = s2[:-1]
-                g.trace(repr(s2))
+                if s2.endswith('\n'): s2 = s2[:-1]
+                at.v.tempBodyList[-1] = s2
+                if trace: g.trace('v: %30s %s' % (at.v.h,repr(s2+s)))
 
         at.appendToOut(s)
     #@-node:ekr.20041005105605.102:at.readAfterRef
