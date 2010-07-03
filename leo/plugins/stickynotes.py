@@ -429,6 +429,12 @@ class Tabula(QMainWindow):
         self.load_states()
         self.setWindowTitle("Tabula " + os.path.basename(self.c.mFileName))
 
+        def on_quit(tag, kw):
+            # saving when hidden nukes all
+            if self.isVisisble():
+                self.save_states()
+        leoPlugins.registerHandler("end1",on_quit)
+
     def add_note(self, p):
         #g.pdb()
         gnx = p.gnx
@@ -444,13 +450,13 @@ class Tabula(QMainWindow):
         n.show()
         return n
 
+    def closeEvent(self, event):
+        self.save_states()
+
     def save_states(self):
         # n.parent() because the wrapper QMdiSubWindow holds the geom relative to parent
         geoms = dict((gnx, n.parent().saveGeometry()) for (gnx, n) in self.notes.items() if n.isVisible())
         self.c.cacher.db['tabulanotes'] = geoms
-
-    def closeEvent(self, event):
-        self.save_states()
 
     def load_states(self):
         try:
