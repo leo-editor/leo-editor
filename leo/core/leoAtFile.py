@@ -250,7 +250,6 @@ class atFile:
         self.root_seen = False # True: root vnode has been handled in this file.
         self.toString = False # True: sring-oriented read or write.
         self.writing_to_shadow_directory = False
-        #@nonl
         #@-node:ekr.20041005105605.12:<< init common ivars >>
         #@nl
     #@-node:ekr.20041005105605.10:initCommonIvars
@@ -1115,7 +1114,6 @@ class atFile:
         # New code: always identify root @thin node with self.root:
         at.lastThinNode = None
         at.thinNodeStack = []
-        #@nonl
         #@-node:ekr.20041005105605.75:<< init ivars for scanText4 >>
         #@nl
         if trace: g.trace('filename:',fileName)
@@ -1290,7 +1288,6 @@ class atFile:
 
         # The last node is the node at the top of the stack.
         at.lastThinNode = at.thinNodeStack[-1]
-    #@nonl
     #@-node:ekr.20100630144047.5783:at.changeLevel
     #@+node:ekr.20100625085138.5957:at.createNewThinNode
     def createNewThinNode (self,gnx,headline,level):
@@ -1750,7 +1747,6 @@ class atFile:
     #@-node:ekr.20041005105605.90:end sentinels
     #@+node:ekr.20041005105605.100:Unpaired sentinels
     # Ooops: shadow files are cleared if there is a read error!!
-    #@nonl
     #@+node:ekr.20041005105605.101:at.ignoreOldSentinel
     def  ignoreOldSentinel (self,s,unused_i):
 
@@ -2987,7 +2983,6 @@ class atFile:
 
         at = self
         at.writeAtAutoNodesHelper(writeDirtyOnly=True)
-    #@nonl
     #@+node:ekr.20070806140208:at.writeAtAutoNodesHelper
     def writeAtAutoNodesHelper(self,toString=False,writeDirtyOnly=True):
 
@@ -3132,7 +3127,6 @@ class atFile:
 
         at = self
         return at.writeAtShadowNodesHelper(writeDirtyOnly=True)
-    #@nonl
     #@+node:ekr.20080711093251.4:at.writeAtShadowNodesHelper
     def writeAtShadowNodesHelper(self,toString=False,writeDirtyOnly=True):
 
@@ -4024,7 +4018,6 @@ class atFile:
 
             at.os(s)
             if not s.endswith('\n'): at.onl()
-            #@nonl
             #@-node:ekr.20100629190353.5831:<< write the line as is >>
             #@nl
         else:
@@ -4396,7 +4389,6 @@ class atFile:
                 j,g.choose(j==i,'*',' '),lines[j].rstrip()))
             if j == i:
                 g.es_print(' '*(7+offset)+'^')
-    #@nonl
     #@-node:ekr.20090514111518.5666:syntaxError (leoAtFile)
     #@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
     #@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
@@ -4444,7 +4436,6 @@ class atFile:
             g.trace("unexpected exception")
             g.es_exception()
             if suppress: raise
-    #@nonl
     #@-node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
     #@-node:ekr.20090514111518.5661:checkPythonCode (leoAtFile) & helpers
     #@+node:ekr.20080712150045.3:closeStringFile
@@ -4524,7 +4515,6 @@ class atFile:
             equal = s1 == s2
         # g.trace('equal',equal,'ignoreLineEndings',ignoreLineEndings,'encoding',at.encoding)
         return equal
-    #@nonl
     #@-node:ekr.20041005105605.197:compareFiles
     #@+node:ekr.20041005105605.198:directiveKind4 (write logic)
     def directiveKind4(self,s,i):

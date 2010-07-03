@@ -2054,7 +2054,6 @@ class colorizer:
                     if len(list(self.fonts.keys())) > 1: # Restore the default font.
                         # g.trace('default',key)
                         w.tag_config(key,font=defaultBodyfont)
-            #@nonl
             #@-node:ekr.20060829084924:<< configure fonts >> (revise,maybe)
             #@nl
             #@<< configure tags >>
@@ -2187,7 +2186,6 @@ class colorizer:
             self.hyperCount = 0 # Number of hypertext tags
             self.count += 1
             lines = self.allBodyText.split('\n')
-            #@nonl
             #@-node:ekr.20031218072017.1602:<< initialize ivars & tags >> colorizeAnyLanguage
             #@nl
             g.doHook("init-color-markup",colorer=self,p=self.p,v=self.p)
@@ -2394,7 +2392,6 @@ class colorizer:
             #@+node:ekr.20031218072017.1888:<< update state ivars >>
             self.last_flag = self.flag
             self.last_language = self.language
-            #@nonl
             #@-node:ekr.20031218072017.1888:<< update state ivars >>
             #@nl
             return "ok" # for testing.
