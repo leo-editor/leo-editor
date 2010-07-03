@@ -250,7 +250,6 @@ def stickynote_f(event):
 def mknote(c,p, parent = None):
     """ Launch editable 'sticky note' for the node """
 
-    p = c.p
     v = p.v
     def focusin():
         #print "focus in"
@@ -414,17 +413,51 @@ if encOK:
 #@-node:tbrown.20100120100336.7830:sn_de/encode
 #@+node:ville.20100703194946.5584:class Tabula
 class Tabula(QMainWindow):
-    def __init__(self):
+    def __init__(self, c):
         QMainWindow.__init__(self)
         mdi = self.mdi = QMdiArea(self)
         self.setCentralWidget(mdi)
+        self.notes = {}
+        self.c = c
+        self.load_states()
 
-    def add_note(self, c, p):
+    def add_note(self, p):
         #g.pdb()
-        n = mknote(c, p, parent = self.mdi)
-        self.mdi.addSubWindow(n)
+        gnx = p.gnx
+        if gnx in self.notes:
+            self.notes[gnx].show()
+            return
 
+        n = mknote(self.c, p, parent = self.mdi)
+        self.mdi.addSubWindow(n)
+        self.notes[gnx] = n
         n.show()
+        return n
+
+    def save_states(self):
+        geoms = dict((gnx, n.saveGeometry()) for (gnx, n) in self.notes.items())
+        self.c.cacher.db['tabulanotes'] = geoms
+
+    def load_states(self):
+        try:
+
+            stored = self.c.cacher.db['tabulanotes']
+        except KeyError:
+            #empty
+            return
+
+        ncache = dict((p.gnx, p.copy()) for p in self.c.all_unique_positions())
+
+        for gnx, geom in stored.items():
+            po = ncache[gnx]
+
+            print "add",gnx, po.h
+            n = self.add_note(ncache[gnx])
+            n.restoreGeometry(geom)
+        print stored
+
+
+
 #@-node:ville.20100703194946.5584:class Tabula
 #@+node:ville.20100703194946.5585:@g.command('tabula')
 @g.command('tabula')
@@ -433,11 +466,12 @@ def tabula_f(event):
     try:
        t = c.tabula
     except AttributeError:
-        t = c.tabula = Tabula() 
+        t = c.tabula = Tabula(c) 
     p = c.p
     v = p.v
     t.show()
-    t.add_note(c,p)
+    t.add_note(p)
+    t.save_states()
 
 
 #@-node:ville.20100703194946.5585:@g.command('tabula')
