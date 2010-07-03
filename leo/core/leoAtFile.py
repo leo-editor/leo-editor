@@ -5562,8 +5562,8 @@ class atFile:
 
             cc = self
 
-            fn1 = g.os_path_finalize_join(g.app.loadDir,'%s.py' % (fn))
-            fn2 = g.os_path_finalize_join(g.app.loadDir,'stripped','%s.py' % (fn))
+            fn1 = g.os_path_finalize_join(g.app.loadDir,fn)
+            fn2 = g.os_path_finalize_join(g.app.loadDir,'stripped',fn)
 
             if not g.os_path_exists(fn1):
                 print('not found',fn1) ; return
@@ -5659,7 +5659,7 @@ class atFile:
             except AssertionError:
                 print('old: %s %s' % (old_i,repr(old_s)))
                 print('new: %s %s' % (new_i,repr(new_s)))
-                raise
+                return False
 
             return True
         #@nonl
