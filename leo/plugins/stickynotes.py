@@ -50,7 +50,7 @@ from leo.core import leoPlugins
 
 g.assertUi('qt')
 
-import sys
+import sys,os
 import webbrowser
 
 encOK = False
@@ -68,7 +68,7 @@ from PyQt4.QtCore import (QSize, QString, QVariant, Qt, SIGNAL, QTimer)
 from PyQt4.QtGui import (QAction, QApplication, QColor, QFont,
         QFontMetrics, QIcon, QKeySequence, QMenu, QPixmap, QTextCursor,
         QTextCharFormat, QTextBlockFormat, QTextListFormat,QTextEdit,
-        QPlainTextEdit, QInputDialog)
+        QPlainTextEdit, QInputDialog, QMainWindow, QMdiArea)
 #@nonl
 #@-node:vivainio2.20091008133028.5823:<< imports >>
 #@nl
@@ -110,10 +110,11 @@ def init ():
 #@+node:ville.20091008210853.7616:class FocusingPlainTextEdit
 class FocusingPlaintextEdit(QPlainTextEdit):
 
-    def __init__(self, focusin, focusout):
-        QPlainTextEdit.__init__(self)        
+    def __init__(self, focusin, focusout, closed = None, parent = None):
+        QPlainTextEdit.__init__(self, parent)        
         self.focusin = focusin
         self.focusout = focusout
+        self.closed = closed
 
     def focusOutEvent (self, event):
         #print "focus out"
@@ -124,9 +125,9 @@ class FocusingPlaintextEdit(QPlainTextEdit):
 
     def closeEvent(self, event):
         event.accept()
+        if self.closed:
+            self.closed()
         self.focusout()
-
-
 #@-node:ville.20091008210853.7616:class FocusingPlainTextEdit
 #@+node:ville.20091023181249.5264:class SimpleRichText
 class SimpleRichText(QTextEdit):
@@ -369,6 +370,124 @@ if encOK:
         if len(__ENCKEY[0]) != 32:
             raise Exception("sn_getenckey failed to build key")
 #@-node:tbrown.20100120100336.7830:sn_de/encode
+#@+node:ville.20100703234124.9976:Tabula
+#@+node:ville.20100703194946.5587:def mknote
+def mknote(c,p, parent = None):
+    """ Launch editable 'sticky note' for the node """
+
+    v = p.v
+    def focusin():
+        #print "focus in"
+        if v is c.p.v:
+            nf.setPlainText(v.b)
+            nf.setWindowTitle(p.h)
+            nf.dirty = False
+
+    def focusout():
+        #print "focus out"
+        if not nf.dirty:
+            return
+        v.b = nf.toPlainText()
+        v.setDirty()
+        nf.dirty = False
+        p = c.p
+        if p.v is v:
+            c.selectPosition(c.p)
+
+
+    def closeevent():
+        print "closeevent"
+
+
+    nf = FocusingPlaintextEdit(focusin, focusout, closeevent, parent = parent)
+    nf.dirty = False
+    #decorate_window(nf)
+    nf.setWindowTitle(p.h)
+    nf.setPlainText(p.b)
+    p.setDirty()
+
+    def textchanged_cb():
+        nf.dirty = True
+
+    nf.connect(nf,
+        SIGNAL("textChanged()"),textchanged_cb)
+
+    nf.show()
+
+    g.app.stickynotes[p.gnx] = nf
+    return nf
+#@-node:ville.20100703194946.5587:def mknote
+#@+node:ville.20100703194946.5584:class Tabula
+class Tabula(QMainWindow):
+
+    def __init__(self, c):
+        QMainWindow.__init__(self)
+        mdi = self.mdi = QMdiArea(self)
+        self.setCentralWidget(mdi)
+        self.notes = {}
+        self.c = c
+        self.load_states()
+        self.setWindowTitle("Tabula " + os.path.basename(self.c.mFileName))
+
+    def add_note(self, p):
+        #g.pdb()
+        gnx = p.gnx
+        if gnx in self.notes:
+            n = self.notes[gnx]
+            n.show()
+            return n
+
+        n = mknote(self.c, p, parent = self.mdi)
+        sw = self.mdi.addSubWindow(n)
+        sw.setAttribute(Qt.WA_DeleteOnClose, False)
+        self.notes[gnx] = n
+        n.show()
+        return n
+
+    def save_states(self):
+        # n.parent() because the wrapper QMdiSubWindow holds the geom relative to parent
+        geoms = dict((gnx, n.parent().saveGeometry()) for (gnx, n) in self.notes.items() if n.isVisible())
+        self.c.cacher.db['tabulanotes'] = geoms
+
+    def closeEvent(self, event):
+        self.save_states()
+
+    def load_states(self):
+        try:
+
+            stored = self.c.cacher.db['tabulanotes']
+        except KeyError:
+            #empty
+            return
+
+        # still think leo should maintain a dict like this
+        ncache = dict((p.gnx, p.copy()) for p in self.c.all_unique_positions())
+
+        for gnx, geom in stored.items():
+            po = ncache[gnx]
+
+            n = self.add_note(ncache[gnx])
+            n.parent().restoreGeometry(geom)
+
+        #print stored
+#@-node:ville.20100703194946.5584:class Tabula
+#@+node:ville.20100703194946.5585:@g.command('tabula')
+@g.command('tabula')
+def tabula_f(event):
+    """ Show "tabula" - a MDI window with stickynotes that remember their status """
+    c= event['c']
+    try:
+       t = c.tabula
+    except AttributeError:
+        t = c.tabula = Tabula(c) 
+    p = c.p
+    v = p.v
+    t.show()
+    t.add_note(p)
+
+
+#@-node:ville.20100703194946.5585:@g.command('tabula')
+#@-node:ville.20100703234124.9976:Tabula
 #@-others
 #@nonl
 #@-node:ekr.20100103093121.5329:@thin stickynotes.py
