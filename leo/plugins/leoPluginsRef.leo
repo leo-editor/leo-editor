@@ -103,7 +103,7 @@
 <v t="ekr.20041017035937"><vh>@thin table.py</vh></v>
 </v>
 </v>
-<v t="edream.110203113231.729" a="E"><vh>Debugging</vh>
+<v t="edream.110203113231.729"><vh>Debugging</vh>
 <v t="edream.110203113231.730"><vh>@thin dump_globals.py</vh></v>
 <v t="edream.110203113231.732"><vh>@thin enable_gc.py</vh></v>
 <v t="edream.110203113231.734"><vh>@thin quit_leo.py</vh></v>
@@ -112,7 +112,7 @@
 <v t="edream.110203113231.736"><vh>@thin trace_keys.py</vh></v>
 <v t="edream.110203113231.738"><vh>@thin trace_tags.py</vh></v>
 <v t="ekr.20040205071616"><vh>@thin mnplugins.py</vh></v>
-<v t="ekr.20060513122613" a="E"><vh>xcc plugin</vh>
+<v t="ekr.20060513122613"><vh>xcc plugin</vh>
 <v t="ekr.20060513122613.1"><vh>Examples</vh>
 <v t="ekr.20060513122613.2"><vh>@xcc OpenGl.h</vh>
 <v t="ekr.20060513122613.3"><vh>USE_OPENGL</vh></v>
@@ -149,9 +149,9 @@
 <v t="ekr.20060513122613.22"></v>
 </v>
 </v>
-<v t="ekr.20060514125256" a="E"><vh>Recent</vh>
-<v t="ekr.20060513122450.295" a="E"><vh>Selected Node Funcs</vh>
-<v t="ekr.20060513122450.296" a="E"><vh>sGatherInfo NOT CALLED</vh>
+<v t="ekr.20060514125256"><vh>Recent</vh>
+<v t="ekr.20060513122450.295"><vh>Selected Node Funcs</vh>
+<v t="ekr.20060513122450.296"><vh>sGatherInfo NOT CALLED</vh>
 <v t="ekr.20060513122450.297"><vh>Head</vh></v>
 <v t="ekr.20060513122450.298"><vh>Dicts</vh></v>
 <v t="ekr.20060513122450.299"><vh>File Creation</vh></v>
@@ -274,8 +274,7 @@
 <v t="ekr.20060513122450.86"><vh>Show</vh></v>
 </v>
 </v>
-<v t="ekr.20060513122450"
-expanded="ekr.20060513122450.295,ekr.20060513122450.296,"><vh>@thin xcc_nodes.py</vh></v>
+<v t="ekr.20060513122450"><vh>@thin xcc_nodes.py</vh></v>
 </v>
 </v>
 <v t="ekr.20060703162826"><vh>Dialogs</vh>
@@ -351,8 +350,8 @@ expanded="ekr.20060513122450.295,ekr.20060513122450.296,"><vh>@thin xcc_nodes.py
 </v>
 <v t="ekr.20050402080206.8"><vh>@thin LeoN.py</vh></v>
 </v>
-<v t="EKR.20040517080555" a="E"><vh>Menus &amp; translations</vh>
-<v t="ekr.20090701111504.5294" a="E"><vh>@thin contextmenu.py</vh></v>
+<v t="EKR.20040517080555"><vh>Menus &amp; translations</vh>
+<v t="ekr.20090701111504.5294"><vh>@thin contextmenu.py</vh></v>
 <v t="ekr.20040828122150"><vh>@thin pie_menus.py</vh></v>
 <v t="EKR.20040517080555.36"><vh>@thin scripts_menu.py</vh></v>
 </v>
@@ -805,7 +804,8 @@ expanded="ekr.20060513122450.295,ekr.20060513122450.296,"><vh>@thin xcc_nodes.py
 <v t="tbrown.20100318101414.5990"
 marks="tbrown.20100318101414.5993,tbrown.20100318101414.5994,tbrown.20100318101414.5998,"><vh>@thin viewrendered.py</vh></v>
 <v t="ekr.20100103093121.5329" a="E"
-marks="vivainio2.20091008133028.5823,vivainio2.20091008140054.14555,ville.20091008210853.7616,ville.20091023181249.5264,vivainio2.20091008133028.5825,ville.20091023181249.5266,"><vh>@thin stickynotes.py</vh></v>
+marks="vivainio2.20091008133028.5823,vivainio2.20091008140054.14555,ville.20091008210853.7616,ville.20091023181249.5264,vivainio2.20091008133028.5825,ville.20091023181249.5266,"
+expanded="ville.20100703234124.9976,"><vh>@thin stickynotes.py</vh></v>
 <v t="ekr.20100103093121.5339"><vh>@thin stickynotes_plus.py</vh></v>
 <v t="ekr.20070119094733.1"><vh>@thin dtest.py</vh></v>
 </v>
