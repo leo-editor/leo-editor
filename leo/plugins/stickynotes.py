@@ -425,8 +425,9 @@ class Tabula(QMainWindow):
         #g.pdb()
         gnx = p.gnx
         if gnx in self.notes:
-            self.notes[gnx].show()
-            return
+            n = self.notes[gnx]
+            n.show()
+            return n
 
         n = mknote(self.c, p, parent = self.mdi)
         self.mdi.addSubWindow(n)
@@ -435,7 +436,7 @@ class Tabula(QMainWindow):
         return n
 
     def save_states(self):
-        geoms = dict((gnx, n.saveGeometry()) for (gnx, n) in self.notes.items())
+        geoms = dict((gnx, n.parent().saveGeometry()) for (gnx, n) in self.notes.items())
         self.c.cacher.db['tabulanotes'] = geoms
 
     def load_states(self):
@@ -451,9 +452,9 @@ class Tabula(QMainWindow):
         for gnx, geom in stored.items():
             po = ncache[gnx]
 
-            print "add",gnx, po.h
             n = self.add_note(ncache[gnx])
-            n.restoreGeometry(geom)
+            n.parent().restoreGeometry(geom)
+            print "geom", n.geometry()
         print stored
 
 
