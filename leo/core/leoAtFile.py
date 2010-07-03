@@ -5562,30 +5562,125 @@ class atFile:
 
         def __init__ (self,c):
             self.c = c
-            self.at = c.atFileCommands
+            self.at = at = c.atFileCommands
+            self.old_sentinels = (
+                # These appear only in old files.
+                at.endNode,at.endAt,at.endDoc,at.startNonl,at.startNl)
+            self.new_sentinels = (at.endRef,)
+                # These appear only in new files.
 
         #@    @+others
         #@+node:ekr.20100702115533.5827:compare
         def compare (self,fn):
 
             cc = self
+
             fn1 = g.os_path_finalize_join(g.app.loadDir,fn)
             fn2 = g.os_path_finalize_join(g.app.loadDir,'stripped',fn)
 
             if cc.ignore(fn):
                 print('** skipping',fn)
             elif not g.os_path_exists(fn1):
-                print('** missing',fn1)
+                print('** missing',fn1) # full path.
             elif not g.os_path_exists(fn2):
-                print('** missing ',fn)
+                print('** missing ',fn) # short path.
             else:
                 print('   checking',fn)
                 s1 = open(fn1).read()
                 s2 = open(fn2).read()
-                cc.compareNormalLines(s1,s2)
-                cc.compareSentinelLines(s1,s2)
+                if 1: # unified compare: not ready yet.
+                    cc.compareLines(s1,s2)
+                else: # separate compares.
+                    cc.compareNormalLines(s1,s2)
+                    cc.compareSentinelLines(s1,s2)
         #@-node:ekr.20100702115533.5827:compare
-        #@+node:ekr.20100702115533.5828:compareNormalLines & helper
+        #@+node:ekr.20100703060610.5911:compareLines (unified) & helper
+        def compareLines (self,old,new):
+
+            cc = self ; at = cc.at
+
+            try:
+                at.startSentinelComment = '#'
+                old_lines = g.splitLines(old)
+                new_lines = g.splitLines(new)
+                old_i = new_i = 0
+                while old_i < len(old_lines):
+                    old_progress,new_progress = old_i,new_i
+                    old_i,new_i = cc.compareLine(old_i,new_i,old_lines,new_lines)
+                    assert old_progress < old_i or new_progress < new_i,'progress'
+                assert new_i == len(new_lines),'trailing new lines'
+
+            except AssertionError:
+                old_s = old_lines[old_i]
+                new_s = new_lines[new_i]
+                (typ,value, traceback) = sys.exc_info()
+                print('assert failed',value)
+                print('old: %s %s' % (old_i,repr(old_s)))
+                print('new: %s %s' % (new_i,repr(new_s)))
+        #@+node:ekr.20100703060610.5913:compareLine
+        def compareLine (self,old_i,new_i,old_lines,new_lines):
+
+            cc = self ; at = cc.at
+            old_s = old_lines[old_i]
+            new_s = new_lines[new_i]
+            old_kind = at.sentinelKind4(old_s)
+            new_kind = at.sentinelKind4(new_s)
+            if not old_s.strip():
+                old_i += 1
+            elif not new_s.strip():
+                new_i += 1
+            elif old_kind == at.noSentinel:
+                if old_s.lstrip().startswith('#'):
+                    old_i,new_i = cc.checkComments(old_i,new_i,old_lines,new_lines)
+                else:
+                    assert old_s == new_s,'normal line mismatch'
+                    old_i += 1 ; new_i += 1
+            elif old_kind in cc.old_sentinels:
+                old_i += 1 # Not in new files.
+            elif new_kind in cc.new_sentinels:
+                new_i += 1 # Not in old files.
+            elif old_kind == new_kind:
+                old_i += 1
+                new_i += 1
+                if old_kind == at.startNode:
+                    cc.checkStartNode(old_s,new_s)
+            else:
+                print('*** sentinel kind mismatch')
+                assert False,'old_kind: %s, new_kind: %s' % (
+                    at.sentinelName(old_kind),at.sentinelName(new_kind))
+
+            return old_i,new_i
+        #@-node:ekr.20100703060610.5913:compareLine
+        #@+node:ekr.20100703060610.5914:checkComments
+        def checkComments (self,old_i,new_i,old_lines,new_lines):
+
+            '''Check a range of comments.'''
+
+            cc = self ; at = cc.at
+
+            def get_plain_comments(i,lines):
+                comments = []
+                while i < len(lines):
+                    s = lines[i]
+                    kind = at.sentinelKind4(s)
+                    if not s.lstrip():
+                        i += 1
+                    elif s.lstrip().startswith('#') and kind == at.noSentinel:
+                        s = s.lstrip()
+                        comments.append(s[1:])
+                        i += 1
+                    else: break
+                s = ''.join(comments).replace(' ','').replace('\t','').replace('\n','')
+                return i,s
+
+            old_i,old_comments = get_plain_comments(old_i,old_lines)
+            new_i,new_comments = get_plain_comments(new_i,new_lines)
+            assert old_comments == new_comments,'plain comment mismatch\nold: %s\n\nnew: %s' % (
+                old_comments,new_comments)
+            return old_i,new_i
+        #@-node:ekr.20100703060610.5914:checkComments
+        #@-node:ekr.20100703060610.5911:compareLines (unified) & helper
+        #@+node:ekr.20100702115533.5828:compareNormalLines
         def compareNormalLines (self,s1,s2):
 
             cc = self
@@ -5600,27 +5695,8 @@ class atFile:
                     print('\nold: %s %s' % (i,repr(line1)))
                     print('new: %s %s' % (i,repr(line2)))
                     return
-        #@+node:ekr.20100702115533.5825:removeComments
-        def removeComments(self,source):
-
-            aList = []
-            verbatim = False # True if @verbatim seen.
-
-            for s in g.splitLines(source):
-                if not s.strip(): continue
-                if verbatim:
-                    aList.append(s)
-                    verbatim = False
-                if s.lstrip().startswith('#@verbatim'):
-                    verbatim = True
-                elif s.lstrip().startswith('#'):
-                    continue # We don't check doc parts.
-                else: aList.append(s)
-
-            return aList
-        #@-node:ekr.20100702115533.5825:removeComments
-        #@-node:ekr.20100702115533.5828:compareNormalLines & helper
-        #@+node:ekr.20100702115533.5829:compareSentinelLines & helpers
+        #@-node:ekr.20100702115533.5828:compareNormalLines
+        #@+node:ekr.20100702115533.5829:compareSentinelLines
         def compareSentinelLines (self,old,new):
 
             '''Compare sentinels lines in files containing old and new sentinels.'''
@@ -5631,8 +5707,6 @@ class atFile:
             new_lines = cc.removeNormalLines(new)
             at.startSentinelComment = '#'
             old_i = new_i = 0
-            old_sentinels = (at.endNode,at.endAt,at.endDoc,at.startNonl,at.startNl)
-            new_sentinels = (at.endRef,)
             try:
                 while old_i < len(old_lines):
                     old_progress,new_progress = old_i,new_i
@@ -5640,9 +5714,9 @@ class atFile:
                     new_s = new_lines[new_i]
                     old_kind = at.sentinelKind4(old_s)
                     new_kind = at.sentinelKind4(new_s)
-                    if old_kind in old_sentinels:
+                    if old_kind in cc.old_sentinels:
                         old_i += 1 # Not in new files.
-                    elif new_kind in new_sentinels:
+                    elif new_kind in cc.new_sentinels:
                         new_i += 1 # Not in old files.
                     elif old_kind == new_kind:
                         old_i += 1
@@ -5657,6 +5731,22 @@ class atFile:
             except AssertionError:
                 print('old: %s %s' % (old_i,repr(old_s)))
                 print('new: %s %s' % (new_i,repr(new_s)))
+        #@-node:ekr.20100702115533.5829:compareSentinelLines
+        #@+node:ekr.20100703060610.5870:ignore
+        def ignore (self,fn):
+
+            '''Return True if we should not check fn.'''
+
+            files = (
+                'leoDebugger.py',
+                    # Unknown source.
+                'leoAtFile.py',
+                    # This has passed, and it keeps changing.
+            )
+
+            return fn.startswith('leo_') or fn in files
+        #@-node:ekr.20100703060610.5870:ignore
+        #@+node:ekr.20100703060610.5912:helpers
         #@+node:ekr.20100702115533.6254:checkStartNode
         def checkStartNode (self,old_s,new_s):
 
@@ -5678,27 +5768,32 @@ class atFile:
             assert old_gnx == new_gnx,'old_gnx: %s new_gnx: %s' % (old_gnx,new_gnx)
             # assert old_level == new_level,'level'
         #@-node:ekr.20100702115533.6254:checkStartNode
+        #@+node:ekr.20100702115533.5825:removeComments
+        def removeComments(self,source):
+
+            aList = []
+            verbatim = False # True if @verbatim seen.
+
+            for s in g.splitLines(source):
+                if not s.strip(): continue
+                if verbatim:
+                    aList.append(s)
+                    verbatim = False
+                if s.lstrip().startswith('#@verbatim'):
+                    verbatim = True
+                elif s.lstrip().startswith('#'):
+                    continue # We don't check doc parts.
+                else: aList.append(s)
+
+            return aList
+        #@-node:ekr.20100702115533.5825:removeComments
         #@+node:ekr.20100702115533.5920:removeNormalLines
         def removeNormalLines(self,source):
 
             return [s for s in g.splitLines(source)
                         if s.lstrip().startswith('#@')]
         #@-node:ekr.20100702115533.5920:removeNormalLines
-        #@-node:ekr.20100702115533.5829:compareSentinelLines & helpers
-        #@+node:ekr.20100703060610.5870:ignore
-        def ignore (self,fn):
-
-            '''Return True if we should not check fn.'''
-
-            files = (
-                'leoDebugger.py',
-                    # Unknown source.
-                'leoAtFile.py',
-                    # This has passed, and it keeps changing.
-            )
-
-            return fn.startswith('leo_') or fn in files
-        #@-node:ekr.20100703060610.5870:ignore
+        #@-node:ekr.20100703060610.5912:helpers
         #@+node:ekr.20100703060610.5869:run
         def run (self):
 
