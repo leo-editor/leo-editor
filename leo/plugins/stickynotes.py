@@ -417,6 +417,28 @@ def mknote(c,p, parent = None):
     g.app.stickynotes[p.gnx] = nf
     return nf
 #@-node:ville.20100703194946.5587:def mknote
+#@+node:ville.20100704010850.5589:def tabula_show
+def tabula_show(c):
+    try:
+       t = c.tabula
+    except AttributeError:
+        t = c.tabula = Tabula(c) 
+    t.show()
+    return t
+
+#@-node:ville.20100704010850.5589:def tabula_show
+#@+node:ville.20100703194946.5585:@g.command('tabula')
+@g.command('tabula')
+def tabula_f(event):
+    """ Show "tabula" - a MDI window with stickynotes that remember their status """
+    c= event['c']
+    t = tabula_show(c)
+    p = c.p
+    v = p.v
+    t.add_note(p)
+
+
+#@-node:ville.20100703194946.5585:@g.command('tabula')
 #@+node:ville.20100703194946.5584:class Tabula
 class Tabula(QMainWindow):
 
@@ -428,6 +450,12 @@ class Tabula(QMainWindow):
         self.c = c
         self.load_states()
         self.setWindowTitle("Tabula " + os.path.basename(self.c.mFileName))
+
+        def on_quit(tag, kw):
+            # saving when hidden nukes all
+            if self.isVisisble():
+                self.save_states()
+        leoPlugins.registerHandler("end1",on_quit)
 
     def add_note(self, p):
         #g.pdb()
@@ -444,13 +472,13 @@ class Tabula(QMainWindow):
         n.show()
         return n
 
+    def closeEvent(self, event):
+        self.save_states()
+
     def save_states(self):
         # n.parent() because the wrapper QMdiSubWindow holds the geom relative to parent
         geoms = dict((gnx, n.parent().saveGeometry()) for (gnx, n) in self.notes.items() if n.isVisible())
         self.c.cacher.db['tabulanotes'] = geoms
-
-    def closeEvent(self, event):
-        self.save_states()
 
     def load_states(self):
         try:
@@ -471,22 +499,14 @@ class Tabula(QMainWindow):
 
         #print stored
 #@-node:ville.20100703194946.5584:class Tabula
-#@+node:ville.20100703194946.5585:@g.command('tabula')
-@g.command('tabula')
-def tabula_f(event):
-    """ Show "tabula" - a MDI window with stickynotes that remember their status """
+#@+node:ville.20100704010850.5588:@g.command('tabula-show')
+@g.command('tabula-show')
+def tabula_show_f(event):
     c= event['c']
-    try:
-       t = c.tabula
-    except AttributeError:
-        t = c.tabula = Tabula(c) 
-    p = c.p
-    v = p.v
-    t.show()
-    t.add_note(p)
 
-
-#@-node:ville.20100703194946.5585:@g.command('tabula')
+    tabula_show(c)
+#@nonl
+#@-node:ville.20100704010850.5588:@g.command('tabula-show')
 #@-node:ville.20100703234124.9976:Tabula
 #@-others
 #@nonl
