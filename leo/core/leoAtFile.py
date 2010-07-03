@@ -5553,6 +5553,13 @@ class atFile:
     #@+node:ekr.20100702115533.5826:at.compareClass (unit testing)
     class compareClass:
 
+        '''A class to compare files containing old and new sentinels.
+
+        Run the tests from an @test node as follows::
+
+            c.atFileCommands.compareClass(c).run()
+        '''
+
         def __init__ (self,c):
             self.c = c
             self.at = c.atFileCommands
@@ -5562,29 +5569,21 @@ class atFile:
         def compare (self,fn):
 
             cc = self
-
             fn1 = g.os_path_finalize_join(g.app.loadDir,fn)
             fn2 = g.os_path_finalize_join(g.app.loadDir,'stripped',fn)
 
-            if not g.os_path_exists(fn1):
-                print('not found',fn1) ; return
-            if not g.os_path_exists(fn2):
-                print('** missing ',fn) ; return
-
-            print('   checking',fn)
-
-            s1 = open(fn1).read()
-            s2 = open(fn2).read()
-
-            ok1 = cc.compareNormalLines(s1,s2)
-            ok2 = cc.compareSentinelLines(s1,s2)
-
-            # assert ok1,'ok1'
-            # assert ok2,'ok2'
-
-
-
-
+            if cc.ignore(fn):
+                print('** skipping',fn)
+            elif not g.os_path_exists(fn1):
+                print('** missing',fn1)
+            elif not g.os_path_exists(fn2):
+                print('** missing ',fn)
+            else:
+                print('   checking',fn)
+                s1 = open(fn1).read()
+                s2 = open(fn2).read()
+                cc.compareNormalLines(s1,s2)
+                cc.compareSentinelLines(s1,s2)
         #@-node:ekr.20100702115533.5827:compare
         #@+node:ekr.20100702115533.5828:compareNormalLines & helper
         def compareNormalLines (self,s1,s2):
@@ -5600,9 +5599,7 @@ class atFile:
                 if line1 != line2:
                     print('\nold: %s %s' % (i,repr(line1)))
                     print('new: %s %s' % (i,repr(line2)))
-                    return False
-
-            return True
+                    return
         #@+node:ekr.20100702115533.5825:removeComments
         def removeComments(self,source):
 
@@ -5660,10 +5657,6 @@ class atFile:
             except AssertionError:
                 print('old: %s %s' % (old_i,repr(old_s)))
                 print('new: %s %s' % (new_i,repr(new_s)))
-                return False
-
-            return True
-        #@nonl
         #@+node:ekr.20100702115533.6254:checkStartNode
         def checkStartNode (self,old_s,new_s):
 
@@ -5716,10 +5709,7 @@ class atFile:
 
             for fn in files:
                 fn = g.shortFileName(fn)
-                if cc.ignore(fn):
-                    print('** skipping',fn)
-                else:
-                    cc.compare(fn)
+                cc.compare(fn)
         #@-node:ekr.20100703060610.5869:run
         #@-others
     #@-node:ekr.20100702115533.5826:at.compareClass (unit testing)
