@@ -32,7 +32,7 @@
 <v t="ekr.20090430075506.4"><vh>Notes &amp; to-do</vh>
 <v t="ekr.20090430075506.3"><vh>@thin leoPluginNotes.txt</vh></v>
 </v>
-<v t="edream.110203113231.618"><vh>Plugins</vh>
+<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
 <v t="ekr.20041114102139"><vh>Notes</vh>
@@ -728,7 +728,7 @@
 <v t="ekr.20050130120433"><vh>@thin test/failed_import.py</vh></v>
 <v t="ekr.20080214092357"><vh>@thin test/ekr_test.py</vh></v>
 </v>
-<v t="ekr.20050306081349"><vh>Text formatting</vh>
+<v t="ekr.20050306081349" a="E"><vh>Text formatting</vh>
 <v t="mork.20041010095009"><vh>@thin xsltWithNodes.py</vh></v>
 <v t="ekr.20040331071919"><vh>Leo to AsciiDoc</vh>
 <v t="ekr.20050128070307"><vh>@url http://www.marshallresearch.com/michael-dawson/os/leo.html</vh></v>
@@ -803,8 +803,8 @@
 </v>
 <v t="tbrown.20100318101414.5990"
 marks="tbrown.20100318101414.5993,tbrown.20100318101414.5994,tbrown.20100318101414.5998,"><vh>@thin viewrendered.py</vh></v>
-<v t="ekr.20100103093121.5329"
-marks="vivainio2.20091008133028.5823,vivainio2.20091008140054.14555,ville.20091008210853.7616,ville.20091023181249.5264,vivainio2.20091008133028.5825,ville.20091023181249.5266,"><vh>@thin stickynotes.py</vh></v>
+<v t="ekr.20100103093121.5329" a="E"
+marks="vivainio2.20091008133028.5823,vivainio2.20091008140054.14555,ville.20091008210853.7616,ville.20091023181249.5264,vivainio2.20091008133028.5825,ville.20100703194946.5587,ville.20091023181249.5266,"><vh>@thin stickynotes.py</vh></v>
 <v t="ekr.20100103093121.5339"><vh>@thin stickynotes_plus.py</vh></v>
 <v t="ekr.20070119094733.1"><vh>@thin dtest.py</vh></v>
 </v>
