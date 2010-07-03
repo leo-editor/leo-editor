@@ -110,7 +110,6 @@ class leoGui:
         'setScript',
         'widget_name',
     )
-    #@nonl
     #@-node:ekr.20061109211054:leoGui.mustBeDefinedOnlyInBaseClass
     #@+node:ekr.20061109211022:leoGui.mustBeDefinedInSubclasses
     mustBeDefinedInSubclasses = (
@@ -247,7 +246,6 @@ class leoGui:
     def runPropertiesDialog(self,title='Properties', data={}, callback=None, buttons=None):
         """Dispay a modal TkPropertiesDialog"""
         self.oops()
-    #@nonl
     #@-node:ekr.20031218072017.3730:app.gui dialogs
     #@+node:ekr.20061031173016:app.gui.createKeyHandlerClass
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
@@ -257,7 +255,6 @@ class leoGui:
         # import leo.core.leoKeys as leoKeys # Do this here to break a circular dependency.
 
         # return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
-    #@nonl
     #@-node:ekr.20061031173016:app.gui.createKeyHandlerClass
     #@+node:ekr.20031218072017.3731:app.gui file dialogs
     def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
@@ -425,7 +422,6 @@ class leoGui:
     def finishCreate (self):
 
         pass
-    #@nonl
     #@-node:ekr.20070219084912:finishCreate (may be overridden in subclasses)
     #@+node:ekr.20031218072017.3741:oops
     def oops (self):
@@ -485,7 +481,6 @@ class leoGui:
             else:
                 return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (
                     repr(self.char),repr(self.keysym))
-    #@nonl
     #@-node:ekr.20070228160107:class leoKeyEvent (leoGui)
     #@-node:ekr.20070228154059:May be defined in subclasses
     #@-others
@@ -517,7 +512,6 @@ class nullGui(leoGui):
         import leo.core.leoKeys as leoKeys # Do this here to break a circular dependency.
 
         return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
-    #@nonl
     #@-node:ekr.20070123092623:nullGui.createKeyHandlerClass
     #@+node:ekr.20031218072017.2229:runMainLoop
     def runMainLoop(self):

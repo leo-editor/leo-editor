@@ -474,7 +474,6 @@ class parserBaseClass:
                 g.pr('')
                 g.trace(level,kind,'...')
                 self.dumpMenuList(val,level+1)
-    #@nonl
     #@-node:ekr.20070926142312:dumpMenuList
     #@-node:ekr.20070925144337.2:doMenus & helpers (ParserBaseClass)
     #@+node:ekr.20060102103625.1:doMode (ParserBaseClass)
@@ -666,7 +665,6 @@ class parserBaseClass:
             else:
                 # g.trace('***skipping***',p.h)
                 p.moveToThreadNext()
-    #@nonl
     #@-node:bobjack.20080324141020.5:doPopupItems
     #@-node:bobjack.20080324141020.4:doPopup & helper
     #@+node:tbrown.20080514112857.124:doMenuat
@@ -736,7 +734,6 @@ class parserBaseClass:
         for i in "*.-& \t\n":
             val = val.replace(i,'')
         return val.lower()
-    #@nonl
     #@-node:tbrown.20080514180046.9:getName
     #@+node:tbrown.20080514180046.2:dumpMenuTree
     def dumpMenuTree (self,aList,level=0,path=''):
@@ -1346,7 +1343,6 @@ class configClass:
             g.trace('home file:',self.homeFile)
             g.trace('myGlobal file:',self.myGlobalConfigFile)
             g.trace('myHome file:',self.myHomeConfigFile)
-    #@nonl
     #@-node:ekr.20041117083857:initSettingsFiles
     #@-node:ekr.20041117083202:Birth... (g.app.config)
     #@+node:ekr.20041117081009:Getters... (g.app.config)
@@ -2047,7 +2043,6 @@ class configClass:
                 if ok: seen.append(path)
         if not seen and self.write_recent_files_as_needed:
             self.createRecentFiles()
-    #@nonl
     #@+node:ekr.20061010121944:createRecentFiles
     def createRecentFiles (self):
 
@@ -2066,7 +2061,6 @@ class configClass:
                 except Exception:
                     g.es_print('can not create',fileName,color='red')
                     g.es_exception()
-    #@nonl
     #@-node:ekr.20061010121944:createRecentFiles
     #@+node:ekr.20050424115658:readRecentFilesFile
     def readRecentFilesFile (self,path):
@@ -2092,7 +2086,6 @@ class configClass:
                 self.appendToRecentFiles(lines)
 
         return ok
-    #@nonl
     #@-node:ekr.20050424115658:readRecentFilesFile
     #@-node:ekr.20070224115832:readRecentFiles & helpers
     #@+node:ekr.20050424114937.2:writeRecentFilesFile & helper

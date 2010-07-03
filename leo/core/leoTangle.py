@@ -2028,7 +2028,6 @@ class baseTangleCommands:
                 if self.tangling and code and code == part.code:
                     s = g.angleBrackets(section.name)
                     g.es('warning: possible duplicate definition of:',s)
-            #@nonl
             #@-node:ekr.20031218072017.3533:<<check for duplicate code definitions >>
             #@nl
         if code or doc:
@@ -3212,7 +3211,6 @@ class baseTangleCommands:
         val = int(s[j:i])
         # g.trace(s[j:i],val)
         return i, val
-    #@nonl
     #@-node:ekr.20031218072017.3593:scan_short_val
     #@+node:ekr.20031218072017.3594:setRootFromHeadline
     def setRootFromHeadline (self,p):

@@ -64,7 +64,6 @@ class baseEditCommandsClass:
         '''Called from k.keyboardQuit to init all classes.'''
 
         pass
-    #@nonl
     #@-node:ekr.20050920084036.2: ctor, finishCreate, init (baseEditCommandsClass)
     #@+node:ekr.20051214132256:begin/endCommand (baseEditCommands)
     #@+node:ekr.20051214133130:beginCommand  & beginCommandWithEvent
@@ -150,7 +149,6 @@ class baseEditCommandsClass:
             c.widgetWantsFocusNow(self.w)
 
         return self.w
-    #@nonl
     #@-node:ekr.20061007105001:editWidget (baseEditCommandsClass)
     #@+node:ekr.20050920084036.5:getPublicCommands & getStateCommands
     def getPublicCommands (self):
@@ -371,7 +369,6 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 p.b = w.getAllText()
                 c.undoer.afterChangeNodeContents(p,
                     command='dabbrev-completion',bunch=b,dirtyVnodeList=[]) 
-    #@nonl
     #@-node:ekr.20050920084036.60:dynamicCompletion
     #@+node:ekr.20050920084036.59:dynamicExpansion
     def dynamicExpansion (self,event=None):
@@ -424,7 +421,6 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 i,j = g.getWord(s,ins)
                 w.delete(i,j)
                 w.insert(i,k.arg)
-    #@nonl
     #@-node:ekr.20070605110441:dynamicExpandHelper
     #@-node:ekr.20050920084036.59:dynamicExpansion
     #@+node:ekr.20050920084036.61:getDynamicList (helper)
@@ -691,7 +687,6 @@ class bufferCommandsClass (baseEditCommandsClass):
             self.endCommand()
             c.redraw_after_icons_changed()
             c.recolor()
-    #@nonl
     #@-node:ekr.20050920084036.35:appendToBuffer
     #@+node:ekr.20050920084036.36:copyToBuffer
     def copyToBuffer (self,event):
@@ -742,7 +737,6 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.seeInsertPoint()
             self.endCommand()
             c.redraw_after_icons_changed()
-    #@nonl
     #@-node:ekr.20050920084036.37:insertToBuffer
     #@+node:ekr.20050920084036.38:killBuffer
     def killBuffer (self,event):
@@ -1314,7 +1308,6 @@ class debugCommandsClass (baseEditCommandsClass):
     def pdb (self,event=None):
 
         g.pdb()
-    #@nonl
     #@-node:ekr.20090226080753.8:pdb
     #@+node:ekr.20060210100432:printFocus
     # Doesn't work if the focus isn't in a pane with bindings!
@@ -1604,7 +1597,6 @@ class editCommandsClass (baseEditCommandsClass):
 
         # g.trace()
         pass
-    #@nonl
     #@-node:ekr.20061012113455:doNothing
     #@-node:ekr.20050929155208: birth
     #@+node:ekr.20100209160132.5763:cache (leoEditCommands)
@@ -1752,7 +1744,6 @@ class editCommandsClass (baseEditCommandsClass):
         c.widgetWantsFocusNow(pane)
         k.newMinibufferWidget = pane
         k.showStateAndMode()
-    #@nonl
     #@-node:ekr.20051022144825.1:cycleFocus
     #@+node:ekr.20060613090701:cycleAllFocus
     editWidgetCount = 0
@@ -1822,7 +1813,6 @@ class editCommandsClass (baseEditCommandsClass):
             k.newMinibufferWidget = pane
             c.widgetWantsFocusNow(pane)
             k.showStateAndMode()
-    #@nonl
     #@-node:ekr.20060613090701:cycleAllFocus
     #@+node:ekr.20051022144825:focusTo...
     def focusToBody (self,event):
@@ -1950,7 +1940,6 @@ class editCommandsClass (baseEditCommandsClass):
         ins = w.getInsertPoint()
         row,col = g.convertPythonIndexToRowCol(s,ins)
         self.ccolumn = col
-    #@nonl
     #@-node:ekr.20050920084036.133:setCommentColumn
     #@+node:ekr.20050920084036.134:indentToCommentColumn
     def indentToCommentColumn (self,event):
@@ -2051,7 +2040,6 @@ class editCommandsClass (baseEditCommandsClass):
                 k.setLabelGrey('Eval: %s -> %s' % (e,result))
             except Exception:
                 k.setLabelGrey('Invalid Expression: %s' % e)
-    #@nonl
     #@-node:ekr.20050920084036.65:evalExpression
     #@+node:ekr.20050920084036.66:fill column and centering
     #@+at
@@ -2186,7 +2174,6 @@ class editCommandsClass (baseEditCommandsClass):
 
     def findCharacterExtendSelection (self,event):
         return self.findCharacterHelper(event,backward=False,extend=True)
-    #@nonl
     #@+node:ekr.20060417194232.1:findCharacterHelper
     def findCharacterHelper (self,event,backward,extend):
 
@@ -2224,7 +2211,6 @@ class editCommandsClass (baseEditCommandsClass):
                 if j > -1: self.moveToHelper(event,j,extend)
             k.resetLabel()
             k.clearState()
-    #@nonl
     #@-node:ekr.20060417194232.1:findCharacterHelper
     #@-node:ekr.20060925151926:backward/findCharacter & helper
     #@+node:ekr.20060417194232.2:findWord and FindWordOnLine & helper
@@ -2473,7 +2459,6 @@ class editCommandsClass (baseEditCommandsClass):
             self.setIconList(p, aList[1:])
             c.setChanged(True)
             c.redraw_after_icons_changed()
-    #@nonl
     #@-node:ekr.20071114082418:deleteFirstIcon
     #@+node:ekr.20071114092622:deleteIconByName
     def deleteIconByName (self,t,name,relPath): ### t not used.
@@ -2502,7 +2487,6 @@ class editCommandsClass (baseEditCommandsClass):
             c.redraw_after_icons_changed()
         else:
             g.trace('not found',name)
-    #@nonl
     #@-node:ekr.20071114092622:deleteIconByName
     #@+node:ekr.20071114085054:deleteLastIcon
     def deleteLastIcon (self,event=None):
@@ -2515,7 +2499,6 @@ class editCommandsClass (baseEditCommandsClass):
             self.setIconList(p, aList[:-1])
             c.setChanged(True)
             c.redraw_after_icons_changed()
-    #@nonl
     #@-node:ekr.20071114085054:deleteLastIcon
     #@+node:ekr.20071114082418.1:deleteNodeIcons
     def deleteNodeIcons (self,event=None):
@@ -3015,7 +2998,6 @@ class editCommandsClass (baseEditCommandsClass):
         brackets = self.openBracketsList + self.closeBracketsList
         inBrackets = ch and g.toUnicode(ch) in brackets
         # if trace: g.trace(name,repr(ch),ch and ch in brackets)
-        #@nonl
         #@-node:ekr.20061103114242:<< set local vars >>
         #@nl
         if trace: g.trace('ch',repr(ch),'keysym',repr(keysym)) # ,'stroke',repr(stroke))
@@ -3508,7 +3490,6 @@ class editCommandsClass (baseEditCommandsClass):
         self.moveSpotNode = p.v
 
         # g.trace('moveSpot',i)
-    #@nonl
     #@-node:ekr.20060209095101:setMoveCol
     #@-node:ekr.20051218170358: general helpers
     #@+node:ekr.20081123102100.1:backToHome
@@ -3775,7 +3756,6 @@ class editCommandsClass (baseEditCommandsClass):
         i1 = 1 + s.rfind('.',0,i2-1)
 
         w.setSelectionRange(i1,i2)
-    #@nonl
     #@-node:ekr.20061007214835.4:extend-to-sentence
     #@+node:ekr.20060116074839.2:extend-to-word
     def extendToWord (self,event,direction='forward'):
@@ -3806,7 +3786,6 @@ class editCommandsClass (baseEditCommandsClass):
             i += 1
 
         w.setSelectionRange(i1,i)
-    #@nonl
     #@-node:ekr.20060116074839.2:extend-to-word
     #@+node:ekr.20050920084036.140:movePastClose & helper
     def movePastClose (self,event):
@@ -4135,7 +4114,6 @@ class editCommandsClass (baseEditCommandsClass):
             i += 1
 
         self.moveToHelper(event,i,extend)
-    #@nonl
     #@-node:ekr.20051218121447:moveWordHelper
     #@-node:ekr.20050920084036.149:words & helper
     #@-node:ekr.20050929114218:move cursor... (leoEditCommands)
@@ -5145,7 +5123,6 @@ class editFileCommandsClass (baseEditCommandsClass):
         c.selectPosition(parent)
         u.afterChangeGroup(parent,undoType,reportFlag=True) 
         c.redraw()
-    #@nonl
     #@+node:ekr.20070921074410:createCompareClones
     def createCompareClones (self,d,kind,parent):
 
@@ -5180,7 +5157,6 @@ class editFileCommandsClass (baseEditCommandsClass):
             return c2
         else:
             return None
-    #@nonl
     #@-node:ekr.20070921070101:createHiddenCommander
     #@+node:ekr.20070921070101.1:createFileDict
     def createFileDict (self,c):
@@ -5471,7 +5447,6 @@ class helpCommandsClass (baseEditCommandsClass):
             # key is a function that extracts args.
 
         return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data])
-    #@nonl
     #@-node:ekr.20060417203717:helpForCommand
     #@+node:ekr.20060226131603.1:aproposAutocompletion
     # @pagewidth 40
@@ -6189,7 +6164,6 @@ class killBufferCommandsClass (baseEditCommandsClass):
             return val
 
         __next__ = next
-        #@nonl
         #@-node:ekr.20071003160252.2:next
         #@-others
 
@@ -6664,7 +6638,6 @@ class macroCommandsClass (baseEditCommandsClass):
 
         if self.lastMacro:
             self.executeMacro(self.lastMacro)
-    #@nonl
     #@-node:ekr.20050920084036.202:callLastKeyboardMacro
     #@+node:ekr.20050920084036.194:callNamedMacro
     def callNamedMacro (self,event):
@@ -6849,7 +6822,6 @@ class macroCommandsClass (baseEditCommandsClass):
             self.macro.append(event)
     #@-node:ekr.20050920084036.204:startKbdMacro
     #@-others
-#@nonl
 #@-node:ekr.20050920084036.190:macroCommandsClass
 #@+node:ekr.20050920084036.221:rectangleCommandsClass
 class rectangleCommandsClass (baseEditCommandsClass):
@@ -7672,7 +7644,6 @@ class minibufferFind (baseEditCommandsClass):
             self.updateChangeList(k.arg)
             self.lastStateHelper()
             self.generalChangeHelper(self._sString,k.arg,changeAll=True)
-    #@nonl
     #@-node:ekr.20070105123800:changeAll (minibufferFind)
     #@+node:ekr.20060128080201:cloneFindAll
     def cloneFindAll (self,event):
@@ -8392,7 +8363,6 @@ class searchCommandsClass (baseEditCommandsClass):
             if trace: g.trace('event',event)
             k.updateLabel(event)
             self.iSearch()
-    #@nonl
     #@-node:ekr.20050920084036.264:iSearchStateHandler
     #@+node:ekr.20090204084607.4:iSearchBackspace
     def iSearchBackspace (self):
@@ -8885,7 +8855,6 @@ class spellTabHandler (leoFind.leoFind):
                 if trace: g.trace(0,0,'-->',p.h)
 
         return None,None,None,None
-    #@nonl
     #@-node:ekr.20051025071455.47:findNextWord (spellTab)
     #@-node:ekr.20051025071455.40:find & helpers
     #@+node:ekr.20051025121408:hide
@@ -9146,7 +9115,6 @@ class AspellClass:
                 if x is None: break
                 aList.append(x)
         return aList
-    #@nonl
     #@-node:ekr.20061018101455.4:suggestions
     #@+node:ekr.20051025071455.11:updateDictionary
     def updateDictionary(self):

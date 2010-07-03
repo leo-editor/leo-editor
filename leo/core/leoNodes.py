@@ -28,7 +28,6 @@ if g.app and g.app.use_psyco:
 import time
 import re
 import itertools
-#@nonl
 #@-node:ekr.20060904165452.1:<< imports >>
 #@nl
 
@@ -156,7 +155,6 @@ class nodeIndices (object):
             except Exception:
                 g.trace('double exception: returning original index')
                 return repr(index)
-    #@nonl
     #@-node:ekr.20031218072017.1999:toString
     #@-others
 #@-node:ekr.20031218072017.1991:class nodeIndices
@@ -271,7 +269,6 @@ class position (object):
             return x1 > x2
         else:
             return True
-    #@nonl
     #@-node:ekr.20091210082012.6233:p.__gt__
     #@+node:ekr.20040117170612:p.__getattr__ (no longer used)
     # No longer used.  All code must now be aware of the one-node world.
@@ -289,7 +286,6 @@ class position (object):
                 # print("unknown position attribute: %s" % attr)
                 # import traceback ; traceback.print_stack()
             # raise AttributeError(attr)
-    #@nonl
     #@-node:ekr.20040117170612:p.__getattr__ (no longer used)
     #@+node:ekr.20040117173448:p.__nonzero__ & __bool__
     #@+at
@@ -357,7 +353,6 @@ class position (object):
 
         aList.reverse()
         return aList
-    #@nonl
     #@-node:ekr.20061006092649:p.archivedPosition
     #@+node:ekr.20040117171654:p.copy
     # Using this routine can generate huge numbers of temporary positions during a tree traversal.
@@ -574,7 +569,6 @@ class position (object):
     # New in Leo 4.4.3:
     hasVisBack = visBack
     hasVisNext = visNext
-    #@nonl
     #@-node:ekr.20031218072017.915:p.getX & vnode compatibility traversal routines
     #@+node:ekr.20080416161551.192:p.hasX
     def hasBack(self):
@@ -631,7 +625,6 @@ class position (object):
         while p.hasBack():
             p.moveToBack()
         return p
-    #@nonl
     #@-node:ekr.20060920203352:p.findRootPosition
     #@+node:ekr.20080416161551.194:p.isAncestorOf
     def isAncestorOf (self, p2):
@@ -815,7 +808,6 @@ class position (object):
         # We can't change this because Leo's core uses
         # p.setDirty and c.setDirty interchangeably.
         p.setDirty()
-    #@nonl
     #@-node:ekr.20040315034158:p.setBodyString & setHeadString
     #@+node:ekr.20040312015908:p.Visited bits
     #@+node:ekr.20040306220634.17:p.clearVisitedInTree
@@ -1072,7 +1064,6 @@ class position (object):
 
     # Compatibility with old code.
     self_and_siblings_iter = self_and_siblings
-    #@nonl
     #@-node:ekr.20091001141621.6057:p.self_and_siblings
     #@+node:ekr.20091001141621.6066:p.self_and_subtree
     def self_and_subtree(self):
@@ -1422,7 +1413,6 @@ class position (object):
             p.v = None
 
         return p
-    #@nonl
     #@-node:ekr.20080416161551.201:p.moveToFirstChild
     #@+node:ekr.20080416161551.202:p.moveToLastChild
     def moveToLastChild (self):
@@ -1673,7 +1663,6 @@ class position (object):
     #@+node:ekr.20080423062035.1:p.Low level methods
     # These methods are only for the use of low-level code
     # in leoNodes.py, leoFileCommands.py and leoUndo.py.
-    #@nonl
     #@+node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
     def _adjustPositionBeforeUnlink (self,p2):
 
@@ -1716,7 +1705,6 @@ class position (object):
             if trace: g.trace('***new stack: %s\n%s' % (
                 p.h,stack))
             p.stack = stack
-    #@nonl
     #@-node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
     #@+node:ekr.20080416161551.214:p._linkAfter
     def _linkAfter (self,p_after,adjust=True):
@@ -1735,7 +1723,6 @@ class position (object):
         child = p.v
         n = p_after._childIndex+1
         child._addLink(n,parent_v,adjust=adjust)
-    #@nonl
     #@-node:ekr.20080416161551.214:p._linkAfter
     #@+node:ekr.20080416161551.215:p._linkAsNthChild
     def _linkAsNthChild (self,parent,n,adjust=True):
@@ -1814,7 +1801,6 @@ class position (object):
             child._cutLink(n,parent_v)
         else:
             self.badUnlink(parent_v,n,child)
-    #@nonl
     #@+node:ekr.20090706171333.6226:p.badUnlink
     def badUnlink (self,parent_v,n,child):
 
@@ -1835,7 +1821,6 @@ class position (object):
             g.trace('parent_v',parent_v,'child',child)
             g.trace('** callers:',g.callers())
             if g.app.unitTesting: assert False, 'bad child index: %s' % (n)
-    #@nonl
     #@-node:ekr.20090706171333.6226:p.badUnlink
     #@-node:ekr.20080416161551.217:p._unlink
     #@-node:ekr.20080423062035.1:p.Low level methods
@@ -1991,7 +1976,6 @@ class vnode (baseVnode):
     if use_zodb and ZODB:
         def __hash__(self):
             return self.__hash__()
-    #@nonl
     #@-node:ekr.20060910100316:v.__hash__ (only for zodb)
     #@-node:ekr.20031218072017.3342:v.Birth & death
     #@+node:ekr.20031218072017.3346:v.Comparisons
@@ -2169,7 +2153,6 @@ class vnode (baseVnode):
             return g.toUnicode(self._bodyString)
 
     getBody = bodyString
-    #@nonl
     #@-node:ekr.20031218072017.3378:v.bodyString
     #@+node:ekr.20031218072017.3360:v.Children
     #@+node:ekr.20031218072017.3362:v.firstChild
@@ -2338,7 +2321,6 @@ class vnode (baseVnode):
 
         if trace: g.trace(nodes)
         return nodes
-    #@nonl
     #@-node:ekr.20090830051712.6153:v.findAllPotentiallyDirtyNodes
     #@+node:ekr.20090830051712.6157:v.setAllAncestorAtFileNodesDirty
     # Unlike p.setAllAncestorAtFileNodesDirty,
@@ -2581,7 +2563,6 @@ class vnode (baseVnode):
         if len(v.parents) == 1:
             for child in v.children:
                 child._addParentLinks(parent=v)
-    #@nonl
     #@-node:ekr.20090804184658.6129:v._addParentLinks
     #@-node:ekr.20090706110836.6135:v._addLink & helper
     #@+node:ekr.20090804184658.6128:v._cutLink
@@ -2601,7 +2582,6 @@ class vnode (baseVnode):
         if len(v.parents) == 0:
             for child in v.children:
                 child._cutParentLinks(parent=v)
-    #@nonl
     #@+node:ekr.20090804190529.6133:v._cutParentLinks
     def _cutParentLinks(self,parent):
 
@@ -2688,9 +2668,7 @@ class vnode (baseVnode):
     #@-node:ekr.20090215165030.1:v.gnx Property
     #@-node:ekr.20090130065000.1:v.Properties
     #@-others
-#@nonl
 #@-node:ekr.20031218072017.3341:class vnode
 #@-others
-#@nonl
 #@-node:ekr.20031218072017.3320:@thin leoNodes.py
 #@-leo

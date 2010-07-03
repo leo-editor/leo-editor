@@ -87,7 +87,6 @@ class shadowController:
         else:
             self.error('Can not compute shadow path: .leo file has not been saved')
             return None
-    #@nonl
     #@-node:ekr.20080711063656.7:x.baseDirName
     #@+node:ekr.20080711063656.4:x.dirName and pathName
     def dirName (self,filename):
@@ -105,7 +104,6 @@ class shadowController:
         x = self ; c = x.c ; theDir = x.baseDirName()
 
         return theDir and c.os_path_finalize_join(theDir,filename)
-    #@nonl
     #@-node:ekr.20080711063656.4:x.dirName and pathName
     #@+node:ekr.20080712080505.3:x.isSignificantPublicFile
     def isSignificantPublicFile (self,fn):
@@ -322,7 +320,6 @@ class shadowController:
         old_old_j, old_i2_modified_lines = -1,-1
 
         tag = old_i = old_j = new_i = new_j = None
-        #@nonl
         #@-node:ekr.20080708094444.40:<< init vars >>
         #@nl
         #@    << define print_tags >>
@@ -827,7 +824,6 @@ class shadowController:
                 g.es_print('can not find',headline)
                 assert False
             return p
-        #@nonl
         #@-node:ekr.20080709062932.19:findNode
         #@+node:ekr.20080709062932.20:createSentinelNode
         def createSentinelNode (self,root,p):
@@ -920,7 +916,6 @@ class shadowController:
 
             assert self.ok
             return self.ok
-        #@nonl
         #@-node:ekr.20080709062932.10:runTest (atShadowTestCase)
         #@+node:ekr.20080709062932.11:shortDescription
         def shortDescription (self):
@@ -979,7 +974,6 @@ class shadowController:
         def isVerbatimSentinel(self,s):
 
             return self.isSentinel(s,suffix='verbatim')
-        #@nonl
         #@-node:ekr.20090529061522.6260:isVerbatimSentinel
         #@-others
 
@@ -1007,7 +1001,6 @@ class shadowController:
             self.length = len(self.lines)
             self.i = 0
             self.shadowController=shadowController
-        #@nonl
         #@-node:ekr.20080708094444.13:__init__
         #@+node:ekr.20080708094444.14:index
         def index (self):
@@ -1044,7 +1037,6 @@ class shadowController:
             sr = self.shadowController.sourcereader(shadowController,self.lines)
             sr.i = self.i
             return sr
-        #@nonl
         #@-node:ekr.20080708094444.19:clone
         #@+node:ekr.20080708094444.20:dump
         def dump(self, title):
@@ -1054,7 +1046,6 @@ class shadowController:
             for i, line in enumerate(self.lines):
                 marker = g.choose(i==self.i,'**','  ')
                 g.pr("%s %3s:%s" % (marker, i, repr(line)),)
-        #@nonl
         #@-node:ekr.20080708094444.20:dump
         #@-others
     #@-node:ekr.20080708094444.12:class sourcereader

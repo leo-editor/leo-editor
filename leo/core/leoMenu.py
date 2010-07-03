@@ -265,7 +265,6 @@ class leoMenu:
             else:
                 result.append(ch)
         return ''.join(result)
-    #@nonl
     #@-node:ekr.20060926213642:capitalizeMinibufferMenuName
     #@+node:ekr.20031218072017.3785:createMenusFromTables & helpers
     def createMenusFromTables (self):
@@ -462,7 +461,6 @@ class leoMenu:
         ):
             menu = self.createNewMenu(name,'C&ursor/Selection...')
             self.createMenuEntries(menu,table)
-    #@nonl
     #@-node:ekr.20050921103736:createCmndsMenuFromTable
     #@+node:ekr.20031218072017.3802:createWindowMenuFromTable
     def createWindowMenuFromTable (self):
@@ -479,7 +477,6 @@ class leoMenu:
         else:
             helpMenu = self.createNewMenu("&Help")
             self.createMenuEntries(helpMenu,self.helpMenuTable)
-    #@nonl
     #@-node:ekr.20031218072017.3803:createHelpMenuFromTable
     #@+node:ekr.20070926135612:createMenusFromConfigList & helpers
     def createMenusFromConfigList (self,aList):
@@ -525,7 +522,6 @@ class leoMenu:
 
         if table:
             self.createMenuEntries(parentMenu,table)
-    #@nonl
     #@-node:ekr.20070927082205:createMenuFromConfigList
     #@+node:ekr.20070927172712:handleSpecialMenus
     def handleSpecialMenus (self,name,parentName,table=None):
@@ -733,7 +729,6 @@ class leoMenu:
         ]
 
         # a,cd,e,f,i,l,m,n,o,r,u,w
-    #@nonl
     #@-node:ekr.20031218072017.3761:defineFileMenuReadWriteMenuTable
     #@+node:ekr.20031218072017.3762:defineFileMenuTangleMenuTable
     def defineFileMenuTangleMenuTable (self):
@@ -932,7 +927,6 @@ class leoMenu:
         self.defineCmdsMenuSpellCheckTable()
         self.defineCmdsMenuTextTable()
         self.defineCmdsMenuToggleTable()
-    #@nonl
     #@+node:ekr.20060117094955.1:defineCmdsMenuAbbrevTable
     def defineCmdsMenuAbbrevTable (self):
 
@@ -961,7 +955,6 @@ class leoMenu:
             '&cycle-editor-focus',
             '&delete-editor',
         ]
-    #@nonl
     #@-node:ekr.20060912093104:defineCmdsMenuBodyEditorsTable
     #@+node:ekr.20060117095212:defineCmdsMenuBufferTable
     def defineCmdsMenuBuffersTable (self):
@@ -1052,7 +1045,6 @@ class leoMenu:
             '-',
             '&next-line-extend-selection',    
         ]
-    #@nonl
     #@-node:ekr.20060924124119:defineCmdsMenuCursorTable
     #@+node:ekr.20060923060822:defineCmdsMenuFocusTable
     def defineCmdsMenuFocusTable (self):
@@ -1103,7 +1095,6 @@ class leoMenu:
             'show-find-&options',
             'show-&fonts',
         ]
-    #@nonl
     #@-node:ekr.20061011085641:defineCmdsMenuPickersTable
     #@+node:ekr.20060117095212.2:defineCmdsMenuRectanglesTable
     def defineCmdsMenuRectanglesTable (self):
@@ -1163,7 +1154,6 @@ class leoMenu:
             'scroll-up-line',
             'scroll-&up-page',
         ]
-    #@nonl
     #@-node:ekr.20060923060822.1:defineCmdsMenuScrollTable
     #@+node:ekr.20060117095212.7:defineCmdsMenuSpellCheckTable
     def defineCmdsMenuSpellCheckTable (self):
@@ -1203,7 +1193,6 @@ class leoMenu:
             'sort-&fields',
             '&sort-lines',
         ]
-    #@nonl
     #@-node:ekr.20060924161901:defineCmdsMenuTextTable
     #@+node:ekr.20060926161940:defineCmdsMenuToggleTable
     def defineCmdsMenuToggleTable (self):

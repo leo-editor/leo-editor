@@ -127,7 +127,6 @@ class LeoApp:
         self.prolog_postfix_string = "?>"
         self.prolog_namespace_string = \
             'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
-        #@nonl
         #@-node:ekr.20031218072017.1417:<< define global constants >>
         #@nl
         #@    << Define global data structures >>
@@ -358,7 +357,6 @@ class LeoApp:
         import leo.core.leoGui as leoGui
 
         g.app.gui = leoGui.nullGui("nullGui")
-    #@nonl
     #@-node:ekr.20090202191501.5:app.createNullGui
     #@+node:ekr.20090619065122.8593:app.createDefaultGui
     def createDefaultGui (self,fileName='',verbose=False):
@@ -769,7 +767,6 @@ class LeoApp:
             leoVer,build,date)
         app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
             n1,n2,n3,guiVersion,sysVersion)
-    #@nonl
     #@-node:ekr.20090717112235.6007:app.computeSignon
     #@+node:ekr.20031218072017.2619:app.writeWaitingLog
     def writeWaitingLog (self,c,forceLog=False):

@@ -149,7 +149,6 @@ class generalTestCase(unittest.TestCase):
 
         # Restore the outline.
         self.c.outerUpdate()
-    #@nonl
     #@-node:ekr.20051104075904.9:tearDown
     #@+node:ekr.20051104075904.8:setUp
     def setUp (self):
@@ -775,7 +774,6 @@ def runTestsExternally (c,all):
                     p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
                 else:
                     p2,limit2,lookForMark2,lookForNodes2 = p,p.nodeAfterTree(),False,True
-            #@nonl
             #@-node:ekr.20070705065154:<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
             #@nl
 
@@ -809,7 +807,6 @@ def runTestsExternally (c,all):
                     else:
                         if trace and verbose: g.trace('skip',p.h)
                         p.moveToThreadNext()
-        #@nonl
         #@+node:ekr.20070705080413:addMarkTree
         def addMarkTree (self,p):
 
@@ -1824,7 +1821,6 @@ def runEditCommandTest (c,p):
     c.selectPosition(atTest)
     atTest.contract()
     # Don't redraw.
-#@nonl
 #@-node:ekr.20061008140603:runEditCommandTest
 #@+node:ekr.20051104075904.95:throwAssertionError
 def throwAssertionError():
@@ -1940,7 +1936,6 @@ def importAllModulesInPath (path,exclude=[]):
 
     # g.trace(modules)
     return modules
-#@nonl
 #@-node:ekr.20051104075904.102:importAllModulesInPath
 #@+node:ekr.20051104075904.103:safeImportModule
 #@+at 

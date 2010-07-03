@@ -10,7 +10,6 @@ http://webpages.charter.net/edreamleo/rstplugin3.html
 To generate documents from rST files, Python's docutils_ module must be
 installed. The code will use the SilverCity_ syntax coloring package if is is
 available.'''
-#@nonl
 #@-node:ekr.20090502071837.4:<< docstring >>
 #@nl
 
@@ -103,7 +102,6 @@ if docutils:
     docutils.parsers.rst.directives.register_directive('code-block',code_block)
 else:
     code_block.options = {}
-#@nonl
 #@-node:ekr.20090502071837.12:code_block
 #@+node:ekr.20090502071837.33:class rstCommands
 #@+at
@@ -176,7 +174,6 @@ class rstCommands:
         self.path = '' # The path from any @path directive.
         self.source = None # The written source as a string.
         self.trialWrite = False # True if doing a trialWrite.
-        #@nonl
         #@-node:ekr.20090502071837.36:<< init ivars >> (leoRst)
         #@nl
         self.createDefaultOptionsDict()
@@ -221,7 +218,6 @@ class rstCommands:
             # self.getOption('keep_at_file_prefix'),
             # self.getOption('strip_at_file_prefix'),
         ]
-    #@nonl
     #@-node:ekr.20090502071837.38:initHeadlineCommands
     #@+node:ekr.20090502071837.39:initSingleNodeOptions
     def initSingleNodeOptions (self):
@@ -233,7 +229,6 @@ class rstCommands:
             'preformat_this_node',
             'show_this_headline',
         ]
-    #@nonl
     #@-node:ekr.20090502071837.39:initSingleNodeOptions
     #@+node:ekr.20090502071837.40:munge
     def munge (self,name):
@@ -252,7 +247,6 @@ class rstCommands:
         s = s.replace('-','_')
 
         return s
-    #@nonl
     #@-node:ekr.20090502071837.40:munge
     #@-node:ekr.20090502071837.34: Birth & init
     #@+node:ekr.20090511055302.5793:rst3 command
@@ -321,7 +315,6 @@ class rstCommands:
             'rst3_preformat_prefix':        '@rst-preformat',
             'rst3_show_headline_prefix':    '@rst-head',
         }
-    #@nonl
     #@-node:ekr.20090502071837.42:createDefaultOptionsDict
     #@+node:ekr.20090502071837.43:dumpSettings (debugging)
     def dumpSettings (self):
@@ -332,7 +325,6 @@ class rstCommands:
         g.pr('present settings...')
         for key in keys:
             g.pr('%20s %s' % (key,d.get(key)))
-    #@nonl
     #@-node:ekr.20090502071837.43:dumpSettings (debugging)
     #@+node:ekr.20090502071837.44:getOption
     def getOption (self,name):
@@ -343,7 +335,6 @@ class rstCommands:
                 self, name, self.optionsDict.get(name)))
 
         return self.optionsDict.get(name)
-    #@nonl
     #@-node:ekr.20090502071837.44:getOption
     #@+node:ekr.20090502071837.45:initCodeBlockString
     def initCodeBlockString(self,p):
@@ -369,7 +360,6 @@ class rstCommands:
                 language.title())
         else:
             self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n\n'
-    #@nonl
     #@-node:ekr.20090502071837.45:initCodeBlockString
     #@+node:ekr.20090502071837.46:preprocessTree & helpers
     def preprocessTree (self,root):
@@ -388,7 +378,6 @@ class rstCommands:
             for key in self.tnodeOptionDict.keys():
                 g.trace(key)
                 g.printDict(self.tnodeOptionDict.get(key))
-    #@nonl
     #@+node:ekr.20090502071837.47:preprocessNode
     def preprocessNode (self,p):
 
@@ -396,7 +385,6 @@ class rstCommands:
         if d is None:
             d = self.scanNodeForOptions(p)
             self.tnodeOptionDict [p.v] = d
-    #@nonl
     #@-node:ekr.20090502071837.47:preprocessNode
     #@+node:ekr.20090502071837.48:parseOptionLine
     def parseOptionLine (self,s):
@@ -419,7 +407,6 @@ class rstCommands:
         else:
             # g.trace('*True')
             return name,'True'
-    #@nonl
     #@-node:ekr.20090502071837.48:parseOptionLine
     #@+node:ekr.20090502071837.49:scanForOptionDocParts
     def scanForOptionDocParts (self,p,s):
@@ -450,7 +437,6 @@ class rstCommands:
                                 d.update(self.scanOption(p,line))
                         break
         return d
-    #@nonl
     #@-node:ekr.20090502071837.49:scanForOptionDocParts
     #@+node:ekr.20090502071837.50:scanHeadlineForOptions
     def scanHeadlineForOptions (self,p):
@@ -520,7 +506,6 @@ class rstCommands:
         d.update(d2)
 
         return d
-    #@nonl
     #@-node:ekr.20090502071837.51:scanNodeForOptions
     #@+node:ekr.20090502071837.52:scanOption
     def scanOption (self,p,s):
@@ -561,7 +546,6 @@ class rstCommands:
             if d2: d.update(d2)
 
         return d
-    #@nonl
     #@-node:ekr.20090502071837.53:scanOptions
     #@-node:ekr.20090502071837.46:preprocessTree & helpers
     #@+node:ekr.20090502071837.54:scanAllOptions & helpers
@@ -776,7 +760,6 @@ class rstCommands:
             self.processTree(current,ext=None,toString=False,justOneFile=justOneFile)
 
         g.es_print('done',color='blue')
-    #@nonl
     #@-node:ekr.20090502071837.62:processTopTree
     #@+node:ekr.20090502071837.63:processTree
     def processTree(self,p,ext,toString,justOneFile):
@@ -1035,7 +1018,6 @@ class rstCommands:
             d[str(key)] = str(val)
 
         return d
-    #@nonl
     #@-node:ekr.20090502071837.66:handleMissingStyleSheetArgs
     #@-node:ekr.20090502071837.65:writeToDocutils (sets argv) & helper
     #@+node:ekr.20090502071837.67:writeNodeToString (New in 4.4.1)
@@ -1058,7 +1040,6 @@ class rstCommands:
                 return self.processTree(p,ext=ext,toString=True,justOneFile=True)
         else:
             return self.processTree(current,ext=ext,toString=True,justOneFile=True)
-    #@nonl
     #@-node:ekr.20090502071837.67:writeNodeToString (New in 4.4.1)
     #@-node:ekr.20090502071837.59:Top-level write code
     #@+node:ekr.20090502071837.58:write methods (leoRst)
@@ -1094,7 +1075,6 @@ class rstCommands:
                 break
             result.append(s)
         return n, result
-    #@nonl
     #@-node:ekr.20090502071837.68:getDocPart
     #@+node:ekr.20090502071837.72:handleCodeMode & helper
     def handleCodeMode (self,lines):
@@ -1207,7 +1187,6 @@ class rstCommands:
                 # g.trace(len(result),p.h)
                 self.writeHeadlineHelper(p)
         return result
-    #@nonl
     #@-node:ekr.20090502071837.76:handleDocOnlyMode
     #@+node:ekr.20090502071837.81:handleSpecialDocParts
     def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
@@ -1246,7 +1225,6 @@ class rstCommands:
             return False
         else:
             return len(s) == 1 or s[1].isspace()
-    #@nonl
     #@-node:ekr.20090502071837.77:isAnyDocPart
     #@+node:ekr.20090502071837.79:isAnySpecialDocPart
     def isAnySpecialDocPart (self,s):
@@ -1283,7 +1261,6 @@ class rstCommands:
             # repr(kind),result,repr(s)))
 
         return result
-    #@nonl
     #@-node:ekr.20090502071837.78:isSpecialDocPart
     #@+node:ekr.20090502071837.80:removeLeoDirectives
     def removeLeoDirectives (self,lines):
@@ -1307,7 +1284,6 @@ class rstCommands:
                 result.append(s)
 
         return result
-    #@nonl
     #@-node:ekr.20090502071837.80:removeLeoDirectives
     #@+node:ekr.20090502071837.82:replaceCodeBlockDirectives
     def replaceCodeBlockDirectives (self,lines):
@@ -1335,7 +1311,6 @@ class rstCommands:
                     result.append(s)
 
         return result
-    #@nonl
     #@-node:ekr.20090502071837.82:replaceCodeBlockDirectives
     #@+node:ekr.20090502071837.70:skip_literal_block
     def skip_literal_block (self,lines,n):
@@ -1354,7 +1329,6 @@ class rstCommands:
 
         # g.printList(result,tag='literal block')
         return n, result
-    #@nonl
     #@-node:ekr.20090502071837.70:skip_literal_block
     #@+node:ekr.20090502071837.94:write (leoRst)
     def write (self,s,theFile=None):
@@ -1443,7 +1417,6 @@ class rstCommands:
             return
 
         self.writeHeadlineHelper(p)
-    #@nonl
     #@+node:ekr.20090502071837.84:writeHeadlineHelper
     def writeHeadlineHelper (self,p):
 
@@ -1580,7 +1553,6 @@ class rstCommands:
             # repr(openDirectory),repr(default_path),repr(path)))
 
         return path
-    #@nonl
     #@-node:ekr.20090502071837.89:computeOutputFileName
     #@+node:ekr.20090502071837.90:encode
     def encode (self,s):
@@ -1597,13 +1569,11 @@ class rstCommands:
             name = g.os_path_finalize(name)
 
             g.es_print('wrote: %s' % (name),color="blue")
-    #@nonl
     #@-node:ekr.20090502071837.91:report
     #@+node:ekr.20090502071837.92:rstComment
     def rstComment (self,s):
 
         return '.. %s' % s
-    #@nonl
     #@-node:ekr.20090502071837.92:rstComment
     #@+node:ekr.20090502071837.93:underline (leoRst)
     def underline (self,s,p):
@@ -1669,7 +1639,6 @@ class rstCommands:
             self.write(s)
             self.http_map [anchorname] = p.copy()
             # if bwm_file: print >> bwm_file, "addNodeMarker", anchorname, p
-    #@nonl
     #@-node:ekr.20090502071837.96:http_addNodeMarker
     #@+node:ekr.20090502071837.97:http_endTree & helpers
     # Was http_support_main
@@ -1691,7 +1660,6 @@ class rstCommands:
 
             if self.getOption('clear_http_attributes'):
                 g.es_print("http attributes cleared")
-    #@nonl
     #@+node:ekr.20090502071837.98:set_initial_http_attributes
     def set_initial_http_attributes (self,filename):
 
@@ -1702,7 +1670,6 @@ class rstCommands:
             parser.feed(line)
 
         f.close()
-    #@nonl
     #@-node:ekr.20090502071837.98:set_initial_http_attributes
     #@+node:ekr.20090502071837.100:relocate_references
     #@+at 
@@ -1763,7 +1730,6 @@ class rstCommands:
                     except:
                         g.es("Skipped", attr[line+2])
         # g.trace('after %s\n\n\n',attr)
-    #@nonl
     #@-node:ekr.20090502071837.100:relocate_references
     #@+node:ekr.20090502071837.99:find_anchors
     def find_anchors (self, p):
@@ -1784,7 +1750,6 @@ class rstCommands:
                     # bwm: not quite sure what's going on here.
                     parser.feed(line)        
         # g.trace(g.dictToString(self.anchor_map,tag='anchor_map'))
-    #@nonl
     #@-node:ekr.20090502071837.99:find_anchors
     #@+node:ekr.20090502071837.101:http_attribute_iter
     def http_attribute_iter (self, p):
@@ -1798,7 +1763,6 @@ class rstCommands:
             attr = mod_http.get_http_attribute(p1)
             if attr:
                 yield (p1.copy(),attr)
-    #@nonl
     #@-node:ekr.20090502071837.101:http_attribute_iter
     #@-node:ekr.20090502071837.97:http_endTree & helpers
     #@-node:ekr.20090502071837.95:Support for http plugin

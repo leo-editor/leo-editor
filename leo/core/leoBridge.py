@@ -53,7 +53,6 @@
 # programs can use these commanders as described in Leo's scripting 
 # chapter.
 #@-at
-#@nonl
 #@-node:ekr.20070227091955.2:<< about the leoBridge module >>
 #@nl
 
@@ -73,7 +72,6 @@ def controller(gui='nullGui',loadPlugins=True,readSettings=True,verbose=False):
         gBridgeController = bridgeController(gui,loadPlugins,readSettings,verbose)
 
     return gBridgeController
-#@nonl
 #@-node:ekr.20070227092442:controller
 #@+node:ekr.20070227092442.2:class bridgeController
 class bridgeController:
@@ -101,7 +99,6 @@ class bridgeController:
         '''Return a fully initialized leoGlobals module.'''
 
         return self.isOpen() and self.g
-    #@nonl
     #@-node:ekr.20070227092442.4:globals
     #@+node:ekr.20070227093530:initLeo & helpers
     def initLeo (self):
@@ -239,7 +236,6 @@ class bridgeController:
             print("isValidPython: unexpected exception: g.CheckVersion")
             import traceback ; traceback.print_exc()
             return 0
-    #@nonl
     #@-node:ekr.20070227093629.4:isValidPython
     #@+node:ekr.20070227094232:getLeoID
     def getLeoID (self):
@@ -266,7 +262,6 @@ class bridgeController:
             g.app.leoID = getattr(sys,nonConstantAttr)
             if verbose and not g.app.silentMode:
                 g.es("leoID=",g.app.leoID,spaces=False,color='red')
-        #@nonl
         #@-node:ekr.20070227094232.1:<< try to get leoID from sys.leoID>>
         #@nl
         if not g.app.leoID:
@@ -328,7 +323,6 @@ class bridgeController:
         g = self.g
 
         return g and g.app and g.app.gui
-    #@nonl
     #@-node:ekr.20070227093918:isOpen
     #@+node:ekr.20070227092442.5:openLeoFile & helpers
     def openLeoFile (self,fileName):

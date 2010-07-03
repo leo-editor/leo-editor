@@ -47,7 +47,6 @@ def main ():
         if trace:
             t3 = time.time() ; print('%s open file: %0.2fsec' % (tag,t3-t2))
         runUnitTests(c,g)
-#@nonl
 #@+node:ekr.20080730161153.7:runUnitTests
 def runUnitTests (c,g):
 

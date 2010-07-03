@@ -1600,7 +1600,6 @@ class leoImportCommands (scanUtility):
         scanner = pascalScanner(importCommands=self,atAuto=atAuto)
 
         scanner.run(s,parent)
-    #@nonl
     #@-node:ekr.20070711104241.2:scanPascalText
     #@+node:ekr.20070711090122:scanPHPText
     def scanPHPText (self,s,parent,atAuto=False):
@@ -3143,7 +3142,6 @@ class elispScanner (baseScannerClass):
     #@-node:ekr.20070711060113.1: __init__
     #@+node:ekr.20070711060113.2:Overrides
     # skipClass/Function/Signature are defined in the base class.
-    #@nonl
     #@+node:ekr.20070711060113.3:startsClass/Function & skipSignature
     def startsClass (self,unused_s,unused_i):
         '''Return True if s[i:] starts a class definition.
@@ -3295,7 +3293,6 @@ class javaScriptScanner (baseScannerClass):
                 else:
                     i += 1
             return i
-    #@nonl
     #@-node:ekr.20071102161115:skipString
     #@-others
 #@-node:ekr.20071027111225.2:class javaScriptScanner
@@ -3491,7 +3488,6 @@ class pascalScanner (baseScannerClass):
         self.startSigIndent = oldStartSigIndent
     #@-node:ekr.20080211071959:putClass & helpers
     #@-others
-#@nonl
 #@-node:ekr.20070711104241.3:class pascalScanner
 #@+node:ekr.20100219075946.5742:class phpScanner
 class phpScanner (baseScannerClass):
@@ -4186,7 +4182,6 @@ class xmlScanner (baseScannerClass):
         self.trace = False
 
         self.addTags()
-    #@nonl
     #@-node:ekr.20071214072451: __init__ (xmlScanner)
     #@+node:ekr.20071214131818:addTags
     def addTags (self):
@@ -4221,7 +4216,6 @@ class xmlScanner (baseScannerClass):
         while i < n and (self.isWordChar(s[i]) or s[i] in chars):
             i += 1
         return i
-    #@nonl
     #@+node:ekr.20091230062012.6239:isWordChar
     #@+at 
     #@nonl
@@ -4360,7 +4354,6 @@ class xmlScanner (baseScannerClass):
     #@-others
 #@-node:ekr.20071214072145.1:class xmlScanner
 #@-others
-#@nonl
 #@-node:ekr.20031218072017.3241:<< scanner classes >>
 #@nl
 #@-node:ekr.20031218072017.3206:@thin leoImport.py

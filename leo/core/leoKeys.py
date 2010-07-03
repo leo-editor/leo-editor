@@ -65,7 +65,6 @@ import types
 # confusing set of
 # rules.
 #@-at
-#@nonl
 #@-node:ekr.20061031131434.2:<< about 'internal' bindings >>
 #@nl
 #@<< about key dicts >>
@@ -462,7 +461,6 @@ class autoCompleterClass:
         if not g.unitTesting:
             s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
             g.es(s,color='red')
-    #@nonl
     #@-node:ekr.20061031131434.15:showAutocompleter/CalltipsStatus
     #@-node:ekr.20061031131434.8:Top level
     #@+node:ekr.20061031131434.16:Helpers
@@ -777,7 +775,6 @@ class autoCompleterClass:
         j += 1
         w.setSelectionRange(i,j,insert=j)
         c.frame.body.onBodyChanged('Typing')
-    #@nonl
     #@-node:ekr.20061031131434.31:extendSelection
     #@+node:ekr.20061031131434.33:findCalltipWord
     def findCalltipWord (self,w):
@@ -790,7 +787,6 @@ class autoCompleterClass:
             return word
         else:
             return ''
-    #@nonl
     #@-node:ekr.20061031131434.33:findCalltipWord
     #@+node:ekr.20080924032842.5:findAnchor
     def findAnchor (self,w):
@@ -809,7 +805,6 @@ class autoCompleterClass:
 
         # g.trace(i,j,repr(word))
         return j,word
-    #@nonl
     #@-node:ekr.20080924032842.5:findAnchor
     #@+node:ekr.20061031131434.34:finish
     def finish (self):
@@ -1210,7 +1205,6 @@ class autoCompleterClass:
                 okchars [z] = z
             okchars ['_'] = '_'
             self.okchars = okchars 
-        #@nonl
         #@-node:ekr.20061031131434.50:definePatterns
         #@+node:ekr.20061031131434.51:scanOutline
         def scanOutline (self,verbose=True):
@@ -2854,7 +2848,6 @@ class keyHandlerClass:
     def propagateKeyEvent (self,event):
 
         self.oops() # Should be overridden.
-    #@nonl
     #@-node:ekr.20070613190936:k.propagateKeyEvent
     #@+node:ekr.20061031131434.117:negativeArgument (redo?)
     def negativeArgument (self,event):
@@ -3381,7 +3374,6 @@ class keyHandlerClass:
         self.master_key_count += 1
 
         isPlain =  k.isPlainKey(stroke)
-        #@nonl
         #@-node:ekr.20061031131434.147:<< define vars >>
         #@nl
         trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
@@ -3743,7 +3735,6 @@ class keyHandlerClass:
     #@-node:ekr.20061031131434.145:Master event handlers (keyHandler)
     #@+node:ekr.20061031170011.3:Minibuffer (keyHandler)
     # These may be overridden, but this code is now gui-independent.
-    #@nonl
     #@+node:ekr.20061031131434.135:k.minibufferWantsFocus/Now
     def minibufferWantsFocus(self):
 
@@ -3916,7 +3907,6 @@ class keyHandlerClass:
             else:
                 w.insert(ins,ch)
                 i = ins+1
-    #@nonl
     #@-node:ekr.20061031170011.12:updateLabel
     #@+node:ekr.20061031170011.13:getEditableTextRange
     def getEditableTextRange (self):
@@ -4706,7 +4696,6 @@ class keyHandlerClass:
 
         k = self
         k.setInputState(k.defaultUnboundKeyAction)
-    #@nonl
     #@-node:ekr.20080511122507.4:setDefaultInputState
     #@+node:ekr.20061031131434.133:setInputState
     def setInputState (self,state):
@@ -5009,7 +4998,6 @@ class keyHandlerClass:
     #@-node:ekr.20061031131434.203:doControlU
     #@-node:ekr.20061031131434.200:universalDispatcher & helpers
     #@-others
-#@nonl
 #@-node:ekr.20061031131434.74:class keyHandlerClass
 #@-others
 #@-node:ekr.20061031131434:@thin leoKeys.py

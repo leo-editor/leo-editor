@@ -410,7 +410,6 @@ class LeoWorkbook:
         return "<LeoWorkbook>"
 
     __repr__ = __str__
-    #@nonl
     #@-node:ekr.20100120092047.6119:__str__
     #@+node:ekr.20100120092047.6120:__setattr__
     def __setattr__(self,key, val):

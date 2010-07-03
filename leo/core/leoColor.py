@@ -94,7 +94,6 @@ default_font_dict = {
     'name'           :'undefined_section_name_font',
     'latexBackground':'latex_background_font',
 }
-#@nonl
 #@-node:ekr.20031218072017.2795:<< define colorizer constants >>
 #@nl
 #@<< define global colorizer data >>
@@ -818,7 +817,6 @@ def getColor(name, default=None):
     return None
 
 get = getColor
-#@nonl
 #@-node:bob.20071231111744.2:get / getColor
 #@+node:bob.20080115070511.4:getRGB / getColorRGB
 def getColorRGB(name, default=None):
@@ -1771,7 +1769,6 @@ class colorizer:
         "def",      "in",     "self",   "__FILE__",
         "defined?", "module", "super",  "__LINE__",
         ]
-        #@nonl
         #@-node:sps.20081213155951.1:ruby keywords
         #@+node:ekr.20031218072017.382:rebol keywords
         self.rebol_keywords = [
@@ -1885,7 +1882,6 @@ class colorizer:
             "while" ]
         #@-node:ekr.20031218072017.383:tcl/tk keywords
         #@-others
-        #@nonl
         #@-node:ekr.20031218072017.371:<< define colorizer keywords >>
         #@nl
         #@    << ivars for communication between colorizeAnyLanguage and its allies >>
@@ -1958,7 +1954,6 @@ class colorizer:
 
         # g.trace(name1,getattr(self,name1))
         # g.trace(name2,getattr(self,name2))
-    #@nonl
     #@-node:ekr.20080704085627.3:splitList
     #@-node:ekr.20031218072017.1605:color.__init__ & helper
     #@+node:ekr.20031218072017.2801:colorize & recolor_range
@@ -3007,7 +3002,6 @@ class colorizer:
                 self.tag("name",i+2,j)
             self.tag("nameBrackets",j,j+k)
             return j + k
-    #@nonl
     #@-node:ekr.20031218072017.1914:doNowebSecRef (colorizer)
     #@+node:ekr.20031218072017.1604:removeAllTags & removeTagsFromLines
     def removeAllTags (self):
@@ -3072,7 +3066,6 @@ class colorizer:
     def isSameColorState (self):
 
         return False
-    #@nonl
     #@-node:ekr.20071009094150:isSameColorState
     #@+node:ekr.20031218072017.1944:removeAllImages (leoColor)
     def removeAllImages (self):

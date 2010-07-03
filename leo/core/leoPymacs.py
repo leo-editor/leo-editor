@@ -63,14 +63,12 @@ def script_result():
     global g
     init()
     return g.app.scriptResult
-#@nonl
 #@-node:ekr.20061024130957:getters
 #@+node:ekr.20061024060248.3:hello
 def hello():
 
     init()
     return 'Hello from Leo.  g.app: %s' % g.app
-#@nonl
 #@-node:ekr.20061024060248.3:hello
 #@+node:ekr.20061024075542:init
 def init ():
@@ -170,6 +168,5 @@ def run_script(c,script,p=None):
     return g.app.scriptResult
 #@-node:ekr.20061024084200:run-script (pymacs)
 #@-others
-#@nonl
 #@-node:ekr.20061024060248.1:@thin leoPymacs.py
 #@-leo

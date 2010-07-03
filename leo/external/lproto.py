@@ -9,7 +9,6 @@
 Author: Ville M. Vainio <vivainio@gmail.com>
 
 """
-#@nonl
 #@-node:ville.20091010205847.1364:<< docstring >>
 #@nl
 
@@ -19,7 +18,6 @@ Author: Ville M. Vainio <vivainio@gmail.com>
 from PyQt4 import QtCore, QtNetwork
 import socket
 import struct
-#@nonl
 #@-node:ville.20091009234538.1373:<< imports >>
 #@nl
 
@@ -154,6 +152,5 @@ class LProtoClient:
 
 #@-node:ville.20091010233144.10051:class LProtoClient
 #@-others
-#@nonl
 #@-node:ville.20091010232339.6117:@thin ../external/lproto.py
 #@-leo

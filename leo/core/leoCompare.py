@@ -200,7 +200,6 @@ class baseLeoCompare:
             self.outputFile = None
 
         return None # To keep pychecker happy.
-    #@nonl
     #@-node:ekr.20031218072017.3635:compare_directories (entry)
     #@+node:ekr.20031218072017.3636:compare_files (entry)
     def compare_files (self, name1, name2):

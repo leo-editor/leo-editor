@@ -57,7 +57,6 @@ class BadLeoFile(Exception):
 
 class invalidPaste(Exception):
     pass
-#@nonl
 #@-node:ekr.20060918164811:<< define exception classes >>
 #@nl
 
@@ -102,7 +101,6 @@ if sys.platform != 'cli':
                 'vh':                          (self.startVH,self.endVH),
                 'vnodes':                      (self.startVnodes,None), # Causes window to appear.
             }
-            #@nonl
             #@-node:ekr.20060919110638.21:<< define dispatch dict >>
             #@nl
 
@@ -126,7 +124,6 @@ if sys.platform != 'cli':
             self.nodeStack = []
             self.rootNode = None # a sax node.
             self.trace = False # True and g.unitTesting
-        #@nonl
         #@-node:ekr.20060919110638.20: __init__ & helpers
         #@+node:ekr.20060919110638.29: Do nothing
         def endElementNS(self,unused_name,unused_qname):
@@ -146,7 +143,6 @@ if sys.platform != 'cli':
 
         def startDocument(self):
             pass
-        #@nonl
         #@-node:ekr.20060919110638.29: Do nothing
         #@+node:ekr.20060919134313: Utils
         #@+node:ekr.20060919110638.23:attrsToList
@@ -159,7 +155,6 @@ if sys.platform != 'cli':
             return [
                 g.Bunch(name=name,val=attrs.getValue(name))
                     for name in attrs.getNames()]
-        #@nonl
         #@-node:ekr.20060919110638.23:attrsToList
         #@+node:ekr.20060919110638.26:error
         def error (self, message):
@@ -167,13 +162,11 @@ if sys.platform != 'cli':
             g.pr('\n\nXML error: %s\n' % (message))
 
             self.errors += 1
-        #@nonl
         #@-node:ekr.20060919110638.26:error
         #@+node:ekr.20060919110638.27:inElement
         def inElement (self,name):
 
             return self.elementStack and name in self.elementStack
-        #@nonl
         #@-node:ekr.20060919110638.27:inElement
         #@+node:ekr.20060919110638.28:printStartElement
         def printStartElement(self,name,attrs):
@@ -194,7 +187,6 @@ if sys.platform != 'cli':
 
             if name.lower() in ['v','t','vnodes','tnodes',]:
                 g.pr('')
-        #@nonl
         #@+node:ekr.20060919110638.24:attrsToString
         def attrsToString (self,attrs,sep='\n'):
 
@@ -210,13 +202,11 @@ if sys.platform != 'cli':
             ]
 
             return sep.join(result)
-        #@nonl
         #@-node:ekr.20060919110638.24:attrsToString
         #@+node:ekr.20060919110638.25:clean
         def clean(self,s):
 
             return g.toEncodedString(s,"ascii")
-        #@nonl
         #@-node:ekr.20060919110638.25:clean
         #@-node:ekr.20060919110638.28:printStartElement
         #@-node:ekr.20060919134313: Utils
@@ -266,7 +256,6 @@ if sys.platform != 'cli':
             name2 = self.elementStack.pop()
             assert name == name2
             # if self.trace: g.trace('** pop',name2)
-        #@nonl
         #@+node:ekr.20060919110638.32:endTnode
         def endTnode (self):
 
@@ -275,7 +264,6 @@ if sys.platform != 'cli':
                 # if self.trace: g.trace(repr(sax_node))
 
             self.content = []
-        #@nonl
         #@-node:ekr.20060919110638.32:endTnode
         #@+node:ekr.20060919110638.33:endVnode
         def endVnode (self):
@@ -283,7 +271,6 @@ if sys.platform != 'cli':
             self.level -= 1
             self.node = self.nodeStack.pop()
             # if self.trace: g.trace(repr(self.node))
-        #@nonl
         #@-node:ekr.20060919110638.33:endVnode
         #@+node:ekr.20060919110638.34:endVH
         def endVH (self):
@@ -293,7 +280,6 @@ if sys.platform != 'cli':
                 # if self.trace: g.trace(repr(self.node))
 
             self.content = []
-        #@nonl
         #@-node:ekr.20060919110638.34:endVH
         #@-node:ekr.20060919110638.31:endElement & helpers
         #@+node:ekr.20060919110638.45:getRootNode
@@ -314,7 +300,6 @@ if sys.platform != 'cli':
                     g.es('','%s: %s' % (target,data),color='blue')
             else:
                 g.trace(target,data)
-        #@nonl
         #@-node:ekr.20061004054323:processingInstruction (stylesheet)
         #@+node:ekr.20060919110638.35:startElement & helpers
         def startElement(self,name,attrs):
@@ -335,7 +320,6 @@ if sys.platform != 'cli':
                 func,junk = data
                 if func:
                     func(attrs)
-        #@nonl
         #@+node:ekr.20060919110638.36:getWindowPositionAttributes
         def getWindowPositionAttributes (self,attrs):
 
@@ -411,7 +395,6 @@ if sys.platform != 'cli':
         def startVH (self,unused_attrs):
 
             self.content = []
-        #@nonl
         #@-node:ekr.20060919110638.40:startVH
         #@+node:ekr.20060919112118:startVnodes
         def startVnodes (self,unused_attrs):
@@ -448,7 +431,6 @@ if sys.platform != 'cli':
             self.content = []
 
             self.tnodeAttributes(attrs)
-        #@nonl
         #@+node:ekr.20060919110638.42:tnodeAttributes
         def tnodeAttributes (self,attrs):
 
@@ -508,7 +490,6 @@ if sys.platform != 'cli':
             self.nodeStack.append(parent)
 
             return parent
-        #@nonl
         #@+node:ekr.20060919110638.44:vnodeAttributes
         # The native attributes of <v> elements are a, t, vtag, tnodeList,
         # marks, expanded and descendentTnodeUnknownAttributes.
@@ -526,12 +507,10 @@ if sys.platform != 'cli':
                     node.tnx = str(val) # nodeIndices.toString returns a string.
                 else:
                     node.attributes[name] = val
-        #@nonl
         #@-node:ekr.20060919110638.44:vnodeAttributes
         #@-node:ekr.20060919110638.43:startVnode
         #@-node:ekr.20060919110638.35:startElement & helpers
         #@-others
-    #@nonl
     #@-node:ekr.20060919110638.19:class saxContentHandler (XMLGenerator)
     #@+node:ekr.20060919110638.15:class saxNodeClass
     class saxNodeClass:
@@ -551,7 +530,6 @@ if sys.platform != 'cli':
             self.tnodeAttributes = {}
             self.tnodeList = []
             self.tnx = None
-        #@nonl
         #@-node:ekr.20060919110638.16: node.__init__
         #@+node:ekr.20060919110638.17: node.__str__ & __repr__
         def __str__ (self):
@@ -559,7 +537,6 @@ if sys.platform != 'cli':
             return '<v:%s %s %s>' % (id(self),self.headString,len(self.bodyString))
 
         __repr__ = __str__
-        #@nonl
         #@-node:ekr.20060919110638.17: node.__str__ & __repr__
         #@+node:ekr.20060919110638.18:node.dump
         def dump (self):
@@ -568,13 +545,10 @@ if sys.platform != 'cli':
                 id(self),self.tnx,len(self.bodyString),self.headString))
             g.pr('children:',g.listToString(self.children))
             g.pr('attrs:',list(self.attributes.values()))
-        #@nonl
         #@-node:ekr.20060919110638.18:node.dump
         #@-others
-    #@nonl
     #@-node:ekr.20060919110638.15:class saxNodeClass
     #@-others
-    #@nonl
     #@-node:ekr.20060919145406:<< define sax classes >>
     #@nl
 
@@ -995,7 +969,6 @@ class baseFileCommands:
     #@-node:ekr.20060919104836: Top-level
     #@+node:ekr.20060919133249:Common
     # Methods common to both the sax and non-sax code.
-    #@nonl
     #@+node:ekr.20031218072017.2004:canonicalTnodeIndex
     def canonicalTnodeIndex(self,index):
 
@@ -1055,7 +1028,6 @@ class baseFileCommands:
         self.gnxDict = {}
         self.c.nodeConflictList = [] # 2010/01/05
         self.c.nodeConflictFileName = None # 2010/01/05
-    #@nonl
     #@-node:ekr.20060919142200.1:initReadIvars
     #@+node:EKR.20040627120120:restoreDescendentAttributes
     def restoreDescendentAttributes (self):
@@ -1308,7 +1280,6 @@ class baseFileCommands:
             root.dump()
         for child in root.children:
             self.dumpSaxTree(child,dummy=False)
-    #@nonl
     #@-node:ekr.20060919110638.2:dumpSaxTree
     #@+node:ekr.20061003093021:getSaxUa
     def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
@@ -1442,7 +1413,6 @@ class baseFileCommands:
                     p.v.tnodeList = result
                     # g.trace('*** tnodeList for',p.h,result)
                 delattr(p.v,'tempTnodeList')
-    #@nonl
     #@-node:ekr.20060919110638.11:resolveTnodeLists
     #@+node:ekr.20080805132422.3:resolveArchivedPosition  (New in Leo 4.5)
     def resolveArchivedPosition(self,archivedPosition,root_v):
@@ -1476,7 +1446,6 @@ class baseFileCommands:
                 return oops('bad index="%s", len(children)="%s"' % (n,len(children)))
 
         return last_v
-    #@nonl
     #@-node:ekr.20080805132422.3:resolveArchivedPosition  (New in Leo 4.5)
     #@+node:ekr.20060919110638.13:setPositionsFromVnodes & helper (sax read)
     def setPositionsFromVnodes (self):
@@ -1524,7 +1493,6 @@ class baseFileCommands:
                 p.moveToFirstChild()
                 # g.trace('level',level,'index',aList[level],p.h)
         return p
-    #@nonl
     #@-node:ekr.20061006104837.1:archivedPositionToPosition
     #@-node:ekr.20060919110638.13:setPositionsFromVnodes & helper (sax read)
     #@-node:ekr.20060919104530:Sax (reading)
@@ -1609,7 +1577,6 @@ class baseFileCommands:
         zipMark = g.choose(c.isZipped,'[zipped] ','')
 
         g.es("saved:","%s%s" % (zipMark,g.shortFileName(fileName)))
-    #@nonl
     #@-node:ekr.20070413061552:putSavedMessage
     #@-node:ekr.20070413045221.2: Top-level  (leoFileCommands)
     #@+node:ekr.20050404190914.2:deleteFileWithMessage (leoFileCommands)
@@ -1815,7 +1782,6 @@ class baseFileCommands:
         self.put(c.frame.stylesheet or c.config.stylesheet)
         self.put("?>")
         self.put_nl()
-    #@nonl
     #@-node:ekr.20031218072017.1248:putStyleSheetLine
     #@+node:ekr.20031218072017.1577:putTnode
     def putTnode (self,v):
@@ -1959,7 +1925,6 @@ class baseFileCommands:
             if not isAuto: # Bug fix: 2008/8/7.
                 attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
                 attrs.append(self.putDescendentAttributes(p))
-        #@nonl
         #@-node:ekr.20040324082713:<< Append unKnownAttributes to attrs>> putVnode
         #@nl
         attrs = ''.join(attrs)
@@ -2016,7 +1981,6 @@ class baseFileCommands:
                 self.putVnode(p,isIgnore=p.isAtIgnoreNode()) # Write the next top-level node.
 
         self.put("</vnodes>\n")
-    #@nonl
     #@-node:ekr.20031218072017.1579:putVnodes
     #@+node:ekr.20031218072017.1247:putXMLLine
     def putXMLLine (self):
@@ -2028,7 +1992,6 @@ class baseFileCommands:
             g.app.prolog_prefix_string,
             self.leo_file_encoding,
             g.app.prolog_postfix_string))
-    #@nonl
     #@-node:ekr.20031218072017.1247:putXMLLine
     #@-node:ekr.20040324080819.1:putLeoFile & helpers
     #@+node:ekr.20031218072017.1573:putLeoOutline (to clipboard)
@@ -2062,7 +2025,6 @@ class baseFileCommands:
         '''Should be overridden by the opml plugin.'''
 
         return None
-    #@nonl
     #@-node:ekr.20060919064401:putToOPML
     #@+node:ekr.20031218072017.3046:write_Leo_file & helpers
     def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
@@ -2087,7 +2049,6 @@ class baseFileCommands:
         return ok
 
     write_LEO_file = write_Leo_file # For compatibility with old plugins.
-    #@nonl
     #@+node:ekr.20100119145629.6109:checkOutline
     def checkOutline (self):
 
@@ -2528,6 +2489,5 @@ class baseFileCommands:
 class fileCommands (baseFileCommands):
     """A class creating the fileCommands subcommander."""
     pass
-#@nonl
 #@-node:ekr.20031218072017.3018:@thin leoFileCommands.py
 #@-leo

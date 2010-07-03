@@ -472,7 +472,6 @@ class undoer:
         # to the
         # createUndoInfoDict info, but quite a bit uglier.
         #@-at
-        #@nonl
         #@-node:EKR.20040530114124:<< about u.saveTree >>
         #@nl
 
@@ -1438,7 +1437,6 @@ class undoer:
         u.redoing = False
         u.bead += 1
         u.setUndoTypes()
-    #@nonl
     #@+node:ekr.20050424170219:redoClearRecentFiles
     def redoClearRecentFiles (self):
 
@@ -1534,7 +1532,6 @@ class undoer:
 
         c.selectPosition(p)
         if newSel: c.frame.body.setSelectionRange(newSel)
-    #@nonl
     #@-node:ekr.20050318085432.6:redoGroup
     #@+node:ekr.20050412085138.1:redoHoistNode & redoDehoistNode
     def redoHoistNode (self):
@@ -1592,7 +1589,6 @@ class undoer:
                 v.setDirty()
 
             c.selectPosition(u.p)
-    #@nonl
     #@-node:ekr.20050526125801:redoMark
     #@+node:ekr.20050411111847:redoMove
     def redoMove (self):
@@ -1681,7 +1677,6 @@ class undoer:
         parent_v.children = u.newChildren
         p = c.setPositionAfterSort(u.sortChildren)
         c.setCurrentPosition(p)
-    #@nonl
     #@-node:ekr.20080425060424.4:redoSort
     #@+node:ekr.20050318085432.8:redoTree
     def redoTree (self):
@@ -1770,7 +1765,6 @@ class undoer:
         u.undoing = False
         u.bead -= 1
         u.setUndoTypes()
-    #@nonl
     #@+node:ekr.20050424170219.1:undoClearRecentFiles
     def undoClearRecentFiles (self):
 
@@ -1874,7 +1868,6 @@ class undoer:
 
         c.selectPosition(p)
         if oldSel: c.frame.body.setSelectionRange(oldSel)
-    #@nonl
     #@-node:ekr.20050318085713:undoGroup
     #@+node:ekr.20050412083244:undoHoistNode & undoDehoistNode
     def undoHoistNode (self):
@@ -2087,7 +2080,6 @@ class undoer:
         parent_v.children = u.oldChildren
         p = c.setPositionAfterSort(u.sortChildren)
         c.setCurrentPosition(p)
-    #@nonl
     #@-node:ekr.20080425060424.5:undoSort
     #@+node:ekr.20050318085713.2:undoTree
     def undoTree (self):

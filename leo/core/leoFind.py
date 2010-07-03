@@ -87,7 +87,6 @@ import re
 # setting s_ctrl
 # and its insert and sel attributes.
 #@-at
-#@nonl
 #@-node:ekr.20031218072017.2414:<< Theory of operation of find/change >>
 #@nl
 
@@ -165,7 +164,6 @@ class searchWidget:
         return i
     #@-node:ekr.20070105092022.4:toPythonIndex
     #@-others
-#@nonl
 #@-node:ekr.20070105092022.1:class searchWidget
 #@+node:ekr.20061212084717:class leoFind
 class leoFind:
@@ -1304,7 +1302,6 @@ class leoFind:
                     p and p.h,editPosition,focus, c.frame.body.bodyCtrl))
         else:
             self.in_headline = self.search_headline
-    #@nonl
     #@-node:ekr.20031218072017.3086:initInHeadline
     #@+node:ekr.20031218072017.3087:initInteractiveCommands
     def initInteractiveCommands(self):
@@ -1378,7 +1375,6 @@ class leoFind:
             c.k.showStateAndMode(c.frame.body.bodyCtrl)
         else:
             c.widgetWantsFocusNow(t)
-    #@nonl
     #@-node:ekr.20031218072017.3089:restore
     #@+node:ekr.20031218072017.3090:save (leoFind)
     def save (self):
@@ -1745,7 +1741,6 @@ class nullFindTab (findTab):
     #@+node:ekr.20070302090616.15:createBindings
     def createBindings (self):
         pass
-    #@nonl
     #@-node:ekr.20070302090616.15:createBindings
     #@+node:ekr.20070302090616.9:createFrame
     def createFrame (self,parentFrame):
@@ -1754,7 +1749,6 @@ class nullFindTab (findTab):
 
         self.createFindChangeAreas()
         self.createBoxes()
-    #@nonl
     #@+node:ekr.20070302090616.10:createFindChangeAreas
     def createFindChangeAreas (self):
 
@@ -1807,7 +1801,6 @@ class nullFindTab (findTab):
                 w = self.buttonWidget(label)
                 self.widgetsDict[ivar] = w
             self.boxes.append(w)
-    #@nonl
     #@-node:ekr.20070302090616.12:createBoxes
     #@+node:ekr.20070302090616.14:createButtons (not used)
     def createButtons (self):
@@ -1855,7 +1848,6 @@ class nullFindTab (findTab):
             self.val = val
 
         SetValue = set # SetValue is the wxWidgets spelling.
-    #@nonl
     #@-node:ekr.20070302090616.8:class svar (nullFindTab)
     #@+node:ekr.20070302092907:class buttonWidget (nullFindTab)
     class buttonWidget:
@@ -1877,7 +1869,6 @@ class nullFindTab (findTab):
     #@-node:ekr.20070302092907:class buttonWidget (nullFindTab)
     #@+node:ekr.20070302090616.16:Options
     # This is the same as the Tk code because we simulate Tk svars.
-    #@nonl
     #@+node:ekr.20070302090616.17:getOption
     def getOption (self,ivar):
 
@@ -1918,7 +1909,6 @@ class nullFindTab (findTab):
     #@-node:ekr.20070302090616.19:toggleOption
     #@-node:ekr.20070302090616.16:Options
     #@-others
-#@nonl
 #@-node:ekr.20070302090616:class nullFindTab class (findTab)
 #@-others
 #@-node:ekr.20060123151617:@thin leoFind.py

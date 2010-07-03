@@ -85,7 +85,6 @@ globalDirectiveList = [
     'tabwidth', 'terse',
     'unit','verbose', 'wrap',
 ]
-#@nonl
 #@-node:EKR.20040610094819:<< define globalDirectiveList >>
 #@nl
 #@<< define the nullObject class >>
@@ -1215,7 +1214,6 @@ def es_dump (s,n = 30,title=None):
         aList = ''.join(['%2x ' % (ord(ch)) for ch in s[i:i+n]])
         g.es_print('',aList)
         i += n
-#@nonl
 #@-node:ekr.20060917120951:es_dump
 #@+node:ekr.20031218072017.3110:es_error & es_print_error
 def es_error (*args,**keys):
@@ -1336,7 +1334,6 @@ def printEntireTree(c,tag=''):
     g.pr('printEntireTree',tag,'root',c.rootPosition())
     for p in c.all_positions():
         g.pr('..'*p.level(),p.v)
-#@nonl
 #@-node:ekr.20070510074941:g.printEntireTree
 #@+node:ekr.20031218072017.3115:printLeoModules
 def printLeoModules(message=None):
@@ -1392,7 +1389,6 @@ class redirectClass:
 
         self.old = None
         self.encoding = 'utf-8' # 2019/03/29 For pdb.
-    #@nonl
     #@-node:ekr.20041012082437:redirectClass.__init__
     #@+node:ekr.20041012082437.1:isRedirected
     def isRedirected (self):
@@ -1588,7 +1584,6 @@ def get_line_after (s,i):
     return nl + s[i:k]
 
 getLineAfter = get_line_after
-#@nonl
 #@-node:ekr.20031218072017.3127:g.get_line & get_line__after
 #@+node:ekr.20031218072017.3128:pause
 def pause (s):
@@ -2404,7 +2399,6 @@ def openLeoOrZipFile (fileName):
         if not g.unitTesting:
             g.es_print("can not open:",fileName,color="blue")
         return None,False
-#@nonl
 #@-node:ekr.20070412082527:g.openLeoOrZipFile
 #@+node:ekr.20090520055433.5945:g.openWithFileName & helpers
 def openWithFileName(fileName,old_c,
@@ -2509,7 +2503,6 @@ def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
         c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
     return True
-#@nonl
 #@-node:ekr.20090520055433.5950:g.handleOpenHooks
 #@+node:ekr.20090520055433.5954:g.mungeFileName
 def mungeFileName(fileName):
@@ -3141,7 +3134,6 @@ def idleTimeHookHandler(*args,**keys):
         g.app.afterHandler = g.idleTimeHookHandler
     else:
         g.app.afterHandler = None
-#@nonl
 #@-node:EKR.20040602125018.2:idleTimeHookHandler
 #@-node:ekr.20031218072017.1315:idle time functions (leoGlobals)
 #@+node:ekr.20031218072017.1596:g.doHook
@@ -3846,7 +3838,6 @@ def os_startfile(fname):
             os.system("open '%s'" % (fname,))
     else:
         os.system('xdg-open ' + fname)
-#@nonl
 #@-node:ekr.20090829140232.6036:os_startfile
 #@+node:ekr.20031218072017.2160:toUnicodeFileEncoding
 def toUnicodeFileEncoding(path):
@@ -4377,7 +4368,6 @@ def skip_id(s,i,chars=None):
     while i < n and (g.isWordChar(s[i]) or s[i] in chars):
         i += 1
     return i
-#@nonl
 #@-node:ekr.20040705195048:skip_id
 #@+node:ekr.20031218072017.3187:skip_line, skip_to_start/end_of_line
 #@+at 
@@ -4835,7 +4825,6 @@ def isValidEncoding (encoding):
         return False
     except AttributeError: # Linux.
         return False
-#@nonl
 #@-node:ekr.20031218072017.1500:g.isValidEncoding
 #@+node:ekr.20061006152327:g.isWordChar & g.isWordChar1
 def isWordChar (ch):
@@ -4847,7 +4836,6 @@ def isWordChar (ch):
 def isWordChar1 (ch):
 
     return ch and (ch.isalpha() or ch == '_')
-#@nonl
 #@-node:ekr.20061006152327:g.isWordChar & g.isWordChar1
 #@+node:ekr.20031218072017.1501:g.reportBadChars
 def reportBadChars (s,encoding):
@@ -5127,7 +5115,6 @@ def CheckVersionToInt (s):
             return int(s)
         else:
             return 0
-#@nonl
 #@-node:ekr.20070120123930:CheckVersionToInt
 #@-node:ekr.20060921100435:CheckVersion, helper
 #@+node:ekr.20060921100435.1:oldCheckVersion (Dave Hein)
@@ -5239,7 +5226,6 @@ def oldCheckVersion( version, againstVersion, condition=">=", stringCompare="0.0
 
     # didn't find a condition that we expected.
     raise EnvironmentError("condition must be one of '>=', '>', '==', '!=', '<', or '<='.")
-#@nonl
 #@-node:ekr.20060921100435.1:oldCheckVersion (Dave Hein)
 #@-node:ekr.20031218072017.3097:CheckVersion
 #@+node:ekr.20031218072017.3098:class Bunch (object)
@@ -5306,7 +5292,6 @@ bunch = Bunch
 # From the Python cookbook, recipe 5.23
 
 # This is now defined at the start of this file.
-#@nonl
 #@-node:ekr.20031219074948.1:class nullObject
 #@+node:ekr.20031218072017.3103:g.computeWindowTitle
 def computeWindowTitle (fileName):
@@ -5604,7 +5589,6 @@ def getLine (s,i):
     else:       k = k + 1
     # g.trace('i,j,k',i,j,k,repr(s[j:k]))
     return j,k
-#@nonl
 #@-node:ekr.20061031102333.2:g.getWord & getLine
 #@+node:ekr.20041219095213:import wrappers
 #@+at 
@@ -6172,7 +6156,6 @@ def init_zodb (pathToZodbStorage,verbose=True):
             g.es_exception()
         init_zodb_failed [pathToZodbStorage] = True
         return None
-#@nonl
 #@-node:ekr.20060913090832.1:g.init_zodb
 #@-node:ekr.20060913091602:ZODB support
 #@-others

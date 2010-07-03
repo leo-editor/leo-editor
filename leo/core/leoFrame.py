@@ -91,7 +91,6 @@ class baseTextWidget:
         'clipboard_clear', # usesg.app.gui method.
         'onChar',
     )
-    #@nonl
     #@-node:ekr.20081031074455.3:baseTextWidget: must be defined in base class
     #@+node:ekr.20081031074455.4:baseTextWidget: must be defined in subclasses
     #@+at
@@ -150,7 +149,6 @@ class baseTextWidget:
         '_setSelectionRange',
         '_setYScrollPosition',
     )
-    #@nonl
     #@-node:ekr.20081031074455.4:baseTextWidget: must be defined in subclasses
     #@+node:ekr.20081031074455.5:baseTextWidget: mustBeDefined
     mustBeDefined = (
@@ -188,7 +186,6 @@ class baseTextWidget:
         'toPythonIndexRowCol',
         # 'xyzzy', # to make test fail.
     )
-    #@nonl
     #@-node:ekr.20081031074455.5:baseTextWidget: mustBeDefined
     #@-node:ekr.20070228074312.1:Birth & special methods (baseText)
     #@+node:ekr.20081031074455.6:must be defined in base class
@@ -206,7 +203,6 @@ class baseTextWidget:
         if keysym:
             c.k.masterKeyHandler(event,stroke=keysym)
             c.outerUpdate()
-    #@nonl
     #@-node:ekr.20070228074312.2:onChar
     #@+node:ekr.20070228074312.12:clipboard_clear & clipboard_append
     def clipboard_clear (self):
@@ -222,7 +218,6 @@ class baseTextWidget:
     #@-node:ekr.20081031074455.6:must be defined in base class
     #@+node:ekr.20081031074455.8:May be defined in subclasses
     # These are high-level interface methods that do not call low-level methods.
-    #@nonl
     #@+node:ekr.20081031074455.13: do-nothings
     def bind (self,kind,*args,**keys):          pass
     def getWidth (self):                        return 0
@@ -244,7 +239,6 @@ class baseTextWidget:
     def yview (self,*args):                     return 0,0
 
     tag_config = tag_configure
-    #@nonl
     #@-node:ekr.20081031074455.13: do-nothings
     #@+node:ekr.20090320055710.4:toPythonIndexToRowCol (baseText) (may be overridden)
     def toPythonIndexRowCol(self,index):
@@ -302,7 +296,6 @@ class baseTextWidget:
         return self.name
 
     getName = GetName
-    #@nonl
     #@-node:ekr.20070228102413:getName & GetName
     #@+node:ekr.20070228074312.25:hasSelection
     def hasSelection (self):
@@ -361,7 +354,6 @@ class baseTextWidget:
             return i
 
     toGuiIndex = toPythonIndex
-    #@nonl
     #@-node:ekr.20070228074312.7:w.toGuiIndex & toPythonIndex
     #@-node:ekr.20081031074455.8:May be defined in subclasses
     #@+node:ekr.20081031074455.9:Must be defined in subclasses (low-level interface)
@@ -392,7 +384,6 @@ class baseTextWidget:
     #@-node:ekr.20081031074455.9:Must be defined in subclasses (low-level interface)
     #@+node:ekr.20081031074455.2:Must be defined in subclasses (high-level interface)
     # These methods are widget-independent because they call the corresponding _xxx methods.
-    #@nonl
     #@+node:ekr.20070228074312.10:appendText
     def appendText (self,s):
 
@@ -496,7 +487,6 @@ class baseTextWidget:
 
         w = self
         w._scrollLines(n)
-    #@nonl
     #@-node:ekr.20070228074312.29:scrollLines
     #@+node:ekr.20070228074312.30:see & seeInsertPoint
     def see(self,index):
@@ -516,7 +506,6 @@ class baseTextWidget:
 
         w = self
         w._setAllText(s,new_p=new_p)
-    #@nonl
     #@-node:ekr.20070228074312.32:setAllText
     #@+node:ekr.20070228074312.33:setBackgroundColor
     def setBackgroundColor (self,color):
@@ -531,7 +520,6 @@ class baseTextWidget:
         return w._setBackgroundColor(color)
 
     SetBackgroundColour = setBackgroundColor
-    #@nonl
     #@-node:ekr.20070228074312.33:setBackgroundColor
     #@+node:ekr.20070228074312.34:setFocus
     def setFocus (self):
@@ -555,7 +543,6 @@ class baseTextWidget:
         return w._setForegroundColor(color)
 
     SetForegroundColour = setForegroundColor
-    #@nonl
     #@-node:ekr.20080510153327.3:setForegroundColor
     #@+node:ekr.20070228074312.35:setInsertPoint
     def setInsertPoint (self,pos):
@@ -589,7 +576,6 @@ class baseTextWidget:
 
         w = self
         w._setYScrollPosition(i)
-    #@nonl
     #@-node:ekr.20070228074312.38:setYScrollPosition
     #@-node:ekr.20081031074455.2:Must be defined in subclasses (high-level interface)
     #@-others
@@ -658,7 +644,6 @@ class stringTextWidget (baseTextWidget):
         if self.trace: g.trace(self,'i',i)
         self.ins = i
         self.sel = i,i
-    #@nonl
     #@-node:ekr.20070228074228.3:Overrides
     #@+node:ekr.20070228111853:setSelectionRange (stringText)
     def setSelectionRange (self,i,j,insert=None):
@@ -675,12 +660,10 @@ class stringTextWidget (baseTextWidget):
             self.ins = j
 
         if self.trace: g.trace('i',i,'j',j,'insert',repr(insert))
-    #@nonl
     #@-node:ekr.20070228111853:setSelectionRange (stringText)
     #@-others
 #@-node:ekr.20070228074228.1:class stringTextWidget (baseTextWidget)
 #@-others
-#@nonl
 #@-node:ekr.20070228074228:<< define text classes >>
 #@nl
 
@@ -891,7 +874,6 @@ class leoBody:
         c.k.completeAllBindingsForWidget(w)
 
         self.recolorWidget(p,w)
-        #@nonl
         #@-node:ekr.20060528110922:<< create text widget w >>
         #@nl
         self.editorWidgets[name] = w
@@ -1011,7 +993,6 @@ class leoBody:
         elif hasattr(w,'leo_label') and w.leo_label:
             w.leo_label.pack_forget()
             w.leo_label = None
-    #@nonl
     #@-node:ekr.20060530210057:select/unselectLabel
     #@+node:ekr.20061017083312:selectEditor & helpers
     selectEditorLockout = False
@@ -1375,7 +1356,6 @@ class leoBody:
         sel    = g.toUnicode(sel)
         after  = g.toUnicode(after)
         return before,sel,after
-    #@nonl
     #@-node:ekr.20031218072017.4031:getSelectionAreas
     #@+node:ekr.20031218072017.2377:getSelectionLines
     def getSelectionLines (self):
@@ -1465,7 +1445,6 @@ class leoBody:
 
     def initAfterLoad (self):
         pass
-    #@nonl
     #@-node:ekr.20081005065934.6:leoBody: may be defined in subclasses
     #@-others
 #@-node:ekr.20031218072017.3656:class leoBody
@@ -1513,7 +1492,6 @@ class leoFrame:
         self.startupWindow=False # True if initially opened window
         self.stylesheet = None # The contents of <?xml-stylesheet...?> line.
         self.tab_width = 0 # The tab width in effect in this pane.
-    #@nonl
     #@+node:ekr.20080429051644.1:leoFrame.mustBeDefined
     # List of methods that must be defined either in the base class or a subclass.
 
@@ -1532,7 +1510,6 @@ class leoFrame:
         'initCompleteHint',
         'showIconBar',
     )
-    #@nonl
     #@-node:ekr.20080429051644.1:leoFrame.mustBeDefined
     #@+node:ekr.20061109120726:leoFrame.mustBeDefinedOnlyInBaseClass
     mustBeDefinedOnlyInBaseClass = (
@@ -1569,7 +1546,6 @@ class leoFrame:
         'statusLineIsEnabled',
         'updateStatusLine',
     )
-    #@nonl
     #@-node:ekr.20061109120726:leoFrame.mustBeDefinedOnlyInBaseClass
     #@+node:ekr.20061109120704:leoFrame.mustBeDefinedInSubclasses
     mustBeDefinedInSubclasses = (
@@ -1607,7 +1583,6 @@ class leoFrame:
         'setInitialWindowGeometry',
         'setTopGeometry',
     )
-    #@nonl
     #@-node:ekr.20061109120704:leoFrame.mustBeDefinedInSubclasses
     #@+node:ekr.20051009045404:createFirstTreeNode
     def createFirstTreeNode (self):
@@ -1778,7 +1753,6 @@ class leoFrame:
 
     def updateStatusLine(self):
         if self.statusLine: self.statusLine.update()
-    #@nonl
     #@-node:ekr.20041223105114.1:Status line convenience methods
     #@+node:ekr.20070130115927.4:Cut/Copy/Paste (leoFrame)
     #@+node:ekr.20070130115927.5:copyText
@@ -1894,7 +1868,6 @@ class leoFrame:
     def OnPaste (self,event=None):
 
         return self.pasteText(event=event,middleButton=True)
-    #@nonl
     #@-node:ekr.20061016071937:OnPaste (To support middle-button paste)
     #@-node:ekr.20070130115927.4:Cut/Copy/Paste (leoFrame)
     #@+node:ekr.20031218072017.3980:Edit Menu... (leoFrame)
@@ -1953,7 +1926,6 @@ class leoFrame:
         s = p.h.rstrip()
         c.setHeadString(p,'%s %s' % (s,time))
         c.redrawAndEdit(p,selectAll=True)
-    #@nonl
     #@-node:ekr.20031218072017.3983:insertHeadlineTime
     #@-node:ekr.20031218072017.3980:Edit Menu... (leoFrame)
     #@-node:ekr.20061109125528.1:Must be defined in base class
@@ -2020,7 +1992,6 @@ class leoFrame:
 
     def OnBodyRClick(self,event=None):
         pass
-    #@nonl
     #@-node:ekr.20071027150501:event handlers (leoFrame)
     #@+node:ekr.20031218072017.3688:getTitle & setTitle
     def getTitle (self):
@@ -2044,7 +2015,6 @@ class leoFrame:
 
     def initCompleteHint (self):
         pass
-    #@nonl
     #@-node:ekr.20081005065934.3:initAfterLoad  & initCompleteHint (leoFrame)
     #@+node:ekr.20031218072017.3687:setTabWidth (leoFrame)
     def setTabWidth (self,w):
@@ -2100,7 +2070,6 @@ class leoLog:
         self.logNumber = 0 # To create unique name fields for text widgets.
         self.newTabCount = 0 # Number of new tabs created.
         self.textDict = {}  # Keys are page names. Values are logCtrl's (text widgets).
-    #@nonl
     #@-node:ekr.20031218072017.3695: ctor (leoLog)
     #@+node:ekr.20070302101344:Must be defined in the base class
     def onActivateLog (self,event=None):
@@ -2168,7 +2137,6 @@ class leoLog:
             tabName = list(d.keys())[i]
             self.selectTab(tabName)
             return 
-    #@nonl
     #@-node:ekr.20070302094848.4:cycleTabFocus
     #@+node:ekr.20070302094848.5:deleteTab
     def deleteTab (self,tabName,force=False):
@@ -2297,7 +2265,6 @@ class leoTree:
         'initAfterLoad', # New in Leo 4.6.
         'treeSelectHint', # New in Leo 4.6.
     )
-    #@nonl
     #@-node:ekr.20081005065934.7:leoTree.mustBeDefined
     #@+node:ekr.20061109164512:leoTree.mustBeDefinedOnlyInBaseClass
     mustBeDefinedOnlyInBaseClass = (
@@ -2315,7 +2282,6 @@ class leoTree:
         'updateHead',
         'oops',
     )
-    #@nonl
     #@-node:ekr.20061109164512:leoTree.mustBeDefinedOnlyInBaseClass
     #@+node:ekr.20061109164610:leoTree.mustBeDefinedInSubclasses
     mustBeDefinedInSubclasses = (
@@ -2358,7 +2324,6 @@ class leoTree:
     def setEditLabelState(self,v,selectAll=False):  self.oops()
     def setSelectedLabelState(self,p):              self.oops()
     def setUnselectedLabelState(self,p):            self.oops()
-    #@nonl
     #@-node:ekr.20031218072017.3706: Must be defined in subclasses
     #@+node:ekr.20061109165848:Must be defined in base class
     #@+node:ekr.20031218072017.3716:Getters/Setters (tree)
@@ -2587,7 +2552,6 @@ class leoTree:
         for f in (OnHyperLinkControlClick,OnHyperLinkEnter,OnHyperLinkLeave):
 
             g.funcToMethod(f,leoNodes.position)
-    #@nonl
     #@-node:ekr.20040803072955.21:tree.injectCallbacks
     #@+node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper
     def OnIconDoubleClick (self,p):
@@ -2773,7 +2737,6 @@ class leoTree:
             c.treeWantsFocus()
         else:
             c.bodyWantsFocus()
-        #@nonl
         #@-node:ekr.20040803072955.133:<< set the current node >>
         #@nl
         c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
@@ -2856,7 +2819,6 @@ class leoTreeTab:
 
     def setTabLabel(self,tabName):
         self.oops()
-    #@nonl
     #@-node:ekr.20070317073755:Must be defined in subclasses
     #@+node:ekr.20070317083104:oops
     def oops(self):
@@ -2864,7 +2826,6 @@ class leoTreeTab:
         g.pr("leoTreeTree oops:", g.callers(4), "should be overridden in subclass")
     #@-node:ekr.20070317083104:oops
     #@-others
-#@nonl
 #@-node:ekr.20070317073627:class leoTreeTab
 #@+node:ekr.20031218072017.2191:class nullBody (leoBody)
 class nullBody (leoBody):
@@ -2951,7 +2912,6 @@ class nullBody (leoBody):
     # Low-level gui...
     def hasFocus (self):                        pass
     def setFocus (self):                        pass
-    #@nonl
     #@-node:ekr.20031218072017.2197:nullBody: leoBody interface
     #@-others
 #@-node:ekr.20031218072017.2191:class nullBody (leoBody)
@@ -3055,7 +3015,6 @@ class nullFrame (leoFrame):
 
     # In help menu...
     def leoHelp (self,event=None): pass
-    #@nonl
     #@-node:ekr.20061109124129:Gui-dependent commands
     #@+node:ekr.20041130065921:Window...
     def bringToFront (self):    pass
@@ -3082,7 +3041,6 @@ class nullIconBarClass:
         self.c = c
         self.parentFrame = parentFrame
         self.w = g.nullObject()
-    #@nonl
     #@-node:ekr.20070301164543.1: ctor
     #@+node:ekr.20070301164543.2:add
     def add(self,*args,**keys):
@@ -3273,7 +3231,6 @@ class nullStatusLineClass:
     show = pack
     #@-node:ekr.20070302171917:methods
     #@-others
-#@nonl
 #@-node:ekr.20070302171509:class nullStatusLineClass
 #@+node:ekr.20031218072017.2233:class nullTree
 class nullTree (leoTree):
@@ -3345,7 +3302,6 @@ class nullTree (leoTree):
 
     def select (self,p,scroll=True):
         pass
-    #@nonl
     #@-node:ekr.20070228163350.1:Drawing & scrolling (nullTree)
     #@+node:ekr.20070228163350.2:Headlines (nullTree)
     def edit_widget (self,p):
@@ -3386,7 +3342,6 @@ class nullTree (leoTree):
         if p:
             self.revertHeadline = p.h
                 # New in 4.4b2: helps undo.
-    #@nonl
     #@-node:ekr.20070228164730:editLabel (nullTree)
     #@+node:ekr.20070228160345:setHeadline (nullTree)
     def setHeadline (self,p,s):
@@ -3413,6 +3368,5 @@ class nullTree (leoTree):
     #@-others
 #@-node:ekr.20031218072017.2233:class nullTree
 #@-others
-#@nonl
 #@-node:ekr.20031218072017.3655:@thin leoFrame.py
 #@-leo

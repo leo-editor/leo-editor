@@ -46,7 +46,6 @@ def runUnitTests (c,g):
         g.es('unexpected exception')
         g.es_exception()
         raise
-#@nonl
 #@-node:ekr.20080730161153.4:runUnitTests
 #@+node:ekr.20090121164439.6177:scanOptions
 def scanOptions():
