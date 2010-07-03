@@ -26,6 +26,7 @@ if g.app and g.app.use_psyco:
 
 import leo.core.leoNodes as leoNodes
 
+import glob
 # import hashlib
 import os
 import sys
@@ -5568,9 +5569,9 @@ class atFile:
             if not g.os_path_exists(fn1):
                 print('not found',fn1) ; return
             if not g.os_path_exists(fn2):
-                print('not found',fn2) ; return
+                print('** missing ',fn) ; return
 
-            print('checking',fn)
+            print('   checking',fn)
 
             s1 = open(fn1).read()
             s2 = open(fn2).read()
@@ -5691,6 +5692,35 @@ class atFile:
                         if s.lstrip().startswith('#@')]
         #@-node:ekr.20100702115533.5920:removeNormalLines
         #@-node:ekr.20100702115533.5829:compareSentinelLines & helpers
+        #@+node:ekr.20100703060610.5870:ignore
+        def ignore (self,fn):
+
+            '''Return True if we should not check fn.'''
+
+            files = (
+                'leoDebugger.py',
+                    # Unknown source.
+                'leoAtFile.py',
+                    # This has passed, and it keeps changing.
+            )
+
+            return fn.startswith('leo_') or fn in files
+        #@-node:ekr.20100703060610.5870:ignore
+        #@+node:ekr.20100703060610.5869:run
+        def run (self):
+
+            cc = self
+
+            files = glob.glob(
+                g.os_path_finalize_join(g.app.loadDir,'*.py'))
+
+            for fn in files:
+                fn = g.shortFileName(fn)
+                if cc.ignore(fn):
+                    print('** skipping',fn)
+                else:
+                    cc.compare(fn)
+        #@-node:ekr.20100703060610.5869:run
         #@-others
     #@-node:ekr.20100702115533.5826:at.compareClass (unit testing)
     #@-others
