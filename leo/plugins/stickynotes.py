@@ -439,6 +439,29 @@ def tabula_f(event):
 
 
 #@-node:ville.20100703194946.5585:@g.command('tabula')
+#@+node:ville.20100704010850.5588:@g.command('tabula-show')
+@g.command('tabula-show')
+def tabula_show_f(event):
+    c= event['c']
+
+    tabula_show(c)
+
+
+
+#@-node:ville.20100704010850.5588:@g.command('tabula-show')
+#@+node:ville.20100704125228.5592:@g.command('tabula-marked')
+@g.command('tabula-marked')
+def tabula_marked_f(event):
+    """ Create tabula from all marked nodes """
+    c= event['c']
+
+    t=tabula_show(c)
+
+    for p in c.all_unique_positions():
+        if p.isMarked():
+            t.add_note(p)
+
+#@-node:ville.20100704125228.5592:@g.command('tabula-marked')
 #@+node:ville.20100703194946.5584:class Tabula
 class Tabula(QMainWindow):
 
@@ -499,14 +522,6 @@ class Tabula(QMainWindow):
 
         #print stored
 #@-node:ville.20100703194946.5584:class Tabula
-#@+node:ville.20100704010850.5588:@g.command('tabula-show')
-@g.command('tabula-show')
-def tabula_show_f(event):
-    c= event['c']
-
-    tabula_show(c)
-#@nonl
-#@-node:ville.20100704010850.5588:@g.command('tabula-show')
 #@-node:ville.20100703234124.9976:Tabula
 #@-others
 #@nonl
