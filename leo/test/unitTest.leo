@@ -740,7 +740,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20090703080553.5000"><vh>@suite run all doctests</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
@@ -865,7 +865,25 @@
 <v t="ekr.20100131180007.5452"><vh>@@test tnodeAttributes</vh></v>
 <v t="ekr.20100131180007.5462"><vh>@test verbatim sentinel</vh></v>
 </v>
-<v t="ekr.20050112095306.1"><vh>leoAtFile</vh>
+<v t="ekr.20050112095306.1" a="E"><vh>leoAtFile</vh>
+<v t="ekr.20100704135340.5689"><vh>@@@test compare old/new files</vh>
+<v t="ekr.20100704135340.5690" a="E"><vh>compareClass</vh>
+<v t="ekr.20100704135340.5691"><vh>compare</vh></v>
+<v t="ekr.20100704135340.5692"><vh>compareLines (Not used)</vh>
+<v t="ekr.20100704135340.5693"><vh>compareLine</vh></v>
+<v t="ekr.20100704135340.5694"><vh>checkComments</vh></v>
+</v>
+<v t="ekr.20100704135340.5695"><vh>compareNormalLines</vh></v>
+<v t="ekr.20100704135340.5696"><vh>compareSentinelLines</vh></v>
+<v t="ekr.20100704135340.5697"><vh>ignore</vh></v>
+<v t="ekr.20100704135340.5698"><vh>helpers</vh>
+<v t="ekr.20100704135340.5699"><vh>checkStartNode</vh></v>
+<v t="ekr.20100704135340.5700"><vh>removeComments</vh></v>
+<v t="ekr.20100704135340.5701"><vh>removeNormalLines</vh></v>
+</v>
+<v t="ekr.20100704135340.5702"><vh>run</vh></v>
+</v>
+</v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
 <v t="ekr.20041021065903"><vh>#@asis</vh>
 <v t="ekr.20041021065903.1"><vh>&lt;&lt; section &gt;&gt;</vh></v>
@@ -2041,7 +2059,7 @@
 <v t="ekr.20100131171342.5602"><vh>@test leoTextWidget</vh></v>
 <v t="ekr.20100131171342.5603"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20090529141856.4682" a="E"><vh>leoImport</vh>
+<v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh> Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
 <v t="ekr.20090529141856.4686"><vh>exportTests</vh>
@@ -2091,10 +2109,10 @@
 </v>
 </v>
 <v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
-<v t="ekr.20090529141856.4716" a="E"><vh> Tests of @auto</vh>
+<v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
 <v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
-<v t="ekr.20090529141856.4717" a="E"><vh>C tests</vh>
+<v t="ekr.20090529141856.4717"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
 <v t="ekr.20090529141856.4720"><vh>@test defaultImporter</vh></v>
@@ -2105,41 +2123,41 @@
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20090529141856.4727" a="E"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20090529141856.4731" a="E"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
 <v t="ekr.20090529141856.4733"><vh>@test elisp 2</vh></v>
 </v>
-<v t="ekr.20090529141856.4766" a="E"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 <v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
 <v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
-<v t="ekr.20090529141856.4772" a="E"><vh>Test BundleException.java</vh>
+<v t="ekr.20090529141856.4772"><vh>Test BundleException.java</vh>
 <v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
 </v>
 </v>
-<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@test Javascript-2</vh></v>
 <v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
 <v t="ekr.20090529141856.4779"><vh>@@test javascript-test-js</vh></v>
 </v>
-<v t="ekr.20090529141856.4734" a="E"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20100219080213.5365" a="E"><vh>PHP tests</vh>
+<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
 <v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
 </v>
-<v t="ekr.20090529141856.4736" a="E"><vh>Python tests</vh>
+<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
 <v t="ekr.20090529141856.4737"><vh>@@test nested class</vh></v>
 <v t="ekr.20090529141856.4738"><vh>@test comment after dict assign</vh></v>
 <v t="ekr.20090529141856.4739"><vh>@test decorator test</vh></v>
@@ -2170,11 +2188,11 @@
 <v t="ekr.20090529141856.4764"><vh>@test two functions (for comparison with unindent does not end function)</vh></v>
 <v t="ekr.20090529141856.4765"><vh>@test unindent in triple string does not end function</vh></v>
 </v>
-<v t="ekr.20090529141856.4780" a="E"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 </v>
 </v>
-<v t="ekr.20090529141856.4784" a="E"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20090529141856.4786"><vh>@test rST import test (no double-underlines)</vh></v>
 <v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
@@ -2194,7 +2212,7 @@
 <v t="ekr.20100131171342.5608"><vh>@test strokeFromSetting</vh></v>
 <v t="ekr.20100131171342.5609"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194424.1" a="E"><vh>leoNodes</vh>
+<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>Startup</vh></v>
@@ -2292,13 +2310,13 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040802071519" a="E"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20100131180007.5391"><vh>@test v.atAutoNodeName &amp; v.atAutoRstNodeName</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20071113202452"><vh>@test zz restore the screen</vh></v>
-<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
@@ -2313,7 +2331,7 @@
 <v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
 <v t="ekr.20080503082625.4"><vh>@test promote</vh></v>
 </v>
-<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -2321,13 +2339,13 @@
 <v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5610" a="E"><vh>leoPlugins</vh>
+<v t="ekr.20100131171342.5610"><vh>leoPlugins</vh>
 <v t="ekr.20100131171342.5611"><vh>@test getHandlersForTag</vh></v>
 </v>
-<v t="ekr.20091219122958.5066" a="E"><vh>leoRst</vh>
+<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
 <v t="ekr.20091219121039.5065"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
 </v>
-<v t="ekr.20090529115704.4396" a="E"><vh>leoShadow</vh>
+<v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 <v t="ekr.20090529115704.4569"><vh>@@test delete unittest shadow directory</vh></v>
 <v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
@@ -2771,12 +2789,12 @@
 </v>
 </v>
 </v>
-<v t="ekr.20100131171342.5612" a="E"><vh>leoTest</vh>
+<v t="ekr.20100131171342.5612"><vh>leoTest</vh>
 <v t="ekr.20100131171342.5613"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
-<v t="ekr.20040712101754.37" a="E"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38" a="E"><vh>editBodyTests</vh>
+<v t="ekr.20040712101754.37"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
 <v t="ekr.20050417202713"><vh>addComments</vh>
 <v t="ekr.20050417202713.1"><vh>before</vh></v>
@@ -23426,6 +23444,258 @@ last line 1: no newline</t>
 /*@nonl*/
 /*@-node:root*/
 /*@-leo*/
+</t>
+<t tx="ekr.20100704135340.5689"># This test requires that the stripped (new) sentinels be in leo/core/stripped.
+# This test was useful once, but no longer.
+
+import glob
+import sys
+
+@others
+
+compareClass(c).run()
+</t>
+<t tx="ekr.20100704135340.5690">class compareClass:
+
+    '''A class to compare files containing old and new sentinels.
+
+    Run the tests from an @test node as follows::
+
+        c.atFileCommands.compareClass(c).run()
+    '''
+
+    def __init__ (self,c):
+        self.c = c
+        self.at = at = c.atFileCommands
+        self.old_sentinels = (
+            # These appear only in old files.
+            at.endNode,at.endAt,at.endDoc,
+            at.startMiddle,at.startNonl,at.startNl)
+        self.new_sentinels = (at.endRef,)
+            # These appear only in new files.
+
+    @others
+</t>
+<t tx="ekr.20100704135340.5691">def compare (self,fn):
+
+    cc = self
+
+    fn1 = g.os_path_finalize_join(g.app.loadDir,fn)
+    fn2 = g.os_path_finalize_join(g.app.loadDir,'stripped',fn)
+
+    if cc.ignore(fn):
+        print('** skipping',fn)
+    elif not g.os_path_exists(fn1):
+        print('** missing',fn1) # full path.
+    elif not g.os_path_exists(fn2):
+        print('** missing ',fn) # short path.
+    else:
+        print('   checking',fn)
+        s1 = open(fn1).read()
+        s2 = open(fn2).read()
+        cc.compareNormalLines(s1,s2)
+        cc.compareSentinelLines(s1,s2)
+</t>
+<t tx="ekr.20100704135340.5692">def compareLines (self,old,new):
+
+    cc = self ; at = cc.at
+
+    try:
+        at.startSentinelComment = '#'
+        old_lines = g.splitLines(old)
+        new_lines = g.splitLines(new)
+        old_i = new_i = 0
+        while old_i &lt; len(old_lines):
+            old_progress,new_progress = old_i,new_i
+            old_i,new_i = cc.compareLine(old_i,new_i,old_lines,new_lines)
+            assert old_progress &lt; old_i or new_progress &lt; new_i,'progress'
+        assert new_i == len(new_lines),'trailing new lines'
+
+    except AssertionError:
+        old_s = old_lines[old_i]
+        new_s = new_lines[new_i]
+        (typ,value, traceback) = sys.exc_info()
+        print('assert failed',value)
+        print('old: %s %s' % (old_i,repr(old_s)))
+        print('new: %s %s' % (new_i,repr(new_s)))
+</t>
+<t tx="ekr.20100704135340.5693">def compareLine (self,old_i,new_i,old_lines,new_lines):
+
+    cc = self ; at = cc.at
+    old_s = old_lines[old_i]
+    new_s = new_lines[new_i]
+    old_kind = at.sentinelKind4(old_s)
+    new_kind = at.sentinelKind4(new_s)
+    if not old_s.strip():
+        old_i += 1
+    elif not new_s.strip():
+        new_i += 1
+    elif old_kind == at.noSentinel:
+        if old_s.lstrip().startswith('#'):
+            old_i,new_i = cc.checkComments(old_i,new_i,old_lines,new_lines)
+        else:
+            assert old_s == new_s,'normal line mismatch'
+            old_i += 1 ; new_i += 1
+    elif old_kind in cc.old_sentinels:
+        old_i += 1 # Not in new files.
+    elif new_kind in cc.new_sentinels:
+        new_i += 1 # Not in old files.
+    elif old_kind == new_kind:
+        old_i += 1
+        new_i += 1
+        if old_kind == at.startNode:
+            cc.checkStartNode(old_s,new_s)
+    else:
+        print('*** sentinel kind mismatch')
+        assert False,'old_kind: %s, new_kind: %s' % (
+            at.sentinelName(old_kind),at.sentinelName(new_kind))
+
+    return old_i,new_i
+</t>
+<t tx="ekr.20100704135340.5694">def checkComments (self,old_i,new_i,old_lines,new_lines):
+
+    '''Check a range of comments.'''
+
+    cc = self ; at = cc.at
+
+    def get_plain_comments(i,lines):
+        comments = []
+        while i &lt; len(lines):
+            s = lines[i]
+            kind = at.sentinelKind4(s)
+            if not s.lstrip():
+                i += 1
+            elif s.lstrip().startswith('#') and kind == at.noSentinel:
+                s = s.lstrip()
+                comments.append(s[1:])
+                i += 1
+            else: break
+        s = ''.join(comments).replace(' ','').replace('\t','').replace('\n','')
+        return i,s
+
+    old_i,old_comments = get_plain_comments(old_i,old_lines)
+    new_i,new_comments = get_plain_comments(new_i,new_lines)
+    assert old_comments == new_comments,'plain comment mismatch\nold: %s\n\nnew: %s' % (
+        old_comments,new_comments)
+    return old_i,new_i
+</t>
+<t tx="ekr.20100704135340.5695">def compareNormalLines (self,s1,s2):
+
+    cc = self
+
+    aList1 = cc.removeComments(s1)
+    aList2 = cc.removeComments(s2)
+    n1,n2 = len(aList1),len(aList2)
+
+    for i in range(min(n1,n2)):
+        line1,line2 = aList1[i],aList2[i]
+        if line1 != line2:
+            print('\nold: %s %s' % (i,repr(line1)))
+            print('new: %s %s' % (i,repr(line2)))
+            return
+</t>
+<t tx="ekr.20100704135340.5696">def compareSentinelLines (self,old,new):
+
+    '''Compare sentinels lines in files containing old and new sentinels.'''
+
+    cc = self ; at = cc.at
+
+    old_lines = cc.removeNormalLines(old)
+    new_lines = cc.removeNormalLines(new)
+    at.startSentinelComment = '#'
+    old_i = new_i = 0
+    try:
+        while old_i &lt; len(old_lines):
+            old_progress,new_progress = old_i,new_i
+            old_s = old_lines[old_i]
+            new_s = new_lines[new_i]
+            old_kind = at.sentinelKind4(old_s)
+            new_kind = at.sentinelKind4(new_s)
+            if old_kind in cc.old_sentinels:
+                old_i += 1 # Not in new files.
+            elif new_kind in cc.new_sentinels:
+                new_i += 1 # Not in old files.
+            elif old_kind == new_kind:
+                old_i += 1
+                new_i += 1
+                if old_kind == at.startNode:
+                    cc.checkStartNode(old_s,new_s)
+            else:
+                print('*** sentinel kind mismatch')
+                assert False,'old_kind: %s, new_kind: %s' % (
+                    at.sentinelName(old_kind),at.sentinelName(new_kind))
+            assert old_progress &lt; old_i or new_progress &lt; new_i,'progress'
+    except AssertionError:
+        print('old: %s %s' % (old_i,repr(old_s)))
+        print('new: %s %s' % (new_i,repr(new_s)))
+</t>
+<t tx="ekr.20100704135340.5697">def ignore (self,fn):
+
+    '''Return True if we should not check fn.'''
+
+    files = (
+        'leoDebugger.py',
+            # Unknown source.
+        'leoAtFile.py',
+            # This has passed, and it keeps changing.
+    )
+
+    return fn.startswith('leo_') or fn in files
+</t>
+<t tx="ekr.20100704135340.5698"></t>
+<t tx="ekr.20100704135340.5699">def checkStartNode (self,old_s,new_s):
+
+    cc = self ; at = cc.at
+
+    def parse (ver,s,tag):
+        at.readVersion5 = ver
+        i = at.skipSentinelStart4(s,0)
+        assert g.match(s,i,"+node:"),'missing +node: (%s)' % (tag)
+        i += 6
+        gnx,junk,level,ok = at.parseThinNodeSentinel(s,i)
+        if not ok: print('%s_ok: %s' % (tag,s))
+        return gnx,ok # old_level is always 0.
+
+    old_gnx,old_ok = parse(False,old_s,'old')
+    new_gnx,new_ok = parse(True,new_s,'new')
+
+    assert old_ok and new_ok,'old_ok: %s new_ok: %s' % (old_ok,new_ok)
+    assert old_gnx == new_gnx,'old_gnx: %s new_gnx: %s' % (old_gnx,new_gnx)
+    # assert old_level == new_level,'level'
+</t>
+<t tx="ekr.20100704135340.5700">def removeComments(self,source):
+
+    aList = []
+    verbatim = False # True if @verbatim seen.
+
+    for s in g.splitLines(source):
+        if not s.strip(): continue
+        if verbatim:
+            aList.append(s)
+            verbatim = False
+        if s.lstrip().startswith('#@verbatim'):
+            verbatim = True
+        elif s.lstrip().startswith('#'):
+            continue # We don't check doc parts.
+        else: aList.append(s)
+
+    return aList
+</t>
+<t tx="ekr.20100704135340.5701">def removeNormalLines(self,source):
+
+    return [s for s in g.splitLines(source)
+                if s.lstrip().startswith('#@')]
+</t>
+<t tx="ekr.20100704135340.5702">def run (self):
+
+    cc = self
+
+    files = glob.glob(
+        g.os_path_finalize_join(g.app.loadDir,'*.py'))
+
+    for fn in files:
+        fn = g.shortFileName(fn)
+        cc.compare(fn)
 </t>
 <t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
 
