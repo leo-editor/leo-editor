@@ -495,7 +495,21 @@ class Tabula(QMainWindow):
         def do_tile():
             self.mdi.tileSubWindows()
 
-        tile = self.tb.addAction("Tile", do_tile)
+        def do_go():
+            cur = self.mdi.activeSubWindow()
+            active = [gnx for (gnx, n) in self.notes.items() if n.parent() == cur]
+            if not active:
+                print "no node"
+                return
+            tgt = active[0]
+
+            p = next(p for p in self.c.all_unique_positions() if p.gnx == tgt)
+            self.c.selectPosition(p)
+
+
+        self.tb.addAction("Tile", do_tile)
+        self.tb.addAction("Go", do_go)
+
 
     def add_note(self, p):
         #g.pdb()
