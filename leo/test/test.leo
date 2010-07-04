@@ -474,6 +474,8 @@
 </v>
 </v>
 <v t="ekr.20080531080812.1"><vh>tracer tests</vh></v>
+<v t="ekr.20100615095815.2189"><vh>activate/deactivate events</vh></v>
+<v t="ekr.20100330082345.2120"><vh>pseudoplain</vh></v>
 </v>
 <v t="ekr.20100119095726.2043"><vh>rest colorizing</vh></v>
 <v t="ekr.20100130095415.2023"><vh>Simulate startup code for non-ascii directories</vh></v>
@@ -494,23 +496,30 @@
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
-<v t="ekr.20100127111116.2059"><vh>wrapping</vh></v>
 <v t="ekr.20100205074729.2085"><vh>Clone battle test</vh>
 <v t="ekr.20100205074729.2086"><vh>node a</vh></v>
 <v t="ekr.20100205074729.2087"><vh>@@thin clone-battle-test.txt</vh>
 <v t="ekr.20100205074729.2086"></v>
 </v>
 </v>
-<v t="ekr.20100330082345.2120"><vh>pseudoplain</vh></v>
+<v t="ekr.20100127111116.2059"><vh>wrapping</vh></v>
 <v t="ekr.20100625072850.2179"><vh>@@test new sentinels</vh></v>
+<v t="ekr.20100519083913.2157"><vh>@@thin sentinels_test.py</vh>
+<v t="ekr.20100630124326.2188"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="node:ekr.20100519083913.2158"><vh>&lt;&lt; a &gt;&gt;</vh>
+<v t="ekr.20100519083913.2159"><vh>a-1</vh></v>
+<v t="ekr.20100519083913.2160"><vh>a-2</vh></v>
 </v>
-<v t="ekr.20100507094542.2119"><vh>@root-code at-root-code-test.py</vh>
-<v t="ekr.20100507094542.2120"><vh>spam</vh></v>
+<v t="ekr.20100519083913.2161"><vh>1-1</vh>
+<v t="ekr.20100519083913.2162"><vh>2-1</vh></v>
+<v t="ekr.20100519083913.2163"><vh>2-2</vh></v>
 </v>
-<v t="ekr.20100520125300.2146"><vh>@button moved-script-button-test</vh></v>
-<v t="ekr.20100521121737.2148"><vh>start leo bridge</vh></v>
-<v t="ekr.20100521123308.2150"><vh>Run system code</vh></v>
-<v t="ekr.20100522091157.2152"><vh>@@thin test_verbatim_sentinel.py</vh></v>
+<v t="ekr.20100519083913.2164"><vh>1-2</vh></v>
+<v t="ekr.20100702113214.2191"><vh>&lt;&lt; nested sentinels test &gt;&gt;</vh>
+<v t="ekr.20100702113214.2192"><vh>&lt;&lt; inner nested sentinels test &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20100704140059.2197"><vh>test of at-raw</vh></v>
+</v>
 <v t="ekr.20100526075442.2155"><vh>@@auto-rst c:\prog\graphs.rst</vh>
 <v t="ekr.20100526092131.2157"><vh>DOT</vh>
 <v t="ekr.20100526092131.2158"><vh>Examples from User guide</vh></v>
@@ -533,25 +542,10 @@
 <v t="ekr.20100526092131.2171"><vh>pygraphviz</vh></v>
 <v t="ekr.20100526092131.2172"><vh>Diagraming apt components</vh></v>
 </v>
-<v t="ekr.20100615095815.2189"><vh>activate/deactivate events</vh></v>
-<v t="ekr.20100616085524.2191"><vh>config iter</vh></v>
-<v t="ekr.20100519083913.2157"><vh>@@thin sentinels_test.py</vh>
-<v t="ekr.20100630124326.2188"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="node:ekr.20100519083913.2158"><vh>&lt;&lt; a &gt;&gt;</vh>
-<v t="ekr.20100519083913.2159"><vh>a-1</vh></v>
-<v t="ekr.20100519083913.2160"><vh>a-2</vh></v>
+<v t="ekr.20100507094542.2119"><vh>@root-code at-root-code-test.py</vh>
+<v t="ekr.20100507094542.2120"><vh>spam</vh></v>
 </v>
-<v t="ekr.20100519083913.2161"><vh>1-1</vh>
-<v t="ekr.20100519083913.2162"><vh>2-1</vh></v>
-<v t="ekr.20100519083913.2163"><vh>2-2</vh></v>
 </v>
-<v t="ekr.20100519083913.2164"><vh>1-2</vh></v>
-<v t="ekr.20100702113214.2191"><vh>&lt;&lt; nested sentinels test &gt;&gt;</vh>
-<v t="ekr.20100702113214.2192"><vh>&lt;&lt; inner nested sentinels test &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20100704140059.2197"><vh>test of at-raw</vh></v>
-</v>
-<v t="ekr.20100704140059.2234" a="E"><vh>@thin sentinels_test.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -972,7 +966,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="14,4"></t>
+<t tx="ekr.20070416075121" str_leo_pos="4"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5846,7 +5840,6 @@ if 0:
 </t>
 <t tx="ekr.20100519083913.2164">1-2
 </t>
-<t tx="ekr.20100520125300.2146">@others</t>
 <t tx="ekr.20100521101729.2148"># Just playing with part of a template system, the (partial) mock up for "range()" is:
 
 def tabStopNaming (event=None):
@@ -5870,20 +5863,6 @@ def tabStopNaming (event=None):
       k.setLabelBlue('')
 
 tabStopNaming()</t>
-<t tx="ekr.20100521121737.2148">from leo.core import leoBridge
-bridge = leoBridge.controller(
-    gui='nullGui',verbose=False,
-    loadPlugins=False,readSettings=False)
-print(bridge)</t>
-<t tx="ekr.20100521123308.2150">import os
-os.system('cd c:\\')
-os.system('dir')
-</t>
-<t tx="ekr.20100522091157.2152"># A test
-
-&lt;&lt; ref &gt;&gt;
-
-# end</t>
 <t tx="ekr.20100526075442.2155" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e657331710358030000003d2b2a7104752e">@language rest
 @tabwidth -4
 @others
@@ -6416,8 +6395,6 @@ leoPlugins.registerHandler("deactivate", on_deactivate)
 leoPlugins.registerHandler("activate", on_activate)
 
 print('window events activated')</t>
-<t tx="ekr.20100616085524.2191">for name,val,c,letter in g.app.config.config_iter(c):
-    print('%45s %s %s' % (name,letter,val))</t>
 <t tx="ekr.20100625072850.2179">at = c.atFileCommands
 child = c.insertChild()
 assert child
