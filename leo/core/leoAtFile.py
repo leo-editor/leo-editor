@@ -32,7 +32,7 @@ import time
 
 #@-<< imports >>
 
-if new_write:
+if False and new_write:
     fill = '=' * 10
     g.es_print('\n==== leoAtFile.py: new_write on ====\n',color='red')
 
@@ -3756,7 +3756,9 @@ class atFile:
             at.indent += delta
             at.putSentinel("@afterref")
             at.os(after) ; at.onl_sent() # Not a real newline.
-            if not at.writeVersion5:
+            if at.writeVersion5:
+                pass # Never write @nonl sentinels.
+            else:
                 at.putSentinel("@nonl")
             at.indent -= delta
     #@+node:ekr.20041005105605.180: *4* writing doc lines...
@@ -3928,8 +3930,7 @@ class atFile:
             # Put an @nonl sentinel if there is significant text following @doc or @.
             if not g.is_nl(s,j):
                 # Doesn't work if we are using block comments.
-                if not at.writeVersion5:
-                    at.putSentinel("@nonl")
+                at.putSentinel("@nonl")
                 at.putDocLine(s,j)
     #@+node:ekr.20041005105605.187: *3* Writing 4,x sentinels...
     #@+node:ekr.20041005105605.188: *4* nodeSentinelText 4.x
@@ -4006,7 +4007,7 @@ class atFile:
         at = self
 
         if at.writeVersion5:
-            return
+            return # Never write @-node or @-middle sentinels.
 
         s = self.nodeSentinelText(p)
 
