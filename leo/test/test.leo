@@ -549,7 +549,7 @@
 <v t="ekr.20100702113214.2192"><vh>&lt;&lt; inner nested sentinels test &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20100702113422.2196"><vh>@thin sentinels_test.py</vh></v>
+<v t="ekr.20100704120258.2196"><vh>@thin sentinels_test.py</vh></v>
 <v t="ekr.20100625072850.2179"><vh>@test new sentinels</vh></v>
 </vnodes>
 <tnodes>

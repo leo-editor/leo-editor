@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="134" left="625" height="873" width="952"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -2572,9 +2572,9 @@
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="ekr.20071113200638.1" a="E"><vh>leoTangle</vh>
-<v t="sps.20100609153802.16076" a="E"><vh>support routines</vh>
-<v t="sps.20100615182644.8464" a="E"><vh>scanAllDirectives</vh>
+<v t="ekr.20071113200638.1"><vh>@ignore leoTangle</vh>
+<v t="sps.20100609153802.16076"><vh>support routines</vh>
+<v t="sps.20100615182644.8464"><vh>scanAllDirectives</vh>
 <v t="ekr.20090624125638.4963"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
 <v t="ekr.20071113090055.1"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
 <v t="sps.20100609234650.39252"><vh>@test c.tangleCommands.scanAllDirectives 3</vh>
@@ -2584,19 +2584,19 @@
 <v t="sps.20100614134444.5498"><vh>#@root</vh></v>
 </v>
 </v>
-<v t="sps.20100609153802.16077" a="E"><vh>token_type</vh>
+<v t="sps.20100609153802.16077"><vh>token_type</vh>
 <v t="sps.20100609153802.16078"><vh>@test token_type</vh></v>
 </v>
-<v t="sps.20100609153802.16079" a="E"><vh>setRootFromText</vh>
+<v t="sps.20100609153802.16079"><vh>setRootFromText</vh>
 <v t="sps.20100609153802.16080"><vh>@test setRootFromText</vh></v>
 </v>
-<v t="sps.20100614142106.5499" a="E"><vh>st_enter</vh>
+<v t="sps.20100614142106.5499"><vh>st_enter</vh>
 <v t="sps.20100614142106.5500"><vh>@test st_enter</vh></v>
 </v>
-<v t="sps.20100614142106.5503" a="E"><vh>st_enter_root_name</vh>
+<v t="sps.20100614142106.5503"><vh>st_enter_root_name</vh>
 <v t="sps.20100614142106.5504"><vh>@test st_enter_root_name</vh></v>
 </v>
-<v t="sps.20100614142106.5507" a="E"><vh>skip_body</vh>
+<v t="sps.20100614142106.5507"><vh>skip_body</vh>
 <v t="sps.20100614142106.5508"><vh>@test skip_body</vh>
 <v t="sps.20100614142106.5509"><vh>#@root</vh></v>
 </v>
@@ -2604,7 +2604,7 @@
 <v t="sps.20100614142106.5513"><vh>#@root</vh></v>
 </v>
 </v>
-<v t="sps.20100614142106.5520" a="E"><vh>tanglePass1</vh>
+<v t="sps.20100614142106.5520"><vh>tanglePass1</vh>
 <v t="sps.20100614142106.5521"><vh>@test tanglePass1</vh>
 <v t="sps.20100614142106.5522"><vh>#@root</vh></v>
 </v>
@@ -2612,7 +2612,7 @@
 <v t="sps.20100614142106.5524"><vh>#@root</vh></v>
 </v>
 </v>
-<v t="sps.20100614142106.5530" a="E"><vh>tanglePass2</vh>
+<v t="sps.20100614142106.5530"><vh>tanglePass2</vh>
 <v t="sps.20100614142106.5531"><vh>@test tanglePass2</vh>
 <v t="sps.20100614142106.5532"><vh>#@root</vh></v>
 </v>
@@ -2620,7 +2620,7 @@
 <v t="sps.20100614142106.5534"><vh>#@root</vh></v>
 </v>
 </v>
-<v t="sps.20100614142106.5540" a="E"><vh>put_all_roots</vh>
+<v t="sps.20100614142106.5540"><vh>put_all_roots</vh>
 <v t="sps.20100614142106.5541"><vh>@test put_all_roots</vh>
 <v t="sps.20100614142106.5542"><vh>#@root</vh></v>
 </v>
@@ -2629,10 +2629,10 @@
 </v>
 </v>
 </v>
-<v t="sps.20100609153802.16075" a="E"><vh>top level</vh>
-<v t="sps.20100618084840.5607" a="E"><vh>tangle</vh>
-<v t="sps.20100531151404.9757" a="E"><vh>with sentinels</vh>
-<v t="sps.20100609111310.5536" a="E"><vh>now working</vh>
+<v t="sps.20100609153802.16075"><vh>top level</vh>
+<v t="sps.20100618084840.5607"><vh>tangle</vh>
+<v t="sps.20100531151404.9757"><vh>with sentinels</vh>
+<v t="sps.20100609111310.5536"><vh>now working</vh>
 <v t="sps.20100531132336.19970"><vh>@test @root with @language c</vh>
 <v t="sps.20100531132336.19971"><vh>#@root</vh></v>
 <v t="sps.20100531132336.19972"><vh>'root-test'</vh></v>
@@ -2714,7 +2714,7 @@
 <v t="sps.20100612133937.5519"><vh>'root-test-one'</vh></v>
 <v t="sps.20100612133937.5520"><vh>'root-test-two'</vh></v>
 </v>
-<v t="sps.20100602033555.5436" a="E"><vh>NOTE: Multiple parts (and nodes) ARE allowed for &lt;&lt; secref &gt;&gt;</vh>
+<v t="sps.20100602033555.5436"><vh>NOTE: Multiple parts (and nodes) ARE allowed for &lt;&lt; secref &gt;&gt;</vh>
 <v t="sps.20100601210726.21583"><vh>@test @root-doc with subnodes - headline &lt;&lt; secref &gt;&gt; first</vh>
 <v t="sps.20100601210726.21584"><vh>#@root</vh>
 <v t="sps.20100601210726.21588"><vh>&lt;&lt; secref &gt;&gt; this works</vh></v>
@@ -2744,7 +2744,7 @@
 </v>
 </v>
 </v>
-<v t="sps.20100601184403.5443" a="E"><vh>failing</vh>
+<v t="sps.20100601184403.5443"><vh>failing</vh>
 <v t="sps.20100602033555.5432"><vh>@test @root with @language html and @comment  //</vh>
 <v t="sps.20100602033555.5433"><vh>#@root</vh>
 <v t="sps.20100602033555.5435"><vh>&lt;&lt; javascript section &gt;&gt;</vh></v>
@@ -2753,14 +2753,14 @@
 </v>
 </v>
 </v>
-<v t="sps.20100531151404.9758" a="E"><vh>without sentinels</vh>
+<v t="sps.20100531151404.9758"><vh>without sentinels</vh>
 <v t="ekr.20090624125638.4967"><vh>@test @root with @silent</vh>
 <v t="ekr.20090624125638.4968"><vh>#@root</vh></v>
 <v t="ekr.20090624125638.4969"><vh>'root-test'</vh></v>
 </v>
 </v>
 </v>
-<v t="sps.20100618084840.5608" a="E"><vh>untangle</vh>
+<v t="sps.20100618084840.5608"><vh>untangle</vh>
 <v t="sps.20100618084840.5613"><vh>@test simplest untangle</vh>
 <v t="sps.20100618084840.5614"><vh>#@root</vh></v>
 <v t="sps.20100618084840.5617"><vh>#@root</vh></v>
@@ -14253,7 +14253,7 @@ b</t>
 <t tx="ekr.20070315065849.3">a
 
 b</t>
-<t tx="ekr.20070417092935" str_leo_pos="7"></t>
+<t tx="ekr.20070417092935"></t>
 <t tx="ekr.20070417092935.1"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070515150433"></t>

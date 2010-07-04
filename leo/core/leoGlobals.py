@@ -1950,7 +1950,7 @@ class Tracer:
     g.startTracer()
     '''
 
-    #@	@+others
+    #@    @+others
     #@+node:ekr.20080531075119.2: __init__
     def __init__(self):
 

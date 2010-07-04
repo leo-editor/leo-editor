@@ -1547,13 +1547,32 @@ class atFile:
         j = g.skip_ws(s,i)
         leadingWs = s[i:j]
 
+        # New in Leo 4.8: Ignore the spellling in leadingWs.
+        # Instead, compute lws2, the regularized leading whitespace.
+        junk_i,w = g.skip_leading_ws_with_indent(s,0,at.tab_width)
+        lws2 = g.computeLeadingWhitespace(max(0,w-at.indent),at.tab_width)
+
+        if 0:
+            # This trace proves that we can use the lws of the @others
+            # line itself rather than the [lws] in #@[lws]@+others.
+            # 
+            if leadingWs != lws2:
+                g.trace('w',w,'at.indent',at.indent,
+                    'lws',repr(leadingWs),'lws2',repr(lws2),
+                    at.root.h,'\n',repr(s))
+
         if leadingWs:
             assert g.match(s,j,"@+others"),'missing @+others'
         else:
             assert g.match(s,j,"+others"),'missing +others'
 
         # Make sure that the generated at-others is properly indented.
-        at.appendToOut(leadingWs + "@others\n")
+        if 0: # old code: preserve the spellling.
+            at.appendToOut(leadingWs + "@others\n")
+        else:
+            # New code (for both old and new sentinels).
+            # Regularize the whitespace preceding the @others directive.
+            at.appendToOut(lws2 + "@others\n")
 
         if at.readVersion5:
             at.endSentinelIndentStack.append(at.indent)
@@ -3792,21 +3811,24 @@ class atFile:
 
         lws = at.leadingWs or ''
 
-        if lws:
+        if new_write or not lws:
+            # Never write lws in new sentinels.
+            at.putSentinel("@+others")
+        else:
+            # Use the old (bizarre) convention when writing old sentinels.
             # Note: there are *two* at signs here.
             at.putSentinel("@" + lws + "@+others")
-        else:
-            at.putSentinel("@+others")
 
         for child in p.children():
             if at.inAtOthers(child):
                 at.putAtOthersChild(child)
 
-        if new_write and lws:
-            # This is a more consistent convention.
-            at.putSentinel("@" + lws + "@-others")
-        else:
-            at.putSentinel("@-others")
+        # This is the same in both old and new sentinels.
+        at.putSentinel("@-others")
+            # Old code.
+            # Note: there are *two* at signs here.
+            # at.putSentinel("@" + lws + "@-others")
+
         at.indent -= delta
     #@-node:ekr.20041005105605.173:putAtOthersLine
     #@-node:ekr.20041005105605.170:@others
@@ -4228,12 +4250,12 @@ class atFile:
             at.leadingWs = s[i:j] # Remember the leading whitespace, including its spelling.
         else:
             # g.trace("indent",self.indent)
-            self.putIndent(self.indent) # 1/29/04: fix bug reported by Dan Winkler.
+            self.putIndent(at.indent) # 1/29/04: fix bug reported by Dan Winkler.
             at.os(s[i:j]) ; at.onl_sent() # 10/21/03
-            at.indent += delta # Align the @nonl with the following line.
             if not new_write:
+                at.indent += delta # Align the @nonl with the following line.
                 at.putSentinel("@nonl")
-            at.indent -= delta # Let the caller set at.indent permanently.
+                at.indent -= delta # Let the caller set at.indent permanently.
     #@-node:ekr.20041005105605.190:putLeadInSentinel 4.x
     #@+node:ekr.20041005105605.191:putCloseNodeSentinel 4.x
     def putCloseNodeSentinel(self,p,middle=False):

@@ -1056,7 +1056,7 @@ class shadowController:
 
         Similar to class sourcereader.
         """
-        #@	@+others
+        #@    @+others
         #@+node:ekr.20080708094444.22:__init__
         def __init__ (self,shadowController):
 
