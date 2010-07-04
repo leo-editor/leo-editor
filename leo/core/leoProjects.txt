@@ -1007,6 +1007,8 @@ def readEndOthers (self,unused_s,unused_i):
             at.docOut = []
             at.inCode = True
 
+        at.raw = False # End raw mode.
+
         at.v = at.endSentinelNodeStack.pop()
         at.indent = at.endSentinelIndentStack.pop()
 
@@ -1029,6 +1031,8 @@ def readEndRef (self,unused_s,unused_i):
             at.appendToOut(''.join(at.docOut))
             at.docOut = []
             at.inCode = True
+
+        at.raw = False # End raw mode.
 
         at.lastRefNode = at.v # A kludge for at.readAfterRef
         at.v = at.endSentinelNodeStack.pop()
@@ -1690,6 +1694,8 @@ def readEndOthers (self,unused_s,unused_i):
             at.docOut = []
             at.inCode = True
 
+        at.raw = False # End raw mode.
+
         at.v = at.endSentinelNodeStack.pop()
         at.indent = at.endSentinelIndentStack.pop()
 
@@ -1712,6 +1718,8 @@ def readEndRef (self,unused_s,unused_i):
             at.appendToOut(''.join(at.docOut))
             at.docOut = []
             at.inCode = True
+
+        at.raw = False # End raw mode.
 
         at.lastRefNode = at.v # A kludge for at.readAfterRef
         at.v = at.endSentinelNodeStack.pop()
@@ -2973,6 +2981,8 @@ def readEndRef (self,unused_s,unused_i):
             at.docOut = []
             at.inCode = True
 
+        at.raw = False # End raw mode.
+
         at.lastRefNode = at.v # A kludge for at.readAfterRef
         at.v = at.endSentinelNodeStack.pop()
         at.indent = at.endSentinelIndentStack.pop()
@@ -3534,6 +3544,8 @@ def readEndRef (self,unused_s,unused_i):
             at.appendToOut(''.join(at.docOut))
             at.docOut = []
             at.inCode = True
+
+        at.raw = False # End raw mode.
 
         at.lastRefNode = at.v # A kludge for at.readAfterRef
         at.v = at.endSentinelNodeStack.pop()
@@ -4799,6 +4811,8 @@ def readEndOthers (self,unused_s,unused_i):
             at.docOut = []
             at.inCode = True
 
+        at.raw = False # End raw mode.
+
         at.v = at.endSentinelNodeStack.pop()
         at.indent = at.endSentinelIndentStack.pop()
 
@@ -4821,6 +4835,8 @@ def readEndRef (self,unused_s,unused_i):
             at.appendToOut(''.join(at.docOut))
             at.docOut = []
             at.inCode = True
+
+        at.raw = False # End raw mode.
 
         at.lastRefNode = at.v # A kludge for at.readAfterRef
         at.v = at.endSentinelNodeStack.pop()

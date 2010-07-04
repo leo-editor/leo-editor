@@ -502,6 +502,7 @@
 </v>
 </v>
 <v t="ekr.20100330082345.2120"><vh>pseudoplain</vh></v>
+<v t="ekr.20100625072850.2179"><vh>@@test new sentinels</vh></v>
 </v>
 <v t="ekr.20100507094542.2119"><vh>@root-code at-root-code-test.py</vh>
 <v t="ekr.20100507094542.2120"><vh>spam</vh></v>
@@ -548,9 +549,9 @@
 <v t="ekr.20100702113214.2191"><vh>&lt;&lt; nested sentinels test &gt;&gt;</vh>
 <v t="ekr.20100702113214.2192"><vh>&lt;&lt; inner nested sentinels test &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20100704140059.2197"><vh>test of at-raw</vh></v>
 </v>
-<v t="ekr.20100704120258.2196"><vh>@thin sentinels_test.py</vh></v>
-<v t="ekr.20100625072850.2179"><vh>@test new sentinels</vh></v>
+<v t="ekr.20100704140059.2234" a="E"><vh>@thin sentinels_test.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -971,7 +972,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="14"></t>
+<t tx="ekr.20070416075121" str_leo_pos="14,4"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
@@ -5831,6 +5832,7 @@ if 0:
 # after others.
 
 &lt;&lt; nested sentinels test &gt;&gt; # after nested sentinels test
+@last # this is the last line.
 </t>
 <t tx="ekr.20100519083913.2159">a-1
 </t>
@@ -6430,6 +6432,14 @@ c.redraw()
 <t tx="ekr.20100630124326.2188">import sys</t>
 <t tx="ekr.20100702113214.2191">&lt;&lt; inner nested sentinels test &gt;&gt; # after inner nested sentinels.</t>
 <t tx="ekr.20100702113214.2192"># in inner nested sentinels test.</t>
+<t tx="ekr.20100704140059.2197">@raw
+
+# &lt;&lt; this looks like a section reference &gt;&gt;
+
+@end_raw
+
+# after at-raw
+</t>
 <t tx="node:ekr.20100519083913.2158"># a before
 @others
 # a after</t>

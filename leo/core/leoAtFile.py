@@ -1609,6 +1609,8 @@ class atFile:
                 at.docOut = []
                 at.inCode = True
 
+            at.raw = False # End raw mode.
+
             at.v = at.endSentinelNodeStack.pop()
             at.indent = at.endSentinelIndentStack.pop()
 
@@ -1631,6 +1633,8 @@ class atFile:
                 at.appendToOut(''.join(at.docOut))
                 at.docOut = []
                 at.inCode = True
+
+            at.raw = False # End raw mode.
 
             at.lastRefNode = at.v # A kludge for at.readAfterRef
             at.v = at.endSentinelNodeStack.pop()
@@ -3327,7 +3331,7 @@ class atFile:
         s = g.choose(fromString,fromString,p.b)
 
         p.v.setVisited()
-        # g.trace('visit',p.h)
+        if trace: g.trace('visit',p.h)
             # Make sure v is never expanded again.
             # Suppress orphans check.
         if not at.thinFile:
@@ -3358,6 +3362,7 @@ class atFile:
         else:
             trailingNewlineFlag = True # don't need to generate an @nonl
         #@-    << Make sure all lines end in a newline >>
+        at.raw = False # 2007/07/04: Bug fix exposed by new sentinels.
         s = self.cleanLines(p,s)
         i = 0
         while i < len(s):
@@ -4006,6 +4011,7 @@ class atFile:
         at = self
 
         if at.writeVersion5:
+            at.raw = False # Bug fix: 2010/07/04
             return # Never write @-node or @-middle sentinels.
 
         s = self.nodeSentinelText(p)
