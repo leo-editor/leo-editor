@@ -474,11 +474,19 @@ class Tabula(QMainWindow):
         self.load_states()
         self.setWindowTitle("Tabula " + os.path.basename(self.c.mFileName))
 
+        self.create_actions()
         def on_quit(tag, kw):
             # saving when hidden nukes all
             if self.isVisisble():
                 self.save_states()
         leoPlugins.registerHandler("end1",on_quit)
+
+    def create_actions(self):
+        self.tb = self.addToolBar("toolbar")
+        def do_tile():
+            self.mdi.tileSubWindows()
+
+        tile = self.tb.addAction("Tile", do_tile)
 
     def add_note(self, p):
         #g.pdb()
