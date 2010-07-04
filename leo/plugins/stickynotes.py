@@ -469,12 +469,19 @@ class Tabula(QMainWindow):
         QMainWindow.__init__(self)
         mdi = self.mdi = QMdiArea(self)
         self.setCentralWidget(mdi)
+        self.create_actions()
+        self.menuBar().setVisible(False)
+
         self.notes = {}
         self.c = c
-        self.load_states()
+        def delayed_load():
+            self.load_states()
+
+        QTimer.singleShot(0, delayed_load)
+
+        #self.load_states()
         self.setWindowTitle("Tabula " + os.path.basename(self.c.mFileName))
 
-        self.create_actions()
         def on_quit(tag, kw):
             # saving when hidden nukes all
             if self.isVisisble():
@@ -483,6 +490,8 @@ class Tabula(QMainWindow):
 
     def create_actions(self):
         self.tb = self.addToolBar("toolbar")
+        self.tb.setObjectName("toolbar")
+        #self.addToolBar(Qt.BottomToolBarArea, self.tb)
         def do_tile():
             self.mdi.tileSubWindows()
 
@@ -509,6 +518,7 @@ class Tabula(QMainWindow):
     def save_states(self):
         # n.parent() because the wrapper QMdiSubWindow holds the geom relative to parent
         geoms = dict((gnx, n.parent().saveGeometry()) for (gnx, n) in self.notes.items() if n.isVisible())
+        geoms['mainwindow'] = self.saveState()
         self.c.cacher.db['tabulanotes'] = geoms
 
     def load_states(self):
@@ -519,6 +529,8 @@ class Tabula(QMainWindow):
             #empty
             return
 
+        mwstate = stored.pop("mainwindow")
+        self.restoreState(mwstate)
         # still think leo should maintain a dict like this
         ncache = dict((p.gnx, p.copy()) for p in self.c.all_unique_positions())
 
