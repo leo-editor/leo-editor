@@ -10,8 +10,6 @@
 #@@tabwidth -4
 #@@pagewidth 60
 
-new_read = True # Should always be true.
-    # Setting this to False will not help!
 new_write = False
     # Enable writing simplified sentinels.
 
@@ -295,7 +293,7 @@ class atFile:
         self.out = None
         self.outStack = []
         self.readVersion = '' # New in Leo 4.8: "4" or "5" for new-style thin files.
-        self.readVersion5 = False # synonym for new_read and at.readVersion >= '5'
+        self.readVersion5 = False # synonym for at.readVersion >= '5'
         self.rootSeen = False
         self.tnodeList = []
             # Needed until old-style @file nodes are no longer supported.
@@ -2259,7 +2257,7 @@ class atFile:
             while i < len(s) and (s[i] == '.' or s[i].isdigit()):
                 i += 1
             at.readVersion = s[j:i] # 2010/05/18.
-            at.readVersion5 = new_read and at.readVersion >= '5'
+            at.readVersion5 = at.readVersion >= '5'
 
             if j < i:
                 pass
