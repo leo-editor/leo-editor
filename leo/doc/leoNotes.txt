@@ -1,10 +1,10 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20031218072017.329:@thin ../doc/leoNotes.txt
+#@+leo-ver=5-thin
+#@+node:ekr.20031218072017.329: * @thin ../doc/leoNotes.txt
 #@@nocolor
 
 #@+all
-#@+node:ekr.20090202064534.4: Your mission, should you choose to accept it
-#@+node:ekr.20100223100750.5843:Original post by Robin Dunn
+#@+node:ekr.20090202064534.4: **  Your mission, should you choose to accept it
+#@+node:ekr.20100223100750.5843: *3* Original post by Robin Dunn
 @nocolor-node
 
 Here are the emacs features that I use very often that any editor would
@@ -151,9 +151,7 @@ Things that would be nice to have, but that I could live without:
 * (done) Be able to run shell commands, or the shell itself in an editor buffer.
 
 * (easy) have a built-in psychotherapist or be able to play towers of hanoi.  ;-) 
-#@nonl
-#@-node:ekr.20100223100750.5843:Original post by Robin Dunn
-#@+node:ekr.20100223100750.5842:Post to pyxides, 2010/02/23
+#@+node:ekr.20100223100750.5842: *3* Post to pyxides, 2010/02/23
 http://groups.google.com/group/pyxides
 
 Robin Dunn's post, reproduced at:
@@ -199,12 +197,9 @@ would be important to you.
 
 P.S. Leo does have auto-completion.  It will be improved in Leo 4.9.
 
-#@-node:ekr.20100223100750.5842:Post to pyxides, 2010/02/23
-#@-node:ekr.20090202064534.4: Your mission, should you choose to accept it
-#@+node:ekr.20061116060847:@url http://www.jhorman.org/wikidPad/
-#@-node:ekr.20061116060847:@url http://www.jhorman.org/wikidPad/
-#@+node:ekr.20091218120633.6299:Bzr
-#@+node:ekr.20080917153158.10:Bzr notes
+#@+node:ekr.20061116060847: ** @url http://www.jhorman.org/wikidPad/
+#@+node:ekr.20091218120633.6299: ** Bzr
+#@+node:ekr.20080917153158.10: *3* Bzr notes
 @nocolor
 
 How to create launchpad key pairs:
@@ -251,8 +246,7 @@ C:\Documents and Settings\HP_Administrator\Application Data\bazaar\2.0
 Linux:
 
 - Configuration file is bazaar.conf in ~/.bazaar directory
-#@-node:ekr.20080917153158.10:Bzr notes
-#@+node:ekr.20090713080429.6042:Bzr workflow notes
+#@+node:ekr.20090713080429.6042: *3* Bzr workflow notes
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/bd3e06a8a34a1938
@@ -304,17 +298,12 @@ Then, to get my ~/leo-editor up to date again:
 
 cd ~/leo-editor
 bzr pull 
-#@nonl
-#@-node:ekr.20090713080429.6042:Bzr workflow notes
-#@+node:ekr.20081113095540.1:Bzr/ubuntu notes
+#@+node:ekr.20081113095540.1: *3* Bzr/ubuntu notes
 /etc/apt/sources.list.d is a directory
 It contains, on my machine, files called edgy-universe.list.x
 The prefix doesn't matter, but the contents of these files must contain the proper ubuntu distro name,
 for example, gutsy, hardy, intrepid.
-#@nonl
-#@-node:ekr.20081113095540.1:Bzr/ubuntu notes
-#@-node:ekr.20091218120633.6299:Bzr
-#@+node:ekr.20090502071837.103:Cool projects
+#@+node:ekr.20090502071837.103: ** Cool projects
 @nocolor
 
 These are projects that3 I'd like to follow up on.
@@ -372,19 +361,16 @@ Call hierarchy tracing (using python 'trace' module)
 - Tomboy: wiki-like notes
   http://projects.gnome.org/tomboy/index.html
   http://groups.google.com/group/leo-editor/browse_thread/thread/18d4af19686f2ead
-#@-node:ekr.20090502071837.103:Cool projects
-#@+node:ekr.20091218120633.6300:Other notes
-#@+node:ekr.20090601083544.6066:Cool plugins & Leo code
+#@+node:ekr.20091218120633.6300: ** Other notes
+#@+node:ekr.20090601083544.6066: *3* Cool plugins & Leo code
 These are plugins/projects that I'd like to investigate further.
 
 interact.py:  Add buttons so leo can interact with command line environments.
 
 g.command (class command) decorator:
 http://groups.google.com/group/leo-editor/browse_thread/thread/a83082cec5ad3df8
-#@+node:ekr.20090601083544.6068:@g.command decorator
-#@-node:ekr.20090601083544.6068:@g.command decorator
-#@-node:ekr.20090601083544.6066:Cool plugins & Leo code
-#@+node:ekr.20070614094933:EasyInstall installation notes--XP
+#@+node:ekr.20090601083544.6068: *4* @g.command decorator
+#@+node:ekr.20070614094933: *3* EasyInstall installation notes--XP
 C:\prog>c:\python25\python ez_setup.py
 Downloading http://cheeseshop.python.org/packages/2.5/s/setuptools/setuptools-0.6c6-py2.5.egg
 Processing setuptools-0.6c6-py2.5.egg
@@ -412,10 +398,8 @@ Installing easy_install-2.4.exe script to c:\python24\Scripts
 
 Installed c:\python24\lib\site-packages\setuptools-0.6c6-py2.4.egg
 Processing dependencies for setuptools==0.6c6
-#@nonl
-#@-node:ekr.20070614094933:EasyInstall installation notes--XP
-#@+node:ekr.20071104222805:Emacs/Pymacs notes
-#@+node:ekr.20071102191642.1:xemacs/pymacs install notes
+#@+node:ekr.20071104222805: *3* Emacs/Pymacs notes
+#@+node:ekr.20071102191642.1: *4* xemacs/pymacs install notes
 @nocolor
 
 Added the following line to setup.py and setup files.
@@ -473,13 +457,10 @@ The rest is from Leo's Chapter 18::
     (setq c (leo-open fileName))
     (setq script "print 'c',c.shortFileName() ,'current:',c.p.h")
     (leo-run-script c script)
-#@nonl
-#@-node:ekr.20071102191642.1:xemacs/pymacs install notes
-#@+node:ekr.20071103090504:Pymacs docs
+#@+node:ekr.20071103090504: *4* Pymacs docs
 @killcolor
-#@nonl
-#@+node:ekr.20071103090504.1:Emacs Lisp structures and Python objects
-#@+node:ekr.20071103090504.2:Emacs lisp structures and Python
+#@+node:ekr.20071103090504.1: *5* Emacs Lisp structures and Python objects
+#@+node:ekr.20071103090504.2: *6* Emacs lisp structures and Python
 Conversions
 
 Whenever Emacs Lisp calls Python functions giving them arguments, these arguments are Emacs Lisp structures that should be converted into Python objects in some way. Conversely, whenever Python calls Emacs Lisp functions, the arguments are Python objects that should be received as Emacs Lisp structures. We need some conventions for doing such conversions.
@@ -487,8 +468,7 @@ Whenever Emacs Lisp calls Python functions giving them arguments, these argument
 Conversions generally transmit mutable Emacs Lisp structures as mutable objects on the Python side, in such a way that transforming the object in Python will effectively transform the structure on the Emacs Lisp side (strings are handled a bit specially however, see below). The other way around, Python objects transmitted to Emacs Lisp often loose their mutability, so transforming the Emacs Lisp structure is not reflected on the Python side.
 
 Pymacs sticks to standard Emacs Lisp, it explicitly avoids various Emacs Lisp extensions. One goal for many Pymacs users is taking some distance from Emacs Lisp, so Pymacs is not overly pushing users deeper into it.
-#@-node:ekr.20071103090504.2:Emacs lisp structures and Python
-#@+node:ekr.20071103090504.3:Simple objects
+#@+node:ekr.20071103090504.3: *6* Simple objects
 Simple objects
 
 Emacs Lisp nil and the equivalent Emacs Lisp () yield Python None. Python None and the Python empty list [] are returned as nil in Emacs Lisp.
@@ -498,8 +478,7 @@ Emacs Lisp numbers, either integer or floating, are converted in equivalent Pyth
 Emacs Lisp strings are usually converted into equivalent Python narrow strings. As Python strings do not have text properties, these are not reflected. This may be changed by setting the pymacs-mutable-strings option : if this variable is not nil, Emacs Lisp strings are then transmitted opaquely. Python strings, except Unicode, are always converted into Emacs Lisp strings.
 
 Emacs Lisp symbols yield the special lisp.symbol or lisp[string] notations on the Python side. The first notation is used when the Emacs Lisp symbol starts with a letter, and contains only letters, digits and hyphens, in which case Emacs Lisp hyphens get replaced by Python underscores. This convention is welcome, as Emacs Lisp programmers commonly prefer using dashes, where Python programmers use underlines. Otherwise, the second notation is used. Conversely, lisp.symbol on the Python side yields an Emacs Lisp symbol with underscores replaced with hyphens, while lisp[string] corresponds to an Emacs Lisp symbol printed with that string which, of course, should then be a valid Emacs Lisp symbol name.
-#@-node:ekr.20071103090504.3:Simple objects
-#@+node:ekr.20071103090504.4:Sequences
+#@+node:ekr.20071103090504.4: *6* Sequences
 Sequences
 
 The case of strings has been discussed in the previous section.
@@ -525,10 +504,8 @@ So, in case speed is especially important and many modifications happen in a row
 We cannot so easily change the size of a vector, the same as it is a bit more of a stunt to modify a tuple. The shape of these objects is fixed. Mapping vectors to tuples, which is admittedly strange, will only be done if the Python side requests an expanded copy, otherwise an opaque Emacs Lisp object is seen in Python. In the other direction, whenever an Emacs Lisp vector is needed, one has to write tuple(python_list) while transmitting the object. Such transmissions are most probably to be unusual, as people are not going to blindly transmit whole big structures back and forth between Emacs and Python, they would rather do it once in a while only, and do only local modifications afterwards. The infrequent casting to tuple for getting an Emacs Lisp vector seems to suggest that we did a reasonable compromise.
 
 In Python, both tuples and lists have O(1) access, so there is no real speed consideration there. Emacs Lisp is different : vectors have O(1) access while lists have O(N) access. The rigidity of Emacs Lisp vectors is such that people do not resort to vectors unless there is a speed issue, so in real Emacs Lisp practice, vectors are used rather parsimoniously. So much, in fact, that Emacs Lisp vectors are overloaded for what they are not meant : for example, very small vectors are used to represent X events in key-maps, programmers only want to test vectors for their type, or users just like bracketed syntax. The speed of access is hardly an issue then.
-#@-node:ekr.20071103090504.4:Sequences
-#@-node:ekr.20071103090504.1:Emacs Lisp structures and Python objects
-#@+node:ekr.20071103090504.5:Opaque objects
-#@+node:ekr.20071103090504.6:Emacs lisp handles
+#@+node:ekr.20071103090504.5: *5* Opaque objects
+#@+node:ekr.20071103090504.6: *6* Emacs lisp handles
 Emacs Lisp handles
 
 When a Python function is called from Emacs Lisp, the function arguments have already been converted to Python types from Emacs Lisp types and the function result is going to be converted back to Emacs Lisp.
@@ -542,8 +519,7 @@ Emacs Lisp handles are either instances of the internal Lisp class, or of one of
 Emacs Lisp handles have a value() method, which merely returns self. They also have a copy() method, which tries to open the box if possible. Emacs Lisp proper lists are turned into Python lists, Emacs Lisp vectors are turned into Python tuples. Then, modifying the structure of the copy on the Python side has no effect on the Emacs Lisp side.
 
 For Emacs Lisp handles, str() returns an Emacs Lisp representation of the handle which should be eq to the original object if read back and evaluated in Emacs Lisp. repr() returns a Python representation of the expanded Emacs Lisp object. If that Emacs Lisp object has an Emacs Lisp representation which Emacs Lisp could read back, then repr() value is such that it could be read back and evaluated in Python as well, this would result in another object which is equal to the original, but not neccessarily eq.
-#@-node:ekr.20071103090504.6:Emacs lisp handles
-#@+node:ekr.20071103090504.7:Python handles
+#@+node:ekr.20071103090504.7: *6* Python handles
 Python handles
 
 The same as Emacs Lisp handles are useful for handling Emacs Lisp objects on the Python side, Python handles are useful for handling Python objects on the Emacs Lisp side.
@@ -559,14 +535,12 @@ The objects represented by these Python handles may be inspected or modified usi
 the initial setq above could be decomposed into :
 
            (setq compiled (pymacs-eval "re.compile('pattern')")
-     	    matcher (pymacs-call "getattr" compiled "match"))
+            matcher (pymacs-call "getattr" compiled "match"))
 
 
 This example shows that one may use pymacs-call with getattr as the function, to get a wanted attribute for a Python object.
-#@-node:ekr.20071103090504.7:Python handles
-#@-node:ekr.20071103090504.5:Opaque objects
-#@+node:ekr.20071103090504.8:Usages on the Emacs lisp side
-#@+node:ekr.20071103090504.9:pymacs-eval/apply
+#@+node:ekr.20071103090504.8: *5* Usages on the Emacs lisp side
+#@+node:ekr.20071103090504.9: *6* pymacs-eval/apply
 
 pymacs-eval
 
@@ -581,8 +555,7 @@ pymacs-apply
 Function (pymacs-apply function arguments) will get Python to apply the given function over the given arguments. arguments is a list containing all arguments, or nil if there is none. Besides arguments being bundled together instead of given separately, the function acts pretty much like pymacs-call.
 
 We do not expect that pymacs-eval, pymacs-call or pymacs-apply will be much used, if ever. In practice, the Emacs Lisp side of a Pymacs application might call pymacs-load a few times for linking into the Python modules, with the indirect effect of defining trampoline functions for these modules on the Emacs Lisp side, which can later be called like usual Emacs Lisp functions.
-#@-node:ekr.20071103090504.9:pymacs-eval/apply
-#@+node:ekr.20071103090504.10:pymacs-load
+#@+node:ekr.20071103090504.10: *6* pymacs-load
 pymacs-load
 
 Function (pymacs-load module prefix) imports the Python module into Emacs Lisp space.
@@ -596,22 +569,18 @@ Whenever pymacs_load_hook is defined in the loaded Python module, pymacs-load ca
 The return value of a successful pymacs-load is the module object. An optional third argument, noerror, when given and not nil, will have pymacs-load to return nil instead of raising an error, if the Python module could not be found.
 
 When later calling one of these trampoline functions, all provided arguments are converted to Python and transmitted, and the function return value is later converted back to Emacs Lisp. It is left to the Python side to check for argument consistency. However, for an interactive function, the interaction specification drives some checking on the Emacs Lisp side. Currently, there is no provision for collecting keyword arguments in Emacs Lisp.
-#@-node:ekr.20071103090504.10:pymacs-load
-#@-node:ekr.20071103090504.8:Usages on the Emacs lisp side
-#@+node:ekr.20071103091052:Usage on the Python side
-#@+node:ekr.20071103091052.1:Python setup
+#@+node:ekr.20071103091052: *5* Usage on the Python side
+#@+node:ekr.20071103091052.1: *6* Python setup
 Python setup
 
 Pymacs requires little or no setup in the Python modules which are meant to be used from Emacs, for the simple situations where these modules receive nothing but Emacs nil, numbers or strings, or return nothing but Python None, numbers or strings.
 
 Otherwise, use from Pymacs import lisp. If you need more Pymacs features, like the Let class, write from Pymacs import lisp, Let.
-#@-node:ekr.20071103091052.1:Python setup
-#@+node:ekr.20071103091052.2:Response mode
+#@+node:ekr.20071103091052.2: *6* Response mode
 Response mode
 
 When Python receives a request from Emacs in the context of Pymacs, and until it returns the reply, Emacs keeps listening to serve Python requests. Emacs is not listening otherwise. Other Python threads, if any, may not call Emacs without very careful synchronisation.
-#@-node:ekr.20071103091052.2:Response mode
-#@+node:ekr.20071103091052.3:Emacs lisp symbols
+#@+node:ekr.20071103091052.3: *6* Emacs lisp symbols
 Emacs Lisp symbols
 
 lisp is a special object which has useful built-in magic. Its attributes do nothing but represent Emacs Lisp symbols, created on the fly as needed (symbols also have their built-in magic).
@@ -625,8 +594,7 @@ In Python, writing lisp.symbol = value or lisp[string] = value does assign value
 The Symbol class has value() and copy() methods. One can use either lisp.symbol.value() or lisp.symbol.copy() to access the Emacs Lisp value of a symbol, after conversion to some Python object, of course. However, if value() would have given an Emacs Lisp handle, lisp.symbol.copy() has the effect of lisp.symbol.value().copy(), that is, it returns the value of the symbol as opened as possible.
 
 A symbol may also be used as if it was a Python function, in which case it really names an Emacs Lisp function that should be applied over the following function arguments. The result of the Emacs Lisp function becomes the value of the call, with all due conversions of course.
-#@-node:ekr.20071103091052.3:Emacs lisp symbols
-#@+node:ekr.20071103091052.4:Dynamic bindings (The let class)
+#@+node:ekr.20071103091052.4: *6* Dynamic bindings (The let class)
 Dynamic bindings
 
 As Emacs Lisp uses dynamic bindings, it is common that Emacs Lisp programs use
@@ -642,12 +610,12 @@ force reading the mark in such cases, but for the sake of illustration, let's
 ignore that, and temporarily deactivate transient mark mode instead. This could
 be done this way :
 
-         try :
-     	let = Let()
-     	let.push(transient_mark_mode=None)
-     	... user code ...
-         finally :
-     	let.pop()
+        try :
+        let = Let()
+        let.push(transient_mark_mode=None)
+        ... user code ...
+        finally :
+        let.pop()
 
 let.push() accepts any number of keywords arguments. Each keyword name is
 interpreted as an Emacs Lisp symbol written the Pymacs way, with underlines. The
@@ -701,7 +669,7 @@ generation. For example, one may write :
 
          let = Let().push_excursion()
          if True :
-     	... user code ...
+         ... user code ...
          del let
 
 The if True: (use if 1: with older Python releases, some people might prefer
@@ -709,8 +677,7 @@ writing if let: anyway), has the only goal of indenting user code, so the scope
 of the let variable is made very explicit. This is purely stylistic, and not at
 all necessary. The last del let might be omitted in a few circumstances, for
 example if the excursion lasts until the end of the Python function.
-#@-node:ekr.20071103091052.4:Dynamic bindings (The let class)
-#@+node:ekr.20071103091052.5:Raw Emacs lisp expression
+#@+node:ekr.20071103091052.5: *6* Raw Emacs lisp expression
 Raw Emacs Lisp expressions
 
 Pymacs offers a device for evaluating a raw Emacs Lisp expression, or a sequence of such, expressed as a string. One merely uses lisp as a function, like this :
@@ -723,8 +690,7 @@ Pymacs offers a device for evaluating a raw Emacs Lisp expression, or a sequence
 
 
 The Emacs Lisp value of the last or only expression in the sequence becomes the value of the lisp call, after conversion back to Python.
-#@-node:ekr.20071103091052.5:Raw Emacs lisp expression
-#@+node:ekr.20071103091052.6:User interaction
+#@+node:ekr.20071103091052.6: *6* User interaction
 User interaction
 
 Emacs functions have the concept of user interaction for completing the specification of their arguments while being called. This happens only when a function is interactively called by the user, it does not happen when a function is programmatically called by another. As Python does not have a corresponding facility, a bit of trickery was needed to retrofit that facility on the Python side.
@@ -742,12 +708,12 @@ short reminder about how this string is interpreted on the Emacs side, try C-h f
 interactive within Emacs. Here is an example where an empty string is used to
 specify that an interactive has no arguments::
 
-         from Pymacs import lisp
+    from Pymacs import lisp
 
-         def hello_world() :
-     	"`Hello world' from Python."
-     	lisp.insert("Hello from Python!")
-         hello_world.interaction = ''
+    def hello_world() :
+        "`Hello world' from Python."
+        lisp.insert("Hello from Python!")
+        hello_world.interaction = ''
 
 Versions of Python released before the integration of PEP 232 do not allow users
 to add attributes to functions, so there is a fallback mechanism. Let's presume
@@ -758,13 +724,13 @@ other than None, that function is going to be interactive on the Emacs side.
 Here is how the preceeding example should be written for an older version of
 Python, or when portability is at premium::
 
-         from Pymacs import lisp
-         interactions = {}
+    from Pymacs import lisp
+    interactions = {}
 
-         def hello_world() :
-     	"`Hello world' from Python."
-     	lisp.insert("Hello from Python!")
-         interactions[hello_world] = ''
+    def hello_world() :
+        "`Hello world' from Python."
+        lisp.insert("Hello from Python!")
+        interactions[hello_world] = ''
 
 One might wonder why we do not merely use lisp.interactive(...) from within
 Python. There is some magic in the Emacs Lisp interpreter itself, looking for
@@ -774,8 +740,7 @@ to scan the already compiled form of the Python code, seeking for
 lisp.interactive, but as the evaluation of lisp.interactive arguments could get
 arbitrarily complex, it would a real challenge un-compiling that evaluation into
 Emacs Lisp.
-#@-node:ekr.20071103091052.6:User interaction
-#@+node:ekr.20071103091052.7:Key bindings
+#@+node:ekr.20071103091052.7: *6* Key bindings
 Keybindings
 
 An interactive function may be bound to a key sequence.
@@ -802,10 +767,8 @@ To bind the F1 key to the helper function in some module :
 the Emacs Lisp symbol f1. So, Python (lisp.f1,) is Emacs Lisp [f1]. Keys like
 [M-f2] might require some more ingenuity, one may write either (lisp['M-f2'],)
 or (lisp.M_f2,) on the Python side.
-#@-node:ekr.20071103091052.7:Key bindings
-#@-node:ekr.20071103091052:Usage on the Python side
-#@+node:ekr.20071103092153:Debugging
-#@+node:ekr.20071103092153.1:The *pymacs* buffer
+#@+node:ekr.20071103092153: *5* Debugging
+#@+node:ekr.20071103092153.1: *6* The *pymacs* buffer
 The *Pymacs* buffer
 
 Emacs and Python are two separate processes (well, each may use more than one process). Pymacs implements a simple communication protocol between both, and does whatever needed so the programmers do not have to worry about details. The main debugging tool is the communication buffer between Emacs and Python, which is named *Pymacs*. As it is sometimes helpful to understand the communication protocol, it is briefly explained here, using an artificially complex example to do so. Consider :
@@ -830,42 +793,56 @@ reply and pymacs-reply are special functions meant to indicate that an expected 
 Part of the protocol manages memory, and this management generates some extra-noise in the *Pymacs* buffer. Whenever Emacs passes a structure to Python, an extra pointer is generated on the Emacs side to inhibit garbage collection by Emacs. Python garbage collector detects when the received structure is no longer needed on the Python side, at which time the next communication will tell Emacs to remove the extra pointer. It works symmetrically as well, that is, whenever Python passes a structure to Emacs, an extra Python reference is generated to inhibit garbage collection on the Python side. Emacs garbage collector detects when the received structure is no longer needed on the Emacs side, after which Python will be told to remove the extra reference. For efficiency, those allocation-related messages are delayed, merged and batched together within the next communication having another purpose.
 
 Variable pymacs-trace-transit may be modified for controlling how and when the *Pymacs* buffer, or parts thereof, get erased.
-#@-node:ekr.20071103092153.1:The *pymacs* buffer
-#@+node:ekr.20071103092153.2:Usual Emacs debugging
+#@+node:ekr.20071103092153.2: *6* Usual Emacs debugging
 Emacs usual debugging
 
-If cross-calls between Emacs Lisp and Python nest deeply, an error will raise successive exceptions alternatively on both sides as requests unstack, and the diagnostic gets transmitted back and forth, slightly growing as we go. So, errors will eventually be reported by Emacs. I made no kind of effort to transmit the Emacs Lisp backtrace on the Python side, as I do not see a purpose for it : all debugging is done within Emacs windows anyway.
+If cross-calls between Emacs Lisp and Python nest deeply, an error will raise
+successive exceptions alternatively on both sides as requests unstack, and the
+diagnostic gets transmitted back and forth, slightly growing as we go. So,
+errors will eventually be reported by Emacs. I made no kind of effort to
+transmit the Emacs Lisp backtrace on the Python side, as I do not see a purpose
+for it : all debugging is done within Emacs windows anyway.
 
-On recent Emacses, the Python backtrace gets displayed in the mini-buffer, and the Emacs Lisp backtrace is simultaneously shown in the *Backtrace* window. One useful thing is to allow to mini-buffer to grow big, so it has more chance to fully contain the Python backtrace, the last lines of which are often especially useful. Here, I use :
+On recent Emacses, the Python backtrace gets displayed in the mini-buffer, and
+the Emacs Lisp backtrace is simultaneously shown in the *Backtrace* window. One
+useful thing is to allow to mini-buffer to grow big, so it has more chance to
+fully contain the Python backtrace, the last lines of which are often especially
+useful. Here, I use :
 
          (setq resize-mini-windows t
-     	  max-mini-window-height .85)
+          max-mini-window-height .85)
 
-
-in my .emacs file, so the mini-buffer may use 85% of the screen, and quickly shrinks when fewer lines are needed. The mini-buffer contents disappear at the next keystroke, but you can recover the Python backtrace by looking at the end of the *Messages* buffer. In which case the ffap package in Emacs may be yet another friend! From the *Messages* buffer, once ffap activated, merely put the cursor on the file name of a Python module from the backtrace, and C-x C-f RET will quickly open that source for you.
-#@-node:ekr.20071103092153.2:Usual Emacs debugging
-#@+node:ekr.20071103092153.3:Auto-reloading on save
+in my .emacs file, so the mini-buffer may use 85% of the screen, and quickly
+shrinks when fewer lines are needed. The mini-buffer contents disappear at the
+next keystroke, but you can recover the Python backtrace by looking at the end
+of the *Messages* buffer. In which case the ffap package in Emacs may be yet
+another friend! From the *Messages* buffer, once ffap activated, merely put the
+cursor on the file name of a Python module from the backtrace, and C-x C-f RET
+will quickly open that source for you.
+#@+node:ekr.20071103092153.3: *6* Auto-reloading on save
 Auto-reloading on save
 
-I found useful to automatically pymacs-load some Python files whenever they get saved from Emacs. This can be decided on a per-file or per-directory basis. To get a particular Python file to be reloaded automatically on save, add the following lines at the end :
+I found useful to automatically pymacs-load some Python files whenever they get
+saved from Emacs. This can be decided on a per-file or per-directory basis. To
+get a particular Python file to be reloaded automatically on save, add the
+following lines at the end :
 
      # Local Variables :
      # pymacs-auto-reload : t
      # End :
 
+Here is an example of automatic reloading on a per-directory basis. The code
+below assumes that Python files meant for Pymacs are kept in
+~/share/emacs/python.
 
-Here is an example of automatic reloading on a per-directory basis. The code below assumes that Python files meant for Pymacs are kept in ~/share/emacs/python.
-
-         (defun fp-maybe-pymacs-reload ()
-           (let ((pymacsdir (expand-file-name "~/share/emacs/python/")))
-     	(when (and (string-equal (file-name-directory buffer-file-name)
-     				 pymacsdir)
-     		   (string-match "\\.py\\'" buffer-file-name))
-     	  (pymacs-load (substring buffer-file-name 0 -3)))))
+    (defun fp-maybe-pymacs-reload ()
+        (let ((pymacsdir (expand-file-name "~/share/emacs/python/")))
+         (when (and (string-equal (file-name-directory buffer-file-name)
+                  pymacsdir)
+              (string-match "\\.py\\'" buffer-file-name))
+          (pymacs-load (substring buffer-file-name 0 -3)))))
          (add-hook 'after-save-hook 'fp-maybe-pymacs-reload)
-#@-node:ekr.20071103092153.3:Auto-reloading on save
-#@-node:ekr.20071103092153:Debugging
-#@+node:ekr.20071103092153.4:Example 1: defining an Emacs command in Python
+#@+node:ekr.20071103092153.4: *5* Example 1: defining an Emacs command in Python
 @nocolor
 Let's say I have a a module, call it manglers.py, containing this simple python
 function::
@@ -898,8 +875,7 @@ Here is the emacs side::
 
     (pymacs-load "manglers")
     (global-set-key [f7] 'manglers-break-on-whitespace)
-#@-node:ekr.20071103092153.4:Example 1: defining an Emacs command in Python
-#@+node:ekr.20071103093725:Example 3: defining a rebox tool
+#@+node:ekr.20071103093725: *5* Example 3: defining a rebox tool
 For comments held within boxes, it is painful to fill paragraphs, while
 stretching or shrinking the surrounding box by hand, as needed. This piece of
 Python code eases my life on this. It may be used interactively from within
@@ -915,7 +891,7 @@ boxed comment.
 Emacs rebox-comment is different, as it has to chase itself the extent of the
 surrounding boxed comment.
 
-#@+node:ekr.20071103094355:The python side
+#@+node:ekr.20071103094355: *6* The python side
 Design notes for rebox.py:
 
 Pymacs specific features are used exclusively from within the pymacs_load_hook
@@ -982,8 +958,7 @@ uneasy project : fmt implements the Knuth refilling algorithm, which depends on
 dynamic programming techniques; Ross did carefully fine tune them, and took care
 of many details. If GNU fmt fails, for not being available, say, refill_lines
 falls back on a dumb refilling algorithm, which is better than none.
-#@-node:ekr.20071103094355:The python side
-#@+node:ekr.20071103094355.1:The emacs side
+#@+node:ekr.20071103094355.1: *6* The emacs side
 For most Emacs language editing modes, refilling does not make sense
 outside comments, one may redefine the `M-q' command and link it to this
 Pymacs module.  For example, I use this in my `.emacs' file::
@@ -1062,9 +1037,7 @@ it ought to include the word `box', which will get replaced by your actual
 comment.  If the first line is shorter than the middle one, it gets merged
 at the start of the comment.  If the last line is shorter than the middle
 one, it gets merged at the end of the comment and is refilled with it.
-#@nonl
-#@-node:ekr.20071103094355.1:The emacs side
-#@+node:ekr.20071103093725.1:rebox.py
+#@+node:ekr.20071103093725.1: *6* rebox.py
 @color
 @language python
 @tabwidth -4
@@ -1074,7 +1047,7 @@ one, it gets merged at the end of the comment and is refilled with it.
 
 if __name__ == '__main__':
     apply(main, sys.argv[1:])
-#@+node:ekr.20071103093725.2:rebox declarations
+#@+node:ekr.20071103093725.2: *7* rebox declarations
 #!/usr/bin/env python
 # Copyright © 1991-1998, 2000, 2002 Progiciels Bourbeau-Pinard inc.
 # François Pinard <pinard@iro.umontreal.ca>, April 1991.
@@ -1291,8 +1264,7 @@ into `rebox.py', and added the facility to use it as a batch script.
 
 import re, string, sys
 
-#@-node:ekr.20071103093725.2:rebox declarations
-#@+node:ekr.20071103093725.3:main
+#@+node:ekr.20071103093725.3: *7* main
 def main(*arguments):
     refill = 1
     style = None
@@ -1335,8 +1307,7 @@ def main(*arguments):
             sys.stderr.write("Reboxed from style %d to %d.\n"
                              % (old_style, new_style))
 
-#@-node:ekr.20071103093725.3:main
-#@+node:ekr.20071103093725.4:pymacs_load_hook
+#@+node:ekr.20071103093725.4: *7* pymacs_load_hook
 def pymacs_load_hook():
     global interactions, lisp, Let, region, comment, set_default_style
     from Pymacs import lisp, Let
@@ -1349,41 +1320,36 @@ def pymacs_load_hook():
     interactions[comment] = 'P'
     set_default_style = emacs_rebox.set_default_style
 
-#@-node:ekr.20071103093725.4:pymacs_load_hook
-#@+node:ekr.20071103093725.5:class Emacs_Rebox
+#@+node:ekr.20071103093725.5: *7* class Emacs_Rebox
 class Emacs_Rebox:
     @others
-#@+node:ekr.20071103093725.6:__init__
+#@+node:ekr.20071103093725.6: *8* __init__
 
 def __init__(self):
     self.default_style = None
 
-#@-node:ekr.20071103093725.6:__init__
-#@+node:ekr.20071103093725.7:set_default_style
+#@+node:ekr.20071103093725.7: *8* set_default_style
 def set_default_style(self, style):
     """\
 Set the default style to STYLE.
 """
     self.default_style = style
 
-#@-node:ekr.20071103093725.7:set_default_style
-#@+node:ekr.20071103093725.8:region
+#@+node:ekr.20071103093725.8: *8* region
 def region(self, flag):
     """\
 Rebox the boxed comment in the current region, obeying FLAG.
 """
     self.emacs_engine(flag, self.find_region)
 
-#@-node:ekr.20071103093725.8:region
-#@+node:ekr.20071103093725.9:comment
+#@+node:ekr.20071103093725.9: *8* comment
 def comment(self, flag):
     """\
 Rebox the surrounding boxed comment, obeying FLAG.
 """
     self.emacs_engine(flag, self.find_comment)
 
-#@-node:ekr.20071103093725.9:comment
-#@+node:ekr.20071103093725.10:emacs_engine
+#@+node:ekr.20071103093725.10: *8* emacs_engine
 def emacs_engine(self, flag, find_limits):
     """\
 Rebox text while obeying FLAG.  Call FIND_LIMITS to discover the extent
@@ -1445,8 +1411,7 @@ of the boxed comment.
         lisp.message("Reboxed from style %d to %d"
                      % (old_style, new_style))
 
-#@-node:ekr.20071103093725.10:emacs_engine
-#@+node:ekr.20071103093725.11:ask_for_style
+#@+node:ekr.20071103093725.11: *8* ask_for_style
 def ask_for_style(self):
     """\
 Request the style interactively, using the minibuffer.
@@ -1472,16 +1437,14 @@ Box type is 1-opened, 2-half-single, 3-single, 4-half-double or 5-double")
             type = key - ord('0')
     return 100*language + 10*quality + type
 
-#@-node:ekr.20071103093725.11:ask_for_style
-#@+node:ekr.20071103093725.12:find_region
+#@+node:ekr.20071103093725.12: *8* find_region
 def find_region(self):
     """\
 Return the limits of the region.
 """
     return lisp.point(), lisp.mark(lisp.t)
 
-#@-node:ekr.20071103093725.12:find_region
-#@+node:ekr.20071103093725.13:find_comment
+#@+node:ekr.20071103093725.13: *8* find_comment
 def find_comment(self):
     """\
 Find and return the limits of the block of comments following or enclosing
@@ -1559,8 +1522,7 @@ of comments.  Extend it as far as possible in both directions.
             end = lisp.point()
     return start, end
 
-#@-node:ekr.20071103093725.13:find_comment
-#@+node:ekr.20071103093725.14:remainder_of_line
+#@+node:ekr.20071103093725.14: *8* remainder_of_line
 def remainder_of_line(self):
     """\
 Return all characters between point and end of line in Emacs buffer.
@@ -1569,8 +1531,7 @@ Return all characters between point and end of line in Emacs buffer.
 (buffer-substring (point) (save-excursion (skip-chars-forward "^\n") (point)))
 ''')
 
-#@-node:ekr.20071103093725.14:remainder_of_line
-#@+node:ekr.20071103093725.15:clean_undo_after_old
+#@+node:ekr.20071103093725.15: *8* clean_undo_after_old
 def clean_undo_after_old(self, checkpoint):
     """\
 Remove all intermediate boundaries from the Undo list since CHECKPOINT.
@@ -1592,8 +1553,7 @@ Remove all intermediate boundaries from the Undo list since CHECKPOINT.
                 tail = cdr(tail)
                 setcdr(cursor, tail)
 
-#@-node:ekr.20071103093725.15:clean_undo_after_old
-#@+node:ekr.20071103093725.16:clean_undo_after
+#@+node:ekr.20071103093725.16: *8* clean_undo_after
 def clean_undo_after(self, checkpoint):
     """\
 Remove all intermediate boundaries from the Undo list since CHECKPOINT.
@@ -1610,9 +1570,7 @@ nil)
 """
          % (checkpoint or 'nil'))
 
-#@-node:ekr.20071103093725.16:clean_undo_after
-#@-node:ekr.20071103093725.5:class Emacs_Rebox
-#@+node:ekr.20071103093725.17:engine
+#@+node:ekr.20071103093725.17: *7* engine
 def engine(text, style=None, width=79, refill=1, tabify=0, position=None):
     """\
 Add, delete or adjust a boxed comment held in TEXT, according to STYLE.
@@ -1668,8 +1626,7 @@ style does not exist.
         position = marker.get_position(text, new_template.characters())
     return old_template.style, new_style, text, position
 
-#@-node:ekr.20071103093725.17:engine
-#@+node:ekr.20071103093725.18:guess_language
+#@+node:ekr.20071103093725.18: *7* guess_language
 def guess_language(line):
     """\
 Guess the language in use for LINE.
@@ -1679,8 +1636,7 @@ Guess the language in use for LINE.
             return language
     return 1
 
-#@-node:ekr.20071103093725.18:guess_language
-#@+node:ekr.20071103093725.19:guess_template
+#@+node:ekr.20071103093725.19: *7* guess_template
 def guess_template(lines):
     """\
 Find the heaviest box template matching LINES.
@@ -1692,8 +1648,7 @@ Find the heaviest box template matching LINES.
                 best_template = template
     return best_template
 
-#@-node:ekr.20071103093725.19:guess_template
-#@+node:ekr.20071103093725.20:left_margin_size
+#@+node:ekr.20071103093725.20: *7* left_margin_size
 def left_margin_size(lines):
     """\
 Return the width of the left margin for all LINES.  Ignore white lines.
@@ -1708,8 +1663,7 @@ Return the width of the left margin for all LINES.  Ignore white lines.
         margin = 0
     return margin
 
-#@-node:ekr.20071103093725.20:left_margin_size
-#@+node:ekr.20071103093725.21:merge_styles
+#@+node:ekr.20071103093725.21: *7* merge_styles
 def merge_styles(original, update):
     """\
 Return style attributes as per ORIGINAL, in which attributes have been
@@ -1722,8 +1676,7 @@ overridden by non-zero corresponding style attributes from UPDATE.
             style[counter] = merge[counter]
     return 100*style[0] + 10*style[1] + style[2]
 
-#@-node:ekr.20071103093725.21:merge_styles
-#@+node:ekr.20071103093725.22:refill_lines
+#@+node:ekr.20071103093725.22: *7* refill_lines
 def refill_lines(lines, width):
     """\
 Refill LINES, trying to not produce lines having more than WIDTH columns.
@@ -1773,11 +1726,10 @@ Refill LINES, trying to not produce lines having more than WIDTH columns.
                 start = end + 1
     return new_lines
 
-#@-node:ekr.20071103093725.22:refill_lines
-#@+node:ekr.20071103093725.23:class Marker
+#@+node:ekr.20071103093725.23: *7* class Marker
 class Marker:
     @others
-#@+node:ekr.20071103093725.24:save_position
+#@+node:ekr.20071103093725.24: *8* save_position
 
 ## Heuristic to simulate a marker while reformatting boxes.
 
@@ -1795,8 +1747,7 @@ by faking that all IGNORABLE characters before POSITION were removed.
             counter = counter + 1
     self.position = position - counter
 
-#@-node:ekr.20071103093725.24:save_position
-#@+node:ekr.20071103093725.25:get_position
+#@+node:ekr.20071103093725.25: *8* get_position
 def get_position(self, text, ignorable, latest=0):
     """\
 Given a TEXT, return the value that would yield the currently saved position,
@@ -1827,14 +1778,12 @@ If LATEST is true, return the biggest possible value instead of the smallest.
                     break
     return position + counter
 
-#@-node:ekr.20071103093725.25:get_position
-#@-node:ekr.20071103093725.23:class Marker
-#@+node:ekr.20071103093725.26:class Template
+#@+node:ekr.20071103093725.26: *7* class Template
 ## Template processing.
 
 class Template:
     @others
-#@+node:ekr.20071103093725.27:__init__
+#@+node:ekr.20071103093725.27: *8* __init__
 
 def __init__(self, style, weight, lines):
     """\
@@ -1956,13 +1905,11 @@ refilled with it.
     # Save results.
     template_registry[style] = self
 
-#@-node:ekr.20071103093725.27:__init__
-#@+node:ekr.20071103093725.28:__cmp__
+#@+node:ekr.20071103093725.28: *8* __cmp__
 def __cmp__(self, other):
     return cmp(self.weight, other.weight)
 
-#@-node:ekr.20071103093725.28:__cmp__
-#@+node:ekr.20071103093725.29:characters
+#@+node:ekr.20071103093725.29: *8* characters
 def characters(self):
     """\
 Return a string of characters which may be used to draw the box.
@@ -1977,8 +1924,7 @@ Return a string of characters which may be used to draw the box.
                     characters = characters + character
     return characters
 
-#@-node:ekr.20071103093725.29:characters
-#@+node:ekr.20071103093725.30:match
+#@+node:ekr.20071103093725.30: *8* match
 def match(self, lines):
     """\
 Returns true if LINES exactly match this template.
@@ -1999,8 +1945,7 @@ Returns true if LINES exactly match this template.
                 return 0
     return 1
 
-#@-node:ekr.20071103093725.30:match
-#@+node:ekr.20071103093725.31:unbuild
+#@+node:ekr.20071103093725.31: *8* unbuild
 def unbuild(self, lines):
     """\
 Remove all comment marks from LINES, as hinted by this template.  Returns the
@@ -2032,8 +1977,7 @@ cleaned up set of lines, and the size of the left margin.
         end = end - 1
     return lines[start:end], margin
 
-#@-node:ekr.20071103093725.31:unbuild
-#@+node:ekr.20071103093725.32:build
+#@+node:ekr.20071103093725.32: *8* build
 def build(self, lines, width, refill, margin):
     """\
 Put LINES back into a boxed comment according to this template, after
@@ -2104,9 +2048,7 @@ and the total size of each line should ideally not go over WIDTH.
         lines.append(string.rstrip(' ' * margin + line))
     return lines
 
-#@-node:ekr.20071103093725.32:build
-#@-node:ekr.20071103093725.26:class Template
-#@+node:ekr.20071103093725.33:regexp_quote
+#@+node:ekr.20071103093725.33: *7* regexp_quote
 def regexp_quote(text):
     """\
 Return a regexp matching TEXT without its surrounding space, maybe
@@ -2119,8 +2061,7 @@ Unless spaces, the text is nested within a regexp parenthetical group.
         return ' *'
     return '(' + re.escape(text.strip() + ') *'
 
-#@-node:ekr.20071103093725.33:regexp_quote
-#@+node:ekr.20071103093725.34:regexp_ruler
+#@+node:ekr.20071103093725.34: *7* regexp_ruler
 def regexp_ruler(character):
     """\
 Return a regexp matching two or more repetitions of CHARACTER, maybe
@@ -2133,8 +2074,7 @@ Unless spaces, the ruler is nested within a regexp parenthetical group.
         return '  +'
     return '(' + re.escape(character + character) + '+) *'
 
-#@-node:ekr.20071103093725.34:regexp_ruler
-#@+node:ekr.20071103093725.35:unbuild_clean
+#@+node:ekr.20071103093725.35: *7* unbuild_clean
 def unbuild_clean(line, regexp):
     """\
 Return LINE with all parenthetical groups in REGEXP erased and replaced by an
@@ -2148,8 +2088,7 @@ equivalent number of spaces, except for trailing spaces, which get removed.
             line = line[:start] + ' ' * (end - start) + line[end:]
     return string.rstrip(line)
 
-#@-node:ekr.20071103093725.35:unbuild_clean
-#@+node:ekr.20071103093725.36:make_generic
+#@+node:ekr.20071103093725.36: *7* make_generic
 ## Template data.
 
 # Matcher functions for a comment start, indexed by numeric LANGUAGE.
@@ -2184,8 +2123,7 @@ all using the same WEIGHT.  Replace `?' in LINES accordingly.
             new_lines.append(string.replace(line, '?', character))
         Template(new_style, weight, new_lines)
 
-#@-node:ekr.20071103093725.36:make_generic
-#@+node:ekr.20071103093725.37:<< templates >>
+#@+node:ekr.20071103093725.37: *7* << templates >>
 
 make_generic(11, 115, ('? box',))
 
@@ -2380,12 +2318,7 @@ Template(251, 158, ('/* ',
                     ' * box',
                     ' */   '))
 
-#@-node:ekr.20071103093725.37:<< templates >>
-#@-node:ekr.20071103093725.1:rebox.py
-#@-node:ekr.20071103093725:Example 3: defining a rebox tool
-#@-node:ekr.20071103090504:Pymacs docs
-#@-node:ekr.20071104222805:Emacs/Pymacs notes
-#@+node:ekr.20050123161408:ExamDiff files & scripts
+#@+node:ekr.20050123161408: *3* ExamDiff files & scripts
 0 leo.py
 1 leoApp.py
 2 leoAtFile.py
@@ -2414,8 +2347,7 @@ Template(251, 158, ('/* ',
 25 leoTkinterMenu.py
 26 leoTkinterTree.py
 27 leoUndo.py
-#@nonl
-#@+node:ekr.20050123160215.1:Put all files in alpha order in ExamDiff
+#@+node:ekr.20050123160215.1: *4* Put all files in alpha order in ExamDiff
 print '-' * 20
 d = []
 
@@ -2431,11 +2363,9 @@ for s in d:
 
 
 
-#@-node:ekr.20050123160215.1:Put all files in alpha order in ExamDiff
-#@-node:ekr.20050123161408:ExamDiff files & scripts
-#@+node:ekr.20031218072017.365:How to...
-#@+node:ekr.20060208112908:BZR stuff...
-#@+node:ekr.20060331094112:How to generate keys using putty
+#@+node:ekr.20031218072017.365: *3* How to...
+#@+node:ekr.20060208112908: *4* BZR stuff...
+#@+node:ekr.20060331094112: *5* How to generate keys using putty
 To generate a SSH key using PuTTY:
 
 Execute c:\"Program Files"\tortoiseCVS\PUTTYGEN.EXE
@@ -2471,9 +2401,7 @@ Exit the PuTTY Key Generator (PUTTYGEN).
 Key data sync to hosts from the SourceForge.net site occurs on regular
 intervals. Your key data will be synchronized to the designated servers (either
 shell and CVS, or the Compile Farm) after a short delay.
-#@nonl
-#@-node:ekr.20060331094112:How to generate keys using putty
-#@+node:ekr.20060208112908.1:How to check out leo from SourceForge
+#@+node:ekr.20060208112908.1: *5* How to check out leo from SourceForge
 The Tortoise cvs params:
 
 :ext:edream@cvs.sourceforge.net:/cvsroot/leo
@@ -2486,25 +2414,21 @@ Repository folder: /cvsroot/leo
 User name: your cvs name
 
 ### :pserver:anonymous@cvs.sourceforge.net:/cvsroot/leo
-#@nonl
-#@-node:ekr.20060208112908.1:How to check out leo from SourceForge
-#@+node:ekr.20031218072017.366:How to add and remove files from CVS repository
+#@+node:ekr.20031218072017.366: *5* How to add and remove files from CVS repository
 use the command line option in the admin menu to do the following:
 
 add leoConfig.py and leoConfig.txt
-	cvs add leoConfig.txt
-	cvs add leoConfig.py
-	(then do commit)
+    cvs add leoConfig.txt
+    cvs add leoConfig.py
+    (then do commit)
 
 remove readme*.doc
-	remove files from working area (done)
-	cvs remove readme1.doc
-	cvs remove readme2.doc
-	...
-	(then do commit)
-#@nonl
-#@-node:ekr.20031218072017.366:How to add and remove files from CVS repository
-#@+node:ekr.20031218072017.391:How to use CVS branches
+    remove files from working area (done)
+    cvs remove readme1.doc
+    cvs remove readme2.doc
+    ...
+    (then do commit)
+#@+node:ekr.20031218072017.391: *5* How to use CVS branches
 @nocolor
 
 I have a fair bit of expertise on CVS branches. It's late at night, so I don't have time for a long soapbox spiel at the moment. I will try to post something tomorrow. 
@@ -2526,10 +2450,7 @@ I would recommend caution with merging because as you have noted, leo files are 
 You may want to look at manually merging changes back into the main branch until leo implements invariant unique (UUID) sentinel indices. 
 
 This will not hurt your ability to use branches, only your ability to automatically merge changes from one branch onto another.
-#@nonl
-#@-node:ekr.20031218072017.391:How to use CVS branches
-#@-node:ekr.20060208112908:BZR stuff...
-#@+node:ekr.20031218072017.367:How to add support for a new language
+#@+node:ekr.20031218072017.367: *4* How to add support for a new language
 @nocolor
 
 - Add new entries in the following Python dictionariues in leoApp.py:
@@ -2555,29 +2476,22 @@ TESTS
 - Test the syntax coloring for the new language by using the @language directive.
 
 @color
-#@nonl
-#@-node:ekr.20031218072017.367:How to add support for a new language
-#@+node:ekr.20080814134319.1:How to create and push to a private bzr branch
+#@+node:ekr.20080814134319.1: *4* How to create and push to a private bzr branch
 @nocolor
 
 C:\leo.repo\trunk>bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
 
 C:\leo.repo\trunk>bzr push --use-existing-dir bzr+ssh://edreamleo@bazaar.launchpad.net/~edreamleo/leo-editor/leo-4-5-1
 
-#@-node:ekr.20080814134319.1:How to create and push to a private bzr branch
-#@+node:ekr.20051203084725:How to expand java .jar files
+#@+node:ekr.20051203084725: *4* How to expand java .jar files
 - Put whatever.jar in c:\prog
 - cd: c:\prog
 - jar xvf whatever.jar
-#@nonl
-#@-node:ekr.20051203084725:How to expand java .jar files
-#@+node:ekr.20031218072017.384:How to export syntax colored code preserving colors
+#@+node:ekr.20031218072017.384: *4* How to export syntax colored code preserving colors
 Scite has the option to "Export as html" and "export as rtf", and it will be
 full of colour and fonts - and you can define them in properties, so it will be
 the same as during editing.
-#@nonl
-#@-node:ekr.20031218072017.384:How to export syntax colored code preserving colors
-#@+node:ekr.20031218072017.385:How to Increase environment space
+#@+node:ekr.20031218072017.385: *4* How to Increase environment space
 To increase the size of environment space, add the following to config.sys:
 
 shell=C:\windows\command\command.com /p:4096
@@ -2590,9 +2504,7 @@ Check you system for the location of command.com.
 2. This works for versions of Windows prior to Me.
 On Me you set the registry somehow.
 No information on XP.
-#@nonl
-#@-node:ekr.20031218072017.385:How to Increase environment space
-#@+node:ekr.20051203084725.1:How to install and run jythonShell
+#@+node:ekr.20051203084725.1: *4* How to install and run jythonShell
 Install:
 
 Put JythonShellEA.jar in c:\prog\JythonShell
@@ -2607,9 +2519,7 @@ Here is the contents of jythonShell.bat:
 
 cd c:\prog\jythonShell
 java -cp c:\jython-2.2a1\jython.jar;c:\prog\jythonShell\JythonShellEA2.1.jar org.leo.shell.JythonShell
-#@nonl
-#@-node:ekr.20051203084725.1:How to install and run jythonShell
-#@+node:ekr.20050316092232:How to install jyLeo
+#@+node:ekr.20050316092232: *4* How to install jyLeo
 - Unpack the .zip file, placing the result somewhere, say in c:\prog\jyleo-Jan-11-06
 
 - Edit jleo.bat so it refers to jyleo-Jan-11-06.  For example:
@@ -2625,8 +2535,7 @@ goto loop
 
 cd c:\prog\jyleo-Jan-11-06
 java -jar c:\jython-2.2a1\jython.jar src\leo.py
-#@nonl
-#@+node:ekr.20050716104357:Old instructions
+#@+node:ekr.20050716104357: *5* Old instructions
 @nocolor
 
 - put the jyleo-nnn.jar file in c:\prog
@@ -2655,8 +2564,7 @@ try:
     home = os.getenv('HOME' )#,default=dotDir)
 except Exception:
     home = ''
-#@-node:ekr.20050716104357:Old instructions
-#@+node:ekr.20050317153447:jy-Leo install instructions by Paul Paterson
+#@+node:ekr.20050317153447: *5* jy-Leo install instructions by Paul Paterson
 @killcolor
 
 http://sourceforge.net/forum/message.php?msg_id=3053534
@@ -2698,9 +2606,7 @@ C:\Apps\jLeo\j-leo-MAR15\src\leo.py"
 Works a treat!  
 
 Paul
-#@-node:ekr.20050317153447:jy-Leo install instructions by Paul Paterson
-#@-node:ekr.20050316092232:How to install jyLeo
-#@+node:ekr.20051129084430:How to install jython
+#@+node:ekr.20051129084430: *4* How to install jython
 @nocolor
 
 - Download jython_Release_2_2alpha1.jar and put it anywhere (say on the desktop)
@@ -2710,11 +2616,8 @@ Paul
 
 - Using the Control Panel, System, Advanced tab, environment variables,
   add c:\jython-2.2a1\jython.jar to CLASSPATH (in user variables)
-#@nonl
-#@+node:ekr.20051129084430.1:@url http://www.jython.org/install.html
-#@-node:ekr.20051129084430.1:@url http://www.jython.org/install.html
-#@-node:ekr.20051129084430:How to install jython
-#@+node:ekr.20070623150151:How to make Leo commands undoable
+#@+node:ekr.20051129084430.1: *5* @url http://www.jython.org/install.html
+#@+node:ekr.20070623150151: *4* How to make Leo commands undoable
 The chapter commands provide a good example.  In this file, see the node:
 
 Code-->Core classes...-->@thin leoChapters.py-->class chapterController-->Undo
@@ -2753,8 +2656,7 @@ Writing correct undo and redo helpers is usually a bit tricky.  The code is ofte
 
 
 
-#@-node:ekr.20070623150151:How to make Leo commands undoable
-#@+node:ekr.20091217112515.6070:How to make the codewise completer work
+#@+node:ekr.20091217112515.6070: *4* How to make the codewise completer work
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/ac3f8789010c882e
@@ -2819,7 +2721,7 @@ Also, try the explicit declarations:
 w.<alt+0>
 
 And self.<alt+0>
-#@+node:ekr.20091217112515.6069:Others posts
+#@+node:ekr.20091217112515.6069: *5* Others posts
 @nocolor-node
 
 1. codewisecompleter.py now completes by explicit type hints (as seen in
@@ -2843,9 +2745,7 @@ same thing.
 ==============
 
 The version of codewise completer that works with Tk is now on trunk.
-#@nonl
-#@-node:ekr.20091217112515.6069:Others posts
-#@+node:ekr.20091217112515.6071:plugin docs
+#@+node:ekr.20091217112515.6071: *5* plugin docs
 @nocolor-node
 
 - You need to create ctags file to ~/.leo/tags. Example::
@@ -2859,9 +2759,7 @@ The version of codewise completer that works with Tk is now on trunk.
 Attempting to complete 'foo->' is useless, but 'foo->ba' will work (provided you
 don't have 2000 functions/methods starting with 'ba'. 'foo->' portion is ignored
 in completion search.
-#@-node:ekr.20091217112515.6071:plugin docs
-#@-node:ekr.20091217112515.6070:How to make the codewise completer work
-#@+node:ekr.20031218072017.386:How to remove cursed newlines: use binary mode
+#@+node:ekr.20031218072017.386: *4* How to remove cursed newlines: use binary mode
 teknico ( Nicola Larosa ) 
  RE: Removing '\r' characters?   
 2002-09-16 14:27  
@@ -2882,7 +2780,7 @@ Sorry for being a bit vague, I was talking about the Leo source files themselves
 If Leo itself does not solve the problem, may I suggest the 
 Tools/scripts/crlf.py script in the Python source distibution? It's nice and simple, and skips binary files, too. That's what I use every time I install a new version of Leo. :^) 
 
-#@+node:ekr.20031218072017.387:The solution
+#@+node:ekr.20031218072017.387: *5* The solution
 Under unix, python writes "\n" as "\n"; under windows, it writes it as "\r\n". The unix python interpreter ignores trailing "\r" in python source files. There are no such guarantees for other languages. Unix users should be able to get rid of the cosmetically detrimental "\r" either by running dos2unix on the offending files, or, if they're part of a .leo project, reading them into leo and writing them out again.  
 
 
@@ -2913,9 +2811,7 @@ I am going to see if there is any way to get Python to write a "raw" '\n' to a f
 Thanks again for this most helpful comment. 
 
 Edward
-#@nonl
-#@-node:ekr.20031218072017.387:The solution
-#@+node:ekr.20031218072017.388:cursed newline answer
+#@+node:ekr.20031218072017.388: *5* cursed newline answer
 In 2.3 you can open files with the "U" flag and get "universal newline"
 support: 
 
@@ -2933,8 +2829,7 @@ problem,\r\n'
 >>> line
 'This is an example of what I have come to call the "cursed newline" problem,\n'
 
-#@-node:ekr.20031218072017.388:cursed newline answer
-#@+node:ekr.20031218072017.389:cursed newline answer 2
+#@+node:ekr.20031218072017.389: *5* cursed newline answer 2
 > You can open the file in 'binary' mode (adding 'b' to the mode string) and
 > the file will contain '\r\n' on both platforms (and any other platforms.)
 
@@ -2949,12 +2844,9 @@ returns. On the Mac I have no idea what they do. Probably just carriage
 returns, to be different :-)
 
 2.3 will be a bit more flexible about such mattrers.
-#@-node:ekr.20031218072017.389:cursed newline answer 2
-#@-node:ekr.20031218072017.386:How to remove cursed newlines: use binary mode
-#@+node:ekr.20061023153133:How to run patch
+#@+node:ekr.20061023153133: *4* How to run patch
 patch -p1 < patchfile
-#@-node:ekr.20061023153133:How to run patch
-#@+node:ekr.20050510071834:How to use a temp file with pdb
+#@+node:ekr.20050510071834: *4* How to use a temp file with pdb
 @killcolor
 
 http://sourceforge.net/forum/message.php?msg_id=3137690
@@ -2966,8 +2858,7 @@ when the user executes a script with Pdb it:
 2. Executes pdb based off of that tmp file.
 
 that way you get all the goodness that pdb can offer.
-#@-node:ekr.20050510071834:How to use a temp file with pdb
-#@+node:ekr.20041214135556:How to use Tile
+#@+node:ekr.20041214135556: *4* How to use Tile
 @nocolor
 https://sourceforge.net/forum/message.php?msg_id=2882718
 By: nobody
@@ -3001,10 +2892,7 @@ def createRootWindow(self):
     self.createGlobalWindows()
 
     return root
-#@nonl
-#@-node:ekr.20041214135556:How to use Tile
-#@-node:ekr.20031218072017.365:How to...
-#@+node:ekr.20070215183046:IronPython notes
+#@+node:ekr.20070215183046: *3* IronPython notes
 @nocolor
 
 - IronPython does not accept 'from __future__ import x'
@@ -3017,14 +2905,11 @@ def createRootWindow(self):
   It complains about a missing 'strict' codec.
 
 - IronPython has trouble with the pdb module, so some other way must be found to debug IronPython programs.
-#@nonl
-#@-node:ekr.20070215183046:IronPython notes
-#@+node:ekr.20080114142724:leoGtkNotes
+#@+node:ekr.20080114142724: *3* leoGtkNotes
 @nocolor
 
 @all
-#@nonl
-#@+node:ekr.20080112175736: gtk: to do
+#@+node:ekr.20080112175736: *4*  gtk: to do
 gtkGui:
 
 ** Rewrite leoKeyEventClass.
@@ -3049,14 +2934,10 @@ General:
 - Write unit tests for all new gui code.
 - Unit tests for showFindPanel and openCompareWindow.
 
-#@-node:ekr.20080112175736: gtk: to do
-#@+node:ekr.20080113061130: gtk: what I did
+#@+node:ekr.20080113061130: *4*  gtk: what I did
 - Added code to Leo's code to do nothing it the compare panel and stand-alone find panel do not exist.
-#@nonl
-#@-node:ekr.20080113061130: gtk: what I did
-#@-node:ekr.20080114142724:leoGtkNotes
-#@+node:ekr.20050214055018:Mac Notes
-#@+node:ekr.20050221054932:How to make monolithic Leo app on MacOS X
+#@+node:ekr.20050214055018: *3* Mac Notes
+#@+node:ekr.20050221054932: *4* How to make monolithic Leo app on MacOS X
  @killcolor
 http://sourceforge.net/forum/message.php?msg_id=3007062
 By: jgleeson
@@ -3098,13 +2979,9 @@ it does only if you are brilliant enough to decode my instructions.   ;)
 HTH
 
 -John
-#@nonl
-#@-node:ekr.20050221054932:How to make monolithic Leo app on MacOS X
-#@+node:ekr.20050214055018.4:@url http://idisk.mac.com/genthaler-Public/Leo.zip (download)
-#@-node:ekr.20050214055018.4:@url http://idisk.mac.com/genthaler-Public/Leo.zip (download)
-#@+node:ekr.20050214055018.5:@url http://www.wordtech-software.com/leo.html  (Mac Bundle)
-#@-node:ekr.20050214055018.5:@url http://www.wordtech-software.com/leo.html  (Mac Bundle)
-#@+node:ekr.20050513164506:Problems with run script command on Mac x11
+#@+node:ekr.20050214055018.4: *4* @url http://idisk.mac.com/genthaler-Public/Leo.zip (download)
+#@+node:ekr.20050214055018.5: *4* @url http://www.wordtech-software.com/leo.html  (Mac Bundle)
+#@+node:ekr.20050513164506: *4* Problems with run script command on Mac x11
 @killcolor
 
 Jon Schull <jschull@softlock.com>  
@@ -3144,7 +3021,7 @@ Those text streams are available...
         print popenResults[pOut].read()
         print popenResults[pErr].read()
 
-    import os	
+    import os
     do('/sw/bin/python /Users/jis/box.py')
 
 ...but only when the vpython program terminates.
@@ -3153,7 +3030,7 @@ Here's the good news:  if we execute our vp program with
 /sw/bin/idle.py rather than with python, we get to see the program 
 output in real time (under idle, under X11).
 
-    import os	
+    import os
     os.chdir('/sw/lib/python2.3/idlelib')
     os.popen3('/sw/bin/python idle.py -r /Users/jis/box.py')
 
@@ -3176,10 +3053,8 @@ Associate Professor
 Information Technology
 Rochester Institute of Technology
 schull@digitalgoods.com 585-738-6696
-#@nonl
-#@-node:ekr.20050513164506:Problems with run script command on Mac x11
-#@+node:ekr.20040104162835.8:Linux/Mac notes: Dan Winkler
-#@+node:ekr.20040104162835.13:Fink & aqua
+#@+node:ekr.20040104162835.8: *4* Linux/Mac notes: Dan Winkler
+#@+node:ekr.20040104162835.13: *5* Fink & aqua
 Yes, fink does have pre-built Pythons, both 2.1 and 2.2.  (If you don't 
 see them it probably means you don't have the right servers listed in 
 your /sw/etc/apt/sources.list file.)  However, the versions of Python 
@@ -3207,8 +3082,7 @@ So Tk can either be present or not and if it is present it can use
 either X Windows or Aqua.  You want it present and using Aqua, I think.
 
 
-#@-node:ekr.20040104162835.13:Fink & aqua
-#@+node:ekr.20040104162835.14:Mac, Fink, etc.
+#@+node:ekr.20040104162835.14: *5* Mac, Fink, etc.
 > 1. The python that FC installs is MacPython.  I think that because the
 > MacPython docs talk about Fink.
 
@@ -3238,8 +3112,7 @@ don't have to deinstall the FC stuff.  All the FC stuff lives in its
 own world under /sw and runs under X.  It won't conflict with the Mac 
 world.
 
-#@-node:ekr.20040104162835.14:Mac, Fink, etc.
-#@+node:ekr.20040104162835.15:Double clicking on Linux
+#@+node:ekr.20040104162835.15: *5* Double clicking on Linux
 Double-clickable things (i.e. Macintosh applications) are usually 
 actually folders with a name that ends in .app.  The file you found is 
 probably executable only from the command line, not by double clicking 
@@ -3253,10 +3126,7 @@ clicking on foo in the finder (the .app extension is suppressed).  The
 idea behind this is that an application can look like just one opaque 
 icon in the finder but actually have all its resources nicely organized 
 in subfolders.
-#@-node:ekr.20040104162835.15:Double clicking on Linux
-#@-node:ekr.20040104162835.8:Linux/Mac notes: Dan Winkler
-#@-node:ekr.20050214055018:Mac Notes
-#@+node:ekr.20060111112513.1:New jyLeo notes
+#@+node:ekr.20060111112513.1: *3* New jyLeo notes
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=3516227
 By: nobody
@@ -3317,20 +3187,17 @@ it may just have a slow startup in the aggregate.  So don't think its not doing
 anything, it probably is.
 
 leouser
-#@nonl
-#@-node:ekr.20060111112513.1:New jyLeo notes
-#@+node:ekr.20031218072017.392:Python Notes...
-#@+node:ekr.20031218072017.398:How to call any Python method from the C API
+#@+node:ekr.20031218072017.392: *3* Python Notes...
+#@+node:ekr.20031218072017.398: *4* How to call any Python method from the C API
 In general, everything you can do in Python is accessible through the C API.
 
-	lines = block.split('\n');
+    lines = block.split('\n');
 
 > That will be
 
-	lines = PyObject_CallMethod(block, "split", "s", "\n");
-#@-node:ekr.20031218072017.398:How to call any Python method from the C API
-#@+node:ekr.20031218072017.399:How to run Python programs easily on NT,2K,XP
-#@+node:ekr.20031218072017.400:setting the PATHEXT env var
+    lines = PyObject_CallMethod(block, "split", "s", "\n");
+#@+node:ekr.20031218072017.399: *4* How to run Python programs easily on NT,2K,XP
+#@+node:ekr.20031218072017.400: *5* setting the PATHEXT env var
 It is worth noting that NT, Win2K and XP all have an alternative which is
 to add .PY to the PATHEXT environment variable. Then you can run any .PY
 file directly just by typing the name of the script without the extension. 
@@ -3350,8 +3217,7 @@ C:\>google
 Usage: C:\python22\tools\Scripts\google.py querystring
 
 C:\>
-#@-node:ekr.20031218072017.400:setting the PATHEXT env var
-#@+node:ekr.20031218072017.401:Yet another Python .bat wrapper
+#@+node:ekr.20031218072017.401: *5* Yet another Python .bat wrapper
 >> It has a header of just one line. All the ugly stuff is at the end.
 >>
 >> -------------------------------------------------------------------
@@ -3378,10 +3244,7 @@ It's for running python scripts on windows, without having to type:
 and almost takes the place of the "shabang" line at the top of *nix
 scripts.
 
-#@-node:ekr.20031218072017.401:Yet another Python .bat wrapper
-#@-node:ekr.20031218072017.399:How to run Python programs easily on NT,2K,XP
-#@-node:ekr.20031218072017.392:Python Notes...
-#@+node:ekr.20090501095634.2:rst2leo.py
+#@+node:ekr.20090501095634.2: *3* rst2leo.py
 # By Kent Tenney
 
 @language python
@@ -3402,12 +3265,12 @@ valid_underline_characters = [
 # assert valid_underline_characters == valid_underline_characters2
 
 @others
-#@+node:ekr.20090501095634.4:class ParseReST
+#@+node:ekr.20090501095634.4: *4* class ParseReST
 class ParseReST:
     """Processes a chunks of ReST, creating a list of nodes/sections
     """
     @others
-#@+node:ekr.20090501095634.5:__init__
+#@+node:ekr.20090501095634.5: *5* __init__
 def __init__(self, input):
 
     """Initialize document level variables
@@ -3430,9 +3293,7 @@ def __init__(self, input):
     self.section = {'title':'root', 'contents':[], 'underline_character':'root'}
     # the list of sections
     self.sections = []
-#@nonl
-#@-node:ekr.20090501095634.5:__init__
-#@+node:ekr.20090501095634.39:_isCharacterLine (old)
+#@+node:ekr.20090501095634.39: *5* _isCharacterLine (old)
 def _isCharacterLine(self):
     """Determine if the current line consists of only 
     valid underline characters
@@ -3455,8 +3316,7 @@ def _isCharacterLine(self):
     return is_character_line
 
 
-#@-node:ekr.20090501095634.39:_isCharacterLine (old)
-#@+node:ekr.20090501095634.6:_isUnderLine
+#@+node:ekr.20090501095634.6: *5* _isUnderLine
 def _isUnderLine(self,s):
 
     """Return True if s consists of only valid underline characters
@@ -3466,9 +3326,7 @@ def _isUnderLine(self,s):
         if ch not in valid_underline_characters:
             return False
     return True
-#@nonl
-#@-node:ekr.20090501095634.6:_isUnderLine
-#@+node:ekr.20090501095634.7:_isTransition
+#@+node:ekr.20090501095634.7: *5* _isTransition
 def _isTransition(self):
     """self.index is pointing to a character line
     if there are blank lines on either side, this is a transition
@@ -3481,8 +3339,7 @@ def _isTransition(self):
     return len(prev) == 0 and len(next) == 0
 
 
-#@-node:ekr.20090501095634.7:_isTransition
-#@+node:ekr.20090501095634.8:_isUnderline
+#@+node:ekr.20090501095634.8: *5* _isUnderline
 def _isUnderline(self):
     """self.index is pointing to a character line 
     if two lines back is a blank line, the previous line
@@ -3500,8 +3357,7 @@ def _isUnderline(self):
 
 
 
-#@-node:ekr.20090501095634.8:_isUnderline
-#@+node:ekr.20090501095634.9:_isUnderOverline
+#@+node:ekr.20090501095634.9: *5* _isUnderOverline
 def _isUnderOverline(self):
     """self.index is pointing at a character line
     if there is a line not longer than this
@@ -3522,8 +3378,7 @@ def _isUnderOverline(self):
 
 
 
-#@-node:ekr.20090501095634.9:_isUnderOverline
-#@+node:ekr.20090501095634.10:_isSectionHead
+#@+node:ekr.20090501095634.10: *5* _isSectionHead
 def _isSectionHead(self):
     """The current line is a character line,
     is this a section heading?
@@ -3564,8 +3419,7 @@ def _isSectionHead(self):
         raise Exception ("Error in foundSectionHead()")
 
 
-#@-node:ekr.20090501095634.10:_isSectionHead
-#@+node:ekr.20090501095634.11:_closeCurrentSection
+#@+node:ekr.20090501095634.11: *5* _closeCurrentSection
 def _closeCurrentSection(self):
     """We have a section title, which ended the previous
     section. Add this section to nodes, and start the next
@@ -3574,8 +3428,7 @@ def _closeCurrentSection(self):
     self.section = {'title':'', 'contents':[], 'underline_character':''}
 
 
-#@-node:ekr.20090501095634.11:_closeCurrentSection
-#@+node:ekr.20090501095634.12:_insertTitle
+#@+node:ekr.20090501095634.12: *5* _insertTitle
 def _insertTitle(self, uc, isSubTitle = False):
     """Inserting a title consists of merging section[1],
     the first section, into section[0], the root.
@@ -3608,8 +3461,7 @@ def _insertTitle(self, uc, isSubTitle = False):
 
 
 
-#@-node:ekr.20090501095634.12:_insertTitle
-#@+node:ekr.20090501095634.13:_fixupSections
+#@+node:ekr.20090501095634.13: *5* _fixupSections
 def _fixupSections(self):
     """Make corrections to the list of sections
     to reflect the syntax for 'Title' and 'Subtitle'
@@ -3648,8 +3500,7 @@ def _fixupSections(self):
 
 
 
-#@-node:ekr.20090501095634.13:_fixupSections
-#@+node:ekr.20090501095634.14:processLines
+#@+node:ekr.20090501095634.14: *5* processLines
 def processLines(self):
     """Loop through the lines of ReST input, building a list
     of sections. A section consists of::
@@ -3674,14 +3525,11 @@ def processLines(self):
         if len(self.sections[0]['underline_character']) > 1:
             self._fixupSections()
     return self.sections
-#@nonl
-#@-node:ekr.20090501095634.14:processLines
-#@-node:ekr.20090501095634.4:class ParseReST
-#@+node:ekr.20090501095634.15:class BuildLeo
+#@+node:ekr.20090501095634.15: *4* class BuildLeo
 class BuildLeo:
     """Create a tree of nodes in a Leo file using a list of sections"""
     @others
-#@+node:ekr.20090501095634.16:__init__
+#@+node:ekr.20090501095634.16: *5* __init__
 
 def __init__(self, nodes, position, commander):
     """the nodes paramater is returned by ParseReST.processLines
@@ -3702,8 +3550,7 @@ def __init__(self, nodes, position, commander):
     # in the order of levels. The first is always 'root'
     self.underline_characters = ['root',]
 
-#@-node:ekr.20090501095634.16:__init__
-#@+node:ekr.20090501095634.17:_setRootNodeHeadString
+#@+node:ekr.20090501095634.17: *5* _setRootNodeHeadString
 def _setRootNodeHeadString(self, rootstring):
     """
     """
@@ -3719,8 +3566,7 @@ def _setRootNodeHeadString(self, rootstring):
 
 
 
-#@-node:ekr.20090501095634.17:_setRootNodeHeadString
-#@+node:ekr.20090501095634.18:_dedent
+#@+node:ekr.20090501095634.18: *5* _dedent
 def _dedent(self, text):
     """
     """
@@ -3738,8 +3584,7 @@ def _dedent(self, text):
     return result    
 
 
-#@-node:ekr.20090501095634.18:_dedent
-#@+node:ekr.20090501095634.19:_fixCodeNodes
+#@+node:ekr.20090501095634.19: *5* _fixCodeNodes
 def _fixCodeNodes(self):
     """The main block loops through nodes calling isCodeNode on each
     node. isCodeNode finds and removes markup added to code nodes
@@ -3784,8 +3629,7 @@ def _fixCodeNodes(self):
 
 
 
-#@-node:ekr.20090501095634.19:_fixCodeNodes
-#@+node:ekr.20090501095634.20:_contents2String
+#@+node:ekr.20090501095634.20: *5* _contents2String
 def _contents2String(self):
     """nodes[index]['contents'] is a list of string,
     all the processing required is line oriented.
@@ -3802,8 +3646,7 @@ def _contents2String(self):
 
 
 
-#@-node:ekr.20090501095634.20:_contents2String
-#@+node:ekr.20090501095634.21:processNodes
+#@+node:ekr.20090501095634.21: *5* processNodes
 def processNodes(self):
     """Step through the list of nodes created by
     parseReST creating the appropriate Leo nodes
@@ -3866,12 +3709,10 @@ def processNodes(self):
 
 
 
-#@-node:ekr.20090501095634.21:processNodes
-#@-node:ekr.20090501095634.15:class BuildLeo
-#@+node:ekr.20090501095634.22:class ZWiki
+#@+node:ekr.20090501095634.22: *4* class ZWiki
 class ZWiki:
     @others
-#@+node:ekr.20090501095634.23:__init__
+#@+node:ekr.20090501095634.23: *5* __init__
 def __init__ (self, url, auth = None, cookie = None, create = False):
     """ZWiki init
     """
@@ -3888,8 +3729,7 @@ def __init__ (self, url, auth = None, cookie = None, create = False):
 
 
 
-#@-node:ekr.20090501095634.23:__init__
-#@+node:ekr.20090501095634.24:_addHeaders
+#@+node:ekr.20090501095634.24: *5* _addHeaders
 def _addHeaders(self):
     """
     """
@@ -3908,8 +3748,7 @@ def _addHeaders(self):
 
 
 
-#@-node:ekr.20090501095634.24:_addHeaders
-#@+node:ekr.20090501095634.25:_string2DateTime
+#@+node:ekr.20090501095634.25: *5* _string2DateTime
 def _string2DateTime(self, s):
     """Convert the string used by ZWiki ThePage/lastEditTime
     to a datetime.datetime instance
@@ -3931,8 +3770,7 @@ def _string2DateTime(self, s):
 
 
 
-#@-node:ekr.20090501095634.25:_string2DateTime
-#@+node:ekr.20090501095634.26:_parseURL
+#@+node:ekr.20090501095634.26: *5* _parseURL
 def _parseURL(self):
     """Get self.page and self.base from the url,
     assemble url's for editform, page create and lastEditTime
@@ -3951,8 +3789,7 @@ def _parseURL(self):
 
 
 
-#@-node:ekr.20090501095634.26:_parseURL
-#@+node:ekr.20090501095634.27:_createFile
+#@+node:ekr.20090501095634.27: *5* _createFile
 def _createFile(self):
     """
     """
@@ -3973,8 +3810,7 @@ def _createFile(self):
 
 
 
-#@-node:ekr.20090501095634.27:_createFile
-#@+node:ekr.20090501095634.28:getLastEditTime
+#@+node:ekr.20090501095634.28: *5* getLastEditTime
 def getLastEditTime(self):
     """Return the contents of page/lastEditTime
     """
@@ -3983,8 +3819,7 @@ def getLastEditTime(self):
     return self.browser.contents
 
 
-#@-node:ekr.20090501095634.28:getLastEditTime
-#@+node:ekr.20090501095634.29:putReST
+#@+node:ekr.20090501095634.29: *5* putReST
 def putReST(self, data):
     """
     """
@@ -4017,8 +3852,7 @@ def putReST(self, data):
 
 
 
-#@-node:ekr.20090501095634.29:putReST
-#@+node:ekr.20090501095634.30:getReST
+#@+node:ekr.20090501095634.30: *5* getReST
 def getReST(self):
     """
     Get the contents of the text form on ThePage/editform
@@ -4041,8 +3875,7 @@ def getReST(self):
 
 
 
-#@-node:ekr.20090501095634.30:getReST
-#@+node:ekr.20090501095634.31:putFile
+#@+node:ekr.20090501095634.31: *5* putFile
 def putFile(self, data):
     """Upload a file to a ZWiki.
 
@@ -4076,8 +3909,7 @@ def putFile(self, data):
 
 
 
-#@-node:ekr.20090501095634.31:putFile
-#@+node:ekr.20090501095634.32:getFile
+#@+node:ekr.20090501095634.32: *5* getFile
 def getFile(self):
     """
     """
@@ -4102,14 +3934,12 @@ def getFile(self):
 
 
 
-#@-node:ekr.20090501095634.32:getFile
-#@-node:ekr.20090501095634.22:class ZWiki
-#@+node:ekr.20090501095634.33:class Button
+#@+node:ekr.20090501095634.33: *4* class Button
 class Button:
     """Wrapper for rst2leo 'upload' and 'download' buttons
     """
     @others
-#@+node:ekr.20090501095634.34:__init__
+#@+node:ekr.20090501095634.34: *5* __init__
 
 
 def __init__(self, position, commander, leoGlobals):
@@ -4133,8 +3963,7 @@ def __init__(self, position, commander, leoGlobals):
 
 
 
-#@-node:ekr.20090501095634.34:__init__
-#@+node:ekr.20090501095634.35:_stripCodeMarkers
+#@+node:ekr.20090501095634.35: *5* _stripCodeMarkers
 def _stripCodeMarkers(self, data):
     """@data is a string containing the ReST version of the Leo node
     convert to list for processing to remove the **code** markers
@@ -4152,8 +3981,7 @@ def _stripCodeMarkers(self, data):
 
 
 
-#@-node:ekr.20090501095634.35:_stripCodeMarkers
-#@+node:ekr.20090501095634.36:upload
+#@+node:ekr.20090501095634.36: *5* upload
 def upload(self):
     """
     """
@@ -4197,8 +4025,7 @@ def upload(self):
 
 
 
-#@-node:ekr.20090501095634.36:upload
-#@+node:ekr.20090501095634.37:download
+#@+node:ekr.20090501095634.37: *5* download
 def download(self):
     """
     """
@@ -4230,9 +4057,7 @@ def download(self):
 
 
 
-#@-node:ekr.20090501095634.37:download
-#@-node:ekr.20090501095634.33:class Button
-#@+node:ekr.20090501095634.38:getConfig
+#@+node:ekr.20090501095634.38: *4* getConfig
 def getConfig(text, tag):
     """Utility method to retrieve config data
 
@@ -4259,10 +4084,8 @@ def getConfig(text, tag):
 
 
 
-#@-node:ekr.20090501095634.38:getConfig
-#@-node:ekr.20090501095634.2:rst2leo.py
-#@+node:ekr.20070308062440:Thread notes
-#@+node:ekr.20070308062440.1:Posting 2
+#@+node:ekr.20070308062440: *3* Thread notes
+#@+node:ekr.20070308062440.1: *4* Posting 2
 On 2/26/07, Edward Ream <edreamleo@charter.net> wrote:
 
 > threads will swap after sys.getcheckinterval() bytecodes have been
@@ -4313,13 +4136,9 @@ def runtasks():
             pass
         else:
             tasks.append(task)
-#@nonl
-#@-node:ekr.20070308062440.1:Posting 2
-#@-node:ekr.20070308062440:Thread notes
-#@+node:ekr.20050306070535:Tk Notes
+#@+node:ekr.20050306070535: *3* Tk Notes
 @killcolor
-#@nonl
-#@+node:ekr.20050306070535.3:How to detect changes in text
+#@+node:ekr.20050306070535.3: *4* How to detect changes in text
 http://sourceforge.net/forum/message.php?msg_id=1864564
 By: btheado
 
@@ -4348,22 +4167,17 @@ Also note the text widget in Tk8.4 (http://www.tcl.tk/man/tcl8.4/TkCmd/text.htm#
 has a built-in way of seeing if the text has changed
 
 Brian Theado
-#@nonl
-#@-node:ekr.20050306070535.3:How to detect changes in text
-#@-node:ekr.20050306070535:Tk Notes
-#@-node:ekr.20091218120633.6300:Other notes
-#@+node:ekr.20031218072017.434:Unused code
+#@+node:ekr.20031218072017.434: ** Unused code
 @ignore
 @language python
 @color
-#@nonl
-#@+node:ekr.20050920084036.207:queryReplaceCommandsClass (limited to single node)
+#@+node:ekr.20050920084036.207: *3* queryReplaceCommandsClass (limited to single node)
 class queryReplaceCommandsClass (baseEditCommandsClass):
 
     '''A class to handle query replace commands.'''
 
     @others
-#@+node:ekr.20050920084036.208: ctor & init
+#@+node:ekr.20050920084036.208: *4*  ctor & init
 def __init__ (self,c):
 
     baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -4374,16 +4188,14 @@ def init (self):
     self.qQ = None
     self.qR = None
     self.replaced = 0 # The number of replacements.
-#@-node:ekr.20050920084036.208: ctor & init
-#@+node:ekr.20050920084036.209: getPublicCommands
+#@+node:ekr.20050920084036.209: *4*  getPublicCommands
 def getPublicCommands (self):
 
     return {
         'query-replace':        self.queryReplace,
         'query-replace-regex':  self.queryReplaceRegex,
     }
-#@-node:ekr.20050920084036.209: getPublicCommands
-#@+node:ekr.20050920084036.210:Entry points
+#@+node:ekr.20050920084036.210: *4* Entry points
 def queryReplace (self,event):
 
     '''Interactively find and replace text.
@@ -4396,9 +4208,8 @@ def queryReplaceRegex (self,event):
     This is not recommended: Leo's other find and change commands are more capable.'''
     self.regexp = True
     self.stateHandler(event)
-#@-node:ekr.20050920084036.210:Entry points
-#@+node:ekr.20051005151838:Helpers
-#@+node:ekr.20050920084036.212:doOneReplace
+#@+node:ekr.20051005151838: *4* Helpers
+#@+node:ekr.20050920084036.212: *5* doOneReplace
 def doOneReplace (self,event):
 
     w = self.editWidget(event)
@@ -4409,8 +4220,7 @@ def doOneReplace (self,event):
     ins = w.getInsertPoint()
     w.insert(ins,self.qR)
     self.replaced += 1
-#@-node:ekr.20050920084036.212:doOneReplace
-#@+node:ekr.20050920084036.219:findNextMatch (query-replace)
+#@+node:ekr.20050920084036.219: *5* findNextMatch (query-replace)
 def findNextMatch (self,event):
 
     '''Find the next match and select it.
@@ -4429,7 +4239,7 @@ def findNextMatch (self,event):
         << handle regexp >>
     else:
         << handle plain search >>
-#@+node:ekr.20051005155611:<< handle regexp >>
+#@+node:ekr.20051005155611: *6* << handle regexp >>
 try:
     regex = re.compile(self.qQ)
 except Exception:
@@ -4454,8 +4264,7 @@ if match:
 else:
     self.quitSearch(event)
     return False
-#@-node:ekr.20051005155611:<< handle regexp >>
-#@+node:ekr.20051005160923:<< handle plain search >> (tag_add & tag_config) LATER
+#@+node:ekr.20051005160923: *6* << handle plain search >> (tag_add & tag_config) LATER
 i = w.search(self.qQ,'insert',stopindex='end')
 
 if i:
@@ -4466,9 +4275,7 @@ if i:
 else:
     self.quitSearch(event)
     return False
-#@-node:ekr.20051005160923:<< handle plain search >> (tag_add & tag_config) LATER
-#@-node:ekr.20050920084036.219:findNextMatch (query-replace)
-#@+node:ekr.20050920084036.211:getUserResponse
+#@+node:ekr.20050920084036.211: *5* getUserResponse
 def getUserResponse (self,event):
 
     w = self.editWidget(event)
@@ -4492,8 +4299,7 @@ def getUserResponse (self,event):
             self.quitSearch(event)
 
     w.seeInsertPoint()
-#@-node:ekr.20050920084036.211:getUserResponse
-#@+node:ekr.20050920084036.220:quitSearch
+#@+node:ekr.20050920084036.220: *5* quitSearch
 def quitSearch (self,event,message=None):
 
     k = self.k
@@ -4505,8 +4311,7 @@ def quitSearch (self,event,message=None):
     if message is None:
         message = 'Replaced %d occurences' % self.replaced
     k.setLabelGrey(message)
-#@-node:ekr.20050920084036.220:quitSearch
-#@+node:ekr.20050920084036.215:stateHandler
+#@+node:ekr.20050920084036.215: *5* stateHandler
 def stateHandler (self,event):
 
     k = self.k ; state = k.getState('query-replace')
@@ -4535,10 +4340,7 @@ def stateHandler (self,event):
         self.findNextMatch(event)
     elif state == 3:
         self.getUserResponse(event)
-#@-node:ekr.20050920084036.215:stateHandler
-#@-node:ekr.20051005151838:Helpers
-#@-node:ekr.20050920084036.207:queryReplaceCommandsClass (limited to single node)
-#@+node:ekr.20070418075804:printSettingsHelper (no longer used)
+#@+node:ekr.20070418075804: *3* printSettingsHelper (no longer used)
 def printSettingsHelper(self,settings,d,letter=None):
 
     suppressKind = ('shortcut','shortcuts','openwithtable')
@@ -4551,8 +4353,7 @@ def printSettingsHelper(self,settings,d,letter=None):
                 bunch = d.get(key)
                 if bunch.kind not in suppressKind:
                     settings[key] = (letter,bunch.val)
-#@nonl
-#@+node:ekr.20070418084502:<< set letter >>
+#@+node:ekr.20070418084502: *4* << set letter >>
 theHash = d.get('_hash').lower()
 
 if letter:
@@ -4565,10 +4366,7 @@ else:
     letter = '[D]'
 
 # g.trace(letter,theHash)
-#@nonl
-#@-node:ekr.20070418084502:<< set letter >>
-#@-node:ekr.20070418075804:printSettingsHelper (no longer used)
-#@+node:ekr.20100518100915.5901:needClosingSentinel (not used)
+#@+node:ekr.20100518100915.5901: *3* needClosingSentinel (not used)
 # We don't need this.  The closing sentinels for @others and section references suffice.
 
 def needClosingSentinel(self,p):
@@ -4584,10 +4382,9 @@ def needClosingSentinel(self,p):
         j = s.find('>>')
         if -1 < i < j: return True
     return False
-#@-node:ekr.20100518100915.5901:needClosingSentinel (not used)
-#@+node:ekr.20100624082003.5943:Unused from readNormalLine
+#@+node:ekr.20100624082003.5943: *3* Unused from readNormalLine
 # Now in appendToDocPart
-#@+node:ekr.20041005105605.78:<< Skip the leading stuff >>
+#@+node:ekr.20041005105605.78: *4* << Skip the leading stuff >>
 if len(at.endSentinelComment) == 0:
     # Skip the single comment delim and a blank.
     i = g.skip_ws(s,0)
@@ -4596,8 +4393,7 @@ if len(at.endSentinelComment) == 0:
         if g.match(s,i," "): i += 1
 else:
     i = at.skipIndent(s,0,at.indent)
-#@-node:ekr.20041005105605.78:<< Skip the leading stuff >>
-#@+node:ekr.20041005105605.79:<< Append s to docOut >> (unused)
+#@+node:ekr.20041005105605.79: *4* << Append s to docOut >> (unused)
 line = s[i:-1] # remove newline for rstrip.
 
 if line == line.rstrip():
@@ -4606,10 +4402,8 @@ if line == line.rstrip():
 else:
     # trailing whitespace: the newline is fake.
     at.docOut.append(line)
-#@-node:ekr.20041005105605.79:<< Append s to docOut >> (unused)
-#@-node:ekr.20100624082003.5943:Unused from readNormalLine
-#@+node:ekr.20100625085138.5954:Not used from readStartNode
-#@+node:ekr.20041005105605.86:<< set gnx and bump i >>
+#@+node:ekr.20100625085138.5954: *3* Not used from readStartNode
+#@+node:ekr.20041005105605.86: *4* << set gnx and bump i >>
 j = s.find(':',i)
 if j == -1:
     g.trace("no closing colon",g.get_line(s,i))
@@ -4636,8 +4430,7 @@ if newNode:
     i += 1
 else:
     i = j + 1 # Skip the i
-#@-node:ekr.20041005105605.86:<< set gnx and bump i >>
-#@+node:ekr.20041005105605.87:<< Set headline, undoing the CWEB hack >>
+#@+node:ekr.20041005105605.87: *4* << Set headline, undoing the CWEB hack >>
 # Set headline to the rest of the line.
 # Don't strip leading whitespace."
 
@@ -4651,9 +4444,7 @@ else:
 # the opening comment delim ends in '@'.
 if at.startSentinelComment[-1:] == '@':
     headline = headline.replace('@@','@')
-#@-node:ekr.20041005105605.87:<< Set headline, undoing the CWEB hack >>
-#@-node:ekr.20100625085138.5954:Not used from readStartNode
-#@+node:ekr.20100518100915.5900:do_end_nodes
+#@+node:ekr.20100518100915.5900: *3* do_end_nodes
 def do_end_nodes (self,n):
 
     '''Remove n node sentinels from the sentinel stack,
@@ -4675,8 +4466,7 @@ def do_end_nodes (self,n):
         else:
             g.trace('unexpected top: %s' % at.sentinelName(top))
             break
-#@-node:ekr.20100518100915.5900:do_end_nodes
-#@+node:ekr.20041005105605.96:<< indicate that the node has been changed >>
+#@+node:ekr.20041005105605.96: *3* << indicate that the node has been changed >>
 if at.perfectImportRoot:
     << bump at.correctedLines and tell about the correction >>
     at.v._bodyString = s # Allowed use of _bodyString.
@@ -4703,7 +4493,7 @@ else:
     c.changed = True
         # Important: the dirty bits won't stick unless we set c.changed here.
         # Do *not* call c.setChanged(True) here: that would be too slow.
-#@+node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
+#@+node:ekr.20041005105605.97: *4* << bump at.correctedLines and tell about the correction >>
 # Report the number of corrected nodes.
 at.correctedLines += 1
 
@@ -4728,9 +4518,7 @@ if found:
 else:
     # This should never happen.
     g.es("correcting hidden node: v=",repr(at.v),color="red")
-#@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
-#@-node:ekr.20041005105605.96:<< indicate that the node has been changed >>
-#@+node:ekr.20100630062622.5831:readDocPart (not used)
+#@+node:ekr.20100630062622.5831: *3* readDocPart (not used)
 # It's too difficult to communicate with scanText4.
 def readDocPart (self):
 
@@ -4752,8 +4540,7 @@ def readDocPart (self):
             break
         else:
             at.readNormalLine(s)
-#@-node:ekr.20100630062622.5831:readDocPart (not used)
-#@+node:ekr.20100629190135.5829:putDocPart (new)
+#@+node:ekr.20100629190135.5829: *3* putDocPart (new)
 def putDocPart (self,s,i,docKind,next_i):
 
     trace = True and not g.unitTesting
@@ -4776,28 +4563,6 @@ def putDocPart (self,s,i,docKind,next_i):
             at.putDocLine(s,i)
             i = next_i
     return i
-#@nonl
-#@-node:ekr.20100629190135.5829:putDocPart (new)
-#@+node:ekr.20100624082003.5944:at.closePreviousNode (not used)
-def closePreviousNode (self,oldLevel,newLevel):
-
-    trace = False and not g.unitTesting
-    at = self
-
-    # if trace: g.trace([at.sentinelName(z) for z in at.endSentinelStack])
-
-    if newLevel <= oldLevel:
-        # Pretend we have seen -node sentinels.
-        for z in range(oldLevel - newLevel):
-            oldLevel -= 1
-            at.readEndNode('',0)
-
-        at.lastThinNode = at.thinNodeStack[newLevel-1]
-    else:
-        at.lastThinNode = at.thinNodeStack[-1]
-#@-node:ekr.20100624082003.5944:at.closePreviousNode (not used)
-#@-node:ekr.20031218072017.434:Unused code
+#@+node:ekr.20100624082003.5944: *3* at.closePreviousNode (not used)
 #@-all
-#@nonl
-#@-node:ekr.20031218072017.329:@thin ../doc/leoNotes.txt
 #@-leo

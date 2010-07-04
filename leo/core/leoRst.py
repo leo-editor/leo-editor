@@ -257,7 +257,7 @@ class rstCommands:
             'rst3_default_path': None, # New in Leo 4.4a4 # Bug fix: must be None, not ''.
             'rst3_stylesheet_name': 'default.css',
             'rst3_stylesheet_path': None, # Bug fix: must be None, not ''.
-    			'rst3_stylesheet_embed': True,
+                'rst3_stylesheet_embed': True,
             'rst3_publish_argv_for_missing_stylesheets': None,
             # Global options...
             'rst3_code_block_string': '',
