@@ -1,34 +1,31 @@
-#@+leo-ver=4-thin
-#@+node:ville.20091010232339.6117:@thin ../external/lproto.py
+#@+leo-ver=5-thin
+#@+node:ville.20091010232339.6117: * @thin ../external/lproto.py
 #@@language python
 
-#@<< docstring >>
-#@+node:ville.20091010205847.1364:<< docstring >>
+#@+<< docstring >>
+#@+node:ville.20091010205847.1364: ** << docstring >>
 """ lproto - simple local socket protocol dispatcher (reactor) for PyQt 
 
 Author: Ville M. Vainio <vivainio@gmail.com>
 
 """
-#@-node:ville.20091010205847.1364:<< docstring >>
-#@nl
+#@-<< docstring >>
 
-#@<< imports >>
-#@+node:ville.20091009234538.1373:<< imports >>
+#@+<< imports >>
+#@+node:ville.20091009234538.1373: ** << imports >>
 # todo move out qt dep
 from PyQt4 import QtCore, QtNetwork
 import socket
 import struct
-#@-node:ville.20091009234538.1373:<< imports >>
-#@nl
+#@-<< imports >>
 
 #@+others
-#@+node:ville.20091010205847.1363:sending
+#@+node:ville.20091010205847.1363: ** sending
 def mk_send_bytes(msg):
     lendesc = struct.pack('I', len(msg))
     return lendesc + msg
 
-#@-node:ville.20091010205847.1363:sending
-#@+node:ville.20091010205847.1362:class LProtoBuf
+#@+node:ville.20091010205847.1362: ** class LProtoBuf
 class LProtoBuf:
     def __init__(self):
 
@@ -69,11 +66,10 @@ class LProtoBuf:
             return
 
         print("in buf",self.buf)
-#@-node:ville.20091010205847.1362:class LProtoBuf
-#@+node:ville.20091009234538.1374:class LProtoServer
+#@+node:ville.20091009234538.1374: ** class LProtoServer
 class LProtoServer:
-    #@    @+others
-    #@+node:ville.20091009234538.1380:methods
+    #@+others
+    #@+node:ville.20091009234538.1380: *3* methods
     def __init__(self):
         self.srv = QtNetwork.QLocalServer()
         self.srv.connect(self.srv, QtCore.SIGNAL("newConnection()"),
@@ -120,23 +116,19 @@ class LProtoServer:
     def readyread(self):
         pass
 
-    #@-node:ville.20091009234538.1380:methods
     #@-others
-#@-node:ville.20091009234538.1374:class LProtoServer
-#@+node:ville.20091010205847.1360:(ignore) class LProtoObsoleteClient
+#@+node:ville.20091010205847.1360: ** (ignore) class LProtoObsoleteClient
 class LProtoObsoleteClient:
-    #@    @+others
-    #@+node:ville.20091010205847.1361:initialization
+    #@+others
+    #@+node:ville.20091010205847.1361: *3* initialization
     def __init__(self):
         self.cl = QtNetwork.QLocalSocket()
 
     def connect(self, name):
         self.cl.connectToServer(name)
         print("client connected")
-    #@-node:ville.20091010205847.1361:initialization
     #@-others
-#@-node:ville.20091010205847.1360:(ignore) class LProtoObsoleteClient
-#@+node:ville.20091010233144.10051:class LProtoClient
+#@+node:ville.20091010233144.10051: ** class LProtoClient
 class LProtoClient:
 
     def __init__(self, fname):
@@ -150,7 +142,5 @@ class LProtoClient:
         self.socket.sendall(byts)
 
 
-#@-node:ville.20091010233144.10051:class LProtoClient
 #@-others
-#@-node:ville.20091010232339.6117:@thin ../external/lproto.py
 #@-leo

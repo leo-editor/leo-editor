@@ -911,7 +911,8 @@
 <v t="ekr.20090704085350.5018"><vh>@test @shadow: shape of tree</vh></v>
 <v t="ekr.20040707141957.12"><vh>@test @thin</vh>
 <v t="ekr.20040707141957.13"><vh>#@thin</vh></v>
-<v t="ekr.20040707141957.14"><vh>Output</vh></v>
+<v t="ekr.20100704121201.5674"><vh>output</vh></v>
+<v t="ekr.20040707141957.14"><vh>old-output (old sentinels)</vh></v>
 </v>
 <v t="ekr.20090704085350.5046"><vh>@test @thin: shape of tree</vh></v>
 <v t="ekr.20100225094004.5385"><vh>@test at.isFileLike</vh></v>
@@ -938,7 +939,8 @@
 <v t="ekr.20060602195313.3"><vh>&lt;&lt; Get LRR Task &gt;&gt;</vh></v>
 <v t="ekr.20060602195313.4"><vh>&lt;&lt; Start LRR &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20060602195914"><vh>Result</vh></v>
+<v t="ekr.20060602195914"><vh>expected</vh></v>
+<v t="ekr.20100704121201.5676"><vh>old-expected</vh></v>
 </v>
 <v t="ekr.20090620110118.5829"><vh>@test verbatim sentinel</vh></v>
 <v t="ekr.20071113201736"><vh>@test zz restore the screen</vh></v>
@@ -2848,11 +2850,6 @@
 <v t="ekr.20100223094723.5377"><vh>@test skipToTheNextClassOrFunction (a function next)</vh></v>
 <v t="ekr.20100223094723.5378"><vh>@test skipToTheNextClassOrFunction (nothing next)</vh></v>
 <v t="ekr.20100223094723.5379"><vh>@test skipToTheNextClassOrFunction (indented def next)</vh></v>
-</v>
-<v t="ekr.20100223094723.5380"><vh>Failing tests</vh>
-<v t="ekr.20090529141856.4753"></v>
-<v t="ekr.20090529141856.4758"></v>
-<v t="sps.20100602033555.5432"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -11646,17 +11643,22 @@ if guiname == 'wxWindows':
 <t tx="ekr.20060602195313">at = c.atFileCommands
 child = p.firstChild()
 child2 = child.next()
-result = str(child2.b)
+expected = str(child2.b)
 at.write(child,nosentinels=False,thinFile=False,scriptWrite=False,toString=True)
-s = str(at.stringOutput)
+result = str(at.stringOutput)
 
-if s != result:
-    print('-' * 30)
-    print(s)
-    print('-' * 30)
-    print(result)
+if expected != result:
+    print('\n','-' * 20)
+    print("result...")
+    for line in g.splitLines(result):
+        print("%3d" % len(line),repr(line))
+    print('-' * 20)
+    print("expected...")
+    for line in g.splitLines(expected):
+        print("%3d" % len(line),repr(line))
+    print('-' * 20)
     
-assert s == result</t>
+assert expected == result</t>
 <t tx="ekr.20060602195313.2">@language c
 #ifdef COMMENT
 @comment /* */ 
@@ -11670,7 +11672,7 @@ assert s == result</t>
 &lt;&lt; Start LRR &gt;&gt;</t>
 <t tx="ekr.20060602195313.3"></t>
 <t tx="ekr.20060602195313.4"></t>
-<t tx="ekr.20060602195914">/*@+leo-ver=4*/
+<t tx="ekr.20060602195914">/*@+leo-ver=5*/
 /*@+node:root*/
 /*@@language c*/
 #ifdef COMMENT
@@ -11682,16 +11684,12 @@ assert s == result</t>
 /*@+others*/
 /*@-others*/
 
-/*@&lt;&lt; Get LRR Task &gt;&gt;*/
+/*@+&lt;&lt; Get LRR Task &gt;&gt;*/
 /*@+node:&lt;&lt; Get LRR Task &gt;&gt;*/
-/*@-node:&lt;&lt; Get LRR Task &gt;&gt;*/
-/*@nl*/
-/*@&lt;&lt; Start LRR &gt;&gt;*/
+/*@-&lt;&lt; Get LRR Task &gt;&gt;*/
+/*@+&lt;&lt; Start LRR &gt;&gt;*/
 /*@+node:&lt;&lt; Start LRR &gt;&gt;*/
-/*@-node:&lt;&lt; Start LRR &gt;&gt;*/
-/*@nl*/
-/*@nonl*/
-/*@-node:root*/
+/*@-&lt;&lt; Start LRR &gt;&gt;*/
 /*@-leo*/
 </t>
 <t tx="ekr.20060912091510.1">import time
@@ -20701,7 +20699,9 @@ def cheese():
 </t>
 <t tx="ekr.20090627071704.4986">import leo.core.leoTest as leoTest
 
-leoTest.runAtFileTest(c,p)</t>
+leoTest.runAtFileTest(c,p)
+
+# Important: with new sentinels, all nodes have newlines.</t>
 <t tx="ekr.20090627071704.4987">@language python
 @tabwidth -4
 @others
@@ -20710,18 +20710,16 @@ leoTest.runAtFileTest(c,p)</t>
 <t tx="ekr.20090627071704.4988"># Test of goto-global-line command
 
 def spam(cheese):
-
-    print(cheese)</t>
+    print(cheese)
+</t>
 <t tx="ekr.20090627071704.4989">def cheese():
-
-    pass</t>
+    pass
+</t>
 <t tx="ekr.20090627071704.4990"># Test of goto-global-line command
 
 def spam(cheese):
-
     print(cheese)
 def cheese():
-
     pass
 #end
 </t>
@@ -23309,8 +23307,6 @@ i = scanner.skipToTheNextClassOrFunction(s,i,lastIndent=0)
 assert i==expected,'expected %s, got %s %s' % (
     expected,i,repr(s[i:]))
 </t>
-<t tx="ekr.20100223094723.5380"># These fail with the new python import hacks
-</t>
 <t tx="ekr.20100223123103.5382"># These commands are implemented by qtGui.py
 
 def closeEnough(f1,f2):
@@ -23400,6 +23396,37 @@ f.close()
 assert g.os_path_exists(name)
 </t>
 <t tx="ekr.20100507152400.5388"></t>
+<t tx="ekr.20100704121201.5674">#@+leo-ver=5-thin
+#@+node:ekr.20040707141957.13: * #@thin
+Line 1
+
+#@@last
+#@-leo
+last line 1: no newline</t>
+<t tx="ekr.20100704121201.5676">/*@+leo-ver=4*/
+/*@+node:root*/
+/*@@language c*/
+#ifdef COMMENT
+/*@@comment /* */ */
+#endif
+/*@@tabwidth 4*/
+/*@@lineending crlf*/
+
+/*@+others*/
+/*@-others*/
+
+/*@&lt;&lt; Get LRR Task &gt;&gt;*/
+/*@+node:&lt;&lt; Get LRR Task &gt;&gt;*/
+/*@-node:&lt;&lt; Get LRR Task &gt;&gt;*/
+/*@nl*/
+/*@&lt;&lt; Start LRR &gt;&gt;*/
+/*@+node:&lt;&lt; Start LRR &gt;&gt;*/
+/*@-node:&lt;&lt; Start LRR &gt;&gt;*/
+/*@nl*/
+/*@nonl*/
+/*@-node:root*/
+/*@-leo*/
+</t>
 <t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
 
 aList = g.get_directives_dict_list(p2)

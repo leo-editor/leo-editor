@@ -1,9 +1,9 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20100208065621.5894:@thin leoCache.py
+#@+leo-ver=5-thin
+#@+node:ekr.20100208065621.5894: * @thin leoCache.py
 '''A module encapsulating Leo's file caching'''
 
-#@<< imports >>
-#@+node:ekr.20100208223942.10436:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20100208223942.10436: ** << imports >>
 import sys
 isPython3 = sys.version_info >= (3,0,0)
 
@@ -27,8 +27,7 @@ import zlib
     # import marshal
 # except ImportError:
     # marshal = None
-#@-node:ekr.20100208223942.10436:<< imports >>
-#@nl
+#@-<< imports >>
 
 # Abbreviations used throughout.
 abspath     = g.os_path_abspath
@@ -41,14 +40,14 @@ normcase    = g.os_path_normcase
 split       = g.os_path_split
 
 #@+others
-#@+node:ekr.20100208062523.5885:class cacher
+#@+node:ekr.20100208062523.5885: ** class cacher
 class cacher:
 
     '''A class that encapsulates all aspects of Leo's file caching.'''
 
-    #@    @+others
-    #@+node:ekr.20100208082353.5919: Birth
-    #@+node:ekr.20100208062523.5886: ctor (cacher)
+    #@+others
+    #@+node:ekr.20100208082353.5919: *3*  Birth
+    #@+node:ekr.20100208062523.5886: *4*  ctor (cacher)
     def __init__ (self,c=None):
 
         trace = False and not g.unitTesting
@@ -60,8 +59,7 @@ class cacher:
         self.dbdirname = None # A string.
         self.inited = False
 
-    #@-node:ekr.20100208062523.5886: ctor (cacher)
-    #@+node:ekr.20100208082353.5918:initFileDB
+    #@+node:ekr.20100208082353.5918: *4* initFileDB
     def initFileDB (self,fn):
 
         trace = False and not g.unitTesting
@@ -84,8 +82,7 @@ class cacher:
 
             self.db = PickleShareDB(dbdirname)
             self.inited = True
-    #@-node:ekr.20100208082353.5918:initFileDB
-    #@+node:ekr.20100208082353.5920:initGlobalDb
+    #@+node:ekr.20100208082353.5920: *4* initGlobalDb
     def initGlobalDB (self):
 
         trace = False and not g.unitTesting
@@ -98,15 +95,12 @@ class cacher:
             return db
         else:
             return None
-    #@-node:ekr.20100208082353.5920:initGlobalDb
-    #@+node:ekr.20100210163813.5747:save (cacher)
+    #@+node:ekr.20100210163813.5747: *4* save (cacher)
     def save (self,fn,changeName):
 
         if changeName or not self.inited:
             self.initFileDB(fn)
-    #@-node:ekr.20100210163813.5747:save (cacher)
-    #@-node:ekr.20100208082353.5919: Birth
-    #@+node:ekr.20100209160132.5759:clear/AllCache(s) (cacher)
+    #@+node:ekr.20100209160132.5759: *3* clear/AllCache(s) (cacher)
     def clearCache (self):
         if self.db:
             self.db.clear(verbose=True)
@@ -123,8 +117,7 @@ class cacher:
             c = frame.c
             if c.cacher:
                 c.cacher.clearCache()
-    #@-node:ekr.20100209160132.5759:clear/AllCache(s) (cacher)
-    #@+node:ekr.20100208071151.5907:fileKey
+    #@+node:ekr.20100208071151.5907: *3* fileKey
     # was atFile._contentHashFile
 
     def fileKey(self,s,content,requireEncodedString=False):
@@ -145,9 +138,8 @@ class cacher:
         m.update(s)
         m.update(content)
         return "fcache/" + m.hexdigest()
-    #@-node:ekr.20100208071151.5907:fileKey
-    #@+node:ekr.20100208082353.5925:Reading
-    #@+node:ekr.20100208071151.5910:cacher.createOutlineFromCacheList & helpers
+    #@+node:ekr.20100208082353.5925: *3* Reading
+    #@+node:ekr.20100208071151.5910: *4* cacher.createOutlineFromCacheList & helpers
     def createOutlineFromCacheList(self,parent_v,aList,top=True,atAll=None,fileName=None):
 
         """ Create outline structure from recursive aList
@@ -211,7 +203,7 @@ class cacher:
                         # Tells getLeoFile to propegate dirty nodes.
             else:
                 self.createOutlineFromCacheList(child_v,z,top=False,atAll=atAll)
-    #@+node:ekr.20100208071151.5911:fastAddLastChild
+    #@+node:ekr.20100208071151.5911: *5* fastAddLastChild
     # Similar to createThinChild4
     def fastAddLastChild(self,parent_v,gnxString):
         '''Create new vnode as last child of the receiver.
@@ -248,9 +240,7 @@ class cacher:
         child_v.setVisited() # Supress warning/deletion of unvisited nodes.
 
         return is_clone,child_v
-    #@-node:ekr.20100208071151.5911:fastAddLastChild
-    #@-node:ekr.20100208071151.5910:cacher.createOutlineFromCacheList & helpers
-    #@+node:ekr.20100208082353.5923:getCachedGlobalFileRatios
+    #@+node:ekr.20100208082353.5923: *4* getCachedGlobalFileRatios
     def getCachedGlobalFileRatios (self):
 
         trace = False and not g.unitTesting
@@ -271,8 +261,7 @@ class cacher:
             g.trace('key',key,'%1.2f %1.2f' % (ratio,ratio2))
 
         return ratio,ratio2
-    #@-node:ekr.20100208082353.5923:getCachedGlobalFileRatios
-    #@+node:ekr.20100208082353.5924:getCachedStringPosition
+    #@+node:ekr.20100208082353.5924: *4* getCachedStringPosition
     def getCachedStringPosition(self):
 
         trace = False and not g.unitTesting
@@ -289,8 +278,7 @@ class cacher:
 
         if trace: g.trace(str_pos,key)
         return str_pos
-    #@-node:ekr.20100208082353.5924:getCachedStringPosition
-    #@+node:ekr.20100208082353.5922:getCachedWindowPositionDict
+    #@+node:ekr.20100208082353.5922: *4* getCachedWindowPositionDict
     def getCachedWindowPositionDict (self,fn):
 
         trace = False and not g.unitTesting
@@ -313,8 +301,7 @@ class cacher:
 
         if trace: g.trace(fn,key,data)
         return d
-    #@-node:ekr.20100208082353.5922:getCachedWindowPositionDict
-    #@+node:ekr.20100208071151.5905:readFile (cacher)
+    #@+node:ekr.20100208071151.5905: *4* readFile (cacher)
     def readFile (self,fileName,root):
 
         trace = False and not g.unitTesting
@@ -343,10 +330,8 @@ class cacher:
             self.createOutlineFromCacheList(root.v,aList,fileName=fileName)
 
         return s,ok,key
-    #@-node:ekr.20100208071151.5905:readFile (cacher)
-    #@-node:ekr.20100208082353.5925:Reading
-    #@+node:ekr.20100208082353.5927:Writing
-    #@+node:ekr.20100208071151.5901:makeCacheList
+    #@+node:ekr.20100208082353.5927: *3* Writing
+    #@+node:ekr.20100208071151.5901: *4* makeCacheList
     def makeCacheList(self,p):
 
         '''Create a recursive list describing a tree
@@ -356,8 +341,7 @@ class cacher:
         return [
             p.h,p.b,p.gnx,
             [self.makeCacheList(p2) for p2 in p.children()]]
-    #@-node:ekr.20100208071151.5901:makeCacheList
-    #@+node:ekr.20100208082353.5929:setCachedGlobalsElement
+    #@+node:ekr.20100208082353.5929: *4* setCachedGlobalsElement
     def setCachedGlobalsElement(self,fn):
 
         trace = False and not g.unitTesting
@@ -382,8 +366,7 @@ class cacher:
             str(top),str(left),str(height),str(width))
         if trace:
             g.trace('top',top,'left',left,'height',height,'width',width)
-    #@-node:ekr.20100208082353.5929:setCachedGlobalsElement
-    #@+node:ekr.20100208082353.5928:setCachedStringPosition
+    #@+node:ekr.20100208082353.5928: *4* setCachedStringPosition
     def setCachedStringPosition(self,str_pos):
 
         trace = False and not g.unitTesting
@@ -399,8 +382,7 @@ class cacher:
         self.db['current_position_%s' % key] = str_pos
 
         if trace: g.trace(str_pos,key)
-    #@-node:ekr.20100208082353.5928:setCachedStringPosition
-    #@+node:ekr.20100208071151.5903:writeFile (cacher)
+    #@+node:ekr.20100208071151.5903: *4* writeFile (cacher)
     # Was atFile.writeCachedTree
 
     def writeFile(self,p,fileKey):
@@ -419,9 +401,7 @@ class cacher:
         else:
             if trace: g.trace('caching ',p.h,fileKey)
             self.db[fileKey] = self.makeCacheList(p)
-    #@-node:ekr.20100208071151.5903:writeFile (cacher)
-    #@-node:ekr.20100208082353.5927:Writing
-    #@+node:ekr.20100208065621.5890:test (cacher)
+    #@+node:ekr.20100208065621.5890: *3* test (cacher)
     def test(self):
 
         if g.app.gui.guiName() == 'nullGui':
@@ -447,19 +427,17 @@ class cacher:
         if 0: print(db.keys())
         db.clear()
         return True
-    #@-node:ekr.20100208065621.5890:test (cacher)
     #@-others
-#@-node:ekr.20100208062523.5885:class cacher
-#@+node:ekr.20100208223942.5967:class PickleShareDB
+#@+node:ekr.20100208223942.5967: ** class PickleShareDB
 _sentinel = object()
 
 class PickleShareDB:
 
     """ The main 'connection' object for PickleShare database """
 
-    #@    @+others
-    #@+node:ekr.20100208223942.5968: Birth & special methods
-    #@+node:ekr.20100208223942.5969: __init__
+    #@+others
+    #@+node:ekr.20100208223942.5968: *3*  Birth & special methods
+    #@+node:ekr.20100208223942.5969: *4*  __init__
     def __init__(self,root):
 
         """
@@ -496,8 +474,7 @@ class PickleShareDB:
 
         self.loader = loadz
         self.dumper = dumpz
-    #@-node:ekr.20100208223942.5969: __init__
-    #@+node:ekr.20100208223942.5970:__contains__
+    #@+node:ekr.20100208223942.5970: *4* __contains__
     def __contains__(self, key):
 
         trace = False and g.unitTesting
@@ -505,8 +482,7 @@ class PickleShareDB:
         if trace: g.trace('(PickleShareDB)',key)
 
         return self.has_key(key)
-    #@-node:ekr.20100208223942.5970:__contains__
-    #@+node:ekr.20100208223942.5971:__delitem__
+    #@+node:ekr.20100208223942.5971: *4* __delitem__
     def __delitem__(self,key):
 
         """ del db["key"] """
@@ -526,8 +502,7 @@ class PickleShareDB:
             # notfound and permission denied are ok - we
             # lost, the other process wins the conflict
             pass
-    #@-node:ekr.20100208223942.5971:__delitem__
-    #@+node:ekr.20100208223942.5972:__getitem__
+    #@+node:ekr.20100208223942.5972: *4* __getitem__
     def __getitem__(self,key):
 
         """ db['key'] reading """
@@ -555,8 +530,7 @@ class PickleShareDB:
         self.cache[fn] = (obj,mtime)
         if trace: g.trace('(PickleShareDB: set cache)',key)
         return obj
-    #@-node:ekr.20100208223942.5972:__getitem__
-    #@+node:ekr.20100208223942.5973:__iter__
+    #@+node:ekr.20100208223942.5973: *4* __iter__
     def __iter__(self):
 
         trace = False and g.unitTesting
@@ -565,16 +539,14 @@ class PickleShareDB:
 
         for k in list(self.keys()):
             yield k
-    #@-node:ekr.20100208223942.5973:__iter__
-    #@+node:ekr.20100208223942.5974:__repr__
+    #@+node:ekr.20100208223942.5974: *4* __repr__
     def __repr__(self):
 
         return "PickleShareDB('%s')" % self.root
 
 
 
-    #@-node:ekr.20100208223942.5974:__repr__
-    #@+node:ekr.20100208223942.5975:__setitem__
+    #@+node:ekr.20100208223942.5975: *4* __setitem__
     def __setitem__(self,key,value):
 
         """ db['key'] = 5 """
@@ -597,9 +569,7 @@ class PickleShareDB:
             if trace: g.trace('***OSError')
             if e.errno != 2:
                 raise
-    #@-node:ekr.20100208223942.5975:__setitem__
-    #@-node:ekr.20100208223942.5968: Birth & special methods
-    #@+node:ekr.20100208223942.10452:_makedirs
+    #@+node:ekr.20100208223942.10452: *3* _makedirs
     def _makedirs(self,fn,mode=0o777):
 
         trace = False and not g.unitTesting
@@ -607,8 +577,7 @@ class PickleShareDB:
 
         os.makedirs(fn,mode)
 
-    #@-node:ekr.20100208223942.10452:_makedirs
-    #@+node:ekr.20100208223942.10458:_openFile
+    #@+node:ekr.20100208223942.10458: *3* _openFile
     def _openFile(self,fn, mode='r'):
 
         """ Open this file.  Return a file object.
@@ -621,8 +590,7 @@ class PickleShareDB:
             return open(fn, mode)
         except Exception:
             return None
-    #@-node:ekr.20100208223942.10458:_openFile
-    #@+node:ekr.20100208223942.10454:_walkfiles & helpers
+    #@+node:ekr.20100208223942.10454: *3* _walkfiles & helpers
     def _walkfiles(self,s, pattern=None):
 
         """ D.walkfiles() -> iterator over files in D, recursively.
@@ -641,7 +609,7 @@ class PickleShareDB:
                 for f in self._walkfiles(child,pattern):
                     yield f
 
-    #@+node:ekr.20100208223942.10456:_listdir
+    #@+node:ekr.20100208223942.10456: *4* _listdir
     def _listdir(self,s, pattern=None):
 
         """ D.listdir() -> List of items in this directory.
@@ -662,8 +630,7 @@ class PickleShareDB:
 
         return [join(s,child) for child in names]
 
-    #@-node:ekr.20100208223942.10456:_listdir
-    #@+node:ekr.20100208223942.10464:_fn_match
+    #@+node:ekr.20100208223942.10464: *4* _fn_match
     def _fn_match(self,s, pattern):
         """ Return True if self.name matches the given pattern.
 
@@ -673,9 +640,7 @@ class PickleShareDB:
 
         return fnmatch.fnmatch(basename(s), pattern)
 
-    #@-node:ekr.20100208223942.10464:_fn_match
-    #@-node:ekr.20100208223942.10454:_walkfiles & helpers
-    #@+node:ekr.20100208223942.5978:clear
+    #@+node:ekr.20100208223942.5978: *3* clear
     def clear (self,verbose=False):
 
         # Deletes all files in the fcache subdirectory.
@@ -689,8 +654,7 @@ class PickleShareDB:
 
         for z in self.keys():
             self.__delitem__(z)
-    #@-node:ekr.20100208223942.5978:clear
-    #@+node:ekr.20100208223942.5979:get
+    #@+node:ekr.20100208223942.5979: *3* get
     def get(self, key, default=None):
 
         trace = False and g.unitTesting
@@ -700,8 +664,7 @@ class PickleShareDB:
             return self[key]
         except KeyError:
             return default
-    #@-node:ekr.20100208223942.5979:get
-    #@+node:ekr.20100208223942.5980:has_key
+    #@+node:ekr.20100208223942.5980: *3* has_key
     def has_key(self, key):
 
         trace = False and g.unitTesting
@@ -713,12 +676,10 @@ class PickleShareDB:
             return False
 
         return True
-    #@-node:ekr.20100208223942.5980:has_key
-    #@+node:ekr.20100208223942.5981:items
+    #@+node:ekr.20100208223942.5981: *3* items
     def items(self):
         return [z for z in self]
-    #@-node:ekr.20100208223942.5981:items
-    #@+node:ekr.20100208223942.5982:keys & helpers
+    #@+node:ekr.20100208223942.5982: *3* keys & helpers
     # Called by clear, and during unit testing.
 
     def keys(self, globpat = None):
@@ -737,7 +698,7 @@ class PickleShareDB:
         if trace: g.trace('(PickleShareDB)',len(result),result)
 
         return result
-    #@+node:ekr.20100208223942.5976:_normalized
+    #@+node:ekr.20100208223942.5976: *4* _normalized
     def _normalized(self, p):
         """ Make a key suitable for user's eyes """
 
@@ -745,8 +706,7 @@ class PickleShareDB:
 
         return self._relpathto(self.root,p).replace('\\','/')
 
-    #@-node:ekr.20100208223942.5976:_normalized
-    #@+node:ekr.20100208223942.10460:_relpathto
+    #@+node:ekr.20100208223942.10460: *4* _relpathto
     # Used only by _normalized.
 
     def _relpathto(self,src, dst):
@@ -786,8 +746,7 @@ class PickleShareDB:
             return os.curdir
         else:
             return join(*segments)
-    #@-node:ekr.20100208223942.10460:_relpathto
-    #@+node:ekr.20100208223942.10462:_splitall
+    #@+node:ekr.20100208223942.10462: *4* _splitall
     # Used by relpathto.
 
     def _splitall(self,s):
@@ -812,9 +771,7 @@ class PickleShareDB:
         parts.reverse()
         return parts
 
-    #@-node:ekr.20100208223942.10462:_splitall
-    #@-node:ekr.20100208223942.5982:keys & helpers
-    #@+node:ekr.20100208223942.5989:uncache
+    #@+node:ekr.20100208223942.5989: *3* uncache
     def uncache(self,*items):
         """ Removes all, or specified items from cache
 
@@ -832,9 +789,6 @@ class PickleShareDB:
         for it in items:
             self.cache.pop(it,None)
 
-    #@-node:ekr.20100208223942.5989:uncache
     #@-others
-#@-node:ekr.20100208223942.5967:class PickleShareDB
 #@-others
-#@-node:ekr.20100208065621.5894:@thin leoCache.py
 #@-leo

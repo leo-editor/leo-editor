@@ -1,27 +1,26 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20041117062700:@thin leoConfig.py
+#@+leo-ver=5-thin
+#@+node:ekr.20041117062700: * @thin leoConfig.py
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
 
-#@<< imports >>
-#@+node:ekr.20041227063801:<< imports >>
+#@+<< imports >>
+#@+node:ekr.20041227063801: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
 
 import sys
 import zipfile
-#@-node:ekr.20041227063801:<< imports >>
-#@nl
+#@-<< imports >>
 
-#@<< class parserBaseClass >>
-#@+node:ekr.20041119203941.2:<< class parserBaseClass >>
+#@+<< class parserBaseClass >>
+#@+node:ekr.20041119203941.2: ** << class parserBaseClass >>
 class parserBaseClass:
 
     """The base class for settings parsers."""
 
-    #@    << parserBaseClass data >>
-    #@+node:ekr.20041121130043:<< parserBaseClass data >>
+    #@+    << parserBaseClass data >>
+    #@+node:ekr.20041121130043: *3* << parserBaseClass data >>
     # These are the canonicalized names.  Case is ignored, as are '_' and '-' characters.
 
     basic_types = [
@@ -39,11 +38,10 @@ class parserBaseClass:
 
     # Keys are settings names, values are (type,value) tuples.
     settingsDict = {}
-    #@-node:ekr.20041121130043:<< parserBaseClass data >>
-    #@nl
+    #@-    << parserBaseClass data >>
 
-    #@    @+others
-    #@+node:ekr.20041119204700: ctor (parserBaseClass)
+    #@+others
+    #@+node:ekr.20041119204700: *3*  ctor (parserBaseClass)
     def __init__ (self,c,localFlag):
 
         self.c = c
@@ -91,8 +89,7 @@ class parserBaseClass:
         }
 
         self.debug_count = 0
-    #@-node:ekr.20041119204700: ctor (parserBaseClass)
-    #@+node:ekr.20080514084054.4:computeModeName (parserBaseClass)
+    #@+node:ekr.20080514084054.4: *3* computeModeName (parserBaseClass)
     def computeModeName (self,name):
 
         s = name.strip().lower()
@@ -111,8 +108,7 @@ class parserBaseClass:
 
         modeName = s + '-mode'
         return modeName
-    #@-node:ekr.20080514084054.4:computeModeName (parserBaseClass)
-    #@+node:ekr.20060102103625:createModeCommand (parserBaseClass)
+    #@+node:ekr.20060102103625: *3* createModeCommand (parserBaseClass)
     def createModeCommand (self,modeName,name,modeDict):
 
         modeName = 'enter-' + modeName.replace(' ','-')
@@ -129,17 +125,15 @@ class parserBaseClass:
 
         # New in 4.4.1 b2: silently allow redefinitions of modes.
         d [modeName] = modeDict
-    #@-node:ekr.20060102103625:createModeCommand (parserBaseClass)
-    #@+node:ekr.20041120103012:error
+    #@+node:ekr.20041120103012: *3* error
     def error (self,s):
 
         g.pr(s)
 
         # Does not work at present because we are using a null Gui.
         g.es(s,color="blue")
-    #@-node:ekr.20041120103012:error
-    #@+node:ekr.20041120094940:kind handlers (parserBaseClass)
-    #@+node:ekr.20060608221203:doAbbrev
+    #@+node:ekr.20041120094940: *3* kind handlers (parserBaseClass)
+    #@+node:ekr.20060608221203: *4* doAbbrev
     def doAbbrev (self,p,kind,name,val):
 
         d = {}
@@ -152,8 +146,7 @@ class parserBaseClass:
                 if name: d [val] = name
 
         self.set (p,'abbrev','abbrev',d)
-    #@-node:ekr.20060608221203:doAbbrev
-    #@+node:ekr.20041120094940.1:doBool
+    #@+node:ekr.20041120094940.1: *4* doBool
     def doBool (self,p,kind,name,val):
 
         if val in ('True','true','1'):
@@ -162,8 +155,7 @@ class parserBaseClass:
             self.set(p,kind,name,False)
         else:
             self.valueError(p,kind,name,val)
-    #@-node:ekr.20041120094940.1:doBool
-    #@+node:ekr.20070925144337:doButtons
+    #@+node:ekr.20070925144337: *4* doButtons
     def doButtons (self,p,kind,name,val):
 
         '''Handle an @buttons tree.'''
@@ -183,8 +175,7 @@ class parserBaseClass:
         g.app.config.atCommonButtonsList = aList
         g.app.config.buttonsFileName = c and c.shortFileName() or '<no settings file>'
 
-    #@-node:ekr.20070925144337:doButtons
-    #@+node:ekr.20080312071248.6:doCommands
+    #@+node:ekr.20080312071248.6: *4* doCommands
     def doCommands (self,p,kind,name,val):
 
         '''Handle an @commands tree.'''
@@ -204,8 +195,7 @@ class parserBaseClass:
         g.app.config.atCommonCommandsList = aList
 
 
-    #@-node:ekr.20080312071248.6:doCommands
-    #@+node:ekr.20041120094940.2:doColor
+    #@+node:ekr.20041120094940.2: *4* doColor
     def doColor (self,p,kind,name,val):
 
         # At present no checking is done.
@@ -213,8 +203,7 @@ class parserBaseClass:
         val = val.lstrip("'").rstrip("'")
 
         self.set(p,kind,name,val)
-    #@-node:ekr.20041120094940.2:doColor
-    #@+node:ekr.20071214140900:doData
+    #@+node:ekr.20071214140900: *4* doData
     def doData (self,p,kind,name,val):
 
         s = p.b
@@ -222,16 +211,14 @@ class parserBaseClass:
         data = [z.strip() for z in lines if z.strip() and not z.startswith('#')]
 
         self.set(p,kind,name,data)
-    #@-node:ekr.20071214140900:doData
-    #@+node:ekr.20041120094940.3:doDirectory & doPath
+    #@+node:ekr.20041120094940.3: *4* doDirectory & doPath
     def doDirectory (self,p,kind,name,val):
 
         # At present no checking is done.
         self.set(p,kind,name,val)
 
     doPath = doDirectory
-    #@-node:ekr.20041120094940.3:doDirectory & doPath
-    #@+node:ekr.20070224075914:doEnabledPlugins
+    #@+node:ekr.20070224075914: *4* doEnabledPlugins
     def doEnabledPlugins (self,p,kind,name,val):
 
         c = self.c
@@ -245,8 +232,7 @@ class parserBaseClass:
         # Set the global config ivars.
         g.app.config.enabledPluginsString = s
         g.app.config.enabledPluginsFileName = c and c.shortFileName() or '<no settings file>'
-    #@-node:ekr.20070224075914:doEnabledPlugins
-    #@+node:ekr.20041120094940.6:doFloat
+    #@+node:ekr.20041120094940.6: *4* doFloat
     def doFloat (self,p,kind,name,val):
 
         try:
@@ -254,8 +240,7 @@ class parserBaseClass:
             self.set(p,kind,name,val)
         except ValueError:
             self.valueError(p,kind,name,val)
-    #@-node:ekr.20041120094940.6:doFloat
-    #@+node:ekr.20041120094940.4:doFont
+    #@+node:ekr.20041120094940.4: *4* doFont
     def doFont (self,p,kind,name,val):
 
         trace = False
@@ -272,22 +257,15 @@ class parserBaseClass:
                 setKind = key
                 self.set(p,setKind,name,val)
                 if trace and val not in (None,'none','None'): g.trace(key,val)
-    #@-node:ekr.20041120094940.4:doFont
-    #@+node:ekr.20041120103933:doIf
+    #@+node:ekr.20041120103933: *4* doIf
     def doIf(self,p,kind,name,val):
 
         g.trace("'if' not supported yet")
         return None
-    #@-node:ekr.20041120103933:doIf
-    #@+node:ekr.20041121125416:doIfGui (can never work)
-    #@+at 
-    #@nonl
-    # Alas, @if-gui can't be made to work. The problem is that 
-    # plugins can set
-    # g.app.gui, but plugins need settings so the leoSettings.leo 
-    # files must be parsed
+    #@+node:ekr.20041121125416: *4* doIfGui (can never work)
+    #@+at Alas, @if-gui can't be made to work. The problem is that plugins can set
+    # g.app.gui, but plugins need settings so the leoSettings.leo files must be parsed
     # before g.app.gui.guiName() is known.
-    #@-at
     #@@c
 
     if 0:
@@ -302,8 +280,7 @@ class parserBaseClass:
                 return None
             else:
                 return "skip"
-    #@-node:ekr.20041121125416:doIfGui (can never work)
-    #@+node:dan.20080410121257.2:doIfHostname
+    #@+node:dan.20080410121257.2: *4* doIfHostname
     def doIfHostname (self,p,kind,name,val):
         """headline: @ifhostname bob,!harry,joe
 
@@ -323,21 +300,18 @@ class parserBaseClass:
 
         return None
 
-    #@-node:dan.20080410121257.2:doIfHostname
-    #@+node:ekr.20041120104215:doIfPlatform
+    #@+node:ekr.20041120104215: *4* doIfPlatform
     def doIfPlatform (self,p,kind,name,val):
 
         if sys.platform.lower() == name.lower():
             return None
         else:
             return "skip"
-    #@-node:ekr.20041120104215:doIfPlatform
-    #@+node:ekr.20041120104215.1:doIgnore
+    #@+node:ekr.20041120104215.1: *4* doIgnore
     def doIgnore(self,p,kind,name,val):
 
         return "skip"
-    #@-node:ekr.20041120104215.1:doIgnore
-    #@+node:ekr.20041120094940.5:doInt
+    #@+node:ekr.20041120094940.5: *4* doInt
     def doInt (self,p,kind,name,val):
 
         try:
@@ -345,8 +319,7 @@ class parserBaseClass:
             self.set(p,kind,name,val)
         except ValueError:
             self.valueError(p,kind,name,val)
-    #@-node:ekr.20041120094940.5:doInt
-    #@+node:ekr.20041217132253:doInts
+    #@+node:ekr.20041217132253: *4* doInts
     def doInts (self,p,kind,name,val):
 
         '''We expect either:
@@ -384,8 +357,7 @@ class parserBaseClass:
 
             # At present no checking is done.
             self.set(p,kind,name,val)
-    #@-node:ekr.20041217132253:doInts
-    #@+node:ekr.20070925144337.2:doMenus & helpers (ParserBaseClass)
+    #@+node:ekr.20070925144337.2: *4* doMenus & helpers (ParserBaseClass)
     def doMenus (self,p,kind,name,val):
 
         c = self.c ; aList = [] ; tag = '@menu' ; trace = False and g.isPython3
@@ -421,7 +393,7 @@ class parserBaseClass:
                 g.es_print(s,color='blue')
             g.app.config.menusList = aList
             g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
-    #@+node:ekr.20070926141716:doItems
+    #@+node:ekr.20070926141716: *5* doItems
     def doItems (self,p,aList):
 
         trace = False and g.isPython3
@@ -462,8 +434,7 @@ class parserBaseClass:
             else:
                 # g.trace('***skipping***',p.h)
                 p.moveToThreadNext()
-    #@-node:ekr.20070926141716:doItems
-    #@+node:ekr.20070926142312:dumpMenuList
+    #@+node:ekr.20070926142312: *5* dumpMenuList
     def dumpMenuList (self,aList,level=0):
 
         for z in aList:
@@ -474,9 +445,7 @@ class parserBaseClass:
                 g.pr('')
                 g.trace(level,kind,'...')
                 self.dumpMenuList(val,level+1)
-    #@-node:ekr.20070926142312:dumpMenuList
-    #@-node:ekr.20070925144337.2:doMenus & helpers (ParserBaseClass)
-    #@+node:ekr.20060102103625.1:doMode (ParserBaseClass)
+    #@+node:ekr.20060102103625.1: *4* doMode (ParserBaseClass)
     def doMode(self,p,kind,name,val):
 
         '''Parse an @mode node and create the enter-<name>-mode command.'''
@@ -522,8 +491,7 @@ class parserBaseClass:
 
         # Create the command, but not any bindings to it.
         self.createModeCommand(modeName,name1,d)
-    #@-node:ekr.20060102103625.1:doMode (ParserBaseClass)
-    #@+node:ekr.20070411101643.1:doOpenWith (ParserBaseClass)
+    #@+node:ekr.20070411101643.1: *4* doOpenWith (ParserBaseClass)
     def doOpenWith (self,p,kind,name,val):
 
         # g.trace('kind',kind,'name',name,'val',val,'c',self.c)
@@ -534,13 +502,11 @@ class parserBaseClass:
         name = kind = 'openwithtable'
         self.openWithList.append(d)
         self.set(p,kind,name,self.openWithList)
-    #@-node:ekr.20070411101643.1:doOpenWith (ParserBaseClass)
-    #@+node:ekr.20041120104215.2:doPage
+    #@+node:ekr.20041120104215.2: *4* doPage
     def doPage(self,p,kind,name,val):
 
         pass # Ignore @page this while parsing settings.
-    #@-node:ekr.20041120104215.2:doPage
-    #@+node:ekr.20041121125741:doRatio
+    #@+node:ekr.20041121125741: *4* doRatio
     def doRatio (self,p,kind,name,val):
 
         try:
@@ -551,8 +517,7 @@ class parserBaseClass:
                 self.valueError(p,kind,name,val)
         except ValueError:
             self.valueError(p,kind,name,val)
-    #@-node:ekr.20041121125741:doRatio
-    #@+node:ekr.20041120105609:doShortcuts (ParserBaseClass)
+    #@+node:ekr.20041120105609: *4* doShortcuts (ParserBaseClass)
     def doShortcuts(self,p,kind,name,val,s=None):
 
         c = self.c ; d = self.shortcutsDict ; k = c.k
@@ -580,14 +545,12 @@ class parserBaseClass:
                         d [name] = bunchList
                         self.set(p,"shortcut",name,bunchList)
                         self.setShortcut(name,bunchList)
-    #@-node:ekr.20041120105609:doShortcuts (ParserBaseClass)
-    #@+node:ekr.20041217132028:doString
+    #@+node:ekr.20041217132028: *4* doString
     def doString (self,p,kind,name,val):
 
         # At present no checking is done.
         self.set(p,kind,name,val)
-    #@-node:ekr.20041217132028:doString
-    #@+node:ekr.20041120094940.8:doStrings
+    #@+node:ekr.20041120094940.8: *4* doStrings
     def doStrings (self,p,kind,name,val):
 
         '''We expect one of the following:
@@ -608,8 +571,7 @@ class parserBaseClass:
 
             # At present no checking is done.
             self.set(p,kind,name,val)
-    #@-node:ekr.20041120094940.8:doStrings
-    #@+node:bobjack.20080324141020.4:doPopup & helper
+    #@+node:bobjack.20080324141020.4: *4* doPopup & helper
     def doPopup (self,p,kind,name,val):
 
         """
@@ -636,7 +598,7 @@ class parserBaseClass:
 
 
         g.app.config.context_menus[popupName] = aList
-    #@+node:bobjack.20080324141020.5:doPopupItems
+    #@+node:bobjack.20080324141020.5: *5* doPopupItems
     def doPopupItems (self,p,aList):
 
         p = p.copy() ; after = p.nodeAfterTree()
@@ -665,9 +627,7 @@ class parserBaseClass:
             else:
                 # g.trace('***skipping***',p.h)
                 p.moveToThreadNext()
-    #@-node:bobjack.20080324141020.5:doPopupItems
-    #@-node:bobjack.20080324141020.4:doPopup & helper
-    #@+node:tbrown.20080514112857.124:doMenuat
+    #@+node:tbrown.20080514112857.124: *4* doMenuat
     def doMenuat (self,p,kind,name,val):
 
         if g.app.config.menusList:
@@ -727,15 +687,14 @@ class parserBaseClass:
 
         else:
             g.es_print("ERROR: @menuat found but no menu tree to patch")
-    #@+node:tbrown.20080514180046.9:getName
+    #@+node:tbrown.20080514180046.9: *5* getName
     def getName(self, val, val2=None):
         if val2 and val2.strip(): val = val2
         val = val.split('\n',1)[0]
         for i in "*.-& \t\n":
             val = val.replace(i,'')
         return val.lower()
-    #@-node:tbrown.20080514180046.9:getName
-    #@+node:tbrown.20080514180046.2:dumpMenuTree
+    #@+node:tbrown.20080514180046.2: *5* dumpMenuTree
     def dumpMenuTree (self,aList,level=0,path=''):
 
         for z in aList:
@@ -747,8 +706,7 @@ class parserBaseClass:
                 name = self.getName(kind.replace('@menu ',''))
                 g.es_print('%s %s... [%s]' % ('    '*(level), kind, path+'/'+name))
                 self.dumpMenuTree(val,level+1,path=path+'/'+name)
-    #@-node:tbrown.20080514180046.2:dumpMenuTree
-    #@+node:tbrown.20080514180046.8:patchMenuTree
+    #@+node:tbrown.20080514180046.8: *5* patchMenuTree
     def patchMenuTree(self, orig, targetPath, path=''):
 
         for n,z in enumerate(orig):
@@ -770,22 +728,17 @@ class parserBaseClass:
                     return ans
 
         return None
-    #@-node:tbrown.20080514180046.8:patchMenuTree
-    #@-node:tbrown.20080514112857.124:doMenuat
-    #@-node:ekr.20041120094940:kind handlers (parserBaseClass)
-    #@+node:ekr.20041124063257:munge
+    #@+node:ekr.20041124063257: *3* munge
     def munge(self,s):
 
         return g.app.config.canonicalizeSettingName(s)
-    #@-node:ekr.20041124063257:munge
-    #@+node:ekr.20041119204700.2:oops
+    #@+node:ekr.20041119204700.2: *3* oops
     def oops (self):
         g.pr("parserBaseClass oops:",
             g.callers(),
             "must be overridden in subclass")
-    #@-node:ekr.20041119204700.2:oops
-    #@+node:ekr.20041213082558:parsers
-    #@+node:ekr.20041213083651:fontSettingNameToFontKind
+    #@+node:ekr.20041213082558: *3* parsers
+    #@+node:ekr.20041213083651: *4* fontSettingNameToFontKind
     def fontSettingNameToFontKind (self,name):
 
         s = name.strip()
@@ -795,8 +748,7 @@ class parserBaseClass:
                     return tag[1:]
 
         return None
-    #@-node:ekr.20041213083651:fontSettingNameToFontKind
-    #@+node:ekr.20041213082558.1:parseFont & helper
+    #@+node:ekr.20041213082558.1: *4* parseFont & helper
     def parseFont (self,p):
 
         d = {
@@ -817,7 +769,7 @@ class parserBaseClass:
         d['comments'] = '\n'.join(comments)
 
         return d
-    #@+node:ekr.20041213082558.2:parseFontLine
+    #@+node:ekr.20041213082558.2: *5* parseFontLine
     def parseFontLine (self,line,d):
 
         s = line.strip()
@@ -847,9 +799,7 @@ class parserBaseClass:
             fontKind = self.fontSettingNameToFontKind(name)
             if fontKind:
                 d[fontKind] = name,val # Used only by doFont.
-    #@-node:ekr.20041213082558.2:parseFontLine
-    #@-node:ekr.20041213082558.1:parseFont & helper
-    #@+node:ekr.20041119205148:parseHeadline
+    #@+node:ekr.20041119205148: *4* parseHeadline
     def parseHeadline (self,s):
 
         """Parse a headline of the form @kind:name=val
@@ -872,8 +822,7 @@ class parserBaseClass:
 
         # g.trace("%50s %10s %s" %(name,kind,val))
         return kind,name,val
-    #@-node:ekr.20041119205148:parseHeadline
-    #@+node:ekr.20070411101643.2:parseOpenWith & helper
+    #@+node:ekr.20070411101643.2: *4* parseOpenWith & helper
     def parseOpenWith (self,p):
 
         d = {'command': None,}
@@ -885,7 +834,7 @@ class parserBaseClass:
             self.parseOpenWithLine(line,d)
 
         return d
-    #@+node:ekr.20070411101643.4:parseOpenWithLine
+    #@+node:ekr.20070411101643.4: *5* parseOpenWithLine
     def parseOpenWithLine (self,line,d):
 
         s = line.strip()
@@ -898,9 +847,7 @@ class parserBaseClass:
 
         if not g.match(s,0,'#'):
             d['command'] = s
-    #@-node:ekr.20070411101643.4:parseOpenWithLine
-    #@-node:ekr.20070411101643.2:parseOpenWith & helper
-    #@+node:ekr.20041120112043:parseShortcutLine (g.app.config)
+    #@+node:ekr.20041120112043: *4* parseShortcutLine (g.app.config)
     def parseShortcutLine (self,s):
 
         '''Parse a shortcut line.  Valid forms:
@@ -957,8 +904,7 @@ class parserBaseClass:
 
         # g.trace(pane,name,val,s)
         return name,g.bunch(nextMode=nextMode,pane=pane,val=val)
-    #@-node:ekr.20041120112043:parseShortcutLine (g.app.config)
-    #@+node:ekr.20060608222828:parseAbbrevLine (g.app.config)
+    #@+node:ekr.20060608222828: *4* parseAbbrevLine (g.app.config)
     def parseAbbrevLine (self,s):
 
         '''Parse an abbreviation line:
@@ -982,9 +928,7 @@ class parserBaseClass:
 
         if val: return name,val
         else:   return None,None
-    #@-node:ekr.20060608222828:parseAbbrevLine (g.app.config)
-    #@-node:ekr.20041213082558:parsers
-    #@+node:ekr.20041120094940.9:set (parserBaseClass)
+    #@+node:ekr.20041120094940.9: *3* set (parserBaseClass)
     def set (self,p,kind,name,val):
 
         """Init the setting for name to val."""
@@ -1008,8 +952,7 @@ class parserBaseClass:
             # g.trace('*****',key,val)
 
         d [key] = g.Bunch(path=c.mFileName,kind=kind,val=val,tag='setting')
-    #@-node:ekr.20041120094940.9:set (parserBaseClass)
-    #@+node:ekr.20041227071423:setShortcut (ParserBaseClass)
+    #@+node:ekr.20041227071423: *3* setShortcut (ParserBaseClass)
     def setShortcut (self,name,bunchList):
 
         c = self.c
@@ -1022,8 +965,7 @@ class parserBaseClass:
         if 0:
             for b in bunchList:
                 g.trace('%20s %45s %s' % (b.val,rawKey,b.pane))
-    #@-node:ekr.20041227071423:setShortcut (ParserBaseClass)
-    #@+node:ekr.20041119204700.1:traverse (parserBaseClass)
+    #@+node:ekr.20041119204700.1: *3* traverse (parserBaseClass)
     def traverse (self):
 
         c = self.c
@@ -1048,36 +990,29 @@ class parserBaseClass:
                 p.moveToThreadNext()
 
         return self.settingsDict
-    #@-node:ekr.20041119204700.1:traverse (parserBaseClass)
-    #@+node:ekr.20041120094940.10:valueError
+    #@+node:ekr.20041120094940.10: *3* valueError
     def valueError (self,p,kind,name,val):
 
         """Give an error: val is not valid for kind."""
 
         self.error("%s is not a valid %s for %s" % (val,kind,name))
-    #@-node:ekr.20041120094940.10:valueError
-    #@+node:ekr.20041119204700.3:visitNode (must be overwritten in subclasses)
+    #@+node:ekr.20041119204700.3: *3* visitNode (must be overwritten in subclasses)
     def visitNode (self,p):
 
         self.oops()
-    #@-node:ekr.20041119204700.3:visitNode (must be overwritten in subclasses)
     #@-others
-#@-node:ekr.20041119203941.2:<< class parserBaseClass >>
-#@nl
+#@-<< class parserBaseClass >>
 
 #@+others
-#@+node:ekr.20041119203941:class configClass
+#@+node:ekr.20041119203941: ** class configClass
 class configClass:
     """A class to manage configuration settings."""
-    #@    << class data >>
-    #@+node:ekr.20041122094813:<<  class data >> (g.app.config)
+    #@+    << class data >>
+    #@+node:ekr.20041122094813: *3* <<  class data >> (g.app.config)
     #@+others
-    #@+node:ekr.20041117062717.1:defaultsDict
-    #@+at 
-    #@nonl
-    # This contains only the "interesting" defaults.
+    #@+node:ekr.20041117062717.1: *4* defaultsDict
+    #@+at This contains only the "interesting" defaults.
     # Ints and bools default to 0, floats to 0.0 and strings to "".
-    #@-at
     #@@c
 
     defaultBodyFontSize = g.choose(sys.platform=="win32",9,12)
@@ -1137,8 +1072,7 @@ class configClass:
         ("split_bar_relief","relief","groove"),
         ("split_bar_width","int",7),
     )
-    #@-node:ekr.20041117062717.1:defaultsDict
-    #@+node:ekr.20041118062709:define encodingIvarsDict
+    #@+node:ekr.20041118062709: *4* define encodingIvarsDict
     encodingIvarsDict = {'_hash':'encodingIvarsDict'}
 
     encodingIvarsData = (
@@ -1149,8 +1083,7 @@ class configClass:
         ("defaultEncoding","string",None),
             # Defaults to None so it doesn't override better defaults.
     )
-    #@-node:ekr.20041118062709:define encodingIvarsDict
-    #@+node:ekr.20041117072055:ivarsDict
+    #@+node:ekr.20041117072055: *4* ivarsDict
     # Each of these settings sets the corresponding ivar.
     # Also, the c.configSettings settings class inits the corresponding commander ivar.
     ivarsDict = {'_hash':'ivarsDict'}
@@ -1181,7 +1114,6 @@ class configClass:
             # "char","word","line","node"
         ("write_strips_blank_lines","bool",False),
     )
-    #@-node:ekr.20041117072055:ivarsDict
     #@-others
 
     # List of dictionaries to search.  Order not too important.
@@ -1194,11 +1126,10 @@ class configClass:
 
     # Keys are setting names, values are type names.
     warningsDict = {} # Used by get() or allies.
-    #@-node:ekr.20041122094813:<<  class data >> (g.app.config)
-    #@nl
-    #@    @+others
-    #@+node:ekr.20041117083202:Birth... (g.app.config)
-    #@+node:ekr.20041117062717.2:ctor (configClass)
+    #@-    << class data >>
+    #@+others
+    #@+node:ekr.20041117083202: *3* Birth... (g.app.config)
+    #@+node:ekr.20041117062717.2: *4* ctor (configClass)
     def __init__ (self):
 
         # g.trace('g.app.config')
@@ -1235,8 +1166,7 @@ class configClass:
         self.initIvarsFromSettings()
         self.initSettingsFiles()
         self.initRecentFiles()
-    #@-node:ekr.20041117062717.2:ctor (configClass)
-    #@+node:ekr.20041227063801.2:initDicts
+    #@+node:ekr.20041227063801.2: *4* initDicts
     def initDicts (self):
 
         # Only the settings parser needs to search all dicts.
@@ -1253,8 +1183,7 @@ class configClass:
         for key,kind,val in self.encodingIvarsData:
             self.encodingIvarsDict[self.munge(key)] = g.Bunch(
                 ivar=key,kind=kind,encoding=val,tag='encodings')
-    #@-node:ekr.20041227063801.2:initDicts
-    #@+node:ekr.20041117065611.2:initIvarsFromSettings & helpers
+    #@+node:ekr.20041117065611.2: *4* initIvarsFromSettings & helpers
     def initIvarsFromSettings (self):
 
         trace = False and not g.unitTesting
@@ -1267,7 +1196,7 @@ class configClass:
         for ivar in self.ivarsDict:
             if ivar != '_hash':
                 self.initIvar(ivar)
-    #@+node:ekr.20041117065611.1:initEncoding
+    #@+node:ekr.20041117065611.1: *5* initEncoding
     def initEncoding (self,key):
 
         '''Init g.app.config encoding ivars during initialization.'''
@@ -1281,8 +1210,7 @@ class configClass:
 
         if encoding and not g.isValidEncoding(encoding):
             g.es("g.app.config: bad encoding:","%s: %s" % (ivar,encoding))
-    #@-node:ekr.20041117065611.1:initEncoding
-    #@+node:ekr.20041117065611:initIvar
+    #@+node:ekr.20041117065611: *5* initIvar
     def initIvar(self,key):
 
         '''Init g.app.config ivars during initialization.
@@ -1300,14 +1228,11 @@ class configClass:
 
         if trace: g.trace('g.app.config',ivar,key,val)
         setattr(self,ivar,val)
-    #@-node:ekr.20041117065611:initIvar
-    #@-node:ekr.20041117065611.2:initIvarsFromSettings & helpers
-    #@+node:ekr.20041117083202.2:initRecentFiles
+    #@+node:ekr.20041117083202.2: *4* initRecentFiles
     def initRecentFiles (self):
 
         self.recentFiles = []
-    #@-node:ekr.20041117083202.2:initRecentFiles
-    #@+node:ekr.20041117083857:initSettingsFiles
+    #@+node:ekr.20041117083857: *4* initSettingsFiles
     def initSettingsFiles (self):
 
         """Set self.globalConfigFile, self.homeFile, self.myGlobalConfigFile,
@@ -1343,10 +1268,8 @@ class configClass:
             g.trace('home file:',self.homeFile)
             g.trace('myGlobal file:',self.myGlobalConfigFile)
             g.trace('myHome file:',self.myHomeConfigFile)
-    #@-node:ekr.20041117083857:initSettingsFiles
-    #@-node:ekr.20041117083202:Birth... (g.app.config)
-    #@+node:ekr.20041117081009:Getters... (g.app.config)
-    #@+node:ekr.20041123070429:canonicalizeSettingName (munge)
+    #@+node:ekr.20041117081009: *3* Getters... (g.app.config)
+    #@+node:ekr.20041123070429: *4* canonicalizeSettingName (munge)
     def canonicalizeSettingName (self,name):
 
         if name is None:
@@ -1359,8 +1282,7 @@ class configClass:
         return g.choose(name,name,None)
 
     munge = canonicalizeSettingName
-    #@-node:ekr.20041123070429:canonicalizeSettingName (munge)
-    #@+node:ekr.20041123092357:config.findSettingsPosition
+    #@+node:ekr.20041123092357: *4* config.findSettingsPosition
     # This was not used prior to Leo 4.5.
 
     def findSettingsPosition (self,c,setting):
@@ -1382,8 +1304,7 @@ class configClass:
                 return p.copy()
 
         return c.nullPosition()
-    #@-node:ekr.20041123092357:config.findSettingsPosition
-    #@+node:ekr.20051011105014:exists (g.app.config)
+    #@+node:ekr.20051011105014: *4* exists (g.app.config)
     def exists (self,c,setting,kind):
 
         '''Return true if a setting of the given kind exists, even if it is None.'''
@@ -1404,8 +1325,7 @@ class configClass:
 
         # g.trace('does not exist',setting,kind)
         return False
-    #@-node:ekr.20051011105014:exists (g.app.config)
-    #@+node:ekr.20041117083141:get & allies (g.app.config)
+    #@+node:ekr.20041117083141: *4* get & allies (g.app.config)
     def get (self,c,setting,kind):
 
         """Get the setting and make sure its type matches the expected type."""
@@ -1449,7 +1369,7 @@ class configClass:
                     return val
 
         return None
-    #@+node:ekr.20041121143823:getValFromDict
+    #@+node:ekr.20041121143823: *5* getValFromDict
     def getValFromDict (self,d,setting,requestedType,warn=True):
 
         '''Look up the setting in d. If warn is True, warn if the requested type
@@ -1485,8 +1405,7 @@ class configClass:
         else:
             # g.trace(setting,val)
             return val, True
-    #@-node:ekr.20041121143823:getValFromDict
-    #@+node:ekr.20051015093141:typesMatch
+    #@+node:ekr.20051015093141: *5* typesMatch
     def typesMatch (self,type1,type2):
 
         '''
@@ -1508,17 +1427,14 @@ class configClass:
             (type1 in shortcuts and type2 in shortcuts) or
             type1 == type2
         )
-    #@-node:ekr.20051015093141:typesMatch
-    #@-node:ekr.20041117083141:get & allies (g.app.config)
-    #@+node:ekr.20060608224112:getAbbrevDict
+    #@+node:ekr.20060608224112: *4* getAbbrevDict
     def getAbbrevDict (self,c):
 
         """Search all dictionaries for the setting & check it's type"""
 
         d = self.get(c,'abbrev','abbrev')
         return d or {}
-    #@-node:ekr.20060608224112:getAbbrevDict
-    #@+node:ekr.20041117081009.3:getBool
+    #@+node:ekr.20041117081009.3: *4* getBool
     def getBool (self,c,setting,default=None):
 
         '''Return the value of @bool setting, or the default if the setting is not found.'''
@@ -1529,36 +1445,31 @@ class configClass:
             return val
         else:
             return default
-    #@-node:ekr.20041117081009.3:getBool
-    #@+node:ekr.20070926082018:getButtons
+    #@+node:ekr.20070926082018: *4* getButtons
     def getButtons (self):
 
         '''Return a list of tuples (x,y) for common @button nodes.'''
 
         return g.app.config.atCommonButtonsList
-    #@-node:ekr.20070926082018:getButtons
-    #@+node:ekr.20041122070339:getColor
+    #@+node:ekr.20041122070339: *4* getColor
     def getColor (self,c,setting):
 
         '''Return the value of @color setting.'''
 
         return self.get(c,setting,"color")
-    #@-node:ekr.20041122070339:getColor
-    #@+node:ekr.20080312071248.7:getCommonCommands
+    #@+node:ekr.20080312071248.7: *4* getCommonCommands
     def getCommonAtCommands (self):
 
         '''Return the list of tuples (headline,script) for common @command nodes.'''
 
         return g.app.config.atCommonCommandsList
-    #@-node:ekr.20080312071248.7:getCommonCommands
-    #@+node:ekr.20071214140900.1:getData
+    #@+node:ekr.20071214140900.1: *4* getData
     def getData (self,c,setting):
 
         '''Return a list of non-comment strings in the body text of @data setting.'''
 
         return self.get(c,setting,"data")
-    #@-node:ekr.20071214140900.1:getData
-    #@+node:ekr.20041117093009.1:getDirectory
+    #@+node:ekr.20041117093009.1: *4* getDirectory
     def getDirectory (self,c,setting):
 
         '''Return the value of @directory setting, or None if the directory does not exist.'''
@@ -1569,15 +1480,13 @@ class configClass:
              return theDir
         else:
             return None
-    #@-node:ekr.20041117093009.1:getDirectory
-    #@+node:ekr.20070224075914.1:getEnabledPlugins
+    #@+node:ekr.20070224075914.1: *4* getEnabledPlugins
     def getEnabledPlugins (self):
 
         '''Return the body text of the @enabled-plugins node.'''
 
         return g.app.config.enabledPluginsString
-    #@-node:ekr.20070224075914.1:getEnabledPlugins
-    #@+node:ekr.20041117082135:getFloat
+    #@+node:ekr.20041117082135: *4* getFloat
     def getFloat (self,c,setting):
 
         '''Return the value of @float setting.'''
@@ -1588,8 +1497,7 @@ class configClass:
             return val
         except TypeError:
             return None
-    #@-node:ekr.20041117082135:getFloat
-    #@+node:ekr.20041117062717.13:getFontFromParams (config)
+    #@+node:ekr.20041117062717.13: *4* getFontFromParams (config)
     def getFontFromParams(self,c,family,size,slant,weight,defaultSize=12):
 
         """Compute a font from font parameters.
@@ -1615,8 +1523,7 @@ class configClass:
         # g.trace(g.callers(3),family,size,slant,weight,g.shortFileName(c.mFileName))
 
         return g.app.gui.getFontFromParams(family,size,slant,weight)
-    #@-node:ekr.20041117062717.13:getFontFromParams (config)
-    #@+node:ekr.20041117081513:getInt
+    #@+node:ekr.20041117081513: *4* getInt
     def getInt (self,c,setting):
 
         '''Return the value of @int setting.'''
@@ -1627,8 +1534,7 @@ class configClass:
             return val
         except TypeError:
             return None
-    #@-node:ekr.20041117081513:getInt
-    #@+node:ekr.20041117093009.2:getLanguage
+    #@+node:ekr.20041117093009.2: *4* getLanguage
     def getLanguage (self,c,setting):
 
         '''Return the setting whose value should be a language known to Leo.'''
@@ -1637,8 +1543,7 @@ class configClass:
         # g.trace(setting,language)
 
         return language
-    #@-node:ekr.20041117093009.2:getLanguage
-    #@+node:ekr.20070926070412:getMenusList (c.config)
+    #@+node:ekr.20070926070412: *4* getMenusList (c.config)
     def getMenusList (self,c):
 
         '''Return the list of entries for the @menus tree.'''
@@ -1647,8 +1552,7 @@ class configClass:
         # g.trace(aList and len(aList) or 0)
 
         return aList or g.app.config.menusList
-    #@-node:ekr.20070926070412:getMenusList (c.config)
-    #@+node:ekr.20070411101643:getOpenWith
+    #@+node:ekr.20070411101643: *4* getOpenWith
     def getOpenWith (self,c):
 
         '''Return a list of dictionaries corresponding to @openwith nodes.'''
@@ -1656,8 +1560,7 @@ class configClass:
         val = self.get(c,'openwithtable','openwithtable')
 
         return val
-    #@-node:ekr.20070411101643:getOpenWith
-    #@+node:ekr.20041122070752:getRatio
+    #@+node:ekr.20041122070752: *4* getRatio
     def getRatio (self,c,setting):
 
         '''Return the value of @float setting.
@@ -1673,15 +1576,13 @@ class configClass:
                 return None
         except TypeError:
             return None
-    #@-node:ekr.20041122070752:getRatio
-    #@+node:ekr.20041117062717.11:getRecentFiles
+    #@+node:ekr.20041117062717.11: *4* getRecentFiles
     def getRecentFiles (self):
 
         '''Return the list of recently opened files.'''
 
         return self.recentFiles
-    #@-node:ekr.20041117062717.11:getRecentFiles
-    #@+node:ekr.20080917061525.3:getSettingSource (g.app.config)
+    #@+node:ekr.20080917061525.3: *4* getSettingSource (g.app.config)
     def getSettingSource (self,c,setting):
 
         '''return the name of the file responsible for setting.'''
@@ -1697,8 +1598,7 @@ class configClass:
                     return bunch.path,bunch.val
         else:
             return 'unknown setting',None
-    #@-node:ekr.20080917061525.3:getSettingSource (g.app.config)
-    #@+node:ekr.20041117062717.14:getShortcut (config)
+    #@+node:ekr.20041117062717.14: *4* getShortcut (config)
     def getShortcut (self,c,shortcutName):
 
         '''Return rawKey,accel for shortcutName'''
@@ -1714,15 +1614,13 @@ class configClass:
             return key,bunchList
         else:
             return key,[]
-    #@-node:ekr.20041117062717.14:getShortcut (config)
-    #@+node:ekr.20041117081009.4:getString
+    #@+node:ekr.20041117081009.4: *4* getString
     def getString (self,c,setting):
 
         '''Return the value of @string setting.'''
 
         return self.get(c,setting,"string")
-    #@-node:ekr.20041117081009.4:getString
-    #@+node:ekr.20041120074536:settingsRoot
+    #@+node:ekr.20041120074536: *4* settingsRoot
     def settingsRoot (self,c):
 
         '''Return the position of the @settings tree.'''
@@ -1734,9 +1632,7 @@ class configClass:
                 return p.copy()
         else:
             return c.nullPosition()
-    #@-node:ekr.20041120074536:settingsRoot
-    #@-node:ekr.20041117081009:Getters... (g.app.config)
-    #@+node:ekr.20100616083554.5922:Iterators... (g.app.config)
+    #@+node:ekr.20100616083554.5922: *3* Iterators... (g.app.config)
     def config_iter(self,c):
 
         '''Letters:
@@ -1767,7 +1663,7 @@ class configClass:
             yield z
 
         raise StopIteration
-    #@+node:ekr.20100616083554.5923:config_iter_helper
+    #@+node:ekr.20100616083554.5923: *4* config_iter_helper
     def config_iter_helper (self,d,names):
 
         if not d: return []
@@ -1792,10 +1688,8 @@ class configClass:
                     result.append((key,bunch.val,letter),)
 
         return result
-    #@-node:ekr.20100616083554.5923:config_iter_helper
-    #@-node:ekr.20100616083554.5922:Iterators... (g.app.config)
-    #@+node:ekr.20041118084146:Setters (g.app.config)
-    #@+node:ekr.20041118084146.1:set (g.app.config) To be deleted??
+    #@+node:ekr.20041118084146: *3* Setters (g.app.config)
+    #@+node:ekr.20041118084146.1: *4* set (g.app.config) To be deleted??
     def set (self,c,setting,kind,val):
 
         '''Set the setting.  Not called during initialization.'''
@@ -1823,13 +1717,11 @@ class configClass:
         if 0:
             dkind = d.get('_hash','<no hash: %s>' % c.hash())
             g.trace(dkind,setting,kind,val)
-    #@-node:ekr.20041118084146.1:set (g.app.config) To be deleted??
-    #@+node:ekr.20041118084241:setString
+    #@+node:ekr.20041118084241: *4* setString
     def setString (self,c,setting,val):
 
         self.set(c,setting,"string",val)
-    #@-node:ekr.20041118084241:setString
-    #@+node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
+    #@+node:ekr.20041228042224: *4* setIvarsFromSettings (g.app.config)
     def setIvarsFromSettings (self,c):
 
         '''Init g.app.config ivars or c's ivars from settings.
@@ -1870,8 +1762,7 @@ class configClass:
                         if trace: g.trace("%20s %s = %s" % (
                             'g.app.config',ivar,val))
                         setattr(self,ivar,val)
-    #@-node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
-    #@+node:ekr.20041201080436:appendToRecentFiles (g.app.config)
+    #@+node:ekr.20041201080436: *4* appendToRecentFiles (g.app.config)
     def appendToRecentFiles (self,files):
 
         files = [theFile.strip() for theFile in files]
@@ -1889,17 +1780,15 @@ class configClass:
                     self.recentFiles.remove(name2)
 
             self.recentFiles.append(name)
-    #@-node:ekr.20041201080436:appendToRecentFiles (g.app.config)
-    #@-node:ekr.20041118084146:Setters (g.app.config)
-    #@+node:ekr.20041117093246:Scanning @settings (g.app.config)
-    #@+node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
+    #@+node:ekr.20041117093246: *3* Scanning @settings (g.app.config)
+    #@+node:ekr.20041120064303: *4* readSettingsFiles & helpers (g.app.config)
     def readSettingsFiles (self,fileName,verbose=True):
 
         trace = False and not g.unitTesting
         seen = []
         self.write_recent_files_as_needed = False # Will be set later.
-        #@    << define localDirectory, localConfigFile & myLocalConfigFile >>
-        #@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+        #@+    << define localDirectory, localConfigFile & myLocalConfigFile >>
+        #@+node:ekr.20061028082834: *5* << define localDirectory, localConfigFile & myLocalConfigFile >>
         # This can't be done in initSettingsFiles because
         # the local directory does not yet exist.
         localDirectory = g.os_path_dirname(fileName)
@@ -1913,8 +1802,7 @@ class configClass:
         myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
         if not g.os_path_exists(myLocalConfigFile):
             myLocalConfigFile = None
-        #@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
-        #@nl
+        #@-    << define localDirectory, localConfigFile & myLocalConfigFile >>
 
         if trace: g.trace(g.callers(5))
         table = (
@@ -1960,7 +1848,7 @@ class configClass:
         # self.createMyLeoSettingsFile(myLocalConfigFile)
         self.inited = True
         self.setIvarsFromSettings(None)
-    #@+node:ekr.20041117085625:openSettingsFile
+    #@+node:ekr.20041117085625: *5* openSettingsFile
     def openSettingsFile (self,path):
 
         theFile,isZipped = g.openLeoOrZipFile(path)
@@ -1982,8 +1870,7 @@ class configClass:
         c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
         g.app.gui = oldGui
         return ok and c
-    #@-node:ekr.20041117085625:openSettingsFile
-    #@+node:ekr.20051013161232:updateSettings
+    #@+node:ekr.20051013161232: *5* updateSettings
     def updateSettings (self,c,localFlag):
 
         d = self.readSettings(c,localFlag)
@@ -1999,9 +1886,7 @@ class configClass:
             if localFlag:
                 g.trace(c.fileName())
                 g.trace(d and list(d.keys()))
-    #@-node:ekr.20051013161232:updateSettings
-    #@-node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
-    #@+node:ekr.20041117083857.1:g.app.config.readSettings
+    #@+node:ekr.20041117083857.1: *4* g.app.config.readSettings
     # Called to read all leoSettings.leo files.
     # Also called when opening an .leo file to read @settings tree.
 
@@ -2020,10 +1905,8 @@ class configClass:
         d = parser.traverse()
 
         return d
-    #@-node:ekr.20041117083857.1:g.app.config.readSettings
-    #@-node:ekr.20041117093246:Scanning @settings (g.app.config)
-    #@+node:ekr.20050424114937.1:Reading and writing .leoRecentFiles.txt (g.app.config)
-    #@+node:ekr.20070224115832:readRecentFiles & helpers
+    #@+node:ekr.20050424114937.1: *3* Reading and writing .leoRecentFiles.txt (g.app.config)
+    #@+node:ekr.20070224115832: *4* readRecentFiles & helpers
     def readRecentFiles (self,localConfigFile):
 
         '''Read all .leoRecentFiles.txt files.'''
@@ -2043,7 +1926,7 @@ class configClass:
                 if ok: seen.append(path)
         if not seen and self.write_recent_files_as_needed:
             self.createRecentFiles()
-    #@+node:ekr.20061010121944:createRecentFiles
+    #@+node:ekr.20061010121944: *5* createRecentFiles
     def createRecentFiles (self):
 
         '''Trye to reate .leoRecentFiles.txt in
@@ -2061,8 +1944,7 @@ class configClass:
                 except Exception:
                     g.es_print('can not create',fileName,color='red')
                     g.es_exception()
-    #@-node:ekr.20061010121944:createRecentFiles
-    #@+node:ekr.20050424115658:readRecentFilesFile
+    #@+node:ekr.20050424115658: *5* readRecentFilesFile
     def readRecentFilesFile (self,path):
 
         fileName = g.os_path_join(path,'.leoRecentFiles.txt')
@@ -2086,9 +1968,7 @@ class configClass:
                 self.appendToRecentFiles(lines)
 
         return ok
-    #@-node:ekr.20050424115658:readRecentFilesFile
-    #@-node:ekr.20070224115832:readRecentFiles & helpers
-    #@+node:ekr.20050424114937.2:writeRecentFilesFile & helper
+    #@+node:ekr.20050424114937.2: *4* writeRecentFilesFile & helper
     recentFileMessageWritten = False
 
     def writeRecentFilesFile (self,c):
@@ -2124,7 +2004,7 @@ class configClass:
             self.recentFileMessageWritten = True
         else:
             pass # g.trace('----- not found: %s' % g.os_path_join(localPath,tag))
-    #@+node:ekr.20050424131051:writeRecentFilesFileHelper
+    #@+node:ekr.20050424131051: *5* writeRecentFilesFileHelper
     def writeRecentFilesFileHelper (self,fileName):
 
         # g.trace(g.toUnicode(fileName))
@@ -2172,10 +2052,7 @@ class configClass:
             return True
         else:
             return False
-    #@-node:ekr.20050424131051:writeRecentFilesFileHelper
-    #@-node:ekr.20050424114937.2:writeRecentFilesFile & helper
-    #@-node:ekr.20050424114937.1:Reading and writing .leoRecentFiles.txt (g.app.config)
-    #@+node:ekr.20070418073400:g.app.config.printSettings
+    #@+node:ekr.20070418073400: *3* g.app.config.printSettings
     def printSettings (self,c):
 
         '''Prints the value of every setting, except key bindings and commands and open-with tables.
@@ -2204,24 +2081,21 @@ class configClass:
         # Use a single g.es statement.
         result.append('\n'+legend)
         g.es('',''.join(result),tabName='Settings')
-    #@-node:ekr.20070418073400:g.app.config.printSettings
     #@-others
-#@-node:ekr.20041119203941:class configClass
-#@+node:ekr.20041119203941.3:class settingsTreeParser (parserBaseClass)
+#@+node:ekr.20041119203941.3: ** class settingsTreeParser (parserBaseClass)
 class settingsTreeParser (parserBaseClass):
 
     '''A class that inits settings found in an @settings tree.
 
     Used by read settings logic.'''
 
-    #@    @+others
-    #@+node:ekr.20041119204103:ctor
+    #@+others
+    #@+node:ekr.20041119204103: *3* ctor
     def __init__ (self,c,localFlag=True):
 
         # Init the base class.
         parserBaseClass.__init__(self,c,localFlag)
-    #@-node:ekr.20041119204103:ctor
-    #@+node:ekr.20041119204714:visitNode (settingsTreeParser)
+    #@+node:ekr.20041119204714: *3* visitNode (settingsTreeParser)
     def visitNode (self,p):
 
         """Init any settings found in node p."""
@@ -2259,9 +2133,6 @@ class settingsTreeParser (parserBaseClass):
                 g.pr("*** no handler",kind)
 
         return None
-    #@-node:ekr.20041119204714:visitNode (settingsTreeParser)
     #@-others
-#@-node:ekr.20041119203941.3:class settingsTreeParser (parserBaseClass)
 #@-others
-#@-node:ekr.20041117062700:@thin leoConfig.py
 #@-leo

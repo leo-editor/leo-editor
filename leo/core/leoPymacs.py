@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-#@+leo-ver=4-thin
-#@+node:ekr.20061024060248.1:@thin leoPymacs.py
+#@+leo-ver=5-thin
+#@+node:ekr.20061024060248.1: * @thin leoPymacs.py
 #@@first
 
-#@<< docstring>>
-#@+node:ekr.20061024060248.2:<< docstring >>
+#@+<< docstring>>
+#@+node:ekr.20061024060248.2: ** << docstring >>
 '''A module to allow the Pymacs bridge to access Leo data.
 
 All code in this module must be called *from* Emacs:
@@ -25,8 +25,7 @@ Notes:
   Note that full path names are required in each case.
 
 '''
-#@-node:ekr.20061024060248.2:<< docstring >>
-#@nl
+#@-<< docstring>>
 
 #@@language python
 #@@tabwidth -4
@@ -38,7 +37,7 @@ pymacsFile = __file__
 # print('leoPymacs:pymacsFile',pymacsFile)
 
 #@+others
-#@+node:ekr.20061024131236:dump
+#@+node:ekr.20061024131236: ** dump
 def dump (anObject):
 
     global g
@@ -46,8 +45,7 @@ def dump (anObject):
     init()
 
     return str(g.toEncodedString(repr(anObject),encoding='ascii'))
-#@-node:ekr.20061024131236:dump
-#@+node:ekr.20061024130957:getters
+#@+node:ekr.20061024130957: ** getters
 def get_app ():
     '''Scripts can use g.app.scriptDict for communication with pymacs.'''
     global g
@@ -63,14 +61,12 @@ def script_result():
     global g
     init()
     return g.app.scriptResult
-#@-node:ekr.20061024130957:getters
-#@+node:ekr.20061024060248.3:hello
+#@+node:ekr.20061024060248.3: ** hello
 def hello():
 
     init()
     return 'Hello from Leo.  g.app: %s' % g.app
-#@-node:ekr.20061024060248.3:hello
-#@+node:ekr.20061024075542:init
+#@+node:ekr.20061024075542: ** init
 def init ():
 
     global inited
@@ -110,8 +106,7 @@ def init ():
     if 1: # These traces show up in the pymacs buffer.
         g.trace('app',g.app)
         g.trace('gui',g.app.gui)
-#@-node:ekr.20061024075542:init
-#@+node:ekr.20061024075542.1:open
+#@+node:ekr.20061024075542.1: ** open
 def open (fileName=None):
 
     global g
@@ -139,8 +134,7 @@ def open (fileName=None):
         g.es_print('','leoPymacs.open:','can not open',fileName)
 
     return c
-#@-node:ekr.20061024075542.1:open
-#@+node:ekr.20061024084200:run-script (pymacs)
+#@+node:ekr.20061024084200: ** run-script (pymacs)
 def run_script(c,script,p=None):
 
     # It is possible to use script=None, in which case p must be defined.
@@ -166,7 +160,5 @@ def run_script(c,script,p=None):
 
     # g.trace('script returns: ',repr(g.app.scriptResult))
     return g.app.scriptResult
-#@-node:ekr.20061024084200:run-script (pymacs)
 #@-others
-#@-node:ekr.20061024060248.1:@thin leoPymacs.py
 #@-leo

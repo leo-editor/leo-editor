@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:ekr.20080730161153.5:@thin leoDynamicTest.py
+#@+leo-ver=5-thin
+#@+node:ekr.20080730161153.5: * @thin leoDynamicTest.py
 '''A program to run dynamic unit tests with the leoBridge module.'''
 
 import optparse
@@ -21,7 +21,7 @@ import leo.core.leoPlugins as leoPlugins # leoPlugins.init must be called.
 # Do not define g here. Use the g returned by the bridge.
 
 #@+others
-#@+node:ekr.20080730161153.6:main & helpers
+#@+node:ekr.20080730161153.6: ** main & helpers
 def main ():
 
     trace = False
@@ -47,15 +47,14 @@ def main ():
         if trace:
             t3 = time.time() ; print('%s open file: %0.2fsec' % (tag,t3-t2))
         runUnitTests(c,g)
-#@+node:ekr.20080730161153.7:runUnitTests
+#@+node:ekr.20080730161153.7: *3* runUnitTests
 def runUnitTests (c,g):
 
     p = c.rootPosition()
     #g.es_print('running dynamic unit tests...')
     c.selectPosition(p)
     c.debugCommands.runAllUnitTestsLocally()
-#@-node:ekr.20080730161153.7:runUnitTests
-#@+node:ekr.20090121164439.6176:scanOptions
+#@+node:ekr.20090121164439.6176: *3* scanOptions
 def scanOptions():
 
     '''Handle all options and remove them from sys.argv.'''
@@ -83,8 +82,6 @@ def scanOptions():
     silent = options.silent
 
     return path,gui,silent
-#@-node:ekr.20090121164439.6176:scanOptions
-#@-node:ekr.20080730161153.6:main & helpers
 #@-others
 
 if __name__ == '__main__':
@@ -93,5 +90,4 @@ if __name__ == '__main__':
         for z in sys.argv[2:]: print('  %s' % repr(z))
     leoPlugins.init() # Necessary.
     main()
-#@-node:ekr.20080730161153.5:@thin leoDynamicTest.py
 #@-leo
