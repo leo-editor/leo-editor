@@ -207,45 +207,15 @@ class SimpleRichText(QTextEdit):
 def stickynote_f(event):
     """ Launch editable 'sticky note' for the node """
 
-    c= event['c']
+    c = event['c']
     p = c.p
-    v = p.v
-    def focusin():
-        #print "focus in"
-        if v is c.p.v:
-            nf.setPlainText(v.b)
-            nf.setWindowTitle(p.h)
-            nf.dirty = False
 
+    c = event['c']
+    p = c.p
 
-    def focusout():
-        #print "focus out"
-        if not nf.dirty:
-            return
-        v.b = nf.toPlainText()
-        v.setDirty()
-        nf.dirty = False
-        p = c.p
-        if p.v is v:
-            c.selectPosition(c.p)
+    nf = mknote(c,p)
 
-
-    nf = FocusingPlaintextEdit(focusin, focusout)
-    nf.dirty = False
-    decorate_window(nf)
-    nf.setWindowTitle(p.h)
-    nf.setPlainText(p.b)
-    p.setDirty()
-
-    def textchanged_cb():
-        nf.dirty = True
-
-    nf.connect(nf,
-        SIGNAL("textChanged()"),textchanged_cb)
-
-    nf.show()
-
-    g.app.stickynotes[p.gnx] = nf
+    return
 #@-node:vivainio2.20091008133028.5825:g.command('stickynote')
 #@+node:ville.20091023181249.5266:g.command('stickynoter')
 @g.command('stickynoter')
@@ -255,13 +225,13 @@ def stickynoter_f(event):
     c= event['c']
     p = c.p
     v = p.v
+
     def focusin():
         print("focus in")
         if v is c.p.v:
             nf.setHtml(v.b)
             nf.setWindowTitle(p.h)
             nf.dirty = False
-
 
     def focusout():
         print("focus out")
@@ -273,7 +243,6 @@ def stickynoter_f(event):
         p = c.p
         if p.v is v:
             c.selectPosition(c.p)
-
 
     nf = SimpleRichText(focusin, focusout)  # not LessSimpleRichText
     nf.dirty = False
@@ -311,7 +280,9 @@ if encOK:
         def focusin():
             #print "focus in"
             if v is c.p.v:
-                nf.setPlainText(sn_decode(v.b))
+                if sn_decode(v.b) != nf.toPlainText():
+                    # only when needed to avoid scroll jumping
+                    nf.setPlainText(sn_decode(v.b))
                 nf.setWindowTitle(p.h)
                 nf.dirty = False
 
@@ -326,23 +297,12 @@ if encOK:
             if p.v is v:
                 c.selectPosition(c.p)
 
-
-        nf = FocusingPlaintextEdit(focusin, focusout)
-        nf.dirty = False
-        decorate_window(nf)
-        nf.setWindowTitle(p.h)
-        nf.setPlainText(sn_decode(p.b))
-        p.setDirty()
-
-        def textchanged_cb():
-            nf.dirty = True
-
-        nf.connect(nf,
-            SIGNAL("textChanged()"),textchanged_cb)
-
-        nf.show()
-
-        g.app.stickynotes[p.gnx] = nf
+        c = event['c']
+        p = c.p
+        nf = mknote(c,p)
+        nf.focusout = focusout
+        nf.focusin = focusin
+        nf.setPlainText(sn_decode(v.b))
 #@-node:tbrown.20100120100336.7829:g.command('stickynoteenc')
 #@+node:tbrown.20100120100336.7830:sn_de/encode
 if encOK:
@@ -372,15 +332,17 @@ if encOK:
 #@-node:tbrown.20100120100336.7830:sn_de/encode
 #@+node:ville.20100703234124.9976:Tabula
 #@+node:ville.20100703194946.5587:def mknote
-def mknote(c,p, parent = None):
+def mknote(c,p, parent=None):
     """ Launch editable 'sticky note' for the node """
 
     v = p.v
     def focusin():
         #print "focus in"
         if v is c.p.v:
-            nf.setPlainText(v.b)
-            nf.setWindowTitle(p.h)
+            if v.b != nf.toPlainText():
+                # only when needed to avoid scroll jumping
+                nf.setPlainText(v.b)
+            nf.setWindowTitle(v.h)
             nf.dirty = False
 
     def focusout():
@@ -396,12 +358,14 @@ def mknote(c,p, parent = None):
 
 
     def closeevent():
-        print "closeevent"
+        pass
+        # print "closeevent"
 
 
     nf = FocusingPlaintextEdit(focusin, focusout, closeevent, parent = parent)
+    nf.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     nf.dirty = False
-    #decorate_window(nf)
+    nf.resize(600, 300)
     nf.setWindowTitle(p.h)
     nf.setPlainText(p.b)
     p.setDirty()
@@ -493,7 +457,19 @@ class Tabula(QMainWindow):
         self.tb.setObjectName("toolbar")
         #self.addToolBar(Qt.BottomToolBarArea, self.tb)
         def do_tile():
+            self.mdi.setViewMode(QMdiArea.SubWindowView)
             self.mdi.tileSubWindows()
+        def do_cascade():
+            self.mdi.setViewMode(QMdiArea.SubWindowView)
+            self.mdi.cascadeSubWindows()
+        def do_un_tab():
+            if self.mdi.viewMode() == QMdiArea.SubWindowView:
+                self.mdi.setViewMode(QMdiArea.TabbedView)
+            else:
+                self.mdi.setViewMode(QMdiArea.SubWindowView)
+        def do_close_all():
+            for i in self.mdi.subWindowList():
+                self.mdi.removeSubWindow(i)
 
         def do_go():
             cur = self.mdi.activeSubWindow()
@@ -506,9 +482,17 @@ class Tabula(QMainWindow):
             p = next(p for p in self.c.all_unique_positions() if p.gnx == tgt)
             self.c.selectPosition(p)
 
-
         self.tb.addAction("Tile", do_tile)
+        self.tb.addAction("Cascade", do_cascade)
+        self.tb.addAction("(Un)Tab", do_un_tab)
         self.tb.addAction("Go", do_go)
+        self.tb.addSeparator()
+        self.tb.addAction("Close All", do_close_all)
+
+        # ca = QAction("Close All", self.tb)
+        # ca.setMenuRole(QAction.QuitRole)
+        # ca.connect(ca, SIGNAL("triggered()"), do_close_all)
+        # self.tb.addAction(ca)
 
 
     def add_note(self, p):
