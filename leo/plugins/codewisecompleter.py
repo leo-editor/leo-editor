@@ -4,24 +4,16 @@
 #@+node:ville.20091204224145.5356:<< docstring >>
 ''' This plugin uses ctags to provide autocompletion list
 
-Requirements:
-    - Exuberant Ctags: 
+Instructions:
 
-Usage:
-    - You need to create ctags file to ~/.leo/tags. Example::
+    sudo apt-get install exuberant-ctags
+    bzr branch lp:codewise
+    cd codewise
+    python setup.py install
 
-        cd ~/.leo
-        ctags -R /usr/lib/python2.5 ~/leo-editor ~/my-project
+    run "codewise" to get help
 
-    - Enter text you want to complete and press alt+0 to show completions
-      (or bind/execute ctags-complete command yourself).
-
-Exuberant Ctags supports wide array of programming languages. It does not
-do type inference, so you need to remember at least the start 
-of the function yourself. That is, attempting to complete 'foo->'
-is useless, but 'foo->ba' will work (provided you don't have 2000 
-functions/methods starting with 'ba'. 'foo->' portion is ignored in completion
-search.
+    Press alt-0 to start completion in leo
 
 '''
 #@-node:ville.20091204224145.5356:<< docstring >>
