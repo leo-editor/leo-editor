@@ -164,8 +164,7 @@ class cacher:
         for z in children:
             h,b,gnx,grandChildren = z
             isClone,child_v = self.fastAddLastChild(parent_v,gnx)
-            # if trace and h == 'writeException':
-                # g.trace('clone',isClone,'b',len(b),h,fileName)
+
             if isClone:
                 self.reportChangedClone(child_v,b,h,gnx)
             else:
@@ -347,8 +346,6 @@ class cacher:
 
         # This is called after at.copyAllTempBodyStringsToVnodes,
         # so p.b *is* the body text.
-
-        # if p.h == 'writeException': g.trace(len(p.b),p.h)
 
         return [
             p.h,p.b,p.gnx,

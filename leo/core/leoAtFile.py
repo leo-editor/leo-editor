@@ -2105,10 +2105,6 @@ class atFile:
         for p in root.self_and_subtree():
             hasList = hasattr(p.v,'tempBodyList')
             hasString = hasattr(p.v,'tempBodyString')
-            # if p.v.h == 'writeException':
-                # g.trace('old',len(p.b),
-                    # 'hasList',hasList,len(hasList and ''.join(p.v.tempBodyList) or ''),
-                    # 'hasString',hasString,len(hasString and p.v.tempBodyString or ''))
             if not hasString and not hasList:
                 continue # Bug fix 2010/07/06: do nothing!
             # Terminate the node if v.tempBodyList exists.
@@ -2121,7 +2117,6 @@ class atFile:
             delattr(p.v,'tempBodyString') # essential.
             old_body = p.b
             if s != old_body:
-                # if p.v.h == 'writeException': g.trace('changed',len(s))
                 if thinFile:
                     p.v.setBodyString(s)
                     if p.v.isDirty():
@@ -2135,7 +2130,7 @@ class atFile:
                         c.mod_label_controller.add_label(p,"before change:",old_body)
                     except Exception:
                         pass
-                    # 2010/02/05: This warning is given elsewhere.
+                    # This warning is given elsewhere.
                     # g.es("changed:",p.h,color="blue")
     #@+node:ekr.20041005105605.119: *4* at.createImportedNode
     def createImportedNode (self,root,headline):

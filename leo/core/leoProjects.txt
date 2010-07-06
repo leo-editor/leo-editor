@@ -2850,8 +2850,7 @@ def createOutlineFromCacheList(self,parent_v,aList,fileName,top=True):
     for z in children:
         h,b,gnx,grandChildren = z
         isClone,child_v = self.fastAddLastChild(parent_v,gnx)
-        # if trace and h == 'writeException':
-            # g.trace('clone',isClone,'b',len(b),h,fileName)
+
         if isClone:
             self.reportChangedClone(child_v,b,h,gnx)
         else:
@@ -7733,25 +7732,6 @@ def writeException (self,root=None): # changed 11.
    that is, before *other* files (which would correct the mistake)
    have been read.
 
-#@+node:ekr.20100704180651.5728: *5*  Copies
-#@+node:ekr.20100704174240.5720: *6* writeException (copy)
-def writeException (self,root=None):
-
-    g.es("exception writing:",self.targetFileName,color="red")
-    g.es_exception()
-
-    if self.outputFile:
-        self.outputFile.flush()
-        self.outputFile.close()
-        self.outputFile = None
-
-    if self.outputFileName:
-        self.remove(self.outputFileName)
-
-    if root:
-        # Make sure we try to rewrite this file.
-        root.setOrphan()
-        root.setDirty()
 #@+node:ekr.20100706093047.5768: *5* Terminating nodes
 #@+node:ekr.20050301105854: *6* at.copyAllTempBodyStringsToVnodes
 def copyAllTempBodyStringsToVnodes (self,root,thinFile):
@@ -7762,10 +7742,6 @@ def copyAllTempBodyStringsToVnodes (self,root,thinFile):
     for p in root.self_and_subtree():
         hasList = hasattr(p.v,'tempBodyList')
         hasString = hasattr(p.v,'tempBodyString')
-        # if p.v.h == 'writeException':
-            # g.trace('old',len(p.b),
-                # 'hasList',hasList,len(hasList and ''.join(p.v.tempBodyList) or ''),
-                # 'hasString',hasString,len(hasString and p.v.tempBodyString or ''))
         if not hasString and not hasList:
             continue # Bug fix 2010/07/06: do nothing!
         # Terminate the node if v.tempBodyList exists.
@@ -7778,7 +7754,6 @@ def copyAllTempBodyStringsToVnodes (self,root,thinFile):
         delattr(p.v,'tempBodyString') # essential.
         old_body = p.b
         if s != old_body:
-            # if p.v.h == 'writeException': g.trace('changed',len(s))
             if thinFile:
                 p.v.setBodyString(s)
                 if p.v.isDirty():
@@ -7792,7 +7767,7 @@ def copyAllTempBodyStringsToVnodes (self,root,thinFile):
                     c.mod_label_controller.add_label(p,"before change:",old_body)
                 except Exception:
                     pass
-                # 2010/02/05: This warning is given elsewhere.
+                # This warning is given elsewhere.
                 # g.es("changed:",p.h,color="blue")
 #@+node:ekr.20100628072537.5814: *6* at.terminateNode & helpers
 def terminateNode (self,middle=False,v=None):
@@ -8346,8 +8321,6 @@ def makeCacheList(self,p):
     # This is called after at.copyAllTempBodyStringsToVnodes,
     # so p.b *is* the body text.
 
-    # if p.h == 'writeException': g.trace(len(p.b),p.h)
-
     return [
         p.h,p.b,p.gnx,
         [self.makeCacheList(p2) for p2 in p.children()]]
@@ -8376,8 +8349,7 @@ def createOutlineFromCacheList(self,parent_v,aList,fileName,top=True):
     for z in children:
         h,b,gnx,grandChildren = z
         isClone,child_v = self.fastAddLastChild(parent_v,gnx)
-        # if trace and h == 'writeException':
-            # g.trace('clone',isClone,'b',len(b),h,fileName)
+
         if isClone:
             self.reportChangedClone(child_v,b,h,gnx)
         else:
@@ -8468,10 +8440,6 @@ def copyAllTempBodyStringsToVnodes (self,root,thinFile):
     for p in root.self_and_subtree():
         hasList = hasattr(p.v,'tempBodyList')
         hasString = hasattr(p.v,'tempBodyString')
-        # if p.v.h == 'writeException':
-            # g.trace('old',len(p.b),
-                # 'hasList',hasList,len(hasList and ''.join(p.v.tempBodyList) or ''),
-                # 'hasString',hasString,len(hasString and p.v.tempBodyString or ''))
         if not hasString and not hasList:
             continue # Bug fix 2010/07/06: do nothing!
         # Terminate the node if v.tempBodyList exists.
@@ -8484,7 +8452,6 @@ def copyAllTempBodyStringsToVnodes (self,root,thinFile):
         delattr(p.v,'tempBodyString') # essential.
         old_body = p.b
         if s != old_body:
-            # if p.v.h == 'writeException': g.trace('changed',len(s))
             if thinFile:
                 p.v.setBodyString(s)
                 if p.v.isDirty():
@@ -8498,7 +8465,7 @@ def copyAllTempBodyStringsToVnodes (self,root,thinFile):
                     c.mod_label_controller.add_label(p,"before change:",old_body)
                 except Exception:
                     pass
-                # 2010/02/05: This warning is given elsewhere.
+                # This warning is given elsewhere.
                 # g.es("changed:",p.h,color="blue")
 #@-all
 #@-leo
