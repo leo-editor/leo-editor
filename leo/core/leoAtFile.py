@@ -1164,13 +1164,23 @@ class atFile:
         at = self
         j = g.skip_ws(s,i)
         leadingWs = s[i:j]
+
         if leadingWs:
             assert g.match(s,j,"@+all"),'missing @+all'
         else:
             assert g.match(s,j,"+all"),'missing +all'
 
+        junk_i,w = g.skip_leading_ws_with_indent(s,0,at.tab_width)
+        lws2 = g.computeLeadingWhitespace(max(0,w-at.indent),at.tab_width)
+
         # Make sure that the generated at-all is properly indented.
-        at.appendToOut(leadingWs + "@all\n")
+        if 0: # old code
+            at.appendToOut(leadingWs + "@all\n")
+        else:
+            # New code (for both old and new sentinels).
+            # Regularize the whitespace preceding the @others directive.
+            at.appendToOut(lws2 + "@all\n")
+
         at.endSentinelStack.append(at.endAll)
         if at.readVersion5:
             at.endSentinelNodeStack.append(at.v)
@@ -1536,12 +1546,9 @@ class atFile:
             assert g.match(s,j,"+others"),'missing +others'
 
         # Make sure that the generated at-others is properly indented.
-        if 0: # old code: preserve the spellling.
-            at.appendToOut(leadingWs + "@others\n")
-        else:
-            # New code (for both old and new sentinels).
-            # Regularize the whitespace preceding the @others directive.
-            at.appendToOut(lws2 + "@others\n")
+        # New code (for both old and new sentinels).
+        # Regularize the whitespace preceding the @others directive.
+        at.appendToOut(lws2 + "@others\n")
 
         if at.readVersion5:
             at.endSentinelIndentStack.append(at.indent)
@@ -3503,10 +3510,19 @@ class atFile:
         at.putLeadInSentinel(s,i,j,delta)
 
         at.indent += delta
-        if at.leadingWs:
-            at.putSentinel("@" + at.leadingWs + "@+all")
+
+        if 1: # new code.
+            lws = at.leadingWs or ''
+
+            if at.writeVersion5 or not lws:
+                at.putSentinel("@+all")
+            else:
+                at.putSentinel("@" + at.leadingWs + "@+all") 
         else:
-            at.putSentinel("@+all")
+            if at.leadingWs:
+                at.putSentinel("@" + at.leadingWs + "@+all")
+            else:
+                at.putSentinel("@+all")
 
         for child in p.children():
             at.putAtAllChild(child)
