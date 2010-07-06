@@ -1170,16 +1170,12 @@ class atFile:
         else:
             assert g.match(s,j,"+all"),'missing +all'
 
+        # Make sure that the generated at-all is properly indented.
+        # New code (for both old and new sentinels).
+        # Regularize the whitespace preceding the @all directive.
         junk_i,w = g.skip_leading_ws_with_indent(s,0,at.tab_width)
         lws2 = g.computeLeadingWhitespace(max(0,w-at.indent),at.tab_width)
-
-        # Make sure that the generated at-all is properly indented.
-        if 0: # old code
-            at.appendToOut(leadingWs + "@all\n")
-        else:
-            # New code (for both old and new sentinels).
-            # Regularize the whitespace preceding the @others directive.
-            at.appendToOut(lws2 + "@all\n")
+        at.appendToOut(lws2 + "@all\n")
 
         at.endSentinelStack.append(at.endAll)
         if at.readVersion5:
@@ -1404,25 +1400,13 @@ class atFile:
         j = g.skip_ws(s,i)
         assert g.match(s,j,"<<"),'missing @<< sentinel'
 
-        if 1: # new read code
-            if at.readVersion5:
-                line = lws2 + s[j:]
-            elif len(at.endSentinelComment) == 0:
-                line = s[i:-1] # No trailing newline
-            else:
-                k = s.find(at.endSentinelComment,i)
-                line = s[i:k] # No trailing newline, whatever k is.
+        if at.readVersion5:
+            line = lws2 + s[j:]
+        elif len(at.endSentinelComment) == 0:
+            line = s[i:-1] # No trailing newline
         else:
-
-            if len(at.endSentinelComment) == 0:
-                line = s[i:-1] # No trailing newline
-            else:
-                k = s.find(at.endSentinelComment,i)
-                line = s[i:k] # No trailing newline, whatever k is.
-
-            if at.readVersion5:
-                # Put the newline back: there is no longer an @nl sentinel.
-                line = line + '\n'
+            k = s.find(at.endSentinelComment,i)
+            line = s[i:k] # No trailing newline, whatever k is.
 
         # Undo the cweb hack.
         start = at.startSentinelComment
@@ -1526,20 +1510,6 @@ class atFile:
         j = g.skip_ws(s,i)
         leadingWs = s[i:j]
 
-        # New in Leo 4.8: Ignore the spellling in leadingWs.
-        # Instead, compute lws2, the regularized leading whitespace.
-        junk_i,w = g.skip_leading_ws_with_indent(s,0,at.tab_width)
-        lws2 = g.computeLeadingWhitespace(max(0,w-at.indent),at.tab_width)
-
-        if 0:
-            # This trace proves that we can use the lws of the @others
-            # line itself rather than the [lws] in #@[lws]@+others.
-            # 
-            if leadingWs != lws2:
-                g.trace('w',w,'at.indent',at.indent,
-                    'lws',repr(leadingWs),'lws2',repr(lws2),
-                    at.root.h,'\n',repr(s))
-
         if leadingWs:
             assert g.match(s,j,"@+others"),'missing @+others'
         else:
@@ -1548,6 +1518,8 @@ class atFile:
         # Make sure that the generated at-others is properly indented.
         # New code (for both old and new sentinels).
         # Regularize the whitespace preceding the @others directive.
+        junk_i,w = g.skip_leading_ws_with_indent(s,0,at.tab_width)
+        lws2 = g.computeLeadingWhitespace(max(0,w-at.indent),at.tab_width)
         at.appendToOut(lws2 + "@others\n")
 
         if at.readVersion5:
@@ -3510,19 +3482,12 @@ class atFile:
         at.putLeadInSentinel(s,i,j,delta)
 
         at.indent += delta
+        lws = at.leadingWs or ''
 
-        if 1: # new code.
-            lws = at.leadingWs or ''
-
-            if at.writeVersion5 or not lws:
-                at.putSentinel("@+all")
-            else:
-                at.putSentinel("@" + at.leadingWs + "@+all") 
+        if at.writeVersion5 or not lws:
+            at.putSentinel("@+all")
         else:
-            if at.leadingWs:
-                at.putSentinel("@" + at.leadingWs + "@+all")
-            else:
-                at.putSentinel("@+all")
+            at.putSentinel("@" + at.leadingWs + "@+all") 
 
         for child in p.children():
             at.putAtAllChild(child)
@@ -3678,9 +3643,6 @@ class atFile:
 
         # This is the same in both old and new sentinels.
         at.putSentinel("@-others")
-            # Old code.
-            # Note: there are *two* at signs here.
-            # at.putSentinel("@" + lws + "@-others")
 
         at.indent -= delta
     #@+node:ekr.20041005105605.174: *5* putCodeLine (leoAtFile)
@@ -3770,7 +3732,6 @@ class atFile:
 
         lws = at.leadingWs or ''
         if at.writeVersion5:
-            # at.putSentinel("@+" + lws + name)
             at.putSentinel("@+" + name)
         else:
             at.putSentinel("@" + lws + name)
@@ -3791,7 +3752,6 @@ class atFile:
                 at.putCloseNodeSentinel(p2,middle=True)
 
         if at.writeVersion5:
-            # at.putSentinel("@-" + lws + name)
             at.putSentinel("@-" + name)
 
         at.indent -= delta
