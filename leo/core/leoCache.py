@@ -146,15 +146,15 @@ class cacher:
         built by makeCacheList."""
 
         trace = False and not g.unitTesting
+        verbose = False
         c = self.c
         if not c:
             g.internalError('no c')
 
         if top:
-            if trace: g.trace(fileName)
+            if trace and verbose: g.trace(fileName)
             c.cacheListFileName = fileName
 
-        #import pprint ; pprint.pprint(tree)
         h,b,gnx,children = aList
         if h is not None:
             v = parent_v
@@ -164,8 +164,10 @@ class cacher:
         for z in children:
             h,b,gnx,grandChildren = z
             isClone,child_v = self.fastAddLastChild(parent_v,gnx)
+            # if trace and h == 'writeException':
+                # g.trace('clone',isClone,'b',len(b),h,fileName)
             if isClone:
-                self.testForChangedClone(child_v,b,h,gnx)
+                self.reportChangedClone(child_v,b,h,gnx)
             else:
                 self.createOutlineFromCacheList(
                     child_v,z,fileName,top=False)
@@ -206,22 +208,28 @@ class cacher:
         child_v.setVisited() # Supress warning/deletion of unvisited nodes.
 
         return is_clone,child_v
-    #@+node:ekr.20100705083838.5740: *5* testForChangedClone
-    def testForChangedClone (self,child_v,b,h,gnx):
+    #@+node:ekr.20100705083838.5740: *5* reportChangedClone
+    def reportChangedClone (self,child_v,b,h,gnx):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         fileName=c.cacheListFileName
         old,new = child_v.b,b
 
-        if (old == new or
+        same = (
+            old == new or
             new.endswith('\n') and old == new[:-1] or
-            old.endswith('\n') and new == old[:-1]
-        ):
-            return
+            old.endswith('\n') and new == old[:-1])
 
-        if trace: g.trace('clone changed in',fileName,'\n',
-            'len(old)',len(old),'len(new)',len(new),gnx,h)
+        # if trace and not same:
+        if trace and (not same or h == 'writeException'):
+            g.trace('same %s old %s new %s %s %s' % (
+                same,len(old),len(new),h,fileName))
+
+        # This would make it impossible to clear nodes!
+        # if not new: return same
+
+        if same: return
 
         c.nodeConflictList.append(g.bunch(
             tag='(cached)',
@@ -337,6 +345,11 @@ class cacher:
         for use by createOutlineFromCacheList.
         '''
 
+        # This is called after at.copyAllTempBodyStringsToVnodes,
+        # so p.b *is* the body text.
+
+        # if p.h == 'writeException': g.trace(len(p.b),p.h)
+
         return [
             p.h,p.b,p.gnx,
             [self.makeCacheList(p2) for p2 in p.children()]]
@@ -387,11 +400,12 @@ class cacher:
     def writeFile(self,p,fileKey):
 
         trace = False and not g.unitTesting
+        verbose = False
         c = self.c
 
         # Bug fix: 2010/05/26: check g.enableDB before giving internal error.
         if not g.enableDB:
-            if trace: g.trace('cache disabled')
+            if trace and verbose: g.trace('cache disabled')
         elif not fileKey:
             g.trace(g.callers(5))
             g.internalError('empty fileKey')
@@ -400,6 +414,7 @@ class cacher:
         else:
             if trace: g.trace('caching ',p.h,fileKey)
             self.db[fileKey] = self.makeCacheList(p)
+        if trace:g.trace('* callers',g.callers(4))
     #@+node:ekr.20100208065621.5890: *3* test (cacher)
     def test(self):
 

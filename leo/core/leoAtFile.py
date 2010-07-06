@@ -254,7 +254,6 @@ class atFile:
 
         #@+    << init ivars for reading >>
         #@+node:ekr.20041005105605.14: *4* << init ivars for reading >>
-        self.atAllFlag = False # True if @all seen.
         self.cloneSibCount = 0
             # n > 1: Make sure n cloned sibs exists at next @+node sentinel
         self.correctedLines = 0
@@ -262,8 +261,12 @@ class atFile:
         self.done = False # True when @-leo seen.
         self.endSentinelIndentStack = []
             # Restored indentation for @-others and @-<< sentinels.
+            # Used only when readVersion5.
         self.endSentinelStack = []
             # Contains entries for +node sentinels only when not readVersion5
+        self.endSentinelLevelStack = []
+            # The saved level, len(at.thinNodeStack), for @-others and @-<< sentinels.
+            # Used only when readVersion5.
         self.endSentinelNodeStack = []
             # Used only when readVersion5.
         self.importing = False
@@ -847,13 +850,15 @@ class atFile:
         tempList = hasattr(at.v,'tempBodyList') and ''.join(at.v.tempBodyList) or ''
 
         if at.readVersion5:
-            # at.terminateNode() may not have been called for at.v,
-            # Use tempList if it exists, or tempString otherwise.
+            # Terminate the previous body text if it exists.
             if hasattr(at.v,'tempBodyList'):
                 body = tempList
                 delattr(at.v,'tempBodyList') # So the change below "takes".
-            else:
+            elif hasattr(at.v,'tempBodyString'):
                 body = tempString
+                delattr(at.v,'tempBodyString')
+            else:
+                body = ''
         else:
             body = tempString
 
@@ -866,7 +871,6 @@ class atFile:
 
         # *Always* put the temp body text into at.v.tempBodyString.
         root.v.tempBodyString = s
-
         #@-    << handle first and last lines >>
 
         return thinFile
@@ -1165,14 +1169,12 @@ class atFile:
         else:
             assert g.match(s,j,"+all"),'missing +all'
 
-        # g.trace('root_seen',at.root_seen,at.root.h,repr(s))
-        at.atAllFlag = True
-
         # Make sure that the generated at-all is properly indented.
         at.appendToOut(leadingWs + "@all\n")
         at.endSentinelStack.append(at.endAll)
         if at.readVersion5:
             at.endSentinelNodeStack.append(at.v)
+            at.endSentinelLevelStack.append(len(at.thinNodeStack))
     #@+node:ekr.20041005105605.85: *6* at.readStartNode & helpers
     def readStartNode (self,s,i,middle=False):
 
@@ -1190,8 +1192,8 @@ class atFile:
             if at.docOut:
                 at.appendToOut(''.join(at.docOut))
                 at.docOut = []
-            # Do **not** call at.terminateNode here! This would be
-            # wrong if we are in the range of @+others or @+<<.
+            # Important: with new sentinels we *never*
+            # terminate nodes until the post-pass.
         else:
             assert not at.docOut # Cleared by @-node sentinel.
             at.outStack.append(at.out)
@@ -1258,7 +1260,16 @@ class atFile:
                 v = at.createThinChild4(gnx,headline)
                 at.thinNodeStack.append(v)
                 # Terminate a previous clone if it exists.
-                at.terminateBody(v,postPass=False)
+                # Do not use the full terminateNode logic!
+                if hasattr(v,'tempBodyList'):
+                    v.tempBodyString = ''.join(v.tempBodyList)
+                    delattr(v,'tempBodyList')
+                else:
+                    # Major bug fix: 2010/07/6:
+                    # Do *not* create v.tempBodyString here!
+                    # That would tell at.copyAllTempBodyStringsToVnodes
+                    # that an older (empty) version exists!
+                    pass
             else:
                 at.thinNodeStack.append(at.lastThinNode)
                 v = at.createThinChild4(gnx,headline)
@@ -1394,6 +1405,7 @@ class atFile:
 
         if at.readVersion5:
             # g.trace(at.indent,repr(line))
+            at.endSentinelLevelStack.append(len(at.thinNodeStack))
             at.endSentinelIndentStack.append(at.indent)
             at.endSentinelStack.append(at.endRef)
             at.endSentinelNodeStack.append(at.v)
@@ -1517,6 +1529,7 @@ class atFile:
             at.endSentinelIndentStack.append(at.indent)
             at.endSentinelStack.append(at.endOthers)
             at.endSentinelNodeStack.append(at.v)
+            at.endSentinelLevelStack.append(len(at.thinNodeStack))
         else:
             at.endSentinelStack.append(at.endOthers)
     #@+node:ekr.20041005105605.90: *5* end sentinels
@@ -1529,10 +1542,11 @@ class atFile:
         at.popSentinelStack(at.endAll)
 
         if at.readVersion5 and at.thinNodeStack:
-            # The -others sentinel terminates the preceding node.
+
+            # Restore the node containing the @all directive.
+            # *Never* terminate new-sentinel nodes until the post-pass.
             oldLevel = len(at.thinNodeStack)
-            newLevel = oldLevel-1
-            # g.trace('old',oldLevel,'new',newLevel,at.root.h)
+            newLevel = at.endSentinelLevelStack.pop()
             at.changeLevel(oldLevel,newLevel)
     #@+node:ekr.20041005105605.92: *6* at.readEndAt & readEndDoc
     def readEndAt (self,unused_s,unused_i):
@@ -1617,15 +1631,15 @@ class atFile:
                 at.docOut = []
                 at.inCode = True
 
+            # Restore the node continain the @others directive.
+            # *Never* terminate new-sentinel nodes until the post-pass.
             at.raw = False # End raw mode.
-
             at.v = at.endSentinelNodeStack.pop()
             at.indent = at.endSentinelIndentStack.pop()
-
-            # The -others sentinel terminates the preceding node.
             oldLevel = len(at.thinNodeStack)
-            newLevel = oldLevel-1
+            newLevel = at.endSentinelLevelStack.pop()
             at.changeLevel(oldLevel,newLevel)
+
     #@+node:ekr.20100625140824.5968: *6* at.readEndRef
     def readEndRef (self,unused_s,unused_i):
 
@@ -1642,15 +1656,14 @@ class atFile:
                 at.docOut = []
                 at.inCode = True
 
+            # Restore the node containing the section reference.
+            # *Never* terminate new-sentinel nodes until the post-pass.
             at.raw = False # End raw mode.
-
             at.lastRefNode = at.v # A kludge for at.readAfterRef
             at.v = at.endSentinelNodeStack.pop()
             at.indent = at.endSentinelIndentStack.pop()
-
-            # The -<< sentinel terminates the preceding node.
             oldLevel = len(at.thinNodeStack)
-            newLevel = oldLevel-1
+            newLevel = at.endSentinelLevelStack.pop()
             at.changeLevel(oldLevel,newLevel)
     #@+node:ekr.20041005105605.99: *6* at.readLastDocLine (old sentinels only)
     def readLastDocLine (self,tag):
@@ -2084,21 +2097,31 @@ class atFile:
                 g.choose(at.inCode,'code','doc'),at.v.h,repr(s)))
             # g.trace(g.listToString(at.out))
     #@+node:ekr.20050301105854: *4* at.copyAllTempBodyStringsToVnodes
-    def  copyAllTempBodyStringsToVnodes (self,root,thinFile):
+    def copyAllTempBodyStringsToVnodes (self,root,thinFile):
 
         trace = False and not g.unitTesting
+        if trace: g.trace('*****',root.h,g.callers(4))
         at = self ; c = at.c
         for p in root.self_and_subtree():
-            # Call at.terminateNode if v.tempBodyList exists.
-            if hasattr(p.v,'tempBodyList'):
+            hasList = hasattr(p.v,'tempBodyList')
+            hasString = hasattr(p.v,'tempBodyString')
+            # if p.v.h == 'writeException':
+                # g.trace('old',len(p.b),
+                    # 'hasList',hasList,len(hasList and ''.join(p.v.tempBodyList) or ''),
+                    # 'hasString',hasString,len(hasString and p.v.tempBodyString or ''))
+            if not hasString and not hasList:
+                continue # Bug fix 2010/07/06: do nothing!
+            # Terminate the node if v.tempBodyList exists.
+            if hasList:
                 at.terminateNode(v=p.v)
                     # Sets v.tempBodyString and clears v.tempBodyList.
-            assert not hasattr(p.v,'tempBodyList')
-            if hasattr(p.v,'tempBodyString'):
-                s = p.v.tempBodyString
-            else: s = ''
+                assert not hasattr(p.v,'tempBodyList')
+                assert hasattr(p.v,'tempBodyString')
+            s = p.v.tempBodyString
+            delattr(p.v,'tempBodyString') # essential.
             old_body = p.b
             if s != old_body:
+                # if p.v.h == 'writeException': g.trace('changed',len(s))
                 if thinFile:
                     p.v.setBodyString(s)
                     if p.v.isDirty():
@@ -2348,43 +2371,15 @@ class atFile:
             else: break
             i += 1
         return i
-    #@+node:ekr.20100702062857.5824: *4* at.terminateBody
-    def terminateBody (self,v,postPass=False):
-
-        '''Terminate the scanning of body text for node v.'''
-
-        at = self
-
-        hasString  = hasattr(v,'tempBodyString')
-        hasList    = hasattr(v,'tempBodyList')
-        tempString = hasString and v.tempBodyString or ''
-        tempList   = hasList and ''.join(v.tempBodyList) or ''
-
-        # The old temp text is *always* in tempBodyString.
-        new = g.choose(at.readVersion5,tempList,''.join(at.out))
-        new = g.toUnicode(new)
-        old = tempString or v.getBody()
-
-        # Warn if the body text has changed.
-        # Don't warn about the root node.
-        if v != at.root.v and old != new:
-            if postPass:
-                warn = old # The previous text must exist.
-            else:
-                warn = old and new # Both must exit.
-            if warn:
-                at.indicateNodeChanged(old,new,postPass,v)
-
-        # *Always* put the new text into tempBodyString.
-        v.tempBodyString = new
-        # if v.h == 'writeException': g.trace(at.readVersion5,v.h,v.gnx,'\n',new)
-
-        # *Always delete tempBodyList.  Do not leave this lying around!
-        if hasList: delattr(v,'tempBodyList')
     #@+node:ekr.20100628072537.5814: *4* at.terminateNode & helpers
     def terminateNode (self,middle=False,v=None):
 
-        '''Set the body text of at.v, and issue warning if it has changed.'''
+        '''Set the body text of at.v, and issue warning if it has changed.
+
+        This is called as follows:
+
+        old sentinels: when handling a @-node sentinel.
+        new sentinels: from the post-pass when v.tempBodyList exists.'''
 
         at = self
         trace = False and at.readVersion5 and not g.unitTesting
@@ -2395,7 +2390,7 @@ class atFile:
 
         if at.readVersion5:
             # A vital assertion.
-            # We must not terminate a node before the post pass.
+            # We must *never* terminate a node before the post pass.
             assert postPass
 
         # Get the temp attributes.
@@ -2484,6 +2479,47 @@ class atFile:
         else:
             # This should never happen.
             g.es("correcting hidden node: v=",repr(v),color="red")
+    #@+node:ekr.20100702062857.5824: *5* at.terminateBody
+    def terminateBody (self,v,postPass=False):
+
+        '''Terminate the scanning of body text for node v.'''
+
+        trace = False and not g.unitTesting
+        at = self
+
+        hasString  = hasattr(v,'tempBodyString')
+        hasList    = hasattr(v,'tempBodyList')
+        tempString = hasString and v.tempBodyString or ''
+        tempList   = hasList and ''.join(v.tempBodyList) or ''
+
+        # The old temp text is *always* in tempBodyString.
+        new = g.choose(at.readVersion5,tempList,''.join(at.out))
+        new = g.toUnicode(new)
+        old = tempString or v.getBody()
+            # v.getBody returns v._bodyString.
+
+        # Warn if the body text has changed.
+        # Don't warn about the root node.
+        if v != at.root.v and old != new:
+            if postPass:
+                warn = old # The previous text must exist.
+            else:
+                warn = old and new # Both must exit.
+            if warn:
+                at.indicateNodeChanged(old,new,postPass,v)
+
+        # *Always* put the new text into tempBodyString.
+        v.tempBodyString = new
+
+        if trace: g.trace(
+            v.gnx,
+            'tempString %3s getBody %3s old %3s new %3s' % (
+                len(tempString),len(v.getBody()),len(old),len(new)),
+            v.h,at.root.h)
+            # '\n* callers',g.callers(4))
+
+        # *Always delete tempBodyList.  Do not leave this lying around!
+        if hasList: delattr(v,'tempBodyList')
     #@+node:ekr.20041005105605.132: ** at.Writing
     #@+node:ekr.20041005105605.133: *3* Writing (top level)
     #@+node:ekr.20041005105605.154: *4* at.asisWrite
@@ -4830,7 +4866,7 @@ class atFile:
         self.root.setOrphan()
         self.root.setDirty()
     #@+node:ekr.20041005105605.218: *4* writeException
-    def writeException (self,root=None):
+    def writeException (self,root=None): # changed 11.
 
         g.es("exception writing:",self.targetFileName,color="red")
         g.es_exception()
