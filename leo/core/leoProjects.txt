@@ -124,6 +124,7 @@ def readStartNode (self,s,i,middle=False):
 
     at = self
     gnx,headline,i,level,ok = at.parseNodeSentinel(s,i,middle)
+    # g.trace('%25s %s' % (gnx,repr(s[:40])))
     if not ok: return
     at.root_seen = True
 
@@ -402,260 +403,6 @@ def reportCorrection (self,old,new,v):
     else:
         # This should never happen.
         g.es("correcting hidden node: v=",repr(v),color="red")
-#@+node:ekr.20100629064952.5842: *4* Found: at.docout
-#@+node:ekr.20041005105605.106: *5* at.readDirective (@@)
-def readDirective (self,s,i):
-
-    """Read an @@sentinel."""
-
-    trace = False and not g.unitTesting
-    at = self
-    assert g.match(s,i,"@"),'missing @@ sentinel'
-        # The first '@' has already been eaten.
-
-    if trace: g.trace(repr(s[i:]))
-        # g.trace(g.get_line(s,i))
-
-    if g.match_word(s,i,"@raw"):
-        at.raw = True
-    elif g.match_word(s,i,"@end_raw"):
-        at.raw = False
-
-    e = at.endSentinelComment
-    s2 = s[i:]
-    if len(e) > 0:
-        k = s.rfind(e,i)
-        if k != -1:
-            s2 = s[i:k] + '\n'
-
-    start = at.startSentinelComment
-    if start and len(start) > 0 and start[-1] == '@':
-        s2 = s2.replace('@@','@')
-
-    if 0: # New in 4.2.1: never change comment delims here...
-        if g.match_word(s,i,"@language"):
-            << handle @language >>
-        elif g.match_word(s,i,"@comment"):
-            << handle @comment >>
-
-    # An @c ends the doc part when using new sentinels.
-    if at.readVersion5 and s2 in ('@c','@c\n'):
-        if at.docOut:
-            at.appendToOut(''.join(at.docOut))
-            at.docOut = []
-        at.inCode = True # End the doc part.
-
-    at.appendToOut(s2)
-#@+node:ekr.20041005105605.107: *6* << handle @language >>
-# Skip the keyword and whitespace.
-i += len("@language")
-i = g.skip_ws(s,i)
-j = g.skip_c_id(s,i)
-language = s[i:j]
-
-delim1,delim2,delim3 = g.set_delims_from_language(language)
-
-if trace:
-    g.trace(g.get_line(s,i))
-    g.trace(delim1,delim2,delim3)
-
-# Returns a tuple (single,start,end) of comment delims
-if delim1:
-    at.startSentinelComment = delim1
-    at.endSentinelComment = "" # Must not be None.
-elif delim2 and delim3:
-    at.startSentinelComment = delim2
-    at.endSentinelComment = delim3
-else:
-    line = g.get_line(s,i)
-    g.es("ignoring bad @language sentinel:",line,color="red")
-#@+node:ekr.20041005105605.108: *6* << handle @comment >>
-j = g.skip_line(s,i)
-line = s[i:j]
-delim1,delim2,delim3 = g.set_delims_from_string(line)
-
-#g.trace(g.get_line(s,i))
-#g.trace(delim1,delim2,delim3)
-
-# Returns a tuple (single,start,end) of comment delims
-if delim1:
-    self.startSentinelComment = delim1
-    self.endSentinelComment = "" # Must not be None.
-elif delim2 and delim3:
-    self.startSentinelComment = delim2
-    self.endSentinelComment = delim3
-else:
-    line = g.get_line(s,i)
-    g.es("ignoring bad @comment sentinel:",line,color="red")
-#@+node:ekr.20041005105605.99: *5* at.readLastDocLine (old sentinels only)
-def readLastDocLine (self,tag):
-
-    """Read the @c line that terminates the doc part.
-    tag is @doc or @.
-
-    Not used when reading new sentinels.
-    """
-
-    at = self
-    end = at.endSentinelComment
-    start = at.startSentinelComment
-    s = ''.join(at.docOut)
-
-    # Remove the @doc or @space.  We'll add it back at the end.
-    if g.match(s,0,tag):
-        s = s[len(tag):]
-    else:
-        at.readError("Missing start of doc part")
-        return
-
-    # Bug fix: Append any whitespace following the tag to tag.
-    while s and s[0] in (' ','\t'):
-        tag = tag + s[0] ; s = s[1:]
-
-    if end:
-        # Remove leading newline.
-        if s[0] == '\n': s = s[1:]
-        # Remove opening block delim.
-        if g.match(s,0,start):
-            s = s[len(start):]
-        else:
-            at.readError("Missing open block comment")
-            g.trace('tag',repr(tag),'start',repr(start),'s',repr(s))
-            return
-        # Remove trailing newline.
-        if s[-1] == '\n': s = s[:-1]
-        # Remove closing block delim.
-        if s[-len(end):] == end:
-            s = s[:-len(end)]
-        else:
-            at.readError("Missing close block comment")
-            g.trace(s)
-            g.trace(end)
-            g.trace(start)
-            return
-
-    at.appendToOut(tag + s)
-    at.docOut = []
-#@+node:ekr.20100624082003.5942: *5* at.appendToDocPart
-def appendToDocPart (self,s):
-
-    at = self
-    trace = False and at.readVersion5 and not g.unitTesting
-
-    # Skip the leading stuff
-    if len(at.endSentinelComment) == 0:
-        # Skip the single comment delim and a blank.
-        i = g.skip_ws(s,0)
-        if g.match(s,i,at.startSentinelComment):
-            i += len(at.startSentinelComment)
-            if g.match(s,i," "): i += 1
-    else:
-        i = at.skipIndent(s,0,at.indent)
-
-    if at.readVersion5:
-        # Append the line to docOut.
-        line = s[i:]
-        at.docOut.append(line)
-    else:
-        # Append line to docOut, possibly stripping the newline.
-        line = s[i:-1] # remove newline for rstrip.
-
-        if line == line.rstrip():
-            # no trailing whitespace: the newline is real.
-            at.docOut.append(line + '\n')
-        else:
-            # trailing whitespace: the newline is fake.
-            at.docOut.append(line)
-
-    if trace: g.trace(repr(line))
-#@+node:ekr.20100624082003.5938: *5* readStartAt
-def readStartAt (self,s,i):
-
-    """Read an @+at sentinel."""
-
-    at = self
-    assert g.match(s,i,"+at"),'missing +at'
-    i += 3
-
-    if at.readVersion5: # Append whatever follows the sentinel.
-        j = at.skipToEndSentinel(s,i)
-        follow = s[i:j]
-        at.appendToOut('@' + follow + '\n')
-        at.docOut = []
-        at.inCode = False
-    else:
-        j = g.skip_ws(s,i)
-        ws = s[i:j]
-        at.docOut = ['@' + ws + '\n']
-            # This newline may be removed by a following @nonl
-        at.inCode = False
-        at.endSentinelStack.append(at.endAt)
-#@+node:ekr.20100624082003.5939: *5* readStartDoc
-def readStartDoc (self,s,i):
-
-    """Read an @+doc sentinel."""
-
-    at = self
-    assert g.match(s,i,"+doc"),'missing +doc'
-    i += 4
-
-    if at.readVersion5: # Append whatever follows the sentinel.
-        j = at.skipToEndSentinel(s,i)
-        follow = s[i:j]+'\n'
-        at.appendToOut('@' + follow + '\n')
-        at.docOut = []
-        at.inCode = False
-    else:
-        j = g.skip_ws(s,i)
-        ws = s[i:j]
-        at.docOut = ["@doc" + ws + '\n']
-            # This newline may be removed by a following @nonl
-        at.inCode = False
-        at.endSentinelStack.append(at.endDoc)
-#@+node:ekr.20041005105605.109: *5* at.readNl
-def readNl (self,s,i):
-
-    """Handle an @nonl sentinel."""
-
-    at = self
-    assert g.match(s,i,"nl"),'missing nl sentinel'
-
-    if at.inCode:
-        at.appendToOut('\n')
-    else:
-        at.docOut.append('\n')
-#@+node:ekr.20041005105605.110: *5* at.readNonl
-def readNonl (self,s,i):
-
-    """Handle an @nonl sentinel."""
-
-    at = self
-    assert g.match(s,i,"nonl"),'missing nonl sentinel'
-
-    if at.inCode:
-        s = ''.join(at.out)
-        # 2010/01/07: protect against a mostly-harmless read error.
-        if s:
-            if s[-1] == '\n':
-                at.out = [s[:-1]] # Do not use at.appendToOut here!
-            else:
-                g.trace("out:",s)
-                at.readError("unexpected @nonl directive in code part")
-    else:
-        s = ''.join(at.pending)
-        if s:
-            if s[-1] == '\n':
-                at.pending = [s[:-1]]
-            else:
-                g.trace("docOut:",s)
-                at.readError("unexpected @nonl directive in pending doc part")
-        else:
-            s = ''.join(at.docOut)
-            if s and s[-1] == '\n':
-                at.docOut = [s[:-1]]
-            else:
-                g.trace("docOut:",s)
-                at.readError("unexpected @nonl directive in doc part")
 #@+node:ekr.20100629104046.5809: *4* Reading and writing doc parts
 @ The code could handle doc parts in one place as follows:
 
@@ -776,6 +523,7 @@ def readStartNode (self,s,i,middle=False):
 
     at = self
     gnx,headline,i,level,ok = at.parseNodeSentinel(s,i,middle)
+    # g.trace('%25s %s' % (gnx,repr(s[:40])))
     if not ok: return
     at.root_seen = True
 
@@ -1265,6 +1013,7 @@ def readStartNode (self,s,i,middle=False):
 
     at = self
     gnx,headline,i,level,ok = at.parseNodeSentinel(s,i,middle)
+    # g.trace('%25s %s' % (gnx,repr(s[:40])))
     if not ok: return
     at.root_seen = True
 
@@ -1611,6 +1360,13 @@ def readEndAll (self,unused_s,unused_i):
 
     at = self
     at.popSentinelStack(at.endAll)
+
+    if at.readVersion5 and at.thinNodeStack:
+        # The -others sentinel terminates the preceding node.
+        oldLevel = len(at.thinNodeStack)
+        newLevel = oldLevel-1
+        # g.trace('old',oldLevel,'new',newLevel,at.root.h)
+        at.changeLevel(oldLevel,newLevel)
 #@+node:ekr.20041005105605.92: *7* at.readEndAt & readEndDoc
 def readEndAt (self,unused_s,unused_i):
 
@@ -2993,21 +2749,19 @@ def readEndRef (self,unused_s,unused_i):
         at.changeLevel(oldLevel,newLevel)
 #@+node:ekr.20100701112151.5958: *4* Improve reporting of changed nodes
 #@+node:ekr.20100208071151.5910: *5* cacher.createOutlineFromCacheList & helpers
-def createOutlineFromCacheList(self,parent_v,aList,top=True,atAll=None,fileName=None):
+def createOutlineFromCacheList(self,parent_v,aList,fileName,top=True):
 
     """ Create outline structure from recursive aList
-    built by makeCacheList.
-
-    Clones will be automatically created by gnx,
-    but *not* for the top-level node.
-    """
+    built by makeCacheList."""
 
     trace = False and not g.unitTesting
-    if trace: g.trace(parent_v,g.callers(5))
-
     c = self.c
     if not c:
         g.internalError('no c')
+
+    if top:
+        if trace: g.trace(fileName)
+        c.cacheListFileName = fileName
 
     #import pprint ; pprint.pprint(tree)
     h,b,gnx,children = aList
@@ -3016,46 +2770,14 @@ def createOutlineFromCacheList(self,parent_v,aList,top=True,atAll=None,fileName=
         v._headString = h    
         v._bodyString = b
 
-    if top:
-        c.cacheListFileName = fileName
-        # Scan the body for @all directives.
-        for line in g.splitLines(b):
-            if line.startswith('@all'):
-                atAll = True ; break
-        else:
-            atAll = False
-    else:
-        assert atAll in (True,False,)
-
     for z in children:
         h,b,gnx,grandChildren = z
         isClone,child_v = self.fastAddLastChild(parent_v,gnx)
         if isClone:
-            if child_v.b != b:
-                old,new = child_v.b,b
-                if new.endswith('\n') and old == new[:-1]: continue
-                if old.endswith('\n') and new == old[:-1]: continue
-                # 2010/02/05: Remove special case for @all.
-                c.nodeConflictList.append(g.bunch(
-                    tag='(cached)',
-                    fileName=c.cacheListFileName,
-                    gnx=gnx,
-                    b_old=child_v.b,
-                    h_old=child_v.h,
-                    b_new=b,
-                    h_new=h,
-                ))
-
-                # Always issue the warning.
-                g.es_print("cached read node changed:",
-                    child_v.h,color="red")
-
-                child_v.h,child_v.b = h,b
-                child_v.setDirty()
-                c.changed = True
-                    # Tells getLeoFile to propegate dirty nodes.
+            self.testForChangedClone(child_v,b,h,gnx)
         else:
-            self.createOutlineFromCacheList(child_v,z,top=False,atAll=atAll)
+            self.createOutlineFromCacheList(
+                child_v,z,fileName,top=False)
 #@+node:ekr.20100208071151.5911: *6* fastAddLastChild
 # Similar to createThinChild4
 def fastAddLastChild(self,parent_v,gnxString):
@@ -3093,6 +2815,39 @@ def fastAddLastChild(self,parent_v,gnxString):
     child_v.setVisited() # Supress warning/deletion of unvisited nodes.
 
     return is_clone,child_v
+#@+node:ekr.20100705083838.5740: *6* testForChangedClone
+def testForChangedClone (self,child_v,b,h,gnx):
+
+    trace = True and not g.unitTesting
+    c = self.c
+    fileName=c.cacheListFileName
+    old,new = child_v.b,b
+
+    if (old == new or
+        new.endswith('\n') and old == new[:-1] or
+        old.endswith('\n') and new == old[:-1]
+    ):
+        return
+
+    if trace: g.trace('clone changed in',fileName,'\n',
+        'len(old)',len(old),'len(new)',len(new),gnx,h)
+
+    c.nodeConflictList.append(g.bunch(
+        tag='(cached)',
+        fileName=fileName,
+        gnx=gnx,
+        b_old=child_v.b,
+        h_old=child_v.h,
+        b_new=b,
+        h_new=h,
+    ))
+
+    # Always issue the warning.
+    g.es_print("cached read node changed:",child_v.h,color="red")
+
+    child_v.h,child_v.b = h,b
+    child_v.setDirty()
+    c.changed = True # Tell getLeoFile to propegate dirty nodes.
 #@+node:ekr.20100628072537.5814: *5* at.terminateNode & helpers
 def terminateNode (self,middle=False,v=None):
 
@@ -3329,6 +3084,7 @@ def terminateBody (self,v,postPass=False):
 
     # *Always* put the new text into tempBodyString.
     v.tempBodyString = new
+    # if v.h == 'writeException': g.trace(at.readVersion5,v.h,v.gnx,'\n',new)
 
     # *Always delete tempBodyList.  Do not leave this lying around!
     if hasList: delattr(v,'tempBodyList')
@@ -4070,6 +3826,7 @@ def readStartNode (self,s,i,middle=False):
 
     at = self
     gnx,headline,i,level,ok = at.parseNodeSentinel(s,i,middle)
+    # g.trace('%25s %s' % (gnx,repr(s[:40])))
     if not ok: return
     at.root_seen = True
 
@@ -4382,6 +4139,7 @@ def readStartNode (self,s,i,middle=False):
 
     at = self
     gnx,headline,i,level,ok = at.parseNodeSentinel(s,i,middle)
+    # g.trace('%25s %s' % (gnx,repr(s[:40])))
     if not ok: return
     at.root_seen = True
 
@@ -4728,6 +4486,13 @@ def readEndAll (self,unused_s,unused_i):
 
     at = self
     at.popSentinelStack(at.endAll)
+
+    if at.readVersion5 and at.thinNodeStack:
+        # The -others sentinel terminates the preceding node.
+        oldLevel = len(at.thinNodeStack)
+        newLevel = oldLevel-1
+        # g.trace('old',oldLevel,'new',newLevel,at.root.h)
+        at.changeLevel(oldLevel,newLevel)
 #@+node:ekr.20041005105605.92: *7* at.readEndAt & readEndDoc
 def readEndAt (self,unused_s,unused_i):
 
@@ -7718,5 +7483,22 @@ def writeError(self,message=None):
     self.root.setOrphan()
     self.root.setDirty()
 #@+node:ekr.20041005105605.218: *7* writeException
+def writeException (self,root=None):
+
+    g.es("exception writing:",self.targetFileName,color="red")
+    g.es_exception()
+
+    if self.outputFile:
+        self.outputFile.flush()
+        self.outputFile.close()
+        self.outputFile = None
+
+    if self.outputFileName:
+        self.remove(self.outputFileName)
+
+    if root:
+        # Make sure we try to rewrite this file.
+        root.setOrphan()
+        root.setDirty()
 #@-all
 #@-leo

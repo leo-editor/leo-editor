@@ -1180,6 +1180,7 @@ class atFile:
 
         at = self
         gnx,headline,i,level,ok = at.parseNodeSentinel(s,i,middle)
+        # g.trace('%25s %s' % (gnx,repr(s[:40])))
         if not ok: return
         at.root_seen = True
 
@@ -1526,6 +1527,13 @@ class atFile:
 
         at = self
         at.popSentinelStack(at.endAll)
+
+        if at.readVersion5 and at.thinNodeStack:
+            # The -others sentinel terminates the preceding node.
+            oldLevel = len(at.thinNodeStack)
+            newLevel = oldLevel-1
+            # g.trace('old',oldLevel,'new',newLevel,at.root.h)
+            at.changeLevel(oldLevel,newLevel)
     #@+node:ekr.20041005105605.92: *6* at.readEndAt & readEndDoc
     def readEndAt (self,unused_s,unused_i):
 
@@ -2369,6 +2377,7 @@ class atFile:
 
         # *Always* put the new text into tempBodyString.
         v.tempBodyString = new
+        # if v.h == 'writeException': g.trace(at.readVersion5,v.h,v.gnx,'\n',new)
 
         # *Always delete tempBodyList.  Do not leave this lying around!
         if hasList: delattr(v,'tempBodyList')

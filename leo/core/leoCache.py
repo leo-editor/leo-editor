@@ -140,21 +140,19 @@ class cacher:
         return "fcache/" + m.hexdigest()
     #@+node:ekr.20100208082353.5925: *3* Reading
     #@+node:ekr.20100208071151.5910: *4* cacher.createOutlineFromCacheList & helpers
-    def createOutlineFromCacheList(self,parent_v,aList,top=True,atAll=None,fileName=None):
+    def createOutlineFromCacheList(self,parent_v,aList,fileName,top=True):
 
         """ Create outline structure from recursive aList
-        built by makeCacheList.
-
-        Clones will be automatically created by gnx,
-        but *not* for the top-level node.
-        """
+        built by makeCacheList."""
 
         trace = False and not g.unitTesting
-        if trace: g.trace(parent_v,g.callers(5))
-
         c = self.c
         if not c:
             g.internalError('no c')
+
+        if top:
+            if trace: g.trace(fileName)
+            c.cacheListFileName = fileName
 
         #import pprint ; pprint.pprint(tree)
         h,b,gnx,children = aList
@@ -163,46 +161,14 @@ class cacher:
             v._headString = h    
             v._bodyString = b
 
-        if top:
-            c.cacheListFileName = fileName
-            # Scan the body for @all directives.
-            for line in g.splitLines(b):
-                if line.startswith('@all'):
-                    atAll = True ; break
-            else:
-                atAll = False
-        else:
-            assert atAll in (True,False,)
-
         for z in children:
             h,b,gnx,grandChildren = z
             isClone,child_v = self.fastAddLastChild(parent_v,gnx)
             if isClone:
-                if child_v.b != b:
-                    old,new = child_v.b,b
-                    if new.endswith('\n') and old == new[:-1]: continue
-                    if old.endswith('\n') and new == old[:-1]: continue
-                    # 2010/02/05: Remove special case for @all.
-                    c.nodeConflictList.append(g.bunch(
-                        tag='(cached)',
-                        fileName=c.cacheListFileName,
-                        gnx=gnx,
-                        b_old=child_v.b,
-                        h_old=child_v.h,
-                        b_new=b,
-                        h_new=h,
-                    ))
-
-                    # Always issue the warning.
-                    g.es_print("cached read node changed:",
-                        child_v.h,color="red")
-
-                    child_v.h,child_v.b = h,b
-                    child_v.setDirty()
-                    c.changed = True
-                        # Tells getLeoFile to propegate dirty nodes.
+                self.testForChangedClone(child_v,b,h,gnx)
             else:
-                self.createOutlineFromCacheList(child_v,z,top=False,atAll=atAll)
+                self.createOutlineFromCacheList(
+                    child_v,z,fileName,top=False)
     #@+node:ekr.20100208071151.5911: *5* fastAddLastChild
     # Similar to createThinChild4
     def fastAddLastChild(self,parent_v,gnxString):
@@ -240,6 +206,39 @@ class cacher:
         child_v.setVisited() # Supress warning/deletion of unvisited nodes.
 
         return is_clone,child_v
+    #@+node:ekr.20100705083838.5740: *5* testForChangedClone
+    def testForChangedClone (self,child_v,b,h,gnx):
+
+        trace = True and not g.unitTesting
+        c = self.c
+        fileName=c.cacheListFileName
+        old,new = child_v.b,b
+
+        if (old == new or
+            new.endswith('\n') and old == new[:-1] or
+            old.endswith('\n') and new == old[:-1]
+        ):
+            return
+
+        if trace: g.trace('clone changed in',fileName,'\n',
+            'len(old)',len(old),'len(new)',len(new),gnx,h)
+
+        c.nodeConflictList.append(g.bunch(
+            tag='(cached)',
+            fileName=fileName,
+            gnx=gnx,
+            b_old=child_v.b,
+            h_old=child_v.h,
+            b_new=b,
+            h_new=h,
+        ))
+
+        # Always issue the warning.
+        g.es_print("cached read node changed:",child_v.h,color="red")
+
+        child_v.h,child_v.b = h,b
+        child_v.setDirty()
+        c.changed = True # Tell getLeoFile to propegate dirty nodes.
     #@+node:ekr.20100208082353.5923: *4* getCachedGlobalFileRatios
     def getCachedGlobalFileRatios (self):
 
